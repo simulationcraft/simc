@@ -2,6 +2,7 @@ SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 2081
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 4% Base Mana (44000 @Level 110)
 Spell Level      : 22
 Range            : 50000 yards
@@ -29,6 +30,7 @@ Detecting Invisibility.
 
 Name             : Corruption (id=172) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 3% Base Mana (33000 @Level 110)
 Spell Level      : 3
 Range            : 40 yards
@@ -50,6 +52,7 @@ Description      : Corrupts the target, causing $146739o1 Shadow damage over $14
 Name             : Immolate (id=348) [Spell Family (5)] 
 Replaces         : Corruption (id=172)
 Class            : Destruction Warlock
+School           : Fire
 Resource         : 6% Base Mana (66000 @Level 110)
 Spell Level      : 10
 Range            : 40 yards
@@ -73,6 +76,7 @@ Variables        : $mastery=$?s77220[${((100+$77220m3)/100)}][${1.00}]
 Name             : Doom (id=603) [Spell Family (5)] 
 Replaces         : Corruption (id=172)
 Class            : Demonology Warlock
+School           : Shadow
 Resource         : 2% Base Mana (22000 @Level 110)
 Spell Level      : 47
 Range            : 40 yards
@@ -95,6 +99,7 @@ Tooltip          : Doomed to take $w1 Shadow damage.
 
 Name             : Shadow Bolt (id=686) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 6% Base Mana (66000 @Level 110)
 Spell Level      : 1
 Range            : 40 yards
@@ -115,6 +120,7 @@ Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage.
 
 Name             : Summon Imp (Summon) (id=688) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 1 Soul Shard
 Spell Level      : 1
 Cast Time        : 2.5 seconds
@@ -137,6 +143,7 @@ Description      : Summons an Imp under your command that casts ranged Firebolts
 
 Name             : Drain Life (id=689) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 3% Base Mana (33000 @Level 110) and 3% Base Mana (33000 @Level 110) per second or tick
 Spell Level      : 12
 Range            : 40 yards
@@ -164,6 +171,7 @@ Restoring $m2% of maximum health to the caster when Drain Life deals damage.
 
 Name             : Summon Felhunter (Summon) (id=691) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 1 Soul Shard
 Spell Level      : 35
 Cast Time        : 2.5 seconds
@@ -186,6 +194,7 @@ Description      : Summons a Felhunter under your command, able to heal itself b
 
 Name             : Summon Voidwalker (Summon) (id=697) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 1 Soul Shard
 Spell Level      : 8
 Cast Time        : 2.5 seconds
@@ -208,6 +217,7 @@ Description      : Summons a Voidwalker under your command, able to withstand he
 
 Name             : Banish (id=710) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 2.5% Base Mana (27500 @Level 110)
 Spell Level      : 32
 Range            : 30 yards
@@ -234,6 +244,7 @@ Tooltip          : Invulnerable, but unable to act.
 
 Name             : Summon Succubus (Summon) (id=712) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 1 Soul Shard
 Spell Level      : 28
 Cast Time        : 2.5 seconds
@@ -256,6 +267,7 @@ Description      : Summons a Succubus under your command to seduce enemy Humanoi
 
 Name             : Health Funnel (id=755) [Scaling Spell (11), Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Spell Level      : 19
 Range            : 45 yards
 GCD              : 1.5 seconds
@@ -281,6 +293,7 @@ Tooltip          : Transferring Life.
 Name             : Agony (id=980) [Spell Family (5)] 
 Replaces         : Shadow Bolt (id=686)
 Class            : Affliction Warlock
+School           : Shadow
 Resource         : 3% Base Mana (33000 @Level 110)
 Spell Level      : 10
 Range            : 40 yards
@@ -308,6 +321,7 @@ Damage increases over time.
 
 Name             : Enslave Demon (id=1098) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 5% Base Mana (55000 @Level 110)
 Spell Level      : 54
 Range            : 30 yards
@@ -330,6 +344,7 @@ Tooltip          : Enslaved.
 
 Name             : Summon Infernal (Guardian) (id=1122) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 1 Soul Shard
 Spell Level      : 50
 Range            : 30 yards
@@ -355,6 +370,7 @@ Description      : Summons a Infernal from the Twisting Nether, impacting for $2
 
 Name             : Life Tap (id=1454) [Spell Family (5)] 
 Class            : Affliction Demonology Destruction Warlock
+School           : Shadow
 Spell Level      : 16
 GCD              : 1.5 seconds
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
@@ -372,6 +388,7 @@ Description      : Restores $s1% of your maximum mana, at the cost of $s2% of yo
 
 Name             : Use Soulstone (id=3026) [Spell Family (5)] 
 Class            : Warlock
+School           : Physical
 Spell Level      : 18
 Attributes       : ........ ........ .......x ........   ........ ..x..... ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
@@ -388,6 +405,7 @@ If cast on a dead target, they are instantly resurrected. Targets resurrect with
 
 Name             : Firebolt (Basic Attack) (id=3110) [Spell Family (5)] 
 Class            : Warlock
+School           : Fire
 Resource         : 40 Energy
 Spell Level      : 1
 Range            : 40 yards
@@ -416,6 +434,7 @@ $damage=${(($SP*0.50)*0.657)+$M1}
 
 Name             : Consuming Shadows (Basic Attack) (id=3716) [Spell Family (57)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 20 Energy
 Spell Level      : 10
 Range            : 5 yards
@@ -435,6 +454,7 @@ Description      : Drain $s1 health from all nearby enemies.
 
 Name             : Shoot (id=5019) 
 Class            : Priest, Mage, Warlock
+School           : Physical
 Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 0.5 seconds
@@ -454,6 +474,7 @@ Description      : Attack with an equipped wand.
 
 Name             : Howl of Terror (id=5484) [Spell Family (5), Passive] 
 Class            : Warlock
+School           : Shadow
 Spell Level      : 30
 Proc Chance      : 101%
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -475,6 +496,7 @@ Tooltip          : Disoriented.
 
 Name             : Rain of Fire (id=5740) [Spell Family (5)] 
 Class            : Destruction Warlock
+School           : Fire
 Resource         : 4.5% Base Mana (49500 @Level 110)
 Spell Level      : 38
 Range            : 35 yards
@@ -499,6 +521,7 @@ Tooltip          : $42223s1 Fire damage every $5740t2 sec.
 
 Name             : Fear (id=5782) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 10% Base Mana (110000 @Level 110)
 Spell Level      : 14
 Range            : 30 yards
@@ -524,6 +547,7 @@ Tooltip          : Disoriented.
 
 Name             : Create Healthstone (id=6201) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 5% Base Mana (55000 @Level 110)
 Spell Level      : 5
 Cast Time        : 3 seconds
@@ -542,6 +566,7 @@ Description      : Creates a Healthstone that can be consumed to restore $?s5622
 
 Name             : Soulstone (id=6203) 
 Class            : Warlock
+School           : Shadow
 Spell Level      : 18
 Range            : 50000 yards
 Triggered by     : Soulstone (20707)
@@ -560,6 +585,7 @@ If cast on a dead target, they are instantly resurrected. Targets resurrect with
 
 Name             : Healthstone (id=6262) [Scaling Spell (-2), Spell Family (5)] 
 Class            : Warlock
+School           : Physical
 Cooldown         : 60 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -577,6 +603,7 @@ Tooltip          : $w2 health restored every $t2 sec.
 
 Name             : Seduction (Special Ability) (id=6358) [Spell Family (57)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 20 Energy
 Spell Level      : 20
 Range            : 30 yards
@@ -604,6 +631,7 @@ Tooltip          : Disoriented.
 
 Name             : Whiplash (Special Ability) (id=6360) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 40 Energy
 Spell Level      : 56
 Range            : 30 yards
@@ -627,6 +655,7 @@ Description      : Deals $s1 Shadow damage and instantly knocks back all enemies
 
 Name             : Mortal Coil (id=6789) [Scaling Spell (11), Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 6% Base Mana (66000 @Level 110)
 Spell Level      : 30
 Range            : 20 yards
@@ -656,6 +685,7 @@ Tooltip          : Incapacitated.
 
 Name             : Lash of Pain (Basic Attack) (id=7814) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 60 Energy
 Spell Level      : 20
 Range            : 20 yards
@@ -679,6 +709,7 @@ Master gains $m3 Demonic Fury.][]
 
 Name             : Lesser Invisibility (Special Ability) (id=7870) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 20 Energy
 Spell Level      : 32
 GCD              : 1.5 seconds
@@ -708,6 +739,7 @@ Tooltip          : Invisible.
 
 Name             : Suffering (Special Ability) (id=17735) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 40 Energy
 Spell Level      : 15
 Range            : 30 yards
@@ -734,6 +766,7 @@ Tooltip          : Taunted.
 
 Name             : Shadow Bulwark (Special Ability) (id=17767) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 10 Energy
 Spell Level      : 55
 Range            : 50000 yards
@@ -765,6 +798,7 @@ Tooltip          : Maximum health increased by $s1%.
 
 Name             : Shadowburn (id=17877) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 1 Soul Shard
 Spell Level      : 47
 Range            : 40 yards
@@ -787,6 +821,7 @@ Tooltip          : If the target dies, the Warlock gains $29341s1 Soul Shards.
 
 Name             : Agony (id=17941) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Attributes       : ........ ........ x....... x..x....   ........ ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -800,6 +835,7 @@ Description      : $@spelldesc980
 
 Name             : Conflagrate (id=17962) [Spell Family (5)] 
 Class            : Destruction Warlock
+School           : Fire
 Resource         : 2% Base Mana (22000 @Level 110)
 Spell Level      : 21
 Range            : 40 yards
@@ -821,6 +857,7 @@ Description      : Triggers an explosion of fire on the target, dealing $s1 Fire
 
 Name             : Summon Doomguard (Guardian) (id=18540) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 1 Soul Shard
 Spell Level      : 58
 Range            : 40 yards
@@ -842,6 +879,7 @@ Description      : Summons a Doomguard for $60478d to assault the target with it
 
 Name             : Immolation (id=19483) [Spell Family (57), Passive] 
 Class            : Warlock
+School           : Fire
 Spell Level      : 50
 Attributes       : ....x.x. ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -858,6 +896,7 @@ Tooltip          : Burns nearby enemies for $20153s1 fire damage every $t1 secon
 
 Name             : Spell Lock (Special Ability) (id=19647) [Spell Family (57)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 20 Energy
 Spell Level      : 50
 Range            : 40 yards
@@ -876,6 +915,7 @@ Description      : Counter an enemy's spellcast, preventing any spell from that 
 
 Name             : Devour Magic (id=19658) [Scaling Spell (11)] 
 Class            : Warlock
+School           : Shadow
 Spell Level      : 29
 Range            : 45 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -893,6 +933,7 @@ Description      : Heals and energizes when an effect is dispelled.
 
 Name             : Immolation (id=20153) [Scaling Spell (11), Spell Family (5)] 
 Class            : Warlock
+School           : Fire
 Spell Level      : 50
 Triggered by     : Immolation (19483)
 Attributes       : ....x... ........ x.x..... ........   ...x...x ........ ........ ........ 
@@ -911,6 +952,7 @@ Description      : Deals Fire damage to all enemies near the caster.
 Name             : Expansive Mind (Racial Passive) (id=20591) [Passive] 
 Class            : Paladin, Priest, Shaman, Mage, Warlock, Monk
 Race             : Gnome
+School           : Physical
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -925,6 +967,7 @@ Description      : Maximum mana increased by $s1%.
 
 Name             : Soulstone (id=20707) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 5% Base Mana (55000 @Level 110)
 Spell Level      : 18
 Range            : 40 yards
@@ -950,6 +993,7 @@ Tooltip          : Soul is stored.
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Orc
+School           : Physical
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -964,6 +1008,7 @@ Description      : Damage dealt by pets increased by $s1%.
 
 Name             : Infernal Awakening (id=22703) [Scaling Spell (11), Spell Family (5)] 
 Class            : Warlock
+School           : Fire
 Spell Level      : 50
 Range            : 50000 yards
 Duration         : 2 seconds
@@ -985,6 +1030,7 @@ Tooltip          : Stunned.
 
 Name             : Seed of Corruption (id=27243) [Spell Family (5)] 
 Class            : Affliction Warlock
+School           : Shadow
 Resource         : 4.5% Base Mana (49500 @Level 110)
 Resource         : 0 - 1 Soul Shard w/ Sow the Seeds (id=196226)
 Spell Level      : 38
@@ -1020,6 +1066,7 @@ The seed will detonate early if the target is hit by other detonations, or takes
 
 Name             : Seed of Corruption (id=27285) [Scaling Spell (11), Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Spell Level      : 72
 Range            : 50000 yards
 Affecting spells : Glyph of Hand of Gul'dan (56248), Seeds of Doom (199153)
@@ -1038,6 +1085,7 @@ Description      : $@spelldesc27243
 Name             : Arcane Torrent (Racial) (id=28730) 
 Class            : Priest, Mage, Warlock
 Race             : Blood Elf
+School           : Arcane
 Duration         : 2 seconds
 Cooldown         : 90 seconds
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
@@ -1056,6 +1104,7 @@ Tooltip          : Silenced.
 
 Name             : Shadowburn (id=29341) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Range            : 100 yards
 Attributes       : ........ ........ x....... ...x....   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -1071,6 +1120,7 @@ Description      : $@spelldesc17877
 Name             : Incinerate (id=29722) [Spell Family (5)] 
 Replaces         : Shadow Bolt (id=686)
 Class            : Destruction Warlock
+School           : Fire
 Resource         : 6% Base Mana (66000 @Level 110)
 Spell Level      : 10
 Range            : 40 yards
@@ -1095,6 +1145,7 @@ Description      : Draws fire toward the enemy, dealing $s2 Fire damage.
 
 Name             : Unstable Affliction (id=30108) [Spell Family (5)] 
 Class            : Affliction Warlock
+School           : Shadow
 Resource         : 1 Soul Shard
 Spell Level      : 26
 Range            : 40 yards
@@ -1126,6 +1177,7 @@ Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
 Name             : Summon Felguard (Summon) (id=30146) [Spell Family (5)] 
 Class            : Demonology Warlock
+School           : Shadow
 Resource         : 1 Soul Shard
 Spell Level      : 40
 Cast Time        : 2.5 seconds
@@ -1145,6 +1197,7 @@ Description      : Summons a Felguard under your command as a powerful melee com
 
 Name             : Pursuit (Special Ability) (id=30151) [Spell Family (57)] 
 Class            : Warlock
+School           : Physical
 Resource         : 20 Energy
 Spell Level      : 21
 Range            : 8 - 25 yards
@@ -1174,6 +1227,7 @@ Tooltip          : Movement speed increased by $s3%.
 
 Name             : Pursuit (id=30153) [Scaling Spell (11)] 
 Class            : Warlock
+School           : Physical
 Range            : 50000 yards
 Proc Chance      : 101%
 Triggered by     : Pursuit (30151)
@@ -1195,6 +1249,7 @@ Use anytime the $?s108499[Wrathguard][Felguard]'s target is further than 8 yards
 
 Name             : Legion Strike (Basic Attack) (id=30213) [Spell Family (57)] 
 Class            : Warlock
+School           : Physical
 Resource         : 60 Energy
 Spell Level      : 1
 Range            : 5 yards
@@ -1220,6 +1275,7 @@ Tooltip          : Effectiveness of any healing reduced by $w2%.
 
 Name             : Shadowfury (id=30283) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Spell Level      : 30
 Range            : 30 yards
 Cast Time        : 1.5 seconds
@@ -1240,6 +1296,7 @@ Tooltip          : Stunned.
 
 Name             : Avoidance (Passive) (id=32233) [Passive] 
 Class            : Warlock
+School           : Physical
 Spell Level      : 1
 Attributes       : ....x.x. ........ x.x..... ...x....   .....x.. ........ .x...... ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
@@ -1258,6 +1315,7 @@ Description      : Reduces the damage your summoned demon takes from creature ar
 Name             : Interrupt (id=32747) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Mage, Warlock, Monk, Demon Hunter
 Race             : Blood Elf
+School           : Physical
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 3 seconds
@@ -1276,6 +1334,7 @@ Tooltip          : Interrupted.
 Name             : Blood Fury (Racial) (id=33702) [Scaling Spell (-1)] 
 Class            : Mage, Warlock
 Race             : Orc
+School           : Physical
 Spell Level      : 1
 Duration         : 15 seconds
 Cooldown         : 120 seconds
@@ -1295,6 +1354,7 @@ Tooltip          : Spell power increased by $s2.
 
 Name             : Destruction Holo-gogs (id=41320) 
 Class            : Priest, Mage, Warlock
+School           : Physical
 Cast Time        : 15 seconds
 Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1308,6 +1368,7 @@ Effects          :
 
 Name             : Rain of Fire (id=42223) [Scaling Spell (11), Spell Family (5)] 
 Class            : Warlock
+School           : Fire
 Spell Level      : 20
 Range            : 100 yards
 Affecting spells : Flamelicked (185229), Fire From the Sky (196258), Eradication (196414)
@@ -1325,6 +1386,7 @@ Description      : $@spelldesc5740
 
 Name             : Annihilator Holo-Gogs (id=46111) 
 Class            : Priest, Mage, Warlock
+School           : Physical
 Cast Time        : 15 seconds
 Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1338,6 +1400,7 @@ Effects          :
 
 Name             : Demonic Circle (Summon) (id=48018) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 5% Base Mana (55000 @Level 110)
 Spell Level      : 76
 Cast Time        : 0.5 seconds
@@ -1367,6 +1430,7 @@ Right-click this buff to destroy your Demonic Circle, allowing a new one to be p
 
 Name             : Haunt (id=48181) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 5% Base Mana (55000 @Level 110)
 Spell Level      : 60
 Range            : 40 yards
@@ -1392,6 +1456,7 @@ Tooltip          : Haunt's cooldown will be reset on death.
 
 Name             : Shadow Bite (Basic Attack) (id=54049) [Spell Family (57)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 60 Energy
 Spell Level      : 30
 Range            : 5 yards
@@ -1415,6 +1480,7 @@ Damage increased by $s2% for each of your Affliction damage-over-time effects on
 
 Name             : Glyph of Subtlety (Affliction) (id=56217) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
+School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1429,6 +1495,7 @@ Description      : Your Soul Shards no longer float around you while out of comb
 
 Name             : Glyph of Nightmares (id=56232) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
+School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1443,6 +1510,7 @@ Description      : Your Felsteed and Dreadsteed can cross water while running an
 
 Name             : Glyph of Health Funnel (Affliction, Demonology) (id=56238) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
+School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1458,6 +1526,7 @@ Description      : Your Health Funnel instantly restores $114189s1% of your demo
 
 Name             : Glyph of Shadow Bolt (Demonology) (id=56240) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
+School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1472,6 +1541,7 @@ Description      : Splits your Shadow Bolt into three smaller bolts.
 
 Name             : Glyph of Verdant Spheres (Affliction, Destruction) (id=56241) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
+School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1503,6 +1573,7 @@ Description      : $?c3[When you have a Burning Ember, it appears around your ch
 
 Name             : Glyph of Felguard (Demonology) (id=56246) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
+School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1517,6 +1588,7 @@ Description      : Your Felguard will equip a random two-handed axe, mace, sword
 
 Name             : Glyph of Falling Meteor (Demonology) (id=56247) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
+School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1532,6 +1604,7 @@ Description      : If you use Demonic Leap while falling, you slam into the grou
 
 Name             : Glyph of Hand of Gul'dan (Demonology) (id=56248) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
+School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1547,6 +1620,7 @@ Description      : Your Hand of Gul'dan can now be targeted at a location.
 
 Name             : Hand of Gul'dan (id=56268) 
 Class            : Warlock
+School           : Physical
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1559,6 +1633,7 @@ Effects          :
 
 Name             : Verdant Spheres (id=56282) 
 Class            : Warlock
+School           : Physical
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1571,6 +1646,7 @@ Effects          :
 
 Name             : Nightmares (id=56283) 
 Class            : Warlock
+School           : Physical
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1583,6 +1659,7 @@ Effects          :
 
 Name             : Felguard (id=56285) 
 Class            : Warlock
+School           : Physical
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1595,6 +1672,7 @@ Effects          :
 
 Name             : Health Funnel (id=56288) 
 Class            : Warlock
+School           : Physical
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1607,6 +1685,7 @@ Effects          :
 
 Name             : Subtlety (id=56290) 
 Class            : Warlock
+School           : Physical
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1619,6 +1698,7 @@ Effects          :
 
 Name             : Shadow Bolt (id=56294) 
 Class            : Warlock
+School           : Physical
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1631,6 +1711,7 @@ Effects          :
 
 Name             : Falling Meteor (id=56302) 
 Class            : Warlock
+School           : Physical
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1643,6 +1724,7 @@ Effects          :
 
 Name             : Mechanized Snow Goggles (id=56465) 
 Class            : Priest, Mage, Warlock
+School           : Physical
 Cast Time        : 2 seconds
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1656,6 +1738,7 @@ Effects          :
 
 Name             : Visage Liquification Goggles (id=56484) 
 Class            : Priest, Mage, Warlock
+School           : Physical
 Cast Time        : 15 seconds
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1669,6 +1752,7 @@ Effects          :
 
 Name             : Glyph of Unending Breath (id=58079) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
+School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1683,6 +1767,7 @@ Description      : Increases the swim speed of targets affected by your Unending
 
 Name             : Glyph of Eye of Kilrogg (id=58081) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
+School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1701,6 +1786,7 @@ In addition, the movement speed of your Eye of Kilrogg is increased by $s1% and 
 
 Name             : Glyph of Soulwell (id=58094) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
+School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1715,6 +1801,7 @@ Description      : Your soulwell glows with an eerie light.
 
 Name             : Glyph of Enslave Demon (id=58107) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
+School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1730,6 +1817,7 @@ Description      : Reduces the cast time of your Enslave Demon spell by $58107s1
 
 Name             : Unending Breath (id=58267) 
 Class            : Warlock
+School           : Physical
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1742,6 +1830,7 @@ Effects          :
 
 Name             : Eye of Kilrogg (id=58272) 
 Class            : Warlock
+School           : Physical
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1754,6 +1843,7 @@ Effects          :
 
 Name             : Enslave Demon (id=58274) 
 Class            : Warlock
+School           : Physical
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1766,6 +1856,7 @@ Effects          :
 
 Name             : Soulwell (id=58275) 
 Class            : Warlock
+School           : Physical
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1778,6 +1869,7 @@ Effects          :
 
 Name             : Summon Doomguard (id=60478) [Spell Family (57)] 
 Class            : Warlock
+School           : Physical
 Spell Level      : 60
 Duration         : 20 seconds
 Triggered by     : Summon Doomguard (18540)
@@ -1797,6 +1889,7 @@ Tooltip          : You have summoned a Doomguard.
 
 Name             : Siphon Life (id=63106) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
@@ -1815,6 +1908,7 @@ Tooltip          : Siphoning $w1 life to the caster every $t1 sec.
 
 Name             : Glyph of Crimson Banish (id=63312) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
+School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1831,6 +1925,7 @@ Description      : Your Banish spell is now red.
 
 Name             : Crimson Banish (id=63943) 
 Class            : Warlock
+School           : Physical
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1844,6 +1939,7 @@ Effects          :
 Name             : Viciousness (Racial Passive) (id=68975) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen
+School           : Physical
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1860,6 +1956,7 @@ Tooltip          : Critical strike chance increased by $s1%.
 Name             : Aberration (Racial Passive) (id=68976) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen
+School           : Physical
 Spell Level      : 1
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1877,6 +1974,7 @@ Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 Name             : Darkflight (Racial) (id=68992) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen
+School           : Physical
 Duration         : 10 seconds
 Cooldown         : 120 seconds
 Attributes       : ........ ........ ........ ........   .....x.. ........ ........ ........ 
@@ -1895,6 +1993,7 @@ Tooltip          : True form activated, movement speed increased by an additiona
 
 Name             : Mastery: Potent Afflictions (id=77215) [Spell Family (5), Passive] 
 Class            : Affliction Warlock
+School           : Physical
 Spell Level      : 78
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1916,6 +2015,7 @@ Description      : Increases the damage of Agony, $?s603[Doom][Corruption] and U
 
 Name             : Mastery: Master Demonologist (id=77219) [Spell Family (5), Passive] 
 Class            : Demonology Warlock
+School           : Physical
 Spell Level      : 78
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1932,6 +2032,7 @@ Description      : Demonic Empowerment also increases the damage of your demons 
 
 Name             : Mastery: Chaotic Energies (id=77220) [Spell Family (5), Passive] 
 Class            : Destruction Warlock
+School           : Physical
 Spell Level      : 78
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1947,6 +2048,7 @@ Description      : Your Destruction spells deal up to $s1% additional damage, ra
 
 Name             : Havoc (id=80240) [Spell Family (5)] 
 Class            : Destruction Warlock
+School           : Shadow
 Resource         : 8% Base Mana (88000 @Level 110)
 Spell Level      : 40
 Range            : 40 yards
@@ -1970,6 +2072,7 @@ Tooltip          : Spells cast by the Warlock also hit this target.
 
 Name             : Lightweight Bio-Optic Killshades (id=81725) 
 Class            : Priest, Mage, Warlock
+School           : Physical
 Cast Time        : 5 seconds
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1983,6 +2086,7 @@ Effects          :
 
 Name             : Doom Bolt (id=85692) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 35 Energy
 Spell Level      : 1
 Range            : 30 yards
@@ -2007,6 +2111,7 @@ Master gains $s3 Demonic Fury.
 
 Name             : Hand of Gul'dan (id=86040) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadowflame
 Range            : 50000 yards
 Affecting spells : Glyph of Hand of Gul'dan (56248)
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
@@ -2022,6 +2127,7 @@ Description      : $@spelldesc105174
 
 Name             : Nethermancy (Passive) (id=86091) [Passive, Hidden] 
 Class            : Warlock
+School           : Physical
 Spell Level      : 50
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2037,6 +2143,7 @@ Description      : Increases your Intellect by $s1%.
 
 Name             : Drain Life (id=89653) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Affecting spells : Long Dark Night of the Soul (199214), 
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ .x...... 
@@ -2051,6 +2158,7 @@ Description      : $@spelldesc689
 
 Name             : Felstorm (Special Ability) (id=89751) [Spell Family (57)] 
 Class            : Warlock
+School           : Physical
 Resource         : 60 Energy
 Spell Level      : 45
 Duration         : 6 seconds
@@ -2079,6 +2187,7 @@ Unable to use abilities during Felstorm.
 
 Name             : Felstorm (id=89753) [Spell Family (5)] 
 Class            : Warlock
+School           : Physical
 Spell Level      : 36
 Triggered by     : Felstorm (89751)
 Attributes       : ....x... ........ x.x..... ........   ....x... ........ ........ ........ 
@@ -2097,6 +2206,7 @@ Description      : $@spelldesc89751
 
 Name             : Axe Toss (Special Ability) (id=89766) [Spell Family (57)] 
 Class            : Warlock
+School           : Physical
 Spell Level      : 33
 Range            : 30 yards
 Velocity         : 20 yards/sec
@@ -2116,6 +2226,7 @@ Tooltip          : Stunned for $d.
 
 Name             : Flee (Special Ability) (id=89792) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
+School           : Fire
 Resource         : 20 Energy
 Spell Level      : 33
 Range            : 40 yards
@@ -2138,6 +2249,7 @@ Description      : Escapes to the Master. Flee removes all stuns and roots.
 
 Name             : Singe Magic (Special Ability) (id=89808) [Spell Family (57)] 
 Class            : Warlock
+School           : Fire
 Resource         : 40 Energy
 Spell Level      : 68
 Range            : 30 yards
@@ -2161,6 +2273,7 @@ Cast upon master when $ghe:she; is unable to cast spells due to a magic effect.
 
 Name             : Flee (Special Ability) (id=93282) [Scaling Spell (11), Spell Family (5)] 
 Class            : Warlock
+School           : Fire
 Resource         : 2% Base Mana (22000 @Level 110)
 Spell Level      : 1
 Range            : 40 yards
@@ -2179,6 +2292,7 @@ Description      : Escapes to the Master. Flee removes all stun and roots.
 
 Name             : Control Demon (Passive) (id=93375) [Passive] 
 Class            : Warlock
+School           : Physical
 Spell Level      : 10
 Proc Chance      : 101%
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -2196,6 +2310,7 @@ Description      : Allows you to give commands to control your demon.
 Name             : Altered Form (Racial Passive) (id=94293) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen
+School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2210,6 +2325,7 @@ Description      : Enables Worgens to switch between human and Worgan forms
 
 Name             : The Codex of Xerrath (id=101508) [Spell Family (5), Passive] 
 Class            : Warlock
+School           : Chaos
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2287,6 +2403,7 @@ Description      : Corrupts all of your Warlock fire spells, infusing them with 
 
 Name             : Call Dreadstalkers (id=104316) [Spell Family (5)] 
 Class            : Demonology Warlock
+School           : Physical
 Resource         : 2 Soul Shard
 Spell Level      : 10
 Range            : 40 yards
@@ -2307,6 +2424,7 @@ Description      : Summon $s1 ferocious Dreadstalkers to attack the target for $
 
 Name             : Hand of Gul'dan (id=104317) 
 Class            : Warlock
+School           : Shadow
 Range            : 100 yards
 Duration         : 12 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2322,6 +2440,7 @@ Description      : $@spelldesc105174
 
 Name             : Unending Resolve (id=104773) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 10% Base Mana (110000 @Level 110)
 Spell Level      : 64
 Duration         : 8 seconds
@@ -2348,6 +2467,7 @@ Immune to interrupt and silence effects.
 
 Name             : Fel Armor (id=104938) [Spell Family (5), Passive] 
 Class            : Warlock
+School           : Physical
 Spell Level      : 72
 Affecting spells : Improved Rain of Fire/Hellfire (24430)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -2366,6 +2486,7 @@ Description      : Fel energies protect the Warlock, increasing their Stamina by
 
 Name             : Hand of Gul'dan (id=105174) [Spell Family (5)] 
 Class            : Demonology Warlock
+School           : Shadowflame
 Resource         : 1 - 4 Soul Shard
 Spell Level      : 34
 Range            : 40 yards
@@ -2388,6 +2509,7 @@ Deals up to ${5*$86040m1} Shadowflame damage to all enemies within $86040A1 yds 
 
 Name             : Soul Leech (Talent) (id=108366) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Range            : 50000 yards
 Duration         : 15 seconds
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
@@ -2404,6 +2526,7 @@ Tooltip          : Absorbs $w1 damage.
 
 Name             : Soul Leech (id=108370) [Spell Family (5), Passive] 
 Class            : Warlock
+School           : Physical
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x.x..... ........ 
                  : Hostile Spell, Periodic
@@ -2421,6 +2544,7 @@ Description      : $?c1[Drain Life and Drain Soul][]$?c2[Shadow Bolt][]$?c3[Inci
 
 Name             : Mortal Coil (Talent) (id=108396) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Spell Level      : 30
 Triggered by     : Mortal Coil (6789)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
@@ -2437,6 +2561,7 @@ Tooltip          : Incapacitated.
 
 Name             : Soul Link (id=108415) [Passive] 
 Class            : Demonology Warlock
+School           : Shadow
 Spell Level      : 44
 Range            : 100 yards
 Attributes       : ......x. ........ x.x..... ........   ........ ........ ........ ........ 
@@ -2453,6 +2578,7 @@ Description      : $@spelldesc108446
 
 Name             : Dark Pact (id=108416) 
 Class            : Warlock
+School           : Physical
 Spell Level      : 45
 Range            : 100 yards
 Duration         : 20 seconds
@@ -2475,6 +2601,7 @@ Tooltip          : Absorbs $w1 damage.
 
 Name             : Soul Link (id=108446) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Spell Level      : 20
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
@@ -2498,6 +2625,7 @@ Tooltip          : $s1% of all damage taken is split with your summoned demon.  
 
 Name             : Grimoire of Supremacy (id=108499) [Spell Family (5), Passive] 
 Class            : Warlock
+School           : Physical
 Spell Level      : 75
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2513,6 +2641,7 @@ Description      : Empowers your demon pet, causing it to have $115578s1% increa
 
 Name             : Grimoire of Service (id=108501) [Spell Family (5), Passive] 
 Class            : Warlock
+School           : Physical
 Spell Level      : 75
 Cooldown         : 120 seconds
 Attributes       : ......x. x....... ........ .......x   ........ ........ ........ ....x..x 
@@ -2535,6 +2664,7 @@ $@spellicon111898 $@spellname111898 Stuns its target.][]
 
 Name             : Grimoire of Sacrifice (id=108503) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Spell Level      : 75
 Range            : 50000 yards
 GCD              : 1.5 seconds
@@ -2560,6 +2690,7 @@ Tooltip          : Your spells sometimes deal additional Shadow damage.
 
 Name             : Burning Rush (id=111400) [Spell Family (5)] 
 Class            : Warlock
+School           : Physical
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -2581,6 +2712,7 @@ Tooltip          : Movement speed increased by $s1%.
 
 Name             : Summon Infernal (Guardian) (id=111685) [Spell Family (57)] 
 Class            : Warlock
+School           : Shadow
 Range            : 50000 yards
 Duration         : 20 seconds
 Stance Mask      : 0x00200000
@@ -2600,6 +2732,7 @@ The Infernal deals strong area of effect damage, and will be drawn to attack tar
 
 Name             : Demonic Gateway (id=111771) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 10% Base Mana (110000 @Level 110)
 Spell Level      : 87
 Range            : 10 - 40 yards
@@ -2625,6 +2758,7 @@ Description      : Create a demonic gateway between two locations. Activating th
 
 Name             : Grimoire: Imp (Summon) (id=111859) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 1 Soul Shard
 Spell Level      : 1
 Range            : 40 yards
@@ -2648,6 +2782,7 @@ Imps cast ranged Firebolts and cleanse a hostile magic effect from their master.
 
 Name             : Grimoire: Voidwalker (Summon) (id=111895) 
 Class            : Warlock
+School           : Shadow
 Resource         : 1 Soul Shard
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -2670,6 +2805,7 @@ Voidwalkers will taunt their target when summoned.
 
 Name             : Grimoire: Succubus (Summon) (id=111896) 
 Class            : Warlock
+School           : Shadow
 Resource         : 1 Soul Shard
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -2692,6 +2828,7 @@ Succubi will seduce their target if it is Humanoid.
 
 Name             : Grimoire: Felhunter (Summon) (id=111897) 
 Class            : Warlock
+School           : Shadow
 Resource         : 1 Soul Shard
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -2714,6 +2851,7 @@ Felhunters will Spell Lock their target when summoned.
 
 Name             : Grimoire: Felguard (Summon) (id=111898) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 1 Soul Shard
 Spell Level      : 1
 Range            : 40 yards
@@ -2737,6 +2875,7 @@ Felguard will stun their target when summoned.
 
 Name             : Threatening Presence (Special Ability) (id=112042) [Spell Family (57)] 
 Class            : Warlock
+School           : Physical
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Proc Chance      : 101%
@@ -2759,6 +2898,7 @@ Tooltip          : Increases your threat generation while active.
 
 Name             : Summon Fel Imp (Summon) (id=112866) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 1 Soul Shard
 Spell Level      : 1
 Cast Time        : 2.5 seconds
@@ -2781,6 +2921,7 @@ Description      : Summons a Fel Imp under your command that casts ranged Fel Fi
 
 Name             : Summon Voidlord (Summon) (id=112867) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 1 Soul Shard
 Spell Level      : 8
 Cast Time        : 2.5 seconds
@@ -2803,6 +2944,7 @@ Description      : Summons a Voidlord under your command, able to withstand heav
 
 Name             : Summon Shivarra (Summon) (id=112868) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 1 Soul Shard
 Spell Level      : 20
 Cast Time        : 2.5 seconds
@@ -2825,6 +2967,7 @@ Description      : Summons a Shivarra under your command to mesmerize opponents,
 
 Name             : Summon Observer (Summon) (id=112869) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 1 Soul Shard
 Spell Level      : 29
 Cast Time        : 2.5 seconds
@@ -2847,6 +2990,7 @@ Description      : Summons an Observer under your command, able to heal itself b
 
 Name             : Summon Wrathguard (Summon) (id=112870) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 1 Soul Shard
 Spell Level      : 42
 Cast Time        : 2.5 seconds
@@ -2866,6 +3010,7 @@ Description      : Summons a Wrathguard under your command to serve as a powerfu
 
 Name             : Howl of Terror (Talent) (id=112891) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Spell Level      : 30
 Duration         : 60 seconds
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -2882,6 +3027,7 @@ Tooltip          : You have recently triggered Howl of Terror.
 
 Name             : Summon Abyssal (Guardian) (id=112921) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 1 Soul Shard
 Spell Level      : 49
 Range            : 30 yards
@@ -2904,6 +3050,7 @@ Description      : Summons an Abyssal from the Twisting Nether, impacting for $2
 
 Name             : Summon Abyssal (Guardian) (id=112922) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Range            : 50000 yards
 Duration         : 20 seconds
 Stance Mask      : 0x00200000
@@ -2923,6 +3070,7 @@ The Abyssal deals strong area of effect damage, and will be drawn to attack targ
 
 Name             : Summon Terrorguard (id=112926) [Spell Family (57)] 
 Class            : Warlock
+School           : Physical
 Spell Level      : 60
 Duration         : 20 seconds
 Triggered by     : Summon Terrorguard (112927)
@@ -2939,6 +3087,7 @@ Description      : Summons a Terrorguard.
 
 Name             : Summon Terrorguard (Guardian) (id=112927) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 1 Soul Shard
 Spell Level      : 58
 Range            : 40 yards
@@ -2961,6 +3110,7 @@ Description      : Summons a Terrorguard  for $112926d to assault the target wit
 
 Name             : Demonic Gateway (id=113886) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Range            : 50000 yards
 Duration         : 900 seconds
 Cooldown         : 10 seconds
@@ -2978,6 +3128,7 @@ Description      : $@spelldesc111771
 
 Name             : Demonic Gateway (id=113890) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Range            : 50000 yards
 Duration         : 900 seconds
 Cooldown         : 10 seconds
@@ -2995,6 +3146,7 @@ Description      : $@spelldesc111771
 
 Name             : Demonic Gateway (id=113942) 
 Class            : Warlock
+School           : Physical
 Duration         : 90 seconds
 Attributes       : ........ ........ .......x x.xx.x..   .....x.. ........ ........ ........ 
                  : x..x.... ......x. ...x.... ........   ........ ........ ..x.x... ........ 
@@ -3010,6 +3162,7 @@ Tooltip          : Faded into the nether and unable to use another Demonic Gatew
 
 Name             : Health Funnel (id=114189) [Scaling Spell (11), Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 6 Health
 Spell Level      : 11
 Range            : 45 yards
@@ -3030,6 +3183,7 @@ Tooltip          : Transferring Life.
 
 Name             : Player Damage Reduction (id=115043) [Passive, Hidden] 
 Class            : Death Knight, Shaman, Mage, Warlock, Monk
+School           : Physical
 Spell Level      : 1
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ....x... 
@@ -3045,6 +3199,7 @@ Description      : Reduces all damage taken from players or their pets by ${$m1/
 
 Name             : Shadow Shield (Special Ability) (id=115232) 
 Class            : Warlock
+School           : Shadow
 Resource         : 60 Energy
 Spell Level      : 28
 GCD              : 1.5 seconds
@@ -3079,6 +3234,7 @@ $@spellaura115234
 
 Name             : Shadow Shield (id=115234) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Spell Level      : 8
 Range            : 100 yards
 Triggered by     : Shadow Shield (115232)
@@ -3097,6 +3253,7 @@ Tooltip          : Deals Shadow damage when struck.
 
 Name             : Glyph of Demonic Training (Voidwalker) (id=115408) [Passive, Hidden] 
 Class            : Warlock
+School           : Physical
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3112,6 +3269,7 @@ Tooltip          : Maximum health increased by $s1%.
 
 Name             : Grimoire of Supremacy (id=115578) [Spell Family (57)] 
 Class            : Warlock
+School           : Shadow
 Duration         : Aura (infinite)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3131,6 +3289,7 @@ Tooltip          : Health and damage increased by $s1%.
 
 Name             : Mortal Cleave (Basic Attack) (id=115625) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
+School           : Physical
 Resource         : 60 Energy
 Spell Level      : 1
 Range            : 5 yards
@@ -3160,6 +3319,7 @@ Tooltip          : Effectiveness of any healing reduced by $w3%.
 
 Name             : Felbolt (Basic Attack) (id=115746) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
+School           : Fire
 Resource         : 40 Energy
 Spell Level      : 1
 Range            : 40 yards
@@ -3185,6 +3345,7 @@ Master gains $s3 Demonic Fury.][]
 
 Name             : Bladedance (Basic Attack) (id=115748) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 60 Energy
 Spell Level      : 20
 Range            : 20 yards
@@ -3208,6 +3369,7 @@ Master gains $s3 Demonic Fury.][]
 
 Name             : Fellash (Special Ability) (id=115770) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 40 Energy
 Spell Level      : 56
 Range            : 30 yards
@@ -3230,6 +3392,7 @@ Description      : Deals $s1 Shadow damage and instantly knocks back all enemies
 
 Name             : Tongue Lash (Basic Attack) (id=115778) [Spell Family (57)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 60 Energy
 Spell Level      : 30
 Range            : 10 yards
@@ -3254,6 +3417,7 @@ Master gains $s3 Demonic Fury.][]
 
 Name             : Optical Blast (Special Ability) (id=115781) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 20 Energy
 Spell Level      : 52
 Range            : 40 yards
@@ -3276,6 +3440,7 @@ If used on a casting target, it will counter the enemy's spellcast, preventing a
 
 Name             : Wrathstorm (Special Ability) (id=115831) [Spell Family (57)] 
 Class            : Warlock
+School           : Physical
 Resource         : 60 Energy
 Spell Level      : 45
 Duration         : 6 seconds
@@ -3303,6 +3468,7 @@ Unable to use abilities during Wrathstorm.
 
 Name             : Wrathstorm (id=115832) [Spell Family (5)] 
 Class            : Warlock
+School           : Physical
 Spell Level      : 36
 Triggered by     : Wrathstorm (115831)
 Attributes       : ....x... ........ x.x..... ........   ....x... ........ ........ ........ 
@@ -3321,6 +3487,7 @@ Description      : $@spelldesc115831
 
 Name             : Chaos Bolt (id=116858) [Spell Family (5)] 
 Class            : Destruction Warlock
+School           : Chromatic
 Resource         : 2 Soul Shard
 Spell Level      : 26
 Range            : 40 yards
@@ -3349,6 +3516,7 @@ Variables        : $masteryMod=${$cond($gt($pl,79),1,0)}
 
 Name             : Void Reflexes (id=117225) [Passive] 
 Class            : Warlock
+School           : Physical
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3365,6 +3533,7 @@ Description      : Life in the twisting nether has made this demon particularly 
 
 Name             : Backdraft (id=117828) [Spell Family (5)] 
 Class            : Warlock
+School           : Physical
 Duration         : 5 seconds
 Affecting spells : Fire and the Flames (196222)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3388,6 +3557,7 @@ Tooltip          : Incinerate and Chaos Bolt cast times reduced by $s1%.
 
 Name             : Fear (id=118699) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Spell Level      : 14
 Range            : 30 yards
 Duration         : 20 seconds
@@ -3411,6 +3581,7 @@ Tooltip          : Disoriented.
 
 Name             : Command Demon (id=119898) [Spell Family (5)] 
 Class            : Warlock
+School           : Physical
 Spell Level      : 31
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ........ 
@@ -3440,6 +3611,7 @@ Infernal: $@spellname171017][]
 
 Name             : Cauterize Master (Special Ability) (id=119899) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
+School           : Fire
 Resource         : 40 Energy
 Spell Level      : 56
 Range            : 40 yards
@@ -3461,6 +3633,7 @@ Tooltip          : Healing $s2% health every $t2 sec.
 
 Name             : Lightweight Retinal Armor (id=127117) 
 Class            : Priest, Mage, Warlock
+School           : Physical
 Cast Time        : 1.5 seconds
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3474,6 +3647,7 @@ Effects          :
 
 Name             : Threatening Presence (Special Ability) (id=134477) [Spell Family (57)] 
 Class            : Warlock
+School           : Physical
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Proc Chance      : 101%
@@ -3496,6 +3670,7 @@ Tooltip          : Increases your threat generation while active.
 
 Name             : Glyph of Gateway Attunement (id=135557) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
+School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3510,6 +3685,7 @@ Description      : Demonic Gateways will automatically activate when you step ne
 
 Name             : Gateway Attunement (id=135560) 
 Class            : Warlock
+School           : Physical
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3522,6 +3698,7 @@ Effects          :
 
 Name             : Warlock (id=137042) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
+School           : Physical
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3563,6 +3740,7 @@ Effects          :
 
 Name             : Affliction Warlock (id=137043) [Spell Family (5), Passive, Hidden] 
 Class            : Affliction Warlock
+School           : Physical
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3604,6 +3782,7 @@ Effects          :
 
 Name             : Demonology Warlock (id=137044) [Passive, Hidden] 
 Class            : Demonology Warlock
+School           : Physical
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3645,6 +3824,7 @@ Effects          :
 
 Name             : Destruction Warlock (id=137046) [Spell Family (5), Passive, Hidden] 
 Class            : Destruction Warlock
+School           : Physical
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3688,6 +3868,7 @@ Effects          :
 
 Name             : The Codex of Xerrath (id=137206) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
+School           : Chaos
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3764,6 +3945,7 @@ Description      : Corrupts all of your Warlock fire spells, infusing them with 
 
 Name             : Player Damage Reduction Level 90 (id=142689) [Passive, Hidden] 
 Class            : Death Knight, Shaman, Mage, Warlock, Monk
+School           : Physical
 Spell Level      : 90
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ....x... 
@@ -3779,6 +3961,7 @@ Description      : Reduces all damage taken from players or their pets by ${$m1/
 
 Name             : Item - Warlock T16 2P Bonus (id=145072) [Spell Family (5), Passive] 
 Class            : Warlock
+School           : Physical
 Proc Chance      : 101%
 Proc Flags       : ........ ....x... x.x..x.. ........ 
                  : AOE Hostile Spell, Hostile Spell, Periodic, Trap Triggered
@@ -3802,6 +3985,7 @@ Description      : Conflagrate critical strikes have a $s4% chance to  increase 
 
 Name             : Destructive Influence (id=145075) [Spell Family (5)] 
 Class            : Warlock
+School           : Physical
 Duration         : 10 seconds
 Proc Chance      : 101%
 Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ ........ ........ 
@@ -3818,6 +4002,7 @@ Tooltip          : Critical Strike chance of Immolate and Incinerate increased b
 
 Name             : Empowered Grasp (id=145082) [Spell Family (5)] 
 Class            : Warlock
+School           : Physical
 Duration         : 10 seconds
 Proc Chance      : 101%
 Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ ........ ........ 
@@ -3840,6 +4025,7 @@ Tooltip          : Drain Soul's damaging effects are increased by $s1%.
 
 Name             : Fiery Wrath (id=145085) [Spell Family (5)] 
 Class            : Warlock
+School           : Physical
 Range            : 100 yards
 Duration         : 10 seconds
 Proc Chance      : 101%
@@ -3859,6 +4045,7 @@ Tooltip          : Damage dealt increased by $s1%.
 
 Name             : Item - Warlock T16 4P Bonus (id=145091) [Spell Family (5), Passive] 
 Class            : Warlock
+School           : Physical
 Internal Cooldown: 0.25 seconds
 Proc Chance      : 8%
 Proc Flags       : ........ ........ x....... ........ 
@@ -3889,6 +4076,7 @@ Description      : When a Burning Ember fills up, your critical strike chance is
 
 Name             : Dark Refund (id=145159) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Duration         : 1.5 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
@@ -3908,6 +4096,7 @@ Tooltip          : You regained a Soul Shard from Haunt.
 
 Name             : Ember Master (id=145164) [Spell Family (5)] 
 Class            : Warlock
+School           : Physical
 Duration         : 5 seconds
 Proc Chance      : 101%
 Triggered by     : Item - Warlock T16 4P Bonus (145091)
@@ -3927,6 +4116,7 @@ Tooltip          : Critical strike chance increased by $s1%.
 
 Name             : Ember Master Hidden Cooldown (id=145165) [Spell Family (5), Hidden] 
 Class            : Warlock
+School           : Physical
 Duration         : 10 seconds
 Proc Chance      : 101%
 Triggered by     : Ember Master (145164)
@@ -3943,6 +4133,7 @@ Effects          :
 
 Name             : Fiery Wrath (id=146043) [Spell Family (5)] 
 Class            : Warlock
+School           : Physical
 Range            : 100 yards
 Duration         : 10 seconds
 Proc Chance      : 101%
@@ -3961,6 +4152,7 @@ Tooltip          : Damage dealt increased by $s1%.
 
 Name             : Corruption (id=146739) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Spell Level      : 3
 Range            : 40 yards
 Duration         : 14 seconds
@@ -3981,6 +4173,7 @@ Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
 Name             : Demonic Servitude (id=152107) [Spell Family (5), Passive] 
 Class            : Warlock
+School           : Physical
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4006,6 +4199,7 @@ Description      : You are now able to maintain your control over even greater d
 
 Name             : Cataclysm (id=152108) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadowflame
 Range            : 40 yards
 Cast Time        : 3 seconds
 Cooldown         : 60 seconds
@@ -4023,6 +4217,7 @@ Description      : Conjures a cataclysm at the target location, dealing $s1 Shad
 
 Name             : Demonbolt (id=157695) [Spell Family (5)] 
 Class            : Warlock
+School           : Chaos
 Resource         : 4.8% Base Mana (52800 @Level 110)
 Range            : 40 yards
 Cast Time        : 2.5 seconds
@@ -4049,6 +4244,7 @@ Replaces Shadow Bolt.
 
 Name             : Immolate (id=157736) [Spell Family (5)] 
 Class            : Warlock
+School           : Fire
 Spell Level      : 12
 Range            : 100 yards
 Duration         : 15 seconds
@@ -4068,6 +4264,7 @@ Variables        : $mastery=$?s77220[${((100+$77220m3)/100)}][${1.00}]
 
 Name             : Grimoire: Doomguard (Summon) (id=157900) 
 Class            : Warlock
+School           : Shadow
 Resource         : 1 Soul Shard
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -4088,6 +4285,7 @@ Description      : Summons a Doomguard who attacks the target for $108501s1 sec.
 
 Name             : Grimoire: Infernal (Summon) (id=157901) 
 Class            : Warlock
+School           : Shadow
 Resource         : 1 Soul Shard
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -4108,6 +4306,7 @@ Description      : Summons an Infernal who attacks the target for $108501s1 sec.
 
 Name             : Warlock (id=157903) [Passive, Hidden] 
 Class            : Warlock
+School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4121,6 +4320,7 @@ Effects          :
 
 Name             : Glyph of Metamorphosis (Demonology) (id=159680) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
+School           : Physical
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4135,6 +4335,7 @@ Description      : When you activate Metamorphosis, you no longer transform into
 
 Name             : Metamorphosis (Demonology) (id=159877) 
 Class            : Warlock
+School           : Physical
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4147,6 +4348,7 @@ Effects          :
 
 Name             : Stat Negation Aura - Intellect DPS (id=162699) [Passive, Hidden] 
 Class            : Elemental Arcane Fire Frost Affliction Demonology Destruction Balance Shaman, Mage, Warlock, Druid
+School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4166,6 +4368,7 @@ Effects          :
 
 Name             : Soul Fire (id=166864) 
 Class            : Warlock
+School           : Shadowflame
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -4184,6 +4387,7 @@ Description      : Blasts a target for $s1 Shadowflame damage.
 
 Name             : Cripple (id=170995) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Spell Level      : 1
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -4204,6 +4408,7 @@ Tooltip          : Movement speed reduced by $s1%.
 
 Name             : Burning Presence (Special Ability) (id=171011) [Spell Family (57)] 
 Class            : Warlock
+School           : Physical
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Proc Chance      : 101%
@@ -4240,6 +4445,7 @@ Physical damage taken reduced by $s4%.
 
 Name             : Seethe (Special Ability) (id=171014) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
+School           : Fire
 Spell Level      : 15
 Range            : 30 yards
 Duration         : 5 seconds
@@ -4265,6 +4471,7 @@ Tooltip          : Taunted.
 
 Name             : Meteor Strike (id=171017) [Scaling Spell (11), Spell Family (5)] 
 Class            : Warlock
+School           : Fire
 Spell Level      : 50
 Range            : 50000 yards
 Duration         : 2 seconds
@@ -4286,6 +4493,7 @@ Tooltip          : Stunned.
 
 Name             : Meteor Strike (id=171018) [Scaling Spell (11), Spell Family (5)] 
 Class            : Warlock
+School           : Fire
 Spell Level      : 50
 Range            : 50000 yards
 Duration         : 3 seconds
@@ -4307,6 +4515,7 @@ Tooltip          : Stunned.
 
 Name             : Torch Magic (Special Ability) (id=171021) [Spell Family (57)] 
 Class            : Warlock
+School           : Fire
 Spell Level      : 38
 Range            : 30 yards
 Cooldown         : 10 seconds
@@ -4328,6 +4537,7 @@ Use on the Infernal's current target.
 
 Name             : Shadow Lock (Special Ability) (id=171138) [Spell Family (57)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 20 Energy
 Spell Level      : 50
 Range            : 40 yards
@@ -4346,6 +4556,7 @@ Description      : Counter an enemy's spellcast, preventing any spell from that 
 
 Name             : Grimoire of Synergy (id=171975) [Spell Family (5), Passive] 
 Class            : Warlock
+School           : Shadow
 Spell Level      : 75
 Proc Chance      : 100%
 Real PPM         : 1.333
@@ -4365,6 +4576,7 @@ Description      : When you or your demon deal damage, there is a chance to trig
 
 Name             : Demonic Synergy (id=171982) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Spell Level      : 75
 Range            : 100 yards
 Duration         : 15 seconds
@@ -4382,6 +4594,7 @@ Tooltip          : All damage done increased by $s1%.
 
 Name             : Player Damage Reduction Level 95 (id=178839) [Passive, Hidden] 
 Class            : Death Knight, Shaman, Mage, Warlock, Monk
+School           : Physical
 Spell Level      : 95
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ....x... 
@@ -4397,6 +4610,7 @@ Description      : Reduces all damage taken from players or their pets by ${$m1/
 
 Name             : Player Damage Reduction Level 100 (id=178840) [Passive, Hidden] 
 Class            : Death Knight, Shaman, Mage, Warlock, Monk
+School           : Physical
 Spell Level      : 100
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ....x... 
@@ -4412,6 +4626,7 @@ Description      : Reduces all damage taken from players or their pets by ${$m1/
 
 Name             : Item - Warlock T18 Demonology 4P Bonus (id=185964) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
+School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -4426,6 +4641,7 @@ Description      : When Molten Core occurs, you have a $m1% chance to summon a D
 
 Name             : Prince Malchezaar (id=189296) 
 Class            : Warlock
+School           : Shadow
 Spell Level      : 100
 Velocity         : 40 yards/sec
 Duration         : 10 seconds
@@ -4442,6 +4658,7 @@ Description      : $@spelldesc185964
 
 Name             : Illidari Satyr (id=189297) 
 Class            : Warlock
+School           : Shadow
 Spell Level      : 100
 Velocity         : 40 yards/sec
 Duration         : 10 seconds
@@ -4458,6 +4675,7 @@ Description      : $@spelldesc185964
 
 Name             : Vicious Hellhound (id=189298) 
 Class            : Warlock
+School           : Shadow
 Spell Level      : 100
 Velocity         : 40 yards/sec
 Duration         : 10 seconds
@@ -4474,6 +4692,7 @@ Description      : $@spelldesc185964
 
 Name             : Avoidance (Passive) (id=190019) [Passive] 
 Class            : Warlock
+School           : Physical
 Spell Level      : 1
 Attributes       : ....x.x. ........ x.x..... ...x....   .....x.. ........ .x...... ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
@@ -4491,6 +4710,7 @@ Description      : Reduces the damage your summoned demon takes from creature ar
 
 Name             : Call Dreadstalkers (id=193332) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadowflame
 Range            : 50000 yards
 Duration         : 12 seconds
 Affecting spells : Glyph of Hand of Gul'dan (56248)
@@ -4507,6 +4727,7 @@ Description      : $@spelldesc105174
 
 Name             : Demonic Empowerment (id=193396) [Spell Family (5)] 
 Class            : Demonology Warlock
+School           : Shadow
 Resource         : 6% Base Mana (66000 @Level 110)
 Spell Level      : 38
 Range            : 100 yards
@@ -4542,6 +4763,7 @@ Damage dealt increased by $w4%.][]
 
 Name             : Demonwrath (id=193439) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Spell Level      : 36
 Range            : 100 yards
 Triggered by     : Demonwrath (193440)
@@ -4558,6 +4780,7 @@ Description      : $@spelldesc193440
 
 Name             : Demonwrath (id=193440) [Spell Family (5)] 
 Class            : Demonology Warlock
+School           : Shadow
 Resource         : 0% Base Mana and 2.5% Base Mana (27500 @Level 110) per second or tick
 Spell Level      : 36
 Range            : 100 yards
@@ -4586,6 +4809,7 @@ Tooltip          : Radiating Shadow damage to nearby enemies.
 
 Name             : Chaotic Energy (id=193535) [Spell Family (5), Passive, Hidden] 
 Class            : Destruction Warlock
+School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4600,6 +4824,7 @@ Description      : Haste reduces the cooldown of Conflagrate and Havoc.
 
 Name             : Immolate (id=193540) [Spell Family (5)] 
 Class            : Warlock
+School           : Fire
 Spell Level      : 12
 Range            : 100 yards
 Affecting spells : Destruction Warlock (137046), Flamelicked (185229), Residual Flames (196227), Eradication (196414), Roaring Blaze (205690)
@@ -4617,6 +4842,7 @@ Description      : $@spelldesc348
 
 Name             : Immolate (id=193541) [Spell Family (5), Passive, Hidden] 
 Class            : Destruction Warlock
+School           : Physical
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x.x..... ........ 
                  : Hostile Spell, Periodic
@@ -4635,6 +4861,7 @@ Description      : $@spelldesc348
 
 Name             : Soul Harvest (id=196098) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Spell Level      : 15
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
@@ -4652,6 +4879,7 @@ Description      : Refill $s1 Soul Shards.
 
 Name             : Demonic Power (id=196099) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Spell Level      : 75
 Range            : 50000 yards
 Duration         : 3600 seconds
@@ -4675,6 +4903,7 @@ Tooltip          : Your spells sometimes deal additional Shadow damage.
 
 Name             : Demonic Power (id=196100) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Spell Level      : 75
 Range            : 50000 yards
 Triggered by     : Demonic Power (196099)
@@ -4691,6 +4920,7 @@ Description      : $@spelldesc108503
 
 Name             : Writhe in Agony (id=196102) [Spell Family (5), Passive] 
 Class            : Warlock
+School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4706,6 +4936,7 @@ Description      : Agony's damage may now ramp up to twice as high.
 
 Name             : Absolute Corruption (id=196103) [Spell Family (5), Passive] 
 Class            : Warlock
+School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4720,6 +4951,7 @@ Description      : Corruption is now permanent ($s1 sec against players).
 
 Name             : Mana Tap (id=196104) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Spell Level      : 15
 GCD              : 1.5 seconds
 Duration         : 20 seconds
@@ -4741,6 +4973,7 @@ Tooltip          : Damage increased by $s1%.
 
 Name             : Contagion (id=196105) [Spell Family (5), Passive] 
 Class            : Warlock
+School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4757,6 +4990,7 @@ Description      : Unstable Affliction also increases all damage you deal to the
 
 Name             : Howl of Terror (id=196143) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Spell Level      : 30
 Duration         : 20 seconds
 Proc Chance      : 100%
@@ -4779,6 +5013,7 @@ Tooltip          : Disoriented.
 
 Name             : Sow the Seeds (id=196226) [Spell Family (5), Passive] 
 Class            : Warlock
+School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4793,6 +5028,7 @@ Description      : Seed of Corruption will now consume a Soul Shard, if availabl
 
 Name             : Shadowy Inspiration (id=196269) [Spell Family (5), Passive] 
 Class            : Warlock
+School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4807,6 +5043,7 @@ Description      : Demonic Empowerment also causes your next Shadow Bolt to be I
 
 Name             : Impending Doom (id=196270) [Spell Family (5), Passive] 
 Class            : Warlock
+School           : Physical
 Proc Chance      : 100%
 Proc Flags       : ........ ........ ..x..... ........ 
                  : Periodic
@@ -4826,6 +5063,7 @@ Description      : Doom also summons $s1 Wild Imps when it deals damage.
 
 Name             : Impending Doom (id=196271) 
 Class            : Warlock
+School           : Shadow
 Range            : 100 yards
 Duration         : 12 seconds
 Triggered by     : Impending Doom (196270)
@@ -4842,6 +5080,7 @@ Description      : $@spelldesc105174
 
 Name             : Improved Dreadstalkers (id=196272) [Spell Family (5), Passive] 
 Class            : Warlock
+School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4856,6 +5095,7 @@ Description      : Call Dreadstalkers now also summons $s1 Wild Imps.
 
 Name             : Implosion (id=196277) 
 Class            : Warlock
+School           : Shadowflame
 Resource         : 6% Base Mana (66000 @Level 110)
 Spell Level      : 45
 Range            : 40 yards
@@ -4875,6 +5115,7 @@ Description      : Demonic forces suck all of your Wild Imps toward the target, 
 
 Name             : Implosion (id=196278) 
 Class            : Warlock
+School           : Shadowflame
 Spell Level      : 45
 Range            : 100 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ...x.... ........ 
@@ -4892,6 +5133,7 @@ Description      : $@spelldesc196277
 
 Name             : Hand of Doom (id=196283) [Spell Family (5), Passive] 
 Class            : Warlock
+School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4906,6 +5148,7 @@ Description      : Hand of Gul'dan now also applies Doom to all enemies that it 
 
 Name             : Demonbolt (id=196300) [Spell Family (5)] 
 Class            : Warlock
+School           : Chaos
 Spell Level      : 36
 Range            : 40 yards
 Triggered by     : Demonbolt (157695)
@@ -4922,6 +5165,7 @@ Description      : $@spelldesc157695
 
 Name             : Unstable Affliction (id=196364) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Range            : 50000 yards
 Duration         : 4 seconds
 Affecting spells : Mastery: Potent Afflictions (77215), 
@@ -4940,6 +5184,7 @@ Description      : $@spelldesc30108
 
 Name             : Backdraft (id=196406) [Spell Family (5), Passive] 
 Class            : Warlock
+School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4954,6 +5199,7 @@ Description      : Your Conflagrate reduces the cast times of Incinerate and Cha
 
 Name             : Fire and Brimstone (id=196408) [Spell Family (5), Passive] 
 Class            : Warlock
+School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4968,6 +5214,7 @@ Description      : Incinerate now hits all enemies near your target.
 
 Name             : Wreak Havoc (id=196410) [Spell Family (5), Passive] 
 Class            : Warlock
+School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4986,6 +5233,7 @@ Description      : Havoc now lasts ${8+$m1/1000} sec, and has no cooldown.
 
 Name             : Eradication (id=196412) [Spell Family (5), Passive] 
 Class            : Warlock
+School           : Physical
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
@@ -5003,6 +5251,7 @@ Description      : Chaos Bolt also increases the damage you deal to the target b
 
 Name             : Eradication (id=196414) [Spell Family (5)] 
 Class            : Warlock
+School           : Physical
 Duration         : 6 seconds
 Triggered by     : Eradication (196412)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5020,6 +5269,7 @@ Tooltip          : Damage taken from the Warlock increased by $s1%.
 
 Name             : Channel Demonfire (id=196447) [Spell Family (5)] 
 Class            : Warlock
+School           : Fire
 Resource         : 4.8% Base Mana (52800 @Level 110)
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -5040,6 +5290,7 @@ Description      : Launches $s1 bolts of felfire at Immolated enemies within $19
 
 Name             : Channel Demonfire (id=196448) [Spell Family (5)] 
 Class            : Warlock
+School           : Fire
 Range            : 40 yards
 Velocity         : 16 yards/sec
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5055,6 +5306,7 @@ Description      : $@spelldesc196447
 
 Name             : Channel Demonfire (id=196449) [Spell Family (5), Hidden] 
 Class            : Warlock
+School           : Fire
 Range            : 40 yards
 Velocity         : 16 yards/sec
 Triggered by     : Channel Demonfire (196447)
@@ -5072,6 +5324,7 @@ Description      : $@spelldesc196447
 
 Name             : Power Trip (id=196605) [Spell Family (5), Passive] 
 Class            : Warlock
+School           : Shadow
 Spell Level      : 30
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5087,6 +5340,7 @@ Description      : Demonic Empowerment now affects all of your active demons.
 
 Name             : Drain Soul (id=198590) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Resource         : 3% Base Mana (33000 @Level 110) and 3% Base Mana (33000 @Level 110) per second or tick
 Spell Level      : 7
 Range            : 40 yards
@@ -5115,6 +5369,7 @@ Restoring $m2% of maximum health to the caster when Drain Soul deals damage.
 Name             : Activating Specialization (id=200749) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+School           : Physical
 Range            : 50000 yards
 Cast Time        : 5 seconds
 Attributes       : .......x ........ ........ ....x...   ..xxx..x ........ .x...... ........ 
@@ -5132,6 +5387,7 @@ Tooltip          : Switch to your Primary Talent Specialization.
 
 Name             : Demonic Calling (id=205145) [Spell Family (5), Passive] 
 Class            : Warlock
+School           : Physical
 Proc Chance      : 10%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
@@ -5149,6 +5405,7 @@ Description      : Shadowbolt has a $h% chance to make your next Call Dreadstalk
 
 Name             : Demonic Calling (id=205146) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Duration         : 20 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
@@ -5170,6 +5427,7 @@ Tooltip          : Your next Call Dreadstalkers cost no Soul Shards.
 
 Name             : Reverse Entropy (id=205148) [Spell Family (5), Passive] 
 Class            : Warlock
+School           : Physical
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5185,6 +5443,7 @@ Description      : Chaos Bolt restores $s1% mana.
 
 Name             : Soul Effigy (id=205178) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
@@ -5204,6 +5463,7 @@ Description      : Create a Soul Effigy bound to the target, which is attackable
 
 Name             : Phantom Singularity (id=205179) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 16 seconds
@@ -5221,6 +5481,7 @@ Description      : Place a phantom singularity above the target, which consumes 
 
 Name             : Summon Inquisitor (id=205180) [Spell Family (5)] 
 Class            : Warlock
+School           : Physical
 Resource         : 1 Soul Shard
 GCD              : 1.5 seconds
 Duration         : 18 seconds
@@ -5238,6 +5499,7 @@ Description      : Summon a demonic Inquisitor that will launch Shadowfrost Voll
 
 Name             : Shadowflame (id=205181) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadowflame
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
@@ -5263,6 +5525,7 @@ Tooltip          : Suffering $w2 Shadowflame damage every $t2.
 
 Name             : Secrets of the Necrolyte (id=205183) [Spell Family (5), Passive] 
 Class            : Affliction Warlock
+School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5277,6 +5540,7 @@ Description      : Your Drain Life is massively empowered, dealing $s1% increase
 
 Name             : Roaring Blaze (id=205184) [Spell Family (5), Passive] 
 Class            : Warlock
+School           : Physical
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
@@ -5294,6 +5558,7 @@ Description      : When you Conflagrate an Immolated target, the remaining damag
 
 Name             : Phantom Singularity (id=205246) [Spell Family (5)] 
 Class            : Warlock
+School           : Shadow
 Range            : 40 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
@@ -5310,6 +5575,7 @@ Description      : $@spelldesc205179
 
 Name             : Roaring Blaze (id=205690) [Spell Family (5), Hidden] 
 Class            : Warlock
+School           : Physical
 Range            : 100 yards
 Duration         : 30 seconds
 Stacks           : 100 maximum

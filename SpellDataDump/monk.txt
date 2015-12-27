@@ -2,6 +2,7 @@ SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 2081
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
+School           : Physical
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -16,6 +17,7 @@ Description      : Allows one-hand and off-hand weapons to be equipped in the of
 
 Name             : Growl (Basic Ability) (id=2649) [Scaling Spell (4), Spell Family (9)] 
 Class            : Monk
+School           : Physical
 Spell Level      : 1
 Range            : 30 yards
 Duration         : 3 seconds
@@ -38,6 +40,7 @@ Tooltip          : Taunted.
 
 Name             : Pet Damage (id=8875) [Spell Family (9), Passive, Hidden] 
 Class            : Monk
+School           : Physical
 Attributes       : ....x.xx x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -54,6 +57,7 @@ Tooltip          : Damage increased by $s1%.
 
 Name             : Intimidation (id=19577) [Spell Family (9)] 
 Class            : Hunter, Monk
+School           : Nature
 Range            : 100 yards
 Duration         : 15 seconds
 Cooldown         : 60 seconds
@@ -78,6 +82,7 @@ Tooltip          : Stuns the target for $24394d.
 
 Name             : Pet Health (id=19581) [Spell Family (9), Passive, Hidden] 
 Class            : Monk
+School           : Physical
 Attributes       : ....x.xx x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -93,6 +98,7 @@ Tooltip          : Max Health increased by $s1%.
 Name             : Expansive Mind (Racial Passive) (id=20591) [Passive] 
 Class            : Paladin, Priest, Shaman, Mage, Warlock, Monk
 Race             : Gnome
+School           : Physical
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -108,6 +114,7 @@ Description      : Maximum mana increased by $s1%.
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Orc
+School           : Physical
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -122,6 +129,7 @@ Description      : Damage dealt by pets increased by $s1%.
 
 Name             : Intimidation (id=24394) 
 Class            : Hunter, Monk
+School           : Physical
 Range            : 5 yards
 Duration         : 3 seconds
 Proc Chance      : 101%
@@ -141,6 +149,7 @@ Tooltip          : Stunned.
 Name             : Gift of the Naaru (Racial) (id=28880) [Spell Family (4)] 
 Class            : Warrior, Paladin, Hunter, Priest, Death Knight, Shaman, Mage, Monk
 Race             : Draenei
+School           : Holy
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 5 seconds
@@ -163,6 +172,7 @@ Tooltip          : Healing $/5;s2% every $t1 seconds.
 Name             : Interrupt (id=32747) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Mage, Warlock, Monk, Demon Hunter
 Race             : Blood Elf
+School           : Physical
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 3 seconds
@@ -181,6 +191,7 @@ Tooltip          : Interrupted.
 Name             : Blood Fury (Racial) (id=33697) [Scaling Spell (-1)] 
 Class            : Shaman, Monk
 Race             : Orc
+School           : Physical
 Spell Level      : 1
 Duration         : 15 seconds
 Cooldown         : 120 seconds
@@ -203,6 +214,7 @@ Spell power increased by $s2.
 
 Name             : Hunter Pet (id=34902) [Passive, Hidden] 
 Class            : Monk
+School           : Physical
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ....x... .x......   ........ ........ ........ ........ 
@@ -216,6 +228,7 @@ Effects          :
 
 Name             : Deathblow X11 Goggles (id=41317) 
 Class            : Rogue, Monk, Druid
+School           : Physical
 Cast Time        : 15 seconds
 Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -229,6 +242,7 @@ Effects          :
 
 Name             : Wonderheal XT40 Shades (id=41318) 
 Class            : Monk, Druid
+School           : Physical
 Cast Time        : 15 seconds
 Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -242,6 +256,7 @@ Effects          :
 
 Name             : Magnified Moon Specs (id=41319) 
 Class            : Monk, Druid
+School           : Physical
 Cast Time        : 15 seconds
 Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -255,6 +270,7 @@ Effects          :
 
 Name             : Wonderheal XT68 Shades (id=46106) 
 Class            : Monk, Druid
+School           : Physical
 Cast Time        : 15 seconds
 Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -268,6 +284,7 @@ Effects          :
 
 Name             : Hyper-Magnified Moon Specs (id=46109) 
 Class            : Monk, Druid
+School           : Physical
 Cast Time        : 15 seconds
 Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -281,6 +298,7 @@ Effects          :
 
 Name             : Quad Deathblow X44 Goggles (id=46116) 
 Class            : Rogue, Monk, Druid
+School           : Physical
 Cast Time        : 15 seconds
 Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -294,6 +312,7 @@ Effects          :
 
 Name             : Weakness Spectralizers (id=56481) 
 Class            : Rogue, Monk, Druid
+School           : Physical
 Cast Time        : 15 seconds
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -307,6 +326,7 @@ Effects          :
 
 Name             : Greensight Gogs (id=56486) 
 Class            : Monk, Druid
+School           : Physical
 Cast Time        : 15 seconds
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -320,6 +340,7 @@ Effects          :
 
 Name             : Mechanized Snow Goggles (id=61481) 
 Class            : Rogue, Monk, Druid
+School           : Physical
 Cast Time        : 2 seconds
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -333,6 +354,7 @@ Effects          :
 
 Name             : Avoidance (Passive) (id=65220) [Passive] 
 Class            : Shaman, Mage, Monk
+School           : Physical
 Spell Level      : 1
 Attributes       : ....x.x. ........ x.x..... ...x....   .....x.. ........ .x...... ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
@@ -350,6 +372,7 @@ Description      : Reduces the damage your pet takes from creature area of effec
 
 Name             : Agile Bio-Optic Killshades (id=81722) 
 Class            : Rogue, Monk, Druid
+School           : Physical
 Cast Time        : 5 seconds
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -363,6 +386,7 @@ Effects          :
 
 Name             : Camouflage Bio-Optic Killshades (id=81724) 
 Class            : Monk, Druid
+School           : Physical
 Cast Time        : 5 seconds
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -376,6 +400,7 @@ Effects          :
 
 Name             : Kindred Spirits (id=88680) [Spell Family (9), Passive, Hidden] 
 Class            : Monk
+School           : Physical
 Affecting spells : Kindred Spirits (56315)
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -390,6 +415,7 @@ Effects          :
 
 Name             : Tiger Palm (id=100780) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Resource         : 50 Energy w/ Brewmaster Monk (id=137023)
 Resource         : 50 Energy w/ Windwalker Monk (id=137025)
 Spell Level      : 1
@@ -427,6 +453,7 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 Name             : Blackout Kick (id=100784) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Resource         : 1 Chi w/ Windwalker Monk (id=137025)
 Spell Level      : 3
 Range            : 5 yards
@@ -457,6 +484,7 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 Name             : Flying Serpent Kick (id=101545) [Spell Family (53)] 
 Class            : Windwalker Monk
+School           : Physical
 Spell Level      : 10
 GCD              : 1 seconds
 Duration         : 2 seconds
@@ -493,6 +521,7 @@ If used again while active, you will land, dealing $123586m1 damage to all enemi
 
 Name             : Spinning Crane Kick (id=101546) [Spell Family (53)] 
 Class            : Mistweaver Windwalker Monk
+School           : Physical
 Resource         : 1 Chi w/ Brewmaster Monk (id=137023)
 Resource         : 1 Chi w/ Windwalker Monk (id=137025)
 Resource         : 2% Base Mana (22000 @Level 110) w/ Mistweaver Monk (id=137024)
@@ -525,6 +554,7 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 Name             : Transcendence (id=101643) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Spell Level      : 87
 GCD              : 1.5 seconds
 Duration         : 900 seconds
@@ -546,6 +576,7 @@ Tooltip          : You left your spirit behind, allowing you to use Transcendenc
 
 Name             : Stance of the Fierce Tiger (Stance) (id=103985) [Spell Family (53), Passive, Hidden] 
 Class            : Windwalker Monk
+School           : Physical
 Spell Level      : 1
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -575,6 +606,7 @@ Description      : Increases all damage dealt by $s3%.
 
 Name             : Spinning Crane Kick (id=107270) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Affecting spells : Power of a Thousand Cranes (195269)
 Triggered by     : Spinning Crane Kick (101546)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
@@ -594,6 +626,7 @@ Movement speed reduced by $s2%.
 
 Name             : Rising Sun Kick (id=107428) [Spell Family (53)] 
 Class            : Mistweaver Windwalker Monk
+School           : Physical
 Resource         : 2 Chi w/ Windwalker Monk (id=137025)
 Resource         : 1% Base Mana (11000 @Level 110) w/ Mistweaver Monk (id=137024)
 Spell Level      : 18
@@ -624,6 +657,7 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 Name             : <DND> Monk Energy Driver (Passive) (id=107500) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
+School           : Nature
 Spell Level      : 1
 Attributes       : ......xx x....... x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -640,6 +674,7 @@ Effects          :
 
 Name             : Roll (id=109132) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Spell Level      : 5
 Cooldown         : 0.8 seconds
 Charges          : 2 (20 seconds cooldown)
@@ -656,6 +691,7 @@ Description      : Roll a short distance.
 
 Name             : Fists of Fury (id=113656) [Spell Family (53)] 
 Class            : Windwalker Monk
+School           : Physical
 Resource         : 3 Chi
 Spell Level      : 28
 Range            : 5 yards
@@ -698,6 +734,7 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 Name             : Chi Torpedo (id=115008) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Spell Level      : 75
 Duration         : 1.1 seconds
 Charges          : 2 (20 seconds cooldown)
@@ -728,6 +765,7 @@ Replaces Roll.
 
 Name             : Player Damage Reduction (id=115043) [Passive, Hidden] 
 Class            : Death Knight, Shaman, Mage, Warlock, Monk
+School           : Physical
 Spell Level      : 1
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ....x... 
@@ -743,6 +781,7 @@ Description      : Reduces all damage taken from players or their pets by ${$m1/
 
 Name             : Stagger (id=115069) [Spell Family (53), Passive] 
 Class            : Brewmaster Monk
+School           : Physical
 Spell Level      : 10
 GCD              : 1 seconds
 Attributes       : ....x.x. ........ x.x..... x..x.x.x   ........ ..x..... .x...... ....x..x 
@@ -794,6 +833,7 @@ Also affects magic attacks, at half effectiveness.
 
 Name             : Fighting Style (Passive) (id=115074) [Spell Family (53), Passive] 
 Class            : Monk
+School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -811,6 +851,7 @@ Description      : The Monk's Jab ability will change depending on what weapon i
 
 Name             : Paralysis (id=115078) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Resource         : 3% Base Mana (33000 @Level 110)
 Resource         : 20 Energy w/ Stagger (id=115069)
 Resource         : 20 Energy w/ Stance of the Fierce Tiger (id=103985)
@@ -842,6 +883,7 @@ Tooltip          : Incapacitated.
 
 Name             : Touch of Death (id=115080) [Spell Family (53)] 
 Class            : Windwalker Monk
+School           : Physical
 Spell Level      : 24
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -864,6 +906,7 @@ Tooltip          : Taking $w1 damage when this effect expires.
 
 Name             : Chi Wave (id=115098) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Spell Level      : 18
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -887,6 +930,7 @@ $healing=${$<healMult>*$AP*0.500*(1+$@versadmg)}
 
 Name             : Renewing Mist (id=115151) [Scaling Spell (6), Spell Family (53)] 
 Class            : Mistweaver Monk
+School           : Nature
 Resource         : 3.5% Base Mana (38500 @Level 110)
 Spell Level      : 24
 Range            : 40 yards
@@ -915,6 +959,7 @@ Variables        : $range=$?s123334[${40}][${20}]
 
 Name             : Celerity (Passive Talent) (id=115173) [Spell Family (53), Passive] 
 Class            : Monk
+School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -931,6 +976,7 @@ Description      : Reduces the cooldown of Roll by ${$m1/-1000} sec and increase
 
 Name             : Soothing Mist (id=115175) [Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Spell Level      : 10
 Range            : 40 yards
 Duration         : 300 seconds
@@ -950,6 +996,7 @@ Tooltip          : Healing for $w1 every $t.
 
 Name             : Zen Meditation (id=115176) [Spell Family (53)] 
 Class            : Brewmaster Monk
+School           : Nature
 Spell Level      : 65
 Duration         : 8 seconds
 Cooldown         : 180 seconds
@@ -976,6 +1023,7 @@ Tooltip          : Damage dealt to the Monk reduced by $s2%.
 
 Name             : Resuscitate (id=115178) [Spell Family (53)] 
 Class            : Mistweaver Monk
+School           : Nature
 Resource         : 0.8% Base Mana (8800 @Level 110)
 Spell Level      : 14
 Range            : 40 yards
@@ -995,6 +1043,7 @@ Description      : Returns all dead party members to life with $s1% of maximum h
 
 Name             : Breath of Fire (id=115181) [Spell Family (53)] 
 Class            : Brewmaster Monk
+School           : Fire
 Resource         : 2 Chi
 Spell Level      : 18
 GCD              : 1 seconds
@@ -1018,6 +1067,7 @@ If Dizzying Haze is on the target, they will burn for an additional $123725o1 da
 
 Name             : Fortifying Brew (id=115203) [Scaling Spell (6), Spell Family (53)] 
 Class            : Brewmaster Monk
+School           : Physical
 Spell Level      : 24
 Cooldown         : 180 seconds
 Affecting spells : Item - Monk T16 Brewmaster 2P Bonus (145049)
@@ -1036,6 +1086,7 @@ $damage=$?s124997[${25}][${20}]
 
 Name             : Energizing Elixir (id=115288) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Spell Level      : 36
 Cooldown         : 60 seconds
 Stacks           : 3 maximum
@@ -1056,6 +1107,7 @@ Description      : Chug an Energizing Elixir, instantly refilling your Energy an
 
 Name             : Ironskin Brew (Active Mitigation) (id=115308) [Spell Family (53)] 
 Class            : Brewmaster Monk
+School           : Physical
 Spell Level      : 28
 Duration         : 6 seconds
 Cooldown         : 1 seconds
@@ -1080,6 +1132,7 @@ Tooltip          : Your Stagger amount is increased by an additional $w1%.
 
 Name             : Revival (id=115310) [Scaling Spell (6), Spell Family (53)] 
 Class            : Mistweaver Monk
+School           : Nature
 Resource         : 4.374% Base Mana (48113 @Level 110)
 Spell Level      : 65
 GCD              : 1.5 seconds
@@ -1104,6 +1157,7 @@ Description      : Heals all party and raid members within $A1 yards for $m1 and
 
 Name             : Summon Jade Serpent Statue (id=115313) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Spell Level      : 70
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -1126,6 +1180,7 @@ Description      : Summon a Jade Serpent Statue at a target location. When you t
 
 Name             : Summon Black Ox Statue (id=115315) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Spell Level      : 70
 Range            : 40 yards
 GCD              : 1 seconds
@@ -1148,6 +1203,7 @@ You may cast Provoke on the statue to taunt all enemies near the statue.
 
 Name             : Ascension (id=115396) [Passive] 
 Class            : Monk
+School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1164,6 +1220,7 @@ Description      : Increases your maximum Chi by $s1, and your Energy regenerati
 
 Name             : Black Ox Brew (id=115399) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Spell Level      : 1
 Cooldown         : 60 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1179,6 +1236,7 @@ Description      : Chug some Black Ox Brew, which instantly refills your Energy,
 
 Name             : Detox (id=115450) [Spell Family (53)] 
 Class            : Mistweaver Monk
+School           : Nature
 Resource         : 2.6% Base Mana (28600 @Level 110)
 Spell Level      : 22
 Range            : 40 yards
@@ -1204,6 +1262,7 @@ Description      : Removes all Magic, Poison, and Disease effects from the targe
 
 Name             : Provoke (id=115546) [Scaling Spell (6), Spell Family (53)] 
 Class            : Brewmaster Monk
+School           : Physical
 Spell Level      : 14
 Range            : 30 yards
 Cooldown         : 8 seconds
@@ -1223,6 +1282,7 @@ This ability can be targeted on your Statue of the Black Ox, causing the same ef
 
 Name             : Mastery: Combo Strikes (id=115636) [Spell Family (53), Passive] 
 Class            : Windwalker Monk
+School           : Physical
 Spell Level      : 78
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1238,6 +1298,7 @@ Description      : Your abilities deal $s1% more damage when they are not a repe
 
 Name             : Mortal Wounds (id=115804) 
 Class            : Warrior, Hunter, Monk
+School           : Physical
 Range            : 100 yards
 Duration         : 10 seconds
 Proc Chance      : 101%
@@ -1256,6 +1317,7 @@ Tooltip          : Healing effects received reduced by $w1%.
 
 Name             : Afterlife (id=116092) [Scaling Spell (6), Spell Family (53), Passive] 
 Class            : Windwalker Monk
+School           : Physical
 Spell Level      : 26
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
@@ -1279,6 +1341,7 @@ Enemies who die from $?s152174[Chi Explosion][Blackout Kick] have a $m2% chance 
 
 Name             : Disable (id=116095) [Spell Family (53)] 
 Class            : Windwalker Monk
+School           : Physical
 Resource         : 15 Energy w/ Stagger (id=115069)
 Resource         : 0.7% Base Mana (7699 @Level 110)
 Resource         : 15 Energy
@@ -1306,6 +1369,7 @@ Tooltip          : Movement slowed by $w1%. When struck again by Disable, you wi
 
 Name             : Provoke (id=116189) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 3 seconds
@@ -1329,6 +1393,7 @@ Tooltip          : Taunted. Movement speed increased by $s3%.
 
 Name             : Teachings of the Monastery (id=116645) [Spell Family (53), Passive] 
 Class            : Mistweaver Monk
+School           : Physical
 Spell Level      : 10
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
@@ -1351,6 +1416,7 @@ Your Blackout Kick has a $s2% chance to reset the cooldown of Rising Sun Kick.
 
 Name             : Vivify (id=116670) [Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Resource         : 4% Base Mana (44000 @Level 110) w/ Mistweaver Monk (id=137024)
 Resource         : 20 Energy w/ Windwalker Monk (id=137025)
 Resource         : 20 Energy w/ Brewmaster Monk (id=137023)
@@ -1374,6 +1440,7 @@ Description      : Cause a surge of invigorating mists around the target, healin
 
 Name             : Thunder Focus Tea (id=116680) [Scaling Spell (6), Spell Family (53)] 
 Class            : Mistweaver Monk
+School           : Nature
 Spell Level      : 54
 Duration         : 30 seconds
 Cooldown         : 30 seconds
@@ -1421,6 +1488,7 @@ Tooltip          : Your next spell cast is empowered:
 
 Name             : Effuse (id=116694) [Spell Family (53)] 
 Class            : Mistweaver Monk
+School           : Nature
 Resource         : 1.8% Base Mana (19800 @Level 110) w/ Mistweaver Monk (id=137024)
 Resource         : 30 Energy w/ Windwalker Monk (id=137025)
 Resource         : 30 Energy w/ Brewmaster Monk (id=137023)
@@ -1442,6 +1510,7 @@ Description      : A fast and efficient spell, healing the target for $116995s1.
 
 Name             : Spear Hand Strike (id=116705) [Spell Family (53)] 
 Class            : Brewmaster Windwalker Monk
+School           : Physical
 Spell Level      : 32
 Range            : 5 yards
 Duration         : 4 seconds
@@ -1459,6 +1528,7 @@ Description      : You jab the target in the throat, interrupting their spell ca
 
 Name             : Disable (id=116706) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 8 seconds
@@ -1480,6 +1550,7 @@ Tooltip          : Rooted for $d.
 
 Name             : Tigereye Brew (id=116740) [Spell Family (53)] 
 Class            : Windwalker Monk
+School           : Physical
 Spell Level      : 54
 Duration         : 15 seconds
 Charges          : 2 (90 seconds cooldown)
@@ -1500,6 +1571,7 @@ Tooltip          : Damage and healing done increased by $w1%.
 
 Name             : Combo Breaker: Blackout Kick (id=116768) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Spell Level      : 1
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
@@ -1527,6 +1599,7 @@ Tooltip          : Your next Blackout Kick costs no Chi.
 
 Name             : Parry (id=116812) [Passive] 
 Class            : Monk
+School           : Physical
 Spell Level      : 1
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1542,6 +1615,7 @@ Description      : Gives a chance to parry enemy melee attacks.
 
 Name             : Tiger's Lust (id=116841) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Spell Level      : 15
 Range            : 20 yards
 GCD              : 1.5 seconds
@@ -1562,6 +1636,7 @@ Tooltip          : Moving $s1% faster.
 
 Name             : Ring of Peace (id=116844) [Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -1584,6 +1659,7 @@ Tooltip          : Nearby enemies will be knocked out of the Ring of Peace when 
 
 Name             : Rushing Jade Wind (id=116847) [Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Resource         : 1 Chi
 Spell Level      : 1
 GCD              : 1.5 seconds
@@ -1614,6 +1690,7 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 Name             : Life Cocoon (id=116849) [Scaling Spell (6), Spell Family (53)] 
 Class            : Mistweaver Monk
+School           : Nature
 Resource         : 2.4% Base Mana (26400 @Level 110)
 Spell Level      : 28
 Range            : 40 yards
@@ -1638,6 +1715,7 @@ Variables        : $shield=${((($SP*31.164)+$m1))*(1+$@versadmg)}
 
 Name             : Fists of Fury (id=117418) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Spell Level      : 1
 Range            : 5 yards
 Affecting spells : Fists of the Wind (195291)
@@ -1658,6 +1736,7 @@ Description      : $@spelldesc113656
 
 Name             : Mastery: Elusive Brawler (id=117906) [Spell Family (53), Passive] 
 Class            : Brewmaster Monk
+School           : Physical
 Spell Level      : 78
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
@@ -1683,6 +1762,7 @@ Also increases your attack power by $s2%.
 
 Name             : Mastery: Gust of Mists (id=117907) [Spell Family (53), Passive] 
 Class            : Mistweaver Monk
+School           : Physical
 Spell Level      : 78
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
@@ -1706,6 +1786,7 @@ Description      : Your Effuse, Renewing Mist, Enveloping Mist, and Vivify also 
 
 Name             : Crackling Jade Lightning (id=117952) [Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Spell Level      : 36
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -1732,6 +1813,7 @@ $damage=${4*($m1*$<dmgMult>)}
 
 Name             : Crackling Jade Lightning (id=117959) [Scaling Spell (6), Spell Family (53), Passive, Hidden] 
 Class            : Monk
+School           : Physical
 Spell Level      : 40
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
@@ -1749,6 +1831,7 @@ Effects          :
 
 Name             : Provoke (id=118635) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 3 seconds
@@ -1772,6 +1855,7 @@ Tooltip          : Taunted. Movement speed increased by $s3%.
 
 Name             : Chi Torpedo (id=119085) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Spell Level      : 15
 Duration         : 10 seconds
 Stacks           : 2 maximum
@@ -1791,6 +1875,7 @@ Tooltip          : Movement speed increased by $w1%.
 
 Name             : Leg Sweep (id=119381) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Spell Level      : 45
 GCD              : 1.5 seconds
 Duration         : 5 seconds
@@ -1810,6 +1895,7 @@ Tooltip          : Stunned.
 
 Name             : Purifying Brew (Active Mitigation) (id=119582) [Spell Family (53)] 
 Class            : Brewmaster Monk
+School           : Physical
 Spell Level      : 54
 Cooldown         : 1 seconds
 Charges          : 3 (20 seconds cooldown)
@@ -1829,6 +1915,7 @@ Shares charges with Ironskin Brew.
 
 Name             : Renewing Mist (id=119611) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Range            : 50000 yards
 Duration         : 20 seconds
 Proc Chance      : 100%
@@ -1850,6 +1937,7 @@ Tooltip          : Restores $w1 health every $t1 sec.
 
 Name             : Energy Usage (id=119650) [Hidden] 
 Class            : Monk
+School           : Physical
 Spell Level      : 1
 Duration         : Aura (infinite)
 Attributes       : .......x x....... .......x x..x....   .....x.. ........ ........ ........ 
@@ -1865,6 +1953,7 @@ Effects          :
 
 Name             : Transcendence: Transfer (id=119996) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Spell Level      : 87
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -1886,6 +1975,7 @@ Description      : Your body and spirit swap locations.
 
 Name             : Fists of Fury (id=120086) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Spell Level      : 1
 Range            : 5 yards
 Duration         : 4 seconds
@@ -1905,6 +1995,7 @@ Tooltip          : Stunned.
 
 Name             : Leather Specialization (Passive) (id=120224) [Spell Family (53), Passive] 
 Class            : Mistweaver Monk
+School           : Physical
 Spell Level      : 50
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1920,6 +2011,7 @@ Description      : Increases your Intellect by $s1% while wearing only Leather a
 
 Name             : Leather Specialization (Passive) (id=120225) [Spell Family (53), Passive] 
 Class            : Brewmaster Monk
+School           : Physical
 Spell Level      : 50
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1935,6 +2027,7 @@ Description      : Increases your Stamina by $s1% while wearing only Leather arm
 
 Name             : Leather Specialization (Passive) (id=120227) [Spell Family (53), Passive] 
 Class            : Windwalker Monk
+School           : Physical
 Spell Level      : 50
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1950,6 +2043,7 @@ Description      : Increases your Agility by $s1% while wearing only Leather arm
 
 Name             : Fortifying Brew (id=120954) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Spell Level      : 24
 Duration         : 15 seconds
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -1980,6 +2074,7 @@ $damage=$?s124997[${25}][${20}]
 Name             : Gift of the Naaru (Racial) (id=121093) 
 Class            : Monk
 Race             : Draenei
+School           : Holy
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 5 seconds
@@ -2001,6 +2096,7 @@ Tooltip          : Healing $/5;s2% every $t1 seconds.
 
 Name             : Keg Smash (id=121253) [Spell Family (53)] 
 Class            : Brewmaster Monk
+School           : Physical
 Resource         : 40 Energy
 Spell Level      : 10
 Range            : 15 yards
@@ -2040,6 +2136,7 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 Name             : Power Strikes (id=121283) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Range            : 50000 yards
 Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ .x...... ........ 
@@ -2055,6 +2152,7 @@ Description      : $@spelldesc121286
 
 Name             : Power Strikes (id=121817) [Spell Family (53), Passive] 
 Class            : Monk
+School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2069,6 +2167,7 @@ Description      : Every $t1 sec, your next Tiger Palm generates $s1 additional 
 
 Name             : Dampen Harm (id=122278) [Scaling Spell (10), Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Spell Level      : 60
 Duration         : 45 seconds
 Cooldown         : 90 seconds
@@ -2090,6 +2189,7 @@ Tooltip          : Attacks that deal damage equal to $m1% or more of your total 
 
 Name             : Healing Elixirs (Passive Talent) (id=122280) [Spell Family (53), Passive] 
 Class            : Monk
+School           : Physical
 Proc Chance      : 101%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
@@ -2107,6 +2207,7 @@ Description      : Heals you for $s1% of your maximum health when a damaging att
 
 Name             : Healing Elixirs (id=122281) [Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Affecting spells : Extend Life (185158)
 Triggered by     : Healing Elixirs (134563)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -2122,6 +2223,7 @@ Description      : $@spelldesc122280
 
 Name             : Touch of Karma (id=122470) [Spell Family (53)] 
 Class            : Windwalker Monk
+School           : Physical
 Spell Level      : 22
 Range            : 5 yards
 Duration         : 10 seconds
@@ -2145,6 +2247,7 @@ Tooltip          : All damage dealt to the Monk is redirected to you as Nature d
 
 Name             : Diffuse Magic (id=122783) [Scaling Spell (10), Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Spell Level      : 60
 Duration         : 6 seconds
 Cooldown         : 90 seconds
@@ -2162,6 +2265,7 @@ Tooltip          : Spell damage taken reduced by $m1%.
 
 Name             : Fists of Fury Visual Target (id=123154) [Scaling Spell (6), Spell Family (53), Hidden] 
 Class            : Monk
+School           : Physical
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : Aura (infinite)
@@ -2179,6 +2283,7 @@ Effects          :
 
 Name             : Glyph of Flying Serpent Kick (Windwalker) (id=123403) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
+School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2194,6 +2299,7 @@ Description      : Your Flying Serpent Kick automatically ends when you fly into
 
 Name             : Flying Serpent Kick (id=123404) 
 Class            : Monk
+School           : Physical
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2206,6 +2312,7 @@ Effects          :
 
 Name             : Flying Serpent Kick (id=123586) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Spell Level      : 1
 Duration         : 4 seconds
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
@@ -2234,6 +2341,7 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 Name             : Breath of Fire (id=123725) [Spell Family (53)] 
 Class            : Monk
+School           : Fire
 Spell Level      : 1
 Range            : 50000 yards
 GCD              : 1 seconds
@@ -2254,6 +2362,7 @@ Tooltip          : Burning for $123725o1 Fire damage.
 
 Name             : Invoke Xuen, the White Tiger (id=123904) [Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Spell Level      : 49
 Range            : 40 yards
 Duration         : 45 seconds
@@ -2271,6 +2380,7 @@ Description      : Summon an effigy of Xuen, the White Tiger for $d. Xuen attack
 
 Name             : Chi Burst (id=123986) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Spell Level      : 30
 Range            : 40 yards
 Cast Time        : 1 seconds
@@ -2301,6 +2411,7 @@ $healing=${$130654m1+$<healMult>*$AP*2.75*(1+$@versadmg)}
 
 Name             : Crackling Tiger Lightning (id=123996) [Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Spell Level      : 1
 Range            : 50000 yards
 Triggered by     : Crackling Tiger Lightning Driver (123999)
@@ -2318,6 +2429,7 @@ Description      : $@spelldesc123904
 
 Name             : Crackling Tiger Lightning Driver (id=123999) [Scaling Spell (6), Spell Family (53), Hidden] 
 Class            : Monk
+School           : Nature
 Duration         : Aura (infinite)
 Attributes       : .......x x..x.... ..x..... x..x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2334,6 +2446,7 @@ Effects          :
 
 Name             : Zen Pulse (id=124081) [Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -2355,6 +2468,7 @@ Description      : Trigger a Zen Pulse around an ally.  Deals $s2 damage to all 
 
 Name             : Dual Wield (id=124146) [Passive] 
 Class            : Windwalker Monk
+School           : Physical
 Spell Level      : 10
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2370,6 +2484,7 @@ Description      : You may equip one-handed weapons in your off-hand.
 
 Name             : Stagger (id=124255) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Duration         : Aura (infinite)
 Attributes       : ........ ........ ........ x.xx...x   ........ ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ x....... .....x.. 
@@ -2388,6 +2503,7 @@ Tooltip          : Damage is being staggered every $t1 sec.
 
 Name             : Heavy Stagger (id=124273) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Duration         : 10 seconds
 Attributes       : ........ ........ ........ x.xx...x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... .....x.. 
@@ -2408,6 +2524,7 @@ Stagger Remaining: $w2
 
 Name             : Moderate Stagger (id=124274) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Duration         : 10 seconds
 Attributes       : ........ ........ ........ x.xx...x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... .....x.. 
@@ -2428,6 +2545,7 @@ Stagger Remaining: $w2
 
 Name             : Light Stagger (id=124275) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Duration         : 10 seconds
 Attributes       : ........ ........ ........ x.xx...x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... .....x.. 
@@ -2448,6 +2566,7 @@ Stagger Remaining: $w2
 
 Name             : Touch of Karma (id=124280) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Spell Level      : 1
 Range            : 50000 yards
 Velocity         : 20 yards/sec
@@ -2467,6 +2586,7 @@ Tooltip          : $w1 Nature damage every $t1 sec.
 
 Name             : Gift of the Ox (id=124502) [Spell Family (53), Passive] 
 Class            : Brewmaster Monk
+School           : Physical
 Spell Level      : 40
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -2484,6 +2604,7 @@ This chance is increased, the lower health you are.
 
 Name             : Gift of the Ox (id=124503) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 30 seconds
@@ -2501,6 +2622,7 @@ Description      : $@spelldesc124502
 
 Name             : Gift of the Ox (id=124506) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 30 seconds
@@ -2518,6 +2640,7 @@ Description      : $@spelldesc124502
 
 Name             : Gift of the Ox (id=124507) [Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Range            : 50000 yards
 Affecting spells : Extend Life (185158)
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
@@ -2534,6 +2657,7 @@ Description      : $@spelldesc124502
 
 Name             : Enveloping Mist (id=124682) [Scaling Spell (6), Spell Family (53)] 
 Class            : Mistweaver Monk
+School           : Nature
 Resource         : 6% Base Mana (66000 @Level 110)
 Spell Level      : 10
 Range            : 40 yards
@@ -2559,6 +2683,7 @@ Healing received from the Monk increased by $m2%.
 
 Name             : Glyph of Rising Tiger Kick (Mistweaver, Windwalker) (id=125151) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
+School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2573,6 +2698,7 @@ Description      : Your Rising Sun Kick's visual is altered to the color of the 
 
 Name             : Rising Tiger Kick (id=125152) 
 Class            : Monk
+School           : Physical
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2585,6 +2711,7 @@ Effects          :
 
 Name             : Glyph of Spirit Roll (id=125154) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
+School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2600,6 +2727,7 @@ Description      : You can cast Roll or Chi Torpedo while dead as a spirit.
 
 Name             : Spirit Roll (id=125155) 
 Class            : Monk
+School           : Physical
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2612,6 +2740,7 @@ Effects          :
 
 Name             : Healing Sphere (id=125355) [Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Range            : 50000 yards
 Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ .x...... ........ 
@@ -2627,6 +2756,7 @@ Description      : $@spelldesc116092
 
 Name             : Glyph of Jab (id=125660) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
+School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2641,6 +2771,7 @@ Description      : You always will attack with hands and fist with Jab, even wit
 
 Name             : Jab (id=125661) 
 Class            : Monk
+School           : Physical
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2655,6 +2786,7 @@ Effects          :
 
 Name             : Glyph of Honor (id=125732) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
+School           : Physical
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
@@ -2673,6 +2805,7 @@ Description      : You honorably bow after each successful Touch of Death.
 
 Name             : Honorable Bow (id=125735) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Spell Level      : 1
 Range            : 50000 yards
 Triggered by     : Glyph of Honor (125732), Glyph of Blackout Kick (132005)
@@ -2689,6 +2822,7 @@ Description      : $@spelldesc125732
 
 Name             : Honor (id=125739) 
 Class            : Monk
+School           : Physical
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2701,6 +2835,7 @@ Effects          :
 
 Name             : Glyph of Fighting Pose (id=125872) [Spell Family (53), Passive] 
 Class            : Monk
+School           : Physical
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2716,6 +2851,7 @@ Description      : Your spirit now appears in a fighting pose when using Transce
 
 Name             : Fighting Pose (id=125874) 
 Class            : Monk
+School           : Physical
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2728,6 +2864,7 @@ Effects          :
 
 Name             : Zen Flight (Glyph) (id=125883) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Spell Level      : 1
 GCD              : 1 seconds
 Duration         : Aura (infinite)
@@ -2747,6 +2884,7 @@ Tooltip          : Flying.
 
 Name             : Glyph of Zen Flight (id=125893) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
+School           : Physical
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2764,6 +2902,7 @@ $@spelldesc125883
 
 Name             : Zen Flight (id=125894) 
 Class            : Monk
+School           : Physical
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2776,6 +2915,7 @@ Effects          :
 
 Name             : Glyph of Water Roll (id=125901) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
+School           : Physical
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2791,6 +2931,7 @@ Description      : You can Roll or Chi Torpedo over water.
 
 Name             : Water Roll (id=125903) 
 Class            : Monk
+School           : Physical
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2803,6 +2944,7 @@ Effects          :
 
 Name             : Glyph of Crackling Tiger Lightning (id=125931) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
+School           : Stormstrike
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2817,6 +2959,7 @@ Description      : Your Crackling Jade Lightning visual is altered to the color 
 
 Name             : Crackling Tiger Lightning (id=125932) 
 Class            : Monk
+School           : Physical
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2829,6 +2972,7 @@ Effects          :
 
 Name             : Zen Pilgrimage (id=126892) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Spell Level      : 20
 Cast Time        : 10 seconds
 GCD              : 1 seconds
@@ -2852,6 +2996,7 @@ Use Zen Pilgrimage again to return near to where you were.]
 
 Name             : Zen Pilgrimage/Death Gate/Moonglade Storage Aura I (id=126893) [Scaling Spell (6), Spell Family (53), Hidden] 
 Class            : Monk
+School           : Physical
 Spell Level      : 1
 GCD              : 1 seconds
 Duration         : Aura (infinite)
@@ -2872,6 +3017,7 @@ Effects          :
 
 Name             : Zen Pilgrimage: Return (id=126895) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Spell Level      : 30
 Cast Time        : 10 seconds
 GCD              : 1 seconds
@@ -2893,6 +3039,7 @@ Leaving Peak of Serenity will cancel Zen Pilgrimage: Return.]
 
 Name             : Zen Pilgrimage: Return (id=126896) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Spell Level      : 1
 Duration         : Aura (infinite)
 Triggered by     : Zen Pilgrimage (126892)
@@ -2915,6 +3062,7 @@ Use Zen Pilgrimage again to return near to where you once were.]
 
 Name             : Agile Retinal Armor (id=127118) 
 Class            : Rogue, Monk, Druid
+School           : Physical
 Cast Time        : 5 seconds
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2928,6 +3076,7 @@ Effects          :
 
 Name             : Camouflage Retinal Armor (id=127119) 
 Class            : Monk, Druid
+School           : Physical
 Cast Time        : 1.5 seconds
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2941,6 +3090,7 @@ Effects          :
 
 Name             : Combat Conditioning (id=128595) [Scaling Spell (6), Spell Family (53), Passive, Hidden] 
 Class            : Windwalker Monk
+School           : Physical
 Spell Level      : 20
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2965,6 +3115,7 @@ Grievously wounds the target, reducing the effectiveness of any healing received
 Name             : Arcane Torrent (Racial) (id=129597) 
 Class            : Monk
 Race             : Blood Elf
+School           : Arcane
 Duration         : 2 seconds
 Cooldown         : 90 seconds
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
@@ -2983,6 +3134,7 @@ Tooltip          : Silenced.
 
 Name             : Power Strikes (id=129914) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Spell Level      : 24
 Duration         : Aura (infinite)
 Triggered by     : Power Strikes (121817)
@@ -3000,6 +3152,7 @@ Tooltip          : Your next Tiger Palm will generate $s1 additional Chi.
 
 Name             : Monk (id=130610) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
+School           : Physical
 Spell Level      : 90
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3015,6 +3168,7 @@ Description      : You're a Level 90 Monk.  Grats!
 
 Name             : Chi Burst (id=130654) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Enveloping Mist (124682), Storm, Earth, and Fire (137639), Extend Life (185158)
@@ -3032,6 +3186,7 @@ Description      : $@spelldesc123986
 
 Name             : Glyph of Blackout Kick (Windwalker) (id=132005) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
+School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3046,6 +3201,7 @@ Description      : Your Blackout Kick always deals $100784m2% additional damage 
 
 Name             : Blackout Kick (id=132006) 
 Class            : Monk
+School           : Physical
 Spell Level      : 3
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3059,6 +3215,7 @@ Effects          :
 
 Name             : Chi Wave (id=132463) [Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Spell Level      : 1
 Range            : 50000 yards
 Affecting spells : Storm, Earth, and Fire (137639), Extend Life (185158)
@@ -3076,6 +3233,7 @@ Description      : $@spelldesc115098
 
 Name             : Chi Wave (id=132466) [Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Spell Level      : 1
 Range            : 50000 yards
 Attributes       : ........ ...x.... x......x ...x....   .....x.x ..x..... ........ ....x... 
@@ -3093,6 +3251,7 @@ Description      : $@spelldesc115098
 
 Name             : Chi Wave (id=132467) [Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Spell Level      : 1
 Range            : 50000 yards
 Velocity         : 20 yards/sec
@@ -3113,6 +3272,7 @@ Description      : $@spelldesc115098
 
 Name             : Invoke Niuzao, the Black Ox (id=132578) [Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Spell Level      : 49
 Range            : 40 yards
 Duration         : 45 seconds
@@ -3130,6 +3290,7 @@ Description      : Summon an effigy of Niuzao, the Black Ox for $d. Niuzao attac
 
 Name             : Healing Elixirs (id=134563) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Spell Level      : 24
 Duration         : Aura (infinite)
 Stacks           : 1 initial, 1 maximum
@@ -3151,6 +3312,7 @@ Tooltip          : Your next Brew or Tea will also heal you for $s1% of your tot
 
 Name             : Monk (id=137022) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
+School           : Physical
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3192,6 +3354,7 @@ Effects          :
 
 Name             : Brewmaster Monk (id=137023) [Spell Family (53), Passive, Hidden] 
 Class            : Brewmaster Monk
+School           : Physical
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -3233,6 +3396,7 @@ Effects          :
 
 Name             : Mistweaver Monk (id=137024) [Spell Family (53), Passive, Hidden] 
 Class            : Mistweaver Monk
+School           : Physical
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3294,6 +3458,7 @@ Description      : Mistweaver Monk core passive
 
 Name             : Windwalker Monk (id=137025) [Passive, Hidden] 
 Class            : Windwalker Monk
+School           : Physical
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3335,6 +3500,7 @@ Effects          :
 
 Name             : Combo Breaker (id=137384) [Scaling Spell (6), Spell Family (53), Passive, Hidden] 
 Class            : Windwalker Monk
+School           : Physical
 Spell Level      : 3
 GCD              : 1 seconds
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -3351,6 +3517,7 @@ Description      : You have a $m1% chance when you Jab to cause your next Tiger 
 
 Name             : Storm, Earth, and Fire (id=137639) [Spell Family (53)] 
 Class            : Windwalker Monk
+School           : Nature
 Spell Level      : 65
 GCD              : 1 seconds
 Duration         : Aura (infinite)
@@ -3385,6 +3552,7 @@ The Monk and spirits each do ${100+$w1}% of normal damage and healing.
 
 Name             : Player Damage Reduction Level 90 (id=142689) [Passive, Hidden] 
 Class            : Death Knight, Shaman, Mage, Warlock, Monk
+School           : Physical
 Spell Level      : 90
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ....x... 
@@ -3400,6 +3568,7 @@ Description      : Reduces all damage taken from players or their pets by ${$m1/
 
 Name             : Chi Burst (id=148135) [Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Spell Level      : 30
 Range            : 100 yards
 Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Extend Life (185158)
@@ -3417,6 +3586,7 @@ Description      : $@spelldesc123986
 
 Name             : Rushing Jade Wind (id=148187) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Fighting Style (115074), Mistweaver Monk (137024), Lucidity (137331), Serenity (152173), Mana Tea (197908)
 Triggered by     : Rushing Jade Wind (116847)
 Attributes       : ....x... ........ ..x..... ...x....   ........ ........ ........ ........ 
@@ -3433,6 +3603,7 @@ Description      : $@spelldesc116847
 
 Name             : Serenity (id=152173) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Duration         : 10 seconds
 Cooldown         : 90 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3462,6 +3633,7 @@ All Chi consumers are free, and have half their normal cooldown.
 
 Name             : Spinning Dragon Strike (id=152175) 
 Class            : Monk
+School           : Physical
 GCD              : 1.5 seconds
 Duration         : 1 seconds
 Cooldown         : 20 seconds
@@ -3493,6 +3665,7 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 Name             : Expansive Mind (Racial Passive) (id=154744) [Passive] 
 Class            : Rogue, Monk
 Race             : Gnome
+School           : Physical
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3507,6 +3680,7 @@ Description      : Maximum energy increased by $s1%.
 
 Name             : Roll Speed Controls (id=157361) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
+School           : Physical
 Spell Level      : 1
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3525,6 +3699,7 @@ Effects          :
 
 Name             : Windwalking (id=157411) [Spell Family (53), Passive] 
 Class            : Windwalker Monk
+School           : Physical
 Spell Level      : 12
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3540,6 +3715,7 @@ Description      : Grants you and your allies within $m1 yards $166646s1% increa
 
 Name             : Critical Strikes (Passive) (id=157445) [Passive] 
 Class            : Brewmaster Windwalker Monk
+School           : Physical
 Spell Level      : 10
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3555,6 +3731,7 @@ Description      : Increases your chance to critically strike by $s1%.
 
 Name             : Spinning Dragon Strike (id=158221) 
 Class            : Monk
+School           : Physical
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -3568,6 +3745,7 @@ Description      : $@spelldesc152175
 
 Name             : Bladed Armor (id=161608) [Passive] 
 Class            : Protection Protection Brewmaster Guardian Warrior, Paladin, Monk, Druid
+School           : Physical
 Spell Level      : 10
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3583,6 +3761,7 @@ Description      : Increases your Attack Power by $s1% of your Bonus Armor.
 
 Name             : Refreshing Jade Wind (id=162530) [Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Spell Level      : 1
 Affecting spells : Extend Life (185158)
 Triggered by     : Refreshing Jade Wind (196725)
@@ -3600,6 +3779,7 @@ Description      : $@spelldesc196725
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
 Class            : Beast Mastery Marksmanship Survival Assassination Combat Subtlety Enhancement Windwalker Feral Hunter, Rogue, Shaman, Monk, Druid
+School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3619,6 +3799,7 @@ Effects          :
 
 Name             : Stat Negation Aura - Agility Tank (id=162700) [Passive, Hidden] 
 Class            : Brewmaster Guardian Monk, Druid
+School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3636,6 +3817,7 @@ Effects          :
 
 Name             : Stat Negation Aura - Intellect Healer (id=162701) [Passive, Hidden] 
 Class            : Holy Discipline Holy Restoration Mistweaver Restoration Paladin, Priest, Shaman, Monk, Druid
+School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3653,6 +3835,7 @@ Effects          :
 
 Name             : Summon Black Ox Statue (id=163178) [Spell Family (53), Hidden] 
 Class            : Monk
+School           : Physical
 Spell Level      : 70
 Range            : 40 yards
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -3668,6 +3851,7 @@ Effects          :
 
 Name             : Item - Monk T17 Mistweaver 2P Bonus (id=165404) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
+School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -3682,6 +3866,7 @@ Description      : Every time your Soothing Mist heals a target your critical st
 
 Name             : Windwalking (id=166646) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Spell Level      : 1
 Range            : 100 yards
 Duration         : Aura (infinite)
@@ -3699,6 +3884,7 @@ Tooltip          : Movement speed increased by $s1%.
 
 Name             : Mistweaving (id=167732) 
 Class            : Monk
+School           : Physical
 Spell Level      : 36
 Duration         : 10 seconds
 Cooldown         : 6 seconds
@@ -3718,6 +3904,7 @@ Tooltip          : Critical strike chance increased by $s1%.
 
 Name             : Gift of the Ox (id=178173) [Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Range            : 50000 yards
 Affecting spells : Extend Life (185158)
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
@@ -3734,6 +3921,7 @@ Description      : $@spelldesc124502
 
 Name             : Player Damage Reduction Level 95 (id=178839) [Passive, Hidden] 
 Class            : Death Knight, Shaman, Mage, Warlock, Monk
+School           : Physical
 Spell Level      : 95
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ....x... 
@@ -3749,6 +3937,7 @@ Description      : Reduces all damage taken from players or their pets by ${$m1/
 
 Name             : Player Damage Reduction Level 100 (id=178840) [Passive, Hidden] 
 Class            : Death Knight, Shaman, Mage, Warlock, Monk
+School           : Physical
 Spell Level      : 100
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ....x... 
@@ -3764,6 +3953,7 @@ Description      : Reduces all damage taken from players or their pets by ${$m1/
 
 Name             : Rising Sun Kick (id=185099) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Spell Level      : 56
 Range            : 5 yards
 Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Mistweaver Monk (137024), Serenity (152173), Rising Winds (195263), Mana Tea (197908), Teachings of the Monastery (202090)
@@ -3781,6 +3971,7 @@ Description      : $@spelldesc107428
 
 Name             : Hunting Companion (id=191335) [Spell Family (9)] 
 Class            : Monk
+School           : Physical
 Range            : 50000 yards
 Affecting spells : Aspect of the Eagle (186289), Mastery: Hunting Companion (191334), Aspect of the Wild (193530)
 Triggered by     : Hunting Companion (191336)
@@ -3798,6 +3989,7 @@ Tooltip          : Gain a charge of Mongoose Bite.
 
 Name             : Hunting Companion (id=191336) [Spell Family (9), Passive] 
 Class            : Monk
+School           : Physical
 Proc Flags       : ....x... x.x.x... x.x..... ........ 
                  : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Hostile Spell, Periodic
 Affecting spells : Aspect of the Eagle (186289), Mastery: Hunting Companion (191334), Aspect of the Wild (193530)
@@ -3816,6 +4008,7 @@ Tooltip          : Chance to gain stack of Mongoose Bite.
 
 Name             : Essence Font (id=191837) [Spell Family (53)] 
 Class            : Mistweaver Monk
+School           : Nature
 Resource         : 8% Base Mana (88000 @Level 110)
 Spell Level      : 58
 GCD              : 1.5 seconds
@@ -3837,6 +4030,7 @@ Each bolt heals the target for $191840s1, plus an additional $191840o2 over $191
 
 Name             : Essence Font (id=191840) [Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Spell Level      : 1
 Velocity         : 40 yards/sec
 Duration         : 6 seconds
@@ -3860,6 +4054,7 @@ Tooltip          : Restoring $w2 health every $t2.
 
 Name             : Gust of Mists (id=191894) [Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Spell Level      : 4
 Range            : 100 yards
 Affecting spells : Mastery: Gust of Mists (117907), Enveloping Mist (124682)
@@ -3877,6 +4072,7 @@ Description      : $@spelldesc117907
 
 Name             : Soothing Mist (id=193884) [Spell Family (53), Passive] 
 Class            : Mistweaver Monk
+School           : Nature
 Spell Level      : 10
 Range            : 40 yards
 Proc Chance      : 100%
@@ -3898,6 +4094,7 @@ After casting these spells, you continue to channel healing mists into the targe
 
 Name             : Elusive Brawler (id=195630) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Spell Level      : 80
 Duration         : 10 seconds
 Stacks           : 100 maximum
@@ -3920,6 +4117,7 @@ Tooltip          : Dodge chance increased by $w1%.
 
 Name             : Eye of the Tiger (id=196607) [Spell Family (53), Passive] 
 Class            : Monk
+School           : Physical
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -3937,6 +4135,7 @@ Description      : Tiger Palm also applies Eye of the Tiger, dealing $196608o2 N
 
 Name             : Eye of the Tiger (id=196608) [Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Range            : 100 yards
 Duration         : 8 seconds
 Triggered by     : Eye of the Tiger (196607)
@@ -3956,6 +4155,7 @@ Tooltip          : $?$w1>0[Healing $w1 every $t1 sec.][Suffering $w2 Nature dama
 
 Name             : Secret Ingredients (id=196719) [Spell Family (53), Passive] 
 Class            : Monk
+School           : Physical
 Proc Chance      : 30%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -3975,6 +4175,7 @@ Tiger Palm has a $h% chance to reset the cooldown of Keg Smash.
 
 Name             : Keg Smash! (id=196720) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Duration         : 3 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
@@ -3995,6 +4196,7 @@ $@spelldesc196719
 
 Name             : Light Brewing (id=196721) [Spell Family (53), Passive] 
 Class            : Monk
+School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4011,6 +4213,7 @@ Description      : Reduces the cooldown of Ironskin Brew and Purifying Brew by $
 
 Name             : Dizzying Kicks (id=196722) [Spell Family (53), Passive] 
 Class            : Monk
+School           : Physical
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -4028,6 +4231,7 @@ Description      : Blackout Kick also snares the target by $196723s1% for $19672
 
 Name             : Dizzying Kicks (id=196723) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Range            : 100 yards
 Duration         : 3 seconds
 Triggered by     : Dizzying Kicks (196722)
@@ -4045,6 +4249,7 @@ Tooltip          : Movement slowed by $s1%.
 
 Name             : Refreshing Jade Wind (id=196725) [Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Resource         : 9% Base Mana (99000 @Level 110)
 Spell Level      : 1
 GCD              : 1.5 seconds
@@ -4065,6 +4270,7 @@ Tooltip          : Dealing healing to nearby allies every $116847t1 sec.
 
 Name             : Special Delivery (id=196730) [Spell Family (53), Passive] 
 Class            : Monk
+School           : Physical
 Proc Chance      : 30%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : AOE Heal, Heal
@@ -4093,6 +4299,7 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 Name             : Special Delivery (id=196733) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Range            : 100 yards
 Duration         : 15 seconds
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -4110,6 +4317,7 @@ Description      : $@spelldesc196730
 
 Name             : Special Delivery (id=196734) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Range            : 100 yards
 Velocity         : 3 yards/sec
 Triggered by     : Special Delivery (196730)
@@ -4126,6 +4334,7 @@ Description      : $@spelldesc196730
 
 Name             : Fortified Mind (id=196736) [Spell Family (53), Passive] 
 Class            : Monk
+School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4142,6 +4351,7 @@ Keg Smash and Tiger Palm now also reduce the cooldown of Fortifying Brew.
 
 Name             : High Tolerance (id=196737) [Spell Family (53), Passive] 
 Class            : Monk
+School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4157,6 +4367,7 @@ Description      : You Stagger an additional $s1% of incoming damage.
 
 Name             : Elusive Dance (id=196738) [Spell Family (53), Passive] 
 Class            : Monk
+School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4172,6 +4383,7 @@ Purifying Brew also grants up to $196739s1% Dodge for $196739d, based on the lev
 
 Name             : Elusive Dance (id=196739) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Duration         : 6 seconds
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4186,6 +4398,7 @@ Description      : $@spelldesc196738
 
 Name             : Hit Combo (id=196740) [Spell Family (53), Passive] 
 Class            : Monk
+School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4201,6 +4414,7 @@ Each successive attack that triggers Combo Strikes in a row grants $196741s1% in
 
 Name             : Hit Combo (id=196741) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Duration         : 10 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
@@ -4218,6 +4432,7 @@ Tooltip          : Damage dealt increased by $s1%.
 
 Name             : Chi Orbit (id=196743) [Spell Family (53), Passive] 
 Class            : Monk
+School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4233,6 +4448,7 @@ Every $t1 sec, an orb of energy forms and rotates around you, until it impacts a
 
 Name             : Chi Orbit (id=196748) [Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Range            : 100 yards
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4247,6 +4463,7 @@ Description      : $@spelldesc196743
 
 Name             : Uplifting Trance (id=197206) [Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Range            : 50000 yards
 Duration         : 20 seconds
 Stacks           : 1 initial, 1 maximum
@@ -4268,6 +4485,7 @@ Tooltip          : Your next Vivify causes $s1% increased healing.
 
 Name             : Thunder Focus Tea (id=197218) [Spell Family (53), Hidden] 
 Class            : Monk
+School           : Nature
 Spell Level      : 66
 Duration         : 30 seconds
 Affecting spells : Item - Monk T15 Mistweaver 4P Bonus (138289), Focused Thunder (197895), Harmony and Focus (199485), 
@@ -4287,6 +4505,7 @@ Description      : $@spelldesc116680
 
 Name             : Focused Thunder (id=197895) [Spell Family (53), Passive] 
 Class            : Monk
+School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4305,6 +4524,7 @@ Description      : Thunder Focus Tea now empowers your next ${$m1+1} spells.
 
 Name             : Soothing Elegance (id=197900) [Spell Family (53), Passive] 
 Class            : Monk
+School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4323,6 +4543,7 @@ Description      : Your Soothing Mist may now channel while moving, and does $s2
 
 Name             : Mana Tea (id=197908) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Duration         : 10 seconds
 Cooldown         : 90 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4340,6 +4561,7 @@ Tooltip          : Mana cost of spells reduced by $s1%.
 
 Name             : Lifecycles (id=197915) [Spell Family (53), Passive] 
 Class            : Monk
+School           : Physical
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
@@ -4358,6 +4580,7 @@ Description      : Enveloping Mist reduces the cost of your next Vivify by $s1%,
 
 Name             : Mistwalk (Talent) (id=197945) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -4377,6 +4600,7 @@ Description      : Instantly dash to an ally, and heal them for $s2.
 
 Name             : Crane's Grace (id=198454) [Spell Family (53), Passive] 
 Class            : Monk
+School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4391,6 +4615,7 @@ Description      : If a target affected by your Renewing Mist drops below $s1%, 
 
 Name             : Crane's Grace (id=198476) [Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Range            : 100 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4405,6 +4630,7 @@ Description      : $@spelldesc198454
 
 Name             : Invoke Chi-Ji, the Red Crane (id=198664) [Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Spell Level      : 49
 Range            : 40 yards
 Duration         : 45 seconds
@@ -4422,6 +4648,7 @@ Description      : Summon an effigy of Chi-Ji, the Red Crane for $d. Chi-Ji heal
 
 Name             : Crane Heal (Talent) (id=198756) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Spell Level      : 1
 Range            : 40 yards
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
@@ -4439,6 +4666,7 @@ Description      : Dash to an ally, and heal them for $s2.
 
 Name             : Song of Chi-Ji (id=198898) [Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Spell Level      : 30
 Range            : 40 yards
 Cast Time        : 1.8 seconds
@@ -4459,6 +4687,7 @@ Description      : Conjure a cloud of hypontic mist that slowly travels forward.
 
 Name             : Song of Chi-Ji (id=198909) [Spell Family (53)] 
 Class            : Monk
+School           : Nature
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 20 seconds
@@ -4481,6 +4710,7 @@ Tooltip          : Disoriented.
 
 Name             : Mist Wrap (id=200378) [Spell Family (53), Passive] 
 Class            : Monk
+School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4499,6 +4729,7 @@ Description      : Enveloping Mist duration increased by ${$m1/1000} sec and hea
 
 Name             : Zen Pilgrimage (id=200617) [Hidden] 
 Class            : Monk
+School           : Physical
 Duration         : Aura (infinite)
 Attributes       : .......x x....... .......x x..x.x..   ...x.x.x ..x..... ........ ........ 
                  : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
@@ -4515,6 +4746,7 @@ Description      : Updates the caster's Zen Pilgrimage ability to return the cas
 Name             : Activating Specialization (id=200749) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+School           : Physical
 Range            : 50000 yards
 Cast Time        : 5 seconds
 Attributes       : .......x ........ ........ ....x...   ..xxx..x ........ .x...... ........ 
@@ -4532,6 +4764,7 @@ Tooltip          : Switch to your Primary Talent Specialization.
 
 Name             : Teachings of the Monastery (id=202090) [Spell Family (53)] 
 Class            : Monk
+School           : Physical
 Duration         : 8 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
@@ -4553,6 +4786,7 @@ Tooltip          : Your next Blackout Kick or Rising Sun Kick deals $s1% additio
 Name             : Blackout Strike (id=205523) [Spell Family (53)] 
 Replaces         : Blackout Kick (id=100784)
 Class            : Brewmaster Monk
+School           : Physical
 Spell Level      : 3
 Range            : 5 yards
 GCD              : 1.5 seconds
