@@ -25,11 +25,11 @@ class DBFileList(collections.Mapping):
 
 	def open(self):
 		if not self.options.dbfile:
-			print(self.options.parser('No filename list given'))
+			self.options.parser.error('No filename list given')
 			return False
 
 		if not os.access(self.options.dbfile, os.R_OK):
-			print(self.options.parser('Unable to open filename list %s' % self.options.dbfile))
+			self.options.parser.error('Unable to open filename list %s' % self.options.dbfile)
 			return False
 
 		with open(self.options.dbfile, 'r') as f:
