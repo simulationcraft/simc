@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 import optparse, sys, os
 
@@ -58,7 +58,7 @@ if __name__ == '__main__':
 			if not root.open():
 				sys.exit(1)
 
-			for file_hash, file_name in fname_db.iteritems():
+			for file_hash, file_name in fname_db.items():
 				extract_data = None
 
 				file_md5s = root.GetFileHashMD5(file_hash)
@@ -76,7 +76,7 @@ if __name__ == '__main__':
 				if not extract_data:
 					continue
 
-				print 'Extracting %s ...' % file_name
+				print('Extracting %s ...' % file_name)
 
 				if not blte.extract_file(*extract_data):
 					sys.exit(1)
@@ -94,13 +94,13 @@ if __name__ == '__main__':
 				sys.exit(1)
 
 			output_path = os.path.join(opts.output, cdn.build())
-			for file_hash, file_name in fname_db.iteritems():
+			for file_hash, file_name in fname_db.items():
 				file_md5s = root.GetFileHashMD5(file_hash)
 				if not file_md5s:
 					continue
 
 				if len(file_md5s) > 1:
-					print 'Duplicate files found (%d) for %s, selecting first one ...' % (len(file_md5s), file_name)
+					print('Duplicate files found (%d) for %s, selecting first one ...' % (len(file_md5s), file_name))
 
 				file_keys = encoding.GetFileKeys(file_md5s[0])
 
@@ -108,13 +108,13 @@ if __name__ == '__main__':
 					continue
 
 				if len(file_keys) > 1:
-					print 'More than one key found for %s, selecting first one ...' % file_name
+					print('More than one key found for %s, selecting first one ...' % file_name)
 
-				print 'Extracting %s ...' % file_name
+				print('Extracting %s ...' % file_name)
 
 				data = cdn.fetch_file(file_keys[0])
 				if not data:
-					print 'No data for a given key %s' % file_keys[0].encode('hex')
+					print('No data for a given key %s' % file_keys[0].encode('hex'))
 					continue
 
 				blte.extract_buffer_to_file(data, os.path.join(output_path, file_name.replace('\\', '/')))
@@ -122,7 +122,7 @@ if __name__ == '__main__':
 	elif opts.mode == 'unpack':
 		blte = casc.BLTEExtract(opts)
 		for file in args:
-			print 'Extracting %s ...'
+			print('Extracting %s ...')
 			if not blte.extract_file(file):
 				sys.exit(1)
 
@@ -184,7 +184,7 @@ if __name__ == '__main__':
 			file_name = args[0]
 			data = build.fetch_file(keys[0])
 			if not data:
-				print 'No data for a given key %s' % keys[0].encode('hex')
+				print('No data for a given key %s' % keys[0].encode('hex'))
 				sys.exit(1)
 
 			output_path = os.path.join(opts.output, build.build())

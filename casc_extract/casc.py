@@ -1,10 +1,10 @@
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 # CASC file formats, based on the work of Caali et al. @ http://www.ownedcore.com/forums/world-of-warcraft/world-of-warcraft-model-editing/471104-analysis-of-casc-filesystem.html
-import os, sys, mmap, md5, stat, struct, zlib, glob, re, urllib2, collections, cStringIO
+import os, sys, mmap, hashlib, stat, struct, zlib, glob, re, urllib.request, urllib.error, collections, codecs, io
 
 import jenkins
 
-_BLTE_MAGIC = 'BLTE'
+_BLTE_MAGIC = b'BLTE'
 _CHUNK_DATA_OFFSET_LEN = 4
 _CHUNK_HEADER_LEN = 4
 _CHUNK_HEADER_2_LEN = 8
@@ -33,7 +33,7 @@ class BLTEChunk(object):
 				self.id, self.chunk_length, len(data)))
 			return False
 
-		type = ord(data[0])
+		type = data[0]
 		if type not in [ _NULL_CHUNK, _COMPRESSED_CHUNK, _UNCOMPRESSED_CHUNK ]:
 			self.options.parser.error('Unknown chunk type %#x for chunk%d' % (type, self.id))
 			return False
@@ -44,7 +44,7 @@ class BLTEChunk(object):
 		return self.__decompress(data)
 
 	def __decompress(self, data):
-		type = ord(data[0])
+		type = data[0]
 		if type == _NULL_CHUNK:
 			self.output_data = ''
 		elif type == _UNCOMPRESSED_CHUNK:
@@ -66,10 +66,11 @@ class BLTEChunk(object):
 		return True
 
 	def __verify(self, data):
-		md5s = md5.new(data).digest()
+		md5s = hashlib.md5(data).digest()
 		if md5s != self.sum:
-			print >>sys.stderr, 'Chunk%d of type %#x fails verification, expects %s got %s' % (
-				self.id, ord(data[0]), self.sum.encode('hex'), md5s.encode('hex'))
+			sys.stderr.write('Chunk%d of type %#x fails verification, expects %s got %s' % (
+				self.id, data[0], codecs.encode(self.sum, 'hex').decode('utf-8'),
+				codecs.encode(md5s, 'hex').decode('utf-8')))
 			return False
 
 		return True
@@ -79,7 +80,7 @@ class BLTEFile(object):
 		self.data = extractor
 		self.offset = 0
 		self.chunks = []
-		self.output_data = ''
+		self.output_data = b''
 		self.extract_status = True
 
 	def add_chunk(self, length, c_length, md5s):
@@ -152,19 +153,19 @@ class BLTEFile(object):
 				return False
 
 			# Chunk information
-			for chunk_id in xrange(0, n_chunks):
+			for chunk_id in range(0, n_chunks):
 				c_len, out_len = struct.unpack('>II', self.__read(_CHUNK_HEADER_2_LEN))
 				chunk_sum = self.__read(_CHUNK_SUM_LEN)
 
-				#print 'Chunk#%d@%u: c_len=%u out_len=%u sum=%s' % (chunk_id, self.__tell() - 24, c_len, out_len, chunk_sum.encode('hex'))
+				#print('Chunk#%d@%u: c_len=%u out_len=%u sum=%s' % (chunk_id, self.__tell() - 24, c_len, out_len, chunk_sum.encode('hex')))
 				self.add_chunk(c_len, out_len, chunk_sum)
 
 			# Read chunk data
 			sum_in_file = 0
-			for chunk_id in xrange(0, n_chunks):
+			for chunk_id in range(0, n_chunks):
 				chunk = self.chunks[chunk_id]
 
-				#print 'Chunk#%d@%u: Data extract len=%u, total=%u' % (chunk_id, self.__tell(), chunk.chunk_length, sum_in_file)
+				#print('Chunk#%d@%u: Data extract len=%u, total=%u' % (chunk_id, self.__tell(), chunk.chunk_length, sum_in_file))
 				data = self.__read(chunk.chunk_length)
 				if not chunk.extract(data):
 					self.extract_status = False
@@ -253,7 +254,8 @@ class BLTEExtract(object):
 		key = self.fd.read(16)
 		blte_len = struct.unpack('<I', self.fd.read(4))[0]
 		if key[::-1] != file_key:
-			self.options.parser.error('Invalid file key for %s, expected %s, got %s' % (file_output, file_key.encode('hex'), key.encode('hex')))
+			self.options.parser.error('Invalid file key for %s, expected %s, got %s' % (
+				file_output, codecs.encode(file_key, 'hex').decode('utf-8'), codecs.encode(key, 'hex').decode('utf-8')))
 
 		if blte_len != blte_file_size:
 			self.options.parser.error('Invalid file length, expected %u got %u' % (blte_file_size, blte_len))
@@ -265,9 +267,10 @@ class BLTEExtract(object):
 		if not file:
 			return None
 
-		file_md5 = md5.new(file.output_data).digest()
+		file_md5 = hashlib.md5(file.output_data).digest()
 		if file_md5sum and file_md5sum != file_md5:
-			self.options.parser.error('Invalid md5sum for extracted file, expected %s got %s' % (file_md5sum.encode('hex'), file_md5.encode('hex')))
+			self.options.parser.error('Invalid md5sum for extracted file, expected %s got %s' % (
+				codecs.encode(file_md5sum, 'hex').decode('utf-8'), codecs.encode(file_md5, 'hex').decode('utf-8')))
 
 		self.close()
 
@@ -279,15 +282,15 @@ class BLTEExtract(object):
 			output_path = os.path.join(self.options.output, file_output)
 		else:
 			if file_key:
-				output_path = os.path.join(self.options.output, file_key.encode('hex'))
+				output_path = os.path.join(self.options.output, codecs.encode(file_key, 'hex').decode('utf-8'))
 			elif file_md5sum:
-				output_path = os.path.join(self.options.output, file_md5sum.encode('hex'))
+				output_path = os.path.join(self.options.output, codecs.encode(file_md5sum, 'hex').decode('utf-8'))
 
 		output_dir = os.path.dirname(os.path.abspath(output_path))
 		try:
 			if not os.path.exists(output_dir):
 				os.makedirs(output_dir)
-		except os.error, e:
+		except os.error as e:
 			self.options.parser.error('Output "%s" is not writable: %s' % (output_path, e.strerror))
 
 		data = self.extract_data(file_key, file_md5sum, data_file_number, data_file_offset, blte_file_size)
@@ -297,7 +300,7 @@ class BLTEExtract(object):
 		try:
 			with open(output_path, 'wb') as output_file:
 				output_file.write(data)
-		except IOError, e:
+		except IOError as e:
 			self.options.parser.error('Output "%s" is not writable: %s' % (output_path, e.strerror))
 
 		return True
@@ -308,16 +311,16 @@ class CASCObject(object):
 
 	def get_url(self, url, headers = None):
 		try:
-			req = urllib2.Request(url)
+			req = urllib.request.Request(url)
 			if headers:
-				for k, v in headers.iteritems():
+				for k, v in headers.items():
 					req.add_header(k, v)
 
-			print 'Fetching %s ...' % url
-			f = urllib2.urlopen(req, timeout = 5)
+			print('Fetching %s ...' % url)
+			f = urllib.request.urlopen(req, timeout = 5)
 			if f.getcode() not in [200, 206]:
 				self.options.parser.error('HTTP request for %s returns %u' % (url, f.getcode()))
-		except urllib2.URLError, e:
+		except urllib.error.URLError as e:
 			self.options.parser.error('Unable to fetch %s: %s' % (url, e.reason))
 
 		return f
@@ -330,7 +333,7 @@ class CASCObject(object):
 		if not os.path.exists(dir):
 			try:
 				os.makedirs(dir)
-			except os.error, e:
+			except os.error as e:
 				self.options.parser('Unable to make %s: %s' % (dir, e.strerror))
 
 		return dir
@@ -344,7 +347,7 @@ class CASCObject(object):
 			with open(file, 'wb') as f:
 				f.write(data)
 
-			handle = cStringIO.StringIO(data)
+			handle = io.BytesIO(data)
 		else:
 			handle = open(file, 'rb')
 
@@ -393,7 +396,7 @@ class CDNIndex(CASCObject):
 		cdns_url = '%s/cdns' % self.patch_base_url()
 		handle = self.get_url(cdns_url)
 
-		data = handle.read().strip().split('\n')
+		data = handle.read().decode('utf-8').strip().split('\n')
 		for line in data:
 			split = line.split('|')
 			if split[0] != 'us':
@@ -403,7 +406,7 @@ class CDNIndex(CASCObject):
 			self.cdn_host = split[2].split(' ')[0].strip()
 
 		if not self.cdn_path or not self.cdn_host:
-			print >>sys.stderr, 'Unable to extract CDN information'
+			sys.stderr.write('Unable to extract CDN information\n')
 			sys.exit(1)
 
 	def cdn_base_url(self):
@@ -417,7 +420,7 @@ class CDNIndex(CASCObject):
 		handle = self.get_url(version_url)
 
 		for line in handle.readlines():
-			split = line.split('|')
+			split = line.decode('utf-8').split('|')
 			if split[0] != 'us':
 				continue
 
@@ -431,17 +434,17 @@ class CDNIndex(CASCObject):
 			self.build_cfg_hash = split[1]
 
 		if not self.cdn_hash:
-			print >>sys.stderr, 'Invalid version file'
+			sys.stderr.write('Invalid version file\n')
 			sys.exit(1)
 
-		print 'Current build version: %s' % self.cdn_version
+		print('Current build version: %s' % self.cdn_version)
 
 	def open_cdn_build_cfg(self):
 		path = os.path.join(self.cache_dir('config'), self.cdn_hash)
 		url = self.cdn_url('config', self.cdn_hash)
 
 		for line in self.cached_open(path, url):
-			mobj = re.match('^archives = (.+)', line)
+			mobj = re.match('^archives = (.+)', line.decode('utf-8'))
 			if mobj:
 				self.archives = mobj.group(1).split(' ')
 				continue
@@ -457,7 +460,7 @@ class CDNIndex(CASCObject):
 		url = self.cdn_url('config', self.build_cfg_hash)
 
 		for line in self.cached_open(path, url):
-			mobj = re.match('^([^ ]+)[ ]*=[^A-z0-9]*(.+)', line)
+			mobj = re.match('^([^ ]+)[ ]*=[^A-z0-9]*(.+)', line.decode('utf-8'))
 			if not mobj:
 				continue
 
@@ -466,13 +469,13 @@ class CDNIndex(CASCObject):
 				data = data.split(' ')
 			self.build_info[mobj.group(1)] = data
 
-		print 'Current CDN version: %s' % self.build()
+		print('Current CDN version: %s' % self.build())
 
 	def open_archives(self):
 		sys.stdout.write('Parsing CDN index files ... ')
 
 		index_cache = self.cache_dir('index')
-		for idx in xrange(0, len(self.archives)):
+		for idx in range(0, len(self.archives)):
 			index_file_name = '%s.index' % self.archives[idx]
 			index_file_path = os.path.join(index_cache, index_file_name)
 			index_file_url = self.cdn_url('data', index_file_name)
@@ -490,14 +493,15 @@ class CDNIndex(CASCObject):
 			return False
 
 		handle.seek(0, os.SEEK_SET)
-		for record_idx in xrange(0, record_count):
+		for record_idx in range(0, record_count):
 			key = handle.read(16)
 			size, offset = struct.unpack('>ii', handle.read(8))
 
 			if key in self.cdn_index:
-				print >>sys.stderr, 'Key %s, %d, %d, %d exists in index @ (%s, %d, %d, %d)' % (
-					key.encode('hex'), idx, size, offset, self.archives[self.cdn_index[key].index],
-					self.cdn_index[key].size, self.cdn_index[ key ].offset )
+				sys.stderr.write('Key %s, %d, %d, %d exists in index @ (%s, %d, %d, %d)\n' % (
+					codecs.encode(key, 'hex').decode('utf-8'), idx, size, offset,
+					self.archives[self.cdn_index[key].index],
+					self.cdn_index[key].size, self.cdn_index[ key ].offset ))
 
 			self.cdn_index[key] = CDNIndexRecord(idx, size, offset)
 
@@ -527,13 +531,13 @@ class CDNIndex(CASCObject):
 	def fetch_file(self, key):
 		key_info = self.cdn_index.get(key, None)
 		handle = None
-		key_file_path = os.path.join(self.cache_dir('data'), key.encode('hex'))
+		key_file_path = os.path.join(self.cache_dir('data'), codecs.encode(key, 'hex').decode('utf-8'))
 		if key_info:
 			key_file_url = self.cdn_url('data', self.archives[key_info.index])
 
 			handle = self.cached_open(key_file_path, key_file_url, {'Range': 'bytes=%d-%d' % (key_info.offset, key_info.offset + key_info.size - 1)})
 		else:
-			handle = self.cached_open(key_file_path, self.cdn_url('data', key.encode('hex')))
+			handle = self.cached_open(key_file_path, self.cdn_url('data', codecs.encode(key, 'hex').decode('utf-8')))
 
 		return handle.read()
 
@@ -559,7 +563,7 @@ class CASCDataIndexFile(object):
 			f.seek(padding, os.SEEK_SET)
 
 			data_len, data_sum = struct.unpack('II', f.read(8))
-			for entry_idx in xrange(0, data_len / 18):
+			for entry_idx in range(0, data_len // 18):
 				key = f.read(9)
 				high_byte = struct.unpack('B', f.read(1))[0]
 				low_bits = struct.unpack('>I', f.read(4))[0]
@@ -570,7 +574,7 @@ class CASCDataIndexFile(object):
 
 				self.index.AddIndex(key, int(data_file_number), int(data_file_offset), file_size, self.file)
 
-				#print key.encode('hex'), data_file_number, data_file_offset, high_byte, low_bits, file_size
+				#print(key.encode('hex'), data_file_number, data_file_offset, high_byte, low_bits, file_size)
 
 		return True
 
@@ -584,8 +588,8 @@ class CASCDataIndex(object):
 		if key not in self.idx_data:
 			self.idx_data[key] = (data_file, data_offset, file_size)
 		else:
-			print >>sys.stderr, 'Duplicate key %s in index %s old=%s, new=%s' % (
-				key.encode('hex'), indexname, self.idx_data[key], (data_file, data_offset, file_size))
+			sys.stderr.write('Duplicate key %s in index %s old=%s, new=%s\n' % (
+				codecs.encode(key, 'hex').decode('utf-8'), indexname, self.idx_data[key], (data_file, data_offset, file_size)))
 
 	def GetIndexData(self, key):
 		return self.idx_data.get(key[:9], (-1, 0, 0))
@@ -619,7 +623,7 @@ class CASCDataIndex(object):
 			if self.idx_files[file_number][0] < file_version:
 				self.idx_files[file_number] = (file_version, idx_file)
 
-		for file_number, file_data in self.idx_files.iteritems():
+		for file_number, file_data in self.idx_files.items():
 			self.idx_data[file_number] = CASCDataIndexFile(self.options, self, *file_data)
 			if not self.idx_data[file_number].open():
 				return False
@@ -646,7 +650,7 @@ class CASCEncodingFile(CASCObject):
 		if not blte.extract():
 			self.options.parser.error('Unable to uncompress BLTE data for encoding file')
 
-		md5s = md5.new(blte.output_data).hexdigest()
+		md5s = hashlib.md5(blte.output_data).hexdigest()
 		if md5s != self.build.encoding_file():
 			self.options.parser.error('Invalid md5sum in encoding file, expected %s got %s' % (self.build.encoding_file(), md5s))
 
@@ -670,7 +674,7 @@ class CASCEncodingFile(CASCObject):
 			with open(self.encoding_path(), 'rb') as encoding_file:
 				data = encoding_file.read()
 
-			md5str = md5.new(data).hexdigest()
+			md5str = hashlib.md5(data).hexdigest()
 			if md5str != self.build.encoding_file():
 				data = self.__bootstrap()
 
@@ -678,48 +682,50 @@ class CASCEncodingFile(CASCObject):
 
 		offset = 0
 		fsize = os.stat(self.encoding_path()).st_size
-		locale = data[offset:offset + 2]; offset += 2
-		if locale != 'EN':
-			self.options.parser.error('Unknown locale "%s" in file %s, only EN supported' % (locale, self.encoding_path()))
+		magic = data[offset:offset + 2]; offset += 2
+		if magic != b'EN':
+			self.options.parser.error('Unknown magic "%s" in encoding file %s' % (locale, self.encoding_path()))
 			return False
 
 		unk_b1, unk_b2, unk_b3, unk_s1, unk_s2, hash_table_size, unk_hash_count, unk_b4, hash_table_offset = struct.unpack('>BBBHHIIBI', data[offset:offset + 20])
-		#print unk_b1, unk_b2, unk_b3, unk_s1, unk_s2, hash_table_size, unk_hash_count, unk_b4, hash_table_offset
+		#print(unk_b1, unk_b2, unk_b3, unk_s1, unk_s2, hash_table_size, unk_hash_count, unk_b4, hash_table_offset)
 		offset += 20 + hash_table_offset
 
-		for hash_entry in xrange(0, hash_table_size):
+		for hash_entry in range(0, hash_table_size):
 			md5_file = data[offset:offset + 16]; offset += 16
 			#md5_sum = data[offset:offset + 16];
 			# Skip the second MD5sum, we don't use it for anything
 			offset += 16
 			self.first_entries.append(md5_file)
 
-		for hash_block in xrange(0, hash_table_size):
+		for hash_block in range(0, hash_table_size):
 			before = offset
 			entry_id = 0
-			#print 'Block %u begins at %u' % (hash_block, f.tell())
+			#print('Block %u begins at %u' % (hash_block, f.tell()))
 			n_keys = struct.unpack('H', data[offset:offset + 2])[0]; offset += 2
 			while n_keys != 0:
 				keys = []
 				file_size = struct.unpack('>I', data[offset:offset + 4])[0]; offset += 4
 
 				file_md5 = data[offset:offset + 16]; offset += 16
-				for key_idx in xrange(0, n_keys):
+				for key_idx in range(0, n_keys):
 					keys.append(data[offset:offset + 16]); offset += 16
 
 				if entry_id == 0 and file_md5 != self.first_entries[hash_block]:
 					self.options.parser.error('Invalid first md5 in block %d@%u, expected %s got %s' % (
-						hash_block, offset, self.first_entries[hash_block].encode('hex'), file_md5.encode('hex')))
+						hash_block, offset,
+						codecs.encode(self.first_entries[hash_block], 'hex').decode('utf-8'),
+						codecs.encode(file_md5, 'hex').decode('utf-8')))
 					return False
 
-				#print '%5u %8u %8u %2u %s %s' % (entry_id, f.tell(), file_size, n_keys, file_md5.encode('hex'), file_key.encode('hex'))
+				#print('%5u %8u %8u %2u %s %s' % (entry_id, f.tell(), file_size, n_keys, file_md5.encode('hex'), file_key.encode('hex')))
 				if file_size > 1000000000:
 					self.options.parser.error('Invalid (too large) file size %u in block %u, entry id %u, pos %u' % (file_size, hash_block, entry_id, offset))
 					return False
 
 				if file_md5 in self.md5_map:
 					self.options.parser.error('Duplicate md5 entry %s in block %d@%u' % (
-						file_md5.encode('hex'), hash_block, offset))
+						codecs.encode(file_md5, 'hex').decode('utf-8'), hash_block, offset))
 					return False
 
 				self.md5_map[file_md5] = (file_size, keys)
@@ -728,9 +734,9 @@ class CASCEncodingFile(CASCObject):
 				n_keys = struct.unpack('H', data[offset:offset + 2])[0]; offset += 2
 
 			# Blocks are padded to 4096 bytes it seems, sanity check that the padding is all zeros, though
-			for pad_idx in xrange(0, 4096 - (offset - before)):
+			for pad_idx in range(0, 4096 - (offset - before)):
 				byte = data[offset:offset + 1]; offset += 1
-				if byte != '\x00':
+				if byte != b'\x00':
 					self.options.parser.error('Invalid padding byte %u at the end of block %u, pos %u, expected 0, got %#x' % (pad_idx, hash_block, offset, ord(byte)))
 					return False
 
@@ -738,13 +744,13 @@ class CASCEncodingFile(CASCObject):
 
 		# Rest of the encoding file is unnecessary for now
 
-		#for i in xrange(0, unk_hash_count):
+		#for i in range(0, unk_hash_count):
 		#	tmp = offset
 		#	hash = data[offset:offset + 16]; offset += 16
 		#	hash2 = data[offset:offset + 16]; offset += 16
 		#	unk_word1, unk_word2 = struct.unpack('>II', data[offset:offset + 8]); offset += 8
 		#	unk_b1 = data[offset]; offset += 1
-		#	print tmp, hash.encode('hex'), hash2.encode('hex')
+		#	print(tmp, hash.encode('hex'), hash2.encode('hex'))
 
 		#n = 0
 		#start = offset
@@ -756,13 +762,13 @@ class CASCEncodingFile(CASCObject):
 		#	offset += 9
 		#	if opt1[0] == 0xFFFFFFFF:
 		#		break
-		#	print n, tmp, 4096 - (offset - start), offset - start, hash.encode('hex'), opt1
+		#	print(n, tmp, 4096 - (offset - start), offset - start, hash.encode('hex'), opt1)
 		#	n += 1
 		#	if 4096 - (offset - start) < 25:
 		#		offset += 4096 - (offset - start)
 		#		start = offset
 		#
-		#print offset
+		#print(offset)
 
 		return True
 
@@ -808,7 +814,7 @@ class CASCRootFile(CASCObject):
 		if not os.access(self.cache_dir(), os.W_OK):
 			self.options.parser.error('Error bootstrapping CASCRootFile, "%s" is not writable' % self.cache_dir())
 
-		keys = self.encoding.GetFileKeys(self.build.root_file().decode('hex'))
+		keys = self.encoding.GetFileKeys(codecs.decode(self.build.root_file(), 'hex'))
 		if len(keys) == 0:
 			self.options.parser.error('Could not find root file with mdsum %s from data' % self.build.root_file())
 
@@ -817,7 +823,7 @@ class CASCRootFile(CASCObject):
 		if not self.options.online:
 			file_locations = []
 			for key in keys:
-				file_locations.append((key, self.build.root_file().decode('hex')) + self.index.GetIndexData(key))
+				file_locations.append((key, codecs.decode(self.build.root_file(), 'hex')) + self.index.GetIndexData(key))
 
 			if len(file_locations) == 0:
 				self.options.parser.error('Could not find root file location in data')
@@ -829,15 +835,15 @@ class CASCRootFile(CASCObject):
 		# Fetch from online
 		else:
 			if len(keys) > 1:
-				print 'Duplicate root key found for %s, using first one ...' % self.build.root_file()
+				print('Duplicate root key found for %s, using first one ...' % self.build.root_file())
 
-			handle = self.get_url(self.build.cdn_url('data', keys[0].encode('hex')))
+			handle = self.get_url(self.build.cdn_url('data', codecs.encode(keys[0], 'hex').decode('utf-8')))
 
 			blte = BLTEFile(handle.read())
 			if not blte.extract():
 				self.options.parser.error('Unable to uncompress BLTE data for root file')
 
-			md5s = md5.new(blte.output_data).hexdigest()
+			md5s = hashlib.md5(blte.output_data).hexdigest()
 			if md5s != self.build.root_file():
 				self.options.parser.error('Invalid md5sum in root file, expected %s got %s' % (self.build.root_file(), md5s))
 
@@ -874,7 +880,7 @@ class CASCRootFile(CASCObject):
 			with open(self.root_path(), 'rb') as root_file:
 				data = root_file.read()
 
-			md5str = md5.new(data).hexdigest()
+			md5str = hashlib.md5(data).hexdigest()
 			if md5str != self.build.root_file():
 				data = self.__bootstrap()
 
@@ -884,14 +890,14 @@ class CASCRootFile(CASCObject):
 		while offset < len(data):
 			n_entries, unk_1, flags = struct.unpack('<iII', data[offset:offset + 12])
 			#if flags == 0xFFFFFFFF or flags & 0x2:
-			#	print '%u %d, unk_1=%#.8x, flags=%#.8x' % (offset, n_entries, unk_1, flags)
+			#	print('%u %d, unk_1=%#.8x, flags=%#.8x' % (offset, n_entries, unk_1, flags))
 			offset += 12
 			if n_entries == 0:
 				continue
 
 			offset += 4 * n_entries
 
-			for entry_idx in xrange(0, n_entries):
+			for entry_idx in range(0, n_entries):
 				md5s = data[offset:offset + 16]
 				offset += 16
 				file_name_hash = data[offset:offset + 8]
@@ -905,7 +911,7 @@ class CASCRootFile(CASCObject):
 				if not val in self.hash_map:
 					self.hash_map[val] = []
 
-				#print unk_data[entry_idx], file_name_hash.encode('hex'), md5s.encode('hex')
+				#print(unk_data[entry_idx], file_name_hash.encode('hex'), md5s.encode('hex'))
 				self.hash_map[val].append(md5s)
 				n_md5s += 1
 

@@ -2,7 +2,7 @@
 
 BASE_URL = "http://dist.blizzard.com.edgesuite.net/tpr/wow/config"
 
-import ConfigParser, os, glob, sys, StringIO, collections, urllib2
+import configparser, os, glob, sys, io, collections
 
 import jenkins
 
@@ -25,11 +25,11 @@ class DBFileList(collections.Mapping):
 
 	def open(self):
 		if not self.options.dbfile:
-			print self.options.parser('No filename list given')
+			print(self.options.parser('No filename list given'))
 			return False
 
 		if not os.access(self.options.dbfile, os.R_OK):
-			print self.options.parser('Unable to open filename list %s' % self.options.dbfile)
+			print(self.options.parser('Unable to open filename list %s' % self.options.dbfile))
 			return False
 
 		with open(self.options.dbfile, 'r') as f:
@@ -72,8 +72,8 @@ class BuildCfg(object):
 			self.options.parser.error('Unknown file format for .build.info file, expected 2 lines, got %u' % len(build_lines))
 
 		line_split = build_lines[1].strip().split('|')
-		if len(line_split) != 12:
-			self.options.parser.error('Unknown file format for .build.info file, expected 12 fields, got %u' % len(line_split))
+		if len(line_split) != 14:
+			self.options.parser.error('Unknown file format for .build.info file, expected 14 fields, got %u' % len(line_split))
 
 		self.build_cfg_file = line_split[2]
 		self.cdn_domain = line_split[7].split(' ')[0].strip()
@@ -92,13 +92,13 @@ class BuildCfg(object):
 			self.options.parser.error('Could not read configuration file %s' % build_cfg_path)
 			return False
 
-		self.cfg = ConfigParser.SafeConfigParser()
+		self.cfg = configparser.ConfigParser()
 		# Slight hack to get the configuration file read easily
 		conf_str = '[base]\n' + open(build_cfg_path, 'r').read()
-		conf_str_fp = StringIO.StringIO(conf_str)
+		conf_str_fp = io.StringIO(conf_str)
 		self.cfg.readfp(conf_str_fp)
 
-		print 'Wow build: %s' % self.cfg.get('base', 'build-name')
+		print('Wow build: %s' % self.cfg.get('base', 'build-name'))
 
 		return True
 
