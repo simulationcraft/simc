@@ -579,24 +579,15 @@ struct rogue_attack_t : public melee_attack_t
   int          adds_combo_points;
   weapon_e     requires_weapon;
 
-  // we now track how much combo points we spent on an action
-  int              combo_points_spent;
-
   // Combo point gains
   gain_t* cp_gain;
-
-  // Sinister calling proc action
-  rogue_attack_t* sc_action;
 
   rogue_attack_t( const std::string& token, rogue_t* p,
                   const spell_data_t* s = spell_data_t::nil(),
                   const std::string& options = std::string() ) :
     melee_attack_t( token, p, s ),
     requires_stealth( false ), requires_position( POSITION_NONE ),
-    adds_combo_points( 0 ),
-    requires_weapon( WEAPON_NONE ),
-    combo_points_spent( 0 ),
-    sc_action( nullptr )
+    adds_combo_points( 0 ), requires_weapon( WEAPON_NONE )
   {
     parse_options( options );
 
@@ -615,6 +606,12 @@ struct rogue_attack_t : public melee_attack_t
         case E_ADD_COMBO_POINTS:
           adds_combo_points = effect.base_value();
           break;
+        case E_ENERGIZE:
+          if ( static_cast<power_e>( effect.misc_value1() ) != POWER_COMBO_POINT )
+          {
+            adds_combo_points = effect.resource( RESOURCE_COMBO_POINT );
+          }
+          break;
         default:
           break;
       }
@@ -631,7 +628,9 @@ struct rogue_attack_t : public melee_attack_t
     melee_attack_t::init();
 
     if ( adds_combo_points )
+    {
       cp_gain = player -> get_gain( name_str );
+    }
   }
 
   virtual void snapshot_state( action_state_t* state, dmg_e rt ) override
@@ -639,7 +638,9 @@ struct rogue_attack_t : public melee_attack_t
     melee_attack_t::snapshot_state( state, rt );
 
     if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 )
-      cast_state( state ) -> cp = static_cast<int>( player -> resources.current[RESOURCE_COMBO_POINT] );
+    {
+      cast_state( state ) -> cp = static_cast<int>( player -> resources.current[ RESOURCE_COMBO_POINT ] );
+    }
   }
 
   bool stealthed()
@@ -654,10 +655,6 @@ struct rogue_attack_t : public melee_attack_t
   virtual bool procs_main_gauche() const
   { return callbacks && ! proc && weapon != nullptr && weapon -> slot == SLOT_MAIN_HAND; }
 
-  // Adjust poison proc chance
-  virtual double composite_poison_flat_modifier( const action_state_t* ) const
-  { return 0.0; }
-
   action_state_t* new_state() override
   { return new rogue_attack_state_t( this, target ); }
 
@@ -666,11 +663,6 @@ struct rogue_attack_t : public melee_attack_t
 
   static rogue_attack_state_t* cast_state( action_state_t* st )
   { return debug_cast< rogue_attack_state_t* >( st ); }
-
-  rogue_t* cast()
-  { return p(); }
-  const rogue_t* cast() const
-  { return p(); }
 
   rogue_t* p()
   { return debug_cast< rogue_t* >( player ); }
@@ -800,15 +792,14 @@ struct rogue_poison_t : public rogue_attack_t
   timespan_t execute_time() const override
   { return timespan_t::zero(); }
 
-  virtual double proc_chance( const action_state_t* source_state )
+  virtual double proc_chance( const action_state_t* ) const
   {
     double chance = proc_chance_;
 
     if ( p() -> buffs.envenom -> up() )
+    {
       chance += p() -> buffs.envenom -> data().effectN( 2 ).percent();
-
-    const rogue_attack_t* attack = debug_cast< const rogue_attack_t* >( source_state -> action );
-    chance += attack -> composite_poison_flat_modifier( source_state );
+    }
 
     return chance;
   }
@@ -844,27 +835,6 @@ struct rogue_poison_t : public rogue_attack_t
 
     if ( p() -> mastery.potent_poisons -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
-
-    return m;
-  }
-};
-
-// Venomous Wound ===========================================================
-
-struct venomous_wound_t : public rogue_poison_t
-{
-  venomous_wound_t( rogue_t* p ) :
-    rogue_poison_t( "venomous_wound", p, p -> find_spell( 79136 ) )
-  {
-    background       = true;
-    proc             = true;
-  }
-
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double m = rogue_poison_t::composite_da_multiplier( state );
-
-    m *= 1.0 + p() -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
 
     return m;
   }
@@ -1079,7 +1049,6 @@ struct apply_poison_t : public action_t
     POISON_NONE = 0,
     DEADLY_POISON,
     WOUND_POISON,
-    INSTANT_POISON,
     CRIPPLING_POISON,
     LEECHING_POISON,
   };
@@ -1296,8 +1265,6 @@ void rogue_attack_t::execute()
 
 inline bool rogue_attack_t::ready()
 {
-  rogue_t* p = cast();
-
   if ( ! melee_attack_t::ready() )
     return false;
 
@@ -1307,18 +1274,18 @@ inline bool rogue_attack_t::ready()
 
   if ( requires_stealth )
   {
-    if ( ! p -> buffs.shadow_dance -> check() &&
-         ! p -> buffs.stealth -> check() &&
+    if ( ! p() -> buffs.shadow_dance -> check() &&
+         ! p() -> buffs.stealth -> check() &&
          ! player -> buffs.shadowmeld -> check() &&
-         ! p -> buffs.vanish -> check() &&
-         ! p -> buffs.subterfuge -> check() )
+         ! p() -> buffs.vanish -> check() &&
+         ! p() -> buffs.subterfuge -> check() )
     {
       return false;
     }
   }
 
   if ( requires_position != POSITION_NONE )
-    if ( p -> position() != requires_position )
+    if ( p() -> position() != requires_position )
       return false;
 
   if ( requires_weapon != WEAPON_NONE )
