@@ -646,7 +646,7 @@ struct rogue_attack_t : public melee_attack_t
     }
   }
 
-  virtual void snapshot_state( action_state_t* state, dmg_e rt ) override
+  void snapshot_state( action_state_t* state, dmg_e rt ) override
   {
     melee_attack_t::snapshot_state( state, rt );
 
@@ -789,6 +789,9 @@ struct rogue_attack_t : public melee_attack_t
 
     return m;
   }
+
+  virtual double composite_poison_flat_modifier( const action_state_t* ) const
+  { return 0.0; }
 };
 
 // ==========================================================================
@@ -892,7 +895,7 @@ struct rogue_poison_t : public rogue_attack_t
   timespan_t execute_time() const override
   { return timespan_t::zero(); }
 
-  virtual double proc_chance( const action_state_t* ) const
+  virtual double proc_chance( const action_state_t* source_state ) const
   {
     double chance = proc_chance_;
 
@@ -900,6 +903,9 @@ struct rogue_poison_t : public rogue_attack_t
     {
       chance += p() -> buffs.envenom -> data().effectN( 2 ).percent();
     }
+
+    const rogue_attack_t* attack = debug_cast<const rogue_attack_t*>( source_state -> action );
+    chance += attack -> composite_poison_flat_modifier( source_state );
 
     return chance;
   }
@@ -2804,6 +2810,23 @@ struct kidney_shot_t : public rogue_attack_t
 };
 
 // ==========================================================================
+// Poisoned Knife
+// ==========================================================================
+
+struct poisoned_knife_t : public rogue_attack_t
+{
+  poisoned_knife_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "poisoned_knife", p, p -> find_specialization_spell( "Poisoned Knife" ), options_str )
+  {
+    weapon = &( p -> main_hand_weapon );
+    weapon_multiplier = 0;
+  }
+
+  double composite_poison_flat_modifier( const action_state_t* ) const override
+  { return 1.0; }
+};
+
+// ==========================================================================
 // Experimental weapon swapping
 // ==========================================================================
 
@@ -4049,6 +4072,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "marked_for_death"    ) return new marked_for_death_t   ( this, options_str );
   if ( name == "mutilate"            ) return new mutilate_t           ( this, options_str );
   if ( name == "pistol shot"         ) return new pistol_shot_t        ( this, options_str );
+  if ( name == "poisoned_knife"      ) return new poisoned_knife_t     ( this, options_str );
   if ( name == "premeditation"       ) return new premeditation_t      ( this, options_str );
   if ( name == "rupture"             ) return new rupture_t            ( this, options_str );
   if ( name == "saber_slash"         ) return new saber_slash_t        ( this, options_str );
