@@ -634,14 +634,6 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
             default: break;
           }
           break;
-        case A_ADD_PCT_MODIFIER:
-          switch ( spelleffect_data.misc_value1() )
-          {
-            case P_RESOURCE_COST:
-              base_costs[ player -> primary_resource() ] *= 1 + 0.01 * spelleffect_data.base_value();
-              break;
-          }
-          break;
         default: break;
       }
       break;
