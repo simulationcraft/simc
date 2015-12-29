@@ -218,32 +218,25 @@ public:
 
   struct buffs_t
   {
-    buff_t* bladed_armor;
-    buff_t* channeling_soothing_mist;
-    buff_t* chi_orbit;
+    // General
     buff_t* chi_torpedo;
-    buff_t* combo_breaker_bok;
-    buff_t* cranes_zeal;
     buff_t* dampen_harm;
     buff_t* diffuse_magic;
-    buff_t* forceful_winds;
-    buff_t* fortifying_brew;
-    buff_t* keg_smash_talent;
-    buff_t* power_strikes;
     buff_t* rushing_jade_wind;
-    buff_t* serenity;
-    buff_t* storm_earth_and_fire;
-    buff_t* gift_of_the_ox;
-    buff_t* tigereye_brew;
-
-    buff_t* zen_meditation;
 
     // Brewmaster
+    buff_t* bladed_armor;
     buff_t* elusive_brawler;
     buff_t* elusive_dance;
+    buff_t* fortifying_brew;
+    buff_t* gift_of_the_ox;
     buff_t* ironskin_brew;
+    buff_t* keg_smash_talent;
+    buff_t* zen_meditation;
 
     // Mistweaver
+    absorb_buff_t* life_cocoon;
+    buff_t* channeling_soothing_mist;
     buff_t* chi_jis_guidance;
     buff_t* mana_tea;
     buff_t* mistweaving;
@@ -251,15 +244,20 @@ public:
     buff_t* teachings_of_the_monastery;
 
     // Windwalker
+    buff_t* chi_orbit;
+    buff_t* combo_breaker_bok;
+    buff_t* combo_strikes;
     buff_t* dizzying_kicks;
+    buff_t* eye_of_the_tiger;
+    buff_t* forceful_winds;
+    buff_t* hit_combo;
+    buff_t* power_strikes;
+    buff_t* storm_earth_and_fire;
+    buff_t* serenity;
     buff_t* swift_as_the_wind;
     buff_t* transfer_the_power;
+    buff_t* tigereye_brew;
     buff_t* vital_mists;
-
-    // Legion changes
-    buff_t* eye_of_the_tiger;
-    buff_t* combo_strikes;
-    buff_t* hit_combo;
   } buff;
 
 public:
@@ -4417,6 +4415,28 @@ struct monk_absorb_t: public monk_action_t < absorb_t >
   {
   }
 };
+
+// ==========================================================================
+// Life Cocoon
+// ==========================================================================
+
+struct life_cocoon_t: public monk_absorb_t
+{
+  life_cocoon_t( monk_t& p, const std::string& options_str ):
+    monk_absorb_t( "life_cocoon", p, p.spec.life_cocoon )
+  {
+    parse_options( options_str );
+    harmful = may_crit = false;
+    cooldown -> duration = data().charge_cooldown();
+    spell_power_mod.direct = 31.164; // Hard Code 2015-Dec-29
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    p() -> buff.life_cocoon -> trigger( 1, s -> result_amount );
+    stats -> add_result( 0.0, s -> result_amount, ABSORB, s -> result, s -> block_result, s -> target );
+  }
+};
 } // end namespace absorbs
 
 using namespace attacks;
@@ -4575,11 +4595,12 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "purifying_brew" ) return new            purifying_brew_t( *this, options_str );
   if ( name == "gift_of_the_ox" ) return new            gift_of_the_ox_t( *this, options_str );
   // Mistweaver
+  if ( name == "crackling_jade_lightning" ) return new  crackling_jade_lightning_t( *this, options_str );
+  if ( name == "effuse" ) return new                    effuse_t( *this, options_str );
   if ( name == "enveloping_mist" ) return new           enveloping_mist_t( *this, options_str );
+  if ( name == "life_cocoon" ) return new               life_cocoon_t( *this, options_str );
   if ( name == "mana_tea" ) return new                  mana_tea_t( *this, options_str );
   if ( name == "renewing_mist" ) return new             renewing_mist_t( *this, options_str );
-  if ( name == "effuse" ) return new                    effuse_t( *this, options_str );
-  if ( name == "crackling_jade_lightning" ) return new  crackling_jade_lightning_t( *this, options_str );
   // Talents
   if ( name == "chi_wave" ) return new                  chi_wave_t( this, options_str );
   if ( name == "chi_burst" ) return new                 chi_burst_t( this, options_str );
@@ -4989,8 +5010,9 @@ void monk_t::create_buffs()
   // Mistweaver
   buff.channeling_soothing_mist = buff_creator_t( this, "channeling_soothing_mist", passives.soothing_mist_heal );
 
-  buff.cranes_zeal = buff_creator_t( this, "cranes_zeal", find_spell( 127722 ) )
-    .add_invalidate( CACHE_CRIT );
+  buff.life_cocoon = absorb_buff_creator_t( this, "life_cocoon", spec.life_cocoon )
+    .source( get_stats( "life_cocoon" ) )
+    .cd( timespan_t::zero() );
 
   buff.mana_tea = buff_creator_t( this, "mana_tea", talent.mana_tea )
     .default_value( talent.mana_tea -> effectN( 1 ).percent() );
@@ -5189,9 +5211,6 @@ double monk_t::composite_melee_crit() const
   if ( buff.mistweaving -> check() )
     crit += buff.mistweaving -> stack_value();
 
-  if ( buff.cranes_zeal -> check() )
-    crit += buff.cranes_zeal -> data().effectN( 1 ).percent();
-
   return crit;
 }
 
@@ -5214,11 +5233,6 @@ double monk_t::composite_spell_crit() const
   double crit = player_t::composite_spell_crit();
 
   crit += spec.critical_strikes -> effectN( 1 ).percent();
-
-  if ( buff.cranes_zeal -> check() )
-  {
-    crit += buff.cranes_zeal -> data().effectN( 1 ).percent();
-  }
 
   return crit;
 }
