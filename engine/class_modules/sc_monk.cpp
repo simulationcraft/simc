@@ -244,10 +244,11 @@ public:
     buff_t* ironskin_brew;
 
     // Mistweaver
-    buff_t* teachings_of_the_monastery;
+    buff_t* chi_jis_guidance;
     buff_t* mana_tea;
     buff_t* mistweaving;
-    buff_t* chi_jis_guidance;
+    buff_t* the_mists_of_sheilun;
+    buff_t* teachings_of_the_monastery;
 
     // Windwalker
     buff_t* dizzying_kicks;
@@ -521,6 +522,7 @@ public:
     const spell_data_t* soothing_mist_heal;
     const spell_data_t* soothing_mist_statue;
     const spell_data_t* teachings_of_the_monastery_buff;
+    const spell_data_t* the_mists_of_sheilun_heal;
     const spell_data_t* tier17_2pc_heal;
     const spell_data_t* tier17_4pc_heal;
     const spell_data_t* tier18_4pc_heal;
@@ -577,6 +579,7 @@ public:
     eluding_movements( nullptr ),
     soothing_breeze( nullptr ),
     furious_sun( nullptr ),
+    sheilun_staff_of_the_mists( nullptr ),
     aburaq( nullptr )
   {
     // actives
@@ -685,6 +688,7 @@ public:
   const special_effect_t* furious_sun;
 
   // Legion Artifact effects
+  const special_effect_t* sheilun_staff_of_the_mists;
   const special_effect_t* aburaq;
 };
 
@@ -1854,6 +1858,33 @@ struct monk_heal_t: public monk_action_t < heal_t >
     double m = base_t::composite_target_multiplier( target );
 
     return m;
+  }
+
+  virtual double action_multiplier()
+  {
+    double am = base_t::action_multiplier();
+
+    if ( p() -> specialization() == MONK_MISTWEAVER )
+    {
+      player_t* t = ( execute_state ) ? execute_state -> target : target;
+
+      if ( td( t ) -> dots.enveloping_mist -> is_ticking() )
+        am *= 1.0 + p() -> spec.enveloping_mist -> effectN( 2 ).percent();
+    }
+
+    return am;
+  }
+
+  virtual double action_ta_multiplier()
+  {
+    double atm = base_t::action_ta_multiplier();
+
+    if ( p() -> specialization() == MONK_MISTWEAVER )
+    {
+      if ( p() -> buff.the_mists_of_sheilun -> up() )
+        atm *= 1.0 + p() -> buff.the_mists_of_sheilun -> value();
+    }
+    return atm;
   }
 };
 
@@ -4028,123 +4059,26 @@ struct diffuse_magic_t: public monk_spell_t
 
 namespace heals {
 // ==========================================================================
-// Enveloping Mist
-// ==========================================================================
-/*
-TODO: Verify healing values.
-*/
-
-struct enveloping_mist_t: public monk_heal_t
-{
-  enveloping_mist_t( monk_t& p, const std::string& options_str ):
-    monk_heal_t( "enveloping_mist", p, p.spec.enveloping_mist )
-  {
-    parse_options( options_str );
-
-    may_miss = false;
-  }
-};
-
-// ==========================================================================
-// Renewing Mist
-// ==========================================================================
-/*
-TODO: Verify healing values.
-Add bouncing.
-*/
-
-struct renewing_mist_t: public monk_heal_t
-{
-  renewing_mist_t( monk_t& p, const std::string& options_str ):
-    monk_heal_t( "renewing_mist", p, p.spec.renewing_mist )
-  {
-    parse_options( options_str );
-    may_crit = may_miss = false;
-    dot_duration = p.passives.renewing_mist_heal -> duration();
-  }
-
-  virtual double cost() const override
-  {
-    double c = monk_heal_t::cost();
-
-    if ( p() -> buff.chi_jis_guidance -> up() )
-      c *= 1 + p() -> buff.chi_jis_guidance -> value(); // Saved as -50%
-    return c;
-  }
-
-
-  virtual void execute() override
-  {
-    monk_heal_t::execute();
-  }
-};
-
-// ==========================================================================
 // Soothing Mist
 // ==========================================================================
-/*
-DESC: Surging Mist and Enveloping Mist need to be able to be cast while
-we're channeling Soothing Mist WITHOUT interrupting the channel. to
-achieve this, soothing_mist applies a HoT to the target that is
-removed whenever the monk executes an action that is not one of these
-whitelised spells. Auto attack is also halted while the HoT is
-active. The HoT is also removed any time the user moves, is stunned,
-interrupted, etc.
-
-TODO: Verify healing values.
-Change cost from per tick to on use + per second.
-Confirm the mana consumption is affected by lucidity.
-*/
 
 struct soothing_mist_t: public monk_heal_t
 {
-  int consecutive_failed_chi_procs;
 
-  soothing_mist_t( monk_t& p, const std::string& options_str ):
-    monk_heal_t( "soothing_mist", p, p.spec.soothing_mist )
+  soothing_mist_t( monk_t& p ):
+    monk_heal_t( "soothing_mist", p, p.passives.soothing_mist_heal )
   {
-    parse_options( options_str );
+    background = true;
 
     tick_zero = true;
-    consecutive_failed_chi_procs = 0;
-
-    // Cost is handled in action_t::tick()
-    base_costs[RESOURCE_MANA] = 0.0;
-    base_costs_per_tick[RESOURCE_MANA] = 0.0;
-  }
-
-  virtual double action_ta_multiplier() const override
-  {
-    double tm = monk_heal_t::action_ta_multiplier();
-
-    player_t* t = ( execute_state ) ? execute_state -> target : target;
-
-    if ( td( t ) -> dots.enveloping_mist -> is_ticking() )
-      tm *= 1.0 + p() -> spec.enveloping_mist -> effectN( 2 ).percent();
-
-    return tm;
   }
 
   virtual void tick( dot_t* d ) override
   {
-    // Deduct mana / fizzle if the caster does not have enough mana
-    double tick_cost = data().cost( POWER_MANA ) * p() -> resources.base[RESOURCE_MANA] * p() -> composite_spell_haste();
-    if ( p() -> resources.current[RESOURCE_MANA] >= tick_cost )
-      p() -> resource_loss( RESOURCE_MANA, tick_cost, p() -> gain.soothing_mist, this );
-    else
-    {
-      player_t* t = ( execute_state ) ? execute_state -> target : target;
-
-      td( t ) -> dots.enveloping_mist -> cancel();
-      p() -> buff.channeling_soothing_mist -> expire();
-      return;
-    }
-
     monk_heal_t::tick( d );
 
     if ( p() -> sets.has_set_bonus ( MONK_MISTWEAVER, T17, B2 ) )
       p() -> buff.mistweaving -> trigger();
-
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4167,12 +4101,42 @@ struct soothing_mist_t: public monk_heal_t
     if ( p() -> buff.channeling_soothing_mist -> check() )
       return false;
 
-    // Mana cost check
-    double tick_cost = data().cost( POWER_MANA ) * p() -> resources.base[RESOURCE_MANA];
-    if ( p() -> resources.current[RESOURCE_MANA] < tick_cost )
-      return false;
-
     return monk_heal_t::ready();
+  }
+};
+
+// ==========================================================================
+// The Mists of Sheilun
+// ==========================================================================
+
+struct the_mists_of_sheilun_heal_t: public monk_heal_t
+{
+  the_mists_of_sheilun_heal_t( monk_t& p ):
+    monk_heal_t( "the_mists_of_sheilun", p, p.passives.the_mists_of_sheilun_heal )
+  {
+    background = true;
+    aoe = -1;
+  }
+};
+
+// The Mists of Sheilun Buff ==========================================================
+struct the_mists_of_sheilun_buff_t : public buff_t
+{
+  the_mists_of_sheilun_heal_t* heal;
+
+  the_mists_of_sheilun_buff_t( monk_t* p ) :
+    buff_t( buff_creator_t( p, "the_mists_of_sheilun", p -> sheilun_staff_of_the_mists -> driver() -> effectN( 1 ).trigger() )
+      .chance( p -> sheilun_staff_of_the_mists -> driver() -> effectN( 1 ).percent() )
+      .default_value( p -> sheilun_staff_of_the_mists -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ).percent() ) )
+  { 
+    heal = new the_mists_of_sheilun_heal_t( *p );
+  }
+
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    heal -> execute();
   }
 };
 
@@ -4182,37 +4146,83 @@ struct soothing_mist_t: public monk_heal_t
 
 struct effuse_t: public monk_heal_t
 {
+  the_mists_of_sheilun_buff_t* artifact;
+
   effuse_t( monk_t& p, const std::string& options_str ):
     monk_heal_t( "effuse", p, p.spec.effuse )
   {
     parse_options( options_str );
 
-    hasted_gcd = true;
-
-    if ( p.specialization() == MONK_MISTWEAVER )
-    {
-      resource_current = RESOURCE_MANA;
-      base_costs[RESOURCE_MANA] = p.spec.effuse-> cost( POWER_MANA ) * p.resources.base[RESOURCE_MANA];
-    }
-    else
-    {
-      resource_current = RESOURCE_ENERGY;
-      base_costs[RESOURCE_ENERGY] = p.spec.effuse-> cost( POWER_ENERGY );
-    }
+    if ( p.sheilun_staff_of_the_mists )
+      artifact = new the_mists_of_sheilun_buff_t( &p );
 
     may_miss = false;
   }
 
-  virtual timespan_t execute_time() const override
+  virtual void impact( action_state_t* s ) override
   {
-    timespan_t et = monk_heal_t::execute_time();
+    if ( p() -> sets.has_set_bonus( MONK_MISTWEAVER, T17, B4 ) && s -> result == RESULT_CRIT )
+      p() -> buff.chi_jis_guidance -> trigger();
 
-    return et;
+    if ( p() -> sheilun_staff_of_the_mists )
+      artifact -> trigger();
+  }
+};
+
+// ==========================================================================
+// Enveloping Mist
+// ==========================================================================
+
+struct enveloping_mist_t: public monk_heal_t
+{
+  the_mists_of_sheilun_buff_t* artifact;
+
+  enveloping_mist_t( monk_t& p, const std::string& options_str ):
+    monk_heal_t( "enveloping_mist", p, p.spec.enveloping_mist )
+  {
+    parse_options( options_str );
+
+    may_miss = false;
+
+    if ( p.sheilun_staff_of_the_mists )
+      artifact = new the_mists_of_sheilun_buff_t( &p );
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    if ( p() -> sheilun_staff_of_the_mists )
+      artifact -> trigger();
+  }
+};
+
+// ==========================================================================
+// Renewing Mist
+// ==========================================================================
+/*
+Bouncing only happens when overhealing, so not going to bother with bouncing
+*/
+
+struct renewing_mist_t: public monk_heal_t
+{
+  the_mists_of_sheilun_buff_t* artifact;
+
+  renewing_mist_t( monk_t& p, const std::string& options_str ):
+    monk_heal_t( "renewing_mist", p, p.spec.renewing_mist )
+  {
+    parse_options( options_str );
+    may_crit = may_miss = false;
+    dot_duration = p.passives.renewing_mist_heal -> duration();
+
+    if ( p.sheilun_staff_of_the_mists )
+      artifact = new the_mists_of_sheilun_buff_t( &p );
   }
 
   virtual double cost() const override
   {
     double c = monk_heal_t::cost();
+
+    if ( p() -> buff.chi_jis_guidance -> up() )
+      c *= 1 + p() -> buff.chi_jis_guidance -> value(); // Saved as -50%
 
     return c;
   }
@@ -4224,10 +4234,52 @@ struct effuse_t: public monk_heal_t
 
   virtual void impact( action_state_t* s ) override
   {
-    if ( p() -> sets.has_set_bonus( MONK_MISTWEAVER, T17, B4 ) && s -> result == RESULT_CRIT )
-      p() -> buff.chi_jis_guidance -> trigger();
+    if ( p() -> sheilun_staff_of_the_mists )
+      artifact -> trigger();
   }
 };
+
+// ==========================================================================
+// Vivify
+// ==========================================================================
+
+struct vivify_t: public monk_heal_t
+{
+  the_mists_of_sheilun_buff_t* artifact;
+
+  vivify_t( monk_t& p, const std::string& options_str ):
+    monk_heal_t( "vivify", p, p.spec.vivify )
+  {
+    parse_options( options_str );
+
+    // 1 for the primary target, plus the value of the effect
+    aoe = 1 + data().effectN( 1 ).base_value();
+    spell_power_mod.direct = data().effectN( 2 ).sp_coeff();
+
+    if ( p.specialization() == MONK_MISTWEAVER )
+    {
+      resource_current = RESOURCE_MANA;
+      base_costs[RESOURCE_MANA] = p.spec.effuse-> cost( POWER_MANA ) * p.resources.base[RESOURCE_MANA];
+
+      if ( p.sheilun_staff_of_the_mists )
+        artifact = new the_mists_of_sheilun_buff_t( &p );
+    }
+    else
+    {
+      resource_current = RESOURCE_ENERGY;
+      base_costs[RESOURCE_ENERGY] = p.spec.effuse -> cost( POWER_ENERGY );
+    }
+
+    may_miss = false;
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    if ( p() -> sheilun_staff_of_the_mists )
+      artifact -> trigger();
+  }
+};
+
 
 // ==========================================================================
 // Zen Sphere (Heal)
@@ -4440,9 +4492,10 @@ namespace buffs
     }
 
     protected:
-    monk_t& monk;
+    monk_t& monk;    
   };
 
+// Fortifying Brew Buff ==========================================================
   struct fortifying_brew_t: public monk_buff_t < buff_t >
 {
   int health_gain;
@@ -4512,6 +4565,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "provoke" ) return new                   provoke_t( this, options_str );
   if ( name == "touch_of_death" ) return new            touch_of_death_t( this, options_str );
   if ( name == "storm_earth_and_fire" ) return new      storm_earth_and_fire_t( this, options_str );
+  if ( name == "vivify" ) return new                    vivify_t( *this, options_str );
   // Brewmaster
   if ( name == "blackout_strike" ) return new           blackout_strike_t( this, options_str );
   if ( name == "breath_of_fire" ) return new            breath_of_fire_t( *this, options_str );
@@ -4524,7 +4578,6 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "enveloping_mist" ) return new           enveloping_mist_t( *this, options_str );
   if ( name == "mana_tea" ) return new                  mana_tea_t( *this, options_str );
   if ( name == "renewing_mist" ) return new             renewing_mist_t( *this, options_str );
-  if ( name == "soothing_mist" ) return new             soothing_mist_t( *this, options_str );
   if ( name == "effuse" ) return new                    effuse_t( *this, options_str );
   if ( name == "crackling_jade_lightning" ) return new  crackling_jade_lightning_t( *this, options_str );
   // Talents
@@ -4778,6 +4831,7 @@ void monk_t::init_spells()
   passives.soothing_mist_heal               = find_spell( 115175 );
   passives.soothing_mist_statue             = find_spell( 198533 );
   passives.teachings_of_the_monastery_buff  = find_spell( 202090 );
+  passives.the_mists_of_sheilun_heal        = find_spell( 199894 );
   passives.tier17_2pc_heal                  = find_spell( 167732 );
   passives.tier17_4pc_heal                  = find_spell( 167717 );
   passives.tier18_4pc_heal                  = find_spell( 185158 ); // Extend Life
@@ -4933,7 +4987,7 @@ void monk_t::create_buffs()
     .max_stack( 99 );
 
   // Mistweaver
-  buff.channeling_soothing_mist = buff_creator_t( this, "channeling_soothing_mist", spell_data_t::nil() );
+  buff.channeling_soothing_mist = buff_creator_t( this, "channeling_soothing_mist", passives.soothing_mist_heal );
 
   buff.cranes_zeal = buff_creator_t( this, "cranes_zeal", find_spell( 127722 ) )
     .add_invalidate( CACHE_CRIT );
@@ -6380,6 +6434,14 @@ static void furious_sun( special_effect_t& effect )
   do_trinket_init( monk, MONK_WINDWALKER, monk -> furious_sun, effect );
 }
 
+// Mistweaver Legion Artifact
+static void sheilun_staff_of_the_mists( special_effect_t& effect )
+{
+  monk_t* monk = debug_cast<monk_t*> ( effect.player );
+  do_trinket_init( monk, MONK_MISTWEAVER, monk -> sheilun_staff_of_the_mists, effect );
+}
+
+// Windwalker Legion Artifact
 static void aburaq( special_effect_t& effect )
 {
   monk_t* monk = debug_cast<monk_t*> ( effect.player );
@@ -6407,6 +6469,7 @@ struct monk_module_t: public module_t
 
     // Legion Artifacts
     unique_gear::register_special_effect( 195599, aburaq );
+    unique_gear::register_special_effect( 199887, sheilun_staff_of_the_mists );
 
     // TODO: Add the Legion Legendary effects
   }
