@@ -4066,7 +4066,7 @@ struct soothing_mist_t: public monk_heal_t
   soothing_mist_t( monk_t& p ):
     monk_heal_t( "soothing_mist", p, p.passives.soothing_mist_heal )
   {
-    background = true;
+    background = dual = true;
 
     tick_zero = true;
   }
@@ -4112,7 +4112,7 @@ struct the_mists_of_sheilun_heal_t: public monk_heal_t
   the_mists_of_sheilun_heal_t( monk_t& p ):
     monk_heal_t( "the_mists_of_sheilun", p, p.passives.the_mists_of_sheilun_heal )
   {
-    background = true;
+    background = dual = true;
     aoe = -1;
   }
 };
@@ -4273,6 +4273,61 @@ struct vivify_t: public monk_heal_t
 
   virtual void impact( action_state_t* s ) override
   {
+    if ( p() -> sheilun_staff_of_the_mists )
+      artifact -> trigger();
+  }
+};
+
+// ==========================================================================
+// Essence Font
+// ==========================================================================
+// Rough draft on implementation
+// It's supposed to work that each tick sends a heal every 167 milliseconds
+// but only 3 heals per person over the course of the channel
+// 0 - player 1, 167 - player 2, 334 - player 3, 501 - player 4, 668 - player 5, 835 - player 6
+// 1002 - player 1, 1169 - player 2, 1336 - player 3, etc
+//
+// TODO: Find out what happens with less than 6 people.
+
+struct essence_font_t: public monk_spell_t
+{
+  struct essence_font_heal_t : public monk_heal_t
+  {
+    essence_font_heal_t( monk_t& p ) :
+      monk_heal_t( "essence_font_heal", p, p.spec.essence_font -> effectN( 1 ).trigger() )
+    {
+      background = dual = true;
+    }
+  };
+
+  essence_font_heal_t* heal;
+  the_mists_of_sheilun_buff_t* artifact;
+
+  essence_font_t( monk_t* p, const std::string& options_str ) :
+    monk_spell_t( "essence_font", p, p -> spec.essence_font ),
+    heal( new essence_font_heal_t( *p ) )
+  {
+    parse_options( options_str );
+
+    may_miss = hasted_ticks = false;
+    tick_zero = true;
+
+    add_child( heal );
+
+    if ( p -> sheilun_staff_of_the_mists )
+      artifact = new the_mists_of_sheilun_buff_t( p );
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    timespan_t tt = tick_time( s -> haste );
+    return tt * p() -> spec.essence_font -> effectN( 1 ).base_value() * 3;
+  }
+
+  virtual void execute() override
+  {
+    monk_spell_t::execute();
+
     if ( p() -> sheilun_staff_of_the_mists )
       artifact -> trigger();
   }
