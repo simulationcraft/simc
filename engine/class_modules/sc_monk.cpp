@@ -84,6 +84,7 @@ enum sef_ability_e {
   SEF_BLACKOUT_KICK,
   SEF_RISING_SUN_KICK,
   SEF_RISING_SUN_KICK_TRINKET,
+  SEF_RISING_SUN_KICK_TORNADO_KICK,
   SEF_FISTS_OF_FURY,
   SEF_SPINNING_CRANE_KICK,
   SEF_RUSHING_JADE_WIND,
@@ -1153,6 +1154,16 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
   };
 
+  struct sef_rising_sun_kick_tornado_kick_t : public sef_melee_attack_t
+  {
+
+    sef_rising_sun_kick_tornado_kick_t( storm_earth_and_fire_pet_t* player ) :
+      sef_melee_attack_t( "rising_sun_kick_tornado_kick", player, player -> o() -> passives.rising_sun_kick_trinket )
+    {
+      player -> find_action( "rising_sun_kick" ) -> add_child( this );
+    }
+  };
+
   struct sef_tick_action_t : public sef_melee_attack_t
   {
     sef_tick_action_t( const std::string& name, storm_earth_and_fire_pet_t* p, const spell_data_t* data ) :
@@ -1363,14 +1374,15 @@ public:
   {
     pet_t::init_spells();
 
-    attacks[ SEF_TIGER_PALM              ] = new sef_tiger_palm_t( this );
-    attacks[ SEF_BLACKOUT_KICK           ] = new sef_blackout_kick_t( this );
-    attacks[ SEF_RISING_SUN_KICK         ] = new sef_rising_sun_kick_t( this );
-    attacks[ SEF_RISING_SUN_KICK_TRINKET ] = new sef_rising_sun_kick_trinket_t( this );
-    attacks[ SEF_FISTS_OF_FURY           ] = new sef_fists_of_fury_t( this );
-    attacks[ SEF_SPINNING_CRANE_KICK     ] = new sef_spinning_crane_kick_t( this );
-    attacks[ SEF_RUSHING_JADE_WIND       ] = new sef_rushing_jade_wind_t( this );
-    attacks[ SEF_SPINNING_DRAGON_STRIKE  ] = new sef_spinning_dragon_strike_t( this );
+    attacks[ SEF_TIGER_PALM                   ] = new sef_tiger_palm_t( this );
+    attacks[ SEF_BLACKOUT_KICK                ] = new sef_blackout_kick_t( this );
+    attacks[ SEF_RISING_SUN_KICK              ] = new sef_rising_sun_kick_t( this );
+    attacks[ SEF_RISING_SUN_KICK_TRINKET      ] = new sef_rising_sun_kick_trinket_t( this );
+    attacks[ SEF_RISING_SUN_KICK_TORNADO_KICK ] = new sef_rising_sun_kick_tornado_kick_t( this );
+    attacks[ SEF_FISTS_OF_FURY                ] = new sef_fists_of_fury_t( this );
+    attacks[ SEF_SPINNING_CRANE_KICK          ] = new sef_spinning_crane_kick_t( this );
+    attacks[ SEF_RUSHING_JADE_WIND            ] = new sef_rushing_jade_wind_t( this );
+    attacks[ SEF_SPINNING_DRAGON_STRIKE       ] = new sef_spinning_dragon_strike_t( this );
 
     spells[ sef_spell_idx( SEF_CHI_BURST )                ] = new sef_chi_burst_t( this );
     spells[ sef_spell_idx( SEF_CHI_WAVE )                 ] = new sef_chi_wave_t( this );
@@ -2104,6 +2116,7 @@ struct tiger_palm_t: public monk_melee_attack_t
 // Rising Sun Kick
 // ==========================================================================
 
+// Rising Sun Kick T18 Windwalker Trinket Proc ==============================
 struct rising_sun_kick_proc_t : public monk_melee_attack_t
 {
   rising_sun_kick_proc_t( monk_t* p, const spell_data_t* s ) :
@@ -2116,7 +2129,6 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     trigger_gcd = timespan_t::zero();
-
   }
 
   bool init_finished()
@@ -2140,12 +2152,26 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
     return timespan_t::from_millis( 250 );
   }
 
+  virtual double action_multiplier() const
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    if ( p() -> artifact.rising_winds.rank() )
+      am *= 1 + p() -> artifact.rising_winds.percent();
+
+    return am;
+  }
+
   virtual void execute() override
   {
     monk_melee_attack_t::execute();
 
     if ( result_is_miss( execute_state -> result ) )
       return;
+
+    // Activate A'Buraq's Trait
+    if ( p() -> artifact.transfer_the_power.rank() )
+      p() -> buff.transfer_the_power -> trigger();
 
     // Apply Mortal Wonds
     if ( p() -> specialization() == MONK_WINDWALKER )
@@ -2166,9 +2192,106 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
   }
 };
 
+// Rising Sun Kick Tornado Kick Windwalker Artifact Trait ==================
+struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
+{
+  rising_sun_kick_proc_t* rsk_proc;
+
+  rising_sun_kick_tornado_kick_t( monk_t* p, const spell_data_t* s ) :
+    monk_melee_attack_t( "rising_sun_kick_torndo_kick", p, s )
+  {
+    sef_ability = SEF_RISING_SUN_KICK_TORNADO_KICK;
+
+    cooldown -> duration = timespan_t::from_millis( 250 );
+    background = true;
+    mh = &( player -> main_hand_weapon );
+    oh = &( player -> off_hand_weapon );
+    trigger_gcd = timespan_t::zero();
+
+    if ( p -> furious_sun )
+      rsk_proc = new rising_sun_kick_proc_t( p, p -> passives.rising_sun_kick_trinket );
+  }
+
+  bool init_finished()
+  {
+    bool ret = monk_melee_attack_t::init_finished();
+    action_t* rsk = player -> find_action( "rising_sun_kick" );
+    if ( rsk )
+    {
+      base_multiplier = rsk -> base_multiplier;
+      spell_power_mod.direct = rsk -> spell_power_mod.direct;
+
+      rsk -> add_child( this );
+    }
+
+    return ret;
+  }
+
+  // Force 250 milliseconds for the animation, but not delay the overall GCD
+  timespan_t execute_time() const override
+  {
+    return timespan_t::from_millis( 250 );
+  }
+
+  virtual double action_multiplier() const
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+    
+    if ( p() -> artifact.tornado_kicks.rank())
+      am *= p() -> artifact.rising_winds.data().effectN( 1 ).percent(); // saved as 100
+
+    if ( p() -> artifact.rising_winds.rank() )
+      am *= 1 + p() -> artifact.rising_winds.percent();
+
+    return am;
+  }
+
+  virtual void execute() override
+  {
+    monk_melee_attack_t::execute();
+
+    if ( result_is_miss( execute_state -> result ) )
+      return;
+
+    // Apply Mortal Wonds
+    if ( p() -> specialization() == MONK_WINDWALKER )
+      p() -> debuffs.mortal_wounds -> trigger();
+
+    // Activate A'Buraq's Trait
+    if ( p() -> artifact.transfer_the_power.rank() )
+      p() -> buff.transfer_the_power -> trigger();
+
+    // Combo Breaker if T18 2-piece (Your Rising Sun Kick has a 30% chance to generate Combo Breaker.)
+    double cb_chance = combo_breaker_chance( CS_RISING_SUN_KICK );
+    if ( cb_chance > 0 )
+    {
+      if ( p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
+          p() -> proc.combo_breaker_bok -> occur();
+    }
+
+    // TODO: Check if the Tornado Kick can proc the T18 trinket
+    // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
+    // of the special effect.
+    if ( p() -> furious_sun )
+    {
+      double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item) / 100.0;
+
+      if ( rng().roll( proc_chance ) )
+        rsk_proc -> execute();
+    }
+  }
+
+  virtual double cost() const override
+  {
+    return 0;
+  }
+};
+
+// Risign Sun Kick Baseline ability =======================================
 struct rising_sun_kick_t: public monk_melee_attack_t
 {
   rising_sun_kick_proc_t* rsk_proc;
+  rising_sun_kick_tornado_kick_t* rsk_tornado_kick;
 
   rising_sun_kick_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( "rising_sun_kick", p, p -> spec.rising_sun_kick )
@@ -2179,15 +2302,15 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     if ( p -> specialization() == MONK_MISTWEAVER )
       cooldown -> duration += p -> passives.aura_mistweaver_monk -> effectN( 8 ).time_value();
 
-//    if( p -> talent.pool_of_mists -> ok() )
-//      cooldown -> charges += p -> talent.pool_of_mists -> effectN( 2 ).base_value();
-
     sef_ability = SEF_RISING_SUN_KICK;
 
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     attack_power_mod.direct = p -> passives.rising_sun_kick_trinket -> effectN( 1 ).ap_coeff();
     spell_power_mod.direct = 0.0;
+
+    if (p -> artifact.tornado_kicks.rank() )
+      rsk_tornado_kick = new rising_sun_kick_tornado_kick_t( p, p -> passives.rising_sun_kick_trinket );
 
     if ( p -> furious_sun )
       rsk_proc = new rising_sun_kick_proc_t( p, p -> passives.rising_sun_kick_trinket );
@@ -2207,9 +2330,6 @@ struct rising_sun_kick_t: public monk_melee_attack_t
   virtual double action_multiplier() const
   {
     double am = monk_melee_attack_t::action_multiplier();
-
-//    if ( p() -> talent.pool_of_mists -> ok() )
-//      am *= 1.0 + p() -> talent.pool_of_mists -> effectN( 4 ).percent();
 
     if ( p() -> artifact.rising_winds.rank() )
       am *= 1 + p() -> artifact.rising_winds.percent();
@@ -2257,6 +2377,9 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 
     if ( p() -> buff.serenity -> up() )
       p() -> gain.serenity -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] - cost() );
+
+    if ( p() -> artifact.tornado_kicks.rank() )
+      rsk_tornado_kick -> execute();
 
     // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
     // of the special effect.
