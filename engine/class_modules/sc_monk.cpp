@@ -4431,10 +4431,43 @@ struct enveloping_mist_t: public monk_heal_t
 Bouncing only happens when overhealing, so not going to bother with bouncing
 */
 
+// Renewing Mist Dancing Mist Mistweaver Artifact Traits ====================
+struct renewing_mist_dancing_mist_t: public monk_heal_t
+{
+  gust_of_mists_t* mastery;
+
+  renewing_mist_dancing_mist_t( monk_t& p ):
+    monk_heal_t( "renewing_mist_dancing_mist", p, p.spec.renewing_mist )
+  {
+    background = dual = true;
+    may_crit = may_miss = false;
+    dot_duration = p.passives.renewing_mist_heal -> duration();
+
+    if ( p.artifact.extended_healing.rank() )
+      dot_duration += p.artifact.extended_healing.time_value();
+
+    mastery = new gust_of_mists_t( p );
+  }
+
+  virtual double cost() const override
+  {
+    return 0;
+  }
+
+  virtual void execute() override
+  {
+    monk_heal_t::execute();
+
+    mastery -> execute();
+  }
+};
+
+// Base Renewing Mist Heal ================================================
 struct renewing_mist_t: public monk_heal_t
 {
   the_mists_of_sheilun_buff_t* artifact;
   gust_of_mists_t* mastery;
+  renewing_mist_dancing_mist_t* rem;
 
   renewing_mist_t( monk_t& p, const std::string& options_str ):
     monk_heal_t( "renewing_mist", p, p.spec.renewing_mist )
@@ -4443,11 +4476,14 @@ struct renewing_mist_t: public monk_heal_t
     may_crit = may_miss = false;
     dot_duration = p.passives.renewing_mist_heal -> duration();
 
+    if ( p.sheilun_staff_of_the_mists )
+      artifact = new the_mists_of_sheilun_buff_t( &p );
+
     if ( p.artifact.extended_healing.rank() )
       dot_duration += p.artifact.extended_healing.time_value();
 
-    if ( p.sheilun_staff_of_the_mists )
-      artifact = new the_mists_of_sheilun_buff_t( &p );
+    if ( p.artifact.dancing_mists.rank() )
+      rem = new renewing_mist_dancing_mist_t( p );
 
     mastery = new gust_of_mists_t( p );
   }
@@ -4476,13 +4512,19 @@ struct renewing_mist_t: public monk_heal_t
   {
     monk_heal_t::execute();
 
+    mastery -> execute();
+
     if ( p() -> buff.thunder_focus_tea -> up() )
       p() -> buff.thunder_focus_tea -> decrement();
 
     if ( p() -> sheilun_staff_of_the_mists )
       artifact -> trigger();
 
-    mastery -> execute();
+    if ( p() -> artifact.dancing_mists.rank() )
+    {
+      if ( rng().roll( p() -> artifact.dancing_mists.percent() ) )
+          rem -> execute();
+    }
   }
 };
 
@@ -4565,7 +4607,7 @@ struct vivify_t: public monk_heal_t
 
       if ( p() -> sheilun_staff_of_the_mists )
         artifact -> trigger();
-
+      
       mastery -> execute();
     }
   }
@@ -4952,11 +4994,63 @@ struct monk_absorb_t: public monk_action_t < absorb_t >
 // ==========================================================================
 // Life Cocoon
 // ==========================================================================
+// TODO: Double check if the Enveloping Mists and Renewing Mists from Mists
+// of life proc the mastery or not.
+
+// Enveloping Mist Mists of Life Mistweaver Artifact Trait =======================
+struct enveloping_mist_mists_of_life_t: public monk_heal_t
+{
+  enveloping_mist_mists_of_life_t( monk_t& p ):
+    monk_heal_t( "enveloping_mist_mists_of_life", p, p.spec.enveloping_mist )
+  {
+    background = dual = true;
+    may_miss = false;
+
+    dot_duration = p.spec.enveloping_mist -> duration();
+    if ( p.talent.mist_wrap )
+      dot_duration += timespan_t::from_seconds( p.talent.mist_wrap -> effectN( 1 ).base_value() );
+  }
+
+  virtual double action_multiplier()
+  {
+    double am = monk_heal_t::action_multiplier();
+
+    if ( p() -> artifact.way_of_the_mistweaver.rank() )
+      am *= 1 + p() -> artifact.way_of_the_mistweaver.percent();
+
+    return am;
+  }
+
+  virtual double cost() const override
+  {
+    return 0;
+  }
+};
+
+// Renewing Mist Mists of Life Mistweaver Artifact Traits ===================
+struct renewing_mist_mists_of_life_t: public monk_heal_t
+{
+  renewing_mist_mists_of_life_t( monk_t& p ):
+    monk_heal_t( "renewing_mist_dancing_mist", p, p.spec.renewing_mist )
+  {
+    background = dual = true;
+    may_crit = may_miss = false;
+    dot_duration = p.passives.renewing_mist_heal -> duration();
+
+    if ( p.artifact.extended_healing.rank() )
+      dot_duration += p.artifact.extended_healing.time_value();
+  }
+
+  virtual double cost() const override
+  {
+    return 0;
+  }
+};
 
 struct life_cocoon_t: public monk_absorb_t
 {
-//  renewing_mist_t rem;
-//  enveloping_mist_t em;
+  renewing_mist_mists_of_life_t* rem;
+  enveloping_mist_mists_of_life_t* em;
 
   life_cocoon_t( monk_t& p, const std::string& options_str ):
     monk_absorb_t( "life_cocoon", p, p.spec.life_cocoon )
@@ -4966,12 +5060,11 @@ struct life_cocoon_t: public monk_absorb_t
     cooldown -> duration = data().charge_cooldown();
     spell_power_mod.direct = 31.164; // Hard Code 2015-Dec-29
 
-/*    if ( p.artifact.mists_of_life.rank() )
+    if ( p.artifact.mists_of_life.rank() )
     {
-      rem = new renewing_mist_t( p, options_str );
-      em = new enveloping_mist_t( p, options_str );
+      rem = new renewing_mist_mists_of_life_t( p );
+      em = new enveloping_mist_mists_of_life_t( p );
     }
-*/
   }
 
   virtual double action_multiplier()
@@ -4989,12 +5082,11 @@ struct life_cocoon_t: public monk_absorb_t
     p() -> buff.life_cocoon -> trigger( 1, s -> result_amount );
     stats -> add_result( 0.0, s -> result_amount, ABSORB, s -> result, s -> block_result, s -> target );
 
-/*    if ( p() -> artifact.mists_of_life.rank() )
+    if ( p() -> artifact.mists_of_life.rank() )
     {
       rem -> execute();
       em -> execute();
     }
-*/
   }
 };
 } // end namespace absorbs
