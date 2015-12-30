@@ -521,6 +521,7 @@ public:
     const spell_data_t* tier17_2pc_tank;
     // Mistweaver
     const spell_data_t* aura_mistweaver_monk;
+    const spell_data_t* blessings_of_yulon;
     const spell_data_t* lifecycles_enveloping_mist;
     const spell_data_t* lifecycles_vivify;
     const spell_data_t* renewing_mist_heal;
@@ -4680,9 +4681,21 @@ struct essence_font_t: public monk_spell_t
 // Revival
 // ==========================================================================
 
+struct blessings_of_yulon_t: public monk_heal_t
+{
+  blessings_of_yulon_t( monk_t& p ):
+    monk_heal_t( "blessings_of_yulon", p, p.passives.blessings_of_yulon )
+  {
+    background = dual = false;
+    may_miss = may_crit = false;
+  }
+};
+
+
 struct revival_t: public monk_heal_t
 {
   the_mists_of_sheilun_buff_t* artifact;
+  blessings_of_yulon_t* yulon;
 
   revival_t( monk_t& p, const std::string& options_str ):
     monk_heal_t( "revival", p, p.spec.revival )
@@ -4694,6 +4707,9 @@ struct revival_t: public monk_heal_t
 
     if ( p.sheilun_staff_of_the_mists )
       artifact = new the_mists_of_sheilun_buff_t( &p );
+
+    if ( p.artifact.blessings_of_yulon.rank() )
+      yulon = new blessings_of_yulon_t( p );
   }
 
   virtual void execute() override
@@ -4702,6 +4718,45 @@ struct revival_t: public monk_heal_t
 
     if ( p() -> sheilun_staff_of_the_mists )
       artifact -> trigger();
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    monk_heal_t::impact( s );
+
+    if ( p() -> artifact.blessings_of_yulon.rank() )
+    {
+      double percent = p() -> artifact.blessings_of_yulon.percent();
+      yulon -> base_dd_min = s -> result_amount * percent;
+      yulon -> base_dd_max = s -> result_amount * percent;
+      yulon -> execute();
+    }
+  }
+};
+
+// ==========================================================================
+// Sheilun's Gift
+// ==========================================================================
+
+struct sheiluns_gift_t: public monk_heal_t
+{
+  the_mists_of_sheilun_buff_t* artifact;
+
+  sheiluns_gift_t( monk_t& p, const std::string& options_str ):
+    monk_heal_t( "sheiluns_gift", p, &p.artifact.sheiluns_gift.data() )
+  {
+    parse_options( options_str );
+
+    may_miss = false;
+
+    artifact = new the_mists_of_sheilun_buff_t( &p );
+  }
+
+  virtual void execute() override
+  {
+    monk_heal_t::execute();
+
+    artifact -> trigger();
   }
 };
 
@@ -5272,6 +5327,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "spinning_dragon_strike" ) return new    spinning_dragon_strike_t( this, options_str );
   if ( name == "serenity" ) return new                  serenity_t( this, options_str );
   // Artifacts
+  if ( name == "sheiluns_gift" ) return new             sheiluns_gift_t( *this, options_str );
   if ( name == "strike_of_the_windlord" ) return new    strike_of_the_windlord_t( this, options_str );
   return base_t::create_action( name, options_str );
 }
@@ -5506,6 +5562,7 @@ void monk_t::init_spells()
 
   // Mistweaver
   passives.aura_mistweaver_monk             = find_spell( 137024 );
+  passives.blessings_of_yulon               = find_spell( 199671 );
   passives.lifecycles_enveloping_mist       = find_spell( 197919 );
   passives.lifecycles_vivify                = find_spell( 197916 );
   passives.renewing_mist_heal               = find_spell( 119611 );
