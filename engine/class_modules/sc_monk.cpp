@@ -521,6 +521,7 @@ public:
     const spell_data_t* soothing_mist_statue;
     const spell_data_t* teachings_of_the_monastery_buff;
     const spell_data_t* the_mists_of_sheilun_heal;
+    const spell_data_t* zen_pulse_heal;
     const spell_data_t* tier17_2pc_heal;
     const spell_data_t* tier17_4pc_heal;
     const spell_data_t* tier18_4pc_heal;
@@ -1955,6 +1956,7 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
 // Tiger Palm
 // ==========================================================================
 
+// Eye of the Tiger ========================================================
 struct eye_of_the_tiger_heal_tick_t : public monk_heal_t
 {
   eye_of_the_tiger_heal_tick_t( monk_t& p, const std::string& name ):
@@ -3148,7 +3150,6 @@ struct touch_of_death_buff_t : public buff_t
     p -> gale_burst_touch_of_death_bonus = 0.0;
     return buff_t::trigger();
   }
-
 
   virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
@@ -4399,84 +4400,62 @@ struct gift_of_the_ox_t: public monk_heal_t
 };
 
 // ==========================================================================
-// Zen Sphere (Heal)
+// Zen Pulse
 // ==========================================================================
-/*
-struct zen_sphere_t: public monk_heal_t
+
+struct zen_pulse_heal_t : public monk_heal_t
 {
-  struct zen_sphere_dot_t: public monk_spell_t
+  zen_pulse_heal_t( monk_t& p ):
+    monk_heal_t("zen_pulse_heal", p, p.passives.zen_pulse_heal )
   {
-    zen_sphere_dot_t( monk_t& player ):
-      monk_spell_t( "zen_sphere_dmg", &player, player.find_spell( 124098 ) )
-    {
-      background = dual = true;
-
-      attack_power_mod.direct = 0.095;
-    }
-  };
-
-  struct zen_sphere_explosion_heal_t : public monk_heal_t
-  {
-    zen_sphere_explosion_heal_t( monk_t& p ):
-      monk_heal_t( "zen_sphere_detonate_heal", p, p.find_spell( 124101 ) )
-    {
-      background = dual = true;
-      aoe = -1;
-
-      attack_power_mod.direct = 1.25;
-    }
-
-  struct zen_sphere_explosion_dmg_t: public monk_spell_t
-  {
-    zen_sphere_explosion_dmg_t( monk_t& player ):
-      monk_spell_t( "zen_sphere_detonate", &player, player.find_spell( 125033 ) )
-    {
-      background = dual = true;
-      aoe = -1;
-
-      attack_power_mod.direct = 1.25;
-    }
-  };
-
-  zen_sphere_dot_t*            dot;
-  zen_sphere_explosion_heal_t* explosion_heal;
-  zen_sphere_explosion_dmg_t*  explosion_dmg;
-
-  zen_sphere_t( monk_t& p, const std::string& options_str ):
-    monk_heal_t( "zen_sphere", p, p.talent.zen_sphere ),
-    dot( new zen_sphere_dot_t( p ) ),
-    explosion_heal( new zen_sphere_explosion_heal_t( p ) ),
-    explosion_dmg( new zen_sphere_explosion_dmg_t( p ) )
-  {
-    sef_ability = SEF_ZEN_SPHERE;
-
-    parse_options( options_str );
-
-    add_child( explosion_heal );
-    dot -> add_child( explosion_dmg );
-
-    attack_power_mod.tick = 0.095;
-    hasted_ticks = false;
-
-    cooldown -> duration = data().cooldown();
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    monk_heal_t::last_tick( d );
-
-    if ( ! player -> is_sleeping() )
-    {
-      explosion_dmg -> execute();
-
-      if ( player -> record_healing() )
-      {
-        explosion_heal -> execute();
-      }
-    }
+    background = true;
+    may_crit = may_miss = false;
+    target = &( p );
   }
 };
-*/
+
+struct zen_pulse_dmg_t: public monk_spell_t
+{
+  heal_t* heal;
+  zen_pulse_dmg_t( monk_t* player ):
+    monk_spell_t( "zen_pulse_damage", player, player -> talent.zen_pulse )
+  {
+    background = true;
+    aoe = -1;
+
+    heal = new zen_pulse_heal_t( *player );
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    monk_spell_t::impact( s );
+
+    heal -> base_dd_min = s -> result_amount;
+    heal -> base_dd_max = s -> result_amount;
+    heal -> execute();
+  }
+};
+
+struct zen_pulse_t : public monk_spell_t
+{
+  spell_t* damage;
+  zen_pulse_t( monk_t* player ) :
+    monk_spell_t( "zen_pulse", player, player -> talent.zen_pulse )
+  {
+    may_miss = may_dodge = may_parry = false;
+    damage = new zen_pulse_dmg_t( player );
+  }
+
+  virtual void execute() override
+  {
+    monk_spell_t::execute();
+
+    if ( result_is_miss( execute_state -> result ) )
+      return;
+
+    damage -> execute();
+  }
+};
 
 // ==========================================================================
 // Chi Wave
@@ -5067,6 +5046,7 @@ void monk_t::init_spells()
   passives.soothing_mist_statue             = find_spell( 198533 );
   passives.teachings_of_the_monastery_buff  = find_spell( 202090 );
   passives.the_mists_of_sheilun_heal        = find_spell( 199894 );
+  passives.zen_pulse_heal                   = find_spell( 198487 );
   passives.tier17_2pc_heal                  = find_spell( 167732 );
   passives.tier17_4pc_heal                  = find_spell( 167717 );
   passives.tier18_4pc_heal                  = find_spell( 185158 ); // Extend Life
@@ -5264,6 +5244,7 @@ void monk_t::create_buffs()
     .default_value( passives.hit_combo -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
+  // TODO: Double check if Strength of Xuen Artifact trait works with Serenity
   buff.serenity = buff_creator_t( this, "serenity", talent.serenity )
     .default_value( talent.serenity -> effectN( 2 ).percent() )
     .duration( talent.serenity -> duration() )
