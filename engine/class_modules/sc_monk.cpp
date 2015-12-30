@@ -212,9 +212,9 @@ public:
     actions::spells::stagger_self_damage_t* stagger_self_damage;
   } active_actions;
 
-  bool track_jade;
-
   combo_strikes_e previous_combo_strike;
+
+  double gale_burst_touch_of_death_bonus;
 
   struct buffs_t
   {
@@ -595,8 +595,8 @@ public:
       regen_caches[CACHE_HASTE] = true;
       regen_caches[CACHE_ATTACK_HASTE] = true;
     }
-    track_jade = false;
     previous_combo_strike = CS_NONE;
+    gale_burst_touch_of_death_bonus = 0;
     user_options.initial_chi = 0;
     user_options.goto_throttle = 0;
     user_options.ppm_below_35_percent_dm = 0;
@@ -1786,6 +1786,13 @@ public:
     ab::execute();
 
     trigger_storm_earth_and_fire( this );
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    if ( p() -> artifact.gale_burst.rank() && s -> action -> harmful )
+      p() -> gale_burst_touch_of_death_bonus += p() -> artifact.gale_burst.value() * s -> result_amount;
+    ab::impact( s );
   }
 
   virtual timespan_t gcd() const
@@ -3094,13 +3101,14 @@ struct special_delivery_t : public monk_melee_attack_t
 // Touch of Death
 // ==========================================================================
 
-struct touch_of_death_t: public monk_melee_attack_t
+// Touch of Death Impact ====================================================
+struct touch_of_death_impact_t: public monk_spell_t
 {
-  touch_of_death_t( monk_t* p, const std::string& options_str ):
-    monk_melee_attack_t( "touch_of_death", p, p -> spec.touch_of_death )
+  touch_of_death_impact_t( monk_t* p ):
+    monk_spell_t( "touch_of_death_impact", p, p -> spec.touch_of_death )
   {
-    parse_options( options_str );
-    may_crit = may_miss = may_dodge = may_parry = may_block = false;
+    may_crit = may_miss = may_dodge = may_parry = may_block = tick_zero = false;
+    school = SCHOOL_PHYSICAL;
   }
 
   virtual double target_armor( player_t* ) const override { return 0; }
@@ -3108,8 +3116,70 @@ struct touch_of_death_t: public monk_melee_attack_t
   virtual void impact( action_state_t* s ) override
   {
     s -> result_amount = p() -> resources.max[RESOURCE_HEALTH];
-    monk_melee_attack_t::impact( s );
+    s -> result_amount += p() -> gale_burst_touch_of_death_bonus;
+    monk_spell_t::impact( s );
   }
+};
+
+
+// Touch of Death Buff =================================================
+struct touch_of_death_buff_t : public buff_t
+{
+  touch_of_death_impact_t* impact;
+
+  touch_of_death_buff_t( monk_t* p ) :
+    buff_t( buff_creator_t( p, "touch_of_death", p -> spec.touch_of_death )
+      .duration( p -> spec.touch_of_death -> duration() )
+      .cd( timespan_t::zero() ) )
+  { 
+    impact = new touch_of_death_impact_t( p );
+  }
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    monk_t* p = debug_cast< monk_t* >( player );
+    p -> gale_burst_touch_of_death_bonus = 0.0;
+    return buff_t::trigger( stacks, value, chance, duration );
+  }
+
+  bool trigger()
+  {
+    monk_t* p = debug_cast< monk_t* >( player );
+    p -> gale_burst_touch_of_death_bonus = 0.0;
+    return buff_t::trigger();
+  }
+
+
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    impact -> execute();
+  }
+};
+
+// Touch of Death Trigger ====================================================
+struct touch_of_death_t: public monk_spell_t
+{
+  touch_of_death_buff_t* buff;
+
+  touch_of_death_t( monk_t* p, const std::string& options_str ):
+    monk_spell_t( "touch_of_death", p, p -> spec.touch_of_death )
+  {
+    parse_options( options_str );
+    may_crit = may_miss = may_dodge = may_parry = may_block = tick_zero = false;
+    school = SCHOOL_PHYSICAL;
+
+    buff = new touch_of_death_buff_t( p );
+  }
+
+  virtual void execute() override
+  {
+    monk_spell_t::execute();
+
+    buff -> trigger();
+  }
+
 };
 
 // ==========================================================================
