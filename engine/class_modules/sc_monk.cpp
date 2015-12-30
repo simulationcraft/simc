@@ -3313,127 +3313,6 @@ struct black_ox_brew_t: public monk_spell_t
 };
 
 // ==========================================================================
-// Chi Wave
-// ==========================================================================
-
-struct chi_wave_heal_tick_t: public monk_heal_t
-{
-  chi_wave_heal_tick_t( monk_t& p, const std::string& name ):
-    monk_heal_t( name, p, p.passives.chi_wave_heal )
-  {
-    background = direct_tick = true;
-    attack_power_mod.direct = 0.500; // Hard code 09/09/14
-    target = player;
-  }
-};
-
-struct chi_wave_dmg_tick_t: public monk_spell_t
-{
-  chi_wave_dmg_tick_t( monk_t* player, const std::string& name ):
-    monk_spell_t( name, player, player -> passives.chi_wave_damage )
-  {
-    background = direct_tick = true;
-    attack_power_mod.direct = 0.500; // Hard code 09/09/14
-  }
-};
-
-struct chi_wave_t: public monk_spell_t
-{
-  heal_t* heal;
-  spell_t* damage;
-  bool dmg;
-  chi_wave_t( monk_t* player, const std::string& options_str ):
-    monk_spell_t( "chi_wave", player, player -> talent.chi_wave ),
-    heal( new chi_wave_heal_tick_t( *player, "chi_wave_heal" ) ),
-    damage( new chi_wave_dmg_tick_t( player, "chi_wave_damage" ) ),
-    dmg( true )
-  {
-    sef_ability = SEF_CHI_WAVE;
-
-    parse_options( options_str );
-    hasted_ticks = harmful = false;
-    dot_duration = timespan_t::from_seconds( player -> talent.chi_wave -> effectN( 1 ).base_value() );
-    base_tick_time = timespan_t::from_seconds( 1.0 );
-    add_child( heal );
-    add_child( damage );
-    tick_zero = true;
-    radius = player -> find_spell( 132466 ) -> effectN( 2 ).base_value();
-  }
-
-  virtual void execute() override
-  {
-    monk_spell_t::execute();
-
-    if ( result_is_miss( execute_state -> result ) )
-      return;
-
-    combo_strikes_trigger( CS_CHI_WAVE );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    dmg = true; // Set flag so that the first tick does damage
-
-    monk_spell_t::impact( s );
-  }
-
-  void tick( dot_t* d ) override
-  {
-    monk_spell_t::tick( d );
-    // Select appropriate tick action
-    if ( dmg )
-      damage -> execute();
-    else
-      heal -> execute();
-
-    dmg = !dmg; // Invert flag for next use
-  }
-};
-
-// ==========================================================================
-// Chi Burst
-// ==========================================================================
-
-struct chi_burst_heal_t: public monk_heal_t
-{
-  chi_burst_heal_t( monk_t& player ):
-    monk_heal_t( "chi_burst_heal", player, player.passives.chi_burst_heal )
-  {
-    background = true;
-    target = p();
-    attack_power_mod.direct = 2.75;
-  }
-};
-
-struct chi_burst_t: public monk_spell_t
-{
-  chi_burst_heal_t* heal;
-  chi_burst_t( monk_t* player, const std::string& options_str ):
-    monk_spell_t( "chi_burst", player, player -> passives.chi_burst_damage ),
-    heal( nullptr )
-  {
-    sef_ability = SEF_CHI_BURST;
-
-    parse_options( options_str );
-    heal = new chi_burst_heal_t( *player );
-    execute_action = heal;
-    aoe = -1;
-    interrupt_auto_attack = false;
-    attack_power_mod.direct = 2.75; // hardcoded
-  }
-
-  virtual void execute() override
-  {
-    monk_spell_t::execute();
-
-    if ( result_is_miss( execute_state -> result ) )
-      return;
-
-    combo_strikes_trigger( CS_CHI_BURST );
-  }
-};
-
-// ==========================================================================
 // Chi Torpedo
 // ==========================================================================
 
@@ -4139,12 +4018,44 @@ struct the_mists_of_sheilun_buff_t : public buff_t
 };
 
 // ==========================================================================
+// Gust of Mists
+// ==========================================================================
+// The mastery actually affects the Spell Power Coefficient but I am not sure if that
+// would work normally. Using Action Multiplier since it APPEARS to calculate the same.
+//
+// TODO: Double Check if this works.
+
+struct gust_of_mists_t: public monk_heal_t
+{
+  gust_of_mists_t( monk_t& p ):
+    monk_heal_t( "gust_of_mists", p, p.mastery.gust_of_mists -> effectN( 2 ).trigger() )
+  {
+    background = dual = true;
+    spell_power_mod.direct = 1;
+  }
+
+  virtual double action_multiplier()
+  {
+    double am = monk_heal_t::action_multiplier();
+
+    am *= p() -> cache.mastery() * p() -> mastery.gust_of_mists -> effectN( 1 ).mastery_value();
+
+    // Mastery's Effect 3 gives a flat add modifier of 0.1 Spell Power co-efficient
+    // TODO: Double check calculation
+
+    return am;
+  }
+};
+
+
+// ==========================================================================
 // Effuse
 // ==========================================================================
 
 struct effuse_t: public monk_heal_t
 {
   the_mists_of_sheilun_buff_t* artifact;
+  gust_of_mists_t* mastery;
 
   effuse_t( monk_t& p, const std::string& options_str ):
     monk_heal_t( "effuse", p, p.spec.effuse )
@@ -4154,16 +4065,25 @@ struct effuse_t: public monk_heal_t
     if ( p.sheilun_staff_of_the_mists )
       artifact = new the_mists_of_sheilun_buff_t( &p );
 
+    mastery = new gust_of_mists_t( p );
+
     may_miss = false;
+  }
+
+  virtual void execute() override
+  {
+    monk_heal_t::execute();
+
+    if ( p() -> sheilun_staff_of_the_mists )
+      artifact -> trigger();
+
+    mastery -> execute();
   }
 
   virtual void impact( action_state_t* s ) override
   {
     if ( p() -> sets.has_set_bonus( MONK_MISTWEAVER, T17, B4 ) && s -> result == RESULT_CRIT )
       p() -> buff.chi_jis_guidance -> trigger();
-
-    if ( p() -> sheilun_staff_of_the_mists )
-      artifact -> trigger();
   }
 };
 
@@ -4174,6 +4094,7 @@ struct effuse_t: public monk_heal_t
 struct enveloping_mist_t: public monk_heal_t
 {
   the_mists_of_sheilun_buff_t* artifact;
+  gust_of_mists_t* mastery;
 
   enveloping_mist_t( monk_t& p, const std::string& options_str ):
     monk_heal_t( "enveloping_mist", p, p.spec.enveloping_mist )
@@ -4184,12 +4105,18 @@ struct enveloping_mist_t: public monk_heal_t
 
     if ( p.sheilun_staff_of_the_mists )
       artifact = new the_mists_of_sheilun_buff_t( &p );
+
+    mastery = new gust_of_mists_t( p );
   }
 
-  virtual void impact( action_state_t* s ) override
+  virtual void execute() override
   {
+    monk_heal_t::execute();
+
     if ( p() -> sheilun_staff_of_the_mists )
       artifact -> trigger();
+
+    mastery -> execute();
   }
 };
 
@@ -4203,6 +4130,7 @@ Bouncing only happens when overhealing, so not going to bother with bouncing
 struct renewing_mist_t: public monk_heal_t
 {
   the_mists_of_sheilun_buff_t* artifact;
+  gust_of_mists_t* mastery;
 
   renewing_mist_t( monk_t& p, const std::string& options_str ):
     monk_heal_t( "renewing_mist", p, p.spec.renewing_mist )
@@ -4213,6 +4141,8 @@ struct renewing_mist_t: public monk_heal_t
 
     if ( p.sheilun_staff_of_the_mists )
       artifact = new the_mists_of_sheilun_buff_t( &p );
+
+    mastery = new gust_of_mists_t( p );
   }
 
   virtual double cost() const override
@@ -4228,12 +4158,11 @@ struct renewing_mist_t: public monk_heal_t
   virtual void execute() override
   {
     monk_heal_t::execute();
-  }
 
-  virtual void impact( action_state_t* s ) override
-  {
     if ( p() -> sheilun_staff_of_the_mists )
       artifact -> trigger();
+
+    mastery -> execute();
   }
 };
 
@@ -4244,6 +4173,7 @@ struct renewing_mist_t: public monk_heal_t
 struct vivify_t: public monk_heal_t
 {
   the_mists_of_sheilun_buff_t* artifact;
+  gust_of_mists_t* mastery;
 
   vivify_t( monk_t& p, const std::string& options_str ):
     monk_heal_t( "vivify", p, p.spec.vivify )
@@ -4261,6 +4191,8 @@ struct vivify_t: public monk_heal_t
 
       if ( p.sheilun_staff_of_the_mists )
         artifact = new the_mists_of_sheilun_buff_t( &p );
+
+      mastery = new gust_of_mists_t( p );
     }
     else
     {
@@ -4271,10 +4203,17 @@ struct vivify_t: public monk_heal_t
     may_miss = false;
   }
 
-  virtual void impact( action_state_t* s ) override
+  virtual void execute() override
   {
-    if ( p() -> sheilun_staff_of_the_mists )
-      artifact -> trigger();
+    monk_heal_t::execute();
+
+    if ( p() -> specialization() == MONK_MISTWEAVER )
+    {
+      if ( p() -> sheilun_staff_of_the_mists )
+        artifact -> trigger();
+
+      mastery -> execute();
+    }
   }
 };
 
@@ -4321,7 +4260,7 @@ struct essence_font_t: public monk_spell_t
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     timespan_t tt = tick_time( s -> haste );
-    return tt * p() -> spec.essence_font -> effectN( 1 ).base_value() * 3;
+    return tt * p() -> spec.essence_font -> effectN( 1 ).base_value() * data().duration().total_seconds();
   }
 
   virtual void execute() override
@@ -4333,6 +4272,62 @@ struct essence_font_t: public monk_spell_t
   }
 };
 
+// ==========================================================================
+// Revival
+// ==========================================================================
+
+struct revival_t: public monk_heal_t
+{
+  the_mists_of_sheilun_buff_t* artifact;
+
+  revival_t( monk_t& p, const std::string& options_str ):
+    monk_heal_t( "revival", p, p.spec.revival )
+  {
+    parse_options( options_str );
+
+    may_miss = false;
+    aoe = -1;
+
+    if ( p.sheilun_staff_of_the_mists )
+      artifact = new the_mists_of_sheilun_buff_t( &p );
+  }
+
+  virtual void execute() override
+  {
+    monk_heal_t::execute();
+
+    if ( p() -> sheilun_staff_of_the_mists )
+      artifact -> trigger();
+  }
+};
+
+// ==========================================================================
+// Gift of the Ox
+// ==========================================================================
+
+struct gift_of_the_ox_t: public monk_heal_t
+{
+  gift_of_the_ox_t( monk_t& p, const std::string& options_str ):
+    monk_heal_t( "gift_of_the_ox", p, p.passives.gift_of_the_ox_heal )
+  {
+    parse_options( options_str );
+    harmful = false;
+    background = true;
+    target = &p;
+    trigger_gcd = timespan_t::zero();
+    base_pct_heal = p.passives.gift_of_the_ox_heal -> effectN( 1 ).percent();
+  }
+
+  virtual void execute() override
+  {
+    if ( p() -> buff.gift_of_the_ox -> up() )
+    {
+      monk_heal_t::execute();
+
+      p() -> buff.gift_of_the_ox -> decrement();
+    }
+  }
+};
 
 // ==========================================================================
 // Zen Sphere (Heal)
@@ -4415,30 +4410,123 @@ struct zen_sphere_t: public monk_heal_t
 */
 
 // ==========================================================================
-// Gift of the Ox
+// Chi Wave
 // ==========================================================================
 
-struct gift_of_the_ox_t: public monk_heal_t
+struct chi_wave_heal_tick_t: public monk_heal_t
 {
-  gift_of_the_ox_t( monk_t& p, const std::string& options_str ):
-    monk_heal_t( "gift_of_the_ox", p, p.passives.gift_of_the_ox_heal )
+  chi_wave_heal_tick_t( monk_t& p, const std::string& name ):
+    monk_heal_t( name, p, p.passives.chi_wave_heal )
   {
+    background = direct_tick = true;
+    attack_power_mod.direct = 0.500; // Hard code 09/09/14
+    target = player;
+  }
+};
+
+struct chi_wave_dmg_tick_t: public monk_spell_t
+{
+  chi_wave_dmg_tick_t( monk_t* player, const std::string& name ):
+    monk_spell_t( name, player, player -> passives.chi_wave_damage )
+  {
+    background = direct_tick = true;
+    attack_power_mod.direct = 0.500; // Hard code 09/09/14
+  }
+};
+
+struct chi_wave_t: public monk_spell_t
+{
+  heal_t* heal;
+  spell_t* damage;
+  bool dmg;
+  chi_wave_t( monk_t* player, const std::string& options_str ):
+    monk_spell_t( "chi_wave", player, player -> talent.chi_wave ),
+    heal( new chi_wave_heal_tick_t( *player, "chi_wave_heal" ) ),
+    damage( new chi_wave_dmg_tick_t( player, "chi_wave_damage" ) ),
+    dmg( true )
+  {
+    sef_ability = SEF_CHI_WAVE;
+
     parse_options( options_str );
-    harmful = false;
-    background = true;
-    target = &p;
-    trigger_gcd = timespan_t::zero();
-    base_pct_heal = p.passives.gift_of_the_ox_heal -> effectN( 1 ).percent();
+    hasted_ticks = harmful = false;
+    dot_duration = timespan_t::from_seconds( player -> talent.chi_wave -> effectN( 1 ).base_value() );
+    base_tick_time = timespan_t::from_seconds( 1.0 );
+    add_child( heal );
+    add_child( damage );
+    tick_zero = true;
+    radius = player -> find_spell( 132466 ) -> effectN( 2 ).base_value();
   }
 
   virtual void execute() override
   {
-    if ( p() -> buff.gift_of_the_ox -> up() )
-    {
-      monk_heal_t::execute();
+    monk_spell_t::execute();
 
-      p() -> buff.gift_of_the_ox -> decrement();
-    }
+    if ( result_is_miss( execute_state -> result ) )
+      return;
+
+    combo_strikes_trigger( CS_CHI_WAVE );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    dmg = true; // Set flag so that the first tick does damage
+
+    monk_spell_t::impact( s );
+  }
+
+  void tick( dot_t* d ) override
+  {
+    monk_spell_t::tick( d );
+    // Select appropriate tick action
+    if ( dmg )
+      damage -> execute();
+    else
+      heal -> execute();
+
+    dmg = !dmg; // Invert flag for next use
+  }
+};
+
+// ==========================================================================
+// Chi Burst
+// ==========================================================================
+
+struct chi_burst_heal_t: public monk_heal_t
+{
+  chi_burst_heal_t( monk_t& player ):
+    monk_heal_t( "chi_burst_heal", player, player.passives.chi_burst_heal )
+  {
+    background = true;
+    target = p();
+    attack_power_mod.direct = 2.75;
+  }
+};
+
+struct chi_burst_t: public monk_spell_t
+{
+  chi_burst_heal_t* heal;
+  chi_burst_t( monk_t* player, const std::string& options_str ):
+    monk_spell_t( "chi_burst", player, player -> passives.chi_burst_damage ),
+    heal( nullptr )
+  {
+    sef_ability = SEF_CHI_BURST;
+
+    parse_options( options_str );
+    heal = new chi_burst_heal_t( *player );
+    execute_action = heal;
+    aoe = -1;
+    interrupt_auto_attack = false;
+    attack_power_mod.direct = 2.75; // hardcoded
+  }
+
+  virtual void execute() override
+  {
+    monk_spell_t::execute();
+
+    if ( result_is_miss( execute_state -> result ) )
+      return;
+
+    combo_strikes_trigger( CS_CHI_BURST );
   }
 };
 
@@ -4653,9 +4741,11 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "crackling_jade_lightning" ) return new  crackling_jade_lightning_t( *this, options_str );
   if ( name == "effuse" ) return new                    effuse_t( *this, options_str );
   if ( name == "enveloping_mist" ) return new           enveloping_mist_t( *this, options_str );
+  if ( name == "essence_font" ) return new              essence_font_t( this, options_str );
   if ( name == "life_cocoon" ) return new               life_cocoon_t( *this, options_str );
   if ( name == "mana_tea" ) return new                  mana_tea_t( *this, options_str );
   if ( name == "renewing_mist" ) return new             renewing_mist_t( *this, options_str );
+  if ( name == "revival" ) return new                   revival_t( *this, options_str );
   // Talents
   if ( name == "chi_wave" ) return new                  chi_wave_t( this, options_str );
   if ( name == "chi_burst" ) return new                 chi_burst_t( this, options_str );
