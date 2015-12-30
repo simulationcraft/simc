@@ -4416,7 +4416,7 @@ struct zen_pulse_heal_t : public monk_heal_t
 
 struct zen_pulse_dmg_t: public monk_spell_t
 {
-  heal_t* heal;
+  zen_pulse_heal_t* heal;
   zen_pulse_dmg_t( monk_t* player ):
     monk_spell_t( "zen_pulse_damage", player, player -> talent.zen_pulse )
   {
@@ -4454,6 +4454,24 @@ struct zen_pulse_t : public monk_spell_t
       return;
 
     damage -> execute();
+  }
+};
+
+// ==========================================================================
+// Mistwalk
+// ==========================================================================
+// Not going to model the teleportation part of the spell
+
+struct mistwalk_t: public monk_heal_t
+{
+  mistwalk_t( monk_t& p, const std::string& options_str ):
+    monk_heal_t( "mistwalk", p, p.talent.mistwalk )
+  {
+    parse_options( options_str );
+
+    may_miss = false;
+
+    attack_power_mod.direct = p.talent.mistwalk -> effectN( 2 ).ap_coeff();
   }
 };
 
