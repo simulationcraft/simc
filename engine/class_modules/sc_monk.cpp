@@ -3167,8 +3167,7 @@ struct touch_of_death_t: public monk_spell_t
     monk_spell_t( "touch_of_death", p, p -> spec.touch_of_death )
   {
     parse_options( options_str );
-    may_crit = may_miss = may_dodge = may_parry = may_block = tick_zero = false;
-    school = SCHOOL_PHYSICAL;
+    tick_zero = false;
 
     buff = new touch_of_death_buff_t( p );
   }
