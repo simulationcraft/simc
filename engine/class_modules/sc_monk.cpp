@@ -238,10 +238,13 @@ public:
     absorb_buff_t* life_cocoon;
     buff_t* channeling_soothing_mist;
     buff_t* chi_jis_guidance;
+    buff_t* lifecycles_enveloping_mist;
+    buff_t* lifecycles_vivify;
     buff_t* mana_tea;
     buff_t* mistweaving;
     buff_t* the_mists_of_sheilun;
     buff_t* teachings_of_the_monastery;
+    buff_t* thunder_focus_tea;
 
     // Windwalker
     buff_t* chi_orbit;
@@ -516,6 +519,8 @@ public:
     const spell_data_t* tier17_2pc_tank;
     // Mistweaver
     const spell_data_t* aura_mistweaver_monk;
+    const spell_data_t* lifecycles_enveloping_mist;
+    const spell_data_t* lifecycles_vivify;
     const spell_data_t* renewing_mist_heal;
     const spell_data_t* soothing_mist_heal;
     const spell_data_t* soothing_mist_statue;
@@ -1875,7 +1880,14 @@ struct monk_heal_t: public monk_action_t < heal_t >
       player_t* t = ( execute_state ) ? execute_state -> target : target;
 
       if ( td( t ) -> dots.enveloping_mist -> is_ticking() )
-        am *= 1.0 + p() -> spec.enveloping_mist -> effectN( 2 ).percent();
+      {
+        if ( p() -> talent.mist_wrap )
+          am *= 1.0 + p() -> spec.enveloping_mist -> effectN( 2 ).percent() + p() -> talent.mist_wrap -> effectN( 2 ).percent();
+        else
+          am *= 1.0 + p() -> spec.enveloping_mist -> effectN( 2 ).percent();
+      }
+      if ( p()-> buff.life_cocoon -> up() )
+        am += 1.0 + p() -> spec.life_cocoon -> effectN( 2 ).percent();
     }
 
     return am;
@@ -3604,6 +3616,53 @@ void sef_despawn_cb_t::operator()(player_t*)
 }
 
 // ==========================================================================
+// Crackling Jade Lightning
+// ==========================================================================
+
+struct crackling_jade_lightning_t: public monk_spell_t
+{
+  crackling_jade_lightning_t( monk_t& p, const std::string& options_str ):
+    monk_spell_t( "crackling_jade_lightning", &p, p.spec.crackling_jade_lightning )
+  {
+    sef_ability = SEF_CRACKLING_JADE_LIGHTNING;
+
+    parse_options( options_str );
+
+    channeled = tick_may_crit = true;
+    hasted_ticks = false; // Channeled spells always have hasted ticks. Use hasted_ticks = false to disable the increase in the number of ticks.
+    interrupt_auto_attack = true;
+  }
+
+  virtual void execute() override
+  {
+    monk_spell_t::execute();
+
+    if ( result_is_miss( execute_state -> result ) )
+      return;
+
+    combo_strikes_trigger( CS_CRACKLING_JADE_LIGHTNING );
+  }
+
+  void last_tick( dot_t* dot ) override
+  {
+    monk_spell_t::last_tick( dot );
+
+    // Reset swing timer
+    if ( player -> main_hand_attack )
+    {
+      player -> main_hand_attack -> cancel();
+      player -> main_hand_attack -> schedule_execute();
+    }
+
+    if ( player -> off_hand_attack )
+    {
+      player -> off_hand_attack -> cancel();
+      player -> off_hand_attack -> schedule_execute();
+    }
+  }
+};
+
+// ==========================================================================
 // Chi Orbit
 // ==========================================================================
 
@@ -3694,43 +3753,6 @@ struct fortifying_brew_t: public monk_spell_t
     monk_spell_t::execute();
 
     p() -> buff.fortifying_brew -> trigger();
-  }
-};
-
-// ==========================================================================
-// Mana Tea
-// ==========================================================================
-// Manatee
-//                   _.---.._
-//     _        _.-'         ''-.
-//   .'  '-,_.-'                 '''.
-//  (       _                     o  :
-//   '._ .-'  '-._         \  \-  ---]
-//                 '-.___.-')  )..-'
-//                          (_/lame
-
-struct mana_tea_t: public monk_spell_t
-{
-  mana_tea_t( monk_t& p, const std::string& options_str ):
-    monk_spell_t( "mana_tea", &p, p.talent.mana_tea )
-  {
-    parse_options( options_str );
-
-    harmful = false;
-    trigger_gcd = timespan_t::zero();
-  }
-
-  void execute() override
-  {
-    monk_spell_t::execute();
-
-    p() -> buff.mana_tea -> trigger();
-
-    if ( p() -> talent.healing_elixirs -> ok() )
-    {
-      if ( p() -> cooldown.healing_elixirs -> up() )
-        p() -> active_actions.healing_elixir -> execute();
-    }
   }
 };
 
@@ -3910,51 +3932,71 @@ struct purifying_brew_t: public monk_spell_t
 };
 
 // ==========================================================================
-// Crackling Jade Lightning
+// Mana Tea
 // ==========================================================================
+// Manatee
+//                   _.---.._
+//     _        _.-'         ''-.
+//   .'  '-,_.-'                 '''.
+//  (       _                     o  :
+//   '._ .-'  '-._         \  \-  ---]
+//                 '-.___.-')  )..-'
+//                          (_/lame
 
-struct crackling_jade_lightning_t: public monk_spell_t
+struct mana_tea_t: public monk_spell_t
 {
-  crackling_jade_lightning_t( monk_t& p, const std::string& options_str ):
-    monk_spell_t( "crackling_jade_lightning", &p, p.spec.crackling_jade_lightning )
+  mana_tea_t( monk_t& p, const std::string& options_str ):
+    monk_spell_t( "mana_tea", &p, p.talent.mana_tea )
   {
-    sef_ability = SEF_CRACKLING_JADE_LIGHTNING;
-
     parse_options( options_str );
 
-    channeled = tick_may_crit = true;
-    hasted_ticks = false; // Channeled spells always have hasted ticks. Use hasted_ticks = false to disable the increase in the number of ticks.
-    interrupt_auto_attack = true;
+    harmful = false;
+    trigger_gcd = timespan_t::zero();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     monk_spell_t::execute();
 
-    if ( result_is_miss( execute_state -> result ) )
-      return;
+    p() -> buff.mana_tea -> trigger();
 
-    combo_strikes_trigger( CS_CRACKLING_JADE_LIGHTNING );
-  }
-
-  void last_tick( dot_t* dot ) override
-  {
-    monk_spell_t::last_tick( dot );
-
-    // Reset swing timer
-    if ( player -> main_hand_attack )
+    if ( p() -> talent.healing_elixirs -> ok() )
     {
-      player -> main_hand_attack -> cancel();
-      player -> main_hand_attack -> schedule_execute();
-    }
-
-    if ( player -> off_hand_attack )
-    {
-      player -> off_hand_attack -> cancel();
-      player -> off_hand_attack -> schedule_execute();
+      if ( p() -> cooldown.healing_elixirs -> up() )
+        p() -> active_actions.healing_elixir -> execute();
     }
   }
 };
+
+// ==========================================================================
+// Thunder Focus Tea
+// ==========================================================================
+
+struct thunder_focus_tea_t: public monk_spell_t
+{
+  thunder_focus_tea_t( monk_t& p, const std::string& options_str ):
+    monk_spell_t( "Thunder_focus_tea", &p, p.spec.thunder_focus_tea )
+  {
+    parse_options( options_str );
+
+    harmful = false;
+    trigger_gcd = timespan_t::zero();
+  }
+
+  void execute() override
+  {
+    monk_spell_t::execute();
+
+    p() -> buff.thunder_focus_tea -> trigger( p() -> buff.thunder_focus_tea -> max_stack() );
+
+    if ( p() -> talent.healing_elixirs -> ok() )
+    {
+      if ( p() -> cooldown.healing_elixirs -> up() )
+        p() -> active_actions.healing_elixir -> execute();
+    }
+  }
+};
+
 
 // ==========================================================================
 // Dampen Harm
@@ -4020,6 +4062,15 @@ struct soothing_mist_t: public monk_heal_t
     tick_zero = true;
   }
 
+  virtual double action_multiplier()
+  {
+    double am = monk_heal_t::action_multiplier();
+
+    if ( p() -> talent.soothing_elegance )
+      am *= 1 + p() -> talent.soothing_elegance -> effectN( 2 ).percent();
+
+    return am;
+  }
   virtual void tick( dot_t* d ) override
   {
     monk_heal_t::tick( d );
@@ -4117,7 +4168,6 @@ struct gust_of_mists_t: public monk_heal_t
   }
 };
 
-
 // ==========================================================================
 // Effuse
 // ==========================================================================
@@ -4140,9 +4190,22 @@ struct effuse_t: public monk_heal_t
     may_miss = false;
   }
 
+  virtual double action_multiplier()
+  {
+    double am = monk_heal_t::action_multiplier();
+
+    if ( p() -> buff.thunder_focus_tea -> up() )
+      am *= 1 + p() -> spec.thunder_focus_tea -> effectN( 2 ).percent(); // saved as -100
+
+    return am;
+  }
+
   virtual void execute() override
   {
     monk_heal_t::execute();
+
+    if ( p() -> buff.thunder_focus_tea -> up() )
+      p() -> buff.thunder_focus_tea -> decrement();
 
     if ( p() -> sheilun_staff_of_the_mists )
       artifact -> trigger();
@@ -4173,15 +4236,46 @@ struct enveloping_mist_t: public monk_heal_t
 
     may_miss = false;
 
+    dot_duration = p.spec.enveloping_mist -> duration();
+    if ( p.talent.mist_wrap )
+      dot_duration += timespan_t::from_seconds( p.talent.mist_wrap -> effectN( 1 ).base_value() );
+
     if ( p.sheilun_staff_of_the_mists )
       artifact = new the_mists_of_sheilun_buff_t( &p );
 
     mastery = new gust_of_mists_t( p );
   }
 
+  virtual double cost() const override
+  {
+    double c = monk_heal_t::cost();
+
+    if ( p() -> buff.lifecycles_enveloping_mist -> check() )
+      c *= 1 + p() -> buff.lifecycles_enveloping_mist -> value(); // saved as -20%
+
+    return c;
+  }
+
+  virtual timespan_t execute_time() const override
+  {
+    timespan_t et = monk_heal_t::execute_time();
+
+    if (p()->buff.thunder_focus_tea->check())
+      et *= 1 + p() -> spec.thunder_focus_tea -> effectN( 3 ).percent(); // saved as -100
+
+    return et;
+  }
+
   virtual void execute() override
   {
     monk_heal_t::execute();
+
+    if ( p() -> talent.lifecycles )
+    {
+      if ( p() -> buff.lifecycles_enveloping_mist -> up() )
+        p() -> buff.lifecycles_enveloping_mist -> expire();
+      p() -> buff.lifecycles_vivify -> trigger();
+    }
 
     if ( p() -> sheilun_staff_of_the_mists )
       artifact -> trigger();
@@ -4219,15 +4313,28 @@ struct renewing_mist_t: public monk_heal_t
   {
     double c = monk_heal_t::cost();
 
-    if ( p() -> buff.chi_jis_guidance -> up() )
+    if ( p() -> buff.chi_jis_guidance -> check() )
       c *= 1 + p() -> buff.chi_jis_guidance -> value(); // Saved as -50%
 
     return c;
   }
 
+  void update_ready( timespan_t ) override
+  {
+    timespan_t cd = cooldown -> duration;
+
+    if ( p() -> buff.thunder_focus_tea -> check() )
+      cd *= 1 + p() -> spec.thunder_focus_tea -> effectN( 1 ).percent();
+
+    monk_heal_t::update_ready( cd );
+  }
+
   virtual void execute() override
   {
     monk_heal_t::execute();
+
+    if ( p() -> buff.thunder_focus_tea -> up() )
+      p() -> buff.thunder_focus_tea -> decrement();
 
     if ( p() -> sheilun_staff_of_the_mists )
       artifact -> trigger();
@@ -4257,7 +4364,7 @@ struct vivify_t: public monk_heal_t
     if ( p.specialization() == MONK_MISTWEAVER )
     {
       resource_current = RESOURCE_MANA;
-      base_costs[RESOURCE_MANA] = p.spec.effuse-> cost( POWER_MANA ) * p.resources.base[RESOURCE_MANA];
+      base_costs[RESOURCE_MANA] = p.spec.vivify-> cost( POWER_MANA ) * p.resources.base[RESOURCE_MANA];
 
       if ( p.sheilun_staff_of_the_mists )
         artifact = new the_mists_of_sheilun_buff_t( &p );
@@ -4267,10 +4374,24 @@ struct vivify_t: public monk_heal_t
     else
     {
       resource_current = RESOURCE_ENERGY;
-      base_costs[RESOURCE_ENERGY] = p.spec.effuse -> cost( POWER_ENERGY );
+      base_costs[RESOURCE_ENERGY] = p.spec.vivify -> cost( POWER_ENERGY );
     }
 
     may_miss = false;
+  }
+
+  virtual double cost() const override
+  {
+    double c = monk_heal_t::cost();
+
+    // TODO: check the interation between Thunder Focus Tea and Lifecycles
+    if ( p() -> buff.thunder_focus_tea -> check() )
+      c *= 1 + p() -> spec.thunder_focus_tea -> effectN( 5 ).percent(); // saved as -100
+
+    if ( p() -> buff.lifecycles_vivify -> check() )
+      c *= 1 + p() -> buff.lifecycles_vivify -> value(); // saved as -20%
+
+    return c;
   }
 
   virtual void execute() override
@@ -4279,6 +4400,16 @@ struct vivify_t: public monk_heal_t
 
     if ( p() -> specialization() == MONK_MISTWEAVER )
     {
+      if ( p() -> buff.thunder_focus_tea -> up() )
+        p() -> buff.thunder_focus_tea -> decrement();
+
+      if ( p() -> talent.lifecycles )
+      {
+        if ( p() -> buff.lifecycles_vivify -> up() )
+          p() -> buff.lifecycles_vivify -> expire();
+        p() -> buff.lifecycles_enveloping_mist -> trigger();
+      }
+
       if ( p() -> sheilun_staff_of_the_mists )
         artifact -> trigger();
 
@@ -4613,6 +4744,38 @@ struct healing_elixirs_t: public monk_heal_t
     cooldown -> duration = data().effectN( 1 ).period();
   }
 };
+
+// ==========================================================================
+// Refreshing Jade Wind
+// ==========================================================================
+
+struct refreshing_jade_wind_heal_t: public monk_heal_t
+{
+  refreshing_jade_wind_heal_t( monk_t& player ):
+    monk_heal_t( "refreshing_jade_wind_heal", player, player.talent.refreshing_jade_wind-> effectN( 1 ).trigger() )
+  {
+    background = true;
+    aoe = 6;
+  }
+};
+
+struct refreshing_jade_wind_t: public monk_spell_t
+{
+  refreshing_jade_wind_heal_t* heal;
+  refreshing_jade_wind_t( monk_t* player, const std::string& options_str ):
+    monk_spell_t( "refreshing_jade_wind", player, player -> talent.refreshing_jade_wind )
+  {
+    parse_options( options_str );
+    heal = new refreshing_jade_wind_heal_t( *player );
+  }
+
+  void tick( dot_t* d ) override
+  {
+    monk_spell_t::tick( d );
+
+    heal -> execute();
+  }
+};
 } // end namespace heals
 
 namespace absorbs {
@@ -4781,30 +4944,24 @@ action_t* monk_t::create_action( const std::string& name,
                                  const std::string& options_str )
 {
   using namespace actions;
-  // Melee Attacks
-  if (name == "auto_attack") return new                 auto_attack_t(this, options_str);
+  // General
+  if ( name == "auto_attack" ) return new               auto_attack_t( this, options_str );
+  if ( name == "crackling_jade_lightning" ) return new  crackling_jade_lightning_t( *this, options_str );
   if ( name == "tiger_palm" ) return new                tiger_palm_t( this, options_str );
   if ( name == "blackout_kick" ) return new             blackout_kick_t( this, options_str );
   if ( name == "spinning_crane_kick" ) return new       spinning_crane_kick_t( this, options_str );
-  if ( name == "fists_of_fury" ) return new             fists_of_fury_t( this, options_str );
   if ( name == "rising_sun_kick" ) return new           rising_sun_kick_t( this, options_str );
-  if ( name == "tigereye_brew" ) return new             tigereye_brew_t( this, options_str );
-  if ( name == "touch_of_karma" ) return new            touch_of_karma_t( this, options_str );
-  if ( name == "energizing_elixir" ) return new         energizing_elixir_t( this, options_str );
-  if ( name == "provoke" ) return new                   provoke_t( this, options_str );
-  if ( name == "touch_of_death" ) return new            touch_of_death_t( this, options_str );
-  if ( name == "storm_earth_and_fire" ) return new      storm_earth_and_fire_t( this, options_str );
   if ( name == "vivify" ) return new                    vivify_t( *this, options_str );
   // Brewmaster
   if ( name == "blackout_strike" ) return new           blackout_strike_t( this, options_str );
   if ( name == "breath_of_fire" ) return new            breath_of_fire_t( *this, options_str );
-  if ( name == "keg_smash" ) return new                 keg_smash_t( *this, options_str );
   if ( name == "fortifying_brew" ) return new           fortifying_brew_t( *this, options_str );
-  if ( name == "ironskin_brew" ) return new             ironskin_brew_t( *this, options_str );
-  if ( name == "purifying_brew" ) return new            purifying_brew_t( *this, options_str );
   if ( name == "gift_of_the_ox" ) return new            gift_of_the_ox_t( *this, options_str );
+  if ( name == "ironskin_brew" ) return new             ironskin_brew_t( *this, options_str );
+  if ( name == "keg_smash" ) return new                 keg_smash_t( *this, options_str );
+  if ( name == "purifying_brew" ) return new            purifying_brew_t( *this, options_str );
+  if ( name == "provoke" ) return new                   provoke_t( this, options_str );
   // Mistweaver
-  if ( name == "crackling_jade_lightning" ) return new  crackling_jade_lightning_t( *this, options_str );
   if ( name == "effuse" ) return new                    effuse_t( *this, options_str );
   if ( name == "enveloping_mist" ) return new           enveloping_mist_t( *this, options_str );
   if ( name == "essence_font" ) return new              essence_font_t( this, options_str );
@@ -4812,16 +4969,26 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "mana_tea" ) return new                  mana_tea_t( *this, options_str );
   if ( name == "renewing_mist" ) return new             renewing_mist_t( *this, options_str );
   if ( name == "revival" ) return new                   revival_t( *this, options_str );
+  if ( name == "thunder_focus_tea" ) return new         thunder_focus_tea_t( *this, options_str );
+  // Windwalker
+  if ( name == "fists_of_fury" ) return new             fists_of_fury_t( this, options_str );
+  if ( name == "tigereye_brew" ) return new             tigereye_brew_t( this, options_str );
+  if ( name == "touch_of_karma" ) return new            touch_of_karma_t( this, options_str );
+  if ( name == "touch_of_death" ) return new            touch_of_death_t( this, options_str );
+  if ( name == "storm_earth_and_fire" ) return new      storm_earth_and_fire_t( this, options_str );
   // Talents
-  if ( name == "chi_wave" ) return new                  chi_wave_t( this, options_str );
   if ( name == "chi_burst" ) return new                 chi_burst_t( this, options_str );
+  if ( name == "chi_orbit" ) return new                 chi_orbit_t( this, options_str );
+  if ( name == "chi_torpedo" ) return new               chi_torpedo_t( this, options_str );
+  if ( name == "chi_wave" ) return new                  chi_wave_t( this, options_str );
   if ( name == "black_ox_brew" ) return new             black_ox_brew_t( this, options_str );
   if ( name == "dampen_harm" ) return new               dampen_harm_t( *this, options_str );
   if ( name == "diffuse_magic" ) return new             diffuse_magic_t( *this, options_str );
-  if ( name == "rushing_jade_wind" ) return new         rushing_jade_wind_t( this, options_str );
+  if ( name == "energizing_elixir" ) return new         energizing_elixir_t( this, options_str );
   if ( name == "invoke_xuen" ) return new               xuen_spell_t( this, options_str );
-  if ( name == "chi_torpedo" ) return new               chi_torpedo_t( this, options_str );
-  if ( name == "chi_orbit" ) return new                 chi_orbit_t( this, options_str );
+  if ( name == "mistwalk" ) return new                  mistwalk_t( *this, options_str );
+  if ( name == "refreshing_jade_wind" ) return new      refreshing_jade_wind_t( this, options_str );
+  if ( name == "rushing_jade_wind" ) return new         rushing_jade_wind_t( this, options_str );
   if ( name == "spinning_dragon_strike" ) return new    spinning_dragon_strike_t( this, options_str );
   if ( name == "serenity" ) return new                  serenity_t( this, options_str );
   // Artifacts
@@ -5059,6 +5226,8 @@ void monk_t::init_spells()
 
   // Mistweaver
   passives.aura_mistweaver_monk             = find_spell( 137024 );
+  passives.lifecycles_enveloping_mist       = find_spell( 197919 );
+  passives.lifecycles_vivify                = find_spell( 197916 );
   passives.renewing_mist_heal               = find_spell( 119611 );
   passives.soothing_mist_heal               = find_spell( 115175 );
   passives.soothing_mist_statue             = find_spell( 198533 );
@@ -5229,8 +5398,17 @@ void monk_t::create_buffs()
   buff.mana_tea = buff_creator_t( this, "mana_tea", talent.mana_tea )
     .default_value( talent.mana_tea -> effectN( 1 ).percent() );
 
+  buff.lifecycles_enveloping_mist = buff_creator_t( this, "lifecycles_enveloping_mist", passives.lifecycles_enveloping_mist )
+    .default_value( passives.lifecycles_enveloping_mist -> effectN( 1 ).percent() );
+
+  buff.lifecycles_vivify = buff_creator_t( this, "lifecycles_vivify", passives.lifecycles_vivify )
+    .default_value( passives.lifecycles_vivify -> effectN( 1 ).percent() );
+
   buff.teachings_of_the_monastery = buff_creator_t( this, "teachings_of_the_monastery", passives.teachings_of_the_monastery_buff )
     .default_value( passives.teachings_of_the_monastery_buff -> effectN( 1 ).percent() );
+
+  buff.thunder_focus_tea = buff_creator_t( this, "thunder_focus_tea", spec.thunder_focus_tea )
+    .max_stack( 1 +  ( talent.focused_thunder ? talent.focused_thunder -> effectN( 1 ).base_value()  : 0 ) );
 
   buff.vital_mists = buff_creator_t( this, "vital_mists", find_spell( 118674 ) ).max_stack( 5 );
 
@@ -5784,7 +5962,7 @@ void monk_t::combat_begin()
     if ( talent.chi_orbit -> ok() )
     {
       // If Chi Orbit, start out with max stacks
-      buff.chi_orbit -> trigger( 4 );
+      buff.chi_orbit -> trigger( buff.chi_orbit -> max_stack() );
       new ( *sim ) chi_orbit_event_t( *this, timespan_t::zero() );
     }
 
