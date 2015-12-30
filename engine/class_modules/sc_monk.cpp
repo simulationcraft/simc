@@ -255,6 +255,7 @@ public:
     buff_t* eye_of_the_tiger;
     buff_t* forceful_winds;
     buff_t* hit_combo;
+    buff_t* light_on_your_feet;
     buff_t* power_strikes;
     buff_t* storm_earth_and_fire;
     buff_t* serenity;
@@ -2238,7 +2239,7 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
     double am = monk_melee_attack_t::action_multiplier();
     
     if ( p() -> artifact.tornado_kicks.rank())
-      am *= p() -> artifact.rising_winds.data().effectN( 1 ).percent(); // saved as 100
+      am *= p() -> artifact.rising_winds.percent();
 
     if ( p() -> artifact.rising_winds.rank() )
       am *= 1 + p() -> artifact.rising_winds.percent();
@@ -4192,6 +4193,9 @@ struct soothing_mist_t: public monk_heal_t
     if ( p() -> talent.soothing_elegance )
       am *= 1 + p() -> talent.soothing_elegance -> effectN( 2 ).percent();
 
+    if ( p() -> artifact.soothing_remedies.rank() )
+      am *= 1 + p() -> artifact.soothing_remedies.percent();
+
     return am;
   }
   virtual void tick( dot_t* d ) override
@@ -4320,6 +4324,9 @@ struct effuse_t: public monk_heal_t
     if ( p() -> buff.thunder_focus_tea -> up() )
       am *= 1 + p() -> spec.thunder_focus_tea -> effectN( 2 ).percent(); // saved as -100
 
+    if ( p() -> artifact.coalescing_mists.rank() )
+      am *= 1 + p() -> artifact.coalescing_mists.percent();
+
     return am;
   }
 
@@ -4367,6 +4374,16 @@ struct enveloping_mist_t: public monk_heal_t
       artifact = new the_mists_of_sheilun_buff_t( &p );
 
     mastery = new gust_of_mists_t( p );
+  }
+
+  virtual double action_multiplier()
+  {
+    double am = monk_heal_t::action_multiplier();
+
+    if ( p() -> artifact.way_of_the_mistweaver.rank() )
+      am *= 1 + p() -> artifact.way_of_the_mistweaver.percent();
+
+    return am;
   }
 
   virtual double cost() const override
@@ -4425,6 +4442,9 @@ struct renewing_mist_t: public monk_heal_t
     parse_options( options_str );
     may_crit = may_miss = false;
     dot_duration = p.passives.renewing_mist_heal -> duration();
+
+    if ( p.artifact.extended_healing.rank() )
+      dot_duration += p.artifact.extended_healing.time_value();
 
     if ( p.sheilun_staff_of_the_mists )
       artifact = new the_mists_of_sheilun_buff_t( &p );
@@ -4501,6 +4521,16 @@ struct vivify_t: public monk_heal_t
     }
 
     may_miss = false;
+  }
+
+  virtual double action_multiplier()
+  {
+    double am = monk_heal_t::action_multiplier();
+
+    if ( p() -> artifact.infusion_of_life.rank() )
+      am *= 1 + p() -> artifact.infusion_of_life.percent();
+
+    return am;
   }
 
   virtual double cost() const override
@@ -4593,6 +4623,14 @@ struct essence_font_t: public monk_spell_t
 
     if ( p() -> sheilun_staff_of_the_mists )
       artifact -> trigger();
+  }
+
+  virtual void last_tick( dot_t* d ) override
+  {
+    monk_spell_t::last_tick( d );
+
+    if ( p() -> artifact.light_on_your_feet_mw.rank() )
+      p() -> buff.light_on_your_feet -> trigger();
   }
 };
 
@@ -4917,6 +4955,9 @@ struct monk_absorb_t: public monk_action_t < absorb_t >
 
 struct life_cocoon_t: public monk_absorb_t
 {
+//  renewing_mist_t rem;
+//  enveloping_mist_t em;
+
   life_cocoon_t( monk_t& p, const std::string& options_str ):
     monk_absorb_t( "life_cocoon", p, p.spec.life_cocoon )
   {
@@ -4924,12 +4965,36 @@ struct life_cocoon_t: public monk_absorb_t
     harmful = may_crit = false;
     cooldown -> duration = data().charge_cooldown();
     spell_power_mod.direct = 31.164; // Hard Code 2015-Dec-29
+
+/*    if ( p.artifact.mists_of_life.rank() )
+    {
+      rem = new renewing_mist_t( p, options_str );
+      em = new enveloping_mist_t( p, options_str );
+    }
+*/
+  }
+
+  virtual double action_multiplier()
+  {
+    double am = monk_absorb_t::action_multiplier();
+
+    if ( p() -> artifact.protection_of_shaohao.rank() )
+      am *= 1 + p() -> artifact.protection_of_shaohao.percent();
+
+    return am;
   }
 
   virtual void impact( action_state_t* s ) override
   {
     p() -> buff.life_cocoon -> trigger( 1, s -> result_amount );
     stats -> add_result( 0.0, s -> result_amount, ABSORB, s -> result, s -> block_result, s -> target );
+
+/*    if ( p() -> artifact.mists_of_life.rank() )
+    {
+      rem -> execute();
+      em -> execute();
+    }
+*/
   }
 };
 } // end namespace absorbs
@@ -5527,11 +5592,15 @@ void monk_t::create_buffs()
   buff.lifecycles_vivify = buff_creator_t( this, "lifecycles_vivify", passives.lifecycles_vivify )
     .default_value( passives.lifecycles_vivify -> effectN( 1 ).percent() );
 
+  buff.light_on_your_feet = buff_creator_t( this, "light_on_your_feet", find_spell( 199407 ) )
+    .default_value( artifact.light_on_your_feet_mw.rank() ? artifact.light_on_your_feet_mw.percent() : 0 );
+
   buff.teachings_of_the_monastery = buff_creator_t( this, "teachings_of_the_monastery", passives.teachings_of_the_monastery_buff )
     .default_value( passives.teachings_of_the_monastery_buff -> effectN( 1 ).percent() );
 
   buff.thunder_focus_tea = buff_creator_t( this, "thunder_focus_tea", spec.thunder_focus_tea )
-    .max_stack( 1 +  ( talent.focused_thunder ? talent.focused_thunder -> effectN( 1 ).base_value()  : 0 ) );
+    .max_stack( 1 + ( talent.focused_thunder ? talent.focused_thunder -> effectN( 1 ).base_value()  : 0 )
+                  + ( artifact.harmony_and_focus.rank() ? artifact.harmony_and_focus.value() : 0 ) );
 
   buff.vital_mists = buff_creator_t( this, "vital_mists", find_spell( 118674 ) ).max_stack( 5 );
 
@@ -6163,6 +6232,9 @@ void monk_t::target_mitigation( school_e school,
   if ( school != SCHOOL_PHYSICAL && specialization() == MONK_BREWMASTER )
     // TODO: Double Check that Brewmasters mitigate 15% of Magical Damage
     s -> result_amount *= 1.0 + spec.stagger -> effectN( 5 ).percent();
+
+  if ( artifact.shroud_of_mist.rank() )
+    s -> result_amount *= 1.0 + artifact.shroud_of_mist.value();
 
   // Damage Reduction Cooldowns
   if ( buff.fortifying_brew -> up() )
