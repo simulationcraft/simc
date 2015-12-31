@@ -15,21 +15,30 @@ WINDWALKER:
 - Serenity - Double check if Strength of Xuen Artifact trait works with Serenity
 - Transfer of Power - Get actual duration and max stacks of the buff
 - Add expression for Combo Strike
+- Check if SEF uses Strike of the Windlord
 
 MISTWEAVER: 
 - Gusts of Mists - Check calculations
 - Vivify - Check the interation between Thunder Focus Tea and Lifecycles
 - Essence Font - Find out what happens with less than 6 people.
 - Life Cocoon - Double check if the Enveloping Mists and Renewing Mists from Mists of Life proc the mastery or not.
+- Not Modeled:
+-- Crane's Grace
+-- Invoke Chi-Ji
+-- Summon Jade Serpent Statue
 
 BREWMASTER:
 - Get the actual amount that Fortified Mind reduces Fortifying Brew's cooldown by
 - Fortuitous Sphers - Finish implementing
 - Break up Healing Elixers and Fortuitous into two spells; one for proc and one for heal
-- Zen Meditation
 - Gift of the Ox - Check if 35% chance is baseline and increased by HP percent from there
 - Double Check that Brewmasters mitigate 15% of Magical Damage
 - Stagger - Effect says 10 but tooltip say 6%; double check
+- Not Modeled:
+-- Summon Black Ox Statue
+-- Invoke Niuzao
+-- Fortified Mind
+-- Zen Meditation
 */
 #include "simulationcraft.hpp"
 
@@ -83,6 +92,7 @@ enum sef_ability_e {
   SEF_RISING_SUN_KICK_TRINKET,
   SEF_RISING_SUN_KICK_TORNADO_KICK,
   SEF_FISTS_OF_FURY,
+  SEF_CROSSWINDS,
   SEF_SPINNING_CRANE_KICK,
   SEF_RUSHING_JADE_WIND,
   SEF_SPINNING_DRAGON_STRIKE,
@@ -538,6 +548,7 @@ public:
     const spell_data_t* combo_breaker_bok;
     const spell_data_t* crackling_tiger_lightning;
     const spell_data_t* crackling_tiger_lightning_driver;
+    const spell_data_t* crosswinds;
     const spell_data_t* dizzying_kicks;
     const spell_data_t* hit_combo;
     const spell_data_t* rising_sun_kick_trinket;
@@ -1178,6 +1189,33 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
   };
 
+  struct sef_crosswinds_tick_t: public sef_tick_action_t
+  {
+    sef_crosswinds_tick_t( storm_earth_and_fire_pet_t* p ):
+      sef_tick_action_t( "crosswinds_tick", p, p -> o() -> passives.crosswinds )
+    { 
+      aoe = p -> o() -> artifact.crosswinds.data().effectN( 1 ).trigger() -> effectN( 1 ).base_value();
+
+      // Reset some variables to ensure proper execution
+      dot_duration = timespan_t::zero();
+      school = SCHOOL_PHYSICAL;
+    }
+  };
+
+  struct sef_crosswinds_t : public sef_melee_attack_t
+  {
+    sef_crosswinds_t( storm_earth_and_fire_pet_t* player ) :
+      sef_melee_attack_t( "crosswinds", player, player -> o() -> artifact.crosswinds.data().effectN( 1 ).trigger() )
+    {
+      channeled = tick_zero = true;
+      may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
+
+      weapon_power_mod = 0;
+
+      tick_action = new sef_crosswinds_tick_t( player );
+    }
+  };
+
   struct sef_fists_of_fury_tick_t: public sef_tick_action_t
   {
     sef_fists_of_fury_tick_t( storm_earth_and_fire_pet_t* p ):
@@ -1196,7 +1234,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
   };
 
-  struct sef_fists_of_fury_t : public sef_melee_attack_t
+ struct sef_fists_of_fury_t : public sef_melee_attack_t
   {
     sef_fists_of_fury_t( storm_earth_and_fire_pet_t* player ) :
       sef_melee_attack_t( "fists_of_fury", player, player -> o() -> spec.fists_of_fury )
@@ -1381,6 +1419,7 @@ public:
     attacks[ SEF_RISING_SUN_KICK_TRINKET      ] = new sef_rising_sun_kick_trinket_t( this );
     attacks[ SEF_RISING_SUN_KICK_TORNADO_KICK ] = new sef_rising_sun_kick_tornado_kick_t( this );
     attacks[ SEF_FISTS_OF_FURY                ] = new sef_fists_of_fury_t( this );
+    attacks[ SEF_CROSSWINDS                   ] = new sef_crosswinds_t( this );
     attacks[ SEF_SPINNING_CRANE_KICK          ] = new sef_spinning_crane_kick_t( this );
     attacks[ SEF_RUSHING_JADE_WIND            ] = new sef_rushing_jade_wind_t( this );
     attacks[ SEF_SPINNING_DRAGON_STRIKE       ] = new sef_spinning_dragon_strike_t( this );
@@ -2758,6 +2797,39 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
 // ==========================================================================
 // Fists of Fury
 // ==========================================================================
+// TODO: Get AP Co-efficient of Crosswinds
+
+// Crosswinds Artifact Trait ===============================================
+struct crosswinds_tick_t : public monk_melee_attack_t
+{
+  crosswinds_tick_t( monk_t* p ) :
+    monk_melee_attack_t( "crosswinds_tick", p, p -> passives.crosswinds )
+  {
+    background = dual = true;
+    aoe = p -> artifact.crosswinds.data().effectN( 1 ).trigger() -> effectN( 1 ).base_value();
+    mh = &( player -> main_hand_weapon );
+    oh = &( player -> off_hand_weapon );
+
+    base_costs[ RESOURCE_CHI ] = 0;
+    dot_duration = timespan_t::zero();
+    trigger_gcd = timespan_t::zero();
+  }
+};
+
+struct crosswinds_t : public monk_melee_attack_t
+{
+  crosswinds_t( monk_t* p ) :
+    monk_melee_attack_t( "crosswinds", p, p -> artifact.crosswinds.data().effectN( 1 ).trigger() )
+  {
+    sef_ability = SEF_CROSSWINDS;
+
+    background = dual = tick_zero = true; 
+    may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
+    channeled = false;
+
+    tick_action = new crosswinds_tick_t( p );
+  }
+};
 
 struct fists_of_fury_tick_t: public monk_melee_attack_t
 {
@@ -2788,6 +2860,7 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
 struct fists_of_fury_t: public monk_melee_attack_t
 {
   rising_sun_kick_proc_t* rsk_proc;
+  crosswinds_t* crosswinds;
 
   fists_of_fury_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( "fists_of_fury", p, p -> spec.fists_of_fury )
@@ -2810,6 +2883,9 @@ struct fists_of_fury_t: public monk_melee_attack_t
 
     if ( p -> furious_sun )
       rsk_proc = new rising_sun_kick_proc_t( p, p -> passives.rising_sun_kick_trinket );
+
+    if ( p -> artifact.crosswinds.rank() )
+      crosswinds = new crosswinds_t( p );
   }
 
   virtual void update_ready( timespan_t ) override
@@ -2863,6 +2939,9 @@ struct fists_of_fury_t: public monk_melee_attack_t
       return;
 
     combo_strikes_trigger( CS_FISTS_OF_FURY );
+
+    if ( p() -> artifact.crosswinds.rank() )
+      crosswinds -> execute();
   }
 
   virtual void last_tick( dot_t* dot ) override
@@ -4713,13 +4792,9 @@ struct vivify_t: public monk_heal_t
 // ==========================================================================
 // Essence Font
 // ==========================================================================
-// Rough draft on implementation
-// It's supposed to work that each tick sends a heal every 167 milliseconds
-// but only 3 heals per person over the course of the channel
-// 0 - player 1, 167 - player 2, 334 - player 3, 501 - player 4, 668 - player 5, 835 - player 6
-// 1002 - player 1, 1169 - player 2, 1336 - player 3, etc
-//
-// TODO: Find out what happens with less than 6 people.
+// The spell only hits each player 3 times no matter how many players are in group
+// In order to get this working, initially only triggering the heal every 1002 milliseconds
+// (6 * 167 milliseconds) hitting up to 6 players
 
 struct essence_font_t: public monk_spell_t
 {
@@ -4729,6 +4804,7 @@ struct essence_font_t: public monk_spell_t
       monk_heal_t( "essence_font_heal", p, p.spec.essence_font -> effectN( 1 ).trigger() )
     {
       background = dual = true;
+      aoe = p.spec.essence_font -> effectN( 1 ).base_value();
     }
   };
 
@@ -4744,16 +4820,12 @@ struct essence_font_t: public monk_spell_t
     may_miss = hasted_ticks = false;
     tick_zero = true;
 
+    base_tick_time = data().effectN( 1 ).base_value() * data().effectN(1).period();
+
     add_child( heal );
 
     if ( p -> sheilun_staff_of_the_mists )
       artifact = new the_mists_of_sheilun_buff_t( p );
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    timespan_t tt = tick_time( s -> haste );
-    return tt * p() -> spec.essence_font -> effectN( 1 ).base_value() * data().duration().total_seconds();
   }
 
   virtual void execute() override
@@ -5677,6 +5749,7 @@ void monk_t::init_spells()
   passives.combo_breaker_bok                = find_spell( 116768 );
   passives.crackling_tiger_lightning        = find_spell( 123996 );
   passives.crackling_tiger_lightning_driver = find_spell( 123999 );
+  passives.crosswinds                       = find_spell( 196061 );
   passives.dizzying_kicks                   = find_spell( 196723 );
   passives.hit_combo                        = find_spell( 196741 );
   passives.rising_sun_kick_trinket          = find_spell( 185099 );
