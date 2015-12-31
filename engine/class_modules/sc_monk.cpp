@@ -5,34 +5,31 @@
 /*
 TODO:
 
-Add all buffs
-- Crackling Jade Lightning
-Change expel harm to heal later on.
-
 GENERAL:
-- Fortuitous Sphers - Finish implementing
-- Break up Healing Elixers and Fortuitous into two spells; one for proc and one for heal
-- Zen Meditation
 
 WINDWALKER:
 - Add the cooldown reduction while Serenity is active
+- Check if the Tornado Kick can proc the T18 trinket
+- Check if Spinning Dragon Kick works with T18 trinket
+- Strike of the Windlord - make sure AoE is using the n^2 calculation or straight up AoE
+- Serenity - Double check if Strength of Xuen Artifact trait works with Serenity
+- Transfer of Power - Get actual duration and max stacks of the buff
+- Add expression for Combo Strike
 
-MISTWEAVER: Pretty much everything. I have no plans of fixing mistweaver. -alex 8/26/14
-Implement the following spells:
-- Renewing Mist
-- Revival
-- Uplift
-- Life Cocoon
-- Teachings of the Monastery
-- Focus and Harmony
-* SCK healing
-* BoK's cleave effect
-- Non-glyphed Mana Tea
+MISTWEAVER: 
+- Gusts of Mists - Check calculations
+- Vivify - Check the interation between Thunder Focus Tea and Lifecycles
+- Essence Font - Find out what happens with less than 6 people.
+- Life Cocoon - Double check if the Enveloping Mists and Renewing Mists from Mists of Life proc the mastery or not.
 
 BREWMASTER:
-
-- Add some form of cooldown for Expel harm below 35% to better model what is in-game
-
+- Get the actual amount that Fortified Mind reduces Fortifying Brew's cooldown by
+- Fortuitous Sphers - Finish implementing
+- Break up Healing Elixers and Fortuitous into two spells; one for proc and one for heal
+- Zen Meditation
+- Gift of the Ox - Check if 35% chance is baseline and increased by HP percent from there
+- Double Check that Brewmasters mitigate 15% of Magical Damage
+- Stagger - Effect says 10 but tooltip say 6%; double check
 */
 #include "simulationcraft.hpp"
 
@@ -5978,11 +5975,6 @@ void monk_t::reset()
 void monk_t::regen( timespan_t periodicity )
 {
   resource_e resource_type = primary_resource();
-
-  if ( resource_type == RESOURCE_MANA )
-  {
-    //TODO: add mana tea here
-  }
 
   base_t::regen( periodicity );
 }
