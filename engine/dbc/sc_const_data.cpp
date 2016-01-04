@@ -480,11 +480,15 @@ specialization_e dbc::translate_spec_str( player_e ptype, const std::string& spe
     {
       if ( str_compare_ci( spec_str, "assassination" ) )
         return ROGUE_ASSASSINATION;
-      if ( str_compare_ci( spec_str, "ass" ) )
+      else if ( str_compare_ci( spec_str, "ass" ) )
         return ROGUE_ASSASSINATION;
-      if ( str_compare_ci( spec_str, "mut" ) )
+      else if ( str_compare_ci( spec_str, "mut" ) )
         return ROGUE_ASSASSINATION;
-      else if ( str_compare_ci( spec_str, "combat" ) )
+      else if ( str_compare_ci( spec_str, "outlaw" ) )
+        return ROGUE_OUTLAW;
+      else if ( str_compare_ci( spec_str, "pirate" ) )
+        return ROGUE_OUTLAW;
+      else if ( str_compare_ci( spec_str, "swashbuckler" ) )
         return ROGUE_OUTLAW;
       else if ( str_compare_ci( spec_str, "subtlety" ) )
         return ROGUE_SUBTLETY;
