@@ -5511,7 +5511,7 @@ void rogue_t::init_action_list()
     precombat -> add_action( "honor_among_thieves,cooldown=2.2,cooldown_stddev=0.1",
                              "Proxy Honor Among Thieves action. Generates Combo Points at a mean rate of 2.2 seconds. Comment out to disable (and use the real Honor Among Thieves)." );
 
-    def -> add_talent( this, "Shadow Reflection", "if=buff.shadow_dance.up|time<2" );
+    def -> add_talent( this, "Shadow Reflection", "if=buff.shadow_dance.up|(set_bonus.tier18_4pc=1&time<2)" );
 
     for ( size_t i = 0; i < item_actions.size(); i++ )
       def -> add_action( item_actions[i] + ",if=buff.shadow_dance.up" );
@@ -5524,9 +5524,13 @@ void rogue_t::init_action_list()
         def -> add_action( racial_actions[i] + ",if=buff.shadow_dance.up" );
     }
 
-    // Shadow Dancing and Vanishing and Marking for the Deathing
     def -> add_action( this, "Premeditation", "if=combo_points<4" );
+    // First action in the Opener
     def -> add_action( this, "Vanish","if=set_bonus.tier18_4pc=1&time<1" );
+    def -> add_action( this, "Hemorrhage","if=set_bonus.tier18_4pc=0&glyph.hemorrhaging_veins.enabled&time<1&!ticking&!dot.rupture.ticking&!dot.crimson_tempest.ticking&!dot.garrote.ticking" );
+    def -> add_action( this, "Garrote","if=set_bonus.tier18_4pc=0&time<1&!ticking&!dot.rupture.ticking&!dot.crimson_tempest.ticking&!dot.hemorrhage.ticking" );
+
+    // Shadow Dancing and Vanishing and Marking for the Deathing
     def -> add_action( "wait,sec=buff.subterfuge.remains-0.1,if=buff.subterfuge.remains>0.5&buff.subterfuge.remains<1.6&time>6" );
 
     def -> add_action( this, find_class_spell( "Shadow Dance" ), "pool_resource", "if=energy<110&cooldown.shadow_dance.remains<3.5" );
@@ -5549,7 +5553,7 @@ void rogue_t::init_action_list()
     if ( find_item( "maalus_the_blood_drinker" ) )
       def -> add_action( this, "Vanish", "if=set_bonus.tier18_4pc=1&buff.shadow_reflection.up&combo_points<3");
     def -> add_action( this, find_class_spell( "Vanish" ), "pool_resource", "for_next=1,extra_amount=115" );
-    def -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&energy>=115&combo_points<4-talent.anticipation.enabled&buff.shadow_dance.down" );
+    def -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&energy>=115&combo_points<4-talent.anticipation.enabled&buff.shadow_dance.down&(!cooldown.shadow_dance.up|set_bonus.tier18_4pc=1)" );
 
     def -> add_talent( this, "Marked for Death", "if=combo_points=0" );
 
