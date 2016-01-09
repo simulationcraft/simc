@@ -82,7 +82,7 @@ race=blood_elf
 spec=blood
 role=tank
 position=front
-talents=1200002
+talents=2311113
 glyphs=
 head=casque_of_foul_concentration,id=124331,bonus_id=567,upgrade=2
 neck=world_enders_gorget,id=124222,bonus_id=567,upgrade=2,enchant=75mult
