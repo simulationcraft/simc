@@ -49,18 +49,14 @@ actions+=/run_action_list,name=cdbos,if=!dot.breath_of_sindragosa.ticking&cooldo
 actions.bos=blood_tap,if=buff.blood_charge.stack>=11
 actions.bos+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<35&runic_power>5
 actions.bos+=/blood_tap,if=buff.blood_charge.stack>=9&runic_power>80&(blood.frac>1.8|frost.frac>1.8|unholy.frac>1.8)
-actions.bos+=/death_coil,if=runic_power>80&(blood.frac>1.8|frost.frac>1.8|unholy.frac>1.8)
 actions.bos+=/blood_tap,if=buff.blood_charge.stack>=9&runic_power>85&(buff.convulsive_shadows.remains>5|buff.convulsive_shadows.remains>2&buff.bloodlust.up)
-actions.bos+=/death_coil,if=runic_power>85&(buff.convulsive_shadows.remains>5|buff.convulsive_shadows.remains>2&buff.bloodlust.up)
-actions.bos+=/outbreak,if=(!dot.blood_plague.ticking|!dot.frost_fever.ticking)&runic_power>21
-actions.bos+=/chains_of_ice,if=!dot.frost_fever.ticking&runic_power<90
+actions.bos+=/outbreak,if=(!dot.blood_plague.ticking|!dot.frost_fever.ticking)&runic_power>21&!glyph.outbreak.enabled
 actions.bos+=/plague_strike,if=!dot.blood_plague.ticking&runic_power>5
 actions.bos+=/icy_touch,if=!dot.frost_fever.ticking&runic_power>5
 actions.bos+=/death_strike,if=runic_power<16
 actions.bos+=/blood_tap,if=runic_power<16
 actions.bos+=/blood_boil,if=runic_power<16&runic_power>5&buff.crimson_scourge.down&(blood>=1&blood.death=0|blood=2&blood.death<2)
 actions.bos+=/arcane_torrent,if=runic_power<16
-actions.bos+=/chains_of_ice,if=runic_power<16
 actions.bos+=/blood_boil,if=runic_power<16&buff.crimson_scourge.down&(blood>=1&blood.death=0|blood=2&blood.death<2)
 actions.bos+=/icy_touch,if=runic_power<16
 actions.bos+=/plague_strike,if=runic_power<16
@@ -71,8 +67,8 @@ actions.bos+=/blood_tap,if=(blood.frac>1.8&blood.death>=1|frost.frac>1.8|unholy.
 actions.bos+=/blood_boil,if=(blood>=1&blood.death=0&target.health.pct-3*(target.health.pct%target.time_to_die)>35|blood=2&blood.death<2)&buff.crimson_scourge.down
 actions.bos+=/antimagic_shell,if=runic_power<65
 actions.bos+=/plague_leech,if=runic_power<65
-actions.bos+=/outbreak,if=!dot.blood_plague.ticking
-actions.bos+=/outbreak,if=pet.dancing_rune_weapon.active&!pet.dancing_rune_weapon.dot.blood_plague.ticking
+actions.bos+=/outbreak,if=!dot.blood_plague.ticking&!glyph.outbreak.enabled
+actions.bos+=/outbreak,if=pet.dancing_rune_weapon.active&!pet.dancing_rune_weapon.dot.blood_plague.ticking&!glyph.outbreak.enabled
 actions.bos+=/death_and_decay,if=buff.crimson_scourge.up
 actions.bos+=/blood_boil,if=buff.crimson_scourge.up
 
@@ -110,7 +106,6 @@ actions.last+=/plague_leech
 
 actions.nbos=breath_of_sindragosa,if=runic_power>=80
 actions.nbos+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35
-actions.nbos+=/chains_of_ice,if=!dot.frost_fever.ticking
 actions.nbos+=/icy_touch,if=!dot.frost_fever.ticking
 actions.nbos+=/plague_strike,if=!dot.blood_plague.ticking
 actions.nbos+=/death_strike,if=(blood.frac>1.8&blood.death>=1|frost.frac>1.8|unholy.frac>1.8)&runic_power<80
