@@ -43,7 +43,7 @@ actions+=/icebound_fortitude,if=health.pct<30&buff.army_of_the_dead.down&buff.da
 actions+=/death_pact,if=health.pct<30
 actions+=/run_action_list,name=last,if=target.time_to_die<8|target.time_to_die<13&cooldown.empower_rune_weapon.remains<4
 actions+=/run_action_list,name=bos,if=dot.breath_of_sindragosa.ticking
-actions+=/run_action_list,name=nbos,if=!dot.breath_of_sindragosa.ticking&cooldown.breath_of_sindragosa.remains<4
+actions+=/run_action_list,name=near_bos,if=!dot.breath_of_sindragosa.ticking&cooldown.breath_of_sindragosa.remains<4
 actions+=/run_action_list,name=cdbos,if=!dot.breath_of_sindragosa.ticking&cooldown.breath_of_sindragosa.remains>=4
 
 actions.bos=blood_tap,if=buff.blood_charge.stack>=11
@@ -53,14 +53,12 @@ actions.bos+=/death_coil,if=runic_power>80&(blood.frac>1.8|frost.frac>1.8|unholy
 actions.bos+=/blood_tap,if=buff.blood_charge.stack>=9&runic_power>85&(buff.convulsive_shadows.remains>5|buff.convulsive_shadows.remains>2&buff.bloodlust.up)
 actions.bos+=/death_coil,if=runic_power>85&(buff.convulsive_shadows.remains>5|buff.convulsive_shadows.remains>2&buff.bloodlust.up)
 actions.bos+=/outbreak,if=(!dot.blood_plague.ticking|!dot.frost_fever.ticking)&runic_power>21
-actions.bos+=/chains_of_ice,if=!dot.frost_fever.ticking&runic_power<90
 actions.bos+=/plague_strike,if=!dot.blood_plague.ticking&runic_power>5
 actions.bos+=/icy_touch,if=!dot.frost_fever.ticking&runic_power>5
 actions.bos+=/death_strike,if=runic_power<16
 actions.bos+=/blood_tap,if=runic_power<16
 actions.bos+=/blood_boil,if=runic_power<16&runic_power>5&buff.crimson_scourge.down&(blood>=1&blood.death=0|blood=2&blood.death<2)
 actions.bos+=/arcane_torrent,if=runic_power<16
-actions.bos+=/chains_of_ice,if=runic_power<16
 actions.bos+=/blood_boil,if=runic_power<16&buff.crimson_scourge.down&(blood>=1&blood.death=0|blood=2&blood.death<2)
 actions.bos+=/icy_touch,if=runic_power<16
 actions.bos+=/plague_strike,if=runic_power<16
@@ -108,41 +106,10 @@ actions.last+=/icy_touch,if=target.time_to_die<2|cooldown.empower_rune_weapon.re
 actions.last+=/empower_rune_weapon,if=!blood&!unholy&!frost&runic_power<76|target.time_to_die<5
 actions.last+=/plague_leech
 
-actions.nbos=breath_of_sindragosa,if=runic_power>=80
-actions.nbos+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35
-actions.nbos+=/chains_of_ice,if=!dot.frost_fever.ticking
-actions.nbos+=/icy_touch,if=!dot.frost_fever.ticking
-actions.nbos+=/plague_strike,if=!dot.blood_plague.ticking
-actions.nbos+=/death_strike,if=(blood.frac>1.8&blood.death>=1|frost.frac>1.8|unholy.frac>1.8)&runic_power<80
-actions.nbos+=/death_and_decay,if=buff.crimson_scourge.up
-actions.nbos+=/blood_boil,if=buff.crimson_scourge.up|(blood=2&runic_power<80&blood.death<2)
-
-head=ogreskull_boneplate_greathelm,id=115539,bonus_id=567
-neck=gluttons_kerchief,id=113882,bonus_id=567,enchant=gift_of_multistrike
-shoulders=overdriven_spaulders,id=113990,bonus_id=567
-back=gronnstitched_greatcloak,id=113873,bonus_id=567,enchant=gift_of_multistrike
-chest=ogreskull_boneplate_breastplate,id=115537,bonus_id=567
-wrists=bracers_of_visceral_force,id=119331,bonus_id=567
-hands=ogreskull_boneplate_gauntlets,id=115538,bonus_id=567
-waist=ironcrushers_collar,id=113950,bonus_id=567
-legs=ogreskull_boneplate_greaves,id=115535,bonus_id=567
-feet=sabatons_of_fractal_earth,id=113936,bonus_id=567
-finger1=seal_of_unquenchable_flame,id=113922,bonus_id=567,enchant=gift_of_multistrike
-finger2=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_multistrike
-trinket1=blast_furnace_door,id=113893,bonus_id=567
-trinket2=vial_of_convulsive_shadows,id=113969,bonus_id=567
-main_hand=kagrazs_burning_blade,id=113913,bonus_id=567,enchant=rune_of_the_fallen_crusader
-
-# Gear Summary
-# gear_ilvl=701.00
-# gear_strength=3618
-# gear_stamina=4763
-# gear_crit_rating=521
-# gear_haste_rating=574
-# gear_mastery_rating=720
-# gear_multistrike_rating=1985
-# gear_versatility_rating=267
-# gear_armor=2287
-# gear_bonus_armor=875
-# set_bonus=tier17_2pc=1
-# set_bonus=tier17_4pc=1
+actions.near_bos=breath_of_sindragosa,if=runic_power>=80
+actions.near_bos+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35
+actions.near_bos+=/icy_touch,if=!dot.frost_fever.ticking
+actions.near_bos+=/plague_strike,if=!dot.blood_plague.ticking
+actions.near_bos+=/death_strike,if=(blood.frac>1.8&blood.death>=1|frost.frac>1.8|unholy.frac>1.8)&runic_power<80
+actions.near_bos+=/death_and_decay,if=buff.crimson_scourge.up
+actions.near_bos+=/blood_boil,if=buff.crimson_scourge.up|(blood=2&runic_power<80&blood.death<2)
