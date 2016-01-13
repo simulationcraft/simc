@@ -1,4 +1,4 @@
-SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20810)
+SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20914)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Beast Mastery Survival Hunter
@@ -610,7 +610,7 @@ Description      : Command your pet to intimidate the target, stunning it for $2
 Tooltip          : Stuns the target for $24394d.
 
 Name             : Boar's Speed (id=19596) [Spell Family (9), Passive] 
-Class            : Ferocity Tenacity Cunning Cunning Hunter Pet
+Class            : Ferocity Tenacity Cunning Hunter Pet
 School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1147,7 +1147,7 @@ Description      : Your pet charges an enemy, immobilizing the target and adds m
 Tooltip          : Immobilized.
 
 Name             : Spiked Collar (id=53184) [Spell Family (9), Passive] 
-Class            : Ferocity Ferocity Tenacity Cunning Hunter, Death Knight Pet
+Class            : Ferocity Ferocity Tenacity Hunter, Death Knight Pet
 School           : Physical
 Range            : 5 yards
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -1249,8 +1249,9 @@ Description      : You attempt to finish off a wounded target, dealing $sw2 Phys
 If Kill Shot fails to kill the target, the cooldown is reset.
 
 Name             : Last Stand (Tenacity Ability) (id=53478) [Spell Family (9)] 
-Class            : Ferocity Tenacity Tenacity Cunning Hunter Pet
+Class            : Ferocity Tenacity Tenacity Hunter Pet
 School           : Physical
+Duration         : 20 seconds
 Cooldown         : 360 seconds
 Attributes       : ....x... ........ ..x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1259,31 +1260,12 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=46146)    : Dummy (3)
+#1 (id=46146)    : Apply Aura (6) | Increase Max Health (Stacking) (250)
                    Base Value: 30 | Scaled Value: 30
-Description      : Your pet temporarily gains $s1% of its maximum health for $53479d.  After the effect expires, the health is lost.
-
-Name             : Last Stand (id=53479) 
-Class            : Hunter
-School           : Physical
-Range            : 100 yards
-Duration         : 20 seconds
-Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ .....x.. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=46147)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30
-#2 (id=171675)   : Apply Aura (6) | Unknown effect sub type (382)
-                   Base Value: 23 | Scaled Value: 23 | Misc Value: 1
 Description      : Your pet temporarily gains $s1% of its maximum health for $d.  After the effect expires, the health is lost.
-Tooltip          : $?$w1>0[Health increased by $w1.][Pet health increased.]
 
 Name             : Roar of Sacrifice (Cunning Ability) (id=53480) [Spell Family (9)] 
-Class            : Ferocity Tenacity Cunning Cunning Hunter Pet
+Class            : Ferocity Tenacity Cunning Hunter Pet
 School           : Nature
 Range            : 40 yards
 Duration         : 12 seconds
@@ -1306,7 +1288,7 @@ Description      : Protects a friendly target from critical strikes, making atta
 Tooltip          : Immune to critical strikes, but damage transferred to the Hunter's pet.
 
 Name             : Blood of the Rhino (id=53482) [Passive] 
-Class            : Ferocity Tenacity Tenacity Cunning Hunter Pet
+Class            : Ferocity Tenacity Tenacity Hunter Pet
 School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1325,7 +1307,7 @@ Effects          :
 Description      : Increases all healing effects on your pet by $s1%, reduces your pet's physical damage taken by $s2%, and reduces your pet's chance to be critically hit by melee attacks by $s3%.
 
 Name             : Bullheaded (Cunning Ability) (id=53490) [Spell Family (9)] 
-Class            : Cunning Cunning Hunter Pet
+Class            : Cunning Hunter Pet
 School           : Physical
 GCD              : 1.5 seconds
 Duration         : 0.1 seconds
@@ -1344,7 +1326,7 @@ Effects          :
 Description      : Removes all movement impairing effects and all effects which cause loss of control of your pet, and reduces damage done to your pet by $63896s1% for $63896d.
 
 Name             : Cornered (id=53497) [Spell Family (9), Passive] 
-Class            : Ferocity Tenacity Cunning Cunning Hunter Pet
+Class            : Ferocity Tenacity Cunning Hunter Pet
 School           : Physical
 Proc Chance      : 101%
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -1714,7 +1696,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1
 
 Name             : Dash (Ferocity, Cunning Ability) (id=61684) [Spell Family (9)] 
-Class            : Ferocity Ferocity Cunning Cunning Hunter Pet
+Class            : Ferocity Ferocity Cunning Hunter Pet
 School           : Physical
 Spell Level      : 10
 Duration         : 16 seconds
@@ -1759,7 +1741,7 @@ Description      : Your pet charges an enemy, immobilizing the target for $53148
 Tooltip          : Attack power increased by $61685s2%.
 
 Name             : Great Stamina (id=61688) [Passive] 
-Class            : Ferocity Tenacity Tenacity Cunning Hunter Pet
+Class            : Ferocity Tenacity Tenacity Hunter Pet
 School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3388,7 +3370,7 @@ Description      : Your damage dealt with Auto Shot, Arcane Shot and Aimed Shot 
 Tooltip          : Your damage dealt with Auto Shot, Arcane Shot and Aimed Shot is increased by $s1%.
 
 Name             : Combat Experience (id=156843) [Spell Family (9), Passive] 
-Class            : Ferocity Tenacity Cunning Hunter, Death Knight Pet
+Class            : Ferocity Tenacity Hunter, Death Knight Pet
 School           : Physical
 Spell Level      : 1
 Attributes       : ....x.x. x....... ..x..... ........   ........ ........ ........ ........ 
@@ -4240,7 +4222,7 @@ Name             : Wild Call (id=185789) [Spell Family (9), Passive]
 Class            : Beast Mastery Hunter
 School           : Physical
 Spell Level      : 22
-Proc Chance      : 30%
+Proc Chance      : 20%
 Proc Flags       : ......x. ........ ........ ........ 
                  : White Ranged
 Affecting spells : One with the Pack (199528)
@@ -4864,19 +4846,16 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #2 (id=279997)   : Weapon Damage% (31)
                    Base Value: 350 | Scaled Value: 3.5
-#3 (id=286016)   : Trigger Spell: Mongoose Fury (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 190931
 Description      : A brutal attack, attempting to sever the enemy's limbs, dealing $sw1 Physical damage.
 
-Also grants Mongoose Fury, which increases the damage of further Mongoose Bites by $190931s1% for $190931d, stacking up to $190931u times.
+Also grants Mongoose Fury, which increases the damage of further Mongoose Bites by $190931s1% for $190931d, stacking up to $190931u times.  Successive attacks add stacks but do not increase the duration.
 
 Name             : Mongoose Fury (id=190931) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
-Duration         : 3.5 seconds
+Duration         : 12 seconds
 Stacks           : 6 maximum
 Proc Chance      : 101%
-Triggered by     : Mongoose Bite (190928)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4941,7 +4920,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=280652)   : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 18
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Misc Value: 18
                    Affected Spells: Hunting Companion (191335), Hunting Companion (191336)
 Description      : Your pets attacks have a ${$m1/2}.1% chance to grant you an additional charge of Mongoose Bite.
 

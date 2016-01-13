@@ -1,4 +1,4 @@
-SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20810)
+SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20914)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Fire Frost Mage
@@ -181,7 +181,6 @@ Spell Level      : 7
 GCD              : 1.5 seconds
 Duration         : 1 seconds
 Cooldown         : 15 seconds
-Charges          : 0 (15 seconds cooldown)
 Affecting spells : Reduced Blink GCD (44301), Tome of Blink (168795), Everywhere At Once (187301), Displacement (195676)
 Attributes       : ........ ........ x....... ........   ........ ..x....x ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -428,7 +427,7 @@ School           : Arcane
 Spell Level      : 44
 Duration         : 15 seconds
 Cooldown         : 90 seconds
-Affecting spells : Icy Veins (12472), Item - Mage T12 4P Bonus (99064), Stolen Time (105791), Item - Mage T14 4P Bonus (123101), Wild Arcanist (184903), Aegwynn's Imperative (187264)
+Affecting spells : Icy Veins (12472), Stolen Time (105791), Item - Mage T14 4P Bonus (123101), Wild Arcanist (184903), Aegwynn's Imperative (187264)
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -450,9 +449,9 @@ Effects          :
 #5 (id=269262)   : Apply Aura (6) | Add Percent Modifier: Spell Global Cooldown (108)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 21
                    Affected Spells: Arcane Blast (30451)
-Description      : When activated, you deal $s1% more spell damage and damaging spells cost $s2% $?p99064|?s157614[less][more] mana to cast. This effect lasts $D.
+Description      : When activated, you deal $s1% more spell damage and damaging spells cost $s2% less mana to cast. This effect lasts $D.
 Tooltip          : Spell damage increased by $w1%.
-Mana costs of your damaging spells $?$w2=10[increased][reduced] by $w2%.
+Mana costs of your damaging spells reduced by $w2%.
 
 Name             : Evocation (id=12051) [Spell Family (3)] 
 Class            : Arcane Mage
@@ -461,7 +460,7 @@ Spell Level      : 40
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 90 seconds
-Affecting spells : Icy Veins (12472), Ice Floes (108839), Improved Evocation (157614), Words of Power (205035)
+Affecting spells : Icy Veins (12472), Ice Floes (108839), Words of Power (205035)
 Attributes       : ........ ........ x....... ........   ......x. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
@@ -1867,24 +1866,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Enables Worgens to switch between human and Worgan forms
 
-Name             : Item - Mage T12 4P Bonus (id=99064) [Spell Family (3), Passive] 
-Class            : Mage
-School           : Physical
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=106305)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
-                   Base Value: -20 | Scaled Value: -20 | Misc Value: 12
-                   Affected Spells: Arcane Power (12042)
-#2 (id=106308)   : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 18
-Description      : Your spells have an increased chance to trigger Brain Freeze or Pyroblast!.  In addition, Arcane Power decreases the cost of your damaging spells by 10% instead of increasing their cost.
-
 Name             : Ice Floes (id=108839) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
@@ -3003,22 +2984,6 @@ Effects          :
 Description      : $@spelldesc153561
 Tooltip          : Burning for $w1 Fire damage every $t1 sec.
 
-Name             : Improved Evocation (id=157614) [Spell Family (3), Passive] 
-Class            : Mage
-School           : Physical
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=219781)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
-                   Base Value: -30000 | Scaled Value: -30000 | Misc Value: 11
-                   Affected Spells: Evocation (12051)
-Description      : Reduces the cooldown of Evocation by ${$m1/-1000} sec.
-
 Name             : Enhanced Pyrotechnics (id=157642) [Spell Family (3), Passive] 
 Class            : Fire Mage
 School           : Physical
@@ -3768,8 +3733,9 @@ School           : Frost
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
-Duration         : 20 seconds
+Duration         : 10 seconds
 Cooldown         : 60 seconds
+Affecting spells : Ray of Frost (208141)
 Attributes       : ........ ........ ........ ........   ..x..... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3780,9 +3746,12 @@ Attributes       : ........ ........ ........ ........   ..x..... ........ .....
 Effects          :
 #1 (id=302648)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -30 | Scaled Value: -30
-#2 (id=303101)   : Apply Aura (6) | Periodic Damage: frost every 0.5 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.78700
-Description      : Channels a ray of frost at the target, slowing the target by $m1% and dealing $o2 Frost damage to the target over $d.  The damage dealt is increased the longer the ray is channeled.
+#2 (id=303101)   : Apply Aura (6) | Periodic Damage: frost every 1 seconds (3)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000
+Description      : For the next $d, you can channel a beam of icy power at an enemy.
+
+Ray of Frost slows the target by $m1% and deals $s2 Frost damage every $t2 sec.  Each time Ray of Frost deals damage, its damage is increased by $208141s1%.
+
 
 Name             : Arcane Familiar (id=205022) [Spell Family (3)] 
 Class            : Mage
@@ -4014,11 +3983,6 @@ Name             : Ice Ward (id=205036) [Spell Family (3), Passive]
 Class            : Mage
 School           : Frost
 Spell Level      : 1
-Internal Cooldown: 1 seconds
-Stacks           : 3 initial, 3 maximum
-Proc Chance      : 100%
-Proc Flags       : ...x.x.. ........ ........ ........ 
-                 : White Melee Taken, Yellow Melee Taken
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4175,5 +4139,26 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 0x10
 Description      : Whenever you attempt to chill a target, you chill yourself with a stacking debuff.  The higher the debuff, the more damage all your frost spells deal, but the slower you move.
 Tooltip          : Damage dealt by Frost spells increased by $s1%
+
+Name             : Ray of Frost (id=208141) [Spell Family (3)] 
+Class            : Mage
+School           : Frost
+Spell Level      : 1
+Range            : 40 yards
+Duration         : 10 seconds
+Stacks           : 10 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=307923)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22
+                   Affected Spells: Ray of Frost (205021)
+Description      : $@spelldesc205021
+Tooltip          : Ray of Frost damage increased by $s1%.
 
 

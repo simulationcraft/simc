@@ -1,4 +1,4 @@
-SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20810)
+SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20914)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -2027,7 +2027,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68066)    : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Misc Value: 32
-                   Affected Spells: Demonic Empowerment (193396), Stormlash (195222)
+                   Affected Spells: Demonic Empowerment (193396)
 Description      : Demonic Empowerment also increases the damage of your demons by ${$m1}.2%.
 
 Name             : Mastery: Chaotic Energies (id=77220) [Spell Family (5), Passive] 
@@ -2619,7 +2619,7 @@ Effects          :
 #1 (id=119566)   : Apply Owner Area Aura (143) | Unknown effect sub type (81)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 127 | Radius: 100 yards
 #2 (id=119569)   : Apply Owner Area Aura (143) | Periodic Dummy: every 1 seconds (226)
-                   Base Value: 3 | Scaled Value: 3 | Misc Value: 127 | Radius: 100 yards
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 127 | Radius: 100 yards
 Description      : $s1% of all damage taken is split with your demon pet, and $s2% of damage you deal heals you and your demon.
 Tooltip          : $s1% of all damage taken is split with your summoned demon.  $s2% of all damage done by the Warlock is converted into healing on the Warlock and the demon.
 
@@ -4754,9 +4754,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Radius: 100 yards
 #5 (id=285122)   : Apply Aura (6) | Scale% (61)
                    Base Value: 50 | Scaled Value: 50 | Radius: 100 yards
-Description      : Empowers $?s196605[all][up to $s1] of your active demons with dark energies, increasing their Haste and health by $s2% for $d.
+Description      : Empowers $?s196605[all][up to $s1] of your active demons with dark energies, increasing their Haste and health by $s2% for $d.$?s196605[][
 
-Prefers stronger demons first.
+Prefers stronger demons first.]
 Tooltip          : Haste increased by $w2%.
 Health increased by $w3%.$?w4>0[
 Damage dealt increased by $w4%.][]
@@ -5292,7 +5292,7 @@ Name             : Channel Demonfire (id=196448) [Spell Family (5)]
 Class            : Warlock
 School           : Fire
 Range            : 40 yards
-Velocity         : 16 yards/sec
+Velocity         : 24 yards/sec
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

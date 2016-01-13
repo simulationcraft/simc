@@ -1,4 +1,4 @@
-SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20810)
+SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20914)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -11,16 +11,16 @@ Affecting spells : Vendetta (79140), Shadow Blades (121471), Item - Rogue T14 2P
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=30)       : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000
 #2 (id=31)       : Weapon Damage% (31)
-                   Base Value: 160 | Scaled Value: 1.6 | SP Coefficient: 1.00000
-#3 (id=32)       : Add Combo Points (80)
-                   Base Value: 1 | Scaled Value: 1
+                   Base Value: 240 | Scaled Value: 2.4 | SP Coefficient: 1.00000
+#3 (id=32)       : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points
 #4 (id=297239)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 Description      : Stab the target, causing $sw2 Physical damage. Damage increased $s4% when behind your target. Awards $s3 combo $lpoint:points;.
@@ -86,7 +86,7 @@ Affecting spells : Stealth (1784), Hemorrhage (16511), Vendetta (79140), Shadow 
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ x....... ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
@@ -94,8 +94,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.75000
 #2 (id=281)      : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
-#3 (id=282)      : Add Combo Points (80)
-                   Base Value: 1 | Scaled Value: 1
+#3 (id=282)      : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points
 Description      : Garrote the enemy, causing $o1 damage over $d and awarding $s3 combo $lpoint:points;. Silences the target for $1330d when used from Stealth.
 Tooltip          : $w1 damage every $t1 seconds.
 
@@ -130,13 +130,13 @@ Affecting spells : Glyph of Disguise (63268), Shadow Blades (121471), Silent Bla
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ..x..... x....... x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Disable player procs (112)
 Effects          :
-#1 (id=447)      : Add Combo Points (80)
-                   Base Value: 2 | Scaled Value: 2 | SP Coefficient: 1.00000
+#1 (id=447)      : Energize Power (30)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: combo_points
 #2 (id=448)      : Trigger Spell: Mutilate (64)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Trigger Spell: 5374
 #3 (id=449)      : Trigger Spell: Mutilate Off-Hand (64)
@@ -301,14 +301,14 @@ Affecting spells : Vendetta (79140), Shadow Blades (121471), Prey on the Weak (1
 Attributes       : ....x... ........ x.x..x.. ........   ........ ........ ..x..... ..xx.... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ x....... ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=564)      : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0
-#2 (id=565)      : Add Combo Points (80)
-                   Base Value: 2 | Scaled Value: 2
+#2 (id=565)      : Energize Power (30)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: combo_points
 #3 (id=169689)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f
 Description      : Stuns the target for $d.  Awards $s2 combo $lpoint:points;$?s138106[ and causes you to appear behind the target][].
@@ -324,7 +324,7 @@ Affecting spells : Glyph of Blurred Speed (58039), Enhanced Vanish (157666), Ite
 Attributes       : ....x... ........ x.x.x... ...x.x..   .....x.. ..x..... ........ ........ 
                  : .xx..... ........ ........ ........   ........ ........ xxx..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Disable player procs (112), Disable target procs (113)
@@ -333,8 +333,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #2 (id=138233)   : Trigger Spell: (18461) (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 18461
-#3 (id=271221)   : Add Combo Points (80)
-                   Base Value: 0 | Scaled Value: 0
+#3 (id=271221)   : Energize Power (30)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: combo_points
 Description      : Allows you to vanish from sight, entering stealth while in combat.  For the first $11327d after vanishing, damage and harmful effects received will not break stealth.  Also breaks movement impairing effects.
 Tooltip          : Improved stealth.
 
@@ -460,8 +460,7 @@ Resource         : 1 - 5 Combo Points
 Spell Level      : 10
 Range            : 8 yards
 GCD              : 1 seconds
-Duration         : 3 seconds
-Affecting spells : Death from Above (163786), Deeper Strategem (193531), Alacrity (193539), Fate's Thirst (202514), Fatebringer (202524)
+Affecting spells : Death from Above (163786), Eviscerating Blade (184917), Deeper Strategem (193531), Alacrity (193539), Fate's Thirst (202514), Fatebringer (202524)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -471,18 +470,16 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=622)      : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0
-#2 (id=293713)   : Apply Aura (6) | Root (26)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.82500
 Description      : Lunging finishing move that causes damage per combo point and has increased range:
-   1 point  : ${($AP*0.559)*$<mult>*(1+$@versadmg)} damage
-   2 points: ${($AP*0.559)*$<mult>*(1+$@versadmg)*2} damage
-   3 points: ${($AP*0.559)*$<mult>*(1+$@versadmg)*3} damage
-   4 points: ${($AP*0.559)*$<mult>*(1+$@versadmg)*4} damage
-   5 points: ${($AP*0.559)*$<mult>*(1+$@versadmg)*5} damage$?s193531[
-   6 points: ${($AP*0.559)*$<mult>*(1+$@versadmg)*6} damage][]
+   1 point  : ${$<mult>*$m1*1} damage
+   2 points: ${$<mult>*$m1*2} damage
+   3 points: ${$<mult>*$m1*3} damage
+   4 points: ${$<mult>*$m1*4} damage
+   5 points: ${$<mult>*$m1*5} damage$?s193531[
+   6 points: ${$<mult>*$m1*6} damage][]
 Tooltip          : Rooted.
-Variables        : $mult=$?s16511[${(((100+$76808m1))/100)}][${1.00*0.88}]
+Variables        : $mult=${(1+$76808m1/100)*(1+$@versadmg)}
 
 Name             : Deadly Poison (id=2818) [Scaling Spell (9), Spell Family (8)] 
 Class            : Rogue
@@ -653,7 +650,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Druid (137012), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Owlkin Frenzy (157228), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Tranquil Mind (189858), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Warrior of Elune (202425), Solar Stabbing (202426), Blessing of Elune (202737)
+Affecting spells : Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Owlkin Frenzy (157228), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Warrior of Elune (202425), Solar Stabbing (202426), Blessing of Elune (202737)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -662,7 +659,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.28600
+                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.80000
 Description      : Causes $s1 Nature damage to the target.
 
 Name             : Evasion (id=5277) [Spell Family (8)] 
@@ -744,7 +741,7 @@ Affecting spells : Stealth (1784), Vendetta (79140), Shadow Blades (121471), Clo
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
@@ -752,8 +749,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 #2 (id=3613)     : Weapon Damage% (31)
                    Base Value: 315 | Scaled Value: 3.15 | SP Coefficient: 1.00000
-#3 (id=3614)     : Add Combo Points (80)
-                   Base Value: 2 | Scaled Value: 2
+#3 (id=3614)     : Energize Power (30)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: energy
 Description      : Ambush the target, causing $sw2 Physical damage to the target (damage increased 40% if a dagger is equipped)$?s138106[ and causes you to appear behind the target][].  Awards $s3 combo $lpoint:points;.
 
 Name             : Wound Poison (id=8679) [Spell Family (8)] 
@@ -951,12 +948,12 @@ Triggered by     : Seal Fate (14190)
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
                  : x.x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=6472)     : Add Combo Points (80)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000
+#1 (id=6472)     : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points
 
 Name             : Seal Fate (id=14190) [Spell Family (8), Passive] 
 Class            : Assassination Rogue
@@ -1007,7 +1004,7 @@ Affecting spells : Glyph of Hemorrhage (56807), Vendetta (79140), Shadow Blades 
 Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   .x...... ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
@@ -1015,8 +1012,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 #2 (id=8232)     : Weapon Damage% (31)
                    Base Value: 91 | Scaled Value: 0.91
-#3 (id=8233)     : Add Combo Points (80)
-                   Base Value: 1 | Scaled Value: 1
+#3 (id=8233)     : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points
 #4 (id=134070)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 30 | Scaled Value: 30
                    Affected Spells: Garrote (703), Rupture (1943), Internal Bleeding (154953)
@@ -2111,7 +2108,7 @@ Attributes       : ........ ........ ........ ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=68390)    : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 30 | Scaled Value: 30
-                   Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Mutilate Off-Hand (27576), Spore Cloud (32643), Envenom (32645), Fan of Knives (51723), Deadly Poison (113780), Shuriken Toss (114014), Debilitating Poison (115196), Shadow Blade (121473), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Poisoned Knife (185565), Eviscerate (196819), Shuriken Storm (197835), Parley (199743), Riposte (199753), Riposte (199754), Numbing Poison (200803)
+                   Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Mutilate Off-Hand (27576), Spore Cloud (32643), Envenom (32645), Fan of Knives (51723), Deadly Poison (113780), Shuriken Toss (114014), Debilitating Poison (115196), Shadow Blade (121473), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Poisoned Knife (185565), Eviscerate (196819), Shuriken Storm (197835), Riposte (199753), Riposte (199754), Numbing Poison (200803)
 #2 (id=68391)    : Apply Aura (6) | Unknown effect sub type (343)
                    Base Value: 30 | Scaled Value: 30
 #3 (id=87043)    : Apply Aura (6) | Stalked (68)
@@ -2216,7 +2213,7 @@ Effects          :
 #1 (id=87938)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=295577)   : Weapon Damage% (31)
-                   Base Value: 140 | Scaled Value: 1.4
+                   Base Value: 210 | Scaled Value: 2.1
 Description      : A vicious attack that deals $86392sw2 Physical damage with your off-hand.
 
 Name             : Altered Form (Racial Passive) (id=94293) [Passive, Hidden] 
@@ -2379,14 +2376,14 @@ Affecting spells : Vendetta (79140), Shadow Blades (121471), Silent Blades (1451
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ x....... 
+                 : ........ ........ ........ ........   ........ ........ x....... x....... 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=127100)   : School Damage: physical (2)
                    Base Value: 0 | Scaled Value: 0 (avg=2) | AP Coefficient: 1.20000
-#2 (id=127665)   : Add Combo Points (80)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.20000
+#2 (id=127665)   : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.20000 | Misc Value: combo_points
 Description      : A ranged attack dealing $s1 Physical damage to an enemy target. Awards $s2 combo $lpoint:points;.
 
 Name             : Anticipation (id=114015) [Spell Family (8), Passive] 
@@ -2586,7 +2583,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=169681)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 12
-                   Affected Spells: Kidney Shot (408), Gouge (1776), Sap (6770), Parley (199743)
+                   Affected Spells: Kidney Shot (408), Gouge (1776), Sap (6770)
 #2 (id=169695)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 23
                    Affected Spells: Cheap Shot (1833), Blind (2094)
@@ -2770,13 +2767,13 @@ Cooldown         : 60 seconds
 Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... ........ ..x..... 
                  : ........ ........ ........ ....x...   ........ ........ x...x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
-                 : ..x..... ........ .......x ........   ........ ........ ........ ........ 
+                 : ..x..... ........ .......x ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Disable player procs (112)
 Effects          :
-#1 (id=180708)   : Add Combo Points (80)
-                   Base Value: 5 | Scaled Value: 5 | SP Coefficient: 1.00000
+#1 (id=180708)   : Energize Power (30)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: combo_points
 #2 (id=180709)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=185210)   : Trigger Spell: Marked for Death (64)
@@ -3290,7 +3287,7 @@ Affecting spells : Vendetta (79140), Shadow Blades (121471), Item - Rogue T14 2P
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
@@ -3298,8 +3295,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000
 #2 (id=246974)   : Weapon Damage% (31)
                    Base Value: 210 | Scaled Value: 2.1 | SP Coefficient: 1.00000
-#3 (id=246975)   : Add Combo Points (80)
-                   Base Value: 1 | Scaled Value: 1
+#3 (id=246975)   : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points
 Description      : Stab the target, causing $sw2 Physical damage. Awards $s3 combo $lpoint:points;.
 
 Name             : Crimson Vial (id=185311) [Scaling Spell (8), Spell Family (8)] 
@@ -3372,16 +3369,16 @@ Affecting spells : Premeditation (196979), Precision Strike (197235)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=269259)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 #2 (id=269260)   : Weapon Damage% (31)
-                   Base Value: 220 | Scaled Value: 2.2 | SP Coefficient: 1.00000
-#3 (id=269261)   : Add Combo Points (80)
-                   Base Value: 2 | Scaled Value: 2
+                   Base Value: 440 | Scaled Value: 4.4 | SP Coefficient: 1.00000
+#3 (id=269261)   : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points
 Description      : Strike through the shadows, appearing behind your target and dealing $sw2 Physical damage.  Awards $s3 combo $lpoint:points;.
 
 Name             : Poisoned Knife (id=185565) [Scaling Spell (9), Spell Family (8)] 
@@ -3397,7 +3394,7 @@ Affecting spells : Vendetta (79140), Shadow Blades (121471), Silent Blades (1451
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ..xxx... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ..x..... ........ ........   ........ ........ ........ x....... 
+                 : ........ ..x..... ........ ........   ........ ........ x....... x....... 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
@@ -3406,8 +3403,8 @@ Effects          :
                    Affected Spells: Deadly Poison (2823), Crippling Poison (3408), Wound Poison (8679), Leeching Poison (108211), Paralytic Poison (200800), Numbing Poison (200802)
 #2 (id=269457)   : School Damage: physical (2)
                    Base Value: 0 | Scaled Value: 0 (avg=2) | AP Coefficient: 0.60000
-#3 (id=269458)   : Add Combo Points (80)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.20000
+#3 (id=269458)   : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.20000 | Misc Value: combo_points
 Description      : Throw a poison-coated knife, dealing $s2 damage and applying your active Lethal and Non-Lethal Poisons. Awards $s3 combo $lpoint:points;.
 
 Name             : Pistol Shot (id=185763) [Scaling Spell (9), Spell Family (8)] 
@@ -3423,14 +3420,14 @@ Affecting spells : Gunslinger (202522), Dreadblade's Fate (202710)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ..xxx... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ..x..... ........ ........   ........ ........ ........ x....... 
+                 : ........ ..x..... ........ ........   ........ ........ x....... x....... 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=269972)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 (avg=2) | AP Coefficient: 0.60000
-#2 (id=269973)   : Add Combo Points (80)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.20000
+                   Base Value: 0 | Scaled Value: 0 (avg=2) | AP Coefficient: 1.00000
+#2 (id=269973)   : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.20000 | Misc Value: combo_points
 #3 (id=269974)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50
 Description      : Draw a concealed pistol and fire a quick shot at an enemy, dealing $s1 damage and reducing movement speed by $s3% for $d. Awards $s2 combo $lpoint:points;.
@@ -3493,7 +3490,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=270001)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 (avg=0, dl=0.4) | AP Coefficient: 0.27525 | Radius: 3 - 9 yards
+                   Base Value: 1 | Scaled Value: 1 (avg=0, dl=0.4) | AP Coefficient: 0.55500 | Radius: 3 - 9 yards
 Description      : $@spelldesc185767
 Tooltip          : $@spellaura185767
 
@@ -3553,7 +3550,7 @@ Effects          :
 #2 (id=283620)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=283621)   : Weapon Damage% (31)
-                   Base Value: 176 | Scaled Value: 1.76
+                   Base Value: 265 | Scaled Value: 2.65
 #4 (id=283622)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14
                    Affected Spells: Saber Slash (193315)
@@ -3616,11 +3613,11 @@ Description      : You may now have a maximum of $s3 combo points, and your fini
 Name             : Weaponmaster (id=193537) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
-Proc Chance      : 20%
+Proc Chance      : 6%
 Proc Flags       : ....x... x...x... x.x..... ........ 
                  : Yellow Melee, Yellow Ranged, AOE Hostile Spell, Hostile Spell, Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3754,7 +3751,7 @@ Resource         : 1 - 5 Combo Points
 Spell Level      : 46
 Range            : 5 yards
 GCD              : 1 seconds
-Duration         : 4 seconds
+Duration         : 6 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Hostile Spell Taken
@@ -3767,18 +3764,18 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=286896)   : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.06850
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.87500
 #2 (id=286897)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 1 | Scaled Value: 1
 #3 (id=286898)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50
 Description      : Finishing move that infects the target with shadowy energy, dealing Shadow damage over time and causing attacks against the target to reduce movement speed by $206760s1% for $206760d. Lasts longer per combo point.
-   1 point  : ${$<bonus>*1*0.0685*$AP*0.5*8} over 8 sec
-   2 points: ${$<bonus>*2*0.0685*$AP*0.5*12} over 12 sec
-   3 points: ${$<bonus>*3*0.0685*$AP*0.5*16} over 16 sec
-   4 points: ${$<bonus>*4*0.0685*$AP*0.5*20} over 20 sec
-   5 points: ${$<bonus>*5*0.0685*$AP*0.5*24} over 24 sec$?s193531[
-   5 points: ${$<bonus>*6*0.0685*$AP*0.5*24} over 28 sec][]
+   1 point  : ${$<bonus>*$m1*8/2} over 8 sec
+   2 points: ${$<bonus>*$m1*10/2} over 10 sec
+   3 points: ${$<bonus>*$m1*12/2} over 12 sec
+   4 points: ${$<bonus>*$m1*14/2} over 14 sec
+   5 points: ${$<bonus>*$m1*16/2} over 16 sec$?s193531[
+   6 points: ${$<bonus>*$m1*18/2} over 18 sec][]
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec and snared by attacks.
 Variables        : $dur1=$?s56801[${6+2+4}][${6+2}]
 $dur2=$?s56801[${6+4+4}][${6+4}]
@@ -3825,15 +3822,15 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=288959)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.82500
 Description      : Finishing move that disembowels the target, causing damage per combo point.
-   1 point  : ${($AP*0.559)*$<mult>*(1+$@versadmg)} damage
-   2 points: ${($AP*0.559)*$<mult>*(1+$@versadmg)*2} damage
-   3 points: ${($AP*0.559)*$<mult>*(1+$@versadmg)*3} damage
-   4 points: ${($AP*0.559)*$<mult>*(1+$@versadmg)*4} damage
-   5 points: ${($AP*0.559)*$<mult>*(1+$@versadmg)*5} damage$?s193531[
-   6 points: ${($AP*0.559)*$<mult>*(1+$@versadmg)*6} damage][]
-Variables        : $mult=$?s16511[${(((100+$76808m1))/100)}][${1.00*0.88}]
+   1 point  : ${$<mult>*$m1*1} damage
+   2 points: ${$<mult>*$m1*2} damage
+   3 points: ${$<mult>*$m1*3} damage
+   4 points: ${$<mult>*$m1*4} damage
+   5 points: ${$<mult>*$m1*5}?s193531[
+   6 points: ${$<mult>*$m1*6} damage][]
+Variables        : $mult=${(1+$76808m1/100)*(1+$@versadmg)}
 
 Name             : Thuggee (id=196861) [Spell Family (8), Passive] 
 Class            : Rogue
@@ -3889,12 +3886,12 @@ Triggered by     : Shadow Techniques (196912)
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
                  : x.x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=289127)   : Add Combo Points (80)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000
+#1 (id=289127)   : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points
 
 Name             : Shadow Techniques (id=196912) [Spell Family (8), Passive] 
 Class            : Subtlety Rogue
@@ -4138,26 +4135,25 @@ Proc Chance      : 101%
 Affecting spells : Glyph of Enslave Demon (58107), Grimoire of Convert Demon (168800)
 Attributes       : ........ ........ x....... ......x.   x....... ........ .x...... ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ...x.... ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ...x.... ........ .....x..   .......x x....... ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=293940)   : Apply Aura (6) | Charm (6)
                    Base Value: 32 | Scaled Value: 88 | Points Per Level: 1
-Description      : Bribe a humanoid target with fool's gold, convincing it to fight for you for $d.
+Description      : Bribe a non-player humanoid target with fool's gold, convincing it to fight for you for $d.
 Tooltip          : Bribed.
 
 Name             : Parley (id=199743) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
-Resource         : 35 Energy
 Spell Level      : 50
-Range            : 30 yards
+Range            : 40 yards
 GCD              : 1 seconds
-Duration         : 60 seconds
+Duration         : 300 seconds
+Cooldown         : 20 seconds
 Proc Chance      : 100%
-Affecting spells : Vendetta (79140), Prey on the Weak (131511)
 Attributes       : ....x... ........ x.x.xx.. ........   ........ x.x..... ..x..... .x.x.... 
                  : ........ ........ ........ ........   x....... ........ xx...... ........ 
                  : ........ ........ .......x ........   .....x.. .x...... ........ ........ 
@@ -4174,7 +4170,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #4 (id=293946)   : Apply Aura (6) | Periodic Dummy: every 3 seconds (226)
                    Base Value: 0 | Scaled Value: 0
-Description      : Pacifies the target, who is forced to negotiate instead of fighting for $d. Only works on Humanoids, Demons, and Dragonkin. Any damage caused will break the peace. Limit 1 target.
+Description      : Pacifies the target, who is forced to negotiate instead of fighting for $d. Only works on Humanoids, Demons, and Dragonkin. Any damage caused will break the peace. Limit 1 target.
+
+Replaces Blind.
 Tooltip          : Pacified.
 
 Name             : Riposte (id=199753) [Spell Family (8)] 
@@ -4300,16 +4298,16 @@ GCD              : 1 seconds
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=295616)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000
 #2 (id=295617)   : Weapon Damage% (31)
-                   Base Value: 210 | Scaled Value: 2.1 | SP Coefficient: 1.00000
-#3 (id=295618)   : Add Combo Points (80)
-                   Base Value: 1 | Scaled Value: 1
+                   Base Value: 315 | Scaled Value: 3.15 | SP Coefficient: 1.00000
+#3 (id=295618)   : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points
 Description      : Infuse your weapon with Shadow energies and stab the target, causing $sw2 Shadow damage. Awards $s3 combo $lpoint:points;.
 
 Replaces Backstab.

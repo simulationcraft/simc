@@ -1,4 +1,4 @@
-SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20810)
+SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20914)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -618,7 +618,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=117946)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.50000 | Radius: 0 - 8 yards
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.33300 | Radius: 0 - 8 yards
 Description      : $@spelldesc101546
 Tooltip          : Attacking all nearby enemies for Physical damage every $101546t1 sec.
 
@@ -827,7 +827,7 @@ Effects          :
 #16 (id=287166)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 14
                    Affected Spells: Tiger Palm (100780)
-Description      : You shrug off physical attacks, delaying ${$115069m8}% of the damage, instead taking it over $124273d.
+Description      : You shrug off physical attacks, delaying ${$115069m9}% of the damage, instead taking it over $124273d.
 
 Also affects magic attacks, at half effectiveness.
 
@@ -931,7 +931,7 @@ $healing=${$<healMult>*$AP*0.500*(1+$@versadmg)}
 Name             : Renewing Mist (id=115151) [Scaling Spell (6), Spell Family (53)] 
 Class            : Mistweaver Monk
 School           : Nature
-Resource         : 3.5% Base Mana (38500 @Level 110)
+Resource         : 2.8% Base Mana (30799 @Level 110)
 Spell Level      : 24
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -991,7 +991,7 @@ Attributes       : ........ ........ x....... ........   ..x...x. ........ .....
 Effects          :
 #1 (id=128871)   : Apply Aura (6) | Periodic Heal: every 0.5 seconds (8)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.40000 | Chain Multiplier: 100
-Description      : @spelldesc193884
+Description      : $@spelldesc193884
 Tooltip          : Healing for $w1 every $t.
 
 Name             : Zen Meditation (id=115176) [Spell Family (53)] 
@@ -999,7 +999,7 @@ Class            : Brewmaster Monk
 School           : Nature
 Spell Level      : 65
 Duration         : 8 seconds
-Cooldown         : 180 seconds
+Cooldown         : 300 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
@@ -1015,7 +1015,7 @@ Effects          :
 #1 (id=128872)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=128873)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -90 | Scaled Value: -90 | Misc Value: 0x7f
+                   Base Value: -60 | Scaled Value: -60 | Misc Value: 0x7f
 #3 (id=135928)   : Apply Aura (6) | Unknown effect sub type (106)
                    Base Value: 10 | Scaled Value: 10
 Description      : Reduces all damage taken by $s2% for $d.  Being hit by a melee attack will cancel this effect.
@@ -1069,7 +1069,7 @@ Name             : Fortifying Brew (id=115203) [Scaling Spell (6), Spell Family 
 Class            : Brewmaster Monk
 School           : Physical
 Spell Level      : 24
-Cooldown         : 180 seconds
+Cooldown         : 300 seconds
 Affecting spells : Item - Monk T16 Brewmaster 2P Bonus (145049)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1120,7 +1120,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=129069)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 60 | Scaled Value: 60
+                   Base Value: 40 | Scaled Value: 40
 #2 (id=251580)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 4
 #3 (id=269051)   : Apply Aura (6) | Modify Damage Done% (79)
@@ -1172,11 +1172,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .x...
 Effects          :
 #1 (id=129077)   : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 60849 | Misc Value 2: 0xc90
-#2 (id=129078)   : None (0)
-                   Base Value: 30 | Scaled Value: 30
-#3 (id=134031)   : Dummy (3)
+#2 (id=129078)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
-Description      : Summon a Jade Serpent Statue at a target location. When you trigger Soothing Mist, the statue will also begin casting Soothing Mist on your target.
+Description      : Summon a Jade Serpent Statue at a target location. When you trigger Soothing Mist, the statue will also begin casting Soothing Mist on your target, healing for $s2% as much as yours.
 
 Name             : Summon Black Ox Statue (id=115315) [Spell Family (53)] 
 Class            : Monk
@@ -1460,7 +1458,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 11
                    Affected Spells: Renewing Mist (115151)
 #2 (id=214145)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 100 | Scaled Value: 100
+                   Base Value: 150 | Scaled Value: 150
                    Affected Spells: Effuse (116694)
 #3 (id=289634)   : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10
@@ -1481,7 +1479,7 @@ Description      : Receive a jolt of energy, empowering your next $?a197895[two 
 Tooltip          : Your next spell cast is empowered:
 
 - Renewing Mist does not trigger its cooldown.
-- Effuse's healing is increased by 200%.
+- Effuse's healing is increased by $s2%.
 - Enveloping Mist is instant.
 - Essence Font may be cast while moving.
 - Vivify costs no mana.
@@ -1696,7 +1694,7 @@ Spell Level      : 28
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
-Cooldown         : 120 seconds
+Cooldown         : 180 seconds
 Affecting spells : Lucidity (137331), Item - Monk WoD PvP Mistweaver 4P Bonus (165697), Mana Tea (197908), Protection of Shaohao (199367)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -1802,7 +1800,7 @@ Attributes       : ........ ........ ........ ........   ..x..... ......x. .....
                  : Channeled (34)
 Effects          :
 #1 (id=134063)   : Apply Aura (6) | Periodic Damage: nature every 1 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.00000
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.10000
 #2 (id=225417)   : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200
 Description      : Channel Jade lightning, causing $o1 Nature damage over $117952d to the target$?a154436[, generating 1 Chi each time it deals damage,][] and sometimes knocking back melee attackers.
@@ -2170,7 +2168,7 @@ Class            : Monk
 School           : Physical
 Spell Level      : 60
 Duration         : 45 seconds
-Cooldown         : 90 seconds
+Cooldown         : 120 seconds
 Stacks           : 3 initial, 3 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -2183,8 +2181,8 @@ Effects          :
 #1 (id=153848)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 127
 #2 (id=240978)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Misc Value: 127
-Description      : Reduces damage by $m2% from the next $n attacks that damage you for $m1% or more of your maximum health.  Castable while stunned.
+                   Base Value: 30 | Scaled Value: 30 | SP Coefficient: 1.00000 | Misc Value: 127
+Description      : Reduces damage by $m2% from the next $n attacks that damage you for $m1% or more of your maximum health. Castable while stunned.
 Tooltip          : Attacks that deal damage equal to $m1% or more of your total health are reduced by half.
 
 Name             : Healing Elixirs (Passive Talent) (id=122280) [Spell Family (53), Passive] 
@@ -2250,7 +2248,7 @@ Class            : Monk
 School           : Nature
 Spell Level      : 60
 Duration         : 6 seconds
-Cooldown         : 90 seconds
+Cooldown         : 120 seconds
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2259,7 +2257,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=154600)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -90 | Scaled Value: -90 | SP Coefficient: 1.00000 | Misc Value: 0x7e
+                   Base Value: -60 | Scaled Value: -60 | SP Coefficient: 1.00000 | Misc Value: 0x7e
 Description      : Reduces magic damage taken by $m1% for $d and transfers all harmful magical effects back to their original caster if possible.
 Tooltip          : Spell damage taken reduced by $m1%.
 
@@ -3625,11 +3623,11 @@ Effects          :
                    Affected Spells: Blackout Kick (100784), Spinning Crane Kick (101546), Rising Sun Kick (107428), Fists of Fury (113656), Rushing Jade Wind (116847), Fists of Fury (120086), Rushing Jade Wind (148187), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Blackout Strike (205523)
 Description      : You enter an elevated state of mental and physical serenity for $?s115069[$s1 sec][$d]. 
 
-While in this state, you deal $s2% increased damage and healing, and all Chi consumers are free, and have half their normal cooldown.
+While in this state, you deal $s2% increased damage and healing, and all Chi consumers are free, and have $s4% reduced cooldown.
 
 Replaces Tigereye Brew.
 Tooltip          : Damage dealt increased by $s2%.
-All Chi consumers are free, and have half their normal cooldown.
+All Chi consumers are free, and have $s4% reduced cooldown.
 
 Name             : Spinning Dragon Strike (id=152175) 
 Class            : Monk
@@ -4115,6 +4113,74 @@ Effects          :
 Description      : $@spelldesc117906
 Tooltip          : Dodge chance increased by $w1%.
 
+Name             : Crosswinds (id=195650) [Spell Family (53), Passive] 
+Class            : Monk
+School           : Physical
+Range            : 100 yards
+Proc Chance      : 101%
+Proc Flags       : ....x... ....x... x....... ........ 
+                 : Yellow Melee, AOE Hostile Spell, Hostile Spell
+Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=287188)   : Apply Aura (6) | Proc Trigger Spell: Crosswinds (42)
+                   Base Value: 10 | Scaled Value: 10 | Trigger Spell: 195651
+Description      : While using Fists of Fury, you frequently project an image of yourself to crash into one of the targets you are hitting.
+
+Name             : Crosswinds (id=195651) [Spell Family (53)] 
+Class            : Monk
+School           : Nature
+Range            : 100 yards
+Duration         : 4 seconds
+Triggered by     : Crosswinds (195650)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .x....x. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=287189)   : Apply Aura (6) | Periodic Trigger Spell: Crosswinds every 0.5 seconds (23)
+                   Base Value: 3 | Scaled Value: 3 | Trigger Spell: 195653
+Description      : $@spelldesc195650
+
+Name             : Crosswinds (id=195653) [Spell Family (53)] 
+Class            : Monk
+School           : Nature
+Range            : 100 yards
+Duration         : 2 seconds
+Triggered by     : Crosswinds (195651)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .x....x. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=287191)   : Summon (28)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 99625 | Misc Value 2: 0xe67 | Radius: 11 yards
+Description      : $@spelldesc195650
+
+Name             : Crosswinds (id=196061) 
+Class            : Monk
+School           : Physical
+Range            : 60 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=287778)   : School Damage: physical (2)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.00000
+Description      : $@spelldesc195650
+
 Name             : Eye of the Tiger (id=196607) [Spell Family (53), Passive] 
 Class            : Monk
 School           : Physical
@@ -4169,8 +4235,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=288809)   : Apply Aura (6) | Proc Trigger Spell: Keg Smash! (42)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 196720
-Description      : 
-Tiger Palm has a $h% chance to reset the cooldown of Keg Smash.
+Description      : Tiger Palm has a $h% chance to reset the cooldown of Keg Smash.
 
 
 Name             : Keg Smash! (id=196720) [Spell Family (53)] 
@@ -4389,12 +4454,13 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=288841)   : Apply Aura (6) | Modify Dodge% (49)
                    Base Value: 15 | Scaled Value: 15
 Description      : $@spelldesc196738
+Tooltip          : Dodge chance increased by $w1%.
 
 Name             : Hit Combo (id=196740) [Spell Family (53), Passive] 
 Class            : Monk
@@ -4580,7 +4646,7 @@ Description      : Enveloping Mist reduces the cost of your next Vivify by $s1%,
 
 Name             : Mistwalk (Talent) (id=197945) [Spell Family (53)] 
 Class            : Monk
-School           : Physical
+School           : Nature
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -4661,7 +4727,7 @@ Effects          :
 #1 (id=292176)   : Unknown effect type (254)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 8
 #2 (id=292177)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.00000
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.50000
 Description      : Dash to an ally, and heal them for $s2.
 
 Name             : Song of Chi-Ji (id=198898) [Spell Family (53)] 

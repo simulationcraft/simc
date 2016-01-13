@@ -1,4 +1,4 @@
-SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20810)
+SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20914)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -121,7 +121,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 300 seconds
 Charges          : 0 (300 seconds cooldown)
-Affecting spells : Sword of Light (53503), Lucidity (137288), Protector of the Ashen Blade (186944)
+Affecting spells : Sword of Light (53503), Lucidity (137288), Protector of the Ashen Blade (186944), PH - Reduce Cooldown/Increase Duration of Blessings (206338), 
 Attributes       : ........ ........ x.x..... ........   ........ .......x ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
@@ -150,7 +150,7 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 25 seconds
 Charges          : 0 (25 seconds cooldown)
-Affecting spells : Sword of Light (53503), Item - Paladin T13 Protection 2P Bonus (Judgment) (105800), Lucidity (137288), Unbound Freedom (199325)
+Affecting spells : Sword of Light (53503), Item - Paladin T13 Protection 2P Bonus (Judgment) (105800), Lucidity (137288), Unbound Freedom (199325), PH - Reduce Cooldown/Increase Duration of Blessings (206338), 
 Attributes       : ........ ........ x.x..... ........   ........ .......x .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -223,12 +223,12 @@ Resource         : 7% Base Mana (15400 @Level 110)
 Spell Level      : 56
 Range            : 40 yards
 Duration         : 12 seconds
-Cooldown         : 120 seconds
+Cooldown         : 240 seconds
 Charges          : 0 (120 seconds cooldown)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Lucidity (137288)
+Affecting spells : Lucidity (137288), PH - Reduce Cooldown/Increase Duration of Blessings (206338), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x.x.... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -357,7 +357,7 @@ Name             : Holy Shock (id=20473) [Spell Family (10)]
 Class            : Holy Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 School           : Holy
-Resource         : 7.5% Base Mana (16500 @Level 110)
+Resource         : 10% Base Mana (22000 @Level 110)
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -463,7 +463,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=15851)    : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.25, dl=0.08) | SP Coefficient: 3.00000
+                   Base Value: 1 | Scaled Value: 0 (avg=1.25, dl=0.08) | SP Coefficient: 3.50000
 Description      : Blasts the target with Holy energy, causing $25912s1 Holy damage to an enemy, or $25914s1 healing to an ally.
 
 Name             : Holy Shock (id=25914) [Scaling Spell (7), Spell Family (10)] 
@@ -482,7 +482,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=15852)    : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=8.222, dl=0.08) | SP Coefficient: 3.00000
+                   Base Value: 1 | Scaled Value: 0 (avg=8.222, dl=0.08) | SP Coefficient: 3.50000
 Description      : Blasts the target with Holy energy, causing $25912s1 Holy damage to an enemy, or $25914s1 healing to an ally.
 
 Name             : Sanctity of Battle (id=25956) [Spell Family (10), Passive, Hidden] 
@@ -622,7 +622,7 @@ Class            : Protection Paladin
 School           : Physical
 Spell Level      : 65
 Duration         : 8 seconds
-Cooldown         : 60 seconds
+Cooldown         : 120 seconds
 Affecting spells : Item - Paladin T14 Protection 2P Bonus (123104), Item - Paladin WoD PvP Protection 4P Bonus (171427)
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -992,7 +992,7 @@ Effects          :
 #1 (id=46249)    : Apply Aura (6) | Override Spell Power per Attack Power% (366)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 126 | Misc Value 2: 0x1
 #2 (id=46250)    : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value 2: 0x4
+                   Base Value: 10 | Scaled Value: 10 | Misc Value 2: 0x4
 #3 (id=87654)    : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15
 #4 (id=134929)   : Apply Aura (6) | Add Percent Modifier: Spell Global Cooldown (108)
@@ -1001,7 +1001,7 @@ Effects          :
 #5 (id=134930)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: -6 | Scaled Value: -6
 #6 (id=156625)   : Apply Aura (6) | Modify Block% (51)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 11
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 11
                    Affected Spells: Cleanse (4987)
 #7 (id=172063)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -80 | Scaled Value: -80 | Misc Value: 14
@@ -1604,7 +1604,7 @@ Description      : Gives a chance to parry enemy melee attacks.
 Name             : Holy Light (id=82326) [Spell Family (10)] 
 Class            : Holy Paladin
 School           : Holy
-Resource         : 10% Base Mana (22000 @Level 110)
+Resource         : 12% Base Mana (26400 @Level 110)
 Spell Level      : 54
 Range            : 40 yards
 Cast Time        : 2.5 seconds
@@ -1645,7 +1645,7 @@ Description      : When you avoid a melee attack or use Hammer of the Righteous,
 Name             : Light of Dawn (id=85222) [Spell Family (10)] 
 Class            : Holy Paladin
 School           : Holy
-Resource         : 20% Base Mana (44000 @Level 110)
+Resource         : 14% Base Mana (30800 @Level 110)
 Spell Level      : 65
 GCD              : 1.5 seconds
 Cooldown         : 10 seconds
@@ -1677,7 +1677,7 @@ Attributes       : ........ ........ x.x..... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=86389)    : Weapon Damage% (31)
-                   Base Value: 170 | Scaled Value: 1.7
+                   Base Value: 190 | Scaled Value: 1.9
 #2 (id=131736)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #3 (id=281826)   : Dummy (3)
@@ -1759,7 +1759,7 @@ School           : Holy
 Spell Level      : 72
 Range            : 30 yards
 Duration         : 8 seconds
-Cooldown         : 180 seconds
+Cooldown         : 300 seconds
 Affecting spells : Item - Paladin T13 Protection 4P Bonus (Divine Guardian) (105744)
 Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -1768,18 +1768,14 @@ Attributes       : ........ ........ ........ .......x   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=88340)    : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 46490 | Misc Value 2: 0xc56 | Radius: 2 yards
+#1 (id=88340)    : Apply Aura (6) | Unknown effect sub type (56)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 46490 | Misc Value 2: 0x7
 #2 (id=100215)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=102488)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 0x7f
-Description      : Summons a Guardian of Ancient Kings to protect you for $d.  
-
-The Guardian of Ancient Kings reduces damage taken by $86657s2%.
-Tooltip          : Protected by a Guardian of Ancient Kings.
-
-Incoming damage reduced by $86657s2%.
+Description      : You become empowered by the spirits of ancient kings, reducing all damage taken by $86657s2%.
+Tooltip          : Damage taken reduced by $86657s2%.
 
 Name             : Light of the Ancient Kings (id=86678) [Spell Family (10)] 
 Class            : Paladin
@@ -1963,7 +1959,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=115800)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 0x7f
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f
 #2 (id=132822)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 1
 #3 (id=166229)   : Apply Aura (6) | Modify Dodge% (49)
@@ -1975,6 +1971,8 @@ Effects          :
 #6 (id=266383)   : Apply Aura (6) | Add Percent Modifier: Spell Generated Threat (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 2
                    Affected Spells: Lay on Hands (633), Flash of Light (19750), Protector of the Innocent (94289), Eternal Flame (114163), Stay of Execution (114917), Arcing Light (119952), Eternal Flame (156322), Blaze of Light (205208)
+#7 (id=307574)   : Apply Aura (6) | Absorb Damage (69)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 127
 Description      : Decreases damage taken by $s1%, increases your chance to dodge by $s3%, and reduces the chance for your attacks to be parried by $s4%.
 
 Name             : Unbreakable Spirit (id=114154) [Spell Family (10), Passive] 
@@ -2188,7 +2186,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.59400
 #2 (id=163021)   : Dummy (3)
                    Base Value: 594 | Scaled Value: 594
-Description      : A hammer slowly falls from the sky, causing ${$114917m1*27.906} healing over $114917d. This healing is a large burst at first, and then decreases over time.
+Description      : A hammer slowly falls from the sky, causing ${$114917m2*27.906} healing over $114917d. This healing is a large burst at first, and then decreases over time.
 Tooltip          : Healing every $t1 sec, decreasing over time.
 
 Name             : Light's Hammer (id=114918) [Spell Family (10), Passive] 
@@ -2876,7 +2874,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=210812)   : Apply Aura (6) | Modify Block% (51)
-                   Base Value: 15 | Scaled Value: 15
+                   Base Value: 10 | Scaled Value: 10
 #2 (id=218981)   : Apply Aura (6) | Proc Trigger Spell: Holy Shield (42)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 157122
 #3 (id=232078)   : Apply Aura (6) | Absorb Damage (69)
@@ -3581,13 +3579,13 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 138248
 Description      : Your Crusader Strike and Blade of Justice have a $h% chance to generate $s1 additional Holy Power.
 
-Name             : Redoubt (id=190774) [Spell Family (4), Passive] 
+Name             : Redoubt (id=190774) [Spell Family (10), Passive] 
 Class            : Protection Paladin
 School           : Physical
 Spell Level      : 12
 Proc Chance      : 100%
-Proc Flags       : ..x..... ........ ........ ........ 
-                 : White Melee
+Proc Flags       : ....x... ....x... x....... ........ 
+                 : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3598,7 +3596,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=279708)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
-Description      : Your autoattack critical strikes cause you to gain a charge of Shield of the Righteous or Light of the Protector.
+Description      : Your Judgment critical strikes cause you to gain a charge of Shield of the Righteous.
 
 Name             : Divine Steed (id=190784) [Spell Family (10)] 
 Class            : Protection Paladin
@@ -3838,12 +3836,15 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: holy_power
 Description      : Divine Hammers spin around the Paladin, damaging enemies within $198137A1 yds for $198137sw1 Holy damage instantly and every $t1 sec for $d. Generates $s2 Holy Power.
 
-Replaces Blade of Justice.
+Replaces Blade of Justice.
+
+<Temp Visual>
 
 Name             : Execution Sentence (id=198035) [Spell Family (10)] 
 Class            : Paladin
 School           : Physical
 Range            : 20 yards
+GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 10 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3931,13 +3932,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=291074)   : Trigger Spell: Turalyon's Might (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 204616
-#2 (id=302501)   : Unknown effect type (179)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 6074
-#3 (id=302518)   : Apply Aura (6) | Unknown effect sub type (332)
+#1 (id=291074)   : Summon (28)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 104943 | Misc Value 2: 0xecf
+#2 (id=302501)   : Apply Aura (6) | Unknown effect sub type (332)
                    Base Value: 204930 | Scaled Value: 204930 | Misc Value: 198051
-Description      : Flings a blade of holy light to the target location, dealing $204616s1 Holy damage instantly and every $s2 seconds to enemies within $204616A1 yds for$d.
+Description      : Flings a blade of holy light to the target location, dealing $204616s1 Holy damage instantly and every $207857t1 seconds to enemies within $204616A1 yds for $d.
 
 Re-activating the ability will cause the Paladin to charge to the blade, damaging enemies in the area for $204929s1 Holy damage, ending the effect.
 
@@ -4101,7 +4100,7 @@ Attributes       : ........ ........ x.x..... ...x....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=294443)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000
 Description      : $@spelldesc200025
 
 Name             : Aura of the Silver Hand (id=200373) [Spell Family (10), Passive] 
@@ -4454,17 +4453,19 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
                  : Channeled (34)
 Effects          :
 #1 (id=300234)   : Apply Aura (6) | Periodic Damage: holy every 0.75 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.75000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.00000
 #2 (id=300235)   : Apply Aura (6) | Periodic Heal%: every 0.75 seconds (20)
-                   Base Value: 2 | Scaled Value: 2
-#3 (id=300236)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.00000
+#3 (id=300236)   : Apply Aura (6)
                    Base Value: 50 | Scaled Value: 50
-Description      : Fires holy bolts at the target, causing $o1 Holy damage and restoring $o2% of the paladin's heath over $d.
+Description      : Fires holy bolts at the target, causing $o1 Holy damage and restoring $o2 health over $d.
 
-Deals $s3% additional damage to stunned targets.
+Deals $s3% additional damage to stunned targets.
+
+<Temp Visual>
 Tooltip          : Suffering $w1 Holy damage every $t1 seconds. 
 
-Restoring $m2% of maximum health to the caster when Holy Wrath deals damage.
+Restoring health to the caster when Holy Wrath deals damage.
 
 Name             : First Avenger (id=203776) [Spell Family (10), Passive] 
 Class            : Paladin
@@ -4575,7 +4576,7 @@ School           : Holy
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
-Affecting spells : Lucidity (137323), The Edge of Dark and Light (197715), Rapid Atonement (197763), Darkest Shadows (197917)
+Affecting spells : Lucidity (137323), The Edge of Dark and Light (197715), Borrowed Time (197763), Darkest Shadows (197917)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4595,7 +4596,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 60 seconds
-Affecting spells : Lucidity (137288)
+Affecting spells : Lucidity (137288), PH - Reduce Cooldown/Increase Duration of Blessings (206338), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4617,7 +4618,8 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 180 seconds
-Attributes       : ........ ........ x.x..... ........   ........ .......x ........ ........ 
+Affecting spells : PH - Reduce Cooldown/Increase Duration of Blessings (206338), 
+Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -4628,7 +4630,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 126
 Description      : Places a blessing on a party or raid member, protecting them from all magical attacks for $d.
 
-Cannot be used on a target with Forbearance.  Causes Forbearance for $25771d.
+Cannot be used on a target with Forbearance.  Causes Forbearance for $25771d.
+
+Replaces Blessing of Protection.
 Tooltip          : Immune to magical attacks.
 
 Name             : Blessed Hammer (id=204019) [Spell Family (10)] 
@@ -4640,15 +4644,13 @@ Charges          : 2 (3 seconds cooldown)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ..x..... ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=301056)   : Unknown effect type (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 6006
-#2 (id=303011)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 127
-Description      : Throw a Blessed Hammer that spirals outward, dealing $204301s1 Holy damage to enemies that it hits, and causing them to deal $204301s2% less damage to the Paladin for $204301d.
+Description      : Throw a Blessed Hammer that spirals outward, dealing $204301s1 Holy damage to enemies that it hits, and causing them to deal $204301s2% less damage to the Paladin on their next autoattack.
 
 Replaces Hammer of the Righteous.
 
@@ -4809,7 +4811,7 @@ Name             : Blessed Hammer (id=204301) [Spell Family (10)]
 Class            : Paladin
 School           : Holy
 Range            : 100 yards
-Duration         : 4 seconds
+Duration         : 10 seconds
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
@@ -4820,7 +4822,7 @@ Effects          :
 #1 (id=301536)   : School Damage: holy (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000
 #2 (id=303007)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10
+                   Base Value: 15 | Scaled Value: 15
 Description      : $@spelldesc204019
 Tooltip          : Dealing $s2% reduced damage to the Paladin.
 
@@ -4829,7 +4831,7 @@ Class            : Paladin
 School           : Holy
 Spell Level      : 6
 Range            : 50000 yards
-Triggered by     : Turalyon's Might (198051)
+Triggered by     : Turalyon's Might (207857)
 Attributes       : ........ ........ ........ x..x....   ...x...x ........ ........ ........ 
                  : ........ ......x. ...x.... ....x.x.   x....... ........ ........ .x....x. 
                  : ........ ........ ........ ........   ...x.... ..x..... .xx..... ..x..... 
@@ -4878,7 +4880,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .x...
 Effects          :
 #1 (id=302924)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
-Description      : Instantly counterattack any enemy that strikes you in melee for $d.  Melee attacks made from behind cannot be counterattacked.  Maximum of $n counterattacks.
+Description      : Instantly counterattack any enemy that strikes you in melee for $d.  Melee attacks made from behind cannot be counterattacked.  Maximum of $n counterattacks.
+
+<Temp Visual>
 Tooltip          : Counterattacking all melee attacks.
 
 Name             : Blaze of Light (id=205208) [Spell Family (10)] 
@@ -4898,7 +4902,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=302951)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 5.75000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 7.00000
 Description      : A quick and powerful heal, healing a friendly target for $s1.
 
 Replaces Flash of Light.
@@ -4986,5 +4990,20 @@ Effects          :
 #1 (id=304011)   : Direct Heal% (136)
                    Base Value: 5 | Scaled Value: 5
 Description      : $@spelldesc203539
+
+Name             : Turalyon's Might (id=207857) [Passive, Hidden] 
+Class            : Paladin
+School           : Nature
+Spell Level      : 1
+Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=307483)   : Apply Aura (6) | Periodic Trigger Spell: Turalyon's Might every 2 seconds (23)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 204616
 
 
