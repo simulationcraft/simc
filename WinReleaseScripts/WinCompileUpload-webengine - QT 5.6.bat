@@ -40,11 +40,13 @@ for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBui
 
 robocopy "%redist%x64\Microsoft.VC140.CRT" %install%\ msvcp140.dll vccorlib140.dll vcruntime140.dll
 robocopy locale\ %install%\locale sc_de.qm sc_zh.qm sc_it.qm
-robocopy winreleasescripts\ %install%\ qt.conf
+::robocopy winreleasescripts\ %install%\ qt.conf
 robocopy . %install%\ Welcome.html Welcome.png Simulationcraft64.exe simc64.exe readme.txt Error.html COPYING
 robocopy Profiles\ %install%\profiles\ *.* /S
 cd %install%
 %qt_dir%\msvc2015_64\bin\windeployqt.exe --no-translations simulationcraft64.exe
+del Qt5Core.dll
+robocopy "%qt_dir%\msvc2015_64\bin" . Qt5Core.dll
 cd ..
 
 cd winreleasescripts
@@ -65,11 +67,13 @@ for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBui
 
 robocopy "%redist%x86\Microsoft.VC140.CRT" %install%\ msvcp140.dll vccorlib140.dll vcruntime140.dll
 robocopy locale\ %install%\locale sc_de.qm sc_zh.qm sc_it.qm
-robocopy winreleasescripts\ %install%\ qt.conf
+::robocopy winreleasescripts\ %install%\ qt.conf
 robocopy . %install%\ Welcome.html Welcome.png Simulationcraft.exe simc.exe readme.txt Error.html COPYING
 robocopy Profiles\ %install%\profiles\ *.* /S
 cd %install%
 C:\Qt\Qt5.6.0.32\5.6\msvc2015\bin\windeployqt.exe --no-translations simulationcraft.exe
+del Qt5Core.dll
+robocopy "%qt_dir%\msvc2015\bin" . Qt5Core.dll
 cd ..
 
 cd winreleasescripts
