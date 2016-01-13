@@ -250,7 +250,7 @@ class SpecializationEnumGenerator(DataGenerator):
 
                 spec_to_idx_map[ spec_id ] = spec_data.index
             # Ugly but works for us for now
-            elif spec_data.f9 == 0:
+            elif spec_data.name in [ 'Ferocity', 'Cunning', 'Tenacity' ]:
                 spec_name = 'PET_%s' % (
                     spec_data.name.upper().replace(" ", "_")
                 )
@@ -349,7 +349,7 @@ class SpecializationListGenerator(DataGenerator):
                     DataGenerator._class_names[spec_data.class_id].upper().replace(" ", "_"),
                     spec_data.name.upper().replace(" ", "_"),
                 )
-            elif spec_data.f9 == 0:
+            elif spec_data.name in [ 'Ferocity', 'Cunning', 'Tenacity' ]:
                 spec_name = 'PET_%s' % (
                     spec_data.name.upper().replace(" ", "_")
                 )
