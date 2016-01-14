@@ -255,6 +255,7 @@ public:
     const spell_data_t* critical_strikes;
     const spell_data_t* dual_wield;
     const spell_data_t* enhancement_shaman;
+    const spell_data_t* flametongue;
     const spell_data_t* flurry;
     const spell_data_t* maelstrom_weapon;
     const spell_data_t* stormfury;
@@ -799,11 +800,15 @@ private:
 public:
   bool may_proc_windfury;
   bool may_proc_flametongue;
+  bool may_proc_maelstrom_weapon;
+  bool may_proc_stormfury;
 
   shaman_attack_t( const std::string& token, shaman_t* p, const spell_data_t* s ) :
     base_t( token, p, s ),
     may_proc_windfury( p -> spec.windfury -> ok() ),
-    may_proc_flametongue( true )
+    may_proc_flametongue( p -> spec.flametongue -> ok() ),
+    may_proc_maelstrom_weapon( p -> spec.maelstrom_weapon -> ok() ),
+    may_proc_stormfury( p -> spec.stormfury -> ok() )
   {
     special = true;
     may_glance = false;
@@ -2471,6 +2476,7 @@ struct crash_lightning_t : public shaman_attack_t
   {
     parse_options( options_str );
 
+    may_proc_windfury = may_proc_flametongue = may_proc_stormfury = false;
     aoe = -1;
     radius += player -> talent.crashing_storm -> effectN( 1 ).base_value();
     weapon = &( p() -> main_hand_weapon );
@@ -2562,7 +2568,8 @@ struct fury_of_air_aoe_t : public shaman_attack_t
   {
     background = true;
     aoe = -1;
-    school = SCHOOL_PHYSICAL;
+    school = SCHOOL_NATURE;
+    may_proc_windfury = may_proc_flametongue = may_proc_stormfury = false;
 
     weapon = &( player -> main_hand_weapon );
   }
@@ -4673,6 +4680,7 @@ void shaman_t::init_spells()
   spec.critical_strikes      = find_specialization_spell( "Critical Strikes" );
   spec.dual_wield            = find_specialization_spell( "Dual Wield" );
   spec.enhancement_shaman    = find_specialization_spell( "Enhancement Shaman" );
+  spec.flametongue           = find_specialization_spell( "Flametongue" );
   spec.flurry                = find_specialization_spell( "Flurry" );
   spec.maelstrom_weapon      = find_specialization_spell( "Maelstrom Weapon" );
   spec.stormfury             = find_specialization_spell( "Stormfury" );
@@ -4870,9 +4878,9 @@ void shaman_t::init_scaling()
 void shaman_t::trigger_stormfury( const action_state_t* state )
 {
   assert( debug_cast< shaman_attack_t* >( state -> action ) != nullptr && "Stormfury called on invalid action type" );
-  //shaman_attack_t* attack = debug_cast< shaman_attack_t* >( state -> action );
+  shaman_attack_t* attack = debug_cast< shaman_attack_t* >( state -> action );
 
-  if ( ! spec.stormfury -> ok() )
+  if ( ! attack -> may_proc_stormfury )
   {
     return;
   }
