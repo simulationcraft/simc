@@ -2269,7 +2269,7 @@ struct stormstrike_base_t : public shaman_attack_t
     cooldown             = p() -> cooldown.strike;
     weapon_multiplier    = 0.0;
     may_crit             = false;
-    may_proc_flametongue = false;
+    may_proc_flametongue = may_proc_windfury = may_proc_stormfury = false;
   }
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
