@@ -1057,10 +1057,6 @@ struct execution_sentence_t : public paladin_spell_t
       tick_multiplier[ 10 ] *= 5;
     }
 
-    // not on GCD, usable off-GCD
-    trigger_gcd = timespan_t::zero();
-    use_off_gcd = true;
-
     // disable if not talented
     if ( ! ( p -> talents.execution_sentence -> ok() ) )
       background = true;
@@ -2776,9 +2772,6 @@ struct templars_verdict_t : public holy_power_consumer_t
     : holy_power_consumer_t( "templars_verdict", p, p -> find_class_spell( "Templar's Verdict" ), true )
   {
     parse_options( options_str );
-
-    // TODO: this is supposedly the correct modifier here
-    weapon_multiplier = 2.7;
 
     base_multiplier *= 1.0 + p -> artifact.might_of_the_templar.percent();
   }
