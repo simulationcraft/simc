@@ -1531,6 +1531,8 @@ class SpellDataGenerator(DataGenerator):
           ( 197576, 0 ),                                # Magnitude ground? effect
           ( 206442, 0 ),                                # Lava Shock
           ( 191635, 0 ), ( 191634, 0 ),                 # Static Overload spells
+          ( 202045, 0 ), ( 202044, 0 ),                 # Feral Swipe, Stomp
+          ( 33750, 0 ),                                 # Offhand Windfury Attack
         ),
 
         # Mage:

@@ -380,7 +380,7 @@ public:
   shaman_attack_t* ascendance_oh;
 
   // Weapon Enchants
-  shaman_attack_t* windfury;
+  shaman_attack_t* windfury_mh, * windfury_oh;
   shaman_spell_t*  flametongue;
 
   shaman_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN ) :
@@ -423,7 +423,8 @@ public:
     ascendance_oh = nullptr;
 
     // Weapon Enchants
-    windfury    = nullptr;
+    windfury_mh = nullptr;
+    windfury_oh = nullptr;
     flametongue = nullptr;
 
     regen_type = REGEN_DISABLED;
@@ -1756,8 +1757,8 @@ struct windfury_weapon_melee_attack_t : public shaman_attack_t
 {
   double furious_winds_chance;
 
-  windfury_weapon_melee_attack_t( const std::string& n, shaman_t* player, weapon_t* w ) :
-    shaman_attack_t( n, player, player -> find_spell( 25504 ) ), furious_winds_chance( 0 )
+  windfury_weapon_melee_attack_t( const std::string& n, shaman_t* player, const spell_data_t* s, weapon_t* w ) :
+    shaman_attack_t( n, player, s ), furious_winds_chance( 0 )
   {
     weapon           = w;
     school           = SCHOOL_PHYSICAL;
@@ -4966,16 +4967,26 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
 
   if ( rng().roll( proc_chance ) )
   {
+    action_t* a = nullptr;
+    if ( state -> action -> weapon -> slot == SLOT_MAIN_HAND )
+    {
+      a = windfury_mh;
+    }
+    else
+    {
+      a = windfury_oh;
+    }
+
     cooldown.feral_spirits -> ready -= timespan_t::from_seconds( sets.set( SET_MELEE, T15, B4 ) -> effectN( 1 ).base_value() );
 
-    windfury -> target = state -> target;
-    windfury -> schedule_execute();
-    windfury -> schedule_execute();
-    windfury -> schedule_execute();
+    a -> target = state -> target;
+    a -> schedule_execute();
+    a -> schedule_execute();
+    a -> schedule_execute();
     if ( sets.has_set_bonus( SHAMAN_ENHANCEMENT, PVP, B4 ) )
     {
-      windfury -> schedule_execute();
-      windfury -> schedule_execute();
+      a -> schedule_execute();
+      a -> schedule_execute();
     }
   }
 }
@@ -5313,7 +5324,11 @@ void shaman_t::init_action_list()
   // After error checks, initialize secondary actions for various things
   if ( specialization() == SHAMAN_ENHANCEMENT )
   {
-    windfury = new windfury_weapon_melee_attack_t( "windfury_attack", this, &( main_hand_weapon ) );
+    windfury_mh = new windfury_weapon_melee_attack_t( "windfury_attack", this, find_spell( 25504 ), &( main_hand_weapon ) );
+    if ( off_hand_weapon.type != WEAPON_NONE )
+    {
+      windfury_oh = new windfury_weapon_melee_attack_t( "windfury_attack_oh", this, find_spell( 33750 ), &( off_hand_weapon ) );
+    }
     flametongue = new flametongue_weapon_spell_t( "flametongue_attack", this, &( off_hand_weapon ) );
   }
 
