@@ -2436,9 +2436,9 @@ struct rockbiter_t : public shaman_spell_t
 
   void execute() override
   {
-    shaman_spell_t::execute();
-
     p() -> buff.rockbiter -> trigger();
+
+    shaman_spell_t::execute();
   }
 };
 
