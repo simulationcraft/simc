@@ -1991,8 +1991,8 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
       const spelleffect_data_t& ed = data().effectN( i );
       effect_type_t type = ed.type();
 
-      if ( type == E_ADD_COMBO_POINTS )
-        combo_point_gain = ed.base_value();
+      if ( type == E_ENERGIZE && ed.resource_gain_type() == RESOURCE_COMBO_POINT )
+        combo_point_gain = ed.resource( RESOURCE_COMBO_POINT );
       else if ( type == E_APPLY_AURA && ed.subtype() == A_PERIODIC_DAMAGE )
       {
         snapshot_flags |= STATE_AP;
@@ -2187,7 +2187,7 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
                             p() -> sets.set( DRUID_FERAL, T17, B2 ) -> effectN( 1 ).base_value(),
                             p() -> gain.feral_tier17_2pc );
 
-    if ( p() -> predator_rppm_rate && p() -> predator.trigger() )
+    if ( p() -> predator_rppm_rate && p() -> talent.predator -> ok() && p() -> predator.trigger() )
       trigger_predator();
   }
 
