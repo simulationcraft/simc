@@ -509,12 +509,14 @@ public:
   // Sanctity of Battle bools
   bool hasted_cd;
   bool hasted_gcd;
+  bool should_trigger_blessing_of_might;
 
   paladin_action_t( const std::string& n, paladin_t* player,
                     const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
     hasted_cd( ab::data().affected_by( player -> passives.sanctity_of_battle -> effectN( 1 ) ) ),
-    hasted_gcd( ab::data().affected_by( player -> passives.sanctity_of_battle -> effectN( 2 ) ) )
+    hasted_gcd( ab::data().affected_by( player -> passives.sanctity_of_battle -> effectN( 2 ) ) ),
+    should_trigger_blessing_of_might( true )
   {
   }
 
@@ -569,9 +571,26 @@ public:
     }
   }
 
+  void trigger_blessing_of_might( action_state_t* s )
+  {
+    if ( p() -> buffs.blessing_of_might -> up() )
+    {
+      if ( p() -> rng().roll( p() -> buffs.blessing_of_might -> data().effectN( 1 ).percent() ) )
+      {
+        double amount = s -> result_amount;
+        amount *= p() -> buffs.blessing_of_might -> data().effectN( 2 ).percent();
+        p() -> active_blessing_of_might_proc -> base_dd_max = p() -> active_blessing_of_might_proc -> base_dd_min = amount;
+        p() -> active_blessing_of_might_proc -> target = s -> target;
+        p() -> active_blessing_of_might_proc -> execute();
+      }
+    }
+  }
+
   virtual void impact( action_state_t* s )
   {
     ab::impact( s );
+
+    trigger_blessing_of_might(s);
   }
 
   virtual double cooldown_multiplier() { return 1.0; }
@@ -1027,7 +1046,12 @@ struct execution_sentence_t : public paladin_spell_t
     travel_speed   = 0;
     tick_may_crit  = 1;
 
-    school = SCHOOL_HOLY;
+    // Right now, on the alpha, this does physical damage. This is probably a
+    // bug, but...
+    if ( p -> bugs )
+      school = SCHOOL_PHYSICAL;
+    else
+      school = SCHOOL_HOLY;
 
     // Where the 0.0374151195 comes from
     // The whole dots scales with data().effectN( 2 ).base_value()/1000 * SP
@@ -1070,7 +1094,6 @@ struct execution_sentence_t : public paladin_spell_t
     assert( static_cast<size_t>( td( target ) -> dots.execution_sentence -> current_tick ) < tick_multiplier.size() && "Execution Sentence current tick > tick multiplier array" );
     int idx = td( target ) -> dots.execution_sentence -> current_tick;
     m *= tick_multiplier[ idx ];
-
 
     return m;
   }
@@ -1629,7 +1652,6 @@ struct wake_of_ashes_impact_t : public paladin_spell_t
 
     // TODO: is this correct?
     weapon_power_mod = 1.0 / 3.5;
-    school = SCHOOL_HOLY;
   }
 };
 
@@ -1694,15 +1716,12 @@ struct light_of_dawn_t : public paladin_heal_t
 struct paladin_melee_attack_t: public paladin_action_t < melee_attack_t >
 {
   bool use2hspec;
-  bool should_trigger_blessing_of_might;
 
   paladin_melee_attack_t( const std::string& n, paladin_t* p,
                           const spell_data_t* s = spell_data_t::nil(),
-                          bool u2h = true,
-                          bool bom = true ):
+                          bool u2h = true ):
                           base_t( n, p, s ),
-                          use2hspec( u2h ),
-                          should_trigger_blessing_of_might( bom )
+                          use2hspec( u2h )
   {
     may_crit = true;
     special = true;
@@ -1750,29 +1769,6 @@ struct paladin_melee_attack_t: public paladin_action_t < melee_attack_t >
     }
 
     p() -> buffs.retribution_trinket -> trigger();
-  }
-
-  void trigger_blessing_of_might( action_state_t* s )
-  {
-    if ( p() -> buffs.blessing_of_might -> up() )
-    {
-      if ( rng().roll( p() -> buffs.blessing_of_might -> data().effectN( 1 ).percent() ) )
-      {
-        double amount = s -> result_amount;
-        amount *= p() -> buffs.blessing_of_might -> data().effectN( 2 ).percent();
-        p() -> active_blessing_of_might_proc -> base_dd_max = p() -> active_blessing_of_might_proc -> base_dd_min = amount;
-        p() -> active_blessing_of_might_proc -> target = s -> target;
-        p() -> active_blessing_of_might_proc -> execute();
-      }
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    base_t::impact( s );
-
-    if ( should_trigger_blessing_of_might )
-      trigger_blessing_of_might( s );
   }
 };
 
@@ -2462,7 +2458,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 struct hand_of_light_proc_t : public paladin_melee_attack_t
 {
   hand_of_light_proc_t( paladin_t* p )
-    : paladin_melee_attack_t( "hand_of_light", p, spell_data_t::nil(), false, false )
+    : paladin_melee_attack_t( "hand_of_light", p, spell_data_t::nil(), false )
   {
     school = SCHOOL_HOLY;
     may_crit    = false;
@@ -2517,16 +2513,19 @@ struct blessing_of_might_proc_t : public paladin_melee_attack_t
 {
   // TODO: there is an actual spell here: 205729
   blessing_of_might_proc_t( paladin_t* p )
-    : paladin_melee_attack_t( "blessing_of_might_proc", p, spell_data_t::nil(), false, false )
+    : paladin_melee_attack_t( "blessing_of_might_proc", p, spell_data_t::nil(), false )
   {
     school = SCHOOL_HOLY;
     may_miss    = false;
     may_dodge   = false;
     may_parry   = false;
     may_glance  = false;
+    may_crit    = true;
     background  = true;
     trigger_gcd = timespan_t::zero();
     id          = 205729;
+
+    should_trigger_blessing_of_might = false;
 
     // No weapon multiplier
     weapon_multiplier = 0.0;
@@ -2551,7 +2550,7 @@ struct blessing_of_might_proc_t : public paladin_melee_attack_t
 struct ashen_strike_impact_t : public paladin_melee_attack_t
 {
   ashen_strike_impact_t( paladin_t* p )
-    : paladin_melee_attack_t( "ashen_strike_impact", p, p -> find_spell( 180290 ), true, false )
+    : paladin_melee_attack_t( "ashen_strike_impact", p, p -> find_spell( 180290 ), true )
   {
     background = true;
     weapon_multiplier = 0.0;
@@ -3493,8 +3492,7 @@ void paladin_t::generate_action_prio_list_ret()
     precombat -> add_action( food_action );
   }
 
-  precombat -> add_action( this, "Seal of Truth", "if=spell_targets.divine_storm<3" );
-  precombat -> add_action( this, "Seal of Righteousness", "if=spell_targets.divine_storm>=3" );
+  precombat -> add_action( this, "Blessing of Might" );
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
@@ -3516,6 +3514,7 @@ void paladin_t::generate_action_prio_list_ret()
   action_priority_list_t* single = get_action_priority_list( "single" );
   action_priority_list_t* cleave = get_action_priority_list( "cleave" );
 
+  def -> add_action( "auto_attack" );
   def -> add_action( this, "Rebuke" );
 
   if ( sim -> allow_potions )
@@ -3527,10 +3526,6 @@ void paladin_t::generate_action_prio_list_ret()
     else if ( true_level >= 80 )
       def -> add_action( "potion,name=golemblood,if=buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40" );
   }
-
-  def -> add_talent( this, "Execution Sentence" );
-  def -> add_talent( this, "Turalyon's Might" );
-  def -> add_talent( this, "Consecration" );
 
   // Items
   int num_items = ( int ) items.size();
@@ -3553,65 +3548,61 @@ void paladin_t::generate_action_prio_list_ret()
   def -> add_action( "call_action_list,name=cleave,if=spell_targets.divine_storm>=3" );
   def -> add_action( "call_action_list,name=single" );
 
-  single -> add_action( this, "Judgment", "if=dot.judgment.remains<1");
-
-  single -> add_action( "wake_of_ashes" );
-
-  single -> add_talent( this, "Zeal", "if=t18_class_trinket=1&buff.focus_of_vengeance.remains<gcd.max*2" );
-  single -> add_talent( this, "Crusader Flurry", "if=t18_class_trinket=1&buff.focus_of_vengeance.remains<gcd.max*2" );
-  single -> add_action( this, "Crusader Strike", "if=t18_class_trinket=1&buff.focus_of_vengeance.remains<gcd.max*2" );
-
-  single -> add_action( this, "Templar's Verdict", "if=holy_power=5" );
-
-  single -> add_talent( this, "Divine Hammer", "if=holy_power<=3" );
-  single -> add_action( this, "Blade of Justice", "if=holy_power<=2" );
-
-  single -> add_talent( this, "Zeal", "if=holy_power<=3" );
-  single -> add_talent( this, "Crusader Flurry", "if=holy_power<=3" );
-  single -> add_action( this, "Crusader Strike", "if=holy_power<=3" );
-
-  single -> add_talent( this, "Blade of Wrath", "if=holy_power<=3" );
-
-  single -> add_action( this, "Templar's Verdict", "if=holy_power>=4" );
-
-  single -> add_talent( this, "Divine Hammer", "if=holy_power<=4" );
-  single -> add_action( this, "Blade of Justice", "if=holy_power<=3" );
-
-  single -> add_talent( this, "Zeal", "if=holy_power<=4" );
-  single -> add_talent( this, "Crusader Flurry", "if=holy_power<=4" );
-  single -> add_action( this, "Crusader Strike", "if=holy_power<=4" );
-
-  single -> add_talent( this, "Blade of Wrath", "if=holy_power<=4" );
-
+  // J >
   single -> add_action( this, "Judgment" );
 
-  single -> add_talent( this, "Blade of Wrath" );
+  // TV5 > TV4 >
+  single -> add_action( this, "Templar's Verdict", "if=holy_power>=4" );
 
-  single -> add_talent( this, "Zeal" );
-  single -> add_talent( this, "Crusader Flurry" );
-  single -> add_action( this, "Crusader Strike" );
-
+  // BoJ/DH >
   single -> add_talent( this, "Divine Hammer" );
   single -> add_action( this, "Blade of Justice" );
 
+  // ES >
+  single -> add_talent( this, "Execution Sentence" );
+  single -> add_talent( this, "Consecration" );
+  single -> add_talent( this, "Turalyon's Might" );
+
+  // CF3 >
+  single -> add_talent( this, "Crusader Flurry", "if=charges=3" );
+  single -> add_talent( this, "Zeal" );
+  single -> add_talent( this, "Crusader Strike" );
+
+  // TV3 >
+  single -> add_action( this, "Templar's Verdict", "if=holy_power>=3" );
+
+  // CF2 > CF1
+  single -> add_talent( this, "Crusader Flurry" );
+
+  // why would you pick this talent
+  single -> add_talent( this, "Blade of Wrath" );
+
+  // TODO: Determine where this goes
+  single -> add_action( "wake_of_ashes" );
+
   //Executed if three or more targets are present.
-
-  cleave -> add_action( this, "Divine Storm", "if=holy_power=5" );
-
-  cleave -> add_action( this, "Hammer of the Righteous", "if=t18_class_trinket=1&buff.focus_of_vengeance.remains<gcd.max*2" );
-
-  cleave -> add_action( this, "Divine Storm", "if=holy_power=5&(buff.avenging_wrath.up|target.health.pct<35)" );
-  cleave -> add_action( this, "Divine Storm", "if=holy_power=4&(buff.avenging_wrath.up|target.health.pct<35)" );
-  cleave -> add_action( this, "Divine Storm", "if=holy_power=3&(buff.avenging_wrath.up|target.health.pct<35)" );
-
-  cleave -> add_action( this, "Hammer of the Righteous", ",if=spell_targets.hammer_of_the_righteous>=4&(holy_power<=3|(holy_power=4&target.health.pct>=35&buff.avenging_wrath.down))" );
-  cleave -> add_action( this, "Crusader Strike", "if=holy_power<=3|(holy_power=4&target.health.pct>=35&buff.avenging_wrath.down)" );
-
-  cleave -> add_action( this, "judgment", "if=holy_power<=3|(holy_power=4&cooldown.crusader_strike.remains>=gcd*2&target.health.pct>35&buff.avenging_wrath.down)" );
-
+  // TODO: this is a total guess
+  cleave -> add_action( this, "Judgment" );
   cleave -> add_action( this, "Divine Storm", "if=holy_power>=4" );
 
+  cleave -> add_talent( this, "Divine Hammer" );
+  cleave -> add_action( this, "Blade of Justice" );
+
+  cleave -> add_talent( this, "Consecration" );
+  cleave -> add_talent( this, "Turalyon's Might" );
+  cleave -> add_talent( this, "Execution Sentence" );
+
+  cleave -> add_talent( this, "Zeal" );
+  cleave -> add_talent( this, "Crusader Flurry", "if=charges=3" );
+  cleave -> add_action( this, "Crusader Strike" );
+
   cleave -> add_action( this, "Divine Storm", "if=holy_power>=3" );
+
+  cleave -> add_talent( this, "Crusader Flurry" );
+
+  cleave -> add_action( "wake_of_ashes" );
+
+  cleave -> add_talent( this, "Blade of Wrath" );
 }
 
 // ==========================================================================
