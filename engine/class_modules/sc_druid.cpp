@@ -1745,7 +1745,7 @@ struct shooting_stars_t : public druid_spell_t
 
   shooting_stars_t( druid_t* player ) :
     druid_spell_t( "shooting_stars", player, player -> find_spell( 202497 ) ),
-    proc_chance( 0.50 ) // not in spell data, tested Dec 3 2015
+    proc_chance( 0.20 ) // 01/24/2015: From in-game testing.
   {
     background = true;
     ap_per_cast = data().effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
