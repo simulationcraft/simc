@@ -2598,6 +2598,10 @@ struct rip_t : public cat_attack_t
     /* FIXME: Does this even work correctly for tick_damage expression?
      probably just uses the CP of the Rip already on the target */
     rip_state_t* rip_state = debug_cast<rip_state_t*>( td( s -> target ) -> dots.rip -> state );
+    if ( ! rip_state )
+    {
+      return 0;
+    }
 
     return ap_per_point * rip_state -> combo_points;
   }
