@@ -2853,6 +2853,10 @@ struct rip_t : public cat_attack_t
   double attack_tick_power_coefficient( const action_state_t* s ) const override
   {
     rip_state_t* rip_state = debug_cast<rip_state_t*>( td( s -> target ) -> dots.rip -> state );
+    if ( ! rip_state )
+    {
+      return 0;
+    }
 
     return ap_per_point * rip_state -> combo_points;
   }
