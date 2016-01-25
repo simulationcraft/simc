@@ -272,15 +272,13 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   setWindowTitle( QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion() + " " + webEngineName());
   setAttribute( Qt::WA_AlwaysShowToolTips );
 
-#if defined( Q_OS_MAC )
-  QDir::home().mkpath( "Library/Application Support/SimulationCraft" );
-  AppDataDir = QDir::home().absoluteFilePath( "Library/Application Support/SimulationCraft" );
-#elif defined( Q_OS_WIN )
+#if defined( Q_OS_WIN )
   AppDataDir = QCoreApplication::applicationDirPath();
 #else
-  QStringList q = QStandardPaths::standardLocations( QStandardPaths::CacheLocation );
+  QStringList q = QStandardPaths::standardLocations( QStandardPaths::AppDataLocation );
   assert( !q.isEmpty() );
   AppDataDir = q.first();
+  QDir::home().mkpath( AppDataDir );
 #endif
 
   QStringList s = QStandardPaths::standardLocations( QStandardPaths::CacheLocation );
