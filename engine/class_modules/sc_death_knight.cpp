@@ -6682,7 +6682,10 @@ void death_knight_t::default_apl_blood()
     bos -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>=10&(!unholy|!frost|!blood)" );
     bos -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<35&runic_power>5" );
     bos -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>=9&runic_power>80&(blood.frac>1.8|frost.frac>1.8|unholy.frac>1.8)" );
-    bos -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>=9&runic_power>85&(buff.convulsive_shadows.remains>5|buff.convulsive_shadows.remains>2&buff.bloodlust.up)" );
+    if ( find_item( "vial_of_convulsive_shadows" ) )
+    {
+      bos -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>=9&runic_power>85&(buff.convulsive_shadows.remains>5|buff.convulsive_shadows.remains>2&buff.bloodlust.up)" );
+    }
     bos -> add_action( this, "Outbreak", "if=(!dot.blood_plague.ticking|!dot.frost_fever.ticking)&runic_power>21&!glyph.outbreak.enabled" );
     bos -> add_action( this, "Anti-Magic Shell", "damage=100000,if=runic_power<31" );
     bos -> add_action( this, "Death Strike", "if=runic_power<31" );
