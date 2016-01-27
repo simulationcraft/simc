@@ -5212,6 +5212,25 @@ double brambles_handler( const action_state_t* s )
   return p -> active.brambles -> absorb_size;
 }
 
+// Earthwarden Absorb Handler ===============================================
+
+double earthwarden_handler( const action_state_t* s )
+{
+  if ( s -> action -> special )
+    return 0;
+
+  druid_t* p = static_cast<druid_t*>( s -> target );
+  assert( p -> talent.earthwarden -> ok() );
+
+  if ( ! p -> buff.earthwarden -> up() )
+    return 0;
+
+  double absorb = s -> result_amount * p -> buff.earthwarden -> current_value;
+  p -> buff.earthwarden -> decrement();
+
+  return absorb;
+}
+
 // Persistent Buff Delay Event ==============================================
 
 struct persistent_buff_delay_event_t : public event_t
@@ -5468,6 +5487,10 @@ void druid_t::init_spells()
     
   talent.stonebark                      = find_talent_spell( "Stonebark" );
   talent.flourish                       = find_talent_spell( "Flourish" );
+
+  if ( talent.earthwarden -> ok() )
+    instant_absorb_list[ talent.earthwarden -> id() ] =
+      new instant_absorb_t( this, find_spell( 203975 ), "earthwarden", &earthwarden_handler );
 
   // Artifact ===============================================================
 
@@ -6934,6 +6957,7 @@ void druid_t::init_absorb_priority()
 
   absorb_priority.push_back( 184878 ); // Stalwart Guardian
   absorb_priority.push_back( talent.brambles -> id() ); // Brambles
+  absorb_priority.push_back( talent.earthwarden -> id() ); // Earthwarden - Legion TOCHECK
 }
 
 // druid_t::target_mitigation ===============================================
@@ -6951,12 +6975,6 @@ void druid_t::target_mitigation( school_e school, dmg_e type, action_state_t* s 
 
   if ( spell.thick_hide )
     s -> result_amount *= 1.0 + spell.thick_hide -> effectN( 1 ).percent();
-
-  if ( talent.earthwarden -> ok() && ! s -> action -> special && buff.earthwarden -> up() )
-  {
-    s -> result_amount *= 1.0 - buff.earthwarden -> current_value;
-    buff.earthwarden -> decrement();
-  }
 
   if ( talent.rend_and_tear -> ok() )
     s -> result_amount *= 1.0 - talent.rend_and_tear -> effectN( 2 ).percent()
