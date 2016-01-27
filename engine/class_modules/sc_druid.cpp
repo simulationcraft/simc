@@ -28,6 +28,7 @@ namespace { // UNNAMED NAMESPACE
 
  Guardian =============================
  Statistics?
+ Primal Fury gone or bugged?
  Incarnation CD modifier rework
 
  Resto ================================
@@ -281,7 +282,6 @@ public:
     buff_t* dash;
     buff_t* displacer_beast;
     buff_t* cenarion_ward;
-    buff_t* dream_of_cenarius;
     buff_t* incarnation;
     buff_t* clearcasting;
     buff_t* prowl;
@@ -435,7 +435,6 @@ public:
     const spell_data_t* leather_specialization; // All Specializations
     const spell_data_t* mana_attunement;        // Feral & Guardian
     const spell_data_t* omen_of_clarity;        // Feral & Restoration
-    const spell_data_t* dream_of_cenarius;      // All Specs (TOCHECK: does this still exist?)
 
     // Feral
     const spell_data_t* feral_passive; // Feral Overrides Passive
@@ -823,7 +822,7 @@ struct brambles_t : public absorb_t
   {
     absorb_t::init();
 
-    snapshot_flags &= ~STATE_VERSATILITY; // Is not affected by versatility. TOCHECK
+    snapshot_flags &= ~STATE_VERSATILITY; // Is not affected by versatility.
   }
 
   void execute() override
@@ -2931,7 +2930,7 @@ public:
 
   virtual timespan_t gcd() const override
   {
-    if ( p() -> specialization() != DRUID_GUARDIAN )
+    if ( p() -> specialization() != DRUID_GUARDIAN ) // TOCHECK
       return base_t::gcd();
 
     timespan_t t = base_t::gcd();
@@ -2964,7 +2963,8 @@ public:
     {
       p() -> resource_gain( RESOURCE_RAGE, rage_amount, rage_gain );
 
-      if ( p() -> spell.primal_fury -> ok() && s -> target == target && s -> result == RESULT_CRIT ) // Only trigger from primary target
+      if ( p() -> spell.primal_fury -> ok() && s -> target == target
+           && s -> result == RESULT_CRIT && s -> result_amount > 0 ) // Only trigger from primary target. Legion TOCHECK
       {
         p() -> resource_gain( RESOURCE_RAGE,
                               p() -> spell.primal_fury -> effectN( 1 ).resource( RESOURCE_RAGE ),
@@ -2995,7 +2995,7 @@ public:
     if ( s -> result_total <= 0 )
       return;
 
-    if ( rng().roll( p() -> talent.galactic_guardian -> effectN( 1 ).percent() ) )
+    if ( rng().roll( p() -> talent.galactic_guardian -> proc_chance() ) )
     {
       p() -> active.galactic_guardian -> target = s -> target;
       p() -> active.galactic_guardian -> execute();
@@ -3019,7 +3019,7 @@ struct bear_melee_t : public bear_attack_t
     trigger_gcd = timespan_t::zero();
     special     = false;
 
-    rage_amount = 5.0;
+    rage_amount = 70.0 / 9.0; // Legion TOCHECK: Estimate 01/27/2016, need more accurate number.
   }
 
   virtual timespan_t execute_time() const override
@@ -3129,7 +3129,7 @@ struct lacerate_dot_t : public bear_attack_t
 
   virtual void tick( dot_t* d ) override
   {
-    rage_tick_amount = td( d -> state -> target ) -> lacerate_stack * blood_frenzy_amount;
+    rage_tick_amount = td( d -> state -> target ) -> lacerate_stack == 3 ? blood_frenzy_amount : 0;
     
     bear_attack_t::tick( d );
   }
@@ -3194,7 +3194,6 @@ struct mangle_t : public bear_attack_t
     {
       rage_amount += player -> talent.soul_of_the_forest -> effectN( 1 ).resource( RESOURCE_RAGE );
       base_multiplier *= 1.0 + player -> talent.soul_of_the_forest -> effectN( 2 ).percent();
-      base_crit += p() -> spec.dream_of_cenarius -> effectN( 3 ).percent();
     }
   }
 
@@ -3228,14 +3227,6 @@ struct mangle_t : public bear_attack_t
 
     aoe = base_aoe;
   }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    bear_attack_t::impact( s );
-
-    if ( p() -> spec.dream_of_cenarius -> ok() && s -> result == RESULT_CRIT )
-      p() -> buff.dream_of_cenarius -> trigger();
-  }
 };
 
 // Maul =====================================================================
@@ -3247,7 +3238,6 @@ struct maul_t : public bear_attack_t
   {
     parse_options( options_str );
     weapon = &( player -> main_hand_weapon );
-    normalize_weapon_speed = false; // Legion TOCHECK
 
     use_off_gcd = true;
   }
@@ -3271,8 +3261,6 @@ struct pulverize_t : public bear_attack_t
     bear_attack_t( "pulverize", player, player -> talent.pulverize )
   {
     parse_options( options_str );
-
-    normalize_weapon_speed = false; // TOCHECK
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3325,8 +3313,6 @@ struct thrash_bear_t : public bear_attack_t
     {
       dot -> target = s -> target;
       dot -> execute();
-
-      td( s -> target ) -> dots.thrash_cat -> cancel(); // Legion TOCHECK
     }
   }
 
@@ -3415,7 +3401,7 @@ void druid_heal_t::init_living_seed()
 }
 
 // Frenzied Regeneration ====================================================
-// Legion TOCHECK: How do multiple frenzied regenerations interact?
+// FIXME: Change to ignite.
 
 struct frenzied_regeneration_t : public druid_heal_t
 {
@@ -3433,7 +3419,7 @@ struct frenzied_regeneration_t : public druid_heal_t
     may_crit = tick_may_crit = false;
     dot_behavior = DOT_CLIP;
 
-    heal_pct = data().effectN( 2 ).percent();
+    heal_pct = data().effectN( 2 ).percent() + p -> talent.guardian_of_elune -> effectN( 2 ).percent();
     time_window = timespan_t::from_seconds( data().effectN( 3 ).base_value() );
     min_pct = data().effectN( 4 ).percent();
     num_ticks = dot_duration / base_tick_time;
@@ -3441,8 +3427,6 @@ struct frenzied_regeneration_t : public druid_heal_t
     p -> cooldown.frenzied_regen_use -> duration = cooldown -> duration;
     cooldown -> charges = 2;
     cooldown -> duration = timespan_t::from_seconds( 20.0 );
-
-    base_multiplier *= 1.0 + p -> talent.guardian_of_elune -> effectN( 2 ).percent();
   }
 
   virtual void execute()
@@ -3484,27 +3468,11 @@ struct healing_touch_t : public druid_heal_t
     // redirect to self if not specified
     if ( target -> is_enemy() || ( target -> type == HEALING_ENEMY && p -> specialization() == DRUID_GUARDIAN ) )
       target = p;
-    
-    if ( p -> spec.dream_of_cenarius -> ok() && p -> specialization() == DRUID_GUARDIAN )
-      attack_power_mod.direct = spell_power_mod.direct;
-  }
-
-  double spell_direct_power_coefficient( const action_state_t* /* state */ ) const override
-  {
-    return spell_power_mod.direct * ! p() -> buff.dream_of_cenarius -> check();
-  }
-
-  double attack_direct_power_coefficient( const action_state_t* /* state */ ) const override
-  {
-    return attack_power_mod.direct * p() -> buff.dream_of_cenarius -> check();
   }
 
   virtual double cost() const override
   {
     if ( p() -> buff.predatory_swiftness -> check() )
-      return 0;
-
-    if ( p() -> buff.dream_of_cenarius -> check() )
       return 0;
 
     return druid_heal_t::cost();
@@ -3519,23 +3487,9 @@ struct healing_touch_t : public druid_heal_t
     druid_heal_t::consume_resource();
   }
 
-  virtual double action_da_multiplier() const override
-  {
-    double adm = druid_heal_t::action_da_multiplier();
-
-    if ( p() -> spec.dream_of_cenarius -> ok() ) {
-      if ( p() -> specialization() == DRUID_FERAL || p() -> specialization() == DRUID_BALANCE )
-        adm *= 1.0 + p() -> spec.dream_of_cenarius -> effectN( 1 ).percent();
-      else if ( p() -> specialization() == DRUID_GUARDIAN )
-        adm *= 1.0 + p() -> spec.dream_of_cenarius -> effectN( 2 ).percent();
-    }
-
-    return adm;
-  }
-
   virtual timespan_t execute_time() const override
   {
-    if ( p() -> buff.predatory_swiftness -> check() || p() -> buff.dream_of_cenarius -> up() )
+    if ( p() -> buff.predatory_swiftness -> check() )
       return timespan_t::zero();
 
     return druid_heal_t::execute_time();
@@ -3570,7 +3524,6 @@ struct healing_touch_t : public druid_heal_t
       p() -> buff.bloodtalons -> trigger( 2 );
 
     p() -> buff.predatory_swiftness -> expire();
-    p() -> buff.dream_of_cenarius -> expire();
   }
 
   virtual timespan_t gcd() const override
@@ -3725,16 +3678,6 @@ struct rejuvenation_t : public druid_heal_t
     druid_heal_t( "rejuvenation", p, p -> find_class_spell( "Rejuvenation" ), options_str )
   {
     tick_zero = true;
-  }
-
-  virtual double action_ta_multiplier() const override
-  {
-    double atm = base_t::action_ta_multiplier();
-
-    if ( p() -> spec.dream_of_cenarius -> ok() && p() -> specialization() == DRUID_FERAL )
-        atm *= 1.0 + p() -> spec.dream_of_cenarius -> effectN( 2 ).percent();
-
-    return atm;
   }
 };
 
@@ -5567,22 +5510,12 @@ void druid_t::init_spells()
 
   if ( specialization() == DRUID_FERAL )
   {
-    spec.dream_of_cenarius = find_spell ( 158497 );
     spell.primal_fury      = find_spell( 16953 );
     spell.gushing_wound    = find_spell( 165432 );
   }
   else if ( specialization() == DRUID_GUARDIAN )
   {
-    spec.dream_of_cenarius = find_spell( 158501 );
     spell.primal_fury      = find_spell( 16959 );
-  }
-  else if ( specialization() == DRUID_RESTORATION )
-  {
-    spec.dream_of_cenarius = find_spell( 158504 );
-  }
-  else if ( specialization() == DRUID_BALANCE )
-  {
-    spec.dream_of_cenarius  = find_spell( 108373 );
   }
 
   // Affinities =============================================================
@@ -5728,12 +5661,6 @@ void druid_t::create_buffs()
     default:
       break;
   }
-
-  if ( specialization() == DRUID_GUARDIAN )
-    buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", spec.dream_of_cenarius )
-                            .chance( spec.dream_of_cenarius -> effectN( 1 ).percent() );
-  else
-    buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", spec.dream_of_cenarius );
 
   buff.bloodtalons        = buff_creator_t( this, "bloodtalons", talent.bloodtalons -> ok() ? find_spell( 145152 ) : spell_data_t::not_found() )
                             .max_stack( 2 );
@@ -6534,7 +6461,7 @@ void druid_t::recalculate_resource_max( resource_e rt )
   if ( mastery.natures_guardian -> ok() && rt == RESOURCE_HEALTH )
   {
     resources.max[ rt ] *= 1.0 + cache.mastery_value();
-    // Maintain current health pct. Legion TOCHECK
+    // Maintain current health pct.
     resources.current[ rt ] = resources.max[ rt ] * pct_health;
 
     if ( sim -> log )
@@ -7019,7 +6946,6 @@ void druid_t::target_mitigation( school_e school, dmg_e type, action_state_t* s 
 
   s -> result_amount *= 1.0 + buff.pulverize -> value();
 
-  // TOCHECK: This talent only has one effect for some reason, may change in the future.
   if ( talent.galactic_guardian -> ok() && get_target_data( s -> action -> player ) -> dots.moonfire -> is_ticking() )
     s -> result_amount *= 1.0 - talent.galactic_guardian -> effectN( 1 ).percent();
 
@@ -7071,11 +6997,10 @@ void druid_t::assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t
 
   if ( s -> result_amount > 0 && buff.bristling_fur -> up() )
   {
-    // TOCHECK: This is a total guess based on ancient wiki pages on how Berserk Stance worked.
-    // 1 rage per 1% health taken
-    double rage = s -> result_amount / resources.max[ RESOURCE_HEALTH ] * 100;
-
-    resource_gain( RESOURCE_RAGE, rage, gain.bristling_fur );
+    // 1 rage per 1% of maximum health taken
+    resource_gain( RESOURCE_RAGE,
+                   s -> result_amount / resources.max[ RESOURCE_HEALTH ] * 100,
+                   gain.bristling_fur );
   }
 }
 
