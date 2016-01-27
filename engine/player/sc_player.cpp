@@ -5081,7 +5081,7 @@ double account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
         result_ignoring_external_absorbs -= absorbed;
         s -> self_absorb_amount += absorbed;
 
-        if ( p.sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
+        if ( p.sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() && absorbed != 0 )
           p.sim -> out_debug.printf( "Damage to %s after %s is %f", s -> target -> name(), ab -> name.c_str(), s -> result_amount );
       }
       else
@@ -5108,7 +5108,7 @@ double account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
               if ( ab -> source == &p || p.is_my_pet( ab -> source ) )
                 s -> self_absorb_amount += absorbed;
 
-              if ( p.sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
+              if ( p.sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() && absorbed != 0 )
                 p.sim -> out_debug.printf( "Damage to %s after %s is %f", s -> target -> name(), ab -> name(), s -> result_amount );
             }
 
