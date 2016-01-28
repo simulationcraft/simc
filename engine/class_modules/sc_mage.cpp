@@ -3513,7 +3513,7 @@ struct pyroblast_t : public fire_mage_spell_t
     fire_mage_spell_t::execute();
 
     // TODO: Use client data when it's updated
-    if ( p() -> talents.pyromaniac -> ok() && rng().roll( 0.5 ) )
+    if ( p() -> talents.pyromaniac -> ok() && rng().roll( 0.1 ) )
     {
       return;
     }
