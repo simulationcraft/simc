@@ -269,7 +269,7 @@ public:
     buff_t* serenity;
     buff_t* swift_as_the_wind;
     buff_t* transfer_the_power;
-    buff_t* tigereye_brew
+    buff_t* tigereye_brew;
   } buff;
 
 public:
