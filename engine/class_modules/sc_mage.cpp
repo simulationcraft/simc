@@ -2559,6 +2559,8 @@ struct fireball_t : public fire_mage_spell_t
       c += p() -> buffs.enhanced_pyrotechnics -> stack() *
            p() -> buffs.enhanced_pyrotechnics -> data().effectN( 1 ).percent();
 
+      if( p() -> talents.fire_starter -> ok() && target -> health_percentage() > 90 )
+        c = 1.0;
     return c;
   }
 
