@@ -233,6 +233,8 @@ public:
           * ignite_spread, // Spread events
           * ignite_new_spread, // Spread to new target
           * ignite_overwrite; // Spread to target with existing ignite
+
+    proc_t* controlled_burn; // Tracking Controlled Burn talent
   } procs;
 
   // Specializations
@@ -1518,6 +1520,17 @@ struct fire_mage_spell_t : public mage_spell_t
         {
           p -> procs.heating_up_generated -> occur();
           p -> buffs.heating_up -> trigger();
+
+          // Controlled Burn HU -> HS conversion
+          // TODO: Fix hardcoded 10% once spelldata is updated.
+          if ( p -> talents.controlled_burn -> ok() && rng().roll ( 0.1 ) )
+          {
+            p -> procs.controlled_burn -> occur();
+            p -> buffs.heating_up -> expire();
+            p -> buffs.hot_streak -> trigger();
+            if ( p -> sim -> debug )
+              p -> sim -> out_debug.printf( "controlled burn proc");
+          }
         }
       }
     }
@@ -3500,7 +3513,7 @@ struct pyroblast_t : public fire_mage_spell_t
     fire_mage_spell_t::execute();
 
     // TODO: Use client data when it's updated
-    if ( p() -> talents.pyromaniac -> ok() && rng().roll( 0.5 ) )
+    if ( p() -> talents.pyromaniac -> ok() && rng().roll( 0.1 ) )
     {
       return;
     }
@@ -4640,6 +4653,7 @@ void mage_t::init_procs()
       procs.ignite_new_spread = get_proc( "Ignites spread to new targets" );
       procs.ignite_overwrite  =
         get_proc( "Ignites spread to target with existing ignite" );
+      procs.controlled_burn   = get_proc(" Controlled Burn HU -> HS Conversion ");
       break;
     default:
       // This shouldn't happen
