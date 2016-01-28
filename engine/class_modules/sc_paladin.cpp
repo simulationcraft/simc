@@ -117,6 +117,7 @@ public:
     // Holy Power
     gain_t* hp_crusader_strike;
     gain_t* hp_blade_of_justice;
+    gain_t* hp_wake_of_ashes;
     gain_t* hp_conviction;
     gain_t* hp_templars_verdict_refund;
     gain_t* hp_judgment;
@@ -1653,6 +1654,12 @@ struct wake_of_ashes_impact_t : public paladin_spell_t
     // TODO: is this correct?
     weapon_power_mod = 1.0 / 3.5;
   }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
+    p() -> resource_gain( RESOURCE_HOLY_POWER, 5, p() -> gains.hp_wake_of_ashes );
+  }
 };
 
 struct wake_of_ashes_t : public paladin_spell_t
@@ -2815,7 +2822,7 @@ struct templars_verdict_t : public holy_power_consumer_t
   {
     double am = holy_power_consumer_t::action_multiplier();
 
-    // Final Verdict buffs CS damage by 25%
+    // Final Verdict buffs TV damage by 25%
     if ( p() -> talents.final_verdict -> ok() )
     {
       am *= 1.0 + p() -> talents.final_verdict -> effectN( 1 ).percent();
@@ -3255,6 +3262,7 @@ void paladin_t::init_gains()
   gains.hp_crusader_strike          = get_gain( "crusader_strike" );
   gains.hp_blade_of_justice         = get_gain( "blade_of_justice" );
   gains.hp_conviction               = get_gain( "conviction" );
+  gains.hp_wake_of_ashes            = get_gain( "wake_of_ashes" );
   gains.hp_judgment                 = get_gain( "judgment" );
   gains.hp_templars_verdict_refund  = get_gain( "templars_verdict_refund" );
 
