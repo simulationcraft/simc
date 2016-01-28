@@ -20,7 +20,7 @@ WINDWALKER:
 MISTWEAVER: 
 - Gusts of Mists - Check calculations
 - Vivify - Check the interation between Thunder Focus Tea and Lifecycles
-- Essence Font - Find out what happens with less than 6 people.
+- Essence Font - See if the implementation can be corrected to the intended design.
 - Life Cocoon - Double check if the Enveloping Mists and Renewing Mists from Mists of Life proc the mastery or not.
 - Not Modeled:
 -- Crane's Grace
@@ -246,6 +246,7 @@ public:
     absorb_buff_t* life_cocoon;
     buff_t* channeling_soothing_mist;
     buff_t* chi_jis_guidance;
+    buff_t* extend_life;
     buff_t* lifecycles_enveloping_mist;
     buff_t* lifecycles_vivify;
     buff_t* mana_tea;
@@ -268,8 +269,7 @@ public:
     buff_t* serenity;
     buff_t* swift_as_the_wind;
     buff_t* transfer_the_power;
-    buff_t* tigereye_brew;
-    buff_t* vital_mists;
+    buff_t* tigereye_brew
   } buff;
 
 public:
@@ -541,7 +541,7 @@ public:
     const spell_data_t* zen_pulse_heal;
     const spell_data_t* tier17_2pc_heal;
     const spell_data_t* tier17_4pc_heal;
-    const spell_data_t* tier18_4pc_heal;
+    const spell_data_t* tier18_2pc_heal;
     // Windwalker
     const spell_data_t* aura_windwalker_monk;
     const spell_data_t* chi_orbit;
@@ -1938,8 +1938,12 @@ struct monk_heal_t: public monk_action_t < heal_t >
         else
           am *= 1.0 + p() -> spec.enveloping_mist -> effectN( 2 ).percent();
       }
-      if ( p()-> buff.life_cocoon -> up() )
-        am += 1.0 + p() -> spec.life_cocoon -> effectN( 2 ).percent();
+
+      if ( p() -> buff.life_cocoon -> up() )
+        am *= 1.0 + p() -> spec.life_cocoon -> effectN( 2 ).percent();
+
+      if ( p() -> buff.extend_life -> up() )
+        am *= 1.0 + p() -> buff.extend_life -> value();
     }
 
     return am;
@@ -4470,6 +4474,8 @@ struct effuse_t: public monk_heal_t
 
     mastery = new gust_of_mists_t( p );
 
+    spell_power_mod.direct = data().effectN( 1 ).ap_coeff();
+
     may_miss = false;
   }
 
@@ -4525,7 +4531,7 @@ struct enveloping_mist_t: public monk_heal_t
 
     dot_duration = p.spec.enveloping_mist -> duration();
     if ( p.talent.mist_wrap )
-      dot_duration += timespan_t::from_seconds( p.talent.mist_wrap -> effectN( 1 ).base_value() );
+      dot_duration += p.talent.mist_wrap -> effectN( 1 ).time_value();
 
     if ( p.sheilun_staff_of_the_mists )
       artifact = new the_mists_of_sheilun_buff_t( &p );
@@ -4597,10 +4603,34 @@ struct enveloping_mist_t: public monk_heal_t
 Bouncing only happens when overhealing, so not going to bother with bouncing
 */
 
+struct extend_life_t: public monk_heal_t
+{
+  extend_life_t( monk_t& p ):
+    monk_heal_t( "extend_life", p, p.passives.tier18_2pc_heal )
+  {
+    background = dual = true;
+    dot_duration = timespan_t::zero();
+  }
+
+  virtual double cost() const override
+  {
+    return 0;
+  }
+
+  virtual void execute() override
+  {
+    monk_heal_t::execute();
+
+    p() -> buff.extend_life -> trigger();
+  }
+
+};
+
 // Renewing Mist Dancing Mist Mistweaver Artifact Traits ====================
 struct renewing_mist_dancing_mist_t: public monk_heal_t
 {
   gust_of_mists_t* mastery;
+  extend_life_t* tier18_2pc;
 
   renewing_mist_dancing_mist_t( monk_t& p ):
     monk_heal_t( "renewing_mist_dancing_mist", p, p.spec.renewing_mist )
@@ -4611,6 +4641,9 @@ struct renewing_mist_dancing_mist_t: public monk_heal_t
 
     if ( p.artifact.extended_healing.rank() )
       dot_duration += p.artifact.extended_healing.time_value();
+
+    if ( p.sets.has_set_bonus( MONK_MISTWEAVER, T18, B2 ) )
+      tier18_2pc = new extend_life_t( p ); 
 
     mastery = new gust_of_mists_t( p );
   }
@@ -4624,6 +4657,9 @@ struct renewing_mist_dancing_mist_t: public monk_heal_t
   {
     monk_heal_t::execute();
 
+    if ( p() -> sets.has_set_bonus( MONK_MISTWEAVER, T18, B4 ) )
+      tier18_2pc -> execute();
+
     mastery -> execute();
   }
 };
@@ -4635,6 +4671,7 @@ struct renewing_mist_t: public monk_heal_t
   shaohaos_mists_of_wisdom_t* shaohao;
   renewing_mist_dancing_mist_t* rem;
   gust_of_mists_t* mastery;
+  extend_life_t* tier18_2pc;
 
   renewing_mist_t( monk_t& p, const std::string& options_str ):
     monk_heal_t( "renewing_mist", p, p.spec.renewing_mist )
@@ -4654,6 +4691,9 @@ struct renewing_mist_t: public monk_heal_t
 
     if ( p.artifact.dancing_mists.rank() )
       rem = new renewing_mist_dancing_mist_t( p );
+
+    if ( p.sets.has_set_bonus( MONK_MISTWEAVER, T18, B4 ) )
+      tier18_2pc = new extend_life_t( p );
 
     mastery = new gust_of_mists_t( p );
   }
@@ -4681,6 +4721,9 @@ struct renewing_mist_t: public monk_heal_t
   virtual void execute() override
   {
     monk_heal_t::execute();
+
+    if ( p() -> sets.has_set_bonus( MONK_MISTWEAVER, T18, B2 ) )
+      tier18_2pc -> execute();
 
     mastery -> execute();
 
@@ -4793,8 +4836,10 @@ struct vivify_t: public monk_heal_t
 // Essence Font
 // ==========================================================================
 // The spell only hits each player 3 times no matter how many players are in group
-// In order to get this working, initially only triggering the heal every 1002 milliseconds
-// (6 * 167 milliseconds) hitting up to 6 players
+// The intended model is every 1/6 of a sec, it fires a bolt at a single target 
+// that is randomly selected from the pool of [allies that are within range that 
+// have not been the target of any of the 5 previous ticks]. If there only 3 
+// potential allies, then that set is empty half the time, and a bolt doesn't fire.
 
 struct essence_font_t: public monk_spell_t
 {
@@ -5742,7 +5787,7 @@ void monk_t::init_spells()
   passives.zen_pulse_heal                   = find_spell( 198487 );
   passives.tier17_2pc_heal                  = find_spell( 167732 );
   passives.tier17_4pc_heal                  = find_spell( 167717 );
-  passives.tier18_4pc_heal                  = find_spell( 185158 ); // Extend Life
+  passives.tier18_2pc_heal                  = find_spell( 185158 ); // Extend Life
 
   // Windwalker
   passives.chi_orbit                        = find_spell( 196748 );
@@ -5921,15 +5966,16 @@ void monk_t::create_buffs()
     .max_stack( 1 + ( talent.focused_thunder ? talent.focused_thunder -> effectN( 1 ).base_value()  : 0 )
                   + ( artifact.harmony_and_focus.rank() ? artifact.harmony_and_focus.value() : 0 ) );
 
-  buff.vital_mists = buff_creator_t( this, "vital_mists", find_spell( 118674 ) ).max_stack( 5 );
-
   buff.mistweaving = buff_creator_t(this, "mistweaving", passives.tier17_2pc_heal )
     .default_value( passives.tier17_2pc_heal -> effectN( 1 ).percent() )
     .max_stack( 7 )
     .add_invalidate( CACHE_CRIT );
 
   buff.chi_jis_guidance = buff_creator_t( this, "chi_jis_guidance", passives.tier17_4pc_heal )
-    .default_value( passives.tier17_4pc_heal -> effectN( 1 ).percent() ) ;
+    .default_value( passives.tier17_4pc_heal -> effectN( 1 ).percent() );
+
+  buff.extend_life = buff_creator_t( this, "extend_life", passives.tier18_2pc_heal )
+    .default_value( passives.tier18_2pc_heal -> effectN( 2 ).percent() );
 
   // Windwalker
   buff.chi_orbit = buff_creator_t( this, "chi_orbit", talent.chi_orbit )
