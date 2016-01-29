@@ -1636,6 +1636,7 @@ class SpellDataGenerator(DataGenerator):
 		  ( 188046, 0 ),       # T18 2P Faerie casts this spell
           ( 202771, 0 ), ( 202768, 0 ), # Half Moon, Full Moon artifact powers
 		  ( 203001, 0 ),       # Goldrinn's Fang, Spirit of Goldrinn artifact power
+		  ( 203958, 0 ),       # Brambles (talent) damage spell
         ),
     ]
 

@@ -788,12 +788,10 @@ struct brambles_t : public absorb_t
   struct brambles_reflect_t : public attack_t
   {
     brambles_reflect_t( druid_t* p ) :
-      attack_t( "brambles_reflect", p, /* p -> find_spell( 203958 ) FIXME */ spell_data_t::nil() )
+      attack_t( "brambles_reflect", p, p -> find_spell( 203958 ) )
     {
       may_block = may_dodge = may_parry = may_miss = true;
       may_crit = true;
-
-      school = SCHOOL_NATURE;
     }
   };
 
