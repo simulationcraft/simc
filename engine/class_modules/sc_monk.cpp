@@ -16,6 +16,7 @@ WINDWALKER:
 - Transfer of Power - Get actual duration and max stacks of the buff
 - Add expression for Combo Strike
 - Check if SEF uses Strike of the Windlord
+- Update Crosswind's targeting system.
 
 MISTWEAVER: 
 - Gusts of Mists - Check calculations
