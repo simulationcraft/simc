@@ -2330,10 +2330,44 @@ struct divine_hammer_t : public paladin_spell_t
 
 // Divine Storm =============================================================
 
+
+struct echoed_divine_storm_t: public holy_power_consumer_t
+{
+  echoed_divine_storm_t( paladin_t* p, const std::string& options_str )
+    : holy_power_consumer_t( "divine_storm", p, p -> find_class_spell( "Divine Storm" ) )
+  {
+    parse_options( options_str );
+
+    weapon = &( p -> main_hand_weapon );
+
+    base_multiplier *= 1.0 + p -> artifact.righteous_blade.percent();
+
+    aoe = -1;
+    background = true;
+  }
+
+  virtual double cost() const override
+  {
+    return 0;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    holy_power_consumer_t::impact( s );
+
+    // TODO(mserrano): is this right?
+    if ( result_is_hit( s -> result ) )
+      // Trigger Hand of Light procs
+      trigger_hand_of_light( s );
+  }
+};
+
 struct divine_storm_t: public holy_power_consumer_t
 {
+  echoed_divine_storm_t* echoed_spell;
   divine_storm_t( paladin_t* p, const std::string& options_str )
-    : holy_power_consumer_t( "divine_storm", p, p -> find_class_spell( "Divine Storm" ) )
+    : holy_power_consumer_t( "divine_storm", p, p -> find_class_spell( "Divine Storm" ) ),
+      echoed_spell( new echoed_divine_storm_t( p, options_str ) )
   {
     parse_options( options_str );
 
@@ -2344,28 +2378,13 @@ struct divine_storm_t: public holy_power_consumer_t
     aoe = -1;
   }
 
-  virtual double cost() const override
-  {
-    if ( background )
-      return 0;
-    return holy_power_consumer_t::cost();
-  }
-
   virtual void execute() override
   {
     holy_power_consumer_t::execute();
 
-    if ( background )
+    if ( p() -> artifact.echo_of_the_highlord.rank() )
     {
-      background = false;
-    }
-    else
-    {
-      if ( p() -> artifact.echo_of_the_highlord.rank() )
-      {
-        background = true;
-        schedule_execute();
-      }
+      echoed_spell -> schedule_execute();
     }
   }
 
@@ -2772,21 +2791,61 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
 
 // Templar's Verdict ========================================================================
 
-struct templars_verdict_t : public holy_power_consumer_t
+// Stupid hack.
+// TODO(mserrano): fix this.
+struct echoed_templars_verdict_t : public holy_power_consumer_t
 {
-  templars_verdict_t( paladin_t* p, const std::string& options_str )
+  echoed_templars_verdict_t( paladin_t* p, const std::string& options_str )
     : holy_power_consumer_t( "templars_verdict", p, p -> find_class_spell( "Templar's Verdict" ), true )
   {
     parse_options( options_str );
 
     base_multiplier *= 1.0 + p -> artifact.might_of_the_templar.percent();
+    background = true;
   }
 
   virtual double cost() const override
   {
-    if ( background )
-      return 0;
-    return holy_power_consumer_t::cost();
+    return 0;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = holy_power_consumer_t::action_multiplier();
+
+    // Final Verdict buffs TV damage by 25%
+    if ( p() -> talents.final_verdict -> ok() )
+    {
+      am *= 1.0 + p() -> talents.final_verdict -> effectN( 1 ).percent();
+    }
+
+    return am;
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    holy_power_consumer_t::impact( s );
+
+    // TODO(mserrano): does this apply to the echoed spell?
+    if ( result_is_hit( s -> result ) )
+    {
+      // Trigger Hand of Light procs
+      trigger_hand_of_light( s );
+    }
+  }
+};
+
+struct templars_verdict_t : public holy_power_consumer_t
+{
+  echoed_templars_verdict_t* echoed_spell;
+
+  templars_verdict_t( paladin_t* p, const std::string& options_str )
+    : holy_power_consumer_t( "templars_verdict", p, p -> find_class_spell( "Templar's Verdict" ), true ),
+      echoed_spell( new echoed_templars_verdict_t( p, options_str ) )
+  {
+    parse_options( options_str );
+
+    base_multiplier *= 1.0 + p -> artifact.might_of_the_templar.percent();
   }
 
   virtual void execute () override
@@ -2803,17 +2862,9 @@ struct templars_verdict_t : public holy_power_consumer_t
       p() -> resource_gain( RESOURCE_HOLY_POWER, c, p() -> gains.hp_templars_verdict_refund );
     }
 
-    if ( background )
+    if ( p() -> artifact.echo_of_the_highlord.rank() )
     {
-      background = false;
-    }
-    else
-    {
-      if ( p() -> artifact.echo_of_the_highlord.rank() )
-      {
-        background = true;
-        schedule_execute();
-      }
+      echoed_spell -> schedule_execute();
     }
   }
 
