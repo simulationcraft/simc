@@ -365,6 +365,7 @@ public:
     gain_t* blessing_of_anshe;
     gain_t* blessing_of_elune;
     gain_t* celestial_alignment;
+    gain_t* incarnation;
     gain_t* lunar_strike;
     gain_t* shooting_stars;
     gain_t* solar_wrath;
@@ -1629,8 +1630,9 @@ public:
   {
     double am = spell_t::action_multiplier();
 
-    if ( p() -> buff.celestial_alignment -> check() )
-      am *= 1.0 + p() -> buff.celestial_alignment -> check_value();
+    // FIXME: These modifiers do not apply to all spells, only a specific list from spell data.
+    am *= 1.0 + p() -> buff.celestial_alignment -> check_value();
+    am *= 1.0 + p() -> buff.incarnation_moonkin -> check_value();
 
     return am;
   }
@@ -1658,10 +1660,18 @@ public:
     double ap = base_ap;
     double bonus_pct = 0;
     
-    if ( benefits_from_ca && p() -> buff.celestial_alignment -> check() )
+    if ( benefits_from_ca )
     {
-      ap *= 1.0 + p() -> spec.celestial_alignment -> effectN( 3 ).percent();
-      bonus_pct += p() -> spec.celestial_alignment -> effectN( 3 ).percent();
+      if ( p() -> buff.celestial_alignment -> check() )
+      {
+        ap *= 1.0 + p() -> spec.celestial_alignment -> effectN( 3 ).percent();
+        bonus_pct += p() -> spec.celestial_alignment -> effectN( 3 ).percent();
+      }
+      else if ( p() -> buff.incarnation_moonkin -> check() )
+      {
+        ap *= 1.0 + p() -> buff.incarnation_moonkin -> data().effectN( 3 ).percent();
+        bonus_pct += p() -> buff.incarnation_moonkin -> data().effectN( 3 ).percent();
+      }
     }
 
     if ( benefits_from_elune && p() -> buff.blessing_of_elune -> check() )
@@ -1677,8 +1687,13 @@ public:
     ap -= base_ap;
 
     // Divide the remaining AP gain among the buffs based on their modifier / bonus_pct ratio.
-    if ( benefits_from_ca && p() -> buff.celestial_alignment -> check() )
-      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * ( p() -> spec.celestial_alignment -> effectN( 3 ).percent() / bonus_pct ), p() -> gain.celestial_alignment );
+    if ( benefits_from_ca )
+    {
+      if ( p() -> buff.celestial_alignment -> check() )
+        p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * ( p() -> spec.celestial_alignment -> effectN( 3 ).percent() / bonus_pct ), p() -> gain.celestial_alignment );
+      else if ( p() -> buff.incarnation_moonkin -> check() )
+        p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * ( p() -> buff.incarnation_moonkin -> data().effectN( 3 ).percent() / bonus_pct ), p() -> gain.incarnation );
+    }
 
     if ( benefits_from_elune && p() -> buff.blessing_of_elune -> check() )
       p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * ( p() -> spell.blessing_of_elune -> effectN( 2 ).percent() / bonus_pct ), p() -> gain.blessing_of_elune );
@@ -4096,6 +4111,8 @@ struct celestial_alignment_t : public druid_spell_t
   {
     if ( p() -> talent.collapsing_stars -> ok() )
       return false;
+    if ( p() -> talent.incarnation_moonkin -> ok() )
+      return false;
 
     return druid_spell_t::ready();
   }
@@ -5704,7 +5721,6 @@ void druid_t::create_buffs()
 
   buff.incarnation_moonkin = buff_creator_t( this, "incarnation", talent.incarnation_moonkin )
                               .default_value( talent.incarnation_moonkin -> effectN( 1 ).percent() )
-                              .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                               .cd( timespan_t::zero() );
 
   buff.incarnation_cat     = new incarnation_cat_buff_t( *this );
@@ -6266,6 +6282,7 @@ void druid_t::init_gains()
   gain.blessing_of_anshe     = get_gain( "blessing_of_anshe"     );
   gain.blessing_of_elune     = get_gain( "blessing_of_elune"     );
   gain.celestial_alignment   = get_gain( "celestial_alignment"   );
+  gain.incarnation           = get_gain( "incarnation"           );
   gain.lunar_strike          = get_gain( "lunar_strike"          );
   gain.shooting_stars        = get_gain( "shooting_stars"        );
   gain.solar_wrath           = get_gain( "solar_wrath"           );
@@ -6612,8 +6629,6 @@ double druid_t::composite_player_multiplier( school_e school ) const
   {
     if ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_NATURE ) )
     {
-      m *= 1.0 + buff.incarnation_moonkin -> check_value();
-
       m *= 1.0 + buff.balance_tier18_4pc -> check_value();
 
       if ( buff.moonkin_form -> check() )
