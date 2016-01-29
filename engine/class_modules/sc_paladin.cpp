@@ -94,6 +94,7 @@ public:
     buff_t* seal_of_light;
     buff_t* turalyons_might;
     buff_t* blessing_of_might;
+    buff_t* conviction;
 
     // Set Bonuses
     buff_t* faith_barricade;      // t17_2pc_tank
@@ -118,7 +119,6 @@ public:
     gain_t* hp_crusader_strike;
     gain_t* hp_blade_of_justice;
     gain_t* hp_wake_of_ashes;
-    gain_t* hp_conviction;
     gain_t* hp_templars_verdict_refund;
     gain_t* hp_judgment;
   } gains;
@@ -1817,7 +1817,7 @@ struct holy_power_generator_t : public paladin_melee_attack_t
       // Conviction
       if ( p() -> passives.conviction -> ok() && rng().roll( p() -> passives.conviction -> proc_chance() ) )
       {
-        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_conviction);
+        p() -> buffs.conviction -> trigger();
       }
     }
   }
@@ -2311,7 +2311,9 @@ struct divine_hammer_t : public paladin_spell_t
 
       // Conviction
       if ( p() -> passives.conviction -> ok() && rng().roll( p() -> passives.conviction -> proc_chance() ) )
-        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_conviction);
+      {
+        p() -> buffs.conviction -> trigger();
+      }
 
       if ( p() -> artifact.blades_of_light.rank() )
       {
@@ -2378,9 +2380,20 @@ struct divine_storm_t: public holy_power_consumer_t
     aoe = -1;
   }
 
+  virtual double cost() const override
+  {
+    double base_cost = holy_power_consumer_t::cost();
+    if ( p() -> buffs.conviction -> up() )
+      return base_cost - 1;
+    return base_cost;
+  }
+
   virtual void execute() override
   {
     holy_power_consumer_t::execute();
+
+    if ( p() -> buffs.conviction -> up() )
+      p() -> buffs.conviction -> expire();
 
     if ( p() -> artifact.echo_of_the_highlord.rank() )
     {
@@ -2848,12 +2861,23 @@ struct templars_verdict_t : public holy_power_consumer_t
     base_multiplier *= 1.0 + p -> artifact.might_of_the_templar.percent();
   }
 
+  virtual double cost() const override
+  {
+    double base_cost = holy_power_consumer_t::cost();
+    if ( p() -> buffs.conviction -> up() )
+      return base_cost - 1;
+    return base_cost;
+  }
+
   virtual void execute () override
   {
     // store cost for potential refunding (see below)
     double c = cost();
 
     holy_power_consumer_t::execute();
+
+    if ( p() -> buffs.conviction -> up() )
+      p() -> buffs.conviction -> expire();
 
     // missed/dodged/parried TVs do not consume Holy Power, but do consume Divine Purpose
     // check for a miss, and refund the appropriate amount of HP if we spent any
@@ -3312,7 +3336,6 @@ void paladin_t::init_gains()
   // Holy Power
   gains.hp_crusader_strike          = get_gain( "crusader_strike" );
   gains.hp_blade_of_justice         = get_gain( "blade_of_justice" );
-  gains.hp_conviction               = get_gain( "conviction" );
   gains.hp_wake_of_ashes            = get_gain( "wake_of_ashes" );
   gains.hp_judgment                 = get_gain( "judgment" );
   gains.hp_templars_verdict_refund  = get_gain( "templars_verdict_refund" );
@@ -3384,6 +3407,7 @@ void paladin_t::create_buffs()
                                           .add_invalidate( CACHE_ATTACK_SPEED );
   buffs.seal_of_light                  = buff_creator_t( this, "seal_of_light" ).spell( find_spell( 202273 ) )
                                           .add_invalidate( CACHE_ATTACK_SPEED );
+  buffs.conviction                     = buff_creator_t( this, "conviction" ).spell( find_spell( 209785 ) );
   // this feels like a horrible hack. Open to suggestions.
   buffs.turalyons_might                = buff_creator_t( this, "turalyons_might" ).spell( find_spell( 198051 ) )
                                           .duration( timespan_t::from_seconds( 8 ) );
