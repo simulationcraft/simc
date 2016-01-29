@@ -1194,8 +1194,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
     sef_crosswinds_tick_t( storm_earth_and_fire_pet_t* p ):
       sef_tick_action_t( "crosswinds_tick", p, p -> o() -> passives.crosswinds )
     { 
-      aoe = p -> o() -> artifact.crosswinds.data().effectN( 1 ).trigger() -> effectN( 1 ).base_value();
-
       // Reset some variables to ensure proper execution
       dot_duration = timespan_t::zero();
       school = SCHOOL_PHYSICAL;
@@ -2239,36 +2237,17 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
 // Rising Sun Kick Tornado Kick Windwalker Artifact Trait ==================
 struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
 {
-  rising_sun_kick_proc_t* rsk_proc;
 
   rising_sun_kick_tornado_kick_t( monk_t* p, const spell_data_t* s ) :
     monk_melee_attack_t( "rising_sun_kick_torndo_kick", p, s )
   {
-    sef_ability = SEF_RISING_SUN_KICK_TORNADO_KICK;
+//    sef_ability = SEF_RISING_SUN_KICK_TORNADO_KICK; // Right now SEF does not benefit from Tornado Kicks
+
+    may_miss = may_dodge = may_parry = may_crit = may_block = true;
 
     cooldown -> duration = timespan_t::from_millis( 250 );
     background = true;
-    mh = &( player -> main_hand_weapon );
-    oh = &( player -> off_hand_weapon );
     trigger_gcd = timespan_t::zero();
-
-    if ( p -> furious_sun )
-      rsk_proc = new rising_sun_kick_proc_t( p, p -> passives.rising_sun_kick_trinket );
-  }
-
-  bool init_finished()
-  {
-    bool ret = monk_melee_attack_t::init_finished();
-    action_t* rsk = player -> find_action( "rising_sun_kick" );
-    if ( rsk )
-    {
-      base_multiplier = rsk -> base_multiplier;
-      spell_power_mod.direct = rsk -> spell_power_mod.direct;
-
-      rsk -> add_child( this );
-    }
-
-    return ret;
   }
 
   // Force 250 milliseconds for the animation, but not delay the overall GCD
@@ -2284,45 +2263,7 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
     if ( p() -> artifact.tornado_kicks.rank())
       am *= p() -> artifact.rising_winds.percent();
 
-    if ( p() -> artifact.rising_winds.rank() )
-      am *= 1 + p() -> artifact.rising_winds.percent();
-
     return am;
-  }
-
-  virtual void execute() override
-  {
-    monk_melee_attack_t::execute();
-
-    if ( result_is_miss( execute_state -> result ) )
-      return;
-
-    // Apply Mortal Wonds
-    if ( p() -> specialization() == MONK_WINDWALKER )
-      p() -> debuffs.mortal_wounds -> trigger();
-
-    // Activate A'Buraq's Trait
-    if ( p() -> artifact.transfer_the_power.rank() )
-      p() -> buff.transfer_the_power -> trigger();
-
-    // Combo Breaker if T18 2-piece (Your Rising Sun Kick has a 30% chance to generate Combo Breaker.)
-    double cb_chance = combo_breaker_chance( CS_RISING_SUN_KICK );
-    if ( cb_chance > 0 )
-    {
-      if ( p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
-          p() -> proc.combo_breaker_bok -> occur();
-    }
-
-    // TODO: Check if the Tornado Kick can proc the T18 trinket
-    // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
-    // of the special effect.
-    if ( p() -> furious_sun )
-    {
-      double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item) / 100.0;
-
-      if ( rng().roll( proc_chance ) )
-        rsk_proc -> execute();
-    }
   }
 
   virtual double cost() const override
@@ -2422,9 +2363,6 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     if ( p() -> buff.serenity -> up() )
       p() -> gain.serenity -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] - cost() );
 
-    if ( p() -> artifact.tornado_kicks.rank() )
-      rsk_tornado_kick -> execute();
-
     // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
     // of the special effect.
     if ( p() -> furious_sun )
@@ -2444,6 +2382,21 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     return monk_melee_attack_t::cost();
   }
 
+  virtual void impact( action_state_t* s ) override
+  {
+    monk_melee_attack_t::impact( s );
+
+    if ( p() -> artifact.tornado_kicks.rank() )
+    {
+      if ( result_is_hit( s -> result ) )
+      {
+        rsk_tornado_kick -> target = s -> target;
+        rsk_tornado_kick -> base_dd_max = s -> result_raw;
+        rsk_tornado_kick -> base_dd_min = s -> result_raw;
+        rsk_tornado_kick -> execute();
+      }
+    }
+  }
 };
 
 // ==========================================================================
@@ -2804,13 +2757,17 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
 // TODO: Get AP Co-efficient of Crosswinds
 
 // Crosswinds Artifact Trait ===============================================
+/* When you activate FoF, you get a hidden buff on yourself that shoots a wind spirit guy at a random 
+   target that is being hit by your FoF, regardless of how many people are being hit by FoF. If you 
+   FoF one target, they all hit that guy. If you FoF 5 targets, each wind spirit hits a random one 
+   of the 5 guys. it just rolls Random(1, (number of targets)), and picks that guy.
+*/
 struct crosswinds_tick_t : public monk_melee_attack_t
 {
   crosswinds_tick_t( monk_t* p ) :
     monk_melee_attack_t( "crosswinds_tick", p, p -> passives.crosswinds )
   {
     background = dual = true;
-    aoe = p -> artifact.crosswinds.data().effectN( 1 ).trigger() -> effectN( 1 ).base_value();
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
 
