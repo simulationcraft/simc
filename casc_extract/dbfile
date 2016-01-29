@@ -15,9 +15,9 @@ DBFilesClient\AnimationData.dbc
 DBFilesClient\AreaGroupMember.db2
 DBFilesClient\AreaPOI.db2
 DBFilesClient\AreaPOIState.db2
-DBFilesClient\AreaTable.dbc
-DBFilesClient\AreaTrigger.dbc
-DBFilesClient\AreaTriggerActionSet.dbc
+DBFilesClient\AreaTable.db2
+DBFilesClient\AreaTrigger.db2
+DBFilesClient\AreaTriggerActionSet.db2
 DBFilesClient\AreaTriggerBox.db2
 DBFilesClient\AreaTriggerCylinder.db2
 DBFilesClient\AreaTriggerSphere.db2
@@ -66,7 +66,7 @@ DBFilesClient\CharSections.dbc
 DBFilesClient\CharShipment.db2
 DBFilesClient\CharShipmentContainer.db2
 DBFilesClient\CharStartOutfit.db2
-DBFilesClient\CharTitles.dbc
+DBFilesClient\CharTitles.db2
 DBFilesClient\CharacterFaceBoneSet.db2
 DBFilesClient\CharacterFacialHairStyles.dbc
 DBFilesClient\CharacterLoadout.db2
@@ -87,6 +87,7 @@ DBFilesClient\ChrUpgradeTier.db2
 DBFilesClient\CinematicCamera.db2
 DBFilesClient\CinematicSequences.db2
 DBFilesClient\CombatCondition.db2
+DBFilesClient\ComponentModelFileData.db2
 DBFilesClient\ComponentTextureFileData.db2
 DBFilesClient\ConversationLine.db2
 DBFilesClient\Creature.db2
@@ -96,7 +97,7 @@ DBFilesClient\CreatureDisplayInfo.db2
 DBFilesClient\CreatureDisplayInfoCond.db2
 DBFilesClient\CreatureDisplayInfoExtra.db2
 DBFilesClient\CreatureDisplayInfoTrn.db2
-DBFilesClient\CreatureFamily.dbc
+DBFilesClient\CreatureFamily.db2
 DBFilesClient\CreatureImmunities.db2
 DBFilesClient\CreatureModelData.dbc
 DBFilesClient\CreatureMovementInfo.db2
@@ -116,16 +117,16 @@ DBFilesClient\DeclinedWordCases.db2
 DBFilesClient\DestructibleModelData.db2
 DBFilesClient\DeviceBlacklist.db2
 DBFilesClient\DeviceDefaultSettings.db2
-DBFilesClient\Difficulty.dbc
+DBFilesClient\Difficulty.db2
 DBFilesClient\DissolveEffect.db2
 DBFilesClient\DriverBlacklist.db2
-DBFilesClient\DungeonEncounter.dbc
-DBFilesClient\DungeonMap.dbc
+DBFilesClient\DungeonEncounter.db2
+DBFilesClient\DungeonMap.db2
 DBFilesClient\DungeonMapChunk.db2
 DBFilesClient\DurabilityCosts.db2
 DBFilesClient\DurabilityQuality.db2
 DBFilesClient\Emotes.db2
-DBFilesClient\EmotesText.dbc
+DBFilesClient\EmotesText.db2
 DBFilesClient\EmotesTextData.db2
 DBFilesClient\EmotesTextSound.db2
 DBFilesClient\EnvironmentalDamage.db2
@@ -137,6 +138,7 @@ DBFilesClient\FootprintTextures.db2
 DBFilesClient\FootstepTerrainLookup.db2
 DBFilesClient\FriendshipRepReaction.db2
 DBFilesClient\FriendshipReputation.db2
+DBFilesClient\FullScreenEffect.db2
 DBFilesClient\GMSurveyAnswers.db2
 DBFilesClient\GMSurveyCurrentSurvey.db2
 DBFilesClient\GMSurveyQuestions.db2
@@ -156,6 +158,7 @@ DBFilesClient\GarrBuildingDoodadSet.db2
 DBFilesClient\GarrBuildingPlotInst.db2
 DBFilesClient\GarrClassSpec.db2
 DBFilesClient\GarrEncounter.db2
+DBFilesClient\GarrEncounterSetXEncounter.db2
 DBFilesClient\GarrEncounterXMechanic.db2
 DBFilesClient\GarrFollItemSetMember.db2
 DBFilesClient\GarrFollSupportSpell.db2
@@ -199,7 +202,7 @@ DBFilesClient\GuildColorBorder.db2
 DBFilesClient\GuildColorEmblem.db2
 DBFilesClient\GuildPerkSpells.db2
 DBFilesClient\Heirloom.db2
-DBFilesClient\HelmetAnimScaling.dbc
+DBFilesClient\HelmetAnimScaling.db2
 DBFilesClient\HelmetGeosetVisData.db2
 DBFilesClient\HighlightColor.db2
 DBFilesClient\HolidayDescriptions.db2
@@ -266,7 +269,7 @@ DBFilesClient\JournalEncounterXDifficulty.db2
 DBFilesClient\JournalInstance.db2
 DBFilesClient\JournalItemXDifficulty.db2
 DBFilesClient\JournalSectionXDifficulty.db2
-DBFilesClient\JournalTier.dbc
+DBFilesClient\JournalTier.db2
 DBFilesClient\JournalTierXInstance.db2
 DBFilesClient\KeyChain.db2
 DBFilesClient\KeystoneAffix.db2
@@ -297,12 +300,12 @@ DBFilesClient\ManifestInterfaceData.dbc
 DBFilesClient\ManifestInterfaceItemIcon.dbc
 DBFilesClient\ManifestInterfaceTOCData.db2
 DBFilesClient\ManifestMP3.dbc
-DBFilesClient\Map.dbc
+DBFilesClient\Map.db2
 DBFilesClient\MapChallengeMode.db2
 DBFilesClient\MapDifficulty.dbc
 DBFilesClient\MarketingPromotionsXLocale.db2
 DBFilesClient\Material.db2
-DBFilesClient\MinorTalent.dbc
+DBFilesClient\MinorTalent.db2
 DBFilesClient\ModelFileData.db2
 DBFilesClient\ModelManifest.db2
 DBFilesClient\ModelNameToManifest.db2
@@ -334,7 +337,7 @@ DBFilesClient\Path.db2
 DBFilesClient\PathNode.db2
 DBFilesClient\PathNodeProperty.db2
 DBFilesClient\PathProperty.db2
-DBFilesClient\Phase.dbc
+DBFilesClient\Phase.db2
 DBFilesClient\PhaseShiftZoneSounds.db2
 DBFilesClient\PhaseXPhaseGroup.db2
 DBFilesClient\PlayerCondition.db2
@@ -441,6 +444,7 @@ DBFilesClient\SpellInterrupts.db2
 DBFilesClient\SpellItemEnchantment.dbc
 DBFilesClient\SpellItemEnchantmentCondition.db2
 DBFilesClient\SpellKeyboundOverride.db2
+DBFilesClient\SpellLabel.db2
 DBFilesClient\SpellLearnSpell.db2
 DBFilesClient\SpellLevels.db2
 DBFilesClient\SpellMechanic.db2
@@ -512,7 +516,7 @@ DBFilesClient\Vehicle.dbc
 DBFilesClient\VehicleSeat.db2
 DBFilesClient\VehicleUIIndSeat.db2
 DBFilesClient\VehicleUIIndicator.db2
-DBFilesClient\VideoHardware.dbc
+DBFilesClient\VideoHardware.db2
 DBFilesClient\Vignette.db2
 DBFilesClient\VocalUISounds.db2
 DBFilesClient\WMOAreaTable.dbc
