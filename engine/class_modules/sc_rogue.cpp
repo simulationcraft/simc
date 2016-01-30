@@ -503,7 +503,6 @@ struct rogue_t : public player_t
   virtual double    energy_regen_per_second() const override;
   virtual double    passive_movement_modifier() const override;
   virtual double    temporary_movement_modifier() const override;
-  void combat_begin() override;
 
   bool poisoned_enemy( player_t* target, bool deadly_fade = false ) const;
 
@@ -5973,7 +5972,7 @@ void rogue_t::init_resources( bool force )
 {
   player_t::init_resources( force );
 
-  resources.current[ RESOURCE_COMBO_POINT ] = 0;
+  resources.current[ RESOURCE_COMBO_POINT ] = initial_combo_points;
 }
 
 // rogue_t::init_buffs ======================================================
@@ -6497,15 +6496,6 @@ double rogue_t::passive_movement_modifier() const
     ms += talent.nightstalker -> effectN( 1 ).percent();
 
   return ms;
-}
-
-void rogue_t::combat_begin()
-{
-
-  player_t::combat_begin();
-
-  if ( initial_combo_points > 0 )
-    resources.current[RESOURCE_COMBO_POINT] = initial_combo_points; // User specified Combo Points.
 }
 
 // rogue_t::regen ===========================================================
