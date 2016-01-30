@@ -2789,7 +2789,7 @@ struct crosswinds_t : public monk_melee_attack_t
     sef_ability = SEF_CROSSWINDS;
 
     background = dual = true; 
-    may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = tick_zero = false;
+    may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = hasted_ticks = tick_zero = false;
     channeled = false;
 
     tick_action = new crosswinds_tick_t( p );
