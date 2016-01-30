@@ -1207,7 +1207,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
       sef_melee_attack_t( "crosswinds", player, player -> o() -> artifact.crosswinds.data().effectN( 1 ).trigger() )
     {
       channeled = tick_zero = true;
-      may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
+      may_crit = may_miss = may_block = may_dodge = may_parry = hasted_ticks = tick_zero = callbacks = false;
 
       weapon_power_mod = 0;
 
