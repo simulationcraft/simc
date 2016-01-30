@@ -619,7 +619,7 @@ struct rogue_attack_t : public melee_attack_t
           adds_combo_points = effect.base_value();
           break;
         case E_ENERGIZE:
-          if ( static_cast<power_e>( effect.misc_value1() ) != POWER_COMBO_POINT )
+          if ( static_cast<power_e>( effect.misc_value1() ) == POWER_COMBO_POINT )
           {
             adds_combo_points = effect.resource( RESOURCE_COMBO_POINT );
           }
@@ -1856,26 +1856,6 @@ struct eviscerate_t : public rogue_attack_t
     attack_power_mod.direct = 0.559;
     // Hard-coded tooltip.
     attack_power_mod.direct *= 0.88;
-
-    // Tier 18 (WoD 6.2) Combat trinket effect
-    // TODO: Eviscerate actually changes spells to 185187
-    if ( p -> eviscerating_blade )
-    {
-      const spell_data_t* data = p -> find_spell( p -> eviscerating_blade -> spell_id );
-      base_multiplier *= 1.0 + data -> effectN( 2 ).average( p -> eviscerating_blade -> item ) / 100.0;
-
-      range += data -> effectN( 1 ).base_value();
-    }
-  }
-
-  timespan_t gcd() const override
-  {
-    timespan_t t = rogue_attack_t::gcd();
-
-    if ( t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
-      t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
-
-    return t;
   }
 
   double action_multiplier() const override
@@ -1895,9 +1875,6 @@ struct eviscerate_t : public rogue_attack_t
     if ( p() -> buffs.death_from_above -> check() )
       c *= 1.0 + p() -> buffs.death_from_above -> data().effectN( 1 ).percent();
 
-    if ( p() -> buffs.deceit -> check() )
-      c *= 1.0 + p() -> buffs.deceit -> data().effectN( 1 ).percent();
-
     if ( c < 0 )
       c = 0;
 
@@ -1911,7 +1888,6 @@ struct eviscerate_t : public rogue_attack_t
     if ( ! p() -> buffs.death_from_above -> check() )
     {
       p() -> spend_combo_points( execute_state );
-      p() -> buffs.deceit -> expire();
     }
 
     if ( result_is_miss( execute_state -> result ) && resource_consumed > 0 )
@@ -1928,23 +1904,6 @@ struct eviscerate_t : public rogue_attack_t
       v *= cast_state( execute_state ) -> cp;
       p() -> cooldowns.vanish -> adjust( v, false );
     }
-  }
-
-  virtual void impact( action_state_t* state ) override
-  {
-    rogue_attack_t::impact( state );
-
-    if ( result_is_hit( state -> result ) &&
-         p() -> spec.cut_to_the_chase -> ok() && p() -> buffs.slice_and_dice -> check() )
-    {
-      double snd = p() -> buffs.slice_and_dice -> data().effectN( 1 ).percent();
-      if ( p() -> mastery.executioner -> ok() )
-        snd *= 1.0 + p() -> cache.mastery_value();
-      timespan_t snd_duration = 3 * 6 * p() -> buffs.slice_and_dice -> buff_period;
-
-      p() -> buffs.slice_and_dice -> trigger( 1, snd, -1.0, snd_duration );
-    }
-
   }
 };
 
@@ -2139,7 +2098,7 @@ struct killing_spree_t : public rogue_attack_t
 struct pistol_shot_t : public rogue_attack_t
 {
     pistol_shot_t( rogue_t* p, const std::string& options_str ) :
-        rogue_attack_t( "pistol_shot", p, p -> spec.saber_slash, options_str )
+        rogue_attack_t( "pistol_shot", p, p -> find_specialization_spell( "Pistol Shot" ), options_str )
     { }
 
     double cost() const override
@@ -2151,6 +2110,90 @@ struct pistol_shot_t : public rogue_attack_t
 
       return rogue_attack_t::cost();
     }
+
+    void execute() override
+    {
+      rogue_attack_t::execute();
+
+      p() -> buffs.free_pistol_shot -> expire();
+    }
+};
+
+// Run Through
+
+struct run_through_t: public rogue_attack_t
+{
+  run_through_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "run_through", p, p -> find_specialization_spell( "Run Through" ), options_str )
+  {
+    weapon = &( player -> main_hand_weapon );
+    weapon_multiplier = weapon_power_mod = 0;
+
+    attack_power_mod.direct = 0.559;
+    // Hard-coded tooltip.
+    attack_power_mod.direct *= 0.88;
+
+    // Tier 18 (WoD 6.2) Combat trinket effect
+    // TODO: Eviscerate actually changes spells to 185187
+    // TODO: Legion
+    if ( p -> eviscerating_blade )
+    {
+      const spell_data_t* data = p -> find_spell( p -> eviscerating_blade -> spell_id );
+      base_multiplier *= 1.0 + data -> effectN( 2 ).average( p -> eviscerating_blade -> item ) / 100.0;
+
+      range += data -> effectN( 1 ).base_value();
+    }
+  }
+
+  timespan_t gcd() const override
+  {
+    timespan_t t = rogue_attack_t::gcd();
+
+    if ( t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
+      t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
+
+    return t;
+  }
+
+  double action_multiplier() const override
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    if ( p() -> buffs.death_from_above -> up() )
+      m *= 1.0 + p() -> buffs.death_from_above -> data().effectN( 2 ).percent();
+
+    return m;
+  }
+
+  double cost() const override
+  {
+    double c = rogue_attack_t::cost();
+
+    if ( p() -> buffs.death_from_above -> check() )
+      c *= 1.0 + p() -> buffs.death_from_above -> data().effectN( 1 ).percent();
+
+    if ( p() -> buffs.deceit -> check() )
+      c *= 1.0 + p() -> buffs.deceit -> data().effectN( 1 ).percent();
+
+    if ( c < 0 )
+      c = 0;
+
+    return c;
+  }
+
+  void consume_resource() override
+  {
+    melee_attack_t::consume_resource();
+
+    if ( ! p() -> buffs.death_from_above -> check() )
+    {
+      p() -> spend_combo_points( execute_state );
+      p() -> buffs.deceit -> expire();
+    }
+
+    if ( result_is_miss( execute_state -> result ) && resource_consumed > 0 )
+      p() -> trigger_energy_refund( execute_state );
+  }
 };
 
 // Marked for Death =========================================================
@@ -2413,7 +2456,9 @@ struct saber_slash_t : public rogue_attack_t
   saber_slash_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "saber_slash", p, p -> find_specialization_spell( "Saber Slash" ), options_str ),
     saberslash_proc_event( nullptr ), delay( data().duration() )
-  { }
+  {
+    weapon = &( player -> main_hand_weapon );
+  }
 
   void reset() override
   {
@@ -2596,11 +2641,13 @@ struct death_from_above_driver_t : public rogue_attack_t
 {
   envenom_t* envenom;
   eviscerate_t* eviscerate;
+  run_through_t* run_through;
 
   death_from_above_driver_t( rogue_t* p ) :
     rogue_attack_t( "death_from_above_driver", p, p -> talent.death_from_above ),
     envenom( p -> specialization() == ROGUE_ASSASSINATION ? new envenom_t( p, "" ) : nullptr ),
-    eviscerate( p -> specialization() != ROGUE_ASSASSINATION ? new eviscerate_t( p, "" ) : nullptr )
+    eviscerate( p -> specialization() == ROGUE_SUBTLETY ? new eviscerate_t( p, "" ) : nullptr ),
+    run_through( p -> specialization() == ROGUE_OUTLAW ? new run_through_t( p, "" ) : nullptr )
   {
     callbacks = tick_may_crit = false;
     quiet = dual = background = harmful = true;
@@ -2636,6 +2683,18 @@ struct death_from_above_driver_t : public rogue_attack_t
 
       eviscerate -> pre_execute_state = evis_state;
       eviscerate -> execute();
+    }
+    else if ( run_through )
+    {
+      // DFA is a finisher, so copy CP state (number of CPs used on DFA) from
+      // the DFA dot
+      action_state_t* rs_state = run_through -> get_state();
+      run_through -> target = d -> target;
+      run_through -> snapshot_state( rs_state, DMG_DIRECT );
+      cast_state( rs_state ) -> cp = cast_state( d -> state ) -> cp;
+
+      run_through -> pre_execute_state = rs_state;
+      run_through -> execute();
     }
     else
     {
@@ -4070,9 +4129,10 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "killing_spree"       ) return new killing_spree_t      ( this, options_str );
   if ( name == "marked_for_death"    ) return new marked_for_death_t   ( this, options_str );
   if ( name == "mutilate"            ) return new mutilate_t           ( this, options_str );
-  if ( name == "pistol shot"         ) return new pistol_shot_t        ( this, options_str );
+  if ( name == "pistol_shot"         ) return new pistol_shot_t        ( this, options_str );
   if ( name == "poisoned_knife"      ) return new poisoned_knife_t     ( this, options_str );
   if ( name == "premeditation"       ) return new premeditation_t      ( this, options_str );
+  if ( name == "run_through"         ) return new run_through_t        ( this, options_str );
   if ( name == "rupture"             ) return new rupture_t            ( this, options_str );
   if ( name == "saber_slash"         ) return new saber_slash_t        ( this, options_str );
   if ( name == "shadowstep"          ) return new shadowstep_t         ( this, options_str );
@@ -4372,7 +4432,7 @@ void rogue_t::create_buffs()
                               .add_invalidate( CACHE_ATTACK_SPEED )
                               .add_invalidate( sets.has_set_bonus( ROGUE_OUTLAW, T18, B4 ) ? CACHE_PLAYER_DAMAGE_MULTIPLIER : CACHE_NONE );
   buffs.free_pistol_shot    = buff_creator_t( this, "free_pistol_shot" )
-                              .chance( spec.saber_slash -> proc_chance() );
+                              .chance( spec.saber_slash -> effectN( 5 ).percent() );
   buffs.feint               = buff_creator_t( this, "feint", find_specialization_spell( "Feint" ) )
     .duration( find_class_spell( "Feint" ) -> duration() );
   buffs.master_of_subtlety_passive = buff_creator_t( this, "master_of_subtlety_passive", talent.master_of_subtlety )
