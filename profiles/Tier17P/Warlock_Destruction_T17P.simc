@@ -96,16 +96,16 @@ actions.aoe+=/incinerate
 head=hood_of_arcane_mystery,id=109970,bonus_id=524
 neck=magisters_chain,id=109954,bonus_id=524,enchant_id=5317
 shoulders=felflame_spaulders,id=109948,bonus_id=524
-trinket1=tovras_lightning_repository,id=110001,bonus_id=524
-chest=robes_of_swirling_light,id=109901,bonus_id=524
 back=purifiers_silken_cape,id=114484,bonus_id=486,enchant_id=5310
+chest=robes_of_swirling_light,id=109901,bonus_id=524
+wrists=bracers_of_arcane_mystery,id=109864,bonus_id=524
 hands=gloves_of_swirling_light,id=109846,bonus_id=524
 waist=frosttouched_cord,id=109825,bonus_id=524
-wrists=bracers_of_arcane_mystery,id=109864,bonus_id=524
 legs=lightbinder_leggings,id=109807,bonus_id=524
 feet=sandals_of_arcane_mystery,id=109784,bonus_id=524
 finger1=mindstalker_seal,id=114471,bonus_id=56,enchant_id=5324
 finger2=mark_of_ice,id=109764,bonus_id=524,enchant_id=5324
+trinket1=tovras_lightning_repository,id=110001,bonus_id=524
 trinket2=crushtos_runic_alarm,id=110000,bonus_id=524
 main_hand=spire_of_the_furious_construct,id=110031,bonus_id=524,enchant_id=5330
 

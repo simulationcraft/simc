@@ -18,6 +18,7 @@ spec=windwalker
 actions.precombat=flask,type=greater_draenic_agility_flask
 actions.precombat+=/food,type=salty_squid_roll
 actions.precombat+=/stance,choose=fierce_tiger
+actions.precombat+=/legacy_of_the_white_tiger,if=!aura.str_agi_int.up|!aura.critical_strike.up
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_agility
 
@@ -39,7 +40,7 @@ actions+=/tiger_palm,if=!talent.chi_explosion.enabled&buff.tiger_power.remains<6
 actions+=/tiger_palm,if=talent.chi_explosion.enabled&(cooldown.fists_of_fury.remains<5|cooldown.fists_of_fury.up)&buff.tiger_power.remains<5
 actions+=/tigereye_brew,if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack=20
 actions+=/tigereye_brew,if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=9&buff.serenity.up
-actions+=/tigereye_brew,if=talent.chi_explosion.enabled&buff.tigereye_brew_use.down
+actions+=/tigereye_brew,if=talent.chi_explosion.enabled&buff.tigereye_brew.stack>=1&t18_class_trinket&set_bonus.tier18_4pc=1&buff.tigereye_brew_use.down
 actions+=/tigereye_brew,if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=9&cooldown.fists_of_fury.up&chi>=3&debuff.rising_sun_kick.up&buff.tiger_power.up
 actions+=/tigereye_brew,if=talent.hurricane_strike.enabled&buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=9&cooldown.hurricane_strike.up&chi>=3&debuff.rising_sun_kick.up&buff.tiger_power.up
 actions+=/tigereye_brew,if=buff.tigereye_brew_use.down&chi>=2&(buff.tigereye_brew.stack>=16|target.time_to_die<40)&debuff.rising_sun_kick.up&buff.tiger_power.up
@@ -137,16 +138,16 @@ actions.aoe_rjw+=/jab,if=chi.max-chi>=2
 head=helm_of_the_somber_gaze,id=115556
 neck=darklight_necklace,id=113865,enchant=gift_of_multistrike
 shoulders=mantle_of_the_somber_gaze,id=115559
-trinket1=humming_blackiron_trigger,id=113985
-chest=vest_of_the_somber_gaze,id=115558
 back=drape_of_the_dark_hunt,id=113971,enchant=gift_of_multistrike
+chest=vest_of_the_somber_gaze,id=115558
+wrists=bracers_of_shattered_limbs,id=119333
 hands=cannonball_loaders_grips,id=113949
 waist=conductors_multipocket_girdle,id=113964
-wrists=bracers_of_shattered_limbs,id=119333
 legs=legwraps_of_the_somber_gaze,id=115557
 feet=furnace_tenders_treads,id=113895
 finger1=timeless_solium_band_of_the_assassin,id=118297,enchant=gift_of_multistrike
 finger2=unexploded_explosive_shard,id=113877,enchant=gift_of_multistrike
+trinket1=humming_blackiron_trigger,id=113985
 trinket2=beating_heart_of_the_mountain,id=113931
 main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,enchant=mark_of_warsong
 

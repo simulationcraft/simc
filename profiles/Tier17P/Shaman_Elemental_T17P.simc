@@ -30,14 +30,14 @@ actions+=/bloodlust,if=target.health.pct<25|time>0.500
 actions+=/use_item,name=fleshrenders_meathook
 # In-combat potion is preferentially linked to Ascendance, unless combat will end shortly
 actions+=/potion,name=draenic_intellect,if=buff.ascendance.up|target.time_to_die<=30
-actions+=/berserking,if=!buff.bloodlust.up&!buff.elemental_mastery.up&(set_bonus.tier15_4pc_caster=1|(buff.ascendance.cooldown_remains=0&(dot.flame_shock.remains>buff.ascendance.duration|level<87)))
+actions+=/berserking,if=!buff.bloodlust.up&!buff.elemental_mastery.up&buff.ascendance.cooldown_remains=0&(dot.flame_shock.remains>buff.ascendance.duration|level<87)
 actions+=/blood_fury,if=buff.bloodlust.up|buff.ascendance.up|((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)
 actions+=/arcane_torrent
 actions+=/elemental_mastery,if=action.lava_burst.cast_time>=1.2
 actions+=/ancestral_swiftness,if=!buff.ascendance.up
 actions+=/storm_elemental_totem
 actions+=/fire_elemental_totem,if=!active
-actions+=/ascendance,if=spell_targets.chain_lightning>1|(dot.flame_shock.remains>buff.ascendance.duration&(target.time_to_die<20|buff.bloodlust.up|time>=60)&cooldown.lava_burst.remains>0)
+actions+=/ascendance,if=spell_targets.chain_lightning>1|(dot.flame_shock.remains>buff.ascendance.duration&(target.time_to_die<20|buff.bloodlust.up|buff.berserking.up|time>=60)&cooldown.lava_burst.remains>0)
 actions+=/liquid_magma,if=pet.searing_totem.remains>=15|pet.fire_elemental_totem.remains>=15
 # On multiple enemies, the priority follows the 'aoe' action list.
 actions+=/call_action_list,name=aoe,if=spell_targets.chain_lightning>(2+t18_class_trinket)
@@ -78,16 +78,16 @@ actions.aoe+=/lightning_bolt
 head=morningscale_cowl,id=109984,bonus_id=524
 neck=alcs_pendant_of_fiery_dreams,id=109957,bonus_id=524,enchant=gift_of_multistrike
 shoulders=rockhide_shoulderguards,id=109941,bonus_id=524
-trinket1=coagulated_genesaur_blood,id=110004,bonus_id=524
-chest=lavalink_ringmail,id=109890,bonus_id=524
 back=forgeflame_greatcloak,id=109925,bonus_id=524,enchant=gift_of_multistrike
+chest=lavalink_ringmail,id=109890,bonus_id=524
+wrists=morningscale_bracers,id=109883,bonus_id=524
 hands=sharpeye_gauntlets,id=109853,bonus_id=524
 waist=sharpeye_belt,id=109834,bonus_id=524
-wrists=morningscale_bracers,id=109883,bonus_id=524
 legs=lavalink_legguards,id=109816,bonus_id=524
 feet=rockhide_treads,id=109792,bonus_id=524
 finger1=mark_of_ice,id=109764,bonus_id=524,enchant=gift_of_multistrike
 finger2=darkflame_loop,id=109766,bonus_id=524,enchant=gift_of_multistrike
+trinket1=coagulated_genesaur_blood,id=110004,bonus_id=524
 trinket2=fleshrenders_meathook,id=110002,bonus_id=524
 main_hand=portalrippers_staff,id=110039,bonus_id=524,enchant=mark_of_the_frostwolf
 

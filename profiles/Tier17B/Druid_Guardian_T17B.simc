@@ -1,6 +1,7 @@
 druid="Druid_Guardian_T17B"
 level=100
 race=night_elf
+timeofday=night
 role=tank
 position=front
 talents=0301022
@@ -54,16 +55,16 @@ actions+=/lacerate
 head=sorkas_nightshade_cowl,id=113978,bonus_id=567/523/448,gem_id=115814
 neck=choker_of_bestial_force,id=113952,bonus_id=567/523/448,gem_id=115814,enchant=gift_of_mastery
 shoulders=living_wood_spaulders,id=115544,bonus_id=567/523/448,gem_id=115814
-trinket1=blast_furnace_door,id=113893,bonus_id=567/523/448,gem_id=115814
-chest=unrendable_wolfhide_robes,id=113951,bonus_id=567/523/448,gem_id=115814
 back=gronnstitched_greatcloak,id=113873,bonus_id=567/523/448,gem_id=115814,enchant=gift_of_mastery
+chest=unrendable_wolfhide_robes,id=113951,bonus_id=567/523/448,gem_id=115814
+wrists=squires_electroplated_bracers,id=113962,bonus_id=567/523/448,gem_id=115814
 hands=cannonball_loaders_grips,id=113949,bonus_id=567/523/448,gem_id=115814
 waist=girdle_of_unconquered_glory,id=113907,bonus_id=567/523/448,gem_id=115814
-wrists=squires_electroplated_bracers,id=113962,bonus_id=567/523/448,gem_id=115814
 legs=living_wood_legguards,id=115543,bonus_id=567/523/448,gem_id=115814
 feet=treads_of_the_dark_hunt,id=113974,bonus_id=567/523/448,gem_id=115814
 finger1=spellbound_runic_band_of_elemental_invincibility,id=118308,enchant=gift_of_mastery
 finger2=stonefist_band,id=113938,bonus_id=567/523/448,gem_id=115814,enchant=gift_of_mastery
+trinket1=blast_furnace_door,id=113893,bonus_id=567/523/448,gem_id=115814
 trinket2=tablet_of_turnbuckle_teamwork,id=113905,bonus_id=567/523/448,gem_id=115814
 main_hand=earthwarped_bladestaff,id=113640,bonus_id=567/523/448,gem_id=115814,enchant=mark_of_the_frostwolf
 

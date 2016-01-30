@@ -18,6 +18,7 @@ spec=windwalker
 actions.precombat=flask,type=greater_draenic_agility_flask
 actions.precombat+=/food,type=salty_squid_roll
 actions.precombat+=/stance,choose=fierce_tiger
+actions.precombat+=/legacy_of_the_white_tiger,if=!aura.str_agi_int.up|!aura.critical_strike.up
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_agility
 
@@ -39,7 +40,7 @@ actions+=/tiger_palm,if=!talent.chi_explosion.enabled&buff.tiger_power.remains<6
 actions+=/tiger_palm,if=talent.chi_explosion.enabled&(cooldown.fists_of_fury.remains<5|cooldown.fists_of_fury.up)&buff.tiger_power.remains<5
 actions+=/tigereye_brew,if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack=20
 actions+=/tigereye_brew,if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=9&buff.serenity.up
-actions+=/tigereye_brew,if=talent.chi_explosion.enabled&buff.tigereye_brew_use.down
+actions+=/tigereye_brew,if=talent.chi_explosion.enabled&buff.tigereye_brew.stack>=1&t18_class_trinket&set_bonus.tier18_4pc=1&buff.tigereye_brew_use.down
 actions+=/tigereye_brew,if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=9&cooldown.fists_of_fury.up&chi>=3&debuff.rising_sun_kick.up&buff.tiger_power.up
 actions+=/tigereye_brew,if=talent.hurricane_strike.enabled&buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=9&cooldown.hurricane_strike.up&chi>=3&debuff.rising_sun_kick.up&buff.tiger_power.up
 actions+=/tigereye_brew,if=buff.tigereye_brew_use.down&chi>=2&(buff.tigereye_brew.stack>=16|target.time_to_die<40)&debuff.rising_sun_kick.up&buff.tiger_power.up
@@ -137,28 +138,28 @@ actions.aoe_rjw+=/jab,if=chi.max-chi>=2
 head=mask_of_the_hurricanes_eye,id=124262,bonus_id=567,upgrade=2
 neck=choker_of_the_great_betrayer,id=124210,bonus_id=567,upgrade=2,enchant=gift_of_haste
 shoulders=mantle_of_the_hurricanes_eye,id=124273,bonus_id=567,upgrade=2
-trinket1=sacred_draenic_incense,id=124517,bonus_id=567,upgrade=2
-chest=tunic_of_the_soulbinder,id=124245,bonus_id=567,upgrade=2
 back=cloak_of_desperate_temerity,id=124134,bonus_id=567,upgrade=2,enchant=gift_of_haste
+chest=tunic_of_the_soulbinder,id=124245,bonus_id=567,upgrade=2
+wrists=bloodcult_bracers,id=124279,bonus_id=567,upgrade=2
 hands=fistwraps_of_the_hurricanes_eye,id=124256,bonus_id=567,upgrade=2
 waist=waistwrap_of_banishment,id=124276,bonus_id=567,upgrade=2
-wrists=bloodcult_bracers,id=124279,bonus_id=567,upgrade=2
 legs=legwraps_of_the_hurricanes_eye,id=124268,bonus_id=567,upgrade=2
 feet=oppressors_merciless_treads,id=124251,bonus_id=567,upgrade=2
 finger1=maalus_the_blood_drinker,id=124636,bonus_id=641,enchant=gift_of_haste
 finger2=portal_key_signet,id=124189,bonus_id=567,upgrade=2,enchant=gift_of_haste
+trinket1=sacred_draenic_incense,id=124517,bonus_id=567,upgrade=2
 trinket2=soul_capacitor,id=124225,bonus_id=567,upgrade=2
 main_hand=xutenash_glaive_of_ruin,id=124378,bonus_id=567,upgrade=2,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_ilvl=740.13
-# gear_agility=5114
-# gear_stamina=6865
-# gear_crit_rating=1835
-# gear_haste_rating=1232
-# gear_mastery_rating=493
-# gear_multistrike_rating=2529
+# gear_ilvl=742.00
+# gear_agility=5201
+# gear_stamina=6981
+# gear_crit_rating=1863
+# gear_haste_rating=1250
+# gear_mastery_rating=502
+# gear_multistrike_rating=2576
 # gear_versatility_rating=270
-# gear_armor=1433
+# gear_armor=1450
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

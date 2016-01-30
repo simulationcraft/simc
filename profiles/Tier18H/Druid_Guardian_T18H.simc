@@ -1,6 +1,7 @@
 druid="Druid_Guardian_T18H"
 level=100
 race=night_elf
+timeofday=night
 role=tank
 position=front
 talents=0301022
@@ -53,16 +54,16 @@ actions+=/lacerate
 head=oathclaw_helm,id=124261,bonus_id=566
 neck=world_enders_gorget,id=124222,bonus_id=566,enchant=gift_of_mastery
 shoulders=oathclaw_mantle,id=124272,bonus_id=566
-trinket1=anzus_cursed_plume,id=124241,bonus_id=566
-chest=oathclaw_vestment,id=124246,bonus_id=566
 back=void_lords_wizened_cloak,id=124147,bonus_id=566,enchant=gift_of_mastery
+chest=oathclaw_vestment,id=124246,bonus_id=566
+wrists=manacles_of_the_multitudes,id=124280,bonus_id=566
 hands=felfinger_runegloves,id=124254,bonus_id=566
 waist=waistwrap_of_banishment,id=124276,bonus_id=566
-wrists=manacles_of_the_multitudes,id=124280,bonus_id=566
 legs=oathclaw_leggings,id=124267,bonus_id=566
 feet=toxicologists_treated_boots,id=124250,bonus_id=566
 finger1=spellbound_runic_band_of_elemental_invincibility,id=118308,enchant=gift_of_mastery
 finger2=mannoroths_calcified_eye,id=124204,bonus_id=566,enchant=gift_of_mastery
+trinket1=anzus_cursed_plume,id=124241,bonus_id=566
 trinket2=blast_furnace_door,id=113893,bonus_id=567
 main_hand=xutenash_glaive_of_ruin,id=124378,bonus_id=566,enchant=mark_of_bleeding_hollow
 

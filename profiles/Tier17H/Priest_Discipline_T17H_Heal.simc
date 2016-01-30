@@ -45,16 +45,16 @@ actions+=/heal
 head=soul_priests_hood,id=115563,bonus_id=566
 neck=feldspars_control_choker,id=113890,bonus_id=566,enchant=gift_of_critical_strike
 shoulders=soul_priests_shoulderguards,id=115561,bonus_id=566
-trinket1=autorepairing_autoclave,id=113986,bonus_id=566
-chest=soul_priests_raiment,id=115560,bonus_id=566
 back=barrage_dodger_cloak,id=113878,bonus_id=566,enchant=gift_of_critical_strike
+chest=soul_priests_raiment,id=115560,bonus_id=566
+wrists=bracers_of_enkindled_power,id=113956,bonus_id=566
 hands=soul_priests_gloves,id=115562,bonus_id=566
 waist=seeking_ember_girdle,id=113941,bonus_id=566
-wrists=bracers_of_enkindled_power,id=113956,bonus_id=566
 legs=soul_priests_leggings,id=115564,bonus_id=566
 feet=cavedwellers_climbers,id=113864,bonus_id=566
 finger1=spellbound_solium_band_of_the_immortal_spirit,id=118304,enchant=gift_of_critical_strike
 finger2=firemenders_smoldering_signet,id=113957,bonus_id=566,enchant=gift_of_critical_strike
+trinket1=autorepairing_autoclave,id=113986,bonus_id=566
 trinket2=ironspike_chew_toy,id=119192,bonus_id=566
 main_hand=blackhand_doomstaff,id=113988,bonus_id=566,enchant=mark_of_shadowmoon
 

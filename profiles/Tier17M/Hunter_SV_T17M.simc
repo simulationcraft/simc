@@ -74,16 +74,16 @@ actions.aoe+=/cobra_shot
 head=rylakstalkers_headguard,id=115545,bonus_id=567
 neck=darklight_necklace,id=113865,bonus_id=567,enchant_id=5320
 shoulders=rylakstalkers_spaulders,id=115547,bonus_id=567
-trinket1=humming_blackiron_trigger,id=113985,bonus_id=567
-chest=rylakstalkers_tunic,id=115548,bonus_id=567
 back=drape_of_the_dark_hunt,id=113971,bonus_id=567,enchant_id=5313
+chest=rylakstalkers_tunic,id=115548,bonus_id=567
+wrists=bloodwhirl_bracers,id=113968,bonus_id=567
 hands=rylakstalkers_gloves,id=115549,bonus_id=567
 waist=grenadiers_belt,id=113955,bonus_id=567
-wrists=bloodwhirl_bracers,id=113968,bonus_id=567
 legs=legguards_of_the_stampede,id=113944,bonus_id=567
 feet=treads_of_the_veteran_smith,id=119339,bonus_id=567
 finger1=unexploded_explosive_shard,id=113877,bonus_id=567,enchant_id=5327
 finger2=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5327
+trinket1=humming_blackiron_trigger,id=113985,bonus_id=567
 trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=567
 main_hand=garans_brutal_spearlauncher,id=113966,bonus_id=567,enchant_id=5275
 

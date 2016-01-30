@@ -1,6 +1,7 @@
 druid="Druid_Feral_T17P"
 level=100
 race=night_elf
+timeofday=night
 role=attack
 position=back
 talents=3002002
@@ -43,7 +44,6 @@ actions+=/berserking,sync=tigers_fury
 actions+=/arcane_torrent,sync=tigers_fury
 actions+=/tigers_fury,if=(!buff.omen_of_clarity.react&energy.deficit>=60)|energy.deficit>=80|(t18_class_trinket&buff.berserk.up&buff.tigers_fury.down)
 actions+=/incarnation,if=cooldown.berserk.remains<10&energy.time_to_max>1
-actions+=/shadowmeld,if=dot.rake.remains<4.5&energy>=35&dot.rake.pmultiplier<2&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>15)&!buff.incarnation.up
 # Keep Rip from falling off during execute range.
 actions+=/ferocious_bite,cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<3&target.health.pct<25
 actions+=/healing_touch,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&((combo_points>=4&!set_bonus.tier18_4pc)|combo_points=5|buff.predatory_swiftness.remains<1.5)
@@ -61,11 +61,12 @@ actions+=/call_action_list,name=generator,if=combo_points<5
 actions.finisher=rip,cycle_targets=1,if=remains<2&target.time_to_die-remains>18&(target.health.pct>25|!dot.rip.ticking)
 actions.finisher+=/ferocious_bite,cycle_targets=1,max_energy=1,if=target.health.pct<25&dot.rip.ticking
 actions.finisher+=/rip,cycle_targets=1,if=remains<7.2&persistent_multiplier>dot.rip.pmultiplier&target.time_to_die-remains>18
-actions.finisher+=/rip,cycle_targets=1,if=remains<7.2&persistent_multiplier=dot.rip.pmultiplier&(energy.time_to_max<=1|!talent.bloodtalons.enabled)&target.time_to_die-remains>18
+actions.finisher+=/rip,cycle_targets=1,if=remains<7.2&persistent_multiplier=dot.rip.pmultiplier&(energy.time_to_max<=1|(set_bonus.tier18_4pc&energy>50)|(set_bonus.tier18_2pc&buff.omen_of_clarity.react)|!talent.bloodtalons.enabled)&target.time_to_die-remains>18
 actions.finisher+=/savage_roar,if=((set_bonus.tier18_4pc&energy>50)|(set_bonus.tier18_2pc&buff.omen_of_clarity.react)|energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&buff.savage_roar.remains<12.6
 actions.finisher+=/ferocious_bite,max_energy=1,if=(set_bonus.tier18_4pc&energy>50)|(set_bonus.tier18_2pc&buff.omen_of_clarity.react)|energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3
 
-actions.maintain=rake,cycle_targets=1,if=remains<3&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)
+actions.maintain=shadowmeld,if=energy>=35&dot.rake.pmultiplier<2.1&buff.tigers_fury.up&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>18)&!buff.incarnation.up
+actions.maintain+=/rake,cycle_targets=1,if=remains<3&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)
 actions.maintain+=/rake,cycle_targets=1,if=remains<4.5&(persistent_multiplier>=dot.rake.pmultiplier|(talent.bloodtalons.enabled&(buff.bloodtalons.up|!buff.predatory_swiftness.up)))&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)
 actions.maintain+=/moonfire_cat,cycle_targets=1,if=remains<4.2&spell_targets.swipe<=5&target.time_to_die-remains>tick_time*5
 actions.maintain+=/rake,cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&spell_targets.swipe=1&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)
@@ -76,16 +77,16 @@ actions.generator+=/shred,if=spell_targets.swipe<3|(spell_targets.swipe=3&buff.i
 head=bloodfeather_cowl,id=109976,bonus_id=524
 neck=fireblade_collar,id=109951,bonus_id=524,enchant=gift_of_critical_strike
 shoulders=blackwater_spaulders,id=109938,bonus_id=524
-trinket1=blood_seal_of_azzakel,id=109995,bonus_id=524
-chest=chestguard_of_burning_focus,id=109884,bonus_id=524
 back=sootscarred_longcloak,id=109918,bonus_id=524,enchant=gift_of_critical_strike
+chest=chestguard_of_burning_focus,id=109884,bonus_id=524
+wrists=leafmender_wraps,id=109871,bonus_id=524
 hands=gauntlets_of_burning_focus,id=109848,bonus_id=524
 waist=leafmender_girdle,id=109832,bonus_id=524
-wrists=leafmender_wraps,id=109871,bonus_id=524
 legs=bloodfeather_leggings,id=109810,bonus_id=524
 feet=boots_of_burning_focus,id=109787,bonus_id=524
 finger1=ancient_draenic_loop,id=109779,bonus_id=524,enchant=gift_of_critical_strike
 finger2=rogers_brown_diamond_seal,id=109759,bonus_id=524,enchant=gift_of_critical_strike
+trinket1=blood_seal_of_azzakel,id=109995,bonus_id=524
 trinket2=gorashans_lodestone_spike,id=109998,bonus_id=524
 main_hand=crushtos_neck_separator,id=110040,bonus_id=524,enchant=mark_of_the_shattered_hand
 

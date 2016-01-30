@@ -71,30 +71,30 @@ actions+=/life_tap
 head=deathrattle_mask,id=124162,bonus_id=567,upgrade=2
 neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,upgrade=2,enchant_id=5318
 shoulders=mantle_of_the_eredar_lord,id=124176,bonus_id=567,upgrade=2
-trinket1=fragment_of_the_dark_star,id=124522,bonus_id=567,upgrade=2
-chest=deathrattle_robe,id=124173,bonus_id=567,upgrade=2
 back=cloak_of_hideous_unity,id=124138,bonus_id=567,upgrade=2,enchant_id=5311
+chest=deathrattle_robe,id=124173,bonus_id=567,upgrade=2
+wrists=contemptuous_wristguards,id=124186,bonus_id=567,upgrade=2
 hands=deathrattle_gloves,id=124156,bonus_id=567,upgrade=2
 waist=sash_of_unending_anguish,id=124181,bonus_id=567,upgrade=2
-wrists=contemptuous_wristguards,id=124186,bonus_id=567,upgrade=2
 legs=deathrattle_leggings,id=124167,bonus_id=567,upgrade=2
 feet=dessicated_soulrender_slippers,id=124150,bonus_id=567,upgrade=2
 finger1=nithramus_the_allseer,id=124635,bonus_id=641,enchant_id=5325
 finger2=loathful_encrusted_band,id=124192,bonus_id=567,upgrade=2,enchant_id=5325
+trinket1=fragment_of_the_dark_star,id=124522,bonus_id=567,upgrade=2
 trinket2=desecrated_shadowmoon_insignia,id=124228,bonus_id=567,upgrade=2
 main_hand=edict_of_argus,id=124382,bonus_id=567,upgrade=2,enchant_id=5337
 
 # Gear Summary
-# gear_ilvl=740.47
-# gear_stamina=6915
-# gear_intellect=4608
-# gear_spell_power=2741
-# gear_crit_rating=689
-# gear_haste_rating=2466
-# gear_mastery_rating=2905
-# gear_multistrike_rating=610
+# gear_ilvl=742.33
+# gear_stamina=7032
+# gear_intellect=4686
+# gear_spell_power=2792
+# gear_crit_rating=703
+# gear_haste_rating=2506
+# gear_mastery_rating=2953
+# gear_multistrike_rating=621
 # gear_versatility_rating=228
-# gear_armor=1178
+# gear_armor=1200
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
 default_pet=felhunter

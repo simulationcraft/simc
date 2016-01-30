@@ -98,16 +98,16 @@ actions.aoe+=/incinerate
 head=demon_princes_ascendant_crown,id=124159
 neck=vial_of_immiscible_liquid,id=124212,enchant=75crit
 shoulders=deathrattle_shoulderpads,id=124179
-trinket1=desecrated_shadowmoon_insignia,id=124228
-chest=deathrattle_robe,id=124173
 back=spellcloak_of_suramar,id=127972,enchant=100crit
+chest=deathrattle_robe,id=124173
+wrists=contemptuous_wristguards,id=124186
 hands=deathrattle_gloves,id=124156
 waist=demonbuckle_sash_of_argus,id=124200
-wrists=contemptuous_wristguards,id=124186
 legs=deathrattle_leggings,id=124167
 feet=bloody_daggerheeled_pumps,id=124149
 finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=50crit
 finger2=loathful_encrusted_band,id=124192,enchant=50crit
+trinket1=desecrated_shadowmoon_insignia,id=124228
 trinket2=fragment_of_the_dark_star,id=124522
 main_hand=edict_of_argus,id=124382,enchant_id=5384
 
