@@ -345,7 +345,7 @@ public:
   virtual void      regen( timespan_t periodicity ) override;
   virtual void      combat_begin() override;
 
-  double  get_hand_of_light();
+  double  get_hand_of_light() const;
   void    trigger_grand_crusader();
   void    trigger_holy_shield( action_state_t* s );
   virtual bool has_t18_class_trinket() const override;
@@ -2079,14 +2079,58 @@ struct zeal_t : public holy_power_generator_t
 
 // Blade of Justice =========================================================
 
-struct blade_of_justice_t : public holy_power_generator_t
+
+struct bol_blade_of_justice_t : public holy_power_generator_t
 {
   const spell_data_t* sword_of_light;
-  int remaining_executes;
+  bol_blade_of_justice_t( paladin_t* p, const std::string& options_str )
+    : holy_power_generator_t( "blade_of_justice", p, p -> find_class_spell( "Blade of Justice" ), true ),
+      sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
+  {
+    parse_options( options_str );
+
+    // Guarded by the Light and Sword of Light reduce base mana cost; spec-limited so only one will ever be active
+    base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent()
+                                       +  p -> passives.sword_of_light -> effectN( 4 ).percent();
+    base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
+
+    base_multiplier *= 1.0 + p -> artifact.deliver_the_justice.percent();
+
+    background = true;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = holy_power_generator_t::action_multiplier();
+
+    // Virtue's Blade buffs BoJ damage by 25%
+    if ( p() -> talents.virtues_blade -> ok() )
+    {
+      am *= 1.0 + p() -> talents.virtues_blade -> effectN( 1 ).percent();
+    }
+
+    return am;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    holy_power_generator_t::impact( s );
+
+    // TODO: does this happen?
+    if ( result_is_hit( s -> result ) )
+      // Trigger Hand of Light procs
+      trigger_hand_of_light( s );
+  }
+};
+
+struct blade_of_justice_t : public holy_power_generator_t
+{
+  bol_blade_of_justice_t* bol_proc;
+  const spell_data_t* sword_of_light;
   blade_of_justice_t( paladin_t* p, const std::string& options_str )
     : holy_power_generator_t( "blade_of_justice", p, p -> find_class_spell( "Blade of Justice" ), true ),
       sword_of_light( p -> find_specialization_spell( "Sword of Light" ) ),
-      remaining_executes( 0 )
+      bol_proc( new bol_blade_of_justice_t( p, options_str ) )
   {
     parse_options( options_str );
 
@@ -2117,24 +2161,14 @@ struct blade_of_justice_t : public holy_power_generator_t
   {
     holy_power_generator_t::execute();
 
-    if ( background )
+    if ( p() -> artifact.blades_of_light.rank() )
     {
-      remaining_executes--;
-      if (remaining_executes == 0)
-        background = false;
-    }
-    else
-    {
-      if ( p() -> artifact.blades_of_light.rank() )
-      {
-        background = true;
-        remaining_executes = (int)(rng().range(1, 4));
-        if (remaining_executes > 3) {
-          remaining_executes = 3;
-        }
-        for (int i = 0; i < remaining_executes; i++) {
-          schedule_execute();
-        }
+      int remaining_executes = (int)(rng().range(1, 4));
+      if (remaining_executes > 3) {
+        remaining_executes = 3;
+      }
+      for (int i = 0; i < remaining_executes; i++) {
+        bol_proc -> schedule_execute();
       }
     }
   }
@@ -2146,11 +2180,9 @@ struct blade_of_justice_t : public holy_power_generator_t
     // Special things that happen when BoJ connects
     if ( result_is_hit( s -> result ) )
     {
-      if ( !background ) {
-        // Holy Power gains, only relevant if BoJ connects
-        int g = data().effectN( 3 ).base_value(); // default is a gain of 2 Holy Power
-        p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_blade_of_justice ); // apply gain, record as due to BoJ
-      }
+      // Holy Power gains, only relevant if BoJ connects
+      int g = data().effectN( 3 ).base_value(); // default is a gain of 2 Holy Power
+      p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_blade_of_justice ); // apply gain, record as due to BoJ
     }
 
     if ( result_is_hit( s -> result ) )
@@ -2253,7 +2285,7 @@ struct divine_hammer_tick_t : public paladin_melee_attack_t
 
     paladin_td_t* td = this -> td( t );
 
-    if ( td -> buffs.debuffs_judgment -> up() )
+    if ( ( ! ( p() -> bugs ) ) && ( td -> buffs.debuffs_judgment -> up() ) )
     {
       double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent();
       if ( p() -> talents.judgments_of_the_bold -> ok() )
@@ -2270,9 +2302,12 @@ struct divine_hammer_tick_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
+    if ( !( p() -> bugs ) )
+    {
+      if ( result_is_hit( s -> result ) )
       // Trigger Hand of Light procs
-      trigger_hand_of_light( s );
+        trigger_hand_of_light( s );
+    }
   }
 };
 
@@ -2310,9 +2345,12 @@ struct divine_hammer_t : public paladin_spell_t
       p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_blade_of_justice ); // apply gain, record as due to BoJ
 
       // Conviction
-      if ( p() -> passives.conviction -> ok() && rng().roll( p() -> passives.conviction -> proc_chance() ) )
+      if ( ! ( p() -> bugs ) )
       {
-        p() -> buffs.conviction -> trigger();
+        if ( p() -> passives.conviction -> ok() && rng().roll( p() -> passives.conviction -> proc_chance() ) )
+        {
+          p() -> buffs.conviction -> trigger();
+        }
       }
 
       if ( p() -> artifact.blades_of_light.rank() )
@@ -2832,19 +2870,10 @@ struct echoed_templars_verdict_t : public holy_power_consumer_t
       am *= 1.0 + p() -> talents.final_verdict -> effectN( 1 ).percent();
     }
 
+    // TODO(mserrano): Does this apply to the echoed spell?
+    am *= 1.0 + p() -> get_hand_of_light();
+
     return am;
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    holy_power_consumer_t::impact( s );
-
-    // TODO(mserrano): does this apply to the echoed spell?
-    if ( result_is_hit( s -> result ) )
-    {
-      // Trigger Hand of Light procs
-      trigger_hand_of_light( s );
-    }
   }
 };
 
@@ -2903,19 +2932,9 @@ struct templars_verdict_t : public holy_power_consumer_t
       am *= 1.0 + p() -> talents.final_verdict -> effectN( 1 ).percent();
     }
 
+    am *= 1.0 + p() -> get_hand_of_light();
+
     return am;
-  }
-
-
-  virtual void impact( action_state_t* s ) override
-  {
-    holy_power_consumer_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      // Trigger Hand of Light procs
-      trigger_hand_of_light( s );
-    }
   }
 };
 
@@ -4653,7 +4672,7 @@ void paladin_t::combat_begin()
 
 // paladin_t::get_hand_of_light =============================================
 
-double paladin_t::get_hand_of_light()
+double paladin_t::get_hand_of_light() const
 {
   if ( specialization() != PALADIN_RETRIBUTION ) return 0.0;
 
