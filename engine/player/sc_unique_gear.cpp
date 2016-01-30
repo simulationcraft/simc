@@ -34,7 +34,6 @@ namespace enchants
   void mark_of_the_thunderlord( special_effect_t& );
   void mark_of_the_shattered_hand( special_effect_t& );
   void mark_of_the_frostwolf( special_effect_t& );
-  void mark_of_shadowmoon( special_effect_t& );
   void mark_of_blackrock( special_effect_t& );
   void mark_of_warsong( special_effect_t& );
   void megawatt_filament( special_effect_t& );
@@ -281,28 +280,6 @@ void enchants::hemets_heartseeker( special_effect_t& effect )
   effect.trigger_spell_id = 173288;
 
   new dbc_proc_callback_t( effect.item, effect );
-}
-
-void enchants::mark_of_shadowmoon( special_effect_t& effect )
-{
-  effect.type = SPECIAL_EFFECT_EQUIP;
-
-  struct mos_proc_callback_t : public dbc_proc_callback_t
-  {
-    mos_proc_callback_t( const item_t* i, const special_effect_t& effect ) :
-      dbc_proc_callback_t( i, effect )
-    { }
-
-    void trigger( action_t* a, void* call_data ) override
-    {
-      if ( listener -> resources.pct( RESOURCE_MANA ) > 0.5 )
-        return;
-
-      dbc_proc_callback_t::trigger( a, call_data );
-    }
-  };
-
-  new mos_proc_callback_t( effect.item, effect );
 }
 
 void enchants::mark_of_blackrock( special_effect_t& effect )
@@ -4328,7 +4305,6 @@ void unique_gear::register_special_effects()
   register_special_effect( 159243, enchants::mark_of_the_thunderlord    );
   register_special_effect( 159682, enchants::mark_of_warsong            );
   register_special_effect( 159683, enchants::mark_of_the_frostwolf      );
-  register_special_effect( 159684, enchants::mark_of_shadowmoon         );
   register_special_effect( 159685, enchants::mark_of_blackrock          );
   register_special_effect( 156059, enchants::megawatt_filament          );
   register_special_effect( 156052, enchants::oglethorpes_missile_splitter );
