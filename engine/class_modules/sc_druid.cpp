@@ -2333,7 +2333,7 @@ struct ferocious_bite_t : public cat_attack_t
       sabertooth_base = timespan_t::from_seconds( p -> talent.sabertooth -> effectN( 1 ).base_value() );
   }
 
-  const double maximum_energy()
+  double maximum_energy() const
   {
     double req = base_costs[ RESOURCE_ENERGY ] + max_excess_energy;
     
@@ -4331,6 +4331,7 @@ struct incarnation_t : public druid_spell_t
       case DRUID_RESTORATION:
         inc_buff = p -> buff.incarnation_tree;
         break;
+      default: assert( 0 ); break;
     }
 
     harmful = false;
