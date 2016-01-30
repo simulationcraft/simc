@@ -129,28 +129,28 @@ actions.multi_target_bos+=/empower_rune_weapon
 head=demongaze_helm,id=124332,bonus_id=567,upgrade=2
 neck=shadowgorged_iron_choker,id=124217,bonus_id=567,upgrade=2,enchant=gift_of_haste
 shoulders=demongaze_pauldrons,id=124344,bonus_id=567,upgrade=2
-back=soulbinders_greatcloak,id=124143,bonus_id=567,upgrade=2,enchant=gift_of_haste
+trinket1=reapers_harvest,id=124513,bonus_id=567,upgrade=2
 chest=demongaze_chestplate,id=124317,bonus_id=567,upgrade=2
-wrists=breachscarred_wristplates,id=124353,bonus_id=567,upgrade=2
+back=soulbinders_greatcloak,id=124143,bonus_id=567,upgrade=2,enchant=gift_of_haste
 hands=gauntlets_of_derision,id=124326,bonus_id=567,upgrade=2
 waist=girdle_of_demonic_wrath,id=124350,bonus_id=567,upgrade=2
+wrists=breachscarred_wristplates,id=124353,bonus_id=567,upgrade=2
 legs=demongaze_legplates,id=124338,bonus_id=567,upgrade=2
 feet=treads_of_the_defiler,id=124322,bonus_id=567,upgrade=2
 finger1=thorasus_the_stone_heart_of_draenor,id=124634,bonus_id=641,enchant=gift_of_haste
 finger2=flanged_gasket,id=124196,bonus_id=567,upgrade=2,enchant=gift_of_haste
-trinket1=reapers_harvest,id=124513,bonus_id=567,upgrade=2
 trinket2=empty_drinking_horn,id=124238,bonus_id=567,upgrade=2
 main_hand=maul_of_tyranny,id=124375,bonus_id=567,upgrade=2,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=741.00
-# gear_strength=5179
-# gear_stamina=6909
-# gear_crit_rating=553
-# gear_haste_rating=2663
-# gear_mastery_rating=1334
-# gear_multistrike_rating=1733
-# gear_versatility_rating=111
-# gear_armor=2580
+# gear_ilvl=739.13
+# gear_strength=5094
+# gear_stamina=6795
+# gear_crit_rating=548
+# gear_haste_rating=2618
+# gear_mastery_rating=1309
+# gear_multistrike_rating=1707
+# gear_versatility_rating=109
+# gear_armor=2564
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

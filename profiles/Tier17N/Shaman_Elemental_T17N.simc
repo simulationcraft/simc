@@ -30,14 +30,14 @@ actions=wind_shear
 actions+=/bloodlust,if=target.health.pct<25|time>0.500
 # In-combat potion is preferentially linked to Ascendance, unless combat will end shortly
 actions+=/potion,name=draenic_intellect,if=buff.ascendance.up|target.time_to_die<=30
-actions+=/berserking,if=!buff.bloodlust.up&!buff.elemental_mastery.up&buff.ascendance.cooldown_remains=0&(dot.flame_shock.remains>buff.ascendance.duration|level<87)
+actions+=/berserking,if=!buff.bloodlust.up&!buff.elemental_mastery.up&(set_bonus.tier15_4pc_caster=1|(buff.ascendance.cooldown_remains=0&(dot.flame_shock.remains>buff.ascendance.duration|level<87)))
 actions+=/blood_fury,if=buff.bloodlust.up|buff.ascendance.up|((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)
 actions+=/arcane_torrent
 actions+=/elemental_mastery,if=action.lava_burst.cast_time>=1.2
 actions+=/ancestral_swiftness,if=!buff.ascendance.up
 actions+=/storm_elemental_totem
 actions+=/fire_elemental_totem,if=!active
-actions+=/ascendance,if=spell_targets.chain_lightning>1|(dot.flame_shock.remains>buff.ascendance.duration&(target.time_to_die<20|buff.bloodlust.up|buff.berserking.up|time>=60)&cooldown.lava_burst.remains>0)
+actions+=/ascendance,if=spell_targets.chain_lightning>1|(dot.flame_shock.remains>buff.ascendance.duration&(target.time_to_die<20|buff.bloodlust.up|time>=60)&cooldown.lava_burst.remains>0)
 actions+=/liquid_magma,if=pet.searing_totem.remains>=15|pet.fire_elemental_totem.remains>=15
 # On multiple enemies, the priority follows the 'aoe' action list.
 actions+=/call_action_list,name=aoe,if=spell_targets.chain_lightning>(2+t18_class_trinket)
@@ -78,16 +78,16 @@ actions.aoe+=/lightning_bolt
 head=windspeakers_faceguard,id=115579
 neck=choker_of_bloody_flame,id=120077,enchant=gift_of_multistrike
 shoulders=windspeakers_mantle,id=115576
-back=runescribed_gronncloak,id=120078,enchant=gift_of_multistrike
+trinket1=darmacs_unstable_talisman,id=113948
 chest=windspeakers_tunic,id=115577
-wrists=bloodwhirl_bracers,id=113968
+back=runescribed_gronncloak,id=120078,enchant=gift_of_multistrike
 hands=windspeakers_handwraps,id=115578
 waist=grenadiers_belt,id=113955
+wrists=bloodwhirl_bracers,id=113968
 legs=legguards_of_the_stampede,id=113944
 feet=railwalkers_ratcheted_boots,id=113954
 finger1=timeless_solium_band_of_the_archmage,id=118296,enchant=gift_of_multistrike
 finger2=epicenter_loop,id=113947,enchant=gift_of_multistrike
-trinket1=darmacs_unstable_talisman,id=113948
 trinket2=blackiron_micro_crucible,id=113984
 main_hand=franzoks_headsmasher,id=113904,enchant=mark_of_the_frostwolf
 off_hand=enginestokers_lantern,id=113960

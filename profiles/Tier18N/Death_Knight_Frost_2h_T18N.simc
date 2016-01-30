@@ -128,16 +128,16 @@ actions.multi_target_bos+=/empower_rune_weapon
 head=demongaze_helm,id=124332
 neck=shadowgorged_iron_choker,id=124217,enchant=gift_of_haste
 shoulders=demongaze_pauldrons,id=124344
-back=soulbinders_greatcloak,id=124143,enchant=gift_of_haste
+trinket1=reapers_harvest,id=124513
 chest=demongaze_chestplate,id=124317
-wrists=breachscarred_wristplates,id=124353
+back=soulbinders_greatcloak,id=124143,enchant=gift_of_haste
 hands=gauntlets_of_derision,id=124326
 waist=girdle_of_demonic_wrath,id=124350
+wrists=breachscarred_wristplates,id=124353
 legs=demongaze_legplates,id=124338
 feet=treads_of_the_defiler,id=124322
 finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_haste
 finger2=flanged_gasket,id=124196,enchant=gift_of_haste
-trinket1=reapers_harvest,id=124513
 trinket2=empty_drinking_horn,id=124238
 main_hand=maul_of_tyranny,id=124375,enchant=rune_of_the_fallen_crusader
 

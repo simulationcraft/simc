@@ -1,7 +1,6 @@
 druid="Druid_Guardian_T18M"
 level=100
 race=night_elf
-timeofday=night
 role=tank
 position=front
 talents=0301022
@@ -55,29 +54,29 @@ actions+=/lacerate
 head=oathclaw_helm,id=124261,bonus_id=567,upgrade=2
 neck=world_enders_gorget,id=124222,bonus_id=567,upgrade=2,enchant=gift_of_mastery
 shoulders=oathclaw_mantle,id=124272,bonus_id=567,upgrade=2
-back=void_lords_wizened_cloak,id=124147,bonus_id=567,upgrade=2,enchant=gift_of_mastery
+trinket1=anzus_cursed_plume,id=124241,bonus_id=567,upgrade=2
 chest=oathclaw_vestment,id=124246,bonus_id=567,upgrade=2
-wrists=manacles_of_the_multitudes,id=124280,bonus_id=567,upgrade=2
+back=void_lords_wizened_cloak,id=124147,bonus_id=567,upgrade=2,enchant=gift_of_mastery
 hands=felfinger_runegloves,id=124254,bonus_id=567,upgrade=2
 waist=waistwrap_of_banishment,id=124276,bonus_id=567,upgrade=2
+wrists=manacles_of_the_multitudes,id=124280,bonus_id=567,upgrade=2
 legs=oathclaw_leggings,id=124267,bonus_id=567,upgrade=2
 feet=toxicologists_treated_boots,id=124250,bonus_id=567,upgrade=2
 finger1=sanctus_sigil_of_the_unbroken,id=124637,bonus_id=641,enchant=gift_of_mastery
 finger2=mannoroths_calcified_eye,id=124204,bonus_id=567,upgrade=2,enchant=gift_of_mastery
-trinket1=anzus_cursed_plume,id=124241,bonus_id=567,upgrade=2
 trinket2=blast_furnace_door,id=113893,bonus_id=567
 main_hand=xutenash_glaive_of_ruin,id=124378,bonus_id=567,upgrade=2,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_ilvl=740.00
-# gear_agility=4692
-# gear_stamina=7041
-# gear_crit_rating=466
-# gear_haste_rating=875
-# gear_mastery_rating=2461
-# gear_multistrike_rating=1220
-# gear_versatility_rating=437
-# gear_armor=1462
-# gear_bonus_armor=2102
+# gear_ilvl=738.27
+# gear_agility=4614
+# gear_stamina=6926
+# gear_crit_rating=458
+# gear_haste_rating=859
+# gear_mastery_rating=2420
+# gear_multistrike_rating=1198
+# gear_versatility_rating=434
+# gear_armor=1444
+# gear_bonus_armor=2077
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

@@ -1,7 +1,6 @@
 rogue="Rogue_Combat_T17N"
 level=100
 race=night_elf
-timeofday=night
 role=attack
 position=back
 talents=3000031
@@ -37,52 +36,49 @@ actions+=/berserking
 actions+=/arcane_torrent,if=energy<60
 actions+=/blade_flurry,if=(spell_targets.blade_flurry>=2&!buff.blade_flurry.up)|(spell_targets.blade_flurry<2&buff.blade_flurry.up)
 actions+=/shadow_reflection,if=(cooldown.killing_spree.remains<10&combo_points>3)|buff.adrenaline_rush.up
-actions+=/pool_resource,for_next=1
 actions+=/ambush
-actions+=/vanish,if=time>25&(combo_points<4|(talent.anticipation.enabled&anticipation_charges<4))&((talent.shadow_focus.enabled&energy.time_to_max>2.5&energy>=15)|(talent.subterfuge.enabled&energy>=90)|(!talent.shadow_focus.enabled&!talent.subterfuge.enabled&energy>=60))
-actions+=/shadowmeld,if=(combo_points<4|(talent.anticipation.enabled&anticipation_charges<4))&energy>=60
-actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2&(dot.revealing_strike.ticking|time>10)|(target.time_to_die>45&combo_points=5&buff.slice_and_dice.remains<12&buff.deep_insight.down)
-actions+=/call_action_list,name=adrenaline_rush,if=dot.revealing_strike.ticking&buff.adrenaline_rush.down
-actions+=/call_action_list,name=killing_spree,if=energy.time_to_max>6&(!talent.shadow_reflection.enabled|cooldown.shadow_reflection.remains>30|buff.shadow_reflection.remains>8)
+actions+=/vanish,if=time>10&(combo_points<3|(talent.anticipation.enabled&anticipation_charges<3)|(combo_points<4|(talent.anticipation.enabled&anticipation_charges<4)))&((talent.shadow_focus.enabled&buff.adrenaline_rush.down&energy<90&energy>=15)|(talent.subterfuge.enabled&energy>=90)|(!talent.shadow_focus.enabled&!talent.subterfuge.enabled&energy>=60))
+actions+=/shadowmeld,if=time>10&energy>=60&buff.adrenaline_rush.down&(combo_points<3|(talent.anticipation.enabled&anticipation_charges<3)|(combo_points<4|(talent.anticipation.enabled&anticipation_charges<4)))
+actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2|((target.time_to_die>45&combo_points=5&buff.slice_and_dice.remains<12)&buff.deep_insight.down)
+actions+=/call_action_list,name=adrenaline_rush,if=cooldown.killing_spree.remains>10
+actions+=/call_action_list,name=killing_spree,if=(energy<40|(buff.bloodlust.up&time<10)|buff.bloodlust.remains>20)&buff.adrenaline_rush.down&(!talent.shadow_reflection.enabled|cooldown.shadow_reflection.remains>30|buff.shadow_reflection.remains>3)
 actions+=/marked_for_death,if=combo_points<=1&dot.revealing_strike.ticking&(!talent.shadow_reflection.enabled|buff.shadow_reflection.up|cooldown.shadow_reflection.remains>30)
-actions+=/call_action_list,name=finisher,if=combo_points=5&dot.revealing_strike.ticking&(buff.deep_insight.up|!talent.anticipation.enabled|(talent.anticipation.enabled&anticipation_charges>=3))
 actions+=/call_action_list,name=generator,if=combo_points<5|!dot.revealing_strike.ticking|(talent.anticipation.enabled&anticipation_charges<3&buff.deep_insight.down)
+actions+=/call_action_list,name=finisher,if=combo_points=5&dot.revealing_strike.ticking&(buff.deep_insight.up|!talent.anticipation.enabled|(talent.anticipation.enabled&anticipation_charges>=3))
 
-# Adrenaline Rush Handler
+actions.adrenaline_rush=adrenaline_rush,if=target.time_to_die>=44
+actions.adrenaline_rush+=/adrenaline_rush,if=target.time_to_die<44&(buff.archmages_greater_incandescence_agi.react|trinket.proc.any.react|trinket.stacking_proc.any.react)
+actions.adrenaline_rush+=/adrenaline_rush,if=target.time_to_die<=buff.adrenaline_rush.duration*1.5
 
-actions.adrenaline_rush=adrenaline_rush,if=target.time_to_die>=75
-actions.adrenaline_rush+=/adrenaline_rush,if=target.time_to_die<75&(trinket.proc.any.react|trinket.stacking_proc.any.react)
-actions.adrenaline_rush+=/adrenaline_rush,if=target.time_to_die<=buff.adrenaline_rush.duration*2
+actions.killing_spree=killing_spree,if=target.time_to_die>=44
+actions.killing_spree+=/killing_spree,if=target.time_to_die<44&buff.archmages_greater_incandescence_agi.react&buff.archmages_greater_incandescence_agi.remains>=buff.killing_spree.duration
+actions.killing_spree+=/killing_spree,if=target.time_to_die<44&trinket.proc.any.react&trinket.proc.any.remains>=buff.killing_spree.duration
+actions.killing_spree+=/killing_spree,if=target.time_to_die<44&trinket.stacking_proc.any.react&trinket.stacking_proc.any.remains>=buff.killing_spree.duration
+actions.killing_spree+=/killing_spree,if=target.time_to_die<=buff.killing_spree.duration*1.5
 
-# Killing Spree Handler
-
-actions.killing_spree=killing_spree,if=target.time_to_die>=25
-actions.killing_spree+=/killing_spree,if=target.time_to_die<25&(trinket.proc.any.react&trinket.proc.any.remains>=buff.killing_spree.duration|trinket.stacking_proc.any.react&trinket.stacking_proc.any.remains>=buff.killing_spree.duration)
-actions.killing_spree+=/killing_spree,if=target.time_to_die<=buff.killing_spree.duration*5
-
-# Combo Point Finishers
-
-actions.finisher=death_from_above
-actions.finisher+=/eviscerate,if=(!talent.death_from_above.enabled|cooldown.death_from_above.remains)
-
-# Combo Point Generators
+# Combo point generators
 
 actions.generator=revealing_strike,if=(combo_points=4&dot.revealing_strike.remains<7.2&(target.time_to_die>dot.revealing_strike.remains+7.2)|(target.time_to_die<dot.revealing_strike.remains+7.2&ticks_remain<2))|!ticking
 actions.generator+=/sinister_strike,if=dot.revealing_strike.ticking
 
+# Combo point finishers
+
+actions.finisher=death_from_above
+actions.finisher+=/eviscerate,if=(!talent.death_from_above.enabled|cooldown.death_from_above.remains)
+
 head=sorkas_nightshade_cowl,id=113978
 neck=engineers_grounded_gorget,id=113892,enchant=gift_of_haste
 shoulders=poisoners_spaulders,id=115574
-back=cloak_of_delving_secrets,id=113929,enchant=gift_of_haste
+trinket1=meaty_dragonspine_trophy,id=118114
 chest=poisoners_tunic,id=115570
-wrists=squires_electroplated_bracers,id=113962
+back=cloak_of_delving_secrets,id=113929,enchant=gift_of_haste
 hands=poisoners_gloves,id=115571
 waist=girdle_of_unconquered_glory,id=113907
+wrists=squires_electroplated_bracers,id=113962
 legs=poisoners_legguards,id=115573
 feet=ironflecked_sandals,id=119340
 finger1=timeless_solium_band_of_the_assassin,id=118297,enchant=gift_of_haste
 finger2=unexploded_explosive_shard,id=113877,enchant=gift_of_haste
-trinket1=meaty_dragonspine_trophy,id=118114
 trinket2=beating_heart_of_the_mountain,id=113931
 main_hand=hansgars_forgehammer,id=113897,enchant=mark_of_warsong
 off_hand=hansgars_forgehammer,id=113897,enchant=mark_of_warsong

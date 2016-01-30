@@ -1,7 +1,6 @@
 druid="Druid_Feral_T17N"
 level=100
 race=night_elf
-timeofday=night
 role=attack
 position=back
 talents=3002002
@@ -44,6 +43,7 @@ actions+=/berserking,sync=tigers_fury
 actions+=/arcane_torrent,sync=tigers_fury
 actions+=/tigers_fury,if=(!buff.omen_of_clarity.react&energy.deficit>=60)|energy.deficit>=80|(t18_class_trinket&buff.berserk.up&buff.tigers_fury.down)
 actions+=/incarnation,if=cooldown.berserk.remains<10&energy.time_to_max>1
+actions+=/shadowmeld,if=dot.rake.remains<4.5&energy>=35&dot.rake.pmultiplier<2&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>15)&!buff.incarnation.up
 # Keep Rip from falling off during execute range.
 actions+=/ferocious_bite,cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<3&target.health.pct<25
 actions+=/healing_touch,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&((combo_points>=4&!set_bonus.tier18_4pc)|combo_points=5|buff.predatory_swiftness.remains<1.5)
@@ -61,12 +61,11 @@ actions+=/call_action_list,name=generator,if=combo_points<5
 actions.finisher=rip,cycle_targets=1,if=remains<2&target.time_to_die-remains>18&(target.health.pct>25|!dot.rip.ticking)
 actions.finisher+=/ferocious_bite,cycle_targets=1,max_energy=1,if=target.health.pct<25&dot.rip.ticking
 actions.finisher+=/rip,cycle_targets=1,if=remains<7.2&persistent_multiplier>dot.rip.pmultiplier&target.time_to_die-remains>18
-actions.finisher+=/rip,cycle_targets=1,if=remains<7.2&persistent_multiplier=dot.rip.pmultiplier&(energy.time_to_max<=1|(set_bonus.tier18_4pc&energy>50)|(set_bonus.tier18_2pc&buff.omen_of_clarity.react)|!talent.bloodtalons.enabled)&target.time_to_die-remains>18
+actions.finisher+=/rip,cycle_targets=1,if=remains<7.2&persistent_multiplier=dot.rip.pmultiplier&(energy.time_to_max<=1|!talent.bloodtalons.enabled)&target.time_to_die-remains>18
 actions.finisher+=/savage_roar,if=((set_bonus.tier18_4pc&energy>50)|(set_bonus.tier18_2pc&buff.omen_of_clarity.react)|energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&buff.savage_roar.remains<12.6
 actions.finisher+=/ferocious_bite,max_energy=1,if=(set_bonus.tier18_4pc&energy>50)|(set_bonus.tier18_2pc&buff.omen_of_clarity.react)|energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3
 
-actions.maintain=shadowmeld,if=energy>=35&dot.rake.pmultiplier<2.1&buff.tigers_fury.up&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>18)&!buff.incarnation.up
-actions.maintain+=/rake,cycle_targets=1,if=remains<3&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)
+actions.maintain=rake,cycle_targets=1,if=remains<3&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)
 actions.maintain+=/rake,cycle_targets=1,if=remains<4.5&(persistent_multiplier>=dot.rake.pmultiplier|(talent.bloodtalons.enabled&(buff.bloodtalons.up|!buff.predatory_swiftness.up)))&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)
 actions.maintain+=/moonfire_cat,cycle_targets=1,if=remains<4.2&spell_targets.swipe<=5&target.time_to_die-remains>tick_time*5
 actions.maintain+=/rake,cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&spell_targets.swipe=1&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)
@@ -77,16 +76,16 @@ actions.generator+=/shred,if=spell_targets.swipe<3|(spell_targets.swipe=3&buff.i
 head=acidic_jaws,id=113880
 neck=darklight_necklace,id=113865,enchant=gift_of_critical_strike
 shoulders=living_wood_spaulders,id=115544
-back=drape_of_the_dark_hunt,id=113971,enchant=gift_of_critical_strike
+trinket1=beating_heart_of_the_mountain,id=113931
 chest=living_wood_raiment,id=115540
-wrists=bracers_of_shattered_limbs,id=119333
+back=drape_of_the_dark_hunt,id=113971,enchant=gift_of_critical_strike
 hands=living_wood_grips,id=115541
 waist=conductors_multipocket_girdle,id=113964
+wrists=bracers_of_shattered_limbs,id=119333
 legs=living_wood_legguards,id=115543
 feet=furnace_tenders_treads,id=113895
 finger1=timeless_solium_band_of_the_assassin,id=118297,enchant=gift_of_critical_strike
 finger2=unexploded_explosive_shard,id=113877,enchant=gift_of_critical_strike
-trinket1=beating_heart_of_the_mountain,id=113931
 trinket2=humming_blackiron_trigger,id=113985
 main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,enchant=mark_of_the_thunderlord
 

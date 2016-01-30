@@ -129,28 +129,28 @@ actions.multi_target_bos+=/empower_rune_weapon
 head=demongaze_helm,id=124332,bonus_id=567,upgrade=2
 neck=corrupted_talonguard_pendant,id=124218,bonus_id=567,upgrade=2,enchant=gift_of_mastery
 shoulders=demongaze_pauldrons,id=124344,bonus_id=567,upgrade=2
-back=soulbinders_greatcloak,id=124143,bonus_id=567,upgrade=2,enchant=gift_of_mastery
+trinket1=empty_drinking_horn,id=124238,bonus_id=567,upgrade=2
 chest=demongaze_chestplate,id=124317,bonus_id=567,upgrade=2
-wrists=breachscarred_wristplates,id=124353,bonus_id=567,upgrade=2
+back=soulbinders_greatcloak,id=124143,bonus_id=567,upgrade=2,enchant=gift_of_mastery
 hands=gauntlets_of_derision,id=124326,bonus_id=567,upgrade=2
 waist=girdle_of_demonic_wrath,id=124350,bonus_id=567,upgrade=2
+wrists=breachscarred_wristplates,id=124353,bonus_id=567,upgrade=2
 legs=demongaze_legplates,id=124338,bonus_id=567,upgrade=2
 feet=treads_of_the_defiler,id=124322,bonus_id=567,upgrade=2
 finger1=thorasus_the_stone_heart_of_draenor,id=124634,bonus_id=641,enchant=gift_of_mastery
 finger2=congealed_globule_loop,id=124197,bonus_id=567,upgrade=2,enchant=gift_of_mastery
-trinket1=empty_drinking_horn,id=124238,bonus_id=567,upgrade=2
 trinket2=discordant_chorus,id=124237,bonus_id=567,upgrade=2
 main_hand=fiendsbreath_warmace,id=124374,bonus_id=567,upgrade=2,enchant=rune_of_razorice
 off_hand=fiendsbreath_warmace,id=124374,bonus_id=567,upgrade=2,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=741.25
-# gear_strength=5712
-# gear_stamina=6845
-# gear_crit_rating=751
-# gear_haste_rating=1566
-# gear_mastery_rating=1596
-# gear_multistrike_rating=2424
-# gear_armor=2580
+# gear_ilvl=739.38
+# gear_strength=5617
+# gear_stamina=6729
+# gear_crit_rating=742
+# gear_haste_rating=1537
+# gear_mastery_rating=1571
+# gear_multistrike_rating=2385
+# gear_armor=2564
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

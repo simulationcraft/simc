@@ -99,30 +99,30 @@ actions.aoe+=/incinerate
 head=demon_princes_ascendant_crown,id=124159,bonus_id=567,upgrade=2
 neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,upgrade=2,enchant=75crit
 shoulders=deathrattle_shoulderpads,id=124179,bonus_id=567,upgrade=2
-back=shawl_of_sanguinary_ritual,id=124137,bonus_id=567,upgrade=2,enchant=100crit
+trinket1=fragment_of_the_dark_star,id=124522,bonus_id=567,upgrade=2
 chest=deathrattle_robe,id=124173,bonus_id=567,upgrade=2
-wrists=contemptuous_wristguards,id=124186,bonus_id=567,upgrade=2
+back=shawl_of_sanguinary_ritual,id=124137,bonus_id=567,upgrade=2,enchant=100crit
 hands=deathrattle_gloves,id=124156,bonus_id=567,upgrade=2
 waist=demonbuckle_sash_of_argus,id=124200,bonus_id=567,upgrade=2
+wrists=contemptuous_wristguards,id=124186,bonus_id=567,upgrade=2
 legs=deathrattle_leggings,id=124167,bonus_id=567,upgrade=2
 feet=bloody_daggerheeled_pumps,id=124149,bonus_id=567,upgrade=2
 finger1=nithramus_the_allseer,id=124635,bonus_id=641,upgrade=2,enchant=50crit
 finger2=loathful_encrusted_band,id=124192,bonus_id=567,upgrade=2,enchant=50crit
-trinket1=fragment_of_the_dark_star,id=124522,bonus_id=567,upgrade=2
 trinket2=desecrated_shadowmoon_insignia,id=124228,bonus_id=567,upgrade=2
 main_hand=edict_of_argus,id=124382,bonus_id=567,upgrade=2,enchant_id=5384
 
 # Gear Summary
-# gear_ilvl=742.67
-# gear_stamina=7078
-# gear_intellect=4718
-# gear_spell_power=2792
-# gear_crit_rating=1653
-# gear_haste_rating=823
-# gear_mastery_rating=3168
-# gear_multistrike_rating=1017
-# gear_versatility_rating=391
-# gear_armor=1206
+# gear_ilvl=741.33
+# gear_stamina=7012
+# gear_intellect=4673
+# gear_spell_power=2741
+# gear_crit_rating=1628
+# gear_haste_rating=808
+# gear_mastery_rating=3141
+# gear_multistrike_rating=998
+# gear_versatility_rating=406
+# gear_armor=1187
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
 default_pet=felhunter

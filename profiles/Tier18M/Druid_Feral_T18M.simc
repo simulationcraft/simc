@@ -1,7 +1,6 @@
 druid="Druid_Feral_T18M"
 level=100
 race=night_elf
-timeofday=night
 role=attack
 position=back
 talents=3002002
@@ -45,6 +44,7 @@ actions+=/berserking,sync=tigers_fury
 actions+=/arcane_torrent,sync=tigers_fury
 actions+=/tigers_fury,if=(!buff.omen_of_clarity.react&energy.deficit>=60)|energy.deficit>=80|(t18_class_trinket&buff.berserk.up&buff.tigers_fury.down)
 actions+=/incarnation,if=cooldown.berserk.remains<10&energy.time_to_max>1
+actions+=/shadowmeld,if=dot.rake.remains<4.5&energy>=35&dot.rake.pmultiplier<2&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>15)&!buff.incarnation.up
 # Keep Rip from falling off during execute range.
 actions+=/ferocious_bite,cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<3&target.health.pct<25
 actions+=/healing_touch,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&((combo_points>=4&!set_bonus.tier18_4pc)|combo_points=5|buff.predatory_swiftness.remains<1.5)
@@ -62,12 +62,11 @@ actions+=/call_action_list,name=generator,if=combo_points<5
 actions.finisher=rip,cycle_targets=1,if=remains<2&target.time_to_die-remains>18&(target.health.pct>25|!dot.rip.ticking)
 actions.finisher+=/ferocious_bite,cycle_targets=1,max_energy=1,if=target.health.pct<25&dot.rip.ticking
 actions.finisher+=/rip,cycle_targets=1,if=remains<7.2&persistent_multiplier>dot.rip.pmultiplier&target.time_to_die-remains>18
-actions.finisher+=/rip,cycle_targets=1,if=remains<7.2&persistent_multiplier=dot.rip.pmultiplier&(energy.time_to_max<=1|(set_bonus.tier18_4pc&energy>50)|(set_bonus.tier18_2pc&buff.omen_of_clarity.react)|!talent.bloodtalons.enabled)&target.time_to_die-remains>18
+actions.finisher+=/rip,cycle_targets=1,if=remains<7.2&persistent_multiplier=dot.rip.pmultiplier&(energy.time_to_max<=1|!talent.bloodtalons.enabled)&target.time_to_die-remains>18
 actions.finisher+=/savage_roar,if=((set_bonus.tier18_4pc&energy>50)|(set_bonus.tier18_2pc&buff.omen_of_clarity.react)|energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&buff.savage_roar.remains<12.6
 actions.finisher+=/ferocious_bite,max_energy=1,if=(set_bonus.tier18_4pc&energy>50)|(set_bonus.tier18_2pc&buff.omen_of_clarity.react)|energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3
 
-actions.maintain=shadowmeld,if=energy>=35&dot.rake.pmultiplier<2.1&buff.tigers_fury.up&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>18)&!buff.incarnation.up
-actions.maintain+=/rake,cycle_targets=1,if=remains<3&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)
+actions.maintain=rake,cycle_targets=1,if=remains<3&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)
 actions.maintain+=/rake,cycle_targets=1,if=remains<4.5&(persistent_multiplier>=dot.rake.pmultiplier|(talent.bloodtalons.enabled&(buff.bloodtalons.up|!buff.predatory_swiftness.up)))&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)
 actions.maintain+=/moonfire_cat,cycle_targets=1,if=remains<4.2&spell_targets.swipe<=5&target.time_to_die-remains>tick_time*5
 actions.maintain+=/rake,cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&spell_targets.swipe=1&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)
@@ -78,28 +77,28 @@ actions.generator+=/shred,if=spell_targets.swipe<3|(spell_targets.swipe=3&buff.i
 head=oathclaw_helm,id=124261,bonus_id=567,upgrade=2
 neck=choker_of_the_great_betrayer,id=124210,bonus_id=567,upgrade=2,enchant_id=5317
 shoulders=oathclaw_mantle,id=124272,bonus_id=567,upgrade=2
-back=cloak_of_desperate_temerity,id=124134,bonus_id=567,upgrade=2,enchant_id=5310
+trinket1=seed_of_creation,id=124514,bonus_id=567,upgrade=2
 chest=tunic_of_the_soulbinder,id=124245,bonus_id=567,upgrade=2
-wrists=manacles_of_the_multitudes,id=124280,bonus_id=567,upgrade=2
+back=cloak_of_desperate_temerity,id=124134,bonus_id=567,upgrade=2,enchant_id=5310
 hands=oathclaw_gauntlets,id=124255,bonus_id=567,upgrade=2
 waist=waistwrap_of_banishment,id=124276,bonus_id=567,upgrade=2
+wrists=manacles_of_the_multitudes,id=124280,bonus_id=567,upgrade=2
 legs=oathclaw_leggings,id=124267,bonus_id=567,upgrade=2
 feet=spiked_irontoe_slippers,id=124249,bonus_id=567,upgrade=2
 finger1=maalus_the_blood_drinker,id=124636,bonus_id=641,enchant_id=5324
 finger2=portal_key_signet,id=124189,bonus_id=567,upgrade=2,enchant_id=5324
-trinket1=seed_of_creation,id=124514,bonus_id=567,upgrade=2
 trinket2=soul_capacitor,id=124225,bonus_id=567,upgrade=2
 main_hand=xutenash_glaive_of_ruin,id=124378,bonus_id=567,upgrade=2,enchant_id=5330
 
 # Gear Summary
-# gear_ilvl=741.67
-# gear_agility=5182
-# gear_stamina=6952
-# gear_crit_rating=2245
-# gear_haste_rating=155
-# gear_mastery_rating=1344
-# gear_multistrike_rating=2418
+# gear_ilvl=739.80
+# gear_agility=5095
+# gear_stamina=6837
+# gear_crit_rating=2216
+# gear_haste_rating=152
+# gear_mastery_rating=1318
+# gear_multistrike_rating=2375
 # gear_versatility_rating=270
-# gear_armor=1444
+# gear_armor=1427
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

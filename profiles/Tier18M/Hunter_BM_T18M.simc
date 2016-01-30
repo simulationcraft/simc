@@ -64,29 +64,29 @@ actions+=/cobra_shot
 head=hood_of_the_savage_hunt,id=124296,bonus_id=567,upgrade=2
 neck=chain_of_lidless_eyes,id=124209,bonus_id=567,upgrade=2,enchant_id=5319
 shoulders=pauldrons_of_the_savage_hunt,id=124307,bonus_id=567,upgrade=2
-back=cloak_of_tangible_dread,id=124135,bonus_id=567,upgrade=2,enchant_id=5311
+trinket1=malicious_censer,id=124226,bonus_id=567,upgrade=2
 chest=hauberk_of_the_savage_hunt,id=124284,bonus_id=567,upgrade=2
-wrists=bracers_of_fel_empowerment,id=124314,bonus_id=567,upgrade=2
+back=cloak_of_tangible_dread,id=124135,bonus_id=567,upgrade=2,enchant_id=5311
 hands=gloves_of_the_savage_hunt,id=124292,bonus_id=567,upgrade=2
 waist=girdle_of_the_legion_general,id=124310,bonus_id=567,upgrade=2
+wrists=bracers_of_fel_empowerment,id=124314,bonus_id=567,upgrade=2
 legs=haughty_chain_legguards,id=124300,bonus_id=567,upgrade=2
 feet=spiked_throatcrusher_boots,id=124287,bonus_id=567,upgrade=2
 finger1=maalus_the_blood_drinker,id=124636,bonus_id=641,enchant_id=5326
 finger2=portal_key_signet,id=124189,bonus_id=567,upgrade=2,enchant_id=5326
-trinket1=malicious_censer,id=124226,bonus_id=567,upgrade=2
 trinket2=talisman_of_the_master_tracker,id=124515,bonus_id=567,upgrade=2
 main_hand=cursed_demonbone_longbow,id=124361,bonus_id=567,upgrade=2,enchant_id=5383
 
 # Gear Summary
-# gear_ilvl=742.67
-# gear_agility=4667
-# gear_stamina=7006
-# gear_crit_rating=1284
-# gear_haste_rating=1022
-# gear_mastery_rating=2113
-# gear_multistrike_rating=2369
+# gear_ilvl=740.80
+# gear_agility=4591
+# gear_stamina=6890
+# gear_crit_rating=1267
+# gear_haste_rating=1004
+# gear_mastery_rating=2076
+# gear_multistrike_rating=2325
 # gear_versatility_rating=270
-# gear_armor=1774
+# gear_armor=1758
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
 summon_pet=cat

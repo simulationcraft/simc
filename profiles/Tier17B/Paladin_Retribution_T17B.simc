@@ -19,10 +19,8 @@ actions.precombat=flask,type=greater_draenic_strength_flask
 actions.precombat+=/food,type=sleeper_sushi
 actions.precombat+=/blessing_of_kings,if=!aura.str_agi_int.up
 actions.precombat+=/blessing_of_might,if=!aura.mastery.up
-actions.precombat+=/seal_of_truth,if=equipped.empty_drinking_horn&spell_targets.divine_storm<2
-actions.precombat+=/seal_of_righteousness,if=equipped.empty_drinking_horn&spell_targets.divine_storm>=2
-actions.precombat+=/seal_of_truth,if=spell_targets.divine_storm<3&!equipped.empty_drinking_horn
-actions.precombat+=/seal_of_righteousness,if=spell_targets.divine_storm>=3&!equipped.empty_drinking_horn
+actions.precombat+=/seal_of_truth,if=spell_targets.divine_storm<3
+actions.precombat+=/seal_of_righteousness,if=spell_targets.divine_storm>=3
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_strength
@@ -34,10 +32,6 @@ actions+=/potion,name=draenic_strength,if=(buff.bloodlust.react|buff.avenging_wr
 actions+=/auto_attack,target_if=dot.censure.remains<4
 actions+=/speed_of_light,if=movement.distance>5
 actions+=/judgment,if=talent.empowered_seals.enabled&time<2
-actions+=/seal_of_truth,if=equipped.empty_drinking_horn&spell_targets.divine_storm<2&!talent.empowered_seals.enabled
-actions+=/seal_of_righteousness,if=equipped.empty_drinking_horn&spell_targets.divine_storm>=2&!talent.empowered_seals.enabled
-actions+=/seal_of_truth,if=spell_targets.divine_storm<3&!talent.empowered_seals.enabled&!equipped.empty_drinking_horn
-actions+=/seal_of_righteousness,if=spell_targets.divine_storm>=3&!talent.empowered_seals.enabled&!equipped.empty_drinking_horn
 actions+=/execution_sentence,if=!talent.seraphim.enabled
 actions+=/execution_sentence,sync=seraphim,if=talent.seraphim.enabled
 actions+=/lights_hammer,if=!talent.seraphim.enabled
@@ -149,16 +143,16 @@ actions.cleave+=/holy_prism,target=self
 head=helmet_of_guiding_light,id=115568,bonus_id=567/523/448,gem_id=115812
 neck=thogars_serrated_chain,id=113959,bonus_id=567/523/448,gem_id=115812,enchant=gift_of_mastery
 shoulders=pauldrons_of_guiding_light,id=115565,bonus_id=567/523/448,gem_id=115812
-back=cloak_of_sanguine_terror,id=113972,bonus_id=567/523/448,gem_id=115812,enchant=gift_of_mastery
+trinket1=horn_of_screaming_spirits,id=119193,bonus_id=567/523/448,gem_id=115812
 chest=battleplate_of_guiding_light,id=115566,bonus_id=567/523/448,gem_id=115812
-wrists=bracers_of_visceral_force,id=119331,bonus_id=567/523/448,gem_id=115812
+back=cloak_of_sanguine_terror,id=113972,bonus_id=567/523/448,gem_id=115812,enchant=gift_of_mastery
 hands=gauntlets_of_dramatic_blows,id=113906,bonus_id=567/523/448,gem_id=115812
 waist=uktars_belt_of_chiming_rings,id=113976,bonus_id=567/523/448,gem_id=115812
+wrists=bracers_of_visceral_force,id=119331,bonus_id=567/523/448,gem_id=115812
 legs=legplates_of_guiding_light,id=115569,bonus_id=567/523/448,gem_id=115812
 feet=sabatons_of_fractal_earth,id=113936,bonus_id=567/523/448,gem_id=115812
 finger1=seal_of_the_savage_howl,id=113940,bonus_id=567/523/448,gem_id=115812,enchant=gift_of_mastery
 finger2=spellbound_solium_band_of_sorcerous_strength,id=118300,enchant=gift_of_mastery
-trinket1=horn_of_screaming_spirits,id=119193,bonus_id=567/523/448,gem_id=115812
 trinket2=vial_of_convulsive_shadows,id=113969,bonus_id=567/523/448,gem_id=115812
 main_hand=thogars_control_rod,id=113953,bonus_id=567/523/448,gem_id=115812,enchant=mark_of_warsong
 

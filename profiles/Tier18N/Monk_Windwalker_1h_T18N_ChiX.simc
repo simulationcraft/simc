@@ -18,7 +18,6 @@ spec=windwalker
 actions.precombat=flask,type=greater_draenic_agility_flask
 actions.precombat+=/food,type=salty_squid_roll
 actions.precombat+=/stance,choose=fierce_tiger
-actions.precombat+=/legacy_of_the_white_tiger,if=!aura.str_agi_int.up|!aura.critical_strike.up
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_agility
 
@@ -39,7 +38,7 @@ actions+=/tiger_palm,if=!talent.chi_explosion.enabled&buff.tiger_power.remains<6
 actions+=/tiger_palm,if=talent.chi_explosion.enabled&(cooldown.fists_of_fury.remains<5|cooldown.fists_of_fury.up)&buff.tiger_power.remains<5
 actions+=/tigereye_brew,if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack=20
 actions+=/tigereye_brew,if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=9&buff.serenity.up
-actions+=/tigereye_brew,if=talent.chi_explosion.enabled&buff.tigereye_brew.stack>=1&t18_class_trinket&set_bonus.tier18_4pc=1&buff.tigereye_brew_use.down
+actions+=/tigereye_brew,if=talent.chi_explosion.enabled&buff.tigereye_brew_use.down
 actions+=/tigereye_brew,if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=9&cooldown.fists_of_fury.up&chi>=3&debuff.rising_sun_kick.up&buff.tiger_power.up
 actions+=/tigereye_brew,if=talent.hurricane_strike.enabled&buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=9&cooldown.hurricane_strike.up&chi>=3&debuff.rising_sun_kick.up&buff.tiger_power.up
 actions+=/tigereye_brew,if=buff.tigereye_brew_use.down&chi>=2&(buff.tigereye_brew.stack>=16|target.time_to_die<40)&debuff.rising_sun_kick.up&buff.tiger_power.up
@@ -136,16 +135,16 @@ actions.aoe_rjw+=/jab,if=chi.max-chi>=2
 head=mask_of_the_hurricanes_eye,id=124262
 neck=choker_of_the_great_betrayer,id=124210,enchant=gift_of_haste
 shoulders=mantle_of_the_hurricanes_eye,id=124273
-back=cloak_of_desperate_temerity,id=124134,enchant=gift_of_haste
+trinket1=sacred_draenic_incense,id=124517
 chest=tunic_of_the_soulbinder,id=124245
-wrists=bloodcult_bracers,id=124279
+back=cloak_of_desperate_temerity,id=124134,enchant=gift_of_haste
 hands=fistwraps_of_the_hurricanes_eye,id=124256
 waist=waistwrap_of_banishment,id=124276
+wrists=bloodcult_bracers,id=124279
 legs=legwraps_of_the_hurricanes_eye,id=124268
 feet=oppressors_merciless_treads,id=124251
 finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_haste
 finger2=portal_key_signet,id=124189,enchant=gift_of_haste
-trinket1=sacred_draenic_incense,id=124517
 trinket2=soul_capacitor,id=124225
 main_hand=demonblade_eviscerator,id=124368,enchant=mark_of_warsong
 off_hand=demonblade_eviscerator,id=124368,enchant=mark_of_warsong

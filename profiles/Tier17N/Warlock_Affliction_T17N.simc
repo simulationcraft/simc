@@ -70,16 +70,16 @@ actions+=/life_tap
 head=shadow_councils_hood,id=115586
 neck=gruuls_lip_ring,id=113872,enchant_id=5318
 shoulders=hexweave_mantle,id=114809,bonus_id=118/559
-back=runefrenzy_greatcloak,id=113937,enchant_id=5311
+trinket1=darmacs_unstable_talisman,id=113948
 chest=shadow_councils_robes,id=115588
-wrists=hexweave_bracers,id=114814,bonus_id=119/559
+back=runefrenzy_greatcloak,id=113937,enchant_id=5311
 hands=shadow_councils_gloves,id=115585
 waist=seeking_ember_girdle,id=113941
+wrists=hexweave_bracers,id=114814,bonus_id=119/559
 legs=shadow_councils_leggings,id=115587
 feet=hexweave_slippers,id=114815,bonus_id=118/559
 finger1=ukuroggs_corrupted_seal,id=113975,enchant_id=5325
 finger2=timeless_solium_band_of_the_archmage,id=118296,enchant_id=5325
-trinket1=darmacs_unstable_talisman,id=113948
 trinket2=blackiron_micro_crucible,id=113984
 main_hand=infernoflame_staff,id=113869,enchant_id=5337
 

@@ -122,16 +122,16 @@ actions.single_target+=/ice_lance,moving=1
 head=countenance_of_the_revenant,id=124158
 neck=choker_of_forbidden_indulgence,id=124391,enchant=gift_of_multistrike
 shoulders=mantle_of_the_arcanic_conclave,id=124177
-back=cloak_of_hideous_unity,id=124138,enchant=gift_of_multistrike
+trinket1=tome_of_shifting_words,id=124516
 chest=robe_of_the_arcanic_conclave,id=124171
-wrists=powdersinged_bracers,id=124183
+back=cloak_of_hideous_unity,id=124138,enchant=gift_of_multistrike
 hands=gloves_of_the_arcanic_conclave,id=124154
 waist=demonbuckle_sash_of_argus,id=124200
+wrists=powdersinged_bracers,id=124183
 legs=pantaloons_of_the_arcanic_conclave,id=124165
 feet=bloody_daggerheeled_pumps,id=124149
 finger1=loathful_encrusted_band,id=124192,enchant=gift_of_multistrike
 finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_multistrike
-trinket1=tome_of_shifting_words,id=124516
 trinket2=unblinking_gaze_of_sethe,id=124229
 main_hand=edict_of_argus,id=124382,enchant=mark_of_the_frostwolf
 

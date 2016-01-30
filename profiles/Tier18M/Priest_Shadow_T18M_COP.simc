@@ -290,29 +290,29 @@ actions.cop+=/devouring_plague,moving=1
 head=demon_princes_ascendant_crown,id=124159,bonus_id=567,upgrade=2
 neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,upgrade=2,enchant=gift_of_mastery
 shoulders=pious_mantle,id=124178,bonus_id=567,upgrade=2
-back=cloak_of_hideous_unity,id=124138,bonus_id=567,upgrade=2,enchant=gift_of_mastery
+trinket1=repudiation_of_war,id=124519,bonus_id=567,upgrade=2
 chest=pious_raiment,id=124172,bonus_id=567,upgrade=2
-wrists=contemptuous_wristguards,id=124186,bonus_id=567,upgrade=2
+back=cloak_of_hideous_unity,id=124138,bonus_id=567,upgrade=2,enchant=gift_of_mastery
 hands=pious_handwraps,id=124155,bonus_id=567,upgrade=2
 waist=demonbuckle_sash_of_argus,id=124200,bonus_id=567,upgrade=2
+wrists=contemptuous_wristguards,id=124186,bonus_id=567,upgrade=2
 legs=pious_leggings,id=124166,bonus_id=567,upgrade=2
 feet=dessicated_soulrender_slippers,id=124150,bonus_id=567,upgrade=2
 finger1=nithramus_the_allseer,id=124635,bonus_id=641,enchant=gift_of_mastery
 finger2=loathful_encrusted_band,id=124192,bonus_id=567,upgrade=2,enchant=gift_of_mastery
-trinket1=repudiation_of_war,id=124519,bonus_id=567,upgrade=2
 trinket2=desecrated_shadowmoon_insignia,id=124228,bonus_id=567,upgrade=2
 main_hand=edict_of_argus,id=124382,bonus_id=567,upgrade=2,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_ilvl=742.67
-# gear_stamina=7072
-# gear_intellect=4714
-# gear_spell_power=2792
-# gear_crit_rating=1064
-# gear_haste_rating=1387
-# gear_mastery_rating=3305
-# gear_multistrike_rating=1065
+# gear_ilvl=740.80
+# gear_stamina=6956
+# gear_intellect=4635
+# gear_spell_power=2741
+# gear_crit_rating=1044
+# gear_haste_rating=1361
+# gear_mastery_rating=3255
+# gear_multistrike_rating=1045
 # gear_versatility_rating=228
-# gear_armor=1204
+# gear_armor=1185
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

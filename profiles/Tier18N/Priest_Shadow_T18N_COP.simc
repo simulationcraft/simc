@@ -288,16 +288,16 @@ actions.cop+=/devouring_plague,moving=1
 head=demon_princes_ascendant_crown,id=124159
 neck=vial_of_immiscible_liquid,id=124212,enchant=gift_of_mastery
 shoulders=pious_mantle,id=124178
-back=cloak_of_hideous_unity,id=124138,enchant=gift_of_mastery
+trinket1=repudiation_of_war,id=124519
 chest=pious_raiment,id=124172
-wrists=contemptuous_wristguards,id=124186
+back=cloak_of_hideous_unity,id=124138,enchant=gift_of_mastery
 hands=pious_handwraps,id=124155
 waist=demonbuckle_sash_of_argus,id=124200
+wrists=contemptuous_wristguards,id=124186
 legs=pious_leggings,id=124166
 feet=dessicated_soulrender_slippers,id=124150
 finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_mastery
 finger2=loathful_encrusted_band,id=124192,enchant=gift_of_mastery
-trinket1=repudiation_of_war,id=124519
 trinket2=desecrated_shadowmoon_insignia,id=124228
 main_hand=edict_of_argus,id=124382,enchant=mark_of_warsong
 

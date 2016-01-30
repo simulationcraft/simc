@@ -290,30 +290,30 @@ actions.cop+=/devouring_plague,moving=1
 head=pious_cowl,id=124161,bonus_id=567,upgrade=2
 neck=glowing_firestone,id=124211,bonus_id=567,upgrade=2,enchant=gift_of_critical_strike
 shoulders=pious_mantle,id=124178,bonus_id=567,upgrade=2
-back=cloak_of_hideous_unity,id=124138,bonus_id=567,upgrade=2,enchant=gift_of_critical_strike
+trinket1=repudiation_of_war,id=124519,bonus_id=567,upgrade=2
 chest=pious_raiment,id=124172,bonus_id=567,upgrade=2
-wrists=contemptuous_wristguards,id=124186,bonus_id=567,upgrade=2
+back=cloak_of_hideous_unity,id=124138,bonus_id=567,upgrade=2,enchant=gift_of_critical_strike
 hands=pious_handwraps,id=124155,bonus_id=567,upgrade=2
 waist=cord_of_unhinged_malice,id=124182,bonus_id=567,upgrade=2
+wrists=contemptuous_wristguards,id=124186,bonus_id=567,upgrade=2
 legs=leggings_of_the_iron_summoner,id=124164,bonus_id=567,upgrade=2
 feet=bloody_daggerheeled_pumps,id=124149,bonus_id=567,upgrade=2
 finger1=nithramus_the_allseer,id=124635,bonus_id=641,enchant=gift_of_critical_strike
 finger2=seal_of_the_traitorous_councilor,id=124191,bonus_id=567,upgrade=2,enchant=gift_of_critical_strike
-trinket1=repudiation_of_war,id=124519,bonus_id=567,upgrade=2
 trinket2=iron_reaver_piston,id=124227,bonus_id=567,upgrade=2
 main_hand=gavel_of_the_eredar,id=124372,bonus_id=567,upgrade=2,enchant=mark_of_the_thunderlord
 off_hand=gibbering_madness,id=124205,bonus_id=567,upgrade=2
 
 # Gear Summary
-# gear_ilvl=740.63
-# gear_stamina=6918
-# gear_intellect=5003
-# gear_spell_power=2790
-# gear_crit_rating=2717
-# gear_haste_rating=2145
-# gear_mastery_rating=741
-# gear_multistrike_rating=1017
-# gear_versatility_rating=556
-# gear_armor=1196
+# gear_ilvl=738.75
+# gear_stamina=6804
+# gear_intellect=4919
+# gear_spell_power=2741
+# gear_crit_rating=2671
+# gear_haste_rating=2104
+# gear_mastery_rating=734
+# gear_multistrike_rating=998
+# gear_versatility_rating=550
+# gear_armor=1175
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

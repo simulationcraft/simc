@@ -96,16 +96,16 @@ actions.aoe+=/incinerate
 head=shadow_councils_hood,id=115586,bonus_id=566
 neck=gruuls_lip_ring,id=113872,bonus_id=566,enchant_id=5319
 shoulders=shadow_councils_mantle,id=115589,bonus_id=566
-back=runefrenzy_greatcloak,id=113937,bonus_id=566,enchant_id=5312
+trinket1=darmacs_unstable_talisman,id=113948,bonus_id=566
 chest=shadow_councils_robes,id=115588,bonus_id=566
-wrists=bracers_of_enkindled_power,id=113956,bonus_id=566
+back=runefrenzy_greatcloak,id=113937,bonus_id=566,enchant_id=5312
 hands=shadow_councils_gloves,id=115585,bonus_id=566
 waist=seeking_ember_girdle,id=113941,bonus_id=566
+wrists=bracers_of_enkindled_power,id=113956,bonus_id=566
 legs=turret_mechanics_legwraps,id=113970,bonus_id=566
 feet=cavedwellers_climbers,id=113864,bonus_id=566
 finger1=spellbound_solium_band_of_the_kirintor,id=118301,enchant_id=5326
 finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=566,enchant_id=5326
-trinket1=darmacs_unstable_talisman,id=113948,bonus_id=566
 trinket2=goren_soul_repository,id=119194,bonus_id=566
 main_hand=blackhand_doomstaff,id=113988,bonus_id=566,enchant_id=5384
 
