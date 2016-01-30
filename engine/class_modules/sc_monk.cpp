@@ -2763,6 +2763,9 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
    FoF one target, they all hit that guy. If you FoF 5 targets, each wind spirit hits a random one 
    of the 5 guys. it just rolls Random(1, (number of targets)), and picks that guy.
 */
+/* Crosswinds triggers 5 times over 2.5-3 second period; even though the duration of the buff is 4 
+   seconds. Trigger happens after the second tick of Fists of Fury.
+*/
 struct crosswinds_tick_t : public monk_melee_attack_t
 {
   crosswinds_tick_t( monk_t* p ) :
@@ -2790,6 +2793,12 @@ struct crosswinds_t : public monk_melee_attack_t
     channeled = false;
 
     tick_action = new crosswinds_tick_t( p );
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    timespan_t tt = tick_time( s -> haste );
+    return tt * 5; // Hard coding 5 ticks since that is what is being observed.
   }
 };
 
@@ -2823,9 +2832,11 @@ struct fists_of_fury_t: public monk_melee_attack_t
 {
   rising_sun_kick_proc_t* rsk_proc;
   crosswinds_t* crosswinds;
+  double tick_count;
 
   fists_of_fury_t( monk_t* p, const std::string& options_str ):
-    monk_melee_attack_t( "fists_of_fury", p, p -> spec.fists_of_fury )
+    monk_melee_attack_t( "fists_of_fury", p, p -> spec.fists_of_fury ),
+    tick_count( 0.0 )
   {
     parse_options( options_str );
 
@@ -2897,14 +2908,24 @@ struct fists_of_fury_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
+    tick_count = 0;
+
     if ( result_is_miss( execute_state -> result ) )
       return;
 
     combo_strikes_trigger( CS_FISTS_OF_FURY );
+  }
 
-    if ( p() -> artifact.crosswinds.rank() )
+  void tick( dot_t* d ) override
+  {
+    monk_melee_attack_t::tick( d );
+
+    tick_count++;
+
+    if ( tick_count == 2 && p() -> artifact.crosswinds.rank() )
       crosswinds -> execute();
   }
+
 
   virtual void last_tick( dot_t* dot ) override
   {
