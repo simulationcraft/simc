@@ -2764,7 +2764,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
    of the 5 guys. it just rolls Random(1, (number of targets)), and picks that guy.
 */
 /* Crosswinds triggers 5 times over 2.5-3 second period; even though the duration of the buff is 4 
-   seconds. Trigger happens after the second tick of Fists of Fury.
+   seconds. Trigger happens after the first tick of Fists of Fury but does not have a zero tick.
 */
 struct crosswinds_tick_t : public monk_melee_attack_t
 {
@@ -2788,8 +2788,8 @@ struct crosswinds_t : public monk_melee_attack_t
   {
     sef_ability = SEF_CROSSWINDS;
 
-    background = dual = tick_zero = true; 
-    may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
+    background = dual = true; 
+    may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = tick_zero = false;
     channeled = false;
 
     tick_action = new crosswinds_tick_t( p );
@@ -2832,11 +2832,11 @@ struct fists_of_fury_t: public monk_melee_attack_t
 {
   rising_sun_kick_proc_t* rsk_proc;
   crosswinds_t* crosswinds;
-  double tick_count;
+  bool crosswinds_trigger;
 
   fists_of_fury_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( "fists_of_fury", p, p -> spec.fists_of_fury ),
-    tick_count( 0.0 )
+    crosswinds_trigger( true )
   {
     parse_options( options_str );
 
@@ -2908,7 +2908,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    tick_count = 0;
+    crosswinds_trigger = true;
 
     if ( result_is_miss( execute_state -> result ) )
       return;
@@ -2920,10 +2920,11 @@ struct fists_of_fury_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::tick( d );
 
-    tick_count++;
-
-    if ( tick_count == 2 && p() -> artifact.crosswinds.rank() )
+    // Trigger after the first tick
+    if ( crosswinds_trigger && p() -> artifact.crosswinds.rank() )
       crosswinds -> execute();
+
+    crosswinds_trigger = false;
   }
 
 
