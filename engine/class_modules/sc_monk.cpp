@@ -1922,7 +1922,7 @@ struct monk_heal_t: public monk_action_t < heal_t >
     return m;
   }
 
-  virtual double action_multiplier()
+  double action_multiplier() const override
   {
     double am = base_t::action_multiplier();
 
@@ -1948,7 +1948,7 @@ struct monk_heal_t: public monk_action_t < heal_t >
     return am;
   }
 
-  virtual double action_ta_multiplier()
+  double action_ta_multiplier() const override
   {
     double atm = base_t::action_ta_multiplier();
 
@@ -4290,7 +4290,7 @@ struct soothing_mist_t: public monk_heal_t
     tick_zero = true;
   }
 
-  virtual double action_multiplier()
+  double action_multiplier() const override
   {
     double am = monk_heal_t::action_multiplier();
 
@@ -4422,7 +4422,7 @@ struct gust_of_mists_t: public monk_heal_t
     spell_power_mod.direct = 1;
   }
 
-  virtual double action_multiplier()
+  double action_multiplier() const override
   {
     double am = monk_heal_t::action_multiplier();
 
@@ -4459,7 +4459,7 @@ struct effuse_t: public monk_heal_t
     may_miss = false;
   }
 
-  virtual double action_multiplier()
+  double action_multiplier() const override
   {
     double am = monk_heal_t::action_multiplier();
 
@@ -4522,7 +4522,7 @@ struct enveloping_mist_t: public monk_heal_t
     mastery = new gust_of_mists_t( p );
   }
 
-  virtual double action_multiplier()
+  double action_multiplier() const override
   {
     double am = monk_heal_t::action_multiplier();
 
@@ -4764,7 +4764,7 @@ struct vivify_t: public monk_heal_t
     may_miss = false;
   }
 
-  virtual double action_multiplier()
+  double action_multiplier() const override
   {
     double am = monk_heal_t::action_multiplier();
 
@@ -5258,7 +5258,7 @@ struct enveloping_mist_mists_of_life_t: public monk_heal_t
       dot_duration += timespan_t::from_seconds( p.talent.mist_wrap -> effectN( 1 ).base_value() );
   }
 
-  virtual double action_multiplier()
+  double action_multiplier() const override
   {
     double am = monk_heal_t::action_multiplier();
 
@@ -5314,7 +5314,7 @@ struct life_cocoon_t: public monk_absorb_t
     }
   }
 
-  virtual double action_multiplier()
+  double action_multiplier() const override
   {
     double am = monk_absorb_t::action_multiplier();
 
