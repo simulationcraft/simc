@@ -470,6 +470,7 @@ public:
 
     // Bear
     const spell_data_t* bear_form_passive; // Bear form passive buff
+    const spell_data_t* lacerate_dot; // For Rend and Tear modifier
     const spell_data_t* thick_hide; // Guardian Affinity passive
 
     // Moonkin
@@ -1264,10 +1265,13 @@ private:
 public:
   typedef druid_action_t base_t;
 
+  bool benefits_from_rend_and_tear;
+
   druid_action_t( const std::string& n, druid_t* player,
                   const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ), 
-    form_mask( ab::data().stance_mask() ), may_autounshift( true ), autoshift( 0 )
+    form_mask( ab::data().stance_mask() ), may_autounshift( true ), autoshift( 0 ),
+    benefits_from_rend_and_tear( ab::data().affected_by( player -> spell.lacerate_dot -> effectN( 2 ) ) )
   {
     ab::may_crit      = true;
     ab::tick_may_crit = true;
@@ -1281,11 +1285,11 @@ public:
   druid_td_t* td( player_t* t ) const
   { return p() -> get_target_data( t ); }
 
-  virtual double composite_target_multiplier( player_t* t ) const
+  virtual double composite_target_multiplier( player_t* t ) const override
   {
     double tm = ab::composite_target_multiplier( t );
 
-    if ( p() -> talent.rend_and_tear -> ok() )
+    if ( benefits_from_rend_and_tear )
       tm *= 1.0 + p() -> talent.rend_and_tear -> effectN( 2 ).percent() * td( t ) -> lacerate_stack;
 
     return tm;
@@ -1544,7 +1548,13 @@ private:
   bool consumed_owlkin_frenzy;
 public:
   double ap_per_hit, ap_per_tick, ap_per_cast;
-  bool benefits_from_ca, benefits_from_elune;
+  bool benefits_from_ca_ap,    // Celestial Alignment astral power gain
+       benefits_from_inc_ap,   // Incarnation astral power gain
+       benefits_from_elune,    // Blessing of Elune astral power gain
+       benefits_from_ca_dd,    // Celestial Alignment direct damage mod
+       benefits_from_ca_td,    // Celestial Alignment tick damage mod
+       benefits_from_inc_dd,   // Incarnation direct damage mod
+       benefits_from_inc_td;   // Incarnation tick damage mod
   bool consumes_owlkin_frenzy;
   gain_t* ap_gain;
 
@@ -1555,8 +1565,14 @@ public:
       ap_per_hit( 0 ),
       ap_per_tick( 0 ),
       ap_per_cast( 0 ),
-      benefits_from_ca( false ),
-      benefits_from_elune( false ),
+      benefits_from_ca_ap( data().affected_by( p -> spec.celestial_alignment -> effectN( 3 ) ) ),
+      benefits_from_inc_ap( data().affected_by( p -> talent.incarnation_moonkin -> effectN( 3 ) ) ), // TOCHECK: Does this even work on Wrath on alpha? Seems like it shouldn't.
+      benefits_from_elune( data().affected_by( p -> spell.blessing_of_elune -> effectN( 1 ) )
+                        || data().affected_by( p -> spell.blessing_of_elune -> effectN( 2 ) ) ),
+      benefits_from_ca_dd( data().affected_by( p -> spec.celestial_alignment -> effectN( 1 ) ) ),
+      benefits_from_ca_td( data().affected_by( p -> spec.celestial_alignment -> effectN( 2 ) ) ),
+      benefits_from_inc_dd( data().affected_by( p -> talent.incarnation_moonkin -> effectN( 1 ) ) ),
+      benefits_from_inc_td( data().affected_by( p -> talent.incarnation_moonkin -> effectN( 2 ) ) ),
       consumes_owlkin_frenzy( false ),
       ap_gain( p->get_gain( name() ) )
   {
@@ -1624,15 +1640,30 @@ public:
       trigger_astral_power_gain( ap_per_tick );
   }
 
-  virtual double action_multiplier() const override
+  virtual double action_da_multiplier() const override
   {
-    double am = spell_t::action_multiplier();
+    double dm = spell_t::action_da_multiplier();
 
-    // FIXME: These modifiers do not apply to all spells, only a specific list from spell data.
-    am *= 1.0 + p() -> buff.celestial_alignment -> check_value();
-    am *= 1.0 + p() -> buff.incarnation_moonkin -> check_value();
+    if ( benefits_from_ca_dd )
+      dm *= 1.0 + p() -> buff.celestial_alignment -> check_value();
 
-    return am;
+    if ( benefits_from_inc_dd )
+      dm *= 1.0 + p() -> buff.incarnation_moonkin -> check_value();
+
+    return dm;
+  }
+
+  virtual double action_ta_multiplier() const override
+  {
+    double tm = spell_t::action_ta_multiplier();
+
+    if ( benefits_from_ca_td )
+      tm *= 1.0 + p() -> buff.celestial_alignment -> check_value();
+
+    if ( benefits_from_inc_td )
+      tm *= 1.0 + p() -> buff.incarnation_moonkin -> check_value();
+
+    return tm;
   }
 
   virtual timespan_t execute_time() const
@@ -1658,18 +1689,16 @@ public:
     double ap = base_ap;
     double bonus_pct = 0;
     
-    if ( benefits_from_ca )
+    if ( benefits_from_ca_ap && p() -> buff.celestial_alignment -> check() )
     {
-      if ( p() -> buff.celestial_alignment -> check() )
-      {
-        ap *= 1.0 + p() -> spec.celestial_alignment -> effectN( 3 ).percent();
-        bonus_pct += p() -> spec.celestial_alignment -> effectN( 3 ).percent();
-      }
-      else if ( p() -> buff.incarnation_moonkin -> check() )
-      {
-        ap *= 1.0 + p() -> buff.incarnation_moonkin -> data().effectN( 3 ).percent();
-        bonus_pct += p() -> buff.incarnation_moonkin -> data().effectN( 3 ).percent();
-      }
+      ap *= 1.0 + p() -> spec.celestial_alignment -> effectN( 3 ).percent();
+      bonus_pct += p() -> spec.celestial_alignment -> effectN( 3 ).percent();
+    }
+
+    if ( benefits_from_inc_ap && p() -> buff.incarnation_moonkin -> check() )
+    {
+      ap *= 1.0 + p() -> buff.incarnation_moonkin -> data().effectN( 3 ).percent();
+      bonus_pct += p() -> buff.incarnation_moonkin -> data().effectN( 3 ).percent();
     }
 
     if ( benefits_from_elune && p() -> buff.blessing_of_elune -> check() )
@@ -1685,13 +1714,11 @@ public:
     ap -= base_ap;
 
     // Divide the remaining AP gain among the buffs based on their modifier / bonus_pct ratio.
-    if ( benefits_from_ca )
-    {
-      if ( p() -> buff.celestial_alignment -> check() )
-        p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * ( p() -> spec.celestial_alignment -> effectN( 3 ).percent() / bonus_pct ), p() -> gain.celestial_alignment );
-      else if ( p() -> buff.incarnation_moonkin -> check() )
-        p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * ( p() -> buff.incarnation_moonkin -> data().effectN( 3 ).percent() / bonus_pct ), p() -> gain.incarnation );
-    }
+    if ( benefits_from_ca_ap && p() -> buff.celestial_alignment -> check() )
+      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * ( p() -> spec.celestial_alignment -> effectN( 3 ).percent() / bonus_pct ), p() -> gain.celestial_alignment );
+
+    if ( benefits_from_inc_ap && p() -> buff.incarnation_moonkin -> check() )
+      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * ( p() -> buff.incarnation_moonkin -> data().effectN( 3 ).percent() / bonus_pct ), p() -> gain.incarnation );
 
     if ( benefits_from_elune && p() -> buff.blessing_of_elune -> check() )
       p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * ( p() -> spell.blessing_of_elune -> effectN( 2 ).percent() / bonus_pct ), p() -> gain.blessing_of_elune );
@@ -3130,7 +3157,7 @@ struct lacerate_dot_t : public bear_attack_t
   double blood_frenzy_amount;
 
   lacerate_dot_t( druid_t* p ) :
-    bear_attack_t( "lacerate_dot", p, p -> find_spell( 192090 ) ),
+    bear_attack_t( "lacerate_dot", p, p -> spell.lacerate_dot ),
     blood_frenzy_amount( 0.0 )
   {
     may_miss = may_block = may_dodge = may_parry = may_crit = false;
@@ -4481,7 +4508,6 @@ struct lunar_strike_t : public druid_spell_t
     base_aoe_multiplier  = data().effectN( 1 ).percent();
 
     ap_per_cast = data().effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
-    benefits_from_ca = benefits_from_elune = true;
     consumes_owlkin_frenzy = true;
 
     base_execute_time *= 1 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
@@ -4754,7 +4780,6 @@ struct solar_wrath_t : public druid_spell_t
     parse_options( options_str );
 
     ap_per_cast = data().effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
-    benefits_from_ca = benefits_from_elune = true;
     consumes_owlkin_frenzy = true;
 
     base_execute_time *= 1.0 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
@@ -5575,21 +5600,22 @@ void druid_t::init_spells()
 
   // Spells =================================================================
 
-  spell.bear_form_passive               = find_class_spell( "Bear Form"                   ) -> ok() ? find_spell( 1178   ) : spell_data_t::not_found(); // This is the passive applied on shapeshift!
-  spell.cat_form                        = find_class_spell( "Cat Form"                    ) -> ok() ? find_spell( 3025   ) : spell_data_t::not_found();
-  spell.cat_form_speed                  = find_class_spell( "Cat Form"                    ) -> ok() ? find_spell( 113636 ) : spell_data_t::not_found();
-
-  spell.blessing_of_anshe               = find_spell( 202739 );
-  spell.blessing_of_elune               = find_spell( 202737 );
+  spell.bear_form_passive = find_class_spell( "Bear Form"                   ) -> ok() ? find_spell( 1178   ) : spell_data_t::not_found(); // This is the passive applied on shapeshift!
+  spell.cat_form          = find_class_spell( "Cat Form"                    ) -> ok() ? find_spell( 3025   ) : spell_data_t::not_found();
+  spell.cat_form_speed    = find_class_spell( "Cat Form"                    ) -> ok() ? find_spell( 113636 ) : spell_data_t::not_found();
+  
+  spell.lacerate_dot      = find_spell( 192090 );
+  spell.blessing_of_anshe = find_spell( 202739 );
+  spell.blessing_of_elune = find_spell( 202737 );
 
   if ( specialization() == DRUID_FERAL )
   {
-    spell.primal_fury      = find_spell( 16953 );
-    spell.gushing_wound    = find_spell( 165432 );
+    spell.primal_fury   = find_spell( 16953 );
+    spell.gushing_wound = find_spell( 165432 );
   }
   else if ( specialization() == DRUID_GUARDIAN )
   {
-    spell.primal_fury      = find_spell( 16959 );
+    spell.primal_fury   = find_spell( 16959 );
   }
 
   // Affinities =============================================================
