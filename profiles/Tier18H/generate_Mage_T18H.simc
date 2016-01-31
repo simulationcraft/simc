@@ -44,8 +44,8 @@ legs=pantaloons_of_the_arcanic_conclave,id=124165,bonus_id=566
 feet=bloody_daggerheeled_pumps,id=124149,bonus_id=566
 finger1=seal_of_the_traitorous_councilor,id=124191,bonus_id=566,enchant=gift_of_critical_strike
 finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_critical_strike
-trinket1=goren_soul_repository,id=119194,bonus_id=566
-trinket2=unblinking_gaze_of_sethe,id=124229,bonus_id=566
+trinket1=sandmans_pouch,id=112320,bonus_id=618
+trinket2=desecrated_shadowmoon_insignia,id=124228,bonus_id=566
 main_hand=edict_of_argus,id=124382,bonus_id=566,enchant=mark_of_the_thunderlord
 save=Mage_Fire_T18H.simc
 

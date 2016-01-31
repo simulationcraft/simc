@@ -78,6 +78,7 @@ actions.combust_sequence+=/meteor,if=active_enemies<=2
 actions.combust_sequence+=/pyroblast,if=set_bonus.tier17_4pc&buff.pyromaniac.up
 actions.combust_sequence+=/inferno_blast,if=set_bonus.tier16_4pc_caster&(buff.pyroblast.up^buff.heating_up.up)
 actions.combust_sequence+=/fireball,if=!dot.ignite.ticking&!in_flight
+actions.combust_sequence+=/fireball,if=crit_pct_current-1>(1000%13)&prev_gcd.pyroblast&buff.pyroblast.up&buff.heating_up.up&12-pet.prismatic_crystal.remains<action.fireball.execute_time+3*gcd.max
 actions.combust_sequence+=/pyroblast,if=buff.pyroblast.up&dot.ignite.tick_dmg*(6-ceil(dot.ignite.remains-travel_time))<crit_damage*mastery_value
 # Meteor Combustions can run out of Pyro procs before impact. Use IB to delay Combustion
 actions.combust_sequence+=/inferno_blast,if=talent.meteor.enabled&cooldown.meteor.duration-cooldown.meteor.remains<gcd.max*3
@@ -131,18 +132,18 @@ legs=pantaloons_of_the_arcanic_conclave,id=124165,bonus_id=566
 feet=bloody_daggerheeled_pumps,id=124149,bonus_id=566
 finger1=seal_of_the_traitorous_councilor,id=124191,bonus_id=566,enchant=gift_of_critical_strike
 finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_critical_strike
-trinket1=goren_soul_repository,id=119194,bonus_id=566
-trinket2=unblinking_gaze_of_sethe,id=124229,bonus_id=566
+trinket1=sandmans_pouch,id=112320,bonus_id=618
+trinket2=desecrated_shadowmoon_insignia,id=124228,bonus_id=566
 main_hand=edict_of_argus,id=124382,bonus_id=566,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_ilvl=711.33
+# gear_ilvl=713.00
 # gear_stamina=5347
-# gear_intellect=4325
+# gear_intellect=3915
 # gear_spell_power=2214
 # gear_crit_rating=1767
 # gear_haste_rating=848
-# gear_mastery_rating=1308
+# gear_mastery_rating=1724
 # gear_multistrike_rating=845
 # gear_versatility_rating=237
 # gear_armor=988

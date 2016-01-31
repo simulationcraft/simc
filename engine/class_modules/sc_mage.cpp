@@ -6040,6 +6040,8 @@ void mage_t::apl_fire()
                                   "if=set_bonus.tier16_4pc_caster&(buff.pyroblast.up^buff.heating_up.up)" );
   combust_sequence -> add_action( this, "Fireball",
                                   "if=!dot.ignite.ticking&!in_flight" );
+  combust_sequence -> add_action( this, "Fireball",
+                                  "if=crit_pct_current-1>(1000%13)&prev_gcd.pyroblast&buff.pyroblast.up&buff.heating_up.up&12-pet.prismatic_crystal.remains<action.fireball.execute_time+3*gcd.max" );
   combust_sequence -> add_action( this, "Pyroblast",
                                   "if=buff.pyroblast.up&dot.ignite.tick_dmg*(6-ceil(dot.ignite.remains-travel_time))<crit_damage*mastery_value" );
   combust_sequence -> add_action( this, "Inferno Blast",
