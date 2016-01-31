@@ -4524,7 +4524,6 @@ struct prismatic_crystal_t : public mage_spell_t
   {
     parse_options( options_str );
     may_miss = may_crit = harmful = callbacks = false;
-    min_gcd = data().gcd();
     ignore_false_positive = true;
     action_skill = 1;
   }
