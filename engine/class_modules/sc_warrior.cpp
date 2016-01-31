@@ -144,6 +144,7 @@ public:
   struct spells_t
   {
     const spell_data_t* charge;
+    const spell_data_t* colossus_smash_debuff;
     const spell_data_t* defensive_stance;
     const spell_data_t* indomitable;
     const spell_data_t* intervene;
@@ -405,7 +406,7 @@ public:
     headlongrush( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 1 ) ) ),
     headlongrushgcd( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 2 ) ) ),
     recklessness( ab::data().affected_by( player -> spec.recklessness -> effectN( 1 ) ) ),
-    colossal_might( ab::data().affected_by( player -> mastery.colossal_might -> effectN( 1 ) ) ),
+    colossal_might( ab::data().affected_by( player -> spell.colossus_smash_debuff -> effectN( 3 ) ) ),
     sweeping_strikes( ab::data().affected_by( player -> talents.sweeping_strikes -> effectN( 1 ) ) ),
     dauntless( ab::data().affected_by( player -> talents.dauntless -> effectN( 1 ) ) )
   {
@@ -453,7 +454,7 @@ public:
 
     if ( colossal_might && td( target ) -> debuffs_colossus_smash -> up() )
     {
-      am *= 1.0 + ab::player -> cache.mastery_value();
+      am *= 1.0 + ab::player -> spell.colossus_smash_debuff -> effectN( 3 ).percent() + ab::player -> cache.mastery_value();
     }
 
     return am;
@@ -643,6 +644,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
   virtual void execute() override
   {
     base_t::execute();
+
     if ( procs_overpower && execute_state -> result != RESULT_MISS && p() -> rppm.overpower -> trigger() )
     {
       p() -> buff.overpower -> trigger();
@@ -1071,7 +1073,7 @@ struct colossus_smash_t: public warrior_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      td( execute_state -> target ) -> debuffs_colossus_smash -> trigger( 1, data().effectN( 2 ).percent() );
+      td( execute_state -> target ) -> debuffs_colossus_smash -> trigger();
       p() -> buff.colossus_smash -> trigger();
 
       if ( p() -> sets.set( WARRIOR_ARMS, T17, B2 ) && p() -> buff.tier17_2pc_arms -> trigger() )
@@ -1321,16 +1323,6 @@ struct heroic_strike_t: public warrior_attack_t
       am *= 2.0; // No spell data yet.
 
     return am;
-  }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double dtm = warrior_attack_t::composite_target_multiplier( target );
-
-    if ( td( target ) -> debuffs_colossus_smash -> up() )
-      dtm *= 2.0;
-
-    return dtm;
   }
 
   bool ready() override
@@ -2814,6 +2806,7 @@ void warrior_t::init_spells()
 
   // Generic spells
   spell.charge                  = find_class_spell( "Charge" );
+  spell.colossus_smash_debuff   = find_spell( 208086 );
   spell.defensive_stance        = find_class_spell( "Defensive Stance" );
   if ( specialization() == WARRIOR_FURY )
   { spell.indomitable = find_spell( 202095 ); }
@@ -3402,7 +3395,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ):
   dots_rend = target -> get_dot( "rend", &p );
 
   debuffs_colossus_smash = buff_creator_t( *this, "colossus_smash" )
-    .duration( p.spec.colossus_smash -> duration() )
+    .duration( p.spell.colossus_smash_debuff -> duration() )
     .cd( timespan_t::zero() );
 
   debuffs_demoralizing_shout = new buffs::debuff_demo_shout_t( *this );
@@ -3427,8 +3420,8 @@ void warrior_t::create_buffs()
     .period( timespan_t::zero() )
     .cd( timespan_t::zero() );
 
-  buff.colossus_smash = buff_creator_t( this, "colossus_smash_up", spec.colossus_smash )
-    .duration( spec.colossus_smash -> duration() )
+  buff.colossus_smash = buff_creator_t( this, "colossus_smash_up", spell.colossus_smash_debuff )
+    .duration( spell.colossus_smash_debuff -> duration() )
     .cd( timespan_t::zero() );
 
   buff.defensive_stance = buff_creator_t( this, "defensive_stance", find_class_spell( "Defensive Stance" ) )
