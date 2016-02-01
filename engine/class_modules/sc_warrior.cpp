@@ -266,9 +266,9 @@ public:
     const spell_data_t* seething_rage; //
     const spell_data_t* renewed_fury; //
     const spell_data_t* dauntless;
-    const spell_data_t* overpower; //
+    const spell_data_t* overpower;
     const spell_data_t* imposing_roar; // 
-    const spell_data_t* fervor_of_battle; //
+    const spell_data_t* fervor_of_battle;
     const spell_data_t* enraging_blows;
     const spell_data_t* frenzy;
     const spell_data_t* best_served_cold; //
@@ -461,7 +461,8 @@ public:
 
     if ( colossal_might && td( target ) -> debuffs_colossus_smash -> up() )
     {
-      am *= 1.0 + td( target ) -> debuffs_colossus_smash -> value() + p() -> cache.mastery_value();
+      am *= 1.0 + ( td( target ) -> debuffs_colossus_smash -> value() + p() -> cache.mastery_value() )
+                * ( 1.0 + p() -> talents.titanic_might -> effectN( 2 ).percent() );
     }
 
     return am;
@@ -1678,7 +1679,7 @@ struct mortal_strike_t: public warrior_attack_t
 
   double bonus_da( const action_state_t* s ) const override
   {
-    double b = bonus_da( s );
+    double b = warrior_attack_t::bonus_da( s );
 
     // Add flat damage from mortal strike, cancelling out the weapon multiplier.
     // This is ugly and there's probably a better way to do this.
@@ -1879,7 +1880,7 @@ struct rampage_attack_t: public warrior_attack_t
 
   double bonus_da( const action_state_t* s ) const override
   {
-    double b = bonus_da( s );
+    double b = warrior_attack_t::bonus_da( s );
 
     // Add flat damage from mortal strike, cancelling out the weapon multiplier.
     // This is ugly and there's probably a better way to do this.
@@ -3531,7 +3532,8 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ):
 
   debuffs_colossus_smash = buff_creator_t( *this, "colossus_smash" )
     .default_value( p.spell.colossus_smash_debuff -> effectN( 3 ).percent() )
-    .duration( p.spell.colossus_smash_debuff -> duration() )
+    .duration( p.spell.colossus_smash_debuff -> duration()
+             * ( 1.0 + p.talents.titanic_might -> effectN( 1 ).percent() ) )
     .cd( timespan_t::zero() );
 
   debuffs_demoralizing_shout = new buffs::debuff_demo_shout_t( *this );
@@ -3560,7 +3562,8 @@ void warrior_t::create_buffs()
     .default_value( find_spell( 188923 ) -> effectN( 1 ).percent() );
 
   buff.colossus_smash = buff_creator_t( this, "colossus_smash_up", spell.colossus_smash_debuff )
-    .duration( spell.colossus_smash_debuff -> duration() )
+    .duration( spell.colossus_smash_debuff -> duration()
+             * ( 1.0 + talents.titanic_might -> effectN( 1 ).percent() ) )
     .cd( timespan_t::zero() );
 
   buff.defensive_stance = buff_creator_t( this, "defensive_stance", find_class_spell( "Defensive Stance" ) )
