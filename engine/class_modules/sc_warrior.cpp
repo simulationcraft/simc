@@ -1222,11 +1222,9 @@ struct colossus_smash_t: public warrior_attack_t
       if ( p() -> buff.colossus_smash -> remains() < p() -> buff.colossus_smash -> buff_duration )
         p() -> buff.colossus_smash -> trigger();
 
-      if ( p() -> artifact.shattered_defenses.rank() )
-        p() -> buff.shattered_defenses -> trigger();
+      p() -> buff.shattered_defenses -> trigger();
 
-      if ( p() -> artifact.precise_strikes.rank() )
-        p() -> buff.precise_strikes -> trigger();
+      p() -> buff.precise_strikes -> trigger();
 
       if ( p() -> sets.set( WARRIOR_ARMS, T17, B2 ) && p() -> buff.tier17_2pc_arms -> trigger() )
         p() -> proc.t17_2pc_arms -> occur();
@@ -1278,8 +1276,7 @@ struct corrupted_rage_t: public warrior_attack_t
       if ( p() -> buff.colossus_smash -> remains() < p() -> buff.colossus_smash -> buff_duration )
         p() -> buff.colossus_smash -> trigger();
       
-      if ( p() -> artifact.shattered_defenses.rank() )
-        p() -> buff.shattered_defenses -> trigger();
+      p() -> buff.shattered_defenses -> trigger();
     }
   }
 
@@ -3901,7 +3898,8 @@ void warrior_t::create_buffs()
   buff.overpower = buff_creator_t( this, "overpower", spell.overpower_driver -> effectN( 1 ).trigger() );
 
   buff.precise_strikes = buff_creator_t( this, "precise_strikes", artifact.precise_strikes.data().effectN( 1 ).trigger() )
-    .default_value( artifact.precise_strikes.percent() );
+    .default_value( artifact.precise_strikes.percent() )
+    .chance( artifact.precise_strikes.rank() > 0 );
 
   buff.ravager = buff_creator_t( this, "ravager", talents.ravager );
 
@@ -3912,7 +3910,8 @@ void warrior_t::create_buffs()
     .cd( timespan_t::zero() );
 
   buff.shattered_defenses = buff_creator_t( this, "shattered_defenses", artifact.shattered_defenses.data().effectN( 1 ).trigger() )
-    .default_value( artifact.shattered_defenses.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+    .default_value( artifact.shattered_defenses.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+    .chance( artifact.shattered_defenses.rank() );
 
   buff.shield_block = buff_creator_t( this, "shield_block", find_spell( 132404 ) )
     .cd( timespan_t::zero() )
