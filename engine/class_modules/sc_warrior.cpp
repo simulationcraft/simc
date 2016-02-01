@@ -47,6 +47,9 @@ public:
   const special_effect_t* arms_trinket;
   const special_effect_t* prot_trinket;
 
+  // Artifacts
+  const special_effect_t* stromkar_the_warbreaker;
+
   // Active
   struct active_t
   {
@@ -182,6 +185,7 @@ public:
   struct realppm_t
   {
     std::unique_ptr<real_ppm_t> overpower;
+    std::unique_ptr<real_ppm_t> shadow_slash;
   } rppm;
 
   // Spec Passives
@@ -287,6 +291,30 @@ public:
     const spell_data_t* endless_rage; //
   } talents;
 
+  // Artifacts
+  struct artifact_spell_data_t
+  {
+    // Arms - Strom'kar the Warbreaker
+    artifact_power_t corrupted_rage;
+
+    // NYI
+    artifact_power_t exploit_the_weakness;
+    artifact_power_t war_veteran;
+    artifact_power_t touch_of_zakajz;
+    artifact_power_t shattered_defenses;
+    artifact_power_t deathblow;
+    artifact_power_t defensive_measures;
+    artifact_power_t one_against_many;
+    artifact_power_t crushing_blows;
+    artifact_power_t unending_rage;
+    artifact_power_t thoradins_might;
+    artifact_power_t void_cleave;
+    artifact_power_t focus_in_battle;
+    artifact_power_t precise_strikes;
+    artifact_power_t corrupted_blood_of_zakajz;
+    artifact_power_t tactical_advance;
+  } artifact;
+
   // Perks
   struct perks_t
   {
@@ -296,6 +324,7 @@ public:
 
   warrior_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ):
     player_t( sim, WARRIOR, name, r ),
+    stromkar_the_warbreaker(),
     heroic_charge( nullptr ),
     rampage_driver( nullptr ),
     rampage_attacks( 0 ),
@@ -1153,6 +1182,37 @@ struct colossus_smash_t: public warrior_attack_t
   }
 };
 
+// Corrupted Rage ===========================================================
+
+struct corrupted_rage_t: public warrior_attack_t
+{
+  corrupted_rage_t( warrior_t* p, const std::string& options_str ):
+    warrior_attack_t( "corrupted_rage", p, p -> find_spell( 209577 ) )
+  {
+    parse_options( options_str );
+    weapon = &( player -> main_hand_weapon );
+    aoe = -1;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      td( s -> target ) -> debuffs_colossus_smash -> trigger();
+    }
+  }
+
+  bool ready() override
+  {
+    if ( ! p() -> artifact.corrupted_rage.rank() )
+      return false;
+
+    return warrior_attack_t::ready();
+  }
+};
+
 // Deep Wounds ==============================================================
 
 struct deep_wounds_t: public warrior_attack_t
@@ -1666,6 +1726,18 @@ struct heroic_charge_t: public warrior_attack_t
 
 struct mortal_strike_t: public warrior_attack_t
 {
+  struct shadow_slash_t: public warrior_attack_t
+  {
+    shadow_slash_t( warrior_t* p ):
+      warrior_attack_t( "shadow_slash", p, p -> find_spell( 209733 ) )
+    {
+      background = true;
+      aoe = -1;
+    }
+  };
+
+  shadow_slash_t* shadow_slash;
+
   mortal_strike_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "mortal_strike", p, p -> spec.mortal_strike )
   {
@@ -1675,6 +1747,12 @@ struct mortal_strike_t: public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
     base_costs[RESOURCE_RAGE] += p -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
     cooldown -> charges += p -> talents.mortal_combo -> effectN( 1 ).base_value();
+
+    if ( p -> stromkar_the_warbreaker )
+    {
+      shadow_slash = new shadow_slash_t( p );
+      add_child( shadow_slash );
+    }
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -1700,6 +1778,13 @@ struct mortal_strike_t: public warrior_attack_t
       }
 
       p() -> buff.heroic_strike -> expire();
+    }
+
+    // Does not require hit.
+    if ( p() -> stromkar_the_warbreaker && p() -> rppm.shadow_slash -> trigger() )
+    {
+      shadow_slash -> target = target;
+      shadow_slash -> execute();
     }
   }
 
@@ -2790,6 +2875,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "charge"               ) return new charge_t               ( this, options_str );
   if ( name == "cleave"               ) return new cleave_t               ( this, options_str );
   if ( name == "colossus_smash"       ) return new colossus_smash_t       ( this, options_str );
+  if ( name == "corrupted_rage"       ) return new corrupted_rage_t       ( this, options_str );
   if ( name == "defensive_stance"     ) return new defensive_stance_t     ( this, options_str );
   if ( name == "demoralizing_shout"   ) return new demoralizing_shout     ( this, options_str );
   if ( name == "devastate"            ) return new devastate_t            ( this, options_str );
@@ -2909,7 +2995,7 @@ void warrior_t::init_spells()
   
   talents.rend                  = find_talent_spell( "Rend" );
   talents.die_by_the_sword      = find_talent_spell( "Die by the Sword" );
-  talents.bounding_strike       = find_talent_spell ("Bounding Strike" );
+  talents.bounding_strike       = find_talent_spell( "Bounding Strike" );
   talents.seething_rage         = find_talent_spell( "Seething Rage" );
   talents.renewed_fury          = find_talent_spell( "Renewed Fury" );
   talents.dauntless             = find_talent_spell( "Dauntless" );
@@ -2932,6 +3018,24 @@ void warrior_t::init_spells()
   talents.furious_charge        = find_talent_spell( "Furious Charge");
   talents.crackling_thunder     = find_talent_spell( "Crackling Thunder" );
   talents.endless_rage          = find_talent_spell( "Endless Rage" );
+
+  // Artifact
+  artifact.corrupted_rage            = find_artifact_spell( "Corrupted Rage" );
+  artifact.exploit_the_weakness      = find_artifact_spell( "Exploit the Weakness" );
+  artifact.war_veteran               = find_artifact_spell( "War Veteran" );
+  artifact.touch_of_zakajz           = find_artifact_spell( "Touch of Zakajz" );
+  artifact.shattered_defenses        = find_artifact_spell( "Shattered Defenses" );
+  artifact.deathblow                 = find_artifact_spell( "Deathblow" );
+  artifact.defensive_measures        = find_artifact_spell( "Defensive Measures" );
+  artifact.one_against_many          = find_artifact_spell( "One Against Many" );
+  artifact.crushing_blows            = find_artifact_spell( "Crushing Blows" );
+  artifact.unending_rage             = find_artifact_spell( "Unending Rage" );
+  artifact.void_cleave               = find_artifact_spell( "Void Cleave" );
+  artifact.thoradins_might           = find_artifact_spell( "Thoradin's Might" );
+  artifact.focus_in_battle           = find_artifact_spell( "Focus in Battle" );
+  artifact.precise_strikes           = find_artifact_spell( "Precise Strikes" );
+  artifact.corrupted_blood_of_zakajz = find_artifact_spell( "Corrupted Blood of Zakajz" );
+  artifact.tactical_advance          = find_artifact_spell( "Tactical Advance" );
 
   //Perks
   perk.improved_defensive_stance     = find_perk_spell( "Improved Defensive Stance" );
@@ -3434,6 +3538,13 @@ struct overpower_t: public warrior_real_ppm_t < real_ppm_t >
     base_t( p, real_ppm_t( p, p.spell.overpower_driver -> real_ppm(), 1.0, RPPM_HASTE ) )
   {}
 };
+
+struct shadow_slash_t: public warrior_real_ppm_t < real_ppm_t >
+{
+  shadow_slash_t( warrior_t& p ):
+    base_t( p, real_ppm_t( p, p.stromkar_the_warbreaker -> driver() -> real_ppm(), 1.0, RPPM_NONE ) )
+  {}
+};
 };
 
 // ==========================================================================
@@ -3710,6 +3821,7 @@ void warrior_t::init_rng()
   player_t::init_rng();
 
   rppm.overpower = std::unique_ptr<rppm::overpower_t>( new rppm::overpower_t( *this ) );
+  rppm.shadow_slash = std::unique_ptr<rppm::shadow_slash_t>( new rppm::shadow_slash_t( *this ) );
 }
 
 // warrior_t::init_resources ================================================
@@ -3824,6 +3936,10 @@ void warrior_t::reset()
   if ( rppm.overpower )
   {
     rppm.overpower -> reset();
+  }
+  if ( rppm.shadow_slash )
+  {
+    rppm.shadow_slash -> reset();
   }
 }
 
@@ -4395,6 +4511,13 @@ static void prot_trinket( special_effect_t& effect )
   do_trinket_init( s, WARRIOR_PROTECTION, s -> prot_trinket, effect );
 }
 
+// Strom'kar the Warbreaker
+static void stromkar_the_warbreaker( special_effect_t& effect )
+{
+  warrior_t* s = debug_cast<warrior_t*>( effect.player );
+  do_trinket_init( s, WARRIOR_ARMS, s -> stromkar_the_warbreaker, effect );
+}
+
 // WARRIOR MODULE INTERFACE =================================================
 
 struct warrior_module_t: public module_t
@@ -4415,6 +4538,7 @@ struct warrior_module_t: public module_t
     unique_gear::register_special_effect( 184926, fury_trinket );
     unique_gear::register_special_effect( 184925, arms_trinket );
     unique_gear::register_special_effect( 184927, prot_trinket );
+    unique_gear::register_special_effect( 209579, stromkar_the_warbreaker );
   }
 
   virtual void register_hotfixes() const override
