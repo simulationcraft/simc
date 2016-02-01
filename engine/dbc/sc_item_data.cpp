@@ -682,6 +682,7 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
     // This is backed up by some unknown (to us) client data at the moment. Just hardcode the values
     // based on the given bonus IDs, and hope for the best.
     case ITEM_BONUS_SCALING:
+    case ITEM_BONUS_SCALING_2:
     {
       if ( ! item_database::apply_item_scaling( item, entry.value_1 ) )
       {

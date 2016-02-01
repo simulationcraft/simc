@@ -415,8 +415,8 @@
   ],
   "ScalingStatDistribution.db2": [
     { "data_type": "H", "field": "id_curve",  "formats": { "cpp": "%5u" } },
-    { "data_type": "B", "field": "max_level", "formats": { "cpp": "%3u" } },
-    { "data_type": "B", "field": "min_level", "formats": { "cpp": "%3u" } }
+    { "data_type": "B", "field": "min_level", "formats": { "cpp": "%3u" } },
+    { "data_type": "B", "field": "max_level", "formats": { "cpp": "%3u" } }
   ],
   "SkillLineAbility.db2": [
     { "data_type": "I", "field": "id_spell" },

@@ -47,10 +47,14 @@ public:
   const special_effect_t* arms_trinket;
   const special_effect_t* prot_trinket;
 
+  // Artifacts
+  const special_effect_t* stromkar_the_warbreaker;
+
   // Active
   struct active_t
   {
     action_t* deep_wounds;
+    action_t* corrupted_blood_of_zakajz;
   } active;
 
   // Buffs
@@ -78,7 +82,10 @@ public:
     buff_t* meat_cleaver;
     // Arms only
     buff_t* colossus_smash;
+    buff_t* corrupted_blood_of_zakajz;
     buff_t* cleave;
+    buff_t* precise_strikes;
+    buff_t* shattered_defenses;
     // Prot only
     buff_t* last_stand;
     buff_t* ravager_protection;
@@ -182,6 +189,7 @@ public:
   struct realppm_t
   {
     std::unique_ptr<real_ppm_t> overpower;
+    std::unique_ptr<real_ppm_t> shadow_slash;
   } rppm;
 
   // Spec Passives
@@ -287,6 +295,30 @@ public:
     const spell_data_t* endless_rage; //
   } talents;
 
+  // Artifacts
+  struct artifact_spell_data_t
+  {
+    // Arms - Strom'kar the Warbreaker
+    artifact_power_t corrupted_rage;
+    artifact_power_t exploit_the_weakness;
+    artifact_power_t war_veteran;
+    artifact_power_t shattered_defenses;
+    artifact_power_t deathblow;
+    artifact_power_t one_against_many;
+    artifact_power_t crushing_blows;
+    artifact_power_t thoradins_might;
+    artifact_power_t void_cleave;
+    artifact_power_t precise_strikes;
+    artifact_power_t focus_in_battle;
+    artifact_power_t unending_rage;
+    artifact_power_t corrupted_blood_of_zakajz;
+
+    // NYI
+    artifact_power_t touch_of_zakajz;
+    artifact_power_t defensive_measures;
+    artifact_power_t tactical_advance;
+  } artifact;
+
   // Perks
   struct perks_t
   {
@@ -296,6 +328,7 @@ public:
 
   warrior_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ):
     player_t( sim, WARRIOR, name, r ),
+    stromkar_the_warbreaker(),
     heroic_charge( nullptr ),
     rampage_driver( nullptr ),
     rampage_attacks( 0 ),
@@ -402,7 +435,8 @@ namespace
 template <class Base>
 struct warrior_action_t: public Base
 {
-  bool headlongrush, headlongrushgcd, battle_cry, colossal_might, sweeping_strikes, dauntless;
+  bool headlongrush, headlongrushgcd, battle_cry,
+    colossal_might, sweeping_strikes, dauntless, war_veteran;
 private:
   typedef Base ab; // action base, eg. spell_t
 public:
@@ -415,7 +449,8 @@ public:
     battle_cry( ab::data().affected_by( player -> spec.battle_cry -> effectN( 1 ) ) ),
     colossal_might( ab::data().affected_by( player -> spell.colossus_smash_debuff -> effectN( 3 ) ) ),
     sweeping_strikes( ab::data().affected_by( player -> talents.sweeping_strikes -> effectN( 1 ) ) ),
-    dauntless( ab::data().affected_by( player -> talents.dauntless -> effectN( 1 ) ) )
+    dauntless( ab::data().affected_by( player -> talents.dauntless -> effectN( 1 ) ) ),
+    war_veteran( ab::data().affected_by( player -> artifact.war_veteran.data().effectN( 1 ).trigger() -> effectN( 1 ) ) )
   {
     ab::may_crit = true;
   }
@@ -451,6 +486,9 @@ public:
 
     if ( dauntless )
       c *= 1.0 + p() -> talents.dauntless -> effectN( 1 ).percent();
+
+    if ( war_veteran && p() -> buff.battle_cry -> check() )
+      c *= 1.0 + p() -> artifact.war_veteran.data().effectN( 1 ).trigger() -> effectN( 1 ).percent();
 
     return c;
   }
@@ -668,6 +706,27 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
         p() -> cooldown.colossus_smash -> reset( true );
         p() -> proc.tactician -> occur();
       }
+
+      if ( p() -> buff.corrupted_blood_of_zakajz -> up() )
+      {
+        residual_action::trigger(
+          p() -> active.corrupted_blood_of_zakajz, // ignite spell
+          target, // target
+          s -> result_amount * p() -> buff.corrupted_blood_of_zakajz -> check_value() );
+      }
+    }
+  }
+
+  virtual void tick( dot_t* d ) override
+  {
+    base_t::tick( d );
+
+    if ( p() -> buff.corrupted_blood_of_zakajz -> up() )
+    {
+      residual_action::trigger(
+        p() -> active.corrupted_blood_of_zakajz, // ignite spell
+        target, // target
+        d -> state -> result_amount * p() -> buff.corrupted_blood_of_zakajz -> check_value() );
     }
   }
 
@@ -1080,7 +1139,18 @@ struct charge_t: public warrior_attack_t
 
 struct cleave_t: public warrior_attack_t
 {
+  struct void_cleave_t: public warrior_attack_t
+  {
+    void_cleave_t( warrior_t* p ):
+      warrior_attack_t( "void_cleave", p, p -> find_spell( 209700 ) )
+    {
+      background = true;
+      aoe = -1;
+    }
+  };
+
   int targets_hit;
+  void_cleave_t* void_cleave;
 
   cleave_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "cleave", p, p -> spec.cleave )
@@ -1088,6 +1158,12 @@ struct cleave_t: public warrior_attack_t
     parse_options( options_str );
     weapon = &( player -> main_hand_weapon );
     aoe = -1;
+
+    if ( p -> artifact.void_cleave.rank() )
+    {
+      void_cleave = new void_cleave_t( p );
+      add_child( void_cleave );
+    }
   }
 
   void execute() override
@@ -1099,6 +1175,12 @@ struct cleave_t: public warrior_attack_t
     if ( targets_hit )
     {
       p() -> buff.cleave -> trigger( 1, p() -> buff.cleave -> default_value * std::min( p() -> buff.cleave -> max_stack(), targets_hit ) );
+
+      if ( targets_hit >= p() -> artifact.void_cleave.data().effectN( 1 ).base_value() )
+      {
+        void_cleave -> target = target;
+        void_cleave -> execute();
+      }
     }
   }
 
@@ -1136,7 +1218,13 @@ struct colossus_smash_t: public warrior_attack_t
     if ( result_is_hit( execute_state -> result ) )
     {
       td( execute_state -> target ) -> debuffs_colossus_smash -> trigger();
-      p() -> buff.colossus_smash -> trigger();
+
+      if ( p() -> buff.colossus_smash -> remains() < p() -> buff.colossus_smash -> buff_duration )
+        p() -> buff.colossus_smash -> trigger();
+
+      p() -> buff.shattered_defenses -> trigger();
+
+      p() -> buff.precise_strikes -> trigger();
 
       if ( p() -> sets.set( WARRIOR_ARMS, T17, B2 ) && p() -> buff.tier17_2pc_arms -> trigger() )
         p() -> proc.t17_2pc_arms -> occur();
@@ -1150,6 +1238,54 @@ struct colossus_smash_t: public warrior_attack_t
     am *= 1.0 + p() -> cache.mastery_value();
 
     return am;
+  }
+};
+
+// Corrupted Blood of Zakajz ========================================================
+
+struct corrupted_blood_of_zakajz_t : public residual_action::residual_periodic_action_t<warrior_attack_t>
+{
+  corrupted_blood_of_zakajz_t( warrior_t* p ) :
+    residual_action::residual_periodic_action_t<warrior_attack_t>( "corrupted_blood_of_zakajz", p, p -> find_spell( 209569 ) )
+  {
+    background = dual = proc = true;
+    may_miss = may_dodge = may_parry = false;
+  }
+};
+
+// Corrupted Rage ===========================================================
+
+struct corrupted_rage_t: public warrior_attack_t
+{
+  corrupted_rage_t( warrior_t* p, const std::string& options_str ):
+    warrior_attack_t( "corrupted_rage", p, p -> find_spell( 209577 ) )
+  {
+    parse_options( options_str );
+    weapon = &( player -> main_hand_weapon );
+    aoe = -1;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      td( s -> target ) -> debuffs_colossus_smash -> trigger();
+
+      if ( p() -> buff.colossus_smash -> remains() < p() -> buff.colossus_smash -> buff_duration )
+        p() -> buff.colossus_smash -> trigger();
+      
+      p() -> buff.shattered_defenses -> trigger();
+    }
+  }
+
+  bool ready() override
+  {
+    if ( ! p() -> artifact.corrupted_rage.rank() )
+      return false;
+
+    return warrior_attack_t::ready();
   }
 };
 
@@ -1277,6 +1413,8 @@ struct execute_t: public warrior_attack_t
            p -> off_hand_weapon.group() == WEAPON_1H )
         weapon_multiplier *= 1.0 + p -> spec.singleminded_fury -> effectN( 3 ).percent();
     }
+
+    base_crit += p -> artifact.deathblow.percent();
   }
 
   double action_multiplier() const override
@@ -1293,7 +1431,19 @@ struct execute_t: public warrior_attack_t
     else if ( p() -> has_shield_equipped() )
     { am *= 1.0 + p() -> spec.protection -> effectN( 2 ).percent(); }
 
+    am *= 1.0 + p() -> buff.shattered_defenses -> check_value();
+
     return am;
+  }
+
+  double composite_crit() const override
+  {
+    double cc = warrior_attack_t::composite_crit();
+
+    if ( p() -> buff.shattered_defenses -> check() )
+      cc += p() -> buff.shattered_defenses -> data().effectN( 2 ).percent();
+
+    return cc;
   }
 
   double cost() const override
@@ -1302,6 +1452,8 @@ struct execute_t: public warrior_attack_t
 
     if ( p() -> mastery.colossal_might -> ok() )
       c = std::min( 40.0, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
+
+    c *= 1.0 + p() -> buff.precise_strikes -> check_value();
 
     return c;
   }
@@ -1313,6 +1465,26 @@ struct execute_t: public warrior_attack_t
     if ( p() -> specialization() == WARRIOR_FURY && result_is_hit( execute_state -> result ) &&
          p() -> off_hand_weapon.type != WEAPON_NONE ) // If MH fails to land, or if there is no OH weapon for Fury, oh attack does not execute.
       oh_attack -> execute();
+
+    if ( p() -> buff.shattered_defenses -> up() )
+      p() -> buff.shattered_defenses -> expire();
+
+    if ( p() -> buff.precise_strikes -> up() )
+      p() -> buff.precise_strikes -> expire();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    if ( s -> result == RESULT_CRIT && td( s -> target ) -> debuffs_colossus_smash -> check() )
+    {
+      td( s -> target ) -> debuffs_colossus_smash -> extend_duration( p(),
+        timespan_t::from_seconds( p() -> artifact.exploit_the_weakness.value() ) );
+      
+      timespan_t remains = std::max( td( s -> target ) -> debuffs_colossus_smash -> remains(), p() -> buff.colossus_smash -> remains() );
+      p() -> buff.colossus_smash -> extend_duration( p(), remains - p() -> buff.colossus_smash -> remains() );
+    }
   }
 
   bool ready() override
@@ -1666,6 +1838,18 @@ struct heroic_charge_t: public warrior_attack_t
 
 struct mortal_strike_t: public warrior_attack_t
 {
+  struct shadow_slash_t: public warrior_attack_t
+  {
+    shadow_slash_t( warrior_t* p ):
+      warrior_attack_t( "shadow_slash", p, p -> find_spell( 209733 ) )
+    {
+      background = true;
+      aoe = -1;
+    }
+  };
+
+  shadow_slash_t* shadow_slash;
+
   mortal_strike_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "mortal_strike", p, p -> spec.mortal_strike )
   {
@@ -1675,6 +1859,19 @@ struct mortal_strike_t: public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
     base_costs[RESOURCE_RAGE] += p -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
     cooldown -> charges += p -> talents.mortal_combo -> effectN( 1 ).base_value();
+    base_multiplier *= 1.0 + p -> artifact.thoradins_might.percent();
+
+    if ( p -> stromkar_the_warbreaker )
+    {
+      shadow_slash = new shadow_slash_t( p );
+      add_child( shadow_slash );
+
+      if ( p -> artifact.focus_in_battle.rank() )
+      {
+        assert( p -> artifact.focus_in_battle.data().proc_chance() == p -> spec.tactician -> proc_chance() );
+        procs_tactician = true;
+      }
+    }
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -1686,6 +1883,34 @@ struct mortal_strike_t: public warrior_attack_t
     b += p() -> buff.heroic_strike -> check_value() / weapon_multiplier;
 
     return b;
+  }
+
+  double composite_crit() const override
+  {
+    double cc = warrior_attack_t::composite_crit();
+
+    if ( p() -> buff.shattered_defenses -> check() )
+      cc += p() -> buff.shattered_defenses -> data().effectN( 2 ).percent();
+
+    return cc;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    am *= 1.0 + p() -> buff.shattered_defenses -> check_value();
+
+    return am;
+  }
+
+  double cost() const override
+  {
+    double c = warrior_attack_t::cost();
+
+    c *= 1.0 + p() -> buff.precise_strikes -> check_value();
+
+    return c;
   }
 
   void execute() override
@@ -1700,6 +1925,33 @@ struct mortal_strike_t: public warrior_attack_t
       }
 
       p() -> buff.heroic_strike -> expire();
+    }
+
+    // Does not require hit.
+    if ( p() -> stromkar_the_warbreaker && p() -> rppm.shadow_slash -> trigger() )
+    {
+      shadow_slash -> target = target;
+      shadow_slash -> execute();
+    }
+
+    if ( p() -> buff.shattered_defenses -> up() )
+      p() -> buff.shattered_defenses -> expire();
+
+    if ( p() -> buff.precise_strikes -> up() )
+      p() -> buff.precise_strikes -> expire();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    if ( s -> result == RESULT_CRIT && td( s -> target ) -> debuffs_colossus_smash -> check() )
+    {
+      td( s -> target ) -> debuffs_colossus_smash -> extend_duration( p(),
+        timespan_t::from_seconds( p() -> artifact.exploit_the_weakness.value() ) );
+      
+      timespan_t remains = std::max( td( s -> target ) -> debuffs_colossus_smash -> remains(), p() -> buff.colossus_smash -> remains() );
+      p() -> buff.colossus_smash -> extend_duration( p(), remains - p() -> buff.colossus_smash -> remains() );
     }
   }
 
@@ -2233,6 +2485,7 @@ struct slam_t: public warrior_attack_t
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
     procs_tactician = true;
+    base_multiplier *= 1.0 + p -> artifact.crushing_blows.percent();
   }
 
   bool ready() override
@@ -2673,6 +2926,8 @@ struct battle_cry_t: public warrior_spell_t
                             p() -> talents.reckless_abandon -> effectN( 2 ).resource( RESOURCE_RAGE ),
                             p() -> gain.battle_cry );
     }
+
+    p() -> buff.corrupted_blood_of_zakajz -> trigger();
   }
 };
 
@@ -2790,6 +3045,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "charge"               ) return new charge_t               ( this, options_str );
   if ( name == "cleave"               ) return new cleave_t               ( this, options_str );
   if ( name == "colossus_smash"       ) return new colossus_smash_t       ( this, options_str );
+  if ( name == "corrupted_rage"       ) return new corrupted_rage_t       ( this, options_str );
   if ( name == "defensive_stance"     ) return new defensive_stance_t     ( this, options_str );
   if ( name == "demoralizing_shout"   ) return new demoralizing_shout     ( this, options_str );
   if ( name == "devastate"            ) return new devastate_t            ( this, options_str );
@@ -2909,7 +3165,7 @@ void warrior_t::init_spells()
   
   talents.rend                  = find_talent_spell( "Rend" );
   talents.die_by_the_sword      = find_talent_spell( "Die by the Sword" );
-  talents.bounding_strike       = find_talent_spell ("Bounding Strike" );
+  talents.bounding_strike       = find_talent_spell( "Bounding Strike" );
   talents.seething_rage         = find_talent_spell( "Seething Rage" );
   talents.renewed_fury          = find_talent_spell( "Renewed Fury" );
   talents.dauntless             = find_talent_spell( "Dauntless" );
@@ -2933,6 +3189,24 @@ void warrior_t::init_spells()
   talents.crackling_thunder     = find_talent_spell( "Crackling Thunder" );
   talents.endless_rage          = find_talent_spell( "Endless Rage" );
 
+  // Artifact
+  artifact.corrupted_rage            = find_artifact_spell( "Corrupted Rage" );
+  artifact.exploit_the_weakness      = find_artifact_spell( "Exploit the Weakness" );
+  artifact.war_veteran               = find_artifact_spell( "War Veteran" );
+  artifact.touch_of_zakajz           = find_artifact_spell( "Touch of Zakajz" );
+  artifact.shattered_defenses        = find_artifact_spell( "Shattered Defenses" );
+  artifact.deathblow                 = find_artifact_spell( "Deathblow" );
+  artifact.defensive_measures        = find_artifact_spell( "Defensive Measures" );
+  artifact.one_against_many          = find_artifact_spell( "One Against Many" );
+  artifact.crushing_blows            = find_artifact_spell( "Crushing Blows" );
+  artifact.unending_rage             = find_artifact_spell( "Unending Rage" );
+  artifact.void_cleave               = find_artifact_spell( "Void Cleave" );
+  artifact.thoradins_might           = find_artifact_spell( "Thoradin's Might" );
+  artifact.focus_in_battle           = find_artifact_spell( "Focus in Battle" );
+  artifact.precise_strikes           = find_artifact_spell( "Precise Strikes" );
+  artifact.corrupted_blood_of_zakajz = find_artifact_spell( "Corrupted Blood of Zakajz" );
+  artifact.tactical_advance          = find_artifact_spell( "Tactical Advance" );
+
   //Perks
   perk.improved_defensive_stance     = find_perk_spell( "Improved Defensive Stance" );
   perk.improved_block                = find_perk_spell( "Improved Block" );
@@ -2954,8 +3228,10 @@ void warrior_t::init_spells()
 
   // Active spells
   active.deep_wounds        = nullptr;
+  active.corrupted_blood_of_zakajz = nullptr;
 
   if ( spec.deep_wounds -> ok() ) active.deep_wounds = new deep_wounds_t( this );
+  if ( artifact.corrupted_blood_of_zakajz.rank() ) active.corrupted_blood_of_zakajz = new corrupted_blood_of_zakajz_t( this );
   if ( sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) )  spell.t17_prot_2p = find_spell( 169688 );
   if ( spec.rampage -> ok() )
   {
@@ -2999,7 +3275,7 @@ void warrior_t::init_base_stats()
 {
   player_t::init_base_stats();
 
-  resources.base[RESOURCE_RAGE] = 100;
+  resources.base[RESOURCE_RAGE] = 100 + artifact.unending_rage.value();
 
   base.attack_power_per_strength = 1.0;
   base.attack_power_per_agility = 0.0;
@@ -3245,20 +3521,13 @@ void warrior_t::apl_arms()
   std::vector<std::string> racial_actions = get_racial_actions();
 
   action_priority_list_t* default_list = get_action_priority_list( "default" );
-  action_priority_list_t* movement = get_action_priority_list( "movement" );
   action_priority_list_t* single_target = get_action_priority_list( "single" );
   action_priority_list_t* aoe = get_action_priority_list( "aoe" );
 
-  default_list -> add_action( this, "Charge", "if=debuff.charge.down" );
+  default_list -> add_action( this, "Charge" );
   default_list -> add_action( "auto_attack" );
-  default_list -> add_action( "run_action_list,name=movement,if=movement.distance>5", "This is mostly to prevent cooldowns from being accidentally used during movement." );
-
-  size_t num_items = items.size();
-  for ( size_t i = 0; i < num_items; i++ )
-  {
-    if ( items[i].name_str == "scabbard_of_kyanos" )
-      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=debuff.colossus_smash.up" );
-  }
+  default_list -> add_action( "run_action_list,name=aoe,if=spell_targets.cleave>1" );
+  default_list -> add_action( "run_action_list,name=single" );
 
   if ( sim -> allow_potions )
   {
@@ -3268,10 +3537,6 @@ void warrior_t::apl_arms()
       default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<25" );
   }
 
-  default_list -> add_action( this, "Battle Cry", "if=(((target.time_to_die>190|target.health.pct<20)|target.time_to_die<=12|talent.anger_management.enabled)&((desired_targets=1&!raid_event.adds.exists)|!talent.bladestorm.enabled)",
-                              "This incredibly long line (Due to differing talent choices) says 'Use battle_cry on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'" );
-  default_list -> add_talent( this, "Avatar", "if=buff.battle_cry.up|target.time_to_die<25" );
-
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
     if ( racial_actions[i] == "arcane_torrent" )
@@ -3280,54 +3545,33 @@ void warrior_t::apl_arms()
       default_list -> add_action( racial_actions[i] + ",if=debuff.colossus_smash.up|buff.battle_cry.up" );
   }
 
-  default_list -> add_action( this, "Heroic Leap", "if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists" );
-  default_list -> add_action( "call_action_list,name=aoe,if=spell_targets.whirlwind>1" );
-  default_list -> add_action( "call_action_list,name=single" );
-
-  movement -> add_action( this, "Heroic Leap" );
-  movement -> add_action( this, "Charge" );
-  movement -> add_talent( this, "Storm Bolt", "", "May as well throw storm bolt if we can." );
-  movement -> add_action( this, "Heroic Throw" );
-
-  single_target -> add_action( this, "Rend", "if=target.time_to_die>4&(remains<gcd|(debuff.colossus_smash.down&remains<5.4))" );
-  single_target -> add_talent( this, "Ravager", "if=cooldown.colossus_smash.remains<4&(!raid_event.adds.exists|raid_event.adds.in>55)" );
+  single_target -> add_talent( this, "Rend", "if=remains<gcd" );
+  single_target -> add_talent( this, "Heroic Strike", "if=buff.heroic_strike.stack<3&(rage.deficit<35|buff.battle_cry.up)" );
+  single_target -> add_action( this, "Battle Cry", "sync=colossus_smash" );
+  single_target -> add_action( this, "Battle Cry", "if=buff.colossus_smash_up.remains>=5|(buff.colossus_smash_up.up&cooldown.colossus_smash.remains=0)" );
+  single_target -> add_talent( this, "Avatar", "sync=colossus_smash" );
+  single_target -> add_talent( this, "Avatar", "if=buff.colossus_smash_up.remains>=5|(buff.colossus_smash_up.up&cooldown.colossus_smash.remains=0)" );
+  if ( artifact.corrupted_rage.rank() )
+    single_target -> add_action( "corrupted_rage,if=debuff.colossus_smash.down" );
   single_target -> add_action( this, "Colossus Smash", "if=debuff.colossus_smash.down" );
-  single_target -> add_action( this, "Mortal Strike", "if=target.health.pct>20" );
-  single_target -> add_action( this, "Colossus Smash" );
-  single_target -> add_talent( this, "Bladestorm", "if=(((debuff.colossus_smash.up|cooldown.colossus_smash.remains>3)&target.health.pct>20)|(target.health.pct<20&rage<30&cooldown.colossus_smash.remains>4))&(!raid_event.adds.exists|raid_event.adds.in>55)" );
-  single_target -> add_talent( this, "Storm Bolt", "if=debuff.colossus_smash.down" );
-  single_target -> add_talent( this, "Siegebreaker" );
-  single_target -> add_talent( this, "Dragon Roar", "if=!debuff.colossus_smash.up&(!raid_event.adds.exists|raid_event.adds.in>15)" );
-  single_target -> add_action( this, "Execute", "if=(rage.deficit<48&cooldown.colossus_smash.remains>gcd)|debuff.colossus_smash.up|target.time_to_die<5" );
-  single_target -> add_action( this, "Rend", "if=target.time_to_die>4&remains<5.4" );
-  single_target -> add_action( "wait,sec=cooldown.colossus_smash.remains,if=cooldown.colossus_smash.remains<gcd" );
-  single_target -> add_talent( this, "Shockwave", "if=target.health.pct<=20" );
-  single_target -> add_action( "wait,sec=0.1,if=target.health.pct<=20" );
-  single_target -> add_talent( this, "Impending Victory", "if=rage<40&!set_bonus.tier18_4pc" );
-  single_target -> add_action( this, "Slam", "if=rage>20&!set_bonus.tier18_4pc" );
-  single_target -> add_action( this, "Whirlwind", "if=((!set_bonus.tier18_2pc&!t18_class_trinket)|(!set_bonus.tier18_4pc&rage.deficit<45)|rage.deficit<30)&set_bonus.tier18_4pc&(rage>=40|debuff.colossus_smash.up)" );
+  single_target -> add_talent( this, "Bladestorm", "if=buff.battle_cry.up" );
+  single_target -> add_talent( this, "Overpower" );
+  single_target -> add_action( this, "Execute", "if=debuff.colossus_smash.up" );
+  single_target -> add_action( this, "Mortal Strike", "if=target.health.pct>20&(!talent.mortal_combo.enabled|(charges=2|debuff.colossus_smash.up))" );
+  single_target -> add_action( this, "Execute", "if=rage.deficit<50" );
+  single_target -> add_talent( this, "Storm Bolt" );
+  single_target -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down&buff.precise_strikes.down" );
+  single_target -> add_action( this, "Slam", "if=target.health.pct>20&(debuff.colossus_smash.up|rage.deficit<50)" );
+  single_target -> add_talent( this, "Rend", "if=remains<=duration*0.3" );
+  single_target -> add_action( this, "Execute" );
+  single_target -> add_action( this, "Slam", "if=target.health.pct>20" );
+  single_target -> add_action( "heroic_charge" );
   single_target -> add_talent( this, "Shockwave" );
 
-  aoe -> add_action( this, "Rend", "if=dot.rend.remains<5.4&target.time_to_die>4" );
-  aoe -> add_action( this, "Rend", "cycle_targets=1,max_cycle_targets=2,if=dot.rend.remains<5.4&target.time_to_die>8&!buff.colossus_smash_up.up" );
-  aoe -> add_action( this, "Rend", "cycle_targets=1,if=dot.rend.remains<5.4&target.time_to_die-remains>18&!buff.colossus_smash_up.up&spell_targets.whirlwind<=8" );
-  aoe -> add_talent( this, "Ravager", "if=cooldown.colossus_smash.remains<4" );
-  aoe -> add_talent( this, "Bladestorm", "if=((debuff.colossus_smash.up|cooldown.colossus_smash.remains>3)&target.health.pct>20)|(target.health.pct<20&rage<30&cooldown.colossus_smash.remains>4)" );
-  aoe -> add_action( this, "Colossus Smash", "if=dot.rend.ticking" );
-  aoe -> add_action( this, "Execute", "cycle_targets=1,if=spell_targets.whirlwind<=8&((rage.deficit<48&cooldown.colossus_smash.remains>gcd)|rage>80|target.time_to_die<5|debuff.colossus_smash.up)" );
-  aoe -> add_action( "heroic_charge,cycle_targets=1,if=target.health.pct<20&rage<70&swing.mh.remains>2" );
-  aoe -> add_action( this, "Mortal Strike", "if=target.health.pct>20&(rage>60|debuff.colossus_smash.up)&spell_targets.whirlwind<=5", "Heroic Charge is an event that makes the warrior heroic leap out of melee range for an instant\n"
-                     "# If heroic leap is not available, the warrior will simply run out of melee to charge range, and then charge back in.\n"
-                     "# This can delay autoattacks, but typically the rage gained from charging is more than\n"
-                     "# The amount lost from delayed autoattacks. Charge only grants rage from charging a different target than the last time.\n"
-                     "# Which means this is only worth doing on AoE, and only when you cycle your charge target." );
-  aoe -> add_talent( this, "Dragon Roar", "if=!debuff.colossus_smash.up" );
-  aoe -> add_action( this, "Thunder Clap", "if=(target.health.pct>20|spell_targets.whirlwind>=9)" );
-  aoe -> add_action( this, "Rend", "cycle_targets=1,if=dot.rend.remains<5.4&target.time_to_die>8&!buff.colossus_smash_up.up&spell_targets.whirlwind>=9&rage<50" );
-  aoe -> add_action( this, "Whirlwind", "if=target.health.pct>20|spell_targets.whirlwind>=9" );
-  aoe -> add_talent( this, "Siegebreaker" );
-  aoe -> add_talent( this, "Storm Bolt", "if=cooldown.colossus_smash.remains>4|debuff.colossus_smash.up" );
-  aoe -> add_talent( this, "Shockwave" );
+  aoe -> add_action( this, "Cleave", "if=buff.cleave.down" );
+  aoe -> add_action( this, "Whirlwind" );
+  aoe -> add_action( this, "Colossus Smash", "cycle_targets=1,if=debuff.colossus_smash.down" );
+  aoe -> add_action( "heroic_charge" );
 }
 
 // Protection Warrior Action Priority List ========================================
@@ -3432,6 +3676,13 @@ struct overpower_t: public warrior_real_ppm_t < real_ppm_t >
 {
   overpower_t( warrior_t& p ):
     base_t( p, real_ppm_t( p, p.spell.overpower_driver -> real_ppm(), 1.0, RPPM_HASTE ) )
+  {}
+};
+
+struct shadow_slash_t: public warrior_real_ppm_t < real_ppm_t >
+{
+  shadow_slash_t( warrior_t& p ):
+    base_t( p, real_ppm_t( p, p.stromkar_the_warbreaker -> driver() -> real_ppm(), 1.0, RPPM_NONE ) )
   {}
 };
 };
@@ -3559,12 +3810,18 @@ void warrior_t::create_buffs()
     .cd( timespan_t::zero() );
 
   buff.cleave = buff_creator_t( this, "cleave", find_spell( 188923 ) )
-    .default_value( find_spell( 188923 ) -> effectN( 1 ).percent() );
+    .default_value( find_spell( 188923 ) -> effectN( 1 ).percent()
+      + artifact.one_against_many.percent() );
 
   buff.colossus_smash = buff_creator_t( this, "colossus_smash_up", spell.colossus_smash_debuff )
     .duration( spell.colossus_smash_debuff -> duration()
              * ( 1.0 + talents.titanic_might -> effectN( 1 ).percent() ) )
     .cd( timespan_t::zero() );
+
+  buff.corrupted_blood_of_zakajz = buff_creator_t( this, "corrupted_blood_of_zakajz",
+    artifact.corrupted_blood_of_zakajz.data().effectN( 1 ).trigger() )
+    .default_value( artifact.corrupted_blood_of_zakajz.percent() )
+    .chance( artifact.corrupted_blood_of_zakajz.rank() );
 
   buff.defensive_stance = buff_creator_t( this, "defensive_stance", find_class_spell( "Defensive Stance" ) )
     .activated( true )
@@ -3608,6 +3865,10 @@ void warrior_t::create_buffs()
 
   buff.overpower = buff_creator_t( this, "overpower", spell.overpower_driver -> effectN( 1 ).trigger() );
 
+  buff.precise_strikes = buff_creator_t( this, "precise_strikes", artifact.precise_strikes.data().effectN( 1 ).trigger() )
+    .default_value( artifact.precise_strikes.percent() )
+    .chance( artifact.precise_strikes.rank() > 0 );
+
   buff.ravager = buff_creator_t( this, "ravager", talents.ravager );
 
   buff.ravager_protection = buff_creator_t( this, "ravager_protection", talents.ravager )
@@ -3615,6 +3876,10 @@ void warrior_t::create_buffs()
 
   buff.battle_cry = buff_creator_t( this, "battle_cry", spec.battle_cry )
     .cd( timespan_t::zero() );
+
+  buff.shattered_defenses = buff_creator_t( this, "shattered_defenses", artifact.shattered_defenses.data().effectN( 1 ).trigger() )
+    .default_value( artifact.shattered_defenses.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+    .chance( artifact.shattered_defenses.rank() );
 
   buff.shield_block = buff_creator_t( this, "shield_block", find_spell( 132404 ) )
     .cd( timespan_t::zero() )
@@ -3710,6 +3975,9 @@ void warrior_t::init_rng()
   player_t::init_rng();
 
   rppm.overpower = std::unique_ptr<rppm::overpower_t>( new rppm::overpower_t( *this ) );
+
+  if ( stromkar_the_warbreaker )
+    rppm.shadow_slash = std::unique_ptr<rppm::shadow_slash_t>( new rppm::shadow_slash_t( *this ) );
 }
 
 // warrior_t::init_resources ================================================
@@ -3824,6 +4092,10 @@ void warrior_t::reset()
   if ( rppm.overpower )
   {
     rppm.overpower -> reset();
+  }
+  if ( rppm.shadow_slash )
+  {
+    rppm.shadow_slash -> reset();
   }
 }
 
@@ -4395,6 +4667,13 @@ static void prot_trinket( special_effect_t& effect )
   do_trinket_init( s, WARRIOR_PROTECTION, s -> prot_trinket, effect );
 }
 
+// Strom'kar the Warbreaker
+static void stromkar_the_warbreaker( special_effect_t& effect )
+{
+  warrior_t* s = debug_cast<warrior_t*>( effect.player );
+  do_trinket_init( s, WARRIOR_ARMS, s -> stromkar_the_warbreaker, effect );
+}
+
 // WARRIOR MODULE INTERFACE =================================================
 
 struct warrior_module_t: public module_t
@@ -4415,6 +4694,7 @@ struct warrior_module_t: public module_t
     unique_gear::register_special_effect( 184926, fury_trinket );
     unique_gear::register_special_effect( 184925, arms_trinket );
     unique_gear::register_special_effect( 184927, prot_trinket );
+    unique_gear::register_special_effect( 209579, stromkar_the_warbreaker );
   }
 
   virtual void register_hotfixes() const override
