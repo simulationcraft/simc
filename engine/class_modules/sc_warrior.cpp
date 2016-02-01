@@ -65,12 +65,13 @@ public:
     buff_t* intervene_movement;
     // Arms and Fury
     buff_t* avatar;
+    buff_t* battle_cry;
+    buff_t* commanding_shout;
     buff_t* die_by_the_sword;
     buff_t* dragon_roar;
-    buff_t* commanding_shout;
+    buff_t* heroic_strike;
     buff_t* overpower;
     buff_t* ravager;
-    buff_t* battle_cry;
     // Fury Only
     buff_t* enrage;
     buff_t* frenzy;
@@ -1366,24 +1367,27 @@ struct hamstring_t: public warrior_attack_t
 
 struct heroic_strike_t: public warrior_attack_t
 {
-  double anger_management_rage;
   heroic_strike_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "heroic_strike", p, p -> talents.heroic_strike )
   {
     parse_options( options_str );
-
-    weapon = &( player -> main_hand_weapon );
     use_off_gcd = true;
+    may_crit = false;
+    attack_power_mod.direct = data().effectN( 1 ).percent();
   }
 
-  double action_multiplier() const override
+  void init() override
   {
-    double am = warrior_attack_t::action_multiplier();
+    warrior_attack_t::init();
 
-    if ( p() -> buff.enrage -> up() )
-      am *= 2.0; // No spell data yet.
+    // Simply AP * coeff. Vers, crit, target modifiers all come later.
+    snapshot_flags = STATE_AP;
+  }
 
-    return am;
+  void impact( action_state_t* s ) override
+  {
+    if ( p() -> buff.heroic_strike -> current_stack < p() -> buff.heroic_strike -> max_stack() )
+      p() -> buff.heroic_strike -> trigger( 1, p() -> buff.heroic_strike -> check_value() + s -> result_raw );
   }
 
   bool ready() override
@@ -1672,11 +1676,30 @@ struct mortal_strike_t: public warrior_attack_t
     cooldown -> charges += p -> talents.mortal_combo -> effectN( 1 ).base_value();
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = bonus_da( s );
+
+    // Add flat damage from mortal strike, cancelling out the weapon multiplier.
+    // This is ugly and there's probably a better way to do this.
+    b += p() -> buff.heroic_strike -> check_value() / weapon_multiplier;
+
+    return b;
+  }
+
   void execute() override
   {
     warrior_attack_t::execute();
-    if ( result_is_hit( execute_state -> result ) && sim -> overrides.mortal_wounds )
-      execute_state -> target -> debuffs.mortal_wounds -> trigger();
+
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      if ( sim -> overrides.mortal_wounds )
+      {
+        execute_state -> target -> debuffs.mortal_wounds -> trigger();
+      }
+
+      p() -> buff.heroic_strike -> expire();
+    }
   }
 
   double cooldown_reduction() const override
@@ -1854,6 +1877,17 @@ struct rampage_attack_t: public warrior_attack_t
     dual = true;
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = bonus_da( s );
+
+    // Add flat damage from mortal strike, cancelling out the weapon multiplier.
+    // This is ugly and there's probably a better way to do this.
+    b += p() -> buff.heroic_strike -> check_value() / weapon_multiplier;
+
+    return b;
+  }
+
   double action_multiplier() const override
   {
     double dam = warrior_attack_t::action_multiplier();
@@ -1864,6 +1898,13 @@ struct rampage_attack_t: public warrior_attack_t
       dam *= 1.0 + p() -> cache.mastery_value();
     }
     return dam;
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    p() -> buff.heroic_strike -> expire();
   }
 };
 
@@ -3548,6 +3589,9 @@ void warrior_t::create_buffs()
   buff.frenzy = buff_creator_t( this, "frenzy", talents.frenzy )
     .add_invalidate( CACHE_HASTE )
     .default_value( talents.frenzy -> effectN( 2 ).percent() );
+
+  buff.heroic_strike = buff_creator_t( this, "heroic_strike", talents.heroic_strike )
+    .cd( timespan_t::zero() );
 
   buff.heroic_leap_movement = buff_creator_t( this, "heroic_leap_movement" );
   buff.charge_movement = buff_creator_t( this, "charge_movement" );
