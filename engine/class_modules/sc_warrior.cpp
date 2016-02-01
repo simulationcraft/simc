@@ -82,6 +82,7 @@ public:
     // Arms only
     buff_t* colossus_smash;
     buff_t* cleave;
+    buff_t* shattered_defenses;
     // Prot only
     buff_t* last_stand;
     buff_t* ravager_protection;
@@ -296,10 +297,10 @@ public:
   {
     // Arms - Strom'kar the Warbreaker
     artifact_power_t corrupted_rage;
-
-    // NYI
     artifact_power_t exploit_the_weakness;
     artifact_power_t war_veteran;
+
+    // NYI
     artifact_power_t touch_of_zakajz;
     artifact_power_t shattered_defenses;
     artifact_power_t deathblow;
@@ -431,7 +432,8 @@ namespace
 template <class Base>
 struct warrior_action_t: public Base
 {
-  bool headlongrush, headlongrushgcd, battle_cry, colossal_might, sweeping_strikes, dauntless;
+  bool headlongrush, headlongrushgcd, battle_cry,
+    colossal_might, sweeping_strikes, dauntless, war_veteran;
 private:
   typedef Base ab; // action base, eg. spell_t
 public:
@@ -444,7 +446,8 @@ public:
     battle_cry( ab::data().affected_by( player -> spec.battle_cry -> effectN( 1 ) ) ),
     colossal_might( ab::data().affected_by( player -> spell.colossus_smash_debuff -> effectN( 3 ) ) ),
     sweeping_strikes( ab::data().affected_by( player -> talents.sweeping_strikes -> effectN( 1 ) ) ),
-    dauntless( ab::data().affected_by( player -> talents.dauntless -> effectN( 1 ) ) )
+    dauntless( ab::data().affected_by( player -> talents.dauntless -> effectN( 1 ) ) ),
+    war_veteran( ab::data().affected_by( player -> artifact.war_veteran.data().effectN( 1 ).trigger() -> effectN( 1 ) ) )
   {
     ab::may_crit = true;
   }
@@ -480,6 +483,9 @@ public:
 
     if ( dauntless )
       c *= 1.0 + p() -> talents.dauntless -> effectN( 1 ).percent();
+
+    if ( war_veteran && p() -> buff.battle_cry -> check() )
+      c *= 1.0 + p() -> artifact.war_veteran.data().effectN( 1 ).trigger() -> effectN( 1 ).percent();
 
     return c;
   }
@@ -1167,6 +1173,9 @@ struct colossus_smash_t: public warrior_attack_t
       td( execute_state -> target ) -> debuffs_colossus_smash -> trigger();
       p() -> buff.colossus_smash -> trigger();
 
+      if ( p() -> artifact.shattered_defenses.rank() )
+        p() -> buff.shattered_defenses -> trigger();
+
       if ( p() -> sets.set( WARRIOR_ARMS, T17, B2 ) && p() -> buff.tier17_2pc_arms -> trigger() )
         p() -> proc.t17_2pc_arms -> occur();
     }
@@ -1202,6 +1211,9 @@ struct corrupted_rage_t: public warrior_attack_t
     {
       td( s -> target ) -> debuffs_colossus_smash -> trigger();
       p() -> buff.colossus_smash -> trigger();
+      
+      if ( p() -> artifact.shattered_defenses.rank() )
+        p() -> buff.shattered_defenses -> trigger();
     }
   }
 
@@ -1354,7 +1366,19 @@ struct execute_t: public warrior_attack_t
     else if ( p() -> has_shield_equipped() )
     { am *= 1.0 + p() -> spec.protection -> effectN( 2 ).percent(); }
 
+    am *= 1.0 + p() -> buff.shattered_defenses -> check_value();
+
     return am;
+  }
+
+  double composite_crit() const override
+  {
+    double cc = warrior_attack_t::composite_crit();
+
+    if ( p() -> buff.shattered_defenses -> check() )
+      cc += p() -> buff.shattered_defenses -> data().effectN( 2 ).percent();
+
+    return cc;
   }
 
   double cost() const override
@@ -1374,6 +1398,9 @@ struct execute_t: public warrior_attack_t
     if ( p() -> specialization() == WARRIOR_FURY && result_is_hit( execute_state -> result ) &&
          p() -> off_hand_weapon.type != WEAPON_NONE ) // If MH fails to land, or if there is no OH weapon for Fury, oh attack does not execute.
       oh_attack -> execute();
+
+    if ( p() -> buff.shattered_defenses -> up() )
+      p() -> buff.shattered_defenses -> expire();
   }
 
   void impact( action_state_t* s ) override
@@ -1781,6 +1808,25 @@ struct mortal_strike_t: public warrior_attack_t
     return b;
   }
 
+  double composite_crit() const override
+  {
+    double cc = warrior_attack_t::composite_crit();
+
+    if ( p() -> buff.shattered_defenses -> check() )
+      cc += p() -> buff.shattered_defenses -> data().effectN( 2 ).percent();
+
+    return cc;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    am *= 1.0 + p() -> buff.shattered_defenses -> check_value();
+
+    return am;
+  }
+
   void execute() override
   {
     warrior_attack_t::execute();
@@ -1801,6 +1847,9 @@ struct mortal_strike_t: public warrior_attack_t
       shadow_slash -> target = target;
       shadow_slash -> execute();
     }
+
+    if ( p() -> buff.shattered_defenses -> up() )
+      p() -> buff.shattered_defenses -> expire();
   }
 
   void impact( action_state_t* s ) override
@@ -3755,6 +3804,9 @@ void warrior_t::create_buffs()
 
   buff.battle_cry = buff_creator_t( this, "battle_cry", spec.battle_cry )
     .cd( timespan_t::zero() );
+
+  buff.shattered_defenses = buff_creator_t( this, "shattered_defenses", artifact.shattered_defenses.data().effectN( 1 ).trigger() )
+    .default_value( artifact.shattered_defenses.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
   buff.shield_block = buff_creator_t( this, "shield_block", find_spell( 132404 ) )
     .cd( timespan_t::zero() )
