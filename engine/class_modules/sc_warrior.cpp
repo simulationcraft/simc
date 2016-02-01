@@ -1868,7 +1868,7 @@ struct mortal_strike_t: public warrior_attack_t
 
       if ( p -> artifact.focus_in_battle.rank() )
       {
-        assert( p -> artifact.focus_inbattle.data().proc_chance() == p -> spec.tactician -> proc_chance() );
+        assert( p -> artifact.focus_in_battle.data().proc_chance() == p -> spec.tactician -> proc_chance() );
         procs_tactician = true;
       }
     }
@@ -3521,20 +3521,13 @@ void warrior_t::apl_arms()
   std::vector<std::string> racial_actions = get_racial_actions();
 
   action_priority_list_t* default_list = get_action_priority_list( "default" );
-  action_priority_list_t* movement = get_action_priority_list( "movement" );
   action_priority_list_t* single_target = get_action_priority_list( "single" );
   action_priority_list_t* aoe = get_action_priority_list( "aoe" );
 
-  default_list -> add_action( this, "Charge", "if=debuff.charge.down" );
+  default_list -> add_action( this, "Charge" );
   default_list -> add_action( "auto_attack" );
-  default_list -> add_action( "run_action_list,name=movement,if=movement.distance>5", "This is mostly to prevent cooldowns from being accidentally used during movement." );
-
-  size_t num_items = items.size();
-  for ( size_t i = 0; i < num_items; i++ )
-  {
-    if ( items[i].name_str == "scabbard_of_kyanos" )
-      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=debuff.colossus_smash.up" );
-  }
+  default_list -> add_action( "run_action_list,name=aoe,if=spell_targets.cleave>1" );
+  default_list -> add_action( "run_action_list,name=single" );
 
   if ( sim -> allow_potions )
   {
@@ -3544,10 +3537,6 @@ void warrior_t::apl_arms()
       default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<25" );
   }
 
-  default_list -> add_action( this, "Battle Cry", "if=(((target.time_to_die>190|target.health.pct<20)|target.time_to_die<=12|talent.anger_management.enabled)&((desired_targets=1&!raid_event.adds.exists)|!talent.bladestorm.enabled)",
-                              "This incredibly long line (Due to differing talent choices) says 'Use battle_cry on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'" );
-  default_list -> add_talent( this, "Avatar", "if=buff.battle_cry.up|target.time_to_die<25" );
-
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
     if ( racial_actions[i] == "arcane_torrent" )
@@ -3556,54 +3545,33 @@ void warrior_t::apl_arms()
       default_list -> add_action( racial_actions[i] + ",if=debuff.colossus_smash.up|buff.battle_cry.up" );
   }
 
-  default_list -> add_action( this, "Heroic Leap", "if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists" );
-  default_list -> add_action( "call_action_list,name=aoe,if=spell_targets.whirlwind>1" );
-  default_list -> add_action( "call_action_list,name=single" );
-
-  movement -> add_action( this, "Heroic Leap" );
-  movement -> add_action( this, "Charge" );
-  movement -> add_talent( this, "Storm Bolt", "", "May as well throw storm bolt if we can." );
-  movement -> add_action( this, "Heroic Throw" );
-
-  single_target -> add_action( this, "Rend", "if=target.time_to_die>4&(remains<gcd|(debuff.colossus_smash.down&remains<5.4))" );
-  single_target -> add_talent( this, "Ravager", "if=cooldown.colossus_smash.remains<4&(!raid_event.adds.exists|raid_event.adds.in>55)" );
+  single_target -> add_talent( this, "Rend", "if=remains<gcd" );
+  single_target -> add_talent( this, "Heroic Strike", "if=buff.heroic_strike.stack<3&(rage.deficit<35|buff.battle_cry.up)" );
+  single_target -> add_action( this, "Battle Cry", "sync=colossus_smash" );
+  single_target -> add_action( this, "Battle Cry", "if=buff.colossus_smash_up.remains>=5|(buff.colossus_smash_up.up&cooldown.colossus_smash.remains=0)" );
+  single_target -> add_talent( this, "Avatar", "sync=colossus_smash" );
+  single_target -> add_talent( this, "Avatar", "if=buff.colossus_smash_up.remains>=5|(buff.colossus_smash_up.up&cooldown.colossus_smash.remains=0)" );
+  if ( artifact.corrupted_rage.rank() )
+    single_target -> add_action( "corrupted_rage,if=debuff.colossus_smash.down" );
   single_target -> add_action( this, "Colossus Smash", "if=debuff.colossus_smash.down" );
-  single_target -> add_action( this, "Mortal Strike", "if=target.health.pct>20" );
-  single_target -> add_action( this, "Colossus Smash" );
-  single_target -> add_talent( this, "Bladestorm", "if=(((debuff.colossus_smash.up|cooldown.colossus_smash.remains>3)&target.health.pct>20)|(target.health.pct<20&rage<30&cooldown.colossus_smash.remains>4))&(!raid_event.adds.exists|raid_event.adds.in>55)" );
-  single_target -> add_talent( this, "Storm Bolt", "if=debuff.colossus_smash.down" );
-  single_target -> add_talent( this, "Siegebreaker" );
-  single_target -> add_talent( this, "Dragon Roar", "if=!debuff.colossus_smash.up&(!raid_event.adds.exists|raid_event.adds.in>15)" );
-  single_target -> add_action( this, "Execute", "if=(rage.deficit<48&cooldown.colossus_smash.remains>gcd)|debuff.colossus_smash.up|target.time_to_die<5" );
-  single_target -> add_action( this, "Rend", "if=target.time_to_die>4&remains<5.4" );
-  single_target -> add_action( "wait,sec=cooldown.colossus_smash.remains,if=cooldown.colossus_smash.remains<gcd" );
-  single_target -> add_talent( this, "Shockwave", "if=target.health.pct<=20" );
-  single_target -> add_action( "wait,sec=0.1,if=target.health.pct<=20" );
-  single_target -> add_talent( this, "Impending Victory", "if=rage<40&!set_bonus.tier18_4pc" );
-  single_target -> add_action( this, "Slam", "if=rage>20&!set_bonus.tier18_4pc" );
-  single_target -> add_action( this, "Whirlwind", "if=((!set_bonus.tier18_2pc&!t18_class_trinket)|(!set_bonus.tier18_4pc&rage.deficit<45)|rage.deficit<30)&set_bonus.tier18_4pc&(rage>=40|debuff.colossus_smash.up)" );
+  single_target -> add_talent( this, "Bladestorm", "if=buff.battle_cry.up" );
+  single_target -> add_talent( this, "Overpower" );
+  single_target -> add_action( this, "Execute", "if=debuff.colossus_smash.up" );
+  single_target -> add_action( this, "Mortal Strike", "if=target.health.pct>20&(!talent.mortal_combo.enabled|(charges=2|debuff.colossus_smash.up))" );
+  single_target -> add_action( this, "Execute", "if=rage.deficit<50" );
+  single_target -> add_talent( this, "Storm Bolt" );
+  single_target -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down&buff.precise_strikes.down" );
+  single_target -> add_action( this, "Slam", "if=target.health.pct>20&(debuff.colossus_smash.up|rage.deficit<50)" );
+  single_target -> add_talent( this, "Rend", "if=remains<=duration*0.3" );
+  single_target -> add_action( this, "Execute" );
+  single_target -> add_action( this, "Slam", "if=target.health.pct>20" );
+  single_target -> add_action( "heroic_charge" );
   single_target -> add_talent( this, "Shockwave" );
 
-  aoe -> add_action( this, "Rend", "if=dot.rend.remains<5.4&target.time_to_die>4" );
-  aoe -> add_action( this, "Rend", "cycle_targets=1,max_cycle_targets=2,if=dot.rend.remains<5.4&target.time_to_die>8&!buff.colossus_smash_up.up" );
-  aoe -> add_action( this, "Rend", "cycle_targets=1,if=dot.rend.remains<5.4&target.time_to_die-remains>18&!buff.colossus_smash_up.up&spell_targets.whirlwind<=8" );
-  aoe -> add_talent( this, "Ravager", "if=cooldown.colossus_smash.remains<4" );
-  aoe -> add_talent( this, "Bladestorm", "if=((debuff.colossus_smash.up|cooldown.colossus_smash.remains>3)&target.health.pct>20)|(target.health.pct<20&rage<30&cooldown.colossus_smash.remains>4)" );
-  aoe -> add_action( this, "Colossus Smash", "if=dot.rend.ticking" );
-  aoe -> add_action( this, "Execute", "cycle_targets=1,if=spell_targets.whirlwind<=8&((rage.deficit<48&cooldown.colossus_smash.remains>gcd)|rage>80|target.time_to_die<5|debuff.colossus_smash.up)" );
-  aoe -> add_action( "heroic_charge,cycle_targets=1,if=target.health.pct<20&rage<70&swing.mh.remains>2" );
-  aoe -> add_action( this, "Mortal Strike", "if=target.health.pct>20&(rage>60|debuff.colossus_smash.up)&spell_targets.whirlwind<=5", "Heroic Charge is an event that makes the warrior heroic leap out of melee range for an instant\n"
-                     "# If heroic leap is not available, the warrior will simply run out of melee to charge range, and then charge back in.\n"
-                     "# This can delay autoattacks, but typically the rage gained from charging is more than\n"
-                     "# The amount lost from delayed autoattacks. Charge only grants rage from charging a different target than the last time.\n"
-                     "# Which means this is only worth doing on AoE, and only when you cycle your charge target." );
-  aoe -> add_talent( this, "Dragon Roar", "if=!debuff.colossus_smash.up" );
-  aoe -> add_action( this, "Thunder Clap", "if=(target.health.pct>20|spell_targets.whirlwind>=9)" );
-  aoe -> add_action( this, "Rend", "cycle_targets=1,if=dot.rend.remains<5.4&target.time_to_die>8&!buff.colossus_smash_up.up&spell_targets.whirlwind>=9&rage<50" );
-  aoe -> add_action( this, "Whirlwind", "if=target.health.pct>20|spell_targets.whirlwind>=9" );
-  aoe -> add_talent( this, "Siegebreaker" );
-  aoe -> add_talent( this, "Storm Bolt", "if=cooldown.colossus_smash.remains>4|debuff.colossus_smash.up" );
-  aoe -> add_talent( this, "Shockwave" );
+  aoe -> add_action( this, "Cleave", "if=buff.cleave.down" );
+  aoe -> add_action( this, "Whirlwind" );
+  aoe -> add_action( this, "Colossus Smash", "cycle_targets=1,if=debuff.colossus_smash.down" );
+  aoe -> add_action( "heroic_charge" );
 }
 
 // Protection Warrior Action Priority List ========================================
@@ -4007,7 +3975,9 @@ void warrior_t::init_rng()
   player_t::init_rng();
 
   rppm.overpower = std::unique_ptr<rppm::overpower_t>( new rppm::overpower_t( *this ) );
-  rppm.shadow_slash = std::unique_ptr<rppm::shadow_slash_t>( new rppm::shadow_slash_t( *this ) );
+
+  if ( stromkar_the_warbreaker )
+    rppm.shadow_slash = std::unique_ptr<rppm::shadow_slash_t>( new rppm::shadow_slash_t( *this ) );
 }
 
 // warrior_t::init_resources ================================================
