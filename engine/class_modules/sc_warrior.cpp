@@ -1201,6 +1201,7 @@ struct corrupted_rage_t: public warrior_attack_t
     if ( result_is_hit( s -> result ) )
     {
       td( s -> target ) -> debuffs_colossus_smash -> trigger();
+      p() -> buff.colossus_smash -> trigger();
     }
   }
 
@@ -1373,6 +1374,20 @@ struct execute_t: public warrior_attack_t
     if ( p() -> specialization() == WARRIOR_FURY && result_is_hit( execute_state -> result ) &&
          p() -> off_hand_weapon.type != WEAPON_NONE ) // If MH fails to land, or if there is no OH weapon for Fury, oh attack does not execute.
       oh_attack -> execute();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    if ( s -> result == RESULT_CRIT && td( s -> target ) -> debuffs_colossus_smash -> check() )
+    {
+      td( s -> target ) -> debuffs_colossus_smash -> extend_duration( p(),
+        timespan_t::from_seconds( p() -> artifact.exploit_the_weakness.value() ) );
+      
+      timespan_t remains = std::max( td( s -> target ) -> debuffs_colossus_smash -> remains(), p() -> buff.colossus_smash -> remains() );
+      p() -> buff.colossus_smash -> extend_duration( p(), remains - p() -> buff.colossus_smash -> remains() );
+    }
   }
 
   bool ready() override
@@ -1785,6 +1800,20 @@ struct mortal_strike_t: public warrior_attack_t
     {
       shadow_slash -> target = target;
       shadow_slash -> execute();
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    if ( s -> result == RESULT_CRIT && td( s -> target ) -> debuffs_colossus_smash -> check() )
+    {
+      td( s -> target ) -> debuffs_colossus_smash -> extend_duration( p(),
+        timespan_t::from_seconds( p() -> artifact.exploit_the_weakness.value() ) );
+      
+      timespan_t remains = std::max( td( s -> target ) -> debuffs_colossus_smash -> remains(), p() -> buff.colossus_smash -> remains() );
+      p() -> buff.colossus_smash -> extend_duration( p(), remains - p() -> buff.colossus_smash -> remains() );
     }
   }
 
