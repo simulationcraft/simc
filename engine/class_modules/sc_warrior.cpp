@@ -77,6 +77,7 @@ public:
     buff_t* meat_cleaver;
     // Arms only
     buff_t* colossus_smash;
+    buff_t* cleave;
     // Prot only
     buff_t* last_stand;
     buff_t* ravager_protection;
@@ -131,6 +132,7 @@ public:
     gain_t* battle_cry;
     // Arms Only
     gain_t* melee_crit;
+    gain_t* fervor_of_battle;
     // Prot Only
     gain_t* critical_block;
     gain_t* revenge;
@@ -146,6 +148,7 @@ public:
     const spell_data_t* charge;
     const spell_data_t* colossus_smash_debuff;
     const spell_data_t* defensive_stance;
+    const spell_data_t* fervor_of_battle;
     const spell_data_t* indomitable;
     const spell_data_t* intervene;
     const spell_data_t* headlong_rush;
@@ -186,6 +189,7 @@ public:
     //All specs
     const spell_data_t* execute;
     //Arms only
+    const spell_data_t* cleave;
     const spell_data_t* colossus_smash;
     const spell_data_t* hamstring;
     const spell_data_t* mortal_strike;
@@ -656,6 +660,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
         p() -> buff.overpower -> trigger();
       }
 
+      // TOCHECK: Does Sweeping Strikes grant MS/Execute 2 chances to proc Tactician?
       if ( procs_tactician && rng().roll( p() -> spec.tactician -> proc_chance() ) )
       {
         p() -> cooldown.colossus_smash -> reset( true );
@@ -1066,6 +1071,48 @@ struct charge_t: public warrior_attack_t
       return false;
 
     return warrior_attack_t::ready();
+  }
+};
+
+// Cleave ===================================================================
+
+struct cleave_t: public warrior_attack_t
+{
+  int targets_hit;
+
+  cleave_t( warrior_t* p, const std::string& options_str ):
+    warrior_attack_t( "cleave", p, p -> spec.cleave )
+  {
+    parse_options( options_str );
+    weapon = &( player -> main_hand_weapon );
+    aoe = -1;
+  }
+
+  void execute() override
+  {
+    targets_hit = 0;
+
+    warrior_attack_t::execute();
+
+    if ( targets_hit )
+    {
+      p() -> buff.cleave -> trigger( 1, p() -> buff.cleave -> default_value * std::min( p() -> buff.cleave -> max_stack(), targets_hit ) );
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      targets_hit++;
+
+      if ( p() -> talents.fervor_of_battle -> ok() )
+      {
+        p() -> resource_gain( RESOURCE_RAGE, p() -> spell.fervor_of_battle -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.fervor_of_battle );
+      }
+    }
   }
 };
 
@@ -2303,6 +2350,23 @@ struct whirlwind_mh_t: public warrior_attack_t
   {
     aoe = -1;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    if ( p() -> talents.fervor_of_battle -> ok() )
+      p() -> resource_gain( RESOURCE_RAGE, p() -> spell.fervor_of_battle -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.fervor_of_battle );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    am *= 1.0 + p() -> buff.cleave -> check_value();
+
+    return am;
+  }
 };
 
 struct whirlwind_parent_t: public warrior_attack_t
@@ -2360,6 +2424,13 @@ struct whirlwind_parent_t: public warrior_attack_t
       if ( oh_attack )
         oh_attack -> execute();
     }
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    warrior_attack_t::last_tick( d );
+
+    p() -> buff.cleave -> expire();
   }
 
   void execute() override
@@ -2675,6 +2746,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "bladestorm"           ) return new bladestorm_t           ( this, options_str );
   if ( name == "bloodthirst"          ) return new bloodthirst_t          ( this, options_str );
   if ( name == "charge"               ) return new charge_t               ( this, options_str );
+  if ( name == "cleave"               ) return new cleave_t               ( this, options_str );
   if ( name == "colossus_smash"       ) return new colossus_smash_t       ( this, options_str );
   if ( name == "defensive_stance"     ) return new defensive_stance_t     ( this, options_str );
   if ( name == "demoralizing_shout"   ) return new demoralizing_shout     ( this, options_str );
@@ -2734,6 +2806,7 @@ void warrior_t::init_spells()
   spec.bastion_of_defense       = find_specialization_spell( "Bastion of Defense" );
   spec.bladed_armor             = find_specialization_spell( "Bladed Armor" );
   spec.bloodthirst              = find_specialization_spell( "Bloodthirst" );
+  spec.cleave                   = find_specialization_spell( "Cleave" );
   spec.colossus_smash           = find_specialization_spell( "Colossus Smash" );
   spec.deep_wounds              = find_specialization_spell( "Deep Wounds" );
   spec.demoralizing_shout       = find_specialization_spell( "Demoralizing Shout" );
@@ -2828,6 +2901,7 @@ void warrior_t::init_spells()
   spell.charge                  = find_class_spell( "Charge" );
   spell.colossus_smash_debuff   = find_spell( 208086 );
   spell.defensive_stance        = find_class_spell( "Defensive Stance" );
+  spell.fervor_of_battle        = find_spell( 202317 );
   if ( specialization() == WARRIOR_FURY )
   { spell.indomitable = find_spell( 202095 ); }
   spell.intervene               = find_class_spell( "Intervene" );
@@ -3441,6 +3515,9 @@ void warrior_t::create_buffs()
     .period( timespan_t::zero() )
     .cd( timespan_t::zero() );
 
+  buff.cleave = buff_creator_t( this, "cleave", find_spell( 188923 ) )
+    .default_value( find_spell( 188923 ) -> effectN( 1 ).percent() );
+
   buff.colossus_smash = buff_creator_t( this, "colossus_smash_up", spell.colossus_smash_debuff )
     .duration( spell.colossus_smash_debuff -> duration() )
     .cd( timespan_t::zero() );
@@ -3541,6 +3618,7 @@ void warrior_t::init_gains()
   gain.critical_block = get_gain( "critical_block" );
   gain.enrage = get_gain( "enrage" );
   gain.melee_crit = get_gain( "melee_crit" );
+  gain.fervor_of_battle = get_gain( "fervor_of_battle" );
   gain.melee_main_hand = get_gain( "melee_main_hand" );
   gain.melee_off_hand = get_gain( "melee_off_hand" );
   gain.raging_blow = get_gain( "raging_blow" );
