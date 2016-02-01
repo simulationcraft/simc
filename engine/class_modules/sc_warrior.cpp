@@ -70,7 +70,7 @@ public:
     buff_t* commanding_shout;
     buff_t* overpower;
     buff_t* ravager;
-    buff_t* recklessness;
+    buff_t* battle_cry;
     // Fury Only
     buff_t* enrage;
     buff_t* frenzy;
@@ -102,7 +102,7 @@ public:
     // Talents
     cooldown_t* shockwave;
     // Fury And Arms
-    cooldown_t* recklessness;
+    cooldown_t* battle_cry;
     // Arms only
     cooldown_t* colossus_smash;
     cooldown_t* mortal_strike;
@@ -128,7 +128,7 @@ public:
     gain_t* bloodthirst;
     gain_t* melee_off_hand;
     gain_t* raging_blow;
-    gain_t* recklessness;
+    gain_t* battle_cry;
     // Arms Only
     gain_t* melee_crit;
     // Prot Only
@@ -168,6 +168,7 @@ public:
   {
     proc_t* arms_trinket;
     proc_t* delayed_auto_attack;
+    proc_t* tactician;
 
     //Tier bonuses
     proc_t* t17_2pc_arms;
@@ -190,10 +191,11 @@ public:
     const spell_data_t* mortal_strike;
     const spell_data_t* seasoned_soldier;
     const spell_data_t* slam;
+    const spell_data_t* tactician;
     //Arms and Fury
     const spell_data_t* die_by_the_sword;
     const spell_data_t* commanding_shout;
-    const spell_data_t* recklessness;
+    const spell_data_t* battle_cry;
     const spell_data_t* whirlwind;
     //Fury only
     const spell_data_t* bloodthirst;
@@ -395,7 +397,7 @@ namespace
 template <class Base>
 struct warrior_action_t: public Base
 {
-  bool headlongrush, headlongrushgcd, recklessness, colossal_might, sweeping_strikes, dauntless;
+  bool headlongrush, headlongrushgcd, battle_cry, colossal_might, sweeping_strikes, dauntless;
 private:
   typedef Base ab; // action base, eg. spell_t
 public:
@@ -405,7 +407,7 @@ public:
     ab( n, player, s ),
     headlongrush( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 1 ) ) ),
     headlongrushgcd( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 2 ) ) ),
-    recklessness( ab::data().affected_by( player -> spec.recklessness -> effectN( 1 ) ) ),
+    battle_cry( ab::data().affected_by( player -> spec.battle_cry -> effectN( 1 ) ) ),
     colossal_might( ab::data().affected_by( player -> spell.colossus_smash_debuff -> effectN( 3 ) ) ),
     sweeping_strikes( ab::data().affected_by( player -> talents.sweeping_strikes -> effectN( 1 ) ) ),
     dauntless( ab::data().affected_by( player -> talents.dauntless -> effectN( 1 ) ) )
@@ -454,7 +456,7 @@ public:
 
     if ( colossal_might && td( target ) -> debuffs_colossus_smash -> up() )
     {
-      am *= 1.0 + ab::player -> spell.colossus_smash_debuff -> effectN( 3 ).percent() + ab::player -> cache.mastery_value();
+      am *= 1.0 + td( target ) -> debuffs_colossus_smash -> value() + p() -> cache.mastery_value();
     }
 
     return am;
@@ -464,8 +466,8 @@ public:
   {
     double cc = ab::composite_crit();
 
-    if ( recklessness )
-      cc += p() -> buff.recklessness -> value();
+    if ( battle_cry )
+      cc += p() -> buff.battle_cry -> value();
 
     return cc;
   }
@@ -587,7 +589,7 @@ public:
       rage *= -1;
 
       if ( p() -> specialization() != WARRIOR_PROTECTION )
-        p() -> cooldown.recklessness -> adjust( timespan_t::from_seconds( rage ) );
+        p() -> cooldown.battle_cry -> adjust( timespan_t::from_seconds( rage ) );
       else
       {
         p() -> cooldown.last_stand -> adjust( timespan_t::from_seconds( rage ) );
@@ -626,10 +628,12 @@ struct warrior_spell_t: public warrior_action_t < spell_t >
 struct warrior_attack_t: public warrior_action_t < melee_attack_t >
 { // Main Warrior Attack Class
   bool procs_overpower;
+  bool procs_tactician;
+
   warrior_attack_t( const std::string& n, warrior_t* p,
                     const spell_data_t* s = spell_data_t::nil() ):
     base_t( n, p, s ),
-    procs_overpower( false )
+    procs_overpower( false ), procs_tactician( false )
   {
     special = true;
     if ( p -> talents.overpower -> ok() )
@@ -641,13 +645,22 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     base_t::assess_damage( type, s );
   }
 
-  virtual void execute() override
+  virtual void impact( action_state_t* s ) override
   {
-    base_t::execute();
+    base_t::impact( s );
 
-    if ( procs_overpower && execute_state -> result != RESULT_MISS && p() -> rppm.overpower -> trigger() )
+    if ( result_is_hit( s -> result ) )
     {
-      p() -> buff.overpower -> trigger();
+      if ( procs_overpower && p() -> rppm.overpower -> trigger() )
+      {
+        p() -> buff.overpower -> trigger();
+      }
+
+      if ( procs_tactician && rng().roll( p() -> spec.tactician -> proc_chance() ) )
+      {
+        p() -> cooldown.colossus_smash -> reset( true );
+        p() -> proc.tactician -> occur();
+      }
     }
   }
 
@@ -1205,6 +1218,7 @@ struct execute_t: public warrior_attack_t
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
+    procs_tactician = true;
 
     if ( p -> specialization() == WARRIOR_FURY )
     {
@@ -1605,6 +1619,7 @@ struct mortal_strike_t: public warrior_attack_t
   {
     parse_options( options_str );
     cooldown = p -> cooldown.mortal_strike;
+    cooldown -> duration = data().charge_cooldown();
     weapon = &( p -> main_hand_weapon );
     base_costs[RESOURCE_RAGE] += p -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
     cooldown -> charges += p -> talents.mortal_combo -> effectN( 1 ).base_value();
@@ -2128,6 +2143,7 @@ struct slam_t: public warrior_attack_t
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
+    procs_tactician = true;
   }
 
   bool ready() override
@@ -2283,7 +2299,7 @@ struct whirlwind_off_hand_t: public warrior_attack_t
 struct whirlwind_mh_t: public warrior_attack_t
 {
   whirlwind_mh_t( warrior_t* p, const spell_data_t* whirlwind ):
-    warrior_attack_t( "whirlwind", p, whirlwind )
+    warrior_attack_t( "whirlwind_mh", p, whirlwind )
   {
     aoe = -1;
   }
@@ -2327,14 +2343,17 @@ struct whirlwind_parent_t: public warrior_attack_t
     tick_zero = true;
     callbacks = false;
     base_tick_time = spin_time;
-    hasted_ticks = true;
+    hasted_ticks = false;
     dot_duration = base_tick_time * 2;
   }
 
   void tick( dot_t* d ) override
   {
+    // Only the first whirl procs tactician.
+    mh_attack -> procs_tactician = d -> current_tick == 0;
+
     warrior_attack_t::tick( d );
-    mh_attack -> execute();
+
     if ( mh_attack )
     {
       mh_attack -> execute();
@@ -2512,13 +2531,13 @@ struct commanding_shout_t: public warrior_spell_t
   }
 };
 
-// Recklessness =============================================================
+// Battle Cry =============================================================
 
-struct recklessness_t: public warrior_spell_t
+struct battle_cry_t: public warrior_spell_t
 {
   double bonus_crit;
-  recklessness_t( warrior_t* p, const std::string& options_str ):
-    warrior_spell_t( "recklessness", p, p -> spec.recklessness ),
+  battle_cry_t( warrior_t* p, const std::string& options_str ):
+    warrior_spell_t( "battle_cry", p, p -> spec.battle_cry ),
     bonus_crit( 0.0 )
   {
     parse_options( options_str );
@@ -2531,7 +2550,7 @@ struct recklessness_t: public warrior_spell_t
   {
     warrior_spell_t::execute();
 
-    p() -> buff.recklessness -> trigger( 1, bonus_crit );
+    p() -> buff.battle_cry -> trigger( 1, bonus_crit );
     if ( p() -> sets.has_set_bonus( WARRIOR_FURY, T17, B4 ) )
       p() -> buff.tier17_4pc_fury_driver -> trigger();
 
@@ -2539,7 +2558,7 @@ struct recklessness_t: public warrior_spell_t
     {
       p() -> resource_gain( RESOURCE_RAGE,
                             p() -> talents.reckless_abandon -> effectN( 2 ).resource( RESOURCE_RAGE ),
-                            p() -> gain.recklessness );
+                            p() -> gain.battle_cry );
     }
   }
 };
@@ -2680,7 +2699,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "raging_blow"          ) return new raging_blow_t          ( this, options_str );
   if ( name == "commanding_shout"     ) return new commanding_shout_t     ( this, options_str );
   if ( name == "ravager"              ) return new ravager_t              ( this, options_str );
-  if ( name == "recklessness"         ) return new recklessness_t         ( this, options_str );
+  if ( name == "battle_cry"           ) return new battle_cry_t           ( this, options_str );
   if ( name == "rend"                 ) return new rend_t                 ( this, options_str );
   if ( name == "revenge"              ) return new revenge_t              ( this, options_str );
   if ( name == "siegebreaker"         ) return new siegebreaker_t         ( this, options_str );
@@ -2732,7 +2751,7 @@ void warrior_t::init_spells()
   spec.rampage                  = find_specialization_spell( "Rampage" );
   spec.raging_blow              = find_specialization_spell( "Raging Blow" );
   spec.commanding_shout         = find_specialization_spell( "Commanding Shout" );
-  spec.recklessness             = find_specialization_spell( "Recklessness" );
+  spec.battle_cry             = find_specialization_spell( "Battle Cry" );
   spec.resolve                  = find_specialization_spell( "Resolve" );
   spec.revenge                  = find_specialization_spell( "Revenge" );
   spec.riposte                  = find_specialization_spell( "Riposte" );
@@ -2743,6 +2762,7 @@ void warrior_t::init_spells()
   spec.singleminded_fury        = find_specialization_spell( "Single-Minded Fury" );
   spec.slam                     = find_specialization_spell( "Slam" );
   spec.sword_and_board          = find_specialization_spell( "Sword and Board" );
+  spec.tactician                = find_specialization_spell( "Tactician" );
   spec.titans_grip              = find_specialization_spell( "Titan's Grip" );
   spec.thunder_clap             = find_specialization_spell( "Thunder Clap" );
   spec.unwavering_sentinel      = find_specialization_spell( "Unwavering Sentinel" );
@@ -2848,7 +2868,7 @@ void warrior_t::init_spells()
   cooldown.rage_from_charge -> duration = timespan_t::from_seconds( 12.0 );
   cooldown.rage_from_crit_block     = get_cooldown( "rage_from_crit_block" );
   cooldown.rage_from_crit_block -> duration = timespan_t::from_seconds( 3.0 );
-  cooldown.recklessness             = get_cooldown( "recklessness" );
+  cooldown.battle_cry               = get_cooldown( "battle_cry" );
   cooldown.revenge                  = get_cooldown( "revenge" );
   cooldown.revenge_reset            = get_cooldown( "revenge_reset" );
   cooldown.revenge_reset -> duration = spell.revenge_trigger -> internal_cooldown();
@@ -3014,35 +3034,35 @@ void warrior_t::apl_fury()
     if ( items[i].name_str == "scabbard_of_kyanos" )
       default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.avatar.up|target.time_to_die<25)" );
     else if ( items[i].name_str == "vial_of_convulsive_shadows" )
-      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.recklessness.up|target.time_to_die<25|!talent.anger_management.enabled)" );
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.battle_cry.up|target.time_to_die<25|!talent.anger_management.enabled)" );
     else if ( items[i].name_str == "thorasus_the_stone_heart_of_draenor" )
-      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.recklessness.up|target.time_to_die<25)" );
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.battle_cry.up|target.time_to_die<25)" );
   }
 
   if ( sim -> allow_potions )
   {
     if ( true_level > 90 )
-      default_list -> add_action( "potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=30" );
+      default_list -> add_action( "potion,name=draenic_strength,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<=30" );
     else if ( true_level >= 80 )
-      default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=30" );
+      default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<=30" );
   }
 
   default_list -> add_action( "run_action_list,name=single_target,if=(raid_event.adds.cooldown<60&raid_event.adds.count>2&spell_targets.whirlwind=1)|raid_event.movement.cooldown<5", "Skip cooldown usage if we can line them up with bladestorm on a large set of adds, or if movement is coming soon." );
-  default_list -> add_action( this, "Recklessness", "if=target.time_to_die<15)&((talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled)" );
+  default_list -> add_action( this, "Battle Cry", "if=target.time_to_die<15)&((talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled)" );
   default_list -> add_action( "call_action_list,name=reck_anger_management,if=talent.anger_management.enabled&((talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled)" );
   default_list -> add_action( "call_action_list,name=reck_no_anger,if=!talent.anger_management.enabled&((talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled)" );
 
-  reck_anger_management -> add_action( this, "Recklessness", "if=(target.time_to_die>140|target.health.pct<20)" );
-  reck_no_anger -> add_action( this, "Recklessness", "if=(target.time_to_die>190|target.health.pct<20)" );
+  reck_anger_management -> add_action( this, "Battle Cry", "if=(target.time_to_die>140|target.health.pct<20)" );
+  reck_no_anger -> add_action( this, "Battle Cry", "if=(target.time_to_die>190|target.health.pct<20)" );
 
-  default_list -> add_talent( this, "Avatar", "if=buff.recklessness.up|cooldown.recklessness.remains>60|target.time_to_die<30" );
+  default_list -> add_talent( this, "Avatar", "if=buff.battle_cry.up|cooldown.battle_cry.remains>60|target.time_to_die<30" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
     if ( racial_actions[i] == "arcane_torrent" )
       default_list -> add_action( racial_actions[i] + ",if=rage<rage.max-40" );
     else
-      default_list -> add_action( racial_actions[i] + ",if=buff.recklessness.up" );
+      default_list -> add_action( racial_actions[i] + ",if=buff.battle_cry.up" );
   }
 
   default_list -> add_action( "call_action_list,name=two_targets,if=spell_targets.whirlwind=2" );
@@ -3055,7 +3075,7 @@ void warrior_t::apl_fury()
   movement -> add_talent( this, "Storm Bolt", "", "May as well throw storm bolt if we can." );
   movement -> add_action( this, "Heroic Throw" );
 
-  single_target -> add_action( this, "Recklessness", "if=target.health.pct<20&raid_event.adds.exists" );
+  single_target -> add_action( this, "Battle Cry", "if=target.health.pct<20&raid_event.adds.exists" );
   single_target -> add_action( this, "Bloodthirst", "if=buff.enrage.down" );
   single_target -> add_talent( this, "Ravager", "if=!raid_event.adds.exists|raid_event.adds.in>60|target.time_to_die<40" );
   single_target -> add_talent( this, "Siegebreaker" );
@@ -3098,7 +3118,7 @@ void warrior_t::apl_fury()
   aoe -> add_talent( this, "Dragon Roar" );
   aoe -> add_action( this, "Bloodthirst" );
 
-  bladestorm -> add_action( this, "Recklessness", "sync=bladestorm,if=buff.enrage.remains>4&(raid_event.adds.in>60|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)", "oh god why" );
+  bladestorm -> add_action( this, "Battle Cry", "sync=bladestorm,if=buff.enrage.remains>4&(raid_event.adds.in>60|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)", "oh god why" );
   bladestorm -> add_talent( this, "Bladestorm", "if=buff.enrage.remains>4&(raid_event.adds.in>60|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)" );
 }
 
@@ -3127,21 +3147,21 @@ void warrior_t::apl_arms()
   if ( sim -> allow_potions )
   {
     if ( true_level > 90 )
-      default_list -> add_action( "potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<25" );
+      default_list -> add_action( "potion,name=draenic_strength,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<25" );
     else if ( true_level >= 80 )
-      default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<25" );
+      default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<25" );
   }
 
-  default_list -> add_action( this, "Recklessness", "if=(((target.time_to_die>190|target.health.pct<20)|target.time_to_die<=12|talent.anger_management.enabled)&((desired_targets=1&!raid_event.adds.exists)|!talent.bladestorm.enabled)",
-                              "This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'" );
-  default_list -> add_talent( this, "Avatar", "if=buff.recklessness.up|target.time_to_die<25" );
+  default_list -> add_action( this, "Battle Cry", "if=(((target.time_to_die>190|target.health.pct<20)|target.time_to_die<=12|talent.anger_management.enabled)&((desired_targets=1&!raid_event.adds.exists)|!talent.bladestorm.enabled)",
+                              "This incredibly long line (Due to differing talent choices) says 'Use battle_cry on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'" );
+  default_list -> add_talent( this, "Avatar", "if=buff.battle_cry.up|target.time_to_die<25" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
     if ( racial_actions[i] == "arcane_torrent" )
       default_list -> add_action( racial_actions[i] + ",if=rage<rage.max-40" );
     else
-      default_list -> add_action( racial_actions[i] + ",if=debuff.colossus_smash.up|buff.recklessness.up" );
+      default_list -> add_action( racial_actions[i] + ",if=debuff.colossus_smash.up|buff.battle_cry.up" );
   }
 
   default_list -> add_action( this, "Heroic Leap", "if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists" );
@@ -3395,6 +3415,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ):
   dots_rend = target -> get_dot( "rend", &p );
 
   debuffs_colossus_smash = buff_creator_t( *this, "colossus_smash" )
+    .default_value( p.spell.colossus_smash_debuff -> effectN( 3 ).percent() )
     .duration( p.spell.colossus_smash_debuff -> duration() )
     .cd( timespan_t::zero() );
 
@@ -3468,7 +3489,7 @@ void warrior_t::create_buffs()
   buff.ravager_protection = buff_creator_t( this, "ravager_protection", talents.ravager )
     .add_invalidate( CACHE_PARRY );
 
-  buff.recklessness = buff_creator_t( this, "recklessness", spec.recklessness )
+  buff.battle_cry = buff_creator_t( this, "battle_cry", spec.battle_cry )
     .cd( timespan_t::zero() );
 
   buff.shield_block = buff_creator_t( this, "shield_block", find_spell( 132404 ) )
@@ -3523,7 +3544,7 @@ void warrior_t::init_gains()
   gain.melee_main_hand = get_gain( "melee_main_hand" );
   gain.melee_off_hand = get_gain( "melee_off_hand" );
   gain.raging_blow = get_gain( "raging_blow" );
-  gain.recklessness = get_gain( "recklessness" );
+  gain.battle_cry = get_gain( "battle_cry" );
   gain.revenge = get_gain( "revenge" );
   gain.shield_slam = get_gain( "shield_slam" );
   gain.sword_and_board = get_gain( "sword_and_board" );
@@ -3554,6 +3575,7 @@ void warrior_t::init_procs()
   proc.t17_2pc_fury = get_proc( "t17_2pc_fury" );
   proc.t17_2pc_arms = get_proc( "t17_2pc_arms" );
   proc.arms_trinket = get_proc( "arms_trinket" );
+  proc.tactician    = get_proc( "tactician"    );
 }
 
 // warrior_t::init_rng ========================================================
