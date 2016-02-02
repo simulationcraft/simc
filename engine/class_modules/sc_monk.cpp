@@ -560,6 +560,11 @@ public:
 
   } passives;
 
+  struct
+  {
+    real_ppm_t swift_as_the_wind;
+  } real_ppm;
+
   struct pets_t
   {
     pets::storm_earth_and_fire_pet_t* sef[ SEF_PET_MAX ];
@@ -649,6 +654,7 @@ public:
   virtual void      create_buffs() override;
   virtual void      init_gains() override;
   virtual void      init_procs() override;
+  virtual void      init_rng() override;
   virtual void      regen( timespan_t periodicity ) override;
   virtual void      reset() override;
   virtual void      interrupt() override;
@@ -1206,8 +1212,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     sef_crosswinds_t( storm_earth_and_fire_pet_t* player ) :
       sef_melee_attack_t( "crosswinds", player, player -> o() -> artifact.crosswinds.data().effectN( 1 ).trigger() )
     {
-      channeled = true;
-      may_crit = may_miss = may_block = may_dodge = may_parry = hasted_ticks = tick_zero = callbacks = false;
+      may_crit = may_miss = may_block = may_dodge = may_parry = hasted_ticks = tick_zero = channeled = callbacks = false;
 
       weapon_power_mod = 0;
 
@@ -2114,7 +2119,7 @@ struct tiger_palm_t: public monk_melee_attack_t
       combo_strikes_trigger(CS_TIGER_PALM);
 
       // If A'Buraq is equipped, chance to trigger the weapon effect buff
-      if ( p() -> aburaq )
+      if ( p() -> aburaq && p() -> real_ppm.swift_as_the_wind.trigger() )
         p() -> buff.swift_as_the_wind -> trigger();
 
       // Calculate how much Chi is generated
@@ -5989,7 +5994,6 @@ void monk_t::create_buffs()
                               .cd( timespan_t::zero() );
 
   buff.swift_as_the_wind = buff_creator_t( this, "swift_as_the_wind", aburaq -> driver() -> effectN( 1 ).trigger() )
-    .chance( aburaq -> driver() -> effectN( 1 ).percent() )
     .default_value( aburaq -> driver() -> effectN( 1 ).trigger() -> effectN( 2 ).percent() );
 
   buff.tigereye_brew = buff_creator_t( this, "tigereye_brew", spec.tigereye_brew )
@@ -6049,6 +6053,15 @@ void monk_t::init_procs()
   proc.tier17_4pc_heal            = get_proc( "tier17_2pc_heal" );
 }
 
+// monk_t::init_rng =======================================================
+
+void monk_t::init_rng()
+{
+  player_t::init_rng();
+
+  real_ppm.swift_as_the_wind = real_ppm_t( *this, aburaq -> driver() -> real_ppm() );
+}
+
 // druid_t::has_t18_class_trinket ===========================================
 
 bool monk_t::has_t18_class_trinket() const
@@ -6067,6 +6080,7 @@ bool monk_t::has_t18_class_trinket() const
 void monk_t::reset()
 {
   base_t::reset();
+  real_ppm.swift_as_the_wind.reset();
 }
 
 // monk_t::regen (brews/teas)================================================
