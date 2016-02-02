@@ -26,6 +26,7 @@ Global
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug-WebEngine|Win32.ActiveCfg = Debug-WebEngine|Win32
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug-WebEngine|Win32.Build.0 = Debug-WebEngine|Win32
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug-WebEngine|x64.ActiveCfg = Debug-WebEngine|x64
+		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug-WebEngine|x64.Build.0 = Debug-WebEngine|x64
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug-WebKit|Win32.ActiveCfg = Debug-WebEngine|Win32
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug-WebKit|Win32.Build.0 = Debug-WebEngine|Win32
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug-WebKit|x64.ActiveCfg = Debug-WebKit|x64
