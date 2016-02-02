@@ -265,6 +265,7 @@ public:
     gain_t* insanity_shadow_word_death;
     gain_t* insanity_mind_flay;
     gain_t* insanity_shadow_word_void;
+	gain_t* insanity_void_bolt;
     gain_t* insanity_shadow_crash;
     gain_t* power_word_solace;
     gain_t* insanity_drain;
@@ -2399,10 +2400,15 @@ struct shadow_word_death_t : public priest_spell_t
     : priest_spell_t( "shadow_word_death", p,
                       p.find_class_spell( "Shadow Word: Death" ) ),
       insanity_gain( 30.0 )  // FIXME not in spelldata
+	  // insanity_gain( p.find_spell( 190714 )->effectN( 3 ).percent() )  // Probably the right value.
   {
     parse_options( options_str );
 
-    base_multiplier *= 4.0;  // FIXME remove when spelldata is fixed
+	// FIXME remove when spelldata is fixed
+	if (p.talents.reaper_of_souls->ok())
+		base_multiplier *= 1.5;
+	else
+		base_multiplier *= 4.0;  
 
     base_multiplier *=
         1.0 + p.sets.set( SET_CASTER, T13, B2 )->effectN( 1 ).percent();
@@ -2427,7 +2433,7 @@ struct shadow_word_death_t : public priest_spell_t
         generate_insanity(
             insanity_gain,
             priest.gains
-                .insanity_shadow_word_death );  // FIXME Execute or Impact
+                .insanity_shadow_word_death );
     }
 
     priest_spell_t::impact( s );
@@ -2610,6 +2616,16 @@ struct shadow_word_pain_t : public priest_spell_t
         priest.procs.shadowy_insight_from_shadow_word_pain->occur();
   }
 
+  double cost() const override
+  {
+	  double c = priest_spell_t::cost();
+
+	  if (priest.specialization() == PRIEST_SHADOW)
+		  return 0.0;
+
+	  return c;
+  }
+
   void execute() override
   {
     priest_spell_t::execute();
@@ -2781,9 +2797,12 @@ struct vampiric_touch_t : public priest_spell_t
 
 struct void_bolt_t : public priest_spell_t
 {
+  double insanity_gain;
+
   void_bolt_t( priest_t& player, const std::string& options_str )
     : priest_spell_t( "void_bolt", player,
-                      player.find_specialization_spell( "Void Bolt" ) )
+                      player.find_specialization_spell( "Void Bolt" ) ),
+	  insanity_gain(data().effectN(3).resource(RESOURCE_INSANITY))
   {
     parse_options( options_str );
   }
@@ -2806,6 +2825,8 @@ struct void_bolt_t : public priest_spell_t
     {
       td.dots.vampiric_touch->extend_duration( extend_duration );
     }
+
+    generate_insanity(insanity_gain, priest.gains.insanity_void_bolt);
   }
 
   void update_ready( timespan_t cd_duration ) override
@@ -4927,7 +4948,7 @@ void priest_t::create_cooldowns()
  */
 void priest_t::create_gains()
 {
-  gains.mindbender              = get_gain( "Mindbender Mana" );
+  gains.mindbender              = get_gain( "Mindbender Resource Gain" );
   gains.power_word_solace       = get_gain( "Power Word: Solace Mana" );
   gains.devouring_plague_health = get_gain( "Devouring Plague Health" );
   gains.insanity_mind_flay =
@@ -4935,6 +4956,8 @@ void priest_t::create_gains()
   gains.insanity_mind_blast = get_gain( "Insanity from Mind Blast" );
   gains.insanity_shadow_word_void =
       get_gain( "Insanity from Shadow Word: Void" );
+  gains.insanity_void_bolt =
+	  get_gain( "Insanity from Void Bolt" );
   gains.insanity_shadow_word_death =
       get_gain( "Insanity from Shadow Word: Death" );
   gains.insanity_shadow_crash = get_gain( "Insanity from Shadow Crash" );
