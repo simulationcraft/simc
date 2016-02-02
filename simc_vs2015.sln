@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2015
-VisualStudioVersion = 12.0.31206.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimcGUI_qt5.6.0", "vs\simcqt_vs2015.vcxproj", "{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}"
 EndProject
@@ -26,7 +26,6 @@ Global
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug-WebEngine|Win32.ActiveCfg = Debug-WebEngine|Win32
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug-WebEngine|Win32.Build.0 = Debug-WebEngine|Win32
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug-WebEngine|x64.ActiveCfg = Debug-WebEngine|x64
-		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug-WebEngine|x64.Build.0 = Debug-WebEngine|x64
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug-WebKit|Win32.ActiveCfg = Debug-WebEngine|Win32
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug-WebKit|Win32.Build.0 = Debug-WebEngine|Win32
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug-WebKit|x64.ActiveCfg = Debug-WebKit|x64

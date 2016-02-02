@@ -2399,8 +2399,8 @@ struct shadow_word_death_t : public priest_spell_t
   shadow_word_death_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "shadow_word_death", p,
                       p.find_class_spell( "Shadow Word: Death" ) ),
-      insanity_gain( 30.0 )  // FIXME not in spelldata
-	  // insanity_gain( p.find_spell( 190714 )->effectN( 3 ).percent() )  // Probably the right value.
+      //insanity_gain( 30.0 )  // FIXME not in spelldata
+	  insanity_gain( p.find_spell( 190714 )->effectN( 1 ).resource(RESOURCE_INSANITY) )
   {
     parse_options( options_str );
 
@@ -2427,16 +2427,19 @@ struct shadow_word_death_t : public priest_spell_t
 
   void impact( action_state_t* s ) override
   {
-    if ( result_is_hit( s->result ) )
-    {
-      if ( priest.talents.reaper_of_souls->ok() )
-        generate_insanity(
-            insanity_gain,
-            priest.gains
-                .insanity_shadow_word_death );
-    }
+	double save_health_percentage = s->target->health_percentage();
 
     priest_spell_t::impact( s );
+
+	if (result_is_hit(s->result))
+	{
+		if ( priest.talents.reaper_of_souls->ok() ||
+			 ( ( save_health_percentage > 0.0 ) && ( s->target->health_percentage() <= 0.0 ) ) )
+			generate_insanity(
+				insanity_gain,
+				priest.gains
+				.insanity_shadow_word_death);
+	}
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
