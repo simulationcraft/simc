@@ -2202,6 +2202,9 @@ struct mind_blast_t : public priest_spell_t
     parse_options( options_str );
     is_mind_spell       = true;
 
+	cooldown->charges = data().charges();
+	cooldown->duration = data().charge_cooldown();
+
     spell_power_mod.direct *=
         1.0 + player.talents.fortress_of_the_mind->effectN( 4 ).percent();
   }
