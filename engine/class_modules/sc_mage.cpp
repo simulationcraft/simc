@@ -272,7 +272,7 @@ public:
                       * arcane_static, // NYI
                       * torrent, // NYI
                       * pyromaniac, // NYI
-                      * conflagration, // NYI
+                      * conflagration,
                       * fire_starter, // NYI
                       * ray_of_frost, // NYI
                       * lonely_winter, // NYI
@@ -1724,11 +1724,29 @@ struct presence_of_mind_t : public arcane_mage_spell_t
   }
 };
 
+// Conflagration Spell =====================================================
 
-// Ignite ===================================================================
+struct conflagration_explosion_t : public fire_mage_spell_t
+{
+  conflagration_explosion_t( mage_t* p ) :
+    fire_mage_spell_t( "conflagration_explosion", p, p -> talents.conflagration )
+  {
+    parse_effect_data( p -> find_spell( 205345) -> effectN(1) );
+    callbacks = false;
+    background = true;
+    aoe = -1;
+    base_costs[ RESOURCE_MANA ] = 0;
+    trigger_gcd = timespan_t::zero();
+  }
+};
+
+// Ignite Spell ===================================================================
 
 struct ignite_t : public residual_action_t
 {
+  
+  conflagration_explosion_t* conflagration_explosion;
+
   struct ignite_state_t : public residual_periodic_state_t
   {
     bool spread_helper;
@@ -1746,13 +1764,18 @@ struct ignite_t : public residual_action_t
     }
   };
 
-
   ignite_t( mage_t* player ) :
-    residual_action_t( "ignite", player, player -> find_spell( 12846 ) )
+    residual_action_t( "ignite", player, player -> find_spell( 12846 ) ),
+    conflagration_explosion( nullptr )
   {
     dot_duration = dbc::find_spell( player, 12654 ) -> duration();
     base_tick_time = dbc::find_spell( player, 12654 ) -> effectN( 1 ).period();
     school = SCHOOL_FIRE;
+    
+    if ( player -> talents.conflagration -> ok() )
+    { 
+      conflagration_explosion = new conflagration_explosion_t( player );
+    }
   }
 
   residual_periodic_state_t* new_state() override
@@ -1760,9 +1783,18 @@ struct ignite_t : public residual_action_t
     return new ignite_state_t( p(), this, target);
   }
 
-  void tick(dot_t* dot) override
+  void tick( dot_t* dot ) override
   {
     residual_action_t::tick( dot );
+
+    
+    if ( p() -> talents.conflagration -> ok() && rng().roll( p() -> talents.conflagration -> effectN( 1 ).percent() ) )
+    {
+      conflagration_explosion -> target = dot -> target;
+      conflagration_explosion -> execute();    
+    }
+
+
     ignite_state_t* ignite_state = debug_cast<ignite_state_t*>( dot -> state);
     if ( ignite_state -> spread_helper && dot -> remains() > base_tick_time)
     {
@@ -2387,6 +2419,7 @@ struct cone_of_cold_t : public mage_spell_t
     aoe = -1;
   }
 };
+
 
 // Counterspell Spell =======================================================
 
