@@ -151,7 +151,7 @@ public:
   // Benefits
   struct benefits_t
   {
-    benefit_t* arcane_charge[ 4 ]; // CHANGED 2014/4/15 - Arcane Charges max stack is 4 now, not 7.
+    benefit_t* arcane_charge[ 4 ];
     benefit_t* water_elemental;
   } benefits;
 
@@ -191,6 +191,7 @@ public:
     buff_t* ice_floes,
           * incanters_flow,
           * rune_of_power;
+
   } buffs;
 
   // Cooldowns
@@ -271,9 +272,9 @@ public:
     const spell_data_t* arcane_familiar, // NYI
                       * arcane_static, // NYI
                       * torrent, // NYI
-                      * pyromaniac, // NYI
+                      * pyromaniac, 
                       * conflagration,
-                      * fire_starter, // NYI
+                      * fire_starter,
                       * ray_of_frost, // NYI
                       * lonely_winter, // NYI
                       * bone_chilling; // NYI
@@ -293,8 +294,8 @@ public:
                       * charged_up, // NYI
                       * words_of_power, // NYI
                       * blast_wave,
-                      * flame_on, // NYI
-                      * controlled_burn, // NYI
+                      * flame_on,
+                      * controlled_burn,
                       * ice_nova,
                       * frozen_touch, // NYI
                       * bitter_cold; // NYI
@@ -325,6 +326,65 @@ public:
                       * comet_storm;
   } talents;
 
+  // Artifact
+  struct artifact_spell_data_t
+  {
+    // Arcane
+    artifact_power_t arcane_rebound,
+                     archmages_fortitude,
+                     amethyst_awakening,
+                     everywhere_at_once,
+                     arcane_purification,
+                     aegwynns_imperative,
+                     archmages_alacrity,
+                     aegwynns_ascendance,
+                     aegwynns_wrath,
+                     crackling_energy,
+                     blasting_rod,
+                     ethereal_sensitivity,
+                     aegwynns_fury,
+                     echoes_of_aegwynn,
+                     might_of_the_guardians,
+                     torrential_barrage,
+                     power_of_aegwynn;
+
+    // Fire
+    artifact_power_t aftershocks,
+                     scorched_earth,
+                     everburning_consumption,
+                     blue_flame_special,
+                     molten_skin,
+                     phoenix_reborn,
+                     great_balls_of_fire,
+                     cauterizing_blink,
+                     fire_at_will,
+                     pyroclasmic_paranoia,
+                     reignition_overdrive,
+                     pyretic_incantation,
+                     burning_gaze,
+                     by_fire_be_purged,
+                     placeholder_fire,
+                     blast_furnace;
+
+    // Frost
+    artifact_power_t ebonbolt,
+                     let_it_go,
+                     frozen_veins,
+                     permafrost,
+                     the_storm_rages,
+                     black_icicle,
+                     shield_of_alodi,
+                     icy_caress,
+                     placeholder_frost,
+                     chain_reaction,
+                     clarity_of_thought,
+                     flash_freeze,
+                     placeholder_frost,
+                     orbital_strike,
+                     ice_age,
+                     chilled_to_the_core;
+  } artifact;
+ 
 public:
   mage_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, MAGE, name, r ),
@@ -4488,6 +4548,57 @@ void mage_t::init_spells()
   talents.thermal_void    = find_talent_spell( "Thermal Void"    );
   talents.glacial_spike   = find_talent_spell( "Glacial Spike"   );
   talents.comet_storm     = find_talent_spell( "Comet Storm"     );
+
+  //Artifact Spells
+  //Arcane
+  artifact.aegwynns_ascendance     = find_artifact_spell( "Aegwynns Ascendance"   );
+  artifact.aegwynns_fury           = find_artifact_spell( "Aegwynns Fury"         );
+  artifact.aegwynns_imperative     = find_artifact_spell( "Aegwynns Imperative"   );
+  artifact.aegwynns_wrath          = find_artifact_spell( "Aegwynns Wrath"        );
+  artifact.amethyst_awakening      = find_artifact_spell( "Amethyst Awakening"    );
+  artifact.arcane_purification     = find_artifact_spell( "Arcane Purification"   );
+  artifact.arcane_rebound          = find_artifact_spell( "Arcane Rebound"        );
+  artifact.archmages_fortitude     = find_artifact_spell( "Archmages Fortitude"   );
+  artifact.archmages_alacrity      = find_artifact_spell( "Archmages Alacrity"    );
+  artifact.blasting_rod            = find_artifact_spell( "Blasting Rod"          );
+  artifact.crackling_energy        = find_artifact_spell( "Crackling Energy"      );
+  artifact.might_of_the_guardians  = find_artifact_spell( "Might Of The Guardians");
+  artifact.torrential_barrage      = find_artifact_spell( "Torrential Barrage"    );
+  artifact.everywhere_at_once      = find_artifact_spell( "Everywhere At Once"    );
+  artifact.ethereal_sensitivity    = find_artifact_spell( "Ethereal Sensitivity"  );
+  artifact.power_of_aegwynn        = find_artifact_spell( "Power of Aegywnn"      );
+  artifact.echoes_of_aegwynn       = find_artifact_spell( "Echoes of Aegywnn"     );
+  //Fire
+  artifact.aftershocks             = find_artifact_spell( "Aftershocks"            );
+  artifact.scorched_earth          = find_artifact_spell( "Scorched Earth"         );
+  artifact.blue_flame_special      = find_artifact_spell( "Blue Flame Special"     );
+  artifact.everburning_consumption = find_artifact_spell( "Everburning Consumption");
+  artifact.molten_skin             = find_artifact_spell( "Molten Skin"            );
+  artifact.phoenix_reborn          = find_artifact_spell( "Phoenix Reborn"         );
+  artifact.great_balls_of_fire     = find_artifact_spell( "Great Balls of Fire"    );
+  artifact.cauterizing_blink       = find_artifact_spell( "Cauterizing Blink"      );
+  artifact.fire_at_will            = find_artifact_spell( "Fire At Will"           );
+  artifact.pyroclasmic_paranoia    = find_artifact_spell( "Pyroclasmic Paranoia"   );
+  artifact.reignition_overdrive    = find_artifact_spell( "Reignition Overdrive"   );
+  artifact.pyretic_incantation     = find_artifact_spell( "Pyretic Incantation"    );
+  artifact.burning_gaze            = find_artifact_spell( "Burning Gaze"           );
+  artifact.blast_furnace           = find_artifact_spell( "Blast Furnace"          );
+  //Frost
+  artifact.ebonbolt                = find_artifact_spell( "Ebonbolt"               );
+  artifact.let_it_go               = find_artifact_spell( "Let It Go"              );
+  artifact.frozen_veins            = find_artifact_spell( "Frozen Veins"           );
+  artifact.permafrost              = find_artifact_spell( "Permafrost"             );
+  artifact.the_storm_rages         = find_artifact_spell( "The Storm Rages"        );
+  artifact.black_icicle            = find_artifact_spell( "Black Icicle"           );
+  artifact.shield_of_alodi         = find_artifact_spell( "Shield of Alodi"        );
+  artifact.clarity_of_thought      = find_artifact_spell( "Clarity of Thought"     );
+  artifact.flash_freeze            = find_artifact_spell( "Flash Freeze"           );
+  artifact.icy_caress              = find_artifact_spell( "Icy Caress"             );
+  artifact.chain_reaction          = find_artifact_spell( "Chain Reaction"         );
+  artifact.orbital_strike          = find_artifact_spell( "Orbital Strike"         );
+  artifact.ice_age                 = find_artifact_spell( "Ice Age"                );
+  artifact.chilled_to_the_core     = find_artifact_spell( "Chilled To The Core"    );
+
 
   // Spec Spells
   spec.arcane_charge         = find_spell( 36032 );
