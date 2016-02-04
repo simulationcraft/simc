@@ -330,59 +330,57 @@ public:
   struct artifact_spell_data_t
   {
     // Arcane
-    artifact_power_t arcane_rebound,
-                     archmages_fortitude,
-                     amethyst_awakening,
-                     everywhere_at_once,
-                     arcane_purification,
-                     aegwynns_imperative,
-                     archmages_alacrity,
-                     aegwynns_ascendance,
-                     aegwynns_wrath,
-                     crackling_energy,
-                     blasting_rod,
-                     ethereal_sensitivity,
-                     aegwynns_fury,
-                     echoes_of_aegwynn,
-                     might_of_the_guardians,
-                     torrential_barrage,
-                     power_of_aegwynn;
+    artifact_power_t arcane_rebound, //NYI
+                     archmages_fortitude, //NYI
+                     amethyst_awakening, //NYI
+                     everywhere_at_once, //NYI
+                     arcane_purification, //NYI
+                     aegwynns_imperative, //NYI
+                     archmages_alacrity, //NYI
+                     aegwynns_ascendance, //NYI
+                     aegwynns_wrath, //NYI
+                     crackling_energy, //NYI
+                     blasting_rod, //NYI
+                     ethereal_sensitivity, //NYI
+                     aegwynns_fury, //NYI
+                     echoes_of_aegwynn, //NYI
+                     might_of_the_guardians, //NYI
+                     torrential_barrage, //NYI
+                     power_of_aegwynn; //NYI
 
     // Fire
-    artifact_power_t aftershocks,
-                     scorched_earth,
-                     everburning_consumption,
-                     blue_flame_special,
-                     molten_skin,
-                     phoenix_reborn,
+    artifact_power_t aftershocks, //NYI
+                     scorched_earth, //NYI
+                     everburning_consumption, //NYI
+                     blue_flame_special, //NYI
+                     molten_skin, //NYI
+                     phoenix_reborn, //NYI
                      great_balls_of_fire,
-                     cauterizing_blink,
+                     cauterizing_blink, //NYI
                      fire_at_will,
                      pyroclasmic_paranoia,
-                     reignition_overdrive,
-                     pyretic_incantation,
+                     reignition_overdrive, //NYI
+                     pyretic_incantation, //NYI
                      burning_gaze,
-                     by_fire_be_purged,
-                     placeholder_fire,
-                     blast_furnace;
+                     by_fire_be_purged, //NYI
+                     blast_furnace; //NYI
 
     // Frost
-    artifact_power_t ebonbolt,
-                     let_it_go,
-                     frozen_veins,
-                     permafrost,
-                     the_storm_rages,
-                     black_icicle,
-                     shield_of_alodi,
-                     icy_caress,
-                     placeholder_frost,
-                     chain_reaction,
-                     clarity_of_thought,
-                     flash_freeze,
-                     placeholder_frost,
-                     orbital_strike,
-                     ice_age,
-                     chilled_to_the_core;
+    artifact_power_t ebonbolt, //NYI
+                     let_it_go, //NYI
+                     frozen_veins, //NYI
+                     permafrost, //NYI
+                     the_storm_rages, //NYI
+                     black_icicle, //NYI
+                     shield_of_alodi, //NYI
+                     icy_caress, //NYI
+                     chain_reaction, //NYI
+                     clarity_of_thought, //NYI
+                     flash_freeze, //NYI
+                     placeholder_frost, //NYI
+                     orbital_strike, //NYI
+                     ice_age, //NYI
+                     chilled_to_the_core; //NYI
   } artifact;
  
 public:
@@ -1626,6 +1624,15 @@ struct fire_mage_spell_t : public mage_spell_t
 
     trigger( p -> active_ignite, s -> target, amount );
   }
+
+  virtual double action_multiplier() const
+  {
+    double am = mage_spell_t::action_multiplier();
+
+    am *= 1.0 + p() -> artifact.burning_gaze.percent();
+    return am;
+  }
+
 };
 
 
@@ -2591,6 +2598,18 @@ struct fireball_t : public fire_mage_spell_t
 
     triggers_hot_streak = true;
     triggers_ignite = true;
+    base_multiplier *= 1.0 + p -> artifact.great_balls_of_fire.percent();
+    
+  }
+
+  virtual timespan_t execute_time() const override
+  {
+    timespan_t t = fire_mage_spell_t::execute_time();
+
+    if ( p() -> artifact.fire_at_will.rank() )
+      // Spellvalue is -100ms
+      t -= - ( p() -> artifact.fire_at_will.time_value() );
+    return t;
   }
 
   virtual timespan_t travel_time() const override
@@ -2602,6 +2621,9 @@ struct fireball_t : public fire_mage_spell_t
   virtual void impact( action_state_t* s ) override
   {
     fire_mage_spell_t::impact( s );
+
+    if ( sim -> debug )
+      sim -> out_debug.printf( "%d GBOF multiplier",  p() -> artifact.great_balls_of_fire.percent() );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -2665,6 +2687,8 @@ struct fireball_t : public fire_mage_spell_t
 
     return m;
   }
+
+
 };
 
 // Flamestrike Spell ========================================================
@@ -3578,6 +3602,10 @@ struct pyroblast_t : public fire_mage_spell_t
       conjure_phoenix = new conjure_phoenix_t( p );
       add_child( conjure_phoenix );
     }
+
+    base_multiplier *= 1.0 + p -> artifact.pyroclasmic_paranoia.percent();
+
+
   }
 
   virtual action_state_t* new_state() override
