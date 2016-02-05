@@ -50,16 +50,16 @@ actions+=/heal
 head=soul_priests_hood,id=115563,bonus_id=567
 neck=talisman_of_the_fomor,id=113932,bonus_id=567,enchant=gift_of_multistrike
 shoulders=soul_priests_shoulderguards,id=115561,bonus_id=567
-trinket1=autorepairing_autoclave,id=113986,bonus_id=567
-chest=soul_priests_raiment,id=115560,bonus_id=567
 back=flame_infusion_drape,id=113945,bonus_id=567,enchant=gift_of_multistrike
+chest=soul_priests_raiment,id=115560,bonus_id=567
+wrists=bracers_of_enkindled_power,id=113956,bonus_id=567
 hands=soul_priests_gloves,id=115562,bonus_id=567
 waist=seeking_ember_girdle,id=113941,bonus_id=567
-wrists=bracers_of_enkindled_power,id=113956,bonus_id=567
 legs=soul_priests_leggings,id=115564,bonus_id=567
 feet=cavedwellers_climbers,id=113864,bonus_id=567
 finger1=sixeyed_band,id=113901,bonus_id=567,enchant=gift_of_multistrike
 finger2=spellbound_runic_band_of_infinite_preservation,id=118309,enchant=gift_of_multistrike
+trinket1=autorepairing_autoclave,id=113986,bonus_id=567
 trinket2=ironspike_chew_toy,id=119192,bonus_id=567
 main_hand=infernoflame_staff,id=113869,bonus_id=567,enchant=mark_of_shadowmoon
 
