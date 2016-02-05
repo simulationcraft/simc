@@ -44,7 +44,7 @@ feet=spiked_irontoe_slippers,id=124249,bonus_id=567,upgrade=2
 finger1=maalus_the_blood_drinker,id=124636,enchant_id=5324,bonus_id=641
 finger2=portal_key_signet,id=124189,bonus_id=567,upgrade=2,enchant_id=5324
 trinket1=seed_of_creation,id=124514,bonus_id=567,upgrade=2
-trinket2=soul_capacitor,id=124225,bonus_id=567,upgrade=2
+trinket2=soul_capacitor,id=124225,bonus_id=567,upgrade=2,initial_cd=4.5
 main_hand=xutenash_glaive_of_ruin,id=124378,bonus_id=567,upgrade=2,enchant_id=5330
 save=Druid_Feral_T18M.simc
 
