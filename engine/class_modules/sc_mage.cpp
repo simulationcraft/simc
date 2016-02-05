@@ -5813,10 +5813,14 @@ void mage_t::apl_arcane()
 
   init_burn -> add_action( "start_burn_phase,if=buff.arcane_charge.stack>=4&(legendary_ring.cooldown.remains<gcd.max|legendary_ring.cooldown.remains>target.time_to_die+15|!legendary_ring.has_cooldown)&(cooldown.prismatic_crystal.up|!talent.prismatic_crystal.enabled)&(cooldown.arcane_power.up|(glyph.arcane_power.enabled&cooldown.arcane_power.remains>60))&(cooldown.evocation.remains-2*buff.arcane_missiles.stack*spell_haste-gcd.max*talent.prismatic_crystal.enabled)*0.75*(1-0.1*(cooldown.arcane_power.remains<5))*(1-0.1*(talent.nether_tempest.enabled|talent.supernova.enabled))*(10%action.arcane_blast.execute_time)<mana.pct-20-2.5*active_enemies*(9-active_enemies)+(cooldown.evocation.remains*1.8%spell_haste)",
                            "Regular burn with evocation" );
+  init_burn -> add_action( "start_burn_phase,if=talent.prismatic_crystal.enabled&t18_class_trinket&equipped.124230&time<1",
+                           "PC + ToSW + PoF opener burn" );
   init_burn -> add_action( "start_burn_phase,if=target.time_to_die*0.75*(1-0.1*(talent.nether_tempest.enabled|talent.supernova.enabled))*(10%action.arcane_blast.execute_time)*1.1<mana.pct-10+(target.time_to_die*1.8%spell_haste)",
                            "End of fight burn" );
 
 
+  init_crystal -> add_talent( this, "Prismatic Crystal",
+                              "if=t18_class_trinket&equipped.124230&time<2" );
   init_crystal -> add_action( "call_action_list,name=conserve,if=buff.arcane_charge.stack<4|(buff.arcane_missiles.react&debuff.mark_of_doom.remains>2*spell_haste+(target.distance%20))",
                               "Conditions for initiating Prismatic Crystal" );
   init_crystal -> add_action( this, "Arcane Missiles",

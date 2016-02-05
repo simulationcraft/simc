@@ -6260,6 +6260,7 @@ private:
   double       freq;
   double       modifier;
   double       rppm;
+  bool         first_proc_occurred;
   timespan_t   last_trigger_attempt;
   timespan_t   last_successful_trigger;
   timespan_t   initial_precombat_time;
@@ -6303,9 +6304,10 @@ public:
 
   real_ppm_t() :
     player( nullptr ), freq( 0 ), modifier( 0 ), rppm( 0 ),
+    first_proc_occurred( false ),
     last_trigger_attempt( timespan_t::from_seconds( -10.0 ) ),
-    last_successful_trigger( timespan_t::from_seconds( -180.0 ) ),
-    initial_precombat_time( timespan_t::from_seconds( -180.0 ) ),
+    last_successful_trigger( timespan_t::from_seconds( -120.0 ) ),
+    initial_precombat_time( timespan_t::from_seconds( -120.0 ) ),
     scales_with( RPPM_NONE )
   { }
 
@@ -6314,10 +6316,10 @@ public:
     freq( frequency ),
     modifier( mod ),
     rppm( freq * mod ),
+    first_proc_occurred( false ),
     last_trigger_attempt( timespan_t::from_seconds( -10.0 ) ),
-    last_successful_trigger( timespan_t::from_seconds( -180.0 ) ), // Blizz done lied to us, or changed it without telling. After going through a lot of logs,
-                                                                   // it seems that it's actually 3 minutes for the precombat timer.
-    initial_precombat_time( timespan_t::from_seconds( -180.0 ) ),
+    last_successful_trigger( timespan_t::from_seconds( -120.0 ) ),
+    initial_precombat_time( timespan_t::from_seconds( -120.0 ) ),
     scales_with( s )
   { }
 
@@ -6351,6 +6353,7 @@ public:
   {
     last_trigger_attempt = timespan_t::from_seconds( -10.0 );
     last_successful_trigger = initial_precombat_time;
+    first_proc_occurred = false;
   }
 
   bool trigger()
@@ -6360,12 +6363,19 @@ public:
     if ( last_trigger_attempt == player -> sim -> current_time() )
       return false;
 
-    bool success = player -> rng().roll( proc_chance( player, rppm, last_trigger_attempt, last_successful_trigger, scales_with ) );
-
-    last_trigger_attempt = player -> sim -> current_time();
+    double chance = proc_chance( player, rppm, last_trigger_attempt,
+                                 last_successful_trigger, scales_with );
+    bool success = player -> rng().roll( chance );
 
     if ( success )
+    {
+      first_proc_occurred = true;
       last_successful_trigger = player -> sim -> current_time();
+    }
+    // Due to a bug, last attempt to trigger is fixed until first proc
+    if ( first_proc_occurred )
+      last_trigger_attempt = player -> sim -> current_time();
+
     return success;
   }
 };
