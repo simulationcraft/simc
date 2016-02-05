@@ -7313,9 +7313,9 @@ void priest_t::apl_shadow()
   // Choose which APL to use based on talents and fight conditions.
   decision->add_action( "call_action_list,name=main,if=(!talent.clarity_of_power.enabled&!talent.void_entropy.enabled)|(talent.clarity_of_power.enabled&!t18_class_trinket&buff.bloodlust.up&buff.power_infusion.up)" );
   decision->add_action( "call_action_list,name=vent,if=talent.void_entropy.enabled&!talent.clarity_of_power.enabled&!talent.auspicious_spirits.enabled" );
-  decision->add_action( "call_action_list,name=cop_row_insanity_spend,if=talent.clarity_of_power.enabled&talent.insanity.enabled&t18_class_trinket&target.health.pct>20&shadow_orb=5" );
-  decision->add_action( "call_action_list,name=cop_row_insanity_build,if=talent.clarity_of_power.enabled&talent.insanity.enabled&t18_class_trinket&target.health.pct>20&shadow_orb<5" );
-  decision->add_action( "call_action_list,name=cop_row_insanity_death,if=talent.clarity_of_power.enabled&talent.insanity.enabled&t18_class_trinket&target.health.pct<=20" );
+  decision->add_action( "call_action_list,name=cop_row_insanity_spend,if=active_enemies=1&talent.clarity_of_power.enabled&talent.insanity.enabled&t18_class_trinket&target.health.pct>20&shadow_orb=5" );
+  decision->add_action( "call_action_list,name=cop_row_insanity_build,if=active_enemies=1&talent.clarity_of_power.enabled&talent.insanity.enabled&t18_class_trinket&target.health.pct>20&shadow_orb<5" );
+  decision->add_action( "call_action_list,name=cop_row_insanity_death,if=active_enemies=1&talent.clarity_of_power.enabled&talent.insanity.enabled&t18_class_trinket&target.health.pct<=20" );
   decision->add_action( "call_action_list,name=cop,if=talent.clarity_of_power.enabled&!talent.insanity.enabled" );
   decision->add_action( "call_action_list,name=cop_dotweave,if=talent.clarity_of_power.enabled&talent.insanity.enabled&target.health.pct>20&active_enemies<=6" );
   decision->add_action( "call_action_list,name=cop_insanity,if=talent.clarity_of_power.enabled&talent.insanity.enabled" );
