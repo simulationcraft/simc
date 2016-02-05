@@ -711,6 +711,9 @@ void item_t::encoded_item( xml_writer_t& writer ) const
   if ( parsed.item_level > 0 )
     writer.print_attribute( "item_level", std::to_string( item_level() ) );
 
+  if ( parsed.initial_cd > timespan_t::zero() )
+    writer.print_attribute( "initial_cd", std::to_string( parsed.initial_cd.total_seconds() ) );
+
   writer.end_tag( "item" );
 }
 
@@ -807,6 +810,9 @@ std::string item_t::encoded_item() const
 
   if ( ! option_data_source_str.empty() )
     s << ",source=" << option_data_source_str;
+
+  if ( option_initial_cd > 0 )
+    s << ",initial_cd=" << option_initial_cd;
 
   return s.str();
 }
