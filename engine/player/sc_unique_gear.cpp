@@ -2027,25 +2027,50 @@ void item::legendary_ring( special_effect_t& effect )
 
     struct legendary_ring_buff_t: public buff_t
     {
+      struct legendary_ring_delay_event_t : public event_t
+      {
+        player_t* player;
+        action_t* boom;
+        double value;
+
+        legendary_ring_delay_event_t( player_t* p, action_t* b, double v ) :
+          event_t( *p ), player( p ), boom( b ), value( v )
+        { add_event( timespan_t::from_seconds( 1.0 ) ); }
+
+        const char* name() const override
+        { return "legendary_ring_boom_delay"; }
+
+        void execute() override
+        {
+          if ( ! player -> is_sleeping() )
+          {
+            boom -> base_dd_min = boom -> base_dd_max = value;
+            boom -> execute();
+          }
+        }
+      };
+
       action_t* boom;
+      player_t* p;
+
       legendary_ring_buff_t( special_effect_t& originaleffect, std::string name, const spell_data_t* buff, const spell_data_t* damagespell ):
         buff_t( buff_creator_t( originaleffect.player, name, buff, originaleffect.item )
         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
         .default_value( originaleffect.player -> find_spell( originaleffect.spell_id ) -> effectN( 1 ).average( originaleffect.item ) / 10000.0 ) ),
-        boom( 0 )
+        boom( 0 ), p( originaleffect.player )
       {
-        boom = originaleffect.player -> find_action( damagespell -> name_cstr() );
+        boom = p -> find_action( damagespell -> name_cstr() );
 
         if ( !boom )
         {
-          boom = originaleffect.player -> create_proc_action( damagespell -> name_cstr(), originaleffect );
+          boom = p -> create_proc_action( damagespell -> name_cstr(), originaleffect );
         }
 
         if ( !boom )
         {
           boom = new legendary_ring_damage_t( originaleffect, damagespell );
         }
-        originaleffect.player -> buffs.legendary_aoe_ring = this;
+        p -> buffs.legendary_aoe_ring = this;
       }
 
       void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -2054,11 +2079,8 @@ void item::legendary_ring( special_effect_t& effect )
 
         buff_t::expire_override( expiration_stacks, remaining_duration );
 
-        if ( cv > 0 && !player -> is_sleeping() )
-        {
-          boom -> base_dd_min = boom -> base_dd_max = cv;
-          boom -> execute();
-        }
+        if ( cv > 0 )
+          new ( *sim ) legendary_ring_delay_event_t( p, boom, cv );
       }
   };
 
