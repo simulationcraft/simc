@@ -6022,7 +6022,7 @@ void mage_t::apl_fire()
                               "Combustion sequence initialization\n"
                               "# This sequence lists the requirements for preparing a Combustion combo with each talent choice\n"
                               "# Meteor Combustion" );
-  init_combust -> add_action( "start_pyro_chain,if=talent.prismatic_crystal.enabled&cooldown.prismatic_crystal.up&(legendary_ring.cooldown.remains<gcd.max&(!equipped.112320|trinket.proc.crit.react)|legendary_ring.cooldown.remains>target.time_to_die+15|!legendary_ring.has_cooldown)&((cooldown.combustion.remains<gcd.max*2&buff.pyroblast.up&(buff.heating_up.up^action.fireball.in_flight))|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*gcd.max)))",
+  init_combust -> add_action( "start_pyro_chain,if=talent.prismatic_crystal.enabled&cooldown.prismatic_crystal.up&(legendary_ring.cooldown.remains<gcd.max&(!equipped.112320|trinket.proc.crit.react)|legendary_ring.cooldown.remains+20>target.time_to_die|!legendary_ring.has_cooldown)&((cooldown.combustion.remains<gcd.max*2&buff.pyroblast.up&(buff.heating_up.up^action.fireball.in_flight))|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*gcd.max)))",
                               "Prismatic Crystal Combustion" );
   init_combust -> add_action( "start_pyro_chain,if=talent.prismatic_crystal.enabled&!glyph.combustion.enabled&cooldown.prismatic_crystal.remains>20&((cooldown.combustion.remains<gcd.max*2&buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight)|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*gcd.max)))",
                               "Unglyphed Combustions between Prismatic Crystals" );
@@ -6045,7 +6045,7 @@ void mage_t::apl_fire()
   combust_sequence -> add_action( this, "Fireball",
                                   "if=!dot.ignite.ticking&!in_flight" );
   combust_sequence -> add_action( this, "Fireball",
-                                  "if=crit_pct_current-1>(1000%13)&prev_gcd.pyroblast&buff.pyroblast.up&buff.heating_up.up&12-pet.prismatic_crystal.remains<action.fireball.execute_time+3*gcd.max" );
+                                  "if=crit_pct_current-1>(1000%13)&prev_gcd.pyroblast&buff.pyroblast.up&buff.heating_up.up&12-pet.prismatic_crystal.remains<action.fireball.execute_time+3*gcd.max&spell_haste<0.7" );
   combust_sequence -> add_action( this, "Pyroblast",
                                   "if=buff.pyroblast.up&dot.ignite.tick_dmg*(6-ceil(dot.ignite.remains-travel_time))<crit_damage*mastery_value" );
   combust_sequence -> add_action( this, "Inferno Blast",
@@ -6063,7 +6063,7 @@ void mage_t::apl_fire()
   active_talents -> add_talent( this, "Cold Snap",
                                 "if=glyph.dragons_breath.enabled&!talent.prismatic_crystal.enabled&!cooldown.dragons_breath.up" );
   active_talents -> add_action( this, "Dragon's Breath",
-                                "if=glyph.dragons_breath.enabled&(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>8)" );
+                                "if=glyph.dragons_breath.enabled&(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>8|legendary_ring.cooldown.remains>10)" );
   active_talents -> add_talent( this, "Blast Wave",
                                 "if=(!talent.incanters_flow.enabled|buff.incanters_flow.stack>=4)&(target.time_to_die<10|!talent.prismatic_crystal.enabled|(charges>=1&cooldown.prismatic_crystal.remains>recharge_time))" );
 
