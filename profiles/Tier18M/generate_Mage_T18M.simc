@@ -51,7 +51,7 @@ save=Mage_Fire_T18M.simc
 
 mage="Mage_Frost_T18M"
 level=100
-race=dwarf
+race=troll
 role=spell
 position=back
 talents=3003222
