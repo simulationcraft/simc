@@ -6140,11 +6140,11 @@ void mage_t::apl_frost()
                               "if=buff.rune_of_power.remains<cast_time" );
   default_list -> add_talent( this, "Rune of Power",
                               "if=(cooldown.icy_veins.remains<gcd.max&buff.rune_of_power.remains<20)|(cooldown.prismatic_crystal.remains<gcd.max&buff.rune_of_power.remains<10)" );
-  default_list -> add_action( "call_action_list,name=cooldowns,if=target.time_to_die<24" );
-  default_list -> add_action( "call_action_list,name=crystal_sequence,if=talent.prismatic_crystal.enabled&(cooldown.prismatic_crystal.remains<=gcd.max|pet.prismatic_crystal.active)" );
-  default_list -> add_action( "call_action_list,name=water_jet,if=prev_off_gcd.water_jet|debuff.water_jet.remains>0" );
-  default_list -> add_action( "water_jet,if=time<1&active_enemies<4&!(talent.ice_nova.enabled&talent.prismatic_crystal.enabled)",
+  default_list -> add_action( "water_jet,if=time<1&active_enemies<4&!talent.prismatic_crystal.enabled",
                               "Water jet on pull for non PC talent combos" );
+  default_list -> add_action( "call_action_list,name=cooldowns,if=target.time_to_die<24" );
+  default_list -> add_action( "call_action_list,name=crystal_sequence,if=talent.prismatic_crystal.enabled&(cooldown.prismatic_crystal.remains<=gcd.max|pet.prismatic_crystal.active)&(legendary_ring.cooldown.remains<gcd.max|legendary_ring.cooldown.remains+15>target.time_to_die|!legendary_ring.has_cooldown)" );
+  default_list -> add_action( "call_action_list,name=water_jet,if=prev_off_gcd.water_jet|debuff.water_jet.remains>0" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
   default_list -> add_action( "call_action_list,name=single_target" );
 
@@ -6163,12 +6163,12 @@ void mage_t::apl_frost()
   crystal_sequence -> add_action( this, "Frozen Orb",
                                   "target_if=max:target.time_to_die&target!=pet.prismatic_crystal" );
   crystal_sequence -> add_talent( this, "Prismatic Crystal" );
+  crystal_sequence -> add_action( "water_jet,if=pet.prismatic_crystal.remains>(5+10*set_bonus.tier18_4pc)*spell_haste*0.9" );
   crystal_sequence -> add_action( "call_action_list,name=cooldowns" );
   crystal_sequence -> add_talent( this, "Frost Bomb",
                                   "if=talent.prismatic_crystal.enabled&current_target=pet.prismatic_crystal&active_enemies>1&!ticking" );
   crystal_sequence -> add_action( this, "Ice Lance",
                                   "if=!t18_class_trinket&(buff.fingers_of_frost.react>=2+set_bonus.tier18_4pc*2|(buff.fingers_of_frost.react>set_bonus.tier18_4pc*2&active_dot.frozen_orb))" );
-  crystal_sequence -> add_action( "water_jet,if=pet.prismatic_crystal.remains>(5+10*set_bonus.tier18_4pc)*spell_haste*0.8" );
   crystal_sequence -> add_talent( this, "Ice Nova",
                                   "if=charges=2|pet.prismatic_crystal.remains<4" );
   crystal_sequence -> add_action( this, "Ice Lance",
@@ -6236,7 +6236,7 @@ void mage_t::apl_frost()
                      "interrupt_if=cooldown.frozen_orb.up|(talent.frost_bomb.enabled&buff.fingers_of_frost.react>=2)" );
 
 
-  single_target -> add_action( "call_action_list,name=cooldowns,if=!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>15",
+  single_target -> add_action( "call_action_list,name=cooldowns,if=(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>15)&!legendary_ring.has_cooldown",
                                "Single target sequence" );
   single_target -> add_action( this, "Ice Lance",
                                "if=buff.fingers_of_frost.react&(buff.fingers_of_frost.remains<action.frostbolt.execute_time|buff.fingers_of_frost.remains<buff.fingers_of_frost.react*gcd.max)",
@@ -6244,10 +6244,10 @@ void mage_t::apl_frost()
   single_target -> add_action( this, "Frostfire Bolt",
                                "if=buff.brain_freeze.react&(buff.brain_freeze.remains<action.frostbolt.execute_time|buff.brain_freeze.remains<buff.brain_freeze.react*gcd.max)" );
   single_target -> add_talent( this, "Frost Bomb",
-                               "if=!talent.prismatic_crystal.enabled&cooldown.frozen_orb.remains<gcd.max&debuff.frost_bomb.remains<10",
+                               "if=(!talent.prismatic_crystal.enabled|legendary_ring.cooldown.remains>45)&cooldown.frozen_orb.remains<gcd.max&debuff.frost_bomb.remains<10",
                                "Frozen Orb usage without Prismatic Crystal" );
   single_target -> add_action( this, "Frozen Orb",
-                               "if=!talent.prismatic_crystal.enabled&buff.fingers_of_frost.stack<2&cooldown.icy_veins.remains>45-20*talent.thermal_void.enabled" );
+                               "if=(!talent.prismatic_crystal.enabled|legendary_ring.cooldown.remains>45)&buff.fingers_of_frost.stack<2&cooldown.icy_veins.remains>45-20*talent.thermal_void.enabled" );
   single_target -> add_action( this, "Ice Lance",
                                "if=buff.fingers_of_frost.react&buff.shatterlance.up",
                                "Single target routine; Rough summary: IN2 > FoF2 > CmS > IN > BF > FoF" );
