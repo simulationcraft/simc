@@ -5510,6 +5510,8 @@ void rogue_t::init_action_list()
     precombat -> add_action( "honor_among_thieves,cooldown=2.2,cooldown_stddev=0.1",
                              "Proxy Honor Among Thieves action. Generates Combo Points at a mean rate of 2.2 seconds. Comment out to disable (and use the real Honor Among Thieves)." );
 
+    if ( find_item( "maalus_the_blood_drinker") && find_item( "soul_capacitor" ) )
+      def -> add_action( "cancel_buff,name=spirit_shift,if=buff.maalus.remains<1&buff.maalus.up&buff.spirit_shift.remains-buff.maalus.remains<3", "Explode Spirit Shift at the end of Maalus if it has significant damage stored up." );
     def -> add_talent( this, "Shadow Reflection", "if=buff.shadow_dance.up|(set_bonus.tier18_4pc=1&time<2)" );
 
     for ( size_t i = 0; i < item_actions.size(); i++ )
