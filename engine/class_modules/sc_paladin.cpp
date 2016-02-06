@@ -2129,8 +2129,8 @@ struct blade_of_justice_t : public holy_power_generator_t
   const spell_data_t* sword_of_light;
   blade_of_justice_t( paladin_t* p, const std::string& options_str )
     : holy_power_generator_t( "blade_of_justice", p, p -> find_class_spell( "Blade of Justice" ), true ),
-      sword_of_light( p -> find_specialization_spell( "Sword of Light" ) ),
-      bol_proc( new bol_blade_of_justice_t( p, options_str ) )
+      bol_proc( new bol_blade_of_justice_t( p, options_str ) ),
+      sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
   {
     parse_options( options_str );
 
@@ -2703,9 +2703,10 @@ struct judgment_t : public paladin_melee_attack_t
       // +1 Holy Power for Ret
       if ( p() -> specialization() == PALADIN_RETRIBUTION )
       {
-        // apply gain, attribute gain to Judgment
+        // ... but only with Might of Virtue
         if ( p() -> talents.might_of_virtue -> ok() )
         {
+          // apply gain, attribute gain to Judgment
           p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_judgment );
         }
       }
@@ -2898,17 +2899,18 @@ struct templars_verdict_t : public holy_power_consumer_t
     return base_cost;
   }
 
-  virtual void execute () override
+  virtual void execute() override
   {
     // store cost for potential refunding (see below)
     double c = cost();
 
     holy_power_consumer_t::execute();
 
+    // TODO: do misses consume conviction?
     if ( p() -> buffs.conviction -> up() )
       p() -> buffs.conviction -> expire();
 
-    // missed/dodged/parried TVs do not consume Holy Power, but do consume Divine Purpose
+    // missed/dodged/parried TVs do not consume Holy Power
     // check for a miss, and refund the appropriate amount of HP if we spent any
     if ( result_is_miss( execute_state -> result ) && c > 0 )
     {
@@ -3655,6 +3657,7 @@ void paladin_t::generate_action_prio_list_ret()
 
   // TV5 > TV4 >
   single -> add_action( this, "Templar's Verdict", "if=holy_power>=4" );
+  single -> add_action( this, "Templar's Verdict", "if=(holy_power>=2)&(buff.conviction.up)");
 
   // BoJ/DH >
   single -> add_talent( this, "Divine Hammer" );
@@ -3680,12 +3683,14 @@ void paladin_t::generate_action_prio_list_ret()
   single -> add_talent( this, "Blade of Wrath" );
 
   // TODO: Determine where this goes
+  // TODO: how should this interact with holy power?
   single -> add_action( "wake_of_ashes" );
 
   //Executed if three or more targets are present.
   // TODO: this is a total guess
   cleave -> add_action( this, "Judgment" );
   cleave -> add_action( this, "Divine Storm", "if=holy_power>=4" );
+  cleave -> add_action( this, "Divine Storm", "if=(holy_power>=2)&(buff.conviction.up)" );
 
   cleave -> add_talent( this, "Divine Hammer" );
   cleave -> add_action( this, "Blade of Justice" );
@@ -3702,6 +3707,8 @@ void paladin_t::generate_action_prio_list_ret()
 
   cleave -> add_talent( this, "Crusader Flurry" );
 
+  // TODO: Determine where this goes
+  // TODO: how should this interact with holy power?
   cleave -> add_action( "wake_of_ashes" );
 
   cleave -> add_talent( this, "Blade of Wrath" );
