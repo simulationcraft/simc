@@ -5283,7 +5283,6 @@ void mage_t::create_pets()
 
   if ( sets.has_set_bonus( MAGE_ARCANE, T18, B2 ) )
   {
-    pets::temporal_hero_t::randomize_last_summoned( this );
     for ( unsigned i = 0; i < sizeof_array( pets.temporal_heroes ); i++ )
     {
       pets.temporal_heroes[ i ] = new pets::temporal_hero_t( sim, this );
