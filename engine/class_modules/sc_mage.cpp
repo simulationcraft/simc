@@ -88,6 +88,14 @@ struct unstable_magic_explosion_t;
 } // actions
 
 namespace pets {
+enum hero_e
+{
+  ARTHAS,
+  JAINA,
+  SYLVANAS,
+  TYRANDE
+};
+
 struct water_elemental_pet_t;
 }
 
@@ -140,6 +148,9 @@ public:
   // RPPM objects
   real_ppm_t rppm_pyromaniac;         // T17 Fire 4pc
   real_ppm_t rppm_arcane_instability; // T17 Arcane 4pc
+
+  // Tier 18 Arcane pet order tracking
+  pets::hero_e last_summoned;
 
   // Tier 18 (WoD 6.2) trinket effects
   const special_effect_t* wild_arcanist; // Arcane
@@ -1123,16 +1134,7 @@ struct prismatic_crystal_t : public pet_t
 
 struct temporal_hero_t : public pet_t
 {
-  enum hero_e
-  {
-    ARTHAS,
-    JAINA,
-    SYLVANAS,
-    TYRANDE
-  };
-
   hero_e hero_type;
-  static hero_e last_summoned;
 
   struct temporal_hero_melee_attack_t : public mage_pet_melee_attack_t
   {
@@ -1319,12 +1321,12 @@ struct temporal_hero_t : public pet_t
   void arise() override
   {
     pet_t::arise();
+    mage_t* m = debug_cast<mage_t*>( owner );
 
     // Summoned heroes follow Jaina -> Arthas -> Sylvanas -> Tyrande order
-    if ( last_summoned == JAINA )
+    if ( m -> last_summoned == JAINA )
     {
       hero_type = ARTHAS;
-      last_summoned = hero_type;
       temporal_hero_multiplier = 0.1964;
 
       if ( sim -> debug )
@@ -1333,10 +1335,9 @@ struct temporal_hero_t : public pet_t
                                  owner -> name() );
       }
     }
-    else if ( last_summoned == TYRANDE )
+    else if ( m -> last_summoned == TYRANDE )
     {
       hero_type = JAINA;
-      last_summoned = hero_type;
       temporal_hero_multiplier = 0.6;
 
       if ( sim -> debug )
@@ -1345,10 +1346,9 @@ struct temporal_hero_t : public pet_t
                                  owner -> name() );
       }
     }
-    else if ( last_summoned == ARTHAS )
+    else if ( m -> last_summoned == ARTHAS )
     {
       hero_type = SYLVANAS;
-      last_summoned = hero_type;
       temporal_hero_multiplier = 0.5283;
 
       if ( sim -> debug )
@@ -1360,7 +1360,6 @@ struct temporal_hero_t : public pet_t
     else
     {
       hero_type = TYRANDE;
-      last_summoned = hero_type;
       temporal_hero_multiplier = 0.5283;
 
       if ( sim -> debug )
@@ -1370,13 +1369,15 @@ struct temporal_hero_t : public pet_t
       }
     }
 
+    m -> last_summoned = hero_type;
+
     if ( owner -> sets.has_set_bonus( MAGE_ARCANE, T18, B4 ) )
     {
       mage_t* m = debug_cast<mage_t*>( owner );
       m -> buffs.temporal_power -> trigger();
-    }
 
-    owner -> invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+      owner -> invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    }
   }
 
   void demise() override
@@ -1389,29 +1390,27 @@ struct temporal_hero_t : public pet_t
     owner -> invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
-  static void randomize_last_summoned( const mage_t* p )
+  static void randomize_last_summoned( mage_t* m )
   {
-    double rand = p -> rng().real();
+    double rand = m -> rng().real();
     if ( rand < 0.25 )
     {
-      last_summoned = ARTHAS;
+      m -> last_summoned = ARTHAS;
     }
     else if ( rand < 0.5 )
     {
-      last_summoned = JAINA;
+      m -> last_summoned = JAINA;
     }
     else if ( rand < 0.75 )
     {
-      last_summoned = SYLVANAS;
+      m -> last_summoned = SYLVANAS;
     }
     else
     {
-      last_summoned = TYRANDE;
+      m -> last_summoned = TYRANDE;
     }
   }
 };
-
-temporal_hero_t::hero_e temporal_hero_t::last_summoned;
 
 } // pets
 
@@ -5284,10 +5283,10 @@ void mage_t::create_pets()
 
   if ( sets.has_set_bonus( MAGE_ARCANE, T18, B2 ) )
   {
+    pets::temporal_hero_t::randomize_last_summoned( this );
     for ( unsigned i = 0; i < sizeof_array( pets.temporal_heroes ); i++ )
     {
       pets.temporal_heroes[ i ] = new pets::temporal_hero_t( sim, this );
-      pets::temporal_hero_t::randomize_last_summoned( this );
     }
   }
 }
