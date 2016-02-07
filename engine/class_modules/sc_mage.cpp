@@ -6236,7 +6236,7 @@ void mage_t::apl_frost()
                      "interrupt_if=cooldown.frozen_orb.up|(talent.frost_bomb.enabled&buff.fingers_of_frost.react>=2)" );
 
 
-  single_target -> add_action( "call_action_list,name=cooldowns,if=(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>15)&!legendary_ring.has_cooldown",
+  single_target -> add_action( "call_action_list,name=cooldowns,if=!talent.prismatic_crystal.enabled|(cooldown.prismatic_crystal.remains>15&!legendary_ring.has_cooldown)",
                                "Single target sequence" );
   single_target -> add_action( this, "Ice Lance",
                                "if=buff.fingers_of_frost.react&(buff.fingers_of_frost.remains<action.frostbolt.execute_time|buff.fingers_of_frost.remains<buff.fingers_of_frost.react*gcd.max)",
