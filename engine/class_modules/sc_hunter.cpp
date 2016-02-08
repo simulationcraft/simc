@@ -233,14 +233,6 @@ public:
     const spell_data_t* improved_focus_fire;
     const spell_data_t* improved_beast_cleave;
     const spell_data_t* enhanced_basic_attacks;
-    // Marks
-    const spell_data_t* enhanced_kill_shot;
-    const spell_data_t* enhanced_aimed_shot;
-    const spell_data_t* improved_focus;
-    // Survival
-    const spell_data_t* empowered_explosive_shot;
-    const spell_data_t* enhanced_traps;
-    const spell_data_t* enhanced_entrapment;
   } perks;
 
   // Specialization Spells
@@ -254,8 +246,6 @@ public:
     const spell_data_t* lethal_shots;
     const spell_data_t* lightning_reflexes;
     const spell_data_t* animal_handler;
-
-    const spell_data_t* exhilaration;
 
     // Beast Mastery
     const spell_data_t* cobra_shot;
@@ -274,12 +264,12 @@ public:
     const spell_data_t* kindred_spirits;
     const spell_data_t* invigoration;
     const spell_data_t* exotic_beasts;
+    const spell_data_t* chimaera_shot;
     
     // Marksmanship
     const spell_data_t* aimed_shot;
     const spell_data_t* careful_aim;
     const spell_data_t* bombardment;
-    const spell_data_t* chimaera_shot;
     const spell_data_t* rapid_fire;
     const spell_data_t* lock_and_load;
 
@@ -2270,8 +2260,7 @@ struct aimed_shot_t: public hunter_ranged_attack_t
   {
     parse_options( options_str );
 
-    crit_gain = p -> perks.enhanced_aimed_shot -> effectN( 1 ).resource( RESOURCE_FOCUS );
-    crit_gain += p -> sets.set( HUNTER_MARKSMANSHIP, T17, B2 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
+    crit_gain = p -> sets.set( HUNTER_MARKSMANSHIP, T17, B2 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent();
     base_execute_time *= 1.0 - ( p -> sets.set( HUNTER_MARKSMANSHIP, T18, B4 ) -> effectN( 2 ).percent() );
   }
@@ -2323,9 +2312,6 @@ struct freezing_trap_t: public hunter_ranged_attack_t
     parse_options( options_str );
 
     cooldown -> duration = data().cooldown();
-    if ( p() -> perks.enhanced_traps -> ok() )
-      cooldown -> duration *= ( 1.0 + p() -> perks.enhanced_traps -> effectN( 1 ).percent() );
-
     freezing_trap_gain = player -> get_gain( "freezing_trap" );
     
     // BUG simulate slow velocity of launch
@@ -2371,8 +2357,6 @@ struct explosive_trap_t: public hunter_ranged_attack_t
     parse_options( options_str );
 
     cooldown -> duration = data().cooldown();
-    if ( p() -> perks.enhanced_traps -> ok() )
-      cooldown -> duration *= ( 1.0 + p() -> perks.enhanced_traps -> effectN( 1 ).percent() );
     range = 40.0;
     // BUG simulate slow velocity of launch
     travel_speed = 18.0;
@@ -2491,36 +2475,6 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 
     if ( result_is_hit( s -> result ) )
       p() -> resource_gain( RESOURCE_FOCUS, focus_gain, p() -> gains.cobra_shot );
-  }
-};
-
-// Kill Shot ================================================================
-
-struct kill_shot_t: public hunter_ranged_attack_t
-{
-  kill_shot_t( hunter_t* player, const std::string& options_str ):
-    hunter_ranged_attack_t( "kill_shot", player, player -> find_specialization_spell( "Kill Shot" ) )
-  {
-    parse_options( options_str );
-  }
-
-  virtual void execute() override
-  {
-    hunter_ranged_attack_t::execute();
-
-    if ( p() -> cooldowns.kill_shot_reset -> up() )
-    {
-      cooldown -> reset( true );
-      p() -> cooldowns.kill_shot_reset -> start();
-    }
-  }
-
-  virtual bool ready() override
-  {
-    if ( target -> health_percentage() > ( p() -> perks.enhanced_kill_shot -> ok() ? 35 : 20 ) )
-      return false;
-
-    return hunter_ranged_attack_t::ready();
   }
 };
 
@@ -3353,7 +3307,6 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "freezing_trap"         ) return new          freezing_trap_t( this, options_str );
   if ( name == "focus_fire"            ) return new             focus_fire_t( this, options_str );
   if ( name == "kill_command"          ) return new           kill_command_t( this, options_str );
-  if ( name == "kill_shot"             ) return new              kill_shot_t( this, options_str );
   if ( name == "multishot"             ) return new             multi_shot_t( this, options_str );
   if ( name == "multi_shot"            ) return new             multi_shot_t( this, options_str );
   if ( name == "rapid_fire"            ) return new             rapid_fire_t( this, options_str );
@@ -3473,19 +3426,7 @@ void hunter_t::init_spells()
   talents.barrage                           = find_talent_spell( "Barrage" );
 
   talents.exotic_munitions                  = find_talent_spell( "Exotic Munitions" );
-
-  // Perks
-  perks.enhanced_camouflage               = find_perk_spell( "Enhanced Camouflage" );
-  perks.improved_focus_fire               = find_perk_spell( "Improved Focus Fire" );
-  perks.improved_beast_cleave             = find_perk_spell( "Improved Beast Cleave" );
-  perks.enhanced_basic_attacks            = find_perk_spell( "Enhanced Basic Attacks" );
-  perks.enhanced_kill_shot                = find_perk_spell( "Enhanced Kill Shot" );
-  perks.enhanced_aimed_shot               = find_perk_spell( "Enhanced Aimed Shot" );
-  perks.improved_focus                    = find_perk_spell( "Improved Focus" );
-  perks.empowered_explosive_shot          = find_perk_spell( "Empowered Explosive Shot" );
-  perks.enhanced_traps                    = find_perk_spell( "Enhanced Traps" );
-  perks.enhanced_entrapment               = find_perk_spell( "Enhanced Entrapment" );
-
+  
   // Mastery
   mastery.master_of_beasts     = find_mastery_spell( HUNTER_BEAST_MASTERY );
   mastery.sniper_training      = find_mastery_spell( HUNTER_MARKSMANSHIP );
@@ -3583,7 +3524,7 @@ void hunter_t::init_base_stats()
 
   base_focus_regen_per_second = 4;
 
-  resources.base[RESOURCE_FOCUS] = 100 + specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS ) + perks.improved_focus -> effectN( 1 ).resource( RESOURCE_FOCUS );
+  resources.base[RESOURCE_FOCUS] = 100 + specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS );
 
   // Orc racial
   if ( race == RACE_ORC )
