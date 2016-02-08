@@ -55,7 +55,7 @@ actions+=/shadowmeld,if=talent.subterfuge.enabled&energy>=95+glyph.energy.enable
 actions+=/pool_resource,for_next=1,extra_amount=95+glyph.energy.enabled*20
 actions+=/vanish,if=talent.subterfuge.enabled&energy>=95+glyph.energy.enabled*20&combo_points<4-talent.anticipation.enabled&buff.shadow_dance.down&(!cooldown.shadow_dance.up|set_bonus.tier18_4pc=1)
 actions+=/marked_for_death,if=combo_points=0
-actions+=/run_action_list,name=finisher,if=combo_points=5&debuff.find_weakness.remains&buff.shadow_reflection.remains
+actions+=/run_action_list,name=finisher,if=combo_points=5&debuff.find_weakness.remains&buff.shadow_reflection.remains&buff.shadowmeld.down
 actions+=/pool_resource,for_next=1
 actions+=/ambush,if=talent.anticipation.enabled&combo_points+anticipation_charges<8&time>2
 actions+=/run_action_list,name=finisher,if=combo_points=5
@@ -72,8 +72,8 @@ actions.generator+=/fan_of_knives,if=spell_targets.fan_of_knives>2
 actions.generator+=/backstab,if=debuff.find_weakness.up|buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up
 actions.generator+=/shuriken_toss,if=energy<65&energy.regen<16
 actions.generator+=/hemorrhage,if=glyph.hemorrhaging_veins.enabled&((talent.anticipation.enabled&combo_points+anticipation_charges<=2)|combo_points<=2|target.time_to_die<=6)&!ticking&!dot.rupture.ticking&!dot.crimson_tempest.ticking&!dot.garrote.ticking
-actions.generator+=/backstab,if=energy.time_to_max<=gcd*2
-actions.generator+=/hemorrhage,if=energy.time_to_max<=gcd*1.5&position_front
+actions.generator+=/backstab,if=energy.time_to_max<=gcd*2.5
+actions.generator+=/hemorrhage,if=energy.time_to_max<=gcd*2&position_front
 actions.generator+=/run_action_list,name=pool
 
 # Combo point finishers
