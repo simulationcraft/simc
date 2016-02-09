@@ -283,7 +283,6 @@ public:
     gain_t* butchery;
     gain_t* chill_of_the_grave;
     gain_t* frost_presence;
-    gain_t* horn_of_winter;
     gain_t* improved_frost_presence;
     gain_t* power_refund;
     gain_t* scent_of_blood;
@@ -6527,7 +6526,6 @@ void death_knight_t::default_apl_blood()
     precombat -> add_action( food_str );
 
   precombat -> add_action( this, "Blood Presence" );
-  precombat -> add_action( this, "Horn of Winter" );
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   if ( sim -> allow_potions && true_level >= 80 )
@@ -6754,7 +6752,6 @@ void death_knight_t::default_apl_frost()
   if ( sim -> allow_food && level() >= 80 )
     precombat -> add_action( food_str );
 
-  precombat -> add_action( this, "Horn of Winter" );
   precombat -> add_action( this, "Frost Presence" );
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat -> add_action( this, "Army of the Dead" );
@@ -6983,7 +6980,6 @@ void death_knight_t::init_action_list()
   if ( sim -> allow_food && level() > 90 && tree == DEATH_KNIGHT_UNHOLY )
     precombat -> add_action( food_ms );
 
-  precombat -> add_action( this, "Horn of Winter" );
   precombat -> add_action( this, "Unholy Presence" );
 
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
@@ -7312,7 +7308,6 @@ void death_knight_t::init_gains()
   gains.butchery                         = get_gain( "butchery"                   );
   gains.chill_of_the_grave               = get_gain( "chill_of_the_grave"         );
   gains.frost_presence                   = get_gain( "frost_presence"             );
-  gains.horn_of_winter                   = get_gain( "horn_of_winter"             );
   gains.improved_frost_presence          = get_gain( "improved_frost_presence"    );
   gains.power_refund                     = get_gain( "power_refund"               );
   gains.scent_of_blood                   = get_gain( "scent_of_blood"             );

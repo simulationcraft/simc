@@ -33,7 +33,7 @@ role=attack
 position=back
 talents=3000021
 #glyphs=energy/disappearance
-spec=combat
+spec=outlaw
 
 head=felblade_hood,id=124263,bonus_id=566
 neck=choker_of_the_great_betrayer,id=124210,bonus_id=566,enchant_id=5318

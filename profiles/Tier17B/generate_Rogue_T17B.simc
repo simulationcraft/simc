@@ -44,7 +44,7 @@ timeofday=night
 role=attack
 position=back
 talents=3000031
-spec=combat
+spec=outlaw
 #glyphs=energy/disappearance
 head=poisoners_helmet,id=115572,bonus_id=566
 neck=engineers_grounded_gorget,id=113892,bonus_id=566,enchant=gift_of_haste

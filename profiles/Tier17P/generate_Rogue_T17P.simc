@@ -40,7 +40,7 @@ timeofday=night
 role=attack
 position=back
 talents=3000021
-spec=combat
+spec=outlaw
 #glyphs=energy/disappearance
 head=crystalbinder_helm,id=109977,bonus_id=524
 neck=windseal_necklace,id=109953,bonus_id=524,enchant=gift_of_haste
