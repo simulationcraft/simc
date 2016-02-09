@@ -3414,7 +3414,6 @@ void warrior_t::apl_fury()
   action_priority_list_t* reck_anger_management = get_action_priority_list( "reck_anger_management" );
   action_priority_list_t* reck_no_anger = get_action_priority_list( "reck_no_anger" );
 
-  default_list -> add_action( this, "Charge", "if=debuff.charge.down" );
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( "run_action_list,name=movement,if=movement.distance>5", "This is mostly to prevent cooldowns from being accidentally used during movement." );
   default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.down" );
