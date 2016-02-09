@@ -4,7 +4,6 @@ race=draenei
 role=heal
 position=back
 talents=3223232
-glyphs=prayer_of_mending/circle_of_healing/deep_wells
 spec=discipline
 
 # This default action priority list is automatically created based on your character.
@@ -17,7 +16,6 @@ spec=discipline
 
 actions.precombat=flask,type=greater_draenic_intellect_flask
 actions.precombat+=/food,type=pickled_eel
-actions.precombat+=/power_word_fortitude,if=!aura.stamina.up
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_intellect
@@ -26,21 +24,9 @@ actions.precombat+=/prayer_of_mending
 # Executed every time the actor is available.
 
 actions=mana_potion,if=mana.pct<=75
-actions+=/blood_fury
-actions+=/berserking
-actions+=/arcane_torrent
-actions+=/power_infusion,if=talent.power_infusion.enabled
-actions+=/power_word_solace,if=talent.power_word_solace.enabled
-actions+=/mindbender,if=talent.mindbender.enabled&mana.pct<80
-actions+=/shadowfiend,if=!talent.mindbender.enabled
-actions+=/power_word_shield
-actions+=/penance_heal,if=buff.borrowed_time.up
-actions+=/penance_heal
-actions+=/flash_heal,if=buff.surge_of_light.react
-actions+=/prayer_of_mending
-actions+=/clarity_of_will
-actions+=/heal,if=buff.power_infusion.up|mana.pct>20
-actions+=/heal
+actions+=/shadowfiend
+actions+=/shadow_word_pain,,if=remains<tick_time|!ticking
+actions+=/smite
 
 head=soul_priests_hood,id=115563,bonus_id=566
 neck=feldspars_control_choker,id=113890,bonus_id=566,enchant=gift_of_critical_strike
@@ -61,13 +47,12 @@ main_hand=blackhand_doomstaff,id=113988,bonus_id=566,enchant=mark_of_shadowmoon
 # Gear Summary
 # gear_ilvl=685.33
 # gear_stamina=4114
-# gear_intellect=2973
-# gear_spirit=1090
+# gear_intellect=2920
 # gear_spell_power=1596
-# gear_crit_rating=1551
-# gear_haste_rating=810
-# gear_mastery_rating=793
-# gear_multistrike_rating=300
+# gear_crit_rating=1276
+# gear_haste_rating=960
+# gear_mastery_rating=943
+# gear_versatility_rating=944
 # gear_armor=809
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

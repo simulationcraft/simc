@@ -17,40 +17,36 @@ spec=guardian
 
 actions.precombat=flask,type=greater_draenic_agility_flask
 actions.precombat+=/food,type=sleeper_sushi
-actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
 actions.precombat+=/bear_form
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/cenarion_ward
 
 # Executed every time the actor is available.
 
 actions=auto_attack
 actions+=/skull_bash
-actions+=/savage_defense,if=buff.barkskin.down
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
 actions+=/use_item,slot=trinket2
-actions+=/barkskin,if=buff.bristling_fur.down
-actions+=/bristling_fur,if=buff.barkskin.down&buff.savage_defense.down
-actions+=/maul,if=buff.tooth_and_claw.react&incoming_damage_1s
-actions+=/berserk,if=(buff.pulverize.remains>10|!talent.pulverize.enabled)&buff.incarnation.down
-actions+=/frenzied_regeneration,if=rage>=80
-actions+=/cenarion_ward
-actions+=/renewal,if=health.pct<30
-actions+=/heart_of_the_wild
-actions+=/rejuvenation,if=buff.heart_of_the_wild.up&remains<=3.6
-actions+=/natures_vigil
-actions+=/healing_touch,if=buff.dream_of_cenarius.react&health.pct<30
-actions+=/pulverize,if=buff.pulverize.remains<=3.6
-actions+=/lacerate,if=talent.pulverize.enabled&buff.pulverize.remains<=(3-dot.lacerate.stack)*gcd&buff.berserk.down
-actions+=/incarnation,if=buff.berserk.down
-actions+=/lacerate,if=!ticking
-actions+=/thrash_bear,if=!ticking
+actions+=/barkskin
+actions+=/bristling_fur,if=buff.ironfur.remains<2&rage<40
+actions+=/ironfur,if=buff.ironfur.down|rage.deficit<25
+actions+=/frenzied_regeneration,if=!ticking&incoming_damage_6s%health.max>0.25+(2-charges_fractional)*0.15
+actions+=/pulverize,cycle_targets=1,if=buff.pulverize.down
 actions+=/mangle
-actions+=/thrash_bear,if=remains<=4.8
+actions+=/pulverize,cycle_targets=1,if=buff.pulverize.remains<gcd
+actions+=/lunar_beam
+actions+=/incarnation
+actions+=/thrash_bear,if=active_enemies>=2
+actions+=/pulverize,cycle_targets=1,if=buff.pulverize.remains<3.6
+actions+=/lacerate,cycle_targets=1,if=dot.lacerate.stack<3
 actions+=/lacerate
+actions+=/thrash_bear,if=talent.pulverize.enabled&buff.pulverize.remains<3.6
+actions+=/moonfire,cycle_targets=1,if=!ticking
+actions+=/moonfire,cycle_targets=1,if=remains<3.6
+actions+=/moonfire,cycle_targets=1,if=remains<7.2
+actions+=/moonfire
 
 head=sorkas_nightshade_cowl,id=113978,bonus_id=566
 neck=choker_of_bestial_force,id=113952,bonus_id=566,enchant=gift_of_mastery
@@ -72,10 +68,9 @@ main_hand=earthwarped_bladestaff,id=113640,bonus_id=566,enchant=mark_of_the_fros
 # gear_ilvl=684.33
 # gear_agility=2707
 # gear_stamina=4060
-# gear_haste_rating=582
-# gear_mastery_rating=1875
-# gear_multistrike_rating=982
-# gear_versatility_rating=440
+# gear_crit_rating=490
+# gear_haste_rating=926
+# gear_mastery_rating=1955
+# gear_versatility_rating=892
 # gear_armor=1086
-# gear_bonus_armor=876
 # set_bonus=tier17_2pc=1

@@ -4,7 +4,6 @@ race=draenei
 role=heal
 position=back
 talents=3223332
-glyphs=prayer_of_mending/circle_of_healing/deep_wells
 spec=holy
 
 # This default action priority list is automatically created based on your character.
@@ -17,8 +16,6 @@ spec=holy
 
 actions.precombat=flask,type=greater_draenic_intellect_flask
 actions.precombat+=/food,type=salty_squid_roll
-actions.precombat+=/power_word_fortitude,if=!aura.stamina.up
-actions.precombat+=/chakra_serenity
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_intellect
@@ -27,25 +24,7 @@ actions.precombat+=/prayer_of_mending
 # Executed every time the actor is available.
 
 actions=mana_potion,if=mana.pct<=75
-actions+=/blood_fury
-actions+=/berserking
-actions+=/arcane_torrent
-actions+=/power_infusion,if=talent.power_infusion.enabled
-actions+=/lightwell
-actions+=/power_word_solace,if=talent.power_word_solace.enabled
-actions+=/mindbender,if=talent.mindbender.enabled&mana.pct<80
-actions+=/shadowfiend,if=!talent.mindbender.enabled
-actions+=/prayer_of_mending,if=buff.divine_insight.up
-actions+=/flash_heal,if=buff.surge_of_light.up
-actions+=/circle_of_healing
-actions+=/holy_word
-actions+=/halo,if=talent.halo.enabled
-actions+=/cascade,if=talent.cascade.enabled
-actions+=/divine_star,if=talent.divine_star.enabled
-actions+=/renew,if=!ticking
-actions+=/heal,if=buff.serendipity.react>=2&mana.pct>40
-actions+=/prayer_of_mending
-actions+=/heal
+actions+=/smite
 
 head=soul_priests_hood,id=115563,bonus_id=567/523/448/42,gem_id=115813
 neck=talisman_of_the_fomor,id=113932,bonus_id=567/523/448/42,gem_id=115813,enchant=gift_of_multistrike
@@ -66,13 +45,12 @@ main_hand=infernoflame_staff,id=113869,bonus_id=567/523/448/42,gem_id=115813,enc
 # Gear Summary
 # gear_ilvl=706.60
 # gear_stamina=5019
-# gear_intellect=3625
-# gear_spirit=1375
+# gear_intellect=3561
 # gear_spell_power=1943
-# gear_crit_rating=896
-# gear_haste_rating=1307
-# gear_mastery_rating=1028
-# gear_multistrike_rating=1584
+# gear_crit_rating=1029
+# gear_haste_rating=3169
+# gear_mastery_rating=1347
+# gear_versatility_rating=1173
 # gear_speed_rating=2082
 # gear_armor=943
 # set_bonus=tier17_2pc=1

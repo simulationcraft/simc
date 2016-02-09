@@ -17,39 +17,35 @@ spec=guardian
 
 actions.precombat=flask,type=greater_draenic_agility_flask
 actions.precombat+=/food,type=sleeper_sushi
-actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
 actions.precombat+=/bear_form
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/cenarion_ward
 
 # Executed every time the actor is available.
 
 actions=auto_attack
 actions+=/skull_bash
-actions+=/savage_defense,if=buff.barkskin.down
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
-actions+=/barkskin,if=buff.bristling_fur.down
-actions+=/bristling_fur,if=buff.barkskin.down&buff.savage_defense.down
-actions+=/maul,if=buff.tooth_and_claw.react&incoming_damage_1s
-actions+=/berserk,if=(buff.pulverize.remains>10|!talent.pulverize.enabled)&buff.incarnation.down
-actions+=/frenzied_regeneration,if=rage>=80
-actions+=/cenarion_ward
-actions+=/renewal,if=health.pct<30
-actions+=/heart_of_the_wild
-actions+=/rejuvenation,if=buff.heart_of_the_wild.up&remains<=3.6
-actions+=/natures_vigil
-actions+=/healing_touch,if=buff.dream_of_cenarius.react&health.pct<30
-actions+=/pulverize,if=buff.pulverize.remains<=3.6
-actions+=/lacerate,if=talent.pulverize.enabled&buff.pulverize.remains<=(3-dot.lacerate.stack)*gcd&buff.berserk.down
-actions+=/incarnation,if=buff.berserk.down
-actions+=/lacerate,if=!ticking
-actions+=/thrash_bear,if=!ticking
+actions+=/barkskin
+actions+=/bristling_fur,if=buff.ironfur.remains<2&rage<40
+actions+=/ironfur,if=buff.ironfur.down|rage.deficit<25
+actions+=/frenzied_regeneration,if=!ticking&incoming_damage_6s%health.max>0.25+(2-charges_fractional)*0.15
+actions+=/pulverize,cycle_targets=1,if=buff.pulverize.down
 actions+=/mangle
-actions+=/thrash_bear,if=remains<=4.8
+actions+=/pulverize,cycle_targets=1,if=buff.pulverize.remains<gcd
+actions+=/lunar_beam
+actions+=/incarnation
+actions+=/thrash_bear,if=active_enemies>=2
+actions+=/pulverize,cycle_targets=1,if=buff.pulverize.remains<3.6
+actions+=/lacerate,cycle_targets=1,if=dot.lacerate.stack<3
 actions+=/lacerate
+actions+=/thrash_bear,if=talent.pulverize.enabled&buff.pulverize.remains<3.6
+actions+=/moonfire,cycle_targets=1,if=!ticking
+actions+=/moonfire,cycle_targets=1,if=remains<3.6
+actions+=/moonfire,cycle_targets=1,if=remains<7.2
+actions+=/moonfire
 
 head=oathclaw_helm,id=124261
 neck=world_enders_gorget,id=124222,enchant=gift_of_mastery
@@ -71,12 +67,11 @@ main_hand=xutenash_glaive_of_ruin,id=124378,enchant=mark_of_bleeding_hollow
 # gear_ilvl=699.00
 # gear_agility=3139
 # gear_stamina=4711
-# gear_crit_rating=321
-# gear_haste_rating=603
-# gear_mastery_rating=1782
-# gear_multistrike_rating=841
-# gear_versatility_rating=245
+# gear_crit_rating=785
+# gear_haste_rating=908
+# gear_mastery_rating=1725
+# gear_versatility_rating=1029
 # gear_armor=1164
-# gear_bonus_armor=1471
+# gear_bonus_armor=332
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
