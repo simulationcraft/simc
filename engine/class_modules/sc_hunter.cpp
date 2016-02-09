@@ -117,7 +117,7 @@ public:
     gain_t* invigoration;
     gain_t* focus_fire;
     gain_t* thrill_of_the_hunt;
-    gain_t* steady_shot;
+    gain_t* arcane_shot;
     gain_t* steady_focus;
     gain_t* focusing_shot;
     gain_t* cobra_shot;
@@ -2027,6 +2027,9 @@ struct hunter_melee_attack_t: public hunter_action_t < melee_attack_t >
     p() -> active.pet -> resource_gain( RESOURCE_FOCUS, gain, p() -> active.pet -> gains.go_for_the_throat );
   }
 
+  // Attempt to trigger steady focus. th eargument will be true if two shots are required (typical). 
+  // The first shot applies the pre_steady_focus buff, which has no other affect other than marking 
+  // that a second shot will actually start steady focus.
   virtual void trigger_steady_focus( bool require_pre )
   {
     if ( !p() -> talents.steady_focus -> ok() )
@@ -2461,11 +2464,6 @@ struct cobra_shot_t: public hunter_ranged_attack_t
     cast_in_BW = player -> get_proc( "cobra_shot during bestial_wrath" );
   }
 
-  virtual void try_steady_focus() override
-  {
-    trigger_steady_focus( true );
-  }
-
   virtual void execute() override
   {
     hunter_ranged_attack_t::execute();
@@ -2500,12 +2498,12 @@ struct serpent_sting_t: public hunter_ranged_attack_t
   }
 };
 
-// Arcane Shot Attack =======================================================
+// Raptor Strike Attack =======================================================
 
-struct arcane_shot_t: public hunter_ranged_attack_t
+struct raptor_strike_t: public hunter_melee_attack_t
 {
-  arcane_shot_t( hunter_t* player, const std::string& options_str ):
-    hunter_ranged_attack_t( "arcane_shot", player, player -> find_spell( "Arcane Shot" ) )
+  raptor_strike_t( hunter_t* player, const std::string& options_str ):
+    hunter_melee_attack_t( "raptor_strike", player, player -> find_spell( "Raptor Strike" ) )
   {
     parse_options( options_str );
     base_multiplier *= 1.0 + player -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent();
@@ -2513,31 +2511,23 @@ struct arcane_shot_t: public hunter_ranged_attack_t
 
   virtual double cost() const override
   {
-    return thrill_discount( hunter_ranged_attack_t::cost() );
-  }
-  
-  virtual void try_steady_focus() override
-  {
-    trigger_steady_focus( true );
+    return thrill_discount( hunter_melee_attack_t::cost() );
   }
 
   virtual void execute() override
   {
-    hunter_ranged_attack_t::execute();
+    hunter_melee_attack_t::execute();
     consume_thrill_of_the_hunt();
 
     if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T18, B2 ) && p() -> buffs.focus_fire -> check() )
       p() -> buffs.focus_fire -> extend_duration( p(), p() -> sets.set( HUNTER_BEAST_MASTERY, T18, B2 ) -> effectN( 1 ).time_value() );
-
-    if ( result_is_hit( execute_state -> result ) )
-      trigger_tier15_4pc_melee( p() -> procs.tier15_4pc_melee_arcane_shot, p() -> action_lightning_arrow_arcane_shot );
 
     trigger_blackness();
   }
 
   virtual void impact( action_state_t* s ) override
   {
-    hunter_ranged_attack_t::impact( s );
+    hunter_melee_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -2624,20 +2614,21 @@ struct multi_shot_t: public hunter_ranged_attack_t
 
 // Steady Shot Attack =======================================================
 
-struct steady_shot_t: public hunter_ranged_attack_t
+struct arcane_shot_t: public hunter_ranged_attack_t
 {
   double focus_gain;
-  steady_shot_t( hunter_t* player, const std::string& options_str ):
-    hunter_ranged_attack_t( "steady_shot", player, player -> find_class_spell( "Steady Shot" ) )
+  arcane_shot_t( hunter_t* player, const std::string& options_str ):
+    hunter_ranged_attack_t( "arcane_shot", player, player -> find_specialization_spell( "Arcane Shot" ) )
   {
     parse_options( options_str );
 
-    focus_gain = p() -> find_spell( 77443 ) -> effectN( 1 ).base_value();
-    // Needs testing
-    if ( p() -> sets.has_set_bonus( SET_MELEE, T13, B2 ) )
-      focus_gain *= 2.0;
+    focus_gain = p() -> find_spell( 187675 ) -> effectN( 1 ).base_value();
   }
 
+  virtual void try_steady_focus() override
+  {
+    trigger_steady_focus( true );
+  }
 
   virtual void execute() override
   {
@@ -2646,7 +2637,7 @@ struct steady_shot_t: public hunter_ranged_attack_t
     if ( result_is_hit( execute_state -> result ) )
     {
       trigger_tier15_2pc_melee();
-      p() -> resource_gain( RESOURCE_FOCUS, focus_gain, p() -> gains.steady_shot );
+      p() -> resource_gain( RESOURCE_FOCUS, focus_gain, p() -> gains.arcane_shot );
     }
   }
 
@@ -3318,7 +3309,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "multishot"             ) return new             multi_shot_t( this, options_str );
   if ( name == "multi_shot"            ) return new             multi_shot_t( this, options_str );
   if ( name == "rapid_fire"            ) return new             rapid_fire_t( this, options_str );
-  if ( name == "steady_shot"           ) return new            steady_shot_t( this, options_str );
+  if ( name == "steady_shot"           ) return new          raptor_strike_t( this, options_str );
   if ( name == "summon_pet"            ) return new             summon_pet_t( this, options_str );
   if ( name == "a_murder_of_crows"     ) return new                    moc_t( this, options_str );
   if ( name == "aspect_of_the_fox"     ) return new      aspect_of_the_fox_t( this, options_str );
@@ -3326,11 +3317,6 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "stampede"              ) return new               stampede_t( this, options_str );
   if ( name == "dire_beast"            ) return new             dire_beast_t( this, options_str );
   if ( name == "barrage"               ) return new                barrage_t( this, options_str );
-
-#if 0
-  if ( name == "binding_shot"          ) return new           binding_shot_t( this, options_str );
-  if ( name == "wyvern_sting"          ) return new           wyvern_sting_t( this, options_str );
-#endif
   return player_t::create_action( name, options_str );
 }
 
@@ -3623,7 +3609,7 @@ void hunter_t::init_gains()
   gains.invigoration         = get_gain( "invigoration" );
   gains.focus_fire           = get_gain( "focus_fire" );
   gains.thrill_of_the_hunt   = get_gain( "thrill_of_the_hunt_savings" );
-  gains.steady_shot          = get_gain( "steady_shot" );
+  gains.arcane_shot          = get_gain( "steady_shot" );
   gains.steady_focus         = get_gain( "steady_focus" );
   gains.focusing_shot        = get_gain( "focusing_shot" );
   gains.cobra_shot           = get_gain( "cobra_shot" );
