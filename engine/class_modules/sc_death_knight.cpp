@@ -2942,7 +2942,7 @@ struct disease_t : public death_knight_spell_t
 
     // TODO-WOD: Check if multiplicative
     base_multiplier *= 1.0 + p -> spec.ebon_plaguebringer -> effectN( 2 ).percent();
-    base_multiplier *= 1.0 + p -> spec.crimson_scourge -> effectN( 3 ).percent();
+    base_multiplier *= 1.0 + p -> spec.crimson_scourge -> effectN( 1 ).percent();
     if ( p -> glyph.enduring_infection -> ok() )
     {
       base_multiplier += p -> find_spell( 58671 ) -> effectN( 1 ).percent();

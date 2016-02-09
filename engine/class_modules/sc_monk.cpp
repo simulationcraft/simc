@@ -5993,8 +5993,15 @@ void monk_t::create_buffs()
                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                               .cd( timespan_t::zero() );
 
-  buff.swift_as_the_wind = buff_creator_t( this, "swift_as_the_wind", aburaq -> driver() -> effectN( 1 ).trigger() )
-    .default_value( aburaq -> driver() -> effectN( 1 ).trigger() -> effectN( 2 ).percent() );
+  if ( aburaq )
+  {
+    buff.swift_as_the_wind = buff_creator_t( this, "swift_as_the_wind", aburaq -> driver() -> effectN( 1 ).trigger() )
+      .default_value( aburaq -> driver() -> effectN( 1 ).trigger() -> effectN( 2 ).percent() );
+  }
+  else
+  {
+    buff.swift_as_the_wind = 0;
+  }
 
   buff.tigereye_brew = buff_creator_t( this, "tigereye_brew", spec.tigereye_brew )
     .period( timespan_t::zero() ) // Tigereye Brew does not tick, despite what the spelldata implies.
@@ -6059,7 +6066,14 @@ void monk_t::init_rng()
 {
   player_t::init_rng();
 
-  real_ppm.swift_as_the_wind = real_ppm_t( *this, aburaq -> driver() -> real_ppm() );
+  if ( aburaq )
+  {
+    real_ppm.swift_as_the_wind = real_ppm_t( *this, aburaq -> driver() -> real_ppm() );
+  }
+  else
+  {
+    real_ppm.swift_as_the_wind = real_ppm_t( *this, 0 );
+  }
 }
 
 // druid_t::has_t18_class_trinket ===========================================
