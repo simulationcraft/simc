@@ -114,7 +114,7 @@ Spell Level      : 7
 Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Affecting spells : Battle Cry (1719), Headlong Rush (158836), Item - Warrior T18 Arms 4P Bonus (185804), Dauntless (202297), Colossus Smash (208086)
+Affecting spells : Battle Cry (1719), Headlong Rush (158836), Item - Warrior T18 Arms 4P Bonus (185804), Dauntless (202297), Colossus Smash (208086), War Veteran (209553)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... .x...... ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -135,7 +135,7 @@ Spell Level      : 32
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
-Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Dauntless (202297), Colossus Smash (208086)
+Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Dauntless (202297), Colossus Smash (208086), War Veteran (209553)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -207,7 +207,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
-Affecting spells : Battle Cry (1719), Headlong Rush (158836), Dauntless (202297), Colossus Smash (208086)
+Affecting spells : Battle Cry (1719), Headlong Rush (158836), Dauntless (202297), Colossus Smash (208086), Crushing Blows (209472), War Veteran (209553)
 Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -227,7 +227,7 @@ School           : Physical
 Resource         : 30 Rage
 Spell Level      : 28 (max 80)
 GCD              : 1.5 seconds
-Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Headlong Rush (158836), Cleave (188923), Dauntless (202297), Scales of Earth (203564), Colossus Smash (208086)
+Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Headlong Rush (158836), Cleave (188923), Dauntless (202297), Colossus Smash (208086), War Veteran (209553)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -251,7 +251,7 @@ Spell Level      : 35
 Range            : 5 yards
 Duration         : 15 seconds
 Cooldown         : 1 seconds
-Affecting spells : Hamstring Rage Reduction (22778), Improved Hamstring (24428), Headlong Rush (158836), Dauntless (202297), Colossus Smash (208086)
+Affecting spells : Hamstring Rage Reduction (22778), Improved Hamstring (24428), Headlong Rush (158836), Dauntless (202297), Colossus Smash (208086), War Veteran (209553)
 Attributes       : ........ ........ x.x..... ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -289,7 +289,9 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 10 yards
 #3 (id=298936)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: rage
-Description      : Let loose a battle cry, granting your special attacks an additional $s1% chance to critically strike for $d.
+Description      : Let loose a battle cry, granting your special attacks an additional $s1% chance to critically strike for $d.$?a202751[
+
+Generates ${$202751s2/10} Rage.][]
 Tooltip          : Critical chance of special attacks increased by $w1%.
 
 Name             : Shield Block (Active Mitigation) (id=2565) [Spell Family (4)] 
@@ -394,7 +396,7 @@ Resource         : 40 Rage
 Spell Level      : 8 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Death Sentence (144442), Headlong Rush (158836), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Sweeping Strikes (202161), Dauntless (202297), Scales of Earth (203564), Colossus Smash (208086)
+Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Death Sentence (144442), Headlong Rush (158836), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Sweeping Strikes (202161), Dauntless (202297), Colossus Smash (208086), Deathblow (209481), Precise Strikes (209493), War Veteran (209553), Shattered Defenses (209706), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ .x...... ........ ........   ........ ....x... ........ ........ 
@@ -416,7 +418,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 6 seconds
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Headlong Rush (158836), Thunder Crash (188644), Might of the Vrykul (188783), Crackling Thunder (203201), Scales of Earth (203564), Colossus Smash (208086)
+Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Headlong Rush (158836), Thunder Crash (188644), Might of the Vrykul (188783), Crackling Thunder (203201), Colossus Smash (208086)
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -438,7 +440,7 @@ Spell Level      : 56
 Range            : 8 - 40 yards
 Cooldown         : 0.8 seconds
 Charges          : 1 (45 seconds cooldown)
-Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Leaping Giants (203230), Scales of Earth (203564)
+Affecting spells : Demoralizing Shout (1160), Battle Cry (1719)
 Attributes       : ....x... x....... x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -477,7 +479,7 @@ Spell Level      : 28
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 9 seconds
-Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Deep Wounds (115768), Headlong Rush (158836), Scales of Earth (203564)
+Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Deep Wounds (115768), Headlong Rush (158836)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ....x... ........ ........ 
@@ -502,7 +504,7 @@ Resource         : 10 Rage
 Spell Level      : 30
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Headlong Rush (158836), Dauntless (202297), Scales of Earth (203564), Colossus Smash (208086)
+Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Headlong Rush (158836), Dauntless (202297), Colossus Smash (208086), War Veteran (209553)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ...xx... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -571,7 +573,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Charges          : 1 (6 seconds cooldown)
 Proc Chance      : 101%
-Affecting spells : Battle Cry (1719), Mortal Strike and Bloodthirst Damage Up (60174), Item - Warrior T13 Arms and Fury 2P Bonus (Inner Rage) (105797), Item - Warrior T14 DPS 2P Bonus (123142), Headlong Rush (158836), Item - Warrior T17 Arms 2P Bonus (165336), Vicious Strike (165638), Deadly Calm (166587), Sweeping Strikes (202161), Dauntless (202297), Heroic Strike (207982), Colossus Smash (208086)
+Affecting spells : Battle Cry (1719), Mortal Strike and Bloodthirst Damage Up (60174), Item - Warrior T13 Arms and Fury 2P Bonus (Inner Rage) (105797), Item - Warrior T14 DPS 2P Bonus (123142), Headlong Rush (158836), Item - Warrior T17 Arms 2P Bonus (165336), Vicious Strike (165638), Deadly Calm (166587), Sweeping Strikes (202161), Dauntless (202297), Heroic Strike (207982), Colossus Smash (208086), Thoradin's Might (209480), Precise Strikes (209493), War Veteran (209553), Shattered Defenses (209706), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ....x... ........ ........ 
@@ -707,7 +709,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Item - Warrior T14 DPS 2P Bonus (123142), Headlong Rush (158836), Strength of the Earth Aspect (188647), Scales of Earth (203564), Heroic Strike (204488)
+Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Deep Wounds (115768), Item - Warrior T14 DPS 2P Bonus (123142), Headlong Rush (158836), Strength of the Earth Aspect (188647), Heroic Strike (204488)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -761,23 +763,6 @@ Effects          :
 #1 (id=12247)    : Apply Aura (6) | Unknown effect sub type (429)
                    Base Value: 1 | Scaled Value: 1
 Description      : Damage dealt by pets increased by $s1%.
-
-Name             : Bloodcurdling Shout (id=23690) [Spell Family (4), Hidden] 
-Class            : Warrior
-School           : Physical
-Spell Level      : 1
-Duration         : 6 seconds
-Triggered by     : Glyph of Bloodcurdling Shout (58096)
-Attributes       : .......x x....... ........ ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Hidden (7)
-Effects          :
-#2 (id=130480)   : Apply Aura (6) | Increase Speed% (31)
-                   Base Value: 25 | Scaled Value: 25 | Radius: 0 - 40 yards
 
 Name             : Bloodthirst (id=23881) [Spell Family (4)] 
 Class            : Fury Warrior
@@ -839,7 +824,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 9 seconds
-Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Shield Block (132404), Headlong Rush (158836), Vicious Strike (165642), Might of the Vrykul (188783), Scales of Earth (203564), Heroic Strike (204488)
+Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Shield Block (132404), Headlong Rush (158836), Vicious Strike (165642), Might of the Vrykul (188783), Heroic Strike (204488)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -994,7 +979,7 @@ School           : Physical
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Battle Cry (1719), Headlong Rush (158836), Scales of Earth (203564), Colossus Smash (208086)
+Affecting spells : Battle Cry (1719), Headlong Rush (158836), Colossus Smash (208086)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x...... ........ ........   ........ ........ ........ ........ 
@@ -1044,7 +1029,7 @@ Name             : Whirlwind Off-Hand (id=44949) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 36 (max 80)
-Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Headlong Rush (158836), Cleave (188923), Dauntless (202297), Scales of Earth (203564), Colossus Smash (208086)
+Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Headlong Rush (158836), Cleave (188923), Dauntless (202297), Colossus Smash (208086), War Veteran (209553)
 Triggered by     : Whirlwind (190411)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ x....... 
@@ -1113,7 +1098,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 60 seconds
-Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Seasoned Soldier (12712), Protection (131086), Headlong Rush (158836), Scales of Earth (203564), Colossus Smash (208086)
+Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Seasoned Soldier (12712), Protection (131086), Headlong Rush (158836), Colossus Smash (208086)
 Attributes       : ....x... ........ x.x..... ........   ....x... .xx....x ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -1128,7 +1113,7 @@ Effects          :
 #3 (id=39084)    : Apply Aura (6) | Unknown effect sub type (263)
                    Base Value: 0 | Scaled Value: 0
                    Affected Spells: Defensive Stance (71), Taunt (355), Shield Wall (871), Demoralizing Shout (1160), Shield Block (2565), Last Stand (12975), Demoralizing Shout (125565), Enraged Regeneration (184364)
-Description      : Become an unstoppable storm of destructive force, striking all targets within $50622A1 yards $?s23881[for $50622sw2 Physical damage with your main-hand and $95738sw2 Physical damage with your off-hand][for $168969sw2 Physical damage] every $t1 sec for $d.  You are immune to movement impairing and loss of control effects, but can only use Taunt and other defensive abilities.$?c1[
+Description      : Become an unstoppable storm of destructive force, striking all targets within $50622A1 yards $?s23881[with both weapons for ${$50622sw2+$95738sw2} Physical damage][for $168969sw2 Physical damage] every $t1 sec for $d.  You are immune to movement impairing and loss of control effects, but can only use Taunt and other defensive abilities.$?c1[
 
 Channeling Bladestorm does not prevent avoiding attacks.][]
 Tooltip          : Deal area damage every $t1 sec.
@@ -1199,7 +1184,7 @@ Name             : Bladestorm (id=50622) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 1
-Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Seasoned Soldier (12712), Protection (131086), Headlong Rush (158836), Scales of Earth (203564), Colossus Smash (208086)
+Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Seasoned Soldier (12712), Protection (131086), Headlong Rush (158836), Colossus Smash (208086)
 Triggered by     : Bladestorm (46924)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -1222,7 +1207,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 56
 Range            : 50000 yards
-Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Leaping Giants (203230), Scales of Earth (203564)
+Affecting spells : Demoralizing Shout (1160), Battle Cry (1719)
 Attributes       : ....x... ........ x.x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ..x..... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ..x...x. 
@@ -1301,25 +1286,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=51402)    : Apply Aura (6) | Proc Trigger Spell: Glyph of Mystic Shout (42)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Trigger Spell: 121186
+                   Affected Spells: Cleave (188923)
 Description      : Your Battle Shout and Commanding Shout cause you to hover in the air for $121186d.
-
-Name             : Glyph of Bloodcurdling Shout (id=58096) [Spell Family (4), Passive, Hidden] 
-Class            : Warrior
-School           : Physical
-Proc Chance      : 100%
-Proc Flags       : ........ ..x...x. ........ ........ 
-                 : AOE Heal, Heal
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=51403)    : Apply Aura (6) | Proc Trigger Spell: Bloodcurdling Shout (42)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Trigger Spell: 23690
-Description      : Your Battle Shout and Commanding Shout terrify small animals.
 
 Name             : Glyph of Gushing Wound (Protection) (id=58099) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
@@ -1407,21 +1375,6 @@ Effects          :
 #1 (id=51619)    : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 488
 
-Name             : Glyph of Bloody Healing (Protection) (id=58369) [Spell Family (4), Passive, Hidden] 
-Class            : Warrior
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=51722)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 12
-Description      : Increases the healing you receive from bandages by $58369s1% while your Deep Wounds is active.
-
 Name             : Bloody Healing (id=58408) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
@@ -1470,24 +1423,6 @@ Attributes       : .....x.. ........ x....... ........   ........ ..x..... .....
 Effects          :
 #1 (id=55367)    : Create Item (24)
                    Base Value: 1 | Scaled Value: 1
-
-Name             : Glyph of Intimidating Shout (id=63327) [Spell Family (4), Passive, Hidden] 
-Class            : Warrior
-School           : Physical
-Proc Chance      : 100%
-Proc Flags       : ........ ......x. ........ ........ 
-                 : Heal
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=57453)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 23
-Description      : All targets of your Intimidating Shout now tremble in place instead of fleeing in fear.
 
 Name             : Intimidating Shout (id=63950) 
 Class            : Warrior
@@ -1754,7 +1689,7 @@ Effects          :
 #2 (id=86559)    : Trigger Spell: Raging Blow (64)
                    Base Value: 80 | Scaled Value: 80 | Trigger Spell: 85384
 #3 (id=244038)   : Energize Power (30)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: rage
+                   Base Value: 60 | Scaled Value: 60 | Misc Value: rage
 Description      : A mighty blow with both weapons that deals a total of ${$96103sw2+$85384sw2} Physical damage.
 
 Generates ${$m3/10} Rage.$?a202321[][
@@ -1887,7 +1822,7 @@ Name             : Bladestorm Off-Hand (id=95738) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 1
-Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Seasoned Soldier (12712), Protection (131086), Headlong Rush (158836), Scales of Earth (203564), Colossus Smash (208086)
+Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Seasoned Soldier (12712), Protection (131086), Headlong Rush (158836), Colossus Smash (208086)
 Triggered by     : Bladestorm (50622), Bladestorm (168969)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
@@ -1964,7 +1899,7 @@ School           : Physical
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
-Charges          : 2 (4.5 seconds cooldown)
+Charges          : 3 (6 seconds cooldown)
 Proc Chance      : 101%
 Affecting spells : Battle Cry (1719), Headlong Rush (158836), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -1979,9 +1914,9 @@ Effects          :
 #2 (id=107865)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=107866)   : Weapon Damage% (31)
-                   Base Value: 250 | Scaled Value: 2.5
+                   Base Value: 360 | Scaled Value: 3.6
 #4 (id=305220)   : Energize Power (30)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: rage
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: rage
 Description      : An aggressive strike with your off-hand weapon that deals $sw3 Physical damage
 
 Generates ${$s4/10} Rage.
@@ -2061,7 +1996,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 25 yards/sec
 Cooldown         : 30 seconds
-Affecting spells : Battle Cry (1719), Headlong Rush (158836), Scales of Earth (203564), Colossus Smash (208086)
+Affecting spells : Battle Cry (1719), Headlong Rush (158836), Colossus Smash (208086)
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2176,7 +2111,7 @@ Duration         : 15 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ .......x ........ .......x 
                  : Heal Taken
-Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Headlong Rush (158836), Item - Warrior T18 Arms 4P Bonus (185804), Dauntless (202297), Colossus Smash (208086)
+Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Headlong Rush (158836), Item - Warrior T18 Arms 4P Bonus (185804), Dauntless (202297), Colossus Smash (208086), War Veteran (209553)
 Triggered by     : Deep Wounds (115768)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ..x....x ........ ........ ........   ........ ..x..... ..x..... ..x...x. 
@@ -2187,9 +2122,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
 Effects          :
 #1 (id=129821)   : Apply Aura (6) | Periodic Damage: physical every 3 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.84000
-Description      : Your Mortal Strike, Bloodthirst, Devastate, and Thunder Clap cause the target to bleed for $115767o1 Physical damage over $115767d.
-
-This effect is cancelled if the target reaches full health.
+Description      : $@spelldesc115768
 Tooltip          : Bleeding for $w1 every $t1 sec.  Cancelled if target reaches full health.
 
 Name             : Deep Wounds (id=115768) [Spell Family (4), Passive] 
@@ -2208,7 +2141,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #2 (id=236206)   : Apply Aura (6) | Unknown effect sub type (109)
                    Base Value: 100 | Scaled Value: 100 | Trigger Spell: 115767
-                   Affected Spells: Revenge (6572)
+                   Affected Spells: Revenge (6572), Devastate (20243)
 Description      : Your Devastate and Revenge cause the target to bleed for $115767o1 Physical damage over $115767d.
 
 This effect is cancelled if the target reaches full health.
@@ -2355,7 +2288,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 20 seconds
-Affecting spells : Battle Cry (1719), Headlong Rush (158836), Scales of Earth (203564), Colossus Smash (208086)
+Affecting spells : Battle Cry (1719), Headlong Rush (158836), Colossus Smash (208086)
 Attributes       : ....x... ........ x.x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2463,6 +2396,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=149948)   : Apply Aura (6) | Unknown effect sub type (106)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1
+                   Affected Spells: Cleave (188923)
 
 Name             : Ultimatum (id=122509) [Spell Family (4), Passive] 
 Class            : Warrior
@@ -2499,6 +2433,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=156291)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1
+                   Affected Spells: Cleave (188923)
 Description      : Your Charge leaves a trail of fire in its wake. If you're going to Charge why not do it with some style?
 
 Name             : Blazing Trail (id=123780) 
@@ -2643,7 +2578,7 @@ Spell Level      : 1
 Range            : 30 yards
 Velocity         : 25 yards/sec
 Duration         : 4 seconds
-Affecting spells : Battle Cry (1719), Headlong Rush (158836), Scales of Earth (203564), Colossus Smash (208086)
+Affecting spells : Battle Cry (1719), Headlong Rush (158836), Colossus Smash (208086)
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ..x..... ..x..... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2901,7 +2836,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 25 yards/sec
 Cooldown         : 30 seconds
-Affecting spells : Battle Cry (1719), Headlong Rush (158836), Scales of Earth (203564), Colossus Smash (208086)
+Affecting spells : Battle Cry (1719), Headlong Rush (158836), Colossus Smash (208086)
 Triggered by     : Storm Bolt (107570)
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... x....... 
@@ -2917,57 +2852,6 @@ Effects          :
 #3 (id=229604)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : Hurl your weapon at an enemy, causing $sw2 Physical damage and stunning the target for $132169d.  Deals more damage to targets that are permanently immune to stuns.
-
-Name             : Glyph of the Raging Whirlwind (id=146968) [Spell Family (4), Passive, Hidden] 
-Class            : Warrior
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=198915)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 11
-Description      : Whirlwind gives you ${$147297m1*6/10} rage over $147297d, but for that time you no longer generate rage from autoattacks.
-
-Name             : Glyph of the Watchful Eye (id=146973) [Spell Family (4), Passive, Hidden] 
-Class            : Warrior
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=198920)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 11
-Description      : Intervene will now target the party or raid member with the lowest health within $3411A3 yards.
-
-Name             : Raging Whirlwind (id=147297) [Spell Family (4)] 
-Class            : Warrior
-School           : Physical
-Duration         : 6 seconds
-Stacks           : 2 maximum
-Proc Chance      : 101%
-Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=199740)   : Apply Aura (6) | Periodic Energize Power: every 1 seconds (24)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 1
-#2 (id=199747)   : Apply Aura (6) | Unknown effect sub type (213)
-                   Base Value: -1000 | Scaled Value: -1000
-Description      : Generating ${$147297m1*6/10} rage over $d, but not generating rage from autoattacks.
-Tooltip          : Generating ${$m1/10}.1 rage per second.
-No rage generated from autoattacks.
 
 Name             : Bloodbath (id=147531) [Spell Family (4)] 
 Class            : Warrior
@@ -3157,7 +3041,7 @@ Effects          :
                    Affected Spells: Thunder Clap (6343), Overpower (7384), Mortal Strike (12294), Bloodthirst (23881), Shield Slam (23922), Furious Slash (100130), Heroic Strike (202562)
 #2 (id=222415)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11
-                   Affected Spells: Defensive Stance (71), Rend (772), Slam (1464), Whirlwind (1680), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Piercing Howl (12323), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Improved Hamstring (24428), Victory Rush (34428), Whirlwind Off-Hand (44949), Bladestorm (46924), Bladestorm (50622), Heroic Throw (57755), Raging Blow (85288), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Colossus Smash (108126), Deep Wounds (115767), Dragon Roar (118000), Storm Bolt (132169), Storm Bolt Off-Hand (145585), Ravager (152277), Ravager (156287), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Execute (168874), Bladestorm (168969), Siegebreaker (176289), Rampage (184367), Rampage (184707), Rampage (184709), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Heroic Strike (202562), Colossus Smash (208086)
+                   Affected Spells: Defensive Stance (71), Rend (772), Slam (1464), Whirlwind (1680), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Piercing Howl (12323), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Improved Hamstring (24428), Victory Rush (34428), Whirlwind Off-Hand (44949), Bladestorm (46924), Bladestorm (50622), Heroic Throw (57755), Raging Blow (85288), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Colossus Smash (108126), Deep Wounds (115767), Dragon Roar (118000), Storm Bolt (132169), Storm Bolt Off-Hand (145585), Ravager (152277), Ravager (156287), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Execute (168874), Bladestorm (168969), Siegebreaker (176289), Rampage (184367), Rampage (184707), Rampage (184709), Cleave (188923), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Heroic Strike (202562), Colossus Smash (208086)
 #3 (id=307975)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1598
 Description      : Haste reduces your global cooldown, and the cooldown of $?s12294[Mortal Strike and Thunder Clap]?s23881[Bloodthirst][Shield Slam and Thunder Clap].
@@ -3240,7 +3124,7 @@ Resource         : 10 Rage
 Spell Level      : 8 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Death Sentence (144442), Headlong Rush (158836), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Sweeping Strikes (202161), Dauntless (202297), Scales of Earth (203564), Colossus Smash (208086)
+Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Death Sentence (144442), Headlong Rush (158836), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Sweeping Strikes (202161), Dauntless (202297), Colossus Smash (208086), Deathblow (209481), Precise Strikes (209493), War Veteran (209553), Shattered Defenses (209706), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ .x...... ........ ........   ........ ....x... ........ ........ 
@@ -3262,7 +3146,7 @@ School           : Physical
 Spell Level      : 7 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Death Sentence (144442), Headlong Rush (158836), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Sweeping Strikes (202161), Dauntless (202297), Scales of Earth (203564), Colossus Smash (208086)
+Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Death Sentence (144442), Headlong Rush (158836), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Sweeping Strikes (202161), Dauntless (202297), Colossus Smash (208086), Deathblow (209481), Precise Strikes (209493), War Veteran (209553), Shattered Defenses (209706), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ..x..... x....... 
                  : ........ .x...... ........ ........   ........ ....x... ........ ........ 
@@ -3305,7 +3189,7 @@ Resource         : 10 Rage
 Spell Level      : 7 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Death Sentence (144442), Headlong Rush (158836), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Sweeping Strikes (202161), Dauntless (202297), Scales of Earth (203564), Colossus Smash (208086)
+Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Death Sentence (144442), Headlong Rush (158836), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Sweeping Strikes (202161), Dauntless (202297), Colossus Smash (208086), Deathblow (209481), Precise Strikes (209493), War Veteran (209553), Shattered Defenses (209706), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ .x...... ........ ........   ........ ........ ........ ........ 
@@ -3324,7 +3208,7 @@ Name             : Bladestorm (id=168969) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 1
-Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Seasoned Soldier (12712), Protection (131086), Headlong Rush (158836), Scales of Earth (203564), Colossus Smash (208086)
+Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Seasoned Soldier (12712), Protection (131086), Headlong Rush (158836), Colossus Smash (208086)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : .......x .......x ........ ........   ........ .......x ........ ........ 
@@ -3407,13 +3291,13 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20
 #4 (id=267868)   : Apply Aura (6) | Unknown effect sub type (213)
                    Base Value: 20 | Scaled Value: 20
-Description      : Bloodthirst critical strikes $?a206320[or activating Berserker Rage ][]will Enrage you, increasing attack speed by $184362s1% and damage taken by $184362s2% for $184362d.
+Description      : Bloodthirst and Rampage critical strikes $?a206320[or activating Berserker Rage ][]will Enrage you, increasing attack speed by $184362s1% and damage taken by $184362s2% for $184362d.
 
 Name             : Enrage (id=184362) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
 Spell Level      : 1
-Duration         : 5 seconds
+Duration         : 4 seconds
 Affecting spells : Item - Warrior T18 Protection 2P Bonus (185796), Warpaint (208154)
 Triggered by     : Enrage (184361)
 Attributes       : ........ ........ ........ x......x   ........ ..x..... ........ ........ 
@@ -3450,9 +3334,7 @@ Effects          :
 #2 (id=304657)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 3
                    Affected Spells: Bloodthirst Heal (117313)
-Description      : Reduces damage taken by $s1%, and Bloodthirst restores an additional $s2% health. Usable while stunned. Lasts $d.
-
-Only usable while Enraged.
+Description      : Reduces damage taken by $s1%, and Bloodthirst restores an additional $s2% health. Usable while stunned. Lasts $d.
 Tooltip          : Damage taken reduced by $s1%. Bloodthirst restores an additional $s2% health.
 
 Name             : Rampage (id=184367) [Spell Family (4)] 
@@ -3487,9 +3369,14 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1245 | Trigger Spell: 201364
 #8 (id=293418)   : Trigger Spell: Rampage (64)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1255 | Trigger Spell: 201363
-Description      : Unleash a series of 5 brutal strikes over 2 sec for a total of ${$sw3+$184707sw1+$184709sw1+$201364sw1+$201363sw1} Physical damage.
+#9 (id=310352)   : Unknown effect type (164)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 209697
+Description      : Unleash a series of 5 brutal strikes over 2 sec for a total of ${$<rampageDamage>} Physical damage.
 
 Rampage always deals damage as if you were Enraged.
+Variables        : $masteryMult=$?s76856[${1+$76856m1/100}][${1}]
+$rampageMult=$?a184362[${1}][${$<masteryMult>}]
+$rampageDamage=${($sw3+$184707sw1+$184709sw1+$201364sw1+$201363sw1)*$<rampageMult>}
 
 Name             : Rampage (id=184707) [Spell Family (4)] 
 Class            : Warrior
@@ -3561,6 +3448,7 @@ School           : Physical
 Duration         : 6 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
+Affecting spells : Glyph of Mystic Shout (58095), Glyph of Mystic Shout (121186), Glyph of the Blazing Trail (123779), Headlong Rush (158836), One Against Many (209462)
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3580,7 +3468,7 @@ School           : Physical
 Resource         : 20 Rage
 Spell Level      : 28 (max 80)
 GCD              : 1.5 seconds
-Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Headlong Rush (158836), Cleave (188923), Dauntless (202297), Scales of Earth (203564), Colossus Smash (208086)
+Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Headlong Rush (158836), Cleave (188923), Dauntless (202297), Colossus Smash (208086), War Veteran (209553)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -3767,7 +3655,7 @@ Name             : Whirlwind (id=199658) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 28 (max 80)
-Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Headlong Rush (158836), Cleave (188923), Dauntless (202297), Scales of Earth (203564), Colossus Smash (208086)
+Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Headlong Rush (158836), Cleave (188923), Dauntless (202297), Colossus Smash (208086), War Veteran (209553)
 Triggered by     : Whirlwind (1680)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
@@ -3787,7 +3675,7 @@ Name             : Whirlwind (id=199667) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 28 (max 80)
-Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Headlong Rush (158836), Cleave (188923), Dauntless (202297), Scales of Earth (203564), Colossus Smash (208086)
+Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Headlong Rush (158836), Cleave (188923), Dauntless (202297), Colossus Smash (208086), War Veteran (209553)
 Triggered by     : Whirlwind (190411)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
@@ -3807,7 +3695,7 @@ Name             : Whirlwind (id=199850) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 28 (max 80)
-Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Headlong Rush (158836), Cleave (188923), Dauntless (202297), Scales of Earth (203564), Colossus Smash (208086)
+Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Headlong Rush (158836), Cleave (188923), Dauntless (202297), Colossus Smash (208086), War Veteran (209553)
 Triggered by     : Whirlwind (1680)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3831,7 +3719,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
-Triggered by     : Tactician (184783)
+Triggered by     : Tactician (184783), Focus in Battle (209554)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4218,7 +4106,7 @@ Stacks           : 1 initial, 3 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
-Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Headlong Rush (158836), Dauntless (202297)
+Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Headlong Rush (158836), Dauntless (202297), War Veteran (209553)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4401,11 +4289,14 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=299230)   : Apply Aura (6) | Add Flat Modifier: Spell Resource Cost (107)
-                   Base Value: -400 | Scaled Value: -400 | Misc Value: 14
+                   Base Value: -200 | Scaled Value: -200 | Misc Value: 14
                    Affected Spells: Rampage (184367), Rampage (184707), Rampage (184709), Rampage (201363), Rampage (201364)
 #2 (id=299233)   : Apply Aura (6) | Dummy (4)
                    Base Value: 500 | Scaled Value: 500 | Misc Value: 1
                    Affected Spells: Rampage (184367), Rampage (184707), Rampage (184709), Rampage (201363), Rampage (201364)
+#3 (id=310353)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
+                   Base Value: -200 | Scaled Value: -200 | Misc Value: 3
+                   Affected Spells: Rampage! (209694)
 Description      : Reduces the cost of Rampage by ${$s1/-10} Rage.
 
 Name             : Heavy Repercussions (id=203177) [Spell Family (4), Passive, Hidden] 
@@ -4440,10 +4331,10 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=299592)   : Weapon Damage% (31)
-                   Base Value: 200 | Scaled Value: 2
-#2 (id=299593)   : Normalized Weapon Damage (121)
+#1 (id=299592)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
+#2 (id=299593)   : Weapon Damage% (31)
+                   Base Value: 200 | Scaled Value: 2
 Description      : $@spelldesc203179
 
 Name             : Opportunity Strikes (id=203179) [Spell Family (4), Passive, Hidden] 
@@ -4692,5 +4583,71 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 12
                    Affected Spells: Berserker Rage (18499), Raging Blow (85384), Raging Blow (96103), Enrage (184362)
 Description      : Reduces the damage taken effect of Enrage to 20%.
+
+Name             : Void Cleave (id=209573) [Spell Family (4), Passive, Hidden] 
+Class            : Warrior
+School           : Physical
+Range            : 100 yards
+Proc Chance      : 101%
+Proc Flags       : ........ ..x...x. ........ ........ 
+                 : AOE Heal, Heal
+Attributes       : ......xx ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=310164)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 3 | Scaled Value: 3
+Description      : When Cleave strikes more than 3 targets, Stromkar releases a burst of void energy, causing 1000 damage to all targets within 8 yards.
+
+Name             : Rampage! (id=209694) [Spell Family (4), Passive, Hidden] 
+Class            : Fury Warrior
+School           : Physical
+Spell Level      : 18
+Affecting spells : Carnage (202922)
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=310346)   : Apply Aura (6) | Unknown effect sub type (396)
+                   Base Value: 900 | Scaled Value: 900 | Misc Value: 1 | Trigger Spell: 209697
+
+Name             : Rampage! (id=209697) [Spell Family (4), Hidden] 
+Class            : Warrior
+School           : Physical
+Duration         : 6 seconds
+Triggered by     : Rampage! (209694), Rampage (184367)
+Attributes       : .......x ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7)
+Effects          :
+#1 (id=310350)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+
+Name             : Void Cleave (id=209700) [Spell Family (4)] 
+Class            : Warrior
+School           : Shadow
+Range            : 100 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=310355)   : School Damage: shadow (2)
+                   Base Value: 3 | Scaled Value: 3 | AP Coefficient: 0.75000 | Radius: 0 - 8 yards
+Description      : $@spelldesc209573
 
 

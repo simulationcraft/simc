@@ -38,7 +38,7 @@ Effects          :
 Description      : Allows one-hand and off-hand weapons to be equipped in the off-hand.
 
 Name             : Disengage (id=781) [Spell Family (9)] 
-Class            : Hunter
+Class            : Beast Mastery Marksmanship Hunter
 School           : Physical
 Spell Level      : 14
 Range            : 50000 yards
@@ -82,7 +82,7 @@ Spell Level      : 1
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 3 seconds
-Affecting spells : Glyph of Revive Pet (57866), Glyph of Lesser Proportion (57870)
+Affecting spells : Glyph of Lesser Proportion (57870), Hunter (137014)
 Attributes       : ........ ........ x....... .......x   ........ ..x..... .x...... ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
@@ -140,8 +140,7 @@ School           : Nature
 Spell Level      : 10
 Range            : 30 yards
 GCD              : 1.5 seconds
-Duration         : 10 seconds
-Affecting spells : Glyph of Tame Beast (119464), 
+Duration         : 6 seconds
 Attributes       : ........ ........ x....... ........   ..x..... ......x. .x...... ..x..... 
                  : ........ ..x..... x....... ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -152,7 +151,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .x...
 Effects          :
 #1 (id=480)      : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
-#2 (id=481)      : Apply Aura (6) | Periodic Trigger Spell: Tame Beast every 10 seconds (23)
+#2 (id=481)      : Apply Aura (6) | Periodic Trigger Spell: Tame Beast every 6 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 13481
 Description      : $?a166615[|CFFFF2020You must dismiss your current pet before you can tame another one.|CFFFFD200
 
@@ -294,7 +293,7 @@ School           : Physical
 Spell Level      : 32
 Duration         : 360 seconds
 Cooldown         : 30 seconds
-Affecting spells : Improved Feign Death (24432), Glyph of Fireworks (57903)
+Affecting spells : Improved Feign Death (24432)
 Attributes       : ........ x....... x.x.x... .x......   ........ ..x..... .xx..... ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1184,8 +1183,6 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
 Effects          :
 #1 (id=45831)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
-#2 (id=301539)   : Energize Power (30)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: focus
 Description      : A two-headed shot that hits your primary target and another nearby target, dealing $171454sw3 Nature or Frost damage to each target. Generates $204304s1 Focus for every target hit.
 
 Name             : Piercing Shots (id=53238) [Spell Family (9), Passive] 
@@ -1512,22 +1509,6 @@ Effects          :
 Description      : Cannot benefit from Bloodlust or other similar effects.
 Tooltip          : Cannot benefit from Bloodlust or other similar effects.
 
-Name             : Glyph of Revive Pet (id=57866) [Spell Family (9), Passive, Hidden] 
-Class            : Hunter
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=51175)    : Apply Aura (6) | Add Percent Modifier: Spell Pushback (108)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 9
-                   Affected Spells: Revive Pet (982)
-Description      : Reduces the pushback suffered from damaging attacks while casting Revive Pet by $57866s1%.
-
 Name             : Glyph of Lesser Proportion (id=57870) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
 School           : Physical
@@ -1543,55 +1524,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 9
                    Affected Spells: Revive Pet (982)
 Description      : Slightly reduces the size of your pet.
-
-Name             : Glyph of Stampede (id=57902) [Spell Family (9), Passive, Hidden] 
-Class            : Hunter
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=51226)    : Apply Aura (6) | Unknown effect sub type (410)
-                   Base Value: 75 | Scaled Value: 75 | Misc Value: 9
-Description      : Your Stampede no longer summons pets from your stable, and instead uses copies of your current pet.
-
-Name             : Glyph of Fireworks (id=57903) [Spell Family (9), Passive, Hidden] 
-Class            : Hunter
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=51227)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 11
-                   Affected Spells: Feign Death (5384)
-Description      : Teaches you the ability Fireworks.
-
-Launch fireworks from your gun, bow or crossbow.
-
-Name             : Glyph of Aspect of the Pack (id=57904) [Spell Family (9), Passive, Hidden] 
-Class            : Hunter
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=51228)    : Apply Aura (6) | Add Flat Modifier: Spell Radius (107)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 6
-                   Affected Spells: Aspect of the Cheetah (186257), Aspect of the Cheetah (186258)
-Description      : Increases the range of your Aspect of the Pack ability by $57904s1 yards.
 
 Name             : Revive Pet (id=58186) 
 Class            : Hunter
@@ -1609,6 +1541,7 @@ Effects          :
 Name             : Lesser Proportion (id=58188) 
 Class            : Hunter
 School           : Physical
+Cast Time        : 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1618,6 +1551,7 @@ Attributes       : ........ x....... ........ ....x...   ........ ........ .x...
 Effects          :
 #1 (id=51506)    : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 440
+Description      : $@spelldesc57870
 
 Name             : Fireworks (id=58229) 
 Class            : Hunter
@@ -1694,6 +1628,25 @@ Attributes       : .....x.. ........ x....... ........   ........ ..x..... .....
 Effects          :
 #1 (id=55366)    : Create Item (24)
                    Base Value: 1 | Scaled Value: 1
+
+Name             : Aspect of the Chameleon (id=61648) [Spell Family (9)] 
+Class            : Hunter
+School           : Nature
+Spell Level      : 1
+GCD              : 1 seconds
+Duration         : 60 seconds
+Cooldown         : 180 seconds
+Attributes       : ........ ........ x.x..... x.......   ........ ........ .x...... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=55553)    : Apply Aura (6) | Unknown effect sub type (120)
+                   Base Value: 0 | Scaled Value: 0
+Description      : The Hunter takes on the aspect of a chameleon, becoming untrackable.
+Tooltip          : Untrackable.
 
 Name             : Dash (Ferocity, Cunning Ability) (id=61684) [Spell Family (9)] 
 Class            : Ferocity Ferocity Cunning Hunter Pet
@@ -2392,7 +2345,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=120617)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 11
-Description      : Disengage also frees you from all movement impairing effects and increases your movement speed by $118922s1% for $118922d.
+Description      : $?s190925[Harpoon][Disengage] also frees you from all movement impairing effects and increases your movement speed by $118922s1% for $118922d.
 
 Name             : Binding Shot (id=109248) [Spell Family (9)] 
 Class            : Hunter
@@ -2629,41 +2582,6 @@ Effects          :
 Description      : $@spelldesc109215
 Tooltip          : Increased movement speed by $s1%.
 
-Name             : Glyph of Aspect of the Cheetah (id=119462) [Spell Family (9), Passive, Hidden] 
-Class            : Hunter
-School           : Physical
-Spell Level      : 5
-Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=137589)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 4 | Scaled Value: 4 | SP Coefficient: 1.00000 | Misc Value: 12
-Description      : Your Aspect of the Cheetah no longer causes you to be dazed when struck.  Instead, the effect is cancelled.
-
-Name             : Glyph of Tame Beast (id=119464) [Spell Family (9), Passive, Hidden] 
-Class            : Hunter
-School           : Physical
-Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=137591)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
-                   Base Value: -4000 | Scaled Value: -4000 | SP Coefficient: 1.00000 | Misc Value: 1
-                   Affected Spells: Tame Beast (1515)
-#2 (id=156805)   : Apply Aura (6) | Add Flat Modifier: Unknown 2 (107)
-                   Base Value: -4000 | Scaled Value: -4000 | SP Coefficient: 1.00000 | Misc Value: 19
-                   Affected Spells: Tame Beast (1515)
-Description      : Reduces the time required to complete Tame Beast by ${$m1/-1000} sec.
-
 Name             : Barrage (id=120360) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -2724,7 +2642,7 @@ Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 8 seconds
 Cooldown         : 10 seconds
-Affecting spells : Guide: Sharpshooting (178549), Wild Call (185791), Sniper Training (193468)
+Affecting spells : Guide: Sharpshooting (178549), Sniper Training (193468)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2879,25 +2797,7 @@ Effects          :
 #1 (id=157471)   : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1022
 
-Name             : Glyph of Aspect of the Beast (id=125042) [Spell Family (9), Passive, Hidden] 
-Class            : Hunter
-School           : Nature
-Spell Level      : 1
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=158430)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-Description      : Teaches you the ability Aspect of the Beast.
-
-The Hunter takes on the aspects of a beast, becoming untrackable.  Only one Aspect can be active at a time.
-
-Name             : Fetch (Glyph) (id=125050) [Spell Family (9)] 
+Name             : Fetch (id=125050) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Range            : 50 yards
@@ -2913,24 +2813,6 @@ Effects          :
 #1 (id=158441)   : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 40 yards
 Description      : Command your pet to retrieve the loot from a nearby corpse within $A1 yards.
-
-Name             : Glyph of Fetch (id=126746) [Spell Family (9), Passive, Hidden] 
-Class            : Hunter
-School           : Holy
-Spell Level      : 1
-Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=161076)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1
-Description      : Teaches you the ability Fetch.
-
-Command your pet to retrieve the loot from a nearby corpse within $125050A1 yards.
 
 Name             : Fetch (id=126798) 
 Class            : Hunter
@@ -2958,6 +2840,24 @@ Attributes       : .....x.. ........ x....... ........   ........ ..x..... .....
 Effects          :
 #1 (id=161560)   : Create Item (24)
                    Base Value: 1 | Scaled Value: 1
+
+Name             : Fireworks (id=127933) [Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Range            : 40 yards
+Cast Time        : 2.5 seconds
+GCD              : 1 seconds
+Attributes       : .x...... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ...x....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Ranged ability (1)
+Effects          :
+#1 (id=162867)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 15 yards
+Description      : Launch fireworks from your gun, bow or crossbow.
 
 Name             : Exhilaration (id=128594) [Spell Family (9)] 
 Class            : Hunter
@@ -3137,6 +3037,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #15 (id=260646)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
+#16 (id=310316)   : Apply Aura (6) | Add Percent Modifier: Spell Pushback (108)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 9
+                   Affected Spells: Revive Pet (982)
 
 Name             : Beast Mastery Hunter (id=137015) [Spell Family (9), Passive, Hidden] 
 Class            : Beast Mastery Hunter
@@ -3326,7 +3229,7 @@ Effects          :
 Description      : Interrupts spellcasting, preventing any spell in that school from being cast for $d.
 
 Name             : Adaptation (id=152244) [Passive] 
-Class            : Hunter, Death Knight
+Class            : Hunter, Death Knight, Shaman
 School           : Physical
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3370,7 +3273,7 @@ Description      : Your damage dealt with Auto Shot, Arcane Shot and Aimed Shot 
 Tooltip          : Your damage dealt with Auto Shot, Arcane Shot and Aimed Shot is increased by $s1%.
 
 Name             : Combat Experience (id=156843) [Spell Family (9), Passive] 
-Class            : Ferocity Tenacity Hunter, Death Knight Pet
+Class            : Ferocity Tenacity Hunter, Death Knight, Shaman Pet
 School           : Physical
 Spell Level      : 1
 Attributes       : ....x.x. x....... ..x..... ........   ........ ........ ........ ........ 
@@ -3445,21 +3348,6 @@ Effects          :
 #1 (id=219929)   : Apply Aura (6) | Unknown effect sub type (418)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 2
 Description      : Increases your maximum Focus by $s1.
-
-Name             : Glyph of Play Dead (id=159459) [Spell Family (9), Passive, Hidden] 
-Class            : Hunter
-School           : Physical
-Attributes       : ....x.xx x....... ........ ........   ...x...x ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=223352)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 60 | Scaled Value: 60 | Misc Value: 23
-Description      : Your pet also plays dead when you use Feign Death.
 
 Name             : Molten Hide (Special Ability) (id=159786) 
 Class            : Hunter
@@ -4124,6 +4012,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #2 (id=243432)   : Weapon Damage% (31)
                    Base Value: 660 | Scaled Value: 6.6
+#3 (id=309451)   : Trigger Spell: Chimaera Shot (64)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 204304
 Description      : $@spelldesc53209
 
 Name             : Chimaera Shot (id=171457) [Spell Family (9)] 
@@ -4145,6 +4035,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #2 (id=243436)   : Weapon Damage% (31)
                    Base Value: 665 | Scaled Value: 6.65
+#3 (id=309452)   : Trigger Spell: Chimaera Shot (64)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 204304
 Description      : $@spelldesc53209
 
 Name             : Stopping Power (id=175686) 
@@ -4255,9 +4147,6 @@ Attributes       : ........ ........ ........ .......x   ........ ..x..... .....
 Effects          :
 #1 (id=270016)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
-#2 (id=270017)   : Apply Aura (6) | Unknown effect sub type (383)
-                   Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Dire Beast (120679)
 Description      : The cooldown of Dire Beast is reset.
 Tooltip          : The cooldown of Dire Beast is reset.
 
@@ -4398,8 +4287,8 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 5
 Duration         : 3 seconds
-Cooldown         : 60 seconds
-Affecting spells : Glyph of Aspect of the Pack (57904), Dash (199921)
+Cooldown         : 180 seconds
+Affecting spells : Dash (199921)
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4417,7 +4306,7 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 5
 Duration         : 9 seconds
-Affecting spells : Glyph of Aspect of the Pack (57904), Dash (199921)
+Affecting spells : Dash (199921)
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4515,10 +4404,14 @@ Class            : Marksmanship Hunter
 School           : Physical
 Resource         : 50 Focus
 Spell Level      : 22
-Range            : 10 yards
+Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 30 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
 Affecting spells : Freezing Trap (3355), Black Decay (188400), Gust of Wind (190567)
 Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -4537,7 +4430,7 @@ Effects          :
 #4 (id=272331)   : Apply Aura (6) | Confuse (5)
                    Base Value: -50 | Scaled Value: -50 | Radius: 8 yards
 Description      : Fire an explosion of bolts that strikes all enemies in front of you, knocking them back and disorienting them, and dealing $sw1 Physical damage.
-Tooltip          : Disoriented
+Tooltip          : Disoriented.
 
 Name             : Vulnerable (id=187131) [Spell Family (9)] 
 Class            : Hunter
@@ -4981,7 +4874,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=280784)   : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.73300
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.30000
 Description      : $@spelldesc34026
 Tooltip          : Bleeding for $w1 damage every second.
 
@@ -6021,19 +5914,17 @@ Spell Level      : 1
 Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Duration         : 0.9 seconds
 Charges          : 2 (15 seconds cooldown)
-Attributes       : ....x... ........ x.....x. ........   ..x..... .x...... ........ ........ 
-                 : ........ ........ ........ ........   ........ .......x ........ ........ 
+Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Channeled (34)
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=294651)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-Description      : Toss 3 Axes at your enemy target, dealing $200167s1 Physical damage for each axe.
+#1 (id=294651)   : Dummy (3)
+                   Base Value: 3 | Scaled Value: 3
+Description      : Toss $s1 axes at an enemy, each dealing $200167s1 Physical damage.
 
 Name             : Throwing Axes (id=200167) [Spell Family (9)] 
 Class            : Hunter
@@ -6049,8 +5940,8 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=294656)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.60000
-Description      : Toss 3 Hatchet at an enemy target, dealing $s1 Physical damage.
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.00000
+Description      : $@spelldesc200163
 
 Name             : Activating Specialization (id=200749) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -6298,6 +6189,7 @@ School           : Nature
 Spell Level      : 60
 Range            : 50000 yards
 Affecting spells : Freezing Trap (3355), Item - Hunter T14 2P Bonus (123090), Lone Wolf (155228), Guide: Sharpshooting (178549), Black Decay (188400), Sniper Training (193468)
+Triggered by     : Chimaera Shot (171454), Chimaera Shot (171457)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6307,7 +6199,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=301540)   : Energize Power (30)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: focus
-Description      : Generates $s1 Focus.
+Description      : $@spelldesc53209
 
 Name             : Big Game Hunter (id=204308) [Spell Family (9), Passive] 
 Class            : Hunter
@@ -6365,8 +6257,8 @@ Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=301566)   : Apply Aura (6) | Modify Ranged and Melee Haste% (192)
-                   Base Value: 100 | Scaled Value: 100
+#1 (id=301566)   : Apply Aura (6) | Modify All Haste% (193)
+                   Base Value: 10 | Scaled Value: 10
 Description      : Increases Haste by $s1%.
 Tooltip          : Haste increased by $s1%.
 
@@ -6400,11 +6292,11 @@ Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=301586)   : Apply Aura (6) | Unknown effect sub type (318)
-                   Base Value: 40 | Scaled Value: 40
+                   Base Value: 10 | Scaled Value: 10
 Description      : Increases Mastery by $s1.
 Tooltip          : Mastery increased by $s1.
 
-Name             : Mechanical Transponder (id=205154) [Hidden] 
+Name             : Mecha-Bond Imprint Matrix (id=205154) [Hidden] 
 Class            : Hunter
 School           : Nature
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -6417,6 +6309,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=302863)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
+Description      : Allows you to tame pets in the Mechanical family.
 
 Name             : A Murder of Crows (id=206505) [Spell Family (9)] 
 Class            : Hunter
@@ -6495,5 +6388,48 @@ Effects          :
 Description      : Your next Marked Shot applies $s stacks of Vulnerability to all Marked Targets.
 Tooltip          : Haste increased by $s1%.
 Your next Marked Shot applies $s stacks of Vulnerability to all Marked Targets.
+
+Name             : Play Dead (id=209997) [Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Spell Level      : 32
+Range            : 100 yards
+Duration         : 360 seconds
+Cooldown         : 30 seconds
+Affecting spells : Improved Feign Death (24432)
+Triggered by     : Wake Up (210000)
+Attributes       : ........ x....... x.x.x... .x......   ........ ..x..... .xx..... ........ 
+                 : ........ ........ ........ ........   ........ ........ ..x..... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=310880)   : Apply Aura (6) | Feign Death (66)
+                   Base Value: 0 | Scaled Value: 0
+#2 (id=310889)   : Apply Aura (6) | Stun (12)
+                   Base Value: 0 | Scaled Value: 0
+#3 (id=310896)   : Apply Aura (6) | Unknown effect sub type (332)
+                   Base Value: 210000 | Scaled Value: 210000 | Misc Value: 209997
+Description      : Playing Dead, tricking enemies into ignoring them. Lasts up to $d.
+Tooltip          : Playing Dead.
+
+Name             : Wake Up (id=210000) [Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Spell Level      : 32
+Range            : 100 yards
+Cooldown         : 30 seconds
+Affecting spells : Improved Feign Death (24432)
+Attributes       : ........ x....... x.x.x... .x......   ........ ..x..... .xx..... ........ 
+                 : ........ ........ ........ ........   ........ ........ ..x..... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=310886)   : Unknown effect type (203)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 209997
+Description      : Tell your pet to wake up.
 
 

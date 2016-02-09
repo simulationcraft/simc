@@ -32,9 +32,7 @@ Attributes       : ....x... ........ ..x..... x..x....   ........ ..x..... .x...
 Effects          :
 #2 (id=1295)     : Apply Aura (6) | Periodic Dummy: every 0.25 seconds (226)
                    Base Value: 60068 | Scaled Value: 60068
-#3 (id=97375)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 93061 | Scaled Value: 93061
-Description      : Activates a freezing aura for $d that creates ice beneath your feet, allowing party or raid members within $a1 yards to walk on water.  Usable while mounted,$?s59307[ and allows you to fall from a greater distance without suffering damage,][] but being attacked or damaged will cancel the effect.
+Description      : Activates a freezing aura for $d that creates ice beneath your feet, allowing party or raid members within $a1 yards to walk on water.  Usable while mounted, but being attacked or damaged will cancel the effect.
 Tooltip          : Grants the ability to walk across water.
 
 Name             : Bite (Basic Attack) (id=17253) [Scaling Spell (4), Spell Family (9)] 
@@ -205,7 +203,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .x...
 Effects          :
 #1 (id=34352)    : Apply Aura (6) | Periodic Trigger Spell: Army of the Dead every 0.5 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 42651
-Description      : Summons a legion of Ghouls over $d who will fight for the Death Knight for $42651d, swarming the area, $?s56222[taunting and ][]fighting anything they can.
+Description      : Summons a legion of Ghouls over $d who will fight for the Death Knight for $42651d, swarming the area, fighting anything they can.
 Tooltip          : Summoning Ghouls.
 
 Name             : Army of the Dead (id=42651) [Spell Family (15)] 
@@ -473,7 +471,7 @@ Spell Level      : 55
 Range            : 40 yards
 GCD              : 1.5 seconds
 Proc Chance      : 101%
-Affecting spells : On a Pale Horse (51986), Glyph of Tranquil Grip (63335), Sudden Doom (81340), Deadliest Coil (191419)
+Affecting spells : On a Pale Horse (51986), Sudden Doom (81340), Deadliest Coil (191419)
 Attributes       : ........ ........ ..x..... ........   ........ .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -766,6 +764,7 @@ Proc Chance      : 100%
 Real PPM         : 3 (Haste multiplier)
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
+Affecting spells : Double Doom (191741)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ...x.... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -778,30 +777,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 81340
 Description      : Your autoattacks have a chance to make your next Death Coil cost no Runic Power.
 
-Name             : Death Grip (id=49560) [Spell Family (15)] 
-Class            : Death Knight
-School           : Physical
-Range            : 50000 yards
-Duration         : 3 seconds
-Triggered by     : Veteran of the Third War (48263)
-Attributes       : ........ ........ ........ ........   ........ .x...... ........ ...x.... 
-                 : ........ ........ ........ ......x.   ........ ........ ..x..... ......x. 
-                 : ........ ...x.... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ .......x x....... 
-                 : x....... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=41681)    : Dummy (3)
-                   Base Value: 49575 | Scaled Value: 49575 | Radius: 0 - 3 yards
-#2 (id=41682)    : Apply Aura (6) | Taunt (11)
-                   Base Value: 0 | Scaled Value: 0
-#3 (id=41683)    : Unknown effect type (114)
-                   Base Value: 0 | Scaled Value: 0
-#4 (id=298909)   : Server Side Script (77)
-                   Base Value: 0 | Scaled Value: 0
-Description      : Harness the unholy energy that surrounds and binds all matter, drawing the target toward the Death Knight and forcing the enemy to attack the Death Knight, and increasing threat that you generate against the target by $s2% for $d.
-Tooltip          : Taunted.
-
 Name             : Death Grip (id=49576) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
@@ -809,7 +784,7 @@ Spell Level      : 55
 Range            : 30 yards
 GCD              : 1 seconds
 Charges          : 1 (20 seconds cooldown)
-Attributes       : ........ ........ ........ ........   ........ ........ ...x.... ........ 
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ......x. ........ ....x... ........   ........ ........ xx...... ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ....x...   ........ ........ ........ ........ 
@@ -817,9 +792,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ ...x.
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
-#1 (id=41698)    : Dummy (3)
+#1 (id=41698)    : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0
-Description      : Harnesses the energy that surrounds and binds all matter, drawing the target toward the Death Knight$?s63335[]?s56222[ and forcing the enemy to attack the Death Knight for $49560d][].
+Description      : Harnesses the energy that surrounds and binds all matter, drawing the target toward the Death Knight$?s137008[ and forcing the enemy to attack the Death Knight, and increasing threat that you generate against the target by $51399s1% for $51399d][].
 
 Name             : Death Strike (Active Mitigation) (id=49998) [Spell Family (15)] 
 Class            : Death Knight
@@ -828,7 +803,7 @@ Resource         : 40 Runic Power
 Spell Level      : 56
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Scent of Blood (50421), On a Pale Horse (51986), Dark Succor (101568), Item - Death Knight T13 Blood 2P Bonus (105552), Item - Death Knight T13 Blood 4P Bonus (105587), Item - Death Knight T13 DPS 2P Bonus (105609), Item - Death Knight T13 DPS 4P Bonus (105646), Blood Death Knight (137008), Deathbringer (144953)
+Affecting spells : Scent of Blood (50421), On a Pale Horse (51986), Dark Succor (101568), Item - Death Knight T13 Blood 2P Bonus (105552), Item - Death Knight T13 Blood 4P Bonus (105587), Item - Death Knight T13 DPS 2P Bonus (105609), Item - Death Knight T13 DPS 4P Bonus (105646), Blood Death Knight (137008), Deathbringer (144953), Item - Death Knight T18 Blood 4P Bonus (187873)
 Triggered by     : Scent of Blood (50421)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -878,7 +853,6 @@ School           : Physical
 Duration         : 20 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Item - Death Knight T18 Blood 2P Bonus (187872)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -922,7 +896,7 @@ School           : Shadow
 Resource         : 1 Rune
 Spell Level      : 59
 GCD              : 1.5 seconds
-Affecting spells : On a Pale Horse (51986), Glyph of Resilient Grip (59309)
+Affecting spells : On a Pale Horse (51986)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -942,11 +916,11 @@ School           : Shadow
 Resource         : 1 Rune
 Resource         : -10 Runic Power
 Spell Level      : 55
-Cast Time        : 10 seconds
+Cast Time        : 4 seconds
 GCD              : 1 seconds
 Duration         : 60 seconds
 Cooldown         : 60 seconds
-Affecting spells : On a Pale Horse (51986), Glyph of Death Gate (60200)
+Affecting spells : On a Pale Horse (51986)
 Attributes       : ........ ........ ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -1025,6 +999,25 @@ Tooltip          : Strength increased by $w1%.$?$w3!=0[
 Immune to effects that cause loss of control.
 Movement speed reduced by $90259s2%.][
 Immune to movement from external sources.]
+
+Name             : Death Grip (id=51399) [Spell Family (15)] 
+Class            : Death Knight
+School           : Physical
+Range            : 30 yards
+Duration         : 3 seconds
+Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ......x.   ........ ........ ..x..... ........ 
+                 : x....... ...x.... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ .......x x....... 
+                 : x....... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=43733)    : Apply Aura (6) | Taunt (11)
+                   Base Value: 200 | Scaled Value: 200
+#2 (id=43734)    : Unknown effect type (114)
+                   Base Value: 0 | Scaled Value: 0
+Description      : $@spelldesc49560
+Tooltip          : Taunted.
 
 Name             : Runic Corruption (id=51460) [Spell Family (15)] 
 Class            : Death Knight
@@ -1421,21 +1414,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Causes your Army of the Dead spell to summon an assortment of undead minions.
 
-Name             : Glyph of Army of the Dead (id=58669) [Spell Family (15), Passive, Hidden] 
-Class            : Death Knight
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=93230)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 7
-Description      : The ghouls summoned by your Army of the Dead no longer taunt their target.
-
 Name             : Glyph of Death's Embrace (id=58677) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
 School           : Physical
@@ -1450,25 +1428,9 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=52081)    : Apply Aura (6) | Proc Trigger Spell: Glyph of Death's Embrace (42)
+#1 (id=52081)    : Apply Aura (6) | Proc Trigger Spell: (58679) (42)
                    Base Value: 20 | Scaled Value: 20 | Trigger Spell: 58679
 Description      : Your Death Coil refunds $s1 Runic Power when used to heal an allied minion, but will no longer trigger Blood Tap when used this way.
-
-Name             : Glyph of Death's Embrace (id=58679) [Spell Family (15)] 
-Class            : Death Knight
-School           : Shadow
-Spell Level      : 55
-Triggered by     : Glyph of Death's Embrace (58677)
-Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ .x...x..   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=52083)    : Energize Power (30)
-                   Base Value: 200 | Scaled Value: 200 | Misc Value: runic_power
-Description      : Your Death Coil refunds 20 Runic Power when used to heal an allied minion.
 
 Name             : Glyph of Horn of Winter (id=58680) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
@@ -1601,51 +1563,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 59052
 Description      : Your Obliterate has a $h% chance to cause your next Howling Blast to consume no runes, generate no Runic Power, and deal $59052s2% additional damage.
 
-Name             : Glyph of Path of Frost (id=59307) [Spell Family (15), Passive, Hidden] 
-Class            : Death Knight
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=52792)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-Description      : Your Path of Frost ability allows you to fall from a greater distance without suffering damage.
-
-Name             : Glyph of Resilient Grip (id=59309) [Spell Family (15), Passive, Hidden] 
-Class            : Death Knight
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=52794)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6
-                   Affected Spells: Blood Boil (50842)
-Description      : When your Death Grip ability fails because its target is immune, its cooldown is reset.
-
-Name             : Resilient Grip (id=59311) 
-Class            : Death Knight
-School           : Physical
-Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=52796)    : Unknown effect type (74)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 553
-Description      : When your Death Grip ability fails because its target is immune, its cooldown is reset.
-
 Name             : Path of Frost (id=59312) 
 Class            : Death Knight
 School           : Physical
@@ -1673,21 +1590,6 @@ Effects          :
 #1 (id=52798)    : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 555
 Description      : Reduces the cast time of your Death Gate spell by $60200s1%.
-
-Name             : Glyph of Corpse Explosion (id=59336) [Spell Family (15), Passive, Hidden] 
-Class            : Death Knight
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=52826)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 14
-Description      : Teaches you the ability Corpse Explosion.
 
 Name             : Corpse Explosion (id=59337) 
 Class            : Death Knight
@@ -1724,22 +1626,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20
 Description      : $@spelldesc28880
 Tooltip          : Healing $/5;s2% every $t1 seconds.
-
-Name             : Glyph of Death Gate (id=60200) [Spell Family (15), Passive, Hidden] 
-Class            : Death Knight
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=53895)    : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
-                   Base Value: -60 | Scaled Value: -60 | Misc Value: 10
-                   Affected Spells: Death Gate (50977)
-Description      : Reduces the cast time of your Death Gate spell by $60200s1%.
 
 Name             : Mechanized Snow Goggles (id=61483) 
 Class            : Warrior, Paladin, Death Knight
@@ -1869,25 +1755,6 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100
 Description      : When your pet is at or above 50 Focus, your pet's Basic Attacks will deal $s1% more damage, but cost $s2% additional focus.
 
-Name             : Glyph of Tranquil Grip (id=63335) [Spell Family (15), Passive, Hidden] 
-Class            : Death Knight
-School           : Physical
-Proc Chance      : 100%
-Proc Flags       : ........ ....x... x....... ........ 
-                 : AOE Hostile Spell, Hostile Spell
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=57462)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Death Coil (47541)
-Description      : Your Death Grip spell no longer taunts the target.
-
 Name             : Dark Transformation (id=63560) [Spell Family (15)] 
 Class            : Unholy Death Knight
 School           : Shadow
@@ -1897,7 +1764,7 @@ GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Duration         : 20 seconds
 Cooldown         : 60 seconds
-Affecting spells : On a Pale Horse (51986), Item - Death Knight T17 Unholy 2P Bonus (165575), Item - Death Knight T18 Unholy 2P Bonus (187865), Eternal Agony (208598)
+Affecting spells : On a Pale Horse (51986), Item - Death Knight T17 Unholy 2P Bonus (165575), Eternal Agony (208598)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ......x. .x...... ........ ........   ........ ........ ........ ........ 
@@ -1913,26 +1780,12 @@ Description      : Transform your Ghoul into a powerful undead monstrosity for $
 Tooltip          : Transformed into an undead monstrosity.
 Damage dealt increased by $w1%.
 
-Name             : Tranquil Grip (id=63961) 
-Class            : Death Knight
-School           : Physical
-Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=58155)    : Unknown effect type (74)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 773
-Description      : Your Death Grip spell no longer taunts the target.
-
 Name             : Death Strike Off-Hand (id=66188) [Scaling Spell (1), Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
 Range            : 100 yards
 GCD              : 1.5 seconds
-Affecting spells : Scent of Blood (50421), Dark Succor (101568), Item - Death Knight T13 Blood 2P Bonus (105552), Item - Death Knight T13 Blood 4P Bonus (105587), Item - Death Knight T13 DPS 2P Bonus (105609), Item - Death Knight T13 DPS 4P Bonus (105646), Blood Death Knight (137008), Deathbringer (144953)
+Affecting spells : Scent of Blood (50421), Dark Succor (101568), Item - Death Knight T13 Blood 2P Bonus (105552), Item - Death Knight T13 Blood 4P Bonus (105587), Item - Death Knight T13 DPS 2P Bonus (105609), Item - Death Knight T13 DPS 4P Bonus (105646), Blood Death Knight (137008), Deathbringer (144953), Item - Death Knight T18 Blood 4P Bonus (187873)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ..x..... x.....x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2196,7 +2049,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68676)    : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100
-Description      : When you spend Runic Power, you have a ${$m1/100}.1% chance per Runic Power spent to activate a random fully-depleted rune.
+Description      : When you spend Runic Power, you have a ${$m1/100}.1% chance per Runic Power spent to gain a Rune.
 
 Name             : Dancing Rune Weapon (id=81256) [Spell Family (15)] 
 Class            : Death Knight
@@ -2238,7 +2091,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ..x.x.x. x....... ........ 
                  : AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
-Affecting spells : Double Doom (191741), 
+Affecting spells : Double Doom (191741)
 Triggered by     : Sudden Doom (49530)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2792,6 +2645,24 @@ Effects          :
 #1 (id=161563)   : Create Item (24)
                    Base Value: 1 | Scaled Value: 1
 
+Name             : Corpse Explosion (id=127344) [Spell Family (15)] 
+Class            : Death Knight
+School           : Shadow
+Range            : 30 yards
+GCD              : 1 seconds
+Duration         : Aura (infinite)
+Cooldown         : 15 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
+                 : x....... ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   .......x x....... ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#2 (id=162117)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0
+Description      : Cause a target corpse to explode in a shower of gore. Does not affect mechanical or elemental corpses.
+
 Name             : Blink Strikes (id=130392) [Spell Family (9), Passive] 
 Class            : Hunter, Death Knight
 School           : Physical
@@ -3185,7 +3056,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1074
 
 Name             : Adaptation (id=152244) [Passive] 
-Class            : Hunter, Death Knight
+Class            : Hunter, Death Knight, Shaman
 School           : Physical
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3323,7 +3194,7 @@ Effects          :
 Description      : $@spelldesc152280
 
 Name             : Combat Experience (id=156843) [Spell Family (9), Passive] 
-Class            : Ferocity Tenacity Hunter, Death Knight Pet
+Class            : Ferocity Tenacity Hunter, Death Knight, Shaman Pet
 School           : Physical
 Spell Level      : 1
 Attributes       : ....x.x. x....... ..x..... ........   ........ ........ ........ ........ 
@@ -3534,22 +3405,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Choose a level 75 talent.
 
-Name             : Grip of Death (id=175680) 
-Class            : Death Knight
-School           : Physical
-Spell Level      : 90
-GCD              : 1.5 seconds
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ...x.... ........ ........ ........ 
-Effects          :
-#1 (id=251150)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0
-Description      : Choose a level 90 talent.
-
 Name             : Frozen Runeblade (id=178808) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
@@ -3648,11 +3503,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=274026)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 3
-#2 (id=274027)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
-                   Base Value: 40 | Scaled Value: 40 | Misc Value: 3
-                   Affected Spells: Dark Transformation (63560)
-Description      : Your Death Coil applies double the amount of Shadow Infusion onto your Ghoul.
+                   Base Value: -3000 | Scaled Value: -3000 | Misc Value: 3
+Description      : Your Death Coil reduces the cooldown of Dark Transformation by ${$m1/-1000} sec.
 
 Name             : Crazed Monstrosity (id=187970) 
 Class            : Death Knight
@@ -4771,7 +4623,6 @@ Effects          :
 Name             : Will of the Necropolis (Passive Talent) (id=206967) [Spell Family (8), Passive] 
 Class            : Death Knight
 School           : Physical
-Affecting spells : Glyph of Decoy (56800)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4965,7 +4816,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=306338)   : Apply Aura (6) | Periodic Energize Power: every 1 seconds (24)
+#1 (id=306338)   : Apply Aura (6) | Periodic Energize Power: every 1.5 seconds (24)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 5
 #2 (id=306339)   : Apply Aura (6) | Periodic Energize Power: every 1 seconds (24)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 6
@@ -5419,7 +5270,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 100 yards
 Description      : Cause all of your Virulent Plague effects to instantly erupt.
 
-Name             : Meat Shield (id=207319) [Spell Family (15)] 
+Name             : Corpse Shield (id=207319) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
 Duration         : 10 seconds
