@@ -3564,7 +3564,21 @@ struct nether_tempest_t : public arcane_mage_spell_t
   }
 };
 
-// Phoenixs Flames Spell: TODO - Finish Spell =============================================================
+// Phoenix Reborn Spell ==============================================================
+
+// TODO: Ignite specific execute.
+struct phoenix_reborn_t : public fire_mage_spell_t
+{
+  phoenix_reborn_t( mage_t* p, const std::string& options_str ) :
+    fire_mage_spell_t( "phoenix_reborn", p, &( p -> artifact.phoenix_reborn.data() ) )
+  {
+    parse_options( options_str );
+    base_dd_min = base_dd_max = p -> find_spell( 205409 ) -> effectN( 1 ).base_value();
+  }
+};
+
+
+// Phoenixs Flames Spell =============================================================
 
 struct phoenixs_flames_t : public fire_mage_spell_t
 {
@@ -4475,6 +4489,7 @@ action_t* mage_t::create_action( const std::string& name,
 
   // Artifact Specific Spells
   // Fire
+  if ( name == "phoenix_reborn"    ) return new           phoenix_reborn_t( this, options_str );
   if ( name == "phoenixs_flames"   ) return new          phoenixs_flames_t( this, options_str );
 
   // Shared spells
