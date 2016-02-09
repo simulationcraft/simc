@@ -272,6 +272,7 @@ public:
     const spell_data_t* bombardment;
     const spell_data_t* rapid_fire;
     const spell_data_t* lock_and_load;
+    const spell_data_t* lone_wolf;
 
     // Survival
     const spell_data_t* flanking_strike;
@@ -501,9 +502,12 @@ private:
 public:
   typedef hunter_action_t base_t;
 
+  bool lone_wolf;
+
   hunter_action_t( const std::string& n, hunter_t* player,
                    const spell_data_t* s = spell_data_t::nil() ):
-                   ab( n, player, s )
+                   ab( n, player, s ),
+                   lone_wolf( ab::data().affected_by( player -> specs.lone_wolf -> effectN( 1 ) ) )
   {
   }
 
@@ -526,6 +530,10 @@ public:
   virtual double action_multiplier() const
   {
     double am = ab::action_multiplier();
+
+    if ( lone_wolf )
+      am *= 1.0 + p() -> specs.lone_wolf -> effectN( 1 ).percent();
+
     return am;
   }
 
