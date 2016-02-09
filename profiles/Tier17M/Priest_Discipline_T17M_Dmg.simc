@@ -4,7 +4,6 @@ race=draenei
 role=spell
 position=back
 talents=3223232
-glyphs=smite/holy_fire/inquisitor
 spec=discipline
 
 # This default action priority list is automatically created based on your character.
@@ -17,7 +16,6 @@ spec=discipline
 
 actions.precombat=flask,type=greater_draenic_intellect_flask
 actions.precombat+=/food,type=salty_squid_roll
-actions.precombat+=/power_word_fortitude,if=!aura.stamina.up
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_intellect
@@ -25,21 +23,10 @@ actions.precombat+=/smite
 
 # Executed every time the actor is available.
 
-actions=potion,name=draenic_intellect,if=buff.bloodlust.react|target.time_to_die<=40
-actions+=/mindbender,if=talent.mindbender.enabled
-actions+=/shadowfiend,if=!talent.mindbender.enabled
-actions+=/blood_fury
-actions+=/berserking
-actions+=/arcane_torrent
-actions+=/power_infusion,if=talent.power_infusion.enabled
-actions+=/shadow_word_pain,if=!ticking
-actions+=/penance
-actions+=/power_word_solace,if=talent.power_word_solace.enabled
-actions+=/holy_fire,if=!talent.power_word_solace.enabled
-actions+=/smite,if=glyph.smite.enabled&(dot.power_word_solace.remains+dot.holy_fire.remains)>cast_time
-actions+=/shadow_word_pain,if=remains<(duration*0.3)
+actions=mana_potion,if=mana.pct<=75
+actions+=/shadowfiend
+actions+=/shadow_word_pain,,if=remains<tick_time|!ticking
 actions+=/smite
-actions+=/shadow_word_pain
 
 head=soul_priests_hood,id=115563
 neck=choker_of_bloody_flame,id=120077,bonus_id=567,enchant=gift_of_critical_strike
@@ -61,12 +48,11 @@ off_hand=enginestokers_lantern,id=113960,bonus_id=567
 # Gear Summary
 # gear_ilvl=699.06
 # gear_stamina=4642
-# gear_intellect=3840
+# gear_intellect=3668
 # gear_spell_power=1834
-# gear_crit_rating=1466
-# gear_haste_rating=1067
-# gear_mastery_rating=156
-# gear_multistrike_rating=1043
+# gear_crit_rating=1544
+# gear_haste_rating=1411
+# gear_mastery_rating=502
 # gear_versatility_rating=561
 # gear_armor=878
 # set_bonus=tier17_2pc=1

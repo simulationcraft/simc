@@ -16,7 +16,7 @@ race=tauren
 role=attack
 spec=fury
 talents=1321321
-glyphs=unending_rage/raging_wind/heroic_leap
+#glyphs=unending_rage/raging_wind/heroic_leap
 head=blackhands_faceguard,id=115584
 neck=vertebrae_protector,id=113900,enchant=gift_of_critical_strike
 shoulder=blackhands_shoulderguards,id=115581
@@ -42,7 +42,7 @@ race=tauren
 role=attack
 spec=fury
 talents=1321321
-glyphs=unending_rage/raging_wind/heroic_leap
+#glyphs=unending_rage/raging_wind/heroic_leap
 head=blackhands_faceguard,id=115584
 neck=vertebrae_protector,id=113900,enchant=gift_of_critical_strike
 shoulder=blackhands_shoulderguards,id=115581
@@ -69,7 +69,7 @@ spec=Arms
 role=attack
 position=back
 talents=1321322
-glyphs=unending_rage/heroic_leap/sweeping_strikes
+#glyphs=unending_rage/heroic_leap/sweeping_strikes
 head=blackhands_faceguard,id=115584
 neck=vertebrae_protector,id=113900,enchant=gift_of_critical_strike
 shoulder=overdriven_spaulders,id=113990
@@ -94,7 +94,7 @@ race=tauren
 role=tank
 position=front
 talents=1113323
-glyphs=unending_rage/cleave/heroic_leap
+#glyphs=unending_rage/cleave/heroic_leap
 spec=prot
 head=hardened_greathelm,id=113910
 neck=choker_of_bestial_force,id=113952,bonus_id=566,enchant=gift_of_mastery
@@ -113,30 +113,3 @@ trinket2=blast_furnace_door,id=113893
 main_hand=kromogs_brutal_fist,id=113927,enchant=mark_of_blackrock
 off_hand=kromogs_protecting_palm,id=113926
 save=Warrior_Protection_T17N.simc
-
-# Warrior Gladiator T17N
-warrior="Warrior_Gladiator_T17N"
-level=100
-race=tauren
-role=attack
-position=back
-talents=1133323
-glyphs=unending_rage/cleave/heroic_leap
-spec=prot
-head=blackhands_faceguard,id=115584
-neck=glowing_taladite_pendant,id=115799,bonus_id=258/527,enchant_id=5317
-shoulder=blackhands_shoulderguards,id=115581
-chest=blackhands_chestguard,id=115582
-waist=ashelias_adorned_waistguard,id=118888
-legs=blackhands_legguards,id=115580
-feet=iron_bellow_sabatons,id=113961
-wrist=bracers_of_visceral_force,id=119331
-hands=gauntlets_of_dramatic_blows,id=113906
-finger1=glowing_taladite_ring,id=115794,bonus_id=258/527,enchant_id=5324
-finger2=timeless_solium_band_of_the_bulwark,id=118298,enchant_id=5324
-trinket1=knights_badge,id=112319,bonus_id=527
-trinket2=evergaze_arcane_eidolon,id=113861 
-back=powerful_hexweave_cloak,id=114817,bonus_id=258/527,enchant_id=5310
-main_hand=taners_terrible_spine,id=113862,enchant_id=5330
-off_hand=kromogs_protecting_palm,id=113926
-save=Warrior_Gladiator_T17N.simc

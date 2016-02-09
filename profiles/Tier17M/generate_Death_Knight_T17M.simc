@@ -17,7 +17,7 @@ spec=unholy
 role=attack
 position=back
 talents=2001003
-glyphs=
+#glyphs=
 head=ogreskull_boneplate_greathelm,id=115539,bonus_id=567
 neck=thogars_serrated_chain,id=113959,bonus_id=567,enchant=gift_of_multistrike
 shoulders=overdriven_spaulders,id=113990,bonus_id=567
@@ -43,7 +43,7 @@ spec=frost
 role=attack
 position=back
 talents=2001002
-glyphs=
+#glyphs=
 head=ogreskull_boneplate_greathelm,id=115539,bonus_id=567
 neck=vertebrae_protector,id=113900,bonus_id=567,enchant=gift_of_haste
 shoulders=ogreskull_boneplate_pauldrons,id=115536,bonus_id=567
@@ -68,7 +68,7 @@ spec=frost
 role=attack
 position=back
 talents=2001002
-glyphs=
+#glyphs=
 head=ogreskull_boneplate_greathelm,id=115539,bonus_id=567
 neck=thogars_serrated_chain,id=113959,bonus_id=567,enchant=gift_of_mastery
 shoulders=overdriven_spaulders,id=113990,bonus_id=567
@@ -116,7 +116,7 @@ race=orc
 role=tank
 position=front
 talents=http://us.battle.net/wow/en/tool/talent-calculator#da!1000002
-glyphs=vampiric_blood/regenerative_magic
+#glyphs=vampiric_blood/regenerative_magic
 spec=blood
 head=ogreskull_boneplate_greathelm,id=115539,bonus_id=567
 neck=gluttons_kerchief,id=113882,bonus_id=567,enchant=gift_of_multistrike

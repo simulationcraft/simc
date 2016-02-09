@@ -5,7 +5,6 @@ timeofday=night
 role=attack
 position=back
 talents=3002002
-glyphs=savage_roar
 spec=feral
 
 # This default action priority list is automatically created based on your character.
@@ -18,7 +17,6 @@ spec=feral
 
 actions.precombat=flask,type=greater_draenic_agility_flask
 actions.precombat+=/food,type=pickled_eel
-actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
 actions.precombat+=/healing_touch,if=talent.bloodtalons.enabled
 actions.precombat+=/cat_form
 actions.precombat+=/prowl
@@ -35,24 +33,21 @@ actions+=/dash,if=movement.distance&buff.displacer_beast.down&buff.wild_charge_m
 actions+=/rake,if=buff.prowl.up|buff.shadowmeld.up
 actions+=/auto_attack
 actions+=/skull_bash
-actions+=/force_of_nature,if=charges=3|trinket.proc.all.react|target.time_to_die<20
 actions+=/berserk,if=buff.tigers_fury.up&(buff.incarnation.up|!talent.incarnation_king_of_the_jungle.enabled)
 actions+=/use_item,slot=trinket1,if=(prev.tigers_fury&(target.time_to_die>trinket.stat.any.cooldown|target.time_to_die<45))|prev.berserk|(buff.incarnation.up&time<10)
 actions+=/potion,name=draenic_agility,if=(buff.berserk.remains>10&(target.time_to_die<180|(trinket.proc.all.react&target.health.pct<25)))|target.time_to_die<=40
 actions+=/blood_fury,sync=tigers_fury
 actions+=/berserking,sync=tigers_fury
 actions+=/arcane_torrent,sync=tigers_fury
-actions+=/tigers_fury,if=(!buff.omen_of_clarity.react&energy.deficit>=60)|energy.deficit>=80|(t18_class_trinket&buff.berserk.up&buff.tigers_fury.down)
+actions+=/tigers_fury,if=(!buff.clearcasting.react&energy.deficit>=60)|energy.deficit>=80|(t18_class_trinket&buff.berserk.up&buff.tigers_fury.down)
 actions+=/incarnation,if=cooldown.berserk.remains<10&energy.time_to_max>1
 # Keep Rip from falling off during execute range.
 actions+=/ferocious_bite,cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<3&target.health.pct<25
 actions+=/healing_touch,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&((combo_points>=4&!set_bonus.tier18_4pc)|combo_points=5|buff.predatory_swiftness.remains<1.5)
-actions+=/savage_roar,if=buff.savage_roar.down
-actions+=/thrash_cat,if=set_bonus.tier18_4pc&buff.omen_of_clarity.react&remains<4.5&combo_points+buff.bloodtalons.stack!=6
+actions+=/thrash_cat,if=set_bonus.tier18_4pc&buff.clearcasting.react&remains<4.5&combo_points+buff.bloodtalons.stack!=6
 actions+=/pool_resource,for_next=1
 actions+=/thrash_cat,cycle_targets=1,if=remains<4.5&(spell_targets.thrash_cat>=2&set_bonus.tier17_2pc|spell_targets.thrash_cat>=4)
 actions+=/call_action_list,name=finisher,if=combo_points=5
-actions+=/savage_roar,if=buff.savage_roar.remains<gcd
 actions+=/call_action_list,name=maintain,if=combo_points<5
 actions+=/pool_resource,for_next=1
 actions+=/thrash_cat,cycle_targets=1,if=remains<4.5&spell_targets.thrash_cat>=2
@@ -61,9 +56,8 @@ actions+=/call_action_list,name=generator,if=combo_points<5
 actions.finisher=rip,cycle_targets=1,if=remains<2&target.time_to_die-remains>18&(target.health.pct>25|!dot.rip.ticking)
 actions.finisher+=/ferocious_bite,cycle_targets=1,max_energy=1,if=target.health.pct<25&dot.rip.ticking
 actions.finisher+=/rip,cycle_targets=1,if=remains<7.2&persistent_multiplier>dot.rip.pmultiplier&target.time_to_die-remains>18
-actions.finisher+=/rip,cycle_targets=1,if=remains<7.2&persistent_multiplier=dot.rip.pmultiplier&(energy.time_to_max<=1|(set_bonus.tier18_4pc&energy>50)|(set_bonus.tier18_2pc&buff.omen_of_clarity.react)|!talent.bloodtalons.enabled)&target.time_to_die-remains>18
-actions.finisher+=/savage_roar,if=((set_bonus.tier18_4pc&energy>50)|(set_bonus.tier18_2pc&buff.omen_of_clarity.react)|energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&buff.savage_roar.remains<12.6
-actions.finisher+=/ferocious_bite,max_energy=1,if=(set_bonus.tier18_4pc&energy>50)|(set_bonus.tier18_2pc&buff.omen_of_clarity.react)|energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3
+actions.finisher+=/rip,cycle_targets=1,if=remains<7.2&persistent_multiplier=dot.rip.pmultiplier&(energy.time_to_max<=1|(set_bonus.tier18_4pc&energy>50)|(set_bonus.tier18_2pc&buff.clearcasting.react)|!talent.bloodtalons.enabled)&target.time_to_die-remains>18
+actions.finisher+=/ferocious_bite,max_energy=1,if=(set_bonus.tier18_4pc&energy>50)|(set_bonus.tier18_2pc&buff.clearcasting.react)|energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3
 
 actions.maintain=shadowmeld,if=energy>=35&dot.rake.pmultiplier<2.1&buff.tigers_fury.up&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>18)&!buff.incarnation.up
 actions.maintain+=/rake,cycle_targets=1,if=remains<3&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)
@@ -92,12 +86,11 @@ main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,bonus_id=566,enchant
 
 # Gear Summary
 # gear_ilvl=685.33
-# gear_agility=3470
+# gear_agility=3303
 # gear_stamina=4114
-# gear_crit_rating=1645
-# gear_haste_rating=308
-# gear_mastery_rating=489
-# gear_multistrike_rating=1045
+# gear_crit_rating=1510
+# gear_haste_rating=1063
+# gear_mastery_rating=639
 # gear_versatility_rating=403
 # gear_armor=1086
 # set_bonus=tier17_2pc=1

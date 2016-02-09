@@ -16,78 +16,41 @@ spec=balance
 
 actions.precombat=flask,type=greater_draenic_intellect_flask
 actions.precombat+=/food,type=sleeper_sushi
-actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
 actions.precombat+=/moonkin_form
+actions.precombat+=/blessing_of_elune
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_intellect
 actions.precombat+=/incarnation
-actions.precombat+=/starfire
+actions.precombat+=/lunar_strike
 
 # Executed every time the actor is available.
 
-actions=force_of_nature,if=trinket.stat.intellect.up|charges=3|target.time_to_die<21
-actions+=/call_action_list,name=cooldowns,if=cooldown.celestial_alignment.up&(eclipse_energy>=0|target.time_to_die<=30+gcd)
+actions=potion,name=draenic_intellect,if=buff.celestial_alignment.up
+actions+=/blood_fury,if=buff.celestial_alignment.up
+actions+=/berserking,if=buff.celestial_alignment.up
+actions+=/arcane_torrent,if=buff.celestial_alignment.up
 actions+=/use_item,slot=trinket1
 actions+=/use_item,slot=trinket2
-actions+=/call_action_list,name=ca_aoe,if=buff.celestial_alignment.up&spell_targets.starfall_pulse>1&!t18_class_trinket
-actions+=/call_action_list,name=ca,if=buff.celestial_alignment.up&(spell_targets.starfall_pulse=1|t18_class_trinket)
-actions+=/call_action_list,name=aoe_t18_trinket,if=buff.celestial_alignment.down&spell_targets.starfall.pulse>1&t18_class_trinket
-actions+=/call_action_list,name=aoe,if=spell_targets.starfall_pulse>1&buff.celestial_alignment.down&!t18_class_trinket
-actions+=/call_action_list,name=single_target,if=spell_targets.starfall_pulse=1&buff.celestial_alignment.down
-
-actions.single_target=starsurge,if=charges=3
-actions.single_target+=/starsurge,if=buff.lunar_empowerment.down&eclipse_energy>40
-actions.single_target+=/starsurge,if=buff.solar_empowerment.down&eclipse_energy<-40
-actions.single_target+=/sunfire,if=(remains<solar_max&eclipse_dir.solar)|(buff.solar_peak.up&buff.solar_peak.remains<action.wrath.cast_time&!talent.balance_of_power.enabled)
-actions.single_target+=/stellar_flare,if=remains<7
-actions.single_target+=/moonfire,if=!talent.euphoria.enabled&(remains<lunar_max&eclipse_dir.lunar)|(buff.lunar_peak.up&buff.lunar_peak.remains<action.starfire.cast_time&remains<eclipse_change+20)&!talent.balance_of_power.enabled
-actions.single_target+=/moonfire,if=talent.euphoria.enabled&(remains<lunar_max&eclipse_dir.lunar)|(buff.lunar_peak.up&buff.lunar_peak.remains<action.starfire.cast_time&remains<eclipse_change+10)&!talent.balance_of_power.enabled
-actions.single_target+=/moonfire,if=talent.balance_of_power.enabled&remains<eclipse_change+14
-actions.single_target+=/wrath,if=(eclipse_energy<0&eclipse_change>action.starfire.cast_time)|(eclipse_energy>0&cast_time>eclipse_change)
-actions.single_target+=/starfire
-
-actions.aoe=sunfire,cycle_targets=1,if=remains<8
-actions.aoe+=/starfall,if=spell_targets.starfall_pulse>2&buff.starfall.remains<3
-actions.aoe+=/starfall,if=@eclipse_energy<20&eclipse_dir.lunar&buff.starfall.remains<3&talent.euphoria.enabled
-actions.aoe+=/starfall,if=@eclipse_energy<10&eclipse_dir.lunar&buff.starfall.remains<3&!talent.euphoria.enabled
-actions.aoe+=/moonfire,cycle_targets=1,if=remains<12
-actions.aoe+=/stellar_flare,cycle_targets=1,if=remains<7
-actions.aoe+=/starsurge,if=(buff.lunar_empowerment.down&eclipse_energy>40&charges>1)|charges=3
-actions.aoe+=/starsurge,if=(buff.solar_empowerment.down&eclipse_energy<-40&charges>1)|charges=3
-actions.aoe+=/wrath,if=(eclipse_energy<=0&eclipse_change>action.starfire.cast_time)|(eclipse_energy>0&cast_time>eclipse_change)
-actions.aoe+=/starfire
-
-actions.ca=starsurge,if=(buff.lunar_empowerment.down&eclipse_energy>=0)|(buff.solar_empowerment.down&eclipse_energy<0)
-actions.ca+=/moonfire,cycle_targets=1,if=!dot.moonfire.remains|!dot.sunfire.remains
-actions.ca+=/sunfire,cycle_targets=1,if=!dot.moonfire.remains|!dot.sunfire.remains
-actions.ca+=/starfire,if=eclipse_energy>=0&buff.celestial_alignment.remains>cast_time
-actions.ca+=/wrath,if=buff.celestial_alignment.remains>cast_time
-actions.ca+=/moonfire,cycle_targets=1
-actions.ca+=/sunfire,cycle_targets=1
-
-actions.ca_aoe=starfall,if=buff.starfall.remains<3
-actions.ca_aoe+=/moonfire,cycle_targets=1,if=!dot.moonfire.ticking|!dot.sunfire.ticking
-actions.ca_aoe+=/sunfire,cycle_targets=1,if=!dot.moonfire.ticking|!dot.sunfire.ticking
-actions.ca_aoe+=/starsurge,if=buff.lunar_empowerment.down&eclipse_energy>=0&charges>1
-actions.ca_aoe+=/starsurge,if=buff.solar_empowerment.down&eclipse_energy<0&charges>1
-actions.ca_aoe+=/starfire,if=eclipse_energy>=0&buff.celestial_alignment.remains>cast_time
-actions.ca_aoe+=/wrath,if=buff.celestial_alignment.remains>cast_time
-actions.ca_aoe+=/moonfire,cycle_targets=1
-actions.ca_aoe+=/sunfire,cycle_targets=1
-
-actions.aoe_t18_trinket=starsurge,if=charges=3
-actions.aoe_t18_trinket+=/sunfire,cycle_targets=1,if=remains<8
-actions.aoe_t18_trinket+=/moonfire,cycle_targets=1,if=remains<12
-actions.aoe_t18_trinket+=/starsurge,if=eclipse_energy>40&buff.lunar_empowerment.down
-actions.aoe_t18_trinket+=/starsurge,if=eclipse_energy<-40&buff.solar_empowerment.down
-actions.aoe_t18_trinket+=/wrath,if=(eclipse_energy<0&action.starfire.cast_time<eclipse_change)|(eclipse_energy>0&cast_time>eclipse_change)
-actions.aoe_t18_trinket+=/starfire
-
-actions.cooldowns=incarnation
-actions.cooldowns+=/potion,name=draenic_intellect
-actions.cooldowns+=/Berserking
-actions.cooldowns+=/celestial_alignment
+actions+=/blessing_of_elune,moving=0
+actions+=/blessing_of_anshe,moving=1
+actions+=/warrior_of_elune,if=buff.lunar_empowerment.stack>=2
+actions+=/stellar_flare,if=remains<2
+actions+=/moonfire,if=remains<2
+actions+=/sunfire,if=remains<2
+actions+=/astral_communion,if=astral_power.deficit>=75
+actions+=/incarnation,if=astral_power>=40
+actions+=/celestial_alignment,if=astral_power>=40
+actions+=/collapsing_stars,if=astral_power.deficit<=10
+actions+=/lunar_strike,if=talent.natures_balance.enabled&dot.moonfire.remains<5
+actions+=/solar_wrath,if=talent.natures_balance.enabled&dot.sunfire.remains<5
+actions+=/lunar_strike,if=buff.lunar_empowerment.stack=3
+actions+=/solar_wrath,if=buff.solar_empowerment.stack=3
+actions+=/starsurge,if=!talent.collapsing_stars.enabled|(buff.collapsing_stars_up.down&(cooldown.collapsing_stars.remains>10|astral_power.deficit<=10))
+actions+=/lunar_strike,if=buff.lunar_empowerment.up&(!talent.warrior_of_elune.enabled|buff.warrior_of_elune.up)
+actions+=/solar_wrath,if=buff.solar_empowerment.up
+actions+=/lunar_strike,if=talent.full_moon.enabled|action.solar_wrath.cast_time<1
+actions+=/solar_wrath
 
 head=bloodfeather_cowl,id=109976
 neck=magisters_chain,id=109954,enchant=gift_of_critical_strike
@@ -110,8 +73,7 @@ main_hand=spire_of_the_furious_construct,id=110031,enchant=mark_of_the_thunderlo
 # gear_stamina=2465
 # gear_intellect=1854
 # gear_spell_power=958
-# gear_crit_rating=1315
-# gear_haste_rating=60
-# gear_mastery_rating=883
-# gear_multistrike_rating=174
+# gear_crit_rating=1040
+# gear_haste_rating=171
+# gear_mastery_rating=946
 # gear_armor=814

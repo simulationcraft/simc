@@ -3284,7 +3284,7 @@ void warrior_t::init_base_stats()
   // Base miss, dodge, parry, and block are set in player_t::init_base_stats().
   // Just need to add class- or spec-based modifiers here.
 
-  base.dodge += spec.bastion_of_defense -> effectN( 3 ).percent();
+  base.dodge += spec.bastion_of_defense -> effectN( 2 ).percent();
 
   base_gcd = timespan_t::from_seconds( 1.5 );
 

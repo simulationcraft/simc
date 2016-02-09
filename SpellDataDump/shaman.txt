@@ -47,7 +47,7 @@ Range            : 30 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
-Affecting spells : Elemental Focus (16246), Elemental Reach (29000), Telluric Currents (55453), Elemental Fury (60188), Shamanism (62099), Spiritwalker's Grace (79206), Temporal Maelstrom (105869), Windstrike (115356), Item - Shaman T14 Elemental 2P Bonus (123123), Lucidity (137326), Elemental Discharge (144999), Lightning Surge (189796), Call the Thunder (191493), Fire Empowered (193774), Lightning Rod (197209), Stormkeeper (205495), Lord of Storms (207092)
+Affecting spells : Elemental Focus (16246), Elemental Reach (29000), Telluric Currents (55453), Elemental Fury (60188), Shamanism (62099), Spiritwalker's Grace (79206), Temporal Maelstrom (105869), Windstrike (115356), Item - Shaman T14 Elemental 2P Bonus (123123), Lucidity (137326), Elemental Discharge (144999), Lightning Surge (189796), Call the Thunder (191493), Fire Empowered (193774), Lightning Rod (197209), Stormkeeper (205495), Lord of Storms (207092), Tidal Feedback (207356)
 Triggered by     : Tidal Feedback (207356)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -68,7 +68,7 @@ Spell Level      : 28
 Range            : 30 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Affecting spells : Elemental Focus (16246), Elemental Reach (29000), Elemental Fury (60188), Shamanism (62099), Spiritwalker's Grace (79206), Temporal Maelstrom (105869), Ascendance (114050), Windstrike (115356), Lucidity (137326), Elemental Discharge (144999), Electric Discharge (191577), Fire Empowered (193774), Lightning Rod (197209), Stormkeeper (205495)
+Affecting spells : Elemental Focus (16246), Elemental Reach (29000), Elemental Fury (60188), Shamanism (62099), Spiritwalker's Grace (79206), Temporal Maelstrom (105869), Ascendance (114050), Windstrike (115356), Lucidity (137326), Elemental Discharge (144999), Electric Discharge (191577), Fire Empowered (193774), Lightning Rod (197209), Stormkeeper (205495), Unbreakable Chains (207348)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -88,7 +88,7 @@ Spell Level      : 44
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Healing Trance (60515), Mastery: Deep Healing (77226), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Temporal Maelstrom (105869), Lucidity (137326), High Tide (157154), Harmony of the Elements (167703)
+Affecting spells : Healing Trance (60515), Mastery: Deep Healing (77226), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Temporal Maelstrom (105869), Lucidity (137326), High Tide (157154), Harmony of the Elements (167703), Unbreakable Chains (207348)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -140,7 +140,7 @@ Attributes       : ........ ........ x....... ....x...   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=602)      : Unknown effect type (172)
-                   Base Value: 35 | Scaled Value: 35
+                   Base Value: 35 | Scaled Value: 35 | Radius: 100 yards
 #2 (id=201012)   : Trigger Spell: (148037) (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 148037
 Description      : Returns all dead party members to life with $s1% of maximum health and mana.  Cannot be cast when in combat.
@@ -169,7 +169,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #5 (id=250398)   : Apply Aura (6) | Unknown effect sub type (191)
                    Base Value: 1000 | Scaled Value: 1000
-Description      : Turns the Shaman into a Ghost Wolf, increasing movement speed by $s2%.$?s159642[ Speed increased by an additional $159642s1% if activated outside combat.][]$?s59289[ As a Ghost Wolf, the Shaman is less hindered by effects that would reduce movement speed.][]
+Description      : Turns the Shaman into a Ghost Wolf, increasing movement speed by $s2%.
 Tooltip          : Increases movement speed by $w2%.$?$w3!=0[
 Less hindered by effects that reduce movement speed.][]
 
@@ -244,7 +244,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 100 yards
 #2 (id=2126)     : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
-Description      : Changes the caster's viewpoint to the targeted location. Lasts $d.$?s58059[][ Only usable outdoors.]
+Description      : Changes the caster's viewpoint to the targeted location. Lasts $d.
 Tooltip          : Cannot move while using Far Sight.
 
 Name             : Healing Surge (id=8004) [Spell Family (11)] 
@@ -255,7 +255,7 @@ Spell Level      : 7
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Shaman Healing Surge Crit Chance (38501), Tidal Waves (53390), Healing Trance (60515), Mastery: Deep Healing (77226), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Temporal Maelstrom (105869), Lucidity (137326), Maelstrom Power Increase (190900), Spiritual Healing (198296), Lord of Storms (207092), Pull of the Sea (207118)
+Affecting spells : Shaman Healing Surge Crit Chance (38501), Tidal Waves (53390), Healing Trance (60515), Mastery: Deep Healing (77226), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Temporal Maelstrom (105869), Lucidity (137326), Maelstrom Power Increase (190900), Spiritual Healing (198296), Lord of Storms (207092), Pull of the Sea (207118), Pull of the Sea (210029), Pull of the Sea (210030), Pull of the Sea (210031), Pull of the Sea (210032), Pull of the Sea (210033)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -274,7 +274,7 @@ Resource         : 10 - 100 Maelstrom
 Spell Level      : 3
 Range            : 30 yards
 GCD              : 1.5 seconds
-Affecting spells : Elemental Focus (16246), Flurry (16282), Elemental Reach (29000), Shaman Shock Range Bonus (32973), Elemental Fury (60188), Ascendance (114050), Windstrike (115356), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Earth Surge (189797), Earthen Attunement (191598), Lightning Rod (197209), Telluric Currents (202327), Pull of the Sea (207118), 
+Affecting spells : Elemental Focus (16246), Flurry (16282), Elemental Reach (29000), Shaman Shock Range Bonus (32973), Elemental Fury (60188), Ascendance (114050), Windstrike (115356), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Earth Surge (189797), Earthen Attunement (191598), Lightning Rod (197209), Telluric Currents (202327), Pull of the Sea (207118), Pull of the Sea (210029), Pull of the Sea (210030), Pull of the Sea (210031), Pull of the Sea (210032), Pull of the Sea (210033), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -488,7 +488,6 @@ Class            : Shaman
 School           : Nature
 Spell Level      : 32
 Cooldown         : 1800 seconds
-Affecting spells : Glyph of Far Sight (58059)
 Attributes       : ......x. ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -908,7 +907,7 @@ Spell Level      : 5
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 45 seconds
-Affecting spells : Elemental Focus (16246), Elemental Reach (29000), Elemental Fury (60188), Glyph of Thunderstorm (62132), Elemental Discharge (144999)
+Affecting spells : Elemental Focus (16246), Elemental Reach (29000), Elemental Fury (60188), Elemental Discharge (144999)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -922,7 +921,7 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 300 | Radius: 0 - 10 yards
 #3 (id=43817)    : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -40 | Scaled Value: -40 | Radius: 0 - 10 yards
-Description      : Calls down a bolt of lightning, dealing $s1 Nature damage to all enemies within $A1 yards, reducing their movement speed by $s3% for $d$?s62132[][, and knocking them back from the Shaman]. This spell is usable while stunned.
+Description      : Calls down a bolt of lightning, dealing $s1 Nature damage to all enemies within $A1 yards, reducing their movement speed by $s3% for $d. This spell is usable while stunned.
 Tooltip          : Movement speed reduced by $s3%.
 
 Name             : Lava Burst (id=51505) [Spell Family (11)] 
@@ -1087,44 +1086,6 @@ Description      : $@spelldesc51564
 Tooltip          : Cast time of next Healing Wave reduced by $w1%.
 Critical effect chance of next Healing Surge increased by $w2%.
 
-Name             : Glyph of Lava Lash (Enhancement) (id=55444) [Spell Family (11), Passive, Hidden] 
-Class            : Shaman
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=48388)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Lava Lash (60103)
-#2 (id=48389)    : None (0)
-                   Base Value: 1 | Scaled Value: 1
-                   Affected Spells: Mana Spring (24853)
-Description      : Your Lava Lash ability no longer spreads Flame Shock to nearby targets.
-
-Name             : Glyph of the Lakestrider (id=55448) [Spell Family (11), Passive, Hidden] 
-Class            : Shaman
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=48396)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Spore Cloud (32642), Lightning Shield (192106), Lightning Shield (192109)
-#2 (id=48397)    : None (0)
-                   Base Value: 1 | Scaled Value: 1
-                   Affected Spells: Mana Spring (24853)
-Description      : You automatically gain Water Walking while you are in Ghost Wolf form.
-
 Name             : Telluric Currents (Restoration) (id=55453) [Spell Family (11), Passive] 
 Class            : Restoration Shaman
 School           : Physical
@@ -1279,55 +1240,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Disrupts the target's concentration with a burst of wind, interrupting spellcasting and preventing any spell in that school from being cast for $d.
 
-Name             : Glyph of Totemic Encirclement (id=58057) [Spell Family (11), Passive, Hidden] 
-Class            : Shaman
-School           : Physical
-Proc Chance      : 100%
-Proc Flags       : ........ ..x.x.x. x....... ........ 
-                 : AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=51361)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 5
-Description      : When you cast a totem spell, you also place unempowered totems for any elements that are not currently active.  These totems have $s1 health and produce no other effects.
-
-Name             : Glyph of Astral Recall (id=58058) [Spell Family (11), Passive, Hidden] 
-Class            : Shaman
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=51362)    : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
-                   Base Value: -300000 | Scaled Value: -300000 | Misc Value: 11
-Description      : Reduces the cooldown of your Astral Recall spell by ${$m1/-60000} minutes.
-
-Name             : Glyph of Far Sight (id=58059) [Spell Family (11), Passive, Hidden] 
-Class            : Shaman
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=51363)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5
-                   Affected Spells: Reincarnation (20608)
-Description      : Your Far Sight spell may be used indoors.
-
 Name             : Glyph of the Spectral Wolf (id=58135) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
 School           : Physical
@@ -1360,6 +1272,7 @@ Description      : Cooldown of your Astral Recall spell reduced by ${$58058m1/-6
 Name             : Spectral Wolf (id=58261) 
 Class            : Shaman
 School           : Physical
+Cast Time        : 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1369,6 +1282,7 @@ Attributes       : ........ x....... ........ ....x...   ........ ........ .x...
 Effects          :
 #1 (id=51596)    : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 471
+Description      : $@spelldesc58135
 
 Name             : Far Sight (id=58263) 
 Class            : Shaman
@@ -1495,7 +1409,7 @@ Resource         : 30 Maelstrom
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Flurry (16282), Glyph of Lava Lash (55444), Item - Shaman T14 Enhancement 2P Bonus (123132), Forged in Lava (198236), Lava Dredger (198933)
+Affecting spells : Flurry (16282), Item - Shaman T14 Enhancement 2P Bonus (123132), Forged in Lava (198236), Lava Dredger (198933)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1539,7 +1453,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 18 seconds
 Charges          : 1 (6 seconds cooldown)
-Affecting spells : Healing Trance (60515), Mastery: Deep Healing (77226), Spiritual Stimulus (105763), Lucidity (137326), Item - Shaman T18 Restoration 2P Bonus (185873), Torrent (200072), Pull of the Sea (207118), 
+Affecting spells : Healing Trance (60515), Mastery: Deep Healing (77226), Spiritual Stimulus (105763), Lucidity (137326), Item - Shaman T18 Restoration 2P Bonus (185873), Torrent (200072), Pull of the Sea (207118), Pull of the Sea (210029), Pull of the Sea (210030), Pull of the Sea (210031), Pull of the Sea (210032), Pull of the Sea (210033), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -1571,7 +1485,7 @@ Effects          :
 Name             : Earthquake Totem (id=61882) [Spell Family (11)] 
 Class            : Elemental Shaman
 School           : Nature
-Resource         : 80 Maelstrom
+Resource         : 40 Maelstrom
 Spell Level      : 52
 Range            : 35 yards
 GCD              : 1.5 seconds
@@ -1621,25 +1535,6 @@ Effects          :
                    Base Value: -3000 | Scaled Value: -3000 | Misc Value: 11
                    Affected Spells: Chain Lightning (421), Chain Lightning (188443)
 Description      : Increases the damage of Lightning Bolt by $s1% and Chain Lightning by $s2%, reduces the casting time of Lightning Bolt by $/1000;S3 sec, and removes the cooldown from Chain Lightning.
-
-Name             : Glyph of Thunderstorm (Elemental) (id=62132) [Spell Family (11), Passive, Hidden] 
-Class            : Shaman
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=56111)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 12
-                   Affected Spells: Thunderstorm (51490)
-#2 (id=56112)    : None (0)
-                   Base Value: 1 | Scaled Value: 1
-                   Affected Spells: Mana Spring (24853)
-Description      : Removes the knockback effect from your Thunderstorm spell.
 
 Name             : Thunderstorm (id=62133) 
 Class            : Shaman
@@ -1922,7 +1817,7 @@ Spell Level      : 56
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Tidal Waves (53390), Healing Trance (60515), Mastery: Deep Healing (77226), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Temporal Maelstrom (105869), Item - Shaman T14 Restoration 2P Bonus (123134), Lucidity (137326), Lord of Storms (207092), Pull of the Sea (207118)
+Affecting spells : Tidal Waves (53390), Healing Trance (60515), Mastery: Deep Healing (77226), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Temporal Maelstrom (105869), Item - Shaman T14 Restoration 2P Bonus (123134), Lucidity (137326), Lord of Storms (207092), Pull of the Sea (207118), Pull of the Sea (210029), Pull of the Sea (210030), Pull of the Sea (210031), Pull of the Sea (210032), Pull of the Sea (210033)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1932,7 +1827,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=68093)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.50000 | Chain Multiplier: 0.2
-Description      : A slow but efficient wave of healing energy that restores $s1 of a friendly targetâ€™s health.
+Description      : A slow but efficient wave of healing energy that restores $s1 of a friendly target’s health.
 
 Name             : Earthquake (id=77478) [Spell Family (11)] 
 Class            : Shaman
@@ -2489,7 +2384,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ ...x.
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=128512)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.20000 | Radius: 0 - 40 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.60000 | Radius: 0 - 40 yards
 Description      : Heals injured allies.
 
 Name             : Player Damage Reduction (id=115043) [Passive, Hidden] 
@@ -3175,21 +3070,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 12
 Description      : You summon a rain storm of frogs at your targeted location.
 
-Name             : Glyph of Spirit Wolf (id=147770) [Spell Family (11), Passive, Hidden] 
-Class            : Shaman
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=200648)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 12
-Description      : Ghost Wolf can be now be used while you are a ghost.
-
 Name             : Glyph of the Flaming Serpent (id=147772) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
 School           : Physical
@@ -3292,7 +3172,7 @@ Attributes       : ........ x....... ........ ....x...   ........ ........ .x...
 Effects          :
 #1 (id=201203)   : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1090
-Description      : $@spelldesc63279
+Description      : $@spelldesc147783
 
 Name             : Lingering Ancestors (id=148080) 
 Class            : Shaman
@@ -3391,6 +3271,47 @@ Effects          :
 #1 (id=201249)   : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1097
 Description      : $@spelldesc63279
+
+Name             : Adaptation (id=152244) [Passive] 
+Class            : Hunter, Death Knight, Shaman
+School           : Physical
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=210781)   : Apply Aura (6) | Unknown effect sub type (451)
+                   Base Value: 0 | Scaled Value: 0
+Description      : Increases the effect of your pet's Combat Experience to $156843m2% increased damage. Your pet now gains the following abilities, regardless of its active spec:
+|cFFFFFFFF
+Spiked Collar
+Roar of Sacrifice
+Cornered
+Boar's Speed
+Last Stand
+Blood of the Rhino
+Great Stamina|r
+
+Name             : Combat Experience (id=156843) [Spell Family (9), Passive] 
+Class            : Ferocity Tenacity Hunter, Death Knight, Shaman Pet
+School           : Physical
+Spell Level      : 1
+Attributes       : ....x.x. x....... ..x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=218485)   : Apply Aura (6) | Unknown effect sub type (214)
+                   Base Value: 2000 | Scaled Value: 2000
+#2 (id=218486)   : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 70 | Scaled Value: 70 | Misc Value: 0x7f
+Description      : Increases all damage done by your pet by $s2%.
 
 Name             : Cloudburst Totem (id=157153) [Spell Family (11)] 
 Class            : Shaman
@@ -3531,24 +3452,6 @@ Effects          :
 #2 (id=306466)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | Radius: 0 - 40 yards
 Description      : $@spelldesc157153
-
-Name             : Glyph of Ghostly Speed (id=159642) [Spell Family (11), Passive, Hidden] 
-Class            : Shaman
-School           : Physical
-Stance Mask      : 0x00008000
-Attributes       : ....x.xx x......x ........ ........   ...x...x ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ....x...   ........ .x...... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=223642)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 60 | Scaled Value: 60
-Description      : Ghost Wolf grants an additional $s1% movement speed.  This movement speed bonus will not be granted if Ghost Wolf is activated while in combat.
-
-This effect is disabled indoors and in battlegrounds and arenas and cannot be combined with other speed increases.
 
 Name             : Ghostly Speed (id=159865) 
 Class            : Shaman
@@ -3843,6 +3746,7 @@ Description      : Your Ascendance form now appears as an elementally enhanced v
 Name             : Ascendance (id=186217) 
 Class            : Shaman
 School           : Physical
+Cast Time        : 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3852,7 +3756,7 @@ Attributes       : ........ x....... ........ ....x...   ........ ........ .x...
 Effects          :
 #1 (id=271109)   : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1215
-Description      : $@spelldesc63279
+Description      : $@spelldesc186198
 
 Name             : Maelstrom (id=187828) [Passive, Hidden] 
 Class            : Elemental Enhancement Shaman
@@ -3876,7 +3780,7 @@ Resource         : 0 - 15 Maelstrom
 Spell Level      : 1
 Range            : 30 yards
 GCD              : 1.5 seconds
-Affecting spells : Elemental Focus (16246), Elemental Reach (29000), Telluric Currents (55453), Elemental Fury (60188), Shamanism (62099), Spiritwalker's Grace (79206), Temporal Maelstrom (105869), Windstrike (115356), Item - Shaman T14 Elemental 2P Bonus (123123), Lucidity (137326), Elemental Discharge (144999), Lightning Surge (189796), Call the Thunder (191493), Fire Empowered (193774), Lightning Rod (197209), Stormkeeper (205495), Lord of Storms (207092)
+Affecting spells : Elemental Focus (16246), Elemental Reach (29000), Telluric Currents (55453), Elemental Fury (60188), Shamanism (62099), Spiritwalker's Grace (79206), Temporal Maelstrom (105869), Windstrike (115356), Item - Shaman T14 Elemental 2P Bonus (123123), Lucidity (137326), Elemental Discharge (144999), Lightning Surge (189796), Call the Thunder (191493), Fire Empowered (193774), Lightning Rod (197209), Stormkeeper (205495), Lord of Storms (207092), Tidal Feedback (207356)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3910,7 +3814,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards
 Description      : Attack all enemies in front of you, dealing $sw1 damage.  
 
-If you hit more than 1 target you enhance both weapons with Lightning, causing Stormstrike and Lava Lash to deal an additional $195592sw1 damage to all targets in front of you.  Lasts $187878d.  
+If you hit at least 2 targets, you enhance both weapons with Lightning for $187878d, causing Stormstrike and Lava Lash to deal an additional $195592sw1 damage to all targets in front of you.  
 
 Name             : Crash Lightning (id=187878) [Spell Family (11)] 
 Class            : Shaman
@@ -3974,7 +3878,7 @@ Spell Level      : 7
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Affecting spells : Shaman Healing Surge Crit Chance (38501), Tidal Waves (53390), Healing Trance (60515), Mastery: Deep Healing (77226), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Temporal Maelstrom (105869), Lucidity (137326), Maelstrom Power Increase (190900), Spiritual Healing (198296), Lord of Storms (207092), Pull of the Sea (207118)
+Affecting spells : Shaman Healing Surge Crit Chance (38501), Tidal Waves (53390), Healing Trance (60515), Mastery: Deep Healing (77226), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Temporal Maelstrom (105869), Lucidity (137326), Maelstrom Power Increase (190900), Spiritual Healing (198296), Lord of Storms (207092), Pull of the Sea (207118), Pull of the Sea (210029), Pull of the Sea (210030), Pull of the Sea (210031), Pull of the Sea (210032), Pull of the Sea (210033)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4021,7 +3925,7 @@ Range            : 30 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
-Affecting spells : Elemental Focus (16246), Elemental Reach (29000), Telluric Currents (55453), Elemental Fury (60188), Shamanism (62099), Spiritwalker's Grace (79206), Temporal Maelstrom (105869), Windstrike (115356), Item - Shaman T14 Elemental 2P Bonus (123123), Lucidity (137326), Elemental Discharge (144999), Lightning Surge (189796), Call the Thunder (191493), Fire Empowered (193774), Lightning Rod (197209), Stormkeeper (205495), Lord of Storms (207092)
+Affecting spells : Elemental Focus (16246), Elemental Reach (29000), Telluric Currents (55453), Elemental Fury (60188), Shamanism (62099), Spiritwalker's Grace (79206), Temporal Maelstrom (105869), Windstrike (115356), Item - Shaman T14 Elemental 2P Bonus (123123), Lucidity (137326), Elemental Discharge (144999), Lightning Surge (189796), Call the Thunder (191493), Fire Empowered (193774), Lightning Rod (197209), Stormkeeper (205495), Lord of Storms (207092), Tidal Feedback (207356)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4065,8 +3969,8 @@ Resource         : 0 - 20 Maelstrom
 Spell Level      : 10
 Range            : 30 yards
 GCD              : 1.5 seconds
-Duration         : 10 seconds
-Affecting spells : Flurry (16282), Elemental Reach (29000), Shaman Shock Range Bonus (32973), Telluric Currents (55453), Elemental Fury (60188), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Elemental Bellows (184919), Searing Shocks (191499), Path of Flame (201909), Pull of the Sea (207118), 
+Duration         : 15 seconds
+Affecting spells : Flurry (16282), Elemental Reach (29000), Shaman Shock Range Bonus (32973), Telluric Currents (55453), Elemental Fury (60188), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Elemental Bellows (184919), Searing Shocks (191499), Path of Flame (201909), Pull of the Sea (207118), Pull of the Sea (210029), Pull of the Sea (210030), Pull of the Sea (210031), Pull of the Sea (210032), Pull of the Sea (210033), 
 Attributes       : ........ ........ x.x..... ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4080,7 +3984,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.43750
 Description      : Sears the target with fire, causing $s1 Fire damage and then an additional $s2 Fire damage every $t2 sec.
 
-Lasts 10 to 30 sec based on Maelstrom spent.
+Lasts 15 to 35 sec based on Maelstrom spent.
 Tooltip          : Suffering $w2 Fire damage every $t2 sec.
 
 Name             : Chain Lightning (id=188443) [Spell Family (11)] 
@@ -4090,7 +3994,7 @@ Spell Level      : 28
 Range            : 30 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Affecting spells : Elemental Focus (16246), Elemental Reach (29000), Elemental Fury (60188), Shamanism (62099), Spiritwalker's Grace (79206), Temporal Maelstrom (105869), Ascendance (114050), Windstrike (115356), Lucidity (137326), Elemental Discharge (144999), Electric Discharge (191577), Fire Empowered (193774), Lightning Rod (197209), Stormkeeper (205495)
+Affecting spells : Elemental Focus (16246), Elemental Reach (29000), Elemental Fury (60188), Shamanism (62099), Spiritwalker's Grace (79206), Temporal Maelstrom (105869), Ascendance (114050), Windstrike (115356), Lucidity (137326), Elemental Discharge (144999), Electric Discharge (191577), Fire Empowered (193774), Lightning Rod (197209), Stormkeeper (205495), Unbreakable Chains (207348)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4157,7 +4061,7 @@ Range            : 25 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 6 seconds
-Affecting spells : Flurry (16282), Elemental Reach (29000), Shaman Shock Range Bonus (32973), Telluric Currents (55453), Elemental Fury (60188), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Elemental Bellows (184919), Searing Shocks (191499), Path of Flame (201909), Pull of the Sea (207118), 
+Affecting spells : Flurry (16282), Elemental Reach (29000), Shaman Shock Range Bonus (32973), Telluric Currents (55453), Elemental Fury (60188), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Elemental Bellows (184919), Searing Shocks (191499), Path of Flame (201909), Pull of the Sea (207118), Pull of the Sea (210029), Pull of the Sea (210030), Pull of the Sea (210031), Pull of the Sea (210032), Pull of the Sea (210033), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4669,7 +4573,7 @@ Spell Level      : 8
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 60 seconds
-Affecting spells : Energized Shield (24499), Shaman Lightning Shield Bonus (33020), Glyph of the Lakestrider (55448), Elemental Fury (60188), Windstrike (115356), Lucidity (137326), Elemental Discharge (144999)
+Affecting spells : Energized Shield (24499), Shaman Lightning Shield Bonus (33020), Elemental Fury (60188), Windstrike (115356), Lucidity (137326), Elemental Discharge (144999)
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ xx..x... ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4680,7 +4584,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=281802)   : Apply Aura (6) | Periodic Trigger Spell: Lightning Shield every 0.5 seconds (23)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 192109
-Description      : Surround yourself with a shield of lighting for $d which deals $192109m damage to a random enemy within $192109r yards.
+Description      : Surround yourself with a shield of lighting for $d which deals $192109m damage to a random enemy within $192109r yards every $t1 sec.
 Tooltip          : Deals Nature damage to attackers.
 Variables        : $mult1=$?s16261[${1.05}][${1.00}]
 $mult2=$?s16290[${1.10}][${$<mult1>}]
@@ -4692,7 +4596,7 @@ Class            : Shaman
 School           : Nature
 Spell Level      : 8
 Range            : 10 yards
-Affecting spells : Energized Shield (24499), Shaman Lightning Shield Bonus (33020), Glyph of the Lakestrider (55448), Elemental Fury (60188), Windstrike (115356), Lucidity (137326), Elemental Discharge (144999)
+Affecting spells : Energized Shield (24499), Shaman Lightning Shield Bonus (33020), Elemental Fury (60188), Windstrike (115356), Lucidity (137326), Elemental Discharge (144999)
 Triggered by     : Lightning Shield (192106)
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ xx..x... ........ 
@@ -4762,7 +4666,7 @@ Effects          :
 #1 (id=282019)   : Apply Aura (6) | Add Flat Modifier: Stack Amount (107)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 4
                    Affected Spells: Stormfury (201846)
-Description      : When Stormfury is activated, you now gain 2 Stormstrikes which are cost 50% Maelstrom and trigger no cooldown.
+Description      : Stormfury now affects the next ${1+$m1} Stormstrikes.
 
 Name             : Elemental Fusion (id=192235) [Spell Family (11), Passive] 
 Class            : Shaman
@@ -5099,7 +5003,7 @@ Spell Level      : 26
 Range            : 25 yards
 GCD              : 1 seconds
 Charges          : 1 (6 seconds cooldown)
-Affecting spells : Elemental Focus (16246), Flurry (16282), Elemental Reach (29000), Shaman Shock Range Bonus (32973), Elemental Fury (60188), Ascendance (114050), Windstrike (115356), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Earth Surge (189797), Earthen Attunement (191598), Lightning Rod (197209), Telluric Currents (202327), Pull of the Sea (207118), 
+Affecting spells : Elemental Focus (16246), Flurry (16282), Elemental Reach (29000), Shaman Shock Range Bonus (32973), Elemental Fury (60188), Ascendance (114050), Windstrike (115356), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Earth Surge (189797), Earthen Attunement (191598), Lightning Rod (197209), Telluric Currents (202327), Pull of the Sea (207118), Pull of the Sea (210029), Pull of the Sea (210030), Pull of the Sea (210031), Pull of the Sea (210032), Pull of the Sea (210033), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5143,7 +5047,7 @@ Spell Level      : 26
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
-Affecting spells : Elemental Focus (16246), Flurry (16282), Elemental Reach (29000), Shaman Shock Range Bonus (32973), Elemental Fury (60188), Ascendance (114050), Windstrike (115356), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Earth Surge (189797), Earthen Attunement (191598), Lightning Rod (197209), Telluric Currents (202327), Pull of the Sea (207118), 
+Affecting spells : Elemental Focus (16246), Flurry (16282), Elemental Reach (29000), Shaman Shock Range Bonus (32973), Elemental Fury (60188), Ascendance (114050), Windstrike (115356), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Earth Surge (189797), Earthen Attunement (191598), Lightning Rod (197209), Telluric Currents (202327), Pull of the Sea (207118), Pull of the Sea (210029), Pull of the Sea (210030), Pull of the Sea (210031), Pull of the Sea (210032), Pull of the Sea (210033), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5414,7 +5318,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=289629)   : School Damage: flamestrike (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.30000 | Radius: 11 yards
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 5.00000 | Radius: 11 yards
 #2 (id=290614)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Radius: 11 yards
 #3 (id=290630)   : Dummy (3)
@@ -5525,7 +5429,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=290979)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 36
-Description      : Rockbiter now also enhances your weapon, increasing your Attack Power by $202004s1%.
+Description      : Rockbiter now also enhances your weapon, increasing your Attack Power by $202004s1% for $202004d.
 
 Name             : Wellspring (id=197995) [Spell Family (11)] 
 Class            : Shaman
@@ -5558,7 +5462,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=290989)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.00000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.00000
 Description      : $@spelldesc146099
 Tooltip          : $@spellaura146099
 
@@ -5594,7 +5498,7 @@ GCD              : 1 seconds
 Duration         : 15 seconds
 Cooldown         : 120 seconds
 Affecting spells : Lucidity (137326), Path of Elements (201910)
-Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ .x...... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5809,6 +5713,7 @@ Name             : Unleash Lava (id=199053) [Spell Family (11)]
 Class            : Shaman
 School           : Fire
 Range            : 100 yards
+Velocity         : 10 yards/sec
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5817,22 +5722,23 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=292917)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.00000
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.00000
 Description      : $@spelldesc198736
 
 Name             : Unleash Lightning (id=199054) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
 Range            : 100 yards
+Velocity         : 1.2 yards/sec
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ....x... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=292919)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.00000
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.00000
 Description      : $@spelldesc198736
 
 Name             : Unleash Doom (id=199055) [Spell Family (11)] 
@@ -6065,7 +5971,7 @@ Effects          :
                    Affected Spells: Fire Elemental (188592), Storm Elemental (192249), Fire Elemental (198067), Earth Elemental (198103)
 Description      : The cooldown on your Summon Elementals spells is reduced by ${$s1/-1000} seconds.
 
-Name             : Rockbiter (id=202004) [Spell Family (11)] 
+Name             : Landslide (id=202004) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
 Spell Level      : 10
@@ -6110,6 +6016,53 @@ While the Spirits are active, your Haste is increased by $190185s2% and you gene
 
 Replaces Feral Spirit.
 Variables        : $percent=$?s63271[${$58877m1*1.4}][${$58877m1}]
+
+Name             : Stomp (id=202044) [Spell Family (11)] 
+Class            : Shaman
+School           : Nature
+Spell Level      : 20
+Range            : 5 yards
+GCD              : 1.5 seconds
+Duration         : 3 seconds
+Cooldown         : 14 seconds
+Attributes       : ....x... ........ x.x..... ........   .......x .x...... ........ ...x.... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=297755)   : School Damage: nature (2)
+                   Base Value: 1 | Scaled Value: 1 | Radius: 0 - 8 yards
+#2 (id=297756)   : Apply Aura (6) | Taunt (11)
+                   Base Value: 1 | Scaled Value: 1 | Radius: 0 - 8 yards
+Description      : Shakes the ground with thundering force, doing ${$<damage>} Nature damage to all enemies within $A1 yards, and Provoking them. This ability causes a moderate amount of additional threat.
+Variables        : $ce=$?s152244[${1.85}][${1.5}]
+$damage=${$<ce>*($RAP*0.250)}
+
+Name             : Feral Swipe (id=202045) [Spell Family (11)] 
+Class            : Shaman
+School           : Physical
+Spell Level      : 20
+Range            : 5 yards
+GCD              : 1.5 seconds
+Duration         : 10 seconds
+Cooldown         : 3 seconds
+Stacks           : 15 maximum
+Proc Chance      : 101%
+Attributes       : ....x... ........ x.x..... ........   .......x .x...... ........ ...x.... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=297757)   : School Damage: physical (2)
+                   Base Value: 1 | Scaled Value: 1
+#2 (id=297758)   : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.62000
+Description      : Swipe at the target, causing $s1 Physical damage, and an additional $o2 Bleed damage over $d.
+Tooltip          : Bleeding for $o2 damage.
 
 Name             : Maelstrom Totem (id=202188) [Spell Family (11)] 
 Class            : Shaman
@@ -6167,7 +6120,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=298005)   : Summon (28)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 102402 | Misc Value 2: 0xeac
+                   Base Value: 33 | Scaled Value: 33 | Misc Value: 102402 | Misc Value 2: 0xeac
 Description      : Summons an Earth Totem with ${$m1*$MHP/100} health at the feet of the caster for $d.  When the caster is struck by a melee attack within $202227a1 yards of the totem, the totem Taunts the attacker.
 
 Any enemy that attacks the Stoneclaw Totem takes $202242s1% increased damage from the caster for $d.
@@ -6255,7 +6208,7 @@ Resource         : 10 - 100 Maelstrom
 Spell Level      : 3
 Range            : 30 yards
 GCD              : 1.5 seconds
-Affecting spells : Elemental Focus (16246), Flurry (16282), Elemental Reach (29000), Shaman Shock Range Bonus (32973), Elemental Fury (60188), Ascendance (114050), Windstrike (115356), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Earth Surge (189797), Earthen Attunement (191598), Lightning Rod (197209), Telluric Currents (202327), Pull of the Sea (207118), 
+Affecting spells : Elemental Focus (16246), Flurry (16282), Elemental Reach (29000), Shaman Shock Range Bonus (32973), Elemental Fury (60188), Ascendance (114050), Windstrike (115356), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Earth Surge (189797), Earthen Attunement (191598), Lightning Rod (197209), Telluric Currents (202327), Pull of the Sea (207118), Pull of the Sea (210029), Pull of the Sea (210030), Pull of the Sea (210031), Pull of the Sea (210032), Pull of the Sea (210033), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6276,7 +6229,7 @@ Spell Level      : 10
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 30 seconds
-Affecting spells : Flurry (16282), Elemental Reach (29000), Shaman Shock Range Bonus (32973), Telluric Currents (55453), Elemental Fury (60188), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Elemental Bellows (184919), Searing Shocks (191499), Path of Flame (201909), Pull of the Sea (207118), 
+Affecting spells : Flurry (16282), Elemental Reach (29000), Shaman Shock Range Bonus (32973), Telluric Currents (55453), Elemental Fury (60188), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Elemental Bellows (184919), Searing Shocks (191499), Path of Flame (201909), Pull of the Sea (207118), Pull of the Sea (210029), Pull of the Sea (210030), Pull of the Sea (210031), Pull of the Sea (210032), Pull of the Sea (210033), 
 Triggered by     : Lava Shock (206442)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

@@ -17,7 +17,7 @@ race=troll
 spec=shadow
 role=spell
 position=back
-glyphs=mind_flay/fade/sha
+#glyphs=mind_flay/fade/sha
 head=demon_princes_ascendant_crown,id=124159,bonus_id=566
 neck=vial_of_immiscible_liquid,id=124212,bonus_id=566,enchant=gift_of_mastery
 shoulders=pious_mantle,id=124178,bonus_id=566
@@ -96,7 +96,7 @@ race=draenei
 spec=holy
 role=spell
 position=back
-glyphs=smite/holy_fire/inquisitor
+#glyphs=smite/holy_fire/inquisitor
 #save=Priest_Holy_T18H_Dmg.simc
 
 # Discipline Heal
@@ -107,7 +107,7 @@ race=draenei
 spec=discipline
 role=heal
 position=back
-glyphs=prayer_of_mending/circle_of_healing/deep_wells
+#glyphs=prayer_of_mending/circle_of_healing/deep_wells
 #save=Priest_Discipline_T18H_Heal.simc
 
 # Discipline Dmg
@@ -118,5 +118,5 @@ race=draenei
 spec=discipline
 role=spell
 position=back
-glyphs=smite/holy_fire/inquisitor
+#glyphs=smite/holy_fire/inquisitor
 #save=Priest_Discipline_T18H_Dmg.simc

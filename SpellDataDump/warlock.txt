@@ -22,9 +22,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 4277 | Misc Value 2: 0x41 | Radius: 100 yards
 #2 (id=87)       : Apply Aura (6) | Invisibility Detection (19)
                    Base Value: 0 | Scaled Value: 440 | Points Per Level: 5
-Description      : Summons an Eye of Kilrogg and binds your vision to it.  The eye $?s58081[flies very quickly][is stealthed and moves quickly] but is very fragile.$?s58081[
-
-If you cast Demonic Circle: Summon while controlling an Eye of Kilrogg, the circle will appear where the eye is located.][]
+Description      : Summons an Eye of Kilrogg and binds your vision to it.  The eye is stealthed and moves quickly but is very fragile.
 Tooltip          : Controlling Eye of Kilrogg.
 Detecting Invisibility.
 
@@ -98,7 +96,7 @@ Generates a Soul Shard when it deals damage.
 Tooltip          : Doomed to take $w1 Shadow damage.
 
 Name             : Shadow Bolt (id=686) [Spell Family (5)] 
-Class            : Warlock
+Class            : Demonology Warlock
 School           : Shadow
 Resource         : 6% Base Mana (66000 @Level 110)
 Spell Level      : 1
@@ -272,7 +270,6 @@ Spell Level      : 19
 Range            : 45 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Glyph of Health Funnel (56238)
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ........ 
                  : ...x.... ...x.... ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -291,7 +288,6 @@ Description      : Sacrifices ${$m3*6}% of your maximum health over $d to restor
 Tooltip          : Transferring Life.
 
 Name             : Agony (id=980) [Spell Family (5)] 
-Replaces         : Shadow Bolt (id=686)
 Class            : Affliction Warlock
 School           : Shadow
 Resource         : 3% Base Mana (33000 @Level 110)
@@ -301,7 +297,7 @@ GCD              : 1.5 seconds
 Duration         : 18 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
-Affecting spells : Unstable Affliction (30108), Glyph of Verdant Spheres (56241), Mastery: Potent Afflictions (77215), Item - Warlock T13 4P Bonus (Soulburn) (105787), Epidemic (184922), Writhe in Agony (196102), Inimitable Agony (199111), Perdition (199158)
+Affecting spells : Unstable Affliction (30108), Mastery: Potent Afflictions (77215), Item - Warlock T13 4P Bonus (Soulburn) (105787), Epidemic (184922), Writhe in Agony (196102), Inimitable Agony (199111), Perdition (199158)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -329,7 +325,7 @@ Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Duration         : 300 seconds
 Proc Chance      : 101%
-Affecting spells : Glyph of Enslave Demon (58107), Grimoire of Convert Demon (168800)
+Affecting spells : Grimoire of Convert Demon (168800)
 Attributes       : ........ ........ x....... ......x.   x....... ........ .x...... ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ...x.... ........ .....x..   ........ ........ ........ ........ 
@@ -352,7 +348,7 @@ GCD              : 1.5 seconds
 Velocity         : 1.5 yards/sec
 Duration         : 0.25 seconds
 Cooldown         : 180 seconds
-Affecting spells : Glyph of Hand of Gul'dan (56248), Demonic Servitude (152107)
+Affecting spells : Demonic Servitude (152107)
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -1012,7 +1008,6 @@ School           : Fire
 Spell Level      : 50
 Range            : 50000 yards
 Duration         : 2 seconds
-Affecting spells : Glyph of Hand of Gul'dan (56248)
 Triggered by     : Summon Infernal (1122), Summon Abyssal (112921)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -1069,7 +1064,7 @@ Class            : Warlock
 School           : Shadow
 Spell Level      : 72
 Range            : 50000 yards
-Affecting spells : Glyph of Hand of Gul'dan (56248), Seeds of Doom (199153)
+Affecting spells : Seeds of Doom (199153)
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   x....... .x...... ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ..x..... 
@@ -1118,7 +1113,6 @@ Effects          :
 Description      : $@spelldesc17877
 
 Name             : Incinerate (id=29722) [Spell Family (5)] 
-Replaces         : Shadow Bolt (id=686)
 Class            : Destruction Warlock
 School           : Fire
 Resource         : 6% Base Mana (66000 @Level 110)
@@ -1153,7 +1147,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Proc Chance      : 101%
-Affecting spells : Glyph of Falling Meteor (56247), Mastery: Potent Afflictions (77215), Epidemic (184922), Contagion (196105), Inherently Unstable (199152), Perdition (199158), Compound Interest (199281)
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Contagion (196105), Inherently Unstable (199152), Perdition (199158), Compound Interest (199281)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1478,99 +1472,6 @@ Damage increased by $s2% for each of your Affliction damage-over-time effects on
 
 |cFF777777(Right-Click to toggle)|r
 
-Name             : Glyph of Subtlety (Affliction) (id=56217) [Spell Family (5), Passive, Hidden] 
-Class            : Warlock
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=49241)    : Dummy (3)
-                   Base Value: -8000 | Scaled Value: -8000
-Description      : Your Soul Shards no longer float around you while out of combat.
-
-Name             : Glyph of Nightmares (id=56232) [Spell Family (5), Passive, Hidden] 
-Class            : Warlock
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=49259)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-Description      : Your Felsteed and Dreadsteed can cross water while running and leave a trail of flames.
-
-Name             : Glyph of Health Funnel (Affliction, Demonology) (id=56238) [Spell Family (5), Passive, Hidden] 
-Class            : Warlock
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=49265)    : Apply Aura (6) | Unknown effect sub type (332)
-                   Base Value: 114189 | Scaled Value: 114189
-                   Affected Spells: Health Funnel (755), Health Funnel (114189)
-Description      : Your Health Funnel instantly restores $114189s1% of your demon's health, but has a 10 sec. cooldown.
-
-Name             : Glyph of Shadow Bolt (Demonology) (id=56240) [Spell Family (5), Passive, Hidden] 
-Class            : Warlock
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=49267)    : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 686 | Misc Value 2: 0x27f72
-Description      : Splits your Shadow Bolt into three smaller bolts.
-
-Name             : Glyph of Verdant Spheres (Affliction, Destruction) (id=56241) [Spell Family (5), Passive, Hidden] 
-Class            : Warlock
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=49268)    : Dummy (3)
-                   Base Value: 4000 | Scaled Value: 4000
-                   Affected Spells: Agony (980)
-#2 (id=159201)   : Apply Aura (6) | Unknown effect sub type (396)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 14 | Trigger Spell: 117197
-#3 (id=159202)   : Apply Aura (6) | Unknown effect sub type (396)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 14 | Trigger Spell: 117197
-#4 (id=159203)   : Apply Aura (6) | Unknown effect sub type (396)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 14 | Trigger Spell: 117197
-#5 (id=159204)   : Apply Aura (6) | Unknown effect sub type (396)
-                   Base Value: 40 | Scaled Value: 40 | Misc Value: 14 | Trigger Spell: 117197
-#6 (id=159205)   : Apply Aura (6) | Unknown effect sub type (396)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Misc Value 2: 0x1 | Trigger Spell: 117197
-#7 (id=159206)   : Apply Aura (6) | Unknown effect sub type (396)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 14 | Misc Value 2: 0x1 | Trigger Spell: 117197
-#8 (id=159207)   : Apply Aura (6) | Unknown effect sub type (396)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 14 | Misc Value 2: 0x1 | Trigger Spell: 117197
-#9 (id=159208)   : Apply Aura (6) | Unknown effect sub type (396)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 14 | Misc Value 2: 0x1 | Trigger Spell: 117197
-Description      : $?c3[When you have a Burning Ember, it appears around your character as a Verdant Sphere.][Your Soul Shards are transformed into Verdant Spheres.]
-
 Name             : Glyph of Felguard (Demonology) (id=56246) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
 School           : Physical
@@ -1585,38 +1486,6 @@ Effects          :
 #1 (id=49273)    : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5
 Description      : Your Felguard will equip a random two-handed axe, mace, sword, or polearm from your backpack.
-
-Name             : Glyph of Falling Meteor (Demonology) (id=56247) [Spell Family (5), Passive, Hidden] 
-Class            : Warlock
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=49274)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 10
-                   Affected Spells: Unstable Affliction (30108)
-Description      : If you use Demonic Leap while falling, you slam into the ground rapidly and will not die from falling damage.
-
-Name             : Glyph of Hand of Gul'dan (Demonology) (id=56248) [Spell Family (5), Passive, Hidden] 
-Class            : Warlock
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=49275)    : Dummy (3)
-                   Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Summon Infernal (1122), Infernal Awakening (22703), Seed of Corruption (27285), Hand of Gul'dan (86040), Hand of Gul'dan (105174), Meteor Strike (171017), Meteor Strike (171018), Call Dreadstalkers (193332)
-Description      : Your Hand of Gul'dan can now be targeted at a location.
 
 Name             : Hand of Gul'dan (id=56268) 
 Class            : Warlock
@@ -1750,40 +1619,6 @@ Effects          :
 #1 (id=49565)    : Create Item (24)
                    Base Value: 1 | Scaled Value: 1
 
-Name             : Glyph of Unending Breath (id=58079) [Spell Family (5), Passive, Hidden] 
-Class            : Warlock
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=51385)    : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 12
-Description      : Increases the swim speed of targets affected by your Unending Breath spell by $58079s1%.
-
-Name             : Glyph of Eye of Kilrogg (id=58081) [Spell Family (5), Passive, Hidden] 
-Class            : Warlock
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=51387)    : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 23
-#2 (id=127212)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
-                   Base Value: -500 | Scaled Value: -500 | Misc Value: 3
-Description      : Your Eye of Kilrogg is no longer stealthed and can now place your Demonic Circle.  The casting Warlock must be within line of sight of the Eye of Kilrogg to place the Demonic Circle.
-
-In addition, the movement speed of your Eye of Kilrogg is increased by $s1% and allows it to fly in areas where flying mounts are enabled.
-
 Name             : Glyph of Soulwell (id=58094) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
 School           : Physical
@@ -1798,22 +1633,6 @@ Effects          :
 #1 (id=51401)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 29893 | Misc Value 2: 0x8561
 Description      : Your soulwell glows with an eerie light.
-
-Name             : Glyph of Enslave Demon (id=58107) [Spell Family (5), Passive, Hidden] 
-Class            : Warlock
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=51414)    : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 10
-                   Affected Spells: Enslave Demon (1098), Convert Demon (175984), Bribe (199740)
-Description      : Reduces the cast time of your Enslave Demon spell by $58107s1%.
 
 Name             : Unending Breath (id=58267) 
 Class            : Warlock
@@ -2113,7 +1932,6 @@ Name             : Hand of Gul'dan (id=86040) [Spell Family (5)]
 Class            : Warlock
 School           : Shadowflame
 Range            : 50000 yards
-Affecting spells : Glyph of Hand of Gul'dan (56248)
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   x....... ........ ........ ......x. 
                  : ........ ........ ........ .x......   ........ ..x..... ........ ..x..... 
@@ -2493,7 +2311,6 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 0.7 yards/sec
-Affecting spells : Glyph of Hand of Gul'dan (56248)
 Attributes       : ........ ........ x....... ........   .......x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ...x.... ........ ........   ........ ..x..... ........ ...x.... 
@@ -3160,27 +2977,6 @@ Effects          :
 Description      : Faded into the nether and unable to use another Demonic Gateway.
 Tooltip          : Faded into the nether and unable to use another Demonic Gateway.
 
-Name             : Health Funnel (id=114189) [Scaling Spell (11), Spell Family (5)] 
-Class            : Warlock
-School           : Shadow
-Resource         : 6 Health
-Spell Level      : 11
-Range            : 45 yards
-GCD              : 1.5 seconds
-Cooldown         : 10 seconds
-Affecting spells : Glyph of Health Funnel (56238)
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ...x.... ...x.... ........ .....x..   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .....x.. ........ ........ 
-                 : ........ ........ ........ ...x....   ........ ........ ........ ........ 
-                 : ........ ....x... .x...... x.......   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=127352)   : Direct Heal% (136)
-                   Base Value: 15 | Scaled Value: 15
-Description      : Instantly restores $s1% of your summoned Demon's maximum health.
-Tooltip          : Transferring Life.
-
 Name             : Player Damage Reduction (id=115043) [Passive, Hidden] 
 Class            : Death Knight, Shaman, Mage, Warlock, Monk
 School           : Physical
@@ -3667,21 +3463,6 @@ Always keep this effect active.
 
 |cFF777777(Right-Click to toggle)|r
 Tooltip          : Increases your threat generation while active.
-
-Name             : Glyph of Gateway Attunement (id=135557) [Spell Family (5), Passive, Hidden] 
-Class            : Warlock
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=177032)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3
-Description      : Demonic Gateways will automatically activate when you step near them.
 
 Name             : Gateway Attunement (id=135560) 
 Class            : Warlock
@@ -4318,21 +4099,6 @@ Effects          :
 #1 (id=220228)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 
-Name             : Glyph of Metamorphosis (Demonology) (id=159680) [Spell Family (5), Passive, Hidden] 
-Class            : Warlock
-School           : Physical
-Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=223741)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100
-Description      : When you activate Metamorphosis, you no longer transform into a demon, but instead grow demon wings on your normal form.
-
 Name             : Metamorphosis (Demonology) (id=159877) 
 Class            : Warlock
 School           : Physical
@@ -4476,7 +4242,6 @@ Spell Level      : 50
 Range            : 50000 yards
 Duration         : 2 seconds
 Cooldown         : 60 seconds
-Affecting spells : Glyph of Hand of Gul'dan (56248)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4498,7 +4263,6 @@ Spell Level      : 50
 Range            : 50000 yards
 Duration         : 3 seconds
 Cooldown         : 60 seconds
-Affecting spells : Glyph of Hand of Gul'dan (56248)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4713,7 +4477,6 @@ Class            : Warlock
 School           : Shadowflame
 Range            : 50000 yards
 Duration         : 12 seconds
-Affecting spells : Glyph of Hand of Gul'dan (56248)
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -5286,7 +5049,7 @@ Attributes       : ........ ........ ........ ........   ..x...x. ........ .....
 Effects          :
 #1 (id=288342)   : Apply Aura (6) | Periodic Trigger Spell: Channel Demonfire every 0.2 seconds (23)
                    Base Value: 15 | Scaled Value: 15 | Trigger Spell: 196449
-Description      : Launches $s1 bolts of felfire at Immolated enemies within $196449A1 yds, over $d. Each bolt deals $196448s1 Fire damage.
+Description      : Launches $s1 bolts of felfire at random Immolated enemies within $196449A1 yds, over $d. Each bolt deals $196448s1 Fire damage.
 
 Name             : Channel Demonfire (id=196448) [Spell Family (5)] 
 Class            : Warlock

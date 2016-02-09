@@ -4,7 +4,6 @@ race=orc
 role=attack
 position=ranged_back
 talents=0003113
-talent_override=lone_wolf,if=raid_event.adds.count>=3|enemies>1
 spec=marksmanship
 
 # This default action priority list is automatically created based on your character.
@@ -23,8 +22,6 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/exotic_munitions,ammo_type=poisoned,if=spell_targets.multi_shot<3
 actions.precombat+=/exotic_munitions,ammo_type=incendiary,if=spell_targets.multi_shot>=3
 actions.precombat+=/potion,name=draenic_agility
-actions.precombat+=/glaive_toss
-actions.precombat+=/focusing_shot
 
 # Executed every time the actor is available.
 
@@ -34,36 +31,6 @@ actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury
 actions+=/berserking
 actions+=/potion,name=draenic_agility,if=((buff.rapid_fire.up|buff.bloodlust.up)&(cooldown.stampede.remains<1))|target.time_to_die<=25
-actions+=/chimaera_shot
-actions+=/kill_shot
-actions+=/rapid_fire
-actions+=/stampede,if=buff.rapid_fire.up|buff.bloodlust.up|target.time_to_die<=25
-actions+=/call_action_list,name=careful_aim,if=buff.careful_aim.up
-actions+=/explosive_trap,if=spell_targets.explosive_trap_tick>1
-actions+=/a_murder_of_crows
-actions+=/dire_beast,if=cast_regen+action.aimed_shot.cast_regen<focus.deficit
-actions+=/glaive_toss
-actions+=/powershot,if=cast_regen<focus.deficit
-actions+=/barrage
-# Pool max focus for rapid fire so we can spam AimedShot with Careful Aim buff
-actions+=/steady_shot,if=focus.deficit*cast_time%(14+cast_regen)>cooldown.rapid_fire.remains
-actions+=/focusing_shot,if=focus.deficit*cast_time%(50+cast_regen)>cooldown.rapid_fire.remains&focus<100
-# Cast a second shot for steady focus if that won't cap us.
-actions+=/steady_shot,if=buff.pre_steady_focus.up&(14+cast_regen+action.aimed_shot.cast_regen)<=focus.deficit
-actions+=/multishot,if=spell_targets.multi_shot>6
-actions+=/aimed_shot,if=talent.focusing_shot.enabled
-actions+=/aimed_shot,if=focus+cast_regen>=85
-actions+=/aimed_shot,if=buff.thrill_of_the_hunt.react&focus+cast_regen>=65
-# Allow FS to over-cap by 10 if we have nothing else to do
-actions+=/focusing_shot,if=50+cast_regen-10<focus.deficit
-actions+=/steady_shot
-
-actions.careful_aim=glaive_toss,if=active_enemies>2
-actions.careful_aim+=/powershot,if=spell_targets.powershot>1&cast_regen<focus.deficit
-actions.careful_aim+=/barrage,if=spell_targets.barrage>1
-actions.careful_aim+=/aimed_shot
-actions.careful_aim+=/focusing_shot,if=50+cast_regen<focus.deficit
-actions.careful_aim+=/steady_shot
 
 head=lavalink_helm,id=109983
 neck=stormshot_choker,id=109950,enchant=gift_of_critical_strike
@@ -85,10 +52,9 @@ main_hand=bonetooth_longbow,id=110037,enchant=megawatt_filament
 # gear_ilvl=630.00
 # gear_agility=1907
 # gear_stamina=2465
-# gear_crit_rating=1308
-# gear_haste_rating=219
-# gear_mastery_rating=137
-# gear_multistrike_rating=552
+# gear_crit_rating=1144
+# gear_haste_rating=416
+# gear_mastery_rating=381
 # gear_versatility_rating=378
 # gear_armor=1111
 summon_pet=cat

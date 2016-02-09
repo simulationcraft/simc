@@ -13,7 +13,7 @@ race=troll
 spec=shadow
 role=spell
 position=back
-glyphs=mind_flay/fade/sha
+#glyphs=mind_flay/fade/sha
 head=hood_of_arcane_mystery,id=109970,bonus_id=524
 neck=magisters_chain,id=109954,bonus_id=524,enchant=gift_of_mastery
 shoulders=felflame_spaulders,id=109948,bonus_id=524

@@ -4,10 +4,6 @@ race=tauren
 role=attack
 position=back
 talents=0021021
-talent_override=bladestorm,if=raid_event.adds.count>=1|enemies>1
-talent_override=dragon_roar,if=raid_event.adds.count>=1|enemies>1
-talent_override=ravager,if=raid_event.adds.cooldown>=60&raid_event.adds.exists
-glyphs=unending_rage/raging_wind/heroic_leap
 spec=fury
 
 # This default action priority list is automatically created based on your character.
@@ -20,7 +16,6 @@ spec=fury
 
 actions.precombat=flask,type=greater_draenic_strength_flask
 actions.precombat+=/food,type=pickled_eel
-actions.precombat+=/stance,choose=battle
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_strength
@@ -31,17 +26,17 @@ actions=charge,if=debuff.charge.down
 actions+=/auto_attack
 # This is mostly to prevent cooldowns from being accidentally used during movement.
 actions+=/run_action_list,name=movement,if=movement.distance>5
-actions+=/berserker_rage,if=buff.enrage.down|(prev_gcd.bloodthirst&buff.raging_blow.stack<2)
+actions+=/berserker_rage,if=buff.enrage.down
 actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists
-actions+=/potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=30
+actions+=/potion,name=draenic_strength,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<=30
 # Skip cooldown usage if we can line them up with bladestorm on a large set of adds, or if movement is coming soon.
 actions+=/run_action_list,name=single_target,if=(raid_event.adds.cooldown<60&raid_event.adds.count>2&spell_targets.whirlwind=1)|raid_event.movement.cooldown<5
-actions+=/recklessness,if=(buff.bloodbath.up|cooldown.bloodbath.remains>25|!talent.bloodbath.enabled|target.time_to_die<15)&((talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled)&set_bonus.tier18_4pc
-actions+=/call_action_list,name=reck_anger_management,if=talent.anger_management.enabled&((talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled)&!set_bonus.tier18_4pc
-actions+=/call_action_list,name=reck_no_anger,if=!talent.anger_management.enabled&((talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled)&!set_bonus.tier18_4pc
-actions+=/avatar,if=buff.recklessness.up|cooldown.recklessness.remains>60|target.time_to_die<30
-actions+=/blood_fury,if=buff.bloodbath.up|!talent.bloodbath.enabled|buff.recklessness.up
-actions+=/berserking,if=buff.bloodbath.up|!talent.bloodbath.enabled|buff.recklessness.up
+actions+=/battle_cry,if=target.time_to_die<15)&((talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled)
+actions+=/call_action_list,name=reck_anger_management,if=talent.anger_management.enabled&((talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled)
+actions+=/call_action_list,name=reck_no_anger,if=!talent.anger_management.enabled&((talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled)
+actions+=/avatar,if=buff.battle_cry.up|cooldown.battle_cry.remains>60|target.time_to_die<30
+actions+=/blood_fury,if=buff.battle_cry.up
+actions+=/berserking,if=buff.battle_cry.up
 actions+=/arcane_torrent,if=rage<rage.max-40
 actions+=/call_action_list,name=two_targets,if=spell_targets.whirlwind=2
 actions+=/call_action_list,name=three_targets,if=spell_targets.whirlwind=3
@@ -49,78 +44,53 @@ actions+=/call_action_list,name=aoe,if=spell_targets.whirlwind>3
 actions+=/call_action_list,name=single_target
 
 actions.movement=heroic_leap
-actions.movement+=/charge,cycle_targets=1,if=debuff.charge.down
-# If possible, charge a target that will give rage. Otherwise, just charge to get back in range.
 actions.movement+=/charge
 # May as well throw storm bolt if we can.
 actions.movement+=/storm_bolt
 actions.movement+=/heroic_throw
 
-actions.single_target=bloodbath
-actions.single_target+=/recklessness,if=target.health.pct<20&raid_event.adds.exists
-actions.single_target+=/wild_strike,if=(rage>rage.max-20)&target.health.pct>20
-actions.single_target+=/bloodthirst,if=(!talent.unquenchable_thirst.enabled&(rage<rage.max-40))|buff.enrage.down|buff.raging_blow.stack<2
-actions.single_target+=/ravager,if=buff.bloodbath.up|(!talent.bloodbath.enabled&(!raid_event.adds.exists|raid_event.adds.in>60|target.time_to_die<40))
-actions.single_target+=/siegebreaker
-actions.single_target+=/execute,if=buff.sudden_death.react
+actions.single_target=battle_cry,if=target.health.pct<20&raid_event.adds.exists
+actions.single_target+=/bloodthirst,if=buff.enrage.down
 actions.single_target+=/storm_bolt
-actions.single_target+=/wild_strike,if=buff.bloodsurge.up
 actions.single_target+=/execute,if=buff.enrage.up|target.time_to_die<12
-actions.single_target+=/dragon_roar,if=buff.bloodbath.up|!talent.bloodbath.enabled
+actions.single_target+=/dragon_roar
 actions.single_target+=/raging_blow
-actions.single_target+=/wait,sec=cooldown.bloodthirst.remains,if=cooldown.bloodthirst.remains<0.5&rage<50
-actions.single_target+=/wild_strike,if=buff.enrage.up&target.health.pct>20
 actions.single_target+=/bladestorm,if=!raid_event.adds.exists
 actions.single_target+=/shockwave,if=!talent.unquenchable_thirst.enabled
-actions.single_target+=/impending_victory,if=!talent.unquenchable_thirst.enabled&target.health.pct>20
 actions.single_target+=/bloodthirst
 
-actions.two_targets=bloodbath
-actions.two_targets+=/ravager,if=buff.bloodbath.up|!talent.bloodbath.enabled
-actions.two_targets+=/dragon_roar,if=buff.bloodbath.up|!talent.bloodbath.enabled
+actions.two_targets=dragon_roar
 actions.two_targets+=/call_action_list,name=bladestorm
-actions.two_targets+=/bloodthirst,if=buff.enrage.down|rage<40|buff.raging_blow.down
-actions.two_targets+=/siegebreaker
+actions.two_targets+=/bloodthirst,if=buff.enrage.down|rage<40
 actions.two_targets+=/execute,cycle_targets=1
 actions.two_targets+=/raging_blow,if=buff.meat_cleaver.up|target.health.pct<20
 actions.two_targets+=/whirlwind,if=!buff.meat_cleaver.up&target.health.pct>20
-actions.two_targets+=/wild_strike,if=buff.bloodsurge.up
 actions.two_targets+=/bloodthirst
 actions.two_targets+=/whirlwind
 
-actions.three_targets=bloodbath
-actions.three_targets+=/ravager,if=buff.bloodbath.up|!talent.bloodbath.enabled
-actions.three_targets+=/call_action_list,name=bladestorm
-actions.three_targets+=/bloodthirst,if=buff.enrage.down|rage<50|buff.raging_blow.down
-actions.three_targets+=/raging_blow,if=buff.meat_cleaver.stack>=2
-actions.three_targets+=/siegebreaker
+actions.three_targets=call_action_list,name=bladestorm
+actions.three_targets+=/bloodthirst,if=buff.enrage.down|rage<50
+actions.three_targets+=/raging_blow,if=buff.meat_cleaver.up
 actions.three_targets+=/execute,cycle_targets=1
-actions.three_targets+=/dragon_roar,if=buff.bloodbath.up|!talent.bloodbath.enabled
+actions.three_targets+=/dragon_roar
 actions.three_targets+=/whirlwind,if=target.health.pct>20
 actions.three_targets+=/bloodthirst
-actions.three_targets+=/wild_strike,if=buff.bloodsurge.up
 actions.three_targets+=/raging_blow
 
-actions.aoe=bloodbath
-actions.aoe+=/ravager,if=buff.bloodbath.up|!talent.bloodbath.enabled
-actions.aoe+=/raging_blow,if=buff.meat_cleaver.stack>=3&buff.enrage.up
-actions.aoe+=/bloodthirst,if=buff.enrage.down|rage<50|buff.raging_blow.down
-actions.aoe+=/raging_blow,if=buff.meat_cleaver.stack>=3
+actions.aoe=raging_blow,if=buff.meat_cleaver.up&buff.enrage.up
+actions.aoe+=/bloodthirst,if=buff.enrage.down|rage<50
 actions.aoe+=/call_action_list,name=bladestorm
 actions.aoe+=/whirlwind
-actions.aoe+=/siegebreaker
-actions.aoe+=/execute,if=buff.sudden_death.react
-actions.aoe+=/dragon_roar,if=buff.bloodbath.up|!talent.bloodbath.enabled
+actions.aoe+=/dragon_roar
 actions.aoe+=/bloodthirst
-actions.aoe+=/wild_strike,if=buff.bloodsurge.up
 
 # oh god why
-actions.bladestorm=recklessness,sync=bladestorm,if=buff.enrage.remains>6&((talent.anger_management.enabled&raid_event.adds.in>45)|(!talent.anger_management.enabled&raid_event.adds.in>60)|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)
-actions.bladestorm+=/bladestorm,if=buff.enrage.remains>6&((talent.anger_management.enabled&raid_event.adds.in>45)|(!talent.anger_management.enabled&raid_event.adds.in>60)|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)
+actions.bladestorm=battle_cry,sync=bladestorm,if=buff.enrage.remains>4&(raid_event.adds.in>60|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)
+actions.bladestorm+=/bladestorm,if=buff.enrage.remains>4&(raid_event.adds.in>60|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)
 
-actions.reck_anger_management=recklessness,if=(target.time_to_die>140|target.health.pct<20)&(buff.bloodbath.up|!talent.bloodbath.enabled|target.time_to_die<15)
+actions.reck_anger_management=battle_cry,if=(target.time_to_die>140|target.health.pct<20)
 
-actions.reck_no_anger=recklessness,if=(target.time_to_die>190|target.health.pct<20)&(buff.bloodbath.up|!talent.bloodbath.enabled|target.time_to_die<15)
+actions.reck_no_anger=battle_cry,if=(target.time_to_die>190|target.health.pct<20)
 
 head=faceguard_of_iron_wrath,id=124334
 neck=choker_of_sneering_superiority,id=124219,enchant=gift_of_critical_strike
@@ -141,12 +111,11 @@ off_hand=fiendsbreath_warmace,id=124374,enchant=mark_of_the_thunderlord
 
 # Gear Summary
 # gear_ilvl=700.94
-# gear_strength=3500
+# gear_strength=3387
 # gear_stamina=4658
-# gear_crit_rating=1840
+# gear_crit_rating=1804
 # gear_haste_rating=761
-# gear_mastery_rating=1045
-# gear_multistrike_rating=759
+# gear_mastery_rating=1565
 # gear_armor=2278
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

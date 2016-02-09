@@ -11,7 +11,7 @@ race=tauren
 role=attack
 spec=fury
 talents=1121322
-glyphs=58098/58355/58370/123779/146969
+#glyphs=58098/58355/58370/123779/146969
 
 head=verdant_plate_crown,id=109986,bonus_id=524
 neck=goreclasp_choker,id=109963,bonus_id=524,enchant_id=5317
@@ -37,7 +37,7 @@ race=tauren
 role=attack
 spec=fury
 talents=1121322
-glyphs=58098/58355/58370/123779/146969
+#glyphs=58098/58355/58370/123779/146969
 
 head=verdant_plate_crown,id=109986,bonus_id=524
 neck=goreclasp_choker,id=109963,bonus_id=524,enchant_id=5317
@@ -63,7 +63,7 @@ race=tauren
 role=attack
 spec=arms
 talents=2321322
-glyphs=58098/58355/123779/146969
+#glyphs=58098/58355/123779/146969
 
 head=rivetsealed_casque,id=109989,bonus_id=524
 neck=goreclasp_choker,id=109963,bonus_id=524,enchant_id=5320
@@ -82,33 +82,6 @@ back=gonglu_strength_of_xuen,id=102249,upgrade=2,gem_id=115809,enchant_id=5310
 main_hand=steelforged_greataxe,id=116453,bonus_id=76/525,enchant_id=5330
 save=Warrior_Arms_T17P.simc
 
-warrior=Warrior_Gladiator_T17P
-level=100
-race=tauren
-role=attack
-position=back
-spec=protection
-talents=2133323
-glyphs=58098/58355/123779/159701
-
-head=incarnadine_greathelm,id=109985,bonus_id=524
-neck=choker_of_weeping_viscera,id=109969,bonus_id=524,enchant_id=5317
-shoulder=incarnadine_shoulderguard,id=109943,bonus_id=524
-chest=goldsteel_chestguard,id=109894,bonus_id=524
-waist=rivetsealed_waistplate,id=109841,bonus_id=524
-legs=incarnadine_legplates,id=109818,bonus_id=524
-feet=incarnadine_greaves,id=109793,bonus_id=524
-wrist=incarnadine_bracers,id=109876,bonus_id=524
-hands=verdant_plate_grips,id=109857,bonus_id=524
-finger1=signet_of_the_glorious_protector,id=109778,bonus_id=524,enchant_id=5324
-finger2=bladebinder_ring,id=109775,bonus_id=524,enchant_id=5324
-trinket1=bonemaws_big_toe,id=110012,bonus_id=524
-trinket2=turbulent_emblem,id=114491
-back=gonglu_strength_of_xuen,id=102249,upgrade=2,gem_id=115809,enchant_id=5310
-main_hand=steelforged_saber,id=116454,bonus_id=78/525,enchant_id=5330
-off_hand=steelforged_shield,id=116647,bonus_id=77/525
-save=Warrior_Gladiator_T17P.simc
-
 warrior=Warrior_Protection_T17P
 level=100
 race=tauren
@@ -117,7 +90,7 @@ position=front
 spec=protection
 professions=
 talents=2133322
-glyphs=58098/58355/123779/159701
+#glyphs=58098/58355/123779/159701
 
 head=incarnadine_greathelm,id=109985,bonus_id=524
 neck=choker_of_weeping_viscera,id=109969,bonus_id=524,enchant_id=5317

@@ -15,7 +15,7 @@ race=troll
 spec=shadow
 role=spell
 position=back
-glyphs=mind_flay/fade/sha
+#glyphs=mind_flay/fade/sha
 head=demon_princes_ascendant_crown,id=124159,bonus_id=567,upgrade=2
 neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,upgrade=2,enchant=gift_of_mastery
 shoulders=pious_mantle,id=124178,bonus_id=567,upgrade=2

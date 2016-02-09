@@ -5,7 +5,6 @@ timeofday=night
 role=tank
 position=front
 talents=0130122
-glyphs=fortifying_brew,expel_harm,fortuitous_spheres
 spec=brewmaster
 
 # This default action priority list is automatically created based on your character.
@@ -18,74 +17,6 @@ spec=brewmaster
 
 actions.precombat=flask,type=greater_draenic_agility_flask
 actions.precombat+=/food,type=sleeper_sushi
-actions.precombat+=/stance,choose=sturdy_ox
-actions.precombat+=/legacy_of_the_white_tiger,if=!aura.str_agi_int.up|!aura.critical_strike.up
-# Snapshot raid buffed stats before combat begins and pre-potting is done.
-actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=draenic_armor
-actions.precombat+=/dampen_harm
-
-# Executed every time the actor is available.
-
-actions=auto_attack
-actions+=/blood_fury,if=energy<=40
-actions+=/berserking,if=energy<=40
-actions+=/arcane_torrent,if=chi.max-chi>=1&energy<=40
-actions+=/chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4
-actions+=/chi_brew,if=talent.chi_brew.enabled&chi.max-chi>=2&buff.elusive_brew_stacks.stack<=10&((charges=1&recharge_time<5)|charges=2|(target.time_to_die<15&(cooldown.touch_of_death.remains>target.time_to_die|glyph.touch_of_death.enabled)))
-actions+=/chi_brew,if=(chi<1&stagger.heavy)|(chi<2&buff.shuffle.down)
-actions+=/gift_of_the_ox,if=buff.gift_of_the_ox.react&incoming_damage_1500ms
-actions+=/diffuse_magic,if=incoming_damage_1500ms&buff.fortifying_brew.down
-actions+=/dampen_harm,if=incoming_damage_1500ms&buff.fortifying_brew.down&buff.elusive_brew_activated.down
-actions+=/fortifying_brew,if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.elusive_brew_activated.down
-actions+=/elusive_brew,if=buff.elusive_brew_stacks.react>=9&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.elusive_brew_activated.down
-actions+=/invoke_xuen,if=talent.invoke_xuen.enabled&target.time_to_die>15&buff.shuffle.remains>=3&buff.serenity.down
-actions+=/serenity,if=talent.serenity.enabled&cooldown.keg_smash.remains>6
-actions+=/potion,name=draenic_armor,if=(buff.fortifying_brew.down&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.elusive_brew_activated.down)
-actions+=/touch_of_death,if=target.health.percent<10&cooldown.touch_of_death.remains=0&((!glyph.touch_of_death.enabled&chi>=3&target.time_to_die<8)|(glyph.touch_of_death.enabled&target.time_to_die<5))
-actions+=/call_action_list,name=st,if=active_enemies<3
-actions+=/call_action_list,name=aoe,if=active_enemies>=3
-
-actions.st=purifying_brew,if=stagger.heavy
-actions.st+=/chi_explosion,if=talent.chi_explosion.enabled&buff.shuffle.down&chi>=2
-actions.st+=/blackout_kick,if=buff.shuffle.down
-actions.st+=/purifying_brew,if=buff.serenity.up
-actions.st+=/chi_explosion,if=talent.chi_explosion.enabled&chi>=3
-actions.st+=/purifying_brew,if=stagger.moderate&buff.shuffle.remains>=6
-actions.st+=/guard,if=(charges=1&recharge_time<5)|charges=2|target.time_to_die<15
-actions.st+=/guard,if=incoming_damage_10s>=health.max*0.5
-actions.st+=/chi_brew,if=target.health.percent<10&cooldown.touch_of_death.remains=0&chi.max-chi>=2&(buff.shuffle.remains>=6|target.time_to_die<buff.shuffle.remains)&!glyph.touch_of_death.enabled
-actions.st+=/keg_smash,if=chi.max-chi>=2&!buff.serenity.remains
-actions.st+=/blackout_kick,if=buff.shuffle.remains<=3&cooldown.keg_smash.remains>=gcd
-actions.st+=/blackout_kick,if=buff.serenity.up
-actions.st+=/chi_burst,if=energy.time_to_max>2&buff.serenity.down
-actions.st+=/chi_wave,if=energy.time_to_max>2&buff.serenity.down
-actions.st+=/zen_sphere,cycle_targets=1,if=!dot.zen_sphere.ticking&energy.time_to_max>2&buff.serenity.down
-actions.st+=/blackout_kick,if=chi.max-chi<2
-actions.st+=/expel_harm,if=health.percent<95&chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80
-actions.st+=/jab,if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80
-actions.st+=/tiger_palm
-
-actions.aoe=purifying_brew,if=stagger.heavy
-actions.aoe+=/chi_explosion,if=talent.chi_explosion.enabled&buff.shuffle.down&chi>=2
-actions.aoe+=/blackout_kick,if=buff.shuffle.down
-actions.aoe+=/purifying_brew,if=buff.serenity.up
-actions.aoe+=/chi_explosion,if=talent.chi_explosion.enabled&chi>=4
-actions.aoe+=/purifying_brew,if=stagger.moderate&buff.shuffle.remains>=6
-actions.aoe+=/guard,if=(charges=1&recharge_time<5)|charges=2|target.time_to_die<15
-actions.aoe+=/guard,if=incoming_damage_10s>=health.max*0.5
-actions.aoe+=/chi_brew,if=target.health.percent<10&cooldown.touch_of_death.remains=0&chi<=3&chi>=1&(buff.shuffle.remains>=6|target.time_to_die<buff.shuffle.remains)&!glyph.touch_of_death.enabled
-actions.aoe+=/keg_smash,if=chi.max-chi>=2&!buff.serenity.remains
-actions.aoe+=/blackout_kick,if=buff.shuffle.remains<=3&cooldown.keg_smash.remains>=gcd
-actions.aoe+=/blackout_kick,if=buff.serenity.up
-actions.aoe+=/rushing_jade_wind,if=chi.max-chi>=1&buff.serenity.down
-actions.aoe+=/chi_burst,if=energy.time_to_max>2&buff.serenity.down
-actions.aoe+=/chi_wave,if=energy.time_to_max>2&buff.serenity.down
-actions.aoe+=/zen_sphere,cycle_targets=1,if=!dot.zen_sphere.ticking&energy.time_to_max>2&buff.serenity.down
-actions.aoe+=/blackout_kick,if=chi.max-chi<2
-actions.aoe+=/expel_harm,if=health.percent<95&chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80
-actions.aoe+=/jab,if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80
-actions.aoe+=/tiger_palm
 
 head=blackwater_helm,id=109979,bonus_id=524
 neck=reinforced_bloodsteel_gorget,id=109966,bonus_id=524,enchant=gift_of_versatility
@@ -108,8 +39,8 @@ main_hand=crushtos_neck_separator,id=110040,bonus_id=524,enchant_id=5352
 # gear_agility=1801
 # gear_stamina=2465
 # gear_crit_rating=657
-# gear_mastery_rating=186
-# gear_multistrike_rating=776
-# gear_versatility_rating=877
+# gear_haste_rating=533
+# gear_mastery_rating=429
+# gear_versatility_rating=827
 # gear_armor=814
-# gear_bonus_armor=419
+# gear_bonus_armor=194

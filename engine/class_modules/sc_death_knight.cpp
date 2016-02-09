@@ -283,7 +283,6 @@ public:
     gain_t* butchery;
     gain_t* chill_of_the_grave;
     gain_t* frost_presence;
-    gain_t* horn_of_winter;
     gain_t* improved_frost_presence;
     gain_t* power_refund;
     gain_t* scent_of_blood;
@@ -2943,7 +2942,7 @@ struct disease_t : public death_knight_spell_t
 
     // TODO-WOD: Check if multiplicative
     base_multiplier *= 1.0 + p -> spec.ebon_plaguebringer -> effectN( 2 ).percent();
-    base_multiplier *= 1.0 + p -> spec.crimson_scourge -> effectN( 3 ).percent();
+    base_multiplier *= 1.0 + p -> spec.crimson_scourge -> effectN( 1 ).percent();
     if ( p -> glyph.enduring_infection -> ok() )
     {
       base_multiplier += p -> find_spell( 58671 ) -> effectN( 1 ).percent();
@@ -6506,7 +6505,7 @@ void death_knight_t::default_apl_blood()
   std::string food_str = "food,type=";
   std::string potion_str = "potion,name=";
 
-  potion_str += ( true_level > 90 ) ? "draenic_armor" : ( true_level >= 85 ) ? "mountains" : "earthen";
+  potion_str += ( true_level >= 85 ) ? "mountains" : "earthen";
   if ( talent.breath_of_sindragosa -> ok() )
   {
     flask_str += "greater_draenic_strength_flask";
@@ -6527,7 +6526,6 @@ void death_knight_t::default_apl_blood()
     precombat -> add_action( food_str );
 
   precombat -> add_action( this, "Blood Presence" );
-  precombat -> add_action( this, "Horn of Winter" );
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   if ( sim -> allow_potions && true_level >= 80 )
@@ -6576,7 +6574,6 @@ void death_knight_t::default_apl_blood()
     def -> add_action( this, "Death and Decay", "if=buff.crimson_scourge.react" );
     def -> add_action( this, "Blood Boil", "if=buff.crimson_scourge.react" );
     def -> add_action( this, "Death Coil" );
-    def -> add_action( this, "Empower Rune Weapon", "if=!blood&!unholy&!frost" );
 
     bt -> add_action( this, "Death Strike", "if=unholy=2|frost=2" );
     bt -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>=5&!blood" );
@@ -6636,7 +6633,7 @@ void death_knight_t::default_apl_blood()
     def -> add_action( this, "Vampiric Blood", "if=health.pct<40" );
     def -> add_action( this, "Icebound Fortitude" ,"if=health.pct<30&buff.army_of_the_dead.down&buff.dancing_rune_weapon.down&buff.bone_shield.down&buff.rune_tap.down" );
     def -> add_talent( this, "Death Pact", "if=health.pct<30" );
-    def -> add_action( "run_action_list,name=last,if=target.time_to_die<8|target.time_to_die<13&cooldown.empower_rune_weapon.remains<4" );
+    def -> add_action( "run_action_list,name=last,if=target.time_to_die<8|target.time_to_die<13" );
     def -> add_action( "run_action_list,name=bos,if=dot.breath_of_sindragosa.ticking" );
     def -> add_action( "run_action_list,name=nbos,if=!dot.breath_of_sindragosa.ticking&cooldown.breath_of_sindragosa.remains<4" );
     def -> add_action( "run_action_list,name=cdbos,if=!dot.breath_of_sindragosa.ticking&cooldown.breath_of_sindragosa.remains>=4" );
@@ -6671,7 +6668,6 @@ void death_knight_t::default_apl_blood()
     bos -> add_action( this, "Icy Touch", "if=runic_power<16" );
     bos -> add_action( this, "Plague Strike", "if=runic_power<16" );
     bos -> add_action( this, "Rune Tap", "if=runic_power<16&blood>=1&blood.death=0&frost=0&unholy=0&buff.crimson_scourge.up" );
-    bos -> add_action( this, "Empower Rune Weapon", "if=runic_power<16&blood=0&frost=0&unholy=0" );
     bos -> add_action( this, "Death Strike", "if=(blood.frac>1.8&blood.death>=1|frost.frac>1.8|unholy.frac>1.8|buff.blood_charge.stack>=11)" );
     bos -> add_talent( this, "Blood Tap", "if=(blood.frac>1.8&blood.death>=1|frost.frac>1.8|unholy.frac>1.8)" );
     bos -> add_action( this, "Blood Boil", "if=(blood>=1&blood.death=0&target.health.pct-3*(target.health.pct%target.time_to_die)>35|blood=2&blood.death<2)&buff.crimson_scourge.down" );
@@ -6709,9 +6705,8 @@ void death_knight_t::default_apl_blood()
     last -> add_action( this, "Death Strike" );
     last -> add_action( this, "Blood Boil", "if=blood=2|target.time_to_die<=7" );
     last -> add_action( this, "Death Coil", "if=runic_power>75|target.time_to_die<4|!dot.breath_of_sindragosa.ticking" );
-    last -> add_action( this, "Plague Strike", "if=target.time_to_die<2|cooldown.empower_rune_weapon.remains<2" );
-    last -> add_action( this, "Icy Touch", "if=target.time_to_die<2|cooldown.empower_rune_weapon.remains<2" );
-    last -> add_action( this, "Empower Rune Weapon", "if=!blood&!unholy&!frost&runic_power<76|target.time_to_die<5" );
+    last -> add_action( this, "Plague Strike", "if=target.time_to_die<2" );
+    last -> add_action( this, "Icy Touch", "if=target.time_to_die<2" );
     last -> add_talent( this, "Plague Leech" );
 
     nbos -> add_talent( this, "Breath of Sindragosa", "if=runic_power>=80" );
@@ -6754,7 +6749,6 @@ void death_knight_t::default_apl_frost()
   if ( sim -> allow_food && level() >= 80 )
     precombat -> add_action( food_str );
 
-  precombat -> add_action( this, "Horn of Winter" );
   precombat -> add_action( this, "Frost Presence" );
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat -> add_action( this, "Army of the Dead" );
@@ -6983,7 +6977,6 @@ void death_knight_t::init_action_list()
   if ( sim -> allow_food && level() > 90 && tree == DEATH_KNIGHT_UNHOLY )
     precombat -> add_action( food_ms );
 
-  precombat -> add_action( this, "Horn of Winter" );
   precombat -> add_action( this, "Unholy Presence" );
 
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
@@ -7061,7 +7054,6 @@ void death_knight_t::init_action_list()
     unholy -> add_action( this, "Festering Strike", "if=(cooldown.breath_of_sindragosa.remains>6|runic_power<75)|!talent.breath_of_sindragosa.enabled" );
     unholy -> add_action( this, "Death Coil", "if=(cooldown.breath_of_sindragosa.remains>20)|!talent.breath_of_sindragosa.enabled" );
     unholy -> add_talent( this, "Plague Leech" );
-    unholy -> add_action( this, "Empower Rune Weapon", "if=!talent.breath_of_sindragosa.enabled" );
 
     for ( size_t i = 0; i < get_racial_actions().size(); i++ )
     {
@@ -7091,7 +7083,6 @@ void death_knight_t::init_action_list()
     bos -> add_action( this, "Dark Transformation" );
     bos -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>=5" );
     bos -> add_talent( this, "Plague Leech" );
-    bos -> add_action( this, "Empower Rune Weapon", "if=runic_power<60" );
     bos -> add_action( this, "Death Coil", "if=buff.sudden_doom.react" );
     break;
   }
@@ -7312,7 +7303,6 @@ void death_knight_t::init_gains()
   gains.butchery                         = get_gain( "butchery"                   );
   gains.chill_of_the_grave               = get_gain( "chill_of_the_grave"         );
   gains.frost_presence                   = get_gain( "frost_presence"             );
-  gains.horn_of_winter                   = get_gain( "horn_of_winter"             );
   gains.improved_frost_presence          = get_gain( "improved_frost_presence"    );
   gains.power_refund                     = get_gain( "power_refund"               );
   gains.scent_of_blood                   = get_gain( "scent_of_blood"             );

@@ -4,7 +4,6 @@ race=gnome
 role=spell
 position=back
 talents=3003322
-glyphs=cone_of_cold
 spec=arcane
 
 # This default action priority list is automatically created based on your character.
@@ -17,7 +16,6 @@ spec=arcane
 
 actions.precombat=flask,type=greater_draenic_intellect_flask
 actions.precombat+=/food,type=sleeper_sushi
-actions.precombat+=/arcane_brilliance
 actions.precombat+=/snapshot_stats
 actions.precombat+=/rune_of_power
 actions.precombat+=/mirror_image
@@ -28,19 +26,16 @@ actions.precombat+=/arcane_blast
 
 actions=counterspell,if=target.debuff.casting.react
 actions+=/stop_burn_phase,if=prev_gcd.evocation&burn_phase_duration>gcd.max
-actions+=/cold_snap,if=health.pct<30
 actions+=/time_warp,if=target.health.pct<25|time>5
 actions+=/call_action_list,name=movement,if=raid_event.movement.exists
 actions+=/rune_of_power,if=buff.rune_of_power.remains<2*spell_haste
 actions+=/mirror_image
-actions+=/cold_snap,if=buff.presence_of_mind.down&cooldown.presence_of_mind.remains>75
 actions+=/call_action_list,name=aoe,if=active_enemies>=5
 actions+=/call_action_list,name=init_burn,if=!burn_phase
 actions+=/call_action_list,name=burn,if=burn_phase
 actions+=/call_action_list,name=conserve
 
 actions.movement=blink,if=movement.distance>10
-actions.movement+=/blazing_speed,if=movement.remains>0
 actions.movement+=/ice_floes,if=buff.ice_floes.down&(raid_event.movement.distance>0|raid_event.movement.in<2*spell_haste)
 
 # Regular burn with evocation
@@ -51,13 +46,11 @@ actions.init_burn+=/start_burn_phase,if=target.time_to_die*0.75*(1-0.1*(talent.n
 # Conditions for initiating Prismatic Crystal
 actions.init_crystal=call_action_list,name=conserve,if=buff.arcane_charge.stack<4|(buff.arcane_missiles.react&debuff.mark_of_doom.remains>2*spell_haste+(target.distance%20))
 actions.init_crystal+=/arcane_missiles,if=buff.arcane_missiles.react&t18_class_trinket
-actions.init_crystal+=/prismatic_crystal
 
 # Actions while Prismatic Crystal is active
 actions.crystal_sequence=call_action_list,name=cooldowns
 actions.crystal_sequence+=/nether_tempest,if=buff.arcane_charge.stack=4&!ticking&pet.prismatic_crystal.remains>8
 actions.crystal_sequence+=/supernova,if=mana.pct<96
-actions.crystal_sequence+=/presence_of_mind,if=cooldown.cold_snap.up|pet.prismatic_crystal.remains<2*spell_haste
 actions.crystal_sequence+=/arcane_blast,if=buff.arcane_charge.stack=4&mana.pct>93&pet.prismatic_crystal.remains>cast_time
 actions.crystal_sequence+=/arcane_missiles,if=pet.prismatic_crystal.remains>2*spell_haste+(target.distance%20)
 actions.crystal_sequence+=/supernova,if=pet.prismatic_crystal.remains<2*spell_haste+(target.distance%20)
@@ -85,7 +78,6 @@ actions.aoe+=/arcane_missiles,if=set_bonus.tier17_4pc&active_enemies<10&buff.arc
 actions.aoe+=/arcane_missiles,target_if=debuff.mark_of_doom.remains>2*spell_haste+(target.distance%20),if=buff.arcane_missiles.react
 actions.aoe+=/nether_tempest,cycle_targets=1,if=talent.arcane_orb.enabled&buff.arcane_charge.stack=4&ticking&remains<cooldown.arcane_orb.remains
 actions.aoe+=/arcane_barrage,if=buff.arcane_charge.stack=4
-actions.aoe+=/cone_of_cold,if=glyph.cone_of_cold.enabled
 actions.aoe+=/arcane_explosion
 
 # High mana usage, "Burn" sequence
@@ -98,12 +90,10 @@ actions.burn+=/supernova,if=target.time_to_die<8|charges=2
 actions.burn+=/nether_tempest,cycle_targets=1,if=target!=pet.prismatic_crystal&buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<3.6))
 actions.burn+=/arcane_orb,if=buff.arcane_charge.stack<4
 actions.burn+=/arcane_barrage,if=talent.arcane_orb.enabled&active_enemies>=3&buff.arcane_charge.stack=4&(cooldown.arcane_orb.remains<gcd.max|prev_gcd.arcane_orb)
-actions.burn+=/presence_of_mind,if=mana.pct>96&(!talent.prismatic_crystal.enabled|!cooldown.prismatic_crystal.up)
 actions.burn+=/arcane_blast,if=buff.arcane_charge.stack=4&mana.pct>93
 actions.burn+=/arcane_missiles,if=buff.arcane_charge.stack=4&(mana.pct>70|!cooldown.evocation.up|target.time_to_die<15)
 actions.burn+=/supernova,if=mana.pct>70&mana.pct<96
 actions.burn+=/evocation,interrupt_if=mana.pct>100-10%spell_haste,if=target.time_to_die>10&mana.pct<30+2.5*active_enemies*(9-active_enemies)-(40*(t18_class_trinket&buff.arcane_power.up))
-actions.burn+=/presence_of_mind,if=!talent.prismatic_crystal.enabled|!cooldown.prismatic_crystal.up
 actions.burn+=/arcane_blast
 actions.burn+=/evocation
 
@@ -114,7 +104,6 @@ actions.conserve+=/arcane_missiles,if=set_bonus.tier17_4pc&buff.arcane_instabili
 actions.conserve+=/nether_tempest,cycle_targets=1,if=target!=pet.prismatic_crystal&buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<3.6))
 actions.conserve+=/supernova,if=target.time_to_die<8|(charges=2&(buff.arcane_power.up|!cooldown.arcane_power.up|!legendary_ring.cooldown.up)&(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>8))
 actions.conserve+=/arcane_orb,if=buff.arcane_charge.stack<2
-actions.conserve+=/presence_of_mind,if=mana.pct>96&(!talent.prismatic_crystal.enabled|!cooldown.prismatic_crystal.up)
 actions.conserve+=/arcane_missiles,if=buff.arcane_missiles.react&debuff.mark_of_doom.remains>2*spell_haste+(target.distance%20)
 actions.conserve+=/arcane_blast,if=buff.arcane_charge.stack=4&mana.pct>93
 actions.conserve+=/arcane_barrage,if=talent.arcane_orb.enabled&active_enemies>=3&buff.arcane_charge.stack=4&(cooldown.arcane_orb.remains<gcd.max|prev_gcd.arcane_orb)
@@ -122,7 +111,6 @@ actions.conserve+=/arcane_missiles,if=buff.arcane_charge.stack=4&(!talent.overpo
 actions.conserve+=/supernova,if=mana.pct<96&(buff.arcane_missiles.stack<2|buff.arcane_charge.stack=4)&(buff.arcane_power.up|(charges=1&(cooldown.arcane_power.remains>recharge_time|legendary_ring.cooldown.remains>recharge_time)))&(!talent.prismatic_crystal.enabled|current_target=pet.prismatic_crystal|(charges=1&cooldown.prismatic_crystal.remains>recharge_time+8))
 actions.conserve+=/nether_tempest,cycle_targets=1,if=target!=pet.prismatic_crystal&buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<(10-3*talent.arcane_orb.enabled)*spell_haste))
 actions.conserve+=/arcane_barrage,if=buff.arcane_charge.stack=4
-actions.conserve+=/presence_of_mind,if=buff.arcane_charge.stack<2&mana.pct>93
 actions.conserve+=/arcane_blast
 actions.conserve+=/arcane_barrage
 
@@ -147,9 +135,8 @@ main_hand=spire_of_the_furious_construct,id=110031,bonus_id=524,enchant=mark_of_
 # gear_stamina=2465
 # gear_intellect=1854
 # gear_spell_power=958
-# gear_crit_rating=314
-# gear_haste_rating=581
-# gear_mastery_rating=1300
-# gear_multistrike_rating=176
+# gear_crit_rating=429
+# gear_haste_rating=642
+# gear_mastery_rating=1025
 # gear_versatility_rating=52
 # gear_armor=552

@@ -23,8 +23,6 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/exotic_munitions,ammo_type=poisoned,if=spell_targets.multi_shot<3
 actions.precombat+=/exotic_munitions,ammo_type=incendiary,if=spell_targets.multi_shot>=3
 actions.precombat+=/potion,name=draenic_agility
-actions.precombat+=/glaive_toss
-actions.precombat+=/focusing_shot
 
 # Executed every time the actor is available.
 
@@ -36,30 +34,12 @@ actions+=/berserking
 actions+=/potion,name=draenic_agility,if=!talent.stampede.enabled&((buff.bestial_wrath.up&(legendary_ring.up|!legendary_ring.has_cooldown)&target.health.pct<=20)|target.time_to_die<=20)
 actions+=/potion,name=draenic_agility,if=talent.stampede.enabled&((buff.stampede.remains&(legendary_ring.up|!legendary_ring.has_cooldown)&(buff.bloodlust.up|buff.focus_fire.up))|target.time_to_die<=40)
 actions+=/stampede,if=((buff.bloodlust.up|buff.focus_fire.up)&(legendary_ring.up|!legendary_ring.has_cooldown))|target.time_to_die<=25
-actions+=/dire_beast
-actions+=/focus_fire,if=buff.focus_fire.down&((cooldown.bestial_wrath.remains<1&buff.bestial_wrath.down)|(talent.stampede.enabled&buff.stampede.remains)|pet.cat.buff.frenzy.remains<1)
 actions+=/bestial_wrath,if=focus>30&!buff.bestial_wrath.up
 actions+=/multishot,if=spell_targets.multi_shot>1&pet.cat.buff.beast_cleave.remains<0.5
-actions+=/focus_fire,min_frenzy=5
 actions+=/barrage,if=spell_targets.barrage>1
-actions+=/explosive_trap,if=spell_targets.explosive_trap_tick>5
 actions+=/multishot,if=spell_targets.multi_shot>5
 actions+=/kill_command
 actions+=/a_murder_of_crows
-actions+=/kill_shot,if=focus.time_to_max>gcd
-actions+=/focusing_shot,if=focus<50
-# Cast a second shot for steady focus if that won't cap us.
-actions+=/cobra_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<7&(14+cast_regen)<focus.deficit
-actions+=/explosive_trap,if=spell_targets.explosive_trap_tick>1
-# Prepare for steady focus refresh if it is running out.
-actions+=/cobra_shot,if=talent.steady_focus.enabled&buff.steady_focus.remains<4&focus<50
-actions+=/glaive_toss
-actions+=/barrage
-actions+=/powershot,if=focus.time_to_max>cast_time
-actions+=/cobra_shot,if=spell_targets.multi_shot>5
-actions+=/arcane_shot,if=(buff.thrill_of_the_hunt.react&focus>35)|buff.bestial_wrath.up
-actions+=/arcane_shot,if=focus>=75
-actions+=/cobra_shot
 
 head=hood_of_the_savage_hunt,id=124296,bonus_id=567,upgrade=2
 neck=chain_of_lidless_eyes,id=124209,bonus_id=567,upgrade=2,enchant_id=5319
@@ -81,10 +61,9 @@ main_hand=cursed_demonbone_longbow,id=124361,bonus_id=567,upgrade=2,enchant_id=5
 # gear_ilvl=742.67
 # gear_agility=4667
 # gear_stamina=7006
-# gear_crit_rating=1284
-# gear_haste_rating=1022
-# gear_mastery_rating=2113
-# gear_multistrike_rating=2369
+# gear_crit_rating=2226
+# gear_haste_rating=1756
+# gear_mastery_rating=2367
 # gear_versatility_rating=270
 # gear_armor=1774
 # set_bonus=tier18_2pc=1

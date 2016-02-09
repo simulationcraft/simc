@@ -4,7 +4,6 @@ race=troll
 role=spell
 position=back
 talents=0000211
-glyphs=dark_soul
 spec=demonology
 
 # This default action priority list is automatically created based on your character.
@@ -17,110 +16,11 @@ spec=demonology
 
 actions.precombat=flask,type=greater_draenic_intellect_flask
 actions.precombat+=/food,type=sleeper_sushi
-actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
-actions.precombat+=/summon_pet,if=!talent.demonic_servitude.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.grimoire_of_sacrifice.down)
-actions.precombat+=/summon_doomguard,if=talent.demonic_servitude.enabled&active_enemies<9
-actions.precombat+=/summon_infernal,if=talent.demonic_servitude.enabled&active_enemies>=9
-actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_intellect
-actions.precombat+=/soul_fire
 
 # Executed every time the actor is available.
 
-actions=summon_doomguard,if=!talent.demonic_servitude.enabled&spell_targets.infernal_awakening<9
-actions+=/summon_infernal,if=!talent.demonic_servitude.enabled&spell_targets.infernal_awakening>=9
-actions+=/potion,name=draenic_intellect,if=buff.bloodlust.remains>30|(((buff.dark_soul.up&(trinket.proc.any.react|trinket.stacking_proc.any.react>6)&!buff.demonbolt.remains)|target.health.pct<20)&(!talent.grimoire_of_service.enabled|!talent.demonic_servitude.enabled|pet.service_doomguard.active))
-actions+=/berserking
-actions+=/blood_fury
-actions+=/arcane_torrent
-actions+=/mannoroths_fury
-actions+=/felguard:felstorm
-actions+=/wrathguard:wrathstorm
-actions+=/wrathguard:mortal_cleave,if=pet.wrathguard.cooldown.wrathstorm.remains>5
-actions+=/call_action_list,name=opener,if=time<7&talent.demonic_servitude.enabled
-actions+=/service_pet,if=talent.grimoire_of_service.enabled&(target.time_to_die>120|target.time_to_die<=25|(buff.dark_soul.remains&target.health.pct<20))
-actions+=/dark_soul,if=talent.demonbolt.enabled&((time<=20&!buff.demonbolt.remains&demonic_fury>=360)|target.time_to_die<buff.demonbolt.remains|(!buff.demonbolt.remains&demonic_fury>=790))
-actions+=/dark_soul,if=!talent.demonbolt.enabled&((charges=2&(time>6|(debuff.shadowflame.stack=1&action.hand_of_guldan.in_flight)))|!talent.archimondes_darkness.enabled|(target.time_to_die<=20&!glyph.dark_soul.enabled)|target.time_to_die<=10|(target.time_to_die<=60&demonic_fury>400)|((trinket.proc.any.react|trinket.stacking_proc.any.react)&(demonic_fury>600|(glyph.dark_soul.enabled&demonic_fury>450))))
-actions+=/imp_swarm,if=!talent.demonbolt.enabled&(buff.dark_soul.up|(cooldown.dark_soul.remains>(120%(1%spell_haste)))|time_to_die<32)&time>3
-actions+=/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&(((set_bonus.tier17_4pc=0&((charges=1&recharge_time<4)|charges=2))|(charges=3|(charges=2&recharge_time<13.8-travel_time*2))&((cooldown.cataclysm.remains>dot.shadowflame.duration)|!talent.cataclysm.enabled))|dot.shadowflame.remains>travel_time)
-actions+=/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&talent.demonbolt.enabled&((set_bonus.tier17_4pc=0&((charges=1&recharge_time<4)|charges=2))|(charges=3|(charges=2&recharge_time<13.8-travel_time*2))|dot.shadowflame.remains>travel_time)
-actions+=/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<3.7&time<5&buff.demonbolt.remains<gcd*2&(charges>=2|set_bonus.tier17_4pc=0)&action.dark_soul.charges>=1
-actions+=/call_action_list,name=db,if=talent.demonbolt.enabled
-actions+=/call_action_list,name=meta,if=buff.metamorphosis.up
-actions+=/corruption,cycle_targets=1,if=target.time_to_die>=6&remains<=(0.3*duration)&buff.metamorphosis.down
-actions+=/metamorphosis,if=buff.dark_soul.remains>gcd&(time>6|debuff.shadowflame.stack=2)&(demonic_fury>300|!glyph.dark_soul.enabled)&(demonic_fury>=80&buff.molten_core.stack>=1|demonic_fury>=40)
-actions+=/metamorphosis,if=(trinket.stacking_proc.any.react|trinket.proc.any.react)&((demonic_fury>450&action.dark_soul.recharge_time>=10&glyph.dark_soul.enabled)|(demonic_fury>650&cooldown.dark_soul.remains>=10))
-actions+=/metamorphosis,if=!cooldown.cataclysm.remains&talent.cataclysm.enabled
-actions+=/metamorphosis,if=!dot.doom.ticking&target.time_to_die>=30%(1%spell_haste)&demonic_fury>300
-actions+=/metamorphosis,if=(demonic_fury>750&(action.hand_of_guldan.charges=0|(!dot.shadowflame.ticking&!action.hand_of_guldan.in_flight_to_target)))|floor(demonic_fury%80)*action.soul_fire.execute_time>=target.time_to_die
-actions+=/metamorphosis,if=demonic_fury>=950
-actions+=/imp_swarm
-actions+=/hellfire,interrupt=1,if=spell_targets.hellfire_tick>=5
-actions+=/soul_fire,if=buff.molten_core.react&(buff.demon_rush.remains<=execute_time+travel_time+action.shadow_bolt.execute_time|buff.demon_rush.stack<5)&set_bonus.tier18_2pc=1
-actions+=/soul_fire,if=buff.molten_core.react&(buff.molten_core.stack>=7|target.health.pct<=25|(buff.dark_soul.remains&cooldown.metamorphosis.remains>buff.dark_soul.remains)|trinket.proc.any.remains>execute_time|trinket.stacking_proc.any.remains>execute_time)&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>execute_time)
-actions+=/soul_fire,if=buff.molten_core.react&target.time_to_die<(time+target.time_to_die)*0.25+cooldown.dark_soul.remains
-actions+=/life_tap,if=mana.pct<40&buff.dark_soul.down
-actions+=/hellfire,interrupt=1,if=spell_targets.hellfire_tick>=4
-actions+=/shadow_bolt
-actions+=/hellfire,moving=1,interrupt=1
-actions+=/life_tap
-
-actions.opener=hand_of_guldan,if=!in_flight&!dot.shadowflame.ticking
-actions.opener+=/service_pet,if=talent.grimoire_of_service.enabled
-actions.opener+=/corruption,if=!ticking
-
-actions.db=kiljaedens_cunning,moving=1,if=buff.demonbolt.stack=0|(buff.demonbolt.stack<4&buff.demonbolt.remains>=(40*spell_haste-execute_time))
-actions.db+=/call_action_list,name=db_meta,if=buff.metamorphosis.up
-actions.db+=/corruption,cycle_targets=1,if=target.time_to_die>=6&remains<=(0.3*duration)&buff.metamorphosis.down
-actions.db+=/metamorphosis,if=buff.dark_soul.remains>gcd&(demonic_fury>=470|buff.dark_soul.remains<=action.demonbolt.execute_time*3)&(buff.demonbolt.down|target.time_to_die<buff.demonbolt.remains|(buff.dark_soul.remains>execute_time&demonic_fury>=175))
-actions.db+=/metamorphosis,if=buff.demonbolt.down&demonic_fury>=480&(action.dark_soul.charges=0|!talent.archimondes_darkness.enabled&cooldown.dark_soul.remains)&(legendary_ring.cooldown.remains>=buff.demonbolt.duration|!legendary_ring.has_cooldown)
-actions.db+=/metamorphosis,if=(demonic_fury%80)*2*spell_haste>=target.time_to_die&target.time_to_die<buff.demonbolt.remains
-actions.db+=/metamorphosis,if=target.time_to_die>=30*spell_haste&!dot.doom.ticking&buff.dark_soul.down&time>10
-actions.db+=/metamorphosis,if=demonic_fury>750&buff.demonbolt.remains>=action.metamorphosis.cooldown
-actions.db+=/metamorphosis,if=(((demonic_fury-120)%800)>(buff.demonbolt.remains%40))&buff.demonbolt.remains>=10&dot.doom.remains-gcd<=dot.doom.duration*0.3
-actions.db+=/metamorphosis,if=buff.demonbolt.remains&buff.demonbolt.remains<10&demonic_fury-((40*action.touch_of_chaos.gcd*buff.demonbolt.remains)+(6*buff.demonbolt.remains))>=800
-actions.db+=/imp_swarm
-actions.db+=/hellfire,interrupt=1,if=spell_targets.hellfire_tick>=5
-actions.db+=/soul_fire,if=buff.molten_core.react&(buff.demon_rush.remains<=execute_time+travel_time+action.shadow_bolt.execute_time|buff.demon_rush.stack<5)&set_bonus.tier18_2pc=1
-actions.db+=/soul_fire,if=((set_bonus.tier18_2pc=0&buff.molten_core.react)|buff.molten_core.react>1)&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>cast_time)
-actions.db+=/life_tap,if=mana.pct<40&buff.dark_soul.down
-actions.db+=/hellfire,interrupt=1,if=spell_targets.hellfire_tick>=4
-actions.db+=/shadow_bolt
-actions.db+=/hellfire,moving=1,interrupt=1
-actions.db+=/life_tap
-
-actions.db_meta=immolation_aura,if=demonic_fury>450&spell_targets.immolation_aura_tick>=5&buff.immolation_aura.down
-actions.db_meta+=/doom,cycle_targets=1,if=active_enemies_within.40>=6&target.time_to_die>=30*spell_haste&remains-gcd<=(duration*0.3)&(buff.dark_soul.down|!glyph.dark_soul.enabled)
-actions.db_meta+=/soul_fire,if=buff.molten_core.react&buff.demon_rush.remains<=4&set_bonus.tier18_2pc=1
-actions.db_meta+=/demonbolt,if=(buff.demonbolt.stack=0|(buff.demonbolt.stack<4&buff.demonbolt.remains>=(40*spell_haste-execute_time)))&(legendary_ring.cooldown.remains>=buff.demonbolt.duration|!legendary_ring.has_cooldown)
-actions.db_meta+=/doom,cycle_targets=1,if=target.time_to_die>=30*spell_haste&remains<=(duration*0.3)&(buff.dark_soul.down|!glyph.dark_soul.enabled)
-actions.db_meta+=/soul_fire,if=buff.molten_core.react&(buff.demon_rush.remains<=execute_time+travel_time+action.touch_of_chaos.execute_time)&set_bonus.tier18_2pc=1
-actions.db_meta+=/cancel_metamorphosis,if=buff.demonbolt.stack>3&demonic_fury<=600&target.time_to_die>buff.demonbolt.remains&buff.dark_soul.down
-actions.db_meta+=/chaos_wave,if=buff.dark_soul.up&spell_targets.chaos_wave>=2&demonic_fury>450
-actions.db_meta+=/soul_fire,if=buff.molten_core.react&(((buff.dark_soul.remains>execute_time)&demonic_fury>=175)|(target.time_to_die<buff.demonbolt.remains))
-actions.db_meta+=/soul_fire,if=buff.molten_core.react&target.health.pct<=25&(((demonic_fury-80)%800)>(buff.demonbolt.remains%40))&demonic_fury>=750
-actions.db_meta+=/soul_fire,if=buff.molten_core.react&buff.demon_rush.stack<5&set_bonus.tier18_2pc=1
-actions.db_meta+=/touch_of_chaos,cycle_targets=1,if=dot.corruption.remains<17.4&demonic_fury>750
-actions.db_meta+=/touch_of_chaos,if=(target.time_to_die<buff.demonbolt.remains|(demonic_fury>=750&buff.demonbolt.remains)|buff.dark_soul.up)
-actions.db_meta+=/touch_of_chaos,if=(((demonic_fury-40)%800)>(buff.demonbolt.remains%40))&demonic_fury>=750
-actions.db_meta+=/cancel_metamorphosis
-
-actions.meta=kiljaedens_cunning,if=!cooldown.cataclysm.remains
-actions.meta+=/cataclysm,if=(active_enemies=1|spell_targets.cataclysm>1)
-actions.meta+=/immolation_aura,if=demonic_fury>450&spell_targets.immolation_aura_tick>=3&buff.immolation_aura.down
-actions.meta+=/doom,if=target.time_to_die>=30*spell_haste&remains<=(duration*0.3)&(remains<cooldown.cataclysm.remains|!talent.cataclysm.enabled)&trinket.stacking_proc.any.react<10
-actions.meta+=/soul_fire,if=buff.molten_core.react&(buff.demon_rush.remains<=execute_time+travel_time+action.touch_of_chaos.execute_time)&set_bonus.tier18_2pc=1
-actions.meta+=/chaos_wave,if=buff.dark_soul.remains&(trinket.proc.crit.react|trinket.proc.mastery.react|trinket.proc.intellect.react|trinket.proc.multistrike.react|trinket.stacking_proc.multistrike.react>7)
-actions.meta+=/cancel_metamorphosis,if=((demonic_fury<650&!glyph.dark_soul.enabled)|demonic_fury<450)&buff.dark_soul.down&(trinket.stacking_proc.any.down&trinket.proc.any.down|demonic_fury<(800-cooldown.dark_soul.remains*(10%spell_haste)))&target.time_to_die>20
-actions.meta+=/cancel_metamorphosis,if=action.hand_of_guldan.charges>0&dot.shadowflame.remains<action.hand_of_guldan.travel_time+action.shadow_bolt.cast_time&((demonic_fury<100&buff.dark_soul.remains>10)|time<15)&!glyph.dark_soul.enabled
-actions.meta+=/cancel_metamorphosis,if=action.hand_of_guldan.charges=3&(!buff.dark_soul.remains>gcd|action.metamorphosis.cooldown<gcd)
-actions.meta+=/chaos_wave,if=buff.dark_soul.up&spell_targets.chaos_wave>=2|(charges=3|set_bonus.tier17_4pc=0&charges=2)
-actions.meta+=/soul_fire,if=buff.molten_core.react&(buff.dark_soul.remains>execute_time|target.health.pct<=25|trinket.proc.crit.react|trinket.proc.mastery.react|trinket.proc.intellect.react|trinket.proc.multistrike.react)
-actions.meta+=/soul_fire,if=buff.molten_core.react&trinket.stacking_proc.multistrike.react&trinket.stacking_proc.multistrike.remains<=buff.molten_core.react*cast_time&trinket.stacking_proc.multistrike.remains<=demonic_fury%(80%cast_time)
-actions.meta+=/soul_fire,if=buff.molten_core.react&buff.demon_rush.stack<5&set_bonus.tier18_2pc=1
-actions.meta+=/touch_of_chaos,cycle_targets=1,if=dot.corruption.remains<17.4&demonic_fury>750
-actions.meta+=/touch_of_chaos
-actions.meta+=/cancel_metamorphosis
+actions=life_tap
 
 head=demon_princes_ascendant_crown,id=124159,bonus_id=566
 neck=vial_of_immiscible_liquid,id=124212,bonus_id=566,enchant_id=5319
@@ -143,10 +43,9 @@ main_hand=edict_of_argus,id=124382,bonus_id=566,enchant_id=5384
 # gear_stamina=5380
 # gear_intellect=3586
 # gear_spell_power=2214
-# gear_crit_rating=853
-# gear_haste_rating=888
-# gear_mastery_rating=2795
-# gear_multistrike_rating=805
+# gear_crit_rating=967
+# gear_haste_rating=1579
+# gear_mastery_rating=2401
 # gear_versatility_rating=108
 # gear_armor=991
 # set_bonus=tier18_2pc=1

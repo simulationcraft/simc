@@ -4,7 +4,7 @@ race=blood_elf
 role=attack
 position=back
 talents=3000032
-glyphs=vendetta/energy/disappearance
+#glyphs=vendetta/energy/disappearance
 spec=assassination
 
 head=felblade_hood,id=124263,bonus_id=567,upgrade=2
@@ -32,8 +32,8 @@ timeofday=night
 role=attack
 position=back
 talents=3000021
-glyphs=energy/disappearance
-spec=combat
+#glyphs=energy/disappearance
+spec=outlaw
 
 head=felblade_hood,id=124263,bonus_id=567,upgrade=2
 neck=choker_of_the_great_betrayer,id=124210,bonus_id=567,enchant_id=5318,upgrade=2
@@ -60,7 +60,7 @@ timeofday=night
 role=attack
 position=back
 talents=2000032
-glyphs=energy/hemorrhaging_veins/vanish
+#glyphs=energy/hemorrhaging_veins/vanish
 spec=subtlety
 
 head=felblade_hood,id=124263,bonus_id=567,upgrade=2

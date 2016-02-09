@@ -16,7 +16,7 @@ spec=unholy
 role=attack
 position=back
 talents=2001002
-glyphs=
+#glyphs=
 head=hardened_greathelm,id=113910,bonus_id=567
 neck=thogars_serrated_chain,id=113959,bonus_id=567,enchant=gift_of_mastery
 shoulders=ogreskull_boneplate_pauldrons,id=115536,bonus_id=567
@@ -43,7 +43,7 @@ spec=frost
 role=attack
 position=back
 talents=2001002
-glyphs=
+#glyphs=
 head=ogreskull_boneplate_greathelm,id=115539,bonus_id=567
 neck=thogars_serrated_chain,id=113959,bonus_id=567,enchant=gift_of_mastery
 shoulders=overdriven_spaulders,id=113990,bonus_id=567
@@ -70,7 +70,7 @@ spec=frost
 role=attack
 position=back
 talents=2001002
-glyphs=
+#glyphs=
 head=ogreskull_boneplate_greathelm,id=115539,bonus_id=567
 neck=thogars_serrated_chain,id=113959,bonus_id=567,enchant=gift_of_multistrike
 shoulders=ogreskull_boneplate_pauldrons,id=115536,bonus_id=567

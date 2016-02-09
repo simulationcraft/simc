@@ -106,7 +106,7 @@ Spell Level      : 16
 Range            : 5 yards
 Cooldown         : 0.5 seconds
 Stance Mask      : 0x20000000
-Affecting spells : Glyph of Pick Pocket (58017), Pickpocketer's Handbook (168798)
+Affecting spells : Pickpocketer's Handbook (168798)
 Attributes       : ....x... ........ x....... ........   .....x.. ....x... .x...x.. ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -170,7 +170,6 @@ Spell Level      : 28
 Range            : 30 yards
 GCD              : 1 seconds
 Cooldown         : 30 seconds
-Affecting spells : Glyph of Distract (58032)
 Attributes       : ....x... ........ ..x..... ......x.   .....x.. x.x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -239,7 +238,7 @@ Class            : Assassination Combat Subtlety Rogue
 School           : Physical
 Spell Level      : 5
 Duration         : Aura (infinite)
-Cooldown         : 6 seconds
+Cooldown         : 2 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
@@ -274,8 +273,7 @@ Class            : Rogue
 School           : Physical
 Spell Level      : 24
 Range            : 5 yards
-Cast Time        : 5 seconds
-Affecting spells : Glyph of Pick Lock (58027)
+Cast Time        : 1.5 seconds
 Attributes       : ....x... ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -320,7 +318,7 @@ Class            : Assassination Combat Subtlety Rogue
 School           : Physical
 Spell Level      : 32
 Cooldown         : 120 seconds
-Affecting spells : Glyph of Blurred Speed (58039), Enhanced Vanish (157666), Item - Rogue T18 Subtlety 2P Bonus (186278)
+Affecting spells : Enhanced Vanish (157666), Item - Rogue T18 Subtlety 2P Bonus (186278)
 Attributes       : ....x... ........ x.x.x... ...x.x..   .....x.. ..x..... ........ ........ 
                  : .xx..... ........ ........ ........   ........ ........ xxx..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -342,7 +340,6 @@ Name             : Safe Fall (Passive) (id=1860) [Spell Family (8), Passive, Hid
 Class            : Rogue
 School           : Physical
 Spell Level      : 48
-Affecting spells : Glyph of Safe Fall (58033)
 Attributes       : ....x.xx ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -505,12 +502,12 @@ Name             : Deadly Poison (id=2823) [Spell Family (8)]
 Class            : Assassination Rogue
 School           : Physical
 Spell Level      : 10
-Cast Time        : 3 seconds
+Cast Time        : 1.5 seconds
 Duration         : 3600 seconds
 Proc Chance      : 30%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
-Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Envenom (32645), Glyph of Poisons (58038), Mastery: Potent Poisons (76803), Vendetta (79140), Poisoned Knife (185565), Surge of Toxins (192425), Master Poisoner (196864), Numbing Poison (200803)
+Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Envenom (32645), Mastery: Potent Poisons (76803), Vendetta (79140), Poisoned Knife (185565), Surge of Toxins (192425), Master Poisoner (196864), Numbing Poison (200803)
 Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ...xx... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -564,12 +561,12 @@ Name             : Crippling Poison (id=3408) [Spell Family (8)]
 Class            : Assassination Rogue
 School           : Physical
 Spell Level      : 19
-Cast Time        : 3 seconds
+Cast Time        : 1.5 seconds
 Duration         : 3600 seconds
 Proc Chance      : 50%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
-Affecting spells : Blade Flurry (13877), Envenom (32645), Glyph of Poisons (58038), Mastery: Potent Poisons (76803), Vendetta (79140), Poisoned Knife (185565), Master Poisoner (196864)
+Affecting spells : Blade Flurry (13877), Envenom (32645), Mastery: Potent Poisons (76803), Vendetta (79140), Poisoned Knife (185565), Master Poisoner (196864)
 Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ...xx... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -650,7 +647,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Owlkin Frenzy (157228), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Warrior of Elune (202425), Solar Stabbing (202426), Blessing of Elune (202737)
+Affecting spells : Incarnation: Chosen of Elune (102560), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Owlkin Frenzy (157228), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Warrior of Elune (202425), Solar Stabbing (202426), Blessing of Elune (202737)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -757,12 +754,12 @@ Name             : Wound Poison (id=8679) [Spell Family (8)]
 Class            : Assassination Rogue
 School           : Physical
 Spell Level      : 25
-Cast Time        : 3 seconds
+Cast Time        : 1.5 seconds
 Duration         : 3600 seconds
 Proc Chance      : 30%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
-Affecting spells : Improved Poisons (14117), Envenom (32645), Glyph of Poisons (58038), Mastery: Potent Poisons (76803), Vendetta (79140), Poisoned Knife (185565), Surge of Toxins (192425), Master Poisoner (196864), Numbing Poison (200803)
+Affecting spells : Improved Poisons (14117), Envenom (32645), Mastery: Potent Poisons (76803), Vendetta (79140), Poisoned Knife (185565), Surge of Toxins (192425), Master Poisoner (196864), Numbing Poison (200803)
 Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ...xx... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -804,7 +801,7 @@ School           : Physical
 Spell Level      : 24
 Duration         : 3 seconds
 Stance Mask      : 0x20000000
-Affecting spells : Nightstalker (14062), Glyph of Blurred Speed (58039), Enhanced Vanish (157666), Item - Rogue T18 Subtlety 2P Bonus (186278), Into the Fray <NNF> (196922), Acrobatic Strikes (196924)
+Affecting spells : Nightstalker (14062), Enhanced Vanish (157666), Item - Rogue T18 Subtlety 2P Bonus (186278), Into the Fray <NNF> (196922), Acrobatic Strikes (196924)
 Attributes       : ....x... x....... x.x.x... .x.x....   .....x.. ..x..... ........ ........ 
                  : .x...... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1000,7 +997,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 20 seconds
 Proc Chance      : 101%
-Affecting spells : Glyph of Hemorrhage (56807), Vendetta (79140), Shadow Blades (121471), Silent Blades (145193), Numbing Poison (200803)
+Affecting spells : Vendetta (79140), Shadow Blades (121471), Silent Blades (145193), Numbing Poison (200803)
 Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   .x...... ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1135,7 +1132,7 @@ Name             : Fleet Footed (Passive) (id=31209) [Spell Family (8), Passive]
 Class            : Rogue
 School           : Physical
 Spell Level      : 62
-Affecting spells : Catwalk (197241)
+Affecting spells : Catwalk (197241), Catwalk (210144), Catwalk (210145), Catwalk (210146), Catwalk (210147), Catwalk (210148)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1190,7 +1187,6 @@ Physical damage taken reduced by $w3%.][]
 Name             : Cheat Death (Passive Talent) (id=31230) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
-Affecting spells : Glyph of Decoy (56800)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ...x.... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1323,6 +1319,7 @@ School           : Physical
 Spell Level      : 13
 Range            : 25 yards
 Duration         : 2 seconds
+Cooldown         : 1 seconds
 Charges          : 1 (30 seconds cooldown)
 Attributes       : ....x... ........ ........ .....x..   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx...... ........ 
@@ -1486,41 +1483,22 @@ Effects          :
 #1 (id=49563)    : Create Item (24)
                    Base Value: 1 | Scaled Value: 1
 
-Name             : Glyph of Decoy (id=56800) [Spell Family (8), Passive, Hidden] 
+Name             : Detection (id=56814) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
-Proc Chance      : 100%
-Proc Flags       : ....x... ........ ........ ........ 
-                 : Yellow Melee
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+GCD              : 1 seconds
+Duration         : 30 seconds
+Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
 Effects          :
-#1 (id=49924)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5
-                   Affected Spells: Cheat Death (31230), Will of the Necropolis (206967)
-Description      : When you Vanish, you leave behind a brief illusion that very closely resembles you.
-
-Name             : Glyph of Hemorrhage (Subtlety) (id=56807) [Spell Family (8), Passive, Hidden] 
-Class            : Rogue
-School           : Physical
-Proc Chance      : 101%
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=49932)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | Misc Value: 23 | Trigger Spell: 89775
-                   Affected Spells: Hemorrhage (16511)
-Description      : Your Hemorrhage ability only causes lingering damage over time to targets that were already afflicted by a Bleed effect.
+#1 (id=49940)    : Apply Aura (6) | Invisibility Detection (19)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 5
+Description      : Focus intently on trying to detect certain creatures.
+Tooltip          : Detecting certain creatures.
 
 Name             : Decoy (id=57141) 
 Class            : Rogue
@@ -1603,102 +1581,6 @@ Effects          :
 #2 (id=211071)   : Weapon Damage% (31)
                    Base Value: 100 | Scaled Value: 1
 Description      : $@spelldesc51690
-
-Name             : Glyph of Pick Pocket (id=58017) [Spell Family (8), Passive, Hidden] 
-Class            : Rogue
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=51319)    : Apply Aura (6) | Add Flat Modifier: Spell Range (107)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 5
-                   Affected Spells: Pick Pocket (921), Pick Pocket (192986)
-Description      : Increases the range of your Pick Pocket ability by $58017s1 yards.
-
-Name             : Glyph of Pick Lock (id=58027) [Spell Family (8), Passive, Hidden] 
-Class            : Rogue
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=51331)    : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 10
-                   Affected Spells: Pick Lock (1804)
-Description      : Reduces the cast time of your Pick Lock ability by $58027s1%.
-
-Name             : Glyph of Distract (id=58032) [Spell Family (8), Passive, Hidden] 
-Class            : Rogue
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=51336)    : Apply Aura (6) | Add Flat Modifier: Spell Range (107)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 5
-                   Affected Spells: Distract (1725)
-Description      : Increases the range of your Distract ability by $58032s1 yards.
-
-Name             : Glyph of Safe Fall (id=58033) [Spell Family (8), Passive, Hidden] 
-Class            : Rogue
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=51337)    : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 3
-                   Affected Spells: Safe Fall (1860)
-Description      : Increases the distance your Safe Fall ability allows you to fall without taking damage.
-
-Name             : Glyph of Poisons (id=58038) [Spell Family (8), Passive, Hidden] 
-Class            : Rogue
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=51342)    : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 10
-                   Affected Spells: Deadly Poison (2823), Crippling Poison (3408), Wound Poison (8679), Leeching Poison (108211), Paralytic Poison (200800), Numbing Poison (200802)
-Description      : You apply poisons to your weapons $58038s1% faster.
-
-Name             : Glyph of Blurred Speed (id=58039) [Spell Family (8), Passive, Hidden] 
-Class            : Rogue
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=51343)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 23
-                   Affected Spells: Vanish (1856), Vanish (11327)
-Description      : Enables you to walk on water while your Sprint ability is active.
 
 Name             : Distract (id=58254) 
 Class            : Rogue
@@ -1838,7 +1720,6 @@ Name             : Killing Spree (id=61851) [Spell Family (8), Hidden]
 Class            : Rogue
 School           : Physical
 Duration         : 3 seconds
-Affecting spells : Glyph of Killing Spree (63252)
 Attributes       : ....x..x x....... x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   x....... ........ xx...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1852,22 +1733,6 @@ Effects          :
 #2 (id=55782)    : Apply Aura (6) | Unknown effect sub type (147)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2053
 Description      : Step through the shadows from enemy to enemy within 10 yards, attacking an enemy every .5 secs with both weapons until 5 assaults are made.  Can hit the same target multiple times.  Cannot hit invisible or stealthed targets.
-
-Name             : Glyph of Killing Spree (Combat) (id=63252) [Spell Family (8), Passive, Hidden] 
-Class            : Rogue
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=57366)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Killing Spree (61851)
-Description      : Your Killing Spree returns you to your starting location when the effect ends.
 
 Name             : Glyph of Disguise (id=63268) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
@@ -1902,6 +1767,7 @@ Description      : $@spelldesc63252
 Name             : Disguise (id=63899) 
 Class            : Rogue
 School           : Physical
+Cast Time        : 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1911,6 +1777,7 @@ Attributes       : ........ x....... ........ ....x...   ........ ........ .x...
 Effects          :
 #1 (id=58102)    : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 733
+Description      : $@spelldesc63268
 
 Name             : Viciousness (Racial Passive) (id=68975) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
@@ -2266,9 +2133,9 @@ Description      : Abilities cost $112942s1% less Energy while you are stealthed
 Name             : Leeching Poison (id=108211) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
-Cast Time        : 3 seconds
+Cast Time        : 1.5 seconds
 Duration         : 3600 seconds
-Affecting spells : Blade Flurry (13877), Envenom (32645), Glyph of Poisons (58038), Poisoned Knife (185565)
+Affecting spells : Blade Flurry (13877), Envenom (32645), Poisoned Knife (185565)
 Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ...xx... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -2538,23 +2405,6 @@ Effects          :
 #1 (id=155212)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 5 | Scaled Value: 5
 Description      : Haste increased by $s1%.
-
-Name             : Glyph of Detection (id=125044) [Spell Family (8), Passive] 
-Class            : Rogue
-School           : Physical
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=158432)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 23
-Description      : Teaches you the ability Detection.
-
-Focus intently on trying to detect certain creatures.
 
 Name             : Agile Retinal Armor (id=127118) 
 Class            : Rogue, Monk, Druid
@@ -2918,38 +2768,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 0 (avg=0.146) | Misc Value: 33554432
 Description      : $@spelldesc145210
 Tooltip          : Mastery increased by $s1.
-
-Name             : Glyph of the Headhunter (id=146960) [Spell Family (8), Passive, Hidden] 
-Class            : Rogue
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=198907)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 121733 | Misc Value 2: 0x24155
-#2 (id=200689)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 26679 | Misc Value 2: 0x24520
-Description      : Your Throw and Deadly Throw abilities will now throw axes regardless of your currently equipped weapon.
-
-Name             : Glyph of Improved Distraction (id=146961) [Spell Family (8), Passive, Hidden] 
-Class            : Rogue
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=198908)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 11
-Description      : Distract now summons a decoy at the target location.
 
 Name             : Headhunting (id=148075) 
 Class            : Rogue
@@ -3790,7 +3608,7 @@ Name             : Grappling Hook (id=195457) [Spell Family (8)]
 Class            : Rogue
 School           : Physical
 Spell Level      : 12
-Range            : 25 yards
+Range            : 40 yards
 Cooldown         : 30 seconds
 Attributes       : ....x... ........ ........ .....x..   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx...... ........ 
@@ -3828,7 +3646,7 @@ Description      : Finishing move that disembowels the target, causing damage pe
    2 points: ${$<mult>*$m1*2} damage
    3 points: ${$<mult>*$m1*3} damage
    4 points: ${$<mult>*$m1*4} damage
-   5 points: ${$<mult>*$m1*5}?s193531[
+   5 points: ${$<mult>*$m1*5} damage$?s193531[
    6 points: ${$<mult>*$m1*6} damage][]
 Variables        : $mult=${(1+$76808m1/100)*(1+$@versadmg)}
 
@@ -3901,6 +3719,7 @@ Internal Cooldown: 3 seconds
 Proc Chance      : 50%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
+Affecting spells : Fortune's Bite (197369)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4132,7 +3951,7 @@ GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 180 seconds
 Proc Chance      : 101%
-Affecting spells : Glyph of Enslave Demon (58107), Grimoire of Convert Demon (168800)
+Affecting spells : Grimoire of Convert Demon (168800)
 Attributes       : ........ ........ x....... ......x.   x....... ........ .x...... ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ...x.... ........ .....x..   .......x x....... ........ ........ 
@@ -4232,6 +4051,7 @@ Spell Level      : 25
 Range            : 20 yards
 GCD              : 1 seconds
 Velocity         : 50 yards/sec
+Cooldown         : 20 seconds
 Affecting spells : Deeper Strategem (193531), Alacrity (193539), Tangled Shadow (200778), Fatebringer (202524)
 Attributes       : ....x... ........ x.....x. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4251,6 +4071,7 @@ Description      : Finishing move that deals damage with your pistol and stuns t
    4 points: ${$AP*0.35*4*$<mult>} damage, 4 sec
    5 points: ${$AP*0.35*5*$<mult>} damage, 5 sec$?s193531[
    6 points: ${$AP*0.35*6*$<mult>} damage, 6 sec][]
+Tooltip          : Stunned.
 Variables        : $mult=$?s76808[${((100+$76808m1))/100*(1+$@versadmg)}]$?s84601[${1.10*(1+$@versadmg)}][${1.00*(1+$@versadmg)}]
 
 Name             : Swordmaster (Passive Talent) (id=200733) [Spell Family (8), Passive] 
@@ -4295,6 +4116,7 @@ Resource         : 35 Energy
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1 seconds
+Affecting spells : The Quiet Knife (197231)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4305,7 +4127,7 @@ Effects          :
 #1 (id=295616)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000
 #2 (id=295617)   : Weapon Damage% (31)
-                   Base Value: 315 | Scaled Value: 3.15 | SP Coefficient: 1.00000
+                   Base Value: 260 | Scaled Value: 2.6 | SP Coefficient: 1.00000
 #3 (id=295618)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points
 Description      : Infuse your weapon with Shadow energies and stab the target, causing $sw2 Shadow damage. Awards $s3 combo $lpoint:points;.
@@ -4347,9 +4169,9 @@ Description      : Nightblade now decreases the target's movement speed by an ad
 Name             : Paralytic Poison (id=200800) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
-Cast Time        : 3 seconds
+Cast Time        : 1.5 seconds
 Duration         : 3600 seconds
-Affecting spells : Blade Flurry (13877), Envenom (32645), Glyph of Poisons (58038), Poisoned Knife (185565)
+Affecting spells : Blade Flurry (13877), Envenom (32645), Poisoned Knife (185565)
 Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ...xx... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -4367,12 +4189,12 @@ Name             : Numbing Poison (id=200802) [Spell Family (8)]
 Class            : Rogue
 School           : Physical
 Spell Level      : 10
-Cast Time        : 3 seconds
+Cast Time        : 1.5 seconds
 Duration         : 3600 seconds
 Proc Chance      : 20%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
-Affecting spells : Envenom (32645), Glyph of Poisons (58038), Poisoned Knife (185565)
+Affecting spells : Envenom (32645), Poisoned Knife (185565)
 Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ...xx... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -4472,5 +4294,19 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50
 Description      : $@spelldesc195452
 Tooltip          : Movement speed slowed by $s1%.
+
+Name             : Detection (id=210108) [Spell Family (8), Passive] 
+Class            : Rogue
+School           : Physical
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=311072)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 23
 
 

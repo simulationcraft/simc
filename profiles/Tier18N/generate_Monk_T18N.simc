@@ -5,7 +5,7 @@ race=blood_elf
 role=dps
 position=back
 talents=0230023
-glyphs=touch_of_death,blackout_kick
+#glyphs=touch_of_death,blackout_kick
 spec=windwalker
 
 head=mask_of_the_hurricanes_eye,id=124262
@@ -33,7 +33,7 @@ race=blood_elf
 role=dps
 position=back
 talents=0230023
-glyphs=touch_of_death,blackout_kick
+#glyphs=touch_of_death,blackout_kick
 spec=windwalker
 
 head=mask_of_the_hurricanes_eye,id=124262
@@ -61,7 +61,7 @@ race=blood_elf
 role=dps
 position=back
 talents=0220022
-glyphs=touch_of_death,blackout_kick
+#glyphs=touch_of_death,blackout_kick
 spec=windwalker
 
 head=mask_of_the_hurricanes_eye,id=124262
@@ -90,7 +90,7 @@ race=blood_elf
 role=dps
 position=back
 talents=0220022
-glyphs=touch_of_death,blackout_kick
+#glyphs=touch_of_death,blackout_kick
 spec=windwalker
 
 head=mask_of_the_hurricanes_eye,id=124262

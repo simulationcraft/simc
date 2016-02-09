@@ -12,7 +12,7 @@ spec=unholy
 role=attack
 position=back
 talents=2001003
-glyphs=
+#glyphs=
 head=rivet-sealed_casque,id=109989,bonus_id=524
 neck=bloodmist_pendant,id=109962,bonus_id=524,enchant=gift_of_multistrike
 shoulders=gutcrusher_shoulderplates,id=109946,bonus_id=524
@@ -38,7 +38,7 @@ spec=frost
 role=attack
 position=back
 talents=2001002
-glyphs=
+#glyphs=
 head=rivet-sealed_casque,id=109989,bonus_id=524
 neck=bloodmist_pendant,id=109962,bonus_id=524,enchant=gift_of_mastery
 shoulders=gutcrusher_shoulderplates,id=109946,bonus_id=524
@@ -63,7 +63,7 @@ spec=frost
 role=attack
 position=back
 talents=2001002
-glyphs=
+#glyphs=
 head=rivet-sealed_casque,id=109989,bonus_id=524
 neck=bloodmist_pendant,id=109962,bonus_id=524,enchant=gift_of_mastery
 shoulders=gutcrusher_shoulderplates,id=109946,bonus_id=524

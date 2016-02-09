@@ -18,7 +18,7 @@ role=dps
 position=back
 talents=0230023
 spec=windwalker
-glyphs=touch_of_death,blackout_kick
+#glyphs=touch_of_death,blackout_kick
 
 head=helm_of_the_somber_gaze,id=115556
 neck=darklight_necklace,id=113865,enchant=gift_of_multistrike
@@ -46,7 +46,7 @@ role=dps
 position=back
 talents=0230023
 spec=windwalker
-glyphs=touch_of_death,blackout_kick
+#glyphs=touch_of_death,blackout_kick
 
 head=helm_of_the_somber_gaze,id=115556
 neck=darklight_necklace,id=113865,enchant=gift_of_multistrike
@@ -73,7 +73,7 @@ spec=brewmaster
 role=tank
 position=front
 talents=0130122
-glyphs=fortifying_brew,expel_harm,fortuitous_spheres
+#glyphs=fortifying_brew,expel_harm,fortuitous_spheres
 
 head=sorkas_nightshade_cowl,id=113978
 neck=choker_of_bestial_force,id=113952,enchant_id=5319
@@ -101,7 +101,7 @@ spec=brewmaster
 role=tank
 position=front
 talents=0130123
-glyphs=fortifying_brew,expel_harm,fortuitous_spheres
+#glyphs=fortifying_brew,expel_harm,fortuitous_spheres
 
 head=sorkas_nightshade_cowl,id=113978
 neck=choker_of_bestial_force,id=113952,enchant_id=5319
@@ -129,7 +129,7 @@ spec=brewmaster
 role=tank
 position=front
 talents=0130122
-glyphs=fortifying_brew,expel_harm,fortuitous_spheres
+#glyphs=fortifying_brew,expel_harm,fortuitous_spheres
 
 head=sorkas_nightshade_cowl,id=113978
 neck=choker_of_bestial_force,id=113952,enchant_id=5319
@@ -156,7 +156,7 @@ spec=brewmaster
 role=tank
 position=front
 talents=0130123
-glyphs=fortifying_brew,expel_harm,fortuitous_spheres
+#glyphs=fortifying_brew,expel_harm,fortuitous_spheres
 
 head=sorkas_nightshade_cowl,id=113978
 neck=choker_of_bestial_force,id=113952,enchant_id=5319

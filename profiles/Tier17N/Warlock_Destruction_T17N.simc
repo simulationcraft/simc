@@ -20,78 +20,11 @@ spec=destruction
 
 actions.precombat=flask,type=greater_draenic_intellect_flask
 actions.precombat+=/food,type=pickled_eel
-actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
-actions.precombat+=/summon_pet,if=!talent.demonic_servitude.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.grimoire_of_sacrifice.down)
-actions.precombat+=/summon_doomguard,if=talent.demonic_servitude.enabled&active_enemies<9
-actions.precombat+=/summon_infernal,if=talent.demonic_servitude.enabled&active_enemies>=9
-actions.precombat+=/snapshot_stats
-actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled&!talent.demonic_servitude.enabled
 actions.precombat+=/potion,name=draenic_intellect
-actions.precombat+=/incinerate
 
 # Executed every time the actor is available.
 
-actions=summon_doomguard,if=!talent.demonic_servitude.enabled&spell_targets.infernal_awakening<9
-actions+=/summon_infernal,if=!talent.demonic_servitude.enabled&spell_targets.infernal_awakening>=9
-actions+=/potion,name=draenic_intellect,if=target.time_to_die<=25|buff.dark_soul.remains>10|(glyph.dark_soul.enabled&buff.dark_soul.remains)
-actions+=/berserking
-actions+=/blood_fury
-actions+=/arcane_torrent
-actions+=/mannoroths_fury
-actions+=/service_pet,if=talent.grimoire_of_service.enabled&(target.time_to_die>120|target.time_to_die<=25|(buff.dark_soul.remains&target.health.pct<20))
-actions+=/dark_soul,if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(charges=2|target.time_to_die<40|trinket.proc.any.react|trinket.stacking_proc.any.react))
-actions+=/run_action_list,name=single_target,if=spell_targets.fire_and_brimstone<6&(!talent.charred_remains.enabled|spell_targets.rain_of_fire<4)
-actions+=/run_action_list,name=aoe,if=spell_targets.fire_and_brimstone>=6|(talent.charred_remains.enabled&spell_targets.rain_of_fire>=4)
-
-actions.single_target=havoc,if=raid_event.adds.exists
-actions.single_target+=/havoc,target=2,if=!raid_event.adds.exists
-actions.single_target+=/shadowburn,cycle_targets=1,if=raid_event.adds.exists&sim.target!=target&talent.charred_remains.enabled&target.time_to_die<10
-actions.single_target+=/shadowburn,if=talent.charred_remains.enabled&target.time_to_die<10
-actions.single_target+=/kiljaedens_cunning,if=(talent.cataclysm.enabled&!cooldown.cataclysm.remains)
-actions.single_target+=/kiljaedens_cunning,moving=1,if=!talent.cataclysm.enabled
-actions.single_target+=/cataclysm,if=spell_targets.cataclysm>1
-actions.single_target+=/fire_and_brimstone,if=buff.fire_and_brimstone.down&dot.immolate.remains<=action.immolate.cast_time&(cooldown.cataclysm.remains>action.immolate.cast_time|!talent.cataclysm.enabled)&spell_targets.fire_and_brimstone>4
-actions.single_target+=/immolate,cycle_targets=1,if=(sim.target=target|!buff.havoc.remains|!raid_event.adds.exists)&remains<=cast_time&(cooldown.cataclysm.remains>cast_time|!talent.cataclysm.enabled)
-actions.single_target+=/cancel_buff,name=fire_and_brimstone,if=buff.fire_and_brimstone.up&dot.immolate.remains-action.immolate.cast_time>(dot.immolate.duration*0.3)
-actions.single_target+=/shadowburn,cycle_targets=1,if=raid_event.adds.exists&sim.target!=target&buff.havoc.remains
-actions.single_target+=/chaos_bolt,cycle_targets=1,if=raid_event.adds.exists&sim.target!=target&buff.havoc.remains>cast_time&buff.havoc.stack>=3&target.time_to_die>=12
-actions.single_target+=/shadowburn,if=!raid_event.adds.exists&buff.havoc.remains
-actions.single_target+=/chaos_bolt,if=!raid_event.adds.exists&buff.havoc.remains>cast_time&buff.havoc.stack>=3
-actions.single_target+=/conflagrate,cycle_targets=1,if=raid_event.adds.exists&sim.target!=target&buff.havoc.remains<=gcd*3&charges=2
-actions.single_target+=/conflagrate,if=charges=2
-actions.single_target+=/cataclysm
-actions.single_target+=/rain_of_fire,if=remains<=tick_time&(spell_targets.rain_of_fire>4|(buff.mannoroths_fury.up&spell_targets.rain_of_fire>2))
-actions.single_target+=/chaos_bolt,if=talent.charred_remains.enabled&spell_targets.fire_and_brimstone>1&target.health.pct>20
-actions.single_target+=/chaos_bolt,if=talent.charred_remains.enabled&buff.backdraft.stack<3&burning_ember>=2.5
-actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&(burning_ember>=3.5|buff.dark_soul.up|target.time_to_die<20)
-actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&set_bonus.tier17_2pc=1&burning_ember>=2.5
-actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&buff.archmages_greater_incandescence_int.react&buff.archmages_greater_incandescence_int.remains>cast_time
-actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time
-actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&trinket.proc.crit.react&trinket.proc.crit.remains>cast_time
-actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&trinket.stacking_proc.multistrike.react>=8&trinket.stacking_proc.multistrike.remains>=cast_time
-actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&trinket.proc.multistrike.react&trinket.proc.multistrike.remains>cast_time
-actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&trinket.proc.versatility.react&trinket.proc.versatility.remains>cast_time
-actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&trinket.proc.mastery.react&trinket.proc.mastery.remains>cast_time
-actions.single_target+=/fire_and_brimstone,if=buff.fire_and_brimstone.down&dot.immolate.remains-action.immolate.cast_time<=(dot.immolate.duration*0.3)&spell_targets.fire_and_brimstone>4
-actions.single_target+=/immolate,cycle_targets=1,if=(sim.target=target|!buff.havoc.remains|!raid_event.adds.exists)&remains-cast_time<=(duration*0.3)
-actions.single_target+=/conflagrate,cycle_targets=1,if=raid_event.adds.exists&sim.target!=target&buff.havoc.remains<=gcd*3&buff.backdraft.stack=0
-actions.single_target+=/conflagrate,if=buff.backdraft.stack=0
-actions.single_target+=/incinerate,cycle_targets=1,if=raid_event.adds.exists&sim.target!=target&buff.havoc.remains<=action.incinerate.cast_time*3
-actions.single_target+=/incinerate
-
-actions.aoe=rain_of_fire,if=!talent.charred_remains.enabled&remains<=tick_time
-actions.aoe+=/havoc,target=2,if=!talent.charred_remains.enabled&buff.fire_and_brimstone.down
-actions.aoe+=/shadowburn,if=!talent.charred_remains.enabled&buff.havoc.remains
-actions.aoe+=/chaos_bolt,if=!talent.charred_remains.enabled&buff.havoc.remains>cast_time&buff.havoc.stack>=3
-actions.aoe+=/kiljaedens_cunning,if=(talent.cataclysm.enabled&!cooldown.cataclysm.remains)
-actions.aoe+=/kiljaedens_cunning,moving=1,if=!talent.cataclysm.enabled
-actions.aoe+=/cataclysm
-actions.aoe+=/fire_and_brimstone,if=buff.fire_and_brimstone.down
-actions.aoe+=/immolate,if=buff.fire_and_brimstone.up&!dot.immolate.ticking&(burning_ember>=2|!talent.charred_remains.enabled)
-actions.aoe+=/conflagrate,if=buff.fire_and_brimstone.up&charges=2&(burning_ember>=2|!talent.charred_remains.enabled)
-actions.aoe+=/immolate,if=buff.fire_and_brimstone.up&dot.immolate.remains-action.immolate.cast_time<=(dot.immolate.duration*0.3)&(burning_ember>=2|!talent.charred_remains.enabled)
-actions.aoe+=/chaos_bolt,if=talent.charred_remains.enabled&buff.fire_and_brimstone.up&burning_ember>=3
-actions.aoe+=/incinerate
+actions=life_tap
 
 head=shadow_councils_hood,id=115586
 neck=gruuls_lip_ring,id=113872,enchant_id=5319
@@ -112,12 +45,11 @@ main_hand=blackhand_doomstaff,id=113988,enchant_id=5384
 # Gear Summary
 # gear_ilvl=670.67
 # gear_stamina=3589
-# gear_intellect=2956
+# gear_intellect=2824
 # gear_spell_power=1389
 # gear_crit_rating=944
 # gear_haste_rating=747
-# gear_mastery_rating=1520
-# gear_multistrike_rating=106
+# gear_mastery_rating=1351
 # gear_versatility_rating=78
 # gear_armor=727
 # set_bonus=tier17_2pc=1

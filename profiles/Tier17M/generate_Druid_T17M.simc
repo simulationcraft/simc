@@ -42,7 +42,7 @@ spec=feral
 role=attack
 position=back
 talents=3002002
-glyphs=savage_roar
+#glyphs=savage_roar
 head=acidic_jaws,id=113880,bonus_id=567
 neck=darklight_necklace,id=113865,bonus_id=567,enchant=gift_of_critical_strike
 shoulder=living_wood_spaulders,id=115544,bonus_id=567
@@ -68,7 +68,7 @@ spec=feral
 role=attack
 position=back
 talents=3002002
-glyphs=savage_roar
+#glyphs=savage_roar
 head=sorkas_nightshade_cowl,id=113978,bonus_id=567
 neck=engineers_grounded_gorget,id=113892,bonus_id=567,enchant=gift_of_mastery
 shoulder=living_wood_spaulders,id=115544,bonus_id=567

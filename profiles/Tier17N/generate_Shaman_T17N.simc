@@ -19,7 +19,7 @@ role=spell
 position=back
 professions=blacksmithing=600/engineering=600
 talents=0003011
-glyphs=chain_lightning
+#glyphs=chain_lightning
 head=windspeakers_faceguard,id=115579
 neck=choker_of_bloody_flame,id=120077,enchant=gift_of_multistrike
 shoulders=windspeakers_mantle,id=115576
@@ -48,7 +48,7 @@ role=attack
 position=back
 professions=engineering=600/enchanting=600
 talents=0003012
-glyphs=chain_lightning/frost_shock
+#glyphs=chain_lightning/frost_shock
 head=blastproof_cowl,id=113891
 neck=engineers_grounded_gorget,id=113892,enchant=gift_of_haste
 shoulders=windspeakers_mantle,id=115576

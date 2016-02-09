@@ -20,52 +20,11 @@ spec=affliction
 
 actions.precombat=flask,type=greater_draenic_intellect_flask
 actions.precombat+=/food,type=felmouth_frenzy
-actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
-actions.precombat+=/summon_pet,if=!talent.demonic_servitude.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.grimoire_of_sacrifice.down)
-actions.precombat+=/summon_doomguard,if=talent.demonic_servitude.enabled&active_enemies<9
-actions.precombat+=/summon_infernal,if=talent.demonic_servitude.enabled&active_enemies>=9
-actions.precombat+=/snapshot_stats
-actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled&!talent.demonic_servitude.enabled
 actions.precombat+=/potion,name=draenic_intellect
-actions.precombat+=/soulburn,if=talent.soulburn_haunt.enabled
-actions.precombat+=/haunt
 
 # Executed every time the actor is available.
 
-actions=summon_doomguard,if=!talent.demonic_servitude.enabled&spell_targets.infernal_awakening<9
-actions+=/summon_infernal,if=!talent.demonic_servitude.enabled&spell_targets.infernal_awakening>=9
-actions+=/soulburn,if=!dot.agony.ticking&!dot.corruption.ticking&!dot.unstable_affliction.ticking&buff.soulburn.down&time<10&!talent.cataclysm.enabled
-actions+=/soul_swap,if=buff.soulburn.remains&!dot.agony.ticking&!dot.corruption.ticking&!dot.unstable_affliction.ticking&time<10&!talent.cataclysm.enabled
-actions+=/potion,name=draenic_intellect,if=buff.dark_soul.up&(trinket.proc.any.react|trinket.stacking_proc.any.react)
-actions+=/berserking,if=(target.time_to_die<=10|buff.dark_soul.up|set_bonus.tier18_4pc=0)
-actions+=/blood_fury
-actions+=/arcane_torrent
-actions+=/mannoroths_fury
-actions+=/service_pet,if=talent.grimoire_of_service.enabled&(target.time_to_die>120|target.time_to_die<=25|(buff.dark_soul.remains&target.health.pct<20))
-actions+=/dark_soul,if=(set_bonus.tier18_4pc=1&dot.haunt.remains<=gcd)|!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(charges=2|target.time_to_die<40|trinket.proc.any.react|trinket.stacking_proc.any.react))
-actions+=/kiljaedens_cunning,if=(talent.cataclysm.enabled&!cooldown.cataclysm.remains)
-actions+=/kiljaedens_cunning,moving=1,if=!talent.cataclysm.enabled
-actions+=/cataclysm
-actions+=/agony,cycle_targets=1,if=remains<=gcd
-actions+=/corruption,cycle_targets=1,if=remains<=gcd
-actions+=/unstable_affliction,cycle_targets=1,if=remains<=cast_time
-actions+=/soulburn,cycle_targets=1,if=!talent.soulburn_haunt.enabled&spell_targets.seed_of_corruption_aoe>2&dot.corruption.remains<=dot.corruption.duration*0.3
-actions+=/seed_of_corruption,cycle_targets=1,if=!talent.soulburn_haunt.enabled&spell_targets.seed_of_corruption_aoe>2&!dot.seed_of_corruption.remains&buff.soulburn.remains
-actions+=/soulburn,if=shard_react&soul_shard>=2&talent.soulburn_haunt.enabled&buff.soulburn.down&(buff.haunting_spirits.remains-action.haunt.cast_time<=buff.haunting_spirits.duration*0.3)
-actions+=/haunt,if=shard_react&!talent.soulburn_haunt.enabled&!in_flight_to_target&(dot.haunt.remains<duration*0.3+cast_time+travel_time|soul_shard=4)&(trinket.proc.any.react|trinket.stacking_proc.any.react>6|buff.dark_soul.up|soul_shard>2|soul_shard*14<=target.time_to_die)&(buff.dark_soul.down|set_bonus.tier18_4pc=0)
-actions+=/haunt,cycle_targets=1,if=shard_react&!in_flight_to_target&buff.dark_soul.remains>cast_time+travel_time&!dot.haunt.ticking&set_bonus.tier18_4pc=1
-actions+=/haunt,if=shard_react&talent.soulburn_haunt.enabled&!in_flight_to_target&((buff.soulburn.up&((buff.haunting_spirits.remains-cast_time<=buff.haunting_spirits.duration*0.3&(dot.haunt.remains-cast_time<=dot.haunt.duration*0.3|set_bonus.tier18_4pc=1&buff.dark_soul.remains))|buff.haunting_spirits.down)))
-actions+=/haunt,if=shard_react&talent.soulburn_haunt.enabled&!in_flight_to_target&soul_shard>2&(dot.haunt.remains<duration*0.3+cast_time+travel_time|soul_shard=4)&(trinket.proc.any.react|trinket.stacking_proc.any.react>6|buff.dark_soul.up|soul_shard>2|soul_shard*14<=target.time_to_die)&(buff.dark_soul.down|set_bonus.tier18_4pc=0)
-actions+=/agony,cycle_targets=1,if=target.time_to_die>16&remains<=(duration*0.3)&((talent.cataclysm.enabled&remains<=(cooldown.cataclysm.remains+action.cataclysm.cast_time))|!talent.cataclysm.enabled)
-actions+=/unstable_affliction,cycle_targets=1,if=target.time_to_die>10&remains-cast_time<=(duration*0.3)&((talent.cataclysm.enabled&remains<=(cooldown.cataclysm.remains+action.cataclysm.cast_time))|!talent.cataclysm.enabled)
-actions+=/seed_of_corruption,cycle_targets=1,if=!talent.soulburn_haunt.enabled&spell_targets.seed_of_corruption_aoe>3&!dot.seed_of_corruption.ticking
-actions+=/corruption,cycle_targets=1,if=target.time_to_die>12&remains<=(duration*0.3)
-actions+=/drain_soul,cycle_targets=1,interrupt=1,if=buff.dark_soul.remains&dot.haunt.ticking&dot.haunt.remains<=dot.haunt.duration*0.3&set_bonus.tier18_4pc=1
-actions+=/life_tap,if=mana.pct<30&buff.dark_soul.down
-actions+=/seed_of_corruption,cycle_targets=1,if=spell_targets.seed_of_corruption_aoe>3&!dot.seed_of_corruption.ticking
-actions+=/drain_soul,interrupt=1,chain=1
-actions+=/agony,cycle_targets=1,moving=1,if=mana.pct>50
-actions+=/life_tap
+actions=life_tap
 
 head=shadow_councils_hood,id=115586
 neck=gruuls_lip_ring,id=113872,enchant_id=5318
@@ -86,12 +45,11 @@ main_hand=infernoflame_staff,id=113869,enchant_id=5337
 # Gear Summary
 # gear_ilvl=670.67
 # gear_stamina=3589
-# gear_intellect=3008
+# gear_intellect=2865
 # gear_spell_power=1389
-# gear_crit_rating=263
-# gear_haste_rating=1568
+# gear_crit_rating=425
+# gear_haste_rating=1293
 # gear_mastery_rating=1354
-# gear_multistrike_rating=162
 # gear_versatility_rating=78
 # gear_armor=727
 # set_bonus=tier17_2pc=1

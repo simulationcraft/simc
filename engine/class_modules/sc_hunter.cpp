@@ -88,7 +88,6 @@ public:
     buff_t* thrill_of_the_hunt;
     buff_t* stampede;
     buff_t* rapid_fire;
-    buff_t* sniper_training;
     buff_t* tier13_4pc;
     buff_t* tier16_2pc;
     buff_t* tier16_4pc;
@@ -3418,6 +3417,7 @@ void hunter_t::init_spells()
   talents.stampede                          = find_talent_spell( "Stampede" );
 
   talents.barrage                           = find_talent_spell( "Barrage" );
+  talents.serpent_sting                     = find_talent_spell( "Serpent Sting" );
 
   talents.exotic_munitions                  = find_talent_spell( "Exotic Munitions" );
   
@@ -3491,6 +3491,7 @@ void hunter_t::init_spells()
   specs.kill_command         = find_specialization_spell( "Kill Command" );
   specs.rapid_fire           = find_specialization_spell( "Rapid Fire" );
   specs.survivalist          = find_specialization_spell( "Survivalist" );
+  specs.lone_wolf            = find_specialization_spell( "Lone Wolf" );
 
   if ( talents.serpent_sting -> ok() )
     active.serpent_sting = new attacks::serpent_sting_t( this );
@@ -3538,7 +3539,7 @@ void hunter_t::create_buffs()
   buffs.bestial_wrath                = buff_creator_t( this, "bestial_wrath", specs.bestial_wrath )
     .cd( timespan_t::zero() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-    buffs.bestial_wrath -> default_value = buffs.bestial_wrath -> data().effectN( 7 ).percent();
+    buffs.bestial_wrath -> default_value = buffs.bestial_wrath -> data().effectN( 1 ).percent();
 
 
   buffs.bestial_wrath -> buff_duration += sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
@@ -3565,10 +3566,6 @@ void hunter_t::create_buffs()
     .add_invalidate( CACHE_ATTACK_HASTE );
 
   buffs.rapid_fire -> cooldown -> duration = timespan_t::zero();
-
-  buffs.sniper_training   = buff_creator_t( this, "sniper_training", mastery.sniper_training )
-                            .duration( timespan_t::from_seconds( mastery.sniper_training -> effectN( 3 ).base_value() ) )
-                            .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.stampede = buff_creator_t( this, 130201, "stampede" ) // To allow action lists to react to stampede, rather than doing it in a roundabout way.
     .activated( true )
@@ -3973,11 +3970,6 @@ void hunter_t::reset()
 void hunter_t::arise()
 {
   player_t::arise();
-
-  if ( mastery.sniper_training -> ok() )
-  {
-    buffs.sniper_training -> trigger();
-  }
 }
 
 // hunter_t::composite_rating_multiplier =====================================
@@ -4058,7 +4050,7 @@ double hunter_t::composite_player_critical_damage_multiplier() const
 {
   double cdm = player_t::composite_player_critical_damage_multiplier();
 
-  if ( buffs.sniper_training -> up() )
+  if ( mastery.sniper_training -> ok() )
   {
     cdm += cache.mastery_value();
   }
@@ -4090,11 +4082,6 @@ double hunter_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.bestial_wrath -> up() )
     m *= 1.0 + buffs.bestial_wrath -> current_value;
-
-  if ( buffs.sniper_training -> up() )
-  {
-    m *= 1.0 + cache.mastery_value();
-  }
 
   if ( longview && specialization() == HUNTER_MARKSMANSHIP )
   {
