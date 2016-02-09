@@ -194,7 +194,7 @@ public:
 
     // Artifact
     buff_t* flame_orb,
-          * highborns_will; //Flame orb driver
+          * highborns_will; // Flame orb driver
 
   } buffs;
 
@@ -3564,13 +3564,32 @@ struct nether_tempest_t : public arcane_mage_spell_t
   }
 };
 
-// Phoenix Flames Spell: TODO - Finish Spell =============================================================
+// Phoenixs Flames Spell: TODO - Finish Spell =============================================================
 
-struct phoenix_flames_t : public fire_mage_spell_t
+struct phoenixs_flames_t : public fire_mage_spell_t
 {
-  phoenix_flames_t( mage_t* p ) :
-    fire_mage_spell_t( "phoenix_flames", p, p -> find_spell( 194466 ) )
-  {}
+  phoenixs_flames_t( mage_t* p, const std::string& options_str ) :
+    fire_mage_spell_t( "phoenixs_flames", p, p -> find_spell( 194466 ) )
+  {
+    parse_options( options_str );
+    aoe = -1;
+    base_aoe_multiplier *= data().effectN( 2 ).sp_coeff() / data().effectN( 1 ).sp_coeff();
+  }
+
+  virtual bool ready() override
+  {
+    if (  !p() -> buffs.flame_orb -> check() )
+      return false;
+
+    return fire_mage_spell_t::ready();
+  }
+
+  virtual void execute() override
+  {
+    fire_mage_spell_t::execute();
+
+    p() -> buffs.flame_orb -> decrement();
+  }
 };
 
 
@@ -3617,8 +3636,6 @@ struct pyroblast_t : public fire_mage_spell_t
     }
 
     base_multiplier *= 1.0 + p -> artifact.pyroclasmic_paranoia.percent();
-
-
   }
 
   virtual action_state_t* new_state() override
@@ -3631,7 +3648,6 @@ struct pyroblast_t : public fire_mage_spell_t
     fire_mage_spell_t::schedule_execute( state );
 
     p() -> buffs.hot_streak -> up();
-
   }
 
   virtual timespan_t execute_time() const override
@@ -3658,7 +3674,6 @@ struct pyroblast_t : public fire_mage_spell_t
     {
       p() -> buffs.hot_streak -> expire();
     }
-
   }
 
   virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
@@ -4458,6 +4473,10 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "water_elemental"   ) return new  summon_water_elemental_t( this, options_str );
   if ( name == "water_jet"         ) return new               water_jet_t( this, options_str );
 
+  // Artifact Specific Spells
+  // Fire
+  if ( name == "phoenixs_flames"   ) return new          phoenixs_flames_t( this, options_str );
+
   // Shared spells
   if ( name == "blink"             ) return new                   blink_t( this, options_str );
   if ( name == "cone_of_cold"      ) return new            cone_of_cold_t( this, options_str );
@@ -4726,14 +4745,6 @@ struct incanters_flow_t : public buff_t
       reverse = false;
   }
 };
-
-/*struct highborns_will_t : public buff_t
-{
-  highborns_will_t( mage_t* p ) :
-    buff_t( buff_creator_t( p, "flame_orb_driver", p -> find_spell( 194462 ) ) // Buff here
-            .duration( p -> sim -> max_time * 3 )
-            .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) { p -> flame_orb ->} )
-};*/
 
 // mage_t::create_buffs =======================================================
 
