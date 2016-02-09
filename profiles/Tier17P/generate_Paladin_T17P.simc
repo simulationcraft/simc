@@ -10,7 +10,7 @@ race=draenei
 role=attack
 spec=retribution
 talents=2112333
-glyphs=54922/54924/57954/89401/115933/146957
+#glyphs=54922/54924/57954/89401/115933/146957
 
 head=gutcrusher_coronet,id=109988,bonus_id=524
 neck=bloodmist_pendant,id=109962,bonus_id=524,enchant_id=5318
@@ -36,7 +36,7 @@ race=blood_elf
 spec=protection
 role=tank
 position=front
-glyphs=focused_shield/divine_protection/final_wrath
+#glyphs=focused_shield/divine_protection/final_wrath
 
 head=verdant_plate_crown,id=109986,bonus_id=524
 neck=reinforced_bloodsteel_gorget,id=109966,bonus_id=524,enchant=gift_of_mastery

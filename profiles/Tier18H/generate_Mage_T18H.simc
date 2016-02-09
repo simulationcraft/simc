@@ -5,7 +5,7 @@ race=gnome
 role=spell
 position=back
 talents=3003222
-glyphs=cone_of_cold
+#glyphs=cone_of_cold
 spec=arcane
 head=demon_princes_ascendant_crown,id=124159,bonus_id=566
 neck=vial_of_immiscible_liquid,id=124212,bonus_id=566,enchant=gift_of_haste
@@ -30,7 +30,7 @@ race=troll
 role=spell
 position=back
 talents=3003322
-glyphs=inferno_blast/combustion/dragons_breath
+#glyphs=inferno_blast/combustion/dragons_breath
 spec=fire
 head=cowl_of_the_arcanic_conclave,id=124160,bonus_id=566
 neck=vial_of_immiscible_liquid,id=124212,bonus_id=566,enchant=gift_of_critical_strike
@@ -55,7 +55,7 @@ race=dwarf
 role=spell
 position=back
 talents=3003222
-glyphs=icy_veins/splitting_ice/cone_of_cold
+#glyphs=icy_veins/splitting_ice/cone_of_cold
 spec=frost
 head=countenance_of_the_revenant,id=124158,bonus_id=566
 neck=choker_of_forbidden_indulgence,id=124391,bonus_id=566,enchant=gift_of_multistrike

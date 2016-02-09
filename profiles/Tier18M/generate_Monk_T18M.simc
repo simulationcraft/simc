@@ -5,7 +5,7 @@ race=blood_elf
 role=dps
 position=back
 talents=0230023
-glyphs=touch_of_death,blackout_kick
+#glyphs=touch_of_death,blackout_kick
 spec=windwalker
 
 head=mask_of_the_hurricanes_eye,id=124262,bonus_id=567,upgrade=2
@@ -33,7 +33,7 @@ race=blood_elf
 role=dps
 position=back
 talents=0230023
-glyphs=touch_of_death,blackout_kick
+#glyphs=touch_of_death,blackout_kick
 spec=windwalker
 
 head=mask_of_the_hurricanes_eye,id=124262,bonus_id=567,upgrade=2
@@ -61,7 +61,7 @@ race=blood_elf
 role=dps
 position=back
 talents=0220022
-glyphs=touch_of_death,blackout_kick
+#glyphs=touch_of_death,blackout_kick
 spec=windwalker
 
 head=mask_of_the_hurricanes_eye,id=124262,bonus_id=567,upgrade=2
@@ -90,7 +90,7 @@ race=blood_elf
 role=dps
 position=back
 talents=0220022
-glyphs=touch_of_death,blackout_kick
+#glyphs=touch_of_death,blackout_kick
 spec=windwalker
 
 head=mask_of_the_hurricanes_eye,id=124262,bonus_id=567,upgrade=2
@@ -117,7 +117,7 @@ race=blood_elf
 role=hybrid
 position=back
 talents=1313323
-glyphs=touch_of_death
+#glyphs=touch_of_death
 spec=mistweaver
 
 head=helm_of_the_somber_gaze,id=115556,bonus_id=567

@@ -15,7 +15,7 @@ race=draenei
 role=attack
 position=back
 talents=2112333
-glyphs=winged_vengeance/templars_verdict/righteous_retreat/fire_from_the_heavens/judgment/mass_exorcism
+#glyphs=winged_vengeance/templars_verdict/righteous_retreat/fire_from_the_heavens/judgment/mass_exorcism
 spec=retribution
  
 head=helmet_of_guiding_light,id=115568,bonus_id=566
@@ -42,7 +42,7 @@ race=blood_elf
 spec=protection
 role=tank
 position=front
-glyphs=focused_shield/divine_protection/final_wrath
+#glyphs=focused_shield/divine_protection/final_wrath
 
 head=helmet_of_guiding_light,id=115568,bonus_id=566
 neck=choker_of_bestial_force,id=113952,bonus_id=566,enchant=gift_of_haste
@@ -69,7 +69,7 @@ save=Paladin_Protection_T17H.simc
 # role=heal
 # position=back
 # talents=2132232
-# glyphs=divinity/protector_of_the_innocent/
+# #glyphs=divinity/protector_of_the_innocent/
 # spec=holy
 # head=helmet_of_guiding_light,id=115568,bonus_id=566
 # neck=feldspars_control_choker,id=113890,bonus_id=566,enchant=gift_of_critical_strike
@@ -95,7 +95,7 @@ save=Paladin_Protection_T17H.simc
 # role=spell
 # position=back
 # talents=1132232
-# glyphs=holy_shock/harsh_words/merciful_wrath
+# #glyphs=holy_shock/harsh_words/merciful_wrath
 # spec=holy
 # head=lavadipped_greathelm,id=113894,bonus_id=567
 # neck=choker_of_bloody_flame,id=120077,bonus_id=567,enchant_id=5320

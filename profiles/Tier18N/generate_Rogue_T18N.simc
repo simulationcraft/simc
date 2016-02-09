@@ -4,7 +4,7 @@ race=blood_elf
 role=attack
 position=back
 talents=3000032
-glyphs=vendetta/energy/disappearance
+#glyphs=vendetta/energy/disappearance
 spec=assassination
 
 head=felblade_hood,id=124263
@@ -32,7 +32,7 @@ timeofday=night
 role=attack
 position=back
 talents=3000021
-glyphs=energy/disappearance
+#glyphs=energy/disappearance
 spec=combat
 
 head=felblade_hood,id=124263
@@ -60,7 +60,7 @@ timeofday=night
 role=attack
 position=back
 talents=2000032
-glyphs=energy/hemorrhaging_veins/vanish
+#glyphs=energy/hemorrhaging_veins/vanish
 spec=subtlety
 
 head=felblade_hood,id=124263

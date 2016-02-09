@@ -13,7 +13,7 @@ spec=elemental
 role=attack
 position=back
 talents=0001011
-glyphs=chain_lightning
+#glyphs=chain_lightning
 head=morningscale_cowl,id=109984,bonus_id=524
 neck=alcs_pendant_of_fiery_dreams,id=109957,bonus_id=524,enchant=gift_of_multistrike
 shoulders=rockhide_shoulderguards,id=109941,bonus_id=524
@@ -40,7 +40,7 @@ spec=enhancement
 role=attack
 position=back
 talents=0003012
-glyphs=chain_lightning/frost_shock
+#glyphs=chain_lightning/frost_shock
 head=rockhide_casque,id=109982,bonus_id=524
 neck=windseal_necklace,id=109953,bonus_id=524,enchant=gift_of_haste
 shoulders=lavalink_spaulders,id=109942,bonus_id=524

@@ -15,7 +15,7 @@ race=draenei
 role=attack
 position=back
 talents=2112333
-glyphs=winged_vengeance/templars_verdict/righteous_retreat/fire_from_the_heavens/judgment/mass_exorcism
+#glyphs=winged_vengeance/templars_verdict/righteous_retreat/fire_from_the_heavens/judgment/mass_exorcism
 spec=retribution
  
 head=helmet_of_guiding_light,id=115568,bonus_id=567
@@ -42,7 +42,7 @@ race=blood_elf
 spec=protection
 role=tank
 position=front
-glyphs=focused_shield/divine_protection/final_wrath
+#glyphs=focused_shield/divine_protection/final_wrath
 
 head=helmet_of_guiding_light,id=115568,bonus_id=567
 neck=choker_of_bestial_force,id=113952,bonus_id=567,enchant=gift_of_haste
@@ -69,7 +69,7 @@ save=Paladin_Protection_T17M.simc
 # role=heal
 # position=back
 # talents=2132232
-# glyphs=divinity/protector_of_the_innocent/
+# #glyphs=divinity/protector_of_the_innocent/
 # spec=holy
 
 # head=helmet_of_guiding_light,id=115568,bonus_id=567

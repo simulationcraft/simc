@@ -11,7 +11,7 @@ race=tauren
 role=attack
 spec=fury
 talents=1121322
-glyphs=58098/58355/58370/123779/146969
+#glyphs=58098/58355/58370/123779/146969
 
 head=verdant_plate_crown,id=109986,bonus_id=524
 neck=goreclasp_choker,id=109963,bonus_id=524,enchant_id=5317
@@ -37,7 +37,7 @@ race=tauren
 role=attack
 spec=fury
 talents=1121322
-glyphs=58098/58355/58370/123779/146969
+#glyphs=58098/58355/58370/123779/146969
 
 head=verdant_plate_crown,id=109986,bonus_id=524
 neck=goreclasp_choker,id=109963,bonus_id=524,enchant_id=5317
@@ -63,7 +63,7 @@ race=tauren
 role=attack
 spec=arms
 talents=2321322
-glyphs=58098/58355/123779/146969
+#glyphs=58098/58355/123779/146969
 
 head=rivetsealed_casque,id=109989,bonus_id=524
 neck=goreclasp_choker,id=109963,bonus_id=524,enchant_id=5320
@@ -89,7 +89,7 @@ role=attack
 position=back
 spec=protection
 talents=2133323
-glyphs=58098/58355/123779/159701
+#glyphs=58098/58355/123779/159701
 
 head=incarnadine_greathelm,id=109985,bonus_id=524
 neck=choker_of_weeping_viscera,id=109969,bonus_id=524,enchant_id=5317
@@ -117,7 +117,7 @@ position=front
 spec=protection
 professions=
 talents=2133322
-glyphs=58098/58355/123779/159701
+#glyphs=58098/58355/123779/159701
 
 head=incarnadine_greathelm,id=109985,bonus_id=524
 neck=choker_of_weeping_viscera,id=109969,bonus_id=524,enchant_id=5317

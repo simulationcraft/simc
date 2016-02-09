@@ -18,7 +18,7 @@ race=troll
 spec=shadow
 role=spell
 position=back
-glyphs=mind_flay/fade/sha
+#glyphs=mind_flay/fade/sha
 head=slagbombers_hood,id=113981
 neck=gruuls_lip_ring,id=113872,enchant=gift_of_mastery
 shoulders=soul_priests_shoulderguards,id=115561
@@ -87,7 +87,7 @@ race=draenei
 spec=holy
 role=heal
 position=back
-glyphs=prayer_of_mending/circle_of_healing/deep_wells
+#glyphs=prayer_of_mending/circle_of_healing/deep_wells
 head=soul_priests_hood,id=115563
 neck=talisman_of_the_fomor,id=113932,enchant=gift_of_multistrike
 shoulders=soul_priests_shoulderguards,id=115561
@@ -114,7 +114,7 @@ race=draenei
 spec=holy
 role=spell
 position=back
-glyphs=smite/holy_fire/inquisitor
+#glyphs=smite/holy_fire/inquisitor
 head=soul_priests_hood,id=115563
 neck=choker_of_bloody_flame,id=120077,enchant=gift_of_multistrike
 shoulders=soul_priests_shoulderguards,id=115561
@@ -141,7 +141,7 @@ race=draenei
 spec=discipline
 role=heal
 position=back
-glyphs=prayer_of_mending/circle_of_healing/deep_wells
+#glyphs=prayer_of_mending/circle_of_healing/deep_wells
 head=soul_priests_hood,id=115563
 neck=feldspars_control_choker,id=113890,enchant=gift_of_critical_strike
 shoulders=soul_priests_shoulderguards,id=115561
@@ -168,7 +168,7 @@ race=draenei
 spec=discipline
 role=spell
 position=back
-glyphs=smite/holy_fire/inquisitor
+#glyphs=smite/holy_fire/inquisitor
 head=soul_priests_hood,id=115563
 neck=choker_of_bloody_flame,id=120077,enchant=gift_of_critical_strike
 shoulders=soul_priests_shoulderguards,id=115561

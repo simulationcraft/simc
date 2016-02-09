@@ -30,7 +30,7 @@ spec=feral
 role=attack
 position=back
 talents=3002002
-glyphs=savage_roar
+#glyphs=savage_roar
 head=oathclaw_helm,id=124261,bonus_id=566
 neck=choker_of_the_great_betrayer,id=124210,bonus_id=566,enchant_id=5317
 shoulders=oathclaw_mantle,id=124272,bonus_id=566

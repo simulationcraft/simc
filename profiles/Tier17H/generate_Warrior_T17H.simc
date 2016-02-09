@@ -17,7 +17,7 @@ race=tauren
 role=attack
 spec=fury
 talents=1321321
-glyphs=unending_rage/raging_wind/heroic_leap
+#glyphs=unending_rage/raging_wind/heroic_leap
 head=blackhands_faceguard,id=115584,bonus_id=566
 neck=vertebrae_protector,id=113900,bonus_id=566,enchant=gift_of_critical_strike
 shoulder=blackhands_shoulderguards,id=115581,bonus_id=566
@@ -43,7 +43,7 @@ race=tauren
 role=attack
 spec=fury
 talents=1321321
-glyphs=unending_rage/raging_wind/heroic_leap
+#glyphs=unending_rage/raging_wind/heroic_leap
 head=blackhands_faceguard,id=115584,bonus_id=566
 neck=vertebrae_protector,id=113900,bonus_id=566,enchant=gift_of_critical_strike
 shoulder=blackhands_shoulderguards,id=115581,bonus_id=566
@@ -70,7 +70,7 @@ spec=Arms
 role=attack
 position=back
 talents=1321322
-glyphs=unending_rage/heroic_leap/sweeping_strikes
+#glyphs=unending_rage/heroic_leap/sweeping_strikes
 head=blackhands_faceguard,id=115584,bonus_id=566
 neck=vertebrae_protector,id=113900,bonus_id=566,enchant=gift_of_critical_strike
 shoulder=overdriven_spaulders,id=113990,bonus_id=566
@@ -95,7 +95,7 @@ race=tauren
 role=tank
 position=front
 talents=1113323
-glyphs=unending_rage/heroic_leap/cleave
+#glyphs=unending_rage/heroic_leap/cleave
 spec=prot
 head=hardened_greathelm,id=113910,bonus_id=566
 neck=choker_of_bestial_force,id=113952,bonus_id=566,enchant=gift_of_mastery
@@ -122,7 +122,7 @@ race=tauren
 role=attack
 position=back
 talents=1133323
-glyphs=unending_rage/heroic_leap/cleave
+#glyphs=unending_rage/heroic_leap/cleave
 spec=prot
 head=,id=115584,bonus_id=566
 neck=,id=113882,bonus_id=566,enchant_id=5317
