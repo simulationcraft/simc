@@ -4781,7 +4781,10 @@ struct vivify_t: public monk_heal_t
 
       if ( p() -> sheilun_staff_of_the_mists )
         artifact -> trigger();
-      
+
+    if ( p() -> buff.uplifting_trance -> up() )
+      p() -> buff.uplifting_trance -> expire();
+
       mastery -> execute();
     }
   }
