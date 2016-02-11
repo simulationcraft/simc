@@ -1722,6 +1722,7 @@ public:
     {
       p() -> buff.combo_strikes -> expire();
       p() -> buff.hit_combo -> expire();
+      p() -> buff.combo_master -> expire();
       p() -> tier19_4pc_melee_counter = 0;
     }
   }
@@ -5955,8 +5956,9 @@ void monk_t::create_buffs()
     .default_value( passives.tier19_4pc_melee -> effectN( 1 ).base_value() )
     .add_invalidate( CACHE_MASTERY );
 
-  buff.combo_strikes = buff_creator_t(this, "combo_strikes")
-    .duration( timespan_t::from_seconds( 30 ) )
+  buff.combo_strikes = buff_creator_t( this, "combo_strikes" )
+    .duration( passives.hit_combo -> duration() )
+    .quiet( true ) // In-game does not show this buff but I would like to use it for background stuff
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.forceful_winds = buff_creator_t( this, "forceful_winds", passives.tier17_4pc_melee )
