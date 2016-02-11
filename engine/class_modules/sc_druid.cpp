@@ -22,7 +22,6 @@ namespace { // UNNAMED NAMESPACE
  Stellar Drift cast while moving
  Starfall positioning
  Utility & NYI artifact perks (see p() -> artifact).
- Celestial alignment damage modifier on correct spells
  Accurate starfall travel time & debuff mechanics ?
  Force of Nature!
 
@@ -80,6 +79,7 @@ struct druid_td_t : public actor_target_data_t
 {
   struct dots_t
   {
+    dot_t* ashamanes_frenzy;
     dot_t* collapsing_stars;
     dot_t* gushing_wound;
     dot_t* lacerate;
@@ -98,8 +98,9 @@ struct druid_td_t : public actor_target_data_t
 
   struct buffs_t
   {
-    buff_t* lifebloom;
     buff_t* bloodletting;
+    buff_t* lifebloom;
+    buff_t* open_wounds;
     buff_t* starfall;
   } buffs;
 
@@ -229,6 +230,7 @@ public:
 
   // Artifacts
   const special_effect_t* scythe_of_elune;
+  const special_effect_t* fangs_of_ashamane;
 
   // RPPM objects
   real_ppm_t balance_tier18_2pc;
@@ -371,6 +373,7 @@ public:
     gain_t* solar_wrath;
 
     // Feral (Cat)
+    gain_t* ashamanes_frenzy;
     gain_t* bloody_slash;
     gain_t* energy_refund;
     gain_t* elunes_guidance;
@@ -589,6 +592,24 @@ public:
     artifact_power_t rejuvenating_innervation;
     artifact_power_t light_of_the_sun;
     artifact_power_t mooncraze; // will be replaced
+
+    // Feral -- Fangs of Ashamane
+    artifact_power_t ashamanes_frenzy;
+    artifact_power_t ashamanes_energy;
+    artifact_power_t ashamanes_bite;
+    artifact_power_t open_wounds;
+    artifact_power_t shadow_thrash;
+    artifact_power_t razor_fangs;
+    artifact_power_t honed_instincts;
+    artifact_power_t protection_of_ashamane;
+    artifact_power_t attuned_to_nature;
+    artifact_power_t powerful_bite;
+    artifact_power_t scent_of_blood;
+    artifact_power_t feral_power;
+    artifact_power_t feral_instinct;
+    artifact_power_t sharpened_claws;
+    artifact_power_t tear_the_flesh;
+    artifact_power_t hardened_roots;
   } artifact;
 
   druid_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
@@ -598,6 +619,7 @@ public:
     t16_2pc_starfall_bolt( nullptr ),
     t16_2pc_sun_bolt( nullptr ),
     scythe_of_elune(),
+    fangs_of_ashamane(),
     balance_tier18_2pc( *this ),
     predator( *this ),
     initial_astral_power( 0 ),
@@ -1265,13 +1287,14 @@ private:
 public:
   typedef druid_action_t base_t;
 
-  bool benefits_from_rend_and_tear;
+  bool benefits_from_rend_and_tear, benefits_from_open_wounds;
 
   druid_action_t( const std::string& n, druid_t* player,
                   const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ), 
     form_mask( ab::data().stance_mask() ), may_autounshift( true ), autoshift( 0 ),
-    benefits_from_rend_and_tear( ab::data().affected_by( player -> spell.lacerate_dot -> effectN( 2 ) ) )
+    benefits_from_rend_and_tear( ab::data().affected_by( player -> spell.lacerate_dot -> effectN( 2 ) ) ),
+    benefits_from_open_wounds( ab::data().affected_by( player -> artifact.open_wounds.data().effectN( 1 ).trigger() -> effectN( 1 ) ) )
   {
     ab::may_crit      = true;
     ab::tick_may_crit = true;
@@ -1291,6 +1314,16 @@ public:
 
     if ( benefits_from_rend_and_tear )
       tm *= 1.0 + p() -> talent.rend_and_tear -> effectN( 2 ).percent() * td( t ) -> lacerate_stack;
+
+    return tm;
+  }
+
+  virtual double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double tm = ab::composite_ta_multiplier( s );
+    
+    if ( benefits_from_open_wounds )
+      tm *= 1.0 + td( s -> target ) -> buffs.open_wounds -> value();
 
     return tm;
   }
@@ -2260,6 +2293,99 @@ struct cat_melee_t : public cat_attack_t
   }
 };
 
+// Ashamane's Frenzy ========================================================
+/* TOCHECK: How exactly does the bleed/ignite work? And what does/doesn't snapshot?
+            May be able to simplify implementation a bit if only AP snapshots. */
+
+struct ashamanes_frenzy_t : public cat_attack_t
+{
+  struct ashamanes_frenzy_ignite_driver_t : public cat_attack_t
+  {
+    struct ashamanes_frenzy_ignite_t : public residual_action::residual_periodic_action_t<cat_attack_t>
+    {
+      ashamanes_frenzy_ignite_t( druid_t* p, const spell_data_t* spell, ashamanes_frenzy_t* parent ) :
+        residual_action::residual_periodic_action_t<cat_attack_t>( "ashamanes_frenzy_bleed", p, spell )
+      {
+        background = dual = tick_may_crit = true;
+        may_dodge = may_parry = may_block = may_miss = false;
+
+        parent -> add_child( this );
+      }
+
+      void init() override
+      {
+        residual_action::residual_periodic_action_t<cat_attack_t>::init();
+
+        snapshot_flags = update_flags = STATE_CRIT | STATE_TGT_CRIT | STATE_VERSATILITY | STATE_MUL_TA;
+      }
+    };
+
+    ashamanes_frenzy_ignite_t* ignite;
+    double persistent_multiplier;
+
+    ashamanes_frenzy_ignite_driver_t( druid_t* p, const spell_data_t* spell, ashamanes_frenzy_t* parent ) :
+      cat_attack_t( "ashamanes_frenzy_ignite_driver", p, spell ), persistent_multiplier( 1.0 )
+    {
+      background = dual = true;
+      may_crit = tick_may_crit = may_dodge = may_parry = may_block = may_miss = false;
+
+      attack_power_mod.direct = data().effectN( 2 ).ap_coeff();
+      base_multiplier *= dot_duration / base_tick_time;
+
+      dot_duration = timespan_t::zero();
+
+      ignite = new ashamanes_frenzy_ignite_t( p, spell, parent );
+    }
+
+    void init() override
+    {
+      cat_attack_t::init();
+
+      // Versatility accounted for dynamically, so disable it here.
+      snapshot_flags &= ~STATE_VERSATILITY;
+    }
+
+    // Use snapshotted modifiers from parent.
+    double composite_persistent_multiplier( const action_state_t* s ) const override
+    { return persistent_multiplier; }
+    
+    // Bleed penetrates armor
+    double target_armor( player_t* t ) const override
+    { return 0.0; }
+
+    void impact( action_state_t* s ) override
+    { residual_action::trigger( ignite, target, s -> result_amount ); }
+  };
+
+  ashamanes_frenzy_ignite_driver_t* ignite_driver;
+
+  ashamanes_frenzy_t( druid_t* player, const std::string& options_str ) :
+    cat_attack_t( "ashamanes_frenzy", player, &player -> artifact.ashamanes_frenzy.data(), options_str )
+  {
+    const spell_data_t* tick_spell = data().effectN( 1 ).trigger();
+
+    attack_power_mod.tick = tick_spell -> effectN( 1 ).ap_coeff();
+    ignite_driver = new ashamanes_frenzy_ignite_driver_t( player, tick_spell, this );
+  }
+
+  void tick( dot_t* d ) override
+  {
+    cat_attack_t::tick( d );
+
+    ignite_driver -> target = target;
+    ignite_driver -> persistent_multiplier = d -> state -> persistent_multiplier;
+    ignite_driver -> execute();
+  }
+
+  virtual void execute() override
+  {
+    cat_attack_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) )
+      p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.ashamanes_frenzy );
+  }
+};
+
 // Berserk ==================================================================
 
 struct berserk_t : public cat_attack_t
@@ -2535,11 +2661,14 @@ struct rake_t : public cat_attack_t
      Must use direct damage because tick_zeroes cannot be blocked, and
      this attack can be blocked if the druid is in front of the target. */
   double composite_da_multiplier( const action_state_t* state ) const override
-  {
+  { 
     double dm = cat_attack_t::composite_da_multiplier( state );
 
     if ( p() -> mastery.razor_claws -> ok() )
       dm *= 1.0 + p() -> cache.mastery_value();
+    
+    if ( benefits_from_open_wounds )
+      dm *= 1.0 + td( state -> target ) -> buffs.open_wounds -> value();
 
     return dm;
   }
@@ -2631,6 +2760,14 @@ struct rip_t : public cat_attack_t
     }
 
     return ap_per_point * rip_state -> combo_points;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    cat_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) ) // TOCHECK
+      td( s -> target ) -> buffs.open_wounds -> trigger();
   }
 };
 
@@ -2907,6 +3044,9 @@ struct thrash_cat_t : public cat_attack_t
 
     if ( p() -> mastery.razor_claws -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
+
+    if ( benefits_from_open_wounds )
+      m *= 1.0 + td( state -> target ) -> buffs.open_wounds -> value();
 
     return m;
   }
@@ -5348,6 +5488,8 @@ action_t* druid_t::create_action( const std::string& name,
   using namespace heals;
   using namespace spells;
 
+  if ( name == "ashamanes_frenzy" || 
+       name == "frenzy"                 ) return new       ashamanes_frenzy_t( this, options_str );
   if ( name == "astral_communion" || 
        name == "ac")                      return new       astral_communion_t( this, options_str );
   if ( name == "auto_attack"            ) return new            auto_attack_t( this, options_str );
@@ -5590,6 +5732,24 @@ void druid_t::init_spells()
   artifact.light_of_the_sun             = find_artifact_spell( "Light of the Sun" );
   artifact.empowerment                  = find_artifact_spell( "Empowerment" );
 
+  // Feral -- Fangs of Ashamane
+  artifact.ashamanes_frenzy             = find_artifact_spell( "Ashamane's Frenzy" );
+  artifact.ashamanes_energy             = find_artifact_spell( "Ashamane's Energy" );
+  artifact.ashamanes_bite               = find_artifact_spell( "Ashamane's Bite" );
+  artifact.open_wounds                  = find_artifact_spell( "Open Wounds" );
+  artifact.shadow_thrash                = find_artifact_spell( "Shadow Thrash" );
+  artifact.razor_fangs                  = find_artifact_spell( "Razor Fangs" );
+  artifact.honed_instincts              = find_artifact_spell( "Honed Instincts" );
+  artifact.protection_of_ashamane       = find_artifact_spell( "Protection of Ashamane" );
+  artifact.attuned_to_nature            = find_artifact_spell( "Attuned to Nature" );
+  artifact.powerful_bite                = find_artifact_spell( "Powerful Bite" );
+  artifact.scent_of_blood               = find_artifact_spell( "Scent of Blood" );
+  artifact.feral_power                  = find_artifact_spell( "Feral Power" );
+  artifact.feral_instinct               = find_artifact_spell( "Feral Instinct" );
+  artifact.sharpened_claws              = find_artifact_spell( "Sharpened Claws" );
+  artifact.tear_the_flesh               = find_artifact_spell( "Tear the Flesh" );
+  artifact.hardened_roots               = find_artifact_spell( "Hardened Roots" );
+
   // Masteries ==============================================================
 
   mastery.razor_claws         = find_mastery_spell( DRUID_FERAL );
@@ -5815,15 +5975,15 @@ void druid_t::create_buffs()
                                    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Feral
-  buff.tigers_fury           = buff_creator_t( this, "tigers_fury", find_specialization_spell( "Tiger's Fury" ) )
-                               .default_value( find_specialization_spell( "Tiger's Fury" ) -> effectN( 1 ).percent() )
-                               .cd( timespan_t::zero() )
-                               .refresh_behavior( BUFF_REFRESH_PANDEMIC ); // Legion TOCHECK
+  buff.predatory_swiftness   = buff_creator_t( this, "predatory_swiftness", spec.predatory_swiftness -> ok() ? find_spell( 69369 ) : spell_data_t::not_found() );
   buff.savage_roar           = buff_creator_t( this, "savage_roar", talent.savage_roar )
                                .default_value( talent.savage_roar -> effectN( 2 ).percent() )
                                .refresh_behavior( BUFF_REFRESH_DURATION ) // Pandemic refresh is done by the action
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buff.predatory_swiftness   = buff_creator_t( this, "predatory_swiftness", spec.predatory_swiftness -> ok() ? find_spell( 69369 ) : spell_data_t::not_found() );
+  buff.tigers_fury           = buff_creator_t( this, "tigers_fury", find_specialization_spell( "Tiger's Fury" ) )
+                               .default_value( find_specialization_spell( "Tiger's Fury" ) -> effectN( 1 ).percent() )
+                               .cd( timespan_t::zero() )
+                               .refresh_behavior( BUFF_REFRESH_PANDEMIC ); // Legion TOCHECK
   buff.feral_tier15_4pc      = buff_creator_t( this, "feral_tier15_4pc", find_spell( 138358 ) )
                                .default_value( find_spell( 138358 ) -> effectN( 1 ).percent() );
   buff.feral_tier16_2pc      = buff_creator_t( this, "feral_tier16_2pc", find_spell( 144865 ) )
@@ -6317,6 +6477,7 @@ void druid_t::init_gains()
   gain.solar_wrath           = get_gain( "solar_wrath"           );
 
   // Feral
+  gain.ashamanes_frenzy      = get_gain( "ashamanes_frenzy"      );
   gain.bloody_slash          = get_gain( "bloody_slash"          );
   gain.energy_refund         = get_gain( "energy_refund"         );
   gain.elunes_guidance       = get_gain( "elunes_guidance"       );
@@ -7127,6 +7288,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
     buffs( buffs_t() ),
     lacerate_stack( 0 )
 {
+  dots.ashamanes_frenzy = target.get_dot( "ashamanes_frenzy", &source );
   dots.collapsing_stars = target.get_dot( "collapsing_stars", &source );
   dots.gushing_wound    = target.get_dot( "gushing_wound",    &source );
   dots.lacerate         = target.get_dot( "lacerate",         &source );
@@ -7141,12 +7303,13 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   dots.starfall         = target.get_dot( "starfall",         &source );
   dots.thrash_cat       = target.get_dot( "thrash_cat",       &source );
   dots.wild_growth      = target.get_dot( "wild_growth",      &source );
-
-  buffs.lifebloom       = buff_creator_t( *this, "lifebloom", source.find_class_spell( "Lifebloom" ) );
+  
   buffs.bloodletting    = buff_creator_t( *this, "bloodletting", source.find_spell( 165699 ) )
-                          .default_value( source.find_spell( 165699 ) -> ok() ? source.find_spell( 165699 ) -> effectN( 1 ).percent() : 0.10 )
-                          .duration( source.find_spell( 165699 ) -> ok() ? source.find_spell( 165699 ) -> duration() : timespan_t::from_seconds( 6.0 ) )
-                          .chance( 1.0 );
+                          .default_value( source.find_spell( 165699 ) -> effectN( 1 ).percent() );
+  buffs.lifebloom       = buff_creator_t( *this, "lifebloom", source.find_class_spell( "Lifebloom" ) );
+  buffs.open_wounds     = buff_creator_t( *this, "open_wounds", source.artifact.open_wounds.data().effectN( 1 ).trigger() )
+                          .default_value( source.artifact.open_wounds.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+                          .chance( source.artifact.open_wounds.rank() );
   buffs.starfall        = buff_creator_t( *this, "starfall", source.find_spell( 197637 ) )
                           .default_value( source.find_spell( 197637 ) -> effectN( 1 ).percent() + source.artifact.falling_star.percent() );
 }
@@ -7358,6 +7521,13 @@ static void scythe_of_elune( special_effect_t& effect )
                           .tick_zero( true );
 }
 
+// Fangs of Ashamane
+static void fangs_of_ashamane( special_effect_t& effect )
+{
+  druid_t* s = debug_cast<druid_t*>( effect.player );
+  do_trinket_init( s, DRUID_FERAL, s -> fangs_of_ashamane, effect );
+}
+
 // DRUID MODULE INTERFACE ===================================================
 
 struct druid_module_t : public module_t
@@ -7385,6 +7555,7 @@ struct druid_module_t : public module_t
     unique_gear::register_special_effect( 184878, stalwart_guardian );
     unique_gear::register_special_effect( 184879, flourish );
     unique_gear::register_special_effect( 202509, scythe_of_elune );
+    unique_gear::register_special_effect( 210719, fangs_of_ashamane );
   } 
 
   virtual void register_hotfixes() const override
