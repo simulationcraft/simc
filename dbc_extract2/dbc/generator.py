@@ -1613,6 +1613,7 @@ class SpellDataGenerator(DataGenerator):
           ( 116768, 3 ), # Combo Breaker: Blackout Kick
           ( 121283, 0 ), # Chi Sphere from Power Strikes
           ( 196061, 0 ), # Crosswinds Artifact trait damage spell
+          ( 211432, 0 ), # Tier 19 4-piece DPS Buff
         ),
 
         # Druid:
