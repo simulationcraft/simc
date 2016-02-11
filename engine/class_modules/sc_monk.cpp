@@ -115,68 +115,6 @@ enum sef_ability_e {
 
 #define sef_spell_idx( x ) ( ( x ) - SEF_SPELL_MIN )
 
-namespace monk_util
-{
-// Special Monk Attack Weapon damage collection, if the pointers mh or oh are
-// set, instead of the classical action_t::weapon Damage is divided instead of
-// multiplied by the weapon speed, AP portion is not multiplied by weapon
-// speed.  Both MH and OH are directly weaved into one damage number
-double monk_weapon_damage( const action_t* action,
-                           const weapon_t* mh,
-                           const weapon_t* oh,
-                           double weapon_power_mod,
-                           double ap )
-{
-  player_t* player = action -> player;
-  sim_t* sim = player -> sim;
-
-  double total_dmg = 0;
-  // Main Hand
-  if ( mh && mh -> type != WEAPON_NONE && weapon_power_mod > 0 )
-  {
-    assert( mh -> slot != SLOT_OFF_HAND );
-    double dmg = sim -> averaged_range( mh -> min_dmg, mh -> max_dmg ) + mh -> bonus_dmg;
-      
-    dmg /= mh -> swing_time.total_seconds();
-    total_dmg += dmg;
-
-    if ( sim->debug )
-    {
-      sim -> out_debug.printf( "%s main hand weapon damage portion for %s: td=%.3f min_dmg=%.0f max_dmg=%.0f wd=%.3f bd=%.3f ws=%.3f ap=%.3f",
-                               player -> name(), action -> name(),
-                               total_dmg, mh -> min_dmg, mh -> max_dmg, dmg,
-                               mh -> bonus_dmg, mh -> swing_time.total_seconds(), ap );
-    }
-  }
-
-  // Off Hand
-  if ( oh && oh -> type != WEAPON_NONE && weapon_power_mod > 0 && player -> specialization() != MONK_MISTWEAVER )
-  {
-    assert( oh -> slot == SLOT_OFF_HAND );
-    double dmg = sim -> averaged_range( oh -> min_dmg, oh -> max_dmg ) + oh -> bonus_dmg;
-      
-    dmg /= oh -> swing_time.total_seconds();
-    // OH penalty
-    dmg *= 0.5;
-
-    total_dmg += dmg;
-
-    if ( sim -> debug )
-    {
-      sim -> out_debug.printf( "%s off-hand weapon damage portion for %s: td=%.3f min_dmg=%.0f max_dmg=%.0f wd=%.3f bd=%.3f ws=%.3f ap=%.3f",
-                               player -> name(), action -> name(), total_dmg, oh -> min_dmg, oh -> max_dmg, dmg, oh -> bonus_dmg, oh -> swing_time.total_seconds(), ap );
-    }
-  }
-
-  if ( player -> dual_wield() )
-    total_dmg *= 0.857143;
-
-  total_dmg += weapon_power_mod * ap;
-
-  return total_dmg;
-}
-} // Namespace 'monk_util' ends
-
 struct monk_td_t: public actor_target_data_t
 {
 public:
@@ -224,6 +162,9 @@ public:
   combo_strikes_e previous_combo_strike;
 
   double gale_burst_touch_of_death_bonus;
+  unsigned int internal_id;
+  // Counter for when to start the trigger for the 19 4-piece Windwalker Combo Master buff
+  double tier19_4pc_melee_counter;
 
   struct buffs_t
   {
@@ -255,10 +196,12 @@ public:
     buff_t* the_mists_of_sheilun;
     buff_t* teachings_of_the_monastery;
     buff_t* thunder_focus_tea;
+    buff_t* uplifting_trance;
 
     // Windwalker
     buff_t* chi_orbit;
     buff_t* combo_breaker_bok;
+    buff_t* combo_master;
     buff_t* combo_strikes;
     buff_t* dizzying_kicks;
     buff_t* eye_of_the_tiger;
@@ -293,6 +236,7 @@ public:
     gain_t* spinning_crane_kick;
     gain_t* rushing_jade_wind;
     gain_t* effuse;
+    gain_t* spirit_of_the_crane;
     gain_t* tier15_2pc_melee;
     gain_t* tier16_4pc_melee;
     gain_t* tier16_4pc_tank;
@@ -338,8 +282,8 @@ public:
     const spell_data_t* power_strikes;
     // Mistweaver
     const spell_data_t* lifecycles;
-    const spell_data_t* cranes_grace;
-    const spell_data_t* soothing_elegance;
+    const spell_data_t* spirit_of_the_crane;
+    const spell_data_t* mist_wrap;
 
     // Tier 60 Talents
     const spell_data_t* ring_of_peace;
@@ -364,7 +308,7 @@ public:
     // Mistweaver
     const spell_data_t* refreshing_jade_wind;
     const spell_data_t* invoke_chi_ji;
-    const spell_data_t* mist_wrap;
+    const spell_data_t* summon_jade_serpent_statue;
 
     // Tier 100 Talents
     // Brewmaster
@@ -378,7 +322,7 @@ public:
     // Mistweaver
     const spell_data_t* mana_tea;
     const spell_data_t* focused_thunder;
-    const spell_data_t* summon_jade_serpent_statue;
+    const spell_data_t* rising_thunder;
   } talent;
 
   // Specialization
@@ -501,6 +445,7 @@ public:
     cooldown_t* fortifying_brew;
     cooldown_t* healing_elixirs;
     cooldown_t* rising_sun_kick;
+    cooldown_t* thunder_focus_tea;
     cooldown_t* touch_of_death;
   } cooldown;
 
@@ -537,8 +482,10 @@ public:
     const spell_data_t* shaohaos_mists_of_wisdom;
     const spell_data_t* soothing_mist_heal;
     const spell_data_t* soothing_mist_statue;
+    const spell_data_t* spirit_of_the_crane;
     const spell_data_t* teachings_of_the_monastery_buff;
     const spell_data_t* the_mists_of_sheilun_heal;
+    const spell_data_t* uplifting_trance;
     const spell_data_t* zen_pulse_heal;
     const spell_data_t* tier17_2pc_heal;
     const spell_data_t* tier17_4pc_heal;
@@ -557,6 +504,7 @@ public:
     const spell_data_t* touch_of_karma_tick;
     const spell_data_t* tier15_2pc_melee;
     const spell_data_t* tier17_4pc_melee;
+    const spell_data_t* tier19_4pc_melee;
 
   } passives;
 
@@ -612,6 +560,7 @@ public:
     cooldown.fists_of_fury                = get_cooldown( "fists_of_fury" );
     cooldown.healing_elixirs              = get_cooldown( "healing_elixirs" );
     cooldown.rising_sun_kick              = get_cooldown( "rising_sun_kick" );
+    cooldown.thunder_focus_tea            = get_cooldown( "thunder_focus_tea" );
     cooldown.touch_of_death               = get_cooldown( "touch_of_death" );
 
     regen_type = REGEN_DYNAMIC;
@@ -622,6 +571,8 @@ public:
     }
     previous_combo_strike = CS_NONE;
     gale_burst_touch_of_death_bonus = 0;
+    internal_id = 0;
+    tier19_4pc_melee_counter = 0;
     user_options.initial_chi = 0;
     user_options.goto_throttle = 0;
     user_options.ppm_below_35_percent_dm = 0;
@@ -644,6 +595,7 @@ public:
   virtual double    composite_attack_power_multiplier() const override;
   virtual double    composite_parry() const override;
   virtual double    composite_dodge() const override;
+  virtual double    composite_mastery_rating() const override;
   virtual double    composite_crit_avoidance() const override;
   virtual double    composite_rating_multiplier( rating_e rating ) const override;
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() ) override;
@@ -941,18 +893,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
       {
         weapon = w;
       }
-    }
-
-    // SEF uses the "normal" monk weapon damage calculation, except for auto
-    // attacks.
-    double calculate_weapon_damage( double attack_power ) const override
-    {
-      // Actual weapon damage calculation is done with the OWNER weapons for
-      // special attacks, not SEF specific ones.
-//      if ( main_hand || ( main_hand && off_hand ) )
-//        return monk_util::monk_weapon_damage( this, &( o() -> main_hand_weapon ), &( o() -> off_hand_weapon ), weapon_power_mod, attack_power );
-//      else
-        return base_t::calculate_weapon_damage( attack_power );
     }
 
     // Physical tick_action abilities need amount_type() override, so the
@@ -1767,6 +1707,12 @@ public:
   {
     if ( !compare_previous_combo_strikes( new_ability ) && p() -> mastery.combo_strikes -> ok() )
     {
+/*      if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T19, B4 ) && p() -> tier19_4pc_melee_counter < 3 )
+        p() -> tier19_4pc_melee_counter++;
+      else
+        p() -> buff.combo_master -> trigger();
+*/
+
       p() -> buff.combo_strikes -> trigger();
       if ( p() -> talent.hit_combo -> ok() )
         p() -> buff.hit_combo -> trigger();
@@ -1776,6 +1722,7 @@ public:
     {
       p() -> buff.combo_strikes -> expire();
       p() -> buff.hit_combo -> expire();
+      p() -> tier19_4pc_melee_counter = 0;
     }
   }
 
@@ -1937,10 +1884,13 @@ struct monk_heal_t: public monk_action_t < heal_t >
 
       if ( td( t ) -> dots.enveloping_mist -> is_ticking() )
       {
-        if ( p() -> talent.mist_wrap )
-          am *= 1.0 + p() -> spec.enveloping_mist -> effectN( 2 ).percent() + p() -> talent.mist_wrap -> effectN( 2 ).percent();
-        else
-          am *= 1.0 + p() -> spec.enveloping_mist -> effectN( 2 ).percent();
+        if ( p() -> internal_id != internal_id )
+        {
+          if ( p() -> talent.mist_wrap )
+            am *= 1.0 + p() -> spec.enveloping_mist -> effectN( 2 ).percent() + p() -> talent.mist_wrap -> effectN( 2 ).percent();
+          else
+            am *= 1.0 + p() -> spec.enveloping_mist -> effectN( 2 ).percent();
+        }
       }
 
       if ( p() -> buff.life_cocoon -> up() )
@@ -1979,27 +1929,6 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
   {
     special = true;
     may_glance = false;
-  }
-
-  virtual double target_armor( player_t* t ) const override
-  {
-    double a = base_t::target_armor( t );
-
-    return a;
-  }
-
-  // Special Monk Attack Weapon damage collection, if the pointers mh or oh are set, instead of the classical action_t::weapon
-  // Damage is divided instead of multiplied by the weapon speed, AP portion is not multiplied by weapon speed.
-  // Both MH and OH are directly weaved into one damage number
-  virtual double calculate_weapon_damage( double ap ) const override
-  {
-    // Use monk specific weapon damage calculation if mh or oh (monk specific weapons) are
-    // specificed.
-//    if ( mh || oh )
-//      return monk_util::monk_weapon_damage( this, mh, oh, weapon_power_mod, ap );
-    // Otherwise, use normal weapon damage calculation. It's only used for auto-attacks currently.
-//    else
-      return melee_attack_t::calculate_weapon_damage( ap );
   }
 
   virtual double composite_target_multiplier( player_t* t ) const override
@@ -2116,7 +2045,7 @@ struct tiger_palm_t: public monk_melee_attack_t
     else if ( p() -> specialization () == MONK_WINDWALKER)
     {
       // Trigger Combo Strikes
-      combo_strikes_trigger(CS_TIGER_PALM);
+      combo_strikes_trigger( CS_TIGER_PALM );
 
       // If A'Buraq is equipped, chance to trigger the weapon effect buff
       if ( p() -> aburaq && p() -> real_ppm.swift_as_the_wind.trigger() )
@@ -2151,7 +2080,11 @@ struct tiger_palm_t: public monk_melee_attack_t
     {
       // Reduces the remaining cooldown on your Brews by 1 sec
       if ( p() -> cooldown.brewmaster_active_mitigation -> down() )
-        p() -> cooldown.brewmaster_active_mitigation -> adjust( -1 * timespan_t::from_seconds( data().effectN( 3 ).base_value() ) );
+      {
+        double time_reduction = data().effectN( 3 ).base_value();
+//          + ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T19, B4 ) ? p() -> sets.set( MONK_BREWMASTER, T19, B4 ) -> effectN( 1 ).base_value() : 0 );
+        p() -> cooldown.brewmaster_active_mitigation -> adjust( -1 * timespan_t::from_seconds( time_reduction ) );
+      }
 
       // Tiger Palm has a 30% chance to reset the cooldown of Keg Smash.
       if ( p() -> talent.secret_ingredients -> ok() )
@@ -2292,6 +2225,9 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     cooldown -> duration = data().cooldown();
     if ( p -> specialization() == MONK_MISTWEAVER )
       cooldown -> duration += p -> passives.aura_mistweaver_monk -> effectN( 8 ).time_value();
+//    if ( p -> sets.has_set_bonus( MONK_WINDWALKER, T19, B2) )
+//      cooldown -> duration += p -> sets.set( MONK_WINDWALKER, T19, B2 ) ->effectN( 1 ).time_value();
+
 
     sef_ability = SEF_RISING_SUN_KICK;
 
@@ -2328,7 +2264,6 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     if ( p() -> buff.teachings_of_the_monastery -> up() )
     {
       am *= 1 + p() -> buff.teachings_of_the_monastery -> value();
-      p() -> buff.teachings_of_the_monastery -> expire();
     }
 
     return am;
@@ -2341,7 +2276,12 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     if ( result_is_miss( execute_state -> result ) )
       return;
 
-    if ( p() -> specialization() == MONK_WINDWALKER )
+    if ( p() -> specialization() == MONK_MISTWEAVER )
+    {
+      if ( p() -> talent.rising_thunder -> ok() )
+        p() -> cooldown.thunder_focus_tea -> reset( true );
+    }
+    else if ( p() -> specialization() == MONK_WINDWALKER )
     {
       p() -> debuffs.mortal_wounds -> trigger();
 
@@ -2391,6 +2331,16 @@ struct rising_sun_kick_t: public monk_melee_attack_t
   virtual void impact( action_state_t* s ) override
   {
     monk_melee_attack_t::impact( s );
+
+    if ( p() -> buff.teachings_of_the_monastery -> up() )
+    {
+      p() -> buff.teachings_of_the_monastery -> expire();
+      // Spirit of the Crane does not have a buff associated with it. Since
+      // this is tied somewhat with Teachings of the Monastery, tacking
+      // this onto the removal of that buff.
+      if ( p() -> talent.spirit_of_the_crane -> ok() )
+        p() -> resource_gain( RESOURCE_MANA, ( p() -> resources.max[RESOURCE_MANA] * p() -> passives.spirit_of_the_crane -> effectN( 1 ).percent() ), p() -> gain.spirit_of_the_crane );
+    }
 
     if ( p() -> artifact.tornado_kicks.rank() )
     {
@@ -2454,6 +2404,16 @@ struct blackout_kick_t: public monk_melee_attack_t
     // Apply Dizzing Kick debuff onto the target if talented
     if ( p() -> talent.dizzying_kicks -> ok() )
       td( s -> target ) -> debuff.dizzing_kicks -> trigger();
+
+    if ( p() -> buff.teachings_of_the_monastery -> up() )
+    {
+      p() -> buff.teachings_of_the_monastery -> expire();
+      // Spirit of the Crane does not have a buff associated with it. Since
+      // this is tied somewhat with Teachings of the Monastery, tacking
+      // this onto the removal of that buff.
+      if ( p() -> talent.spirit_of_the_crane -> ok() )
+        p() -> resource_gain( RESOURCE_MANA, ( p() -> resources.max[RESOURCE_MANA] * p() -> passives.spirit_of_the_crane -> effectN( 1 ).percent() ), p() -> gain.spirit_of_the_crane );
+    }
   }
 
   void execute() override
@@ -2469,6 +2429,7 @@ struct blackout_kick_t: public monk_melee_attack_t
     {
       if ( p() -> buff.teachings_of_the_monastery -> up() )
       {
+
         if ( rng().roll( p() -> spec.teachings_of_the_monastery -> effectN( 2 ).percent() ) )
           p() -> cooldown.rising_sun_kick -> reset( true );
       }
@@ -2487,7 +2448,6 @@ struct blackout_kick_t: public monk_melee_attack_t
     if ( p() -> buff.teachings_of_the_monastery -> up() )
     {
       am *= 1 + p() -> buff.teachings_of_the_monastery -> value();
-      p() -> buff.teachings_of_the_monastery -> expire();
     }
     if ( p() -> specialization() == MONK_WINDWALKER )
     {
@@ -4299,9 +4259,6 @@ struct soothing_mist_t: public monk_heal_t
   {
     double am = monk_heal_t::action_multiplier();
 
-    if ( p() -> talent.soothing_elegance )
-      am *= 1 + p() -> talent.soothing_elegance -> effectN( 2 ).percent();
-
     if ( p() -> artifact.soothing_remedies.rank() )
       am *= 1 + p() -> artifact.soothing_remedies.percent();
 
@@ -4525,6 +4482,8 @@ struct enveloping_mist_t: public monk_heal_t
       shaohao = new shaohaos_mists_of_wisdom_t( p );
 
     mastery = new gust_of_mists_t( p );
+
+    p.internal_id = internal_id;
   }
 
   double action_multiplier() const override
@@ -4730,6 +4689,14 @@ struct renewing_mist_t: public monk_heal_t
           rem -> execute();
     }
   }
+
+  void tick( dot_t* d ) override
+  {
+    monk_heal_t::tick( d );
+
+    p() -> buff.uplifting_trance -> trigger();
+  }
+
 };
 
 // ==========================================================================
@@ -4772,6 +4739,9 @@ struct vivify_t: public monk_heal_t
   double action_multiplier() const override
   {
     double am = monk_heal_t::action_multiplier();
+
+    if ( p() -> buff.uplifting_trance -> up() )
+      am *= 1 + p() -> buff.uplifting_trance -> value();
 
     if ( p() -> artifact.infusion_of_life.rank() )
       am *= 1 + p() -> artifact.infusion_of_life.percent();
@@ -5593,8 +5563,8 @@ void monk_t::init_spells()
   talent.power_strikes               = find_talent_spell( "Power Strikes" );
   // Mistweaver
   talent.lifecycles                  = find_talent_spell( "Lifecycles" );
-  talent.cranes_grace                = find_talent_spell(" Crane's Grace" );
-  talent.soothing_elegance           = find_talent_spell( "Soothing Elegance" );
+  talent.spirit_of_the_crane         = find_talent_spell( "Spirit of the Crane" );
+  talent.mist_wrap                   = find_talent_spell( "Mist Wrap" );
 
   // Tier 60 Talents
   talent.ring_of_peace               = find_talent_spell( "Ring of Peace" );
@@ -5619,7 +5589,7 @@ void monk_t::init_spells()
   // Mistweaver
   talent.refreshing_jade_wind        = find_talent_spell( "Refreshing Jade Wind" );
   talent.invoke_chi_ji               = find_talent_spell( "Invoke Chi-Ji, the Red Crane", "invoke_chi_ji" );
-  talent.mist_wrap                   = find_talent_spell( "Mist Wrap" );
+  talent.summon_jade_serpent_statue  = find_talent_spell( "Summon Jade Serpent Statue" );
 
   // Tier 100 Talents
   // Brewmaster
@@ -5633,7 +5603,7 @@ void monk_t::init_spells()
   // Mistweaver
   talent.mana_tea                    = find_talent_spell( "Mana Tea" );
   talent.focused_thunder             = find_talent_spell( "Focused Thunder" );
-  talent.summon_jade_serpent_statue  = find_talent_spell( "Summon Jade Serpent Statue" );
+  talent.rising_thunder              = find_talent_spell ("Rising Thunder");
   
   // Artifact spells ========================================
   // Brewmater
@@ -5767,8 +5737,10 @@ void monk_t::init_spells()
   passives.shaohaos_mists_of_wisdom         = find_spell( 199877 ); // artifact.shaohaos_mists_of_wisdom.data().effectN( 1 ).trigger() -> effectN( 2 ).trigger()
   passives.soothing_mist_heal               = find_spell( 115175 );
   passives.soothing_mist_statue             = find_spell( 198533 );
+  passives.spirit_of_the_crane              = find_spell( 210803 );
   passives.teachings_of_the_monastery_buff  = find_spell( 202090 );
   passives.the_mists_of_sheilun_heal        = find_spell( 199894 );
+  passives.uplifting_trance                 = find_spell( 197206 );
   passives.zen_pulse_heal                   = find_spell( 198487 );
   passives.tier17_2pc_heal                  = find_spell( 167732 );
   passives.tier17_4pc_heal                  = find_spell( 167717 );
@@ -5787,6 +5759,7 @@ void monk_t::init_spells()
   passives.touch_of_karma_tick              = find_spell( 124280 );
   passives.tier15_2pc_melee                 = find_spell( 138311 );
   passives.tier17_4pc_melee                 = find_spell( 166603 );
+  passives.tier19_4pc_melee                 = find_spell( 211432 );
 
   // Mastery spells =========================================
   mastery.combo_strikes              = find_mastery_spell( MONK_WINDWALKER );
@@ -5915,6 +5888,7 @@ void monk_t::create_buffs()
 
   buff.ironskin_brew = buff_creator_t(this, "ironskin_brew", spec.ironskin_brew )
     .default_value( spec.ironskin_brew -> effectN( 1 ).percent() )
+//      + ( sets.has_set_bonus( MONK_BREWMASTER, T19, B2 ) ? sets.set( MONK_BREWMASTER, T19, B2 ) -> effectN( 1 ).percent() : 0 ) )
     .refresh_behavior( BUFF_REFRESH_EXTEND );
 
   buff.keg_smash_talent = buff_creator_t( this, "keg_smash", passives.keg_smash_buff )
@@ -5951,6 +5925,11 @@ void monk_t::create_buffs()
     .max_stack( 1 + ( talent.focused_thunder ? talent.focused_thunder -> effectN( 1 ).base_value()  : 0 )
                   + ( artifact.harmony_and_focus.rank() ? artifact.harmony_and_focus.value() : 0 ) );
 
+  buff.uplifting_trance = buff_creator_t( this, "uplifting_trance", passives.uplifting_trance )
+    .chance( spec.renewing_mist -> effectN( 2 ).percent() )
+//      + ( sets.has_set_bonus( MONK_MISTWEAVER, T19, B2 ) ? sets.set( MONK_MISTWEAVER, T19, B2 ) -> effectN( 1 ).percent() : 0 ) )
+    .default_value( passives.uplifting_trance -> effectN( 1 ).percent() );
+
   buff.mistweaving = buff_creator_t(this, "mistweaving", passives.tier17_2pc_heal )
     .default_value( passives.tier17_2pc_heal -> effectN( 1 ).percent() )
     .max_stack( 7 )
@@ -5968,6 +5947,10 @@ void monk_t::create_buffs()
     .max_stack( 4 );
 
   buff.combo_breaker_bok = buff_creator_t( this, "combo_breaker_bok", passives.combo_breaker_bok );
+
+  buff.combo_master = buff_creator_t( this, "combo_master", passives.tier19_4pc_melee )
+    .default_value( passives.tier19_4pc_melee -> effectN( 1 ).base_value() )
+    .add_invalidate( CACHE_MASTERY );
 
   buff.combo_strikes = buff_creator_t(this, "combo_strikes")
     .duration( timespan_t::from_seconds( 30 ) )
@@ -6036,6 +6019,7 @@ void monk_t::init_gains()
   gain.serenity                 = get_gain( "serenity" );
   gain.soothing_mist            = get_gain( "soothing_mist" );
   gain.spinning_crane_kick      = get_gain( "spinning_crane_kick" );
+  gain.spirit_of_the_crane      = get_gain( "spirit_of_the_crane" );
   gain.rushing_jade_wind        = get_gain( "rushing_jade_wind" );
   gain.effuse                   = get_gain( "effuse" );
   gain.tier15_2pc_melee         = get_gain( "tier15_2pc_melee" );
@@ -6336,6 +6320,20 @@ double monk_t::composite_crit_avoidance() const
   c += spec.stagger -> effectN( 8 ).percent();
 
   return c;
+}
+
+// monk_t::composite_mastery_rating ===========================================
+
+double monk_t::composite_mastery_rating() const
+{
+  double m = player_t::composite_mastery_rating();
+
+  if ( buff.combo_master -> up() )
+  {
+    m += buff.combo_master -> value();
+  }
+
+  return m;
 }
 
 // monk_t::composite_rating_multiplier =================================
