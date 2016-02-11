@@ -181,7 +181,8 @@ class DBCParser(object):
 
         if not self._class:
             self._class = dbc.data.proxy_class(self.file_name(), self._fields, self._record_size, self._id_offset > 0,
-                    self._magic in [ b'WDB3', b'WDB4' ] and self.count_pad_bytes() or 0)
+                    0)
+                    #self._magic in [ b'WDB3', b'WDB4' ] and self.count_pad_bytes() or 0)
 
         if not self._options.raw and hasattr(self._class, '_ff') and self._records > 0:
             self._class._ff = (self.compute_id_output_format(),) + self._class._ff[1:]

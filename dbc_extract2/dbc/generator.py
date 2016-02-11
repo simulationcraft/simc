@@ -4116,7 +4116,10 @@ class SpellItemEnchantmentGenerator(RandomSuffixGenerator):
             if gprop.id == 0:
                 continue
 
-            gprop.item = data
+            if not hasattr(gprop, 'item'):
+                gprop.item = []
+
+            gprop.item.append(data)
 
         # Map gem properties to enchants
         for id, data in self._gemproperties_db.items():
@@ -4147,7 +4150,7 @@ class SpellItemEnchantmentGenerator(RandomSuffixGenerator):
 
             fields = ench_data.field('id', 'slot')
             if hasattr(ench_data, 'gem_property') and hasattr(ench_data.gem_property, 'item'):
-                fields += ench_data.gem_property.item.field('id')
+                fields += ench_data.gem_property.item[0].field('id')
             else:
                 fields += self._item_sparse_db[0].field('id')
             fields += ench_data.field('scaling_type', 'min_scaling_level', 'max_scaling_level', 'req_skill', 'req_skill_value')
