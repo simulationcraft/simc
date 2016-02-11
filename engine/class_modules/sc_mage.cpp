@@ -315,7 +315,7 @@ public:
                       * frost_bomb,
                       * unstable_magic,
                       * erosion, // NYI
-                      * flame_patch, // NYI
+                      * flame_patch,
                       * arctic_gale; // NYI
 
     // Tier 100
@@ -346,7 +346,7 @@ public:
                      crackling_energy, //NYI
                      blasting_rod, //NYI
                      ethereal_sensitivity, //NYI
-                     aegwynns_fury, //NYI
+                     aegwynns_fury,
                      echoes_of_aegwynn, //NYI
                      might_of_the_guardians, //NYI
                      torrential_barrage, //NYI
@@ -1991,6 +1991,9 @@ struct arcane_blast_t : public arcane_mage_spell_t
       am *= 1.0 + wild_arcanist_effect;
     }
 
+    if ( p() -> artifact.blasting_rod.rank() )
+      am *= 1.0 + p() -> artifact.blasting_rod.percent();
+
     return am;
   }
 
@@ -2075,6 +2078,16 @@ struct arcane_explosion_t : public arcane_mage_spell_t
       }
     }
   }
+
+  virtual double action_multiplier() const override
+  {
+    double am = arcane_mage_spell_t::action_multiplier();
+
+    if ( p() -> artifact.arcane_purification.rank() )
+      am *= 1.0 + p() -> artifact.arcane_purification.percent();
+
+    return am;
+  }
 };
 
 
@@ -2130,6 +2143,9 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     {
       am *= 1.07;
     }
+
+    if ( p() -> artifact.aegwynns_fury.rank() )
+      am *= 1.0 + p() -> artifact.aegwynns_fury.percent();
 
     return am;
   }
@@ -2695,10 +2711,22 @@ struct fireball_t : public fire_mage_spell_t
 
 };
 
+// Flame Patch Spell ========================================================
+
+struct flame_patch_t : public fire_mage_spell_t
+{
+  flame_patch_t( mage_t* p, const std::string& options_str ) :
+    fire_mage_spell_t( "flame_patch", p, p -> talents.flame_patch )
+  {
+    parse_options( options_str );
+    aoe=-1;
+  }
+};
 // Flamestrike Spell ========================================================
 
 struct flamestrike_t : public fire_mage_spell_t
 {
+  flame_patch_t* flame_patch;
   flamestrike_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "flamestrike", p,
                        p -> find_specialization_spell( "Flamestrike" ) )
