@@ -30,7 +30,7 @@ Tooltip          : Fading.
 Name             : Frostbolt (id=116) [Spell Family (3)] 
 Class            : Frost Mage
 School           : Frost
-Resource         : 4% Base Mana (44000 @Level 110)
+Resource         : 2% Base Mana (22000 @Level 110)
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -48,7 +48,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.78700
 #2 (id=76)       : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0
-Description      : Launches a bolt of frost at the enemy, causing $s2 Frost damage and slowing movement speed by $205708s1% for $205708d.
+Description      : Launches a bolt of frost at the enemy, causing $s1 Frost damage and slowing movement speed by $205708s1% for $205708d.
 Tooltip          : $?$w1=0[][Movement slowed by $205708w1%.]
 
 Name             : Cone of Cold (id=120) [Scaling Spell (5), Spell Family (3)] 
@@ -118,7 +118,7 @@ $mult=${$<arctic5>*$<piercing3>}
 Name             : Fireball (id=133) [Spell Family (3)] 
 Class            : Fire Mage
 School           : Fire
-Resource         : 4% Base Mana (44000 @Level 110)
+Resource         : 2% Base Mana (22000 @Level 110)
 Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 2.25 seconds
@@ -245,12 +245,12 @@ Description      : Counters the enemy's spellcast, preventing any spell from tha
 Name             : Scorch (id=2948) [Spell Family (3)] 
 Class            : Fire Mage
 School           : Fire
-Resource         : 2% Base Mana (22000 @Level 110)
+Resource         : 1% Base Mana (11000 @Level 110)
 Spell Level      : 40
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Arcane Power (12042), Icy Veins (12472), Shatter (12982), Critical Mass (117216), 
+Affecting spells : Arcane Power (12042), Icy Veins (12472), Shatter (12982), Critical Mass (117216), PH - Enhanced Pyrotechnics Affects Scorch (208100)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -289,7 +289,7 @@ Spell Level      : 16
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
-Affecting spells : Arcane Power (12042), Icy Veins (12472), Ice Floes (108839), Arcane Instability (166872), Arcane Focus (171375), Ethereal Sensitivity (187276), Aegwynn's Fury (187287), Archmage's Alacrity (187292)
+Affecting spells : Arcane Power (12042), Icy Veins (12472), Ice Floes (108839), Arcane Instability (166872), Arcane Focus (171375), Rule of Threes (187292)
 Triggered by     : Arcane Missiles! (79683)
 Attributes       : ........ x....... x....... .....x..   ..x....x ..x...x. ........ ..x.x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -310,7 +310,7 @@ Description      : Launches five waves of Arcane Missiles at the enemy over $514
 
 Arcane Missiles' damage is increased by $36032s1% per Arcane Charge.
 
-Arcane Missiles has a chance to be activated after each of your damaging spell casts. Limit $79683s1 charges.
+Arcane Missiles has a $79684h% chance to be activated after each of your damaging spell casts. Limit $79683s1 charges.
 
 Name             : Mage Armor (id=6117) [Scaling Spell (-1), Spell Family (3), Passive] 
 Class            : Arcane Mage
@@ -342,7 +342,7 @@ School           : Arcane
 Spell Level      : 24
 Range            : 60 yards
 Velocity         : 20 yards/sec
-Affecting spells : Shatter (12982), Arcane Charge (36032), Item - Mage T14 2P Bonus (123097), Arcane Focus (171375), Erosion (210134)
+Affecting spells : Shatter (12982), Arcane Charge (36032), Item - Mage T14 2P Bonus (123097), Arcane Focus (171375), Aegwynn's Fury (187287), Erosion (210134)
 Triggered by     : Arcane Missiles (5143)
 Attributes       : ........ ........ x....... ........   ..x..... ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ......x. 
@@ -381,7 +381,7 @@ Attackers are slowed.
 Name             : Pyroblast (id=11366) [Spell Family (3)] 
 Class            : Fire Mage
 School           : Fire
-Resource         : 5% Base Mana (55000 @Level 110)
+Resource         : 2.5% Base Mana (27500 @Level 110)
 Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 4.5 seconds
@@ -642,7 +642,7 @@ Tooltip          : Healing $/5;s2% every $t1 seconds.
 Name             : Arcane Blast (id=30451) [Spell Family (3)] 
 Class            : Arcane Mage
 School           : Arcane
-Resource         : 5% Base Mana (55000 @Level 110)
+Resource         : 3% Base Mana (33000 @Level 110)
 Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 2.25 seconds
@@ -755,7 +755,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
-Affecting spells : Arcane Power (12042), Shatter (12982), Fire Mage (137019)
+Affecting spells : Arcane Power (12042), Shatter (12982), Fire Mage (137019), PH - Dragon's Breath Range Increase (207547)
 Attributes       : ........ ........ x...x... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -985,7 +985,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
 Cooldown         : 3 seconds
-Affecting spells : Arcane Power (12042), Shatter (12982), Arcane Charge (36032), Torrential Barrage (187304), Arcane Rebound (188006), Erosion (210134)
+Affecting spells : Arcane Power (12042), Shatter (12982), Arcane Charge (36032), Torrential Barrage (187304), Erosion (210134)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1068,6 +1068,7 @@ Duration         : 15 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
 Affecting spells : Item - Mage T18 Frost 4P Bonus (185971)
+Triggered by     : PH - Icy Veins Periodically Grants Fingers of Frost (208147)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1231,19 +1232,6 @@ Effects          :
 #1 (id=49565)    : Create Item (24)
                    Base Value: 1 | Scaled Value: 1
 
-Name             : Momentum (id=56591) 
-Class            : Mage
-School           : Physical
-Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=49686)    : Unknown effect type (74)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 320
-
 Name             : Crittermorph (id=56599) 
 Class            : Mage
 School           : Physical
@@ -1276,35 +1264,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Cannot benefit from Bloodlust or other similar effects.
 Tooltip          : Cannot benefit from Bloodlust or other similar effects.
-
-Name             : Conjure Familiar (id=58238) 
-Class            : Mage
-School           : Physical
-Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=51573)    : Unknown effect type (74)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 448
-Description      : Teaches you the spell Conjure Familiar.
-
-$@spelldesc126578
-
-Name             : Arcane Language (id=58241) 
-Class            : Mage
-School           : Physical
-Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=51576)    : Unknown effect type (74)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 451
 
 Name             : Gift of the Naaru (Racial) (id=59548) [Spell Family (3)] 
 Class            : Mage
@@ -1351,19 +1310,6 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50
 Description      : Inflicts Frost damage to an enemy and reduces its movement speed for $d.
 Tooltip          : Reduced movement speed.
-
-Name             : Illusion (id=63862) 
-Class            : Mage
-School           : Physical
-Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=58064)    : Unknown effect type (74)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 698
 
 Name             : Avoidance (Passive) (id=65220) [Passive] 
 Class            : Shaman, Mage, Monk
@@ -1475,7 +1421,7 @@ Stacks           : 1 initial, 3 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
-Affecting spells : Arcane Missiles (5143), Arcane Power (12042), Icy Veins (12472), Ice Floes (108839), Arcane Instability (166872), Arcane Focus (171375), Ethereal Sensitivity (187276), Aegwynn's Fury (187287), Archmage's Alacrity (187292)
+Affecting spells : Arcane Missiles (5143), Arcane Power (12042), Icy Veins (12472), Ice Floes (108839), Arcane Instability (166872), Arcane Focus (171375), Rule of Threes (187292)
 Triggered by     : Arcane Missiles (79684)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -1498,6 +1444,7 @@ Spell Level      : 24
 Proc Chance      : 30%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
+Affecting spells : Ethereal Sensitivity (187276)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1759,19 +1706,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | SP Coefficient: 1.00000 | Misc Value 2: 0x8
 Description      : Increases your Intellect by $s1%.
 
-Name             : Rapid Teleportation (id=89748) 
-Class            : Mage
-School           : Physical
-Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=92643)    : Unknown effect type (74)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 923
-
 Name             : Altered Form (Racial Passive) (id=94293) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen
@@ -1836,7 +1770,7 @@ Tooltip          : $s1% increased movement speed and unaffected by movement spee
 Name             : Inferno Blast (id=108853) [Spell Family (3)] 
 Class            : Fire Mage
 School           : Fire
-Resource         : 2% Base Mana (22000 @Level 110)
+Resource         : 1% Base Mana (11000 @Level 110)
 Spell Level      : 24
 Range            : 40 yards
 Cooldown         : 0.5 seconds
@@ -2226,7 +2160,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=141251)   : Apply Aura (6) | Mod Power Regen (110)
-                   Base Value: 350 | Scaled Value: 350
+                   Base Value: 50 | Scaled Value: 50
 Description      : Your mana regeneration is increased by $s1%.
 Tooltip          : Increases your mana regeneration by $s1%.
 
@@ -2245,42 +2179,6 @@ Effects          :
 #1 (id=159107)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : Choose a level 75 talent.
-
-Name             : Conjure Familiar (Glyph) (id=126578) [Spell Family (3)] 
-Class            : Mage
-School           : Physical
-Cast Time        : 3 seconds
-GCD              : 1.5 seconds
-Cooldown         : 60 seconds
-Affecting spells : Icy Veins (12472), Ice Floes (108839)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=160854)   : Create Item (157)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 43118
-Description      : Conjures a familiar stone, containing either an Arcane, Fiery, or Icy Familiar.
-
-Name             : Glyph of Conjure Familiar (id=126748) [Spell Family (3), Passive, Hidden] 
-Class            : Mage
-School           : Holy
-Spell Level      : 1
-Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=161079)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1
-Description      : Teaches you the ability Conjure Familiar.
-
-$@spelldesc126578
 
 Name             : Lightweight Retinal Armor (id=127117) 
 Class            : Priest, Mage, Warlock
@@ -2304,7 +2202,7 @@ Attributes       : ........ ........ ........ .....x..   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ x....... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=170110)   : Dummy (3)
@@ -2567,7 +2465,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ ...x.
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=198243)   : Unknown effect type (174) | Scale% (61)
-                   Base Value: -40 | Scaled Value: -40 | Misc Value: 11 | Radius: 100 yards
+                   Base Value: -15 | Scaled Value: -15 | Misc Value: 11 | Radius: 100 yards
 Description      : Reduces the size of your Water Elemental by $s1%.
 
 Name             : Glyph of the Unbound Elemental (Frost) (id=146976) [Spell Family (3), Passive, Hidden] 
@@ -2584,21 +2482,6 @@ Effects          :
 #1 (id=198924)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11
 Description      : Your Water Elemental is replaced by an Unbound Water Elemental.
-
-Name             : Glyph of Condensation (Frost) (id=147353) [Spell Family (3), Passive, Hidden] 
-Class            : Mage
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ...x.... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=199870)   : Unknown effect type (174) | Scale% (61)
-                   Base Value: 40 | Scaled Value: 40 | Misc Value: 11 | Radius: 100 yards
-Description      : Increases the size of your Water Elemental by $s1%.
 
 Name             : Unbound Elemental (id=147970) 
 Class            : Mage
@@ -2629,21 +2512,6 @@ Effects          :
 #1 (id=201010)   : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1080
 Description      : $@spelldesc146662
-
-Name             : Condensation (id=147972) 
-Class            : Mage
-School           : Physical
-Cast Time        : 1.5 seconds
-Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=201011)   : Unknown effect type (74)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1081
-Description      : $@spelldesc147353
 
 Name             : Icicle (id=148012) [Spell Family (3), Hidden] 
 Class            : Mage
@@ -3006,7 +2874,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30
 #4 (id=226056)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50
-Description      : Arcane Blast, Fireball, and Frostbolt have a $?s112965[$s2%]?s12042[$s1%][$s3%] chance to explode on impact, dealing an additional $s4% damage to the target, and to all other enemies within $157977A1 yards.
+Description      : Arcane Blast, Fireball, and Frostbolt have a $?s137020[$s2%]?s137021[$s1%][$s3%] chance to explode on impact, dealing an additional $s4% damage to the target, and to all other enemies within $157977A1 yards.
 
 Name             : Unstable Magic (id=157977) [Spell Family (3)] 
 Class            : Mage
@@ -3145,9 +3013,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 1
 #2 (id=228488)   : Apply Aura (6) | Unknown effect sub type (467)
                    Base Value: -100 | Scaled Value: -100
-#3 (id=228489)   : Apply Aura (6) | Unknown effect sub type (467)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 4
-#4 (id=228490)   : Apply Aura (6) | Unknown effect sub type (466)
+#3 (id=228489)   : Apply Aura (6) | Unknown effect sub type (466)
                    Base Value: -100 | Scaled Value: -100
 
 Name             : Meteor Burn (id=175396) [Hidden] 
@@ -3394,6 +3260,8 @@ Effects          :
 #2 (id=279640)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Misc Value: 3
                    Affected Spells: Arcane Charge (36032)
+#3 (id=313335)   : Apply Aura (6) | Mod Power Regen (110)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 Description      : Increases your Mana regeneration rate and maximum Mana by ${$m1}.1%.
 
 Arcane Charges increase the damage of affected spells by an additional ${$m2}.2%.
@@ -3692,7 +3560,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=302647)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10
-Description      : Casting Pyroblast while Hotstreak is active has a $s1% chance to instantly reactivate Hotstreak.
+Description      : Casting Pyroblast while Hot Streak is active has a $s1% chance to instantly reactivate Hot Streak.
 
 Name             : Ray of Frost (id=205021) [Spell Family (3)] 
 Class            : Mage
@@ -3705,7 +3573,7 @@ Cooldown         : 60 seconds
 Affecting spells : Ray of Frost (208141)
 Attributes       : ........ ........ ........ ........   ..x..... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3714,7 +3582,7 @@ Effects          :
 #1 (id=302648)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -30 | Scaled Value: -30
 #2 (id=303101)   : Apply Aura (6) | Periodic Damage: frost every 1 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000
 Description      : For the next $d, you can channel a beam of icy power at an enemy.
 
 Ray of Frost slows the target by $m1% and deals $s2 Frost damage every $t2 sec.  Each time Ray of Frost deals damage, its damage is increased by $208141s1%.
@@ -3767,7 +3635,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=302651)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 10 | Scaled Value: 10
+                   Base Value: 25 | Scaled Value: 25
                    Affected Spells: Frostbolt (116), Ice Lance (30455), Frozen Orb (84714), Frozen Orb (84721), Icicle (148022)
 Description      : You can no longer summon your Water Elemental, however Frost Bolt, Ice Lance, Frozen Orb, and Icicles deal $s1% more damage. 
 
@@ -3880,16 +3748,19 @@ Name             : Charged Up (id=205032) [Spell Family (3)]
 Class            : Mage
 School           : Arcane
 Spell Level      : 1
+Duration         : 10 seconds
 Cooldown         : 30 seconds
-Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
+Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ..x..... ........ ........   ........ ........ x....... ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=302659)   : Energize Power (30)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: none
+#2 (id=312441)   : Apply Aura (6) | Unknown effect sub type (94)
+                   Base Value: 0 | Scaled Value: 0
 Description      : When activated, generates $s1 Arcane Charges.
 
 Name             : Controlled Burn (id=205033) [Spell Family (3), Passive] 
@@ -4033,11 +3904,11 @@ Effects          :
 Description      : $@spelldesc205023
 
 Name             : Flame Patch (id=205470) [Spell Family (3)] 
-Class            : Mage
+Class            : Shaman, Mage
 School           : Fire
 Spell Level      : 1
 Range            : 100 yards
-Duration         : 15 seconds
+Duration         : 8 seconds
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ......x. 
@@ -4051,7 +3922,7 @@ Description      : Flame patch burning enemies.
 Tooltip          : Burning
 
 Name             : Flame Patch (id=205472) [Spell Family (3)] 
-Class            : Mage
+Class            : Shaman, Mage
 School           : Fire
 Spell Level      : 44
 Range            : 100 yards
@@ -4133,7 +4004,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
@@ -4177,7 +4048,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=311119)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 1 | Scaled Value: 1
-                   Affected Spells: Invisibility (66), Arcane Explosion (1449), Arcane Missiles (7268), Arcane Blast (30451), Slow (31589), Invisibility (32612), Arcane Barrage (44425), Greater Invisibility (110959), Greater Invisibility (110960), Ancient Teleport: Dalaran (120145), Arcane Orb (153640)
+                   Affected Spells: Invisibility (66), Arcane Explosion (1449), Arcane Missiles (7268), Arcane Blast (30451), Slow (31589), Invisibility (32612), Arcane Barrage (44425), Greater Invisibility (110959), Greater Invisibility (110960), Ancient Teleport: Dalaran (120145), Arcane Orb (153640), Sloooow Down (210732)
 Description      : $@spelldesc205039
 Tooltip          : Damage taken from Arcane spells increased by $s1%.
 
@@ -4186,7 +4057,7 @@ Class            : Mage
 School           : Physical
 Spell Level      : 1
 Range            : 100 yards
-Duration         : 5 seconds
+Duration         : 3 seconds
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
