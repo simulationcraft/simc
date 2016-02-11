@@ -60,7 +60,6 @@ public:
   // Active
   heal_t*   active_beacon_of_light;
   heal_t*   active_enlightened_judgments;
-  action_t* active_hand_of_light_proc;
   action_t* active_blessing_of_might_proc;
   action_t* active_holy_shield_proc;
   heal_t*   active_protector_of_the_innocent;
@@ -283,7 +282,6 @@ public:
     retribution_trinket = nullptr;
     active_beacon_of_light             = nullptr;
     active_enlightened_judgments       = nullptr;
-    active_hand_of_light_proc          = nullptr;
     active_blessing_of_might_proc      = nullptr;
     active_holy_shield_proc            = nullptr;
     active_protector_of_the_innocent   = nullptr;
@@ -537,17 +535,6 @@ public:
     }
 
     return ab::cost();
-  }
-
-  // hand of light handling
-  void trigger_hand_of_light( action_state_t* s )
-  {
-    if ( p() -> passives.hand_of_light -> ok() )
-    {
-      p() -> active_hand_of_light_proc -> base_dd_max = p() -> active_hand_of_light_proc-> base_dd_min = s -> result_amount;
-      p() -> active_hand_of_light_proc -> target = s -> target;
-      p() -> active_hand_of_light_proc -> execute();
-    }
   }
 
   virtual void execute()
@@ -1960,6 +1947,8 @@ struct crusader_strike_t : public holy_power_generator_t
       am *= 1.0 + p() -> talents.fires_of_justice -> effectN( 1 ).percent();
     }
 
+    am *= 1.0 + p() -> get_hand_of_light();
+
     return am;
   }
 
@@ -1974,9 +1963,6 @@ struct crusader_strike_t : public holy_power_generator_t
       int g = data().effectN( 3 ).base_value(); // default is a gain of 1 Holy Power
       p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_crusader_strike ); // apply gain, record as due to CS
     }
-    if ( result_is_hit( s -> result ) )
-      // Trigger Hand of Light procs
-      trigger_hand_of_light( s );
   }
 };
 
@@ -2002,6 +1988,13 @@ struct crusader_flurry_t : public holy_power_generator_t
     base_multiplier *= 1.0 + p -> artifact.sharpened_edge.percent();
   }
 
+  double action_multiplier() const override
+  {
+    double am = holy_power_generator_t::action_multiplier();
+    am *= 1.0 + p() -> get_hand_of_light();
+    return am;
+  }
+
   void execute() override
   {
     holy_power_generator_t::execute();
@@ -2019,9 +2012,6 @@ struct crusader_flurry_t : public holy_power_generator_t
       int g = data().effectN( 3 ).base_value(); // default is a gain of 1 Holy Power
       p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_crusader_strike ); // apply gain, record as due to CS
     }
-    if ( result_is_hit( s -> result ) )
-      // Trigger Hand of Light procs
-      trigger_hand_of_light( s );
   }
 };
 
@@ -2057,6 +2047,13 @@ struct zeal_t : public holy_power_generator_t
     retribution_trinket_trigger();
   }
 
+  double action_multiplier() const override
+  {
+    double am = holy_power_generator_t::action_multiplier();
+    am *= 1.0 + p() -> get_hand_of_light();
+    return am;
+  }
+
   void impact( action_state_t* s ) override
   {
     holy_power_generator_t::impact( s );
@@ -2071,20 +2068,17 @@ struct zeal_t : public holy_power_generator_t
       int g = data().effectN( 3 ).base_value(); // default is a gain of 1 Holy Power
       p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_crusader_strike ); // apply gain, record as due to CS
     }
-    if ( result_is_hit( s -> result ) )
-      // Trigger Hand of Light procs
-      trigger_hand_of_light( s );
   }
 };
 
 // Blade of Justice =========================================================
 
 
-struct bol_blade_of_justice_t : public holy_power_generator_t
+struct blade_of_light_t : public paladin_melee_attack_t
 {
   const spell_data_t* sword_of_light;
-  bol_blade_of_justice_t( paladin_t* p, const std::string& options_str )
-    : holy_power_generator_t( "blade_of_justice", p, p -> find_class_spell( "Blade of Justice" ), true ),
+  blade_of_light_t( paladin_t* p, const std::string& options_str )
+    : paladin_melee_attack_t( "blade_of_light", p, p -> find_spell( 193115 ), true ),
       sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
   {
     parse_options( options_str );
@@ -2094,42 +2088,17 @@ struct bol_blade_of_justice_t : public holy_power_generator_t
                                        +  p -> passives.sword_of_light -> effectN( 4 ).percent();
     base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
 
-    base_multiplier *= 1.0 + p -> artifact.deliver_the_justice.percent();
-
     background = true;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = holy_power_generator_t::action_multiplier();
-
-    // Virtue's Blade buffs BoJ damage by 25%
-    if ( p() -> talents.virtues_blade -> ok() )
-    {
-      am *= 1.0 + p() -> talents.virtues_blade -> effectN( 1 ).percent();
-    }
-
-    return am;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    holy_power_generator_t::impact( s );
-
-    // TODO: does this happen?
-    if ( result_is_hit( s -> result ) )
-      // Trigger Hand of Light procs
-      trigger_hand_of_light( s );
   }
 };
 
 struct blade_of_justice_t : public holy_power_generator_t
 {
-  bol_blade_of_justice_t* bol_proc;
+  blade_of_light_t* bol_proc;
   const spell_data_t* sword_of_light;
   blade_of_justice_t( paladin_t* p, const std::string& options_str )
     : holy_power_generator_t( "blade_of_justice", p, p -> find_class_spell( "Blade of Justice" ), true ),
-      bol_proc( new bol_blade_of_justice_t( p, options_str ) ),
+      bol_proc( new blade_of_light_t( p, options_str ) ),
       sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
   {
     parse_options( options_str );
@@ -2153,6 +2122,8 @@ struct blade_of_justice_t : public holy_power_generator_t
     {
       am *= 1.0 + p() -> talents.virtues_blade -> effectN( 1 ).percent();
     }
+
+    am *= 1.0 + p() -> get_hand_of_light();
 
     return am;
   }
@@ -2184,10 +2155,6 @@ struct blade_of_justice_t : public holy_power_generator_t
       int g = data().effectN( 3 ).base_value(); // default is a gain of 2 Holy Power
       p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_blade_of_justice ); // apply gain, record as due to BoJ
     }
-
-    if ( result_is_hit( s -> result ) )
-      // Trigger Hand of Light procs
-      trigger_hand_of_light( s );
   }
 };
 
@@ -2211,6 +2178,13 @@ struct blade_of_wrath_t : public holy_power_generator_t
     base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
 
     base_multiplier *= 1.0 + p -> artifact.deliver_the_justice.percent();
+  }
+
+  double action_multiplier() const override
+  {
+    double am = holy_power_generator_t::action_multiplier();
+    am *= 1.0 + p() -> get_hand_of_light();
+    return am;
   }
 
   void execute() override
@@ -2252,10 +2226,6 @@ struct blade_of_wrath_t : public holy_power_generator_t
         p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_blade_of_justice ); // apply gain, record as due to BoJ
       }
     }
-
-    if ( result_is_hit( s -> result ) )
-      // Trigger Hand of Light procs
-      trigger_hand_of_light( s );
   }
 };
 
@@ -2279,6 +2249,14 @@ struct divine_hammer_tick_t : public paladin_melee_attack_t
     base_multiplier *= 1.0 + p -> artifact.deliver_the_justice.percent();
   }
 
+  double action_multiplier() const override
+  {
+    double am = paladin_melee_attack_t::action_multiplier();
+    if ( !( p() -> bugs ) )
+      am *= 1.0 + p() -> get_hand_of_light();
+    return am;
+  }
+
   double composite_target_multiplier( player_t* t ) const override
   {
     double m = paladin_melee_attack_t::composite_target_multiplier( t );
@@ -2296,18 +2274,6 @@ struct divine_hammer_tick_t : public paladin_melee_attack_t
     }
 
     return m;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    paladin_melee_attack_t::impact( s );
-
-    if ( !( p() -> bugs ) )
-    {
-      if ( result_is_hit( s -> result ) )
-      // Trigger Hand of Light procs
-        trigger_hand_of_light( s );
-    }
   }
 };
 
@@ -2370,7 +2336,7 @@ struct divine_hammer_t : public paladin_spell_t
 
 // Divine Storm =============================================================
 
-
+// TODO(mserrano): this is wrong
 struct echoed_divine_storm_t: public holy_power_consumer_t
 {
   echoed_divine_storm_t( paladin_t* p, const std::string& options_str )
@@ -2391,14 +2357,11 @@ struct echoed_divine_storm_t: public holy_power_consumer_t
     return 0;
   }
 
-  void impact( action_state_t* s ) override
+  double action_multiplier() const override
   {
-    holy_power_consumer_t::impact( s );
-
-    // TODO(mserrano): is this right?
-    if ( result_is_hit( s -> result ) )
-      // Trigger Hand of Light procs
-      trigger_hand_of_light( s );
+    double am = holy_power_consumer_t::action_multiplier();
+    am *= 1.0 + p() -> get_hand_of_light();
+    return am;
   }
 };
 
@@ -2439,13 +2402,11 @@ struct divine_storm_t: public holy_power_consumer_t
     }
   }
 
-  void impact( action_state_t* s ) override
+  double action_multiplier() const override
   {
-    holy_power_consumer_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-      // Trigger Hand of Light procs
-      trigger_hand_of_light( s );
+    double am = holy_power_consumer_t::action_multiplier();
+    am *= 1.0 + p() -> get_hand_of_light();
+    return am;
   }
 };
 
@@ -2527,60 +2488,6 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       hotr_aoe -> target = execute_state -> target;
       hotr_aoe -> execute();
     }
-  }
-};
-
-// Hand of Light proc =======================================================
-
-struct hand_of_light_proc_t : public paladin_melee_attack_t
-{
-  hand_of_light_proc_t( paladin_t* p )
-    : paladin_melee_attack_t( "hand_of_light", p, spell_data_t::nil(), false )
-  {
-    school = SCHOOL_HOLY;
-    may_crit    = false;
-    may_miss    = false;
-    may_dodge   = false;
-    may_parry   = false;
-    may_glance  = false;
-    background  = true;
-    trigger_gcd = timespan_t::zero();
-    id          = 96172;
-
-    // No weapon multiplier
-    weapon_multiplier = 0.0;
-    // Note that setting weapon_multiplier=0.0 prevents STATE_MUL_DA from being added
-    // to snapshot_flags because both base_dd_min && base_dd_max are zero, so we need
-    // to do it specifically in init().
-    // Alternate solution is to set weapon = NULL, but we have to use init() to disable
-    // other multipliers (Versatility) anyway.
-  }
-
-  // Disable multipliers in init() so that it doesn't double-dip on anything
-  virtual void init() override
-  {
-    paladin_melee_attack_t::init();
-    // Disable the snapshot_flags for all multipliers, but specifically allow factors in
-    // action_state_t::composite_da_multiplier() to be called. This lets us use
-    // action_multiplier() to apply the HoL factor, but we need to divide by the other
-    // factors in composite_da_multiplier() to make sure we don't double-dip.
-    snapshot_flags &= STATE_NO_MULTIPLIER;
-    snapshot_flags |= STATE_MUL_DA;
-
-    // Note: I've turned off ALL other multipliers here now that CoE is gone. If we need to enable
-    // specific ones later, we'll have to remove the STATE_NO_MULTIPLIER flag and disable
-    // STATE_VERSATILITY (and any other relevant flags) individually.
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = static_cast<paladin_t*>( player ) -> get_hand_of_light();
-
-    // HoL doesn't double dip on anything in composite_player_multiplier(): avenging wrath, GoWoG, Divine Shield, etc.
-    // Remove it here by dividing by the resulting multiplier.
-    am /= p() -> composite_player_multiplier( SCHOOL_HOLY );
-
-    return am;
   }
 };
 
@@ -2843,12 +2750,11 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
 
 // Templar's Verdict ========================================================================
 
-// Stupid hack.
-// TODO(mserrano): fix this.
+// TODO(mserrano): Are any of these multipliers correct?
 struct echoed_templars_verdict_t : public holy_power_consumer_t
 {
   echoed_templars_verdict_t( paladin_t* p, const std::string& options_str )
-    : holy_power_consumer_t( "templars_verdict", p, p -> find_class_spell( "Templar's Verdict" ), true )
+    : holy_power_consumer_t( "echoed_verdict", p, p -> find_spell( 186805 ) , true )
   {
     parse_options( options_str );
 
@@ -3860,7 +3766,6 @@ void paladin_t::init_action_list()
     return;
   }
 
-  active_hand_of_light_proc          = new hand_of_light_proc_t         ( this );
   active_blessing_of_might_proc      = new blessing_of_might_proc_t     ( this );
 
   // create action priority lists
