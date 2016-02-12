@@ -3086,6 +3086,28 @@ struct tigers_fury_t : public cat_attack_t
 
 struct thrash_cat_t : public cat_attack_t
 {
+  struct shadow_thrash_t : public cat_attack_t
+  {
+    struct shadow_thrash_tick_t : public cat_attack_t
+    {
+      shadow_thrash_tick_t( druid_t* p ) :
+        cat_attack_t( "shadow_thrash", p, p -> find_spell( 210687 ) )
+      {
+        background = dual = true;
+        aoe = -1;
+      }
+    };
+
+    shadow_thrash_t( druid_t* p ) :
+      cat_attack_t( "shadow_thrash", p, p -> artifact.shadow_thrash.data().effectN( 1 ).trigger() )
+    {
+      background = true;
+      tick_action = new shadow_thrash_tick_t( p );
+    }
+  };
+
+  shadow_thrash_t* shadow_thrash;
+
   thrash_cat_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "thrash_cat", p, p -> find_spell( 106830 ), options_str )
   {
@@ -3097,6 +3119,21 @@ struct thrash_cat_t : public cat_attack_t
 
     base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
     dot_duration   *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
+
+    if ( p -> artifact.shadow_thrash.rank() )
+    {
+      shadow_thrash = new shadow_thrash_t( p );
+      add_child( shadow_thrash );
+    }
+  }
+
+  void execute() override
+  {
+    cat_attack_t::execute();
+
+    // TOCHECK: Procs just on cast or on ticks too?
+    if ( shadow_thrash && p() -> rppm.shadow_thrash -> trigger() )
+      shadow_thrash -> execute();
   }
 };
 
@@ -5772,9 +5809,11 @@ void druid_t::init_spells()
 
   // Feral -- Fangs of Ashamane
   artifact.ashamanes_frenzy             = find_artifact_spell( "Ashamane's Frenzy" );
+  artifact.open_wounds                  = find_artifact_spell( "Open Wounds" );
+
+  // NYI
   artifact.ashamanes_energy             = find_artifact_spell( "Ashamane's Energy" );
   artifact.ashamanes_bite               = find_artifact_spell( "Ashamane's Bite" );
-  artifact.open_wounds                  = find_artifact_spell( "Open Wounds" );
   artifact.shadow_thrash                = find_artifact_spell( "Shadow Thrash" );
   artifact.razor_fangs                  = find_artifact_spell( "Razor Fangs" );
   artifact.honed_instincts              = find_artifact_spell( "Honed Instincts" );
