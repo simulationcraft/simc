@@ -2605,6 +2605,10 @@ struct fury_of_air_t : public shaman_spell_t
 
     tick_action = new fury_of_air_aoe_t( player );
   }
+
+  // Infinite duration, so lets go for twice expected time gimmick.
+  timespan_t composite_dot_duration( const action_state_t* ) const override
+  { return sim -> expected_iteration_time * 2; }
 };
 
 struct earthen_spike_t : public shaman_attack_t
