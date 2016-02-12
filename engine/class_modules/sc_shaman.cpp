@@ -3047,11 +3047,6 @@ struct lightning_bolt_t : public shaman_spell_t
   lightning_bolt_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "lightning_bolt", player, player -> find_specialization_spell( "Lightning Bolt" ), options_str )
   {
-    if ( player -> specialization() == SHAMAN_ENHANCEMENT )
-    {
-      attack_power_mod.direct = 0.1; // Hardcoded to tooltip
-    }
-
     base_multiplier *= 1.0 + player -> artifact.call_the_thunder.percent();
 
     if ( player -> mastery.elemental_overload -> ok() )
