@@ -323,7 +323,6 @@ public:
     const spell_data_t* landslide;
 
     const spell_data_t* tempest;
-    const spell_data_t* spiritual_affinity;
     const spell_data_t* sundering;
 
     const spell_data_t* fury_of_air;
@@ -3246,8 +3245,6 @@ struct feral_spirit_spell_t : public shaman_spell_t
     shaman_spell_t( "feral_spirit", player, player -> find_specialization_spell( "Feral Spirit" ), options_str )
   {
     harmful   = false;
-
-    cooldown -> duration += player -> talent.spiritual_affinity -> effectN( 1 ).time_value();
   }
 
   virtual void execute() override
@@ -4727,7 +4724,6 @@ void shaman_t::init_spells()
   talent.landslide                   = find_talent_spell( "Landslide"            );
 
   talent.tempest                     = find_talent_spell( "Tempest"              );
-  talent.spiritual_affinity          = find_talent_spell( "Spiritual Affinity"   );
   talent.sundering                   = find_talent_spell( "Sundering"            );
 
   talent.fury_of_air                 = find_talent_spell( "Fury of Air"          );
