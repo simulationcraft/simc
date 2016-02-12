@@ -2810,7 +2810,7 @@ struct rake_t : public cat_attack_t
     cat_attack_t( "rake", p, p -> find_specialization_spell( "Rake" ), options_str ),
     stealth_multiplier( 0.0 )
   {
-    special = true;
+    direct_bleed = true;
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
 
     bleed_spell           = p -> find_spell( 155722 );
