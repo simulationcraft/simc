@@ -4907,6 +4907,11 @@ void shaman_t::trigger_stormfury( const action_state_t* state )
     return;
   }
 
+  if ( ! attack -> weapon || attack -> weapon -> slot != SLOT_MAIN_HAND )
+  {
+    return;
+  }
+
   double proc_chance = spec.stormfury -> proc_chance();
   proc_chance += cache.mastery() * mastery.enhanced_elements -> effectN( 3 ).mastery_value();
 
