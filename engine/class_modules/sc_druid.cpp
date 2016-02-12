@@ -91,6 +91,7 @@ struct druid_td_t : public actor_target_data_t
     dot_t* rip;
     dot_t* shadow_rake;
     dot_t* shadow_rip;
+    dot_t* shadow_thrash;
     dot_t* stellar_flare;
     dot_t* sunfire;
     dot_t* starfall;
@@ -116,6 +117,17 @@ struct druid_td_t : public actor_target_data_t
            dots.rejuvenation  -> is_ticking() ||
            dots.lifebloom     -> is_ticking() ||
            dots.wild_growth   -> is_ticking();
+  }
+
+  unsigned feral_tier19_4pc_bleeds() // TOCHECK
+  {
+    return dots.rip -> is_ticking()
+         + dots.rake -> is_ticking()
+         + dots.thrash_cat -> is_ticking()
+         + dots.ashamanes_frenzy -> is_ticking()
+         + dots.shadow_rip -> is_ticking()
+         + dots.shadow_rake -> is_ticking()
+         + dots.shadow_thrash -> is_ticking();
   }
 
   void reset()
@@ -401,6 +413,7 @@ public:
     gain_t* feral_tier16_4pc;
     gain_t* feral_tier17_2pc;
     gain_t* feral_tier18_4pc;
+    gain_t* feral_tier19_2pc;
 
     // Guardian (Bear)
     gain_t* bear_form;
@@ -3040,6 +3053,9 @@ struct shred_t : public cat_attack_t
     if ( t -> debuffs.bleeding -> up() )
       tm *= 1.0 + p() -> spec.swipe -> effectN( 2 ).percent();
 
+    if ( p() -> sets.has_set_bonus( DRUID_FERAL, T19, B4 ) )
+      tm *= 1.0 + td( t ) -> feral_tier19_4pc_bleeds() * p() -> sets.set( DRUID_FERAL, T19, B4 ) -> effectN( 1 ).percent();
+
     return tm;
   }
 
@@ -3151,6 +3167,9 @@ public:
 
     if ( t -> debuffs.bleeding -> up() )
       tm *= 1.0 + data().effectN( 2 ).percent();
+
+    if ( p() -> sets.has_set_bonus( DRUID_FERAL, T19, B4 ) )
+      tm *= 1.0 + td( t ) -> feral_tier19_4pc_bleeds() * p() -> sets.set( DRUID_FERAL, T19, B4 ) -> effectN( 1 ).percent();
 
     return tm;
   }
@@ -3279,6 +3298,9 @@ struct thrash_cat_t : public cat_attack_t
     // TOCHECK: Procs just on cast or on ticks too?
     if ( shadow_thrash && p() -> rppm.shadow_thrash -> trigger() )
       shadow_thrash -> execute();
+
+    if ( attackHit && p() -> sets.has_set_bonus( DRUID_FERAL, T19, B2 ) )
+      p() -> resource_gain( RESOURCE_COMBO_POINT, 1, p() -> gain.feral_tier19_2pc ); // TODO: Get CP value from spell data when its available.
   }
 };
 
@@ -6738,6 +6760,7 @@ void druid_t::init_gains()
   gain.feral_tier16_4pc      = get_gain( "feral_tier16_4pc"      );
   gain.feral_tier17_2pc      = get_gain( "feral_tier17_2pc"      );
   gain.feral_tier18_4pc      = get_gain( "feral_tier18_4pc"      );
+  gain.feral_tier19_2pc      = get_gain( "feral_tier19_2pc"      );
   gain.guardian_tier17_2pc   = get_gain( "guardian_tier17_2pc"   );
   gain.guardian_tier18_2pc   = get_gain( "guardian_tier18_2pc"   );
 }
@@ -7541,6 +7564,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   dots.rip              = target.get_dot( "rip",              &source );
   dots.shadow_rake      = target.get_dot( "ashamanes_rake",   &source );
   dots.shadow_rip       = target.get_dot( "ashamanes_rip",    &source );
+  dots.shadow_thrash    = target.get_dot( "shadow_thrash",    &source );
   dots.sunfire          = target.get_dot( "sunfire",          &source );
   dots.starfall         = target.get_dot( "starfall",         &source );
   dots.thrash_cat       = target.get_dot( "thrash_cat",       &source );

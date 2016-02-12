@@ -1644,6 +1644,8 @@ class SpellDataGenerator(DataGenerator):
 		  ( 210713, 2 ),       # Ashamane's Rake (Fangs of Ashamane artifact trait spell)
 		  ( 210705, 2 ),       # Ashamane's Rip (Fangs of Ashamane artifact trait spell)
 		  ( 210649, 2 ),       # Feral Instinct (Fangs of Ashamane artifact trait)
+		  ( 211140, 2 ),       # Feral tier19_2pc
+		  ( 211142, 2 ),       # Feral tier19_4pc
         ),
     ]
 

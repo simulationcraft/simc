@@ -670,6 +670,7 @@ enum set_bonus_type_e
   T17,
   T18,
   T18LFR,
+  T19,
 
   SET_BONUS_MAX
 };
