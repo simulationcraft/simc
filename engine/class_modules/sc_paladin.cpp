@@ -7,8 +7,9 @@
     - everything, pretty much :(
 
   TODO (ret):
+    - Blinding Light & Repentance
+    - Equality & Eye for an Eye
     - bugfixes & cleanup
-    - Turalyon's Might (properly)
     - figure out why spells 193984-193987 can't be found
     - A few Artifact Powers
     - Verify speculative implementations of some artifact powers + BoM
@@ -91,7 +92,6 @@ public:
 
     buff_t* zeal;
     buff_t* seal_of_light;
-    buff_t* turalyons_might;
     buff_t* blessing_of_might;
     buff_t* conviction;
 
@@ -216,7 +216,6 @@ public:
 
     // Retribution
     const spell_data_t* execution_sentence;
-    const spell_data_t* turalyons_might;
     const spell_data_t* consecration;
     const spell_data_t* fires_of_justice;
     const spell_data_t* crusader_flurry;
@@ -224,8 +223,6 @@ public:
     const spell_data_t* virtues_blade;
     const spell_data_t* blade_of_wrath;
     const spell_data_t* divine_hammer;
-    const spell_data_t* judgments_of_the_bold;
-    const spell_data_t* might_of_virtue;
     const spell_data_t* mass_judgment;
     const spell_data_t* blaze_of_light;
     const spell_data_t* divine_steed;
@@ -1785,10 +1782,6 @@ struct holy_power_generator_t : public paladin_melee_attack_t
     if ( td -> buffs.debuffs_judgment -> up() )
     {
       double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent();
-      if ( p() -> talents.judgments_of_the_bold -> ok() )
-      {
-        judgment_multiplier += p() -> talents.judgments_of_the_bold -> effectN( 1 ).percent();
-      }
       m *= judgment_multiplier;
     }
 
@@ -1829,10 +1822,6 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
     if ( td -> buffs.debuffs_judgment -> up() )
     {
       double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent();
-      if ( p() -> talents.judgments_of_the_bold -> ok() )
-      {
-        judgment_multiplier += p() -> talents.judgments_of_the_bold -> effectN( 1 ).percent();
-      }
       m *= judgment_multiplier;
     }
 
@@ -2266,10 +2255,6 @@ struct divine_hammer_tick_t : public paladin_melee_attack_t
     if ( ( ! ( p() -> bugs ) ) && ( td -> buffs.debuffs_judgment -> up() ) )
     {
       double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent();
-      if ( p() -> talents.judgments_of_the_bold -> ok() )
-      {
-        judgment_multiplier += p() -> talents.judgments_of_the_bold -> effectN( 1 ).percent();
-      }
       m *= judgment_multiplier;
     }
 
@@ -2600,26 +2585,6 @@ struct judgment_t : public paladin_melee_attack_t
     ashen_strike_impact_spell = new ashen_strike_impact_t( p );
   }
 
-  virtual void execute() override
-  {
-    paladin_melee_attack_t::execute();
-
-    // Special things that happen when Judgment succeeds
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      // +1 Holy Power for Ret
-      if ( p() -> specialization() == PALADIN_RETRIBUTION )
-      {
-        // ... but only with Might of Virtue
-        if ( p() -> talents.might_of_virtue -> ok() )
-        {
-          // apply gain, attribute gain to Judgment
-          p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_judgment );
-        }
-      }
-    }
-  }
-
   // Special things that happen when Judgment damages target
   virtual void impact( action_state_t* s ) override
   {
@@ -2644,24 +2609,6 @@ struct judgment_t : public paladin_melee_attack_t
     }
 
     paladin_melee_attack_t::impact( s );
-  }
-
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double m = paladin_melee_attack_t::composite_target_multiplier( t );
-
-    if ( p() -> talents.might_of_virtue -> ok() )
-    {
-      paladin_td_t* td = this -> td( t );
-
-      if ( td -> buffs.debuffs_judgment -> up() )
-      {
-        m *= 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent();
-      }
-    }
-
-    return m;
   }
 };
 
@@ -2887,124 +2834,10 @@ struct holy_wrath_t : public paladin_spell_t
     if ( td -> buffs.debuffs_judgment -> up() )
     {
       double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent();
-      if ( p() -> talents.judgments_of_the_bold -> ok() )
-      {
-        judgment_multiplier += p() -> talents.judgments_of_the_bold -> effectN( 1 ).percent();
-      }
       m *= judgment_multiplier;
     }
 
     return m;
-  }
-
-  void tick( dot_t* d ) override
-  {
-    paladin_spell_t::tick( d );
-  }
-};
-
-// Turalyon's Might
-
-// This one is a doozy.
-
-struct turalyons_might_tick_t : public paladin_spell_t
-{
-  turalyons_might_tick_t( paladin_t* p )
-    : paladin_spell_t( "turalyons_might_tick", p, p -> find_spell( 204616 ) )
-  {
-    aoe         = -1;
-    dual        = true;
-    direct_tick = true;
-    background  = true;
-    may_crit    = true;
-  }
-
-  virtual void execute() override
-  {
-    paladin_spell_t::execute();
-  }
-};
-
-struct turalyons_might_t;
-
-struct turalyons_might_charge_t : public paladin_spell_t
-{
-  // Maybe this is supposed to be 204930?
-  turalyons_might_charge_t( paladin_t* p )
-    : paladin_spell_t( "turalyons_might_charge", p, p -> find_spell( 204929 ) )
-  {
-    aoe = -1;
-    dual = true;
-    background = true;
-    may_crit = true;
-
-    // not on GCD, usable off-GCD
-    trigger_gcd = timespan_t::zero();
-    use_off_gcd = true;
-  }
-
-  virtual void execute() override
-  {
-    paladin_spell_t::execute();
-    p() -> buffs.turalyons_might -> expire();
-  }
-
-  bool ready() override
-  {
-    return p() -> buffs.turalyons_might -> up();
-  }
-};
-
-struct turalyons_might_t : public paladin_spell_t
-{
-  turalyons_might_charge_t* child;
-
-  turalyons_might_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "turalyons_might", p, p -> find_spell( 198051 ) )
-  {
-    parse_options( options_str );
-
-    background = ! ( p -> talents.turalyons_might -> ok() );
-
-    hasted_ticks   = false;
-    may_miss       = false;
-    tick_zero      = true;
-
-    dot_duration           = timespan_t::from_seconds( 8.0 );
-    base_tick_time         = timespan_t::from_seconds( 2.0 );
-
-    tick_action = new turalyons_might_tick_t( p );
-
-    // not on GCD, usable off-GCD
-    trigger_gcd = timespan_t::zero();
-    use_off_gcd = true;
-
-    child = new turalyons_might_charge_t( p );
-  }
-
-  virtual void execute() override
-  {
-    paladin_spell_t::execute();
-    p() -> buffs.turalyons_might -> trigger();
-  }
-
-  virtual void tick( dot_t* dot ) override
-  {
-    // As of right now on the alpha, the ticks continue to happen even when
-    // the charge has occurred.
-    //if ( p() -> buffs.turalyons_might -> up() )
-    paladin_spell_t::tick( dot );
-    //else
-    //  cancel();
-  }
-
-  virtual void last_tick( dot_t* dot ) override
-  {
-    // okay, this is a horror show of a hack.
-    // In reality, this doesn't automatically happen.
-    // But putting it in the APL seems to cause trouble.
-    child -> schedule_execute();
-    paladin_spell_t::last_tick( dot );
   }
 };
 
@@ -3121,8 +2954,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   actor_target_data_t( target, paladin )
 {
   dots.execution_sentence = target -> get_dot( "execution_sentence", paladin );
-  buffs.debuffs_judgment = buff_creator_t( *this, "judgment", paladin -> find_spell( 197277 ))
-    .duration( ( ( paladin -> talents.mass_judgment -> ok() ) ? 2 : 1 ) * paladin -> find_spell( 197277 ) -> duration() );
+  buffs.debuffs_judgment = buff_creator_t( *this, "judgment", paladin -> find_spell( 197277 ));
 }
 
 // paladin_t::create_action =================================================
@@ -3147,7 +2979,6 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "divine_shield"             ) return new divine_shield_t            ( this, options_str );
   if ( name == "divine_storm"              ) return new divine_storm_t             ( this, options_str );
   if ( name == "execution_sentence"        ) return new execution_sentence_t       ( this, options_str );
-  if ( name == "turalyons_might"           ) return new turalyons_might_t          ( this, options_str );
   if ( name == "hand_of_sacrifice"         ) return new hand_of_sacrifice_t        ( this, options_str );
   if ( name == "hammer_of_justice"         ) return new hammer_of_justice_t        ( this, options_str );
   if ( name == "hammer_of_the_righteous"   ) return new hammer_of_the_righteous_t  ( this, options_str );
@@ -3335,9 +3166,6 @@ void paladin_t::create_buffs()
   buffs.seal_of_light                  = buff_creator_t( this, "seal_of_light" ).spell( find_spell( 202273 ) )
                                           .add_invalidate( CACHE_ATTACK_SPEED );
   buffs.conviction                     = buff_creator_t( this, "conviction" ).spell( find_spell( 209785 ) );
-  // this feels like a horrible hack. Open to suggestions.
-  buffs.turalyons_might                = buff_creator_t( this, "turalyons_might" ).spell( find_spell( 198051 ) )
-                                          .duration( timespan_t::from_seconds( 8 ) );
   buffs.blessing_of_might              = buff_creator_t( this, "blessing_of_might" ).spell( find_spell( 203528 ) );
 
   // Tier Bonuses
@@ -3855,7 +3683,6 @@ void paladin_t::init_spells()
   talents.final_stand                = find_talent_spell( "Final Stand" );
 
   talents.execution_sentence         = find_talent_spell( "Execution Sentence" );
-  talents.turalyons_might            = find_talent_spell( "Turalyon's Might" );
   talents.consecration               = find_talent_spell( "Consecration" );
   talents.fires_of_justice           = find_talent_spell( "The Fires of Justice" );
   talents.crusader_flurry            = find_talent_spell( "Crusader Flurry" );
@@ -3863,8 +3690,6 @@ void paladin_t::init_spells()
   talents.virtues_blade              = find_talent_spell( "Virtue's Blade" );
   talents.blade_of_wrath             = find_talent_spell( "Blade of Wrath" );
   talents.divine_hammer              = find_talent_spell( "Divine Hammer" );
-  talents.judgments_of_the_bold      = find_talent_spell( "Judgments of the Bold" );
-  talents.might_of_virtue            = find_talent_spell( "The Might of Virtue" );
   talents.mass_judgment              = find_talent_spell( "Mass Judgment" );
   talents.blaze_of_light             = find_talent_spell( "Blaze of Light" );
   talents.divine_steed               = find_talent_spell( "Divine Steed" );
@@ -4630,10 +4455,6 @@ expr_t* paladin_t::create_expression( action_t* a,
 
       if ( boj_cd -> remains() < shortest_hpg_time )
         shortest_hpg_time = boj_cd -> remains();
-
-      if ( paladin.talents.might_of_virtue -> ok() )
-        if ( j_cd -> remains() < shortest_hpg_time )
-          shortest_hpg_time = j_cd -> remains();
 
       if ( gcd_ready > shortest_hpg_time )
         return gcd_ready.total_seconds();
