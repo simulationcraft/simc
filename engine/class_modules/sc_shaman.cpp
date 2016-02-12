@@ -163,6 +163,7 @@ public:
     stat_buff_t* tier13_4pc_caster;
 
     buff_t* flametongue;
+    buff_t* frostbrand;
     buff_t* stormfury;
     buff_t* crash_lightning;
     haste_buff_t* windsong;
@@ -257,6 +258,7 @@ public:
     const spell_data_t* enhancement_shaman;
     const spell_data_t* flametongue;
     const spell_data_t* flurry;
+    const spell_data_t* frostbrand;
     const spell_data_t* maelstrom_weapon;
     const spell_data_t* stormfury;
     const spell_data_t* stormlash;
@@ -435,6 +437,7 @@ public:
   // triggers
   void trigger_windfury_weapon( const action_state_t* );
   void trigger_flametongue_weapon( const action_state_t* );
+  void trigger_frostbrand_weapon( const action_state_t* );
   void trigger_tier15_2pc_caster( const action_state_t* );
   void trigger_tier16_2pc_melee( const action_state_t* );
   void trigger_tier16_4pc_melee( const action_state_t* );
@@ -801,6 +804,7 @@ private:
 public:
   bool may_proc_windfury;
   bool may_proc_flametongue;
+  bool may_proc_frostbrand;
   bool may_proc_maelstrom_weapon;
   bool may_proc_stormfury;
 
@@ -808,6 +812,7 @@ public:
     base_t( token, p, s ),
     may_proc_windfury( p -> spec.windfury -> ok() ),
     may_proc_flametongue( p -> spec.flametongue -> ok() ),
+    may_proc_frostbrand( p -> spec.frostbrand -> ok() ),
     may_proc_maelstrom_weapon( p -> spec.maelstrom_weapon -> ok() ),
     may_proc_stormfury( p -> spec.stormfury -> ok() )
   {
@@ -844,6 +849,7 @@ public:
     p() -> trigger_windfury_weapon( state );
     p() -> trigger_stormfury( state );
     p() -> trigger_flametongue_weapon( state );
+    p() -> trigger_frostbrand_weapon( state );
     p() -> trigger_unleash_doom( state );
     //p() -> trigger_tier16_2pc_melee( state ); TODO: Legion will change this
   }
@@ -2465,6 +2471,24 @@ struct flametongue_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p() -> buff.flametongue -> trigger();
+  }
+};
+
+// Frostbrand Spell =========================================================
+
+struct frostbrand_t : public shaman_spell_t
+{
+  frostbrand_t( shaman_t* player, const std::string& options_str ) :
+    shaman_spell_t( "frostbrand", player, player -> find_specialization_spell( "Frostbrand" ), options_str )
+  {
+    base_multiplier *= 1.0 + player -> artifact.surge_of_elements.percent();
+  }
+
+  void execute() override
+  {
+    shaman_spell_t::execute();
+
+    p() -> buff.frostbrand -> trigger();
   }
 };
 
@@ -4468,6 +4492,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "fire_elemental"          ) return new           fire_elemental_t( this, options_str );
   if ( name == "flametongue"             ) return new              flametongue_t( this, options_str );
   if ( name == "flame_shock"             ) return new              flame_shock_t( this, options_str );
+  if ( name == "frostbrand"              ) return new               frostbrand_t( this, options_str );
   if ( name == "frost_shock"             ) return new              frost_shock_t( this, options_str );
   if ( name == "fury_of_air"             ) return new              fury_of_air_t( this, options_str );
   if ( name == "lava_beam"               ) return new                lava_beam_t( this, options_str );
@@ -4682,6 +4707,7 @@ void shaman_t::init_spells()
   spec.dual_wield            = find_specialization_spell( "Dual Wield" );
   spec.enhancement_shaman    = find_specialization_spell( "Enhancement Shaman" );
   spec.flametongue           = find_specialization_spell( "Flametongue" );
+  spec.frostbrand            = find_specialization_spell( "Frostbrand" );
   spec.flurry                = find_specialization_spell( "Flurry" );
   spec.maelstrom_weapon      = find_specialization_spell( "Maelstrom Weapon" );
   spec.stormfury             = find_specialization_spell( "Stormfury" );
@@ -5133,6 +5159,20 @@ void shaman_t::trigger_flametongue_weapon( const action_state_t* state )
   flametongue -> schedule_execute();
 }
 
+void shaman_t::trigger_frostbrand_weapon( const action_state_t* state )
+{
+  assert( debug_cast< shaman_attack_t* >( state -> action ) != nullptr && "Frostbrand called on invalid action type" );
+  shaman_attack_t* attack = debug_cast< shaman_attack_t* >( state -> action );
+  if ( ! attack -> may_proc_frostbrand )
+    return;
+
+  if ( ! attack -> weapon )
+    return;
+
+  if ( ! buff.frostbrand -> up() )
+    return;
+}
+
 // shaman_t::init_buffs =====================================================
 
 void shaman_t::create_buffs()
@@ -5192,6 +5232,7 @@ void shaman_t::create_buffs()
                                .chance( sets.has_set_bonus( SHAMAN_ELEMENTAL, T18, B4 ) );
 
   buff.flametongue = buff_creator_t( this, "flametongue", find_specialization_spell( "Flametongue" ) -> effectN( 1 ).trigger() );
+  buff.frostbrand = buff_creator_t( this, "frostbrand", spec.frostbrand );
   buff.stormfury = buff_creator_t( this, "stormfury", find_spell( 201846 ) )
                    .activated( false ) // TODO: Need a delay on this
                    .max_stack( find_spell( 201846 ) -> initial_stacks() + talent.tempest -> effectN( 1 ).base_value() );
