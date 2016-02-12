@@ -326,6 +326,7 @@ public:
 
     const spell_data_t* tempest;
     const spell_data_t* sundering;
+    const spell_data_t* stormbringer;
 
     const spell_data_t* fury_of_air;
     const spell_data_t* hailstorm;
@@ -2220,6 +2221,11 @@ struct lava_lash_t : public shaman_attack_t
     base_multiplier *= 1.0 + player -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + player -> artifact.forged_in_lava.percent();
 
+    if ( player -> talent.stormbringer -> ok() )
+    {
+      cooldown -> duration += player -> talent.stormbringer -> effectN( 3 ).time_value();
+    }
+
     parse_options( options_str );
     weapon              = &( player -> off_hand_weapon );
 
@@ -2670,7 +2676,10 @@ struct lightning_shield_t : public shaman_spell_t
   {
     harmful = false;
 
-    add_child( player -> lightning_shield );
+    if ( player -> lightning_shield )
+    {
+      add_child( player -> lightning_shield );
+    }
   }
 
   virtual void execute() override
@@ -3057,6 +3066,15 @@ struct lightning_bolt_t : public shaman_spell_t
     shaman_spell_t( "lightning_bolt", player, player -> find_specialization_spell( "Lightning Bolt" ), options_str )
   {
     base_multiplier *= 1.0 + player -> artifact.call_the_thunder.percent();
+
+    // TODO: Is it still 10% per Maelstrom with Stormbringer?
+    if ( player -> talent.stormbringer -> ok() )
+    {
+      base_multiplier *= 1.0 + player -> talent.stormbringer -> effectN( 1 ).percent();
+      secondary_costs[ RESOURCE_MAELSTROM ] = player -> talent.stormbringer -> effectN( 2 ).base_value();
+      resource_current = RESOURCE_MAELSTROM;
+      attack_power_mod.direct = 0.1;
+    }
 
     if ( player -> mastery.elemental_overload -> ok() )
     {
@@ -4735,6 +4753,7 @@ void shaman_t::init_spells()
 
   talent.tempest                     = find_talent_spell( "Tempest"              );
   talent.sundering                   = find_talent_spell( "Sundering"            );
+  talent.stormbringer                = find_talent_spell( "Stormbringer"         );
 
   talent.fury_of_air                 = find_talent_spell( "Fury of Air"          );
   talent.hailstorm                   = find_talent_spell( "Hailstorm"            );
