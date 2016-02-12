@@ -615,15 +615,17 @@ public:
     artifact_power_t shadow_thrash;
     artifact_power_t razor_fangs;
     artifact_power_t honed_instincts;
-    artifact_power_t protection_of_ashamane;
     artifact_power_t attuned_to_nature;
     artifact_power_t powerful_bite;
-    artifact_power_t scent_of_blood;
     artifact_power_t feral_power;
-    artifact_power_t feral_instinct;
     artifact_power_t sharpened_claws;
     artifact_power_t tear_the_flesh;
+
+    // NYI
     artifact_power_t hardened_roots;
+    artifact_power_t protection_of_ashamane;
+    artifact_power_t scent_of_blood;
+    artifact_power_t feral_instinct;
   } artifact;
 
   druid_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
@@ -2628,6 +2630,8 @@ struct ferocious_bite_t : public cat_attack_t
     special                = true;
     spell_power_mod.direct = 0;
 
+    crit_bonus_multiplier *= 1.0 + p -> artifact.powerful_bite.percent(); // TOCHECK
+
     if ( p -> talent.sabertooth -> ok() )
       sabertooth_base = timespan_t::from_seconds( p -> talent.sabertooth -> effectN( 1 ).base_value() );
 
@@ -2815,6 +2819,8 @@ struct rake_t : public cat_attack_t
 
     base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
     dot_duration   *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
+
+    base_multiplier *= 1.0 + p -> artifact.tear_the_flesh.percent();
   }
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
@@ -2857,6 +2863,8 @@ struct rip_t : public cat_attack_t
 
     base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
     dot_duration   *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
+
+    base_multiplier *= 1.0 + p -> artifact.razor_fangs.percent();
   }
 
   action_state_t* new_state() override
@@ -2971,8 +2979,8 @@ struct shred_t : public cat_attack_t
   shred_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "shred", p, p -> find_specialization_spell( "Shred" ), options_str )
   {
-    base_multiplier *= 1.0 + player -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
-    special = true;
+    base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> artifact.feral_power.percent();
 
     if ( p -> fangs_of_ashamane )
     {
@@ -3065,6 +3073,8 @@ public:
   {
     aoe = -1;
     combo_point_gain = data().effectN( 1 ).base_value(); // Effect is not labelled correctly as CP gain
+
+    base_multiplier *= 1.0 + player -> artifact.sharpened_claws.percent();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3833,6 +3843,8 @@ struct healing_touch_t : public druid_heal_t
     // redirect to self if not specified
     if ( target -> is_enemy() || ( target -> type == HEALING_ENEMY && p -> specialization() == DRUID_GUARDIAN ) )
       target = p;
+
+    base_multiplier *= 1.0 + p -> artifact.attuned_to_nature.percent();
   }
 
   virtual double cost() const override
@@ -5906,19 +5918,17 @@ void druid_t::init_spells()
   artifact.open_wounds                  = find_artifact_spell( "Open Wounds" );
   artifact.ashamanes_bite               = find_artifact_spell( "Ashamane's Bite" );
   artifact.shadow_thrash                = find_artifact_spell( "Shadow Thrash" );
-
-  // NYI
   artifact.ashamanes_energy             = find_artifact_spell( "Ashamane's Energy" );
   artifact.razor_fangs                  = find_artifact_spell( "Razor Fangs" );
-  artifact.honed_instincts              = find_artifact_spell( "Honed Instincts" );
-  artifact.protection_of_ashamane       = find_artifact_spell( "Protection of Ashamane" );
   artifact.attuned_to_nature            = find_artifact_spell( "Attuned to Nature" );
   artifact.powerful_bite                = find_artifact_spell( "Powerful Bite" );
-  artifact.scent_of_blood               = find_artifact_spell( "Scent of Blood" );
   artifact.feral_power                  = find_artifact_spell( "Feral Power" );
-  artifact.feral_instinct               = find_artifact_spell( "Feral Instinct" );
   artifact.sharpened_claws              = find_artifact_spell( "Sharpened Claws" );
   artifact.tear_the_flesh               = find_artifact_spell( "Tear the Flesh" );
+  artifact.honed_instincts              = find_artifact_spell( "Honed Instincts" );
+  artifact.protection_of_ashamane       = find_artifact_spell( "Protection of Ashamane" );
+  artifact.scent_of_blood               = find_artifact_spell( "Scent of Blood" );
+  artifact.feral_instinct               = find_artifact_spell( "Feral Instinct" );
   artifact.hardened_roots               = find_artifact_spell( "Hardened Roots" );
 
   // Masteries ==============================================================
@@ -6195,7 +6205,8 @@ void druid_t::create_buffs()
                                .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   buff.survival_instincts    = buff_creator_t( this, "survival_instincts", find_specialization_spell( "Survival Instincts" ) )
                                .cd( timespan_t::zero() )
-                               .default_value( 0.0 - find_specialization_spell( "Survival Instincts" ) -> effectN( 1 ).percent() );
+                               .default_value( 0.0 - find_specialization_spell( "Survival Instincts" ) -> effectN( 1 ).percent() )
+                               .duration( find_specialization_spell( "Survival Instincts" ) -> duration() + artifact.honed_instincts.time_value() );
   buff.guardian_tier15_2pc   = buff_creator_t( this, "guardian_tier15_2pc", find_spell( 138217 ) );
   buff.guardian_tier17_4pc   = buff_creator_t( this, "guardian_tier17_4pc", find_spell( 177969 ) )
                                .chance( find_spell( 177969 ) -> proc_chance() )
