@@ -2560,6 +2560,13 @@ struct ferocious_bite_t : public cat_attack_t
       base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
     }
 
+    void init() override
+    {
+      cat_attack_t::init();
+
+      update_flags |= STATE_MUL_TA; // Dynamically update for mastery & Open Wounds.
+    }
+
     virtual dot_t* get_source_dot( player_t* ) const = 0;
 
     virtual void execute() override
@@ -2580,7 +2587,10 @@ struct ferocious_bite_t : public cat_attack_t
   {
     shadow_rip_t( druid_t* p ) :
       shadow_bleed_t( "ashamanes_rip", p, p -> find_spell( 210705 ) )
-    { attack_power_mod.tick = p -> find_specialization_spell( "Rip" ) -> effectN( 1 ).ap_coeff(); }
+    {
+      attack_power_mod.tick = p -> find_specialization_spell( "Rip" ) -> effectN( 1 ).ap_coeff();
+      base_multiplier *= 1.0 + p -> artifact.razor_fangs.percent();
+    }
 
     dot_t* get_source_dot( player_t* t ) const override
     { return td( t ) -> dots.rip; }
@@ -2600,7 +2610,10 @@ struct ferocious_bite_t : public cat_attack_t
   {
     shadow_rake_t( druid_t* p ) :
       shadow_bleed_t( "ashamanes_rake", p, p -> find_spell( 210713 ) )
-    { attack_power_mod.tick = p -> find_spell( 155722 ) -> effectN( 1 ).ap_coeff(); }
+    {
+      attack_power_mod.tick = p -> find_spell( 155722 ) -> effectN( 1 ).ap_coeff();
+      base_multiplier *= 1.0 + p -> artifact.tear_the_flesh.percent();
+    }
 
     dot_t* get_source_dot( player_t* t ) const override
     { return td( t ) -> dots.rake; }
@@ -2690,7 +2703,7 @@ struct ferocious_bite_t : public cat_attack_t
         double blood_in_the_water = p() -> sets.has_set_bonus( SET_MELEE, T13, B2 ) ? p() -> sets.set( SET_MELEE, T13, B2 ) -> effectN( 2 ).base_value() : 25.0;
 
         if ( state -> target -> health_percentage() <= blood_in_the_water )
-            td( state -> target ) -> dots.rip -> refresh_duration( 0 );
+          td( state -> target ) -> dots.rip -> refresh_duration( 0 );
 
         if ( sabertooth_total > timespan_t::zero() )
           td( state -> target ) -> dots.rip -> extend_duration( sabertooth_total ); // TOCHECK: Sabertooth before or after BitW?
