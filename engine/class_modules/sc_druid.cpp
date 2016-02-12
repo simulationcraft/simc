@@ -2549,33 +2549,22 @@ public:
 
 struct ferocious_bite_t : public cat_attack_t
 {
-  struct shadow_rip_t : public cat_attack_t
+  struct shadow_bleed_t : public cat_attack_t
   {
-    shadow_rip_t( druid_t* p ) :
-      cat_attack_t( "ashamanes_rip", p, p -> find_spell( 210705 ) )
+    shadow_bleed_t( const std::string& name, druid_t* p, const spell_data_t* s ) :
+      cat_attack_t( name, p, s )
     {
       may_crit = may_miss = may_block = may_dodge = may_parry = false;
       dot_duration = timespan_t::zero();
 
-      attack_power_mod.tick = p -> find_spell( "Rip" ) -> effectN( 1 ).ap_coeff();
       base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
     }
 
-    double attack_tick_power_coefficient( const action_state_t* s ) const override
-    {
-      /* FIXME: Does this even work correctly for tick_damage expression?
-       probably just uses the CP of the Rip already on the target */
-      rip_state_t* rip_state = debug_cast<rip_state_t*>( td( s -> target ) -> dots.shadow_rip -> state );
-      
-      if ( ! rip_state )
-        return 0;
+    virtual dot_t* get_source_dot( player_t* ) const = 0;
 
-      return cat_attack_t::attack_tick_power_coefficient( s ) * rip_state -> combo_points;
-    }
-
-    void execute() override
+    virtual void execute() override
     {
-      dot_t* source = td( target ) -> dots.rip;
+      dot_t* source = get_source_dot( target );
       assert( source -> is_ticking() );
 
       dot_t* dest = get_dot( target );
@@ -2587,30 +2576,34 @@ struct ferocious_bite_t : public cat_attack_t
     }
   };
 
-  struct shadow_rake_t : public cat_attack_t
+  struct shadow_rip_t : public shadow_bleed_t
+  {
+    shadow_rip_t( druid_t* p ) :
+      shadow_bleed_t( "ashamanes_rip", p, p -> find_spell( 210705 ) )
+    { attack_power_mod.tick = p -> find_specialization_spell( "Rip" ) -> effectN( 1 ).ap_coeff(); }
+
+    dot_t* get_source_dot( player_t* t ) const override
+    { return td( t ) -> dots.rip; }
+
+    double attack_tick_power_coefficient( const action_state_t* s ) const override
+    {
+      rip_state_t* rip_state = debug_cast<rip_state_t*>( td( s -> target ) -> dots.shadow_rip -> state );
+      
+      if ( ! rip_state )
+        return 0;
+
+      return cat_attack_t::attack_tick_power_coefficient( s ) * rip_state -> combo_points;
+    }
+  };
+
+  struct shadow_rake_t : public shadow_bleed_t
   {
     shadow_rake_t( druid_t* p ) :
-      cat_attack_t( "ashamanes_rake", p, p -> find_spell( 210713 ) )
-    {
-      may_crit = may_miss = may_block = may_dodge = may_parry = false;
-      dot_duration = timespan_t::zero();
+      shadow_bleed_t( "ashamanes_rake", p, p -> find_spell( 210713 ) )
+    { attack_power_mod.tick = p -> find_spell( 155722 ) -> effectN( 1 ).ap_coeff(); }
 
-      attack_power_mod.tick = p -> find_spell( 155722 ) -> effectN( 1 ).ap_coeff();
-      base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
-    }
-
-    void execute() override
-    {
-      dot_t* source = td( target ) -> dots.rake;
-      assert( source -> is_ticking() );
-
-      dot_t* dest = get_dot( target );
-      dest -> current_action = this;
-
-      cat_attack_t::execute();
-
-      source -> copy( dest );
-    }
+    dot_t* get_source_dot( player_t* t ) const override
+    { return td( t ) -> dots.rake; }
   };
 
   double excess_energy;
