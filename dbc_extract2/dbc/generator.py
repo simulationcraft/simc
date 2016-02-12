@@ -2662,17 +2662,22 @@ class SpellDataGenerator(DataGenerator):
             fields += spell._classopts.field('family')
             # 38
             fields += spell._shapeshift.field('flags')
-            # 39, 40
+            # 39
+            if len(spell._categories) == 1:
+                fields += self._spellmechanic_db[spell._categories[0].mechanic].field('mechanic')
+            else:
+                fields += self._spellmechanic_db[0].field('mechanic')
+            # 40, 41
             fields += spell.field('desc', 'tt')
-            # 41
+            # 42
             if spell.id_desc_var and self._spelldescriptionvariables_db.get(spell.id_desc_var):
                 fields += self._spelldescriptionvariables_db[spell.id_desc_var].field('desc')
             else:
                 fields += [ u'0' ]
-            # 42
+            # 43
             fields += spell.field('rank')
             # Pad struct with empty pointers for direct access to spell effect data
-            # 43, 464 45
+            # 44, 45, 46
             fields += [ u'0', u'0', u'0' ]
 
             try:

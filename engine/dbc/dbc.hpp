@@ -623,17 +623,20 @@ public:
   unsigned    _class_flags_family; // 37 SpellClassOptions.dbc spell family
   // SpellShapeshift.db2
   unsigned    _stance_mask;        // 38 Stance mask (used only for druid form restrictions?)
-  const char* _desc;               // 39 Spell.dbc description stringblock
-  const char* _tooltip;            // 40 Spell.dbc tooltip stringblock
+  // SpellMechanic.db2
+  unsigned    _mechanic;           // 39
+  // Textual data
+  const char* _desc;               // 40 Spell.dbc description stringblock
+  const char* _tooltip;            // 41 Spell.dbc tooltip stringblock
   // SpellDescriptionVariables.dbc
-  const char* _desc_vars;          // 41 Spell description variable stringblock, if present
+  const char* _desc_vars;          // 42 Spell description variable stringblock, if present
   // SpellIcon.dbc
-  const char* _rank_str;           // 42
+  const char* _rank_str;           // 43
 
   // Pointers for runtime linking
-  std::vector<const spelleffect_data_t*>* _effects; // 43
-  std::vector<const spellpower_data_t*>*  _power; // 44
-  std::vector<spell_data_t*>* _driver; // The triggered spell's driver(s) // 45
+  std::vector<const spelleffect_data_t*>* _effects; // 44
+  std::vector<const spellpower_data_t*>*  _power; // 45
+  std::vector<spell_data_t*>* _driver; // The triggered spell's driver(s) // 46
 
   // Direct member access functions
   uint32_t category() const
@@ -728,6 +731,9 @@ public:
 
   unsigned stance_mask() const
   { return _stance_mask; }
+
+  unsigned mechanic() const
+  { return _mechanic; }
 
   // Helper functions
   size_t effect_count() const
