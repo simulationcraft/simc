@@ -89,6 +89,8 @@ struct druid_td_t : public actor_target_data_t
     dot_t* regrowth;
     dot_t* rejuvenation;
     dot_t* rip;
+    dot_t* shadow_rake;
+    dot_t* shadow_rip;
     dot_t* stellar_flare;
     dot_t* sunfire;
     dot_t* starfall;
@@ -430,6 +432,7 @@ public:
   // Procs
   struct procs_t
   {
+    proc_t* ashamanes_bite;
     proc_t* clearcasting;
     proc_t* clearcasting_wasted;
     proc_t* predator;
@@ -2333,6 +2336,41 @@ struct cat_melee_t : public cat_attack_t
   }
 };
 
+// Rip State ================================================================
+
+struct rip_state_t : public action_state_t
+{
+  int combo_points;
+  druid_t* druid;
+
+  rip_state_t( druid_t* p, action_t* a, player_t* target ) :
+    action_state_t( a, target ), combo_points( 0 ), druid( p )
+  { }
+
+  void initialize() override
+  {
+    action_state_t::initialize();
+
+    combo_points = (int) druid -> resources.current[ RESOURCE_COMBO_POINT ];
+  }
+
+  void copy_state( const action_state_t* state ) override
+  {
+    action_state_t::copy_state( state );
+    const rip_state_t* rip_state = debug_cast<const rip_state_t*>( state );
+    combo_points = rip_state -> combo_points;
+  }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    action_state_t::debug_str( s );
+
+    s << " combo_points=" << combo_points;
+
+    return s;
+  }
+};
+
 // Ashamane's Frenzy ========================================================
 /* TOCHECK: How exactly does the bleed/ignite work? And what does/doesn't snapshot?
             May be able to simplify implementation a bit if only AP snapshots. */
@@ -2503,11 +2541,77 @@ public:
 
 struct ferocious_bite_t : public cat_attack_t
 {
+  struct shadow_rip_t : public cat_attack_t
+  {
+    shadow_rip_t( druid_t* p ) :
+      cat_attack_t( "ashamanes_rip", p, p -> find_spell( 210705 ) )
+    {
+      may_crit = may_miss = may_block = may_dodge = may_parry = false;
+      dot_duration = timespan_t::zero();
+
+      attack_power_mod.tick = p -> find_spell( "Rip" ) -> effectN( 1 ).ap_coeff();
+      base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
+    }
+
+    double attack_tick_power_coefficient( const action_state_t* s ) const override
+    {
+      /* FIXME: Does this even work correctly for tick_damage expression?
+       probably just uses the CP of the Rip already on the target */
+      rip_state_t* rip_state = debug_cast<rip_state_t*>( td( s -> target ) -> dots.shadow_rip -> state );
+      
+      if ( ! rip_state )
+        return 0;
+
+      return cat_attack_t::attack_tick_power_coefficient( s ) * rip_state -> combo_points;
+    }
+
+    void execute() override
+    {
+      dot_t* source = td( target ) -> dots.rip;
+      assert( source -> is_ticking() );
+
+      dot_t* dest = get_dot( target );
+      dest -> current_action = this;
+
+      cat_attack_t::execute();
+
+      source -> copy( dest );
+    }
+  };
+
+  struct shadow_rake_t : public cat_attack_t
+  {
+    shadow_rake_t( druid_t* p ) :
+      cat_attack_t( "ashamanes_rake", p, p -> find_spell( 210713 ) )
+    {
+      may_crit = may_miss = may_block = may_dodge = may_parry = false;
+      dot_duration = timespan_t::zero();
+
+      attack_power_mod.tick = p -> find_spell( 155722 ) -> effectN( 1 ).ap_coeff();
+      base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
+    }
+
+    void execute() override
+    {
+      dot_t* source = td( target ) -> dots.rake;
+      assert( source -> is_ticking() );
+
+      dot_t* dest = get_dot( target );
+      dest -> current_action = this;
+
+      cat_attack_t::execute();
+
+      source -> copy( dest );
+    }
+  };
+
   double excess_energy;
   double max_excess_energy;
   timespan_t sabertooth_total;
   timespan_t sabertooth_base;
   bool max_energy;
+  shadow_rip_t* shadow_rip;
+  shadow_rake_t* shadow_rake;
 
   ferocious_bite_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "ferocious_bite", p, p -> find_class_spell( "Ferocious Bite" ), "" ),
@@ -2524,6 +2628,12 @@ struct ferocious_bite_t : public cat_attack_t
 
     if ( p -> talent.sabertooth -> ok() )
       sabertooth_base = timespan_t::from_seconds( p -> talent.sabertooth -> effectN( 1 ).base_value() );
+
+    if ( p -> artifact.ashamanes_bite.rank() )
+    {
+      shadow_rip  = new shadow_rip_t( p );
+      shadow_rake = new shadow_rake_t( p );
+    }
   }
 
   double maximum_energy() const
@@ -2563,7 +2673,7 @@ struct ferocious_bite_t : public cat_attack_t
     if ( p() -> buff.feral_tier15_4pc -> up() )
       p() -> buff.feral_tier15_4pc -> decrement();
 
-    max_excess_energy = -1 * data().effectN( 2 ).base_value();
+    max_excess_energy = -1 * data().effectN( 2 ).base_value(); 
   }
 
   void impact( action_state_t* state ) override
@@ -2581,6 +2691,24 @@ struct ferocious_bite_t : public cat_attack_t
 
         if ( sabertooth_total > timespan_t::zero() )
           td( state -> target ) -> dots.rip -> extend_duration( sabertooth_total ); // TOCHECK: Sabertooth before or after BitW?
+      }
+
+      // TOCHECK: Does the target need to have Rip/Rake on them to be eligible to proc?
+      if ( shadow_rip && p() -> rppm.ashamanes_bite -> trigger() )
+      {
+        p() -> proc.ashamanes_bite -> occur();
+
+        if ( td( state -> target ) -> dots.rip -> is_ticking() )
+        {
+          shadow_rip -> target = state -> target;
+          shadow_rip -> execute();
+        }
+
+        if ( td( state -> target ) -> dots.rake -> is_ticking() )
+        {
+          shadow_rake -> target = state -> target;
+          shadow_rake -> execute();
+        }
       }
     }
   }
@@ -2708,50 +2836,13 @@ struct rake_t : public cat_attack_t
 
 // Rip ======================================================================
 
-struct rip_state_t : public action_state_t
-{
-  int combo_points;
-  druid_t* druid;
-
-  rip_state_t( druid_t* p, action_t* a, player_t* target ) :
-    action_state_t( a, target ), combo_points( 0 ), druid( p )
-  { }
-
-  void initialize() override
-  {
-    action_state_t::initialize();
-
-    combo_points = (int) druid -> resources.current[ RESOURCE_COMBO_POINT ];
-  }
-
-  void copy_state( const action_state_t* state ) override
-  {
-    action_state_t::copy_state( state );
-    const rip_state_t* rip_state = debug_cast<const rip_state_t*>( state );
-    combo_points = rip_state -> combo_points;
-  }
-
-  std::ostringstream& debug_str( std::ostringstream& s ) override
-  {
-    action_state_t::debug_str( s );
-
-    s << " combo_points=" << combo_points;
-
-    return s;
-  }
-};
-
 struct rip_t : public cat_attack_t
 {
-  double ap_per_point;
-
   rip_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "rip", p, p -> find_specialization_spell( "Rip" ), options_str ),
-    ap_per_point( 0.0 )
+    cat_attack_t( "rip", p, p -> find_specialization_spell( "Rip" ), options_str )
   {
     base_costs[ RESOURCE_COMBO_POINT ] = 1;
 
-    ap_per_point = data().effectN( 1 ).ap_coeff();
     special      = true;
     may_crit     = false;
     dot_duration += player -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
@@ -2774,12 +2865,11 @@ struct rip_t : public cat_attack_t
     /* FIXME: Does this even work correctly for tick_damage expression?
      probably just uses the CP of the Rip already on the target */
     rip_state_t* rip_state = debug_cast<rip_state_t*>( td( s -> target ) -> dots.rip -> state );
-    if ( ! rip_state )
-    {
-      return 0;
-    }
 
-    return ap_per_point * rip_state -> combo_points;
+    if ( ! rip_state )
+      return 0;
+
+    return cat_attack_t::attack_tick_power_coefficient( s ) * rip_state -> combo_points;
   }
 
   void impact( action_state_t* s ) override
@@ -6589,6 +6679,7 @@ void druid_t::init_procs()
 {
   player_t::init_procs();
 
+  proc.ashamanes_bite           = get_proc( "ashamanes_bite"         );
   proc.clearcasting             = get_proc( "clearcasting"           );
   proc.clearcasting_wasted      = get_proc( "clearcasting_wasted"    );
   proc.predator                 = get_proc( "predator"               );
@@ -7376,6 +7467,8 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   dots.regrowth         = target.get_dot( "regrowth",         &source );
   dots.rejuvenation     = target.get_dot( "rejuvenation",     &source );
   dots.rip              = target.get_dot( "rip",              &source );
+  dots.shadow_rake      = target.get_dot( "ashamanes_rake",   &source );
+  dots.shadow_rip       = target.get_dot( "ashamanes_rip",    &source );
   dots.sunfire          = target.get_dot( "sunfire",          &source );
   dots.starfall         = target.get_dot( "starfall",         &source );
   dots.thrash_cat       = target.get_dot( "thrash_cat",       &source );

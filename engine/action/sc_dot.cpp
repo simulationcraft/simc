@@ -185,6 +185,7 @@ void dot_t::trigger( timespan_t duration )
   }
 }
 
+// For copying a DoT to a different target.
 void dot_t::copy( player_t* other_target, dot_copy_e copy_type )
 {
   if ( target == other_target )
@@ -297,6 +298,100 @@ void dot_t::copy( player_t* other_target, dot_copy_e copy_type )
 
     other_dot -> tick_event = new ( sim ) dot_tick_event_t( other_dot, tick_time );
   }
+}
+
+// For duplicating a DoT (creating a 2nd instance) on one target.
+void dot_t::copy( dot_t* other_dot )
+{
+  // Shared initialize for the target dot state, independent of the copying
+  // method
+  action_state_t* target_state = nullptr;
+  if ( ! other_dot -> state )
+  {
+    target_state = current_action -> get_state( state );
+    other_dot -> state = target_state;
+  }
+  else
+  {
+    target_state = other_dot -> state;
+    target_state -> copy_state( state );
+  }
+  target_state -> target = other_dot -> target;
+  target_state -> action = current_action;
+
+  // If we don't start the copied dot from the beginning, we need to bypass a
+  // lot of the dot scheduling logic, and simply do the minimum amount possible
+  // to get the dot aligned with the source dot, both in terms of state, as
+  // well as the remaining duration, and the remaining ongoing tick time.
+  timespan_t new_duration;
+
+  // Other dot is ticking, the cloning process will be a refresh
+  if ( other_dot -> is_ticking() )
+  {
+    // The new duration is computed through our normal refresh duration
+    // method. End result (by default) will be source_remains + min(
+    // target_remains, 0.3 * source_remains )
+    new_duration = current_action -> calculate_dot_refresh_duration( other_dot, remains() );
+
+    assert( other_dot -> end_event && other_dot -> tick_event );
+
+    // Cancel target's ongoing events, we are about to re-do them
+    event_t::cancel( other_dot -> end_event );
+    event_t::cancel( other_dot -> tick_event );
+  }
+  // No target dot ticking, just copy the source's remaining time
+  else
+  {
+    new_duration = remains();
+
+    // Add an active dot on the source, since we are starting a new one
+    source -> add_active_dot( other_dot -> current_action -> internal_id );
+  }
+
+  if ( sim.debug )
+    sim.out_debug.printf( "%s cloning %s on %s to %s: source_remains=%.3f target_remains=%.3f target_duration=%.3f",
+      current_action -> player -> name(), current_action -> name(), target -> name(), other_dot -> name(),
+      remains().total_seconds(), other_dot -> remains().total_seconds(), new_duration.total_seconds() );
+
+  // To compute new number of ticks, we use the new duration, plus the
+  // source's ongoing remaining tick time, since we are copying the ongoing
+  // tick too
+  timespan_t computed_tick_duration = new_duration;
+  if ( tick_event && tick_event -> remains() > new_duration )
+    computed_tick_duration += time_to_tick - tick_event -> remains();
+
+  // Aand then adjust some things for ease-of-use for now. The copied dot has
+  // its current tick reset to 0, and it's last start time is set to current
+  // time.
+  //
+  // TODO?: A more proper way might be to also copy the source dot's last
+  // start time and current tick, in practice it is probably meaningless,
+  // though.
+  other_dot -> last_start = sim.current_time();
+  other_dot -> current_duration = new_duration;
+  other_dot -> current_tick = 0;
+  other_dot -> extended_time = timespan_t::zero();
+  other_dot -> time_to_tick = time_to_tick;
+  other_dot -> num_ticks = as<int>( std::ceil( computed_tick_duration / time_to_tick ) );
+
+  other_dot -> ticking = true;
+  other_dot -> end_event = new ( sim ) dot_end_event_t( other_dot, new_duration );
+
+  other_dot -> last_tick_factor = other_dot -> current_action -> last_tick_factor( other_dot, time_to_tick, computed_tick_duration );
+
+  // The clone may happen on tick, or mid tick. If it happens on tick, the
+  // source dot will not have a new tick event scheduled yet, so the tick
+  // time has to be based on the action's tick time. If cloning happens mid
+  // tick, we just use the remaining tick time of the source for the tick
+  // time. Tick time will be recalculated on the next tick, implicitly
+  // syncing it to the source's tick time.
+  timespan_t tick_time;
+  if ( tick_event )
+    tick_time = tick_event -> remains();
+  else
+    tick_time = other_dot -> current_action -> tick_time( other_dot -> state -> haste );
+
+  other_dot -> tick_event = new ( sim ) dot_tick_event_t( other_dot, tick_time );
 }
 
 // dot_t::create_expression =================================================

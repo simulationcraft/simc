@@ -1641,6 +1641,8 @@ class SpellDataGenerator(DataGenerator):
 		  ( 203001, 1 ),       # Goldrinn's Fang, Spirit of Goldrinn artifact power
 		  ( 203958, 3 ),       # Brambles (talent) damage spell
 		  ( 210721, 2 ),       # Shredded Wounds (Fangs of Ashamane artifact passive)
+		  ( 210713, 2 ),       # Ashamane's Rake (Fangs of Ashamane artifact trait spell)
+		  ( 210705, 2 ),       # Ashamane's Rip (Fangs of Ashamane artifact trait spell)
         ),
     ]
 
