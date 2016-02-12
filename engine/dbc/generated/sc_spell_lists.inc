@@ -894,11 +894,14 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       175683, // Ursol's Power
            0,
     },
-    // Balance tree, 13 abilities
+    // Balance tree, 16 abilities
     {
        22812, // Barkskin (Active Mitigation)
       194223, // Celestial Alignment
       122114, // Chosen of Elune
+      202771, // Full Moon
+      203001, // Goldrinn's Fang
+      202768, // Half Moon
         5185, // Healing Touch
        29166, // Innervate
       194153, // Lunar Strike (Lunar)
@@ -911,17 +914,21 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        93402, // Sunfire (Solar)
            0,
     },
-    // Feral tree, 15 abilities
+    // Feral tree, 19 abilities
     {
       106951, // Berserk
+      145152, // Bloodtalons
         1850, // Dash
+      146874, // Feral Rage
        22568, // Ferocious Bite
         5185, // Healing Touch
        22570, // Maim
+      155625, // Moonfire
         5215, // Prowl
         1822, // Rake
         1079, // Rip
         5221, // Shred
+      210721, // Shredded Wounds
       106839, // Skull Bash
       106898, // Stampeding Roar
        61336, // Survival Instincts (Active Mitigation)
@@ -930,9 +937,10 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         5217, // Tiger's Fury
            0,
     },
-    // Guardian tree, 15 abilities
+    // Guardian tree, 17 abilities
     {
        22812, // Barkskin (Active Mitigation)
+      203958, // Brambles
        22842, // Frenzied Regeneration
         6795, // Growl
         5185, // Healing Touch
@@ -944,6 +952,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         6807, // Maul
         5215, // Prowl
       106839, // Skull Bash
+      185321, // Stalwart Guardian
       106898, // Stampeding Roar
        61336, // Survival Instincts (Active Mitigation)
       106832, // Thrash
@@ -971,7 +980,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        48438, // Wild Growth
            0,
     },
+    // Pet tree, 1 abilities
     {
+      188046, // Fey Missile
            0,
     },
   },

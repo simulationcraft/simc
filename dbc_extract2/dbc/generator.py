@@ -1620,27 +1620,27 @@ class SpellDataGenerator(DataGenerator):
         ( (  93402, 1, True ), # Sunfire
           ( 106996, 1, True ), # Astral Storm
           ( 112071, 1, True ), # Celestial Alignment
-          ( 110621, 0, True ), # Symbiosis spells
           ( 122114, 1, True ), # Chosen of Elune
           ( 122283, 0, True ),
           ( 110807, 0, True ),
           ( 112997, 0, True ),
-          ( 110691, 5 ),       # Wrath for Mirror Images
           ( 144770, 1, False ), ( 144772, 1, False ), # Balance Tier 16 2pc spells
           ( 150017, 5 ),       # Rake for Treants
-          ( 146874, 0 ),       # Feral Rage (T16 4pc feral bonus)
+          ( 146874, 2 ),       # Feral Rage (T16 4pc feral bonus)
           ( 124991, 0 ), ( 124988, 0 ), # Nature's Vigil
-		  ( 155627, 0 ),       # Lunar Inspiration
-		  ( 155625, 0 ),       # Lunar Inspiration Moonfire
-		  ( 145152, 0 ),       # Bloodtalons buff
-		  ( 135597, 0 ),       # Tooth and Claw absorb buff
-		  ( 155784, 0 ),       # Primal Tenacity buff
+		  ( 155627, 2 ),       # Lunar Inspiration
+		  ( 155625, 2 ),       # Lunar Inspiration Moonfire
+		  ( 145152, 2 ),       # Bloodtalons buff
+		  ( 135597, 3 ),       # Tooth and Claw absorb buff
+		  ( 155784, 3 ),       # Primal Tenacity buff
 		  ( 137542, 0 ),       # Displacer Beast buff
-		  ( 185321, 0 ),       # Stalwart Guardian buff (T18 trinket)
-		  ( 188046, 0 ),       # T18 2P Faerie casts this spell
-          ( 202771, 0 ), ( 202768, 0 ), # Half Moon, Full Moon artifact powers
-		  ( 203001, 0 ),       # Goldrinn's Fang, Spirit of Goldrinn artifact power
-		  ( 203958, 0 ),       # Brambles (talent) damage spell
+		  ( 185321, 3 ),       # Stalwart Guardian buff (T18 trinket)
+		  ( 188046, 5 ),       # T18 2P Faerie casts this spell
+          ( 202771, 1 ),       # Half Moon artifact power
+		  ( 202768, 1 ),       # Full Moon artifact power
+		  ( 203001, 1 ),       # Goldrinn's Fang, Spirit of Goldrinn artifact power
+		  ( 203958, 3 ),       # Brambles (talent) damage spell
+		  ( 210721, 2 ),       # Shredded Wounds (Fangs of Ashamane artifact passive)
         ),
     ]
 

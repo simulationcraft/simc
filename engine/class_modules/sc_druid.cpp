@@ -233,8 +233,17 @@ public:
   const special_effect_t* fangs_of_ashamane;
 
   // RPPM objects
-  real_ppm_t balance_tier18_2pc;
-  real_ppm_t predator; // Optional RPPM approximation
+  struct rppms_t
+  {
+    // Feral
+    real_ppm_t* ashamanes_bite;
+    real_ppm_t* predator; // Optional RPPM approximation
+    real_ppm_t* shadow_thrash;
+    real_ppm_t* shredded_wounds;
+
+    // Balance
+    real_ppm_t* balance_tier18_2pc;
+  } rppm;
 
   // Options
   double predator_rppm_rate;
@@ -620,8 +629,6 @@ public:
     t16_2pc_sun_bolt( nullptr ),
     scythe_of_elune(),
     fangs_of_ashamane(),
-    balance_tier18_2pc( *this ),
-    predator( *this ),
     initial_astral_power( 0 ),
     initial_moon_stage( NEW_MOON ),
     active( active_actions_t() ),
@@ -1759,7 +1766,7 @@ public:
 
   virtual void trigger_balance_tier18_2pc()
   {
-    if ( ! p() -> balance_tier18_2pc.trigger() )
+    if ( ! p() -> rppm.balance_tier18_2pc -> trigger() )
       return;
 
     for ( pet_t* pet : p() -> pet_fey_moonwing )
@@ -2244,12 +2251,15 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
                             p() -> sets.set( DRUID_FERAL, T17, B2 ) -> effectN( 1 ).base_value(),
                             p() -> gain.feral_tier17_2pc );
 
-    if ( p() -> predator_rppm_rate && p() -> talent.predator -> ok() && p() -> predator.trigger() )
+    if ( p() -> predator_rppm_rate && p() -> talent.predator -> ok() )
       trigger_predator();
   }
 
   void trigger_predator()
   {
+    if ( ! p() -> rppm.predator -> trigger() )
+      return;
+
     if ( ! p() -> cooldown.tigers_fury -> down() )
       p() -> proc.predator_wasted -> occur();
 
@@ -2688,41 +2698,41 @@ struct rake_t : public cat_attack_t
 
 // Rip ======================================================================
 
+struct rip_state_t : public action_state_t
+{
+  int combo_points;
+  druid_t* druid;
+
+  rip_state_t( druid_t* p, action_t* a, player_t* target ) :
+    action_state_t( a, target ), combo_points( 0 ), druid( p )
+  { }
+
+  void initialize() override
+  {
+    action_state_t::initialize();
+
+    combo_points = (int) druid -> resources.current[ RESOURCE_COMBO_POINT ];
+  }
+
+  void copy_state( const action_state_t* state ) override
+  {
+    action_state_t::copy_state( state );
+    const rip_state_t* rip_state = debug_cast<const rip_state_t*>( state );
+    combo_points = rip_state -> combo_points;
+  }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    action_state_t::debug_str( s );
+
+    s << " combo_points=" << combo_points;
+
+    return s;
+  }
+};
+
 struct rip_t : public cat_attack_t
 {
-  struct rip_state_t : public action_state_t
-  {
-    int combo_points;
-    druid_t* druid;
-
-    rip_state_t( druid_t* p, action_t* a, player_t* target ) :
-      action_state_t( a, target ), combo_points( 0 ), druid( p )
-    { }
-
-    void initialize() override
-    {
-      action_state_t::initialize();
-
-      combo_points = (int) druid -> resources.current[ RESOURCE_COMBO_POINT ];
-    }
-
-    void copy_state( const action_state_t* state ) override
-    {
-      action_state_t::copy_state( state );
-      const rip_state_t* rip_state = debug_cast<const rip_state_t*>( state );
-      combo_points = rip_state -> combo_points;
-    }
-
-    std::ostringstream& debug_str( std::ostringstream& s ) override
-    {
-      action_state_t::debug_str( s );
-
-      s << " combo_points=" << combo_points;
-
-      return s;
-    }
-  };
-
   double ap_per_point;
 
   rip_t( druid_t* p, const std::string& options_str ) :
@@ -2827,11 +2837,63 @@ struct savage_roar_t : public cat_attack_t
 
 struct shred_t : public cat_attack_t
 {
+  struct shredded_wounds_t : public cat_attack_t
+  {
+    shredded_wounds_t( druid_t* p ) :
+      cat_attack_t( "shredded_wounds", p, p -> find_spell( 210721 ) )
+    {
+      background = true;
+
+      const spell_data_t* rip = p -> find_specialization_spell( "Rip" );
+
+      attack_power_mod.direct = rip -> effectN( 1 ).ap_coeff();
+      base_multiplier *= p -> fangs_of_ashamane -> driver() -> effectN( 1 ).percent();
+    }
+
+    double composite_persistent_multiplier( const action_state_t* s ) const override
+    { return td( s -> target ) -> dots.rip -> state -> persistent_multiplier; }
+
+    double attack_direct_power_coefficient( const action_state_t* s ) const override
+    {
+      rip_state_t* rip_state = debug_cast<rip_state_t*>( td( s -> target ) -> dots.rip -> state );
+
+      if ( ! rip_state )
+        return 0;
+
+      return cat_attack_t::attack_direct_power_coefficient( s ) * rip_state -> combo_points;
+    }
+
+    double composite_da_multiplier( const action_state_t* state ) const override
+    { 
+      double dm = cat_attack_t::composite_da_multiplier( state );
+
+      if ( p() -> mastery.razor_claws -> ok() )
+        dm *= 1.0 + p() -> cache.mastery_value();
+    
+      if ( benefits_from_open_wounds )
+        dm *= 1.0 + td( state -> target ) -> buffs.open_wounds -> value();
+
+      return dm;
+    }
+
+    // Bleed damage penetrates armor.
+    virtual double target_armor( player_t* ) const override
+    { return 0.0; }
+  };
+
+  shredded_wounds_t* shredded_wounds;
+
   shred_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "shred", p, p -> find_specialization_spell( "Shred" ), options_str )
   {
     base_multiplier *= 1.0 + player -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
     special = true;
+
+    if ( p -> fangs_of_ashamane )
+    {
+      shredded_wounds = new shredded_wounds_t( p );
+      add_child( shredded_wounds );
+    }
   }
 
   virtual void execute() override
@@ -2853,7 +2915,13 @@ struct shred_t : public cat_attack_t
       p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.shred );
 
       if ( s -> result == RESULT_CRIT && p() -> sets.has_set_bonus( DRUID_FERAL, PVP, B4 ) )
-        td( s -> target ) -> buffs.bloodletting -> trigger(); // Druid module debuff
+        td( s -> target ) -> buffs.bloodletting -> trigger(); // Druid module debuff\
+
+      if ( shredded_wounds && td( s -> target ) -> dots.rip -> is_ticking() && p() -> rppm.shredded_wounds -> trigger() )
+      {
+        shredded_wounds -> target = target;
+        shredded_wounds -> execute();
+      }
     }
   }
 
@@ -6538,14 +6606,14 @@ void druid_t::init_resources( bool force )
 void druid_t::init_rng()
 {
   // RPPM objects
-  balance_tier18_2pc.set_frequency( sets.set( DRUID_BALANCE, T18, B2 ) -> real_ppm() );
-
-  // Predator: optional RPPM approximation.
-  predator.set_frequency( predator_rppm_rate );
-  // Set all rampup to 0 so it doesn't proc on pull.
-  predator.set_initial_precombat_time( timespan_t::zero() );
-  predator.set_last_trigger_attempt( timespan_t::from_seconds( -1.0 ) );
-  predator.set_last_trigger_success( timespan_t::zero() );
+  rppm.balance_tier18_2pc = new real_ppm_t( *this, sets.set( DRUID_BALANCE, T18, B2 ) -> real_ppm() );
+  rppm.predator           = new real_ppm_t( *this, predator_rppm_rate ); // Predator: optional RPPM approximation.
+  rppm.predator             -> set_initial_precombat_time( timespan_t::zero() ); // Set all rampup to 0 so it doesn't proc on pull.
+  rppm.predator             -> set_last_trigger_attempt( timespan_t::from_seconds( -1.0 ) );
+  rppm.predator             -> set_last_trigger_success( timespan_t::zero() );
+  rppm.shredded_wounds    = new real_ppm_t( *this, fangs_of_ashamane -> driver() -> real_ppm(), RPPM_HASTE );
+  rppm.ashamanes_bite     = new real_ppm_t( *this, artifact.ashamanes_bite.data().real_ppm(), RPPM_HASTE );
+  rppm.shadow_thrash      = new real_ppm_t( *this, artifact.shadow_thrash.data().real_ppm(), RPPM_HASTE );
 
   player_t::init_rng();
 }
