@@ -344,12 +344,12 @@ public:
                      aegwynns_ascendance, //NYI
                      aegwynns_wrath, //NYI
                      crackling_energy, //NYI
-                     blasting_rod, //NYI
+                     blasting_rod,
                      ethereal_sensitivity, //NYI
-                     aegwynns_fury,
+                     aegwynns_fury, //NYI
                      echoes_of_aegwynn, //NYI
-                     might_of_the_guardians, //NYI
-                     torrential_barrage, //NYI
+                     rule_of_threes, //NYI
+                     torrential_barrage,
                      power_of_aegwynn; //NYI
 
     // Fire
@@ -1887,6 +1887,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
     parse_options( options_str );
 
     base_aoe_multiplier *= data().effectN( 2 ).percent();
+    base_multiplier *= 1.0 + p -> artifact.torrential_barrage.percent();
   }
 
   virtual void execute() override
@@ -1930,6 +1931,8 @@ struct arcane_blast_t : public arcane_mage_spell_t
     wild_arcanist_effect( 0.0 )
   {
     parse_options( options_str );
+    
+    base_multiplier *= 1.0 + p -> artifact.blasting_rod.percent();
 
     if ( p -> wild_arcanist )
     {
@@ -1990,9 +1993,6 @@ struct arcane_blast_t : public arcane_mage_spell_t
     {
       am *= 1.0 + wild_arcanist_effect;
     }
-
-    if ( p() -> artifact.blasting_rod.rank() )
-      am *= 1.0 + p() -> artifact.blasting_rod.percent();
 
     return am;
   }
@@ -2120,7 +2120,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     may_miss = false;
     may_proc_missiles = false;
     dot_duration      = data().duration();
-    base_tick_time    = data().effectN( 2).period();
+    base_tick_time    = data().effectN( 2 ).period();
     channeled         = true;
     hasted_ticks      = false;
     dynamic_tick_action = true;
@@ -2143,10 +2143,6 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     {
       am *= 1.07;
     }
-
-    if ( p() -> artifact.aegwynns_fury.rank() )
-      am *= 1.0 + p() -> artifact.aegwynns_fury.percent();
-
     return am;
   }
 
@@ -2195,7 +2191,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     }
   }
 
-  virtual void last_tick ( dot_t * d) override
+  virtual void last_tick ( dot_t * d ) override
   {
     arcane_mage_spell_t::last_tick( d );
 
@@ -4667,7 +4663,7 @@ void mage_t::init_spells()
   artifact.archmages_alacrity      = find_artifact_spell( "Archmages Alacrity"    );
   artifact.blasting_rod            = find_artifact_spell( "Blasting Rod"          );
   artifact.crackling_energy        = find_artifact_spell( "Crackling Energy"      );
-  artifact.might_of_the_guardians  = find_artifact_spell( "Might Of The Guardians");
+  artifact.rule_of_threes          = find_artifact_spell( "Rule of Threes"        );
   artifact.torrential_barrage      = find_artifact_spell( "Torrential Barrage"    );
   artifact.everywhere_at_once      = find_artifact_spell( "Everywhere At Once"    );
   artifact.ethereal_sensitivity    = find_artifact_spell( "Ethereal Sensitivity"  );
