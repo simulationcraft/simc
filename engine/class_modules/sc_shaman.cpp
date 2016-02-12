@@ -167,7 +167,7 @@ public:
     buff_t* stormfury;
     buff_t* crash_lightning;
     haste_buff_t* windsong;
-    haste_buff_t* fists_of_stone;
+    buff_t* fists_of_stone;
     buff_t* rockbiter;
     buff_t* doom_winds;
     buff_t* unleash_doom;
@@ -326,9 +326,9 @@ public:
     const spell_data_t* sundering;
 
     const spell_data_t* fury_of_air;
-    const spell_data_t* crashing_storm;
 
     const spell_data_t* earthen_spike;
+    const spell_data_t* crashing_storm;
   } talent;
 
   // Artifact
@@ -2500,7 +2500,6 @@ struct crash_lightning_t : public shaman_attack_t
 
     may_proc_windfury = may_proc_flametongue = may_proc_stormfury = false;
     aoe = -1;
-    radius += player -> talent.crashing_storm -> effectN( 1 ).base_value();
     weapon = &( p() -> main_hand_weapon );
   }
 
@@ -4713,9 +4712,9 @@ void shaman_t::init_spells()
   talent.sundering                   = find_talent_spell( "Sundering"            );
 
   talent.fury_of_air                 = find_talent_spell( "Fury of Air"          );
-  talent.crashing_storm              = find_talent_spell( "Crashing Storm"       );
 
   talent.earthen_spike               = find_talent_spell( "Earthen Spike"        );
+  talent.crashing_storm              = find_talent_spell( "Crashing Storm"       );
 
   // Artifact
 
@@ -5187,10 +5186,9 @@ void shaman_t::create_buffs()
   buff.crash_lightning = buff_creator_t( this, "crash_lightning", find_spell( 187878 ) );
   buff.windsong = haste_buff_creator_t( this, "windsong", talent.windsong )
                   .default_value( 1.0 / ( 1.0 + talent.windsong -> effectN( 2 ).percent() ) );
-  buff.fists_of_stone = haste_buff_creator_t( this, "fists_of_stone", talent.fists_of_stone )
+  buff.fists_of_stone = buff_creator_t( this, "fists_of_stone", talent.fists_of_stone )
                         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-                        .add_invalidate( CACHE_CRIT )
-                        .default_value( 1.0 / ( 1.0 + talent.fists_of_stone -> effectN( 3 ).percent() ) );
+                        .add_invalidate( CACHE_CRIT );
   buff.rockbiter = buff_creator_t( this, "rockbiter", find_spell( 202004 ) )
                    .add_invalidate( CACHE_ATTACK_POWER )
                    .chance( talent.landslide -> ok() )
@@ -5675,11 +5673,6 @@ double shaman_t::temporary_movement_modifier() const
   if ( buff.feral_spirit -> up() )
     ms = std::max( buff.feral_spirit -> data().effectN( 1 ).percent(), ms );
 
-  if ( buff.fists_of_stone -> up() )
-  {
-    ms *= 1.0 + buff.fists_of_stone -> data().effectN( 4 ).percent();
-  }
-
   if ( buff.ghost_wolf -> up() )
   {
     ms *= 1.0 + buff.ghost_wolf -> data().effectN( 2 ).percent();
@@ -5741,11 +5734,6 @@ double shaman_t::composite_melee_speed() const
   if ( buff.windsong -> up() )
   {
     speed *= buff.windsong -> check_value();
-  }
-
-  if ( buff.fists_of_stone -> up() )
-  {
-    speed *= buff.fists_of_stone -> check_value();
   }
 
   if ( buff.wind_strikes -> up() )
