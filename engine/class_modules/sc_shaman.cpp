@@ -112,6 +112,7 @@ public:
   action_t* lightning_strike;
   spell_t*  electrocute;
   action_t* volcanic_inferno;
+  spell_t*  lightning_shield;
 
   // Pets
   std::vector<pet_t*> pet_feral_spirit;
@@ -199,6 +200,7 @@ public:
     cooldown_t* feral_spirits;
     cooldown_t* lava_burst;
     cooldown_t* lava_lash;
+    cooldown_t* lightning_shield;
     cooldown_t* strike;
     cooldown_t* t16_2pc_melee;
     cooldown_t* t16_4pc_caster;
@@ -414,6 +416,7 @@ public:
     cooldown.feral_spirits        = get_cooldown( "feral_spirit"          );
     cooldown.lava_burst           = get_cooldown( "lava_burst"            );
     cooldown.lava_lash            = get_cooldown( "lava_lash"             );
+    cooldown.lightning_shield     = get_cooldown( "lightning_shield"      );
     cooldown.strike               = get_cooldown( "strike"                );
     cooldown.t16_2pc_melee        = get_cooldown( "t16_2pc_melee"         );
     cooldown.t16_4pc_caster       = get_cooldown( "t16_4pc_caster"        );
@@ -450,6 +453,7 @@ public:
   void trigger_stormfury( const action_state_t* state );
   void trigger_unleash_doom( const action_state_t* state );
   void trigger_elemental_focus( const action_state_t* state );
+  void trigger_lightning_shield( const action_state_t* state );
 
   // Character Definition
   virtual void      init_spells() override;
@@ -853,6 +857,7 @@ public:
     p() -> trigger_flametongue_weapon( state );
     p() -> trigger_hailstorm( state );
     p() -> trigger_unleash_doom( state );
+    p() -> trigger_lightning_shield( state );
     //p() -> trigger_tier16_2pc_melee( state ); TODO: Legion will change this
   }
 
@@ -2018,6 +2023,16 @@ struct volcanic_inferno_driver_t : public shaman_spell_t
   }
 };
 
+struct lightning_shield_damage_t : public shaman_spell_t
+{
+  lightning_shield_damage_t( shaman_t* player ) :
+    shaman_spell_t( "lightning_shield_damage", player, player -> find_spell( 192109 ) )
+  {
+    background = true;
+    callbacks = false;
+  }
+};
+
 // shaman_heal_t::impact ====================================================
 
 void shaman_heal_t::impact( action_state_t* s )
@@ -2648,24 +2663,14 @@ struct earthen_spike_t : public shaman_attack_t
 
 // Lightning Shield Spell ===================================================
 
-// TODO: Random targeting
-struct lightning_shield_damage_t : public shaman_spell_t
-{
-  lightning_shield_damage_t( shaman_t* player ) :
-    shaman_spell_t( "lightning_shield_damage", player, player -> find_spell( 192109 ) )
-  {
-    background = true;
-  }
-};
-
 struct lightning_shield_t : public shaman_spell_t
 {
   lightning_shield_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "lightning_shield", player, player -> find_talent_spell( "Lightning Shield" ), options_str )
   {
-    harmful = hasted_ticks = false;
+    harmful = false;
 
-    tick_action = new lightning_shield_damage_t( player );
+    add_child( player -> lightning_shield );
   }
 
   virtual void execute() override
@@ -4788,6 +4793,11 @@ void shaman_t::init_spells()
     spell.echo_of_the_elements       = spell_data_t::not_found();
   }
 
+  if ( talent.lightning_shield -> ok() )
+  {
+    lightning_shield = new lightning_shield_damage_t( this );
+  }
+
   if ( artifact.unleash_doom.rank() )
   {
     unleash_doom[ 0 ] = new unleash_doom_spell_t( "unleash_lava", this, find_spell( 199053 ) );
@@ -4910,6 +4920,39 @@ void shaman_t::trigger_elemental_focus( const action_state_t* state )
 
   buff.elemental_focus -> trigger( buff.elemental_focus -> data().initial_stacks() );
   cooldown.elemental_focus -> start( spec.elemental_focus -> internal_cooldown() );
+}
+
+void shaman_t::trigger_lightning_shield( const action_state_t* state )
+{
+  if ( ! talent.lightning_shield -> ok() )
+  {
+    return;
+  }
+
+  if ( cooldown.lightning_shield -> down() )
+  {
+    return;
+  }
+
+  if ( ! buff.lightning_shield -> up() )
+  {
+    return;
+  }
+
+  if ( ! state -> action -> result_is_hit( state -> result ) )
+  {
+    return;
+  }
+
+  if ( ! rng().roll( talent.lightning_shield -> proc_chance() ) )
+  {
+    return;
+  }
+
+  lightning_shield -> target = state -> target;
+  lightning_shield -> schedule_execute();
+
+  cooldown.lightning_shield -> start( talent.lightning_shield -> internal_cooldown() );
 }
 
 void shaman_t::trigger_unleash_doom( const action_state_t* state )
@@ -5132,13 +5175,24 @@ void shaman_t::trigger_hailstorm( const action_state_t* state )
   assert( debug_cast< shaman_attack_t* >( state -> action ) != nullptr && "Hailstorm called on invalid action type" );
   shaman_attack_t* attack = debug_cast< shaman_attack_t* >( state -> action );
   if ( ! attack -> may_proc_frostbrand )
+  {
     return;
+  }
+
+  if ( ! talent.hailstorm -> ok() )
+  {
+    return;
+  }
 
   if ( ! attack -> weapon )
+  {
     return;
+  }
 
   if ( ! buff.frostbrand -> up() )
+  {
     return;
+  }
 
   hailstorm -> target = state -> target;
   hailstorm -> schedule_execute();
@@ -5157,8 +5211,7 @@ void shaman_t::create_buffs()
                                  .activated( false )
                                  .chance( 1.0 ); // Proc chance is handled externally
   buff.lightning_shield        = buff_creator_t( this, "lightning_shield", find_talent_spell( "Lightning Shield" ) )
-                                 .period( timespan_t::zero() ) // Model ticks as a dot
-                                 .cd( timespan_t::zero() );
+                                 .chance( talent.lightning_shield -> ok() );
   buff.shamanistic_rage        = buff_creator_t( this, "shamanistic_rage", find_specialization_spell( "Shamanistic Rage" ) );
   buff.spirit_walk             = buff_creator_t( this, "spirit_walk", find_specialization_spell( "Spirit Walk" ) );
   buff.spiritwalkers_grace     = buff_creator_t( this, "spiritwalkers_grace", find_specialization_spell( "Spiritwalker's Grace" ) )
