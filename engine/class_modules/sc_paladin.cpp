@@ -2322,10 +2322,11 @@ struct divine_hammer_t : public paladin_spell_t
 // Divine Storm =============================================================
 
 // TODO(mserrano): this is wrong
-struct echoed_divine_storm_t: public holy_power_consumer_t
+// TODO(mserrano): supposedly this has a 77.15% attack power coefficient
+struct echoed_divine_storm_t: public paladin_melee_attack_t
 {
   echoed_divine_storm_t( paladin_t* p, const std::string& options_str )
-    : holy_power_consumer_t( "divine_storm", p, p -> find_class_spell( "Divine Storm" ) )
+    : paladin_melee_attack_t( "divine_storm", p, p -> find_class_spell( "Divine Storm" ), false )
   {
     parse_options( options_str );
 
@@ -2344,7 +2345,7 @@ struct echoed_divine_storm_t: public holy_power_consumer_t
 
   double action_multiplier() const override
   {
-    double am = holy_power_consumer_t::action_multiplier();
+    double am = paladin_melee_attack_t::action_multiplier();
     am *= 1.0 + p() -> get_hand_of_light();
     return am;
   }
@@ -2698,14 +2699,14 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
 // Templar's Verdict ========================================================================
 
 // TODO(mserrano): Are any of these multipliers correct?
-struct echoed_templars_verdict_t : public holy_power_consumer_t
+// TODO(mserrano): supposedly this has a 89.15% attack power base coefficient
+struct echoed_templars_verdict_t : public paladin_melee_attack_t
 {
   echoed_templars_verdict_t( paladin_t* p, const std::string& options_str )
-    : holy_power_consumer_t( "echoed_verdict", p, p -> find_spell( 186805 ) , true )
+    : paladin_melee_attack_t( "echoed_verdict", p, p -> find_spell( 186805 ) , false )
   {
     parse_options( options_str );
 
-    base_multiplier *= 1.0 + p -> artifact.might_of_the_templar.percent();
     background = true;
   }
 
@@ -2716,8 +2717,9 @@ struct echoed_templars_verdict_t : public holy_power_consumer_t
 
   double action_multiplier() const override
   {
-    double am = holy_power_consumer_t::action_multiplier();
+    double am = paladin_melee_attack_t::action_multiplier();
 
+    // TODO: does this apply?
     // Final Verdict buffs TV damage by 25%
     if ( p() -> talents.final_verdict -> ok() )
     {
