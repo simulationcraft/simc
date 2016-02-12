@@ -1439,11 +1439,12 @@ public:
   bool consume_bloodtalons;
   snapshot_counter_t* bt_counter;
   snapshot_counter_t* tf_counter;
+  bool direct_bleed;
 
   druid_attack_t( const std::string& n, druid_t* player,
                   const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ), attackHit( false ), consume_bloodtalons( false ),
-    bt_counter( nullptr ), tf_counter( nullptr )
+    bt_counter( nullptr ), tf_counter( nullptr ), direct_bleed( false )
   {
     ab::may_glance    = false;
     ab::special       = true;
@@ -1500,6 +1501,14 @@ public:
       bt_counter -> count_tick();
       tf_counter -> count_tick();
     }
+  }
+
+  virtual double target_armor( player_t* t ) const override
+  { 
+    if ( direct_bleed )
+      return 0.0;
+    else
+      return ab::target_armor( t );
   }
 
   virtual double composite_persistent_multiplier( const action_state_t* s ) const
@@ -2028,6 +2037,8 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
   double base_td_bonus;
   bool   consume_ooc;
   bool   trigger_tier17_2pc;
+  bool   benefits_from_razor_claws_dd,
+         benefits_from_razor_claws_td;
 
   cat_attack_t( const std::string& token, druid_t* p,
                 const spell_data_t* s = spell_data_t::nil(),
@@ -2035,7 +2046,9 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
     base_t( token, p, s ),
     requires_stealth( false ), combo_point_gain( 0 ),
     base_dd_bonus( 0.0 ), base_td_bonus( 0.0 ), consume_ooc( true ),
-    trigger_tier17_2pc( false )
+    trigger_tier17_2pc( false ),
+    benefits_from_razor_claws_dd( data().affected_by( p -> mastery.razor_claws -> effectN( 1 ) ) ),
+    benefits_from_razor_claws_td( data().affected_by( p -> mastery.razor_claws -> effectN( 2 ) ) )
   {
     parse_options( options );
 
@@ -2225,11 +2238,28 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
     return tc;
   }
 
+  double composite_da_multiplier( const action_state_t* state ) const override
+  { 
+    double dm = base_t::composite_da_multiplier( state );
+    
+     /* Modifiers for direct bleed damage. */
+    if ( direct_bleed )
+    {
+      if ( benefits_from_razor_claws_dd && p() -> mastery.razor_claws -> ok() )
+        dm *= 1.0 + p() -> cache.mastery_value();
+    
+      if ( benefits_from_open_wounds )
+        dm *= 1.0 + td( state -> target ) -> buffs.open_wounds -> value();
+    }
+
+    return dm;
+  }
+
   virtual double composite_ta_multiplier( const action_state_t* s ) const override
   {
     double tm = base_t::composite_ta_multiplier( s );
 
-    if ( p() -> mastery.razor_claws -> ok() && dbc::is_school( s -> action -> school, SCHOOL_PHYSICAL ) )
+    if ( benefits_from_razor_claws_td && p() -> mastery.razor_claws -> ok() )
       tm *= 1.0 + p() -> cache.mastery_value();
 
     return tm;
@@ -2359,7 +2389,7 @@ struct ashamanes_frenzy_t : public cat_attack_t
     double composite_persistent_multiplier( const action_state_t* s ) const override
     { return persistent_multiplier; }
     
-    // Bleed penetrates armor
+    // Bleed penetrates armor. Don't use direct_bleed because we don't want to apply mastery here.
     double target_armor( player_t* t ) const override
     { return 0.0; }
 
@@ -2667,26 +2697,6 @@ struct rake_t : public cat_attack_t
     return pm;
   }
 
-  /* Treat direct damage as "bleed"
-     Must use direct damage because tick_zeroes cannot be blocked, and
-     this attack can be blocked if the druid is in front of the target. */
-  double composite_da_multiplier( const action_state_t* state ) const override
-  { 
-    double dm = cat_attack_t::composite_da_multiplier( state );
-
-    if ( p() -> mastery.razor_claws -> ok() )
-      dm *= 1.0 + p() -> cache.mastery_value();
-    
-    if ( benefits_from_open_wounds )
-      dm *= 1.0 + td( state -> target ) -> buffs.open_wounds -> value();
-
-    return dm;
-  }
-
-  // Bleed damage penetrates armor.
-  virtual double target_armor( player_t* ) const override
-  { return 0.0; }
-
   virtual void impact( action_state_t* s ) override
   {
     cat_attack_t::impact( s );
@@ -2842,7 +2852,7 @@ struct shred_t : public cat_attack_t
     shredded_wounds_t( druid_t* p ) :
       cat_attack_t( "shredded_wounds", p, p -> find_spell( 210721 ) )
     {
-      background = true;
+      background = direct_bleed = true;
 
       const spell_data_t* rip = p -> find_specialization_spell( "Rip" );
 
@@ -2862,23 +2872,6 @@ struct shred_t : public cat_attack_t
 
       return cat_attack_t::attack_direct_power_coefficient( s ) * rip_state -> combo_points;
     }
-
-    double composite_da_multiplier( const action_state_t* state ) const override
-    { 
-      double dm = cat_attack_t::composite_da_multiplier( state );
-
-      if ( p() -> mastery.razor_claws -> ok() )
-        dm *= 1.0 + p() -> cache.mastery_value();
-    
-      if ( benefits_from_open_wounds )
-        dm *= 1.0 + td( state -> target ) -> buffs.open_wounds -> value();
-
-      return dm;
-    }
-
-    // Bleed damage penetrates armor.
-    virtual double target_armor( player_t* ) const override
-    { return 0.0; }
   };
 
   shredded_wounds_t* shredded_wounds;
@@ -3098,30 +3091,13 @@ struct thrash_cat_t : public cat_attack_t
   {
     aoe                    = -1;
     spell_power_mod.direct = 0;
+    direct_bleed = true;
 
     trigger_tier17_2pc = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
 
     base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
     dot_duration   *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
   }
-
-  // Treat direct damage as "bleed"
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double m = cat_attack_t::composite_da_multiplier( state );
-
-    if ( p() -> mastery.razor_claws -> ok() )
-      m *= 1.0 + p() -> cache.mastery_value();
-
-    if ( benefits_from_open_wounds )
-      m *= 1.0 + td( state -> target ) -> buffs.open_wounds -> value();
-
-    return m;
-  }
-
-  // Treat direct damage as "bleed"
-  virtual double target_armor( player_t* ) const override
-  { return 0.0; }
 };
 
 // Flurry of Xuen (Fen-yu Legendary Cloak proc) =============================
@@ -3419,6 +3395,7 @@ struct lacerate_t : public bear_attack_t
     parse_options( options_str );
 
     add_child( dot );
+    direct_bleed = true;
   }
 
   virtual void impact( action_state_t* state ) override
@@ -3434,10 +3411,6 @@ struct lacerate_t : public bear_attack_t
         p() -> cooldown.mangle -> reset( true );
     }
   }
-
-  // Treat direct damage as "bleed"
-  virtual double target_armor( player_t* ) const override
-  { return 0.0; }
 };
 
 // Mangle ============================================================
@@ -3564,6 +3537,7 @@ struct thrash_bear_t : public bear_attack_t
     parse_options( options_str );
     aoe                    = -1;
     spell_power_mod.direct = 0;
+    direct_bleed = true;
 
     // Apply hidden passive damage multiplier
     base_dd_multiplier *= 1.0 + player -> spec.guardian_passive -> effectN( 6 ).percent();
@@ -3579,10 +3553,6 @@ struct thrash_bear_t : public bear_attack_t
       dot -> execute();
     }
   }
-
-  // Treat direct damage as "bleed"
-  virtual double target_armor( player_t* ) const override
-  { return 0.0; }
 };
 
 } // end namespace bear_attacks
