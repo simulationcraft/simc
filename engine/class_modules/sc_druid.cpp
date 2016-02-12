@@ -315,6 +315,7 @@ public:
     buff_t* balance_tier18_4pc; // T18 4P Balance
 
     // Feral
+    buff_t* ashamanes_energy;
     buff_t* berserk;
     buff_t* bloodtalons;
     buff_t* elunes_guidance;
@@ -384,6 +385,7 @@ public:
     gain_t* solar_wrath;
 
     // Feral (Cat)
+    gain_t* ashamanes_energy;
     gain_t* ashamanes_frenzy;
     gain_t* bloody_slash;
     gain_t* energy_refund;
@@ -3169,6 +3171,8 @@ struct tigers_fury_t : public cat_attack_t
 
     if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B4 ) )
       p() -> buff.feral_tier16_4pc -> trigger();
+
+    p() -> buff.ashamanes_energy -> trigger();
   }
 };
 
@@ -5900,11 +5904,11 @@ void druid_t::init_spells()
   // Feral -- Fangs of Ashamane
   artifact.ashamanes_frenzy             = find_artifact_spell( "Ashamane's Frenzy" );
   artifact.open_wounds                  = find_artifact_spell( "Open Wounds" );
+  artifact.ashamanes_bite               = find_artifact_spell( "Ashamane's Bite" );
+  artifact.shadow_thrash                = find_artifact_spell( "Shadow Thrash" );
 
   // NYI
   artifact.ashamanes_energy             = find_artifact_spell( "Ashamane's Energy" );
-  artifact.ashamanes_bite               = find_artifact_spell( "Ashamane's Bite" );
-  artifact.shadow_thrash                = find_artifact_spell( "Shadow Thrash" );
   artifact.razor_fangs                  = find_artifact_spell( "Razor Fangs" );
   artifact.honed_instincts              = find_artifact_spell( "Honed Instincts" );
   artifact.protection_of_ashamane       = find_artifact_spell( "Protection of Ashamane" );
@@ -6050,6 +6054,11 @@ void druid_t::create_buffs()
   using namespace buffs;
 
   // Generic / Multi-spec druid buffs
+  buff.ashamanes_energy      = buff_creator_t( this, "ashamanes_energy", find_spell( 210583 ) )
+                               .chance( artifact.ashamanes_energy.rank() > 0 )
+                               .default_value( artifact.ashamanes_energy.value() )
+                               .tick_callback( [ this ]( buff_t* b , int, const timespan_t& ) {
+                                  resource_gain( RESOURCE_ENERGY, b -> value(), gain.ashamanes_energy ); } );
   buff.bear_form             = new bear_form_t( *this );
   buff.berserk               = new berserk_buff_t( *this );
   buff.cat_form              = new cat_form_t( *this );
@@ -6644,6 +6653,7 @@ void druid_t::init_gains()
   gain.solar_wrath           = get_gain( "solar_wrath"           );
 
   // Feral
+  gain.ashamanes_energy      = get_gain( "ashamanes_energy"      );
   gain.ashamanes_frenzy      = get_gain( "ashamanes_frenzy"      );
   gain.bloody_slash          = get_gain( "bloody_slash"          );
   gain.energy_refund         = get_gain( "energy_refund"         );
