@@ -326,6 +326,7 @@ public:
     const spell_data_t* sundering;
 
     const spell_data_t* fury_of_air;
+    const spell_data_t* hailstorm;
 
     const spell_data_t* earthen_spike;
     const spell_data_t* crashing_storm;
@@ -382,6 +383,8 @@ public:
   shaman_attack_t* windfury_mh, * windfury_oh;
   shaman_spell_t*  flametongue;
 
+  shaman_attack_t* hailstorm;
+
   shaman_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN ) :
     player_t( sim, SHAMAN, name, r ),
     lava_surge_during_lvb( false ),
@@ -426,6 +429,8 @@ public:
     windfury_oh = nullptr;
     flametongue = nullptr;
 
+    hailstorm = nullptr;
+
     regen_type = REGEN_DISABLED;
   }
 
@@ -434,7 +439,7 @@ public:
   // triggers
   void trigger_windfury_weapon( const action_state_t* );
   void trigger_flametongue_weapon( const action_state_t* );
-  void trigger_frostbrand_weapon( const action_state_t* );
+  void trigger_hailstorm( const action_state_t* );
   void trigger_tier15_2pc_caster( const action_state_t* );
   void trigger_tier16_2pc_melee( const action_state_t* );
   void trigger_tier16_4pc_melee( const action_state_t* );
@@ -846,7 +851,7 @@ public:
     p() -> trigger_windfury_weapon( state );
     p() -> trigger_stormfury( state );
     p() -> trigger_flametongue_weapon( state );
-    p() -> trigger_frostbrand_weapon( state );
+    p() -> trigger_hailstorm( state );
     p() -> trigger_unleash_doom( state );
     //p() -> trigger_tier16_2pc_melee( state ); TODO: Legion will change this
   }
@@ -1809,6 +1814,17 @@ struct crash_lightning_attack_t : public shaman_attack_t
   }
 };
 
+struct hailstorm_attack_t : public shaman_attack_t
+{
+  hailstorm_attack_t( const std::string& n, shaman_t* p, weapon_t* w ) :
+    shaman_attack_t( n, p, p -> find_spell( 210854 ) )
+  {
+    weapon = w;
+    background = true;
+    callbacks = may_proc_windfury = may_proc_frostbrand = may_proc_flametongue = may_proc_maelstrom_weapon = false;
+  }
+};
+
 struct stormstrike_attack_t : public shaman_attack_t
 {
   crash_lightning_attack_t* cl;
@@ -2272,7 +2288,7 @@ struct stormstrike_base_t : public shaman_attack_t
     cooldown             = p() -> cooldown.strike;
     weapon_multiplier    = 0.0;
     may_crit             = false;
-    may_proc_flametongue = may_proc_windfury = may_proc_stormfury = false;
+    may_proc_flametongue = may_proc_windfury = may_proc_stormfury = may_proc_frostbrand = false;
   }
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
@@ -2498,7 +2514,7 @@ struct crash_lightning_t : public shaman_attack_t
   {
     parse_options( options_str );
 
-    may_proc_windfury = may_proc_flametongue = may_proc_stormfury = false;
+    may_proc_windfury = may_proc_flametongue = may_proc_stormfury = may_proc_frostbrand = false;
     aoe = -1;
     weapon = &( p() -> main_hand_weapon );
   }
@@ -2590,7 +2606,7 @@ struct fury_of_air_aoe_t : public shaman_attack_t
     background = true;
     aoe = -1;
     school = SCHOOL_NATURE;
-    may_proc_windfury = may_proc_flametongue = may_proc_stormfury = false;
+    may_proc_windfury = may_proc_flametongue = may_proc_stormfury = may_proc_frostbrand = false;
 
     weapon = &( player -> main_hand_weapon );
   }
@@ -4716,6 +4732,7 @@ void shaman_t::init_spells()
   talent.sundering                   = find_talent_spell( "Sundering"            );
 
   talent.fury_of_air                 = find_talent_spell( "Fury of Air"          );
+  talent.hailstorm                   = find_talent_spell( "Hailstorm"            );
 
   talent.earthen_spike               = find_talent_spell( "Earthen Spike"        );
   talent.crashing_storm              = find_talent_spell( "Crashing Storm"       );
@@ -5110,9 +5127,9 @@ void shaman_t::trigger_flametongue_weapon( const action_state_t* state )
   flametongue -> schedule_execute();
 }
 
-void shaman_t::trigger_frostbrand_weapon( const action_state_t* state )
+void shaman_t::trigger_hailstorm( const action_state_t* state )
 {
-  assert( debug_cast< shaman_attack_t* >( state -> action ) != nullptr && "Frostbrand called on invalid action type" );
+  assert( debug_cast< shaman_attack_t* >( state -> action ) != nullptr && "Hailstorm called on invalid action type" );
   shaman_attack_t* attack = debug_cast< shaman_attack_t* >( state -> action );
   if ( ! attack -> may_proc_frostbrand )
     return;
@@ -5122,6 +5139,9 @@ void shaman_t::trigger_frostbrand_weapon( const action_state_t* state )
 
   if ( ! buff.frostbrand -> up() )
     return;
+
+  hailstorm -> target = state -> target;
+  hailstorm -> schedule_execute();
 }
 
 // shaman_t::init_buffs =====================================================
@@ -5321,6 +5341,11 @@ void shaman_t::init_action_list()
       windfury_oh = new windfury_weapon_melee_attack_t( "windfury_attack_oh", this, find_spell( 33750 ), &( off_hand_weapon ) );
     }
     flametongue = new flametongue_weapon_spell_t( "flametongue_attack", this, &( off_hand_weapon ) );
+  }
+
+  if ( talent.hailstorm -> ok() )
+  {
+    hailstorm = new hailstorm_attack_t( "hailstorm", this, &( main_hand_weapon ) );
   }
 
   if ( sets.has_set_bonus( SET_CASTER, T15, B2 ) )
