@@ -327,7 +327,6 @@ public:
 
     const spell_data_t* fury_of_air;
     const spell_data_t* crashing_storm;
-    const spell_data_t* stonefist_strike;
 
     const spell_data_t* earthen_spike;
   } talent;
@@ -2609,18 +2608,6 @@ struct fury_of_air_t : public shaman_spell_t
   }
 };
 
-struct stonefist_strike_t : public shaman_attack_t
-{
-  stonefist_strike_t( shaman_t* player, const std::string& options_str ) :
-    shaman_attack_t( "stonefist_strike", player, player -> talent.stonefist_strike )
-  {
-    weapon = &( player -> main_hand_weapon );
-    weapon_multiplier *= 2.0; // TODO: Need a composite_weapon_multiplier() that takes a state object so we can differentiate properly between targets
-
-    parse_options( options_str );
-  }
-};
-
 struct earthen_spike_t : public shaman_attack_t
 {
   earthen_spike_t( shaman_t* player, const std::string& options_str ) :
@@ -4470,7 +4457,6 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "rockbiter"               ) return new                rockbiter_t( this, options_str );
   if ( name == "spirit_walk"             ) return new              spirit_walk_t( this, options_str );
   if ( name == "spiritwalkers_grace"     ) return new      spiritwalkers_grace_t( this, options_str );
-  if ( name == "stonefist_strike"        ) return new         stonefist_strike_t( this, options_str );
   if ( name == "storm_elemental"         ) return new          storm_elemental_t( this, options_str );
   if ( name == "stormkeeper"             ) return new              stormkeeper_t( this, options_str );
   if ( name == "stormstrike"             ) return new              stormstrike_t( this, options_str );
@@ -4728,7 +4714,6 @@ void shaman_t::init_spells()
 
   talent.fury_of_air                 = find_talent_spell( "Fury of Air"          );
   talent.crashing_storm              = find_talent_spell( "Crashing Storm"       );
-  talent.stonefist_strike            = find_talent_spell( "Stonefist Strike"     );
 
   talent.earthen_spike               = find_talent_spell( "Earthen Spike"        );
 
