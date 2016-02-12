@@ -287,6 +287,14 @@ const char * _effect_subtype_strings[] =
   nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 445
 };
 
+std::string mechanic_str( unsigned mechanic ) {
+  switch ( static_cast<spell_mechanic>( mechanic ) )
+  {
+    case MECHANIC_BLEED: return "Bleed";
+    default:             return "Unknown(" + util::to_string( mechanic ) + ")";
+  }
+}
+
 std::string spell_flags( const spell_data_t* spell )
 {
   std::ostringstream s;
@@ -528,6 +536,11 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
     if ( e -> radius_max() > 0 && e -> radius_max() != e -> radius() )
       s << " - " << e -> radius_max();
     s << " yards";
+  }
+
+  if ( e -> mechanic() > 0 )
+  {
+    s << " | Mechanic: " << mechanic_str( e -> mechanic() );
   }
 
   s << std::endl;

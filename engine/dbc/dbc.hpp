@@ -401,6 +401,7 @@ public:
   double           _pp_combo_points; // Effect points per combo points
   double           _real_ppl;        // Effect real points per level
   int              _die_sides;       // Effect damage range
+  unsigned         _mechanic;        // Effect Mechanic
 
   // Pointers for runtime linking
   spell_data_t* _spell;
@@ -501,6 +502,10 @@ public:
 
   int die_sides() const
   { return _die_sides; }
+
+  // TODO: Enumize
+  unsigned mechanic() const
+  { return _mechanic; }
 
   bool class_flag( unsigned flag ) const
   {

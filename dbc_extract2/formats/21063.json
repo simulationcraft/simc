@@ -598,6 +598,9 @@
     { "data_type": "H", "field": "spell_level" },
     { "data_type": "H", "field": "unk_1" }
   ],
+  "SpellMechanic.db2": [
+    { "data_type": "I", "field": "mechanic", "formats": { "cpp": "%2u" } }
+  ],
   "SpellMisc.db2": [
     { "data_type": "I", "field": "flags_1" },
     { "data_type": "I", "field": "flags_2" },

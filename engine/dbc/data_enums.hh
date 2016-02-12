@@ -1,6 +1,10 @@
 #ifndef DATA_ENUMS_HH
 #define DATA_ENUMS_HH
 
+enum spell_mechanic {
+  MECHANIC_BLEED = 124
+};
+
 enum rppm_modifier_type_e
 {
   RPPM_MODIFIER_HASTE = 1,
