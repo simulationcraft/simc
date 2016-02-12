@@ -330,7 +330,6 @@ public:
     const spell_data_t* crashing_storm;
     const spell_data_t* stonefist_strike;
 
-    const spell_data_t* feral_kin;
     const spell_data_t* earthen_spike;
   } talent;
 
@@ -3268,36 +3267,6 @@ struct feral_spirit_spell_t : public shaman_spell_t
     p() -> buff.feral_spirit -> trigger();
     p() -> buff.feral_spirit2 -> trigger();
   }
-
-  bool ready() override
-  {
-    if ( p() -> talent.feral_kin -> ok() )
-    {
-      return false;
-    }
-
-    return shaman_spell_t::ready();
-  }
-};
-
-struct feral_kin_t : public shaman_spell_t
-{
-  feral_kin_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "feral_kin", player, player -> talent.feral_kin, options_str )
-  {
-    harmful   = false;
-
-    cooldown -> duration += player -> talent.spiritual_affinity -> effectN( 1 ).time_value();
-  }
-
-  virtual void execute() override
-  {
-    shaman_spell_t::execute();
-
-    // TODO: Summon kindred spirit
-
-    p() -> buff.feral_spirit2 -> trigger();
-  }
 };
 
 // Thunderstorm Spell =======================================================
@@ -4499,7 +4468,6 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "lightning_shield"        ) return new         lightning_shield_t( this, options_str );
   if ( name == "shamanistic_rage"        ) return new         shamanistic_rage_t( this, options_str );
   if ( name == "windstrike"              ) return new               windstrike_t( this, options_str );
-  if ( name == "feral_kin"               ) return new                feral_kin_t( this, options_str );
   if ( name == "feral_spirit"            ) return new       feral_spirit_spell_t( this, options_str );
   if ( name == "fists_of_stone"          ) return new           fists_of_stone_t( this, options_str );
   if ( name == "rockbiter"               ) return new                rockbiter_t( this, options_str );
@@ -4766,7 +4734,6 @@ void shaman_t::init_spells()
   talent.crashing_storm              = find_talent_spell( "Crashing Storm"       );
   talent.stonefist_strike            = find_talent_spell( "Stonefist Strike"     );
 
-  talent.feral_kin                   = find_talent_spell( "Feral Kin"            );
   talent.earthen_spike               = find_talent_spell( "Earthen Spike"        );
 
   // Artifact
