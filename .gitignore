@@ -69,3 +69,7 @@ build.conf
 /simc.vcxproj.user
 .gdbinit
 CMakeCache.txt
+SimulationCraft.config
+SimulationCraft.creator
+SimulationCraft.files
+SimulationCraft.includes
