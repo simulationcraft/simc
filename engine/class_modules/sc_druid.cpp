@@ -319,9 +319,11 @@ public:
     buff_t* berserk;
     buff_t* bloodtalons;
     buff_t* elunes_guidance;
+    buff_t* feral_instinct;
     buff_t* incarnation_cat;
     buff_t* predatory_swiftness;
     buff_t* savage_roar;
+    buff_t* scent_of_blood;
     buff_t* tigers_fury;
     buff_t* feral_tier15_4pc;
     buff_t* feral_tier16_2pc;
@@ -620,12 +622,12 @@ public:
     artifact_power_t feral_power;
     artifact_power_t sharpened_claws;
     artifact_power_t tear_the_flesh;
+    artifact_power_t scent_of_blood;
+    artifact_power_t feral_instinct;
 
     // NYI
     artifact_power_t hardened_roots;
     artifact_power_t protection_of_ashamane;
-    artifact_power_t scent_of_blood;
-    artifact_power_t feral_instinct;
   } artifact;
 
   druid_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
@@ -2154,6 +2156,7 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
       // Track benefit of damage buffs
       p() -> buff.tigers_fury -> up();
       p() -> buff.savage_roar -> up();
+      p() -> buff.feral_instinct -> up();
       if ( special && base_costs[ RESOURCE_ENERGY ] > 0 )
         p() -> buff.berserk -> up();
     }
@@ -2483,6 +2486,7 @@ struct berserk_t : public cat_attack_t
     cat_attack_t::execute();
 
     p() -> buff.berserk -> trigger();
+    p() -> buff.feral_instinct -> trigger();
 
     if ( p() -> sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
       p() -> buff.feral_tier17_4pc -> trigger();
@@ -3077,6 +3081,19 @@ public:
     base_multiplier *= 1.0 + player -> artifact.sharpened_claws.percent();
   }
 
+  double cost() const override
+  {
+    double c = cat_attack_t::cost();
+
+    // TOCHECK
+    double reduction = p() -> buff.scent_of_blood -> check_value();
+    reduction *= 1.0 + p() -> buff.berserk -> check_value();
+    reduction *= 1.0 + p() -> buff.incarnation_cat -> check_value();
+    c += reduction;
+
+    return c;
+  }
+
   virtual void impact( action_state_t* s ) override
   {
     cat_attack_t::impact( s );
@@ -3102,6 +3119,7 @@ public:
     }
 
     p() -> buff.feral_tier16_2pc -> up();
+    p() -> buff.scent_of_blood -> up();
 
     if ( p() -> buff.feral_tier15_4pc -> up() )
       p() -> buff.feral_tier15_4pc -> decrement();
@@ -3211,6 +3229,7 @@ struct thrash_cat_t : public cat_attack_t
   };
 
   shadow_thrash_t* shadow_thrash;
+  int targets_hit;
 
   thrash_cat_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "thrash_cat", p, p -> find_spell( 106830 ), options_str )
@@ -3231,9 +3250,21 @@ struct thrash_cat_t : public cat_attack_t
     }
   }
 
+  void impact( action_state_t* s ) override
+  {
+    cat_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+      targets_hit++;
+  }
+
   void execute() override
   {
+    targets_hit = 0;
+    
     cat_attack_t::execute();
+
+    p() -> buff.scent_of_blood -> trigger( 1, targets_hit * p() -> buff.scent_of_blood -> default_value );
 
     // TOCHECK: Procs just on cast or on ticks too?
     if ( shadow_thrash && p() -> rppm.shadow_thrash -> trigger() )
@@ -4690,6 +4721,7 @@ struct incarnation_t : public druid_spell_t
     druid_spell_t::execute();
 
     inc_buff -> trigger();
+    p() -> buff.feral_instinct -> trigger();
 
     if ( ! p() -> in_combat )
     {
@@ -6120,6 +6152,11 @@ void druid_t::create_buffs()
                                 gain.elunes_guidance ); } )
                             .cd( timespan_t::zero() )
                             .period( talent.elunes_guidance -> effectN( 2 ).period() );
+ 
+  buff.feral_instinct     = buff_creator_t( this, "feral_instinct", find_spell( 210649 ) )
+                            .chance( artifact.feral_instinct.rank() )
+                            .default_value( artifact.feral_instinct.percent() )
+                            .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Balance
 
@@ -6166,6 +6203,9 @@ void druid_t::create_buffs()
                                .default_value( talent.savage_roar -> effectN( 2 ).percent() )
                                .refresh_behavior( BUFF_REFRESH_DURATION ) // Pandemic refresh is done by the action
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.scent_of_blood        = buff_creator_t( this, "scent_of_blood", find_spell( 210664 ) )
+                               .chance( artifact.scent_of_blood.rank() )
+                               .default_value( -artifact.scent_of_blood.data().effectN( 1 ).resource( RESOURCE_ENERGY ) );
   buff.tigers_fury           = buff_creator_t( this, "tigers_fury", find_specialization_spell( "Tiger's Fury" ) )
                                .default_value( find_specialization_spell( "Tiger's Fury" ) -> effectN( 1 ).percent() )
                                .cd( timespan_t::zero() )
@@ -7014,6 +7054,9 @@ double druid_t::composite_player_multiplier( school_e school ) const
         m *= 1.0 + buff.moonkin_form -> data().effectN( 9 ).percent();
     }
   }
+
+  m *= 1.0 + buff.feral_instinct -> check_value();
+
   return m;
 }
 

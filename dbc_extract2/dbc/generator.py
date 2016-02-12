@@ -1643,6 +1643,7 @@ class SpellDataGenerator(DataGenerator):
 		  ( 210721, 2 ),       # Shredded Wounds (Fangs of Ashamane artifact passive)
 		  ( 210713, 2 ),       # Ashamane's Rake (Fangs of Ashamane artifact trait spell)
 		  ( 210705, 2 ),       # Ashamane's Rip (Fangs of Ashamane artifact trait spell)
+		  ( 210649, 2 ),       # Feral Instinct (Fangs of Ashamane artifact trait)
         ),
     ]
 

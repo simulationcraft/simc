@@ -914,13 +914,14 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        93402, // Sunfire (Solar)
            0,
     },
-    // Feral tree, 21 abilities
+    // Feral tree, 22 abilities
     {
       210713, // Ashamane's Rake
       210705, // Ashamane's Rip
       106951, // Berserk
       145152, // Bloodtalons
         1850, // Dash
+      210649, // Feral Instinct
       146874, // Feral Rage
        22568, // Ferocious Bite
         5185, // Healing Touch
