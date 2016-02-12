@@ -1303,14 +1303,14 @@ private:
 public:
   typedef druid_action_t base_t;
 
-  bool benefits_from_rend_and_tear, benefits_from_open_wounds;
+  bool rend_and_tear, open_wounds;
 
   druid_action_t( const std::string& n, druid_t* player,
                   const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ), 
     form_mask( ab::data().stance_mask() ), may_autounshift( true ), autoshift( 0 ),
-    benefits_from_rend_and_tear( ab::data().affected_by( player -> spell.lacerate_dot -> effectN( 2 ) ) ),
-    benefits_from_open_wounds( ab::data().affected_by( player -> artifact.open_wounds.data().effectN( 1 ).trigger() -> effectN( 1 ) ) )
+    rend_and_tear( ab::data().affected_by( player -> spell.lacerate_dot -> effectN( 2 ) ) ),
+    open_wounds( ab::data().affected_by( player -> artifact.open_wounds.data().effectN( 1 ).trigger() -> effectN( 1 ) ) )
   {
     ab::may_crit      = true;
     ab::tick_may_crit = true;
@@ -1328,18 +1328,11 @@ public:
   {
     double tm = ab::composite_target_multiplier( t );
 
-    if ( benefits_from_rend_and_tear )
+    if ( rend_and_tear )
       tm *= 1.0 + p() -> talent.rend_and_tear -> effectN( 2 ).percent() * td( t ) -> lacerate_stack;
 
-    return tm;
-  }
-
-  virtual double composite_ta_multiplier( const action_state_t* s ) const override
-  {
-    double tm = ab::composite_ta_multiplier( s );
-    
-    if ( benefits_from_open_wounds )
-      tm *= 1.0 + td( s -> target ) -> buffs.open_wounds -> value();
+    if ( open_wounds )
+      tm *= 1.0 + td( t ) -> buffs.open_wounds -> check_value();
 
     return tm;
   }
@@ -1457,6 +1450,24 @@ public:
   {
     ab::may_glance    = false;
     ab::special       = true;
+
+    parse_special_effect_data();
+  }
+
+  void parse_special_effect_data()
+  {
+    for ( size_t i = 1; i <= data().effect_count(); i++ )
+    {
+      const spelleffect_data_t& ed = data().effectN( i );
+      effect_type_t type = ed.type();
+      
+      // Check for bleed flag at effect or spell level.
+      if ( ( type == E_SCHOOL_DAMAGE || type == E_WEAPON_PERCENT_DAMAGE )
+        && ( ed.mechanic() == MECHANIC_BLEED || data().mechanic() == MECHANIC_BLEED ) )
+      {
+        direct_bleed = true;
+      }
+    }
   }
 
   virtual void init()
@@ -1606,13 +1617,10 @@ private:
   bool consumed_owlkin_frenzy;
 public:
   double ap_per_hit, ap_per_tick, ap_per_cast;
-  bool benefits_from_ca_ap,    // Celestial Alignment astral power gain
-       benefits_from_inc_ap,   // Incarnation astral power gain
-       benefits_from_elune,    // Blessing of Elune astral power gain
-       benefits_from_ca_dd,    // Celestial Alignment direct damage mod
-       benefits_from_ca_td,    // Celestial Alignment tick damage mod
-       benefits_from_inc_dd,   // Incarnation direct damage mod
-       benefits_from_inc_td;   // Incarnation tick damage mod
+  struct {
+    bool direct, tick, astral_power;
+  } celestial_alignment, incarnation;
+  bool blessing_of_elune;
   bool consumes_owlkin_frenzy;
   gain_t* ap_gain;
 
@@ -1623,18 +1631,20 @@ public:
       ap_per_hit( 0 ),
       ap_per_tick( 0 ),
       ap_per_cast( 0 ),
-      benefits_from_ca_ap( data().affected_by( p -> spec.celestial_alignment -> effectN( 3 ) ) ),
-      benefits_from_inc_ap( data().affected_by( p -> talent.incarnation_moonkin -> effectN( 3 ) ) ), // TOCHECK: Does this even work on Wrath on alpha? Seems like it shouldn't.
-      benefits_from_elune( data().affected_by( p -> spell.blessing_of_elune -> effectN( 1 ) )
-                        || data().affected_by( p -> spell.blessing_of_elune -> effectN( 2 ) ) ),
-      benefits_from_ca_dd( data().affected_by( p -> spec.celestial_alignment -> effectN( 1 ) ) ),
-      benefits_from_ca_td( data().affected_by( p -> spec.celestial_alignment -> effectN( 2 ) ) ),
-      benefits_from_inc_dd( data().affected_by( p -> talent.incarnation_moonkin -> effectN( 1 ) ) ),
-      benefits_from_inc_td( data().affected_by( p -> talent.incarnation_moonkin -> effectN( 2 ) ) ),
+      blessing_of_elune( data().affected_by( p -> spell.blessing_of_elune -> effectN( 1 ) )
+                      || data().affected_by( p -> spell.blessing_of_elune -> effectN( 2 ) ) ),
       consumes_owlkin_frenzy( false ),
       ap_gain( p->get_gain( name() ) )
   {
     parse_options( options );
+
+    incarnation.direct = data().affected_by( p -> talent.incarnation_moonkin -> effectN( 1 ) );
+    incarnation.tick = data().affected_by( p -> talent.incarnation_moonkin -> effectN( 2 ) );
+    incarnation.astral_power = data().affected_by( p -> talent.incarnation_moonkin -> effectN( 3 ) ); // TOCHECK: Does this even work on Wrath on alpha? Seems like it shouldn't.
+
+    celestial_alignment.direct = data().affected_by( p -> spec.celestial_alignment -> effectN( 1 ) );
+    celestial_alignment.tick = data().affected_by( p -> spec.celestial_alignment -> effectN( 2 ) );
+    celestial_alignment.astral_power = data().affected_by( p -> spec.celestial_alignment -> effectN( 3 ) );
   }
 
   virtual void reset()
@@ -1702,10 +1712,10 @@ public:
   {
     double dm = spell_t::action_da_multiplier();
 
-    if ( benefits_from_ca_dd )
+    if ( celestial_alignment.direct )
       dm *= 1.0 + p() -> buff.celestial_alignment -> check_value();
 
-    if ( benefits_from_inc_dd )
+    if ( incarnation.direct )
       dm *= 1.0 + p() -> buff.incarnation_moonkin -> check_value();
 
     return dm;
@@ -1715,10 +1725,10 @@ public:
   {
     double tm = spell_t::action_ta_multiplier();
 
-    if ( benefits_from_ca_td )
+    if ( celestial_alignment.tick )
       tm *= 1.0 + p() -> buff.celestial_alignment -> check_value();
 
-    if ( benefits_from_inc_td )
+    if ( incarnation.tick )
       tm *= 1.0 + p() -> buff.incarnation_moonkin -> check_value();
 
     return tm;
@@ -1747,19 +1757,19 @@ public:
     double ap = base_ap;
     double bonus_pct = 0;
     
-    if ( benefits_from_ca_ap && p() -> buff.celestial_alignment -> check() )
+    if ( celestial_alignment.astral_power && p() -> buff.celestial_alignment -> check() )
     {
       ap *= 1.0 + p() -> spec.celestial_alignment -> effectN( 3 ).percent();
       bonus_pct += p() -> spec.celestial_alignment -> effectN( 3 ).percent();
     }
 
-    if ( benefits_from_inc_ap && p() -> buff.incarnation_moonkin -> check() )
+    if ( incarnation.astral_power && p() -> buff.incarnation_moonkin -> check() )
     {
       ap *= 1.0 + p() -> buff.incarnation_moonkin -> data().effectN( 3 ).percent();
       bonus_pct += p() -> buff.incarnation_moonkin -> data().effectN( 3 ).percent();
     }
 
-    if ( benefits_from_elune && p() -> buff.blessing_of_elune -> check() )
+    if ( blessing_of_elune && p() -> buff.blessing_of_elune -> check() )
     {
       ap *= 1.0 + p() -> spell.blessing_of_elune -> effectN( 2 ).percent();
       bonus_pct += p() -> spec.celestial_alignment -> effectN( 3 ).percent();
@@ -1772,13 +1782,13 @@ public:
     ap -= base_ap;
 
     // Divide the remaining AP gain among the buffs based on their modifier / bonus_pct ratio.
-    if ( benefits_from_ca_ap && p() -> buff.celestial_alignment -> check() )
+    if ( celestial_alignment.astral_power && p() -> buff.celestial_alignment -> check() )
       p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * ( p() -> spec.celestial_alignment -> effectN( 3 ).percent() / bonus_pct ), p() -> gain.celestial_alignment );
 
-    if ( benefits_from_inc_ap && p() -> buff.incarnation_moonkin -> check() )
+    if ( incarnation.astral_power && p() -> buff.incarnation_moonkin -> check() )
       p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * ( p() -> buff.incarnation_moonkin -> data().effectN( 3 ).percent() / bonus_pct ), p() -> gain.incarnation );
 
-    if ( benefits_from_elune && p() -> buff.blessing_of_elune -> check() )
+    if ( blessing_of_elune && p() -> buff.blessing_of_elune -> check() )
       p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * ( p() -> spell.blessing_of_elune -> effectN( 2 ).percent() / bonus_pct ), p() -> gain.blessing_of_elune );
   }
 
@@ -2046,8 +2056,9 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
   double base_td_bonus;
   bool   consume_ooc;
   bool   trigger_tier17_2pc;
-  bool   benefits_from_razor_claws_dd,
-         benefits_from_razor_claws_td;
+  struct {
+    bool direct, tick;
+  } razor_claws;
 
   cat_attack_t( const std::string& token, druid_t* p,
                 const spell_data_t* s = spell_data_t::nil(),
@@ -2055,9 +2066,7 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
     base_t( token, p, s ),
     requires_stealth( false ), combo_point_gain( 0 ),
     base_dd_bonus( 0.0 ), base_td_bonus( 0.0 ), consume_ooc( true ),
-    trigger_tier17_2pc( false ),
-    benefits_from_razor_claws_dd( data().affected_by( p -> mastery.razor_claws -> effectN( 1 ) ) ),
-    benefits_from_razor_claws_td( data().affected_by( p -> mastery.razor_claws -> effectN( 2 ) ) )
+    trigger_tier17_2pc( false )
   {
     parse_options( options );
 
@@ -2066,6 +2075,9 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
     // Skills that cost combo points can't be cast outside of Cat Form.
     if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 )
       form_mask |= CAT_FORM;
+
+    razor_claws.direct = data().affected_by( p -> mastery.razor_claws -> effectN( 1 ) );
+    razor_claws.tick = data().affected_by( p -> mastery.razor_claws -> effectN( 2 ) );
   }
 
   void parse_special_effect_data()
@@ -2078,7 +2090,7 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
       if ( type == E_ENERGIZE && ed.resource_gain_type() == RESOURCE_COMBO_POINT )
         combo_point_gain = ed.resource( RESOURCE_COMBO_POINT );
       else if ( type == E_APPLY_AURA && ed.subtype() == A_PERIODIC_DAMAGE )
-      {
+      { 
         snapshot_flags |= STATE_AP;
         base_td_bonus = ed.bonus( player );
       }
@@ -2253,14 +2265,8 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
     double dm = base_t::composite_da_multiplier( state );
     
      /* Modifiers for direct bleed damage. */
-    if ( direct_bleed )
-    {
-      if ( benefits_from_razor_claws_dd && p() -> mastery.razor_claws -> ok() )
-        dm *= 1.0 + p() -> cache.mastery_value();
-    
-      if ( benefits_from_open_wounds )
-        dm *= 1.0 + td( state -> target ) -> buffs.open_wounds -> value();
-    }
+    if ( razor_claws.direct )
+      dm *= 1.0 + p() -> cache.mastery_value();
 
     return dm;
   }
@@ -2269,7 +2275,7 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
   {
     double tm = base_t::composite_ta_multiplier( s );
 
-    if ( benefits_from_razor_claws_td && p() -> mastery.razor_claws -> ok() )
+    if ( razor_claws.tick ) // Don't need to check school, it modifies all periodic damage.
       tm *= 1.0 + p() -> cache.mastery_value();
 
     return tm;
@@ -2810,7 +2816,6 @@ struct rake_t : public cat_attack_t
     cat_attack_t( "rake", p, p -> find_specialization_spell( "Rake" ), options_str ),
     stealth_multiplier( 0.0 )
   {
-    direct_bleed = true;
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
 
     bleed_spell           = p -> find_spell( 155722 );
@@ -2962,7 +2967,7 @@ struct shred_t : public cat_attack_t
     shredded_wounds_t( druid_t* p ) :
       cat_attack_t( "shredded_wounds", p, p -> find_spell( 210721 ) )
     {
-      background = direct_bleed = true;
+      background = true;
 
       const spell_data_t* rip = p -> find_specialization_spell( "Rip" );
 
@@ -3018,7 +3023,7 @@ struct shred_t : public cat_attack_t
       p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.shred );
 
       if ( s -> result == RESULT_CRIT && p() -> sets.has_set_bonus( DRUID_FERAL, PVP, B4 ) )
-        td( s -> target ) -> buffs.bloodletting -> trigger(); // Druid module debuff\
+        td( s -> target ) -> buffs.bloodletting -> trigger(); // Druid module debuff
 
       if ( shredded_wounds && td( s -> target ) -> dots.rip -> is_ticking() && p() -> rppm.shredded_wounds -> trigger() )
       {
@@ -3242,7 +3247,6 @@ struct thrash_cat_t : public cat_attack_t
   {
     aoe                    = -1;
     spell_power_mod.direct = 0;
-    direct_bleed = true;
 
     trigger_tier17_2pc = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
 
@@ -3573,7 +3577,6 @@ struct lacerate_t : public bear_attack_t
     parse_options( options_str );
 
     add_child( dot );
-    direct_bleed = true;
   }
 
   virtual void impact( action_state_t* state ) override
@@ -3715,7 +3718,6 @@ struct thrash_bear_t : public bear_attack_t
     parse_options( options_str );
     aoe                    = -1;
     spell_power_mod.direct = 0;
-    direct_bleed = true;
 
     // Apply hidden passive damage multiplier
     base_dd_multiplier *= 1.0 + player -> spec.guardian_passive -> effectN( 6 ).percent();
