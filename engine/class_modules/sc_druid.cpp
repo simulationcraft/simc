@@ -1445,7 +1445,7 @@ template <class Base>
 struct druid_attack_t : public druid_action_t< Base >
 {
 protected:
-  bool attackHit;
+  bool attack_hit;
 private:
   typedef druid_action_t< Base > ab;
 public:
@@ -1458,7 +1458,7 @@ public:
 
   druid_attack_t( const std::string& n, druid_t* player,
                   const spell_data_t* s = spell_data_t::nil() ) :
-    ab( n, player, s ), attackHit( false ), consume_bloodtalons( false ),
+    ab( n, player, s ), attack_hit( false ), consume_bloodtalons( false ),
     bt_counter( nullptr ), tf_counter( nullptr ), direct_bleed( false )
   {
     ab::may_glance    = false;
@@ -1498,11 +1498,11 @@ public:
 
   virtual void execute()
   {
-    attackHit = false;
+    attack_hit = false;
 
     ab::execute();
 
-    if( consume_bloodtalons && attackHit )
+    if( consume_bloodtalons && attack_hit )
     {
       bt_counter -> count_execute();
       tf_counter -> count_execute();
@@ -1516,7 +1516,7 @@ public:
     ab::impact( s );
 
     if ( ab::result_is_hit( s -> result ) )
-      attackHit = true;
+      attack_hit = true;
 
     if ( ! ab::special )
     {
@@ -2525,11 +2525,11 @@ struct berserk_t : public cat_attack_t
 struct bloody_slash_t : public cat_attack_t
 {
 private:
-  bool attackCritical;
+  bool attack_critical;
 public:
   bloody_slash_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "bloody_slash", p, p -> talent.bloody_slash ),
-    attackCritical( false )
+    attack_critical( false )
   {
     parse_options( options_str );
 
@@ -2543,19 +2543,19 @@ public:
     cat_attack_t::impact( s );
 
     if ( s -> result == RESULT_CRIT )
-      attackCritical = true;
+      attack_critical = true;
   }
 
   virtual void execute() override
   {
-    attackCritical = false;
+    attack_critical = false;
 
     cat_attack_t::execute();
     
-    if ( attackHit )
+    if ( attack_hit )
     {
       p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.bloody_slash );
-      if ( attackCritical && p() -> spell.primal_fury -> ok() )
+      if ( attack_critical && p() -> spell.primal_fury -> ok() )
       {
         p() -> proc.primal_fury -> occur();
         p() -> resource_gain( RESOURCE_COMBO_POINT, p() -> spell.primal_fury -> effectN( 1 ).base_value(), p() -> gain.primal_fury );
@@ -3096,11 +3096,11 @@ struct shred_t : public cat_attack_t
 struct swipe_t : public cat_attack_t
 {
 private:
-  bool attackCritical;
+  bool attack_critical;
 public:
   swipe_t( druid_t* player, const std::string& options_str ) :
     cat_attack_t( "swipe", player, player -> spec.swipe, options_str ),
-    attackCritical( false )
+    attack_critical( false )
   {
     aoe = -1;
     combo_point_gain = data().effectN( 1 ).base_value(); // Effect is not labelled correctly as CP gain
@@ -3126,19 +3126,19 @@ public:
     cat_attack_t::impact( s );
 
     if ( s -> result == RESULT_CRIT )
-      attackCritical = true;
+      attack_critical = true;
   }
 
   virtual void execute() override
   {
-    attackCritical = false;
+    attack_critical = false;
 
     cat_attack_t::execute();
     
-    if ( attackHit )
+    if ( attack_hit )
     {
       p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.swipe );
-      if ( attackCritical && p() -> spell.primal_fury -> ok() )
+      if ( attack_critical && p() -> spell.primal_fury -> ok() )
       {
         p() -> proc.primal_fury -> occur();
         p() -> resource_gain( RESOURCE_COMBO_POINT, p() -> spell.primal_fury -> effectN( 1 ).base_value(), p() -> gain.primal_fury );
@@ -3258,11 +3258,15 @@ struct thrash_cat_t : public cat_attack_t
     }
   };
 
+private:
+  bool attack_critical;
+public:
   shadow_thrash_t* shadow_thrash;
   int targets_hit;
 
   thrash_cat_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "thrash_cat", p, p -> find_spell( 106830 ), options_str )
+    cat_attack_t( "thrash_cat", p, p -> find_spell( 106830 ), options_str ),
+    attack_critical( false )
   {
     aoe                    = -1;
     spell_power_mod.direct = 0;
@@ -3285,11 +3289,14 @@ struct thrash_cat_t : public cat_attack_t
 
     if ( result_is_hit( s -> result ) )
       targets_hit++;
+
+    if ( s -> result == RESULT_CRIT )
+      attack_critical = true;
   }
 
   void execute() override
   {
-    targets_hit = 0;
+    targets_hit = attack_critical = false;
     
     cat_attack_t::execute();
 
@@ -3299,8 +3306,15 @@ struct thrash_cat_t : public cat_attack_t
     if ( shadow_thrash && p() -> rppm.shadow_thrash -> trigger() )
       shadow_thrash -> execute();
 
-    if ( attackHit && p() -> sets.has_set_bonus( DRUID_FERAL, T19, B2 ) )
+    if ( attack_hit && p() -> sets.has_set_bonus( DRUID_FERAL, T19, B2 ) )
+    {
       p() -> resource_gain( RESOURCE_COMBO_POINT, 1, p() -> gain.feral_tier19_2pc ); // TODO: Get CP value from spell data when its available.
+      if ( attack_critical && p() -> spell.primal_fury -> ok() ) // TOCHECK
+      {
+        p() -> proc.primal_fury -> occur();
+        p() -> resource_gain( RESOURCE_COMBO_POINT, p() -> spell.primal_fury -> effectN( 1 ).base_value(), p() -> gain.primal_fury );
+      }
+    }
   }
 };
 
