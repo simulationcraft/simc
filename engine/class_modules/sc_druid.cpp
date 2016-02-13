@@ -14,9 +14,11 @@ namespace { // UNNAMED NAMESPACE
 
  Astral Influence
  Affinity active components
+ All legendary items
 
  Feral ================================
  Predator vs. adds
+ Artifact utility traits
 
  Balance ==============================
  Stellar Drift cast while moving
@@ -24,6 +26,7 @@ namespace { // UNNAMED NAMESPACE
  Utility & NYI artifact perks (see p() -> artifact).
  Accurate starfall travel time & debuff mechanics ?
  Force of Nature!
+ Fury of Elune
 
  Guardian =============================
  Statistics?
@@ -130,7 +133,7 @@ struct druid_td_t : public actor_target_data_t
          + dots.shadow_thrash -> is_ticking();
   }
 
-  void reset()
+  void reset() override
   {
     lacerate_stack = 0;
   }
@@ -616,27 +619,27 @@ public:
     artifact_power_t twilight_glow;
 
     // NYI
-    artifact_power_t scion_of_the_night_sky;
-    artifact_power_t touch_of_the_moon;
-    artifact_power_t rejuvenating_innervation;
     artifact_power_t light_of_the_sun;
     artifact_power_t mooncraze; // will be replaced
+    artifact_power_t rejuvenating_innervation;
+    artifact_power_t scion_of_the_night_sky;
+    artifact_power_t touch_of_the_moon;
 
     // Feral -- Fangs of Ashamane
-    artifact_power_t ashamanes_frenzy;
-    artifact_power_t ashamanes_energy;
     artifact_power_t ashamanes_bite;
-    artifact_power_t open_wounds;
-    artifact_power_t shadow_thrash;
-    artifact_power_t razor_fangs;
-    artifact_power_t honed_instincts;
+    artifact_power_t ashamanes_energy;
+    artifact_power_t ashamanes_frenzy;
     artifact_power_t attuned_to_nature;
-    artifact_power_t powerful_bite;
+    artifact_power_t feral_instinct;
     artifact_power_t feral_power;
+    artifact_power_t honed_instincts;
+    artifact_power_t open_wounds;
+    artifact_power_t powerful_bite;
+    artifact_power_t razor_fangs;
+    artifact_power_t scent_of_blood;
+    artifact_power_t shadow_thrash;
     artifact_power_t sharpened_claws;
     artifact_power_t tear_the_flesh;
-    artifact_power_t scent_of_blood;
-    artifact_power_t feral_instinct;
 
     // NYI
     artifact_power_t hardened_roots;
