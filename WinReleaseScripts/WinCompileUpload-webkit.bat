@@ -52,23 +52,3 @@ cd ..
 call start winscp /command "open downloads" "put %download%\SimcSetup-%simcversion%-win64.exe -nopreservetime -nopermissions -transfer=binary" "exit"
 7z a -r %install% %install% -mx9 -md=32m
 call start winscp /command "open downloads" "put %download%\%install%.7z -nopreservetime -nopermissions -transfer=binary" "exit"
-
-set install=simc-%simcversion%-win32
-"%MSBUILDDIR%msbuild.exe" %simcfiles%\simc_vs2013.sln /p:configuration=WebKit /p:platform=win32 /nr:true /m:8
-
-robocopy "%redist%x86\Microsoft.VC120.CRT" %install%\ msvcp120.dll msvcr120.dll vccorlib120.dll
-robocopy locale\ %install%\locale sc_de.qm sc_zh.qm sc_it.qm
-robocopy winreleasescripts\ %install%\ qt.conf
-robocopy . %install%\ Welcome.html Welcome.png Simulationcraft.exe simc.exe readme.txt Error.html COPYING
-robocopy Profiles\ %install%\profiles\ *.* /S
-cd %install%
-C:\Qt\Qt5.5.1.32\5.5\msvc2013\bin\windeployqt.exe --no-translations simulationcraft.exe
-cd ..
-
-cd winreleasescripts
-iscc.exe "setup32.iss"
-cd ..
-call start winscp /command "open downloads" "put %download%\SimcSetup-%simcversion%-win32.exe -nopreservetime -nopermissions -transfer=binary" "exit"
-7z a -r %install% %install% -mx9 -md=32m
-winscp /command "open downloads" "put %download%\%install%.7z -nopreservetime -nopermissions -transfer=binary" "exit"
-pause
