@@ -1707,10 +1707,13 @@ public:
   {
     if ( !compare_previous_combo_strikes( new_ability ) && p() -> mastery.combo_strikes -> ok() )
     {
-      if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T19, B4 ) && p() -> tier19_4pc_melee_counter < 3 )
-        p() -> tier19_4pc_melee_counter++;
-      else
-        p() -> buff.combo_master -> trigger();
+      if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T19, B4 ) )
+      {
+        if ( p() -> tier19_4pc_melee_counter < 3 )
+          p() -> tier19_4pc_melee_counter++;
+        else
+          p() -> buff.combo_master -> trigger();
+      }
 
       p() -> buff.combo_strikes -> trigger();
       if ( p() -> talent.hit_combo -> ok() )
