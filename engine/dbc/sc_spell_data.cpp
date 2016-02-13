@@ -64,7 +64,8 @@ const sdata_field_t _effect_data_fields[] =
   { SD_TYPE_DOUBLE,   "p_combo_points" },
   { SD_TYPE_DOUBLE,   "p_level"        },
   { SD_TYPE_INT,      "damage_range"   },
-  { SD_TYPE_UNSIGNED, "mechanic"       }
+  { SD_TYPE_UNSIGNED, "mechanic"       },
+  { SD_TYPE_UNSIGNED, "chain_target"   }
 };
 
 const sdata_field_t _spell_data_fields[] =

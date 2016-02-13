@@ -553,6 +553,13 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
     return;
   }
 
+  // Technically, there could be both a single target and an aoe effect in a single spell, but that
+  // probably will never happen.
+  if ( spelleffect_data.chain_target() > 1 )
+  {
+    aoe = spelleffect_data.chain_target();
+  }
+
   switch ( spelleffect_data.type() )
   {
       // Direct Damage

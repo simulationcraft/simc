@@ -402,6 +402,7 @@ public:
   double           _real_ppl;        // Effect real points per level
   int              _die_sides;       // Effect damage range
   unsigned         _mechanic;        // Effect Mechanic
+  unsigned         _chain_target;    // Number of targets (for chained spells)
 
   // Pointers for runtime linking
   spell_data_t* _spell;
@@ -506,6 +507,9 @@ public:
   // TODO: Enumize
   unsigned mechanic() const
   { return _mechanic; }
+
+  unsigned chain_target() const
+  { return _chain_target; }
 
   bool class_flag( unsigned flag ) const
   {

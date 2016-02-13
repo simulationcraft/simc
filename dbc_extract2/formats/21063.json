@@ -536,7 +536,7 @@
     { "data_type": "I", "field": "unk_2" },
     { "data_type": "f", "field": "ap_coefficient" },
     { "data_type": "H", "field": "sub_type" },
-    { "data_type": "H", "field": "chain_target" },
+    { "data_type": "H", "field": "chain_target", "formats": { "cpp": "%3u" } },
     { "data_type": "B", "field": "unk_3" },
     { "data_type": "B", "field": "type" },
     { "data_type": "B", "field": "id_mechanic" },

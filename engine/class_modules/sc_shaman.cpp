@@ -2740,7 +2740,7 @@ struct chain_lightning_t: public shaman_spell_t
   chain_lightning_t( shaman_t* player, const std::string& options_str ):
     shaman_spell_t( "chain_lightning", player, player -> find_specialization_spell( "Chain Lightning" ), options_str )
   {
-    aoe = 3 + player -> artifact.electric_discharge.value();
+    aoe = 5 + player -> artifact.electric_discharge.value();
     base_add_multiplier = data().effectN( 1 ).chain_multiplier();
     radius = 10.0;
 

@@ -543,6 +543,11 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
     s << " | Mechanic: " << mechanic_str( e -> mechanic() );
   }
 
+  if ( e -> chain_target() > 0 )
+  {
+    s << " | Chain Targets: " << e -> chain_target();
+  }
+
   s << std::endl;
 
   std::vector< const spell_data_t* > affected_spells = dbc.effect_affects_spells( spell -> class_family(), e );

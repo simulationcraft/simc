@@ -2709,7 +2709,7 @@ class SpellDataGenerator(DataGenerator):
                 continue
 
             if index % 20 == 0:
-                self._out.write('//{     Id,Flags,   SpId,Idx, EffectType                  , EffectSubType                              ,       Average,         Delta,       Unknown,   Coefficient, APCoefficient,  Ampl,  Radius,  RadMax,   BaseV,   MiscV,  MiscV2, {     Flags1,     Flags2,     Flags3,     Flags4 }, Trigg,   DmgMul,  CboP, RealP,Die,Mech,0, 0 },\n')
+                self._out.write('//{     Id,Flags,   SpId,Idx, EffectType                  , EffectSubType                              ,       Average,         Delta,       Unknown,   Coefficient, APCoefficient,  Ampl,  Radius,  RadMax,   BaseV,   MiscV,  MiscV2, {     Flags1,     Flags2,     Flags3,     Flags4 }, Trigg,   DmgMul,  CboP, RealP,Die,Mech,ChTrg,0, 0 },\n')
 
             # 1
             fields = effect.field('id')
@@ -2745,6 +2745,7 @@ class SpellDataGenerator(DataGenerator):
             fields += [ '{ %s }' % ', '.join( effect.field('class_mask_1', 'class_mask_2', 'class_mask_3', 'class_mask_4' ) ) ]
             fields += effect.field('trigger_spell', 'dmg_multiplier', 'points_per_combo_points', 'real_ppl', 'die_sides')
             fields += self._spellmechanic_db[effect.id_mechanic].field('mechanic')
+            fields += effect.field('chain_target')
             # Pad struct with empty pointers for direct spell data access
             fields += [ '0', '0' ]
 
