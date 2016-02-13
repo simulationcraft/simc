@@ -1707,11 +1707,10 @@ public:
   {
     if ( !compare_previous_combo_strikes( new_ability ) && p() -> mastery.combo_strikes -> ok() )
     {
-/*      if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T19, B4 ) && p() -> tier19_4pc_melee_counter < 3 )
+      if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T19, B4 ) && p() -> tier19_4pc_melee_counter < 3 )
         p() -> tier19_4pc_melee_counter++;
       else
         p() -> buff.combo_master -> trigger();
-*/
 
       p() -> buff.combo_strikes -> trigger();
       if ( p() -> talent.hit_combo -> ok() )
@@ -2082,8 +2081,8 @@ struct tiger_palm_t: public monk_melee_attack_t
       // Reduces the remaining cooldown on your Brews by 1 sec
       if ( p() -> cooldown.brewmaster_active_mitigation -> down() )
       {
-        double time_reduction = data().effectN( 3 ).base_value();
-//          + ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T19, B4 ) ? p() -> sets.set( MONK_BREWMASTER, T19, B4 ) -> effectN( 1 ).base_value() : 0 );
+        double time_reduction = data().effectN( 3 ).base_value()
+          + ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T19, B4 ) ? p() -> sets.set( MONK_BREWMASTER, T19, B4 ) -> effectN( 1 ).base_value() : 0 );
         p() -> cooldown.brewmaster_active_mitigation -> adjust( -1 * timespan_t::from_seconds( time_reduction ) );
       }
 
@@ -2226,8 +2225,8 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     cooldown -> duration = data().cooldown();
     if ( p -> specialization() == MONK_MISTWEAVER )
       cooldown -> duration += p -> passives.aura_mistweaver_monk -> effectN( 8 ).time_value();
-//    if ( p -> sets.has_set_bonus( MONK_WINDWALKER, T19, B2) )
-//      cooldown -> duration += p -> sets.set( MONK_WINDWALKER, T19, B2 ) ->effectN( 1 ).time_value();
+    if ( p -> sets.has_set_bonus( MONK_WINDWALKER, T19, B2) )
+      cooldown -> duration += p -> sets.set( MONK_WINDWALKER, T19, B2 ) -> effectN( 1 ).time_value();
 
 
     sef_ability = SEF_RISING_SUN_KICK;
@@ -2430,8 +2429,7 @@ struct blackout_kick_t: public monk_melee_attack_t
     {
       if ( p() -> buff.teachings_of_the_monastery -> up() )
       {
-
-        if ( rng().roll( p() -> spec.teachings_of_the_monastery -> effectN( 2 ).percent() ) )
+        if ( rng().roll( p() -> spec.teachings_of_the_monastery -> effectN( 1 ).percent() ) )
           p() -> cooldown.rising_sun_kick -> reset( true );
       }
     }
@@ -5891,8 +5889,8 @@ void monk_t::create_buffs()
     .add_invalidate( CACHE_DODGE );
 
   buff.ironskin_brew = buff_creator_t(this, "ironskin_brew", spec.ironskin_brew )
-    .default_value( spec.ironskin_brew -> effectN( 1 ).percent() )
-//      + ( sets.has_set_bonus( MONK_BREWMASTER, T19, B2 ) ? sets.set( MONK_BREWMASTER, T19, B2 ) -> effectN( 1 ).percent() : 0 ) )
+    .default_value( spec.ironskin_brew -> effectN( 1 ).percent() 
+      + ( sets.has_set_bonus( MONK_BREWMASTER, T19, B2 ) ? sets.set( MONK_BREWMASTER, T19, B2 ) -> effectN( 1 ).percent() : 0 ) )
     .refresh_behavior( BUFF_REFRESH_EXTEND );
 
   buff.keg_smash_talent = buff_creator_t( this, "keg_smash", passives.keg_smash_buff )
@@ -5930,8 +5928,8 @@ void monk_t::create_buffs()
                   + ( artifact.harmony_and_focus.rank() ? artifact.harmony_and_focus.value() : 0 ) );
 
   buff.uplifting_trance = buff_creator_t( this, "uplifting_trance", passives.uplifting_trance )
-    .chance( spec.renewing_mist -> effectN( 2 ).percent() )
-//      + ( sets.has_set_bonus( MONK_MISTWEAVER, T19, B2 ) ? sets.set( MONK_MISTWEAVER, T19, B2 ) -> effectN( 1 ).percent() : 0 ) )
+    .chance( spec.renewing_mist -> effectN( 2 ).percent() 
+      + ( sets.has_set_bonus( MONK_MISTWEAVER, T19, B2 ) ? sets.set( MONK_MISTWEAVER, T19, B2 ) -> effectN( 1 ).percent() : 0 ) )
     .default_value( passives.uplifting_trance -> effectN( 1 ).percent() );
 
   buff.mistweaving = buff_creator_t(this, "mistweaving", passives.tier17_2pc_heal )
