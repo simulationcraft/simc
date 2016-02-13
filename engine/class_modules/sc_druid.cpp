@@ -1469,14 +1469,14 @@ public:
 
   void parse_special_effect_data()
   {
-    for ( size_t i = 1; i <= data().effect_count(); i++ )
+    for ( size_t i = 1; i <= this -> data().effect_count(); i++ )
     {
-      const spelleffect_data_t& ed = data().effectN( i );
+      const spelleffect_data_t& ed = this -> data().effectN( i );
       effect_type_t type = ed.type();
       
       // Check for bleed flag at effect or spell level.
       if ( ( type == E_SCHOOL_DAMAGE || type == E_WEAPON_PERCENT_DAMAGE )
-        && ( ed.mechanic() == MECHANIC_BLEED || data().mechanic() == MECHANIC_BLEED ) )
+        && ( ed.mechanic() == MECHANIC_BLEED || this -> data().mechanic() == MECHANIC_BLEED ) )
       {
         direct_bleed = true;
       }
