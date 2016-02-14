@@ -251,7 +251,6 @@ public:
     const spell_data_t* elemental_fury;
     const spell_data_t* fulmination;
     const spell_data_t* lava_surge;
-    const spell_data_t* shamanism;
     const spell_data_t* spiritual_insight;
 
     // Enhancement
@@ -944,26 +943,6 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     if ( data().affected_by( p -> spec.elemental_fury -> effectN( 1 ) ) )
     {
       crit_bonus_multiplier *= 1.0 + p -> spec.elemental_fury -> effectN( 1 ).percent();
-    }
-
-    if ( data().affected_by( p -> spec.shamanism -> effectN( 1 ) ) )
-    {
-      base_multiplier *= 1.0 + p -> spec.shamanism -> effectN( 1 ).percent();
-    }
-
-    if ( data().affected_by( p -> spec.shamanism -> effectN( 2 ) ) )
-    {
-      base_multiplier *= 1.0 + p -> spec.shamanism -> effectN( 2 ).percent();
-    }
-
-    if ( data().affected_by( p -> spec.shamanism -> effectN( 3 ) ) )
-    {
-      base_execute_time += p -> spec.shamanism -> effectN( 3 ).time_value();
-    }
-
-    if ( data().affected_by( p -> spec.shamanism -> effectN( 4 ) ) )
-    {
-      cooldown -> duration += p -> spec.shamanism -> effectN( 4 ).time_value();
     }
   }
 
@@ -4693,7 +4672,6 @@ void shaman_t::init_spells()
   spec.elemental_fury        = find_specialization_spell( "Elemental Fury" );
   spec.fulmination           = find_specialization_spell( "Fulmination" );
   spec.lava_surge            = find_specialization_spell( "Lava Surge" );
-  spec.shamanism             = find_specialization_spell( "Shamanism" );
 
   // Enhancement
   spec.critical_strikes      = find_specialization_spell( "Critical Strikes" );
