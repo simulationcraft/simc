@@ -2769,14 +2769,13 @@ struct chain_lightning_t: public shaman_spell_t
   chain_lightning_t( shaman_t* player, const std::string& options_str ):
     shaman_spell_t( "chain_lightning", player, player -> find_specialization_spell( "Chain Lightning" ), options_str )
   {
-    aoe += player -> artifact.electric_discharge.value();
+    base_multiplier *= 1.0 + player -> artifact.electric_discharge.percent();
     base_add_multiplier = data().effectN( 1 ).chain_multiplier();
     radius = 10.0;
 
     if ( player -> mastery.elemental_overload -> ok() )
     {
       overload = new elemental_overload_spell_t( player, "chain_lightning_overload", player -> find_spell( 45297 ) );
-      overload -> aoe += player -> artifact.electric_discharge.value();
       add_child( overload );
     }
   }
@@ -2950,14 +2949,13 @@ struct lava_beam_t : public shaman_spell_t
   lava_beam_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "lava_beam", player, player -> find_spell( 114074 ), options_str )
   {
-    // TODO: Currently not affected in spell data.
-    aoe                   = 5  + player -> artifact.electric_discharge.value();
     base_add_multiplier   = data().effectN( 1 ).chain_multiplier();
+    // TODO: Currently not affected in spell data.
+    base_multiplier *= 1.0 + player -> artifact.electric_discharge.percent();
 
     if ( player -> mastery.elemental_overload -> ok() )
     {
       overload = new elemental_overload_spell_t( player, "lava_beam_overload", player -> find_spell( 114738 ) );
-      overload -> aoe = 5  + player -> artifact.electric_discharge.value();
       add_child( overload );
     }
   }
