@@ -113,6 +113,7 @@ public:
   spell_t*  electrocute;
   action_t* volcanic_inferno;
   spell_t*  lightning_shield;
+  spell_t*  molten_earth;
 
   // Pets
   std::vector<pet_t*> pet_feral_spirit;
@@ -294,7 +295,7 @@ public:
 
     // Elemental
     const spell_data_t* path_of_flame;
-    const spell_data_t* path_of_elements;
+    const spell_data_t* molten_earth;
     const spell_data_t* maelstrom_totem;
 
     const spell_data_t* fleet_of_foot;
@@ -432,6 +433,8 @@ public:
     flametongue = nullptr;
 
     hailstorm = nullptr;
+    lightning_shield = nullptr;
+    molten_earth = nullptr;
 
     regen_type = REGEN_DISABLED;
   }
@@ -453,6 +456,7 @@ public:
   void trigger_unleash_doom( const action_state_t* state );
   void trigger_elemental_focus( const action_state_t* state );
   void trigger_lightning_shield( const action_state_t* state );
+  void trigger_molten_earth( const action_state_t* state );
 
   // Character Definition
   virtual void      init_spells() override;
@@ -950,6 +954,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     base_t::execute();
 
     trigger_elemental_empowerment();
+    p() -> trigger_molten_earth( execute_state );
   }
 
   void impact( action_state_t* state ) override
@@ -2012,6 +2017,49 @@ struct lightning_shield_damage_t : public shaman_spell_t
   }
 };
 
+struct molten_earth_spell_t : public shaman_spell_t
+{
+  molten_earth_spell_t( shaman_t* p ) :
+    shaman_spell_t( "molten_earth", p, p -> find_spell( 170379 ) )
+  {
+    background = proc = true;
+    callbacks = false;
+  }
+};
+
+struct molten_earth_driver_t : public spell_t
+{
+  molten_earth_spell_t* nuke;
+
+  molten_earth_driver_t( shaman_t* p ) :
+    spell_t( "molten_earth_driver", p, p -> find_spell( 170377 ) )
+  {
+    may_miss = may_crit = callbacks = proc = tick_may_crit = false;
+    background = hasted_ticks = quiet = dual = true;
+
+    nuke = new molten_earth_spell_t( p );
+  }
+
+  timespan_t tick_time( double haste ) const override
+  { return timespan_t::from_seconds( rng().range( 0.001, 2 * base_tick_time.total_seconds() * haste ) ); }
+
+  void tick( dot_t* d ) override
+  {
+    spell_t::tick( d );
+
+    // Last tick will not cast a nuke like our normal dot system does
+    if ( d -> remains() > timespan_t::zero() )
+    {
+      nuke -> target = d -> target;
+      nuke -> schedule_execute();
+    }
+  }
+
+  // Maximum duration is extended by max of 6 seconds
+  timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t ) const override
+  { return data().duration(); }
+};
+
 // shaman_heal_t::impact ====================================================
 
 void shaman_heal_t::impact( action_state_t* s )
@@ -2544,7 +2592,6 @@ struct fire_elemental_t : public shaman_spell_t
     shaman_spell_t( "fire_elemental", player, player -> find_specialization_spell( "Fire Elemental" ), options_str )
   {
     harmful = may_crit = false;
-    cooldown -> duration += player -> talent.path_of_elements -> effectN( 1 ).time_value();
   }
 
   void execute() override
@@ -3446,7 +3493,6 @@ struct storm_elemental_t : public shaman_spell_t
     shaman_spell_t( "storm_elemental", player, player -> talent.storm_elemental, options_str )
   {
     harmful = may_crit = false;
-    cooldown -> duration += player -> talent.path_of_elements -> effectN( 1 ).time_value();
   }
 
   void execute() override
@@ -4709,7 +4755,7 @@ void shaman_t::init_spells()
 
   // Elemental
   talent.path_of_flame               = find_talent_spell( "Path of Flame"        );
-  talent.path_of_elements            = find_talent_spell( "Path of Elements"     );
+  talent.molten_earth                = find_talent_spell( "Molten Earth"         );
   talent.maelstrom_totem             = find_talent_spell( "Maelstrom Totem"      );
 
   talent.elemental_blast             = find_talent_spell( "Elemental Blast"      );
@@ -4799,6 +4845,11 @@ void shaman_t::init_spells()
   if ( talent.lightning_shield -> ok() )
   {
     lightning_shield = new lightning_shield_damage_t( this );
+  }
+
+  if ( talent.molten_earth -> ok() )
+  {
+    molten_earth = new molten_earth_driver_t( this );
   }
 
   if ( artifact.unleash_doom.rank() )
@@ -4956,6 +5007,25 @@ void shaman_t::trigger_lightning_shield( const action_state_t* state )
   lightning_shield -> schedule_execute();
 
   cooldown.lightning_shield -> start( talent.lightning_shield -> internal_cooldown() );
+}
+
+// TODO: Target swaps
+void shaman_t::trigger_molten_earth( const action_state_t* state )
+{
+  if ( ! talent.molten_earth -> ok() )
+    return;
+
+  if ( ! state -> action -> harmful )
+    return;
+
+  if ( ! state -> action -> result_is_hit( state -> result ) )
+    return;
+
+  // Molten earth does not trigger itself.
+  if ( state -> action == debug_cast<molten_earth_driver_t*>( molten_earth ) -> nuke )
+    return;
+
+  molten_earth -> schedule_execute();
 }
 
 void shaman_t::trigger_unleash_doom( const action_state_t* state )
