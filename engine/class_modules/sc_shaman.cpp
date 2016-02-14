@@ -591,9 +591,6 @@ private:
 public:
   typedef shaman_action_t base_t;
 
-  // Echo of Elements functionality
-  bool        uses_eoe;
-
   // Flurry
   bool        hasted_cd;
   bool        hasted_gcd;
@@ -614,7 +611,6 @@ public:
   shaman_action_t( const std::string& n, shaman_t* player,
                    const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
-    uses_eoe( false ),
     hasted_cd( ab::data().affected_by( player -> spec.flurry -> effectN( 1 ) ) ),
     hasted_gcd( ab::data().affected_by( player -> spec.flurry -> effectN( 2 ) ) ),
     track_cd_waste( s -> cooldown() > timespan_t::zero() || s -> charge_cooldown() > timespan_t::zero() ),
@@ -652,7 +648,7 @@ public:
     if ( ab::data().charges() > 0 )
     {
       ab::cooldown -> duration = ab::data().charge_cooldown();
-      ab::cooldown -> charges = ab::data().charges() + p() -> talent.echo_of_the_elements -> effectN( 1 ).base_value();
+      ab::cooldown -> charges = ab::data().charges();
     }
   }
 
@@ -2987,7 +2983,6 @@ struct lava_burst_t : public shaman_spell_t
   lava_burst_t( shaman_t* player, const std::string& options_str ):
     shaman_spell_t( "lava_burst", player, player -> find_specialization_spell( "Lava Burst" ), options_str )
   {
-    uses_eoe = player -> talent.echo_of_the_elements -> ok();
     base_multiplier *= 1.0 + player -> artifact.lava_imbued.percent();
     base_multiplier *= 1.0 + player -> talent.path_of_flame -> effectN( 1 ).percent();
     // TODO: Additive with Elemental Fury? Spell data claims same effect property, so probably ..
@@ -3000,6 +2995,16 @@ struct lava_burst_t : public shaman_spell_t
       overload -> crit_bonus_multiplier += player -> artifact.molten_blast.percent();
       overload -> base_multiplier *= 1.0 + player -> talent.path_of_flame -> effectN( 1 ).percent();
       add_child( overload );
+    }
+  }
+
+  void init() override
+  {
+    shaman_spell_t::init();
+
+    if ( player -> specialization() == SHAMAN_ELEMENTAL )
+    {
+      cooldown -> charges += p() -> talent.echo_of_the_elements -> effectN( 2 ).base_value();
     }
   }
 
