@@ -2740,7 +2740,7 @@ struct chain_lightning_t: public shaman_spell_t
   chain_lightning_t( shaman_t* player, const std::string& options_str ):
     shaman_spell_t( "chain_lightning", player, player -> find_specialization_spell( "Chain Lightning" ), options_str )
   {
-    aoe = 5 + player -> artifact.electric_discharge.value();
+    aoe += player -> artifact.electric_discharge.value();
     base_add_multiplier = data().effectN( 1 ).chain_multiplier();
     radius = 10.0;
 
@@ -3587,8 +3587,11 @@ struct flame_shock_t : public shaman_spell_t
 
 struct frost_shock_t : public shaman_spell_t
 {
+  double damage_coefficient;
+
   frost_shock_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "frost_shock", player, player -> find_specialization_spell( "Frost Shock" ), options_str )
+    shaman_spell_t( "frost_shock", player, player -> find_specialization_spell( "Frost Shock" ), options_str ),
+    damage_coefficient( data().effectN( 3 ).percent() / secondary_costs[ RESOURCE_MAELSTROM ] )
   {
     base_multiplier *= 1.0 + player -> artifact.earthen_attunement.percent();
   }
@@ -3601,6 +3604,8 @@ struct frost_shock_t : public shaman_spell_t
     {
       m *= p() -> buff.earth_surge -> check_value();
     }
+
+    m *= 1.0 + cost() * damage_coefficient;
 
     return m;
   }
