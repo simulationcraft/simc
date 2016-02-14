@@ -180,7 +180,6 @@ public:
     buff_t* ghost_wolf;
     buff_t* elemental_focus;
     buff_t* earth_surge;
-    buff_t* tempest_totem_empower_lava; // TODO: Placeholder name
     buff_t* lightning_surge;
 
     // Artifact related buffs
@@ -3011,18 +3010,6 @@ struct lava_burst_t : public shaman_spell_t
     }
   }
 
-  double action_multiplier() const override
-  {
-    double m = shaman_spell_t::action_multiplier();
-
-    if ( p() -> buff.tempest_totem_empower_lava -> up() )
-    {
-      m *= p() -> buff.tempest_totem_empower_lava -> check_value();
-    }
-
-    return m;
-  }
-
   double composite_target_crit( player_t* t ) const override
   {
     double m = shaman_spell_t::composite_target_crit ( t );
@@ -5273,9 +5260,6 @@ void shaman_t::create_buffs()
     .activated( false );
   buff.earth_surge = buff_creator_t( this, "earth_surge", find_spell( 189797 ) )
     .default_value( 1.0 + find_spell( 189797 ) -> effectN( 1 ).percent() );
-  buff.tempest_totem_empower_lava = buff_creator_t( this, "tempest_totem_empower_lava", find_spell( 190507 ) )
-    .chance( 1.0 ) // TODO: Fixme once spell data stabilizes
-    .default_value( 1.0 + find_spell( 190507 ) -> effectN( 1 ).percent() );
   buff.lightning_surge = buff_creator_t( this, "lightning_surge", find_spell( 189796 ) )
     // TODO: 1 - 0.5 or 1 / 1.5 ?
     .default_value( 1.0 + find_spell( 189796 ) -> effectN( 1 ).percent() );
