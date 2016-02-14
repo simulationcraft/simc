@@ -190,6 +190,12 @@ public:
     buff_t* fire_empowerment;
     buff_t* nature_empowerment;
     buff_t* power_of_the_maelstrom;
+
+    // Totemic mastery
+    buff_t* resonance_totem;
+    buff_t* storm_totem;
+    buff_t* ember_totem;
+    buff_t* tailwind_totem;
   } buff;
 
   // Cooldowns
@@ -216,7 +222,7 @@ public:
     gain_t* feral_spirit;
     gain_t* fulmination;
     gain_t* spirit_of_the_maelstrom;
-    gain_t* maelstrom_totem;
+    gain_t* resonance_totem;
   } gain;
 
   // Tracked Procs
@@ -296,7 +302,7 @@ public:
     // Elemental
     const spell_data_t* path_of_flame;
     const spell_data_t* molten_earth;
-    const spell_data_t* maelstrom_totem;
+    const spell_data_t* totem_mastery;
 
     const spell_data_t* fleet_of_foot;
 
@@ -311,7 +317,6 @@ public:
     const spell_data_t* liquid_magma_totem;
 
     const spell_data_t* primal_elementalist;
-    const spell_data_t* totemic_fury;
 
     // Enhancement
     const spell_data_t* windsong;
@@ -3120,7 +3125,10 @@ struct lightning_bolt_t : public shaman_spell_t
       return 1.0;
     }
 
-    return shaman_spell_t::overload_chance( s );
+    double chance = shaman_spell_t::overload_chance( s );
+    chance += p() -> buff.storm_totem -> value();
+
+    return chance;
   }
 
   size_t n_overloads( const action_state_t* s ) const override
@@ -3582,6 +3590,18 @@ struct flame_shock_t : public shaman_spell_t
   timespan_t composite_dot_duration( const action_state_t* ) const override
   { return ( dot_duration + timespan_t::from_seconds( cost() ) ) * duration_multiplier; }
 
+  double action_ta_multiplier() const override
+  {
+    double m = shaman_spell_t::action_ta_multiplier();
+
+    if ( p() -> buff.ember_totem -> up() )
+    {
+      m *= p () -> buff.ember_totem -> check_value();
+    }
+
+    return m;
+  }
+
   void tick( dot_t* d ) override
   {
     shaman_spell_t::tick( d );
@@ -3751,6 +3771,27 @@ struct stormkeeper_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p() -> buff.stormkeeper -> trigger( p() -> buff.stormkeeper -> data().max_stacks() );
+  }
+};
+
+// Totemic Mastery Spell ====================================================
+
+struct totem_mastery_t : public shaman_spell_t
+{
+  totem_mastery_t( shaman_t* player, const std::string& options_str ) :
+    shaman_spell_t( "totem_mastery", player, player -> talent.totem_mastery, options_str )
+  {
+    harmful = may_crit = callbacks = may_miss = false;
+  }
+
+  void execute() override
+  {
+    shaman_spell_t::execute();
+
+    p() -> buff.resonance_totem -> trigger();
+    p() -> buff.storm_totem -> trigger();
+    p() -> buff.ember_totem -> trigger();
+    p() -> buff.tailwind_totem -> trigger();
   }
 };
 
@@ -4143,47 +4184,6 @@ struct earthquake_totem_t : public shaman_totem_pet_t
   }
 };
 
-// Maelstrom totem ==========================================================
-
-struct maelstrom_totem_pulse_t : public totem_pulse_action_t
-{
-  const spell_data_t* energize;
-
-  maelstrom_totem_pulse_t( shaman_totem_pet_t* totem ) :
-    totem_pulse_action_t( "maelstrom_bolt", totem, totem -> find_spell( 202192 ) ),
-    energize( totem -> find_spell( 202205 ) )
-  {
-    // TODO: Check if pulses are hasted
-    hasted_pulse = true;
-  }
-
-  void execute() override
-  {
-    totem_pulse_action_t::execute();
-
-    o() -> resource_gain( RESOURCE_MAELSTROM,
-                          energize -> effectN( 1 ).resource( RESOURCE_MAELSTROM ),
-                          o() -> gain.maelstrom_totem,
-                          this );
-  }
-};
-
-struct maelstrom_totem_t : public shaman_totem_pet_t
-{
-  maelstrom_totem_t( shaman_t* owner ):
-    shaman_totem_pet_t( owner, "maelstrom_totem" )
-  {
-    pulse_amplitude = owner -> find_spell( 202192 ) -> cast_time( owner -> level() );
-  }
-
-  void init_spells() override
-  {
-    shaman_totem_pet_t::init_spells();
-
-    pulse_action = new maelstrom_totem_pulse_t( this );
-  }
-};
-
 // Liquid Magma totem =======================================================
 
 struct liquid_magma_globule_t : public spell_t
@@ -4233,135 +4233,6 @@ struct liquid_magma_totem_t : public shaman_totem_pet_t
     shaman_totem_pet_t::init_spells();
 
     pulse_action = new liquid_magma_totem_pulse_t( this );
-  }
-};
-
-// Totemic Fury =============================================================
-
-struct totemic_fury_pulse_t : public totem_pulse_action_t
-{
-  totemic_fury_pulse_t( shaman_totem_pet_t* totem, const std::string& name, const spell_data_t* s ) :
-    totem_pulse_action_t( name, totem, s )
-  {
-    hasted_pulse = true;
-  }
-};
-
-struct earth_totem_t : public shaman_totem_pet_t
-{
-  earth_totem_t( shaman_t* owner ) :
-    shaman_totem_pet_t( owner, "earth_totem" )
-  {
-    pulse_amplitude = owner -> find_spell( 188768 ) -> cast_time( owner -> level() );
-  }
-
-  void arise() override
-  {
-    shaman_totem_pet_t::arise();
-
-    o() -> buff.earth_surge -> trigger();
-  }
-
-  void demise() override
-  {
-    shaman_totem_pet_t::demise();
-
-    o() -> buff.earth_surge -> expire();
-  }
-
-  void init_spells() override
-  {
-    shaman_totem_pet_t::init_spells();
-
-    pulse_action = new totemic_fury_pulse_t( this, "tempest_lightning_bolt", owner -> find_spell( 188768 ) );
-  }
-};
-
-struct fire_totem_t : public shaman_totem_pet_t
-{
-  fire_totem_t( shaman_t* owner ) :
-    shaman_totem_pet_t( owner, "fire_totem" )
-  {
-    pulse_amplitude = owner -> find_spell( 188768 ) -> cast_time( owner -> level() );
-  }
-
-  void arise() override
-  {
-    shaman_totem_pet_t::arise();
-
-    o() -> buff.tempest_totem_empower_lava -> trigger();
-  }
-
-  void demise() override
-  {
-    shaman_totem_pet_t::demise();
-
-    o() -> buff.tempest_totem_empower_lava -> expire();
-  }
-
-  void init_spells() override
-  {
-    shaman_totem_pet_t::init_spells();
-
-    pulse_action = new totemic_fury_pulse_t( this, "tempest_lightning_bolt", owner -> find_spell( 188768 ) );
-  }
-};
-
-struct lightning_totem_t : public shaman_totem_pet_t
-{
-  lightning_totem_t( shaman_t* owner ) :
-    shaman_totem_pet_t( owner, "lightning_totem" )
-  {
-    pulse_amplitude = owner -> find_spell( 188768 ) -> cast_time( owner -> level() );
-  }
-
-  void arise() override
-  {
-    shaman_totem_pet_t::arise();
-
-    o() -> buff.lightning_surge -> trigger();
-  }
-
-  void demise() override
-  {
-    shaman_totem_pet_t::demise();
-
-    o() -> buff.lightning_surge -> expire();
-  }
-
-  void init_spells() override
-  {
-    shaman_totem_pet_t::init_spells();
-
-    pulse_action = new totemic_fury_pulse_t( this, "tempest_lightning_bolt", owner -> find_spell( 188768 ) );
-  }
-};
-
-struct totemic_fury_t : public shaman_spell_t
-{
-  std::array<shaman_totem_t*, 3> totem_spells;
-
-  totemic_fury_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "totemic_fury", player, player -> talent.totemic_fury, options_str )
-  {
-    harmful = may_crit = callbacks = false;
-
-    totem_spells[ 0 ] = new shaman_totem_t( "earth_totem", player, "", player -> find_spell( 189713 ) );
-    totem_spells[ 0 ] -> background = totem_spells[ 0 ] -> dual = totem_spells[ 0 ] -> quiet = true;
-    totem_spells[ 1 ] = new shaman_totem_t( "fire_totem", player, "", player -> find_spell( 189711 ) );
-    totem_spells[ 1 ] -> background = totem_spells[ 1 ] -> dual = totem_spells[ 1 ] -> quiet = true;
-    totem_spells[ 2 ] = new shaman_totem_t( "lightning_totem", player, "", player -> find_spell( 188275 ) );
-    totem_spells[ 2 ] -> background = totem_spells[ 2 ] -> dual = totem_spells[ 2 ] -> quiet = true;
-  }
-
-  void execute() override
-  {
-    shaman_spell_t::execute();
-
-    for ( auto totem : totem_spells )
-    {
-      totem -> execute();
-    }
   }
 };
 
@@ -4536,7 +4407,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "stormstrike"             ) return new              stormstrike_t( this, options_str );
   if ( name == "sundering"               ) return new                sundering_t( this, options_str );
   if ( name == "thunderstorm"            ) return new             thunderstorm_t( this, options_str );
-  if ( name == "totemic_fury"            ) return new             totemic_fury_t( this, options_str );
+  if ( name == "totem_mastery"           ) return new            totem_mastery_t( this, options_str );
   if ( name == "wind_shear"              ) return new               wind_shear_t( this, options_str );
   if ( name == "windsong"                ) return new                 windsong_t( this, options_str );
 
@@ -4550,11 +4421,6 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "earthquake_totem" )
   {
     return new  shaman_totem_t( "earthquake_totem", this, options_str, find_specialization_spell( "Earthquake Totem" ) );
-  }
-
-  if ( name == "maelstrom_totem" )
-  {
-    return new  shaman_totem_t( "maelstrom_totem", this, options_str, talent.maelstrom_totem );
   }
 
   if ( name == "liquid_magma_totem" )
@@ -4588,11 +4454,7 @@ pet_t* shaman_t::create_pet( const std::string& pet_name,
   if ( pet_name == "earth_elemental_pet"      ) return new pet::earth_elemental_t( this, false );
   if ( pet_name == "earth_elemental_guardian" ) return new pet::earth_elemental_t( this, true );
   if ( pet_name == "earthquake_totem"         ) return new earthquake_totem_t( this );
-  if ( pet_name == "maelstrom_totem"          ) return new maelstrom_totem_t( this );
   if ( pet_name == "liquid_magma_totem"       ) return new liquid_magma_totem_t( this );
-  if ( pet_name == "earth_totem"              ) return new earth_totem_t( this );
-  if ( pet_name == "fire_totem"               ) return new fire_totem_t( this );
-  if ( pet_name == "lightning_totem"          ) return new lightning_totem_t( this );
 
   return nullptr;
 }
@@ -4641,21 +4503,9 @@ void shaman_t::create_pets()
     create_pet( "earthquake_totem" );
   }
 
-  if ( talent.maelstrom_totem -> ok() && find_action( "maelstrom_totem" ) )
-  {
-    create_pet( "maelstrom_totem" );
-  }
-
   if ( talent.liquid_magma_totem -> ok() && find_action( "liquid_magma_totem" ) )
   {
     create_pet( "liquid_magma_totem" );
-  }
-
-  if ( talent.totemic_fury -> ok() && find_action( "totemic_fury" ) )
-  {
-    create_pet( "earth_totem" );
-    create_pet( "fire_totem" );
-    create_pet( "lightning_totem" );
   }
 
   if ( sets.has_set_bonus( SET_CASTER, T16, B4 ) )
@@ -4756,7 +4606,7 @@ void shaman_t::init_spells()
   // Elemental
   talent.path_of_flame               = find_talent_spell( "Path of Flame"        );
   talent.molten_earth                = find_talent_spell( "Molten Earth"         );
-  talent.maelstrom_totem             = find_talent_spell( "Maelstrom Totem"      );
+  talent.totem_mastery               = find_talent_spell( "Totem Mastery"        );
 
   talent.elemental_blast             = find_talent_spell( "Elemental Blast"      );
   talent.echo_of_the_elements        = find_talent_spell( "Echo of the Elements" );
@@ -4769,7 +4619,6 @@ void shaman_t::init_spells()
   talent.liquid_magma_totem          = find_talent_spell( "Liquid Magma Totem"   );
 
   talent.primal_elementalist         = find_talent_spell( "Primal Elementalist"  );
-  talent.totemic_fury                = find_talent_spell( "Totemic Fury"         );
 
   // Enhancement
   talent.windsong                    = find_talent_spell( "Windsong"             );
@@ -5382,6 +5231,24 @@ void shaman_t::create_buffs()
     .default_value( find_spell( 192625 ) -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.power_of_the_maelstrom = buff_creator_t( this, "power_of_the_maelstrom", find_spell( 191861 ) -> effectN( 1 ).trigger() );
+
+  buff.resonance_totem = buff_creator_t( this, "resonance_totem", find_spell( 202192 ) )
+                         .duration( talent.totem_mastery -> effectN( 1 ).trigger() -> duration() )
+                         .period( find_spell( 202192 ) -> effectN( 1 ).period() )
+                         .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
+                          this -> resource_gain( RESOURCE_MAELSTROM, b -> data().effectN( 1 ).resource( RESOURCE_MAELSTROM ),
+                              this -> gain.resonance_totem, nullptr ); } );
+  buff.storm_totem = buff_creator_t( this, "storm_totem", find_spell( 210651 ) )
+                     .duration( talent.totem_mastery -> effectN( 2 ).trigger() -> duration() )
+                     .cd( timespan_t::zero() ) // Handled by the action
+                     .default_value( find_spell( 210651 ) -> effectN( 2 ).percent() );
+  buff.ember_totem = buff_creator_t( this, "ember_totem", find_spell( 210658 ) )
+                     .duration( talent.totem_mastery -> effectN( 3 ).trigger() -> duration() )
+                     .default_value( 1.0 + find_spell( 210658 ) -> effectN( 1 ).percent() );
+  buff.tailwind_totem = buff_creator_t( this, "tailwind_totem", find_spell( 210659 ) )
+                        .add_invalidate( CACHE_HASTE )
+                        .duration( talent.totem_mastery -> effectN( 4 ).trigger() -> duration() )
+                        .default_value( 1.0 / ( 1.0 + find_spell( 210659 ) -> effectN( 1 ).percent() ) );
 }
 
 // shaman_t::init_gains =====================================================
@@ -5395,7 +5262,7 @@ void shaman_t::init_gains()
   gain.feral_spirit         = get_gain( "Feral Spirit"      );
   gain.fulmination          = get_gain( "Fulmination"       );
   gain.spirit_of_the_maelstrom = get_gain( "Spirit of the Maelstrom" );
-  gain.maelstrom_totem      = get_gain( "Maelstrom Totem"   );
+  gain.resonance_totem      = get_gain( "Resonance Totem"   );
 }
 
 // shaman_t::init_procs =====================================================
@@ -5797,6 +5664,11 @@ double shaman_t::composite_spell_haste() const
     h *= 1.0 / ( 1.0 + buff.master_of_the_elements -> stack_value() );
   }
 
+  if ( buff.tailwind_totem -> up() )
+  {
+    h *= buff.tailwind_totem -> check_value();
+  }
+
   return h;
 }
 
@@ -5872,6 +5744,11 @@ double shaman_t::composite_melee_haste() const
   if ( buff.master_of_the_elements -> check() )
   {
     h *= buff.master_of_the_elements -> stack_value();
+  }
+
+  if ( buff.tailwind_totem -> up() )
+  {
+    h *= buff.tailwind_totem -> check_value();
   }
 
   return h;
