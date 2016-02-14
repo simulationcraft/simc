@@ -2929,6 +2929,7 @@ struct lava_beam_t : public shaman_spell_t
 
 // Lava Burst Spell =========================================================
 
+// TODO: Add Path of Flame Flame Shock spreading mechanism
 struct lava_burst_t : public shaman_spell_t
 {
   lava_burst_t( shaman_t* player, const std::string& options_str ):
@@ -2936,6 +2937,7 @@ struct lava_burst_t : public shaman_spell_t
   {
     uses_eoe = player -> talent.echo_of_the_elements -> ok();
     base_multiplier *= 1.0 + player -> artifact.lava_imbued.percent();
+    base_multiplier *= 1.0 + player -> talent.path_of_flame -> effectN( 1 ).percent();
     // TODO: Additive with Elemental Fury? Spell data claims same effect property, so probably ..
     crit_bonus_multiplier += player -> artifact.molten_blast.percent();
 
@@ -2944,6 +2946,7 @@ struct lava_burst_t : public shaman_spell_t
       overload = new elemental_overload_spell_t( player, "lava_burst_overload", player -> find_spell( 77451 ) );
       // State snapshot does not include crit damage bonuses, so need to set it here
       overload -> crit_bonus_multiplier += player -> artifact.molten_blast.percent();
+      overload -> base_multiplier *= 1.0 + player -> talent.path_of_flame -> effectN( 1 ).percent();
       add_child( overload );
     }
   }
