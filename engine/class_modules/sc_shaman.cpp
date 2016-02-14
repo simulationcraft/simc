@@ -303,7 +303,6 @@ public:
     const spell_data_t* echo_of_the_elements;
 
     const spell_data_t* elemental_fusion;
-    const spell_data_t* sons_of_flame;
     const spell_data_t* magnitude;
 
     const spell_data_t* lightning_rod;
@@ -4714,7 +4713,6 @@ void shaman_t::init_spells()
   talent.echo_of_the_elements        = find_talent_spell( "Echo of the Elements" );
 
   talent.elemental_fusion            = find_talent_spell( "Elemental Fusion"     );
-  talent.sons_of_flame               = find_talent_spell( "Sons of Flame"        );
   talent.magnitude                   = find_talent_spell( "Magnitude"            );
 
   talent.lightning_rod               = find_talent_spell( "Lightning Rod"        );
