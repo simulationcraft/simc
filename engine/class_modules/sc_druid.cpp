@@ -2426,13 +2426,11 @@ struct ashamanes_frenzy_t : public cat_attack_t
   {
     struct ashamanes_frenzy_ignite_t : public residual_action::residual_periodic_action_t<cat_attack_t>
     {
-      ashamanes_frenzy_ignite_t( druid_t* p, const spell_data_t* spell, ashamanes_frenzy_t* parent ) :
+      ashamanes_frenzy_ignite_t( druid_t* p, const spell_data_t* spell ) :
         residual_action::residual_periodic_action_t<cat_attack_t>( "ashamanes_frenzy_bleed", p, spell )
       {
         background = dual = tick_may_crit = true;
         may_dodge = may_parry = may_block = may_miss = false;
-
-        parent -> add_child( this );
       }
 
       void init() override
@@ -2470,7 +2468,8 @@ struct ashamanes_frenzy_t : public cat_attack_t
       dot_duration = timespan_t::zero(); // We don't want to apply a DoT here.
       open_wounds = razor_claws.direct = razor_claws.tick = false; // Don't benefit from mastery or Open Wounds here.
 
-      ignite = new ashamanes_frenzy_ignite_t( p, spell, parent );
+      ignite = new ashamanes_frenzy_ignite_t( p, spell );
+      parent -> add_child( ignite );
     }
 
     void init() override
