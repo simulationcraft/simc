@@ -246,6 +246,7 @@ public:
     real_ppm_t unleash_doom;
     real_ppm_t volcanic_inferno;
     real_ppm_t power_of_the_maelstrom;
+    real_ppm_t static_overload;
   } real_ppm;
 
   // Class Specializations
@@ -2798,7 +2799,7 @@ struct chain_lightning_t: public shaman_spell_t
 
   double overload_chance( const action_state_t* s ) const override
   {
-    if ( p() -> buff.static_overload -> stack() == p() -> buff.static_overload -> max_stack() )
+    if ( p() -> buff.static_overload -> stack() )
     {
       return 1.0;
     }
@@ -2820,15 +2821,14 @@ struct chain_lightning_t: public shaman_spell_t
 
   void execute() override
   {
-    // Perform before impacts, so palpatine mode is not offset by one cast
-    p() -> buff.static_overload -> trigger();
-
     shaman_spell_t::execute();
 
     p() -> buff.stormkeeper -> decrement();
-    if ( p() -> buff.static_overload -> stack() == p() -> buff.static_overload -> max_stack() )
+    p() -> buff.static_overload -> decrement();
+
+    if ( p() -> artifact.static_overload.rank() && p() -> real_ppm.static_overload.trigger() )
     {
-      p() -> buff.static_overload -> expire();
+      p() -> buff.static_overload -> trigger();
     }
   }
 
@@ -5362,6 +5362,7 @@ void shaman_t::init_rng()
   real_ppm.unleash_doom = real_ppm_t( *this, artifact.unleash_doom.data().real_ppm() );
   real_ppm.volcanic_inferno = real_ppm_t( *this, artifact.volcanic_inferno.data().real_ppm() );
   real_ppm.power_of_the_maelstrom = real_ppm_t( *this, find_spell( 191861 ) -> real_ppm() );
+  real_ppm.static_overload = real_ppm_t( *this, find_spell( 191602 ) -> real_ppm() );
 }
 
 // shaman_t::init_actions ===================================================
@@ -5958,6 +5959,7 @@ void shaman_t::reset()
   real_ppm.unleash_doom.reset();
   real_ppm.volcanic_inferno.reset();
   real_ppm.power_of_the_maelstrom.reset();
+  real_ppm.static_overload.reset();
 }
 
 // shaman_t::merge ==========================================================
