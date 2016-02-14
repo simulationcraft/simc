@@ -2409,8 +2409,16 @@ struct rip_state_t : public action_state_t
 
 // Ashamane's Frenzy ========================================================
 /* TOCHECK: How exactly does the bleed/ignite work? And what does/doesn't snapshot?
-     May be able to simplify implementation a bit if only AP snapshots. It seems
-     likely that Open Wounds snapshots. */
+     May be able to simplify implementation a bit if only AP snapshots. 
+     
+     Currently implemented:
+       - Snapshot on application: AP, persistent multipliers, player multipliers, and
+        target vulnerabilities.
+       - Snapshot on tick: Crit, vers, mastery, Open Wounds.
+      
+     Note that as of build 21071, the spell data for Razor Claws and Open Wounds
+     suggest that Ashamane's Frenzy does *not* benefit from them, so this
+     implementation respects that. */
 
 struct ashamanes_frenzy_t : public cat_attack_t
 {
