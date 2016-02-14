@@ -349,7 +349,7 @@ public:
     artifact_power_t stormkeeper;
     artifact_power_t call_the_thunder;
     artifact_power_t earthen_attunement;
-    artifact_power_t searing_shocks;
+    artifact_power_t the_ground_trembles;
     artifact_power_t lava_imbued;
     artifact_power_t volcanic_inferno;
     artifact_power_t static_overload;
@@ -2776,7 +2776,7 @@ struct chain_lightning_t: public shaman_spell_t
     if ( player -> mastery.elemental_overload -> ok() )
     {
       overload = new elemental_overload_spell_t( player, "chain_lightning_overload", player -> find_spell( 45297 ) );
-      overload -> aoe = 3 + player -> artifact.electric_discharge.value();
+      overload -> aoe += player -> artifact.electric_discharge.value();
       add_child( overload );
     }
   }
@@ -3593,7 +3593,6 @@ struct flame_shock_t : public shaman_spell_t
     tick_may_crit         = true;
     track_cd_waste        = false;
     cooldown -> duration += player -> spec.spiritual_insight -> effectN( 3 ).time_value();
-    dot_duration         += player -> artifact.searing_shocks.time_value();
 
     // Elemental Tier 18 (WoD 6.2) trinket effect is in use, adjust Flame Shock based on spell data
     // of the special effect.
@@ -4231,6 +4230,7 @@ struct earthquake_totem_pulse_t : public totem_pulse_action_t
     school = SCHOOL_PHYSICAL;
     spell_power_mod.direct = 0.11; // Hardcoded into tooltip because it's cool
     hasted_pulse = true;
+    base_multiplier *= 1.0 + o() -> artifact.the_ground_trembles.percent();
   }
 
   double target_armor( player_t* ) const override
@@ -4718,7 +4718,7 @@ void shaman_t::init_spells()
   artifact.stormkeeper               = find_artifact_spell( "Stormkeeper"        );
   artifact.call_the_thunder          = find_artifact_spell( "Call the Thunder"   );
   artifact.earthen_attunement        = find_artifact_spell( "Earthen Attunement" );
-  artifact.searing_shocks            = find_artifact_spell( "Searing Shocks"     );
+  artifact.the_ground_trembles       = find_artifact_spell( "The Ground Trembles");
   artifact.lava_imbued               = find_artifact_spell( "Lava Imbued"        );
   artifact.volcanic_inferno          = find_artifact_spell( "Volcanic Inferno"   );
   artifact.static_overload           = find_artifact_spell( "Static Overload"    );
