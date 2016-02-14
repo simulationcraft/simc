@@ -181,6 +181,7 @@ public:
     buff_t* elemental_focus;
     buff_t* earth_surge;
     buff_t* lightning_surge;
+    buff_t* icefury;
 
     // Artifact related buffs
     buff_t* stormkeeper;
@@ -317,8 +318,8 @@ public:
     const spell_data_t* storm_elemental;
     const spell_data_t* aftershock;
 
+    const spell_data_t* icefury;
     const spell_data_t* liquid_magma_totem;
-
 
     // Enhancement
     const spell_data_t* windsong;
@@ -3278,6 +3279,22 @@ struct elemental_blast_t : public shaman_spell_t
   }
 };
 
+// Icefury Spell ====================================================
+
+struct icefury_t : public shaman_spell_t
+{
+  icefury_t( shaman_t* player, const std::string& options_str ) :
+    shaman_spell_t( "icefury", player, player -> talent.icefury, options_str )
+  {
+  }
+
+  void execute() override
+  {
+    shaman_spell_t::execute();
+
+    p() -> buff.icefury -> trigger( data().initial_stacks() );
+  }
+};
 
 // Shamanistic Rage Spell ===================================================
 
@@ -3289,7 +3306,7 @@ struct shamanistic_rage_t : public shaman_spell_t
     harmful = may_crit = false;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     shaman_spell_t::execute();
 
@@ -3675,6 +3692,8 @@ struct frost_shock_t : public shaman_spell_t
 
     m *= 1.0 + cost() * damage_coefficient;
 
+    m *= 1.0 + p() -> buff.icefury -> value();
+
     return m;
   }
 
@@ -3689,6 +3708,8 @@ struct frost_shock_t : public shaman_spell_t
           p() -> gain.aftershock,
           nullptr );
     }
+
+    p() -> buff.icefury -> decrement();
   }
 
 };
@@ -4436,6 +4457,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "frostbrand"              ) return new               frostbrand_t( this, options_str );
   if ( name == "frost_shock"             ) return new              frost_shock_t( this, options_str );
   if ( name == "fury_of_air"             ) return new              fury_of_air_t( this, options_str );
+  if ( name == "icefury"                 ) return new                  icefury_t( this, options_str );
   if ( name == "lava_beam"               ) return new                lava_beam_t( this, options_str );
   if ( name == "lava_burst"              ) return new               lava_burst_t( this, options_str );
   if ( name == "lava_lash"               ) return new                lava_lash_t( this, options_str );
@@ -4667,6 +4689,7 @@ void shaman_t::init_spells()
   talent.storm_elemental             = find_talent_spell( "Storm Elemental"      );
   talent.aftershock                  = find_talent_spell( "Aftershock"           );
 
+  talent.icefury                     = find_talent_spell( "Icefury"              );
   talent.liquid_magma_totem          = find_talent_spell( "Liquid Magma Totem"   );
 
   // Enhancement
@@ -5295,6 +5318,9 @@ void shaman_t::create_buffs()
                         .add_invalidate( CACHE_HASTE )
                         .duration( talent.totem_mastery -> effectN( 4 ).trigger() -> duration() )
                         .default_value( 1.0 / ( 1.0 + find_spell( 210659 ) -> effectN( 1 ).percent() ) );
+  buff.icefury = buff_creator_t( this, "icefury", talent.icefury )
+    .cd( timespan_t::zero() ) // Handled by the action
+    .default_value( talent.icefury -> effectN( 3 ).percent() );
 }
 
 // shaman_t::init_gains =====================================================
