@@ -2409,7 +2409,8 @@ struct rip_state_t : public action_state_t
 
 // Ashamane's Frenzy ========================================================
 /* TOCHECK: How exactly does the bleed/ignite work? And what does/doesn't snapshot?
-            May be able to simplify implementation a bit if only AP snapshots. */
+     May be able to simplify implementation a bit if only AP snapshots. It seems
+     likely that Open Wounds snapshots. */
 
 struct ashamanes_frenzy_t : public cat_attack_t
 {
@@ -2430,7 +2431,20 @@ struct ashamanes_frenzy_t : public cat_attack_t
       {
         residual_action::residual_periodic_action_t<cat_attack_t>::init();
 
+        // Only benefit from vers, crit, and mastery.
         snapshot_flags = update_flags = STATE_CRIT | STATE_TGT_CRIT | STATE_VERSATILITY | STATE_MUL_TA;
+      }
+
+      /* Open Wounds is usually applied via composite_target_multiplier, but since we don't want to
+        double dip on target vulnerabilities let's apply it here instead. */
+      double composite_ta_multiplier( const action_state_t* s ) const override
+      {
+        double tm = residual_action::residual_periodic_action_t<cat_attack_t>::composite_ta_multiplier( s );
+
+        if ( open_wounds )
+          tm *= 1.0 + td( s -> target ) -> buffs.open_wounds -> value();
+
+        return tm;
       }
     };
 
@@ -2444,9 +2458,9 @@ struct ashamanes_frenzy_t : public cat_attack_t
       may_crit = tick_may_crit = may_dodge = may_parry = may_block = may_miss = false;
 
       attack_power_mod.direct = data().effectN( 2 ).ap_coeff();
-      base_multiplier *= dot_duration / base_tick_time;
-
-      dot_duration = timespan_t::zero();
+      attack_power_mod.direct *= dot_duration / base_tick_time; // We want to calculate the total damage.
+      dot_duration = timespan_t::zero(); // We don't want to apply a DoT here.
+      open_wounds = razor_claws.direct = razor_claws.tick = false; // Don't benefit from mastery or Open Wounds here.
 
       ignite = new ashamanes_frenzy_ignite_t( p, spell, parent );
     }
@@ -2455,17 +2469,16 @@ struct ashamanes_frenzy_t : public cat_attack_t
     {
       cat_attack_t::init();
 
-      // Versatility accounted for dynamically, so disable it here.
-      snapshot_flags &= ~STATE_VERSATILITY;
+      /* Don't benefit from crit or vers. Penetrate target armor. direct_bleed from spell
+      data handles this automatically, but this way we can short circuit some calculations. */
+      snapshot_flags = update_flags &= ~( STATE_CRIT | STATE_TGT_CRIT | STATE_VERSATILITY | STATE_TGT_ARMOR );
+      // Enable persistent multiplier.
+      snapshot_flags = update_flags |= STATE_MUL_PERSISTENT;
     }
 
-    // Use snapshotted modifiers from parent.
-    double composite_persistent_multiplier( const action_state_t* s ) const override
+    // Use snapshotted modifiers from parent. Bloodtalons, SR, and Tiger's Fury apply here.
+    double composite_persistent_multiplier( const action_state_t* ) const override
     { return persistent_multiplier; }
-
-    // Bleed penetrates armor. Don't use direct_bleed because we don't want to apply mastery here.
-    double target_armor( player_t* t ) const override
-    { return 0.0; }
 
     void impact( action_state_t* s ) override
     { residual_action::trigger( ignite, target, s -> result_amount ); }
