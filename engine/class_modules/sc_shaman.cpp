@@ -217,6 +217,7 @@ public:
   // Gains
   struct
   {
+    gain_t* aftershock;
     gain_t* ascendance;
     gain_t* resurgence;
     gain_t* feral_spirit;
@@ -310,13 +311,15 @@ public:
     const spell_data_t* echo_of_the_elements;
 
     const spell_data_t* elemental_fusion;
+    const spell_data_t* primal_elementalist;
     const spell_data_t* magnitude;
 
     const spell_data_t* lightning_rod;
     const spell_data_t* storm_elemental;
+    const spell_data_t* aftershock;
+
     const spell_data_t* liquid_magma_totem;
 
-    const spell_data_t* primal_elementalist;
 
     // Enhancement
     const spell_data_t* windsong;
@@ -3549,6 +3552,19 @@ struct earth_shock_t : public shaman_spell_t
     return m;
   }
 
+  void execute() override
+  {
+    shaman_spell_t::execute();
+
+    if ( p() -> talent.aftershock -> ok() )
+    {
+      p() -> resource_gain( RESOURCE_MAELSTROM,
+          resource_consumed * p() -> talent.aftershock -> effectN( 1 ).percent(),
+          p() -> gain.aftershock,
+          nullptr );
+    }
+  }
+
   bool ready() override
   {
     if ( p() -> buff.ascendance -> check() )
@@ -3607,6 +3623,19 @@ struct flame_shock_t : public shaman_spell_t
     return m;
   }
 
+  void execute() override
+  {
+    shaman_spell_t::execute();
+
+    if ( p() -> talent.aftershock -> ok() )
+    {
+      p() -> resource_gain( RESOURCE_MAELSTROM,
+          resource_consumed * p() -> talent.aftershock -> effectN( 1 ).percent(),
+          p() -> gain.aftershock,
+          nullptr );
+    }
+  }
+
   void tick( dot_t* d ) override
   {
     shaman_spell_t::tick( d );
@@ -3661,6 +3690,20 @@ struct frost_shock_t : public shaman_spell_t
 
     return m;
   }
+
+  void execute() override
+  {
+    shaman_spell_t::execute();
+
+    if ( p() -> talent.aftershock -> ok() )
+    {
+      p() -> resource_gain( RESOURCE_MAELSTROM,
+          resource_consumed * p() -> talent.aftershock -> effectN( 1 ).percent(),
+          p() -> gain.aftershock,
+          nullptr );
+    }
+  }
+
 };
 
 // Lava Shock Spell =========================================================
@@ -3694,6 +3737,19 @@ struct lava_shock_t : public shaman_spell_t
     }
 
     return m;
+  }
+
+  void execute() override
+  {
+    shaman_spell_t::execute();
+
+    if ( p() -> talent.aftershock -> ok() )
+    {
+      p() -> resource_gain( RESOURCE_MAELSTROM,
+          resource_consumed * p() -> talent.aftershock -> effectN( 1 ).percent(),
+          p() -> gain.aftershock,
+          nullptr );
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -4617,13 +4673,14 @@ void shaman_t::init_spells()
   talent.echo_of_the_elements        = find_talent_spell( "Echo of the Elements" );
 
   talent.elemental_fusion            = find_talent_spell( "Elemental Fusion"     );
+  talent.primal_elementalist         = find_talent_spell( "Primal Elementalist"  );
   talent.magnitude                   = find_talent_spell( "Magnitude"            );
 
   talent.lightning_rod               = find_talent_spell( "Lightning Rod"        );
   talent.storm_elemental             = find_talent_spell( "Storm Elemental"      );
-  talent.liquid_magma_totem          = find_talent_spell( "Liquid Magma Totem"   );
+  talent.aftershock                  = find_talent_spell( "Aftershock"           );
 
-  talent.primal_elementalist         = find_talent_spell( "Primal Elementalist"  );
+  talent.liquid_magma_totem          = find_talent_spell( "Liquid Magma Totem"   );
 
   // Enhancement
   talent.windsong                    = find_talent_spell( "Windsong"             );
@@ -5262,6 +5319,7 @@ void shaman_t::init_gains()
 {
   player_t::init_gains();
 
+  gain.aftershock           = get_gain( "Aftershock"        );
   gain.ascendance           = get_gain( "Ascendance"        );
   gain.resurgence           = get_gain( "resurgence"        );
   gain.feral_spirit         = get_gain( "Feral Spirit"      );
