@@ -187,8 +187,6 @@ public:
     buff_t* stormkeeper;
     buff_t* static_overload;
     buff_t* master_of_the_elements;
-    buff_t* fire_empowerment;
-    buff_t* nature_empowerment;
     buff_t* power_of_the_maelstrom;
 
     // Totemic mastery
@@ -358,7 +356,6 @@ public:
     artifact_power_t master_of_the_elements;
     artifact_power_t molten_blast;
     artifact_power_t elementalist;
-    artifact_power_t elemental_empowerment;
 
     // Enhancement
     artifact_power_t doom_winds;
@@ -958,7 +955,6 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   {
     base_t::execute();
 
-    trigger_elemental_empowerment();
     p() -> trigger_molten_earth( execute_state );
   }
 
@@ -982,22 +978,6 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       return true;
 
     return base_t::usable_moving();
-  }
-
-  double action_multiplier() const override
-  {
-    double m = base_t::action_multiplier();
-
-    if ( dbc::is_school( school, SCHOOL_FIRE ) )
-    {
-      m *= 1.0 + p() -> buff.fire_empowerment -> stack_value();
-    }
-    else if ( dbc::is_school( school, SCHOOL_NATURE ) )
-    {
-      m *= 1.0 + p() -> buff.nature_empowerment -> stack_value();
-    }
-
-    return m;
   }
 
   double composite_persistent_multiplier( const action_state_t* state ) const override
@@ -1071,28 +1051,6 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       // TODO: Does Master of Elements benefit from Power of the Maelstrom (artifact weapon
       // passive)?
       p() -> buff.master_of_the_elements -> trigger();
-    }
-  }
-
-  void trigger_elemental_empowerment() const
-  {
-    if ( background )
-    {
-      return;
-    }
-
-    if ( ! p() -> artifact.elemental_empowerment.rank() )
-    {
-      return;
-    }
-
-    if ( dbc::is_school( school, SCHOOL_FIRE ) )
-    {
-      p() -> buff.nature_empowerment -> trigger();
-    }
-    else if ( dbc::is_school( school, SCHOOL_NATURE ) )
-    {
-      p() -> buff.fire_empowerment -> trigger();
     }
   }
 };
@@ -4724,7 +4682,6 @@ void shaman_t::init_spells()
   artifact.master_of_the_elements    = find_artifact_spell( "Master of the Elements" );
   artifact.molten_blast              = find_artifact_spell( "Molten Blast"       );
   artifact.elementalist              = find_artifact_spell( "Elementalist"       );
-  artifact.elemental_empowerment     = find_artifact_spell( "Elemental Empowerment" );
 
   // Enhancement
   artifact.doom_winds                = find_artifact_spell( "Doom Winds"         );
@@ -5291,12 +5248,6 @@ void shaman_t::create_buffs()
   buff.master_of_the_elements = buff_creator_t( this, "master_of_the_elements", artifact.master_of_the_elements.data().effectN( 1 ).trigger() )
     .default_value( artifact.master_of_the_elements.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_HASTE );
-  buff.fire_empowerment = buff_creator_t( this, "fire_empowerment", find_spell( 192624 ) )
-    .default_value( find_spell( 192624 ) -> effectN( 1 ).percent() )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buff.nature_empowerment = buff_creator_t( this, "nature_empowerment", find_spell( 192625 ) )
-    .default_value( find_spell( 192625 ) -> effectN( 1 ).percent() )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.power_of_the_maelstrom = buff_creator_t( this, "power_of_the_maelstrom", find_spell( 191861 ) -> effectN( 1 ).trigger() );
 
   buff.resonance_totem = buff_creator_t( this, "resonance_totem", find_spell( 202192 ) )
