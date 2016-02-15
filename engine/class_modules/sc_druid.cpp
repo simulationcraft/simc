@@ -28,11 +28,14 @@ namespace { // UNNAMED NAMESPACE
   Accurate starfall travel time & debuff mechanics ?
   Force of Nature!
   Fury of Elune
+  Force of Nature
 
   Guardian ==================================================================
   Statistics?
   Primal Fury gone or bugged?
   Incarnation CD modifier rework
+  Gore
+  Frenzied Regeneration ignite
 
   Resto =====================================================================
   All the things
@@ -2525,7 +2528,7 @@ struct ashamanes_frenzy_t : public cat_attack_t
 struct berserk_t : public cat_attack_t
 {
   berserk_t( druid_t* player, const std::string& options_str ) :
-    cat_attack_t( "berserk", player, player -> find_spell( 106951 ), options_str )
+    cat_attack_t( "berserk", player, player -> find_specialization_spell( "Berserk" ), options_str )
   {
     harmful = consume_ooc = may_miss = may_parry = may_dodge = may_crit = false;
   }
@@ -6239,7 +6242,7 @@ void druid_t::create_buffs()
                             .period( talent.elunes_guidance -> effectN( 2 ).period() );
  
   buff.feral_instinct     = buff_creator_t( this, "feral_instinct", find_spell( 210649 ) )
-                            .chance( artifact.feral_instinct.rank() )
+                            .chance( artifact.feral_instinct.rank() > 0 )
                             .default_value( artifact.feral_instinct.percent() )
                             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
@@ -6290,7 +6293,7 @@ void druid_t::create_buffs()
                                .refresh_behavior( BUFF_REFRESH_DURATION ) // Pandemic refresh is done by the action
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.scent_of_blood        = buff_creator_t( this, "scent_of_blood", find_spell( 210664 ) )
-                               .chance( artifact.scent_of_blood.rank() )
+                               .chance( artifact.scent_of_blood.rank() > 0 )
                                .default_value( -artifact.scent_of_blood.data().effectN( 1 ).resource( RESOURCE_ENERGY ) );
   buff.tigers_fury           = buff_creator_t( this, "tigers_fury", find_specialization_spell( "Tiger's Fury" ) )
                                .default_value( find_specialization_spell( "Tiger's Fury" ) -> effectN( 1 ).percent() )
@@ -7648,7 +7651,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   buffs.lifebloom       = buff_creator_t( *this, "lifebloom", source.find_class_spell( "Lifebloom" ) );
   buffs.open_wounds     = buff_creator_t( *this, "open_wounds", source.artifact.open_wounds.data().effectN( 1 ).trigger() )
                           .default_value( source.artifact.open_wounds.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() )
-                          .chance( source.artifact.open_wounds.rank() );
+                          .chance( source.artifact.open_wounds.rank() > 0 );
   buffs.starfall        = buff_creator_t( *this, "starfall", source.find_spell( 197637 ) )
                           .default_value( source.find_spell( 197637 ) -> effectN( 1 ).percent() + source.artifact.falling_star.percent() );
 }
