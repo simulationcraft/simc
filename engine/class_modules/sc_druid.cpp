@@ -3451,14 +3451,22 @@ public:
     return cdr;
   }
 
+  virtual void execute() override
+  {
+    base_t::execute();
+
+    if ( attack_hit )
+    {
+      p() -> resource_gain( RESOURCE_RAGE, rage_amount, rage_gain );
+    }
+  }
+
   virtual void impact( action_state_t* s ) override
   {
     base_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
-      p() -> resource_gain( RESOURCE_RAGE, rage_amount, rage_gain );
-
       if ( p() -> spell.primal_fury -> ok() && s -> target == target
            && s -> result == RESULT_CRIT && s -> result_amount > 0 ) // Only trigger from primary target. Legion TOCHECK
       {
@@ -3661,9 +3669,6 @@ struct lacerate_t : public bear_attack_t
     {
       dot -> target = target;
       dot -> execute();
-
-      if ( rng().roll( 0.25 ) ) // FIXME: Find in spell data.
-        p() -> cooldown.mangle -> reset( true );
     }
   }
 };
@@ -3795,6 +3800,8 @@ struct thrash_bear_t : public bear_attack_t
 
     // Apply hidden passive damage multiplier
     base_dd_multiplier *= 1.0 + player -> spec.guardian_passive -> effectN( 6 ).percent();
+    
+    rage_amount = data().effectN( 2 ).resource( RESOURCE_RAGE );
   }
 
   virtual void impact( action_state_t* s ) override
