@@ -6716,14 +6716,14 @@ struct cancel_buff_t : public action_t
     {
       sim -> errorf( "Player %s uses cancel_buff with unknown buff %s\n", player -> name(), buff_name.c_str() );
       sim -> cancel();
-    } else {
-      if ( !buff -> can_cancel )
-      {
-        sim -> errorf( "Player %s uses cancel_buff on %s, which cannot be cancelled in game\n", player -> name(), buff_name.c_str() );
-        sim -> cancel();
-      }
-      trigger_gcd = timespan_t::zero();
     }
+    else if ( !buff -> can_cancel )
+    {
+      sim -> errorf( "Player %s uses cancel_buff on %s, which cannot be cancelled in game\n", player -> name(), buff_name.c_str() );
+      sim -> cancel();
+    }
+
+    trigger_gcd = timespan_t::zero();
   }
 
   virtual void execute() override
