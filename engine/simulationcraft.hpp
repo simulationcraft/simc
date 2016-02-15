@@ -2532,6 +2532,7 @@ struct item_t
   std::string option_addon_id_str;
   std::string option_gem_id_str;
   std::string option_bonus_id_str;
+  std::string option_initial_cd_str;
   double option_initial_cd;
 
   // Extracted data
