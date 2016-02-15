@@ -126,7 +126,8 @@ std::string output_action_name( const stats_t& s, const player_t* actor )
 
   if ( s.player->sim->report_details )
   {
-    class_attr = " class=\"toggle-details\"";
+    class_attr = " id=\"actor" + util::to_string( s.player -> index ) + "_" + s.name_str +
+                 "_" + stats_type + "_toggle\" class=\"toggle-details\"";
   }
 
   for ( const auto& action : s.action_list )
