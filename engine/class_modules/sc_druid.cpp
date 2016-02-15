@@ -6869,9 +6869,6 @@ void druid_t::init_rng()
   // RPPM objects
   rppm.balance_tier18_2pc = new real_ppm_t( *this, sets.set( DRUID_BALANCE, T18, B2 ) -> real_ppm() );
   rppm.predator           = new real_ppm_t( *this, predator_rppm_rate ); // Predator: optional RPPM approximation.
-  rppm.predator             -> set_initial_precombat_time( timespan_t::zero() ); // Set all rampup to 0 so it doesn't proc on pull.
-  rppm.predator             -> set_last_trigger_attempt( timespan_t::from_seconds( -1.0 ) );
-  rppm.predator             -> set_last_trigger_success( timespan_t::zero() );
   rppm.shredded_wounds    = new real_ppm_t( *this, fangs_of_ashamane -> driver() -> real_ppm(), RPPM_HASTE );
   rppm.ashamanes_bite     = new real_ppm_t( *this, artifact.ashamanes_bite.data().real_ppm(), RPPM_HASTE );
   rppm.shadow_thrash      = new real_ppm_t( *this, artifact.shadow_thrash.data().real_ppm(), RPPM_HASTE );

@@ -6263,9 +6263,9 @@ public:
 
   real_ppm_t() :
     player( nullptr ), freq( 0 ), modifier( 0 ), rppm( 0 ),
-    last_trigger_attempt( timespan_t::from_seconds( -10.0 ) ),
-    last_successful_trigger( timespan_t::from_seconds( -180.0 ) ),
-    initial_precombat_time( timespan_t::from_seconds( -180.0 ) ),
+    last_trigger_attempt( timespan_t::zero() ),
+    last_successful_trigger( timespan_t::zero() ),
+    initial_precombat_time( timespan_t::zero() ),
     scales_with( RPPM_NONE )
   { }
 
@@ -6274,10 +6274,9 @@ public:
     freq( frequency ),
     modifier( mod ),
     rppm( freq * mod ),
-    last_trigger_attempt( timespan_t::from_seconds( -10.0 ) ),
-    last_successful_trigger( timespan_t::from_seconds( -180.0 ) ), // Blizz done lied to us, or changed it without telling. After going through a lot of logs,
-                                                                   // it seems that it's actually 3 minutes for the precombat timer.
-    initial_precombat_time( timespan_t::from_seconds( -180.0 ) ),
+    last_trigger_attempt( timespan_t::zero() ),
+    last_successful_trigger( timespan_t::zero() ),
+    initial_precombat_time( timespan_t::zero() ),
     scales_with( s )
   { }
 
