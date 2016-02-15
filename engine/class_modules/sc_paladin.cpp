@@ -2326,7 +2326,7 @@ struct divine_hammer_t : public paladin_spell_t
 struct echoed_divine_storm_t: public paladin_melee_attack_t
 {
   echoed_divine_storm_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "divine_storm", p, p -> find_class_spell( "Divine Storm" ), false )
+    : paladin_melee_attack_t( "echoed_divine_storm", p, p -> find_spell( 186876 ), false )
   {
     parse_options( options_str );
 
@@ -2701,7 +2701,7 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
 // Templar's Verdict ========================================================================
 
 // TODO(mserrano): Are any of these multipliers correct?
-// TODO(mserrano): supposedly this has a 89.15% attack power base coefficient
+// TODO(mserrano): supposedly this has a 85.72% attack power base coefficient
 struct echoed_templars_verdict_t : public paladin_melee_attack_t
 {
   echoed_templars_verdict_t( paladin_t* p, const std::string& options_str )
@@ -2710,6 +2710,7 @@ struct echoed_templars_verdict_t : public paladin_melee_attack_t
     parse_options( options_str );
 
     background = true;
+    base_multiplier *= 1.0 + p -> artifact.might_of_the_templar.percent();
   }
 
   virtual double cost() const override
@@ -2721,14 +2722,11 @@ struct echoed_templars_verdict_t : public paladin_melee_attack_t
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
-    // TODO: does this apply?
-    // Final Verdict buffs TV damage by 25%
     if ( p() -> talents.final_verdict -> ok() )
     {
       am *= 1.0 + p() -> talents.final_verdict -> effectN( 1 ).percent();
     }
 
-    // TODO(mserrano): Does this apply to the echoed spell?
     am *= 1.0 + p() -> get_hand_of_light();
 
     return am;

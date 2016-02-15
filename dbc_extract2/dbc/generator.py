@@ -1072,7 +1072,7 @@ class ItemDataGenerator(DataGenerator):
             # this makes it more readable
             item_entry['flags'] = item.field('flags')[0].strip()
             item_entry['flags_2'] = item.field('flags_2')[0].strip()
-            
+
             flag_types = 0x00
 
             if hasattr(item, 'journal'):
@@ -1425,7 +1425,7 @@ class SpellDataGenerator(DataGenerator):
             ( 118779, 0, False ),   # Victory Rush heal is not directly activatable
             ( 144442, 0 ),          # T16 Melee 4 pc buff
             ( 119938, 0 ),          # Overpower
-			( 209700, 0 )           # Void Cleave (arms artifact gold medal) 
+            ( 209700, 0 )           # Void Cleave (arms artifact gold medal)
         ),
 
         # Paladin:
@@ -1441,6 +1441,9 @@ class SpellDataGenerator(DataGenerator):
             ( 113075, 0, False ),   # Barkskin (from Symbiosis)
             ( 144569, 0, False ),   # Bastion of Power (prot T16 4-piece bonus)
             ( 130552, 0, True ),    # Harsh Word
+            ( 186876, 0 ),          # echoed Divine Storm (speculative)
+            ( 186805, 0 ),          # echoed Templar's Verdict (speculative)
+            ( 193115, 0 ),          # Blade of Light (speculative)
         ),
 
         # Hunter:
