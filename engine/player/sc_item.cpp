@@ -29,7 +29,6 @@ item_t::item_t( player_t* p, const std::string& o ) :
   parsed(),
   xml(),
   options_str( o ),
-  option_initial_cd( 0 ),
   cached_upgrade_item_level( -1 )
 {
   parsed.data.name = name_str.c_str();
@@ -601,7 +600,7 @@ bool item_t::parse_options()
   options.push_back(opt_string("enchant_id", option_enchant_id_str));
   options.push_back(opt_string("addon_id", option_addon_id_str));
   options.push_back(opt_string("bonus_id", option_bonus_id_str));
-  options.push_back(opt_float("initial_cd", option_initial_cd));
+  options.push_back(opt_string("initial_cd", option_initial_cd_str));
 
   try
   {
@@ -662,8 +661,8 @@ bool item_t::parse_options()
     }
   }
 
-  if ( option_initial_cd > 0.0 )
-    parsed.initial_cd = timespan_t::from_seconds( option_initial_cd );
+  if ( ! option_initial_cd_str.empty() )
+    parsed.initial_cd = timespan_t::from_seconds( std::stod( option_initial_cd_str ) );
 
   return true;
 }
@@ -811,8 +810,8 @@ std::string item_t::encoded_item() const
   if ( ! option_data_source_str.empty() )
     s << ",source=" << option_data_source_str;
 
-  if ( option_initial_cd > 0 )
-    s << ",initial_cd=" << option_initial_cd;
+  if ( ! option_initial_cd_str.empty() )
+    s << ",initial_cd=" << option_initial_cd_str;
 
   return s.str();
 }
