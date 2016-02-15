@@ -1558,44 +1558,21 @@ class SpellDataGenerator(DataGenerator):
 
         # Warlock:
         (
-            ( 115746, 5 ),       # fel imp felbolt
-            ( 166864, 5 ),       # inner demon soulfire
-            ( 115778, 5 ),       # observer tongue lash
-            ( 115748, 5 ),       # shivarra bladedance
-            ( 115625, 5 ),       # wrathguard mortal cleave
-            ( 112092, 0 ),       # glyphed shadow bolt
-            ( 112866, 0, True ), # fel imp summon
-            ( 112867, 0, True ), # voidlord summon
-            ( 112868, 0, True ), # shivarra summon
-            ( 112869, 0, True ), # observer summon
-            ( 112870, 2, True ), # wrathguard summon
-            ( 112921, 0, True ), # abyssal summon
-            ( 112927, 0, True ), # terrorguard summon
             ( 157900, 0, True ), # grimoire: doomguard
             ( 157901, 0, True ), # grimoire: infernal
-            ( 115422, 2, True ), # void ray
             ( 104025, 2, True ), # immolation aura
-            ( 104027, 2, True ), # meta soul fire
-            ( 124916, 2, True ), # meta chaos wave
-            ( 103964, 2, True ), # meta touch of chaos
             ( 104232, 3, True ), # destruction rain of fire
-            ( 131737, 0, False ), ( 131740, 0, False ), ( 132566, 0, False ), ( 131736, 0, False ), # Duplicated Warlock dots
             ( 111859, 0, True ), ( 111895, 0, True ), ( 111897, 0, True ), ( 111896, 0, True ), ( 111898, 2, True ), # Grimoire of Service summons
-            ( 103988, 0, False ), # Demo melee
-            ( 145075, 0 ),        # T16 2pc destro
-            ( 145085, 0 ),        # T16 2pc demo
-            ( 145159, 0 ),        # T16 4pc affli soul shard gain
             ( 114654, 0 ),        # Fire and Brimstone nukes
             ( 108686, 0 ),
             ( 109468, 0 ),
             ( 104225, 0 ),
-            ( 89653, 0 ),         # Drain Life heal
             ( 129476, 0 ),        # Immolation Aura
             ( 189297, 0 ),        # Demonology Warlock T18 4P Pet
             ( 189298, 0 ),        # Demonology Warlock T18 4P Pet
             ( 189296, 0 ),        # Demonology Warlock T18 4P Pet
-            ( 157701, 0 ),        # Charred Remains Chaos Bolt
             ( 17941, 0 ),         # Agony energize
+            ( 104318, 5 ),        # Wild Imp Firebolt
         ),
 
         # Monk:
