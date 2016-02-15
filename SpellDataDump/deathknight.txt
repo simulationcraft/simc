@@ -144,6 +144,7 @@ School           : Physical
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 3 seconds
+Mechanic         : Unknown(227)
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -274,9 +275,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=37500)    : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -70 | Scaled Value: -70
+                   Base Value: -70 | Scaled Value: -70 | Mechanic: Unknown(88)
 #2 (id=37501)    : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(88)
 #3 (id=83376)    : School Damage: frost (2)
                    Base Value: 0 | Scaled Value: 0
 Description      : Shackles the target with frozen chains, reducing movement speed by $s1% for $d.
@@ -456,7 +457,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=39737)    : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(227)
 Description      : Smash the target's mind with cold, interrupting spellcasting and preventing any spell in that school from being cast for $d.
 
 Name             : Death Coil (id=47541) [Scaling Spell (1), Spell Family (15)] 
@@ -573,7 +574,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=40863)    : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 126
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 126 | Mechanic: Unknown(227)
 #2 (id=40864)    : Apply Aura (6) | Unknown effect sub type (267)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 126
 #3 (id=306615)   : Apply Aura (6) | Modify Damage Taken% (87)
@@ -762,6 +763,7 @@ Spell Level      : 55
 Range            : 30 yards
 GCD              : 1 seconds
 Charges          : 1 (20 seconds cooldown)
+Mechanic         : Unknown(50)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ......x. ........ ....x... ........   ........ ........ xx...... ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -828,6 +830,7 @@ Race             : Blood Elf
 School           : Arcane
 Duration         : 2 seconds
 Cooldown         : 90 seconds
+Mechanic         : Unknown(72)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -958,6 +961,7 @@ Class            : Death Knight
 School           : Physical
 Range            : 30 yards
 Duration         : 3 seconds
+Mechanic         : Unknown(278)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ......x.   ........ ........ ..x..... ........ 
                  : x....... ...x.... ........ ........   ........ ........ ........ ........ 
@@ -2009,6 +2013,7 @@ Name             : Reinforced Bio-Optic Killshades (id=81714)
 Class            : Warrior, Paladin, Death Knight
 School           : Physical
 Cast Time        : 5 seconds
+Mechanic         : Unknown(245)
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2157,7 +2162,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=95513)    : Weapon Damage% (31)
-                   Base Value: 150 | Scaled Value: 1.5
+                   Base Value: 150 | Scaled Value: 1.5 | Chain Targets: 3
 Description      : Rakes an enemy with deformed claws, dealing $91778s1% of normal damage to the target and up to ${$91778x1-1} additional targets.
 
 Name             : Monstrous Blow (id=91797) [Spell Family (15)] 
@@ -2176,7 +2181,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=95537)    : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95)
 #2 (id=95538)    : Weapon Damage% (31)
                    Base Value: 125 | Scaled Value: 1.25
 Description      : Strike an enemy with a smashing attack, dealing $s2% of normal melee damage and stunning for $d.
@@ -2198,7 +2203,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=95541)    : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95)
 #2 (id=95595)    : Weapon Damage% (31)
                    Base Value: 12 | Scaled Value: 0.12
 Description      : Bite and tear at a target's limbs, stunning it for $d and dealing damage.
@@ -2245,9 +2250,9 @@ Attributes       : ........ ........ ..x..... ........   ...x...x .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=95550)    : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(227)
 #2 (id=95551)    : Apply Aura (6) | Root (26)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Mechanic: Unknown(58)
 Description      : Charge an enemy, interrupting spellcasting and immobilizing them for $d.
 Tooltip          : Immobilized.
 
@@ -2384,6 +2389,7 @@ Range            : 20 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
 Cooldown         : 120 seconds
+Mechanic         : Unknown(95)
 Attributes       : ........ ........ ........ ........   ..x..... ......x. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2413,11 +2419,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .x...
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=119238)   : Server Side Script (77)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(50)
 #2 (id=192367)   : Server Side Script (77)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 20 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 20 yards | Mechanic: Unknown(50)
 #3 (id=204723)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 20 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 20 yards | Mechanic: Unknown(50)
 Description      : Shadowy tendrils coil around all enemies within $A2 yards of a target (hostile or friendly), pulling them to the target's location.
 
 Name             : Control Undead (id=111673) [Spell Family (15)] 
@@ -2431,6 +2437,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 300 seconds
 Proc Chance      : 101%
+Mechanic         : Unknown(2)
 Affecting spells : On a Pale Horse (51986)
 Attributes       : ........ ........ x....... ......x.   x....... ........ .x...... ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -2440,7 +2447,7 @@ Attributes       : ........ ........ x....... ......x.   x....... ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #2 (id=124130)   : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: -30 | Scaled Value: -30
+                   Base Value: -30 | Scaled Value: -30 | Mechanic: Unknown(65)
 Description      : Dominates the target undead creature, forcing it to do your bidding. While controlled, the undead minion's haste is reduced by $s2%. Lasts up to $d.
 Tooltip          : Controlled.
 
@@ -2534,6 +2541,7 @@ Name             : Reinforced Retinal Armor (id=127123)
 Class            : Warrior, Paladin, Death Knight
 School           : Physical
 Cast Time        : 1.5 seconds
+Mechanic         : Unknown(245)
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3830,11 +3838,11 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=286507)   : Normalized Weapon Damage (121)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.5)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.5) | Chain Targets: 1
 #2 (id=286508)   : Weapon Damage% (31)
-                   Base Value: 200 | Scaled Value: 2
+                   Base Value: 200 | Scaled Value: 2 | Chain Targets: 1
 #3 (id=286519)   : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3
+                   Base Value: 3 | Scaled Value: 3 | Chain Targets: 1
 Description      : Smash the target, dealing $sw2 Physical damage and generating $s3 charges of Bone Shield.
 
 |Tinterface\icons\ability_deathknight_boneshield.blp:24|t |cFFFFFFFFBone Shield|r
@@ -4392,9 +4400,9 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=306039)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 (avg=0.756)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.756) | Chain Targets: 3
 #2 (id=306040)   : Weapon Damage% (31)
-                   Base Value: 100 | Scaled Value: 1
+                   Base Value: 100 | Scaled Value: 1 | Chain Targets: 3
 #3 (id=306041)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #4 (id=312174)   : Dummy (3)
@@ -4489,6 +4497,7 @@ Class            : Death Knight
 School           : Shadow
 Range            : 50000 yards
 Duration         : 3 seconds
+Mechanic         : Unknown(42)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -4497,7 +4506,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=306090)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(42)
 Description      : $@spelldesc206960
 Tooltip          : Cowering in fear.
 
@@ -4515,7 +4524,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : Hidden (7)
 Effects          :
 #1 (id=306091)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(42)
 
 Name             : Will of the Necropolis (Passive Talent) (id=206967) [Spell Family (8), Passive] 
 Class            : Death Knight
@@ -4807,7 +4816,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : Disable weapon procs (151)
 Effects          :
 #1 (id=306386)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95)
 Description      : $@spelldesc207161
 Tooltip          : Stunned.
 
@@ -4820,6 +4829,7 @@ Duration         : 4 seconds
 Cooldown         : 60 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
+Mechanic         : Unknown(10)
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
@@ -4867,7 +4877,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : Disable weapon procs (151)
 Effects          :
 #1 (id=306397)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95)
 Description      : $@spelldesc207170
 Tooltip          : Stunned.
 
@@ -5274,6 +5284,7 @@ School           : Shadow
 Spell Level      : 81
 Range            : 100 yards
 Duration         : 3 seconds
+Mechanic         : Unknown(88)
 Affecting spells : PH - Death Knight - Unholy - Increase Outbreak Spread Radius (208713)
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5337,7 +5348,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=313810)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -30 | Scaled Value: -30 | Radius: 0 - 8 yards
+                   Base Value: -30 | Scaled Value: -30 | Radius: 0 - 8 yards | Mechanic: Unknown(88)
 Description      : $@spelldesc196770
 Tooltip          : Movement speed reduced by $s1%.
 
@@ -5356,7 +5367,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : Disable weapon procs (151)
 Effects          :
 #1 (id=313872)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(239)
 Description      : $@spelldesc207161
 Tooltip          : Dazed. Movement speed reduced by $s1.
 

@@ -77,7 +77,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=155)      : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.20000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.20000 | Chain Targets: 5
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets.
 
 Name             : Chain Heal (id=1064) [Spell Family (11)] 
@@ -97,7 +97,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=387)      : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.00000 | Chain Multiplier: 0.7
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.00000 | Chain Multiplier: 0.7 | Chain Targets: 4
 #2 (id=219186)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 Description      : Heals the friendly target for $s1, then jumps to heal the most injured nearby party or raid members. Healing is reduced by $?a157154[15][30]% after each jump. Heals $x1 total targets.
@@ -698,6 +698,7 @@ Class            : Shaman
 School           : Nature
 Spell Level      : 66
 Cooldown         : 5 seconds
+Mechanic         : Unknown(133)
 Attributes       : ....x... ........ ..x..... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ...x.... ........ ........   ........ ........ ........ ........ 
@@ -787,7 +788,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=37247)    : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.80000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.80000 | Chain Targets: 5
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies.  Affects $x1 total targets.
 
 Name             : Primal-Attuned Goggles (id=46110) 
@@ -874,7 +875,7 @@ Effects          :
 #2 (id=43816)    : Knock Back (98)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 300 | Radius: 0 - 10 yards
 #3 (id=43817)    : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -40 | Scaled Value: -40 | Radius: 0 - 10 yards
+                   Base Value: -40 | Scaled Value: -40 | Radius: 0 - 10 yards | Mechanic: Unknown(88)
 Description      : Calls down a bolt of lightning, dealing $s1 Nature damage to all enemies within $A1 yards, reducing their movement speed by $s3% for $d and knocking them back from the Shaman. This spell is usable while stunned.
 Tooltip          : Movement speed reduced by $s3%.
 
@@ -915,6 +916,7 @@ GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 30 seconds
 Proc Chance      : 100%
+Mechanic         : Unknown(141)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Spiritwalker's Grace (79206), Lucidity (137326), Item - Shaman WoD PvP Elemental 2P Bonus (171109)
@@ -1139,7 +1141,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=51296)    : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(227)
 Description      : Disrupts the target's concentration with a burst of wind, interrupting spellcasting and preventing any spell in that school from being cast for $d.
 
 Name             : Glyph of the Spectral Wolf (id=58135) [Spell Family (11), Passive, Hidden] 
@@ -1410,6 +1412,7 @@ Class            : Shaman
 School           : Nature
 Duration         : 5 seconds
 Proc Chance      : 100%
+Mechanic         : Unknown(58)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Triggered by     : Earthgrab (116943)
@@ -1716,6 +1719,7 @@ Name             : Deadly Bio-Optic Killshades (id=81716)
 Class            : Hunter, Shaman
 School           : Physical
 Cast Time        : 5 seconds
+Mechanic         : Unknown(245)
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1730,6 +1734,7 @@ Name             : Energized Bio-Optic Killshades (id=81720)
 Class            : Shaman
 School           : Physical
 Cast Time        : 5 seconds
+Mechanic         : Unknown(245)
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2089,7 +2094,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=127188)   : School Damage: fire (2)
-                   Base Value: -1 | Scaled Value: 0 - 2 | Value Range: 3 | SP Coefficient: 1.61000 | Chain Multiplier: 1.1
+                   Base Value: -1 | Scaled Value: 0 - 2 | Value Range: 3 | SP Coefficient: 1.61000 | Chain Multiplier: 1.1 | Chain Targets: 5
 #2 (id=188522)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 #3 (id=305304)   : Energize Power (30)
@@ -2144,7 +2149,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=128188)   : School Damage: fire (2)
-                   Base Value: 190 | Scaled Value: 0 (avg=0.816, dl=0.133) | Points Per Level: 1.9 | Value Range: 27 | SP Coefficient: 1.20750 | Chain Multiplier: 1.1
+                   Base Value: 190 | Scaled Value: 0 (avg=0.816, dl=0.133) | Points Per Level: 1.9 | Value Range: 27 | SP Coefficient: 1.20750 | Chain Multiplier: 1.1 | Chain Targets: 5
 Description      : Unleash a blast of superheated flame at the enemy, dealing $s1 Fire damage and then jumping to additional nearby enemies. Affects up to $x1 total targets.
 
 Name             : Windwalk Totem (id=114896) [Spell Family (11), Passive] 
@@ -2405,7 +2410,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=134743)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Mechanic: Unknown(95)
 Description      : Smashes an enemy with a rocky fist, stunning the target for $d.
 Tooltip          : Stunned.
 
@@ -2475,6 +2480,7 @@ Class            : Shaman
 School           : Nature
 Cast Time        : 5 seconds
 Duration         : 5 seconds
+Mechanic         : Unknown(95)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2548,6 +2554,7 @@ Name             : Deadly Retinal Armor (id=127120)
 Class            : Hunter, Shaman
 School           : Physical
 Cast Time        : 1.5 seconds
+Mechanic         : Unknown(245)
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2562,6 +2569,7 @@ Name             : Energized Retinal Armor (id=127121)
 Class            : Shaman
 School           : Physical
 Cast Time        : 1.5 seconds
+Mechanic         : Unknown(245)
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2887,7 +2895,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=200571)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88)
 Description      : $@spelldesc196834
 Tooltip          : Movement slowed by $s1%.
 
@@ -3647,7 +3655,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=275203)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.40000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.40000 | Chain Targets: 5
 #2 (id=287538)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets.  Generates $s2 Maelstrom per target hit. 
@@ -4504,7 +4512,7 @@ Effects          :
 #1 (id=288995)   : School Damage: frost (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.50000
 #2 (id=288996)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88)
 #3 (id=313061)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 Description      : Instantly shocks an enemy with frost, dealing $s1 Frost damage and reducing the target's movement speed by $s2% for $d.
@@ -4606,6 +4614,7 @@ GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 30 seconds
 Proc Chance      : 100%
+Mechanic         : Unknown(141)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Spiritwalker's Grace (79206), Lucidity (137326), Item - Shaman WoD PvP Elemental 2P Bonus (171109)
@@ -4711,7 +4720,7 @@ Effects          :
 #1 (id=289629)   : School Damage: flamestrike (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 10.00000 | Radius: 11 yards
 #2 (id=290614)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 11 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 11 yards | Mechanic: Unknown(95)
 #3 (id=290630)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 1 yards
 Description      : Shatter a line of earth before you, causing $s1 Physical damage and knocking enemies to the side.
@@ -5383,7 +5392,7 @@ Effects          :
 #1 (id=297755)   : School Damage: nature (2)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 8 yards
 #2 (id=297756)   : Apply Aura (6) | Taunt (11)
-                   Base Value: 1 | Scaled Value: 1 | Radius: 0 - 8 yards
+                   Base Value: 1 | Scaled Value: 1 | Radius: 0 - 8 yards | Mechanic: Unknown(133)
 Description      : Shakes the ground with thundering force, doing ${$<damage>} Nature damage to all enemies within $A1 yards, and Provoking them. This ability causes a moderate amount of additional threat.
 Variables        : $ce=$?s152244[${1.85}][${1.5}]
 $damage=${$<ce>*($RAP*0.250)}
@@ -5862,6 +5871,7 @@ GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 30 seconds
 Proc Chance      : 100%
+Mechanic         : Unknown(141)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Spiritwalker's Grace (79206), Lucidity (137326), Item - Shaman WoD PvP Elemental 2P Bonus (171109)

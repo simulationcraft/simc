@@ -117,6 +117,7 @@ Spell Level      : 7
 Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
+Mechanic         : Bleed
 Affecting spells : Battle Cry (1719), Headlong Rush (158836), Item - Warrior T18 Arms 4P Bonus (185804), Dauntless (202297), Colossus Smash (208086), Will of the First King (209553)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... .x...... ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -126,7 +127,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=310)      : Apply Aura (6) | Periodic Damage: physical every 3 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.50000
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.50000 | Mechanic: Bleed
 Description      : Wounds the target, causing $o1 bleed damage over $d.
 Tooltip          : Bleeding for $w1 damage every $t1 sec.
 
@@ -263,7 +264,7 @@ Attributes       : ........ ........ x.x..... ........   ...x...x .x...... .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=523)      : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88)
 #2 (id=236708)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=236709)   : Weapon Damage% (31)
@@ -408,9 +409,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1900)     : Normalized Weapon Damage (121)
-                   Base Value: 1 | Scaled Value: 1
+                   Base Value: 1 | Scaled Value: 1 | Chain Targets: 1
 #2 (id=229536)   : Weapon Damage% (31)
-                   Base Value: 625 | Scaled Value: 6.25
+                   Base Value: 625 | Scaled Value: 6.25 | Chain Targets: 1
 Description      : Attempt to finish off a wounded foe, causing a total of ${$sw2+$163558sw2} Physical damage. Only usable on enemies that have less than 20% health.
 
 Name             : Thunder Clap (id=6343) [Spell Family (4)] 
@@ -432,7 +433,7 @@ Effects          :
 #1 (id=2203)     : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.75000 | Radius: 0 - 8 yards
 #2 (id=236564)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Radius: 0 - 8 yards
+                   Base Value: -50 | Scaled Value: -50 | Radius: 0 - 8 yards | Mechanic: Unknown(88)
 Description      : Blasts all enemies within $6343A1 yards for $?s12712[${$6343m1*1.2}][$6343m1] damage$?s199045[, rooting them for $199042d and reducing their movement speed by $s2% for $d.][ and reduces their movement speed by $s2% for $d.]
 Tooltip          : Movement speed reduced by $s2%.
 
@@ -472,7 +473,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=108711)   : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(227)
 Description      : Pummel the target, $?s58357[silencing for $18498d, ][]interrupting spellcasting and preventing any spell in that school from being cast for $d.
 
 Name             : Revenge (id=6572) [Spell Family (4)] 
@@ -532,6 +533,7 @@ Spell Level      : 1
 Range            : 50000 yards
 Duration         : 1.5 seconds
 Proc Chance      : 101%
+Mechanic         : Unknown(95)
 Attributes       : ....x... ........ x.x..... ........   ...x...x .x...... ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -585,11 +587,11 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=5274)     : Trigger Spell: Mortal Wounds (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 115804
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 115804 | Chain Targets: 1
 #2 (id=5275)     : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Targets: 1
 #3 (id=99581)    : Weapon Damage% (31)
-                   Base Value: 350 | Scaled Value: 3.5
+                   Base Value: 350 | Scaled Value: 3.5 | Chain Targets: 1
 #4 (id=156241)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: rage
 Description      : A vicious strike that deals $sw3 Physical damage and reduces the effectiveness of healing on the target for $115804d.
@@ -601,6 +603,7 @@ Resource         : 10 Rage
 Spell Level      : 26
 GCD              : 1.5 seconds
 Duration         : 15 seconds
+Mechanic         : Unknown(88)
 Affecting spells : Headlong Rush (158836)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -964,6 +967,7 @@ School           : Physical
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 3 seconds
+Mechanic         : Unknown(227)
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1508,6 +1512,7 @@ Race             : Blood Elf
 School           : Arcane
 Duration         : 2 seconds
 Cooldown         : 90 seconds
+Mechanic         : Unknown(72)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1617,6 +1622,7 @@ Name             : Reinforced Bio-Optic Killshades (id=81714)
 Class            : Warrior, Paladin, Death Knight
 School           : Physical
 Cast Time        : 5 seconds
+Mechanic         : Unknown(245)
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1687,9 +1693,9 @@ Attributes       : ....x... ........ x.x..... ........   ....x... ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=86555)    : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Targets: 1
 #2 (id=86556)    : Weapon Damage% (31)
-                   Base Value: 150 | Scaled Value: 1.5
+                   Base Value: 150 | Scaled Value: 1.5 | Chain Targets: 1
 Description      : $@spelldesc85288
 
 Name             : Meat Cleaver (id=85739) [Spell Family (4)] 
@@ -1828,9 +1834,9 @@ Attributes       : ....x... ........ x.x..... ........   ....x... ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=101983)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Targets: 1
 #2 (id=101984)   : Weapon Damage% (31)
-                   Base Value: 150 | Scaled Value: 1.5
+                   Base Value: 150 | Scaled Value: 1.5 | Chain Targets: 1
 Description      : $@spelldesc85288
 
 Name             : Commanding Shout (id=97462) [Spell Family (4)] 
@@ -1951,6 +1957,7 @@ Class            : Warrior
 School           : Physical
 Range            : 50000 yards
 Duration         : 1.5 seconds
+Mechanic         : Unknown(58)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -1959,7 +1966,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=115753)   : Apply Aura (6) | Unknown effect sub type (455)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(58) | Chain Targets: 1
 Description      : $@spelldesc100
 Tooltip          : Rooted.
 
@@ -2048,6 +2055,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 6 seconds
+Mechanic         : Bleed
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ..x..... ..x..... ..x...x. 
                  : ........ x......x ....x... ........   ........ ........ ........ ........ 
@@ -2056,7 +2064,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : ........ ......x. ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=126202)   : Apply Aura (6) | Periodic Damage: physical every 1 seconds (3)
-                   Base Value: 5 | Scaled Value: 0 (avg=0.094)
+                   Base Value: 5 | Scaled Value: 0 (avg=0.094) | Mechanic: Bleed
 Description      : $@spelldesc12292
 Tooltip          : Bleeding for $w1 every $t1 sec.
 
@@ -2088,6 +2096,7 @@ Spell Level      : 32
 Range            : 100 yards
 Duration         : 15 seconds
 Proc Chance      : 100%
+Mechanic         : Bleed
 Proc Flags       : ........ .......x ........ .......x 
                  : Heal Taken
 Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Headlong Rush (158836), Item - Warrior T18 Arms 4P Bonus (185804), Dauntless (202297), Colossus Smash (208086), Will of the First King (209553)
@@ -2100,7 +2109,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=129821)   : Apply Aura (6) | Periodic Damage: physical every 3 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.84000
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.84000 | Mechanic: Bleed
 Description      : $@spelldesc115768
 Tooltip          : Bleeding for $w1 every $t1 sec.  Cancelled if target reaches full health.
 
@@ -2509,6 +2518,7 @@ Name             : Reinforced Retinal Armor (id=127123)
 Class            : Warrior, Paladin, Death Knight
 School           : Physical
 Cast Time        : 1.5 seconds
+Mechanic         : Unknown(245)
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2554,7 +2564,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=170833)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95)
 Description      : $@spelldesc46968
 Tooltip          : Stunned.
 
@@ -2565,6 +2575,7 @@ Spell Level      : 1
 Range            : 30 yards
 Velocity         : 25 yards/sec
 Duration         : 4 seconds
+Mechanic         : Unknown(95)
 Affecting spells : Battle Cry (1719), Headlong Rush (158836), Colossus Smash (208086)
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ..x..... ..x..... ........ 
@@ -2574,7 +2585,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=170838)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95)
 Description      : $@spelldesc107570
 Tooltip          : Stunned.
 
@@ -2877,6 +2888,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 6 seconds
+Mechanic         : Unknown(88)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ..x..... ..x..... ..x...x. 
                  : ........ x......x ....x... ........   ........ ........ ........ ........ 
@@ -2885,7 +2897,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : ........ ......x. ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=200180)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88)
 Description      : $@spelldesc12292
 Tooltip          : Movement slowed by $s1%.
 
@@ -3112,9 +3124,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=229520)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1
 #2 (id=229537)   : Weapon Damage% (31)
-                   Base Value: 200 | Scaled Value: 2
+                   Base Value: 200 | Scaled Value: 2 | Chain Targets: 1
 #3 (id=239183)   : Energize Power (30)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: rage
 Description      : Attempt to finish off a foe, causing $sw2 Physical damage to the target, and consuming up to $m3 additional Rage to deal up to $168874sw2 additional damage. Only usable on enemies that have less than 20% health. $?s146971[ Successfully killing an enemy with Execute grants you ${$147352m1/10} rage.][]
@@ -3134,9 +3146,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=230085)   : Normalized Weapon Damage (121)
-                   Base Value: 1 | Scaled Value: 1
+                   Base Value: 1 | Scaled Value: 1 | Chain Targets: 1
 #2 (id=230086)   : Weapon Damage% (31)
-                   Base Value: 625 | Scaled Value: 6.25
+                   Base Value: 625 | Scaled Value: 6.25 | Chain Targets: 1
 Description      : $@spelldesc5308
 
 Name             : Colossus Smash (id=167105) [Spell Family (4)] 
@@ -3241,7 +3253,7 @@ Effects          :
 #2 (id=252259)   : Weapon Damage% (31)
                    Base Value: 450 | Scaled Value: 4.5
 #3 (id=252260)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 10.00000
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 10.00000 | Mechanic: Unknown(95)
 #4 (id=252299)   : Knock Back (98)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 240
 Description      : Use your full strength to bodyslam the target, dealing $sw2 damage, and knocking them back and down for $d.
@@ -3275,6 +3287,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 1
 Duration         : 4.4 seconds
+Mechanic         : Unknown(262)
 Affecting spells : Item - Warrior T18 Protection 2P Bonus (185796), Warpaint (208154)
 Triggered by     : Enrage (184361), Massacre (206316)
 Attributes       : ........ ........ ........ x......x   ........ ..x..... ........ ........ 
@@ -3337,9 +3350,9 @@ Effects          :
 #2 (id=267215)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #3 (id=267216)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1
 #4 (id=268060)   : Weapon Damage% (31)
-                   Base Value: 100 | Scaled Value: 1
+                   Base Value: 100 | Scaled Value: 1 | Chain Targets: 1
 #5 (id=268061)   : Trigger Spell: Rampage (64)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 300 | Trigger Spell: 184707
 #6 (id=291716)   : Trigger Spell: Rampage (64)
@@ -3371,9 +3384,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=267757)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1
 #2 (id=267758)   : Weapon Damage% (31)
-                   Base Value: 250 | Scaled Value: 2.5
+                   Base Value: 250 | Scaled Value: 2.5 | Chain Targets: 1
 Description      : $@spelldesc184367
 
 Name             : Rampage (id=184709) [Spell Family (4)] 
@@ -3393,9 +3406,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=267761)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1
 #2 (id=267762)   : Weapon Damage% (31)
-                   Base Value: 175 | Scaled Value: 1.75
+                   Base Value: 175 | Scaled Value: 1.75 | Chain Targets: 1
 Description      : $@spelldesc184367
 
 Name             : Tactician (id=184783) [Spell Family (4), Passive] 
@@ -3753,9 +3766,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=296642)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1
 #2 (id=296643)   : Weapon Damage% (31)
-                   Base Value: 275 | Scaled Value: 2.75
+                   Base Value: 275 | Scaled Value: 2.75 | Chain Targets: 1
 Description      : $@spelldesc184367
 
 Name             : Rampage (id=201364) [Spell Family (4)] 
@@ -3774,9 +3787,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=296644)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1
 #2 (id=296645)   : Weapon Damage% (31)
-                   Base Value: 450 | Scaled Value: 4.5
+                   Base Value: 450 | Scaled Value: 4.5 | Chain Targets: 1
 Description      : $@spelldesc184367
 
 Name             : Indomitable (id=202095) [Passive] 

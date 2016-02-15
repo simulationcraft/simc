@@ -11,6 +11,7 @@ Duration         : 15 seconds
 Cooldown         : 6 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
+Mechanic         : Unknown(162)
 Affecting spells : Improved Power Word: Shield (24191), Rapture (47536), Lucidity (137323)
 Attributes       : ........ ...x.... x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.x.. ........   ........ ........ ........ ........ 
@@ -200,6 +201,7 @@ GCD              : 1.5 seconds
 Duration         : 30 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
+Mechanic         : Unknown(2)
 Affecting spells : Lucidity (137323)
 Attributes       : ........ ........ x.x.x... ........   x.x..... .....x.. .x...... ..x..... 
                  : ......x. ........ ...x.... ........   ........ ........ ........ ........ 
@@ -381,6 +383,7 @@ Duration         : 8 seconds
 Cooldown         : 60 seconds
 Proc Chance      : 100%
 Stance Mask      : 0x08000000
+Mechanic         : Unknown(42)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Psychic Scream Duration Increase (23044), Improved Psychic Scream (44297), Lucidity (137323), Psychic Voice (196704)
@@ -411,6 +414,7 @@ GCD              : 1.5 seconds
 Duration         : 50 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
+Mechanic         : Unknown(171)
 Affecting spells : Glyph of Shackle Undead (57986), Lucidity (137323)
 Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
                  : ........ ........ ...x.... ........   x....... ........ ........ ........ 
@@ -522,7 +526,7 @@ Effects          :
 #1 (id=7301)     : Apply Aura (6) | Periodic Damage: shadow every 0.75 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.30000
 #2 (id=7302)     : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88)
 #3 (id=303457)   : Apply Aura (6) | Periodic Energize Power: every 0.75 seconds (24)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: 13
 Description      : Assault the target's mind with Shadow energy, causing $o1 Shadow damage over $d$?s120585[. Each time Mind Flay deals damage, the Priest will be granted $120587s1% increased movement speed for $120587d, stacking up to $120587u times.][ and slowing their movement speed by $s2%.]
@@ -540,6 +544,7 @@ Duration         : 5 seconds
 Cooldown         : 45 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
+Mechanic         : Unknown(72)
 Affecting spells : Lucidity (137323)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -651,6 +656,7 @@ Race             : Blood Elf
 School           : Arcane
 Duration         : 2 seconds
 Cooldown         : 90 seconds
+Mechanic         : Unknown(72)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -794,6 +800,7 @@ School           : Physical
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 3 seconds
+Mechanic         : Unknown(227)
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1488,6 +1495,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 45 seconds
+Mechanic         : Unknown(204)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1496,7 +1504,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=58262)    : Apply Aura (6) | Stun (12)
-                   Base Value: 1 | Scaled Value: 1
+                   Base Value: 1 | Scaled Value: 1 | Mechanic: Unknown(204)
 Description      : Terrifies the target, stunning them for $d.
 Tooltip          : Stunned.
 
@@ -1689,6 +1697,7 @@ Spell Level      : 83
 Range            : 40 yards
 Duration         : 1.5 seconds
 Cooldown         : 90 seconds
+Mechanic         : Unknown(50)
 Affecting spells : Lucidity (137323)
 Attributes       : ........ ........ ........ ........   ........ ........ ...x.... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1836,6 +1845,7 @@ Name             : Lightweight Bio-Optic Killshades (id=81725)
 Class            : Priest, Mage, Warlock
 School           : Physical
 Cast Time        : 5 seconds
+Mechanic         : Unknown(245)
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1897,6 +1907,7 @@ School           : Shadow
 Spell Level      : 1
 Duration         : 3 seconds
 Proc Chance      : 100%
+Mechanic         : Unknown(204)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ x....... ..x...x.   ...x...x ........ ........ ........ 
@@ -2505,6 +2516,7 @@ Name             : Lightweight Retinal Armor (id=127117)
 Class            : Priest, Mage, Warlock
 School           : Physical
 Cast Time        : 1.5 seconds
+Mechanic         : Unknown(245)
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3810,7 +3822,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=294708)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(10)
 Description      : $@spelldesc88625
 Tooltip          : Incapacitated.
 
@@ -3848,7 +3860,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=294717)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(10)
 Description      : $@spelldesc88625
 Tooltip          : Incapacitated.
 
@@ -4075,7 +4087,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=301476)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -70 | Scaled Value: -70 | Radius: 0 - 10 yards
+                   Base Value: -70 | Scaled Value: -70 | Radius: 0 - 10 yards | Mechanic: Unknown(88)
 #2 (id=301490)   : Unknown effect type (144)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 300 | Radius: 0 - 10 yards
 Description      : Create a burst of light around a friendly target, knocking away nearby enemies and slowing their movement by $s1% for $d seconds.
@@ -4153,6 +4165,7 @@ Cast Time        : 1.5 seconds
 GCD              : 0.5 seconds
 Duration         : 3 seconds
 Cooldown         : 30 seconds
+Mechanic         : Unknown(95)
 Attributes       : ........ ........ x....... ........   ...x...x ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

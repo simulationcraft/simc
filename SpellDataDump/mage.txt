@@ -102,7 +102,7 @@ Effects          :
 #1 (id=83)       : School Damage: frost (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.14925 | Radius: 0 - 12 yards
 #2 (id=84)       : Apply Aura (6) | Root (26)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 12 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 12 yards | Mechanic: Unknown(58)
 Description      : Blasts enemies within $A1 yds of the caster for $122s1 Frost damage and freezes them in place for up to $122d. Damage caused may interrupt the effect.
 Tooltip          : Frozen in place.
 Variables        : $arctic1=$?s31674[${1.01}][${1}]
@@ -218,7 +218,7 @@ Effects          :
 #1 (id=126904)   : School Damage: fire (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | Radius: 8 yards
 #2 (id=630)      : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Radius: 8 yards
+                   Base Value: -50 | Scaled Value: -50 | Radius: 8 yards | Mechanic: Unknown(88)
 Description      : Calls down a pillar of fire, burning all enemies within the area for $s1 Fire damage and reducing their movement speed by $s2% for $d.
 Tooltip          : Movement speed slowed by $s2%.
 
@@ -230,6 +230,7 @@ Spell Level      : 26
 Range            : 40 yards
 Duration         : 6 seconds
 Cooldown         : 24 seconds
+Mechanic         : Unknown(227)
 Affecting spells : Improved Counterspell (24429)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -353,7 +354,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ........ .....
                  : Channeled (34), Not a proc (105)
 Effects          :
 #1 (id=2716)     : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.75000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.75000 | Chain Targets: 1
 Description      : $@spelldesc5143
 
 Name             : Frost Armor (id=7302) [Spell Family (3), Passive] 
@@ -602,6 +603,7 @@ Race             : Blood Elf
 School           : Arcane
 Duration         : 2 seconds
 Cooldown         : 90 seconds
+Mechanic         : Unknown(72)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -683,11 +685,11 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=20036)    : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.335, dl=0.25) | SP Coefficient: 0.50000 | Chain Multiplier: 0.5
+                   Base Value: 1 | Scaled Value: 0 (avg=0.335, dl=0.25) | SP Coefficient: 0.50000 | Chain Multiplier: 0.5 | Chain Targets: 1
 #2 (id=85836)    : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 #3 (id=257156)   : Server Side Script (77)
-                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0.5
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0.5 | Chain Targets: 1
 Description      : Quickly fling a shard of ice at the target, dealing $?a44544[${$m1*$<fingersMult>} to ${$M1*$<fingersMult>}][$s1] Frost damage$?s56377&!a44544[, and ${$m1*$56377m2/100} to ${$M1*$56377m2/100} Frost damage to a second nearby target][]$?s56377&a44544[, and ${$m1*$<fingersMult>*$56377m2/100} to ${$M1*$<fingersMult>*$56377m2/100} Frost damage to a second nearby target][].
 
 Ice Lance damage is doubled against frozen targets.
@@ -739,7 +741,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=21198)    : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88)
 Description      : Reduces the target's movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $w1%.
 
@@ -766,7 +768,7 @@ Effects          :
 #1 (id=21276)    : School Damage: fire (2)
                    Base Value: 1 | Scaled Value: 0 (avg=1.967, dl=0.15) | SP Coefficient: 0.86000 | Radius: 12 yards
 #2 (id=21277)    : Apply Aura (6) | Confuse (5)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 12 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 12 yards | Mechanic: Unknown(10)
 Description      : Targets in a cone in front of the caster take $s1 Fire damage and are disoriented for $d.  
 
 Any direct damage will cancel the effect.
@@ -845,6 +847,7 @@ School           : Physical
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 3 seconds
+Mechanic         : Unknown(227)
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -877,7 +880,7 @@ Attributes       : ........ ........ x....... ......x.   ...x...x ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=23237)    : Apply Aura (6) | Root (26)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Mechanic: Unknown(58)
 Description      : Blasts enemies in a $a1 yard radius with frost, freezing them in place for up to $d. Damage caused may interrupt the effect. $?s112965[
 
 Grants the Mage a charge of Fingers of Frost for each target successfully hit by Freeze.][]
@@ -994,7 +997,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=36330)    : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.50000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.50000 | Chain Targets: 1
 #2 (id=157070)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 Description      : Launches bolts of arcane energy at the enemy target, causing $s1 Arcane damage. Consumes all Arcane Charges.
@@ -1095,6 +1098,7 @@ Spell Level      : 15
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Charges          : 2 (300 seconds cooldown)
+Mechanic         : Unknown(214)
 Attributes       : ........ ........ x.x..... ........   ........ ..x....x ........ ........ 
                  : ........ ........ .....x.. .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1307,7 +1311,7 @@ Effects          :
 #1 (id=53215)    : School Damage: frost (2)
                    Base Value: 1 | Scaled Value: 0 (avg=1.65, dl=0.1) | SP Coefficient: 0.47000
 #2 (id=53216)    : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88)
 Description      : Inflicts Frost damage to an enemy and reduces its movement speed for $d.
 Tooltip          : Reduced movement speed.
 
@@ -1500,6 +1504,7 @@ Name             : Lightweight Bio-Optic Killshades (id=81725)
 Class            : Priest, Mage, Warlock
 School           : Physical
 Cast Time        : 5 seconds
+Mechanic         : Unknown(245)
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1517,6 +1522,7 @@ Spell Level      : 45
 Range            : 100 yards
 Duration         : 10 seconds
 Proc Chance      : 101%
+Mechanic         : Unknown(103)
 Proc Flags       : ...x.x.x .x.x.x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ x....... x..xx...   .....x.. ........ .x...... ........ 
@@ -1527,7 +1533,7 @@ Attributes       : ........ ........ x....... x..xx...   .....x.. ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=82979)    : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 20 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 20 yards | Mechanic: Unknown(103)
 Description      : $@spelldesc113724
 Tooltip          : Incapacitated.
 
@@ -2184,6 +2190,7 @@ Name             : Lightweight Retinal Armor (id=127117)
 Class            : Priest, Mage, Warlock
 School           : Physical
 Cast Time        : 1.5 seconds
+Mechanic         : Unknown(245)
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2548,7 +2555,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=201127)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | Chain Multiplier: 0.5
+                   Base Value: 1 | Scaled Value: 1 | Chain Multiplier: 0.5 | Chain Targets: 1
 Description      : $@spelldesc76613
 
 Name             : Prismatic Crystal (id=152087) 
@@ -2966,7 +2973,7 @@ Effects          :
 #2 (id=220363)   : School Damage: fire (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.00000 | Radius: 0 - 8 yards
 #3 (id=220364)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -70 | Scaled Value: -70 | Radius: 0 - 8 yards
+                   Base Value: -70 | Scaled Value: -70 | Radius: 0 - 8 yards | Mechanic: Unknown(88)
 Description      : Causes an explosion around the target enemy or ally, dealing $s2 Fire damage to all enemies within $A2 yards, and reducing movement speed by $s3% for $d. A primary enemy target will take $s1% increased damage.
 Tooltip          : Movement speed reduced by $s3%.
 
@@ -2994,7 +3001,7 @@ Effects          :
 #2 (id=220384)   : School Damage: frost (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.50000 | Radius: 0 - 8 yards
 #3 (id=220385)   : Apply Aura (6) | Root (26)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Mechanic: Unknown(58)
 Description      : Causes a whirl of icy wind around the target enemy or ally, dealing $s2 Frost damage to all enemies within $A2 yards, and freezing them in place for $d. A primary enemy target will take $s1% increased damage.
 Tooltip          : Frozen.
 
@@ -3305,7 +3312,7 @@ Effects          :
 #1 (id=281310)   : School Damage: frost (2)
                    Base Value: 39 | Scaled Value: 40 - 49 | Value Range: 10 | SP Coefficient: 0.30000
 #2 (id=281311)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88)
 Description      : Inflicts Frost damage to an enemy and reduces its movement speed for $d.
 Tooltip          : Reduced movement speed.
 
@@ -3518,7 +3525,7 @@ Effects          :
 #1 (id=294013)   : School Damage: frost (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.00000
 #2 (id=294014)   : Apply Aura (6) | Root (26)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(58)
 Description      : Conjure a massive spike of ice, and merge your current Icicles into it. It impales your target, dealing $s1 damage, plus the damage stored in your Icicles.
 
 Requires 5 Icicles to cast.
@@ -3580,7 +3587,7 @@ Attributes       : ........ ........ ........ ........   ..x..... ........ .....
                  : Channeled (34)
 Effects          :
 #1 (id=302648)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -30 | Scaled Value: -30
+                   Base Value: -30 | Scaled Value: -30 | Mechanic: Unknown(88)
 #2 (id=303101)   : Apply Aura (6) | Periodic Damage: frost every 1 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000
 Description      : For the next $d, you can channel a beam of icy power at an enemy.
@@ -3951,7 +3958,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=303945)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: 30 | Scaled Value: 30
+                   Base Value: 30 | Scaled Value: 30 | Mechanic: Unknown(88)
 Description      : Chilled for $s1% for $d
 Tooltip          : Slowed by $s1% for $d.
 

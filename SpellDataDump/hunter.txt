@@ -245,6 +245,7 @@ Spell Level      : 28
 Range            : 100 yards
 Duration         : 60 seconds
 Proc Chance      : 101%
+Mechanic         : Unknown(103)
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ ........ x..x..x.   .....x.. ..x..... ..x..... .x...... 
@@ -271,6 +272,7 @@ GCD              : 1 seconds
 Velocity         : 40 yards/sec
 Duration         : 6 seconds
 Cooldown         : 5 seconds
+Mechanic         : Unknown(88)
 Affecting spells : Freezing Trap (3355), Mortal Shots (36413), Guide: Sharpshooting (178549), Sniper Training (193468)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -516,6 +518,7 @@ Duration         : 30 seconds
 Cooldown         : 45 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
+Mechanic         : Unknown(81)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Freezing Trap (3355), Guide: Sharpshooting (178549), Sniper Training (193468)
@@ -528,7 +531,7 @@ Attributes       : .x..x... ........ x...x... ........   ........ ..x..... .x...
                  : Ranged ability (1), Disable weapon procs (151)
 Effects          :
 #1 (id=10613)    : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(81)
 Description      : A stinging shot that puts the target to sleep, incapacitating them for $d.  Any damage will cancel the effect.
 
 Usable while moving.
@@ -790,6 +793,7 @@ School           : Physical
 Range            : 5 yards
 Duration         : 3 seconds
 Proc Chance      : 101%
+Mechanic         : Unknown(95)
 Triggered by     : Intimidation (19577)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -881,6 +885,7 @@ School           : Physical
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 3 seconds
+Mechanic         : Unknown(227)
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1048,7 +1053,7 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=25516)    : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88)
 Description      : Slows time around the enemy, reducing their movement speed by $s1% for $d.
 Tooltip          : Movement slowed by $s1%.
 
@@ -1111,6 +1116,7 @@ Spell Level      : 20
 Range            : 5 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
+Mechanic         : Unknown(88)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1119,7 +1125,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=42638)    : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88)
 Description      : Snap at the target's feet, reducing movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
@@ -1146,6 +1152,7 @@ School           : Physical
 Spell Level      : 80
 Range            : 8 - 25 yards
 Duration         : 1 seconds
+Mechanic         : Unknown(58)
 Triggered by     : Charge (61685)
 Attributes       : ....x... ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1198,7 +1205,7 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
                  : Ranged ability (1)
 Effects          :
 #1 (id=45831)    : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 2
 Description      : A two-headed shot that hits your primary target and another nearby target, dealing $171454sw3 Nature or Frost damage to each target. Generates $204304s1 Focus for every target hit.
 
 Name             : Piercing Shots (id=53238) [Spell Family (9), Passive] 
@@ -1363,6 +1370,7 @@ Spell Level      : 20
 Range            : 30 yards
 Duration         : 5 seconds
 Cooldown         : 10 seconds
+Mechanic         : Unknown(88)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1371,7 +1379,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=47481)    : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88)
 #2 (id=47482)    : Trigger Spell: Froststorm Breath (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 54689
 Description      : Your pet simultaneously breathes frost and lightning at an enemy target, slowing the target for $d.
@@ -1410,7 +1418,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=47538)    : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 2
 
 Name             : Heart of the Phoenix (Ferocity Ability) (id=55709) [Spell Family (9)] 
 Class            : Ferocity Ferocity Hunter Pet
@@ -1669,6 +1677,7 @@ School           : Physical
 Range            : 50000 yards
 Duration         : 8 seconds
 Proc Chance      : 101%
+Mechanic         : Bleed
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ x....... ......x. 
                  : ........ x....... ....x... ........   ........ ........ ........ ........ 
@@ -1678,7 +1687,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Disable player procs (112)
 Effects          :
 #1 (id=57625)    : Apply Aura (6) | Periodic Damage: physical every 1 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | Mechanic: Bleed
 Description      : Your critical strikes with Arcane Shot, Marked Shot and Aimed Shot cause the target to bleed for an additional $s1% of the initial damage over $63468d.
 Tooltip          : Bleeding.
 
@@ -1804,6 +1813,7 @@ Race             : Blood Elf
 School           : Arcane
 Duration         : 2 seconds
 Cooldown         : 90 seconds
+Mechanic         : Unknown(72)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1822,6 +1832,7 @@ Name             : Deadly Bio-Optic Killshades (id=81716)
 Class            : Hunter, Shaman
 School           : Physical
 Cast Time        : 5 seconds
+Mechanic         : Unknown(245)
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2435,6 +2446,7 @@ Spell Level      : 1
 Range            : 100 yards
 Duration         : 5 seconds
 Proc Chance      : 101%
+Mechanic         : Unknown(95)
 Attributes       : ........ ........ ..x..... x.xx...x   ...x.x.x ........ ..x..... ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ......x. 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
@@ -2443,7 +2455,7 @@ Attributes       : ........ ........ ..x..... x.xx...x   ...x.x.x ........ ..x..
                  : ........ ........ x.....x. ........   ........ ........ ........ ..x..... 
 Effects          :
 #1 (id=133385)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95)
 #2 (id=133386)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 Description      : Breaking the tether of Binding Shot will stun the target for $d (3 sec PvP).
@@ -2648,7 +2660,7 @@ Effects          :
 #1 (id=140699)   : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.52000 | Radius: 0 - 100 yards
 #2 (id=150546)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -30 | Scaled Value: -30 | Radius: 0 - 50 yards
+                   Base Value: -30 | Scaled Value: -30 | Radius: 0 - 50 yards | Mechanic: Unknown(88)
 Description      : $@spelldesc117050
 Tooltip          : Movement speed slowed by $s2%.
 
@@ -2668,7 +2680,7 @@ Effects          :
 #1 (id=150477)   : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.52000 | Radius: 0 - 100 yards
 #2 (id=150547)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -30 | Scaled Value: -30 | Radius: 0 - 50 yards
+                   Base Value: -30 | Scaled Value: -30 | Radius: 0 - 50 yards | Mechanic: Unknown(88)
 Description      : $@spelldesc117050
 Tooltip          : Movement speed slowed by $s2%.
 
@@ -2693,6 +2705,7 @@ Name             : Deadly Retinal Armor (id=127120)
 Class            : Hunter, Shaman
 School           : Physical
 Cast Time        : 1.5 seconds
+Mechanic         : Unknown(245)
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2825,6 +2838,7 @@ School           : Nature
 Spell Level      : 28
 Range            : 50000 yards
 Duration         : 39 seconds
+Mechanic         : Unknown(88)
 Attributes       : ........ ........ ........ x.xx....   ...x.x.x ..x..... ........ ........ 
                  : ..x..... ......x. ...x.... ....x...   ........ ........ ........ ......x. 
                  : x......x ...x...x ....x... ........   ...x.... ..x..... .xx..... ........ 
@@ -2844,6 +2858,7 @@ Spell Level      : 1
 Range            : 100 yards
 Duration         : 8 seconds
 Proc Chance      : 100%
+Mechanic         : Unknown(58)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ x....... ........   .......x ........ ........ ........ 
@@ -3087,7 +3102,7 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .x...
                  : Ranged ability (1)
 Effects          :
 #1 (id=199883)   : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(227)
 Description      : Interrupts spellcasting, preventing any spell in that school from being cast for $d.
 
 Name             : Adaptation (id=152244) [Passive] 
@@ -3423,6 +3438,7 @@ Spell Level      : 20
 Range            : 5 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
+Mechanic         : Unknown(88)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3431,7 +3447,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=224317)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88)
 Description      : Claw at the target's feet, reducing movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
@@ -3442,6 +3458,7 @@ Spell Level      : 20
 Range            : 25 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
+Mechanic         : Unknown(88)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3450,7 +3467,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=224321)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88)
 Description      : Shoot webs at the target, slowing movement by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
@@ -3500,6 +3517,7 @@ Spell Level      : 1
 Range            : 100 yards
 Duration         : 30 seconds
 Proc Chance      : 100%
+Mechanic         : Unknown(58)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ ........ ......x.   ........ ..x..... ..x..... ........ 
@@ -3520,6 +3538,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 30 seconds
+Mechanic         : Bleed
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3528,7 +3547,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=228151)   : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000 | Mechanic: Bleed
 Description      : $@spelldesc162479
 Tooltip          : Bleeding for $w1 damage every $t1 seconds.
 
@@ -3729,7 +3748,7 @@ Effects          :
 #1 (id=228234)   : Weapon Damage% (31)
                    Base Value: 17 | Scaled Value: 0.17
 #2 (id=228235)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88)
 Description      : $@spelldesc162539
 Tooltip          : Slowed by $s2%.
 
@@ -4008,6 +4027,7 @@ Range            : 8 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 10 seconds
+Mechanic         : Bleed
 Affecting spells : Jagged Claws (203578)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...... ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4017,7 +4037,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=270149)   : Apply Aura (6) | Periodic Damage: physical every 1 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.96600
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.96600 | Mechanic: Bleed
 Description      : Tear a wound in the target, dealing $o1 damage over $d.
 Tooltip          : Bleeding for $o1 damage every $t1 sec.
 
@@ -4275,7 +4295,7 @@ Effects          :
 #3 (id=272309)   : Knock Back (98)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 150 | Radius: 8 yards
 #4 (id=272331)   : Apply Aura (6) | Confuse (5)
-                   Base Value: -50 | Scaled Value: -50 | Radius: 8 yards
+                   Base Value: -50 | Scaled Value: -50 | Radius: 8 yards | Mechanic: Unknown(10)
 Description      : Fire an explosion of bolts that strikes all enemies in front of you, knocking them back and disorienting them, and dealing $sw1 Physical damage.
 Tooltip          : Disoriented.
 
@@ -4295,9 +4315,9 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=272823)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: 15 | Scaled Value: 15
+                   Base Value: 15 | Scaled Value: 15 | Mechanic: Unknown(88)
 #2 (id=296786)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25
+                   Base Value: 25 | Scaled Value: 25 | Mechanic: Unknown(88)
 Description      : Slows the target by $s1% for $6d. Stacks $u times.
 Tooltip          : Vulnerable to Aimed Shot. 
 Slowed by $s1% for $6d.
@@ -4417,7 +4437,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=273764)   : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(227)
 Description      : Interrupts spellcasting, preventing any spell in that school from being cast for $d.
 
 Name             : Carve (id=187708) [Spell Family (9)] 
@@ -4684,7 +4704,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=280760)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -70 | Scaled Value: -70
+                   Base Value: -70 | Scaled Value: -70 | Mechanic: Unknown(88)
 Description      : $@spelldesc34026
 Tooltip          : Movement slowed by $s1%.
 
@@ -4963,6 +4983,7 @@ Class            : Hunter
 School           : Physical
 Range            : 40 yards
 Duration         : 15 seconds
+Mechanic         : Unknown(88)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -5052,6 +5073,7 @@ Class            : Hunter
 School           : Physical
 Range            : 40 yards
 Velocity         : 0.8 yards/sec
+Mechanic         : Unknown(88)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -5252,7 +5274,7 @@ Effects          :
 #1 (id=286030)   : Apply Aura (6) | Periodic Damage: fire every 1 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 #2 (id=286031)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -20 | Scaled Value: -20
+                   Base Value: -20 | Scaled Value: -20 | Mechanic: Unknown(88)
 #3 (id=286032)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000
 Description      : Sets an enemy aflame, inflicting $o1 Fire damage over $d. and sending it into a state of panic. While the target is affected, the flames periodically scorch its nearby allies for $16806s1 damage as well.
@@ -5291,7 +5313,7 @@ Attributes       : ........ ........ x.x..... ........   ...x...x .x...... .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=287183)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88)
 Description      : Maims the target, reducing their movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
@@ -5794,6 +5816,7 @@ Class            : Hunter
 School           : Physical
 Range            : 100 yards
 Duration         : 4 seconds
+Mechanic         : Unknown(88)
 Attributes       : ........ ........ ........ x.xx....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ...x.... ....x...   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -5812,6 +5835,7 @@ School           : Nature
 Spell Level      : 28
 Range            : 50000 yards
 Duration         : 4 seconds
+Mechanic         : Unknown(88)
 Attributes       : ........ ........ ........ x.xx....   ...x.x.x ..x..... ........ ........ 
                  : ..x..... ......x. ...x.... ....x...   ........ ........ ........ ......x. 
                  : x......x ...x...x ....x... ........   ...x.... ........ .xx..... ........ 
@@ -5829,6 +5853,7 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 1
 Range            : 50000 yards
+Mechanic         : Bleed
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5837,13 +5862,14 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=296366)   : School Damage: physical (2)
-                   Base Value: 500 | Scaled Value: 500 | SP Coefficient: 2.00000
+                   Base Value: 500 | Scaled Value: 500 | SP Coefficient: 2.00000 | Mechanic: Bleed
 Description      : When your Steel Trap is triggered, the target will also take $s1 Physical Damage.
 
 Name             : Caltrops (id=201310) 
 Class            : Hunter
 School           : Physical
 Range            : 40 yards
+Mechanic         : Unknown(88)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -5881,6 +5907,7 @@ Name             : Stomp! (id=201754)
 Class            : Hunter
 School           : Physical
 Cooldown         : 90 seconds
+Mechanic         : Unknown(95)
 Attributes       : ....x... ........ ..x..... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6109,7 +6136,7 @@ Attributes       : ........ ........ x.x..... ........   ...x...x .x...... .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=305743)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88)
 Description      : $@spelldesc200108
 Tooltip          : Slowed by $s1%.
 

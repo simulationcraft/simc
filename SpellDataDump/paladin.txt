@@ -63,6 +63,7 @@ Spell Level      : 18
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 300 seconds
+Mechanic         : Unknown(214)
 Affecting spells : Unbreakable Spirit (114154), Lucidity (137288), Final Stand (204077)
 Attributes       : ........ ........ x.x..... ........   ........ ..x....x ........ ........ 
                  : ........ ........ .....x.. .....x..   ........ ........ ........ ........ 
@@ -94,6 +95,7 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 60 seconds
 Proc Chance      : 101%
+Mechanic         : Unknown(95)
 Affecting spells : Improved Hammer of Justice (24188), Lucidity (137288)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -121,6 +123,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 300 seconds
 Charges          : 0 (300 seconds cooldown)
+Mechanic         : Unknown(214)
 Affecting spells : Sword of Light (53503), Lucidity (137288), Protector of the Ashen Blade (186944), PH - Reduce Cooldown/Increase Duration of Blessings (206338), 
 Attributes       : ........ ........ x.x..... ........   ........ .......x ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -279,6 +282,7 @@ Duration         : 60 seconds
 Cooldown         : 15 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
+Mechanic         : Unknown(255)
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Lucidity (137288)
@@ -395,6 +399,7 @@ Class            : Paladin
 School           : Holy
 Range            : 50000 yards
 Duration         : 30 seconds
+Mechanic         : Unknown(214)
 Attributes       : ........ ........ ........ ..x..x..   ...x...x ..x..... xx...... ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
@@ -478,10 +483,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=15880)    : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11
-                   Affected Spells: Judgment (20271), Holy Shock (20473), Holy Shock (25912), Consecration (26573), Avenger's Shield (31935), Crusader Strike (35395), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Light of the Protector (184092), Blade of Justice (184575), Judgment (197277), Judgment (198166), Consecration (205228)
+                   Affected Spells: Judgment (20271), Holy Shock (20473), Holy Shock (25912), Consecration (26573), Avenger's Shield (31935), Crusader Strike (35395), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Light of the Protector (184092), Blade of Justice (184575), Blade of Light (193115), Judgment (197277), Judgment (198166), Consecration (205228)
 #2 (id=169557)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11
-                   Affected Spells: Judgment (20271), Holy Shock (20473), Holy Shock (25912), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Templar's Verdict (85256), Rebuke (96231), Light of the Protector (184092), Blade of Justice (184575), Judgment (197277), Judgment (198166)
+                   Affected Spells: Judgment (20271), Holy Shock (20473), Holy Shock (25912), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Templar's Verdict (85256), Rebuke (96231), Light of the Protector (184092), Blade of Justice (184575), Templar's Verdict (186805), Divine Storm (186876), Blade of Light (193115), Judgment (197277), Judgment (198166)
 #3 (id=279707)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 1543
 #4 (id=290284)   : Apply Aura (6) | Unknown effect sub type (457)
@@ -662,11 +667,11 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=21607)    : School Damage: holy (2)
-                   Base Value: 0 | Scaled Value: 1 - 3 | Value Range: 3 | AP Coefficient: 2.18400
+                   Base Value: 0 | Scaled Value: 1 - 3 | Value Range: 3 | AP Coefficient: 2.18400 | Chain Targets: 3
 #2 (id=135932)   : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.63500
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.63500 | Mechanic: Unknown(227) | Chain Targets: 65535
 #3 (id=135933)   : Apply Aura (6) | Silence (27)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.63500
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.63500 | Mechanic: Unknown(72) | Chain Targets: 65535
 #4 (id=290272)   : Trigger Spell: Avenger's Valor (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 197561
 Description      : Hurls your shield at an enemy target, dealing $s1 Holy damage, $?s56414[dazing, ][]interrupting and silencing the target for $d$?s54930[][, and then jumping to ${$x1-1} additional nearby enemies].
@@ -699,6 +704,7 @@ School           : Physical
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 3 seconds
+Mechanic         : Unknown(227)
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1041,7 +1047,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=46256)    : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.00000
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.00000 | Chain Targets: 1
 Description      : Instantly slam the target with your shield, causing $s1 Holy damage, and reducing damage you take by ${$clamp($132403m1,25,80)}% for $132403d.
 
 Name             : Light's Beacon (id=53651) [Spell Family (10), Passive, Hidden] 
@@ -1422,7 +1428,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68009)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000
-                   Affected Spells: Crusader Strike (35395), Divine Storm (53385), Templar's Verdict (85256), Blade of Justice (184575), Divine Hammer (198034), Divine Hammer (198137), Crusader Flurry (202254), Blade of Wrath (202270), Zeal (203317)
+                   Affected Spells: Crusader Strike (35395), Divine Storm (53385), Templar's Verdict (85256), Blade of Justice (184575), Templar's Verdict (186805), Divine Storm (186876), Blade of Light (193115), Divine Hammer (198034), Divine Hammer (198137), Crusader Flurry (202254), Blade of Wrath (202270), Zeal (203317)
 #2 (id=92088)    : Apply Aura (6) | Dummy (4)
                    Base Value: 225 | Scaled Value: 225
 Description      : Your Crusader Strike, Blade of Justice, Divine Storm, and Templar's Verdict deal ${$76672m1}.1% additional damage.
@@ -1448,6 +1454,7 @@ Name             : Reinforced Bio-Optic Killshades (id=81714)
 Class            : Warrior, Paladin, Death Knight
 School           : Physical
 Cast Time        : 5 seconds
+Mechanic         : Unknown(245)
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1462,6 +1469,7 @@ Name             : Specialized Bio-Optic Killshades (id=81715)
 Class            : Paladin
 School           : Physical
 Cast Time        : 5 seconds
+Mechanic         : Unknown(245)
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1813,7 +1821,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : Disable player procs (112)
 Effects          :
 #1 (id=102188)   : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(227)
 Description      : Interrupts spellcasting and prevents any spell in that school from being cast for $d.
 
 Name             : Blinding Light (id=105421) [Spell Family (10)] 
@@ -1823,6 +1831,7 @@ Spell Level      : 87
 Duration         : 6 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
+Mechanic         : Unknown(10)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ ..x.x... ......x.   ...x...x ........ ..x..... ........ 
@@ -2279,6 +2288,7 @@ Name             : Specialized Retinal Armor (id=127122)
 Class            : Paladin
 School           : Physical
 Cast Time        : 1.5 seconds
+Mechanic         : Unknown(245)
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2293,6 +2303,7 @@ Name             : Reinforced Retinal Armor (id=127123)
 Class            : Warrior, Paladin, Death Knight
 School           : Physical
 Cast Time        : 1.5 seconds
+Mechanic         : Unknown(245)
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2668,6 +2679,7 @@ Race             : Blood Elf
 School           : Arcane
 Duration         : 2 seconds
 Cooldown         : 90 seconds
+Mechanic         : Unknown(72)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2805,6 +2817,7 @@ Range            : 15 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 180 seconds
+Mechanic         : Unknown(95)
 Triggered by     : The Jailer's Libram (168802)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ x....... ........ ........ 
@@ -2921,6 +2934,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 30 seconds
 Proc Chance      : 101%
+Mechanic         : Unknown(88)
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2944,6 +2958,7 @@ Duration         : 10 seconds
 Cooldown         : 60 seconds
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
+Mechanic         : Unknown(88)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
@@ -3251,6 +3266,7 @@ Duration         : 15 seconds
 Cooldown         : 120 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
+Mechanic         : Unknown(162)
 Attributes       : ........ ...x.... x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -3282,6 +3298,46 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 209785
 Description      : Your Crusader Strike and Blade of Justice have a $h% chance to cause your next Holy Power spender to cost $209785s1 less Holy Power.
 
+Name             : Templar's Verdict (id=186805) [Spell Family (10)] 
+Class            : Paladin
+School           : Holy
+Spell Level      : 10
+Range            : 100 yards
+Affecting spells : Sanctity of Battle (25956), Mastery: Hand of Light (76672), Item - Paladin T13 Retribution 4P Bonus (Zealotry) (105820), Item - Paladin T14 Retribution 2P Bonus (123108), Might of the Templar (185368), Judgment (197277), Final Verdict (198038), PH - Templar's Verdict and Divine Storm Increase Damage of Next One (207635), Conviction (209785), 
+Attributes       : ........ ........ x.x..... ........   ....x... ........ ........ ...x.... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ....x... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=272152)   : Weapon Damage% (31)
+                   Base Value: 30 | Scaled Value: 0.3
+#2 (id=272153)   : Normalized Weapon Damage (121)
+                   Base Value: 1 | Scaled Value: 1
+Description      : A powerful weapon strike that deals $sw1 Holy damage.
+
+Name             : Divine Storm (id=186876) [Spell Family (10)] 
+Class            : Paladin
+School           : Holy
+Spell Level      : 34
+GCD              : 1.5 seconds
+Affecting spells : Sanctity of Battle (25956), Mastery: Hand of Light (76672), Exorcism (138162), Divine Crusader (144595), Righteous Blade (184843), Divine Tempest (186773), Judgment (197277), PH - Templar's Verdict and Divine Storm Increase Damage of Next One (207635), Conviction (209785), 
+Attributes       : ........ ........ x.x..... ........   ....x... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .......x ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=272275)   : Weapon Damage% (31)
+                   Base Value: 27 | Scaled Value: 0.27 | Radius: 0 - 8 yards
+#2 (id=272276)   : Normalized Weapon Damage (121)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards
+#3 (id=283234)   : Direct Heal (10)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.50000 | Radius: 0 - 8 yards
+Description      : Deals $sw1 Holy damage to all enemies within $A1 yards. $?s63220[Using Divine Storm will also heal you for $115515s1% of your maximum health.][]
+
 Name             : Redoubt (id=190774) [Spell Family (10), Passive] 
 Class            : Protection Paladin
 School           : Physical
@@ -3308,6 +3364,7 @@ Spell Level      : 87
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 60 seconds
+Mechanic         : Unknown(180)
 Affecting spells : Knight Templar (204139), 
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .....x.. 
@@ -3326,6 +3383,25 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f
 Description      : Summons your Holy Charger to ride for $d, increasing movement speed by $s3%.  Useable while indoors or in combat.
 Tooltip          : Increases ground speed by $s3%.
+
+Name             : Blade of Light (id=193115) [Spell Family (10)] 
+Class            : Paladin
+School           : Holy
+Spell Level      : 1
+Range            : 100 yards
+Affecting spells : Sanctity of Battle (25956), Mastery: Hand of Light (76672), Deliver the Justice (186927), Judgment (197277), Virtue's Blade (202271)
+Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=283314)   : Normalized Weapon Damage (121)
+                   Base Value: 0 | Scaled Value: 0
+#2 (id=283315)   : Weapon Damage% (31)
+                   Base Value: 35 | Scaled Value: 0.35
+Description      : Strikes an enemy with a Blade of Light, dealing $sw2 Holy damage.
 
 Name             : Daybreak (Passive Talent) (id=196903) [Spell Family (10), Passive] 
 Class            : Paladin
@@ -3450,7 +3526,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=289735)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 30 | Scaled Value: 30
-                   Affected Spells: Holy Shock (20473), Holy Shock (25912), Crusader Strike (35395), Divine Storm (53385), Templar's Verdict (85256), Blade of Justice (184575)
+                   Affected Spells: Holy Shock (20473), Holy Shock (25912), Crusader Strike (35395), Divine Storm (53385), Templar's Verdict (85256), Blade of Justice (184575), Templar's Verdict (186805), Divine Storm (186876), Blade of Light (193115)
 Description      : $@spelldesc20271
 Tooltip          : Taking $s1% increased damage from the Paladin's $?s137027[Holy Power abilities][Crusader Strike and Holy Shock].
 
@@ -3598,7 +3674,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=291061)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 15 | Scaled Value: 15
-                   Affected Spells: Templar's Verdict (85256)
+                   Affected Spells: Templar's Verdict (85256), Templar's Verdict (186805)
 Description      : Increases damage done by Templar's Verdict by $s1%.
 
 Name             : Beacon of Hope (id=198042) [Spell Family (10)] 
@@ -3875,7 +3951,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=298134)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 25 | Scaled Value: 25
-                   Affected Spells: Blade of Justice (184575)
+                   Affected Spells: Blade of Justice (184575), Blade of Light (193115)
 Description      : Increases damage done by Blade of Justice by $s1%.
 
 Name             : Seal of Light (id=202273) [Spell Family (10)] 
@@ -3939,7 +4015,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=299837)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 6
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 6 | Chain Targets: 1
 #2 (id=299838)   : Weapon Damage% (31)
                    Base Value: 90 | Scaled Value: 0.9
 #3 (id=299839)   : Energize Power (30)
@@ -4215,6 +4291,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 180 seconds
+Mechanic         : Unknown(214)
 Affecting spells : PH - Reduce Cooldown/Increase Duration of Blessings (206338), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -4392,6 +4469,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 300 seconds
+Mechanic         : Unknown(214)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
@@ -4554,6 +4632,7 @@ Spell Level      : 87
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 60 seconds
+Mechanic         : Unknown(180)
 Affecting spells : Knight Templar (204139), 
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .....x.. 
@@ -4591,10 +4670,10 @@ Attributes       : ........ ........ ..x..... .....x..   ........ ........ .....
 Effects          :
 #1 (id=310496)   : Apply Aura (6) | Add Flat Modifier: Spell Resource Cost (107)
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 14
-                   Affected Spells: Divine Storm (53385), Templar's Verdict (85256), Seal of Light (202273), Holy Wrath (203545), Eye for an Eye (205191)
+                   Affected Spells: Divine Storm (53385), Templar's Verdict (85256), Templar's Verdict (186805), Divine Storm (186876), Seal of Light (202273), Holy Wrath (203545), Eye for an Eye (205191)
 #2 (id=314994)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 14
-                   Affected Spells: Divine Storm (53385), Templar's Verdict (85256), Seal of Light (202273), Holy Wrath (203545), Eye for an Eye (205191)
+                   Affected Spells: Divine Storm (53385), Templar's Verdict (85256), Templar's Verdict (186805), Divine Storm (186876), Seal of Light (202273), Holy Wrath (203545), Eye for an Eye (205191)
 Description      : $@spelldesc185817
 Tooltip          : Your next Holy Power spender costs $s2 less Holy Power.
 

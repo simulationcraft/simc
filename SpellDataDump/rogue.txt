@@ -36,6 +36,7 @@ GCD              : 1 seconds
 Duration         : 1 seconds
 Cooldown         : 20 seconds
 Proc Chance      : 101%
+Mechanic         : Unknown(95)
 Affecting spells : Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Vendetta (79140), Prey on the Weak (131511), Deepening Shadows (185314), Deeper Strategem (193531), Alacrity (193539), Acrobatic Strikes (196924), Paralytic Poison (200800)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -82,6 +83,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 18 seconds
 Cooldown         : 15 seconds
+Mechanic         : Bleed
 Affecting spells : Stealth (1784), Hemorrhage (16511), Vendetta (79140), Shadow Blades (121471), Cloak and Dagger (138106), Silent Blades (145193), From the Shadows (184918), Shadow Dance (185422), Numbing Poison (200803)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -91,7 +93,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=280)      : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.75000
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.75000 | Mechanic: Bleed
 #2 (id=281)      : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 #3 (id=282)      : Energize Power (30)
@@ -151,6 +153,7 @@ School           : Physical
 Spell Level      : 60
 Range            : 50000 yards
 Duration         : 3 seconds
+Mechanic         : Unknown(72)
 Affecting spells : Thuggee (196861)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -160,7 +163,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=450)      : Apply Aura (6) | Silence (27)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Mechanic: Unknown(72)
 Description      : Silences an enemy for $d.
 Tooltip          : Silenced.
 
@@ -172,6 +175,7 @@ Spell Level      : 28
 Range            : 30 yards
 GCD              : 1 seconds
 Cooldown         : 30 seconds
+Mechanic         : Unknown(31)
 Attributes       : ....x... ........ ..x..... ......x.   .....x.. x.x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -200,7 +204,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=537)      : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(227)
 Description      : A quick kick that interrupts spellcasting and prevents any spell in that school from being cast for $d.$?s56805[ If you successfully interrupt a spell, Kick's cooldown is reduced by ${$56805m2/1000} sec.][]
 
 Name             : Gouge (id=1776) [Spell Family (8)] 
@@ -214,6 +218,7 @@ Duration         : 4 seconds
 Cooldown         : 10 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
+Mechanic         : Unknown(110)
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
 Affecting spells : Vendetta (79140), Dirty Tricks (108216), Prey on the Weak (131511), Acrobatic Strikes (196924), Ghostly Strike (196937), 
@@ -297,6 +302,7 @@ GCD              : 1 seconds
 Duration         : 4 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x20000000
+Mechanic         : Unknown(95)
 Affecting spells : Vendetta (79140), Shadow Blades (121471), Prey on the Weak (131511), Cloak and Dagger (138106), Silent Blades (145193), Premeditation (196979), Paralytic Poison (200800)
 Attributes       : ....x... ........ x.x..x.. ........   ........ ........ ..x..... ..xx.... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -363,6 +369,7 @@ Spell Level      : 22
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 4 seconds
+Mechanic         : Bleed
 Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Hemorrhage (16511), Rogue Tier 6 Trinket (40460), Mastery: Executioner (76808), Vendetta (79140), Deepening Shadows (185314), Adrenaline Rush (186286), Gushing Wound (192329), Deeper Strategem (193531), Alacrity (193539), Numbing Poison (200803)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -372,9 +379,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=586)      : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.06850
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.06850 | Mechanic: Bleed
 #2 (id=239409)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
-                   Base Value: 1 | Scaled Value: 1
+                   Base Value: 1 | Scaled Value: 1 | Mechanic: Bleed
 #3 (id=293833)   : Trigger Spell: Rupture (64)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 160 | Trigger Spell: 199672
 #4 (id=293834)   : Trigger Spell: Rupture (64)
@@ -431,6 +438,7 @@ Duration         : 60 seconds
 Cooldown         : 120 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
+Mechanic         : Unknown(10)
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
 Affecting spells : Dirty Tricks (108216), Prey on the Weak (131511)
@@ -591,6 +599,7 @@ Spell Level      : 19
 Range            : 100 yards
 Duration         : 12 seconds
 Proc Chance      : 100%
+Mechanic         : Unknown(88)
 Proc Flags       : ........ .......x ........ ........ 
                  : Heal Taken
 Affecting spells : Blade Flurry (13877), Mastery: Potent Poisons (76803), Vendetta (79140), Master Poisoner (196864)
@@ -711,6 +720,7 @@ GCD              : 1 seconds
 Duration         : 60 seconds
 Proc Chance      : 100%
 Stance Mask      : 0x20000000
+Mechanic         : Unknown(255)
 Affecting spells : Vendetta (79140), Prey on the Weak (131511)
 Attributes       : ....x... ........ x.x.xx.. ........   .....x.. x.x..... ..x..... .x.x.... 
                  : ........ ........ ........ ........   x....... ........ xx...... ........ 
@@ -1086,7 +1096,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=12763)    : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 100
 Description      : $@spelldesc13877
 
 Name             : Arcane Torrent (Racial) (id=25046) 
@@ -1095,6 +1105,7 @@ Race             : Blood Elf
 School           : Arcane
 Duration         : 2 seconds
 Cooldown         : 90 seconds
+Mechanic         : Unknown(72)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1268,6 +1279,7 @@ School           : Physical
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 3 seconds
+Mechanic         : Unknown(227)
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1283,6 +1295,7 @@ Tooltip          : Interrupted.
 Name             : Combat Potency (id=35546) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Mechanic         : Unknown(88)
 Affecting spells : Fortune Strikes (202530)
 Triggered by     : Combat Potency (35551)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
@@ -1846,6 +1859,7 @@ Name             : Agile Bio-Optic Killshades (id=81722)
 Class            : Rogue, Monk, Druid
 School           : Physical
 Cast Time        : 5 seconds
+Mechanic         : Unknown(245)
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2136,6 +2150,7 @@ Spell Level      : 20
 Range            : 100 yards
 Duration         : 12 seconds
 Proc Chance      : 100%
+Mechanic         : Unknown(88)
 Proc Flags       : ........ .......x ........ ........ 
                  : Heal Taken
 Affecting spells : Blade Flurry (13877), Mastery: Potent Poisons (76803), Vendetta (79140), Master Poisoner (196864)
@@ -2237,6 +2252,7 @@ Name             : Agile Retinal Armor (id=127118)
 Class            : Rogue, Monk, Druid
 School           : Physical
 Cast Time        : 5 seconds
+Mechanic         : Unknown(245)
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2683,6 +2699,7 @@ School           : Physical
 Spell Level      : 75
 Range            : 100 yards
 Duration         : 12 seconds
+Mechanic         : Bleed
 Affecting spells : Hemorrhage (16511), Vendetta (79140)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
@@ -2692,7 +2709,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=215087)   : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20700
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20700 | Mechanic: Bleed
 Description      : $@spelldesc154904
 Tooltip          : Suffering $w1 damage every $t1 sec.
 
@@ -3073,7 +3090,7 @@ Effects          :
 #2 (id=269973)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.20000 | Misc Value: combo_points
 #3 (id=269974)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88)
 Description      : Draw a concealed pistol and fire a quick shot at an enemy, dealing $s1 damage and reducing movement speed by $s3% for $d. Awards $s2 combo $lpoint:points;.
 
 Name             : Cannonball Barrage (id=185767) [Spell Family (8)] 
@@ -3106,6 +3123,7 @@ School           : Physical
 Spell Level      : 10
 Range            : 50000 yards
 Duration         : 1.5 seconds
+Mechanic         : Unknown(88)
 Attributes       : ........ x....... ........ ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3410,9 +3428,9 @@ Effects          :
 #1 (id=286896)   : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.87500
 #2 (id=286897)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
-                   Base Value: 1 | Scaled Value: 1
+                   Base Value: 1 | Scaled Value: 1 | Mechanic: Bleed
 #3 (id=286898)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88)
 Description      : Finishing move that infects the target with shadowy energy, dealing Shadow damage over time and causing attacks against the target to reduce movement speed by $206760s1% for $206760d. Lasts longer per combo point.
    1 point  : ${$<bonus>*$m1*8/2} over 8 sec
    2 points: ${$<bonus>*$m1*10/2} over 10 sec
@@ -3780,6 +3798,7 @@ GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 180 seconds
 Proc Chance      : 101%
+Mechanic         : Unknown(2)
 Affecting spells : Grimoire of Convert Demon (168800)
 Attributes       : ........ ........ x....... ......x.   x....... ........ .x...... ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -3802,6 +3821,7 @@ GCD              : 1 seconds
 Duration         : 300 seconds
 Cooldown         : 20 seconds
 Proc Chance      : 100%
+Mechanic         : Unknown(2)
 Attributes       : ....x... ........ x.x.xx.. ........   ........ x.x..... ..x..... .x.x.... 
                  : ........ ........ ........ ........   x....... ........ xx...... ........ 
                  : ........ ........ .......x ........   .....x.. .x...... ........ ........ 
@@ -3881,6 +3901,7 @@ Range            : 20 yards
 GCD              : 1 seconds
 Velocity         : 50 yards/sec
 Cooldown         : 20 seconds
+Mechanic         : Unknown(95)
 Affecting spells : Deeper Strategem (193531), Alacrity (193539), Tangled Shadow (200778), Fatebringer (202524)
 Attributes       : ....x... ........ x.....x. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3892,7 +3913,7 @@ Effects          :
 #1 (id=294039)   : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.25000
 #2 (id=294040)   : Apply Aura (6) | Stun (12)
-                   Base Value: 70 | Scaled Value: 70
+                   Base Value: 70 | Scaled Value: 70 | Mechanic: Unknown(95)
 Description      : Finishing move that deals damage with your pistol and stuns the target:
    1 point  : ${$AP*0.35*1*$<mult>} damage, 1 sec
    2 points: ${$AP*0.35*2*$<mult>} damage, 2 sec
@@ -4120,7 +4141,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .x...
                  : Disable target procs (113)
 Effects          :
 #1 (id=305751)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88)
 Description      : $@spelldesc195452
 Tooltip          : Movement speed slowed by $s1%.
 
