@@ -244,11 +244,11 @@ struct artifact_power_t
   const artifact_power_rank_t* rank_data_;
   const artifact_power_data_t* power_;
 
-  double value() const
+  double value( size_t idx = 1 ) const
   {
     if ( rank() == 1 )
     {
-      return spell_ -> effectN( 1 ).base_value();
+      return spell_ -> effectN( idx ).base_value();
     }
     else
     {
@@ -268,8 +268,8 @@ struct artifact_power_t
     }
   }
 
-  double percent() const
-  { return value() * .01; }
+  double percent( size_t idx = 1 ) const
+  { return value( idx ) * .01; }
 
   const spell_data_t& data() const
   { return *spell_; }
@@ -877,7 +877,7 @@ public:
   /**
    * Get current number of stacks + benefit tracking.
    * Use check() inside of ready() and cost() methods to prevent skewing of "benefit" calculations.
-   * This will only modify the benefit counters once per sim time unit. 
+   * This will only modify the benefit counters once per sim time unit.
    * Use up()/down where the presence of the buff affects the action mechanics.
    */
   int stack();
@@ -1773,10 +1773,10 @@ struct sim_t : private sc_thread_t
     void flush()          { AUTO_LOCK(m); total_work = projected_work = work; }
     void project( int w ) { AUTO_LOCK(m); projected_work = w; assert(w>=work); }
     int  size()           { AUTO_LOCK(m); return total_work; }
-    bool pop()         
-    { 
-      AUTO_LOCK(m); 
-      if( work >= total_work ) return false; 
+    bool pop()
+    {
+      AUTO_LOCK(m);
+      if( work >= total_work ) return false;
       if( ++work == total_work ) projected_work = work;
       return work < total_work;
     }
@@ -4349,7 +4349,7 @@ private:
   {
     if ( ( yards >= current.distance_to_move ) && current.moving_away <= 0 )
     {
-      //x_position += current.distance_to_move; Maybe in wonderland we can track this type of player movement. 
+      //x_position += current.distance_to_move; Maybe in wonderland we can track this type of player movement.
       current.distance_to_move = 0;
       current.movement_direction = MOVEMENT_NONE;
       buffs.raid_movement -> expire();
