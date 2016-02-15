@@ -247,7 +247,7 @@ public:
     artifact_power_t unbreakable_will;              // NYI
     artifact_power_t wrath_of_the_ashbringer;
     artifact_power_t embrace_the_light;             // NYI
-    artifact_power_t divine_tempest;                // NYI
+    artifact_power_t divine_tempest;                // Implemented 20% damage gain but not AoE shift
     artifact_power_t healing_storm;                 // NYI
     artifact_power_t protector_of_the_ashen_blade;  // NYI
     artifact_power_t blades_of_light;
@@ -2333,6 +2333,7 @@ struct echoed_divine_storm_t: public paladin_melee_attack_t
     weapon = &( p -> main_hand_weapon );
 
     base_multiplier *= 1.0 + p -> artifact.righteous_blade.percent();
+    base_multiplier *= 1.0 + p -> artifact.divine_tempest.percent( 2 );
 
     aoe = -1;
     background = true;
@@ -2363,6 +2364,7 @@ struct divine_storm_t: public holy_power_consumer_t
     weapon = &( p -> main_hand_weapon );
 
     base_multiplier *= 1.0 + p -> artifact.righteous_blade.percent();
+    base_multiplier *= 1.0 + p -> artifact.divine_tempest.percent( 2 );
 
     aoe = -1;
   }
@@ -3703,7 +3705,8 @@ void paladin_t::init_spells()
   artifact.wake_of_ashes           = find_artifact_spell( "Wake of Ashes" );
   artifact.deliver_the_justice     = find_artifact_spell( "Deliver the Justice" );
   artifact.highlords_judgment      = find_artifact_spell( "Highlord's Judgment" );
-  artifact.righteous_blade         = find_artifact_spell( "Righteous Blade");
+  artifact.righteous_blade         = find_artifact_spell( "Righteous Blade" );
+  artifact.divine_tempest          = find_artifact_spell( "Divine Tempest" );
   artifact.might_of_the_templar    = find_artifact_spell( "Might of the Templar" );
   artifact.sharpened_edge          = find_artifact_spell( "Sharpened Edge" );
   artifact.echo_of_the_highlord    = find_artifact_spell( "Echo of the Highlord" );
