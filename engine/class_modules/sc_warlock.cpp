@@ -1156,7 +1156,6 @@ struct wild_imp_pet_t: public warlock_pet_t
 {
   stats_t** firebolt_stats;
   stats_t* regular_stats;
-  stats_t* swarm_stats;
 
   wild_imp_pet_t( sim_t* sim, warlock_t* owner ):
     warlock_pet_t( sim, owner, "wild_imp", PET_WILD_IMP, true ), firebolt_stats( nullptr )
@@ -1184,13 +1183,10 @@ struct wild_imp_pet_t: public warlock_pet_t
       if ( this == o() -> pets.wild_imps[ 0 ] || sim -> report_pets_separately )
       {
         regular_stats = a -> stats;
-        swarm_stats = get_stats( "fel_firebolt_swarm", a );
-        swarm_stats -> school = a -> school;
       }
       else
       {
         regular_stats = o() -> pets.wild_imps[ 0 ] -> get_stats( "fel_firebolt" );
-        swarm_stats = o() -> pets.wild_imps[ 0 ] -> get_stats( "fel_firebolt_swarm" );
       }
       return a;
     }
@@ -1198,14 +1194,10 @@ struct wild_imp_pet_t: public warlock_pet_t
     return warlock_pet_t::create_action( name, options_str );
   }
 
-  void trigger( bool swarm = false )
+  void trigger()
   {
-    if ( swarm )
-      *firebolt_stats = swarm_stats;
-    else
-      *firebolt_stats = regular_stats;
-
-    summon();
+    *firebolt_stats = regular_stats;
+      summon();
   }
 };
 
@@ -2527,7 +2519,7 @@ struct call_dreadstalkers_t : public warlock_spell_t
 
     for ( size_t i = 0; i < p() -> pets.dreadstalkers.size(); i++ )
     {
-      if ( !p() -> pets.dreadstalkers[i] -> is_sleeping() )
+      if ( p() -> pets.dreadstalkers[i] -> is_sleeping() )
       {
         p() -> pets.dreadstalkers[i] -> summon( dreadstalker_duration );
         return;
