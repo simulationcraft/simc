@@ -426,6 +426,7 @@ public:
     gain_t* bear_form;
     gain_t* brambles;
     gain_t* bristling_fur;
+    gain_t* gore;
     gain_t* stalwart_guardian;
     gain_t* rage_refund;
     gain_t* guardian_tier17_2pc;
@@ -456,15 +457,23 @@ public:
   // Procs
   struct procs_t
   {
-    proc_t* ashamanes_bite;
+    // Feral & Resto
     proc_t* clearcasting;
     proc_t* clearcasting_wasted;
+
+    // Feral
+    proc_t* ashamanes_bite;
     proc_t* predator;
     proc_t* predator_wasted;
     proc_t* primal_fury;
-    proc_t* starshards;
     proc_t* tier15_2pc_melee;
     proc_t* tier17_2pc_melee;
+
+    // Balance
+    proc_t* starshards;
+
+    // Guardian
+    proc_t* gore;
   } proc;
 
   // Class Specializations
@@ -493,6 +502,7 @@ public:
 
     // Guardian
     const spell_data_t* bladed_armor;
+    const spell_data_t* gore;
     const spell_data_t* guardian_passive; // Guardian Overrides Passive
     const spell_data_t* ironfur;
     const spell_data_t* resolve;
@@ -1420,6 +1430,21 @@ public:
       p() -> spell.gushing_wound -> effectN( 1 ).percent() * dmg );
   }
 
+  bool trigger_gore()
+  {
+    if ( rng().roll( p() -> spec.gore -> proc_chance() ) )
+    {
+      p() -> proc.gore -> occur();
+      p() -> cooldown.mangle -> reset( true );
+      // TOCHECK: Tooltip says 40 but spell data says 25? Maybe I'm missing something.
+      p() -> resource_gain( RESOURCE_RAGE,
+        p() -> spec.gore -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.gore );
+
+      return true;
+    }
+    return false;
+  }
+
   virtual expr_t* create_expression( const std::string& name_str )
   {
     if ( util::str_compare_ci( name_str, "active_dot.starfall" ) )
@@ -1918,6 +1943,16 @@ struct moonfire_t : public druid_spell_t
 
       if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) )
         trigger_balance_tier18_2pc();
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    druid_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) ) // TOCHECK: Can Galactic Guardian proc this?
+    {
+      trigger_gore();
     }
   }
 };
@@ -3417,11 +3452,13 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
 {
 public:
   double rage_amount, rage_tick_amount;
+  bool gore;
 
   bear_attack_t( const std::string& n, druid_t* p,
                  const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, p, s ), rage_amount( 0.0 ),
-    rage_tick_amount( 0.0 ),  rage_gain( p -> get_gain( name() ) )
+    rage_tick_amount( 0.0 ),  rage_gain( p -> get_gain( name() ) ),
+    gore( false )
   {}
 
   virtual timespan_t gcd() const override
@@ -3458,6 +3495,11 @@ public:
     if ( attack_hit )
     {
       p() -> resource_gain( RESOURCE_RAGE, rage_amount, rage_gain );
+
+      if ( gore ) // TOCHECK: Does it need to hit?
+      {
+        trigger_gore();
+      }
     }
   }
 
@@ -3659,6 +3701,7 @@ struct lacerate_t : public bear_attack_t
     parse_options( options_str );
 
     add_child( dot );
+    gore = true;
   }
 
   virtual void impact( action_state_t* state ) override
@@ -3686,6 +3729,7 @@ struct mangle_t : public bear_attack_t
 
     bleeding_multiplier = data().effectN( 3 ).percent();
     rage_amount = data().effectN( 4 ).resource( RESOURCE_RAGE );
+    gore = true;
 
     if ( p() -> specialization() == DRUID_GUARDIAN )
     {
@@ -3802,6 +3846,7 @@ struct thrash_bear_t : public bear_attack_t
     base_dd_multiplier *= 1.0 + player -> spec.guardian_passive -> effectN( 6 ).percent();
     
     rage_amount = data().effectN( 2 ).resource( RESOURCE_RAGE );
+    gore = true;
   }
 
   virtual void impact( action_state_t* s ) override
@@ -5926,6 +5971,7 @@ void druid_t::init_spells()
 
   // Guardian
   spec.bladed_armor            = find_specialization_spell( "Bladed Armor" );
+  spec.gore                    = find_specialization_spell( "Gore" );
   spec.guardian_passive        = find_specialization_spell( "Guardian Overrides Passive" );
   spec.ironfur                 = find_specialization_spell( "Ironfur" );
   spec.resolve                 = find_specialization_spell( "Resolve" );
@@ -6831,6 +6877,7 @@ void druid_t::init_gains()
   gain.bear_form             = get_gain( "bear_form"             );
   gain.brambles              = get_gain( "brambles"              );
   gain.bristling_fur         = get_gain( "bristling_fur"         );
+  gain.gore                  = get_gain( "gore"                  );
   gain.rage_refund           = get_gain( "rage_refund"           );
   gain.stalwart_guardian     = get_gain( "stalwart_guardian"     );
 
@@ -6853,6 +6900,7 @@ void druid_t::init_procs()
   proc.ashamanes_bite           = get_proc( "ashamanes_bite"         );
   proc.clearcasting             = get_proc( "clearcasting"           );
   proc.clearcasting_wasted      = get_proc( "clearcasting_wasted"    );
+  proc.gore                     = get_proc( "gore"                   );
   proc.predator                 = get_proc( "predator"               );
   proc.predator_wasted          = get_proc( "predator_wasted"        );
   proc.primal_fury              = get_proc( "primal_fury"            );
@@ -6879,9 +6927,11 @@ void druid_t::init_rng()
   // RPPM objects
   rppm.balance_tier18_2pc = new real_ppm_t( *this, sets.set( DRUID_BALANCE, T18, B2 ) -> real_ppm() );
   rppm.predator           = new real_ppm_t( *this, predator_rppm_rate ); // Predator: optional RPPM approximation.
-  rppm.shredded_wounds    = new real_ppm_t( *this, fangs_of_ashamane -> driver() -> real_ppm(), 1.0, RPPM_HASTE );
   rppm.ashamanes_bite     = new real_ppm_t( *this, artifact.ashamanes_bite.data().real_ppm(), 1.0, RPPM_HASTE );
   rppm.shadow_thrash      = new real_ppm_t( *this, artifact.shadow_thrash.data().real_ppm(), 1.0, RPPM_HASTE );
+
+  if ( fangs_of_ashamane )
+    rppm.shredded_wounds    = new real_ppm_t( *this, fangs_of_ashamane -> driver() -> real_ppm(), 1.0, RPPM_HASTE );
 
   player_t::init_rng();
 }
