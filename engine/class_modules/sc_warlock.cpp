@@ -9,6 +9,7 @@
 //
 // TODO:
 // Check all false-positive flags
+// Check resource generation execute/impact and hit requirement
 //
 // Affliction -
 // Haunt reset
@@ -35,6 +36,7 @@ namespace pets {
   struct t18_illidari_satyr_t;
   struct t18_prince_malchezaar_t;
   struct t18_vicious_hellhound_t;
+  struct dreadstalker_pet_t;
 }
 
 struct warlock_td_t: public actor_target_data_t
@@ -85,11 +87,13 @@ public:
     pet_t* last;
     static const int WILD_IMP_LIMIT = 25;
     static const int T18_PET_LIMIT = 6 ;
+    static const int DREADSTALKER_LIMIT = 3;
     std::array<pets::wild_imp_pet_t*, WILD_IMP_LIMIT> wild_imps;
     pet_t* inner_demon;
     std::array<pets::t18_illidari_satyr_t*, T18_PET_LIMIT> t18_illidari_satyr;
     std::array<pets::t18_prince_malchezaar_t*, T18_PET_LIMIT> t18_prince_malchezaar;
     std::array<pets::t18_vicious_hellhound_t*, T18_PET_LIMIT> t18_vicious_hellhound;
+    std::array<pets::dreadstalker_pet_t*, DREADSTALKER_LIMIT> dreadstalkers;
   } pets;
 
   std::vector<std::string> pet_name_list;
@@ -221,6 +225,7 @@ public:
     gain_t* drain_soul;
     gain_t* soul_harvest;
     gain_t* mana_tap;
+    gain_t* shadow_bolt;
   } gains;
 
   // Procs
@@ -1204,6 +1209,30 @@ struct wild_imp_pet_t: public warlock_pet_t
   }
 };
 
+struct dreadstalker_pet_t : public warlock_pet_t
+{
+  dreadstalker_pet_t( sim_t* sim, warlock_t* owner ) :
+    warlock_pet_t( sim, owner, "dreadstalker", PET_DOG, true )
+  {
+    //action_list_str = "dreadbite";
+  }
+
+  void init_base_stats() override
+  {
+    warlock_pet_t::init_base_stats();
+    base_energy_regen_per_second = 0;
+    melee_attack = new actions::warlock_pet_melee_t( this );
+    if ( o() -> pets.dreadstalkers[0] )
+      melee_attack -> stats = o() -> pets.dreadstalkers[0] -> get_stats( "melee" );
+  }
+
+  //virtual action_t* create_action(const std::string& name, const std::string& options_str) override
+  //{
+  //  if (name == "doom_bolt") return new actions::doom_bolt_t(this);
+
+  //  return warlock_pet_t::create_action(name, options_str);
+  //}
+};
 
 } // end namespace pets
 
@@ -1764,22 +1793,11 @@ struct doom_t: public warlock_spell_t
     may_crit = false;
   }
 
-  double action_multiplier() const override
-  {
-    double am = spell_t::action_multiplier();
-
-    double mastery = p() -> cache.mastery();
-    am *= 1.0 + mastery * p() -> mastery_spells.master_demonologist -> effectN( 3 ).mastery_value();
-
-    return am;
-  }
-
   virtual void tick( dot_t* d ) override
   {
     warlock_spell_t::tick( d );
 
-    if ( d -> state -> result == RESULT_CRIT ) trigger_wild_imp( p() );
-
+    if ( d -> state -> result == RESULT_HIT ) trigger_wild_imp( p() );
   }
 };
 
@@ -1848,13 +1866,18 @@ struct hand_of_guldan_t: public warlock_spell_t
 
 struct shadow_bolt_t: public warlock_spell_t
 {
-  hand_of_guldan_t* hand_of_guldan;
   shadow_bolt_t( warlock_t* p ):
-    warlock_spell_t( p, "Shadow Bolt" ), hand_of_guldan( new hand_of_guldan_t( p ) )
+    warlock_spell_t( p, "Shadow Bolt" )
   {
     base_multiplier *= 1.0 + p -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 3 ).percent();
-    hand_of_guldan               -> background = true;
-    hand_of_guldan               -> base_costs[RESOURCE_MANA] = 0;
+  }
+
+  void execute() override
+  {
+    warlock_spell_t::execute();
+
+    if ( result_is_hit( execute_state -> result) )
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.shadow_bolt );
   }
 };
 
@@ -2485,6 +2508,34 @@ struct summon_doomguard_t: public warlock_spell_t
   }
 };
 
+struct call_dreadstalkers_t : public warlock_spell_t
+{
+  timespan_t dreadstalker_duration;
+
+  call_dreadstalkers_t( warlock_t* p ) :
+    warlock_spell_t( "Call_Dreadstalkers", p, p -> find_spell( 104316 ) )
+    {
+      harmful = false;
+      ignore_false_positive = true;
+      may_crit = false;
+      dreadstalker_duration = timespan_t::from_seconds( 12 );
+    }
+
+  virtual void execute() override
+  {
+    warlock_spell_t::execute();
+
+    for ( size_t i = 0; i < p() -> pets.dreadstalkers.size(); i++ )
+    {
+      if ( !p() -> pets.dreadstalkers[i] -> is_sleeping() )
+      {
+        p() -> pets.dreadstalkers[i] -> summon( dreadstalker_duration );
+        return;
+      }
+    }
+  }
+};
+
 // TALENT SPELLS
 
 struct shadowflame_t: public warlock_spell_t
@@ -3060,6 +3111,7 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "fire_and_brimstone"    ) a = new    fire_and_brimstone_t( this );
   else if ( action_name == "summon_infernal"       ) a = new       summon_infernal_t( this );
   else if ( action_name == "summon_doomguard"      ) a = new      summon_doomguard_t( this );
+  else if ( action_name == "call_dreadstalkers"    ) a = new    call_dreadstalkers_t( this );
   else if ( action_name == "summon_felhunter"      ) a = new summon_main_pet_t( "felhunter", this );
   else if ( action_name == "summon_felguard"       ) a = new summon_main_pet_t( "felguard", this );
   else if ( action_name == "summon_succubus"       ) a = new summon_main_pet_t( "succubus", this );
@@ -3123,6 +3175,10 @@ void warlock_t::create_pets()
       pets.wild_imps[ i ] = new pets::wild_imp_pet_t( sim, this );
       if ( i > 0 )
         pets.wild_imps[ i ] -> quiet = 1;
+    }
+    for ( size_t i = 0; i < pets.dreadstalkers.size(); i++ )
+    {
+      pets.dreadstalkers[ i ] = new pets::dreadstalker_pet_t( sim, this );
     }
     if ( sets.has_set_bonus( WARLOCK_DEMONOLOGY, T18, B4 ) )
     {
@@ -3311,6 +3367,7 @@ void warlock_t::init_gains()
   gains.drain_soul          = get_gain( "drain_soul" );
   gains.soul_harvest        = get_gain( "soul_harvest" );
   gains.mana_tap            = get_gain( "mana_tap" );
+  gains.shadow_bolt         = get_gain( "shadow_bolt" );
 }
 
 // warlock_t::init_procs ===============================================
