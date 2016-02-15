@@ -6869,9 +6869,9 @@ void druid_t::init_rng()
   // RPPM objects
   rppm.balance_tier18_2pc = new real_ppm_t( *this, sets.set( DRUID_BALANCE, T18, B2 ) -> real_ppm() );
   rppm.predator           = new real_ppm_t( *this, predator_rppm_rate ); // Predator: optional RPPM approximation.
-  rppm.shredded_wounds    = new real_ppm_t( *this, fangs_of_ashamane -> driver() -> real_ppm(), RPPM_HASTE );
-  rppm.ashamanes_bite     = new real_ppm_t( *this, artifact.ashamanes_bite.data().real_ppm(), RPPM_HASTE );
-  rppm.shadow_thrash      = new real_ppm_t( *this, artifact.shadow_thrash.data().real_ppm(), RPPM_HASTE );
+  rppm.shredded_wounds    = new real_ppm_t( *this, fangs_of_ashamane -> driver() -> real_ppm(), 1.0, RPPM_HASTE );
+  rppm.ashamanes_bite     = new real_ppm_t( *this, artifact.ashamanes_bite.data().real_ppm(), 1.0, RPPM_HASTE );
+  rppm.shadow_thrash      = new real_ppm_t( *this, artifact.shadow_thrash.data().real_ppm(), 1.0, RPPM_HASTE );
 
   player_t::init_rng();
 }
