@@ -3052,6 +3052,11 @@ struct lava_burst_t : public shaman_spell_t
 
     p() -> lava_surge_during_lvb = false;
     p() -> cooldown.fire_elemental -> adjust( -timespan_t::from_seconds( p() -> artifact.elementalist.value() ) );
+
+    if ( p() -> artifact_enabled() && p() -> real_ppm.power_of_the_maelstrom.trigger() )
+    {
+      p() -> buff.power_of_the_maelstrom -> trigger( p() -> buff.power_of_the_maelstrom -> max_stack() );
+    }
   }
 
   timespan_t execute_time() const override
@@ -3182,10 +3187,6 @@ struct lightning_bolt_t : public shaman_spell_t
 
     p() -> buff.stormkeeper -> decrement();
     p() -> buff.power_of_the_maelstrom -> decrement();
-    if ( p() -> artifact_enabled() && p() -> real_ppm.power_of_the_maelstrom.trigger() )
-    {
-      p() -> buff.power_of_the_maelstrom -> trigger( p() -> buff.power_of_the_maelstrom -> max_stack() );
-    }
   }
 
   void impact( action_state_t* state ) override
