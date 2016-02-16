@@ -2806,7 +2806,7 @@ struct chain_lightning_t: public shaman_spell_t
 
     if ( p() -> buff.stormkeeper -> up() )
     {
-      m *= 1.0 + p() -> buff.stormkeeper -> data().effectN( 2 ).percent();
+      m *= 1.0 + p() -> buff.stormkeeper -> data().effectN( 1 ).percent();
     }
 
     return m;
@@ -2820,18 +2820,6 @@ struct chain_lightning_t: public shaman_spell_t
     }
 
     return shaman_spell_t::overload_chance( s );
-  }
-
-  double composite_crit() const override
-  {
-    double c = shaman_spell_t::composite_crit();
-
-    if ( p() -> buff.stormkeeper -> up() )
-    {
-      c += p() -> buff.stormkeeper -> data().effectN( 1 ).percent();
-    }
-
-    return c;
   }
 
   void execute() override
@@ -3161,22 +3149,10 @@ struct lightning_bolt_t : public shaman_spell_t
 
     if ( p() -> buff.stormkeeper -> up() )
     {
-      m *= 1.0 + p() -> buff.stormkeeper -> data().effectN( 2 ).percent();
+      m *= 1.0 + p() -> buff.stormkeeper -> data().effectN( 1 ).percent();
     }
 
     return m;
-  }
-
-  double composite_crit() const override
-  {
-    double c = shaman_spell_t::composite_crit();
-
-    if ( p() -> buff.stormkeeper -> up() )
-    {
-      c += p() -> buff.stormkeeper -> data().effectN( 1 ).percent();
-    }
-
-    return c;
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -3600,8 +3576,8 @@ struct flame_shock_t : public shaman_spell_t
 {
   double duration_multiplier;
 
-  flame_shock_t( shaman_t* player, const spell_data_t* s, const std::string& options_str = std::string()  ) :
-    shaman_spell_t( "flame_shock", player, s, options_str ),
+  flame_shock_t( shaman_t* player, const std::string& options_str = std::string()  ) :
+    shaman_spell_t( "flame_shock", player, player -> find_specialization_spell( "Flame Shock" ), options_str ),
     duration_multiplier( 1.0 )
   {
     tick_may_crit         = true;
@@ -3620,10 +3596,6 @@ struct flame_shock_t : public shaman_spell_t
       duration_multiplier = 1.0 + duration_value;
     }
   }
-
-  flame_shock_t( shaman_t* player, const std::string& options_str = std::string() ) :
-    flame_shock_t( player, player -> find_specialization_spell( "Flame Shock" ), options_str )
-  { }
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
   { return ( dot_duration + timespan_t::from_seconds( cost() ) ) * duration_multiplier; }
