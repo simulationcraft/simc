@@ -55,7 +55,7 @@ endif
 
 MKDIR      = mkdir
 CXX        = g++
-CPP_FLAGS  = -Wall -Wextra -Woverloaded-virtual -W -I. -DSC_SHARED_DATA=\"$(SHARED_DATA)\" --std=c++0x -O3
+CPP_FLAGS  = -Wall -Wextra -Woverloaded-virtual -W -I. -DSC_SHARED_DATA=\"$(SHARED_DATA)\" --std=c++0x -O3 -MMD -MP
 OPTS       = 
 
 LINK_LIBS  =
@@ -172,9 +172,13 @@ SRC_H   := $(filter %.h, $(SRC)) $(filter %.hh, $(SRC)) $(filter %.hpp, $(SRC)) 
 SRC_CPP := $(filter %.cpp, $(SRC))
 OBJ_DIR = .
 OBJ_EXT = o
-SRC_OBJ	:= $(SRC_CPP:%.cpp=$(OBJ_DIR)$(PATHSEP)%.$(OBJ_EXT))
+DEP_EXT = d
+SRC_OBJ := $(SRC_CPP:%.cpp=$(OBJ_DIR)$(PATHSEP)%.$(OBJ_EXT))
+SRC_DEPS := $(SRC_CPP:%.cpp=$(OBJ_DIR)$(PATHSEP)%.$(DEP_EXT))
 
 .PHONY:	all mostlyclean clean
+
+-include $(SRC_DEPS)
 
 all: $(MODULE)
 
@@ -213,7 +217,7 @@ $(OBJ_DIR)$(PATHSEP)%.$(OBJ_EXT): %.cpp $(SRC_H)
 # cleanup targets
 mostlyclean:
 	-@echo [$(MODULE)] Cleaning intermediate files
-	@$(REMOVE) $(SRC_OBJ)
+	@$(REMOVE) $(SRC_OBJ) $(SRC_DEPS)
 
 clean: mostlyclean
 	-@echo [$(MODULE)] Cleaning target files
