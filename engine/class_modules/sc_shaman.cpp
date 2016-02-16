@@ -31,6 +31,7 @@ struct shaman_td_t : public actor_target_data_t
   struct dots
   {
     dot_t* flame_shock;
+    dot_t* radens_fury;
   } dot;
 
   struct debuffs
@@ -38,6 +39,7 @@ struct shaman_td_t : public actor_target_data_t
     buff_t* t16_2pc_caster;
     buff_t* earthen_spike;
     buff_t* lightning_rod;
+    buff_t* radens_fury;
   } debuff;
 
   struct heals
@@ -114,6 +116,7 @@ public:
   action_t* volcanic_inferno;
   spell_t*  lightning_shield;
   spell_t*  molten_earth;
+  spell_t*  radens_fury;
 
   // Pets
   std::vector<pet_t*> pet_feral_spirit;
@@ -182,6 +185,7 @@ public:
     buff_t* earth_surge;
     buff_t* lightning_surge;
     buff_t* icefury;
+    buff_t* radens_fury;
 
     // Artifact related buffs
     buff_t* stormkeeper;
@@ -245,6 +249,7 @@ public:
     real_ppm_t volcanic_inferno;
     real_ppm_t power_of_the_maelstrom;
     real_ppm_t static_overload;
+    real_ppm_t radens_fury;
   } real_ppm;
 
   // Class Specializations
@@ -356,6 +361,7 @@ public:
     artifact_power_t master_of_the_elements;
     artifact_power_t molten_blast;
     artifact_power_t elementalist;
+    artifact_power_t radens_fury;
 
     // Enhancement
     artifact_power_t doom_winds;
@@ -463,6 +469,7 @@ public:
   void trigger_elemental_focus( const action_state_t* state );
   void trigger_lightning_shield( const action_state_t* state );
   void trigger_molten_earth( const action_state_t* state );
+  void trigger_radens_fury_damage( const action_state_t* state );
 
   // Character Definition
   virtual void      init_spells() override;
@@ -546,6 +553,7 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
   actor_target_data_t( target, p )
 {
   dot.flame_shock       = target -> get_dot( "flame_shock", p );
+  dot.radens_fury       = target -> get_dot( "radens_fury", p );
 
   debuff.t16_2pc_caster = buff_creator_t( *this, "tier16_2pc_caster", p -> sets.set( SET_CASTER, T16, B2 ) -> effectN( 1 ).trigger() )
                           .chance( static_cast< double >( p -> sets.has_set_bonus( SET_CASTER, T16, B2 ) ) );
@@ -555,6 +563,8 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
   debuff.lightning_rod = buff_creator_t( *this, "lightning_rod", p -> talent.lightning_rod )
                          .default_value( 1.0 + p -> talent.lightning_rod -> effectN( 1 ).percent() )
                          .cd( timespan_t::zero() ); // Cooldown handled by action
+  debuff.radens_fury = buff_creator_t( *this, "radens_fury_dot", p -> find_spell( 192625 ) )
+                       .period( timespan_t::zero() ); // Ticking handled by the dot
 }
 
 // ==========================================================================
@@ -1924,6 +1934,16 @@ struct elemental_overload_spell_t : public shaman_spell_t
     background = true;
     callbacks = false;
   }
+
+  void execute() override
+  {
+    shaman_spell_t::execute();
+
+    if ( p() -> real_ppm.radens_fury.trigger() )
+    {
+      p() -> buff.radens_fury -> trigger();
+    }
+  }
 };
 
 struct earthen_might_damage_t : public shaman_spell_t
@@ -2021,6 +2041,43 @@ struct molten_earth_driver_t : public spell_t
   // Maximum duration is extended by max of 6 seconds
   timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t ) const override
   { return data().duration(); }
+};
+
+struct radens_fury_damage_t : public shaman_spell_t
+{
+  radens_fury_damage_t( shaman_t* p ) :
+    shaman_spell_t( "radens_fury_damage", p, p -> find_spell( 210167 ) )
+  {
+    background = true;
+  }
+};
+
+struct radens_fury_t : public shaman_spell_t
+{
+  radens_fury_t( shaman_t* p ) :
+    shaman_spell_t( "radens_fury", p, p -> find_spell( 192625 ) )
+  {
+    may_miss = may_crit = callbacks = proc = false;
+    background = true;
+
+    tick_action = new radens_fury_damage_t( p );
+  }
+
+  void execute() override
+  {
+    shaman_spell_t::execute();
+
+    td( execute_state -> target ) -> debuff.radens_fury -> trigger();
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = shaman_spell_t::composite_target_multiplier( t );
+
+    m *= td( target ) -> debuff.radens_fury -> stack();
+
+    return m;
+  }
 };
 
 // shaman_heal_t::impact ====================================================
@@ -3523,6 +3580,7 @@ struct earth_shock_t : public shaman_spell_t
           p() -> gain.aftershock,
           nullptr );
     }
+    p() -> trigger_radens_fury_damage( execute_state );
   }
 
   bool ready() override
@@ -3593,6 +3651,7 @@ struct flame_shock_t : public shaman_spell_t
           p() -> gain.aftershock,
           nullptr );
     }
+    p() -> trigger_radens_fury_damage( execute_state );
   }
 
   void tick( dot_t* d ) override
@@ -3665,76 +3724,9 @@ struct frost_shock_t : public shaman_spell_t
     }
 
     p() -> buff.icefury -> decrement();
+    p() -> trigger_radens_fury_damage( execute_state );
   }
 
-};
-
-// Lava Shock Spell =========================================================
-
-struct lava_shock_t : public shaman_spell_t
-{
-  double base_coefficient;
-  flame_shock_t* flame_shock;
-
-  lava_shock_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "lava_shock", player, player -> find_spell( 206442 ), options_str ),
-    base_coefficient( data().effectN( 1 ).sp_coeff() / base_cost() ),
-    flame_shock( new flame_shock_t( player, player -> find_spell( 206444 ) ) )
-  {
-    base_multiplier *= 1.0 + player -> artifact.earthen_attunement.percent();
-
-    flame_shock -> dual = flame_shock -> background = true;
-    flame_shock -> callbacks = false;
-  }
-
-  double spell_direct_power_coefficient( const action_state_t* ) const override
-  { return base_coefficient * cost(); }
-
-  double action_multiplier() const override
-  {
-    double m = shaman_spell_t::action_multiplier();
-
-    if ( p() -> buff.earth_surge -> up() )
-    {
-      m *= p() -> buff.earth_surge -> check_value();
-    }
-
-    return m;
-  }
-
-  void execute() override
-  {
-    shaman_spell_t::execute();
-
-    if ( p() -> talent.aftershock -> ok() )
-    {
-      p() -> resource_gain( RESOURCE_MAELSTROM,
-          resource_consumed * p() -> talent.aftershock -> effectN( 1 ).percent(),
-          p() -> gain.aftershock,
-          nullptr );
-    }
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    shaman_spell_t::impact( state );
-
-    if ( result_is_hit( state -> result ) )
-    {
-      flame_shock -> target = state -> target;
-      flame_shock -> execute();
-    }
-  }
-
-  bool ready() override
-  {
-    if ( ! p() -> buff.ascendance -> check() )
-    {
-      return false;
-    }
-
-    return shaman_spell_t::ready();
-  }
 };
 
 // Wind Shear Spell =========================================================
@@ -4417,7 +4409,6 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "lava_beam"               ) return new                lava_beam_t( this, options_str );
   if ( name == "lava_burst"              ) return new               lava_burst_t( this, options_str );
   if ( name == "lava_lash"               ) return new                lava_lash_t( this, options_str );
-  if ( name == "lava_shock"              ) return new               lava_shock_t( this, options_str );
   if ( name == "lightning_bolt"          ) return new           lightning_bolt_t( this, options_str );
   if ( name == "lightning_rod"           ) return new            lightning_rod_t( this, options_str );
   if ( name == "lightning_shield"        ) return new         lightning_shield_t( this, options_str );
@@ -4682,6 +4673,7 @@ void shaman_t::init_spells()
   artifact.master_of_the_elements    = find_artifact_spell( "Master of the Elements" );
   artifact.molten_blast              = find_artifact_spell( "Molten Blast"       );
   artifact.elementalist              = find_artifact_spell( "Elementalist"       );
+  artifact.radens_fury               = find_artifact_spell( "Ra-den's Fury"      );
 
   // Enhancement
   artifact.doom_winds                = find_artifact_spell( "Doom Winds"         );
@@ -4742,6 +4734,11 @@ void shaman_t::init_spells()
   if ( artifact.volcanic_inferno.rank() )
   {
     volcanic_inferno = new volcanic_inferno_driver_t( this );
+  }
+
+  if ( artifact.radens_fury.rank() )
+  {
+    radens_fury = new radens_fury_t( this );
   }
 
   // Constants
@@ -4902,6 +4899,24 @@ void shaman_t::trigger_molten_earth( const action_state_t* state )
     return;
 
   molten_earth -> schedule_execute();
+}
+
+void shaman_t::trigger_radens_fury_damage( const action_state_t* state )
+{
+  if ( ! artifact.radens_fury.rank() )
+  {
+    return;
+  }
+
+  if ( ! buff.radens_fury -> up() )
+  {
+    return;
+  }
+
+  radens_fury -> target = state -> target;
+  radens_fury -> schedule_execute();
+
+  buff.radens_fury -> decrement();
 }
 
 void shaman_t::trigger_unleash_doom( const action_state_t* state )
@@ -5270,6 +5285,7 @@ void shaman_t::create_buffs()
   buff.icefury = buff_creator_t( this, "icefury", talent.icefury )
     .cd( timespan_t::zero() ) // Handled by the action
     .default_value( talent.icefury -> effectN( 3 ).percent() );
+  buff.radens_fury = buff_creator_t( this, "radens_fury", artifact.radens_fury.data().effectN( 1 ).trigger() );
 }
 
 // shaman_t::init_gains =====================================================
@@ -5314,6 +5330,7 @@ void shaman_t::init_rng()
   real_ppm.volcanic_inferno = real_ppm_t( *this, artifact.volcanic_inferno.data().real_ppm() );
   real_ppm.power_of_the_maelstrom = real_ppm_t( *this, find_spell( 191861 ) -> real_ppm() );
   real_ppm.static_overload = real_ppm_t( *this, find_spell( 191602 ) -> real_ppm() );
+  real_ppm.radens_fury = real_ppm_t( *this, find_spell( 192623 ) -> real_ppm() );
 }
 
 // shaman_t::init_actions ===================================================
@@ -5911,6 +5928,7 @@ void shaman_t::reset()
   real_ppm.volcanic_inferno.reset();
   real_ppm.power_of_the_maelstrom.reset();
   real_ppm.static_overload.reset();
+  real_ppm.radens_fury.reset();
 }
 
 // shaman_t::merge ==========================================================
