@@ -257,13 +257,13 @@ public:
   struct rppms_t
   {
     // Feral
-    real_ppm_t* ashamanes_bite;
-    real_ppm_t* predator; // Optional RPPM approximation
-    real_ppm_t* shadow_thrash;
-    real_ppm_t* shredded_wounds;
+    real_ppm_t ashamanes_bite;
+    real_ppm_t predator; // Optional RPPM approximation
+    real_ppm_t shadow_thrash;
+    real_ppm_t shredded_wounds;
 
     // Balance
-    real_ppm_t* balance_tier18_2pc;
+    real_ppm_t balance_tier18_2pc;
   } rppm;
 
   // Options
@@ -1844,7 +1844,7 @@ public:
 
   virtual void trigger_balance_tier18_2pc()
   {
-    if ( ! p() -> rppm.balance_tier18_2pc -> trigger() )
+    if ( ! p() -> rppm.balance_tier18_2pc.trigger() )
       return;
 
     for ( pet_t* pet : p() -> pet_fey_moonwing )
@@ -2364,7 +2364,7 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
 
   void trigger_predator()
   {
-    if ( ! p() -> rppm.predator -> trigger() )
+    if ( ! p() -> rppm.predator.trigger() )
       return;
 
     if ( ! p() -> cooldown.tigers_fury -> down() )
@@ -2798,7 +2798,7 @@ struct ferocious_bite_t : public cat_attack_t
       }
 
       // TOCHECK: Does the target need to have Rip/Rake on them to be eligible to proc?
-      if ( shadow_rip && p() -> rppm.ashamanes_bite -> trigger() )
+      if ( shadow_rip && p() -> rppm.ashamanes_bite.trigger() )
       {
         p() -> proc.ashamanes_bite -> occur();
 
@@ -3107,7 +3107,7 @@ struct shred_t : public cat_attack_t
       if ( s -> result == RESULT_CRIT && p() -> sets.has_set_bonus( DRUID_FERAL, PVP, B4 ) )
         td( s -> target ) -> buffs.bloodletting -> trigger(); // Druid module debuff
 
-      if ( shredded_wounds && td( s -> target ) -> dots.rip -> is_ticking() && p() -> rppm.shredded_wounds -> trigger() )
+      if ( shredded_wounds && td( s -> target ) -> dots.rip -> is_ticking() && p() -> rppm.shredded_wounds.trigger() )
       {
         shredded_wounds -> target = target;
         shredded_wounds -> execute();
@@ -3372,7 +3372,7 @@ public:
     p() -> buff.scent_of_blood -> trigger( 1, targets_hit * p() -> buff.scent_of_blood -> default_value );
 
     // TOCHECK: Procs just on cast or on ticks too?
-    if ( shadow_thrash && p() -> rppm.shadow_thrash -> trigger() )
+    if ( shadow_thrash && p() -> rppm.shadow_thrash.trigger() )
       shadow_thrash -> execute();
 
     if ( attack_hit && p() -> sets.has_set_bonus( DRUID_FERAL, T19, B2 ) )
@@ -6925,13 +6925,13 @@ void druid_t::init_resources( bool force )
 void druid_t::init_rng()
 {
   // RPPM objects
-  rppm.balance_tier18_2pc = new real_ppm_t( *this, sets.set( DRUID_BALANCE, T18, B2 ) -> real_ppm() );
-  rppm.predator           = new real_ppm_t( *this, predator_rppm_rate ); // Predator: optional RPPM approximation.
-  rppm.ashamanes_bite     = new real_ppm_t( *this, artifact.ashamanes_bite.data().real_ppm(), 1.0, RPPM_HASTE );
-  rppm.shadow_thrash      = new real_ppm_t( *this, artifact.shadow_thrash.data().real_ppm(), 1.0, RPPM_HASTE );
+  rppm.balance_tier18_2pc = real_ppm_t( *this, sets.set( DRUID_BALANCE, T18, B2 ) -> real_ppm() );
+  rppm.predator           = real_ppm_t( *this, predator_rppm_rate ); // Predator: optional RPPM approximation.
+  rppm.ashamanes_bite     = real_ppm_t( *this, artifact.ashamanes_bite.data().real_ppm(), 1.0, RPPM_HASTE );
+  rppm.shadow_thrash      = real_ppm_t( *this, artifact.shadow_thrash.data().real_ppm(), 1.0, RPPM_HASTE );
 
   if ( fangs_of_ashamane )
-    rppm.shredded_wounds    = new real_ppm_t( *this, fangs_of_ashamane -> driver() -> real_ppm(), 1.0, RPPM_HASTE );
+    rppm.shredded_wounds  = real_ppm_t( *this, fangs_of_ashamane -> driver() -> real_ppm(), 1.0, RPPM_HASTE );
 
   player_t::init_rng();
 }
@@ -7020,6 +7020,12 @@ void druid_t::reset()
     druid_td_t* td = target_data[ sim -> actor_list[ i ] ];
     if ( td ) td -> reset();
   }
+  
+  rppm.ashamanes_bite.reset();
+  rppm.predator.reset();
+  rppm.shadow_thrash.reset();
+  rppm.shredded_wounds.reset();
+  rppm.balance_tier18_2pc.reset();
 }
 
 // druid_t::merge ===========================================================
