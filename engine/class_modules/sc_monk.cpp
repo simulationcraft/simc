@@ -1598,7 +1598,7 @@ struct monk_action_t: public Base
   sef_ability_e sef_ability;
   bool hasted_gcd;
 private:
-  std::array < resource_e, MONK_WINDWALKER + 1 > _resource_by_stance;
+  std::array < resource_e, MONK_MISTWEAVER + 1 > _resource_by_stance;
   typedef Base ab; // action base, eg. spell_t
 public:
   typedef monk_action_t base_t;
@@ -1656,16 +1656,16 @@ public:
       switch ( pd -> aura_id() )
       {
       case 137023:
-        assert( _resource_by_stance[MONK_BREWMASTER] == RESOURCE_MAX && "Two power entries per aura id." );
-        _resource_by_stance[MONK_BREWMASTER] = pd -> resource();
+        assert( _resource_by_stance[ specdata::spec_idx( MONK_BREWMASTER ) ] == RESOURCE_MAX && "Two power entries per aura id." );
+        _resource_by_stance[ specdata::spec_idx( MONK_BREWMASTER ) ] = pd -> resource();
         break;
       case 137024:
-        assert( _resource_by_stance[MONK_MISTWEAVER] == RESOURCE_MAX && "Two power entries per aura id." );
-        _resource_by_stance[MONK_MISTWEAVER] = pd -> resource();
+        assert( _resource_by_stance[ specdata::spec_idx( MONK_MISTWEAVER ) ] == RESOURCE_MAX && "Two power entries per aura id." );
+        _resource_by_stance[ specdata::spec_idx( MONK_MISTWEAVER ) ] = pd -> resource();
         break;
       case 137025:
-        assert( _resource_by_stance[MONK_WINDWALKER] == RESOURCE_MAX && "Two power entries per aura id." );
-        _resource_by_stance[MONK_WINDWALKER] = pd -> resource();
+        assert( _resource_by_stance[ specdata::spec_idx( MONK_WINDWALKER ) ] == RESOURCE_MAX && "Two power entries per aura id." );
+        _resource_by_stance[ specdata::spec_idx( MONK_WINDWALKER ) ] = pd -> resource();
         break;
       default: break;
       }
@@ -1688,7 +1688,7 @@ public:
 
   virtual resource_e current_resource() const
   {
-    resource_e resource_by_stance = _resource_by_stance[p() -> specialization()];
+    resource_e resource_by_stance = _resource_by_stance[specdata::spec_idx( p() -> specialization() )];
 
     if ( resource_by_stance == RESOURCE_MAX )
       return ab::current_resource();
