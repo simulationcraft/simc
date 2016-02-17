@@ -166,6 +166,7 @@ struct rogue_td_t : public actor_target_data_t
     buff_t* leeching_poison;
     buff_t* numbing_poison;
     buffs::marked_for_death_debuff_t* marked_for_death;
+    buff_t* ghostly_strike;
   } debuffs;
 
   rogue_td_t( player_t* target, rogue_t* source );
@@ -762,6 +763,8 @@ struct rogue_attack_t : public melee_attack_t
     m *= 1.0 + tdata -> debuffs.vendetta -> value();
 
     m *= 1.0 + tdata -> debuffs.numbing_poison -> stack_value();
+
+    m *= 1.0 + tdata -> debuffs.ghostly_strike -> stack_value();
 
     return m;
   }
@@ -1969,6 +1972,27 @@ struct garrote_t : public rogue_attack_t
 
     p() -> trigger_venomous_wounds( d -> state );
     p() -> trigger_thuggee( d -> state );
+  }
+};
+
+// Ghostly Strike ===========================================================
+
+struct ghostly_strike_t : public rogue_attack_t
+{
+  ghostly_strike_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "ghostly_strike", p, p -> talent.ghostly_strike, options_str )
+  {
+    weapon = &( p -> main_hand_weapon );
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+
+    if ( result_is_hit( state -> result ) )
+    {
+      td( state -> target ) -> debuffs.ghostly_strike -> trigger();
+    }
   }
 };
 
@@ -3667,6 +3691,8 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.marked_for_death = new buffs::marked_for_death_debuff_t( *this );
   debuffs.hemorrhage = buff_creator_t( *this, "hemorrhage", source -> talent.hemorrhage )
                        .default_value( 1.0 + source -> talent.hemorrhage -> effectN( 4 ).percent() );
+  debuffs.ghostly_strike = buff_creator_t( *this, "ghostly_strike", source -> talent.ghostly_strike )
+    .default_value( source -> talent.ghostly_strike -> effectN( 5 ).percent() );
 }
 
 // ==========================================================================
@@ -4123,6 +4149,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "fan_of_knives"       ) return new fan_of_knives_t      ( this, options_str );
   if ( name == "feint"               ) return new feint_t              ( this, options_str );
   if ( name == "garrote"             ) return new garrote_t            ( this, options_str );
+  if ( name == "ghostly_strike"      ) return new ghostly_strike_t     ( this, options_str );
   if ( name == "hemorrhage"          ) return new hemorrhage_t         ( this, options_str );
   if ( name == "kick"                ) return new kick_t               ( this, options_str );
   if ( name == "kidney_shot"         ) return new kidney_shot_t        ( this, options_str );
