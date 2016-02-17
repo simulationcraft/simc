@@ -887,7 +887,7 @@ void report::print_html_sample_data( report::sc_html_stream& os, const player_t&
       std::string tokenized_div_name = data.name_str + "_dist";
       util::tokenize( tokenized_div_name );
 
-      highchart::histogram_chart_t chart( tokenized_div_name, p.sim );
+      highchart::histogram_chart_t chart( tokenized_div_name, *p.sim );
       chart.set_toggle_id( "actor" + util::to_string( p.index ) + "_" + tokenized_div_name + "_stats_toggle" );
       if ( chart::generate_distribution( chart, nullptr, data.distribution, name, data.mean(), data.min(), data.max() ) )
       {
