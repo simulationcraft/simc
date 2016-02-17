@@ -1432,7 +1432,7 @@ public:
 
   bool trigger_gore()
   {
-    if ( rng().roll( p() -> spec.gore -> proc_chance() ) )
+    if ( this -> rng().roll( p() -> spec.gore -> proc_chance() ) )
     {
       p() -> proc.gore -> occur();
       p() -> cooldown.mangle -> reset( true );
