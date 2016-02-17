@@ -1596,7 +1596,7 @@ void action_t::assess_damage( dmg_e    type,
       player -> priority_iteration_dmg += s -> result_amount;
     }
 
-    if ( target -> is_enemy() )
+    if ( s -> target -> is_enemy() )
     {
       if ( player -> buffs.legendary_aoe_ring && player -> buffs.legendary_aoe_ring -> check() )
       {
