@@ -2779,6 +2779,7 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
 
+    attack_power_mod.direct = p -> spec.fists_of_fury -> effectN( 5 ).ap_coeff();
     base_costs[ RESOURCE_CHI ] = 0;
     dot_duration = timespan_t::zero();
     trigger_gcd = timespan_t::zero();
@@ -3113,8 +3114,8 @@ struct melee_t: public monk_melee_attack_t
       t *= 1.0 / ( 1.0 + p() -> spec.way_of_the_monk_aa_speed -> effectN( 1 ).percent() );
 */
 
-    if ( p() -> buff.swift_as_the_wind -> up() )
-      t * 1.0 / (1.0 + p() -> buff.swift_as_the_wind -> value() );
+    if ( p() -> aburaq && p() -> buff.swift_as_the_wind -> up() )
+      t *= 1.0 / (1.0 + p() -> buff.swift_as_the_wind -> value() );
 
     if ( first )
       return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::zero() ) : t / 2 ) : timespan_t::zero();
@@ -5883,7 +5884,7 @@ void monk_t::create_buffs()
     .add_invalidate( CACHE_ATTACK_POWER );
 
   buff.elusive_brawler = buff_creator_t( this, "elusive_brawler", passives.elusive_brawler )
-    .max_stack( static_cast<int>( ceil( 1 / ( mastery.elusive_brawler -> effectN( 1 ).mastery_value() * 8 ) ) ) )
+    .max_stack( specialization() == MONK_BREWMASTER ? static_cast<int>( ceil( 1 / ( mastery.elusive_brawler -> effectN( 1 ).mastery_value() * 8 ) ) ) : 1 )
     .add_invalidate( CACHE_DODGE );
 
   buff.elusive_dance = buff_creator_t(this, "elusive_dance", passives.elusive_dance)
