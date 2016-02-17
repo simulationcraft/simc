@@ -65,6 +65,9 @@ struct yseras_tick_t;
 namespace cat_attacks {
 struct gushing_wound_t;
 }
+namespace bear_attacks {
+struct bear_attack_t;
+}
 
 enum form_e {
   CAT_FORM       = 0x1,
@@ -87,6 +90,7 @@ struct druid_td_t : public actor_target_data_t
   struct dots_t
   {
     dot_t* ashamanes_frenzy;
+    dot_t* blood_claws;
     dot_t* collapsing_stars;
     dot_t* gushing_wound;
     dot_t* lacerate;
@@ -114,8 +118,6 @@ struct druid_td_t : public actor_target_data_t
     buff_t* starfall;
   } buffs;
 
-  int lacerate_stack;
-
   druid_td_t( player_t& target, druid_t& source );
 
   bool hot_ticking()
@@ -135,11 +137,6 @@ struct druid_td_t : public actor_target_data_t
            + dots.shadow_rip -> is_ticking()
            + dots.shadow_rake -> is_ticking()
            + dots.shadow_thrash -> is_ticking();
-  }
-
-  void reset()
-  {
-    lacerate_stack = 0;
   }
 };
 
@@ -252,6 +249,7 @@ public:
   // Artifacts
   const special_effect_t* scythe_of_elune;
   const special_effect_t* fangs_of_ashamane;
+  const special_effect_t* claws_of_ursoc;
 
   // RPPM objects
   struct rppms_t
@@ -273,6 +271,7 @@ public:
 
   struct active_actions_t
   {
+    bear_attacks::bear_attack_t*  blood_claws;
     brambles_t*                   brambles;
     stalwart_guardian_t*          stalwart_guardian;
     cat_attacks::gushing_wound_t* gushing_wound;
@@ -658,6 +657,26 @@ public:
     // NYI
     artifact_power_t hardened_roots;
     artifact_power_t protection_of_ashamane;
+
+    // Guardian -- Claws of Ursoc
+
+    // NYI
+    artifact_power_t rage_of_the_sleeper;
+    artifact_power_t adaptive_fur;
+    artifact_power_t embrace_of_the_nightmare;
+    artifact_power_t reinforced_fur;
+    artifact_power_t mauler;
+    artifact_power_t jagged_claws;
+    artifact_power_t ion_cannon;
+    artifact_power_t bestial_fortitude;
+    artifact_power_t perpetual_spring;
+    artifact_power_t right_to_bear_arms;
+    artifact_power_t ursocs_endurance;
+    artifact_power_t sharpened_instincts;
+    artifact_power_t vicious_bites;
+    artifact_power_t grasping_roots;
+    artifact_power_t wildflesh;
+    artifact_power_t heart_of_the_woods; // will be replaced
   } artifact;
 
   druid_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
@@ -668,6 +687,7 @@ public:
     t16_2pc_sun_bolt( nullptr ),
     scythe_of_elune(),
     fangs_of_ashamane(),
+    claws_of_ursoc(),
     initial_astral_power( 0 ),
     initial_moon_stage( NEW_MOON ),
     active( active_actions_t() ),
@@ -1360,7 +1380,7 @@ public:
     double tm = ab::composite_target_multiplier( t );
 
     if ( rend_and_tear )
-      tm *= 1.0 + p() -> talent.rend_and_tear -> effectN( 2 ).percent() * td( t ) -> lacerate_stack;
+      tm *= 1.0 + p() -> talent.rend_and_tear -> effectN( 2 ).percent() * td( t ) -> dots.lacerate -> current_stack();
 
     if ( open_wounds )
       tm *= 1.0 + td( t ) -> buffs.open_wounds -> check_value();
@@ -1450,23 +1470,6 @@ public:
     if ( util::str_compare_ci( name_str, "active_dot.starfall" ) )
     {
       return make_ref_expr( "starfall", p() -> active_starfalls );
-    }
-    else if ( util::str_compare_ci( name_str, "dot.lacerate.stack" ) )
-    {
-      struct lacerate_stack_expr_t : public expr_t
-      {
-        druid_t& druid;
-        action_t* action;
-
-        lacerate_stack_expr_t( druid_t& p, action_t* a ) :
-          expr_t( "stack" ), druid( p ), action( a )
-        {}
-
-        virtual double evaluate() override
-        { return druid.get_target_data( action -> target ) -> lacerate_stack; }
-      };
-
-      return new lacerate_stack_expr_t( *p(), this );
     }
 
     return ab::create_expression( name_str );
@@ -3450,7 +3453,6 @@ namespace bear_attacks {
 
 struct bear_attack_t : public druid_attack_t<melee_attack_t>
 {
-public:
   double rage_amount, rage_tick_amount;
   bool gore;
 
@@ -3494,7 +3496,10 @@ public:
 
     if ( attack_hit )
     {
-      p() -> resource_gain( RESOURCE_RAGE, rage_amount, rage_gain );
+      if ( rage_amount )
+      {
+        p() -> resource_gain( RESOURCE_RAGE, rage_amount, rage_gain );
+      }
 
       if ( gore ) // TOCHECK: Does it need to hit?
       {
@@ -3520,6 +3525,13 @@ public:
 
       if ( p() -> talent.galactic_guardian -> ok() )
         trigger_galactic_guardian( s );
+
+      if ( p() -> active.blood_claws && ! background && harmful && s -> result_amount > 0 )
+      {
+        p() -> active.blood_claws -> target = s -> target;
+        p() -> active.blood_claws -> execute();
+      }
+
     }
   }
 
@@ -3529,7 +3541,10 @@ public:
 
     if ( result_is_hit( d -> state -> result ) )
     {
-      p() -> resource_gain( RESOURCE_RAGE, rage_tick_amount, rage_gain );
+      if ( rage_tick_amount )
+      {
+        p() -> resource_gain( RESOURCE_RAGE, rage_tick_amount, rage_gain );
+      }
 
       if ( p() -> talent.galactic_guardian -> ok() )
         trigger_galactic_guardian( d -> state );
@@ -3574,6 +3589,19 @@ struct bear_melee_t : public bear_attack_t
       return timespan_t::from_seconds( 0.01 );
 
     return bear_attack_t::execute_time();
+  }
+};
+
+// Blood Claws ==============================================================
+
+struct blood_claws_t : public bear_attack_t
+{
+  blood_claws_t( druid_t* p ) :
+    bear_attack_t( "blood_claws", p, p -> claws_of_ursoc -> driver() -> effectN( 1 ).trigger() )
+  {
+    background = true;
+    may_crit = false;
+    dot_max_stack = 5;
   }
 };
 
@@ -3650,41 +3678,23 @@ struct lacerate_dot_t : public bear_attack_t
     bear_attack_t( "lacerate_dot", p, p -> spell.lacerate_dot ),
     blood_frenzy_amount( 0.0 )
   {
+    background = dual = true;
     may_miss = may_block = may_dodge = may_parry = may_crit = false;
+    dot_max_stack = 3;
 
     if ( p -> talent.blood_frenzy -> ok() )
       blood_frenzy_amount = p -> find_spell( 203961 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
   }
 
-  virtual void impact( action_state_t* state ) override
-  {
-    bear_attack_t::impact( state );
-
-    if ( result_is_hit( state -> result ) && td( state -> target ) -> lacerate_stack < 3 )
-      td( state -> target ) -> lacerate_stack++;
-  }
-
-  virtual double composite_target_ta_multiplier( player_t* t ) const override
-  {
-    double tm = bear_attack_t::composite_target_ta_multiplier( t );
-
-    tm *= td( t ) -> lacerate_stack;
-
-    return tm;
-  }
+  // Explicitly apply "lacerate" DoT so that DoT expressions used with lacerate_t work correctly.
+  dot_t* get_dot( player_t* t ) override
+  { return td( t ) -> dots.lacerate; }
 
   virtual void tick( dot_t* d ) override
   {
-    rage_tick_amount = td( d -> state -> target ) -> lacerate_stack == 3 ? blood_frenzy_amount : 0;
+    rage_tick_amount = d -> current_stack() == d -> max_stack ? blood_frenzy_amount : 0;
 
     bear_attack_t::tick( d );
-  }
-
-  virtual void last_tick( dot_t* d ) override
-  {
-    bear_attack_t::last_tick( d );
-
-    td( target ) -> lacerate_stack = 0;
   }
 };
 
@@ -3692,27 +3702,14 @@ struct lacerate_dot_t : public bear_attack_t
 
 struct lacerate_t : public bear_attack_t
 {
-  lacerate_dot_t* dot;
-
   lacerate_t( druid_t* p, const std::string& options_str ) :
-    bear_attack_t( "lacerate", p, p -> find_specialization_spell( "Lacerate" ) ),
-    dot( new lacerate_dot_t( p ) )
+    bear_attack_t( "lacerate", p, p -> find_specialization_spell( "Lacerate" ) )
   {
     parse_options( options_str );
-
-    add_child( dot );
+    
+    impact_action = new lacerate_dot_t( p );
+    add_child( impact_action );
     gore = true;
-  }
-
-  virtual void impact( action_state_t* state ) override
-  {
-    bear_attack_t::impact( state );
-
-    if ( result_is_hit( state -> result ) )
-    {
-      dot -> target = target;
-      dot -> execute();
-    }
   }
 };
 
@@ -3821,7 +3818,8 @@ struct pulverize_t : public bear_attack_t
   virtual bool ready() override
   {
     // Call bear_attack_t::ready() first for proper targeting support.
-    if ( bear_attack_t::ready() && td( target ) -> lacerate_stack >= 3 )
+    if ( bear_attack_t::ready() && td( target ) -> dots.lacerate -> current_stack()
+         == td( target ) -> dots.lacerate -> max_stack )
       return true;
     else
       return false;
@@ -3832,32 +3830,20 @@ struct pulverize_t : public bear_attack_t
 
 struct thrash_bear_t : public bear_attack_t
 {
-  lacerate_dot_t* dot;
-
-  thrash_bear_t( druid_t* player, const std::string& options_str ) :
-    bear_attack_t( "thrash_bear", player, player -> find_spell( 77758 ) ),
-    dot( new lacerate_dot_t( player ) )
+  thrash_bear_t( druid_t* p, const std::string& options_str ) :
+    bear_attack_t( "thrash_bear", p, p -> find_spell( 77758 ) )
   {
     parse_options( options_str );
     aoe                    = -1;
     spell_power_mod.direct = 0;
 
     // Apply hidden passive damage multiplier
-    base_dd_multiplier *= 1.0 + player -> spec.guardian_passive -> effectN( 6 ).percent();
+    base_dd_multiplier *= 1.0 + p -> spec.guardian_passive -> effectN( 6 ).percent();
     
     rage_amount = data().effectN( 2 ).resource( RESOURCE_RAGE );
     gore = true;
-  }
 
-  virtual void impact( action_state_t* s ) override
-  {
-    bear_attack_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      dot -> target = s -> target;
-      dot -> execute();
-    }
+    impact_action = new lacerate_dot_t( p );
   }
 };
 
@@ -4268,13 +4254,12 @@ struct swiftmend_t : public druid_heal_t
     }
   };
 
-  swiftmend_aoe_heal_t* aoe_heal;
-
   swiftmend_t( druid_t* p, const std::string& options_str ) :
-    druid_heal_t( "swiftmend", p, p -> find_class_spell( "Swiftmend" ), options_str ),
-    aoe_heal( new swiftmend_aoe_heal_t( p, &data() ) )
+    druid_heal_t( "swiftmend", p, p -> find_class_spell( "Swiftmend" ), options_str )
   {
     init_living_seed();
+
+    impact_action = new swiftmend_aoe_heal_t( p, &data() );
   }
 
   virtual void impact( action_state_t* state ) override
@@ -4288,8 +4273,6 @@ struct swiftmend_t : public druid_heal_t
 
       if ( p() -> talent.soul_of_the_forest -> ok() )
         p() -> buff.soul_of_the_forest -> trigger();
-
-      aoe_heal -> execute();
     }
   }
 
@@ -5518,7 +5501,6 @@ struct starsurge_t : public druid_spell_t
   };
 
   double starshards_chance;
-  goldrinns_fang_t* power_of_goldrinn;
 
   starsurge_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "starsurge", player, player -> find_specialization_spell( "Starsurge" ) ),
@@ -5538,8 +5520,8 @@ struct starsurge_t : public druid_spell_t
 
     if ( player -> artifact.power_of_goldrinn.rank() )
     {
-      power_of_goldrinn = new goldrinns_fang_t( player );
-      add_child( power_of_goldrinn );
+      impact_action = new goldrinns_fang_t( player );
+      add_child( impact_action );
     }
   }
 
@@ -5559,12 +5541,6 @@ struct starsurge_t : public druid_spell_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( p() -> artifact.power_of_goldrinn.rank() )
-      {
-        power_of_goldrinn -> target = target;
-        power_of_goldrinn -> execute();
-      }
-
       // Dec 3 2015: Starsurge must hit to grant empowerments, but grants them on cast not impact.
       p() -> buff.solar_empowerment -> trigger();
       p() -> buff.lunar_empowerment -> trigger();
@@ -6100,6 +6076,24 @@ void druid_t::init_spells()
   artifact.scent_of_blood               = find_artifact_spell( "Scent of Blood" );
   artifact.feral_instinct               = find_artifact_spell( "Feral Instinct" );
   artifact.hardened_roots               = find_artifact_spell( "Hardened Roots" );
+
+  // Guardian -- Claws of Ursoc
+  artifact.rage_of_the_sleeper          = find_artifact_spell( "Rage of the Sleeper" );
+  artifact.adaptive_fur                 = find_artifact_spell( "Adaptive Fur" );
+  artifact.embrace_of_the_nightmare     = find_artifact_spell( "Embrace of the Nightmare" );
+  artifact.reinforced_fur               = find_artifact_spell( "Reinforced Fur" );
+  artifact.mauler                       = find_artifact_spell( "Mauler" );
+  artifact.jagged_claws                 = find_artifact_spell( "Jagged Claws" );
+  artifact.ion_cannon                   = find_artifact_spell( "Ion Cannon" );
+  artifact.bestial_fortitude            = find_artifact_spell( "Bestial Fortitude" );
+  artifact.perpetual_spring             = find_artifact_spell( "Perpetual Spring" );
+  artifact.right_to_bear_arms           = find_artifact_spell( "Right to Bear Arms" );
+  artifact.ursocs_endurance             = find_artifact_spell( "Ursoc's Endurance" );
+  artifact.sharpened_instincts          = find_artifact_spell( "Sharpened Instincts" );
+  artifact.vicious_bites                = find_artifact_spell( "Vicious Bites" );
+  artifact.grasping_roots               = find_artifact_spell( "Grasping Roots" );
+  artifact.wildflesh                    = find_artifact_spell( "Wildflesh" );
+  artifact.heart_of_the_woods           = find_artifact_spell( "Heart of the Woods" ); // will be replaced
 
   // Masteries ==============================================================
 
@@ -7014,12 +7008,6 @@ void druid_t::reset()
 
   if ( mastery.natures_guardian -> ok() )
     recalculate_resource_max( RESOURCE_HEALTH );
-
-  for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
-  {
-    druid_td_t* td = target_data[ sim -> actor_list[ i ] ];
-    if ( td ) td -> reset();
-  }
   
   rppm.ashamanes_bite.reset();
   rppm.predator.reset();
@@ -7617,10 +7605,14 @@ void druid_t::target_mitigation( school_e school, dmg_e type, action_state_t* s 
 
   if ( talent.rend_and_tear -> ok() )
     s -> result_amount *= 1.0 - talent.rend_and_tear -> effectN( 2 ).percent()
-                          * get_target_data( s -> action -> player ) -> lacerate_stack;
+      * get_target_data( s -> action -> player ) -> dots.lacerate -> current_stack();
 
   if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
     s -> result_amount *= 1.0 + buff.mark_of_ursol -> value();
+
+  if ( claws_of_ursoc )
+    s -> result_amount *= 1.0 + active.blood_claws -> data().effectN( 2 ).percent()
+      * get_target_data( s -> action -> player ) -> dots.blood_claws -> current_stack();
 
   player_t::target_mitigation( school, type, s );
 }
@@ -7687,10 +7679,10 @@ void druid_t::assess_heal( school_e school,
 druid_td_t::druid_td_t( player_t& target, druid_t& source )
   : actor_target_data_t( &target, &source ),
     dots( dots_t() ),
-    buffs( buffs_t() ),
-    lacerate_stack( 0 )
+    buffs( buffs_t() )
 {
   dots.ashamanes_frenzy = target.get_dot( "ashamanes_frenzy", &source );
+  dots.blood_claws      = target.get_dot( "blood_claws",      &source );
   dots.collapsing_stars = target.get_dot( "collapsing_stars", &source );
   dots.gushing_wound    = target.get_dot( "gushing_wound",    &source );
   dots.lacerate         = target.get_dot( "lacerate",         &source );
@@ -7933,6 +7925,15 @@ static void fangs_of_ashamane( special_effect_t& effect )
   do_trinket_init( s, DRUID_FERAL, s -> fangs_of_ashamane, effect );
 }
 
+// Claws of Ursoc
+static void claws_of_ursoc( special_effect_t& effect )
+{
+  druid_t* s = debug_cast<druid_t*>( effect.player );
+  do_trinket_init( s, DRUID_GUARDIAN, s -> claws_of_ursoc, effect );
+
+  s -> active.blood_claws = new bear_attacks::blood_claws_t( s );
+}
+
 // DRUID MODULE INTERFACE ===================================================
 
 struct druid_module_t : public module_t
@@ -7961,6 +7962,7 @@ struct druid_module_t : public module_t
     unique_gear::register_special_effect( 184879, flourish );
     unique_gear::register_special_effect( 202509, scythe_of_elune );
     unique_gear::register_special_effect( 210719, fangs_of_ashamane );
+    unique_gear::register_special_effect( 200815, claws_of_ursoc );
   }
 
   virtual void register_hotfixes() const override
