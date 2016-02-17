@@ -1750,6 +1750,30 @@ struct blade_flurry_t : public rogue_attack_t
   }
 };
 
+// Cannonball Barrage =======================================================
+
+struct cannonball_barrage_damage_t : public rogue_attack_t
+{
+  cannonball_barrage_damage_t( rogue_t* p ) :
+    rogue_attack_t( "cannonball_barrage_damage", p, p -> find_spell( 185779 ) )
+  {
+    background = true;
+  }
+
+  double target_armor( player_t* ) const override
+  { return 0; }
+};
+
+// TODO: Velocity is fubard in spell data, probably
+struct cannonball_barrage_t : public rogue_attack_t
+{
+  cannonball_barrage_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "cannonball_barrage", p, p -> talent.cannonball_barrage, options_str )
+  {
+    tick_action = new cannonball_barrage_damage_t( p );
+  }
+};
+
 // Envenom ==================================================================
 
 struct envenom_t : public rogue_attack_t
@@ -4163,6 +4187,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "auto_attack"         ) return new auto_melee_attack_t  ( this, options_str );
   if ( name == "backstab"            ) return new backstab_t           ( this, options_str );
   if ( name == "blade_flurry"        ) return new blade_flurry_t       ( this, options_str );
+  if ( name == "cannonball_barrage"  ) return new cannonball_barrage_t ( this, options_str );
   if ( name == "death_from_above"    ) return new death_from_above_t   ( this, options_str );
   if ( name == "envenom"             ) return new envenom_t            ( this, options_str );
   if ( name == "eviscerate"          ) return new eviscerate_t         ( this, options_str );
