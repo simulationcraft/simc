@@ -5029,6 +5029,9 @@ public:
   /// Default full duration of dot.
   timespan_t dot_duration;
 
+  // Maximum number of DoT stacks.
+  int dot_max_stack;
+
   /// Cost of using the ability.
   std::array< double, RESOURCE_MAX > base_costs, secondary_costs;
 
@@ -5216,7 +5219,6 @@ public:
   { options.insert( options.begin(), std::move(new_option) ); }
   void   check_spec( specialization_e );
   void   check_spell( const spell_data_t* );
-  dot_t* get_dot( player_t* target = nullptr );
   dot_t* find_dot( player_t* target ) const;
   void add_child( action_t* child );
   void add_travel_event( travel_event_t* e )
@@ -5592,6 +5594,7 @@ public:
 
   virtual void do_teleport( action_state_t* );
 
+  virtual dot_t* get_dot( player_t* = nullptr );
 
   // ================
   // Static functions
@@ -6073,6 +6076,7 @@ private:
   timespan_t last_start;
   timespan_t extended_time; // Added time per extend_duration for the current dot application
   timespan_t reduced_time; // Removed time per reduce_duration for the current dot application
+  int stack;
 public:
   event_t* tick_event;
   event_t* end_event;
@@ -6083,6 +6087,7 @@ public:
   action_t* current_action;
   action_state_t* state;
   int num_ticks, current_tick;
+  int max_stack;
   timespan_t miss_time;
   timespan_t time_to_tick;
   std::string name_str;
@@ -6112,6 +6117,8 @@ public:
   { return extended_time; }
   double get_last_tick_factor() const
   { return last_tick_factor; }
+  int current_stack() const
+  { return ticking ? stack : 0; }
 
   void tick();
   void last_tick();

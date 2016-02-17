@@ -3962,7 +3962,7 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
   {
     dot_t* d = get_dot();
     if ( d && d -> state )
-      return calculate_tick_amount( d -> state, 1 );
+      return calculate_tick_amount( d -> state, d -> current_stack() );
     return 0;
   }
 };

@@ -305,6 +305,7 @@ action_t::action_t( action_e       ty,
   base_execute_time( timespan_t::zero() ),
   base_tick_time( timespan_t::zero() ),
   dot_duration( timespan_t::zero() ),
+  dot_max_stack( 1 ),
   base_cooldown_reduction( 1.0 ),
   movement_directionality( MOVEMENT_NONE ),
   base_teleport_distance( 0.0 ),
@@ -1375,7 +1376,7 @@ void action_t::tick( dot_t* d )
     if ( tick_may_crit && rng().roll( d -> state -> composite_crit() ) )
       d -> state -> result = RESULT_CRIT;
 
-    d -> state -> result_amount = calculate_tick_amount( d -> state, d -> get_last_tick_factor() );
+    d -> state -> result_amount = calculate_tick_amount( d -> state, d -> get_last_tick_factor() * d -> current_stack() );
 
     assess_damage( amount_type( d -> state, true ), d -> state );
 
@@ -2220,7 +2221,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       action.snapshot_state( state, amount_type );
       state -> target = action.target;
       if ( amount_type == DMG_OVER_TIME || amount_type == HEAL_OVER_TIME )
-        return action.calculate_tick_amount( state, 1.0 /* Assumes full tick damage calculation */ );
+        return action.calculate_tick_amount( state, 1.0 /* Assumes full tick & one stack */ );
       else
       {
         state -> result_amount = action.calculate_direct_amount( state );
@@ -3035,6 +3036,7 @@ void action_t::trigger_dot( action_state_t* s )
   if ( dot_behavior == DOT_CLIP ) dot -> cancel();
 
   dot -> current_action = this;
+  dot -> max_stack = dot_max_stack;
 
   if ( ! dot -> state ) dot -> state = get_state();
   dot -> state -> copy_state( s );

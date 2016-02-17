@@ -487,7 +487,7 @@ expr_t* dot_t::create_expression( action_t* action,
           }
           s -> copy_state( dot() -> state );
           s -> result = RESULT_HIT;
-          return s -> action -> calculate_tick_amount( s, 1.0 );
+          return s -> action -> calculate_tick_amount( s, dot() -> current_stack() );
         }
         return 0.0;
       }
@@ -518,7 +518,7 @@ expr_t* dot_t::create_expression( action_t* action,
           }
           s -> copy_state( dot() -> state );
           s -> result = RESULT_CRIT;
-          return s -> action -> calculate_tick_amount( s, 1.0 );
+          return s -> action -> calculate_tick_amount( s, dot() -> current_stack() );
         }
         return 0.0;
       }
@@ -642,6 +642,18 @@ expr_t* dot_t::create_expression( action_t* action,
       virtual double evaluate() override { return dot() -> state ? dot() -> state -> crit * 100.0 : 0; }
     };
     return new dot_crit_pct_expr_t( this, action, dynamic );
+  }
+  else if ( name_str == "stack" )
+  {
+    struct dot_stack_expr_t : public dot_expr_t
+    {
+      dot_stack_expr_t( dot_t* d, action_t* a, bool dynamic ) :
+        dot_expr_t( "dot_stack", d, a, dynamic ) {}
+      virtual double evaluate() override {
+        return dot() -> current_stack();
+      }
+    };
+    return new dot_stack_expr_t( this, action, dynamic );
   }
 
   return nullptr;
@@ -826,6 +838,7 @@ void dot_t::start( timespan_t duration )
   last_start = sim.current_time();
 
   ticking = true;
+  stack = 1;
 
   end_event = new ( sim ) dot_end_event_t( this, current_duration );
 
@@ -860,6 +873,9 @@ void dot_t::refresh( timespan_t duration )
 
   last_start = sim.current_time();
 
+  if ( stack < max_stack )
+    stack++;
+
   assert( end_event && "Dot is ticking but has no end event." );
   timespan_t remaining_duration = end_event -> remains();
 
@@ -877,8 +893,8 @@ void dot_t::refresh( timespan_t duration )
   num_ticks = current_tick + as<int>(std::ceil(remains() / current_action->tick_time(state->haste) ) );
 
   if ( sim.debug )
-    sim.out_debug.printf( "%s refreshes dot for %s on %s. duration=%.3f",
-                          source -> name(), name(), target -> name(),
+    sim.out_debug.printf( "%s refreshes dot %s (%d) on %s. duration=%.3f",
+                          source -> name(), name(), stack, target -> name(),
                           current_duration.total_seconds() );
 
   // Ensure that the ticker is running when dots are refreshed. It is possible
