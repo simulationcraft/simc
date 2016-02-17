@@ -1,4 +1,4 @@
-#define CLASS_ABILITY_SIZE (31)
+#define CLASS_ABILITY_SIZE (29)
 #define CLASS_ABILITY_TREE_SIZE (6)
 
 #ifndef MAX_CLASS
@@ -298,7 +298,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        94022, // Trick (Bonus Ability)
        35346, // Warp Time (Special Ability)
       160067, // Web Spray (Special Ability)
-           0,
     },
   },
   // Class active abilities for Rogue
@@ -699,7 +698,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Warlock
   {
-    // General tree, 31 abilities
+    // General tree, 25 abilities
     {
          710, // Banish
       119898, // Command Demon
@@ -719,19 +718,14 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       108396, // Mortal Coil (Talent)
        63106, // Siphon Life
        20707, // Soulstone
-      112921, // Summon Abyssal (Guardian)
        18540, // Summon Doomguard (Guardian)
-      112866, // Summon Fel Imp (Summon)
          691, // Summon Felhunter (Summon)
          688, // Summon Imp (Summon)
         1122, // Summon Infernal (Guardian)
-      112869, // Summon Observer (Summon)
-      112868, // Summon Shivarra (Summon)
          712, // Summon Succubus (Summon)
-      112927, // Summon Terrorguard (Guardian)
-      112867, // Summon Voidlord (Summon)
          697, // Summon Voidwalker (Summon)
       104773, // Unending Resolve
+           0,
     },
     // Affliction tree, 4 abilities
     {
@@ -741,7 +735,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        30108, // Unstable Affliction
            0,
     },
-    // Demonology tree, 10 abilities
+    // Demonology tree, 9 abilities
     {
       104316, // Call Dreadstalkers
       193396, // Demonic Empowerment
@@ -752,7 +746,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         1454, // Life Tap
          686, // Shadow Bolt
        30146, // Summon Felguard (Summon)
-      112870, // Summon Wrathguard (Summon)
            0,
     },
     // Destruction tree, 7 abilities
@@ -769,24 +762,22 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 31 abilities
+    // Pet tree, 27 abilities
     {
        89766, // Axe Toss (Special Ability)
-      115748, // Bladedance (Basic Attack)
       171011, // Burning Presence (Special Ability)
       119899, // Cauterize Master (Special Ability)
         3716, // Consuming Shadows (Basic Attack)
       170995, // Cripple
        19658, // Devour Magic
        85692, // Doom Bolt
-      115746, // Felbolt (Basic Attack)
+      104318, // Fel Firebolt (Basic Attack)
        89751, // Felstorm (Special Ability)
         3110, // Firebolt (Basic Attack)
        89792, // Flee (Special Ability)
         7814, // Lash of Pain (Basic Attack)
        30213, // Legion Strike (Basic Attack)
         7870, // Lesser Invisibility (Special Ability)
-      115625, // Mortal Cleave (Basic Attack)
        30151, // Pursuit (Special Ability)
         6358, // Seduction (Special Ability)
       171014, // Seethe (Special Ability)
@@ -794,14 +785,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       171138, // Shadow Lock (Special Ability)
       115232, // Shadow Shield (Special Ability)
        89808, // Singe Magic (Special Ability)
-      166864, // Soul Fire
        19647, // Spell Lock (Special Ability)
        17735, // Suffering (Special Ability)
       112042, // Threatening Presence (Special Ability)
       134477, // Threatening Presence (Special Ability)
-      115778, // Tongue Lash (Basic Attack)
       171021, // Torch Magic (Special Ability)
         6360, // Whiplash (Special Ability)
+           0,
     },
   },
   // Class active abilities for Monk

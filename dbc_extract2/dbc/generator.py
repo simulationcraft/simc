@@ -1476,6 +1476,7 @@ class SpellDataGenerator(DataGenerator):
             ( 186183, 0 ),          # Assassination T18 2PC Nature Damage component
             ( 157957, 0 ),          # Shadow Reflection Dispatch
             ( 173458, 0 ),          # Shadow Reflection Backstab
+            ( 195627, 0 ),          # Free Pistol Shot proc for Saber Slash
         ),
 
         # Priest:

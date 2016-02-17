@@ -222,7 +222,7 @@ struct rogue_t : public player_t
     buff_t* killing_spree;
     buff_t* master_of_subtlety;
     buff_t* master_of_subtlety_passive;
-    buff_t* free_pistol_shot; // TODO: Not its real name, need to see in game what it is
+    buff_t* opportunity; // TODO: Not its real name, need to see in game what it is
     buff_t* shadow_dance;
     buff_t* shadowstep;
     buff_t* sleight_of_hand;
@@ -288,6 +288,7 @@ struct rogue_t : public player_t
     gain_t* premeditation;
     gain_t* seal_fate;
     gain_t* legendary_daggers;
+    gain_t* quick_draw;
   } gains;
 
   // Spec passives
@@ -2121,26 +2122,45 @@ struct killing_spree_t : public rogue_attack_t
 
 struct pistol_shot_t : public rogue_attack_t
 {
-    pistol_shot_t( rogue_t* p, const std::string& options_str ) :
-        rogue_attack_t( "pistol_shot", p, p -> find_specialization_spell( "Pistol Shot" ), options_str )
-    { }
+  pistol_shot_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "pistol_shot", p, p -> find_specialization_spell( "Pistol Shot" ), options_str )
+  { }
 
-    double cost() const override
+  double cost() const override
+  {
+    if ( p() -> buffs.opportunity -> check() )
     {
-      if ( p() -> buffs.free_pistol_shot -> check() )
-      {
-        return 0;
-      }
-
-      return rogue_attack_t::cost();
+      return 0;
     }
 
-    void execute() override
-    {
-      rogue_attack_t::execute();
+    return rogue_attack_t::cost();
+  }
 
-      p() -> buffs.free_pistol_shot -> expire();
+  double action_multiplier() const override
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    if ( p() -> talent.quick_draw -> ok() && p() -> buffs.opportunity -> up() )
+    {
+      m *= 1.0 + p() -> talent.quick_draw -> effectN( 1 ).percent();
     }
+
+    return m;
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    if ( p() -> talent.quick_draw -> ok() && p() -> buffs.opportunity -> check() )
+    {
+      p() -> trigger_combo_point_gain( nullptr,
+          static_cast<int>( p() -> talent.quick_draw -> effectN( 2 ).base_value() ),
+          p() -> gains.quick_draw );
+    }
+
+    p() -> buffs.opportunity -> expire();
+  }
 };
 
 // Run Through
@@ -2496,7 +2516,7 @@ struct saber_slash_t : public rogue_attack_t
 
     if ( result_is_hit( state -> result ) && ! saberslash_proc_event )
     {
-      if ( p() -> buffs.free_pistol_shot -> trigger() )
+      if ( p() -> buffs.opportunity -> trigger() )
       {
         saberslash_proc_event = new ( *sim ) saberslash_proc_event_t( p(), this, state -> target );
       }
@@ -4343,6 +4363,7 @@ void rogue_t::init_gains()
   gains.t17_2pc_subtlety        = get_gain( "t17_2pc_subtlety" );
   gains.t17_4pc_subtlety        = get_gain( "t17_4pc_subtlety" );
   gains.venomous_wounds         = get_gain( "venomous_vim"       );
+  gains.quick_draw = get_gain( "Quick Draw" );
 }
 
 // rogue_t::init_procs ======================================================
@@ -4458,8 +4479,8 @@ void rogue_t::create_buffs()
                               .affects_regen( true )
                               .add_invalidate( CACHE_ATTACK_SPEED )
                               .add_invalidate( sets.has_set_bonus( ROGUE_OUTLAW, T18, B4 ) ? CACHE_PLAYER_DAMAGE_MULTIPLIER : CACHE_NONE );
-  buffs.free_pistol_shot    = buff_creator_t( this, "free_pistol_shot" )
-                              .chance( spec.saber_slash -> effectN( 5 ).percent() );
+  buffs.opportunity    = buff_creator_t( this, "opportunity", find_spell( 195627 ) )
+                              .chance( spec.saber_slash -> effectN( 5 ).percent() + talent.swordmaster -> effectN( 1 ).percent() );
   buffs.feint               = buff_creator_t( this, "feint", find_specialization_spell( "Feint" ) )
     .duration( find_class_spell( "Feint" ) -> duration() );
   buffs.master_of_subtlety_passive = buff_creator_t( this, "master_of_subtlety_passive", talent.master_of_subtlety )
