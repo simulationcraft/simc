@@ -3,6 +3,9 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 /*
+NOTES:
+- to evaluate Combo Strikes in the APL, use "!prev_gcd.[ability]"
+
 TODO:
 
 GENERAL:
@@ -14,7 +17,6 @@ WINDWALKER:
 - Strike of the Windlord - make sure AoE is using the n^2 calculation or straight up AoE
 - Serenity - Double check if Strength of Xuen Artifact trait works with Serenity
 - Transfer of Power - Get actual duration and max stacks of the buff
-- Add expression for Combo Strike
 - Check if SEF uses Strike of the Windlord
 - Update Crosswind's targeting system.
 
@@ -1005,16 +1007,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
         state -> da_multiplier /= 1.0 + o() -> spec.way_of_the_monk_aa_damage -> effectN( 1 ).percent();
       }
 */
-    }
-
-    virtual timespan_t execute_time() const override
-    {
-      timespan_t t = sef_melee_attack_t::execute_time();
-
-//      if ( ! player -> dual_wield() )
-//        t *= 1.0 / ( 1.0 + o() -> spec.way_of_the_monk_aa_speed -> effectN( 1 ).percent() );
-
-      return t;
     }
 
     void execute() override
@@ -3109,10 +3101,6 @@ struct melee_t: public monk_melee_attack_t
   virtual timespan_t execute_time() const override
   {
     timespan_t t = monk_melee_attack_t::execute_time();
-
-/*    if ( p() -> main_hand_weapon.group() == WEAPON_2H )
-      t *= 1.0 / ( 1.0 + p() -> spec.way_of_the_monk_aa_speed -> effectN( 1 ).percent() );
-*/
 
     if ( p() -> aburaq && p() -> buff.swift_as_the_wind -> up() )
       t *= 1.0 / (1.0 + p() -> buff.swift_as_the_wind -> value() );
@@ -7160,21 +7148,6 @@ double monk_t::current_stagger_dot_remains()
   return remains;
 }
 
-// monk_t::convert_expression_action_to_enum =============================================
-
-/*combo_strikes_e monk_t::convert_expression_action_to_enum( action_t* action )
-{
-  std::string& action_name = action->name();
-  switch (action->name())
-  {
-    case "tiger_palm": return CS_TIGER_PALM; break;
-    default: return CS_NONE; break;
-  }
-}
-*/
-// TODO: Convert action_t* a to Combo Strike ENUM
-// TODO: Compare Combo Strike
-
 // monk_t::create_expression ==================================================
 
 expr_t* monk_t::create_expression( action_t* a, const std::string& name_str )
@@ -7249,12 +7222,6 @@ expr_t* monk_t::create_expression( action_t* a, const std::string& name_str )
     else if ( splits[1] == "remains" )
       return new stagger_remains_expr_t( *this );
   }
-
-/*  if ( splits.size() == 2 && splits[0] == "combo_strikes")
-  {
-
-  }
-  */
 
   return base_t::create_expression( a, name_str );
 }
