@@ -4,7 +4,7 @@ DBFilesClient\Achievement_Category.db2
 DBFilesClient\AdventureJournal.db2
 DBFilesClient\AdventureMapPOI.db2
 DBFilesClient\AnimKit.db2
-DBFilesClient\AnimKitBoneSet.dbc
+DBFilesClient\AnimKitBoneSet.db2
 DBFilesClient\AnimKitBoneSetAlias.db2
 DBFilesClient\AnimKitConfig.db2
 DBFilesClient\AnimKitConfigBoneSet.db2
@@ -12,7 +12,7 @@ DBFilesClient\AnimKitPriority.db2
 DBFilesClient\AnimKitSegment.db2
 DBFilesClient\AnimReplacement.db2
 DBFilesClient\AnimReplacementSet.db2
-DBFilesClient\AnimationData.dbc
+DBFilesClient\AnimationData.db2
 DBFilesClient\AreaGroupMember.db2
 DBFilesClient\AreaPOI.db2
 DBFilesClient\AreaPOIState.db2
@@ -32,7 +32,7 @@ DBFilesClient\ArtifactQuestXP.db2
 DBFilesClient\ArtifactUnlock.db2
 DBFilesClient\AuctionHouse.db2
 DBFilesClient\BankBagSlotPrices.db2
-DBFilesClient\BannedAddOns.dbc
+DBFilesClient\BannedAddOns.db2
 DBFilesClient\BarberShopStyle.db2
 DBFilesClient\BattlePetAbility.db2
 DBFilesClient\BattlePetAbilityEffect.db2
@@ -70,7 +70,7 @@ DBFilesClient\CharShipmentContainer.db2
 DBFilesClient\CharStartOutfit.db2
 DBFilesClient\CharTitles.db2
 DBFilesClient\CharacterFaceBoneSet.db2
-DBFilesClient\CharacterFacialHairStyles.dbc
+DBFilesClient\CharacterFacialHairStyles.db2
 DBFilesClient\CharacterLoadout.db2
 DBFilesClient\CharacterLoadoutItem.db2
 DBFilesClient\ChatChannels.db2
@@ -261,8 +261,6 @@ DBFilesClient\ItemSpec.db2
 DBFilesClient\ItemSpecOverride.db2
 DBFilesClient\ItemSubClass.db2
 DBFilesClient\ItemSubClassMask.db2
-DBFilesClient\ItemToBattlePetSpecies.db2
-DBFilesClient\ItemToMountSpell.db2
 DBFilesClient\ItemUpgrade.db2
 DBFilesClient\ItemVisualEffects.db2
 DBFilesClient\ItemVisuals.db2
@@ -292,7 +290,7 @@ DBFilesClient\LightParams.db2
 DBFilesClient\LightSkybox.db2
 DBFilesClient\LiquidMaterial.db2
 DBFilesClient\LiquidObject.db2
-DBFilesClient\LiquidType.dbc
+DBFilesClient\LiquidType.db2
 DBFilesClient\LoadingScreenTaxiSplines.db2
 DBFilesClient\LoadingScreens.db2
 DBFilesClient\Locale.db2
@@ -309,6 +307,7 @@ DBFilesClient\ManifestMP3.dbc
 DBFilesClient\Map.db2
 DBFilesClient\MapChallengeMode.db2
 DBFilesClient\MapDifficulty.db2
+DBFilesClient\MapDifficultyXCondition.db2
 DBFilesClient\MarketingPromotionsXLocale.db2
 DBFilesClient\Material.db2
 DBFilesClient\MinorTalent.db2
@@ -489,7 +488,7 @@ DBFilesClient\StringLookups.db2
 DBFilesClient\SummonProperties.db2
 DBFilesClient\TactKey.db2
 DBFilesClient\TactKeyLookup.db2
-DBFilesClient\Talent.dbc
+DBFilesClient\Talent.db2
 DBFilesClient\TaxiNodes.db2
 DBFilesClient\TaxiPath.db2
 DBFilesClient\TaxiPathNode.db2
@@ -518,7 +517,7 @@ DBFilesClient\UnitBlood.db2
 DBFilesClient\UnitBloodLevels.db2
 DBFilesClient\UnitCondition.db2
 DBFilesClient\UnitPowerBar.db2
-DBFilesClient\Vehicle.dbc
+DBFilesClient\Vehicle.db2
 DBFilesClient\VehicleSeat.db2
 DBFilesClient\VehicleUIIndSeat.db2
 DBFilesClient\VehicleUIIndicator.db2
@@ -542,11 +541,10 @@ DBFilesClient\WorldBossLockout.db2
 DBFilesClient\WorldChunkSounds.db2
 DBFilesClient\WorldEffect.db2
 DBFilesClient\WorldElapsedTimer.db2
-DBFilesClient\WorldMapArea.dbc
+DBFilesClient\WorldMapArea.db2
 DBFilesClient\WorldMapContinent.db2
 DBFilesClient\WorldMapOverlay.db2
 DBFilesClient\WorldMapTransforms.db2
-DBFilesClient\WorldState.dbc
 DBFilesClient\WorldStateExpression.db2
 DBFilesClient\WorldStateUI.db2
 DBFilesClient\WorldStateZoneSounds.db2
@@ -562,10 +560,6 @@ DBFilesClient\gtBattlePetTypeDamageMod.dbc
 DBFilesClient\gtBattlePetXP.dbc
 DBFilesClient\gtChallengeModeDamage.dbc
 DBFilesClient\gtChallengeModeHealth.dbc
-DBFilesClient\gtChanceToMeleeCrit.dbc
-DBFilesClient\gtChanceToMeleeCritBase.dbc
-DBFilesClient\gtChanceToSpellCrit.dbc
-DBFilesClient\gtChanceToSpellCritBase.dbc
 DBFilesClient\gtCombatRatings.dbc
 DBFilesClient\gtCombatRatingsMultByILvl.dbc
 DBFilesClient\gtHonorLevel.dbc
@@ -585,12 +579,10 @@ DBFilesClient\gtNpcTotalHpExp3.dbc
 DBFilesClient\gtNpcTotalHpExp4.dbc
 DBFilesClient\gtNpcTotalHpExp5.dbc
 DBFilesClient\gtNpcTotalHpExp6.dbc
-DBFilesClient\gtOCTBaseHPByClass.dbc
 DBFilesClient\gtOCTBaseMPByClass.dbc
 DBFilesClient\gtOCTHpPerStamina.dbc
 DBFilesClient\gtOCTLevelExperience.dbc
 DBFilesClient\gtRegenMPPerSpt.dbc
-DBFilesClient\gtResilienceDR.dbc
 DBFilesClient\gtSandboxScaling.dbc
 DBFilesClient\gtSpellScaling.dbc
 game.db2
