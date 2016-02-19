@@ -88,6 +88,12 @@ enum buff_refresh_behavior_e
   BUFF_REFRESH_CUSTOM,
 };
 
+enum buff_stack_behavior_e
+{
+  BUFF_STACK_DEFAULT,
+  BUFF_STACK_ASYNCHRONOUS,
+};
+
 enum movement_direction_e
 {
   MOVEMENT_UNKNOWN = -1,

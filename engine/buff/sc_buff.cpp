@@ -43,7 +43,11 @@ struct expiration_t : public buff_event_t
   virtual void execute() override
   {
     buff -> expiration = nullptr;
-    buff -> expire();
+
+    if ( buff -> stack_behavior == BUFF_STACK_ASYNCHRONOUS )
+      buff -> decrement();
+    else
+      buff -> expire();
   }
 };
 
@@ -339,6 +343,8 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   else
     refresh_behavior = params._refresh_behavior;
 
+  stack_behavior = params._stack_behavior;
+
   if ( params._refresh_duration_callback )
     refresh_duration_callback = params._refresh_duration_callback;
 
@@ -623,7 +629,8 @@ bool buff_t::trigger( int        stacks,
   if ( value == DEFAULT_VALUE() && default_value != DEFAULT_VALUE() )
     value = default_value;
 
-  if ( ! activated && player && player -> in_combat && sim -> default_aura_delay > timespan_t::zero() )
+  if ( ( ! activated || stack_behavior == BUFF_STACK_ASYNCHRONOUS ) && player
+    && player -> in_combat && sim -> default_aura_delay > timespan_t::zero() )
   {
     // In-game, procs that happen "close to eachother" are usually delayed into the
     // same time slot. We roughly model this by allowing procs that happen during the
@@ -690,7 +697,7 @@ void buff_t::increment( int        stacks,
 
   if ( _max_stack == 0 ) return;
 
-  if ( current_stack == 0 )
+  if ( current_stack == 0 || stack_behavior == BUFF_STACK_ASYNCHRONOUS )
   {
     start( stacks, value, duration );
   }
@@ -785,7 +792,7 @@ void buff_t::start( int        stacks,
   if ( _max_stack == 0 ) return;
 
 #ifndef NDEBUG
-  if ( current_stack != 0 )
+  if ( stack_behavior != BUFF_STACK_ASYNCHRONOUS && current_stack != 0 )
   {
     sim -> errorf( "buff_t::start assertion error current_stack is not zero, buff %s from %s.\n",
                    name_str.c_str(), source_name().c_str() );
@@ -1902,6 +1909,7 @@ void buff_creator_basics_t::init()
   _tick_time_behavior = BUFF_TICK_TIME_UNHASTED;
   _behavior = BUFF_TICK_NONE;
   _refresh_behavior = BUFF_REFRESH_NONE;
+  _stack_behavior = BUFF_STACK_DEFAULT;
   _default_value = buff_t::DEFAULT_VALUE();
   _affects_regen = -1;
   _initial_tick = false;

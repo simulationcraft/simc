@@ -364,8 +364,7 @@ public:
     buff_t* survival_instincts;
     buff_t* guardian_tier15_2pc;
     buff_t* guardian_tier17_4pc;
-    buff_t* ironfur; // proxy buff, manages stack count and mechanical effect
-    buff_t* ironfur_stack[9]; // individual buffs, manages timers
+    buff_t* ironfur;
 
     // Restoration
     buff_t* incarnation_tree;
@@ -1301,32 +1300,6 @@ struct celestial_alignment_buff_t : public druid_buff_t < buff_t >
     druid_buff_t<buff_t>::expire_override( stacks, duration );
 
     druid -> buff.star_power -> expire();
-  }
-};
-
-// Ironfur Buff =============================================================
-
-struct ironfur_buff_t : public druid_buff_t < buff_t >
-{
-  ironfur_buff_t( druid_t& p, const std::string& s ) :
-    base_t( p, buff_creator_t( &p, s, p.spec.ironfur )
-            .cd( timespan_t::zero() )
-            .quiet( true )
-            .duration( p.spec.ironfur -> duration() + p.talent.guardian_of_elune -> effectN( 1 ).time_value() ) )
-  {}
-
-  virtual void start( int stacks, double value, timespan_t duration ) override
-  {
-    druid_buff_t<buff_t>::start( stacks, value, duration );
-
-    p().buff.ironfur -> trigger();
-  }
-
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    druid_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
-
-    p().buff.ironfur -> decrement();
   }
 };
 
@@ -3655,36 +3628,6 @@ struct growl_t: public bear_attack_t
   }
 };
 
-// Ironfur ==================================================================
-
-struct ironfur_t : public bear_attack_t
-{
-  ironfur_t( druid_t* p, const std::string& options_str ) :
-    bear_attack_t( "ironfur", p, p -> spec.ironfur )
-  {
-    parse_options( options_str );
-
-    use_off_gcd = true;
-    harmful = may_miss = may_parry = may_dodge = may_crit = false;
-  }
-
-  virtual void execute() override
-  {
-    bear_attack_t::execute();
-
-    for ( size_t i = 0; i < 9; i++ )
-    {
-      if ( ! p() -> buff.ironfur_stack[ i ] -> check() )
-      {
-        p() -> buff.ironfur_stack[ i ] -> trigger();
-        return;
-      }
-    }
-
-    assert( "No ironfur_stack instance found to trigger!" );
-  }
-};
-
 // Lacerate DoT =============================================================
 
 struct lacerate_dot_t : public bear_attack_t
@@ -4908,6 +4851,27 @@ struct incarnation_t : public druid_spell_t
       p() -> cooldown.growl  -> reset( false );
       p() -> cooldown.maul   -> reset( false );
     }
+  }
+};
+
+// Ironfur ==================================================================
+
+struct ironfur_t : public druid_spell_t
+{
+  ironfur_t( druid_t* p, const std::string& options_str ) :
+    druid_spell_t( "ironfur", p, p -> spec.ironfur )
+  {
+    parse_options( options_str );
+
+    use_off_gcd = true;
+    harmful = may_miss = may_parry = may_dodge = may_crit = false;
+  }
+
+  virtual void execute() override
+  {
+    druid_spell_t::execute();
+
+    p() -> buff.ironfur -> trigger();
   }
 };
 
@@ -6452,17 +6416,12 @@ void druid_t::create_buffs()
   buff.guardian_tier17_4pc   = buff_creator_t( this, "guardian_tier17_4pc", find_spell( 177969 ) )
                                .default_value( find_spell( 177969 ) -> effectN( 1 ).percent() );
   buff.ironfur               = buff_creator_t( this, "ironfur", spec.ironfur )
-                               .duration( timespan_t::zero() )
+                               .duration( spec.ironfur -> duration() + talent.guardian_of_elune -> effectN( 1 ).time_value() + artifact.ursocs_endurance.time_value() )
                                .default_value( spec.ironfur -> effectN( 1 ).percent() )
                                .add_invalidate( CACHE_ARMOR )
-                               .max_stack( spec.ironfur -> max_stacks() + 2 ); // Just add two regardless of talents because why not.
-
-  for ( size_t i = 0; i < 9; i++ )
-  {
-    char s[50];
-    sprintf( s, "ironfur_%x", static_cast<unsigned>( 10 + i ) );
-    buff.ironfur_stack[i]    = new ironfur_buff_t( *this, s );
-  }
+                               .max_stack( 20 ) // many stacks, handle it
+                               .stack_behavior( BUFF_STACK_ASYNCHRONOUS )
+                               .cd( timespan_t::zero() );
 
   // Restoration
   buff.harmony               = buff_creator_t( this, "harmony", mastery.harmony -> ok() ? find_spell( 100977 ) : spell_data_t::not_found() );

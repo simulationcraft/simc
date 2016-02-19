@@ -590,6 +590,7 @@ protected:
   bool _initial_tick;
   buff_tick_time_e _tick_time_behavior;
   buff_refresh_behavior_e _refresh_behavior;
+  buff_stack_behavior_e _stack_behavior;
   buff_tick_callback_t _tick_callback;
   buff_refresh_duration_callback_t _refresh_duration_callback;
   std::vector<cache_e> _invalidate_list;
@@ -665,6 +666,8 @@ public:
   { _refresh_behavior = b; return *( static_cast<bufftype*>( this ) ); }
   bufftype& refresh_duration_callback( const buff_refresh_duration_callback_t& cb )
   { _refresh_behavior = BUFF_REFRESH_CUSTOM; _refresh_duration_callback = cb; return *( static_cast<bufftype*>( this ) ); }
+  bufftype& stack_behavior( buff_stack_behavior_e b )
+  { _stack_behavior = b; return *( static_cast<bufftype*>( this ) ); }
 };
 
 struct buff_creator_t : public buff_creator_helper_t<buff_creator_t>
@@ -826,6 +829,7 @@ public:
 
   buff_refresh_behavior_e refresh_behavior;
   buff_refresh_duration_callback_t refresh_duration_callback;
+  buff_stack_behavior_e stack_behavior;
 
   // Ticking buff values
   unsigned current_tick;
