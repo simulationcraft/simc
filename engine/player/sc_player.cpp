@@ -8695,22 +8695,22 @@ expr_t* player_t::create_expression( action_t* a,
   }
   else if ( splits.size() == 3 && splits[ 0 ] == "artifact" && ( splits[ 2 ] == "enabled" || splits[ 2 ] == "rank" ) )
   {
-    artifact_power_t* power = const_cast< artifact_power_t* >( &find_artifact_spell( splits[ 1 ], true ) );
+    artifact_power_t power = find_artifact_spell( splits[ 1 ], true );
 
     if ( splits[ 2 ] == "enabled" )
     {
       if ( sim -> optimize_expressions )
-        return expr_t::create_constant( expression_str, ( power && power -> rank() > 0 ) ? 1.0 : 0.0 );
+        return expr_t::create_constant( expression_str, power.rank() > 0 ? 1.0 : 0.0 );
       else
       {
         struct ap_enabled_expr_t : public player_expr_t
         {
-          artifact_power_t* ap;
+          bool enabled;
 
-          ap_enabled_expr_t( const std::string& name, player_t& p, artifact_power_t* a ) :
-            player_expr_t( name, p ), ap( a ) {}
-          virtual double evaluate() override
-          { return ( ap -> rank() > 0 ) ? 1.0 : 0.0; }
+          ap_enabled_expr_t( const std::string& name, player_t& p, const artifact_power_t& a ) :
+            player_expr_t( name, p ), enabled( a.rank() > 0 ) {}
+          double evaluate() override
+          { return enabled ? 1.0 : 0.0; }
         };
 
         return new ap_enabled_expr_t( expression_str, *this, power );
@@ -8719,17 +8719,17 @@ expr_t* player_t::create_expression( action_t* a,
     else if ( splits[ 2 ] == "rank" )
     {
       if ( sim -> optimize_expressions )
-        return expr_t::create_constant( expression_str, power ? power -> rank() : 0.0 );
+        return expr_t::create_constant( expression_str, power.rank() );
       else
       {
         struct ap_rank_expr_t : public player_expr_t
         {
-          artifact_power_t* ap;
+          double rank;
 
-          ap_rank_expr_t( const std::string& name, player_t& p, artifact_power_t* a ) :
-            player_expr_t( name, p ), ap( a ) {}
-          virtual double evaluate() override
-          { return ap ? ap -> rank() : 0.0; }
+          ap_rank_expr_t( const std::string& name, player_t& p, const artifact_power_t& a ) :
+            player_expr_t( name, p ), rank( a.rank() ) {}
+          double evaluate() override
+          { return rank; }
         };
 
         return new ap_rank_expr_t( expression_str, *this, power );
