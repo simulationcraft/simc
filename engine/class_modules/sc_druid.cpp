@@ -272,6 +272,7 @@ public:
   struct active_actions_t
   {
     bear_attacks::bear_attack_t*  blood_claws;
+    bear_attacks::bear_attack_t*  rage_of_the_sleeper;
     brambles_t*                   brambles;
     stalwart_guardian_t*          stalwart_guardian;
     cat_attacks::gushing_wound_t* gushing_wound;
@@ -357,6 +358,7 @@ public:
     buff_t* incarnation_bear;
     buff_t* mark_of_ursol;
     buff_t* pulverize;
+    buff_t* rage_of_the_sleeper;
     buff_t* survival_instincts;
     buff_t* guardian_tier15_2pc;
     buff_t* guardian_tier17_4pc;
@@ -427,6 +429,7 @@ public:
     gain_t* bristling_fur;
     gain_t* gore;
     gain_t* stalwart_guardian;
+    gain_t* rage_of_the_sleeper;
     gain_t* rage_refund;
     gain_t* guardian_tier17_2pc;
     gain_t* guardian_tier18_2pc;
@@ -788,6 +791,7 @@ public:
   virtual void      create_options() override;
   virtual action_t* create_proc_action( const std::string& name, const special_effect_t& ) override;
   virtual std::string      create_profile( save_e type = SAVE_ALL ) override;
+  virtual double    resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
 
   void              apl_precombat();
   void              apl_default();
@@ -1463,16 +1467,6 @@ public:
       return true;
     }
     return false;
-  }
-
-  virtual expr_t* create_expression( const std::string& name_str )
-  {
-    if ( util::str_compare_ci( name_str, "active_dot.starfall" ) )
-    {
-      return make_ref_expr( "starfall", p() -> active_starfalls );
-    }
-
-    return ab::create_expression( name_str );
   }
 };
 
@@ -3826,6 +3820,39 @@ struct pulverize_t : public bear_attack_t
   }
 };
 
+// Rage of the Sleeper ======================================================
+
+struct rage_of_the_sleeper_t : public bear_attack_t
+{
+  rage_of_the_sleeper_t( druid_t* p, const std::string& options_str ) :
+    bear_attack_t( "rage_of_the_sleeper", p, &p -> artifact.rage_of_the_sleeper.data() )
+  {
+    parse_options( options_str );
+
+    use_off_gcd = true;
+    harmful = may_miss = may_parry = may_dodge = may_crit = false;
+  }
+
+  virtual void execute() override
+  {
+    bear_attack_t::execute();
+
+    p() -> buff.rage_of_the_sleeper -> trigger();
+  }
+};
+
+struct rage_of_the_sleeper_reflect_t : public bear_attack_t
+{
+  rage_of_the_sleeper_reflect_t( druid_t* p ) :
+    bear_attack_t( "rage_of_the_sleeper_reflect", p, spell_data_t::nil() )
+  {
+    background = true;
+    may_block = may_dodge = may_parry = may_miss = may_crit = false;
+    base_multiplier *= p -> artifact.rage_of_the_sleeper.data().effectN( 3 ).percent();
+    school = SCHOOL_NATURE; // school gets set on execute, but let's make it nature so the pie chart is pretty
+  }
+};
+
 // Thrash (Bear) ============================================================
 
 struct thrash_bear_t : public bear_attack_t
@@ -5857,6 +5884,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "sunfire"                ) return new                sunfire_t( this, options_str );
   if ( name == "moonkin_form"           ) return new           moonkin_form_t( this, options_str );
   if ( name == "pulverize"              ) return new              pulverize_t( this, options_str );
+  if ( name == "rage_of_the_sleeper"    ) return new    rage_of_the_sleeper_t( this, options_str );
   if ( name == "rake"                   ) return new                   rake_t( this, options_str );
   if ( name == "renewal"                ) return new                renewal_t( this, options_str );
   if ( name == "regrowth"               ) return new               regrowth_t( this, options_str );
@@ -6176,6 +6204,8 @@ void druid_t::init_spells()
   }
   if ( talent.galactic_guardian -> ok() )
     active.galactic_guardian  = new spells::moonfire_t( this, "" );
+  if ( artifact.rage_of_the_sleeper.rank() )
+    active.rage_of_the_sleeper = new bear_attacks::rage_of_the_sleeper_reflect_t( this );
 }
 
 // druid_t::init_base =======================================================
@@ -6379,15 +6409,15 @@ void druid_t::create_buffs()
   buff.pulverize             = buff_creator_t( this, "pulverize", find_spell( 158792 ) )
                                .default_value( find_spell( 158792 ) -> effectN( 1 ).percent() )
                                .refresh_behavior( BUFF_REFRESH_PANDEMIC );
+  buff.rage_of_the_sleeper   = buff_creator_t( this, "rage_of_the_sleeper", &artifact.rage_of_the_sleeper.data() )
+                               .chance( 1.0 ) // spell data says 10% for no apparent reason
+                               .cd( timespan_t::zero() );
   buff.survival_instincts    = buff_creator_t( this, "survival_instincts", find_specialization_spell( "Survival Instincts" ) )
                                .cd( timespan_t::zero() )
                                .default_value( 0.0 - find_specialization_spell( "Survival Instincts" ) -> effectN( 1 ).percent() )
                                .duration( find_specialization_spell( "Survival Instincts" ) -> duration() + artifact.honed_instincts.time_value() );
   buff.guardian_tier15_2pc   = buff_creator_t( this, "guardian_tier15_2pc", find_spell( 138217 ) );
   buff.guardian_tier17_4pc   = buff_creator_t( this, "guardian_tier17_4pc", find_spell( 177969 ) )
-                               .chance( find_spell( 177969 ) -> proc_chance() )
-                               .duration( find_spell( 177969 ) -> duration() )
-                               .max_stack( find_spell( 177969 ) -> max_stacks() )
                                .default_value( find_spell( 177969 ) -> effectN( 1 ).percent() );
   buff.ironfur               = buff_creator_t( this, "ironfur", spec.ironfur )
                                .duration( timespan_t::zero() )
@@ -6872,6 +6902,7 @@ void druid_t::init_gains()
   gain.brambles              = get_gain( "brambles"              );
   gain.bristling_fur         = get_gain( "bristling_fur"         );
   gain.gore                  = get_gain( "gore"                  );
+  gain.rage_of_the_sleeper   = get_gain( "rage_of_the_sleeper"   );
   gain.rage_refund           = get_gain( "rage_refund"           );
   gain.stalwart_guardian     = get_gain( "stalwart_guardian"     );
 
@@ -7440,6 +7471,10 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
 
     return new moon_stage_expr_t( *this, name_str );
   }
+  else if ( util::str_compare_ci( name_str, "active_dot.starfall" ) )
+  {
+    return make_ref_expr( "starfall", active_starfalls );
+  }
 
   return player_t::create_expression( a, name_str );
 }
@@ -7615,6 +7650,15 @@ void druid_t::target_mitigation( school_e school, dmg_e type, action_state_t* s 
       * get_target_data( s -> action -> player ) -> dots.blood_claws -> current_stack();
 
   player_t::target_mitigation( school, type, s );
+
+  if ( s -> action -> special && buff.rage_of_the_sleeper -> up() ) // TOCHECK
+  {
+    active.rage_of_the_sleeper -> base_dd_min = s -> result_amount;
+    active.rage_of_the_sleeper -> target = s -> action -> player;
+    active.rage_of_the_sleeper -> school = s -> action -> school; // TOCHECK
+    active.rage_of_the_sleeper -> execute();
+    s -> result_amount *= 1.0 - buff.rage_of_the_sleeper -> data().effectN( 3 ).percent();
+  }
 }
 
 // druid_t::assess_damage ===================================================
@@ -7673,7 +7717,25 @@ void druid_t::assess_heal( school_e school,
   if ( mastery.natures_guardian -> ok() )
     s -> result_total *= 1.0 + cache.mastery_value();
 
+  if ( buff.rage_of_the_sleeper -> up() )
+  {
+    gain.rage_of_the_sleeper -> add( RESOURCE_HEALTH, 0, s -> result_total * buff.rage_of_the_sleeper -> data().effectN( 2 ).percent() );
+    s -> result_total *= 1.0 + buff.rage_of_the_sleeper -> data().effectN( 2 ).percent();
+  }
+
   player_t::assess_heal( school, dmg_type, s );
+}
+
+// druid_t::resource_gain ===================================================
+
+double druid_t::resource_gain( resource_e rt, double amount, gain_t* g, action_t* a )
+{
+  double result = player_t::resource_gain( rt, amount, g, a );
+
+  if ( rt == RESOURCE_RAGE && buff.rage_of_the_sleeper -> up() )
+    player_t::resource_gain( rt, amount * buff.rage_of_the_sleeper -> data().effectN( 4 ).percent(), gain.rage_of_the_sleeper );
+
+  return result;
 }
 
 druid_td_t::druid_td_t( player_t& target, druid_t& source )
