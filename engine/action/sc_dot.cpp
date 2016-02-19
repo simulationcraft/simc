@@ -16,6 +16,8 @@ dot_t::dot_t( const std::string& n, player_t* t, player_t* s ) :
   current_duration( timespan_t::zero() ),
   last_start( timespan_t::min() ),
   extended_time( timespan_t::zero() ),
+  reduced_time( timespan_t::zero() ),
+  stack( 0 ),
   tick_event( nullptr ),
   end_event( nullptr ),
   last_tick_factor( -1.0 ),
@@ -154,6 +156,7 @@ void dot_t::reset()
   time_to_tick = timespan_t::zero();
   ticking = false;
   current_tick = 0;
+  stack = 0;
   extended_time = timespan_t::zero();
   ticking = false;
   miss_time = timespan_t::min();
@@ -276,6 +279,7 @@ void dot_t::copy( player_t* other_target, dot_copy_e copy_type )
     other_dot -> current_duration = new_duration;
     other_dot -> current_tick = 0;
     other_dot -> extended_time = timespan_t::zero();
+    other_dot -> stack = stack;
     other_dot -> time_to_tick = time_to_tick;
     other_dot -> num_ticks = as<int>( std::ceil( computed_tick_duration / time_to_tick ) );
 
@@ -371,6 +375,7 @@ void dot_t::copy( dot_t* other_dot )
   other_dot -> current_duration = new_duration;
   other_dot -> current_tick = 0;
   other_dot -> extended_time = timespan_t::zero();
+  other_dot -> stack = stack;
   other_dot -> time_to_tick = time_to_tick;
   other_dot -> num_ticks = as<int>( std::ceil( computed_tick_duration / time_to_tick ) );
 
