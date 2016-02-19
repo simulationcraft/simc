@@ -34,8 +34,8 @@ namespace { // UNNAMED NAMESPACE
   Statistics?
   Primal Fury gone or bugged?
   Incarnation CD modifier rework
-  Gore
   Frenzied Regeneration ignite
+  Embrace of the Nightmare rage gain?
 
   Resto =====================================================================
   All the things
@@ -665,10 +665,10 @@ public:
 
     // Guardian -- Claws of Ursoc
     artifact_power_t adaptive_fur;
+    artifact_power_t embrace_of_the_nightmare;
     artifact_power_t rage_of_the_sleeper;
 
     // NYI
-    artifact_power_t embrace_of_the_nightmare;
     artifact_power_t reinforced_fur;
     artifact_power_t mauler;
     artifact_power_t jagged_claws;
@@ -766,6 +766,7 @@ public:
   virtual double    composite_block() const override { return 0; }
   virtual double    composite_crit_avoidance() const override;
   virtual double    composite_dodge() const override;
+  virtual double    composite_leech() const override;
   virtual double    composite_melee_attack_power() const override;
   virtual double    composite_melee_crit() const override;
   virtual double    composite_melee_expertise( const weapon_t* ) const override;
@@ -6440,7 +6441,9 @@ void druid_t::create_buffs()
                                .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   buff.rage_of_the_sleeper   = buff_creator_t( this, "rage_of_the_sleeper", &artifact.rage_of_the_sleeper.data() )
                                .chance( 1.0 ) // spell data says 10% for no apparent reason
-                               .cd( timespan_t::zero() );
+                               .cd( timespan_t::zero() )
+                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                               .add_invalidate( CACHE_LEECH );
   buff.survival_instincts    = buff_creator_t( this, "survival_instincts", find_specialization_spell( "Survival Instincts" ) )
                                .cd( timespan_t::zero() )
                                .default_value( 0.0 - find_specialization_spell( "Survival Instincts" ) -> effectN( 1 ).percent() )
@@ -7276,6 +7279,9 @@ double druid_t::composite_player_multiplier( school_e school ) const
 
   m *= 1.0 + buff.feral_instinct -> check_value();
 
+  if ( artifact.embrace_of_the_nightmare.rank() )
+    m *= 1.0 + buff.rage_of_the_sleeper -> check() * buff.rage_of_the_sleeper -> data().effectN( 7 ).percent();
+
   return m;
 }
 
@@ -7462,6 +7468,18 @@ double druid_t::composite_dodge() const
   d += buff.protection_of_ashamane -> check_value();
 
   return d;
+}
+
+// druid_t::composite_leech =================================================
+
+double druid_t::composite_leech() const
+{
+  double l = player_t::composite_leech();
+
+  if ( artifact.embrace_of_the_nightmare.rank() )
+    l += buff.rage_of_the_sleeper -> check() * buff.rage_of_the_sleeper -> data().effectN( 8 ).percent();
+
+  return l;
 }
 
 // druid_t::create_expression ===============================================
