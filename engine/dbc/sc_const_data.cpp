@@ -814,12 +814,15 @@ double dbc_t::melee_crit_base( player_e t, unsigned level ) const
   uint32_t class_id = util::class_id( t );
 
   assert( class_id < dbc_t::class_max_size() && level > 0 && level <= MAX_SCALING_LEVEL );
+  /*
 #if SC_USE_PTR
   return ptr ? __ptr_gt_chance_to_melee_crit_base[ class_id ][ level - 1 ]
     : __gt_chance_to_melee_crit_base[ class_id ][ level - 1 ];
 #else
   return __gt_chance_to_melee_crit_base[ class_id ][ level - 1 ];
 #endif
+  */
+  return 0;
 }
 
 double dbc_t::melee_crit_base( pet_e t, unsigned level ) const
@@ -832,12 +835,15 @@ double dbc_t::spell_crit_base( player_e t, unsigned level ) const
   uint32_t class_id = util::class_id( t );
 
   assert( class_id < dbc_t::class_max_size() && level > 0 && level <= MAX_SCALING_LEVEL );
+  /*
 #if SC_USE_PTR
   return ptr ? __ptr_gt_chance_to_spell_crit_base[ class_id ][ level - 1 ]
              : __gt_chance_to_spell_crit_base[ class_id ][ level - 1 ];
 #else
   return __gt_chance_to_spell_crit_base[ class_id ][ level - 1 ];
 #endif
+  */
+  return 0;
 }
  
 double dbc_t::spell_crit_base( pet_e t, unsigned level ) const
@@ -970,12 +976,15 @@ double dbc_t::melee_crit_scaling( player_e t, unsigned level ) const
   uint32_t class_id = util::class_id( t );
 
   assert( class_id < dbc_t::class_max_size() && level > 0 && level <= MAX_SCALING_LEVEL );
+  /*
 #if SC_USE_PTR
   return ptr ? __ptr_gt_chance_to_melee_crit[ class_id ][ level - 1 ]
              : __gt_chance_to_melee_crit[ class_id ][ level - 1 ];
 #else
   return __gt_chance_to_melee_crit[ class_id ][ level - 1 ];
 #endif
+  */
+  return 0;
 }
  
 double dbc_t::melee_crit_scaling( pet_e t, unsigned level ) const
@@ -988,12 +997,15 @@ double dbc_t::spell_crit_scaling( player_e t, unsigned level ) const
   uint32_t class_id = util::class_id( t );
 
   assert( class_id < dbc_t::class_max_size() && level > 0 && level <= MAX_SCALING_LEVEL );
+  /*
 #if SC_USE_PTR
   return ptr ? __ptr_gt_chance_to_spell_crit[ class_id ][ level - 1 ]
              : __gt_chance_to_spell_crit[ class_id ][ level - 1 ];
 #else
   return __gt_chance_to_spell_crit[ class_id ][ level - 1 ];
 #endif
+  */
+  return 0;
 }
  
 double dbc_t::spell_crit_scaling( pet_e t, unsigned level ) const
@@ -1057,12 +1069,15 @@ double dbc_t::health_base( player_e t, unsigned level ) const
   uint32_t class_id = util::class_id( t );
 
   assert( class_id < MAX_CLASS && level > 0 && level <= MAX_SCALING_LEVEL );
+  /*
 #if SC_USE_PTR
   return ptr ? __ptr_gt_octbase_hpby_class[ class_id ][ level - 1 ]
              : __gt_octbase_hpby_class[ class_id ][ level - 1 ];
 #else
   return __gt_octbase_hpby_class[ class_id ][ level - 1 ];
 #endif
+  */
+  return 0;
 }
 
 double dbc_t::resource_base( player_e t, unsigned level ) const

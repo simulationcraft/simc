@@ -357,7 +357,7 @@ elif options.type == 'scale':
         sys.exit(1)
     g.generate()
 
-    tables = [ 'gtChanceToMeleeCritBase', 'gtChanceToSpellCritBase', 'gtChanceToMeleeCrit', 'gtChanceToSpellCrit', 'gtRegenMPPerSpt', 'gtOCTBaseHPByClass', 'gtOCTBaseMPByClass' ]
+    tables = [ 'gtRegenMPPerSpt', 'gtOCTBaseMPByClass' ]
     g = dbc.generator.ClassScalingDataGenerator(options, tables)
     if not g.initialize():
         sys.exit(1)

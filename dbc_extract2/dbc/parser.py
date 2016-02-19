@@ -24,7 +24,7 @@ class DBCParser(object):
         else:
             table_name = os.path.basename(self._fname).split('.')[0].replace('-', '_')
 
-        if not self._options.raw and '%s' % table_name in dir(dbc.data):
+        if not self._options.raw and self._options.type != 'header' and '%s' % table_name in dir(dbc.data):
             self._class = getattr(dbc.data, '%s' % table_name)
 
     # DBC IDs in an idblock + potential ID cloning
@@ -133,9 +133,9 @@ class DBCParser(object):
         self._records, self._fields, self._record_size, self._string_block_size = _BASE_HEADER.unpack_from(self._data, offset)
         offset += _BASE_HEADER.size
 
-        if self._class and self._record_size != self._class._parser.size:
-            raise Exception('Invalid data format size in %s, record_size=%u, dataformat_size=%u' % (
-                self._fname, self._record_size, self._class._parser.size))
+        #if self._class and self._record_size != self._class._parser.size:
+        #    raise Exception('Invalid data format size in %s, record_size=%u, dataformat_size=%u' % (
+        #        self._fname, self._record_size, self._class._parser.size))
 
         if self._magic in [b'WDB2', b'WDB3', b'WCH4', b'WDB4']:
             self._table_hash, self._build, self._timestamp = _DB_HEADER_1.unpack_from(self._data, offset)
