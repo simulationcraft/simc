@@ -2483,19 +2483,9 @@ struct rockbiter_t : public shaman_spell_t
   rockbiter_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "rockbiter", player, player -> find_specialization_spell( "Rockbiter" ), options_str )
   {
-    maelstrom_gain += player -> talent.spiritual_resonance -> effectN( 1 ).base_value();
+    maelstrom_gain += player -> talent.spiritual_resonance -> effectN( 1 ).base_value() +
+                      player -> artifact.gathering_of_the_maelstrom.value();
     base_multiplier *= 1.0 + player -> artifact.surge_of_elements.percent();
-  }
-
-  double composite_maelstrom_gain_coefficient( const action_state_t* state ) const override
-  {
-    double m = shaman_spell_t::composite_maelstrom_gain_coefficient( state );
-    if ( rng().roll( p() -> artifact.gathering_of_the_maelstrom.percent() ) )
-    {
-      m *= 2.0;
-    }
-
-    return m;
   }
 
   void execute() override
