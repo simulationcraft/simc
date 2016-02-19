@@ -155,7 +155,6 @@ public:
     buff_t* tidal_waves;
     buff_t* focus_of_the_elements;
     buff_t* feral_spirit;
-    haste_buff_t* feral_spirit2;
     buff_t* t18_4pc_elemental;
     buff_t* gathering_vortex;
 
@@ -3329,7 +3328,6 @@ struct feral_spirit_spell_t : public shaman_spell_t
     }
 
     p() -> buff.feral_spirit -> trigger();
-    p() -> buff.feral_spirit2 -> trigger();
   }
 };
 
@@ -5179,12 +5177,6 @@ void shaman_t::create_buffs()
   buff.focus_of_the_elements = buff_creator_t( this, "focus_of_the_elements", find_spell( 167205 ) )
                                .chance( static_cast< double >( sets.has_set_bonus( SHAMAN_ELEMENTAL, T17, B2 ) ) );
   buff.feral_spirit          = buff_creator_t( this, "t17_4pc_melee", sets.set( SHAMAN_ENHANCEMENT, T17, B4 ) -> effectN( 1 ).trigger() );
-  buff.feral_spirit2         = haste_buff_creator_t( this, "feral_spirit", find_specialization_spell( "Feral Spirit" ) -> effectN( 2 ).trigger() )
-                               .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
-                                     double g = b -> data().effectN( 1 ).base_value();
-                                     g += this -> talent.spiritual_resonance -> effectN( 2 ).base_value();
-                                     this -> resource_gain( RESOURCE_MAELSTROM, g, this -> gain.feral_spirit );
-                                   });
 
   buff.gathering_vortex      = buff_creator_t( this, "gathering_vortex", find_spell( 189078 ) )
                                .max_stack( sets.has_set_bonus( SHAMAN_ELEMENTAL, T18, B4 )
@@ -5667,11 +5659,6 @@ double shaman_t::composite_spell_haste() const
 
   h *= 1.0 / ( 1.0 + buff.t18_4pc_elemental -> stack_value() );
 
-  if ( buff.feral_spirit2 -> up() )
-  {
-    h *= 1.0 / ( 1.0 + buff.feral_spirit2 -> data().effectN( 2 ).percent() );
-  }
-
   if ( buff.master_of_the_elements -> check() )
   {
     h *= 1.0 / ( 1.0 + buff.master_of_the_elements -> stack_value() );
@@ -5748,11 +5735,6 @@ double shaman_t::composite_melee_haste() const
 
   if ( buff.tier13_4pc_healer -> up() )
     h *= 1.0 / ( 1.0 + buff.tier13_4pc_healer -> data().effectN( 1 ).percent() );
-
-  if ( buff.feral_spirit2 -> up() )
-  {
-    h *= 1.0 / ( 1.0 + buff.feral_spirit2 -> data().effectN( 2 ).percent() );
-  }
 
   if ( buff.master_of_the_elements -> check() )
   {
