@@ -178,7 +178,6 @@ public:
     haste_buff_t* wind_strikes;
     buff_t* gathering_storms;
     buff_t* fire_empowered;
-    buff_t* lava_dredger;
     buff_t* ghost_wolf;
     buff_t* elemental_focus;
     buff_t* earth_surge;
@@ -2291,32 +2290,6 @@ struct lava_lash_t : public shaman_attack_t
     }
   }
 
-  double cost() const override
-  {
-    if ( background )
-    {
-      return 0;
-    }
-
-    return shaman_attack_t::cost();
-  }
-
-  void execute() override
-  {
-    shaman_attack_t::execute();
-
-    if ( p() -> buff.lava_dredger -> up() )
-    {
-      background = dual = true;
-      schedule_execute();
-      p() -> buff.lava_dredger -> decrement();
-    }
-    else
-    {
-      background = dual = false;
-    }
-  }
-
   void impact( action_state_t* state ) override
   {
     shaman_attack_t::impact( state );
@@ -2332,13 +2305,6 @@ struct lava_lash_t : public shaman_attack_t
       p() -> doom_vortex -> target = state -> target;
       p() -> doom_vortex -> schedule_execute();
     }
-  }
-
-  void reset()
-  {
-    shaman_attack_t::reset();
-
-    background = dual = false;
   }
 };
 
@@ -5214,7 +5180,6 @@ void shaman_t::create_buffs()
                       .default_value( 1.0 / ( 1.0 + artifact.wind_strikes.percent() ) );
   buff.gathering_storms = buff_creator_t( this, "gathering_storms", find_spell( 198300 ) );
   buff.fire_empowered = buff_creator_t( this, "fire_empowered", find_spell( 193774 ) );
-  buff.lava_dredger = buff_creator_t( this, "lava_dredger", find_spell( 198830 ) );
   buff.ghost_wolf = buff_creator_t( this, "ghost_wolf", find_class_spell( "Ghost Wolf" ) )
                     .period( artifact.spirit_of_the_maelstrom.rank() ? find_spell( 198240 ) -> effectN( 1 ).period() : timespan_t::min() )
                     .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
@@ -6358,8 +6323,8 @@ static void doomhammer( special_effect_t& effect )
 
     void trigger( action_t* a, void* call_data ) override
     {
-      // Proc on Rockbiter and Flametongue (primary buttonpress) only
-      if ( a -> id != 193786 && a -> id != 193796 )
+      // Proc on Rockbiter only
+      if ( a -> id != 193786 )
       {
         return;
       }
@@ -6369,15 +6334,11 @@ static void doomhammer( special_effect_t& effect )
 
     void execute( action_t* a, action_state_t* state ) override
     {
-      shaman_t* shaman = debug_cast<shaman_t*>( state -> action -> player );
       switch ( a -> id )
       {
         case 193786:
           earthen_might -> target = state -> target;
           earthen_might -> schedule_execute();
-          break;
-        case 193796:
-          shaman -> buff.lava_dredger -> trigger();
           break;
         default:
           break;
