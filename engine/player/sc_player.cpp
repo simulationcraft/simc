@@ -7752,7 +7752,7 @@ const spell_data_t* player_t::find_specialization_spell( const std::string& name
 
 // player_t::find_artifact_spell ==========================================
 
-artifact_power_t player_t::find_artifact_spell( const std::string& name ) const
+artifact_power_t player_t::find_artifact_spell( const std::string& name, bool tokenized ) const
 {
   if ( ! artifact_enabled() )
   {
@@ -7779,7 +7779,11 @@ artifact_power_t player_t::find_artifact_spell( const std::string& name ) const
       continue;
     }
 
-    if ( util::str_compare_ci( name, power -> name ) )
+    std::string power_name = power -> name;
+    if ( tokenized )
+      util::tokenize( power_name );
+
+    if ( util::str_compare_ci( name, power_name ) )
     {
       power_data = power;
       break;
@@ -8668,26 +8672,69 @@ expr_t* player_t::create_expression( action_t* a,
       { return ( s && s -> ok() ); }
     };
 
-    if ( splits[ 2 ] != "enabled"  )
+    if ( splits[ 2 ] != "enabled" )
     {
       return 0;
     }
 
     spell_data_t* s;
 
-    if ( splits[ 0 ] == "glyph" )
+    if ( splits[ 0 ] == "talent" )
     {
-      s = const_cast< spell_data_t* >( find_glyph_spell( splits[ 1 ] ) );
+      s = const_cast< spell_data_t* >( find_talent_spell( splits[ 1 ], std::string(), specialization(), true ) );
     }
     else
     {
-      s = const_cast< spell_data_t* >( find_talent_spell( splits[ 1 ], std::string(), specialization(), true ) );
+      s = const_cast< spell_data_t* >( find_glyph_spell( splits[ 1 ] ) );
     }
 
     if( sim -> optimize_expressions )
       return expr_t::create_constant( expression_str, ( s && s -> ok() ) ? 1.0 : 0.0 );
     else
       return new s_expr_t( expression_str, *this, s );
+  }
+  else if ( splits.size() == 3 && splits[ 0 ] == "artifact" && ( splits[ 2 ] == "enabled" || splits[ 2 ] == "rank" ) )
+  {
+    artifact_power_t* power = const_cast< artifact_power_t* >( &find_artifact_spell( splits[ 1 ], true ) );
+
+    if ( splits[ 2 ] == "enabled" )
+    {
+      if ( sim -> optimize_expressions )
+        return expr_t::create_constant( expression_str, ( power && power -> rank() > 0 ) ? 1.0 : 0.0 );
+      else
+      {
+        struct ap_enabled_expr_t : public player_expr_t
+        {
+          artifact_power_t* ap;
+
+          ap_enabled_expr_t( const std::string& name, player_t& p, artifact_power_t* a ) :
+            player_expr_t( name, p ), ap( a ) {}
+          virtual double evaluate() override
+          { return ( ap -> rank() > 0 ) ? 1.0 : 0.0; }
+        };
+
+        return new ap_enabled_expr_t( expression_str, *this, power );
+      }
+    }
+    else if ( splits[ 2 ] == "rank" )
+    {
+      if ( sim -> optimize_expressions )
+        return expr_t::create_constant( expression_str, power ? power -> rank() : 0.0 );
+      else
+      {
+        struct ap_rank_expr_t : public player_expr_t
+        {
+          artifact_power_t* ap;
+
+          ap_rank_expr_t( const std::string& name, player_t& p, artifact_power_t* a ) :
+            player_expr_t( name, p ), ap( a ) {}
+          virtual double evaluate() override
+          { return ap ? ap -> rank() : 0.0; }
+        };
+
+        return new ap_rank_expr_t( expression_str, *this, power );
+      }
+    }
   }
   else if ( ( splits.size() == 3 && splits[ 0 ] == "action" ) || splits[ 0 ] == "in_flight" || splits[ 0 ] == "in_flight_to_target" )
   {

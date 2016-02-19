@@ -649,9 +649,8 @@ expr_t* dot_t::create_expression( action_t* action,
     {
       dot_stack_expr_t( dot_t* d, action_t* a, bool dynamic ) :
         dot_expr_t( "dot_stack", d, a, dynamic ) {}
-      virtual double evaluate() override {
-        return dot() -> current_stack();
-      }
+      virtual double evaluate() override
+      { return dot() -> current_stack(); }
     };
     return new dot_stack_expr_t( this, action, dynamic );
   }

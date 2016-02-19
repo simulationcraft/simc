@@ -4109,7 +4109,7 @@ struct player_t : public actor_t
   const spell_data_t* find_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_spell( const unsigned int id, const std::string& token = std::string() ) const;
 
-  artifact_power_t find_artifact_spell( const std::string& name ) const;
+  artifact_power_t find_artifact_spell( const std::string& name, bool tokenized = false ) const;
 
   virtual expr_t* create_expression( action_t*, const std::string& name );
   expr_t* create_resource_expression( const std::string& name );
