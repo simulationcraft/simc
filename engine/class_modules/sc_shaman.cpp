@@ -1181,10 +1181,12 @@ struct feral_spirit_pet_t : public pet_t
   struct melee_t : public melee_attack_t
   {
     windfury_t* wf;
+    const spell_data_t* maelstrom;
 
     melee_t( feral_spirit_pet_t* player ) :
       melee_attack_t( "melee", player, spell_data_t::nil() ),
-      wf( new windfury_t( player ) )
+      wf( new windfury_t( player ) ),
+      maelstrom( player -> find_spell( 190185 ) )
     {
       auto_attack = true;
       weapon = &( player -> main_hand_weapon );
@@ -1204,13 +1206,18 @@ struct feral_spirit_pet_t : public pet_t
         stats = p() -> o() -> pet_feral_spirit[ 0 ] -> get_stats( name(), this );
     }
 
-    virtual void impact( action_state_t* state ) override
+    void impact( action_state_t* state ) override
     {
       melee_attack_t::impact( state );
 
+      shaman_t* o = p() -> o();
+      o -> resource_gain( RESOURCE_MAELSTROM,
+                          maelstrom -> effectN( 1 ).resource( RESOURCE_MAELSTROM ),
+                          o -> gain.feral_spirit,
+                          state -> action );
+
       if ( result_is_hit( state -> result ) )
       {
-        shaman_t* o = p() -> o();
 
         if ( o -> buff.feral_spirit -> up() && rng().roll( p() -> wf_driver -> proc_chance() ) )
         {

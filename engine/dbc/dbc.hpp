@@ -1179,8 +1179,6 @@ public:
 
   // Game data table access
   double combat_rating_multiplier( unsigned item_level ) const;
-  bool is_combat_rating( item_mod_type t ) const;
-
   double melee_crit_base( pet_e t, unsigned level ) const;
   double spell_crit_base( pet_e t, unsigned level ) const;
   double dodge_base( player_e t ) const;
