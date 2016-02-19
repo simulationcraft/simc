@@ -341,6 +341,7 @@ public:
     buff_t* feral_instinct;
     buff_t* incarnation_cat;
     buff_t* predatory_swiftness;
+    buff_t* protection_of_ashamane;
     buff_t* savage_roar;
     buff_t* scent_of_blood;
     buff_t* tigers_fury;
@@ -652,6 +653,7 @@ public:
     artifact_power_t honed_instincts;
     artifact_power_t open_wounds;
     artifact_power_t powerful_bite;
+    artifact_power_t protection_of_ashamane;
     artifact_power_t razor_fangs;
     artifact_power_t scent_of_blood;
     artifact_power_t shadow_thrash;
@@ -660,18 +662,17 @@ public:
 
     // NYI
     artifact_power_t hardened_roots;
-    artifact_power_t protection_of_ashamane;
 
     // Guardian -- Claws of Ursoc
+    artifact_power_t adaptive_fur;
+    artifact_power_t rage_of_the_sleeper;
 
     // NYI
-    artifact_power_t rage_of_the_sleeper;
-    artifact_power_t adaptive_fur;
     artifact_power_t embrace_of_the_nightmare;
     artifact_power_t reinforced_fur;
     artifact_power_t mauler;
     artifact_power_t jagged_claws;
-    artifact_power_t ion_cannon;
+    artifact_power_t ion_cannon; // disabled
     artifact_power_t bestial_fortitude;
     artifact_power_t perpetual_spring;
     artifact_power_t right_to_bear_arms;
@@ -764,6 +765,7 @@ public:
   virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
   virtual double    composite_block() const override { return 0; }
   virtual double    composite_crit_avoidance() const override;
+  virtual double    composite_dodge() const override;
   virtual double    composite_melee_attack_power() const override;
   virtual double    composite_melee_crit() const override;
   virtual double    composite_melee_expertise( const weapon_t* ) const override;
@@ -1266,6 +1268,7 @@ struct cat_form_t : public druid_buff_t< buff_t >
     base_t::expire_override( expiration_stacks, remaining_duration );
 
     swap_melee( druid.caster_melee_attack, druid.caster_form_weapon );
+    druid.buff.protection_of_ashamane -> trigger();
   }
 
   virtual void start( int stacks, double value, timespan_t duration ) override
@@ -4886,7 +4889,7 @@ struct incarnation_t : public druid_spell_t
     druid_spell_t::execute();
 
     inc_buff -> trigger();
-    p() -> buff.feral_instinct -> trigger();
+    p() -> buff.feral_instinct -> trigger(); // TOCHECK
 
     if ( ! p() -> in_combat )
     {
@@ -6382,8 +6385,14 @@ void druid_t::create_buffs()
                                    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Feral
-  buff.predatory_swiftness   = buff_creator_t( this, "predatory_swiftness",
-                               spec.predatory_swiftness -> ok() ? find_spell( 69369 ) : spell_data_t::not_found() );
+  buff.predatory_swiftness   = buff_creator_t( this, "predatory_swiftness", find_spell( 69369 ) )
+                               .chance( spec.predatory_swiftness -> ok() );
+  buff.protection_of_ashamane = buff_creator_t( this, "protection_of_ashamane", find_spell( 210655 ) )
+                               .chance( artifact.protection_of_ashamane.rank() > 0 )
+                               .cd( find_spell( 213557 ) -> duration() )
+                               .default_value( find_spell( 210655 ) -> effectN( 1 ).percent() )
+                               .add_invalidate( CACHE_DODGE )
+                               .add_invalidate( CACHE_ARMOR );
   buff.savage_roar           = buff_creator_t( this, "savage_roar", talent.savage_roar )
                                .default_value( talent.savage_roar -> effectN( 2 ).percent() )
                                .refresh_behavior( BUFF_REFRESH_DURATION ) // Pandemic refresh is done by the action
@@ -7232,6 +7241,8 @@ double druid_t::composite_armor_multiplier() const
 
   a *= 1.0 + buff.ironfur -> check_stack_value();
 
+  a *= 1.0 + buff.protection_of_ashamane -> check() * buff.protection_of_ashamane -> data().effectN( 2 ).percent();
+
   return a;
 }
 
@@ -7440,6 +7451,17 @@ double druid_t::composite_crit_avoidance() const
     c += buff.bear_form -> data().effectN( 7 ).percent();
 
   return c;
+}
+
+// druid_t::composite_dodge =================================================
+
+double druid_t::composite_dodge() const
+{
+  double d = player_t::composite_dodge();
+
+  d += buff.protection_of_ashamane -> check_value();
+
+  return d;
 }
 
 // druid_t::create_expression ===============================================

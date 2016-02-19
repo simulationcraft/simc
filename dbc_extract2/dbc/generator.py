@@ -1627,6 +1627,7 @@ class SpellDataGenerator(DataGenerator):
 		  ( 210649, 2 ),       # Feral Instinct (Fangs of Ashamane artifact trait)
 		  ( 211140, 2 ),       # Feral tier19_2pc
 		  ( 211142, 2 ),       # Feral tier19_4pc
+		  ( 213557, 2 ),       # Protection of Ashamane ICD (Fangs of Ashamane artifact trait) 
         ),
     ]
 
