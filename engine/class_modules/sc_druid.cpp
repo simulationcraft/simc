@@ -7707,10 +7707,11 @@ void druid_t::assess_damage( school_e school,
 
   if ( artifact.adaptive_fur.rank() ) // TOCHECK
   {
-    buff.adaptive_fur -> trigger( 1, s -> action -> school );
-    if ( sim -> log )
+    if ( buff.adaptive_fur -> trigger( 1, school ) && sim -> log )
+    {
       sim -> out_log.printf( "%s %s adapts to %s (%d).", name(), buff.adaptive_fur -> name(),
-        util::school_type_string( s -> action -> school ), s -> action -> school );
+        util::school_type_string( school ), school );
+    }
   }
 }
 
