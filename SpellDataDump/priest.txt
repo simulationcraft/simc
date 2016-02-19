@@ -101,7 +101,7 @@ Description      : Dispels Magic on the enemy target, removing $m1 beneficial Ma
 Name             : Smite (id=585) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
-Resource         : 1% Base Mana (11000 @Level 110)
+Resource         : 1% Base Mana (11000 @Level 110) w/ Discipline Priest (id=137032)
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -117,8 +117,8 @@ Effects          :
 #1 (id=236)      : School Damage: holy (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000
 #2 (id=314092)   : Dummy (3)
-                   Base Value: 15 | Scaled Value: 15
-Description      : Smite an enemy for $s1 Holy damage$?s137032[ and absorbs the next $<shield> damage dealt by the enemy][and has a $s2% chance to reset the cooldown of Holy Fire].
+                   Base Value: 20 | Scaled Value: 20
+Description      : Smite an enemy for $s1 Holy damage$?s137032[ and absorbs the next $<shield> damage dealt by the enemy][ and has a $s2% chance to reset the cooldown of Holy Fire].
 Variables        : $shield=${(($SPS*2.5)+$m3)*(1+$@versadmg)}
 
 Name             : Fade (id=586) [Spell Family (6)] 
@@ -150,7 +150,7 @@ GCD              : 1.5 seconds
 Duration         : 18 seconds
 Proc Chance      : 100%
 Stance Mask      : 0x08000000
-Affecting spells : Mastery: Madness (77486), Item - Priest T13 Shadow 4P Bonus (Shadow Word: Pain) (105844), Item - Priest T14 Shadow 2P Bonus (123114), Item - Priest T14 Shadow 4P Bonus (123115), Discipline Priest (137032), Lucidity (137323), Legacy of the Void (193224), To the Pain (193644), Voidform (194249)
+Affecting spells : Mastery: Madness (77486), Item - Priest T13 Shadow 4P Bonus (Shadow Word: Pain) (105844), Item - Priest T14 Shadow 2P Bonus (123114), Item - Priest T14 Shadow 4P Bonus (123115), Discipline Priest (137032), Lucidity (137323), To the Pain (193644), Voidform (194249)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -193,7 +193,7 @@ Description      : A powerful prayer that heals up to $s3 injured allies within 
 Name             : Dominate Mind (id=605) [Spell Family (6)] 
 Class            : Priest
 School           : Shadow
-Resource         : 0.5% Base Mana (5500 @Level 110)
+Resource         : 0.5% Base Mana (5500 @Level 110) w/ Discipline Priest (id=137032)
 Spell Level      : 38
 Range            : 30 yards
 Cast Time        : 1.8 seconds
@@ -219,7 +219,8 @@ Tooltip          : Disoriented.
 Name             : Levitate (id=1706) [Spell Family (6)] 
 Class            : Discipline Holy Shadow Priest
 School           : Holy
-Resource         : 0.9% Base Mana (9900 @Level 110)
+Resource         : 0.9% Base Mana (9900 @Level 110) w/ Discipline Priest (id=137032)
+Resource         : 0.9% Base Mana (9900 @Level 110) w/ Holy Priest (id=137031)
 Spell Level      : 28
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -357,7 +358,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 1 (9 seconds cooldown)
-Affecting spells : Power Infusion (10060), Mind Spike (73510), Shadow Priest (137033), Lucidity (137323), Item - Priest T16 Shadow 2P Bonus (145174), Empowered Shadows (145180), Mental Fatigue (185104), Fortress of the Mind (193195), Surrender to Madness (193223), Mind Shattering (193643), Voidform (194249), The Edge of Dark and Light (197715), Darkest Shadows (197917)
+Affecting spells : Power Infusion (10060), Mind Spike (73510), Shadow Priest (137033), Lucidity (137323), Item - Priest T16 Shadow 2P Bonus (145174), Empowered Shadows (145180), Mental Fatigue (185104), Fortress of the Mind (193195), Surrender to Madness (193223), Mind Shattering (193643), Voidform (194249), The Edge of Dark and Light (197715), Darkest Shadows (197917), Lingering Insanity (197937)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -464,7 +465,7 @@ Resource         : 1% Base Mana (11000 @Level 110)
 Spell Level      : 12
 Range            : 30 yards
 GCD              : 1.5 seconds
-Duration         : 9 seconds
+Duration         : 7 seconds
 Cooldown         : 10 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
@@ -514,7 +515,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Stance Mask      : 0x08000000
-Affecting spells : Power Infusion (10060), Lucidity (137323), Mental Fatigue (185104), Fortress of the Mind (193195), Surrender to Madness (193223), Voidform (194249), Void Ray (205372)
+Affecting spells : Power Infusion (10060), Lucidity (137323), Mental Fatigue (185104), Fortress of the Mind (193195), Surrender to Madness (193223), Voidform (194249), Lingering Insanity (197937), Void Ray (205372)
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -595,7 +596,7 @@ Name             : Spirit of Redemption (id=20711) [Spell Family (6), Passive]
 Class            : Holy Priest
 School           : Physical
 Spell Level      : 29
-Affecting spells : Glyph of the Val'kyr (126094)
+Affecting spells : Glyph of the Val'kyr (126094), Afterlife (196707)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -631,7 +632,7 @@ Duration         : 15 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. .....x.. ........ 
                  : AOE Heal, Heal, Trap Triggered
-Affecting spells : Glyph of the Val'kyr (126094)
+Affecting spells : Glyph of the Val'kyr (126094), Afterlife (196707)
 Attributes       : ........ ........ x......x ........   ........ ..x..... ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -705,10 +706,9 @@ Range            : 30 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 15 seconds
-Stance Mask      : 0x08000000
 Affecting spells : Holy Priest (137031), Discipline Priest (137032), Lucidity (137323)
-Attributes       : ........ ........ x....... .....x..   ........ ........ ........ ........ 
-                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -740,7 +740,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=22171)    : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.80000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.60000
 #2 (id=165318)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 Description      : A word of dark binding that inflicts $s1 Shadow damage to the target. Only usable on enemies that have less than $s2% health.
@@ -833,7 +833,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=22870)    : Trigger Spell: Prayer of Mending (64)
                    Base Value: 5 | Scaled Value: 5 | Trigger Spell: 41637
-Description      : Places a spell on a party or raid member that heals them for ${$<mending>} the next time they take damage. When the heal occurs, Prayer of Mending jumps to another party or raid member within $155793a1 yds. Jumps up to $s1 times and lasts $41635d after each jump.$?s55685[ The first bounce will heal for an additional $55685m1%.][]
+Description      : Places a spell on a party or raid member that heals them for $33110s1 the next time they take damage. When the heal occurs, Prayer of Mending jumps to another party or raid member within $155793a1 yds. Jumps up to $s1 times and lasts $41635d after each jump.
 Variables        : $mult1=$?s87336[${1.25}][${1.0}]
 $mult2=$?s122098[${1.25*$<mult1>}][${$<mult1>}]
 $mending=${(1+($SP*0.666))*$pctH*$<mult2>}
@@ -1095,7 +1095,7 @@ Class            : Discipline Priest
 School           : Holy
 Spell Level      : 54
 Duration         : 8 seconds
-Cooldown         : 90 seconds
+Cooldown         : 120 seconds
 Proc Chance      : 101%
 Affecting spells : Doomsayer (197727)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1584,8 +1584,8 @@ School           : Holy
 Spell Level      : 66
 Range            : 40 yards
 GCD              : 1.5 seconds
-Duration         : 12 seconds
-Cooldown         : 300 seconds
+Duration         : 10 seconds
+Cooldown         : 360 seconds
 Affecting spells : Lucidity (137323)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3095,34 +3095,31 @@ Effects          :
 Description      : Causes an explosion of shadow magic around the target, dealing ${$49821m1*5} Shadow damage over $48045d to all enemies within $49821a1 yards around the target.
 Tooltip          : Causing shadow damage to all targets within $49821a1 yards.
 
-Name             : Voidform (id=185916) [Spell Family (6), Passive] 
+Name             : Voidform (id=185916) [Spell Family (6), Passive, Hidden] 
 Class            : Shadow Priest
 School           : Physical
 Spell Level      : 10
 Affecting spells : Complete Healing (184914), 
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
+                 : Passive (6), Hidden (7)
 Effects          :
 #1 (id=270241)   : Apply Aura (6) | Unknown effect sub type (328)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 13 | Trigger Spell: 194249
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 13 | Trigger Spell: 212873
 #2 (id=270242)   : Apply Aura (6) | Unknown effect sub type (328)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 13 | Misc Value 2: 0x1 | Trigger Spell: 194251
-#3 (id=285134)   : Apply Aura (6) | Dummy (4)
+#3 (id=285134)   : Apply Aura (6) | Unknown effect sub type (328)
+                   Base Value: 99 | Scaled Value: 99 | Misc Value: 13 | Misc Value 2: 0x1 | Trigger Spell: 212971
+#4 (id=285158)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5
-#4 (id=285158)   : Apply Aura (6) | Unknown effect sub type (402)
+#5 (id=313330)   : Apply Aura (6) | Unknown effect sub type (402)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 249
-#5 (id=313330)   : Apply Aura (6) | Dummy (4)
+#6 (id=315903)   : Apply Aura (6) | Dummy (4)
                    Base Value: -3000 | Scaled Value: -3000 | Misc Value: 249
-Description      : When you reach 100 Insanity, you enter Voidform, reducing the cooldown on Mind Blast by ${$m5/-1000} sec, and increasing your Shadow damage by $194249s1%.
-
-While in Voidform, you gain $194249m3% Haste, every $194249t5 sec. This Haste will also persist until you next enter Voidform.
-
-Voidform causes your Insanity to constantly drain, faster and faster, until completely drained, and Voidform ends.
 
 Name             : Shadow Mend (id=186263) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -3374,11 +3371,9 @@ Effects          :
                    Affected Spells: Shadow Word: Death (190714)
 #4 (id=315206)   : Trigger Spell: Surrendered Soul (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 212570
-Description      : Surrender to the Old Gods, sacrificing your soul for ultimate power.
+Description      : All your Insanity-generating abilities generate $s1% more Insanity until you exit Voidform.
 
-All your Insanity-generating abilities generate $s1% more Insanity until you exit Voidform, and then you die. Requires Voidform.
-
-After surrendering your soul, you cannot be revived by in-combat resurrection abilities for $212570d.
+Then you die. Horribly.
 Tooltip          : Generating $s1% more Insanity.  When you exit Voidform, you will die.
 
 Name             : Legacy of the Void (id=193224) [Spell Family (6)] 
@@ -3400,12 +3395,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=283482)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 50 | Scaled Value: 50
-                   Affected Spells: Shadow Word: Pain (589), Shadow Word: Death (32379), Shadow Word: Void (205351)
-#2 (id=303774)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 2 (108)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 12
-                   Affected Spells: Shadow Word: Void (205351)
+                   Affected Spells: Shadow Word: Death (32379), Shadow Word: Void (205351)
 Description      : $@spelldesc193225
-Tooltip          : Increases the effect of your next Shadow Word by $s1%.
+Tooltip          : Increases the damage of your next Shadow Word by $s1%.
 
 Name             : Legacy of the Void (id=193225) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
@@ -3423,7 +3415,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=283483)   : Apply Aura (6) | Proc Trigger Spell: Legacy of the Void (42)
                    Base Value: 20 | Scaled Value: 20 | Trigger Spell: 193224
-Description      : Casting Mind Blast increases the effect of your next Shadow Word by $193224s1% for $193224d, stacking up to $193224u times.
+Description      : Casting Mind Blast increases the damage of your next Shadow Word by $193224s1% for $193224d, stacking up to $193224u times.
 
 Name             : Insanity Visual Controller (id=194248) [Spell Family (6), Passive] 
 Class            : Shadow Priest
@@ -3452,14 +3444,14 @@ Effects          :
                    Base Value: 75 | Scaled Value: 75 | Misc Value: 13 | Misc Value 2: 0x1 | Trigger Spell: 210195
 
 Name             : Voidform (id=194249) [Spell Family (6)] 
-Class            : Priest
+Class            : Shadow Priest
 School           : Shadow
 Spell Level      : 10
 Duration         : Aura (infinite)
 Stacks           : 100 maximum
 Proc Chance      : 101%
 Affecting spells : PH - Voidform Reduced Insanity Drain - Passive (208574)
-Triggered by     : Voidform (185916), Insanity (194251)
+Triggered by     : Insanity (194251)
 Attributes       : ........ ........ ..x..... x..x.x.x   .....x.. ..x..... ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -3488,7 +3480,13 @@ Effects          :
 #10 (id=294247)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22
                    Affected Spells: Shadow Word: Pain (589), Vampiric Touch (34914)
-Description      : $@spelldesc185916
+Description      : Activate Voidform, increasing damage by $s1%, reducing the cooldown on Mind Blast by ${$m6/-1000} sec, and gaining $m3% Haste every $t5 sec.
+
+Your Insanity will drain increasingly fast until it reaches 0 and Voidform ends.
+
+When Voidform ends, you gain Lingering Insanity, allowing the Haste bonus to persist for $197937d or until you next enter Voidform.
+
+|cFFFFFFFFRequires 100 Insanity to activate.|r
 Tooltip          : Cooldown on Mind Blast reduced by ${$185916m5/-1000} sec.
 Shadow damage dealt increased by $w1%.
 Haste increased by $w3%.
@@ -3574,6 +3572,22 @@ Effects          :
                    Base Value: -30000 | Scaled Value: -30000 | SP Coefficient: 1.00000 | Misc Value: 11
                    Affected Spells: Psychic Scream (8122)
 Description      : Reduces the cooldown of your Psychic Scream ability by ${$m1/-1000} sec.
+
+Name             : Afterlife (id=196707) [Spell Family (6), Passive] 
+Class            : Priest
+School           : Physical
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=288794)   : Apply Aura (6) | Add Percent Modifier: Spell Duration (108)
+                   Base Value: 200 | Scaled Value: 200 | SP Coefficient: 1.00000 | Misc Value: 1
+                   Affected Spells: Spirit of Redemption (20711), Spirit of Redemption (27827)
+Description      : Increases the duration of Spirit of Redemption by $s1%.
 
 Name             : Light of the Naaru (id=196985) [Spell Family (6), Passive] 
 Class            : Priest
@@ -3675,6 +3689,28 @@ Effects          :
 #1 (id=290033)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | SP Coefficient: 1.00000
 Description      : Your Atonement duration is increased by $s1 sec.
+
+Name             : Lingering Insanity (id=197937) [Spell Family (6)] 
+Class            : Priest
+School           : Shadow
+Duration         : 60 seconds
+Stacks           : 100 maximum
+Proc Chance      : 101%
+Affecting spells : PH - Lingering Insanity Duration Increase (208167)
+Attributes       : ........ ........ ..x..... x..x.x..   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=290888)   : Apply Aura (6) | Modify All Haste% (193)
+                   Base Value: 1 | Scaled Value: 1
+#2 (id=290890)   : Apply Aura (6) | Add Percent Modifier: Spell Global Cooldown (108)
+                   Base Value: -33 | Scaled Value: -33 | Misc Value: 21
+                   Affected Spells: Mind Blast (8092), Mind Flay (15407)
+Description      : $@spelldesc185916
+Tooltip          : Haste increased by $w1%.
 
 Name             : Void Lord (id=199849) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
@@ -3792,7 +3828,7 @@ School           : Holy
 Spell Level      : 50
 Duration         : 30 seconds
 Cooldown         : 180 seconds
-Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
+Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4124,7 +4160,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 3 (20 seconds cooldown)
-Affecting spells : Power Infusion (10060), Surrender to Madness (193223), Legacy of the Void (193224), 
+Affecting spells : Power Infusion (10060), Surrender to Madness (193223), Legacy of the Void (193224)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4140,6 +4176,31 @@ Description      : Blasts the target's mind for $s1 Shadow damage.
 
 |cFFFFFFFFGenerates $/100;s2 Insanity.|r
 
+Name             : Dominate Mind (id=205364) [Spell Family (6)] 
+Class            : Priest
+School           : Shadow
+Resource         : 0.5% Base Mana (5500 @Level 110)
+Spell Level      : 1
+Range            : 30 yards
+Cast Time        : 1.8 seconds
+GCD              : 1.5 seconds
+Duration         : 60 seconds
+Proc Chance      : 101%
+Stance Mask      : 0x08000000
+Mechanic         : Unknown(2)
+Affecting spells : Lucidity (137323)
+Attributes       : ........ ........ x.x..... ........   x....... ........ .x...... ..x..... 
+                 : ......x. ........ ...x.... ........   ........ ........ ........ ........ 
+                 : ........ ...x.... ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ .....x.x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#2 (id=303230)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+Description      : Controls a mind up to level $s1 for $d while still controlling your own mind.  Does not work versus Mechanical beings$?a205477[][ or players]. This spell shares diminishing returns with other disorienting effects.
+Tooltip          : Disoriented.
+
 Name             : Dominant Mind (id=205367) [Spell Family (6), Passive] 
 Class            : Priest
 School           : Physical
@@ -4154,7 +4215,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=303234)   : Apply Aura (6) | Unknown effect sub type (332)
                    Base Value: 205364 | Scaled Value: 205364 | Misc Value: 605
-Description      : You may also control your own character while Dominate Mind is active.
+Description      : You may also control your own character while Dominate Mind is active, and Dominate Mind now lasts $205364d.
 
 Name             : Mind Bomb (id=205369) [Spell Family (5)] 
 Class            : Priest
@@ -4163,7 +4224,7 @@ Spell Level      : 30
 Range            : 30 yards
 Cast Time        : 1.5 seconds
 GCD              : 0.5 seconds
-Duration         : 3 seconds
+Duration         : 4 seconds
 Cooldown         : 30 seconds
 Mechanic         : Unknown(95)
 Attributes       : ........ ........ x....... ........   ...x...x ........ .x...... ........ 
@@ -4359,5 +4420,39 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc193223
 Tooltip          : Cannot be revived by in-combat resurrections.
+
+Name             : Voidform (id=212873) [Spell Family (6), Hidden] 
+Class            : Priest
+School           : Shadow
+Spell Level      : 10
+Duration         : Aura (infinite)
+Proc Chance      : 101%
+Triggered by     : Voidform (185916), Insanity (212971)
+Attributes       : .......x ........ ..x..... x..x.x.x   .....x.. ..x..... ........ ........ 
+                 : ........ ......x. ...x.... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... ........ ........   ........ ........ x....... ........ 
+                 : .....x.. ....x... ........ ........   ........ ...x.... ........ ........ 
+                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
+                 : Hidden (7)
+Effects          :
+#1 (id=315745)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22
+
+Name             : Insanity (id=212971) [Spell Family (107), Hidden] 
+Class            : Priest
+School           : Physical
+Spell Level      : 1
+Triggered by     : Voidform (185916)
+Attributes       : .......x ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7)
+Effects          :
+#1 (id=315902)   : Unknown effect type (164)
+                   Base Value: 212873 | Scaled Value: 212873 | Trigger Spell: 212873
 
 

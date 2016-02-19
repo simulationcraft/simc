@@ -68,7 +68,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
 Effects          :
 #1 (id=80)       : School Damage: frost (2)
                    Base Value: 1 | Scaled Value: 0 (avg=0.381) | SP Coefficient: 0.23850 | Radius: 12 yards
-Description      : Targets in a cone in front of the caster take $s2 Frost damage and are slowed by $205708s1% for $205708d.
+Description      : Targets in a cone in front of the caster take $s2 Frost damage and are slowed by $212792m1% for $212792d.
 Tooltip          : Movement slowed by $s1%.
 Variables        : $arctic1=$?s31674[${1.01}][${1}]
 $arctic2=$?s31675[${1.02}][${$<arctic1>}]
@@ -179,9 +179,9 @@ School           : Arcane
 Resource         : 2% Base Mana (22000 @Level 110)
 Spell Level      : 7
 GCD              : 1.5 seconds
-Duration         : 1 seconds
-Cooldown         : 15 seconds
-Affecting spells : Reduced Blink GCD (44301), Tome of Blink (168795), Everywhere At Once (187301), Displacement (195676)
+Duration         : 0.3 seconds
+Charges          : 1 (15 seconds cooldown)
+Affecting spells : Reduced Blink GCD (44301), Tome of Blink (168795), Everywhere At Once (187301)
 Attributes       : ........ ........ x....... ........   ........ ..x....x ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -311,7 +311,7 @@ Description      : Launches five waves of Arcane Missiles at the enemy over $514
 
 Arcane Missiles' damage is increased by $36032s1% per Arcane Charge.
 
-Arcane Missiles has a $79684h% chance to be activated after each of your damaging spell casts. Limit $79683s1 charges.
+Arcane Missiles has a $79684s1% chance to be activated after each of your damaging spell casts. Limit $79683s1 charges.
 
 Name             : Mage Armor (id=6117) [Scaling Spell (-1), Spell Family (3), Passive] 
 Class            : Arcane Mage
@@ -354,7 +354,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ........ .....
                  : Channeled (34), Not a proc (105)
 Effects          :
 #1 (id=2716)     : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.75000 | Chain Targets: 1
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.55000 | Chain Targets: 1
 Description      : $@spelldesc5143
 
 Name             : Frost Armor (id=7302) [Spell Family (3), Passive] 
@@ -422,6 +422,25 @@ Effects          :
 Description      : Instantly shields you for $d, absorbing ${$m1+$SPFR*10} damage. While the shield holds, spellcasting will not be interrupted by damage.
 Tooltip          : Absorbs $w1 damage.
 
+Name             : Cold Snap (id=11958) [Spell Family (3), Passive] 
+Class            : Mage
+School           : Physical
+Spell Level      : 1
+Attributes       : ......x. ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=5072)     : Apply Aura (6) | Modify Cooldown Charge (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1560
+#2 (id=181335)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
+                   Base Value: 3 | Scaled Value: 3 | Misc Value: 32
+                   Affected Spells: Ice Block (45438)
+Description      : Ice Block now has ${1+$m1} charges, and heals you for $s2% of your maximum health every $45438t4 sec.
+
 Name             : Arcane Power (id=12042) [Spell Family (3)] 
 Class            : Arcane Mage
 School           : Arcane
@@ -461,7 +480,7 @@ Spell Level      : 40
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 90 seconds
-Affecting spells : Icy Veins (12472), Ice Floes (108839), Words of Power (205035)
+Affecting spells : Icy Veins (12472), Ice Floes (108839)
 Attributes       : ........ ........ x....... ........   ......x. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
@@ -493,7 +512,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30
 #2 (id=5359)     : Apply Aura (6) | Add Percent Modifier: Spell Pushback (108)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 9
-                   Affected Spells: Frostbolt (116), Fireball (133), Flamestrike (2120), Scorch (2948), Arcane Missiles (5143), Pyroblast (11366), Arcane Power (12042), Evocation (12051), Arcane Blast (30451), Arcane Missiles! (79683), Conjure Familiar (126578), Cannonball Barrage (185779), Conjure Refreshment (190336), Blizzard (190356), Blizzard (190357), Phoenix's Flames (194466)
+                   Affected Spells: Frostbolt (116), Fireball (133), Flamestrike (2120), Scorch (2948), Arcane Missiles (5143), Pyroblast (11366), Arcane Power (12042), Evocation (12051), Arcane Blast (30451), Arcane Missiles! (79683), Conjure Familiar (126578), Cannonball Barrage (185779), Conjure Refreshment (190336), Blizzard (190356), Blizzard (190357), Phoenix's Flames (194466), Displacement (195676), Displacement Beacon (212799)
 Description      : Accelerates your spellcasting, granting $m1% haste and preventing spell pushback.$?s56374[  Casting Icy Veins removes all movement slowing and cast time slowing effects.][] Lasts $d.
 Tooltip          : Haste increased by $w1% and immune to pushback.
 
@@ -917,7 +936,7 @@ Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Affecting spells : Item - Mage T15 4P Bonus (138376), Mastery: Savant (190740)
-Triggered by     : Arcane Blast (88084), Arcane Charge Effect Controller (190427)
+Triggered by     : Arcane Blast (88084), Arcane Charge (190427)
 Attributes       : ........ ........ ..x..... ..x..x..   ........ ..x..... ........ ....x... 
                  : ........ ........ ........ ....x...   ........ ........ xx...... ........ 
                  : x......x ........ .......x ........   ........ ........ ........ ........ 
@@ -1094,11 +1113,12 @@ Name             : Ice Block (id=45438) [Spell Family (3)]
 Class            : Mage
 School           : Frost
 Resource         : 15% Base Mana (165000 @Level 110)
-Spell Level      : 15
+Spell Level      : 26
 GCD              : 1.5 seconds
 Duration         : 10 seconds
-Charges          : 2 (300 seconds cooldown)
+Charges          : 1 (300 seconds cooldown)
 Mechanic         : Unknown(214)
+Affecting spells : Cold Snap (11958)
 Attributes       : ........ ........ x.x..... ........   ........ ..x....x ........ ........ 
                  : ........ ........ .....x.. .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1445,7 +1465,7 @@ Name             : Arcane Missiles (id=79684) [Spell Family (3), Passive, Hidden
 Class            : Arcane Mage
 School           : Physical
 Spell Level      : 24
-Proc Chance      : 30%
+Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Affecting spells : Ethereal Sensitivity (187276)
@@ -1458,7 +1478,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=68492)    : Apply Aura (6) | Proc Trigger Spell: Arcane Missiles! (42)
-                   Base Value: 40 | Scaled Value: 40 | Trigger Spell: 79683
+                   Base Value: 30 | Scaled Value: 30 | Trigger Spell: 79683
 
 Name             : Time Warp (id=80353) [Spell Family (3)] 
 Class            : Mage
@@ -1799,7 +1819,7 @@ Class            : Arcane Mage
 School           : Arcane
 Spell Level      : 56
 GCD              : 1.5 seconds
-Cooldown         : 90 seconds
+Cooldown         : 120 seconds
 Affecting spells : Erosion (210134)
 Attributes       : ........ ........ x...x... ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -1810,11 +1830,7 @@ Attributes       : ........ ........ x...x... ........   ........ ..x..... .x...
 Effects          :
 #1 (id=123208)   : Trigger Spell: Greater Invisibility (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 110960
-Description      : Instantly makes you invisible and untargetable for $110960d, removing all threat and two damage over time effects.  Any action taken cancels this effect.  You take $113862s1% reduced damage while invisible and for 3 sec after the effect expires.$?s56366[
-
-You move $87833s1% faster while invisible. ][]
-
-Replaces Invisibility.
+Description      : Instantly makes you invisible and untargetable for $110960d, removing all threat.  Any action taken cancels this effect.  You take $113862s1% reduced damage while invisible and for 3 sec after the effect expires.
 
 Name             : Greater Invisibility (id=110960) [Spell Family (3)] 
 Class            : Mage
@@ -1949,7 +1965,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=126901)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -90 | Scaled Value: -90 | Misc Value: 0x7f
+                   Base Value: -60 | Scaled Value: -60 | Misc Value: 0x7f
 Description      : $@spelldesc110959
 Tooltip          : Damage taken is reduced by $s1%.
 
@@ -2841,7 +2857,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 7
                    Affected Spells: Fireball (133)
 Description      : $@spelldesc157642
-Tooltip          : Increases critical strike chance of Fireball and Frostfire Bolt by $s1%.
+Tooltip          : Increases critical strike chance of Fireball by $s1%.
 
 Name             : Improved Blizzard (id=157727) [Spell Family (3), Passive] 
 Class            : Frost Mage
@@ -3208,7 +3224,7 @@ $piercing2=$?s12952[${1.04}][${$<piercing1>}]
 $piercing3=$?s12953[${1.06}][${$<piercing2>}]
 $mult=${$<arctic5>*$<piercing3>}
 
-Name             : Arcane Charge Effect Controller (id=190427) [Spell Family (3), Passive] 
+Name             : Arcane Charge (id=190427) [Spell Family (3), Passive] 
 Class            : Arcane Mage
 School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -3262,7 +3278,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=279639)   : Apply Aura (6) | Unknown effect sub type (132)
+#1 (id=279639)   : Apply Aura (6) | Unknown effect sub type (178)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 #2 (id=279640)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Misc Value: 3
@@ -3277,21 +3293,21 @@ Name             : Shimmer (id=191738) [Spell Family (3), Passive]
 Class            : Mage
 School           : Arcane
 Spell Level      : 1
-Internal Cooldown: 30 seconds
-Proc Chance      : 30%
-Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=281258)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30
-Description      : When you take damage there is a $s1% chance for the cooldown of Blink to be reset. This effect cannot occur more than once every 30 secs.
+#1 (id=281258)   : Apply Aura (6) | Unknown effect sub type (332)
+                   Base Value: 212653 | Scaled Value: 212653 | Misc Value: 1953
+#2 (id=315360)   : Apply Aura (6) | Modify Cooldown Charge (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1446
+#3 (id=315641)   : Apply Aura (6) | Unknown effect sub type (332)
+                   Base Value: 212801 | Scaled Value: 212801 | Misc Value: 195676
+Description      : Blink now has ${1+$m2} charges, is off the global cooldown, and can be cast while casting.
 
 Name             : Frostbolt (id=191764) 
 Class            : Mage
@@ -3383,7 +3399,7 @@ School           : Arcane
 Spell Level      : 10
 Stacks           : 4 maximum
 Proc Chance      : 101%
-Triggered by     : Arcane Charge Effect Controller (190427)
+Triggered by     : Arcane Charge (190427)
 Attributes       : ........ ........ ..x..... ..x..x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx...... ........ 
                  : x......x ........ .......x ........   ........ ........ ........ ........ 
@@ -3400,10 +3416,11 @@ Increases the number of targets hit by Arcane Barrage for 50% damage by $36032w3
 
 Name             : Displacement (id=195676) [Spell Family (3)] 
 Class            : Arcane Mage
-School           : Physical
+School           : Arcane
 Spell Level      : 24
-Duration         : 4 seconds
-Cooldown         : 90 seconds
+GCD              : 1.5 seconds
+Cooldown         : 30 seconds
+Affecting spells : Icy Veins (12472), Improved Mana Gems (37447), 
 Attributes       : ........ ........ x.x..... .x......   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3411,11 +3428,11 @@ Attributes       : ........ ........ x.x..... .x......   ........ ..x..... .....
                  : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=287216)   : Apply Aura (6) | Unknown effect sub type (383)
+#1 (id=287216)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Blink (1953)
-Description      : For the next $d, casting Blink will not trigger its cooldown.
-Tooltip          : Blink will not trigger its cooldown.
+Description      : Teleports you back to where you last Blinked from. Resets the cooldown of Blink.
+
+Only usable within $212799d of Blinking.
 
 Name             : Quickening (id=198923) [Spell Family (3), Passive] 
 Class            : Mage
@@ -3587,7 +3604,7 @@ Attributes       : ........ ........ ........ ........   ..x..... ........ .....
                  : Channeled (34)
 Effects          :
 #1 (id=302648)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -30 | Scaled Value: -30 | Mechanic: Unknown(88)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88)
 #2 (id=303101)   : Apply Aura (6) | Periodic Damage: frost every 1 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000
 Description      : For the next $d, you can channel a beam of icy power at an enemy.
@@ -3652,11 +3669,11 @@ School           : Arcane
 Spell Level      : 1
 Duration         : Aura (infinite)
 Cooldown         : 60 seconds
-Stacks           : 4 initial, 4 maximum
+Stacks           : 3 initial, 3 maximum
 Proc Chance      : 100%
 Proc Flags       : ......x. x...x... x....... ........ 
                  : White Ranged, Yellow Ranged, AOE Hostile Spell, Hostile Spell
-Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
+Attributes       : ........ ........ x.x..... .x......   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3666,7 +3683,7 @@ Effects          :
 #1 (id=302652)   : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10
                    Affected Spells: Arcane Blast (30451)
-Description      : Once activated, the next 4 Arcane Blasts you cast will be instant.
+Description      : Once activated, the next $n Arcane Blasts you cast will be instant.
 
 Name             : Fire Starter (id=205026) [Spell Family (3), Passive] 
 Class            : Mage
@@ -3767,8 +3784,8 @@ Effects          :
 #1 (id=302659)   : Energize Power (30)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: none
 #2 (id=312441)   : Apply Aura (6) | Unknown effect sub type (94)
-                   Base Value: 0 | Scaled Value: 0
-Description      : When activated, generates $s1 Arcane Charges.
+                   Base Value: 3 | Scaled Value: 3
+Description      : When activated, grants $s1 Arcane Charges.
 
 Name             : Controlled Burn (id=205033) [Spell Family (3), Passive] 
 Class            : Mage
@@ -3815,10 +3832,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=302662)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 12
-                   Affected Spells: Evocation (12051)
-Description      : Channeling Evocation now generates $s1 charges of Arcane Missiles every 2 secs.
+#1 (id=302662)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 12
+#2 (id=315404)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 123 | Scaled Value: 123 | Misc Value: 12
+Description      : You have up to an additional $s1% chance to trigger Arcane Missiles, based on your current Mana percentage (higher chance at higher Mana).
 
 Name             : Ice Ward (id=205036) [Spell Family (3), Passive] 
 Class            : Mage
@@ -3833,9 +3851,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=302663)   : Apply Aura (6) | Modify Cooldown Charge (411)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 1588
-Description      : Frost Nova now has $s1 charges.
-Tooltip          : Frost Nova now has 2 charges.
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1588
+Description      : Frost Nova now has ${1+$m1} charges.
 
 Name             : Flame Patch (id=205037) [Spell Family (3), Passive] 
 Class            : Mage
@@ -4075,5 +4092,44 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=311158)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0
+
+Name             : Cone of Cold (id=212792) [Spell Family (3)] 
+Class            : Mage
+School           : Frost
+Spell Level      : 1
+Range            : 100 yards
+Duration         : 5 seconds
+Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .x...... ........ ........ ........ 
+Effects          :
+#1 (id=315617)   : Apply Aura (6) | Decrease Movement Speed% (33)
+                   Base Value: 70 | Scaled Value: 70 | Mechanic: Unknown(88)
+Description      : Chilled for $s1% for $d
+Tooltip          : Slowed by $s1% for $d.
+
+Name             : Displacement Beacon (id=212799) [Spell Family (3)] 
+Class            : Mage
+School           : Arcane
+Spell Level      : 24
+Duration         : 6 seconds
+Cooldown         : 30 seconds
+Affecting spells : Icy Veins (12472), Improved Mana Gems (37447), 
+Attributes       : ........ ........ x.x..... .x......   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=315628)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#2 (id=315652)   : Unknown effect type (179)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 7044
+Description      : $@spelldesc195676
+Tooltip          : Able to Displace back to where last Blinked from.
 
 

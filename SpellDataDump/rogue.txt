@@ -37,7 +37,7 @@ Duration         : 1 seconds
 Cooldown         : 20 seconds
 Proc Chance      : 101%
 Mechanic         : Unknown(95)
-Affecting spells : Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Vendetta (79140), Prey on the Weak (131511), Deepening Shadows (185314), Deeper Strategem (193531), Alacrity (193539), Acrobatic Strikes (196924), Paralytic Poison (200800)
+Affecting spells : Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Vendetta (79140), Prey on the Weak (131511), Deepening Shadows (185314), Deeper Strategem (193531), Alacrity (193539), Acrobatic Strikes (196924), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ...x.... ........ ........   ........ ........ ........ ........ 
@@ -154,7 +154,6 @@ Spell Level      : 60
 Range            : 50000 yards
 Duration         : 3 seconds
 Mechanic         : Unknown(72)
-Affecting spells : Thuggee (196861)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -221,7 +220,7 @@ Proc Chance      : 100%
 Mechanic         : Unknown(110)
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
-Affecting spells : Vendetta (79140), Dirty Tricks (108216), Prey on the Weak (131511), Acrobatic Strikes (196924), Ghostly Strike (196937), 
+Affecting spells : Vendetta (79140), Dirty Tricks (108216), Prey on the Weak (131511), Acrobatic Strikes (196924), Ghostly Strike (196937), Buried Treasure (199600)
 Attributes       : ....x... ...x.... x.x.x... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   .x.x.... ..x..... ........ ..x..... 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -303,7 +302,7 @@ Duration         : 4 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x20000000
 Mechanic         : Unknown(95)
-Affecting spells : Vendetta (79140), Shadow Blades (121471), Prey on the Weak (131511), Cloak and Dagger (138106), Silent Blades (145193), Premeditation (196979), Paralytic Poison (200800)
+Affecting spells : Vendetta (79140), Shadow Blades (121471), Prey on the Weak (131511), Cloak and Dagger (138106), Silent Blades (145193), Premeditation (196979)
 Attributes       : ....x... ........ x.x..x.. ........   ........ ........ ..x..... ..xx.... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -424,9 +423,9 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 127
 #2 (id=127075)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f
-Description      : Performs an evasive maneuver, reducing damage taken from area-of-effect attacks by $s1% $?s79008[and all damage taken by $s2% ][]for $d.
-Tooltip          : $?$w2!=0[Damage taken reduced by $w2%.
-][]Damage taken from area-of-effect attacks reduced by $w1%.
+Description      : Performs an evasive maneuver, reducing damage taken from area-of-effect attacks by $s1% $?s79008[and all other damage taken by $s2% ][]for $d.
+Tooltip          : Damage taken from area-of-effect attacks reduced by $w1%.$?$w2!=0[and all other damage taken reduced by $w2%.
+][]
 
 Name             : Blind (id=2094) [Spell Family (8)] 
 Class            : Combat Subtlety Rogue
@@ -553,7 +552,7 @@ Class            : Rogue
 School           : Physical
 Spell Level      : 26
 Duration         : 8 seconds
-Cooldown         : 30 seconds
+Cooldown         : 60 seconds
 Affecting spells : Vendetta (79140)
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -667,7 +666,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 2.20000
+                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 2.50000
 Description      : Causes $s1 Nature damage to the target.
 
 Name             : Evasion (id=5277) [Spell Family (8)] 
@@ -880,7 +879,7 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 3
 #2 (id=136652)   : Apply Aura (6) | Add Percent Modifier: Spell Proc Chance (108)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 18
-                   Affected Spells: Crippling Poison (3408), Crippling Poison (3409), Leeching Poison (108211), Leeching Poison (112961), Debilitating Poison (115196), Paralytic Poison (200800)
+                   Affected Spells: Crippling Poison (3408), Crippling Poison (3409), Leeching Poison (108211), Leeching Poison (112961), Debilitating Poison (115196)
 #3 (id=180823)   : Dummy (3)
                    Base Value: 35 | Scaled Value: 35
 #4 (id=181788)   : Dummy (3)
@@ -1250,10 +1249,10 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1
 #2 (id=22421)    : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 18
-                   Affected Spells: Deadly Poison (2823), Crippling Poison (3408), Wound Poison (8679), Leeching Poison (108211), Paralytic Poison (200800), Numbing Poison (200802)
+                   Affected Spells: Deadly Poison (2823), Crippling Poison (3408), Wound Poison (8679), Leeching Poison (108211), Numbing Poison (200802)
 #3 (id=159997)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 18
-                   Affected Spells: Deadly Poison (2823), Crippling Poison (3408), Wound Poison (8679), Leeching Poison (108211), Paralytic Poison (200800), Numbing Poison (200802)
+                   Affected Spells: Deadly Poison (2823), Crippling Poison (3408), Wound Poison (8679), Leeching Poison (108211), Numbing Poison (200802)
 #4 (id=220587)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0
                    Affected Spells: Mutilate (5374), Mutilate Off-Hand (27576)
@@ -1789,7 +1788,7 @@ Effects          :
 #1 (id=68339)    : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
                    Base Value: -30 | Scaled Value: -30 | SP Coefficient: 1.00000 | Misc Value: 12
                    Affected Spells: Feint (1966)
-Description      : Feint also reduces all damage you take by $s1% for $1966d.
+Description      : Feint also reduces all damage you take from non-area of effect attacks by $s1% for $1966d.
 
 Name             : Venomous Wounds (id=79134) [Spell Family (8), Passive] 
 Class            : Assassination Rogue
@@ -2208,7 +2207,7 @@ Effects          :
                    Affected Spells: Garrote (703), Cheap Shot (1833), Fan of Knives (51723), Shuriken Toss (114014), Poisoned Knife (185565), Shuriken Storm (197835), Riposte (199753)
 #4 (id=150621)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 23
-                   Affected Spells: Backstab (53), Ambush (8676), Hemorrhage (16511), Backstab (173458)
+                   Affected Spells: Backstab (53), Ambush (8676), Hemorrhage (16511), Backstab (173458), Shadowstrike (185438), Gloomblade (200758)
 Description      : Draw upon the surrounding shadows to empower your weapons, causing your autoattacks to deal pure Shadow damage and your combo-point-generating abilities to generate an additional combo point when used$?p138150[, and reduces the Energy cost of all abilities by $138151s1%][].  Lasts $d.
 Tooltip          : Autoattacks deal pure Shadow damage.
 Combo-point-generating attacks generate $s2 additional combo point.
@@ -2621,7 +2620,7 @@ Range            : 15 yards
 GCD              : 2 seconds
 Duration         : 1 seconds
 Cooldown         : 20 seconds
-Affecting spells : Mastery: Executioner (76808), Fatebringer (202524)
+Affecting spells : Mastery: Executioner (76808), Deeper Strategem (193531), Alacrity (193539), Fatebringer (202524)
 Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -2700,7 +2699,7 @@ Spell Level      : 75
 Range            : 100 yards
 Duration         : 12 seconds
 Mechanic         : Bleed
-Affecting spells : Hemorrhage (16511), Vendetta (79140)
+Affecting spells : Hemorrhage (16511), Vendetta (79140), Deeper Strategem (193531)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ...x.... ........ ....x... ........   ........ ........ ........ ........ 
@@ -3026,7 +3025,7 @@ Spell Level      : 10
 Range            : 30 yards
 GCD              : 1 seconds
 Stance Mask      : 0x20000000
-Affecting spells : Premeditation (196979), Precision Strike (197235)
+Affecting spells : Shadow Blades (121471), Premeditation (196979), Precision Strike (197235)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3037,7 +3036,7 @@ Effects          :
 #1 (id=269259)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 #2 (id=269260)   : Weapon Damage% (31)
-                   Base Value: 440 | Scaled Value: 4.4 | SP Coefficient: 1.00000
+                   Base Value: 550 | Scaled Value: 5.5 | SP Coefficient: 1.00000
 #3 (id=269261)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points
 Description      : Strike through the shadows, appearing behind your target and dealing $sw2 Physical damage.  Awards $s3 combo $lpoint:points;.
@@ -3061,7 +3060,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
 Effects          :
 #1 (id=269456)   : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 18
-                   Affected Spells: Deadly Poison (2823), Crippling Poison (3408), Wound Poison (8679), Leeching Poison (108211), Paralytic Poison (200800), Numbing Poison (200802)
+                   Affected Spells: Deadly Poison (2823), Crippling Poison (3408), Wound Poison (8679), Leeching Poison (108211), Numbing Poison (200802)
 #2 (id=269457)   : School Damage: physical (2)
                    Base Value: 0 | Scaled Value: 0 (avg=2) | AP Coefficient: 0.60000
 #3 (id=269458)   : Energize Power (30)
@@ -3077,10 +3076,10 @@ Range            : 20 yards
 GCD              : 1 seconds
 Velocity         : 40 yards/sec
 Duration         : 6 seconds
-Affecting spells : Gunslinger (202522), Dreadblade's Fate (202710), PH - Between the Eyes Increase Damage of Pistol Shot (209423)
-Attributes       : ........ ........ ........ ........   ........ .x...... ........ ..xxx... 
+Affecting spells : Opportunity (195627), Buried Treasure (199600), Gunslinger (202522), Dreadblade's Fate (202710), PH - Between the Eyes Increase Damage of Pistol Shot (209423)
+Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ..xxx... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : ........ ..x..... ........ ........   ........ ........ x....... x....... 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3091,6 +3090,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.20000 | Misc Value: combo_points
 #3 (id=269974)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88)
+#4 (id=316548)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
 Description      : Draw a concealed pistol and fire a quick shot at an enemy, dealing $s1 damage and reducing movement speed by $s3% for $d. Awards $s2 combo $lpoint:points;.
 
 Name             : Cannonball Barrage (id=185767) [Spell Family (8)] 
@@ -3198,7 +3199,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 0.5 seconds
-Affecting spells : Acrobatic Strikes (196924), Ghostly Strike (196937), Swordmaster (200733), Cursed Edges (202463), Dreadblade's Fate (202710)
+Affecting spells : Acrobatic Strikes (196924), Ghostly Strike (196937), Buried Treasure (199600), Swordmaster (200733), Cursed Edges (202463), Dreadblade's Fate (202710)
 Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
@@ -3252,6 +3253,78 @@ Description      : Finishing move that rolls the dice of fate, providing a rando
    6 points: 42 seconds][]
 Tooltip          : Gained a random combat enhancement.
 
+Name             : Weigh Anchor (id=193356) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Level      : 1
+GCD              : 1 seconds
+Duration         : Aura (infinite)
+Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
+                 : ....x... ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=283680)   : Apply Aura (6) | Modify Ranged and Melee Haste% (192)
+                   Base Value: 40 | Scaled Value: 40
+Description      : Increases Haste by $s1% for the duration of Roll the Bones.
+Tooltip          : Haste increased by $s1%.
+
+Name             : Shark Infested Waters (id=193357) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Level      : 1
+GCD              : 1 seconds
+Duration         : Aura (infinite)
+Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
+                 : ....x... ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=283681)   : Apply Aura (6) | Modify Critical Strike% (290)
+                   Base Value: 40 | Scaled Value: 40
+Description      : Increases Critical Strike chance by $s1% for the duration of Roll the Bones.
+Tooltip          : Critical Strike chance increased by $s1%.
+
+Name             : Grand Melee (id=193358) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Level      : 1
+GCD              : 1 seconds
+Duration         : Aura (infinite)
+Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
+                 : ....x... ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=283682)   : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 35 | Scaled Value: 35 | Misc Value: 0x7f
+Description      : Increases all damage done by $s1% for the duration of Roll the Bones.
+Tooltip          : All damage done increased by $s1%.
+
+Name             : True Bearing (id=193359) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Level      : 1
+GCD              : 1 seconds
+Duration         : Aura (infinite)
+Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
+                 : ....x... ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=283683)   : Apply Aura (6) | Unknown effect sub type (318)
+                   Base Value: 40 | Scaled Value: 40
+Description      : Increases chance to trigger Main Gauche by ${$m1*$76806m2/100}% for the duration of Roll the Bones.
+Tooltip          : Increases chance to trigger Main Gauche by ${$m1*$76806m2/100}%.
+
 Name             : Deeper Strategem (id=193531) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
@@ -3265,12 +3338,18 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=283924)   : Apply Aura (6) | Unknown effect sub type (63)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 4
-                   Affected Spells: Kidney Shot (408), Rupture (1943), Run Through (2098), Slice and Dice (5171), Envenom (32645), Roll the Bones (193316), Nightblade (195452), Eviscerate (196819), Between the Eyes (199804), Enveloping Shadows (206237)
+                   Affected Spells: Kidney Shot (408), Rupture (1943), Run Through (2098), Slice and Dice (5171), Envenom (32645), Death from Above (152150), Roll the Bones (193316), Nightblade (195452), Eviscerate (196819), Between the Eyes (199804), Enveloping Shadows (206237)
 #2 (id=283925)   : Apply Aura (6) | Unknown effect sub type (418)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 4
 #3 (id=297518)   : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | Misc Value: 4
-Description      : You may now have a maximum of $s3 combo points, and your finishing moves now consume up to $s3 combo points.
+#4 (id=315625)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 20 | Scaled Value: 20
+                   Affected Spells: Run Through (2098), Envenom (32645), Death from Above (152150), Eviscerate (196819), Between the Eyes (199804)
+#5 (id=315626)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22
+                   Affected Spells: Rupture (1943), Internal Bleeding (154953), Nightblade (195452)
+Description      : You may now have a maximum of $s3 combo points, and your finishing moves now consume up to $s3 combo points.  Your damaging finishing moves also deal $s4% increased damage.
 
 Name             : Weaponmaster (id=193537) [Spell Family (8), Passive] 
 Class            : Rogue
@@ -3308,7 +3387,7 @@ Effects          :
 #1 (id=283934)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 1 | Scaled Value: 1
 Description      : Increases haste by $s1% for $d.
-Tooltip          : Increases haste by $w1%.
+Tooltip          : Haste increased by $w1%.
 
 Name             : Alacrity (id=193539) [Spell Family (8), Passive] 
 Class            : Rogue
@@ -3323,7 +3402,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=283935)   : Apply Aura (6) | Unknown effect sub type (109)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Points Per Combo Point: 20 | Trigger Spell: 193538
-                   Affected Spells: Kidney Shot (408), Rupture (1943), Run Through (2098), Slice and Dice (5171), Envenom (32645), Eviscerate (196819), Between the Eyes (199804)
+                   Affected Spells: Kidney Shot (408), Rupture (1943), Run Through (2098), Slice and Dice (5171), Envenom (32645), Death from Above (152150), Nightblade (195452), Eviscerate (196819), Between the Eyes (199804), Enveloping Shadows (206237)
 #2 (id=283936)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20
 Description      : Your finishing moves have a $s2% chance per combo point to grant $193538s1% Haste for $193538d, stacking up to $193538u times.
@@ -3417,7 +3496,7 @@ Duration         : 6 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Hostile Spell Taken
-Affecting spells : Mastery: Executioner (76808), Deepening Shadows (185314), Deeper Strategem (193531), Demon's Kiss (197233), Tangled Shadow (200778)
+Affecting spells : Mastery: Executioner (76808), Deepening Shadows (185314), Deeper Strategem (193531), Alacrity (193539), Demon's Kiss (197233), Tangled Shadow (200778)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ........ ....x... ........   ........ ........ ........ ........ 
@@ -3466,6 +3545,36 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Launch a grappling hook and pull yourself to the target location.
 
+Name             : Opportunity (id=195627) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Level      : 1
+Duration         : 10 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : ....x... x....... ........ ........ 
+                 : Yellow Melee, Yellow Ranged
+Affecting spells : Quick Draw (196938), 
+Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ......x.   ........ .xx..... ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Not a proc (105)
+Effects          :
+#1 (id=287160)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 14
+                   Affected Spells: Pistol Shot (185763)
+#2 (id=294100)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 12
+                   Affected Spells: Pistol Shot (185763)
+#3 (id=294101)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 2 (108)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 12
+                   Affected Spells: Pistol Shot (185763)
+Description      : $@spelldesc193315
+Tooltip          : Your next Pistol Shot is free.
+
 Name             : Eviscerate (id=196819) [Spell Family (8)] 
 Class            : Subtlety Rogue
 School           : Physical
@@ -3508,10 +3617,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=289043)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
-                   Base Value: -2000 | Scaled Value: -2000 | Misc Value: 1
-                   Affected Spells: Garrote - Silence (1330)
-Description      : Each time you deal Bleed damage, you have a $h% chance to reset the cooldown on Garrote, but Garrote's silence now lasts only ${(3000+$m1)/1000} sec.
+#1 (id=289043)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1
+Description      : Each time you deal Bleed damage, you have a $h% chance to reset the cooldown on Garrote.
 
 Name             : Master Poisoner (id=196864) [Spell Family (8), Passive] 
 Class            : Rogue
@@ -3538,12 +3646,10 @@ Effects          :
                    Affected Spells: Wound Poison (8679)
 Description      : Increases the damage done by your poisons by $s1% and their non-damaging effects by $s3%.
 
-Name             : Shadow Technique (id=196911) [Spell Family (8)] 
+Name             : Shadow Techniques (id=196911) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
 Range            : 50000 yards
-Stacks           : 3 maximum
-Proc Chance      : 101%
 Triggered by     : Shadow Techniques (196912)
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
                  : x.x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -3559,8 +3665,7 @@ Name             : Shadow Techniques (id=196912) [Spell Family (8), Passive]
 Class            : Subtlety Rogue
 School           : Physical
 Spell Level      : 27
-Internal Cooldown: 3 seconds
-Proc Chance      : 50%
+Proc Chance      : 100%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
 Affecting spells : Fortune's Bite (197369)
@@ -3572,7 +3677,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=289128)   : Apply Aura (6) | Proc Trigger Spell: Shadow Technique (42)
+#1 (id=289128)   : Apply Aura (6) | Proc Trigger Spell: Shadow Techniques (42)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 196911
 Description      : Your autoattacks have a chance to generate a combo point.
 
@@ -3624,6 +3729,7 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 15 seconds
+Affecting spells : Buried Treasure (199600)
 Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
@@ -3662,8 +3768,10 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=289173)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Misc Value: 23
+                   Affected Spells: Opportunity (195627)
 #2 (id=294102)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | Misc Value: 12
+                   Affected Spells: Opportunity (195627)
 Description      : Free uses of Pistol Shot granted by Sabre Slash now generate $s2 additional combo point, and deal $s1% increased damage.
 
 Name             : Strike From The Shadows (Passive Talent) (id=196951) [Spell Family (8), Passive] 
@@ -3753,7 +3861,51 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.23100 | Radius: 0 - 10 yards
 #2 (id=290721)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.35000 | Radius: 0 - 10 yards
-Description      : Sprays shurikens at all targets within $A1 yards, dealing $s1 Physical damage and applying your active poisons at their normal rate. Awards $s2 combo $Lpoint:points;$ per target hit.
+Description      : Sprays shurikens at all targets within $A1 yards, dealing $s1 Physical damage. Awards $s2 combo $Lpoint:points;$ per target hit.
+
+Name             : Buried Treasure (id=199600) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Level      : 1
+GCD              : 1 seconds
+Duration         : Aura (infinite)
+Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
+                 : ....x... ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=293719)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 23
+                   Affected Spells: Gouge (1776)
+#2 (id=293720)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 3
+                   Affected Spells: Saber Slash (193315), Ghostly Strike (196937)
+#3 (id=293721)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 12
+                   Affected Spells: Pistol Shot (185763)
+Description      : Your combo-generating abilities  generate $s1 additional combo point for the duration of Roll the Bones.
+Tooltip          : Your attacks generate $s1 additional combo point.
+
+Name             : Jolly Roger (id=199603) [Scaling Spell (9), Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Level      : 1
+Duration         : Aura (infinite)
+Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=293724)   : School Damage: physical (2)
+                   Base Value: 0 | Scaled Value: 0 (avg=0, dl=0.4) | AP Coefficient: 10.00000 | Radius: 0 - 8 yards
+#2 (id=294104)   : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
+                   Base Value: 30 | Scaled Value: 30
+Description      : Roll the Bones dice explode and instantly deal $s1 Physical damage to all targets within $A1 yards of the Rogue. Also increases attack speed by $s2% for the duration of Roll the Bones.
+Tooltip          : Attack speed increased by $s2%.
 
 Name             : Rupture (id=199672) [Hidden] 
 Class            : Rogue
@@ -3789,7 +3941,7 @@ Effects          :
 Description      : You can sense nearby treasure, making it appear on the minimap.  Lasts $d.
 Tooltip          : Finding treasure.
 
-Name             : Bribe (id=199740) [Spell Family (5)] 
+Name             : Bribe (id=199740) [Spell Family (8)] 
 Class            : Combat Rogue
 School           : Shadow
 Spell Level      : 54
@@ -3799,7 +3951,7 @@ Duration         : 60 seconds
 Cooldown         : 180 seconds
 Proc Chance      : 101%
 Mechanic         : Unknown(2)
-Affecting spells : Grimoire of Convert Demon (168800)
+Affecting spells : Shady Dealer (202521)
 Attributes       : ........ ........ x....... ......x.   x....... ........ .x...... ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ...x.... ........ .....x..   .......x x....... ........ ........ 
@@ -3966,7 +4118,7 @@ Resource         : 35 Energy
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : The Quiet Knife (197231)
+Affecting spells : Shadow Blades (121471), The Quiet Knife (197231)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3975,9 +4127,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=295616)   : Normalized Weapon Damage (121)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000
+                   Base Value: 1 | Scaled Value: 1
 #2 (id=295617)   : Weapon Damage% (31)
-                   Base Value: 260 | Scaled Value: 2.6 | SP Coefficient: 1.00000
+                   Base Value: 260 | Scaled Value: 2.6
 #3 (id=295618)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points
 Description      : Infuse your weapon with Shadow energies and stab the target, causing $sw2 Shadow damage. Awards $s3 combo $lpoint:points;.
@@ -4015,25 +4167,6 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 23
                    Affected Spells: Nightblade (195452), Between the Eyes (199804)
 Description      : Nightblade now decreases the target's movement speed by an additional $s1%.
-
-Name             : Paralytic Poison (id=200800) [Spell Family (8)] 
-Class            : Rogue
-School           : Physical
-Cast Time        : 1.5 seconds
-Duration         : 3600 seconds
-Affecting spells : Blade Flurry (13877), Envenom (32645), Poisoned Knife (185565)
-Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...... ........ 
-                 : ........ ........ ........ ........   ........ ........ ...xx... ........ 
-                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=295683)   : Apply Aura (6) | Add Percent Modifier: Spell Duration (108)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 1
-                   Affected Spells: Kidney Shot (408), Cheap Shot (1833)
-Description      : Coats your weapons with a Non-Lethal Poison that lasts for $d and causes $s1% increased duration for your Kidney Shot and Cheap Shot.
-Tooltip          : Kidney Shot and Cheap Shot duration increased by $s1%.
 
 Name             : Numbing Poison (id=200802) [Spell Family (8)] 
 Class            : Rogue
@@ -4103,7 +4236,7 @@ Resource         : 1 - 5 Combo Points
 Spell Level      : 14
 Range            : 100 yards
 GCD              : 1 seconds
-Affecting spells : Deepening Shadows (185314), Deeper Strategem (193531)
+Affecting spells : Deepening Shadows (185314), Deeper Strategem (193531), Alacrity (193539)
 Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -4124,7 +4257,7 @@ Description      : Finishing move that consumes combo points to generate twice a
    6 points: 24 seconds][]
 Tooltip          : Generating $w1 Combo Point every $t1 sec.
 
-Name             : Nightblade (id=206760) [Spell Family (7)] 
+Name             : Night Terrors (id=206760) [Spell Family (7)] 
 Class            : Rogue
 School           : Nature
 Spell Level      : 1
@@ -4185,7 +4318,7 @@ Spell Level      : 14
 GCD              : 1 seconds
 Duration         : 20 seconds
 Stance Mask      : 0x20000000
-Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
+Attributes       : ....x... ........ x.x..... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

@@ -132,7 +132,7 @@ Name             : Intimidation (id=24394)
 Class            : Hunter, Monk
 School           : Physical
 Range            : 5 yards
-Duration         : 3 seconds
+Duration         : 5 seconds
 Proc Chance      : 101%
 Mechanic         : Unknown(95)
 Triggered by     : Intimidation (19577)
@@ -465,7 +465,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 3 seconds
 Proc Chance      : 101%
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Combo Breaker: Blackout Kick (116768), Combat Conditioning (128595), Mistweaver Monk (137024), Serenity (152173), Dark Skies (195265), Teachings of the Monastery (202090)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Blackout Kick! (116768), Combat Conditioning (128595), Mistweaver Monk (137024), Serenity (152173), Dark Skies (195265), Teachings of the Monastery (202090), Obsidian Fists (213051)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -514,9 +514,9 @@ Effects          :
                    Base Value: 400 | Scaled Value: 400
 #6 (id=172321)   : Apply Aura (6) | Unknown effect sub type (191)
                    Base Value: 36 | Scaled Value: 36
-#7 (id=254018)   : Apply Aura (6) | Unknown effect sub type (395)
+#7 (id=254018)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2156
-#8 (id=254019)   : Apply Aura (6) | Unknown effect sub type (395)
+#8 (id=254019)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 388
 #9 (id=305879)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 300 | Scaled Value: 300
@@ -633,7 +633,7 @@ Name             : Rising Sun Kick (id=107428) [Spell Family (53)]
 Class            : Mistweaver Windwalker Monk
 School           : Physical
 Resource         : 2 Chi w/ Windwalker Monk (id=137025)
-Resource         : 1% Base Mana (11000 @Level 110) w/ Mistweaver Monk (id=137024)
+Resource         : 2% Base Mana (22000 @Level 110) w/ Mistweaver Monk (id=137024)
 Spell Level      : 18
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -1036,7 +1036,7 @@ GCD              : 1 seconds
 Velocity         : 30 yards/sec
 Cooldown         : 15 seconds
 Proc Chance      : 101%
-Affecting spells : Stagger (115069)
+Affecting spells : Stagger (115069), Adjunct Advantage (213049), 
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1098,6 +1098,7 @@ Spell Level      : 28
 Duration         : 6 seconds
 Cooldown         : 1 seconds
 Charges          : 3 (16 seconds cooldown)
+Affecting spells : Potent Kick (213047)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1409,7 +1410,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Affecting spells : Thunder Focus Tea (116680), Enveloping Mist (124682), Extend Life (185158), Uplifting Trance (197206), Mana Tea (197908), Infusion of Life (199380)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1552,7 +1553,7 @@ Effects          :
 Description      : Consumes Tigereye Brew, gaining $s1% increased damage and healing dealt for $d.
 Tooltip          : Damage and healing done increased by $w1%.
 
-Name             : Combo Breaker: Blackout Kick (id=116768) [Spell Family (53)] 
+Name             : Blackout Kick! (id=116768) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
 Spell Level      : 1
@@ -1915,7 +1916,7 @@ Attributes       : ........ ........ ..x..... x..x....   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=138091)   : Apply Aura (6) | Periodic Heal: every 2 seconds (8)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.069999) | SP Coefficient: 0.75000
+                   Base Value: 1 | Scaled Value: 0 (avg=2.069999) | SP Coefficient: 0.50000
 Description      : $@spelldesc115151
 Tooltip          : Restores $w1 health every $t1 sec.
 
@@ -2031,6 +2032,7 @@ Class            : Monk
 School           : Physical
 Spell Level      : 24
 Duration         : 15 seconds
+Affecting spells : Staggering Around (213055)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2091,6 +2093,7 @@ Duration         : 15 seconds
 Cooldown         : 8 seconds
 Charges          : 0 (8 seconds cooldown)
 Proc Chance      : 101%
+Affecting spells : Brewmaster Monk (137023), Smashed (213050)
 Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2303,7 +2306,7 @@ Range            : 50000 yards
 GCD              : 1 seconds
 Duration         : 8 seconds
 Proc Chance      : 101%
-Affecting spells : Stagger (115069)
+Affecting spells : Stagger (115069), Adjunct Advantage (213049), 
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2598,7 +2601,7 @@ Name             : Gift of the Ox (id=124507) [Spell Family (53)]
 Class            : Monk
 School           : Nature
 Range            : 50000 yards
-Affecting spells : Extend Life (185158)
+Affecting spells : Extend Life (185158), Gifted Student (213136)
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ .x...... ........ 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
@@ -2680,7 +2683,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
                  : Disable target procs (113)
 Effects          :
 #1 (id=158992)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.05500
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 12.00000
 Description      : $@spelldesc116092
 
 Name             : Glyph of Honor (id=125732) [Spell Family (53), Passive, Hidden] 
@@ -3185,10 +3188,11 @@ Effects          :
 #1 (id=179707)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 100 | Scaled Value: 100
                    Affected Spells: Effuse (116694)
-#2 (id=191108)   : Apply Aura (6) | Dummy (4)
+#2 (id=191108)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 0 | Scaled Value: 0
-#3 (id=191109)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Affected Spells: Keg Smash (121253)
+#3 (id=191109)   : Apply Aura (6) | Unknown effect sub type (457)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1562
 #4 (id=191110)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #5 (id=191111)   : Apply Aura (6) | Dummy (4)
@@ -3927,7 +3931,7 @@ Stacks           : 100 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
-Affecting spells : Mastery: Elusive Brawler (117906)
+Affecting spells : Mastery: Elusive Brawler (117906), Fortification (213341), 
 Triggered by     : Mastery: Elusive Brawler (117906)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4532,7 +4536,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=292176)   : Unknown effect type (254)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 8
-#2 (id=292177)   : Direct Heal (10)
+#2 (id=316503)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.50000
 Description      : Chi'Ji dashes to three allies, healing them for $s2.
 
@@ -4646,7 +4650,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 3 seconds
 Proc Chance      : 101%
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Combo Breaker: Blackout Kick (116768), Combat Conditioning (128595), Mistweaver Monk (137024), Serenity (152173), Dark Skies (195265), Teachings of the Monastery (202090)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Blackout Kick! (116768), Combat Conditioning (128595), Mistweaver Monk (137024), Serenity (152173), Dark Skies (195265), Teachings of the Monastery (202090), Obsidian Fists (213051)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

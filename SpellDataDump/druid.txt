@@ -115,7 +115,7 @@ Spell Level      : 18
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Affecting spells : Incarnation: Tree of Life (5420), Bear Form (5487), Nimble Healing Touch (24542), Blessing of Lower City (37878), Ironbark (102342), Item - Druid T13 Restoration 2P Bonus (Healing Touch and Rejuv) (105715), Item - Druid T13 Restoration 4P Bonus (Rejuvenation) (105770), Item - Mage T13 4P Bonus (Arcane Power, Combustion, and Icy Veins) (105790), Tricks of Time (105864), Item - Druid T14 Restoration 2P Bonus (123088), Lucidity (137247), Germination (155675), Persistence (186396), Dreamwalker (189854), Astral Influence (197524), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Incarnation: Tree of Life (5420), Bear Form (5487), Nimble Healing Touch (24542), Blessing of Lower City (37878), Ironbark (102342), Item - Druid T13 Restoration 2P Bonus (Healing Touch and Rejuv) (105715), Item - Druid T13 Restoration 4P Bonus (Rejuvenation) (105770), Item - Mage T13 4P Bonus (Arcane Power, Combustion, and Icy Veins) (105790), Tricks of Time (105864), Item - Druid T14 Restoration 2P Bonus (123088), Lucidity (137247), Germination (155675), Persistence (186396), Astral Influence (197524), Essence of G'Hanir (208253), PH - Affinity Effects Are Increased (210667)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .x...x.. ........ ........ 
@@ -314,7 +314,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 2.20000
+                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 2.50000
 Description      : Causes $s1 Nature damage to the target.
 
 Name             : Healing Touch (id=5185) [Spell Family (7)] 
@@ -472,22 +472,22 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=124697)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 15 | Scaled Value: 15
-                   Affected Spells: Rejuvenation (774), Healing Touch (5185), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Efflorescence (145205), Tranquility (157982), Lifebloom (186371), Rejuvenation (189875)
+                   Affected Spells: Rejuvenation (774), Healing Touch (5185), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Efflorescence (145205), Tranquility (157982), Mark of Shifting (186370)
 #2 (id=124698)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22
-                   Affected Spells: Rejuvenation (774), Healing Touch (5185), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Efflorescence (145205), Tranquility (157982), Lifebloom (186371), Rejuvenation (189875)
+                   Affected Spells: Rejuvenation (774), Healing Touch (5185), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Efflorescence (145205), Tranquility (157982), Mark of Shifting (186370)
 #3 (id=1947)     : Apply Aura (6) | Modify Armor% (101)
                    Base Value: 120 | Scaled Value: 120 | Misc Value: 1
-                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Lifebloom (186371), Rejuvenation (189875)
+                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Mark of Shifting (186370)
 #4 (id=253735)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 14
-                   Affected Spells: Rejuvenation (774), Rejuvenation (189875)
+                   Affected Spells: Rejuvenation (774), Mark of Shifting (186370)
 #5 (id=253736)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 22
-                   Affected Spells: Rejuvenation (774), Rejuvenation (189875)
+                   Affected Spells: Rejuvenation (774), Mark of Shifting (186370)
 #6 (id=253737)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 50 | Scaled Value: 50
-                   Affected Spells: Rejuvenation (774), Rejuvenation (189875)
+                   Affected Spells: Rejuvenation (774), Mark of Shifting (186370)
 
 Name             : Aquatic Form Passive (id=5421) [Spell Family (7), Passive] 
 Class            : Druid
@@ -550,7 +550,7 @@ Effects          :
                    Affected Spells: Ysera's Gift (145108)
 #11 (id=299396)   : Apply Aura (6) | Add Percent Modifier: Spell Generated Threat (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 2
-                   Affected Spells: Rejuvenation (774), Healing Touch (5185), Cenarion Ward (102351), Cenarion Ward (102352), Renewal (108238), Rejuvenation (189875)
+                   Affected Spells: Rejuvenation (774), Healing Touch (5185), Cenarion Ward (102351), Cenarion Ward (102352), Renewal (108238), Mark of Shifting (186370)
 #12 (id=304138)   : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10
                    Affected Spells: Rebirth (20484)
@@ -617,6 +617,7 @@ Description      : Maul the target for $sw2 Physical damage.
 Name             : Moonfire (Lunar) (id=8921) [Spell Family (7)] 
 Class            : Druid
 School           : Arcane
+Resource         : 3% Base Mana (6600 @Level 110) w/ Restoration Druid (id=137012)
 Spell Level      : 6
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -645,7 +646,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Stance Mask      : 0x00000002
-Affecting spells : Incarnation: Tree of Life (5420), Clearcasting (16870), Nimble Healing Touch (24542), Blessing of Lower City (37878), Incarnation: Tree of Life (81097), Ironbark (102342), Tricks of Time (105864), Lucidity (137247), Blessing of the World Tree (189744), Dreamwalker (189854), Power of the Archdruid (189877), Astral Influence (197524), Abundance (207640), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Incarnation: Tree of Life (5420), Clearcasting (16870), Nimble Healing Touch (24542), Blessing of Lower City (37878), Incarnation: Tree of Life (81097), Ironbark (102342), Tricks of Time (105864), Lucidity (137247), Blessing of the World Tree (189744), Astral Influence (197524), Abundance (207640), Essence of G'Hanir (208253), PH - Affinity Effects Are Increased (210667)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -994,13 +995,15 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ...x.... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .....x.. 
                  : Disable weapon procs (151)
 Effects          :
-#1 (id=12792)    : Weapon Damage (58)
-                   Base Value: 0 | Scaled Value: 0 (avg=0.075) | Bonus Value: 0 (0.179)
-#2 (id=12793)    : Weapon Damage% (31)
-                   Base Value: 65 | Scaled Value: 0.65 | Points Per Combo Point: 10
+#1 (id=12792)    : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0
+#2 (id=12793)    : Weapon Damage (58)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.075) | Bonus Value: 0 (0.179) | Radius: 0 - 5 yards
+#3 (id=315748)   : Weapon Damage% (31)
+                   Base Value: 65 | Scaled Value: 0.65 | Points Per Combo Point: 10 | Radius: 0 - 5 yards
 Description      : Finishing move that causes Physical damage and stuns the target. Damage and duration increased per combo point:
 
    1 point  : $168877sw3 damage, 1 sec
@@ -1047,7 +1050,7 @@ Duration         : 6 seconds
 Cooldown         : 1 seconds
 Charges          : 2 (20 seconds cooldown)
 Stance Mask      : 0x00000010
-Affecting spells : Bear Form (5487), Item - Druid T14 Guardian 4P Bonus (123087), Improved Regeneration (138217), Guardian of Elune (155578), Primal Mending (177969), Ursoc's Endurance (200399), Wildflesh (200400)
+Affecting spells : Bear Form (5487), Item - Druid T14 Guardian 4P Bonus (123087), Improved Regeneration (138217), Guardian of Elune (155578), Primal Mending (177969), Ursoc's Endurance (200399), Wildflesh (200400), Right to Bear Arms (200450)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1150,6 +1153,7 @@ Tooltip          : Your spells cost no mana.
 Name             : Lacerate (id=33745) [Spell Family (7)] 
 Class            : Guardian Druid
 School           : Physical
+Resource         : 15 Rage w/ Sharpened Claws (id=202110)
 Spell Level      : 22
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -1160,7 +1164,7 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ .......x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=23629)    : School Damage: physical (2)
@@ -1178,7 +1182,7 @@ Duration         : 12 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Stance Mask      : 0x00000002
-Affecting spells : Incarnation: Tree of Life (5420), Blessing of Lower City (37878), Incarnation: Tree of Life (81098), Ironbark (102342), Tricks of Time (105864), Lucidity (137247), Item - Druid T18 Restoration 4P Bonus (185397), Dreamwalker (189854), Astral Influence (197524), PH - Increase Lifebloom Final Heal (207271), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Incarnation: Tree of Life (5420), Blessing of Lower City (37878), Incarnation: Tree of Life (81098), Ironbark (102342), Tricks of Time (105864), Lucidity (137247), Item - Druid T18 Restoration 4P Bonus (185397), Astral Influence (197524), PH - Increase Lifebloom Final Heal (207271), Essence of G'Hanir (208253), PH - Affinity Effects Are Increased (210667)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   .....x.. .....x.. ........ ........ 
@@ -1416,7 +1420,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 7 seconds
 Cooldown         : 10 seconds
-Affecting spells : Incarnation: Tree of Life (5420), Ironbark (102342), Tricks of Time (105864), Lucidity (137247), Nature's Wisdom (167715), Infusion of Nature (189757), Dreamwalker (189854), Astral Influence (197524), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Incarnation: Tree of Life (5420), Ironbark (102342), Tricks of Time (105864), Lucidity (137247), Nature's Wisdom (167715), Infusion of Nature (189757), Astral Influence (197524), Essence of G'Hanir (208253), PH - Affinity Effects Are Increased (210667)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ......x. ........ 
@@ -1849,10 +1853,10 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=68110)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.75000
                    Affected Spells: Starsurge (78674), Starfall (191034), Starfall (191037), Starsurge (197626)
 #2 (id=90627)    : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Misc Value: 3
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.75000 | Misc Value: 3
                    Affected Spells: Solar Empowerment (164545), Lunar Empowerment (164547), Starfall (197637)
 Description      : Increases the damage of Starfall and Starsurge, and the effect of the Empowerments that they grant by an additional $s1%.
 
@@ -1903,7 +1907,7 @@ GCD              : 1.5 seconds
 Cooldown         : 6 seconds
 Stance Mask      : 0x00000010
 Mechanic         : Bleed
-Affecting spells : Bear Form (5487), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Guardian Overrides Passive (106734), Berserk (106951), Clearcasting (135700), Bloodletting (165699), Lacerate (192090), Astral Influence (197524), Jagged Claws (200409), PH - Increase Thrash Radius and Damage (208681), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Bear Form (5487), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Guardian Overrides Passive (106734), Berserk (106951), Clearcasting (135700), Bloodletting (165699), Lacerate (192090), Astral Influence (197524), Jagged Claws (200409), Sharpened Claws (202110), PH - Increase Thrash Radius and Damage (208681), PH - Affinity Effects Are Increased (210667)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ .......x ........ ........ 
@@ -1937,7 +1941,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=68268)    : School Damage: spellstorm (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 7.00000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 6.00000
 #2 (id=289864)   : Trigger Spell: Lunar Empowerment (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 164547
 #3 (id=289865)   : Trigger Spell: Solar Empowerment (64)
@@ -2037,7 +2041,7 @@ Attributes       : .......x x....... ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=68622)    : Apply Aura (6) | Dummy (4)
                    Base Value: 94447 | Scaled Value: 94447
-                   Affected Spells: Lifebloom (33763), Lifebloom (33778), Lifebloom (186371)
+                   Affected Spells: Lifebloom (33763), Lifebloom (33778)
 
 Name             : Efflorescence (id=81262) [Spell Family (7)] 
 Class            : Druid
@@ -2212,6 +2216,7 @@ Description      : Cures harmful effects on the friendly target, removing all Ma
 Name             : Sunfire (Solar) (id=93402) [Scaling Spell (3), Spell Family (7)] 
 Class            : Balance Restoration Druid
 School           : Nature
+Resource         : 3% Base Mana (6600 @Level 110) w/ Restoration Druid (id=137012)
 Spell Level      : 24
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -2346,7 +2351,7 @@ Effects          :
                    Base Value: 12 | Scaled Value: 12
 #3 (id=219284)   : Apply Aura (6) | Unknown effect sub type (283)
                    Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102351), Cenarion Ward (102352), Tranquility (157982), Lifebloom (186371), Rejuvenation (189875)
+                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102351), Cenarion Ward (102352), Tranquility (157982), Mark of Shifting (186370)
 Description      : The target's skin becomes as tough as Ironwood, reducing all damage taken by $s1% for $d.  Counts as a heal over time effect for $@spellicon77495 $@spellname77495$?a197061[ and increases healing from your heal over time effects by $197061s2%][].
 Tooltip          : All damage taken is reduced by $s1%$?a197061[ and healing over time from the caster increased by $w3%][].
 
@@ -2362,7 +2367,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Bear Form (5487), Ironbark (102342), Lucidity (137247), Dreamwalker (189854), Astral Influence (197524), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Bear Form (5487), Ironbark (102342), Lucidity (137247), Astral Influence (197524), Essence of G'Hanir (208253), PH - Affinity Effects Are Increased (210667)
 Attributes       : ....x... ...x.... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2381,7 +2386,7 @@ School           : Nature
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 6 seconds
-Affecting spells : Bear Form (5487), Ironbark (102342), Lucidity (137247), Dreamwalker (189854), Astral Influence (197524), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Bear Form (5487), Ironbark (102342), Lucidity (137247), Astral Influence (197524), Essence of G'Hanir (208253), PH - Affinity Effects Are Increased (210667)
 Triggered by     : Cenarion Ward (102351)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -2558,10 +2563,10 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... x....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=111387)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 50 | Scaled Value: 50
+                   Base Value: 45 | Scaled Value: 45
                    Affected Spells: Solar Wrath (5176), Moonfire (8921), Starsurge (78674), Sunfire (93402), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191034), Starfall (191037), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630)
 #2 (id=310508)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 22
+                   Base Value: 45 | Scaled Value: 45 | Misc Value: 22
                    Affected Spells: Solar Wrath (5176), Moonfire (8921), Starsurge (78674), Sunfire (93402), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191034), Starfall (191037), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630)
 #3 (id=310509)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 3 (108)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 23
@@ -2725,7 +2730,7 @@ GCD              : 1 seconds
 Duration         : 15 seconds
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Mastery: Razor Claws (77493), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Berserk (106951), Clearcasting (135700), Bloodletting (165699), Astral Influence (197524), Jagged Claws (200409), Jagged Wounds (202032), PH - Increase Thrash Radius and Damage (208681), PH - Affinity Effects Are Increased (210667), Open Wounds (210670)
+Affecting spells : Mastery: Razor Claws (77493), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Berserk (106951), Clearcasting (135700), Bloodletting (165699), Astral Influence (197524), Jagged Claws (200409), Jagged Wounds (202032), Sharpened Claws (202110), PH - Increase Thrash Radius and Damage (208681), PH - Affinity Effects Are Increased (210667), Open Wounds (210670)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ .......x ........ ........ 
@@ -2749,6 +2754,7 @@ Resource         : 0 Rage
 Spell Level      : 18
 Range            : 5 yards
 Stance Mask      : 0x00000011
+Affecting spells : Sharpened Claws (202110)
 Attributes       : ........ x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3826,7 +3832,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=216363)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1
-                   Affected Spells: Rejuvenation (774), Rejuvenation (189875)
+                   Affected Spells: Rejuvenation (774), Mark of Shifting (186370)
 Description      : You can apply two Rejuvenations to the same target.
 
 Name             : Rake (id=155722) [Spell Family (7)] 
@@ -4183,7 +4189,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=231955)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 30 | Scaled Value: 30
+                   Base Value: 20 | Scaled Value: 20
                    Affected Spells: Solar Wrath (5176), Solar Wrath (190984), Solar Wrath (197629)
 #2 (id=232253)   : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 10
@@ -4212,7 +4218,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=231957)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 30 | Scaled Value: 30
+                   Base Value: 20 | Scaled Value: 20
                    Affected Spells: Lunar Strike (194153), Lunar Strike (197628)
 #2 (id=232254)   : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 10
@@ -4228,7 +4234,7 @@ Class            : Druid
 School           : Arcane
 Spell Level      : 3
 Range            : 100 yards
-Duration         : 12 seconds
+Duration         : 16 seconds
 Stance Mask      : 0x40000012
 Affecting spells : Incarnation: Chosen of Elune (102560), Balance Overrides Passive (106732), Item - Druid T14 Balance 4P Bonus (123083), Guardian Druid (137010), Restoration Druid (137012), Lucidity (137247), Lunar Inspiration (155627), Persistence (186396), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Starfall (197637), Feral Overrides Passive (197692), Twilight Glow (202386), PH - Affinity Effects Are Increased (210667)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4251,7 +4257,7 @@ Class            : Druid
 School           : Nature
 Spell Level      : 18
 Range            : 100 yards
-Duration         : 8 seconds
+Duration         : 12 seconds
 Stance Mask      : 0x40000000
 Affecting spells : Incarnation: Chosen of Elune (102560), Balance Overrides Passive (106732), Item - Druid T14 Balance 4P Bonus (123083), Restoration Druid (137012), Lucidity (137247), Persistence (186396), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Starfall (197637), Sunfire Burns (202466), PH - Affinity Effects Are Increased (210667)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -4995,10 +5001,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=290202)   : Apply Aura (6) | Add Flat Modifier: Spell Range (107)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 5
-                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Lacerate (33745), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Wild Charge (102401), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Lifebloom (186371), Rejuvenation (189875), Solar Wrath (190984), Starfall (191034), Starfall (191037), Lacerate (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Stellar Flare (202347), Force of Nature (205636), Revitalize (212040)
+                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Lacerate (33745), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Wild Charge (102401), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Mark of Shifting (186370), Solar Wrath (190984), Starfall (191034), Starfall (191037), Lacerate (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Stellar Flare (202347), Force of Nature (205636), Revitalize (212040)
 #2 (id=314659)   : Apply Aura (6) | Unknown effect sub type (153)
                    Base Value: 5 | Scaled Value: 5
-                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Lacerate (33745), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Wild Charge (102401), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Lifebloom (186371), Rejuvenation (189875), Solar Wrath (190984), Starfall (191034), Starfall (191037), Lacerate (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Stellar Flare (202347), Force of Nature (205636), Revitalize (212040)
+                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Lacerate (33745), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Wild Charge (102401), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Mark of Shifting (186370), Solar Wrath (190984), Starfall (191034), Starfall (191037), Lacerate (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Stellar Flare (202347), Force of Nature (205636), Revitalize (212040)
 Description      : Increases the range of all of your abilities by $s1 yards.
 
 Name             : Moonkin Form (id=197625) [Spell Family (7)] 
@@ -5106,7 +5112,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=290381)   : School Damage: nature (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.20000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000
 Description      : Causes $s1 Nature damage to the target.
 
 Name             : Sunfire (Solar) (id=197630) [Scaling Spell (3), Spell Family (7)] 
@@ -5172,7 +5178,7 @@ Attributes       : ........ ........ ........ .....x..   .......x ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=290410)   : Apply Aura (6) | Unknown effect sub type (271)
-                   Base Value: 30 | Scaled Value: 30
+                   Base Value: 20 | Scaled Value: 20
                    Affected Spells: Moonfire (8921), Sunfire (93402), Moonfire (164812), Sunfire (164815), Sunfire (197630)
 Description      : $@spelldesc48505
 Tooltip          : Taking $w1% additional damage from the Druid's Moonfire and Sunfire.
@@ -5274,7 +5280,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=295008)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Misc Value: 7
+                   Base Value: 60 | Scaled Value: 60 | SP Coefficient: 1.00000 | Misc Value: 7
 Description      : When Rejuvenation heals a target below $s1% health, it applies Cultivation to the target, healing them for $200389o1 over $200389d.
 
 Name             : Activating Specialization (id=200749) [Hidden] 
@@ -5409,6 +5415,25 @@ Effects          :
 Description      : Immediately gain $s1 combo points and an additional $s2 combo point every $t2 sec for $d.
 Tooltip          : Gaining $s2 combo point every $t sec.
 
+Name             : Sharpened Claws (id=202110) [Spell Family (7), Passive, Hidden] 
+Class            : Druid
+School           : Physical
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=297867)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 50 | Scaled Value: 50
+                   Affected Spells: Thrash (77758), Thrash (106830), Thrash (106832)
+#2 (id=297868)   : Dummy (3)
+                   Base Value: 15 | Scaled Value: 15
+Description      : Lacerate deals $s1% more initial damage but now costs $s2 Rage.
+Tooltip          : Lacerate deals $s1% more initial damage but now costs $s2 Rage.
+
 Name             : Feral Affinity (id=202155) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
@@ -5473,8 +5498,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=298290)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 7798
-Description      : Moonfire and Sunfire ticks have a chance to call down a falling star, dealing $202497m1 Arcane damage and generating $202497s2 Astral Power.
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 7798
+Description      : Moonfire and Sunfire ticks have a $s1% chance to call down a falling star, dealing $202497m1 Arcane damage and generating $202497s2 Astral Power.
 
 Name             : Starlord (id=202345) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -5509,7 +5534,7 @@ Effects          :
 #1 (id=298295)   : School Damage: spellstorm (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.78000
 #2 (id=298296)   : Apply Aura (6) | Periodic Damage: spellstorm every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.26000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.20000
 Description      : Burns the target for $s1 Spellstorm damage, and then an additional $o2 damage over $d.
 
 Stellar Flare benefits from both Lunar and Solar Empowerments, consuming 1 of each.
@@ -6241,7 +6266,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=312122)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25
-Description      : Your Mangle, Thrash, Lacerate, and Moonfire each have a $h% chance to reset the cooldown of Mangle, and cause it to generate an additional $93622s1 Rage.
+Description      : Your Mangle, Thrash, Lacerate, and Moonfire each have a $h% chance to reset the cooldown of Mangle, and cause it to generate an additional ${$93622m1/10} Rage.
 
 Name             : Ashamane's Rake (id=210713) [Spell Family (7)] 
 Class            : Druid
