@@ -114,6 +114,7 @@ player_e translate_class_id( int cid );
 player_e translate_class_str( const std::string& s );
 race_e translate_race_id( int rid );
 stat_e translate_item_mod( int stat_mod );
+bool is_combat_rating( item_mod_type t );
 int translate_stat( stat_e stat );
 stat_e translate_attribute( attribute_e attribute );
 stat_e translate_rating_mod( unsigned ratings );

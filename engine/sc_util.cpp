@@ -2655,6 +2655,47 @@ std::string util::decode_html( const std::string& input )
   return output;
 }
 
+bool util::is_combat_rating( item_mod_type t )
+{
+  switch ( t )
+  {
+    case ITEM_MOD_MASTERY_RATING:
+    case ITEM_MOD_DODGE_RATING:
+    case ITEM_MOD_PARRY_RATING:
+    case ITEM_MOD_BLOCK_RATING:
+    case ITEM_MOD_HIT_MELEE_RATING:
+    case ITEM_MOD_HIT_RANGED_RATING:
+    case ITEM_MOD_HIT_SPELL_RATING:
+    case ITEM_MOD_CRIT_MELEE_RATING:
+    case ITEM_MOD_CRIT_RANGED_RATING:
+    case ITEM_MOD_CRIT_SPELL_RATING:
+    case ITEM_MOD_HIT_TAKEN_MELEE_RATING:
+    case ITEM_MOD_HIT_TAKEN_RANGED_RATING:
+    case ITEM_MOD_HIT_TAKEN_SPELL_RATING:
+    case ITEM_MOD_CRIT_TAKEN_MELEE_RATING:
+    case ITEM_MOD_CRIT_TAKEN_RANGED_RATING:
+    case ITEM_MOD_CRIT_TAKEN_SPELL_RATING:
+    case ITEM_MOD_HASTE_MELEE_RATING:
+    case ITEM_MOD_HASTE_RANGED_RATING:
+    case ITEM_MOD_HASTE_SPELL_RATING:
+    case ITEM_MOD_HIT_RATING:
+    case ITEM_MOD_CRIT_RATING:
+    case ITEM_MOD_HIT_TAKEN_RATING:
+    case ITEM_MOD_CRIT_TAKEN_RATING:
+    case ITEM_MOD_RESILIENCE_RATING:
+    case ITEM_MOD_HASTE_RATING:
+    case ITEM_MOD_EXPERTISE_RATING:
+    case ITEM_MOD_MULTISTRIKE_RATING:
+    case ITEM_MOD_READINESS_RATING:
+    case ITEM_MOD_SPEED_RATING:
+    case ITEM_MOD_LEECH_RATING:
+    case ITEM_MOD_AVOIDANCE_RATING:
+      return true;
+    default:
+      return false;
+  }
+}
+
 // encode_html ==============================================================
 
 std::string util::encode_html( const std::string& s )
