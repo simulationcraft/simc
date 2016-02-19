@@ -350,6 +350,7 @@ public:
     buff_t* feral_tier17_4pc;
 
     // Guardian
+    buff_t* adaptive_fur;
     buff_t* barkskin;
     buff_t* bladed_armor;
     buff_t* bristling_fur;
@@ -1109,6 +1110,24 @@ public:
   { }
 
   druid_t& p() const { return druid; }
+};
+
+// Adaptive Fur =============================================================
+/* Custom benefit implementation since we need to be able to increment
+   down_count even when the buff is active. */
+
+struct adaptive_fur_t : public druid_buff_t< buff_t >
+{
+  adaptive_fur_t( druid_t& p ) :
+    base_t( p, buff_creator_t( &p, "adaptive_fur", p.artifact.adaptive_fur.data().effectN( 1 ).trigger() )
+      .chance( p.artifact.adaptive_fur.data().proc_chance() ) )
+  {}
+
+  void benefits()
+  { up_count++; }
+
+  void no_benefit()
+  { down_count++; }
 };
 
 // Bear Form ================================================================
@@ -6386,6 +6405,7 @@ void druid_t::create_buffs()
                                .quiet( true );
 
   // Guardian
+  buff.adaptive_fur          = new adaptive_fur_t( *this );
   buff.barkskin              = buff_creator_t( this, "barkskin", find_specialization_spell( "Barkskin" ) )
                                .cd( timespan_t::zero() )
                                .default_value( find_specialization_spell( "Barkskin" ) -> effectN( 2 ).percent() );
@@ -7648,6 +7668,16 @@ void druid_t::target_mitigation( school_e school, dmg_e type, action_state_t* s 
   if ( claws_of_ursoc )
     s -> result_amount *= 1.0 + active.blood_claws -> data().effectN( 2 ).percent()
       * get_target_data( s -> action -> player ) -> dots.blood_claws -> current_stack();
+  
+  if ( buff.adaptive_fur -> check() && dbc::is_school( school, ( school_e ) ( int ) buff.adaptive_fur -> check_value() ) ) // TOCHECK
+  {
+    debug_cast<buffs::adaptive_fur_t*>( buff.adaptive_fur ) -> benefits();
+    s -> result_amount *= 1.0 + buff.adaptive_fur -> data().effectN( 1 ).percent();
+  }
+  else
+  {
+    debug_cast<buffs::adaptive_fur_t*>( buff.adaptive_fur ) -> no_benefit();
+  }
 
   player_t::target_mitigation( school, type, s );
 
@@ -7674,6 +7704,14 @@ void druid_t::assess_damage( school_e school,
     buff.ironfur -> up();
 
   player_t::assess_damage( school, dtype, s );
+
+  if ( artifact.adaptive_fur.rank() ) // TOCHECK
+  {
+    buff.adaptive_fur -> trigger( 1, s -> action -> school );
+    if ( sim -> log )
+      sim -> out_log.printf( "%s %s adapts to %s (%d).", name(), buff.adaptive_fur -> name(),
+        util::school_type_string( s -> action -> school ), s -> action -> school );
+  }
 }
 
 // druid_t::assess_damage_imminent_preabsorb ================================
