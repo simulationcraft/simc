@@ -298,6 +298,7 @@ struct rogue_t : public player_t
     gain_t* seal_fate;
     gain_t* legendary_daggers;
     gain_t* quick_draw;
+    gain_t* buried_treasure;
   } gains;
 
   // Spec passives
@@ -651,7 +652,7 @@ struct rogue_attack_t : public melee_attack_t
   {
     melee_attack_t::init();
 
-    if ( adds_combo_points )
+    if ( generate_cp() )
     {
       cp_gain = player -> get_gain( name_str );
     }
@@ -672,6 +673,9 @@ struct rogue_attack_t : public melee_attack_t
   {
     return p() -> buffs.vanish -> check() || p() -> buffs.stealth -> check() || player -> buffs.shadowmeld -> check();
   }
+
+  virtual unsigned generate_cp( const action_state_t* = nullptr ) const
+  { return adds_combo_points; }
 
   virtual bool procs_poison() const
   { return weapon != nullptr; }
@@ -1335,7 +1339,7 @@ void rogue_attack_t::impact( action_state_t* state )
 {
   melee_attack_t::impact( state );
 
-  if ( adds_combo_points )
+  if ( generate_cp() )
     p() -> trigger_seal_fate( state );
 
   p() -> trigger_main_gauche( state );
@@ -2020,6 +2024,17 @@ struct ghostly_strike_t : public rogue_attack_t
     weapon = &( p -> main_hand_weapon );
   }
 
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) && p() -> buffs.buried_treasure -> up() )
+    {
+      p() -> trigger_combo_point_gain( execute_state, p() -> buffs.buried_treasure -> data().effectN( 2 ).base_value(),
+          p() -> gains.buried_treasure );
+    }
+  }
+
   void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
@@ -2185,6 +2200,12 @@ struct pistol_shot_t : public rogue_attack_t
   void execute() override
   {
     rogue_attack_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) && p() -> buffs.buried_treasure -> up() )
+    {
+      p() -> trigger_combo_point_gain( execute_state, p() -> buffs.buried_treasure -> data().effectN( 3 ).base_value(),
+          p() -> gains.buried_treasure );
+    }
 
     if ( p() -> talent.quick_draw -> ok() && p() -> buffs.opportunity -> check() )
     {
@@ -2570,6 +2591,12 @@ struct saber_slash_t : public rogue_attack_t
 
     if ( result_is_hit( state -> result ) && ! saberslash_proc_event )
     {
+      if ( p() -> buffs.buried_treasure -> up() )
+      {
+        p() -> trigger_combo_point_gain( state, p() -> buffs.buried_treasure -> data().effectN( 2 ).base_value(),
+            p() -> gains.buried_treasure );
+      }
+
       if ( p() -> buffs.opportunity -> trigger() )
       {
         saberslash_proc_event = new ( *sim ) saberslash_proc_event_t( p(), this, state -> target );
@@ -3426,10 +3453,10 @@ void rogue_t::trigger_combo_point_gain( const action_state_t* state,
   int n_cp = 0;
   if ( cp_override == -1 )
   {
-    if ( ! attack -> adds_combo_points )
+    if ( ! attack -> generate_cp( state ) )
       return;
 
-    n_cp = attack -> adds_combo_points;
+    n_cp = attack -> generate_cp( state );
   }
   else
     n_cp = cp_override;
@@ -4509,6 +4536,7 @@ void rogue_t::init_gains()
   gains.t17_4pc_subtlety        = get_gain( "t17_4pc_subtlety" );
   gains.venomous_wounds         = get_gain( "venomous_vim"       );
   gains.quick_draw = get_gain( "Quick Draw" );
+  gains.buried_treasure = get_gain( "Buried Treasure" );
 }
 
 // rogue_t::init_procs ======================================================
