@@ -441,7 +441,7 @@ class LevelScalingDataGenerator(DataGenerator):
                     self._out.write(', ')
 
                 if k > 0 and (k + 1) % 5 == 0:
-                    self._out.write('\n')
+                    self._out.write('\t// %4u\n' % (k + 1))
 
             self._out.write('};\n\n')
 
@@ -471,16 +471,13 @@ class MonsterLevelScalingDataGenerator(DataGenerator):
                     self._out.write(', ')
 
                 if k > 0 and (k + 1) % 5 == 0:
-                    self._out.write('\n')
+                    self._out.write('\t// %4u\n' % (k + 1))
 
             self._out.write('\n};\n\n')
 
 class IlevelScalingDataGenerator(DataGenerator):
-    def __init__(self, options, scaling_data):
-        if isinstance(scaling_data, str):
-            self._dbc = [ scaling_data ]
-        else:
-            self._dbc = scaling_data
+    def __init__(self, options, *args):
+        self._dbc = args
 
         DataGenerator.__init__(self, options)
 
@@ -499,7 +496,7 @@ class IlevelScalingDataGenerator(DataGenerator):
                 self._out.write('%15.5f, ' % val.gt_value)
 
                 if k > 0 and (k + 1) % 5 == 0:
-                    self._out.write('\n')
+                    self._out.write('\t// %4u\n' % (k + 1))
 
             self._out.write('\n};\n\n')
 
@@ -535,9 +532,9 @@ class CombatRatingsDataGenerator(DataGenerator):
             self._out.write('  {\n')
             m  = CombatRatingsDataGenerator._combat_rating_ids[j]
             for k in range(m * 123, m * 123 + self._options.level, 5):
-                self._out.write('    %10.5f, %10.5f, %10.5f, %10.5f, %10.5f,\n' % (
+                self._out.write('    %10.5f, %10.5f, %10.5f, %10.5f, %10.5f,\t// %4u\n' % (
                     db[k].gt_value, db[k + 1].gt_value, db[k + 2].gt_value,
-                    db[k + 3].gt_value, db[k + 4].gt_value ))
+                    db[k + 3].gt_value, db[k + 4].gt_value, (k + 5 - m * 123)))
 
             self._out.write('  },\n')
 
@@ -595,9 +592,9 @@ class ClassScalingDataGenerator(DataGenerator):
 
                 self._out.write('  {\n')
                 for k in range((j - 1) * 123, (j - 1) * 123 + self._options.level, 5):
-                    self._out.write('    %15.5f, %15.5f, %15.5f, %15.5f, %15.5f,\n' % (
+                    self._out.write('    %15.5f, %15.5f, %15.5f, %15.5f, %15.5f,\t// %4u\n' % (
                         db[k].gt_value, db[k + 1].gt_value, db[k + 2].gt_value,
-                        db[k + 3].gt_value, db[k + 4].gt_value
+                        db[k + 3].gt_value, db[k + 4].gt_value, k - (j - 1) * 123 + 5
                     ))
                 self._out.write('  },\n')
 
@@ -629,9 +626,9 @@ class SpellScalingDataGenerator(DataGenerator):
 
             self._out.write('  {\n')
             for k in range((j - 1) * 123, (j - 1) * 123 + self._options.level, 5):
-                self._out.write('    %15.5f, %15.5f, %15.5f, %15.5f, %15.5f,\n' % (
+                self._out.write('    %15.5f, %15.5f, %15.5f, %15.5f, %15.5f,\t// %4u\n' % (
                     db[k].gt_value, db[k + 1].gt_value, db[k + 2].gt_value,
-                    db[k + 3].gt_value, db[k + 4].gt_value
+                    db[k + 3].gt_value, db[k + 4].gt_value, k - (j - 1) * 123 + 5
                 ))
             self._out.write('  },\n')
 

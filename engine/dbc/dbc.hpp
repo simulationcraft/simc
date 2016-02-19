@@ -1171,6 +1171,7 @@ public:
   { return dbc::add_token( id_spell, token_name, ptr ); }
 
   // Game data table access
+  double combat_rating_multiplier( unsigned item_level ) const;
   double melee_crit_base( player_e t, unsigned level ) const;
   double melee_crit_base( pet_e t, unsigned level ) const;
   double spell_crit_base( player_e t, unsigned level ) const;

@@ -368,7 +368,7 @@ elif options.type == 'scale':
         sys.exit(1)
     g.generate()
 
-    g = dbc.generator.IlevelScalingDataGenerator(options, 'gtItemSocketCostPerLevel')
+    g = dbc.generator.IlevelScalingDataGenerator(options, 'gtItemSocketCostPerLevel', 'gtCombatRatingsMultByILvl' )
     if not g.initialize():
         sys.exit(1)
 

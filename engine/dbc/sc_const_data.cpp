@@ -809,6 +809,17 @@ bool dbc_t::replace_id( uint32_t id_spell, uint32_t replaced_by_id )
   return false;
 }
 
+double dbc_t::combat_rating_multiplier( unsigned item_level ) const
+{
+  assert( item_level > 0 && item_level <= MAX_ILEVEL );
+#if SC_USE_PTR
+  return ptr ? __ptr_gt_combat_ratings_mult_by_ilvl[ item_level - 1 ]
+    : __gt_combat_ratings_mult_by_ilvl[ item_level - 1 ];
+#else
+  return __gt_combat_ratings_mult_by_ilvl[ item_level - 1 ];
+#endif
+}
+
 double dbc_t::melee_crit_base( player_e t, unsigned level ) const
 {
   uint32_t class_id = util::class_id( t );
