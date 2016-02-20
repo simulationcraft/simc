@@ -28,7 +28,7 @@ BIN_INSTALL_PATH = $(PREFIX)
 # Installation path for the shared files. By default it's not used; if $PREFIX
 # is set to something else than "..", set to
 # $DESTDIR$PREFIX/share/SimulationCraft
-SHARE_INSTALL_PATH = 
+SHARE_INSTALL_PATH =
 
 ifneq (${PREFIX},..)
   ORG_NAME = SimulationCraft
@@ -56,7 +56,7 @@ endif
 MKDIR      = mkdir
 CXX        = g++
 CPP_FLAGS  = -Wall -Wextra -Woverloaded-virtual -W -I. -DSC_SHARED_DATA=\"$(SHARED_DATA)\" --std=c++0x -O3 -MMD -MP
-OPTS       = 
+OPTS       =
 
 LINK_LIBS  =
 
@@ -178,9 +178,9 @@ SRC_DEPS := $(SRC_CPP:%.cpp=$(OBJ_DIR)$(PATHSEP)%.$(DEP_EXT))
 
 .PHONY:	all mostlyclean clean
 
--include $(SRC_DEPS)
-
 all: $(MODULE)
+
+-include $(SRC_DEPS)
 
 debug:OPTS += -g -fno-omit-frame-pointer -O0
 debug: $(MODULE)
