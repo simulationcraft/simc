@@ -2342,11 +2342,6 @@ struct lava_lash_t : public shaman_attack_t
     base_multiplier *= 1.0 + player -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + player -> artifact.forged_in_lava.percent();
 
-    if ( player -> talent.stormbringer -> ok() )
-    {
-      cooldown -> duration += player -> talent.stormbringer -> effectN( 3 ).time_value();
-    }
-
     parse_options( options_str );
     weapon              = &( player -> off_hand_weapon );
 
@@ -3135,18 +3130,24 @@ struct lava_burst_t : public shaman_spell_t
 
 struct lightning_bolt_t : public shaman_spell_t
 {
+  double m_stormbringer;
+
   lightning_bolt_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "lightning_bolt", player, player -> find_specialization_spell( "Lightning Bolt" ), options_str )
+    shaman_spell_t( "lightning_bolt", player, player -> find_specialization_spell( "Lightning Bolt" ), options_str ),
+    m_stormbringer( player -> talent.stormbringer -> effectN( 2 ).percent() / player -> talent.stormbringer -> effectN( 1 ).base_value() )
   {
     base_multiplier *= 1.0 + player -> artifact.call_the_thunder.percent();
+
+    if ( player -> talent.stormbringer -> ok() )
+    {
+      cooldown -> duration += player -> talent.stormbringer -> effectN( 3 ).time_value();
+    }
 
     // TODO: Is it still 10% per Maelstrom with Stormbringer?
     if ( player -> talent.stormbringer -> ok() )
     {
-      base_multiplier *= 1.0 + player -> talent.stormbringer -> effectN( 1 ).percent();
-      secondary_costs[ RESOURCE_MAELSTROM ] = player -> talent.stormbringer -> effectN( 2 ).base_value();
+      secondary_costs[ RESOURCE_MAELSTROM ] = player -> talent.stormbringer -> effectN( 1 ).base_value();
       resource_current = RESOURCE_MAELSTROM;
-      attack_power_mod.direct = 0.1;
     }
 
     if ( player -> mastery.elemental_overload -> ok() )
@@ -3181,9 +3182,9 @@ struct lightning_bolt_t : public shaman_spell_t
     return shaman_spell_t::n_overloads( s );
   }
 
-  double attack_direct_power_coefficient( const action_state_t* /* state */ ) const override
+  double spell_direct_power_coefficient( const action_state_t* /* state */ ) const override
   {
-    return attack_power_mod.direct * cost();
+    return spell_power_mod.direct * ( 1.0 + m_stormbringer * cost() );
   }
 
   double action_multiplier() const override
