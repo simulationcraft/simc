@@ -361,6 +361,7 @@ public:
     artifact_power_t molten_blast;
     artifact_power_t elementalist;
     artifact_power_t radens_fury;
+    artifact_power_t firestorm;
 
     // Enhancement
     artifact_power_t doom_winds;
@@ -3643,6 +3644,7 @@ struct flame_shock_t : public shaman_spell_t
     tick_may_crit         = true;
     track_cd_waste        = false;
     cooldown -> duration += player -> spec.spiritual_insight -> effectN( 3 ).time_value();
+    base_multiplier *= 1.0 + player -> artifact.firestorm.percent();
 
     // Elemental Tier 18 (WoD 6.2) trinket effect is in use, adjust Flame Shock based on spell data
     // of the special effect.
@@ -4706,6 +4708,7 @@ void shaman_t::init_spells()
   artifact.molten_blast              = find_artifact_spell( "Molten Blast"       );
   artifact.elementalist              = find_artifact_spell( "Elementalist"       );
   artifact.radens_fury               = find_artifact_spell( "Ra-den's Fury"      );
+  artifact.firestorm                 = find_artifact_spell( "Firestorm"          );
 
   // Enhancement
   artifact.doom_winds                = find_artifact_spell( "Doom Winds"         );
