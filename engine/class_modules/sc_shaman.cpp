@@ -117,6 +117,7 @@ public:
   spell_t*  lightning_shield;
   spell_t*  molten_earth;
   spell_t*  radens_fury;
+  spell_t* crashing_storm;
 
   // Pets
   std::vector<pet_t*> pet_feral_spirit;
@@ -2085,6 +2086,75 @@ struct radens_fury_t : public shaman_spell_t
   }
 };
 
+struct crashing_storm_spell_t : public shaman_spell_t
+{
+  double x, y;
+
+  crashing_storm_spell_t( shaman_t* p ) :
+    shaman_spell_t( "crashing_storm", p, p -> find_spell( 210801 ) ),
+    x( -1 ), y( -1 )
+  {
+    callbacks = false;
+    ground_aoe = background = true;
+  }
+
+  void snapshot_internal( action_state_t* state, unsigned flags, dmg_e rt ) override
+  {
+    assert( x >= 0 && y >= 0 );
+
+    shaman_spell_t::snapshot_internal( state, flags, rt );
+
+    state -> original_x = x;
+    state -> original_y = y;
+  }
+};
+
+// Fake "ground aoe object" for Crashing Storm talent
+struct crashing_storm_event_t : public player_event_t
+{
+  uint8_t current_tick, n_ticks;
+
+  // Ground AOE state
+  player_t* target;
+  double x, y;
+
+  crashing_storm_event_t( shaman_t* p, player_t* t, double x_, double y_, uint8_t tick = 0 ) :
+    player_event_t( *p ),
+    current_tick( tick ),
+    n_ticks( static_cast<uint8_t>( p -> find_spell( 210797 ) -> duration().total_seconds() ) ),
+    target( t ), x( x_ ), y( y_ )
+  {
+    // Base tick time is 1 second, affected by speed
+    add_event( timespan_t::from_seconds( p -> cache.spell_speed() ) );
+  }
+
+  const char* name() const override
+  { return "crashing_storm"; }
+
+  shaman_t* shaman()
+  { return debug_cast<shaman_t*>( player() ); }
+
+  crashing_storm_spell_t* spell()
+  { return debug_cast<crashing_storm_spell_t*>( shaman() -> crashing_storm ); }
+
+  void execute() override
+  {
+    // Setup spell state, and execute
+    crashing_storm_spell_t* spell_ = spell();
+    spell_ -> target = target;
+    spell_ -> x = x;
+    spell_ -> y = y;
+
+    spell_ -> schedule_execute();
+
+    // Schedule next tick
+    if ( current_tick + 1 < n_ticks )
+    {
+      new ( sim() ) crashing_storm_event_t( shaman(), target, x, y, current_tick + 1 );
+    }
+  }
+};
+
 // shaman_heal_t::impact ====================================================
 
 void shaman_heal_t::impact( action_state_t* s )
@@ -2551,6 +2621,12 @@ struct crash_lightning_t : public shaman_attack_t
   void execute() override
   {
     shaman_attack_t::execute();
+
+    if ( p() -> talent.crashing_storm -> ok() )
+    {
+      new ( *sim ) crashing_storm_event_t( p(), execute_state -> target,
+          player -> x_position, player -> y_position );
+    }
 
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -4647,6 +4723,11 @@ void shaman_t::init_spells()
   if ( talent.lightning_shield -> ok() )
   {
     lightning_shield = new lightning_shield_damage_t( this );
+  }
+
+  if ( talent.crashing_storm -> ok() )
+  {
+    crashing_storm = new crashing_storm_spell_t( this );
   }
 
   if ( talent.molten_earth -> ok() )
