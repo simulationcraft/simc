@@ -1212,7 +1212,8 @@ struct feral_spirit_pet_t : public pet_t
 
       shaman_t* o = p() -> o();
       o -> resource_gain( RESOURCE_MAELSTROM,
-                          maelstrom -> effectN( 1 ).resource( RESOURCE_MAELSTROM ),
+                          maelstrom -> effectN( 1 ).resource( RESOURCE_MAELSTROM ) +
+                          o -> talent.spiritual_resonance -> effectN( 2 ).base_value(),
                           o -> gain.feral_spirit,
                           state -> action );
 
