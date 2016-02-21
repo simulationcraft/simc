@@ -115,7 +115,7 @@ public:
   spell_t*  electrocute;
   action_t* volcanic_inferno;
   spell_t*  lightning_shield;
-  spell_t*  molten_earth;
+  spell_t*  earthen_rage;
   spell_t*  radens_fury;
   spell_t* crashing_storm;
 
@@ -305,7 +305,7 @@ public:
 
     // Elemental
     const spell_data_t* path_of_flame;
-    const spell_data_t* molten_earth;
+    const spell_data_t* earthen_rage;
     const spell_data_t* totem_mastery;
 
     const spell_data_t* fleet_of_foot;
@@ -445,7 +445,7 @@ public:
 
     hailstorm = nullptr;
     lightning_shield = nullptr;
-    molten_earth = nullptr;
+    earthen_rage = nullptr;
 
     regen_type = REGEN_DISABLED;
   }
@@ -467,7 +467,7 @@ public:
   void trigger_unleash_doom( const action_state_t* state );
   void trigger_elemental_focus( const action_state_t* state );
   void trigger_lightning_shield( const action_state_t* state );
-  void trigger_molten_earth( const action_state_t* state );
+  void trigger_earthen_rage( const action_state_t* state );
   void trigger_radens_fury_damage( const action_state_t* state );
 
   // Character Definition
@@ -964,7 +964,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   {
     base_t::execute();
 
-    p() -> trigger_molten_earth( execute_state );
+    p() -> trigger_earthen_rage( execute_state );
   }
 
   void impact( action_state_t* state ) override
@@ -2008,27 +2008,27 @@ struct lightning_shield_damage_t : public shaman_spell_t
   }
 };
 
-struct molten_earth_spell_t : public shaman_spell_t
+struct earthen_rage_spell_t : public shaman_spell_t
 {
-  molten_earth_spell_t( shaman_t* p ) :
-    shaman_spell_t( "molten_earth", p, p -> find_spell( 170379 ) )
+  earthen_rage_spell_t( shaman_t* p ) :
+    shaman_spell_t( "earthen_rage", p, p -> find_spell( 170379 ) )
   {
     background = proc = true;
     callbacks = false;
   }
 };
 
-struct molten_earth_driver_t : public spell_t
+struct earthen_rage_driver_t : public spell_t
 {
-  molten_earth_spell_t* nuke;
+  earthen_rage_spell_t* nuke;
 
-  molten_earth_driver_t( shaman_t* p ) :
-    spell_t( "molten_earth_driver", p, p -> find_spell( 170377 ) )
+  earthen_rage_driver_t( shaman_t* p ) :
+    spell_t( "earthen_rage_driver", p, p -> find_spell( 170377 ) )
   {
     may_miss = may_crit = callbacks = proc = tick_may_crit = false;
     background = hasted_ticks = quiet = dual = true;
 
-    nuke = new molten_earth_spell_t( p );
+    nuke = new earthen_rage_spell_t( p );
   }
 
   timespan_t tick_time( double haste ) const override
@@ -4654,7 +4654,7 @@ void shaman_t::init_spells()
 
   // Elemental
   talent.path_of_flame               = find_talent_spell( "Path of Flame"        );
-  talent.molten_earth                = find_talent_spell( "Molten Earth"         );
+  talent.earthen_rage                = find_talent_spell( "Molten Earth"         );
   talent.totem_mastery               = find_talent_spell( "Totem Mastery"        );
 
   talent.elemental_blast             = find_talent_spell( "Elemental Blast"      );
@@ -4752,9 +4752,9 @@ void shaman_t::init_spells()
     crashing_storm = new crashing_storm_spell_t( this );
   }
 
-  if ( talent.molten_earth -> ok() )
+  if ( talent.earthen_rage -> ok() )
   {
-    molten_earth = new molten_earth_driver_t( this );
+    earthen_rage = new earthen_rage_driver_t( this );
   }
 
   if ( artifact.unleash_doom.rank() )
@@ -4920,9 +4920,9 @@ void shaman_t::trigger_lightning_shield( const action_state_t* state )
 }
 
 // TODO: Target swaps
-void shaman_t::trigger_molten_earth( const action_state_t* state )
+void shaman_t::trigger_earthen_rage( const action_state_t* state )
 {
-  if ( ! talent.molten_earth -> ok() )
+  if ( ! talent.earthen_rage -> ok() )
     return;
 
   if ( ! state -> action -> harmful )
@@ -4932,10 +4932,10 @@ void shaman_t::trigger_molten_earth( const action_state_t* state )
     return;
 
   // Molten earth does not trigger itself.
-  if ( state -> action == debug_cast<molten_earth_driver_t*>( molten_earth ) -> nuke )
+  if ( state -> action == debug_cast<earthen_rage_driver_t*>( earthen_rage ) -> nuke )
     return;
 
-  molten_earth -> schedule_execute();
+  earthen_rage -> schedule_execute();
 }
 
 void shaman_t::trigger_radens_fury_damage( const action_state_t* state )
