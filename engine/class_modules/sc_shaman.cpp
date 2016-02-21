@@ -865,7 +865,7 @@ public:
     if ( ! result_is_hit( state -> result ) )
       return;
 
-    trigger_maelstrom_weapon( execute_state );
+    trigger_maelstrom_weapon( state );
     p() -> trigger_windfury_weapon( state );
     p() -> trigger_stormfury( state );
     p() -> trigger_flametongue_weapon( state );
@@ -877,7 +877,7 @@ public:
 
   void trigger_maelstrom_weapon( const action_state_t* source_state, double amount = 0 )
   {
-    if ( ! p() -> spec.maelstrom_weapon -> ok() )
+    if ( may_proc_maelstrom_weapon )
     {
       return;
     }
