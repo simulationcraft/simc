@@ -1936,8 +1936,10 @@ struct doom_vortex_t : public shaman_spell_t
 
 struct elemental_overload_spell_t : public shaman_spell_t
 {
-  elemental_overload_spell_t( shaman_t* p, const std::string& name, const spell_data_t* s ) :
-    shaman_spell_t( name, p, s )
+  double fulmination_gain;
+
+  elemental_overload_spell_t( shaman_t* p, const std::string& name, const spell_data_t* s, double fg = 0 ) :
+    shaman_spell_t( name, p, s ), fulmination_gain( fg )
   {
     base_execute_time = timespan_t::zero();
     background = true;
@@ -1951,6 +1953,16 @@ struct elemental_overload_spell_t : public shaman_spell_t
     if ( p() -> real_ppm.radens_fury.trigger() )
     {
       p() -> buff.radens_fury -> trigger();
+    }
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    shaman_spell_t::impact( state );
+
+    if ( result_is_hit( state -> result ) && p() -> spec.fulmination -> ok() )
+    {
+      player -> resource_gain( RESOURCE_MAELSTROM, fulmination_gain, p() -> gain.fulmination, this );
     }
   }
 };
@@ -2844,7 +2856,9 @@ struct chain_lightning_t: public shaman_spell_t
 
     if ( player -> mastery.elemental_overload -> ok() )
     {
-      overload = new elemental_overload_spell_t( player, "chain_lightning_overload", player -> find_spell( 45297 ) );
+      overload = new elemental_overload_spell_t( player, "chain_lightning_overload", player -> find_spell( 45297 ),
+      // TODO: Use multiplier from Mastery when it's fixed
+      player -> spec.fulmination -> effectN( 2 ).base_value() / 2 );
       add_child( overload );
     }
   }
@@ -3011,7 +3025,9 @@ struct lava_beam_t : public shaman_spell_t
 
     if ( player -> mastery.elemental_overload -> ok() )
     {
-      overload = new elemental_overload_spell_t( player, "lava_beam_overload", player -> find_spell( 114738 ) );
+      overload = new elemental_overload_spell_t( player, "lava_beam_overload", player -> find_spell( 114738 ),
+      // TODO: Use multiplier from Mastery when it's fixed
+      player -> spec.fulmination -> effectN( 2 ).base_value() / 2 );
       add_child( overload );
     }
   }
@@ -3047,10 +3063,12 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( player -> mastery.elemental_overload -> ok() )
     {
-      overload = new elemental_overload_spell_t( player, "lava_burst_overload", player -> find_spell( 77451 ) );
+      overload = new elemental_overload_spell_t( player, "lava_burst_overload", player -> find_spell( 77451 ),
+      // TODO: Use multiplier from Mastery when it's fixed
+      // TODO: Spell data lagging behind, it's actually 16 per, and not 15
+      ( player -> spec.fulmination -> effectN( 1 ).base_value() + 1 ) / 2 );
       // State snapshot does not include crit damage bonuses, so need to set it here
       overload -> crit_bonus_multiplier += player -> artifact.molten_blast.percent();
-      overload -> base_multiplier *= 1.0 + player -> talent.path_of_flame -> effectN( 1 ).percent();
       add_child( overload );
     }
   }
@@ -3174,7 +3192,10 @@ struct lightning_bolt_t : public shaman_spell_t
 
     if ( player -> mastery.elemental_overload -> ok() )
     {
-      overload = new elemental_overload_spell_t( player, "lightning_bolt_overload", player -> find_spell( 45284 ) );
+      overload = new elemental_overload_spell_t( player, "lightning_bolt_overload", player -> find_spell( 45284 ),
+      // TODO: Use multiplier from Mastery when it's fixed
+      // TODO: Spell data lagging behind, it's actually 16 per, and not 15
+      ( player -> spec.fulmination -> effectN( 1 ).base_value() + 1 ) / 2 );
       add_child( overload );
     }
   }
