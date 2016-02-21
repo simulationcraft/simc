@@ -179,6 +179,7 @@ public:
     haste_buff_t* wind_strikes;
     buff_t* gathering_storms;
     buff_t* fire_empowered;
+    buff_t* storm_empowered;
     buff_t* ghost_wolf;
     buff_t* elemental_focus;
     buff_t* earth_surge;
@@ -678,6 +679,11 @@ public:
     if ( p() -> buff.fire_empowered -> up() )
     {
       m *= 1.0 + p() -> buff.fire_empowered -> data().effectN( 1 ).percent();
+    }
+
+    if ( p() -> buff.storm_empowered -> up() )
+    {
+      m *= 1.0 + p() -> buff.storm_empowered -> data().effectN( 1 ).percent();
     }
 
     return m;
@@ -2673,8 +2679,11 @@ struct crash_lightning_t : public shaman_attack_t
 
 struct fire_elemental_t : public shaman_spell_t
 {
+  const spell_data_t* base_spell;
+
   fire_elemental_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "fire_elemental", player, player -> find_specialization_spell( "Fire Elemental" ), options_str )
+    shaman_spell_t( "fire_elemental", player, player -> find_specialization_spell( "Fire Elemental" ), options_str ),
+    base_spell( player -> find_spell( 188592 ) )
   {
     harmful = may_crit = false;
   }
@@ -2683,9 +2692,26 @@ struct fire_elemental_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    // TODO: Incomplete spell data
-    p() -> guardian_fire_elemental -> summon( timespan_t::from_seconds( 15 ) );
+    if ( p() -> talent.primal_elementalist -> ok() )
+    {
+      p() -> pet_fire_elemental -> summon( base_spell -> duration() );
+    }
+    else
+    {
+      p() -> guardian_fire_elemental -> summon( base_spell -> duration() );
+    }
+
     p() -> buff.fire_empowered -> trigger();
+  }
+
+  bool ready() override
+  {
+    if ( p() -> talent.storm_elemental -> ok() )
+    {
+      return false;
+    }
+
+    return shaman_spell_t::ready();
   }
 };
 
@@ -3590,7 +3616,16 @@ struct storm_elemental_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    p() -> guardian_storm_elemental -> summon( data().duration() );
+    if ( p() -> talent.primal_elementalist -> ok() )
+    {
+      p() -> pet_storm_elemental -> summon( data().duration() );
+    }
+    else
+    {
+      p() -> guardian_storm_elemental -> summon( data().duration() );
+    }
+
+    p() -> buff.storm_empowered -> trigger();
   }
 };
 
@@ -5297,6 +5332,7 @@ void shaman_t::create_buffs()
                       .default_value( 1.0 / ( 1.0 + artifact.wind_strikes.percent() ) );
   buff.gathering_storms = buff_creator_t( this, "gathering_storms", find_spell( 198300 ) );
   buff.fire_empowered = buff_creator_t( this, "fire_empowered", find_spell( 193774 ) );
+  buff.storm_empowered = buff_creator_t( this, "storm_empowered", find_spell( 212747 ) );
   buff.ghost_wolf = buff_creator_t( this, "ghost_wolf", find_class_spell( "Ghost Wolf" ) )
                     .period( artifact.spirit_of_the_maelstrom.rank() ? find_spell( 198240 ) -> effectN( 1 ).period() : timespan_t::min() )
                     .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
