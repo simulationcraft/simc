@@ -2090,10 +2090,11 @@ struct radens_fury_t : public shaman_spell_t
 struct crashing_storm_spell_t : public shaman_spell_t
 {
   double x, y;
+  timespan_t duration;
 
   crashing_storm_spell_t( shaman_t* p ) :
     shaman_spell_t( "crashing_storm", p, p -> find_spell( 210801 ) ),
-    x( -1 ), y( -1 )
+    x( -1 ), y( -1 ), duration( p -> find_spell( 210797 ) -> duration() )
   {
     callbacks = false;
     ground_aoe = background = true;
@@ -2113,20 +2114,25 @@ struct crashing_storm_spell_t : public shaman_spell_t
 // Fake "ground aoe object" for Crashing Storm talent
 struct crashing_storm_event_t : public player_event_t
 {
-  uint8_t current_tick, n_ticks;
+  timespan_t start_time;
 
   // Ground AOE state
   player_t* target;
   double x, y;
 
-  crashing_storm_event_t( shaman_t* p, player_t* t, double x_, double y_, uint8_t tick = 0 ) :
+  crashing_storm_event_t( shaman_t* p, player_t* t, double x_, double y_, const timespan_t& time_, bool first_tick = false ) :
     player_event_t( *p ),
-    current_tick( tick ),
-    n_ticks( static_cast<uint8_t>( p -> find_spell( 210797 ) -> duration().total_seconds() ) ),
-    target( t ), x( x_ ), y( y_ )
+    start_time( time_ ), target( t ), x( x_ ), y( y_ )
   {
-    // Base tick time is 1 second, affected by speed
-    add_event( timespan_t::from_seconds( p -> cache.spell_speed() ) );
+    if ( first_tick )
+    {
+      add_event( timespan_t::zero() );
+    }
+    else
+    {
+      // Base tick time is 1 second, affected by speed
+      add_event( timespan_t::from_seconds( p -> cache.spell_speed() ) );
+    }
   }
 
   const char* name() const override
@@ -2140,18 +2146,30 @@ struct crashing_storm_event_t : public player_event_t
 
   void execute() override
   {
-    // Setup spell state, and execute
     crashing_storm_spell_t* spell_ = spell();
+
+    // Ticks are 1 second base, affected by haste.
+    timespan_t next_tick = timespan_t::from_seconds( player() -> cache.attack_haste() );
+
+    if ( sim().debug )
+    {
+      sim().out_debug.printf( "%s crashing_storm pulse start_time=%.3f remaining_time=%.3f tick_time=%.3f",
+          player() -> name(), start_time.total_seconds(),
+          ( spell_ -> duration - ( sim().current_time() - start_time ) ).total_seconds(),
+          next_tick.total_seconds() );
+    }
+
+    // Setup spell state, and execute
     spell_ -> target = target;
     spell_ -> x = x;
     spell_ -> y = y;
 
     spell_ -> schedule_execute();
 
-    // Schedule next tick
-    if ( current_tick + 1 < n_ticks )
+    // Schedule next tick, if it can fit into the duration
+    if ( spell_ -> duration - ( sim().current_time() - start_time ) >= next_tick )
     {
-      new ( sim() ) crashing_storm_event_t( shaman(), target, x, y, current_tick + 1 );
+      new ( sim() ) crashing_storm_event_t( shaman(), target, x, y, start_time );
     }
   }
 };
@@ -2621,7 +2639,7 @@ struct crash_lightning_t : public shaman_attack_t
     if ( p() -> talent.crashing_storm -> ok() )
     {
       new ( *sim ) crashing_storm_event_t( p(), execute_state -> target,
-          player -> x_position, player -> y_position );
+          player -> x_position, player -> y_position, sim -> current_time(), true );
     }
 
     if ( result_is_hit( execute_state -> result ) )
@@ -3135,13 +3153,15 @@ struct lightning_bolt_t : public shaman_spell_t
 
   lightning_bolt_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "lightning_bolt", player, player -> find_specialization_spell( "Lightning Bolt" ), options_str ),
-    m_stormbringer( player -> talent.stormbringer -> effectN( 2 ).percent() / player -> talent.stormbringer -> effectN( 1 ).base_value() )
+    m_stormbringer( 0 )
   {
     base_multiplier *= 1.0 + player -> artifact.call_the_thunder.percent();
 
     if ( player -> talent.stormbringer -> ok() )
     {
       cooldown -> duration += player -> talent.stormbringer -> effectN( 3 ).time_value();
+      m_stormbringer = player -> talent.stormbringer -> effectN( 2 ).percent() /
+        player -> talent.stormbringer -> effectN( 1 ).base_value();
     }
 
     // TODO: Is it still 10% per Maelstrom with Stormbringer?
