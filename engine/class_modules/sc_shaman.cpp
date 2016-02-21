@@ -1780,6 +1780,7 @@ struct crash_lightning_attack_t : public shaman_attack_t
     callbacks = false;
     aoe = -1;
     cooldown -> duration = timespan_t::zero();
+    callbacks = may_proc_windfury = may_proc_frostbrand = may_proc_flametongue = may_proc_maelstrom_weapon = false;
   }
 };
 
@@ -2627,7 +2628,6 @@ struct crash_lightning_t : public shaman_attack_t
   {
     parse_options( options_str );
 
-    may_proc_windfury = may_proc_flametongue = may_proc_stormfury = may_proc_frostbrand = false;
     aoe = -1;
     weapon = &( p() -> main_hand_weapon );
   }
