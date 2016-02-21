@@ -2902,6 +2902,42 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Choose a level 90 talent.
 
+Name             : Ashes to Ashes (id=179546) [Spell Family (10), Passive] 
+Class            : Paladin
+School           : Physical
+Range            : 100 yards
+Proc Chance      : 100%
+Proc Flags       : ....x... ....x... x....... ........ 
+                 : Yellow Melee, AOE Hostile Spell, Hostile Spell
+Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=258001)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50
+#2 (id=283248)   : Dummy (3)
+                   Base Value: 35 | Scaled Value: 35
+Description      : Judgment has a chance to blast your target with Holy damage.
+
+Name             : Ashen Strike (id=180290) [Spell Family (10)] 
+Class            : Paladin
+School           : Holy
+Range            : 100 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=259221)   : School Damage: holy (2)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.71000
+Description      : $@spelldesc179546
+
 Name             : Guiding Light (id=181197) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy

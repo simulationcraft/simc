@@ -5723,6 +5723,39 @@ Effects          :
                    Affected Spells: Stormlash (195222), Stormlash (195255), Stormlash (195256)
 Description      : Your Stormlash effect now spreads to $s1 additional target and deals $s2% additional damage.
 
+Name             : Crashing Storm (id=210797) [Spell Family (3)] 
+Class            : Shaman
+School           : Nature
+Spell Level      : 1
+Range            : 100 yards
+Duration         : 8 seconds
+Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .....x.. ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ...x....   ........ ........ ........ ........ 
+Effects          :
+#1 (id=312254)   : Unknown effect type (179)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 6826 | Radius: 4 yards
+Description      : $@spelldesc192246
+
+Name             : Crashing Storm (id=210801) [Spell Family (3)] 
+Class            : Shaman
+School           : Nature
+Spell Level      : 44
+Range            : 100 yards
+Attributes       : ........ ........ ........ x..x....   ...x...x ........ ........ ........ 
+                 : ........ ......x. ...x.... ....x.x.   x....... ........ ........ .x....x. 
+                 : ........ ........ ........ ........   ...x.... ..x..... .xx..... ..x..... 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=312258)   : School Damage: nature (2)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.20000 | Radius: 8 yards
+Description      : $@spelldesc192246
+
 Name             : Hailstorm (id=210853) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
