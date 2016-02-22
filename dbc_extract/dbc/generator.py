@@ -156,12 +156,11 @@ class RealPPMModifierGenerator(DataGenerator):
                     continue
 
                 spell_id = aopts_data.id_spell
-                break
 
-            if spell_id == 0:
-                continue
+                if spell_id == 0:
+                    continue
 
-            output_data.append((data.id_chr_spec, data.coefficient, spell_id, data.unk_1))
+                output_data.append((data.id_chr_spec, data.coefficient, spell_id, data.unk_1))
 
         output_data.sort(cmp = lambda l, r: l[2] - r[2])
 
