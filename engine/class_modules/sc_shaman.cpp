@@ -25,6 +25,7 @@ struct shaman_heal_t;
 struct shaman_totem_pet_t;
 struct totem_pulse_event_t;
 struct totem_pulse_action_t;
+struct stormlash_buff_t;
 
 struct shaman_td_t : public actor_target_data_t
 {
@@ -198,6 +199,9 @@ public:
     buff_t* storm_totem;
     buff_t* ember_totem;
     buff_t* tailwind_totem;
+
+    // Stormlaash
+    stormlash_buff_t* stormlash;
   } buff;
 
   // Cooldowns
@@ -250,6 +254,7 @@ public:
     real_ppm_t power_of_the_maelstrom;
     real_ppm_t static_overload;
     real_ppm_t radens_fury;
+    real_ppm_t stormlash;
   } real_ppm;
 
   // Class Specializations
@@ -471,45 +476,48 @@ public:
   void trigger_lightning_shield( const action_state_t* state );
   void trigger_earthen_rage( const action_state_t* state );
   void trigger_radens_fury_damage( const action_state_t* state );
+  void trigger_stormlash( const action_state_t* state );
 
   // Character Definition
-  virtual void      init_spells() override;
-  virtual void      init_resources( bool force = false ) override;
-  virtual void      init_base_stats() override;
-  virtual void      init_scaling() override;
-  virtual void      create_buffs() override;
-  virtual void      init_gains() override;
-  virtual void      init_procs() override;
-  virtual void      init_action_list() override;
-  virtual void      init_rng() override;
-  virtual void      moving() override;
-  virtual void      invalidate_cache( cache_e c ) override;
-  virtual double    temporary_movement_modifier() const override;
-  virtual double    composite_melee_crit() const override;
-  virtual double    composite_melee_haste() const override;
-  virtual double    composite_melee_speed() const override;
-  virtual double    composite_attack_power_multiplier() const override;
-  virtual double    composite_spell_crit() const override;
-  virtual double    composite_spell_haste() const override;
-  virtual double    composite_spell_power( school_e school ) const override;
-  virtual double    composite_spell_power_multiplier() const override;
-  virtual double    composite_player_multiplier( school_e school ) const override;
-  virtual double    matching_gear_multiplier( attribute_e attr ) const override;
-  virtual action_t* create_action( const std::string& name, const std::string& options ) override;
-  virtual action_t* create_proc_action( const std::string& /* name */, const special_effect_t& ) override;
-  virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() ) override;
-  virtual void      create_pets() override;
-  virtual expr_t* create_expression( action_t*, const std::string& name ) override;
-  virtual resource_e primary_resource() const override { return RESOURCE_MANA; }
-  virtual role_e primary_role() const override;
-  virtual stat_e convert_hybrid_stat( stat_e s ) const override;
-  virtual void      arise() override;
-  virtual void      reset() override;
-  virtual void      merge( player_t& other ) override;
+  void      init_spells() override;
+  void      init_resources( bool force = false ) override;
+  void      init_base_stats() override;
+  void      init_scaling() override;
+  void      create_buffs() override;
+  void      init_gains() override;
+  void      init_procs() override;
+  void      init_action_list() override;
+  void      init_rng() override;
+  void      init_special_effects() override;
 
-  virtual void     datacollection_begin() override;
-  virtual void     datacollection_end() override;
-  virtual bool     has_t18_class_trinket() const override;
+  void      moving() override;
+  void      invalidate_cache( cache_e c ) override;
+  double    temporary_movement_modifier() const override;
+  double    composite_melee_crit() const override;
+  double    composite_melee_haste() const override;
+  double    composite_melee_speed() const override;
+  double    composite_attack_power_multiplier() const override;
+  double    composite_spell_crit() const override;
+  double    composite_spell_haste() const override;
+  double    composite_spell_power( school_e school ) const override;
+  double    composite_spell_power_multiplier() const override;
+  double    composite_player_multiplier( school_e school ) const override;
+  double    matching_gear_multiplier( attribute_e attr ) const override;
+  action_t* create_action( const std::string& name, const std::string& options ) override;
+  action_t* create_proc_action( const std::string& /* name */, const special_effect_t& ) override;
+  pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() ) override;
+  void      create_pets() override;
+  expr_t* create_expression( action_t*, const std::string& name ) override;
+  resource_e primary_resource() const override { return RESOURCE_MANA; }
+  role_e primary_role() const override;
+  stat_e convert_hybrid_stat( stat_e s ) const override;
+  void      arise() override;
+  void      reset() override;
+  void      merge( player_t& other ) override;
+
+  void     datacollection_begin() override;
+  void     datacollection_end() override;
+  bool     has_t18_class_trinket() const override;
 
   target_specific_t<shaman_td_t> target_data;
 
@@ -589,6 +597,131 @@ struct ascendance_buff_t : public buff_t
   void ascendance( attack_t* mh, attack_t* oh, timespan_t lvb_cooldown );
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override;
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
+};
+
+// Stormlash
+
+struct stormlash_spell_t : public spell_t
+{
+  double damage_pool;
+  timespan_t previous_proc, buff_duration;
+
+  stormlash_spell_t( player_t* p ) :
+    spell_t( "stormlash", p, p -> find_spell( 213307 ) ),
+    damage_pool( 0 ), previous_proc( timespan_t::zero() ),
+    buff_duration( p -> find_spell( 195222 ) -> duration() )
+  {
+    background = true;
+    callbacks = may_crit = may_miss = false;
+  }
+
+  void setup( player_t* source )
+  {
+    damage_pool = source -> cache.attack_power() * data().effectN( 1 ).ap_coeff();
+    // Add in mastery multiplier
+    damage_pool *= 1.0 + source -> cache.mastery_value();
+    // Add in versatility multiplier
+    damage_pool *= 1.0 + source -> cache.damage_versatility();
+    // Add in crit multiplier
+    damage_pool *= 1.0 + source -> cache.attack_crit();
+    // TODO: Add in crit damage multiplier
+
+    previous_proc = sim -> current_time();
+  }
+
+  double base_da_min( const action_state_t* ) const override
+  {
+    timespan_t interval = sim -> current_time() - previous_proc;
+    double multiplier = interval / buff_duration;
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf( "%s stormlash damage_pool=%.1f previous=%.3f interval=%.3f multiplier=%.3f damage=%.3f",
+          player -> name(), damage_pool, previous_proc.total_seconds(), interval.total_seconds(), multiplier, damage_pool * multiplier );
+    }
+    return damage_pool * multiplier;
+  }
+
+  double base_da_max( const action_state_t* state ) const override
+  { return base_da_min( state ); }
+
+  void init() override
+  {
+    spell_t::init();
+
+    snapshot_flags = update_flags = 0;
+  }
+
+  void execute() override
+  {
+    spell_t::execute();
+    previous_proc = sim -> current_time();
+  }
+
+  void reset() override
+  {
+    spell_t::reset();
+
+    previous_proc = timespan_t::zero();
+  }
+};
+
+struct stormlash_callback_t : public dbc_proc_callback_t
+{
+  stormlash_spell_t* spell;
+
+  stormlash_callback_t( player_t* p, const special_effect_t& effect ) :
+    dbc_proc_callback_t( p, effect ),
+    spell( new stormlash_spell_t( p ) )
+  { }
+
+  void execute( action_t* /* a */, action_state_t* state ) override
+  {
+    // This can occur if the stormlash buff on the actor refreshes. Otherwise, the 100ms ICD will
+    // take care of things.
+    if ( spell -> previous_proc == listener -> sim -> current_time() )
+    {
+      return;
+    }
+
+    spell -> target = state -> target;
+    spell -> schedule_execute();
+  }
+
+  void reset() override
+  {
+    dbc_proc_callback_t::reset();
+
+    deactivate();
+  }
+};
+
+struct stormlash_buff_t : public buff_t
+{
+  stormlash_callback_t* callback;
+
+  stormlash_buff_t( player_t* p ) :
+    buff_t( buff_creator_t( p, "stormlash", p -> find_spell( 195222 ) ).activated( false ).cd( timespan_t::zero() ) )
+  { }
+
+  void trigger_stormlash( player_t* source_actor )
+  {
+    callback -> spell -> setup( source_actor );
+
+    trigger();
+  }
+
+  void execute( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() ) override
+  {
+    buff_t::execute( stacks, value, duration );
+    callback -> activate();
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    callback -> deactivate();
+  }
 };
 
 // ==========================================================================
@@ -879,6 +1012,7 @@ public:
     p() -> trigger_hailstorm( state );
     p() -> trigger_unleash_doom( state );
     p() -> trigger_lightning_shield( state );
+    p() -> trigger_stormlash( state );
     //p() -> trigger_tier16_2pc_melee( state ); TODO: Legion will change this
   }
 
@@ -5015,6 +5149,27 @@ void shaman_t::trigger_radens_fury_damage( const action_state_t* state )
   buff.radens_fury -> decrement();
 }
 
+void shaman_t::trigger_stormlash( const action_state_t* state )
+{
+  if ( ! spec.stormlash -> ok() )
+  {
+    return;
+  }
+
+  if ( ! real_ppm.stormlash.trigger() )
+  {
+    return;
+  }
+
+  if ( sim -> debug )
+  {
+    sim -> out_debug.printf( "%s triggers stormlash", name() );
+  }
+
+  // TODO: Pick someone, maybe, perhaps?
+  buff.stormlash -> trigger_stormlash( this );
+}
+
 void shaman_t::trigger_unleash_doom( const action_state_t* state )
 {
   if ( ! state -> action -> special )
@@ -5376,6 +5531,8 @@ void shaman_t::create_buffs()
     .cd( timespan_t::zero() ) // Handled by the action
     .default_value( talent.icefury -> effectN( 3 ).percent() );
   buff.radens_fury = buff_creator_t( this, "radens_fury", artifact.radens_fury.data().effectN( 1 ).trigger() );
+
+  buff.stormlash = new stormlash_buff_t( this );
 }
 
 // shaman_t::init_gains =====================================================
@@ -5421,6 +5578,25 @@ void shaman_t::init_rng()
   real_ppm.power_of_the_maelstrom = real_ppm_t( *this, find_spell( 191861 ) -> real_ppm() );
   real_ppm.static_overload = real_ppm_t( *this, find_spell( 191602 ) -> real_ppm() );
   real_ppm.radens_fury = real_ppm_t( *this, find_spell( 192623 ) -> real_ppm() );
+  real_ppm.stormlash = real_ppm_t( *this, find_spell( 195255 ) -> real_ppm(),
+      dbc.real_ppm_modifier( 195255, this ), dbc.real_ppm_scale( 195255 ) );
+}
+
+// shaman_t::init_special_effects ===========================================
+
+void shaman_t::init_special_effects()
+{
+  player_t::init_special_effects();
+
+  // shaman_t::create_buffs has been called before init_special_effects
+  stormlash_buff_t* stormlash_buff = static_cast<stormlash_buff_t*>( buff_t::find( this, "stormlash" ) );
+
+  special_effect_t* effect = new special_effect_t( this );
+  effect -> type = SPECIAL_EFFECT_CUSTOM;
+  effect -> spell_id = 195222;
+  special_effects.push_back( effect );
+
+  stormlash_buff -> callback = new stormlash_callback_t( this, *effect );
 }
 
 // shaman_t::init_actions ===================================================
@@ -6009,6 +6185,7 @@ void shaman_t::reset()
   real_ppm.power_of_the_maelstrom.reset();
   real_ppm.static_overload.reset();
   real_ppm.radens_fury.reset();
+  real_ppm.stormlash.reset();
 }
 
 // shaman_t::merge ==========================================================
