@@ -1538,6 +1538,7 @@ class SpellDataGenerator(DataGenerator):
           ( 202045, 0 ), ( 202044, 0 ),                 # Feral Swipe, Stomp
           ( 33750, 0 ),                                 # Offhand Windfury Attack
           ( 210801, 0 ), ( 210797, 0 ),                 # Crashing Storm
+          ( 207835, 0 ), ( 213307, 0 ),                 # Stormlash auxilary spell(s)
         ),
 
         # Mage:
