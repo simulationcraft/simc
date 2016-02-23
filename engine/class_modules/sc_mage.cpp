@@ -125,8 +125,11 @@ public:
   action_t* icicle;
   event_t* icicle_event;
 
+  // Ignite
+  action_t* ignite;
+  event_t* ignite_spread_event;
+
   // Active
-  action_t* active_ignite;
   action_t* unstable_magic_explosion;
   player_t* last_bomb_target;
 
@@ -393,7 +396,7 @@ public:
     current_target( target ),
     icicle( nullptr ),
     icicle_event( nullptr ),
-    active_ignite( nullptr ),
+    ignite( nullptr ),
     unstable_magic_explosion( nullptr ),
     last_bomb_target( nullptr ),
     rppm_pyromaniac( *this ),
@@ -1626,10 +1629,17 @@ struct fire_mage_spell_t : public mage_spell_t
       amount *= 2.0;
     }
 
-    trigger( p -> active_ignite, s -> target, amount );
+    bool ignite_exists = p -> ignite -> get_dot( s -> target ) -> is_ticking();
+
+    trigger( p -> ignite, s -> target, amount );
+
+    if ( !ignite_exists )
+    {
+      p -> procs.ignite_applied -> occur();
+    }
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier() const override
   {
     double am = mage_spell_t::action_multiplier();
 
@@ -1797,10 +1807,10 @@ struct presence_of_mind_t : public arcane_mage_spell_t
 
 // Conflagration Spell =====================================================
 
-struct conflagration_explosion_t : public fire_mage_spell_t
+struct conflagration_t : public fire_mage_spell_t
 {
-  conflagration_explosion_t( mage_t* p ) :
-    fire_mage_spell_t( "conflagration_explosion", p, p -> talents.conflagration )
+  conflagration_t( mage_t* p ) :
+    fire_mage_spell_t( "conflagration", p, p -> talents.conflagration )
   {
     parse_effect_data( p -> find_spell( 205345) -> effectN(1) );
     callbacks = false;
@@ -1815,63 +1825,32 @@ struct conflagration_explosion_t : public fire_mage_spell_t
 
 struct ignite_t : public residual_action_t
 {
-  
-  conflagration_explosion_t* conflagration_explosion;
-
-  struct ignite_state_t : public residual_periodic_state_t
-  {
-    bool spread_helper;
-    mage_t* mage;
-
-    ignite_state_t(mage_t* p, action_t* a, player_t* target) :
-      residual_periodic_state_t( a, target ), spread_helper( false ), mage( p )
-    { }
-
-    void copy_state( const action_state_t* state ) override
-    {
-      action_state_t::copy_state( state );
-      const ignite_state_t* ignite_state = debug_cast<const ignite_state_t*>( state );
-      spread_helper = ignite_state -> spread_helper;
-    }
-  };
+  conflagration_t* conflagration;
 
   ignite_t( mage_t* player ) :
     residual_action_t( "ignite", player, player -> find_spell( 12846 ) ),
-    conflagration_explosion( nullptr )
+    conflagration( nullptr )
   {
     dot_duration = dbc::find_spell( player, 12654 ) -> duration();
     base_tick_time = dbc::find_spell( player, 12654 ) -> effectN( 1 ).period();
     school = SCHOOL_FIRE;
-    
-    if ( player -> talents.conflagration -> ok() )
-    { 
-      conflagration_explosion = new conflagration_explosion_t( player );
-    }
-  }
 
-  residual_periodic_state_t* new_state() override
-  {
-    return new ignite_state_t( p(), this, target);
+    if ( player -> talents.conflagration -> ok() )
+    {
+      conflagration = new conflagration_t( player );
+    }
   }
 
   void tick( dot_t* dot ) override
   {
     residual_action_t::tick( dot );
 
-    
-    if ( p() -> talents.conflagration -> ok() && rng().roll( p() -> talents.conflagration -> effectN( 1 ).percent() ) )
+    if ( p() -> talents.conflagration -> ok() &&
+         rng().roll( p() -> talents.conflagration -> effectN( 1 ).percent() ) )
     {
-      conflagration_explosion -> target = dot -> target;
-      conflagration_explosion -> execute();    
+      conflagration -> target = dot -> target;
+      conflagration -> execute();
     }
-
-
-    ignite_state_t* ignite_state = debug_cast<ignite_state_t*>( dot -> state);
-    if ( ignite_state -> spread_helper && dot -> remains() > base_tick_time)
-    {
-      if ( sim -> log ) sim -> out_log << "Ignite spreads"; //Remove or alter message
-    }
-    ignite_state -> spread_helper =  ignite_state -> spread_helper ? false : true;
   }
 };
 
@@ -2615,7 +2594,6 @@ struct fireball_t : public fire_mage_spell_t
     triggers_hot_streak = true;
     triggers_ignite = true;
     base_multiplier *= 1.0 + p -> artifact.great_balls_of_fire.percent();
-    
   }
 
   virtual timespan_t execute_time() const override
@@ -4436,6 +4414,149 @@ struct icicle_event_t : public event_t
   }
 };
 
+struct ignite_spread_event_t : public event_t
+{
+  mage_t* mage;
+
+  static double ignite_bank( dot_t* ignite )
+  {
+    if ( !ignite -> is_ticking() )
+    {
+      return 0.0;
+    }
+
+    residual_periodic_state_t* ignite_state =
+      debug_cast< residual_periodic_state_t* >( ignite -> state );
+    return ignite_state -> tick_amount * ignite -> ticks_left();
+  }
+
+  static bool ignite_compare ( dot_t* a, dot_t* b )
+  {
+    return ignite_bank( a ) > ignite_bank( b );
+  }
+
+  ignite_spread_event_t( mage_t& m ) :
+    event_t( m ), mage( &m )
+  {
+  }
+
+  virtual const char* name() const override
+  { return "ignite_spread_event"; }
+
+  void execute() override
+  {
+    mage -> procs.ignite_spread -> occur();
+    if ( sim -> log )
+    {
+      sim().out_log.printf( "%s ignite spread event occurs", mage -> name() );
+    }
+
+    std::vector< player_t* > tl = mage -> ignite -> target_list();
+
+    if ( tl.size() == 1 )
+    {
+      return;
+    }
+
+    std::vector< dot_t* > active_ignites;
+    std::vector< dot_t* > candidates;
+    // Split ignite targets by whether ignite is ticking
+    for ( size_t i = 0, actors = tl.size(); i < actors; i++ )
+    {
+      player_t* t = tl[ i ];
+
+      dot_t* ignite = t -> get_dot( "ignite", mage );
+      if ( ignite -> is_ticking() )
+      {
+        active_ignites.push_back( ignite );
+      }
+      else
+      {
+        candidates.push_back( ignite );
+      }
+    }
+
+    // Sort active ignites by descending bank size
+    std::sort( active_ignites.begin(), active_ignites.end(), ignite_compare );
+
+    // Loop over active ignites:
+    // - Pop smallest ignite for spreading
+    // - Remove equal sized ignites from tail of spread candidate list
+    // - Choose random target and execute spread
+    // - Remove spread destination from candidate list
+    // - Add spreaded ignite source to candidate list
+    // This algorithm provides random selection of the spread target, while
+    // guaranteeing that every source will have a larger ignite bank than the
+    // destination. It also guarantees that each ignite will spread to a unique
+    // target. This allows us to avoid N^2 spread validity checks.
+    while ( active_ignites.size() > 0 )
+    {
+      dot_t* source = active_ignites.back();
+      active_ignites.pop_back();
+      double source_bank = ignite_bank(source);
+
+      if ( !candidates.empty() )
+      {
+        // Skip candidates that have equal ignite bank size to the source
+        int index = candidates.size() - 1;
+        while ( index >= 0 )
+        {
+          if ( ignite_bank( candidates[ index ] ) < source_bank )
+          {
+            break;
+          }
+          index--;
+        }
+        if ( index < 0 )
+        {
+          // No valid spread targets
+          continue;
+        }
+
+        // TODO: Filter valid candidates by ignite spread range
+
+        // Randomly select spread target from remaining candidates
+        index = floor( mage -> rng().real() * index );
+        dot_t* destination = candidates[ index ];
+
+        if ( destination -> is_ticking() )
+        {
+          // TODO: Use benefits to keep track of lost ignite banks
+          destination -> cancel();
+          mage -> procs.ignite_overwrite -> occur();
+          if ( sim -> log )
+          {
+            sim().out_log.printf( "%s ignite spreads from %s to %s (overwrite)",
+                                 mage -> name(), source -> target -> name(),
+                                 destination -> target -> name() );
+          }
+        }
+        else
+        {
+          mage -> procs.ignite_new_spread -> occur();
+          if ( sim -> log )
+          {
+            sim().out_log.printf( "%s ignite spreads from %s to %s (new)",
+                                 mage -> name(), source -> target -> name(),
+                                 destination -> target -> name() );
+          }
+        }
+        source -> copy( destination -> target, DOT_COPY_CLONE );
+
+        // Remove spread destination from candidates
+        candidates.erase( candidates.begin() + index );
+      }
+
+      // Add spread source to candidates
+      candidates.push_back( source );
+    }
+
+    // Schedule next spread for 2 seconds later
+    mage -> ignite_spread_event = new ( sim() ) events::ignite_spread_event_t( *mage );
+    mage -> ignite_spread_event -> add_event( timespan_t::from_seconds( 2.0 ) );
+  }
+};
+
 } // namespace events
 
 // ==========================================================================
@@ -4722,7 +4843,7 @@ void mage_t::init_spells()
 
   // Active spells
   if ( spec.ignite -> ok()  )
-    active_ignite = new actions::ignite_t( this );
+    ignite = new actions::ignite_t( this );
   if ( spec.icicles -> ok() )
     icicle = new actions::icicle_t( this );
   if ( talents.unstable_magic )
@@ -5742,6 +5863,7 @@ void mage_t::reset()
 
   icicles.clear();
   event_t::cancel( icicle_event );
+  event_t::cancel( ignite_spread_event );
   last_bomb_target = nullptr;
 
   burn_phase.reset();
@@ -5824,6 +5946,13 @@ void mage_t::arise()
   {
     buffs.highborns_will -> trigger();
     buffs.flame_orb -> trigger( buffs.flame_orb -> max_stack() );
+  }
+
+  if ( ignite )
+  {
+    ignite_spread_event = new ( *sim )events::ignite_spread_event_t( *this );
+    timespan_t first_spread = timespan_t::from_seconds( rng().real() * 2.0 );
+    ignite_spread_event -> add_event( first_spread );
   }
 }
 
