@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 21134
+// Class based active abilities, wow build 21108
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -28,7 +28,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Warrior
   {
-    // General tree, 9 abilities
+    // General tree, 10 abilities
     {
       117313, // Bloodthirst Heal
          100, // Charge
@@ -38,6 +38,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       118340, // Impending Victory (Talent)
         6552, // Pummel
       156287, // Ravager
+      145585, // Storm Bolt Off-Hand
       175710, // Unleashed Rage
            0,
     },
@@ -137,13 +138,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       183998, // Light of the Martyr
            0,
     },
-    // Protection tree, 14 abilities
+    // Protection tree, 13 abilities
     {
        31850, // Ardent Defender
        31935, // Avenger's Shield
         1022, // Blessing of Protection
         6940, // Blessing of Sacrifice
-      213644, // Cleanse Toxins
        26573, // Consecration
          498, // Divine Protection
        86659, // Guardian of Ancient Kings
@@ -155,12 +155,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        53600, // Shield of the Righteous (Active Mitigation)
            0,
     },
-    // Retribution tree, 15 abilities
+    // Retribution tree, 14 abilities
     {
        31884, // Avenging Wrath
       184575, // Blade of Justice
         1022, // Blessing of Protection
-      213644, // Cleanse Toxins
        53385, // Divine Storm
        19750, // Flash of Light
       203538, // Greater Blessing of Kings
@@ -254,7 +253,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       187650, // Freezing Trap
       190925, // Harpoon
       193265, // Hatchet Toss
-      185855, // Lacerate
+      185855, // Laceration
          136, // Mend Pet
       190928, // Mongoose Bite
       187707, // Muzzle
@@ -341,21 +340,20 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         8679, // Wound Poison
            0,
     },
-    // Outlaw tree, 15 abilities
+    // Outlaw tree, 14 abilities
     {
        13750, // Adrenaline Rush
         8676, // Ambush
       199804, // Between the Eyes
        13877, // Blade Flurry
         2094, // Blind
-        1833, // Cheap Shot
         1725, // Distract
         1776, // Gouge
       185763, // Pistol Shot
       199754, // Riposte
-      193316, // Roll the Bones
         2098, // Run Through
       193315, // Saber Slash
+        5171, // Slice and Dice
         1784, // Stealth
         1856, // Vanish
            0,
@@ -442,7 +440,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          139, // Renew
            0,
     },
-    // Shadow tree, 19 abilities
+    // Shadow tree, 18 abilities
     {
        47585, // Dispersion
         1706, // Levitate
@@ -452,7 +450,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
           17, // Power Word: Shield
        64044, // Psychic Horror
         8122, // Psychic Scream
-      213634, // Purify Disease
       179338, // Searing Insanity
       186263, // Shadow Mend
        32379, // Shadow Word: Death
@@ -551,11 +548,10 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Shaman
   {
-    // General tree, 11 abilities
+    // General tree, 10 abilities
     {
       114911, // Ancestral Guidance
         2008, // Ancestral Spirit
-      108271, // Astral Shift
         2825, // Bloodlust
         2645, // Ghost Wolf
        32182, // Heroism
@@ -566,10 +562,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       115356, // Windstrike
            0,
     },
-    // Elemental tree, 13 abilities
+    // Elemental tree, 12 abilities
     {
       188443, // Chain Lightning
-       51886, // Cleanse Spirit
       198103, // Earth Elemental
         8042, // Earth Shock
        61882, // Earthquake Totem
@@ -585,7 +580,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     },
     // Enhancement tree, 12 abilities
     {
-       51886, // Cleanse Spirit
       187874, // Crash Lightning
        51533, // Feral Spirit
       193796, // Flametongue
@@ -594,12 +588,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        60103, // Lava Lash
       187837, // Lightning Bolt
       193786, // Rockbiter
+       30823, // Shamanistic Rage
        58875, // Spirit Walk
        17364, // Stormstrike
        57994, // Wind Shear
            0,
     },
-    // Restoration tree, 16 abilities
+    // Restoration tree, 17 abilities
     {
       212048, // Ancestral Vision
         1064, // Chain Heal
@@ -614,6 +609,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          403, // Lightning Bolt
        77130, // Purify Spirit
        61295, // Riptide
+       30823, // Shamanistic Rage
        98008, // Spirit Link Totem (Air Totem)
        79206, // Spiritwalker's Grace
        57994, // Wind Shear
@@ -893,7 +889,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       175683, // Ursol's Power
            0,
     },
-    // Balance tree, 17 abilities
+    // Balance tree, 16 abilities
     {
        22812, // Barkskin (Active Mitigation)
       194223, // Celestial Alignment
@@ -906,7 +902,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       194153, // Lunar Strike (Lunar)
        24858, // Moonkin Form
         5215, // Prowl
-        2782, // Remove Corruption
        78675, // Solar Beam
       190984, // Solar Wrath (Solar)
       191034, // Starfall
@@ -914,7 +909,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        93402, // Sunfire (Solar)
            0,
     },
-    // Feral tree, 23 abilities
+    // Feral tree, 22 abilities
     {
       210713, // Ashamane's Rake
       210705, // Ashamane's Rip
@@ -929,19 +924,18 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       155625, // Moonfire
         5215, // Prowl
         1822, // Rake
-        2782, // Remove Corruption
         1079, // Rip
         5221, // Shred
       210721, // Shredded Wounds
       106839, // Skull Bash
       106898, // Stampeding Roar
        61336, // Survival Instincts (Active Mitigation)
-      213764, // Swipe
+      106785, // Swipe
       106832, // Thrash
         5217, // Tiger's Fury
            0,
     },
-    // Guardian tree, 18 abilities
+    // Guardian tree, 17 abilities
     {
        22812, // Barkskin (Active Mitigation)
       203958, // Brambles
@@ -950,16 +944,15 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         5185, // Healing Touch
           99, // Incapacitating Roar
       192081, // Ironfur (Active Mitigation)
+       33745, // Lacerate
        33917, // Mangle
       192083, // Mark of Ursol (Active Mitigation)
         6807, // Maul
         5215, // Prowl
-        2782, // Remove Corruption
       106839, // Skull Bash
       185321, // Stalwart Guardian
       106898, // Stampeding Roar
        61336, // Survival Instincts (Active Mitigation)
-      213764, // Swipe
       106832, // Thrash
            0,
     },
@@ -1043,7 +1036,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 };
 #define TREE_SPECIALIZATION_SIZE (32)
 
-// Talent tree specialization abilities, wow build 21134
+// Talent tree specialization abilities, wow build 21108
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1225,7 +1218,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       161608, // Bladed Armor
         1022, // Blessing of Protection
         6940, // Blessing of Sacrifice
-      213644, // Cleanse Toxins
        26573, // Consecration
          498, // Divine Protection
       190784, // Divine Steed
@@ -1255,7 +1247,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        31884, // Avenging Wrath
       184575, // Blade of Justice
         1022, // Blessing of Protection
-      213644, // Cleanse Toxins
       185817, // Conviction
        53385, // Divine Storm
        19750, // Flash of Light
@@ -1265,7 +1256,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
          853, // Hammer of Justice
       183218, // Hand of Hindrance
       183222, // Hand of Light
-       76672, // Mastery: Divine Judgment
+       76672, // Mastery: Hand of Light
        86539, // Plate Specialization
        96231, // Rebuke
       183435, // Retribution
@@ -1360,7 +1351,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       187650, // Freezing Trap
       190925, // Harpoon
       193265, // Hatchet Toss
-      185855, // Lacerate
+      185855, // Laceration
       191334, // Mastery: Hunting Companion
          136, // Mend Pet
       190928, // Mongoose Bite
@@ -1418,20 +1409,19 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        13877, // Blade Flurry
         2094, // Blind
       199740, // Bribe
-        1833, // Cheap Shot
        35551, // Combat Potency
+      137036, // Combat Rogue
         1725, // Distract
       199736, // Find Treasure
         1776, // Gouge
        76806, // Mastery: Main Gauche
-      137036, // Outlaw Rogue
          921, // Pick Pocket
       185763, // Pistol Shot
       199754, // Riposte
-      193316, // Roll the Bones
         2098, // Run Through
        14161, // Ruthlessness
       193315, // Saber Slash
+        5171, // Slice and Dice
       162697, // Stat Negation Aura - Agility DPS
         1784, // Stealth
       157660, // Swashbuckler
@@ -1538,7 +1528,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
           17, // Power Word: Shield
        64044, // Psychic Horror
         8122, // Psychic Scream
-      213634, // Purify Disease
       186263, // Shadow Mend
       186440, // Shadow Mend
       137033, // Shadow Priest
@@ -1640,7 +1629,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     // Specialization abilities for Elemental
     {
       188443, // Chain Lightning
-       51886, // Cleanse Spirit
       198103, // Earth Elemental
         8042, // Earth Shock
        61882, // Earthquake Totem
@@ -1655,6 +1643,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        51505, // Lava Burst
        77756, // Lava Surge
       188196, // Lightning Bolt
+      187828, // Maelstrom
       190488, // Maelstrom Controller
        86108, // Mail Specialization
       168534, // Mastery: Elemental Overload
@@ -1666,7 +1655,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     },
     // Specialization abilities for Enhancement
     {
-       51886, // Cleanse Spirit
       187874, // Crash Lightning
       157444, // Critical Strikes
        86629, // Dual Wield
@@ -1678,6 +1666,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       188070, // Healing Surge
        60103, // Lava Lash
       187837, // Lightning Bolt
+      187828, // Maelstrom
       195771, // Maelstrom Controller Decreasing
       190899, // Maelstrom Controller Increasing
       187880, // Maelstrom Weapon
@@ -1685,6 +1674,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        77223, // Mastery: Enhanced Elements
        51522, // Primal Wisdom
       193786, // Rockbiter
+       30823, // Shamanistic Rage
        58875, // Spirit Walk
       162697, // Stat Negation Aura - Agility DPS
       201845, // Stormfury
@@ -1714,6 +1704,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       137039, // Restoration Shaman
        16196, // Resurgence
        61295, // Riptide
+       30823, // Shamanistic Rage
        98008, // Spirit Link Totem
        79206, // Spiritwalker's Grace
       162701, // Stat Negation Aura - Intellect Healer
@@ -1922,6 +1913,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     // Specialization abilities for Balance
     {
       197524, // Astral Influence
+      197911, // Astral Power
       137013, // Balance Druid
       106732, // Balance Overrides Passive
        22812, // Barkskin
@@ -1935,7 +1927,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        24858, // Moonkin Form
       112857, // Natural Insight
         5215, // Prowl
-        2782, // Remove Corruption
        78675, // Solar Beam
       190984, // Solar Wrath
       191034, // Starfall
@@ -1967,14 +1958,13 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       159286, // Primal Fury
         5215, // Prowl
         1822, // Rake
-        2782, // Remove Corruption
         1079, // Rip
         5221, // Shred
       106839, // Skull Bash
       106898, // Stampeding Roar
       162697, // Stat Negation Aura - Agility DPS
        61336, // Survival Instincts
-      213764, // Swipe
+      106785, // Swipe
       106832, // Thrash
         5217, // Tiger's Fury
            0,
@@ -1993,6 +1983,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
           99, // Incapacitating Roar
        48484, // Infected Wounds
       192081, // Ironfur
+       33745, // Lacerate
        86096, // Leather Specialization
       166142, // Mana Attunement
        33917, // Mangle
@@ -2002,12 +1993,10 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
         6807, // Maul
        33873, // Nurturing Instinct
         5215, // Prowl
-        2782, // Remove Corruption
       106839, // Skull Bash
       106898, // Stampeding Roar
       162700, // Stat Negation Aura - Agility Tank
        61336, // Survival Instincts
-      213764, // Swipe
        16931, // Thick Hide
       106832, // Thrash
            0,
@@ -2084,7 +2073,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 21134
+// Class mastery abilities, wow build 21108
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2130,7 +2119,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
     },
     // Masteries for Retribution specialization
     {
-      76672, // Mastery: Divine Judgment
+      76672, // Mastery: Hand of Light
     },
     {
           0,
@@ -2323,7 +2312,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 21134
+// Racial abilities, wow build 21108
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3057,7 +3046,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 };
 #define GLYPH_ABILITIES_SIZE (8)
 
-// Glyph spells for classes, wow build 21134
+// Glyph spells for classes, wow build 21108
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3259,7 +3248,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 };
 #define SET_BONUS_DATA_SIZE (518)
 
-// Set bonus data, wow build 21134
+// Set bonus data, wow build 21108
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,              {   0 },    0,   73, 165641, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -3803,7 +3792,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
 };
 #define PERK_SIZE (3)
 
-// Perk specialization abilities, wow build 21134
+// Perk specialization abilities, wow build 21108
 static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   {
     {
@@ -3995,7 +3984,7 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
     },
   },
 };
-// Glyph properties, wow build 21134
+// Glyph properties, wow build 21108
 static glyph_property_data_t __glyph_property_data[72] = {
   {  1028, 125151 },
   {  1039, 125732 },
@@ -4072,7 +4061,7 @@ static glyph_property_data_t __glyph_property_data[72] = {
 };
 #define RPPMMOD_SIZE (155)
 
-// 155 RPPM Modifiers, wow build level 21134
+// 155 RPPM Modifiers, wow build level 21108
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  29725,    4,  1,  1.0000 },
   {  49530,    4,  1,  1.0000 },
@@ -4230,4 +4219,3003 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 210719,    4,  1,  1.0000 },
   { 211984,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
+};
+#define ARTIFACT_SIZE (40)
+
+// Artifact base data, wow build 21108
+static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
+  {  2,  70 },
+  {  3, 577 },
+  {  4,  62 },
+  { 11,  73 },
+  { 12, 251 },
+  { 13, 105 },
+  { 15, 250 },
+  { 16, 252 },
+  { 17, 261 },
+  { 34, 255 },
+  { 35,  72 },
+  { 36,  71 },
+  { 37, 266 },
+  { 38, 267 },
+  { 39, 265 },
+  { 40, 262 },
+  { 41, 263 },
+  { 42, 264 },
+  { 43, 259 },
+  { 44, 260 },
+  { 45, 257 },
+  { 46, 256 },
+  { 47, 258 },
+  { 48,  65 },
+  { 49,  66 },
+  { 50, 269 },
+  { 51, 270 },
+  { 52, 268 },
+  { 53,  64 },
+  { 54,  63 },
+  { 55, 254 },
+  { 56, 253 },
+  { 57, 104 },
+  { 58, 103 },
+  { 59, 102 },
+  { 60, 581 },
+  { 74,  70 },
+  { 80,  70 },
+  { 81,  70 },
+  {  0,   0 },
+};
+#define ARTIFACT_POWER_SIZE (639)
+
+// Artifact power data, wow build 21108
+static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] = {
+  {   40,   2,  0,   1, "Wake of Ashes"                      }, // Wake of Ashes (id=205273, n_ranks=1)
+  {   41,   2,  4,   3, "Highlord's Judgment"                }, // Highlord's Judgment (id=186941, n_ranks=6)
+  {   42,   2,  5,   3, "Sharpened Edge"                     }, // Sharpened Edge (id=184759, n_ranks=6)
+  {   43,   2,  6,   3, "Righteous Blade"                    }, // Righteous Blade (id=184843, n_ranks=6)
+  {   44,   2, 11,   3, "Embrace the Light"                  }, // Embrace the Light (id=186934, n_ranks=6)
+  {   47,   2, 12,   3, "Deflection"                         }, // Deflection (id=184778, n_ranks=6)
+  {   49,   2,  1,   1, "Divine Tempest"                     }, // Divine Tempest (id=186773, n_ranks=1)
+  {   50,   2,  8,   3, "Deliver the Justice"                }, // Deliver the Justice (id=186927, n_ranks=6)
+  {   51,   2,  9,   3, "Might of the Templar"               }, // Might of the Templar (id=185368, n_ranks=6)
+  {   52,   2, 10,   3, "Protector of the Ashen Blade"       }, // Protector of the Ashen Blade (id=186944, n_ranks=6)
+  {   53,   2,  7,   3, "Wrath of the Ashbringer"            }, // Wrath of the Ashbringer (id=186945, n_ranks=6)
+  {   54,   2,  2,   1, "Echo of the Highlord"               }, // Echo of the Highlord (id=186788, n_ranks=1)
+  {  350,   2,  0,   1, "Endless Resolve"                    }, // Endless Resolve (id=185086, n_ranks=1)
+  {  351,   2,  0,   1, "Unbreakable Will"                   }, // Unbreakable Will (id=182234, n_ranks=1)
+  {  352,   2,  0,   1, "Healing Storm"                      }, // Healing Storm (id=193058, n_ranks=1)
+  {  353,   2,  3,   1, "Blades of Light"                    }, // Blades of Light (id=193108, n_ranks=1)
+  { 1118,   2,  0,  10, "Light of the Ashbringer"            }, // Light of the Ashbringer (id=207604, n_ranks=10)
+  { 1207,   2,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  { 1000,   3,  4,   3, "Contained Fury"                     }, // Contained Fury (id=201454, n_ranks=6)
+  { 1001,   3,  5,   3, "Critical Chaos"                     }, // Critical Chaos (id=201455, n_ranks=6)
+  { 1002,   3,  6,   3, "Chaos Vision"                       }, // Chaos Vision (id=201456, n_ranks=6)
+  { 1003,   3,  7,   3, "Sharpened Glaives"                  }, // Sharpened Glaives (id=201457, n_ranks=6)
+  { 1004,   3,  8,   3, "Demon Rage"                         }, // Demon Rage (id=201458, n_ranks=6)
+  { 1005,   3, 11,   3, "Illidari Knowledge"                 }, // Illidari Knowledge (id=201459, n_ranks=6)
+  { 1006,   3,  9,   3, "Unleashed Demons"                   }, // Unleashed Demons (id=201460, n_ranks=6)
+  { 1007,   3, 12,   3, "Deceiver's Fury"                    }, // Deceiver's Fury (id=201463, n_ranks=6)
+  { 1008,   3, 10,   3, "Overwhelming Power"                 }, // Overwhelming Power (id=201464, n_ranks=6)
+  { 1010,   3,  0,   1, "Fury of the Illidari"               }, // Fury of the Illidari (id=201467, n_ranks=1)
+  { 1011,   3,  0,   1, "Feast on the Souls"                 }, // Feast on the Souls (id=201468, n_ranks=1)
+  { 1012,   3,  0,   1, "Demon Speed"                        }, // Demon Speed (id=201469, n_ranks=1)
+  { 1013,   3,  0,   1, "Balanced Blades"                    }, // Balanced Blades (id=201470, n_ranks=1)
+  { 1014,   3,  1,   1, "Inner Demons"                       }, // Inner Demons (id=201471, n_ranks=1)
+  { 1015,   3,  2,   1, "Rage of the Illidari"               }, // Rage of the Illidari (id=201472, n_ranks=1)
+  { 1016,   3,  3,   1, "Anguish of the Deceiver"            }, // Anguish of the Deceiver (id=201473, n_ranks=1)
+  { 1190,   3,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  {   72,   4,  4,   3, "Torrential Barrage"                 }, // Torrential Barrage (id=187304, n_ranks=6)
+  {   73,   4,  1,   1, "Arcane Rebound"                     }, // Arcane Rebound (id=188006, n_ranks=1)
+  {   74,   4,  5,   3, "Blasting Rod"                       }, // Blasting Rod (id=187258, n_ranks=6)
+  {   75,   4,  6,   3, "Aegwynn's Wrath"                    }, // Aegwynn's Wrath (id=187321, n_ranks=6)
+  {   77,   4,  8,   3, "Arcane Purification"                }, // Arcane Purification (id=187313, n_ranks=6)
+  {   78,   4,  0,   1, "Crackling Energy"                   }, // Crackling Energy (id=187310, n_ranks=1)
+  {   79,   4, 10,   3, "Aegwynn's Fury"                     }, // Aegwynn's Fury (id=187287, n_ranks=6)
+  {   80,   4,  0,   1, "Rule of Threes"                     }, // Rule of Threes (id=187292, n_ranks=1)
+  {   81,   4,  9,   3, "Ethereal Sensitivity"               }, // Ethereal Sensitivity (id=187276, n_ranks=6)
+  {   82,   4,  7,   3, "Aegwynn's Imperative"               }, // Aegwynn's Imperative (id=187264, n_ranks=6)
+  {   83,   4, 11,   3, "Everywhere At Once"                 }, // Everywhere At Once (id=187301, n_ranks=6)
+  {   84,   4, 12,   3, "Icy Core"                           }, // Icy Core (id=210716, n_ranks=6)
+  {   86,   4,  2,   1, "Touch of the Magi"                  }, // Touch of the Magi (id=210725, n_ranks=1)
+  {   87,   4,  3,   1, "Aegwynn's Ascendance"               }, // Aegwynn's Ascendance (id=187680, n_ranks=1)
+  {  290,   4,  0,   1, "Mark of Aluneth"                    }, // Mark of Aluneth (id=210726, n_ranks=1)
+  { 1169,   4,  0,   1, "Sloooow Down"                       }, // Sloooow Down (id=210730, n_ranks=1)
+  { 1199,   4,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  {   91,  11,  0,   1, "Shadowflame Shield"                 }, // Shadowflame Shield (id=203524, n_ranks=1)
+  {   92,  11,  1,   1, "Scales of the Earth Warder"         }, // Scales of the Earth Warder (id=203567, n_ranks=1)
+  {   93,  11,  2,   1, "Dragon Scales"                      }, // Dragon Scales (id=203576, n_ranks=1)
+  {   94,  11,  3,   1, "Might of the Vrykul"                }, // Might of the Vrykul (id=188778, n_ranks=1)
+  {   95,  11,  4,   3, "Vrykul Shield Training"             }, // Vrykul Shield Training (id=188635, n_ranks=6)
+  {   96,  11,  5,   3, "Strength of the Earth Aspect"       }, // Strength of the Earth Aspect (id=188647, n_ranks=6)
+  {   97,  11,  0,   1, "Rumbling Voice"                     }, // Rumbling Voice (id=188651, n_ranks=1)
+  {   98,  11,  6,   3, "Will to Survive"                    }, // Will to Survive (id=188683, n_ranks=6)
+  {   99,  11,  7,   3, "Leaping Giants"                     }, // Leaping Giants (id=203230, n_ranks=6)
+  {  100,  11,  8,   3, "Dragon Skin"                        }, // Dragon Skin (id=203225, n_ranks=6)
+  {  101,  11,  9,   3, "Intolerance"                        }, // Intolerance (id=203227, n_ranks=6)
+  {  102,  11, 10,   3, "Shatter the Bones"                  }, // Shatter the Bones (id=188639, n_ranks=6)
+  {  103,  11,  0,   1, "Wall of Steel (NYI)"                }, // Wall of Steel (NYI) (id=203261, n_ranks=1)
+  {  104,  11,  0,   1, "Reflective Plating"                 }, // Reflective Plating (id=188672, n_ranks=1)
+  {  105,  11, 11,   3, "Toughness"                          }, // Toughness (id=188632, n_ranks=6)
+  {  106,  11, 12,   3, "Thunder Crash"                      }, // Thunder Crash (id=188644, n_ranks=6)
+  { 1222,  11,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  {  108,  12,  4,   3, "Cold as Ice"                        }, // Cold as Ice (id=189080, n_ranks=6)
+  {  109,  12,  6,   3, "Blast Radius"                       }, // Blast Radius (id=189086, n_ranks=6)
+  {  110,  12,  5,   3, "Ambidexterity"                      }, // Ambidexterity (id=189092, n_ranks=6)
+  {  111,  12, 10,   3, "Over-Powered"                       }, // Over-Powered (id=189097, n_ranks=6)
+  {  113,  12,  8,   3, "Nothing but the Boots"              }, // Nothing but the Boots (id=189144, n_ranks=6)
+  {  114,  12,  9,   3, "Bad to the Bone"                    }, // Bad to the Bone (id=189147, n_ranks=6)
+  {  115,  12, 11,   3, "Ice in Your Veins"                  }, // Ice in Your Veins (id=189154, n_ranks=6)
+  {  117,  12,  7,   3, "Dead of Winter"                     }, // Dead of Winter (id=189164, n_ranks=6)
+  {  119,  12,  0,   1, "Frozen Core"                        }, // Frozen Core (id=189179, n_ranks=1)
+  {  120,  12,  0,   1, "Mirror Ball"                        }, // Mirror Ball (id=189180, n_ranks=1)
+  {  122,  12,  1,   1, "Sindragosa's Fury"                  }, // Sindragosa's Fury (id=190778, n_ranks=1)
+  {  123,  12,  2,   1, "Hypothermia"                        }, // Hypothermia (id=189185, n_ranks=1)
+  {  124,  12,  3,   1, "Crystalline Swords"                 }, // Crystalline Swords (id=189186, n_ranks=1)
+  { 1090,  12, 12,   3, "Frozen Skin"                        }, // Frozen Skin (id=204875, n_ranks=6)
+  { 1091,  12,  0,   1, "Chill of the Grave"                 }, // Chill of the Grave (id=205209, n_ranks=1)
+  { 1092,  12,  3,   1, "Frozen Soul"                        }, // Frozen Soul (id=189184, n_ranks=1)
+  { 1188,  12,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  {  125,  13,  0,   1, "Essence of G'Hanir"                 }, // Essence of G'Hanir (id=208253, n_ranks=1)
+  {  126,  13,  1,   1, "Dreamwalker"                        }, // Dreamwalker (id=189849, n_ranks=1)
+  {  127,  13,  2,   1, "Tranquil Mind"                      }, // Tranquil Mind (id=189857, n_ranks=1)
+  {  128,  13,  3,   1, "Power of the Archdruid"             }, // Power of the Archdruid (id=189870, n_ranks=1)
+  {  129,  13,  0,   1, "Nature's Essence"                   }, // Nature's Essence (id=189787, n_ranks=1)
+  {  130,  13,  4,   3, "Knowledge of the Ancients"          }, // Knowledge of the Ancients (id=189772, n_ranks=6)
+  {  131,  13,  5,   3, "Seeds of the World Tree"            }, // Seeds of the World Tree (id=189768, n_ranks=6)
+  {  132,  13,  6,   3, "Essence of Nordrassil"              }, // Essence of Nordrassil (id=189760, n_ranks=6)
+  {  133,  13,  7,   3, "Infusion of Nature"                 }, // Infusion of Nature (id=189757, n_ranks=6)
+  {  134,  13,  8,   3, "Armor of the Ancients"              }, // Armor of the Ancients (id=189754, n_ranks=6)
+  {  135,  13,  9,   3, "Natural Mending"                    }, // Natural Mending (id=189749, n_ranks=6)
+  {  136,  13, 10,   3, "Blessing of the World Tree"         }, // Blessing of the World Tree (id=189744, n_ranks=6)
+  {  137,  13, 11,   3, "Persistence"                        }, // Persistence (id=186396, n_ranks=6)
+  {  138,  13,  0,   1, "Repetitive Blooming"                }, // Repetitive Blooming (id=186393, n_ranks=1)
+  {  139,  13,  0,   1, "Mark of Shifting"                   }, // Mark of Shifting (id=186372, n_ranks=1)
+  {  140,  13, 12,   3, "Grovewalker"                        }, // Grovewalker (id=186320, n_ranks=6)
+  { 1195,  13,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  { 1254,  13,  0,   0, "Artificial Damage"                  }, // Artificial Damage (id=213428, n_ranks=1)
+  {  272,  15,  4,   3, "Iron Heart"                         }, // Iron Heart (id=192450, n_ranks=6)
+  {  273,  15,  5,   3, "Meat Shield"                        }, // Meat Shield (id=192453, n_ranks=6)
+  {  274,  15,  6,   3, "Grim Fortitude"                     }, // Grim Fortitude (id=192447, n_ranks=6)
+  {  275,  15,  7,   3, "Veinrender"                         }, // Veinrender (id=192457, n_ranks=6)
+  {  276,  15,  8,   3, "Coagulopathy"                       }, // Coagulopathy (id=192460, n_ranks=6)
+  {  277,  15,  9,   3, "Vampiric Fangs"                     }, // Vampiric Fangs (id=208793, n_ranks=6)
+  {  278,  15, 10,   3, "All-Consuming Rot"                  }, // All-Consuming Rot (id=192464, n_ranks=6)
+  {  279,  15, 11,   3, "Dance of Darkness"                  }, // Dance of Darkness (id=192514, n_ranks=6)
+  {  280,  15, 12,   3, "Bonebreaker"                        }, // Bonebreaker (id=192538, n_ranks=6)
+  {  281,  15,  0,   1, "Rattling Bones [Untested IMPL]"     }, // Rattling Bones [Untested IMPL] (id=192557, n_ranks=1)
+  {  282,  15,  0,   1, "Touch of the Grave"                 }, // Touch of the Grave (id=192548, n_ranks=1)
+  {  283,  15,  0,   1, "Mouth of Hell"                      }, // Mouth of Hell (id=192570, n_ranks=1)
+  {  284,  15,  1,   1, "Skeletal Shattering [NYI]"          }, // Skeletal Shattering [NYI] (id=192558, n_ranks=1)
+  {  285,  15,  2,   1, "Unending Thirst"                    }, // Unending Thirst (id=192567, n_ranks=1)
+  {  286,  15,  3,   1, "Umbilicus Eternus"                  }, // Umbilicus Eternus (id=193213, n_ranks=1)
+  {  289,  15,  0,   1, "Consumption"                        }, // Consumption (id=205223, n_ranks=1)
+  { 1187,  15,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  {  149,  16,  0,   1, "Apocalypse"                         }, // Apocalypse (id=205488, n_ranks=1)
+  {  150,  16,  1,   1, "The Shambler"                       }, // The Shambler (id=191760, n_ranks=1)
+  {  151,  16,  2,   1, "Double Doom"                        }, // Double Doom (id=191741, n_ranks=1)
+  {  152,  16,  3,   1, "Flagellation"                       }, // Flagellation (id=191747, n_ranks=1)
+  {  153,  16,  0,   1, "Portal to the Underworld"           }, // Portal to the Underworld (id=191637, n_ranks=1)
+  {  154,  16,  0,   1, "Armies of the Damned"               }, // Armies of the Damned (id=191731, n_ranks=1)
+  {  156,  16,  4,   3, "Deadliest Coil"                     }, // Deadliest Coil (id=191419, n_ranks=6)
+  {  157,  16,  5,   3, "Rotten Touch"                       }, // Rotten Touch (id=191442, n_ranks=6)
+  {  158,  16,  6,   3, "Plaguebearer"                       }, // Plaguebearer (id=191485, n_ranks=6)
+  {  262,  16, 11,   3, "Deadly Durability"                  }, // Deadly Durability (id=191565, n_ranks=6)
+  {  263,  16,  0,   1, "Gravitational Pull"                 }, // Gravitational Pull (id=191721, n_ranks=1)
+  {  264,  16,  7,   3, "Runic Tattoos"                      }, // Runic Tattoos (id=191592, n_ranks=3)
+  {  265,  16,  8,   3, "Scourge the Unbeliever"             }, // Scourge the Unbeliever (id=191494, n_ranks=6)
+  {  266,  16,  9,   3, "The Darkest Crusade"                }, // The Darkest Crusade (id=191488, n_ranks=6)
+  {  267,  16, 12,   3, "Unholy Endurance"                   }, // Unholy Endurance (id=191584, n_ranks=6)
+  { 1119,  16, 10,   3, "Eternal Agony"                      }, // Eternal Agony (id=208598, n_ranks=6)
+  { 1189,  16,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  {  851,  17,  0,   1, "Goremaw's Bite"                     }, // Goremaw's Bite (id=209782, n_ranks=1)
+  {  852,  17,  4,   3, "The Quiet Knife"                    }, // The Quiet Knife (id=197231, n_ranks=6)
+  {  853,  17,  5,   3, "Demon's Kiss"                       }, // Demon's Kiss (id=197233, n_ranks=6)
+  {  854,  17,  6,   3, "Gutripper"                          }, // Gutripper (id=197234, n_ranks=6)
+  {  855,  17,  7,   3, "Precision Strike"                   }, // Precision Strike (id=197235, n_ranks=6)
+  {  856,  17,  8,   3, "Fortune's Bite"                     }, // Fortune's Bite (id=197369, n_ranks=6)
+  {  857,  17,  9,   3, "Soul Shadows"                       }, // Soul Shadows (id=197386, n_ranks=6)
+  {  858,  17, 10,   3, "Energetic Stabbing"                 }, // Energetic Stabbing (id=197239, n_ranks=6)
+  {  859,  17, 11,   3, "Catwalk"                            }, // Catwalk (id=197241, n_ranks=6)
+  {  860,  17, 12,   3, "Ghost Armor"                        }, // Ghost Armor (id=197244, n_ranks=6)
+  {  861,  17,  0,   1, "Second Shuriken"                    }, // Second Shuriken (id=197610, n_ranks=1)
+  {  862,  17,  0,   1, "Faster Than Light"                  }, // Faster Than Light (id=197256, n_ranks=1)
+  {  863,  17,  0,   1, "Embrace of Darkness"                }, // Embrace of Darkness (id=197604, n_ranks=1)
+  {  864,  17,  1,   1, "Akaari's Soul"                      }, // Akaari's Soul (id=209835, n_ranks=1)
+  {  865,  17,  2,   1, "Shadow Nova"                        }, // Shadow Nova (id=209781, n_ranks=1)
+  {  866,  17,  3,   1, "Finality"                           }, // Finality (id=197406, n_ranks=1)
+  { 1213,  17,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  { 1068,  34,  0,   1, "Fury of the Eagle"                  }, // Fury of the Eagle (id=203415, n_ranks=1)
+  { 1070,  34,  4,   3, "Sharpened Beak"                     }, // Sharpened Beak (id=203566, n_ranks=6)
+  { 1071,  34,  5,   3, "My Beloved Monster"                 }, // My Beloved Monster (id=203577, n_ranks=6)
+  { 1072,  34,  6,   3, "Jagged Claws"                       }, // Jagged Claws (id=203578, n_ranks=6)
+  { 1073,  34,  7,   3, "Raptor's Cry"                       }, // Raptor's Cry (id=203638, n_ranks=6)
+  { 1074,  34,  8,   3, "Fluffy, Go"                         }, // Fluffy, Go (id=203669, n_ranks=6)
+  { 1075,  34,  9,   3, "Strength of the Mountain"           }, // Strength of the Mountain (id=203670, n_ranks=6)
+  { 1076,  34, 10,   3, "Hellcarver"                         }, // Hellcarver (id=203673, n_ranks=6)
+  { 1077,  34, 11,   3, "Embrace of the Wild"                }, // Embrace of the Wild (id=203748, n_ranks=6)
+  { 1078,  34, 12,   3, "Exhilaration of Joy"                }, // Exhilaration of Joy (id=203749, n_ranks=6)
+  { 1079,  34,  0,   1, "Superior Trapper"                   }, // Superior Trapper (id=203751, n_ranks=1)
+  { 1080,  34,  0,   1, "Hunter's Guile"                     }, // Hunter's Guile (id=203752, n_ranks=1)
+  { 1081,  34,  0,   1, "Thar She Blows"                     }, // Thar She Blows (id=203754, n_ranks=1)
+  { 1082,  34,  1,   1, "Aspect of the Skylord"              }, // Aspect of the Skylord (id=203755, n_ranks=1)
+  { 1083,  34,  2,   1, "From Behind"                        }, // From Behind (id=203756, n_ranks=1)
+  { 1084,  34,  3,   1, "Eagle's Bite"                       }, // Eagle's Bite (id=203757, n_ranks=1)
+  { 1198,  34,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  {  980,  35,  1,   1, "Juggernaut"                         }, // Juggernaut (id=200875, n_ranks=1)
+  {  981,  35,  2,   1, "Fires of Odyn"                      }, // Fires of Odyn (id=200874, n_ranks=1)
+  {  982,  35,  3,   1, "Odyn's Champion"                    }, // Odyn's Champion (id=200872, n_ranks=1)
+  {  984,  35,  0,   1, "Odyn's Fury"                        }, // Odyn's Fury (id=205545, n_ranks=1)
+  {  985,  35,  0,   1, "Focus In Chaos"                     }, // Focus In Chaos (id=200871, n_ranks=1)
+  {  986,  35,  0,   1, "Helya's Wrath"                      }, // Helya's Wrath (id=200870, n_ranks=1)
+  {  987,  35,  0,   1, "Sense Death"                        }, // Sense Death (id=200863, n_ranks=1)
+  {  988,  35,  4,   3, "Deathdealer"                        }, // Deathdealer (id=200846, n_ranks=6)
+  {  989,  35,  5,   3, "Thirst for Battle"                  }, // Thirst for Battle (id=200847, n_ranks=6)
+  {  990,  35,  6,   3, "Wrath and Fury"                     }, // Wrath and Fury (id=200849, n_ranks=6)
+  {  991,  35,  7,   3, "Unstoppable"                        }, // Unstoppable (id=200853, n_ranks=6)
+  {  992,  35,  8,   3, "Uncontrolled Rage"                  }, // Uncontrolled Rage (id=200856, n_ranks=6)
+  {  993,  35, 11,   3, "Battle Scars"                       }, // Battle Scars (id=200857, n_ranks=6)
+  {  994,  35, 12,   3, "Bloodcraze"                         }, // Bloodcraze (id=200859, n_ranks=6)
+  {  995,  35,  9,   3, "Unrivaled Strength"                 }, // Unrivaled Strength (id=200860, n_ranks=6)
+  {  996,  35, 10,   3, "Raging Berserker"                   }, // Raging Berserker (id=200861, n_ranks=6)
+  { 1221,  35,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  { 1136,  36,  0,   1, "Warbreaker"                         }, // Warbreaker (id=209577, n_ranks=1)
+  { 1137,  36,  1,   1, "Shattered Defenses"                 }, // Shattered Defenses (id=209574, n_ranks=1)
+  { 1138,  36,  2,   1, "Void Cleave"                        }, // Void Cleave (id=209573, n_ranks=1)
+  { 1139,  36,  3,   1, "Corrupted Blood of Zakajz"          }, // Corrupted Blood of Zakajz (id=209566, n_ranks=1)
+  { 1140,  36,  0,   1, "Defensive Measures"                 }, // Defensive Measures (id=209559, n_ranks=1)
+  { 1141,  36,  0,   1, "Focus in Battle"                    }, // Focus in Battle (id=209554, n_ranks=1)
+  { 1142,  36,  0,   1, "Will of the First King"             }, // Will of the First King (id=209548, n_ranks=1)
+  { 1143,  36,  4,   3, "Unending Rage"                      }, // Unending Rage (id=209459, n_ranks=6)
+  { 1144,  36,  5,   3, "One Against Many"                   }, // One Against Many (id=209462, n_ranks=6)
+  { 1145,  36,  6,   3, "Crushing Blows"                     }, // Crushing Blows (id=209472, n_ranks=6)
+  { 1146,  36,  7,   3, "Thoradin's Might"                   }, // Thoradin's Might (id=209480, n_ranks=6)
+  { 1147,  36,  8,   3, "Deathblow"                          }, // Deathblow (id=209481, n_ranks=6)
+  { 1148,  36, 11,   3, "Tactical Advance"                   }, // Tactical Advance (id=209483, n_ranks=6)
+  { 1149,  36,  9,   3, "Precise Strikes"                    }, // Precise Strikes (id=209492, n_ranks=6)
+  { 1150,  36, 10,   3, "Exploit the Weakness"               }, // Exploit the Weakness (id=209494, n_ranks=6)
+  { 1151,  36, 12,   3, "Touch of Zakajz"                    }, // Touch of Zakajz (id=209541, n_ranks=6)
+  { 1220,  36,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  { 1170,  37,  0,   1, "Thal'kiel's Consumption"            }, // Thal'kiel's Consumption (id=211714, n_ranks=1)
+  { 1171,  37,  4,   3, "Summoner's Prowess"                 }, // Summoner's Prowess (id=211108, n_ranks=6)
+  { 1172,  37,  5,   3, "Legionwrath"                        }, // Legionwrath (id=211126, n_ranks=6)
+  { 1173,  37,  6,   3, "The Doom of Azeroth"                }, // The Doom of Azeroth (id=211106, n_ranks=6)
+  { 1174,  37,  7,   3, "Sharpened Dreadfangs"               }, // Sharpened Dreadfangs (id=211123, n_ranks=6)
+  { 1175,  37,  8,   3, "Dirty Hands"                        }, // Dirty Hands (id=211105, n_ranks=6)
+  { 1176,  37,  9,   3, "Infernal Furnace"                   }, // Infernal Furnace (id=211119, n_ranks=6)
+  { 1177,  37, 10,   3, "Maw of Shadows"                     }, // Maw of Shadows (id=211099, n_ranks=6)
+  { 1178,  37, 11,   3, "Open Link"                          }, // Open Link (id=211144, n_ranks=6)
+  { 1179,  37, 12,   3, "Firm Resolve"                       }, // Firm Resolve (id=211131, n_ranks=6)
+  { 1180,  37,  0,   1, "Imp Slap"                           }, // Imp Slap (id=211158, n_ranks=1)
+  { 1181,  37,  0,   1, "Dread of Night"                     }, // Dread of Night (id=211173, n_ranks=1)
+  { 1182,  37,  0,   1, "Siphon of the Man'ari"              }, // Siphon of the Man'ari (id=212391, n_ranks=1)
+  { 1183,  37,  1,   1, "The Expendables"                    }, // The Expendables (id=211219, n_ranks=1)
+  { 1184,  37,  2,   1, "Imp-to the Breach"                  }, // Imp-to the Breach (id=211321, n_ranks=1)
+  { 1185,  37,  3,   1, "Stolen Power"                       }, // Stolen Power (id=211530, n_ranks=1)
+  { 1218,  37,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  {  803,  38,  0,   1, "Tearing Time and Space"             }, // Tearing Time and Space (id=196204, n_ranks=1)
+  {  804,  38,  4,   3, "Master of Disaster"                 }, // Master of Disaster (id=196211, n_ranks=6)
+  {  805,  38,  5,   3, "Chaotic Instability"                }, // Chaotic Instability (id=196217, n_ranks=6)
+  {  806,  38,  6,   3, "Fire and the Flames"                }, // Fire and the Flames (id=196222, n_ranks=6)
+  {  807,  38,  7,   3, "Residual Flames"                    }, // Residual Flames (id=196227, n_ranks=6)
+  {  808,  38,  8,   3, "Soulsnatcher"                       }, // Soulsnatcher (id=196236, n_ranks=6)
+  {  809,  38,  9,   3, "Burning Hunger"                     }, // Burning Hunger (id=196432, n_ranks=6)
+  {  810,  38, 10,   3, "Fire From the Sky"                  }, // Fire From the Sky (id=196258, n_ranks=6)
+  {  811,  38, 11,   3, "Devourer of Life"                   }, // Devourer of Life (id=196301, n_ranks=6)
+  {  812,  38, 12,   3, "Eternal Struggle"                   }, // Eternal Struggle (id=196305, n_ranks=6)
+  {  813,  38,  0,   1, "Planeswalker"                       }, // Planeswalker (id=196675, n_ranks=1)
+  {  814,  38,  0,   1, "Price of Power"                     }, // Price of Power (id=196332, n_ranks=1)
+  {  815,  38,  0,   1, "Lord of Flames"                     }, // Lord of Flames (id=196710, n_ranks=1)
+  {  816,  38,  1,   1, "Regard of the Sargerai"             }, // Regard of the Sargerai (id=196540, n_ranks=3)
+  {  817,  38,  2,   1, "Conflagration of Chaos"             }, // Conflagration of Chaos (id=196546, n_ranks=1)
+  {  818,  38,  3,   1, "Stuff of the Universe"              }, // Stuff of the Universe (id=196667, n_ranks=1)
+  { 1219,  38,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  {  915,  39,  4,   3, "Inimitable Agony"                   }, // Inimitable Agony (id=199111, n_ranks=6)
+  {  916,  39,  5,   3, "Hideous Corruption"                 }, // Hideous Corruption (id=199112, n_ranks=6)
+  {  917,  39,  6,   3, "Drained to a Husk"                  }, // Drained to a Husk (id=199120, n_ranks=6)
+  {  918,  39,  7,   3, "Inherently Unstable"                }, // Inherently Unstable (id=199152, n_ranks=6)
+  {  919,  39,  8,   3, "Seeds of Doom"                      }, // Seeds of Doom (id=199153, n_ranks=6)
+  {  920,  39,  9,   3, "Perdition"                          }, // Perdition (id=199158, n_ranks=6)
+  {  921,  39, 10,   3, "Shadowy Incantations"               }, // Shadowy Incantations (id=199163, n_ranks=6)
+  {  922,  39, 11,   3, "Mere Flesh"                         }, // Mere Flesh (id=199212, n_ranks=6)
+  {  923,  39, 12,   3, "Long Dark Night of the Soul"        }, // Long Dark Night of the Soul (id=199214, n_ranks=6)
+  {  924,  39,  0,   1, "Sweet Souls"                        }, // Sweet Souls (id=199220, n_ranks=1)
+  {  925,  39,  0,   1, "Fatal Echoes"                       }, // Fatal Echoes (id=199257, n_ranks=1)
+  {  926,  39,  0,   1, "Compound Interest"                  }, // Compound Interest (id=199282, n_ranks=1)
+  {  927,  39,  0,   1, "Soul Flame"                         }, // Soul Flame (id=199471, n_ranks=1)
+  {  928,  39,  0,   1, "Wrath of Consumption"               }, // Wrath of Consumption (id=199472, n_ranks=1)
+  {  929,  39,  0,   1, "Harvester of Souls"                 }, // Harvester of Souls (id=201424, n_ranks=1)
+  {  999,  39,  0,   1, "Reap Soul"                          }, // Reap Soul (id=199910, n_ranks=1)
+  { 1217,  39,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  {  291,  40,  0,   1, "Stormkeeper"                        }, // Stormkeeper (id=205495, n_ranks=1)
+  {  292,  40,  0,   1, "Static Overload"                    }, // Static Overload (id=191602, n_ranks=1)
+  {  293,  40,  0,   1, "Master of the Elements"             }, // Master of the Elements (id=191647, n_ranks=1)
+  {  294,  40,  0,   1, "Elementalist"                       }, // Elementalist (id=191512, n_ranks=1)
+  {  295,  40,  1,   1, "Fury of the Storms"                 }, // Fury of the Storms (id=191717, n_ranks=1)
+  {  296,  40,  2,   1, "Ra-den's Fury"                      }, // Ra-den's Fury (id=192623, n_ranks=1)
+  {  297,  40,  3,   1, "Volcanic Inferno"                   }, // Volcanic Inferno (id=192630, n_ranks=1)
+  {  298,  40,  4,   3, "Call the Thunder"                   }, // Call the Thunder (id=191493, n_ranks=6)
+  {  299,  40,  5,   3, "The Ground Trembles"                }, // The Ground Trembles (id=191499, n_ranks=6)
+  {  300,  40,  6,   3, "Lava Imbued"                        }, // Lava Imbued (id=191504, n_ranks=6)
+  {  301,  40,  7,   3, "Firestorm"                          }, // Firestorm (id=191740, n_ranks=6)
+  {  302,  40, 11,   3, "Protection of the Elements"         }, // Protection of the Elements (id=191569, n_ranks=6)
+  {  303,  40,  8,   3, "Molten Blast"                       }, // Molten Blast (id=191572, n_ranks=6)
+  {  304,  40,  9,   3, "Electric Discharge"                 }, // Electric Discharge (id=191577, n_ranks=6)
+  {  305,  40, 12,   3, "Shamanistic Healing"                }, // Shamanistic Healing (id=191582, n_ranks=6)
+  {  306,  40, 10,   3, "Earthen Attunement"                 }, // Earthen Attunement (id=191598, n_ranks=6)
+  { 1214,  40,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  {  899,  41,  0,   1, "Doom Winds"                         }, // Doom Winds (id=204945, n_ranks=1)
+  {  900,  41,  1,   1, "Unleash Doom"                       }, // Unleash Doom (id=198736, n_ranks=1)
+  {  901,  41,  2,   1, "Doom Wolves"                        }, // Doom Wolves (id=198505, n_ranks=1)
+  {  902,  41,  0,   1, "Hurricane"                          }, // Hurricane (id=198361, n_ranks=1)
+  {  903,  41,  0,   1, "Stormflurry"                        }, // Stormflurry (id=198367, n_ranks=1)
+  {  904,  41,  0,   1, "Alpha Wolf"                         }, // Alpha Wolf (id=198434, n_ranks=1)
+  {  905,  41,  4,   3, "Hammer of Storms"                   }, // Hammer of Storms (id=198228, n_ranks=6)
+  {  906,  41,  5,   3, "Forged in Lava"                     }, // Forged in Lava (id=198236, n_ranks=6)
+  {  907,  41, 10,   3, "Spirit of the Maelstrom"            }, // Spirit of the Maelstrom (id=198238, n_ranks=6)
+  {  908,  41,  6,   3, "Surge of the Elements"              }, // Surge of the Elements (id=198247, n_ranks=6)
+  {  909,  41, 12,   3, "Fueled by Rage"                     }, // Fueled by Rage (id=198248, n_ranks=6)
+  {  910,  41,  7,   3, "Wind Strikes"                       }, // Wind Strikes (id=198292, n_ranks=6)
+  {  911,  41, 11,   3, "Spiritual Healing"                  }, // Spiritual Healing (id=198296, n_ranks=6)
+  {  912,  41,  8,   3, "Gathering Storms"                   }, // Gathering Storms (id=198299, n_ranks=6)
+  {  913,  41,  9,   3, "Gathering of the Maelstrom"         }, // Gathering of the Maelstrom (id=198349, n_ranks=6)
+  {  930,  41,  3,   1, "Doom Vortex"                        }, // Doom Vortex (id=199107, n_ranks=1)
+  { 1215,  41,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  { 1102,  42,  0,   1, "Gift of the Queen"                  }, // Gift of the Queen (id=207366, n_ranks=1)
+  { 1103,  42,  4,   3, "Tidal Chains"                       }, // Tidal Chains (id=207088, n_ranks=6)
+  { 1104,  42,  5,   3, "Lord of Storms"                     }, // Lord of Storms (id=207092, n_ranks=6)
+  { 1105,  42,  6,   3, "Pull of the Sea"                    }, // Pull of the Sea (id=207118, n_ranks=6)
+  { 1106,  42,  7,   3, "Wavecrash"                          }, // Wavecrash (id=207206, n_ranks=6)
+  { 1107,  42,  8,   3, "Empowered Droplets"                 }, // Empowered Droplets (id=207255, n_ranks=6)
+  { 1108,  42,  9,   3, "Queen Ascendant"                    }, // Queen Ascendant (id=207285, n_ranks=6)
+  { 1109,  42, 10,   3, "Unbreakable Chains"                 }, // Unbreakable Chains (id=207348, n_ranks=6)
+  { 1110,  42, 11,   3, "Ghost in the Mist"                  }, // Ghost in the Mist (id=207351, n_ranks=6)
+  { 1111,  42, 12,   3, "Caress of the Tidemother"           }, // Caress of the Tidemother (id=207354, n_ranks=6)
+  { 1112,  42,  0,   1, "Sense of Urgency"                   }, // Sense of Urgency (id=207355, n_ranks=1)
+  { 1113,  42,  0,   1, "Tidal Feedback"                     }, // Tidal Feedback (id=207356, n_ranks=1)
+  { 1114,  42,  0,   1, "Servant of the Queen"               }, // Servant of the Queen (id=207357, n_ranks=1)
+  { 1115,  42,  1,   1, "Tidal Pools"                        }, // Tidal Pools (id=207358, n_ranks=1)
+  { 1116,  42,  2,   1, "Decree of the Queen"                }, // Decree of the Queen (id=207360, n_ranks=1)
+  { 1117,  42,  3,   1, "Cumulative Upkeep"                  }, // Cumulative Upkeep (id=207362, n_ranks=1)
+  { 1216,  42,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  { 1258,  42,  0,   0, "Artificial Damage"                  }, // Artificial Damage (id=213428, n_ranks=1)
+  {  323,  43,  0,   3, "Toxic Blades"                       }, // Toxic Blades (id=192310, n_ranks=6)
+  {  324,  43,  0,   3, "Serrated Edge"                      }, // Serrated Edge (id=192315, n_ranks=6)
+  {  325,  43,  0,   3, "Master Alchemist"                   }, // Master Alchemist (id=192318, n_ranks=6)
+  {  326,  43,  0,   3, "Embrace the Shadows"                }, // Embrace the Shadows (id=192323, n_ranks=6)
+  {  327,  43,  0,   3, "Balanced Blades"                    }, // Balanced Blades (id=192326, n_ranks=6)
+  {  328,  43,  0,   3, "Gushing Wound"                      }, // Gushing Wound (id=192329, n_ranks=6)
+  {  329,  43,  0,   3, "Shadow Walker"                      }, // Shadow Walker (id=192345, n_ranks=6)
+  {  330,  43,  0,   3, "Master Assassin"                    }, // Master Assassin (id=192349, n_ranks=6)
+  {  331,  43,  0,   3, "Poison Knives"                      }, // Poison Knives (id=192376, n_ranks=6)
+  {  332,  43,  0,   1, "Urge to Kill"                       }, // Urge to Kill (id=192384, n_ranks=1)
+  {  333,  43,  0,   1, "Shadow Swiftness"                   }, // Shadow Swiftness (id=192422, n_ranks=1)
+  {  334,  43,  0,   1, "Surge of Toxins"                    }, // Surge of Toxins (id=192424, n_ranks=1)
+  {  335,  43,  0,   1, "From the Shadows"                   }, // From the Shadows (id=192428, n_ranks=1)
+  {  337,  43,  0,   1, "Bag of Tricks"                      }, // Bag of Tricks (id=192657, n_ranks=1)
+  {  346,  43,  0,   1, "Grasp of Gul'dan"                   }, // Grasp of Gul'dan (id=192759, n_ranks=1)
+  {  347,  43,  0,   1, "Blood of the Assassinated"          }, // Blood of the Assassinated (id=192923, n_ranks=1)
+  { 1211,  43,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  { 1052,  44,  0,   1, "Curse of the Dreadblades"           }, // Curse of the Dreadblades (id=202665, n_ranks=1)
+  { 1053,  44,  1,   1, "Blunderbuss"                        }, // Blunderbuss (id=202897, n_ranks=1)
+  { 1054,  44,  2,   1, "Greed"                              }, // Greed (id=202820, n_ranks=1)
+  { 1055,  44,  3,   1, "Blurred Time"                       }, // Blurred Time (id=202769, n_ranks=1)
+  { 1056,  44,  0,   1, "Deception"                          }, // Deception (id=202755, n_ranks=1)
+  { 1057,  44,  0,   1, "Hidden Blade"                       }, // Hidden Blade (id=202753, n_ranks=1)
+  { 1058,  44,  0,   1, "Blademaster"                        }, // Blademaster (id=202628, n_ranks=1)
+  { 1059,  44,  4,   3, "Cursed Edges"                       }, // Cursed Edges (id=202463, n_ranks=6)
+  { 1060,  44,  5,   3, "Blade Dancer"                       }, // Blade Dancer (id=202507, n_ranks=6)
+  { 1061,  44,  6,   3, "Fate's Thirst"                      }, // Fate's Thirst (id=202514, n_ranks=6)
+  { 1062,  44, 11,   3, "Shady Dealer"                       }, // Shady Dealer (id=202521, n_ranks=6)
+  { 1063,  44,  7,   3, "Gunslinger"                         }, // Gunslinger (id=202522, n_ranks=6)
+  { 1064,  44,  8,   3, "Fatebringer"                        }, // Fatebringer (id=202524, n_ranks=6)
+  { 1065,  44,  9,   3, "Fortune Strikes"                    }, // Fortune Strikes (id=202530, n_ranks=6)
+  { 1066,  44, 12,   3, "Ghostly Shell"                      }, // Ghostly Shell (id=202533, n_ranks=6)
+  { 1067,  44, 10,   3, "Fortune's Boon"                     }, // Fortune's Boon (id=202907, n_ranks=6)
+  { 1212,  44,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  {  834,  45,  0,   1, "Light of T'uure"                    }, // Light of T'uure (id=208065, n_ranks=1)
+  {  835,  45,  1,   1, "Renew the Faith"                    }, // Renew the Faith (id=196492, n_ranks=1)
+  {  836,  45,  2,   1, "Save the Fallen"                    }, // Save the Fallen (id=196537, n_ranks=1)
+  {  837,  45,  3,   1, "Blessing of T'uure"                 }, // Blessing of T'uure (id=196578, n_ranks=1)
+  {  838,  45,  0,   1, "Power of the Naaru"                 }, // Power of the Naaru (id=196489, n_ranks=1)
+  {  839,  45,  0,   1, "Guardians of the Light"             }, // Guardians of the Light (id=196437, n_ranks=1)
+  {  840,  45,  0,   1, "Holy Mending"                       }, // Holy Mending (id=196779, n_ranks=1)
+  {  841,  45, 12,   3, "Trust in the Light"                 }, // Trust in the Light (id=196355, n_ranks=6)
+  {  842,  45,  5,   3, "Say Your Prayers"                   }, // Say Your Prayers (id=196358, n_ranks=6)
+  {  843,  45,  6,   3, "Serenity Now"                       }, // Serenity Now (id=196416, n_ranks=6)
+  {  844,  45,  7,   3, "Reverence"                          }, // Reverence (id=196418, n_ranks=6)
+  {  845,  45, 11,   3, "Focus in the Light"                 }, // Focus in the Light (id=196419, n_ranks=6)
+  {  846,  45,  8,   3, "Holy Hands"                         }, // Holy Hands (id=196422, n_ranks=6)
+  {  847,  45,  9,   3, "Hallowed Ground"                    }, // Hallowed Ground (id=196429, n_ranks=6)
+  {  848,  45, 10,   3, "Words of Healing"                   }, // Words of Healing (id=196430, n_ranks=6)
+  {  849,  45,  4,   3, "Holy Guidance"                      }, // Holy Guidance (id=196434, n_ranks=6)
+  { 1209,  45,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  { 1257,  45,  0,   0, "Artificial Damage"                  }, // Artificial Damage (id=213428, n_ranks=1)
+  {  883,  46,  0,   1, "Light's Wrath"                      }, // Light's Wrath (id=207946, n_ranks=1)
+  {  884,  46,  0,   1, "Taming the Shadows"                 }, // Taming the Shadows (id=197779, n_ranks=1)
+  {  885,  46,  0,   1, "Share in the Light"                 }, // Share in the Light (id=197781, n_ranks=1)
+  {  886,  46,  1,   1, "Barrier for the Devoted"            }, // Barrier for the Devoted (id=197815, n_ranks=1)
+  {  887,  46,  2,   1, "Chosen by the Light"                }, // Chosen by the Light (id=197772, n_ranks=1)
+  {  888,  46,  4,   3, "Confession"                         }, // Confession (id=197708, n_ranks=6)
+  {  889,  46, 11,   3, "Vestments of Discipline"            }, // Vestments of Discipline (id=197711, n_ranks=6)
+  {  890,  46,  5,   3, "Pain is in Your Mind"               }, // Pain is in Your Mind (id=197713, n_ranks=6)
+  {  891,  46,  6,   3, "The Edge of Dark and Light"         }, // The Edge of Dark and Light (id=197715, n_ranks=6)
+  {  892,  46,  7,   3, "Burst of Light"                     }, // Burst of Light (id=197716, n_ranks=6)
+  {  893,  46,  8,   3, "Doomsayer"                          }, // Doomsayer (id=197727, n_ranks=6)
+  {  894,  46,  9,   3, "Shield of Faith"                    }, // Shield of Faith (id=197729, n_ranks=6)
+  {  895,  46, 10,   3, "Borrowed Time"                      }, // Borrowed Time (id=197762, n_ranks=6)
+  {  896,  46, 12,   3, "Speed of the Pious"                 }, // Speed of the Pious (id=197766, n_ranks=6)
+  {  897,  46,  3,   1, "Power of the Dark Side"             }, // Power of the Dark Side (id=198068, n_ranks=1)
+  {  898,  46,  0,   1, "Sins of the Many"                   }, // Sins of the Many (id=198074, n_ranks=1)
+  { 1208,  46,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  {  764,  47,  0,   1, "Void Torrent"                       }, // Void Torrent (id=205065, n_ranks=1)
+  {  765,  47,  0,   1, "Thrive in the Shadows"              }, // Thrive in the Shadows (id=194024, n_ranks=1)
+  {  766,  47,  0,   1, "Sinister Thoughts"                  }, // Sinister Thoughts (id=194026, n_ranks=1)
+  {  767,  47,  4,   3, "Unleash the Shadows"                }, // Unleash the Shadows (id=194093, n_ranks=6)
+  {  768,  47,  1,   1, "Power of the Old Gods"              }, // Power of the Old Gods (id=194096, n_ranks=1)
+  {  769,  47,  2,   1, "Sphere of Insanity"                 }, // Sphere of Insanity (id=194179, n_ranks=1)
+  {  770,  47,  3,   1, "Mass Hysteria"                      }, // Mass Hysteria (id=194378, n_ranks=1)
+  {  771,  47, 11,   3, "From the Shadows"                   }, // From the Shadows (id=193642, n_ranks=6)
+  {  772,  47,  5,   3, "Mind Shattering"                    }, // Mind Shattering (id=193643, n_ranks=6)
+  {  773,  47,  6,   3, "To the Pain"                        }, // To the Pain (id=193644, n_ranks=6)
+  {  774,  47,  7,   3, "Death's Embrace"                    }, // Death's Embrace (id=193645, n_ranks=6)
+  {  775,  47, 12,   3, "Thoughts of Insanity"               }, // Thoughts of Insanity (id=193647, n_ranks=6)
+  {  776,  47, 10,   3, "Tremble in Fear"                    }, // Tremble in Fear (id=194002, n_ranks=6)
+  {  777,  47,  8,   3, "Touch of Darkness"                  }, // Touch of Darkness (id=194007, n_ranks=6)
+  {  778,  47,  9,   3, "Void Corruption"                    }, // Void Corruption (id=194016, n_ranks=6)
+  {  779,  47,  0,   1, "Mental Fortitude"                   }, // Mental Fortitude (id=194018, n_ranks=1)
+  { 1210,  47,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  {  963,  48,  2,   1, "Boon of the Silver Hand"            }, // Boon of the Silver Hand (id=200443, n_ranks=1)
+  {  964,  48,  3,   1, "Protection of Tyr"                  }, // Protection of Tyr (id=200430, n_ranks=1)
+  {  965,  48,  0,   1, "Lightburst"                         }, // Lightburst (id=200652, n_ranks=1)
+  {  966,  48,  1,   1, "The Light Saves"                    }, // The Light Saves (id=200421, n_ranks=1)
+  {  967,  48,  0,   1, "Protection of the Light"            }, // Protection of the Light (id=200407, n_ranks=1)
+  {  968,  48,  0,   1, "Vindicator"                         }, // Vindicator (id=200373, n_ranks=1)
+  {  969,  48, 11,   3, "Share the Burden"                   }, // Share the Burden (id=200327, n_ranks=6)
+  {  970,  48,  4,   3, "Focused Healing"                    }, // Focused Healing (id=200326, n_ranks=6)
+  {  971,  48,  5,   3, "Justice through Sacrifice"          }, // Justice through Sacrifice (id=200316, n_ranks=6)
+  {  972,  48,  6,   3, "Shock Treatment"                    }, // Shock Treatment (id=200315, n_ranks=6)
+  {  973,  48,  0,   1, "Templar of the Light"               }, // Templar of the Light (id=200311, n_ranks=1)
+  {  974,  48, 12,   3, "Knight of the Silver Hand"          }, // Knight of the Silver Hand (id=200302, n_ranks=6)
+  {  975,  48,  9,   3, "Blessings of the Silver Hand"       }, // Blessings of the Silver Hand (id=200298, n_ranks=6)
+  {  976,  48,  7,   3, "Expel the Darkness"                 }, // Expel the Darkness (id=200296, n_ranks=6)
+  {  977,  48,  8,   3, "Deliver the Light"                  }, // Deliver the Light (id=200294, n_ranks=6)
+  { 1186,  48,  9,   3, "Break of Dawn"                      }, // Break of Dawn (id=200482, n_ranks=6)
+  { 1205,  48,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  { 1256,  48,  0,   0, "Artificial Damage"                  }, // Artificial Damage (id=213428, n_ranks=1)
+  { 1120,  49,  0,   1, "Eye of Tyr"                         }, // Eye of Tyr (id=209202, n_ranks=1)
+  { 1121,  49,  4,   3, "Hammer Time"                        }, // Hammer Time (id=209229, n_ranks=6)
+  { 1122,  49,  5,   3, "Stern Judgment"                     }, // Stern Judgment (id=209217, n_ranks=6)
+  { 1123,  49,  6,   3, "Unflinching Defense"                }, // Unflinching Defense (id=209220, n_ranks=6)
+  { 1124,  49,  7,   3, "Righteous Crusader"                 }, // Righteous Crusader (id=209226, n_ranks=6)
+  { 1125,  49,  8,   3, "Scatter the Shadows"                }, // Scatter the Shadows (id=209223, n_ranks=6)
+  { 1126,  49,  9,   3, "Consecration in Flame"              }, // Consecration in Flame (id=209218, n_ranks=6)
+  { 1127,  49, 10,   3, "Heart of the Avenger"               }, // Heart of the Avenger (id=209216, n_ranks=6)
+  { 1128,  49, 11,   3, "Resolve of Truth"                   }, // Resolve of Truth (id=209224, n_ranks=6)
+  { 1129,  49, 12,   3, "Faith's Armor"                      }, // Faith's Armor (id=209225, n_ranks=6)
+  { 1130,  49,  0,   1, "Painful Truths"                     }, // Painful Truths (id=209341, n_ranks=1)
+  { 1131,  49,  0,   1, "Sacrifice of the Just"              }, // Sacrifice of the Just (id=209285, n_ranks=1)
+  { 1132,  49,  0,   1, "Forbearant Faithful"                }, // Forbearant Faithful (id=209376, n_ranks=1)
+  { 1133,  49,  1,   1, "Bulwark of Order"                   }, // Bulwark of Order (id=209389, n_ranks=1)
+  { 1134,  49,  2,   1, "Light of the Titans"                }, // Light of the Titans (id=209528, n_ranks=1)
+  { 1135,  49,  3,   1, "Tyr's Enforcer"                     }, // Tyr's Enforcer (id=209474, n_ranks=1)
+  { 1206,  49,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  {  800,  50,  4,   3, "Inner Peace"                        }, // Inner Peace (id=195243, n_ranks=6)
+  {  801,  50, 11,   3, "Light on Your Feet"                 }, // Light on Your Feet (id=195244, n_ranks=6)
+  {  820,  50,  5,   3, "Rising Winds"                       }, // Rising Winds (id=195263, n_ranks=6)
+  {  821,  50,  6,   3, "Dark Skies"                         }, // Dark Skies (id=195265, n_ranks=6)
+  {  822,  50,  7,   3, "Death Art"                          }, // Death Art (id=195266, n_ranks=5)
+  {  824,  50,  8,   3, "Power of a Thousand Cranes"         }, // Power of a Thousand Cranes (id=195269, n_ranks=6)
+  {  825,  50,  9,   3, "Fists of the Wind"                  }, // Fists of the Wind (id=195291, n_ranks=6)
+  {  826,  50,  0,   1, "Good Karma"                         }, // Good Karma (id=195295, n_ranks=1)
+  {  827,  50,  0,   1, "Acrobatics"                         }, // Acrobatics (id=195298, n_ranks=1)
+  {  828,  50,  0,   1, "Transfer the Power"                 }, // Transfer the Power (id=195300, n_ranks=1)
+  {  829,  50, 12,   3, "Healing Winds"                      }, // Healing Winds (id=195380, n_ranks=6)
+  {  830,  50,  1,   1, "Gale Burst"                         }, // Gale Burst (id=195399, n_ranks=1)
+  {  831,  50,  0,   1, "Strike of the Windlord"             }, // Strike of the Windlord (id=205320, n_ranks=1)
+  {  832,  50,  2,   1, "Crosswinds"                         }, // Crosswinds (id=195650, n_ranks=1)
+  {  833,  50,  3,   1, "Tornado Kicks"                      }, // Tornado Kicks (id=196082, n_ranks=1)
+  { 1094,  50, 10,   3, "Strength of Xuen"                   }, // Strength of Xuen (id=195267, n_ranks=6)
+  { 1204,  50,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  {  931,  51,  0,   1, "Sheilun's Gift"                     }, // Sheilun's Gift (id=205406, n_ranks=1)
+  {  932,  51,  1,   1, "Shaohao's Mists of Wisdom"          }, // Shaohao's Mists of Wisdom (id=199806, n_ranks=1)
+  {  933,  51,  2,   1, "Blessings of Yu'lon"                }, // Blessings of Yu'lon (id=199665, n_ranks=1)
+  {  934,  51,  3,   1, "Celestial Breath"                   }, // Celestial Breath (id=199640, n_ranks=1)
+  {  935,  51,  0,   1, "Harmony and Focus"                  }, // Harmony and Focus (id=199485, n_ranks=1)
+  {  936,  51,  0,   1, "Mists of Life"                      }, // Mists of Life (id=199563, n_ranks=1)
+  {  937,  51,  0,   1, "Dancing Mists"                      }, // Dancing Mists (id=199573, n_ranks=1)
+  {  938,  51,  4,   3, "Coalescing Mists"                   }, // Coalescing Mists (id=199364, n_ranks=6)
+  {  939,  51, 11,   3, "Shroud of Mist"                     }, // Shroud of Mist (id=199365, n_ranks=6)
+  {  940,  51,  5,   3, "Way of the Mistweaver"              }, // Way of the Mistweaver (id=199366, n_ranks=6)
+  {  941,  51,  6,   3, "Protection of Shaohao"              }, // Protection of Shaohao (id=199367, n_ranks=6)
+  {  942,  51,  7,   3, "Extended Healing"                   }, // Extended Healing (id=199372, n_ranks=6)
+  {  943,  51,  8,   3, "Soothing Remedies"                  }, // Soothing Remedies (id=199377, n_ranks=6)
+  {  944,  51,  9,   3, "Infusion of Life"                   }, // Infusion of Life (id=199380, n_ranks=6)
+  {  945,  51, 12,   3, "Spirit Tether"                      }, // Spirit Tether (id=199384, n_ranks=6)
+  {  946,  51, 10,   3, "Light on Your Feet"                 }, // Light on Your Feet (id=199401, n_ranks=6)
+  { 1203,  51,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  { 1255,  51,  0,   0, "Artificial Damage"                  }, // Artificial Damage (id=213428, n_ranks=1)
+  { 1202,  52,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  { 1259,  52,  0,   1, "Wanderer's Special"                 }, // Wanderer's Special (id=213435, n_ranks=1)
+  { 1260,  52,  4,   3, "Obsidian Fists"                     }, // Obsidian Fists (id=213051, n_ranks=6)
+  { 1261,  52,  5,   3, "Adjunct Advantage"                  }, // Adjunct Advantage (id=213049, n_ranks=6)
+  { 1262,  52,  6,   3, "Smashed"                            }, // Smashed (id=213050, n_ranks=6)
+  { 1263,  52,  7,   3, "Dark Side of the Moon"              }, // Dark Side of the Moon (id=213062, n_ranks=6)
+  { 1264,  52,  8,   3, "Staggering Around"                  }, // Staggering Around (id=213055, n_ranks=6)
+  { 1265,  52,  9,   3, "Healthy Appetite"                   }, // Healthy Appetite (id=213133, n_ranks=6)
+  { 1266,  52, 10,   3, "Gifted Student"                     }, // Gifted Student (id=213136, n_ranks=6)
+  { 1267,  52, 11,   3, "Potent Kick"                        }, // Potent Kick (id=213047, n_ranks=6)
+  { 1268,  52, 12,   3, "Pawsed"                             }, // Pawsed (id=213116, n_ranks=6)
+  { 1269,  52,  0,   1, "Swift as a Coursing River"          }, // Swift as a Coursing River (id=213161, n_ranks=1)
+  { 1270,  52,  0,   1, "Overflow"                           }, // Overflow (id=213180, n_ranks=1)
+  { 1271,  52,  0,   1, "Even Handed"                        }, // Even Handed (id=213160, n_ranks=1)
+  { 1272,  52,  1,   1, "Dragonfire Brew"                    }, // Dragonfire Brew (id=213183, n_ranks=1)
+  { 1273,  52,  2,   1, "Brew-Stache"                        }, // Brew-Stache (id=213495, n_ranks=1)
+  { 1274,  52,  3,   1, "Fortification"                      }, // Fortification (id=213340, n_ranks=1)
+  {  783,  53,  0,   1, "Ebonbolt"                           }, // Ebonbolt (id=195297, n_ranks=1)
+  {  784,  53,  4,   3, "Icy Caress"                         }, // Icy Caress (id=195315, n_ranks=6)
+  {  785,  53,  5,   3, "Orbital Strike"                     }, // Orbital Strike (id=195317, n_ranks=6)
+  {  786,  53,  6,   3, "Let It Go"                          }, // Let It Go (id=195322, n_ranks=6)
+  {  787,  53,  7,   3, "Ice Age"                            }, // Ice Age (id=195323, n_ranks=6)
+  {  788,  53,  8,   3, "Frozen Veins"                       }, // Frozen Veins (id=195345, n_ranks=6)
+  {  789,  53,  9,   3, "Clarity of Thought"                 }, // Clarity of Thought (id=195351, n_ranks=6)
+  {  790,  53, 10,   3, "The Storm Rages"                    }, // The Storm Rages (id=195352, n_ranks=6)
+  {  791,  53, 11,   3, "Shield of Alodi"                    }, // Shield of Alodi (id=195354, n_ranks=6)
+  {  792,  53, 12,   3, "Permafrost"                         }, // Permafrost (id=195391, n_ranks=6)
+  {  793,  53,  0,   1, "Chain Reaction"                     }, // Chain Reaction (id=195419, n_ranks=1)
+  {  794,  53,  0,   0, 0                                    },
+  {  795,  53,  0,   1, "Flash Freeze"                       }, // Flash Freeze (id=195437, n_ranks=1)
+  {  796,  53,  1,   0, 0                                    },
+  {  797,  53,  2,   1, "Black Icicle"                       }, // Black Icicle (id=195615, n_ranks=1)
+  {  798,  53,  3,   1, "Chilled to the Core"                }, // Chilled to the Core (id=195448, n_ranks=1)
+  { 1200,  53,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  {  748,  54,  0,   1, "Phoenix Reborn"                     }, // Phoenix Reborn (id=205393, n_ranks=1)
+  {  749,  54,  4,   3, "Fire at Will"                       }, // Fire at Will (id=194224, n_ranks=6)
+  {  750,  54,  5,   3, "Reignition Overdrive"               }, // Reignition Overdrive (id=194234, n_ranks=6)
+  {  751,  54, 10,   3, "Pyroclasmic Paranoia"               }, // Pyroclasmic Paranoia (id=194239, n_ranks=6)
+  {  752,  54,  6,   3, "Burning Gaze"                       }, // Burning Gaze (id=194312, n_ranks=6)
+  {  753,  54,  7,   3, "Blue Flame Special"                 }, // Blue Flame Special (id=210182, n_ranks=6)
+  {  754,  54,  8,   3, "Great Balls of Fire"                }, // Great Balls of Fire (id=194313, n_ranks=6)
+  {  755,  54,  9,   3, "Everburning Consumption"            }, // Everburning Consumption (id=194314, n_ranks=6)
+  {  756,  54, 11,   3, "Cauterizing Blink"                  }, // Cauterizing Blink (id=194318, n_ranks=6)
+  {  757,  54, 12,   3, "Molten Skin"                        }, // Molten Skin (id=194315, n_ranks=6)
+  {  758,  54,  0,   1, 0                                    },
+  {  759,  54,  0,   1, "By Fire Be Purged"                  }, // By Fire Be Purged (id=194320, n_ranks=1)
+  {  760,  54,  0,   1, "Scorched Earth"                     }, // Scorched Earth (id=194324, n_ranks=1)
+  {  761,  54,  1,   1, "Blast Furnace"                      }, // Blast Furnace (id=194487, n_ranks=1)
+  {  762,  54,  2,   1, "Aftershocks"                        }, // Aftershocks (id=194431, n_ranks=1)
+  {  763,  54,  3,   1, "Pyretic Incantation"                }, // Pyretic Incantation (id=194331, n_ranks=1)
+  { 1201,  54,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  {  307,  55,  0,   1, "Windburst"                          }, // Windburst (id=204147, n_ranks=1)
+  {  308,  55,  0,   1, "Mark of the Windrunner"             }, // Mark of the Windrunner (id=204219, n_ranks=1)
+  {  309,  55,  0,   1, "Critical Focus"                     }, // Critical Focus (id=191328, n_ranks=1)
+  {  310,  55,  0,   1, "Rapid Killing"                      }, // Rapid Killing (id=191339, n_ranks=1)
+  {  311,  55,  1,   1, "Call of the Hunter (NYI)"           }, // Call of the Hunter (NYI) (id=191048, n_ranks=1)
+  {  312,  55,  4,   3, "Deadly Aim"                         }, // Deadly Aim (id=190449, n_ranks=6)
+  {  313,  55,  5,   3, "Windrunner's Guidance"              }, // Windrunner's Guidance (id=190457, n_ranks=6)
+  {  314,  55,  6,   3, "Quick Shot"                         }, // Quick Shot (id=190462, n_ranks=6)
+  {  315,  55,  7,   3, "Call the Targets"                   }, // Call the Targets (id=190467, n_ranks=6)
+  {  316,  55, 11,   3, "Healing Shell"                      }, // Healing Shell (id=190503, n_ranks=6)
+  {  317,  55, 12,   3, "Survival of the Fittest"            }, // Survival of the Fittest (id=190514, n_ranks=6)
+  {  318,  55,  8,   3, "Precision"                          }, // Precision (id=190520, n_ranks=6)
+  {  319,  55,  9,   3, "Marked for Death"                   }, // Marked for Death (id=190529, n_ranks=6)
+  {  320,  55, 10,   3, "Gust of Wind"                       }, // Gust of Wind (id=190567, n_ranks=6)
+  {  321,  55,  2,   1, "Whispers of the Past"               }, // Whispers of the Past (id=204217, n_ranks=1)
+  {  322,  55,  3,   1, "Bullseye"                           }, // Bullseye (id=204089, n_ranks=1)
+  { 1197,  55,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  {  868,  56,  4,   3, "Wilderness Expert"                  }, // Wilderness Expert (id=197038, n_ranks=6)
+  {  869,  56,  5,   3, "Furious Swipes"                     }, // Furious Swipes (id=197047, n_ranks=6)
+  {  870,  56,  6,   3, "Pack Leader"                        }, // Pack Leader (id=197080, n_ranks=6)
+  {  871,  56, 12,   3, "Natural Reflexes"                   }, // Natural Reflexes (id=197138, n_ranks=6)
+  {  872,  56,  7,   3, "Focus of the Titans"                }, // Focus of the Titans (id=197139, n_ranks=6)
+  {  873,  56,  8,   3, "Spitting Cobras"                    }, // Spitting Cobras (id=197140, n_ranks=6)
+  {  874,  56, 13,   3, "Mimiron's Shell"                    }, // Mimiron's Shell (id=197160, n_ranks=6)
+  {  875,  56,  9,   3, "Jaws of Thunder"                    }, // Jaws of Thunder (id=197162, n_ranks=6)
+  {  876,  56,  0,   1, "Hunter's Advantage"                 }, // Hunter's Advantage (id=197178, n_ranks=1)
+  {  877,  56,  0,   1, "Spirit Bond"                        }, // Spirit Bond (id=197199, n_ranks=1)
+  {  878,  56,  1,   1, "Master of Beasts"                   }, // Master of Beasts (id=197248, n_ranks=1)
+  {  879,  56,  2,   1, "Stormshot"                          }, // Stormshot (id=197278, n_ranks=1)
+  {  880,  56,  0,   1, "Renewed Vigor"                      }, // Renewed Vigor (id=197343, n_ranks=1)
+  {  881,  56,  0,   1, "Titan's Thunder"                    }, // Titan's Thunder (id=207068, n_ranks=1)
+  {  882,  56,  3,   1, "Surge of the Stormgod"              }, // Surge of the Stormgod (id=197354, n_ranks=1)
+  { 1095,  56, 10,   3, "Unleash the Beast"                  }, // Unleash the Beast (id=206910, n_ranks=6)
+  { 1196,  56,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  {  948,  57,  4,   3, "Reinforced Fur"                     }, // Reinforced Fur (id=200395, n_ranks=6)
+  {  949,  57,  5,   3, "Ursoc's Endurance"                  }, // Ursoc's Endurance (id=200399, n_ranks=6)
+  {  950,  57, 11,   3, "Wildflesh"                          }, // Wildflesh (id=200400, n_ranks=6)
+  {  951,  57,  7,   3, "Perpetual Spring"                   }, // Perpetual Spring (id=200402, n_ranks=6)
+  {  952,  57,  8,   3, "Jagged Claws"                       }, // Jagged Claws (id=200409, n_ranks=6)
+  {  953,  57,  9,   3, "Bestial Fortitude"                  }, // Bestial Fortitude (id=200414, n_ranks=6)
+  {  954,  57, 10,   3, "Sharpened Instincts"                }, // Sharpened Instincts (id=200415, n_ranks=6)
+  {  955,  57,  6,   3, "Mauler"                             }, // Mauler (id=208762, n_ranks=6)
+  {  956,  57, 12,   3, "Vicious Bites"                      }, // Vicious Bites (id=200440, n_ranks=6)
+  {  957,  57,  0,   1, "Right to Bear Arms"                 }, // Right to Bear Arms (id=200450, n_ranks=1)
+  {  958,  57,  0,   1, "Ion Cannon"                         }, // Ion Cannon (id=200515, n_ranks=1)
+  {  959,  57,  0,   1, "Grasping Roots [NYI]"               }, // Grasping Roots [NYI] (id=201073, n_ranks=1)
+  {  960,  57,  0,   1, "Rage of the Sleeper"                }, // Rage of the Sleeper (id=200851, n_ranks=1)
+  {  961,  57,  1,   1, "Embrace of the Nightmare"           }, // Embrace of the Nightmare (id=200855, n_ranks=1)
+  {  962,  57,  2,   1, "Heart of the Woods [NYI]"           }, // Heart of the Woods [NYI] (id=200854, n_ranks=1)
+  {  979,  57,  3,   1, "Adaptive Fur"                       }, // Adaptive Fur (id=200850, n_ranks=1)
+  { 1194,  57,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  { 1153,  58,  0,   1, "Ashamane's Frenzy"                  }, // Ashamane's Frenzy (id=210722, n_ranks=1)
+  { 1154,  58,  1,   1, "Ashamane's Bite"                    }, // Ashamane's Bite (id=210702, n_ranks=1)
+  { 1155,  58,  2,   1, "Shadow Thrash"                      }, // Shadow Thrash (id=210676, n_ranks=1)
+  { 1156,  58,  3,   1, "Open Wounds"                        }, // Open Wounds (id=210666, n_ranks=1)
+  { 1157,  58,  0,   1, "Scent of Blood"                     }, // Scent of Blood (id=210663, n_ranks=1)
+  { 1158,  58,  0,   1, "Protection of Ashamane"             }, // Protection of Ashamane (id=210650, n_ranks=1)
+  { 1159,  58,  0,   1, "Hardened Roots"                     }, // Hardened Roots (id=210638, n_ranks=1)
+  { 1160,  58, 11,   3, "Honed Instincts"                    }, // Honed Instincts (id=210557, n_ranks=6)
+  { 1161,  58,  4,   3, "Razor Fangs"                        }, // Razor Fangs (id=210570, n_ranks=6)
+  { 1162,  58,  5,   3, "Feral Power"                        }, // Feral Power (id=210571, n_ranks=6)
+  { 1163,  58,  6,   3, "Powerful Bite"                      }, // Powerful Bite (id=210575, n_ranks=6)
+  { 1164,  58,  7,   3, "Ashamane's Energy"                  }, // Ashamane's Energy (id=210579, n_ranks=6)
+  { 1165,  58, 12,   3, "Attuned to Nature"                  }, // Attuned to Nature (id=210590, n_ranks=6)
+  { 1166,  58,  8,   3, "Tear the Flesh"                     }, // Tear the Flesh (id=210593, n_ranks=6)
+  { 1167,  58,  9,   3, "Feral Instinct"                     }, // Feral Instinct (id=210631, n_ranks=6)
+  { 1168,  58,  9,   3, "Sharpened Claws"                    }, // Sharpened Claws (id=210637, n_ranks=6)
+  { 1193,  58,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  { 1034,  59, 11,   3, "Bladed Feathers"                    }, // Bladed Feathers (id=202302, n_ranks=6)
+  { 1035,  59, 12,   3, "Touch of the Moon"                  }, // Touch of the Moon (id=203018, n_ranks=6)
+  { 1036,  59,  4,   3, "Dark Side of the Moon"              }, // Dark Side of the Moon (id=202384, n_ranks=6)
+  { 1037,  59,  5,   3, "Twilight Glow"                      }, // Twilight Glow (id=202386, n_ranks=6)
+  { 1038,  59,  6,   3, "Solar Stabbing"                     }, // Solar Stabbing (id=202426, n_ranks=6)
+  { 1039,  59,  7,   3, "Scythe of the Stars"                }, // Scythe of the Stars (id=202433, n_ranks=6)
+  { 1040,  59,  8,   3, "Falling Star"                       }, // Falling Star (id=202445, n_ranks=6)
+  { 1041,  59,  9,   3, "Sunfire Burns"                      }, // Sunfire Burns (id=202466, n_ranks=6)
+  { 1042,  59, 10,   3, "Empowerment"                        }, // Empowerment (id=202464, n_ranks=6)
+  { 1043,  59,  0,   1, "Rejuvenating Innervation"           }, // Rejuvenating Innervation (id=202890, n_ranks=1)
+  { 1044,  59,  0,   1, "Light of the Sun"                   }, // Light of the Sun (id=202918, n_ranks=1)
+  { 1045,  59,  0,   1, "Mooncraze"                          }, // Mooncraze (id=202937, n_ranks=1)
+  { 1046,  59,  1,   1, "Moon and Stars"                     }, // Moon and Stars (id=202940, n_ranks=1)
+  { 1047,  59,  2,   1, "Power of Goldrinn"                  }, // Power of Goldrinn (id=202996, n_ranks=1)
+  { 1048,  59,  3,   1, "Scion of the Night Sky"             }, // Scion of the Night Sky (id=203019, n_ranks=1)
+  { 1049,  59,  0,   1, "New Moon"                           }, // New Moon (id=202767, n_ranks=1)
+  { 1192,  59,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  { 1096,  60,  0,   1, "Soul Carver"                        }, // Soul Carver (id=207407, n_ranks=1)
+  { 1097,  60,  0,   1, "Demonic Flames"                     }, // Demonic Flames (id=212894, n_ranks=1)
+  { 1098,  60,  1,   1, "Painbringer"                        }, // Painbringer (id=207387, n_ranks=1)
+  { 1099,  60,  4,   3, "Aldrachi Design"                    }, // Aldrachi Design (id=207343, n_ranks=6)
+  { 1100,  60,  5,   3, "Aura of Pain"                       }, // Aura of Pain (id=207347, n_ranks=6)
+  { 1101,  60,  6,   3, "Honed Warblades"                    }, // Honed Warblades (id=207352, n_ranks=6)
+  { 1191,  60,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  { 1227,  60,  0,   1, "Scorched Ground"                    }, // Scorched Ground (id=212899, n_ranks=1)
+  { 1228,  60,  0,   1, "Defensive Spikes"                   }, // Defensive Spikes (id=212829, n_ranks=1)
+  { 1229,  60,  7,   3, "Infernal Force"                     }, // Infernal Force (id=207375, n_ranks=6)
+  { 1230,  60,  8,   3, "Embrace the Pain"                   }, // Embrace the Pain (id=212816, n_ranks=6)
+  { 1231,  60,  9,   3, "Fiery Demise"                       }, // Fiery Demise (id=212817, n_ranks=6)
+  { 1232,  60, 10,   3, "Will of the Illidari"               }, // Will of the Illidari (id=212819, n_ranks=6)
+  { 1233,  60, 11,   3, "Devour Souls"                       }, // Devour Souls (id=212821, n_ranks=6)
+  { 1234,  60, 12,   3, "Shatter the Souls"                  }, // Shatter the Souls (id=212827, n_ranks=6)
+  { 1235,  60,  3,   1, "Charred Warblades"                  }, // Charred Warblades (id=213010, n_ranks=1)
+  { 1236,  60,  2,   1, "Fueled by Pain"                     }, // Fueled by Pain (id=213017, n_ranks=1)
+  { 1087,  74,  0,   0, 0                                    },
+  { 1088,  74,  0,   0, 0                                    },
+  { 1089,  74,  0,   0, 0                                    },
+  { 1237,  80,  3,   1, "Blades of Light"                    }, // Blades of Light (id=193108, n_ranks=1)
+  { 1238,  80,  0,   1, "Healing Storm"                      }, // Healing Storm (id=193058, n_ranks=1)
+  { 1239,  80,  0,   1, "Unbreakable Will"                   }, // Unbreakable Will (id=182234, n_ranks=1)
+  { 1240,  80,  0,   1, "Endless Resolve"                    }, // Endless Resolve (id=185086, n_ranks=1)
+  { 1241,  80,  2,   1, "Echo of the Highlord"               }, // Echo of the Highlord (id=186788, n_ranks=1)
+  { 1242,  80,  7,   3, "Wrath of the Ashbringer"            }, // Wrath of the Ashbringer (id=186945, n_ranks=6)
+  { 1243,  80, 10,   3, "Protector of the Ashen Blade"       }, // Protector of the Ashen Blade (id=186944, n_ranks=6)
+  { 1244,  80,  9,   3, "Might of the Templar"               }, // Might of the Templar (id=185368, n_ranks=6)
+  { 1245,  80,  8,   3, "Deliver the Justice"                }, // Deliver the Justice (id=186927, n_ranks=6)
+  { 1246,  80,  1,   1, "Divine Tempest"                     }, // Divine Tempest (id=186773, n_ranks=1)
+  { 1247,  80, 12,   3, "Deflection"                         }, // Deflection (id=184778, n_ranks=6)
+  { 1248,  80, 11,   3, "Embrace the Light"                  }, // Embrace the Light (id=186934, n_ranks=6)
+  { 1249,  80,  6,   3, "Righteous Blade"                    }, // Righteous Blade (id=184843, n_ranks=6)
+  { 1250,  80,  5,   3, "Sharpened Edge"                     }, // Sharpened Edge (id=184759, n_ranks=6)
+  { 1251,  80,  4,   3, "Highlord's Judgment"                }, // Highlord's Judgment (id=186941, n_ranks=6)
+  { 1252,  80,  0,   1, "Wake of Ashes"                      }, // Wake of Ashes (id=205273, n_ranks=1)
+  { 1253,  80,  0,   1, "Ashes to Ashes"                     }, // Ashes to Ashes (id=179546, n_ranks=1)
+  {    0,   0,  0,   0, 0                                    },
+};
+#define ARTIFACT_POWER_RANK_SIZE (2305)
+
+// Artifact power rank data, wow build 21108
+static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RANK_SIZE] = {
+  { 2316,    40,  0, 205273,      0.000 },
+  { 2317,    41,  0, 186941,      0.000 },
+  { 3199,    41,  1, 186941,     30.000 },
+  { 3200,    41,  2, 186941,     45.000 },
+  { 3201,    41,  3, 186941,     60.000 },
+  { 3202,    41,  4, 186941,     75.000 },
+  { 3203,    41,  5, 186941,     90.000 },
+  { 2320,    42,  0, 184759,      0.000 },
+  { 3204,    42,  1, 184759,     12.000 },
+  { 3205,    42,  2, 184759,     18.000 },
+  { 3206,    42,  3, 184759,     24.000 },
+  { 3207,    42,  4, 184759,     30.000 },
+  { 3208,    42,  5, 184759,     36.000 },
+  { 2323,    43,  0, 184843,      0.000 },
+  { 3209,    43,  1, 184843,     10.000 },
+  { 3210,    43,  2, 184843,     15.000 },
+  { 3211,    43,  3, 184843,     20.000 },
+  { 3212,    43,  4, 184843,     25.000 },
+  { 3213,    43,  5, 184843,     30.000 },
+  { 2326,    44,  0, 186934,      0.000 },
+  { 3214,    44,  1, 186934,     30.000 },
+  { 3215,    44,  2, 186934,     45.000 },
+  { 3216,    44,  3, 186934,     60.000 },
+  { 3217,    44,  4, 186934,     75.000 },
+  { 3218,    44,  5, 186934,     90.000 },
+  { 2329,    47,  0, 184778,      0.000 },
+  { 3219,    47,  1, 184778, -10000.000 },
+  { 3220,    47,  2, 184778, -15000.000 },
+  { 3221,    47,  3, 184778, -20000.000 },
+  { 3222,    47,  4, 184778, -25000.000 },
+  { 3223,    47,  5, 184778, -30000.000 },
+  { 2332,    49,  0, 186773,      0.000 },
+  { 2333,    50,  0, 186927,      0.000 },
+  { 3224,    50,  1, 186927,     16.000 },
+  { 3225,    50,  2, 186927,     24.000 },
+  { 3226,    50,  3, 186927,     32.000 },
+  { 3227,    50,  4, 186927,     40.000 },
+  { 3228,    50,  5, 186927,     48.000 },
+  { 2336,    51,  0, 185368,      0.000 },
+  { 3229,    51,  1, 185368,      8.000 },
+  { 3230,    51,  2, 185368,     12.000 },
+  { 3231,    51,  3, 185368,     16.000 },
+  { 3232,    51,  4, 185368,     20.000 },
+  { 3233,    51,  5, 185368,     24.000 },
+  { 2339,    52,  0, 186944,      0.000 },
+  { 3234,    52,  1, 186944, -20000.000 },
+  { 3235,    52,  2, 186944, -30000.000 },
+  { 3236,    52,  3, 186944, -40000.000 },
+  { 3237,    52,  4, 186944, -50000.000 },
+  { 3238,    52,  5, 186944, -60000.000 },
+  { 2342,    53,  0, 186945,      0.000 },
+  { 3239,    53,  1, 186945,   5000.000 },
+  { 3240,    53,  2, 186945,   7500.000 },
+  { 3241,    53,  3, 186945,  10000.000 },
+  { 3242,    53,  4, 186945,  12500.000 },
+  { 3243,    53,  5, 186945,  15000.000 },
+  { 2345,    54,  0, 186788,      0.000 },
+  { 2380,    72,  0, 187304,      3.000 },
+  { 3514,    72,  1, 187304,      6.000 },
+  { 3515,    72,  2, 187304,     10.000 },
+  { 3516,    72,  3, 187304,     13.000 },
+  { 3517,    72,  4, 187304,     16.000 },
+  { 3518,    72,  5, 187304,     20.000 },
+  { 2383,    73,  0, 188006,      0.000 },
+  { 2384,    74,  0, 187258,      0.000 },
+  { 3519,    74,  1, 187258,      4.000 },
+  { 3520,    74,  2, 187258,      6.000 },
+  { 3521,    74,  3, 187258,      8.000 },
+  { 3522,    74,  4, 187258,     10.000 },
+  { 3523,    74,  5, 187258,     12.000 },
+  { 2387,    75,  0, 187321,      0.000 },
+  { 3524,    75,  1, 187321,      4.000 },
+  { 3525,    75,  2, 187321,      6.000 },
+  { 3526,    75,  3, 187321,      8.000 },
+  { 3527,    75,  4, 187321,     10.000 },
+  { 3528,    75,  5, 187321,     12.000 },
+  { 2393,    77,  0, 187313,      0.000 },
+  { 3534,    77,  1, 187313,      6.000 },
+  { 3535,    77,  2, 187313,     10.000 },
+  { 3536,    77,  3, 187313,     13.000 },
+  { 3537,    77,  4, 187313,     16.000 },
+  { 3538,    77,  5, 187313,     20.000 },
+  { 2396,    78,  0, 187310,      0.000 },
+  { 2399,    79,  0, 187287,      3.000 },
+  { 3544,    79,  1, 187287,      6.000 },
+  { 3545,    79,  2, 187287,     10.000 },
+  { 3546,    79,  3, 187287,     13.000 },
+  { 3547,    79,  4, 187287,     16.000 },
+  { 3548,    79,  5, 187287,     20.000 },
+  { 2402,    80,  0, 187292,      0.000 },
+  { 2405,    81,  0, 187276,      6.000 },
+  { 3554,    81,  1, 187276,     12.000 },
+  { 3555,    81,  2, 187276,     18.000 },
+  { 3556,    81,  3, 187276,     24.000 },
+  { 3557,    81,  4, 187276,     30.000 },
+  { 3558,    81,  5, 187276,     36.000 },
+  { 2408,    82,  0, 187264,      0.000 },
+  { 3559,    82,  1, 187264,   4000.000 },
+  { 3560,    82,  2, 187264,   6000.000 },
+  { 3561,    82,  3, 187264,   8000.000 },
+  { 3562,    82,  4, 187264,  10000.000 },
+  { 3563,    82,  5, 187264,  12000.000 },
+  { 2411,    83,  0, 187301,      3.000 },
+  { 3564,    83,  1, 187301,      6.000 },
+  { 3565,    83,  2, 187301,     10.000 },
+  { 3566,    83,  3, 187301,     13.000 },
+  { 3567,    83,  4, 187301,     16.000 },
+  { 3568,    83,  5, 187301,     20.000 },
+  { 2414,    84,  0, 210716,     33.000 },
+  { 5142,    84,  1, 210716,     66.000 },
+  { 5143,    84,  2, 210716,    100.000 },
+  { 5144,    84,  3, 210716,    133.000 },
+  { 5145,    84,  4, 210716,    166.000 },
+  { 5146,    84,  5, 210716,    200.000 },
+  { 2420,    86,  0, 210725,      0.000 },
+  { 2421,    87,  0, 187680,      0.000 },
+  { 2422,    91,  0, 203524,      0.000 },
+  { 2423,    92,  0, 203567,      0.000 },
+  { 2424,    93,  0, 203576,      0.000 },
+  { 2425,    94,  0, 188778,      0.000 },
+  { 2426,    95,  0, 188635,      0.000 },
+  { 3469,    95,  1, 188635,      6.000 },
+  { 3470,    95,  2, 188635,     10.000 },
+  { 3471,    95,  3, 188635,     13.000 },
+  { 3472,    95,  4, 188635,     16.000 },
+  { 3473,    95,  5, 188635,     20.000 },
+  { 2429,    96,  0, 188647,      0.000 },
+  { 3474,    96,  1, 188647,      6.000 },
+  { 3475,    96,  2, 188647,     10.000 },
+  { 3476,    96,  3, 188647,     13.000 },
+  { 3477,    96,  4, 188647,     16.000 },
+  { 3478,    96,  5, 188647,     20.000 },
+  { 2432,    97,  0, 188651,      0.000 },
+  { 2433,    98,  0, 188683,      0.000 },
+  { 3479,    98,  1, 188683,     20.000 },
+  { 3480,    98,  2, 188683,     30.000 },
+  { 3481,    98,  3, 188683,     40.000 },
+  { 3482,    98,  4, 188683,     50.000 },
+  { 3483,    98,  5, 188683,     60.000 },
+  { 2436,    99,  0, 203230,      0.000 },
+  { 4801,    99,  1, 203230,  -4000.000 },
+  { 4802,    99,  2, 203230,  -6000.000 },
+  { 4803,    99,  3, 203230,  -8000.000 },
+  { 4804,    99,  4, 203230, -10000.000 },
+  { 4805,    99,  5, 203230, -12000.000 },
+  { 2439,   100,  0, 203225,      0.000 },
+  { 4806,   100,  1, 203225,      4.000 },
+  { 4807,   100,  2, 203225,      6.000 },
+  { 4808,   100,  3, 203225,      8.000 },
+  { 4809,   100,  4, 203225,     10.000 },
+  { 4810,   100,  5, 203225,     12.000 },
+  { 2442,   101,  0, 203227,      0.000 },
+  { 4795,   101,  1, 203227,    200.000 },
+  { 4796,   101,  2, 203227,    300.000 },
+  { 4797,   101,  3, 203227,    400.000 },
+  { 4798,   101,  4, 203227,    500.000 },
+  { 4799,   101,  5, 203227,    600.000 },
+  { 2445,   102,  0, 188639,      0.000 },
+  { 3499,   102,  1, 188639,     10.000 },
+  { 3500,   102,  2, 188639,     15.000 },
+  { 3501,   102,  3, 188639,     20.000 },
+  { 3502,   102,  4, 188639,     25.000 },
+  { 3503,   102,  5, 188639,     30.000 },
+  { 2448,   103,  0, 203261,      0.000 },
+  { 2449,   104,  0, 188672,      0.000 },
+  { 2450,   105,  0, 188632,      0.000 },
+  { 3504,   105,  1, 188632,      6.000 },
+  { 3505,   105,  2, 188632,     10.000 },
+  { 3506,   105,  3, 188632,     13.000 },
+  { 3507,   105,  4, 188632,     16.000 },
+  { 3508,   105,  5, 188632,     20.000 },
+  { 2453,   106,  0, 188644,      0.000 },
+  { 3509,   106,  1, 188644,     20.000 },
+  { 3510,   106,  2, 188644,     30.000 },
+  { 3511,   106,  3, 188644,     40.000 },
+  { 3512,   106,  4, 188644,     50.000 },
+  { 3513,   106,  5, 188644,     60.000 },
+  { 2457,   108,  0, 189080,      3.000 },
+  { 3595,   108,  1, 189080,      6.000 },
+  { 3596,   108,  2, 189080,     10.000 },
+  { 3597,   108,  3, 189080,     13.000 },
+  { 3598,   108,  4, 189080,     16.000 },
+  { 3599,   108,  5, 189080,     20.000 },
+  { 2460,   109,  0, 189086,      0.000 },
+  { 3600,   109,  1, 189086,     20.000 },
+  { 3601,   109,  2, 189086,     30.000 },
+  { 3602,   109,  3, 189086,     40.000 },
+  { 3603,   109,  4, 189086,     50.000 },
+  { 3604,   109,  5, 189086,     60.000 },
+  { 2463,   110,  0, 189092,      0.000 },
+  { 3605,   110,  1, 189092,     20.000 },
+  { 3606,   110,  2, 189092,     30.000 },
+  { 3607,   110,  3, 189092,     40.000 },
+  { 3608,   110,  4, 189092,     50.000 },
+  { 3609,   110,  5, 189092,     60.000 },
+  { 2466,   111,  0, 189097,      0.000 },
+  { 3610,   111,  1, 189097,     60.000 },
+  { 3611,   111,  2, 189097,    100.000 },
+  { 3612,   111,  3, 189097,    130.000 },
+  { 3613,   111,  4, 189097,    160.000 },
+  { 3614,   111,  5, 189097,    200.000 },
+  { 2472,   113,  0, 189144,      0.000 },
+  { 3620,   113,  1, 189144,     20.000 },
+  { 3621,   113,  2, 189144,     30.000 },
+  { 3622,   113,  3, 189144,     40.000 },
+  { 3623,   113,  4, 189144,     50.000 },
+  { 3624,   113,  5, 189144,     60.000 },
+  { 2475,   114,  0, 189147,      0.000 },
+  { 3625,   114,  1, 189147,     75.000 },
+  { 3626,   114,  2, 189147,    100.000 },
+  { 3627,   114,  3, 189147,    125.000 },
+  { 3628,   114,  4, 189147,    150.000 },
+  { 3629,   114,  5, 189147,    175.000 },
+  { 2478,   115,  0, 189154,      0.000 },
+  { 3630,   115,  1, 189154,    200.000 },
+  { 3631,   115,  2, 189154,    300.000 },
+  { 3632,   115,  3, 189154,    400.000 },
+  { 3633,   115,  4, 189154,    500.000 },
+  { 3634,   115,  5, 189154,    600.000 },
+  { 2484,   117,  0, 189164,      0.000 },
+  { 3635,   117,  1, 189164,     10.000 },
+  { 3636,   117,  2, 189164,     15.000 },
+  { 3637,   117,  3, 189164,     20.000 },
+  { 3638,   117,  4, 189164,     25.000 },
+  { 3639,   117,  5, 189164,     30.000 },
+  { 2490,   119,  0, 189179,      0.000 },
+  { 2491,   120,  0, 189180,      0.000 },
+  { 2493,   122,  0, 190778,      0.000 },
+  { 2494,   123,  0, 189185,      0.000 },
+  { 2495,   124,  0, 189186,      0.000 },
+  { 2496,   125,  0, 208253,      0.000 },
+  { 2497,   126,  0, 189849,      0.000 },
+  { 2498,   127,  0, 189857,      0.000 },
+  { 2499,   128,  0, 189870,      0.000 },
+  { 2500,   129,  0, 189787,      0.000 },
+  { 2501,   130,  0, 189772,      0.000 },
+  { 3424,   130,  1, 189772,      6.000 },
+  { 3425,   130,  2, 189772,     10.000 },
+  { 3426,   130,  3, 189772,     13.000 },
+  { 3427,   130,  4, 189772,     16.000 },
+  { 3428,   130,  5, 189772,     20.000 },
+  { 2504,   131,  0, 189768,      0.000 },
+  { 3429,   131,  1, 189768,     20.000 },
+  { 3430,   131,  2, 189768,     30.000 },
+  { 3431,   131,  3, 189768,     40.000 },
+  { 3432,   131,  4, 189768,     50.000 },
+  { 3433,   131,  5, 189768,     60.000 },
+  { 2507,   132,  0, 189760,      0.000 },
+  { 3434,   132,  1, 189760,     10.000 },
+  { 3435,   132,  2, 189760,     15.000 },
+  { 3436,   132,  3, 189760,     20.000 },
+  { 3437,   132,  4, 189760,     25.000 },
+  { 3438,   132,  5, 189760,     30.000 },
+  { 2510,   133,  0, 189757,      0.000 },
+  { 3439,   133,  1, 189757,    -10.000 },
+  { 3440,   133,  2, 189757,    -15.000 },
+  { 3441,   133,  3, 189757,    -20.000 },
+  { 3442,   133,  4, 189757,    -25.000 },
+  { 3443,   133,  5, 189757,    -30.000 },
+  { 2513,   134,  0, 189754,      0.000 },
+  { 3444,   134,  1, 189754,     -4.000 },
+  { 3445,   134,  2, 189754,     -6.000 },
+  { 3446,   134,  3, 189754,     -8.000 },
+  { 3447,   134,  4, 189754,    -10.000 },
+  { 3448,   134,  5, 189754,    -12.000 },
+  { 2516,   135,  0, 189749,      0.000 },
+  { 3449,   135,  1, 189749,     10.000 },
+  { 3450,   135,  2, 189749,     15.000 },
+  { 3451,   135,  3, 189749,     20.000 },
+  { 3452,   135,  4, 189749,     25.000 },
+  { 3453,   135,  5, 189749,     30.000 },
+  { 2519,   136,  0, 189744,      0.000 },
+  { 3454,   136,  1, 189744,      6.000 },
+  { 3455,   136,  2, 189744,     10.000 },
+  { 3456,   136,  3, 189744,     13.000 },
+  { 3457,   136,  4, 189744,     16.000 },
+  { 3458,   136,  5, 189744,     20.000 },
+  { 2522,   137,  0, 186396,      0.000 },
+  { 3459,   137,  1, 186396,   2000.000 },
+  { 3460,   137,  2, 186396,   3000.000 },
+  { 3461,   137,  3, 186396,   4000.000 },
+  { 3462,   137,  4, 186396,   5000.000 },
+  { 3463,   137,  5, 186396,   6000.000 },
+  { 2525,   138,  0, 186393,      0.000 },
+  { 2526,   139,  0, 186372,      0.000 },
+  { 2527,   140,  0, 186320,      0.000 },
+  { 3464,   140,  1, 186320,      6.000 },
+  { 3465,   140,  2, 186320,     10.000 },
+  { 3466,   140,  3, 186320,     13.000 },
+  { 3467,   140,  4, 186320,     16.000 },
+  { 3468,   140,  5, 186320,     20.000 },
+  { 2530,   149,  0, 205488,      0.000 },
+  { 2531,   150,  0, 191760,      0.000 },
+  { 2532,   151,  0, 191741,      0.000 },
+  { 2533,   152,  0, 191747,      0.000 },
+  { 2534,   153,  0, 191637,      0.000 },
+  { 2535,   154,  0, 191731,      0.000 },
+  { 2536,   156,  0, 191419,      0.000 },
+  { 3645,   156,  1, 191419,     10.000 },
+  { 3646,   156,  2, 191419,     15.000 },
+  { 3647,   156,  3, 191419,     20.000 },
+  { 3648,   156,  4, 191419,     25.000 },
+  { 3649,   156,  5, 191419,     30.000 },
+  { 2539,   157,  0, 191442,      5.000 },
+  { 3650,   157,  1, 191442,     10.000 },
+  { 3651,   157,  2, 191442,     15.000 },
+  { 3652,   157,  3, 191442,     20.000 },
+  { 3653,   157,  4, 191442,     25.000 },
+  { 3654,   157,  5, 191442,     30.000 },
+  { 2542,   158,  0, 191485,      0.000 },
+  { 3655,   158,  1, 191485,     10.000 },
+  { 3656,   158,  2, 191485,     15.000 },
+  { 3657,   158,  3, 191485,     20.000 },
+  { 3658,   158,  4, 191485,     25.000 },
+  { 3659,   158,  5, 191485,     30.000 },
+  { 2545,   262,  0, 191565,      0.000 },
+  { 3670,   262,  1, 191565,     -6.000 },
+  { 3671,   262,  2, 191565,    -10.000 },
+  { 3672,   262,  3, 191565,    -13.000 },
+  { 3673,   262,  4, 191565,    -16.000 },
+  { 3674,   262,  5, 191565,    -20.000 },
+  { 2548,   263,  0, 191721,      0.000 },
+  { 2549,   264,  0, 191592,      0.000 },
+  { 2550,   264,  1, 191593,      0.000 },
+  { 2551,   264,  2, 191594,      0.000 },
+  { 2552,   265,  0, 191494,      0.000 },
+  { 3665,   265,  1, 191494,     20.000 },
+  { 3666,   265,  2, 191494,     30.000 },
+  { 3667,   265,  3, 191494,     40.000 },
+  { 3668,   265,  4, 191494,     50.000 },
+  { 3669,   265,  5, 191494,     60.000 },
+  { 2555,   266,  0, 191488,      0.000 },
+  { 3660,   266,  1, 191488,     75.000 },
+  { 3661,   266,  2, 191488,    100.000 },
+  { 3662,   266,  3, 191488,    125.000 },
+  { 3663,   266,  4, 191488,    150.000 },
+  { 3664,   266,  5, 191488,    175.000 },
+  { 2558,   267,  0, 191584,      0.000 },
+  { 3675,   267,  1, 191584,    -10.000 },
+  { 3676,   267,  2, 191584,    -15.000 },
+  { 3677,   267,  3, 191584,    -20.000 },
+  { 3678,   267,  4, 191584,    -25.000 },
+  { 3679,   267,  5, 191584,    -30.000 },
+  { 2561,   272,  0, 192450,      0.000 },
+  { 3685,   272,  1, 192450,      6.000 },
+  { 3686,   272,  2, 192450,     10.000 },
+  { 3687,   272,  3, 192450,     13.000 },
+  { 3688,   272,  4, 192450,     16.000 },
+  { 3689,   272,  5, 192450,     20.000 },
+  { 2564,   273,  0, 192453,      0.000 },
+  { 3690,   273,  1, 192453,      6.000 },
+  { 3691,   273,  2, 192453,     10.000 },
+  { 3692,   273,  3, 192453,     13.000 },
+  { 3693,   273,  4, 192453,     16.000 },
+  { 3694,   273,  5, 192453,     20.000 },
+  { 2567,   274,  0, 192447,      0.000 },
+  { 3680,   274,  1, 192447,     -6.000 },
+  { 3681,   274,  2, 192447,    -10.000 },
+  { 3682,   274,  3, 192447,    -13.000 },
+  { 3683,   274,  4, 192447,    -16.000 },
+  { 3684,   274,  5, 192447,    -20.000 },
+  { 2570,   275,  0, 192457,      0.000 },
+  { 3695,   275,  1, 192457,     20.000 },
+  { 3696,   275,  2, 192457,     30.000 },
+  { 3697,   275,  3, 192457,     40.000 },
+  { 3698,   275,  4, 192457,     50.000 },
+  { 3699,   275,  5, 192457,     60.000 },
+  { 2573,   276,  0, 192460,      0.000 },
+  { 3700,   276,  1, 192460,     20.000 },
+  { 3701,   276,  2, 192460,     30.000 },
+  { 3702,   276,  3, 192460,     40.000 },
+  { 3703,   276,  4, 192460,     50.000 },
+  { 3704,   276,  5, 192460,     60.000 },
+  { 2576,   277,  0, 192542,      0.000 },
+  { 2577,   277,  1, 192543,      0.000 },
+  { 2578,   277,  2, 192544,      0.000 },
+  { 4974,   277,  3, 208793,      0.000 },
+  { 4975,   277,  4, 208794,      0.000 },
+  { 4976,   277,  5, 208795,      0.000 },
+  { 2579,   278,  0, 192464,     10.000 },
+  { 3705,   278,  1, 192464,     20.000 },
+  { 3706,   278,  2, 192464,     30.000 },
+  { 3707,   278,  3, 192464,     40.000 },
+  { 3708,   278,  4, 192464,     50.000 },
+  { 3709,   278,  5, 192464,     60.000 },
+  { 2582,   279,  0, 192514,   2000.000 },
+  { 3710,   279,  1, 192514,   4000.000 },
+  { 3711,   279,  2, 192514,   6000.000 },
+  { 3712,   279,  3, 192514,   8000.000 },
+  { 3713,   279,  4, 192514,  10000.000 },
+  { 3714,   279,  5, 192514,  12000.000 },
+  { 2585,   280,  0, 192538,      0.000 },
+  { 3715,   280,  1, 192538,     10.000 },
+  { 3716,   280,  2, 192538,     15.000 },
+  { 3717,   280,  3, 192538,     20.000 },
+  { 3718,   280,  4, 192538,     25.000 },
+  { 3719,   280,  5, 192538,     30.000 },
+  { 2588,   281,  0, 192557,      0.000 },
+  { 2589,   282,  0, 192548,      0.000 },
+  { 2590,   283,  0, 192570,      0.000 },
+  { 2591,   284,  0, 192558,      0.000 },
+  { 2592,   285,  0, 192567,      0.000 },
+  { 2593,   286,  0, 193213,      0.000 },
+  { 4029,   289,  0, 205223,      0.000 },
+  { 2594,   290,  0, 210726,      0.000 },
+  { 2595,   291,  0, 205495,      0.000 },
+  { 2596,   292,  0, 191602,      0.000 },
+  { 2597,   293,  0, 191647,      0.000 },
+  { 5316,   294,  0, 191512,      0.000 },
+  { 2599,   295,  0, 191717,      0.000 },
+  { 2600,   296,  0, 192623,      0.000 },
+  { 2601,   297,  0, 192630,      0.000 },
+  { 2602,   298,  0, 191493,      0.000 },
+  { 3381,   298,  1, 191493,      6.000 },
+  { 3382,   298,  2, 191493,     10.000 },
+  { 3383,   298,  3, 191493,     13.000 },
+  { 3384,   298,  4, 191493,     16.000 },
+  { 3385,   298,  5, 191493,     20.000 },
+  { 2605,   299,  0, 191499,      0.000 },
+  { 3386,   299,  1, 191499,     10.000 },
+  { 3387,   299,  2, 191499,     15.000 },
+  { 3388,   299,  3, 191499,     20.000 },
+  { 3389,   299,  4, 191499,     25.000 },
+  { 3390,   299,  5, 191499,     30.000 },
+  { 2608,   300,  0, 191504,      0.000 },
+  { 3391,   300,  1, 191504,      6.000 },
+  { 3392,   300,  2, 191504,     10.000 },
+  { 3393,   300,  3, 191504,     13.000 },
+  { 3394,   300,  4, 191504,     16.000 },
+  { 3395,   300,  5, 191504,     20.000 },
+  { 2611,   301,  0, 191740,      0.000 },
+  { 5317,   301,  1, 191740,     10.000 },
+  { 5318,   301,  2, 191740,     15.000 },
+  { 5319,   301,  3, 191740,     20.000 },
+  { 5320,   301,  4, 191740,     25.000 },
+  { 5321,   301,  5, 191740,     30.000 },
+  { 2614,   302,  0, 191569,      0.000 },
+  { 3401,   302,  1, 191569,     30.000 },
+  { 3402,   302,  2, 191569,     45.000 },
+  { 3403,   302,  3, 191569,     60.000 },
+  { 3404,   302,  4, 191569,     75.000 },
+  { 3405,   302,  5, 191569,     90.000 },
+  { 2617,   303,  0, 191572,      0.000 },
+  { 3406,   303,  1, 191572,      6.000 },
+  { 3407,   303,  2, 191572,     10.000 },
+  { 3408,   303,  3, 191572,     13.000 },
+  { 3409,   303,  4, 191572,     16.000 },
+  { 3410,   303,  5, 191572,     20.000 },
+  { 2620,   304,  0, 191577,      0.000 },
+  { 3411,   304,  1, 191577,     10.000 },
+  { 3412,   304,  2, 191577,     15.000 },
+  { 3413,   304,  3, 191577,     20.000 },
+  { 3414,   304,  4, 191577,     25.000 },
+  { 3415,   304,  5, 191577,     30.000 },
+  { 2623,   305,  0, 191582,      0.000 },
+  { 2624,   305,  1, 191589,     28.000 },
+  { 2625,   305,  2, 191590,     26.000 },
+  { 3416,   305,  3, 195118,     24.000 },
+  { 3417,   305,  4, 195120,     22.000 },
+  { 3418,   305,  5, 195121,     20.000 },
+  { 2626,   306,  0, 191598,      0.000 },
+  { 3419,   306,  1, 191598,      6.000 },
+  { 3420,   306,  2, 191598,     10.000 },
+  { 3421,   306,  3, 191598,     13.000 },
+  { 3422,   306,  4, 191598,     16.000 },
+  { 3423,   306,  5, 191598,     20.000 },
+  { 2629,   307,  0, 204147,      0.000 },
+  { 2630,   308,  0, 204219,      0.000 },
+  { 2631,   309,  0, 191328,      0.000 },
+  { 2632,   310,  0, 191339,      0.000 },
+  { 2633,   311,  0, 191048,      0.000 },
+  { 2634,   312,  0, 190449,      0.000 },
+  { 3336,   312,  1, 190449,      6.000 },
+  { 3337,   312,  2, 190449,     10.000 },
+  { 3338,   312,  3, 190449,     13.000 },
+  { 3339,   312,  4, 190449,     16.000 },
+  { 3340,   312,  5, 190449,     20.000 },
+  { 2637,   313,  0, 190457,      0.000 },
+  { 3341,   313,  1, 190457,      6.000 },
+  { 3342,   313,  2, 190457,     10.000 },
+  { 3343,   313,  3, 190457,     13.000 },
+  { 3344,   313,  4, 190457,     16.000 },
+  { 3345,   313,  5, 190457,     20.000 },
+  { 2640,   314,  0, 190462,      0.000 },
+  { 3346,   314,  1, 190462, -20000.000 },
+  { 3347,   314,  2, 190462, -30000.000 },
+  { 3348,   314,  3, 190462, -40000.000 },
+  { 3349,   314,  4, 190462, -50000.000 },
+  { 3350,   314,  5, 190462, -60000.000 },
+  { 2643,   315,  0, 190467,      0.000 },
+  { 3351,   315,  1, 190467,      6.000 },
+  { 3352,   315,  2, 190467,     10.000 },
+  { 3353,   315,  3, 190467,     13.000 },
+  { 3354,   315,  4, 190467,     16.000 },
+  { 3355,   315,  5, 190467,     20.000 },
+  { 2646,   316,  0, 190503,      0.000 },
+  { 3356,   316,  1, 190503,      4.000 },
+  { 3357,   316,  2, 190503,      6.000 },
+  { 3358,   316,  3, 190503,      8.000 },
+  { 3359,   316,  4, 190503,     10.000 },
+  { 3360,   316,  5, 190503,     12.000 },
+  { 2649,   317,  0, 190514,      0.000 },
+  { 3361,   317,  1, 190514,     -6.000 },
+  { 3362,   317,  2, 190514,    -10.000 },
+  { 3363,   317,  3, 190514,    -13.000 },
+  { 3364,   317,  4, 190514,    -16.000 },
+  { 3365,   317,  5, 190514,    -20.000 },
+  { 2652,   318,  0, 190520,      0.000 },
+  { 3366,   318,  1, 190520,     -4.000 },
+  { 3367,   318,  2, 190520,     -6.000 },
+  { 3368,   318,  3, 190520,     -8.000 },
+  { 3369,   318,  4, 190520,    -10.000 },
+  { 3370,   318,  5, 190520,    -12.000 },
+  { 2655,   319,  0, 190529,      0.000 },
+  { 3371,   319,  1, 190529,     10.000 },
+  { 3372,   319,  2, 190529,     15.000 },
+  { 3373,   319,  3, 190529,     20.000 },
+  { 3374,   319,  4, 190529,     25.000 },
+  { 3375,   319,  5, 190529,     30.000 },
+  { 2658,   320,  0, 190567,      0.000 },
+  { 3376,   320,  1, 190567,     -6.000 },
+  { 3377,   320,  2, 190567,    -10.000 },
+  { 3378,   320,  3, 190567,    -13.000 },
+  { 3379,   320,  4, 190567,    -16.000 },
+  { 3380,   320,  5, 190567,    -20.000 },
+  { 2661,   321,  0, 204217,      0.000 },
+  { 2662,   322,  0, 204089,      0.000 },
+  { 2663,   323,  0, 192310,      0.000 },
+  { 3291,   323,  1, 192310,      6.000 },
+  { 3292,   323,  2, 192310,     10.000 },
+  { 3293,   323,  3, 192310,     13.000 },
+  { 3294,   323,  4, 192310,     16.000 },
+  { 3295,   323,  5, 192310,     20.000 },
+  { 2666,   324,  0, 192315,      0.000 },
+  { 3296,   324,  1, 192315,      6.000 },
+  { 3297,   324,  2, 192315,     10.000 },
+  { 3298,   324,  3, 192315,     13.000 },
+  { 3299,   324,  4, 192315,     16.000 },
+  { 3300,   324,  5, 192315,     20.000 },
+  { 2669,   325,  0, 192318,      0.000 },
+  { 3301,   325,  1, 192318,     10.000 },
+  { 3302,   325,  2, 192318,     15.000 },
+  { 3303,   325,  3, 192318,     20.000 },
+  { 3304,   325,  4, 192318,     25.000 },
+  { 3305,   325,  5, 192318,     30.000 },
+  { 2672,   326,  0, 192323,      0.000 },
+  { 3306,   326,  1, 192323,     -6.000 },
+  { 3307,   326,  2, 192323,    -10.000 },
+  { 3308,   326,  3, 192323,    -13.000 },
+  { 3309,   326,  4, 192323,    -16.000 },
+  { 3310,   326,  5, 192323,    -20.000 },
+  { 2675,   327,  0, 192326,      0.000 },
+  { 3311,   327,  1, 192326,     -6.000 },
+  { 3312,   327,  2, 192326,    -10.000 },
+  { 3313,   327,  3, 192326,    -13.000 },
+  { 3314,   327,  4, 192326,    -16.000 },
+  { 3315,   327,  5, 192326,    -20.000 },
+  { 2678,   328,  0, 192329,      0.000 },
+  { 3316,   328,  1, 192329,      6.000 },
+  { 3317,   328,  2, 192329,     10.000 },
+  { 3318,   328,  3, 192329,     13.000 },
+  { 3319,   328,  4, 192329,     16.000 },
+  { 3320,   328,  5, 192329,     20.000 },
+  { 2681,   329,  0, 192345,      0.000 },
+  { 3321,   329,  1, 192345,  -4000.000 },
+  { 3322,   329,  2, 192345,  -6000.000 },
+  { 3323,   329,  3, 192345,  -8000.000 },
+  { 3324,   329,  4, 192345, -10000.000 },
+  { 3325,   329,  5, 192345, -12000.000 },
+  { 2684,   330,  0, 192349,      0.000 },
+  { 3326,   330,  1, 192349, -20000.000 },
+  { 3327,   330,  2, 192349, -30000.000 },
+  { 3328,   330,  3, 192349, -40000.000 },
+  { 3329,   330,  4, 192349, -50000.000 },
+  { 3330,   330,  5, 192349, -60000.000 },
+  { 2687,   331,  0, 192376,      0.000 },
+  { 3331,   331,  1, 192376,     20.000 },
+  { 3332,   331,  2, 192376,     30.000 },
+  { 3333,   331,  3, 192376,     40.000 },
+  { 3334,   331,  4, 192376,     50.000 },
+  { 3335,   331,  5, 192376,     60.000 },
+  { 2690,   332,  0, 192384,      0.000 },
+  { 2691,   333,  0, 192422,      0.000 },
+  { 2692,   334,  0, 192424,      0.000 },
+  { 2693,   335,  0, 192428,      0.000 },
+  { 2694,   337,  0, 192657,      0.000 },
+  { 2695,   346,  0, 192759,      0.000 },
+  { 2696,   347,  0, 192923,      0.000 },
+  { 2697,   350,  0, 185086,      0.000 },
+  { 2698,   351,  0, 182234,      0.000 },
+  { 2699,   352,  0, 193058,      0.000 },
+  { 2700,   353,  0, 193108,      0.000 },
+  { 3160,   748,  0, 205393,      0.000 },
+  { 2727,   749,  0, 194224,   -100.000 },
+  { 3720,   749,  1, 194224,   -200.000 },
+  { 3721,   749,  2, 194224,   -300.000 },
+  { 3722,   749,  3, 194224,   -400.000 },
+  { 3723,   749,  4, 194224,   -500.000 },
+  { 3724,   749,  5, 194224,   -600.000 },
+  { 3161,   750,  0, 194234,      3.000 },
+  { 3725,   750,  1, 194234,      6.000 },
+  { 3726,   750,  2, 194234,     10.000 },
+  { 3727,   750,  3, 194234,     13.000 },
+  { 3728,   750,  4, 194234,     16.000 },
+  { 3729,   750,  5, 194234,     20.000 },
+  { 3162,   751,  0, 194239,      0.000 },
+  { 3730,   751,  1, 194239,      6.000 },
+  { 3731,   751,  2, 194239,     10.000 },
+  { 3732,   751,  3, 194239,     13.000 },
+  { 3733,   751,  4, 194239,     16.000 },
+  { 3734,   751,  5, 194239,     20.000 },
+  { 3163,   752,  0, 194312,      1.000 },
+  { 3735,   752,  1, 194312,      2.000 },
+  { 3736,   752,  2, 194312,      3.000 },
+  { 3737,   752,  3, 194312,      4.000 },
+  { 3738,   752,  4, 194312,      5.000 },
+  { 3739,   752,  5, 194312,      6.000 },
+  { 5135,   753,  0, 210182,      5.000 },
+  { 5136,   753,  1, 210182,     10.000 },
+  { 5137,   753,  2, 210182,     15.000 },
+  { 5138,   753,  3, 210182,     20.000 },
+  { 5139,   753,  4, 210182,     25.000 },
+  { 5140,   753,  5, 210182,     30.000 },
+  { 3165,   754,  0, 194313,      0.000 },
+  { 3745,   754,  1, 194313,     10.000 },
+  { 3746,   754,  2, 194313,     15.000 },
+  { 3747,   754,  3, 194313,     20.000 },
+  { 3748,   754,  4, 194313,     25.000 },
+  { 3749,   754,  5, 194313,     30.000 },
+  { 3166,   755,  0, 194314,      0.000 },
+  { 3750,   755,  1, 194314,     10.000 },
+  { 3751,   755,  2, 194314,     15.000 },
+  { 3752,   755,  3, 194314,     20.000 },
+  { 3753,   755,  4, 194314,     25.000 },
+  { 3754,   755,  5, 194314,     30.000 },
+  { 3167,   756,  0, 194318,      5.000 },
+  { 3760,   756,  1, 194318,     10.000 },
+  { 3761,   756,  2, 194318,     15.000 },
+  { 3762,   756,  3, 194318,     20.000 },
+  { 3763,   756,  4, 194318,     25.000 },
+  { 3764,   756,  5, 194318,     30.000 },
+  { 3168,   757,  0, 194315,      0.000 },
+  { 3755,   757,  1, 194315,     -6.000 },
+  { 3756,   757,  2, 194315,    -10.000 },
+  { 3757,   757,  3, 194315,    -13.000 },
+  { 3758,   757,  4, 194315,    -16.000 },
+  { 3759,   757,  5, 194315,    -20.000 },
+  { 3169,   759,  0, 194320,      0.000 },
+  { 3170,   760,  0, 194324,      0.000 },
+  { 3171,   761,  0, 194487,      0.000 },
+  { 5134,   762,  0, 194431,      2.000 },
+  { 3172,   763,  0, 194331,      0.000 },
+  { 3173,   764,  0, 205065,      0.000 },
+  { 3174,   765,  0, 194024,      0.000 },
+  { 3175,   766,  0, 194026,      0.000 },
+  { 3176,   767,  0, 194093,      0.000 },
+  { 3286,   767,  1, 194093,     20.000 },
+  { 3287,   767,  2, 194093,     30.000 },
+  { 3288,   767,  3, 194093,     40.000 },
+  { 3289,   767,  4, 194093,     50.000 },
+  { 3290,   767,  5, 194093,     60.000 },
+  { 3177,   768,  0, 194096,      0.000 },
+  { 3178,   769,  0, 194179,      0.000 },
+  { 3179,   770,  0, 194378,      0.000 },
+  { 3180,   771,  0, 193642,      0.000 },
+  { 3194,   771,  1, 193642, -20000.000 },
+  { 3195,   771,  2, 193642, -30000.000 },
+  { 3196,   771,  3, 193642, -40000.000 },
+  { 3197,   771,  4, 193642, -50000.000 },
+  { 3198,   771,  5, 193642, -60000.000 },
+  { 3181,   772,  0, 193643,      0.000 },
+  { 3251,   772,  1, 193643,      6.000 },
+  { 3252,   772,  2, 193643,     10.000 },
+  { 3253,   772,  3, 193643,     13.000 },
+  { 3254,   772,  4, 193643,     16.000 },
+  { 3255,   772,  5, 193643,     20.000 },
+  { 3182,   773,  0, 193644,      0.000 },
+  { 3256,   773,  1, 193644,      6.000 },
+  { 3257,   773,  2, 193644,     10.000 },
+  { 3258,   773,  3, 193644,     13.000 },
+  { 3259,   773,  4, 193644,     16.000 },
+  { 3260,   773,  5, 193644,     20.000 },
+  { 3183,   774,  0, 193645,      0.000 },
+  { 3261,   774,  1, 193645,      6.000 },
+  { 3262,   774,  2, 193645,     10.000 },
+  { 3263,   774,  3, 193645,     13.000 },
+  { 3264,   774,  4, 193645,     16.000 },
+  { 3265,   774,  5, 193645,     20.000 },
+  { 3184,   775,  0, 193647,      0.000 },
+  { 3266,   775,  1, 195080,      0.000 },
+  { 3267,   775,  2, 195081,      0.000 },
+  { 3268,   775,  3, 195082,      0.000 },
+  { 3269,   775,  4, 195083,      0.000 },
+  { 3270,   775,  5, 195084,      0.000 },
+  { 3185,   776,  0, 194002,      0.000 },
+  { 3271,   776,  1, 194002,      2.000 },
+  { 3272,   776,  2, 194002,      3.000 },
+  { 3273,   776,  3, 194002,      4.000 },
+  { 3274,   776,  4, 194002,      5.000 },
+  { 3275,   776,  5, 194002,      6.000 },
+  { 3186,   777,  0, 194007,      0.000 },
+  { 3276,   777,  1, 194007,      6.000 },
+  { 3277,   777,  2, 194007,     10.000 },
+  { 3278,   777,  3, 194007,     13.000 },
+  { 3279,   777,  4, 194007,     16.000 },
+  { 3280,   777,  5, 194007,     20.000 },
+  { 3187,   778,  0, 194016,      0.000 },
+  { 3281,   778,  1, 194016,     30.000 },
+  { 3282,   778,  2, 194016,     40.000 },
+  { 3283,   778,  3, 194016,     50.000 },
+  { 3284,   778,  4, 194016,     60.000 },
+  { 3285,   778,  5, 194016,     70.000 },
+  { 3188,   779,  0, 194018,      0.000 },
+  { 3777,   783,  0, 195297,      0.000 },
+  { 3782,   784,  0, 195315,      0.000 },
+  { 3783,   784,  1, 195315,      6.000 },
+  { 3784,   784,  2, 195315,     10.000 },
+  { 3785,   784,  3, 195315,     13.000 },
+  { 3786,   784,  4, 195315,     16.000 },
+  { 3787,   784,  5, 195315,     20.000 },
+  { 3788,   785,  0, 195317,      0.000 },
+  { 3789,   785,  1, 195317,     10.000 },
+  { 3790,   785,  2, 195317,     15.000 },
+  { 3791,   785,  3, 195317,     20.000 },
+  { 3792,   785,  4, 195317,     25.000 },
+  { 3793,   785,  5, 195317,     30.000 },
+  { 3794,   786,  0, 195322,      0.000 },
+  { 3795,   786,  1, 195322,     20.000 },
+  { 3796,   786,  2, 195322,     30.000 },
+  { 3797,   786,  3, 195322,     40.000 },
+  { 3798,   786,  4, 195322,     50.000 },
+  { 3799,   786,  5, 195322,     60.000 },
+  { 3800,   787,  0, 195323,      0.000 },
+  { 3801,   787,  1, 195323,     20.000 },
+  { 3802,   787,  2, 195323,     30.000 },
+  { 3803,   787,  3, 195323,     40.000 },
+  { 3804,   787,  4, 195323,     50.000 },
+  { 3805,   787,  5, 195323,     60.000 },
+  { 3806,   788,  0, 195345,      0.000 },
+  { 3807,   788,  1, 195345,      2.000 },
+  { 3808,   788,  2, 195345,      3.000 },
+  { 3809,   788,  3, 195345,      4.000 },
+  { 3810,   788,  4, 195345,      5.000 },
+  { 3811,   788,  5, 195345,      6.000 },
+  { 3812,   789,  0, 195351,      0.000 },
+  { 3813,   789,  1, 195351,      6.000 },
+  { 3814,   789,  2, 195351,     10.000 },
+  { 3815,   789,  3, 195351,     13.000 },
+  { 3816,   789,  4, 195351,     16.000 },
+  { 3817,   789,  5, 195351,     20.000 },
+  { 3818,   790,  0, 195352,      0.000 },
+  { 3819,   790,  1, 195352,     20.000 },
+  { 3820,   790,  2, 195352,     30.000 },
+  { 3821,   790,  3, 195352,     40.000 },
+  { 3822,   790,  4, 195352,     50.000 },
+  { 3823,   790,  5, 195352,     60.000 },
+  { 3824,   791,  0, 195354,     20.000 },
+  { 3825,   791,  1, 195354,     40.000 },
+  { 3826,   791,  2, 195354,     60.000 },
+  { 3827,   791,  3, 195354,     80.000 },
+  { 3828,   791,  4, 195354,    100.000 },
+  { 3829,   791,  5, 195354,    120.000 },
+  { 3830,   792,  0, 195391,      0.000 },
+  { 3831,   792,  1, 195391,      6.000 },
+  { 3832,   792,  2, 195391,     10.000 },
+  { 3833,   792,  3, 195391,     13.000 },
+  { 3834,   792,  4, 195391,     16.000 },
+  { 3835,   792,  5, 195391,     20.000 },
+  { 3836,   793,  0, 195419,      0.000 },
+  { 3837,   795,  0, 195437,      0.000 },
+  { 3902,   797,  0, 195615,      0.000 },
+  { 3838,   798,  0, 195448,      0.000 },
+  { 3765,   800,  0, 195243,      0.000 },
+  { 3766,   800,  1, 195243,     20.000 },
+  { 3767,   800,  2, 195243,     30.000 },
+  { 3768,   800,  3, 195243,     40.000 },
+  { 3769,   800,  4, 195243,     50.000 },
+  { 3770,   800,  5, 195243,     60.000 },
+  { 3771,   801,  0, 195244,      3.000 },
+  { 3772,   801,  1, 195244,      6.000 },
+  { 3773,   801,  2, 195244,     10.000 },
+  { 3774,   801,  3, 195244,     13.000 },
+  { 3775,   801,  4, 195244,     16.000 },
+  { 3776,   801,  5, 195244,     20.000 },
+  { 3903,   803,  0, 196204,      0.000 },
+  { 3904,   804,  0, 196211,      0.000 },
+  { 3905,   804,  1, 196211,     10.000 },
+  { 3906,   804,  2, 196211,     15.000 },
+  { 3907,   804,  3, 196211,     20.000 },
+  { 3908,   804,  4, 196211,     25.000 },
+  { 3909,   804,  5, 196211,     30.000 },
+  { 3910,   805,  0, 196217,      0.000 },
+  { 3911,   805,  1, 196217,     10.000 },
+  { 3912,   805,  2, 196217,     15.000 },
+  { 3913,   805,  3, 196217,     20.000 },
+  { 3914,   805,  4, 196217,     25.000 },
+  { 3915,   805,  5, 196217,     30.000 },
+  { 3916,   806,  0, 196222,      0.000 },
+  { 3917,   806,  1, 196222,     -6.000 },
+  { 3918,   806,  2, 196222,    -10.000 },
+  { 3919,   806,  3, 196222,    -13.000 },
+  { 3920,   806,  4, 196222,    -16.000 },
+  { 3921,   806,  5, 196222,    -20.000 },
+  { 3922,   807,  0, 196227,      0.000 },
+  { 3923,   807,  1, 196227,     20.000 },
+  { 3924,   807,  2, 196227,     30.000 },
+  { 3925,   807,  3, 196227,     40.000 },
+  { 3926,   807,  4, 196227,     50.000 },
+  { 3927,   807,  5, 196227,     60.000 },
+  { 3928,   808,  0, 196236,      0.000 },
+  { 3929,   808,  1, 196236,     10.000 },
+  { 3930,   808,  2, 196236,     15.000 },
+  { 3931,   808,  3, 196236,     20.000 },
+  { 3932,   808,  4, 196236,     25.000 },
+  { 3933,   808,  5, 196236,     30.000 },
+  { 3955,   809,  0, 196432,      0.000 },
+  { 3956,   809,  1, 196432,      6.000 },
+  { 3957,   809,  2, 196432,     10.000 },
+  { 3958,   809,  3, 196432,     13.000 },
+  { 3959,   809,  4, 196432,     16.000 },
+  { 3960,   809,  5, 196432,     20.000 },
+  { 3934,   810,  0, 196258,      0.000 },
+  { 3935,   810,  1, 196258,     10.000 },
+  { 3936,   810,  2, 196258,     15.000 },
+  { 3937,   810,  3, 196258,     20.000 },
+  { 3938,   810,  4, 196258,     25.000 },
+  { 3939,   810,  5, 196258,     30.000 },
+  { 3942,   811,  0, 196301,      0.000 },
+  { 3943,   811,  1, 196301,     30.000 },
+  { 3944,   811,  2, 196301,     40.000 },
+  { 3945,   811,  3, 196301,     50.000 },
+  { 3946,   811,  4, 196301,     60.000 },
+  { 3947,   811,  5, 196301,     70.000 },
+  { 3948,   812,  0, 196305,      0.000 },
+  { 3949,   812,  1, 196305,    -20.000 },
+  { 3950,   812,  2, 196305,    -30.000 },
+  { 3951,   812,  3, 196305,    -40.000 },
+  { 3952,   812,  4, 196305,    -50.000 },
+  { 3953,   812,  5, 196305,    -60.000 },
+  { 3966,   813,  0, 196675,      0.000 },
+  { 3954,   814,  0, 196332,      0.000 },
+  { 4028,   815,  0, 196710,      0.000 },
+  { 3961,   816,  0, 196540,      0.000 },
+  { 3962,   816,  1, 196540,     20.000 },
+  { 3963,   816,  2, 196540,     30.000 },
+  { 3964,   817,  0, 196546,      0.000 },
+  { 3965,   818,  0, 196667,      0.000 },
+  { 3858,   820,  0, 195263,      0.000 },
+  { 3859,   820,  1, 195263,      6.000 },
+  { 3860,   820,  2, 195263,     10.000 },
+  { 3861,   820,  3, 195263,     13.000 },
+  { 3862,   820,  4, 195263,     16.000 },
+  { 3863,   820,  5, 195263,     20.000 },
+  { 3864,   821,  0, 195265,      0.000 },
+  { 3865,   821,  1, 195265,      6.000 },
+  { 3866,   821,  2, 195265,     10.000 },
+  { 3867,   821,  3, 195265,     13.000 },
+  { 3868,   821,  4, 195265,     16.000 },
+  { 3869,   821,  5, 195265,     20.000 },
+  { 3870,   822,  0, 195266,      0.000 },
+  { 3871,   822,  1, 195266,     40.000 },
+  { 3872,   822,  2, 195266,     60.000 },
+  { 3873,   822,  3, 195266,     80.000 },
+  { 4881,   822,  4, 195266,    100.000 },
+  { 3880,   824,  0, 195269,      0.000 },
+  { 3881,   824,  1, 195269,      6.000 },
+  { 3882,   824,  2, 195269,     10.000 },
+  { 3883,   824,  3, 195269,     13.000 },
+  { 3884,   824,  4, 195269,     16.000 },
+  { 3885,   824,  5, 195269,     20.000 },
+  { 3886,   825,  0, 195291,      0.000 },
+  { 3887,   825,  1, 195291,      6.000 },
+  { 3888,   825,  2, 195291,     10.000 },
+  { 4878,   825,  3, 195291,     13.000 },
+  { 4879,   825,  4, 195291,     16.000 },
+  { 4880,   825,  5, 195291,     20.000 },
+  { 3889,   826,  0, 195295,      0.000 },
+  { 3890,   827,  0, 195298,      0.000 },
+  { 3891,   828,  0, 195300,      0.000 },
+  { 3892,   829,  0, 195380,      0.000 },
+  { 3893,   829,  1, 195380,     15.000 },
+  { 3894,   829,  2, 195380,     20.000 },
+  { 3895,   829,  3, 195380,     25.000 },
+  { 3896,   829,  4, 195380,     30.000 },
+  { 3897,   829,  5, 195380,     35.000 },
+  { 3898,   830,  0, 195399,      0.000 },
+  { 3899,   831,  0, 205320,      0.000 },
+  { 3900,   832,  0, 195650,      0.000 },
+  { 3901,   833,  0, 196082,      0.000 },
+  { 3967,   834,  0, 208065,      0.000 },
+  { 3968,   835,  0, 196492,      0.000 },
+  { 3969,   836,  0, 196537,      0.000 },
+  { 3970,   837,  0, 196578,      0.000 },
+  { 3971,   838,  0, 196489,      0.000 },
+  { 3972,   839,  0, 196437,      0.000 },
+  { 3973,   840,  0, 196779,      0.000 },
+  { 3974,   841,  0, 196355,      0.000 },
+  { 3975,   841,  1, 196355,     10.000 },
+  { 3976,   841,  2, 196355,     15.000 },
+  { 3977,   841,  3, 196355,     20.000 },
+  { 3978,   841,  4, 196355,     25.000 },
+  { 3979,   841,  5, 196355,     30.000 },
+  { 3980,   842,  0, 196358,      0.000 },
+  { 3981,   842,  1, 196358,     15.000 },
+  { 3982,   842,  2, 196358,     20.000 },
+  { 3983,   842,  3, 196358,     25.000 },
+  { 3984,   842,  4, 196358,     30.000 },
+  { 3985,   842,  5, 196358,     35.000 },
+  { 3986,   843,  0, 196416,      0.000 },
+  { 3987,   843,  1, 196416,     10.000 },
+  { 3988,   843,  2, 196416,     15.000 },
+  { 3989,   843,  3, 196416,     20.000 },
+  { 3990,   843,  4, 196416,     25.000 },
+  { 3991,   843,  5, 196416,     30.000 },
+  { 3992,   844,  0, 196418,      0.000 },
+  { 3993,   844,  1, 196418,      6.000 },
+  { 3994,   844,  2, 196418,     10.000 },
+  { 3995,   844,  3, 196418,     13.000 },
+  { 3996,   844,  4, 196418,     16.000 },
+  { 3997,   844,  5, 196418,     20.000 },
+  { 3998,   845,  0, 196419,      0.000 },
+  { 3999,   845,  1, 196419,     -6.000 },
+  { 4000,   845,  2, 196419,    -10.000 },
+  { 4001,   845,  3, 196419,    -13.000 },
+  { 4002,   845,  4, 196419,    -16.000 },
+  { 4003,   845,  5, 196419,    -20.000 },
+  { 4004,   846,  0, 196422,      0.000 },
+  { 4005,   846,  1, 196422,      6.000 },
+  { 4006,   846,  2, 196422,     10.000 },
+  { 4007,   846,  3, 196422,     13.000 },
+  { 4008,   846,  4, 196422,     16.000 },
+  { 4009,   846,  5, 196422,     20.000 },
+  { 4010,   847,  0, 196429,      0.000 },
+  { 4011,   847,  1, 196429,  -6000.000 },
+  { 4012,   847,  2, 196429, -10000.000 },
+  { 4013,   847,  3, 196429, -13000.000 },
+  { 4014,   847,  4, 196429, -16000.000 },
+  { 4015,   847,  5, 196429, -20000.000 },
+  { 4016,   848,  0, 196430,      0.000 },
+  { 4017,   848,  1, 196430,      6.000 },
+  { 4018,   848,  2, 196430,     10.000 },
+  { 4019,   848,  3, 196430,     13.000 },
+  { 4020,   848,  4, 196430,     16.000 },
+  { 4021,   848,  5, 196430,     20.000 },
+  { 4022,   849,  0, 196434,      0.000 },
+  { 4023,   849,  1, 196434,      6.000 },
+  { 4024,   849,  2, 196434,     10.000 },
+  { 4025,   849,  3, 196434,     13.000 },
+  { 4026,   849,  4, 196434,     16.000 },
+  { 4027,   849,  5, 196434,     20.000 },
+  { 4030,   851,  0, 209782,      0.000 },
+  { 4031,   852,  0, 197231,      0.000 },
+  { 4046,   852,  1, 197231,      6.000 },
+  { 4047,   852,  2, 197231,     10.000 },
+  { 4048,   852,  3, 197231,     13.000 },
+  { 4049,   852,  4, 197231,     16.000 },
+  { 4050,   852,  5, 197231,     20.000 },
+  { 4032,   853,  0, 197233,      0.000 },
+  { 4051,   853,  1, 197233,     10.000 },
+  { 4052,   853,  2, 197233,     15.000 },
+  { 4053,   853,  3, 197233,     20.000 },
+  { 4054,   853,  4, 197233,     25.000 },
+  { 4055,   853,  5, 197233,     30.000 },
+  { 4033,   854,  0, 197234,      0.000 },
+  { 4056,   854,  1, 197234,     10.000 },
+  { 4057,   854,  2, 197234,     15.000 },
+  { 4058,   854,  3, 197234,     20.000 },
+  { 4059,   854,  4, 197234,     25.000 },
+  { 4060,   854,  5, 197234,     30.000 },
+  { 4034,   855,  0, 197235,      0.000 },
+  { 4061,   855,  1, 197235,     20.000 },
+  { 4062,   855,  2, 197235,     30.000 },
+  { 4063,   855,  3, 197235,     40.000 },
+  { 4064,   855,  4, 197235,     50.000 },
+  { 4065,   855,  5, 197235,     60.000 },
+  { 4035,   856,  0, 197369,     10.000 },
+  { 4142,   856,  1, 197369,     20.000 },
+  { 4143,   856,  2, 197369,     30.000 },
+  { 4144,   856,  3, 197369,     40.000 },
+  { 4145,   856,  4, 197369,     50.000 },
+  { 4146,   856,  5, 197369,     60.000 },
+  { 4036,   857,  0, 197386,   3000.000 },
+  { 4147,   857,  1, 197386,   6000.000 },
+  { 4148,   857,  2, 197386,  10000.000 },
+  { 4149,   857,  3, 197386,  13000.000 },
+  { 4150,   857,  4, 197386,  16000.000 },
+  { 4151,   857,  5, 197386,  20000.000 },
+  { 4037,   858,  0, 197239,      0.000 },
+  { 4066,   858,  1, 197239,     10.000 },
+  { 4067,   858,  2, 197239,     15.000 },
+  { 4068,   858,  3, 197239,     20.000 },
+  { 4069,   858,  4, 197239,     25.000 },
+  { 4070,   858,  5, 197239,     30.000 },
+  { 4038,   859,  0, 197241,      0.000 },
+  { 4071,   859,  1, 210144,      0.000 },
+  { 4072,   859,  2, 210145,      0.000 },
+  { 4073,   859,  3, 210146,      0.000 },
+  { 4074,   859,  4, 210147,      0.000 },
+  { 4075,   859,  5, 210148,      0.000 },
+  { 4039,   860,  0, 197244,      0.000 },
+  { 4076,   860,  1, 197244,     -6.000 },
+  { 4077,   860,  2, 197244,    -10.000 },
+  { 4078,   860,  3, 197244,    -13.000 },
+  { 4079,   860,  4, 197244,    -16.000 },
+  { 4080,   860,  5, 197244,    -20.000 },
+  { 4040,   861,  0, 197610,      0.000 },
+  { 4041,   862,  0, 197256,      0.000 },
+  { 4042,   863,  0, 197604,      0.000 },
+  { 4043,   864,  0, 209835,      0.000 },
+  { 4044,   865,  0, 209781,      0.000 },
+  { 4045,   866,  0, 197406,      0.000 },
+  { 4087,   868,  0, 197038,      0.000 },
+  { 4088,   868,  1, 197038,      4.000 },
+  { 4089,   868,  2, 197038,      5.000 },
+  { 4090,   868,  3, 197038,      6.000 },
+  { 4091,   868,  4, 197038,      7.000 },
+  { 4092,   868,  5, 197038,      8.000 },
+  { 4093,   869,  0, 197047,      0.000 },
+  { 4094,   869,  1, 197047,     20.000 },
+  { 4095,   869,  2, 197047,     30.000 },
+  { 4096,   869,  3, 197047,     40.000 },
+  { 4097,   869,  4, 197047,     50.000 },
+  { 4098,   869,  5, 197047,     60.000 },
+  { 4099,   870,  0, 197080,      0.000 },
+  { 4100,   870,  1, 197080,     10.000 },
+  { 4101,   870,  2, 197080,     15.000 },
+  { 4102,   870,  3, 197080,     20.000 },
+  { 4103,   870,  4, 197080,     25.000 },
+  { 4104,   870,  5, 197080,     30.000 },
+  { 4105,   871,  0, 197138,      0.000 },
+  { 4106,   871,  1, 197138,      4.000 },
+  { 4107,   871,  2, 197138,      6.000 },
+  { 4108,   871,  3, 197138,      8.000 },
+  { 4109,   871,  4, 197138,     10.000 },
+  { 4110,   871,  5, 197138,     12.000 },
+  { 4111,   872,  0, 197139,      0.000 },
+  { 4112,   872,  1, 197139,    -10.000 },
+  { 4113,   872,  2, 197139,    -15.000 },
+  { 4114,   872,  3, 197139,    -20.000 },
+  { 4115,   872,  4, 197139,    -25.000 },
+  { 4116,   872,  5, 197139,    -30.000 },
+  { 4117,   873,  0, 197140,      0.000 },
+  { 4118,   873,  1, 197140,      6.000 },
+  { 4119,   873,  2, 197140,     10.000 },
+  { 4120,   873,  3, 197140,     13.000 },
+  { 4121,   873,  4, 197140,     16.000 },
+  { 4122,   873,  5, 197140,     20.000 },
+  { 4123,   874,  0, 197160,      0.000 },
+  { 4124,   874,  1, 197160,     20.000 },
+  { 4125,   874,  2, 197160,     30.000 },
+  { 4126,   874,  3, 197160,     40.000 },
+  { 4127,   874,  4, 197160,     50.000 },
+  { 4128,   874,  5, 197160,     60.000 },
+  { 4129,   875,  0, 197162,      0.000 },
+  { 4130,   875,  1, 197162,     10.000 },
+  { 4131,   875,  2, 197162,     15.000 },
+  { 4132,   875,  3, 197162,     20.000 },
+  { 4133,   875,  4, 197162,     25.000 },
+  { 4134,   875,  5, 197162,     30.000 },
+  { 4135,   876,  0, 197178,      0.000 },
+  { 4136,   877,  0, 197199,      0.000 },
+  { 4137,   878,  0, 197248,      0.000 },
+  { 4138,   879,  0, 197278,      0.000 },
+  { 4139,   880,  0, 197343,      0.000 },
+  { 4140,   881,  0, 207068,      0.000 },
+  { 4141,   882,  0, 197354,      0.000 },
+  { 4152,   883,  0, 207946,      0.000 },
+  { 4153,   884,  0, 197779,      0.000 },
+  { 4154,   885,  0, 197781,      0.000 },
+  { 4155,   886,  0, 197815,      0.000 },
+  { 4156,   887,  0, 197772,      0.000 },
+  { 4157,   888,  0, 197708,      0.000 },
+  { 4158,   888,  1, 197708,      6.000 },
+  { 4159,   888,  2, 197708,     10.000 },
+  { 4160,   888,  3, 197708,     13.000 },
+  { 4161,   888,  4, 197708,     16.000 },
+  { 4162,   888,  5, 197708,     20.000 },
+  { 4163,   889,  0, 197711,      0.000 },
+  { 4164,   889,  1, 197711,     -6.000 },
+  { 4165,   889,  2, 197711,    -10.000 },
+  { 4166,   889,  3, 197711,    -13.000 },
+  { 4167,   889,  4, 197711,    -16.000 },
+  { 4168,   889,  5, 197711,    -20.000 },
+  { 4169,   890,  0, 197713,      0.000 },
+  { 4170,   890,  1, 197713, -20000.000 },
+  { 4171,   890,  2, 197713, -30000.000 },
+  { 4172,   890,  3, 197713, -40000.000 },
+  { 4173,   890,  4, 197713, -50000.000 },
+  { 4174,   890,  5, 197713, -60000.000 },
+  { 4175,   891,  0, 197715,      0.000 },
+  { 4176,   891,  1, 197715,      6.000 },
+  { 4177,   891,  2, 197715,     10.000 },
+  { 4178,   891,  3, 197715,     13.000 },
+  { 4179,   891,  4, 197715,     16.000 },
+  { 4180,   891,  5, 197715,     20.000 },
+  { 4181,   892,  0, 197716,      0.000 },
+  { 4182,   892,  1, 197716,      6.000 },
+  { 4183,   892,  2, 197716,     10.000 },
+  { 4184,   892,  3, 197716,     13.000 },
+  { 4185,   892,  4, 197716,     16.000 },
+  { 4186,   892,  5, 197716,     20.000 },
+  { 4187,   893,  0, 197727,      0.000 },
+  { 4188,   893,  1, 197727,   2000.000 },
+  { 4189,   893,  2, 197727,   3000.000 },
+  { 4190,   893,  3, 197727,   4000.000 },
+  { 4191,   893,  4, 197727,   5000.000 },
+  { 4192,   893,  5, 197727,   6000.000 },
+  { 4193,   894,  0, 197729,      0.000 },
+  { 4194,   894,  1, 197729,      6.000 },
+  { 4195,   894,  2, 197729,     10.000 },
+  { 4196,   894,  3, 197729,     13.000 },
+  { 4197,   894,  4, 197729,     16.000 },
+  { 4198,   894,  5, 197729,     20.000 },
+  { 4199,   895,  0, 197762,      0.000 },
+  { 4200,   895,  1, 197762,    -10.000 },
+  { 4201,   895,  2, 197762,    -15.000 },
+  { 4202,   895,  3, 197762,    -20.000 },
+  { 4203,   895,  4, 197762,    -25.000 },
+  { 4204,   895,  5, 197762,    -30.000 },
+  { 4205,   896,  0, 197766,      0.000 },
+  { 4206,   896,  1, 197766,     10.000 },
+  { 4207,   896,  2, 197766,     15.000 },
+  { 4208,   896,  3, 197766,     20.000 },
+  { 4209,   896,  4, 197766,     25.000 },
+  { 4210,   896,  5, 197766,     30.000 },
+  { 4211,   897,  0, 198068,      0.000 },
+  { 4212,   898,  0, 198074,      0.000 },
+  { 4213,   899,  0, 204945,      0.000 },
+  { 4214,   900,  0, 198736,      0.000 },
+  { 4215,   901,  0, 198505,      0.000 },
+  { 4216,   902,  0, 198361,      0.000 },
+  { 4217,   903,  0, 198367,      0.000 },
+  { 4218,   904,  0, 198434,      0.000 },
+  { 4219,   905,  0, 198228,      0.000 },
+  { 4220,   905,  1, 198228,      6.000 },
+  { 4221,   905,  2, 198228,     10.000 },
+  { 4222,   905,  3, 198228,     13.000 },
+  { 4223,   905,  4, 198228,     16.000 },
+  { 4224,   905,  5, 198228,     20.000 },
+  { 4225,   906,  0, 198236,      0.000 },
+  { 4226,   906,  1, 198236,      6.000 },
+  { 4227,   906,  2, 198236,     10.000 },
+  { 4228,   906,  3, 198236,     13.000 },
+  { 4229,   906,  4, 198236,     16.000 },
+  { 4230,   906,  5, 198236,     20.000 },
+  { 4231,   907,  0, 198238,      0.000 },
+  { 4232,   907,  1, 198238,     10.000 },
+  { 4233,   907,  2, 198238,     15.000 },
+  { 4234,   907,  3, 198238,     20.000 },
+  { 4235,   907,  4, 198238,     25.000 },
+  { 4236,   907,  5, 198238,     30.000 },
+  { 4237,   908,  0, 198247,      0.000 },
+  { 4238,   908,  1, 198247,      6.000 },
+  { 4239,   908,  2, 198247,     10.000 },
+  { 4240,   908,  3, 198247,     13.000 },
+  { 4241,   908,  4, 198247,     16.000 },
+  { 4242,   908,  5, 198247,     20.000 },
+  { 4243,   909,  0, 198248,      0.000 },
+  { 4244,   909,  1, 198248,      4.000 },
+  { 4245,   909,  2, 198248,      6.000 },
+  { 4246,   909,  3, 198248,      8.000 },
+  { 4247,   909,  4, 198248,     10.000 },
+  { 4248,   909,  5, 198248,     12.000 },
+  { 4249,   910,  0, 198292,      0.000 },
+  { 4250,   910,  1, 198292,      6.000 },
+  { 4251,   910,  2, 198292,     10.000 },
+  { 4252,   910,  3, 198292,     13.000 },
+  { 4253,   910,  4, 198292,     16.000 },
+  { 4254,   910,  5, 198292,     20.000 },
+  { 4255,   911,  0, 198296,      0.000 },
+  { 4256,   911,  1, 198296,      6.000 },
+  { 4257,   911,  2, 198296,     10.000 },
+  { 4258,   911,  3, 198296,     13.000 },
+  { 4259,   911,  4, 198296,     16.000 },
+  { 4260,   911,  5, 198296,     20.000 },
+  { 4261,   912,  0, 198299,      0.000 },
+  { 4262,   912,  1, 198299,      4.000 },
+  { 4263,   912,  2, 198299,      6.000 },
+  { 4264,   912,  3, 198299,      8.000 },
+  { 4265,   912,  4, 198299,     10.000 },
+  { 4266,   912,  5, 198299,     12.000 },
+  { 4267,   913,  0, 198349,      0.000 },
+  { 4268,   913,  1, 198349,      2.000 },
+  { 4269,   913,  2, 198349,      3.000 },
+  { 4270,   913,  3, 198349,      4.000 },
+  { 4271,   913,  4, 198349,      5.000 },
+  { 4272,   913,  5, 198349,      6.000 },
+  { 4273,   915,  0, 199111,      3.000 },
+  { 4274,   915,  1, 199111,      6.000 },
+  { 4275,   915,  2, 199111,     10.000 },
+  { 4276,   915,  3, 199111,     13.000 },
+  { 4277,   915,  4, 199111,     16.000 },
+  { 4278,   915,  5, 199111,     20.000 },
+  { 4279,   916,  0, 199112,      3.000 },
+  { 4280,   916,  1, 199112,      6.000 },
+  { 4281,   916,  2, 199112,     10.000 },
+  { 4282,   916,  3, 199112,     13.000 },
+  { 4283,   916,  4, 199112,     16.000 },
+  { 4284,   916,  5, 199112,     20.000 },
+  { 4285,   917,  0, 199120,      4.000 },
+  { 4286,   917,  1, 199120,      6.000 },
+  { 4287,   917,  2, 199120,      8.000 },
+  { 4288,   917,  3, 199120,     10.000 },
+  { 4289,   917,  4, 199120,     12.000 },
+  { 4290,   917,  5, 199120,     14.000 },
+  { 4292,   918,  0, 199152,      3.000 },
+  { 4293,   918,  1, 199152,      6.000 },
+  { 4294,   918,  2, 199152,     10.000 },
+  { 4295,   918,  3, 199152,     13.000 },
+  { 4296,   918,  4, 199152,     16.000 },
+  { 4297,   918,  5, 199152,     20.000 },
+  { 4298,   919,  0, 199153,      5.000 },
+  { 4299,   919,  1, 199153,     10.000 },
+  { 4300,   919,  2, 199153,     15.000 },
+  { 4301,   919,  3, 199153,     20.000 },
+  { 4302,   919,  4, 199153,     25.000 },
+  { 4303,   919,  5, 199153,     30.000 },
+  { 4304,   920,  0, 199158,      5.000 },
+  { 4305,   920,  1, 199158,     10.000 },
+  { 4306,   920,  2, 199158,     15.000 },
+  { 4307,   920,  3, 199158,     20.000 },
+  { 4308,   920,  4, 199158,     25.000 },
+  { 4309,   920,  5, 199158,     30.000 },
+  { 4310,   921,  0, 199163,      1.000 },
+  { 4311,   921,  1, 199163,      2.000 },
+  { 4312,   921,  2, 199163,      3.000 },
+  { 4313,   921,  3, 199163,      4.000 },
+  { 4314,   921,  4, 199163,      5.000 },
+  { 4315,   921,  5, 199163,      6.000 },
+  { 4316,   922,  0, 199212,     -3.000 },
+  { 4317,   922,  1, 199212,     -6.000 },
+  { 4318,   922,  2, 199212,    -10.000 },
+  { 4319,   922,  3, 199212,    -13.000 },
+  { 4320,   922,  4, 199212,    -16.000 },
+  { 4321,   922,  5, 199212,    -20.000 },
+  { 4322,   923,  0, 199214,     10.000 },
+  { 4323,   923,  1, 199214,     20.000 },
+  { 4324,   923,  2, 199214,     30.000 },
+  { 4325,   923,  3, 199214,     40.000 },
+  { 4326,   923,  4, 199214,     50.000 },
+  { 4327,   923,  5, 199214,     60.000 },
+  { 4328,   924,  0, 199220,      0.000 },
+  { 4329,   925,  0, 199257,      0.000 },
+  { 4330,   926,  0, 199282,      0.000 },
+  { 4332,   927,  0, 199471,      0.000 },
+  { 4333,   928,  0, 199472,      0.000 },
+  { 4334,   929,  0, 201424,      0.000 },
+  { 4291,   930,  0, 199107,      0.000 },
+  { 4335,   931,  0, 205406,      0.000 },
+  { 4336,   932,  0, 199806,      0.000 },
+  { 4337,   933,  0, 199665,      0.000 },
+  { 4338,   934,  0, 199640,      0.000 },
+  { 4339,   935,  0, 199485,      0.000 },
+  { 4340,   936,  0, 199563,      0.000 },
+  { 4341,   937,  0, 199573,      0.000 },
+  { 4342,   938,  0, 199364,      0.000 },
+  { 4343,   938,  1, 199364,      6.000 },
+  { 4344,   938,  2, 199364,     10.000 },
+  { 4345,   938,  3, 199364,     13.000 },
+  { 4346,   938,  4, 199364,     16.000 },
+  { 4347,   938,  5, 199364,     20.000 },
+  { 4348,   939,  0, 199365,      0.000 },
+  { 4349,   939,  1, 199365,      6.000 },
+  { 4350,   939,  2, 199365,     10.000 },
+  { 4351,   939,  3, 199365,     13.000 },
+  { 4352,   939,  4, 199365,     16.000 },
+  { 4353,   939,  5, 199365,     20.000 },
+  { 4354,   940,  0, 199366,      0.000 },
+  { 4355,   940,  1, 199366,      6.000 },
+  { 4356,   940,  2, 199366,     10.000 },
+  { 4357,   940,  3, 199366,     13.000 },
+  { 4358,   940,  4, 199366,     16.000 },
+  { 4359,   940,  5, 199366,     20.000 },
+  { 4360,   941,  0, 199367,      0.000 },
+  { 4361,   941,  1, 199367,     10.000 },
+  { 4362,   941,  2, 199367,     15.000 },
+  { 4363,   941,  3, 199367,     20.000 },
+  { 4364,   941,  4, 199367,     25.000 },
+  { 4365,   941,  5, 199367,     30.000 },
+  { 4366,   942,  0, 199372,      0.000 },
+  { 4367,   942,  1, 199372,   4000.000 },
+  { 4368,   942,  2, 199372,   6000.000 },
+  { 4369,   942,  3, 199372,   8000.000 },
+  { 4370,   942,  4, 199372,  10000.000 },
+  { 4371,   942,  5, 199372,  12000.000 },
+  { 4372,   943,  0, 199377,      0.000 },
+  { 4373,   943,  1, 199377,      6.000 },
+  { 4374,   943,  2, 199377,     10.000 },
+  { 4375,   943,  3, 199377,     13.000 },
+  { 4376,   943,  4, 199377,     16.000 },
+  { 4377,   943,  5, 199377,     20.000 },
+  { 4378,   944,  0, 199380,      0.000 },
+  { 4379,   944,  1, 199380,      6.000 },
+  { 4380,   944,  2, 199380,     10.000 },
+  { 4381,   944,  3, 199380,     13.000 },
+  { 4382,   944,  4, 199380,     16.000 },
+  { 4383,   944,  5, 199380,     20.000 },
+  { 4384,   945,  0, 199384,      0.000 },
+  { 4385,   945,  1, 199384,     30.000 },
+  { 4386,   945,  2, 199384,     40.000 },
+  { 4387,   945,  3, 199384,     50.000 },
+  { 4388,   945,  4, 199384,     60.000 },
+  { 4389,   945,  5, 199384,     70.000 },
+  { 4390,   946,  0, 199401,      0.000 },
+  { 4391,   946,  1, 199401,     40.000 },
+  { 4392,   946,  2, 199401,     50.000 },
+  { 4393,   946,  3, 199401,     60.000 },
+  { 4394,   946,  4, 199401,     70.000 },
+  { 4395,   946,  5, 199401,     80.000 },
+  { 4396,   948,  0, 200395,      0.000 },
+  { 4397,   948,  1, 200395,     10.000 },
+  { 4398,   948,  2, 200395,     15.000 },
+  { 4399,   948,  3, 200395,     20.000 },
+  { 4400,   948,  4, 200395,     25.000 },
+  { 4401,   948,  5, 200395,     30.000 },
+  { 4402,   949,  0, 200399,    500.000 },
+  { 4403,   949,  1, 200399,   1000.000 },
+  { 4404,   949,  2, 200399,   1500.000 },
+  { 4405,   949,  3, 200399,   2000.000 },
+  { 4406,   949,  4, 200399,   2500.000 },
+  { 4407,   949,  5, 200399,   3000.000 },
+  { 4408,   950,  0, 200400,      5.000 },
+  { 4409,   950,  1, 200400,     10.000 },
+  { 4410,   950,  2, 200400,     15.000 },
+  { 4411,   950,  3, 200400,     20.000 },
+  { 4412,   950,  4, 200400,     25.000 },
+  { 4413,   950,  5, 200400,     30.000 },
+  { 4414,   951,  0, 200402,     -3.000 },
+  { 4415,   951,  1, 200402,     -6.000 },
+  { 4416,   951,  2, 200402,    -10.000 },
+  { 4417,   951,  3, 200402,    -13.000 },
+  { 4418,   951,  4, 200402,    -16.000 },
+  { 4419,   951,  5, 200402,    -20.000 },
+  { 4420,   952,  0, 200409,      5.000 },
+  { 4421,   952,  1, 200409,     10.000 },
+  { 4422,   952,  2, 200409,     15.000 },
+  { 4423,   952,  3, 200409,     20.000 },
+  { 4424,   952,  4, 200409,     25.000 },
+  { 4425,   952,  5, 200409,     30.000 },
+  { 4426,   953,  0, 200414,      3.000 },
+  { 4427,   953,  1, 200414,      6.000 },
+  { 4428,   953,  2, 200414,     10.000 },
+  { 4429,   953,  3, 200414,     13.000 },
+  { 4430,   953,  4, 200414,     16.000 },
+  { 4431,   953,  5, 200414,     20.000 },
+  { 4432,   954,  0, 200415,     -3.000 },
+  { 4433,   954,  1, 200415,     -6.000 },
+  { 4434,   954,  2, 200415,    -10.000 },
+  { 4435,   954,  3, 200415,    -13.000 },
+  { 4436,   954,  4, 200415,    -16.000 },
+  { 4437,   954,  5, 200415,    -20.000 },
+  { 4641,   955,  0, 208762,      3.000 },
+  { 4969,   955,  1, 208762,      6.000 },
+  { 4970,   955,  2, 208762,     10.000 },
+  { 4971,   955,  3, 208762,     13.000 },
+  { 4972,   955,  4, 208762,     16.000 },
+  { 4973,   955,  5, 208762,     20.000 },
+  { 4438,   956,  0, 200440,      5.000 },
+  { 4439,   956,  1, 200440,     10.000 },
+  { 4440,   956,  2, 200440,     15.000 },
+  { 4441,   956,  3, 200440,     20.000 },
+  { 4442,   956,  4, 200440,     25.000 },
+  { 4443,   956,  5, 200440,     30.000 },
+  { 4444,   957,  0, 200450,      0.000 },
+  { 4506,   958,  0, 200515,      0.000 },
+  { 4576,   959,  0, 201073,      0.000 },
+  { 4509,   960,  0, 200851,      0.000 },
+  { 4510,   961,  0, 200855,      0.000 },
+  { 4511,   962,  0, 200854,      0.000 },
+  { 4445,   963,  0, 200443,      0.000 },
+  { 4446,   964,  0, 200430,      0.000 },
+  { 4447,   965,  0, 200652,      0.000 },
+  { 4448,   966,  0, 200421,      0.000 },
+  { 4449,   967,  0, 200407,      0.000 },
+  { 4450,   968,  0, 200373,      0.000 },
+  { 4451,   969,  0, 200327,      0.000 },
+  { 4452,   969,  1, 200327,     10.000 },
+  { 4453,   969,  2, 200327,     15.000 },
+  { 4454,   969,  3, 200327,     20.000 },
+  { 4455,   969,  4, 200327,     25.000 },
+  { 4456,   969,  5, 200327,     30.000 },
+  { 4457,   970,  0, 200326,      0.000 },
+  { 4458,   970,  1, 200326, -40000.000 },
+  { 4459,   970,  2, 200326, -60000.000 },
+  { 4460,   970,  3, 200326, -80000.000 },
+  { 4461,   970,  4, 200326, -100000.000 },
+  { 4462,   970,  5, 200326, -120000.000 },
+  { 4463,   971,  0, 200316,      0.000 },
+  { 4464,   971,  1, 200316,      6.000 },
+  { 4465,   971,  2, 200316,     10.000 },
+  { 4466,   971,  3, 200316,     13.000 },
+  { 4467,   971,  4, 200316,     16.000 },
+  { 4468,   971,  5, 200316,     20.000 },
+  { 4469,   972,  0, 200315,      0.000 },
+  { 4470,   972,  1, 200315,     10.000 },
+  { 4471,   972,  2, 200315,     15.000 },
+  { 4472,   972,  3, 200315,     20.000 },
+  { 4473,   972,  4, 200315,     25.000 },
+  { 4474,   972,  5, 200315,     30.000 },
+  { 4475,   973,  0, 200311,      0.000 },
+  { 4481,   974,  0, 200302,      0.000 },
+  { 4482,   974,  1, 200302,     10.000 },
+  { 4483,   974,  2, 200302,     15.000 },
+  { 4484,   974,  3, 200302,     20.000 },
+  { 4485,   974,  4, 200302,     25.000 },
+  { 4486,   974,  5, 200302,     30.000 },
+  { 4487,   975,  0, 200298,      0.000 },
+  { 4488,   975,  1, 200298,    -10.000 },
+  { 4489,   975,  2, 200298,    -15.000 },
+  { 4490,   975,  3, 200298,    -20.000 },
+  { 4491,   975,  4, 200298,    -25.000 },
+  { 4492,   975,  5, 200298,    -30.000 },
+  { 4493,   976,  0, 200296,      0.000 },
+  { 4494,   976,  1, 200296,      6.000 },
+  { 4495,   976,  2, 200296,     10.000 },
+  { 4496,   976,  3, 200296,     13.000 },
+  { 4497,   976,  4, 200296,     16.000 },
+  { 4498,   976,  5, 200296,     20.000 },
+  { 4499,   977,  0, 200294,      0.000 },
+  { 4500,   977,  1, 200294,      6.000 },
+  { 4501,   977,  2, 200294,     10.000 },
+  { 4502,   977,  3, 200294,     13.000 },
+  { 4503,   977,  4, 200294,     16.000 },
+  { 4504,   977,  5, 200294,     20.000 },
+  { 4512,   979,  0, 200850,      0.000 },
+  { 4513,   980,  0, 200875,      0.000 },
+  { 4514,   981,  0, 200874,      0.000 },
+  { 4515,   982,  0, 200872,      0.000 },
+  { 4517,   984,  0, 205545,      0.000 },
+  { 4518,   985,  0, 200871,      0.000 },
+  { 4519,   986,  0, 200870,      0.000 },
+  { 4520,   987,  0, 200863,      0.000 },
+  { 4521,   988,  0, 200846,      0.000 },
+  { 4522,   988,  1, 200846,      6.000 },
+  { 4523,   988,  2, 200846,     10.000 },
+  { 4524,   988,  3, 200846,     13.000 },
+  { 4525,   988,  4, 200846,     16.000 },
+  { 4526,   988,  5, 200846,     20.000 },
+  { 4527,   989,  0, 200847,      0.000 },
+  { 4528,   989,  1, 200847,      6.000 },
+  { 4529,   989,  2, 200847,     10.000 },
+  { 4530,   989,  3, 200847,     13.000 },
+  { 4531,   989,  4, 200847,     16.000 },
+  { 4532,   989,  5, 200847,     20.000 },
+  { 4533,   990,  0, 200849,      0.000 },
+  { 4534,   990,  1, 200849,      6.000 },
+  { 4535,   990,  2, 200849,     10.000 },
+  { 4536,   990,  3, 200849,     13.000 },
+  { 4537,   990,  4, 200849,     16.000 },
+  { 4538,   990,  5, 200849,     20.000 },
+  { 4539,   991,  0, 200853,      0.000 },
+  { 4540,   991,  1, 200853,      6.000 },
+  { 4541,   991,  2, 200853,     10.000 },
+  { 4542,   991,  3, 200853,     13.000 },
+  { 4543,   991,  4, 200853,     16.000 },
+  { 4544,   991,  5, 200853,     20.000 },
+  { 4545,   992,  0, 200856,      0.000 },
+  { 4546,   992,  1, 200856,    100.000 },
+  { 4547,   992,  2, 200856,    150.000 },
+  { 4548,   992,  3, 200856,    200.000 },
+  { 4549,   992,  4, 200856,    250.000 },
+  { 4550,   992,  5, 200856,    300.000 },
+  { 4551,   993,  0, 200857,      0.000 },
+  { 4552,   993,  1, 200857,     10.000 },
+  { 4553,   993,  2, 200857,     15.000 },
+  { 4554,   993,  3, 200857,     20.000 },
+  { 4555,   993,  4, 200857,     25.000 },
+  { 4556,   993,  5, 200857,     30.000 },
+  { 4557,   994,  0, 200859,      0.000 },
+  { 4558,   994,  1, 200859,      2.000 },
+  { 4559,   994,  2, 200859,      3.000 },
+  { 4560,   994,  3, 200859,      4.000 },
+  { 4561,   994,  4, 200859,      5.000 },
+  { 4562,   994,  5, 200859,      6.000 },
+  { 4563,   995,  0, 200860,      0.000 },
+  { 4564,   995,  1, 200860,     20.000 },
+  { 4565,   995,  2, 200860,     30.000 },
+  { 4566,   995,  3, 200860,     40.000 },
+  { 4567,   995,  4, 200860,     50.000 },
+  { 4568,   995,  5, 200860,     60.000 },
+  { 4569,   996,  0, 200861,      0.000 },
+  { 4570,   996,  1, 200861,      6.000 },
+  { 4571,   996,  2, 200861,     10.000 },
+  { 4572,   996,  3, 200861,     13.000 },
+  { 4573,   996,  4, 200861,     16.000 },
+  { 4574,   996,  5, 200861,     20.000 },
+  { 4640,   999,  0, 199910,      0.000 },
+  { 4578,  1000,  0, 201454,      0.000 },
+  { 4579,  1000,  1, 201454,     20.000 },
+  { 4580,  1000,  2, 201454,     30.000 },
+  { 4581,  1000,  3, 201454,     40.000 },
+  { 4582,  1000,  4, 201454,     50.000 },
+  { 4583,  1000,  5, 201454,     60.000 },
+  { 4584,  1001,  0, 201455,      0.000 },
+  { 4585,  1001,  1, 201455,      6.000 },
+  { 4586,  1001,  2, 201455,     10.000 },
+  { 4587,  1001,  3, 201455,     13.000 },
+  { 4588,  1001,  4, 201455,     16.000 },
+  { 4589,  1001,  5, 201455,     20.000 },
+  { 4590,  1002,  0, 201456,      0.000 },
+  { 4591,  1002,  1, 201456,     10.000 },
+  { 4592,  1002,  2, 201456,     15.000 },
+  { 4593,  1002,  3, 201456,     20.000 },
+  { 4594,  1002,  4, 201456,     25.000 },
+  { 4595,  1002,  5, 201456,     30.000 },
+  { 4596,  1003,  0, 201457,      0.000 },
+  { 4597,  1003,  1, 201457,      6.000 },
+  { 4598,  1003,  2, 201457,     10.000 },
+  { 4599,  1003,  3, 201457,     13.000 },
+  { 4600,  1003,  4, 201457,     16.000 },
+  { 4601,  1003,  5, 201457,     20.000 },
+  { 4602,  1004,  0, 201458,      0.000 },
+  { 4603,  1004,  1, 201458,      6.000 },
+  { 4604,  1004,  2, 201458,     10.000 },
+  { 4605,  1004,  3, 201458,     13.000 },
+  { 4606,  1004,  4, 201458,     16.000 },
+  { 4607,  1004,  5, 201458,     20.000 },
+  { 4608,  1005,  0, 201459,      0.000 },
+  { 4609,  1005,  1, 201459,     -8.000 },
+  { 4610,  1005,  2, 201459,    -12.000 },
+  { 4611,  1005,  3, 201459,    -16.000 },
+  { 4612,  1005,  4, 201459,    -20.000 },
+  { 4613,  1005,  5, 201459,    -24.000 },
+  { 4614,  1006,  0, 201460,      0.000 },
+  { 4615,  1006,  1, 201460, -40000.000 },
+  { 4616,  1006,  2, 201460, -60000.000 },
+  { 4617,  1006,  3, 201460, -80000.000 },
+  { 4618,  1006,  4, 201460, -100000.000 },
+  { 4619,  1006,  5, 201460, -120000.000 },
+  { 4620,  1007,  0, 201463,      0.000 },
+  { 4621,  1007,  1, 201463,     10.000 },
+  { 4622,  1007,  2, 201463,     15.000 },
+  { 4623,  1007,  3, 201463,     20.000 },
+  { 4624,  1007,  4, 201463,     25.000 },
+  { 4625,  1007,  5, 201463,     30.000 },
+  { 4626,  1008,  0, 201464,      0.000 },
+  { 4627,  1008,  1, 201464,     20.000 },
+  { 4628,  1008,  2, 201464,     30.000 },
+  { 4629,  1008,  3, 201464,     40.000 },
+  { 4630,  1008,  4, 201464,     50.000 },
+  { 4631,  1008,  5, 201464,     60.000 },
+  { 4633,  1010,  0, 201467,      0.000 },
+  { 4634,  1011,  0, 201468,      0.000 },
+  { 4635,  1012,  0, 201469,      0.000 },
+  { 4636,  1013,  0, 201470,      0.000 },
+  { 4637,  1014,  0, 201471,      0.000 },
+  { 4638,  1015,  0, 201472,      0.000 },
+  { 4639,  1016,  0, 201473,      0.000 },
+  { 4671,  1034,  0, 202302,     25.000 },
+  { 4672,  1034,  1, 202302,     50.000 },
+  { 4673,  1034,  2, 202302,     75.000 },
+  { 4674,  1034,  3, 202302,    100.000 },
+  { 4675,  1034,  4, 202302,    125.000 },
+  { 4676,  1034,  5, 202302,    150.000 },
+  { 4786,  1035,  0, 203018,      5.000 },
+  { 4959,  1035,  1, 203018,     10.000 },
+  { 4960,  1035,  2, 203018,     15.000 },
+  { 4961,  1035,  3, 203018,     20.000 },
+  { 4962,  1035,  4, 203018,     25.000 },
+  { 4963,  1035,  5, 203018,     30.000 },
+  { 4677,  1036,  0, 202384,      3.000 },
+  { 4678,  1036,  1, 202384,      6.000 },
+  { 4679,  1036,  2, 202384,     10.000 },
+  { 4680,  1036,  3, 202384,     13.000 },
+  { 4681,  1036,  4, 202384,     16.000 },
+  { 4682,  1036,  5, 202384,     20.000 },
+  { 4683,  1037,  0, 202386,      3.000 },
+  { 4684,  1037,  1, 202386,      6.000 },
+  { 4685,  1037,  2, 202386,     10.000 },
+  { 4686,  1037,  3, 202386,     13.000 },
+  { 4687,  1037,  4, 202386,     16.000 },
+  { 4688,  1037,  5, 202386,     20.000 },
+  { 4689,  1038,  0, 202426,      3.000 },
+  { 4690,  1038,  1, 202426,      6.000 },
+  { 4691,  1038,  2, 202426,     10.000 },
+  { 4692,  1038,  3, 202426,     13.000 },
+  { 4693,  1038,  4, 202426,     16.000 },
+  { 4694,  1038,  5, 202426,     20.000 },
+  { 4695,  1039,  0, 202433,     10.000 },
+  { 4696,  1039,  1, 202433,     20.000 },
+  { 4697,  1039,  2, 202433,     30.000 },
+  { 4698,  1039,  3, 202433,     40.000 },
+  { 4699,  1039,  4, 202433,     50.000 },
+  { 4700,  1039,  5, 202433,     60.000 },
+  { 4701,  1040,  0, 202445,     15.000 },
+  { 4702,  1040,  1, 202445,     30.000 },
+  { 4703,  1040,  2, 202445,     45.000 },
+  { 4704,  1040,  3, 202445,     60.000 },
+  { 4705,  1040,  4, 202445,     75.000 },
+  { 4706,  1040,  5, 202445,     90.000 },
+  { 4713,  1041,  0, 202466,      3.000 },
+  { 4714,  1041,  1, 202466,      6.000 },
+  { 4715,  1041,  2, 202466,     10.000 },
+  { 4716,  1041,  3, 202466,     13.000 },
+  { 4717,  1041,  4, 202466,     16.000 },
+  { 4718,  1041,  5, 202466,     20.000 },
+  { 4707,  1042,  0, 202464,      3.000 },
+  { 4708,  1042,  1, 202464,      6.000 },
+  { 4709,  1042,  2, 202464,     10.000 },
+  { 4710,  1042,  3, 202464,     13.000 },
+  { 4711,  1042,  4, 202464,     16.000 },
+  { 4712,  1042,  5, 202464,     20.000 },
+  { 4784,  1043,  0, 202890,      0.000 },
+  { 4783,  1044,  0, 202918,      0.000 },
+  { 4785,  1045,  0, 202937,      0.000 },
+  { 4788,  1046,  0, 202940,      0.000 },
+  { 4787,  1047,  0, 202996,      0.000 },
+  { 4789,  1048,  0, 203019,      0.000 },
+  { 4719,  1049,  0, 202767,      0.000 },
+  { 4722,  1052,  0, 202665,      0.000 },
+  { 4723,  1053,  0, 202897,      0.000 },
+  { 4724,  1054,  0, 202820,      0.000 },
+  { 4725,  1055,  0, 202769,      0.000 },
+  { 4726,  1056,  0, 202755,      0.000 },
+  { 4727,  1057,  0, 202753,      0.000 },
+  { 4728,  1058,  0, 202628,      0.000 },
+  { 4729,  1059,  0, 202463,      0.000 },
+  { 4730,  1059,  1, 202463,      6.000 },
+  { 4731,  1059,  2, 202463,     10.000 },
+  { 4732,  1059,  3, 202463,     13.000 },
+  { 4733,  1059,  4, 202463,     16.000 },
+  { 4734,  1059,  5, 202463,     20.000 },
+  { 4735,  1060,  0, 202507,      0.000 },
+  { 4736,  1060,  1, 202507,      6.000 },
+  { 4737,  1060,  2, 202507,     10.000 },
+  { 4738,  1060,  3, 202507,     13.000 },
+  { 4739,  1060,  4, 202507,     16.000 },
+  { 4740,  1060,  5, 202507,     20.000 },
+  { 4741,  1061,  0, 202514,      0.000 },
+  { 4742,  1061,  1, 202514,      6.000 },
+  { 4743,  1061,  2, 202514,     10.000 },
+  { 4744,  1061,  3, 202514,     13.000 },
+  { 4745,  1061,  4, 202514,     16.000 },
+  { 4746,  1061,  5, 202514,     20.000 },
+  { 4747,  1062,  0, 202521,      0.000 },
+  { 4748,  1062,  1, 202521, -20000.000 },
+  { 4749,  1062,  2, 202521, -30000.000 },
+  { 4750,  1062,  3, 202521, -40000.000 },
+  { 4751,  1062,  4, 202521, -50000.000 },
+  { 4752,  1062,  5, 202521, -60000.000 },
+  { 4753,  1063,  0, 202522,      0.000 },
+  { 4754,  1063,  1, 202522,      6.000 },
+  { 4755,  1063,  2, 202522,     10.000 },
+  { 4756,  1063,  3, 202522,     13.000 },
+  { 4757,  1063,  4, 202522,     16.000 },
+  { 4758,  1063,  5, 202522,     20.000 },
+  { 4759,  1064,  0, 202524,      0.000 },
+  { 4760,  1064,  1, 202524,     -4.000 },
+  { 4761,  1064,  2, 202524,     -6.000 },
+  { 4762,  1064,  3, 202524,     -8.000 },
+  { 4763,  1064,  4, 202524,    -10.000 },
+  { 4764,  1064,  5, 202524,    -12.000 },
+  { 4765,  1065,  0, 202530,      0.000 },
+  { 4766,  1065,  1, 202530,      2.000 },
+  { 4767,  1065,  2, 202530,      3.000 },
+  { 4768,  1065,  3, 202530,      4.000 },
+  { 4769,  1065,  4, 202530,      5.000 },
+  { 4770,  1065,  5, 202530,      6.000 },
+  { 4771,  1066,  0, 202533,      0.000 },
+  { 4772,  1066,  1, 202533,      4.000 },
+  { 4773,  1066,  2, 202533,      6.000 },
+  { 4774,  1066,  3, 202533,      8.000 },
+  { 4775,  1066,  4, 202533,     10.000 },
+  { 4776,  1066,  5, 202533,     12.000 },
+  { 4777,  1067,  0, 202907,      0.000 },
+  { 4778,  1067,  1, 202907, -20000.000 },
+  { 4779,  1067,  2, 202907, -30000.000 },
+  { 4780,  1067,  3, 202907, -40000.000 },
+  { 4781,  1067,  4, 202907, -50000.000 },
+  { 4782,  1067,  5, 202907, -60000.000 },
+  { 4790,  1068,  0, 203415,      0.000 },
+  { 4792,  1070,  0, 203566,      3.000 },
+  { 4840,  1070,  1, 203566,      6.000 },
+  { 4841,  1070,  2, 203566,     10.000 },
+  { 4842,  1070,  3, 203566,     13.000 },
+  { 4843,  1070,  4, 203566,     16.000 },
+  { 4844,  1070,  5, 203566,     20.000 },
+  { 4793,  1071,  0, 203577,      3.000 },
+  { 4845,  1071,  1, 203577,      6.000 },
+  { 4846,  1071,  2, 203577,     10.000 },
+  { 4847,  1071,  3, 203577,     13.000 },
+  { 4848,  1071,  4, 203577,     16.000 },
+  { 4849,  1071,  5, 203577,     20.000 },
+  { 4794,  1072,  0, 203578,      3.000 },
+  { 4850,  1072,  1, 203578,      6.000 },
+  { 4851,  1072,  2, 203578,     10.000 },
+  { 4852,  1072,  3, 203578,     13.000 },
+  { 4853,  1072,  4, 203578,     16.000 },
+  { 4854,  1072,  5, 203578,     20.000 },
+  { 4800,  1073,  0, 203638,      5.000 },
+  { 4855,  1073,  1, 203638,     10.000 },
+  { 4856,  1073,  2, 203638,     15.000 },
+  { 4857,  1073,  3, 203638,     20.000 },
+  { 4858,  1073,  4, 203638,     25.000 },
+  { 4859,  1073,  5, 203638,     30.000 },
+  { 4811,  1074,  0, 203669,      5.000 },
+  { 4964,  1074,  1, 203669,     10.000 },
+  { 4965,  1074,  2, 203669,     15.000 },
+  { 4966,  1074,  3, 203669,     20.000 },
+  { 4967,  1074,  4, 203669,     25.000 },
+  { 4968,  1074,  5, 203669,     30.000 },
+  { 4812,  1075,  0, 203670,      2.000 },
+  { 4860,  1075,  1, 203670,      4.000 },
+  { 4861,  1075,  2, 203670,      6.000 },
+  { 4862,  1075,  3, 203670,      8.000 },
+  { 4863,  1075,  4, 203670,     10.000 },
+  { 4864,  1075,  5, 203670,     12.000 },
+  { 4813,  1076,  0, 203673,      3.000 },
+  { 4838,  1076,  1, 203673,      6.000 },
+  { 4839,  1076,  2, 203673,     10.000 },
+  { 4865,  1076,  3, 203673,     13.000 },
+  { 4866,  1076,  4, 203673,     16.000 },
+  { 4867,  1076,  5, 203673,     20.000 },
+  { 4814,  1077,  0, 203748,     -3.000 },
+  { 4868,  1077,  1, 203748,     -6.000 },
+  { 4869,  1077,  2, 203748,    -10.000 },
+  { 4870,  1077,  3, 203748,    -13.000 },
+  { 4871,  1077,  4, 203748,    -16.000 },
+  { 4872,  1077,  5, 203748,    -20.000 },
+  { 4815,  1078,  0, 203749,      5.000 },
+  { 4873,  1078,  1, 203749,     10.000 },
+  { 4874,  1078,  2, 203749,     15.000 },
+  { 4875,  1078,  3, 203749,     20.000 },
+  { 4876,  1078,  4, 203749,     25.000 },
+  { 4877,  1078,  5, 203749,     30.000 },
+  { 4816,  1079,  0, 203751,      0.000 },
+  { 4817,  1080,  0, 203752,      0.000 },
+  { 4818,  1081,  0, 203754,      0.000 },
+  { 4819,  1082,  0, 203755,      0.000 },
+  { 4820,  1083,  0, 203756,      0.000 },
+  { 4821,  1084,  0, 203757,      0.000 },
+  { 4823,  1090,  0, 204875,     -3.000 },
+  { 4824,  1090,  1, 204875,     -6.000 },
+  { 4825,  1090,  2, 204875,    -10.000 },
+  { 4826,  1090,  3, 204875,    -13.000 },
+  { 4827,  1090,  4, 204875,    -16.000 },
+  { 4828,  1090,  5, 204875,    -20.000 },
+  { 4830,  1091,  0, 205209,      0.000 },
+  { 4829,  1092,  0, 189184,      0.000 },
+  { 4832,  1094,  0, 195267,      0.000 },
+  { 4833,  1094,  1, 195267,   2000.000 },
+  { 4834,  1094,  2, 195267,   3000.000 },
+  { 4835,  1094,  3, 195267,   4000.000 },
+  { 4836,  1094,  4, 195267,   5000.000 },
+  { 4837,  1094,  5, 195267,   6000.000 },
+  { 4882,  1095,  0, 206910,      0.000 },
+  { 4883,  1095,  1, 206910,      4.000 },
+  { 4884,  1095,  2, 206910,      6.000 },
+  { 4885,  1095,  3, 206910,      8.000 },
+  { 4886,  1095,  4, 206910,     10.000 },
+  { 4887,  1095,  5, 206910,     12.000 },
+  { 4888,  1096,  0, 207407,      0.000 },
+  { 4889,  1097,  0, 212894,      0.000 },
+  { 4890,  1098,  0, 207387,      0.000 },
+  { 4891,  1099,  0, 207343,      0.000 },
+  { 4892,  1099,  1, 207343,      2.000 },
+  { 4893,  1099,  2, 207343,      3.000 },
+  { 4894,  1099,  3, 207343,      4.000 },
+  { 4895,  1099,  4, 207343,      5.000 },
+  { 4896,  1099,  5, 207343,      6.000 },
+  { 4897,  1100,  0, 207347,      0.000 },
+  { 4898,  1100,  1, 207347,     10.000 },
+  { 4899,  1100,  2, 207347,     15.000 },
+  { 4900,  1100,  3, 207347,     20.000 },
+  { 4901,  1100,  4, 207347,     25.000 },
+  { 4902,  1100,  5, 207347,     30.000 },
+  { 4903,  1101,  0, 207352,      0.000 },
+  { 4904,  1101,  1, 207352,     10.000 },
+  { 4905,  1101,  2, 207352,     15.000 },
+  { 4906,  1101,  3, 207352,     20.000 },
+  { 4907,  1101,  4, 207352,     25.000 },
+  { 4908,  1101,  5, 207352,     30.000 },
+  { 4909,  1102,  0, 207366,      0.000 },
+  { 4910,  1103,  0, 207088,     10.000 },
+  { 4925,  1103,  1, 207088,     20.000 },
+  { 4926,  1103,  2, 207088,     30.000 },
+  { 5104,  1103,  3, 207088,     40.000 },
+  { 5105,  1103,  4, 207088,     50.000 },
+  { 5106,  1103,  5, 207088,     60.000 },
+  { 4911,  1104,  0, 207092,      3.000 },
+  { 4927,  1104,  1, 207092,      6.000 },
+  { 4928,  1104,  2, 207092,     10.000 },
+  { 5107,  1104,  3, 207092,     13.000 },
+  { 5108,  1104,  4, 207092,     16.000 },
+  { 5109,  1104,  5, 207092,     20.000 },
+  { 4912,  1105,  0, 207118,      0.000 },
+  { 5110,  1105,  1, 210029,      0.000 },
+  { 5111,  1105,  2, 210030,      0.000 },
+  { 5112,  1105,  3, 210031,      0.000 },
+  { 5113,  1105,  4, 210032,      0.000 },
+  { 5114,  1105,  5, 210033,      0.000 },
+  { 4913,  1106,  0, 207206,     -9.000 },
+  { 4931,  1106,  1, 207206,    -17.000 },
+  { 4932,  1106,  2, 207206,    -23.000 },
+  { 5115,  1106,  3, 207206,    -29.000 },
+  { 5116,  1106,  4, 207206,    -33.000 },
+  { 5117,  1106,  5, 207206,    -38.000 },
+  { 4914,  1107,  0, 207255,      3.000 },
+  { 4933,  1107,  1, 207255,      6.000 },
+  { 4934,  1107,  2, 207255,     10.000 },
+  { 5118,  1107,  3, 207255,     13.000 },
+  { 5119,  1107,  4, 207255,     16.000 },
+  { 5120,  1107,  5, 207255,     20.000 },
+  { 4915,  1108,  0, 207285,      5.000 },
+  { 4935,  1108,  1, 207285,     10.000 },
+  { 4936,  1108,  2, 207285,     15.000 },
+  { 5121,  1108,  3, 207285,     20.000 },
+  { 5122,  1108,  4, 207285,     25.000 },
+  { 5123,  1108,  5, 207285,     30.000 },
+  { 4916,  1109,  0, 207348,      3.000 },
+  { 4937,  1109,  1, 207348,      6.000 },
+  { 4938,  1109,  2, 207348,     10.000 },
+  { 5124,  1109,  3, 207348,     13.000 },
+  { 5125,  1109,  4, 207348,     16.000 },
+  { 5126,  1109,  5, 207348,     20.000 },
+  { 4917,  1110,  0, 207351,      1.000 },
+  { 4939,  1110,  1, 207351,      2.000 },
+  { 4940,  1110,  2, 207351,      3.000 },
+  { 5127,  1110,  3, 207351,      4.000 },
+  { 5128,  1110,  4, 207351,      5.000 },
+  { 5129,  1110,  5, 207351,      6.000 },
+  { 4918,  1111,  0, 207354,     -3.000 },
+  { 4941,  1111,  1, 207354,     -6.000 },
+  { 4942,  1111,  2, 207354,    -10.000 },
+  { 5130,  1111,  3, 207354,    -13.000 },
+  { 5131,  1111,  4, 207354,    -16.000 },
+  { 5132,  1111,  5, 207354,    -20.000 },
+  { 4922,  1112,  0, 207355,      0.000 },
+  { 4923,  1113,  0, 207356,      0.000 },
+  { 4924,  1114,  0, 207357,      0.000 },
+  { 4919,  1115,  0, 207358,      0.000 },
+  { 4920,  1116,  0, 207360,      0.000 },
+  { 4921,  1117,  0, 207362,      0.000 },
+  { 4943,  1118,  0, 207604,      1.000 },
+  { 4944,  1118,  1, 207604,      2.000 },
+  { 4945,  1118,  2, 207604,      3.000 },
+  { 4946,  1118,  3, 207604,      4.000 },
+  { 4947,  1118,  4, 207604,      5.000 },
+  { 4948,  1118,  5, 207604,      6.000 },
+  { 4949,  1118,  6, 207604,      7.000 },
+  { 4950,  1118,  7, 207604,      8.000 },
+  { 4951,  1118,  8, 207604,      9.000 },
+  { 4952,  1118,  9, 207604,     10.000 },
+  { 4953,  1119,  0, 208598,   2000.000 },
+  { 4954,  1119,  1, 208598,   4000.000 },
+  { 4955,  1119,  2, 208598,   6000.000 },
+  { 4956,  1119,  3, 208598,   8000.000 },
+  { 4957,  1119,  4, 208598,  10000.000 },
+  { 4958,  1119,  5, 208598,  12000.000 },
+  { 4977,  1120,  0, 209202,      0.000 },
+  { 4978,  1121,  0, 209229,      3.000 },
+  { 4979,  1121,  1, 209229,      6.000 },
+  { 4980,  1121,  2, 209229,     10.000 },
+  { 4981,  1121,  3, 209229,     13.000 },
+  { 4982,  1121,  4, 209229,     16.000 },
+  { 4983,  1121,  5, 209229,     20.000 },
+  { 4984,  1122,  0, 209217,      3.000 },
+  { 4985,  1122,  1, 209217,      6.000 },
+  { 4986,  1122,  2, 209217,     10.000 },
+  { 4987,  1122,  3, 209217,     13.000 },
+  { 4988,  1122,  4, 209217,     16.000 },
+  { 4989,  1122,  5, 209217,     20.000 },
+  { 4990,  1123,  0, 209220, -10000.000 },
+  { 5008,  1123,  1, 209220, -20000.000 },
+  { 5009,  1123,  2, 209220, -30000.000 },
+  { 5010,  1123,  3, 209220, -40000.000 },
+  { 5011,  1123,  4, 209220, -50000.000 },
+  { 5012,  1123,  5, 209220, -60000.000 },
+  { 4996,  1124,  0, 209226,      0.000 },
+  { 5013,  1124,  1, 213570,      0.000 },
+  { 5014,  1124,  2, 213571,      0.000 },
+  { 5015,  1124,  3, 213572,      0.000 },
+  { 5016,  1124,  4, 213573,      0.000 },
+  { 5017,  1124,  5, 213574,      0.000 },
+  { 4997,  1125,  0, 209223,     10.000 },
+  { 5018,  1125,  1, 209223,     20.000 },
+  { 5019,  1125,  2, 209223,     30.000 },
+  { 5020,  1125,  3, 209223,     40.000 },
+  { 5021,  1125,  4, 209223,     50.000 },
+  { 5022,  1125,  5, 209223,     60.000 },
+  { 4998,  1126,  0, 209218,   1000.000 },
+  { 5023,  1126,  1, 209218,   2000.000 },
+  { 5024,  1126,  2, 209218,   3000.000 },
+  { 5025,  1126,  3, 209218,   4000.000 },
+  { 5026,  1126,  4, 209218,   5000.000 },
+  { 5027,  1126,  5, 209218,   6000.000 },
+  { 4999,  1127,  0, 209216,      3.000 },
+  { 5028,  1127,  1, 209216,      6.000 },
+  { 5029,  1127,  2, 209216,     10.000 },
+  { 5030,  1127,  3, 209216,     13.000 },
+  { 5031,  1127,  4, 209216,     16.000 },
+  { 5032,  1127,  5, 209216,     20.000 },
+  { 5000,  1128,  0, 209224,      2.000 },
+  { 5033,  1128,  1, 209224,      4.000 },
+  { 5034,  1128,  2, 209224,      6.000 },
+  { 5035,  1128,  3, 209224,      8.000 },
+  { 5036,  1128,  4, 209224,     10.000 },
+  { 5037,  1128,  5, 209224,     12.000 },
+  { 5310,  1129,  0, 209225,      0.000 },
+  { 5311,  1129,  1, 211912,      0.000 },
+  { 5312,  1129,  2, 211913,      0.000 },
+  { 5313,  1129,  3, 211914,      0.000 },
+  { 5314,  1129,  4, 211915,      0.000 },
+  { 5315,  1129,  5, 211916,      0.000 },
+  { 5002,  1130,  0, 209341,      0.000 },
+  { 5003,  1131,  0, 209285,      0.000 },
+  { 5004,  1132,  0, 209376,      0.000 },
+  { 5005,  1133,  0, 209389,      0.000 },
+  { 5006,  1134,  0, 209528,      0.000 },
+  { 5007,  1135,  0, 209474,      0.000 },
+  { 5043,  1136,  0, 209577,      0.000 },
+  { 5044,  1137,  0, 209574,      0.000 },
+  { 5045,  1138,  0, 209573,      0.000 },
+  { 5046,  1139,  0, 209566,      0.000 },
+  { 5047,  1140,  0, 209559,      0.000 },
+  { 5048,  1141,  0, 209554,      0.000 },
+  { 5049,  1142,  0, 209548,      0.000 },
+  { 5050,  1143,  0, 209459,      0.000 },
+  { 5059,  1143,  1, 209459,    200.000 },
+  { 5060,  1143,  2, 209459,    300.000 },
+  { 5061,  1143,  3, 209459,    400.000 },
+  { 5062,  1143,  4, 209459,    500.000 },
+  { 5063,  1143,  5, 209459,    600.000 },
+  { 5051,  1144,  0, 209462,      0.000 },
+  { 5064,  1144,  1, 209462,      4.000 },
+  { 5065,  1144,  2, 209462,      6.000 },
+  { 5066,  1144,  3, 209462,      8.000 },
+  { 5067,  1144,  4, 209462,     10.000 },
+  { 5068,  1144,  5, 209462,     12.000 },
+  { 5052,  1145,  0, 209472,      0.000 },
+  { 5069,  1145,  1, 209472,     10.000 },
+  { 5070,  1145,  2, 209472,     15.000 },
+  { 5071,  1145,  3, 209472,     20.000 },
+  { 5072,  1145,  4, 209472,     25.000 },
+  { 5073,  1145,  5, 209472,     30.000 },
+  { 5053,  1146,  0, 209480,      0.000 },
+  { 5074,  1146,  1, 209480,     10.000 },
+  { 5075,  1146,  2, 209480,     15.000 },
+  { 5076,  1146,  3, 209480,     20.000 },
+  { 5077,  1146,  4, 209480,     25.000 },
+  { 5078,  1146,  5, 209480,     30.000 },
+  { 5054,  1147,  0, 209481,      0.000 },
+  { 5079,  1147,  1, 209481,     10.000 },
+  { 5080,  1147,  2, 209481,     15.000 },
+  { 5081,  1147,  3, 209481,     20.000 },
+  { 5082,  1147,  4, 209481,     25.000 },
+  { 5083,  1147,  5, 209481,     30.000 },
+  { 5055,  1148,  0, 209483,      0.000 },
+  { 5084,  1148,  1, 209483,     20.000 },
+  { 5085,  1148,  2, 209483,     30.000 },
+  { 5086,  1148,  3, 209483,     40.000 },
+  { 5087,  1148,  4, 209483,     50.000 },
+  { 5088,  1148,  5, 209483,     60.000 },
+  { 5056,  1149,  0, 209492,      0.000 },
+  { 5089,  1149,  1, 209492,    -30.000 },
+  { 5090,  1149,  2, 209492,    -45.000 },
+  { 5091,  1149,  3, 209492,    -60.000 },
+  { 5092,  1149,  4, 209492,    -75.000 },
+  { 5093,  1149,  5, 209492,    -90.000 },
+  { 5057,  1150,  0, 209494,      0.000 },
+  { 5094,  1150,  1, 209494,      4.000 },
+  { 5095,  1150,  2, 209494,      6.000 },
+  { 5096,  1150,  3, 209494,      8.000 },
+  { 5097,  1150,  4, 209494,     10.000 },
+  { 5098,  1150,  5, 209494,     12.000 },
+  { 5058,  1151,  0, 209541,      0.000 },
+  { 5099,  1151,  1, 209541,      6.000 },
+  { 5100,  1151,  2, 209541,      9.000 },
+  { 5101,  1151,  3, 209541,     12.000 },
+  { 5102,  1151,  4, 209541,     15.000 },
+  { 5103,  1151,  5, 209541,     18.000 },
+  { 5141,  1153,  0, 210722,      0.000 },
+  { 5147,  1154,  0, 210702,      0.000 },
+  { 5148,  1155,  0, 210676,      0.000 },
+  { 5149,  1156,  0, 210666,      0.000 },
+  { 5150,  1157,  0, 210663,      0.000 },
+  { 5151,  1158,  0, 210650,      0.000 },
+  { 5152,  1159,  0, 210638,      0.000 },
+  { 5153,  1160,  0, 210557,      0.000 },
+  { 5154,  1160,  1, 210557,   2000.000 },
+  { 5155,  1160,  2, 210557,   3000.000 },
+  { 5156,  1160,  3, 210557,   4000.000 },
+  { 5157,  1160,  4, 210557,   5000.000 },
+  { 5158,  1160,  5, 210557,   6000.000 },
+  { 5159,  1161,  0, 210570,      0.000 },
+  { 5160,  1161,  1, 210570,     10.000 },
+  { 5161,  1161,  2, 210570,     15.000 },
+  { 5162,  1161,  3, 210570,     20.000 },
+  { 5163,  1161,  4, 210570,     25.000 },
+  { 5164,  1161,  5, 210570,     30.000 },
+  { 5165,  1162,  0, 210571,      0.000 },
+  { 5166,  1162,  1, 210571,     10.000 },
+  { 5167,  1162,  2, 210571,     15.000 },
+  { 5168,  1162,  3, 210571,     20.000 },
+  { 5169,  1162,  4, 210571,     25.000 },
+  { 5170,  1162,  5, 210571,     30.000 },
+  { 5171,  1163,  0, 210575,      0.000 },
+  { 5172,  1163,  1, 210575,     10.000 },
+  { 5173,  1163,  2, 210575,     15.000 },
+  { 5174,  1163,  3, 210575,     20.000 },
+  { 5175,  1163,  4, 210575,     25.000 },
+  { 5176,  1163,  5, 210575,     30.000 },
+  { 5177,  1164,  0, 210579,      0.000 },
+  { 5178,  1164,  1, 210579,     10.000 },
+  { 5179,  1164,  2, 210579,     15.000 },
+  { 5180,  1164,  3, 210579,     20.000 },
+  { 5181,  1164,  4, 210579,     25.000 },
+  { 5182,  1164,  5, 210579,     30.000 },
+  { 5183,  1165,  0, 210590,      0.000 },
+  { 5184,  1165,  1, 210590,     30.000 },
+  { 5185,  1165,  2, 210590,     45.000 },
+  { 5186,  1165,  3, 210590,     60.000 },
+  { 5187,  1165,  4, 210590,     75.000 },
+  { 5188,  1165,  5, 210590,     90.000 },
+  { 5189,  1166,  0, 210593,      0.000 },
+  { 5190,  1166,  1, 210593,     10.000 },
+  { 5191,  1166,  2, 210593,     15.000 },
+  { 5192,  1166,  3, 210593,     20.000 },
+  { 5193,  1166,  4, 210593,     25.000 },
+  { 5194,  1166,  5, 210593,     30.000 },
+  { 5195,  1167,  0, 210631,      0.000 },
+  { 5196,  1167,  1, 210631,     10.000 },
+  { 5197,  1167,  2, 210631,     15.000 },
+  { 5198,  1167,  3, 210631,     20.000 },
+  { 5199,  1167,  4, 210631,     25.000 },
+  { 5200,  1167,  5, 210631,     30.000 },
+  { 5201,  1168,  0, 210637,      0.000 },
+  { 5202,  1168,  1, 210637,     10.000 },
+  { 5203,  1168,  2, 210637,     15.000 },
+  { 5204,  1168,  3, 210637,     20.000 },
+  { 5205,  1168,  4, 210637,     25.000 },
+  { 5206,  1168,  5, 210637,     30.000 },
+  { 5207,  1169,  0, 210730,      0.000 },
+  { 5208,  1170,  0, 211714,      0.000 },
+  { 5256,  1171,  0, 211108,      3.000 },
+  { 5257,  1171,  1, 211108,      6.000 },
+  { 5258,  1171,  2, 211108,     10.000 },
+  { 5259,  1171,  3, 211108,     13.000 },
+  { 5260,  1171,  4, 211108,     16.000 },
+  { 5261,  1171,  5, 211108,     20.000 },
+  { 5304,  1172,  0, 211126,     10.000 },
+  { 5305,  1172,  1, 211126,     20.000 },
+  { 5306,  1172,  2, 211126,     30.000 },
+  { 5307,  1172,  3, 211126,     40.000 },
+  { 5308,  1172,  4, 211126,     50.000 },
+  { 5309,  1172,  5, 211126,     60.000 },
+  { 5298,  1173,  0, 211106,      3.000 },
+  { 5299,  1173,  1, 211106,      6.000 },
+  { 5300,  1173,  2, 211106,     10.000 },
+  { 5301,  1173,  3, 211106,     13.000 },
+  { 5302,  1173,  4, 211106,     16.000 },
+  { 5303,  1173,  5, 211106,     20.000 },
+  { 5292,  1174,  0, 211123,      5.000 },
+  { 5293,  1174,  1, 211123,     10.000 },
+  { 5294,  1174,  2, 211123,     15.000 },
+  { 5295,  1174,  3, 211123,     20.000 },
+  { 5296,  1174,  4, 211123,     25.000 },
+  { 5297,  1174,  5, 211123,     30.000 },
+  { 5286,  1175,  0, 211105,     10.000 },
+  { 5287,  1175,  1, 211105,     20.000 },
+  { 5288,  1175,  2, 211105,     30.000 },
+  { 5289,  1175,  3, 211105,     40.000 },
+  { 5290,  1175,  4, 211105,     50.000 },
+  { 5291,  1175,  5, 211105,     60.000 },
+  { 5280,  1176,  0, 211119,     10.000 },
+  { 5281,  1176,  1, 211119,     20.000 },
+  { 5282,  1176,  2, 211119,     30.000 },
+  { 5283,  1176,  3, 211119,     40.000 },
+  { 5284,  1176,  4, 211119,     50.000 },
+  { 5285,  1176,  5, 211119,     60.000 },
+  { 5274,  1177,  0, 211099,      3.000 },
+  { 5275,  1177,  1, 211099,      6.000 },
+  { 5276,  1177,  2, 211099,     10.000 },
+  { 5277,  1177,  3, 211099,     13.000 },
+  { 5278,  1177,  4, 211099,     16.000 },
+  { 5279,  1177,  5, 211099,     20.000 },
+  { 5262,  1178,  0, 211144,     10.000 },
+  { 5263,  1178,  1, 211144,     20.000 },
+  { 5264,  1178,  2, 211144,     30.000 },
+  { 5265,  1178,  3, 211144,     40.000 },
+  { 5266,  1178,  4, 211144,     50.000 },
+  { 5267,  1178,  5, 211144,     60.000 },
+  { 5268,  1179,  0, 211131, -20000.000 },
+  { 5269,  1179,  1, 211131, -40000.000 },
+  { 5270,  1179,  2, 211131, -60000.000 },
+  { 5271,  1179,  3, 211131, -80000.000 },
+  { 5272,  1179,  4, 211131, -100000.000 },
+  { 5273,  1179,  5, 211131, -120000.000 },
+  { 5254,  1180,  0, 211158,      0.000 },
+  { 5255,  1181,  0, 211173,      0.000 },
+  { 5322,  1182,  0, 212391,      0.000 },
+  { 5251,  1183,  0, 211219,      0.000 },
+  { 5252,  1184,  0, 211321,      0.000 },
+  { 5253,  1185,  0, 211530,      0.000 },
+  { 5209,  1186,  0, 200482,      0.000 },
+  { 5210,  1186,  1, 200482,     10.000 },
+  { 5211,  1186,  2, 200482,     15.000 },
+  { 5212,  1186,  3, 200482,     20.000 },
+  { 5213,  1186,  4, 200482,     25.000 },
+  { 5214,  1186,  5, 200482,     30.000 },
+  { 5215,  1187,  0, 211309,      0.000 },
+  { 5216,  1188,  0, 211309,      0.000 },
+  { 5217,  1189,  0, 211309,      0.000 },
+  { 5218,  1190,  0, 211309,      0.000 },
+  { 5219,  1191,  0, 211309,      0.000 },
+  { 5220,  1192,  0, 211309,      0.000 },
+  { 5221,  1193,  0, 211309,      0.000 },
+  { 5222,  1194,  0, 211309,      0.000 },
+  { 5223,  1195,  0, 211309,      0.000 },
+  { 5224,  1196,  0, 211309,      0.000 },
+  { 5225,  1197,  0, 211309,      0.000 },
+  { 5226,  1198,  0, 211309,      0.000 },
+  { 5227,  1199,  0, 211309,      0.000 },
+  { 5228,  1200,  0, 211309,      0.000 },
+  { 5229,  1201,  0, 211309,      0.000 },
+  { 5230,  1202,  0, 211309,      0.000 },
+  { 5231,  1203,  0, 211309,      0.000 },
+  { 5232,  1204,  0, 211309,      0.000 },
+  { 5233,  1205,  0, 211309,      0.000 },
+  { 5234,  1206,  0, 211309,      0.000 },
+  { 5235,  1207,  0, 211309,      0.000 },
+  { 5236,  1208,  0, 211309,      0.000 },
+  { 5237,  1209,  0, 211309,      0.000 },
+  { 5238,  1210,  0, 211309,      0.000 },
+  { 5239,  1211,  0, 211309,      0.000 },
+  { 5240,  1212,  0, 211309,      0.000 },
+  { 5241,  1213,  0, 211309,      0.000 },
+  { 5242,  1214,  0, 211309,      0.000 },
+  { 5243,  1215,  0, 211309,      0.000 },
+  { 5244,  1216,  0, 211309,      0.000 },
+  { 5245,  1217,  0, 211309,      0.000 },
+  { 5246,  1218,  0, 211309,      0.000 },
+  { 5247,  1219,  0, 211309,      0.000 },
+  { 5248,  1220,  0, 211309,      0.000 },
+  { 5249,  1221,  0, 211309,      0.000 },
+  { 5250,  1222,  0, 211309,      0.000 },
+  { 5325,  1227,  0, 212899,      0.000 },
+  { 5326,  1228,  0, 212829,      0.000 },
+  { 5327,  1229,  0, 207375,      0.000 },
+  { 5328,  1229,  1, 207375,     10.000 },
+  { 5329,  1229,  2, 207375,     15.000 },
+  { 5330,  1229,  3, 207375,     20.000 },
+  { 5331,  1229,  4, 207375,     25.000 },
+  { 5332,  1229,  5, 207375,     30.000 },
+  { 5333,  1230,  0, 212816,      0.000 },
+  { 5334,  1230,  1, 212816,     10.000 },
+  { 5335,  1230,  2, 212816,     15.000 },
+  { 5336,  1230,  3, 212816,     20.000 },
+  { 5337,  1230,  4, 212816,     25.000 },
+  { 5338,  1230,  5, 212816,     30.000 },
+  { 5339,  1231,  0, 212817,      0.000 },
+  { 5340,  1231,  1, 212817,     20.000 },
+  { 5341,  1231,  2, 212817,     30.000 },
+  { 5342,  1231,  3, 212817,     40.000 },
+  { 5343,  1231,  4, 212817,     50.000 },
+  { 5344,  1231,  5, 212817,     60.000 },
+  { 5345,  1232,  0, 212819,      0.000 },
+  { 5346,  1232,  1, 212819,     10.000 },
+  { 5347,  1232,  2, 212819,     15.000 },
+  { 5348,  1232,  3, 212819,     20.000 },
+  { 5349,  1232,  4, 212819,     25.000 },
+  { 5350,  1232,  5, 212819,     30.000 },
+  { 5351,  1233,  0, 212821,      0.000 },
+  { 5352,  1233,  1, 212821,      2.000 },
+  { 5353,  1233,  2, 212821,      3.000 },
+  { 5354,  1233,  3, 212821,      4.000 },
+  { 5355,  1233,  4, 212821,      5.000 },
+  { 5356,  1233,  5, 212821,      6.000 },
+  { 5357,  1234,  0, 212827,      0.000 },
+  { 5358,  1234,  1, 212827,     10.000 },
+  { 5359,  1234,  2, 212827,     15.000 },
+  { 5360,  1234,  3, 212827,     20.000 },
+  { 5361,  1234,  4, 212827,     25.000 },
+  { 5362,  1234,  5, 212827,     30.000 },
+  { 5363,  1235,  0, 213010,      0.000 },
+  { 5364,  1236,  0, 213017,      0.000 },
+  { 5365,  1237,  0, 193108,      0.000 },
+  { 5366,  1238,  0, 193058,      0.000 },
+  { 5367,  1239,  0, 182234,      0.000 },
+  { 5368,  1240,  0, 185086,      0.000 },
+  { 5369,  1241,  0, 186788,      0.000 },
+  { 5370,  1242,  0, 186945,      0.000 },
+  { 5371,  1242,  1, 186945,   5000.000 },
+  { 5372,  1242,  2, 186945,   7500.000 },
+  { 5373,  1242,  3, 186945,  10000.000 },
+  { 5374,  1242,  4, 186945,  12500.000 },
+  { 5375,  1242,  5, 186945,  15000.000 },
+  { 5376,  1243,  0, 186944,      0.000 },
+  { 5377,  1243,  1, 186944, -20000.000 },
+  { 5378,  1243,  2, 186944, -30000.000 },
+  { 5379,  1243,  3, 186944, -40000.000 },
+  { 5380,  1243,  4, 186944, -50000.000 },
+  { 5381,  1243,  5, 186944, -60000.000 },
+  { 5382,  1244,  0, 185368,      0.000 },
+  { 5383,  1244,  1, 185368,      8.000 },
+  { 5384,  1244,  2, 185368,     12.000 },
+  { 5385,  1244,  3, 185368,     16.000 },
+  { 5386,  1244,  4, 185368,     20.000 },
+  { 5387,  1244,  5, 185368,     24.000 },
+  { 5388,  1245,  0, 186927,      0.000 },
+  { 5389,  1245,  1, 186927,     16.000 },
+  { 5390,  1245,  2, 186927,     24.000 },
+  { 5391,  1245,  3, 186927,     32.000 },
+  { 5392,  1245,  4, 186927,     40.000 },
+  { 5393,  1245,  5, 186927,     48.000 },
+  { 5394,  1246,  0, 186773,      0.000 },
+  { 5395,  1247,  0, 184778,      0.000 },
+  { 5396,  1247,  1, 184778, -10000.000 },
+  { 5397,  1247,  2, 184778, -15000.000 },
+  { 5398,  1247,  3, 184778, -20000.000 },
+  { 5399,  1247,  4, 184778, -25000.000 },
+  { 5400,  1247,  5, 184778, -30000.000 },
+  { 5401,  1248,  0, 186934,      0.000 },
+  { 5402,  1248,  1, 186934,     30.000 },
+  { 5403,  1248,  2, 186934,     45.000 },
+  { 5404,  1248,  3, 186934,     60.000 },
+  { 5405,  1248,  4, 186934,     75.000 },
+  { 5406,  1248,  5, 186934,     90.000 },
+  { 5407,  1249,  0, 184843,      0.000 },
+  { 5408,  1249,  1, 184843,     10.000 },
+  { 5409,  1249,  2, 184843,     15.000 },
+  { 5410,  1249,  3, 184843,     20.000 },
+  { 5411,  1249,  4, 184843,     25.000 },
+  { 5412,  1249,  5, 184843,     30.000 },
+  { 5413,  1250,  0, 184759,      0.000 },
+  { 5414,  1250,  1, 184759,     12.000 },
+  { 5415,  1250,  2, 184759,     18.000 },
+  { 5416,  1250,  3, 184759,     24.000 },
+  { 5417,  1250,  4, 184759,     30.000 },
+  { 5418,  1250,  5, 184759,     36.000 },
+  { 5419,  1251,  0, 186941,      0.000 },
+  { 5420,  1251,  1, 186941,     30.000 },
+  { 5421,  1251,  2, 186941,     45.000 },
+  { 5422,  1251,  3, 186941,     60.000 },
+  { 5423,  1251,  4, 186941,     75.000 },
+  { 5424,  1251,  5, 186941,     90.000 },
+  { 5425,  1252,  0, 205273,      0.000 },
+  { 5426,  1253,  0, 179546,      0.000 },
+  { 5427,  1254,  0, 213428,      0.000 },
+  { 5428,  1255,  0, 213428,      0.000 },
+  { 5429,  1256,  0, 213428,      0.000 },
+  { 5430,  1257,  0, 213428,      0.000 },
+  { 5431,  1258,  0, 213428,      0.000 },
+  { 5432,  1259,  0, 213435,      0.000 },
+  { 5433,  1260,  0, 213051,      5.000 },
+  { 5434,  1260,  1, 213051,     10.000 },
+  { 5435,  1260,  2, 213051,     15.000 },
+  { 5436,  1260,  3, 213051,     20.000 },
+  { 5437,  1260,  4, 213051,     25.000 },
+  { 5438,  1260,  5, 213051,     30.000 },
+  { 5439,  1261,  0, 213049,      5.000 },
+  { 5440,  1261,  1, 213049,     10.000 },
+  { 5441,  1261,  2, 213049,     15.000 },
+  { 5442,  1261,  3, 213049,     20.000 },
+  { 5443,  1261,  4, 213049,     25.000 },
+  { 5444,  1261,  5, 213049,     30.000 },
+  { 5445,  1262,  0, 213050,      5.000 },
+  { 5446,  1262,  1, 213050,     10.000 },
+  { 5447,  1262,  2, 213050,     15.000 },
+  { 5448,  1262,  3, 213050,     20.000 },
+  { 5449,  1262,  4, 213050,     25.000 },
+  { 5450,  1262,  5, 213050,     30.000 },
+  { 5451,  1263,  0, 213062,     -5.000 },
+  { 5452,  1263,  1, 213062,    -10.000 },
+  { 5453,  1263,  2, 213062,    -15.000 },
+  { 5454,  1263,  3, 213062,    -20.000 },
+  { 5455,  1263,  4, 213062,    -25.000 },
+  { 5456,  1263,  5, 213062,    -30.000 },
+  { 5457,  1264,  0, 213055,      2.000 },
+  { 5458,  1264,  1, 213055,      4.000 },
+  { 5459,  1264,  2, 213055,      6.000 },
+  { 5460,  1264,  3, 213055,      8.000 },
+  { 5461,  1264,  4, 213055,     10.000 },
+  { 5462,  1264,  5, 213055,     12.000 },
+  { 5463,  1265,  0, 213133,      5.000 },
+  { 5464,  1265,  1, 213133,     10.000 },
+  { 5465,  1265,  2, 213133,     15.000 },
+  { 5466,  1265,  3, 213133,     20.000 },
+  { 5467,  1265,  4, 213133,     25.000 },
+  { 5468,  1265,  5, 213133,     30.000 },
+  { 5469,  1266,  0, 213136,      5.000 },
+  { 5470,  1266,  1, 213136,     10.000 },
+  { 5471,  1266,  2, 213136,     15.000 },
+  { 5472,  1266,  3, 213136,     20.000 },
+  { 5473,  1266,  4, 213136,     25.000 },
+  { 5474,  1266,  5, 213136,     30.000 },
+  { 5475,  1267,  0, 213047,    500.000 },
+  { 5476,  1267,  1, 213047,   1000.000 },
+  { 5477,  1267,  2, 213047,   1500.000 },
+  { 5478,  1267,  3, 213047,   2000.000 },
+  { 5479,  1267,  4, 213047,   2500.000 },
+  { 5480,  1267,  5, 213047,   3000.000 },
+  { 5481,  1268,  0, 213116,      5.000 },
+  { 5482,  1268,  1, 213116,     10.000 },
+  { 5483,  1268,  2, 213116,     15.000 },
+  { 5484,  1268,  3, 213116,     20.000 },
+  { 5485,  1268,  4, 213116,     25.000 },
+  { 5486,  1268,  5, 213116,     30.000 },
+  { 5487,  1269,  0, 213161,      0.000 },
+  { 5488,  1270,  0, 213180,      0.000 },
+  { 5489,  1271,  0, 213160,      0.000 },
+  { 5490,  1272,  0, 213183,      0.000 },
+  { 5491,  1273,  0, 213495,      0.000 },
+  { 5492,  1274,  0, 213340,      0.000 },
+  {    0,     0,  0,      0,      0.000 },
 };
