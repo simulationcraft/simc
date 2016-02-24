@@ -56,7 +56,7 @@ struct expiration_t : public buff_event_t
 
   virtual void execute() override
   {
-    buff -> expiration.pop_front();
+    buff -> expiration.erase( buff -> expiration.begin() );
 
     if ( buff -> stack_behavior == BUFF_STACK_ASYNCHRONOUS )
       buff -> decrement( stack );
@@ -794,7 +794,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
     }
 
     event_t::cancel( expiration.front() );
-    expiration.pop_front();
+    expiration.erase( expiration.begin() );
 
     expiration.push_back( new ( *sim ) expiration_t( this, reschedule_time ) );
 
@@ -918,7 +918,7 @@ void buff_t::refresh( int        stacks,
     if ( ! expiration.empty() )
     {
       event_t::cancel( expiration.front() );
-      expiration.pop_front();
+      expiration.erase( expiration.begin() );
     }
     // Infinite ticking buff refreshes shouldnt happen, but cancel ongoing 
     // tick event just to be sure.
@@ -937,7 +937,7 @@ void buff_t::refresh( int        stacks,
       else if ( duration_remains > d )
       {
         event_t::cancel( expiration.front() );
-        expiration.pop_front();
+        expiration.erase( expiration.begin() );
         expiration.push_back( new ( *sim ) expiration_t( this, d ) );
       }
     }
@@ -1003,7 +1003,7 @@ void buff_t::bump( int stacks, double value )
           else
           {
             event_t::cancel( expiration.front() );
-            expiration.pop_front();
+            expiration.erase( expiration.begin() );
             overflow -= exp_stacks;
           }
         }
@@ -1111,7 +1111,7 @@ void buff_t::expire( timespan_t delay )
     while( ! expiration.empty() )
     {
       event_t::cancel( expiration.front() );
-      expiration.pop_front();
+      expiration.erase( expiration.begin() );
     }
   }
   event_t::cancel( tick_event );

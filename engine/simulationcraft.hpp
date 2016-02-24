@@ -803,7 +803,7 @@ public:
   const std::string name_str;
   const spell_data_t* s_data;
   player_t* const source;
-  std::deque<event_t*> expiration;
+  std::vector<event_t*> expiration;
   event_t* delay;
   event_t* expiration_delay;
   cooldown_t* cooldown;
