@@ -47,7 +47,11 @@ struct expiration_t : public buff_event_t
   expiration_t( buff_t* b, timespan_t d ) :
     buff_event_t( b, d )
   {
-    assert( b -> stack_behavior != BUFF_STACK_ASYNCHRONOUS );
+    if ( b -> stack_behavior == BUFF_STACK_ASYNCHRONOUS )
+    {
+      b -> sim -> errorf( "Asynchronous buff %s on %s creates expiration with no stack count.", buff -> name(), buff -> player -> name() );
+      b -> sim -> cancel();
+    }
   }
 
   virtual void execute() override
@@ -758,7 +762,11 @@ void buff_t::decrement( int    stacks,
 void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 {
   assert( expiration );
-  assert( stack_behavior != BUFF_STACK_ASYNCHRONOUS ); // not supported
+  if ( stack_behavior == BUFF_STACK_ASYNCHRONOUS )
+  {
+    sim -> errorf( "%s attempts to extend asynchronous buff %s.", p -> name(), name() );
+    sim -> cancel();
+  }
 
   if ( extra_seconds > timespan_t::zero() )
   {
