@@ -137,25 +137,27 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.34800
 Description      : Throw a fiery ball that causes $s1 Fire damage.
 
-Name             : Arcane Explosion (id=1449) [Scaling Spell (5), Spell Family (3)] 
+Name             : Arcane Explosion (id=1449) [Spell Family (3)] 
 Class            : Arcane Mage
 School           : Arcane
-Resource         : 3% Base Mana (33000 @Level 110)
+Resource         : 2% Base Mana (22000 @Level 110)
 Spell Level      : 28
 GCD              : 1.5 seconds
-Affecting spells : Arcane Power (12042), Shatter (12982), Crackling Energy (187310), Arcane Purification (187313), Erosion (210134)
+Affecting spells : Arcane Power (12042), Shatter (12982), Arcane Charge (36032), Crackling Energy (187310), Arcane Purification (187313), Erosion (210134)
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=457)      : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.483, dl=0.08) | SP Coefficient: 0.54500 | Radius: 0 - 10 yards
-#2 (id=281175)   : Dummy (3)
-                   Base Value: 30 | Scaled Value: 30
-Description      : Causes an explosion of arcane magic around the caster, dealing $s1 Arcane damage to all targets within $A1 yards. $?s114664[Refreshes the duration of your Arcane Charges and has a $1449s2% chance to generate an Arcane Charge.][]
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.81750 | Radius: 0 - 10 yards
+#2 (id=281175)   : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: none
+Description      : Causes an explosion of arcane magic around the caster, dealing $s1 Arcane damage to all enemies within $A1 yards, and generating an Arcane Charge if any are hit.
+
+Arcane Explosion's damage is increased by $36032s1% per Arcane Charge, and its mana cost is increased by $36032s2% per Arcane Charge.
 
 Name             : Incanter's Flow (id=1463) [Spell Family (3), Passive] 
 Class            : Mage
@@ -947,10 +949,10 @@ Attributes       : ........ ........ ..x..... ..x..x..   ........ ..x..... .....
 Effects          :
 #1 (id=26313)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 50 | Scaled Value: 50
-                   Affected Spells: Arcane Missiles (7268), Arcane Blast (30451), Arcane Barrage (44425)
+                   Affected Spells: Arcane Explosion (1449), Arcane Missiles (7268), Arcane Blast (30451), Arcane Barrage (44425)
 #2 (id=26314)    : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 14
-                   Affected Spells: Arcane Blast (30451)
+                   Affected Spells: Arcane Explosion (1449), Arcane Blast (30451)
 #3 (id=127870)   : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 17
                    Affected Spells: Arcane Barrage (44425)
@@ -961,7 +963,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 21
                    Affected Spells: Arcane Blast (30451)
 Description      : $@spelldesc114664
-Tooltip          : Increases the damage of Arcane Blast, and Arcane Barrage by $36032w1%.
+Tooltip          : Increases the damage of Arcane Blast, Arcane Missiles, Arcane Explosion, and Arcane Barrage by $36032w1%.
 
 Increases the mana cost of Arcane Blast by $36032w2%$?{$w5<0}[, and reduces the cast time of Arcane Blast by $w5%.][.]
 
@@ -1560,7 +1562,7 @@ Tooltip          : Incapacitated.
 Name             : Frozen Orb (id=84714) [Spell Family (3)] 
 Class            : Frost Mage
 School           : Frost
-Resource         : 10% Base Mana (110000 @Level 110)
+Resource         : 1% Base Mana (11000 @Level 110)
 Spell Level      : 28
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -3191,7 +3193,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards
 #2 (id=278849)   : Unknown effect type (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 4658 | Radius: 0 - 8 yards
-Description      : Ice shards pelt the target area doing ${$190357m1*8} Frost damage over $10d and slowing enemies by $205708s1% for $205708d%.
+Description      : Ice shards pelt the target area dealing ${$190357m1*8} Frost damage over $10d and slowing enemies by $205708s1% for $205708d.
 
 Each time Blizzard deals damage, it reduces the cooldown of Frozen Orb by ${$157727m1/100}.1 sec.
 Tooltip          : $42208s1 Frost damage every $42208t1 sec.
@@ -3450,7 +3452,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=292747)   : Apply Aura (6) | Proc Trigger Spell: Quickening (42)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 198924
-Description      : Arcane Blast and Arcane Missiles also grant $198924s1% Haste for $198924d, stacking up to $198924u times.
+Description      : Arcane Blast, Arcane Missiles, and Arcane Explosion also grant $198924s1% Haste for $198924d, stacking up to $198924u times.
 
 This effect is cleared when you cast Arcane Barrage.
 

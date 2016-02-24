@@ -4756,7 +4756,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=306382)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1
-Description      : Drive lesser enemies to the ground, stunning them for $207165d. Other players are Dazed for $211831d instead.
+Description      : Obliterate critical strikes have a chance to drive lesser enemies to the ground, stunning them for $207165d. Other players are Dazed for $211831d instead.
 
 Name             : Abomination's Might (id=207165) [Scaling Spell (3), Spell Family (15)] 
 Class            : Death Knight

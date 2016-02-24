@@ -181,14 +181,14 @@ School           : Arcane
 Spell Level      : 38
 Range            : 40 yards
 GCD              : 1 seconds
-Velocity         : 15 yards/sec
+Velocity         : 2 yards/sec
 Cooldown         : 20 seconds
 Affecting spells : Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
 Attributes       : ........ ........ x....... ........   ........ ..x....x .x...... ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ....x... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=491)      : Trigger Missiles (32)
@@ -261,7 +261,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #2 (id=1072)     : Apply Aura (6) | Unknown effect sub type (308)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7
-                   Affected Spells: Multi-Shot (2643), Freezing Trap (3355), Concussive Shot (5116), Ice Trap (13809), Explosive Trap (13812), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Chimaera Shot (53209), Kill Shot (53351), Bullheaded (63896), Glaive Toss (117050), Serpent Sting (118253), Barrage (120360), Barrage (120361), Glaive Toss (120761), Glaive Toss (121414), Iron Horde Trip Mine (155918), Kill Shot (157708), Steel Trap (162488), Steel Trap (162496), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Aspect of the Turtle (186265), Bursting Shot (186387), Freezing Trap (187650), Freezing Trap (187651), Tar Trap (187698), Tar Trap (187699), Mongoose Bite (190928), Explosive Trap (191433), Cobra Shot (193455), Black Arrow (194599), Dragonsfire Grenade (194855), Dragonsfire Grenade (194856), Trick Shot (199883), Flanking Strike (202800), Fury of the Eagle (203415), Chimaera Shot (204304), Explosive Shot (212431)
+                   Affected Spells: Multi-Shot (2643), Freezing Trap (3355), Concussive Shot (5116), Ice Trap (13809), Explosive Trap (13812), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Chimaera Shot (53209), Kill Shot (53351), Bullheaded (63896), Glaive Toss (117050), Serpent Sting (118253), Barrage (120360), Barrage (120361), Glaive Toss (120761), Glaive Toss (121414), Iron Horde Trip Mine (155918), Kill Shot (157708), Steel Trap (162488), Steel Trap (162496), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Aspect of the Turtle (186265), Bursting Shot (186387), Freezing Trap (187650), Freezing Trap (187651), Tar Trap (187698), Tar Trap (187699), Mongoose Bite (190928), Explosive Trap (191433), Cobra Shot (193455), Black Arrow (194599), Dragonsfire Grenade (194855), Dragonsfire Grenade (194856), Flanking Strike (202800), Fury of the Eagle (203415), Chimaera Shot (204304), Explosive Shot (212431)
 Description      : Place an ice trap that freezes the first enemy that approaches, incapacitating them for $3355d.  Any damage caused will break the ice. Only one target can be Freezing Trapped at a time. Trap will exist for $d.
 Tooltip          : Incapacitated.
 
@@ -552,9 +552,9 @@ Affecting spells : Freezing Trap (3355), Refocus (24531), Thrill of the Hunt (34
 Triggered by     : Lock and Load (194594)
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ...x....   ........ ........ ........ ........ 
+                 : ........ ........ ..x..... ...x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Ranged ability (1)
 Effects          :
@@ -571,7 +571,7 @@ Spell Level      : 40
 Range            : 100 yards
 Duration         : 10 seconds
 Cooldown         : 90 seconds
-Affecting spells : Item - Hunter T14 4P Bonus (123091), Beast Mastery Hunter (137015), Beastlord (184900), Bestial Fury (194306), Unleash the Beast (206910)
+Affecting spells : Item - Hunter T14 4P Bonus (123091), Beast Mastery Hunter (137015), Beastlord (184900), Bestial Fury (194306), Unleash the Beast (206910), 
 Attributes       : ........ ........ x....... .....x..   ........ ..x....x ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -909,7 +909,7 @@ Spell Level      : 3
 Range            : 100 yards
 GCD              : 1 seconds
 Cooldown         : 6 seconds
-Affecting spells : Item - Hunter T14 2P Bonus (123090)
+Affecting spells : Item - Hunter T14 2P Bonus (123090), Pack Leader (197080)
 Attributes       : ........ ........ x.x..x.. ........   ........ ..x..... ........ ..xxx... 
                  : ..x..... ........ ........ ........   ........ .....x.. ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -966,7 +966,7 @@ Attributes       : ........ ........ ..x..... .....x..   ........ ........ .....
 Effects          :
 #1 (id=24774)    : Apply Aura (6) | Add Flat Modifier: Spell Resource Cost (107)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 14
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Raptor Strike (186270), Carve (187708), Cobra Shot (193455), Trick Shot (199883)
+                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Raptor Strike (186270), Carve (187708), Cobra Shot (193455)
 Description      : $@spelldesc109306
 Tooltip          : Reduces the Focus cost of your next $?s193455[Corba Shot]?s19434[Aimed Shot][Raptor Strike] and $?s2643[Multi-Shot][Carve] by $s1.
 
@@ -1932,7 +1932,7 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Item - Hunter T14 2P Bonus (123090)
+Affecting spells : Item - Hunter T14 2P Bonus (123090), Pack Leader (197080)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3133,7 +3133,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=215686)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
-Description      : Unlike other Hunters, Marksmen prefer to rely purelyon their skill and aim, rather than be assisted by a bestial companion.
+Description      : Unlike other Hunters, Marksmen prefer to rely purely on their skill and aim, rather than be assisted by a bestial companion.
 
 Name             : Combat Experience (id=156843) [Spell Family (9), Passive] 
 Class            : Hunter, Death Knight, Shaman
@@ -4004,7 +4004,7 @@ Effects          :
 Description      : The cooldown of Dire Beast is reset.
 Tooltip          : The cooldown of Dire Beast is reset.
 
-Name             : Laceration (id=185855) [Spell Family (9)] 
+Name             : Lacerate (id=185855) [Spell Family (9)] 
 Class            : Survival Hunter
 School           : Physical
 Resource         : 35 Focus
@@ -4056,7 +4056,7 @@ Class            : Marksmanship Hunter
 School           : Physical
 Spell Level      : 18
 Proc Chance      : 100%
-Real PPM         : 6
+Real PPM         : 6 (Haste multiplier)
 Proc Flags       : ........ x....... ........ ........ 
                  : Yellow Ranged
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -4117,7 +4117,7 @@ Spell Level      : 40
 Range            : 100 yards
 Duration         : 10 seconds
 Cooldown         : 90 seconds
-Affecting spells : Item - Hunter T14 4P Bonus (123091), Beast Mastery Hunter (137015), Beastlord (184900), Bestial Fury (194306), Unleash the Beast (206910)
+Affecting spells : Item - Hunter T14 4P Bonus (123091), Beast Mastery Hunter (137015), Beastlord (184900), Bestial Fury (194306), Unleash the Beast (206910), 
 Triggered by     : Bestial Wrath (19574)
 Attributes       : ........ ........ x....... .....x..   ........ ..x....x ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -4762,7 +4762,7 @@ School           : Physical
 Spell Level      : 19
 Range            : 30 yards
 GCD              : 1.5 seconds
-Velocity         : 20 yards/sec
+Velocity         : 25 yards/sec
 Attributes       : ....x... ........ x.....x. ........   ........ .x...... ........ ........ 
                  : ........ ........ ....x... ........   ........ .......x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4810,10 +4810,10 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=283823)   : Apply Aura (6) | Add Percent Modifier: Spell Range (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.62500 | Misc Value: 5
-                   Affected Spells: Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Wyvern Sting (19386), Aimed Shot (19434), Chimaera Shot (53209), Kill Shot (53351), Bullheaded (63896), Binding Shot (109248), Glaive Toss (117050), Barrage (120360), Barrage (120361), Dire Beast (120679), Glaive Toss (120761), Glaive Toss (121414), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Counter Shot (147362), Kill Shot (157708), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Marked Shot (185901), Dark Ranger (186070), Mongoose Bite (190928), Trick Shot (199883), Flanking Strike (202800), Fury of the Eagle (203415), Chimaera Shot (204304), A Murder of Crows (206505)
+                   Affected Spells: Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Wyvern Sting (19386), Aimed Shot (19434), Chimaera Shot (53209), Kill Shot (53351), Bullheaded (63896), Binding Shot (109248), Glaive Toss (117050), Barrage (120360), Barrage (120361), Dire Beast (120679), Glaive Toss (120761), Glaive Toss (121414), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Counter Shot (147362), Kill Shot (157708), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Marked Shot (185901), Dark Ranger (186070), Mongoose Bite (190928), Flanking Strike (202800), Fury of the Eagle (203415), Chimaera Shot (204304), A Murder of Crows (206505)
 #2 (id=283906)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000
-                   Affected Spells: Aimed Shot (19434), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Bursting Shot (186387), Rapid Fire (188202), Volley (194386), Volley (194387), Volley (194392), Black Arrow (194599), Head Shot (198670), Trick Shot (199883), A Murder of Crows (206505), Marked Shot (212621)
+                   Affected Spells: Aimed Shot (19434), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Bursting Shot (186387), Rapid Fire (188202), Volley (194386), Volley (194392), Black Arrow (194599), Head Shot (198670), A Murder of Crows (206505), Marked Shot (212621), Head Shot (213678)
 #3 (id=316221)   : Apply Aura (6) | Add Percent Modifier: Spell Radius (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.62500 | Misc Value: 6
                    Affected Spells: Marked Shot (185901)
@@ -5030,7 +5030,7 @@ Resource         : 80 Focus
 Spell Level      : 42
 Range            : 40 yards
 GCD              : 1 seconds
-Velocity         : 30 yards/sec
+Duration         : 6 seconds
 Affecting spells : Mastery: Sniper Training (193468)
 Attributes       : .x...... ........ x.....x. ........   ...xx..x ........ ........ ....x... 
                  : ........ ........ .x....x. ........   .....x.. ........ ........ ........ 
@@ -5042,34 +5042,15 @@ Attributes       : .x...... ........ x.....x. ........   ...xx..x ........ .....
 Effects          :
 #1 (id=285348)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Radius: 8 yards
-#2 (id=285358)   : Trigger Spell: Volley (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 194387
+#2 (id=285358)   : Unknown effect type (179)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 5089
 Description      : Instantly launch a volley of ammo at the target area, dealing $194392m1 Physical damage to all enemy targets within $A1 yards every $s1 sec for $194387d.
-
-Name             : Volley (id=194387) [Spell Family (9), Hidden] 
-Class            : Hunter
-School           : Physical
-Range            : 40 yards
-Duration         : 6 seconds
-Affecting spells : Mastery: Sniper Training (193468)
-Triggered by     : Volley (194386)
-Attributes       : .......x x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Hidden (7)
-Effects          :
-#1 (id=285350)   : Unknown effect type (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 5089 | Radius: 8 yards
 
 Name             : Volley (id=194392) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Range            : 40 yards
 Velocity         : 0.8 yards/sec
-Mechanic         : Unknown(88)
 Affecting spells : Mastery: Sniper Training (193468)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ........ 
@@ -5079,9 +5060,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=285355)   : School Damage: physical (2)
-                   Base Value: 50 | Scaled Value: 50 | AP Coefficient: 0.14300
-Description      : Jagged caltrops inflict $s1 Physical damage every $t1 sec, and reduce your movement speed by$s2%.
-Tooltip          : Suffering $s1 Physical damage every $t1 sec. movement speed reduced by $s2%.
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.14300
+Description      : $@spelldesc194386
 
 Name             : Way of the Cobra (id=194397) [Spell Family (9), Passive] 
 Class            : Hunter
@@ -5155,13 +5135,13 @@ Attributes       : ....x... ........ ..x..... ...x....   ........ ..x..... .....
 Effects          :
 #1 (id=285662)   : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
                    Base Value: -100 | Scaled Value: -100 | SP Coefficient: 1.00000 | Misc Value: 10
-                   Affected Spells: Aimed Shot (19434), Trick Shot (199883)
+                   Affected Spells: Aimed Shot (19434)
 #2 (id=285663)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14
-                   Affected Spells: Aimed Shot (19434), Trick Shot (199883)
+                   Affected Spells: Aimed Shot (19434)
 #3 (id=285664)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Aimed Shot (19434), Trick Shot (199883)
+                   Affected Spells: Aimed Shot (19434)
 #4 (id=285665)   : Apply Aura (6) | Unknown effect sub type (408)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 19434
                    Affected Spells: Explosive Shot (212431)
@@ -5341,7 +5321,7 @@ Effects          :
                    Base Value: 600 | Scaled Value: 6 | Radius: 0 - 5 yards
 #5 (id=292035)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards
-Description      : A powerful shot which deals up to ${2*$sw2} Physical damage to the target and up to $sw2 Physical damage to all enemies between you and the target.
+Description      : A powerful shot which deals up to ${2*$213678sw2} Physical damage to the target and up to $213678sw2 Physical damage to all enemies between you and the target.
 
 Name             : Camouflage (id=198783) [Spell Family (9)] 
 Class            : Hunter
@@ -5437,8 +5417,8 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=293617)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 8
-Description      : Aimed Shot will now also ricochet and hit all Vulnerable targets for $199883sw2 Physical damage.
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 8
+Description      : Aimed Shot will now also ricochet and hit all Vulnerable targets for $s1% of normal damage.
 
 Name             : Farstrider (id=199523) [Spell Family (9), Passive] 
 Class            : Hunter
@@ -5604,30 +5584,9 @@ Attributes       : ....x... x....... ........ ..x.....   ........ ........ .....
 Effects          :
 #1 (id=294038)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 2 | Scaled Value: 2
-                   Affected Spells: Aimed Shot (19434), Arcane Shot (185358), Rapid Fire (188202), Trick Shot (199883), Marked Shot (212621)
+                   Affected Spells: Aimed Shot (19434), Arcane Shot (185358), Rapid Fire (188202), Marked Shot (212621)
 Description      : For every successive shot cast on the same target, you deal X more damage.  Expires when you attack a new target.
 Tooltip          : Taking $s1% more damage.
-
-Name             : Trick Shot (id=199883) [Scaling Spell (4), Spell Family (9)] 
-Class            : Hunter
-School           : Physical
-Spell Level      : 10
-Range            : 40 yards
-Velocity         : 100 yards/sec
-Affecting spells : Freezing Trap (3355), Refocus (24531), Thrill of the Hunt (34720), Mortal Shots (36413), Shot Power (37508), Item - Hunter T14 4P Bonus (123091), Item - Hunter T16 2P Bonus (144637), Item - Hunter T16 4P Bonus (144641), Guide: Sharpshooting (178549), Item - Hunter T18 Marksmanship 4P Bonus (188191), Deadly Aim (190449), Precision (190520), Marked for Death (190533), Mastery: Sniper Training (193468), Lock and Load (194594), True Aim (199803), PH - Multi-Shot Hits Increase Aimed Shot Damage (208913), Deadeye (213424)
-Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ...x.... 
-                 : ........ ........ .x..x... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ...x....   ........ ........ ........ ........ 
-                 : ........ ........ ........ ....x...   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Ranged ability (1)
-Effects          :
-#1 (id=294236)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 (avg=2.2, dl=0.1)
-#2 (id=294237)   : Weapon Damage% (31)
-                   Base Value: 100 | Scaled Value: 1
-Description      : $@spelldesc199522
 
 Name             : Dash (id=199921) [Spell Family (9), Passive] 
 Class            : Hunter
@@ -6349,8 +6308,33 @@ Attributes       : ........ ........ ........ .....x..   ........ ..x..... .....
 Effects          :
 #1 (id=316585)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 150 | Scaled Value: 150 | Mechanic: Unknown(88)
-                   Affected Spells: Aimed Shot (19434), Trick Shot (199883)
+                   Affected Spells: Aimed Shot (19434)
 Description      : $@spelldesc213423
 Tooltip          : Damage taken from Aimed Shot increased by $s1%.
+
+Name             : Head Shot (id=213678) [Scaling Spell (4), Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Resource         : 20 - 100 Focus
+Range            : 40 yards
+GCD              : 1 seconds
+Velocity         : 100 yards/sec
+Cooldown         : 10 seconds
+Affecting spells : Mastery: Sniper Training (193468)
+Attributes       : .x..x... ........ x.x...x. ........   ........ ......x. ........ ........ 
+                 : ........ ........ .x..x... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ...xx...   ........ ........ ........ ........ 
+                 : ........ ........ ...x.... ....x...   ........ ........ ........ ........ 
+                 : ........ ........ ........ ...x....   ........ x....... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Ranged ability (1)
+Effects          :
+#1 (id=317064)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0
+#2 (id=317065)   : Weapon Damage% (31)
+                   Base Value: 600 | Scaled Value: 6
+#3 (id=317066)   : Normalized Weapon Damage (121)
+                   Base Value: 0 | Scaled Value: 0
+Description      : A powerful shot which deals up to ${2*$sw2} Physical damage to the target and up to $sw2 Physical damage to all enemies between you and the target.
 
 

@@ -145,7 +145,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 5374
 #4 (id=314319)   : Trigger Spell: Mutilate Off-Hand (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 27576
-Description      : Attack with both weapons, dealing a total of ${$5374sw2+$27576sw2} Physical damage. Awards $s1 combo $lpoint:points;.
+Description      : Attack with both weapons, dealing a total of ${$5374sw2+$27576sw2} Physical damage. Awards $s2 combo $lpoint:points;.
 
 Name             : Garrote - Silence (id=1330) [Spell Family (8)] 
 Class            : Rogue
@@ -493,7 +493,7 @@ School           : Nature
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 12 seconds
-Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Mastery: Potent Poisons (76803), Vendetta (79140), Surge of Toxins (192425), Master Poisoner (196864), Numbing Poison (200803)
+Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Mastery: Potent Poisons (76803), Vendetta (79140), Master Alchemist (192318), Surge of Toxins (192425), Master Poisoner (196864), Numbing Poison (200803)
 Triggered by     : Deadly Poison (2823)
 Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...... ........ 
                  : ..x..... ........ ........ x.......   .......x ........ ........ ......x. 
@@ -516,7 +516,7 @@ Duration         : 3600 seconds
 Proc Chance      : 30%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
-Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Envenom (32645), Mastery: Potent Poisons (76803), Vendetta (79140), Poisoned Knife (185565), Surge of Toxins (192425), Master Poisoner (196864), Numbing Poison (200803)
+Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Envenom (32645), Mastery: Potent Poisons (76803), Vendetta (79140), Poisoned Knife (185565), Master Alchemist (192318), Surge of Toxins (192425), Master Poisoner (196864), Numbing Poison (200803)
 Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ...xx... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -633,7 +633,7 @@ Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1833)     : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
-                   Base Value: 40 | Scaled Value: 40
+                   Base Value: 60 | Scaled Value: 60
 #2 (id=127877)   : Apply Aura (6) | Periodic Energize Power: every 2 seconds (24)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3
 Description      : Finishing move that consumes combo points to increase attack speed by $s1%. Lasts longer per combo point.
@@ -642,7 +642,9 @@ Description      : Finishing move that consumes combo points to increase attack 
    3 points: 24 seconds
    4 points: 30 seconds
    5 points: 36 seconds$?s193531[
-   6 points: 42 seconds][]
+   6 points: 42 seconds][]
+
+Replaces Roll the Bones.
 Tooltip          : Attack speed increased by $w1%.$?$w2!=0[
 Regaining $w2 Energy every $t2 sec.][]
 
@@ -657,7 +659,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Incarnation: Chosen of Elune (102560), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Owlkin Frenzy (157228), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Warrior of Elune (202425), Solar Stabbing (202426), Blessing of Elune (202737), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Incarnation: Chosen of Elune (102560), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Owlkin Frenzy (157228), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Warrior of Elune (202425), Solar Stabbing (202426), Blessing of Elune (202737), PH - Affinity Effects Are Increased (210667)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -770,7 +772,7 @@ Duration         : 3600 seconds
 Proc Chance      : 30%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
-Affecting spells : Improved Poisons (14117), Envenom (32645), Mastery: Potent Poisons (76803), Vendetta (79140), Poisoned Knife (185565), Surge of Toxins (192425), Master Poisoner (196864), Numbing Poison (200803)
+Affecting spells : Improved Poisons (14117), Envenom (32645), Mastery: Potent Poisons (76803), Vendetta (79140), Poisoned Knife (185565), Master Alchemist (192318), Surge of Toxins (192425), Master Poisoner (196864), Numbing Poison (200803)
 Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ...xx... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -2365,7 +2367,7 @@ Effects          :
 #15 (id=260986)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 
-Name             : Combat Rogue (id=137036) [Spell Family (8), Passive, Hidden] 
+Name             : Outlaw Rogue (id=137036) [Spell Family (8), Passive, Hidden] 
 Class            : Combat Rogue
 School           : Physical
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -2376,8 +2378,9 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179720)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+#1 (id=179720)   : Apply Aura (6) | Add Percent Modifier: Spell Critical Damage (108)
+                   Base Value: 200 | Scaled Value: 200 | Misc Value: 15
+                   Affected Spells: Between the Eyes (199804)
 #2 (id=191056)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=191057)   : Apply Aura (6) | Dummy (4)
@@ -3266,9 +3269,9 @@ Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=283680)   : Apply Aura (6) | Modify Ranged and Melee Haste% (192)
-                   Base Value: 40 | Scaled Value: 40
-Description      : Increases Haste by $s1% for the duration of Roll the Bones.
+#1 (id=283680)   : Apply Aura (6) | Mod Power Regen (110)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 3
+Description      : Increases Energy regeneration by $s1% for the duration of Roll the Bones.
 Tooltip          : Haste increased by $s1%.
 
 Name             : Shark Infested Waters (id=193357) [Spell Family (8)] 
@@ -3285,7 +3288,7 @@ Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=283681)   : Apply Aura (6) | Modify Critical Strike% (290)
-                   Base Value: 40 | Scaled Value: 40
+                   Base Value: 25 | Scaled Value: 25
 Description      : Increases Critical Strike chance by $s1% for the duration of Roll the Bones.
 Tooltip          : Critical Strike chance increased by $s1%.
 
@@ -3295,6 +3298,9 @@ School           : Physical
 Spell Level      : 1
 GCD              : 1 seconds
 Duration         : Aura (infinite)
+Proc Chance      : 100%
+Proc Flags       : ....x... x.x.x.x. x....... ........ 
+                 : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
 Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -3302,10 +3308,10 @@ Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=283682)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 35 | Scaled Value: 35 | Misc Value: 0x7f
-Description      : Increases all damage done by $s1% for the duration of Roll the Bones.
-Tooltip          : All damage done increased by $s1%.
+#1 (id=283682)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 127
+Description      : For the duration of Roll the Bones, each time you use a finishing move, you reduce the remaining cooldown on Adrenaline Rush and Sprint by $s1 sec per combo point spent.
+Tooltip          : Finishers reduce the remaining cooldown on Adrenaline Rush and Sprint by $s1 sec per combo point.
 
 Name             : True Bearing (id=193359) [Spell Family (8)] 
 Class            : Rogue
@@ -3320,10 +3326,10 @@ Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=283683)   : Apply Aura (6) | Unknown effect sub type (318)
-                   Base Value: 40 | Scaled Value: 40
-Description      : Increases chance to trigger Main Gauche by ${$m1*$76806m2/100}% for the duration of Roll the Bones.
-Tooltip          : Increases chance to trigger Main Gauche by ${$m1*$76806m2/100}%.
+#1 (id=283683)   : Apply Aura (6) | Unknown effect sub type (227)
+                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 213914
+Description      : Increases current and maximum health by $s1% every $t1 sec for the duration of Roll the Bones.
+Tooltip          : Increases current and maximum health by $s1% every $t1 sec.
 
 Name             : Deeper Strategem (id=193531) [Spell Family (8), Passive] 
 Class            : Rogue
@@ -3900,11 +3906,9 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=293724)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 (avg=0, dl=0.4) | AP Coefficient: 10.00000 | Radius: 0 - 8 yards
-#2 (id=294104)   : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
-                   Base Value: 30 | Scaled Value: 30
-Description      : Roll the Bones dice explode and instantly deal $s1 Physical damage to all targets within $A1 yards of the Rogue. Also increases attack speed by $s2% for the duration of Roll the Bones.
+#1 (id=293724)   : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
+                   Base Value: 25 | Scaled Value: 25
+Description      : Increases attack speed by $s2% for the duration of Roll the Bones.
 Tooltip          : Attack speed increased by $s2%.
 
 Name             : Rupture (id=199672) [Hidden] 
@@ -4054,7 +4058,7 @@ GCD              : 1 seconds
 Velocity         : 50 yards/sec
 Cooldown         : 20 seconds
 Mechanic         : Unknown(95)
-Affecting spells : Deeper Strategem (193531), Alacrity (193539), Tangled Shadow (200778), Fatebringer (202524)
+Affecting spells : Outlaw Rogue (137036), Deeper Strategem (193531), Alacrity (193539), Tangled Shadow (200778), Fatebringer (202524)
 Attributes       : ....x... ........ x.....x. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
@@ -4066,7 +4070,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.25000
 #2 (id=294040)   : Apply Aura (6) | Stun (12)
                    Base Value: 70 | Scaled Value: 70 | Mechanic: Unknown(95)
-Description      : Finishing move that deals damage with your pistol and stuns the target:
+Description      : Finishing move that deals damage with your pistol and stuns the target. Critical strikes with this ability deal four times normal damage:
    1 point  : ${$AP*0.35*1*$<mult>} damage, 1 sec
    2 points: ${$AP*0.35*2*$<mult>} damage, 2 sec
    3 points: ${$AP*0.35*3*$<mult>} damage, 3 sec
@@ -4198,7 +4202,7 @@ Range            : 100 yards
 Duration         : 12 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Mastery: Potent Poisons (76803), Vendetta (79140), Surge of Toxins (192425), Master Poisoner (196864)
+Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Mastery: Potent Poisons (76803), Vendetta (79140), Master Alchemist (192318), Surge of Toxins (192425), Master Poisoner (196864)
 Triggered by     : Numbing Poison (200802)
 Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...... ........ 
                  : ..x..... ........ ........ x.......   .......x ........ ........ ......x. 
@@ -4301,7 +4305,7 @@ Triggered by     : Deepening Shadows (185314)
 Attributes       : ....x... ........ .....x.. ...x....   .....x.. ..x..... ........ ....x... 
                  : ..x..... ........ ........ ........   ........ ........ .xx..... ......x. 
                  : ........ .......x ........ ........   ......x. ........ ........ ........ 
-                 : ..x..... ..x..... ........ ........   ........ ........ x....... ........ 
+                 : ..x...x. ..x..... ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Disable target procs (113)
@@ -4331,5 +4335,24 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3
 Description      : Invoke ancient symbols of power, increasing all damage done by the Rogue by $s1% for $d.
 Tooltip          : All damage done increased by $s1%.
+
+Name             : True Bearing (id=213914) [Hidden] 
+Class            : Rogue
+School           : Physical
+Spell Level      : 1
+Duration         : Aura (infinite)
+Stacks           : 60 maximum
+Proc Chance      : 101%
+Triggered by     : True Bearing (193359)
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7)
+Effects          :
+#1 (id=317490)   : Apply Aura (6) | Unknown effect sub type (230)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000
 
 

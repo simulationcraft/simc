@@ -3856,7 +3856,6 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Duration         : 12 seconds
-Charges          : 3 (2 seconds cooldown)
 Affecting spells : Mastery: Master Demonologist (77219), Summoner's Prowess (211108), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4580,7 +4579,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Place a phantom singularity above the target, which consumes the life of all enemies within $205246A2 yards, dealing $205246s2 damage every $t sec for $d, healing you for ${$205246e2*100}% of the damage done.
 
-Name             : Summon Inquisitor (id=205180) [Spell Family (5)] 
+Name             : Summon Dreadlord (id=205180) [Spell Family (5)] 
 Class            : Warlock
 School           : Physical
 Resource         : 1 Soul Shard
@@ -4596,7 +4595,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=302908)   : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 103673 | Misc Value 2: 0xeb6 | Radius: 2.5 yards
-Description      : Summon a demonic Inquisitor that will launch Shadowfrost Volleys at all targets that you have Doomed. Lasts $d.
+Description      : Summon a Dreadlord that will launch Shadow Volleys at all targets that you have Doomed. Lasts $d.
 
 Name             : Shadowflame (id=205181) [Spell Family (5)] 
 Class            : Warlock

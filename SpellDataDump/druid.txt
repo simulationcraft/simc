@@ -175,7 +175,7 @@ GCD              : 1 seconds
 Duration         : 24 seconds
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Predatory Swiftness (16974), Mastery: Razor Claws (77493), Incarnation: King of the Jungle (102543), Berserk (106951), Item - Druid T14 Feral 4P Bonus (123085), Clearcasting (135700), Item - Druid T15 Feral 2P Bonus (138352), Bloodletting (165699), Lacerate (192090), Astral Influence (197524), Jagged Wounds (202032), Razor Fangs (210570), PH - Affinity Effects Are Increased (210667), Open Wounds (210670)
+Affecting spells : Predatory Swiftness (16974), Mastery: Razor Claws (77493), Incarnation: King of the Jungle (102543), Berserk (106951), Item - Druid T14 Feral 4P Bonus (123085), Clearcasting (135700), Item - Druid T15 Feral 2P Bonus (138352), Bloodletting (165699), Thrash (192090), Astral Influence (197524), Jagged Wounds (202032), Razor Fangs (210570), PH - Affinity Effects Are Increased (210667), Open Wounds (210670)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -233,7 +233,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Mastery: Razor Claws (77493), Incarnation: King of the Jungle (102543), Prowl (102547), Berserk (106951), Clearcasting (135700), Bloodletting (165699), Lacerate (192090), Astral Influence (197524), Jagged Wounds (202032), Tear the Flesh (210593), PH - Affinity Effects Are Increased (210667), Open Wounds (210670)
+Affecting spells : Mastery: Razor Claws (77493), Incarnation: King of the Jungle (102543), Prowl (102547), Berserk (106951), Clearcasting (135700), Bloodletting (165699), Thrash (192090), Astral Influence (197524), Jagged Wounds (202032), Tear the Flesh (210593), PH - Affinity Effects Are Increased (210667), Open Wounds (210670)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -271,6 +271,26 @@ Effects          :
 Description      : Activates Cat Form and increases movement speed by $s1% while in Cat Form for $d.
 Tooltip          : Increased movement speed by $s1% while in Cat Form.
 
+Name             : Remove Corruption (id=2782) [Spell Family (7)] 
+Class            : Druid
+School           : Arcane
+Spell Level      : 22
+Range            : 40 yards
+GCD              : 1.5 seconds
+Cooldown         : 8 seconds
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=164777)   : Dispel (38)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 2
+#2 (id=846)      : Dispel (38)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 4
+Description      : Nullifies corrupting effects on the friendly target, removing all Curse and Poison effects.
+
 Name             : Cat Form (id=3025) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Nature
@@ -292,7 +312,7 @@ Effects          :
                    Affected Spells: Wild Charge (102401)
 #4 (id=162558)   : Apply Aura (6) | Add Flat Modifier: Spell Global Cooldown (107)
                    Base Value: -500 | Scaled Value: -500 | Misc Value: 21
-                   Affected Spells: Entangling Roots (339), Healing Touch (5185), Rebirth (20484)
+                   Affected Spells: Entangling Roots (339), Healing Touch (5185), Rebirth (20484), Touch of the Moon (213672)
 
 Name             : Solar Wrath (Solar) (id=5176) [Scaling Spell (3), Spell Family (7)] 
 Class            : Restoration Rogue, Druid
@@ -305,7 +325,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Incarnation: Chosen of Elune (102560), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Owlkin Frenzy (157228), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Warrior of Elune (202425), Solar Stabbing (202426), Blessing of Elune (202737), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Incarnation: Chosen of Elune (102560), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Owlkin Frenzy (157228), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Warrior of Elune (202425), Solar Stabbing (202426), Blessing of Elune (202737), PH - Affinity Effects Are Increased (210667)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -420,7 +440,7 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Incarnation: King of the Jungle (102543), Berserk (106951), Item - Druid T14 Feral 2P Bonus (123084), Clearcasting (135700), Tiger's Fury (138358), Feral Fury (144865), Bloodtalons (145152), Lacerate (192090), Astral Influence (197524), Feral Power (210571), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Incarnation: King of the Jungle (102543), Berserk (106951), Item - Druid T14 Feral 2P Bonus (123084), Clearcasting (135700), Tiger's Fury (138358), Feral Fury (144865), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Feral Power (210571), PH - Affinity Effects Are Increased (210667)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -472,10 +492,10 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=124697)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 15 | Scaled Value: 15
-                   Affected Spells: Rejuvenation (774), Healing Touch (5185), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Efflorescence (145205), Tranquility (157982), Mark of Shifting (186370)
+                   Affected Spells: Rejuvenation (774), Healing Touch (5185), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Efflorescence (145205), Tranquility (157982), Mark of Shifting (186370), Touch of the Moon (213672)
 #2 (id=124698)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22
-                   Affected Spells: Rejuvenation (774), Healing Touch (5185), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Efflorescence (145205), Tranquility (157982), Mark of Shifting (186370)
+                   Affected Spells: Rejuvenation (774), Healing Touch (5185), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Efflorescence (145205), Tranquility (157982), Mark of Shifting (186370), Touch of the Moon (213672)
 #3 (id=1947)     : Apply Aura (6) | Modify Armor% (101)
                    Base Value: 120 | Scaled Value: 120 | Misc Value: 1
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Mark of Shifting (186370)
@@ -531,13 +551,13 @@ Effects          :
                    Base Value: 200 | Scaled Value: 200 | Misc Value: 1
 #4 (id=222311)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11
-                   Affected Spells: Maul (6807), Frenzied Regeneration (22842), Lacerate (33745), Mangle (33917), Thrash (77758), Lacerate (192090)
+                   Affected Spells: Maul (6807), Frenzied Regeneration (22842), Mangle (33917), Thrash (77758), Thrash (192090)
 #5 (id=222312)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11
-                   Affected Spells: Mighty Bash (5211), Maul (6807), Lacerate (33745), Incarnation: Tree of Life (33891), Mangle (33917), Thrash (77758), Pulverize (80313), Cenarion Ward (102351), Cenarion Ward (102352), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Pulverize (158792), Lacerate (192090)
+                   Affected Spells: Mighty Bash (5211), Maul (6807), Incarnation: Tree of Life (33891), Mangle (33917), Thrash (77758), Pulverize (80313), Cenarion Ward (102351), Cenarion Ward (102352), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Pulverize (158792), Thrash (192090)
 #6 (id=272150)   : Apply Aura (6) | Unknown effect sub type (275)
                    Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Healing Touch (5185)
+                   Affected Spells: Healing Touch (5185), Touch of the Moon (213672)
 #7 (id=299392)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 17
 #8 (id=299393)   : Apply Aura (6) | Modify Expertise% (240)
@@ -550,7 +570,7 @@ Effects          :
                    Affected Spells: Ysera's Gift (145108)
 #11 (id=299396)   : Apply Aura (6) | Add Percent Modifier: Spell Generated Threat (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 2
-                   Affected Spells: Rejuvenation (774), Healing Touch (5185), Cenarion Ward (102351), Cenarion Ward (102352), Renewal (108238), Mark of Shifting (186370)
+                   Affected Spells: Rejuvenation (774), Healing Touch (5185), Cenarion Ward (102351), Cenarion Ward (102352), Renewal (108238), Mark of Shifting (186370), Touch of the Moon (213672)
 #12 (id=304138)   : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10
                    Affected Spells: Rebirth (20484)
@@ -600,7 +620,7 @@ Spell Level      : 10
 Range            : 5 yards
 Cooldown         : 3 seconds
 Stance Mask      : 0x00000010
-Affecting spells : Bear Form (5487), Incarnation: Guardian of Ursoc (102558), Bloodtalons (145152), Tooth and Claw (165411), Lacerate (192090), Astral Influence (197524), Mauler (208762), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Bear Form (5487), Incarnation: Guardian of Ursoc (102558), Bloodtalons (145152), Tooth and Claw (165411), Thrash (192090), Astral Influence (197524), Mauler (208762), PH - Affinity Effects Are Increased (210667)
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -622,7 +642,7 @@ Spell Level      : 6
 Range            : 40 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x40000012
-Affecting spells : Incarnation: Chosen of Elune (102560), Balance Overrides Passive (106732), Item - Druid T14 Balance 4P Bonus (123083), Guardian Druid (137010), Restoration Druid (137012), Lucidity (137247), Lunar Inspiration (155627), Persistence (186396), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Starfall (197637), Feral Overrides Passive (197692), Twilight Glow (202386), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Incarnation: Chosen of Elune (102560), Item - Druid T13 Restoration 4P Bonus (Rejuvenation) (105770), Balance Overrides Passive (106732), Item - Druid T14 Balance 4P Bonus (123083), Guardian Druid (137010), Restoration Druid (137012), Lucidity (137247), Lunar Inspiration (155627), Persistence (186396), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Starfall (197637), Feral Overrides Passive (197692), Twilight Glow (202386), PH - Affinity Effects Are Increased (210667), Galactic Guardian (213708)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -632,6 +652,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=3726)     : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
+#2 (id=317114)   : Energize Power (30)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: rage
 Description      : A quick beam of lunar light burns the enemy for $164812s1 Arcane damage and then an additional $164812o2 Arcane damage over $164812d.
 
 Usable while in Bear Form.
@@ -925,8 +947,6 @@ Effects          :
 #1 (id=12001)    : Apply Aura (6) | Threat (10)
                    Base Value: 900 | Scaled Value: 900 | Misc Value: 127
 #2 (id=12002)    : Apply Aura (6) | Unknown effect sub type (332)
-                   Base Value: 779 | Scaled Value: 779
-#3 (id=117093)   : Apply Aura (6) | Unknown effect sub type (332)
                    Base Value: 16979 | Scaled Value: 16979
                    Affected Spells: Wild Charge (102401)
 
@@ -955,7 +975,7 @@ Spell Level      : 3
 Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Predatory Swiftness (16974), Incarnation: King of the Jungle (102543), Berserk (106951), Clearcasting (135700), Item - Druid T15 Feral 2P Bonus (138352), Tiger's Fury (138358), Bloodtalons (145152), Lacerate (192090), Astral Influence (197524), Powerful Bite (210575), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Predatory Swiftness (16974), Incarnation: King of the Jungle (102543), Berserk (106951), Clearcasting (135700), Item - Druid T15 Feral 2P Bonus (138352), Tiger's Fury (138358), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Powerful Bite (210575), PH - Affinity Effects Are Increased (210667)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -989,7 +1009,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 10 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Predatory Swiftness (16974), Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Clearcasting (135700), Item - Druid T15 Feral 2P Bonus (138352), Bloodtalons (145152), Lacerate (192090), Astral Influence (197524), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Predatory Swiftness (16974), Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Clearcasting (135700), Item - Druid T15 Feral 2P Bonus (138352), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), PH - Affinity Effects Are Increased (210667)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -1023,7 +1043,7 @@ Cooldown         : 60 seconds
 Affecting spells : Barkskin Duration Increase (60142), Guardian Druid (137010), Ursoc's Endurance (200399), Perpetual Spring (200402), Survival of the Fittest (203965), 
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ...x.... ........ .x...... ........ 
+                 : ........ ........ ........ ........   ...x.... .x...... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1036,6 +1056,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 26
 #4 (id=253237)   : Apply Aura (6) | Unknown effect sub type (149)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 127 | Misc Value 2: 0xf
+#5 (id=317118)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
+                   Base Value: 0 | Scaled Value: 0
 Description      : The Druid's skin becomes as tough as bark, reducing all damage taken by $s2%$?s63057[ and reducing chance to be critically hit by 25%][] for $d. While protected, damaging attacks will not cause spellcasting delays.
 
 Usable while stunned, frozen, incapacitated, feared, or asleep, and in all forms.
@@ -1050,7 +1072,7 @@ Duration         : 6 seconds
 Cooldown         : 1 seconds
 Charges          : 2 (20 seconds cooldown)
 Stance Mask      : 0x00000010
-Affecting spells : Bear Form (5487), Item - Druid T14 Guardian 4P Bonus (123087), Improved Regeneration (138217), Guardian of Elune (155578), Primal Mending (177969), Ursoc's Endurance (200399), Wildflesh (200400), Right to Bear Arms (200450)
+Affecting spells : Bear Form (5487), Item - Druid T14 Guardian 4P Bonus (123087), Improved Regeneration (138217), Primal Mending (177969), Wildflesh (200400), Right to Bear Arms (200450), Guardian of Elune (213680)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1134,7 +1156,6 @@ Class            : Balance Restoration Druid
 School           : Nature
 Spell Level      : 50
 Range            : 40 yards
-GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 180 seconds
 Stance Mask      : 0x40000002
@@ -1149,27 +1170,6 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 127 | Misc Value 2: 0x1
 Description      : Infuse a friendly healer with energy, allowing them to cast spells without spending mana for $d.
 Tooltip          : Your spells cost no mana.
-
-Name             : Lacerate (id=33745) [Spell Family (7)] 
-Class            : Guardian Druid
-School           : Physical
-Resource         : 15 Rage w/ Sharpened Claws (id=202110)
-Spell Level      : 22
-Range            : 5 yards
-GCD              : 1.5 seconds
-Proc Chance      : 101%
-Stance Mask      : 0x00000010
-Affecting spells : Bear Form (5487), Incarnation: Guardian of Ursoc (102558), Bloodtalons (145152), Lacerate (192090), Astral Influence (197524), Jagged Claws (200409), Rend and Tear (204053), PH - More Lacerate Stacks (208342), PH - Affinity Effects Are Increased (210667)
-Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
-                 : ........ ........ ........ ........   .......x ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .x..x... ........ ........   ........ .......x ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=23629)    : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.60000 | Mechanic: Bleed
-Description      : Lacerates the enemy target, dealing $s1 Bleed damage and an additional $192090o1 Bleed damage over $192090d. Stacks up to $192090u times.
 
 Name             : Lifebloom (id=33763) [Spell Family (7)] 
 Class            : Restoration Druid
@@ -1273,7 +1273,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
 Stance Mask      : 0x00000010
-Affecting spells : Bear Form (5487), Mangle! (93622), Incarnation: Guardian of Ursoc (102558), Bloodtalons (145152), Soul of the Forest (158477), Lacerate (192090), Astral Influence (197524), Vicious Bites (200440), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Bear Form (5487), Mangle! (93622), Incarnation: Guardian of Ursoc (102558), Bloodtalons (145152), Soul of the Forest (158477), Thrash (192090), Astral Influence (197524), Vicious Bites (200440), PH - Affinity Effects Are Increased (210667)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1830,13 +1830,13 @@ Attributes       : ........ ........ ..x..... .x......   ........ ..x..... .x...
 Effects          :
 #1 (id=63124)    : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10
-                   Affected Spells: Entangling Roots (339), Healing Touch (5185), Rebirth (20484)
+                   Affected Spells: Entangling Roots (339), Healing Touch (5185), Rebirth (20484), Touch of the Moon (213672)
 #2 (id=100285)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14
-                   Affected Spells: Entangling Roots (339), Healing Touch (5185), Rebirth (20484)
+                   Affected Spells: Entangling Roots (339), Healing Touch (5185), Rebirth (20484), Touch of the Moon (213672)
 #3 (id=167620)   : Apply Aura (6) | Unknown effect sub type (275)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10
-                   Affected Spells: Entangling Roots (339), Healing Touch (5185), Rebirth (20484)
+                   Affected Spells: Entangling Roots (339), Healing Touch (5185), Rebirth (20484), Touch of the Moon (213672)
 Description      : $@spelldesc16974
 Tooltip          : Your next Entangling Roots, Healing Touch, or Rebirth will be instant, free, and castable in all forms.
 
@@ -1907,7 +1907,7 @@ GCD              : 1.5 seconds
 Cooldown         : 6 seconds
 Stance Mask      : 0x00000010
 Mechanic         : Bleed
-Affecting spells : Bear Form (5487), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Guardian Overrides Passive (106734), Berserk (106951), Clearcasting (135700), Bloodletting (165699), Lacerate (192090), Astral Influence (197524), Jagged Claws (200409), Sharpened Claws (202110), PH - Increase Thrash Radius and Damage (208681), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Bear Form (5487), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Guardian Overrides Passive (106734), Berserk (106951), Clearcasting (135700), Bloodletting (165699), Thrash (192090), Astral Influence (197524), Jagged Claws (200409), PH - Increase Thrash Radius and Damage (208681), PH - Affinity Effects Are Increased (210667)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ .......x ........ ........ 
@@ -1919,7 +1919,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.60000 | Radius: 0 - 8 yards | Mechanic: Bleed
 #2 (id=312099)   : Energize Power (30)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: rage
-Description      : Strikes all enemy targets within $A1 yards, dealing $s1 Bleed damage and applying a stack of Lacerate for an additional $192090o1 Bleed damage over $192090d.
+Description      : Strikes all enemy targets within $A1 yards, dealing $s1 Bleed damage and an additional $192090o1 Bleed damage over $192090d. When applied from Bear Form, this bleed can stack up to $192090u times.
 
 Generates ${$m2/10} Rage. 
 
@@ -1932,7 +1932,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Mastery: Starlight (77492), Incarnation: Chosen of Elune (102560), Item - Druid T13 Balance 4P Bonus (Starsurge) (105717), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Lucidity (137247), Item - Druid T15 Balance 2P Bonus (138348), Item - Druid T16 Balance 2P Bonus (144767), Owlkin Frenzy (157228), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Scythe of the Stars (202433), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Mastery: Starlight (77492), Incarnation: Chosen of Elune (102560), Item - Druid T13 Balance 4P Bonus (Starsurge) (105717), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Lucidity (137247), Item - Druid T15 Balance 2P Bonus (138348), Item - Druid T16 Balance 2P Bonus (144767), Owlkin Frenzy (157228), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Scythe of the Stars (202433), PH - Affinity Effects Are Increased (210667)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1983,7 +1983,7 @@ Spell Level      : 50
 Range            : 5 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x00000010
-Affecting spells : Bear Form (5487), Lacerate (192090), Astral Influence (197524), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Bear Form (5487), Thrash (192090), Astral Influence (197524), PH - Affinity Effects Are Increased (210667)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1995,7 +1995,7 @@ Effects          :
                    Base Value: 420 | Scaled Value: 4.2
 #2 (id=68523)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
-Description      : A devastating blow that consumes 3 stacks of your Lacerate on the target to deal $sw1 Physical damage, and reduce damage taken by $158792s1% for $158792d.
+Description      : A devastating blow that consumes 3 stacks of your Thrash on the target to deal $sw1 Physical damage, and reduce damage taken by $158792s1% for $158792d.
 
 Name             : Sabertooth (id=80863) [Spell Family (7)] 
 Class            : Druid
@@ -2221,7 +2221,7 @@ Spell Level      : 24
 Range            : 40 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x40000000
-Affecting spells : Incarnation: Chosen of Elune (102560), Balance Overrides Passive (106732), Item - Druid T14 Balance 4P Bonus (123083), Restoration Druid (137012), Lucidity (137247), Persistence (186396), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Starfall (197637), Sunfire Burns (202466), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Incarnation: Chosen of Elune (102560), Balance Overrides Passive (106732), Item - Druid T14 Balance 4P Bonus (123083), Restoration Druid (137012), Lucidity (137247), Persistence (186396), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Starfall (197637), Sunfire Burns (202466), PH - Affinity Effects Are Increased (210667), Sunblind (213682)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -2242,7 +2242,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
-Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ....x... 
+Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -2531,7 +2531,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... x....
 Effects          :
 #1 (id=111383)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 11
-                   Affected Spells: Lacerate (33745), Mangle (33917), Thrash (77758), Thrash (106830), Lacerate (192090)
+                   Affected Spells: Mangle (33917), Thrash (77758), Thrash (106830), Thrash (192090)
 #2 (id=111384)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
                    Base Value: -1500 | Scaled Value: -1500 | Misc Value: 11
                    Affected Spells: Maul (6807)
@@ -2730,7 +2730,7 @@ GCD              : 1 seconds
 Duration         : 15 seconds
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Mastery: Razor Claws (77493), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Berserk (106951), Clearcasting (135700), Bloodletting (165699), Astral Influence (197524), Jagged Claws (200409), Jagged Wounds (202032), Sharpened Claws (202110), PH - Increase Thrash Radius and Damage (208681), PH - Affinity Effects Are Increased (210667), Open Wounds (210670)
+Affecting spells : Mastery: Razor Claws (77493), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Berserk (106951), Clearcasting (135700), Bloodletting (165699), Astral Influence (197524), Jagged Claws (200409), Jagged Wounds (202032), PH - Increase Thrash Radius and Damage (208681), PH - Affinity Effects Are Increased (210667), Open Wounds (210670)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ .......x ........ ........ 
@@ -2750,11 +2750,9 @@ Tooltip          : Bleeding for $w2 damage every $t2 sec.
 Name             : Thrash (id=106832) [Spell Family (7)] 
 Class            : Feral Guardian Druid
 School           : Physical
-Resource         : 0 Rage
 Spell Level      : 18
 Range            : 5 yards
 Stance Mask      : 0x00000011
-Affecting spells : Sharpened Claws (202110)
 Attributes       : ........ x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2970,7 +2968,7 @@ Attributes       : ........ ........ ........ ...x....   ........ ..x..... .....
 Effects          :
 #1 (id=127235)   : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 10
-                   Affected Spells: Healing Touch (5185)
+                   Affected Spells: Healing Touch (5185), Touch of the Moon (213672)
 #2 (id=228019)   : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200
 #3 (id=253734)   : Apply Aura (6) | Dummy (4)
@@ -3457,8 +3455,8 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179696)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+#1 (id=179696)   : Apply Aura (6) | Unknown effect sub type (179)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 8
 #2 (id=191146)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=191147)   : Apply Aura (6) | Dummy (4)
@@ -3486,6 +3484,8 @@ Effects          :
 #14 (id=260785)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #15 (id=260786)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#16 (id=317007)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 
 Name             : Displacer Beast (id=137452) [Spell Family (7)] 
@@ -3644,7 +3644,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=195368)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 30 | Scaled Value: 30
-                   Affected Spells: Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Lacerate (33745), Mangle (33917), Swipe (106785), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Lacerate (192090)
+                   Affected Spells: Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Swipe (106785), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Thrash (192090)
 Description      : Casting Healing Touch causes your next two melee abilities to deal $s1% additional damage.
 Tooltip          : Your next two melee abilities deal $s1% additional damage.
 
@@ -3723,6 +3723,9 @@ Your Omen of Clarity now affects the next ${$m1+1} $?s16864[Cat Form abilities][
 Name             : Guardian of Elune (id=155578) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Proc Chance      : 100%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3731,20 +3734,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=216222)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
-                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1
-                   Affected Spells: Ironfur (192081), Mark of Ursol (192083)
-#2 (id=216273)   : Apply Aura (6) | Add Flat Modifier: Spell Periodic Damage (107)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22
-                   Affected Spells: Frenzied Regeneration (22842)
-#3 (id=301353)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 12
-                   Affected Spells: Frenzied Regeneration (22842)
-#4 (id=301354)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 32
-                   Affected Spells: Frenzied Regeneration (22842)
-Description      : Ironfur and Mark of Ursol now last an additional ${$m1/1000} sec.
-Frenzied Regeneration now heals for an additional $s2%.
+#1 (id=216222)   : Apply Aura (6) | Proc Trigger Spell: Guardian of Elune (42)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 213680
+Description      : Mangle increases the duration of your next Ironfur or Mark of Ursol by ${$213680m1/1000} sec, or the healing of your next Frenzied Regeneration by $213680s2%.
 
 Name             : Lunar Inspiration (id=155580) [Passive] 
 Class            : Druid
@@ -3843,7 +3835,7 @@ Range            : 100 yards
 Duration         : 15 seconds
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Mastery: Razor Claws (77493), Incarnation: King of the Jungle (102543), Prowl (102547), Berserk (106951), Clearcasting (135700), Bloodletting (165699), Lacerate (192090), Astral Influence (197524), Jagged Wounds (202032), Tear the Flesh (210593), PH - Affinity Effects Are Increased (210667), Open Wounds (210670)
+Affecting spells : Mastery: Razor Claws (77493), Incarnation: King of the Jungle (102543), Prowl (102547), Berserk (106951), Clearcasting (135700), Bloodletting (165699), Thrash (192090), Astral Influence (197524), Jagged Wounds (202032), Tear the Flesh (210593), PH - Affinity Effects Are Increased (210667), Open Wounds (210670)
 Triggered by     : Rake (1822)
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
@@ -4011,8 +4003,8 @@ Name             : Pulverize (id=158792) [Spell Family (7)]
 Class            : Druid
 School           : Physical
 Spell Level      : 50
-Duration         : 12 seconds
-Affecting spells : Bear Form (5487), Lacerate (192090), Astral Influence (197524), PH - Affinity Effects Are Increased (210667)
+Duration         : 20 seconds
+Affecting spells : Bear Form (5487), Thrash (192090), Astral Influence (197524), PH - Affinity Effects Are Increased (210667)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4236,7 +4228,7 @@ Spell Level      : 3
 Range            : 100 yards
 Duration         : 16 seconds
 Stance Mask      : 0x40000012
-Affecting spells : Incarnation: Chosen of Elune (102560), Balance Overrides Passive (106732), Item - Druid T14 Balance 4P Bonus (123083), Guardian Druid (137010), Restoration Druid (137012), Lucidity (137247), Lunar Inspiration (155627), Persistence (186396), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Starfall (197637), Feral Overrides Passive (197692), Twilight Glow (202386), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Incarnation: Chosen of Elune (102560), Balance Overrides Passive (106732), Item - Druid T14 Balance 4P Bonus (123083), Guardian Druid (137010), Restoration Druid (137012), Lucidity (137247), Lunar Inspiration (155627), Persistence (186396), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Starfall (197637), Feral Overrides Passive (197692), Twilight Glow (202386), PH - Affinity Effects Are Increased (210667)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ .x...... ..x..... ......x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4259,7 +4251,7 @@ Spell Level      : 18
 Range            : 100 yards
 Duration         : 12 seconds
 Stance Mask      : 0x40000000
-Affecting spells : Incarnation: Chosen of Elune (102560), Balance Overrides Passive (106732), Item - Druid T14 Balance 4P Bonus (123083), Restoration Druid (137012), Lucidity (137247), Persistence (186396), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Starfall (197637), Sunfire Burns (202466), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Incarnation: Chosen of Elune (102560), Balance Overrides Passive (106732), Item - Druid T14 Balance 4P Bonus (123083), Restoration Druid (137012), Lucidity (137247), Persistence (186396), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Starfall (197637), Sunfire Burns (202466), PH - Affinity Effects Are Increased (210667), Sunblind (213682)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ .x...... ..x..... ......x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4345,7 +4337,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 10 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Predatory Swiftness (16974), Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Clearcasting (135700), Item - Druid T15 Feral 2P Bonus (138352), Bloodtalons (145152), Lacerate (192090), Astral Influence (197524), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Predatory Swiftness (16974), Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Clearcasting (135700), Item - Druid T15 Feral 2P Bonus (138352), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), PH - Affinity Effects Are Increased (210667)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -4372,7 +4364,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 10 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Predatory Swiftness (16974), Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Clearcasting (135700), Item - Druid T15 Feral 2P Bonus (138352), Bloodtalons (145152), Lacerate (192090), Astral Influence (197524), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Predatory Swiftness (16974), Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Clearcasting (135700), Item - Druid T15 Feral 2P Bonus (138352), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), PH - Affinity Effects Are Increased (210667)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -4399,7 +4391,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 10 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Predatory Swiftness (16974), Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Clearcasting (135700), Item - Druid T15 Feral 2P Bonus (138352), Bloodtalons (145152), Lacerate (192090), Astral Influence (197524), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Predatory Swiftness (16974), Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Clearcasting (135700), Item - Druid T15 Feral 2P Bonus (138352), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), PH - Affinity Effects Are Increased (210667)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -4426,7 +4418,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 10 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Predatory Swiftness (16974), Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Clearcasting (135700), Item - Druid T15 Feral 2P Bonus (138352), Bloodtalons (145152), Lacerate (192090), Astral Influence (197524), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Predatory Swiftness (16974), Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Clearcasting (135700), Item - Druid T15 Feral 2P Bonus (138352), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), PH - Affinity Effects Are Increased (210667)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -4453,7 +4445,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 10 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Predatory Swiftness (16974), Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Clearcasting (135700), Item - Druid T15 Feral 2P Bonus (138352), Bloodtalons (145152), Lacerate (192090), Astral Influence (197524), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Predatory Swiftness (16974), Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Clearcasting (135700), Item - Druid T15 Feral 2P Bonus (138352), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), PH - Affinity Effects Are Increased (210667)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -4633,7 +4625,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Incarnation: Chosen of Elune (102560), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Owlkin Frenzy (157228), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Warrior of Elune (202425), Solar Stabbing (202426), Blessing of Elune (202737), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Incarnation: Chosen of Elune (102560), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Owlkin Frenzy (157228), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Warrior of Elune (202425), Solar Stabbing (202426), Blessing of Elune (202737), PH - Affinity Effects Are Increased (210667)
 Triggered by     : Solar Empowerment (164545)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4659,7 +4651,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Stance Mask      : 0x40000000
-Affecting spells : Mastery: Starlight (77492), Incarnation: Chosen of Elune (102560), Item - Druid T14 Balance 2P Bonus (123082), Lucidity (137247), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Stellar Drift (202354), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Mastery: Starlight (77492), Incarnation: Chosen of Elune (102560), Item - Druid T14 Balance 2P Bonus (123082), Lucidity (137247), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Stellar Drift (202354), PH - Affinity Effects Are Increased (210667), Echoing Stars (213666), 
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ......x. ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4683,7 +4675,7 @@ School           : Spellstorm
 Spell Level      : 76
 Range            : 50000 yards
 Velocity         : 0.8 yards/sec
-Affecting spells : Mastery: Starlight (77492), Incarnation: Chosen of Elune (102560), Item - Druid T14 Balance 2P Bonus (123082), Lucidity (137247), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Stellar Drift (202354), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Mastery: Starlight (77492), Incarnation: Chosen of Elune (102560), Item - Druid T14 Balance 2P Bonus (123082), Lucidity (137247), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Stellar Drift (202354), PH - Affinity Effects Are Increased (210667), Echoing Stars (213666), 
 Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ..x..... ........ ........ ......x.   x....... .x...... ....x... .x....x. 
                  : .......x .......x ........ ........   ........ ........ ........ ..x..... 
@@ -4706,7 +4698,7 @@ Cooldown         : 1 seconds
 Stacks           : 6 maximum
 Proc Chance      : 101%
 Stance Mask      : 0x00000010
-Affecting spells : Guardian of Elune (155578), Reinforced Fur (200395), Ursoc's Endurance (200399)
+Affecting spells : Reinforced Fur (200395), Ursoc's Endurance (200399), Guardian of Elune (213680), Gory Fur (213692)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4727,7 +4719,7 @@ School           : Nature
 Resource         : 45 Rage
 Spell Level      : 72
 Duration         : 6 seconds
-Affecting spells : Guardian of Elune (155578), Ursoc's Endurance (200399)
+Affecting spells : Ursoc's Endurance (200399), Guardian of Elune (213680), Gory Fur (213692)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4740,11 +4732,11 @@ Effects          :
 Description      : Reduces magical damage taken by $s1% for $d.
 Tooltip          : Magical damage taken reduced by $s1%.
 
-Name             : Lacerate (id=192090) [Spell Family (7)] 
+Name             : Thrash (id=192090) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
 Spell Level      : 38
-Range            : 5 yards
+Range            : 100 yards
 Duration         : 15 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
@@ -4760,10 +4752,10 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.30000 | Mechanic: Bleed
 #2 (id=301092)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Rip (1079), Rake (1822), Solar Wrath (5176), Shred (5221), Maul (6807), Moonfire (8921), Ferocious Bite (22568), Maim (22570), Lacerate (33745), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Sunfire (93402), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Lacerate (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Blood Claws (200814), Bloody Slash (202028)
+                   Affected Spells: Rip (1079), Rake (1822), Solar Wrath (5176), Shred (5221), Maul (6807), Moonfire (8921), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Sunfire (93402), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Blood Claws (200814), Bloody Slash (202028)
 #3 (id=301093)   : Apply Aura (6) | Unknown effect sub type (343)
                    Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Rip (1079), Rake (1822), Solar Wrath (5176), Shred (5221), Maul (6807), Moonfire (8921), Ferocious Bite (22568), Maim (22570), Lacerate (33745), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Sunfire (93402), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Lacerate (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Blood Claws (200814), Bloody Slash (202028)
+                   Affected Spells: Rip (1079), Rake (1822), Solar Wrath (5176), Shred (5221), Maul (6807), Moonfire (8921), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Sunfire (93402), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Blood Claws (200814), Bloody Slash (202028)
 Description      : $@spelldesc33745
 Tooltip          : Suffering $w1 damage every $t1 sec.
 
@@ -4797,7 +4789,7 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x40000002
-Affecting spells : Incarnation: Chosen of Elune (102560), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Owlkin Frenzy (157228), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Dark Side of the Moon (202384), Warrior of Elune (202425), Blessing of Elune (202737), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Incarnation: Chosen of Elune (102560), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Owlkin Frenzy (157228), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Dark Side of the Moon (202384), Warrior of Elune (202425), Blessing of Elune (202737), PH - Affinity Effects Are Increased (210667)
 Triggered by     : Lunar Empowerment (164547), Warrior of Elune (202425)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4958,7 +4950,7 @@ You also learn:
 
 $@spellicon6795 $@spellname6795
 $@spellicon33917 $@spellname33917
-$@spellicon106832 $@spellname106832
+$@spellicon77758 $@spellname77758
 $@spellicon192081 $@spellname192081
 $@spellicon22842 $@spellname22842
 
@@ -5001,10 +4993,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=290202)   : Apply Aura (6) | Add Flat Modifier: Spell Range (107)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 5
-                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Lacerate (33745), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Wild Charge (102401), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Mark of Shifting (186370), Solar Wrath (190984), Starfall (191034), Starfall (191037), Lacerate (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Stellar Flare (202347), Force of Nature (205636), Revitalize (212040)
+                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Wild Charge (102401), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Mark of Shifting (186370), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Stellar Flare (202347), Force of Nature (205636), Revitalize (212040), Touch of the Moon (213672), Swipe (213764)
 #2 (id=314659)   : Apply Aura (6) | Unknown effect sub type (153)
                    Base Value: 5 | Scaled Value: 5
-                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Lacerate (33745), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Wild Charge (102401), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Mark of Shifting (186370), Solar Wrath (190984), Starfall (191034), Starfall (191037), Lacerate (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Stellar Flare (202347), Force of Nature (205636), Revitalize (212040)
+                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Wild Charge (102401), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Mark of Shifting (186370), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Stellar Flare (202347), Force of Nature (205636), Revitalize (212040), Touch of the Moon (213672), Swipe (213764)
+#3 (id=317501)   : Apply Aura (6) | Add Flat Modifier: Spell Radius (107)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 6
+                   Affected Spells: Thrash (77758), Swipe (106785), Thrash (106830)
 Description      : Increases the range of all of your abilities by $s1 yards.
 
 Name             : Moonkin Form (id=197625) [Spell Family (7)] 
@@ -5054,7 +5049,7 @@ GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
 Cooldown         : 8 seconds
 Stance Mask      : 0x40000000
-Affecting spells : Mastery: Starlight (77492), Incarnation: Chosen of Elune (102560), Item - Druid T13 Balance 4P Bonus (Starsurge) (105717), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Lucidity (137247), Item - Druid T15 Balance 2P Bonus (138348), Item - Druid T16 Balance 2P Bonus (144767), Owlkin Frenzy (157228), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Scythe of the Stars (202433), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Mastery: Starlight (77492), Incarnation: Chosen of Elune (102560), Item - Druid T13 Balance 4P Bonus (Starsurge) (105717), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Lucidity (137247), Item - Druid T15 Balance 2P Bonus (138348), Item - Druid T16 Balance 2P Bonus (144767), Owlkin Frenzy (157228), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Scythe of the Stars (202433), PH - Affinity Effects Are Increased (210667)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5081,7 +5076,7 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x40000000
-Affecting spells : Incarnation: Chosen of Elune (102560), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Owlkin Frenzy (157228), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Dark Side of the Moon (202384), Warrior of Elune (202425), Blessing of Elune (202737), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Incarnation: Chosen of Elune (102560), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Owlkin Frenzy (157228), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Dark Side of the Moon (202384), Warrior of Elune (202425), Blessing of Elune (202737), PH - Affinity Effects Are Increased (210667)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5103,7 +5098,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Incarnation: Chosen of Elune (102560), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Owlkin Frenzy (157228), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Warrior of Elune (202425), Solar Stabbing (202426), Blessing of Elune (202737), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Incarnation: Chosen of Elune (102560), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Owlkin Frenzy (157228), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Warrior of Elune (202425), Solar Stabbing (202426), Blessing of Elune (202737), PH - Affinity Effects Are Increased (210667)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5123,7 +5118,7 @@ Spell Level      : 18
 Range            : 40 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x40000000
-Affecting spells : Incarnation: Chosen of Elune (102560), Balance Overrides Passive (106732), Item - Druid T14 Balance 4P Bonus (123083), Restoration Druid (137012), Lucidity (137247), Persistence (186396), Lacerate (192090), Celestial Alignment (194223), Astral Influence (197524), Starfall (197637), Sunfire Burns (202466), PH - Affinity Effects Are Increased (210667)
+Affecting spells : Incarnation: Chosen of Elune (102560), Balance Overrides Passive (106732), Item - Druid T14 Balance 4P Bonus (123083), Restoration Druid (137012), Lucidity (137247), Persistence (186396), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Starfall (197637), Sunfire Burns (202466), PH - Affinity Effects Are Increased (210667), Sunblind (213682)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -5218,20 +5213,6 @@ Effects          :
 #1 (id=290540)   : Server Side Script (77)
                    Base Value: 6 | Scaled Value: 6 | Radius: 0 - 60 yards
 Description      : Extend the duration of all of your heal over time effects on friendly targets within $A1 yards by $s1 sec.
-
-Name             : Astral Power (Passive) (id=197911) [Spell Family (7), Passive, Hidden] 
-Class            : Balance Druid
-School           : Nature
-Attributes       : ....x.xx ........ ........ ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ......x. ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=290831)   : Apply Aura (6) | Unknown effect sub type (402)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 255
 
 Name             : Prosperity (Passive Talent) (id=200383) [Spell Family (7), Passive] 
 Class            : Druid
@@ -5341,7 +5322,7 @@ Range            : 8 yards
 GCD              : 1 seconds
 Charges          : 3 (15 seconds cooldown)
 Stance Mask      : 0x00000001
-Affecting spells : Clearcasting (135700), Lacerate (192090), 
+Affecting spells : Clearcasting (135700), Thrash (192090), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -5414,25 +5395,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 139546
 Description      : Immediately gain $s1 combo points and an additional $s2 combo point every $t2 sec for $d.
 Tooltip          : Gaining $s2 combo point every $t sec.
-
-Name             : Sharpened Claws (id=202110) [Spell Family (7), Passive, Hidden] 
-Class            : Druid
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=297867)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 50 | Scaled Value: 50
-                   Affected Spells: Thrash (77758), Thrash (106830), Thrash (106832)
-#2 (id=297868)   : Dummy (3)
-                   Base Value: 15 | Scaled Value: 15
-Description      : Lacerate deals $s1% more initial damage but now costs $s2 Rage.
-Tooltip          : Lacerate deals $s1% more initial damage but now costs $s2 Rage.
 
 Name             : Feral Affinity (id=202155) [Spell Family (7), Passive] 
 Class            : Druid
@@ -5709,7 +5671,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Cooldown         : 10 seconds
+Charges          : 3 (15 seconds cooldown)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5755,9 +5717,9 @@ Name             : Full Moon (id=202771) [Spell Family (7)]
 Class            : Druid
 School           : Arcane
 Range            : 40 yards
-Cast Time        : 4 seconds
+Cast Time        : 3 seconds
 GCD              : 1.5 seconds
-Cooldown         : 20 seconds
+Charges          : 3 (15 seconds cooldown)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5842,7 +5804,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=300960)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 127
-Description      : Sharp brambles protect you, absorbing and reflecting up to ${$AP*0.2} damage from each attack.
+Description      : Sharp brambles protect you, absorbing and reflecting up to ${$AP*0.2} damage from each attack.
+
+While Barkskin is active, the brambles also deal $213709s1 Nature damage to all nearby enemies, every $22812t5 sec.
 
 Name             : Brambles (id=203958) [Spell Family (7)] 
 Class            : Druid
@@ -5886,7 +5850,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=300974)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
-Description      : Lacerate also generates ${$203961s1/10} Rage each time it deals damage over time while at maximum stacks.
+Description      : Thrash also generates ${$203961s1/10} Rage each time it deals damage over time while at 3 stacks.
 
 Name             : Galactic Guardian (id=203964) [Spell Family (7), Passive] 
 Class            : Druid
@@ -5902,10 +5866,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=300976)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 127
-Description      : 
-Your damage has a $h% chance to trigger a Moonfire, and Moonfire also reduces the damage that enemies deal to you by $s1%.
+#1 (id=300976)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+Description      : Your damage has a $h% chance to trigger a free automatic Moonfire on that target. When this occurs, the next Moonfire you cast generates ${$213708m1/10} Rage.
 
 Name             : Survival of the Fittest (id=203965) [Spell Family (7), Passive] 
 Class            : Druid
@@ -5998,11 +5961,11 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 127
 #2 (id=301123)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 12
-                   Affected Spells: Lacerate (33745), Lacerate (192090)
+                   Affected Spells: Thrash (192090)
 #3 (id=301124)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 23
-                   Affected Spells: Lacerate (33745), Lacerate (192090)
-Description      : Lacerate also increases your damage dealt to the target, and reduces your damage taken from the target by $s2% per stack.
+                   Affected Spells: Thrash (192090)
+Description      : While in Bear Form, Thrash also increases your damage dealt to the target, and reduces your damage taken from the target by $s2% per stack.
 
 Name             : Lunar Beam (id=204066) [Spell Family (7)] 
 Class            : Druid
@@ -6130,7 +6093,7 @@ Attributes       : ........ ........ ..x..... x..x...x   ........ ..x..... .....
 Effects          :
 #1 (id=307083)   : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
                    Base Value: -8 | Scaled Value: -8 | Misc Value: 10
-                   Affected Spells: Healing Touch (5185)
+                   Affected Spells: Healing Touch (5185), Touch of the Moon (213672)
 #2 (id=307088)   : Apply Aura (6) | Add Flat Modifier: Spell Critical Chance (107)
                    Base Value: 8 | Scaled Value: 8 | Misc Value: 7
                    Affected Spells: Regrowth (8936)
@@ -6207,7 +6170,7 @@ Class            : Druid
 School           : Physical
 Range            : 100 yards
 Proc Chance      : 101%
-Real PPM         : 1
+Real PPM         : 1 (Haste multiplier)
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -6254,8 +6217,8 @@ Class            : Guardian Druid
 School           : Physical
 Spell Level      : 10
 Proc Chance      : 15%
-Proc Flags       : ....x... ........ x....... ........ 
-                 : Yellow Melee, Hostile Spell
+Proc Flags       : ....x... ....x... x....... ........ 
+                 : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6266,7 +6229,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=312122)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25
-Description      : Your Mangle, Thrash, Lacerate, and Moonfire each have a $h% chance to reset the cooldown of Mangle, and cause it to generate an additional ${$93622m1/10} Rage.
+Description      : Your Thrash, Swipe, and Moonfire each have a $h% chance to reset the cooldown of Mangle, and cause it to generate an additional ${$93622m1/10} Rage.
 
 Name             : Ashamane's Rake (id=210713) [Spell Family (7)] 
 Class            : Druid
@@ -6293,7 +6256,7 @@ Class            : Druid
 School           : Physical
 Range            : 100 yards
 Proc Chance      : 101%
-Real PPM         : 1
+Real PPM         : 1 (Haste multiplier)
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -6388,5 +6351,90 @@ Effects          :
 #1 (id=314325)   : Unknown effect type (172)
                    Base Value: 35 | Scaled Value: 35 | Radius: 100 yards
 Description      : Returns all dead party members to life with $s1% of maximum health and mana. Not castable in combat.
+
+Name             : Guardian of Elune (id=213680) [Spell Family (7)] 
+Class            : Druid
+School           : Physical
+Duration         : 15 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : ........ ..x...x. ........ ........ 
+                 : AOE Heal, Heal
+Triggered by     : Guardian of Elune (155578)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=317069)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
+                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1
+                   Affected Spells: Ironfur (192081), Mark of Ursol (192083)
+#2 (id=317070)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22
+                   Affected Spells: Frenzied Regeneration (22842)
+Description      : $@spelldesc155578
+Tooltip          : Increases the duration of your next Ironfur or Mark of Ursol by ${$m1/1000} sec, or the healing of your next Frenzied Regeneration by $s2%.
+
+Name             : Galactic Guardian (id=213708) [Spell Family (7)] 
+Class            : Druid
+School           : Physical
+Range            : 100 yards
+Duration         : 15 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : ........ ........ x....... ........ 
+                 : Hostile Spell
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=317115)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
+                   Base Value: 150 | Scaled Value: 150 | Misc Value: 12
+                   Affected Spells: Moonfire (8921)
+#2 (id=317116)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0
+Description      : $@spelldesc203964
+Tooltip          : Your next Moonfire generates ${$m1/10} Rage.
+
+Name             : Brambles (id=213709) [Spell Family (7)] 
+Class            : Druid
+School           : Nature
+Range            : 100 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=317117)   : School Damage: nature (2)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20000 | Radius: 0 - 8 yards
+Description      : $@spelldesc203953
+
+Name             : Swipe (id=213764) [Spell Family (7)] 
+Class            : Druid
+School           : Physical
+Spell Level      : 32
+Range            : 8 yards
+GCD              : 1 seconds
+Stance Mask      : 0x00000011
+Affecting spells : Astral Influence (197524), PH - Affinity Effects Are Increased (210667)
+Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .......x ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .x......   ........ ........ ......x. ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=317208)   : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1
+#2 (id=317209)   : Dummy (3)
+                   Base Value: 20 | Scaled Value: 20 | Radius: 0 - 8 yards
+Description      : Swipe nearby enemies, inflicting Physical damage. Damage varies by shapeshift form.
 
 

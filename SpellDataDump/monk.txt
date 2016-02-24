@@ -806,7 +806,7 @@ Effects          :
 #4 (id=138807)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 126
 #5 (id=140824)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -15 | Scaled Value: -15 | Misc Value: 0x7e
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e
 #6 (id=141322)   : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 25 | Scaled Value: 25 | Misc Value 2: 0x4
 #7 (id=153830)   : Apply Aura (6) | Threat (10)
@@ -814,7 +814,7 @@ Effects          :
 #8 (id=157383)   : Apply Aura (6) | Unknown effect sub type (197)
                    Base Value: -6 | Scaled Value: -6
 #9 (id=157505)   : Dummy (3)
-                   Base Value: 10 | Scaled Value: 10
+                   Base Value: 35 | Scaled Value: 35
 #10 (id=214843)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3
 #11 (id=218370)   : Apply Aura (6) | Add Flat Modifier: Spell Global Cooldown (107)
@@ -825,7 +825,7 @@ Effects          :
 #13 (id=255479)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 #14 (id=281261)   : Apply Aura (6) | Modify Base Resistance (142)
-                   Base Value: 125 | Scaled Value: 125 | Misc Value: 1
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1
 #15 (id=281298)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14
                    Affected Spells: Blackout Kick (100784), Breath of Fire (115181), Rushing Jade Wind (116847), Breath of Fire (123725), Rushing Jade Wind (148187), Refreshing Jade Wind (196725), Blackout Strike (205523)
@@ -1097,7 +1097,7 @@ School           : Physical
 Spell Level      : 28
 Duration         : 6 seconds
 Cooldown         : 1 seconds
-Charges          : 3 (16 seconds cooldown)
+Charges          : 3 (14 seconds cooldown)
 Affecting spells : Potent Kick (213047)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1678,7 +1678,6 @@ School           : Nature
 Resource         : 2.4% Base Mana (26400 @Level 110)
 Spell Level      : 28
 Range            : 40 yards
-GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 180 seconds
 Affecting spells : Lucidity (137331), Item - Monk WoD PvP Mistweaver 4P Bonus (165697), Mana Tea (197908), Protection of Shaohao (199367)
@@ -1883,7 +1882,7 @@ Class            : Brewmaster Monk
 School           : Physical
 Spell Level      : 54
 Cooldown         : 1 seconds
-Charges          : 3 (16 seconds cooldown)
+Charges          : 3 (14 seconds cooldown)
 Affecting spells : Purifier (138237)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2213,7 +2212,7 @@ Name             : Touch of Karma (id=122470) [Spell Family (53)]
 Class            : Windwalker Monk
 School           : Physical
 Spell Level      : 22
-Range            : 5 yards
+Range            : 20 yards
 Duration         : 10 seconds
 Cooldown         : 90 seconds
 Affecting spells : Item - Monk WoD PvP Windwalker 2P Bonus (180743)
@@ -2453,7 +2452,7 @@ Attributes       : ........ ........ ........ x.xx...x   ........ ..x..... .....
                  : .x...... ........ ........ ........   ........ ........ ........ ........ 
                  : Disable player procs (112)
 Effects          :
-#1 (id=157231)   : Apply Aura (6) | Periodic Damage: physical every 1 seconds (3)
+#1 (id=157231)   : Apply Aura (6) | Periodic Damage: physical every 0.5 seconds (3)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=179267)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
@@ -2980,7 +2979,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Radius: 0 - 8 yards
 #2 (id=166227)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: chi
-Description      : Silence all enemies within $A1 yards for $d and restore $m2 Chi.  Non-player victim spellcasting is also interrupted for $32747d.
+#3 (id=317059)   : Energize Power% (137)
+                   Base Value: 3 | Scaled Value: 3
+#4 (id=317060)   : Energize Power (30)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: energy
+Description      : Silence all enemies within $A1 yards for $d and restore $?s137025[$s2 Chi][]$?s137024[$s3% of your mana][]$?s137023[%s4 Energy][].  Non-player victim spellcasting is also interrupted for $32747d.
 Tooltip          : Silenced.
 
 Name             : Power Strikes (id=129914) [Spell Family (53)] 
@@ -3176,6 +3179,7 @@ Effects          :
 
 Name             : Brewmaster Monk (id=137023) [Spell Family (53), Passive, Hidden] 
 Class            : Brewmaster Monk
+Race             : Blood Elf
 School           : Physical
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3222,6 +3226,7 @@ Effects          :
 
 Name             : Mistweaver Monk (id=137024) [Spell Family (53), Passive, Hidden] 
 Class            : Mistweaver Monk
+Race             : Blood Elf
 School           : Physical
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3245,8 +3250,8 @@ Effects          :
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Rising Sun Kick (107428), Rushing Jade Wind (116847), Rushing Jade Wind (148187), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Blackout Strike (205523)
 #6 (id=260827)   : Apply Aura (6) | Unknown effect sub type (379)
                    Base Value: -20 | Scaled Value: -20
-#7 (id=260828)   : Apply Aura (6) | Unknown effect sub type (402)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 252
+#7 (id=260828)   : Apply Aura (6) | Unknown effect sub type (179)
+                   Base Value: 0 | Scaled Value: 0
 #8 (id=260829)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
                    Base Value: 4000 | Scaled Value: 4000 | Misc Value: 11
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
@@ -3290,6 +3295,7 @@ Description      : Mistweaver Monk core passive
 
 Name             : Windwalker Monk (id=137025) [Spell Family (53), Passive, Hidden] 
 Class            : Windwalker Monk
+Race             : Blood Elf
 School           : Physical
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3918,7 +3924,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=284538)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
-Description      : Your Effuse, Enveloping Mist, and Vivify also trigger Soothing Mist.
+Description      : Your Effuse, Enveloping Mist, Vivify, and Life Cocoon also trigger Soothing Mist.
 
 After casting these spells, you continue to channel healing mists into the target, healing them for $115175s1 every $115175t1 sec, until you take any other action.
 
@@ -3931,7 +3937,7 @@ Stacks           : 100 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
-Affecting spells : Mastery: Elusive Brawler (117906), Fortification (213341), 
+Affecting spells : Mastery: Elusive Brawler (117906)
 Triggered by     : Mastery: Elusive Brawler (117906)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
