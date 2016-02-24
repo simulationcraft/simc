@@ -38,14 +38,24 @@ struct react_ready_trigger_t : public buff_event_t
 
 struct expiration_t : public buff_event_t
 {
-  expiration_t( buff_t* b, timespan_t d ) : buff_event_t( b, d ) {}
+  unsigned stack;
+
+  expiration_t( buff_t* b, unsigned s, timespan_t d ) :
+    buff_event_t( b, d ), stack( s )
+  {}
+
+  expiration_t( buff_t* b, timespan_t d ) :
+    buff_event_t( b, d )
+  {
+    assert( b -> stack_behavior != BUFF_STACK_ASYNCHRONOUS );
+  }
 
   virtual void execute() override
   {
     buff -> expiration = nullptr;
 
     if ( buff -> stack_behavior == BUFF_STACK_ASYNCHRONOUS )
-      buff -> decrement();
+      buff -> decrement( stack );
     else
       buff -> expire();
   }
@@ -748,6 +758,7 @@ void buff_t::decrement( int    stacks,
 void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 {
   assert( expiration );
+  assert( stack_behavior != BUFF_STACK_ASYNCHRONOUS ); // not supported
 
   if ( extra_seconds > timespan_t::zero() )
   {
@@ -840,7 +851,7 @@ void buff_t::start( int        stacks,
   timespan_t d = ( duration >= timespan_t::zero() ) ? duration : buff_duration;
 
   if ( d > timespan_t::zero() )
-    expiration = new ( *sim ) expiration_t( this, d );
+    expiration = new ( *sim ) expiration_t( this, stacks, d );
 
   timespan_t period = tick_time();
   if ( tick_behavior != BUFF_TICK_NONE && period > timespan_t::zero()
