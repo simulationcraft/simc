@@ -31,8 +31,6 @@ namespace { // UNNAMED NAMESPACE
   New Moon changes
   Bimodal distribution in AoE sims
 
-  Echoing Stars
-  Sunblind
   Touch of the Moon
   Light of the Sun
   Rejuvenating Innervation
@@ -5153,6 +5151,7 @@ struct sunfire_t : public druid_spell_t
     aoe                    = -1;
 
     base_multiplier *= 1.0 + player -> artifact.sunfire_burns.percent();
+    radius += player -> artifact.sunblind.value();
   }
 
   double composite_target_multiplier( player_t* t ) const override
