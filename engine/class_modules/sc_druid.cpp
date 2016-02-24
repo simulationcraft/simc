@@ -23,16 +23,18 @@ namespace { // UNNAMED NAMESPACE
 
   Balance ===================================================================
   Stellar Drift cast while moving
-  Starfall positioning
-  Utility & NYI artifact perks (see p() -> artifact).
-  Accurate starfall travel time & debuff mechanics ?
+  Accurate starfall travel time
   Force of Nature!
   Fury of Elune
   Force of Nature
+  Moonfang
+  New Moon changes
+
   Echoing Stars
   Sunblind
   Touch of the Moon
-  Moonfang
+  Light of the Sun
+  Rejuvenating Innervation
 
   Guardian ==================================================================
   Statistics?
@@ -247,7 +249,8 @@ struct druid_t : public player_t
 private:
   form_e form; // Active druid form
 public:
-  int active_starfalls;
+  unsigned active_starfalls;
+  unsigned starfall_counter; // for assigning each starfall instance an id
   moon_stage_e moon_stage;
 
   // counters for snapshot tracking
@@ -698,6 +701,7 @@ public:
     player_t( sim, DRUID, name, r ),
     form( NO_FORM ),
     active_starfalls( 0 ),
+    starfall_counter( 0 ),
     t16_2pc_starfall_bolt( nullptr ),
     t16_2pc_sun_bolt( nullptr ),
     scythe_of_elune(),
@@ -5352,29 +5356,31 @@ struct stampeding_roar_t : public druid_spell_t
 };
 
 // Starfall Spell ===========================================================
-// TODO: Ground targeted instead of just hitting everything in the whole sim.
 
 struct starfall_t : public druid_spell_t
 {
   struct starfall_pulse_t : public druid_spell_t
   {
-    timespan_t remains;
-
-    starfall_pulse_t( druid_t* player, const std::string& name ) :
-      druid_spell_t( name, player, player -> find_spell( 191037 ) )
+    starfall_pulse_t( druid_t* p ) :
+      druid_spell_t( "starfall_pulse", p, p -> find_spell( 191037 ) )
     {
       background = dual = direct_tick = true; // Legion TOCHECK
       callbacks = false;
 
-      base_multiplier *= 1.0 + player -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 1 ).percent();
-      base_multiplier *= 1.0 + p() -> talent.stellar_drift -> effectN( 2 ).percent();
+      base_multiplier *= 1.0 + p -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 1 ).percent();
+      base_multiplier *= 1.0 + p -> talent.stellar_drift -> effectN( 2 ).percent();
+
+      if ( p -> artifact.echoing_stars.rank() )
+      {
+        aoe += p -> artifact.echoing_stars.data().effectN( 1 ).base_value();
+        base_aoe_multiplier *= 1.0 + p -> artifact.echoing_stars.data().effectN( 2 ).percent();
+        radius = p -> artifact.echoing_stars.data().effectN( 3 ).base_value();
+      }
     }
 
+    // Override travel time since sim doesn't understand the missiles don't start from the player.
     timespan_t travel_time() const override
-    {
-      // Override travel time since sim doesn't understand the missiles don't start from the player.
-      return timespan_t::from_seconds( 0.1 );
-    }
+    { return timespan_t::from_seconds( 0.1 ); }
 
     double action_multiplier() const override
     {
@@ -5385,64 +5391,54 @@ struct starfall_t : public druid_spell_t
 
       return am;
     }
-
-    void impact( action_state_t* s ) override
-    {
-      // No hit check because if they're in the Starfall they should already have the debuff.
-      if ( td( s -> target ) -> buffs.starfall -> remains() < remains )
-        td( s -> target ) -> buffs.starfall -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, remains );
-
-      druid_spell_t::impact( s );
-    }
   };
 
   struct starfall_dot_event_t : public event_t
   {
     druid_t* druid;
-    starfall_t* starfall;
-    timespan_t dot_end;
-    int ticks;
-    int reference_id; // for debug output purposes
+    starfall_t* starfall; // parent action
+    timespan_t expiration; // time of expiration
+    unsigned current_tick;
+    unsigned id; // for debug output purposes
+    double x, y; // starfall position
 
-    starfall_dot_event_t( druid_t* p, starfall_t* a, int t, int id, timespan_t de ) :
-      event_t( *p ), druid( p ), starfall( a ),
-      dot_end( de ), ticks( t ), reference_id( id )
+    starfall_dot_event_t( druid_t* p, starfall_t* a ) :
+      event_t( *p ), druid( p ), starfall( a ), current_tick( 1 ), id( p -> starfall_counter ),
+      expiration( p -> sim -> current_time() + a -> starfall_duration ),
+      x( a -> execute_state -> original_x ), y( a -> execute_state -> original_y )
     {
       add_event( tick_time() );
     }
 
-    starfall_dot_event_t( druid_t* p, starfall_t* a ) :
-      starfall_dot_event_t( p, a, 0, p -> rng().real() * 16e6, p -> sim -> current_time() + a -> _dot_duration )
-    {}
+    starfall_dot_event_t( druid_t* p, unsigned ct, unsigned i, starfall_t* a, timespan_t exp, double prev_x, double prev_y ) :
+      event_t( *p ), current_tick( ct + 1 ), id( i ), druid( p ), starfall( a ),
+      expiration( exp ), x( prev_x ), y( prev_y )
+    {
+      add_event( tick_time() );
+    }
 
     const char* name() const override
     { return "Starfall Custom Tick"; }
 
     timespan_t tick_time()
-    {
-      return starfall -> base_tick_time * druid -> composite_spell_haste();
-    }
+    { return starfall -> base_tick_time * starfall -> composite_haste(); }
 
     void execute() override
     {
-      ticks++;
       sim_t& s = sim();
 
       if ( s.log )
-        s.out_log.printf( "%s ticks (%d of %d). id=%X tt=%.3f",
-                          starfall -> name(),
-                          ticks,
-                          ticks + ( int ) ( ( dot_end - s.current_time() ) / tick_time() ),
-                          reference_id,
-                          tick_time().total_seconds() );
-
-      starfall -> pulse -> remains = dot_end - s.current_time();
+        s.out_log.printf( "%s_%u ticks (%d of %d). tt=%.3f",
+          starfall -> name(), id, current_tick,
+          current_tick + ( int ) ( ( expiration - s.current_time() ) / tick_time() ),
+          tick_time().total_seconds() );
 
       for ( size_t i = 0; i < s.actor_list.size(); i++ )
       {
         player_t* target = s.actor_list[ i ];
 
-        if ( target -> is_enemy() && ! target -> is_sleeping() )
+        if ( target -> is_enemy() && ! target -> is_sleeping() &&
+          ( ! s.distance_targeting_enabled || target -> get_position_distance( x, y ) <= starfall -> radius ) )
         {
           starfall -> pulse -> target = target;
           starfall -> pulse -> execute();
@@ -5450,28 +5446,28 @@ struct starfall_t : public druid_spell_t
       }
 
       // If next tick period falls within the duration, schedule another event. (no partial ticks)
-      if ( sim().current_time() + tick_time() <= dot_end )
-        new ( sim() ) starfall_dot_event_t( druid, starfall, ticks, reference_id, dot_end );
+      if ( sim().current_time() + tick_time() <= expiration )
+        new ( sim() ) starfall_dot_event_t( druid, current_tick, id, starfall, expiration, x, y );
       else
         druid -> active_starfalls--;
     }
   };
 
   starfall_pulse_t* pulse;
-  timespan_t _dot_duration;
+  timespan_t starfall_duration;
 
   starfall_t( druid_t* player, const std::string& options_str ):
     druid_spell_t( "starfall", player, player -> find_spell( 191034 ) ),
-    pulse( new starfall_pulse_t( player, "starfall_pulse" ) )
+    pulse( new starfall_pulse_t( player ) )
   {
     parse_options( options_str );
 
     may_crit = false;
-    _dot_duration = data().duration();
-    base_tick_time = _dot_duration / 9.0; // ticks 9 times (missing from spell data)
+    starfall_duration = data().duration();
+    base_tick_time = starfall_duration / 9.0; // ticks 9 times (missing from spell data)
 
-    radius     = data().effectN( 1 ).radius();
-    radius    *= 1.0 + player -> talent.stellar_drift -> effectN( 1 ).percent();
+    radius  = data().effectN( 1 ).radius();
+    radius *= 1.0 + player -> talent.stellar_drift -> effectN( 1 ).percent();
 
     add_child( pulse );
   }
@@ -5481,6 +5477,7 @@ struct starfall_t : public druid_spell_t
     druid_spell_t::execute();
 
     p() -> active_starfalls++;
+    p() -> starfall_counter++;
     new ( *sim ) starfall_dot_event_t( p(), this );
   }
 
@@ -5488,8 +5485,7 @@ struct starfall_t : public druid_spell_t
   {
     druid_spell_t::impact( s );
 
-    if ( td( s -> target ) -> buffs.starfall -> remains() < _dot_duration )
-      td( s -> target ) -> buffs.starfall -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, _dot_duration );
+    td( s -> target ) -> buffs.starfall -> trigger();
   }
 };
 
@@ -7027,7 +7023,7 @@ void druid_t::reset()
 
   // Reset druid_t variables to their original state.
   form = NO_FORM;
-  active_starfalls = 0;
+  active_starfalls = starfall_counter = 0;
   moon_stage = ( moon_stage_e ) initial_moon_stage;
 
   base_gcd = timespan_t::from_seconds( 1.5 );
