@@ -4446,7 +4446,7 @@ struct ignite_spread_event_t : public event_t
   void execute() override
   {
     mage -> procs.ignite_spread -> occur();
-    if ( sim -> log )
+    if ( mage -> sim -> log )
     {
       sim().out_log.printf( "%s ignite spread event occurs", mage -> name() );
     }
@@ -4524,7 +4524,7 @@ struct ignite_spread_event_t : public event_t
           // TODO: Use benefits to keep track of lost ignite banks
           destination -> cancel();
           mage -> procs.ignite_overwrite -> occur();
-          if ( sim -> log )
+          if ( mage -> sim -> log )
           {
             sim().out_log.printf( "%s ignite spreads from %s to %s (overwrite)",
                                  mage -> name(), source -> target -> name(),
@@ -4534,7 +4534,7 @@ struct ignite_spread_event_t : public event_t
         else
         {
           mage -> procs.ignite_new_spread -> occur();
-          if ( sim -> log )
+          if ( mage -> sim -> log )
           {
             sim().out_log.printf( "%s ignite spreads from %s to %s (new)",
                                  mage -> name(), source -> target -> name(),
