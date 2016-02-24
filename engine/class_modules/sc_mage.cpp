@@ -5954,7 +5954,7 @@ void mage_t::arise()
     buffs.flame_orb -> trigger( buffs.flame_orb -> max_stack() );
   }
 
-  if ( ignite )
+  if ( spec.ignite -> ok()  )
   {
     ignite_spread_event = new ( *sim )events::ignite_spread_event_t( *this );
     timespan_t first_spread = timespan_t::from_seconds( rng().real() * 2.0 );
