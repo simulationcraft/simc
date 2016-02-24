@@ -339,7 +339,7 @@ public:
   virtual void      regen( timespan_t periodicity ) override;
   virtual void      combat_begin() override;
 
-  double  get_hand_of_light() const;
+  double  get_divine_judgment() const;
   void    trigger_grand_crusader();
   void    trigger_holy_shield( action_state_t* s );
   virtual bool has_t18_class_trinket() const override;
@@ -1019,65 +1019,47 @@ struct denounce_t : public paladin_spell_t
 
 struct execution_sentence_t : public paladin_spell_t
 {
-  std::array<double, 11> tick_multiplier;
-
   execution_sentence_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "execution_sentence", p, p -> find_talent_spell( "Execution Sentence" ) ),
-      tick_multiplier()
+    : paladin_spell_t( "execution_sentence", p, p -> find_talent_spell( "Execution Sentence" ) )
   {
     parse_options( options_str );
     hasted_ticks   = false;
     travel_speed   = 0;
-    tick_may_crit  = 1;
-
-    // Right now, on the alpha, this does physical damage. This is probably a
-    // bug, but...
-    if ( p -> bugs )
-      school = SCHOOL_PHYSICAL;
-    else
-      school = SCHOOL_HOLY;
-
-    // Where the 0.0374151195 comes from
-    // The whole dots scales with data().effectN( 2 ).base_value()/1000 * SP
-    // Tick 1-9 grow exponentionally by 10% each time, 10th deals 5x the
-    // damage of the 9th.
-    // 1.1 + 1.1^2 + ... + 1.1^9 + 1.1^9 * 5 = 26.727163056
-    // 1 / 26,727163056 = 0.0374151195, which is the factor to get from the
-    // whole spells SP scaling to the base scaling of the 0th tick
-    // 1st tick is already 0th * 1.1!
-
-    // 9/2/2014 edit: ES now starts with a 1.0 multiplier on tick #1, and the
-    // 10% growth applies to tick #10. So the sequence is now:
-    // 1.0 + 1.1 + 1.1^2 + ... + 1.1^8 + 5*1.1^9 = 25.3692153650.
-    // However, the spell power mod is still hardcoded with the old value,
-    // causing the spell to do about 5% less damage overall.
-    // Full description here:
-    // http://maintankadin.failsafedesign.com/forum/viewtopic.php?p=784654#p784654
-
-    if ( data().ok() )
-    {
-      parse_effect_data( ( p -> find_spell( 198035 ) -> effectN( 1 ) ) );
-      spell_power_mod.tick = p -> find_spell( 198035 ) -> effectN( 2 ).base_value() / 1000.0 * 0.0374151195;
-
-      tick_multiplier[ 1 ] = 1.0;
-      for ( int i = 2; i <= dot_duration / base_tick_time; ++i )
-        tick_multiplier[ i ] = tick_multiplier[ i - 1 ] * 1.1;
-      tick_multiplier[ 10 ] *= 5;
-    }
+    tick_may_crit  = true;
 
     // disable if not talented
     if ( ! ( p -> talents.execution_sentence -> ok() ) )
       background = true;
   }
 
-  double composite_target_multiplier( player_t* target ) const override
+  virtual double cost() const override
   {
-    double m = paladin_spell_t::composite_target_multiplier( target );
+    double base_cost = paladin_spell_t::cost();
+    if ( p() -> buffs.conviction -> up() )
+      return base_cost - 1;
+    return base_cost;
+  }
 
-    // Workaround for some clang insanity. tick_multiplier.at( ... ) does not compile ..
-    assert( static_cast<size_t>( td( target ) -> dots.execution_sentence -> current_tick ) < tick_multiplier.size() && "Execution Sentence current tick > tick multiplier array" );
-    int idx = td( target ) -> dots.execution_sentence -> current_tick;
-    m *= tick_multiplier[ idx ];
+  void execute() override
+  {
+    paladin_spell_t::execute();
+
+    if ( ! ( p() -> bugs ) )
+      if ( p() -> buffs.conviction -> up() )
+        p() -> buffs.conviction -> expire();
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = paladin_spell_t::composite_target_multiplier( t );
+
+    paladin_td_t* td = this -> td( t );
+
+    if ( td -> buffs.debuffs_judgment -> up() )
+    {
+      double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
+      m *= judgment_multiplier;
+    }
 
     return m;
   }
@@ -1780,7 +1762,7 @@ struct holy_power_generator_t : public paladin_melee_attack_t
 
     if ( td -> buffs.debuffs_judgment -> up() )
     {
-      double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent();
+      double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
       m *= judgment_multiplier;
     }
 
@@ -1820,7 +1802,7 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
 
     if ( td -> buffs.debuffs_judgment -> up() )
     {
-      double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent();
+      double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
       m *= judgment_multiplier;
     }
 
@@ -1935,8 +1917,6 @@ struct crusader_strike_t : public holy_power_generator_t
       am *= 1.0 + p() -> talents.fires_of_justice -> effectN( 1 ).percent();
     }
 
-    am *= 1.0 + p() -> get_hand_of_light();
-
     return am;
   }
 
@@ -1974,13 +1954,6 @@ struct crusader_flurry_t : public holy_power_generator_t
     cooldown -> charges = data().charges();
 
     base_multiplier *= 1.0 + p -> artifact.sharpened_edge.percent();
-  }
-
-  double action_multiplier() const override
-  {
-    double am = holy_power_generator_t::action_multiplier();
-    am *= 1.0 + p() -> get_hand_of_light();
-    return am;
   }
 
   void execute() override
@@ -2035,13 +2008,6 @@ struct zeal_t : public holy_power_generator_t
     retribution_trinket_trigger();
   }
 
-  double action_multiplier() const override
-  {
-    double am = holy_power_generator_t::action_multiplier();
-    am *= 1.0 + p() -> get_hand_of_light();
-    return am;
-  }
-
   void impact( action_state_t* s ) override
   {
     holy_power_generator_t::impact( s );
@@ -2078,6 +2044,21 @@ struct blade_of_light_t : public paladin_melee_attack_t
 
     background = true;
   }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = paladin_melee_attack_t::composite_target_multiplier( t );
+
+    paladin_td_t* td = this -> td( t );
+
+    if ( td -> buffs.debuffs_judgment -> up() )
+    {
+      double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
+      m *= judgment_multiplier;
+    }
+
+    return m;
+  }
 };
 
 struct blade_of_justice_t : public holy_power_generator_t
@@ -2111,25 +2092,7 @@ struct blade_of_justice_t : public holy_power_generator_t
       am *= 1.0 + p() -> talents.virtues_blade -> effectN( 1 ).percent();
     }
 
-    am *= 1.0 + p() -> get_hand_of_light();
-
     return am;
-  }
-
-  void execute() override
-  {
-    holy_power_generator_t::execute();
-
-    if ( p() -> artifact.blades_of_light.rank() )
-    {
-      int remaining_executes = (int)(rng().range(1, 4));
-      if (remaining_executes > 3) {
-        remaining_executes = 3;
-      }
-      for (int i = 0; i < remaining_executes; i++) {
-        bol_proc -> schedule_execute();
-      }
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -2142,6 +2105,18 @@ struct blade_of_justice_t : public holy_power_generator_t
       // Holy Power gains, only relevant if BoJ connects
       int g = data().effectN( 3 ).base_value(); // default is a gain of 2 Holy Power
       p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_blade_of_justice ); // apply gain, record as due to BoJ
+
+      if ( p() -> artifact.blades_of_light.rank() )
+      {
+        int remaining_executes = (int)(rng().range(1, 4));
+        if (remaining_executes > 3) {
+          remaining_executes = 3;
+        }
+        for (int i = 0; i < remaining_executes; i++) {
+          bol_proc -> target = s -> target;
+          bol_proc -> schedule_execute();
+        }
+      }
     }
   }
 };
@@ -2151,12 +2126,12 @@ struct blade_of_justice_t : public holy_power_generator_t
 struct blade_of_wrath_t : public holy_power_generator_t
 {
   const spell_data_t* sword_of_light;
-  int remaining_executes;
+  blade_of_light_t* bol_proc;
 
   blade_of_wrath_t( paladin_t* p, const std::string& options_str )
     : holy_power_generator_t( "blade_of_wrath", p, p -> find_talent_spell( "Blade of Wrath" ), true ),
       sword_of_light( p -> find_specialization_spell( "Sword of Light" ) ),
-      remaining_executes( 0 )
+      bol_proc( new blade_of_light_t( p, options_str ) )
   {
     parse_options( options_str );
 
@@ -2168,38 +2143,6 @@ struct blade_of_wrath_t : public holy_power_generator_t
     base_multiplier *= 1.0 + p -> artifact.deliver_the_justice.percent();
   }
 
-  double action_multiplier() const override
-  {
-    double am = holy_power_generator_t::action_multiplier();
-    am *= 1.0 + p() -> get_hand_of_light();
-    return am;
-  }
-
-  void execute() override
-  {
-    holy_power_generator_t::execute();
-    if ( background )
-    {
-      remaining_executes--;
-      if (remaining_executes == 0)
-        background = false;
-    }
-    else
-    {
-      if ( p() -> artifact.blades_of_light.rank() )
-      {
-        background = true;
-        remaining_executes = (int)(rng().range(1, 4));
-        if (remaining_executes > 3) {
-          remaining_executes = 3;
-        }
-        for (int i = 0; i < remaining_executes; i++) {
-          schedule_execute();
-        }
-      }
-    }
-  }
-
   void impact( action_state_t* s ) override
   {
     holy_power_generator_t::impact( s );
@@ -2207,11 +2150,20 @@ struct blade_of_wrath_t : public holy_power_generator_t
     // Special things that happen when BoW connects
     if ( result_is_hit( s -> result ) )
     {
-      if ( !background )
+      // Holy Power gains, only relevant if BoW connects
+      int g = data().effectN( 3 ).base_value(); // default is a gain of 1 Holy Power
+      p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_blade_of_justice ); // apply gain, record as due to BoJ
+
+      if ( p() -> artifact.blades_of_light.rank() )
       {
-        // Holy Power gains, only relevant if BoW connects
-        int g = data().effectN( 3 ).base_value(); // default is a gain of 1 Holy Power
-        p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_blade_of_justice ); // apply gain, record as due to BoJ
+        int remaining_executes = (int)(rng().range(1, 4));
+        if (remaining_executes > 3) {
+          remaining_executes = 3;
+        }
+        for (int i = 0; i < remaining_executes; i++) {
+          bol_proc -> target = s -> target;
+          bol_proc -> schedule_execute();
+        }
       }
     }
   }
@@ -2222,10 +2174,12 @@ struct blade_of_wrath_t : public holy_power_generator_t
 struct divine_hammer_tick_t : public paladin_melee_attack_t
 {
   const spell_data_t* sword_of_light;
+  blade_of_light_t* bol_proc;
 
-  divine_hammer_tick_t( paladin_t* p )
+  divine_hammer_tick_t( paladin_t* p, const std::string& options_str )
     : paladin_melee_attack_t( "divine_hammer_tick", p, p -> find_spell( 198137 ) ),
-      sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
+      sword_of_light( p -> find_specialization_spell( "Sword of Light" ) ),
+      bol_proc( new blade_of_light_t( p, options_str ) )
   {
     aoe         = -1;
     dual        = true;
@@ -2237,37 +2191,55 @@ struct divine_hammer_tick_t : public paladin_melee_attack_t
     base_multiplier *= 1.0 + p -> artifact.deliver_the_justice.percent();
   }
 
-  double action_multiplier() const override
-  {
-    double am = paladin_melee_attack_t::action_multiplier();
-    if ( !( p() -> bugs ) )
-      am *= 1.0 + p() -> get_hand_of_light();
-    return am;
-  }
-
   double composite_target_multiplier( player_t* t ) const override
   {
     double m = paladin_melee_attack_t::composite_target_multiplier( t );
 
     paladin_td_t* td = this -> td( t );
 
-    if ( ( ! ( p() -> bugs ) ) && ( td -> buffs.debuffs_judgment -> up() ) )
+    if ( td -> buffs.debuffs_judgment -> up() )
     {
-      double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent();
+      double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();;
       m *= judgment_multiplier;
     }
 
     return m;
   }
+
+  virtual void execute() override
+  {
+    paladin_melee_attack_t::execute();
+    // Conviction
+    if ( p() -> passives.conviction -> ok() && rng().roll( p() -> passives.conviction -> proc_chance() ) )
+    {
+      p() -> buffs.conviction -> trigger();
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    paladin_melee_attack_t::impact( s );
+    if ( result_is_hit( s -> result ) )
+    {
+      if ( p() -> artifact.blades_of_light.rank() )
+      {
+        int remaining_executes = (int)(rng().range(1, 4));
+        if (remaining_executes > 3) {
+          remaining_executes = 3;
+        }
+        for (int i = 0; i < remaining_executes; i++) {
+          bol_proc -> target = s -> target;
+          bol_proc -> schedule_execute();
+        }
+      }
+    }
+  }
 };
 
 struct divine_hammer_t : public paladin_spell_t
 {
-  int remaining_executes;
-
   divine_hammer_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "divine_hammer", p, p -> find_talent_spell( "Divine Hammer" ) ),
-      remaining_executes( 0 )
+    : paladin_spell_t( "divine_hammer", p, p -> find_talent_spell( "Divine Hammer" ) )
   {
     parse_options( options_str );
 
@@ -2275,46 +2247,15 @@ struct divine_hammer_t : public paladin_spell_t
     may_miss       = false;
     tick_zero      = true;
 
-    tick_action = new divine_hammer_tick_t( p );
+    tick_action = new divine_hammer_tick_t( p, options_str );
   }
 
   virtual void execute() override
   {
     paladin_spell_t::execute();
-
-    if ( background )
-    {
-      remaining_executes--;
-      if ( remaining_executes == 0 )
-        background = false;
-    }
-    else
-    {
-      // Holy Power gen
-      int g = data().effectN( 2 ).base_value(); // default is a gain of 1 Holy Power
-      p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_blade_of_justice ); // apply gain, record as due to BoJ
-
-      // Conviction
-      if ( ! ( p() -> bugs ) )
-      {
-        if ( p() -> passives.conviction -> ok() && rng().roll( p() -> passives.conviction -> proc_chance() ) )
-        {
-          p() -> buffs.conviction -> trigger();
-        }
-      }
-
-      if ( p() -> artifact.blades_of_light.rank() )
-      {
-        background = true;
-        remaining_executes = (int)(rng().range(1, 4));
-        if (remaining_executes > 3) {
-          remaining_executes = 3;
-        }
-        for (int i = 0; i < remaining_executes; i++) {
-          schedule_execute();
-        }
-      }
-    }
+    // Holy Power gen
+    int g = data().effectN( 2 ).base_value(); // default is a gain of 1 Holy Power
+    p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_blade_of_justice ); // apply gain, record as due to BoJ
   }
 };
 
@@ -2341,13 +2282,6 @@ struct echoed_divine_storm_t: public paladin_melee_attack_t
   virtual double cost() const override
   {
     return 0;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = paladin_melee_attack_t::action_multiplier();
-    am *= 1.0 + p() -> get_hand_of_light();
-    return am;
   }
 };
 
@@ -2387,13 +2321,6 @@ struct divine_storm_t: public holy_power_consumer_t
     {
       echoed_spell -> schedule_execute();
     }
-  }
-
-  double action_multiplier() const override
-  {
-    double am = holy_power_consumer_t::action_multiplier();
-    am *= 1.0 + p() -> get_hand_of_light();
-    return am;
   }
 };
 
@@ -2604,6 +2531,7 @@ struct judgment_t : public paladin_melee_attack_t
           {
             // as mentioned above - simc can't find the original missile spells, so we are
             // directly triggering the impact spell. This should be fixed.
+            ashen_strike_impact_spell -> target = s -> target;
             ashen_strike_impact_spell -> schedule_execute();
           }
         }
@@ -2726,8 +2654,6 @@ struct echoed_templars_verdict_t : public paladin_melee_attack_t
       am *= 1.0 + p() -> talents.final_verdict -> effectN( 1 ).percent();
     }
 
-    am *= 1.0 + p() -> get_hand_of_light();
-
     return am;
   }
 };
@@ -2788,8 +2714,6 @@ struct templars_verdict_t : public holy_power_consumer_t
       am *= 1.0 + p() -> talents.final_verdict -> effectN( 1 ).percent();
     }
 
-    am *= 1.0 + p() -> get_hand_of_light();
-
     return am;
   }
 };
@@ -2805,9 +2729,21 @@ struct seal_of_light_t : public paladin_spell_t
     may_miss = false;
   }
 
+  virtual double cost() const override
+  {
+    double base_cost = paladin_spell_t::cost();
+    if ( p() -> buffs.conviction -> up() )
+      return base_cost - 1;
+    return base_cost;
+  }
+
   virtual void execute() override
   {
     paladin_spell_t::execute();
+
+    if ( ! ( p() -> bugs ) )
+      if ( p() -> buffs.conviction -> up() )
+        p() -> buffs.conviction -> expire();
 
     p() -> buffs.seal_of_light -> trigger();
   }
@@ -4405,9 +4341,9 @@ void paladin_t::combat_begin()
   resources.current[ RESOURCE_HOLY_POWER ] = 0;
 }
 
-// paladin_t::get_hand_of_light =============================================
+// paladin_t::get_divine_judgment =============================================
 
-double paladin_t::get_hand_of_light() const
+double paladin_t::get_divine_judgment() const
 {
   if ( specialization() != PALADIN_RETRIBUTION ) return 0.0;
 
