@@ -27,7 +27,6 @@ namespace { // UNNAMED NAMESPACE
   Force of Nature!
   Fury of Elune
   Force of Nature
-  Moonfang
   New Moon changes
   Bimodal distribution in AoE sims
 
@@ -342,7 +341,6 @@ public:
     buff_t* owlkin_frenzy;
     buff_t* solar_empowerment;
     buff_t* star_power; // Moon and Stars artifact medal
-    buff_t* the_reaping;
     buff_t* warrior_of_elune;
     buff_t* balance_tier18_4pc; // T18 4P Balance
 
@@ -5096,6 +5094,15 @@ struct mark_of_ursol_t : public druid_spell_t
   }
 };
 
+// Moonfang ============================================================
+
+struct moonfang_t : public druid_spell_t
+{
+  moonfang_t( druid_t* player ) :
+    druid_spell_t( "moonfang", player, player -> scythe_of_elune -> driver() -> effectN( 1 ).trigger() )
+  {}
+};
+
 // New Moon Spell ===========================================================
 
 struct new_moon_t : public druid_spell_t
@@ -7096,15 +7103,6 @@ void druid_t::arise()
 
   if ( talent.earthwarden -> ok() )
     buff.earthwarden -> trigger( buff.earthwarden -> max_stack() );
-
-  if ( scythe_of_elune )
-  {
-    // Calculate chance for a Reaping proc to have occurred prior to combat.
-    int ticks = buff.owlkin_frenzy -> buff_duration / buff.the_reaping -> buff_period;
-    double chance = 1.0 - std::pow( 1.0 - buff.the_reaping -> default_value, ticks );
-
-    buff.owlkin_frenzy -> trigger( 1, buff_t::DEFAULT_VALUE(), chance );
-  }
 }
 
 // druid_t::combat_begin ====================================================
@@ -7119,9 +7117,6 @@ void druid_t::combat_begin()
 
   if ( talent.earthwarden -> ok() )
     persistent_buff_delay.push_back( new ( *sim ) persistent_buff_delay_event_t( this, buff.earthwarden_driver ) );
-
-  if ( scythe_of_elune )
-    persistent_buff_delay.push_back( new ( *sim ) persistent_buff_delay_event_t( this, buff.the_reaping ) );
 
   if ( spec.bladed_armor -> ok() )
     buff.bladed_armor -> trigger();
@@ -8014,15 +8009,22 @@ static void flourish( special_effect_t& effect )
 // Scythe of Elune
 static void scythe_of_elune( special_effect_t& effect )
 {
-  druid_t* s = debug_cast<druid_t*>( effect.player );
-  do_trinket_init( s, DRUID_BALANCE, s -> scythe_of_elune, effect );
+  struct moonfang_proc_callback_t : public dbc_proc_callback_t
+  {
+    spells::moonfang_t* moonfang;
 
-  s -> buff.the_reaping = buff_creator_t( s, "the_reaping_driver", s -> scythe_of_elune -> driver() )
-                          .quiet( true )
-                          .tick_callback( [ s ]( buff_t*, int, const timespan_t& ) {
-                            s -> buff.owlkin_frenzy ->  trigger( 1, buff_t::DEFAULT_VALUE(), s -> buff.the_reaping -> check_value() ); } )
-                          .default_value( s -> buff.owlkin_frenzy -> default_chance )
-                          .tick_zero( true );
+    moonfang_proc_callback_t( const item_t* i, const special_effect_t& effect ) :
+      dbc_proc_callback_t( i, effect ), moonfang( new spells::moonfang_t( debug_cast<druid_t*>( i -> player ) ) )
+    {}
+
+    void execute( action_t* a, action_state_t* state ) override
+    {
+      moonfang -> target = state -> target;
+      moonfang -> execute();
+    }
+  };
+
+  new moonfang_proc_callback_t( effect.item, effect );
 }
 
 // Fangs of Ashamane
