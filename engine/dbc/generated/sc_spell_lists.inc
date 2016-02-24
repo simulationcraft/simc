@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 21108
+// Class based active abilities, wow build 21154
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -28,7 +28,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Warrior
   {
-    // General tree, 10 abilities
+    // General tree, 9 abilities
     {
       117313, // Bloodthirst Heal
          100, // Charge
@@ -38,7 +38,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       118340, // Impending Victory (Talent)
         6552, // Pummel
       156287, // Ravager
-      145585, // Storm Bolt Off-Hand
       175710, // Unleashed Rage
            0,
     },
@@ -138,12 +137,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       183998, // Light of the Martyr
            0,
     },
-    // Protection tree, 13 abilities
+    // Protection tree, 14 abilities
     {
        31850, // Ardent Defender
        31935, // Avenger's Shield
         1022, // Blessing of Protection
         6940, // Blessing of Sacrifice
+      213644, // Cleanse Toxins
        26573, // Consecration
          498, // Divine Protection
        86659, // Guardian of Ancient Kings
@@ -155,11 +155,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        53600, // Shield of the Righteous (Active Mitigation)
            0,
     },
-    // Retribution tree, 14 abilities
+    // Retribution tree, 15 abilities
     {
        31884, // Avenging Wrath
       184575, // Blade of Justice
         1022, // Blessing of Protection
+      213644, // Cleanse Toxins
        53385, // Divine Storm
        19750, // Flash of Light
       203538, // Greater Blessing of Kings
@@ -253,7 +254,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       187650, // Freezing Trap
       190925, // Harpoon
       193265, // Hatchet Toss
-      185855, // Laceration
+      185855, // Lacerate
          136, // Mend Pet
       190928, // Mongoose Bite
       187707, // Muzzle
@@ -340,20 +341,21 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         8679, // Wound Poison
            0,
     },
-    // Outlaw tree, 14 abilities
+    // Outlaw tree, 15 abilities
     {
        13750, // Adrenaline Rush
         8676, // Ambush
       199804, // Between the Eyes
        13877, // Blade Flurry
         2094, // Blind
+        1833, // Cheap Shot
         1725, // Distract
         1776, // Gouge
       185763, // Pistol Shot
       199754, // Riposte
+      193316, // Roll the Bones
         2098, // Run Through
       193315, // Saber Slash
-        5171, // Slice and Dice
         1784, // Stealth
         1856, // Vanish
            0,
@@ -440,7 +442,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          139, // Renew
            0,
     },
-    // Shadow tree, 18 abilities
+    // Shadow tree, 19 abilities
     {
        47585, // Dispersion
         1706, // Levitate
@@ -450,6 +452,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
           17, // Power Word: Shield
        64044, // Psychic Horror
         8122, // Psychic Scream
+      213634, // Purify Disease
       179338, // Searing Insanity
       186263, // Shadow Mend
        32379, // Shadow Word: Death
@@ -548,10 +551,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Shaman
   {
-    // General tree, 10 abilities
+    // General tree, 11 abilities
     {
       114911, // Ancestral Guidance
         2008, // Ancestral Spirit
+      108271, // Astral Shift
         2825, // Bloodlust
         2645, // Ghost Wolf
        32182, // Heroism
@@ -562,9 +566,10 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       115356, // Windstrike
            0,
     },
-    // Elemental tree, 12 abilities
+    // Elemental tree, 13 abilities
     {
       188443, // Chain Lightning
+       51886, // Cleanse Spirit
       198103, // Earth Elemental
         8042, // Earth Shock
        61882, // Earthquake Totem
@@ -580,6 +585,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     },
     // Enhancement tree, 12 abilities
     {
+       51886, // Cleanse Spirit
       187874, // Crash Lightning
        51533, // Feral Spirit
       193796, // Flametongue
@@ -588,13 +594,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        60103, // Lava Lash
       187837, // Lightning Bolt
       193786, // Rockbiter
-       30823, // Shamanistic Rage
        58875, // Spirit Walk
        17364, // Stormstrike
        57994, // Wind Shear
            0,
     },
-    // Restoration tree, 17 abilities
+    // Restoration tree, 16 abilities
     {
       212048, // Ancestral Vision
         1064, // Chain Heal
@@ -609,7 +614,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          403, // Lightning Bolt
        77130, // Purify Spirit
        61295, // Riptide
-       30823, // Shamanistic Rage
        98008, // Spirit Link Totem (Air Totem)
        79206, // Spiritwalker's Grace
        57994, // Wind Shear
@@ -889,7 +893,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       175683, // Ursol's Power
            0,
     },
-    // Balance tree, 16 abilities
+    // Balance tree, 17 abilities
     {
        22812, // Barkskin (Active Mitigation)
       194223, // Celestial Alignment
@@ -902,6 +906,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       194153, // Lunar Strike (Lunar)
        24858, // Moonkin Form
         5215, // Prowl
+        2782, // Remove Corruption
        78675, // Solar Beam
       190984, // Solar Wrath (Solar)
       191034, // Starfall
@@ -909,7 +914,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        93402, // Sunfire (Solar)
            0,
     },
-    // Feral tree, 22 abilities
+    // Feral tree, 23 abilities
     {
       210713, // Ashamane's Rake
       210705, // Ashamane's Rip
@@ -924,18 +929,19 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       155625, // Moonfire
         5215, // Prowl
         1822, // Rake
+        2782, // Remove Corruption
         1079, // Rip
         5221, // Shred
       210721, // Shredded Wounds
       106839, // Skull Bash
       106898, // Stampeding Roar
        61336, // Survival Instincts (Active Mitigation)
-      106785, // Swipe
+      213764, // Swipe
       106832, // Thrash
         5217, // Tiger's Fury
            0,
     },
-    // Guardian tree, 17 abilities
+    // Guardian tree, 18 abilities
     {
        22812, // Barkskin (Active Mitigation)
       203958, // Brambles
@@ -944,15 +950,16 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         5185, // Healing Touch
           99, // Incapacitating Roar
       192081, // Ironfur (Active Mitigation)
-       33745, // Lacerate
        33917, // Mangle
       192083, // Mark of Ursol (Active Mitigation)
         6807, // Maul
         5215, // Prowl
+        2782, // Remove Corruption
       106839, // Skull Bash
       185321, // Stalwart Guardian
       106898, // Stampeding Roar
        61336, // Survival Instincts (Active Mitigation)
+      213764, // Swipe
       106832, // Thrash
            0,
     },
@@ -1036,7 +1043,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 };
 #define TREE_SPECIALIZATION_SIZE (32)
 
-// Talent tree specialization abilities, wow build 21108
+// Talent tree specialization abilities, wow build 21154
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1218,6 +1225,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       161608, // Bladed Armor
         1022, // Blessing of Protection
         6940, // Blessing of Sacrifice
+      213644, // Cleanse Toxins
        26573, // Consecration
          498, // Divine Protection
       190784, // Divine Steed
@@ -1247,6 +1255,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        31884, // Avenging Wrath
       184575, // Blade of Justice
         1022, // Blessing of Protection
+      213644, // Cleanse Toxins
       185817, // Conviction
        53385, // Divine Storm
        19750, // Flash of Light
@@ -1256,7 +1265,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
          853, // Hammer of Justice
       183218, // Hand of Hindrance
       183222, // Hand of Light
-       76672, // Mastery: Hand of Light
+       76672, // Mastery: Divine Judgment
        86539, // Plate Specialization
        96231, // Rebuke
       183435, // Retribution
@@ -1351,7 +1360,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       187650, // Freezing Trap
       190925, // Harpoon
       193265, // Hatchet Toss
-      185855, // Laceration
+      185855, // Lacerate
       191334, // Mastery: Hunting Companion
          136, // Mend Pet
       190928, // Mongoose Bite
@@ -1409,19 +1418,20 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        13877, // Blade Flurry
         2094, // Blind
       199740, // Bribe
+        1833, // Cheap Shot
        35551, // Combat Potency
-      137036, // Combat Rogue
         1725, // Distract
       199736, // Find Treasure
         1776, // Gouge
        76806, // Mastery: Main Gauche
+      137036, // Outlaw Rogue
          921, // Pick Pocket
       185763, // Pistol Shot
       199754, // Riposte
+      193316, // Roll the Bones
         2098, // Run Through
        14161, // Ruthlessness
       193315, // Saber Slash
-        5171, // Slice and Dice
       162697, // Stat Negation Aura - Agility DPS
         1784, // Stealth
       157660, // Swashbuckler
@@ -1528,6 +1538,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
           17, // Power Word: Shield
        64044, // Psychic Horror
         8122, // Psychic Scream
+      213634, // Purify Disease
       186263, // Shadow Mend
       186440, // Shadow Mend
       137033, // Shadow Priest
@@ -1629,6 +1640,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     // Specialization abilities for Elemental
     {
       188443, // Chain Lightning
+       51886, // Cleanse Spirit
       198103, // Earth Elemental
         8042, // Earth Shock
        61882, // Earthquake Totem
@@ -1643,7 +1655,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        51505, // Lava Burst
        77756, // Lava Surge
       188196, // Lightning Bolt
-      187828, // Maelstrom
       190488, // Maelstrom Controller
        86108, // Mail Specialization
       168534, // Mastery: Elemental Overload
@@ -1655,6 +1666,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     },
     // Specialization abilities for Enhancement
     {
+       51886, // Cleanse Spirit
       187874, // Crash Lightning
       157444, // Critical Strikes
        86629, // Dual Wield
@@ -1666,7 +1678,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       188070, // Healing Surge
        60103, // Lava Lash
       187837, // Lightning Bolt
-      187828, // Maelstrom
       195771, // Maelstrom Controller Decreasing
       190899, // Maelstrom Controller Increasing
       187880, // Maelstrom Weapon
@@ -1674,7 +1685,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        77223, // Mastery: Enhanced Elements
        51522, // Primal Wisdom
       193786, // Rockbiter
-       30823, // Shamanistic Rage
        58875, // Spirit Walk
       162697, // Stat Negation Aura - Agility DPS
       201845, // Stormfury
@@ -1704,7 +1714,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       137039, // Restoration Shaman
        16196, // Resurgence
        61295, // Riptide
-       30823, // Shamanistic Rage
        98008, // Spirit Link Totem
        79206, // Spiritwalker's Grace
       162701, // Stat Negation Aura - Intellect Healer
@@ -1913,7 +1922,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     // Specialization abilities for Balance
     {
       197524, // Astral Influence
-      197911, // Astral Power
       137013, // Balance Druid
       106732, // Balance Overrides Passive
        22812, // Barkskin
@@ -1927,6 +1935,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        24858, // Moonkin Form
       112857, // Natural Insight
         5215, // Prowl
+        2782, // Remove Corruption
        78675, // Solar Beam
       190984, // Solar Wrath
       191034, // Starfall
@@ -1958,13 +1967,14 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       159286, // Primal Fury
         5215, // Prowl
         1822, // Rake
+        2782, // Remove Corruption
         1079, // Rip
         5221, // Shred
       106839, // Skull Bash
       106898, // Stampeding Roar
       162697, // Stat Negation Aura - Agility DPS
        61336, // Survival Instincts
-      106785, // Swipe
+      213764, // Swipe
       106832, // Thrash
         5217, // Tiger's Fury
            0,
@@ -1983,7 +1993,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
           99, // Incapacitating Roar
        48484, // Infected Wounds
       192081, // Ironfur
-       33745, // Lacerate
        86096, // Leather Specialization
       166142, // Mana Attunement
        33917, // Mangle
@@ -1993,10 +2002,12 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
         6807, // Maul
        33873, // Nurturing Instinct
         5215, // Prowl
+        2782, // Remove Corruption
       106839, // Skull Bash
       106898, // Stampeding Roar
       162700, // Stat Negation Aura - Agility Tank
        61336, // Survival Instincts
+      213764, // Swipe
        16931, // Thick Hide
       106832, // Thrash
            0,
@@ -2073,7 +2084,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 21108
+// Class mastery abilities, wow build 21154
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2119,7 +2130,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
     },
     // Masteries for Retribution specialization
     {
-      76672, // Mastery: Hand of Light
+      76672, // Mastery: Divine Judgment
     },
     {
           0,
@@ -2312,7 +2323,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 21108
+// Racial abilities, wow build 21154
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3046,7 +3057,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 };
 #define GLYPH_ABILITIES_SIZE (8)
 
-// Glyph spells for classes, wow build 21108
+// Glyph spells for classes, wow build 21154
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3248,7 +3259,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 };
 #define SET_BONUS_DATA_SIZE (518)
 
-// Set bonus data, wow build 21108
+// Set bonus data, wow build 21154
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,              {   0 },    0,   73, 165641, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -3792,7 +3803,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
 };
 #define PERK_SIZE (3)
 
-// Perk specialization abilities, wow build 21108
+// Perk specialization abilities, wow build 21154
 static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   {
     {
@@ -3984,7 +3995,7 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
     },
   },
 };
-// Glyph properties, wow build 21108
+// Glyph properties, wow build 21154
 static glyph_property_data_t __glyph_property_data[72] = {
   {  1028, 125151 },
   {  1039, 125732 },
@@ -4061,7 +4072,7 @@ static glyph_property_data_t __glyph_property_data[72] = {
 };
 #define RPPMMOD_SIZE (155)
 
-// 155 RPPM Modifiers, wow build level 21108
+// 155 RPPM Modifiers, wow build level 21154
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  29725,    4,  1,  1.0000 },
   {  49530,    4,  1,  1.0000 },
@@ -4220,9 +4231,9 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 211984,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
 };
-#define ARTIFACT_SIZE (40)
+#define ARTIFACT_SIZE (41)
 
-// Artifact base data, wow build 21108
+// Artifact base data, wow build 21154
 static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
   {  2,  70 },
   {  3, 577 },
@@ -4262,12 +4273,13 @@ static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
   { 60, 581 },
   { 74,  70 },
   { 80,  70 },
-  { 81,  70 },
+  { 81,  65 },
+  { 82,  66 },
   {  0,   0 },
 };
 #define ARTIFACT_POWER_SIZE (639)
 
-// Artifact power data, wow build 21108
+// Artifact power data, wow build 21154
 static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] = {
   {   40,   2,  0,   1, "Wake of Ashes"                      }, // Wake of Ashes (id=205273, n_ranks=1)
   {   41,   2,  4,   3, "Highlord's Judgment"                }, // Highlord's Judgment (id=186941, n_ranks=6)
@@ -4438,7 +4450,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1080,  34,  0,   1, "Hunter's Guile"                     }, // Hunter's Guile (id=203752, n_ranks=1)
   { 1081,  34,  0,   1, "Thar She Blows"                     }, // Thar She Blows (id=203754, n_ranks=1)
   { 1082,  34,  1,   1, "Aspect of the Skylord"              }, // Aspect of the Skylord (id=203755, n_ranks=1)
-  { 1083,  34,  2,   1, "From Behind"                        }, // From Behind (id=203756, n_ranks=1)
+  { 1083,  34,  2,   1, "Talon Strike"                       }, // Talon Strike (id=203563, n_ranks=1)
   { 1084,  34,  3,   1, "Eagle's Bite"                       }, // Eagle's Bite (id=203757, n_ranks=1)
   { 1198,  34,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   {  980,  35,  1,   1, "Juggernaut"                         }, // Juggernaut (id=200875, n_ranks=1)
@@ -4592,7 +4604,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  334,  43,  0,   1, "Surge of Toxins"                    }, // Surge of Toxins (id=192424, n_ranks=1)
   {  335,  43,  0,   1, "From the Shadows"                   }, // From the Shadows (id=192428, n_ranks=1)
   {  337,  43,  0,   1, "Bag of Tricks"                      }, // Bag of Tricks (id=192657, n_ranks=1)
-  {  346,  43,  0,   1, "Grasp of Gul'dan"                   }, // Grasp of Gul'dan (id=192759, n_ranks=1)
+  {  346,  43,  0,   1, "Hemotoxin"                          }, // Hemotoxin (id=192759, n_ranks=1)
   {  347,  43,  0,   1, "Blood of the Assassinated"          }, // Blood of the Assassinated (id=192923, n_ranks=1)
   { 1211,  43,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1052,  44,  0,   1, "Curse of the Dreadblades"           }, // Curse of the Dreadblades (id=202665, n_ranks=1)
@@ -4616,14 +4628,14 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  835,  45,  1,   1, "Renew the Faith"                    }, // Renew the Faith (id=196492, n_ranks=1)
   {  836,  45,  2,   1, "Save the Fallen"                    }, // Save the Fallen (id=196537, n_ranks=1)
   {  837,  45,  3,   1, "Blessing of T'uure"                 }, // Blessing of T'uure (id=196578, n_ranks=1)
-  {  838,  45,  0,   1, "Power of the Naaru"                 }, // Power of the Naaru (id=196489, n_ranks=1)
+  {  838,  45, 11,   3, "Power of the Naaru"                 }, // Power of the Naaru (id=196489, n_ranks=6)
   {  839,  45,  0,   1, "Guardians of the Light"             }, // Guardians of the Light (id=196437, n_ranks=1)
   {  840,  45,  0,   1, "Holy Mending"                       }, // Holy Mending (id=196779, n_ranks=1)
   {  841,  45, 12,   3, "Trust in the Light"                 }, // Trust in the Light (id=196355, n_ranks=6)
   {  842,  45,  5,   3, "Say Your Prayers"                   }, // Say Your Prayers (id=196358, n_ranks=6)
   {  843,  45,  6,   3, "Serenity Now"                       }, // Serenity Now (id=196416, n_ranks=6)
   {  844,  45,  7,   3, "Reverence"                          }, // Reverence (id=196418, n_ranks=6)
-  {  845,  45, 11,   3, "Focus in the Light"                 }, // Focus in the Light (id=196419, n_ranks=6)
+  {  845,  45,  0,   1, "Focus in the Light"                 }, // Focus in the Light (id=196419, n_ranks=1)
   {  846,  45,  8,   3, "Holy Hands"                         }, // Holy Hands (id=196422, n_ranks=6)
   {  847,  45,  9,   3, "Hallowed Ground"                    }, // Hallowed Ground (id=196429, n_ranks=6)
   {  848,  45, 10,   3, "Words of Healing"                   }, // Words of Healing (id=196430, n_ranks=6)
@@ -4744,10 +4756,10 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1265,  52,  9,   3, "Healthy Appetite"                   }, // Healthy Appetite (id=213133, n_ranks=6)
   { 1266,  52, 10,   3, "Gifted Student"                     }, // Gifted Student (id=213136, n_ranks=6)
   { 1267,  52, 11,   3, "Potent Kick"                        }, // Potent Kick (id=213047, n_ranks=6)
-  { 1268,  52, 12,   3, "Pawsed"                             }, // Pawsed (id=213116, n_ranks=6)
+  { 1268,  52, 12,   3, "Face Palm"                          }, // Face Palm (id=213116, n_ranks=6)
   { 1269,  52,  0,   1, "Swift as a Coursing River"          }, // Swift as a Coursing River (id=213161, n_ranks=1)
   { 1270,  52,  0,   1, "Overflow"                           }, // Overflow (id=213180, n_ranks=1)
-  { 1271,  52,  0,   1, "Even Handed"                        }, // Even Handed (id=213160, n_ranks=1)
+  { 1271,  52,  0,   1, "Obstinate Determination"            }, // Obstinate Determination (id=213907, n_ranks=1)
   { 1272,  52,  1,   1, "Dragonfire Brew"                    }, // Dragonfire Brew (id=213183, n_ranks=1)
   { 1273,  52,  2,   1, "Brew-Stache"                        }, // Brew-Stache (id=213495, n_ranks=1)
   { 1274,  52,  3,   1, "Fortification"                      }, // Fortification (id=213340, n_ranks=1)
@@ -4833,7 +4845,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  959,  57,  0,   1, "Grasping Roots [NYI]"               }, // Grasping Roots [NYI] (id=201073, n_ranks=1)
   {  960,  57,  0,   1, "Rage of the Sleeper"                }, // Rage of the Sleeper (id=200851, n_ranks=1)
   {  961,  57,  1,   1, "Embrace of the Nightmare"           }, // Embrace of the Nightmare (id=200855, n_ranks=1)
-  {  962,  57,  2,   1, "Heart of the Woods [NYI]"           }, // Heart of the Woods [NYI] (id=200854, n_ranks=1)
+  {  962,  57,  2,   1, "Gory Fur"                           }, // Gory Fur (id=200854, n_ranks=1)
   {  979,  57,  3,   1, "Adaptive Fur"                       }, // Adaptive Fur (id=200850, n_ranks=1)
   { 1194,  57,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1153,  58,  0,   1, "Ashamane's Frenzy"                  }, // Ashamane's Frenzy (id=210722, n_ranks=1)
@@ -4850,7 +4862,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1164,  58,  7,   3, "Ashamane's Energy"                  }, // Ashamane's Energy (id=210579, n_ranks=6)
   { 1165,  58, 12,   3, "Attuned to Nature"                  }, // Attuned to Nature (id=210590, n_ranks=6)
   { 1166,  58,  8,   3, "Tear the Flesh"                     }, // Tear the Flesh (id=210593, n_ranks=6)
-  { 1167,  58,  9,   3, "Feral Instinct"                     }, // Feral Instinct (id=210631, n_ranks=6)
+  { 1167,  58, 10,   3, "Feral Instinct"                     }, // Feral Instinct (id=210631, n_ranks=6)
   { 1168,  58,  9,   3, "Sharpened Claws"                    }, // Sharpened Claws (id=210637, n_ranks=6)
   { 1193,  58,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1034,  59, 11,   3, "Bladed Feathers"                    }, // Bladed Feathers (id=202302, n_ranks=6)
@@ -4864,10 +4876,10 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1042,  59, 10,   3, "Empowerment"                        }, // Empowerment (id=202464, n_ranks=6)
   { 1043,  59,  0,   1, "Rejuvenating Innervation"           }, // Rejuvenating Innervation (id=202890, n_ranks=1)
   { 1044,  59,  0,   1, "Light of the Sun"                   }, // Light of the Sun (id=202918, n_ranks=1)
-  { 1045,  59,  0,   1, "Mooncraze"                          }, // Mooncraze (id=202937, n_ranks=1)
+  { 1045,  59,  0,   1, "Sunblind"                           }, // Sunblind (id=213682, n_ranks=1)
   { 1046,  59,  1,   1, "Moon and Stars"                     }, // Moon and Stars (id=202940, n_ranks=1)
   { 1047,  59,  2,   1, "Power of Goldrinn"                  }, // Power of Goldrinn (id=202996, n_ranks=1)
-  { 1048,  59,  3,   1, "Scion of the Night Sky"             }, // Scion of the Night Sky (id=203019, n_ranks=1)
+  { 1048,  59,  3,   1, "Echoing Stars"                      }, // Echoing Stars (id=213666, n_ranks=1)
   { 1049,  59,  0,   1, "New Moon"                           }, // New Moon (id=202767, n_ranks=1)
   { 1192,  59,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1096,  60,  0,   1, "Soul Carver"                        }, // Soul Carver (id=207407, n_ranks=1)
@@ -4911,7 +4923,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
 };
 #define ARTIFACT_POWER_RANK_SIZE (2305)
 
-// Artifact power rank data, wow build 21108
+// Artifact power rank data, wow build 21154
 static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RANK_SIZE] = {
   { 2316,    40,  0, 205273,      0.000 },
   { 2317,    41,  0, 186941,      0.000 },
@@ -5807,6 +5819,11 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 3969,   836,  0, 196537,      0.000 },
   { 3970,   837,  0, 196578,      0.000 },
   { 3971,   838,  0, 196489,      0.000 },
+  { 5493,   838,  1, 196489,     10.000 },
+  { 5494,   838,  2, 196489,     15.000 },
+  { 5495,   838,  3, 196489,     20.000 },
+  { 5496,   838,  4, 196489,     25.000 },
+  { 5497,   838,  5, 196489,     30.000 },
   { 3972,   839,  0, 196437,      0.000 },
   { 3973,   840,  0, 196779,      0.000 },
   { 3974,   841,  0, 196355,      0.000 },
@@ -5834,11 +5851,6 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 3996,   844,  4, 196418,     16.000 },
   { 3997,   844,  5, 196418,     20.000 },
   { 3998,   845,  0, 196419,      0.000 },
-  { 3999,   845,  1, 196419,     -6.000 },
-  { 4000,   845,  2, 196419,    -10.000 },
-  { 4001,   845,  3, 196419,    -13.000 },
-  { 4002,   845,  4, 196419,    -16.000 },
-  { 4003,   845,  5, 196419,    -20.000 },
   { 4004,   846,  0, 196422,      0.000 },
   { 4005,   846,  1, 196422,      6.000 },
   { 4006,   846,  2, 196422,     10.000 },
@@ -5925,11 +5937,11 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 4044,   865,  0, 209781,      0.000 },
   { 4045,   866,  0, 197406,      0.000 },
   { 4087,   868,  0, 197038,      0.000 },
-  { 4088,   868,  1, 197038,      4.000 },
-  { 4089,   868,  2, 197038,      5.000 },
-  { 4090,   868,  3, 197038,      6.000 },
-  { 4091,   868,  4, 197038,      7.000 },
-  { 4092,   868,  5, 197038,      8.000 },
+  { 4088,   868,  1, 197038,   2000.000 },
+  { 4089,   868,  2, 197038,   3000.000 },
+  { 4090,   868,  3, 197038,   4000.000 },
+  { 4091,   868,  4, 197038,   5000.000 },
+  { 4092,   868,  5, 197038,   6000.000 },
   { 4093,   869,  0, 197047,      0.000 },
   { 4094,   869,  1, 197047,     20.000 },
   { 4095,   869,  2, 197047,     30.000 },
@@ -6083,11 +6095,11 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 4253,   910,  4, 198292,     16.000 },
   { 4254,   910,  5, 198292,     20.000 },
   { 4255,   911,  0, 198296,      0.000 },
-  { 4256,   911,  1, 198296,      6.000 },
-  { 4257,   911,  2, 198296,     10.000 },
-  { 4258,   911,  3, 198296,     13.000 },
-  { 4259,   911,  4, 198296,     16.000 },
-  { 4260,   911,  5, 198296,     20.000 },
+  { 4256,   911,  1, 198296,     10.000 },
+  { 4257,   911,  2, 198296,     15.000 },
+  { 4258,   911,  3, 198296,     20.000 },
+  { 4259,   911,  4, 198296,     25.000 },
+  { 4260,   911,  5, 198296,     30.000 },
   { 4261,   912,  0, 198299,      0.000 },
   { 4262,   912,  1, 198299,      4.000 },
   { 4263,   912,  2, 198299,      6.000 },
@@ -6517,10 +6529,10 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 4712,  1042,  5, 202464,     20.000 },
   { 4784,  1043,  0, 202890,      0.000 },
   { 4783,  1044,  0, 202918,      0.000 },
-  { 4785,  1045,  0, 202937,      0.000 },
+  { 4785,  1045,  0, 213682,      0.000 },
   { 4788,  1046,  0, 202940,      0.000 },
   { 4787,  1047,  0, 202996,      0.000 },
-  { 4789,  1048,  0, 203019,      0.000 },
+  { 4789,  1048,  0, 213666,      0.000 },
   { 4719,  1049,  0, 202767,      0.000 },
   { 4722,  1052,  0, 202665,      0.000 },
   { 4723,  1053,  0, 202897,      0.000 },
@@ -6642,7 +6654,7 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 4817,  1080,  0, 203752,      0.000 },
   { 4818,  1081,  0, 203754,      0.000 },
   { 4819,  1082,  0, 203755,      0.000 },
-  { 4820,  1083,  0, 203756,      0.000 },
+  { 5498,  1083,  0, 203563,      0.000 },
   { 4821,  1084,  0, 203757,      0.000 },
   { 4823,  1090,  0, 204875,     -3.000 },
   { 4824,  1090,  1, 204875,     -6.000 },
@@ -7193,27 +7205,27 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 5466,  1265,  3, 213133,     20.000 },
   { 5467,  1265,  4, 213133,     25.000 },
   { 5468,  1265,  5, 213133,     30.000 },
-  { 5469,  1266,  0, 213136,      5.000 },
-  { 5470,  1266,  1, 213136,     10.000 },
-  { 5471,  1266,  2, 213136,     15.000 },
-  { 5472,  1266,  3, 213136,     20.000 },
-  { 5473,  1266,  4, 213136,     25.000 },
-  { 5474,  1266,  5, 213136,     30.000 },
+  { 5469,  1266,  0, 213136,      3.000 },
+  { 5470,  1266,  1, 213136,      6.000 },
+  { 5471,  1266,  2, 213136,     10.000 },
+  { 5472,  1266,  3, 213136,     13.000 },
+  { 5473,  1266,  4, 213136,     16.000 },
+  { 5474,  1266,  5, 213136,     20.000 },
   { 5475,  1267,  0, 213047,    500.000 },
   { 5476,  1267,  1, 213047,   1000.000 },
   { 5477,  1267,  2, 213047,   1500.000 },
   { 5478,  1267,  3, 213047,   2000.000 },
   { 5479,  1267,  4, 213047,   2500.000 },
   { 5480,  1267,  5, 213047,   3000.000 },
-  { 5481,  1268,  0, 213116,      5.000 },
-  { 5482,  1268,  1, 213116,     10.000 },
-  { 5483,  1268,  2, 213116,     15.000 },
-  { 5484,  1268,  3, 213116,     20.000 },
-  { 5485,  1268,  4, 213116,     25.000 },
-  { 5486,  1268,  5, 213116,     30.000 },
+  { 5481,  1268,  0, 213116,     15.000 },
+  { 5482,  1268,  1, 213116,     30.000 },
+  { 5483,  1268,  2, 213116,     45.000 },
+  { 5484,  1268,  3, 213116,     60.000 },
+  { 5485,  1268,  4, 213116,     75.000 },
+  { 5486,  1268,  5, 213116,     90.000 },
   { 5487,  1269,  0, 213161,      0.000 },
   { 5488,  1270,  0, 213180,      0.000 },
-  { 5489,  1271,  0, 213160,      0.000 },
+  { 5489,  1271,  0, 213907,      0.000 },
   { 5490,  1272,  0, 213183,      0.000 },
   { 5491,  1273,  0, 213495,      0.000 },
   { 5492,  1274,  0, 213340,      0.000 },

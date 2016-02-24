@@ -1074,19 +1074,9 @@ double dbc_t::resource_base( player_e t, unsigned level ) const
 
 /* Mana regen per spirit
  */
-double dbc_t::regen_spirit( player_e t, unsigned level ) const
+double dbc_t::regen_spirit( player_e, unsigned ) const
 {
-  uint32_t class_id = util::class_id( t );
-
-  assert( class_id < dbc_t::class_max_size() );
-  assert( level > 0 );
-  assert( level <= MAX_SCALING_LEVEL );
-#if SC_USE_PTR
-  return ptr ? __ptr_gt_regen_mpper_spt[ class_id ][ level - 1 ]
-             : __gt_regen_mpper_spt[ class_id ][ level - 1 ];
-#else
-  return __gt_regen_mpper_spt[ class_id ][ level - 1 ];
-#endif
+  return 0;
 }
 
 double dbc_t::regen_spirit( pet_e t, unsigned level ) const
