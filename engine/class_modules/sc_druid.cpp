@@ -29,6 +29,10 @@ namespace { // UNNAMED NAMESPACE
   Force of Nature!
   Fury of Elune
   Force of Nature
+  Echoing Stars
+  Sunblind
+  Touch of the Moon
+  Moonfang
 
   Guardian ==================================================================
   Statistics?
@@ -36,6 +40,13 @@ namespace { // UNNAMED NAMESPACE
   Incarnation CD modifier rework
   Frenzied Regeneration ignite
   Embrace of the Nightmare rage gain?
+  Remove lacerate / Lacerate -> Thrash
+  Galactic Guardian change
+  Brambles change
+  Guardian of Elune change
+  Bear swipe
+  Gore change
+  Gory Fur
 
   Resto =====================================================================
   All the things
@@ -636,10 +647,10 @@ public:
     artifact_power_t twilight_glow;
 
     // NYI
+    artifact_power_t echoing_stars;
     artifact_power_t light_of_the_sun;
-    artifact_power_t mooncraze; // will be replaced
     artifact_power_t rejuvenating_innervation;
-    artifact_power_t scion_of_the_night_sky;
+    artifact_power_t sunblind;
     artifact_power_t touch_of_the_moon;
 
     // Feral -- Fangs of Ashamane
@@ -680,7 +691,7 @@ public:
     artifact_power_t vicious_bites;
     artifact_power_t grasping_roots;
     artifact_power_t wildflesh;
-    artifact_power_t heart_of_the_woods; // will be replaced
+    artifact_power_t gory_fur;
   } artifact;
 
   druid_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
@@ -6060,7 +6071,7 @@ void druid_t::init_spells()
   artifact.new_moon                     = find_artifact_spell( "New Moon" );
   artifact.moon_and_stars               = find_artifact_spell( "Moon and Stars" );
   artifact.power_of_goldrinn            = find_artifact_spell( "Power of Goldrinn" );
-  artifact.scion_of_the_night_sky       = find_artifact_spell( "Scion of the Night Sky" );
+  artifact.echoing_stars                = find_artifact_spell( "Echoing Stars" );
   artifact.falling_star                 = find_artifact_spell( "Falling Star" );
   artifact.touch_of_the_moon            = find_artifact_spell( "Touch of the Moon" );
   artifact.bladed_feathers              = find_artifact_spell( "Bladed Feathers" );
@@ -6070,7 +6081,7 @@ void druid_t::init_spells()
   artifact.rejuvenating_innervation     = find_artifact_spell( "Rejuvenating Innervation" );
   artifact.twilight_glow                = find_artifact_spell( "Twilight Glow" );
   artifact.scythe_of_the_stars          = find_artifact_spell( "Scythe of the Stars" );
-  artifact.mooncraze                    = find_artifact_spell( "Mooncraze" );
+  artifact.sunblind                     = find_artifact_spell( "Sunblind" );
   artifact.light_of_the_sun             = find_artifact_spell( "Light of the Sun" );
   artifact.empowerment                  = find_artifact_spell( "Empowerment" );
 
@@ -6108,7 +6119,7 @@ void druid_t::init_spells()
   artifact.vicious_bites                = find_artifact_spell( "Vicious Bites" );
   artifact.grasping_roots               = find_artifact_spell( "Grasping Roots" );
   artifact.wildflesh                    = find_artifact_spell( "Wildflesh" );
-  artifact.heart_of_the_woods           = find_artifact_spell( "Heart of the Woods" ); // will be replaced
+  artifact.gory_fur                     = find_artifact_spell( "Gory Fur" );
 
   // Masteries ==============================================================
 
