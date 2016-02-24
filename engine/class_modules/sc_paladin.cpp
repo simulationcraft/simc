@@ -2223,14 +2223,8 @@ struct divine_hammer_tick_t : public paladin_melee_attack_t
     {
       if ( p() -> artifact.blades_of_light.rank() )
       {
-        int remaining_executes = (int)(rng().range(1, 4));
-        if (remaining_executes > 3) {
-          remaining_executes = 3;
-        }
-        for (int i = 0; i < remaining_executes; i++) {
-          bol_proc -> target = s -> target;
-          bol_proc -> schedule_execute();
-        }
+        bol_proc -> target = s -> target;
+        bol_proc -> schedule_execute();
       }
     }
   }
