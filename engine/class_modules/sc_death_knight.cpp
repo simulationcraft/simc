@@ -2251,8 +2251,8 @@ struct shadow_of_death_t : public buff_t
 
     // Refresh, new value is x% + remaining portion of the ongoing buff.
     // Current value of the buff is the current +max_health% of the buff.
-    if ( expiration )
-      new_multiplier += current_value * expiration -> remains() / data().duration();
+    if ( ! expiration.empty() )
+      new_multiplier += current_value * expiration.back() -> remains() / data().duration();
 
     // Base Health
     double max_health_base = player -> resources.max[ RESOURCE_HEALTH ] - player -> resources.temporary[ RESOURCE_HEALTH ];

@@ -29,6 +29,7 @@ namespace { // UNNAMED NAMESPACE
   Force of Nature
   Moonfang
   New Moon changes
+  Bimodal distribution in AoE sims
 
   Echoing Stars
   Sunblind

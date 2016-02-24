@@ -56,7 +56,7 @@ struct expiration_t : public buff_event_t
 
   virtual void execute() override
   {
-    buff -> expiration = nullptr;
+    buff -> expiration.pop_front();
 
     if ( buff -> stack_behavior == BUFF_STACK_ASYNCHRONOUS )
       buff -> decrement( stack );
@@ -82,7 +82,7 @@ struct tick_t : public buff_event_t
 
     // For tick number calculations, always include the +1ms so we get correct
     // tick number labeling on the last tick, just before the buff expires.
-    int total_ticks = buff -> expiration ? buff -> current_tick + static_cast<int>( buff -> remains() / buff -> tick_time() ) : -1;
+    int total_ticks = buff -> expiration.empty() ? -1 : buff -> current_tick + static_cast<int>( buff -> remains() / buff -> tick_time() );
 
     if ( buff -> sim -> debug )
       buff -> sim -> out_debug.printf( "%s buff %s ticks (%d of %d).", buff -> player -> name(), buff -> name(), buff -> current_tick, total_ticks );
@@ -575,9 +575,9 @@ timespan_t buff_t::remains() const
   {
     return timespan_t::zero();
   }
-  if ( expiration )
+  if ( ! expiration.empty() )
   {
-    return expiration -> occurs() - sim -> current_time();
+    return expiration.back() -> occurs() - sim -> current_time();
   }
   return timespan_t::min();
 }
@@ -761,24 +761,25 @@ void buff_t::decrement( int    stacks,
 
 void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 {
-  assert( expiration );
   if ( stack_behavior == BUFF_STACK_ASYNCHRONOUS )
   {
     sim -> errorf( "%s attempts to extend asynchronous buff %s.", p -> name(), name() );
     sim -> cancel();
   }
 
+  assert( expiration.size() == 1 );
+
   if ( extra_seconds > timespan_t::zero() )
   {
-    expiration -> reschedule( expiration -> remains() + extra_seconds );
+    expiration.front() -> reschedule( expiration.front() -> remains() + extra_seconds );
 
     if ( sim -> debug )
       sim -> out_debug.printf( "%s extends buff %s by %.1f seconds. New expiration time: %.1f",
-                     p -> name(), name_str.c_str(), extra_seconds.total_seconds(), expiration -> occurs().total_seconds() );
+                     p -> name(), name_str.c_str(), extra_seconds.total_seconds(), expiration.front() -> occurs().total_seconds() );
   }
   else if ( extra_seconds < timespan_t::zero() )
   {
-    timespan_t reschedule_time = expiration -> remains() + extra_seconds;
+    timespan_t reschedule_time = expiration.front() -> remains() + extra_seconds;
 
     if ( reschedule_time <= timespan_t::zero() )
     {
@@ -792,13 +793,14 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
       reschedule_time = rng().gauss( lag, dev );
     }
 
-    event_t::cancel( expiration );
+    event_t::cancel( expiration.front() );
+    expiration.pop_front();
 
-    expiration = new ( *sim ) expiration_t( this, reschedule_time );
+    expiration.push_back( new ( *sim ) expiration_t( this, reschedule_time ) );
 
     if ( sim -> debug )
       sim -> out_debug.printf( "%s decreases buff %s by %.1f seconds. New expiration time: %.1f",
-                     p -> name(), name_str.c_str(), -extra_seconds.total_seconds(), expiration -> occurs().total_seconds() );
+                     p -> name(), name_str.c_str(), -extra_seconds.total_seconds(), expiration.back() -> occurs().total_seconds() );
   }
 }
 
@@ -848,18 +850,24 @@ void buff_t::start( int        stacks,
     }
   }
 
+  int before_stacks = stack();
+
   bump( stacks, value );
 
   if ( last_start >= timespan_t::zero() )
   {
     start_intervals.add( ( sim -> current_time() - last_start ).total_seconds() );
   }
-  last_start = sim -> current_time();
+
+  if ( before_stacks <= 0 )
+  {
+    last_start = sim -> current_time();
+  }
 
   timespan_t d = ( duration >= timespan_t::zero() ) ? duration : buff_duration;
 
   if ( d > timespan_t::zero() )
-    expiration = new ( *sim ) expiration_t( this, stacks, d );
+    expiration.push_back( new ( *sim ) expiration_t( this, stacks, d ) );
 
   timespan_t period = tick_time();
   if ( tick_behavior != BUFF_TICK_NONE && period > timespan_t::zero()
@@ -875,7 +883,7 @@ void buff_t::start( int        stacks,
 
     if ( tick_zero && tick_callback )
     {
-      tick_callback( this, expiration ? remains() / period : -1, timespan_t::zero() );
+      tick_callback( this, expiration.empty() ? -1 : remains() / period, timespan_t::zero() );
     }
   }
 }
@@ -907,7 +915,11 @@ void buff_t::refresh( int        stacks,
   // infinite duration
   if ( d <= timespan_t::zero() )
   {
-    event_t::cancel( expiration );
+    if ( ! expiration.empty() )
+    {
+      event_t::cancel( expiration.front() );
+      expiration.pop_front();
+    }
     // Infinite ticking buff refreshes shouldnt happen, but cancel ongoing 
     // tick event just to be sure.
     event_t::cancel( tick_event );
@@ -915,17 +927,18 @@ void buff_t::refresh( int        stacks,
   else
   {
     // Infinite duration -> duration of d
-    if ( ! expiration )
-      expiration = new ( *sim ) expiration_t( this, d );
+    if ( expiration.empty() )
+      expiration.push_back( new ( *sim ) expiration_t( this, d ) );
     else
     {
-      timespan_t duration_remains = expiration -> remains();
+      timespan_t duration_remains = expiration.front() -> remains();
       if ( duration_remains < d )
-        expiration -> reschedule( d );
+        expiration.front() -> reschedule( d );
       else if ( duration_remains > d )
       {
-        event_t::cancel( expiration );
-        expiration = new ( *sim ) expiration_t( this, d );
+        event_t::cancel( expiration.front() );
+        expiration.pop_front();
+        expiration.push_back( new ( *sim ) expiration_t( this, d ) );
       }
     }
 
@@ -942,7 +955,7 @@ void buff_t::refresh( int        stacks,
 
     if ( tick_zero && tick_callback )
     {
-      tick_callback( this, expiration ? remains() / tick_time() : -1, timespan_t::zero() );
+      tick_callback( this, expiration.empty() ? -1 : remains() / tick_time(), timespan_t::zero() );
     }
   }
 }
@@ -968,9 +981,33 @@ void buff_t::bump( int stacks, double value )
     current_stack += stacks;
     if ( current_stack > max_stack() )
     {
+      int overflow = current_stack - max_stack();
+
       overflow_count++;
-      overflow_total += current_stack - max_stack();
+      overflow_total += overflow;
       current_stack = max_stack();
+
+      if ( stack_behavior == BUFF_STACK_ASYNCHRONOUS )
+      {
+        /* Replace the oldest buff with the new one. We do this by cancelling
+        expiration events until their stack count add up to the overflow. */
+        while ( overflow > 0 )
+        {
+          int exp_stacks = debug_cast<expiration_t*>( expiration.front() ) -> stack;
+
+          if ( exp_stacks > overflow )
+          {
+            debug_cast<expiration_t*>( expiration.front() ) -> stack -= overflow;
+            break;
+          }
+          else
+          {
+            event_t::cancel( expiration.front() );
+            expiration.pop_front();
+            overflow -= exp_stacks;
+          }
+        }
+      }
     }
 
     if ( before_stack != current_stack )
@@ -1067,10 +1104,16 @@ void buff_t::expire( timespan_t delay )
 
   timespan_t remaining_duration = timespan_t::zero();
   int expiration_stacks = current_stack;
-  if ( expiration )
-    remaining_duration = expiration -> remains();
+  if ( ! expiration.empty() )
+  {
+    remaining_duration = expiration.back() -> remains();
 
-  event_t::cancel( expiration );
+    while( ! expiration.empty() )
+    {
+      event_t::cancel( expiration.front() );
+      expiration.pop_front();
+    }
+  }
   event_t::cancel( tick_event );
 
   assert( as<std::size_t>( current_stack ) < stack_uptime.size() );
