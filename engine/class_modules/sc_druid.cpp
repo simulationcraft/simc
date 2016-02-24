@@ -24,8 +24,6 @@ namespace { // UNNAMED NAMESPACE
   Balance ===================================================================
   Stellar Drift cast while moving
   Accurate starfall travel time
-  Force of Nature!
-  Fury of Elune
   Force of Nature
   New Moon changes
   Bimodal distribution in AoE sims
@@ -102,7 +100,7 @@ struct druid_td_t : public actor_target_data_t
   {
     dot_t* ashamanes_frenzy;
     dot_t* blood_claws;
-    dot_t* collapsing_stars;
+    dot_t* fury_of_elune;
     dot_t* gushing_wound;
     dot_t* lacerate;
     dot_t* lifebloom;
@@ -250,6 +248,9 @@ public:
   unsigned active_starfalls;
   unsigned starfall_counter; // for assigning each starfall instance an id
   moon_stage_e moon_stage;
+  struct {
+    double x, y;
+  } fury_of_elune_position;
 
   // counters for snapshot tracking
   std::vector<snapshot_counter_t*> counters;
@@ -334,7 +335,7 @@ public:
     buff_t* blessing_of_anshe;
     buff_t* blessing_of_elune;
     buff_t* celestial_alignment;
-    buff_t* collapsing_stars_up; // Tracking buff for APL
+    buff_t* fury_of_elune_up; // Tracking buff for APL
     buff_t* incarnation_moonkin;
     buff_t* lunar_empowerment;
     buff_t* moonkin_form;
@@ -592,7 +593,7 @@ public:
     const spell_data_t* full_moon;
     const spell_data_t* natures_balance;
 
-    const spell_data_t* collapsing_stars;
+    const spell_data_t* fury_of_elune;
     const spell_data_t* astral_communion;
     const spell_data_t* blessing_of_the_ancients;
 
@@ -4612,7 +4613,7 @@ struct celestial_alignment_t : public druid_spell_t
 
   virtual bool ready() override
   {
-    if ( p() -> talent.collapsing_stars -> ok() )
+    if ( p() -> talent.fury_of_elune -> ok() )
       return false;
     if ( p() -> talent.incarnation_moonkin -> ok() )
       return false;
@@ -4621,18 +4622,41 @@ struct celestial_alignment_t : public druid_spell_t
   }
 };
 
-// Collapsing Stars =========================================================
+// Fury of Elune =========================================================
 
-struct collapsing_stars_t : public druid_spell_t
+struct fury_of_elune_t : public druid_spell_t
 {
-  collapsing_stars_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "collapsing_stars", player, player -> talent.collapsing_stars )
+  struct fury_of_elune_tick_t : public druid_spell_t
+  {
+    fury_of_elune_tick_t( druid_t* player ) :
+      druid_spell_t( "fury_of_elune_tick", player, player -> find_spell( 211545 ) )
+    {
+      background = dual = ground_aoe = true;
+    } 
+    
+    void snapshot_internal( action_state_t* state, unsigned flags, dmg_e rt ) override
+    {
+      druid_spell_t::snapshot_internal( state, flags, rt );
+
+      state -> original_x = p() -> fury_of_elune_position.x;
+      state -> original_y = p() -> fury_of_elune_position.y;
+    }
+  };
+
+  fury_of_elune_tick_t* fury_of_elune;
+
+  fury_of_elune_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "fury_of_elune", player, player -> talent.fury_of_elune ),
+    fury_of_elune( new fury_of_elune_tick_t( player ) )
   {
     parse_options( options_str );
 
-    dot_duration = sim -> expected_iteration_time > timespan_t::zero() ?
-                   2 * sim -> expected_iteration_time :
-                   2 * sim -> max_time * ( 1.0 + sim -> vary_combat_length ); // "infinite" duration
+    ground_aoe = true;
+    add_child( fury_of_elune );
+
+    dot_duration   = sim -> expected_iteration_time > timespan_t::zero() ?
+                     2 * sim -> expected_iteration_time :
+                     2 * sim -> max_time * ( 1.0 + sim -> vary_combat_length ); // "infinite" duration
 
     // Tick cost is proportional to base tick time.
     base_costs_per_tick[ RESOURCE_ASTRAL_POWER ] *= base_tick_time.total_seconds();
@@ -4651,7 +4675,17 @@ struct collapsing_stars_t : public druid_spell_t
     druid_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) && ! refresh )
-      p() -> buff.collapsing_stars_up -> trigger();
+      p() -> buff.fury_of_elune_up -> trigger();
+
+    p() -> fury_of_elune_position.x = s -> original_x;
+    p() -> fury_of_elune_position.y = s -> original_y;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    druid_spell_t::tick( d );
+
+    fury_of_elune -> execute();
   }
 
   void cancel() override
@@ -4661,7 +4695,38 @@ struct collapsing_stars_t : public druid_spell_t
     if ( dot_t* dot = find_dot( target ) )
       dot -> cancel();
 
-    p() -> buff.collapsing_stars_up -> decrement();
+    p() -> buff.fury_of_elune_up -> decrement();
+  }
+};
+
+struct fury_of_elune_move_t : public druid_spell_t
+{
+  fury_of_elune_move_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "move_fury_of_elune", player, player -> find_spell( 211547 ) )
+  {}
+
+  void execute() override
+  {
+    druid_spell_t::execute();
+
+    p() -> fury_of_elune_position.x = execute_state -> original_x;
+    p() -> fury_of_elune_position.y = execute_state -> original_y;
+  }
+
+  bool ready() override
+  {
+    if ( ! p() -> buff.fury_of_elune_up -> check() )
+      return false;
+
+    if ( ! sim -> distance_targeting_enabled )
+      return false;
+
+    bool r = druid_spell_t::ready();
+
+    if ( target -> x_position == p() -> fury_of_elune_position.x && target -> y_position == p() -> fury_of_elune_position.y )
+      return false;
+
+    return r;
   }
 };
 
@@ -5857,7 +5922,6 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "cat_form"               ) return new               cat_form_t( this, options_str );
   if ( name == "celestial_alignment" ||
        name == "ca"                     ) return new    celestial_alignment_t( this, options_str );
-  if ( name == "collapsing_stars"       ) return new       collapsing_stars_t( this, options_str );
   if ( name == "cenarion_ward"          ) return new          cenarion_ward_t( this, options_str );
   if ( name == "dash"                   ) return new                   dash_t( this, options_str );
   if ( name == "displacer_beast"        ) return new        displacer_beast_t( this, options_str );
@@ -5865,6 +5929,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "ferocious_bite"         ) return new         ferocious_bite_t( this, options_str );
   if ( name == "frenzied_regeneration"  ) return new  frenzied_regeneration_t( this, options_str );
   if ( name == "full_moon"              ) return new              full_moon_t( this, options_str );
+  if ( name == "fury_of_elune"          ) return new          fury_of_elune_t( this, options_str );
   if ( name == "growl"                  ) return new                  growl_t( this, options_str );
   if ( name == "half_moon"              ) return new              half_moon_t( this, options_str );
   if ( name == "healing_touch"          ) return new          healing_touch_t( this, options_str );
@@ -5881,6 +5946,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "moonfire"               ) return new               moonfire_t( this, options_str );
   if ( name == "moonfire_cat" ||
        name == "lunar_inspiration" )      return new      lunar_inspiration_t( this, options_str );
+  if ( name == "move_fury_of_elune"     ) return new     fury_of_elune_move_t( this, options_str );
   if ( name == "new_moon"               ) return new               new_moon_t( this, options_str );
   if ( name == "sunfire"                ) return new                sunfire_t( this, options_str );
   if ( name == "moonkin_form"           ) return new           moonkin_form_t( this, options_str );
@@ -6027,7 +6093,7 @@ void druid_t::init_spells()
   talent.full_moon                      = find_talent_spell( "Full Moon" );
   talent.natures_balance                = find_talent_spell( "Nature's Balance" );
 
-  talent.collapsing_stars               = find_talent_spell( "Collapsing Stars" );
+  talent.fury_of_elune                  = find_talent_spell( "Fury of Elune" );
   talent.astral_communion               = find_talent_spell( "Astral Communion" );
   talent.blessing_of_the_ancients       = find_talent_spell( "Blessing of the Ancients" );
 
@@ -6336,7 +6402,7 @@ void druid_t::create_buffs()
 
   buff.celestial_alignment       = new celestial_alignment_buff_t( *this );
 
-  buff.collapsing_stars_up       = buff_creator_t( this, "collapsing_stars_up", spell_data_t::nil() )
+  buff.fury_of_elune_up          = buff_creator_t( this, "fury_of_elune_up", spell_data_t::nil() )
                                    .max_stack( 10 ); // Tracking buff for APL use
 
   buff.owlkin_frenzy             = buff_creator_t( this, "owlkin_frenzy", find_spell( 157228 ) )
@@ -6768,13 +6834,13 @@ void druid_t::apl_balance()
   default_list -> add_action( "astral_communion,if=astral_power.deficit>=75" );
   default_list -> add_action( "incarnation,if=astral_power>=40" );
   default_list -> add_action( this, "Celestial Alignment", "if=astral_power>=40" );
-  default_list -> add_action( "collapsing_stars,if=astral_power.deficit<=10" );
+  default_list -> add_action( "fury_of_elune,if=astral_power.deficit<=10" );
   default_list -> add_action( this, "Lunar Strike", "if=talent.natures_balance.enabled&dot.moonfire.remains<5" );
   default_list -> add_action( this, "Solar Wrath", "if=talent.natures_balance.enabled&dot.sunfire.remains<5" );
   default_list -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.stack=3" );
   default_list -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.stack=3" );
   default_list -> add_action( this, "Starsurge",
-                              "if=!talent.collapsing_stars.enabled|(buff.collapsing_stars_up.down&(cooldown.collapsing_stars.remains>10|astral_power.deficit<=10))" );
+                              "if=!talent.fury_of_elune.enabled|(buff.fury_of_elune_up.down&(cooldown.fury_of_elune.remains>10|astral_power.deficit<=10))" );
   default_list -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.up&(!talent.warrior_of_elune.enabled|buff.warrior_of_elune.up)" );
   default_list -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.up" );
   default_list -> add_action( this, "Lunar Strike", "if=talent.full_moon.enabled|action.solar_wrath.cast_time<1" );
@@ -7785,7 +7851,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
 {
   dots.ashamanes_frenzy = target.get_dot( "ashamanes_frenzy", &source );
   dots.blood_claws      = target.get_dot( "blood_claws",      &source );
-  dots.collapsing_stars = target.get_dot( "collapsing_stars", &source );
+  dots.fury_of_elune    = target.get_dot( "fury_of_elune",    &source );
   dots.gushing_wound    = target.get_dot( "gushing_wound",    &source );
   dots.lacerate         = target.get_dot( "lacerate",         &source );
   dots.lifebloom        = target.get_dot( "lifebloom",        &source );
