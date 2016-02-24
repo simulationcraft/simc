@@ -27,6 +27,8 @@ namespace { // UNNAMED NAMESPACE
   Force of Nature
   New Moon changes
   Bimodal distribution in AoE sims
+  Nature's Balance tweak
+  Shooting Stars AsP react
 
   Touch of the Moon
   Light of the Sun
@@ -4809,6 +4811,7 @@ struct full_moon_t : public druid_spell_t
   {
     parse_options( options_str );
 
+    cooldown = player -> cooldown.moon_cd;
     ap_per_cast = data().effectN( 2 ).resource( RESOURCE_ASTRAL_POWER ); // TOCHECK
   }
 
@@ -4817,8 +4820,6 @@ struct full_moon_t : public druid_spell_t
     druid_spell_t::execute();
 
     p() -> moon_stage = NEW_MOON; // TOCHECK: Requires hit?
-
-    p() -> cooldown.moon_cd -> start( cooldown -> duration );
   }
 
   bool ready() override
@@ -4842,6 +4843,8 @@ struct half_moon_t : public druid_spell_t
     druid_spell_t( "half_moon", player, player -> find_spell( 202768 ) )
   {
     parse_options( options_str );
+
+    cooldown = player -> cooldown.moon_cd;
   }
 
   void execute() override
@@ -4849,8 +4852,6 @@ struct half_moon_t : public druid_spell_t
     druid_spell_t::execute();
 
     p() -> moon_stage++;
-
-    p() -> cooldown.moon_cd -> start( cooldown -> duration );
   }
 
   bool ready() override
@@ -5176,6 +5177,10 @@ struct new_moon_t : public druid_spell_t
     druid_spell_t( "new_moon", player, player -> artifact.new_moon.spell_ )
   {
     parse_options( options_str );
+    
+    cooldown = player -> cooldown.moon_cd;
+    cooldown -> duration = data().charge_cooldown();
+    cooldown -> charges  = data().charges();
   }
 
   void execute() override
@@ -5183,8 +5188,6 @@ struct new_moon_t : public druid_spell_t
     druid_spell_t::execute();
 
     p() -> moon_stage++;
-
-    p() -> cooldown.moon_cd -> start( cooldown -> duration );
   }
 
   bool ready() override
