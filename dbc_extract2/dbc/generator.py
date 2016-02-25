@@ -1454,6 +1454,7 @@ class SpellDataGenerator(DataGenerator):
           ( 178875, 0 ), # BM T17 4P
           ( 188507, 0 ), # BM T18 4P
           ( 188402, 0 ), # SV T18 4P
+		  ( 185365, 0 ), # Hunter's Mark debuff
         ),
 
         # Rogue:

@@ -893,12 +893,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       175683, // Ursol's Power
            0,
     },
-    // Balance tree, 17 abilities
+    // Balance tree, 18 abilities
     {
        22812, // Barkskin (Active Mitigation)
       194223, // Celestial Alignment
       122114, // Chosen of Elune
       202771, // Full Moon
+      211547, // Fury of Elune
       203001, // Goldrinn's Fang
       202768, // Half Moon
         5185, // Healing Touch
