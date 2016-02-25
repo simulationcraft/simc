@@ -27,7 +27,6 @@ namespace { // UNNAMED NAMESPACE
   Force of Nature
   New Moon changes
   Bimodal distribution in AoE sims
-  Nature's Balance tweak
   Shooting Stars AsP react
 
   Touch of the Moon
@@ -1863,27 +1862,6 @@ public:
         return;
       }
     }
-  }
-
-  virtual void trigger_natures_balance( action_state_t* s, dot_t* d )
-  {
-    if ( ! p() -> talent.natures_balance -> ok() )
-      return;
-    if ( ! result_is_hit( s -> result ) )
-      return;
-
-    // Nature's Balance may only extend the DoT to 20 seconds remaining.
-
-    timespan_t base_time;
-    if ( d == td( d -> target ) -> dots.moonfire )
-      base_time = timespan_t::from_seconds( p() -> talent.natures_balance -> effectN( 1 ).base_value() );
-    else if ( d == td( d -> target ) -> dots.sunfire )
-      base_time = timespan_t::from_seconds( p() -> talent.natures_balance -> effectN( 2 ).base_value() );
-    else
-      return;
-
-    timespan_t extension_limit = std::max( timespan_t::zero(), timespan_t::from_seconds( 20.0 ) - d -> remains() );
-    d -> extend_duration( std::min( base_time, extension_limit ) );
   }
 }; // end druid_spell_t
 
@@ -5063,6 +5041,8 @@ struct lunar_inspiration_t : public druid_spell_t
 
 struct lunar_strike_t : public druid_spell_t
 {
+  timespan_t natures_balance;
+
   lunar_strike_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "lunar_strike", player, player -> find_specialization_spell( "Lunar Strike" ) )
   {
@@ -5076,6 +5056,7 @@ struct lunar_strike_t : public druid_spell_t
 
     base_execute_time *= 1 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
     base_crit         += player -> artifact.dark_side_of_the_moon.percent();
+    natures_balance    = timespan_t::from_seconds( player -> talent.natures_balance -> effectN( 1 ).base_value() );
   }
 
   double action_multiplier() const override
@@ -5110,7 +5091,8 @@ struct lunar_strike_t : public druid_spell_t
     druid_spell_t::execute();
 
     // Nature's Balance only extends Moonfire on the primary target.
-    trigger_natures_balance( execute_state, td( target ) -> dots.moonfire );
+    if ( natures_balance > timespan_t::zero() && result_is_hit( execute_state -> result ) )
+      td( execute_state -> target ) -> dots.moonfire -> extend_duration( natures_balance, timespan_t::from_seconds( 20.0 ) );
 
     p() -> buff.lunar_empowerment -> decrement();
     p() -> buff.warrior_of_elune -> decrement();
@@ -5350,6 +5332,8 @@ struct skull_bash_t : public druid_spell_t
 
 struct solar_wrath_t : public druid_spell_t
 {
+  timespan_t natures_balance;
+
   solar_wrath_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "solar_wrath", player, player -> find_specialization_spell( "Solar Wrath" ) )
   {
@@ -5361,6 +5345,8 @@ struct solar_wrath_t : public druid_spell_t
     base_execute_time *= 1.0 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
     base_multiplier   *= 1.0 + player -> sets.set( SET_CASTER, T13, B2 ) -> effectN( 1 ).percent();
     base_multiplier   *= 1.0 + player -> artifact.solar_stabbing.percent();
+
+    natures_balance    = timespan_t::from_seconds( player -> talent.natures_balance -> effectN( 2 ).base_value() );
   }
 
   double action_multiplier() const override
@@ -5389,8 +5375,9 @@ struct solar_wrath_t : public druid_spell_t
     p() -> buff.solar_empowerment -> up();
 
     druid_spell_t::execute();
-
-    trigger_natures_balance( execute_state, td( target ) -> dots.sunfire );
+    
+    if ( natures_balance > timespan_t::zero() && result_is_hit( execute_state -> result ) )
+      td( execute_state -> target ) -> dots.sunfire -> extend_duration( natures_balance, timespan_t::from_seconds( 20.0 ) );
 
     if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T17, B4 ) )
       p() -> cooldown.celestial_alignment -> adjust( -1 * p() -> sets.set( DRUID_BALANCE, T17, B4 ) -> effectN( 1 ).time_value() );
