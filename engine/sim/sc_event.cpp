@@ -31,17 +31,21 @@ event_t::event_t( actor_t& a ) :
 
 // event_t::reschedule ======================================================
 
-void event_t::reschedule( timespan_t new_delta_time )
+void event_t::reschedule( timespan_t delta_time )
 {
-  double old_time;
-  if ( _sim.debug )
-    old_time = std::max( time.total_seconds(), reschedule_time.total_seconds() );
-
-  reschedule_time = _sim.event_mgr.current_time + new_delta_time;
+  delta_time += _sim.event_mgr.current_time;
 
   if ( _sim.debug )
-    _sim.out_debug.printf( "Rescheduling event %s (%d) from %.2f to %.2f",
-                name(), id, old_time, reschedule_time.total_seconds() );
+  {
+    if ( reschedule_time == timespan_t::zero() )
+      _sim.out_debug.printf( "Rescheduling event %s (%d) from %.2f to %.2f",
+                  name(), id, time.total_seconds(), delta_time.total_seconds() );
+    else
+      _sim.out_debug.printf( "Adjusting reschedule of event %s (%d) from %.2f to %.2f time=%.2f",
+                  name(), id, reschedule_time.total_seconds(), delta_time.total_seconds(), time.total_seconds() );
+  }
+
+  reschedule_time = delta_time;
 }
 
 // event_t::add_event =======================================================
