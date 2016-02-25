@@ -23,7 +23,6 @@ namespace { // UNNAMED NAMESPACE
 
   Balance ===================================================================
   Stellar Drift cast while moving
-  Accurate starfall travel time
   Force of Nature
   New Moon changes
   Bimodal distribution in AoE sims
@@ -5423,6 +5422,8 @@ struct starfall_t : public druid_spell_t
 {
   struct starfall_pulse_t : public druid_spell_t
   {
+    timespan_t travel_time_;
+
     starfall_pulse_t( druid_t* p ) :
       druid_spell_t( "starfall_pulse", p, p -> find_spell( 191037 ) )
     {
@@ -5440,9 +5441,17 @@ struct starfall_t : public druid_spell_t
       }
     }
 
-    // Override travel time since sim doesn't understand the missiles don't start from the player.
+    void execute() override
+    {
+      /* Generate a travel time (800-1800ms) for the whole execute.
+        Travel time needs to be the same for all chain targets. */
+      travel_time_ = rng().real() * timespan_t::from_seconds( 1.0 ) + timespan_t::from_seconds( 0.8 );
+
+      druid_spell_t::execute();
+    }
+
     timespan_t travel_time() const override
-    { return timespan_t::from_seconds( 0.1 ); }
+    { return travel_time_; }
 
     double action_multiplier() const override
     {
