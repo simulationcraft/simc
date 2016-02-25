@@ -351,7 +351,7 @@ public:
                      ethereal_sensitivity, //NYI
                      aegwynns_fury, //NYI
                      echoes_of_aegwynn, //NYI
-                     rule_of_threes, //NYI
+                     rule_of_threes,
                      torrential_barrage,
                      power_of_aegwynn; //NYI
 
@@ -2147,6 +2147,9 @@ struct arcane_missiles_t : public arcane_mage_spell_t
                                 -> data().effectN( 1 ).percent() ;
       p() -> buffs.arcane_instability -> expire();
     }
+    // Rule of Threes Artifact Power
+    if ( p() -> artifact.rule_of_threes.rank() )
+      base_tick_time *= 1.0 + p() -> artifact.rule_of_threes.data().effectN( 1 ).percent();
 
     arcane_mage_spell_t::execute();
 
@@ -2168,6 +2171,9 @@ struct arcane_missiles_t : public arcane_mage_spell_t
         }
       }
     }
+
+    p() -> buffs.arcane_missiles -> decrement();
+
   }
 
   virtual void last_tick ( dot_t * d ) override
