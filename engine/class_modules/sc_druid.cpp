@@ -35,7 +35,6 @@ namespace { // UNNAMED NAMESPACE
   Primal Fury gone or bugged?
   Incarnation CD modifier rework
   Embrace of the Nightmare rage gain?
-  Brambles change
   Guardian of Elune change
   Gore change
   Gory Fur
@@ -70,6 +69,7 @@ struct gushing_wound_t;
 }
 namespace bear_attacks {
 struct bear_attack_t;
+struct brambles_pulse_t;
 }
 
 enum form_e {
@@ -278,15 +278,16 @@ public:
 
   struct active_actions_t
   {
-    bear_attacks::bear_attack_t*  blood_claws;
-    bear_attacks::bear_attack_t*  rage_of_the_sleeper;
-    brambles_t*                   brambles;
-    stalwart_guardian_t*          stalwart_guardian;
-    cat_attacks::gushing_wound_t* gushing_wound;
-    heals::cenarion_ward_hot_t*   cenarion_ward_hot;
-    heals::yseras_tick_t*         yseras_gift;
-    spells::moonfire_t*           galactic_guardian;
-    spells::starshards_t*         starshards;
+    bear_attacks::bear_attack_t*    blood_claws;
+    bear_attacks::bear_attack_t*    rage_of_the_sleeper;
+    bear_attacks::brambles_pulse_t* brambles_pulse;
+    brambles_t*                     brambles;
+    stalwart_guardian_t*            stalwart_guardian;
+    cat_attacks::gushing_wound_t*   gushing_wound;
+    heals::cenarion_ward_hot_t*     cenarion_ward_hot;
+    heals::yseras_tick_t*           yseras_gift;
+    spells::moonfire_t*             galactic_guardian;
+    spells::starshards_t*           starshards;
   } active;
 
   // Pets
@@ -3606,6 +3607,16 @@ struct blood_claws_t : public bear_attack_t
   }
 };
 
+struct brambles_pulse_t : public bear_attack_t
+{
+  brambles_pulse_t( druid_t* p ) :
+    bear_attack_t( "brambles_pulse", p, p -> find_spell( 213709 ) )
+  {
+    background = dual = true;
+    aoe = -1;
+  }
+};
+
 // Growl  ===================================================================
 
 struct growl_t: public bear_attack_t
@@ -4432,6 +4443,10 @@ struct barkskin_t : public druid_spell_t
     use_off_gcd = true;
 
     cooldown -> duration *= 1.0 + player -> talent.survival_of_the_fittest -> effectN( 1 ).percent();
+    dot_duration = timespan_t::zero();
+
+    if ( player -> talent.brambles -> ok() )
+      add_child( player -> active.brambles_pulse );
   }
 
   void execute() override
@@ -6282,6 +6297,8 @@ void druid_t::init_spells()
     active.brambles           = new brambles_t( this );
     instant_absorb_list[ talent.brambles -> id() ] =
       new instant_absorb_t( this, talent.brambles, "brambles", &brambles_handler );
+
+    active.brambles_pulse     = new bear_attacks::brambles_pulse_t( this );
   }
   if ( talent.galactic_guardian -> ok() )
     active.galactic_guardian  = new spells::galactic_guardian_t( this );
@@ -6480,7 +6497,9 @@ void druid_t::create_buffs()
   buff.adaptive_fur          = new adaptive_fur_t( *this );
   buff.barkskin              = buff_creator_t( this, "barkskin", find_specialization_spell( "Barkskin" ) )
                                .cd( timespan_t::zero() )
-                               .default_value( find_specialization_spell( "Barkskin" ) -> effectN( 2 ).percent() );
+                               .default_value( find_specialization_spell( "Barkskin" ) -> effectN( 2 ).percent() )
+                               .tick_behavior( talent.brambles -> ok() ? BUFF_TICK_REFRESH : BUFF_TICK_NONE )
+                               .tick_callback( [ this ] ( buff_t*, int, const timespan_t& ) { active.brambles_pulse -> execute(); } );
   buff.bladed_armor          = buff_creator_t( this, "bladed_armor", spec.bladed_armor )
                                .default_value( spec.bladed_armor -> effectN( 1 ).percent() )
                                .add_invalidate( CACHE_ATTACK_POWER );
