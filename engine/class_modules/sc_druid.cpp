@@ -35,7 +35,6 @@ namespace { // UNNAMED NAMESPACE
   Primal Fury gone or bugged?
   Incarnation CD modifier rework
   Embrace of the Nightmare rage gain?
-  Guardian of Elune change
   Gore change
   Gory Fur
 
@@ -366,6 +365,7 @@ public:
     buff_t* earthwarden_driver;
     buff_t* incarnation_bear;
     buff_t* galactic_guardian;
+    buff_t* guardian_of_elune;
     buff_t* mark_of_ursol;
     buff_t* pulverize;
     buff_t* rage_of_the_sleeper;
@@ -3702,6 +3702,14 @@ struct mangle_t : public bear_attack_t
 
     aoe = base_aoe;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    bear_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+      p() -> buff.guardian_of_elune -> trigger();
+  }
 };
 
 // Maul =====================================================================
@@ -3958,10 +3966,18 @@ struct frenzied_regeneration_t : public druid_heal_t
     time_window = timespan_t::from_seconds( data().effectN( 3 ).base_value() );
     min_pct = data().effectN( 4 ).percent();
     ignite = new frenzied_regeneration_ignite_t( p, &data() );
+    dot_duration = timespan_t::zero();
 
     p -> cooldown.frenzied_regen_use -> duration = cooldown -> duration;
     cooldown -> charges = 2;
     cooldown -> duration = timespan_t::from_seconds( 20.0 );
+  }
+
+  void init() override
+  {
+    druid_heal_t::init();
+
+    snapshot_flags |= STATE_MUL_DA;
   }
 
   void execute() override
@@ -3969,6 +3985,19 @@ struct frenzied_regeneration_t : public druid_heal_t
     druid_heal_t::execute();
     
     p() -> cooldown.frenzied_regen_use -> start();
+
+    if ( p() -> buff.guardian_of_elune -> up() )
+      p() -> buff.guardian_of_elune -> expire();
+  }
+
+  double action_multiplier() const override
+  {
+    double am = druid_heal_t::action_multiplier();
+
+    am *= 1.0 + p() -> buff.guardian_of_elune -> check()
+      * p() -> buff.guardian_of_elune -> data().effectN( 2 ).percent();
+
+    return am;
   }
 
   double base_da_min( const action_state_t* s ) const override
@@ -4956,7 +4985,10 @@ struct ironfur_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    p() -> buff.ironfur -> trigger();
+    p() -> buff.ironfur -> trigger( 1, p() -> buff.ironfur -> DEFAULT_VALUE(), -1,
+      p() -> buff.ironfur -> buff_duration + timespan_t::from_seconds( p() -> buff.guardian_of_elune -> value() ) );
+
+    p() -> buff.guardian_of_elune -> expire();
   }
 };
 
@@ -5167,7 +5199,10 @@ struct mark_of_ursol_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    p() -> buff.mark_of_ursol -> trigger();
+    p() -> buff.mark_of_ursol -> trigger( 1, p() -> buff.mark_of_ursol -> DEFAULT_VALUE(), -1,
+      p() -> buff.mark_of_ursol -> buff_duration + timespan_t::from_seconds( p() -> buff.guardian_of_elune -> value() ) );
+
+    p() -> buff.guardian_of_elune -> expire();
   }
 };
 
@@ -6425,6 +6460,10 @@ void druid_t::create_buffs()
                             .chance( talent.galactic_guardian -> ok() )
                             .default_value( find_spell( 213708 ) -> effectN( 1 ).resource( RESOURCE_RAGE ) );
 
+  buff.guardian_of_elune  = buff_creator_t( this, "guardian_of_elune", talent.guardian_of_elune -> effectN( 1 ).trigger() )
+                            .chance( talent.guardian_of_elune -> ok() )
+                            .default_value( talent.guardian_of_elune -> effectN( 1 ).trigger() -> effectN( 1 ).time_value().total_seconds() );
+
   // Balance
 
   buff.blessing_of_anshe         = buff_creator_t( this, "blessing_of_anshe", spell.blessing_of_anshe )
@@ -6515,8 +6554,7 @@ void druid_t::create_buffs()
                                .default_value( find_specialization_spell( "Mark of Ursol" ) -> effectN( 1 ).percent() )
                                .cd( timespan_t::zero() ) // cooldown handled by spell
                                .refresh_behavior( BUFF_REFRESH_EXTEND ) // Legion TOCHECK
-                               .duration( find_specialization_spell( "Mark of Ursol" ) -> duration()
-                                          + talent.guardian_of_elune -> effectN( 1 ).time_value() );
+                               .duration( find_specialization_spell( "Mark of Ursol" ) -> duration() );
   buff.pulverize             = buff_creator_t( this, "pulverize", find_spell( 158792 ) )
                                .default_value( find_spell( 158792 ) -> effectN( 1 ).percent() )
                                .refresh_behavior( BUFF_REFRESH_PANDEMIC );
@@ -6533,7 +6571,7 @@ void druid_t::create_buffs()
   buff.guardian_tier17_4pc   = buff_creator_t( this, "guardian_tier17_4pc", find_spell( 177969 ) )
                                .default_value( find_spell( 177969 ) -> effectN( 1 ).percent() );
   buff.ironfur               = buff_creator_t( this, "ironfur", spec.ironfur )
-                               .duration( spec.ironfur -> duration() + talent.guardian_of_elune -> effectN( 1 ).time_value() + artifact.ursocs_endurance.time_value() )
+                               .duration( spec.ironfur -> duration() + artifact.ursocs_endurance.time_value() )
                                .default_value( spec.ironfur -> effectN( 1 ).percent() )
                                .add_invalidate( CACHE_ARMOR )
                                .max_stack( 20 ) // many stacks, handle it
