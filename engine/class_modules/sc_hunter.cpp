@@ -53,11 +53,11 @@ struct hunter_td_t: public actor_target_data_t
 {
   struct debuffs_t
   {
-		buff_t* hunters_mark;
-		buff_t* vulnerable;
-		buff_t* marked_for_death;
-		buff_t* deadeye;
-		buff_t* true_aim;
+    buff_t* hunters_mark;
+    buff_t* vulnerable;
+    buff_t* marked_for_death;
+    buff_t* deadeye;
+    buff_t* true_aim;
   } debuffs;
 
   struct dots_t
@@ -106,8 +106,8 @@ public:
   // Buffs
   struct buffs_t
   {
-		buff_t* aspect_of_the_cheetah;
-		buff_t* aspect_of_the_turtle;
+    buff_t* aspect_of_the_cheetah;
+    buff_t* aspect_of_the_turtle;
     buff_t* beast_cleave;
     buff_t* bestial_wrath;
     buff_t* bombardment;
@@ -167,7 +167,7 @@ public:
 
   real_ppm_t ppm_tier15_2pc_melee;
   real_ppm_t ppm_tier15_4pc_melee;
-	real_ppm_t ppm_hunters_mark;
+  real_ppm_t ppm_hunters_mark;
 
   // Talents
   struct talents_t
@@ -191,7 +191,7 @@ public:
     const spell_data_t* dash;
 
     // tier 3
-	const spell_data_t* stomp;
+    const spell_data_t* stomp;
     const spell_data_t* exotic_munitions;
     const spell_data_t* chimaera_shot;
 
@@ -203,7 +203,7 @@ public:
     const spell_data_t* improved_traps;
 
     // tier 4
-	const spell_data_t* binding_shot;
+    const spell_data_t* binding_shot;
     const spell_data_t* wyvern_sting;
     const spell_data_t* intimidation;
 
@@ -288,14 +288,14 @@ public:
   {
     const spell_data_t* arachnophobia;
     const spell_data_t* lesser_proportion;
-		const spell_data_t* nesignwarys_nemesis;
-		const spell_data_t* sparks;
-		const spell_data_t* bullseye;
-		const spell_data_t* firecracker;
-		const spell_data_t* headhunter;
-		const spell_data_t* hook;
-		const spell_data_t* skullseye;
-		const spell_data_t* trident;
+    const spell_data_t* nesignwarys_nemesis;
+    const spell_data_t* sparks;
+    const spell_data_t* bullseye;
+    const spell_data_t* firecracker;
+    const spell_data_t* headhunter;
+    const spell_data_t* hook;
+    const spell_data_t* skullseye;
+    const spell_data_t* trident;
   } glyphs;
 
   struct mastery_spells_t
@@ -328,7 +328,7 @@ public:
     procs( procs_t() ),
     ppm_tier15_2pc_melee( *this, std::numeric_limits<double>::min(), 1.0, RPPM_HASTE ),
     ppm_tier15_4pc_melee( *this, std::numeric_limits<double>::min(), 1.0, RPPM_HASTE ),
-		ppm_hunters_mark( *this, std::numeric_limits<double>::min(), 1.0, RPPM_HASTE),
+    ppm_hunters_mark( *this, std::numeric_limits<double>::min(), 1.0, RPPM_HASTE),
     talents( talents_t() ),
     specs( specs_t() ),
     glyphs( glyphs_t() ),
@@ -797,7 +797,7 @@ public:
   // Buffs
   struct buffs_t
   {
-	buff_t* aspect_of_the_wild;
+    buff_t* aspect_of_the_wild;
     buff_t* bestial_wrath;
     buff_t* stampede; 
     buff_t* beast_cleave;
@@ -1800,7 +1800,7 @@ struct hunter_melee_attack_t: public hunter_action_t < melee_attack_t >
     if ( player -> main_hand_weapon.type == WEAPON_NONE )
       background = true;
 
-		weapon = &( player -> main_hand_weapon );
+    weapon = &( player -> main_hand_weapon );
     special = true;
     may_crit = true;
     tick_may_crit = true;
@@ -1887,19 +1887,19 @@ struct melee_t: public hunter_melee_attack_t
   melee_t( hunter_t* player, const char* name = "auto_attack", const spell_data_t* s = spell_data_t::nil() ):
     hunter_melee_attack_t( name, player, s ), first( true )
   {
-    school						= SCHOOL_PHYSICAL;
-    weapon						= &( player -> main_hand_weapon );
-    base_execute_time	= player -> main_hand_weapon.swing_time;
-    background				= true;
-    repeating					= true;
-    special						= false;
-    trigger_gcd				= timespan_t::zero();
+    school             = SCHOOL_PHYSICAL;
+    weapon             = &( player -> main_hand_weapon );
+    base_execute_time  = player -> main_hand_weapon.swing_time;
+    background         = true;
+    repeating          = true;
+    special            = false;
+    trigger_gcd        = timespan_t::zero();
   }
 
   virtual timespan_t execute_time() const override
   {
-	if ( ! player -> in_combat ) 
-	  return timespan_t::from_seconds( 0.01 );
+  if ( ! player -> in_combat ) 
+    return timespan_t::from_seconds( 0.01 );
     if ( first )
       return timespan_t::zero();
     else
@@ -1957,8 +1957,8 @@ struct auto_attack_t: public hunter_melee_attack_t
   auto_attack_t( hunter_t* player, const std::string& options_str ) :
     hunter_melee_attack_t( "auto_attack", player, spell_data_t::nil() )
   {
-		parse_options( options_str );
-		player -> main_hand_attack = new melee_t( player );
+    parse_options( options_str );
+    player -> main_hand_attack = new melee_t( player );
   }
 
   virtual void execute() override
@@ -2273,7 +2273,7 @@ struct aimed_shot_t: public hunter_ranged_attack_t
 
     cc += p() -> buffs.careful_aim -> value();
     cc += p() -> sets.set( SET_MELEE, T16, B4 ) -> effectN( 2 ).percent();
-		cc += td( t ) -> debuffs.marked_for_death -> check_stack_value();
+    cc += td( t ) -> debuffs.marked_for_death -> check_stack_value();
 
     return cc;
   }
@@ -2284,8 +2284,8 @@ struct aimed_shot_t: public hunter_ranged_attack_t
 
     if ( s -> result == RESULT_CRIT && crit_gain > 0.0 )
       p() -> resource_gain( RESOURCE_FOCUS, crit_gain, p() -> gains.aimed_shot );
-		if ( p() -> talents.true_aim -> ok() )
-			td( s -> target ) -> debuffs.true_aim -> trigger();
+    if ( p() -> talents.true_aim -> ok() )
+      td( s -> target ) -> debuffs.true_aim -> trigger();
   }
 
   virtual void execute() override
@@ -2298,21 +2298,21 @@ struct aimed_shot_t: public hunter_ranged_attack_t
     }
   }
 
-	virtual double composite_target_da_multiplier( player_t* t ) const override
+  virtual double composite_target_da_multiplier( player_t* t ) const override
   {
-		double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
+    double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
 
-		hunter_td_t* td = this -> td( t );
-		if ( td -> debuffs.vulnerable -> check() )
-			m *= 1.0 + td -> debuffs.vulnerable -> check_stack_value();
-		else if ( td -> debuffs.deadeye -> check() )
-			m *= 1.0 + td -> debuffs.deadeye -> check_stack_value();
+    hunter_td_t* td = this -> td( t );
+    if ( td -> debuffs.vulnerable -> check() )
+      m *= 1.0 + td -> debuffs.vulnerable -> check_stack_value();
+    else if ( td -> debuffs.deadeye -> check() )
+      m *= 1.0 + td -> debuffs.deadeye -> check_stack_value();
 
-		if ( td -> debuffs.true_aim -> check() )
-			m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
+    if ( td -> debuffs.true_aim -> check() )
+      m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
 
-		return m;
-	}
+    return m;
+  }
 };
 
 // Arcane Shot Attack ================================================================
@@ -2341,8 +2341,8 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     {
       trigger_tier15_2pc_melee();
       p() -> resource_gain( RESOURCE_FOCUS, focus_gain, p() -> gains.arcane_shot );
-			if ( p() -> ppm_hunters_mark.trigger() )
-				td( execute_state -> target ) -> debuffs.hunters_mark -> trigger();
+      if ( p() -> ppm_hunters_mark.trigger() )
+        td( execute_state -> target ) -> debuffs.hunters_mark -> trigger();
     }
   }
 
@@ -2351,9 +2351,9 @@ struct arcane_shot_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::impact( s );
 
-		if ( p() -> talents.true_aim -> ok() )
-			td( s -> target ) -> debuffs.true_aim -> trigger();
-	}
+    if ( p() -> talents.true_aim -> ok() )
+      td( s -> target ) -> debuffs.true_aim -> trigger();
+  }
 
   virtual double composite_target_crit( player_t* t ) const override
   {
@@ -2364,17 +2364,17 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     return cc;
   }
 
-	virtual double composite_target_da_multiplier( player_t* t ) const override
+  virtual double composite_target_da_multiplier( player_t* t ) const override
   {
-		double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
+    double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
 
-		hunter_td_t* td = this -> td( t );
+    hunter_td_t* td = this -> td( t );
 
-		if ( td -> debuffs.true_aim -> check() )
-			m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
+    if ( td -> debuffs.true_aim -> check() )
+      m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
 
-		return m;
-	}
+    return m;
+  }
 };
 
 // Marked Shot Attack (WIP) ===========================================================
@@ -2384,69 +2384,70 @@ struct marked_shot_impact_t: public hunter_ranged_attack_t
 {
   marked_shot_impact_t( hunter_t* p, const char* name, const spell_data_t* s ):
     hunter_ranged_attack_t( name, p, s )
-	{
-	}
+  {
+  }
 
-	virtual void impact( action_state_t* s ) override
+  virtual void impact( action_state_t* s ) override
   {
     hunter_ranged_attack_t::impact( s );
 
-		if ( p() -> talents.true_aim -> ok() )
-			td( s -> target ) -> debuffs.true_aim -> trigger();
-	}
+    if ( p() -> talents.true_aim -> ok() )
+      td( s -> target ) -> debuffs.true_aim -> trigger();
+  }
 
-	virtual void execute() override
-	{
-		hunter_ranged_attack_t::execute();
-
-		hunter_td_t* hunter_td = td( execute_state -> target );
-
-		//Consume Hunter's Mark and apply appropriate debuffs
-		hunter_td -> debuffs.hunters_mark -> expire();
-		if( p() -> talents.patient_sniper -> ok() )
-			hunter_td -> debuffs.deadeye -> trigger();
-		else
-			hunter_td -> debuffs.vulnerable -> trigger();
-	}
-
-	virtual double composite_target_da_multiplier( player_t* t ) const override
+  virtual void execute() override
   {
-		double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
+    hunter_ranged_attack_t::execute();
 
-		hunter_td_t* td = this -> td( t );
+    hunter_td_t* hunter_td = td( execute_state -> target );
 
-		if ( td -> debuffs.true_aim -> check() )
-			m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
+    //Consume Hunter's Mark and apply appropriate debuffs
+    hunter_td -> debuffs.hunters_mark -> expire();
+    if( p() -> talents.patient_sniper -> ok() )
+      hunter_td -> debuffs.deadeye -> trigger();
+    else
+      hunter_td -> debuffs.vulnerable -> trigger();
+    hunter_td -> debuffs.marked_for_death -> trigger();
+  }
 
-		return m;
-	}
+  virtual double composite_target_da_multiplier( player_t* t ) const override
+  {
+    double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
+
+    hunter_td_t* td = this -> td( t );
+
+    if ( td -> debuffs.true_aim -> check() )
+      m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
+
+    return m;
+  }
 };
 
 struct marked_shot_t: public hunter_ranged_attack_t
 {
-	marked_shot_impact_t* marked_shot_impact;
+  marked_shot_impact_t* marked_shot_impact;
 
-	marked_shot_t( hunter_t* p, const std::string& options_str):
-		hunter_ranged_attack_t( "marked_shot", p, p -> find_specialization_spell( "Marked Shot" ) ),
-		marked_shot_impact( nullptr )
-	{
-		parse_options( options_str );
+  marked_shot_t( hunter_t* p, const std::string& options_str):
+    hunter_ranged_attack_t( "marked_shot", p, p -> find_specialization_spell( "Marked Shot" ) ),
+    marked_shot_impact( nullptr )
+  {
+    parse_options( options_str );
 
-		marked_shot_impact = new marked_shot_impact_t( p, "marked_shot", p -> find_spell( 212621 ) );
-	}
+    marked_shot_impact = new marked_shot_impact_t( p, "marked_shot", p -> find_spell( 212621 ) );
+  }
 
-	virtual void execute() override
-	{
-		marked_shot_impact -> execute();
-	}
+  virtual void execute() override
+  {
+    marked_shot_impact -> execute();
+  }
 
-	virtual bool ready() override
-	{
-		if ( td( p() -> target ) -> debuffs.hunters_mark -> up() )
-			return true;
+  virtual bool ready() override
+  {
+    if ( td( p() -> target ) -> debuffs.hunters_mark -> up() )
+      return true;
 
-		return false;
-	}
+    return false;
+  }
 };
 
 
@@ -2985,19 +2986,19 @@ dots( dots_t() )
   dots.serpent_sting = target -> get_dot( "serpent_sting", p );
   dots.poisoned_ammo = target -> get_dot( "poisoned_ammo", p );
 
-	debuffs.hunters_mark			= buff_creator_t( *this, "hunters_mark", p -> find_spell( 185365 ) -> effectN( 1 ).trigger() );
-	debuffs.vulnerable				= buff_creator_t( *this, "vulnerable")
-																.spell( p -> find_spell( 187131 ) )
-																.default_value( p -> find_spell( 187131 ) -> effectN( 2 ).percent() );
-	debuffs.marked_for_death	= buff_creator_t( *this, "marked_for_death")
-																.spell( p -> find_spell( 190533 ) )
-																.default_value( p -> find_spell( 190533 ) -> effectN( 1 ).base_value() );
-	debuffs.deadeye						= buff_creator_t( *this, "deadeye" )
-																.spell( p -> find_spell( 213424 ) )
-																.default_value( p -> find_spell( 213424 ) -> effectN( 1 ).percent() );
-	debuffs.true_aim          = buff_creator_t( *this, "true_aim" )
-		                            .spell( p -> find_spell( 199803 ) )
-																.default_value( p -> find_spell( 199803 ) -> effectN( 1 ).percent() );
+  debuffs.hunters_mark      = buff_creator_t( *this, "hunters_mark", p -> find_spell( 185365 ) -> effectN( 1 ).trigger() );
+  debuffs.vulnerable        = buff_creator_t( *this, "vulnerable")
+                                .spell( p -> find_spell( 187131 ) )
+                                .default_value( p -> find_spell( 187131 ) -> effectN( 2 ).percent() );
+  debuffs.marked_for_death  = buff_creator_t( *this, "marked_for_death")
+                                .spell( p -> find_spell( 190533 ) )
+                                .default_value( p -> find_spell( 190533 ) -> effectN( 1 ).base_value() );
+  debuffs.deadeye           = buff_creator_t( *this, "deadeye" )
+                                .spell( p -> find_spell( 213424 ) )
+                                .default_value( p -> find_spell( 213424 ) -> effectN( 1 ).percent() );
+  debuffs.true_aim          = buff_creator_t( *this, "true_aim" )
+                                .spell( p -> find_spell( 199803 ) )
+                                .default_value( p -> find_spell( 199803 ) -> effectN( 1 ).percent() );
 }
  
 
@@ -3015,7 +3016,7 @@ action_t* hunter_t::create_action( const std::string& name,
   using namespace attacks;
   using namespace spells;
 
-  if ( name == "auto_attack"           ) return new			       auto_attack_t( this, options_str );
+  if ( name == "auto_attack"           ) return new             auto_attack_t( this, options_str );
   if ( name == "auto_shot"             ) return new           start_attack_t( this, options_str );
   if ( name == "aimed_shot"            ) return new             aimed_shot_t( this, options_str );
   if ( name == "arcane_shot"           ) return new            arcane_shot_t( this, options_str );
@@ -3025,7 +3026,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "explosive_trap"        ) return new         explosive_trap_t( this, options_str );
   if ( name == "freezing_trap"         ) return new          freezing_trap_t( this, options_str );
   if ( name == "kill_command"          ) return new           kill_command_t( this, options_str );
-	if ( name == "marked_shot"           ) return new	           marked_shot_t( this, options_str );					
+  if ( name == "marked_shot"           ) return new            marked_shot_t( this, options_str );          
   if ( name == "multishot"             ) return new             multi_shot_t( this, options_str );
   if ( name == "multi_shot"            ) return new             multi_shot_t( this, options_str );
   if ( name == "trueshot"              ) return new               trueshot_t( this, options_str );
@@ -3119,77 +3120,74 @@ void hunter_t::init_spells()
 {
   player_t::init_spells();
 
-  // Baseline
-  // Talents
+  //Tier 1
+  talents.one_with_the_pack                 = find_talent_spell( "One with the Pack" );
+  talents.way_of_the_cobra                  = find_talent_spell( "Way of the Cobra" );
+  talents.dire_stable                       = find_talent_spell( "Dire Stable" );
 
-	//Tier 1
-	talents.one_with_the_pack                 = find_talent_spell( "One with the Pack" );
-	talents.way_of_the_cobra                  = find_talent_spell( "Way of the Cobra" );
-	talents.dire_stable                       = find_talent_spell( "Dire Stable" );
+  talents.black_arrow                       = find_talent_spell( "Black Arrow" );
+  talents.steady_focus                      = find_talent_spell( "Steady Focus" );
+  talents.true_aim                          = find_talent_spell( "True Aim" );
+  
+  talents.animal_instincts                  = find_talent_spell( "Animal Instincts" );
+  talents.way_of_moknathal                  = find_talent_spell( "Way of the Mok'Nathal" );
+  talents.throwing_axes                     = find_talent_spell( "Throwing Axes" );
 
-	talents.black_arrow                       = find_talent_spell( "Black Arrow" );
-	talents.steady_focus                      = find_talent_spell( "Steady Focus" );
-	talents.true_aim                          = find_talent_spell( "True Aim" );
-	
-	talents.animal_instincts                  = find_talent_spell( "Animal Instincts" );
-	talents.way_of_moknathal                  = find_talent_spell( "Way of the Mok'Nathal" );
-	talents.throwing_axes                     = find_talent_spell( "Throwing Axes" );
-
-	//Tier 2
+  //Tier 2
   talents.posthaste                         = find_talent_spell( "Posthaste" );
-	talents.farstrider                        = find_talent_spell( "Farstrider" );
-	talents.dash                              = find_talent_spell( "Dash" );
+  talents.farstrider                        = find_talent_spell( "Farstrider" );
+  talents.dash                              = find_talent_spell( "Dash" );
 
-	//Tier 3
-	talents.stomp                             = find_talent_spell( "Stomp" );
-	talents.exotic_munitions                  = find_talent_spell( "Exotic Munitions" );
-	talents.chimaera_shot                     = find_talent_spell( "Chimaera Shot" );
+  //Tier 3
+  talents.stomp                             = find_talent_spell( "Stomp" );
+  talents.exotic_munitions                  = find_talent_spell( "Exotic Munitions" );
+  talents.chimaera_shot                     = find_talent_spell( "Chimaera Shot" );
 
-	talents.explosive_shot                    = find_talent_spell( "Explosive Shot" );
-	talents.trick_shot                        = find_talent_spell( "Trick Shot" );
+  talents.explosive_shot                    = find_talent_spell( "Explosive Shot" );
+  talents.trick_shot                        = find_talent_spell( "Trick Shot" );
 
-	talents.caltrops                          = find_talent_spell( "Caltrops" );
-	talents.steel_trap                        = find_talent_spell( "Steel Trap" );
-	talents.improved_traps                    = find_talent_spell( "Improved Traps" );
+  talents.caltrops                          = find_talent_spell( "Caltrops" );
+  talents.steel_trap                        = find_talent_spell( "Steel Trap" );
+  talents.improved_traps                    = find_talent_spell( "Improved Traps" );
 
-	//Tier 4
+  //Tier 4
   talents.intimidation                      = find_talent_spell( "Intimidation" );
   talents.wyvern_sting                      = find_talent_spell( "Wyvern Sting" );
   talents.binding_shot                      = find_talent_spell( "Binding Shot" );
 
-	//Tier 5
-	talents.big_game_hunter                   = find_talent_spell( "Big Game Hunter" );
-	talents.bestial_fury                      = find_talent_spell( "Bestial Fury" );
-	talents.blink_strikes                     = find_talent_spell( "Blink Strikes" );
+  //Tier 5
+  talents.big_game_hunter                   = find_talent_spell( "Big Game Hunter" );
+  talents.bestial_fury                      = find_talent_spell( "Bestial Fury" );
+  talents.blink_strikes                     = find_talent_spell( "Blink Strikes" );
 
-  talents.careful_aim												= find_talent_spell( "Careful Aim" );
-	talents.heightened_vulnerability          = find_talent_spell( "Heightened Vulnerability" );
-	talents.patient_sniper                    = find_talent_spell( "Patient Sniper" );
+  talents.careful_aim                       = find_talent_spell( "Careful Aim" );
+  talents.heightened_vulnerability          = find_talent_spell( "Heightened Vulnerability" );
+  talents.patient_sniper                    = find_talent_spell( "Patient Sniper" );
 
-	talents.dragonsfire_grenade               = find_talent_spell( "Dragonsfire Grenade" );
-	talents.snake_hunter                      = find_talent_spell( "Snake Hunter" );
+  talents.dragonsfire_grenade               = find_talent_spell( "Dragonsfire Grenade" );
+  talents.snake_hunter                      = find_talent_spell( "Snake Hunter" );
 
-	//Tier 6
+  //Tier 6
   talents.a_murder_of_crows                 = find_talent_spell( "A Murder of Crows" );
   talents.barrage                           = find_talent_spell( "Barrage" );
   talents.volley                            = find_talent_spell( "Volley" );
 
-	//Tier 7
-	talents.stampede                          = find_talent_spell( "Stampede" );
-	talents.killer_cobra                      = find_talent_spell( "Killer Cobra" );
-	talents.aspect_of_the_beast               = find_talent_spell( "Aspect of the Beast" );
+  //Tier 7
+  talents.stampede                          = find_talent_spell( "Stampede" );
+  talents.killer_cobra                      = find_talent_spell( "Killer Cobra" );
+  talents.aspect_of_the_beast               = find_talent_spell( "Aspect of the Beast" );
 
-	talents.dark_ranger                       = find_talent_spell( "Dark Ranger" );
-	talents.head_shot                         = find_talent_spell( "Head Shot" );
-	talents.lock_and_load                     = find_talent_spell( "Lock and Load" );
+  talents.dark_ranger                       = find_talent_spell( "Dark Ranger" );
+  talents.head_shot                         = find_talent_spell( "Head Shot" );
+  talents.lock_and_load                     = find_talent_spell( "Lock and Load" );
 
-	talents.spitting_cobra                    = find_talent_spell( "Spitting Cobra" );
-	talents.expert_trapper                    = find_talent_spell( "Expert Trapper" );
+  talents.spitting_cobra                    = find_talent_spell( "Spitting Cobra" );
+  talents.expert_trapper                    = find_talent_spell( "Expert Trapper" );
   
   // Mastery
   mastery.master_of_beasts     = find_mastery_spell( HUNTER_BEAST_MASTERY );
   mastery.sniper_training      = find_mastery_spell( HUNTER_MARKSMANSHIP );
-  mastery.hunting_companion		 = find_mastery_spell( HUNTER_SURVIVAL );
+  mastery.hunting_companion    = find_mastery_spell( HUNTER_SURVIVAL );
 
   // Glyphs
   glyphs.arachnophobia       = find_glyph_spell( "Glyph of Arachnophobia" );
@@ -3199,9 +3197,9 @@ void hunter_t::init_spells()
   glyphs.bullseye            = find_glyph_spell( "Glyph of the Bullseye" );
   glyphs.firecracker         = find_glyph_spell( "Glyph of the Firecracker" );
   glyphs.headhunter          = find_glyph_spell( "Glyph of the Headhunter" );
-  glyphs.hook				         = find_glyph_spell( "Glyph of the Hook" );
-  glyphs.skullseye			     = find_glyph_spell( "Glyph of the Skullseye" );
-  glyphs.trident			       = find_glyph_spell( "Glyph of the Trident" );
+  glyphs.hook                = find_glyph_spell( "Glyph of the Hook" );
+  glyphs.skullseye           = find_glyph_spell( "Glyph of the Skullseye" );
+  glyphs.trident             = find_glyph_spell( "Glyph of the Trident" );
 
   // Spec spells
   specs.beast_cleave         = find_specialization_spell( "Beast Cleave" );
@@ -3216,7 +3214,7 @@ void hunter_t::init_spells()
   specs.trueshot             = find_specialization_spell( "Trueshot" );
   specs.survivalist          = find_specialization_spell( "Survivalist" );
   specs.lone_wolf            = find_specialization_spell( "Lone Wolf" );
-  specs.dire_beast					 = find_specialization_spell( "Dire Beast" );
+  specs.dire_beast           = find_specialization_spell( "Dire Beast" );
 
   if ( talents.exotic_munitions -> ok() )
   {
@@ -3380,7 +3378,7 @@ void hunter_t::init_rng()
 
   ppm_tier15_2pc_melee.set_frequency( tier15_2pc_melee_rppm );
   ppm_tier15_4pc_melee.set_frequency( 3.0 );
-	ppm_hunters_mark.set_frequency( 6.0 );
+  ppm_hunters_mark.set_frequency( 6.0 );
 
   player_t::init_rng();
 }
