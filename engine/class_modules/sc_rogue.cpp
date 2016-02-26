@@ -260,7 +260,7 @@ struct rogue_t : public player_t
     buff_t* shark_infested_waters;
     buff_t* true_bearing;
     buff_t* buried_treasure;
-    haste_buff_t* weigh_anchor;
+    buff_t* weigh_anchor;
   } buffs;
 
   // Cooldowns
@@ -317,6 +317,7 @@ struct rogue_t : public player_t
     // Outlaw
     const spell_data_t* blade_flurry;
     const spell_data_t* combat_potency;
+    const spell_data_t* roll_the_bones;
     const spell_data_t* ruthlessness;
     const spell_data_t* saber_slash;
     const spell_data_t* swashbuckler; // Ambidexterity
@@ -397,7 +398,7 @@ struct rogue_t : public player_t
     const spell_data_t* killing_spree;
 
     // Outlaw - Level 100
-    const spell_data_t* roll_the_bones;
+    const spell_data_t* slice_and_dice;
 
     // Subtlety - Level 15
     const spell_data_t* master_of_subtlety;
@@ -501,7 +502,6 @@ struct rogue_t : public player_t
   role_e    primary_role() const override  { return ROLE_ATTACK; }
   stat_e    convert_hybrid_stat( stat_e s ) const override;
 
-  double    composite_mastery() const override;
   double    composite_melee_speed() const override;
   double    composite_melee_haste() const override;
   double    composite_melee_crit() const override;
@@ -1469,6 +1469,12 @@ void rogue_attack_t::execute()
     // stealthed, trigger subterfuge
     else if ( stealthed() && ! p() -> buffs.subterfuge -> check() )
       p() -> buffs.subterfuge -> trigger();
+  }
+
+  if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 && p() -> buffs.grand_melee -> up() )
+  {
+    timespan_t val = timespan_t::from_seconds( -2 * cast_state( execute_state ) -> cp );
+    p() -> cooldowns.adrenaline_rush -> adjust( val );
   }
 }
 
@@ -2478,7 +2484,7 @@ struct premeditation_t : public rogue_attack_t
 struct roll_the_bones_t : public rogue_attack_t
 {
   roll_the_bones_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "roll_the_bones", p, p -> talent.roll_the_bones, options_str )
+    rogue_attack_t( "roll_the_bones", p, p -> spec.roll_the_bones, options_str )
   {
     harmful = false;
   }
@@ -2644,7 +2650,7 @@ struct shuriken_toss_t : public rogue_attack_t
 struct slice_and_dice_t : public rogue_attack_t
 {
   slice_and_dice_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "slice_and_dice", p, p -> find_specialization_spell( "Slice and Dice" ), options_str )
+    rogue_attack_t( "slice_and_dice", p, p -> talent.slice_and_dice, options_str )
   {
     base_costs[ RESOURCE_COMBO_POINT ] = 1; // No resource cost in the spell .. sigh
     harmful = false;
@@ -3756,11 +3762,19 @@ struct marked_for_death_debuff_t : public debuff_t
 struct roll_the_bones_t : public buff_t
 {
   rogue_t* rogue;
+  std::array<buff_t*, 6> buffs;
 
   roll_the_bones_t( rogue_t* r ) :
-    buff_t( buff_creator_t( r, "roll_the_bones", r -> talent.roll_the_bones ) ),
+    buff_t( buff_creator_t( r, "roll_the_bones", r -> spec.roll_the_bones ) ),
     rogue( r )
-  { }
+  {
+    buffs[ 0 ] = rogue -> buffs.jolly_roger;
+    buffs[ 1 ] = rogue -> buffs.grand_melee;
+    buffs[ 2 ] = rogue -> buffs.shark_infested_waters;
+    buffs[ 3 ] = rogue -> buffs.true_bearing;
+    buffs[ 4 ] = rogue -> buffs.buried_treasure;
+    buffs[ 5 ] = rogue -> buffs.weigh_anchor;
+  }
 
   void expire_secondary_buffs()
   {
@@ -3777,28 +3791,23 @@ struct roll_the_bones_t : public buff_t
     buff_t::execute( stacks, value, duration );
     expire_secondary_buffs();
 
-    switch ( static_cast<unsigned>( rng().range( 0, 6 ) ) )
+    std::array<unsigned, 6> rolls;
+    range::fill( rolls, 0 );
+    for ( size_t i = 0; i < 5; ++i )
     {
-      case 0:
-        rogue -> buffs.weigh_anchor -> trigger();
-        break;
-      case 1:
-        rogue -> buffs.shark_infested_waters -> trigger();
-        break;
-      case 2:
-        rogue -> buffs.grand_melee -> trigger();
-        break;
-      case 3:
-        rogue -> buffs.true_bearing -> trigger();
-        break;
-      case 4:
-        rogue -> buffs.buried_treasure -> trigger();
-        break;
-      case 5:
-        rogue -> buffs.jolly_roger -> trigger();
-        break;
-      default:
-        assert( 0 );
+      rolls[ rng().range( 0, buffs.size() ) ]++;
+    }
+
+    unsigned largest_group = *std::max_element( rolls.begin(), rolls.end() );
+
+    for ( size_t i = 0; i < buffs.size(); ++i )
+    {
+      if ( rolls[ i ] != largest_group )
+      {
+        continue;
+      }
+
+      buffs[ i ] -> trigger();
     }
   }
 
@@ -3856,15 +3865,6 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
 // Rogue Character Definition
 // ==========================================================================
 
-double rogue_t::composite_mastery() const
-{
-  double m = player_t::composite_mastery();
-
-  m += buffs.true_bearing -> stack_value();
-
-  return m;
-}
-
 // rogue_t::composite_attack_speed ==========================================
 
 double rogue_t::composite_melee_speed() const
@@ -3896,11 +3896,6 @@ double rogue_t::composite_melee_haste() const
     h *= 1.0 / ( 1.0 + buffs.alacrity -> stack_value() );
   }
 
-  if ( buffs.weigh_anchor -> up() )
-  {
-    h *= buffs.weigh_anchor -> check_value();
-  }
-
   return h;
 }
 
@@ -3926,11 +3921,6 @@ double rogue_t::composite_spell_haste() const
   if ( buffs.alacrity -> check() )
   {
     h *= 1.0 / ( 1.0 + buffs.alacrity -> stack_value() );
-  }
-
-  if ( buffs.weigh_anchor -> up() )
-  {
-    h *= buffs.weigh_anchor -> check_value();
   }
 
   return h;
@@ -4005,11 +3995,6 @@ double rogue_t::composite_player_multiplier( school_e school ) const
   if ( buffs.elaborate_planning -> up() )
   {
     m *= buffs.elaborate_planning -> check_value();
-  }
-
-  if ( buffs.grand_melee -> up() )
-  {
-    m *= 1.0 + buffs.grand_melee -> check_value();
   }
 
   return m;
@@ -4425,6 +4410,7 @@ void rogue_t::init_spells()
   // Outlaw
   spec.blade_flurry         = find_specialization_spell( "Blade Flurry" );
   spec.combat_potency       = find_specialization_spell( "Combat Potency" );
+  spec.roll_the_bones       = find_specialization_spell( "Roll the Bones" );
   spec.ruthlessness         = find_specialization_spell( "Ruthlessness" );
   spec.saber_slash          = find_specialization_spell( "Saber Slash" );
   spec.swashbuckler         = find_specialization_spell( "Swashbuckler" );
@@ -4491,7 +4477,7 @@ void rogue_t::init_spells()
   talent.cannonball_barrage = find_talent_spell( "Cannonball Barrage" );
   talent.killing_spree      = find_talent_spell( "Killing Spree" );
 
-  talent.roll_the_bones     = find_talent_spell( "Roll the Bones" );
+  talent.slice_and_dice     = find_talent_spell( "Slice and Dice" );
 
   talent.master_of_subtlety = find_talent_spell( "Master of Subtlety" );
   talent.weaponmaster       = find_talent_spell( "Weaponmaster" );
@@ -4763,21 +4749,19 @@ void rogue_t::create_buffs()
     .default_value( find_spell( 193538 ) -> effectN( 1 ).percent() )
     .chance( talent.alacrity -> ok() );
 
-  buffs.roll_the_bones = new buffs::roll_the_bones_t( this );
   buffs.jolly_roger = haste_buff_creator_t( this, "jolly_roger", find_spell( 199603 ) )
-                      .default_value( 1.0 / ( 1.0 + find_spell( 199603 ) -> effectN( 2 ).percent() ) );
-  buffs.grand_melee = buff_creator_t( this, "grand_melee", find_spell( 193358 ) )
-                      .default_value( find_spell( 193358 ) -> effectN( 1 ).percent() )
-                      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                      .default_value( 1.0 / ( 1.0 + find_spell( 199603 ) -> effectN( 1 ).percent() ) );
+  buffs.grand_melee = buff_creator_t( this, "grand_melee", find_spell( 193358 ) );
   buffs.shark_infested_waters = buff_creator_t( this, "shark_infested_waters", find_spell( 193357 ) )
                                 .default_value( find_spell( 193357 ) -> effectN( 1 ).percent() )
                                 .add_invalidate( CACHE_CRIT );
   buffs.true_bearing = buff_creator_t( this, "true_bearing", find_spell( 193359 ) )
-                       .default_value( find_spell( 193359 ) -> effectN( 1 ).base_value() )
-                       .add_invalidate( CACHE_MASTERY );
+                       .default_value( find_spell( 193359 ) -> effectN( 1 ).base_value() );
   buffs.buried_treasure = buff_creator_t( this, "buried_treasure", find_spell( 199600 ) );
-  buffs.weigh_anchor = haste_buff_creator_t( this, "weigh_anchor", find_spell( 193356 ) )
-                       .default_value( 1.0 / ( 1.0 + find_spell( 193356 ) -> effectN( 1 ).percent() ) );
+  buffs.weigh_anchor = buff_creator_t( this, "weigh_anchor", find_spell( 193356 ) )
+                       .default_value( find_spell( 193356 ) -> effectN( 1 ).percent() );
+  // Note, since I (navv) am a slacker, this needs to be constructed after the secondary buffs.
+  buffs.roll_the_bones = new buffs::roll_the_bones_t( this );
 }
 
 void rogue_t::register_callbacks()
@@ -5087,6 +5071,11 @@ double rogue_t::energy_regen_per_second() const
     assert( poisoned_enemies <= sim -> target_non_sleeping_list.size() );
     unsigned n_poisoned_enemies = std::min( poisoned_enemies, 3U );
     r *= 1.0 + n_poisoned_enemies * spell.venom_rush -> effectN( 1 ).percent();
+  }
+
+  if ( buffs.weigh_anchor -> up() )
+  {
+    r *= 1.0 + buffs.weigh_anchor -> check_value();
   }
 
   return r;
