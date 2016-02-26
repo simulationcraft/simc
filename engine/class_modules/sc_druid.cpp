@@ -35,7 +35,6 @@ namespace { // UNNAMED NAMESPACE
   Primal Fury gone or bugged?
   Incarnation CD modifier rework
   Embrace of the Nightmare rage gain?
-  Galactic Guardian change
   Brambles change
   Guardian of Elune change
   Gore change
@@ -365,6 +364,7 @@ public:
     buff_t* earthwarden;
     buff_t* earthwarden_driver;
     buff_t* incarnation_bear;
+    buff_t* galactic_guardian;
     buff_t* mark_of_ursol;
     buff_t* pulverize;
     buff_t* rage_of_the_sleeper;
@@ -435,6 +435,7 @@ public:
     gain_t* bear_form;
     gain_t* brambles;
     gain_t* bristling_fur;
+    gain_t* galactic_guardian;
     gain_t* gore;
     gain_t* stalwart_guardian;
     gain_t* rage_of_the_sleeper;
@@ -1879,10 +1880,12 @@ struct shooting_stars_t : public druid_spell_t
 struct moonfire_t : public druid_spell_t
 {
   shooting_stars_t* shooting_stars;
+  bool galactic_guardian;
+  bool gore;
 
   moonfire_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "moonfire", player, player -> find_spell( 8921 ) ),
-    shooting_stars( new shooting_stars_t( player ) )
+    shooting_stars( new shooting_stars_t( player ) ), gore( true )
   {
     parse_options( options_str );
 
@@ -1896,6 +1899,7 @@ struct moonfire_t : public druid_spell_t
     spell_power_mod.direct        = dmg_spell -> effectN( 1 ).sp_coeff();
 
     base_multiplier *= 1.0 + player -> artifact.twilight_glow.percent();
+    galactic_guardian = player -> talent.galactic_guardian -> ok();
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -1930,10 +1934,29 @@ struct moonfire_t : public druid_spell_t
   {
     druid_spell_t::impact( s );
 
-    if ( result_is_hit( s -> result ) ) // TOCHECK: Can Galactic Guardian proc this?
+    if ( result_is_hit( s -> result ) )
     {
-      trigger_gore();
+      if ( gore )
+      {
+        trigger_gore();
+      }
+
+      if ( galactic_guardian && p() -> buff.galactic_guardian -> check() )
+      {
+        p() -> resource_gain( RESOURCE_RAGE, p() -> buff.galactic_guardian -> value(), p() -> gain.galactic_guardian );
+        p() -> buff.galactic_guardian -> expire();
+      } 
     }
+  }
+};
+
+struct galactic_guardian_t : public moonfire_t
+{
+  galactic_guardian_t( druid_t* p ) :
+    moonfire_t( p, "" )
+  {
+    background = proc = true;
+    galactic_guardian = gore = false; // TOCHECK
   }
 };
 
@@ -3537,6 +3560,7 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
     {
       p() -> active.galactic_guardian -> target = s -> target;
       p() -> active.galactic_guardian -> execute();
+      p() -> buff.galactic_guardian -> trigger();
     }
   }
 private:
@@ -6260,7 +6284,7 @@ void druid_t::init_spells()
       new instant_absorb_t( this, talent.brambles, "brambles", &brambles_handler );
   }
   if ( talent.galactic_guardian -> ok() )
-    active.galactic_guardian  = new spells::moonfire_t( this, "" );
+    active.galactic_guardian  = new spells::galactic_guardian_t( this );
   if ( artifact.rage_of_the_sleeper.rank() )
     active.rage_of_the_sleeper = new bear_attacks::rage_of_the_sleeper_reflect_t( this );
 }
@@ -6379,6 +6403,10 @@ void druid_t::create_buffs()
                             .chance( artifact.feral_instinct.rank() > 0 )
                             .default_value( artifact.feral_instinct.percent() )
                             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  buff.galactic_guardian  = buff_creator_t( this, "galactic_guardian", find_spell( 213708 ) )
+                            .chance( talent.galactic_guardian -> ok() )
+                            .default_value( find_spell( 213708 ) -> effectN( 1 ).resource( RESOURCE_RAGE ) );
 
   // Balance
 
@@ -6960,6 +6988,7 @@ void druid_t::init_gains()
   gain.bear_form             = get_gain( "bear_form"             );
   gain.brambles              = get_gain( "brambles"              );
   gain.bristling_fur         = get_gain( "bristling_fur"         );
+  gain.galactic_guardian     = get_gain( "galactic_guardian"     );
   gain.gore                  = get_gain( "gore"                  );
   gain.rage_of_the_sleeper   = get_gain( "rage_of_the_sleeper"   );
   gain.rage_refund           = get_gain( "rage_refund"           );
@@ -7706,9 +7735,6 @@ void druid_t::target_mitigation( school_e school, dmg_e type, action_state_t* s 
   s -> result_amount *= 1.0 + buff.survival_instincts -> value();
 
   s -> result_amount *= 1.0 + buff.pulverize -> value();
-
-  if ( talent.galactic_guardian -> ok() && get_target_data( s -> action -> player ) -> dots.moonfire -> is_ticking() )
-    s -> result_amount *= 1.0 - talent.galactic_guardian -> effectN( 1 ).percent();
 
   if ( spell.thick_hide )
     s -> result_amount *= 1.0 + spell.thick_hide -> effectN( 1 ).percent();
