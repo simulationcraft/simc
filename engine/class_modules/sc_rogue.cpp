@@ -428,6 +428,10 @@ struct rogue_t : public player_t
     proc_t* t16_2pc_melee;
     proc_t* t18_2pc_combat;
     proc_t* thuggee;
+
+    proc_t* roll_the_bones_1;
+    proc_t* roll_the_bones_2;
+    proc_t* roll_the_bones_5;
   } procs;
 
   player_t* tot_target;
@@ -3800,6 +3804,7 @@ struct roll_the_bones_t : public buff_t
 
     unsigned largest_group = *std::max_element( rolls.begin(), rolls.end() );
 
+    unsigned n_groups = 0;
     for ( size_t i = 0; i < buffs.size(); ++i )
     {
       if ( rolls[ i ] != largest_group )
@@ -3808,6 +3813,22 @@ struct roll_the_bones_t : public buff_t
       }
 
       buffs[ i ] -> trigger();
+      n_groups++;
+    }
+
+    switch ( n_groups )
+    {
+      case 1:
+        rogue -> procs.roll_the_bones_1 -> occur();
+        break;
+      case 2:
+        rogue -> procs.roll_the_bones_2 -> occur();
+        break;
+      case 5:
+        rogue -> procs.roll_the_bones_5 -> occur();
+        break;
+      default:
+        assert( 0 );
     }
   }
 
@@ -4535,6 +4556,10 @@ void rogue_t::init_procs()
   procs.t16_2pc_melee            = get_proc( "Silent Blades (T16 2PC)" );
   procs.t18_2pc_combat           = get_proc( "Adrenaline Rush (T18 2PC)" );
   procs.thuggee                  = get_proc( "Thuggee" );
+
+  procs.roll_the_bones_1         = get_proc( "Roll the Bones: 1 buff" );
+  procs.roll_the_bones_2         = get_proc( "Roll the Bones: 2 buffs" );
+  procs.roll_the_bones_5         = get_proc( "Roll the Bones: 5 buffs" );
 
   if ( talent.death_from_above -> ok() )
   {
