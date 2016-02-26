@@ -35,7 +35,6 @@ namespace { // UNNAMED NAMESPACE
   Primal Fury gone or bugged?
   Incarnation CD modifier rework
   Embrace of the Nightmare rage gain?
-  Gore change
   Gory Fur
 
   Resto =====================================================================
@@ -3663,7 +3662,6 @@ struct mangle_t : public bear_attack_t
 
     bleeding_multiplier = data().effectN( 3 ).percent();
     rage_amount = data().effectN( 4 ).resource( RESOURCE_RAGE );
-    gore = true;
 
     if ( p() -> specialization() == DRUID_GUARDIAN )
     {
