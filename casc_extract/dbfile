@@ -1,4 +1,3 @@
-DBFilesClient\AreaTable.db2
 DBFilesClient\Achievement.db2
 DBFilesClient\Achievement_Category.db2
 DBFilesClient\AdventureJournal.db2
@@ -16,6 +15,7 @@ DBFilesClient\AnimationData.db2
 DBFilesClient\AreaGroupMember.db2
 DBFilesClient\AreaPOI.db2
 DBFilesClient\AreaPOIState.db2
+DBFilesClient\AreaTable.db2
 DBFilesClient\AreaTrigger.db2
 DBFilesClient\AreaTriggerActionSet.db2
 DBFilesClient\AreaTriggerBox.db2
@@ -25,6 +25,7 @@ DBFilesClient\ArmorLocation.db2
 DBFilesClient\Artifact.db2
 DBFilesClient\ArtifactAppearance.db2
 DBFilesClient\ArtifactAppearanceSet.db2
+DBFilesClient\ArtifactCategory.db2
 DBFilesClient\ArtifactPower.db2
 DBFilesClient\ArtifactPowerLink.db2
 DBFilesClient\ArtifactPowerRank.db2
@@ -60,7 +61,7 @@ DBFilesClient\Cfg_Categories.db2
 DBFilesClient\Cfg_Configs.db2
 DBFilesClient\Cfg_Regions.db2
 DBFilesClient\CharBaseInfo.db2
-DBFilesClient\CharBaseSection.dbc
+DBFilesClient\CharBaseSection.db2
 DBFilesClient\CharComponentTextureLayouts.db2
 DBFilesClient\CharComponentTextureSections.db2
 DBFilesClient\CharHairGeosets.db2
@@ -151,7 +152,7 @@ DBFilesClient\GameObjectDisplayInfo.db2
 DBFilesClient\GameObjectDisplayInfoXSoundKit.db2
 DBFilesClient\GameObjects.db2
 DBFilesClient\GameTables.db2
-DBFilesClient\GameTips.dbc
+DBFilesClient\GameTips.db2
 DBFilesClient\GarrAbility.db2
 DBFilesClient\GarrAbilityCategory.db2
 DBFilesClient\GarrAbilityEffect.db2
@@ -192,7 +193,7 @@ DBFilesClient\GarrType.db2
 DBFilesClient\GarrUiAnimClassInfo.db2
 DBFilesClient\GarrUiAnimRaceInfo.db2
 DBFilesClient\GemProperties.db2
-DBFilesClient\GlueScreenEmote.dbc
+DBFilesClient\GlueScreenEmote.db2
 DBFilesClient\GlyphBindableSpell.db2
 DBFilesClient\GlyphExclusiveCategory.db2
 DBFilesClient\GlyphProperties.db2
@@ -284,7 +285,7 @@ DBFilesClient\LfgDungeonGroup.db2
 DBFilesClient\LfgDungeons.db2
 DBFilesClient\LfgDungeonsGroupingMap.db2
 DBFilesClient\LfgRoleRequirement.db2
-DBFilesClient\Light.dbc
+DBFilesClient\Light.db2
 DBFilesClient\LightData.dbc
 DBFilesClient\LightParams.db2
 DBFilesClient\LightSkybox.db2
@@ -299,11 +300,11 @@ DBFilesClient\Lock.db2
 DBFilesClient\LockType.db2
 DBFilesClient\LookAtController.db2
 DBFilesClient\MailTemplate.db2
-DBFilesClient\ManifestInterfaceActionIcon.dbc
-DBFilesClient\ManifestInterfaceData.dbc
-DBFilesClient\ManifestInterfaceItemIcon.dbc
+DBFilesClient\ManifestInterfaceActionIcon.db2
+DBFilesClient\ManifestInterfaceData.db2
+DBFilesClient\ManifestInterfaceItemIcon.db2
 DBFilesClient\ManifestInterfaceTOCData.db2
-DBFilesClient\ManifestMP3.dbc
+DBFilesClient\ManifestMP3.db2
 DBFilesClient\Map.db2
 DBFilesClient\MapChallengeMode.db2
 DBFilesClient\MapDifficulty.db2
@@ -482,7 +483,7 @@ DBFilesClient\SpellVisualKitEffect.db2
 DBFilesClient\SpellVisualKitModelAttach.db2
 DBFilesClient\SpellVisualMissile.db2
 DBFilesClient\SpellXSpellVisual.db2
-DBFilesClient\Startup_Strings.dbc
+DBFilesClient\Startup_Strings.db2
 DBFilesClient\Stationery.db2
 DBFilesClient\StringLookups.db2
 DBFilesClient\SummonProperties.db2
@@ -502,6 +503,8 @@ DBFilesClient\Toy.db2
 DBFilesClient\TradeSkillCategory.db2
 DBFilesClient\TradeSkillItem.db2
 DBFilesClient\TransformMatrix.db2
+DBFilesClient\TransmogSet.db2
+DBFilesClient\TransmogSetItem.db2
 DBFilesClient\TransportAnimation.db2
 DBFilesClient\TransportPhysics.db2
 DBFilesClient\TransportRotation.db2
@@ -582,7 +585,6 @@ DBFilesClient\gtNpcTotalHpExp6.dbc
 DBFilesClient\gtOCTBaseMPByClass.dbc
 DBFilesClient\gtOCTHpPerStamina.dbc
 DBFilesClient\gtOCTLevelExperience.dbc
-DBFilesClient\gtRegenMPPerSpt.dbc
 DBFilesClient\gtSandboxScaling.dbc
 DBFilesClient\gtSpellScaling.dbc
 game.db2
