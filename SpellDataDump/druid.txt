@@ -1,4 +1,4 @@
-SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20914)
+SimulationCraft 701-01 for World of Warcraft 7.0.3 legion-BETA (build level 21154)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -272,7 +272,7 @@ Description      : Activates Cat Form and increases movement speed by $s1% while
 Tooltip          : Increased movement speed by $s1% while in Cat Form.
 
 Name             : Remove Corruption (id=2782) [Spell Family (7)] 
-Class            : Druid
+Class            : Balance Feral Guardian Druid
 School           : Arcane
 Spell Level      : 22
 Range            : 40 yards
@@ -2695,7 +2695,7 @@ Effects          :
                    Affected Spells: Thrash (77758)
 
 Name             : Swipe (id=106785) [Spell Family (7)] 
-Class            : Feral Druid
+Class            : Druid
 School           : Physical
 Resource         : 45 Energy
 Spell Level      : 32
@@ -6165,6 +6165,46 @@ Effects          :
 Description      : $@spelldesc210631
 Tooltip          : Damage dealt increased by $w1%.
 
+Name             : Protection of Ashamane (id=210650) [Spell Family (7), Passive] 
+Class            : Druid
+School           : Physical
+Range            : 100 yards
+Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=312049)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 30 | Scaled Value: 30
+Description      : When you leave Cat Form, you have $210655s1% increased dodge chance and armor for $210655d.
+
+Shapeshifting into Cat Form will cancel this effect.
+
+This can only occur once every $s1 sec.
+
+Name             : Protection of Ashamane (id=210655) [Spell Family (7)] 
+Class            : Druid
+School           : Physical
+Range            : 100 yards
+Duration         : 5 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=312055)   : Apply Aura (6) | Modify Dodge% (49)
+                   Base Value: 100 | Scaled Value: 100
+#2 (id=312056)   : Apply Aura (6) | Modify Armor% (101)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1
+Description      : $@spelldesc210650
+Tooltip          : Chance to dodge attacks increased by $w1%.
+Armor increased by $s2%.
+
 Name             : Ashamane's Bite (id=210702) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
@@ -6332,6 +6372,22 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Radius: 0 - 3 yards
 Description      : $@spelldesc202770
 
+Name             : Fury of Elune (id=211547) [Spell Family (7)] 
+Class            : Druid
+School           : Spellstorm
+Range            : 40 yards
+Cooldown         : 0.5 seconds
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=313368)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 3 yards
+Description      : $@spelldesc202770
+
 Name             : Revitalize (id=212040) [Spell Family (7)] 
 Class            : Restoration Druid
 School           : Nature
@@ -6351,6 +6407,23 @@ Effects          :
 #1 (id=314325)   : Unknown effect type (172)
                    Base Value: 35 | Scaled Value: 35 | Radius: 100 yards
 Description      : Returns all dead party members to life with $s1% of maximum health and mana. Not castable in combat.
+
+Name             : Protection of Ashamane (id=213557) [Spell Family (7), Hidden] 
+Class            : Druid
+School           : Physical
+Range            : 100 yards
+Duration         : 30 seconds
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7)
+Effects          :
+#1 (id=316822)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1
+Description      : $@spelldesc210650
 
 Name             : Guardian of Elune (id=213680) [Spell Family (7)] 
 Class            : Druid
@@ -6417,7 +6490,7 @@ Effects          :
 Description      : $@spelldesc203953
 
 Name             : Swipe (id=213764) [Spell Family (7)] 
-Class            : Druid
+Class            : Feral Guardian Druid
 School           : Physical
 Spell Level      : 32
 Range            : 8 yards

@@ -1,4 +1,4 @@
-SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20914)
+SimulationCraft 701-01 for World of Warcraft 7.0.3 legion-BETA (build level 21154)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -4457,7 +4457,7 @@ Effects          :
                    Base Value: 212873 | Scaled Value: 212873 | Trigger Spell: 212873
 
 Name             : Purify Disease (id=213634) [Spell Family (6)] 
-Class            : Priest
+Class            : Shadow Priest
 School           : Holy
 Spell Level      : 22
 Range            : 40 yards

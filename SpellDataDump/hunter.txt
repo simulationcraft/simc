@@ -1,4 +1,4 @@
-SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20914)
+SimulationCraft 701-01 for World of Warcraft 7.0.3 legion-BETA (build level 21154)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Beast Mastery Survival Hunter
@@ -3963,6 +3963,24 @@ Effects          :
 #3 (id=315198)   : Energize Power (30)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: focus
 Description      : A quick shot that causes $sw2 Arcane damage, and generates $187675s1 Focus.
+
+Name             : Hunter's Mark (id=185365) [Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Spell Level      : 90
+Range            : 60 yards
+Duration         : 12 seconds
+Attributes       : ........ ........ ........ .....x..   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=269134)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+Description      : Mark the target, causing it to be vulnerable to your attacks for a short duration.
+Tooltip          : Vulnerabilities are exposed.
 
 Name             : Wild Call (id=185789) [Spell Family (9), Passive] 
 Class            : Beast Mastery Hunter

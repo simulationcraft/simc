@@ -1,4 +1,4 @@
-SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20914)
+SimulationCraft 701-01 for World of Warcraft 7.0.3 legion-BETA (build level 21154)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -948,7 +948,7 @@ Effects          :
 Description      : When you cast Chain Heal or Riptide, you gain the Tidal Waves effect, which reduces the cast time of your next Healing Wave by $s1% or increases the critical effect chance of your next Healing Surge by $s2%. Stacks up to $53390u times.
 
 Name             : Cleanse Spirit (id=51886) [Spell Family (11)] 
-Class            : Shaman
+Class            : Elemental Enhancement Shaman
 School           : Nature
 Spell Level      : 18
 Range            : 40 yards

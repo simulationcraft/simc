@@ -1,4 +1,4 @@
-SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20914)
+SimulationCraft 701-01 for World of Warcraft 7.0.3 legion-BETA (build level 21154)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -292,7 +292,7 @@ Effects          :
 Description      : Allows opening of locked chests and doors that require a skill level of up to ${$PL*5}.
 
 Name             : Cheap Shot (id=1833) [Spell Family (8)] 
-Class            : Assassination Subtlety Rogue
+Class            : Assassination Combat Subtlety Rogue
 School           : Physical
 Resource         : 40 Energy
 Spell Level      : 29
@@ -617,7 +617,7 @@ Each strike has a $3408h% chance of poisoning the enemy, slowing their movement 
 Tooltip          : Movement slowed by $s1%.
 
 Name             : Slice and Dice (id=5171) [Spell Family (8)] 
-Class            : Combat Rogue
+Class            : Rogue
 School           : Physical
 Resource         : 25 Energy
 Spell Level      : 14
@@ -3227,7 +3227,7 @@ Description      : Viciously slash an enemy, causing $sw2 Physical damage and aw
 Saber Slash has a $s5% chance to strike an additional time, granting additional damage and combo point, and making your next Pistol Shot free.
 
 Name             : Roll the Bones (id=193316) [Spell Family (8)] 
-Class            : Rogue
+Class            : Combat Rogue
 School           : Physical
 Resource         : 25 Energy
 Resource         : 1 - 5 Combo Points

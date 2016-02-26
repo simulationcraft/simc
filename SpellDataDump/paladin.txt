@@ -1,4 +1,4 @@
-SimulationCraft 701-01 for World of Warcraft 7.0.1 legion-BETA (build level 20914)
+SimulationCraft 701-01 for World of Warcraft 7.0.3 legion-BETA (build level 21154)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -4730,7 +4730,7 @@ Description      : Reduces your Divine Shield cooldown by $s3%.  In addition, an
 Cannot occur while Divine Shield is on cooldown or Forbearance is active. 
 
 Name             : Cleanse Toxins (id=213644) [Spell Family (10)] 
-Class            : Paladin
+Class            : Protection Retribution Paladin
 School           : Holy
 Spell Level      : 21
 Range            : 40 yards
