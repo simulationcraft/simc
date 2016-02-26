@@ -2359,6 +2359,16 @@ struct aimed_shot_t: public hunter_ranged_attack_t
 
     return m;
   }
+
+  virtual double action_multiplier() const override
+  {
+    double am = hunter_ranged_attack_t::action_multiplier();
+
+    if ( p() -> mastery.sniper_training -> ok() )
+      am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
+
+    return am;
+  }
 };
 
 // Arcane Shot Attack ================================================================
@@ -2445,10 +2455,10 @@ struct marked_shot_impact_t: public hunter_ranged_attack_t
       hunter_ranged_attack_t::impact( s );
 
       td -> debuffs.hunters_mark -> expire();
-    }
 
-    if ( p() -> talents.true_aim -> ok() )
-      trigger_true_aim( p(), s -> target );
+      if ( p() -> talents.true_aim -> ok() )
+        trigger_true_aim( p(), s -> target );
+    }
   }
 
   virtual double composite_target_da_multiplier( player_t* t ) const override
@@ -2461,6 +2471,16 @@ struct marked_shot_impact_t: public hunter_ranged_attack_t
       m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
 
     return m;
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = hunter_ranged_attack_t::action_multiplier();
+
+    if ( p() -> mastery.sniper_training -> ok() )
+      am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
+
+    return am;
   }
 };
 
@@ -2508,6 +2528,32 @@ struct marked_shot_t: public hunter_ranged_attack_t
 
 // Head Shot  =========================================================================
 
+struct head_shot_t: public hunter_ranged_attack_t
+{
+  head_shot_t( hunter_t* p, const std::string& options_str ):
+    hunter_ranged_attack_t( "head_shot", p, p -> find_talent_spell( "Head Shot" ) )
+  {
+    parse_options( options_str );
+
+    aoe = -1;
+
+    // Spell data is currently bugged on alpha
+    base_multiplier = 2.0;
+    base_aoe_multiplier = 0.5;
+  }
+  
+  virtual double action_multiplier() const override
+  {
+    double am = hunter_ranged_attack_t::action_multiplier();
+
+    if ( p() -> mastery.sniper_training -> ok() )
+      am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
+
+    am *= std::min( 100.0, p() -> resources.current[RESOURCE_FOCUS] ) / 100;
+
+    return am;
+  }
+};
 
 //==============================
 // Survival attacks 
@@ -2699,6 +2745,16 @@ struct barrage_t: public hunter_spell_t
   {
     return true;
   }
+
+  virtual double action_multiplier() const override
+  {
+    double am = hunter_spell_t::action_multiplier();
+
+    if ( p() -> mastery.sniper_training -> ok() )
+      am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
+
+    return am;
+  }
 };
 
 // A Murder of Crows ========================================================
@@ -2722,6 +2778,10 @@ struct peck_t: public ranged_attack_t
   {
     double am = ranged_attack_t::action_multiplier();
     am *= p() -> beast_multiplier();
+
+    if ( p() -> mastery.sniper_training -> ok() )
+      am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
+
     return am;
   }
 };
@@ -3083,6 +3143,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "exotic_munitions"      ) return new       exotic_munitions_t( this, options_str );
   if ( name == "explosive_trap"        ) return new         explosive_trap_t( this, options_str );
   if ( name == "freezing_trap"         ) return new          freezing_trap_t( this, options_str );
+  if ( name == "head_shot"             ) return new              head_shot_t( this, options_str );
   if ( name == "kill_command"          ) return new           kill_command_t( this, options_str );
   if ( name == "marked_shot"           ) return new            marked_shot_t( this, options_str );
   if ( name == "multishot"             ) return new             multi_shot_t( this, options_str );
@@ -3801,11 +3862,6 @@ double hunter_t::composite_melee_haste() const
 double hunter_t::composite_player_critical_damage_multiplier() const
 {
   double cdm = player_t::composite_player_critical_damage_multiplier();
-
-  if ( mastery.sniper_training -> ok() )
-  {
-    cdm += cache.mastery_value();
-  }
 
   // we use check() for rapid_fire becuase it's usage is reported from value() above
   if ( sets.has_set_bonus( HUNTER_MARKSMANSHIP, T17, B4 ) && buffs.trueshot -> check() )
