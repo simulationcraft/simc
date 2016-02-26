@@ -24,8 +24,6 @@ namespace { // UNNAMED NAMESPACE
   Balance ===================================================================
   Stellar Drift cast while moving
   Force of Nature
-  New Moon changes
-  Bimodal distribution in AoE sims
   Shooting Stars AsP react
 
   Touch of the Moon
@@ -36,7 +34,6 @@ namespace { // UNNAMED NAMESPACE
   Statistics?
   Primal Fury gone or bugged?
   Incarnation CD modifier rework
-  Frenzied Regeneration ignite
   Embrace of the Nightmare rage gain?
   Remove lacerate / Lacerate -> Thrash
   Galactic Guardian change
@@ -3912,50 +3909,63 @@ void druid_heal_t::init_living_seed()
 }
 
 // Frenzied Regeneration ====================================================
-// FIXME: Change to ignite.
+// TOCHECK: Verify healing calculations match alpha.
 
 struct frenzied_regeneration_t : public druid_heal_t
 {
-  double heal_pct;
+  struct frenzied_regeneration_ignite_t : public residual_action::residual_periodic_action_t<druid_heal_t>
+  {
+    frenzied_regeneration_ignite_t( druid_t* p, const spell_data_t* s ) :
+      residual_action::residual_periodic_action_t<druid_heal_t>( "frenzied_regeneration", p, spell_data_t::nil() )
+    {
+      background = true;
+      target = p;
+
+      dot_duration = s -> duration();
+      base_tick_time = s -> effectN( 1 ).period();
+      school = s -> get_school_type();
+    }
+  };
+
+  double heal_pct, min_pct;
   timespan_t time_window;
-  double min_pct;
-  double num_ticks;
-  double last_total_healing;
+  frenzied_regeneration_ignite_t* ignite;
 
   frenzied_regeneration_t( druid_t* p, const std::string& options_str ) :
-    druid_heal_t( "frenzied_regeneration", p, p -> find_specialization_spell( "Frenzied Regeneration" ), options_str )
+    druid_heal_t( "frenzied_regeneration_driver", p, p -> find_specialization_spell( "Frenzied Regeneration" ), options_str )
   {
-    use_off_gcd = true;
-    hasted_ticks = false;
-    may_crit = tick_may_crit = false;
-    dot_behavior = DOT_CLIP;
+    use_off_gcd = quiet = true;
+    may_crit = false;
+    target = p;
 
-    heal_pct = data().effectN( 2 ).percent() + p -> talent.guardian_of_elune -> effectN( 2 ).percent();
+    heal_pct = data().effectN( 2 ).percent(); // base heal percent
     time_window = timespan_t::from_seconds( data().effectN( 3 ).base_value() );
     min_pct = data().effectN( 4 ).percent();
-    num_ticks = dot_duration / base_tick_time;
+    ignite = new frenzied_regeneration_ignite_t( p, &data() );
 
     p -> cooldown.frenzied_regen_use -> duration = cooldown -> duration;
     cooldown -> charges = 2;
     cooldown -> duration = timespan_t::from_seconds( 20.0 );
   }
 
-  virtual void execute()
+  void execute() override
   {
-    double total_healing = p() -> compute_incoming_damage( time_window );
-
-    if ( find_dot( target ) -> is_ticking() )
-      total_healing += last_total_healing * ( find_dot( target ) -> ticks_left() / num_ticks );
-
-    last_total_healing = std::max( total_healing, p() -> resources.max[ RESOURCE_HEALTH ] * min_pct );
-    base_td = last_total_healing / num_ticks;
-
     druid_heal_t::execute();
-
+    
     p() -> cooldown.frenzied_regen_use -> start();
   }
 
-  virtual bool ready()
+  double base_da_min( const action_state_t* s ) const override
+  {
+    double dt = s -> action -> player -> compute_incoming_damage( time_window ) * heal_pct;
+  
+    return std::max( dt, p() -> resources.max[ RESOURCE_HEALTH ] * min_pct );
+  }
+
+  void impact( action_state_t* s ) override
+  { residual_action::trigger( ignite, s -> target, s -> result_amount ); }
+
+  bool ready() override
   {
     if ( p() -> cooldown.frenzied_regen_use -> down() )
       return false;
