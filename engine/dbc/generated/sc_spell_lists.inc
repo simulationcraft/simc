@@ -942,7 +942,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         5217, // Tiger's Fury
            0,
     },
-    // Guardian tree, 18 abilities
+    // Guardian tree, 19 abilities
     {
        22812, // Barkskin (Active Mitigation)
       203958, // Brambles
@@ -961,6 +961,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       106898, // Stampeding Roar
        61336, // Survival Instincts (Active Mitigation)
       213764, // Swipe
+      213771, // Swipe
       106832, // Thrash
            0,
     },

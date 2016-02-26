@@ -35,11 +35,9 @@ namespace { // UNNAMED NAMESPACE
   Primal Fury gone or bugged?
   Incarnation CD modifier rework
   Embrace of the Nightmare rage gain?
-  Remove lacerate / Lacerate -> Thrash
   Galactic Guardian change
   Brambles change
   Guardian of Elune change
-  Bear swipe
   Gore change
   Gory Fur
 
@@ -99,7 +97,6 @@ struct druid_td_t : public actor_target_data_t
     dot_t* blood_claws;
     dot_t* fury_of_elune;
     dot_t* gushing_wound;
-    dot_t* lacerate;
     dot_t* lifebloom;
     dot_t* moonfire;
     dot_t* rake;
@@ -113,6 +110,7 @@ struct druid_td_t : public actor_target_data_t
     dot_t* sunfire;
     dot_t* starfall;
     dot_t* thrash_cat;
+    dot_t* thrash_bear;
     dot_t* wild_growth;
   } dots;
 
@@ -425,7 +423,7 @@ public:
     gain_t* moonfire;
     gain_t* rake;
     gain_t* shred;
-    gain_t* swipe;
+    gain_t* swipe_cat;
     gain_t* tigers_fury;
     gain_t* feral_tier15_2pc;
     gain_t* feral_tier16_4pc;
@@ -503,7 +501,7 @@ public:
     const spell_data_t* feral_passive; // Feral Overrides Passive
     const spell_data_t* sharpened_claws;
     const spell_data_t* predatory_swiftness;
-    const spell_data_t* swipe;
+    const spell_data_t* swipe_cat;
 
     // Balance
     const spell_data_t* balance_passive; // Balance Overrides Passive
@@ -531,7 +529,7 @@ public:
 
     // Bear
     const spell_data_t* bear_form_passive; // Bear form passive buff
-    const spell_data_t* lacerate_dot; // For Rend and Tear modifier
+    const spell_data_t* thrash_bear_dot; // For Rend and Tear modifier
     const spell_data_t* thick_hide; // Guardian Affinity passive
 
     // Moonkin
@@ -1370,7 +1368,7 @@ public:
                   const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
     form_mask( ab::data().stance_mask() ), may_autounshift( true ), autoshift( 0 ),
-    rend_and_tear( ab::data().affected_by( player -> spell.lacerate_dot -> effectN( 2 ) ) ),
+    rend_and_tear( ab::data().affected_by( player -> spell.thrash_bear_dot -> effectN( 2 ) ) ),
     open_wounds( ab::data().affected_by( player -> artifact.open_wounds.data().effectN( 1 ).trigger() -> effectN( 1 ) ) )
   {
     ab::may_crit      = true;
@@ -1390,7 +1388,7 @@ public:
     double tm = ab::composite_target_multiplier( t );
 
     if ( rend_and_tear )
-      tm *= 1.0 + p() -> talent.rend_and_tear -> effectN( 2 ).percent() * td( t ) -> dots.lacerate -> current_stack();
+      tm *= 1.0 + p() -> talent.rend_and_tear -> effectN( 2 ).percent() * td( t ) -> dots.thrash_bear -> current_stack();
 
     if ( open_wounds )
       tm *= 1.0 + td( t ) -> buffs.open_wounds -> check_value();
@@ -3102,7 +3100,7 @@ struct shred_t : public cat_attack_t
     double tm = cat_attack_t::composite_target_multiplier( t );
 
     if ( t -> debuffs.bleeding -> up() )
-      tm *= 1.0 + p() -> spec.swipe -> effectN( 2 ).percent();
+      tm *= 1.0 + p() -> spec.swipe_cat -> effectN( 2 ).percent();
 
     if ( p() -> sets.has_set_bonus( DRUID_FERAL, T19, B4 ) )
       tm *= 1.0 + td( t ) -> feral_tier19_4pc_bleeds() * p() -> sets.set( DRUID_FERAL, T19, B4 ) -> effectN( 1 ).percent();
@@ -3142,15 +3140,15 @@ struct shred_t : public cat_attack_t
   }
 };
 
-// Swipe ====================================================================
+// Swipe (Cat) ====================================================================
 
-struct swipe_t : public cat_attack_t
+struct swipe_cat_t : public cat_attack_t
 {
 private:
   bool attack_critical;
 public:
-  swipe_t( druid_t* player, const std::string& options_str ) :
-    cat_attack_t( "swipe", player, player -> spec.swipe, options_str ),
+  swipe_cat_t( druid_t* player, const std::string& options_str ) :
+    cat_attack_t( "swipe_cat", player, player -> spec.swipe_cat, options_str ),
     attack_critical( false )
   {
     aoe = -1;
@@ -3188,7 +3186,7 @@ public:
 
     if ( attack_hit )
     {
-      p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.swipe );
+      p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.swipe_cat );
       if ( attack_critical && p() -> spell.primal_fury -> ok() )
       {
         p() -> proc.primal_fury -> occur();
@@ -3617,51 +3615,6 @@ struct growl_t: public bear_attack_t
   }
 };
 
-// Lacerate DoT =============================================================
-
-struct lacerate_dot_t : public bear_attack_t
-{
-  double blood_frenzy_amount;
-
-  lacerate_dot_t( druid_t* p ) :
-    bear_attack_t( "lacerate_dot", p, p -> spell.lacerate_dot ),
-    blood_frenzy_amount( 0.0 )
-  {
-    background = dual = true;
-    may_miss = may_block = may_dodge = may_parry = may_crit = false;
-    dot_max_stack = 3;
-
-    if ( p -> talent.blood_frenzy -> ok() )
-      blood_frenzy_amount = p -> find_spell( 203961 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
-  }
-
-  // Explicitly apply "lacerate" DoT so that DoT expressions used with lacerate_t work correctly.
-  dot_t* get_dot( player_t* t ) override
-  { return td( t ) -> dots.lacerate; }
-
-  virtual void tick( dot_t* d ) override
-  {
-    rage_tick_amount = d -> current_stack() == d -> max_stack ? blood_frenzy_amount : 0;
-
-    bear_attack_t::tick( d );
-  }
-};
-
-// Lacerate =================================================================
-
-struct lacerate_t : public bear_attack_t
-{
-  lacerate_t( druid_t* p, const std::string& options_str ) :
-    bear_attack_t( "lacerate", p, p -> find_specialization_spell( "Lacerate" ) )
-  {
-    parse_options( options_str );
-    
-    impact_action = new lacerate_dot_t( p );
-    add_child( impact_action );
-    gore = true;
-  }
-};
-
 // Mangle ===================================================================
 
 struct mangle_t : public bear_attack_t
@@ -3756,8 +3709,8 @@ struct pulverize_t : public bear_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      // consumes 3 stacks of Lacerate on the target
-      s -> target -> find_dot( "lacerate_dot", player ) -> cancel();
+      // consumes 3 stacks of Thrash on the target
+      td( s -> target ) -> dots.thrash_bear -> cancel();
 
       // and reduce damage taken by x% for y sec.
       p() -> buff.pulverize -> trigger();
@@ -3767,8 +3720,8 @@ struct pulverize_t : public bear_attack_t
   virtual bool ready() override
   {
     // Call bear_attack_t::ready() first for proper targeting support.
-    if ( bear_attack_t::ready() && td( target ) -> dots.lacerate -> current_stack()
-         == td( target ) -> dots.lacerate -> max_stack )
+    // Hardcode stack max since it may not be set if this code runs before Thrash is cast.
+    if ( bear_attack_t::ready() && td( target ) -> dots.thrash_bear -> current_stack() == 3 )
       return true;
     else
       return false;
@@ -3808,10 +3761,25 @@ struct rage_of_the_sleeper_reflect_t : public bear_attack_t
   }
 };
 
+// Swipe (Bear) =============================================================
+
+struct swipe_bear_t : public bear_attack_t
+{
+  swipe_bear_t( druid_t* p, const std::string& options_str ) :
+    bear_attack_t( "swipe_bear", p, p -> find_spell( 213771 ) )
+  {
+    parse_options( options_str );
+    aoe = -1;
+    gore = true;
+  }
+};
+
 // Thrash (Bear) ============================================================
 
 struct thrash_bear_t : public bear_attack_t
 {
+  double blood_frenzy_amount;
+
   thrash_bear_t( druid_t* p, const std::string& options_str ) :
     bear_attack_t( "thrash_bear", p, p -> find_spell( 77758 ) )
   {
@@ -3825,7 +3793,20 @@ struct thrash_bear_t : public bear_attack_t
     rage_amount = data().effectN( 2 ).resource( RESOURCE_RAGE );
     gore = true;
 
-    impact_action = new lacerate_dot_t( p );
+    dot_duration = p -> spell.thrash_bear_dot -> duration();
+    base_tick_time = p -> spell.thrash_bear_dot -> effectN( 1 ).period();
+    attack_power_mod.tick = p -> spell.thrash_bear_dot -> effectN( 1 ).ap_coeff();
+    dot_max_stack = 3;
+
+    if ( p -> talent.blood_frenzy -> ok() )
+      blood_frenzy_amount = p -> find_spell( 203961 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
+  }
+
+  virtual void tick( dot_t* d ) override
+  {
+    rage_tick_amount = d -> current_stack() == d -> max_stack ? blood_frenzy_amount : 0;
+
+    bear_attack_t::tick( d );
   }
 };
 
@@ -5943,7 +5924,6 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "half_moon"              ) return new              half_moon_t( this, options_str );
   if ( name == "healing_touch"          ) return new          healing_touch_t( this, options_str );
   if ( name == "ironfur"                ) return new                ironfur_t( this, options_str );
-  if ( name == "lacerate"               ) return new               lacerate_t( this, options_str );
   if ( name == "lifebloom"              ) return new              lifebloom_t( this, options_str );
   if ( name == "lunar_beam"             ) return new             lunar_beam_t( this, options_str );
   if ( name == "lunar_strike"           ) return new           lunar_strike_t( this, options_str );
@@ -5976,7 +5956,8 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "stellar_flare"          ) return new          stellar_flare_t( this, options_str );
   if ( name == "prowl"                  ) return new                  prowl_t( this, options_str );
   if ( name == "survival_instincts"     ) return new     survival_instincts_t( this, options_str );
-  if ( name == "swipe"                  ) return new                  swipe_t( this, options_str );
+  if ( name == "swipe_cat"              ) return new              swipe_cat_t( this, options_str );
+  if ( name == "swipe_bear"             ) return new             swipe_bear_t( this, options_str );
   if ( name == "swiftmend"              ) return new              swiftmend_t( this, options_str );
   if ( name == "tigers_fury"            ) return new            tigers_fury_t( this, options_str );
   if ( name == "thrash_bear"            ) return new            thrash_bear_t( this, options_str );
@@ -6047,7 +6028,7 @@ void druid_t::init_spells()
   spec.nurturing_instinct      = find_specialization_spell( "Nurturing Instinct" );
   spec.predatory_swiftness     = find_specialization_spell( "Predatory Swiftness" );
   spec.sharpened_claws         = find_specialization_spell( "Sharpened Claws" );
-  spec.swipe                   = find_specialization_spell( "Swipe" );
+  spec.swipe_cat               = find_spell( 106785 );
 
   // Guardian
   spec.bladed_armor            = find_specialization_spell( "Bladed Armor" );
@@ -6214,7 +6195,7 @@ void druid_t::init_spells()
   spell.cat_form          = find_class_spell( "Cat Form"                    ) -> ok() ? find_spell( 3025   ) : spell_data_t::not_found();
   spell.cat_form_speed    = find_class_spell( "Cat Form"                    ) -> ok() ? find_spell( 113636 ) : spell_data_t::not_found();
 
-  spell.lacerate_dot      = find_spell( 192090 );
+  spell.thrash_bear_dot      = find_spell( 192090 );
   spell.blessing_of_anshe = find_spell( 202739 );
   spell.blessing_of_elune = find_spell( 202737 );
 
@@ -6742,7 +6723,7 @@ void druid_t::apl_feral()
     {
       std::string line = std::string( "use_item,slot=" ) + items[ i ].slot_name();
       if ( items[ i ].name_str == "mirror_of_the_blademaster" )
-        line += ",if=raid_event.adds.in>60|!raid_event.adds.exists|spell_targets.swipe>desired_targets";
+        line += ",if=raid_event.adds.in>60|!raid_event.adds.exists|spell_targets.swipe_cat>desired_targets";
       else if ( items[ i ].name_str != "maalus_the_blood_drinker" )
         line += ",if=(prev.tigers_fury&(target.time_to_die>trinket.stat.any.cooldown|target.time_to_die<45))|prev.berserk|(buff.incarnation.up&time<10)";
 
@@ -6796,16 +6777,16 @@ void druid_t::apl_feral()
     add_action( "shadowmeld,if=energy>=35&dot.rake.pmultiplier<2.1&buff.tigers_fury.up&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>18)&!buff.incarnation.up" );
   }
   maintain -> add_action( this, "Rake",
-                          "cycle_targets=1,if=remains<3&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)" );
+                          "cycle_targets=1,if=remains<3&((target.time_to_die-remains>3&spell_targets.swipe_cat<3)|target.time_to_die-remains>6)" );
   maintain -> add_action( this, "Rake",
-                          "cycle_targets=1,if=remains<4.5&(persistent_multiplier>=dot.rake.pmultiplier|(talent.bloodtalons.enabled&(buff.bloodtalons.up|!buff.predatory_swiftness.up)))&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)" );
-  maintain -> add_action( "moonfire_cat,cycle_targets=1,if=remains<4.2&spell_targets.swipe<=5&target.time_to_die-remains>tick_time*5" );
+                          "cycle_targets=1,if=remains<4.5&(persistent_multiplier>=dot.rake.pmultiplier|(talent.bloodtalons.enabled&(buff.bloodtalons.up|!buff.predatory_swiftness.up)))&((target.time_to_die-remains>3&spell_targets.swipe_cat<3)|target.time_to_die-remains>6)" );
+  maintain -> add_action( "moonfire_cat,cycle_targets=1,if=remains<4.2&spell_targets.swipe_cat<=5&target.time_to_die-remains>tick_time*5" );
   maintain -> add_action( this, "Rake",
-                          "cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&spell_targets.swipe=1&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)" );
+                          "cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&spell_targets.swipe_cat=1&((target.time_to_die-remains>3&spell_targets.swipe_cat<3)|target.time_to_die-remains>6)" );
 
   // Generators
-  generate -> add_action( this, "Swipe", "if=spell_targets.swipe>=4|(spell_targets.swipe>=3&buff.incarnation.down)" );
-  generate -> add_action( this, "Shred", "if=spell_targets.swipe<3|(spell_targets.swipe=3&buff.incarnation.up)" );
+  generate -> add_action( this, "swipe_cat", "if=spell_targets.swipe_cat>=4|(spell_targets.swipe_cat>=3&buff.incarnation.down)" );
+  generate -> add_action( this, "Shred", "if=spell_targets.swipe_cat<3|(spell_targets.swipe_cat=3&buff.incarnation.up)" );
 }
 
 // Balance Combat Action Priority List ======================================
@@ -6884,8 +6865,6 @@ void druid_t::apl_guardian()
   default_list -> add_action( "incarnation" );
   default_list -> add_action( "thrash_bear,if=active_enemies>=2" );
   default_list -> add_action( "pulverize,cycle_targets=1,if=buff.pulverize.remains<3.6" );
-  default_list -> add_action( this, "Lacerate", "cycle_targets=1,if=dot.lacerate.stack<3" );
-  default_list -> add_action( this, "Lacerate" );
   default_list -> add_action( "thrash_bear,if=talent.pulverize.enabled&buff.pulverize.remains<3.6" );
   default_list -> add_action( this, "Moonfire", "cycle_targets=1,if=!ticking" );
   default_list -> add_action( this, "Moonfire", "cycle_targets=1,if=remains<3.6" );
@@ -6974,7 +6953,7 @@ void druid_t::init_gains()
   gain.rake                  = get_gain( "rake"                  );
   gain.shred                 = get_gain( "shred"                 );
   gain.soul_of_the_forest    = get_gain( "soul_of_the_forest"    );
-  gain.swipe                 = get_gain( "swipe"                 );
+  gain.swipe_cat             = get_gain( "swipe_cat"             );
   gain.tigers_fury           = get_gain( "tigers_fury"           );
 
   // Guardian
@@ -7736,7 +7715,7 @@ void druid_t::target_mitigation( school_e school, dmg_e type, action_state_t* s 
 
   if ( talent.rend_and_tear -> ok() )
     s -> result_amount *= 1.0 - talent.rend_and_tear -> effectN( 2 ).percent()
-      * get_target_data( s -> action -> player ) -> dots.lacerate -> current_stack();
+      * get_target_data( s -> action -> player ) -> dots.thrash_bear -> current_stack();
 
   if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
     s -> result_amount *= 1.0 + buff.mark_of_ursol -> value();
@@ -7862,7 +7841,6 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   dots.blood_claws      = target.get_dot( "blood_claws",      &source );
   dots.fury_of_elune    = target.get_dot( "fury_of_elune",    &source );
   dots.gushing_wound    = target.get_dot( "gushing_wound",    &source );
-  dots.lacerate         = target.get_dot( "lacerate",         &source );
   dots.lifebloom        = target.get_dot( "lifebloom",        &source );
   dots.moonfire         = target.get_dot( "moonfire",         &source );
   dots.stellar_flare    = target.get_dot( "stellar_flare",    &source );
@@ -7875,6 +7853,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   dots.shadow_thrash    = target.get_dot( "shadow_thrash",    &source );
   dots.sunfire          = target.get_dot( "sunfire",          &source );
   dots.starfall         = target.get_dot( "starfall",         &source );
+  dots.thrash_bear      = target.get_dot( "thrash_bear",      &source );
   dots.thrash_cat       = target.get_dot( "thrash_cat",       &source );
   dots.wild_growth      = target.get_dot( "wild_growth",      &source );
 

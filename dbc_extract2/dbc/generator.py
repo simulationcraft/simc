@@ -1630,6 +1630,7 @@ class SpellDataGenerator(DataGenerator):
 		  ( 211142, 2 ),       # Feral tier19_4pc
 		  ( 213557, 2 ),       # Protection of Ashamane ICD (Fangs of Ashamane artifact trait) 
 		  ( 211547, 1 ),       # Fury of Elune move spell
+		  ( 213771, 3 ),       # Swipe (Bear)
         ),
     ]
 
