@@ -12,10 +12,6 @@
 //   - Everything
 //
 // Marksmanship
-//  - Fine tune Marked Shot behavior and reporting for AOE
-//  - Implement a buff check on player for Marked Shot's ready() instead of
-//      relying on hunters_mark_applied in hunter_t
-//  - Tie Marked for Death into artifact
 //  - Update Steady Focus behavior 
 //  - Re-implement Black Arrow
 //  - Update Careful Aim behavior
@@ -26,7 +22,7 @@
 //  - Implement Dark Ranger
 //  - Implement Lock and Load
 //  - Implement Head Shot
-//  - Gather info and implement artifact traits
+//  - Gather info and implement artifacts
 //
 // Survival
 //  - Everything
@@ -116,6 +112,7 @@ public:
     buff_t* careful_aim;
     buff_t* steady_focus;
     buff_t* pre_steady_focus;
+    buff_t* hunters_mark_exists;
     buff_t* lock_and_load;
     buff_t* stampede;
     buff_t* trueshot;
@@ -313,7 +310,8 @@ public:
   stats_t* stats_tier18_4pc_bm;
 
   double pet_multiplier;
-  bool hunters_mark_applied;
+
+  player_t* last_true_aim_target;
 
   hunter_t( sim_t* sim, const std::string& name, race_e r = RACE_NONE ):
     player_t( sim, HUNTER, name, r ),
@@ -341,7 +339,7 @@ public:
     stats_tier17_4pc_bm( nullptr ),
     stats_tier18_4pc_bm( nullptr ),
     pet_multiplier( 1.0 ),
-    hunters_mark_applied( false )
+    last_true_aim_target()
   {
     // Cooldowns
     cooldowns.explosive_shot  = get_cooldown( "explosive_shot" );
@@ -436,9 +434,9 @@ public:
 };
 
 static void do_trinket_init( hunter_t*                 r,
-                             specialization_e         spec,
-                             const special_effect_t*& ptr,
-                             const special_effect_t&  effect )
+                             specialization_e          spec,
+                             const special_effect_t*&  ptr,
+                             const special_effect_t&   effect )
 {
   if ( ! r -> find_spell( effect.spell_id ) -> ok() || r -> specialization() != spec )
   {
@@ -556,7 +554,6 @@ public:
   }
 };
 
-// SV Explosive Shot casts have a 40% chance to not consume a charge of Lock and Load.
 // MM Instant Aimed shots reduce the cast time of your next Aimed Shot by 50%. (uses keen eye buff)
 // TODO BM Offensive abilities used during Bestial Wrath increase all damage you deal by 2% and all
 // damage dealt by your pet by 2%, stacking up to 15 times.
@@ -570,6 +567,31 @@ void trigger_tier16_bm_4pc_brutal_kinship( hunter_t* p )
     return;
   if ( p -> buffs.bestial_wrath -> check() )
     p -> buffs.tier16_4pc_bm_brutal_kinship -> trigger( 1, 0, 1, p -> buffs.bestial_wrath -> remains() );
+}
+
+// True Aim can only exist on one target at a time
+void trigger_true_aim( hunter_t* p, player_t* t )
+{
+  hunter_td_t* td_curr = p -> get_target_data( t );
+
+  // First attack, store target for later
+  if ( p -> last_true_aim_target == nullptr )
+    p -> last_true_aim_target = t;
+  else
+  {
+    // Grab info about the previous target
+    hunter_td_t* td_prev = p -> get_target_data( p -> last_true_aim_target );
+
+    // Attacking a different target, reset the stacks, store current target for later
+    if ( p -> last_true_aim_target != t )
+    {
+      td_prev -> debuffs.true_aim -> expire();
+      p -> last_true_aim_target = t;
+    }
+  }
+
+  // Apply one stack to current target
+  td_curr -> debuffs.true_aim -> trigger();
 }
 
 namespace pets
@@ -2030,16 +2052,16 @@ struct multi_shot_t: public hunter_ranged_attack_t
       // Hunter's Mark applies on cast to all affected targets or none based on RPPM (6*haste).
       // This loop goes through the target list for multi-shot and applies the debuffs on proc.
       // Multi-shot also grants 2 focus per target hit on cast.
-      if ( p() -> specialization() == HUNTER_MARKSMANSHIP && p() -> ppm_hunters_mark.trigger() )
+      if ( p() -> specialization() == HUNTER_MARKSMANSHIP )
       {
-        std::vector<player_t*> multi_shot_targets = execute_state -> action -> target_list();
-        for ( size_t i = 0; i < multi_shot_targets.size(); i++ )
+        p() -> resource_gain( RESOURCE_FOCUS, focus_gain * execute_state -> n_targets, p() -> gains.multi_shot);
+        if ( p() -> ppm_hunters_mark.trigger() )
         {
-          td( multi_shot_targets[i] ) -> debuffs.hunters_mark -> trigger();
-          p() -> resource_gain( RESOURCE_FOCUS, focus_gain, p() -> gains.multi_shot);
+          std::vector<player_t*> multi_shot_targets = execute_state -> action -> target_list();
+          for ( size_t i = 0; i < multi_shot_targets.size(); i++ )
+            td( multi_shot_targets[i] ) -> debuffs.hunters_mark -> trigger();
+          p() -> buffs.hunters_mark_exists -> trigger();
         }
-        //FIXME - change this to a buff
-        p() -> hunters_mark_applied = true;
       }
     }
   }
@@ -2309,7 +2331,7 @@ struct aimed_shot_t: public hunter_ranged_attack_t
     if ( s -> result == RESULT_CRIT && crit_gain > 0.0 )
       p() -> resource_gain( RESOURCE_FOCUS, crit_gain, p() -> gains.aimed_shot );
     if ( p() -> talents.true_aim -> ok() )
-      td( s -> target ) -> debuffs.true_aim -> trigger();
+      trigger_true_aim( p(), s -> target );
   }
 
   virtual void execute() override
@@ -2368,7 +2390,7 @@ struct arcane_shot_t: public hunter_ranged_attack_t
       if ( p() -> ppm_hunters_mark.trigger() )
       {
         td( execute_state -> target ) -> debuffs.hunters_mark -> trigger();
-        p() -> hunters_mark_applied = true;
+        p() -> buffs.hunters_mark_exists -> trigger();
       }
     }
   }
@@ -2379,7 +2401,7 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::impact( s );
 
     if ( p() -> talents.true_aim -> ok() )
-      td( s -> target ) -> debuffs.true_aim -> trigger();
+      trigger_true_aim( p(), s -> target );
   }
 
   virtual double composite_target_crit( player_t* t ) const override
@@ -2406,51 +2428,27 @@ struct arcane_shot_t: public hunter_ranged_attack_t
 
 // Marked Shot Attack (WIP) ===========================================================
 
-struct marked_shot_t: public hunter_ranged_attack_t
+struct marked_shot_impact_t: public hunter_ranged_attack_t
 {
-  marked_shot_t( hunter_t* p, const std::string& options_str):
+  marked_shot_impact_t( hunter_t* p ):
     hunter_ranged_attack_t( "marked_shot", p, p -> find_spell( 212621 ) )
   {
-    parse_options( options_str );
-
-    //Simulated as an AOE ability for simplicity
-    aoe = -1;
-  }
-
-  virtual void execute() override
-  {
-    hunter_ranged_attack_t::execute();
-
-    hunter_td_t* hunter_td = td( execute_state -> target );
-
-    //Consume Hunter's Mark and apply appropriate debuffs
-    p() -> hunters_mark_applied = false;
-    hunter_td -> debuffs.hunters_mark -> expire();
-    if( p() -> talents.patient_sniper -> ok() )
-      hunter_td -> debuffs.deadeye -> trigger();
-    else
-      hunter_td -> debuffs.vulnerable -> trigger();
-    hunter_td -> debuffs.marked_for_death -> trigger();
+    background = true;
   }
 
   virtual void impact( action_state_t* s ) override
   {
-    //Do not deal damage if Hunter's Mark is not on the target
-    if ( !td( s -> target ) -> debuffs.hunters_mark -> up() )
-      return;
+    hunter_td_t* td = this -> td( s -> target );
 
-    hunter_ranged_attack_t::impact( s );
+    if ( td -> debuffs.hunters_mark -> check() )
+    {
+      hunter_ranged_attack_t::impact( s );
+
+      td -> debuffs.hunters_mark -> expire();
+    }
 
     if ( p() -> talents.true_aim -> ok() )
-      td( s -> target ) -> debuffs.true_aim -> trigger();
-  }
-
-  virtual bool ready() override
-  {
-    if ( p() -> hunters_mark_applied )
-      return true;
-
-    return false;
+      trigger_true_aim( p(), s -> target );
   }
 
   virtual double composite_target_da_multiplier( player_t* t ) const override
@@ -2465,6 +2463,50 @@ struct marked_shot_t: public hunter_ranged_attack_t
     return m;
   }
 };
+
+struct marked_shot_t: public hunter_ranged_attack_t
+{
+  marked_shot_impact_t* marked_shot_impact;
+  marked_shot_t( hunter_t* p, const std::string& options_str ):
+    hunter_ranged_attack_t( "marked_shot", p, p -> find_specialization_spell( "Marked Shot" ) ),
+    marked_shot_impact( new marked_shot_impact_t( p ) )
+  {
+    parse_options( options_str );
+
+    //Simulated as an AOE ability for simplicity
+    aoe = -1;
+    impact_action = marked_shot_impact;
+  }
+
+  virtual void execute() override
+  {
+    hunter_ranged_attack_t::execute();
+
+    //Consume Hunter's Mark and apply appropriate debuffs
+    std::vector<player_t*> marked_shot_targets = execute_state -> action -> target_list();
+    for ( size_t i = 0; i < marked_shot_targets.size(); i++ )
+    {
+      if ( td( marked_shot_targets[i] ) -> debuffs.hunters_mark -> check() )
+      {
+        if( p() -> talents.patient_sniper -> ok() )
+          td( marked_shot_targets[i] ) -> debuffs.deadeye -> trigger();
+        else
+          td( marked_shot_targets[i] ) -> debuffs.vulnerable -> trigger();
+      }
+    }
+    p() -> buffs.hunters_mark_exists -> expire();
+  }
+
+  virtual bool ready() override
+  {
+    if ( p() -> buffs.hunters_mark_exists -> up() )
+      return true;
+
+    return false;
+  }
+};
+
+// Head Shot  =========================================================================
 
 
 //==============================
@@ -3032,7 +3074,7 @@ action_t* hunter_t::create_action( const std::string& name,
   using namespace attacks;
   using namespace spells;
 
-  if ( name == "auto_attack"           ) return new             auto_attack_t( this, options_str );
+  if ( name == "auto_attack"           ) return new            auto_attack_t( this, options_str );
   if ( name == "auto_shot"             ) return new           start_attack_t( this, options_str );
   if ( name == "aimed_shot"            ) return new             aimed_shot_t( this, options_str );
   if ( name == "arcane_shot"           ) return new            arcane_shot_t( this, options_str );
@@ -3042,7 +3084,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "explosive_trap"        ) return new         explosive_trap_t( this, options_str );
   if ( name == "freezing_trap"         ) return new          freezing_trap_t( this, options_str );
   if ( name == "kill_command"          ) return new           kill_command_t( this, options_str );
-  if ( name == "marked_shot"           ) return new            marked_shot_t( this, options_str );          
+  if ( name == "marked_shot"           ) return new            marked_shot_t( this, options_str );
   if ( name == "multishot"             ) return new             multi_shot_t( this, options_str );
   if ( name == "multi_shot"            ) return new             multi_shot_t( this, options_str );
   if ( name == "trueshot"              ) return new               trueshot_t( this, options_str );
@@ -3255,7 +3297,7 @@ void hunter_t::init_base_stats()
 
   base_focus_regen_per_second = 10.0;
 
-  resources.base[RESOURCE_FOCUS] = 100 + specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS );
+  resources.base[RESOURCE_FOCUS] = 100 + specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS ) + talents.patient_sniper -> effectN( 1 ).resource( RESOURCE_FOCUS );
 
   // Orc racial
   if ( race == RACE_ORC )
@@ -3287,6 +3329,8 @@ void hunter_t::create_buffs()
 
   buffs.steady_focus                = buff_creator_t( this, 177668, "steady_focus" ).chance( talents.steady_focus -> ok() );
   buffs.pre_steady_focus            = buff_creator_t( this, "pre_steady_focus" ).max_stack( 2 ).quiet( true );
+
+  buffs.hunters_mark_exists         = buff_creator_t( this, "hunters_mark_exists" );
 
   buffs.lock_and_load               = buff_creator_t( this, 168980, "lock_and_load" );
 
@@ -3336,6 +3380,7 @@ void hunter_t::init_gains()
   gains.cobra_shot           = get_gain( "cobra_shot" );
   gains.aimed_shot           = get_gain( "aimed_shot" );
   gains.dire_beast           = get_gain( "dire_beast" );
+  gains.multi_shot           = get_gain( "multi_shot" );
 }
 
 // hunter_t::init_position ==================================================
