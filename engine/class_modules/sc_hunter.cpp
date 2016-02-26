@@ -12,7 +12,9 @@
 //   - Everything
 //
 // Marksmanship
-//  - Marked Shot: update to hit all marked targets
+//  - Fine tune Marked Shot behavior and reporting for AOE
+//  - Implement a buff check on player for Marked Shot's ready() instead of
+//      relying on hunters_mark_applied in hunter_t
 //  - Tie Marked for Death into artifact
 //  - Update Steady Focus behavior 
 //  - Re-implement Black Arrow
@@ -147,6 +149,7 @@ public:
     gain_t* cobra_shot;
     gain_t* aimed_shot;
     gain_t* dire_beast;
+    gain_t* multi_shot;
   } gains;
 
   // Procs
@@ -310,6 +313,7 @@ public:
   stats_t* stats_tier18_4pc_bm;
 
   double pet_multiplier;
+  bool hunters_mark_applied;
 
   hunter_t( sim_t* sim, const std::string& name, race_e r = RACE_NONE ):
     player_t( sim, HUNTER, name, r ),
@@ -336,7 +340,8 @@ public:
     stats_stampede( nullptr ),
     stats_tier17_4pc_bm( nullptr ),
     stats_tier18_4pc_bm( nullptr ),
-    pet_multiplier( 1.0 )
+    pet_multiplier( 1.0 ),
+    hunters_mark_applied( false )
   {
     // Cooldowns
     cooldowns.explosive_shot  = get_cooldown( "explosive_shot" );
@@ -1983,6 +1988,7 @@ struct auto_attack_t: public hunter_melee_attack_t
 
 struct multi_shot_t: public hunter_ranged_attack_t
 {
+  double focus_gain;
   multi_shot_t( hunter_t* player, const std::string& options_str ):
     hunter_ranged_attack_t( "multi_shot", player, player -> find_class_spell( "Multi-Shot" ) )
   {
@@ -1990,16 +1996,14 @@ struct multi_shot_t: public hunter_ranged_attack_t
 
     aoe = -1;
     base_multiplier *= 1.0 + player -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent();
+
+    if ( p() -> specialization() == HUNTER_MARKSMANSHIP )
+      focus_gain = p() -> find_spell( 213363 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
   }
 
   virtual double cost() const override
   {
-    double cost = hunter_ranged_attack_t::cost();
-
-    if ( p() -> buffs.bombardment -> check() )
-      cost += 1 + p() -> buffs.bombardment -> data().effectN( 1 ).base_value();
-
-    return cost;
+    return focus_gain > 0 ? 0 : hunter_ranged_attack_t::cost();
   }
 
   virtual double action_multiplier() const override
@@ -2017,18 +2021,38 @@ struct multi_shot_t: public hunter_ranged_attack_t
     pets::hunter_main_pet_t* pet = p() -> active.pet;
     if ( pet && p() -> specs.beast_cleave -> ok() )
       pet -> buffs.beast_cleave -> trigger();
-
+    
+    
     if ( result_is_hit( execute_state -> result ) )
+    {
       trigger_tier15_4pc_melee( p() -> procs.tier15_4pc_melee_multi_shot, p() -> action_lightning_arrow_multi_shot );
+
+      // Hunter's Mark applies on cast to all affected targets or none based on RPPM (6*haste).
+      // This loop goes through the target list for multi-shot and applies the debuffs on proc.
+      // Multi-shot also grants 2 focus per target hit on cast.
+      if ( p() -> specialization() == HUNTER_MARKSMANSHIP && p() -> ppm_hunters_mark.trigger() )
+      {
+        std::vector<player_t*> multi_shot_targets = execute_state -> action -> target_list();
+        for ( size_t i = 0; i < multi_shot_targets.size(); i++ )
+        {
+          td( multi_shot_targets[i] ) -> debuffs.hunters_mark -> trigger();
+          p() -> resource_gain( RESOURCE_FOCUS, focus_gain, p() -> gains.multi_shot);
+        }
+        //FIXME - change this to a buff
+        p() -> hunters_mark_applied = true;
+      }
+    }
   }
 
   virtual void impact( action_state_t* s ) override
   {
     hunter_ranged_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
-      if ( s -> result == RESULT_CRIT && p() -> specs.bombardment -> ok() )
+    if ( p() -> specialization() == HUNTER_MARKSMANSHIP && result_is_hit( s -> result ) )
+    {
+      if ( s -> result == RESULT_CRIT )
         p() -> buffs.bombardment -> trigger();
+    }
   }
 };
 
@@ -2342,7 +2366,10 @@ struct arcane_shot_t: public hunter_ranged_attack_t
       trigger_tier15_2pc_melee();
       p() -> resource_gain( RESOURCE_FOCUS, focus_gain, p() -> gains.arcane_shot );
       if ( p() -> ppm_hunters_mark.trigger() )
+      {
         td( execute_state -> target ) -> debuffs.hunters_mark -> trigger();
+        p() -> hunters_mark_applied = true;
+      }
     }
   }
 
@@ -2378,21 +2405,16 @@ struct arcane_shot_t: public hunter_ranged_attack_t
 };
 
 // Marked Shot Attack (WIP) ===========================================================
-// TODO: 
 
-struct marked_shot_impact_t: public hunter_ranged_attack_t
+struct marked_shot_t: public hunter_ranged_attack_t
 {
-  marked_shot_impact_t( hunter_t* p, const char* name, const spell_data_t* s ):
-    hunter_ranged_attack_t( name, p, s )
+  marked_shot_t( hunter_t* p, const std::string& options_str):
+    hunter_ranged_attack_t( "marked_shot", p, p -> find_spell( 212621 ) )
   {
-  }
+    parse_options( options_str );
 
-  virtual void impact( action_state_t* s ) override
-  {
-    hunter_ranged_attack_t::impact( s );
-
-    if ( p() -> talents.true_aim -> ok() )
-      td( s -> target ) -> debuffs.true_aim -> trigger();
+    //Simulated as an AOE ability for simplicity
+    aoe = -1;
   }
 
   virtual void execute() override
@@ -2402,12 +2424,33 @@ struct marked_shot_impact_t: public hunter_ranged_attack_t
     hunter_td_t* hunter_td = td( execute_state -> target );
 
     //Consume Hunter's Mark and apply appropriate debuffs
+    p() -> hunters_mark_applied = false;
     hunter_td -> debuffs.hunters_mark -> expire();
     if( p() -> talents.patient_sniper -> ok() )
       hunter_td -> debuffs.deadeye -> trigger();
     else
       hunter_td -> debuffs.vulnerable -> trigger();
     hunter_td -> debuffs.marked_for_death -> trigger();
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    //Do not deal damage if Hunter's Mark is not on the target
+    if ( !td( s -> target ) -> debuffs.hunters_mark -> up() )
+      return;
+
+    hunter_ranged_attack_t::impact( s );
+
+    if ( p() -> talents.true_aim -> ok() )
+      td( s -> target ) -> debuffs.true_aim -> trigger();
+  }
+
+  virtual bool ready() override
+  {
+    if ( p() -> hunters_mark_applied )
+      return true;
+
+    return false;
   }
 
   virtual double composite_target_da_multiplier( player_t* t ) const override
@@ -2420,33 +2463,6 @@ struct marked_shot_impact_t: public hunter_ranged_attack_t
       m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
 
     return m;
-  }
-};
-
-struct marked_shot_t: public hunter_ranged_attack_t
-{
-  marked_shot_impact_t* marked_shot_impact;
-
-  marked_shot_t( hunter_t* p, const std::string& options_str):
-    hunter_ranged_attack_t( "marked_shot", p, p -> find_specialization_spell( "Marked Shot" ) ),
-    marked_shot_impact( nullptr )
-  {
-    parse_options( options_str );
-
-    marked_shot_impact = new marked_shot_impact_t( p, "marked_shot", p -> find_spell( 212621 ) );
-  }
-
-  virtual void execute() override
-  {
-    marked_shot_impact -> execute();
-  }
-
-  virtual bool ready() override
-  {
-    if ( td( p() -> target ) -> debuffs.hunters_mark -> up() )
-      return true;
-
-    return false;
   }
 };
 
