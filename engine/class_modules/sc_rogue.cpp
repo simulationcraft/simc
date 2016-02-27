@@ -190,9 +190,6 @@ struct rogue_t : public player_t
   // Venom Rush poison tracking
   unsigned poisoned_enemies;
 
-  // Premeditation
-  event_t* event_premeditation;
-
   // Active
   attack_t* active_blade_flurry;
   actions::rogue_poison_t* active_lethal_poison;
@@ -305,7 +302,6 @@ struct rogue_t : public player_t
 
     // CP Gains
     gain_t* empowered_fan_of_knives;
-    gain_t* premeditation;
     gain_t* seal_fate;
     gain_t* legendary_daggers;
     gain_t* quick_draw;
@@ -463,7 +459,6 @@ struct rogue_t : public player_t
     player_t( sim, ROGUE, name, r ),
     shadow_techniques( 0 ),
     poisoned_enemies( 0 ),
-    event_premeditation( nullptr ),
     active_blade_flurry( nullptr ),
     active_lethal_poison( nullptr ),
     active_nonlethal_poison( nullptr ),
@@ -2596,62 +2591,6 @@ struct nightblade_t : public rogue_attack_t
   }
 };
 
-// Premeditation ============================================================
-
-struct premeditation_t : public rogue_attack_t
-{
-  struct premeditation_event_t : public player_event_t
-  {
-    int combo_points;
-    player_t* target;
-
-    premeditation_event_t( rogue_t& p, player_t* t, timespan_t duration, int cp ) :
-      player_event_t( p ),
-      combo_points( cp ), target( t )
-    {
-      add_event( duration );
-    }
-    virtual const char* name() const override
-    { return "premeditation"; }
-    void execute() override
-    {
-      rogue_t* p = static_cast< rogue_t* >( player() );
-
-      p -> resources.current[ RESOURCE_COMBO_POINT ] -= combo_points;
-      if ( sim().log )
-      {
-        sim().out_log.printf( "%s loses %d temporary combo_points from premeditation (%d)",
-                    player() -> name(), combo_points, p -> resources.current[ RESOURCE_COMBO_POINT ] );
-      }
-
-      assert( p -> resources.current[ RESOURCE_COMBO_POINT ] >= 0 );
-    }
-  };
-
-  premeditation_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "premeditation", p, p -> find_specialization_spell( "Premeditation" ), options_str )
-  {
-    harmful = may_crit = may_miss = false;
-    requires_stealth = true;
-    // We need special combo points handling here
-    adds_combo_points = 0;
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    rogue_attack_t::impact( state );
-
-    double add_points = data().effectN( 1 ).base_value();
-
-    add_points = std::min( add_points, player -> resources.max[ RESOURCE_COMBO_POINT ] - player -> resources.current[ RESOURCE_COMBO_POINT ] );
-
-    if ( add_points > 0 )
-      p() -> trigger_combo_point_gain( nullptr, static_cast<int>( add_points ), p() -> gains.premeditation );
-
-    p() -> event_premeditation = new ( *sim ) premeditation_event_t( *p(), state -> target, data().duration(), static_cast<int>( add_points ) );
-  }
-};
-
 // Roll the Bones ===========================================================
 
 struct roll_the_bones_t : public rogue_attack_t
@@ -2911,6 +2850,7 @@ struct shadowstrike_t : public rogue_attack_t
   {
     requires_weapon = WEAPON_DAGGER;
     requires_stealth = true;
+    adds_combo_points += p -> talent.premeditation -> effectN( 2 ).base_value();
   }
 
   // TODO: Distance movement support, should teleport up to 30 yards, with distance targeting, next
@@ -3785,9 +3725,6 @@ void rogue_t::trigger_combo_point_gain( const action_state_t* state,
     gain_obj = attack -> cp_gain;
 
   resource_gain( RESOURCE_COMBO_POINT, n_cp, gain_obj, state ? state -> action : nullptr );
-
-  if ( event_premeditation )
-    event_t::cancel( event_premeditation );
 }
 
 void rogue_t::trigger_ruthlessness_cp( const action_state_t* state )
@@ -3952,9 +3889,6 @@ void rogue_t::spend_combo_points( const action_state_t* state )
 
   state -> action -> stats -> consume_resource( RESOURCE_COMBO_POINT, max_spend );
   resource_loss( RESOURCE_COMBO_POINT, max_spend, nullptr, state ? state -> action : nullptr );
-
-  if ( event_premeditation )
-    event_t::cancel( event_premeditation );
 }
 
 bool rogue_t::trigger_t17_4pc_combat( const action_state_t* state )
@@ -4856,7 +4790,6 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "nightblade"          ) return new nightblade_t         ( this, options_str );
   if ( name == "pistol_shot"         ) return new pistol_shot_t        ( this, options_str );
   if ( name == "poisoned_knife"      ) return new poisoned_knife_t     ( this, options_str );
-  if ( name == "premeditation"       ) return new premeditation_t      ( this, options_str );
   if ( name == "roll_the_bones"      ) return new roll_the_bones_t     ( this, options_str );
   if ( name == "run_through"         ) return new run_through_t        ( this, options_str );
   if ( name == "rupture"             ) return new rupture_t            ( this, options_str );
@@ -5055,7 +4988,6 @@ void rogue_t::init_gains()
   gains.legendary_daggers       = get_gain( "legendary_daggers" );
   gains.murderous_intent        = get_gain( "murderous_intent"   );
   gains.overkill                = get_gain( "overkill"           );
-  gains.premeditation           = get_gain( "premeditation" );
   gains.relentless_strikes      = get_gain( "relentless_strikes" );
   gains.seal_fate               = get_gain( "seal_fate" );
   gains.shadow_strikes          = get_gain( "shadow_strikes" );
@@ -5540,8 +5472,6 @@ void rogue_t::reset()
   poisoned_enemies = 0;
 
   shadow_techniques = rng().range( 3, 5 );
-
-  event_t::cancel( event_premeditation );
 
   weapon_data[ WEAPON_MAIN_HAND ].reset();
   weapon_data[ WEAPON_OFF_HAND ].reset();
