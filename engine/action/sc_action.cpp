@@ -3093,6 +3093,18 @@ timespan_t action_t::calculate_dot_refresh_duration( const dot_t* dot, timespan_
     return dot -> time_to_next_tick() + triggered_duration;
 }
 
+bool action_t::dot_refreshable( const dot_t* dot, const timespan_t& triggered_duration ) const
+{
+  if ( ! channeled )
+  {
+    return dot -> remains() <= triggered_duration * .3;
+  }
+  else
+  {
+    dot -> remains() <= dot -> time_to_next_tick();
+  }
+}
+
 call_action_list_t::call_action_list_t( player_t* player, const std::string& options_str ) :
   action_t( ACTION_CALL, "call_action_list", player ), alist( 0 )
 {

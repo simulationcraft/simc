@@ -5524,6 +5524,9 @@ public:
   virtual timespan_t calculate_dot_refresh_duration(const dot_t*,
       timespan_t triggered_duration) const;
 
+  // Helper for dot refresh expression, overridable on action level
+  virtual bool dot_refreshable( const dot_t* dot, const timespan_t& triggered_duration ) const;
+
   // ==========================
   // mutating virtual functions
   // ==========================

@@ -461,6 +461,38 @@ expr_t* dot_t::create_expression( action_t* action,
     };
     return new duration_expr_t( this, action, dynamic );
   }
+  else if ( name_str == "refreshable" )
+  {
+    struct refresh_expr_t : public dot_expr_t
+    {
+      action_state_t* state;
+
+      refresh_expr_t( dot_t* d, action_t* a, bool dynamic ) :
+        dot_expr_t( "dot_refresh", d, a, dynamic ),
+        state( a -> get_state() )
+      { }
+
+      ~refresh_expr_t()
+      { action_state_t::release( state ); }
+
+      double evaluate() override
+      {
+        dot_t* d = dot();
+        // No dot up, thus it'll be refreshable (to full duration)
+        if ( d == nullptr )
+        {
+          return 1;
+        }
+
+        action -> snapshot_state( state, DMG_OVER_TIME );
+        timespan_t new_duration = action -> composite_dot_duration( state );
+
+        return action -> dot_refreshable( d, new_duration );
+      }
+    };
+
+    return new refresh_expr_t( this, action, dynamic );
+  }
   else if ( name_str == "remains" )
   {
     struct remains_expr_t : public dot_expr_t
