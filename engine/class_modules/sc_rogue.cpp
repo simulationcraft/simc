@@ -299,6 +299,7 @@ struct rogue_t : public player_t
     gain_t* legendary_daggers;
     gain_t* quick_draw;
     gain_t* buried_treasure;
+    gain_t* ruthlessness;
   } gains;
 
   // Spec passives
@@ -527,6 +528,7 @@ struct rogue_t : public player_t
   void trigger_energy_refund( const action_state_t* );
   void trigger_venomous_wounds( const action_state_t* );
   void trigger_blade_flurry( const action_state_t* );
+  void trigger_ruthlessness_cp( const action_state_t* );
   void trigger_combo_point_gain( const action_state_t*, int = -1, gain_t* gain = nullptr );
   void spend_combo_points( const action_state_t* );
   bool trigger_t17_4pc_combat( const action_state_t* );
@@ -687,6 +689,9 @@ struct rogue_attack_t : public melee_attack_t
   // Generic rules for proccing Main Gauche, used by rogue_t::trigger_main_gauche()
   virtual bool procs_main_gauche() const
   { return callbacks && ! proc && weapon != nullptr && weapon -> slot == SLOT_MAIN_HAND; }
+
+  virtual bool procs_ruthlessness() const
+  { return base_costs[ RESOURCE_COMBO_POINT ] > 0; }
 
   action_state_t* new_state() override
   { return new rogue_attack_state_t( this, target ); }
@@ -1440,6 +1445,8 @@ void rogue_attack_t::execute()
   p() -> trigger_auto_attack( execute_state );
 
   p() -> trigger_combo_point_gain( execute_state );
+
+  p() -> trigger_ruthlessness_cp( execute_state );
 
   // Anticipation only refreshes Combo Points, if the Combat and Subtlety T17
   // 4pc set bonuses are not in effect. Note that currently in game, Shadow
@@ -2868,6 +2875,9 @@ struct death_from_above_t : public rogue_attack_t
     aoe = -1;
   }
 
+  bool procs_ruthlessness() const override
+  { return false; }
+
   void adjust_attack( attack_t* attack, const timespan_t& oor_delay )
   {
     if ( ! attack || ! attack -> execute_event )
@@ -3489,6 +3499,27 @@ void rogue_t::trigger_combo_point_gain( const action_state_t* state,
 
   if ( event_premeditation )
     event_t::cancel( event_premeditation );
+}
+
+void rogue_t::trigger_ruthlessness_cp( const action_state_t* state )
+{
+  if ( ! spec.ruthlessness -> ok() )
+    return;
+
+  if ( ! state -> action -> result_is_hit( state -> result ) )
+    return;
+
+  actions::rogue_attack_t* attack = debug_cast<actions::rogue_attack_t*>( state -> action );
+  if ( ! attack -> procs_ruthlessness() )
+    return;
+
+  const actions::rogue_attack_state_t* s = attack -> cast_state( state );
+  if ( s -> cp == 0 )
+    return;
+
+  double cp_chance = spec.ruthlessness -> effectN( 1 ).pp_combo_points() * s -> cp / 100.0;
+  if ( rng().roll( cp_chance ) )
+    trigger_combo_point_gain( state, 1, gains.ruthlessness );
 }
 
 void rogue_t::trigger_elaborate_planning( const action_state_t* s )
@@ -4391,6 +4422,17 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
     return make_ref_expr( name_str, resources.current[ RESOURCE_COMBO_POINT ] );
   else if ( util::str_compare_ci( name_str, "poisoned_enemies" ) )
     return make_ref_expr( name_str, poisoned_enemies );
+  else if ( util::str_compare_ci( name_str, "cp_max_spend" ) )
+  {
+    if ( ! dynamic_cast<actions::rogue_attack_t*>( a ) )
+    {
+      return expr_t::create_constant( name_str, 0 );
+    }
+    else
+    {
+      return make_mem_fn_expr( name_str, *this, &rogue_t::consume_cp_max );
+    }
+  }
 
   return player_t::create_expression( a, name_str );
 }
@@ -4465,7 +4507,6 @@ void rogue_t::init_spells()
   spell.fleet_footed        = find_class_spell( "Fleet Footed" );
   spell.sprint              = find_class_spell( "Sprint" );
   spell.relentless_strikes  = find_spell( 58423 );
-  spell.ruthlessness_cp_driver = find_spell( 174597 );
   spell.ruthlessness_driver = find_spell( 14161 );
   spell.ruthlessness_cp     = spec.ruthlessness -> effectN( 1 ).trigger();
   spell.shadow_focus        = find_spell( 112942 );
@@ -4554,6 +4595,7 @@ void rogue_t::init_gains()
   gains.venomous_wounds         = get_gain( "venomous_vim"       );
   gains.quick_draw = get_gain( "Quick Draw" );
   gains.buried_treasure = get_gain( "Buried Treasure" );
+  gains.ruthlessness = get_gain( "Ruthlessness" );
 }
 
 // rogue_t::init_procs ======================================================
