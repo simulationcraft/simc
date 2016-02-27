@@ -216,6 +216,7 @@ public:
     buff_t* swift_as_the_wind;
     buff_t* transfer_the_power;
     buff_t* tigereye_brew;
+    buff_t* touch_of_death;
   } buff;
 
 public:
@@ -1814,7 +1815,7 @@ public:
 
   virtual void impact( action_state_t* s ) override
   {
-    if ( p() -> artifact.gale_burst.rank() && s -> action -> harmful )
+    if ( p() -> artifact.gale_burst.rank() && s -> action -> harmful && p() -> buff.touch_of_death -> up() )
       p() -> gale_burst_touch_of_death_bonus += p() -> artifact.gale_burst.value() * s -> result_amount;
     ab::impact( s );
   }
@@ -2246,7 +2247,6 @@ struct rising_sun_kick_t: public monk_melee_attack_t
       cooldown -> duration += p -> passives.aura_mistweaver_monk -> effectN( 8 ).time_value();
     if ( p -> sets.has_set_bonus( MONK_WINDWALKER, T19, B2) )
       cooldown -> duration += p -> sets.set( MONK_WINDWALKER, T19, B2 ) -> effectN( 1 ).time_value();
-
 
     sef_ability = SEF_RISING_SUN_KICK;
 
@@ -3303,83 +3303,32 @@ struct special_delivery_t : public monk_melee_attack_t
 // Touch of Death
 // ==========================================================================
 
-// Touch of Death Impact ====================================================
-struct touch_of_death_impact_t: public monk_spell_t
+// Touch of Death Trigger ====================================================
+struct touch_of_death_t: public monk_spell_t
 {
-  touch_of_death_impact_t( monk_t* p ):
-    monk_spell_t( "touch_of_death_impact", p, p -> spec.touch_of_death )
+  touch_of_death_t( monk_t* p, const std::string& options_str ):
+    monk_spell_t( "touch_of_death", p, p -> spec.touch_of_death )
   {
-    may_crit = may_miss = may_dodge = may_parry = may_block = tick_zero = false;
+    may_crit = hasted_ticks = false;
+    parse_options( options_str );
     school = SCHOOL_PHYSICAL;
   }
 
   virtual double target_armor( player_t* ) const override { return 0; }
 
-  virtual void impact( action_state_t* s ) override
+  virtual double calculate_tick_amount( action_state_t* state, double dot_multiplier ) const
   {
-    s -> result_amount = p() -> resources.max[RESOURCE_HEALTH];
-    s -> result_amount += p() -> gale_burst_touch_of_death_bonus;
-    monk_spell_t::impact( s );
-  }
-};
-
-
-// Touch of Death Buff =================================================
-struct touch_of_death_buff_t : public buff_t
-{
-  touch_of_death_impact_t* impact;
-
-  touch_of_death_buff_t( monk_t* p ) :
-    buff_t( buff_creator_t( p, "touch_of_death", p -> spec.touch_of_death )
-      .duration( p -> spec.touch_of_death -> duration() )
-      .cd( timespan_t::zero() ) )
-  { 
-    impact = new touch_of_death_impact_t( p );
-  }
-
-  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
-  {
-    monk_t* p = debug_cast< monk_t* >( player );
-    p -> gale_burst_touch_of_death_bonus = 0.0;
-    return buff_t::trigger( stacks, value, chance, duration );
-  }
-
-  bool trigger()
-  {
-    monk_t* p = debug_cast< monk_t* >( player );
-    p -> gale_burst_touch_of_death_bonus = 0.0;
-    return buff_t::trigger();
-  }
-
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-
-    impact -> execute();
-  }
-};
-
-// Touch of Death Trigger ====================================================
-struct touch_of_death_t: public monk_spell_t
-{
-  touch_of_death_buff_t* buff;
-
-  touch_of_death_t( monk_t* p, const std::string& options_str ):
-    monk_spell_t( "touch_of_death", p, p -> spec.touch_of_death )
-  {
-    parse_options( options_str );
-    tick_zero = false;
-
-    buff = new touch_of_death_buff_t( p );
+    return p() -> resources.max[RESOURCE_HEALTH];
   }
 
   virtual void execute() override
   {
     monk_spell_t::execute();
 
-    buff -> trigger();
-  }
+    p() -> gale_burst_touch_of_death_bonus = 0.0;
 
+    p() -> buff.touch_of_death -> execute();
+  }
 };
 
 // ==========================================================================
@@ -5426,7 +5375,7 @@ namespace buffs
   };
 
 // Fortifying Brew Buff ==========================================================
-  struct fortifying_brew_t: public monk_buff_t < buff_t >
+struct fortifying_brew_t: public monk_buff_t < buff_t >
 {
   int health_gain;
   fortifying_brew_t( monk_t& p, const std::string&n, const spell_data_t*s ):
@@ -6041,6 +5990,11 @@ void monk_t::create_buffs()
     .default_value( spec.tigereye_brew -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
+
+  buff.touch_of_death = buff_creator_t( this, "touch_of_death", spec.touch_of_death )
+    .duration( spec.touch_of_death -> duration() )
+    .cd( timespan_t::zero() )
+    .can_cancel( false );
 
   buff.transfer_the_power = buff_creator_t( this, "transfer_the_power", artifact.transfer_the_power.data().effectN( 1 ).trigger() )
     .duration( timespan_t::from_seconds( 20 ) ) // TODO: Get actual duration of buff
