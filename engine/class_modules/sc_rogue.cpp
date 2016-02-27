@@ -1879,9 +1879,24 @@ struct backstab_t : public rogue_attack_t
   {
     double m = rogue_attack_t::composite_da_multiplier( state );
 
+    if ( p() -> position() == POSITION_BACK )
+    {
+      m *= 1.0 + data().effectN( 4 ).percent();
+    }
+
     m *= 1.0 + p() -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 2 ).percent();
 
     return m;
+  }
+
+  bool ready() override
+  {
+    if ( p() -> talent.gloomblade -> ok() )
+    {
+      return false;
+    }
+
+    return rogue_attack_t::ready();
   }
 };
 
@@ -2157,6 +2172,20 @@ struct ghostly_strike_t : public rogue_attack_t
     }
   }
 };
+
+
+// Gloomblade ===============================================================
+
+struct gloomblade_t : public rogue_attack_t
+{
+  gloomblade_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "gloomblade", p, p -> talent.gloomblade, options_str )
+  {
+    requires_weapon = WEAPON_DAGGER;
+    weapon = &( p -> main_hand_weapon );
+  }
+};
+
 
 // Hemorrhage ===============================================================
 
@@ -4817,6 +4846,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "feint"               ) return new feint_t              ( this, options_str );
   if ( name == "garrote"             ) return new garrote_t            ( this, options_str );
   if ( name == "ghostly_strike"      ) return new ghostly_strike_t     ( this, options_str );
+  if ( name == "gloomblade"          ) return new gloomblade_t         ( this, options_str );
   if ( name == "hemorrhage"          ) return new hemorrhage_t         ( this, options_str );
   if ( name == "kick"                ) return new kick_t               ( this, options_str );
   if ( name == "kidney_shot"         ) return new kidney_shot_t        ( this, options_str );
