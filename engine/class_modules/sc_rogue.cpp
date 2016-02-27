@@ -324,10 +324,13 @@ struct rogue_t : public player_t
     const spell_data_t* vitality;
 
     // Subtlety
-    const spell_data_t* energetic_recovery;
+    const spell_data_t* deepening_shadows;
+    const spell_data_t* energetic_recovery; // TODO: Not used?
     const spell_data_t* master_of_shadows;
+    const spell_data_t* shadow_blades;
     const spell_data_t* shadow_dance;
     const spell_data_t* shadow_techniques;
+    const spell_data_t* symbols_of_death;
   } spec;
 
   // Spell Data
@@ -1701,9 +1704,6 @@ struct ambush_t : public rogue_attack_t
   {
     double c = rogue_attack_t::cost();
 
-    if ( p() -> buffs.shadow_dance -> check() )
-      c += p() -> spec.shadow_dance -> effectN( 2 ).base_value();
-
     c -= 2 * p() -> buffs.t16_2pc_melee -> stack();
 
     if ( c < 0 )
@@ -2643,6 +2643,48 @@ struct saber_slash_t : public rogue_attack_t
         saberslash_proc_event = new ( *sim ) saberslash_proc_event_t( p(), this, state -> target );
       }
     }
+  }
+};
+
+// Shadow Dance =============================================================
+
+struct shadow_dance_t : public rogue_attack_t
+{
+  cooldown_t* icd;
+
+  shadow_dance_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "shadow_dance", p, p -> spec.shadow_dance, options_str ),
+    icd( p -> get_cooldown( "shadow_dance_icd" ) )
+  {
+    harmful = may_miss = may_crit = false;
+    cooldown -> charges = data().charges();
+    cooldown -> duration = data().charge_cooldown();
+    icd -> duration = data().cooldown();
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    p() -> buffs.shadow_dance -> trigger();
+    if ( p() -> sets.has_set_bonus( ROGUE_SUBTLETY, T17, B2 ) )
+    {
+      p() -> resource_gain( RESOURCE_ENERGY,
+          p() -> sets.set( ROGUE_SUBTLETY, T17, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_ENERGY ),
+          p() -> gains.t17_2pc_subtlety );
+    }
+
+    icd -> start();
+  }
+
+  bool ready() override
+  {
+    if ( icd -> down() )
+    {
+      return false;
+    }
+
+    return rogue_attack_t::ready();
   }
 };
 
@@ -3638,18 +3680,32 @@ namespace buffs {
 struct shadow_dance_t : public buff_t
 {
   shadow_dance_t( rogue_t* p ) :
-    buff_t( buff_creator_t( p, "shadow_dance", p -> find_specialization_spell( "Shadow Dance" ) )
+    buff_t( buff_creator_t( p, "shadow_dance", p -> spec.shadow_dance )
             .cd( timespan_t::zero() )
             .duration( p -> find_specialization_spell( "Shadow Dance" ) -> duration() +
                        p -> sets.set( SET_MELEE, T13, B4 ) -> effectN( 1 ).time_value() ) )
   { }
 
+  void execute( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::execute( stacks, value, duration );
+
+    rogue_t* rogue = debug_cast<rogue_t*>( player );
+    rogue -> buffs.master_of_subtlety -> expire();
+    rogue -> buffs.master_of_subtlety_passive -> trigger();
+  }
+
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
-    rogue_t* rogue = debug_cast<rogue_t*>( player );
-    rogue -> buffs.shadow_strikes -> trigger();
+    if ( remaining_duration == timespan_t::zero() )
+    {
+      rogue_t* rogue = debug_cast<rogue_t*>( player );
+      rogue -> buffs.shadow_strikes -> trigger();
+      rogue -> buffs.master_of_subtlety_passive -> expire();
+      rogue -> buffs.master_of_subtlety -> trigger();
+    }
   }
 };
 
@@ -4418,6 +4474,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "run_through"         ) return new run_through_t        ( this, options_str );
   if ( name == "rupture"             ) return new rupture_t            ( this, options_str );
   if ( name == "saber_slash"         ) return new saber_slash_t        ( this, options_str );
+  if ( name == "shadow_dance"        ) return new shadow_dance_t       ( this, options_str );
   if ( name == "shadowstep"          ) return new shadowstep_t         ( this, options_str );
   if ( name == "shuriken_toss"       ) return new shuriken_toss_t      ( this, options_str );
   if ( name == "slice_and_dice"      ) return new slice_and_dice_t     ( this, options_str );
@@ -4506,10 +4563,12 @@ void rogue_t::init_spells()
   spec.vitality             = find_specialization_spell( "Vitality" );
 
   // Subtlety
+  spec.deepening_shadows    = find_specialization_spell( "Deepening Shadows" );
   spec.energetic_recovery   = find_specialization_spell( "Energetic Recovery" );
   spec.master_of_shadows    = find_specialization_spell( "Master of Shadows" );
   spec.shadow_dance         = find_specialization_spell( "Shadow Dance" );
   spec.shadow_techniques    = find_specialization_spell( "Shadow Techniques" );
+  spec.symbols_of_death     = find_specialization_spell( "Deepening Shadows" );
 
   // Masteries
   mastery.potent_poisons    = find_mastery_spell( ROGUE_ASSASSINATION );
@@ -5197,7 +5256,7 @@ double rogue_t::passive_movement_modifier() const
 
   ms += spell.fleet_footed -> effectN( 1 ).percent();
 
-  if ( buffs.stealth -> up() ) // Check if nightstalker is temporary or passive.
+  if ( buffs.stealth -> up() || buffs.shadow_dance -> up() ) // Check if nightstalker is temporary or passive.
     ms += talent.nightstalker -> effectN( 1 ).percent();
 
   return ms;
