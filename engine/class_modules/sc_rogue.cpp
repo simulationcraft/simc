@@ -2773,6 +2773,29 @@ struct shadowstrike_t : public rogue_attack_t
   }
 };
 
+// Shuriken Storm ===========================================================
+
+struct shuriken_storm_t: public rogue_attack_t
+{
+  shuriken_storm_t( rogue_t* p, const std::string& options_str ):
+    rogue_attack_t( "shuriken_storm", p, p -> find_specialization_spell( "Shuriken Storm" ), options_str )
+  {
+    aoe = -1;
+    adds_combo_points = 1; // Per target
+  }
+
+  // TODO: Generate_cp
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+    // Don't generate a combo point on the first target hit, since that's
+    // already covered by the action execution logic.
+    if ( state -> chain_target > 0 &&
+         result_is_hit( state -> result ) )
+      p() -> trigger_combo_point_gain( state, 1, cp_gain );
+  }
+};
+
 // Shuriken Toss ============================================================
 
 struct shuriken_toss_t : public rogue_attack_t
@@ -4629,6 +4652,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "shadow_dance"        ) return new shadow_dance_t       ( this, options_str );
   if ( name == "shadowstep"          ) return new shadowstep_t         ( this, options_str );
   if ( name == "shadowstrike"        ) return new shadowstrike_t       ( this, options_str );
+  if ( name == "shuriken_storm"      ) return new shuriken_storm_t     ( this, options_str );
   if ( name == "shuriken_toss"       ) return new shuriken_toss_t      ( this, options_str );
   if ( name == "slice_and_dice"      ) return new slice_and_dice_t     ( this, options_str );
   if ( name == "sprint"              ) return new sprint_t             ( this, options_str );
