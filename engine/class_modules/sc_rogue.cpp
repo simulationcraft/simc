@@ -270,6 +270,7 @@ struct rogue_t : public player_t
     cooldown_t* adrenaline_rush;
     cooldown_t* garrote;
     cooldown_t* killing_spree;
+    cooldown_t* shadow_dance;
     cooldown_t* sprint;
     cooldown_t* vanish;
   } cooldowns;
@@ -428,6 +429,7 @@ struct rogue_t : public player_t
   // Procs
   struct procs_t
   {
+    proc_t* deepening_shadows;
     proc_t* seal_fate;
     proc_t* t16_2pc_melee;
     proc_t* t18_2pc_combat;
@@ -475,6 +477,7 @@ struct rogue_t : public player_t
     cooldowns.adrenaline_rush     = get_cooldown( "adrenaline_rush"     );
     cooldowns.garrote             = get_cooldown( "garrote"             );
     cooldowns.killing_spree       = get_cooldown( "killing_spree"       );
+    cooldowns.shadow_dance        = get_cooldown( "shadow_dance"        );
     cooldowns.sprint              = get_cooldown( "sprint"              );
     cooldowns.vanish              = get_cooldown( "vanish"              );
 
@@ -538,6 +541,7 @@ struct rogue_t : public player_t
   void trigger_elaborate_planning( const action_state_t* );
   void trigger_thuggee( const action_state_t* );
   void trigger_alacrity( const action_state_t* );
+  void trigger_deepening_shadows( const action_state_t* );
 
   double consume_cp_max() const
   { return 5.0 + as<double>( talent.deeper_strategem -> effectN( 1 ).base_value() ); }
@@ -1510,6 +1514,8 @@ void rogue_attack_t::execute()
     timespan_t val = timespan_t::from_seconds( -2 * cast_state( execute_state ) -> cp );
     p() -> cooldowns.adrenaline_rush -> adjust( val );
   }
+
+  p() -> trigger_deepening_shadows( execute_state );
 }
 
 // rogue_attack_t::ready() ==================================================
@@ -2806,6 +2812,8 @@ struct symbols_of_death_t : public rogue_attack_t
   {
     harmful = callbacks = false;
     requires_stealth = true;
+
+    dot_duration = timespan_t::zero(); // TODO: Check ticking in later builds
   }
 
   void execute() override
@@ -3616,6 +3624,30 @@ void rogue_t::trigger_ruthlessness_cp( const action_state_t* state )
   double cp_chance = spec.ruthlessness -> effectN( 1 ).pp_combo_points() * s -> cp / 100.0;
   if ( rng().roll( cp_chance ) )
     trigger_combo_point_gain( state, 1, gains.ruthlessness );
+}
+
+void rogue_t::trigger_deepening_shadows( const action_state_t* state )
+{
+  if ( ! spec.deepening_shadows -> ok() )
+  {
+    return;
+  }
+
+  if ( state -> action -> base_costs[ RESOURCE_COMBO_POINT ] == 0 )
+  {
+    return;
+  }
+
+  const actions::rogue_attack_state_t* s = actions::rogue_attack_t::cast_state( state );
+  if ( s -> cp == 0 )
+    return;
+
+  double cp_chance = spec.deepening_shadows -> effectN( 1 ).pp_combo_points() * s -> cp / 100.0;
+  if ( rng().roll( cp_chance ) )
+  {
+    cooldowns.shadow_dance -> reset( true );
+    procs.deepening_shadows -> occur();
+  }
 }
 
 void rogue_t::trigger_elaborate_planning( const action_state_t* s )
@@ -4733,6 +4765,8 @@ void rogue_t::init_procs()
   procs.roll_the_bones_1         = get_proc( "Roll the Bones: 1 buff" );
   procs.roll_the_bones_2         = get_proc( "Roll the Bones: 2 buffs" );
   procs.roll_the_bones_5         = get_proc( "Roll the Bones: 5 buffs" );
+
+  procs.deepening_shadows        = get_proc( "Deepening Shadows" );
 
   if ( talent.death_from_above -> ok() )
   {
