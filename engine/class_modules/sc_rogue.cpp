@@ -2500,7 +2500,17 @@ struct roll_the_bones_t : public rogue_attack_t
     timespan_t d = ( cast_state( execute_state ) -> cp + 1 ) * p() -> buffs.roll_the_bones -> data().duration();
 
     p() -> buffs.roll_the_bones -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, d );
-  };
+  }
+
+  bool ready() override
+  {
+    if ( p() -> talent.slice_and_dice -> ok() )
+    {
+      return false;
+    }
+
+    return rogue_attack_t::ready();
+  }
 };
 
 // Rupture ==================================================================
