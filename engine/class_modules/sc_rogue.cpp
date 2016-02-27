@@ -310,7 +310,6 @@ struct rogue_t : public player_t
 
     // Assassination
     const spell_data_t* assassins_resolve;
-    const spell_data_t* cut_to_the_chase;
     const spell_data_t* improved_poisons;
     const spell_data_t* seal_fate;
     const spell_data_t* venomous_wounds;
@@ -4493,7 +4492,6 @@ void rogue_t::init_spells()
 
   // Assassination
   spec.assassins_resolve    = find_specialization_spell( "Assassin's Resolve" );
-  spec.cut_to_the_chase     = find_specialization_spell( "Cut to the Chase" );
   spec.improved_poisons     = find_specialization_spell( "Improved Poisons" );
   spec.seal_fate            = find_specialization_spell( "Seal Fate" );
   spec.venomous_wounds      = find_specialization_spell( "Venomous Wounds" );
