@@ -87,6 +87,7 @@ struct rogue_poison_t;
 struct rogue_attack_t;
 struct rogue_poison_buff_t;
 struct melee_t;
+struct shadow_blade_t;
 }
 
 namespace buffs
@@ -202,6 +203,8 @@ struct rogue_t : public player_t
   action_t* auto_attack;
   actions::melee_t* melee_main_hand;
   actions::melee_t* melee_off_hand;
+  actions::shadow_blade_t* shadow_blade_main_hand;
+  actions::shadow_blade_t* shadow_blade_off_hand;
 
   // Data collection
   luxurious_sample_data_t* dfa_mh, *dfa_oh;
@@ -256,6 +259,7 @@ struct rogue_t : public player_t
     buff_t* elaborate_planning;
     haste_buff_t* alacrity;
     buff_t* symbols_of_death;
+    buff_t* shadow_blades;
 
     // Roll the bones
     buff_t* roll_the_bones;
@@ -307,6 +311,7 @@ struct rogue_t : public player_t
     gain_t* buried_treasure;
     gain_t* ruthlessness;
     gain_t* shadow_techniques;
+    gain_t* shadow_blades;
   } gains;
 
   // Spec passives
@@ -700,6 +705,11 @@ struct rogue_attack_t : public melee_attack_t
   {
     double cp = adds_combo_points;
     if ( cp > 0 && p() -> buffs.buried_treasure -> check() )
+    {
+      cp += 1;
+    }
+
+    if ( adds_combo_points > 0 && p() -> buffs.shadow_blades -> check() )
     {
       cp += 1;
     }
@@ -1482,6 +1492,11 @@ void rogue_attack_t::execute()
   p() -> trigger_combo_point_gain( execute_state );
 
   p() -> trigger_ruthlessness_cp( execute_state );
+
+  if ( adds_combo_points > 0 && p() -> buffs.shadow_blades -> up() )
+  {
+    p() -> trigger_combo_point_gain( execute_state, 1, p() -> gains.shadow_blades );
+  }
 
   // Anticipation only refreshes Combo Points, if the Combat and Subtlety T17
   // 4pc set bonuses are not in effect. Note that currently in game, Shadow
@@ -2689,6 +2704,52 @@ struct saber_slash_t : public rogue_attack_t
         saberslash_proc_event = new ( *sim ) saberslash_proc_event_t( p(), this, state -> target );
       }
     }
+  }
+};
+
+// Shadow Blades ============================================================
+
+struct shadow_blade_t : public rogue_attack_t
+{
+  shadow_blade_t( const std::string& name_str, rogue_t* p, const spell_data_t* s, weapon_t* w ) :
+    rogue_attack_t( name_str, p, s )
+  {
+    school  = SCHOOL_SHADOW;
+    special = false;
+    repeating = true;
+    background = true;
+    may_glance = false;
+    base_execute_time = w -> swing_time;
+  }
+};
+
+struct shadow_blades_t : public rogue_attack_t
+{
+  shadow_blades_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "shadow_blades", p, p -> find_specialization_spell( "Shadow Blades" ), options_str )
+  {
+    harmful = may_miss = may_crit = false;
+
+    if ( ! p -> shadow_blade_main_hand )
+    {
+      p -> shadow_blade_main_hand = new shadow_blade_t( "shadow_blades_mh",
+          p,data().effectN( 1 ).trigger(), &( p -> main_hand_weapon ) );
+      add_child( p -> shadow_blade_main_hand );
+    }
+
+    if ( ! p -> shadow_blade_off_hand && p -> off_hand_weapon.type != WEAPON_NONE )
+    {
+      p -> shadow_blade_off_hand = new shadow_blade_t( "shadow_blades_oh",
+          p, p -> find_spell( data().effectN( 1 ).misc_value1() ), &( p -> off_hand_weapon ) );
+      add_child( p -> shadow_blade_off_hand );
+    }
+  }
+
+  void execute()
+  {
+    rogue_attack_t::execute();
+
+    p() -> buffs.shadow_blades -> trigger();
   }
 };
 
@@ -4122,6 +4183,65 @@ struct roll_the_bones_t : public buff_t
   }
 };
 
+struct shadow_blades_t : public buff_t
+{
+  shadow_blades_t( rogue_t* p ) :
+    buff_t( buff_creator_t( p, "shadow_blades", p -> find_specialization_spell( "Shadow Blades" ) )
+        .cd( timespan_t::zero() ) )
+  { }
+
+  void change_auto_attack( attack_t*& hand, attack_t* a )
+  {
+    if ( hand == 0 )
+      return;
+
+    bool executing = hand -> execute_event != 0;
+    timespan_t time_to_hit = timespan_t::zero();
+
+    if ( executing )
+    {
+      time_to_hit = hand -> execute_event -> occurs() - sim -> current_time();
+      event_t::cancel( hand -> execute_event );
+    }
+
+    hand = a;
+
+    // Kick off the new attack, by instantly scheduling and rescheduling it to
+    // the remaining time to hit. We cannot use normal reschedule mechanism
+    // here (i.e., simply use event_t::reschedule() and leave it be), because
+    // the rescheduled event would be triggered before the full swing time
+    // (of the new auto attack) in most cases.
+    if ( executing )
+    {
+      timespan_t old_swing_time = hand -> base_execute_time;
+      hand -> base_execute_time = timespan_t::zero();
+      hand -> schedule_execute();
+      hand -> base_execute_time = old_swing_time;
+      hand -> execute_event -> reschedule( time_to_hit );
+    }
+  }
+
+  void execute( int stacks = 1, double value = buff_t::DEFAULT_VALUE(), timespan_t duration = timespan_t::min() )
+  {
+    buff_t::execute( stacks, value, duration );
+
+    rogue_t* p = debug_cast< rogue_t* >( player );
+    change_auto_attack( p -> main_hand_attack, p -> shadow_blade_main_hand );
+    if ( p -> off_hand_attack )
+      change_auto_attack( p -> off_hand_attack, p -> shadow_blade_off_hand );
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    rogue_t* p = debug_cast< rogue_t* >( player );
+    change_auto_attack( p -> main_hand_attack, p -> melee_main_hand );
+    if ( p -> off_hand_attack )
+      change_auto_attack( p -> off_hand_attack, p -> melee_off_hand );
+  }
+};
+
 } // end namespace buffs
 
 inline void actions::marked_for_death_t::impact( action_state_t* state )
@@ -4649,6 +4769,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "run_through"         ) return new run_through_t        ( this, options_str );
   if ( name == "rupture"             ) return new rupture_t            ( this, options_str );
   if ( name == "saber_slash"         ) return new saber_slash_t        ( this, options_str );
+  if ( name == "shadow_blades"       ) return new shadow_blades_t      ( this, options_str );
   if ( name == "shadow_dance"        ) return new shadow_dance_t       ( this, options_str );
   if ( name == "shadowstep"          ) return new shadowstep_t         ( this, options_str );
   if ( name == "shadowstrike"        ) return new shadowstrike_t       ( this, options_str );
@@ -4851,6 +4972,7 @@ void rogue_t::init_gains()
   gains.ruthlessness = get_gain( "Ruthlessness" );
   gains.shadow_techniques = get_gain( "Shadow Techniques" );
   gains.master_of_shadows = get_gain( "Master of Shadows" );
+  gains.shadow_blades = get_gain( "Shadow Blades" );
 }
 
 // rogue_t::init_procs ======================================================
@@ -5101,6 +5223,7 @@ void rogue_t::create_buffs()
                            .period( timespan_t::zero() )
                            .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                            .default_value( 1.0 + spec.symbols_of_death -> effectN( 1 ).percent() );
+  buffs.shadow_blades = new buffs::shadow_blades_t( this );
 }
 
 void rogue_t::register_callbacks()
