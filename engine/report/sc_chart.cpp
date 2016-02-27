@@ -854,7 +854,8 @@ bool chart::generate_gains( highchart::pie_chart_t& pc, const player_t& p,
     const gain_t* gain = gains_list[ i ];
 
     sc_js_t e;
-    e.set( "color", color::resource_color( type ).str() );
+
+    e.set( "color", color::resource_color( type ).dark( i * ( 0.75 / gains_list.size() ) ).str() );
     e.set( "y", util::round( gain->actual[ type ], p.sim->report_precision ) );
     e.set( "name", gain->name_str );
 
