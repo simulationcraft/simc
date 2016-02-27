@@ -1746,7 +1746,6 @@ struct backstab_t : public rogue_attack_t
     rogue_attack_t( "backstab", p, p -> find_specialization_spell( "Backstab" ), options_str )
   {
     requires_weapon   = WEAPON_DAGGER;
-    requires_position = POSITION_BACK;
   }
 
   virtual double cost() const override
@@ -2705,6 +2704,25 @@ struct shadowstep_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
     p() -> buffs.shadowstep -> trigger();
+  }
+};
+
+// Shadowstrike =============================================================
+
+struct shadowstrike_t : public rogue_attack_t
+{
+  shadowstrike_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "shadowstrike", p, p -> find_specialization_spell( "Shadowstrike" ), options_str )
+  {
+    requires_weapon = WEAPON_DAGGER;
+    requires_stealth = true;
+  }
+
+  // TODO: Distance movement support, should teleport up to 30 yards, with distance targeting, next
+  // to the target
+  double composite_teleport_distance( const action_state_t* ) const override
+  {
+    return data().max_range();
   }
 };
 
@@ -4476,6 +4494,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "saber_slash"         ) return new saber_slash_t        ( this, options_str );
   if ( name == "shadow_dance"        ) return new shadow_dance_t       ( this, options_str );
   if ( name == "shadowstep"          ) return new shadowstep_t         ( this, options_str );
+  if ( name == "shadowstrike"        ) return new shadowstrike_t       ( this, options_str );
   if ( name == "shuriken_toss"       ) return new shuriken_toss_t      ( this, options_str );
   if ( name == "slice_and_dice"      ) return new slice_and_dice_t     ( this, options_str );
   if ( name == "sprint"              ) return new sprint_t             ( this, options_str );
