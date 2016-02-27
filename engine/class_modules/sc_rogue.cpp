@@ -658,7 +658,7 @@ struct rogue_attack_t : public melee_attack_t
   {
     melee_attack_t::init();
 
-    if ( generate_cp() )
+    if ( adds_combo_points )
     {
       cp_gain = player -> get_gain( name_str );
     }
@@ -680,8 +680,18 @@ struct rogue_attack_t : public melee_attack_t
     return p() -> buffs.vanish -> check() || p() -> buffs.stealth -> check() || player -> buffs.shadowmeld -> check();
   }
 
-  virtual unsigned generate_cp( const action_state_t* = nullptr ) const
-  { return adds_combo_points; }
+  // Helper function for expressions. Returns the number of guaranteed generated combo points for
+  // this ability, taking into account any potential buffs.
+  virtual double generate_cp() const
+  {
+    double cp = adds_combo_points;
+    if ( cp > 0 && p() -> buffs.buried_treasure -> check() )
+    {
+      cp += 1;
+    }
+
+    return cp;
+  }
 
   virtual bool procs_poison() const
   { return weapon != nullptr; }
@@ -818,6 +828,16 @@ struct rogue_attack_t : public melee_attack_t
 
   virtual double composite_poison_flat_modifier( const action_state_t* ) const
   { return 0.0; }
+
+  expr_t* create_expression( const std::string& name_str )
+  {
+    if ( util::str_compare_ci( name_str, "cp_gain" ) )
+    {
+      return make_mem_fn_expr( "cp_gain", *this, &rogue_attack_t::generate_cp );
+    }
+
+    return melee_attack_t::create_expression( name_str );
+  }
 };
 
 // ==========================================================================
@@ -1348,7 +1368,7 @@ void rogue_attack_t::impact( action_state_t* state )
 {
   melee_attack_t::impact( state );
 
-  if ( generate_cp() )
+  if ( adds_combo_points )
     p() -> trigger_seal_fate( state );
 
   p() -> trigger_main_gauche( state );
@@ -1884,22 +1904,6 @@ struct envenom_t : public rogue_attack_t
 
     return m;
   }
-
-  virtual void impact( action_state_t* state ) override
-  {
-    rogue_attack_t::impact( state );
-
-    if ( p() -> spec.cut_to_the_chase -> ok() &&
-         p() -> buffs.slice_and_dice -> check() )
-    {
-      double snd = p() -> buffs.slice_and_dice -> data().effectN( 1 ).percent();
-      if ( p() -> mastery.executioner -> ok() )
-        snd *= 1.0 + p() -> cache.mastery_value();
-      timespan_t snd_duration = 6 * p() -> buffs.slice_and_dice -> data().duration();
-
-      p() -> buffs.slice_and_dice -> trigger( 1, snd, -1.0, snd_duration );
-    }
-  }
 };
 
 // Eviscerate ===============================================================
@@ -1979,6 +1983,7 @@ struct fan_of_knives_t: public rogue_attack_t
     adds_combo_points = 1;
   }
 
+  // TODO: Generate_cp
   void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
@@ -2212,6 +2217,16 @@ struct pistol_shot_t : public rogue_attack_t
     }
 
     return m;
+  }
+
+  double generate_cp() const override
+  {
+    double g = rogue_attack_t::generate_cp();
+    if ( p() -> talent.quick_draw -> ok() && p() -> buffs.opportunity -> check() )
+    {
+      g += p() -> talent.quick_draw -> effectN( 2 ).base_value();
+    }
+    return g;
   }
 
   void execute() override
@@ -3483,10 +3498,11 @@ void rogue_t::trigger_combo_point_gain( const action_state_t* state,
   int n_cp = 0;
   if ( cp_override == -1 )
   {
-    if ( ! attack -> generate_cp( state ) )
+    if ( ! attack -> adds_combo_points )
       return;
 
-    n_cp = attack -> generate_cp( state );
+    // Note, this is the "passive number" of generated combo points
+    n_cp = attack -> adds_combo_points;
   }
   else
     n_cp = cp_override;
@@ -3810,7 +3826,9 @@ struct roll_the_bones_t : public buff_t
   std::array<buff_t*, 6> buffs;
 
   roll_the_bones_t( rogue_t* r ) :
-    buff_t( buff_creator_t( r, "roll_the_bones", r -> spec.roll_the_bones ) ),
+    buff_t( buff_creator_t( r, "roll_the_bones", r -> spec.roll_the_bones )
+            .period( timespan_t::zero() ) // Disable ticking
+            .refresh_behavior( BUFF_REFRESH_PANDEMIC ) ),
     rogue( r )
   {
     buffs[ 0 ] = rogue -> buffs.jolly_roger;
