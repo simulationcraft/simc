@@ -183,6 +183,9 @@ struct rogue_td_t : public actor_target_data_t
 
 struct rogue_t : public player_t
 {
+  // Shadow techniques swing counter;
+  unsigned shadow_techniques;
+
   // Venom Rush poison tracking
   unsigned poisoned_enemies;
 
@@ -302,6 +305,7 @@ struct rogue_t : public player_t
     gain_t* quick_draw;
     gain_t* buried_treasure;
     gain_t* ruthlessness;
+    gain_t* shadow_techniques;
   } gains;
 
   // Spec passives
@@ -449,6 +453,7 @@ struct rogue_t : public player_t
 
   rogue_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, ROGUE, name, r ),
+    shadow_techniques( 0 ),
     poisoned_enemies( 0 ),
     event_premeditation( nullptr ),
     active_blade_flurry( nullptr ),
@@ -542,6 +547,7 @@ struct rogue_t : public player_t
   void trigger_thuggee( const action_state_t* );
   void trigger_alacrity( const action_state_t* );
   void trigger_deepening_shadows( const action_state_t* );
+  void trigger_shadow_techniques( const action_state_t* );
 
   double consume_cp_max() const
   { return 5.0 + as<double>( talent.deeper_strategem -> effectN( 1 ).base_value() ); }
@@ -1381,6 +1387,7 @@ void rogue_attack_t::impact( action_state_t* state )
   p() -> trigger_main_gauche( state );
   p() -> trigger_combat_potency( state );
   p() -> trigger_blade_flurry( state );
+  p() -> trigger_shadow_techniques( state );
 
   if ( result_is_hit( state -> result ) )
   {
@@ -3650,6 +3657,30 @@ void rogue_t::trigger_deepening_shadows( const action_state_t* state )
   }
 }
 
+void rogue_t::trigger_shadow_techniques( const action_state_t* state )
+{
+  if ( ! spec.shadow_techniques -> ok() )
+  {
+    return;
+  }
+
+  if ( state -> action -> special )
+  {
+    return;
+  }
+
+  if ( ! state -> action -> result_is_hit( state -> result ) )
+  {
+    return;
+  }
+
+  if ( --shadow_techniques == 0 )
+  {
+    trigger_combo_point_gain( state, 1, gains.shadow_techniques );
+    shadow_techniques = rng().range( 3, 5 );
+  }
+}
+
 void rogue_t::trigger_elaborate_planning( const action_state_t* s )
 {
   if ( ! talent.elaborate_planning -> ok() )
@@ -4749,6 +4780,7 @@ void rogue_t::init_gains()
   gains.quick_draw = get_gain( "Quick Draw" );
   gains.buried_treasure = get_gain( "Buried Treasure" );
   gains.ruthlessness = get_gain( "Ruthlessness" );
+  gains.shadow_techniques = get_gain( "Shadow Techniques" );
 }
 
 // rogue_t::init_procs ======================================================
@@ -5215,6 +5247,8 @@ void rogue_t::reset()
   player_t::reset();
 
   poisoned_enemies = 0;
+
+  shadow_techniques = rng().range( 3, 5 );
 
   event_t::cancel( event_premeditation );
 
