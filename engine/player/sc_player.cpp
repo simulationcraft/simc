@@ -2187,7 +2187,7 @@ bool player_t::init_actions()
   {
     action_t* action = action_list[ i ];
     action -> init();
-    if ( action -> trigger_gcd == timespan_t::zero() && ! action -> background_action() && action -> use_off_gcd )
+    if ( action -> trigger_gcd == timespan_t::zero() && ! action -> background && action -> use_off_gcd )
     {
       action -> action_list -> off_gcd_actions.push_back( action );
       // Optimization: We don't need to do off gcd stuff when there are no other off gcd actions than these two
@@ -2244,7 +2244,7 @@ bool player_t::init_finished()
   // TODO: Energy pooling, and energy-based expressions (energy>=10) are not included yet
   for ( size_t i = 0; i < action_list.size(); ++i )
   {
-    if ( ! action_list[ i ] -> background_action() && action_list[ i ] -> base_costs[ primary_resource() ] > 0 )
+    if ( ! action_list[ i ] -> background && action_list[ i ] -> base_costs[ primary_resource() ] > 0 )
     {
       if ( std::find( resource_thresholds.begin(), resource_thresholds.end(),
             action_list[ i ] -> base_costs[ primary_resource() ] ) == resource_thresholds.end() )
@@ -4045,7 +4045,7 @@ void player_t::schedule_ready( timespan_t delta_time,
 
   readying = new ( *sim ) player_ready_event_t( *this, delta_time );
 
-  if ( was_executing && was_executing -> gcd() > timespan_t::zero() && ! was_executing -> background_action() && ! was_executing -> proc && ! was_executing -> repeating )
+  if ( was_executing && was_executing -> gcd() > timespan_t::zero() && ! was_executing -> background && ! was_executing -> proc && ! was_executing -> repeating )
   {
     // Record the last ability use time for cast_react
     cast_delay_occurred = readying -> occurs();
@@ -6443,7 +6443,7 @@ struct wait_until_ready_t : public wait_fixed_t
         break;
       if ( a == this )
         break;
-      if ( a -> background_action() ) continue;
+      if ( a -> background ) continue;
 
       remains = a -> cooldown -> remains();
       if ( remains > timespan_t::zero() && remains < wait ) wait = remains;
@@ -11204,7 +11204,7 @@ action_t* player_t::select_action( const action_priority_list_t& list )
       }
     }
 
-    if ( a -> background_action() ) continue;
+    if ( a -> background ) continue;
 
     if ( a -> wait_on_ready == 1 )
       break;

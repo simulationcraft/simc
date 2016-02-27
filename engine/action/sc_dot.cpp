@@ -807,7 +807,7 @@ void dot_t::last_tick()
   reset();
 
   // If channeled, bring player back to life
-  if ( current_action -> channeled && ! current_action -> background_action() &&
+  if ( current_action -> channeled && ! current_action -> background &&
        current_action -> player -> arise_time > timespan_t::min() )
   {
     assert( ! current_action -> player -> readying && "Danger Will Robinson! Channeled foreground dot action is trying to schedule ready event for player already having one." );

@@ -5254,9 +5254,6 @@ public:
 
   virtual double false_negative_pct() const;
 
-  virtual bool background_action() const
-  { return background; }
-
   virtual timespan_t execute_time() const
   { return base_execute_time; }
 

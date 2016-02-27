@@ -127,7 +127,7 @@ struct action_execute_event_t : public player_event_t
 
     assert( ! action -> pre_execute_state );
 
-    if ( action -> background_action() ) return;
+    if ( action -> background ) return;
 
     if ( ! p() -> channeling )
     {
@@ -786,7 +786,7 @@ double action_t::false_positive_pct() const
   if ( action_skill == 1 && player -> current.skill_debuff == 0 )
     return failure_rate;
 
-  if ( !player -> in_combat || background_action() || player -> strict_sequence || ignore_false_positive )
+  if ( !player -> in_combat || background || player -> strict_sequence || ignore_false_positive )
     return failure_rate;
 
   failure_rate = ( 1 - action_skill ) / 2;
@@ -811,7 +811,7 @@ double action_t::false_negative_pct() const
   if ( action_skill == 1 && player -> current.skill_debuff == 0 )
     return failure_rate;
 
-  if ( !player -> in_combat || background_action() || player -> strict_sequence )
+  if ( !player -> in_combat || background || player -> strict_sequence )
     return failure_rate;
 
   failure_rate = ( 1 - action_skill ) / 2;
@@ -1615,7 +1615,7 @@ void action_t::schedule_execute( action_state_t* execute_state )
   if ( trigger_gcd > timespan_t::zero() )
     player -> off_gcdactions.clear();
 
-  if ( ! background_action() )
+  if ( ! background )
   {
     player -> executing = this;
     player -> gcd_ready = sim -> current_time() + gcd();
@@ -1684,7 +1684,7 @@ void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
   {
     timespan_t delay = timespan_t::zero();
 
-    if ( ! background_action() && ! proc )
+    if ( ! background && ! proc )
     { /*This doesn't happen anymore due to the gcd queue, in WoD if an ability has a cooldown of 20 seconds,
       it is usable exactly every 20 seconds with proper Lag tolerance set in game.
       The only situation that this could happen is when world lag is over 400, as blizzard does not allow
@@ -1967,7 +1967,7 @@ void action_t::init()
     update_flags &= ~STATE_HASTE;
   }
 
-  if ( !(background_action() || sequence) && (action_list && action_list -> name_str == "precombat") )
+  if ( !(background || sequence) && (action_list && action_list -> name_str == "precombat") )
   {
     if ( harmful )
     {
@@ -1981,7 +1981,7 @@ void action_t::init()
     else
       player -> precombat_action_list.push_back( this );
   }
-  else if ( ! ( background_action() || sequence ) && action_list )
+  else if ( ! ( background || sequence ) && action_list )
     player -> find_action_priority_list( action_list -> name_str ) -> foreground_action_list.push_back( this );
 
   initialized = true;
@@ -3006,7 +3006,7 @@ void action_t::impact( action_state_t* s )
       if ( time_to_travel == timespan_t::zero() )
         impact_action -> pre_execute_state = impact_action -> get_state( s );
 
-      assert( impact_action -> background_action() );
+      assert( impact_action -> background );
       impact_action -> target = s -> target;
       impact_action -> execute();
     }

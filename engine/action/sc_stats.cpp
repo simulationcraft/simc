@@ -273,7 +273,7 @@ void stats_t::analyze()
   {
     action_t& a = *action_list[ i ];
     if ( a.channeled ) channeled = true;
-    if ( ! a.background_action() ) background = false;
+    if ( ! a.background ) background = false;
   }
 
   for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
