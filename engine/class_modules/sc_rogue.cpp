@@ -196,6 +196,7 @@ struct rogue_t : public player_t
   actions::rogue_poison_t* active_nonlethal_poison;
   action_t* active_main_gauche;
   action_t* weaponmaster_dot_strike;
+  action_t* shadow_nova;
 
   // Autoattacks
   action_t* auto_attack;
@@ -299,6 +300,7 @@ struct rogue_t : public player_t
     gain_t* venomous_wounds;
     gain_t* vitality;
     gain_t* master_of_shadows;
+    gain_t* energetic_stabbing;
 
     // CP Gains
     gain_t* empowered_fan_of_knives;
@@ -309,6 +311,7 @@ struct rogue_t : public player_t
     gain_t* ruthlessness;
     gain_t* shadow_techniques;
     gain_t* shadow_blades;
+    gain_t* withering_bite;
   } gains;
 
   // Spec passives
@@ -433,6 +436,25 @@ struct rogue_t : public player_t
     const spell_data_t* potent_poisons;
   } mastery;
 
+  // Artifact powers
+  struct artifact_t
+  {
+    // Subtlety
+    artifact_power_t goremaws_bite;
+    artifact_power_t the_quiet_knife;
+    artifact_power_t demons_kiss;
+    artifact_power_t gutripper;
+    artifact_power_t precision_strike;
+    artifact_power_t fortunes_bite; // TODO: NYI, will change in the future
+    artifact_power_t soul_shadows;
+    artifact_power_t energetic_stabbing;
+    artifact_power_t catwalk;
+    artifact_power_t second_shuriken;
+    artifact_power_t akaaris_soul;
+    artifact_power_t shadow_nova;
+    artifact_power_t finality;
+  } artifact;
+
   // Procs
   struct procs_t
   {
@@ -552,6 +574,7 @@ struct rogue_t : public player_t
   void trigger_deepening_shadows( const action_state_t* );
   void trigger_shadow_techniques( const action_state_t* );
   void trigger_weaponmaster( const action_state_t* );
+  void trigger_energetic_stabbing( const action_state_t* );
 
   double consume_cp_max() const
   { return 5.0 + as<double>( talent.deeper_strategem -> effectN( 1 ).base_value() ); }
@@ -992,6 +1015,16 @@ struct weaponmaster_strike_t : public rogue_attack_t
 
   double calculate_direct_amount( action_state_t* ) const
   { return base_dd_min; }
+};
+
+struct shadow_nova_t : public rogue_attack_t
+{
+  shadow_nova_t( rogue_t* p ) :
+    rogue_attack_t( "shadow_nova", p, p -> artifact.shadow_nova.data().effectN( 1 ).trigger() )
+  {
+    background = true;
+    aoe = -1;
+  }
 };
 
 // ==========================================================================
@@ -1559,6 +1592,8 @@ void rogue_attack_t::execute()
 
   p() -> trigger_ruthlessness_cp( execute_state );
 
+  p() -> trigger_energetic_stabbing( execute_state );
+
   if ( adds_combo_points > 0 && p() -> buffs.shadow_blades -> up() )
   {
     p() -> trigger_combo_point_gain( execute_state, 1, p() -> gains.shadow_blades );
@@ -1849,6 +1884,8 @@ struct backstab_t : public rogue_attack_t
     rogue_attack_t( "backstab", p, p -> find_specialization_spell( "Backstab" ), options_str )
   {
     requires_weapon   = WEAPON_DAGGER;
+
+    base_multiplier *= 1.0 + p -> artifact.the_quiet_knife.percent();
   }
 
   virtual double cost() const override
@@ -2032,6 +2069,7 @@ struct eviscerate_t : public rogue_attack_t
     attack_power_mod.direct = 0.559;
     // Hard-coded tooltip.
     attack_power_mod.direct *= 0.88;
+    base_crit += p -> artifact.gutripper.percent();
   }
 
   double action_multiplier() const override
@@ -2178,9 +2216,46 @@ struct gloomblade_t : public rogue_attack_t
   {
     requires_weapon = WEAPON_DAGGER;
     weapon = &( p -> main_hand_weapon );
+    base_multiplier *= 1.0 + p -> artifact.the_quiet_knife.percent();
   }
 };
 
+// Goremaw's Bite ===========================================================
+
+struct goremaws_bite_strike_t : public rogue_attack_t
+{
+  goremaws_bite_strike_t( rogue_t* p, const std::string& name, const spell_data_t* spell, weapon_t* w ) :
+    rogue_attack_t( name, p, spell )
+  {
+    background = true;
+    weapon = w;
+  }
+};
+
+struct goremaws_bite_t:  public rogue_attack_t
+{
+  goremaws_bite_strike_t* mh, * oh;
+
+  goremaws_bite_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "goremaws_bite", p, &( p -> artifact.goremaws_bite.data() ), options_str ),
+    mh( new goremaws_bite_strike_t( p, "goremaws_bite_mh", p -> artifact.goremaws_bite.data().effectN( 1 ).trigger(), &( p -> main_hand_weapon ) ) ),
+    oh( new goremaws_bite_strike_t( p, "goremaws_bite_oh", p -> artifact.goremaws_bite.data().effectN( 2 ).trigger(), &( p -> off_hand_weapon ) ) )
+  {
+    add_child( mh );
+    add_child( oh );
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    mh -> target = target;
+    mh -> schedule_execute();
+
+    oh -> target = target;
+    oh -> schedule_execute();
+  }
+};
 
 // Hemorrhage ===============================================================
 
@@ -2567,6 +2642,7 @@ struct nightblade_t : public rogue_attack_t
     rogue_attack_t( "nightblade", p, p -> find_specialization_spell( "Nightblade" ), options_str )
   {
     may_crit = false;
+    base_multiplier *= 1.0 + p -> artifact.demons_kiss.percent();
   }
 
   void execute() override
@@ -2851,6 +2927,7 @@ struct shadowstrike_t : public rogue_attack_t
     requires_weapon = WEAPON_DAGGER;
     requires_stealth = true;
     adds_combo_points += p -> talent.premeditation -> effectN( 2 ).base_value();
+    base_multiplier *= 1.0 + p -> artifact.precision_strike.percent();
   }
 
   // TODO: Distance movement support, should teleport up to 30 yards, with distance targeting, next
@@ -3826,6 +3903,30 @@ void rogue_t::trigger_weaponmaster( const action_state_t* s )
   }
 }
 
+void rogue_t::trigger_energetic_stabbing( const action_state_t* s )
+{
+  if ( artifact.energetic_stabbing.rank() == 0 )
+  {
+    return;
+  }
+
+  if ( ! s -> action -> harmful || ! s -> action -> result_is_hit( s -> result ) )
+  {
+    return;
+  }
+
+  actions::rogue_attack_t* attack = debug_cast<actions::rogue_attack_t*>( s -> action );
+  if ( ! attack -> requires_stealth )
+  {
+    return;
+  }
+
+  if ( rng().roll( artifact.energetic_stabbing.data().proc_chance() ) )
+  {
+    resource_gain( RESOURCE_ENERGY, artifact.energetic_stabbing.value(), gains.energetic_stabbing, s -> action );
+  }
+}
+
 void rogue_t::trigger_elaborate_planning( const action_state_t* s )
 {
   if ( ! talent.elaborate_planning -> ok() )
@@ -3954,6 +4055,11 @@ struct shadow_dance_t : public buff_t
       rogue -> buffs.shadow_strikes -> trigger();
       rogue -> buffs.master_of_subtlety_passive -> expire();
       rogue -> buffs.master_of_subtlety -> trigger();
+
+      if ( rogue -> artifact.shadow_nova.rank() )
+      {
+        rogue -> shadow_nova -> schedule_execute();
+      }
     }
   }
 };
@@ -4047,6 +4153,11 @@ struct stealth_t : public buff_t
 
     rogue -> buffs.master_of_subtlety_passive -> expire();
     rogue -> buffs.master_of_subtlety -> trigger();
+
+    if ( rogue -> artifact.shadow_nova.rank() )
+    {
+      rogue -> shadow_nova -> schedule_execute();
+    }
   }
 };
 
@@ -4212,6 +4323,8 @@ struct shadow_blades_t : public buff_t
 {
   shadow_blades_t( rogue_t* p ) :
     buff_t( buff_creator_t( p, "shadow_blades", p -> find_specialization_spell( "Shadow Blades" ) )
+        .duration( p -> find_specialization_spell( "Shadow Blades" ) -> duration() +
+                   p -> artifact.soul_shadows.time_value() )
         .cd( timespan_t::zero() ) )
   { }
 
@@ -4781,6 +4894,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "garrote"             ) return new garrote_t            ( this, options_str );
   if ( name == "ghostly_strike"      ) return new ghostly_strike_t     ( this, options_str );
   if ( name == "gloomblade"          ) return new gloomblade_t         ( this, options_str );
+  if ( name == "goremaws_bite"       ) return new goremaws_bite_t      ( this, options_str );
   if ( name == "hemorrhage"          ) return new hemorrhage_t         ( this, options_str );
   if ( name == "kick"                ) return new kick_t               ( this, options_str );
   if ( name == "kidney_shot"         ) return new kidney_shot_t        ( this, options_str );
@@ -4959,6 +5073,20 @@ void rogue_t::init_spells()
 
   talent.relentless_strikes = find_talent_spell( "Relentless Strikes" );
 
+  artifact.goremaws_bite    = find_artifact_spell( "Goremaw's Bite" );
+  artifact.the_quiet_knife  = find_artifact_spell( "The Quiet Knife" );
+  artifact.demons_kiss      = find_artifact_spell( "Demon's Kiss" );
+  artifact.gutripper        = find_artifact_spell( "Gutripper" );
+  artifact.precision_strike = find_artifact_spell( "Precision Strike" );
+  artifact.fortunes_bite    = find_artifact_spell( "Fortune's Bite" ); // TODO: NYI, will change in the future
+  artifact.soul_shadows     = find_artifact_spell( "Soul Shadows" );
+  artifact.energetic_stabbing = find_artifact_spell( "Energetic Stabbing" );
+  artifact.catwalk          = find_artifact_spell( "Catwalk" );
+  artifact.second_shuriken  = find_artifact_spell( "Second Shuriken" );
+  artifact.akaaris_soul     = find_artifact_spell( "Akaari's Soul" );
+  artifact.shadow_nova      = find_artifact_spell( "Shadow Nova" );
+  artifact.finality         = find_artifact_spell( "Finality" );
+
   auto_attack = new actions::auto_melee_attack_t( this, "" );
 
   if ( mastery.main_gauche -> ok() )
@@ -4970,6 +5098,11 @@ void rogue_t::init_spells()
   if ( talent.weaponmaster -> ok() )
   {
     weaponmaster_dot_strike = new actions::weaponmaster_strike_t( this );
+  }
+
+  if ( artifact.shadow_nova.rank() )
+  {
+    shadow_nova = new actions::shadow_nova_t( this );
   }
 }
 
@@ -5002,6 +5135,8 @@ void rogue_t::init_gains()
   gains.shadow_techniques = get_gain( "Shadow Techniques" );
   gains.master_of_shadows = get_gain( "Master of Shadows" );
   gains.shadow_blades = get_gain( "Shadow Blades" );
+  gains.withering_bite = get_gain( "Withering Bite" );
+  gains.energetic_stabbing = get_gain( "Energetic Stabbing" );
 }
 
 // rogue_t::init_procs ======================================================
@@ -5595,6 +5730,7 @@ double rogue_t::passive_movement_modifier() const
   double ms = player_t::passive_movement_modifier();
 
   ms += spell.fleet_footed -> effectN( 1 ).percent();
+  ms += artifact.catwalk.percent();
 
   if ( buffs.stealth -> up() || buffs.shadow_dance -> up() ) // Check if nightstalker is temporary or passive.
     ms += talent.nightstalker -> effectN( 1 ).percent();
@@ -5760,6 +5896,51 @@ static void from_the_shadows( special_effect_t& effect )
   do_trinket_init( rogue, ROGUE_SUBTLETY, rogue -> from_the_shadows, effect );
 }
 
+static void withering_bite( special_effect_t& effect )
+{
+  struct withering_bite_t : public melee_attack_t
+  {
+    double st_proc_chance;
+    bool procced;
+
+    withering_bite_t( player_t* p, const special_effect_t& effect ) :
+      melee_attack_t( "withering_bite", p, effect.trigger() ),
+      st_proc_chance( effect.driver() -> effectN( 1 ).ap_coeff() ),
+      procced( false )
+    {
+      background = may_crit = special = true;
+      callbacks = false;
+    }
+
+    double action_multiplier() const override
+    { return 1.0 + 3.0 * procced; }
+
+    void execute() override
+    {
+      procced = rng().roll( st_proc_chance );
+
+      melee_attack_t::execute();
+
+      if ( procced )
+      {
+        rogue_t* r = debug_cast<rogue_t*>( player );
+        r -> resource_gain( RESOURCE_COMBO_POINT, 1, r -> gains.withering_bite, this );
+      }
+
+      procced = false;
+    }
+  };
+
+
+  // TODO: Client data claims a whole host of other things
+  effect.proc_flags_ = PF_MELEE;
+  effect.proc_flags2_ = PF2_ALL_HIT;
+  effect.proc_chance_ = 1.0;
+  effect.execute_action = new withering_bite_t( effect.player, effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 struct rogue_module_t : public module_t
 {
   rogue_module_t() : module_t( ROGUE ) {}
@@ -5779,6 +5960,7 @@ struct rogue_module_t : public module_t
     unique_gear::register_special_effect( 184916, toxic_mutilator    );
     unique_gear::register_special_effect( 184917, eviscerating_blade );
     unique_gear::register_special_effect( 184918, from_the_shadows   );
+    unique_gear::register_special_effect( 197525, withering_bite     );
   }
 
   virtual void register_hotfixes() const override
