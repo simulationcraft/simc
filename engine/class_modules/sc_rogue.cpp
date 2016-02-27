@@ -296,6 +296,7 @@ struct rogue_t : public player_t
     gain_t* t17_4pc_subtlety;
     gain_t* venomous_wounds;
     gain_t* vitality;
+    gain_t* master_of_shadows;
 
     // CP Gains
     gain_t* empowered_fan_of_knives;
@@ -3916,6 +3917,12 @@ struct stealth_t : public buff_t
   {
     buff_t::execute( stacks, value, duration );
 
+    if ( rogue -> in_combat && rogue -> spec.master_of_shadows -> ok() )
+    {
+      rogue -> resource_gain( RESOURCE_ENERGY, rogue -> spec.master_of_shadows -> effectN( 1 ).base_value(),
+          rogue -> gains.master_of_shadows );
+    }
+
     rogue -> buffs.master_of_subtlety -> expire();
     rogue -> buffs.master_of_subtlety_passive -> trigger();
   }
@@ -4814,6 +4821,7 @@ void rogue_t::init_gains()
   gains.buried_treasure = get_gain( "Buried Treasure" );
   gains.ruthlessness = get_gain( "Ruthlessness" );
   gains.shadow_techniques = get_gain( "Shadow Techniques" );
+  gains.master_of_shadows = get_gain( "Master of Shadows" );
 }
 
 // rogue_t::init_procs ======================================================
