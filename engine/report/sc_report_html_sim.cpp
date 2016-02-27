@@ -1303,10 +1303,10 @@ void print_html_head( report::sc_html_stream& os, const sim_t& sim )
         "charset=UTF-8\" />\n";
 
   os << "<script type=\"text/javascript\" "
-        "src=\"http://code.jquery.com/jquery-1.11.3.min.js\"></script>\n"
-     << "<script src=\"http://code.highcharts.com/highcharts.js\"></script>\n"
+        "src=\"https://code.jquery.com/jquery-1.11.3.min.js\"></script>\n"
+     << "<script src=\"https://code.highcharts.com/highcharts.js\"></script>\n"
      << "<script "
-        "src=\"http://code.highcharts.com/highcharts-more.js\"></script>\n";
+        "src=\"https://code.highcharts.com/highcharts-more.js\"></script>\n";
 
   print_html_style( os, sim );
 
