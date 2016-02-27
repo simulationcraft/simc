@@ -2461,6 +2461,38 @@ struct mutilate_t : public rogue_attack_t
   }
 };
 
+// Nightblade ===============================================================
+
+struct nightblade_t : public rogue_attack_t
+{
+  nightblade_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "nightblade", p, p -> find_specialization_spell( "Nightblade" ), options_str )
+  {
+    may_crit = false;
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    if ( p() -> sets.has_set_bonus( ROGUE_SUBTLETY, T18, B4 ) )
+    {
+      timespan_t v = timespan_t::from_seconds( -p() -> sets.set( ROGUE_SUBTLETY, T18, B4 ) -> effectN( 1 ).base_value() );
+      v *= cast_state( execute_state ) -> cp;
+      p() -> cooldowns.vanish -> adjust( v, false );
+    }
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    timespan_t duration = data().duration() * ( 1 + cast_state( s ) -> cp );
+    if ( p() -> sets.has_set_bonus( SET_MELEE, T15, B2 ) )
+      duration += data().duration();
+
+    return duration;
+  }
+};
+
 // Premeditation ============================================================
 
 struct premeditation_t : public rogue_attack_t
@@ -4574,6 +4606,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "killing_spree"       ) return new killing_spree_t      ( this, options_str );
   if ( name == "marked_for_death"    ) return new marked_for_death_t   ( this, options_str );
   if ( name == "mutilate"            ) return new mutilate_t           ( this, options_str );
+  if ( name == "nightblade"          ) return new nightblade_t         ( this, options_str );
   if ( name == "pistol_shot"         ) return new pistol_shot_t        ( this, options_str );
   if ( name == "poisoned_knife"      ) return new poisoned_knife_t     ( this, options_str );
   if ( name == "premeditation"       ) return new premeditation_t      ( this, options_str );
