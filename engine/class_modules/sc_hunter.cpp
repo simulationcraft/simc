@@ -572,26 +572,29 @@ void trigger_tier16_bm_4pc_brutal_kinship( hunter_t* p )
 // True Aim can only exist on one target at a time
 void trigger_true_aim( hunter_t* p, player_t* t )
 {
-  hunter_td_t* td_curr = p -> get_target_data( t );
-
-  // First attack, store target for later
-  if ( p -> last_true_aim_target == nullptr )
-    p -> last_true_aim_target = t;
-  else
+  if ( p -> talents.true_aim -> ok() )
   {
-    // Grab info about the previous target
-    hunter_td_t* td_prev = p -> get_target_data( p -> last_true_aim_target );
+    hunter_td_t* td_curr = p -> get_target_data( t );
 
-    // Attacking a different target, reset the stacks, store current target for later
-    if ( p -> last_true_aim_target != t )
-    {
-      td_prev -> debuffs.true_aim -> expire();
+    // First attack, store target for later
+    if ( p -> last_true_aim_target == nullptr )
       p -> last_true_aim_target = t;
-    }
-  }
+    else
+    {
+      // Grab info about the previous target
+      hunter_td_t* td_prev = p -> get_target_data( p -> last_true_aim_target );
 
-  // Apply one stack to current target
-  td_curr -> debuffs.true_aim -> trigger();
+      // Attacking a different target, reset the stacks, store current target for later
+      if ( p -> last_true_aim_target != t )
+      {
+        td_prev -> debuffs.true_aim -> expire();
+        p -> last_true_aim_target = t;
+      }
+    }
+
+    // Apply one stack to current target
+    td_curr -> debuffs.true_aim -> trigger();
+  }
 }
 
 namespace pets
@@ -2330,8 +2333,8 @@ struct aimed_shot_t: public hunter_ranged_attack_t
 
     if ( s -> result == RESULT_CRIT && crit_gain > 0.0 )
       p() -> resource_gain( RESOURCE_FOCUS, crit_gain, p() -> gains.aimed_shot );
-    if ( p() -> talents.true_aim -> ok() )
-      trigger_true_aim( p(), s -> target );
+
+    trigger_true_aim( p(), s -> target );
   }
 
   virtual void execute() override
@@ -2349,12 +2352,12 @@ struct aimed_shot_t: public hunter_ranged_attack_t
     double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
 
     hunter_td_t* td = this -> td( t );
-    if ( td -> debuffs.vulnerable -> check() )
+    if ( td -> debuffs.vulnerable -> up() )
       m *= 1.0 + td -> debuffs.vulnerable -> check_stack_value();
-    else if ( td -> debuffs.deadeye -> check() )
+    else if ( td -> debuffs.deadeye -> up() )
       m *= 1.0 + td -> debuffs.deadeye -> check_stack_value();
 
-    if ( td -> debuffs.true_aim -> check() )
+    if ( td -> debuffs.true_aim -> up() )
       m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
 
     return m;
@@ -2410,8 +2413,7 @@ struct arcane_shot_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::impact( s );
 
-    if ( p() -> talents.true_aim -> ok() )
-      trigger_true_aim( p(), s -> target );
+    trigger_true_aim( p(), s -> target );
   }
 
   virtual double composite_target_crit( player_t* t ) const override
@@ -2429,7 +2431,7 @@ struct arcane_shot_t: public hunter_ranged_attack_t
 
     hunter_td_t* td = this -> td( t );
 
-    if ( td -> debuffs.true_aim -> check() )
+    if ( td -> debuffs.true_aim -> up() )
       m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
 
     return m;
@@ -2450,14 +2452,13 @@ struct marked_shot_impact_t: public hunter_ranged_attack_t
   {
     hunter_td_t* td = this -> td( s -> target );
 
-    if ( td -> debuffs.hunters_mark -> check() )
+    if ( td -> debuffs.hunters_mark -> up() )
     {
       hunter_ranged_attack_t::impact( s );
 
       td -> debuffs.hunters_mark -> expire();
 
-      if ( p() -> talents.true_aim -> ok() )
-        trigger_true_aim( p(), s -> target );
+      trigger_true_aim( p(), s -> target );
     }
   }
 
@@ -2467,7 +2468,7 @@ struct marked_shot_impact_t: public hunter_ranged_attack_t
 
     hunter_td_t* td = this -> td( t );
 
-    if ( td -> debuffs.true_aim -> check() )
+    if ( td -> debuffs.true_aim -> up() )
       m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
 
     return m;
@@ -2506,7 +2507,7 @@ struct marked_shot_t: public hunter_ranged_attack_t
     std::vector<player_t*> marked_shot_targets = execute_state -> action -> target_list();
     for ( size_t i = 0; i < marked_shot_targets.size(); i++ )
     {
-      if ( td( marked_shot_targets[i] ) -> debuffs.hunters_mark -> check() )
+      if ( td( marked_shot_targets[i] ) -> debuffs.hunters_mark -> up() )
       {
         if( p() -> talents.patient_sniper -> ok() )
           td( marked_shot_targets[i] ) -> debuffs.deadeye -> trigger();

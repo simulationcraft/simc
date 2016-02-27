@@ -1,0 +1,43 @@
+hunter="Hunter_MM_Legion"
+level=100
+race=blood_elf
+role=attack
+position=ranged_back
+talents=3000322
+spec=marksmanship
+
+actions=auto_shot
+actions+=/marked_shot,if=!debuff.deadeye.up&focus>80
+actions+=/head_shot
+actions+=/aimed_shot,if=debuff.deadeye.up|focus>110
+actions+=/multi_shot,if=spell_targets.multi_shot>=3
+actions+=/arcane_shot
+
+head=hood_of_the_savage_hunt,id=124296,bonus_id=567,upgrade=2
+neck=choker_of_the_great_betrayer,id=124210,bonus_id=567,upgrade=2,enchant_id=5317
+shoulders=pauldrons_of_the_savage_hunt,id=124307,bonus_id=567,upgrade=2
+back=cloak_of_desperate_temerity,id=124134,bonus_id=567,upgrade=2,enchant_id=5310
+chest=hauberk_of_the_savage_hunt,id=124284,bonus_id=567,upgrade=2
+wrists=bracers_of_fel_empowerment,id=124314,bonus_id=567,upgrade=2
+hands=eredar_felchain_gloves,id=124291,bonus_id=567,upgrade=2
+waist=girdle_of_the_legion_general,id=124310,bonus_id=567,upgrade=2
+legs=leggings_of_the_savage_hunt,id=124301,bonus_id=567,upgrade=2
+feet=spiked_throatcrusher_boots,id=124287,bonus_id=567,upgrade=2
+finger1=maalus_the_blood_drinker,id=124636,bonus_id=641,enchant_id=5324
+finger2=portal_key_signet,id=124189,bonus_id=567,upgrade=2,enchant_id=5324
+trinket1=talisman_of_the_master_tracker,id=124515,bonus_id=567,upgrade=2
+trinket2=felspring_coil,id=124223,bonus_id=567,upgrade=2
+main_hand=cursed_demonbone_longbow,id=124361,bonus_id=567,upgrade=2,enchant_id=5276
+
+# Gear Summary
+# gear_ilvl=742.33
+# gear_agility=4960
+# gear_stamina=7023
+# gear_crit_rating=3167
+# gear_haste_rating=1700
+# gear_mastery_rating=1646
+# gear_versatility_rating=270
+# gear_armor=1774
+# set_bonus=tier18_2pc=1
+# set_bonus=tier18_4pc=1
+summon_pet=cat
