@@ -259,6 +259,7 @@ struct rogue_t : public player_t
     haste_buff_t* alacrity;
     buff_t* symbols_of_death;
     buff_t* shadow_blades;
+    buff_t* enveloping_shadows;
 
     // Roll the bones
     buff_t* roll_the_bones;
@@ -312,6 +313,7 @@ struct rogue_t : public player_t
     gain_t* shadow_techniques;
     gain_t* shadow_blades;
     gain_t* withering_bite;
+    gain_t* enveloping_shadows;
   } gains;
 
   // Spec passives
@@ -1558,8 +1560,6 @@ double rogue_attack_t::cost() const
 
 // rogue_attack_t::consume_resource =========================================
 
-// NOTE NOTE NOTE: Eviscerate / Envenom both override this fully due to Death
-// from Above
 void rogue_attack_t::consume_resource()
 {
   // Abilities triggered as part of another ability (secondary triggers) do not consume resources
@@ -1975,6 +1975,26 @@ struct cannonball_barrage_t : public rogue_attack_t
     rogue_attack_t( "cannonball_barrage", p, p -> talent.cannonball_barrage, options_str )
   {
     tick_action = new cannonball_barrage_damage_t( p );
+  }
+};
+
+// Enveloping Shadows =======================================================
+
+struct enveloping_shadows_t : public rogue_attack_t
+{
+  enveloping_shadows_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "enveloping_shadows", p, p -> talent.enveloping_shadows, options_str )
+  {
+    harmful = false;
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    timespan_t duration = cast_state( execute_state ) -> cp * timespan_t::from_seconds( data().effectN( 1 ).misc_value1() );
+
+    p() -> buffs.enveloping_shadows -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
   }
 };
 
@@ -4887,6 +4907,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "blade_flurry"        ) return new blade_flurry_t       ( this, options_str );
   if ( name == "cannonball_barrage"  ) return new cannonball_barrage_t ( this, options_str );
   if ( name == "death_from_above"    ) return new death_from_above_t   ( this, options_str );
+  if ( name == "enveloping_shadows"  ) return new enveloping_shadows_t ( this, options_str );
   if ( name == "envenom"             ) return new envenom_t            ( this, options_str );
   if ( name == "eviscerate"          ) return new eviscerate_t         ( this, options_str );
   if ( name == "fan_of_knives"       ) return new fan_of_knives_t      ( this, options_str );
@@ -5137,6 +5158,7 @@ void rogue_t::init_gains()
   gains.shadow_blades = get_gain( "Shadow Blades" );
   gains.withering_bite = get_gain( "Withering Bite" );
   gains.energetic_stabbing = get_gain( "Energetic Stabbing" );
+  gains.enveloping_shadows = get_gain( "Enveloping Shadows" );
 }
 
 // rogue_t::init_procs ======================================================
@@ -5389,6 +5411,11 @@ void rogue_t::create_buffs()
                            .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                            .default_value( 1.0 + spec.symbols_of_death -> effectN( 1 ).percent() );
   buffs.shadow_blades = new buffs::shadow_blades_t( this );
+
+  buffs.enveloping_shadows = buff_creator_t( this, "enveloping_shadows", talent.enveloping_shadows )
+            .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
+               resource_gain( RESOURCE_COMBO_POINT, 1, gains.enveloping_shadows );
+            } );
 }
 
 void rogue_t::register_callbacks()
