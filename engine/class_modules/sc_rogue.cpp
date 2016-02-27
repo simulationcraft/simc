@@ -3828,6 +3828,11 @@ struct shadow_dance_t : public buff_t
     rogue_t* rogue = debug_cast<rogue_t*>( player );
     rogue -> buffs.master_of_subtlety -> expire();
     rogue -> buffs.master_of_subtlety_passive -> trigger();
+    if ( rogue -> in_combat && rogue -> spec.master_of_shadows -> ok() )
+    {
+      rogue -> resource_gain( RESOURCE_ENERGY, rogue -> spec.master_of_shadows -> effectN( 1 ).base_value(),
+          rogue -> gains.master_of_shadows );
+    }
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
