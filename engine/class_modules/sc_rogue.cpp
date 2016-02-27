@@ -252,6 +252,7 @@ struct rogue_t : public player_t
 
     buff_t* elaborate_planning;
     haste_buff_t* alacrity;
+    buff_t* symbols_of_death;
 
     // Roll the bones
     buff_t* roll_the_bones;
@@ -2796,6 +2797,26 @@ struct sprint_t: public rogue_attack_t
   }
 };
 
+// Symbols of Death =========================================================
+
+struct symbols_of_death_t : public rogue_attack_t
+{
+  symbols_of_death_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "symbols_of_death", p, p -> spec.symbols_of_death, options_str )
+  {
+    harmful = callbacks = false;
+    requires_stealth = true;
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    p() -> buffs.symbols_of_death -> trigger();
+  }
+};
+
+
 // Vanish ===================================================================
 
 struct vanish_t : public rogue_attack_t
@@ -4150,6 +4171,11 @@ double rogue_t::composite_player_multiplier( school_e school ) const
     m *= buffs.elaborate_planning -> check_value();
   }
 
+  if ( buffs.symbols_of_death -> up() )
+  {
+    m *= buffs.symbols_of_death -> check_value();
+  }
+
   return m;
 }
 
@@ -4499,6 +4525,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "slice_and_dice"      ) return new slice_and_dice_t     ( this, options_str );
   if ( name == "sprint"              ) return new sprint_t             ( this, options_str );
   if ( name == "stealth"             ) return new stealth_t            ( this, options_str );
+  if ( name == "symbols_of_death"    ) return new symbols_of_death_t   ( this, options_str );
   if ( name == "vanish"              ) return new vanish_t             ( this, options_str );
   if ( name == "vendetta"            ) return new vendetta_t           ( this, options_str );
 
@@ -4587,7 +4614,7 @@ void rogue_t::init_spells()
   spec.master_of_shadows    = find_specialization_spell( "Master of Shadows" );
   spec.shadow_dance         = find_specialization_spell( "Shadow Dance" );
   spec.shadow_techniques    = find_specialization_spell( "Shadow Techniques" );
-  spec.symbols_of_death     = find_specialization_spell( "Deepening Shadows" );
+  spec.symbols_of_death     = find_specialization_spell( "Symbols of Death" );
 
   // Masteries
   mastery.potent_poisons    = find_mastery_spell( ROGUE_ASSASSINATION );
@@ -4933,6 +4960,11 @@ void rogue_t::create_buffs()
                        .default_value( find_spell( 193356 ) -> effectN( 1 ).percent() );
   // Note, since I (navv) am a slacker, this needs to be constructed after the secondary buffs.
   buffs.roll_the_bones = new buffs::roll_the_bones_t( this );
+
+  buffs.symbols_of_death = buff_creator_t( this, "symbols_of_death", spec.symbols_of_death )
+                           .period( timespan_t::zero() )
+                           .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                           .default_value( 1.0 + spec.symbols_of_death -> effectN( 1 ).percent() );
 }
 
 void rogue_t::register_callbacks()
