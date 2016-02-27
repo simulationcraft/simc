@@ -202,7 +202,7 @@ public:
 
     // Windwalker
     buff_t* chi_orbit;
-    buff_t* combo_breaker_bok;
+    buff_t* bok_proc;
     buff_t* combo_master;
     buff_t* combo_strikes;
     buff_t* dizzying_kicks;
@@ -225,7 +225,7 @@ public:
     gain_t* black_ox_brew;
     gain_t* chi_refund;
     gain_t* power_strikes;
-    gain_t* combo_breaker_bok;
+    gain_t* bok_proc;
     gain_t* crackling_jade_lightning;
     gain_t* energy_refund;
     gain_t* energizing_elixir;
@@ -250,7 +250,7 @@ public:
 
   struct procs_t
   {
-    proc_t* combo_breaker_bok;
+    proc_t* bok_proc;
     proc_t* eye_of_the_tiger;
     proc_t* mana_tea;
     proc_t* tier15_2pc_melee;
@@ -393,6 +393,23 @@ public:
   struct artifact_spell_data_t
   {
     // Brewmaster Artifact
+    artifact_power_t adjunct_advantage;
+    artifact_power_t brew_stache;
+    artifact_power_t dark_side_of_the_moon;
+    artifact_power_t dragonfire_brew;
+    artifact_power_t even_handed;
+    artifact_power_t fortification;
+    artifact_power_t gifted_student;
+    artifact_power_t healthy_appetite;
+    artifact_power_t obsidian_fists;
+    artifact_power_t overflow;
+    artifact_power_t pawsed;
+    artifact_power_t potent_kick;
+    artifact_power_t smashed;
+    artifact_power_t staggering_around;
+    artifact_power_t swift_as_a_coursing_river;
+    artifact_power_t wanderers_special;
+
     // Mistweaver Artifact
     artifact_power_t blessings_of_yulon;
     artifact_power_t celestial_breath;
@@ -495,7 +512,7 @@ public:
     // Windwalker
     const spell_data_t* aura_windwalker_monk;
     const spell_data_t* chi_orbit;
-    const spell_data_t* combo_breaker_bok;
+    const spell_data_t* bok_proc;
     const spell_data_t* crackling_tiger_lightning;
     const spell_data_t* crackling_tiger_lightning_driver;
     const spell_data_t* crosswinds;
@@ -503,6 +520,7 @@ public:
     const spell_data_t* hit_combo;
     const spell_data_t* rising_sun_kick_trinket;
     const spell_data_t* spinning_dragon_strike;
+    const spell_data_t* swift_as_the_wind;
     const spell_data_t* touch_of_karma_tick;
     const spell_data_t* tier15_2pc_melee;
     const spell_data_t* tier17_4pc_melee;
@@ -552,6 +570,7 @@ public:
     eluding_movements( nullptr ),
     soothing_breeze( nullptr ),
     furious_sun( nullptr ),
+    fu_zan_the_wanderers_companion(nullptr),
     sheilun_staff_of_the_mists( nullptr ),
     aburaq( nullptr )
   {
@@ -666,6 +685,7 @@ public:
   const special_effect_t* furious_sun;
 
   // Legion Artifact effects
+  const special_effect_t* fu_zan_the_wanderers_companion;
   const special_effect_t* sheilun_staff_of_the_mists;
   const special_effect_t* aburaq;
 };
@@ -2029,6 +2049,10 @@ struct tiger_palm_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
+    // Trigger Combo Strikes
+    // registers even on a miss
+    combo_strikes_trigger( CS_TIGER_PALM );
+
     if ( result_is_miss( execute_state -> result ) )
       return;
 
@@ -2039,12 +2063,12 @@ struct tiger_palm_t: public monk_melee_attack_t
       p() -> buff.teachings_of_the_monastery -> trigger();
     else if ( p() -> specialization () == MONK_WINDWALKER)
     {
-      // Trigger Combo Strikes
-      combo_strikes_trigger( CS_TIGER_PALM );
-
       // If A'Buraq is equipped, chance to trigger the weapon effect buff
-      if ( p() -> aburaq && p() -> real_ppm.swift_as_the_wind.trigger() )
-        p() -> buff.swift_as_the_wind -> trigger();
+      if ( p() -> aburaq )
+      {
+        if ( p() -> real_ppm.swift_as_the_wind.trigger() )
+          p() -> buff.swift_as_the_wind -> trigger();
+      }
 
       // Calculate how much Chi is generated
       double chi_gain = data().effectN( 2 ).base_value();
@@ -2061,8 +2085,8 @@ struct tiger_palm_t: public monk_melee_attack_t
 
       // Combo Breaker calculation
       double cb_chance = combo_breaker_chance( CS_TIGER_PALM );
-      if ( p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
-        p() -> proc.combo_breaker_bok -> occur();
+      if ( p() -> buff.bok_proc -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
+        p() -> proc.bok_proc -> occur();
 
       //  Your Chi generating abilities have a 15% chance to generate an Energy Sphere, which will grant you 10 Energy when you walk through it.
       if ( rng().roll( p() -> sets.set( SET_MELEE, T15, B2) -> proc_chance() ) )
@@ -2157,8 +2181,8 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
     double cb_chance = combo_breaker_chance( CS_RISING_SUN_KICK );
     if ( cb_chance > 0 )
     {
-      if ( p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
-          p() -> proc.combo_breaker_bok -> occur();
+      if ( p() -> buff.bok_proc -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
+          p() -> proc.bok_proc -> occur();
     }
   }
 
@@ -2268,6 +2292,10 @@ struct rising_sun_kick_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
+    // Trigger Combo Strikes
+    // registers even on a miss
+    combo_strikes_trigger( CS_RISING_SUN_KICK );
+
     if ( result_is_miss( execute_state -> result ) )
       return;
 
@@ -2280,9 +2308,6 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     {
       p() -> debuffs.mortal_wounds -> trigger();
 
-      // Trigger Windwalker Mastery
-      combo_strikes_trigger( CS_RISING_SUN_KICK );
-
       // Activate A'Buraq's Trait
       if ( p() -> artifact.transfer_the_power.rank() )
         p() -> buff.transfer_the_power -> trigger();
@@ -2291,8 +2316,8 @@ struct rising_sun_kick_t: public monk_melee_attack_t
       double cb_chance = combo_breaker_chance( CS_RISING_SUN_KICK );
       if ( cb_chance > 0 )
       {
-        if ( p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
-            p() -> proc.combo_breaker_bok -> occur();
+        if ( p() -> buff.bok_proc -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
+            p() -> proc.bok_proc -> occur();
       }
     }
   }
@@ -2415,10 +2440,12 @@ struct blackout_kick_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
+    // Trigger Combo Strikes
+    // registers even on a miss
+    combo_strikes_trigger( CS_BLACKOUT_KICK );
+
     if ( result_is_miss( execute_state -> result ) )
       return;
-
-    combo_strikes_trigger( CS_BLACKOUT_KICK );
 
     if ( p() -> specialization() == MONK_MISTWEAVER )
     {
@@ -2449,7 +2476,7 @@ struct blackout_kick_t: public monk_melee_attack_t
         am *= 1 + p() -> artifact.dark_skies.percent();
 
       // check for T16 melee 2p and CB: BoK, for the 50% dmg bonus
-      if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) && p() -> buff.combo_breaker_bok -> up() ) {
+      if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) && p() -> buff.bok_proc -> up() ) {
         // damage increased by 40% for WW 2pc upon CB
         am *= 1 + ( p() -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent() );
       }
@@ -2459,8 +2486,8 @@ struct blackout_kick_t: public monk_melee_attack_t
 
   virtual double cost() const override
   {
-    if ( p() -> buff.combo_breaker_bok -> check() )
-      return monk_melee_attack_t::cost() * ( 1 + p() -> passives.combo_breaker_bok -> effectN ( 1 ).percent() );
+    if ( p() -> buff.bok_proc -> check() )
+      return monk_melee_attack_t::cost() * ( 1 + p() -> passives.bok_proc -> effectN ( 1 ).percent() );
 
     if ( p() -> buff.serenity -> check() )
       return monk_melee_attack_t::cost() * ( 1 + p() -> talent.serenity -> effectN ( 1 ).percent() );
@@ -2474,10 +2501,10 @@ struct blackout_kick_t: public monk_melee_attack_t
 
     double savings = base_costs[RESOURCE_CHI] - cost();
 
-    if ( p() -> buff.combo_breaker_bok -> up() )
+    if ( p() -> buff.bok_proc -> up() )
     {
-      p() -> buff.combo_breaker_bok -> expire();
-      p() -> gain.combo_breaker_bok -> add( RESOURCE_CHI, savings );
+      p() -> buff.bok_proc -> expire();
+      p() -> gain.bok_proc -> add( RESOURCE_CHI, savings );
     }
     else if ( p() -> buff.serenity -> up() )
       p() -> gain.serenity -> add( RESOURCE_CHI, savings );
@@ -2615,10 +2642,12 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
+    // Trigger Combo Strikes
+    // registers even on a miss
+    combo_strikes_trigger( CS_RUSHING_JADE_WIND );
+
     if ( result_is_miss( execute_state -> result ) )
       return;
-
-    combo_strikes_trigger( CS_RUSHING_JADE_WIND );
 
     p() -> buff.rushing_jade_wind -> trigger( 1,
         buff_t::DEFAULT_VALUE(),
@@ -2704,9 +2733,8 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    if ( result_is_miss( execute_state -> result ) )
-      return;
-
+    // Trigger Combo Strikes
+    // registers even on a miss
     combo_strikes_trigger( CS_SPINNING_CRANE_KICK );
   }
 };
@@ -2805,7 +2833,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
     channeled = tick_zero = true;
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
-    attack_power_mod.direct = p -> spec.fists_of_fury -> effectN( 5 ).ap_coeff();
+    attack_power_mod.direct = 0.0;
     spell_power_mod.direct = 0.0;
 
     // T14 WW 2PC
@@ -2870,9 +2898,8 @@ struct fists_of_fury_t: public monk_melee_attack_t
 
     crosswinds_trigger = true;
 
-    if ( result_is_miss( execute_state -> result ) )
-      return;
-
+    // Trigger Combo Strikes
+    // registers even on a miss
     combo_strikes_trigger( CS_FISTS_OF_FURY );
   }
 
@@ -2941,7 +2968,6 @@ struct spinning_dragon_strike_t: public monk_melee_attack_t
     dot_duration = data().duration();
     tick_zero = false;
 
-    attack_power_mod.direct = p -> passives.spinning_dragon_strike -> effectN( 1 ).ap_coeff();
     spell_power_mod.direct = 0.0;
 
     tick_action = new spinning_dragon_strike_tick_t( "spinning_dragon_strike_tick", p, p -> passives.spinning_dragon_strike );
@@ -2954,9 +2980,8 @@ struct spinning_dragon_strike_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    if ( result_is_miss( execute_state -> result ) )
-      return;
-
+    // Trigger Combo Strikes
+    // registers even on a miss
     combo_strikes_trigger( CS_SPINNING_DRAGON_STRIKE );
   }
 
@@ -3011,6 +3036,16 @@ struct strike_of_the_windlord_off_hand_t: public monk_melee_attack_t
     weapon = &( p -> off_hand_weapon );
     aoe = -1;
   }
+
+  double composite_aoe_multiplier(const action_state_t* state) const override
+  {
+    if (state -> target != target)
+    {
+      return 1.0 / state -> n_targets;
+    }
+
+    return 1.0;
+  }
 };
 
 struct strike_of_the_windlord_t: public monk_melee_attack_t
@@ -3023,9 +3058,20 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
     parse_options( options_str );
     may_dodge = may_parry = may_block = true;
     aoe = -1;
+    weapon_multiplier = p -> artifact.strike_of_the_windlord.data().effectN( 2 ).percent();
 
-    oh_attack = new strike_of_the_windlord_off_hand_t( p, "strike_of_the_windlord_offhand", data().effectN( 4 ).trigger() );
+    oh_attack = new strike_of_the_windlord_off_hand_t( p, "strike_of_the_windlord_offhand", data().effectN( 5 ).trigger() );
     add_child( oh_attack );
+  }
+
+  double composite_aoe_multiplier(const action_state_t* state) const override
+  {
+    if ( state->target != target )
+    {
+      return 1.0 / state -> n_targets;
+    }
+
+    return 1.0;
   }
 
 /*
@@ -3084,7 +3130,6 @@ struct melee_t: public monk_melee_attack_t
 
     if ( player -> main_hand_weapon.group() == WEAPON_1H )
     {
-//      base_multiplier *= 1.0 + player -> spec.way_of_the_monk_aa_damage -> effectN( 1 ).percent();
       if ( player -> specialization() == MONK_MISTWEAVER )
         base_multiplier *= 1.0 + player -> passives.aura_mistweaver_monk -> effectN( 3 ).percent();
       else
@@ -3780,9 +3825,8 @@ struct crackling_jade_lightning_t: public monk_spell_t
   {
     monk_spell_t::execute();
 
-    if ( result_is_miss( execute_state -> result ) )
-      return;
-
+    // Trigger Combo Strikes
+    // registers even on a miss
     combo_strikes_trigger( CS_CRACKLING_JADE_LIGHTNING );
   }
 
@@ -5077,9 +5121,8 @@ struct chi_wave_t: public monk_spell_t
   {
     monk_spell_t::execute();
 
-    if ( result_is_miss( execute_state -> result ) )
-      return;
-
+    // Trigger Combo Strikes
+    // registers even on a miss
     combo_strikes_trigger( CS_CHI_WAVE );
   }
 
@@ -5139,9 +5182,8 @@ struct chi_burst_t: public monk_spell_t
   {
     monk_spell_t::execute();
 
-    if ( result_is_miss( execute_state -> result ) )
-      return;
-
+    // Trigger Combo Strikes
+    // registers even on a miss
     combo_strikes_trigger( CS_CHI_BURST );
   }
 };
@@ -5422,9 +5464,12 @@ monk( *p )
   debuff.dizzing_kicks = buff_creator_t( *this, "dizzying_kicks" )
     .spell( p -> passives.dizzying_kicks )
     .default_value( p-> passives.dizzying_kicks -> effectN( 1 ).percent() );
-  debuff.keg_smash = buff_creator_t( *this, "keg_smash" )
-    .spell( p -> spec.keg_smash )
-    .default_value( p -> spec.keg_smash -> effectN( 2 ).percent() );
+  if ( p -> specialization() == MONK_BREWMASTER )
+  {
+    debuff.keg_smash = buff_creator_t( *this, "keg_smash" )
+      .spell( p -> spec.keg_smash )
+      .default_value( p -> spec.keg_smash -> effectN( 2 ).percent() );
+  }
   debuff.storm_earth_and_fire = buff_creator_t( *this, "storm_earth_and_fire_target" )
     .cd( timespan_t::zero() );
 
@@ -5601,6 +5646,22 @@ void monk_t::init_spells()
   
   // Artifact spells ========================================
   // Brewmater
+  artifact.adjunct_advantage          = find_artifact_spell("Adjunct Advantage");
+  artifact.brew_stache                = find_artifact_spell("Brew-Stache");
+  artifact.dark_side_of_the_moon      = find_artifact_spell("Dark Side of the Moon");
+  artifact.dragonfire_brew            = find_artifact_spell("Dragonfire Brew");
+  artifact.even_handed                = find_artifact_spell("Even handed");
+  artifact.fortification              = find_artifact_spell("Fortification");
+  artifact.gifted_student             = find_artifact_spell("Gifted Student");
+  artifact.healthy_appetite           = find_artifact_spell("Healthy Appetite");
+  artifact.obsidian_fists             = find_artifact_spell("Obsidian Fists");
+  artifact.overflow                   = find_artifact_spell("Overflow");
+  artifact.pawsed                     = find_artifact_spell("Pawsed");
+  artifact.potent_kick                = find_artifact_spell("Potent Kick");
+  artifact.smashed                    = find_artifact_spell("Smashed");
+  artifact.staggering_around          = find_artifact_spell("Staggering Around");
+  artifact.swift_as_a_coursing_river  = find_artifact_spell("Swift as a Coursing River");
+  artifact.wanderers_special          = find_artifact_spell("Wanderer's Special");
 
   // Mistweaver
   artifact.blessings_of_yulon         = find_artifact_spell( "Blessings of Yu'lon" );
@@ -5651,8 +5712,6 @@ void monk_t::init_spells()
   spec.tiger_palm                    = find_class_spell( "Tiger Palm" );
   spec.vivify                        = find_class_spell( "Vivify" );
   spec.zen_meditation                = find_specialization_spell( "Zen Meditation" );
-//  spec.way_of_the_monk_aa_damage     = find_spell( 108977 );
-//  spec.way_of_the_monk_aa_speed      = find_spell( 140737 );
 
   // Brewmaster Specialization
   spec.blackout_strike               = find_specialization_spell( "Blackout Strike" );
@@ -5742,7 +5801,7 @@ void monk_t::init_spells()
 
   // Windwalker
   passives.chi_orbit                        = find_spell( 196748 );
-  passives.combo_breaker_bok                = find_spell( 116768 );
+  passives.bok_proc                         = find_spell( 116768 );
   passives.crackling_tiger_lightning        = find_spell( 123996 );
   passives.crackling_tiger_lightning_driver = find_spell( 123999 );
   passives.crosswinds                       = find_spell( 196061 );
@@ -5750,6 +5809,7 @@ void monk_t::init_spells()
   passives.hit_combo                        = find_spell( 196741 );
   passives.rising_sun_kick_trinket          = find_spell( 185099 );
   passives.spinning_dragon_strike           = find_spell( 158221 );
+  passives.swift_as_the_wind                = find_spell( 195599 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
   passives.tier15_2pc_melee                 = find_spell( 138311 );
   passives.tier17_4pc_melee                 = find_spell( 166603 );
@@ -5940,7 +6000,7 @@ void monk_t::create_buffs()
     .default_value( passives.chi_orbit -> effectN( 1 ).ap_coeff() )
     .max_stack( 4 );
 
-  buff.combo_breaker_bok = buff_creator_t( this, "combo_breaker_bok", passives.combo_breaker_bok );
+  buff.bok_proc = buff_creator_t( this, "bok_proc", passives.bok_proc );
 
   buff.combo_master = buff_creator_t( this, "combo_master", passives.tier19_4pc_melee )
     .default_value( passives.tier19_4pc_melee -> effectN( 1 ).base_value() )
@@ -5971,15 +6031,8 @@ void monk_t::create_buffs()
                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                               .cd( timespan_t::zero() );
 
-  if ( aburaq )
-  {
-    buff.swift_as_the_wind = buff_creator_t( this, "swift_as_the_wind", aburaq -> driver() -> effectN( 1 ).trigger() )
-      .default_value( aburaq -> driver() -> effectN( 1 ).trigger() -> effectN( 2 ).percent() );
-  }
-  else
-  {
-    buff.swift_as_the_wind = 0;
-  }
+  buff.swift_as_the_wind = buff_creator_t( this, "swift_as_the_wind", passives.swift_as_the_wind -> effectN( 1 ).trigger() )
+      .default_value( passives.swift_as_the_wind -> effectN( 1 ).trigger() -> effectN( 2 ).percent() );
 
   buff.tigereye_brew = buff_creator_t( this, "tigereye_brew", spec.tigereye_brew )
     .period( timespan_t::zero() ) // Tigereye Brew does not tick, despite what the spelldata implies.
@@ -6004,7 +6057,7 @@ void monk_t::init_gains()
   gain.black_ox_brew            = get_gain( "black_ox_brew" );
   gain.chi_refund               = get_gain( "chi_refund" );
   gain.power_strikes            = get_gain( "power_strikes" );
-  gain.combo_breaker_bok        = get_gain( "combo_breaker_blackout_kick" );
+  gain.bok_proc                 = get_gain( "blackout_kick_proc" );
   gain.crackling_jade_lightning = get_gain( "crackling_jade_lightning" );
   gain.energizing_elixir        = get_gain( "energizing_elixir" );
   gain.energy_refund            = get_gain( "energy_refund" );
@@ -6031,7 +6084,7 @@ void monk_t::init_procs()
 {
   base_t::init_procs();
 
-  proc.combo_breaker_bok          = get_proc( "combo_breaker_bok" );
+  proc.bok_proc                   = get_proc( "bok_proc" );
   proc.eye_of_the_tiger           = get_proc( "eye_of_the_tiger" );
   proc.mana_tea                   = get_proc( "mana_tea" );
   proc.tier15_2pc_melee           = get_proc( "tier15_2pc_melee" );
@@ -6190,7 +6243,7 @@ double monk_t::composite_player_multiplier( school_e school ) const
   if ( buff.combo_strikes -> up() )
   {
     m *= 1.0 + cache.mastery() * mastery.combo_strikes -> effectN( 1 ).mastery_value();
-    m *= 1.0 + buff.hit_combo -> value();
+    m *= 1.0 + buff.hit_combo -> stack_value();
   }
 
   if ( buff.tigereye_brew -> up() )
@@ -6500,7 +6553,7 @@ void monk_t::combat_begin()
   {
     resources.current[RESOURCE_CHI] = 0;
 
-    if ( !buffs.fierce_tiger_movement_aura -> up() )
+    if ( !buffs.windwalking_movement_aura -> up() )
     {
       for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
       {
@@ -6508,7 +6561,7 @@ void monk_t::combat_begin()
         if ( p -> type == PLAYER_GUARDIAN )
           continue;
 
-        p -> buffs.fierce_tiger_movement_aura -> trigger();
+        p -> buffs.windwalking_movement_aura -> trigger();
       }
     }
 
@@ -6687,7 +6740,6 @@ void monk_t::apl_pre_brewmaster()
       pre -> add_action( "food,type=warp_burger" );
   }
 
-  pre -> add_action( "legacy_of_the_white_tiger,if=!aura.str_agi_int.up|!aura.critical_strike.up" );
   pre -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   if ( sim -> allow_potions && true_level >= 80 )
@@ -6740,7 +6792,6 @@ void monk_t::apl_pre_windwalker()
       pre -> add_action( "food,type=warp_burger" );
   }
 
-  pre -> add_action( "legacy_of_the_white_tiger,if=!aura.str_agi_int.up|!aura.critical_strike.up" );
   pre -> add_action( "snapshot_stats" );
 
   if ( sim -> allow_potions )
@@ -6786,7 +6837,6 @@ void monk_t::apl_pre_mistweaver()
       pre -> add_action( "food,type=seafood_magnifique_feast" );
   }
 
-  pre -> add_action( "legacy_of_the_emperor,if=!aura.str_agi_int.up" );
   pre -> add_action( "snapshot_stats" );
 
   if ( sim -> allow_potions )
@@ -6931,9 +6981,9 @@ void monk_t::apl_combat_windwalker()
   def -> add_action( "call_action_list,name=aoe_rjw,if=active_enemies>=3&talent.rushing_jade_wind.enabled" );
 
   // Single Target & Non-Chi Explosion Cleave
-  st -> add_action( this, "Blackout Kick", "if=set_bonus.tier18_2pc=1&buff.combo_breaker_bok.react" );
+  st -> add_action( this, "Blackout Kick", "if=set_bonus.tier18_2pc=1&buff.bok_proc.react" );
   st -> add_action( this, "Rising Sun Kick" );
-  st -> add_action( this, "Blackout Kick", "if=buff.combo_breaker_bok.react|buff.serenity.up" );
+  st -> add_action( this, "Blackout Kick", "if=buff.bok_proc.react|buff.serenity.up" );
   st -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2&buff.serenity.down" );
   st -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2&buff.serenity.down" );
   st -> add_action( this, "Blackout Kick", "if=chi.max-chi<2" );
@@ -6942,7 +6992,7 @@ void monk_t::apl_combat_windwalker()
   // AoE Non-Rushing Jade Wind
   aoe_norjw -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2&buff.serenity.down" );
   aoe_norjw -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2&buff.serenity.down" );
-  aoe_norjw -> add_action( this, "Spinning Crane Kick", "if=buff.combo_breaker_bok.react|buff.serenity.up" );
+  aoe_norjw -> add_action( this, "Spinning Crane Kick", "if=buff.bok_proc.react|buff.serenity.up" );
   aoe_norjw -> add_action( this, "Spinning Crane Kick", "if=chi.max-chi<2&cooldown.fists_of_fury.remains>3" );
   aoe_norjw -> add_action( this, "Tiger Palm", "if=chi.max-chi>=2" );
 
@@ -6950,7 +7000,7 @@ void monk_t::apl_combat_windwalker()
   aoe_rjw -> add_talent( this, "Rushing Jade Wind" );
   aoe_rjw -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2&buff.serenity.down" );
   aoe_rjw -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2&buff.serenity.down" );
-  aoe_rjw -> add_action( this, "Blackout Kick", "if=buff.combo_breaker_bok.react|buff.serenity.up" );
+  aoe_rjw -> add_action( this, "Blackout Kick", "if=buff.bok_proc.react|buff.serenity.up" );
   aoe_rjw -> add_action( this, "Blackout Kick", "if=chi.max-chi<2&cooldown.fists_of_fury.remains>3" );
   aoe_rjw -> add_action( this, "Tiger Palm", "if=chi.max-chi>=2" );
 
@@ -7374,6 +7424,13 @@ static void furious_sun( special_effect_t& effect )
   do_trinket_init( monk, MONK_WINDWALKER, monk -> furious_sun, effect );
 }
 
+// Brewmaster Legion Artifact
+static void fu_zan_the_wanderers_companion( special_effect_t& effect )
+{
+  monk_t* monk = debug_cast<monk_t*> ( effect.player );
+  do_trinket_init( monk, MONK_BREWMASTER, monk -> fu_zan_the_wanderers_companion, effect );
+}
+
 // Mistweaver Legion Artifact
 static void sheilun_staff_of_the_mists( special_effect_t& effect )
 {
@@ -7410,6 +7467,7 @@ struct monk_module_t: public module_t
     // Legion Artifacts
     unique_gear::register_special_effect( 195599, aburaq );
     unique_gear::register_special_effect( 199887, sheilun_staff_of_the_mists );
+    unique_gear::register_special_effect( 213386, fu_zan_the_wanderers_companion );
 
     // TODO: Add the Legion Legendary effects
   }
@@ -7421,8 +7479,8 @@ struct monk_module_t: public module_t
 
   virtual void init( player_t* p ) const override
   {
-    p -> buffs.fierce_tiger_movement_aura = buff_creator_t( p, "fierce_tiger_movement_aura",
-                                                            p -> find_spell( 103985 ) )
+    p -> buffs.windwalking_movement_aura = buff_creator_t( p, "windwalking_movement_aura",
+                                                            p -> find_spell( 166646 ) )
       .duration( timespan_t::from_seconds( 0 ) );
   }
   virtual void combat_begin( sim_t* ) const override {}

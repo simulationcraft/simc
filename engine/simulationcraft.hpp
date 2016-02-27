@@ -3707,7 +3707,7 @@ struct player_t : public actor_t
     buff_t* self_movement;
     buff_t* stampeding_roar;
     buff_t* shadowmeld;
-    buff_t* fierce_tiger_movement_aura;
+    buff_t* windwalking_movement_aura;
     buff_t* stoneform;
     buff_t* stunned;
     buff_t* weakened_soul;
