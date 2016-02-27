@@ -198,6 +198,7 @@ struct rogue_t : public player_t
   actions::rogue_poison_t* active_lethal_poison;
   actions::rogue_poison_t* active_nonlethal_poison;
   action_t* active_main_gauche;
+  action_t* weaponmaster_dot_strike;
 
   // Autoattacks
   action_t* auto_attack;
@@ -444,6 +445,7 @@ struct rogue_t : public player_t
     proc_t* t16_2pc_melee;
     proc_t* t18_2pc_combat;
     proc_t* thuggee;
+    proc_t* weaponmaster;
 
     proc_t* roll_the_bones_1;
     proc_t* roll_the_bones_2;
@@ -554,6 +556,7 @@ struct rogue_t : public player_t
   void trigger_alacrity( const action_state_t* );
   void trigger_deepening_shadows( const action_state_t* );
   void trigger_shadow_techniques( const action_state_t* );
+  void trigger_weaponmaster( const action_state_t* );
 
   double consume_cp_max() const
   { return 5.0 + as<double>( talent.deeper_strategem -> effectN( 1 ).base_value() ); }
@@ -612,7 +615,10 @@ struct rogue_attack_state_t : public action_state_t
   { action_state_t::initialize(); cp = 0; }
 
   std::ostringstream& debug_str( std::ostringstream& s ) override
-  { action_state_t::debug_str( s ) << " cp=" << cp; return s; }
+  {
+    action_state_t::debug_str( s ) << " cp=" << cp;
+    return s;
+  }
 
   void copy_state( const action_state_t* o ) override
   {
@@ -632,12 +638,15 @@ struct rogue_attack_t : public melee_attack_t
   // Combo point gains
   gain_t* cp_gain;
 
+  bool secondary_trigger;
+
   rogue_attack_t( const std::string& token, rogue_t* p,
                   const spell_data_t* s = spell_data_t::nil(),
                   const std::string& options = std::string() ) :
     melee_attack_t( token, p, s ),
     requires_stealth( false ), requires_position( POSITION_NONE ),
-    adds_combo_points( 0 ), requires_weapon( WEAPON_NONE )
+    adds_combo_points( 0 ), requires_weapon( WEAPON_NONE ),
+    secondary_trigger( false )
   {
     parse_options( options );
 
@@ -694,6 +703,17 @@ struct rogue_attack_t : public melee_attack_t
     }
   }
 
+  void update_ready( timespan_t cd_duration = timespan_t::min() ) override
+  {
+    if ( secondary_trigger )
+    {
+      cd_duration = timespan_t::zero();
+    }
+
+    melee_attack_t::update_ready( cd_duration );
+  }
+
+
   bool stealthed()
   {
     return p() -> buffs.vanish -> check() || p() -> buffs.stealth -> check() || player -> buffs.shadowmeld -> check();
@@ -744,11 +764,12 @@ struct rogue_attack_t : public melee_attack_t
   rogue_td_t* td( player_t* t ) const
   { return p() -> get_target_data( t ); }
 
-  virtual double cost() const override;
-  virtual void   execute() override;
-  virtual void   consume_resource() override;
-  virtual bool   ready() override;
-  virtual void   impact( action_state_t* state ) override;
+  double cost() const override;
+  void   execute() override;
+  void   consume_resource() override;
+  bool   ready() override;
+  void   impact( action_state_t* state ) override;
+  void   tick( dot_t* d ) override;
 
   double attack_direct_power_coefficient( const action_state_t* s ) const override
   {
@@ -864,6 +885,33 @@ struct rogue_attack_t : public melee_attack_t
   }
 };
 
+struct secondary_ability_trigger_t : public event_t
+{
+  action_state_t* state;
+
+  secondary_ability_trigger_t( action_state_t* s ) :
+    event_t( *s -> action -> player ), state( s )
+  {
+    add_event( timespan_t::zero() );
+  }
+
+  const char* name() const override
+  { return "secondary_ability_trigger"; }
+
+  void execute() override
+  {
+    actions::rogue_attack_t* attack = debug_cast<actions::rogue_attack_t*>( state -> action );
+    attack -> background = attack -> dual = attack -> secondary_trigger = true;
+    attack -> pre_execute_state = state;
+    attack -> execute();
+    attack -> background = attack -> dual = attack -> secondary_trigger = false;
+    state = nullptr;
+  }
+
+  ~secondary_ability_trigger_t()
+  { if ( state ) action_state_t::release( state ); }
+};
+
 // ==========================================================================
 // Rogue Secondary Abilities
 // ==========================================================================
@@ -933,6 +981,22 @@ struct internal_bleeding_t : public rogue_attack_t
     // Need to fake this here so it uses the correct AP coefficient
     base_costs[ RESOURCE_COMBO_POINT ] = 1; 
   }
+};
+
+struct weaponmaster_strike_t : public rogue_attack_t
+{
+  weaponmaster_strike_t( rogue_t* p ) :
+    rogue_attack_t( "weaponmaster", p, p -> find_spell( 193536 ) )
+  {
+    background = true;
+    callbacks = may_crit = may_miss = may_dodge = may_parry = false;
+  }
+
+  double target_armor( player_t* ) const override
+  { return 0; }
+
+  double calculate_direct_amount( action_state_t* ) const
+  { return base_dd_min; }
 };
 
 // ==========================================================================
@@ -1399,6 +1463,7 @@ void rogue_attack_t::impact( action_state_t* state )
   p() -> trigger_combat_potency( state );
   p() -> trigger_blade_flurry( state );
   p() -> trigger_shadow_techniques( state );
+  p() -> trigger_weaponmaster( state );
 
   if ( result_is_hit( state -> result ) )
   {
@@ -1469,6 +1534,12 @@ double rogue_attack_t::cost() const
 // from Above
 void rogue_attack_t::consume_resource()
 {
+  // Abilities triggered as part of another ability (secondary triggers) do not consume resources
+  if ( secondary_trigger )
+  {
+    return;
+  }
+
   melee_attack_t::consume_resource();
 
   p() -> spend_combo_points( execute_state );
@@ -1573,6 +1644,13 @@ inline bool rogue_attack_t::ready()
       return false;
 
   return true;
+}
+
+void rogue_attack_t::tick( dot_t* d )
+{
+  melee_attack_t::tick( d );
+
+  p() -> trigger_weaponmaster( d -> state );
 }
 
 // Melee Attack =============================================================
@@ -1870,16 +1948,13 @@ struct envenom_t : public rogue_attack_t
 
   void consume_resource() override
   {
-    melee_attack_t::consume_resource();
+    rogue_attack_t::consume_resource();
 
-    if ( ! p() -> buffs.death_from_above -> check() )
-      p() -> spend_combo_points( execute_state );
-
-    if ( p() -> sets.has_set_bonus( ROGUE_ASSASSINATION, T17, B4 ) )
+    if ( ! secondary_trigger &&
+         p() -> sets.has_set_bonus( ROGUE_ASSASSINATION, T17, B4 ) )
+    {
       p() -> trigger_combo_point_gain( execute_state, 1, p() -> gains.t17_4pc_assassination );
-
-    if ( result_is_miss( execute_state -> result ) && resource_consumed > 0 )
-      p() -> trigger_energy_refund( execute_state );
+    }
   }
 
   double action_multiplier() const override
@@ -1970,19 +2045,6 @@ struct eviscerate_t : public rogue_attack_t
       c = 0;
 
     return c;
-  }
-
-  void consume_resource() override
-  {
-    melee_attack_t::consume_resource();
-
-    if ( ! p() -> buffs.death_from_above -> check() )
-    {
-      p() -> spend_combo_points( execute_state );
-    }
-
-    if ( result_is_miss( execute_state -> result ) && resource_consumed > 0 )
-      p() -> trigger_energy_refund( execute_state );
   }
 
   void execute() override
@@ -2342,16 +2404,12 @@ struct run_through_t: public rogue_attack_t
 
   void consume_resource() override
   {
-    melee_attack_t::consume_resource();
+    rogue_attack_t::consume_resource();
 
-    if ( ! p() -> buffs.death_from_above -> check() )
+    if ( ! secondary_trigger )
     {
-      p() -> spend_combo_points( execute_state );
       p() -> buffs.deceit -> expire();
     }
-
-    if ( result_is_miss( execute_state -> result ) && resource_consumed > 0 )
-      p() -> trigger_energy_refund( execute_state );
   }
 };
 
@@ -2732,14 +2790,14 @@ struct shadow_blades_t : public rogue_attack_t
 
     if ( ! p -> shadow_blade_main_hand )
     {
-      p -> shadow_blade_main_hand = new shadow_blade_t( "shadow_blades_mh",
+      p -> shadow_blade_main_hand = new shadow_blade_t( "shadow_blade_mh",
           p,data().effectN( 1 ).trigger(), &( p -> main_hand_weapon ) );
       add_child( p -> shadow_blade_main_hand );
     }
 
     if ( ! p -> shadow_blade_off_hand && p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      p -> shadow_blade_off_hand = new shadow_blade_t( "shadow_blades_oh",
+      p -> shadow_blade_off_hand = new shadow_blade_t( "shadow_blade_offhand",
           p, p -> find_spell( data().effectN( 1 ).misc_value1() ), &( p -> off_hand_weapon ) );
       add_child( p -> shadow_blade_off_hand );
     }
@@ -3018,67 +3076,41 @@ struct vendetta_t : public rogue_attack_t
 
 struct death_from_above_driver_t : public rogue_attack_t
 {
-  envenom_t* envenom;
-  eviscerate_t* eviscerate;
-  run_through_t* run_through;
+  action_t* ability;
 
   death_from_above_driver_t( rogue_t* p ) :
-    rogue_attack_t( "death_from_above_driver", p, p -> talent.death_from_above ),
-    envenom( p -> specialization() == ROGUE_ASSASSINATION ? new envenom_t( p, "" ) : nullptr ),
-    eviscerate( p -> specialization() == ROGUE_SUBTLETY ? new eviscerate_t( p, "" ) : nullptr ),
-    run_through( p -> specialization() == ROGUE_OUTLAW ? new run_through_t( p, "" ) : nullptr )
+    rogue_attack_t( "death_from_above_driver", p, p -> talent.death_from_above )
   {
     callbacks = tick_may_crit = false;
     quiet = dual = background = harmful = true;
     attack_power_mod.direct = 0;
     base_dd_min = base_dd_max = 0;
     base_costs[ RESOURCE_ENERGY ] = 0;
+    switch ( p -> specialization() )
+    {
+      case ROGUE_ASSASSINATION:
+        ability = new envenom_t( p, "" );
+        break;
+      case ROGUE_SUBTLETY:
+        ability = new eviscerate_t( p, "" );
+        break;
+      case ROGUE_OUTLAW:
+        ability = new run_through_t( p, "" );
+        break;
+      default:
+        assert( 0 );
+    }
   }
 
   void tick( dot_t* d ) override
   {
     rogue_attack_t::tick( d );
 
-    if ( envenom )
-    {
-      // DFA is a finisher, so copy CP state (number of CPs used on DFA) from
-      // the DFA dot
-      action_state_t* env_state = envenom -> get_state();
-      envenom -> target = d -> target;
-      envenom -> snapshot_state( env_state, DMG_DIRECT );
-      cast_state( env_state ) -> cp = cast_state( d -> state ) -> cp;
-
-      envenom -> pre_execute_state = env_state;
-      envenom -> execute();
-    }
-    else if ( eviscerate )
-    {
-      // DFA is a finisher, so copy CP state (number of CPs used on DFA) from
-      // the DFA dot
-      action_state_t* evis_state = eviscerate -> get_state();
-      eviscerate -> target = d -> target;
-      eviscerate -> snapshot_state( evis_state, DMG_DIRECT );
-      cast_state( evis_state ) -> cp = cast_state( d -> state ) -> cp;
-
-      eviscerate -> pre_execute_state = evis_state;
-      eviscerate -> execute();
-    }
-    else if ( run_through )
-    {
-      // DFA is a finisher, so copy CP state (number of CPs used on DFA) from
-      // the DFA dot
-      action_state_t* rs_state = run_through -> get_state();
-      run_through -> target = d -> target;
-      run_through -> snapshot_state( rs_state, DMG_DIRECT );
-      cast_state( rs_state ) -> cp = cast_state( d -> state ) -> cp;
-
-      run_through -> pre_execute_state = rs_state;
-      run_through -> execute();
-    }
-    else
-    {
-      assert( 0 );
-    }
+    action_state_t* ability_state = ability -> get_state();
+    ability -> snapshot_state( ability_state, DMG_DIRECT );
+    ability_state -> target = d -> target;
+    cast_state( ability_state ) -> cp = cast_state( d -> state ) -> cp;
+    new ( *sim ) secondary_ability_trigger_t( ability_state );
 
     p() -> buffs.death_from_above -> expire();
   }
@@ -3795,6 +3827,36 @@ void rogue_t::trigger_shadow_techniques( const action_state_t* state )
   {
     trigger_combo_point_gain( state, 1, gains.shadow_techniques );
     shadow_techniques = rng().range( 3, 5 );
+  }
+}
+
+void rogue_t::trigger_weaponmaster( const action_state_t* s )
+{
+  if ( ! talent.weaponmaster -> ok() )
+  {
+    return;
+  }
+
+  if ( ! s -> action -> result_is_hit( s -> result ) || s -> result_raw <= 0 || s -> action -> background )
+  {
+    return;
+  }
+
+  if ( ! rng().roll( talent.weaponmaster -> proc_chance() ) )
+  {
+    return;
+  }
+
+  procs.weaponmaster -> occur();
+  if ( s -> result_type == DMG_DIRECT )
+  {
+    new ( *sim ) actions::secondary_ability_trigger_t( s -> action -> get_state( s ) );
+  }
+  else
+  {
+    weaponmaster_dot_strike -> base_dd_min = weaponmaster_dot_strike -> base_dd_max = s -> result_amount;
+    weaponmaster_dot_strike -> target = s -> target;
+    weaponmaster_dot_strike -> schedule_execute();
   }
 }
 
@@ -4941,6 +5003,11 @@ void rogue_t::init_spells()
 
   if ( spec.blade_flurry -> ok() )
     active_blade_flurry = new actions::blade_flurry_attack_t( this );
+
+  if ( talent.weaponmaster -> ok() )
+  {
+    weaponmaster_dot_strike = new actions::weaponmaster_strike_t( this );
+  }
 }
 
 // rogue_t::init_gains ======================================================
@@ -4985,6 +5052,7 @@ void rogue_t::init_procs()
   procs.t16_2pc_melee            = get_proc( "Silent Blades (T16 2PC)" );
   procs.t18_2pc_combat           = get_proc( "Adrenaline Rush (T18 2PC)" );
   procs.thuggee                  = get_proc( "Thuggee" );
+  procs.weaponmaster             = get_proc( "Weaponmaster" );
 
   procs.roll_the_bones_1         = get_proc( "Roll the Bones: 1 buff" );
   procs.roll_the_bones_2         = get_proc( "Roll the Bones: 2 buffs" );
