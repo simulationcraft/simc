@@ -2808,6 +2808,17 @@ struct explosive_shot_t: public hunter_ranged_attack_t
   }
 };
 
+// WindBurst =========================================================================
+
+struct windburst_t: hunter_ranged_attack_t
+{
+  windburst_t( hunter_t* p, const std::string& options_str ):
+    hunter_ranged_attack_t( "windburst", p, &p -> artifacts.windburst.data() )
+  {
+    parse_options( options_str );
+  }
+};
+
 // Piercing Shots ====================================================================
 
 typedef residual_action::residual_periodic_action_t< hunter_ranged_attack_t > residual_action_t;
@@ -3395,13 +3406,16 @@ action_t* hunter_t::create_action( const std::string& name,
 {
   using namespace attacks;
   using namespace spells;
-
-  if ( name == "auto_attack"           ) return new            auto_attack_t( this, options_str );
-  if ( name == "auto_shot"             ) return new           start_attack_t( this, options_str );
+  
+  if ( name == "a_murder_of_crows"     ) return new                    moc_t( this, options_str );
   if ( name == "aimed_shot"            ) return new             aimed_shot_t( this, options_str );
   if ( name == "arcane_shot"           ) return new            arcane_shot_t( this, options_str );
+  if ( name == "auto_attack"           ) return new            auto_attack_t( this, options_str );
+  if ( name == "auto_shot"             ) return new           start_attack_t( this, options_str );
+  if ( name == "barrage"               ) return new                barrage_t( this, options_str );
   if ( name == "bestial_wrath"         ) return new          bestial_wrath_t( this, options_str );
   if ( name == "chimaera_shot"         ) return new          chimaera_shot_t( this, options_str );
+  if ( name == "dire_beast"            ) return new             dire_beast_t( this, options_str );
   if ( name == "exotic_munitions"      ) return new       exotic_munitions_t( this, options_str );
   if ( name == "explosive_shot"        ) return new         explosive_shot_t( this, options_str );
   if ( name == "explosive_trap"        ) return new         explosive_trap_t( this, options_str );
@@ -3411,13 +3425,11 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "marked_shot"           ) return new            marked_shot_t( this, options_str );
   if ( name == "multishot"             ) return new             multi_shot_t( this, options_str );
   if ( name == "multi_shot"            ) return new             multi_shot_t( this, options_str );
-  if ( name == "trueshot"              ) return new               trueshot_t( this, options_str );
+  if ( name == "stampede"              ) return new               stampede_t( this, options_str );
   if ( name == "steady_shot"           ) return new          raptor_strike_t( this, options_str );
   if ( name == "summon_pet"            ) return new             summon_pet_t( this, options_str );
-  if ( name == "a_murder_of_crows"     ) return new                    moc_t( this, options_str );
-  if ( name == "stampede"              ) return new               stampede_t( this, options_str );
-  if ( name == "dire_beast"            ) return new             dire_beast_t( this, options_str );
-  if ( name == "barrage"               ) return new                barrage_t( this, options_str );
+  if ( name == "trueshot"              ) return new               trueshot_t( this, options_str );
+  if ( name == "windburst"             ) return new              windburst_t( this, options_str );
   return player_t::create_action( name, options_str );
 }
 
