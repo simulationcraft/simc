@@ -12,9 +12,7 @@
 //   - Everything
 //
 // Marksmanship
-//  - Update Steady Focus behavior 
 //  - Re-implement Black Arrow
-//  - Implement Explosive Shot
 //  - Implement Trick Shot
 //  - Implement Heightened Vulnerability
 //  - Implement Volley
@@ -2579,6 +2577,39 @@ struct head_shot_t: public hunter_ranged_attack_t
   }
 };
 
+// Explosive Shot  ====================================================================
+// TODO: Account for projectile activation, get a better formula for distance
+
+struct explosive_shot_t: public hunter_ranged_attack_t
+{
+  player_t* initial_target;
+  explosive_shot_t( hunter_t* p, const std::string& options_str ):
+    hunter_ranged_attack_t( "explosive_shot", p, p -> find_spell( 212680 ) )
+  {
+    parse_options( options_str );
+
+    aoe = -1;
+    cooldown -> duration = p -> find_talent_spell( "Explosive Shot" ) -> cooldown();
+  }
+
+  virtual void execute() override
+  {
+    initial_target = p() -> target;
+
+    hunter_ranged_attack_t::execute();
+  }
+
+  virtual double composite_target_da_multiplier( player_t* t ) const override
+  {
+    double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
+
+    if( sim -> distance_targeting_enabled )
+      m /= 1 + ( initial_target -> get_position_distance( t -> x_position, t -> y_position ) ) / radius;
+
+    return m;
+  }
+};
+
 // Piercing Shots =====================================================================
 
 typedef residual_action::residual_periodic_action_t< hunter_ranged_attack_t > residual_action_t;
@@ -3178,6 +3209,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "bestial_wrath"         ) return new          bestial_wrath_t( this, options_str );
   if ( name == "chimaera_shot"         ) return new          chimaera_shot_t( this, options_str );
   if ( name == "exotic_munitions"      ) return new       exotic_munitions_t( this, options_str );
+  if ( name == "explosive_shot"        ) return new         explosive_shot_t( this, options_str );
   if ( name == "explosive_trap"        ) return new         explosive_trap_t( this, options_str );
   if ( name == "freezing_trap"         ) return new          freezing_trap_t( this, options_str );
   if ( name == "head_shot"             ) return new              head_shot_t( this, options_str );
