@@ -187,6 +187,9 @@ struct rogue_t : public player_t
   // Shadow techniques swing counter;
   unsigned shadow_techniques;
 
+  // Finality related flags
+  bool finality_eviscerate, finality_nightblade;
+
   // Venom Rush poison tracking
   unsigned poisoned_enemies;
 
@@ -483,6 +486,7 @@ struct rogue_t : public player_t
     player_t( sim, ROGUE, name, r ),
     shadow_techniques( 0 ),
     poisoned_enemies( 0 ),
+    finality_eviscerate( false ), finality_nightblade( false ),
     active_blade_flurry( nullptr ),
     active_lethal_poison( nullptr ),
     active_nonlethal_poison( nullptr ),
@@ -2078,23 +2082,59 @@ struct envenom_t : public rogue_attack_t
 
 // Eviscerate ===============================================================
 
-struct eviscerate_t : public rogue_attack_t
+struct eviscerate_base_t : public rogue_attack_t
 {
-  eviscerate_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "eviscerate", p, p -> find_specialization_spell( "Eviscerate" ), options_str )
+  bool affects_finality;
+
+  eviscerate_base_t( rogue_t* p, const std::string& name, const spell_data_t* spell,
+                     const std::string& options_str = std::string() ) :
+    rogue_attack_t( name, p, spell, options_str ), affects_finality( p -> artifact.finality.rank() )
   {
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = weapon_power_mod = 0;
-
-    attack_power_mod.direct = 0.559;
-    // Hard-coded tooltip.
-    attack_power_mod.direct *= 0.88;
     base_crit += p -> artifact.gutripper.percent();
   }
 
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    if ( affects_finality && ! secondary_trigger )
+    {
+      p() -> finality_eviscerate = ! p() -> finality_eviscerate;
+    }
+  }
+
+  expr_t* create_expression( const std::string& name_str ) override
+  {
+    if ( util::str_compare_ci( name_str, "finality" ) )
+    {
+      return make_ref_expr( "finality", p() -> finality_eviscerate );
+    }
+
+    return rogue_attack_t::create_expression( name_str );
+  }
+};
+
+struct finality_eviscerate_t : public eviscerate_base_t
+{
+  finality_eviscerate_t( rogue_t* p ) :
+    eviscerate_base_t( p, "finality_eviscerate", p -> find_spell( 197393 ) )
+  { }
+};
+
+struct eviscerate_t : public eviscerate_base_t
+{
+  finality_eviscerate_t* finality;
+
+  eviscerate_t( rogue_t* p, const std::string& options_str ) :
+    eviscerate_base_t( p, "eviscerate", p -> find_specialization_spell( "Eviscerate" ), options_str ),
+    finality( p -> artifact.finality.rank() ? new finality_eviscerate_t( p ) : nullptr )
+  { }
+
   double action_multiplier() const override
   {
-    double m = rogue_attack_t::action_multiplier();
+    double m = eviscerate_base_t::action_multiplier();
 
     if ( p() -> buffs.death_from_above -> up() )
       m *= 1.0 + p() -> buffs.death_from_above -> data().effectN( 2 ).percent();
@@ -2104,7 +2144,7 @@ struct eviscerate_t : public rogue_attack_t
 
   double cost() const override
   {
-    double c = rogue_attack_t::cost();
+    double c = eviscerate_base_t::cost();
 
     if ( p() -> buffs.death_from_above -> check() )
       c *= 1.0 + p() -> buffs.death_from_above -> data().effectN( 1 ).percent();
@@ -2115,9 +2155,32 @@ struct eviscerate_t : public rogue_attack_t
     return c;
   }
 
+  void schedule_execute( action_state_t* state = nullptr ) override
+  {
+    if ( affects_finality )
+    {
+      if ( p() -> finality_eviscerate )
+      {
+        action_state_t* s = state;
+        if ( state )
+        {
+          s = finality -> get_state( s );
+        }
+        finality -> schedule_execute( s );
+      }
+      else
+      {
+        eviscerate_base_t::schedule_execute( state );
+      }
+    }
+    else {
+      eviscerate_base_t::schedule_execute( state );
+    }
+  }
+
   void execute() override
   {
-    rogue_attack_t::execute();
+    eviscerate_base_t::execute();
 
     if ( p() -> sets.has_set_bonus( ROGUE_SUBTLETY, T18, B4 ) )
     {
@@ -2656,10 +2719,11 @@ struct mutilate_t : public rogue_attack_t
 
 // Nightblade ===============================================================
 
-struct nightblade_t : public rogue_attack_t
+struct nightblade_base_t : public rogue_attack_t
 {
-  nightblade_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "nightblade", p, p -> find_specialization_spell( "Nightblade" ), options_str )
+  nightblade_base_t( rogue_t* p, const std::string& name, const spell_data_t* spell,
+                     const std::string& options_str = std::string() ) :
+    rogue_attack_t( name, p, spell, options_str )
   {
     may_crit = false;
     base_multiplier *= 1.0 + p -> artifact.demons_kiss.percent();
@@ -2668,6 +2732,56 @@ struct nightblade_t : public rogue_attack_t
   void execute() override
   {
     rogue_attack_t::execute();
+
+    if ( p() -> artifact.finality.rank() )
+    {
+      p() -> finality_nightblade = ! p() -> finality_nightblade;
+    }
+  }
+
+  expr_t* create_expression( const std::string& name_str ) override
+  {
+    if ( util::str_compare_ci( name_str, "finality" ) )
+    {
+      return make_ref_expr( "finality", p() -> finality_nightblade );
+    }
+
+    return rogue_attack_t::create_expression( name_str );
+  }
+};
+
+struct finality_nightblade_t : public nightblade_base_t
+{
+  finality_nightblade_t( rogue_t* p ) :
+    nightblade_base_t( p, "finality_nightblade", p -> find_spell( 197395 ) )
+  { }
+};
+
+// TODO: Does Finality version share dot or not?
+struct nightblade_t : public nightblade_base_t
+{
+  finality_nightblade_t* finality;
+
+  nightblade_t( rogue_t* p, const std::string& options_str ) :
+    nightblade_base_t( p, "nightblade", p -> find_specialization_spell( "Nightblade" ), options_str ),
+    finality( p -> artifact.finality.rank() ? new finality_nightblade_t( p ) : nullptr )
+    { }
+
+  void schedule_execute( action_state_t* state = nullptr ) override
+  {
+    if ( p() -> finality_nightblade )
+    {
+      finality -> target = target;
+      finality -> schedule_execute( state );
+    }
+    else {
+      nightblade_base_t::schedule_execute( state );
+    }
+  }
+
+  void execute() override
+  {
+    nightblade_base_t::execute();
 
     if ( p() -> sets.has_set_bonus( ROGUE_SUBTLETY, T18, B4 ) )
     {
@@ -2686,6 +2800,7 @@ struct nightblade_t : public rogue_attack_t
     return duration;
   }
 };
+
 
 // Roll the Bones ===========================================================
 
@@ -3159,6 +3274,7 @@ struct death_from_above_driver_t : public rogue_attack_t
         break;
       case ROGUE_SUBTLETY:
         ability = new eviscerate_t( p, "" );
+        static_cast<eviscerate_t*>( ability ) -> affects_finality = false;
         break;
       case ROGUE_OUTLAW:
         ability = new run_through_t( p, "" );
@@ -5634,6 +5750,8 @@ void rogue_t::reset()
   poisoned_enemies = 0;
 
   shadow_techniques = rng().range( 3, 5 );
+
+  finality_eviscerate = finality_nightblade = false;
 
   weapon_data[ WEAPON_MAIN_HAND ].reset();
   weapon_data[ WEAPON_OFF_HAND ].reset();
