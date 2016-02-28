@@ -2801,7 +2801,7 @@ struct ferocious_bite_t : public cat_attack_t
       }
 
       // TOCHECK: Does the target need to have Rip/Rake on them to be eligible to proc?
-      if ( shadow_rip && p() -> rppm.ashamanes_bite.trigger() )
+      if ( p() -> artifact.ashamanes_bite.rank() && p() -> rppm.ashamanes_bite.trigger() )
       {
         p() -> proc.ashamanes_bite -> occur();
 
