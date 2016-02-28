@@ -485,8 +485,8 @@ struct rogue_t : public player_t
   rogue_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, ROGUE, name, r ),
     shadow_techniques( 0 ),
-    poisoned_enemies( 0 ),
     finality_eviscerate( false ), finality_nightblade( false ),
+    poisoned_enemies( 0 ),
     active_blade_flurry( nullptr ),
     active_lethal_poison( nullptr ),
     active_nonlethal_poison( nullptr ),
@@ -1957,6 +1957,18 @@ struct backstab_t : public rogue_attack_t
   }
 };
 
+// Between the Eyes =========================================================
+
+struct between_the_eyes_t : public rogue_attack_t
+{
+  between_the_eyes_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "between_the_eyes", p, p -> find_specialization_spell( "Between the Eyes" ),
+        options_str )
+  {
+    crit_bonus_multiplier = 3;
+  }
+};
+
 // Blade Flurry =============================================================
 
 struct blade_flurry_t : public rogue_attack_t
@@ -2550,13 +2562,6 @@ struct run_through_t: public rogue_attack_t
   run_through_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "run_through", p, p -> find_specialization_spell( "Run Through" ), options_str )
   {
-    weapon = &( player -> main_hand_weapon );
-    weapon_multiplier = weapon_power_mod = 0;
-
-    attack_power_mod.direct = 0.559;
-    // Hard-coded tooltip.
-    attack_power_mod.direct *= 0.88;
-
     // Tier 18 (WoD 6.2) Combat trinket effect
     // TODO: Eviscerate actually changes spells to 185187
     // TODO: Legion
@@ -5077,6 +5082,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "apply_poison"        ) return new apply_poison_t       ( this, options_str );
   if ( name == "auto_attack"         ) return new auto_melee_attack_t  ( this, options_str );
   if ( name == "backstab"            ) return new backstab_t           ( this, options_str );
+  if ( name == "between_the_eyes"    ) return new between_the_eyes_t   ( this, options_str );
   if ( name == "blade_flurry"        ) return new blade_flurry_t       ( this, options_str );
   if ( name == "cannonball_barrage"  ) return new cannonball_barrage_t ( this, options_str );
   if ( name == "death_from_above"    ) return new death_from_above_t   ( this, options_str );
