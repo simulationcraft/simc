@@ -539,7 +539,8 @@ player_t::player_t( sim_t*             s,
   quiet( false ),
   report_extension( new player_report_extension_t() ),
   iteration_fight_length( timespan_t::zero() ), arise_time( timespan_t::min() ),
-  iteration_waiting_time( timespan_t::zero() ), iteration_executed_foreground_actions( 0 ),
+  iteration_waiting_time( timespan_t::zero() ), iteration_pooling_time( timespan_t::zero() ),
+  iteration_executed_foreground_actions( 0 ),
   rps_gain( 0 ), rps_loss( 0 ),
 
   tmi_window( 6.0 ),
@@ -3506,6 +3507,7 @@ void player_t::datacollection_begin()
 
   iteration_fight_length = timespan_t::zero();
   iteration_waiting_time = timespan_t::zero();
+  iteration_pooling_time = timespan_t::zero();
   iteration_executed_foreground_actions = 0;
   iteration_dmg = 0;
   priority_iteration_dmg = 0;
@@ -6894,7 +6896,7 @@ struct pool_resource_t : public action_t
     if ( sim -> log )
       sim -> out_log.printf( "%s performs %s", player -> name(), name() );
 
-    player -> iteration_waiting_time += wait;
+    player -> iteration_pooling_time += wait;
   }
 
   virtual timespan_t gcd() const override
@@ -10430,6 +10432,7 @@ player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const t
 player_collected_data_t::player_collected_data_t( const std::string& player_name, sim_t& s ) :
   fight_length( player_name + " Fight Length", s.statistics_level < 2 ),
   waiting_time(player_name + " Waiting Time", s.statistics_level < 4),
+  pooling_time(player_name + " Pooling Time", s.statistics_level < 4),
   executed_foreground_actions(player_name + " Executed Foreground Actions", s.statistics_level < 4),
   dmg( player_name + " Damage", s.statistics_level < 2 ),
   compound_dmg( player_name + " Total Damage", s.statistics_level < 2 ),
@@ -10696,10 +10699,12 @@ void player_collected_data_t::collect_data( const player_t& p )
   double f_length = p.iteration_fight_length.total_seconds();
   double sim_length = p.sim -> current_time().total_seconds();
   double w_time = p.iteration_waiting_time.total_seconds();
+  double p_time = p.iteration_pooling_time.total_seconds();
   assert( p.iteration_fight_length <= p.sim -> current_time() );
 
   fight_length.add( f_length );
   waiting_time.add( w_time );
+  pooling_time.add( p_time );
 
   executed_foreground_actions.add( p.iteration_executed_foreground_actions );
 

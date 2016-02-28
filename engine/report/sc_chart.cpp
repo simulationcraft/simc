@@ -921,7 +921,17 @@ bool chart::generate_spent_time( highchart::pie_chart_t& pc, const player_t& p )
     e.set( "color", color::WHITE.str() );
     e.set( "y", util::round( p.collected_data.waiting_time.mean(),
                              p.sim->report_precision ) );
-    e.set( "name", "waiting_time" );
+    e.set( "name", "Waiting" );
+    pc.add( "series.0.data", e );
+  }
+
+  if ( p.collected_data.pooling_time.mean() > 0 )
+  {
+    sc_js_t e;
+    e.set( "color", color::GREY3.str() );
+    e.set( "y", util::round( p.collected_data.pooling_time.mean(),
+                             p.sim->report_precision ) );
+    e.set( "name", "Pooling" );
     pc.add( "series.0.data", e );
   }
 

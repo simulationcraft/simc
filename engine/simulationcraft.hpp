@@ -3061,7 +3061,7 @@ struct player_processed_report_information_t
 struct player_collected_data_t
 {
   extended_sample_data_t fight_length;
-  extended_sample_data_t waiting_time, executed_foreground_actions;
+  extended_sample_data_t waiting_time, pooling_time, executed_foreground_actions;
 
   // DMG
   extended_sample_data_t dmg;
@@ -3615,7 +3615,7 @@ struct player_t : public actor_t
   // Reporting
   std::unique_ptr<player_report_extension_t> report_extension;
   timespan_t iteration_fight_length, arise_time;
-  timespan_t iteration_waiting_time;
+  timespan_t iteration_waiting_time, iteration_pooling_time;
   int iteration_executed_foreground_actions;
   std::array< double, RESOURCE_MAX > iteration_resource_lost, iteration_resource_gained;
   double rps_gain, rps_loss;
