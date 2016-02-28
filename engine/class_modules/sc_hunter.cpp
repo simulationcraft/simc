@@ -2485,21 +2485,44 @@ struct arcane_shot_t: public hunter_ranged_attack_t
   }
 };
 
-// Marked Shot Attack (WIP) ===========================================================
+// Marked Shot Attack =================================================================
 
 struct marked_shot_impact_t: public hunter_ranged_attack_t
 {
   marked_shot_impact_t( hunter_t* p ):
-    hunter_ranged_attack_t( "marked_shot", p, p -> find_spell( 212621 ) )
+    hunter_ranged_attack_t( "marked_shot_impact", p, p -> find_spell( 212621 ) )
   {
+    // Simulated as AOE for simplicity.
+    aoe = -1;
     background = true;
     dual = true;
   }
+  
+  virtual void execute() override
+  {
+    hunter_ranged_attack_t::execute();
 
+    // Consume Hunter's Mark and apply appropriate debuffs. Vulnerable and Deadeye apply on cast.
+    std::vector<player_t*> marked_shot_targets = execute_state -> action -> target_list();
+    for ( size_t i = 0; i < marked_shot_targets.size(); i++ )
+    {
+      if ( td( marked_shot_targets[i] ) -> debuffs.hunters_mark -> up() )
+      {
+        if( p() -> talents.patient_sniper -> ok() )
+          td( marked_shot_targets[i] ) -> debuffs.deadeye -> trigger();
+        else
+          td( marked_shot_targets[i] ) -> debuffs.vulnerable -> trigger();
+      }
+    }
+    p() -> buffs.hunters_mark_exists -> expire();
+  }
+
+  //
   virtual void impact( action_state_t* s ) override
   {
     hunter_td_t* td = this -> td( s -> target );
 
+    // Only register hits against targets with Hunter's Mark.
     if ( td -> debuffs.hunters_mark -> up() )
     {
       hunter_ranged_attack_t::impact( s );
@@ -2546,35 +2569,22 @@ struct marked_shot_t: public hunter_ranged_attack_t
 {
   marked_shot_impact_t* marked_shot_impact;
   marked_shot_t( hunter_t* p, const std::string& options_str ):
-    hunter_ranged_attack_t( "marked_shot", p, p -> find_specialization_spell( "Marked Shot" ) ),
-    marked_shot_impact( new marked_shot_impact_t( p ) )
+    hunter_ranged_attack_t( "marked_shot", p, p -> find_specialization_spell( "Marked Shot" ) )
   {
     parse_options( options_str );
 
-    //Simulated as an AOE ability for simplicity
-    aoe = -1;
-    impact_action = marked_shot_impact;
+    marked_shot_impact = new marked_shot_impact_t( p );
+    add_child( marked_shot_impact );
   }
 
   virtual void execute() override
   {
     hunter_ranged_attack_t::execute();
 
-    //Consume Hunter's Mark and apply appropriate debuffs
-    std::vector<player_t*> marked_shot_targets = execute_state -> action -> target_list();
-    for ( size_t i = 0; i < marked_shot_targets.size(); i++ )
-    {
-      if ( td( marked_shot_targets[i] ) -> debuffs.hunters_mark -> up() )
-      {
-        if( p() -> talents.patient_sniper -> ok() )
-          td( marked_shot_targets[i] ) -> debuffs.deadeye -> trigger();
-        else
-          td( marked_shot_targets[i] ) -> debuffs.vulnerable -> trigger();
-      }
-    }
-    p() -> buffs.hunters_mark_exists -> expire();
+    marked_shot_impact -> execute();
   }
 
+  // Marked Shot can only be used if a Hunter's Mark exists on any target.
   virtual bool ready() override
   {
     if ( p() -> buffs.hunters_mark_exists -> up() )
