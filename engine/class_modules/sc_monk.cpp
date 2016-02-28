@@ -71,12 +71,12 @@ enum combo_strikes_e {
   CS_SPINNING_CRANE_KICK,
   CS_RUSHING_JADE_WIND,
   CS_SPINNING_DRAGON_STRIKE,
+  CS_STRIKE_OF_THE_WINDLORD,
   CS_ATTACK_MAX,
 
   // Spells begin here
   CS_CHI_BURST,
   CS_CHI_WAVE,
-  CS_CRACKLING_JADE_LIGHTNING,
   CS_SPELL_MAX,
 
   // Misc
@@ -1995,6 +1995,7 @@ struct eye_of_the_tiger_dmg_tick_t: public monk_spell_t
   }
 };
 
+// Tiger Palm base ability ===================================================
 struct tiger_palm_t: public monk_melee_attack_t
 {
   heal_t* eye_of_the_tiger_heal;
@@ -3068,6 +3069,10 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
     if ( oh_attack && result_is_hit( execute_state -> result ) &&
          p() -> off_hand_weapon.type != WEAPON_NONE ) // If MH fails to land, OH does not execute.
       oh_attack -> execute();
+
+    // Trigger Combo Strikes
+    // registers even on a miss
+    combo_strikes_trigger( CS_STRIKE_OF_THE_WINDLORD );
   }
 
   bool ready() override
@@ -3737,15 +3742,6 @@ struct crackling_jade_lightning_t: public monk_spell_t
     channeled = tick_may_crit = true;
     hasted_ticks = false; // Channeled spells always have hasted ticks. Use hasted_ticks = false to disable the increase in the number of ticks.
     interrupt_auto_attack = true;
-  }
-
-  virtual void execute() override
-  {
-    monk_spell_t::execute();
-
-    // Trigger Combo Strikes
-    // registers even on a miss
-    combo_strikes_trigger( CS_CRACKLING_JADE_LIGHTNING );
   }
 
   void last_tick( dot_t* dot ) override
