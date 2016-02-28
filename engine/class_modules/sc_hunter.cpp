@@ -2467,7 +2467,6 @@ struct marked_shot_impact_t: public hunter_ranged_attack_t
   marked_shot_impact_t( hunter_t* p ):
     hunter_ranged_attack_t( "marked_shot_impact", p, p -> find_spell( 212621 ) )
   {
-    // Simulated as AOE for simplicity.
     aoe = -1;
     background = true;
     dual = true;
@@ -2548,6 +2547,8 @@ struct marked_shot_t: public hunter_ranged_attack_t
   {
     parse_options( options_str );
 
+    // Simulated as AOE for simplicity.
+    aoe = -1;
     marked_shot_impact = new marked_shot_impact_t( p );
     add_child( marked_shot_impact );
   }
@@ -2563,7 +2564,7 @@ struct marked_shot_t: public hunter_ranged_attack_t
   virtual bool ready() override
   {
     if ( p() -> buffs.hunters_mark_exists -> up() )
-      return true;
+      return hunter_ranged_attack_t::ready();
 
     return false;
   }
@@ -3210,10 +3211,10 @@ dots( dots_t() )
   dots.piercing_shots = target -> get_dot( "piercing_shots", p );
 
   debuffs.hunters_mark      = buff_creator_t( *this, "hunters_mark", p -> find_spell( 185365 ) -> effectN( 1 ).trigger() );
-  debuffs.vulnerable        = buff_creator_t( *this, "vulnerable")
+  debuffs.vulnerable        = buff_creator_t( *this, "vulnerable" )
                                 .spell( p -> find_spell( 187131 ) )
                                 .default_value( p -> find_spell( 187131 ) -> effectN( 2 ).percent() );
-  debuffs.marked_for_death  = buff_creator_t( *this, "marked_for_death")
+  debuffs.marked_for_death  = buff_creator_t( *this, "marked_for_death" )
                                 .spell( p -> find_spell( 190533 ) )
                                 .default_value( p -> find_spell( 190533 ) -> effectN( 1 ).base_value() );
   debuffs.deadeye           = buff_creator_t( *this, "deadeye" )
