@@ -2065,7 +2065,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
       if ( p() -> specialization() == HUNTER_MARKSMANSHIP )
       {
         p() -> resource_gain( RESOURCE_FOCUS, focus_gain * execute_state -> n_targets, p() -> gains.multi_shot);
-        if ( p() -> ppm_hunters_mark.trigger() )
+        if ( p() -> buffs.trueshot -> up() || p() -> ppm_hunters_mark.trigger() )
         {
           std::vector<player_t*> multi_shot_targets = execute_state -> action -> target_list();
           for ( size_t i = 0; i < multi_shot_targets.size(); i++ )
@@ -2422,7 +2422,7 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     {
       trigger_tier15_2pc_melee();
       p() -> resource_gain( RESOURCE_FOCUS, focus_gain, p() -> gains.arcane_shot );
-      if ( p() -> ppm_hunters_mark.trigger() )
+      if ( p() -> buffs.trueshot -> up() || p() -> ppm_hunters_mark.trigger() )
       {
         td( execute_state -> target ) -> debuffs.hunters_mark -> trigger();
         p() -> buffs.hunters_mark_exists -> trigger();
