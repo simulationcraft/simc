@@ -581,6 +581,7 @@ struct rogue_t : public player_t
   void trigger_shadow_techniques( const action_state_t* );
   void trigger_weaponmaster( const action_state_t* );
   void trigger_energetic_stabbing( const action_state_t* );
+  void trigger_akaaris_soul( const action_state_t* );
 
   double consume_cp_max() const
   { return 5.0 + as<double>( talent.deeper_strategem -> effectN( 1 ).base_value() ); }
@@ -662,7 +663,13 @@ struct rogue_attack_t : public melee_attack_t
   // Combo point gains
   gain_t* cp_gain;
 
+  // Secondary triggered ability, due to Weaponmaster talent or Death from Above. Secondary
+  // triggered abilities cost no resources or incur cooldowns.
   bool secondary_trigger;
+
+  // Akaari's Soul stats object. Created for every "opener" (requires_stealth = true) that does
+  // damage. Swapped into the action when Akaari's Soul secondary trigger event executes.
+  stats_t* akaari;
 
   rogue_attack_t( const std::string& token, rogue_t* p,
                   const spell_data_t* s = spell_data_t::nil(),
@@ -670,7 +677,7 @@ struct rogue_attack_t : public melee_attack_t
     melee_attack_t( token, p, s ),
     requires_stealth( false ), requires_position( POSITION_NONE ),
     adds_combo_points( 0 ), requires_weapon( WEAPON_NONE ),
-    secondary_trigger( false )
+    secondary_trigger( false ), akaari( nullptr )
   {
     parse_options( options );
 
@@ -713,6 +720,13 @@ struct rogue_attack_t : public melee_attack_t
     if ( adds_combo_points )
     {
       cp_gain = player -> get_gain( name_str );
+    }
+
+    if ( p() -> artifact.akaaris_soul.rank() && harmful && requires_stealth && ! background &&
+         ( weapon_multiplier > 0 || attack_power_mod.direct > 0 ) )
+    {
+      akaari = player -> get_stats( name_str + "_akaari", this );
+      stats -> add_child( akaari );
     }
   }
 
@@ -913,10 +927,10 @@ struct secondary_ability_trigger_t : public event_t
 {
   action_state_t* state;
 
-  secondary_ability_trigger_t( action_state_t* s ) :
+  secondary_ability_trigger_t( action_state_t* s, const timespan_t& delay = timespan_t::zero() ) :
     event_t( *s -> action -> player ), state( s )
   {
-    add_event( timespan_t::zero() );
+    add_event( delay );
   }
 
   const char* name() const override
@@ -1644,6 +1658,7 @@ void rogue_attack_t::execute()
   }
 
   p() -> trigger_deepening_shadows( execute_state );
+  p() -> trigger_akaaris_soul( execute_state );
 }
 
 // rogue_attack_t::ready() ==================================================
@@ -3069,6 +3084,11 @@ struct shadowstrike_t : public rogue_attack_t
   // to the target
   double composite_teleport_distance( const action_state_t* ) const override
   {
+    if ( secondary_trigger )
+    {
+      return 0;
+    }
+
     return data().max_range();
   }
 };
@@ -4061,6 +4081,37 @@ void rogue_t::trigger_energetic_stabbing( const action_state_t* s )
   {
     resource_gain( RESOURCE_ENERGY, artifact.energetic_stabbing.value(), gains.energetic_stabbing, s -> action );
   }
+}
+
+void rogue_t::trigger_akaaris_soul( const action_state_t* s )
+{
+  struct akaaris_soul_event_t : public actions::secondary_ability_trigger_t
+  {
+    akaaris_soul_event_t( action_state_t* s ) :
+      secondary_ability_trigger_t( s, timespan_t::from_seconds( 4 ) )
+    { }
+
+    const char* name() const override
+    { return "akaaris_soul_event"; }
+
+    void execute() override
+    {
+      actions::rogue_attack_t* attack = rogue_t::cast_attack( state -> action );
+      std::swap( attack -> stats, attack -> akaari );
+
+      secondary_ability_trigger_t::execute();
+
+      std::swap( attack -> stats, attack -> akaari );
+    }
+  };
+
+  actions::rogue_attack_t* attack = rogue_t::cast_attack( s -> action );
+  if ( ! attack -> akaari || attack -> background )
+  {
+    return;
+  }
+
+  new ( *sim ) akaaris_soul_event_t( attack -> get_state( s ) );
 }
 
 void rogue_t::trigger_elaborate_planning( const action_state_t* s )
