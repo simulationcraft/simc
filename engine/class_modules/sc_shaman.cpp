@@ -6544,7 +6544,7 @@ public:
       std::string name_str = entry -> first;
       if ( a )
       {
-        name_str = report::decorated_action_name( a );
+        name_str = report::decorated_action_name( a, a -> stats -> name_str );
       }
 
       std::string row_class_str = "";

@@ -139,7 +139,7 @@ std::string output_action_name( const stats_t& s, const player_t* actor )
   std::string name;
   if ( a )
   {
-    name = report::decorated_action_name( a );
+    name = report::decorated_action_name( a, s.name_str );
   }
   else
   {

@@ -1225,18 +1225,18 @@ std::string report::decorated_item_name( const item_t* item )
   return s.str();
 }
 
-std::string report::decorated_action_name( const action_t* action )
+std::string report::decorated_action_name( const action_t* action, const std::string& stats_name_str )
 {
   std::stringstream s;
 
   if ( action->sim->decorated_tooltips == false || action->data().id() == 0 )
   {
-    s << "<a href=\"#\">" << action->name_str << "</a>";
+    s << "<a href=\"#\">" << stats_name_str << "</a>";
   }
   else
   {
     std::string prefix, suffix;
-    find_affix( action->name_str, action->data().name_cstr(), prefix, suffix );
+    find_affix( stats_name_str, action->data().name_cstr(), prefix, suffix );
 
     s << prefix << "<a href=\"http://" << decoration_domain( *action->sim )
       << ".wowdb.com/spells/" << action->data().id();
