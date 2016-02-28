@@ -5,78 +5,7 @@
 
 #include "simulationcraft.hpp"
 
-using namespace residual_action;
-
 namespace { // UNNAMED NAMESPACE
-
-/* ==========================================================================
-  --------- Legion TODO ---------
-  Common
-    Preparation : RIP
-    Recuperate : RIP
-    Shiv : RIP
-    Poisons : To Remove from Outlaw & Subtlety
-    Crimson Tempest : May be ReAdded for Ass/Sub, not finished
-    Sprint : CD Reduced by 30s
-  Outlaw
-   Abilities
-    AR : Same
-    Ambush : Same
-    Between the Eyes : To Implement - Finisher with Scaling Stun + Damage (Currently only Stun on Alpha)
-    Blade Flurry : Same (Perks is now baseline)
-    Eviscerate : Copy then change to Run Through
-    Garrote : To Remove from Outlaw
-    Killing Spree : Same but a Talent
-    Pistol Shot : To Implement - Builder with an empowered proc from SS (blindside like ?)
-    Revealing Strike : RIP
-    Run Through : New Eviscerate
-    Saber Slash : New Siniter Strike
-    Sinister Strike : Replaced by Saber Slash
-    Slice and Dice : Same (Only Outlaw now)
-   Passive
-    Combat Potency : No more +5% haste
-    Mastery : Same
-    Ruthlessness : CD Reduction & Energy refund removed, only 20% to get 1 CP per CP spent
-    Swashbuckler : New Improved Dual Wield -- Same
-    Bandit's Guile : RIP
-   Talent
-    T15
-     -WOD
-     Nightstalker : Removed from Outlaw
-     Subterfuge : Removed from Outlaw
-     Shadow Focus : Removed from Outlaw
-     -Legion
-     Ghotly Strike : To Implement - New Builder with dmg increased
-     Swordmaster : To Implement - Increase double SS proc chance
-     Quick Draw : To Implement - Better Pistol Shot
-    T45
-     -Legion
-      Deeper Strategem : To Implement - Now a built-in 6th CP (so finisher can consume up to 6)
-      Anticipation : Max stacks reduced to 3
-      Vigor : To Implement - Energy Max increased by 50 + Energy Regen increased by 10%
-    T90
-     -WOD
-      Shuriken Toss : To Remove from Outlaw
-      Marked for Death : Now a T100 talent
-      Anticipation : Now a T45 talent
-     -Legion
-      Cannonball Barrage : To Implement - GTAoE (5-8y not sure) that deal dmg over 1.8s, do not break AA nor is channeled (like Army of the Dead)
-      Alacrity : To Implement - 1% haste per finisher during 20s, refreshed each time and stacking to 25
-      Killing Spree : No longer baseline, T90 talent
-    T100
-     -WOD
-      Venom Rush : RIP 
-      Shadow Reflection : RIP ?
-      Death from Above : Still here
-     -Legion
-      Roll the Bones : To Implement - Replacement of SnD that gives random buff, same duration as SnD
-      Marked for Death : Still here (T90->T100 talent)
-      Death from Above : Still here
-  Subtlety
-    Everything
-  Assassination
-    Everything
-========================================================================== */
 
 struct rogue_t;
 namespace actions
@@ -168,6 +97,7 @@ struct rogue_td_t : public actor_target_data_t
     buff_t* numbing_poison;
     buffs::marked_for_death_debuff_t* marked_for_death;
     buff_t* ghostly_strike;
+    buff_t* dreadblades_fate;
   } debuffs;
 
   rogue_td_t( player_t* target, rogue_t* source );
@@ -218,6 +148,9 @@ struct rogue_t : public player_t
   const special_effect_t* toxic_mutilator;
   const special_effect_t* eviscerating_blade;
   const special_effect_t* from_the_shadows;
+
+  // Artifact special effects (that are not handled by generic system)
+  const special_effect_t* dreadblades_fate;
 
   // Buffs
   struct buffs_t
@@ -475,6 +408,11 @@ struct rogue_t : public player_t
     proc_t* roll_the_bones_5;
   } procs;
 
+  struct rng_t
+  {
+    real_ppm_t dreadblades_fate;
+  } prng;
+
   player_t* tot_target;
   action_callback_t* virtual_hat_callback;
 
@@ -496,6 +434,7 @@ struct rogue_t : public player_t
     toxic_mutilator( nullptr ),
     eviscerating_blade( nullptr ),
     from_the_shadows( nullptr ),
+    dreadblades_fate( nullptr ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
@@ -532,6 +471,7 @@ struct rogue_t : public player_t
   void      init_resources( bool force ) override;
   bool      init_items() override;
   void      init_special_effects() override;
+  void      init_rng() override;
   bool      init_finished() override;
   void      create_buffs() override;
   void      create_options() override;
@@ -582,6 +522,7 @@ struct rogue_t : public player_t
   void trigger_weaponmaster( const action_state_t* );
   void trigger_energetic_stabbing( const action_state_t* );
   void trigger_akaaris_soul( const action_state_t* );
+  void trigger_dreadblades_fate( const action_state_t* );
 
   double consume_cp_max() const
   { return 5.0 + as<double>( talent.deeper_strategem -> effectN( 1 ).base_value() ); }
@@ -1518,6 +1459,7 @@ void rogue_attack_t::impact( action_state_t* state )
   p() -> trigger_blade_flurry( state );
   p() -> trigger_shadow_techniques( state );
   p() -> trigger_weaponmaster( state );
+  p() -> trigger_dreadblades_fate( state );
 
   if ( result_is_hit( state -> result ) )
   {
@@ -2524,6 +2466,17 @@ struct pistol_shot_t : public rogue_attack_t
     return m;
   }
 
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = rogue_attack_t::composite_target_multiplier( target );
+
+    const rogue_td_t* tdata = td( target );
+
+    m *= 1.0 + tdata -> debuffs.dreadblades_fate -> stack() * tdata -> debuffs.dreadblades_fate -> data().effectN( 1 ).percent();
+
+    return m;
+  }
+
   double generate_cp() const override
   {
     double g = rogue_attack_t::generate_cp();
@@ -2942,6 +2895,17 @@ struct saber_slash_t : public rogue_attack_t
     saberslash_proc_event( nullptr ), delay( data().duration() )
   {
     weapon = &( player -> main_hand_weapon );
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = rogue_attack_t::composite_target_multiplier( target );
+
+    const rogue_td_t* tdata = td( target );
+
+    m *= 1.0 + tdata -> debuffs.dreadblades_fate -> stack() * tdata -> debuffs.dreadblades_fate -> data().effectN( 1 ).percent();
+
+    return m;
   }
 
   void reset() override
@@ -4125,6 +4089,27 @@ void rogue_t::trigger_akaaris_soul( const action_state_t* s )
   new ( *sim ) akaaris_soul_event_t( attack -> get_state( s ) );
 }
 
+// TODO: Offensive only?
+void rogue_t::trigger_dreadblades_fate( const action_state_t* s )
+{
+  if ( ! dreadblades_fate )
+  {
+    return;
+  }
+
+  if ( actions::rogue_attack_t::cast_state( s ) -> cp == 0 || s -> action -> background )
+  {
+    return;
+  }
+
+  if ( ! prng.dreadblades_fate.trigger() )
+  {
+    return;
+  }
+
+  cast_attack( s -> action ) -> td( s -> target ) -> debuffs.dreadblades_fate -> trigger();
+}
+
 void rogue_t::trigger_elaborate_planning( const action_state_t* s )
 {
   if ( ! talent.elaborate_planning -> ok() )
@@ -4619,6 +4604,8 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
                        .default_value( 1.0 + source -> talent.hemorrhage -> effectN( 4 ).percent() );
   debuffs.ghostly_strike = buff_creator_t( *this, "ghostly_strike", source -> talent.ghostly_strike )
     .default_value( source -> talent.ghostly_strike -> effectN( 5 ).percent() );
+  debuffs.dreadblades_fate = buff_creator_t( *this, "dreadblades_fate", source -> find_spell( 202710 ) )
+                             .chance( source -> dreadblades_fate != nullptr );
 }
 
 // ==========================================================================
@@ -5794,6 +5781,15 @@ void rogue_t::init_special_effects()
   }
 }
 
+// rogue_t::init_rng ========================================================
+
+void rogue_t::init_rng()
+{
+  player_t::init_rng();
+
+  prng.dreadblades_fate = real_ppm_t( *this, find_spell( 202732 ) -> real_ppm() );
+}
+
 // rogue_t::init_finished ===================================================
 
 bool rogue_t::init_finished()
@@ -6169,6 +6165,8 @@ struct rogue_module_t : public module_t
     unique_gear::register_special_effect( 184917, eviscerating_blade );
     unique_gear::register_special_effect( 184918, from_the_shadows   );
     unique_gear::register_special_effect( 197525, withering_bite     );
+    unique_gear::register_special_effect( 202732,
+        []( special_effect_t& e ) { debug_cast<rogue_t*>( e.player ) -> dreadblades_fate = &e; } );
   }
 
   virtual void register_hotfixes() const override
