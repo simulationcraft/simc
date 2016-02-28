@@ -13,7 +13,6 @@
 //
 // Marksmanship
 //  - Re-implement Black Arrow
-//  - Implement Trick Shot
 //  - Implement Heightened Vulnerability
 //  - Implement Volley
 //  - Implement Dark Ranger
@@ -2307,6 +2306,40 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 // Marksmanship attacks 
 //==============================
 
+// Trick Shot =========================================================================
+
+struct trick_shot_t: public hunter_ranged_attack_t
+{
+  trick_shot_t( hunter_t* p ):
+    hunter_ranged_attack_t( "trick_shot", p, p -> find_talent_spell( "Trick Shot" ) )
+  {
+    // Simulated as aoe for simplicity
+    aoe               = -1;
+    background        = true;
+    weapon            = &p -> main_hand_weapon;
+    weapon_multiplier = p -> find_specialization_spell( "Aimed Shot" ) -> effectN( 2 ).percent();
+    base_multiplier   = p -> find_talent_spell( "Trick Shot" ) -> effectN( 1 ).percent();
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    // Do not hit current target, and only deal damage to targets with Vulnerable
+    if ( s -> target != p() -> target && td( s -> target ) -> debuffs.vulnerable -> up() )
+      hunter_ranged_attack_t::impact( s );
+  }
+
+  // FIXME 21134 - this talent is bugged on alpha (does no damage), so not sure if mastery should affect this or not
+  virtual double action_multiplier() const override
+  {
+    double am = hunter_ranged_attack_t::action_multiplier();
+
+    if ( p() -> mastery.sniper_training -> ok() )
+      am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
+
+    return am;
+  }
+};
+
 // Aimed Shot ========================================================================
 
 struct aimed_shot_t: public hunter_ranged_attack_t
@@ -2323,6 +2356,9 @@ struct aimed_shot_t: public hunter_ranged_attack_t
     crit_gain = p -> sets.set( HUNTER_MARKSMANSHIP, T17, B2 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent();
     base_execute_time *= 1.0 - ( p -> sets.set( HUNTER_MARKSMANSHIP, T18, B4 ) -> effectN( 2 ).percent() );
+
+    if ( p -> talents.trick_shot -> ok() )
+      impact_action = new trick_shot_t( p );
   }
 
   virtual double composite_target_crit( player_t* t ) const override
