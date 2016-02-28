@@ -2614,18 +2614,15 @@ struct head_shot_t: public hunter_ranged_attack_t
 };
 
 // Explosive Shot  ====================================================================
-// TODO: Account for projectile activation, get a better formula for distance
 
-struct explosive_shot_t: public hunter_ranged_attack_t
+struct explosive_shot_activate_t: public hunter_ranged_attack_t
 {
   player_t* initial_target;
-  explosive_shot_t( hunter_t* p, const std::string& options_str ):
-    hunter_ranged_attack_t( "explosive_shot", p, p -> find_spell( 212680 ) )
+  explosive_shot_activate_t( hunter_t* p ):
+    hunter_ranged_attack_t( "explosive_shot_activate", p, p -> find_spell( 212680 ) )
   {
-    parse_options( options_str );
-
     aoe = -1;
-    cooldown -> duration = p -> find_talent_spell( "Explosive Shot" ) -> cooldown();
+    dual = true;
   }
 
   virtual void execute() override
@@ -2643,6 +2640,29 @@ struct explosive_shot_t: public hunter_ranged_attack_t
       m /= 1 + ( initial_target -> get_position_distance( t -> x_position, t -> y_position ) ) / radius;
 
     return m;
+  }
+};
+
+struct explosive_shot_t: public hunter_ranged_attack_t
+{
+  explosive_shot_activate_t* explosive_activate;
+  explosive_shot_t( hunter_t* p, const std::string& options_str ):
+    hunter_ranged_attack_t( "explosive_shot", p, p -> find_talent_spell( "Explosive Shot" ) )
+  {
+    parse_options( options_str );
+    explosive_activate = new explosive_shot_activate_t( p );
+    add_child( explosive_activate );
+    cooldown -> duration = p -> find_talent_spell( "Explosive Shot" ) -> cooldown();
+
+    // FIXME - get a more accurate number
+    travel_speed = 8.0;
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    hunter_ranged_attack_t::impact( s );
+
+    explosive_activate -> execute();
   }
 };
 
