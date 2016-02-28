@@ -2723,6 +2723,19 @@ struct nightblade_base_t : public rogue_attack_t
     }
   }
 
+  // Currently, the finality buff vs normal overwrite eachother, causing a dot cancel
+  // TODO: Check later if this will get fixed
+  void trigger_dot( action_state_t* s ) override
+  {
+    dot_t* d = td( s -> target ) -> dots.nightblade;
+    if ( d -> is_ticking() && d -> current_action -> id != s -> action -> id )
+    {
+      d -> cancel();
+    }
+
+    rogue_attack_t::trigger_dot( s );
+  }
+
   expr_t* create_expression( const std::string& name_str ) override
   {
     if ( util::str_compare_ci( name_str, "finality" ) )
@@ -2731,6 +2744,11 @@ struct nightblade_base_t : public rogue_attack_t
     }
 
     return rogue_attack_t::create_expression( name_str );
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    return data().duration() * ( 1 + cast_state( s ) -> cp );
   }
 };
 
@@ -2777,7 +2795,7 @@ struct nightblade_t : public nightblade_base_t
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    timespan_t duration = data().duration() * ( 1 + cast_state( s ) -> cp );
+    timespan_t duration = nightblade_base_t::composite_dot_duration( s );
     if ( p() -> sets.has_set_bonus( SET_MELEE, T15, B2 ) )
       duration += data().duration();
 
@@ -3274,7 +3292,6 @@ struct death_from_above_driver_t : public rogue_attack_t
         break;
       case ROGUE_SUBTLETY:
         ability = new eviscerate_t( p, "" );
-        static_cast<eviscerate_t*>( ability ) -> affects_finality = false;
         break;
       case ROGUE_OUTLAW:
         ability = new run_through_t( p, "" );
