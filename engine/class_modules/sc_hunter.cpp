@@ -119,7 +119,6 @@ public:
     buff_t* tier16_4pc_mm_keen_eye;
     buff_t* tier16_4pc_bm_brutal_kinship;
     buff_t* heavy_shot; // t17 SV 4pc
-    buff_t* t18_2p_rapid_fire;
   } buffs;
 
   // Cooldowns
@@ -2206,24 +2205,6 @@ struct chimaera_shot_impact_t: public hunter_ranged_attack_t
     radius = 5.0;
   }
 
-  void impact( action_state_t* s ) override
-  {
-    hunter_ranged_attack_t::impact( s );
-    if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T18, B2 ) )
-    {
-      if ( s -> result == RESULT_CRIT && p() -> buffs.trueshot -> remains() < p() -> buffs.t18_2p_rapid_fire -> buff_duration )
-      {
-        p() -> buffs.t18_2p_rapid_fire -> trigger();
-
-        if ( p() -> buffs.trueshot -> check() )
-        {
-          p() -> buffs.trueshot -> expire();
-          p() -> procs.tier18_2pc_mm_wasted_proc -> occur();
-        }
-      }
-    }
-  }
-
   double action_multiplier() const override
   {
     double am = hunter_ranged_attack_t::action_multiplier();
@@ -2344,8 +2325,6 @@ struct trick_shot_t: public hunter_ranged_attack_t
 
 struct aimed_shot_t: public hunter_ranged_attack_t
 {
-  // focus gained on every Aimed Shot crit
-  double crit_gain;
   benefit_t* aimed_in_ca;
   aimed_shot_t( hunter_t* p, const std::string& options_str ):
     hunter_ranged_attack_t( "aimed_shot", p, p -> find_specialization_spell( "Aimed Shot" ) ),
@@ -2353,7 +2332,6 @@ struct aimed_shot_t: public hunter_ranged_attack_t
   {
     parse_options( options_str );
 
-    crit_gain = p -> sets.set( HUNTER_MARKSMANSHIP, T17, B2 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent();
     base_execute_time *= 1.0 - ( p -> sets.set( HUNTER_MARKSMANSHIP, T18, B4 ) -> effectN( 2 ).percent() );
 
@@ -2375,9 +2353,6 @@ struct aimed_shot_t: public hunter_ranged_attack_t
   virtual void impact( action_state_t* s ) override
   {
     hunter_ranged_attack_t::impact( s );
-
-    if ( s -> result == RESULT_CRIT && crit_gain > 0.0 )
-      p() -> resource_gain( RESOURCE_FOCUS, crit_gain, p() -> gains.aimed_shot );
 
     trigger_true_aim( p(), s -> target );
     if( p() -> buffs.careful_aim -> value() && s -> result == RESULT_CRIT )
@@ -3218,10 +3193,6 @@ struct trueshot_t: public hunter_spell_t
   virtual void execute() override
   {
     p() -> buffs.trueshot -> trigger( 1, value );
-    {
-      p() -> procs.tier18_2pc_mm_wasted_overwrite -> occur();
-      p() -> buffs.t18_2p_rapid_fire -> expire();
-    }
 
     hunter_spell_t::execute();
   }
@@ -3532,7 +3503,7 @@ void hunter_t::create_buffs()
 
   buffs.lock_and_load               = buff_creator_t( this, 168980, "lock_and_load" );
 
-  buffs.trueshot                 = buff_creator_t( this, "rapid_fire", specs.trueshot )
+  buffs.trueshot                 = buff_creator_t( this, "trueshot", specs.trueshot )
     .add_invalidate( CACHE_ATTACK_HASTE );
 
   buffs.trueshot -> cooldown -> duration = timespan_t::zero();
@@ -3560,11 +3531,6 @@ void hunter_t::create_buffs()
   buffs.heavy_shot   = buff_creator_t( this, 167165, "heavy_shot" )
     .default_value( find_spell( 167165 ) -> effectN( 1 ).percent() )
     .refresh_behavior( BUFF_REFRESH_EXTEND );
-
-  buffs.t18_2p_rapid_fire = buff_creator_t( this, "rapid_fire_t18", sets.set( HUNTER_MARKSMANSHIP, T18, B2 ) -> effectN( 1 ).trigger() )
-    .chance( sets.set( HUNTER_MARKSMANSHIP, T18, B2 ) -> proc_chance() )
-    .default_value( sets.set( HUNTER_MARKSMANSHIP, T18, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
-    .add_invalidate( CACHE_HASTE );
 }
 
 // hunter_t::init_gains =====================================================
