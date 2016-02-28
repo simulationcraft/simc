@@ -84,6 +84,7 @@ struct rogue_td_t : public actor_target_data_t
     dot_t* garrote;
     dot_t* hemorrhage;
     dot_t* killing_spree; // Strictly speaking, this should probably be on player
+    dot_t* nightblade;
     dot_t* rupture;
   } dots;
 
@@ -2708,6 +2709,10 @@ struct nightblade_base_t : public rogue_attack_t
     base_multiplier *= 1.0 + p -> artifact.demons_kiss.percent();
   }
 
+  // Nightblade dots overwrite eachother
+  dot_t* get_dot( player_t* t = nullptr )
+  { return td( t ? t : target ) -> dots.nightblade; }
+
   void execute() override
   {
     rogue_attack_t::execute();
@@ -4583,6 +4588,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   dots.garrote          = target -> get_dot( "garrote", source );
   dots.rupture          = target -> get_dot( "rupture", source );
   dots.hemorrhage       = target -> get_dot( "hemorrhage", source );
+  dots.nightblade       = target -> get_dot( "nightblade", source );
   dots.killing_spree    = target -> get_dot( "killing_spree", source );
 
   const spell_data_t* vd = source -> find_specialization_spell( "Vendetta" );
