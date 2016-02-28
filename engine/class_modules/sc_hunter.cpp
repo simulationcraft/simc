@@ -14,14 +14,12 @@
 // Marksmanship
 //  - Update Steady Focus behavior 
 //  - Re-implement Black Arrow
-//  - Update Careful Aim behavior
 //  - Implement Explosive Shot
 //  - Implement Trick Shot
 //  - Implement Heightened Vulnerability
 //  - Implement Volley
 //  - Implement Dark Ranger
 //  - Implement Lock and Load
-//  - Implement Head Shot
 //  - Gather info and implement artifacts
 //
 // Survival
@@ -62,6 +60,7 @@ struct hunter_td_t: public actor_target_data_t
   {
     dot_t* serpent_sting;
     dot_t* poisoned_ammo;
+    dot_t* piercing_shots;
   } dots;
 
   hunter_td_t( player_t* target, hunter_t* p );
@@ -79,6 +78,7 @@ public:
     pets::hunter_main_pet_t* pet;
     exotic_munitions    ammo;
     action_t*           serpent_sting;
+    action_t*           piercing_shots;
     action_t*           frozen_ammo;
     action_t*           incendiary_ammo;
     action_t*           poisoned_ammo;
@@ -262,7 +262,6 @@ public:
     
     // Marksmanship
     const spell_data_t* aimed_shot;
-    const spell_data_t* careful_aim;
     const spell_data_t* bombardment;
     const spell_data_t* trueshot;
     const spell_data_t* lock_and_load;
@@ -1818,6 +1817,13 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
     }
   }
 
+  void trigger_piercing_shots( action_state_t* s )
+  {
+    double amount = s -> result_amount;
+
+    residual_action::trigger( p() -> active.piercing_shots, s -> target, amount );
+  }
+
   void trigger_tier15_4pc_melee( proc_t* proc, attack_t* attack );
 };
 
@@ -2335,6 +2341,8 @@ struct aimed_shot_t: public hunter_ranged_attack_t
       p() -> resource_gain( RESOURCE_FOCUS, crit_gain, p() -> gains.aimed_shot );
 
     trigger_true_aim( p(), s -> target );
+    if( p() -> buffs.careful_aim -> value() && s -> result == RESULT_CRIT )
+      trigger_piercing_shots( s );
   }
 
   virtual void execute() override
@@ -2446,6 +2454,7 @@ struct marked_shot_impact_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( "marked_shot", p, p -> find_spell( 212621 ) )
   {
     background = true;
+    dual = true;
   }
 
   virtual void impact( action_state_t* s ) override
@@ -2460,6 +2469,15 @@ struct marked_shot_impact_t: public hunter_ranged_attack_t
 
       trigger_true_aim( p(), s -> target );
     }
+  }
+
+  virtual double composite_target_crit( player_t* t ) const override
+  {
+    double cc = hunter_ranged_attack_t::composite_target_crit( t );
+
+    cc += p() -> buffs.careful_aim -> value();
+
+    return cc;
   }
 
   virtual double composite_target_da_multiplier( player_t* t ) const override
@@ -2553,6 +2571,18 @@ struct head_shot_t: public hunter_ranged_attack_t
     am *= std::min( 100.0, p() -> resources.current[RESOURCE_FOCUS] ) / 100;
 
     return am;
+  }
+};
+
+// Piercing Shots =====================================================================
+
+typedef residual_action::residual_periodic_action_t< hunter_ranged_attack_t > residual_action_t;
+
+struct piercing_shots_t: public residual_action_t
+{
+  piercing_shots_t( hunter_t* p, const char* name, const spell_data_t* s ):
+    residual_action_t( name, p, s)
+  {
   }
 };
 
@@ -3104,6 +3134,7 @@ dots( dots_t() )
 {
   dots.serpent_sting = target -> get_dot( "serpent_sting", p );
   dots.poisoned_ammo = target -> get_dot( "poisoned_ammo", p );
+  dots.piercing_shots = target -> get_dot( "piercing_shots", p );
 
   debuffs.hunters_mark      = buff_creator_t( *this, "hunters_mark", p -> find_spell( 185365 ) -> effectN( 1 ).trigger() );
   debuffs.vulnerable        = buff_creator_t( *this, "vulnerable")
@@ -3325,7 +3356,6 @@ void hunter_t::init_spells()
   specs.beast_cleave         = find_specialization_spell( "Beast Cleave" );
   specs.exotic_beasts        = find_specialization_spell( "Exotic Beasts" );
   specs.kindred_spirits      = find_specialization_spell( "Kindred Spirits" );
-  specs.careful_aim          = find_specialization_spell( "Careful Aim" );
   specs.lock_and_load        = find_specialization_spell( "Lock and Load" );
   specs.bombardment          = find_specialization_spell( "Bombardment" );
   specs.aimed_shot           = find_specialization_spell( "Aimed Shot" );
@@ -3335,6 +3365,9 @@ void hunter_t::init_spells()
   specs.survivalist          = find_specialization_spell( "Survivalist" );
   specs.lone_wolf            = find_specialization_spell( "Lone Wolf" );
   specs.dire_beast           = find_specialization_spell( "Dire Beast" );
+
+  if ( talents.careful_aim -> ok() )
+    active.piercing_shots = new attacks::piercing_shots_t( this, "piercing_shots", find_spell( 63468 ) );
 
   if ( talents.exotic_munitions -> ok() )
   {
@@ -4147,11 +4180,11 @@ stat_e hunter_t::convert_hybrid_stat( stat_e s ) const
 /* Set the careful_aim buff state based on rapid fire and the enemy health. */
 void hunter_t::schedule_ready( timespan_t delta_time, bool waiting )
 {
-  if ( specs.careful_aim -> ok() )
+  if ( talents.careful_aim -> ok() )
   {
     int ca_now = buffs.careful_aim -> check();
-    int threshold = specs.careful_aim -> effectN( 2 ).base_value();
-    if ( buffs.trueshot -> check() || target -> health_percentage() > threshold || buffs.t18_2p_rapid_fire -> check() )
+    int threshold = talents.careful_aim -> effectN( 2 ).base_value();
+    if ( target -> health_percentage() > threshold )
     {
       if ( ! ca_now )
         buffs.careful_aim -> trigger();
