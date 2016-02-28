@@ -668,6 +668,7 @@ struct rogue_attack_t : public melee_attack_t
          ( weapon_multiplier > 0 || attack_power_mod.direct > 0 ) )
     {
       akaari = player -> get_stats( name_str + "_akaari", this );
+      akaari -> school = school;
       stats -> add_child( akaari );
     }
   }
@@ -2106,7 +2107,9 @@ struct eviscerate_t : public eviscerate_base_t
   eviscerate_t( rogue_t* p, const std::string& options_str ) :
     eviscerate_base_t( p, "eviscerate", p -> find_specialization_spell( "Eviscerate" ), options_str ),
     finality( p -> artifact.finality.rank() ? new finality_eviscerate_t( p ) : nullptr )
-  { }
+  {
+    add_child( finality );
+  }
 
   double action_multiplier() const override
   {
@@ -2713,6 +2716,11 @@ struct nightblade_base_t : public rogue_attack_t
   dot_t* get_dot( player_t* t = nullptr )
   { return td( t ? t : target ) -> dots.nightblade; }
 
+  double attack_tick_power_coefficient( const action_state_t* s ) const override
+  {
+    return melee_attack_t::attack_tick_power_coefficient( s );
+  }
+
   void execute() override
   {
     rogue_attack_t::execute();
@@ -2748,7 +2756,7 @@ struct nightblade_base_t : public rogue_attack_t
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    return data().duration() * ( 1 + cast_state( s ) -> cp );
+    return data().duration() + data().effectN( 1 ).period() * cast_state( s ) -> cp;
   }
 };
 
@@ -2767,7 +2775,9 @@ struct nightblade_t : public nightblade_base_t
   nightblade_t( rogue_t* p, const std::string& options_str ) :
     nightblade_base_t( p, "nightblade", p -> find_specialization_spell( "Nightblade" ), options_str ),
     finality( p -> artifact.finality.rank() ? new finality_nightblade_t( p ) : nullptr )
-    { }
+    {
+      add_child( finality );
+    }
 
   void schedule_execute( action_state_t* state = nullptr ) override
   {
