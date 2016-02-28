@@ -2462,16 +2462,19 @@ struct arcane_shot_t: public hunter_ranged_attack_t
 
 // Marked Shot Attack =================================================================
 
-struct marked_shot_impact_t: public hunter_ranged_attack_t
+struct marked_shot_t: public hunter_ranged_attack_t
 {
-  marked_shot_impact_t( hunter_t* p ):
-    hunter_ranged_attack_t( "marked_shot_impact", p, p -> find_spell( 212621 ) )
+  marked_shot_t( hunter_t* p, const std::string& options_str ):
+    hunter_ranged_attack_t( "marked_shot", p, p -> find_specialization_spell( "Marked Shot" ) )
   {
-    aoe = -1;
-    background = true;
-    dual = true;
+    parse_options( options_str );
+
+    // Simulated as AOE for simplicity.
+    aoe               = -1;
+    weapon            = &p -> main_hand_weapon;
+    weapon_multiplier = p -> find_spell( 212621 ) -> effectN( 2 ).percent();
   }
-  
+
   virtual void execute() override
   {
     hunter_ranged_attack_t::execute();
@@ -2491,7 +2494,6 @@ struct marked_shot_impact_t: public hunter_ranged_attack_t
     p() -> buffs.hunters_mark_exists -> expire();
   }
 
-  //
   virtual void impact( action_state_t* s ) override
   {
     hunter_td_t* td = this -> td( s -> target );
@@ -2505,6 +2507,22 @@ struct marked_shot_impact_t: public hunter_ranged_attack_t
 
       trigger_true_aim( p(), s -> target );
     }
+  }
+
+  // Only schedule the attack if a valid target
+  virtual void schedule_travel( action_state_t* s ) override
+  {
+    if ( td( s -> target ) -> debuffs.hunters_mark -> up() ) 
+      hunter_ranged_attack_t::schedule_travel( s );
+  }
+
+  // Marked Shot can only be used if a Hunter's Mark exists on any target.
+  virtual bool ready() override
+  {
+    if ( p() -> buffs.hunters_mark_exists -> up() )
+      return hunter_ranged_attack_t::ready();
+
+    return false;
   }
 
   virtual double composite_target_crit( player_t* t ) const override
@@ -2536,37 +2554,6 @@ struct marked_shot_impact_t: public hunter_ranged_attack_t
       am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
 
     return am;
-  }
-};
-
-struct marked_shot_t: public hunter_ranged_attack_t
-{
-  marked_shot_impact_t* marked_shot_impact;
-  marked_shot_t( hunter_t* p, const std::string& options_str ):
-    hunter_ranged_attack_t( "marked_shot", p, p -> find_specialization_spell( "Marked Shot" ) )
-  {
-    parse_options( options_str );
-
-    // Simulated as AOE for simplicity.
-    aoe = -1;
-    marked_shot_impact = new marked_shot_impact_t( p );
-    add_child( marked_shot_impact );
-  }
-
-  virtual void execute() override
-  {
-    hunter_ranged_attack_t::execute();
-
-    marked_shot_impact -> execute();
-  }
-
-  // Marked Shot can only be used if a Hunter's Mark exists on any target.
-  virtual bool ready() override
-  {
-    if ( p() -> buffs.hunters_mark_exists -> up() )
-      return hunter_ranged_attack_t::ready();
-
-    return false;
   }
 };
 
