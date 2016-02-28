@@ -16,7 +16,6 @@
 //  - Implement Heightened Vulnerability
 //  - Implement Volley
 //  - Implement Dark Ranger
-//  - Implement Lock and Load
 //  - Gather info and implement artifacts
 //
 // Survival
@@ -300,6 +299,50 @@ public:
     const spell_data_t* sniper_training;
     const spell_data_t* hunting_companion;
   } mastery;
+
+  struct artifact_spells_t
+  {
+    // Beast Mastery
+    artifact_power_t titans_thunder;
+    artifact_power_t master_of_beasts;
+    artifact_power_t stormshot;
+    artifact_power_t surge_of_the_stormgod;
+    artifact_power_t spitting_cobras;
+    artifact_power_t jaws_of_thunder;
+    artifact_power_t wilderness_expert;
+    artifact_power_t pack_leader;
+    artifact_power_t unleash_the_beast;
+    artifact_power_t focus_of_the_titans;
+    artifact_power_t furious_swipes;
+
+    // Marksmanship
+    artifact_power_t windburst;
+    artifact_power_t whispers_of_the_past;
+    artifact_power_t call_of_the_hunter;
+    artifact_power_t bullseye;
+    artifact_power_t deadly_aim;
+    artifact_power_t quick_shot;
+    artifact_power_t critical_focus;
+    artifact_power_t windrunners_guidance;
+    artifact_power_t call_the_targets;
+    artifact_power_t marked_for_death;
+    artifact_power_t precision;
+    artifact_power_t rapid_killing;
+
+    // Survival
+    artifact_power_t fury_of_the_eagle;
+    artifact_power_t talon_strike;
+    artifact_power_t eagles_bite;
+    artifact_power_t aspect_of_the_skylord;
+    artifact_power_t sharpened_beak;
+    artifact_power_t raptors_cry;
+    artifact_power_t hellcarver;
+    artifact_power_t my_beloved_monster;
+    artifact_power_t strength_of_the_mountain;
+    artifact_power_t fluffy_go;
+    artifact_power_t jagged_claws;
+    artifact_power_t hunters_guile;
+  } artifacts;
 
   stats_t* stats_stampede;
   stats_t* stats_tier17_4pc_bm;
@@ -3459,6 +3502,45 @@ void hunter_t::init_spells()
   specs.lone_wolf            = find_specialization_spell( "Lone Wolf" );
   specs.dire_beast           = find_specialization_spell( "Dire Beast" );
 
+  // Artifact spells
+  artifacts.titans_thunder           = find_artifact_spell( "Titan's Thunder" );
+  artifacts.master_of_beasts         = find_artifact_spell( "Master of Beasts" );
+  artifacts.stormshot                = find_artifact_spell( "Stormshot" );
+  artifacts.surge_of_the_stormgod    = find_artifact_spell( "Surge of the Stormgod" );
+  artifacts.spitting_cobras          = find_artifact_spell( "Spitting Cobras" );
+  artifacts.jaws_of_thunder          = find_artifact_spell( "Jaws of Thunder" );
+  artifacts.wilderness_expert        = find_artifact_spell( "Wilderness Expert" );
+  artifacts.pack_leader              = find_artifact_spell( "Pack Leader" );
+  artifacts.unleash_the_beast        = find_artifact_spell( "Unleash the Beast" );
+  artifacts.focus_of_the_titans      = find_artifact_spell( "Focus of the Titans" );
+  artifacts.furious_swipes           = find_artifact_spell( "Furious Swipes" );
+
+  artifacts.windburst                = find_artifact_spell( "Windburst" );
+  artifacts.whispers_of_the_past     = find_artifact_spell( "Whispers of the Past" );
+  artifacts.call_of_the_hunter       = find_artifact_spell( "Call of the Hunter" );
+  artifacts.bullseye                 = find_artifact_spell( "Bullseye" );
+  artifacts.deadly_aim               = find_artifact_spell( "Deadly Aim" );
+  artifacts.quick_shot               = find_artifact_spell( "Quick Shot" );
+  artifacts.critical_focus           = find_artifact_spell( "Critical Focus" );
+  artifacts.windrunners_guidance     = find_artifact_spell( "Windrunner's Guidance" );
+  artifacts.call_the_targets         = find_artifact_spell( "Call the Targets" );
+  artifacts.marked_for_death         = find_artifact_spell( "Marked for Death" );
+  artifacts.precision                = find_artifact_spell( "Precision" );
+  artifacts.rapid_killing            = find_artifact_spell( "Rapid Killing" );
+
+  artifacts.fury_of_the_eagle        = find_artifact_spell( "Fury of the Eagle" );
+  artifacts.talon_strike             = find_artifact_spell( "Talon Strike" );
+  artifacts.eagles_bite              = find_artifact_spell( "Eagle's Bite" );
+  artifacts.aspect_of_the_skylord    = find_artifact_spell( "Aspect of the Skylord" );
+  artifacts.sharpened_beak           = find_artifact_spell( "Sharpened Beak" );
+  artifacts.raptors_cry              = find_artifact_spell( "Raptor's Cry" );
+  artifacts.hellcarver               = find_artifact_spell( "Hellcarver" );
+  artifacts.my_beloved_monster       = find_artifact_spell( "My Beloved Monster" );
+  artifacts.strength_of_the_mountain = find_artifact_spell( "Strength of the Mountain" );
+  artifacts.fluffy_go                = find_artifact_spell( "Fluffy, Go" );
+  artifacts.jagged_claws             = find_artifact_spell( "Jagged Claws" );
+  artifacts.hunters_guile            = find_artifact_spell( "Hunter's Guile" );
+  
   if ( talents.careful_aim -> ok() )
     active.piercing_shots = new attacks::piercing_shots_t( this, "piercing_shots", find_spell( 63468 ) );
 
