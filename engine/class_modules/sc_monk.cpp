@@ -206,7 +206,6 @@ public:
     buff_t* combo_master;
     buff_t* combo_strikes;
     buff_t* dizzying_kicks;
-    buff_t* eye_of_the_tiger;
     buff_t* forceful_winds;
     buff_t* hit_combo;
     buff_t* light_on_your_feet;
@@ -477,7 +476,6 @@ public:
     const spell_data_t* chi_torpedo;
     const spell_data_t* chi_wave_damage;
     const spell_data_t* chi_wave_heal;
-    const spell_data_t* eye_of_the_tiger;
     const spell_data_t* healing_elixirs;
     const spell_data_t* rushing_jade_wind_damage;
     const spell_data_t* spinning_crane_kick_damage;
@@ -1815,7 +1813,7 @@ public:
 
   virtual void impact( action_state_t* s ) override
   {
-    if ( p() -> artifact.gale_burst.rank() && s -> action -> harmful && p() -> buff.touch_of_death -> up() )
+    if ( p() -> artifact.gale_burst.rank() && p() -> buff.touch_of_death -> up() && s -> target == target && s -> action -> harmful )
       p() -> gale_burst_touch_of_death_bonus += p() -> artifact.gale_burst.value() * s -> result_amount;
     ab::impact( s );
   }
@@ -1977,9 +1975,10 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
 struct eye_of_the_tiger_heal_tick_t : public monk_heal_t
 {
   eye_of_the_tiger_heal_tick_t( monk_t& p, const std::string& name ):
-    monk_heal_t( name, p, p.passives.eye_of_the_tiger )
+    monk_heal_t( name, p, p.talent.eye_of_the_tiger -> effectN( 1 ).trigger() )
   {
     background = true;
+    may_crit = hasted_ticks = false;
     target = player;
   }
 };
@@ -1987,56 +1986,23 @@ struct eye_of_the_tiger_heal_tick_t : public monk_heal_t
 struct eye_of_the_tiger_dmg_tick_t: public monk_spell_t
 {
   eye_of_the_tiger_dmg_tick_t( monk_t* player, const std::string& name ):
-    monk_spell_t( name, player, player -> passives.eye_of_the_tiger )
+    monk_spell_t( name, player, player -> talent.eye_of_the_tiger -> effectN( 1 ).trigger() )
   {
     background = true;
-    attack_power_mod.direct = player -> passives.eye_of_the_tiger -> effectN( 2 ).ap_coeff();
-  }
-};
-
-struct eye_of_the_tiger_t : public monk_spell_t
-{
-  heal_t* heal;
-  spell_t* damage;
-  eye_of_the_tiger_t( monk_t* player ) :
-    monk_spell_t( "eye_of_the_tiger", player, player -> talent.eye_of_the_tiger ),
-    heal( new eye_of_the_tiger_heal_tick_t( *player, "eye_of_the_tiger_heal" ) ),
-    damage( new eye_of_the_tiger_dmg_tick_t( player, "eye_of_the_tiger_damage" ) )
-  {
-    background = true;
-    hasted_ticks = harmful = false;
-    dot_duration = player -> passives.eye_of_the_tiger -> duration();
-    base_tick_time = player -> passives.eye_of_the_tiger -> effectN( 1 ).period();
-    add_child( heal );
-    add_child( damage );
-    tick_zero = true;
-  }
-
-  virtual void execute() override
-  {
-    monk_spell_t::execute();
-
-    if ( result_is_miss( execute_state -> result ) )
-      return;
-
-    p() -> buff.eye_of_the_tiger -> trigger();
-  }
-
-  void tick(dot_t* d) override
-  {
-    monk_spell_t::tick( d );
-
-    damage -> execute();
-    heal -> execute();
+    may_crit = hasted_ticks = false;
+    attack_power_mod.direct = 0;
+    attack_power_mod.tick = data().effectN( 2 ).ap_coeff();
   }
 };
 
 struct tiger_palm_t: public monk_melee_attack_t
 {
-  eye_of_the_tiger_t* dot;
+  heal_t* eye_of_the_tiger_heal;
+  spell_t* eye_of_the_tiger_damage;
   tiger_palm_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( "tiger_palm", p, p -> spec.tiger_palm ),
-    dot( new eye_of_the_tiger_t( p ) )
+    eye_of_the_tiger_heal( new eye_of_the_tiger_heal_tick_t( *p, "eye_of_the_tiger_heal" ) ),
+    eye_of_the_tiger_damage( new eye_of_the_tiger_dmg_tick_t( p, "eye_of_the_tiger_damage" ) )
   {
     parse_options( options_str );
     sef_ability = SEF_TIGER_PALM;
@@ -2058,7 +2024,10 @@ struct tiger_palm_t: public monk_melee_attack_t
       return;
 
     if ( p() -> talent.eye_of_the_tiger -> ok() )
-      dot -> execute();
+    {
+      eye_of_the_tiger_damage -> execute();
+      eye_of_the_tiger_heal -> execute();
+    }
 
     if ( p() -> specialization() == MONK_MISTWEAVER)
       p() -> buff.teachings_of_the_monastery -> trigger();
@@ -2231,7 +2200,7 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
   }
 };
 
-// Risign Sun Kick Baseline ability =======================================
+// Rising Sun Kick Baseline ability =======================================
 struct rising_sun_kick_t: public monk_melee_attack_t
 {
   rising_sun_kick_proc_t* rsk_proc;
@@ -3302,8 +3271,8 @@ struct special_delivery_t : public monk_melee_attack_t
 // ==========================================================================
 // Touch of Death
 // ==========================================================================
+// TODO: Figure out how Gale Burst is registered in the combat logs.
 
-// Touch of Death Trigger ====================================================
 struct touch_of_death_t: public monk_spell_t
 {
   touch_of_death_t( monk_t* p, const std::string& options_str ):
@@ -5712,7 +5681,6 @@ void monk_t::init_spells()
   passives.chi_torpedo                      = find_spell( 119085 );
   passives.chi_wave_damage                  = find_spell( 132467 );
   passives.chi_wave_heal                    = find_spell( 132463 );
-  passives.eye_of_the_tiger                 = find_spell( 196608 );
   passives.healing_elixirs                  = find_spell( 122281 ); // talent.healing_elixirs -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() 
   passives.rushing_jade_wind_damage         = find_spell( 148187 );
   passives.spinning_crane_kick_damage       = find_spell( 107270 );
@@ -5872,8 +5840,6 @@ void monk_t::create_buffs()
 
   buff.diffuse_magic = buff_creator_t( this, "diffuse_magic", talent.diffuse_magic )
     .default_value( talent.diffuse_magic -> effectN( 1 ).percent() );
-
-  buff.eye_of_the_tiger = buff_creator_t( this, "eye_of_the_tiger", passives.eye_of_the_tiger );
 
   // Brewmaster
   buff.bladed_armor = buff_creator_t( this, "bladed_armor", spec.bladed_armor )
