@@ -3,31 +3,33 @@ level=100
 race=blood_elf
 role=attack
 position=ranged_back
-talents=3000322
+talents=2030332
 spec=marksmanship
 
 actions=auto_shot
-actions+=/marked_shot,if=!debuff.deadeye.up&focus>80
-actions+=/head_shot
-actions+=/aimed_shot,if=debuff.deadeye.up|focus>110
+actions+=/trueshot
+actions+=/marked_shot,if=(talent.patient_sniper.enabled&debuff.deadeye.down)|(!talent.patient_sniper.enabled&(debuff.vulnerable.remains<3|debuff.vulnerable.stack<3|spell_targets.marked_shot>5))
+actions+=/explosive_shot
+actions+=/aimed_shot,if=debuff.deadeye.up|focus>80
 actions+=/multi_shot,if=spell_targets.multi_shot>=3
 actions+=/arcane_shot
+actions+=/arcane_shot
 
-head=hood_of_the_savage_hunt,id=124296,bonus_id=567,upgrade=2
-neck=choker_of_the_great_betrayer,id=124210,bonus_id=567,upgrade=2,enchant_id=5317
-shoulders=pauldrons_of_the_savage_hunt,id=124307,bonus_id=567,upgrade=2
-back=cloak_of_desperate_temerity,id=124134,bonus_id=567,upgrade=2,enchant_id=5310
-chest=hauberk_of_the_savage_hunt,id=124284,bonus_id=567,upgrade=2
-wrists=bracers_of_fel_empowerment,id=124314,bonus_id=567,upgrade=2
-hands=eredar_felchain_gloves,id=124291,bonus_id=567,upgrade=2
-waist=girdle_of_the_legion_general,id=124310,bonus_id=567,upgrade=2
-legs=leggings_of_the_savage_hunt,id=124301,bonus_id=567,upgrade=2
-feet=spiked_throatcrusher_boots,id=124287,bonus_id=567,upgrade=2
-finger1=maalus_the_blood_drinker,id=124636,bonus_id=641,enchant_id=5324
-finger2=portal_key_signet,id=124189,bonus_id=567,upgrade=2,enchant_id=5324
-trinket1=talisman_of_the_master_tracker,id=124515,bonus_id=567,upgrade=2
-trinket2=felspring_coil,id=124223,bonus_id=567,upgrade=2
-main_hand=cursed_demonbone_longbow,id=124361,bonus_id=567,upgrade=2,enchant_id=5276
+head=rylakstalkers_headguard,id=115545,bonus_id=566
+neck=darklight_necklace,id=113865,bonus_id=566,enchant=2000mastery
+shoulders=rylakstalkers_spaulders,id=115547,bonus_id=566
+back=drape_of_the_dark_hunt,id=113971,bonus_id=566
+chest=chestguard_of_the_siegemaker,id=113982,bonus_id=566
+wrists=bracers_of_the_wolfs_cunning,id=113943,bonus_id=566
+hands=rylakstalkers_gloves,id=115549,bonus_id=566
+waist=grenadiers_belt,id=113955,bonus_id=566
+legs=rylakstalkers_legguards,id=115546,bonus_id=566
+feet=slagstomper_treads,id=113888,bonus_id=566
+finger1=unexploded_explosive_shard,id=113877,bonus_id=566
+finger2=spellbound_solium_band_of_fatal_strikes,id=118302
+trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=566
+trinket2=humming_blackiron_trigger,id=113985,bonus_id=566
+main_hand=mouth_of_the_fury,id=113885,bonus_id=566
 
 # Gear Summary
 # gear_ilvl=742.33
