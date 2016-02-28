@@ -4429,11 +4429,8 @@ struct roll_the_bones_t : public buff_t
   rogue_t* rogue;
   std::array<buff_t*, 6> buffs;
 
-  roll_the_bones_t( rogue_t* r ) :
-    buff_t( buff_creator_t( r, "roll_the_bones", r -> spec.roll_the_bones )
-            .period( timespan_t::zero() ) // Disable ticking
-            .refresh_behavior( BUFF_REFRESH_PANDEMIC ) ),
-    rogue( r )
+  roll_the_bones_t( rogue_t* r, buff_creator_t& b ) :
+    buff_t( b ), rogue( r )
   {
     buffs[ 0 ] = rogue -> buffs.jolly_roger;
     buffs[ 1 ] = rogue -> buffs.grand_melee;
@@ -5480,28 +5477,18 @@ void rogue_t::create_buffs()
                              .period( timespan_t::zero() )
                              .refresh_behavior( BUFF_REFRESH_PANDEMIC );
 
-  buff_creator_t snd_creator = buff_creator_t( this, "slice_and_dice", find_specialization_spell( "Slice and Dice" ) )
-                               .tick_behavior( BUFF_TICK_NONE )
+  buff_creator_t snd_creator = buff_creator_t( this, "slice_and_dice", talent.slice_and_dice )
                                .period( timespan_t::zero() )
                                .refresh_behavior( BUFF_REFRESH_PANDEMIC )
                                .add_invalidate( CACHE_ATTACK_SPEED );
+  buff_creator_t rtb_creator = buff_creator_t( this, "roll_the_bones", spec.roll_the_bones )
+                               .period( timespan_t::zero() ) // Disable ticking
+                               .refresh_behavior( BUFF_REFRESH_PANDEMIC );
 
-  if ( spec.energetic_recovery -> ok() )
-  {
-    snd_creator.period( find_class_spell( "Slice and Dice" ) -> effectN( 2 ).period() );
-    snd_creator.tick_behavior( BUFF_TICK_REFRESH );
-    snd_creator.tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
-       resource_gain( RESOURCE_ENERGY,
-                      spec.energetic_recovery -> effectN( 1 ).base_value(),
-                      gains.energetic_recovery );
-    } );
-  }
   // Presume that combat re-uses the ticker for the T18 2pc set bonus
-  else if ( sets.has_set_bonus( ROGUE_OUTLAW, T18, B2 ) )
+  if ( sets.has_set_bonus( ROGUE_OUTLAW, T18, B2 ) )
   {
-    snd_creator.period( find_class_spell( "Slice and Dice" ) -> effectN( 2 ).period() );
-    snd_creator.tick_behavior( BUFF_TICK_REFRESH );
-    snd_creator.tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
+    std::function<void(buff_t*, int, const timespan_t&)> f( [ this ]( buff_t*, int, const timespan_t& ) {
       if ( ! rng().roll( sets.set( ROGUE_OUTLAW, T18, B2 ) -> proc_chance() ) )
         return;
 
@@ -5518,6 +5505,14 @@ void rogue_t::create_buffs()
         }
       }
     } );
+
+    snd_creator.period( talent.slice_and_dice -> effectN( 2 ).period() );
+    snd_creator.tick_behavior( BUFF_TICK_REFRESH );
+    snd_creator.tick_callback( f );
+
+    rtb_creator.period( spec.roll_the_bones -> effectN( 2 ).period() );
+    rtb_creator.tick_behavior( BUFF_TICK_REFRESH );
+    rtb_creator.tick_callback( f );
   }
 
   buffs.slice_and_dice = snd_creator;
@@ -5570,7 +5565,7 @@ void rogue_t::create_buffs()
   buffs.weigh_anchor = buff_creator_t( this, "weigh_anchor", find_spell( 193356 ) )
                        .default_value( find_spell( 193356 ) -> effectN( 1 ).percent() );
   // Note, since I (navv) am a slacker, this needs to be constructed after the secondary buffs.
-  buffs.roll_the_bones = new buffs::roll_the_bones_t( this );
+  buffs.roll_the_bones = new buffs::roll_the_bones_t( this, rtb_creator );
 
   buffs.symbols_of_death = buff_creator_t( this, "symbols_of_death", spec.symbols_of_death )
                            .period( timespan_t::zero() )
