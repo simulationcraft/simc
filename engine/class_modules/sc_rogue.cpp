@@ -906,6 +906,12 @@ struct rogue_attack_t : public melee_attack_t
     if ( p() -> talent.nightstalker -> ok() && p() -> buffs.stealth -> check() )
       m *= 1.0 + p() -> talent.nightstalker -> effectN( 2 ).percent();
 
+    if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 && harmful &&
+         ( weapon_multiplier > 0 || attack_power_mod.direct > 0 || attack_power_mod.tick > 0 ) )
+    {
+      m *= 1.0 + p() -> talent.deeper_strategem -> effectN( 4 ).percent();
+    }
+
     return m;
   }
 
