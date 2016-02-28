@@ -1813,7 +1813,7 @@ public:
 
   virtual void impact( action_state_t* s ) override
   {
-    if ( p() -> artifact.gale_burst.rank() && p() -> buff.touch_of_death -> up() && s -> target == target && s -> action -> harmful )
+    if ( p() -> artifact.gale_burst.rank() && p() -> buff.touch_of_death -> up() && s -> target == p() -> target && s -> action -> harmful )
       p() -> gale_burst_touch_of_death_bonus += p() -> artifact.gale_burst.value() * s -> result_amount;
     ab::impact( s );
   }
