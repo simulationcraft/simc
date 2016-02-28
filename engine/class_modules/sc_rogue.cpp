@@ -431,6 +431,7 @@ struct rogue_t : public player_t
     active_nonlethal_poison( nullptr ),
     active_main_gauche( nullptr ),
     auto_attack( nullptr ), melee_main_hand( nullptr ), melee_off_hand( nullptr ),
+    shadow_blade_main_hand( nullptr ), shadow_blade_off_hand( nullptr ),
     dfa_mh( nullptr ), dfa_oh( nullptr ),
     toxic_mutilator( nullptr ),
     eviscerating_blade( nullptr ),
