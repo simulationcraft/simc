@@ -149,6 +149,7 @@ public:
   struct procs_t
   {
     proc_t* lock_and_load;
+    proc_t* hunters_mark;
     proc_t* tier15_2pc_melee;
     proc_t* tier15_4pc_melee_aimed_shot;
     proc_t* tier15_4pc_melee_arcane_shot;
@@ -2070,6 +2071,8 @@ struct multi_shot_t: public hunter_ranged_attack_t
           std::vector<player_t*> multi_shot_targets = execute_state -> action -> target_list();
           for ( size_t i = 0; i < multi_shot_targets.size(); i++ )
             td( multi_shot_targets[i] ) -> debuffs.hunters_mark -> trigger();
+
+          p() -> procs.hunters_mark -> occur();
           p() -> buffs.hunters_mark_exists -> trigger();
         }
       }
@@ -2425,6 +2428,7 @@ struct arcane_shot_t: public hunter_ranged_attack_t
       if ( p() -> buffs.trueshot -> up() || p() -> ppm_hunters_mark.trigger() )
       {
         td( execute_state -> target ) -> debuffs.hunters_mark -> trigger();
+        p() -> procs.hunters_mark -> occur();
         p() -> buffs.hunters_mark_exists -> trigger();
       }
     }
@@ -3563,6 +3567,7 @@ void hunter_t::init_procs()
   player_t::init_procs();
 
   procs.lock_and_load                = get_proc( "lock_and_load" );
+  procs.hunters_mark                 = get_proc ( "hunters_mark" );
   procs.tier15_2pc_melee             = get_proc( "tier15_2pc_melee" );
   procs.tier15_4pc_melee_aimed_shot  = get_proc( "tier15_4pc_melee_aimed_shot" );
   procs.tier15_4pc_melee_arcane_shot = get_proc( "tier15_4pc_melee_arcane_shot" );
