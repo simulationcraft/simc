@@ -12,11 +12,23 @@
 //   - Everything
 //
 // Marksmanship
+//  - Refactor mastery & careful aim bonuses
 //  - Re-implement Black Arrow
 //  - Implement Heightened Vulnerability
 //  - Implement Volley
 //  - Implement Dark Ranger
-//  - Gather info and implement artifacts
+//  - Artifacts:
+//      * Deadly Aim
+//      * Quick Shot
+//      * Critical Focus
+//      * Windrunner's Guidance
+//      * Call the Targets
+//      * Marked for Death
+//      * Precision
+//      * Rapid Killing
+//      * Bullseye
+//      * Whispers of the Past
+//      * Call of the Hunter
 //
 // Survival
 //  - Everything
@@ -97,6 +109,9 @@ public:
   const special_effect_t* longview;
   const special_effect_t* blackness;
 
+  // Artifact abilities
+  const special_effect_t* thasdorah;
+
   // Buffs
   struct buffs_t
   {
@@ -147,6 +162,7 @@ public:
   // Procs
   struct procs_t
   {
+    proc_t* aimed_shot_artifact;
     proc_t* lock_and_load;
     proc_t* hunters_mark;
     proc_t* tier15_2pc_melee;
@@ -363,6 +379,7 @@ public:
     beastlord( nullptr ),
     longview( nullptr ),
     blackness( nullptr ),
+    thasdorah( nullptr ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
@@ -501,6 +518,12 @@ static void blackness( special_effect_t& effect )
 {
   hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
   do_trinket_init( hunter, HUNTER_SURVIVAL, hunter -> blackness, effect );
+}
+
+static void thasdorah( special_effect_t& effect )
+{
+  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
+  do_trinket_init( hunter, HUNTER_MARKSMANSHIP, hunter -> thasdorah, effect );
 }
 
 // Template for common hunter action code. See priest_action_t.
@@ -2380,9 +2403,69 @@ struct trick_shot_t: public hunter_ranged_attack_t
 
 // Aimed Shot ========================================================================
 
+// (WIP) This is the ability that is proc'd by the MM artifact. 
+// It is affected by all debuffs that would affect Aimed Shot
+struct aimed_shot_artifact_proc_t: hunter_ranged_attack_t
+{
+  aimed_shot_artifact_proc_t( hunter_t* p ):
+    hunter_ranged_attack_t( "aimed_shot_artifact", p, p -> find_spell( 191043 ) )
+  {
+    background = true;
+    proc = true;
+  }
+
+  virtual void execute()
+  {
+    p() -> procs.aimed_shot_artifact -> occur();
+
+    for ( int i = 0; i < p() -> thasdorah -> driver() -> effectN( 1 ).base_value(); i++ )
+      hunter_ranged_attack_t::execute();
+  }
+
+  virtual double composite_target_crit( player_t* t ) const override
+  {
+    double cc = hunter_ranged_attack_t::composite_target_crit( t );
+
+    cc += p() -> buffs.careful_aim -> value();
+    cc += p() -> sets.set( SET_MELEE, T16, B4 ) -> effectN( 2 ).percent();
+    cc += td( t ) -> debuffs.marked_for_death -> check_stack_value();
+
+    return cc;
+  }
+
+  virtual double composite_target_da_multiplier( player_t* t ) const override
+  {
+    double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
+
+    hunter_td_t* td = this -> td( t );
+    if ( td -> debuffs.vulnerable -> up() )
+      m *= 1.0 + td -> debuffs.vulnerable -> check_stack_value();
+    else if ( td -> debuffs.deadeye -> up() )
+      m *= 1.0 + td -> debuffs.deadeye -> check_stack_value();
+
+    if ( td -> debuffs.true_aim -> up() )
+      m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
+
+    return m;
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = hunter_ranged_attack_t::action_multiplier();
+
+    if ( p() -> mastery.sniper_training -> ok() )
+      am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
+
+    return am;
+  }
+};
+
 struct aimed_shot_t: public hunter_ranged_attack_t
 {
   benefit_t* aimed_in_ca;
+
+  aimed_shot_artifact_proc_t* aimed_shot_artifact_proc;
+
   aimed_shot_t( hunter_t* p, const std::string& options_str ):
     hunter_ranged_attack_t( "aimed_shot", p, p -> find_specialization_spell( "Aimed Shot" ) ),
     aimed_in_ca( p -> get_benefit( "aimed_in_careful_aim" ) )
@@ -2390,13 +2473,17 @@ struct aimed_shot_t: public hunter_ranged_attack_t
     parse_options( options_str );
 
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent();
-    base_execute_time *= 1.0 - ( p -> sets.set( HUNTER_MARKSMANSHIP, T18, B4 ) -> effectN( 2 ).percent() );
 
     if( p -> buffs.lock_and_load -> up() )
       base_execute_time *= 0.0;
+    else
+      base_execute_time *= 1.0 - ( p -> sets.set( HUNTER_MARKSMANSHIP, T18, B4 ) -> effectN( 2 ).percent() );
 
     if ( p -> talents.trick_shot -> ok() )
       impact_action = new trick_shot_t( p );
+    
+    if ( p -> thasdorah )
+      aimed_shot_artifact_proc = new aimed_shot_artifact_proc_t( p );
   }
 
   virtual double composite_target_crit( player_t* t ) const override
@@ -2440,6 +2527,14 @@ struct aimed_shot_t: public hunter_ranged_attack_t
 
     if ( p() -> buffs.lock_and_load -> up() )
       p() -> buffs.lock_and_load -> decrement();
+
+    // Thas'dorah's proc has a 1/6 chance to fire 6 mini Aimed Shots. 
+    // Proc chance missing from spell data.
+    if ( aimed_shot_artifact_proc && rng().roll( 0.167 ) )
+    {
+      add_child( aimed_shot_artifact_proc );
+      aimed_shot_artifact_proc -> execute();
+    }
   }
 
   virtual double composite_target_da_multiplier( player_t* t ) const override
@@ -2713,7 +2808,7 @@ struct explosive_shot_t: public hunter_ranged_attack_t
   }
 };
 
-// Piercing Shots =====================================================================
+// Piercing Shots ====================================================================
 
 typedef residual_action::residual_periodic_action_t< hunter_ranged_attack_t > residual_action_t;
 
@@ -3604,7 +3699,7 @@ void hunter_t::create_buffs()
 
   buffs.lock_and_load               = buff_creator_t( this, 194594, "lock_and_load" ).max_stack( 2 );
 
-  buffs.trueshot                 = buff_creator_t( this, "trueshot", specs.trueshot )
+  buffs.trueshot                    = buff_creator_t( this, "trueshot", specs.trueshot )
     .add_invalidate( CACHE_ATTACK_HASTE );
 
   buffs.trueshot -> cooldown -> duration = timespan_t::zero();
@@ -3675,8 +3770,9 @@ void hunter_t::init_procs()
 {
   player_t::init_procs();
 
+  procs.aimed_shot_artifact          = get_proc( "aimed_shot_artifact" );
   procs.lock_and_load                = get_proc( "lock_and_load" );
-  procs.hunters_mark                 = get_proc ( "hunters_mark" );
+  procs.hunters_mark                 = get_proc( "hunters_mark" );
   procs.tier15_2pc_melee             = get_proc( "tier15_2pc_melee" );
   procs.tier15_4pc_melee_aimed_shot  = get_proc( "tier15_4pc_melee_aimed_shot" );
   procs.tier15_4pc_melee_arcane_shot = get_proc( "tier15_4pc_melee_arcane_shot" );
@@ -4430,9 +4526,10 @@ struct hunter_module_t: public module_t
   
   virtual void static_init() const override
   {
-    unique_gear::register_special_effect( 184900, beastlord);
+    unique_gear::register_special_effect( 184900, beastlord );
     unique_gear::register_special_effect( 184901, longview );
-    unique_gear::register_special_effect( 184902, blackness);
+    unique_gear::register_special_effect( 184902, blackness );
+    unique_gear::register_special_effect( 190852, thasdorah );
   }
 
   virtual void init( player_t* p ) const override
