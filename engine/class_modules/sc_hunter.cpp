@@ -2031,6 +2031,11 @@ struct multi_shot_t: public hunter_ranged_attack_t
     if ( p() -> specialization() == HUNTER_MARKSMANSHIP )
       focus_gain = p() -> find_spell( 213363 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
   }
+  
+  virtual void try_steady_focus() override
+  {
+    trigger_steady_focus( true );
+  }
 
   virtual double cost() const override
   {
@@ -3422,7 +3427,7 @@ void hunter_t::create_buffs()
   double careful_aim_crit           = talents.careful_aim -> effectN( 1 ).percent( );
   buffs.careful_aim                 = buff_creator_t( this, "careful_aim", talents.careful_aim ).activated( true ).default_value( careful_aim_crit );
 
-  buffs.steady_focus                = buff_creator_t( this, 177668, "steady_focus" ).chance( talents.steady_focus -> ok() );
+  buffs.steady_focus                = buff_creator_t( this, 193534, "steady_focus" ).chance( talents.steady_focus -> ok() );
   buffs.pre_steady_focus            = buff_creator_t( this, "pre_steady_focus" ).max_stack( 2 ).quiet( true );
 
   buffs.hunters_mark_exists         = buff_creator_t( this, "hunters_mark_exists" );
