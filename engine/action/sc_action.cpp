@@ -3101,7 +3101,7 @@ bool action_t::dot_refreshable( const dot_t* dot, const timespan_t& triggered_du
   }
   else
   {
-    dot -> remains() <= dot -> time_to_next_tick();
+    return dot -> remains() <= dot -> time_to_next_tick();
   }
 }
 
