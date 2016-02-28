@@ -1956,6 +1956,17 @@ struct auto_shot_t: public ranged_t
     school = SCHOOL_PHYSICAL;
     range = 40.0;
   }
+
+  virtual void impact( action_state_t* s )
+  {
+    hunter_ranged_attack_t::impact( s );
+
+    if ( rng().roll( p() -> find_talent_spell( "Lock and Load" ) -> proc_chance() ) )
+    {
+      p() -> buffs.lock_and_load -> trigger( 2 );
+      p() -> procs.lock_and_load -> occur();
+    }
+  }
 };
 
 struct start_attack_t: public hunter_ranged_attack_t
@@ -2338,6 +2349,9 @@ struct aimed_shot_t: public hunter_ranged_attack_t
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent();
     base_execute_time *= 1.0 - ( p -> sets.set( HUNTER_MARKSMANSHIP, T18, B4 ) -> effectN( 2 ).percent() );
 
+    if( p -> buffs.lock_and_load -> up() )
+      base_execute_time *= 0.0;
+
     if ( p -> talents.trick_shot -> ok() )
       impact_action = new trick_shot_t( p );
   }
@@ -2351,6 +2365,16 @@ struct aimed_shot_t: public hunter_ranged_attack_t
     cc += td( t ) -> debuffs.marked_for_death -> check_stack_value();
 
     return cc;
+  }
+
+  virtual double cost() const override
+  {
+    double cost = hunter_ranged_attack_t::cost();
+
+    if( p() -> buffs.lock_and_load -> check() )
+      return 0;
+
+    return cost;
   }
 
   virtual void impact( action_state_t* s ) override
@@ -2370,6 +2394,9 @@ struct aimed_shot_t: public hunter_ranged_attack_t
     {
       p() -> cooldowns.trueshot -> adjust( -p() -> sets.set( HUNTER_MARKSMANSHIP, PVP, B4 ) -> effectN( 1 ).time_value() );
     }
+
+    if ( p() -> buffs.lock_and_load -> up() )
+      p() -> buffs.lock_and_load -> decrement();
   }
 
   virtual double composite_target_da_multiplier( player_t* t ) const override
@@ -3493,7 +3520,7 @@ void hunter_t::create_buffs()
 
   buffs.hunters_mark_exists         = buff_creator_t( this, "hunters_mark_exists" );
 
-  buffs.lock_and_load               = buff_creator_t( this, 168980, "lock_and_load" );
+  buffs.lock_and_load               = buff_creator_t( this, 194594, "lock_and_load" ).max_stack( 2 );
 
   buffs.trueshot                 = buff_creator_t( this, "trueshot", specs.trueshot )
     .add_invalidate( CACHE_ATTACK_HASTE );
