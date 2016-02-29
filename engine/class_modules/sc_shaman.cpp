@@ -227,7 +227,7 @@ public:
     gain_t* ascendance;
     gain_t* resurgence;
     gain_t* feral_spirit;
-    gain_t* fulmination;
+    gain_t* fulmination; // TODO: Remove
     gain_t* spirit_of_the_maelstrom;
     gain_t* resonance_totem;
   } gain;
@@ -266,7 +266,7 @@ public:
     // Elemental
     const spell_data_t* elemental_focus;
     const spell_data_t* elemental_fury;
-    const spell_data_t* fulmination;
+    const spell_data_t* fulmination; // TODO: Remove
     const spell_data_t* lava_surge;
     const spell_data_t* spiritual_insight;
 
@@ -2100,7 +2100,7 @@ struct elemental_overload_spell_t : public shaman_spell_t
   {
     shaman_spell_t::impact( state );
 
-    if ( result_is_hit( state -> result ) && p() -> spec.fulmination -> ok() )
+    if ( fulmination_gain && result_is_hit( state -> result ) && p() -> spec.fulmination -> ok() )
     {
       player -> resource_gain( RESOURCE_MAELSTROM, fulmination_gain, p() -> gain.fulmination, this );
     }
@@ -3016,9 +3016,7 @@ struct chain_lightning_t: public shaman_spell_t
 
     if ( player -> mastery.elemental_overload -> ok() )
     {
-      overload = new elemental_overload_spell_t( player, "chain_lightning_overload", player -> find_spell( 45297 ),
-      // TODO: Use multiplier from Mastery when it's fixed
-      player -> spec.fulmination -> effectN( 2 ).base_value() / 2 );
+      overload = new elemental_overload_spell_t( player, "chain_lightning_overload", player -> find_spell( 45297 ) );
       add_child( overload );
     }
   }
@@ -3066,6 +3064,7 @@ struct chain_lightning_t: public shaman_spell_t
   {
     shaman_spell_t::impact( state );
 
+    /*
     if ( result_is_hit( state -> result ) )
     {
       if ( p() -> spec.fulmination -> ok() )
@@ -3076,6 +3075,7 @@ struct chain_lightning_t: public shaman_spell_t
                                  this );
       }
     }
+    */
 
     p() -> trigger_tier15_2pc_caster( state );
     p() -> trigger_tier16_4pc_caster( state );
@@ -3185,9 +3185,7 @@ struct lava_beam_t : public shaman_spell_t
 
     if ( player -> mastery.elemental_overload -> ok() )
     {
-      overload = new elemental_overload_spell_t( player, "lava_beam_overload", player -> find_spell( 114738 ),
-      // TODO: Use multiplier from Mastery when it's fixed
-      player -> spec.fulmination -> effectN( 2 ).base_value() / 2 );
+      overload = new elemental_overload_spell_t( player, "lava_beam_overload", player -> find_spell( 114738 ) );
       add_child( overload );
     }
   }
@@ -3223,10 +3221,7 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( player -> mastery.elemental_overload -> ok() )
     {
-      overload = new elemental_overload_spell_t( player, "lava_burst_overload", player -> find_spell( 77451 ),
-      // TODO: Use multiplier from Mastery when it's fixed
-      // TODO: Spell data lagging behind, it's actually 16 per, and not 15
-      ( player -> spec.fulmination -> effectN( 1 ).base_value() + 1 ) / 2 );
+      overload = new elemental_overload_spell_t( player, "lava_burst_overload", player -> find_spell( 77451 ) );
       // State snapshot does not include crit damage bonuses, so need to set it here
       overload -> crit_bonus_multiplier += player -> artifact.molten_blast.percent();
       add_child( overload );
@@ -3306,6 +3301,7 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( result_is_hit( state -> result ) )
     {
+      /*
       if ( p() -> spec.fulmination -> ok() )
       {
         player -> resource_gain( RESOURCE_MAELSTROM,
@@ -3313,6 +3309,7 @@ struct lava_burst_t : public shaman_spell_t
                                  p() -> gain.fulmination,
                                  this );
       }
+      */
 
       if ( p() -> artifact.volcanic_inferno.rank() &&
            p() -> real_ppm.volcanic_inferno.trigger() )
@@ -3352,10 +3349,7 @@ struct lightning_bolt_t : public shaman_spell_t
 
     if ( player -> mastery.elemental_overload -> ok() )
     {
-      overload = new elemental_overload_spell_t( player, "lightning_bolt_overload", player -> find_spell( 45284 ),
-      // TODO: Use multiplier from Mastery when it's fixed
-      // TODO: Spell data lagging behind, it's actually 16 per, and not 15
-      ( player -> spec.fulmination -> effectN( 1 ).base_value() + 1 ) / 2 );
+      overload = new elemental_overload_spell_t( player, "lightning_bolt_overload", player -> find_spell( 45284 ) );
       add_child( overload );
     }
   }
@@ -3435,6 +3429,7 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     shaman_spell_t::impact( state );
 
+    /*
     if ( result_is_hit( state -> result ) )
     {
       if ( p() -> spec.fulmination -> ok() )
@@ -3445,6 +3440,7 @@ struct lightning_bolt_t : public shaman_spell_t
                                  this );
       }
     }
+    */
 
     p() -> trigger_tier15_2pc_caster( state );
     p() -> trigger_tier16_4pc_caster( state );
