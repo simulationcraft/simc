@@ -228,7 +228,8 @@ public:
     gain_t* bok_proc;
     gain_t* crackling_jade_lightning;
     gain_t* energy_refund;
-    gain_t* energizing_elixir;
+    gain_t* energizing_elixir_chi;
+    gain_t* energizing_elixir_energy;
     gain_t* keg_smash;
     gain_t* gift_of_the_ox;
     gain_t* mana_tea;
@@ -477,8 +478,6 @@ public:
     const spell_data_t* chi_wave_damage;
     const spell_data_t* chi_wave_heal;
     const spell_data_t* healing_elixirs;
-    const spell_data_t* rushing_jade_wind_damage;
-    const spell_data_t* spinning_crane_kick_damage;
     // Brewmaster
     const spell_data_t* aura_brewmaster_monk;
     const spell_data_t* breath_of_fire_dot;
@@ -2047,11 +2046,13 @@ struct tiger_palm_t: public monk_melee_attack_t
 
       // Power Strike activation
       // Legion change = The buff will no longer summon a chi sphere at max chi. It will hold the buff until you can actually use the power strike
-      if ( p() -> buff.power_strikes -> up() && ( p() -> resources.current[RESOURCE_CHI] + chi_gain < p() -> resources.max[RESOURCE_CHI] ) )
+      // TODO: Currently there appears to be a bug with Power Strikes and overflow
+      if ( p() -> buff.power_strikes -> up() && ( p() -> resources.current[RESOURCE_CHI] + chi_gain <= p() -> resources.max[RESOURCE_CHI] ) )
       {
         player -> resource_gain( RESOURCE_CHI, p() -> buff.power_strikes -> value(), p() -> gain.power_strikes, this );
         p() -> buff.power_strikes -> expire();
       }
+
       player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.tiger_palm, this );
 
       // Combo Breaker calculation
@@ -2546,7 +2547,7 @@ struct blackout_strike_t: public monk_melee_attack_t
 // SCK/RJW Tick Info
 // ==========================================================================
 
-// Shared tick action for both abilities
+// Shared tick action for both abilities ====================================
 struct tick_action_t : public monk_melee_attack_t
 {
   tick_action_t( const std::string& name, monk_t* p, const spell_data_t* data ) :
@@ -2581,12 +2582,11 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
     tick_zero = hasted_ticks = true;
 
-    attack_power_mod.direct = p -> passives.rushing_jade_wind_damage -> effectN( 1 ).ap_coeff();
     base_costs[RESOURCE_CHI] *= 1 + ( p -> specialization() == MONK_BREWMASTER ? p -> spec.stagger -> effectN( 15 ).percent() : 0 ); // -100% for Brewmasters
     spell_power_mod.direct = 0.0;
     dot_behavior = DOT_REFRESH; // Spell uses Pandemic Mechanics.
 
-    tick_action = new tick_action_t( "rushing_jade_wind_tick", p, p -> passives.rushing_jade_wind_damage );
+    tick_action = new tick_action_t( "rushing_jade_wind_tick", p, p -> talent.rushing_jade_wind -> effectN( 1 ).trigger() );
   }
 
   virtual void update_ready( timespan_t ) override
@@ -2663,14 +2663,13 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
     tick_zero = channeled = true;
 
-    attack_power_mod.direct = p -> passives.spinning_crane_kick_damage -> effectN( 1 ).ap_coeff();
     // Brewmasters cannot learn this but the auras are in the database. just being a completionist about this
     base_costs[RESOURCE_CHI] *= 1 + ( p -> specialization() == MONK_BREWMASTER ? p -> spec.stagger -> effectN( 15 ).percent() : 0 ); // -100% for Brewmasters
     spell_power_mod.direct = 0.0;
 
     dot_behavior = DOT_REFRESH; // Spell uses Pandemic Mechanics
 
-    tick_action = new tick_action_t( "spinning_crane_kick_tick", p, p -> passives.spinning_crane_kick_damage );
+    tick_action = new tick_action_t( "spinning_crane_kick_tick", p, p -> spec.spinning_crane_kick -> effectN( 1 ).trigger() );
   }
 
   virtual double action_multiplier() const override
@@ -3036,7 +3035,7 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
 
   double composite_aoe_multiplier(const action_state_t* state) const override
   {
-    if ( state->target != target )
+    if ( state -> target != target )
     {
       return 1.0 / state -> n_targets;
     }
@@ -3044,7 +3043,6 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
     return 1.0;
   }
 
-/*
   virtual double cost() const override
   {
     if ( p() -> buff.serenity -> check() )
@@ -3060,7 +3058,6 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
     if ( p() -> buff.serenity -> up() )
       p() -> gain.serenity -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] - cost() );
   }
-*/
 
   void execute() override
   {
@@ -3453,18 +3450,8 @@ struct energizing_elixir_t: public monk_spell_t
   {
     monk_spell_t::execute();
 
-    // Effect says 200 so figure out the max between Max Energy and 200
-    int energy_max_refund = std::min( p() -> talent.energizing_elixir -> effectN( 1 ).base_value(), static_cast<int>( p() -> resources.max[RESOURCE_ENERGY] ) );
-    // Then refund the difference between the max energy that can be refunded and the current energy
-    int energy_refund = energy_max_refund - static_cast<int>( p() -> resources.current[RESOURCE_ENERGY] );
-
-    // Effect says 10 so figure out the max between Max Chi and 10
-    int chi_max_refund = std::min( p() -> talent.energizing_elixir -> effectN( 2 ).base_value(), static_cast<int>( p() -> resources.max[RESOURCE_CHI] ) );
-    // Then refund the difference between the max chi that can be refunded and the current chi
-    int chi_refund = chi_max_refund - static_cast<int>( p() -> resources.current[RESOURCE_CHI] );
-
-    p() -> resource_gain( RESOURCE_ENERGY, energy_refund, p() -> gain.energy_refund );
-    p() -> resource_gain( RESOURCE_CHI, chi_refund, p() -> gain.chi_refund );
+    p() -> resource_gain( RESOURCE_ENERGY, p() -> talent.energizing_elixir -> effectN( 1 ).base_value(), p() -> gain.energizing_elixir_energy );
+    p() -> resource_gain( RESOURCE_CHI, p() -> talent.energizing_elixir -> effectN( 2 ).base_value(), p() -> gain.energizing_elixir_chi );
 
     // Energizing Brew increases your critical strike damage by 20% for 30 sec.
     // Since Energizing Brew was renamed to Energizing Elixer keep the code in for the time being
@@ -5678,8 +5665,6 @@ void monk_t::init_spells()
   passives.chi_wave_damage                  = find_spell( 132467 );
   passives.chi_wave_heal                    = find_spell( 132463 );
   passives.healing_elixirs                  = find_spell( 122281 ); // talent.healing_elixirs -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() 
-  passives.rushing_jade_wind_damage         = find_spell( 148187 );
-  passives.spinning_crane_kick_damage       = find_spell( 107270 );
 
   // Brewmaster
   passives.aura_brewmaster_monk             = find_spell( 137023 );
@@ -5929,6 +5914,7 @@ void monk_t::create_buffs()
 
   buff.hit_combo = buff_creator_t( this, "hit_combo", passives.hit_combo )
     .default_value( passives.hit_combo -> effectN( 1 ).percent() )
+    .refresh_behavior( BUFF_REFRESH_DURATION )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // TODO: Double check if Strength of Xuen Artifact trait works with Serenity
@@ -5975,7 +5961,8 @@ void monk_t::init_gains()
   gain.power_strikes            = get_gain( "power_strikes" );
   gain.bok_proc                 = get_gain( "blackout_kick_proc" );
   gain.crackling_jade_lightning = get_gain( "crackling_jade_lightning" );
-  gain.energizing_elixir        = get_gain( "energizing_elixir" );
+  gain.energizing_elixir_energy = get_gain( "energizing_elixir_energy" );
+  gain.energizing_elixir_chi    = get_gain( "energizing_elixir_chi" );
   gain.energy_refund            = get_gain( "energy_refund" );
   gain.keg_smash                = get_gain( "keg_smash" );
   gain.mana_tea                 = get_gain( "mana_tea" );
