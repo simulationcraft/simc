@@ -900,7 +900,8 @@ struct consecration_t : public paladin_spell_t
       background = ! ( p -> talents.consecration -> ok() );
     }
 
-    hasted_ticks   = false;
+    hasted_ticks   = true;
+    hasted_cd = true;
     may_miss       = false;
 
     tick_action = new consecration_tick_t( p );
@@ -2181,12 +2182,10 @@ struct blade_of_wrath_t : public holy_power_generator_t
 struct divine_hammer_tick_t : public paladin_melee_attack_t
 {
   const spell_data_t* sword_of_light;
-  blade_of_light_t* bol_proc;
 
   divine_hammer_tick_t( paladin_t* p, const std::string& options_str )
     : paladin_melee_attack_t( "divine_hammer_tick", p, p -> find_spell( 198137 ) ),
-      sword_of_light( p -> find_specialization_spell( "Sword of Light" ) ),
-      bol_proc( new blade_of_light_t( p, options_str ) )
+      sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
   {
     aoe         = -1;
     dual        = true;
@@ -2222,29 +2221,19 @@ struct divine_hammer_tick_t : public paladin_melee_attack_t
       p() -> buffs.conviction -> trigger();
     }
   }
-
-  void impact( action_state_t* s ) override
-  {
-    paladin_melee_attack_t::impact( s );
-    if ( result_is_hit( s -> result ) )
-    {
-      if ( p() -> artifact.blades_of_light.rank() )
-      {
-        bol_proc -> target = s -> target;
-        bol_proc -> schedule_execute();
-      }
-    }
-  }
 };
 
 struct divine_hammer_t : public paladin_spell_t
 {
+  blade_of_light_t* bol_proc;
+
   divine_hammer_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "divine_hammer", p, p -> find_talent_spell( "Divine Hammer" ) )
+    : paladin_spell_t( "divine_hammer", p, p -> find_talent_spell( "Divine Hammer" ) ),
+      bol_proc( new blade_of_light_t( p, options_str ) )
   {
     parse_options( options_str );
 
-    hasted_ticks   = true;
+    hasted_ticks   = false;
     may_miss       = false;
     tick_zero      = true;
 
@@ -2257,6 +2246,19 @@ struct divine_hammer_t : public paladin_spell_t
     // Holy Power gen
     int g = data().effectN( 2 ).base_value(); // default is a gain of 1 Holy Power
     p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_blade_of_justice ); // apply gain, record as due to BoJ
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    paladin_spell_t::impact( s );
+    if ( result_is_hit( s -> result ) )
+    {
+      if ( p() -> artifact.blades_of_light.rank() )
+      {
+        bol_proc -> target = s -> target;
+        bol_proc -> schedule_execute();
+      }
+    }
   }
 };
 
