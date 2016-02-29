@@ -2404,7 +2404,14 @@ struct trick_shot_t: public hunter_ranged_attack_t
 // Aimed Shot ========================================================================
 
 // (WIP) This is the ability that is proc'd by the MM artifact. 
-// It is affected by all debuffs that would affect Aimed Shot
+// Affected by:
+//   Deadeye
+//   True Aim (procs True Aim, as well)
+//   Deadly Aim
+//   Mastery
+// Not affected by:
+//   Vulnerable
+//   Careful Aim
 struct aimed_shot_artifact_proc_t: hunter_ranged_attack_t
 {
   aimed_shot_artifact_proc_t( hunter_t* p ):
@@ -2423,11 +2430,17 @@ struct aimed_shot_artifact_proc_t: hunter_ranged_attack_t
       hunter_ranged_attack_t::execute();
   }
 
+  virtual void impact( action_state_t* s )
+  {
+    hunter_ranged_attack_t::impact( s );
+
+    trigger_true_aim( p(), s -> target );
+  }
+
   virtual double composite_target_crit( player_t* t ) const override
   {
     double cc = hunter_ranged_attack_t::composite_target_crit( t );
 
-    cc += p() -> buffs.careful_aim -> value();
     cc += p() -> sets.set( SET_MELEE, T16, B4 ) -> effectN( 2 ).percent();
     cc += td( t ) -> debuffs.marked_for_death -> check_stack_value();
 
@@ -2439,9 +2452,12 @@ struct aimed_shot_artifact_proc_t: hunter_ranged_attack_t
     double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
 
     hunter_td_t* td = this -> td( t );
+
+    /* Bug? Does not benefit from Vulnerable on Alpha, but benefits from Deadeye
     if ( td -> debuffs.vulnerable -> up() )
-      m *= 1.0 + td -> debuffs.vulnerable -> check_stack_value();
-    else if ( td -> debuffs.deadeye -> up() )
+      m *= 1.0 + td -> debuffs.vulnerable -> check_stack_value(); */
+
+    if ( td -> debuffs.deadeye -> up() )
       m *= 1.0 + td -> debuffs.deadeye -> check_stack_value();
 
     if ( td -> debuffs.true_aim -> up() )
