@@ -2418,6 +2418,7 @@ struct aimed_shot_artifact_proc_t: hunter_ranged_attack_t
   {
     p() -> procs.aimed_shot_artifact -> occur();
 
+    // One proc triggers 6 projectiles
     for ( int i = 0; i < p() -> thasdorah -> driver() -> effectN( 1 ).base_value(); i++ )
       hunter_ranged_attack_t::execute();
   }
@@ -2468,7 +2469,8 @@ struct aimed_shot_t: public hunter_ranged_attack_t
 
   aimed_shot_t( hunter_t* p, const std::string& options_str ):
     hunter_ranged_attack_t( "aimed_shot", p, p -> find_specialization_spell( "Aimed Shot" ) ),
-    aimed_in_ca( p -> get_benefit( "aimed_in_careful_aim" ) )
+    aimed_in_ca( p -> get_benefit( "aimed_in_careful_aim" ) ),
+    aimed_shot_artifact_proc( nullptr )
   {
     parse_options( options_str );
 
@@ -2483,7 +2485,10 @@ struct aimed_shot_t: public hunter_ranged_attack_t
       impact_action = new trick_shot_t( p );
     
     if ( p -> thasdorah )
+    {
       aimed_shot_artifact_proc = new aimed_shot_artifact_proc_t( p );
+      add_child( aimed_shot_artifact_proc );
+    }
   }
 
   virtual double composite_target_crit( player_t* t ) const override
@@ -2531,10 +2536,7 @@ struct aimed_shot_t: public hunter_ranged_attack_t
     // Thas'dorah's proc has a 1/6 chance to fire 6 mini Aimed Shots. 
     // Proc chance missing from spell data.
     if ( aimed_shot_artifact_proc && rng().roll( 0.167 ) )
-    {
-      add_child( aimed_shot_artifact_proc );
       aimed_shot_artifact_proc -> execute();
-    }
   }
 
   virtual double composite_target_da_multiplier( player_t* t ) const override
