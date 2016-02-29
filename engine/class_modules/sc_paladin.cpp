@@ -1996,6 +1996,9 @@ struct zeal_t : public holy_power_generator_t
                                        +  p -> passives.sword_of_light -> effectN( 4 ).percent();
     base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
 
+    cooldown -> duration = data().charge_cooldown();
+    cooldown -> charges = data().charges();
+
     base_multiplier *= 1.0 + p -> artifact.sharpened_edge.percent();
   }
 
