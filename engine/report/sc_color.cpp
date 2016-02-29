@@ -251,6 +251,9 @@ rgb resource_color( resource_e type )
     case RESOURCE_CHI:
       return class_color( MONK );
 
+    case RESOURCE_MAELSTROM:
+      return rgb( "FF9900" );
+
     case RESOURCE_NONE:
     default:
       return GREY2;
