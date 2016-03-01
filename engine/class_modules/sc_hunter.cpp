@@ -18,7 +18,6 @@
 //  - Implement Volley
 //  - Implement Dark Ranger
 //  - Artifacts:
-//      * Critical Focus
 //      * Windrunner's Guidance
 //      * Call the Targets
 //      * Marked for Death
@@ -2618,12 +2617,12 @@ struct aimed_shot_t: public hunter_ranged_attack_t
 struct arcane_shot_t: public hunter_ranged_attack_t
 {
   double focus_gain;
-  arcane_shot_t( hunter_t* player, const std::string& options_str ):
-    hunter_ranged_attack_t( "arcane_shot", player, player -> find_specialization_spell( "Arcane Shot" ) )
+  arcane_shot_t( hunter_t* p, const std::string& options_str ):
+    hunter_ranged_attack_t( "arcane_shot", p, p -> find_specialization_spell( "Arcane Shot" ) )
   {
     parse_options( options_str );
 
-    focus_gain = p() -> find_spell( 187675 ) -> effectN( 1 ).base_value();
+    focus_gain = p -> find_spell( 187675 ) -> effectN( 1 ).base_value();
   }
 
   virtual void try_steady_focus() override
@@ -2638,13 +2637,18 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     if ( result_is_hit( execute_state -> result ) )
     {
       trigger_tier15_2pc_melee();
-      p() -> resource_gain( RESOURCE_FOCUS, focus_gain, p() -> gains.arcane_shot );
+
       if ( p() -> buffs.trueshot -> up() || p() -> ppm_hunters_mark.trigger() )
       {
         td( execute_state -> target ) -> debuffs.hunters_mark -> trigger();
         p() -> procs.hunters_mark -> occur();
         p() -> buffs.hunters_mark_exists -> trigger();
       }
+      
+      double focus_multiplier = 1.0;
+      if ( p() -> thasdorah && execute_state -> result == RESULT_CRIT )
+        focus_multiplier *= 1.0 + p() -> artifacts.critical_focus.percent();
+      p() -> resource_gain( RESOURCE_FOCUS, focus_multiplier * focus_gain, p() -> gains.arcane_shot );
     }
   }
 
