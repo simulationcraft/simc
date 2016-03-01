@@ -18,7 +18,6 @@
 //  - Implement Volley
 //  - Implement Dark Ranger
 //  - Artifacts:
-//      * Rapid Killing
 //      * Bullseye
 //      * Whispers of the Past
 //      * Call of the Hunter
@@ -120,6 +119,7 @@ public:
     buff_t* lock_and_load;
     buff_t* stampede;
     buff_t* trueshot;
+    buff_t* rapid_killing;
     buff_t* tier13_4pc;
     buff_t* tier16_2pc;
     buff_t* tier16_4pc;
@@ -3441,6 +3441,9 @@ struct trueshot_t: public hunter_spell_t
   {
     p() -> buffs.trueshot -> trigger( 1, value );
 
+    if ( p() -> thasdorah && p() -> artifacts.rapid_killing.rank() )
+      p() -> buffs.rapid_killing -> trigger();
+
     hunter_spell_t::execute();
   }
 };
@@ -3800,6 +3803,9 @@ void hunter_t::create_buffs()
     .add_invalidate( CACHE_ATTACK_HASTE );
 
   buffs.trueshot -> cooldown -> duration = timespan_t::zero();
+
+  buffs.rapid_killing               = buff_creator_t( this, 191342, "rapid_killing" )
+    .default_value( find_spell( 191342 ) -> effectN( 1 ).percent() );
 
   buffs.stampede = buff_creator_t( this, 130201, "stampede" ) // To allow action lists to react to stampede, rather than doing it in a roundabout way.
     .activated( true )
@@ -4270,6 +4276,9 @@ double hunter_t::composite_player_critical_damage_multiplier() const
     cdm += bugs ? std::min(15.0, seconds_buffed) * 0.03
                 : seconds_buffed * sets.set( HUNTER_MARKSMANSHIP, T17, B4 ) -> effectN( 1 ).percent();
   }
+
+  if( buffs.rapid_killing -> up() )
+    cdm *= 1.0 + buffs.rapid_killing -> value();
 
   return cdm;
 }
