@@ -2741,7 +2741,7 @@ struct marked_shot_t: public hunter_ranged_attack_t
       td -> debuffs.hunters_mark -> expire();
 
       // Marked for Death is applied on impact, unlike Vulnerable and Deadeye.
-      if ( p() -> thasdorah )
+      if ( p() -> thasdorah && p() -> artifacts.marked_for_death.rank() )
         td -> debuffs.marked_for_death -> trigger();
 
       trigger_true_aim( p(), s -> target );
@@ -3474,7 +3474,7 @@ dots( dots_t() )
                                 .default_value( p -> find_spell( 187131 ) -> effectN( 2 ).percent() );
   debuffs.marked_for_death  = buff_creator_t( *this, "marked_for_death" )
                                 .spell( p -> find_spell( 190533 ) )
-                                .default_value( p -> find_spell( 190533 ) -> effectN( 1 ).base_value() );
+                                .default_value( p -> find_artifact_spell( "Marked for Death" ).percent() );
   debuffs.deadeye           = buff_creator_t( *this, "deadeye" )
                                 .spell( p -> find_spell( 213424 ) )
                                 .default_value( p -> find_spell( 213424 ) -> effectN( 1 ).percent() );
