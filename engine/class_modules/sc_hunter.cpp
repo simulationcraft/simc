@@ -2367,6 +2367,21 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 // Marksmanship attacks 
 //==============================
 
+// Black Arrow ==============================================================
+
+struct black_arrow_t: public hunter_ranged_attack_t
+{
+  black_arrow_t( hunter_t* player, const std::string& options_str ):
+    hunter_ranged_attack_t( "black_arrow", player, player -> find_class_spell( "Black Arrow" ) )
+  {
+    parse_options( options_str );
+    proc = true;
+    tick_may_crit = true;
+    hasted_ticks = false;
+    // TODO not correctly specified
+  }
+};
+
 // Trick Shot =========================================================================
 
 struct trick_shot_t: public hunter_ranged_attack_t
@@ -2918,6 +2933,20 @@ struct explosive_trap_t: public hunter_ranged_attack_t
  }
 };
 
+// Serpent Sting Attack =====================================================
+
+struct serpent_sting_t: public hunter_ranged_attack_t
+{
+  serpent_sting_t( hunter_t* player ):
+    hunter_ranged_attack_t( "serpent_sting", player, player -> find_spell( 118253 ) )
+  {
+    background = true;
+    proc = true;
+    tick_may_crit = true;
+    hasted_ticks = false;
+  }
+};
+
 // Raptor Strike Attack ==============================================================
 
 struct raptor_strike_t: public hunter_melee_attack_t
@@ -3431,7 +3460,8 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "auto_attack"           ) return new            auto_attack_t( this, options_str );
   if ( name == "auto_shot"             ) return new           start_attack_t( this, options_str );
   if ( name == "barrage"               ) return new                barrage_t( this, options_str );
-  if ( name == "bestial_wrath"         ) return new          bestial_wrath_t( this, options_str );
+  if ( name == "bestial_wrath"         ) return new          bestial_wrath_t( this, options_str ); 
+  if ( name == "black_arrow"           ) return new            black_arrow_t( this, options_str );
   if ( name == "chimaera_shot"         ) return new          chimaera_shot_t( this, options_str );
   if ( name == "dire_beast"            ) return new             dire_beast_t( this, options_str );
   if ( name == "exotic_munitions"      ) return new       exotic_munitions_t( this, options_str );
@@ -3583,6 +3613,8 @@ void hunter_t::init_spells()
   talents.a_murder_of_crows                 = find_talent_spell( "A Murder of Crows" );
   talents.barrage                           = find_talent_spell( "Barrage" );
   talents.volley                            = find_talent_spell( "Volley" );
+  talents.mortal_wounds                     = find_talent_spell( "Mortal Wounds" );
+  talents.serpent_sting                     = find_talent_spell( "Serpent Sting" );
 
   //Tier 7
   talents.stampede                          = find_talent_spell( "Stampede" );
@@ -3666,6 +3698,9 @@ void hunter_t::init_spells()
   artifacts.jagged_claws             = find_artifact_spell( "Jagged Claws" );
   artifacts.hunters_guile            = find_artifact_spell( "Hunter's Guile" );
   
+  if ( talents.serpent_sting -> ok() )
+    active.serpent_sting = new attacks::serpent_sting_t( this );
+
   if ( talents.careful_aim -> ok() )
     active.piercing_shots = new attacks::piercing_shots_t( this, "piercing_shots", find_spell( 63468 ) );
 
