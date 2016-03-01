@@ -567,7 +567,8 @@ public:
     ab::impact( s );
 
     // Bullseye artifact trait - procs from specials on targets below 20%
-    if ( special && !background && p() -> thasdorah && p() -> artifacts.bullseye.rank() &&  s -> target -> health_percentage() < p() -> artifacts.bullseye.value() )
+    // TODO: Apparently this only procs on a single impact for multi-shot
+    if ( special && p() -> thasdorah && p() -> artifacts.bullseye.rank() &&  s -> target -> health_percentage() < p() -> artifacts.bullseye.value() )
       p() -> buffs.bullseye -> trigger();
   }
 
@@ -3819,7 +3820,6 @@ void hunter_t::create_buffs()
 
   buffs.bullseye                    = buff_creator_t( this, 204090, "bullseye" )
     .default_value( find_spell( 204090 ) -> effectN( 1 ).percent() )
-    .max_stack( 3 ) //FIXME - need to verify actual number of stacks
     .add_invalidate( CACHE_CRIT ); 
 
   buffs.stampede = buff_creator_t( this, 130201, "stampede" ) // To allow action lists to react to stampede, rather than doing it in a roundabout way.
