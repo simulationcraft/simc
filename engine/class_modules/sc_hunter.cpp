@@ -18,8 +18,6 @@
 //  - Implement Volley
 //  - Implement Dark Ranger
 //  - Artifacts:
-//      * Deadly Aim
-//      * Quick Shot
 //      * Critical Focus
 //      * Windrunner's Guidance
 //      * Call the Targets
@@ -3416,11 +3414,15 @@ struct stampede_t: public hunter_spell_t
 struct trueshot_t: public hunter_spell_t
 {
   double value;
-  trueshot_t( hunter_t* player, const std::string& options_str ):
-    hunter_spell_t( "trueshot", player, player -> specs.trueshot )
+  trueshot_t( hunter_t* p, const std::string& options_str ):
+    hunter_spell_t( "trueshot", p, p -> specs.trueshot )
   {
     parse_options( options_str );
     value = data().effectN( 1 ).percent();
+
+    if ( p -> thasdorah )
+      // Quick Shot: spell data adds -30 seconds to CD
+      cooldown -> duration += p -> artifacts.quick_shot.time_value();
   }
 
   virtual void execute() override
