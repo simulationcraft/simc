@@ -2433,8 +2433,8 @@ struct trick_shot_t: public hunter_ranged_attack_t
 //   Careful Aim
 struct aimed_shot_artifact_proc_t: hunter_ranged_attack_t
 {
-  aimed_shot_artifact_proc_t( hunter_t* p ):
-    hunter_ranged_attack_t( "aimed_shot_artifact", p, p -> find_spell( 191043 ) )
+  aimed_shot_artifact_proc_t( hunter_t* p, const std::string& name ):
+    hunter_ranged_attack_t( name, p, p -> find_spell( 191043 ) )
   {
     background = true;
     proc = true;
@@ -2542,7 +2542,7 @@ struct aimed_shot_t: public hunter_ranged_attack_t
       base_costs[ RESOURCE_FOCUS ] += p -> artifacts.precision.value();
 
       // Weapon passive
-      aimed_shot_artifact_proc = new aimed_shot_artifact_proc_t( p );
+      aimed_shot_artifact_proc = new aimed_shot_artifact_proc_t( p, "artifact" );
       add_child( aimed_shot_artifact_proc );
     }
   }
@@ -2830,8 +2830,8 @@ struct head_shot_t: public hunter_ranged_attack_t
 struct explosive_shot_activate_t: public hunter_ranged_attack_t
 {
   player_t* initial_target;
-  explosive_shot_activate_t( hunter_t* p ):
-    hunter_ranged_attack_t( "explosive_shot_activate", p, p -> find_spell( 212680 ) )
+  explosive_shot_activate_t( hunter_t* p, const std::string& name ):
+    hunter_ranged_attack_t( name, p, p -> find_spell( 212680 ) )
   {
     aoe = -1;
     dual = true;
@@ -2862,7 +2862,7 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( "explosive_shot", p, p -> find_talent_spell( "Explosive Shot" ) )
   {
     parse_options( options_str );
-    explosive_activate = new explosive_shot_activate_t( p );
+    explosive_activate = new explosive_shot_activate_t( p, "explosion" );
     add_child( explosive_activate );
     cooldown -> duration = p -> find_talent_spell( "Explosive Shot" ) -> cooldown();
 
@@ -3468,7 +3468,8 @@ dots( dots_t() )
   dots.poisoned_ammo = target -> get_dot( "poisoned_ammo", p );
   dots.piercing_shots = target -> get_dot( "piercing_shots", p );
 
-  debuffs.hunters_mark      = buff_creator_t( *this, "hunters_mark", p -> find_spell( 185365 ) -> effectN( 1 ).trigger() );
+  debuffs.hunters_mark      = buff_creator_t( *this, "hunters_mark" )
+                                .spell( p -> find_spell( 185365 ) );
   debuffs.vulnerable        = buff_creator_t( *this, "vulnerable" )
                                 .spell( p -> find_spell( 187131 ) )
                                 .default_value( p -> find_spell( 187131 ) -> effectN( 2 ).percent() );
@@ -3804,7 +3805,7 @@ void hunter_t::create_buffs()
   buffs.steady_focus                = buff_creator_t( this, 193534, "steady_focus" ).chance( talents.steady_focus -> ok() );
   buffs.pre_steady_focus            = buff_creator_t( this, "pre_steady_focus" ).max_stack( 2 ).quiet( true );
 
-  buffs.hunters_mark_exists         = buff_creator_t( this, "hunters_mark_exists" );
+  buffs.hunters_mark_exists         = buff_creator_t( this, 185365, "hunters_mark_exists" );
 
   buffs.lock_and_load               = buff_creator_t( this, 194594, "lock_and_load" ).max_stack( 2 );
 
@@ -4254,7 +4255,7 @@ double hunter_t::composite_melee_crit() const
 {
   double crit = player_t::composite_melee_crit();
 
-  if ( buffs.bullseye -> up() )
+  if ( buffs.bullseye -> check() )
     crit += buffs.bullseye -> check_stack_value();
 
   return crit;
@@ -4266,7 +4267,7 @@ double hunter_t::composite_spell_crit() const
 {
   double crit = player_t::composite_spell_crit();
 
-  if ( buffs.bullseye -> up() )
+  if ( buffs.bullseye -> check() )
     crit += buffs.bullseye -> check_stack_value();
 
   return crit;
