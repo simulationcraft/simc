@@ -18,7 +18,6 @@
 //  - Implement Volley
 //  - Implement Dark Ranger
 //  - Artifacts:
-//      * Precision
 //      * Rapid Killing
 //      * Bullseye
 //      * Whispers of the Past
@@ -2530,6 +2529,9 @@ struct aimed_shot_t: public hunter_ranged_attack_t
     {
       // Deadly Aim
       crit_bonus_multiplier *= 1.0 + p -> artifacts.deadly_aim.percent();
+
+      // Precision
+      base_costs[ RESOURCE_FOCUS ] += p -> artifacts.precision.value();
 
       // Weapon passive
       aimed_shot_artifact_proc = new aimed_shot_artifact_proc_t( p );
