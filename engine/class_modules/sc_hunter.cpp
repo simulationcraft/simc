@@ -12,13 +12,11 @@
 //   - Everything
 //
 // Marksmanship
-//  - Refactor mastery & careful aim bonuses
 //  - Re-implement Black Arrow
 //  - Implement Heightened Vulnerability
 //  - Implement Volley
 //  - Implement Dark Ranger
 //  - Artifacts:
-//      * Bullseye
 //      * Whispers of the Past
 //      * Call of the Hunter
 //
@@ -120,6 +118,7 @@ public:
     buff_t* stampede;
     buff_t* trueshot;
     buff_t* rapid_killing;
+    buff_t* bullseye;
     buff_t* tier13_4pc;
     buff_t* tier16_2pc;
     buff_t* tier16_4pc;
@@ -561,6 +560,15 @@ public:
       am *= 1.0 + p() -> specs.lone_wolf -> effectN( 1 ).percent();
 
     return am;
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    ab::impact( s );
+
+    // Bullseye artifact trait - procs from specials on targets below 20%
+    if ( special && !background && p() -> thasdorah && p() -> artifacts.bullseye.rank() &&  s -> target -> health_percentage() < p() -> artifacts.bullseye.value() )
+      p() -> buffs.bullseye -> trigger();
   }
 
   virtual double cast_regen() const
@@ -3807,6 +3815,11 @@ void hunter_t::create_buffs()
   buffs.rapid_killing               = buff_creator_t( this, 191342, "rapid_killing" )
     .default_value( find_spell( 191342 ) -> effectN( 1 ).percent() );
 
+  buffs.bullseye                    = buff_creator_t( this, 204090, "bullseye" )
+    .default_value( find_spell( 204090 ) -> effectN( 1 ).percent() )
+    .max_stack( 3 ) //FIXME - need to verify actual number of stacks
+    .add_invalidate( CACHE_CRIT ); 
+
   buffs.stampede = buff_creator_t( this, 130201, "stampede" ) // To allow action lists to react to stampede, rather than doing it in a roundabout way.
     .activated( true )
     .duration( timespan_t::from_millis( 40027 ) );
@@ -4240,6 +4253,9 @@ double hunter_t::composite_melee_crit() const
 {
   double crit = player_t::composite_melee_crit();
 
+  if ( buffs.bullseye -> up() )
+    crit += buffs.bullseye -> check_stack_value();
+
   return crit;
 }
 
@@ -4248,6 +4264,9 @@ double hunter_t::composite_melee_crit() const
 double hunter_t::composite_spell_crit() const
 {
   double crit = player_t::composite_spell_crit();
+
+  if ( buffs.bullseye -> up() )
+    crit += buffs.bullseye -> check_stack_value();
 
   return crit;
 }
