@@ -18,8 +18,6 @@
 //  - Implement Volley
 //  - Implement Dark Ranger
 //  - Artifacts:
-//      * Windrunner's Guidance
-//      * Call the Targets
 //      * Marked for Death
 //      * Precision
 //      * Rapid Killing
@@ -2091,16 +2089,19 @@ struct auto_attack_t: public hunter_melee_attack_t
 struct multi_shot_t: public hunter_ranged_attack_t
 {
   double focus_gain;
-  multi_shot_t( hunter_t* player, const std::string& options_str ):
-    hunter_ranged_attack_t( "multi_shot", player, player -> find_class_spell( "Multi-Shot" ) )
+  multi_shot_t( hunter_t* p, const std::string& options_str ):
+    hunter_ranged_attack_t( "multi_shot", p, p -> find_class_spell( "Multi-Shot" ) )
   {
     parse_options( options_str );
 
     aoe = -1;
     base_multiplier *= 1.0 + player -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent();
 
-    if ( p() -> specialization() == HUNTER_MARKSMANSHIP )
-      focus_gain = p() -> find_spell( 213363 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
+    if ( p -> thasdorah )
+      base_multiplier *= 1.0 + p -> artifacts.call_the_targets.percent();
+
+    if ( p -> specialization() == HUNTER_MARKSMANSHIP )
+      focus_gain = p -> find_spell( 213363 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
   }
   
   virtual void try_steady_focus() override
