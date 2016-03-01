@@ -89,6 +89,8 @@ public:
   // for 10 seconds.
   std::array< pet_t*, 10 > thunderhawk;
 
+  pet_t* hati;
+
   // Tier 15 4-piece bonus
   attack_t* action_lightning_arrow_aimed_shot;
   attack_t* action_lightning_arrow_arcane_shot;
@@ -101,6 +103,7 @@ public:
 
   // Artifact abilities
   const special_effect_t* thasdorah;
+  const special_effect_t* titanstrike;
 
   // Buffs
   struct buffs_t
@@ -365,6 +368,7 @@ public:
     active( actives_t() ),
     pet_dire_beasts(),
     thunderhawk(),
+    hati(),
     action_lightning_arrow_aimed_shot(),
     action_lightning_arrow_arcane_shot(),
     action_lightning_arrow_multi_shot(),
@@ -372,6 +376,7 @@ public:
     longview( nullptr ),
     blackness( nullptr ),
     thasdorah( nullptr ),
+    titanstrike( nullptr ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
@@ -516,6 +521,12 @@ static void thasdorah( special_effect_t& effect )
 {
   hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
   do_trinket_init( hunter, HUNTER_MARKSMANSHIP, hunter -> thasdorah, effect );
+}
+
+static void titanstrike( special_effect_t& effect )
+{
+  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
+  do_trinket_init( hunter, HUNTER_BEAST_MASTERY, hunter -> titanstrike, effect );
 }
 
 // Template for common hunter action code. See priest_action_t.
@@ -1731,6 +1742,62 @@ struct dire_critter_t: public hunter_pet_t
     // FIXME numbers are from treant. correct them.
     resources.base[RESOURCE_HEALTH] = 9999; // Level 85 value
     resources.base[RESOURCE_MANA] = 0;
+
+    stamina_per_owner = 0;
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, o() -> level() );
+    main_hand_weapon.max_dmg    = main_hand_weapon.min_dmg;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 2 );
+
+    main_hand_attack = new melee_t( *this );
+  }
+
+  virtual void summon( timespan_t duration = timespan_t::zero() ) override
+  {
+    hunter_pet_t::summon( duration );
+
+    // attack immediately on summons
+    main_hand_attack -> execute();
+  }
+};
+
+// ==========================================================================
+// Hati 
+// ==========================================================================
+
+struct hati_t: public hunter_pet_t
+{
+  struct melee_t: public hunter_pet_action_t < hati_t, melee_attack_t >
+  {
+    melee_t( hati_t& p ):
+      base_t( "hati_melee", p )
+    {
+      weapon = &( player -> main_hand_weapon );
+      weapon_multiplier = 0;
+      base_execute_time = weapon -> swing_time;
+      base_dd_min = base_dd_max = player -> dbc.spell_scaling( p.o() -> type, p.o() -> level() );
+      attack_power_mod.direct = 0.5714;
+      school = SCHOOL_PHYSICAL;
+      trigger_gcd = timespan_t::zero();
+      background = true;
+      repeating = true;
+      may_glance = true;
+      may_crit = true;
+      special = false;
+      base_multiplier *= 1.15;
+    }
+  };
+
+  hati_t( hunter_t& owner ):
+  hunter_pet_t( *owner.sim, owner, std::string( "hati" ), PET_HUNTER, true /*GUARDIAN*/ )
+  {
+    owner_coeff.ap_from_ap = 1.0;
+    regen_type = REGEN_DISABLED;
+  }
+
+  virtual void init_base_stats() override
+  {
+    hunter_pet_t::init_base_stats();
 
     stamina_per_owner = 0;
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -3231,6 +3298,9 @@ struct summon_pet_t: public hunter_spell_t
     pet -> type = PLAYER_PET;
     pet -> summon();
 
+    if ( p() -> titanstrike && p() -> hati )
+      p() -> hati -> summon();
+
     if ( p() -> main_hand_attack ) p() -> main_hand_attack -> cancel();
   }
 
@@ -3290,7 +3360,7 @@ struct dire_beast_t: public hunter_spell_t
     // isn't important and combat log testing shows some variation in
     // attack speeds.  This is not quite perfect but more accurate
     // than plateaus.
-    const timespan_t base_duration = timespan_t::from_seconds( 15.0 );
+    const timespan_t base_duration = timespan_t::from_seconds( 8.0 );
     const timespan_t swing_time = beast -> main_hand_weapon.swing_time * beast -> composite_melee_speed();
     double partial_attacks_per_summon = base_duration / swing_time;
     double base_attacks_per_summon = floor( partial_attacks_per_summon - 0.5 ); // 8.4 -> 7, 8.5 -> 8, 8.6 -> 8, etc
@@ -3600,6 +3670,9 @@ void hunter_t::create_pets()
       thunderhawk[i] = new pets::tier15_thunderhawk_t( *this );
     }
   }
+
+  if ( titanstrike )
+    hati = new pets::hati_t( *this );
 }
 
 // hunter_t::init_spells ====================================================
@@ -4657,6 +4730,7 @@ struct hunter_module_t: public module_t
     unique_gear::register_special_effect( 184901, longview );
     unique_gear::register_special_effect( 184902, blackness );
     unique_gear::register_special_effect( 190852, thasdorah );
+    unique_gear::register_special_effect( 190852, titanstrike );
   }
 
   virtual void init( player_t* p ) const override
