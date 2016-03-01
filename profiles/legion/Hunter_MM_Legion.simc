@@ -3,16 +3,18 @@ level=100
 race=blood_elf
 role=attack
 position=ranged_back
-talents=2030332
+talents=2030123
+artifact=http://beta.wowdb.com/artifact-calculator#OJJZbbbbJAAAAAAAAAA
 spec=marksmanship
 
 actions=auto_shot
 actions+=/trueshot
 actions+=/marked_shot,if=(talent.patient_sniper.enabled&debuff.deadeye.down)|(!talent.patient_sniper.enabled&(debuff.vulnerable.remains<3|debuff.vulnerable.stack<3|spell_targets.marked_shot>5))
+actions+=/barrage
 actions+=/explosive_shot
+actions+=/a_murder_of_crows
 actions+=/aimed_shot,if=debuff.deadeye.up|focus>80
 actions+=/multi_shot,if=spell_targets.multi_shot>=3
-actions+=/arcane_shot
 actions+=/arcane_shot
 
 head=rylakstalkers_headguard,id=115545,bonus_id=566
@@ -29,7 +31,7 @@ finger1=unexploded_explosive_shard,id=113877,bonus_id=566
 finger2=spellbound_solium_band_of_fatal_strikes,id=118302
 trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=566
 trinket2=humming_blackiron_trigger,id=113985,bonus_id=566
-main_hand=mouth_of_the_fury,id=113885,bonus_id=566
+main_hand=thasdorah_legacy_of_the_windrunners,id=128826
 
 # Gear Summary
 # gear_ilvl=742.33
