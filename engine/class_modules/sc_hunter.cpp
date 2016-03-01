@@ -2434,6 +2434,10 @@ struct aimed_shot_artifact_proc_t: hunter_ranged_attack_t
   {
     background = true;
     proc = true;
+
+    // No need to check for Artifact since this only triggers with Artifact equipped
+    // Deadly Aim
+    crit_bonus_multiplier *= 1.0 + p -> artifacts.deadly_aim.percent();
   }
 
   virtual void execute()
@@ -2490,6 +2494,16 @@ struct aimed_shot_artifact_proc_t: hunter_ranged_attack_t
 
     return am;
   }
+
+  virtual double composite_crit_multiplier() const override
+  {
+    double cm = hunter_ranged_attack_t::composite_crit_multiplier();
+
+    if ( p() -> thasdorah )
+      cm *= 1.0 + p() -> find_artifact_spell( "Deadly Aim" ).rank() * 0.03;
+
+    return cm;
+  }
 };
 
 struct aimed_shot_t: public hunter_ranged_attack_t
@@ -2517,6 +2531,10 @@ struct aimed_shot_t: public hunter_ranged_attack_t
     
     if ( p -> thasdorah )
     {
+      // Deadly Aim
+      crit_bonus_multiplier *= 1.0 + p -> artifacts.deadly_aim.percent();
+
+      // Weapon passive
       aimed_shot_artifact_proc = new aimed_shot_artifact_proc_t( p );
       add_child( aimed_shot_artifact_proc );
     }
