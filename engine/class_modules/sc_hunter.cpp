@@ -18,7 +18,6 @@
 //  - Implement Volley
 //  - Implement Dark Ranger
 //  - Artifacts:
-//      * Marked for Death
 //      * Precision
 //      * Rapid Killing
 //      * Bullseye
@@ -2730,6 +2729,9 @@ struct marked_shot_t: public hunter_ranged_attack_t
       hunter_ranged_attack_t::impact( s );
 
       td -> debuffs.hunters_mark -> expire();
+
+      // Marked for Death is applied on impact, unlike Vulnerable and Deadeye.
+      td -> debuffs.marked_for_death -> trigger();
 
       trigger_true_aim( p(), s -> target );
     }
