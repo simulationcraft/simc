@@ -9,19 +9,76 @@
 // TODO
 //
 // Beast Mastery
-//   - Everything
+//   - Aspect of the Wild
+//   - Cobra Shot (costs focus)
+//   - Dire Beast (resets BW)
+//   - Wild Call
+// Talents
+//   - One with the Pack
+//   - Way of the Cobra
+//   - Dire Stable
+//   - Stomp
+//   - Big Game Hunter
+//   - Bestial Fury
+//   - Stampede (rework)
+//   - Killer Cobra
+//   - Aspect of the Beast
+// Artifacts
+//   - Jaws of Thunder
+//   - Spitting Cobras
+//   - Wilderness Expert
+//   - Pack Leader
+//   - Unleash the Beast
+//   - Renewed Vigor
+//   - Focus of the Titans
+//   - Furious Swipes
+//   - Titan's Thunder
+//   - Master of Beasts
+//   - Stormshot
+//   - Surge of the Stormgod
 //
 // Marksmanship
-//  - Re-implement Black Arrow
-//  - Implement Heightened Vulnerability
-//  - Implement Volley
-//  - Implement Dark Ranger
-//  - Artifacts:
-//      * Whispers of the Past
-//      * Call of the Hunter
+//   - Re-implement Black Arrow
+//   - Implement Heightened Vulnerability
+//   - Implement Volley
+//   - Implement Dark Ranger
+// Artifacts
+//   - Whispers of the Past
+//   - Call of the Hunter
 //
 // Survival
-//  - Everything
+//   - Carve
+//   - Flanking Strike
+//   - Hatchet Toss (really?)
+//   - Lacerate
+//   - Mongoose Bite
+//   - Raptor Strike
+//   - Mastery: Hunting Companion
+// Talents
+//   - Animal Instincts
+//   - Throwing Axes
+//   - Way of the Mok'Nathal
+//   - Improved Traps
+//   - Steel Trap
+//   - Dragonsfire Grenade
+//   - Snake Hunter
+//   - Butchery
+//   - Mortal Wounds
+//   - Serpent Sting
+//   - Spitting Cobra
+//   - Expert Trapper
+// Artifacts
+//   - Sharpened Beak
+//   - Raptor's Cry
+//   - Hellcarver
+//   - My Beloved Monster
+//   - Strength of the Mountain
+//   - Fluffy, Go
+//   - Jagged Claws
+//   - Hunter's Guile
+//   - Eagle's Bite
+//   - Aspect of the Skylord
+//   - Talon Strike
 //
 // ==========================================================================
 
