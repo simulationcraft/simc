@@ -2741,7 +2741,8 @@ struct marked_shot_t: public hunter_ranged_attack_t
       td -> debuffs.hunters_mark -> expire();
 
       // Marked for Death is applied on impact, unlike Vulnerable and Deadeye.
-      td -> debuffs.marked_for_death -> trigger();
+      if ( p() -> thasdorah )
+        td -> debuffs.marked_for_death -> trigger();
 
       trigger_true_aim( p(), s -> target );
     }
