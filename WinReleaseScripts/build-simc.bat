@@ -14,11 +14,11 @@ if "%PLATFORM%" == "x64" set SUFFIX=64
 if "%VSVERSION%" == "" set VSVERSION=2013
 
 :: Determine current Simulationcraft version
-if "%SIMCVERSION%" == "" for /F "tokens=3 delims= " %%i in ('findstr /C:"#define SC_MAJOR_VERSION" %SIMCDIR%\engine\simulationcraft.hpp') do set SC_MAJOR_VERSION=%%~i
-if "%SIMCVERSION%" == "" for /F "tokens=3 delims= " %%i in ('findstr /C:"#define SC_MINOR_VERSION" %SIMCDIR%\engine\simulationcraft.hpp') do set SC_MINOR_VERSION=%%~i
-if "%SIMCVERSION%" == "" set SIMCVERSION=%SC_MAJOR_VERSION%-%SC_MINOR_VERSION%
+if not defined SIMCVERSION for /F "tokens=3 delims= " %%i in ('findstr /C:"#define SC_MAJOR_VERSION" %SIMCDIR%\engine\simulationcraft.hpp') do set SC_MAJOR_VERSION=%%~i
+if not defined SIMCVERSION for /F "tokens=3 delims= " %%i in ('findstr /C:"#define SC_MINOR_VERSION" %SIMCDIR%\engine\simulationcraft.hpp') do set SC_MINOR_VERSION=%%~i
+if not defined SIMCVERSION set SIMCVERSION=%SC_MAJOR_VERSION%-%SC_MINOR_VERSION%
 if "%SIMCVERSION%" == "-" call :error Unable to determine SIMCVERSION
-if ERRORLEVEL 1 exit /b 1
+if ERRORLEVEL 1 goto :enderror
 
 :: Ensure mandatory environment variables are set and reasonable
 if not defined INSTALL call :error INSTALL environment variable not defined
@@ -65,7 +65,6 @@ if ERRORLEVEL 1 goto :enderror
 if "%3" neq "" set TARGET=/t:%3
 if not defined SOLUTION set SOLUTION=simc_vs%VSVERSION%.sln
 
-msbuild.exe "%SIMCDIR%\%SOLUTION%" /p:configuration=%1 /p:platform=%2 /nr:true /m /t:Clean
 msbuild.exe "%SIMCDIR%\%SOLUTION%" /p:configuration=%1 /p:platform=%2 /nr:true /m %TARGET%
 if ERRORLEVEL 1 exit /b 1
 :: Start release copying process
