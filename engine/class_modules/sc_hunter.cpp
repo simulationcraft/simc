@@ -13,7 +13,7 @@
 //   - Cobra Shot (costs focus)
 //   - Dire Beast (resets BW)
 //   - Wild Call
-// Talents
+//  Talents
 //   - One with the Pack
 //   - Way of the Cobra
 //   - Dire Stable
@@ -23,7 +23,7 @@
 //   - Stampede (rework)
 //   - Killer Cobra
 //   - Aspect of the Beast
-// Artifacts
+//  Artifacts
 //   - Jaws of Thunder
 //   - Spitting Cobras
 //   - Wilderness Expert
@@ -38,11 +38,12 @@
 //   - Surge of the Stormgod
 //
 // Marksmanship
-//   - Re-implement Black Arrow
-//   - Implement Heightened Vulnerability
-//   - Implement Volley
-//   - Implement Dark Ranger
-// Artifacts
+//  Talents
+//   - Black Arrow
+//   - Heightened Vulnerability
+//   - Volley
+//   - Dark Ranger
+//  Artifacts
 //   - Whispers of the Past
 //   - Call of the Hunter
 //
@@ -54,7 +55,7 @@
 //   - Mongoose Bite
 //   - Raptor Strike
 //   - Mastery: Hunting Companion
-// Talents
+//  Talents
 //   - Animal Instincts
 //   - Throwing Axes
 //   - Way of the Mok'Nathal
@@ -67,7 +68,7 @@
 //   - Serpent Sting
 //   - Spitting Cobra
 //   - Expert Trapper
-// Artifacts
+//  Artifacts
 //   - Sharpened Beak
 //   - Raptor's Cry
 //   - Hellcarver
@@ -4787,7 +4788,7 @@ struct hunter_module_t: public module_t
     unique_gear::register_special_effect( 184901, longview );
     unique_gear::register_special_effect( 184902, blackness );
     unique_gear::register_special_effect( 190852, thasdorah );
-    unique_gear::register_special_effect( 190852, titanstrike );
+    unique_gear::register_special_effect( 197344, titanstrike );
   }
 
   virtual void init( player_t* p ) const override
