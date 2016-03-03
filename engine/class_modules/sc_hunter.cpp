@@ -11,8 +11,7 @@
 // Beast Mastery
 //   - Aspect of the Wild
 //   - Cobra Shot (costs focus)
-//   - Dire Beast (resets BW)
-//   - Wild Call
+//   - Dire Beast (focus gain is passive now)
 //  Talents
 //   - One with the Pack
 //   - Way of the Cobra
@@ -3414,6 +3413,9 @@ struct dire_beast_t: public hunter_spell_t
   {
     hunter_spell_t::execute();
     p() -> no_steady_focus();
+
+    timespan_t t = timespan_t::from_seconds( p() -> specs.dire_beast -> effectN( 1 ).base_value() );
+    p() -> cooldowns.bestial_wrath -> adjust( -t );
 
     pet_t* beast;
     for( size_t i = 0; i < p() -> pet_dire_beasts.size(); i++ )
