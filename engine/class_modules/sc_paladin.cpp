@@ -2857,7 +2857,8 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   actor_target_data_t( target, paladin )
 {
   dots.execution_sentence = target -> get_dot( "execution_sentence", paladin );
-  buffs.debuffs_judgment = buff_creator_t( *this, "judgment", paladin -> find_spell( 197277 ));
+  buffs.debuffs_judgment = buff_creator_t( *this, "judgment", paladin -> find_spell( 197277 ))
+    .duration( ( ( paladin -> talents.mass_judgment -> ok() ) ? 2 : 1 ) * paladin -> find_spell( 197277 ) -> duration() );
 }
 
 // paladin_t::create_action =================================================
