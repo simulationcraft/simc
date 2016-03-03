@@ -568,7 +568,7 @@ public:
 
     // Bullseye artifact trait - procs from specials on targets below 20%
     // TODO: Apparently this only procs on a single impact for multi-shot
-    if ( special && p() -> thasdorah && p() -> artifacts.bullseye.rank() &&  s -> target -> health_percentage() < p() -> artifacts.bullseye.value() )
+    if ( ab::special && p() -> thasdorah && p() -> artifacts.bullseye.rank() &&  s -> target -> health_percentage() < p() -> artifacts.bullseye.value() )
       p() -> buffs.bullseye -> trigger();
   }
 
