@@ -1759,20 +1759,6 @@ struct holy_power_generator_t : public paladin_melee_attack_t
   {
 
   }
-
-  void impact( action_state_t* s ) override
-  {
-    paladin_melee_attack_t::impact( s );
-
-    if ( result_is_hit( s -> result ) && !background )
-    {
-      // Conviction
-      if ( p() -> passives.conviction -> ok() && rng().roll( p() -> passives.conviction -> proc_chance() ) )
-      {
-        p() -> buffs.conviction -> trigger();
-      }
-    }
-  }
 };
 
 struct holy_power_consumer_t : public paladin_melee_attack_t
@@ -1889,6 +1875,9 @@ struct crusader_strike_t : public holy_power_generator_t
 
     base_multiplier *= 1.0 + p -> artifact.sharpened_edge.percent();
 
+    cooldown -> duration = data().charge_cooldown();
+    cooldown -> charges = data().charges();
+
     background = ( p -> talents.crusader_flurry -> ok() ) || ( p -> talents.zeal -> ok() );
   }
 
@@ -1896,19 +1885,6 @@ struct crusader_strike_t : public holy_power_generator_t
   {
     holy_power_generator_t::execute();
     retribution_trinket_trigger();
-  }
-
-  double action_multiplier() const override
-  {
-    double am = holy_power_generator_t::action_multiplier();
-
-    // Fires of Justice buffs CS damage by 25%
-    if ( p() -> talents.fires_of_justice -> ok() )
-    {
-      am *= 1.0 + p() -> talents.fires_of_justice -> effectN( 1 ).percent();
-    }
-
-    return am;
   }
 
   void impact( action_state_t* s ) override
@@ -1921,6 +1897,12 @@ struct crusader_strike_t : public holy_power_generator_t
       // Holy Power gains, only relevant if CS connects
       int g = data().effectN( 3 ).base_value(); // default is a gain of 1 Holy Power
       p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_crusader_strike ); // apply gain, record as due to CS
+
+      // fires of justice
+      if ( p() -> talents.fires_of_justice -> ok() && rng().roll( p() -> talents.fires_of_justice -> proc_chance() ) )
+      {
+        p() -> buffs.conviction -> trigger();
+      }
     }
   }
 };
@@ -2166,16 +2148,6 @@ struct divine_hammer_tick_t : public paladin_melee_attack_t
     ground_aoe = true;
 
     base_multiplier *= 1.0 + p -> artifact.deliver_the_justice.percent();
-  }
-
-  virtual void execute() override
-  {
-    paladin_melee_attack_t::execute();
-    // Conviction
-    if ( p() -> passives.conviction -> ok() && rng().roll( p() -> passives.conviction -> proc_chance() ) )
-    {
-      p() -> buffs.conviction -> trigger();
-    }
   }
 };
 
