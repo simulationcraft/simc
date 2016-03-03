@@ -312,6 +312,7 @@ public:
   virtual double    composite_melee_crit() const override;
   virtual double    composite_melee_expertise( const weapon_t* weapon ) const override;
   virtual double    composite_melee_haste() const override;
+  virtual double    composite_melee_speed() const override;
   virtual double    composite_spell_crit() const override;
   virtual double    composite_spell_haste() const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
@@ -1759,21 +1760,6 @@ struct holy_power_generator_t : public paladin_melee_attack_t
 
   }
 
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double m = paladin_melee_attack_t::composite_target_multiplier( t );
-
-    paladin_td_t* td = this -> td( t );
-
-    if ( td -> buffs.debuffs_judgment -> up() )
-    {
-      double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
-      m *= judgment_multiplier;
-    }
-
-    return m;
-  }
-
   void impact( action_state_t* s ) override
   {
     paladin_melee_attack_t::impact( s );
@@ -2052,21 +2038,6 @@ struct blade_of_light_t : public paladin_melee_attack_t
 
     background = true;
   }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double m = paladin_melee_attack_t::composite_target_multiplier( t );
-
-    paladin_td_t* td = this -> td( t );
-
-    if ( td -> buffs.debuffs_judgment -> up() )
-    {
-      double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
-      m *= judgment_multiplier;
-    }
-
-    return m;
-  }
 };
 
 struct blade_of_justice_t : public holy_power_generator_t
@@ -2195,21 +2166,6 @@ struct divine_hammer_tick_t : public paladin_melee_attack_t
     ground_aoe = true;
 
     base_multiplier *= 1.0 + p -> artifact.deliver_the_justice.percent();
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double m = paladin_melee_attack_t::composite_target_multiplier( t );
-
-    paladin_td_t* td = this -> td( t );
-
-    if ( td -> buffs.debuffs_judgment -> up() )
-    {
-      double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();;
-      m *= judgment_multiplier;
-    }
-
-    return m;
   }
 
   virtual void execute() override
@@ -2542,6 +2498,13 @@ struct judgment_t : public paladin_melee_attack_t
     }
 
     paladin_melee_attack_t::impact( s );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = paladin_melee_attack_t::action_multiplier();
+    am *= 1.0 + 2 * p() -> get_divine_judgment();
+    return am;
   }
 };
 
@@ -3104,7 +3067,7 @@ void paladin_t::create_buffs()
   buffs.zeal                           = buff_creator_t( this, "zeal" ).spell( find_spell( 203317 ) )
                                           .add_invalidate( CACHE_HASTE );
   buffs.seal_of_light                  = buff_creator_t( this, "seal_of_light" ).spell( find_spell( 202273 ) )
-                                          .add_invalidate( CACHE_HASTE );
+                                          .add_invalidate( CACHE_ATTACK_SPEED );
   buffs.conviction                     = buff_creator_t( this, "conviction" ).spell( find_spell( 209785 ) );
   buffs.blessing_of_might              = buff_creator_t( this, "blessing_of_might" ).spell( find_spell( 203528 ) );
 
@@ -3853,10 +3816,19 @@ double paladin_t::composite_melee_haste() const
   if ( buffs.zeal -> up() )
     h /= ( 1.0 + buffs.zeal -> stack() * buffs.zeal -> data().effectN( 4 ).percent() );
 
-  if ( buffs.seal_of_light -> up() )
-    h /= ( 1.0 + buffs.seal_of_light -> data().effectN( 1 ).percent() );
-
   return h;
+}
+
+// paladin_t::composite_melee_speed =========================================
+
+double paladin_t::composite_melee_speed() const
+{
+  double m = player_t::composite_melee_speed();
+
+  if ( buffs.seal_of_light -> up() )
+    m /= ( 1.0 + buffs.seal_of_light -> data().effectN( 1 ).percent() );
+
+  return m;
 }
 
 // paladin_t::composite_spell_crit ==========================================
@@ -3884,10 +3856,6 @@ double paladin_t::composite_spell_haste() const
 
   // Infusion of Light (Holy) adds 10% haste
   h /= 1.0 + passives.infusion_of_light -> effectN( 2 ).percent();
-
-  // seal of light adds 25% haste
-  if ( buffs.seal_of_light -> up() )
-    h /= ( 1.0 + buffs.seal_of_light -> data().effectN( 1 ).percent() );
 
   // zeal adds 20% haste per stack
   if ( buffs.zeal -> up() )
