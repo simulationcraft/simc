@@ -1543,6 +1543,8 @@ class SpellDataGenerator(DataGenerator):
           ( 33750, 0 ),                                 # Offhand Windfury Attack
           ( 210801, 0 ), ( 210797, 0 ),                 # Crashing Storm
           ( 207835, 0 ), ( 213307, 0 ),                 # Stormlash auxilary spell(s)
+          # Various feral spirit variation special attacks
+          ( 198455, 0 ), ( 198483, 0 ), ( 198485, 0 ), ( 198480, 0 ),
         ),
 
         # Mage:
