@@ -134,7 +134,6 @@ public:
   {
     const spell_data_t* bladed_armor;
     const spell_data_t* boundless_conviction;
-    const spell_data_t* conviction;
     const spell_data_t* divine_bulwark;
     const spell_data_t* grand_crusader;
     const spell_data_t* guarded_by_the_light;
@@ -2136,7 +2135,7 @@ struct divine_hammer_tick_t : public paladin_melee_attack_t
 {
   const spell_data_t* sword_of_light;
 
-  divine_hammer_tick_t( paladin_t* p, const std::string& options_str )
+  divine_hammer_tick_t( paladin_t* p )
     : paladin_melee_attack_t( "divine_hammer_tick", p, p -> find_spell( 198137 ) ),
       sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
   {
@@ -2165,7 +2164,7 @@ struct divine_hammer_t : public paladin_spell_t
     may_miss       = false;
     tick_zero      = true;
 
-    tick_action = new divine_hammer_tick_t( p, options_str );
+    tick_action = new divine_hammer_tick_t( p );
   }
 
   virtual void execute() override
@@ -3617,7 +3616,6 @@ void paladin_t::init_spells()
   // Ret Passives
   passives.sword_of_light         = find_specialization_spell( "Sword of Light" );
   passives.sword_of_light_value   = find_spell( passives.sword_of_light -> ok() ? 20113 : 0 );
-  passives.conviction             = find_spell( 185817 );
 
   if ( specialization() == PALADIN_RETRIBUTION )
   {
