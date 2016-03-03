@@ -250,6 +250,7 @@ public:
     artifact_power_t healing_storm;                 // NYI
     artifact_power_t protector_of_the_ashen_blade;  // NYI
     artifact_power_t blades_of_light;
+    artifact_power_t ashbringers_light;
   } artifact;
 
   player_t* beacon_target;
@@ -3585,6 +3586,7 @@ void paladin_t::init_spells()
   artifact.wrath_of_the_ashbringer = find_artifact_spell( "Wrath of the Ashbringer" );
   artifact.endless_resolve         = find_artifact_spell( "Endless Resolve" );
   artifact.deflection              = find_artifact_spell( "Deflection" );
+  artifact.ashbringers_light       = find_artifact_spell( "Ashbringer's Light" );
 
   // Spells
   spells.holy_light                    = find_specialization_spell( "Holy Light" );
@@ -3877,6 +3879,9 @@ double paladin_t::composite_player_multiplier( school_e school ) const
   // WoD Ret PvP 4-piece buffs everything
   if ( buffs.vindicators_fury -> check() )
     m *= 1.0 + buffs.vindicators_fury -> value() * buffs.vindicators_fury -> data().effectN( 1 ).percent();
+
+
+  m *= 1.0 + artifact.ashbringers_light.percent();
 
   return m;
 }
