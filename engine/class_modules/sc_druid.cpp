@@ -16,15 +16,28 @@ namespace { // UNNAMED NAMESPACE
   Astral Influence
   Affinity active components
   All legendary items
+  Dash
+  Artifact 20 rank traits?
 
   Feral =====================================================================
   Predator vs. adds
   Artifact utility traits
+  Ashamane's Bite update
+  Feral Power change
+  Scent of Blood update
+  Sharpened Claws update
+  Implement Shredder Fangs
 
   Balance ===================================================================
   Stellar Drift cast while moving
   Force of Nature
   Shooting Stars AsP react
+  Check Echoing Stars
+  Check Starlord
+  Check Fury of Elune
+  Moon and Stars update
+  Check Power of Goldrinn
+  Implement Skywrath
 
   Touch of the Moon
   Light of the Sun
@@ -2639,15 +2652,18 @@ public:
 
 struct ferocious_bite_t : public cat_attack_t
 {
-  struct shadow_bleed_t : public cat_attack_t
+  struct ashamanes_rip_t : public cat_attack_t
   {
-    shadow_bleed_t( const std::string& name, druid_t* p, const spell_data_t* s ) :
-      cat_attack_t( name, p, s )
+    ashamanes_rip_t( druid_t* p ) :
+      cat_attack_t( "ashamanes_rip", p, p -> find_spell( 210705 ) )
     {
+      background = true;
       may_crit = may_miss = may_block = may_dodge = may_parry = false;
       dot_duration = timespan_t::zero();
 
       base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
+      attack_power_mod.tick = p -> find_specialization_spell( "Rip" ) -> effectN( 1 ).ap_coeff();
+      base_multiplier *= 1.0 + p -> artifact.razor_fangs.percent();
     }
 
     void init() override
@@ -2657,11 +2673,9 @@ struct ferocious_bite_t : public cat_attack_t
       update_flags |= STATE_MUL_TA; // Dynamically update for mastery & Open Wounds.
     }
 
-    virtual dot_t* get_source_dot( player_t* ) const = 0;
-
     virtual void execute() override
     {
-      dot_t* source = get_source_dot( target );
+      dot_t* source = td( target ) -> dots.rip;
       assert( source -> is_ticking() );
 
       dot_t* dest = get_dot( target );
@@ -2671,19 +2685,6 @@ struct ferocious_bite_t : public cat_attack_t
 
       source -> copy( dest );
     }
-  };
-
-  struct shadow_rip_t : public shadow_bleed_t
-  {
-    shadow_rip_t( druid_t* p ) :
-      shadow_bleed_t( "ashamanes_rip", p, p -> find_spell( 210705 ) )
-    {
-      attack_power_mod.tick = p -> find_specialization_spell( "Rip" ) -> effectN( 1 ).ap_coeff();
-      base_multiplier *= 1.0 + p -> artifact.razor_fangs.percent();
-    }
-
-    dot_t* get_source_dot( player_t* t ) const override
-    { return td( t ) -> dots.rip; }
 
     double attack_tick_power_coefficient( const action_state_t* s ) const override
     {
@@ -2696,26 +2697,12 @@ struct ferocious_bite_t : public cat_attack_t
     }
   };
 
-  struct shadow_rake_t : public shadow_bleed_t
-  {
-    shadow_rake_t( druid_t* p ) :
-      shadow_bleed_t( "ashamanes_rake", p, p -> find_spell( 210713 ) )
-    {
-      attack_power_mod.tick = p -> find_spell( 155722 ) -> effectN( 1 ).ap_coeff();
-      base_multiplier *= 1.0 + p -> artifact.tear_the_flesh.percent();
-    }
-
-    dot_t* get_source_dot( player_t* t ) const override
-    { return td( t ) -> dots.rake; }
-  };
-
   double excess_energy;
   double max_excess_energy;
   timespan_t sabertooth_total;
   timespan_t sabertooth_base;
   bool max_energy;
-  shadow_rip_t* shadow_rip;
-  shadow_rake_t* shadow_rake;
+  ashamanes_rip_t* ashamanes_rip;
 
   ferocious_bite_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "ferocious_bite", p, p -> find_class_spell( "Ferocious Bite" ), "" ),
@@ -2736,10 +2723,7 @@ struct ferocious_bite_t : public cat_attack_t
       sabertooth_base = timespan_t::from_seconds( p -> talent.sabertooth -> effectN( 1 ).base_value() );
 
     if ( p -> artifact.ashamanes_bite.rank() )
-    {
-      shadow_rip  = new shadow_rip_t( p );
-      shadow_rake = new shadow_rake_t( p );
-    }
+      ashamanes_rip  = new ashamanes_rip_t( p );
   }
 
   double maximum_energy() const
@@ -2801,20 +2785,15 @@ struct ferocious_bite_t : public cat_attack_t
       }
 
       // TOCHECK: Does the target need to have Rip/Rake on them to be eligible to proc?
+      // Ashamane's Bite procs after Sabertooth.
       if ( p() -> artifact.ashamanes_bite.rank() && p() -> rppm.ashamanes_bite.trigger() )
       {
         p() -> proc.ashamanes_bite -> occur();
 
         if ( td( state -> target ) -> dots.rip -> is_ticking() )
         {
-          shadow_rip -> target = state -> target;
-          shadow_rip -> execute();
-        }
-
-        if ( td( state -> target ) -> dots.rake -> is_ticking() )
-        {
-          shadow_rake -> target = state -> target;
-          shadow_rake -> execute();
+          ashamanes_rip -> target = state -> target;
+          ashamanes_rip -> execute();
         }
       }
     }
