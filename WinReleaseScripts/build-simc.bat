@@ -31,8 +31,6 @@ if not defined REDIST call :error REDIST environment variable not defined
 if ERRORLEVEL 1 goto :enderror
 if not defined SZIP call :error SZIP environment variable not defined
 if ERRORLEVEL 1 goto :enderror
-if not defined ISCC call :error ISCC environment variable not defined
-if ERRORLEVEL 1 goto :enderror
 if not exist %INSTALL% call :error INSTALL environment variable points to missing directory
 if ERRORLEVEL 1 goto :enderror
 if not exist %SIMCDIR% call :error SIMCDIR environment variable points to missing directory
@@ -42,8 +40,6 @@ if ERRORLEVEL 1 goto :enderror
 if not exist %REDIST% call :error REDIST environment variable points to missing directory
 if ERRORLEVEL 1 goto :enderror
 if not exist %SZIP% call :error SZIP environment variable points to missing directory
-if ERRORLEVEL 1 goto :enderror
-if not exist %ISCC% call :error ISCC environment variable points to missing directory
 if ERRORLEVEL 1 goto :enderror
 
 :: Setup GIT HEAD commithash for the package name if GIT is found
@@ -61,6 +57,7 @@ if ERRORLEVEL 0 goto :end
 if ERRORLEVEL 1 goto :enderror
 
 :build_release
+
 :: Setup the target if given, otherwise default is to build all targets in the solution
 if "%3" neq "" set TARGET=/t:%3
 if not defined SOLUTION set SOLUTION=simc_vs%VSVERSION%.sln
@@ -71,10 +68,16 @@ if ERRORLEVEL 1 exit /b 1
 md %INSTALLDIR%
 call :copy_base
 
+:: Copy release-specific files
 if "%3" == "" call :copy_simc
 if "%3" == "" call :copy_simcgui
 if "%3" == "SimcGUI" call :copy_simcgui
 if "%3" == "simc" call :copy_simc
+
+:: Build the Inno Setup installer
+if "%3" == "" call :build_installer
+if "%3" == "SimcGUI" call :build_installer
+
 :: Aand compress the install directory
 call :compress
 exit /b 0
@@ -104,6 +107,24 @@ if "%SUFFIX%" == "64" %QTDIR%\msvc%VSVERSION%_64\bin\windeployqt.exe --no-transl
 if "%SUFFIX%" == "" %QTDIR%\msvc%VSVERSION%\bin\windeployqt.exe --no-translations %INSTALLDIR%\Simulationcraft%SUFFIX%.exe
 exit /b 0
 
+:build_installer
+if not defined ISCC exit /b 0
+
+:: Setup additional variables for installer package
+if "%PLATFORM%" == "win32" (
+	set SIMCSUFFIX=%PLATFORM%
+	set SIMCAPPNAME=Simulationcraft
+) else (
+	set SIMCSUFFIX=Win64
+	set SIMCAPPNAME=Simulationcraft (x64)
+)
+set SIMCAPPFULLVERSION=%SC_MAJOR_VERSION:~0,1%.%SC_MAJOR_VERSION:~1,1%.%SC_MAJOR_VERSION:~2,2%.%SC_MINOR_VERSION%
+if "%GITREV%" neq "" set SIMCSUFFIX=%SIMCSUFFIX%%GITREV%
+
+%ISCC%\iscc.exe /DSimcAppFullVersion=%SIMCAPPFULLVERSION% /DSimcAppName="%SIMCAPPNAME%" /DSimcReleaseSuffix="%SIMCSUFFIX%" /DSimcReleaseDir="%INSTALLDIR%" /DSimcAppVersion="%SIMCVERSION%" /DSimcAppExeName="Simulationcraft%SUFFIX%.exe" /DSimcIconFile="%SIMCDIR%\qt\icon\Simcraft2.ico" /DSimcOutputDir="%INSTALL%" %SIMCDIR%\WinReleaseScripts\SetupSimc.iss
+if ERRORLEVEL 1 exit /b 1
+exit /b 0
+
 :compress
 %SZIP%\7z.exe a -r %PACKAGENAME% %INSTALLDIR% -mx9 -md=32m
 exit /b 0
@@ -127,7 +148,7 @@ echo SIMCDIR    : Simulationcraft source directory root
 echo QTDIR      : Root directory of the Qt (5) release
 echo REDIST     : Directory containing Windows Runtime Environment redistributables
 echo SZIP       : Directory containing 7-Zip compressor
-echo ISCC       : Diretory containing Inno Setup (5)
+echo ISCC       : Diretory containing Inno Setup (optional, if omitted no setup will be built)
 echo INSTALL    : Directory to make an installation package in
 echo VSVERSION  : Visual studio version (default 2013)
 echo RELEASE    : Set to build a "release version" (no git commit hash suffix)
