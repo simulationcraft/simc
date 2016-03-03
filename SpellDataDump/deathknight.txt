@@ -1,4 +1,4 @@
-SimulationCraft 701-01 for World of Warcraft 7.0.3 legion-BETA (build level 21154)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21232)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -3787,7 +3787,7 @@ Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.x .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken
 Affecting spells : Bone Wall (144948), Foul Bulwark (206974)
-Triggered by     : PH - Marrowrend Procs Bonus Charges (205816)
+Triggered by     : Rattling Bones (192557), PH - Marrowrend Procs Bonus Charges (205816)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ......x. ........ ...x.... ........   ........ ........ ........ ........ 
@@ -3814,7 +3814,7 @@ Resource         : -20 Runic Power
 Spell Level      : 57
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : On a Pale Horse (51986), Bonebreaker (192538), Rattling Bones [Untested IMPL] (192557)
+Affecting spells : On a Pale Horse (51986), Bonebreaker (192538)
 Triggered by     : Bone Shield (195181)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4896,7 +4896,7 @@ Effects          :
 #1 (id=306491)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards
 #2 (id=306492)   : Weapon Damage% (31)
-                   Base Value: 200 | Scaled Value: 2 | Radius: 8 yards
+                   Base Value: 150 | Scaled Value: 1.5 | Radius: 8 yards
 Description      : A sweeping attack that strikes all enemies in front of you for $sw1 Frost damage. This attack benefits from Killing Machine.
 
 Name             : Obliteration (id=207256) [Spell Family (15)] 

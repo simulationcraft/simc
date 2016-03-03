@@ -1,4 +1,4 @@
-SimulationCraft 701-01 for World of Warcraft 7.0.3 legion-BETA (build level 21154)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21232)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -46,9 +46,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=95)       : Apply Aura (6) | Periodic Heal: every 3 seconds (8)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.75000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.65000
 #2 (id=256131)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.50000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.65000
 Description      : Fill the target with faith in the light, healing them instantly for $s2 and then $o1 over $d.
 Tooltip          : Healing $w1 health every $t1 sec.
 
@@ -106,7 +106,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Lucidity (137323), The Edge of Dark and Light (197715), Darkest Shadows (197917), PH - Heals Cast Faster at High Health (210632)
+Affecting spells : Lucidity (137323), The Edge of Dark and Light (197715), PH - Heals Cast Faster at High Health (210632)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -119,7 +119,7 @@ Effects          :
 #2 (id=314092)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 Description      : Smite an enemy for $s1 Holy damage$?s137032[ and absorbs the next $<shield> damage dealt by the enemy][ and has a $s2% chance to reset the cooldown of Holy Fire].
-Variables        : $shield=${(($SPS*2.5)+$m3)*(1+$@versadmg)}
+Variables        : $shield=${($SPS*2.5)*(1+$@versadmg)}
 
 Name             : Fade (id=586) [Spell Family (6)] 
 Class            : Priest
@@ -168,10 +168,10 @@ Tooltip          : $w2 Shadow damage every $t2 seconds.
 Name             : Prayer of Healing (id=596) [Spell Family (6)] 
 Class            : Holy Priest
 School           : Holy
-Resource         : 6% Base Mana (66000 @Level 110)
+Resource         : 4.5% Base Mana (49500 @Level 110)
 Spell Level      : 38
 Range            : 40 yards
-Cast Time        : 2.5 seconds
+Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
 Affecting spells : Rapid Healing (24546), Healing Trance (37706), Temporal Boon (105826), Lucidity (137323), Clear Thoughts (167695), Holy Guidance (196434), Guardians of the Light (196437), Power of the Naaru (196490), Light of T'uure (208065), PH - Heals Cast Faster at High Health (210632)
@@ -183,7 +183,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=243)      : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Radius: 0 - 20 yards
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Radius: 0 - 20 yards
 #2 (id=105332)   : Trigger Spell: Prayer of Healing (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 98367
 #3 (id=288930)   : Dummy (3)
@@ -225,7 +225,7 @@ Spell Level      : 28
 Range            : 30 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x08000000
-Affecting spells : Glyph of Shadow (107906), Lucidity (137323), Path of Light (193067), 
+Affecting spells : Glyph of Shadow (107906), Lucidity (137323)
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ...x.... ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -262,7 +262,7 @@ Description      : Perform a miracle, healing an ally for $s1.
 Name             : Heal (id=2060) [Spell Family (6)] 
 Class            : Holy Priest
 School           : Holy
-Resource         : 2% Base Mana (22000 @Level 110)
+Resource         : 1.7% Base Mana (18700 @Level 110)
 Spell Level      : 34
 Range            : 40 yards
 Cast Time        : 2.5 seconds
@@ -277,13 +277,13 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=612)      : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 5.00000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.50000
 Description      : A slow but efficient spell that heals an ally for $s1.
 
 Name             : Flash Heal (id=2061) [Spell Family (6)] 
 Class            : Holy Priest
 School           : Holy
-Resource         : 3.2% Base Mana (35200 @Level 110)
+Resource         : 2.8% Base Mana (30799 @Level 110)
 Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -299,7 +299,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=613)      : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 5.00000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.50000
 Description      : A fast but expensive spell that heals an ally for $s1.
 
 Name             : Mind Vision (id=2096) [Spell Family (6)] 
@@ -358,7 +358,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 1 (9 seconds cooldown)
-Affecting spells : Power Infusion (10060), Mind Spike (73510), Shadow Priest (137033), Lucidity (137323), Item - Priest T16 Shadow 2P Bonus (145174), Empowered Shadows (145180), Mental Fatigue (185104), Fortress of the Mind (193195), Surrender to Madness (193223), Mind Shattering (193643), Voidform (194249), The Edge of Dark and Light (197715), Darkest Shadows (197917), Lingering Insanity (197937)
+Affecting spells : Power Infusion (10060), Mind Spike (73510), Shadow Priest (137033), Lucidity (137323), Item - Priest T16 Shadow 2P Bonus (145174), Empowered Shadows (145180), Mental Fatigue (185104), Fortress of the Mind (193195), Surrender to Madness (193223), Mind Shattering (193643), Voidform (194249), The Edge of Dark and Light (197715), Lingering Insanity (197937)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -478,9 +478,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=6990)     : School Damage: holy (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000
 #2 (id=6991)     : Apply Aura (6) | Periodic Damage: holy every 1 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000
 Description      : Consumes the enemy in Holy flames that cause $s1 Holy damage and an additional $o2 Holy damage over $d.  Can stack up to $u times.
 Tooltip          : $w2 Holy damage every $t2 seconds.
 
@@ -865,7 +865,7 @@ Spell Level      : 58
 Range            : 40 yards
 Duration         : 8 seconds
 Cooldown         : 300 seconds
-Affecting spells : Lucidity (137323), Item - Priest WoD PvP Discipline 4P Bonus (171141), Item - Priest WoD PvP Holy4P Bonus (171142), Pain is in Your Mind (197713), PH - Reduce Cooldown of Pain Suppression (206335)
+Affecting spells : Lucidity (137323), Item - Priest WoD PvP Discipline 4P Bonus (171141), Item - Priest WoD PvP Holy4P Bonus (171142), Pain is in Your Mind (197713)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
@@ -1119,7 +1119,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 9 seconds
-Affecting spells : Temporal Boon (105826), Item - Priest T14 Healer 4P Bonus (123113), Lucidity (137323), PH - Penance Mana Cost Reduction (207538)
+Affecting spells : Temporal Boon (105826), Item - Priest T14 Healer 4P Bonus (123113), Lucidity (137323)
 Attributes       : ........ x....... x....... .....x..   ..x....x ..x...x. ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ .x...x.. ........ ........ 
@@ -1170,7 +1170,7 @@ School           : Holy
 Spell Level      : 60
 Range            : 40 yards
 Velocity         : 40 yards/sec
-Affecting spells : Reparation (186478), Confession (197708), Darkest Shadows (197917)
+Affecting spells : Reparation (186478), Confession (197708)
 Triggered by     : Penance (47758)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ........ 
@@ -1862,8 +1862,8 @@ Class            : Discipline Priest
 School           : Physical
 Spell Level      : 38
 Proc Chance      : 100%
-Proc Flags       : ........ ........ x.x..x.. ........ 
-                 : Hostile Spell, Periodic, Trap Triggered
+Proc Flags       : ........ ........ x.x..... ........ 
+                 : Hostile Spell, Periodic
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2081,8 +2081,8 @@ Name             : Surge of Light (id=109186) [Spell Family (6), Passive]
 Class            : Priest
 School           : Physical
 Proc Chance      : 100%
-Proc Flags       : ........ ......x. x.x..x.. ........ 
-                 : Heal, Hostile Spell, Periodic, Trap Triggered
+Proc Flags       : ........ ......x. ........ ........ 
+                 : Heal
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2093,10 +2093,6 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=120560)   : Apply Aura (6) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8 | SP Coefficient: 1.00000
-#2 (id=139592)   : None (0)
-                   Base Value: 20 | Scaled Value: 20
-#3 (id=120561)   : None (0)
-                   Base Value: 75 | Scaled Value: 75
 Description      : $@spelldesc114255
 
 Name             : Spirit Shell (id=109964) [Spell Family (6)] 
@@ -2139,7 +2135,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=122871)   : Unknown effect type (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2148
-Description      : Fire a Divine Star forward 24 yds, healing allies in its path for $110745s1. After reaching its destination, the Divine Star returns to you, healing allies in its path again.
+Description      : Fire a Divine Star forward 24 yds, healing allies in its path for $110745s1 and dealing $122128s1 Holy damage to enemies. After reaching its destination, the Divine Star returns to you, healing allies and damaging enemies in its path again.
 
 Name             : Divine Star (id=110745) [Spell Family (6)] 
 Class            : Priest
@@ -2166,7 +2162,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 600 seconds
 Stance Mask      : 0x08000000
-Affecting spells : Glyph of Shadow (107906), Lucidity (137323), Path of Light (193067), 
+Affecting spells : Glyph of Shadow (107906), Lucidity (137323)
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ...x.... ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2263,7 +2259,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
 Effects          :
 #1 (id=140102)   : Unknown effect type (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 658
-Description      : Creates a ring of Holy energy around you that quickly expands to a 30 yd radius, healing allies for $120692s1.
+Description      : Creates a ring of Holy energy around you that quickly expands to a 30 yd radius, healing allies for $120692s1 and dealing $120696s1 Holy damage to enemies.
 
 Name             : Glyph of the Heavens (id=120581) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
@@ -2281,27 +2277,6 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 7
 Description      : Your Levitate targets will appear to be riding on a cloud for the duration of the spell.
 
-Name             : Halo (id=120644) [Spell Family (6)] 
-Class            : Priest
-School           : Shadow
-Resource         : 1% Base Mana (11000 @Level 110)
-Spell Level      : 46
-Range            : 30 yards
-GCD              : 1.5 seconds
-Duration         : 5.5 seconds
-Cooldown         : 40 seconds
-Affecting spells : Atonement (194384), Light of T'uure (208065)
-Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
-                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   .......x ........ ......x. ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=140359)   : Unknown effect type (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 657
-Description      : Creates a ring of Shadow energy around you that quickly expands and grows in power, up to 30 yds away. Deals up to $120696s1 Shadow damage to enemies, with the greatest effect at 25 yds.
-
 Name             : Halo (id=120692) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -2315,23 +2290,24 @@ Attributes       : ........ ........ .......x x..x....   .....x.x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=140516)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.87400
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.87400
 Description      : $@spelldesc120517
 
-Name             : Halo (id=120696) [Scaling Spell (8), Spell Family (6)] 
+Name             : Halo (id=120696) [Spell Family (6)] 
 Class            : Priest
-School           : Shadow
+School           : Holy
 Range            : 100 yards
 Affecting spells : Atonement (194384), Light of T'uure (208065)
 Attributes       : ........ ........ .......x x..x....   .....x.x ........ ........ ........ 
-                 : .......x ......x. ........ ........   ........ ........ ........ ......xx 
-                 : x......x .......x ........ ........   ...x.... .......x .xxx.... ........ 
+                 : .......x ......x. ........ ........   ........ .x...... ........ ......xx 
+                 : x......x .......x ........ ........   ...x.... .......x .xx..... ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Not a proc (105)
 Effects          :
-#1 (id=140527)   : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=19.266, dl=0.5) | SP Coefficient: 3.26400
+#1 (id=140527)   : School Damage: holy (2)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.87400
 Description      : $@spelldesc120644
 
 Name             : Angelic Feather (id=121536) [Spell Family (6)] 
@@ -2340,7 +2316,7 @@ School           : Holy
 Spell Level      : 30
 Range            : 40 yards
 GCD              : 1.5 seconds
-Charges          : 3 (15 seconds cooldown)
+Charges          : 3 (20 seconds cooldown)
 Proc Chance      : 101%
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2357,7 +2333,7 @@ Name             : Angelic Feather (id=121557) [Spell Family (6)]
 Class            : Priest
 School           : Holy
 Range            : 50000 yards
-Duration         : 6 seconds
+Duration         : 5 seconds
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ....x... ........   ...x.... ........ .xx..... ........ 
@@ -2366,34 +2342,13 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=150932)   : Apply Aura (6) | Increase Speed% (31)
-                   Base Value: 60 | Scaled Value: 60 | SP Coefficient: 1.00000
+                   Base Value: 40 | Scaled Value: 40 | SP Coefficient: 1.00000
 Description      : $@spelldesc121536
 Tooltip          : Movement speed increased by $s1%.
 
-Name             : Divine Star (id=122121) [Spell Family (6)] 
-Class            : Priest
-School           : Shadow
-Resource         : 0.5% Base Mana (5500 @Level 110)
-Range            : 30 yards
-GCD              : 1.5 seconds
-Duration         : 15 seconds
-Cooldown         : 15 seconds
-Affecting spells : Atonement (194384), Light of T'uure (208065)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ...x.... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=153517)   : Unknown effect type (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2147
-Description      : Fire a Divine Star forward 24 yds, damaging enemies in its path for $122128s1. After reaching its destination, the Divine Star returns to you, damaging enemies in its path again.
-Tooltip          : Running the target check.
-
 Name             : Divine Star (id=122128) [Spell Family (6)] 
 Class            : Priest
-School           : Shadow
+School           : Holy
 Range            : 100 yards
 Affecting spells : Atonement (194384), Light of T'uure (208065)
 Attributes       : ........ ........ ........ x..x....   .....x.. .....x.. ........ ........ 
@@ -2404,8 +2359,8 @@ Attributes       : ........ ........ ........ x..x....   .....x.. .....x.. .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Not a proc (105)
 Effects          :
-#1 (id=153526)   : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.63000
+#1 (id=153526)   : School Damage: holy (2)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.90000
 Description      : $@spelldesc122121
 
 Name             : Mindbender (id=123040) [Spell Family (6)] 
@@ -2536,7 +2491,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 0.5 yards/sec
 Cooldown         : 10 seconds
-Affecting spells : Lucidity (137323), Darkest Shadows (197917)
+Affecting spells : Lucidity (137323)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3242,26 +3197,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Trigger Spell: 193065
 Description      : When you cast Shadow Mend on yourself, it deals no damage.
 
-Name             : Path of Light (id=193067) [Spell Family (6), Passive, Hidden] 
-Class            : Priest
-School           : Physical
-Proc Chance      : 101%
-Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=283240)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
-                   Base Value: 15 | Scaled Value: 15 | SP Coefficient: 1.00000 | Misc Value: 32
-                   Affected Spells: Levitate (1706), Levitate (111759)
-#2 (id=292128)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
-                   Base Value: -570000 | Scaled Value: -570000 | Misc Value: 1
-                   Affected Spells: Levitate (1706), Levitate (111759)
-Description      : Your Levitate is no longer canceled by damage, and causes the target to move $s1% faster, but the duration is reduced to 30 sec.
-
 Name             : Castigation (id=193134) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
 School           : Physical
@@ -3527,7 +3462,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50
 #2 (id=294886)   : Apply Aura (6) | Unknown effect sub type (283)
                    Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Penance (47750), Penance (47757), Divine Star (110744), Divine Star (110745), Halo (120517), Halo (120644), Halo (120692), Halo (120696), Divine Star (122121), Divine Star (122128), Shadow Mend (186263), Shadow Mend (187464), Power Word: Radiance (194509), Plea (200829)
+                   Affected Spells: Penance (47750), Penance (47757), Divine Star (110744), Divine Star (110745), Halo (120517), Halo (120692), Halo (120696), Divine Star (122128), Shadow Mend (186263), Shadow Mend (187464), Power Word: Radiance (194509), Plea (200829)
 Description      : $@spelldesc81749
 Tooltip          : Healed whenever the Priest damages an enemy.
 
@@ -3540,7 +3475,7 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Rapid Healing (24546), Temporal Boon (105826), Lucidity (137323), Atonement (194384), Burst of Light (197716), PH - Radiance Heals More and Applies Full Duration Atonement (207898), 
+Affecting spells : Rapid Healing (24546), Temporal Boon (105826), Lucidity (137323), Atonement (194384), Burst of Light (197716)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3586,7 +3521,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=288794)   : Apply Aura (6) | Add Percent Modifier: Spell Duration (108)
-                   Base Value: 200 | Scaled Value: 200 | SP Coefficient: 1.00000 | Misc Value: 1
+                   Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Misc Value: 1
                    Affected Spells: Spirit of Redemption (20711), Spirit of Redemption (27827)
 Description      : Increases the duration of Spirit of Redemption by $s1%.
 
@@ -3897,7 +3832,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=294717)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(10)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95)
 Description      : $@spelldesc88625
 Tooltip          : Incapacitated.
 
@@ -3915,25 +3850,6 @@ Effects          :
 #1 (id=294728)   : Apply Aura (6) | Dummy (4)
                    Base Value: 90 | Scaled Value: 90
 Description      : When Guardian Spirit expires without saving the target from death, reset its cooldown to $s1 seconds.
-
-Name             : Schism (Passive) (id=200306) [Spell Family (6), Passive] 
-Class            : Priest
-School           : Physical
-Spell Level      : 10
-Proc Chance      : 100%
-Proc Flags       : ........ ......x. ........ ........ 
-                 : Heal
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=294882)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-Description      : The final bolt of Penance creates an explosion of shadow energy around the target, dealing $204051s1 damage to all enemies within $204051A1 yards.
 
 Name             : Grace (Passive) (id=200309) [Spell Family (6), Passive] 
 Class            : Priest
@@ -4014,25 +3930,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.25000
 Description      : A quick, efficient plea to heal an ally for $s1.  Mana cost increased $212100s1% for each Atonement you have active.
 
-Name             : Penance (id=204051) [Spell Family (6)] 
-Class            : Priest
-School           : Shadow
-Spell Level      : 60
-Range            : 40 yards
-Velocity         : 40 yards/sec
-Affecting spells : Reparation (186478), Confession (197708), Darkest Shadows (197917)
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ .x...... ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Not a proc (105)
-Effects          :
-#1 (id=301120)   : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.80000 | Radius: 0 - 10 yards
-Description      : $@spelldesc200306
-
 Name             : Shadow Covenant (id=204065) [Spell Family (6)] 
 Class            : Priest
 School           : Shadow
@@ -4058,7 +3955,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 Description      : Draw on the power of shadow to heal up to $s3 injured allies within $A1 yds of the target for $s1, but leaving a shell on them that absorbs the next ${(($SP*2.25)+$m2)*(1+$@versadmg)} healing they receive within $d.
 
-Replaces $@spellicon194509 $@spellname194509.
+Replaces $@spellname194509.
 Tooltip          : Absorbs $w2 healing.
 
 Name             : Purge the Wicked (id=204197) [Spell Family (6)] 
@@ -4139,7 +4036,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 12 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Rapid Healing (24546), Healing Trance (37706), Temporal Boon (105826), Lucidity (137323), Clear Thoughts (167695), Holy Guidance (196434), Guardians of the Light (196437), Power of the Naaru (196490), Light of T'uure (208065), PH - Heals Cast Faster at High Health (210632)
+Affecting spells : Temporal Boon (105826)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4148,7 +4045,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=302436)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.50000 | Radius: 0 - 30 yards
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000 | Radius: 0 - 30 yards
 #2 (id=302437)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Heals up to $s2 injured allies within $A1 yards of the target for $s1.
@@ -4476,5 +4373,50 @@ Effects          :
 #1 (id=316967)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 3
 Description      : Removes all Disease effects from a friendly target.
+
+Name             : Body and Mind (id=214121) [Spell Family (6)] 
+Class            : Priest
+School           : Holy
+Range            : 50000 yards
+GCD              : 1.5 seconds
+Duration         : 4 seconds
+Cooldown         : 10 seconds
+Proc Chance      : 101%
+Affecting spells : Temporal Boon (105826), Lucidity (137323), Absolution (145336)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=317928)   : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000
+#2 (id=317931)   : Apply Aura (6) | Increase Speed% (31)
+                   Base Value: 40 | Scaled Value: 40 | SP Coefficient: 1.00000
+Description      : Heals the target for $s1 every $t sec and increases their movement speed by $s2% for $d.
+Tooltip          : Healing for $w1 every $t and movement speed increased by $s2.
+
+Name             : Schism (id=214621) [Spell Family (6)] 
+Class            : Priest
+School           : Shadow
+Spell Level      : 18
+Range            : 40 yards
+Cast Time        : 1.5 seconds
+GCD              : 1.5 seconds
+Duration         : 6 seconds
+Cooldown         : 20 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=318771)   : School Damage: shadow (2)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000
+#2 (id=318779)   : Apply Aura (6) | Unknown effect sub type (270)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 127
+Description      : Attack the enemy's soul with a surge of Shadow energy, dealing $s1 Shadow damage and increasing damage that you deal to the target by $s2% for $d.
 
 

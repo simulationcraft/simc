@@ -1,4 +1,4 @@
-SimulationCraft 701-01 for World of Warcraft 7.0.3 legion-BETA (build level 21154)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21232)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -124,7 +124,7 @@ Spell Level      : 1
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Affecting spells : Dark Soul (138483), Imp-to the Breach (211321)
+Affecting spells : Dark Soul (138483)
 Attributes       : ........ ........ ........ ........   x....... ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -947,7 +947,7 @@ Attributes       : ....x... ........ x.x..... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=11232)    : School Damage: fire (2)
-                   Base Value: 25 | Scaled Value: 0 (avg=0.1) | Points Per Level: 0.5 | SP Coefficient: 0.22500 | Radius: 0 - 12 yards
+                   Base Value: 25 | Scaled Value: 0 (avg=0.1) | Points Per Level: 0.5 | SP Coefficient: 0.67500 | Radius: 0 - 12 yards
 #2 (id=242870)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 Description      : Deals Fire damage to all enemies near the caster.
@@ -1025,7 +1025,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=12912)    : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1, dl=0.12) | SP Coefficient: 1.00000 | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 0 (avg=1, dl=0.12) | SP Coefficient: 0.50000 | Radius: 0 - 10 yards
 #2 (id=12913)    : Apply Aura (6) | Stun (12)
                    Base Value: 3 | Scaled Value: 3 | SP Coefficient: 1.00000 | Radius: 0 - 10 yards | Mechanic: Unknown(95)
 Description      : An infernal falls from the sky, dealing $s1 Fire damage to all targets, stunning them for $d.
@@ -1745,12 +1745,18 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ .....x..   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : Passive (6)
 Effects          :
 #1 (id=68069)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000
-Description      : Your Destruction spells deal up to $s1% additional damage, randomly.
+#2 (id=318370)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.66600
+#3 (id=318371)   : Apply Aura (6) | Absorb Damage (69)
+                   Base Value: 1000000000 | Scaled Value: 1e+09 | Misc Value: 127
+Description      : Your Destruction spells deal up to $s1% additional damage, randomly.
+
+You take up to $s2% reduced damage, randomly.
 
 Name             : Havoc (id=80240) [Spell Family (5)] 
 Class            : Destruction Warlock
@@ -1807,7 +1813,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=87009)    : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.62000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.00000
 #2 (id=155200)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage. Deals $s2% additional damage to targets below 20% health.$?s152107[
@@ -2102,7 +2108,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Cooldown         : 15 seconds
-Affecting spells : Demonic Calling (205146), PH - Call Dreadstalkers Instant and Discounted (205721), 
+Affecting spells : Demonic Calling (205146)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2119,7 +2125,7 @@ Class            : Warlock
 School           : Shadow
 Range            : 100 yards
 Duration         : 12 seconds
-Affecting spells : Dark Soul (138483), Imp-to the Breach (211321)
+Affecting spells : Dark Soul (138483)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2197,9 +2203,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 2 | Misc Value 2: 0x4
 #2 (id=114560)   : Apply Aura (6) | Unknown effect sub type (118)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 127
-#3 (id=316594)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 0x7f
-Description      : Fel energies protect the Warlock, increasing their Stamina by $s1% reducing all damage taken by $s3%,, and increasing all healing received by $s2%.
+Description      : Fel energies protect the Warlock, increasing their Stamina by $s1%, and increasing all healing received by $s2%.
 
 Name             : Hand of Gul'dan (id=105174) [Spell Family (5)] 
 Class            : Demonology Warlock
@@ -3387,7 +3391,7 @@ Class            : Warlock
 School           : Chaos
 Resource         : 4.8% Base Mana (52800 @Level 110)
 Range            : 40 yards
-Cast Time        : 2.5 seconds
+Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 16 yards/sec
 Affecting spells : Maw of Shadows (211099)
@@ -3606,7 +3610,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=242715)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1, dl=0.12) | SP Coefficient: 1.00000 | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 0 (avg=1, dl=0.12) | SP Coefficient: 0.50000 | Radius: 0 - 10 yards
 #2 (id=242716)   : Apply Aura (6) | Stun (12)
                    Base Value: 3 | Scaled Value: 3 | SP Coefficient: 1.00000 | Radius: 0 - 10 yards | Mechanic: Unknown(95)
 Description      : The infernal releases a powerful burst of flames, dealing $s1 Fire damage to nearby targets, and stunning them for $d.
@@ -3834,7 +3838,7 @@ Class            : Warlock
 School           : Shadowflame
 Range            : 50000 yards
 Duration         : 12 seconds
-Affecting spells : Demonic Calling (205146), PH - Call Dreadstalkers Instant and Discounted (205721), 
+Affecting spells : Demonic Calling (205146)
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -3864,7 +3868,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=283730)   : Apply Aura (6) | Dummy (4)
+#1 (id=283730)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 3 | Scaled Value: 3 | Radius: 100 yards
 #2 (id=283746)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 50 | Scaled Value: 50 | Radius: 100 yards
@@ -3874,6 +3878,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Radius: 100 yards
 #5 (id=285122)   : Apply Aura (6) | Scale% (61)
                    Base Value: 50 | Scaled Value: 50 | Radius: 100 yards
+#6 (id=319044)   : Apply Aura (6) | Mod Power Regen (110)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 3 | Radius: 100 yards
 Description      : Empowers $?s196605[all][up to $s1] of your active demons with dark energies, increasing their Haste and health by $s2% for $d.$?s196605[][
 
 Prefers stronger demons first.]
@@ -4579,7 +4585,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Place a phantom singularity above the target, which consumes the life of all enemies within $205246A2 yards, dealing $205246s2 damage every $t sec for $d, healing you for ${$205246e2*100}% of the damage done.
 
-Name             : Summon Dreadlord (id=205180) [Spell Family (5)] 
+Name             : Summon Beholder (id=205180) [Spell Family (5)] 
 Class            : Warlock
 School           : Physical
 Resource         : 1 Soul Shard
@@ -4595,7 +4601,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=302908)   : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 103673 | Misc Value 2: 0xeb6 | Radius: 2.5 yards
-Description      : Summon a Dreadlord that will launch Shadow Volleys at all targets that you have Doomed. Lasts $d.
+Description      : Summon a Beholder that will launch Eye Lasers that hit all targets that you have Doomed. Lasts $d.
 
 Name             : Shadowflame (id=205181) [Spell Family (5)] 
 Class            : Warlock
@@ -4670,7 +4676,7 @@ Effects          :
 #1 (id=303014)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=303063)   : Health Leech (9)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Radius: 0 - 25 yards
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | Radius: 0 - 25 yards
 Description      : $@spelldesc205179
 
 Name             : Roaring Blaze (id=205690) [Spell Family (5), Hidden] 

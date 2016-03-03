@@ -1,4 +1,4 @@
-SimulationCraft 701-01 for World of Warcraft 7.0.3 legion-BETA (build level 21154)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21232)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -120,7 +120,7 @@ Effects          :
                    Affected Spells: Blade Dance (188499), Blade Dance (199552), Blade Dance (200685)
 #7 (id=297855)   : Apply Aura (6) | Add Flat Modifier: Spell Global Cooldown (107)
                    Base Value: -500 | Scaled Value: -500 | Misc Value: 21
-                   Affected Spells: Demon's Bite (162243), Chaos Strike (162794), Immolation Aura (178740), Chaos Nova (179057), Throw Glaive (185123), Blade Dance (188499), Metamorphosis (191427), Eye Beam (198013), Annihilation (201427), Demon Rend (201429), Sigil of Silence (202137), Sigil of Chains (202138), Shear (203782), Soul Cleave (203798), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204596), Soul Carver (207407), Sigil of Misery (207684), Fracture (209795), Fel Barrage (NYI) (211053), Fel Eruption (211881)
+                   Affected Spells: Demon's Bite (162243), Chaos Strike (162794), Immolation Aura (178740), Chaos Nova (179057), Throw Glaive (185123), Blade Dance (188499), Metamorphosis (191427), Eye Beam (198013), Annihilation (201427), Demon Rend (201429), Sigil of Silence (202137), Sigil of Chains (202138), Shear (203782), Soul Cleave (203798), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204596), Soul Carver (207407), Sigil of Misery (207684), Fracture (209795), Fel Barrage (NYI) (211053), Fel Eruption (211881), Soul Carver (214743)
 Description      : $@spelldesc191427
 Tooltip          : Demon's Bite and Chaos Strike upgraded to $@spellname201429 and $@spellname201427.
 
@@ -130,7 +130,7 @@ School           : Chaos
 Resource         : 40 Fury
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Metamorphosis (162264), Mastery: Demonic Presence (185164), Critical Chaos (201455), Demonic Instincts (203569), Chaos Cleave (206475), Chaos Blades (211048)
+Affecting spells : Metamorphosis (162264), Mastery: Demonic Presence (185164), Critical Chaos (201455), Demonic Instincts (203569), Chaos Cleave (206475), Chaos Blades (211048), Chaos Blades (214795)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -141,7 +141,7 @@ Effects          :
 #1 (id=228690)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1
 #2 (id=230219)   : Weapon Damage% (31)
-                   Base Value: 200 | Scaled Value: 2 | Chain Targets: 1
+                   Base Value: 250 | Scaled Value: 2.5 | Chain Targets: 1
 #3 (id=293650)   : Trigger Spell: Chaos Strike (64)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 300 | Trigger Spell: 199547
 Description      : Slice your target for ${$sw1+$199547sw1} Chaos damage.  Critical strikes do not consume Fury.
@@ -470,7 +470,7 @@ School           : Physical
 Resource         : 50 Fury
 GCD              : 1.5 seconds
 Duration         : 1 seconds
-Cooldown         : 8 seconds
+Cooldown         : 10 seconds
 Affecting spells : Metamorphosis (162264), Demonic Instincts (203569), Chaos Blades (211048)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -768,11 +768,11 @@ Duration         : 2 seconds
 Cooldown         : 45 seconds
 Affecting spells : Metamorphosis (162264), Chaos Vision (201456), Blind Fury (203550), Demonic Instincts (203569)
 Attributes       : ........ ........ ........ ........   ..x...x. .x...... ........ ....xx.. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ...x.... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : Channeled (34), Channeled (38)
 Effects          :
 #1 (id=291023)   : Apply Aura (6) | Periodic Trigger Spell (23)
@@ -860,7 +860,7 @@ Name             : Chaos Strike (id=199547) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Chaos
 Range            : 5 yards
-Affecting spells : Mastery: Demonic Presence (185164), Critical Chaos (201455), Chaos Cleave (206475), Chaos Blades (211048)
+Affecting spells : Mastery: Demonic Presence (185164), Critical Chaos (201455), Chaos Cleave (206475), Chaos Blades (211048), Chaos Blades (214795)
 Triggered by     : Chaos Strike (162794)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ x....... 
@@ -873,13 +873,13 @@ Effects          :
 #1 (id=293648)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1
 #2 (id=293649)   : Weapon Damage% (31)
-                   Base Value: 450 | Scaled Value: 4.5 | Chain Targets: 1
+                   Base Value: 400 | Scaled Value: 4 | Chain Targets: 1
 Description      : $@spelldesc162794
 
 Name             : Blade Dance (id=199552) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
-Affecting spells : Metamorphosis (162264), Chaos Blades (211048)
+Affecting spells : Metamorphosis (162264), Demonic Instincts (203569), Chaos Blades (211048)
 Triggered by     : Blade Dance (188499)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -931,7 +931,7 @@ Description      : This talent has been imprisoned by the Wardens and will be re
 Name             : Blade Dance (id=200685) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
-Affecting spells : Metamorphosis (162264), Chaos Blades (211048)
+Affecting spells : Metamorphosis (162264), Demonic Instincts (203569), Chaos Blades (211048)
 Triggered by     : Blade Dance (188499)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -970,7 +970,7 @@ Class            : Demon Hunter
 School           : Chaos
 Resource         : 40 Fury
 GCD              : 1.5 seconds
-Affecting spells : Metamorphosis (162264), Mastery: Demonic Presence (185164), Critical Chaos (201455), Demonic Instincts (203569), Chaos Cleave (206475), Chaos Blades (211048)
+Affecting spells : Metamorphosis (162264), Mastery: Demonic Presence (185164), Critical Chaos (201455), Demonic Instincts (203569), Chaos Cleave (206475), Chaos Blades (211048), Chaos Blades (214795)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -989,7 +989,7 @@ Description      : Slice your target and all nearby targets for ${$sw1+$201428sw
 Name             : Annihilation (id=201428) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chaos
-Affecting spells : Mastery: Demonic Presence (185164), Critical Chaos (201455), Chaos Cleave (206475), Chaos Blades (211048)
+Affecting spells : Mastery: Demonic Presence (185164), Critical Chaos (201455), Chaos Cleave (206475), Chaos Blades (211048), Chaos Blades (214795)
 Triggered by     : Annihilation (201427)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .x...... ........ x....... 
@@ -1236,10 +1236,10 @@ Attributes       : ....x.xx ........ ........ x.......   ........ ........ .....
 Effects          :
 #1 (id=300298)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000
-                   Affected Spells: Demon's Bite (162243), Chaos Strike (162794), Immolation Aura (178740), Chaos Nova (179057), Throw Glaive (185123), Blade Dance (188499), Metamorphosis (191427), Eye Beam (198013), Annihilation (201427), Demon Rend (201429), Sigil of Silence (202137), Sigil of Chains (202138), Shear (203782), Soul Cleave (203798), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204596), Soul Carver (207407), Sigil of Misery (207684), Fracture (209795), Fel Barrage (NYI) (211053), Fel Eruption (211881)
+                   Affected Spells: Demon's Bite (162243), Chaos Strike (162794), Immolation Aura (178740), Chaos Nova (179057), Throw Glaive (185123), Blade Dance (188499), Metamorphosis (191427), Eye Beam (198013), Annihilation (201427), Demon Rend (201429), Sigil of Silence (202137), Sigil of Chains (202138), Shear (203782), Soul Cleave (203798), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204596), Soul Carver (207407), Sigil of Misery (207684), Fracture (209795), Fel Barrage (NYI) (211053), Fel Eruption (211881), Soul Carver (214743)
 #2 (id=300304)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000
-                   Affected Spells: Shear (203782), Felblade (213241), Felblade (213243)
+                   Affected Spells: Blade Dance (188499), Blade Dance (199552), Blade Dance (200685), Shear (203782), Felblade (213241), Felblade (213243)
 Description      : Reduces your global cooldowns based on Haste.
 
 Name             : Prepared (id=203650) [Spell Family (107)] 
@@ -1425,7 +1425,7 @@ Resource         : 400 Unknown (18)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Metamorphosis (162264), Demonic Instincts (203569), Devour Souls (212821)
+Affecting spells : Metamorphosis (162264), Demonic Instincts (203569), Devour Souls (212821), Tormented Souls (214744)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
