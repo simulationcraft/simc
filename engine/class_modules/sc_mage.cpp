@@ -114,6 +114,39 @@ struct mage_td_t : public actor_target_data_t
   mage_td_t( player_t* target, mage_t* mage );
 };
 
+struct buff_stack_benefit_t
+{
+  const buff_t* buff;
+  benefit_t** buff_stack_benefit;
+
+  buff_stack_benefit_t( const buff_t* _buff,
+                        const std::string& prefix ) :
+    buff( _buff )
+  {
+    buff_stack_benefit = new benefit_t*[ buff -> max_stack() + 1 ];
+    for ( int i = 0; i < buff -> max_stack(); i++ )
+    {
+      buff_stack_benefit[ i ] = buff -> player ->
+                                get_benefit( prefix + " " +
+                                             buff -> name() + " " +
+                                             util::to_string( i ) );
+    }
+  }
+
+  virtual ~buff_stack_benefit_t()
+  {
+    delete[] buff_stack_benefit;
+  }
+
+  void update()
+  {
+    for ( int i = 0; i <= buff -> max_stack(); i++ )
+    {
+      buff_stack_benefit[ i ] -> update( i == buff -> check() );
+    }
+  }
+};
+
 struct mage_t : public player_t
 {
 public:
@@ -154,8 +187,21 @@ public:
   // Benefits
   struct benefits_t
   {
-    benefit_t* arcane_charge[ 4 ];
-    benefit_t* water_elemental;
+    buff_stack_benefit_t* incanters_flow;
+
+    struct arcane_charge_benefits_t
+    {
+      buff_stack_benefit_t* arcane_barrage,
+                          * arcane_blast,
+                          * arcane_explosion,
+                          * arcane_missiles,
+                          * nether_tempest;
+    } arcane_charge;
+
+    benefit_t* fof_from_blizzard,
+             * fof_from_frostbolt,
+             * fof_from_frozen_orb;
+    buff_stack_benefit_t* ray_of_frost;
   } benefits;
 
   // Buffs
@@ -193,6 +239,7 @@ public:
     // Talents
     buff_t* ice_floes,
           * incanters_flow,
+          * ray_of_frost,
           * rune_of_power;
 
     // Artifact
@@ -502,9 +549,6 @@ public:
     }
     return td;
   }
-
-  // Event Tracking
-  virtual void   regen( timespan_t periodicity ) override;
 
   // Public mage functions:
   icicle_data_t get_icicle_object();
@@ -1874,10 +1918,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
     int charges = p() -> buffs.arcane_charge -> check();
     aoe = charges <= 0 ? 0 : 1 + charges;
 
-    for ( int i = 0; i < ( int ) sizeof_array( p() -> benefits.arcane_charge ); i++ )
-    {
-      p() -> benefits.arcane_charge[ i ] -> update( i == charges );
-    }
+    p() -> benefits.arcane_charge.arcane_barrage -> update();
 
     arcane_mage_spell_t::execute();
 
@@ -1910,7 +1951,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
     wild_arcanist_effect( 0.0 )
   {
     parse_options( options_str );
-    
+
     base_multiplier *= 1.0 + p -> artifact.blasting_rod.percent();
 
     if ( p -> wild_arcanist )
@@ -1943,10 +1984,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
 
   virtual void execute() override
   {
-    for ( unsigned i = 0; i < sizeof_array( p() -> benefits.arcane_charge ); i++ )
-    {
-      p() -> benefits.arcane_charge[ i ] -> update( as<int>( i ) == p() -> buffs.arcane_charge -> check() );
-    }
+    p() -> benefits.arcane_charge.arcane_blast -> update();
 
     arcane_mage_spell_t::execute();
 
@@ -2037,23 +2075,18 @@ struct arcane_explosion_t : public arcane_mage_spell_t
 
   virtual void execute() override
   {
+    p() -> benefits.arcane_charge.arcane_blast -> update();
+
     arcane_mage_spell_t::execute();
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( rng().roll ( data().effectN( 2 ).percent() ) )
-      {
-        p() -> buffs.arcane_charge -> trigger();
+      p() -> buffs.arcane_charge -> trigger();
 
-        if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) &&
-             p() -> rppm_arcane_instability.trigger() )
-        {
-          p() -> buffs.arcane_instability -> trigger();
-        }
-      }
-      else
+      if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) &&
+           p() -> rppm_arcane_instability.trigger() )
       {
-        p() -> buffs.arcane_charge -> refresh();
+        p() -> buffs.arcane_instability -> trigger();
       }
     }
   }
@@ -2061,6 +2094,11 @@ struct arcane_explosion_t : public arcane_mage_spell_t
   virtual double action_multiplier() const override
   {
     double am = arcane_mage_spell_t::action_multiplier();
+
+    am *= 1.0 + p() -> buffs.arcane_charge -> stack() *
+                p() -> spec.arcane_charge -> effectN( 1 ).percent() *
+                ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4 )
+                            -> effectN( 1 ).percent() );
 
     if ( p() -> artifact.arcane_purification.rank() )
       am *= 1.0 + p() -> artifact.arcane_purification.percent();
@@ -2134,10 +2172,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
   virtual void execute() override
   {
-    for ( unsigned i = 0; i < sizeof_array( p() -> benefits.arcane_charge ); i++ )
-    {
-      p() -> benefits.arcane_charge[ i ] -> update( as<int>( i ) == p() -> buffs.arcane_charge -> check() );
-    }
+    p() -> benefits.arcane_charge.arcane_missiles -> update();
 
     // 4T17 : Increase the number of missiles by reducing base_tick_time
     base_tick_time = missiles_tick_time;
@@ -2214,11 +2249,6 @@ struct arcane_orb_bolt_t : public arcane_mage_spell_t
 
   virtual void impact( action_state_t* s ) override
   {
-    for ( unsigned i = 0; i < sizeof_array( p() -> benefits.arcane_charge ); i++)
-    {
-      p() -> benefits.arcane_charge[ i ] -> update( as<int>( i ) == p() -> buffs.arcane_charge -> check() );
-    }
-
     arcane_mage_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
@@ -2253,11 +2283,6 @@ struct arcane_orb_t : public arcane_mage_spell_t
 
   virtual void execute() override
   {
-    for ( unsigned i = 0; i < sizeof_array( p() -> benefits.arcane_charge ); i++)
-    {
-      p() -> benefits.arcane_charge[ i ] -> update( as<int>( i ) == p() -> buffs.arcane_charge -> check() );
-    }
-
     arcane_mage_spell_t::execute();
     p() -> buffs.arcane_charge -> trigger();
 
@@ -3510,6 +3535,13 @@ struct nether_tempest_aoe_t: public arcane_mage_spell_t
 
   virtual resource_e current_resource() const override
   { return RESOURCE_NONE; }
+
+  virtual void execute() override
+  {
+    p() -> benefits.arcane_charge.nether_tempest -> update();
+
+    arcane_mage_spell_t::execute();
+  }
 
   virtual timespan_t travel_time() const override
   {
@@ -4988,6 +5020,7 @@ void mage_t::create_buffs()
   buffs.rune_of_power         = buff_creator_t( this, "rune_of_power", find_spell( 116014 ) )
                                   .duration( find_spell( 116011 ) -> duration() )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.ray_of_frost          = buff_creator_t( this, "ray_of_frost", talents.ray_of_frost );
 
   // Artifact
   // Period contained in 194462 ( Highborn's Will ), Stack information contained in 194461 ( Flame Orb )
@@ -5046,12 +5079,34 @@ void mage_t::init_benefits()
 {
   player_t::init_benefits();
 
-  for ( unsigned i = 0; i < sizeof_array( benefits.arcane_charge ); ++i )
+  benefits.incanters_flow =
+    new buff_stack_benefit_t( buffs.incanters_flow, "Incanter's Flow" );
+
+  if ( specialization() == MAGE_ARCANE )
   {
-    benefits.arcane_charge[ i ] = get_benefit( "Arcane Charge " +
-                                               util::to_string( i )  );
+    benefits.arcane_charge.arcane_barrage =
+      new buff_stack_benefit_t( buffs.arcane_charge, "Arcane Barrage" );
+    benefits.arcane_charge.arcane_blast =
+      new buff_stack_benefit_t( buffs.arcane_charge, "Arcane Blast" );
+    benefits.arcane_charge.arcane_explosion =
+      new buff_stack_benefit_t( buffs.arcane_charge, "Arcane Explosion" );
+    benefits.arcane_charge.arcane_missiles =
+      new buff_stack_benefit_t( buffs.arcane_charge, "Arcane Missiles" );
+    if ( talents.nether_tempest -> ok() )
+    {
+      benefits.arcane_charge.nether_tempest =
+        new buff_stack_benefit_t( buffs.arcane_charge, "Nether Tempest" );
+    }
   }
-  benefits.water_elemental   = get_benefit( "water_elemental" );
+
+  benefits.fof_from_blizzard = get_benefit( "Fingers of Frost from Blizzard" );
+  benefits.fof_from_frostbolt =
+    get_benefit( "Fingers of Frost from Frostbolt" );
+  benefits.fof_from_frozen_orb =
+    get_benefit( "Fingers of Frost from Frozen Orb" );
+
+  benefits.ray_of_frost =
+    new buff_stack_benefit_t( buffs.ray_of_frost, "Ray of Frost" );
 }
 
 // mage_t::init_stats =========================================================
@@ -5881,17 +5936,6 @@ void mage_t::reset()
   {
     pets::temporal_hero_t::randomize_last_summoned( this );
   }
-}
-
-// mage_t::regen  ===========================================================
-
-void mage_t::regen( timespan_t periodicity )
-{
-  player_t::regen( periodicity );
-
-  if ( pets.water_elemental )
-    benefits.water_elemental -> update( pets.water_elemental
-                             -> is_sleeping() == 0 );
 }
 
 // mage_t::stun =============================================================
