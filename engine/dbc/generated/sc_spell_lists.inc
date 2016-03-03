@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 21154
+// Class based active abilities, wow build 21232
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -117,7 +117,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       175699, // Weapons of the Light
            0,
     },
-    // Holy tree, 16 abilities
+    // Holy tree, 15 abilities
     {
       212056, // Absolution
        31821, // Aura Mastery
@@ -127,7 +127,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         6940, // Blessing of Sacrifice
         4987, // Cleanse
        26573, // Consecration
-        2812, // Denounce
          498, // Divine Protection
        19750, // Flash of Light
          853, // Hammer of Justice
@@ -874,11 +873,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Druid
   {
-    // General tree, 15 abilities
+    // General tree, 16 abilities
     {
         5487, // Bear Form (Shapeshift)
          768, // Cat Form (Shapeshift)
       127757, // Charm Woodland Creature
+        1850, // Dash
       193753, // Dreamwalk
          339, // Entangling Roots
       164862, // Flap
@@ -915,13 +915,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        93402, // Sunfire (Solar)
            0,
     },
-    // Feral tree, 23 abilities
+    // Feral tree, 20 abilities
     {
-      210713, // Ashamane's Rake
       210705, // Ashamane's Rip
       106951, // Berserk
       145152, // Bloodtalons
-        1850, // Dash
       210649, // Feral Instinct
       146874, // Feral Rage
        22568, // Ferocious Bite
@@ -933,7 +931,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         2782, // Remove Corruption
         1079, // Rip
         5221, // Shred
-      210721, // Shredded Wounds
       106839, // Skull Bash
       106898, // Stampeding Roar
        61336, // Survival Instincts (Active Mitigation)
@@ -1043,9 +1040,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     },
   },
 };
-#define TREE_SPECIALIZATION_SIZE (32)
+#define TREE_SPECIALIZATION_SIZE (31)
 
-// Talent tree specialization abilities, wow build 21154
+// Talent tree specialization abilities, wow build 21232
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1202,7 +1199,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
         6940, // Blessing of Sacrifice
         4987, // Cleanse
        26573, // Consecration
-        2812, // Denounce
       184132, // Divine Intervention
          498, // Divine Protection
        19750, // Flash of Light
@@ -1258,7 +1254,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       184575, // Blade of Justice
         1022, // Blessing of Protection
       213644, // Cleanse Toxins
-      185817, // Conviction
        53385, // Divine Storm
        19750, // Flash of Light
       203538, // Greater Blessing of Kings
@@ -1308,7 +1303,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       109304, // Exhilaration
        53270, // Exotic Beasts
         6991, // Feed Pet
-       34954, // Go for the Throat
        34026, // Kill Command
        56315, // Kindred Spirits
        76657, // Mastery: Master of Beasts
@@ -1324,6 +1318,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     {
        19434, // Aimed Shot
       185358, // Arcane Shot
+      214351, // Black Arrow
        35110, // Bombardment
       186387, // Bursting Shot
         5116, // Concussive Shot
@@ -1375,7 +1370,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
         1515, // Tame Beast
       187698, // Tar Trap
       195645, // Wing Clip
-           0,
     },
     {
            0,
@@ -1950,7 +1944,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     {
       106951, // Berserk
       157447, // Critical Strikes
-        1850, // Dash
       131768, // Feline Swiftness
       137011, // Feral Druid
        16949, // Feral Instinct
@@ -2086,7 +2079,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 21154
+// Class mastery abilities, wow build 21232
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2325,7 +2318,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 21154
+// Racial abilities, wow build 21232
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3059,7 +3052,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 };
 #define GLYPH_ABILITIES_SIZE (8)
 
-// Glyph spells for classes, wow build 21154
+// Glyph spells for classes, wow build 21232
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3261,7 +3254,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 };
 #define SET_BONUS_DATA_SIZE (518)
 
-// Set bonus data, wow build 21154
+// Set bonus data, wow build 21232
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,              {   0 },    0,   73, 165641, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -3805,7 +3798,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
 };
 #define PERK_SIZE (3)
 
-// Perk specialization abilities, wow build 21154
+// Perk specialization abilities, wow build 21232
 static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   {
     {
@@ -3997,7 +3990,7 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
     },
   },
 };
-// Glyph properties, wow build 21154
+// Glyph properties, wow build 21232
 static glyph_property_data_t __glyph_property_data[72] = {
   {  1028, 125151 },
   {  1039, 125732 },
@@ -4072,9 +4065,9 @@ static glyph_property_data_t __glyph_property_data[72] = {
   {  1020, 123779 },
   {     0,      0 }
 };
-#define RPPMMOD_SIZE (155)
+#define RPPMMOD_SIZE (162)
 
-// 155 RPPM Modifiers, wow build level 21154
+// 162 RPPM Modifiers, wow build level 21232
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  29725,    4,  1,  1.0000 },
   {  49530,    4,  1,  1.0000 },
@@ -4206,7 +4199,6 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 192645,    4,  1,  1.0000 },
   { 192646,    4,  1,  1.0000 },
   { 192657,    4,  1,  1.0000 },
-  { 192759,    4,  1,  1.0000 },
   { 192923,    4,  1,  1.0000 },
   { 194909,    4,  1,  1.0000 },
   { 195255,    4,  1,  1.0000 },
@@ -4231,11 +4223,19 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 210702,    4,  1,  1.0000 },
   { 210719,    4,  1,  1.0000 },
   { 211984,    4,  1,  1.0000 },
+  { 214120,    4,  1,  1.0000 },
+  { 214140,    4,  1,  1.0000 },
+  { 214168,    4,  1,  1.0000 },
+  { 214340,    4,  1,  1.0000 },
+  { 214396,    4,  1,  1.0000 },
+  { 214492,    4,  1,  1.0000 },
+  { 214571,    4,  1,  1.0000 },
+  { 214798,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
 };
 #define ARTIFACT_SIZE (41)
 
-// Artifact base data, wow build 21154
+// Artifact base data, wow build 21232
 static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
   {  2,  70 },
   {  3, 577 },
@@ -4279,11 +4279,11 @@ static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
   { 82,  66 },
   {  0,   0 },
 };
-#define ARTIFACT_POWER_SIZE (639)
+#define ARTIFACT_POWER_SIZE (710)
 
-// Artifact power data, wow build 21154
+// Artifact power data, wow build 21232
 static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] = {
-  {   40,   2,  0,   1, "Wake of Ashes"                      }, // Wake of Ashes (id=205273, n_ranks=1)
+  {   40,   2,  0,   0, "Wake of Ashes"                      }, // Wake of Ashes (id=205273, n_ranks=1)
   {   41,   2,  4,   3, "Highlord's Judgment"                }, // Highlord's Judgment (id=186941, n_ranks=6)
   {   42,   2,  5,   3, "Sharpened Edge"                     }, // Sharpened Edge (id=184759, n_ranks=6)
   {   43,   2,  6,   3, "Righteous Blade"                    }, // Righteous Blade (id=184843, n_ranks=6)
@@ -4298,9 +4298,10 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  350,   2,  0,   1, "Endless Resolve"                    }, // Endless Resolve (id=185086, n_ranks=1)
   {  351,   2,  0,   1, "Unbreakable Will"                   }, // Unbreakable Will (id=182234, n_ranks=1)
   {  352,   2,  0,   1, "Healing Storm"                      }, // Healing Storm (id=193058, n_ranks=1)
-  {  353,   2,  3,   1, "Blades of Light"                    }, // Blades of Light (id=193108, n_ranks=1)
-  { 1118,   2,  0,  10, "Light of the Ashbringer"            }, // Light of the Ashbringer (id=207604, n_ranks=10)
+  {  353,   2,  3,   1, "Ashes to Ashes"                     }, // Ashes to Ashes (id=179546, n_ranks=1)
+  { 1118,   2,  0,  20, "Ashbringer's Light"                 }, // Ashbringer's Light (id=207604, n_ranks=20)
   { 1207,   2,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  { 1275,   2,  0,   1, "Blade of Light"                     }, // Blade of Light (id=214081, n_ranks=1)
   { 1000,   3,  4,   3, "Contained Fury"                     }, // Contained Fury (id=201454, n_ranks=6)
   { 1001,   3,  5,   3, "Critical Chaos"                     }, // Critical Chaos (id=201455, n_ranks=6)
   { 1002,   3,  6,   3, "Chaos Vision"                       }, // Chaos Vision (id=201456, n_ranks=6)
@@ -4310,7 +4311,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1006,   3,  9,   3, "Unleashed Demons"                   }, // Unleashed Demons (id=201460, n_ranks=6)
   { 1007,   3, 12,   3, "Deceiver's Fury"                    }, // Deceiver's Fury (id=201463, n_ranks=6)
   { 1008,   3, 10,   3, "Overwhelming Power"                 }, // Overwhelming Power (id=201464, n_ranks=6)
-  { 1010,   3,  0,   1, "Fury of the Illidari"               }, // Fury of the Illidari (id=201467, n_ranks=1)
+  { 1010,   3,  0,   0, "Fury of the Illidari"               }, // Fury of the Illidari (id=201467, n_ranks=1)
   { 1011,   3,  0,   1, "Feast on the Souls"                 }, // Feast on the Souls (id=201468, n_ranks=1)
   { 1012,   3,  0,   1, "Demon Speed"                        }, // Demon Speed (id=201469, n_ranks=1)
   { 1013,   3,  0,   1, "Balanced Blades"                    }, // Balanced Blades (id=201470, n_ranks=1)
@@ -4318,6 +4319,8 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1015,   3,  2,   1, "Rage of the Illidari"               }, // Rage of the Illidari (id=201472, n_ranks=1)
   { 1016,   3,  3,   1, "Anguish of the Deceiver"            }, // Anguish of the Deceiver (id=201473, n_ranks=1)
   { 1190,   3,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  { 1330,   3,  0,   1, "Chaos Blades"                       }, // Chaos Blades (id=214795, n_ranks=1)
+  { 1362,   3,  0,  20, "Chaos Burn"                         }, // Chaos Burn (id=214907, n_ranks=20)
   {   72,   4,  4,   3, "Torrential Barrage"                 }, // Torrential Barrage (id=187304, n_ranks=6)
   {   73,   4,  1,   1, "Arcane Rebound"                     }, // Arcane Rebound (id=188006, n_ranks=1)
   {   74,   4,  5,   3, "Blasting Rod"                       }, // Blasting Rod (id=187258, n_ranks=6)
@@ -4332,10 +4335,12 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {   84,   4, 12,   3, "Icy Core"                           }, // Icy Core (id=210716, n_ranks=6)
   {   86,   4,  2,   1, "Touch of the Magi"                  }, // Touch of the Magi (id=210725, n_ranks=1)
   {   87,   4,  3,   1, "Aegwynn's Ascendance"               }, // Aegwynn's Ascendance (id=187680, n_ranks=1)
-  {  290,   4,  0,   1, "Mark of Aluneth"                    }, // Mark of Aluneth (id=210726, n_ranks=1)
+  {  290,   4,  0,   0, "Mark of Aluneth"                    }, // Mark of Aluneth (id=210726, n_ranks=1)
   { 1169,   4,  0,   1, "Sloooow Down"                       }, // Sloooow Down (id=210730, n_ranks=1)
   { 1199,   4,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
-  {   91,  11,  0,   1, "Shadowflame Shield"                 }, // Shadowflame Shield (id=203524, n_ranks=1)
+  { 1339,   4,  0,   1, "Ancient Power"                      }, // Ancient Power (id=214808, n_ranks=1)
+  { 1371,   4,  0,  20, "Ancient Power"                      }, // Ancient Power (id=214917, n_ranks=20)
+  {   91,  11,  0,   0, "Neltharion's Fury"                  }, // Neltharion's Fury (id=203524, n_ranks=1)
   {   92,  11,  1,   1, "Scales of the Earth Warder"         }, // Scales of the Earth Warder (id=203567, n_ranks=1)
   {   93,  11,  2,   1, "Dragon Scales"                      }, // Dragon Scales (id=203576, n_ranks=1)
   {   94,  11,  3,   1, "Might of the Vrykul"                }, // Might of the Vrykul (id=188778, n_ranks=1)
@@ -4352,6 +4357,8 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  105,  11, 11,   3, "Toughness"                          }, // Toughness (id=188632, n_ranks=6)
   {  106,  11, 12,   3, "Thunder Crash"                      }, // Thunder Crash (id=188644, n_ranks=6)
   { 1222,  11,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  { 1358,  11,  0,   1, "Ancient Power"                      }, // Ancient Power (id=214810, n_ranks=1)
+  { 1395,  11,  0,  20, "Unbreakable Bulwark"                }, // Unbreakable Bulwark (id=214939, n_ranks=20)
   {  108,  12,  4,   3, "Cold as Ice"                        }, // Cold as Ice (id=189080, n_ranks=6)
   {  109,  12,  6,   3, "Blast Radius"                       }, // Blast Radius (id=189086, n_ranks=6)
   {  110,  12,  5,   3, "Ambidexterity"                      }, // Ambidexterity (id=189092, n_ranks=6)
@@ -4362,14 +4369,16 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  117,  12,  7,   3, "Dead of Winter"                     }, // Dead of Winter (id=189164, n_ranks=6)
   {  119,  12,  0,   1, "Frozen Core"                        }, // Frozen Core (id=189179, n_ranks=1)
   {  120,  12,  0,   1, "Mirror Ball"                        }, // Mirror Ball (id=189180, n_ranks=1)
-  {  122,  12,  1,   1, "Sindragosa's Fury"                  }, // Sindragosa's Fury (id=190778, n_ranks=1)
+  {  122,  12,  1,   0, "Crystalline Swords"                 }, // Crystalline Swords (id=189186, n_ranks=1)
   {  123,  12,  2,   1, "Hypothermia"                        }, // Hypothermia (id=189185, n_ranks=1)
-  {  124,  12,  3,   1, "Crystalline Swords"                 }, // Crystalline Swords (id=189186, n_ranks=1)
+  {  124,  12,  3,   1, "Sindragosa's Fury"                  }, // Sindragosa's Fury (id=190778, n_ranks=1)
   { 1090,  12, 12,   3, "Frozen Skin"                        }, // Frozen Skin (id=204875, n_ranks=6)
   { 1091,  12,  0,   1, "Chill of the Grave"                 }, // Chill of the Grave (id=205209, n_ranks=1)
   { 1092,  12,  3,   1, "Frozen Soul"                        }, // Frozen Soul (id=189184, n_ranks=1)
   { 1188,  12,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
-  {  125,  13,  0,   1, "Essence of G'Hanir"                 }, // Essence of G'Hanir (id=208253, n_ranks=1)
+  { 1332,  12,  0,   1, "Ancient Power"                      }, // Ancient Power (id=214808, n_ranks=1)
+  { 1360,  12,  0,  20, "Soulbiter"                          }, // Soulbiter (id=214904, n_ranks=20)
+  {  125,  13,  0,   0, "Essence of G'Hanir"                 }, // Essence of G'Hanir (id=208253, n_ranks=1)
   {  126,  13,  1,   1, "Dreamwalker"                        }, // Dreamwalker (id=189849, n_ranks=1)
   {  127,  13,  2,   1, "Tranquil Mind"                      }, // Tranquil Mind (id=189857, n_ranks=1)
   {  128,  13,  3,   1, "Power of the Archdruid"             }, // Power of the Archdruid (id=189870, n_ranks=1)
@@ -4387,24 +4396,28 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  140,  13, 12,   3, "Grovewalker"                        }, // Grovewalker (id=186320, n_ranks=6)
   { 1195,  13,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1254,  13,  0,   0, "Artificial Damage"                  }, // Artificial Damage (id=213428, n_ranks=1)
+  { 1335,  13,  0,   1, "Ancient Power"                      }, // Ancient Power (id=214809, n_ranks=1)
+  { 1367,  13,  0,  20, "G'Hanir's Bloom"                    }, // G'Hanir's Bloom (id=214913, n_ranks=20)
   {  272,  15,  4,   3, "Iron Heart"                         }, // Iron Heart (id=192450, n_ranks=6)
   {  273,  15,  5,   3, "Meat Shield"                        }, // Meat Shield (id=192453, n_ranks=6)
   {  274,  15,  6,   3, "Grim Fortitude"                     }, // Grim Fortitude (id=192447, n_ranks=6)
   {  275,  15,  7,   3, "Veinrender"                         }, // Veinrender (id=192457, n_ranks=6)
   {  276,  15,  8,   3, "Coagulopathy"                       }, // Coagulopathy (id=192460, n_ranks=6)
-  {  277,  15,  9,   3, "Vampiric Fangs"                     }, // Vampiric Fangs (id=208793, n_ranks=6)
+  {  277,  15,  9,   3, "Vampiric Fangs"                     }, // Vampiric Fangs (id=192542, n_ranks=6)
   {  278,  15, 10,   3, "All-Consuming Rot"                  }, // All-Consuming Rot (id=192464, n_ranks=6)
   {  279,  15, 11,   3, "Dance of Darkness"                  }, // Dance of Darkness (id=192514, n_ranks=6)
   {  280,  15, 12,   3, "Bonebreaker"                        }, // Bonebreaker (id=192538, n_ranks=6)
-  {  281,  15,  0,   1, "Rattling Bones [Untested IMPL]"     }, // Rattling Bones [Untested IMPL] (id=192557, n_ranks=1)
+  {  281,  15,  0,   1, "Rattling Bones"                     }, // Rattling Bones (id=192557, n_ranks=1)
   {  282,  15,  0,   1, "Touch of the Grave"                 }, // Touch of the Grave (id=192548, n_ranks=1)
   {  283,  15,  0,   1, "Mouth of Hell"                      }, // Mouth of Hell (id=192570, n_ranks=1)
   {  284,  15,  1,   1, "Skeletal Shattering [NYI]"          }, // Skeletal Shattering [NYI] (id=192558, n_ranks=1)
   {  285,  15,  2,   1, "Unending Thirst"                    }, // Unending Thirst (id=192567, n_ranks=1)
   {  286,  15,  3,   1, "Umbilicus Eternus"                  }, // Umbilicus Eternus (id=193213, n_ranks=1)
-  {  289,  15,  0,   1, "Consumption"                        }, // Consumption (id=205223, n_ranks=1)
+  {  289,  15,  0,   0, "Consumption"                        }, // Consumption (id=205223, n_ranks=1)
   { 1187,  15,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
-  {  149,  16,  0,   1, "Apocalypse"                         }, // Apocalypse (id=205488, n_ranks=1)
+  { 1331,  15,  0,   1, "Ancient Power"                      }, // Ancient Power (id=214810, n_ranks=1)
+  { 1359,  15,  0,  20, "The Hungering Maw"                  }, // The Hungering Maw (id=214903, n_ranks=20)
+  {  149,  16,  0,   0, "Apocalypse"                         }, // Apocalypse (id=205488, n_ranks=1)
   {  150,  16,  1,   1, "The Shambler"                       }, // The Shambler (id=191760, n_ranks=1)
   {  151,  16,  2,   1, "Double Doom"                        }, // Double Doom (id=191741, n_ranks=1)
   {  152,  16,  3,   1, "Flagellation"                       }, // Flagellation (id=191747, n_ranks=1)
@@ -4421,7 +4434,9 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  267,  16, 12,   3, "Unholy Endurance"                   }, // Unholy Endurance (id=191584, n_ranks=6)
   { 1119,  16, 10,   3, "Eternal Agony"                      }, // Eternal Agony (id=208598, n_ranks=6)
   { 1189,  16,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
-  {  851,  17,  0,   1, "Goremaw's Bite"                     }, // Goremaw's Bite (id=209782, n_ranks=1)
+  { 1333,  16,  0,   1, "Ancient Power"                      }, // Ancient Power (id=214808, n_ranks=1)
+  { 1361,  16,  0,  20, "Fleshsearer"                        }, // Fleshsearer (id=214906, n_ranks=20)
+  {  851,  17,  0,   0, "Goremaw's Bite"                     }, // Goremaw's Bite (id=209782, n_ranks=1)
   {  852,  17,  4,   3, "The Quiet Knife"                    }, // The Quiet Knife (id=197231, n_ranks=6)
   {  853,  17,  5,   3, "Demon's Kiss"                       }, // Demon's Kiss (id=197233, n_ranks=6)
   {  854,  17,  6,   3, "Gutripper"                          }, // Gutripper (id=197234, n_ranks=6)
@@ -4438,7 +4453,9 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  865,  17,  2,   1, "Shadow Nova"                        }, // Shadow Nova (id=209781, n_ranks=1)
   {  866,  17,  3,   1, "Finality"                           }, // Finality (id=197406, n_ranks=1)
   { 1213,  17,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
-  { 1068,  34,  0,   1, "Fury of the Eagle"                  }, // Fury of the Eagle (id=203415, n_ranks=1)
+  { 1349,  17,  0,   1, "Ancient Power"                      }, // Ancient Power (id=214808, n_ranks=1)
+  { 1386,  17,  0,  20, "Legionblade"                        }, // Legionblade (id=214930, n_ranks=20)
+  { 1068,  34,  0,   0, "Fury of the Eagle"                  }, // Fury of the Eagle (id=203415, n_ranks=1)
   { 1070,  34,  4,   3, "Sharpened Beak"                     }, // Sharpened Beak (id=203566, n_ranks=6)
   { 1071,  34,  5,   3, "My Beloved Monster"                 }, // My Beloved Monster (id=203577, n_ranks=6)
   { 1072,  34,  6,   3, "Jagged Claws"                       }, // Jagged Claws (id=203578, n_ranks=6)
@@ -4455,10 +4472,12 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1083,  34,  2,   1, "Talon Strike"                       }, // Talon Strike (id=203563, n_ranks=1)
   { 1084,  34,  3,   1, "Eagle's Bite"                       }, // Eagle's Bite (id=203757, n_ranks=1)
   { 1198,  34,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  { 1338,  34,  0,   1, "Ancient Power"                      }, // Ancient Power (id=214808, n_ranks=1)
+  { 1370,  34,  0,  20, "Voice of the Wild Gods"             }, // Voice of the Wild Gods (id=214916, n_ranks=20)
   {  980,  35,  1,   1, "Juggernaut"                         }, // Juggernaut (id=200875, n_ranks=1)
   {  981,  35,  2,   1, "Fires of Odyn"                      }, // Fires of Odyn (id=200874, n_ranks=1)
   {  982,  35,  3,   1, "Odyn's Champion"                    }, // Odyn's Champion (id=200872, n_ranks=1)
-  {  984,  35,  0,   1, "Odyn's Fury"                        }, // Odyn's Fury (id=205545, n_ranks=1)
+  {  984,  35,  0,   0, "Odyn's Fury"                        }, // Odyn's Fury (id=205545, n_ranks=1)
   {  985,  35,  0,   1, "Focus In Chaos"                     }, // Focus In Chaos (id=200871, n_ranks=1)
   {  986,  35,  0,   1, "Helya's Wrath"                      }, // Helya's Wrath (id=200870, n_ranks=1)
   {  987,  35,  0,   1, "Sense Death"                        }, // Sense Death (id=200863, n_ranks=1)
@@ -4472,7 +4491,9 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  995,  35,  9,   3, "Unrivaled Strength"                 }, // Unrivaled Strength (id=200860, n_ranks=6)
   {  996,  35, 10,   3, "Raging Berserker"                   }, // Raging Berserker (id=200861, n_ranks=6)
   { 1221,  35,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
-  { 1136,  36,  0,   1, "Warbreaker"                         }, // Warbreaker (id=209577, n_ranks=1)
+  { 1357,  35,  0,   1, "Ancient Power"                      }, // Ancient Power (id=214808, n_ranks=1)
+  { 1394,  35,  0,  20, "Titanic Power"                      }, // Titanic Power (id=214938, n_ranks=20)
+  { 1136,  36,  0,   0, "Warbreaker"                         }, // Warbreaker (id=209577, n_ranks=1)
   { 1137,  36,  1,   1, "Shattered Defenses"                 }, // Shattered Defenses (id=209574, n_ranks=1)
   { 1138,  36,  2,   1, "Void Cleave"                        }, // Void Cleave (id=209573, n_ranks=1)
   { 1139,  36,  3,   1, "Corrupted Blood of Zakajz"          }, // Corrupted Blood of Zakajz (id=209566, n_ranks=1)
@@ -4489,7 +4510,9 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1150,  36, 10,   3, "Exploit the Weakness"               }, // Exploit the Weakness (id=209494, n_ranks=6)
   { 1151,  36, 12,   3, "Touch of Zakajz"                    }, // Touch of Zakajz (id=209541, n_ranks=6)
   { 1220,  36,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
-  { 1170,  37,  0,   1, "Thal'kiel's Consumption"            }, // Thal'kiel's Consumption (id=211714, n_ranks=1)
+  { 1356,  36,  0,   1, "Ancient Power"                      }, // Ancient Power (id=214808, n_ranks=1)
+  { 1393,  36,  0,  20, "Unbreakable Steel"                  }, // Unbreakable Steel (id=214937, n_ranks=20)
+  { 1170,  37,  0,   0, "Thal'kiel's Consumption"            }, // Thal'kiel's Consumption (id=211714, n_ranks=1)
   { 1171,  37,  4,   3, "Summoner's Prowess"                 }, // Summoner's Prowess (id=211108, n_ranks=6)
   { 1172,  37,  5,   3, "Legionwrath"                        }, // Legionwrath (id=211126, n_ranks=6)
   { 1173,  37,  6,   3, "The Doom of Azeroth"                }, // The Doom of Azeroth (id=211106, n_ranks=6)
@@ -4503,10 +4526,12 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1181,  37,  0,   1, "Dread of Night"                     }, // Dread of Night (id=211173, n_ranks=1)
   { 1182,  37,  0,   1, "Siphon of the Man'ari"              }, // Siphon of the Man'ari (id=212391, n_ranks=1)
   { 1183,  37,  1,   1, "The Expendables"                    }, // The Expendables (id=211219, n_ranks=1)
-  { 1184,  37,  2,   1, "Imp-to the Breach"                  }, // Imp-to the Breach (id=211321, n_ranks=1)
+  { 1184,  37,  2,   1, "Thal'kiel's Discord"                }, // Thal'kiel's Discord (id=211720, n_ranks=1)
   { 1185,  37,  3,   1, "Stolen Power"                       }, // Stolen Power (id=211530, n_ranks=1)
   { 1218,  37,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
-  {  803,  38,  0,   1, "Tearing Time and Space"             }, // Tearing Time and Space (id=196204, n_ranks=1)
+  { 1354,  37,  0,   1, "Ancient Power"                      }, // Ancient Power (id=214808, n_ranks=1)
+  { 1391,  37,  0,  20, "Thal'kiel's Lingering Power"        }, // Thal'kiel's Lingering Power (id=214935, n_ranks=20)
+  {  803,  38,  0,   0, "Tearing Time and Space"             }, // Tearing Time and Space (id=196204, n_ranks=1)
   {  804,  38,  4,   3, "Master of Disaster"                 }, // Master of Disaster (id=196211, n_ranks=6)
   {  805,  38,  5,   3, "Chaotic Instability"                }, // Chaotic Instability (id=196217, n_ranks=6)
   {  806,  38,  6,   3, "Fire and the Flames"                }, // Fire and the Flames (id=196222, n_ranks=6)
@@ -4523,6 +4548,8 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  817,  38,  2,   1, "Conflagration of Chaos"             }, // Conflagration of Chaos (id=196546, n_ranks=1)
   {  818,  38,  3,   1, "Stuff of the Universe"              }, // Stuff of the Universe (id=196667, n_ranks=1)
   { 1219,  38,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  { 1355,  38,  0,   1, "Ancient Power"                      }, // Ancient Power (id=214808, n_ranks=1)
+  { 1392,  38,  0,  20, "Stolen Power"                       }, // Stolen Power (id=214936, n_ranks=20)
   {  915,  39,  4,   3, "Inimitable Agony"                   }, // Inimitable Agony (id=199111, n_ranks=6)
   {  916,  39,  5,   3, "Hideous Corruption"                 }, // Hideous Corruption (id=199112, n_ranks=6)
   {  917,  39,  6,   3, "Drained to a Husk"                  }, // Drained to a Husk (id=199120, n_ranks=6)
@@ -4538,9 +4565,11 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  927,  39,  0,   1, "Soul Flame"                         }, // Soul Flame (id=199471, n_ranks=1)
   {  928,  39,  0,   1, "Wrath of Consumption"               }, // Wrath of Consumption (id=199472, n_ranks=1)
   {  929,  39,  0,   1, "Harvester of Souls"                 }, // Harvester of Souls (id=201424, n_ranks=1)
-  {  999,  39,  0,   1, "Reap Soul"                          }, // Reap Soul (id=199910, n_ranks=1)
+  {  999,  39,  0,   0, "Reap Soul"                          }, // Reap Soul (id=199910, n_ranks=1)
   { 1217,  39,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
-  {  291,  40,  0,   1, "Stormkeeper"                        }, // Stormkeeper (id=205495, n_ranks=1)
+  { 1353,  39,  0,   1, "Ancient Power"                      }, // Ancient Power (id=214808, n_ranks=1)
+  { 1390,  39,  0,  20, "Soulharvest"                        }, // Soulharvest (id=214934, n_ranks=20)
+  {  291,  40,  0,   0, "Stormkeeper"                        }, // Stormkeeper (id=205495, n_ranks=1)
   {  292,  40,  0,   1, "Static Overload"                    }, // Static Overload (id=191602, n_ranks=1)
   {  293,  40,  0,   1, "Master of the Elements"             }, // Master of the Elements (id=191647, n_ranks=1)
   {  294,  40,  0,   1, "Elementalist"                       }, // Elementalist (id=191512, n_ranks=1)
@@ -4557,7 +4586,9 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  305,  40, 12,   3, "Shamanistic Healing"                }, // Shamanistic Healing (id=191582, n_ranks=6)
   {  306,  40, 10,   3, "Earthen Attunement"                 }, // Earthen Attunement (id=191598, n_ranks=6)
   { 1214,  40,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
-  {  899,  41,  0,   1, "Doom Winds"                         }, // Doom Winds (id=204945, n_ranks=1)
+  { 1350,  40,  0,   1, "Ancient Power"                      }, // Ancient Power (id=214808, n_ranks=1)
+  { 1387,  40,  0,  20, "Stormkeeper's Power"                }, // Stormkeeper's Power (id=214931, n_ranks=20)
+  {  899,  41,  0,   0, "Doom Winds"                         }, // Doom Winds (id=204945, n_ranks=1)
   {  900,  41,  1,   1, "Unleash Doom"                       }, // Unleash Doom (id=198736, n_ranks=1)
   {  901,  41,  2,   1, "Doom Wolves"                        }, // Doom Wolves (id=198505, n_ranks=1)
   {  902,  41,  0,   1, "Hurricane"                          }, // Hurricane (id=198361, n_ranks=1)
@@ -4574,7 +4605,9 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  913,  41,  9,   3, "Gathering of the Maelstrom"         }, // Gathering of the Maelstrom (id=198349, n_ranks=6)
   {  930,  41,  3,   1, "Doom Vortex"                        }, // Doom Vortex (id=199107, n_ranks=1)
   { 1215,  41,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
-  { 1102,  42,  0,   1, "Gift of the Queen"                  }, // Gift of the Queen (id=207366, n_ranks=1)
+  { 1351,  41,  0,   1, "Ancient Power"                      }, // Ancient Power (id=214808, n_ranks=1)
+  { 1388,  41,  0,  20, "Earthshattering Blows"              }, // Earthshattering Blows (id=214932, n_ranks=20)
+  { 1102,  42,  0,   0, "Gift of the Queen"                  }, // Gift of the Queen (id=207366, n_ranks=1)
   { 1103,  42,  4,   3, "Tidal Chains"                       }, // Tidal Chains (id=207088, n_ranks=6)
   { 1104,  42,  5,   3, "Lord of Storms"                     }, // Lord of Storms (id=207092, n_ranks=6)
   { 1105,  42,  6,   3, "Pull of the Sea"                    }, // Pull of the Sea (id=207118, n_ranks=6)
@@ -4592,10 +4625,12 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1117,  42,  3,   1, "Cumulative Upkeep"                  }, // Cumulative Upkeep (id=207362, n_ranks=1)
   { 1216,  42,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1258,  42,  0,   0, "Artificial Damage"                  }, // Artificial Damage (id=213428, n_ranks=1)
+  { 1352,  42,  0,   1, "Ancient Power"                      }, // Ancient Power (id=214809, n_ranks=1)
+  { 1389,  42,  0,  20, "Flow of the Tides"                  }, // Flow of the Tides (id=214933, n_ranks=20)
   {  323,  43,  0,   3, "Toxic Blades"                       }, // Toxic Blades (id=192310, n_ranks=6)
   {  324,  43,  0,   3, "Serrated Edge"                      }, // Serrated Edge (id=192315, n_ranks=6)
   {  325,  43,  0,   3, "Master Alchemist"                   }, // Master Alchemist (id=192318, n_ranks=6)
-  {  326,  43,  0,   3, "Embrace the Shadows"                }, // Embrace the Shadows (id=192323, n_ranks=6)
+  {  326,  43,  0,   3, "Mixology"                           }, // Mixology (id=192323, n_ranks=6)
   {  327,  43,  0,   3, "Balanced Blades"                    }, // Balanced Blades (id=192326, n_ranks=6)
   {  328,  43,  0,   3, "Gushing Wound"                      }, // Gushing Wound (id=192329, n_ranks=6)
   {  329,  43,  0,   3, "Shadow Walker"                      }, // Shadow Walker (id=192345, n_ranks=6)
@@ -4606,10 +4641,12 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  334,  43,  0,   1, "Surge of Toxins"                    }, // Surge of Toxins (id=192424, n_ranks=1)
   {  335,  43,  0,   1, "From the Shadows"                   }, // From the Shadows (id=192428, n_ranks=1)
   {  337,  43,  0,   1, "Bag of Tricks"                      }, // Bag of Tricks (id=192657, n_ranks=1)
-  {  346,  43,  0,   1, "Hemotoxin"                          }, // Hemotoxin (id=192759, n_ranks=1)
+  {  346,  43,  0,   0, "Kingsbane"                          }, // Kingsbane (id=192759, n_ranks=1)
   {  347,  43,  0,   1, "Blood of the Assassinated"          }, // Blood of the Assassinated (id=192923, n_ranks=1)
   { 1211,  43,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
-  { 1052,  44,  0,   1, "Curse of the Dreadblades"           }, // Curse of the Dreadblades (id=202665, n_ranks=1)
+  { 1276,  43,  0,   1, "Assassin's Blades"                  }, // Assassin's Blades (id=214368, n_ranks=1)
+  { 1384,  43,  0,  20, "Slayer's Precision"                 }, // Slayer's Precision (id=214928, n_ranks=20)
+  { 1052,  44,  0,   0, "Curse of the Dreadblades"           }, // Curse of the Dreadblades (id=202665, n_ranks=1)
   { 1053,  44,  1,   1, "Blunderbuss"                        }, // Blunderbuss (id=202897, n_ranks=1)
   { 1054,  44,  2,   1, "Greed"                              }, // Greed (id=202820, n_ranks=1)
   { 1055,  44,  3,   1, "Blurred Time"                       }, // Blurred Time (id=202769, n_ranks=1)
@@ -4626,7 +4663,9 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1066,  44, 12,   3, "Ghostly Shell"                      }, // Ghostly Shell (id=202533, n_ranks=6)
   { 1067,  44, 10,   3, "Fortune's Boon"                     }, // Fortune's Boon (id=202907, n_ranks=6)
   { 1212,  44,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
-  {  834,  45,  0,   1, "Light of T'uure"                    }, // Light of T'uure (id=208065, n_ranks=1)
+  { 1348,  44,  0,   1, "Ancient Power"                      }, // Ancient Power (id=214808, n_ranks=1)
+  { 1385,  44,  0,  20, "Cursed Steel"                       }, // Cursed Steel (id=214929, n_ranks=20)
+  {  834,  45,  0,   0, "Light of T'uure"                    }, // Light of T'uure (id=208065, n_ranks=1)
   {  835,  45,  1,   1, "Renew the Faith"                    }, // Renew the Faith (id=196492, n_ranks=1)
   {  836,  45,  2,   1, "Save the Fallen"                    }, // Save the Fallen (id=196537, n_ranks=1)
   {  837,  45,  3,   1, "Blessing of T'uure"                 }, // Blessing of T'uure (id=196578, n_ranks=1)
@@ -4644,7 +4683,9 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  849,  45,  4,   3, "Holy Guidance"                      }, // Holy Guidance (id=196434, n_ranks=6)
   { 1209,  45,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1257,  45,  0,   0, "Artificial Damage"                  }, // Artificial Damage (id=213428, n_ranks=1)
-  {  883,  46,  0,   1, "Light's Wrath"                      }, // Light's Wrath (id=207946, n_ranks=1)
+  { 1346,  45,  0,   1, "Ancient Power"                      }, // Ancient Power (id=214809, n_ranks=1)
+  { 1380,  45,  0,  20, "Beacon of Light"                    }, // Beacon of Light (id=214926, n_ranks=20)
+  {  883,  46,  0,   0, "Light's Wrath"                      }, // Light's Wrath (id=207946, n_ranks=1)
   {  884,  46,  0,   1, "Taming the Shadows"                 }, // Taming the Shadows (id=197779, n_ranks=1)
   {  885,  46,  0,   1, "Share in the Light"                 }, // Share in the Light (id=197781, n_ranks=1)
   {  886,  46,  1,   1, "Barrier for the Devoted"            }, // Barrier for the Devoted (id=197815, n_ranks=1)
@@ -4661,7 +4702,9 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  897,  46,  3,   1, "Power of the Dark Side"             }, // Power of the Dark Side (id=198068, n_ranks=1)
   {  898,  46,  0,   1, "Sins of the Many"                   }, // Sins of the Many (id=198074, n_ranks=1)
   { 1208,  46,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
-  {  764,  47,  0,   1, "Void Torrent"                       }, // Void Torrent (id=205065, n_ranks=1)
+  { 1345,  46,  0,   1, "Ancient Power"                      }, // Ancient Power (id=214809, n_ranks=1)
+  { 1379,  46,  0,  20, "Forbidden Flame"                    }, // Forbidden Flame (id=214925, n_ranks=20)
+  {  764,  47,  0,   0, "Void Torrent"                       }, // Void Torrent (id=205065, n_ranks=1)
   {  765,  47,  0,   1, "Thrive in the Shadows"              }, // Thrive in the Shadows (id=194024, n_ranks=1)
   {  766,  47,  0,   1, "Sinister Thoughts"                  }, // Sinister Thoughts (id=194026, n_ranks=1)
   {  767,  47,  4,   3, "Unleash the Shadows"                }, // Unleash the Shadows (id=194093, n_ranks=6)
@@ -4678,9 +4721,11 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  778,  47,  9,   3, "Void Corruption"                    }, // Void Corruption (id=194016, n_ranks=6)
   {  779,  47,  0,   1, "Mental Fortitude"                   }, // Mental Fortitude (id=194018, n_ranks=1)
   { 1210,  47,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  { 1347,  47,  0,   1, "Ancient Power"                      }, // Ancient Power (id=214808, n_ranks=1)
+  { 1381,  47,  0,  20, "Darkening Whispers"                 }, // Darkening Whispers (id=214927, n_ranks=20)
   {  963,  48,  2,   1, "Boon of the Silver Hand"            }, // Boon of the Silver Hand (id=200443, n_ranks=1)
   {  964,  48,  3,   1, "Protection of Tyr"                  }, // Protection of Tyr (id=200430, n_ranks=1)
-  {  965,  48,  0,   1, "Lightburst"                         }, // Lightburst (id=200652, n_ranks=1)
+  {  965,  48,  0,   0, "Tyr's Deliverance"                  }, // Tyr's Deliverance (id=200652, n_ranks=1)
   {  966,  48,  1,   1, "The Light Saves"                    }, // The Light Saves (id=200421, n_ranks=1)
   {  967,  48,  0,   1, "Protection of the Light"            }, // Protection of the Light (id=200407, n_ranks=1)
   {  968,  48,  0,   1, "Vindicator"                         }, // Vindicator (id=200373, n_ranks=1)
@@ -4696,7 +4741,9 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1186,  48,  9,   3, "Break of Dawn"                      }, // Break of Dawn (id=200482, n_ranks=6)
   { 1205,  48,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1256,  48,  0,   0, "Artificial Damage"                  }, // Artificial Damage (id=213428, n_ranks=1)
-  { 1120,  49,  0,   1, "Eye of Tyr"                         }, // Eye of Tyr (id=209202, n_ranks=1)
+  { 1342,  48,  0,   1, "Ancient Power"                      }, // Ancient Power (id=214809, n_ranks=1)
+  { 1377,  48,  0,  20, "Silver Touch"                       }, // Silver Touch (id=214923, n_ranks=20)
+  { 1120,  49,  0,   0, "Eye of Tyr"                         }, // Eye of Tyr (id=209202, n_ranks=1)
   { 1121,  49,  4,   3, "Hammer Time"                        }, // Hammer Time (id=209229, n_ranks=6)
   { 1122,  49,  5,   3, "Stern Judgment"                     }, // Stern Judgment (id=209217, n_ranks=6)
   { 1123,  49,  6,   3, "Unflinching Defense"                }, // Unflinching Defense (id=209220, n_ranks=6)
@@ -4713,6 +4760,8 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1134,  49,  2,   1, "Light of the Titans"                }, // Light of the Titans (id=209528, n_ranks=1)
   { 1135,  49,  3,   1, "Tyr's Enforcer"                     }, // Tyr's Enforcer (id=209474, n_ranks=1)
   { 1206,  49,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  { 1343,  49,  0,   1, "Ancient Power"                      }, // Ancient Power (id=214810, n_ranks=1)
+  { 1378,  49,  0,  20, "Unrelenting Light"                  }, // Unrelenting Light (id=214924, n_ranks=20)
   {  800,  50,  4,   3, "Inner Peace"                        }, // Inner Peace (id=195243, n_ranks=6)
   {  801,  50, 11,   3, "Light on Your Feet"                 }, // Light on Your Feet (id=195244, n_ranks=6)
   {  820,  50,  5,   3, "Rising Winds"                       }, // Rising Winds (id=195263, n_ranks=6)
@@ -4725,16 +4774,18 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  828,  50,  0,   1, "Transfer the Power"                 }, // Transfer the Power (id=195300, n_ranks=1)
   {  829,  50, 12,   3, "Healing Winds"                      }, // Healing Winds (id=195380, n_ranks=6)
   {  830,  50,  1,   1, "Gale Burst"                         }, // Gale Burst (id=195399, n_ranks=1)
-  {  831,  50,  0,   1, "Strike of the Windlord"             }, // Strike of the Windlord (id=205320, n_ranks=1)
+  {  831,  50,  0,   0, "Strike of the Windlord"             }, // Strike of the Windlord (id=205320, n_ranks=1)
   {  832,  50,  2,   1, "Crosswinds"                         }, // Crosswinds (id=195650, n_ranks=1)
   {  833,  50,  3,   1, "Tornado Kicks"                      }, // Tornado Kicks (id=196082, n_ranks=1)
   { 1094,  50, 10,   3, "Strength of Xuen"                   }, // Strength of Xuen (id=195267, n_ranks=6)
   { 1204,  50,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
-  {  931,  51,  0,   1, "Sheilun's Gift"                     }, // Sheilun's Gift (id=205406, n_ranks=1)
-  {  932,  51,  1,   1, "Shaohao's Mists of Wisdom"          }, // Shaohao's Mists of Wisdom (id=199806, n_ranks=1)
+  { 1341,  50,  0,   1, "Ancient Power"                      }, // Ancient Power (id=214808, n_ranks=1)
+  { 1376,  50,  0,  20, "Windborne Blows"                    }, // Windborne Blows (id=214922, n_ranks=20)
+  {  931,  51,  0,   0, "Sheilun's Gift"                     }, // Sheilun's Gift (id=205406, n_ranks=1)
+  {  932,  51,  1,   1, "The Mists of Sheilun"               }, // The Mists of Sheilun (id=199887, n_ranks=1)
   {  933,  51,  2,   1, "Blessings of Yu'lon"                }, // Blessings of Yu'lon (id=199665, n_ranks=1)
   {  934,  51,  3,   1, "Celestial Breath"                   }, // Celestial Breath (id=199640, n_ranks=1)
-  {  935,  51,  0,   1, "Harmony and Focus"                  }, // Harmony and Focus (id=199485, n_ranks=1)
+  {  935,  51,  0,   1, "Light on Your Feet"                 }, // Light on Your Feet (id=199401, n_ranks=1)
   {  936,  51,  0,   1, "Mists of Life"                      }, // Mists of Life (id=199563, n_ranks=1)
   {  937,  51,  0,   1, "Dancing Mists"                      }, // Dancing Mists (id=199573, n_ranks=1)
   {  938,  51,  4,   3, "Coalescing Mists"                   }, // Coalescing Mists (id=199364, n_ranks=6)
@@ -4745,27 +4796,31 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  943,  51,  8,   3, "Soothing Remedies"                  }, // Soothing Remedies (id=199377, n_ranks=6)
   {  944,  51,  9,   3, "Infusion of Life"                   }, // Infusion of Life (id=199380, n_ranks=6)
   {  945,  51, 12,   3, "Spirit Tether"                      }, // Spirit Tether (id=199384, n_ranks=6)
-  {  946,  51, 10,   3, "Light on Your Feet"                 }, // Light on Your Feet (id=199401, n_ranks=6)
+  {  946,  51, 10,   3, "Essence of the Mists"               }, // Essence of the Mists (id=199485, n_ranks=6)
   { 1203,  51,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1255,  51,  0,   0, "Artificial Damage"                  }, // Artificial Damage (id=213428, n_ranks=1)
+  { 1295,  51,  0,   1, "Mists of Wisdom"                    }, // Mists of Wisdom (id=214516, n_ranks=1)
+  { 1375,  51,  0,  20, "Mistweaving"                        }, // Mistweaving (id=214921, n_ranks=20)
   { 1202,  52,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
-  { 1259,  52,  0,   1, "Wanderer's Special"                 }, // Wanderer's Special (id=213435, n_ranks=1)
-  { 1260,  52,  4,   3, "Obsidian Fists"                     }, // Obsidian Fists (id=213051, n_ranks=6)
-  { 1261,  52,  5,   3, "Adjunct Advantage"                  }, // Adjunct Advantage (id=213049, n_ranks=6)
-  { 1262,  52,  6,   3, "Smashed"                            }, // Smashed (id=213050, n_ranks=6)
-  { 1263,  52,  7,   3, "Dark Side of the Moon"              }, // Dark Side of the Moon (id=213062, n_ranks=6)
-  { 1264,  52,  8,   3, "Staggering Around"                  }, // Staggering Around (id=213055, n_ranks=6)
-  { 1265,  52,  9,   3, "Healthy Appetite"                   }, // Healthy Appetite (id=213133, n_ranks=6)
-  { 1266,  52, 10,   3, "Gifted Student"                     }, // Gifted Student (id=213136, n_ranks=6)
-  { 1267,  52, 11,   3, "Potent Kick"                        }, // Potent Kick (id=213047, n_ranks=6)
-  { 1268,  52, 12,   3, "Face Palm"                          }, // Face Palm (id=213116, n_ranks=6)
-  { 1269,  52,  0,   1, "Swift as a Coursing River"          }, // Swift as a Coursing River (id=213161, n_ranks=1)
-  { 1270,  52,  0,   1, "Overflow"                           }, // Overflow (id=213180, n_ranks=1)
-  { 1271,  52,  0,   1, "Obstinate Determination"            }, // Obstinate Determination (id=213907, n_ranks=1)
-  { 1272,  52,  1,   1, "Dragonfire Brew"                    }, // Dragonfire Brew (id=213183, n_ranks=1)
-  { 1273,  52,  2,   1, "Brew-Stache"                        }, // Brew-Stache (id=213495, n_ranks=1)
-  { 1274,  52,  3,   1, "Fortification"                      }, // Fortification (id=213340, n_ranks=1)
-  {  783,  53,  0,   1, "Ebonbolt"                           }, // Ebonbolt (id=195297, n_ranks=1)
+  { 1277,  52,  0,   0, "Flaming Keg"                        }, // Flaming Keg (id=214326, n_ranks=1)
+  { 1278,  52,  4,   3, "Obsidian Fists"                     }, // Obsidian Fists (id=213051, n_ranks=6)
+  { 1279,  52,  5,   3, "Adjunct Advantage"                  }, // Adjunct Advantage (id=213049, n_ranks=6)
+  { 1280,  52,  6,   3, "Smashed"                            }, // Smashed (id=213050, n_ranks=6)
+  { 1281,  52,  7,   3, "Dark Side of the Moon"              }, // Dark Side of the Moon (id=213062, n_ranks=6)
+  { 1282,  52,  8,   3, "Staggering Around"                  }, // Staggering Around (id=213055, n_ranks=6)
+  { 1283,  52,  9,   3, "Healthy Appetite"                   }, // Healthy Appetite (id=213133, n_ranks=6)
+  { 1284,  52, 10,   3, "Gifted Student"                     }, // Gifted Student (id=213136, n_ranks=6)
+  { 1285,  52, 11,   3, "Potent Kick"                        }, // Potent Kick (id=213047, n_ranks=6)
+  { 1286,  52, 12,   3, "Face Palm"                          }, // Face Palm (id=213116, n_ranks=6)
+  { 1287,  52,  0,   1, "Swift as a Coursing River"          }, // Swift as a Coursing River (id=213161, n_ranks=1)
+  { 1288,  52,  0,   1, "Overflow"                           }, // Overflow (id=213180, n_ranks=1)
+  { 1289,  52,  0,   1, "Obstinate Determination"            }, // Obstinate Determination (id=214374, n_ranks=1)
+  { 1290,  52,  1,   1, "Dragonfire Brew"                    }, // Dragonfire Brew (id=213183, n_ranks=1)
+  { 1291,  52,  2,   1, "Brew-Stache"                        }, // Brew-Stache (id=214372, n_ranks=1)
+  { 1292,  52,  3,   1, "Fortification"                      }, // Fortification (id=213340, n_ranks=1)
+  { 1293,  52,  0,   1, "Kegerator"                          }, // Kegerator (id=214428, n_ranks=1)
+  { 1374,  52,  0,  20, "Wanderer's Hardiness"               }, // Wanderer's Hardiness (id=214920, n_ranks=20)
+  {  783,  53,  0,   0, "Ebonbolt"                           }, // Ebonbolt (id=214634, n_ranks=1)
   {  784,  53,  4,   3, "Icy Caress"                         }, // Icy Caress (id=195315, n_ranks=6)
   {  785,  53,  5,   3, "Orbital Strike"                     }, // Orbital Strike (id=195317, n_ranks=6)
   {  786,  53,  6,   3, "Let It Go"                          }, // Let It Go (id=195322, n_ranks=6)
@@ -4774,15 +4829,17 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  789,  53,  9,   3, "Clarity of Thought"                 }, // Clarity of Thought (id=195351, n_ranks=6)
   {  790,  53, 10,   3, "The Storm Rages"                    }, // The Storm Rages (id=195352, n_ranks=6)
   {  791,  53, 11,   3, "Shield of Alodi"                    }, // Shield of Alodi (id=195354, n_ranks=6)
-  {  792,  53, 12,   3, "Permafrost"                         }, // Permafrost (id=195391, n_ranks=6)
+  {  792,  53, 12,   3, "Jouster"                            }, // Jouster (id=214626, n_ranks=6)
   {  793,  53,  0,   1, "Chain Reaction"                     }, // Chain Reaction (id=195419, n_ranks=1)
-  {  794,  53,  0,   0, 0                                    },
-  {  795,  53,  0,   1, "Flash Freeze"                       }, // Flash Freeze (id=195437, n_ranks=1)
-  {  796,  53,  1,   0, 0                                    },
-  {  797,  53,  2,   1, "Black Icicle"                       }, // Black Icicle (id=195615, n_ranks=1)
+  {  794,  53,  0,   1, "Ice Nine"                           }, // Ice Nine (id=214664, n_ranks=1)
+  {  795,  53,  0,   1, "Denial of Service"                  }, // Denial of Service (id=195437, n_ranks=1)
+  {  796,  53,  1,   0, "It's Cold Outside"                  }, // It's Cold Outside (id=214776, n_ranks=1)
+  {  797,  53,  2,   1, "Black Ice"                          }, // Black Ice (id=195615, n_ranks=1)
   {  798,  53,  3,   1, "Chilled to the Core"                }, // Chilled to the Core (id=195448, n_ranks=1)
   { 1200,  53,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
-  {  748,  54,  0,   1, "Phoenix Reborn"                     }, // Phoenix Reborn (id=205393, n_ranks=1)
+  { 1296,  53,  0,   1, "Shattering Bolts"                   }, // Shattering Bolts (id=214629, n_ranks=1)
+  { 1373,  53,  0,  20, "Spellborne"                         }, // Spellborne (id=214919, n_ranks=20)
+  {  748,  54,  0,   0, "Highblade's Will"                   }, // Highblade's Will (id=194462, n_ranks=1)
   {  749,  54,  4,   3, "Fire at Will"                       }, // Fire at Will (id=194224, n_ranks=6)
   {  750,  54,  5,   3, "Reignition Overdrive"               }, // Reignition Overdrive (id=194234, n_ranks=6)
   {  751,  54, 10,   3, "Pyroclasmic Paranoia"               }, // Pyroclasmic Paranoia (id=194239, n_ranks=6)
@@ -4792,14 +4849,16 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  755,  54,  9,   3, "Everburning Consumption"            }, // Everburning Consumption (id=194314, n_ranks=6)
   {  756,  54, 11,   3, "Cauterizing Blink"                  }, // Cauterizing Blink (id=194318, n_ranks=6)
   {  757,  54, 12,   3, "Molten Skin"                        }, // Molten Skin (id=194315, n_ranks=6)
-  {  758,  54,  0,   1, 0                                    },
+  {  758,  54,  0,   1, "Aftershocks"                        }, // Aftershocks (id=194431, n_ranks=1)
   {  759,  54,  0,   1, "By Fire Be Purged"                  }, // By Fire Be Purged (id=194320, n_ranks=1)
   {  760,  54,  0,   1, "Scorched Earth"                     }, // Scorched Earth (id=194324, n_ranks=1)
   {  761,  54,  1,   1, "Blast Furnace"                      }, // Blast Furnace (id=194487, n_ranks=1)
-  {  762,  54,  2,   1, "Aftershocks"                        }, // Aftershocks (id=194431, n_ranks=1)
+  {  762,  54,  2,   1, "Phoenix Reborn"                     }, // Phoenix Reborn (id=205393, n_ranks=1)
   {  763,  54,  3,   1, "Pyretic Incantation"                }, // Pyretic Incantation (id=194331, n_ranks=1)
   { 1201,  54,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
-  {  307,  55,  0,   1, "Windburst"                          }, // Windburst (id=204147, n_ranks=1)
+  { 1340,  54,  0,   1, "Ancient Power"                      }, // Ancient Power (id=214808, n_ranks=1)
+  { 1372,  54,  0,  20, "Empowered Spellblade"               }, // Empowered Spellblade (id=214918, n_ranks=20)
+  {  307,  55,  0,   0, "Windburst"                          }, // Windburst (id=204147, n_ranks=1)
   {  308,  55,  0,   1, "Mark of the Windrunner"             }, // Mark of the Windrunner (id=204219, n_ranks=1)
   {  309,  55,  0,   1, "Critical Focus"                     }, // Critical Focus (id=191328, n_ranks=1)
   {  310,  55,  0,   1, "Rapid Killing"                      }, // Rapid Killing (id=191339, n_ranks=1)
@@ -4807,15 +4866,17 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  312,  55,  4,   3, "Deadly Aim"                         }, // Deadly Aim (id=190449, n_ranks=6)
   {  313,  55,  5,   3, "Windrunner's Guidance"              }, // Windrunner's Guidance (id=190457, n_ranks=6)
   {  314,  55,  6,   3, "Quick Shot"                         }, // Quick Shot (id=190462, n_ranks=6)
-  {  315,  55,  7,   3, "Call the Targets"                   }, // Call the Targets (id=190467, n_ranks=6)
+  {  315,  55,  7,   3, "Called Shot"                        }, // Called Shot (id=190467, n_ranks=6)
   {  316,  55, 11,   3, "Healing Shell"                      }, // Healing Shell (id=190503, n_ranks=6)
   {  317,  55, 12,   3, "Survival of the Fittest"            }, // Survival of the Fittest (id=190514, n_ranks=6)
   {  318,  55,  8,   3, "Precision"                          }, // Precision (id=190520, n_ranks=6)
   {  319,  55,  9,   3, "Marked for Death"                   }, // Marked for Death (id=190529, n_ranks=6)
   {  320,  55, 10,   3, "Gust of Wind"                       }, // Gust of Wind (id=190567, n_ranks=6)
-  {  321,  55,  2,   1, "Whispers of the Past"               }, // Whispers of the Past (id=204217, n_ranks=1)
+  {  321,  55,  2,   1, "Legacy of the Windrunners"          }, // Legacy of the Windrunners (id=190852, n_ranks=1)
   {  322,  55,  3,   1, "Bullseye"                           }, // Bullseye (id=204089, n_ranks=1)
   { 1197,  55,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  { 1337,  55,  0,   1, "Wind Arrows"                        }, // Wind Arrows (id=214826, n_ranks=1)
+  { 1369,  55,  0,  20, "Windflight Arrows"                  }, // Windflight Arrows (id=214915, n_ranks=20)
   {  868,  56,  4,   3, "Wilderness Expert"                  }, // Wilderness Expert (id=197038, n_ranks=6)
   {  869,  56,  5,   3, "Furious Swipes"                     }, // Furious Swipes (id=197047, n_ranks=6)
   {  870,  56,  6,   3, "Pack Leader"                        }, // Pack Leader (id=197080, n_ranks=6)
@@ -4829,10 +4890,12 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  878,  56,  1,   1, "Master of Beasts"                   }, // Master of Beasts (id=197248, n_ranks=1)
   {  879,  56,  2,   1, "Stormshot"                          }, // Stormshot (id=197278, n_ranks=1)
   {  880,  56,  0,   1, "Renewed Vigor"                      }, // Renewed Vigor (id=197343, n_ranks=1)
-  {  881,  56,  0,   1, "Titan's Thunder"                    }, // Titan's Thunder (id=207068, n_ranks=1)
+  {  881,  56,  0,   0, "Titan's Thunder"                    }, // Titan's Thunder (id=207068, n_ranks=1)
   {  882,  56,  3,   1, "Surge of the Stormgod"              }, // Surge of the Stormgod (id=197354, n_ranks=1)
   { 1095,  56, 10,   3, "Unleash the Beast"                  }, // Unleash the Beast (id=206910, n_ranks=6)
   { 1196,  56,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  { 1336,  56,  0,   1, "Ancient Power"                      }, // Ancient Power (id=214808, n_ranks=1)
+  { 1368,  56,  0,  20, "Spiritbound"                        }, // Spiritbound (id=214914, n_ranks=20)
   {  948,  57,  4,   3, "Reinforced Fur"                     }, // Reinforced Fur (id=200395, n_ranks=6)
   {  949,  57,  5,   3, "Ursoc's Endurance"                  }, // Ursoc's Endurance (id=200399, n_ranks=6)
   {  950,  57, 11,   3, "Wildflesh"                          }, // Wildflesh (id=200400, n_ranks=6)
@@ -4845,12 +4908,14 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  957,  57,  0,   1, "Right to Bear Arms"                 }, // Right to Bear Arms (id=200450, n_ranks=1)
   {  958,  57,  0,   1, "Ion Cannon"                         }, // Ion Cannon (id=200515, n_ranks=1)
   {  959,  57,  0,   1, "Grasping Roots [NYI]"               }, // Grasping Roots [NYI] (id=201073, n_ranks=1)
-  {  960,  57,  0,   1, "Rage of the Sleeper"                }, // Rage of the Sleeper (id=200851, n_ranks=1)
+  {  960,  57,  0,   0, "Rage of the Sleeper"                }, // Rage of the Sleeper (id=200851, n_ranks=1)
   {  961,  57,  1,   1, "Embrace of the Nightmare"           }, // Embrace of the Nightmare (id=200855, n_ranks=1)
   {  962,  57,  2,   1, "Gory Fur"                           }, // Gory Fur (id=200854, n_ranks=1)
   {  979,  57,  3,   1, "Adaptive Fur"                       }, // Adaptive Fur (id=200850, n_ranks=1)
   { 1194,  57,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
-  { 1153,  58,  0,   1, "Ashamane's Frenzy"                  }, // Ashamane's Frenzy (id=210722, n_ranks=1)
+  { 1334,  57,  0,   1, "Ancient Power"                      }, // Ancient Power (id=214810, n_ranks=1)
+  { 1366,  57,  0,  20, "Ursoc's Bond"                       }, // Ursoc's Bond (id=214912, n_ranks=20)
+  { 1153,  58,  0,   0, "Ashamane's Frenzy"                  }, // Ashamane's Frenzy (id=210722, n_ranks=1)
   { 1154,  58,  1,   1, "Ashamane's Bite"                    }, // Ashamane's Bite (id=210702, n_ranks=1)
   { 1155,  58,  2,   1, "Shadow Thrash"                      }, // Shadow Thrash (id=210676, n_ranks=1)
   { 1156,  58,  3,   1, "Open Wounds"                        }, // Open Wounds (id=210666, n_ranks=1)
@@ -4864,9 +4929,11 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1164,  58,  7,   3, "Ashamane's Energy"                  }, // Ashamane's Energy (id=210579, n_ranks=6)
   { 1165,  58, 12,   3, "Attuned to Nature"                  }, // Attuned to Nature (id=210590, n_ranks=6)
   { 1166,  58,  8,   3, "Tear the Flesh"                     }, // Tear the Flesh (id=210593, n_ranks=6)
-  { 1167,  58, 10,   3, "Feral Instinct"                     }, // Feral Instinct (id=210631, n_ranks=6)
+  { 1167,  58,  9,   3, "Feral Instinct"                     }, // Feral Instinct (id=210631, n_ranks=6)
   { 1168,  58,  9,   3, "Sharpened Claws"                    }, // Sharpened Claws (id=210637, n_ranks=6)
   { 1193,  58,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
+  { 1327,  58,  0,   1, "Shredder Fangs"                     }, // Shredder Fangs (id=214736, n_ranks=1)
+  { 1365,  58,  0,  20, "Fangs of the First"                 }, // Fangs of the First (id=214911, n_ranks=20)
   { 1034,  59, 11,   3, "Bladed Feathers"                    }, // Bladed Feathers (id=202302, n_ranks=6)
   { 1035,  59, 12,   3, "Touch of the Moon"                  }, // Touch of the Moon (id=203018, n_ranks=6)
   { 1036,  59,  4,   3, "Dark Side of the Moon"              }, // Dark Side of the Moon (id=202384, n_ranks=6)
@@ -4881,10 +4948,12 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1045,  59,  0,   1, "Sunblind"                           }, // Sunblind (id=213682, n_ranks=1)
   { 1046,  59,  1,   1, "Moon and Stars"                     }, // Moon and Stars (id=202940, n_ranks=1)
   { 1047,  59,  2,   1, "Power of Goldrinn"                  }, // Power of Goldrinn (id=202996, n_ranks=1)
-  { 1048,  59,  3,   1, "Echoing Stars"                      }, // Echoing Stars (id=213666, n_ranks=1)
-  { 1049,  59,  0,   1, "New Moon"                           }, // New Moon (id=202767, n_ranks=1)
+  { 1048,  59,  3,   1, "Echoing Stars"                      }, // Echoing Stars (id=214508, n_ranks=1)
+  { 1049,  59,  0,   0, "New Moon"                           }, // New Moon (id=202767, n_ranks=1)
   { 1192,  59,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
-  { 1096,  60,  0,   1, "Soul Carver"                        }, // Soul Carver (id=207407, n_ranks=1)
+  { 1294,  59,  0,   1, "Skywrath"                           }, // Skywrath (id=214514, n_ranks=1)
+  { 1364,  59,  0,  20, "Goldrinn's Fury"                    }, // Goldrinn's Fury (id=214910, n_ranks=20)
+  { 1096,  60,  0,   0, "Soul Carver"                        }, // Soul Carver (id=207407, n_ranks=1)
   { 1097,  60,  0,   1, "Demonic Flames"                     }, // Demonic Flames (id=212894, n_ranks=1)
   { 1098,  60,  1,   1, "Painbringer"                        }, // Painbringer (id=207387, n_ranks=1)
   { 1099,  60,  4,   3, "Aldrachi Design"                    }, // Aldrachi Design (id=207343, n_ranks=6)
@@ -4901,6 +4970,8 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1234,  60, 12,   3, "Shatter the Souls"                  }, // Shatter the Souls (id=212827, n_ranks=6)
   { 1235,  60,  3,   1, "Charred Warblades"                  }, // Charred Warblades (id=213010, n_ranks=1)
   { 1236,  60,  2,   1, "Fueled by Pain"                     }, // Fueled by Pain (id=213017, n_ranks=1)
+  { 1328,  60,  0,   1, "Tormented Souls"                    }, // Tormented Souls (id=214744, n_ranks=1)
+  { 1363,  60,  0,  20, "Soulgorger"                         }, // Soulgorger (id=214909, n_ranks=20)
   { 1087,  74,  0,   0, 0                                    },
   { 1088,  74,  0,   0, 0                                    },
   { 1089,  74,  0,   0, 0                                    },
@@ -4923,9 +4994,9 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1253,  80,  0,   1, "Ashes to Ashes"                     }, // Ashes to Ashes (id=179546, n_ranks=1)
   {    0,   0,  0,   0, 0                                    },
 };
-#define ARTIFACT_POWER_RANK_SIZE (2305)
+#define ARTIFACT_POWER_RANK_SIZE (3054)
 
-// Artifact power rank data, wow build 21154
+// Artifact power rank data, wow build 21232
 static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RANK_SIZE] = {
   { 2316,    40,  0, 205273,      0.000 },
   { 2317,    41,  0, 186941,      0.000 },
@@ -5154,9 +5225,9 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 3639,   117,  5, 189164,     30.000 },
   { 2490,   119,  0, 189179,      0.000 },
   { 2491,   120,  0, 189180,      0.000 },
-  { 2493,   122,  0, 190778,      0.000 },
+  { 2493,   122,  0, 189186,      0.000 },
   { 2494,   123,  0, 189185,      0.000 },
-  { 2495,   124,  0, 189186,      0.000 },
+  { 2495,   124,  0, 190778,      0.000 },
   { 2496,   125,  0, 208253,      0.000 },
   { 2497,   126,  0, 189849,      0.000 },
   { 2498,   127,  0, 189857,      0.000 },
@@ -5382,11 +5453,11 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 3414,   304,  4, 191577,     25.000 },
   { 3415,   304,  5, 191577,     30.000 },
   { 2623,   305,  0, 191582,      0.000 },
-  { 2624,   305,  1, 191589,     28.000 },
-  { 2625,   305,  2, 191590,     26.000 },
-  { 3416,   305,  3, 195118,     24.000 },
-  { 3417,   305,  4, 195120,     22.000 },
-  { 3418,   305,  5, 195121,     20.000 },
+  { 5501,   305,  1, 191582,     28.000 },
+  { 5502,   305,  2, 191582,     26.000 },
+  { 5503,   305,  3, 191582,     24.000 },
+  { 5504,   305,  4, 191582,     22.000 },
+  { 5505,   305,  5, 191582,     20.000 },
   { 2626,   306,  0, 191598,      0.000 },
   { 3419,   306,  1, 191598,      6.000 },
   { 3420,   306,  2, 191598,     10.000 },
@@ -5423,11 +5494,11 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 3354,   315,  4, 190467,     16.000 },
   { 3355,   315,  5, 190467,     20.000 },
   { 2646,   316,  0, 190503,      0.000 },
-  { 3356,   316,  1, 190503,      4.000 },
-  { 3357,   316,  2, 190503,      6.000 },
-  { 3358,   316,  3, 190503,      8.000 },
-  { 3359,   316,  4, 190503,     10.000 },
-  { 3360,   316,  5, 190503,     12.000 },
+  { 3356,   316,  1, 190503,      6.000 },
+  { 3357,   316,  2, 190503,     10.000 },
+  { 3358,   316,  3, 190503,     13.000 },
+  { 3359,   316,  4, 190503,     16.000 },
+  { 3360,   316,  5, 190503,     20.000 },
   { 2649,   317,  0, 190514,      0.000 },
   { 3361,   317,  1, 190514,     -6.000 },
   { 3362,   317,  2, 190514,    -10.000 },
@@ -5447,12 +5518,12 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 3374,   319,  4, 190529,     25.000 },
   { 3375,   319,  5, 190529,     30.000 },
   { 2658,   320,  0, 190567,      0.000 },
-  { 3376,   320,  1, 190567,     -6.000 },
-  { 3377,   320,  2, 190567,    -10.000 },
-  { 3378,   320,  3, 190567,    -13.000 },
-  { 3379,   320,  4, 190567,    -16.000 },
-  { 3380,   320,  5, 190567,    -20.000 },
-  { 2661,   321,  0, 204217,      0.000 },
+  { 3376,   320,  1, 190567,    -10.000 },
+  { 3377,   320,  2, 190567,    -15.000 },
+  { 3378,   320,  3, 190567,    -20.000 },
+  { 3379,   320,  4, 190567,    -25.000 },
+  { 3380,   320,  5, 190567,    -30.000 },
+  { 2661,   321,  0, 190852,      0.000 },
   { 2662,   322,  0, 204089,      0.000 },
   { 2663,   323,  0, 192310,      0.000 },
   { 3291,   323,  1, 192310,      6.000 },
@@ -5518,8 +5589,8 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 2697,   350,  0, 185086,      0.000 },
   { 2698,   351,  0, 182234,      0.000 },
   { 2699,   352,  0, 193058,      0.000 },
-  { 2700,   353,  0, 193108,      0.000 },
-  { 3160,   748,  0, 205393,      0.000 },
+  { 2700,   353,  0, 179546,      0.000 },
+  { 3160,   748,  0, 194462,      0.000 },
   { 2727,   749,  0, 194224,   -100.000 },
   { 3720,   749,  1, 194224,   -200.000 },
   { 3721,   749,  2, 194224,   -300.000 },
@@ -5574,10 +5645,11 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 3757,   757,  3, 194315,    -13.000 },
   { 3758,   757,  4, 194315,    -16.000 },
   { 3759,   757,  5, 194315,    -20.000 },
+  { 5500,   758,  0, 194431,      0.000 },
   { 3169,   759,  0, 194320,      0.000 },
   { 3170,   760,  0, 194324,      0.000 },
   { 3171,   761,  0, 194487,      0.000 },
-  { 5134,   762,  0, 194431,      2.000 },
+  { 5134,   762,  0, 205393,      2.000 },
   { 3172,   763,  0, 194331,      0.000 },
   { 3173,   764,  0, 205065,      0.000 },
   { 3174,   765,  0, 194024,      0.000 },
@@ -5640,7 +5712,7 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 3284,   778,  4, 194016,     60.000 },
   { 3285,   778,  5, 194016,     70.000 },
   { 3188,   779,  0, 194018,      0.000 },
-  { 3777,   783,  0, 195297,      0.000 },
+  { 3777,   783,  0, 214634,      0.000 },
   { 3782,   784,  0, 195315,      0.000 },
   { 3783,   784,  1, 195315,      6.000 },
   { 3784,   784,  2, 195315,     10.000 },
@@ -5665,39 +5737,41 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 3803,   787,  3, 195323,     40.000 },
   { 3804,   787,  4, 195323,     50.000 },
   { 3805,   787,  5, 195323,     60.000 },
-  { 3806,   788,  0, 195345,      0.000 },
-  { 3807,   788,  1, 195345,      2.000 },
-  { 3808,   788,  2, 195345,      3.000 },
-  { 3809,   788,  3, 195345,      4.000 },
-  { 3810,   788,  4, 195345,      5.000 },
-  { 3811,   788,  5, 195345,      6.000 },
+  { 3806,   788,  0, 195345,   -500.000 },
+  { 3807,   788,  1, 195345,  -1000.000 },
+  { 3808,   788,  2, 195345,  -1500.000 },
+  { 3809,   788,  3, 195345,  -2000.000 },
+  { 3810,   788,  4, 195345,  -2500.000 },
+  { 3811,   788,  5, 195345,  -3000.000 },
   { 3812,   789,  0, 195351,      0.000 },
   { 3813,   789,  1, 195351,      6.000 },
   { 3814,   789,  2, 195351,     10.000 },
   { 3815,   789,  3, 195351,     13.000 },
   { 3816,   789,  4, 195351,     16.000 },
   { 3817,   789,  5, 195351,     20.000 },
-  { 3818,   790,  0, 195352,      0.000 },
-  { 3819,   790,  1, 195352,     20.000 },
-  { 3820,   790,  2, 195352,     30.000 },
-  { 3821,   790,  3, 195352,     40.000 },
-  { 3822,   790,  4, 195352,     50.000 },
-  { 3823,   790,  5, 195352,     60.000 },
-  { 3824,   791,  0, 195354,     20.000 },
-  { 3825,   791,  1, 195354,     40.000 },
-  { 3826,   791,  2, 195354,     60.000 },
-  { 3827,   791,  3, 195354,     80.000 },
-  { 3828,   791,  4, 195354,    100.000 },
-  { 3829,   791,  5, 195354,    120.000 },
-  { 3830,   792,  0, 195391,      0.000 },
-  { 3831,   792,  1, 195391,      6.000 },
-  { 3832,   792,  2, 195391,     10.000 },
-  { 3833,   792,  3, 195391,     13.000 },
-  { 3834,   792,  4, 195391,     16.000 },
-  { 3835,   792,  5, 195391,     20.000 },
+  { 3818,   790,  0, 195352,      5.000 },
+  { 3819,   790,  1, 195352,     10.000 },
+  { 3820,   790,  2, 195352,     15.000 },
+  { 3821,   790,  3, 195352,     20.000 },
+  { 3822,   790,  4, 195352,     25.000 },
+  { 3823,   790,  5, 195352,     30.000 },
+  { 3824,   791,  0, 195354,     33.000 },
+  { 3825,   791,  1, 195354,     66.000 },
+  { 3826,   791,  2, 195354,    100.000 },
+  { 3827,   791,  3, 195354,    133.000 },
+  { 3828,   791,  4, 195354,    166.000 },
+  { 3829,   791,  5, 195354,    200.000 },
+  { 3830,   792,  0, 214626,     -4.000 },
+  { 3831,   792,  1, 214626,     -8.000 },
+  { 3832,   792,  2, 214626,    -12.000 },
+  { 3833,   792,  3, 214626,    -16.000 },
+  { 3834,   792,  4, 214626,    -20.000 },
+  { 3835,   792,  5, 214626,    -24.000 },
   { 3836,   793,  0, 195419,      0.000 },
+  { 5584,   794,  0, 214664,      0.000 },
   { 3837,   795,  0, 195437,      0.000 },
-  { 3902,   797,  0, 195615,      0.000 },
+  { 5618,   796,  0, 214776,      0.000 },
+  { 5615,   797,  0, 195615,      0.000 },
   { 3838,   798,  0, 195448,      0.000 },
   { 3765,   800,  0, 195243,      0.000 },
   { 3766,   800,  1, 195243,     20.000 },
@@ -5821,11 +5895,11 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 3969,   836,  0, 196537,      0.000 },
   { 3970,   837,  0, 196578,      0.000 },
   { 3971,   838,  0, 196489,      0.000 },
-  { 5493,   838,  1, 196489,     10.000 },
-  { 5494,   838,  2, 196489,     15.000 },
-  { 5495,   838,  3, 196489,     20.000 },
-  { 5496,   838,  4, 196489,     25.000 },
-  { 5497,   838,  5, 196489,     30.000 },
+  { 5506,   838,  1, 196489,     10.000 },
+  { 5507,   838,  2, 196489,     15.000 },
+  { 5508,   838,  3, 196489,     20.000 },
+  { 5509,   838,  4, 196489,     25.000 },
+  { 5510,   838,  5, 196489,     30.000 },
   { 3972,   839,  0, 196437,      0.000 },
   { 3973,   840,  0, 196779,      0.000 },
   { 3974,   841,  0, 196355,      0.000 },
@@ -6176,10 +6250,10 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 4334,   929,  0, 201424,      0.000 },
   { 4291,   930,  0, 199107,      0.000 },
   { 4335,   931,  0, 205406,      0.000 },
-  { 4336,   932,  0, 199806,      0.000 },
+  { 4336,   932,  0, 199887,      0.000 },
   { 4337,   933,  0, 199665,      0.000 },
   { 4338,   934,  0, 199640,      0.000 },
-  { 4339,   935,  0, 199485,      0.000 },
+  { 4339,   935,  0, 199401,      0.000 },
   { 4340,   936,  0, 199563,      0.000 },
   { 4341,   937,  0, 199573,      0.000 },
   { 4342,   938,  0, 199364,      0.000 },
@@ -6189,11 +6263,11 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 4346,   938,  4, 199364,     16.000 },
   { 4347,   938,  5, 199364,     20.000 },
   { 4348,   939,  0, 199365,      0.000 },
-  { 4349,   939,  1, 199365,      6.000 },
-  { 4350,   939,  2, 199365,     10.000 },
-  { 4351,   939,  3, 199365,     13.000 },
-  { 4352,   939,  4, 199365,     16.000 },
-  { 4353,   939,  5, 199365,     20.000 },
+  { 4349,   939,  1, 199365,     -6.000 },
+  { 4350,   939,  2, 199365,    -10.000 },
+  { 4351,   939,  3, 199365,    -13.000 },
+  { 4352,   939,  4, 199365,    -16.000 },
+  { 4353,   939,  5, 199365,    -20.000 },
   { 4354,   940,  0, 199366,      0.000 },
   { 4355,   940,  1, 199366,      6.000 },
   { 4356,   940,  2, 199366,     10.000 },
@@ -6230,12 +6304,12 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 4387,   945,  3, 199384,     50.000 },
   { 4388,   945,  4, 199384,     60.000 },
   { 4389,   945,  5, 199384,     70.000 },
-  { 4390,   946,  0, 199401,      0.000 },
-  { 4391,   946,  1, 199401,     40.000 },
-  { 4392,   946,  2, 199401,     50.000 },
-  { 4393,   946,  3, 199401,     60.000 },
-  { 4394,   946,  4, 199401,     70.000 },
-  { 4395,   946,  5, 199401,     80.000 },
+  { 4390,   946,  0, 199485,      0.000 },
+  { 5573,   946,  1, 199485,      6.000 },
+  { 5574,   946,  2, 199485,     10.000 },
+  { 5575,   946,  3, 199485,     13.000 },
+  { 5576,   946,  4, 199485,     16.000 },
+  { 5577,   946,  5, 199485,     20.000 },
   { 4396,   948,  0, 200395,      0.000 },
   { 4397,   948,  1, 200395,     10.000 },
   { 4398,   948,  2, 200395,     15.000 },
@@ -6328,11 +6402,11 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 4474,   972,  5, 200315,     30.000 },
   { 4475,   973,  0, 200311,      0.000 },
   { 4481,   974,  0, 200302,      0.000 },
-  { 4482,   974,  1, 200302,     10.000 },
-  { 4483,   974,  2, 200302,     15.000 },
-  { 4484,   974,  3, 200302,     20.000 },
-  { 4485,   974,  4, 200302,     25.000 },
-  { 4486,   974,  5, 200302,     30.000 },
+  { 4482,   974,  1, 200302,     -6.000 },
+  { 4483,   974,  2, 200302,    -10.000 },
+  { 4484,   974,  3, 200302,    -13.000 },
+  { 4485,   974,  4, 200302,    -16.000 },
+  { 4486,   974,  5, 200302,    -20.000 },
   { 4487,   975,  0, 200298,      0.000 },
   { 4488,   975,  1, 200298,    -10.000 },
   { 4489,   975,  2, 200298,    -15.000 },
@@ -6534,7 +6608,7 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 4785,  1045,  0, 213682,      0.000 },
   { 4788,  1046,  0, 202940,      0.000 },
   { 4787,  1047,  0, 202996,      0.000 },
-  { 4789,  1048,  0, 213666,      0.000 },
+  { 4789,  1048,  0, 214508,      0.000 },
   { 4719,  1049,  0, 202767,      0.000 },
   { 4722,  1052,  0, 202665,      0.000 },
   { 4723,  1053,  0, 202897,      0.000 },
@@ -6760,16 +6834,26 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 4919,  1115,  0, 207358,      0.000 },
   { 4920,  1116,  0, 207360,      0.000 },
   { 4921,  1117,  0, 207362,      0.000 },
-  { 4943,  1118,  0, 207604,      1.000 },
-  { 4944,  1118,  1, 207604,      2.000 },
-  { 4945,  1118,  2, 207604,      3.000 },
-  { 4946,  1118,  3, 207604,      4.000 },
-  { 4947,  1118,  4, 207604,      5.000 },
-  { 4948,  1118,  5, 207604,      6.000 },
-  { 4949,  1118,  6, 207604,      7.000 },
-  { 4950,  1118,  7, 207604,      8.000 },
-  { 4951,  1118,  8, 207604,      9.000 },
-  { 4952,  1118,  9, 207604,     10.000 },
+  { 4943,  1118,  0, 207604,      0.500 },
+  { 4944,  1118,  1, 207604,      1.000 },
+  { 4945,  1118,  2, 207604,      1.500 },
+  { 4946,  1118,  3, 207604,      2.000 },
+  { 4947,  1118,  4, 207604,      2.500 },
+  { 4948,  1118,  5, 207604,      3.000 },
+  { 4949,  1118,  6, 207604,      3.500 },
+  { 4950,  1118,  7, 207604,      4.000 },
+  { 4951,  1118,  8, 207604,      4.500 },
+  { 4952,  1118,  9, 207604,      5.000 },
+  { 5647,  1118, 10, 207604,      5.500 },
+  { 5648,  1118, 11, 207604,      6.000 },
+  { 5649,  1118, 12, 207604,      6.500 },
+  { 5650,  1118, 13, 207604,      7.000 },
+  { 5651,  1118, 14, 207604,      7.500 },
+  { 5652,  1118, 15, 207604,      8.000 },
+  { 5653,  1118, 16, 207604,      8.500 },
+  { 5654,  1118, 17, 207604,      9.000 },
+  { 5655,  1118, 18, 207604,      9.500 },
+  { 5656,  1118, 19, 207604,     10.000 },
   { 4953,  1119,  0, 208598,   2000.000 },
   { 4954,  1119,  1, 208598,   4000.000 },
   { 4955,  1119,  2, 208598,   6000.000 },
@@ -7009,17 +7093,17 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 5265,  1178,  3, 211144,     40.000 },
   { 5266,  1178,  4, 211144,     50.000 },
   { 5267,  1178,  5, 211144,     60.000 },
-  { 5268,  1179,  0, 211131, -20000.000 },
-  { 5269,  1179,  1, 211131, -40000.000 },
-  { 5270,  1179,  2, 211131, -60000.000 },
-  { 5271,  1179,  3, 211131, -80000.000 },
-  { 5272,  1179,  4, 211131, -100000.000 },
-  { 5273,  1179,  5, 211131, -120000.000 },
+  { 5268,  1179,  0, 211131, -10000.000 },
+  { 5269,  1179,  1, 211131, -20000.000 },
+  { 5270,  1179,  2, 211131, -30000.000 },
+  { 5271,  1179,  3, 211131, -40000.000 },
+  { 5272,  1179,  4, 211131, -50000.000 },
+  { 5273,  1179,  5, 211131, -60000.000 },
   { 5254,  1180,  0, 211158,      0.000 },
   { 5255,  1181,  0, 211173,      0.000 },
   { 5322,  1182,  0, 212391,      0.000 },
   { 5251,  1183,  0, 211219,      0.000 },
-  { 5252,  1184,  0, 211321,      0.000 },
+  { 5252,  1184,  0, 211720,      0.000 },
   { 5253,  1185,  0, 211530,      0.000 },
   { 5209,  1186,  0, 200482,      0.000 },
   { 5210,  1186,  1, 200482,     10.000 },
@@ -7170,66 +7254,802 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 5429,  1256,  0, 213428,      0.000 },
   { 5430,  1257,  0, 213428,      0.000 },
   { 5431,  1258,  0, 213428,      0.000 },
-  { 5432,  1259,  0, 213435,      0.000 },
-  { 5433,  1260,  0, 213051,      5.000 },
-  { 5434,  1260,  1, 213051,     10.000 },
-  { 5435,  1260,  2, 213051,     15.000 },
-  { 5436,  1260,  3, 213051,     20.000 },
-  { 5437,  1260,  4, 213051,     25.000 },
-  { 5438,  1260,  5, 213051,     30.000 },
-  { 5439,  1261,  0, 213049,      5.000 },
-  { 5440,  1261,  1, 213049,     10.000 },
-  { 5441,  1261,  2, 213049,     15.000 },
-  { 5442,  1261,  3, 213049,     20.000 },
-  { 5443,  1261,  4, 213049,     25.000 },
-  { 5444,  1261,  5, 213049,     30.000 },
-  { 5445,  1262,  0, 213050,      5.000 },
-  { 5446,  1262,  1, 213050,     10.000 },
-  { 5447,  1262,  2, 213050,     15.000 },
-  { 5448,  1262,  3, 213050,     20.000 },
-  { 5449,  1262,  4, 213050,     25.000 },
-  { 5450,  1262,  5, 213050,     30.000 },
-  { 5451,  1263,  0, 213062,     -5.000 },
-  { 5452,  1263,  1, 213062,    -10.000 },
-  { 5453,  1263,  2, 213062,    -15.000 },
-  { 5454,  1263,  3, 213062,    -20.000 },
-  { 5455,  1263,  4, 213062,    -25.000 },
-  { 5456,  1263,  5, 213062,    -30.000 },
-  { 5457,  1264,  0, 213055,      2.000 },
-  { 5458,  1264,  1, 213055,      4.000 },
-  { 5459,  1264,  2, 213055,      6.000 },
-  { 5460,  1264,  3, 213055,      8.000 },
-  { 5461,  1264,  4, 213055,     10.000 },
-  { 5462,  1264,  5, 213055,     12.000 },
-  { 5463,  1265,  0, 213133,      5.000 },
-  { 5464,  1265,  1, 213133,     10.000 },
-  { 5465,  1265,  2, 213133,     15.000 },
-  { 5466,  1265,  3, 213133,     20.000 },
-  { 5467,  1265,  4, 213133,     25.000 },
-  { 5468,  1265,  5, 213133,     30.000 },
-  { 5469,  1266,  0, 213136,      3.000 },
-  { 5470,  1266,  1, 213136,      6.000 },
-  { 5471,  1266,  2, 213136,     10.000 },
-  { 5472,  1266,  3, 213136,     13.000 },
-  { 5473,  1266,  4, 213136,     16.000 },
-  { 5474,  1266,  5, 213136,     20.000 },
-  { 5475,  1267,  0, 213047,    500.000 },
-  { 5476,  1267,  1, 213047,   1000.000 },
-  { 5477,  1267,  2, 213047,   1500.000 },
-  { 5478,  1267,  3, 213047,   2000.000 },
-  { 5479,  1267,  4, 213047,   2500.000 },
-  { 5480,  1267,  5, 213047,   3000.000 },
-  { 5481,  1268,  0, 213116,     15.000 },
-  { 5482,  1268,  1, 213116,     30.000 },
-  { 5483,  1268,  2, 213116,     45.000 },
-  { 5484,  1268,  3, 213116,     60.000 },
-  { 5485,  1268,  4, 213116,     75.000 },
-  { 5486,  1268,  5, 213116,     90.000 },
-  { 5487,  1269,  0, 213161,      0.000 },
-  { 5488,  1270,  0, 213180,      0.000 },
-  { 5489,  1271,  0, 213907,      0.000 },
-  { 5490,  1272,  0, 213183,      0.000 },
-  { 5491,  1273,  0, 213495,      0.000 },
-  { 5492,  1274,  0, 213340,      0.000 },
+  { 5499,  1275,  0, 214081,      0.000 },
+  { 5511,  1276,  0, 214368,      0.000 },
+  { 5512,  1277,  0, 214326,      0.000 },
+  { 5513,  1278,  0, 213051,      5.000 },
+  { 5514,  1278,  1, 213051,     10.000 },
+  { 5515,  1278,  2, 213051,     15.000 },
+  { 5516,  1278,  3, 213051,     20.000 },
+  { 5517,  1278,  4, 213051,     25.000 },
+  { 5518,  1278,  5, 213051,     30.000 },
+  { 5519,  1279,  0, 213049,      5.000 },
+  { 5520,  1279,  1, 213049,     10.000 },
+  { 5521,  1279,  2, 213049,     15.000 },
+  { 5522,  1279,  3, 213049,     20.000 },
+  { 5523,  1279,  4, 213049,     25.000 },
+  { 5524,  1279,  5, 213049,     30.000 },
+  { 5525,  1280,  0, 213050,      5.000 },
+  { 5526,  1280,  1, 213050,     10.000 },
+  { 5527,  1280,  2, 213050,     15.000 },
+  { 5528,  1280,  3, 213050,     20.000 },
+  { 5529,  1280,  4, 213050,     25.000 },
+  { 5530,  1280,  5, 213050,     30.000 },
+  { 5531,  1281,  0, 213062,     -5.000 },
+  { 5532,  1281,  1, 213062,    -10.000 },
+  { 5533,  1281,  2, 213062,    -15.000 },
+  { 5534,  1281,  3, 213062,    -20.000 },
+  { 5535,  1281,  4, 213062,    -25.000 },
+  { 5536,  1281,  5, 213062,    -30.000 },
+  { 5537,  1282,  0, 213055,      2.000 },
+  { 5538,  1282,  1, 213055,      4.000 },
+  { 5539,  1282,  2, 213055,      6.000 },
+  { 5540,  1282,  3, 213055,      8.000 },
+  { 5541,  1282,  4, 213055,     10.000 },
+  { 5542,  1282,  5, 213055,     12.000 },
+  { 5543,  1283,  0, 213133,      5.000 },
+  { 5544,  1283,  1, 213133,     10.000 },
+  { 5545,  1283,  2, 213133,     15.000 },
+  { 5546,  1283,  3, 213133,     20.000 },
+  { 5547,  1283,  4, 213133,     25.000 },
+  { 5548,  1283,  5, 213133,     30.000 },
+  { 5549,  1284,  0, 213136,      3.000 },
+  { 5550,  1284,  1, 213136,      6.000 },
+  { 5551,  1284,  2, 213136,     10.000 },
+  { 5552,  1284,  3, 213136,     13.000 },
+  { 5553,  1284,  4, 213136,     16.000 },
+  { 5554,  1284,  5, 213136,     20.000 },
+  { 5555,  1285,  0, 213047,    500.000 },
+  { 5556,  1285,  1, 213047,   1000.000 },
+  { 5557,  1285,  2, 213047,   1500.000 },
+  { 5558,  1285,  3, 213047,   2000.000 },
+  { 5559,  1285,  4, 213047,   2500.000 },
+  { 5560,  1285,  5, 213047,   3000.000 },
+  { 5561,  1286,  0, 213116,     15.000 },
+  { 5562,  1286,  1, 213116,     30.000 },
+  { 5563,  1286,  2, 213116,     45.000 },
+  { 5564,  1286,  3, 213116,     60.000 },
+  { 5565,  1286,  4, 213116,     75.000 },
+  { 5566,  1286,  5, 213116,     90.000 },
+  { 5567,  1287,  0, 213161,      0.000 },
+  { 5571,  1288,  0, 213180,      0.000 },
+  { 5572,  1289,  0, 214374,      0.000 },
+  { 5568,  1290,  0, 213183,      0.000 },
+  { 5570,  1291,  0, 214372,      0.000 },
+  { 5569,  1292,  0, 213340,      0.000 },
+  { 5578,  1293,  0, 214428,      0.000 },
+  { 5579,  1294,  0, 214514,      0.000 },
+  { 5580,  1295,  0, 214516,      0.000 },
+  { 5581,  1296,  0, 214629,      0.000 },
+  { 5613,  1327,  0, 214736,      0.000 },
+  { 5614,  1328,  0, 214744,      0.000 },
+  { 5617,  1330,  0, 214795,      0.000 },
+  { 5619,  1331,  0, 214810,      0.000 },
+  { 5620,  1332,  0, 214808,      0.000 },
+  { 5621,  1333,  0, 214808,      0.000 },
+  { 5622,  1334,  0, 214810,      0.000 },
+  { 5623,  1335,  0, 214809,      0.000 },
+  { 5624,  1336,  0, 214808,      0.000 },
+  { 5625,  1337,  0, 214826,      0.000 },
+  { 5626,  1338,  0, 214808,      0.000 },
+  { 5627,  1339,  0, 214808,      0.000 },
+  { 5628,  1340,  0, 214808,      0.000 },
+  { 5629,  1341,  0, 214808,      0.000 },
+  { 5630,  1342,  0, 214809,      0.000 },
+  { 5631,  1343,  0, 214810,      0.000 },
+  { 5633,  1345,  0, 214809,      0.000 },
+  { 5634,  1346,  0, 214809,      0.000 },
+  { 5635,  1347,  0, 214808,      0.000 },
+  { 5636,  1348,  0, 214808,      0.000 },
+  { 5637,  1349,  0, 214808,      0.000 },
+  { 5638,  1350,  0, 214808,      0.000 },
+  { 5639,  1351,  0, 214808,      0.000 },
+  { 5640,  1352,  0, 214809,      0.000 },
+  { 5641,  1353,  0, 214808,      0.000 },
+  { 5642,  1354,  0, 214808,      0.000 },
+  { 5643,  1355,  0, 214808,      0.000 },
+  { 5644,  1356,  0, 214808,      0.000 },
+  { 5645,  1357,  0, 214808,      0.000 },
+  { 5646,  1358,  0, 214810,      0.000 },
+  { 5657,  1359,  0, 214903,      0.500 },
+  { 5658,  1359,  1, 214903,      1.000 },
+  { 5659,  1359,  2, 214903,      1.500 },
+  { 5660,  1359,  3, 214903,      2.000 },
+  { 5661,  1359,  4, 214903,      2.500 },
+  { 5662,  1359,  5, 214903,      3.000 },
+  { 5663,  1359,  6, 214903,      3.500 },
+  { 5664,  1359,  7, 214903,      4.000 },
+  { 5665,  1359,  8, 214903,      4.500 },
+  { 5666,  1359,  9, 214903,      5.000 },
+  { 5667,  1359, 10, 214903,      5.500 },
+  { 5668,  1359, 11, 214903,      6.000 },
+  { 5669,  1359, 12, 214903,      6.500 },
+  { 5670,  1359, 13, 214903,      7.000 },
+  { 5671,  1359, 14, 214903,      7.500 },
+  { 5672,  1359, 15, 214903,      8.000 },
+  { 5673,  1359, 16, 214903,      8.500 },
+  { 5674,  1359, 17, 214903,      9.000 },
+  { 5675,  1359, 18, 214903,      9.500 },
+  { 5676,  1359, 19, 214903,     10.000 },
+  { 5677,  1360,  0, 214904,      0.500 },
+  { 5678,  1360,  1, 214904,      1.000 },
+  { 5679,  1360,  2, 214904,      1.500 },
+  { 5680,  1360,  3, 214904,      2.000 },
+  { 5681,  1360,  4, 214904,      2.500 },
+  { 5682,  1360,  5, 214904,      3.000 },
+  { 5683,  1360,  6, 214904,      3.500 },
+  { 5684,  1360,  7, 214904,      4.000 },
+  { 5685,  1360,  8, 214904,      4.500 },
+  { 5686,  1360,  9, 214904,      5.000 },
+  { 5687,  1360, 10, 214904,      5.500 },
+  { 5688,  1360, 11, 214904,      6.000 },
+  { 5689,  1360, 12, 214904,      6.500 },
+  { 5690,  1360, 13, 214904,      7.000 },
+  { 5691,  1360, 14, 214904,      7.500 },
+  { 5692,  1360, 15, 214904,      8.000 },
+  { 5693,  1360, 16, 214904,      8.500 },
+  { 5694,  1360, 17, 214904,      9.000 },
+  { 5695,  1360, 18, 214904,      9.500 },
+  { 5696,  1360, 19, 214904,     10.000 },
+  { 5697,  1361,  0, 214906,      0.500 },
+  { 5698,  1361,  1, 214906,      1.000 },
+  { 5699,  1361,  2, 214906,      1.500 },
+  { 5700,  1361,  3, 214906,      2.000 },
+  { 5701,  1361,  4, 214906,      2.500 },
+  { 5702,  1361,  5, 214906,      3.000 },
+  { 5703,  1361,  6, 214906,      3.500 },
+  { 5704,  1361,  7, 214906,      4.000 },
+  { 5705,  1361,  8, 214906,      4.500 },
+  { 5706,  1361,  9, 214906,      5.000 },
+  { 5707,  1361, 10, 214906,      5.500 },
+  { 5708,  1361, 11, 214906,      6.000 },
+  { 5709,  1361, 12, 214906,      6.500 },
+  { 5710,  1361, 13, 214906,      7.000 },
+  { 5711,  1361, 14, 214906,      7.500 },
+  { 5712,  1361, 15, 214906,      8.000 },
+  { 5713,  1361, 16, 214906,      8.500 },
+  { 5714,  1361, 17, 214906,      9.000 },
+  { 5715,  1361, 18, 214906,      9.500 },
+  { 5716,  1361, 19, 214906,     10.000 },
+  { 5717,  1362,  0, 214907,      0.500 },
+  { 5718,  1362,  1, 214907,      1.000 },
+  { 5719,  1362,  2, 214907,      1.500 },
+  { 5720,  1362,  3, 214907,      2.000 },
+  { 5721,  1362,  4, 214907,      2.500 },
+  { 5722,  1362,  5, 214907,      3.000 },
+  { 5723,  1362,  6, 214907,      3.500 },
+  { 5724,  1362,  7, 214907,      4.000 },
+  { 5725,  1362,  8, 214907,      4.500 },
+  { 5726,  1362,  9, 214907,      5.000 },
+  { 5727,  1362, 10, 214907,      5.500 },
+  { 5728,  1362, 11, 214907,      6.000 },
+  { 5729,  1362, 12, 214907,      6.500 },
+  { 5730,  1362, 13, 214907,      7.000 },
+  { 5731,  1362, 14, 214907,      7.500 },
+  { 5732,  1362, 15, 214907,      8.000 },
+  { 5733,  1362, 16, 214907,      8.500 },
+  { 5734,  1362, 17, 214907,      9.000 },
+  { 5735,  1362, 18, 214907,      9.500 },
+  { 5736,  1362, 19, 214907,     10.000 },
+  { 5737,  1363,  0, 214909,      0.500 },
+  { 5738,  1363,  1, 214909,      1.000 },
+  { 5739,  1363,  2, 214909,      1.500 },
+  { 5740,  1363,  3, 214909,      2.000 },
+  { 5741,  1363,  4, 214909,      2.500 },
+  { 5742,  1363,  5, 214909,      3.000 },
+  { 5743,  1363,  6, 214909,      3.500 },
+  { 5744,  1363,  7, 214909,      4.000 },
+  { 5745,  1363,  8, 214909,      4.500 },
+  { 5746,  1363,  9, 214909,      5.000 },
+  { 5747,  1363, 10, 214909,      5.500 },
+  { 5748,  1363, 11, 214909,      6.000 },
+  { 5749,  1363, 12, 214909,      6.500 },
+  { 5750,  1363, 13, 214909,      7.000 },
+  { 5751,  1363, 14, 214909,      7.500 },
+  { 5752,  1363, 15, 214909,      8.000 },
+  { 5753,  1363, 16, 214909,      8.500 },
+  { 5754,  1363, 17, 214909,      9.000 },
+  { 5755,  1363, 18, 214909,      9.500 },
+  { 5756,  1363, 19, 214909,     10.000 },
+  { 5757,  1364,  0, 214910,      0.500 },
+  { 5758,  1364,  1, 214910,      1.000 },
+  { 5759,  1364,  2, 214910,      1.500 },
+  { 5760,  1364,  3, 214910,      2.000 },
+  { 5761,  1364,  4, 214910,      2.500 },
+  { 5762,  1364,  5, 214910,      3.000 },
+  { 5763,  1364,  6, 214910,      3.500 },
+  { 5764,  1364,  7, 214910,      4.000 },
+  { 5765,  1364,  8, 214910,      4.500 },
+  { 5766,  1364,  9, 214910,      5.000 },
+  { 5767,  1364, 10, 214910,      5.500 },
+  { 5768,  1364, 11, 214910,      6.000 },
+  { 5769,  1364, 12, 214910,      6.500 },
+  { 5770,  1364, 13, 214910,      7.000 },
+  { 5771,  1364, 14, 214910,      7.500 },
+  { 5772,  1364, 15, 214910,      8.000 },
+  { 5773,  1364, 16, 214910,      8.500 },
+  { 5774,  1364, 17, 214910,      9.000 },
+  { 5775,  1364, 18, 214910,      9.500 },
+  { 5776,  1364, 19, 214910,     10.000 },
+  { 5777,  1365,  0, 214911,      0.500 },
+  { 5778,  1365,  1, 214911,      1.000 },
+  { 5779,  1365,  2, 214911,      1.500 },
+  { 5780,  1365,  3, 214911,      2.000 },
+  { 5781,  1365,  4, 214911,      2.500 },
+  { 5782,  1365,  5, 214911,      3.000 },
+  { 5783,  1365,  6, 214911,      3.500 },
+  { 5784,  1365,  7, 214911,      4.000 },
+  { 5785,  1365,  8, 214911,      4.500 },
+  { 5786,  1365,  9, 214911,      5.000 },
+  { 5787,  1365, 10, 214911,      5.500 },
+  { 5788,  1365, 11, 214911,      6.000 },
+  { 5789,  1365, 12, 214911,      6.500 },
+  { 5790,  1365, 13, 214911,      7.000 },
+  { 5791,  1365, 14, 214911,      7.500 },
+  { 5792,  1365, 15, 214911,      8.000 },
+  { 5793,  1365, 16, 214911,      8.500 },
+  { 5794,  1365, 17, 214911,      9.000 },
+  { 5795,  1365, 18, 214911,      9.500 },
+  { 5796,  1365, 19, 214911,     10.000 },
+  { 5797,  1366,  0, 214912,      0.500 },
+  { 5798,  1366,  1, 214912,      1.000 },
+  { 5799,  1366,  2, 214912,      1.500 },
+  { 5800,  1366,  3, 214912,      2.000 },
+  { 5801,  1366,  4, 214912,      2.500 },
+  { 5802,  1366,  5, 214912,      3.000 },
+  { 5803,  1366,  6, 214912,      3.500 },
+  { 5804,  1366,  7, 214912,      4.000 },
+  { 5805,  1366,  8, 214912,      4.500 },
+  { 5806,  1366,  9, 214912,      5.000 },
+  { 5807,  1366, 10, 214912,      5.500 },
+  { 5808,  1366, 11, 214912,      6.000 },
+  { 5809,  1366, 12, 214912,      6.500 },
+  { 5810,  1366, 13, 214912,      7.000 },
+  { 5811,  1366, 14, 214912,      7.500 },
+  { 5812,  1366, 15, 214912,      8.000 },
+  { 5813,  1366, 16, 214912,      8.500 },
+  { 5814,  1366, 17, 214912,      9.000 },
+  { 5815,  1366, 18, 214912,      9.500 },
+  { 5816,  1366, 19, 214912,     10.000 },
+  { 5817,  1367,  0, 214913,      0.500 },
+  { 5818,  1367,  1, 214913,      1.000 },
+  { 5819,  1367,  2, 214913,      1.500 },
+  { 5820,  1367,  3, 214913,      2.000 },
+  { 5821,  1367,  4, 214913,      2.500 },
+  { 5822,  1367,  5, 214913,      3.000 },
+  { 5823,  1367,  6, 214913,      3.500 },
+  { 5824,  1367,  7, 214913,      4.000 },
+  { 5825,  1367,  8, 214913,      4.500 },
+  { 5826,  1367,  9, 214913,      5.000 },
+  { 5827,  1367, 10, 214913,      5.500 },
+  { 5828,  1367, 11, 214913,      6.000 },
+  { 5829,  1367, 12, 214913,      6.500 },
+  { 5830,  1367, 13, 214913,      7.000 },
+  { 5831,  1367, 14, 214913,      7.500 },
+  { 5832,  1367, 15, 214913,      8.000 },
+  { 5833,  1367, 16, 214913,      8.500 },
+  { 5834,  1367, 17, 214913,      9.000 },
+  { 5835,  1367, 18, 214913,      9.500 },
+  { 5836,  1367, 19, 214913,     10.000 },
+  { 5837,  1368,  0, 214914,      0.500 },
+  { 5838,  1368,  1, 214914,      1.000 },
+  { 5839,  1368,  2, 214914,      1.500 },
+  { 5840,  1368,  3, 214914,      2.000 },
+  { 5841,  1368,  4, 214914,      2.500 },
+  { 5842,  1368,  5, 214914,      3.000 },
+  { 5843,  1368,  6, 214914,      3.500 },
+  { 5844,  1368,  7, 214914,      4.000 },
+  { 5845,  1368,  8, 214914,      4.500 },
+  { 5846,  1368,  9, 214914,      5.000 },
+  { 5847,  1368, 10, 214914,      5.500 },
+  { 5848,  1368, 11, 214914,      6.000 },
+  { 5849,  1368, 12, 214914,      6.500 },
+  { 5850,  1368, 13, 214914,      7.000 },
+  { 5851,  1368, 14, 214914,      7.500 },
+  { 5852,  1368, 15, 214914,      8.000 },
+  { 5853,  1368, 16, 214914,      8.500 },
+  { 5854,  1368, 17, 214914,      9.000 },
+  { 5855,  1368, 18, 214914,      9.500 },
+  { 5856,  1368, 19, 214914,     10.000 },
+  { 5857,  1369,  0, 214915,      0.500 },
+  { 5858,  1369,  1, 214915,      1.000 },
+  { 5859,  1369,  2, 214915,      1.500 },
+  { 5860,  1369,  3, 214915,      2.000 },
+  { 5861,  1369,  4, 214915,      2.500 },
+  { 5862,  1369,  5, 214915,      3.000 },
+  { 5863,  1369,  6, 214915,      3.500 },
+  { 5864,  1369,  7, 214915,      4.000 },
+  { 5865,  1369,  8, 214915,      4.500 },
+  { 5866,  1369,  9, 214915,      5.000 },
+  { 5867,  1369, 10, 214915,      5.500 },
+  { 5868,  1369, 11, 214915,      6.000 },
+  { 5869,  1369, 12, 214915,      6.500 },
+  { 5870,  1369, 13, 214915,      7.000 },
+  { 5871,  1369, 14, 214915,      7.500 },
+  { 5872,  1369, 15, 214915,      8.000 },
+  { 5873,  1369, 16, 214915,      8.500 },
+  { 5874,  1369, 17, 214915,      9.000 },
+  { 5875,  1369, 18, 214915,      9.500 },
+  { 5876,  1369, 19, 214915,     10.000 },
+  { 5877,  1370,  0, 214916,      0.500 },
+  { 5878,  1370,  1, 214916,      1.000 },
+  { 5879,  1370,  2, 214916,      1.500 },
+  { 5880,  1370,  3, 214916,      2.000 },
+  { 5881,  1370,  4, 214916,      2.500 },
+  { 5882,  1370,  5, 214916,      3.000 },
+  { 5883,  1370,  6, 214916,      3.500 },
+  { 5884,  1370,  7, 214916,      4.000 },
+  { 5885,  1370,  8, 214916,      4.500 },
+  { 5886,  1370,  9, 214916,      5.000 },
+  { 5887,  1370, 10, 214916,      5.500 },
+  { 5888,  1370, 11, 214916,      6.000 },
+  { 5889,  1370, 12, 214916,      6.500 },
+  { 5890,  1370, 13, 214916,      7.000 },
+  { 5891,  1370, 14, 214916,      7.500 },
+  { 5892,  1370, 15, 214916,      8.000 },
+  { 5893,  1370, 16, 214916,      8.500 },
+  { 5894,  1370, 17, 214916,      9.000 },
+  { 5895,  1370, 18, 214916,      9.500 },
+  { 5896,  1370, 19, 214916,     10.000 },
+  { 5897,  1371,  0, 214917,      0.500 },
+  { 5898,  1371,  1, 214917,      1.000 },
+  { 5899,  1371,  2, 214917,      1.500 },
+  { 5900,  1371,  3, 214917,      2.000 },
+  { 5901,  1371,  4, 214917,      2.500 },
+  { 5902,  1371,  5, 214917,      3.000 },
+  { 5903,  1371,  6, 214917,      3.500 },
+  { 5904,  1371,  7, 214917,      4.000 },
+  { 5905,  1371,  8, 214917,      4.500 },
+  { 5906,  1371,  9, 214917,      5.000 },
+  { 5907,  1371, 10, 214917,      5.500 },
+  { 5908,  1371, 11, 214917,      6.000 },
+  { 5909,  1371, 12, 214917,      6.500 },
+  { 5910,  1371, 13, 214917,      7.000 },
+  { 5911,  1371, 14, 214917,      7.500 },
+  { 5912,  1371, 15, 214917,      8.000 },
+  { 5913,  1371, 16, 214917,      8.500 },
+  { 5914,  1371, 17, 214917,      9.000 },
+  { 5915,  1371, 18, 214917,      9.500 },
+  { 5916,  1371, 19, 214917,     10.000 },
+  { 5917,  1372,  0, 214918,      0.500 },
+  { 5918,  1372,  1, 214918,      1.000 },
+  { 5919,  1372,  2, 214918,      1.500 },
+  { 5920,  1372,  3, 214918,      2.000 },
+  { 5921,  1372,  4, 214918,      2.500 },
+  { 5922,  1372,  5, 214918,      3.000 },
+  { 5923,  1372,  6, 214918,      3.500 },
+  { 5924,  1372,  7, 214918,      4.000 },
+  { 5925,  1372,  8, 214918,      4.500 },
+  { 5926,  1372,  9, 214918,      5.000 },
+  { 5927,  1372, 10, 214918,      5.500 },
+  { 5928,  1372, 11, 214918,      6.000 },
+  { 5929,  1372, 12, 214918,      6.500 },
+  { 5930,  1372, 13, 214918,      7.000 },
+  { 5931,  1372, 14, 214918,      7.500 },
+  { 5932,  1372, 15, 214918,      8.000 },
+  { 5933,  1372, 16, 214918,      8.500 },
+  { 5934,  1372, 17, 214918,      9.000 },
+  { 5935,  1372, 18, 214918,      9.500 },
+  { 5936,  1372, 19, 214918,     10.000 },
+  { 5937,  1373,  0, 214919,      0.500 },
+  { 5938,  1373,  1, 214919,      1.000 },
+  { 5939,  1373,  2, 214919,      1.500 },
+  { 5940,  1373,  3, 214919,      2.000 },
+  { 5941,  1373,  4, 214919,      2.500 },
+  { 5942,  1373,  5, 214919,      3.000 },
+  { 5943,  1373,  6, 214919,      3.500 },
+  { 5944,  1373,  7, 214919,      4.000 },
+  { 5945,  1373,  8, 214919,      4.500 },
+  { 5946,  1373,  9, 214919,      5.000 },
+  { 5947,  1373, 10, 214919,      5.500 },
+  { 5948,  1373, 11, 214919,      6.000 },
+  { 5949,  1373, 12, 214919,      6.500 },
+  { 5950,  1373, 13, 214919,      7.000 },
+  { 5951,  1373, 14, 214919,      7.500 },
+  { 5952,  1373, 15, 214919,      8.000 },
+  { 5953,  1373, 16, 214919,      8.500 },
+  { 5954,  1373, 17, 214919,      9.000 },
+  { 5955,  1373, 18, 214919,      9.500 },
+  { 5956,  1373, 19, 214919,     10.000 },
+  { 5957,  1374,  0, 214920,      0.500 },
+  { 5958,  1374,  1, 214920,      1.000 },
+  { 5959,  1374,  2, 214920,      1.500 },
+  { 5960,  1374,  3, 214920,      2.000 },
+  { 5961,  1374,  4, 214920,      2.500 },
+  { 5962,  1374,  5, 214920,      3.000 },
+  { 5963,  1374,  6, 214920,      3.500 },
+  { 5964,  1374,  7, 214920,      4.000 },
+  { 5965,  1374,  8, 214920,      4.500 },
+  { 5966,  1374,  9, 214920,      5.000 },
+  { 5967,  1374, 10, 214920,      5.500 },
+  { 5968,  1374, 11, 214920,      6.000 },
+  { 5969,  1374, 12, 214920,      6.500 },
+  { 5970,  1374, 13, 214920,      7.000 },
+  { 5971,  1374, 14, 214920,      7.500 },
+  { 5972,  1374, 15, 214920,      8.000 },
+  { 5973,  1374, 16, 214920,      8.500 },
+  { 5974,  1374, 17, 214920,      9.000 },
+  { 5975,  1374, 18, 214920,      9.500 },
+  { 5976,  1374, 19, 214920,     10.000 },
+  { 5977,  1375,  0, 214921,      0.500 },
+  { 5978,  1375,  1, 214921,      1.000 },
+  { 5979,  1375,  2, 214921,      1.500 },
+  { 5980,  1375,  3, 214921,      2.000 },
+  { 5981,  1375,  4, 214921,      2.500 },
+  { 5982,  1375,  5, 214921,      3.000 },
+  { 5983,  1375,  6, 214921,      3.500 },
+  { 5984,  1375,  7, 214921,      4.000 },
+  { 5985,  1375,  8, 214921,      4.500 },
+  { 5986,  1375,  9, 214921,      5.000 },
+  { 5987,  1375, 10, 214921,      5.500 },
+  { 5988,  1375, 11, 214921,      6.000 },
+  { 5989,  1375, 12, 214921,      6.500 },
+  { 5990,  1375, 13, 214921,      7.000 },
+  { 5991,  1375, 14, 214921,      7.500 },
+  { 5992,  1375, 15, 214921,      8.000 },
+  { 5993,  1375, 16, 214921,      8.500 },
+  { 5994,  1375, 17, 214921,      9.000 },
+  { 5995,  1375, 18, 214921,      9.500 },
+  { 5996,  1375, 19, 214921,     10.000 },
+  { 5997,  1376,  0, 214922,      0.500 },
+  { 5998,  1376,  1, 214922,      1.000 },
+  { 5999,  1376,  2, 214922,      1.500 },
+  { 6000,  1376,  3, 214922,      2.000 },
+  { 6001,  1376,  4, 214922,      2.500 },
+  { 6002,  1376,  5, 214922,      3.000 },
+  { 6003,  1376,  6, 214922,      3.500 },
+  { 6004,  1376,  7, 214922,      4.000 },
+  { 6005,  1376,  8, 214922,      4.500 },
+  { 6006,  1376,  9, 214922,      5.000 },
+  { 6007,  1376, 10, 214922,      5.500 },
+  { 6008,  1376, 11, 214922,      6.000 },
+  { 6009,  1376, 12, 214922,      6.500 },
+  { 6010,  1376, 13, 214922,      7.000 },
+  { 6011,  1376, 14, 214922,      7.500 },
+  { 6012,  1376, 15, 214922,      8.000 },
+  { 6013,  1376, 16, 214922,      8.500 },
+  { 6014,  1376, 17, 214922,      9.000 },
+  { 6015,  1376, 18, 214922,      9.500 },
+  { 6016,  1376, 19, 214922,     10.000 },
+  { 6017,  1377,  0, 214923,      0.500 },
+  { 6018,  1377,  1, 214923,      1.000 },
+  { 6019,  1377,  2, 214923,      1.500 },
+  { 6020,  1377,  3, 214923,      2.000 },
+  { 6021,  1377,  4, 214923,      2.500 },
+  { 6022,  1377,  5, 214923,      3.000 },
+  { 6023,  1377,  6, 214923,      3.500 },
+  { 6024,  1377,  7, 214923,      4.000 },
+  { 6025,  1377,  8, 214923,      4.500 },
+  { 6026,  1377,  9, 214923,      5.000 },
+  { 6027,  1377, 10, 214923,      5.500 },
+  { 6028,  1377, 11, 214923,      6.000 },
+  { 6029,  1377, 12, 214923,      6.500 },
+  { 6030,  1377, 13, 214923,      7.000 },
+  { 6031,  1377, 14, 214923,      7.500 },
+  { 6032,  1377, 15, 214923,      8.000 },
+  { 6033,  1377, 16, 214923,      8.500 },
+  { 6034,  1377, 17, 214923,      9.000 },
+  { 6035,  1377, 18, 214923,      9.500 },
+  { 6036,  1377, 19, 214923,     10.000 },
+  { 6037,  1378,  0, 214924,      1.000 },
+  { 6038,  1378,  1, 214924,      2.000 },
+  { 6039,  1378,  2, 214924,      3.000 },
+  { 6040,  1378,  3, 214924,      4.000 },
+  { 6041,  1378,  4, 214924,      5.000 },
+  { 6042,  1378,  5, 214924,      6.000 },
+  { 6043,  1378,  6, 214924,      7.000 },
+  { 6044,  1378,  7, 214924,      8.000 },
+  { 6045,  1378,  8, 214924,      9.000 },
+  { 6046,  1378,  9, 214924,     10.000 },
+  { 6047,  1378, 10, 214924,     11.000 },
+  { 6048,  1378, 11, 214924,     12.000 },
+  { 6049,  1378, 12, 214924,     13.000 },
+  { 6050,  1378, 13, 214924,     14.000 },
+  { 6051,  1378, 14, 214924,     15.000 },
+  { 6052,  1378, 15, 214924,     16.000 },
+  { 6053,  1378, 16, 214924,     17.000 },
+  { 6054,  1378, 17, 214924,     18.000 },
+  { 6055,  1378, 18, 214924,     19.000 },
+  { 6056,  1378, 19, 214924,     20.000 },
+  { 6057,  1379,  0, 214925,      0.500 },
+  { 6058,  1379,  1, 214925,      1.000 },
+  { 6059,  1379,  2, 214925,      1.500 },
+  { 6060,  1379,  3, 214925,      2.000 },
+  { 6061,  1379,  4, 214925,      2.500 },
+  { 6062,  1379,  5, 214925,      3.000 },
+  { 6063,  1379,  6, 214925,      3.500 },
+  { 6064,  1379,  7, 214925,      4.000 },
+  { 6065,  1379,  8, 214925,      4.500 },
+  { 6066,  1379,  9, 214925,      5.000 },
+  { 6067,  1379, 10, 214925,      5.500 },
+  { 6068,  1379, 11, 214925,      6.000 },
+  { 6069,  1379, 12, 214925,      6.500 },
+  { 6070,  1379, 13, 214925,      7.000 },
+  { 6071,  1379, 14, 214925,      7.500 },
+  { 6072,  1379, 15, 214925,      8.000 },
+  { 6073,  1379, 16, 214925,      8.500 },
+  { 6074,  1379, 17, 214925,      9.000 },
+  { 6075,  1379, 18, 214925,      9.500 },
+  { 6076,  1379, 19, 214925,     10.000 },
+  { 6077,  1380,  0, 214926,      0.500 },
+  { 6078,  1380,  1, 214926,      1.000 },
+  { 6079,  1380,  2, 214926,      1.500 },
+  { 6080,  1380,  3, 214926,      2.000 },
+  { 6081,  1380,  4, 214926,      2.500 },
+  { 6082,  1380,  5, 214926,      3.000 },
+  { 6083,  1380,  6, 214926,      3.500 },
+  { 6084,  1380,  7, 214926,      4.000 },
+  { 6085,  1380,  8, 214926,      4.500 },
+  { 6086,  1380,  9, 214926,      5.000 },
+  { 6087,  1380, 10, 214926,      5.500 },
+  { 6088,  1380, 11, 214926,      6.000 },
+  { 6089,  1380, 12, 214926,      6.500 },
+  { 6090,  1380, 13, 214926,      7.000 },
+  { 6091,  1380, 14, 214926,      7.500 },
+  { 6092,  1380, 15, 214926,      8.000 },
+  { 6093,  1380, 16, 214926,      8.500 },
+  { 6094,  1380, 17, 214926,      9.000 },
+  { 6095,  1380, 18, 214926,      9.500 },
+  { 6096,  1380, 19, 214926,     10.000 },
+  { 6097,  1381,  0, 214927,      0.500 },
+  { 6098,  1381,  1, 214927,      1.000 },
+  { 6099,  1381,  2, 214927,      1.500 },
+  { 6100,  1381,  3, 214927,      2.000 },
+  { 6101,  1381,  4, 214927,      2.500 },
+  { 6102,  1381,  5, 214927,      3.000 },
+  { 6103,  1381,  6, 214927,      3.500 },
+  { 6104,  1381,  7, 214927,      4.000 },
+  { 6105,  1381,  8, 214927,      4.500 },
+  { 6106,  1381,  9, 214927,      5.000 },
+  { 6107,  1381, 10, 214927,      5.500 },
+  { 6108,  1381, 11, 214927,      6.000 },
+  { 6109,  1381, 12, 214927,      6.500 },
+  { 6110,  1381, 13, 214927,      7.000 },
+  { 6111,  1381, 14, 214927,      7.500 },
+  { 6112,  1381, 15, 214927,      8.000 },
+  { 6113,  1381, 16, 214927,      8.500 },
+  { 6114,  1381, 17, 214927,      9.000 },
+  { 6115,  1381, 18, 214927,      9.500 },
+  { 6116,  1381, 19, 214927,     10.000 },
+  { 6157,  1384,  0, 214928,      0.500 },
+  { 6158,  1384,  1, 214928,      1.000 },
+  { 6159,  1384,  2, 214928,      1.500 },
+  { 6160,  1384,  3, 214928,      2.000 },
+  { 6161,  1384,  4, 214928,      2.500 },
+  { 6162,  1384,  5, 214928,      3.000 },
+  { 6163,  1384,  6, 214928,      3.500 },
+  { 6164,  1384,  7, 214928,      4.000 },
+  { 6165,  1384,  8, 214928,      4.500 },
+  { 6166,  1384,  9, 214928,      5.000 },
+  { 6167,  1384, 10, 214928,      5.500 },
+  { 6168,  1384, 11, 214928,      6.000 },
+  { 6169,  1384, 12, 214928,      6.500 },
+  { 6170,  1384, 13, 214928,      7.000 },
+  { 6171,  1384, 14, 214928,      7.500 },
+  { 6172,  1384, 15, 214928,      8.000 },
+  { 6173,  1384, 16, 214928,      8.500 },
+  { 6174,  1384, 17, 214928,      9.000 },
+  { 6175,  1384, 18, 214928,      9.500 },
+  { 6176,  1384, 19, 214928,     10.000 },
+  { 6177,  1385,  0, 214929,      0.500 },
+  { 6178,  1385,  1, 214929,      1.000 },
+  { 6179,  1385,  2, 214929,      1.500 },
+  { 6180,  1385,  3, 214929,      2.000 },
+  { 6181,  1385,  4, 214929,      2.500 },
+  { 6182,  1385,  5, 214929,      3.000 },
+  { 6183,  1385,  6, 214929,      3.500 },
+  { 6184,  1385,  7, 214929,      4.000 },
+  { 6185,  1385,  8, 214929,      4.500 },
+  { 6186,  1385,  9, 214929,      5.000 },
+  { 6187,  1385, 10, 214929,      5.500 },
+  { 6188,  1385, 11, 214929,      6.000 },
+  { 6189,  1385, 12, 214929,      6.500 },
+  { 6190,  1385, 13, 214929,      7.000 },
+  { 6191,  1385, 14, 214929,      7.500 },
+  { 6192,  1385, 15, 214929,      8.000 },
+  { 6193,  1385, 16, 214929,      8.500 },
+  { 6194,  1385, 17, 214929,      9.000 },
+  { 6195,  1385, 18, 214929,      9.500 },
+  { 6196,  1385, 19, 214929,     10.000 },
+  { 6197,  1386,  0, 214930,      0.500 },
+  { 6198,  1386,  1, 214930,      1.000 },
+  { 6199,  1386,  2, 214930,      1.500 },
+  { 6200,  1386,  3, 214930,      2.000 },
+  { 6201,  1386,  4, 214930,      2.500 },
+  { 6202,  1386,  5, 214930,      3.000 },
+  { 6203,  1386,  6, 214930,      3.500 },
+  { 6204,  1386,  7, 214930,      4.000 },
+  { 6205,  1386,  8, 214930,      4.500 },
+  { 6206,  1386,  9, 214930,      5.000 },
+  { 6207,  1386, 10, 214930,      5.500 },
+  { 6208,  1386, 11, 214930,      6.000 },
+  { 6209,  1386, 12, 214930,      6.500 },
+  { 6210,  1386, 13, 214930,      7.000 },
+  { 6211,  1386, 14, 214930,      7.500 },
+  { 6212,  1386, 15, 214930,      8.000 },
+  { 6213,  1386, 16, 214930,      8.500 },
+  { 6214,  1386, 17, 214930,      9.000 },
+  { 6215,  1386, 18, 214930,      9.500 },
+  { 6216,  1386, 19, 214930,     10.000 },
+  { 6217,  1387,  0, 214931,      0.500 },
+  { 6218,  1387,  1, 214931,      1.000 },
+  { 6219,  1387,  2, 214931,      1.500 },
+  { 6220,  1387,  3, 214931,      2.000 },
+  { 6221,  1387,  4, 214931,      2.500 },
+  { 6222,  1387,  5, 214931,      3.000 },
+  { 6223,  1387,  6, 214931,      3.500 },
+  { 6224,  1387,  7, 214931,      4.000 },
+  { 6225,  1387,  8, 214931,      4.500 },
+  { 6226,  1387,  9, 214931,      5.000 },
+  { 6227,  1387, 10, 214931,      5.500 },
+  { 6228,  1387, 11, 214931,      6.000 },
+  { 6229,  1387, 12, 214931,      6.500 },
+  { 6230,  1387, 13, 214931,      7.000 },
+  { 6231,  1387, 14, 214931,      7.500 },
+  { 6232,  1387, 15, 214931,      8.000 },
+  { 6233,  1387, 16, 214931,      8.500 },
+  { 6234,  1387, 17, 214931,      9.000 },
+  { 6235,  1387, 18, 214931,      9.500 },
+  { 6236,  1387, 19, 214931,     10.000 },
+  { 6237,  1388,  0, 214932,      0.500 },
+  { 6238,  1388,  1, 214932,      1.000 },
+  { 6239,  1388,  2, 214932,      1.500 },
+  { 6240,  1388,  3, 214932,      2.000 },
+  { 6241,  1388,  4, 214932,      2.500 },
+  { 6242,  1388,  5, 214932,      3.000 },
+  { 6243,  1388,  6, 214932,      3.500 },
+  { 6244,  1388,  7, 214932,      4.000 },
+  { 6245,  1388,  8, 214932,      4.500 },
+  { 6246,  1388,  9, 214932,      5.000 },
+  { 6247,  1388, 10, 214932,      5.500 },
+  { 6248,  1388, 11, 214932,      6.000 },
+  { 6249,  1388, 12, 214932,      6.500 },
+  { 6250,  1388, 13, 214932,      7.000 },
+  { 6251,  1388, 14, 214932,      7.500 },
+  { 6252,  1388, 15, 214932,      8.000 },
+  { 6253,  1388, 16, 214932,      8.500 },
+  { 6254,  1388, 17, 214932,      9.000 },
+  { 6255,  1388, 18, 214932,      9.500 },
+  { 6256,  1388, 19, 214932,     10.000 },
+  { 6257,  1389,  0, 214933,      0.500 },
+  { 6258,  1389,  1, 214933,      1.000 },
+  { 6259,  1389,  2, 214933,      1.500 },
+  { 6260,  1389,  3, 214933,      2.000 },
+  { 6261,  1389,  4, 214933,      2.500 },
+  { 6262,  1389,  5, 214933,      3.000 },
+  { 6263,  1389,  6, 214933,      3.500 },
+  { 6264,  1389,  7, 214933,      4.000 },
+  { 6265,  1389,  8, 214933,      4.500 },
+  { 6266,  1389,  9, 214933,      5.000 },
+  { 6267,  1389, 10, 214933,      5.500 },
+  { 6268,  1389, 11, 214933,      6.000 },
+  { 6269,  1389, 12, 214933,      6.500 },
+  { 6270,  1389, 13, 214933,      7.000 },
+  { 6271,  1389, 14, 214933,      7.500 },
+  { 6272,  1389, 15, 214933,      8.000 },
+  { 6273,  1389, 16, 214933,      8.500 },
+  { 6274,  1389, 17, 214933,      9.000 },
+  { 6275,  1389, 18, 214933,      9.500 },
+  { 6276,  1389, 19, 214933,     10.000 },
+  { 6277,  1390,  0, 214934,      0.500 },
+  { 6278,  1390,  1, 214934,      1.000 },
+  { 6279,  1390,  2, 214934,      1.500 },
+  { 6280,  1390,  3, 214934,      2.000 },
+  { 6281,  1390,  4, 214934,      2.500 },
+  { 6282,  1390,  5, 214934,      3.000 },
+  { 6283,  1390,  6, 214934,      3.500 },
+  { 6284,  1390,  7, 214934,      4.000 },
+  { 6285,  1390,  8, 214934,      4.500 },
+  { 6286,  1390,  9, 214934,      5.000 },
+  { 6287,  1390, 10, 214934,      5.500 },
+  { 6288,  1390, 11, 214934,      6.000 },
+  { 6289,  1390, 12, 214934,      6.500 },
+  { 6290,  1390, 13, 214934,      7.000 },
+  { 6291,  1390, 14, 214934,      7.500 },
+  { 6292,  1390, 15, 214934,      8.000 },
+  { 6293,  1390, 16, 214934,      8.500 },
+  { 6294,  1390, 17, 214934,      9.000 },
+  { 6295,  1390, 18, 214934,      9.500 },
+  { 6296,  1390, 19, 214934,     10.000 },
+  { 6297,  1391,  0, 214935,      0.500 },
+  { 6298,  1391,  1, 214935,      1.000 },
+  { 6299,  1391,  2, 214935,      1.500 },
+  { 6300,  1391,  3, 214935,      2.000 },
+  { 6301,  1391,  4, 214935,      2.500 },
+  { 6302,  1391,  5, 214935,      3.000 },
+  { 6303,  1391,  6, 214935,      3.500 },
+  { 6304,  1391,  7, 214935,      4.000 },
+  { 6305,  1391,  8, 214935,      4.500 },
+  { 6306,  1391,  9, 214935,      5.000 },
+  { 6307,  1391, 10, 214935,      5.500 },
+  { 6308,  1391, 11, 214935,      6.000 },
+  { 6309,  1391, 12, 214935,      6.500 },
+  { 6310,  1391, 13, 214935,      7.000 },
+  { 6311,  1391, 14, 214935,      7.500 },
+  { 6312,  1391, 15, 214935,      8.000 },
+  { 6313,  1391, 16, 214935,      8.500 },
+  { 6314,  1391, 17, 214935,      9.000 },
+  { 6315,  1391, 18, 214935,      9.500 },
+  { 6316,  1391, 19, 214935,     10.000 },
+  { 6317,  1392,  0, 214936,      0.500 },
+  { 6318,  1392,  1, 214936,      1.000 },
+  { 6319,  1392,  2, 214936,      1.500 },
+  { 6320,  1392,  3, 214936,      2.000 },
+  { 6321,  1392,  4, 214936,      2.500 },
+  { 6322,  1392,  5, 214936,      3.000 },
+  { 6323,  1392,  6, 214936,      3.500 },
+  { 6324,  1392,  7, 214936,      4.000 },
+  { 6325,  1392,  8, 214936,      4.500 },
+  { 6326,  1392,  9, 214936,      5.000 },
+  { 6327,  1392, 10, 214936,      5.500 },
+  { 6328,  1392, 11, 214936,      6.000 },
+  { 6329,  1392, 12, 214936,      6.500 },
+  { 6330,  1392, 13, 214936,      7.000 },
+  { 6331,  1392, 14, 214936,      7.500 },
+  { 6332,  1392, 15, 214936,      8.000 },
+  { 6333,  1392, 16, 214936,      8.500 },
+  { 6334,  1392, 17, 214936,      9.000 },
+  { 6335,  1392, 18, 214936,      9.500 },
+  { 6336,  1392, 19, 214936,     10.000 },
+  { 6337,  1393,  0, 214937,      0.500 },
+  { 6338,  1393,  1, 214937,      1.000 },
+  { 6339,  1393,  2, 214937,      1.500 },
+  { 6340,  1393,  3, 214937,      2.000 },
+  { 6341,  1393,  4, 214937,      2.500 },
+  { 6342,  1393,  5, 214937,      3.000 },
+  { 6343,  1393,  6, 214937,      3.500 },
+  { 6344,  1393,  7, 214937,      4.000 },
+  { 6345,  1393,  8, 214937,      4.500 },
+  { 6346,  1393,  9, 214937,      5.000 },
+  { 6347,  1393, 10, 214937,      5.500 },
+  { 6348,  1393, 11, 214937,      6.000 },
+  { 6349,  1393, 12, 214937,      6.500 },
+  { 6350,  1393, 13, 214937,      7.000 },
+  { 6351,  1393, 14, 214937,      7.500 },
+  { 6352,  1393, 15, 214937,      8.000 },
+  { 6353,  1393, 16, 214937,      8.500 },
+  { 6354,  1393, 17, 214937,      9.000 },
+  { 6355,  1393, 18, 214937,      9.500 },
+  { 6356,  1393, 19, 214937,     10.000 },
+  { 6357,  1394,  0, 214938,      0.500 },
+  { 6358,  1394,  1, 214938,      1.000 },
+  { 6359,  1394,  2, 214938,      1.500 },
+  { 6360,  1394,  3, 214938,      2.000 },
+  { 6361,  1394,  4, 214938,      2.500 },
+  { 6362,  1394,  5, 214938,      3.000 },
+  { 6363,  1394,  6, 214938,      3.500 },
+  { 6364,  1394,  7, 214938,      4.000 },
+  { 6365,  1394,  8, 214938,      4.500 },
+  { 6366,  1394,  9, 214938,      5.000 },
+  { 6367,  1394, 10, 214938,      5.500 },
+  { 6368,  1394, 11, 214938,      6.000 },
+  { 6369,  1394, 12, 214938,      6.500 },
+  { 6370,  1394, 13, 214938,      7.000 },
+  { 6371,  1394, 14, 214938,      7.500 },
+  { 6372,  1394, 15, 214938,      8.000 },
+  { 6373,  1394, 16, 214938,      8.500 },
+  { 6374,  1394, 17, 214938,      9.000 },
+  { 6375,  1394, 18, 214938,      9.500 },
+  { 6376,  1394, 19, 214938,     10.000 },
+  { 6377,  1395,  0, 214939,      1.000 },
+  { 6378,  1395,  1, 214939,      2.000 },
+  { 6379,  1395,  2, 214939,      3.000 },
+  { 6380,  1395,  3, 214939,      4.000 },
+  { 6381,  1395,  4, 214939,      5.000 },
+  { 6382,  1395,  5, 214939,      6.000 },
+  { 6383,  1395,  6, 214939,      7.000 },
+  { 6384,  1395,  7, 214939,      8.000 },
+  { 6385,  1395,  8, 214939,      9.000 },
+  { 6386,  1395,  9, 214939,     10.000 },
+  { 6387,  1395, 10, 214939,     11.000 },
+  { 6388,  1395, 11, 214939,     12.000 },
+  { 6389,  1395, 12, 214939,     13.000 },
+  { 6390,  1395, 13, 214939,     14.000 },
+  { 6391,  1395, 14, 214939,     15.000 },
+  { 6392,  1395, 15, 214939,     16.000 },
+  { 6393,  1395, 16, 214939,     17.000 },
+  { 6394,  1395, 17, 214939,     18.000 },
+  { 6395,  1395, 18, 214939,     19.000 },
+  { 6396,  1395, 19, 214939,     20.000 },
   {    0,     0,  0,      0,      0.000 },
 };

@@ -1,4 +1,4 @@
-// Level scaling data, wow build 21154
+// Level scaling data, wow build 21232
 static double __gt_octhp_per_stamina[115] = {
   14.00000,   14.00000,   15.00000,   16.00000,   17.00000, 	//    5
   18.00000,   18.00000,   18.00000,   18.00000,   18.00000, 	//   10
@@ -25,7 +25,7 @@ static double __gt_octhp_per_stamina[115] = {
   60.00000,   60.00000,   60.00000,   60.00000,   60.00000	//  115
 };
 
-// Spell scaling multipliers for levels 1 - 115, wow build 21154
+// Spell scaling multipliers for levels 1 - 115, wow build 21232
 static double __gt_spell_scaling[][115] = {
   // Constant scaling
   {
@@ -497,7 +497,7 @@ static double __gt_spell_scaling[][115] = {
   },
 };
 
-// Class based scaling multipliers for levels 1 - 115, wow build 21154
+// Class based scaling multipliers for levels 1 - 115, wow build 21232
 static double __gt_octbase_mpby_class[][115] = {
   {
             0.00000,         0.00000,         0.00000,         0.00000,         0.00000,	//    5
@@ -838,7 +838,7 @@ static double __gt_octbase_mpby_class[][115] = {
   },
 };
 
-// Combat ratings for levels 1 - 115, wow build 21154 
+// Combat ratings for levels 1 - 115, wow build 21232 
 static double __gt_combat_ratings[][115] = {
   // Dodge rating multipliers
   {
@@ -1440,7 +1440,7 @@ static double __gt_combat_ratings[][115] = {
   },
 };
 
-// Item Level scaling data, wow build 21154
+// Item Level scaling data, wow build 21232
 static double __gt_item_socket_cost_per_level[1000] = {
         0.00000,         0.00000,         0.00000,         0.00000,         0.00000, 	//    5
         0.00000,         0.00000,         0.00000,         0.00000,         0.00000, 	//   10
@@ -1645,7 +1645,7 @@ static double __gt_item_socket_cost_per_level[1000] = {
 
 };
 
-// Item Level scaling data, wow build 21154
+// Item Level scaling data, wow build 21232
 static double __gt_combat_ratings_mult_by_ilvl[1000] = {
         1.00000,         1.00000,         1.00000,         1.00000,         1.00000, 	//    5
         1.00000,         1.00000,         1.00000,         1.00000,         1.00000, 	//   10
@@ -1850,7 +1850,7 @@ static double __gt_combat_ratings_mult_by_ilvl[1000] = {
 
 };
 
-// Monster(?) Level scaling data, wow build 21154
+// Monster(?) Level scaling data, wow build 21232
 static double __gt_armor_mitigation_by_lvl[118] = {
       157.0000000000,       167.0000000000,       177.0000000000,       187.0000000000,       197.0000000000, 	//    5
       207.0000000000,       217.0000000000,       227.0000000000,       237.0000000000,       247.0000000000, 	//   10
@@ -1872,7 +1872,7 @@ static double __gt_armor_mitigation_by_lvl[118] = {
      1007.0000000000,      1017.0000000000,      1027.0000000000,      1037.0000000000,      1047.0000000000, 	//   90
      1185.0000000000,      1342.0000000000,      1518.0000000000,      1718.0000000000,      1945.0000000000, 	//   95
      2201.0000000000,      2491.0000000000,      2819.0000000000,      3190.0000000000,      3610.0000000000, 	//  100
-     5435.0000000000,      5613.0000000000,      5799.0000000000,      5994.0000000000,      6199.0000000000, 	//  105
+     3973.0000000000,      4373.0000000000,      4812.0000000000,      5296.0000000000,      5829.0000000000, 	//  105
      6415.0000000000,      6642.0000000000,      6880.0000000000,      7132.0000000000,      7390.0000000000, 	//  110
      7648.0000000000,      7906.0000000000,      8164.0000000000,      8164.0000000000,      8164.0000000000, 	//  115
      8164.0000000000,      8164.0000000000,      8164.0000000000
