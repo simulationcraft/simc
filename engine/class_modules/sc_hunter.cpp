@@ -39,10 +39,11 @@
 //
 // Marksmanship
 //  Talents
+//   - Sidewinders
 //   - Black Arrow
 //   - Heightened Vulnerability
 //   - Volley
-//   - Dark Ranger
+//   - Update Trick Shot behavior
 //  Artifacts
 //   - Whispers of the Past
 //   - Call of the Hunter
@@ -196,6 +197,7 @@ public:
     cooldown_t* bestial_wrath;
     cooldown_t* kill_shot_reset;
     cooldown_t* trueshot;
+    cooldown_t* dire_beast;
   } cooldowns;
 
   // Custom Parameters
@@ -218,6 +220,7 @@ public:
     proc_t* aimed_shot_artifact;
     proc_t* lock_and_load;
     proc_t* hunters_mark;
+    proc_t* wild_call;
     proc_t* tier15_2pc_melee;
     proc_t* tier15_4pc_melee_aimed_shot;
     proc_t* tier15_4pc_melee_arcane_shot;
@@ -454,11 +457,12 @@ public:
   {
     // Cooldowns
     cooldowns.explosive_shot  = get_cooldown( "explosive_shot" );
-    cooldowns.black_arrow = get_cooldown( "black_arrow" );
+    cooldowns.black_arrow     = get_cooldown( "black_arrow" );
     cooldowns.bestial_wrath   = get_cooldown( "bestial_wrath" );
     cooldowns.kill_shot_reset = get_cooldown( "kill_shot_reset" );
     cooldowns.kill_shot_reset -> duration = find_spell( 90967 ) -> duration();
-    cooldowns.trueshot      = get_cooldown( "trueshot" );
+    cooldowns.trueshot        = get_cooldown( "trueshot" );
+    cooldowns.dire_beast      = get_cooldown( "dire_beast" );
 
     summon_pet_str = "";
     base.distance = 40;
@@ -2159,6 +2163,12 @@ struct auto_shot_t: public ranged_t
       p() -> buffs.lock_and_load -> trigger( 2 );
       p() -> procs.lock_and_load -> occur();
     }
+
+    if ( s -> result == RESULT_CRIT && rng().roll( p() -> find_specialization_spell( "Wild Call" ) -> proc_chance() ) )
+    {
+      p() -> cooldowns.dire_beast -> reset( true );
+      p() -> procs.wild_call -> occur();
+    }
   }
 };
 
@@ -3405,9 +3415,17 @@ struct dire_beast_t: public hunter_spell_t
     hunter_spell_t::execute();
     p() -> no_steady_focus();
 
-    pet_t* beast = p() -> pet_dire_beasts[0];
-    if ( !beast -> is_sleeping() )
-      beast = p() -> pet_dire_beasts[1];
+    pet_t* beast;
+    for( size_t i = 0; i < p() -> pet_dire_beasts.size(); i++ )
+    {
+      if ( p() -> pet_dire_beasts[i] -> is_sleeping() )
+      {
+        beast = p() -> pet_dire_beasts[i];
+        break;
+      }
+    }
+
+    assert( beast );
 
     // Dire beast gets a chance for an extra attack based on haste
     // rather than discrete plateaus.  At integer numbers of attacks,
@@ -3835,6 +3853,7 @@ void hunter_t::init_spells()
   specs.survivalist          = find_specialization_spell( "Survivalist" );
   specs.lone_wolf            = find_specialization_spell( "Lone Wolf" );
   specs.dire_beast           = find_specialization_spell( "Dire Beast" );
+  specs.wild_call            = find_specialization_spell( "Wild Call" );
 
   // Artifact spells
   artifacts.titans_thunder           = find_artifact_spell( "Titan's Thunder" );
@@ -4022,6 +4041,7 @@ void hunter_t::init_procs()
   procs.aimed_shot_artifact          = get_proc( "aimed_shot_artifact" );
   procs.lock_and_load                = get_proc( "lock_and_load" );
   procs.hunters_mark                 = get_proc( "hunters_mark" );
+  procs.wild_call                    = get_proc( "wild_call" );
   procs.tier15_2pc_melee             = get_proc( "tier15_2pc_melee" );
   procs.tier15_4pc_melee_aimed_shot  = get_proc( "tier15_4pc_melee_aimed_shot" );
   procs.tier15_4pc_melee_arcane_shot = get_proc( "tier15_4pc_melee_arcane_shot" );
