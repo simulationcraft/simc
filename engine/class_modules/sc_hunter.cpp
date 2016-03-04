@@ -12,7 +12,6 @@
 //   - Dire Beast (focus gain is passive now)
 //  Talent
 //   - Stomp
-//   - Big Game Hunter
 //   - Bestial Fury
 //   - Stampede (rework)
 //   - Killer Cobra
@@ -166,6 +165,7 @@ public:
     buff_t* aspect_of_the_wild;
     buff_t* beast_cleave;
     buff_t* bestial_wrath;
+    buff_t* big_game_hunter;
     buff_t* bombardment;
     buff_t* careful_aim;
     buff_t* steady_focus;
@@ -2183,6 +2183,15 @@ struct auto_shot_t: public ranged_t
       }
     }
   }
+
+  virtual double composite_target_crit( player_t* t ) const override
+  {
+    double cc= ranged_t::composite_target_crit( t );
+
+    cc += p() -> buffs.big_game_hunter -> value();
+
+    return cc;
+  }
 };
 
 struct start_attack_t: public hunter_ranged_attack_t
@@ -2501,6 +2510,15 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
       trigger_tier15_2pc_melee();
+  }
+
+  virtual double composite_target_crit( player_t* t ) const override
+  {
+    double cc = hunter_ranged_attack_t::composite_target_crit( t );
+
+    cc += p() -> buffs.big_game_hunter -> value();
+
+    return cc;
   }
 };
 
@@ -3991,6 +4009,9 @@ void hunter_t::create_buffs()
   double careful_aim_crit           = talents.careful_aim -> effectN( 1 ).percent( );
   buffs.careful_aim                 = buff_creator_t( this, "careful_aim", talents.careful_aim ).activated( true ).default_value( careful_aim_crit );
 
+  double big_game_hunter_crit       = talents.big_game_hunter -> effectN( 1 ).percent( );
+  buffs.big_game_hunter             = buff_creator_t( this, "big_game_hunter", talents.big_game_hunter ).activated( true ).default_value( big_game_hunter_crit );
+
   buffs.steady_focus                = buff_creator_t( this, 193534, "steady_focus" ).chance( talents.steady_focus -> ok() );
   buffs.pre_steady_focus            = buff_creator_t( this, "pre_steady_focus" ).max_stack( 2 ).quiet( true );
 
@@ -4793,6 +4814,21 @@ void hunter_t::schedule_ready( timespan_t delta_time, bool waiting )
     {
       if ( ca_now )
         buffs.careful_aim -> expire();
+    }
+  }
+  else if ( talents.big_game_hunter -> ok() )
+  {
+    int bgh_now = buffs.big_game_hunter -> check();
+    int threshold = talents.big_game_hunter -> effectN( 2 ).base_value();
+    if ( target -> health_percentage() > threshold )
+    {
+      if ( ! bgh_now )
+        buffs.big_game_hunter -> trigger();
+    }
+    else
+    {
+      if ( bgh_now )
+        buffs.big_game_hunter -> expire();
     }
   }
   player_t::schedule_ready( delta_time, waiting );
