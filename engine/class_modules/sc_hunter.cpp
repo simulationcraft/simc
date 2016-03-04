@@ -168,6 +168,7 @@ public:
   {
     buff_t* aspect_of_the_cheetah;
     buff_t* aspect_of_the_turtle;
+    buff_t* aspect_of_the_wild;
     buff_t* beast_cleave;
     buff_t* bestial_wrath;
     buff_t* bombardment;
@@ -493,6 +494,7 @@ public:
   virtual double    composite_player_critical_damage_multiplier() const override;
   virtual double    composite_rating_multiplier( rating_e rating ) const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
+  virtual double    focus_regen_per_second() const override;
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
   virtual void      invalidate_cache( cache_e ) override;
   virtual void      create_options() override;
@@ -1080,6 +1082,8 @@ public:
   {
     base_t::create_buffs();
 
+    buffs.aspect_of_the_wild = buff_creator_t( this, 193530, "aspect_of_the_wild" );
+
     buffs.bestial_wrath = buff_creator_t( this, 19574, "bestial_wrath" ).activated( true );
     buffs.bestial_wrath -> cooldown -> duration = timespan_t::zero();
     buffs.bestial_wrath -> buff_duration += owner -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
@@ -1157,6 +1161,10 @@ public:
   {
     double ac = base_t::composite_melee_crit();
     ac += specs.spiked_collar -> effectN( 3 ).percent();
+
+    if ( buffs.aspect_of_the_wild -> check() )
+      ac += buffs.aspect_of_the_wild -> check_value();
+
     return ac;
   }
 
@@ -3547,6 +3555,33 @@ struct kill_command_t: public hunter_spell_t
   }
 };
 
+// Aspect of the Wild =======================================================
+
+struct aspect_of_the_wild_t: public hunter_spell_t
+{
+  aspect_of_the_wild_t( hunter_t* p, const std::string& options_str ):
+    hunter_spell_t( "aspect_of_the_wild", p, p -> specs.aspect_of_the_wild )
+  {
+    parse_options( options_str );
+    harmful = false;
+  }
+
+  virtual void execute() override
+  {
+    p() -> buffs.aspect_of_the_wild -> trigger();
+    p() -> active.pet -> buffs.aspect_of_the_wild -> trigger();
+    hunter_spell_t::execute();
+  }
+
+  virtual bool ready() override
+  {
+    if ( !p() -> active.pet )
+      return false;
+
+    return hunter_spell_t::ready();
+  }
+};
+
 // Stampede =================================================================
 
 struct stampede_t: public hunter_spell_t
@@ -3651,6 +3686,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "a_murder_of_crows"     ) return new                    moc_t( this, options_str );
   if ( name == "aimed_shot"            ) return new             aimed_shot_t( this, options_str );
   if ( name == "arcane_shot"           ) return new            arcane_shot_t( this, options_str );
+  if ( name == "aspect_of_the_wild"    ) return new     aspect_of_the_wild_t( this, options_str );
   if ( name == "auto_attack"           ) return new            auto_attack_t( this, options_str );
   if ( name == "auto_shot"             ) return new           start_attack_t( this, options_str );
   if ( name == "barrage"               ) return new                barrage_t( this, options_str );
@@ -3856,6 +3892,7 @@ void hunter_t::init_spells()
   specs.lone_wolf            = find_specialization_spell( "Lone Wolf" );
   specs.dire_beast           = find_specialization_spell( "Dire Beast" );
   specs.wild_call            = find_specialization_spell( "Wild Call" );
+  specs.aspect_of_the_wild   = find_specialization_spell( "Aspect of the Wild" );
 
   // Artifact spells
   artifacts.titans_thunder           = find_artifact_spell( "Titan's Thunder" );
@@ -3941,6 +3978,9 @@ void hunter_t::init_base_stats()
 void hunter_t::create_buffs()
 {
   player_t::create_buffs();
+
+  buffs.aspect_of_the_wild           = buff_creator_t( this, 193530, "aspect_of_the_wild" )
+    .add_invalidate( CACHE_CRIT );
 
   buffs.bestial_wrath                = buff_creator_t( this, "bestial_wrath", specs.bestial_wrath )
     .cd( timespan_t::zero() )
@@ -4411,6 +4451,9 @@ double hunter_t::composite_melee_crit() const
   if ( buffs.bullseye -> check() )
     crit += buffs.bullseye -> check_stack_value();
 
+  if ( buffs.aspect_of_the_wild -> check() )
+    crit += buffs.aspect_of_the_wild -> check_value();
+
   return crit;
 }
 
@@ -4422,6 +4465,9 @@ double hunter_t::composite_spell_crit() const
 
   if ( buffs.bullseye -> check() )
     crit += buffs.bullseye -> check_stack_value();
+
+  if ( buffs.aspect_of_the_wild -> check() )
+    crit += buffs.aspect_of_the_wild -> check_value();
 
   return crit;
 }
@@ -4480,6 +4526,16 @@ double hunter_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.tier16_4pc_bm_brutal_kinship -> stack() * buffs.tier16_4pc_bm_brutal_kinship -> data().effectN( 1 ).percent();
 
   return m;
+}
+
+double hunter_t::focus_regen_per_second() const
+{
+  double regen = player_t::focus_regen_per_second();
+
+  if ( buffs.aspect_of_the_wild -> check() )
+    regen += buffs.aspect_of_the_wild -> check_value();
+
+  return regen;
 }
 
 // hunter_t::invalidate_cache ==============================================
