@@ -3962,6 +3962,7 @@ void hunter_t::create_buffs()
   player_t::create_buffs();
 
   buffs.aspect_of_the_wild           = buff_creator_t( this, 193530, "aspect_of_the_wild" )
+    .affects_regen( true )
     .add_invalidate( CACHE_CRIT );
 
   buffs.bestial_wrath                = buff_creator_t( this, "bestial_wrath", specs.bestial_wrath )
@@ -4515,7 +4516,7 @@ double hunter_t::focus_regen_per_second() const
   double regen = player_t::focus_regen_per_second();
 
   if ( buffs.aspect_of_the_wild -> check() )
-    regen += buffs.aspect_of_the_wild -> check_value();
+    regen += buffs.aspect_of_the_wild -> data().effectN( 3 ).base_value();
 
   return regen;
 }
