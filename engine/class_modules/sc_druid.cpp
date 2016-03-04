@@ -22,11 +22,12 @@ namespace { // UNNAMED NAMESPACE
   Feral =====================================================================
   Predator vs. adds
   Artifact utility traits
-  Ashamane's Bite update
   Feral Power change
   Scent of Blood update
   Sharpened Claws update
   Implement Shredder Fangs
+
+  SR as a player multiplier? Fun.
 
   Balance ===================================================================
   Stellar Drift cast while moving
@@ -38,6 +39,7 @@ namespace { // UNNAMED NAMESPACE
   Moon and Stars update
   Check Power of Goldrinn
   Implement Skywrath
+  Remove Moonfang
 
   Touch of the Moon
   Light of the Sun
@@ -49,6 +51,7 @@ namespace { // UNNAMED NAMESPACE
   Incarnation CD modifier rework
   Embrace of the Nightmare rage gain?
   Gory Fur
+  Remove Blood Claws
 
   Resto =====================================================================
   All the things
@@ -152,6 +155,10 @@ struct druid_td_t : public actor_target_data_t
            + dots.shadow_rake -> is_ticking()
            + dots.shadow_thrash -> is_ticking();
   }
+
+  /* Stores rip's "current damage" from when it is applied, since
+     it can't be gotten from the state until the first tick occurs. */
+  double rip_zero;
 };
 
 struct snapshot_counter_t
@@ -276,7 +283,6 @@ public:
     real_ppm_t ashamanes_bite;
     real_ppm_t predator; // Optional RPPM approximation
     real_ppm_t shadow_thrash;
-    real_ppm_t shredded_wounds;
 
     // Balance
     real_ppm_t balance_tier18_2pc;
@@ -2658,19 +2664,17 @@ struct ferocious_bite_t : public cat_attack_t
       cat_attack_t( "ashamanes_rip", p, p -> find_spell( 210705 ) )
     {
       background = true;
-      may_crit = may_miss = may_block = may_dodge = may_parry = false;
-      dot_duration = timespan_t::zero();
+      may_miss = may_block = may_dodge = may_parry = false;
 
+      base_tick_time = p -> find_specialization_spell( "Rip" ) -> effectN( 1 ).period();
       base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
-      attack_power_mod.tick = p -> find_specialization_spell( "Rip" ) -> effectN( 1 ).ap_coeff();
-      base_multiplier *= 1.0 + p -> artifact.razor_fangs.percent();
     }
 
     void init() override
     {
       cat_attack_t::init();
 
-      update_flags |= STATE_MUL_TA; // Dynamically update for mastery & Open Wounds.
+      snapshot_flags = update_flags = STATE_CRIT | STATE_TGT_CRIT | STATE_TGT_MUL_TA;
     }
 
     virtual void execute() override
@@ -2678,22 +2682,25 @@ struct ferocious_bite_t : public cat_attack_t
       dot_t* source = td( target ) -> dots.rip;
       assert( source -> is_ticking() );
 
-      dot_t* dest = get_dot( target );
-      dest -> current_action = this;
+      // Copy remaining Rip duration.
+      dot_duration = source -> remains();
+
+      if ( source -> current_tick == 0 )
+      {
+        // Rip hasn't ticked yet, so we need to get it's tick damage via other means.
+        // rip_t puts its "tick_zero" damage in druid_td_t::rip_zero.
+        base_td = td( target ) -> rip_zero;
+      }
+      else
+      {
+        // Copy tick damage from the most recent tick.
+        base_td = source -> state -> result_amount;
+
+        // This snapshots Open Wounds! If they change the behavior this will need to be reworked somehow.
+        // FIXME: Does this double dip on target vulnerabilities?
+      }
 
       cat_attack_t::execute();
-
-      source -> copy( dest );
-    }
-
-    double attack_tick_power_coefficient( const action_state_t* s ) const override
-    {
-      rip_state_t* rip_state = debug_cast<rip_state_t*>( td( s -> target ) -> dots.shadow_rip -> state );
-
-      if ( ! rip_state )
-        return 0;
-
-      return cat_attack_t::attack_tick_power_coefficient( s ) * rip_state -> combo_points;
     }
   };
 
@@ -2966,7 +2973,13 @@ struct rip_t : public cat_attack_t
     cat_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) ) // TOCHECK
+    {
       td( s -> target ) -> buffs.open_wounds -> trigger();
+
+      // Store rip's damage value for use with Ashamane's Bite.
+      if ( p() -> artifact.ashamanes_bite.rank() )
+        td( s -> target ) -> rip_zero = calculate_tick_amount( s, 1.0 );
+    }
   }
 };
 
@@ -3026,46 +3039,11 @@ struct savage_roar_t : public cat_attack_t
 
 struct shred_t : public cat_attack_t
 {
-  struct shredded_wounds_t : public cat_attack_t
-  {
-    shredded_wounds_t( druid_t* p ) :
-      cat_attack_t( "shredded_wounds", p, p -> find_spell( 210721 ) )
-    {
-      background = true;
-
-      const spell_data_t* rip = p -> find_specialization_spell( "Rip" );
-
-      attack_power_mod.direct = rip -> effectN( 1 ).ap_coeff();
-      base_multiplier *= p -> fangs_of_ashamane -> driver() -> effectN( 1 ).percent();
-    }
-
-    double composite_persistent_multiplier( const action_state_t* s ) const override
-    { return td( s -> target ) -> dots.rip -> state -> persistent_multiplier; }
-
-    double attack_direct_power_coefficient( const action_state_t* s ) const override
-    {
-      rip_state_t* rip_state = debug_cast<rip_state_t*>( td( s -> target ) -> dots.rip -> state );
-
-      if ( ! rip_state )
-        return 0;
-
-      return cat_attack_t::attack_direct_power_coefficient( s ) * rip_state -> combo_points;
-    }
-  };
-
-  shredded_wounds_t* shredded_wounds;
-
   shred_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "shred", p, p -> find_specialization_spell( "Shred" ), options_str )
   {
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> artifact.feral_power.percent();
-
-    if ( p -> fangs_of_ashamane )
-    {
-      shredded_wounds = new shredded_wounds_t( p );
-      add_child( shredded_wounds );
-    }
   }
 
   virtual void execute() override
@@ -3088,12 +3066,6 @@ struct shred_t : public cat_attack_t
 
       if ( s -> result == RESULT_CRIT && p() -> sets.has_set_bonus( DRUID_FERAL, PVP, B4 ) )
         td( s -> target ) -> buffs.bloodletting -> trigger(); // Druid module debuff
-
-      if ( shredded_wounds && td( s -> target ) -> dots.rip -> is_ticking() && p() -> rppm.shredded_wounds.trigger() )
-      {
-        shredded_wounds -> target = target;
-        shredded_wounds -> execute();
-      }
     }
   }
 
@@ -7077,9 +7049,6 @@ void druid_t::init_rng()
   rppm.ashamanes_bite     = real_ppm_t( *this, artifact.ashamanes_bite.data().real_ppm(), 1.0, RPPM_HASTE );
   rppm.shadow_thrash      = real_ppm_t( *this, artifact.shadow_thrash.data().real_ppm(), 1.0, RPPM_HASTE );
 
-  if ( fangs_of_ashamane )
-    rppm.shredded_wounds  = real_ppm_t( *this, fangs_of_ashamane -> driver() -> real_ppm(), 1.0, RPPM_HASTE );
-
   player_t::init_rng();
 }
 
@@ -7165,7 +7134,6 @@ void druid_t::reset()
   rppm.ashamanes_bite.reset();
   rppm.predator.reset();
   rppm.shadow_thrash.reset();
-  rppm.shredded_wounds.reset();
   rppm.balance_tier18_2pc.reset();
 }
 
