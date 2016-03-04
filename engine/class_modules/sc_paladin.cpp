@@ -93,7 +93,7 @@ public:
     buff_t* zeal;
     buff_t* seal_of_light;
     buff_t* blessing_of_might;
-    buff_t* conviction;
+    buff_t* the_fires_of_justice;
 
     // Set Bonuses
     buff_t* faith_barricade;      // t17_2pc_tank
@@ -215,20 +215,26 @@ public:
 
     // Retribution
     const spell_data_t* execution_sentence;
+    const spell_data_t* eye_for_an_eye;
     const spell_data_t* consecration;
     const spell_data_t* fires_of_justice;
     const spell_data_t* crusader_flurry;
     const spell_data_t* zeal;
+    const spell_data_t* fist_of_justice;
+    const spell_data_t* repentance;
+    const spell_data_t* blinding_light;
     const spell_data_t* virtues_blade;
     const spell_data_t* blade_of_wrath;
     const spell_data_t* divine_hammer;
-    const spell_data_t* mass_judgment;
-    const spell_data_t* blaze_of_light;
-    const spell_data_t* divine_steed;
-    const spell_data_t* eye_for_an_eye;
-    const spell_data_t* final_verdict;
     const spell_data_t* seal_of_light;
     const spell_data_t* holy_wrath;
+    const spell_data_t* word_of_glory;
+    const spell_data_t* divine_intervention;
+    const spell_data_t* divine_steed;
+    const spell_data_t* blaze_of_light;
+    const spell_data_t* blessings_of_justice;
+    const spell_data_t* equality;
+    const spell_data_t* mass_judgment;
   } talents;
 
   struct artifact_spell_data_t
@@ -560,6 +566,10 @@ public:
   {
     if ( p() -> buffs.blessing_of_might -> up() )
     {
+      double chance = p() -> buffs.blessing_of_might -> data().effectN( 1 ).percent();
+      if ( p() -> talents.blessings_of_justice -> ok() )
+        chance *= ( 1 + p() -> talents.blessings_of_justice -> effectN( 1 ).percent() );
+
       if ( p() -> rng().roll( p() -> buffs.blessing_of_might -> data().effectN( 1 ).percent() ) )
       {
         double amount = s -> result_amount;
@@ -1025,7 +1035,7 @@ struct execution_sentence_t : public paladin_spell_t
     : paladin_spell_t( "execution_sentence", p, p -> find_talent_spell( "Execution Sentence" ) )
   {
     parse_options( options_str );
-    hasted_ticks   = false;
+    hasted_ticks   = true;
     travel_speed   = 0;
     tick_may_crit  = true;
 
@@ -1034,10 +1044,22 @@ struct execution_sentence_t : public paladin_spell_t
       background = true;
   }
 
+  void init() override
+  {
+    paladin_spell_t::init();
+
+    update_flags &= ~STATE_HASTE;
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    return dot_duration * ( tick_time( s -> haste ) / base_tick_time );
+  }
+
   virtual double cost() const override
   {
     double base_cost = paladin_spell_t::cost();
-    if ( p() -> buffs.conviction -> up() )
+    if ( p() -> buffs.the_fires_of_justice -> up() )
       return base_cost - 1;
     return base_cost;
   }
@@ -1047,8 +1069,8 @@ struct execution_sentence_t : public paladin_spell_t
     paladin_spell_t::execute();
 
     if ( ! ( p() -> bugs ) )
-      if ( p() -> buffs.conviction -> up() )
-        p() -> buffs.conviction -> expire();
+      if ( p() -> buffs.the_fires_of_justice -> up() )
+        p() -> buffs.the_fires_of_justice -> expire();
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -1663,6 +1685,27 @@ struct wake_of_ashes_t : public paladin_spell_t
   }
 };
 
+struct blinding_light_effect_t : public paladin_spell_t
+{
+  blinding_light_effect_t( paladin_t* p )
+    : paladin_spell_t( "blinding_light_effect", p, p -> find_spell( 105421 ) )
+  {
+    background = true;
+  }
+};
+
+struct blinding_light_t : public paladin_spell_t
+{
+  blinding_light_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "blinding_light", p, p -> find_talent_spell( "Blinding Light" ) )
+  {
+    parse_options( options_str );
+
+    aoe = -1;
+    execute_action = new blinding_light_effect_t( p );
+  }
+};
+
 // Light of Dawn ============================================================
 
 struct light_of_dawn_t : public paladin_heal_t
@@ -1901,7 +1944,7 @@ struct crusader_strike_t : public holy_power_generator_t
       // fires of justice
       if ( p() -> talents.fires_of_justice -> ok() && rng().roll( p() -> talents.fires_of_justice -> proc_chance() ) )
       {
-        p() -> buffs.conviction -> trigger();
+        p() -> buffs.the_fires_of_justice -> trigger();
       }
     }
   }
@@ -2252,7 +2295,7 @@ struct divine_storm_t: public holy_power_consumer_t
   virtual double cost() const override
   {
     double base_cost = holy_power_consumer_t::cost();
-    if ( p() -> buffs.conviction -> up() )
+    if ( p() -> buffs.the_fires_of_justice -> up() )
       return base_cost - 1;
     return base_cost;
   }
@@ -2261,8 +2304,8 @@ struct divine_storm_t: public holy_power_consumer_t
   {
     holy_power_consumer_t::execute();
 
-    if ( p() -> buffs.conviction -> up() )
-      p() -> buffs.conviction -> expire();
+    if ( p() -> buffs.the_fires_of_justice -> up() )
+      p() -> buffs.the_fires_of_justice -> expire();
 
     if ( p() -> artifact.echo_of_the_highlord.rank() )
     {
@@ -2598,18 +2641,6 @@ struct echoed_templars_verdict_t : public paladin_melee_attack_t
   {
     return 0;
   }
-
-  double action_multiplier() const override
-  {
-    double am = paladin_melee_attack_t::action_multiplier();
-
-    if ( p() -> talents.final_verdict -> ok() )
-    {
-      am *= 1.0 + p() -> talents.final_verdict -> effectN( 1 ).percent();
-    }
-
-    return am;
-  }
 };
 
 struct templars_verdict_t : public holy_power_consumer_t
@@ -2628,7 +2659,7 @@ struct templars_verdict_t : public holy_power_consumer_t
   virtual double cost() const override
   {
     double base_cost = holy_power_consumer_t::cost();
-    if ( p() -> buffs.conviction -> up() )
+    if ( p() -> buffs.the_fires_of_justice -> up() )
       return base_cost - 1;
     return base_cost;
   }
@@ -2640,9 +2671,9 @@ struct templars_verdict_t : public holy_power_consumer_t
 
     holy_power_consumer_t::execute();
 
-    // TODO: do misses consume conviction?
-    if ( p() -> buffs.conviction -> up() )
-      p() -> buffs.conviction -> expire();
+    // TODO: do misses consume fires of justice?
+    if ( p() -> buffs.the_fires_of_justice -> up() )
+      p() -> buffs.the_fires_of_justice -> expire();
 
     // missed/dodged/parried TVs do not consume Holy Power
     // check for a miss, and refund the appropriate amount of HP if we spent any
@@ -2655,20 +2686,6 @@ struct templars_verdict_t : public holy_power_consumer_t
     {
       echoed_spell -> schedule_execute();
     }
-  }
-
-
-  double action_multiplier() const override
-  {
-    double am = holy_power_consumer_t::action_multiplier();
-
-    // Final Verdict buffs TV damage by 25%
-    if ( p() -> talents.final_verdict -> ok() )
-    {
-      am *= 1.0 + p() -> talents.final_verdict -> effectN( 1 ).percent();
-    }
-
-    return am;
   }
 };
 
@@ -2686,7 +2703,7 @@ struct seal_of_light_t : public paladin_spell_t
   virtual double cost() const override
   {
     double base_cost = paladin_spell_t::cost();
-    if ( p() -> buffs.conviction -> up() )
+    if ( p() -> buffs.the_fires_of_justice -> up() )
       return base_cost - 1;
     return base_cost;
   }
@@ -2696,8 +2713,8 @@ struct seal_of_light_t : public paladin_spell_t
     paladin_spell_t::execute();
 
     if ( ! ( p() -> bugs ) )
-      if ( p() -> buffs.conviction -> up() )
-        p() -> buffs.conviction -> expire();
+      if ( p() -> buffs.the_fires_of_justice -> up() )
+        p() -> buffs.the_fires_of_justice -> expire();
 
     p() -> buffs.seal_of_light -> trigger();
   }
@@ -2845,8 +2862,12 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   actor_target_data_t( target, paladin )
 {
   dots.execution_sentence = target -> get_dot( "execution_sentence", paladin );
+
+  double judgment_duration_multiplier = 1.0;
+  if ( paladin -> talents.mass_judgment -> ok() )
+    judgment_duration_multiplier += paladin -> talents.mass_judgment -> effectN( 2 ).percent();
   buffs.debuffs_judgment = buff_creator_t( *this, "judgment", paladin -> find_spell( 197277 ))
-    .duration( ( ( paladin -> talents.mass_judgment -> ok() ) ? 2 : 1 ) * paladin -> find_spell( 197277 ) -> duration() );
+    .duration( judgment_duration_multiplier * paladin -> find_spell( 197277 ) -> duration() );
 }
 
 // paladin_t::create_action =================================================
@@ -2858,6 +2879,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "avengers_shield"           ) return new avengers_shield_t          ( this, options_str );
   if ( name == "avenging_wrath"            ) return new avenging_wrath_t           ( this, options_str );
   if ( name == "blessing_of_might"         ) return new blessing_of_might_t        ( this, options_str );
+  if ( name == "blinding_light"            ) return new blinding_light_t           ( this, options_str );
   if ( name == "beacon_of_light"           ) return new beacon_of_light_t          ( this, options_str );
   if ( name == "consecration"              ) return new consecration_t             ( this, options_str );
   if ( name == "crusader_strike"           ) return new crusader_strike_t          ( this, options_str );
@@ -3057,7 +3079,7 @@ void paladin_t::create_buffs()
                                           .add_invalidate( CACHE_HASTE );
   buffs.seal_of_light                  = buff_creator_t( this, "seal_of_light" ).spell( find_spell( 202273 ) )
                                           .add_invalidate( CACHE_ATTACK_SPEED );
-  buffs.conviction                     = buff_creator_t( this, "conviction" ).spell( find_spell( 209785 ) );
+  buffs.the_fires_of_justice           = buff_creator_t( this, "the_fires_of_justice" ).spell( find_spell( 209785 ) );
   buffs.blessing_of_might              = buff_creator_t( this, "blessing_of_might" ).spell( find_spell( 203528 ) );
 
   // Tier Bonuses
@@ -3283,7 +3305,7 @@ void paladin_t::generate_action_prio_list_ret()
 
   // TV5 > TV4 >
   single -> add_action( this, "Templar's Verdict", "if=holy_power>=4" );
-  single -> add_action( this, "Templar's Verdict", "if=(holy_power>=2)&(buff.conviction.up)");
+  single -> add_action( this, "Templar's Verdict", "if=(holy_power>=2)&(buff.the_fires_of_justice.up)");
 
   // BoJ/DH >
   single -> add_talent( this, "Divine Hammer" );
@@ -3316,7 +3338,7 @@ void paladin_t::generate_action_prio_list_ret()
   // TODO: this is a total guess
   cleave -> add_action( this, "Judgment" );
   cleave -> add_action( this, "Divine Storm", "if=holy_power>=4" );
-  cleave -> add_action( this, "Divine Storm", "if=(holy_power>=2)&(buff.conviction.up)" );
+  cleave -> add_action( this, "Divine Storm", "if=(holy_power>=2)&(buff.the_fires_of_justice.up)" );
 
   cleave -> add_talent( this, "Divine Hammer" );
   cleave -> add_action( this, "Blade of Justice" );
@@ -3575,20 +3597,26 @@ void paladin_t::init_spells()
   talents.final_stand                = find_talent_spell( "Final Stand" );
 
   talents.execution_sentence         = find_talent_spell( "Execution Sentence" );
+  talents.eye_for_an_eye             = find_talent_spell( "Eye for an Eye" );
   talents.consecration               = find_talent_spell( "Consecration" );
   talents.fires_of_justice           = find_talent_spell( "The Fires of Justice" );
   talents.crusader_flurry            = find_talent_spell( "Crusader Flurry" );
   talents.zeal                       = find_talent_spell( "Zeal" );
+  talents.fist_of_justice            = find_talent_spell( "Fist of Justice" );
+  talents.repentance                 = find_talent_spell( "Repentance" );
+  talents.blinding_light             = find_talent_spell( "Blinding Light" );
   talents.virtues_blade              = find_talent_spell( "Virtue's Blade" );
   talents.blade_of_wrath             = find_talent_spell( "Blade of Wrath" );
   talents.divine_hammer              = find_talent_spell( "Divine Hammer" );
-  talents.mass_judgment              = find_talent_spell( "Mass Judgment" );
-  talents.blaze_of_light             = find_talent_spell( "Blaze of Light" );
-  talents.divine_steed               = find_talent_spell( "Divine Steed" );
-  talents.eye_for_an_eye             = find_talent_spell( "Eye for an Eye" );
-  talents.final_verdict              = find_talent_spell( "Final Verdict" );
   talents.seal_of_light              = find_talent_spell( "Seal of Light" );
   talents.holy_wrath                 = find_talent_spell( "Holy Wrath" );
+  talents.word_of_glory              = find_talent_spell( "Word of Glory" );
+  talents.divine_intervention        = find_talent_spell( "Divine Intervention" );
+  talents.divine_steed               = find_talent_spell( "Divine Steed" );
+  talents.blaze_of_light             = find_talent_spell( "Blaze of Light" );
+  talents.blessings_of_justice       = find_talent_spell( "Blessings of Justice" );
+  talents.equality                   = find_talent_spell( "Equality" );
+  talents.mass_judgment              = find_talent_spell( "Mass Judgment" );
 
   artifact.wake_of_ashes           = find_artifact_spell( "Wake of Ashes" );
   artifact.deliver_the_justice     = find_artifact_spell( "Deliver the Justice" );
