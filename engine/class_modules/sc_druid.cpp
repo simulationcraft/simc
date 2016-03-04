@@ -22,8 +22,6 @@ namespace { // UNNAMED NAMESPACE
   Feral =====================================================================
   Predator vs. adds
   Artifact utility traits
-  Scent of Blood update
-  Sharpened Claws update
 
   SR as a player multiplier? Fun.
 
@@ -1192,7 +1190,7 @@ public:
     druid.buff.moonkin_form -> expire();
     druid.buff.cat_form -> expire();
 
-    druid.buff.tigers_fury -> expire(); // 6/29/2014: Tiger's Fury ends when you enter bear form. Legion TOCHECK
+    druid.buff.tigers_fury -> expire(); // Mar 03 2016: Tiger's Fury ends when you enter bear form.
 
     if ( druid.specialization() == DRUID_GUARDIAN )
       druid.resolve_manager.start();
@@ -1706,7 +1704,6 @@ public:
 
     incarnation.direct = data().affected_by( p -> talent.incarnation_moonkin -> effectN( 1 ) );
     incarnation.tick = data().affected_by( p -> talent.incarnation_moonkin -> effectN( 2 ) );
-    // TOCHECK: Does this even work on Wrath on alpha? Seems like it shouldn't.
     incarnation.astral_power = data().affected_by( p -> talent.incarnation_moonkin -> effectN( 3 ) );
 
     celestial_alignment.direct = data().affected_by( p -> spec.celestial_alignment -> effectN( 1 ) );
@@ -2623,8 +2620,23 @@ public:
     parse_options( options_str );
 
     aoe = -1;
-    cooldown -> charges = 3; // FIXME
-    cooldown -> duration = timespan_t::from_seconds( 15.0 ); // FIXME
+    cooldown -> charges = data().charges();
+    cooldown -> duration = data().charge_cooldown();
+    
+    base_multiplier *= 1.0 + p -> artifact.sharpened_claws.percent();
+  }
+
+  double cost() const override
+  {
+    double c = cat_attack_t::cost();
+
+    // TOCHECK
+    double reduction = p() -> buff.scent_of_blood -> check_value();
+    reduction *= 1.0 + p() -> buff.berserk -> check_value();
+    reduction *= 1.0 + p() -> buff.incarnation_cat -> check_value();
+    c += reduction;
+
+    return c;
   }
 
   virtual void impact( action_state_t* s ) override
@@ -2664,9 +2676,9 @@ struct ferocious_bite_t : public cat_attack_t
     {
       background = true;
       may_miss = may_block = may_dodge = may_parry = false;
-
-      base_tick_time = p -> find_specialization_spell( "Rip" ) -> effectN( 1 ).period();
-      base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
+      
+      // Mar 03 2016: Does not benefit from Jagged Wounds.
+      // base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
     }
 
     void init() override
@@ -2971,9 +2983,9 @@ struct rip_t : public cat_attack_t
   {
     cat_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) ) // TOCHECK
+    if ( result_is_hit( s -> result ) )
     {
-      td( s -> target ) -> buffs.open_wounds -> trigger();
+      td( s -> target ) -> buffs.open_wounds -> trigger(); // TOCHECK
 
       // Store rip's damage value for use with Ashamane's Bite.
       if ( p() -> artifact.ashamanes_bite.rank() )
@@ -3325,7 +3337,6 @@ public:
 
     p() -> buff.scent_of_blood -> trigger( 1, targets_hit * p() -> buff.scent_of_blood -> default_value );
 
-    // TOCHECK: Procs just on cast or on ticks too?
     if ( shadow_thrash && p() -> rppm.shadow_thrash.trigger() )
       shadow_thrash -> execute();
 
@@ -3532,7 +3543,7 @@ struct bear_melee_t : public bear_attack_t
     trigger_gcd = timespan_t::zero();
     special     = false;
 
-    rage_amount = 70.0 / 9.0; // Legion TOCHECK: Estimate 01/27/2016, need more accurate number.
+    rage_amount = 70.0 / 9.0; // Legion TOCHECK: Estimate Jan 27 2016, need more accurate number.
   }
 
   virtual timespan_t execute_time() const override
@@ -6178,7 +6189,7 @@ void druid_t::init_spells()
   artifact.powerful_bite                = find_artifact_spell( "Powerful Bite" );
   artifact.feral_power                  = find_artifact_spell( "Feral Power" );
   artifact.sharpened_claws              = find_artifact_spell( "Sharpened Claws" );
-  artifact.shredder_fangs               = find_artifact_spell( "Shredder Fangs" );
+  // artifact.shredder_fangs               = find_artifact_spell( "Shredder Fangs" );
   artifact.tear_the_flesh               = find_artifact_spell( "Tear the Flesh" );
   artifact.honed_instincts              = find_artifact_spell( "Honed Instincts" );
   artifact.protection_of_ashamane       = find_artifact_spell( "Protection of Ashamane" );
