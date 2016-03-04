@@ -124,7 +124,7 @@ struct buff_stack_benefit_t
     buff( _buff )
   {
     buff_stack_benefit = new benefit_t*[ buff -> max_stack() + 1 ];
-    for ( int i = 0; i < buff -> max_stack(); i++ )
+    for ( int i = 0; i <= buff -> max_stack(); i++ )
     {
       buff_stack_benefit[ i ] = buff -> player ->
                                 get_benefit( prefix + " " +
