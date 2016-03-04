@@ -13,7 +13,6 @@
 //  Talent
 //   - Stomp
 //   - Stampede (rework)
-//   - Killer Cobra
 //   - Aspect of the Beast
 //  Artifacts
 //   - Jaws of Thunder
@@ -192,6 +191,7 @@ public:
     cooldown_t* kill_shot_reset;
     cooldown_t* trueshot;
     cooldown_t* dire_beast;
+    cooldown_t* kill_command;
   } cooldowns;
 
   // Custom Parameters
@@ -458,6 +458,7 @@ public:
     cooldowns.kill_shot_reset -> duration = find_spell( 90967 ) -> duration();
     cooldowns.trueshot        = get_cooldown( "trueshot" );
     cooldowns.dire_beast      = get_cooldown( "dire_beast" );
+    cooldowns.kill_command    = get_cooldown( "kill_command" );
 
     summon_pet_str = "";
     base.distance = 40;
@@ -2511,6 +2512,10 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
       trigger_tier15_2pc_melee();
+
+    // Cobra Shot has a chance to reset Kill Command when Bestial Wrath is up w/ Killer Cobra talent
+    if ( p() -> talents.killer_cobra -> ok() && p() -> buffs.bestial_wrath -> up() && rng().roll( p() -> talents.killer_cobra -> effectN( 1 ).percent() ) )
+      p() -> cooldowns.kill_command -> reset( true );
   }
 
   virtual double composite_target_crit( player_t* t ) const override
