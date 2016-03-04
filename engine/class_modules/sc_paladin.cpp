@@ -241,21 +241,22 @@ public:
   {
     // Ret
     artifact_power_t wake_of_ashes;
+    artifact_power_t blade_of_light;
     artifact_power_t deliver_the_justice;
-    artifact_power_t highlords_judgment;
-    artifact_power_t righteous_blade;
-    artifact_power_t might_of_the_templar;
-    artifact_power_t endless_resolve;
     artifact_power_t sharpened_edge;
     artifact_power_t deflection;
     artifact_power_t echo_of_the_highlord;
-    artifact_power_t unbreakable_will;              // NYI
     artifact_power_t wrath_of_the_ashbringer;
+    artifact_power_t healing_storm;                 // NYI
+    artifact_power_t highlords_judgment;
     artifact_power_t embrace_the_light;             // NYI
     artifact_power_t divine_tempest;                // Implemented 20% damage gain but not AoE shift
-    artifact_power_t healing_storm;                 // NYI
+    artifact_power_t endless_resolve;
+    artifact_power_t might_of_the_templar;
+    artifact_power_t ashes_to_ashes;
     artifact_power_t protector_of_the_ashen_blade;  // NYI
-    artifact_power_t blades_of_light;
+    artifact_power_t unbreakable_will;              // NYI
+    artifact_power_t righteous_blade;
     artifact_power_t ashbringers_light;
   } artifact;
 
@@ -1916,12 +1917,19 @@ struct crusader_strike_t : public holy_power_generator_t
                                        +  p -> passives.sword_of_light -> effectN( 4 ).percent();
     base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
 
-    base_multiplier *= 1.0 + p -> artifact.sharpened_edge.percent();
+    base_multiplier *= 1.0 + p -> artifact.blade_of_light.percent();
 
     cooldown -> duration = data().charge_cooldown();
     cooldown -> charges = data().charges();
 
     background = ( p -> talents.crusader_flurry -> ok() ) || ( p -> talents.zeal -> ok() );
+  }
+
+  double composite_crit() const override
+  {
+    double c = holy_power_generator_t::composite_crit();
+    c += p() -> artifact.sharpened_edge.percent();
+    return c;
   }
 
   void execute() override
@@ -1969,9 +1977,16 @@ struct crusader_flurry_t : public holy_power_generator_t
     cooldown -> duration = data().charge_cooldown();
     cooldown -> charges = data().charges();
 
-    base_multiplier *= 1.0 + p -> artifact.sharpened_edge.percent();
+    base_multiplier *= 1.0 + p -> artifact.blade_of_light.percent();
 
     hasted_cd = hasted_gcd = true;
+  }
+
+  double composite_crit() const override
+  {
+    double c = holy_power_generator_t::composite_crit();
+    c += p() -> artifact.sharpened_edge.percent();
+    return c;
   }
 
   void execute() override
@@ -2015,7 +2030,14 @@ struct zeal_t : public holy_power_generator_t
     cooldown -> duration = data().charge_cooldown();
     cooldown -> charges = data().charges();
 
-    base_multiplier *= 1.0 + p -> artifact.sharpened_edge.percent();
+    base_multiplier *= 1.0 + p -> artifact.blade_of_light.percent();
+  }
+
+  double composite_crit() const override
+  {
+    double c = holy_power_generator_t::composite_crit();
+    c += p() -> artifact.sharpened_edge.percent();
+    return c;
   }
 
   virtual int n_targets() const override
@@ -2050,32 +2072,11 @@ struct zeal_t : public holy_power_generator_t
 
 // Blade of Justice =========================================================
 
-
-struct blade_of_light_t : public paladin_melee_attack_t
-{
-  const spell_data_t* sword_of_light;
-  blade_of_light_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "blade_of_light", p, p -> find_spell( 193115 ), true ),
-      sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
-  {
-    parse_options( options_str );
-
-    // Guarded by the Light and Sword of Light reduce base mana cost; spec-limited so only one will ever be active
-    base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent()
-                                       +  p -> passives.sword_of_light -> effectN( 4 ).percent();
-    base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
-
-    background = true;
-  }
-};
-
 struct blade_of_justice_t : public holy_power_generator_t
 {
-  blade_of_light_t* bol_proc;
   const spell_data_t* sword_of_light;
   blade_of_justice_t( paladin_t* p, const std::string& options_str )
     : holy_power_generator_t( "blade_of_justice", p, p -> find_class_spell( "Blade of Justice" ), true ),
-      bol_proc( new blade_of_light_t( p, options_str ) ),
       sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
   {
     parse_options( options_str );
@@ -2088,19 +2089,9 @@ struct blade_of_justice_t : public holy_power_generator_t
     base_multiplier *= 1.0 + p -> artifact.deliver_the_justice.percent();
 
     background = ( p -> talents.blade_of_wrath -> ok() ) || ( p -> talents.divine_hammer -> ok() );
-  }
 
-  double action_multiplier() const override
-  {
-    double am = holy_power_generator_t::action_multiplier();
-
-    // Virtue's Blade buffs BoJ damage by 25%
-    if ( p() -> talents.virtues_blade -> ok() )
-    {
-      am *= 1.0 + p() -> talents.virtues_blade -> effectN( 1 ).percent();
-    }
-
-    return am;
+    if ( p -> talents.virtues_blade -> ok() )
+      crit_bonus_multiplier += p -> talents.virtues_blade -> effectN( 1 ).percent();
   }
 
   void impact( action_state_t* s ) override
@@ -2113,18 +2104,6 @@ struct blade_of_justice_t : public holy_power_generator_t
       // Holy Power gains, only relevant if BoJ connects
       int g = data().effectN( 3 ).base_value(); // default is a gain of 2 Holy Power
       p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_blade_of_justice ); // apply gain, record as due to BoJ
-
-      if ( p() -> artifact.blades_of_light.rank() )
-      {
-        int remaining_executes = (int)(rng().range(1, 4));
-        if (remaining_executes > 3) {
-          remaining_executes = 3;
-        }
-        for (int i = 0; i < remaining_executes; i++) {
-          bol_proc -> target = s -> target;
-          bol_proc -> schedule_execute();
-        }
-      }
     }
   }
 };
@@ -2134,12 +2113,10 @@ struct blade_of_justice_t : public holy_power_generator_t
 struct blade_of_wrath_t : public holy_power_generator_t
 {
   const spell_data_t* sword_of_light;
-  blade_of_light_t* bol_proc;
 
   blade_of_wrath_t( paladin_t* p, const std::string& options_str )
     : holy_power_generator_t( "blade_of_wrath", p, p -> find_talent_spell( "Blade of Wrath" ), true ),
-      sword_of_light( p -> find_specialization_spell( "Sword of Light" ) ),
-      bol_proc( new blade_of_light_t( p, options_str ) )
+      sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
   {
     parse_options( options_str );
 
@@ -2161,18 +2138,6 @@ struct blade_of_wrath_t : public holy_power_generator_t
       // Holy Power gains, only relevant if BoW connects
       int g = data().effectN( 3 ).base_value(); // default is a gain of 1 Holy Power
       p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_blade_of_justice ); // apply gain, record as due to BoJ
-
-      if ( p() -> artifact.blades_of_light.rank() )
-      {
-        int remaining_executes = (int)(rng().range(1, 4));
-        if (remaining_executes > 3) {
-          remaining_executes = 3;
-        }
-        for (int i = 0; i < remaining_executes; i++) {
-          bol_proc -> target = s -> target;
-          bol_proc -> schedule_execute();
-        }
-      }
     }
   }
 };
@@ -2200,11 +2165,9 @@ struct divine_hammer_tick_t : public paladin_melee_attack_t
 
 struct divine_hammer_t : public paladin_spell_t
 {
-  blade_of_light_t* bol_proc;
 
   divine_hammer_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "divine_hammer", p, p -> find_talent_spell( "Divine Hammer" ) ),
-      bol_proc( new blade_of_light_t( p, options_str ) )
+    : paladin_spell_t( "divine_hammer", p, p -> find_talent_spell( "Divine Hammer" ) )
   {
     parse_options( options_str );
 
@@ -2233,19 +2196,6 @@ struct divine_hammer_t : public paladin_spell_t
     // Holy Power gen
     int g = data().effectN( 2 ).base_value(); // default is a gain of 1 Holy Power
     p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_blade_of_justice ); // apply gain, record as due to BoJ
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    paladin_spell_t::impact( s );
-    if ( result_is_hit( s -> result ) )
-    {
-      if ( p() -> artifact.blades_of_light.rank() )
-      {
-        bol_proc -> target = s -> target;
-        bol_proc -> schedule_execute();
-      }
-    }
   }
 };
 
@@ -2511,11 +2461,11 @@ struct judgment_t : public paladin_melee_attack_t
     {
       td( s -> target ) -> buffs.debuffs_judgment -> trigger();
 
-      if ( p() -> ashbringer )
+      if ( p() -> artifact.ashes_to_ashes.rank() )
       {
         // Ashes to Ashes
         // For some reason the proc chance is effect 2, go figure
-        if ( rng().roll( p() -> ashbringer -> driver() -> effectN( 2 ).percent() ) )
+        if ( rng().roll( p() -> artifact.ashes_to_ashes.percent( 2 ) ) )
         {
           for (unsigned i = 0; i < 4; i++)
           {
@@ -3625,12 +3575,13 @@ void paladin_t::init_spells()
   artifact.divine_tempest          = find_artifact_spell( "Divine Tempest" );
   artifact.might_of_the_templar    = find_artifact_spell( "Might of the Templar" );
   artifact.sharpened_edge          = find_artifact_spell( "Sharpened Edge" );
+  artifact.blade_of_light          = find_artifact_spell( "Blade of Light" );
   artifact.echo_of_the_highlord    = find_artifact_spell( "Echo of the Highlord" );
-  artifact.blades_of_light         = find_artifact_spell( "Blades of Light" );
   artifact.wrath_of_the_ashbringer = find_artifact_spell( "Wrath of the Ashbringer" );
   artifact.endless_resolve         = find_artifact_spell( "Endless Resolve" );
   artifact.deflection              = find_artifact_spell( "Deflection" );
   artifact.ashbringers_light       = find_artifact_spell( "Ashbringer's Light" );
+  artifact.ashes_to_ashes          = find_artifact_spell( "Ashes to Ashes" );
 
   // Spells
   spells.holy_light                    = find_specialization_spell( "Holy Light" );
