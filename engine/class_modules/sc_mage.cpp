@@ -904,9 +904,7 @@ struct mirror_image_pet_t : public pet_t
       double am = mirror_image_spell_t::action_multiplier();
 
       am *= 1.0 + p() -> arcane_charge -> stack() *
-                  p() -> o() -> spec.arcane_charge -> effectN( 4 ).percent() *
-                  ( 1.0 + p() -> o() -> sets.set( SET_CASTER, T15, B4 )
-                                     -> effectN( 1 ).percent() );
+                  p() -> o() -> spec.arcane_charge -> effectN( 4 ).percent();
 
       return am;
     }
@@ -1930,9 +1928,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
     double am = arcane_mage_spell_t::action_multiplier();
 
     am *= 1.0 + p() -> buffs.arcane_charge -> stack() *
-                p() -> spec.arcane_charge -> effectN( 1 ).percent() *
-                ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4 )
-                            -> effectN( 1 ).percent() );
+                p() -> spec.arcane_charge -> effectN( 1 ).percent();
 
     return am;
   }
@@ -1966,13 +1962,8 @@ struct arcane_blast_t : public arcane_mage_spell_t
   {
     double c = arcane_mage_spell_t::cost();
 
-    if ( p() -> buffs.arcane_charge -> check() )
-    {
-      c *= 1.0 +  p() -> buffs.arcane_charge -> check() *
-                  p() -> spec.arcane_charge -> effectN( 2 ).percent() *
-                  ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4 )
-                              -> effectN( 1 ).percent() );
-    }
+    c *= 1.0 +  p() -> buffs.arcane_charge -> check() *
+                p() -> spec.arcane_charge -> effectN( 2 ).percent();
 
     if ( p() -> buffs.arcane_affinity -> check() )
     {
@@ -2002,9 +1993,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
     double am = arcane_mage_spell_t::action_multiplier();
 
     am *= 1.0 + p() -> buffs.arcane_charge -> stack() *
-                p() -> spec.arcane_charge -> effectN( 1 ).percent() *
-                ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4 )
-                            -> effectN( 1 ).percent() );
+                p() -> spec.arcane_charge -> effectN( 1 ).percent();
 
     if ( p() -> wild_arcanist && p() -> buffs.arcane_power -> check() )
     {
@@ -2091,14 +2080,22 @@ struct arcane_explosion_t : public arcane_mage_spell_t
     }
   }
 
+  virtual double cost() const override
+  {
+    double c = arcane_mage_spell_t::cost();
+
+    c *= 1.0 +  p() -> buffs.arcane_charge -> check() *
+                p() -> spec.arcane_charge -> effectN( 2 ).percent();
+
+    return c;
+  }
+
   virtual double action_multiplier() const override
   {
     double am = arcane_mage_spell_t::action_multiplier();
 
     am *= 1.0 + p() -> buffs.arcane_charge -> stack() *
-                p() -> spec.arcane_charge -> effectN( 1 ).percent() *
-                ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4 )
-                            -> effectN( 1 ).percent() );
+                p() -> spec.arcane_charge -> effectN( 1 ).percent();
 
     if ( p() -> artifact.arcane_purification.rank() )
       am *= 1.0 + p() -> artifact.arcane_purification.percent();
@@ -2153,9 +2150,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     double am = arcane_mage_spell_t::action_multiplier();
 
     am *= 1.0 + p() -> buffs.arcane_charge -> stack() *
-                p() -> spec.arcane_charge -> effectN( 1 ).percent() *
-                ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4 )
-                            -> effectN( 1 ).percent() );
+                p() -> spec.arcane_charge -> effectN( 1 ).percent();
     if ( p() -> sets.has_set_bonus( SET_CASTER, T14, B2 ) )
     {
       am *= 1.07;
@@ -2875,9 +2870,6 @@ struct frostbolt_t : public frost_mage_spell_t
     {
       double fof_proc_chance = p() -> spec.fingers_of_frost
                                    -> effectN( 1 ).percent();
-
-      fof_proc_chance += p() -> sets.set( SET_CASTER, T15, B4 )
-                             -> effectN( 3 ).percent();
 
       p() -> buffs.fingers_of_frost
           -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
