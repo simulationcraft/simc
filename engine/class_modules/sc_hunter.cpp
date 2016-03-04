@@ -11,8 +11,6 @@
 // Beast Mastery
 //   - Dire Beast (focus gain is passive now)
 //  Talent
-//   - Way of the Cobra
-//   - Dire Stable
 //   - Stomp
 //   - Big Game Hunter
 //   - Bestial Fury
@@ -209,6 +207,7 @@ public:
     gain_t* aimed_shot;
     gain_t* dire_beast;
     gain_t* multi_shot;
+    gain_t* chimaera_shot;
   } gains;
 
   // Procs
@@ -2446,6 +2445,13 @@ struct chimaera_shot_impact_t: public hunter_ranged_attack_t
 
     return am;
   }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    hunter_ranged_attack_t::impact( s );
+
+    p() -> resource_gain( RESOURCE_FOCUS, p() -> find_spell( 204304 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ), p() -> gains.chimaera_shot );
+  }
 };
 
 struct chimaera_shot_t: public hunter_ranged_attack_t
@@ -4041,6 +4047,7 @@ void hunter_t::init_gains()
   gains.aimed_shot           = get_gain( "aimed_shot" );
   gains.dire_beast           = get_gain( "dire_beast" );
   gains.multi_shot           = get_gain( "multi_shot" );
+  gains.chimaera_shot        = get_gain( "chimaera_shot" );
 }
 
 // hunter_t::init_position ==================================================
