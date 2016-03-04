@@ -9,11 +9,8 @@
 // TODO
 //
 // Beast Mastery
-//   - Aspect of the Wild
-//   - Cobra Shot (costs focus)
 //   - Dire Beast (focus gain is passive now)
-//  Talents
-//   - One with the Pack
+//  Talent
 //   - Way of the Cobra
 //   - Dire Stable
 //   - Stomp
@@ -2171,10 +2168,18 @@ struct auto_shot_t: public ranged_t
       p() -> procs.lock_and_load -> occur();
     }
 
-    if ( s -> result == RESULT_CRIT && rng().roll( p() -> find_specialization_spell( "Wild Call" ) -> proc_chance() ) )
+    if ( s -> result == RESULT_CRIT && p() -> specialization() == HUNTER_BEAST_MASTERY )
     {
-      p() -> cooldowns.dire_beast -> reset( true );
-      p() -> procs.wild_call -> occur();
+      double wild_call_chance = p() -> find_specialization_spell( "Wild Call" ) -> proc_chance();
+
+      if ( p() -> talents.one_with_the_pack -> ok() )
+        wild_call_chance += p() -> talents.one_with_the_pack -> effectN( 1 ).percent();
+
+      if ( rng().roll( wild_call_chance ) )
+      {
+        p() -> cooldowns.dire_beast -> reset( true );
+        p() -> procs.wild_call -> occur();
+      }
     }
   }
 };
