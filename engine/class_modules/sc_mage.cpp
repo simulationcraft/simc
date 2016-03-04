@@ -326,7 +326,7 @@ public:
     const spell_data_t* arcane_familiar, // NYI
                       * arcane_static, // NYI
                       * torrent, // NYI
-                      * pyromaniac, 
+                      * pyromaniac,
                       * conflagration,
                       * fire_starter,
                       * ray_of_frost, // NYI
@@ -2151,10 +2151,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
     am *= 1.0 + p() -> buffs.arcane_charge -> stack() *
                 p() -> spec.arcane_charge -> effectN( 1 ).percent();
-    if ( p() -> sets.has_set_bonus( SET_CASTER, T14, B2 ) )
-    {
-      am *= 1.07;
-    }
+
     return am;
   }
 
