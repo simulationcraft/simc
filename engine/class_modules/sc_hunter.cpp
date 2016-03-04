@@ -2475,38 +2475,19 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
 
 struct cobra_shot_t: public hunter_ranged_attack_t
 {
-  double focus_gain;
-  proc_t* cast_in_BW;
 
   cobra_shot_t( hunter_t* player, const std::string& options_str ):
     hunter_ranged_attack_t( "cobra_shot", player, player -> find_specialization_spell( "Cobra Shot" ) )
   {
     parse_options( options_str );
-    focus_gain = p() -> find_spell( 91954 ) -> effectN( 1 ).base_value();
-
-    if ( p() -> sets.has_set_bonus( SET_MELEE, T13, B2 ) )
-      focus_gain *= 2.0;
-
-    cast_in_BW = player -> get_proc( "cobra_shot during bestial_wrath" );
   }
 
   virtual void execute() override
   {
     hunter_ranged_attack_t::execute();
 
-    if (p() -> buffs.bestial_wrath -> check() )
-      cast_in_BW -> occur();
-
     if ( result_is_hit( execute_state -> result ) )
       trigger_tier15_2pc_melee();
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    hunter_ranged_attack_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-      p() -> resource_gain( RESOURCE_FOCUS, focus_gain, p() -> gains.cobra_shot );
   }
 };
 
@@ -3693,6 +3674,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "bestial_wrath"         ) return new          bestial_wrath_t( this, options_str ); 
   if ( name == "black_arrow"           ) return new            black_arrow_t( this, options_str );
   if ( name == "chimaera_shot"         ) return new          chimaera_shot_t( this, options_str );
+  if ( name == "cobra_shot"            ) return new             cobra_shot_t( this, options_str );
   if ( name == "dire_beast"            ) return new             dire_beast_t( this, options_str );
   if ( name == "exotic_munitions"      ) return new       exotic_munitions_t( this, options_str );
   if ( name == "explosive_shot"        ) return new         explosive_shot_t( this, options_str );
