@@ -12,7 +12,6 @@
 //   - Dire Beast (focus gain is passive now)
 //  Talent
 //   - Stomp
-//   - Bestial Fury
 //   - Stampede (rework)
 //   - Killer Cobra
 //   - Aspect of the Beast
@@ -1084,6 +1083,8 @@ public:
     buffs.bestial_wrath -> cooldown -> duration = timespan_t::zero();
     buffs.bestial_wrath -> buff_duration += owner -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
     buffs.bestial_wrath -> default_value = buffs.bestial_wrath -> data().effectN( 2 ).percent();
+    if ( o() -> talents.bestial_fury -> ok() )
+      buffs.bestial_wrath -> default_value += o() -> talents.bestial_fury -> effectN( 1 ).percent();
 
     // Use buff to indicate whether the pet is a stampede summon
     buffs.stampede          = buff_creator_t( this, 130201, "stampede" )
@@ -4001,6 +4002,8 @@ void hunter_t::create_buffs()
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     buffs.bestial_wrath -> default_value = buffs.bestial_wrath -> data().effectN( 1 ).percent();
 
+  if ( talents.bestial_fury -> ok() )
+    buffs.bestial_wrath -> default_value += talents.bestial_fury -> effectN( 1 ).percent();
 
   buffs.bestial_wrath -> buff_duration += sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
 
