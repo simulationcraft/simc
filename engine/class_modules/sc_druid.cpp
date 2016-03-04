@@ -22,10 +22,8 @@ namespace { // UNNAMED NAMESPACE
   Feral =====================================================================
   Predator vs. adds
   Artifact utility traits
-  Feral Power change
   Scent of Blood update
   Sharpened Claws update
-  Implement Shredder Fangs
 
   SR as a player multiplier? Fun.
 
@@ -684,6 +682,7 @@ public:
     artifact_power_t scent_of_blood;
     artifact_power_t shadow_thrash;
     artifact_power_t sharpened_claws;
+    artifact_power_t shredder_fangs;
     artifact_power_t tear_the_flesh;
 
     // NYI
@@ -3043,7 +3042,8 @@ struct shred_t : public cat_attack_t
     cat_attack_t( "shred", p, p -> find_specialization_spell( "Shred" ), options_str )
   {
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
-    base_multiplier *= 1.0 + p -> artifact.feral_power.percent();
+    base_crit += p -> artifact.feral_power.percent();
+    base_multiplier *= 1.0 + p -> artifact.shredder_fangs.percent();
   }
 
   virtual void execute() override
@@ -6178,6 +6178,7 @@ void druid_t::init_spells()
   artifact.powerful_bite                = find_artifact_spell( "Powerful Bite" );
   artifact.feral_power                  = find_artifact_spell( "Feral Power" );
   artifact.sharpened_claws              = find_artifact_spell( "Sharpened Claws" );
+  artifact.shredder_fangs               = find_artifact_spell( "Shredder Fangs" );
   artifact.tear_the_flesh               = find_artifact_spell( "Tear the Flesh" );
   artifact.honed_instincts              = find_artifact_spell( "Honed Instincts" );
   artifact.protection_of_ashamane       = find_artifact_spell( "Protection of Ashamane" );
