@@ -2552,15 +2552,11 @@ struct dragons_breath_t : public fire_mage_spell_t
 
 // Evocation Spell ==========================================================
 
-class evocation_t : public arcane_mage_spell_t
+struct evocation_t : public arcane_mage_spell_t
 {
-  int arcane_charges;
-
-public:
   evocation_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "evocation", p,
-                         p -> find_class_spell( "Evocation" ) ),
-    arcane_charges( 0 )
+                         p -> find_class_spell( "Evocation" ) )
   {
     parse_options( options_str );
 
@@ -2578,38 +2574,19 @@ public:
     arcane_mage_spell_t::tick( d );
 
     double mana_gain = p() -> resources.max[ RESOURCE_MANA ] *
-                       (data().effectN( 1 ).percent() +
-                        p() -> spec.arcane_charge_passive
-                            -> effectN( 3 ).percent());
-
-    mana_gain *= 1.0 + arcane_charges *
-                       p() -> spec.arcane_charge -> effectN( 4 ).percent() *
-                       ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4)
-                                   -> effectN( 1 ).percent() );
+                       data().effectN( 1 ).percent();
 
     p() -> resource_gain( RESOURCE_MANA, mana_gain, p() -> gains.evocation );
   }
 
   virtual void last_tick( dot_t* d ) override
   {
-    mage_t& p = *this -> p();
-
     arcane_mage_spell_t::last_tick( d );
 
-    if ( p.sets.has_set_bonus( MAGE_ARCANE, T17, B2 ) )
+    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B2 ) )
     {
-      p.buffs.arcane_affinity -> trigger();
+      p() -> buffs.arcane_affinity -> trigger();
     }
-  }
-
-  virtual void execute() override
-  {
-    mage_t& p = *this -> p();
-
-    arcane_charges = p.buffs.arcane_charge -> check();
-    p.buffs.arcane_charge -> expire();
-
-    arcane_mage_spell_t::execute();
   }
 };
 
