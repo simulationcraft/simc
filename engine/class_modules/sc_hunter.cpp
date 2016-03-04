@@ -1774,6 +1774,8 @@ struct dire_critter_t: public hunter_pet_t
       may_crit = true;
       special = false;
       focus_gain = player -> find_spell( 120694 ) -> effectN( 1 ).base_value();
+      if ( o() -> talents.dire_stable -> ok() )
+        focus_gain += o() -> talents.dire_stable -> effectN( 1 ).base_value();
       base_multiplier *= 1.15; // Hotfix
     }
 
