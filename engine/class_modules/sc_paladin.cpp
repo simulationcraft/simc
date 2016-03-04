@@ -1927,6 +1927,8 @@ struct crusader_flurry_t : public holy_power_generator_t
     cooldown -> charges = data().charges();
 
     base_multiplier *= 1.0 + p -> artifact.sharpened_edge.percent();
+
+    hasted_cd = hasted_gcd = true;
   }
 
   void execute() override
@@ -1964,6 +1966,8 @@ struct zeal_t : public holy_power_generator_t
     base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent()
                                        +  p -> passives.sword_of_light -> effectN( 4 ).percent();
     base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
+
+    hasted_cd = hasted_gcd = true;
 
     cooldown -> duration = data().charge_cooldown();
     cooldown -> charges = data().charges();
@@ -2161,14 +2165,26 @@ struct divine_hammer_t : public paladin_spell_t
   {
     parse_options( options_str );
 
-    hasted_ticks   = false;
+    hasted_ticks   = true;
     may_miss       = false;
     tick_zero      = true;
 
     tick_action = new divine_hammer_tick_t( p );
   }
 
-  virtual void execute() override
+  void init() override
+  {
+    paladin_spell_t::init();
+
+    update_flags &= ~STATE_HASTE;
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    return dot_duration * ( tick_time( s -> haste ) / base_tick_time );
+  }
+
+  void execute() override
   {
     paladin_spell_t::execute();
     // Holy Power gen
@@ -2276,11 +2292,11 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
   {
     // AoE effect always hits if single-target attack succeeds
     // Doesn't proc Grand Crusader
-    may_dodge = false;
-    may_parry = false;
-    may_miss  = false;
+    may_dodge  = false;
+    may_parry  = false;
+    may_miss   = false;
     background = true;
-    aoe       = -1;
+    aoe        = -1;
     trigger_gcd = timespan_t::zero(); // doesn't incur GCD (HotR does that already)
   }
 
