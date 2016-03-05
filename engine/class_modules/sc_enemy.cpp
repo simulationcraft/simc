@@ -1185,7 +1185,9 @@ void enemy_t::init_defense()
     double& a = initial.stats.armor;
 
     // a wild equation appears. It's super effective.
-    if ( level() < 100 )
+    if ( level() < 110 )
+      a = 17370; // hard code this until we can get a finalized equation
+    else if ( level() < 100 )
       a = std::floor( 0.006464588162215 * std::exp( 0.123782410252464 * level() ) + 0.5 );
     else
       a = 134*level()-11864;
