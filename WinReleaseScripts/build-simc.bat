@@ -38,6 +38,9 @@ if ERRORLEVEL 1 goto :enderror
 if not exist %REDIST% call :error REDIST environment variable points to missing directory
 if ERRORLEVEL 1 goto :enderror
 
+if defined RELEASE if not defined SC_DEFAULT_APIKEY call :error RELEASE builds must set SC_DEFAULT_APIKEY
+if ERRORLEVEL 1 goto :enderror
+
 :: Setup GIT HEAD commithash for the package name if GIT is found
 where /q git.exe
 if ERRORLEVEL 0 for /F "delims=" %%i IN ('git --git-dir=%SIMCDIR%\.git\ rev-parse --short HEAD') do set GITREV=-%%i
@@ -46,6 +49,8 @@ if defined RELEASE set GITREV=
 :: Setup archive name and installation directory
 set PACKAGENAME=%INSTALL%\simulationcraft-%SIMCVERSION%-%PLATFORM%%GITREV%
 set INSTALLDIR=%INSTALL%\simulationcraft-%SIMCVERSION%-%PLATFORM%
+set PLATFORMQTDIR=%QTDIR%\msvc%VSVERSION%
+if "%PLATFORM%" neq "win32" set PLATFORMQTDIR=%PLATFORMQTDIR%_64
 
 :: Begin the build process
 call :build_release %ARGS%
@@ -58,7 +63,7 @@ if ERRORLEVEL 1 goto :enderror
 if "%3" neq "" set TARGET=/t:%3
 if not defined SOLUTION set SOLUTION=simc_vs%VSVERSION%.sln
 
-msbuild.exe "%SIMCDIR%\%SOLUTION%" /p:configuration=%1 /p:platform=%2 /nr:true /m %TARGET%
+msbuild.exe "%SIMCDIR%\%SOLUTION%" /p:configuration=%1 /p:platform=%2 /nr:true /m /p:QTDIR=%PLATFORMQTDIR% %TARGET%
 if ERRORLEVEL 1 exit /b 1
 :: Start release copying process
 md %INSTALLDIR%
@@ -90,10 +95,8 @@ exit /b 0
 :copy_simcgui
 if "%PLATFORM%" == "win32" (
 	set REDISTPLATFORM=x86
-	set WINDEPLOYQT=%QTDIR%\mscv%VSVERSION%\bin\windeployqt.exe
 ) else (
 	set REDISTPLATFORM=%PLATFORM%
-	set WINDEPLOYQT=%QTDIR%\mscv%VSVERSION%_64\bin\windeployqt.exe
 )
 
 robocopy %REDIST%\%REDISTPLATFORM%\Microsoft.VC120.CRT %INSTALLDIR%\ msvcp120.dll msvcr120.dll vccorlib120.dll /NJH /NJS
@@ -101,7 +104,7 @@ robocopy %SIMCDIR%\ %INSTALLDIR%\ Error.html Welcome.html Welcome.png  /NJH /NJS
 robocopy %SIMCDIR%\locale\ %INSTALLDIR%\locale sc_de.qm sc_zh.qm sc_it.qm  /NJH /NJS
 robocopy %SIMCDIR%\winreleasescripts\ %INSTALLDIR%\ qt.conf  /NJH /NJS
 robocopy %SIMCDIR%\ %INSTALLDIR%\ Simulationcraft%SUFFIX%.exe  /NJH /NJS
-%WINDEPLOYQT% --no-translations %INSTALLDIR%\Simulationcraft%SUFFIX%.exe
+%PLATFORMQTDIR%\bin\windeployqt.exe --no-translations %INSTALLDIR%\Simulationcraft%SUFFIX%.exe
 exit /b 0
 
 :build_installer
@@ -157,6 +160,7 @@ echo ISCC       : Diretory containing Inno Setup (optional, if omitted no setup 
 echo INSTALL    : Directory to make an installation package in
 echo VSVERSION  : Visual studio version (default 2013)
 echo RELEASE    : Set to build a "release version" (no git commit hash suffix)
+echo            : If set, set SC_DEFAULT_APIKEY to the Battle.net key for the release
 goto :end
 
 :end
