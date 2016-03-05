@@ -29,8 +29,6 @@ if not defined QTDIR call :error QTDIR environment variable not defined
 if ERRORLEVEL 1 goto :enderror
 if not defined REDIST call :error REDIST environment variable not defined
 if ERRORLEVEL 1 goto :enderror
-if not defined SZIP call :error SZIP environment variable not defined
-if ERRORLEVEL 1 goto :enderror
 if not exist %INSTALL% call :error INSTALL environment variable points to missing directory
 if ERRORLEVEL 1 goto :enderror
 if not exist %SIMCDIR% call :error SIMCDIR environment variable points to missing directory
@@ -38,8 +36,6 @@ if ERRORLEVEL 1 goto :enderror
 if not exist %QTDIR% call :error QTDIR environment variable points to missing directory
 if ERRORLEVEL 1 goto :enderror
 if not exist %REDIST% call :error REDIST environment variable points to missing directory
-if ERRORLEVEL 1 goto :enderror
-if not exist %SZIP% call :error SZIP environment variable points to missing directory
 if ERRORLEVEL 1 goto :enderror
 
 :: Setup GIT HEAD commithash for the package name if GIT is found
@@ -94,8 +90,10 @@ exit /b 0
 :copy_simcgui
 if "%PLATFORM%" == "win32" (
 	set REDISTPLATFORM=x86
+	set WINDEPLOYQT=%QTDIR%\mscv%VSVERSION%\bin\windeployqt.exe
 ) else (
 	set REDISTPLATFORM=%PLATFORM%
+	set WINDEPLOYQT=%QTDIR%\mscv%VSVERSION%_64\bin\windeployqt.exe
 )
 
 robocopy %REDIST%\%REDISTPLATFORM%\Microsoft.VC120.CRT %INSTALLDIR%\ msvcp120.dll msvcr120.dll vccorlib120.dll /NJH /NJS
@@ -103,8 +101,7 @@ robocopy %SIMCDIR%\ %INSTALLDIR%\ Error.html Welcome.html Welcome.png  /NJH /NJS
 robocopy %SIMCDIR%\locale\ %INSTALLDIR%\locale sc_de.qm sc_zh.qm sc_it.qm  /NJH /NJS
 robocopy %SIMCDIR%\winreleasescripts\ %INSTALLDIR%\ qt.conf  /NJH /NJS
 robocopy %SIMCDIR%\ %INSTALLDIR%\ Simulationcraft%SUFFIX%.exe  /NJH /NJS
-if "%SUFFIX%" == "64" %QTDIR%\msvc%VSVERSION%_64\bin\windeployqt.exe --no-translations %INSTALLDIR%\Simulationcraft%SUFFIX%.exe
-if "%SUFFIX%" == "" %QTDIR%\msvc%VSVERSION%\bin\windeployqt.exe --no-translations %INSTALLDIR%\Simulationcraft%SUFFIX%.exe
+%WINDEPLOYQT% --no-translations %INSTALLDIR%\Simulationcraft%SUFFIX%.exe
 exit /b 0
 
 :build_installer
@@ -121,11 +118,19 @@ if "%PLATFORM%" == "win32" (
 set SIMCAPPFULLVERSION=%SC_MAJOR_VERSION:~0,1%.%SC_MAJOR_VERSION:~1,1%.%SC_MAJOR_VERSION:~2,2%.%SC_MINOR_VERSION%
 if "%GITREV%" neq "" set SIMCSUFFIX=%SIMCSUFFIX%%GITREV%
 
-%ISCC%\iscc.exe /DSimcAppFullVersion=%SIMCAPPFULLVERSION% /DSimcAppName="%SIMCAPPNAME%" /DSimcReleaseSuffix="%SIMCSUFFIX%" /DSimcReleaseDir="%INSTALLDIR%" /DSimcAppVersion="%SIMCVERSION%" /DSimcAppExeName="Simulationcraft%SUFFIX%.exe" /DSimcIconFile="%SIMCDIR%\qt\icon\Simcraft2.ico" /DSimcOutputDir="%INSTALL%" %SIMCDIR%\WinReleaseScripts\SetupSimc.iss
+%ISCC%\iscc.exe /DSimcAppFullVersion=%SIMCAPPFULLVERSION% ^
+				/DSimcAppName="%SIMCAPPNAME%" ^
+				/DSimcReleaseSuffix="%SIMCSUFFIX%" ^
+				/DSimcReleaseDir="%INSTALLDIR%" ^
+				/DSimcAppVersion="%SIMCVERSION%" ^
+				/DSimcAppExeName="Simulationcraft%SUFFIX%.exe" ^
+				/DSimcIconFile="%SIMCDIR%\qt\icon\Simcraft2.ico" ^
+				/DSimcOutputDir="%INSTALL%" %SIMCDIR%\WinReleaseScripts\SetupSimc.iss
 if ERRORLEVEL 1 exit /b 1
 exit /b 0
 
 :compress
+if not defined SZIP exit /b 0
 %SZIP%\7z.exe a -r %PACKAGENAME% %INSTALLDIR% -mx9 -md=32m
 exit /b 0
 
@@ -147,7 +152,7 @@ echo SIMCVERSION: Simulationcraft release version (default from %SIMCDIR%\engine
 echo SIMCDIR    : Simulationcraft source directory root
 echo QTDIR      : Root directory of the Qt (5) release
 echo REDIST     : Directory containing Windows Runtime Environment redistributables
-echo SZIP       : Directory containing 7-Zip compressor
+echo SZIP       : Directory containing 7-Zip compressor (optional, if omitted no copressed file)
 echo ISCC       : Diretory containing Inno Setup (optional, if omitted no setup will be built)
 echo INSTALL    : Directory to make an installation package in
 echo VSVERSION  : Visual studio version (default 2013)
