@@ -1302,11 +1302,12 @@ void print_html_head( report::sc_html_stream& os, const sim_t& sim )
   os << "<meta http-equiv=\"Content-Type\" content=\"text/html; "
         "charset=UTF-8\" />\n";
 
-  os << "<script type=\"text/javascript\" "
-        "src=\"https://code.jquery.com/jquery-1.11.3.min.js\"></script>\n"
-     << "<script src=\"https://code.highcharts.com/highcharts.js\"></script>\n"
-     << "<script "
-        "src=\"https://code.highcharts.com/highcharts-more.js\"></script>\n";
+  os << "<script type=\"text/javascript\">" << std::endl;
+  print_text_array( os, __jquery_include );
+  os << "</script>" << std::endl
+     << "<script type=\"text/javascript\">" << std::endl;
+  print_text_array( os, __highcharts_include );
+  os << "</script>" << std::endl;
 
   print_html_style( os, sim );
 
