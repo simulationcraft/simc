@@ -324,7 +324,7 @@ public:
   {
     // Tier 15
     const spell_data_t* arcane_familiar, // NYI
-                      * arcane_static, // NYI
+                      * presence_of_mind,
                       * torrent, // NYI
                       * pyromaniac,
                       * conflagration,
@@ -1297,13 +1297,7 @@ struct mage_spell_t : public spell_t
 {
   bool consumes_ice_floes,
        frozen,
-       hasted_by_pom, // True if execute_time was set to zero because of PoM
        may_proc_missiles;
-
-private:
-  // Helper variable to disable the functionality of PoM in mage_spell_t::execute_time(),
-  // to check if the spell would be instant or not without PoM.
-  bool pom_enabled;
 
 public:
   mage_spell_t( const std::string& n, mage_t* p,
@@ -1311,9 +1305,7 @@ public:
     spell_t( n, p, s ),
     consumes_ice_floes( true ),
     frozen( false ),
-    hasted_by_pom( false ),
-    may_proc_missiles( true ),
-    pom_enabled( true )
+    may_proc_missiles( true )
   {
     may_crit      = true;
     tick_may_crit = true;
@@ -1340,21 +1332,6 @@ public:
     return c;
   }
 
-  virtual timespan_t execute_time() const override
-  {
-    timespan_t t = spell_t::execute_time();
-
-    if ( !channeled &&
-         pom_enabled &&
-         t > timespan_t::zero() &&
-         p() -> buffs.presence_of_mind -> up() )
-    {
-      return timespan_t::zero();
-    }
-
-    return t;
-  }
-
   virtual void schedule_execute( action_state_t* state = nullptr ) override
   {
     // If there is no state to schedule, make one and put the actor's current
@@ -1379,18 +1356,6 @@ public:
     }
 
     spell_t::schedule_execute( state );
-
-    if ( !channeled )
-    {
-      assert( pom_enabled );
-      pom_enabled = false;
-      if ( execute_time() > timespan_t::zero() &&
-           p() -> buffs.presence_of_mind -> check() )
-      {
-        hasted_by_pom = true;
-      }
-      pom_enabled = true;
-    }
   }
 
   virtual bool usable_moving() const override
@@ -1474,12 +1439,6 @@ public:
     if ( background )
       return;
 
-    if ( ! channeled && hasted_by_pom )
-    {
-      p() -> buffs.presence_of_mind -> expire();
-      hasted_by_pom = false;
-    }
-
     if ( execute_time() > timespan_t::zero() && consumes_ice_floes && p() -> buffs.ice_floes -> up() )
     {
       p() -> buffs.ice_floes -> decrement();
@@ -1496,13 +1455,6 @@ public:
     {
       p() -> buffs.arcane_missiles -> trigger();
     }
-  }
-
-  virtual void reset() override
-  {
-    spell_t::reset();
-
-    hasted_by_pom = false;
   }
 
   void trigger_unstable_magic( action_state_t* state );
@@ -1823,7 +1775,7 @@ struct presence_of_mind_t : public arcane_mage_spell_t
 {
   presence_of_mind_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "presence_of_mind", p,
-                         p -> find_class_spell( "Presence of Mind" )  )
+                         p -> find_talent_spell( "Presence of Mind" )  )
   {
     parse_options( options_str );
     harmful = false;
@@ -1843,7 +1795,10 @@ struct presence_of_mind_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::execute();
 
-    p() -> buffs.presence_of_mind -> trigger();
+    // PoM is infinite duration. CD triggers only when stacks are used up
+    p() -> cooldowns.presence_of_mind -> start( p() -> sim -> max_time * 3 );
+    p() -> buffs.presence_of_mind
+        -> trigger( p() -> buffs.presence_of_mind -> max_stack() );
   }
 };
 
@@ -1986,6 +1941,16 @@ struct arcane_blast_t : public arcane_mage_spell_t
     {
       p() -> buffs.arcane_instability -> trigger();
     }
+
+    if ( p() -> buffs.presence_of_mind -> stack() )
+    {
+      p() -> buffs.presence_of_mind -> decrement();
+      if ( p() -> buffs.presence_of_mind -> stack() == 0 )
+      {
+        timespan_t cd = p() -> buffs.presence_of_mind -> data().duration();
+        p() -> cooldowns.presence_of_mind -> start( cd );
+      }
+    }
   }
 
   virtual double action_multiplier() const override
@@ -2005,6 +1970,11 @@ struct arcane_blast_t : public arcane_mage_spell_t
 
   virtual timespan_t execute_time() const override
   {
+    if ( p() -> buffs.presence_of_mind -> up() )
+    {
+      return timespan_t::zero();
+    }
+
     timespan_t t = arcane_mage_spell_t::execute_time();
 
     if ( p() -> buffs.arcane_affinity -> up() )
@@ -4726,7 +4696,7 @@ void mage_t::init_spells()
   // Talents
   // Tier 15
   talents.arcane_familiar = find_talent_spell( "Arcane Familiar" );
-  talents.arcane_static   = find_talent_spell( "Static"          );
+  talents.presence_of_mind= find_talent_spell( "Presence of Mind");
   talents.torrent         = find_talent_spell( "Torrent"         );
   talents.pyromaniac      = find_talent_spell( "Pyromaniac"      );
   talents.conflagration   = find_talent_spell( "Conflagration"   );
@@ -4926,7 +4896,7 @@ void mage_t::create_buffs()
                                   .chance( find_spell( 79684 ) -> proc_chance() );
   buffs.arcane_power          = buff_creator_t( this, "arcane_power", find_spell( 12042 ) )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buffs.presence_of_mind      = buff_creator_t( this, "presence_of_mind", find_spell( 12043 ) )
+  buffs.presence_of_mind      = buff_creator_t( this, "presence_of_mind", find_spell( 205025 ) )
                                   .activated( true )
                                   .cd( timespan_t::zero() )
                                   .duration( timespan_t::zero() );
