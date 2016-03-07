@@ -2165,7 +2165,7 @@ struct auto_shot_t: public ranged_t
   {
     hunter_ranged_attack_t::impact( s );
 
-    if ( rng().roll( p() -> find_talent_spell( "Lock and Load" ) -> proc_chance() ) )
+    if ( rng().roll( p() -> talents.lock_and_load -> proc_chance() ) )
     {
       p() -> buffs.lock_and_load -> trigger( 2 );
       p() -> procs.lock_and_load -> occur();
@@ -2173,7 +2173,7 @@ struct auto_shot_t: public ranged_t
 
     if ( s -> result == RESULT_CRIT && p() -> specialization() == HUNTER_BEAST_MASTERY )
     {
-      double wild_call_chance = p() -> find_specialization_spell( "Wild Call" ) -> proc_chance();
+      double wild_call_chance = p() -> specs.wild_call -> proc_chance();
 
       if ( p() -> talents.one_with_the_pack -> ok() )
         wild_call_chance += p() -> talents.one_with_the_pack -> effectN( 1 ).percent();
