@@ -4840,7 +4840,7 @@ void mage_t::init_base_stats()
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility = 0.0;
 
-  base.mana_regen_per_second = resources.base[ RESOURCE_MANA ] * 0.045;
+  base.mana_regen_per_second = resources.base[ RESOURCE_MANA ] * 0.015;
 
   // Reduce fire mage distance to avoid proc munching at high haste.
   // TODO: Do we still need this?
