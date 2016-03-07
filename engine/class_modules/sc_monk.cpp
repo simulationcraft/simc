@@ -212,7 +212,7 @@ public:
     buff_t* power_strikes;
     buff_t* storm_earth_and_fire;
     buff_t* serenity;
-    buff_t* swift_as_the_wind;
+//    buff_t* swift_as_the_wind;
     buff_t* transfer_the_power;
     buff_t* tigereye_brew;
     buff_t* touch_of_death;
@@ -518,7 +518,7 @@ public:
     const spell_data_t* hit_combo;
     const spell_data_t* rising_sun_kick_trinket;
     const spell_data_t* spinning_dragon_strike;
-    const spell_data_t* swift_as_the_wind;
+//    const spell_data_t* swift_as_the_wind;
     const spell_data_t* touch_of_karma_tick;
     const spell_data_t* tier15_2pc_melee;
     const spell_data_t* tier17_4pc_melee;
@@ -528,7 +528,7 @@ public:
 
   struct
   {
-    real_ppm_t swift_as_the_wind;
+//    real_ppm_t swift_as_the_wind;
   } real_ppm;
 
   struct pets_t
@@ -1722,7 +1722,10 @@ public:
         if ( p() -> tier19_4pc_melee_counter < 3 )
           p() -> tier19_4pc_melee_counter++;
         else
+        {
           p() -> buff.combo_master -> trigger();
+          p() -> tier19_4pc_melee_counter = 0;
+        }
       }
 
       p() -> buff.combo_strikes -> trigger();
@@ -2034,11 +2037,12 @@ struct tiger_palm_t: public monk_melee_attack_t
     else if ( p() -> specialization () == MONK_WINDWALKER)
     {
       // If A'Buraq is equipped, chance to trigger the weapon effect buff
-      if ( p() -> aburaq )
+/*      if ( p() -> aburaq )
       {
         if ( p() -> real_ppm.swift_as_the_wind.trigger() )
           p() -> buff.swift_as_the_wind -> trigger();
       }
+*/
 
       // Calculate how much Chi is generated
       double chi_gain = data().effectN( 2 ).base_value();
@@ -3118,8 +3122,8 @@ struct melee_t: public monk_melee_attack_t
   {
     timespan_t t = monk_melee_attack_t::execute_time();
 
-    if ( p() -> aburaq && p() -> buff.swift_as_the_wind -> up() )
-      t *= 1.0 / (1.0 + p() -> buff.swift_as_the_wind -> value() );
+//    if ( p() -> aburaq && p() -> buff.swift_as_the_wind -> up() )
+//      t *= 1.0 / (1.0 + p() -> buff.swift_as_the_wind -> value() );
 
     if ( first )
       return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::zero() ) : t / 2 ) : timespan_t::zero();
@@ -5707,7 +5711,7 @@ void monk_t::init_spells()
   passives.hit_combo                        = find_spell( 196741 );
   passives.rising_sun_kick_trinket          = find_spell( 185099 );
   passives.spinning_dragon_strike           = find_spell( 158221 );
-  passives.swift_as_the_wind                = find_spell( 195599 );
+//  passives.swift_as_the_wind                = find_spell( 195599 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
   passives.tier15_2pc_melee                 = find_spell( 138311 );
   passives.tier17_4pc_melee                 = find_spell( 166603 );
@@ -5928,8 +5932,8 @@ void monk_t::create_buffs()
                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                               .cd( timespan_t::zero() );
 
-  buff.swift_as_the_wind = buff_creator_t( this, "swift_as_the_wind", passives.swift_as_the_wind -> effectN( 1 ).trigger() )
-      .default_value( passives.swift_as_the_wind -> effectN( 1 ).trigger() -> effectN( 2 ).percent() );
+//  buff.swift_as_the_wind = buff_creator_t( this, "swift_as_the_wind", passives.swift_as_the_wind -> effectN( 1 ).trigger() )
+//      .default_value( passives.swift_as_the_wind -> effectN( 1 ).trigger() -> effectN( 2 ).percent() );
 
   buff.tigereye_brew = buff_creator_t( this, "tigereye_brew", spec.tigereye_brew )
     .period( timespan_t::zero() ) // Tigereye Brew does not tick, despite what the spelldata implies.
@@ -6001,7 +6005,7 @@ void monk_t::init_rng()
 {
   player_t::init_rng();
 
-  if ( aburaq )
+/*  if ( aburaq )
   {
     real_ppm.swift_as_the_wind = real_ppm_t( *this, aburaq -> driver() -> real_ppm() );
   }
@@ -6009,6 +6013,7 @@ void monk_t::init_rng()
   {
     real_ppm.swift_as_the_wind = real_ppm_t( *this, 0 );
   }
+*/
 }
 
 // druid_t::has_t18_class_trinket ===========================================
@@ -6029,7 +6034,7 @@ bool monk_t::has_t18_class_trinket() const
 void monk_t::reset()
 {
   base_t::reset();
-  real_ppm.swift_as_the_wind.reset();
+//  real_ppm.swift_as_the_wind.reset();
 }
 
 // monk_t::regen (brews/teas)================================================
@@ -6441,7 +6446,7 @@ double monk_t::energy_regen_per_second() const
 {
   double r = base_t::energy_regen_per_second();
 
-  r *= 1.0 + talent.ascension -> effectN( 3 ).percent();
+  r *= 1.0 + talent.ascension -> effectN( 2 ).percent();
 
   return r;
 }

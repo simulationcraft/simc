@@ -29,8 +29,6 @@ if not defined QTDIR call :error QTDIR environment variable not defined
 if ERRORLEVEL 1 goto :enderror
 if not defined REDIST call :error REDIST environment variable not defined
 if ERRORLEVEL 1 goto :enderror
-if not defined SZIP call :error SZIP environment variable not defined
-if ERRORLEVEL 1 goto :enderror
 if not exist %INSTALL% call :error INSTALL environment variable points to missing directory
 if ERRORLEVEL 1 goto :enderror
 if not exist %SIMCDIR% call :error SIMCDIR environment variable points to missing directory
@@ -39,7 +37,8 @@ if not exist %QTDIR% call :error QTDIR environment variable points to missing di
 if ERRORLEVEL 1 goto :enderror
 if not exist %REDIST% call :error REDIST environment variable points to missing directory
 if ERRORLEVEL 1 goto :enderror
-if not exist %SZIP% call :error SZIP environment variable points to missing directory
+
+if defined RELEASE if not defined SC_DEFAULT_APIKEY call :error RELEASE builds must set SC_DEFAULT_APIKEY
 if ERRORLEVEL 1 goto :enderror
 
 :: Setup GIT HEAD commithash for the package name if GIT is found
@@ -50,6 +49,8 @@ if defined RELEASE set GITREV=
 :: Setup archive name and installation directory
 set PACKAGENAME=%INSTALL%\simulationcraft-%SIMCVERSION%-%PLATFORM%%GITREV%
 set INSTALLDIR=%INSTALL%\simulationcraft-%SIMCVERSION%-%PLATFORM%
+set PLATFORMQTDIR=%QTDIR%\msvc%VSVERSION%
+if "%PLATFORM%" neq "win32" set PLATFORMQTDIR=%PLATFORMQTDIR%_64
 
 :: Begin the build process
 call :build_release %ARGS%
@@ -62,7 +63,7 @@ if ERRORLEVEL 1 goto :enderror
 if "%3" neq "" set TARGET=/t:%3
 if not defined SOLUTION set SOLUTION=simc_vs%VSVERSION%.sln
 
-msbuild.exe "%SIMCDIR%\%SOLUTION%" /p:configuration=%1 /p:platform=%2 /nr:true /m %TARGET%
+msbuild.exe "%SIMCDIR%\%SOLUTION%" /p:configuration=%1 /p:platform=%2 /nr:true /m /p:QTDIR=%PLATFORMQTDIR% %TARGET%
 if ERRORLEVEL 1 exit /b 1
 :: Start release copying process
 md %INSTALLDIR%
@@ -103,8 +104,7 @@ robocopy %SIMCDIR%\ %INSTALLDIR%\ Error.html Welcome.html Welcome.png  /NJH /NJS
 robocopy %SIMCDIR%\locale\ %INSTALLDIR%\locale sc_de.qm sc_zh.qm sc_it.qm  /NJH /NJS
 robocopy %SIMCDIR%\winreleasescripts\ %INSTALLDIR%\ qt.conf  /NJH /NJS
 robocopy %SIMCDIR%\ %INSTALLDIR%\ Simulationcraft%SUFFIX%.exe  /NJH /NJS
-if "%SUFFIX%" == "64" %QTDIR%\msvc%VSVERSION%_64\bin\windeployqt.exe --no-translations %INSTALLDIR%\Simulationcraft%SUFFIX%.exe
-if "%SUFFIX%" == "" %QTDIR%\msvc%VSVERSION%\bin\windeployqt.exe --no-translations %INSTALLDIR%\Simulationcraft%SUFFIX%.exe
+%PLATFORMQTDIR%\bin\windeployqt.exe --no-translations %INSTALLDIR%\Simulationcraft%SUFFIX%.exe
 exit /b 0
 
 :build_installer
@@ -121,11 +121,19 @@ if "%PLATFORM%" == "win32" (
 set SIMCAPPFULLVERSION=%SC_MAJOR_VERSION:~0,1%.%SC_MAJOR_VERSION:~1,1%.%SC_MAJOR_VERSION:~2,2%.%SC_MINOR_VERSION%
 if "%GITREV%" neq "" set SIMCSUFFIX=%SIMCSUFFIX%%GITREV%
 
-%ISCC%\iscc.exe /DSimcAppFullVersion=%SIMCAPPFULLVERSION% /DSimcAppName="%SIMCAPPNAME%" /DSimcReleaseSuffix="%SIMCSUFFIX%" /DSimcReleaseDir="%INSTALLDIR%" /DSimcAppVersion="%SIMCVERSION%" /DSimcAppExeName="Simulationcraft%SUFFIX%.exe" /DSimcIconFile="%SIMCDIR%\qt\icon\Simcraft2.ico" /DSimcOutputDir="%INSTALL%" %SIMCDIR%\WinReleaseScripts\SetupSimc.iss
+%ISCC%\iscc.exe /DSimcAppFullVersion=%SIMCAPPFULLVERSION% ^
+				/DSimcAppName="%SIMCAPPNAME%" ^
+				/DSimcReleaseSuffix="%SIMCSUFFIX%" ^
+				/DSimcReleaseDir="%INSTALLDIR%" ^
+				/DSimcAppVersion="%SIMCVERSION%" ^
+				/DSimcAppExeName="Simulationcraft%SUFFIX%.exe" ^
+				/DSimcIconFile="%SIMCDIR%\qt\icon\Simcraft2.ico" ^
+				/DSimcOutputDir="%INSTALL%" %SIMCDIR%\WinReleaseScripts\SetupSimc.iss
 if ERRORLEVEL 1 exit /b 1
 exit /b 0
 
 :compress
+if not defined SZIP exit /b 0
 %SZIP%\7z.exe a -r %PACKAGENAME% %INSTALLDIR% -mx9 -md=32m
 exit /b 0
 
@@ -147,11 +155,12 @@ echo SIMCVERSION: Simulationcraft release version (default from %SIMCDIR%\engine
 echo SIMCDIR    : Simulationcraft source directory root
 echo QTDIR      : Root directory of the Qt (5) release
 echo REDIST     : Directory containing Windows Runtime Environment redistributables
-echo SZIP       : Directory containing 7-Zip compressor
+echo SZIP       : Directory containing 7-Zip compressor (optional, if omitted no copressed file)
 echo ISCC       : Diretory containing Inno Setup (optional, if omitted no setup will be built)
 echo INSTALL    : Directory to make an installation package in
 echo VSVERSION  : Visual studio version (default 2013)
 echo RELEASE    : Set to build a "release version" (no git commit hash suffix)
+echo            : If set, set SC_DEFAULT_APIKEY to the Battle.net key for the release
 goto :end
 
 :end

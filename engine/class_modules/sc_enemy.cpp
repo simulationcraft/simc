@@ -1187,8 +1187,11 @@ void enemy_t::init_defense()
     // a wild equation appears. It's super effective.
     if ( level() < 100 )
       a = std::floor( 0.006464588162215 * std::exp( 0.123782410252464 * level() ) + 0.5 );
-    else
+    else if ( level() < 110 )
       a = 134*level()-11864;
+    else
+      a = 17370; // hard code this until we can get a finalized equation
+
   }
 
   // for future reference, the equations above fit the given values
