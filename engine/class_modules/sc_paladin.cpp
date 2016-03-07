@@ -2393,27 +2393,10 @@ struct ashen_strike_impact_t : public paladin_melee_attack_t
   }
 };
 
-
-struct ashen_strike_t : public paladin_spell_t
-{
-  ashen_strike_impact_t* impact_spell;
-  ashen_strike_t( paladin_t* p, unsigned spell_id )
-    : paladin_spell_t( "ashen_strike", p, p -> find_spell( spell_id ) ),
-      impact_spell( new ashen_strike_impact_t( p ) )
-  {
-    add_child( impact_spell );
-    impact_action = impact_spell;
-    school = SCHOOL_HOLY;
-  }
-};
-
-
 // Judgment =================================================================
 
 struct judgment_t : public paladin_melee_attack_t
 {
-  ashen_strike_t* ashen_strike_spells[4];
-
   // TODO: remove this hack once the missile-spawning spells can be found
   ashen_strike_impact_t* ashen_strike_impact_spell;
 
@@ -2440,13 +2423,6 @@ struct judgment_t : public paladin_melee_attack_t
       // TODO: does this need to be multiplied by the Highlord's Judgment percentage too?
     }
 
-    // These spells are on Wowhead, and seem to be the original missile-spawning spells
-    // that actually get cast on an Ashes to Ashes proc. However, simc can't seem to find them.
-    // So for now, we use the impact spell directly.
-    ashen_strike_spells[0] = new ashen_strike_t( p, 193984 );
-    ashen_strike_spells[1] = new ashen_strike_t( p, 193985 );
-    ashen_strike_spells[2] = new ashen_strike_t( p, 193986 );
-    ashen_strike_spells[3] = new ashen_strike_t( p, 193987 );
     ashen_strike_impact_spell = new ashen_strike_impact_t( p );
   }
 
