@@ -128,7 +128,7 @@ struct buff_stack_benefit_t
     {
       buff_stack_benefit[ i ] = buff -> player ->
                                 get_benefit( prefix + " " +
-                                             buff -> name() + " " +
+                                             buff -> data().name_cstr() + " " +
                                              util::to_string( i ) );
     }
   }
