@@ -512,14 +512,12 @@ public:
   // Sanctity of Battle bools
   bool hasted_cd;
   bool hasted_gcd;
-  bool should_trigger_blessing_of_might;
 
   paladin_action_t( const std::string& n, paladin_t* player,
                     const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
     hasted_cd( ab::data().affected_by( player -> passives.sanctity_of_battle -> effectN( 1 ) ) ),
-    hasted_gcd( ab::data().affected_by( player -> passives.sanctity_of_battle -> effectN( 2 ) ) ),
-    should_trigger_blessing_of_might( true )
+    hasted_gcd( ab::data().affected_by( player -> passives.sanctity_of_battle -> effectN( 2 ) ) )
   {
   }
 
@@ -2362,8 +2360,6 @@ struct blessing_of_might_proc_t : public paladin_melee_attack_t
     background  = true;
     trigger_gcd = timespan_t::zero();
     id          = 205729;
-
-    should_trigger_blessing_of_might = false;
 
     // No weapon multiplier
     weapon_multiplier = 0.0;
