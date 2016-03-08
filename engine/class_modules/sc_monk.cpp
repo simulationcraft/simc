@@ -5907,7 +5907,7 @@ void monk_t::create_buffs()
     .add_invalidate( CACHE_MASTERY );
 
   buff.combo_strikes = buff_creator_t( this, "combo_strikes" )
-    .duration( passives.hit_combo -> duration() )
+    .duration( timespan_t::from_minutes( 10 ) ) // Buff lasts longer than 10 minutes. Sticking it to 10 minutes
     .quiet( true ) // In-game does not show this buff but I would like to use it for background stuff
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
@@ -5949,9 +5949,10 @@ void monk_t::create_buffs()
     .can_cancel( false );
 
   buff.transfer_the_power = buff_creator_t( this, "transfer_the_power", artifact.transfer_the_power.data().effectN( 1 ).trigger() )
-    .duration( timespan_t::from_seconds( 20 ) ) // TODO: Get actual duration of buff
-    .max_stack( 3 ) // TODO: Get the max stacks
-    .default_value( artifact.transfer_the_power.rank() ? artifact.transfer_the_power.percent() : 0 ); 
+    .duration( timespan_t::from_minutes( 10 ) ) // Buff lasts longer than 10 minutes. Sticking it to 10 minutes
+    .quiet( true )
+    // The proc gives 1%; even though tooltip and datamining say 5% per stack
+    .default_value( artifact.transfer_the_power.rank() ?  0.1 /* artifact.transfer_the_power.percent() */ : 0 ); 
 }
 
 // monk_t::init_gains =======================================================
