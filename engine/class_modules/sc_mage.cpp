@@ -1583,8 +1583,9 @@ struct fire_mage_spell_t : public mage_spell_t
           p -> buffs.heating_up -> trigger();
 
           // Controlled Burn HU -> HS conversion
-          // TODO: Fix hardcoded 10% once spelldata is updated.
-          if ( p -> talents.controlled_burn -> ok() && rng().roll ( 0.1 ) )
+          if ( p -> talents.controlled_burn -> ok() &&
+               rng().roll ( p -> talents.controlled_burn
+                              -> effectN( 1 ).percent() ) )
           {
             p -> procs.controlled_burn -> occur();
             p -> buffs.heating_up -> expire();
@@ -3664,8 +3665,8 @@ struct pyroblast_t : public fire_mage_spell_t
   {
     fire_mage_spell_t::execute();
 
-    // TODO: Use client data when it's updated
-    if ( p() -> talents.pyromaniac -> ok() && rng().roll( 0.1 ) )
+    if ( p() -> talents.pyromaniac -> ok() &&
+         rng().roll( p() -> talents.pyromaniac -> effectN( 1 ).percent() ) )
     {
       return;
     }
@@ -4850,11 +4851,6 @@ void mage_t::init_base_stats()
   base.attack_power_per_agility = 0.0;
 
   base.mana_regen_per_second = resources.base[ RESOURCE_MANA ] * 0.015;
-
-  // Reduce fire mage distance to avoid proc munching at high haste.
-  // TODO: Do we still need this?
-  if ( specialization() == MAGE_FIRE )
-    base.distance = 20;
 
   if ( race == RACE_ORC )
     pet_multiplier *= 1.0 + find_racial_spell( "Command" ) -> effectN( 1 ).percent();
