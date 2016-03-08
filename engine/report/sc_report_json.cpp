@@ -322,7 +322,6 @@ js::sc_js_t to_json( const player_collected_data_t::buffed_stats_t& bs )
   node.add( "attack_haste", bs.attack_haste );
   node.add( "attack_speed", bs.attack_speed );
   node.add( "mastery_value", bs.mastery_value );
-  node.add( "readiness", bs.readiness );
   node.add( "damage_versatility", bs.damage_versatility );
   node.add( "heal_versatility", bs.heal_versatility );
   node.add( "mitigation_versatility", bs.mitigation_versatility );

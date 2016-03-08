@@ -276,8 +276,6 @@ rgb stat_color( stat_e type )
       return COLOR_ROGUE;
     case STAT_SPELL_POWER:
       return COLOR_WARLOCK;
-    case STAT_READINESS_RATING:
-      return COLOR_DEATH_KNIGHT;
     case STAT_CRIT_RATING:
       return COLOR_PALADIN;
     case STAT_HASTE_RATING:

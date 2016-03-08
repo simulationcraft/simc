@@ -176,7 +176,6 @@ void scaling_t::init_deltas()
   if ( stats.haste_rating == 0 ) stats.haste_rating = default_delta;
   if ( stats.mastery_rating == 0 ) stats.mastery_rating = default_delta;
   if ( stats.versatility_rating == 0 ) stats.versatility_rating = default_delta;
-  if ( stats.readiness_rating == 0 ) stats.readiness_rating = default_delta;
 
   // Defensive
   if ( stats.armor == 0 ) stats.armor = default_delta;
@@ -524,7 +523,6 @@ void scaling_t::create_options()
   sim->add_option(opt_float("scale_crit_rating", stats.crit_rating));
   sim->add_option(opt_float("scale_haste_rating", stats.haste_rating));
   sim->add_option(opt_float("scale_mastery_rating", stats.mastery_rating));
-  sim->add_option(opt_float("scale_readiness_rating", stats.readiness_rating));
   sim->add_option(opt_float("scale_versatility_rating", stats.versatility_rating));
   sim->add_option(opt_float("scale_weapon_dps", stats.weapon_dps));
   sim->add_option(opt_float("scale_offhand_weapon_dps", stats.weapon_offhand_dps));

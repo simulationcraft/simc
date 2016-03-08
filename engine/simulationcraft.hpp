@@ -415,7 +415,6 @@ struct gear_stats_t
   double mastery_rating;
   double resilience_rating;
   double pvp_power;
-  double readiness_rating;
   double versatility_rating;
   double leech_rating;
   double speed_rating;
@@ -427,7 +426,7 @@ struct gear_stats_t
     hit_rating( 0.0 ), hit_rating2( 0.0 ), crit_rating( 0.0 ), haste_rating( 0.0 ), weapon_dps( 0.0 ), weapon_speed( 0.0 ),
     weapon_offhand_dps( 0.0 ), weapon_offhand_speed( 0.0 ), armor( 0.0 ), bonus_armor( 0.0 ), dodge_rating( 0.0 ),
     parry_rating( 0.0 ), block_rating( 0.0 ), mastery_rating( 0.0 ), resilience_rating( 0.0 ), pvp_power( 0.0 ),
-    readiness_rating( 0.0 ), versatility_rating( 0.0 ), leech_rating( 0.0 ), speed_rating( 0.0 ),
+    versatility_rating( 0.0 ), leech_rating( 0.0 ), speed_rating( 0.0 ),
     avoidance_rating( 0.0 )
   { }
 
@@ -460,7 +459,6 @@ struct gear_stats_t
     mastery_rating += right.mastery_rating;
     resilience_rating += right.resilience_rating;
     pvp_power += right.pvp_power;
-    readiness_rating += right.readiness_rating;
     versatility_rating += right.versatility_rating;
     leech_rating += right.leech_rating;
     speed_rating += right.speed_rating;
@@ -2147,7 +2145,6 @@ enum rating_e
   RATING_MELEE_CRIT,
   RATING_RANGED_CRIT,
   RATING_SPELL_CRIT,
-  RATING_READINESS,
   RATING_PVP_RESILIENCE,
   RATING_LEECH,
   RATING_MELEE_HASTE,
@@ -2184,7 +2181,6 @@ inline cache_e cache_from_rating( rating_e r )
     case RATING_MASTERY: return CACHE_MASTERY;
     case RATING_PVP_POWER: return CACHE_NONE;
     case RATING_PVP_RESILIENCE: return CACHE_NONE;
-    case RATING_READINESS: return CACHE_READINESS;
     case RATING_DAMAGE_VERSATILITY: return CACHE_DAMAGE_VERSATILITY;
     case RATING_HEAL_VERSATILITY: return CACHE_HEAL_VERSATILITY;
     case RATING_MITIGATION_VERSATILITY: return CACHE_MITIGATION_VERSATILITY;
@@ -2205,7 +2201,6 @@ struct rating_t
   double dodge, parry, block;
   double mastery;
   double pvp_resilience, pvp_power;
-  double readiness;
   double damage_versatility, heal_versatility, mitigation_versatility;
   double leech, speed, avoidance;
 
@@ -2229,7 +2224,6 @@ struct rating_t
       case RATING_MASTERY: return mastery;
       case RATING_PVP_POWER: return pvp_power;
       case RATING_PVP_RESILIENCE: return pvp_resilience;
-      case RATING_READINESS: return readiness;
       case RATING_DAMAGE_VERSATILITY: return damage_versatility;
       case RATING_HEAL_VERSATILITY: return heal_versatility;
       case RATING_MITIGATION_VERSATILITY: return mitigation_versatility;
@@ -2955,7 +2949,7 @@ private:
   mutable double _attack_haste, _spell_haste;
   mutable double _attack_speed, _spell_speed;
   mutable double _dodge, _parry, _block, _crit_block, _armor, _bonus_armor;
-  mutable double _mastery, _mastery_value, _crit_avoidance, _miss, _readiness;
+  mutable double _mastery, _mastery_value, _crit_avoidance, _miss;
   mutable double _player_mult[SCHOOL_MAX + 1], _player_heal_mult[SCHOOL_MAX + 1];
   mutable double _damage_versatility, _heal_versatility, _mitigation_versatility;
   mutable double _leech, _run_speed, _avoidance;
@@ -2992,7 +2986,6 @@ public:
   double armor() const;
   double mastery() const;
   double mastery_value() const;
-  double readiness() const;
   double bonus_armor() const;
   double player_multiplier( school_e ) const;
   double player_heal_multiplier( const action_state_t* ) const;
@@ -3029,7 +3022,6 @@ public:
   double armor() const            { return _player -> composite_armor();           }
   double mastery() const          { return _player -> composite_mastery();   }
   double mastery_value() const    { return _player -> composite_mastery_value();   }
-  double readiness() const        { return _player -> composite_readiness(); }
   double damage_versatility() const { return _player -> composite_damage_versatility(); }
   double heal_versatility() const { return _player -> composite_heal_versatility(); }
   double mitigation_versatility() const { return _player -> composite_mitigation_versatility(); }
@@ -3203,7 +3195,7 @@ struct player_collected_data_t
     double attack_power,  attack_hit,  mh_attack_expertise,  oh_attack_expertise, attack_crit;
     double armor, miss, crit, dodge, parry, block, bonus_armor;
     double spell_haste, spell_speed, attack_haste, attack_speed;
-    double mastery_value, readiness;
+    double mastery_value;
     double damage_versatility, heal_versatility, mitigation_versatility;
     double leech, run_speed, avoidance;
   } buffed_stats_snapshot;
@@ -3906,7 +3898,6 @@ struct player_t : public actor_t
   virtual double composite_spell_hit() const;
   virtual double composite_mastery() const;
   virtual double composite_mastery_value() const;
-  virtual double composite_readiness() const;
   virtual double composite_bonus_armor() const;
 
   virtual double composite_damage_versatility() const;
@@ -3993,9 +3984,6 @@ struct player_t : public actor_t
   { return composite_rating( RATING_PARRY ); }
   virtual double composite_block_rating() const
   { return composite_rating( RATING_BLOCK ); }
-
-  virtual double composite_readiness_rating() const
-  { return composite_rating( RATING_READINESS ); }
 
   virtual double composite_damage_versatility_rating() const
   { return composite_rating( RATING_DAMAGE_VERSATILITY ); }
@@ -4560,9 +4548,6 @@ public:
 
   virtual double composite_spell_speed() const override
   { return owner -> cache.spell_speed(); }
-
-  virtual double composite_readiness() const override
-  { return owner -> cache.readiness(); }
 
   virtual double composite_bonus_armor() const override
   { return owner -> cache.bonus_armor(); }
@@ -5427,9 +5412,6 @@ public:
 
     return m;
   }
-
-  virtual double composite_readiness() const
-  { return player -> cache.readiness(); }
 
   virtual double composite_versatility( const action_state_t* ) const
   { return 1.0; }

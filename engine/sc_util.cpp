@@ -1210,7 +1210,6 @@ const char* util::cache_type_string( cache_e c )
     case CACHE_BLOCK:        return "block";
     case CACHE_ARMOR:        return "armor";
     case CACHE_BONUS_ARMOR:  return "bonus_armor";
-    case CACHE_READINESS:    return "readiness";
     case CACHE_VERSATILITY:  return "versatility";
     case CACHE_DAMAGE_VERSATILITY:  return "damage_versatility";
     case CACHE_HEAL_VERSATILITY:  return "heal_versatility";
@@ -1358,7 +1357,6 @@ const char* util::stat_type_string( stat_e stat )
     case STAT_MASTERY_RATING: return "mastery_rating";
 
     case STAT_PVP_POWER: return "pvp_power";
-    case STAT_READINESS_RATING: return "readiness_rating";
     case STAT_VERSATILITY_RATING: return "versatility_rating";
 
     case STAT_LEECH_RATING: return "leech_rating";
@@ -1430,8 +1428,6 @@ const char* util::stat_type_abbrev( stat_e stat )
 
     case STAT_VERSATILITY_RATING: return "Vers";
 
-    case STAT_READINESS_RATING: return "Readiness";
-
     case STAT_LEECH_RATING: return "Leech";
     case STAT_SPEED_RATING: return "RunSpeed";
     case STAT_AVOIDANCE_RATING: return "Avoidance";
@@ -1485,7 +1481,6 @@ const char* util::stat_type_wowhead( stat_e stat )
 
     case STAT_MASTERY_RATING: return "masteryRating";
 
-    case STAT_READINESS_RATING:   return "readiness";
     case STAT_VERSATILITY_RATING: return "versatility";
 
     case STAT_LEECH_RATING: return "lifesteal";
@@ -1901,7 +1896,6 @@ stat_e util::translate_item_mod( int item_mod )
     case ITEM_MOD_EXTRA_ARMOR:         return STAT_BONUS_ARMOR;
     case ITEM_MOD_RESILIENCE_RATING:   return STAT_RESILIENCE_RATING;
     case ITEM_MOD_PVP_POWER:           return STAT_PVP_POWER;
-    case ITEM_MOD_READINESS_RATING:    return STAT_READINESS_RATING;
     case ITEM_MOD_STRENGTH_AGILITY_INTELLECT: return STAT_STR_AGI_INT;
     case ITEM_MOD_AGILITY_INTELLECT:   return STAT_AGI_INT;
     case ITEM_MOD_STRENGTH_AGILITY:    return STAT_STR_AGI;
@@ -1935,7 +1929,6 @@ int util::translate_stat( stat_e stat )
     case STAT_BONUS_ARMOR:        return ITEM_MOD_EXTRA_ARMOR;
     case STAT_RESILIENCE_RATING:  return ITEM_MOD_RESILIENCE_RATING;
     case STAT_PVP_POWER:          return ITEM_MOD_PVP_POWER;
-    case STAT_READINESS_RATING:   return ITEM_MOD_READINESS_RATING;
     case STAT_STR_AGI_INT:        return ITEM_MOD_STRENGTH_AGILITY_INTELLECT;
     case STAT_AGI_INT:            return ITEM_MOD_AGILITY_INTELLECT;
     case STAT_STR_AGI:            return ITEM_MOD_STRENGTH_AGILITY;
@@ -1989,8 +1982,6 @@ stat_e util::translate_rating_mod( unsigned ratings )
     return STAT_MASTERY_RATING;
   else if ( ratings & RATING_MOD_PVP_POWER )
     return STAT_PVP_POWER;
-  else if ( ratings & RATING_MOD_READINESS )
-    return STAT_READINESS_RATING;
   else if ( ratings & RATING_MOD_LEECH )
     return STAT_LEECH_RATING;
   else if ( ratings & RATING_MOD_SPEED )
@@ -2686,7 +2677,6 @@ bool util::is_combat_rating( item_mod_type t )
     case ITEM_MOD_HASTE_RATING:
     case ITEM_MOD_EXPERTISE_RATING:
     case ITEM_MOD_MULTISTRIKE_RATING:
-    case ITEM_MOD_READINESS_RATING:
     case ITEM_MOD_SPEED_RATING:
     case ITEM_MOD_LEECH_RATING:
     case ITEM_MOD_AVOIDANCE_RATING:

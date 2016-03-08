@@ -1929,7 +1929,6 @@ void player_t::init_scaling()
     scales_with[ STAT_CRIT_RATING               ] = true;
     scales_with[ STAT_HASTE_RATING              ] = true;
     scales_with[ STAT_MASTERY_RATING            ] = true;
-    scales_with[ STAT_READINESS_RATING          ] = false; // No longer a stat in game.
     scales_with[ STAT_VERSATILITY_RATING        ] = true;
 
     bool has_movement = false;
@@ -1981,10 +1980,6 @@ void player_t::init_scaling()
 
         case STAT_MASTERY_RATING:
           initial.stats.mastery_rating += v;
-          break;
-
-        case STAT_READINESS_RATING:
-          initial.stats.readiness_rating += v;
           break;
 
         case STAT_VERSATILITY_RATING:
@@ -2417,8 +2412,6 @@ void player_t::create_buffs()
 
       buffs.nitro_boosts       = buff_creator_t( this, "nitro_boosts", find_spell( 54861 ) );
 
-      buffs.cooldown_reduction = buff_creator_t( this, "readiness" ).chance( 0 )
-        .default_value( 1 );
       buffs.amplification = buff_creator_t( this, "amplification", find_spell( 146051 ) )
                             .add_invalidate( CACHE_MASTERY )
                             .add_invalidate( CACHE_HASTE )
@@ -2904,13 +2897,6 @@ double player_t::composite_mastery() const
   return util::round( current.mastery + composite_mastery_rating() / current.rating.mastery, 2 );
 }
 
-// player_t::composite_readiness ============================================
-
-double player_t::composite_readiness() const
-{
-  return composite_readiness_rating() / current.rating.readiness;
-}
-
 // player_t::composite_bonus_armor =========================================
 
 double player_t::composite_bonus_armor() const
@@ -3230,8 +3216,6 @@ double player_t::composite_rating( rating_e rating ) const
       v = current.stats.parry_rating; break;
     case RATING_BLOCK:
       v = current.stats.block_rating; break;
-    case RATING_READINESS:
-      v = current.stats.readiness_rating; break;
     case RATING_LEECH:
       v = current.stats.leech_rating; break;
     case RATING_SPEED:
@@ -4670,7 +4654,6 @@ void player_t::stat_gain( stat_e    stat,
     case STAT_PARRY_RATING:
     case STAT_BLOCK_RATING:
     case STAT_MASTERY_RATING:
-    case STAT_READINESS_RATING:
     case STAT_VERSATILITY_RATING:
       current.stats.add_stat( stat, amount );
       invalidate_cache( cache_type );
@@ -4798,7 +4781,6 @@ void player_t::stat_loss( stat_e    stat,
     case STAT_PARRY_RATING:
     case STAT_BLOCK_RATING:
     case STAT_MASTERY_RATING:
-    case STAT_READINESS_RATING:
     case STAT_VERSATILITY_RATING:
       current.stats.add_stat( stat, -amount );
       invalidate_cache( cache_type );
@@ -6293,7 +6275,6 @@ struct snapshot_stats_t : public action_t
     buffed_stats.attack_haste = p -> cache.attack_haste();
     buffed_stats.attack_speed = p -> cache.attack_speed();
     buffed_stats.mastery_value = p -> cache.mastery_value();
-    buffed_stats.readiness = p -> cache.readiness();
     buffed_stats.bonus_armor = p -> composite_bonus_armor();
     buffed_stats.damage_versatility = p -> cache.damage_versatility();
     buffed_stats.heal_versatility = p -> cache.heal_versatility();
@@ -8489,7 +8470,6 @@ expr_t* player_t::create_expression( action_t* a,
       case STAT_HIT_RATING:       return make_mem_fn_expr( expression_str, *this, &player_t::composite_melee_hit_rating );
       case STAT_CRIT_RATING:      return make_mem_fn_expr( expression_str, *this, &player_t::composite_melee_crit_rating );
       case STAT_HASTE_RATING:     return make_mem_fn_expr( expression_str, *this, &player_t::composite_melee_haste_rating );
-      case STAT_READINESS_RATING:  return make_mem_fn_expr( expression_str, *this, &player_t::composite_readiness_rating );
       case STAT_ARMOR:            return make_ref_expr( expression_str, current.stats.armor );
       case STAT_BONUS_ARMOR:      return make_ref_expr( expression_str, current.stats.bonus_armor );
       case STAT_DODGE_RATING:     return make_mem_fn_expr( expression_str, *this, &player_t::composite_dodge_rating );
@@ -9254,9 +9234,6 @@ std::string player_t::create_profile( save_e stype )
     if ( enchant.mastery_rating              != 0 )  profile_str += "enchant_mastery_rating="
          + util::to_string( enchant.mastery_rating ) + term;
 
-    if ( enchant.readiness_rating            != 0 )  profile_str += "enchant_readiness_rating="
-         + util::to_string( enchant.readiness_rating ) + term;
-
     if ( enchant.versatility_rating            != 0 )  profile_str += "enchant_versatility_rating="
          + util::to_string( enchant.versatility_rating ) + term;
 
@@ -9454,7 +9431,6 @@ void player_t::create_options()
     add_option( opt_float( "gear_runic",            gear.resource[ RESOURCE_RUNIC_POWER  ] ) );
     add_option( opt_float( "gear_armor",            gear.armor ) );
     add_option( opt_float( "gear_mastery_rating",   gear.mastery_rating ) );
-    add_option( opt_float( "gear_readiness_rating", gear.readiness_rating ) );
     add_option( opt_float( "gear_versatility_rating", gear.versatility_rating ) );
     add_option( opt_float( "gear_bonus_armor",      gear.bonus_armor ) );
     add_option( opt_float( "gear_leech_rating",     gear.leech_rating ) );
@@ -9474,7 +9450,6 @@ void player_t::create_options()
     add_option( opt_float( "enchant_hit_rating",       enchant.hit_rating ) );
     add_option( opt_float( "enchant_crit_rating",      enchant.crit_rating ) );
     add_option( opt_float( "enchant_mastery_rating",   enchant.mastery_rating ) );
-    add_option( opt_float( "enchant_readiness_rating", enchant.readiness_rating ) );
     add_option( opt_float( "enchant_versatility_rating", enchant.versatility_rating ) );
     add_option( opt_float( "enchant_bonus_armor",      enchant.bonus_armor ) );
     add_option( opt_float( "enchant_leech_rating",     enchant.leech_rating ) );
@@ -10262,17 +10237,6 @@ double player_stat_cache_t::mastery_value() const
   }
   else assert( _mastery_value == player -> composite_mastery_value() );
   return _mastery_value;
-}
-
-double player_stat_cache_t::readiness() const
-{
-  if ( ! active || ! valid[ CACHE_READINESS ] )
-  {
-    valid[ CACHE_READINESS ] = true;
-    _readiness = player -> composite_readiness();
-  }
-  else assert( _readiness == player -> composite_readiness() );
-  return _readiness;
 }
 
 double player_stat_cache_t::bonus_armor() const
