@@ -70,8 +70,8 @@ legs=demongaze_legplates,id=124338
 feet=treads_of_the_defiler,id=124322
 finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_multistrike
 finger2=congealed_globule_loop,id=124197,enchant=gift_of_multistrike
-trinket1=empty_drinking_horn,id=124238
-trinket2=discordant_chorus,id=124237
+trinket1=vial_of_convulsive_shadows,id=113969
+trinket2=unending_hunger,id=124236
 main_hand=hellrender,id=124360,enchant=rune_of_the_fallen_crusader
 
 save=Death_Knight_Unholy_T18N.simc

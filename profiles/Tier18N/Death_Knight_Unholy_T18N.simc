@@ -34,6 +34,8 @@ actions+=/antimagic_shell,damage=100000,if=((dot.breath_of_sindragosa.ticking&ru
 actions+=/blood_fury,if=!talent.breath_of_sindragosa.enabled
 actions+=/berserking,if=!talent.breath_of_sindragosa.enabled
 actions+=/arcane_torrent,if=!talent.breath_of_sindragosa.enabled
+actions+=/use_item,slot=trinket1,if=!talent.breath_of_sindragosa.enabled
+actions+=/potion,name=draenic_strength,if=(buff.convulsive_shadows.up&target.health.pct<45)&!talent.breath_of_sindragosa.enabled
 actions+=/potion,name=draenic_strength,if=(buff.dark_transformation.up&target.time_to_die<=60)&!talent.breath_of_sindragosa.enabled
 actions+=/run_action_list,name=unholy
 
@@ -73,6 +75,7 @@ actions.unholy+=/empower_rune_weapon,if=!talent.breath_of_sindragosa.enabled
 
 actions.bos=blood_fury,if=dot.breath_of_sindragosa.ticking
 actions.bos+=/berserking,if=dot.breath_of_sindragosa.ticking
+actions.bos+=/use_item,slot=trinket1,if=dot.breath_of_sindragosa.ticking
 actions.bos+=/potion,name=draenic_strength,if=dot.breath_of_sindragosa.ticking
 actions.bos+=/unholy_blight,if=!disease.ticking
 actions.bos+=/plague_strike,if=!disease.ticking
@@ -103,15 +106,15 @@ legs=demongaze_legplates,id=124338
 feet=treads_of_the_defiler,id=124322
 finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_multistrike
 finger2=congealed_globule_loop,id=124197,enchant=gift_of_multistrike
-trinket1=empty_drinking_horn,id=124238
-trinket2=discordant_chorus,id=124237
+trinket1=vial_of_convulsive_shadows,id=113969
+trinket2=unending_hunger,id=124236
 main_hand=hellrender,id=124360,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=699.33
-# gear_strength=3906
+# gear_ilvl=697.00
+# gear_strength=3446
 # gear_stamina=4668
-# gear_crit_rating=585
+# gear_crit_rating=1343
 # gear_haste_rating=805
 # gear_mastery_rating=972
 # gear_multistrike_rating=2052
