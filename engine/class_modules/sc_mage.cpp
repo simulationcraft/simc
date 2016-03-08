@@ -518,6 +518,8 @@ public:
   virtual void      init_procs() override;
   virtual void      init_benefits() override;
   virtual void      init_stats() override;
+  virtual void      invalidate_cache( cache_e c ) override;
+  virtual void      recalculate_resource_max( resource_e rt ) override;
   virtual void      reset() override;
   virtual expr_t*   create_expression( action_t*, const std::string& name ) override;
   virtual action_t* create_action( const std::string& name, const std::string& options ) override;
@@ -5711,25 +5713,81 @@ void mage_t::apl_frost()
 
 }
 
-// Default Action List ===============================================================================================
+// Default Action List ========================================================
 
 void mage_t::apl_default()
 {
   action_priority_list_t* default_list = get_action_priority_list( "default" );
 
-  // TODO: What do mages below level 10 and without specs actually use?
-  default_list -> add_action( "Frostfire Bolt" );
+  // TODO: What do mages below level 10 without specs actually use?
+  default_list -> add_action( "Fireball" );
 }
 
-// mage_t::mana_regen_per_second ============================================
+// mage_t::mana_regen_per_second ==============================================
 
 double mage_t::mana_regen_per_second() const
 {
   double mps = player_t::mana_regen_per_second();
 
-  // TODO: Savant?
+  if ( spec.savant -> ok() )
+  {
+    mps *= 1.0 + cache.mastery_value();
+  }
 
   return mps;
+}
+
+// mage_t::invalidate_cache ===================================================
+
+void mage_t::invalidate_cache( cache_e c )
+{
+  player_t::invalidate_cache( c );
+
+  switch ( c )
+  {
+    case CACHE_MASTERY:
+      if ( spec.savant -> ok() )
+      {
+        recalculate_resource_max( RESOURCE_MANA );
+      }
+      else if ( spec.icicles -> ok() )
+      {
+        pets.water_elemental -> invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+      }
+      break;
+    default:
+      break;
+  }
+}
+
+// mage_t::recalculate_resource_max ===========================================
+
+void mage_t::recalculate_resource_max( resource_e rt )
+{
+  double current_mana, current_mana_max, mana_percent;
+
+  if ( rt == RESOURCE_MANA && spec.savant -> ok() )
+  {
+    current_mana = resources.current[ rt ];
+    current_mana_max = resources.max[ rt ];
+    mana_percent = current_mana / current_mana_max;
+  }
+
+  player_t::recalculate_resource_max( rt );
+
+  if ( rt == RESOURCE_MANA && spec.savant -> ok())
+  {
+    resources.max[ rt ] *= 1.0 + cache.mastery_value();
+    resources.current[ rt ] = resources.max[ rt ] * mana_percent;
+
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf(
+        "%s mana adjusted from %.0f/%.0f to %.0f/%.0f due to Savant",
+        name(), current_mana, current_mana_max,
+        resources.current[ rt ], resources.max[ rt ]);
+    }
+  }
 }
 
 // mage_t::composite_player_multiplier =======================================
@@ -5861,8 +5919,13 @@ void mage_t::reset()
   icicles.clear();
   event_t::cancel( icicle_event );
   event_t::cancel( ignite_spread_event );
-  last_bomb_target = nullptr;
 
+  if ( spec.savant -> ok() )
+  {
+    recalculate_resource_max( RESOURCE_MANA );
+  }
+
+  last_bomb_target = nullptr;
   burn_phase.reset();
 
   rppm_pyromaniac.reset();
