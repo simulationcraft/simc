@@ -126,7 +126,7 @@ public:
     dot_t* enveloping_mist;
     dot_t* renewing_mist;
     dot_t* soothing_mist;
-    dot_t* zen_sphere;
+    dot_t* touch_of_death;
   } dots;
 
   struct buffs_t
@@ -215,7 +215,6 @@ public:
 //    buff_t* swift_as_the_wind;
     buff_t* transfer_the_power;
     buff_t* tigereye_brew;
-    buff_t* touch_of_death;
   } buff;
 
 public:
@@ -1815,7 +1814,7 @@ public:
 
   virtual void impact( action_state_t* s ) override
   {
-    if ( p() -> artifact.gale_burst.rank() && p() -> buff.touch_of_death -> up() && s -> target == p() -> target && s -> action -> harmful )
+    if ( p() -> artifact.gale_burst.rank() && td( s -> target ) -> dots.touch_of_death -> is_ticking() && s -> action -> harmful )
       p() -> gale_burst_touch_of_death_bonus += p() -> artifact.gale_burst.value() * s -> result_amount;
     ab::impact( s );
   }
@@ -3301,8 +3300,6 @@ struct touch_of_death_t: public monk_spell_t
     monk_spell_t::execute();
 
     p() -> gale_burst_touch_of_death_bonus = 0.0;
-
-    p() -> buff.touch_of_death -> execute();
   }
 };
 
@@ -5381,7 +5378,7 @@ monk( *p )
   dots.enveloping_mist = target -> get_dot( "enveloping_mist", p );
   dots.renewing_mist = target -> get_dot( "renewing_mist", p );
   dots.soothing_mist = target -> get_dot( "soothing_mist", p );
-  dots.zen_sphere = target -> get_dot( "zen_sphere", p );
+  dots.touch_of_death = target -> get_dot( "touch_of_death", p );
 }
 
 // monk_t::create_action ====================================================
@@ -5942,11 +5939,6 @@ void monk_t::create_buffs()
     .default_value( spec.tigereye_brew -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
-
-  buff.touch_of_death = buff_creator_t( this, "touch_of_death", spec.touch_of_death )
-    .duration( spec.touch_of_death -> duration() )
-    .cd( timespan_t::zero() )
-    .can_cancel( false );
 
   buff.transfer_the_power = buff_creator_t( this, "transfer_the_power", artifact.transfer_the_power.data().effectN( 1 ).trigger() )
     .duration( timespan_t::from_minutes( 10 ) ) // Buff lasts longer than 10 minutes. Sticking it to 10 minutes
