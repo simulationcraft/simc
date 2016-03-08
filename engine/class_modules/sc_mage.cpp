@@ -2093,13 +2093,11 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
 
 struct arcane_missiles_t : public arcane_mage_spell_t
 {
-  timespan_t missiles_tick_time;
   timespan_t temporal_hero_duration;
 
   arcane_missiles_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "arcane_missiles", p,
                          p -> find_class_spell( "Arcane Missiles" ) ),
-    missiles_tick_time( timespan_t::zero() ),
     temporal_hero_duration( timespan_t::zero() )
   {
     parse_options( options_str );
@@ -2113,7 +2111,6 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     tick_action = new arcane_missiles_tick_t( p );
     may_miss = false;
 
-    missiles_tick_time = base_tick_time;
     temporal_hero_duration = p -> find_spell( 188117 ) -> duration();
   }
 
@@ -2138,24 +2135,35 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   {
     p() -> benefits.arcane_charge.arcane_missiles -> update();
 
+    // Reset base_tick_time to default before applying 4T17/Rule of Threes
+    base_tick_time = data().effectN( 2 ).period();
+
     // 4T17 : Increase the number of missiles by reducing base_tick_time
-    base_tick_time = missiles_tick_time;
     if ( p() -> buffs.arcane_instability -> up() )
     {
       base_tick_time *= 1 + p() -> buffs.arcane_instability
                                 -> data().effectN( 1 ).percent() ;
       p() -> buffs.arcane_instability -> expire();
     }
-    // Rule of Threes Artifact Power
+
     if ( p() -> artifact.rule_of_threes.rank() )
-      base_tick_time *= 1.0 + p() -> artifact.rule_of_threes.data().effectN( 1 ).percent();
+    {
+      base_tick_time *= 1.0 + p() -> artifact.rule_of_threes.data()
+                                             .effectN( 1 ).percent();
+    }
 
     arcane_mage_spell_t::execute();
 
-    if ( p() -> buffs.arcane_power -> check() && p() -> talents.overpowered -> ok() )
-      p() -> buffs.arcane_power -> extend_duration( p(), timespan_t::from_seconds( p() -> talents.overpowered -> effectN( 1 ).base_value() ) );
+    if ( p() -> buffs.arcane_power -> check() &&
+         p() -> talents.overpowered -> ok() )
+    {
+      timespan_t extension =
+        timespan_t::from_seconds( p() -> talents.overpowered
+                                      -> effectN( 1 ).base_value() );
 
-    p() -> buffs.arcane_missiles -> up();
+      p() -> buffs.arcane_power
+          -> extend_duration( p(), extension );
+    }
 
     if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T18, B2 ) &&
          rng().roll( p() -> sets.set( MAGE_ARCANE, T18, B2 )
@@ -2172,7 +2180,6 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     }
 
     p() -> buffs.arcane_missiles -> decrement();
-
   }
 
   virtual void last_tick ( dot_t * d ) override
@@ -4895,7 +4902,7 @@ void mage_t::create_buffs()
   // Arcane
   buffs.arcane_charge         = buff_creator_t( this, "arcane_charge", spec.arcane_charge );
   buffs.arcane_missiles       = buff_creator_t( this, "arcane_missiles", find_spell( 79683 ) )
-                                  .chance( find_spell( 79684 ) -> proc_chance() );
+                                  .chance( find_spell( 79684 ) -> effectN( 1 ).percent() );
   buffs.arcane_power          = buff_creator_t( this, "arcane_power", find_spell( 12042 ) )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.presence_of_mind      = buff_creator_t( this, "presence_of_mind", find_spell( 205025 ) )
