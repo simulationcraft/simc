@@ -2295,8 +2295,7 @@ struct arcane_power_t : public arcane_mage_spell_t
 
   virtual void execute() override
   {
-    arcane_mage_spell_t::execute();
-
+    arcane_mage_spell_t::execute();   
     p() -> buffs.arcane_power -> trigger( 1, data().effectN( 1 ).percent() );
   }
 };
@@ -4757,10 +4756,10 @@ void mage_t::init_spells()
 
   //Artifact Spells
   //Arcane
-  artifact.aegwynns_ascendance     = find_artifact_spell( "Aegwynns Ascendance"   );
-  artifact.aegwynns_fury           = find_artifact_spell( "Aegwynns Fury"         );
-  artifact.aegwynns_imperative     = find_artifact_spell( "Aegwynns Imperative"   );
-  artifact.aegwynns_wrath          = find_artifact_spell( "Aegwynns Wrath"        );
+  artifact.aegwynns_ascendance     = find_artifact_spell( "Aegwynn's Ascendance"   );
+  artifact.aegwynns_fury           = find_artifact_spell( "Aegwynn's Fury"         );
+  artifact.aegwynns_imperative     = find_artifact_spell( "Aegwynn's Imperative"   );
+  artifact.aegwynns_wrath          = find_artifact_spell( "Aegwynn's Wrath"        );
   artifact.amethyst_awakening      = find_artifact_spell( "Amethyst Awakening"    );
   artifact.arcane_purification     = find_artifact_spell( "Arcane Purification"   );
   artifact.arcane_rebound          = find_artifact_spell( "Arcane Rebound"        );
@@ -4901,6 +4900,9 @@ void mage_t::create_buffs()
                                   .chance( find_spell( 79684 ) -> effectN( 1 ).percent() );
   buffs.arcane_power          = buff_creator_t( this, "arcane_power", find_spell( 12042 ) )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  if ( artifact.aegwynns_imperative.rank() )
+    buffs.arcane_power -> buff_duration += artifact.aegwynns_imperative.time_value();
+
   buffs.presence_of_mind      = buff_creator_t( this, "presence_of_mind", find_spell( 205025 ) )
                                   .activated( true )
                                   .cd( timespan_t::zero() )
