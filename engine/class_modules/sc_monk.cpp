@@ -70,7 +70,7 @@ enum combo_strikes_e {
   CS_FISTS_OF_FURY,
   CS_SPINNING_CRANE_KICK,
   CS_RUSHING_JADE_WIND,
-  CS_SPINNING_DRAGON_STRIKE,
+  CS_WHIRLING_DRAGON_PUNCH,
   CS_STRIKE_OF_THE_WINDLORD,
   CS_ATTACK_MAX,
 
@@ -98,7 +98,7 @@ enum sef_ability_e {
   SEF_CROSSWINDS,
   SEF_SPINNING_CRANE_KICK,
   SEF_RUSHING_JADE_WIND,
-  SEF_SPINNING_DRAGON_STRIKE,
+  SEF_WHIRLING_DRAGON_PUNCH,
   SEF_ATTACK_MAX,
   // Attacks end here
 
@@ -319,7 +319,7 @@ public:
     const spell_data_t* high_tolerance;
     // Windwalker
     const spell_data_t* chi_orbit;
-    const spell_data_t* spinning_dragon_strike;
+    const spell_data_t* whirling_dragon_punch;
     const spell_data_t* serenity;
     // Mistweaver
     const spell_data_t* mana_tea;
@@ -516,7 +516,7 @@ public:
     const spell_data_t* dizzying_kicks;
     const spell_data_t* hit_combo;
     const spell_data_t* rising_sun_kick_trinket;
-    const spell_data_t* spinning_dragon_strike;
+    const spell_data_t* whirling_dragon_punch;
 //    const spell_data_t* swift_as_the_wind;
     const spell_data_t* touch_of_karma_tick;
     const spell_data_t* tier15_2pc_melee;
@@ -1230,19 +1230,19 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
   };
 
-  struct sef_spinning_dragon_strike_tick_t : public sef_tick_action_t
+  struct sef_whirling_dragon_punch_tick_t : public sef_tick_action_t
   {
-    sef_spinning_dragon_strike_tick_t( storm_earth_and_fire_pet_t* p ):
-      sef_tick_action_t( "spinning_dragon_strike_tick", p, p -> o() -> passives.spinning_dragon_strike )
+    sef_whirling_dragon_punch_tick_t( storm_earth_and_fire_pet_t* p ):
+      sef_tick_action_t( "whirling_dragon_punch_tick", p, p -> o() -> passives.whirling_dragon_punch )
     {
       aoe = -1;
     }
   };
 
-  struct sef_spinning_dragon_strike_t : public sef_melee_attack_t
+  struct sef_whirling_dragon_punch_t : public sef_melee_attack_t
   {
-    sef_spinning_dragon_strike_t( storm_earth_and_fire_pet_t* player ) :
-      sef_melee_attack_t( "spinning_dragon_strike", player, player -> o() -> talent.spinning_dragon_strike )
+    sef_whirling_dragon_punch_t( storm_earth_and_fire_pet_t* player ) :
+      sef_melee_attack_t( "whirling_dragon_punch", player, player -> o() -> talent.whirling_dragon_punch )
     {
       channeled = true;
 
@@ -1250,7 +1250,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       weapon_power_mod = 0;
 
-      tick_action = new sef_spinning_dragon_strike_tick_t( player );
+      tick_action = new sef_whirling_dragon_punch_tick_t( player );
     }
   };
 
@@ -1375,7 +1375,7 @@ public:
     attacks[ SEF_CROSSWINDS                   ] = new sef_crosswinds_t( this );
     attacks[ SEF_SPINNING_CRANE_KICK          ] = new sef_spinning_crane_kick_t( this );
     attacks[ SEF_RUSHING_JADE_WIND            ] = new sef_rushing_jade_wind_t( this );
-    attacks[ SEF_SPINNING_DRAGON_STRIKE       ] = new sef_spinning_dragon_strike_t( this );
+    attacks[ SEF_WHIRLING_DRAGON_PUNCH        ] = new sef_whirling_dragon_punch_t( this );
 
     spells[ sef_spell_idx( SEF_CHI_BURST )                ] = new sef_chi_burst_t( this );
     spells[ sef_spell_idx( SEF_CHI_WAVE )                 ] = new sef_chi_wave_t( this );
@@ -2212,11 +2212,12 @@ struct rising_sun_kick_t: public monk_melee_attack_t
   rising_sun_kick_tornado_kick_t* rsk_tornado_kick;
 
   rising_sun_kick_t( monk_t* p, const std::string& options_str ):
-    monk_melee_attack_t( "rising_sun_kick", p, p -> spec.rising_sun_kick )
+    monk_melee_attack_t( "rising_sun_kick", p, p -> spec.rising_sun_kick -> effectN( 1 ).trigger() )
   {
     parse_options( options_str );
 
-    cooldown -> duration = data().cooldown();
+    cooldown -> duration = data().charge_cooldown();
+    cooldown -> charges = data().charges();
     if ( p -> specialization() == MONK_MISTWEAVER )
       cooldown -> duration += p -> passives.aura_mistweaver_monk -> effectN( 8 ).time_value();
     if ( p -> sets.has_set_bonus( MONK_WINDWALKER, T19, B2) )
@@ -2230,7 +2231,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     spell_power_mod.direct = 0.0;
 
     if (p -> artifact.tornado_kicks.rank() )
-      rsk_tornado_kick = new rising_sun_kick_tornado_kick_t( p, p -> passives.rising_sun_kick_trinket );
+      rsk_tornado_kick = new rising_sun_kick_tornado_kick_t( p, p -> spec.rising_sun_kick -> effectN( 1 ).trigger() );
 
     if ( p -> furious_sun )
       rsk_proc = new rising_sun_kick_proc_t( p, p -> passives.rising_sun_kick_trinket );
@@ -2906,9 +2907,9 @@ struct fists_of_fury_t: public monk_melee_attack_t
 // Spinning Dragon Strike
 // ==========================================================================
 
-struct spinning_dragon_strike_tick_t: public monk_melee_attack_t
+struct whirling_dragon_punch_tick_t: public monk_melee_attack_t
 {
-  spinning_dragon_strike_tick_t(const std::string& name, monk_t* p, const spell_data_t* s) :
+  whirling_dragon_punch_tick_t(const std::string& name, monk_t* p, const spell_data_t* s) :
     monk_melee_attack_t( name, p, s )
   {
     background = true;
@@ -2925,14 +2926,14 @@ struct spinning_dragon_strike_tick_t: public monk_melee_attack_t
   }
 };
 
-struct spinning_dragon_strike_t: public monk_melee_attack_t
+struct whirling_dragon_punch_t: public monk_melee_attack_t
 {
   rising_sun_kick_proc_t* rsk_proc;
 
-  spinning_dragon_strike_t(monk_t* p, const std::string& options_str) :
-    monk_melee_attack_t( "spinning_dragon_strike", p, p -> talent.spinning_dragon_strike )
+  whirling_dragon_punch_t(monk_t* p, const std::string& options_str) :
+    monk_melee_attack_t( "whirling_dragon_punch", p, p -> talent.whirling_dragon_punch )
   {
-    sef_ability = SEF_SPINNING_DRAGON_STRIKE;
+    sef_ability = SEF_WHIRLING_DRAGON_PUNCH;
 
     parse_options( options_str );
     interrupt_auto_attack = callbacks = false;
@@ -2942,7 +2943,7 @@ struct spinning_dragon_strike_t: public monk_melee_attack_t
 
     spell_power_mod.direct = 0.0;
 
-    tick_action = new spinning_dragon_strike_tick_t( "spinning_dragon_strike_tick", p, p -> passives.spinning_dragon_strike );
+    tick_action = new whirling_dragon_punch_tick_t( "whirling_dragon_punch_tick", p, p -> passives.whirling_dragon_punch );
 
     if ( p -> furious_sun )
       rsk_proc = new rising_sun_kick_proc_t( p, p -> passives.rising_sun_kick_trinket );
@@ -2954,7 +2955,7 @@ struct spinning_dragon_strike_t: public monk_melee_attack_t
 
     // Trigger Combo Strikes
     // registers even on a miss
-    combo_strikes_trigger( CS_SPINNING_DRAGON_STRIKE );
+    combo_strikes_trigger( CS_WHIRLING_DRAGON_PUNCH );
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -5432,7 +5433,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "mistwalk" ) return new                  mistwalk_t( *this, options_str );
   if ( name == "refreshing_jade_wind" ) return new      refreshing_jade_wind_t( this, options_str );
   if ( name == "rushing_jade_wind" ) return new         rushing_jade_wind_t( this, options_str );
-  if ( name == "spinning_dragon_strike" ) return new    spinning_dragon_strike_t( this, options_str );
+  if ( name == "whirling_dragon_punch" ) return new    whirling_dragon_punch_t( this, options_str );
   if ( name == "serenity" ) return new                  serenity_t( this, options_str );
   // Artifacts
   if ( name == "sheiluns_gift" ) return new             sheiluns_gift_t( *this, options_str );
@@ -5539,7 +5540,7 @@ void monk_t::init_spells()
   talent.high_tolerance              = find_talent_spell( "High Tolerance" );
   // Windwalker
   talent.chi_orbit                   = find_talent_spell( "Chi Orbit" );
-  talent.spinning_dragon_strike      = find_talent_spell( "Spinning Dragon Strike" );
+  talent.whirling_dragon_punch       = find_talent_spell( "Whirling Dragon Punch" );
   talent.serenity                    = find_talent_spell( "Serenity" );
   // Mistweaver
   talent.mana_tea                    = find_talent_spell( "Mana Tea" );
@@ -5707,7 +5708,7 @@ void monk_t::init_spells()
   passives.dizzying_kicks                   = find_spell( 196723 );
   passives.hit_combo                        = find_spell( 196741 );
   passives.rising_sun_kick_trinket          = find_spell( 185099 );
-  passives.spinning_dragon_strike           = find_spell( 158221 );
+  passives.whirling_dragon_punch           = find_spell( 158221 );
 //  passives.swift_as_the_wind                = find_spell( 195599 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
   passives.tier15_2pc_melee                 = find_spell( 138311 );
