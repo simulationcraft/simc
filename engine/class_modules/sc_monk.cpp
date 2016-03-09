@@ -2237,7 +2237,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
       rsk_proc = new rising_sun_kick_proc_t( p, p -> passives.rising_sun_kick_trinket );
   }
 
-  virtual void update_ready( timespan_t ) override
+/*  virtual void update_ready( timespan_t ) override
   {
     timespan_t cd = cooldown -> duration;
 
@@ -2246,6 +2246,15 @@ struct rising_sun_kick_t: public monk_melee_attack_t
       cd *= 1 + p() -> talent.serenity -> effectN( 4 ).percent(); // saved as -50
 
     monk_melee_attack_t::update_ready( cd );
+  }
+*/
+  virtual double cooldown_reduction() const override
+  {
+    double cdr = base_t::cooldown_reduction();
+
+    cdr *= p() -> cache.attack_haste();
+
+    return cdr;
   }
 
   virtual double action_multiplier() const
@@ -2593,6 +2602,15 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     tick_action = new tick_action_t( "rushing_jade_wind_tick", p, p -> talent.rushing_jade_wind -> effectN( 1 ).trigger() );
   }
 
+  virtual double cooldown_reduction() const override
+  {
+    double cdr = base_t::cooldown_reduction();
+
+    cdr *= p() -> cache.attack_haste();
+
+    return cdr;
+  }
+
   virtual void update_ready( timespan_t ) override
   {
     timespan_t cd = cooldown -> duration;
@@ -2822,6 +2840,15 @@ struct fists_of_fury_t: public monk_melee_attack_t
       crosswinds = new crosswinds_t( p );
   }
 
+  virtual double cooldown_reduction() const override
+  {
+    double cdr = base_t::cooldown_reduction();
+
+    cdr *= p() -> cache.attack_haste();
+
+    return cdr;
+  }
+
   virtual void update_ready( timespan_t ) override
   {
     timespan_t cd = cooldown -> duration;
@@ -2904,7 +2931,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
 };
 
 // ==========================================================================
-// Spinning Dragon Strike
+// Whirling Dragon Punch
 // ==========================================================================
 
 struct whirling_dragon_punch_tick_t: public monk_melee_attack_t
@@ -2947,6 +2974,15 @@ struct whirling_dragon_punch_t: public monk_melee_attack_t
 
     if ( p -> furious_sun )
       rsk_proc = new rising_sun_kick_proc_t( p, p -> passives.rising_sun_kick_trinket );
+  }
+
+  virtual double cooldown_reduction() const override
+  {
+    double cdr = base_t::cooldown_reduction();
+
+    cdr *= p() -> cache.attack_haste();
+
+    return cdr;
   }
 
   void execute() override
