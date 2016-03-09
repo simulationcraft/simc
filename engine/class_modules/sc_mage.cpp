@@ -147,6 +147,8 @@ struct buff_stack_benefit_t
   }
 };
 
+struct buff_source_benefit_t;
+
 struct mage_t : public player_t
 {
 public:
@@ -198,9 +200,7 @@ public:
                           * nether_tempest;
     } arcane_charge;
 
-    benefit_t* fof_from_blizzard,
-             * fof_from_frostbolt,
-             * fof_from_frozen_orb;
+    buff_source_benefit_t* fingers_of_frost;
     buff_stack_benefit_t* ray_of_frost;
   } benefits;
 
@@ -235,6 +235,7 @@ public:
           * ice_shard,             // T17 2pc Frost
           * frost_t17_4pc,         // T17 4pc Frost
           * shatterlance;          // T18 (WoD 6.2) Frost Trinket
+
 
     // Talents
     buff_t* ice_floes,
@@ -567,6 +568,56 @@ public:
   std::string       get_potion_action();
 };
 
+struct buff_source_benefit_t
+{
+  const buff_t* buff;
+  int trigger_count;
+  std::vector<std::string> sources;
+  std::vector<benefit_t*> buff_source_benefit;
+
+  buff_source_benefit_t( const buff_t* _buff ) :
+    buff( _buff ), trigger_count( 0 )
+  { }
+
+  void update( const std::string& source )
+  {
+    mage_t* mage = static_cast<mage_t*>( buff -> player );
+
+    // Update old sources
+    int index = -1;
+    for ( size_t i = 0; i < sources.size(); i++ )
+    {
+      if ( sources[i] == source )
+      {
+        buff_source_benefit[i] -> update( true );
+        index = i;
+      }
+      else
+      {
+        buff_source_benefit[i] -> update( false );
+      }
+    }
+
+    if ( index == -1 )
+    {
+      // Add new source
+      sources.push_back( source );
+
+      std::string benefit_name = std::string( buff -> data().name_cstr() ) +
+                                 " from " + source;
+      benefit_t* source_benefit = mage -> get_benefit( benefit_name );
+      for ( int i = 0; i < trigger_count; i++ )
+      {
+        source_benefit -> update( false );
+      }
+      source_benefit -> update( true );
+      buff_source_benefit.push_back( source_benefit );
+    }
+
+    trigger_count++;
+  }
+};
+
 inline current_target_reset_cb_t::current_target_reset_cb_t( player_t* m ):
   mage( debug_cast<mage_t*>( m ) )
 { }
@@ -670,8 +721,10 @@ struct water_elemental_pet_t : public pet_t
       water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
 
       if ( result_is_hit( s -> result ) )
-        p -> o() -> buffs.fingers_of_frost
-                 -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
+      {
+        p -> o() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
+        p -> o() -> benefits.fingers_of_frost -> update( "Water Jet" );
+      }
     }
 
   };
@@ -1662,6 +1715,17 @@ struct frost_mage_spell_t : public mage_spell_t
     frozen( false )
   {}
 
+  void trigger_fof( const std::string& source, double chance )
+  {
+    bool success = p() -> buffs.fingers_of_frost
+                       -> trigger( 1, buff_t::DEFAULT_VALUE(), chance );
+
+    if ( success )
+    {
+      p() -> benefits.fingers_of_frost -> update( source );
+    }
+  }
+
   void trigger_icicle_gain( action_state_t* state, stats_t* stats )
   {
     if ( ! p() -> spec.icicles -> ok() )
@@ -2354,20 +2418,15 @@ struct blizzard_shard_t : public frost_mage_spell_t
     return DMG_OVER_TIME;
   }
 
-  virtual void impact( action_state_t* s ) override
+  virtual void execute() override
   {
-    frost_mage_spell_t::impact( s );
+    frost_mage_spell_t::execute();
 
-    if ( result_is_hit( s -> result ) )
+    if ( result_is_hit( execute_state -> result ) )
     {
-      // TODO: Replace hardcode with spell 157727
-      p() -> cooldowns.frozen_orb
-          -> adjust( timespan_t::from_seconds( -0.5 ) );
-
       double fof_proc_chance = p() -> spec.fingers_of_frost
                                    -> effectN( 2 ).percent();
-      p() -> buffs.fingers_of_frost
-          -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance);
+      trigger_fof( "Blizzard", fof_proc_chance);
     }
   }
 };
@@ -2847,8 +2906,7 @@ struct frostbolt_t : public frost_mage_spell_t
       double fof_proc_chance = p() -> spec.fingers_of_frost
                                    -> effectN( 1 ).percent();
 
-      p() -> buffs.fingers_of_frost
-          -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
+      trigger_fof( "Frostbolt", fof_proc_chance );
       p() -> buffs.brain_freeze
           -> trigger( 1, buff_t::DEFAULT_VALUE(),
                       p() -> spec.brain_freeze -> effectN( 1 ).percent() );
@@ -2872,20 +2930,20 @@ struct frostbolt_t : public frost_mage_spell_t
       }
 
       trigger_icicle_gain( s, icicle );
-    }
 
-    if ( result_is_hit( s -> result ) &&
-         ! p() -> pets.water_elemental -> is_sleeping() )
-    {
-      pets::water_elemental_pet_td_t* we_td = p() -> pets.water_elemental -> get_target_data( execute_state -> target );
 
-      if ( we_td -> water_jet -> up() )
+      if ( ! p() -> pets.water_elemental -> is_sleeping() )
       {
-        p() -> buffs.fingers_of_frost
-            -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
+        pets::water_elemental_pet_td_t* we_td =
+          p() -> pets.water_elemental
+              -> get_target_data( execute_state -> target );
+
+        if ( we_td -> water_jet -> up() )
+        {
+          trigger_fof( "Water Jet", 1.0 );
+        }
       }
     }
-
   }
 
   virtual double action_multiplier() const override
@@ -2925,9 +2983,8 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     if ( result_is_hit( s -> result ) )
     {
       double fof_proc_chance = p() -> spec.fingers_of_frost
-                                   -> effectN( 1 ).percent();
-      p() -> buffs.fingers_of_frost
-          -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
+                                   -> effectN( 2 ).percent();
+      trigger_fof( "Frozen Orb Tick", fof_proc_chance );
     }
   }
 
@@ -2981,8 +3038,10 @@ struct frozen_orb_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
-    p() -> buffs.fingers_of_frost
-        -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
+    if ( result_is_hit( s -> result ) )
+    {
+      trigger_fof( "Frozen Orb Initial Impact", 1.0 );
+    }
   }
 };
 
@@ -4814,7 +4873,7 @@ void mage_t::init_spells()
   spec.molten_armor          = find_specialization_spell( "Molten Armor" );
 
   spec.brain_freeze          = find_specialization_spell( "Brain Freeze"     );
-  spec.fingers_of_frost      = find_specialization_spell( "Fingers of Frost" );
+  spec.fingers_of_frost      = find_spell( 112965 );
   spec.frost_armor           = find_specialization_spell( "Frost Armor" );
   spec.shatter               = find_specialization_spell( "Shatter"          );
 
@@ -4855,7 +4914,8 @@ void mage_t::init_base_stats()
     pet_multiplier *= 1.0 + find_racial_spell( "Command" ) -> effectN( 1 ).percent();
 }
 
-// mage_t::init_buffs =======================================================
+// Custom buffs ===============================================================
+
 struct incanters_flow_t : public buff_t
 {
   incanters_flow_t( mage_t* p ) :
@@ -4935,7 +4995,7 @@ void mage_t::create_buffs()
   buffs.brain_freeze          = buff_creator_t( this, "brain_freeze", find_spell( 57761 ) );
   buffs.fingers_of_frost      = buff_creator_t( this, "fingers_of_frost", find_spell( 44544 ) )
                                   .max_stack( find_spell( 44544 ) -> max_stacks() +
-                                              ( sets.has_set_bonus( MAGE_FROST, T18, B4 )? find_spell( 185971 ) -> effectN( 2 ).base_value() : 0 ) );
+                                              sets.set( MAGE_FROST, T18, B4 ) -> effectN( 2 ).base_value() );
   buffs.frost_armor           = buff_creator_t( this, "frost_armor", find_spell( 7302 ) )
                                   .add_invalidate( CACHE_SPELL_HASTE );
   buffs.icy_veins             = buff_creator_t( this, "icy_veins", find_spell( 12472 ) )
@@ -4944,13 +5004,16 @@ void mage_t::create_buffs()
                                   .duration( find_spell( 84714 ) -> duration() )
                                   .period( find_spell( 165470 ) -> effectN( 1 ).time_value() )
                                   .quiet( true )
-                                  .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
+                                  .tick_callback( [ this ]( buff_t*, int, const timespan_t& )
+                                  {
                                     buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
+                                    benefits.fingers_of_frost -> update( "4T17" );
                                     if ( sim -> debug )
                                     {
                                       sim -> out_debug.printf( "%s gains Fingers of Frost from 4T17", name() );
                                     }
-                                  } );
+                                  }
+                                );
   buffs.ice_shard             = buff_creator_t( this, "ice_shard", find_spell( 166869 ) );
   buffs.shatterlance          = buff_creator_t( this, "shatterlance")
                                   .duration( timespan_t::from_seconds( 0.9 ) )
@@ -5042,11 +5105,8 @@ void mage_t::init_benefits()
     }
   }
 
-  benefits.fof_from_blizzard = get_benefit( "Fingers of Frost from Blizzard" );
-  benefits.fof_from_frostbolt =
-    get_benefit( "Fingers of Frost from Frostbolt" );
-  benefits.fof_from_frozen_orb =
-    get_benefit( "Fingers of Frost from Frozen Orb" );
+  benefits.fingers_of_frost =
+    new buff_source_benefit_t( buffs.fingers_of_frost );
 
   benefits.ray_of_frost =
     new buff_stack_benefit_t( buffs.ray_of_frost, "Ray of Frost" );
