@@ -16,7 +16,6 @@ namespace { // UNNAMED NAMESPACE
   Astral Influence
   Affinity active components
   All legendary items
-  Dash
   Artifact 20 rank traits?
 
   Feral =====================================================================
@@ -2705,7 +2704,7 @@ struct ferocious_bite_t : public cat_attack_t
       else
       {
         // Copy tick damage from the most recent tick.
-        base_td = source -> state -> result_amount;
+        base_td = source -> state -> result_raw;
 
         // This snapshots Open Wounds! If they change the behavior this will need to be reworked somehow.
         // FIXME: Does this double dip on target vulnerabilities?
