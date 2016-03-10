@@ -108,7 +108,6 @@ struct mage_td_t : public actor_target_data_t
     buff_t* slow;
     buff_t* frost_bomb;
     buff_t* firestarter;
-    buff_t* water_jet; // Proxy water jet because our expression system sucks
   } debuffs;
 
   mage_td_t( player_t* target, mage_t* mage );
@@ -693,13 +692,6 @@ struct mage_pet_melee_attack_t : public melee_attack_t
 
 struct water_elemental_pet_t;
 
-struct water_elemental_pet_td_t: public actor_target_data_t
-{
-  buff_t* water_jet;
-public:
-  water_elemental_pet_td_t( player_t* target, water_elemental_pet_t* welly );
-};
-
 struct water_elemental_pet_t : public pet_t
 {
   struct freeze_t : public mage_pet_spell_t
@@ -728,111 +720,6 @@ struct water_elemental_pet_t : public pet_t
     }
 
   };
-
-  struct water_jet_t : public mage_pet_spell_t
-  {
-    // queued water jet spell, auto cast water jet spell
-    bool queued, autocast;
-
-    water_jet_t( water_elemental_pet_t* p, const std::string& options_str ) :
-      mage_pet_spell_t( "water_jet", p, p -> find_spell( 135029 ) ),
-      queued( false ), autocast( true )
-    {
-      parse_options( options_str );
-      channeled = tick_may_crit = true;
-
-      if ( p -> o() -> sets.has_set_bonus( MAGE_FROST, T18, B4 ) )
-      {
-        dot_duration += p -> find_spell( 185971 ) -> effectN( 1 ).time_value();
-      }
-    }
-
-    water_elemental_pet_td_t* td( player_t* t ) const
-    { return p() -> get_target_data( t ? t : target ); }
-
-    water_elemental_pet_t* p()
-    { return static_cast<water_elemental_pet_t*>( player ); }
-
-    const water_elemental_pet_t* p() const
-    { return static_cast<water_elemental_pet_t*>( player ); }
-
-    void execute() override
-    {
-      mage_pet_spell_t::execute();
-
-      if ( p() -> o() -> sets.has_set_bonus( MAGE_FROST, T18, B2 ) )
-      {
-        p() -> o() -> buffs.brain_freeze -> trigger( 1 );
-      }
-
-      // If this is a queued execute, disable queued status
-      if ( ! autocast && queued )
-        queued = false;
-    }
-
-    virtual void impact( action_state_t* s ) override
-    {
-      mage_pet_spell_t::impact( s );
-
-      td( s -> target ) -> water_jet
-                        -> trigger(1, buff_t::DEFAULT_VALUE(), 1.0,
-                                   dot_duration *
-                                   p() -> composite_spell_haste());
-
-      // Trigger hidden proxy water jet for the mage, so
-      // debuff.water_jet.<expression> works
-      p() -> o() -> get_target_data( s -> target ) -> debuffs.water_jet
-          -> trigger(1, buff_t::DEFAULT_VALUE(), 1.0,
-                     dot_duration * p() -> composite_spell_haste());
-    }
-
-    virtual double action_multiplier() const override
-    {
-      double am = mage_pet_spell_t::action_multiplier();
-
-      if ( p() -> o() -> spec.icicles -> ok() )
-      {
-        am *= 1.0 + p() -> o() -> cache.mastery_value();
-      }
-
-      return am;
-    }
-
-    virtual void last_tick( dot_t* d ) override
-    {
-      mage_pet_spell_t::last_tick( d );
-      td( d -> target ) -> water_jet -> expire();
-    }
-
-    bool ready() override
-    {
-      // Not ready, until the owner gives permission to cast
-      if ( ! autocast && ! queued )
-        return false;
-
-      return mage_pet_spell_t::ready();
-    }
-
-    void reset() override
-    {
-      mage_pet_spell_t::reset();
-
-      queued = false;
-    }
-  };
-
-  water_elemental_pet_td_t* td( player_t* t ) const
-  { return get_target_data( t ); }
-
-  target_specific_t<water_elemental_pet_td_t> target_data;
-
-  virtual water_elemental_pet_td_t* get_target_data( player_t* target ) const override
-  {
-    water_elemental_pet_td_t*& td = target_data[ target ];
-    if ( ! td )
-      td = new water_elemental_pet_td_t( target, const_cast<water_elemental_pet_t*>(this) );
-    return td;
-  }
 
   struct waterbolt_t: public mage_pet_spell_t
   {
@@ -865,7 +752,7 @@ struct water_elemental_pet_t : public pet_t
   {
     owner_coeff.sp_from_sp = 0.75;
 
-    action_list_str  = "water_jet/waterbolt";
+    action_list_str  = "waterbolt";
   }
 
   mage_t* o()
@@ -878,7 +765,6 @@ struct water_elemental_pet_t : public pet_t
   {
     if ( name == "freeze"     ) return new     freeze_t( this, options_str );
     if ( name == "waterbolt"  ) return new  waterbolt_t( this, options_str );
-    if ( name == "water_jet"  ) return new  water_jet_t( this, options_str );
 
     return pet_t::create_action( name, options_str );
   }
@@ -903,12 +789,6 @@ struct water_elemental_pet_t : public pet_t
     return m;
   }
 };
-
-water_elemental_pet_td_t::water_elemental_pet_td_t( player_t* target, water_elemental_pet_t* welly ) :
-  actor_target_data_t( target, welly )
-{
-  water_jet = buff_creator_t( *this, "water_jet", welly -> find_spell( 135029 ) ).cd( timespan_t::zero() );
-}
 
 
 // ==========================================================================
@@ -2930,19 +2810,6 @@ struct frostbolt_t : public frost_mage_spell_t
       }
 
       trigger_icicle_gain( s, icicle );
-
-
-      if ( ! p() -> pets.water_elemental -> is_sleeping() )
-      {
-        pets::water_elemental_pet_td_t* we_td =
-          p() -> pets.water_elemental
-              -> get_target_data( execute_state -> target );
-
-        if ( we_td -> water_jet -> up() )
-        {
-          trigger_fof( "Water Jet", 1.0 );
-        }
-      }
     }
   }
 
@@ -4261,74 +4128,6 @@ void mage_spell_t::trigger_unstable_magic( action_state_t* s )
 }
 
 
-// Proxy cast Water Jet Action ================================================
-
-struct water_jet_t : public action_t
-{
-  pets::water_elemental_pet_t::water_jet_t* action;
-
-  water_jet_t( mage_t* p, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "water_jet", p ), action( nullptr )
-  {
-    parse_options( options_str );
-
-    may_miss = may_crit = callbacks = false;
-    dual = true;
-    trigger_gcd = timespan_t::zero();
-    ignore_false_positive = true;
-    action_skill = 1;
-  }
-
-  void reset() override
-  {
-    action_t::reset();
-
-    if ( ! action )
-    {
-      mage_t* m = debug_cast<mage_t*>( player );
-      action = debug_cast<pets::water_elemental_pet_t::water_jet_t*>( m -> pets.water_elemental -> find_action( "water_jet" ) );
-      assert( action );
-      action -> autocast = false;
-    }
-  }
-
-  void execute() override
-  {
-    mage_t* m = debug_cast<mage_t*>( player );
-    action -> queued = true;
-    // Interrupt existing cast
-    if ( m -> pets.water_elemental -> executing )
-    {
-      m -> pets.water_elemental -> executing -> interrupt_action();
-    }
-
-    // Cancel existing (potential) player-ready event ..
-    if ( m -> pets.water_elemental -> readying )
-    {
-      event_t::cancel( m -> pets.water_elemental -> readying );
-    }
-
-    // and schedule a new one immediately.
-    m -> pets.water_elemental -> schedule_ready();
-  }
-
-  bool ready() override
-  {
-    // Ensure that the Water Elemental's water_jet is ready. Note that this
-    // skips the water_jet_t::ready() call, and simply checks the "base" ready
-    // properties of the spell (most importantly, the cooldown). If normal
-    // ready() was called, this would always return false, as queued = false,
-    // before this action executes.
-    if ( ! action -> spell_t::ready() )
-      return false;
-
-    // Don't re-execute if water jet is already queued
-    if ( action -> queued == true )
-      return false;
-
-    return action_t::ready();
-  }
-};
 // =====================================================================================
 // Mage Specific Spell Overrides
 // =====================================================================================
@@ -4621,9 +4420,6 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
 
   debuffs.frost_bomb = buff_creator_t( *this, "frost_bomb" ).spell( mage -> talents.frost_bomb );
   debuffs.firestarter = buff_creator_t( *this, "firestarter" ).chance( 1.0 ).duration( timespan_t::from_seconds( 10.0 ) );
-  debuffs.water_jet = buff_creator_t( *this, "water_jet", source -> find_spell( 135029 ) )
-                      .quiet( true )
-                      .cd( timespan_t::zero() );
 }
 
 // mage_t::create_action ====================================================
@@ -4672,7 +4468,6 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "ice_nova"          ) return new                ice_nova_t( this, options_str );
   if ( name == "icy_veins"         ) return new               icy_veins_t( this, options_str );
   if ( name == "water_elemental"   ) return new  summon_water_elemental_t( this, options_str );
-  if ( name == "water_jet"         ) return new               water_jet_t( this, options_str );
 
   // Artifact Specific Spells
   // Fire
