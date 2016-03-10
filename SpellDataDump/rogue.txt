@@ -325,7 +325,7 @@ Class            : Assassination Combat Subtlety Rogue
 School           : Physical
 Spell Level      : 32
 Cooldown         : 120 seconds
-Affecting spells : Enhanced Vanish (157666), Item - Rogue T18 Subtlety 2P Bonus (186278)
+Affecting spells : Item - Rogue T18 Subtlety 2P Bonus (186278)
 Attributes       : ....x... ........ x.x.x... ...x.x..   .....x.. ..x..... ........ ........ 
                  : .xx..... ........ ........ ........   ........ ........ xxx..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -478,14 +478,13 @@ Effects          :
 #1 (id=622)      : School Damage: physical (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.82500
 Description      : Lunging finishing move that causes damage per combo point and has increased range:
-   1 point  : ${$<mult>*$m1*1} damage
-   2 points: ${$<mult>*$m1*2} damage
-   3 points: ${$<mult>*$m1*3} damage
-   4 points: ${$<mult>*$m1*4} damage
-   5 points: ${$<mult>*$m1*5} damage$?s193531[
-   6 points: ${$<mult>*$m1*6} damage][]
+   1 point  : ${$m1*1} damage
+   2 points: ${$m1*2} damage
+   3 points: ${$m1*3} damage
+   4 points: ${$m1*4} damage
+   5 points: ${$m1*5} damage$?s193531[
+   6 points: ${$m1*6} damage][]
 Tooltip          : Rooted.
-Variables        : $mult=${(1+$76808m1/100)*(1+$@versadmg)}
 
 Name             : Deadly Poison (id=2818) [Scaling Spell (9), Spell Family (8)] 
 Class            : Rogue
@@ -633,7 +632,7 @@ Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1833)     : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
-                   Base Value: 60 | Scaled Value: 60
+                   Base Value: 100 | Scaled Value: 100
 #2 (id=127877)   : Apply Aura (6) | Periodic Energize Power: every 2 seconds (24)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3
 Description      : Finishing move that consumes combo points to increase attack speed by $s1%. Lasts longer per combo point.
@@ -712,7 +711,7 @@ Effects          :
 Description      : Instantly attacks for $5374sw2 Physical damage.  Awards 2 combo points.
 
 Name             : Sap (id=6770) [Spell Family (8)] 
-Class            : Assassination Subtlety Rogue
+Class            : Assassination Combat Subtlety Rogue
 School           : Physical
 Resource         : 35 Energy
 Spell Level      : 12
@@ -814,7 +813,7 @@ School           : Physical
 Spell Level      : 24
 Duration         : 3 seconds
 Stance Mask      : 0x20000000
-Affecting spells : Nightstalker (14062), Enhanced Vanish (157666), Item - Rogue T18 Subtlety 2P Bonus (186278), Into the Fray <NNF> (196922), Acrobatic Strikes (196924)
+Affecting spells : Nightstalker (14062), Item - Rogue T18 Subtlety 2P Bonus (186278), Into the Fray <NNF> (196922), Acrobatic Strikes (196924)
 Attributes       : ....x... x....... x.x.x... .x.x....   .....x.. ..x..... ........ ........ 
                  : .x...... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1480,7 +1479,7 @@ Attributes       : ....x... ........ x....... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=44107)    : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.23100 | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.27720 | Radius: 0 - 10 yards
 #2 (id=150470)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.35000 | Radius: 0 - 10 yards
 Description      : Sprays knives at all targets within $A1 yards, dealing $s1 Physical damage and applying your active poisons at their normal rate. Awards $s2 combo $Lpoint:points;.
@@ -2721,7 +2720,7 @@ School           : Physical
 Range            : 100 yards
 Triggered by     : Death from Above (152150)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
-                 : x....... ........ ........ ........   ........ ........ ........ ........ 
+                 : x....... ........ ........ ........   ........ ........ ..x..... ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ...x....   ........ ....x... ........ ........ 
@@ -2786,68 +2785,6 @@ Effects          :
 #1 (id=219544)   : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 10 | Scaled Value: 10
 Description      : Increases your chance to critically strike by $s1%.
-
-Name             : Swashbuckler (id=157660) [Spell Family (8), Passive] 
-Class            : Combat Rogue
-School           : Physical
-Spell Level      : 10
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=219841)   : Apply Aura (6) | Unknown effect sub type (458)
-                   Base Value: 19 | Scaled Value: 19
-Description      : You no longer have a penalty to hitting with your autoattacks due to dual-wielding.
-
-Name             : Enhanced Vanish (id=157666) [Spell Family (8), Passive, Hidden] 
-Class            : Rogue
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=219848)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
-                   Base Value: -30000 | Scaled Value: -30000 | Misc Value: 11
-                   Affected Spells: Vanish (1856), Vanish (11327)
-Description      : Reduces the cooldown on Vanish by ${$m1/-1000} sec.
-
-Name             : Empowered Fan of Knives (id=157671) [Spell Family (8), Passive, Hidden] 
-Class            : Rogue
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=219854)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1
-Description      : Fan of Knives now generates a combo point for each target that it hits.
-
-Name             : Enhanced Stealth (id=157704) [Spell Family (8), Passive, Hidden] 
-Class            : Rogue
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=219903)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5
-Description      : You deal an additional $s1% damage for $31666d after Stealth breaks.
 
 Name             : Stealth (id=158188) [Spell Family (8), Hidden] 
 Class            : Rogue
@@ -2989,7 +2926,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=269038)   : Apply Aura (6) | Unknown effect sub type (109)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 1 | Points Per Combo Point: 5 | Trigger Spell: 212267
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Points Per Combo Point: 5 | Trigger Spell: 212267
                    Affected Spells: Kidney Shot (408), Rupture (1943), Nightblade (195452), Eviscerate (196819), Finality: Eviscerate (197393), Finality: Nightblade (197395), Enveloping Shadows (206237)
 #2 (id=288611)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
@@ -3149,7 +3086,7 @@ School           : Physical
 Spell Level      : 20
 Range            : 100 yards
 Velocity         : 0.6 yards/sec
-Affecting spells : Arcane Power (12042), Icy Veins (12472), Shatter (12982), Ice Floes (108839), The Storm Rages (195352), Arctic Gale (205038), 
+Affecting spells : Icy Veins (12472), Shatter (12982), Ice Floes (108839), The Storm Rages (195352), Arctic Gale (205038), 
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ........ ......x. 
                  : .......x .......x ........ ........   ........ ........ ........ ........ 
@@ -3296,11 +3233,28 @@ Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=283681)   : Apply Aura (6) | Modify Critical Strike% (290)
-                   Base Value: 25 | Scaled Value: 25
+                   Base Value: 40 | Scaled Value: 40
 Description      : Increases Critical Strike chance by $s1% for the duration of Roll the Bones.
 Tooltip          : Critical Strike chance increased by $s1%.
 
 Name             : Grand Melee (id=193358) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Level      : 1
+Duration         : Aura (infinite)
+Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
+                 : ....x... ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=283682)   : Apply Aura (6) | Modify Melee Attack Speed% (319)
+                   Base Value: 40 | Scaled Value: 40
+Description      : Increases your autoattack speed by $s1% for the duration of Roll the Bones.
+Tooltip          : Attacking $s1% faster.
+
+Name             : True Bearing (id=193359) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
 Spell Level      : 1
@@ -3315,25 +3269,8 @@ Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=283682)   : Apply Aura (6) | Modify Melee Attack Speed% (319)
-                   Base Value: 25 | Scaled Value: 25
-Description      : Increases your autoattack speed by $s1% for the duration of Roll the Bones.
-Tooltip          : Attacking $s1% faster.
-
-Name             : True Bearing (id=193359) [Spell Family (8)] 
-Class            : Rogue
-School           : Physical
-Spell Level      : 1
-Duration         : Aura (infinite)
-Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
-                 : ....x... ........ ........ ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
 #1 (id=283683)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 127
+                   Base Value: 3 | Scaled Value: 3 | Misc Value: 127
 Description      : For the duration of Roll the Bones, each time you use a finishing move, you reduce the remaining cooldown on Adrenaline Rush, Sprint, Between the Eyes, Vanish, Blind, Cloak of Shadows, Riposte, Grappling Hook, Cannonball Barrage, Killing Spree, Marked for Death, and Death from Above by $s1 sec per combo point spent.
 Tooltip          : Finishers reduce the remaining cooldown on many of your abilities by $s1 sec per combo point.
 
@@ -3537,8 +3474,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.87500
 #2 (id=286897)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 1 | Scaled Value: 1 | Mechanic: Bleed
-#3 (id=286898)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88)
 Description      : Finishing move that infects the target with shadowy energy, dealing Shadow damage over time and causing attacks against the target to reduce movement speed by $206760s1% for $206760d. Lasts longer per combo point.
    1 point  : ${$<bonus>*$m1*8/2} over 8 sec
    2 points: ${$<bonus>*$m1*10/2} over 10 sec
@@ -3908,6 +3843,9 @@ Spell Level      : 46
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
+Proc Chance      : 100%
+Proc Flags       : ...x.x.x .x.x.x.. .x...... ........ 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Hostile Spell Taken
 Affecting spells : Mastery: Executioner (76808), Deepening Shadows (185314), Deeper Strategem (193531), Alacrity (193539), Demon's Kiss (197233), Tangled Shadow (200778)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3920,8 +3858,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.00000
 #2 (id=289990)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 1 | Scaled Value: 1 | Mechanic: Bleed
-#3 (id=289991)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88)
 Description      : Finishing move that infects the target with shadowy energy, dealing Shadow damage over time and causing attacks against the target to reduce movement speed by $206760s1% for $206760d. Lasts longer per combo point.
    1 point  : ${$<bonus>*$m1*8/2} over 8 sec
    2 points: ${$<bonus>*$m1*10/2} over 10 sec
@@ -3955,7 +3891,7 @@ Attributes       : ....x... ........ x....... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=290720)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.23100 | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.27720 | Radius: 0 - 10 yards
 #2 (id=290721)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.35000 | Radius: 0 - 10 yards
 Description      : Sprays shurikens at all targets within $A1 yards, dealing $s1 Physical damage. Awards $s2 combo $Lpoint:points;$ per target hit.
@@ -3973,7 +3909,7 @@ Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=293719)   : Apply Aura (6) | Mod Power Regen (110)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 3
+                   Base Value: 40 | Scaled Value: 40 | Misc Value: 3
 Description      : Your base Energy regeneration is increased by $s1% for the duration of Roll the Bones.
 Tooltip          : Increases Energy regeneration by $s1%.
 
@@ -3990,9 +3926,9 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=293724)   : Apply Aura (6) | Unknown effect sub type (227)
-                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 213914
-Description      : Increases current and maximum health by $s1% every $t1 sec for the duration of Roll the Bones.
-Tooltip          : Increases current and maximum health by $s1% every $t1 sec.
+                   Base Value: 3 | Scaled Value: 3 | Trigger Spell: 213914
+Description      : Increases health by $s1% every $t1 sec for the duration of Roll the Bones.
+Tooltip          : Increases health every $t1 sec.
 
 Name             : Rupture (id=199672) [Hidden] 
 Class            : Rogue
@@ -4034,8 +3970,8 @@ School           : Shadow
 Spell Level      : 54
 Range            : 30 yards
 GCD              : 1.5 seconds
-Duration         : 60 seconds
-Cooldown         : 180 seconds
+Duration         : 300 seconds
+Cooldown         : 1800 seconds
 Proc Chance      : 101%
 Mechanic         : Unknown(2)
 Affecting spells : Shady Dealer (202521)
@@ -4055,7 +3991,7 @@ Name             : Parley (id=199743) [Spell Family (8)]
 Class            : Rogue
 School           : Physical
 Spell Level      : 50
-Range            : 40 yards
+Range            : 30 yards
 GCD              : 1 seconds
 Duration         : 300 seconds
 Cooldown         : 20 seconds
@@ -4138,7 +4074,7 @@ Resource         : 1 - 5 Combo Points
 Spell Level      : 25
 Range            : 20 yards
 GCD              : 1 seconds
-Velocity         : 50 yards/sec
+Duration         : 5 seconds
 Cooldown         : 20 seconds
 Mechanic         : Unknown(95)
 Affecting spells : Outlaw Rogue (137036), Deeper Strategem (193531), Alacrity (193539), Tangled Shadow (200778), Fatebringer (202524)
@@ -4150,18 +4086,17 @@ Attributes       : ....x... ........ x.....x. ........   ........ .x...... .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=294039)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.25000
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.50000
 #2 (id=294040)   : Apply Aura (6) | Stun (12)
                    Base Value: 70 | Scaled Value: 70 | Mechanic: Unknown(95)
 Description      : Finishing move that deals damage with your pistol and stuns the target. Critical strikes with this ability deal four times normal damage:
-   1 point  : ${$AP*0.35*1*$<mult>} damage, 1 sec
-   2 points: ${$AP*0.35*2*$<mult>} damage, 2 sec
-   3 points: ${$AP*0.35*3*$<mult>} damage, 3 sec
-   4 points: ${$AP*0.35*4*$<mult>} damage, 4 sec
-   5 points: ${$AP*0.35*5*$<mult>} damage, 5 sec$?s193531[
-   6 points: ${$AP*0.35*6*$<mult>} damage, 6 sec][]
+   1 point  : ${$m1*1} damage, 1 sec
+   2 points: ${$m1*2} damage, 2 sec
+   3 points: ${$m1*3} damage, 3 sec
+   4 points: ${$m1*4} damage, 4 sec
+   5 points: ${$m1*5} damage, 5 sec$?s193531[
+   6 points: ${$m1*6} damage, 6 sec][]
 Tooltip          : Stunned.
-Variables        : $mult=$?s76808[${((100+$76808m1))/100*(1+$@versadmg)}]$?s84601[${1.10*(1+$@versadmg)}][${1.00*(1+$@versadmg)}]
 
 Name             : Swordmaster (Passive Talent) (id=200733) [Spell Family (8), Passive] 
 Class            : Rogue
@@ -4437,6 +4372,6 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : Hidden (7)
 Effects          :
 #1 (id=317490)   : Apply Aura (6) | Unknown effect sub type (230)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000
+                   Base Value: 3 | Scaled Value: 3 | SP Coefficient: 1.00000
 
 

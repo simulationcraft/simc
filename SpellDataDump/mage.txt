@@ -36,7 +36,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
-Affecting spells : Arcane Power (12042), Icy Veins (12472), Shatter (12982), Frosty Zap (24392), Improved Counterspell (24429), Ice Floes (108839), Item - Mage T15 2P Bonus (138316), Ice Shard (166869), Icy Caress (195315), Lonely Winter (205024), Shattering Bolts (214629)
+Affecting spells : Icy Veins (12472), Shatter (12982), Frosty Zap (24392), Improved Counterspell (24429), Ice Floes (108839), Item - Mage T15 2P Bonus (138316), Ice Shard (166869), Icy Caress (195315), Lonely Winter (205024), Shattering Bolts (214629)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -58,7 +58,7 @@ Resource         : 4% Base Mana (44000 @Level 110)
 Spell Level      : 28
 GCD              : 1.5 seconds
 Cooldown         : 12 seconds
-Affecting spells : Arcane Power (12042), Shatter (12982), Frozen Thoughts (146557)
+Affecting spells : Shatter (12982), Frozen Thoughts (146557)
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -67,7 +67,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : ........ x....... ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=80)       : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.381) | SP Coefficient: 0.23850 | Radius: 12 yards
+                   Base Value: 1 | Scaled Value: 0 (avg=0.381) | SP Coefficient: 0.28620 | Radius: 12 yards
 Description      : Targets in a cone in front of the caster take $s2 Frost damage and are slowed by $212792m1% for $212792d.
 Tooltip          : Movement slowed by $s1%.
 Variables        : $arctic1=$?s31674[${1.01}][${1}]
@@ -91,7 +91,7 @@ Charges          : 1 (30 seconds cooldown)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Arcane Power (12042), Shatter (12982)
+Affecting spells : Shatter (12982)
 Attributes       : ........ ........ x....... ......x.   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -100,7 +100,7 @@ Attributes       : ........ ........ x....... ......x.   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=83)       : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.14925 | Radius: 0 - 12 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.17910 | Radius: 0 - 12 yards
 #2 (id=84)       : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 12 yards | Mechanic: Unknown(58)
 Description      : Blasts enemies within $A1 yds of the caster for $122s1 Frost damage and freezes them in place for up to $122d. Damage caused may interrupt the effect.
@@ -125,7 +125,7 @@ Cast Time        : 2.25 seconds
 GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
 Proc Chance      : 101%
-Affecting spells : Arcane Power (12042), Icy Veins (12472), Shatter (12982), Ice Floes (108839), Critical Mass (117216), Item - Mage T15 2P Bonus (138316), Enhanced Pyrotechnics (157644), Ignition (165979), Firestarter (171170), Fire at Will (194224), Great Balls of Fire (194313)
+Affecting spells : Icy Veins (12472), Shatter (12982), Ice Floes (108839), Critical Mass (117216), Mage (137018), Item - Mage T15 2P Bonus (138316), Enhanced Pyrotechnics (157644), Ignition (165979), Firestarter (171170), Fire at Will (194224), Great Balls of Fire (194313)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -143,7 +143,7 @@ School           : Arcane
 Resource         : 2% Base Mana (22000 @Level 110)
 Spell Level      : 28
 GCD              : 1.5 seconds
-Affecting spells : Arcane Power (12042), Shatter (12982), Arcane Charge (36032), Crackling Energy (187310), Arcane Purification (187313), Erosion (210134)
+Affecting spells : Shatter (12982), Arcane Charge (36032), Crackling Energy (187310), Arcane Purification (187313), Erosion (210134)
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -152,7 +152,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=457)      : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.81750 | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.98100 | Radius: 0 - 10 yards
 #2 (id=281175)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: none
 Description      : Causes an explosion of arcane magic around the caster, dealing $s1 Arcane damage to all enemies within $A1 yards, and generating an Arcane Charge if any are hit.
@@ -182,8 +182,9 @@ Resource         : 2% Base Mana (22000 @Level 110)
 Spell Level      : 7
 GCD              : 1.5 seconds
 Duration         : 0.3 seconds
+Cooldown         : 0.5 seconds
 Charges          : 1 (15 seconds cooldown)
-Affecting spells : Reduced Blink GCD (44301), Tome of Blink (168795), Everywhere At Once (187301)
+Affecting spells : Reduced Blink GCD (44301), Tome of Blink (168795)
 Attributes       : ........ ........ x....... ........   ........ ..x....x ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -209,7 +210,7 @@ Range            : 40 yards
 Cast Time        : 4 seconds
 GCD              : 1.5 seconds
 Duration         : 8 seconds
-Affecting spells : Arcane Power (12042), Icy Veins (12472), Shatter (12982), Hot Streak! (48108), Ice Floes (108839), Fire Mage (137019), Blue Flame Special (210182), 
+Affecting spells : Icy Veins (12472), Shatter (12982), Hot Streak! (48108), Ice Floes (108839), Fire Mage (137019), Blue Flame Special (210182), 
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ......x. 
@@ -218,7 +219,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
 Effects          :
 #1 (id=126904)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | Radius: 8 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.20000 | Radius: 8 yards
 #2 (id=630)      : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Radius: 8 yards | Mechanic: Unknown(88)
 Description      : Calls down a pillar of fire, burning all enemies within the area for $s1 Fire damage and reducing their movement speed by $s2% for $d.
@@ -253,7 +254,7 @@ Spell Level      : 40
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Arcane Power (12042), Icy Veins (12472), Shatter (12982), Critical Mass (117216), PH - Enhanced Pyrotechnics Affects Scorch (208100)
+Affecting spells : Icy Veins (12472), Shatter (12982), Critical Mass (117216), Mage (137018), PH - Enhanced Pyrotechnics Affects Scorch (208100)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -292,7 +293,7 @@ Spell Level      : 16
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
-Affecting spells : Arcane Power (12042), Icy Veins (12472), Ice Floes (108839), Arcane Instability (166872), Arcane Focus (171375), Rule of Threes (187292)
+Affecting spells : Icy Veins (12472), Ice Floes (108839), Arcane Instability (166872), Arcane Focus (171375), Rule of Threes (187292)
 Triggered by     : Arcane Missiles! (79683)
 Attributes       : ........ x....... x....... .....x..   ..x....x ..x...x. ........ ..x.x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -391,7 +392,7 @@ Cast Time        : 4.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
 Proc Chance      : 101%
-Affecting spells : Arcane Power (12042), Icy Veins (12472), Shatter (12982), Hot Streak! (48108), Ice Floes (108839), Critical Mass (117216), Item - Mage T14 2P Bonus (123097), Item - Mage T15 4P Bonus (138376), Pyromaniac (166868), Pyroclasmic Paranoia (194239), 
+Affecting spells : Icy Veins (12472), Shatter (12982), Hot Streak! (48108), Ice Floes (108839), Critical Mass (117216), Item - Mage T14 2P Bonus (123097), Mage (137018), Item - Mage T15 4P Bonus (138376), Pyromaniac (166868), Pyroclasmic Paranoia (194239), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -447,7 +448,7 @@ Name             : Arcane Power (id=12042) [Spell Family (3)]
 Class            : Arcane Mage
 School           : Arcane
 Spell Level      : 44
-Duration         : 15 seconds
+Duration         : 10 seconds
 Cooldown         : 90 seconds
 Affecting spells : Icy Veins (12472), Stolen Time (105791), Item - Mage T14 4P Bonus (123101), Wild Arcanist (184903), Aegwynn's Imperative (187264)
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -458,10 +459,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=5130)     : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7e
-#2 (id=5131)     : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 14
-                   Affected Spells: Frostbolt (116), Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (5143), Pyroblast (11366), Arcane Blast (30451), Ice Lance (30455), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44457), Arcane Missiles! (79683), Cannonball Barrage (185779), Blizzard (190356), Blizzard (190357), Phoenix's Flames (194466)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7e
+#2 (id=5131)     : Apply Aura (6) | Modify Power Cost% (72)
+                   Base Value: -30 | Scaled Value: -30 | Misc Value: 127 | Misc Value 2: 0x1
 #3 (id=5132)     : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
                    Affected Spells: Arcane Blast (30451)
@@ -696,7 +696,7 @@ Spell Level      : 5
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 38 yards/sec
-Affecting spells : Arcane Power (12042), Shatter (12982), Item - Mage T14 2P Bonus (123097), Let It Go (195322), Empowered Ice Lance (195418), Lonely Winter (205024), PH - Ice Lance Increases Ice Lance Damage (214404)
+Affecting spells : Shatter (12982), Item - Mage T14 2P Bonus (123097), Let It Go (195322), Empowered Ice Lance (195418), Lonely Winter (205024), PH - Ice Lance Increases Ice Lance Damage (214404)
 Triggered by     : Fingers of Frost (44544)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -778,7 +778,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
-Affecting spells : Arcane Power (12042), Shatter (12982), Fire Mage (137019), PH - Dragon's Breath Range Increase (207547)
+Affecting spells : Shatter (12982), Fire Mage (137019), Darckli's Dragonfire Diadem (207547)
 Attributes       : ........ ........ x...x... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -787,7 +787,7 @@ Attributes       : ........ ........ x...x... ........   ...x...x ........ .....
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=21276)    : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.967, dl=0.15) | SP Coefficient: 0.86000 | Radius: 12 yards
+                   Base Value: 1 | Scaled Value: 0 (avg=1.967, dl=0.15) | SP Coefficient: 1.03200 | Radius: 12 yards
 #2 (id=21277)    : Apply Aura (6) | Confuse (5)
                    Base Value: 0 | Scaled Value: 0 | Radius: 12 yards | Mechanic: Unknown(10)
 Description      : Targets in a cone in front of the caster take $s1 Fire damage and are disoriented for $d.  
@@ -1008,8 +1008,8 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
-Cooldown         : 3 seconds
-Affecting spells : Arcane Power (12042), Shatter (12982), Arcane Charge (36032), Torrential Barrage (187304), Erosion (210134)
+Cooldown         : 4.5 seconds
+Affecting spells : Shatter (12982), Arcane Charge (36032), Mage (137018), Torrential Barrage (187304), Erosion (210134)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1050,7 +1050,7 @@ Spell Level      : 49
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
-Affecting spells : Arcane Power (12042), Shatter (12982)
+Affecting spells : Shatter (12982)
 Attributes       : ........ ........ x....... ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1092,7 +1092,7 @@ Duration         : 15 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
 Affecting spells : Item - Mage T18 Frost 4P Bonus (185971)
-Triggered by     : PH - Icy Veins Periodically Grants Fingers of Frost (208147), Ebonbolt (214634), It's Cold Outside (214776)
+Triggered by     : Lady Vashj's Grasp (208147), Ebonbolt (214634), It's Cold Outside (214776)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1440,14 +1440,14 @@ Up to $s2 Icicles can be stored at once. Excess Icicles that are generated will 
 
 Name             : Arcane Missiles! (id=79683) [Spell Family (3)] 
 Class            : Mage
-School           : Physical
+School           : Arcane
 Spell Level      : 24
 Duration         : 20 seconds
 Stacks           : 1 initial, 3 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
-Affecting spells : Arcane Missiles (5143), Arcane Power (12042), Icy Veins (12472), Ice Floes (108839), Arcane Instability (166872), Arcane Focus (171375), Rule of Threes (187292)
+Affecting spells : Arcane Missiles (5143), Icy Veins (12472), Ice Floes (108839), Arcane Instability (166872), Arcane Focus (171375), Rule of Threes (187292)
 Triggered by     : Arcane Missiles (79684)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -2020,10 +2020,10 @@ Attributes       : ........ ........ x....... ..x.....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=128479)   : Apply Aura (6) | Periodic Damage: arcane every 1 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.03410
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.06000
 #2 (id=220453)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10
-Description      : Places a Nether Tempest on the target which deals $114923o1 Arcane damage over $114923d to the target and ${$114954m1*12} to all enemies within 10 yards. Limit 1 target. Damage increased by $36032s1% per Arcane Charge at cast time.
+Description      : Places a Nether Tempest on the target which deals $114923o1 Arcane damage over $114923d to the target and ${$114954m1*12/$t1} to all enemies within 10 yards. Limit 1 target. Damage increased by $36032s1% per Arcane Charge at cast time.
 Tooltip          : Deals $w1 Arcane damage and an additional $w1 Arcane damage to all enemies within $114954A1 yards every $t sec.
 
 Name             : Nether Tempest (id=114954) [Spell Family (3)] 
@@ -2041,7 +2041,7 @@ Attributes       : ........ ........ x.x....x x..x....   ........ ........ .....
                  : ........ ........ x....... ........   ........ ........ .....x.. ........ 
 Effects          :
 #1 (id=128532)   : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.03410 | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.06000 | Radius: 0 - 10 yards
 Description      : $@spelldesc114923
 
 Name             : Player Damage Reduction (id=115043) [Passive, Hidden] 
@@ -2148,9 +2148,6 @@ Effects          :
                    Affected Spells: Fireball (133), Scorch (2948), Pyroblast (11366), Phoenix's Flames (194466)
 #2 (id=132773)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20
-#3 (id=290125)   : Apply Aura (6) | Unknown effect sub type (457)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1500
-                   Affected Spells: Fireball (133), Scorch (2948), Pyroblast (11366), Phoenix's Flames (194466)
 Description      : Multiplies the critical strike chance of your Fireball, Pyroblast, and Scorch by ${1+$m1/100}.2.
 
 Name             : Ancient Teleport: Dalaran (id=120145) [Spell Family (3)] 
@@ -2264,10 +2261,12 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179701)   : Apply Aura (6) | Dummy (4)
+#1 (id=179701)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 0 | Scaled Value: 0
-#2 (id=172453)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Affected Spells: Arcane Barrage (44425)
+#2 (id=172453)   : Apply Aura (6) | Unknown effect sub type (457)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1500
+                   Affected Spells: Fireball (133), Scorch (2948), Pyroblast (11366), Phoenix's Flames (194466)
 #3 (id=188984)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #4 (id=188985)   : Apply Aura (6) | Dummy (4)
@@ -2294,6 +2293,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #15 (id=260656)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
+#16 (id=320019)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#17 (id=320055)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
 
 Name             : Fire Mage (id=137019) [Spell Family (3), Passive, Hidden] 
 Class            : Fire Mage
@@ -2315,8 +2318,9 @@ Effects          :
 #3 (id=191126)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 150 | Scaled Value: 150
                    Affected Spells: Dragon's Breath (31661)
-#4 (id=191127)   : Apply Aura (6) | Dummy (4)
+#4 (id=191127)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 0 | Scaled Value: 0
+                   Affected Spells: Cinderstorm (198928), Cinderstorm (198929)
 #5 (id=191128)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #6 (id=260857)   : Apply Aura (6) | Dummy (4)
@@ -2382,7 +2386,7 @@ Effects          :
 #15 (id=260856)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 
-Name             : Arcane Mage (id=137021) [Passive, Hidden] 
+Name             : Arcane Mage (id=137021) [Spell Family (3), Passive, Hidden] 
 Class            : Arcane Mage
 School           : Physical
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -2420,8 +2424,6 @@ Effects          :
 #13 (id=260874)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #14 (id=260875)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#15 (id=260876)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 
 Name             : Player Damage Reduction Level 90 (id=142689) [Passive, Hidden] 
@@ -2864,24 +2866,6 @@ Effects          :
 Description      : $@spelldesc157642
 Tooltip          : Increases critical strike chance of Fireball by $s1%.
 
-Name             : Improved Blizzard (id=157727) [Spell Family (3), Passive] 
-Class            : Frost Mage
-School           : Physical
-Proc Chance      : 101%
-Proc Flags       : ........ ........ x....... ........ 
-                 : Hostile Spell
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=219930)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50
-Description      : Each time Blizzard deals damage, it reduces the cooldown of Frozen Orb by ${$m1/100}.1 sec.
-
 Name             : Unstable Magic (id=157976) [Spell Family (3), Passive] 
 Class            : Mage
 School           : None
@@ -3184,7 +3168,7 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 8 seconds
 Proc Chance      : 100%
-Affecting spells : Arcane Power (12042), Icy Veins (12472), Shatter (12982), Ice Floes (108839), The Storm Rages (195352), Arctic Gale (205038), 
+Affecting spells : Icy Veins (12472), Shatter (12982), Ice Floes (108839), The Storm Rages (195352), Arctic Gale (205038), 
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3206,9 +3190,9 @@ Class            : Mage
 School           : Frost
 Spell Level      : 44
 Range            : 100 yards
-Affecting spells : Arcane Power (12042), Icy Veins (12472), Shatter (12982), Ice Floes (108839), The Storm Rages (195352), Arctic Gale (205038), 
+Affecting spells : Icy Veins (12472), Shatter (12982), Ice Floes (108839), The Storm Rages (195352), Arctic Gale (205038), 
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
-                 : ..x..... ........ ........ ......x.   ........ .x...... ........ ......x. 
+                 : ........ ........ ........ ......x.   ........ .x...... ........ ......x. 
                  : .......x .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3216,7 +3200,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=278848)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.323) | SP Coefficient: 0.27525 | Radius: 0 - 8 yards
+                   Base Value: 1 | Scaled Value: 0 (avg=0.323) | SP Coefficient: 0.33030 | Radius: 0 - 8 yards
 Description      : $@spelldesc10
 Tooltip          : $@spellaura10
 Variables        : $arctic1=$?s31674[${1.01}][${1}]
@@ -3294,26 +3278,6 @@ Description      : Increases your Mana regeneration rate and maximum Mana by ${$
 
 Arcane Charges increase the damage of affected spells by an additional ${$m2}.2%.
 
-Name             : Shimmer (id=191738) [Spell Family (3), Passive] 
-Class            : Mage
-School           : Arcane
-Spell Level      : 1
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=281258)   : Apply Aura (6) | Unknown effect sub type (332)
-                   Base Value: 212653 | Scaled Value: 212653 | Misc Value: 1953
-#2 (id=315360)   : Apply Aura (6) | Modify Cooldown Charge (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1446
-#3 (id=315641)   : Apply Aura (6) | Unknown effect sub type (332)
-                   Base Value: 212801 | Scaled Value: 212801 | Misc Value: 195676
-Description      : Blink now has ${1+$m2} charges, is off the global cooldown, and can be cast while casting.
-
 Name             : Frostbolt (id=191764) 
 Class            : Mage
 School           : Frost
@@ -3364,7 +3328,7 @@ GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
-Affecting spells : Arcane Power (12042), Icy Veins (12472), Shatter (12982), Hot Streak! (48108), Ice Floes (108839), Critical Mass (117216), Item - Mage T14 2P Bonus (123097), Item - Mage T15 4P Bonus (138376), Pyromaniac (166868), Pyroclasmic Paranoia (194239), 
+Affecting spells : Icy Veins (12472), Shatter (12982), Hot Streak! (48108), Ice Floes (108839), Critical Mass (117216), Item - Mage T14 2P Bonus (123097), Mage (137018), Item - Mage T15 4P Bonus (138376), Pyromaniac (166868), Pyroclasmic Paranoia (194239), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3425,7 +3389,7 @@ School           : Arcane
 Spell Level      : 24
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
-Affecting spells : Icy Veins (12472), Improved Mana Gems (37447), 
+Affecting spells : Icy Veins (12472), Improved Mana Gems (37447), Everywhere At Once (187301), 
 Attributes       : ........ ........ x.x..... .x......   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3486,6 +3450,7 @@ Name             : Cinderstorm (id=198928) [Spell Family (3)]
 Class            : Mage
 School           : Fire
 Range            : 100 yards
+Affecting spells : Fire Mage (137019)
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ........ ........ 
                  : x......x .......x ........ ........   ...x.... .......x .xx..... ........ 
@@ -3506,7 +3471,8 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 2.25 seconds
-Cooldown         : 8 seconds
+Cooldown         : 9 seconds
+Affecting spells : Fire Mage (137019)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3933,7 +3899,7 @@ Effects          :
 Description      : $@spelldesc205023
 
 Name             : Flame Patch (id=205470) [Spell Family (3)] 
-Class            : Shaman, Mage
+Class            : Mage
 School           : Fire
 Spell Level      : 1
 Range            : 100 yards
@@ -3951,7 +3917,7 @@ Description      : Flame patch burning enemies.
 Tooltip          : Burning
 
 Name             : Flame Patch (id=205472) [Spell Family (3)] 
-Class            : Shaman, Mage
+Class            : Mage
 School           : Fire
 Spell Level      : 44
 Range            : 100 yards
@@ -4098,6 +4064,33 @@ Effects          :
 #1 (id=311158)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 
+Name             : Shimmer (id=212653) [Spell Family (3)] 
+Class            : Mage
+School           : Arcane
+Resource         : 2% Base Mana (22000 @Level 110)
+Spell Level      : 7
+Duration         : 0.3 seconds
+Cooldown         : 0.5 seconds
+Charges          : 2 (15 seconds cooldown)
+Affecting spells : Reduced Blink GCD (44301), Tome of Blink (168795)
+Attributes       : ........ ........ x....... ........   ........ ..x....x ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=315357)   : Leap (29)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 20 yards
+#2 (id=315358)   : Apply Aura (6) | Unknown effect sub type (377)
+                   Base Value: 0 | Scaled Value: 0
+Description      : Teleports the caster $A1 yards forward, unless something is in the way.
+
+Shimmer is off the global cooldown, and can be cast while casting.
+
+Replaces Blink.
+Tooltip          : Shimmering.
+
 Name             : Cone of Cold (id=212792) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
@@ -4122,7 +4115,7 @@ School           : Arcane
 Spell Level      : 24
 Duration         : 10 seconds
 Cooldown         : 30 seconds
-Affecting spells : Icy Veins (12472), Improved Mana Gems (37447), 
+Affecting spells : Icy Veins (12472), Improved Mana Gems (37447), Everywhere At Once (187301), 
 Attributes       : ........ ........ x.x..... .x......   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

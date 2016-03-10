@@ -5,9 +5,10 @@ Class            : Beast Mastery Survival Hunter
 School           : Nature
 Spell Level      : 1
 Range            : 45 yards
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 10 seconds
+Affecting spells : Hunter (137014)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -43,7 +44,7 @@ Spell Level      : 14
 Range            : 50000 yards
 Cooldown         : 1 seconds
 Charges          : 1 (20 seconds cooldown)
-Affecting spells : Guide: Disengage (162116)
+Affecting spells : Hunter (137014), Guide: Disengage (162116)
 Attributes       : ........ ........ x.x.x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ xx...... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -62,6 +63,7 @@ School           : Physical
 Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
+Affecting spells : Hunter (137014)
 Attributes       : ....x... ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -81,7 +83,7 @@ Spell Level      : 1
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 3 seconds
-Affecting spells : Glyph of Lesser Proportion (57870), Hunter (137014)
+Affecting spells : Glyph of Lesser Proportion (57870), Hunter (137014), 
 Attributes       : ........ ........ x....... .......x   ........ ..x..... .x...... ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
@@ -100,7 +102,7 @@ Class            : Beast Mastery Survival Hunter
 School           : Nature
 Spell Level      : 12
 Range            : 40 yards
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Duration         : 30 seconds
 Attributes       : ........ ........ x....... ........   ........ ..x..... .x...... ........ 
                  : ...x.... ........ ........ ........   ........ ........ .x...... ........ 
@@ -180,10 +182,10 @@ Class            : Hunter
 School           : Arcane
 Spell Level      : 38
 Range            : 40 yards
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Velocity         : 2 yards/sec
 Cooldown         : 20 seconds
-Affecting spells : Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
+Affecting spells : Hunter (137014), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
 Attributes       : ........ ........ x....... ........   ........ ..x....x .x...... ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -221,9 +223,9 @@ School           : Physical
 Resource         : 40 Focus
 Spell Level      : 28
 Range            : 40 yards
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
-Affecting spells : Freezing Trap (3355), Refocus (24531), Multi-Shot Damage Increase (28539), Thrill of the Hunt (34720), Mortal Shots (36413), Shot Power (37508), Bombardment (82921), Marksmanship Hunter (137016), Item - Hunter T16 2P Bonus (144637), Guide: Sharpshooting (178549), Called Shot (190467), Mastery: Sniper Training (193468), Focus of the Titans (197139)
+Affecting spells : Freezing Trap (3355), Refocus (24531), Multi-Shot Damage Increase (28539), Thrill of the Hunt (34720), Mortal Shots (36413), Shot Power (37508), Bombardment (82921), Hunter (137014), Marksmanship Hunter (137016), Item - Hunter T16 2P Bonus (144637), Guide: Sharpshooting (178549), Called Shot (190467), Mastery: Sniper Training (193468), Focus of the Titans (197139)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -235,7 +237,7 @@ Effects          :
 #1 (id=800)      : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards
 #2 (id=101372)   : Weapon Damage% (31)
-                   Base Value: 55 | Scaled Value: 0.55 | Radius: 0 - 8 yards
+                   Base Value: 66 | Scaled Value: 0.66 | Radius: 0 - 8 yards
 Description      : Fires several missiles, hitting your current target and all enemies within $A2 yards for $sw2 Physical damage.$?s19434[  Each target hit generates $213363s1 Focus.]?s115939[
 
 Triggers Beast Cleave.][]
@@ -261,7 +263,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #2 (id=1072)     : Apply Aura (6) | Unknown effect sub type (308)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7
-                   Affected Spells: Multi-Shot (2643), Freezing Trap (3355), Concussive Shot (5116), Ice Trap (13809), Explosive Trap (13812), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Chimaera Shot (53209), Kill Shot (53351), Bullheaded (63896), Glaive Toss (117050), Serpent Sting (118253), Barrage (120360), Barrage (120361), Glaive Toss (120761), Glaive Toss (121414), Iron Horde Trip Mine (155918), Kill Shot (157708), Steel Trap (162488), Steel Trap (162496), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Aspect of the Turtle (186265), Bursting Shot (186387), Freezing Trap (187650), Freezing Trap (187651), Tar Trap (187698), Tar Trap (187699), Mongoose Bite (190928), Aimed Shot (191043), Explosive Trap (191433), Cobra Shot (193455), Black Arrow (194599), Dragonsfire Grenade (194855), Dragonsfire Grenade (194856), Flanking Strike (202800), Fury of the Eagle (203415), Chimaera Shot (204304), Explosive Shot (212431), Sidewinders (214579)
+                   Affected Spells: Multi-Shot (2643), Freezing Trap (3355), Concussive Shot (5116), Ice Trap (13809), Explosive Trap (13812), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Chimaera Shot (53209), Bullheaded (63896), Serpent Sting (118253), Barrage (120360), Barrage (120361), Glaive Toss (120761), Glaive Toss (121414), Iron Horde Trip Mine (155918), Steel Trap (162488), Steel Trap (162496), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Aspect of the Turtle (186265), Bursting Shot (186387), Freezing Trap (187650), Freezing Trap (187651), Tar Trap (187698), Tar Trap (187699), Mongoose Bite (190928), Aimed Shot (191043), Explosive Trap (191433), Cobra Shot (193455), Black Arrow (194599), Dragonsfire Grenade (194855), Dragonsfire Grenade (194856), Throwing Axes (200163), Flanking Strike (202800), Fury of the Eagle (203415), Chimaera Shot (204304), Explosive Shot (212431), Sidewinders (214579)
 Description      : Place an ice trap that freezes the first enemy that approaches, incapacitating them for $3355d.  Any damage caused will break the ice. Only one target can be Freezing Trapped at a time. Trap will exist for $d.
 Tooltip          : Incapacitated.
 
@@ -270,12 +272,12 @@ Class            : Beast Mastery Marksmanship Hunter
 School           : Physical
 Spell Level      : 8
 Range            : 40 yards
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Duration         : 6 seconds
 Cooldown         : 5 seconds
 Mechanic         : Unknown(88)
-Affecting spells : Freezing Trap (3355), Mortal Shots (36413), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
+Affecting spells : Freezing Trap (3355), Mortal Shots (36413), Hunter (137014), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -295,7 +297,7 @@ School           : Physical
 Spell Level      : 32
 Duration         : 360 seconds
 Cooldown         : 30 seconds
-Affecting spells : Improved Feign Death (24432)
+Affecting spells : Improved Feign Death (24432), Hunter (137014)
 Attributes       : ........ x....... x.x.x... .x......   ........ ..x..... .xx..... ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -371,10 +373,10 @@ Name             : Ice Trap (Frost Trap) (id=13809) [Spell Family (9)]
 Class            : Hunter
 School           : Frost
 Spell Level      : 46
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 30 seconds
-Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Improved Traps (199518), Superior Trapper (203751), Hunter's Guile (203752)
+Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Hunter (137014), Improved Traps (199518), Superior Trapper (203751), Hunter's Guile (203752)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -420,7 +422,7 @@ Attributes       : ........ ........ .....x.. x..x....   ...x.x.x ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=6178)     : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.1, dl=0.25) | AP Coefficient: 0.10000 | Radius: 0 - 5 yards
+                   Base Value: 1 | Scaled Value: 0 (avg=0.1, dl=0.25) | AP Coefficient: 0.12000 | Radius: 0 - 5 yards
 #2 (id=6179)     : Unknown effect type (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 4439
 Description      : $@spelldesc13813
@@ -432,7 +434,7 @@ School           : Fire
 Spell Level      : 38
 Range            : 100 yards
 Duration         : 60 seconds
-Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Black Decay (188400), Improved Traps (199518), Superior Trapper (203751), Hunter's Guile (203752)
+Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Hunter (137014), Black Decay (188400), Improved Traps (199518), Superior Trapper (203751), Hunter's Guile (203752)
 Triggered by     : Explosive Trap (191433)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -514,7 +516,7 @@ School           : Nature
 Spell Level      : 30
 Range            : 40 yards
 Cast Time        : 1.5 seconds
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Duration         : 30 seconds
 Cooldown         : 45 seconds
@@ -523,7 +525,7 @@ Proc Chance      : 100%
 Mechanic         : Unknown(81)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Freezing Trap (3355), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
+Affecting spells : Freezing Trap (3355), Hunter (137014), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
 Attributes       : .x..x... ........ x...x... ........   ........ ..x..... .x...... .x.x.... 
                  : ........ ........ .x...... ........   x....... ........ ........ ........ 
                  : ........ ........ .......x ...x....   .....x.. ........ ........ ........ 
@@ -546,9 +548,9 @@ Resource         : 50 Focus
 Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 2 seconds
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Velocity         : 100 yards/sec
-Affecting spells : Freezing Trap (3355), Refocus (24531), Thrill of the Hunt (34720), Mortal Shots (36413), Shot Power (37508), Item - Hunter T14 4P Bonus (123091), Item - Hunter T16 2P Bonus (144637), Item - Hunter T16 4P Bonus (144641), Guide: Sharpshooting (178549), Item - Hunter T18 Marksmanship 4P Bonus (188191), Deadly Aim (190449), Precision (190520), Marked for Death (190533), Mastery: Sniper Training (193468), Lock and Load (194594), True Aim (199803), PH - Multi-Shot Hits Increase Aimed Shot Damage (208913), Deadeye (213424), Wind Arrows (214826)
+Affecting spells : Freezing Trap (3355), Refocus (24531), Thrill of the Hunt (34720), Mortal Shots (36413), Shot Power (37508), Item - Hunter T14 4P Bonus (123091), Hunter (137014), Item - Hunter T16 2P Bonus (144637), Item - Hunter T16 4P Bonus (144641), Guide: Sharpshooting (178549), Item - Hunter T18 Marksmanship 4P Bonus (188191), Deadly Aim (190449), Precision (190520), Marked for Death (190533), Mastery: Sniper Training (193468), Lock and Load (194594), True Aim (199803), PH - Multi-Shot Hits Increase Aimed Shot Damage (208913), Deadeye (213424), Wind Arrows (214826)
 Triggered by     : Lock and Load (194594)
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
@@ -596,7 +598,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
-Affecting spells : Freezing Trap (3355)
+Affecting spells : Freezing Trap (3355), Hunter (137014)
 Attributes       : ....x... ...x.... x.x..... ........   ........ ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ..x...x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -759,7 +761,7 @@ Name             : Combat Experience (id=20782) [Spell Family (9), Passive]
 Class            : Ferocity Ferocity Tenacity Tenacity Cunning Cunning Hunter Pet
 School           : Physical
 Spell Level      : 1
-Affecting spells : PH -  Pet Gains All Spec Passive Abilities And Increased Damage (212329)
+Affecting spells : The Apex Predator's Claw (212329)
 Attributes       : ....x.x. x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -904,12 +906,12 @@ Tooltip          : Interrupted.
 Name             : Kill Command (id=34026) [Scaling Spell (4), Spell Family (9)] 
 Class            : Beast Mastery Hunter
 School           : Physical
-Resource         : 20 Focus
+Resource         : 30 Focus
 Spell Level      : 3
 Range            : 100 yards
-GCD              : 1 seconds
-Cooldown         : 6 seconds
-Affecting spells : Item - Hunter T14 2P Bonus (123090), Pack Leader (197080)
+GCD              : 1.5 seconds
+Cooldown         : 7.5 seconds
+Affecting spells : Item - Hunter T14 2P Bonus (123090), Hunter (137014), Pack Leader (197080)
 Attributes       : ........ ........ x.x..x.. ........   ........ .xx..... ........ ..xxx... 
                  : ..x..... ........ ........ ........   ........ .....x.. ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -933,7 +935,7 @@ Spell Level      : 42
 Range            : 100 yards
 Duration         : 8 seconds
 Cooldown         : 30 seconds
-Affecting spells : Guide: Sharpshooting (178549)
+Affecting spells : Hunter (137014), Guide: Sharpshooting (178549)
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ...x.... ..x..... 
                  : ...x.... ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   .....x.. ........ ........ ........ 
@@ -1144,9 +1146,9 @@ Class            : Hunter
 School           : Nature
 Spell Level      : 60
 Range            : 40 yards
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Cooldown         : 9 seconds
-Affecting spells : Freezing Trap (3355), Item - Hunter T14 2P Bonus (123090), Guide: Sharpshooting (178549), Black Decay (188400), Mastery: Sniper Training (193468)
+Affecting spells : Freezing Trap (3355), Item - Hunter T14 2P Bonus (123090), Hunter (137014), Guide: Sharpshooting (178549), Black Decay (188400), Mastery: Sniper Training (193468)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1180,7 +1182,7 @@ Effects          :
                    Base Value: 80 | Scaled Value: 80
 #3 (id=316573)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20
-Description      : Against targets above $s2% Health, Aimed Shot, Arcane Shot, Marked Shot, and Multi-Shot have a $s1% increased critical strike chance, and those critical strikes deal an additional $s3% damage over$63468d.
+Description      : Against targets above $s2% Health, Aimed Shot, Arcane Shot, Marked Shot, and Multi-Shot have a $s1% increased critical strike chance, and those critical strikes deal an additional $s3% damage over $63468d.
 
 Name             : Exotic Beasts (id=53270) [Spell Family (9), Passive, Hidden] 
 Class            : Beast Mastery Hunter
@@ -1197,31 +1199,6 @@ Effects          :
 #1 (id=45898)    : Apply Aura (6) | Unknown effect sub type (146)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | Misc Value: 1
 Description      : You master the art of beast training, teaching you the ability to tame Exotic pets.
-
-Name             : Kill Shot (id=53351) [Scaling Spell (4), Spell Family (9)] 
-Class            : Hunter
-School           : Physical
-Spell Level      : 35 (max 80)
-Range            : 45 yards
-GCD              : 1 seconds
-Velocity         : 80 yards/sec
-Cooldown         : 10 seconds
-Affecting spells : Freezing Trap (3355), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
-Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ........ 
-                 : ........ ........ .x...... ........   ........ ........ ........ ........ 
-                 : ........ .x...... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ....x...   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Ranged ability (1)
-Effects          :
-#1 (id=45989)    : Normalized Weapon Damage (121)
-                   Base Value: 1 | Scaled Value: 1
-#2 (id=45990)    : Weapon Damage% (31)
-                   Base Value: 785 | Scaled Value: 7.85
-Description      : You attempt to finish off a wounded target, dealing $sw2 Physical damage. Only usable on enemies with less than 20% health.  If the target dies, the Hunter will regain $164851s1% of maximum health.
-
-If Kill Shot fails to kill the target, the cooldown is reset.
 
 Name             : Last Stand (Tenacity Ability) (id=53478) [Spell Family (9)] 
 Class            : Tenacity Tenacity Hunter Pet
@@ -1502,6 +1479,7 @@ Range            : 40 yards
 Duration         : 5 seconds
 Cooldown         : 180 seconds
 Stance Mask      : 0x81000000
+Affecting spells : Hunter (137014)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1534,7 +1512,7 @@ Name             : Aspect of the Chameleon (id=61648) [Spell Family (9)]
 Class            : Hunter
 School           : Nature
 Spell Level      : 40
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 180 seconds
 Attributes       : ........ ........ x.x..... x.......   ........ ........ .x...... ........ 
@@ -1898,7 +1876,7 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Item - Hunter T14 2P Bonus (123090), Pack Leader (197080)
+Affecting spells : Item - Hunter T14 2P Bonus (123090), Hunter (137014), Pack Leader (197080)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2243,7 +2221,7 @@ School           : Nature
 Range            : 30 yards
 Duration         : 10 seconds
 Cooldown         : 45 seconds
-Affecting spells : Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
+Affecting spells : Hunter (137014), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
 Attributes       : ....x... ........ ........ ........   ........ ........ .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -2278,6 +2256,7 @@ School           : Physical
 Spell Level      : 26
 Range            : 45 yards
 Cooldown         : 120 seconds
+Affecting spells : Hunter (137014)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2361,38 +2340,8 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=130467)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 2
+                   Base Value: 120 | Scaled Value: 120 | SP Coefficient: 1.00000 | Misc Value: 2
 Description      : After you Multi-Shot, your pet's melee attacks also strike all other nearby enemy targets for $s1% as much for the next $118455d.
-
-Name             : Glaive Toss (id=117050) [Spell Family (9)] 
-Class            : Hunter
-School           : Stormstrike
-Resource         : 15 Focus
-Range            : 40 yards
-GCD              : 1 seconds
-Duration         : 15 seconds
-Cooldown         : 15 seconds
-Affecting spells : Freezing Trap (3355), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), 
-Attributes       : ....x... ........ x.x..... .....x..   ........ ..x..... ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=132388)   : Dummy (3)
-                   Base Value: 4 | Scaled Value: 4
-#2 (id=140695)   : Apply Aura (6) | Periodic Dummy: every 0.2 seconds (226)
-                   Base Value: 4 | Scaled Value: 4
-#3 (id=150512)   : Trigger Spell: Glaive Toss (64)
-                   Base Value: 50 | Scaled Value: 50 | Trigger Spell: 120755
-#4 (id=152936)   : Trigger Spell: Glaive Toss (64)
-                   Base Value: 50 | Scaled Value: 50 | Trigger Spell: 120756
-#5 (id=156072)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0
-Description      : You hurl two glaives toward a target, each dealing $120761s1 damage to each enemy struck and reducing movement speed by $120761s2% for $120761d.  The primary target will take $s1 times as much damage from each strike.
-
-The Glaives will return back to you, damaging and snaring targets again as they return.
 
 Name             : Binding Shot (id=117526) [Spell Family (9)] 
 Class            : Hunter
@@ -2422,7 +2371,7 @@ School           : Nature
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 15 seconds
-Affecting spells : Freezing Trap (3355), Survival Hunter (137017), Guide: Sharpshooting (178549), Black Decay (188400)
+Affecting spells : Freezing Trap (3355), Hunter (137014), Survival Hunter (137017), Guide: Sharpshooting (178549), Black Decay (188400)
 Attributes       : ........ ........ x....... ........   ........ .x...... ........ ........ 
                  : ..x..... ........ .x...... ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -2431,7 +2380,7 @@ Attributes       : ........ ........ x....... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=134592)   : Apply Aura (6) | Periodic Damage: nature every 3 seconds (3)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.6) | AP Coefficient: 0.72500
+                   Base Value: 1 | Scaled Value: 0 (avg=2.6) | AP Coefficient: 0.87000
 Description      : Causes $o1 Nature damage over $d.
 Tooltip          : Causes $w1 Nature damage every $t1 seconds.
 
@@ -2479,11 +2428,11 @@ School           : Physical
 Resource         : 60 Focus
 Spell Level      : 24
 Range            : 40 yards
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Duration         : 3 seconds
 Cooldown         : 20 seconds
-Affecting spells : Freezing Trap (3355), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
+Affecting spells : Freezing Trap (3355), Hunter (137014), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
 Attributes       : ........ ........ x....... ........   ..x...x. .x....x. ........ ..x.x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ .x...... ........ ........ 
@@ -2530,10 +2479,10 @@ Class            : Beast Mastery Hunter
 School           : Nature
 Spell Level      : 10
 Range            : 40 yards
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Duration         : 8 seconds
-Cooldown         : 10 seconds
-Affecting spells : Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
+Cooldown         : 12 seconds
+Affecting spells : Hunter (137014), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2547,57 +2496,22 @@ Description      : Summons a powerful wild beast to attack your target for $d. W
 
 Summoning a beast reduces the remaining cooldown of Bestial Wrath by $s1 sec.
 
-Name             : Dire Beast (id=120694) [Spell Family (9), Passive, Hidden] 
+Name             : Dire Beast (id=120694) [Spell Family (9)] 
 Class            : Hunter
-School           : Physical
-Proc Chance      : 100%
-Proc Flags       : ..x..... ........ ........ ........ 
-                 : White Melee
+School           : Nature
+Range            : 100 yards
+Duration         : 8 seconds
 Affecting spells : Dire Stable (193532)
-Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ .......x ........ ........   ........ .....x.. ........ ........ 
+Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
 Effects          :
-#1 (id=140521)   : Apply Pet Area Aura (119) | Periodic Energize Power: every 2 seconds (24)
-                   Base Value: 4 | Scaled Value: 4 | Misc Value: 2 | Radius: 60 yards
-
-Name             : Glaive Toss (id=120755) [Spell Family (9), Hidden] 
-Class            : Hunter
-School           : Physical
-Range            : 50000 yards
-Velocity         : 18 yards/sec
-Triggered by     : Glaive Toss (117050)
-Attributes       : ....x..x x....... ........ .....x..   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ....x... 
-                 : ........ ........ ..x..... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Hidden (7)
-Effects          :
-#1 (id=140691)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0
-
-Name             : Glaive Toss (id=120756) [Spell Family (9), Hidden] 
-Class            : Hunter
-School           : Physical
-Range            : 50000 yards
-Velocity         : 18 yards/sec
-Triggered by     : Glaive Toss (117050)
-Attributes       : ....x..x x....... ........ .....x..   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ....x... 
-                 : ........ ........ ..x..... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Hidden (7)
-Effects          :
-#1 (id=140693)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0
+#1 (id=140521)   : Apply Aura (6) | Periodic Energize Power: every 2 seconds (24)
+                   Base Value: 3 | Scaled Value: 3 | Misc Value: 2
+Tooltip          : Your Dire Beast is granting you $s1 Focus every $t1 sec.
 
 Name             : Glaive Toss (id=120761) [Spell Family (9)] 
 Class            : Hunter
@@ -2678,7 +2592,7 @@ School           : Physical
 Spell Level      : 40
 Range            : 40 yards
 Cast Time        : 2.5 seconds
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Attributes       : .x...... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -2737,10 +2651,10 @@ School           : Physical
 Resource         : 30 Focus
 Spell Level      : 10
 Range            : 40 yards
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 60 seconds
-Affecting spells : Mastery: Master of Beasts (76657), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), 
+Affecting spells : Mastery: Master of Beasts (76657), Hunter (137014), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), 
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ...x.... 
@@ -2759,7 +2673,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 100 yards
 Velocity         : 1.5 yards/sec
-Affecting spells : Mastery: Master of Beasts (76657), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), 
+Affecting spells : Mastery: Master of Beasts (76657), Hunter (137014), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), 
 Attributes       : ........ ........ x....x.x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2777,7 +2691,7 @@ School           : Arcane
 Spell Level      : 38
 Range            : 50000 yards
 Duration         : 20 seconds
-Affecting spells : Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
+Affecting spells : Hunter (137014), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
 Triggered by     : Flare (1543)
 Attributes       : ........ ........ ........ ........   ........ ..x..... .x...... ........ 
                  : ..x..... ........ ......x. ........   ........ ........ ........ ........ 
@@ -2841,20 +2755,23 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179697)   : Apply Aura (6) | Dummy (4)
+#1 (id=179697)   : Apply Aura (6) | Add Percent Modifier: Spell Pushback (108)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 9
+                   Affected Spells: Revive Pet (982)
+#2 (id=191142)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 0 | Scaled Value: 0
-#2 (id=191142)   : Apply Aura (6) | Dummy (4)
+                   Affected Spells: Kill Command (34026), Chimaera Shot (53209), Kill Command (83381), Chimaera Shot (171454), Chimaera Shot (171457), Throwing Axes (200163), Flanking Strike (202800), Chimaera Shot (204304), Butchery (212436)
+#3 (id=191143)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 0 | Scaled Value: 0
-#3 (id=191143)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#4 (id=191144)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#5 (id=191145)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#6 (id=214883)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#7 (id=260638)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Affected Spells: Mend Pet (136), Disengage (781), Call Pet 1 (883), Revive Pet (982), Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Feign Death (5384), Ice Trap (13809), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Kill Command (34026), Misdirection (34477), Chimaera Shot (53209), Gift of the Naaru (59543), Kill Command (83381), Binding Shot (109248), Exhilaration (109304), Serpent Sting (118253), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Counter Shot (147362), Iron Horde Trip Mine (155918), Poisoned Ammo (162543), Frozen Ammo (162546), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Lacerate (185855), Marked Shot (185901), Aspect of the Cheetah (186257), Aspect of the Cheetah (186258), Aspect of the Turtle (186265), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Carve (187708), Harpoon (190925), Mongoose Bite (190928), Aimed Shot (191043), Explosive Trap (191433), Cobra Shot (193455), Aspect of the Wild (193530), Exhilaration (194291), Volley (194386), Volley (194392), Black Arrow (194599), Head Shot (198670), Camouflage (198783), Camouflage (199483), Throwing Axes (200163), Flanking Strike (202800), Fury of the Eagle (203415), Windburst (204147), Chimaera Shot (204304), A Murder of Crows (206505), Play Dead (209997), Wake Up (210000), Explosive Shot (212431), Butchery (212436), Head Shot (213678), Sidewinders (214579)
+#4 (id=191144)   : Apply Aura (6) | Unknown effect sub type (457)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1628
+#5 (id=191145)   : Apply Aura (6) | Unknown effect sub type (457)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1616
+#6 (id=214883)   : Apply Aura (6) | Unknown effect sub type (457)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1575
+#7 (id=260638)   : Apply Aura (6) | Unknown effect sub type (457)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1557
 #8 (id=260639)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #9 (id=260640)   : Apply Aura (6) | Dummy (4)
@@ -2871,9 +2788,18 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #15 (id=260646)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
-#16 (id=310316)   : Apply Aura (6) | Add Percent Modifier: Spell Pushback (108)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 9
-                   Affected Spells: Revive Pet (982)
+#16 (id=310316)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#17 (id=320082)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#18 (id=320083)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#19 (id=320084)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#20 (id=320085)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#21 (id=320086)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
 
 Name             : Beast Mastery Hunter (id=137015) [Spell Family (9), Passive, Hidden] 
 Class            : Beast Mastery Hunter
@@ -2906,16 +2832,6 @@ Effects          :
 #9 (id=260900)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #10 (id=260901)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#11 (id=260902)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#12 (id=260903)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#13 (id=260904)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#14 (id=260905)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#15 (id=260906)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 
 Name             : Marksmanship Hunter (id=137016) [Spell Family (9), Passive, Hidden] 
@@ -3049,7 +2965,7 @@ Range            : 40 yards
 Duration         : 3 seconds
 Cooldown         : 24 seconds
 Proc Chance      : 101%
-Affecting spells : Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
+Affecting spells : Hunter (137014), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
 Attributes       : .x...... ........ x....... ........   ........ .x...... .x...... ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3134,49 +3050,6 @@ Effects          :
 #1 (id=219546)   : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 10 | Scaled Value: 10
 Description      : Increases your chance to critically strike by $s1%.
-
-Name             : Kill Shot (id=157708) [Scaling Spell (4), Spell Family (9)] 
-Class            : Hunter
-School           : Physical
-Spell Level      : 35 (max 80)
-Range            : 45 yards
-GCD              : 1 seconds
-Velocity         : 40 yards/sec
-Cooldown         : 10 seconds
-Affecting spells : Freezing Trap (3355), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
-Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ........ 
-                 : ........ ........ .x...... ........   ........ ........ ........ ........ 
-                 : ........ .x...... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ....x...   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Ranged ability (1)
-Effects          :
-#1 (id=219908)   : Normalized Weapon Damage (121)
-                   Base Value: 1 | Scaled Value: 1
-#2 (id=219909)   : Weapon Damage% (31)
-                   Base Value: 785 | Scaled Value: 7.85
-Description      : You attempt to finish the wounded target off, firing a long range attack dealing $sw2 Physical damage. Kill Shot can only be used on enemies that have 35% or less health. If the target dies, the Hunter will regain $164851s1% of maximum health.
-
-If Kill Shot fails to kill the target, the cooldown is instantly reset, but cannot be reset more often than once every $90967d.
-
-Name             : Improved Focus (id=157726) [Spell Family (9), Passive] 
-Class            : Hunter
-School           : Physical
-Proc Chance      : 100%
-Proc Flags       : ........ x....... ........ ........ 
-                 : Yellow Ranged
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=219929)   : Apply Aura (6) | Unknown effect sub type (418)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 2
-Description      : Increases your maximum Focus by $s1.
 
 Name             : Molten Hide (Special Ability) (id=159786) 
 Class            : Hunter
@@ -3508,7 +3381,7 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 1
 Range            : 40 yards
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Cooldown         : 60 seconds
 Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Improved Traps (199518), Superior Trapper (203751), Hunter's Guile (203752)
@@ -3668,6 +3541,7 @@ Spell Level      : 1
 Range            : 100 yards
 Velocity         : 24 yards/sec
 Duration         : 16 seconds
+Affecting spells : Hunter (137014)
 Triggered by     : Poisoned Ammo (162537)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ......x. 
@@ -3688,6 +3562,7 @@ Spell Level      : 1
 Range            : 100 yards
 Velocity         : 24 yards/sec
 Duration         : 4 seconds
+Affecting spells : Hunter (137014)
 Triggered by     : Frozen Ammo (162539)
 Attributes       : .x...... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ......x. 
@@ -3721,21 +3596,6 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100
 #3 (id=228480)   : Apply Aura (6) | Unknown effect sub type (466)
                    Base Value: -100 | Scaled Value: -100
-
-Name             : Kill Shot (id=164851) [Spell Family (9)] 
-Class            : Hunter
-School           : Physical
-Cooldown         : 120 seconds
-Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ .....x..   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ...x....   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=232500)   : Direct Heal% (136)
-                   Base Value: 15 | Scaled Value: 15
-Description      : $@spelldesc53351
 
 Name             : Survivalist (id=164856) [Spell Family (9), Passive] 
 Class            : Survival Hunter
@@ -3817,7 +3677,7 @@ School           : Frost
 Spell Level      : 60
 Range            : 40 yards
 Velocity         : 40 yards/sec
-Affecting spells : Freezing Trap (3355), Item - Hunter T14 2P Bonus (123090), Guide: Sharpshooting (178549), Black Decay (188400), Mastery: Sniper Training (193468)
+Affecting spells : Freezing Trap (3355), Item - Hunter T14 2P Bonus (123090), Hunter (137014), Guide: Sharpshooting (178549), Black Decay (188400), Mastery: Sniper Training (193468)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3840,7 +3700,7 @@ School           : Nature
 Spell Level      : 60
 Range            : 40 yards
 Velocity         : 40 yards/sec
-Affecting spells : Freezing Trap (3355), Item - Hunter T14 2P Bonus (123090), Guide: Sharpshooting (178549), Black Decay (188400), Mastery: Sniper Training (193468)
+Affecting spells : Freezing Trap (3355), Item - Hunter T14 2P Bonus (123090), Hunter (137014), Guide: Sharpshooting (178549), Black Decay (188400), Mastery: Sniper Training (193468)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3911,9 +3771,9 @@ Class            : Marksmanship Hunter
 School           : Arcane
 Spell Level      : 10
 Range            : 40 yards
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
-Affecting spells : Freezing Trap (3355), Mortal Shots (36413), Shot Power (37508), Item - Hunter T16 2P Bonus (144637), Guide: Sharpshooting (178549), Black Decay (188400), Mastery: Sniper Training (193468), True Aim (199803)
+Affecting spells : Freezing Trap (3355), Mortal Shots (36413), Shot Power (37508), Hunter (137014), Item - Hunter T16 2P Bonus (144637), Guide: Sharpshooting (178549), Black Decay (188400), Mastery: Sniper Training (193468), True Aim (199803)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3998,7 +3858,7 @@ GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 10 seconds
 Mechanic         : Bleed
-Affecting spells : Jagged Claws (203578)
+Affecting spells : Hunter (137014), Jagged Claws (203578)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...... ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4017,9 +3877,9 @@ School           : Physical
 Resource         : 30 Focus
 Spell Level      : 18
 Range            : 40 yards
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
-Affecting spells : Mastery: Sniper Training (193468), Mark of the Windrunner (204219)
+Affecting spells : Hunter (137014), Mastery: Sniper Training (193468), 
 Attributes       : ........ ........ x....... ........   ........ .xx..... ........ ..x.x... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -4035,12 +3895,12 @@ Also exposes Vulnerabilities in the target, snaring them by $187131s1%, and incr
 Variables        : $damagePri=${($rw+$RW)/2*0.7*15*(1+$@versadmg)}
 $damageSec=${($rw+$RW)/2*0.7*7.5*(1+$@versadmg)}
 
-Name             : Seek Vulnerabilities (id=185987) [Spell Family (9), Passive] 
+Name             : Hunter's Mark (id=185987) [Spell Family (9), Passive] 
 Class            : Marksmanship Hunter
 School           : Physical
 Spell Level      : 18
 Proc Chance      : 100%
-Real PPM         : 6 (Haste multiplier)
+Real PPM         : 8 (Haste multiplier)
 Proc Flags       : ........ x....... ........ ........ 
                  : Yellow Ranged
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -4109,7 +3969,7 @@ School           : Physical
 Spell Level      : 5
 Duration         : 3 seconds
 Cooldown         : 180 seconds
-Affecting spells : Dash (199921), PH - Reduce Cooldown of Aspects (206332)
+Affecting spells : Hunter (137014), Dash (199921), PH - Reduce Cooldown of Aspects (206332)
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4127,7 +3987,7 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 5
 Duration         : 9 seconds
-Affecting spells : Dash (199921), PH - Reduce Cooldown of Aspects (206332)
+Affecting spells : Hunter (137014), Dash (199921), PH - Reduce Cooldown of Aspects (206332)
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4146,7 +4006,7 @@ School           : Physical
 Spell Level      : 50
 Duration         : 8 seconds
 Cooldown         : 180 seconds
-Affecting spells : Freezing Trap (3355), Black Decay (188400), PH - Reduce Cooldown of Aspects (206332)
+Affecting spells : Freezing Trap (3355), Hunter (137014), Black Decay (188400), PH - Reduce Cooldown of Aspects (206332)
 Attributes       : ....x... ........ x.x..... ........   ....x... ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4181,7 +4041,7 @@ Resource         : 25 Focus
 Spell Level      : 10
 Range            : 8 yards
 GCD              : 1.5 seconds
-Affecting spells : Thrill of the Hunt (34720), Raptor's Cry (203638)
+Affecting spells : Thrill of the Hunt (34720), Hunter (137014), Raptor's Cry (203638)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4202,7 +4062,7 @@ Spell Level      : 44
 Range            : 100 yards
 Duration         : 10 seconds
 Cooldown         : 120 seconds
-Affecting spells : Wilderness Expert (197038), PH - Reduce Cooldown of Aspects (206332)
+Affecting spells : Hunter (137014), Wilderness Expert (197038), PH - Reduce Cooldown of Aspects (206332)
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4233,7 +4093,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
-Affecting spells : Freezing Trap (3355), Black Decay (188400), Gust of Wind (190567), Mastery: Sniper Training (193468)
+Affecting spells : Freezing Trap (3355), Hunter (137014), Black Decay (188400), Gust of Wind (190567), Mastery: Sniper Training (193468)
 Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ...x.... ........ ........   ........ ..x..... ........ ........ 
@@ -4261,6 +4121,7 @@ Range            : 100 yards
 Duration         : 30 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
+Triggered by     : Mark of the Windrunner (204219)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4281,7 +4142,7 @@ Class            : Survival Hunter
 School           : Physical
 Spell Level      : 28
 Range            : 40 yards
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Cooldown         : 60 seconds
 Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Improved Traps (199518), Superior Trapper (203751), Hunter's Guile (203752)
@@ -4339,7 +4200,7 @@ Class            : Survival Hunter
 School           : Physical
 Spell Level      : 58
 Range            : 40 yards
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Cooldown         : 60 seconds
 Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Improved Traps (199518), Superior Trapper (203751), Hunter's Guile (203752)
@@ -4401,7 +4262,7 @@ Resource         : 40 Focus
 Spell Level      : 54
 Range            : 8 yards
 GCD              : 1.5 seconds
-Affecting spells : Thrill of the Hunt (34720)
+Affecting spells : Thrill of the Hunt (34720), Hunter (137014)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4410,7 +4271,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=273765)   : Weapon Damage% (31)
-                   Base Value: 90 | Scaled Value: 0.9 | Radius: 10 yards
+                   Base Value: 108 | Scaled Value: 1.08 | Radius: 10 yards
 #2 (id=273766)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards
 Description      : A sweeping attack that strikes all enemies in front of you for $sw1 Physical damage.
@@ -4506,9 +4367,10 @@ Class            : Survival Hunter
 School           : Physical
 Spell Level      : 22
 Range            : 5 - 40 yards
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Cooldown         : 15 seconds
+Affecting spells : Hunter (137014)
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4525,7 +4387,7 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 5
 Range            : 5 - 50000 yards
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Duration         : 3 seconds
 Cooldown         : 6 seconds
@@ -4548,7 +4410,7 @@ Spell Level      : 18
 Range            : 8 yards
 GCD              : 1.5 seconds
 Charges          : 3 (10 seconds cooldown)
-Affecting spells : Freezing Trap (3355), Guide: Sharpshooting (178549), Mongoose Fury (190931), Mastery: Sniper Training (193468), Sharpened Beak (203566)
+Affecting spells : Freezing Trap (3355), Hunter (137014), Guide: Sharpshooting (178549), Mongoose Fury (190931), Mastery: Sniper Training (193468), Sharpened Fang (203566)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4583,14 +4445,13 @@ Effects          :
 Description      : $@spelldesc190928
 Tooltip          : Damage dealt by Mongoose Bite increased by $s1%.
 
-Name             : Aimed Shot (id=191043) [Scaling Spell (4), Spell Family (9)] 
+Name             : Aimed Shot (id=191043) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 10
 Range            : 100 yards
-GCD              : 1 seconds
 Velocity         : 100 yards/sec
-Affecting spells : Freezing Trap (3355), Refocus (24531), Thrill of the Hunt (34720), Mortal Shots (36413), Shot Power (37508), Item - Hunter T14 4P Bonus (123091), Item - Hunter T16 2P Bonus (144637), Item - Hunter T16 4P Bonus (144641), Guide: Sharpshooting (178549), Item - Hunter T18 Marksmanship 4P Bonus (188191), Deadly Aim (190449), Precision (190520), Marked for Death (190533), Mastery: Sniper Training (193468), Lock and Load (194594), True Aim (199803), PH - Multi-Shot Hits Increase Aimed Shot Damage (208913), Deadeye (213424), Wind Arrows (214826)
+Affecting spells : Freezing Trap (3355), Refocus (24531), Thrill of the Hunt (34720), Mortal Shots (36413), Shot Power (37508), Item - Hunter T14 4P Bonus (123091), Hunter (137014), Item - Hunter T16 2P Bonus (144637), Item - Hunter T16 4P Bonus (144641), Guide: Sharpshooting (178549), Item - Hunter T18 Marksmanship 4P Bonus (188191), Deadly Aim (190449), Precision (190520), Marked for Death (190533), Mastery: Sniper Training (193468), Lock and Load (194594), True Aim (199803), PH - Multi-Shot Hits Increase Aimed Shot Damage (208913), Deadeye (213424), Wind Arrows (214826)
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -4600,9 +4461,9 @@ Attributes       : .x..x... ........ x....... ........   ........ ........ .....
                  : Ranged ability (1)
 Effects          :
 #1 (id=280170)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 (avg=2.2, dl=0.1)
+                   Base Value: 0 | Scaled Value: 0
 #2 (id=280171)   : Weapon Damage% (31)
-                   Base Value: 100 | Scaled Value: 1
+                   Base Value: 30 | Scaled Value: 0.3
 Description      : A powerful aimed shot that deals $sw2 Physical damage. Deals extra damage to slowed targets.
 
 Name             : Sticky Bomb (id=191241) 
@@ -4725,10 +4586,10 @@ Class            : Survival Hunter
 School           : Fire
 Spell Level      : 48
 Range            : 40 yards
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Cooldown         : 60 seconds
-Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Black Decay (188400), Improved Traps (199518), Superior Trapper (203751), Hunter's Guile (203752)
+Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Hunter (137014), Black Decay (188400), Improved Traps (199518), Superior Trapper (203751), Hunter's Guile (203752)
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4763,12 +4624,12 @@ Description      : Toss a hatchet at an enemy target, dealing $s1 Physical damag
 Name             : Cobra Shot (id=193455) [Spell Family (9)] 
 Class            : Beast Mastery Hunter
 School           : Physical
-Resource         : 30 Focus
+Resource         : 40 Focus
 Spell Level      : 1
 Range            : 40 yards
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
-Affecting spells : Freezing Trap (3355), Thrill of the Hunt (34720), Guide: Sharpshooting (178549), Black Decay (188400), Way of the Cobra (194398), Spitting Cobras (197140)
+Affecting spells : Freezing Trap (3355), Thrill of the Hunt (34720), Hunter (137014), Guide: Sharpshooting (178549), Black Decay (188400), Way of the Cobra (194398), Spitting Cobras (197140)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4796,13 +4657,13 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=283823)   : Apply Aura (6) | Add Percent Modifier: Spell Range (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.62500 | Misc Value: 5
-                   Affected Spells: Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Wyvern Sting (19386), Aimed Shot (19434), Chimaera Shot (53209), Kill Shot (53351), Bullheaded (63896), Binding Shot (109248), Glaive Toss (117050), Barrage (120360), Barrage (120361), Dire Beast (120679), Glaive Toss (120761), Glaive Toss (121414), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Counter Shot (147362), Kill Shot (157708), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Marked Shot (185901), Mongoose Bite (190928), Aimed Shot (191043), Volley (194386), Volley (194392), Black Arrow (194599), Head Shot (198670), Flanking Strike (202800), Fury of the Eagle (203415), Chimaera Shot (204304), A Murder of Crows (206505), Explosive Shot (212431), Head Shot (213678), Sidewinders (214579)
+                   Affected Spells: Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Wyvern Sting (19386), Aimed Shot (19434), Chimaera Shot (53209), Bullheaded (63896), Binding Shot (109248), Barrage (120360), Barrage (120361), Dire Beast (120679), Glaive Toss (120761), Glaive Toss (121414), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Counter Shot (147362), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Marked Shot (185901), Mongoose Bite (190928), Aimed Shot (191043), Volley (194386), Volley (194392), Black Arrow (194599), Head Shot (198670), Fury of the Eagle (203415), Chimaera Shot (204304), A Murder of Crows (206505), Explosive Shot (212431), Head Shot (213678), Sidewinders (214579)
 #2 (id=283906)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000
                    Affected Spells: Aimed Shot (19434), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Bursting Shot (186387), Rapid Fire (188202), Aimed Shot (191043), Volley (194386), Volley (194392), Black Arrow (194599), Head Shot (198670), A Murder of Crows (206505), Marked Shot (212621), Head Shot (213678)
 #3 (id=316221)   : Apply Aura (6) | Add Percent Modifier: Spell Radius (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.62500 | Misc Value: 6
-                   Affected Spells: Glaive Toss (117050), Marked Shot (185901), Sidewinders (214579)
+                   Affected Spells: Marked Shot (185901), Sidewinders (214579)
 Description      : Range of all shots is increased by $s1% and damage of all Focus spending abilities increased by $s2%.
 Tooltip          : Shot range increased by $w1%.
 Focus spending abilites deal $s2% increased damage.
@@ -4834,7 +4695,7 @@ Spell Level      : 18
 Range            : 100 yards
 Duration         : 10 seconds
 Cooldown         : 120 seconds
-Affecting spells : Wilderness Expert (197038), PH - Reduce Cooldown of Aspects (206332)
+Affecting spells : Hunter (137014), Wilderness Expert (197038), PH - Reduce Cooldown of Aspects (206332)
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4864,7 +4725,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=283926)   : Apply Aura (6) | Add Flat Modifier: Spell Tick Time (107)
-                   Base Value: 4 | Scaled Value: 4 | Misc Value: 8
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 8
                    Affected Spells: Dire Beast (120694)
 Description      : Dire Beast generates $s1 additional Focus every $120694t1.
 
@@ -4925,7 +4786,7 @@ Name             : Caltrops (id=194277) [Spell Family (9)]
 Class            : Hunter
 School           : Physical
 Range            : 40 yards
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Velocity         : 15 yards/sec
 Cooldown         : 30 seconds
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
@@ -4982,6 +4843,7 @@ School           : Physical
 Spell Level      : 26
 Range            : 45 yards
 Cooldown         : 120 seconds
+Affecting spells : Hunter (137014)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5015,10 +4877,10 @@ School           : Physical
 Resource         : 80 Focus
 Spell Level      : 42
 Range            : 40 yards
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 6 seconds
-Affecting spells : Mastery: Sniper Training (193468), 
+Affecting spells : Hunter (137014), Mastery: Sniper Training (193468), 
 Attributes       : .x...... ........ x.....x. ........   ...xx..x ........ ........ ....x... 
                  : ........ ........ .x....x. ........   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -5038,7 +4900,7 @@ Class            : Hunter
 School           : Physical
 Range            : 40 yards
 Velocity         : 0.8 yards/sec
-Affecting spells : Mastery: Sniper Training (193468), 
+Affecting spells : Hunter (137014), Mastery: Sniper Training (193468), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -5047,7 +4909,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=285355)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.42900
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.51480
 Description      : $@spelldesc194386
 
 Name             : Way of the Cobra (id=194397) [Spell Family (9), Passive] 
@@ -5161,11 +5023,11 @@ School           : Shadow
 Resource         : 40 Focus
 Spell Level      : 50
 Range            : 40 yards
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Duration         : 8 seconds
 Cooldown         : 15 seconds
-Affecting spells : Freezing Trap (3355), Survival Hunter (137017), Guide: Sharpshooting (178549), Black Decay (188400), Mastery: Sniper Training (193468), 
+Affecting spells : Freezing Trap (3355), Hunter (137014), Survival Hunter (137017), Guide: Sharpshooting (178549), Black Decay (188400), Mastery: Sniper Training (193468), 
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ...x.... ........ ...x....   ........ ........ ........ ........ 
@@ -5188,7 +5050,7 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 1
 Range            : 40 yards
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Cooldown         : 30 seconds
 Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Improved Traps (199518), Superior Trapper (203751), Hunter's Guile (203752)
@@ -5236,7 +5098,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=286030)   : Apply Aura (6) | Periodic Damage: fire every 1 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000
 #2 (id=286031)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | Mechanic: Unknown(88)
 #3 (id=286032)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
@@ -5267,7 +5129,7 @@ School           : Physical
 Resource         : 30 Focus
 Spell Level      : 10
 Range            : 8 yards
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Duration         : 15 seconds
 Attributes       : ........ ........ x.x..... ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ......x. 
@@ -5286,10 +5148,10 @@ Class            : Hunter
 School           : Physical
 Resource         : 20 - 100 Focus
 Range            : 40 yards
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Velocity         : 100 yards/sec
 Cooldown         : 30 seconds
-Affecting spells : Mastery: Sniper Training (193468), 
+Affecting spells : Hunter (137014), Mastery: Sniper Training (193468), 
 Attributes       : .x..x... ........ x.x...x. ........   ........ ......x. ........ ........ 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...xx...   ........ ........ ........ ........ 
@@ -5320,6 +5182,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
+Affecting spells : Hunter (137014)
 Attributes       : ....x... ........ ..x.x... .x.xx...   ....x... ..x..... ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ..x..... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -5351,6 +5214,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
+Affecting spells : Hunter (137014)
 Attributes       : ....x... ........ ..x.x... .x.xx...   ....x... ..x..... ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ..x...x. 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -5623,6 +5487,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Charges          : 2 (15 seconds cooldown)
+Affecting spells : Freezing Trap (3355), Hunter (137014), 
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5822,7 +5687,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=296528)   : School Damage: physical (2)
-                   Base Value: 500 | Scaled Value: 500 | Radius: 6 yards
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.12000 | Radius: 6 yards
 Description      : Jagged caltrops inflict $s1 Physical damage every $t1 sec, and reduce your movement speed by$s2%.
 Tooltip          : Suffering $s1 Physical damage every $t1 sec. movement speed reduced by $s2%.
 
@@ -5850,8 +5715,6 @@ Description      : Summon forth a herd of stampeding animals from the wilds arou
 Name             : Stomp! (id=201754) 
 Class            : Hunter
 School           : Physical
-Cooldown         : 90 seconds
-Mechanic         : Unknown(95)
 Attributes       : ....x... ........ ..x..... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5871,7 +5734,7 @@ Spell Level      : 10
 Range            : 8 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
-Affecting spells : Freezing Trap (3355), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), My Beloved Monster (203577)
+Affecting spells : Freezing Trap (3355), Hunter (137014), Guide: Sharpshooting (178549), My Beloved Monster (203577)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5901,7 +5764,7 @@ Class            : Hunter
 School           : Nature
 Spell Level      : 60
 Range            : 50000 yards
-Affecting spells : Freezing Trap (3355), Item - Hunter T14 2P Bonus (123090), Guide: Sharpshooting (178549), Black Decay (188400), Mastery: Sniper Training (193468)
+Affecting spells : Freezing Trap (3355), Item - Hunter T14 2P Bonus (123090), Hunter (137014), Guide: Sharpshooting (178549), Black Decay (188400), Mastery: Sniper Training (193468)
 Triggered by     : Chimaera Shot (171454), Chimaera Shot (171457)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6030,10 +5893,10 @@ School           : Physical
 Resource         : 30 Focus
 Spell Level      : 10
 Range            : 40 yards
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 60 seconds
-Affecting spells : Mastery: Master of Beasts (76657), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), 
+Affecting spells : Mastery: Master of Beasts (76657), Hunter (137014), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), 
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ...x.... 
@@ -6109,7 +5972,7 @@ Spell Level      : 40
 Range            : 100 yards
 Duration         : 360 seconds
 Cooldown         : 30 seconds
-Affecting spells : Improved Feign Death (24432)
+Affecting spells : Improved Feign Death (24432), Hunter (137014)
 Triggered by     : Wake Up (210000)
 Attributes       : ........ x....... x.x.x... .x......   ........ ..x..... .xx..... ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -6133,7 +5996,7 @@ School           : Physical
 Spell Level      : 32
 Range            : 100 yards
 Cooldown         : 30 seconds
-Affecting spells : Improved Feign Death (24432)
+Affecting spells : Improved Feign Death (24432), Hunter (137014)
 Attributes       : ........ x....... x.x.x... .x......   ........ ..x..... .xx..... ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6150,10 +6013,10 @@ Class            : Hunter
 School           : Fire
 Spell Level      : 10
 Range            : 40 yards
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 30 seconds
-Affecting spells : Freezing Trap (3355), Item - Hunter T14 2P Bonus (123090), Survival Hunter (137017), Black Fire (171103), Guide: Sharpshooting (178549), Black Decay (188400), Mastery: Sniper Training (193468), Lock and Load (194594)
+Affecting spells : Freezing Trap (3355), Item - Hunter T14 2P Bonus (123090), Hunter (137014), Survival Hunter (137017), Black Fire (171103), Guide: Sharpshooting (178549), Black Decay (188400), Mastery: Sniper Training (193468), Lock and Load (194594)
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ........ ........ ........ 
@@ -6175,8 +6038,9 @@ School           : Physical
 Resource         : 40 Focus
 Spell Level      : 1
 Range            : 8 yards
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Charges          : 3 (15 seconds cooldown)
+Affecting spells : Hunter (137014), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -6185,9 +6049,9 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=314957)   : Normalized Weapon Damage (121)
-                   Base Value: 320 | Scaled Value: 320 | Radius: 0 - 8 yards
+                   Base Value: 1 | Scaled Value: 1 | Radius: 0 - 8 yards
 #2 (id=314958)   : Weapon Damage% (31)
-                   Base Value: 320 | Scaled Value: 3.2 | Radius: 0 - 8 yards
+                   Base Value: 384 | Scaled Value: 3.84 | Radius: 0 - 8 yards
 Description      : Strike all nearby enemies in a flurry of strikes, inflicting $sw1 Physical damage to each.
 
 Replaces Carve.
@@ -6283,7 +6147,7 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 1
 Range            : 100 yards
-Duration         : 6 seconds
+Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ .....x..   ........ ..x..... ........ ........ 
@@ -6304,10 +6168,10 @@ Class            : Hunter
 School           : Physical
 Resource         : 20 - 100 Focus
 Range            : 40 yards
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Velocity         : 100 yards/sec
 Cooldown         : 10 seconds
-Affecting spells : Mastery: Sniper Training (193468), 
+Affecting spells : Hunter (137014), Mastery: Sniper Training (193468), 
 Attributes       : .x..x... ........ x.x...x. ........   ........ ......x. ........ ........ 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...xx...   ........ ........ ........ ........ 
@@ -6328,7 +6192,7 @@ Name             : Black Arrow (id=214351) [Passive, Hidden]
 Class            : Marksmanship Hunter
 School           : Shadow
 Spell Level      : 1
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Cooldown         : 15 seconds
 Proc Chance      : 100%
@@ -6346,7 +6210,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Fires a Black Arrow at the target, dealing $3674o1 Shadow damage over $3674d and summoning a skeletal minion to taunt it for the duration.
 
-Black Arrowâ€™s cooldown is reset when you kill an enemy.
+Black Arrow’s cooldown is reset when you kill an enemy.
 Tooltip          : Taking $w1 Shadow damage every $t1 seconds.
 
 Name             : Sidewinders (id=214579) [Spell Family (9)] 
@@ -6354,9 +6218,9 @@ Class            : Hunter
 School           : Nature
 Spell Level      : 50
 Range            : 40 yards
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Charges          : 2 (12 seconds cooldown)
-Affecting spells : Freezing Trap (3355), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), 
+Affecting spells : Freezing Trap (3355), Hunter (137014), Guide: Sharpshooting (178549), Called Shot (190467), Mastery: Sniper Training (193468), 
 Attributes       : .x...... ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

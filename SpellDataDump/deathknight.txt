@@ -22,7 +22,7 @@ Resource         : 1 Rune
 Spell Level      : 66
 GCD              : 1.5 seconds
 Duration         : 600 seconds
-Affecting spells : On a Pale Horse (51986)
+Affecting spells : Death Knight (137005)
 Attributes       : ....x... ........ ..x..... x..x....   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -194,7 +194,7 @@ Spell Level      : 82
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 600 seconds
-Affecting spells : On a Pale Horse (51986)
+Affecting spells : Death Knight (137005)
 Attributes       : ........ ........ ........ ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -235,7 +235,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 30 seconds
-Affecting spells : On a Pale Horse (51986), Crimson Scourge (81141), 
+Affecting spells : Crimson Scourge (81141), Death Knight (137005)
 Attributes       : ........ ........ ........ ..x.....   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ...x..x. 
@@ -265,7 +265,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Proc Chance      : 101%
-Affecting spells : On a Pale Horse (51986)
+Affecting spells : Death Knight (137005)
 Triggered by     : Frozen Core (190509)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -292,7 +292,7 @@ Resource         : 0 - 5 Health w/ Blood for Blood (id=202846)
 Spell Level      : 55
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : On a Pale Horse (51986), Veinrender (192457), Blood for Blood (202846), 
+Affecting spells : Death Knight (137005), Veinrender (192457), Blood for Blood (202846), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ....x... ........ ........ 
@@ -343,7 +343,7 @@ Spell Level      : 55
 Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
-Affecting spells : On a Pale Horse (51986), All Will Serve (194916)
+Affecting spells : Death Knight (137005), All Will Serve (194916)
 Attributes       : ........ ........ ........ .......x   ........ ..x..... .x...... ........ 
                  : x....... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : x....... ........ ........ ........   ........ ........ .....x.. ........ 
@@ -468,7 +468,7 @@ Spell Level      : 55
 Range            : 40 yards
 GCD              : 1.5 seconds
 Proc Chance      : 101%
-Affecting spells : On a Pale Horse (51986), Sudden Doom (81340), Deadliest Coil (191419)
+Affecting spells : Sudden Doom (81340), Death Knight (137005), Deadliest Coil (191419)
 Attributes       : ........ ........ ..x..... ........   ........ .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -620,7 +620,7 @@ Resource         : -20 Runic Power
 Spell Level      : 57
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Killing Machine (51124), On a Pale Horse (51986), Item - Death Knight T14 DPS 2P Bonus (123077), Nothing but the Boots (189144), Obliteration (207256)
+Affecting spells : Killing Machine (51124), Item - Death Knight T14 DPS 2P Bonus (123077), Death Knight (137005), Nothing but the Boots (189144), Obliteration (207256)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -671,7 +671,7 @@ Resource         : 25 Runic Power
 Spell Level      : 55
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Razorice (51714), On a Pale Horse (51986), Item - Death Knight T14 DPS 2P Bonus (123077), Biting Cold (166057), Chill of the Grave (205209), Shattering Strikes (207057)
+Affecting spells : Razorice (51714), Item - Death Knight T14 DPS 2P Bonus (123077), Death Knight (137005), Biting Cold (166057), Chill of the Grave (205209), Shattering Strikes (207057)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -695,7 +695,7 @@ Resource         : -10 Runic Power
 Spell Level      : 55
 Range            : 30 yards
 GCD              : 1.5 seconds
-Affecting spells : Razorice (51714), On a Pale Horse (51986), Rime (59052), Biting Cold (166057), Blast Radius (189086), Northrend Winds (204088)
+Affecting spells : Razorice (51714), Rime (59052), Death Knight (137005), Biting Cold (166057), Blast Radius (189086), Northrend Winds (204088)
 Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -720,7 +720,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 40 seconds
 Cooldown         : 180 seconds
-Affecting spells : On a Pale Horse (51986), Item - Death Knight T14 DPS 4P Bonus (123078)
+Affecting spells : Item - Death Knight T14 DPS 4P Bonus (123078), Death Knight (137005)
 Attributes       : ........ ........ ........ ........   ........ .x...... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -785,7 +785,7 @@ Resource         : 40 Runic Power
 Spell Level      : 56
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : On a Pale Horse (51986), Dark Succor (101568), Item - Death Knight T13 Blood 2P Bonus (105552), Item - Death Knight T13 Blood 4P Bonus (105587), Item - Death Knight T13 DPS 2P Bonus (105609), Item - Death Knight T13 DPS 4P Bonus (105646), Blood Death Knight (137008), Deathbringer (144953), Item - Death Knight T18 Blood 4P Bonus (187873)
+Affecting spells : Dark Succor (101568), Item - Death Knight T13 Blood 2P Bonus (105552), Item - Death Knight T13 Blood 4P Bonus (105587), Item - Death Knight T13 DPS 2P Bonus (105609), Item - Death Knight T13 DPS 4P Bonus (105646), Death Knight (137005), Blood Death Knight (137008), Deathbringer (144953), Item - Death Knight T18 Blood 4P Bonus (187873)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -853,7 +853,7 @@ School           : Shadow
 Spell Level      : 59
 GCD              : 1.5 seconds
 Charges          : 2 (7.5 seconds cooldown)
-Affecting spells : On a Pale Horse (51986)
+Affecting spells : Death Knight (137005)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -878,7 +878,7 @@ Cast Time        : 4 seconds
 GCD              : 1 seconds
 Duration         : 60 seconds
 Cooldown         : 60 seconds
-Affecting spells : On a Pale Horse (51986)
+Affecting spells : Death Knight (137005)
 Attributes       : ........ ........ ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -1073,12 +1073,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 1.00000
 #3 (id=44432)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11
-#4 (id=289546)   : Apply Aura (6) | Unknown effect sub type (417)
-                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11
-                   Affected Spells: Path of Frost (3714), Army of the Dead (42650), Death and Decay (43265), Chains of Ice (45524), Blood Strike (45902), Raise Dead (46584), Death Coil (47541), Obliterate (49020), Frost Strike (49143), Howling Blast (49184), Summon Gargoyle (49206), Death Strike (49998), Blood Boil (50842), Death Gate (50977), Scourge Strike (55090), Raise Ally (61999), Dark Transformation (63560), Outbreak (77575), Festering Strike (85948), Control Undead (111673), Marrowrend (195182), Death's Caress (195292), Remorseless Winter (196770), Consumption (205223), Heart Strike (206930), Frostscythe (207230), Clawing Shadows (207311)
-#5 (id=312234)   : Apply Aura (6) | Unknown effect sub type (457)
-                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 1611
-Description      : You are as hard to stop as death itself, increasing your mounted speed by $s1% and causing haste to reduce your global cooldown.
+Description      : You are as hard to stop as death itself, increasing your mounted speed by $s1%.
 
 Name             : Death and Decay (id=52212) [Scaling Spell (1), Spell Family (15)] 
 Class            : Death Knight
@@ -1093,7 +1088,7 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=44653)    : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 (avg=0.041) | AP Coefficient: 0.12000 | Radius: 0 - 10 yards
+                   Base Value: 0 | Scaled Value: 0 (avg=0.041) | AP Coefficient: 0.14400 | Radius: 0 - 10 yards
 #2 (id=312640)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: runic_power
 Description      : Corrupts the ground targeted by the Death Knight, causing Shadow damage every sec that targets remain in the area for $43265d.
@@ -1184,7 +1179,7 @@ School           : Shadow
 Spell Level      : 55
 Range            : 50000 yards
 Duration         : 24 seconds
-Affecting spells : Coagulopathy (192460), Rapid Decomposition (194662), PH - Increase Blood Plague Max Stacks (208706)
+Affecting spells : Coagulopathy (192460), Rapid Decomposition (194662), Draugr, Girdle of the Everlasting King (208706)
 Triggered by     : Death's Caress (195292)
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
@@ -1212,7 +1207,7 @@ Resource         : -10 Runic Power
 Spell Level      : 55
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : On a Pale Horse (51986), Item - Death Knight T14 DPS 2P Bonus (123077), Flagellation (191748)
+Affecting spells : Item - Death Knight T14 DPS 2P Bonus (123077), Death Knight (137005), Scourge of Worlds (191748)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ....x... ........ ........ 
@@ -1555,7 +1550,7 @@ Spell Level      : 72
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 600 seconds
-Affecting spells : On a Pale Horse (51986)
+Affecting spells : Death Knight (137005)
 Attributes       : ........ ........ ........ ..x.....   ........ ........ .x...... ........ 
                  : x....... ........ ........ ........   ....x... ........ ..x..... ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -1649,7 +1644,7 @@ GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Duration         : 20 seconds
 Cooldown         : 60 seconds
-Affecting spells : On a Pale Horse (51986), Item - Death Knight T17 Unholy 2P Bonus (165575), Eternal Agony (208598)
+Affecting spells : Death Knight (137005), Item - Death Knight T17 Unholy 2P Bonus (165575), Eternal Agony (208598)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ......x. .x...... ........ ........   ........ ........ ........ ........ 
@@ -1785,6 +1780,7 @@ School           : Shadow
 Spell Level      : 80
 Range            : 100 yards
 Proc Chance      : 101%
+Affecting spells : Scourge of Worlds (191748)
 Triggered by     : Scourge Strike (55090)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ..x..... ......x. 
@@ -1884,7 +1880,7 @@ Spell Level      : 81
 Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
-Affecting spells : On a Pale Horse (51986), PH - Death Knight - Unholy - Increase Outbreak Spread Radius (208713)
+Affecting spells : Death Knight (137005), PH - Death Knight - Unholy - Increase Outbreak Spread Radius (208713)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2050,7 +2046,7 @@ Resource         : -20 Runic Power
 Spell Level      : 57
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : On a Pale Horse (51986), Rotten Touch (191442), PH - Festering Strike Rune Cost Reduction (208161)
+Affecting spells : Death Knight (137005), Rotten Touch (191442), PH - Festering Strike Rune Cost Reduction (208161)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2440,7 +2436,7 @@ GCD              : 1.5 seconds
 Duration         : 300 seconds
 Proc Chance      : 101%
 Mechanic         : Unknown(2)
-Affecting spells : On a Pale Horse (51986)
+Affecting spells : Death Knight (137005)
 Attributes       : ........ ........ x....... ......x.   x....... ........ .x...... ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ...x.... ........ .....x..   .......x ........ ........ ........ 
@@ -2632,12 +2628,14 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179688)   : Apply Aura (6) | Dummy (4)
+#1 (id=179688)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 0 | Scaled Value: 0
-#2 (id=188986)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#3 (id=191178)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Affected Spells: Frostscythe (207230)
+#2 (id=188986)   : Apply Aura (6) | Unknown effect sub type (417)
+                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11
+                   Affected Spells: Path of Frost (3714), Army of the Dead (42650), Death and Decay (43265), Chains of Ice (45524), Blood Strike (45902), Raise Dead (46584), Death Coil (47541), Obliterate (49020), Frost Strike (49143), Howling Blast (49184), Summon Gargoyle (49206), Death Strike (49998), Blood Boil (50842), Death Gate (50977), Scourge Strike (55090), Raise Ally (61999), Dark Transformation (63560), Outbreak (77575), Festering Strike (85948), Control Undead (111673), Marrowrend (195182), Death's Caress (195292), Remorseless Winter (196770), Consumption (205223), Heart Strike (206930), Frostscythe (207230), Clawing Shadows (207311)
+#3 (id=191178)   : Apply Aura (6) | Unknown effect sub type (457)
+                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 1611
 #4 (id=191179)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #5 (id=191180)   : Apply Aura (6) | Dummy (4)
@@ -2661,6 +2659,10 @@ Effects          :
 #14 (id=260636)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #15 (id=260637)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#16 (id=320052)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#17 (id=320053)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 
 Name             : Frost Death Knight (id=137006) [Passive, Hidden] 
@@ -3102,7 +3104,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=216887)   : School Damage: shadowfrost (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.33300
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.39960
 Description      : $@spelldesc152280
 
 Name             : Combat Experience (id=156843) [Spell Family (9), Passive] 
@@ -3711,7 +3713,7 @@ Resource         : 1 Rune
 Resource         : -10 Runic Power
 Range            : 100 yards
 GCD              : 1 seconds
-Cooldown         : 12 seconds
+Cooldown         : 15 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3814,7 +3816,7 @@ Resource         : -20 Runic Power
 Spell Level      : 57
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : On a Pale Horse (51986), Bonebreaker (192538)
+Affecting spells : Death Knight (137005), Bonebreaker (192538)
 Triggered by     : Bone Shield (195181)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3843,7 +3845,7 @@ Spell Level      : 58
 Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
-Affecting spells : On a Pale Horse (51986)
+Affecting spells : Death Knight (137005)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3941,7 +3943,7 @@ Effects          :
 #1 (id=287226)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 12
 #2 (id=311793)   : Dummy (3)
-                   Base Value: 25 | Scaled Value: 25
+                   Base Value: 30 | Scaled Value: 30
 Description      : Standing in your Death and Decay also causes Marrowrend to hit multiple targets for $s2% of the damage dealt to the primary target. If Marrowrend hits at least 2 targets, additional Bone Shield charges have a chance to be generated.
 
 Name             : Blood Plague (id=195737) [Spell Family (15)] 
@@ -3990,7 +3992,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=287339)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.30000 | Radius: 0 - 8 yards
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.36000 | Radius: 0 - 8 yards
 Description      : Your autoattacks have a chance to cause you to radiate intense cold, inflicting Frost $s1 damage on all nearby enemies.
 
 Name             : Festering Wound (id=195757) [Spell Family (15)] 
@@ -4085,7 +4087,7 @@ Spell Level      : 60
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 20 seconds
-Affecting spells : On a Pale Horse (51986)
+Affecting spells : Death Knight (137005)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -4116,7 +4118,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=288891)   : School Damage: frost (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20000 | Radius: 0 - 8 yards
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.24000 | Radius: 0 - 8 yards
 Description      : $@spelldesc196770
 
 Name             : Outbreak (id=196782) [Spell Family (15)] 
@@ -4348,7 +4350,7 @@ Resource         : 0 - 5 Health w/ Blood for Blood (id=202846)
 Spell Level      : 55
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : On a Pale Horse (51986), Veinrender (192457), Blood for Blood (202846), 
+Affecting spells : Death Knight (137005), Veinrender (192457), Blood for Blood (202846), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ....x... ........ ........ 
@@ -4359,7 +4361,7 @@ Effects          :
 #1 (id=306039)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 (avg=0.756) | Chain Targets: 3
 #2 (id=306040)   : Weapon Damage% (31)
-                   Base Value: 100 | Scaled Value: 1 | Chain Targets: 3
+                   Base Value: 120 | Scaled Value: 1.2 | Chain Targets: 3
 #3 (id=306041)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #4 (id=312174)   : Dummy (3)
@@ -4717,7 +4719,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=306367)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.323) | AP Coefficient: 0.20000 | Radius: 0 - 8 yards
+                   Base Value: 1 | Scaled Value: 0 (avg=0.323) | AP Coefficient: 0.24000 | Radius: 0 - 8 yards
 Description      : $@spelldesc207142
 
 Name             : Avalanche (id=207151) [Spell Family (15), Hidden] 
@@ -4885,7 +4887,7 @@ Spell Level      : 1
 Range            : 8 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
-Affecting spells : Killing Machine (51124), On a Pale Horse (51986)
+Affecting spells : Killing Machine (51124), Death Knight (137005), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4896,7 +4898,7 @@ Effects          :
 #1 (id=306491)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards
 #2 (id=306492)   : Weapon Damage% (31)
-                   Base Value: 150 | Scaled Value: 1.5 | Radius: 8 yards
+                   Base Value: 180 | Scaled Value: 1.8 | Radius: 8 yards
 Description      : A sweeping attack that strikes all enemies in front of you for $sw1 Frost damage. This attack benefits from Killing Machine.
 
 Name             : Obliteration (id=207256) [Spell Family (15)] 
@@ -4951,7 +4953,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Disable weapon procs (151)
 Effects          :
 #1 (id=306540)   : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.09460 | Radius: 0 - 8 yards
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.11352 | Radius: 0 - 8 yards
 Description      : Deals $d Shadow damage when triggered.
 
 Name             : Ebon Fever (id=207269) [Spell Family (15), Passive] 
@@ -5048,7 +5050,7 @@ Resource         : -10 Runic Power
 Spell Level      : 1
 Range            : 30 yards
 GCD              : 1.5 seconds
-Affecting spells : On a Pale Horse (51986), Item - Death Knight T14 DPS 2P Bonus (123077), Flagellation (191748)
+Affecting spells : Item - Death Knight T14 DPS 2P Bonus (123077), Death Knight (137005), Scourge of Worlds (191748)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5307,9 +5309,9 @@ Name             : Wraith Walk (id=212552) [Spell Family (15)]
 Class            : Blood Frost Unholy Death Knight
 School           : Physical
 GCD              : 1 seconds
-Duration         : 2 seconds
-Cooldown         : 120 seconds
-Affecting spells : Razorice (51714), Lingering Apparition (212763), 
+Duration         : 3 seconds
+Cooldown         : 60 seconds
+Affecting spells : Razorice (51714), Lingering Apparition (212763), White Walker (212765)
 Attributes       : ....x... ........ x....... ........   ..x...x. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5322,14 +5324,16 @@ Effects          :
                    Base Value: 70 | Scaled Value: 70
 #2 (id=315118)   : Apply Aura (6) | Unknown effect sub type (305)
                    Base Value: 70 | Scaled Value: 70
-#3 (id=315121)   : Apply Aura (6) | Unknown effect sub type (321)
+#3 (id=315121)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0
-#4 (id=315362)   : Trigger Spell: Wraith Walk (64)
+#4 (id=315362)   : Apply Aura (6) | Unknown effect sub type (321)
+                   Base Value: 0 | Scaled Value: 0
+#5 (id=315371)   : Trigger Spell: Wraith Walk (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 212654
-#5 (id=315371)   : Apply Aura (6) | Unknown effect sub type (106)
+#6 (id=319591)   : Apply Aura (6) | Unknown effect sub type (106)
                    Base Value: 0 | Scaled Value: 0
-Description      : Sidestep in to the Shadowlands, breaking Root effects and increasing your movement speed by $s1% for $d. During this time all movement-impairing effects are suppressed but you may take no actions.
-Tooltip          : Movement speed increased by $w1%. Cannot be slowed below $s2% of normal run speed. Can take no actions.
+Description      : Sidestep in to the Shadowlands, breaking Root effects and increasing your movement speed by $s1% for $d. During this time all movement-impairing effects are suppressed but you may not attack.
+Tooltip          : Movement speed increased by $w1%. Cannot be slowed below $s2% of normal run speed. Cannot attack.
 
 Name             : Wraith Walk (id=212654) [Spell Family (15), Hidden] 
 Class            : Death Knight
@@ -5361,7 +5365,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=315517)   : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.80000
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.96000
 #2 (id=315519)   : School Damage: shadow (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.12500 | Radius: 0 - 8 yards
 Description      : $@spelldesc207317
@@ -5378,7 +5382,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=315527)   : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.50000 | Radius: 0 - 30 yards
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.60000 | Radius: 0 - 30 yards
 #2 (id=315962)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15
 Description      : Consume your Blood Plagues within $A2 yards, dealing $s1 Shadow damage to each infected enemy. Empowers you with up to $s2% Rune regeneration per plague, for $213003d. Plagues closer to expiration grant more Rune regeneration. 
@@ -5397,11 +5401,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=315564)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
-                   Base Value: 1500 | Scaled Value: 1500 | Misc Value: 1
+#1 (id=315564)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 3
                    Affected Spells: Wraith Walk (212552)
 #2 (id=315565)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
-                   Base Value: -30000 | Scaled Value: -30000 | Misc Value: 11
+                   Base Value: -15000 | Scaled Value: -15000 | Misc Value: 11
                    Affected Spells: Wraith Walk (212552)
 #3 (id=315566)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
@@ -5423,8 +5427,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=315569)   : Apply Aura (6) | Dummy (4)
-                   Base Value: -30 | Scaled Value: -30 | Mechanic: Unknown(88)
-Description      : When you enter or leave Wraith Walk, all nearby enemies are slowed by $212654s1% for $212654d.
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88)
+#2 (id=319592)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
+                   Base Value: -20 | Scaled Value: -20 | Misc Value: 23
+                   Affected Spells: Wraith Walk (212552)
+#3 (id=319593)   : Dummy (3)
+                   Base Value: 20 | Scaled Value: 20
+Description      : You take $s3% reduced damge while Wraith Walk is active. When you enter or leave Wraith Walk, all nearby enemies are slowed by $212654s1% for $212654d.
 
 Name             : Soulgorge (id=213003) [Spell Family (15)] 
 Class            : Death Knight
