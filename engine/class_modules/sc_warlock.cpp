@@ -754,6 +754,14 @@ struct doom_bolt_t: public warlock_pet_spell_t
   }
 };
 
+struct dreadbite_t : public warlock_pet_spell_t
+{
+  dreadbite_t( warlock_pet_t* p ):
+    warlock_pet_spell_t( "Dreadbite", p, p -> find_spell( 205196 ) )
+  {
+  }
+};
+
 struct meteor_strike_t: public warlock_pet_spell_t
 {
   meteor_strike_t( warlock_pet_t* p, const std::string& options_str ):
@@ -1206,7 +1214,7 @@ struct dreadstalker_pet_t : public warlock_pet_t
   dreadstalker_pet_t( sim_t* sim, warlock_t* owner ) :
     warlock_pet_t( sim, owner, "dreadstalker", PET_DOG, true )
   {
-    //action_list_str = "dreadbite";
+    action_list_str = "dreadbite";
   }
 
   void init_base_stats() override
@@ -1218,12 +1226,12 @@ struct dreadstalker_pet_t : public warlock_pet_t
       melee_attack -> stats = o() -> pets.dreadstalkers[0] -> get_stats( "melee" );
   }
 
-  //virtual action_t* create_action(const std::string& name, const std::string& options_str) override
-  //{
-  //  if (name == "doom_bolt") return new actions::doom_bolt_t(this);
+  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
+  {
+    if ( name == "dreadbite" ) return new actions::dreadbite_t( this );
 
-  //  return warlock_pet_t::create_action(name, options_str);
-  //}
+    return warlock_pet_t::create_action( name, options_str );
+  }
 };
 
 } // end namespace pets
