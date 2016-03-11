@@ -1580,6 +1580,7 @@ class SpellDataGenerator(DataGenerator):
             ( 189296, 0 ),        # Demonology Warlock T18 4P Pet
             ( 17941, 0 ),         # Agony energize
             ( 104318, 5 ),        # Wild Imp Firebolt
+            ( 205196, 5 ),        # Dreadstalker Dreadbite
         ),
 
         # Monk:
