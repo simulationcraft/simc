@@ -404,7 +404,7 @@ namespace pets {
     {
       travel_t( player_t* player ): action_t( ACTION_OTHER, "travel", player ) {}
       void execute() override { player -> current.distance = 1; }
-      timespan_t execute_time() const override { return timespan_t::from_seconds( player -> current.distance / 10.0 ); }
+      timespan_t execute_time() const override { return timespan_t::from_seconds( player -> current.distance / 35.0 ); }
       bool ready() override { return ( player -> current.distance > 1 ); }
       bool usable_moving() const override { return true; }
     };
@@ -1212,9 +1212,10 @@ struct wild_imp_pet_t: public warlock_pet_t
 struct dreadstalker_pet_t : public warlock_pet_t
 {
   dreadstalker_pet_t( sim_t* sim, warlock_t* owner ) :
-    warlock_pet_t( sim, owner, "dreadstalker", PET_DOG, true )
+    warlock_pet_t( sim, owner, "dreadstalker", PET_DREADSTALKER, true )
   {
-    action_list_str = "dreadbite";
+    //action_list_str = "dreadbite";
+    action_list_str = "travel";
   }
 
   void init_base_stats() override
@@ -1226,12 +1227,12 @@ struct dreadstalker_pet_t : public warlock_pet_t
       melee_attack -> stats = o() -> pets.dreadstalkers[0] -> get_stats( "melee" );
   }
 
-  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
-  {
-    if ( name == "dreadbite" ) return new actions::dreadbite_t( this );
+  //virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
+  //{
+  //  if ( name == "dreadbite" ) return new actions::dreadbite_t( this );
 
-    return warlock_pet_t::create_action( name, options_str );
-  }
+  //  return warlock_pet_t::create_action( name, options_str );
+  //}
 };
 
 } // end namespace pets
