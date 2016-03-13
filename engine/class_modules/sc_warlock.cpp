@@ -2527,7 +2527,7 @@ struct call_dreadstalkers_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
 
-    int dreadstalker_count = 2;
+    int dreadstalker_count = data().effectN( 1 ).base_value();
     int j = 0;
 
     for ( size_t i = 0; i < p() -> pets.dreadstalkers.size(); i++ )
