@@ -87,7 +87,7 @@ public:
     pet_t* last;
     static const int WILD_IMP_LIMIT = 25;
     static const int T18_PET_LIMIT = 6 ;
-    static const int DREADSTALKER_LIMIT = 3;
+    static const int DREADSTALKER_LIMIT = 2;
     std::array<pets::wild_imp_pet_t*, WILD_IMP_LIMIT> wild_imps;
     pet_t* inner_demon;
     std::array<pets::t18_illidari_satyr_t*, T18_PET_LIMIT> t18_illidari_satyr;
@@ -238,6 +238,7 @@ public:
     proc_t* t18_illidari_satyr;
     proc_t* t18_vicious_hellhound;
     proc_t* t18_prince_malchezaar;
+    proc_t* dreadstalker_debug;
   } procs;
 
   struct spells_t
@@ -2526,12 +2527,16 @@ struct call_dreadstalkers_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
 
+    int dreadstalker_count = 2;
+    int j = 0;
+
     for ( size_t i = 0; i < p() -> pets.dreadstalkers.size(); i++ )
     {
       if ( p() -> pets.dreadstalkers[i] -> is_sleeping() )
       {
         p() -> pets.dreadstalkers[i] -> summon( dreadstalker_duration );
-        return;
+        p() -> procs.dreadstalker_debug -> occur();
+        if ( ++j == dreadstalker_count ) break;
       }
     }
   }
@@ -3384,6 +3389,7 @@ void warlock_t::init_procs()
   procs.t18_prince_malchezaar = get_proc( "t18_prince_malchezaar" );
   procs.t18_vicious_hellhound = get_proc( "t18_vicious_hellhound" );
   procs.t18_illidari_satyr = get_proc( "t18_illidari_satyr" );
+  procs.dreadstalker_debug = get_proc( "dreadstalker_debug" );
 }
 
 void warlock_t::apl_precombat()
