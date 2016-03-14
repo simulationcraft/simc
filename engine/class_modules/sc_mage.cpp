@@ -3404,7 +3404,7 @@ struct frozen_orb_bolt_t : public mage_spell_t
     if ( result_is_hit( s -> result ) )
     {
       double fof_proc_chance = p() -> spec.fingers_of_frost
-                                   -> effectN( 1 ).percent();
+                                   -> effectN( 2 ).percent();
       p() -> buffs.fingers_of_frost
           -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
     }
