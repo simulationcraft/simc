@@ -171,7 +171,6 @@ public:
   struct benefits_t
   {
     benefit_t* arcane_charge[ 4 ]; // CHANGED 2014/4/15 - Arcane Charges max stack is 4 now, not 7.
-    benefit_t* water_elemental;
   } benefits;
 
   // Buffs
@@ -489,9 +488,6 @@ public:
     }
     return td;
   }
-
-  // Event Tracking
-  virtual void   regen( timespan_t periodicity ) override;
 
   // Public mage functions:
   icicle_data_t get_icicle_object();
@@ -5597,7 +5593,6 @@ void mage_t::init_benefits()
   {
     benefits.arcane_charge[ i ] = get_benefit( "Arcane Charge " + util::to_string( i )  );
   }
-  benefits.water_elemental   = get_benefit( "water_elemental" );
 }
 
 // mage_t::init_stats =========================================================
@@ -6467,16 +6462,6 @@ void mage_t::reset()
   {
     pets::temporal_hero_t::randomize_last_summoned( this );
   }
-}
-
-// mage_t::regen  ===========================================================
-
-void mage_t::regen( timespan_t periodicity )
-{
-  player_t::regen( periodicity );
-
-  if ( pets.water_elemental )
-    benefits.water_elemental -> update( pets.water_elemental -> is_sleeping() == 0 );
 }
 
 // mage_t::stun =============================================================
