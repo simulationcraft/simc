@@ -1746,6 +1746,9 @@ public:
       p() -> buff.combo_master -> expire();
       p() -> tier19_4pc_melee_counter = 0;
     }
+
+    if ( p() -> buff.masterful_strikes -> up() )
+      p() -> buff.masterful_strikes -> decrement();
   }
 
   double cost() const
@@ -2276,8 +2279,8 @@ struct rising_sun_kick_t: public monk_melee_attack_t
       if ( p() -> artifact.transfer_the_power.rank() )
         p() -> buff.transfer_the_power -> trigger();
 
-      if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B4 ) )
-        p() -> buff.masterful_strikes -> trigger( p() -> sets.set( MONK_WINDWALKER,T18, B4 ) -> effect_count() );
+      if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B2 ) )
+        p() -> buff.masterful_strikes -> trigger( p() -> sets.set( MONK_WINDWALKER,T18, B2 ) -> effect_count() );
 
     }
   }
