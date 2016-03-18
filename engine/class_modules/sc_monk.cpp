@@ -209,6 +209,7 @@ public:
     buff_t* forceful_winds;
     buff_t* hit_combo;
     buff_t* light_on_your_feet;
+    buff_t* masterful_strikes;
     buff_t* power_strikes;
     buff_t* storm_earth_and_fire;
     buff_t* serenity;
@@ -465,7 +466,9 @@ public:
     cooldown_t* healing_elixirs;
     cooldown_t* rising_sun_kick;
     cooldown_t* thunder_focus_tea;
+    cooldown_t* tigereye_brew;
     cooldown_t* touch_of_death;
+    cooldown_t* serenity;
   } cooldown;
 
   struct passives_t
@@ -521,6 +524,7 @@ public:
     const spell_data_t* touch_of_karma_tick;
     const spell_data_t* tier15_2pc_melee;
     const spell_data_t* tier17_4pc_melee;
+    const spell_data_t* tier18_2pc_melee;
     const spell_data_t* tier19_4pc_melee;
 
   } passives;
@@ -579,7 +583,9 @@ public:
     cooldown.healing_elixirs              = get_cooldown( "healing_elixirs" );
     cooldown.rising_sun_kick              = get_cooldown( "rising_sun_kick" );
     cooldown.thunder_focus_tea            = get_cooldown( "thunder_focus_tea" );
+    cooldown.tigereye_brew                = get_cooldown( "tigereye_brew" );
     cooldown.touch_of_death               = get_cooldown( "touch_of_death" );
+    cooldown.serenity                     = get_cooldown( "serenity" );
 
     regen_type = REGEN_DYNAMIC;
     if ( specialization() != MONK_MISTWEAVER )
@@ -613,6 +619,7 @@ public:
   virtual double    composite_attack_power_multiplier() const override;
   virtual double    composite_parry() const override;
   virtual double    composite_dodge() const override;
+  virtual double    composite_mastery() const override;
   virtual double    composite_mastery_rating() const override;
   virtual double    composite_crit_avoidance() const override;
   virtual double    composite_rating_multiplier( rating_e rating ) const override;
@@ -1741,26 +1748,6 @@ public:
     }
   }
 
-  double combo_breaker_chance( combo_strikes_e ability )
-  {
-    double cb_chance = 0;
-    if ( p() -> specialization() == MONK_WINDWALKER )
-    {
-      if ( ability == CS_RISING_SUN_KICK )
-      {
-        if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B2 ) )
-          cb_chance += p() -> sets.set( MONK_WINDWALKER, T18, B2 ) -> effectN( 1 ).percent();
-      }
-      else
-      {
-        cb_chance += p() -> spec.combo_breaker -> effectN( 1 ).percent();
-        if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B4 ) )
-          cb_chance += p() -> sets.set( MONK_WINDWALKER, T18, B4 ) -> effectN( 1 ).percent();
-      }
-    }
-    return cb_chance;
-  }
-
   double cost() const
   {
     double c = ab::cost();
@@ -2059,8 +2046,7 @@ struct tiger_palm_t: public monk_melee_attack_t
       player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.tiger_palm, this );
 
       // Combo Breaker calculation
-      double cb_chance = combo_breaker_chance( CS_TIGER_PALM );
-      if ( p() -> buff.bok_proc -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
+      if ( p() -> buff.bok_proc -> trigger( 1, buff_t::DEFAULT_VALUE(), p() -> spec.combo_breaker -> effectN( 1 ).percent() ) )
         p() -> proc.bok_proc -> occur();
 
       //  Your Chi generating abilities have a 15% chance to generate an Energy Sphere, which will grant you 10 Energy when you walk through it.
@@ -2077,7 +2063,7 @@ struct tiger_palm_t: public monk_melee_attack_t
       {
         double time_reduction = data().effectN( 3 ).base_value()
           + ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T19, B4 ) ? p() -> sets.set( MONK_BREWMASTER, T19, B4 ) -> effectN( 1 ).base_value() : 0 );
-        p() -> cooldown.brewmaster_active_mitigation -> adjust( -1 * timespan_t::from_seconds( time_reduction ) );
+        p() -> cooldown.brewmaster_active_mitigation -> adjust( timespan_t::from_seconds( time_reduction ) );
       }
 
       // Tiger Palm has a 30% chance to reset the cooldown of Keg Smash.
@@ -2151,14 +2137,6 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
     // Apply Mortal Wonds
     if ( p() -> specialization() == MONK_WINDWALKER )
       p() -> debuffs.mortal_wounds -> trigger();
-
-    // Combo Breaker if T18 2-piece (Your Rising Sun Kick has a 30% chance to generate Combo Breaker.)
-    double cb_chance = combo_breaker_chance( CS_RISING_SUN_KICK );
-    if ( cb_chance > 0 )
-    {
-      if ( p() -> buff.bok_proc -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
-          p() -> proc.bok_proc -> occur();
-    }
   }
 
   virtual double cost() const override
@@ -2212,9 +2190,11 @@ struct rising_sun_kick_t: public monk_melee_attack_t
   rising_sun_kick_tornado_kick_t* rsk_tornado_kick;
 
   rising_sun_kick_t( monk_t* p, const std::string& options_str ):
-    monk_melee_attack_t( "rising_sun_kick", p, p -> spec.rising_sun_kick -> effectN( 1 ).trigger() )
+    monk_melee_attack_t( "rising_sun_kick", p, p -> spec.rising_sun_kick )
   {
     parse_options( options_str );
+
+    attack_power_mod.direct = p -> spec.rising_sun_kick -> effectN( 1 ).trigger() -> effectN( 1 ).ap_coeff();
 
     cooldown -> duration = data().charge_cooldown();
     cooldown -> charges = data().charges();
@@ -2296,13 +2276,9 @@ struct rising_sun_kick_t: public monk_melee_attack_t
       if ( p() -> artifact.transfer_the_power.rank() )
         p() -> buff.transfer_the_power -> trigger();
 
-      // Combo Breaker if T18 2-piece (Your Rising Sun Kick has a 30% chance to generate Combo Breaker.)
-      double cb_chance = combo_breaker_chance( CS_RISING_SUN_KICK );
-      if ( cb_chance > 0 )
-      {
-        if ( p() -> buff.bok_proc -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
-            p() -> proc.bok_proc -> occur();
-      }
+      if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B4 ) )
+        p() -> buff.masterful_strikes -> trigger( p() -> sets.set( MONK_WINDWALKER,T18, B4 ) -> effect_count() );
+
     }
   }
 
@@ -2901,6 +2877,19 @@ struct fists_of_fury_t: public monk_melee_attack_t
     // Trigger Combo Strikes
     // registers even on a miss
     combo_strikes_trigger( CS_FISTS_OF_FURY );
+
+    // Reduces the cooldown of Tigereye Brew by 9 Seconds
+    if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T17, B2 ) )
+    {
+      // Since Serenity replaces Tigereye Brew, adjust Serenity's cooldown first.
+      if ( p() -> talent.serenity )
+        p() -> cooldown.serenity -> adjust( timespan_t::from_seconds( p() -> sets.set( MONK_WINDWALKER, T17, B2 ) -> effectN( 1 ).base_value() ) );
+      else
+        p() -> cooldown.tigereye_brew -> adjust( timespan_t::from_seconds( p() -> sets.set( MONK_WINDWALKER, T17, B2 ) -> effectN( 1 ).base_value() ) );
+    }
+
+    if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B4 ) )
+      p() -> buff.masterful_strikes -> trigger( p() -> sets.set( MONK_WINDWALKER,T18, B4 ) -> effect_count() - 1 );
   }
 
   void tick( dot_t* d ) override
@@ -3283,7 +3272,7 @@ struct keg_smash_t: public monk_melee_attack_t
     
     // Reduces the remaining cooldown on your Brews by 4 sec.
     if ( p() -> cooldown.brewmaster_active_mitigation -> down() )
-      p() -> cooldown.brewmaster_active_mitigation -> adjust( -1 * timespan_t::from_seconds( p() -> spec.keg_smash -> effectN( 3 ).base_value() ) );
+      p() -> cooldown.brewmaster_active_mitigation -> adjust( timespan_t::from_seconds( p() -> spec.keg_smash -> effectN( 3 ).base_value() ) );
   }
 };
 
@@ -3465,6 +3454,10 @@ struct tigereye_brew_t: public monk_spell_t
     }
 
     p() -> buff.tigereye_brew -> trigger();
+
+    // Tigereye Brew increases your critical strike damage by 20% for 30 sec.
+    if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T17, B4 ) )
+      p() -> buff.forceful_winds -> trigger();
   }
 };
 
@@ -3490,11 +3483,6 @@ struct energizing_elixir_t: public monk_spell_t
 
     p() -> resource_gain( RESOURCE_ENERGY, p() -> talent.energizing_elixir -> effectN( 1 ).base_value(), p() -> gain.energizing_elixir_energy );
     p() -> resource_gain( RESOURCE_CHI, p() -> talent.energizing_elixir -> effectN( 2 ).base_value(), p() -> gain.energizing_elixir_chi );
-
-    // Energizing Brew increases your critical strike damage by 20% for 30 sec.
-    // Since Energizing Brew was renamed to Energizing Elixer keep the code in for the time being
-    if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T17, B4 ) )
-      p() -> buff.forceful_winds -> trigger();
   }
 };
 
@@ -3568,6 +3556,12 @@ struct serenity_t: public monk_spell_t
     monk_spell_t::execute();
 
     p() -> buff.serenity -> trigger();
+
+    // Tigereye Brew increases your critical strike damage by 20% for 30 sec.
+    // Since Serenity takes replaces Tigereye Brew, placing this here for the time being.
+    if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T17, B4 ) )
+      p() -> buff.forceful_winds -> trigger();
+
   }
 };
 
@@ -5749,6 +5743,7 @@ void monk_t::init_spells()
   passives.touch_of_karma_tick              = find_spell( 124280 );
   passives.tier15_2pc_melee                 = find_spell( 138311 );
   passives.tier17_4pc_melee                 = find_spell( 166603 );
+  passives.tier18_2pc_melee                 = find_spell( 216172 );
   passives.tier19_4pc_melee                 = find_spell( 211432 );
 
   // Mastery spells =========================================
@@ -5954,6 +5949,11 @@ void monk_t::create_buffs()
     .default_value( passives.hit_combo -> effectN( 1 ).percent() )
     .refresh_behavior( BUFF_REFRESH_DURATION )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  buff.masterful_strikes = buff_creator_t(this, "masterful_strikes", passives.tier18_2pc_melee )
+    .duration( timespan_t::from_minutes( 10 ) )
+    .default_value( passives.tier18_2pc_melee -> effectN( 1 ).percent() )
+    .add_invalidate( CACHE_MASTERY );
 
   // TODO: Double check if Strength of Xuen Artifact trait works with Serenity
   buff.serenity = buff_creator_t( this, "serenity", talent.serenity )
@@ -6310,14 +6310,22 @@ double monk_t::composite_crit_avoidance() const
 
 // monk_t::composite_mastery_rating ===========================================
 
+double monk_t::composite_mastery() const
+{
+  double m = player_t::composite_mastery();
+
+  if ( buff.masterful_strikes -> up())
+    m += buff.masterful_strikes -> value();
+
+  return m;
+}
+
 double monk_t::composite_mastery_rating() const
 {
   double m = player_t::composite_mastery_rating();
 
   if ( buff.combo_master -> up() )
-  {
     m += buff.combo_master -> value();
-  }
 
   return m;
 }
