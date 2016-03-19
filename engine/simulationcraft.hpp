@@ -244,6 +244,9 @@ struct artifact_power_t
   const artifact_power_rank_t* rank_data_;
   const artifact_power_data_t* power_;
 
+  operator const spell_data_t*() const
+  { return spell_; }
+
   double value( size_t idx = 1 ) const
   {
     if ( rank() == 1 )
