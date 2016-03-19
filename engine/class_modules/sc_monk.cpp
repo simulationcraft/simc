@@ -1747,7 +1747,7 @@ public:
       p() -> tier19_4pc_melee_counter = 0;
     }
 
-    if ( p() -> buff.masterful_strikes -> up() )
+    if ( new_ability <= CS_ATTACK_MAX && p() -> buff.masterful_strikes -> up() )
       p() -> buff.masterful_strikes -> decrement();
   }
 
@@ -5955,7 +5955,8 @@ void monk_t::create_buffs()
 
   buff.masterful_strikes = buff_creator_t(this, "masterful_strikes", passives.tier18_2pc_melee )
     .duration( timespan_t::from_minutes( 10 ) )
-    .default_value( passives.tier18_2pc_melee -> effectN( 1 ).percent() )
+    .default_value( passives.tier18_2pc_melee -> effectN( 1 ).base_value() 
+      * ( specialization() == MONK_WINDWALKER ? mastery.combo_strikes -> effectN( 1 ).mastery_value() : 1 ) )
     .add_invalidate( CACHE_MASTERY );
 
   // TODO: Double check if Strength of Xuen Artifact trait works with Serenity
