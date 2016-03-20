@@ -259,11 +259,11 @@ struct artifact_power_t
     }
   }
 
-  timespan_t time_value() const
+  timespan_t time_value( size_t idx = 1 ) const
   {
     if ( rank() == 1 )
     {
-      return spell_ -> effectN( 1 ).time_value();
+      return spell_ -> effectN( idx ).time_value();
     }
     else
     {
