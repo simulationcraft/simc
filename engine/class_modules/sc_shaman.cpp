@@ -32,7 +32,6 @@ struct shaman_td_t : public actor_target_data_t
   struct dots
   {
     dot_t* flame_shock;
-    dot_t* radens_fury;
   } dot;
 
   struct debuffs
@@ -40,7 +39,6 @@ struct shaman_td_t : public actor_target_data_t
     buff_t* t16_2pc_caster;
     buff_t* earthen_spike;
     buff_t* lightning_rod;
-    buff_t* radens_fury;
   } debuff;
 
   struct heals
@@ -117,7 +115,6 @@ public:
   action_t* volcanic_inferno;
   spell_t*  lightning_shield;
   spell_t*  earthen_rage;
-  spell_t*  radens_fury;
   spell_t* crashing_storm;
 
   // Pets
@@ -186,13 +183,11 @@ public:
     buff_t* earth_surge;
     buff_t* lightning_surge;
     buff_t* icefury;
-    buff_t* radens_fury;
     buff_t* hot_hand;
 
     // Artifact related buffs
     buff_t* stormkeeper;
     buff_t* static_overload;
-    buff_t* master_of_the_elements;
     buff_t* power_of_the_maelstrom;
 
     // Totemic mastery
@@ -254,7 +249,6 @@ public:
     real_ppm_t volcanic_inferno;
     real_ppm_t power_of_the_maelstrom;
     real_ppm_t static_overload;
-    real_ppm_t radens_fury;
     real_ppm_t stormlash;
     real_ppm_t hot_hand;
     real_ppm_t doom_vortex;
@@ -359,6 +353,7 @@ public:
   {
     // Elemental
     artifact_power_t stormkeeper;
+    artifact_power_t surge_of_power;
     artifact_power_t call_the_thunder;
     artifact_power_t earthen_attunement;
     artifact_power_t the_ground_trembles;
@@ -369,8 +364,8 @@ public:
     artifact_power_t master_of_the_elements;
     artifact_power_t molten_blast;
     artifact_power_t elementalist;
-    artifact_power_t radens_fury;
     artifact_power_t firestorm;
+    artifact_power_t power_of_the_maelstrom;
 
     // Enhancement
     artifact_power_t doom_winds;
@@ -478,7 +473,6 @@ public:
   void trigger_elemental_focus( const action_state_t* state );
   void trigger_lightning_shield( const action_state_t* state );
   void trigger_earthen_rage( const action_state_t* state );
-  void trigger_radens_fury_damage( const action_state_t* state );
   void trigger_stormlash( const action_state_t* state );
 
   // Character Definition
@@ -565,7 +559,6 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
   actor_target_data_t( target, p )
 {
   dot.flame_shock       = target -> get_dot( "flame_shock", p );
-  dot.radens_fury       = target -> get_dot( "radens_fury", p );
 
   debuff.t16_2pc_caster = buff_creator_t( *this, "tier16_2pc_caster", p -> sets.set( SET_CASTER, T16, B2 ) -> effectN( 1 ).trigger() )
                           .chance( static_cast< double >( p -> sets.has_set_bonus( SET_CASTER, T16, B2 ) ) );
@@ -575,8 +568,6 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
   debuff.lightning_rod = buff_creator_t( *this, "lightning_rod", p -> talent.lightning_rod )
                          .default_value( 1.0 + p -> talent.lightning_rod -> effectN( 1 ).percent() )
                          .cd( timespan_t::zero() ); // Cooldown handled by action
-  debuff.radens_fury = buff_creator_t( *this, "radens_fury_dot", p -> find_spell( 192625 ) )
-                       .period( timespan_t::zero() ); // Ticking handled by the dot
 }
 
 // ==========================================================================
@@ -1200,10 +1191,6 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       action_state_t* overload_state = overload -> get_state( source_state );
 
       overload -> schedule_execute( overload_state );
-
-      // TODO: Does Master of Elements benefit from Power of the Maelstrom (artifact weapon
-      // passive)?
-      p() -> buff.master_of_the_elements -> trigger();
     }
   }
 };
@@ -2100,16 +2087,8 @@ struct elemental_overload_spell_t : public shaman_spell_t
     base_execute_time = timespan_t::zero();
     background = true;
     callbacks = false;
-  }
 
-  void execute() override
-  {
-    shaman_spell_t::execute();
-
-    if ( p() -> real_ppm.radens_fury.trigger() )
-    {
-      p() -> buff.radens_fury -> trigger();
-    }
+    base_multiplier *= 1.0 + p -> artifact.master_of_the_elements.percent();
   }
 
   void impact( action_state_t* state ) override
@@ -2218,43 +2197,6 @@ struct earthen_rage_driver_t : public spell_t
   // Maximum duration is extended by max of 6 seconds
   timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t ) const override
   { return data().duration(); }
-};
-
-struct radens_fury_damage_t : public shaman_spell_t
-{
-  radens_fury_damage_t( shaman_t* p ) :
-    shaman_spell_t( "radens_fury_damage", p, p -> find_spell( 210167 ) )
-  {
-    background = true;
-  }
-};
-
-struct radens_fury_t : public shaman_spell_t
-{
-  radens_fury_t( shaman_t* p ) :
-    shaman_spell_t( "radens_fury", p, p -> find_spell( 192625 ) )
-  {
-    may_miss = may_crit = callbacks = proc = false;
-    background = true;
-
-    tick_action = new radens_fury_damage_t( p );
-  }
-
-  void execute() override
-  {
-    shaman_spell_t::execute();
-
-    td( execute_state -> target ) -> debuff.radens_fury -> trigger();
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double m = shaman_spell_t::composite_target_multiplier( t );
-
-    m *= td( target ) -> debuff.radens_fury -> stack();
-
-    return m;
-  }
 };
 
 struct crashing_storm_spell_t : public shaman_spell_t
@@ -3339,7 +3281,7 @@ struct lava_burst_t : public shaman_spell_t
     p() -> lava_surge_during_lvb = false;
     p() -> cooldown.fire_elemental -> adjust( -timespan_t::from_seconds( p() -> artifact.elementalist.value() ) );
 
-    if ( p() -> artifact_enabled() && p() -> real_ppm.power_of_the_maelstrom.trigger() )
+    if ( p() -> artifact.power_of_the_maelstrom.rank() && p() -> real_ppm.power_of_the_maelstrom.trigger() )
     {
       p() -> buff.power_of_the_maelstrom -> trigger( p() -> buff.power_of_the_maelstrom -> max_stack() );
     }
@@ -3391,7 +3333,7 @@ struct lightning_bolt_t : public shaman_spell_t
     shaman_spell_t( "lightning_bolt", player, player -> find_specialization_spell( "Lightning Bolt" ), options_str ),
     m_overcharge( 0 )
   {
-    base_multiplier *= 1.0 + player -> artifact.call_the_thunder.percent();
+    base_multiplier *= 1.0 + player -> artifact.surge_of_power.percent();
 
     if ( player -> talent.overcharge -> ok() )
     {
@@ -3865,7 +3807,6 @@ struct earth_shock_t : public shaman_spell_t
           p() -> gain.aftershock,
           nullptr );
     }
-    p() -> trigger_radens_fury_damage( execute_state );
   }
 
   bool ready() override
@@ -3933,7 +3874,6 @@ struct flame_shock_t : public shaman_spell_t
           p() -> gain.aftershock,
           nullptr );
     }
-    p() -> trigger_radens_fury_damage( execute_state );
   }
 
   void tick( dot_t* d ) override
@@ -4006,7 +3946,6 @@ struct frost_shock_t : public shaman_spell_t
     }
 
     p() -> buff.icefury -> decrement();
-    p() -> trigger_radens_fury_damage( execute_state );
   }
 
 };
@@ -4945,6 +4884,7 @@ void shaman_t::init_spells()
 
   // Elemental
   artifact.stormkeeper               = find_artifact_spell( "Stormkeeper"        );
+  artifact.surge_of_power            = find_artifact_spell( "Surge of Power"     );
   artifact.call_the_thunder          = find_artifact_spell( "Call the Thunder"   );
   artifact.earthen_attunement        = find_artifact_spell( "Earthen Attunement" );
   artifact.the_ground_trembles       = find_artifact_spell( "The Ground Trembles");
@@ -4955,8 +4895,8 @@ void shaman_t::init_spells()
   artifact.master_of_the_elements    = find_artifact_spell( "Master of the Elements" );
   artifact.molten_blast              = find_artifact_spell( "Molten Blast"       );
   artifact.elementalist              = find_artifact_spell( "Elementalist"       );
-  artifact.radens_fury               = find_artifact_spell( "Ra-den's Fury"      );
   artifact.firestorm                 = find_artifact_spell( "Firestorm"          );
+  artifact.power_of_the_maelstrom    = find_artifact_spell( "Power of the Maelstrom" );
 
   // Enhancement
   artifact.doom_winds                = find_artifact_spell( "Doom Winds"         );
@@ -5022,11 +4962,6 @@ void shaman_t::init_spells()
   if ( artifact.volcanic_inferno.rank() )
   {
     volcanic_inferno = new volcanic_inferno_driver_t( this );
-  }
-
-  if ( artifact.radens_fury.rank() )
-  {
-    radens_fury = new radens_fury_t( this );
   }
 
   // Constants
@@ -5187,24 +5122,6 @@ void shaman_t::trigger_earthen_rage( const action_state_t* state )
     return;
 
   earthen_rage -> schedule_execute();
-}
-
-void shaman_t::trigger_radens_fury_damage( const action_state_t* state )
-{
-  if ( ! artifact.radens_fury.rank() )
-  {
-    return;
-  }
-
-  if ( ! buff.radens_fury -> up() )
-  {
-    return;
-  }
-
-  radens_fury -> target = state -> target;
-  radens_fury -> schedule_execute();
-
-  buff.radens_fury -> decrement();
 }
 
 void shaman_t::trigger_stormlash( const action_state_t* state )
@@ -5565,9 +5482,6 @@ void shaman_t::create_buffs()
     .cd( timespan_t::zero() ); // Handled by the action
   buff.static_overload = buff_creator_t( this, "static_overload", find_spell( 191634 ) )
     .chance( artifact.static_overload.rank() > 0 );
-  buff.master_of_the_elements = buff_creator_t( this, "master_of_the_elements", artifact.master_of_the_elements.data().effectN( 1 ).trigger() )
-    .default_value( artifact.master_of_the_elements.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() )
-    .add_invalidate( CACHE_HASTE );
   buff.power_of_the_maelstrom = buff_creator_t( this, "power_of_the_maelstrom", find_spell( 191861 ) -> effectN( 1 ).trigger() );
 
   buff.resonance_totem = buff_creator_t( this, "resonance_totem", find_spell( 202192 ) )
@@ -5590,7 +5504,6 @@ void shaman_t::create_buffs()
   buff.icefury = buff_creator_t( this, "icefury", talent.icefury )
     .cd( timespan_t::zero() ) // Handled by the action
     .default_value( talent.icefury -> effectN( 3 ).percent() );
-  buff.radens_fury = buff_creator_t( this, "radens_fury", artifact.radens_fury.data().effectN( 1 ).trigger() );
 
   buff.stormlash = new stormlash_buff_t( this );
 
@@ -5639,7 +5552,6 @@ void shaman_t::init_rng()
   real_ppm.volcanic_inferno = real_ppm_t( *this, artifact.volcanic_inferno.data().real_ppm() );
   real_ppm.power_of_the_maelstrom = real_ppm_t( *this, find_spell( 191861 ) -> real_ppm() );
   real_ppm.static_overload = real_ppm_t( *this, find_spell( 191602 ) -> real_ppm() );
-  real_ppm.radens_fury = real_ppm_t( *this, find_spell( 192623 ) -> real_ppm() );
   real_ppm.stormlash = real_ppm_t( *this, find_spell( 195255 ) -> real_ppm(),
       dbc.real_ppm_modifier( 195255, this ), dbc.real_ppm_scale( 195255 ) );
   real_ppm.hot_hand = real_ppm_t( *this, find_spell( 201900 ) -> real_ppm(),
@@ -6026,11 +5938,6 @@ double shaman_t::composite_spell_haste() const
 
   h *= 1.0 / ( 1.0 + buff.t18_4pc_elemental -> stack_value() );
 
-  if ( buff.master_of_the_elements -> check() )
-  {
-    h *= 1.0 / ( 1.0 + buff.master_of_the_elements -> stack_value() );
-  }
-
   if ( buff.tailwind_totem -> up() )
   {
     h *= buff.tailwind_totem -> check_value();
@@ -6102,11 +6009,6 @@ double shaman_t::composite_melee_haste() const
 
   if ( buff.tier13_4pc_healer -> up() )
     h *= 1.0 / ( 1.0 + buff.tier13_4pc_healer -> data().effectN( 1 ).percent() );
-
-  if ( buff.master_of_the_elements -> check() )
-  {
-    h *= buff.master_of_the_elements -> stack_value();
-  }
 
   if ( buff.tailwind_totem -> up() )
   {
@@ -6195,6 +6097,11 @@ double shaman_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buff.boulderfist -> data().effectN( 3 ).percent();
   }
 
+  if ( artifact.call_the_thunder.rank() > 0 && dbc::is_school( school, SCHOOL_NATURE ) )
+  {
+    m *= 1.0 + artifact.call_the_thunder.percent();
+  }
+
   return m;
 }
 
@@ -6250,7 +6157,6 @@ void shaman_t::reset()
   real_ppm.volcanic_inferno.reset();
   real_ppm.power_of_the_maelstrom.reset();
   real_ppm.static_overload.reset();
-  real_ppm.radens_fury.reset();
   real_ppm.stormlash.reset();
   real_ppm.hot_hand.reset();
   real_ppm.doom_vortex.reset();
