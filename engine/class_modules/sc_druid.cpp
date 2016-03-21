@@ -6364,26 +6364,21 @@ void druid_t::create_buffs()
   using namespace buffs;
 
   // Generic / Multi-spec druid buffs
-  buff.ashamanes_energy      = buff_creator_t( this, "ashamanes_energy", find_spell( 210583 ) )
-                               .chance( artifact.ashamanes_energy.rank() > 0 )
-                               .default_value( artifact.ashamanes_energy.value() )
-                               .tick_callback( [ this ]( buff_t* b , int, const timespan_t& ) {
-                                  resource_gain( RESOURCE_ENERGY, b -> value(), gain.ashamanes_energy ); } );
+
   buff.bear_form             = new bear_form_t( *this );
-  buff.berserk               = new berserk_buff_t( *this );
+
   buff.cat_form              = new cat_form_t( *this );
-  buff.dash                  = buff_creator_t( this, "dash", find_class_spell( "Dash" ) )
-                               .cd( timespan_t::zero() )
-                               .default_value( find_class_spell( "Dash" ) -> effectN( 1 ).percent() );
-  buff.moonkin_form          = new moonkin_form_t( *this );
+
   buff.clearcasting          = buff_creator_t( this, "clearcasting", spec.omen_of_clarity -> effectN( 1 ).trigger() )
                                .chance( specialization() == DRUID_RESTORATION ? find_spell( 113043 ) -> proc_chance()
                                         : find_spell( 16864 ) -> proc_chance() )
                                .cd( timespan_t::zero() )
                                .max_stack( 1 + talent.moment_of_clarity -> effectN( 1 ).base_value() );
-  buff.soul_of_the_forest    = buff_creator_t( this, "soul_of_the_forest",
-                               talent.soul_of_the_forest -> ok() ? find_spell( 114108 ) : spell_data_t::not_found() )
-                               .default_value( find_spell( 114108 ) -> effectN( 1 ).percent() );
+
+  buff.dash                  = buff_creator_t( this, "dash", find_class_spell( "Dash" ) )
+                               .cd( timespan_t::zero() )
+                               .default_value( find_class_spell( "Dash" ) -> effectN( 1 ).percent() );
+
   buff.prowl                 = buff_creator_t( this, "prowl", find_class_spell( "Prowl" ) );
 
   // Talent buffs
@@ -6441,113 +6436,102 @@ void druid_t::create_buffs()
 
   // Balance
 
-  buff.blessing_of_anshe         = buff_creator_t( this, "blessing_of_anshe", spell.blessing_of_anshe )
-                                   .tick_time_behavior( BUFF_TICK_TIME_HASTED )
-                                   .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
-                                     resource_gain( RESOURCE_ASTRAL_POWER, b -> data().effectN( 1 ).resource( RESOURCE_ASTRAL_POWER ),
-                                       gain.blessing_of_anshe ); } );
+  buff.blessing_of_anshe     = buff_creator_t( this, "blessing_of_anshe", spell.blessing_of_anshe )
+                               .tick_time_behavior( BUFF_TICK_TIME_HASTED )
+                               .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
+                                 resource_gain( RESOURCE_ASTRAL_POWER, b -> data().effectN( 1 ).resource( RESOURCE_ASTRAL_POWER ),
+                                 gain.blessing_of_anshe ); } );
 
-  buff.blessing_of_elune         = buff_creator_t( this, "blessing_of_elune", spell.blessing_of_elune );
+  buff.blessing_of_elune     = buff_creator_t( this, "blessing_of_elune", spell.blessing_of_elune );
 
-  buff.celestial_alignment       = new celestial_alignment_buff_t( *this );
+  buff.celestial_alignment   = new celestial_alignment_buff_t( *this );
 
-  buff.fury_of_elune_up          = buff_creator_t( this, "fury_of_elune_up", spell_data_t::nil() )
-                                   .max_stack( 10 ); // Tracking buff for APL use
+  buff.fury_of_elune_up      = buff_creator_t( this, "fury_of_elune_up", spell_data_t::nil() )
+                               .max_stack( 10 ); // Tracking buff for APL use
 
-  buff.owlkin_frenzy             = buff_creator_t( this, "owlkin_frenzy", find_spell( 157228 ) )
-                                   .chance( spec.moonkin_form -> proc_chance() );
+  buff.owlkin_frenzy         = buff_creator_t( this, "owlkin_frenzy", find_spell( 157228 ) )
+                               .chance( spec.moonkin_form -> proc_chance() );
 
-  buff.lunar_empowerment         = buff_creator_t( this, "lunar_empowerment", find_spell( 164547 ) )
-                                   .default_value( find_spell( 164547 ) -> effectN( 1 ).percent()
-                                       + talent.soul_of_the_forest -> effectN( 1 ).percent()
-                                       + artifact.empowerment.percent() );
+  buff.lunar_empowerment     = buff_creator_t( this, "lunar_empowerment", find_spell( 164547 ) )
+                               .default_value( find_spell( 164547 ) -> effectN( 1 ).percent()
+                                 + talent.soul_of_the_forest -> effectN( 1 ).percent()
+                                 + artifact.empowerment.percent() );
 
-  buff.solar_empowerment         = buff_creator_t( this, "solar_empowerment", find_spell( 164545 ) )
-                                   .default_value( find_spell( 164545 ) -> effectN( 1 ).percent()
-                                       + talent.soul_of_the_forest -> effectN( 1 ).percent()
-                                       + artifact.empowerment.percent() );
+  buff.moonkin_form          = new moonkin_form_t( *this );
 
-  buff.star_power                = buff_creator_t( this, "star_power", find_spell( 202942 ) )
-                                   .default_value( find_spell( 202942 ) -> effectN( 1 ).percent() )
-                                   .add_invalidate( CACHE_SPELL_HASTE );
+  buff.solar_empowerment     = buff_creator_t( this, "solar_empowerment", find_spell( 164545 ) )
+                               .default_value( find_spell( 164545 ) -> effectN( 1 ).percent()
+                                 + talent.soul_of_the_forest -> effectN( 1 ).percent()
+                                 + artifact.empowerment.percent() );
 
-  buff.warrior_of_elune          = new warrior_of_elune_buff_t( *this );
+  buff.star_power            = buff_creator_t( this, "star_power", find_spell( 202942 ) )
+                               .default_value( find_spell( 202942 ) -> effectN( 1 ).percent() )
+                               .add_invalidate( CACHE_SPELL_HASTE );
 
-  buff.balance_tier18_4pc        = buff_creator_t( this, "faerie_blessing", find_spell( 188086 ) )
-                                   .default_value( find_spell( 188086 ) -> effectN( 1 ).percent() )
-                                   .chance( sets.has_set_bonus( DRUID_BALANCE, T18, B4 ) )
-                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.warrior_of_elune      = new warrior_of_elune_buff_t( *this );
 
   // Feral
+
+  buff.ashamanes_energy      = buff_creator_t( this, "ashamanes_energy", find_spell( 210583 ) )
+                               .chance( artifact.ashamanes_energy.rank() > 0 )
+                               .default_value( artifact.ashamanes_energy.value() )
+                               .tick_callback( [ this ]( buff_t* b , int, const timespan_t& ) {
+                                  resource_gain( RESOURCE_ENERGY, b -> value(), gain.ashamanes_energy ); } );
+
+  buff.berserk               = new berserk_buff_t( *this );
+
   buff.open_wounds           = buff_creator_t( this, "open_wounds_up", spell_data_t::nil() )
                                .chance( artifact.open_wounds.rank() > 0 )
                                .duration( artifact.open_wounds.data().effectN( 1 ).trigger() -> duration() );
+
   buff.predatory_swiftness   = buff_creator_t( this, "predatory_swiftness", find_spell( 69369 ) )
                                .chance( spec.predatory_swiftness -> ok() );
+
   buff.protection_of_ashamane = buff_creator_t( this, "protection_of_ashamane", find_spell( 210655 ) )
                                .chance( artifact.protection_of_ashamane.rank() > 0 )
                                .cd( find_spell( 213557 ) -> duration() )
                                .default_value( find_spell( 210655 ) -> effectN( 1 ).percent() )
                                .add_invalidate( CACHE_DODGE )
                                .add_invalidate( CACHE_ARMOR );
+
   buff.savage_roar           = buff_creator_t( this, "savage_roar", talent.savage_roar )
                                .default_value( talent.savage_roar -> effectN( 2 ).percent() )
                                .refresh_behavior( BUFF_REFRESH_DURATION ) // Pandemic refresh is done by the action
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
   buff.scent_of_blood        = buff_creator_t( this, "scent_of_blood", find_spell( 210664 ) )
                                .chance( artifact.scent_of_blood.rank() > 0 )
                                .default_value( -artifact.scent_of_blood.data().effectN( 1 ).resource( RESOURCE_ENERGY ) );
+
   buff.tigers_fury           = buff_creator_t( this, "tigers_fury", find_specialization_spell( "Tiger's Fury" ) )
                                .default_value( find_specialization_spell( "Tiger's Fury" ) -> effectN( 1 ).percent() )
                                .cd( timespan_t::zero() )
                                .refresh_behavior( BUFF_REFRESH_PANDEMIC ); // Legion TOCHECK
-  buff.feral_tier15_4pc      = buff_creator_t( this, "feral_tier15_4pc", find_spell( 138358 ) )
-                               .default_value( find_spell( 138358 ) -> effectN( 1 ).percent() );
-  buff.feral_tier16_2pc      = buff_creator_t( this, "feral_tier16_2pc", find_spell( 144865 ) )
-                               .default_value( find_spell( 144865 ) -> effectN( 1 ).percent() ); // tier16_2pc_melee
-  buff.feral_tier16_4pc      = buff_creator_t( this, "feral_tier16_4pc", find_spell( 146874 ) )
-                               .default_value( find_spell( 146874 ) -> effectN( 1 ).base_value() ); // tier16_4pc_melee
-  buff.feral_tier17_4pc      = buff_creator_t( this, "feral_tier17_4pc", find_spell( 166639 ) )
-                               .quiet( true );
 
   // Guardian
   buff.adaptive_fur          = new adaptive_fur_t( *this );
+
   buff.barkskin              = buff_creator_t( this, "barkskin", find_specialization_spell( "Barkskin" ) )
                                .cd( timespan_t::zero() )
                                .default_value( find_specialization_spell( "Barkskin" ) -> effectN( 2 ).percent() )
                                .tick_behavior( talent.brambles -> ok() ? BUFF_TICK_REFRESH : BUFF_TICK_NONE )
                                .tick_callback( [ this ] ( buff_t*, int, const timespan_t& ) { active.brambles_pulse -> execute(); } );
+
   buff.bladed_armor          = buff_creator_t( this, "bladed_armor", spec.bladed_armor )
                                .default_value( spec.bladed_armor -> effectN( 1 ).percent() )
                                .add_invalidate( CACHE_ATTACK_POWER );
+
   buff.bristling_fur         = buff_creator_t( this, "bristling_fur", talent.bristling_fur )
                                .cd( timespan_t::zero() );
+
   buff.earthwarden           = buff_creator_t( this, "earthwarden", find_spell( 203975 ) )
                                .default_value( talent.earthwarden -> effectN( 1 ).percent() );
+
   buff.earthwarden_driver    = buff_creator_t( this, "earthwarden_driver", talent.earthwarden )
                                .quiet( true )
                                .tick_callback( [ this ] ( buff_t*, int, const timespan_t& ) { buff.earthwarden -> trigger(); } )
                                .tick_zero( true );
-  buff.mark_of_ursol         = buff_creator_t( this, "mark_of_ursol", find_specialization_spell( "Mark of Ursol" ) )
-                               .default_value( find_specialization_spell( "Mark of Ursol" ) -> effectN( 1 ).percent() )
-                               .cd( timespan_t::zero() ) // cooldown handled by spell
-                               .refresh_behavior( BUFF_REFRESH_EXTEND ) // Legion TOCHECK
-                               .duration( find_specialization_spell( "Mark of Ursol" ) -> duration() );
-  buff.pulverize             = buff_creator_t( this, "pulverize", find_spell( 158792 ) )
-                               .default_value( find_spell( 158792 ) -> effectN( 1 ).percent() )
-                               .refresh_behavior( BUFF_REFRESH_PANDEMIC );
-  buff.rage_of_the_sleeper   = buff_creator_t( this, "rage_of_the_sleeper", &artifact.rage_of_the_sleeper.data() )
-                               .chance( 1.0 ) // spell data says 10% for no apparent reason
-                               .cd( timespan_t::zero() )
-                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-                               .add_invalidate( CACHE_LEECH );
-  buff.survival_instincts    = buff_creator_t( this, "survival_instincts", find_specialization_spell( "Survival Instincts" ) )
-                               .cd( timespan_t::zero() )
-                               .default_value( 0.0 - find_specialization_spell( "Survival Instincts" ) -> effectN( 1 ).percent() )
-                               .duration( find_specialization_spell( "Survival Instincts" ) -> duration() + artifact.honed_instincts.time_value() );
-  buff.guardian_tier15_2pc   = buff_creator_t( this, "guardian_tier15_2pc", find_spell( 138217 ) );
-  buff.guardian_tier17_4pc   = buff_creator_t( this, "guardian_tier17_4pc", find_spell( 177969 ) )
-                               .default_value( find_spell( 177969 ) -> effectN( 1 ).percent() );
+
   buff.ironfur               = buff_creator_t( this, "ironfur", spec.ironfur )
                                .duration( spec.ironfur -> duration() + artifact.ursocs_endurance.time_value() )
                                .default_value( spec.ironfur -> effectN( 1 ).percent() )
@@ -6556,8 +6540,33 @@ void druid_t::create_buffs()
                                .stack_behavior( BUFF_STACK_ASYNCHRONOUS )
                                .cd( timespan_t::zero() );
 
+  buff.mark_of_ursol         = buff_creator_t( this, "mark_of_ursol", find_specialization_spell( "Mark of Ursol" ) )
+                               .default_value( find_specialization_spell( "Mark of Ursol" ) -> effectN( 1 ).percent() )
+                               .cd( timespan_t::zero() ) // cooldown handled by spell
+                               .refresh_behavior( BUFF_REFRESH_EXTEND ) // Legion TOCHECK
+                               .duration( find_specialization_spell( "Mark of Ursol" ) -> duration() );
+
+  buff.pulverize             = buff_creator_t( this, "pulverize", find_spell( 158792 ) )
+                               .default_value( find_spell( 158792 ) -> effectN( 1 ).percent() )
+                               .refresh_behavior( BUFF_REFRESH_PANDEMIC );
+
+  buff.rage_of_the_sleeper   = buff_creator_t( this, "rage_of_the_sleeper", &artifact.rage_of_the_sleeper.data() )
+                               .chance( 1.0 ) // spell data says 10% for no apparent reason
+                               .cd( timespan_t::zero() )
+                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                               .add_invalidate( CACHE_LEECH );
+
+  buff.survival_instincts    = buff_creator_t( this, "survival_instincts", find_specialization_spell( "Survival Instincts" ) )
+                               .cd( timespan_t::zero() )
+                               .default_value( 0.0 - find_specialization_spell( "Survival Instincts" ) -> effectN( 1 ).percent() )
+                               .duration( find_specialization_spell( "Survival Instincts" ) -> duration() + artifact.honed_instincts.time_value() );
+
   // Restoration
   buff.harmony               = buff_creator_t( this, "harmony", mastery.harmony -> ok() ? find_spell( 100977 ) : spell_data_t::not_found() );
+
+  buff.soul_of_the_forest    = buff_creator_t( this, "soul_of_the_forest",
+                               talent.soul_of_the_forest -> ok() ? find_spell( 114108 ) : spell_data_t::not_found() )
+                               .default_value( find_spell( 114108 ) -> effectN( 1 ).percent() );
 
   if ( specialization() == DRUID_RESTORATION || talent.restoration_affinity -> ok() )
   {
@@ -6569,6 +6578,30 @@ void druid_t::create_buffs()
                                  active.yseras_gift -> execute(); } )
                                .tick_zero( true );
   }
+
+  // Set Bonuses
+
+  buff.balance_tier18_4pc    = buff_creator_t( this, "faerie_blessing", find_spell( 188086 ) )
+                               .default_value( find_spell( 188086 ) -> effectN( 1 ).percent() )
+                               .chance( sets.has_set_bonus( DRUID_BALANCE, T18, B4 ) )
+                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  buff.feral_tier15_4pc      = buff_creator_t( this, "feral_tier15_4pc", find_spell( 138358 ) )
+                               .default_value( find_spell( 138358 ) -> effectN( 1 ).percent() );
+
+  buff.feral_tier16_2pc      = buff_creator_t( this, "feral_tier16_2pc", find_spell( 144865 ) )
+                               .default_value( find_spell( 144865 ) -> effectN( 1 ).percent() );
+
+  buff.feral_tier16_4pc      = buff_creator_t( this, "feral_tier16_4pc", find_spell( 146874 ) )
+                               .default_value( find_spell( 146874 ) -> effectN( 1 ).base_value() );
+
+  buff.feral_tier17_4pc      = buff_creator_t( this, "feral_tier17_4pc", find_spell( 166639 ) )
+                               .quiet( true );
+
+  buff.guardian_tier15_2pc   = buff_creator_t( this, "guardian_tier15_2pc", find_spell( 138217 ) );
+
+  buff.guardian_tier17_4pc   = buff_creator_t( this, "guardian_tier17_4pc", find_spell( 177969 ) )
+                               .default_value( find_spell( 177969 ) -> effectN( 1 ).percent() );
 }
 
 // ALL Spec Pre-Combat Action Priority List =================================
