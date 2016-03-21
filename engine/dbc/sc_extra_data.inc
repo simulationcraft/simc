@@ -1702,7 +1702,7 @@ static stat_data_t __gt_class_stats_by_level[][110] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 },
-    {      0,      0,      0,      0,      0 }, // 110
+    {   4402,   9030,   6259,   7328,      0 }, // 110
   },
   { // Demon Hunter // TO-DO: Currently just has Rogue values. Fix.
     //    Str     Agi     Sta     Int     Spi
