@@ -4925,7 +4925,6 @@ struct gift_of_the_ox_t: public monk_heal_t
     background = true;
     target = &p;
     trigger_gcd = timespan_t::zero();
-    base_pct_heal = p.passives.gift_of_the_ox_heal -> effectN( 1 ).percent();
   }
 
   virtual void execute() override
@@ -5185,7 +5184,7 @@ struct refreshing_jade_wind_t: public monk_spell_t
 };
 
 // ==========================================================================
-// Celestial Forutne
+// Celestial Fortune
 // ==========================================================================
 // This is a Brewmaster-specific critical strike effect
 
@@ -5194,13 +5193,13 @@ struct celestial_fortune_t : public monk_heal_t
   proc_t* proc_tracker;
 
   celestial_fortune_t( monk_t& p )
-    : monk_heal_t( "celestial_fortune", p, p.spec.celestial_fortune ),
+    : monk_heal_t( "celestial_fortune", p, p.passives.celestial_fortune ),
     proc_tracker( p.get_proc( name_str ) )
   {
     background = true;
     proc = true;
     target = player;
-    may_crit = false;        
+    may_crit = false;
   }
 
   // Need to disable multipliers in init() so that it doesn't double-dip on anything  
@@ -5531,7 +5530,7 @@ action_t* monk_t::create_action( const std::string& name,
 
 void monk_t::trigger_celestial_fortune( action_state_t* s )
 {
-  if ( ! passives.celestial_fortune -> ok() || s -> action == active_celestial_fortune_proc || s -> result_raw == 0.0 )
+  if ( ! spec.celestial_fortune -> ok() || s -> action == active_celestial_fortune_proc || s -> result_raw == 0.0 )
     return;
 
   // flush out percent heals
@@ -6740,7 +6739,7 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school,
 void monk_t::assess_heal( school_e school, dmg_e dmg_type, action_state_t* s )
 {
   // Celestial Fortune procs a heal every now and again
-  if ( passives.celestial_fortune -> ok() && specialization() == MONK_BREWMASTER )
+  if ( spec.celestial_fortune -> ok() )
     trigger_celestial_fortune( s );
 
   player_t::assess_heal( school, dmg_type, s );
