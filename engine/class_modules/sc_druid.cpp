@@ -434,7 +434,7 @@ public:
     // Feral (Cat)
     gain_t* ashamanes_energy;
     gain_t* ashamanes_frenzy;
-    gain_t* bloody_slash;
+    gain_t* brutal_slash;
     gain_t* energy_refund;
     gain_t* elunes_guidance;
     gain_t* moonfire;
@@ -591,7 +591,7 @@ public:
     const spell_data_t* jagged_wounds;
     const spell_data_t* elunes_guidance;
 
-    const spell_data_t* bloody_slash;
+    const spell_data_t* brutal_slash;
     const spell_data_t* bloodtalons;
 
     // Balance
@@ -2613,15 +2613,15 @@ struct berserk_t : public cat_attack_t
   }
 };
 
-// Bloody Slash =============================================================
+// Brutal Slash =============================================================
 
-struct bloody_slash_t : public cat_attack_t
+struct brutal_slash_t : public cat_attack_t
 {
 private:
   bool attack_critical;
 public:
-  bloody_slash_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "bloody_slash", p, p -> talent.bloody_slash ),
+  brutal_slash_t( druid_t* p, const std::string& options_str ) :
+    cat_attack_t( "brutal_slash", p, p -> talent.brutal_slash ),
     attack_critical( false )
   {
     parse_options( options_str );
@@ -2662,7 +2662,7 @@ public:
 
     if ( attack_hit )
     {
-      p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.bloody_slash );
+      p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.brutal_slash );
       if ( attack_critical && p() -> spell.primal_fury -> ok() )
       {
         p() -> proc.primal_fury -> occur();
@@ -3226,7 +3226,7 @@ public:
 
   virtual bool ready() override
   {
-    if ( p() -> talent.bloody_slash -> ok() )
+    if ( p() -> talent.brutal_slash -> ok() )
       return false;
 
     return cat_attack_t::ready();
@@ -5951,7 +5951,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "bear_form"              ) return new              bear_form_t( this, options_str );
   if ( name == "blessing_of_anshe"      ) return new      blessing_of_anshe_t( this, options_str );
   if ( name == "blessing_of_elune"      ) return new      blessing_of_elune_t( this, options_str );
-  if ( name == "bloody_slash"           ) return new           bloody_slash_t( this, options_str );
+  if ( name == "brutal_slash"           ) return new           brutal_slash_t( this, options_str );
   if ( name == "bristling_fur"          ) return new          bristling_fur_t( this, options_str );
   if ( name == "cat_form"               ) return new               cat_form_t( this, options_str );
   if ( name == "celestial_alignment" ||
@@ -6106,7 +6106,7 @@ void druid_t::init_spells()
   talent.lunar_inspiration              = find_talent_spell( "Lunar Inspiration" );
 
   talent.incarnation_cat                = find_talent_spell( "Incarnation: King of the Jungle" );
-  talent.bloody_slash                   = find_talent_spell( "Bloody Slash" );
+  talent.brutal_slash                   = find_talent_spell( "Brutal Slash" );
 
   talent.sabertooth                     = find_talent_spell( "Sabertooth" );
   talent.jagged_wounds                  = find_talent_spell( "Jagged Wounds" );
@@ -7040,7 +7040,7 @@ void druid_t::init_gains()
   // Feral
   gain.ashamanes_energy      = get_gain( "ashamanes_energy"      );
   gain.ashamanes_frenzy      = get_gain( "ashamanes_frenzy"      );
-  gain.bloody_slash          = get_gain( "bloody_slash"          );
+  gain.brutal_slash          = get_gain( "brutal_slash"          );
   gain.energy_refund         = get_gain( "energy_refund"         );
   gain.elunes_guidance       = get_gain( "elunes_guidance"       );
   gain.moonfire              = get_gain( "moonfire"              );
