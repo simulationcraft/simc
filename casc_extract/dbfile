@@ -128,6 +128,7 @@ DBFilesClient\DungeonMap.db2
 DBFilesClient\DungeonMapChunk.db2
 DBFilesClient\DurabilityCosts.db2
 DBFilesClient\DurabilityQuality.db2
+DBFilesClient\EdgeGlowEffect.db2
 DBFilesClient\Emotes.db2
 DBFilesClient\EmotesText.db2
 DBFilesClient\EmotesTextData.db2
@@ -160,6 +161,7 @@ DBFilesClient\GarrBuilding.db2
 DBFilesClient\GarrBuildingDoodadSet.db2
 DBFilesClient\GarrBuildingPlotInst.db2
 DBFilesClient\GarrClassSpec.db2
+DBFilesClient\GarrClassSpecPlayerCond.db2
 DBFilesClient\GarrEncounter.db2
 DBFilesClient\GarrEncounterSetXEncounter.db2
 DBFilesClient\GarrEncounterXMechanic.db2
@@ -247,6 +249,7 @@ DBFilesClient\ItemEffect.db2
 DBFilesClient\ItemExtendedCost.db2
 DBFilesClient\ItemGroupSounds.db2
 DBFilesClient\ItemLimitCategory.db2
+DBFilesClient\ItemLimitCategoryCondition.db2
 DBFilesClient\ItemModifiedAppearance.db2
 DBFilesClient\ItemModifiedAppearanceExtra.db2
 DBFilesClient\ItemNameDescription.db2
@@ -286,7 +289,7 @@ DBFilesClient\LfgDungeons.db2
 DBFilesClient\LfgDungeonsGroupingMap.db2
 DBFilesClient\LfgRoleRequirement.db2
 DBFilesClient\Light.db2
-DBFilesClient\LightData.dbc
+DBFilesClient\LightData.db2
 DBFilesClient\LightParams.db2
 DBFilesClient\LightSkybox.db2
 DBFilesClient\LiquidMaterial.db2
@@ -392,8 +395,10 @@ DBFilesClient\SceneScript.db2
 DBFilesClient\SceneScriptPackage.db2
 DBFilesClient\SceneScriptPackageMember.db2
 DBFilesClient\ScheduledInterval.db2
+DBFilesClient\ScheduledUniqueCategory.db2
 DBFilesClient\ScheduledWorldState.db2
 DBFilesClient\ScheduledWorldStateGroup.db2
+DBFilesClient\ScheduledWorldStateXUniqCat.db2
 DBFilesClient\ScreenEffect.db2
 DBFilesClient\ScreenLocation.db2
 DBFilesClient\SeamlessSite.db2
