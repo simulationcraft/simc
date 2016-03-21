@@ -7,10 +7,8 @@
     - everything, pretty much :(
 
   TODO (ret):
-    - Blinding Light & Repentance
-    - Equality & Eye for an Eye
+    - Equality & Justicar's (correctly) & Eye for an Eye
     - bugfixes & cleanup
-    - figure out why spells 193984-193987 can't be found
     - A few Artifact Powers
     - Verify speculative implementations of some artifact powers + BoM
     - BoK/BoW
@@ -119,7 +117,7 @@ public:
     gain_t* hp_blade_of_justice;
     gain_t* hp_wake_of_ashes;
     gain_t* hp_templars_verdict_refund;
-    gain_t* hp_judgment;
+    gain_t* hp_holy_wrath;
   } gains;
 
   // Cooldowns
@@ -214,8 +212,8 @@ public:
     const spell_data_t* final_stand;
 
     // Retribution
+    const spell_data_t* final_verdict;
     const spell_data_t* execution_sentence;
-    const spell_data_t* eye_for_an_eye;
     const spell_data_t* consecration;
     const spell_data_t* fires_of_justice;
     const spell_data_t* crusader_flurry;
@@ -226,15 +224,15 @@ public:
     const spell_data_t* virtues_blade;
     const spell_data_t* blade_of_wrath;
     const spell_data_t* divine_hammer;
-    const spell_data_t* seal_of_light;
-    const spell_data_t* holy_wrath;
+    const spell_data_t* justicars_vengeance;
+    const spell_data_t* eye_for_an_eye;
     const spell_data_t* word_of_glory;
     const spell_data_t* divine_intervention;
     const spell_data_t* divine_steed;
-    const spell_data_t* blaze_of_light;
+    const spell_data_t* seal_of_light;
     const spell_data_t* blessings_of_justice;
+    const spell_data_t* holy_wrath;
     const spell_data_t* equality;
-    const spell_data_t* mass_judgment;
   } talents;
 
   struct artifact_spell_data_t
@@ -2212,6 +2210,8 @@ struct echoed_divine_storm_t: public paladin_melee_attack_t
 
     base_multiplier *= 1.0 + p -> artifact.righteous_blade.percent();
     base_multiplier *= 1.0 + p -> artifact.divine_tempest.percent( 2 );
+    if ( p -> talents.final_verdict -> ok() )
+      base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 1 ).percent();
 
     aoe = -1;
     background = true;
@@ -2236,6 +2236,8 @@ struct divine_storm_t: public holy_power_consumer_t
 
     base_multiplier *= 1.0 + p -> artifact.righteous_blade.percent();
     base_multiplier *= 1.0 + p -> artifact.divine_tempest.percent( 2 );
+    if ( p -> talents.final_verdict -> ok() )
+      base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 1 ).percent();
 
     aoe = -1;
   }
@@ -2416,13 +2418,6 @@ struct judgment_t : public paladin_melee_attack_t
 
     base_multiplier *= 1.0 + p -> artifact.highlords_judgment.percent();
 
-    if ( p -> talents.mass_judgment -> ok() )
-    {
-      aoe = -1;
-      base_aoe_multiplier = 1;
-      // TODO: does this need to be multiplied by the Highlord's Judgment percentage too?
-    }
-
     ashen_strike_impact_spell = new ashen_strike_impact_t( p );
   }
 
@@ -2557,6 +2552,8 @@ struct echoed_templars_verdict_t : public paladin_melee_attack_t
 
     background = true;
     base_multiplier *= 1.0 + p -> artifact.might_of_the_templar.percent();
+    if ( p -> talents.final_verdict -> ok() )
+      base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 1 ).percent();
   }
 
   virtual double cost() const override
@@ -2576,6 +2573,8 @@ struct templars_verdict_t : public holy_power_consumer_t
     parse_options( options_str );
 
     base_multiplier *= 1.0 + p -> artifact.might_of_the_templar.percent();
+    if ( p -> talents.final_verdict -> ok() )
+      base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 1 ).percent();
   }
 
   virtual double cost() const override
@@ -2607,6 +2606,48 @@ struct templars_verdict_t : public holy_power_consumer_t
     if ( p() -> artifact.echo_of_the_highlord.rank() )
     {
       echoed_spell -> schedule_execute();
+    }
+  }
+};
+
+// Justicar's Vengeance
+struct justicars_vengeance_t : public holy_power_consumer_t
+{
+  justicars_vengeance_t( paladin_t* p, const std::string& options_str )
+    : holy_power_consumer_t( "justicars_vengeance", p, p -> find_class_spell( "Justicar's Vengeance" ), true )
+  {
+    parse_options( options_str );
+
+    // spelldata claims it is modified by these passives
+    base_multiplier *= 1.0 + p -> artifact.might_of_the_templar.percent();
+    if ( p -> talents.final_verdict -> ok() )
+      base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 1 ).percent();
+  }
+
+  virtual double cost() const override
+  {
+    double base_cost = holy_power_consumer_t::cost();
+    if ( p() -> buffs.the_fires_of_justice -> up() )
+      return base_cost - 1;
+    return base_cost;
+  }
+
+  virtual void execute() override
+  {
+    // store cost for potential refunding (see below)
+    double c = cost();
+
+    holy_power_consumer_t::execute();
+
+    // TODO: do misses consume fires of justice?
+    if ( p() -> buffs.the_fires_of_justice -> up() )
+      p() -> buffs.the_fires_of_justice -> expire();
+
+    // missed/dodged/parried TVs do not consume Holy Power
+    // check for a miss, and refund the appropriate amount of HP if we spent any
+    if ( result_is_miss( execute_state -> result ) && c > 0 )
+    {
+      p() -> resource_gain( RESOURCE_HOLY_POWER, c, p() -> gains.hp_templars_verdict_refund );
     }
   }
 };
@@ -2643,6 +2684,19 @@ struct seal_of_light_t : public paladin_spell_t
 };
 
 // Holy Wrath ========================================================================
+
+struct holy_wrath_tick_t : public paladin_spell_t
+{
+  holy_wrath_tick_t( paladin_t* p ) :
+    paladin_spell_t( "holy_wrath_tick", p, p -> find_talent_spell( "Holy Wrath" ) -> effectN( 2 ).trigger() )
+  {
+    background  = true;
+    may_crit = true;
+    dot_duration = timespan_t::zero();
+  }
+};
+
+
 struct holy_wrath_t : public paladin_spell_t
 {
   holy_wrath_t( paladin_t* p, const std::string& options_str )
@@ -2652,22 +2706,17 @@ struct holy_wrath_t : public paladin_spell_t
     channeled = true;
     tick_zero = false;
     direct_tick = true;
-    hasted_ticks = false;
+    dynamic_tick_action = true;
+    tick_action = new holy_wrath_tick_t( p );
   }
 
-  double composite_target_multiplier( player_t* t ) const override
+  void tick( dot_t* d ) override
   {
-    double m = paladin_spell_t::composite_target_multiplier( t );
+    paladin_spell_t::tick( d );
 
-    paladin_td_t* td = this -> td( t );
-
-    if ( td -> buffs.debuffs_judgment -> up() )
-    {
-      double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent();
-      m *= judgment_multiplier;
-    }
-
-    return m;
+    int g = data().effectN( 2 ).trigger() -> effectN( 2 ).base_value(); // default is a gain of 1 Holy Power
+    // apply gain, record as due to Holy Wrath
+    p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_holy_wrath );
   }
 };
 
@@ -2784,12 +2833,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   actor_target_data_t( target, paladin )
 {
   dots.execution_sentence = target -> get_dot( "execution_sentence", paladin );
-
-  double judgment_duration_multiplier = 1.0;
-  if ( paladin -> talents.mass_judgment -> ok() )
-    judgment_duration_multiplier += paladin -> talents.mass_judgment -> effectN( 2 ).percent();
-  buffs.debuffs_judgment = buff_creator_t( *this, "judgment", paladin -> find_spell( 197277 ))
-    .duration( judgment_duration_multiplier * paladin -> find_spell( 197277 ) -> duration() );
+  buffs.debuffs_judgment = buff_creator_t( *this, "judgment", paladin -> find_spell( 197277 ));
 }
 
 // paladin_t::create_action =================================================
@@ -2834,6 +2878,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "holy_light"                ) return new holy_light_t               ( this, options_str );
   if ( name == "flash_of_light"            ) return new flash_of_light_t           ( this, options_str );
   if ( name == "lay_on_hands"              ) return new lay_on_hands_t             ( this, options_str );
+  if ( name == "justicars_vengeance"       ) return new justicars_vengeance_t      ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -2931,7 +2976,7 @@ void paladin_t::init_gains()
   gains.hp_crusader_strike          = get_gain( "crusader_strike" );
   gains.hp_blade_of_justice         = get_gain( "blade_of_justice" );
   gains.hp_wake_of_ashes            = get_gain( "wake_of_ashes" );
-  gains.hp_judgment                 = get_gain( "judgment" );
+  gains.hp_holy_wrath               = get_gain( "holy_wrath" );
   gains.hp_templars_verdict_refund  = get_gain( "templars_verdict_refund" );
 
   if ( ! retribution_trinket )
@@ -2999,8 +3044,7 @@ void paladin_t::create_buffs()
   // Ret
   buffs.zeal                           = buff_creator_t( this, "zeal" ).spell( find_spell( 203317 ) )
                                           .add_invalidate( CACHE_HASTE );
-  buffs.seal_of_light                  = buff_creator_t( this, "seal_of_light" ).spell( find_spell( 202273 ) )
-                                          .add_invalidate( CACHE_ATTACK_SPEED );
+  buffs.seal_of_light                  = buff_creator_t( this, "seal_of_light" ).spell( find_spell( 202273 ) );
   buffs.the_fires_of_justice           = buff_creator_t( this, "the_fires_of_justice" ).spell( find_spell( 209785 ) );
   buffs.blessing_of_might              = buff_creator_t( this, "blessing_of_might" ).spell( find_spell( 203528 ) );
 
@@ -3518,8 +3562,8 @@ void paladin_t::init_spells()
   talents.knight_templar             = find_talent_spell( "Knight Templar" );
   talents.final_stand                = find_talent_spell( "Final Stand" );
 
+  talents.final_verdict              = find_talent_spell( "Final Verdict" );
   talents.execution_sentence         = find_talent_spell( "Execution Sentence" );
-  talents.eye_for_an_eye             = find_talent_spell( "Eye for an Eye" );
   talents.consecration               = find_talent_spell( "Consecration" );
   talents.fires_of_justice           = find_talent_spell( "The Fires of Justice" );
   talents.crusader_flurry            = find_talent_spell( "Crusader Flurry" );
@@ -3530,15 +3574,15 @@ void paladin_t::init_spells()
   talents.virtues_blade              = find_talent_spell( "Virtue's Blade" );
   talents.blade_of_wrath             = find_talent_spell( "Blade of Wrath" );
   talents.divine_hammer              = find_talent_spell( "Divine Hammer" );
-  talents.seal_of_light              = find_talent_spell( "Seal of Light" );
-  talents.holy_wrath                 = find_talent_spell( "Holy Wrath" );
+  talents.justicars_vengeance        = find_talent_spell( "Justicar's Vengeance" );
+  talents.eye_for_an_eye             = find_talent_spell( "Eye for an Eye" );
   talents.word_of_glory              = find_talent_spell( "Word of Glory" );
   talents.divine_intervention        = find_talent_spell( "Divine Intervention" );
   talents.divine_steed               = find_talent_spell( "Divine Steed" );
-  talents.blaze_of_light             = find_talent_spell( "Blaze of Light" );
+  talents.seal_of_light              = find_talent_spell( "Seal of Light" );
   talents.blessings_of_justice       = find_talent_spell( "Blessings of Justice" );
+  talents.holy_wrath                 = find_talent_spell( "Holy Wrath" );
   talents.equality                   = find_talent_spell( "Equality" );
-  talents.mass_judgment              = find_talent_spell( "Mass Judgment" );
 
   artifact.wake_of_ashes           = find_artifact_spell( "Wake of Ashes" );
   artifact.deliver_the_justice     = find_artifact_spell( "Deliver the Justice" );
@@ -3763,12 +3807,7 @@ double paladin_t::composite_melee_haste() const
 
 double paladin_t::composite_melee_speed() const
 {
-  double m = player_t::composite_melee_speed();
-
-  if ( buffs.seal_of_light -> up() )
-    m /= ( 1.0 + buffs.seal_of_light -> data().effectN( 1 ).percent() );
-
-  return m;
+  return player_t::composite_melee_speed();
 }
 
 // paladin_t::composite_spell_crit ==========================================
