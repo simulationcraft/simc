@@ -42,6 +42,7 @@ BREWMASTER:
 -- Invoke Niuzao
 -- Fortified Mind
 -- Zen Meditation
+-  Celestial Fortune - Double check if this works similar to Prot Paladin's Shining Protector
 */
 #include "simulationcraft.hpp"
 
@@ -144,6 +145,9 @@ struct monk_t: public player_t
 {
 public:
   typedef player_t base_t;
+
+  // Active
+  heal_t*   active_celestial_fortune_proc;
 
   struct
   {
@@ -350,6 +354,7 @@ public:
     const spell_data_t* blackout_strike;
     const spell_data_t* bladed_armor;
     const spell_data_t* breath_of_fire;
+    const spell_data_t* celestial_fortune;
     const spell_data_t* fortifying_brew;
     const spell_data_t* gift_of_the_ox;
     const spell_data_t* ironskin_brew;
@@ -483,6 +488,7 @@ public:
     // Brewmaster
     const spell_data_t* aura_brewmaster_monk;
     const spell_data_t* breath_of_fire_dot;
+    const spell_data_t* celestial_fortune;
     const spell_data_t* elusive_brawler;
     const spell_data_t* elusive_dance;
     const spell_data_t* gift_of_the_ox_heal;
@@ -576,6 +582,8 @@ public:
     aburaq( nullptr )
   {
     // actives
+    active_celestial_fortune_proc = nullptr;
+
     cooldown.brewmaster_attack            = get_cooldown( "brewmaster_attack" );
     cooldown.brewmaster_active_mitigation = get_cooldown( "brews" );
     cooldown.fortifying_brew              = get_cooldown( "fortifying_brew" );
@@ -646,6 +654,7 @@ public:
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* ) override;
   virtual void      assess_damage( school_e, dmg_e, action_state_t* s ) override;
   virtual void      assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* s ) override;
+  virtual void      assess_heal( school_e, dmg_e, action_state_t* s) override;
   virtual void      invalidate_cache( cache_e ) override;
   virtual void      init_action_list() override;
   virtual bool      has_t18_class_trinket() const override;
@@ -679,6 +688,7 @@ public:
   const double moderate_stagger_threshold;
   const double heavy_stagger_threshold;
 //  combo_strikes_e convert_expression_action_to_enum( action_t* a );
+  void trigger_celestial_fortune( action_state_t* );
   double weapon_power_mod;
   double clear_stagger();
   bool has_stagger();
@@ -1747,7 +1757,7 @@ public:
       p() -> tier19_4pc_melee_counter = 0;
     }
 
-    if ( new_ability <= CS_ATTACK_MAX && p() -> buff.masterful_strikes -> up() )
+    if ( p() -> buff.masterful_strikes -> up() )
       p() -> buff.masterful_strikes -> decrement();
   }
 
@@ -5173,6 +5183,51 @@ struct refreshing_jade_wind_t: public monk_spell_t
     heal -> execute();
   }
 };
+
+// ==========================================================================
+// Celestial Forutne
+// ==========================================================================
+// This is a Brewmaster-specific critical strike effect
+
+struct celestial_fortune_t : public monk_heal_t
+{
+  proc_t* proc_tracker;
+
+  celestial_fortune_t( monk_t& p )
+    : monk_heal_t( "celestial_fortune", p, p.spec.celestial_fortune ),
+    proc_tracker( p.get_proc( name_str ) )
+  {
+    background = true;
+    proc = true;
+    target = player;
+    may_crit = false;        
+  }
+
+  // Need to disable multipliers in init() so that it doesn't double-dip on anything  
+  virtual void init() override
+  {
+    monk_heal_t::init();
+    // disable the snapshot_flags for all multipliers, but specifically allow 
+    // action_multiplier() to be called so we can override.
+    snapshot_flags &= STATE_NO_MULTIPLIER;
+    snapshot_flags |= STATE_MUL_DA;
+  }
+
+/*  virtual double action_multiplier() const override
+  {
+    double am = p() -> passives.shining_protector -> effectN( 1 ).percent();
+
+    return am;
+  }
+*/
+
+  virtual void execute() override
+  {
+    proc_tracker -> occur();
+
+    monk_heal_t::execute();
+  }
+};
 } // end namespace heals
 
 namespace absorbs {
@@ -5474,6 +5529,27 @@ action_t* monk_t::create_action( const std::string& name,
   return base_t::create_action( name, options_str );
 }
 
+void monk_t::trigger_celestial_fortune( action_state_t* s )
+{
+  if ( ! passives.celestial_fortune -> ok() || s -> action == active_celestial_fortune_proc || s -> result_raw == 0.0 )
+    return;
+
+  // flush out percent heals
+  if ( s -> action -> type == ACTION_HEAL )
+  {
+    heal_t* heal_cast = debug_cast<heal_t*>( s -> action );
+    if ( ( s -> result_type == HEAL_DIRECT && heal_cast -> base_pct_heal > 0 ) || ( s -> result_type == HEAL_OVER_TIME && heal_cast -> tick_pct_heal > 0 ) )
+      return;
+  }
+
+  // Attempt to proc the heal
+  if ( rng().roll( composite_melee_crit() ) )
+  {
+    active_celestial_fortune_proc -> base_dd_max = active_celestial_fortune_proc -> base_dd_min = s -> result_amount;
+    active_celestial_fortune_proc -> schedule_execute();
+  }
+}
+
 // monk_t::create_pet =======================================================
 
 pet_t* monk_t::create_pet( const std::string& name,
@@ -5653,6 +5729,7 @@ void monk_t::init_spells()
   spec.blackout_strike               = find_specialization_spell( "Blackout Strike" );
   spec.bladed_armor                  = find_specialization_spell( "Bladed Armor" );
   spec.breath_of_fire                = find_specialization_spell( "Breath of Fire" );
+  spec.celestial_fortune             = find_specialization_spell( "Celestial Fortune" );
   spec.fortifying_brew               = find_specialization_spell( "Fortifying Brew" );
   spec.gift_of_the_ox                = find_specialization_spell( "Gift of the Ox" );
   spec.keg_smash                     = find_specialization_spell( "Keg Smash" );
@@ -5704,6 +5781,7 @@ void monk_t::init_spells()
   // Brewmaster
   passives.aura_brewmaster_monk             = find_spell( 137023 );
   passives.breath_of_fire_dot               = find_spell( 123725 );
+  passives.celestial_fortune                = find_spell( 216521 );
   passives.elusive_brawler                  = find_spell( 195630 );
   passives.elusive_dance                    = find_spell( 196739 );
   passives.gift_of_the_ox_heal              = find_spell( 124507 );
@@ -6656,6 +6734,19 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school,
     residual_action::trigger( active_actions.stagger_self_damage, this, stagger_dmg );
   }
 }
+
+// monk_t::assess_heal ===================================================
+
+void monk_t::assess_heal( school_e school, dmg_e dmg_type, action_state_t* s )
+{
+  // Celestial Fortune procs a heal every now and again
+  if ( passives.celestial_fortune -> ok() && specialization() == MONK_BREWMASTER )
+    trigger_celestial_fortune( s );
+
+  player_t::assess_heal( school, dmg_type, s );
+}
+
+
 
 // Brewmaster Pre-Combat Action Priority List ============================
 
