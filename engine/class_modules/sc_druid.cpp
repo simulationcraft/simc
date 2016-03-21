@@ -6438,8 +6438,8 @@ void druid_t::create_buffs()
 
   buff.blessing_of_anshe     = buff_creator_t( this, "blessing_of_anshe", spell.blessing_of_anshe )
                                .tick_time_behavior( BUFF_TICK_TIME_HASTED )
-                               .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
-                                 resource_gain( RESOURCE_ASTRAL_POWER, b -> data().effectN( 1 ).resource( RESOURCE_ASTRAL_POWER ),
+                               .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
+                                 resource_gain( RESOURCE_ASTRAL_POWER, spell.blessing_of_anshe -> effectN( 1 ).resource( RESOURCE_ASTRAL_POWER ),
                                  gain.blessing_of_anshe ); } );
 
   buff.blessing_of_elune     = buff_creator_t( this, "blessing_of_elune", spell.blessing_of_elune );
