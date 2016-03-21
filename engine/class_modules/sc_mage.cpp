@@ -839,9 +839,8 @@ struct mirror_image_pet_t : public pet_t
     {
       double am = mirror_image_spell_t::action_multiplier();
 
-      // TODO: Does Savant affect MI Arcane Charges?
-      am *= 1.0 + p() -> arcane_charge -> stack() *
-                  p() -> o() -> spec.arcane_charge -> effectN( 4 ).percent();
+      // MI Arcane Charges are still hardcoded as 25% damage gains
+      am *= 1.0 + p() -> arcane_charge -> check() * 0.25;
 
       return am;
     }
@@ -1400,6 +1399,15 @@ struct arcane_mage_spell_t : public mage_spell_t
                        const spell_data_t* s = spell_data_t::nil() ) :
     mage_spell_t( n, p, s )
   {}
+
+  double arcane_charge_damage_bonus() const
+  {
+    double per_ac_bonus = p() -> spec.arcane_charge -> effectN( 1 ).percent() *
+                          (1.0 + p() -> cache.mastery_value() *
+                           p() -> spec.savant -> effectN( 2 ).percent() );
+    return 1.0 + p() -> buffs.arcane_charge -> check() * per_ac_bonus;
+  }
+
 };
 
 
@@ -1816,8 +1824,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
   {
     double am = arcane_mage_spell_t::action_multiplier();
 
-    am *= 1.0 + p() -> buffs.arcane_charge -> stack() *
-                p() -> spec.arcane_charge -> effectN( 1 ).percent();
+    am *= arcane_charge_damage_bonus();
 
     return am;
   }
@@ -1897,8 +1904,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
   {
     double am = arcane_mage_spell_t::action_multiplier();
 
-    am *= 1.0 + p() -> buffs.arcane_charge -> stack() *
-                p() -> spec.arcane_charge -> effectN( 1 ).percent();
+    am *= arcane_charge_damage_bonus();
 
     if ( p() -> wild_arcanist && p() -> buffs.arcane_power -> check() )
     {
@@ -2006,8 +2012,7 @@ struct arcane_explosion_t : public arcane_mage_spell_t
   {
     double am = arcane_mage_spell_t::action_multiplier();
 
-    am *= 1.0 + p() -> buffs.arcane_charge -> stack() *
-                p() -> spec.arcane_charge -> effectN( 1 ).percent();
+    am *= arcane_charge_damage_bonus();
 
     if ( p() -> artifact.arcane_purification.rank() )
     {
@@ -2060,8 +2065,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   {
     double am = arcane_mage_spell_t::action_multiplier();
 
-    am *= 1.0 + p() -> buffs.arcane_charge -> stack() *
-                p() -> spec.arcane_charge -> effectN( 1 ).percent();
+    am *= arcane_charge_damage_bonus();
 
     return am;
   }
@@ -3468,8 +3472,7 @@ struct nether_tempest_t : public arcane_mage_spell_t
   {
     double m = arcane_mage_spell_t::composite_persistent_multiplier( state );
 
-    m *= 1.0 +  p() -> buffs.arcane_charge -> stack() *
-                p() -> spec.arcane_charge -> effectN( 1 ).percent();
+    m *= arcane_charge_damage_bonus();
 
     return m;
   }
@@ -4751,7 +4754,6 @@ void mage_t::create_buffs()
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
 
   // Arcane
-  // TODO: Implement arcane_charge_t for savant
   buffs.arcane_charge         = buff_creator_t( this, "arcane_charge", spec.arcane_charge );
   buffs.arcane_missiles       = buff_creator_t( this, "arcane_missiles", find_spell( 79683 ) )
                                   .chance( find_spell( 79684 ) -> effectN( 1 ).percent() );
@@ -5593,7 +5595,7 @@ double mage_t::mana_regen_per_second() const
 
   if ( spec.savant -> ok() )
   {
-    mps *= 1.0 + cache.mastery_value();
+    mps *= 1.0 + cache.mastery_value() * spec.savant -> effectN( 1 ).percent();
   }
 
   return mps;
@@ -5639,7 +5641,7 @@ void mage_t::recalculate_resource_max( resource_e rt )
 
   if ( rt == RESOURCE_MANA && spec.savant -> ok())
   {
-    resources.max[ rt ] *= 1.0 + cache.mastery_value();
+    resources.max[ rt ] *= 1.0 + cache.mastery_value() * spec.savant -> effectN( 1 ).percent();
     resources.current[ rt ] = resources.max[ rt ] * mana_percent;
 
     if ( sim -> debug )
@@ -6150,6 +6152,8 @@ stat_e mage_t::convert_hybrid_stat( stat_e s ) const
   default: return s;
   }
 }
+
+// mage_t::get_icicle_object ==================================================
 
 icicle_data_t mage_t::get_icicle_object()
 {
