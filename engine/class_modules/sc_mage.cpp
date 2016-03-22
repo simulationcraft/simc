@@ -327,7 +327,7 @@ public:
     // Tier 15
     const spell_data_t* arcane_familiar, // NYI
                       * presence_of_mind,
-                      * torrent, // NYI
+                      * torrent,
                       * pyromaniac,
                       * conflagration,
                       * fire_starter,
@@ -1816,7 +1816,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
   virtual void execute() override
   {
     int charges = p() -> buffs.arcane_charge -> check();
-    aoe = charges == 0 ? 0 : 1 + charges;
+    aoe = ( charges == 0 ) ? 0 : 1 + charges;
 
     p() -> benefits.arcane_charge.arcane_barrage -> update();
 
@@ -1830,6 +1830,13 @@ struct arcane_barrage_t : public arcane_mage_spell_t
     double am = arcane_mage_spell_t::action_multiplier();
 
     am *= arcane_charge_damage_bonus();
+
+    if ( p() -> talents.torrent -> ok() )
+    {
+      int targets = std::min( static_cast< size_t >( n_targets() ),
+                              target_list().size() );
+      am *= 1.0 + p() -> talents.torrent -> effectN( 1 ).percent() * targets;
+    }
 
     return am;
   }
