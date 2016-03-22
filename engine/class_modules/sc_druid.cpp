@@ -3658,15 +3658,12 @@ struct mangle_t : public bear_attack_t
     return tm;
   }
 
-  virtual void execute() override
+  int n_targets() const override
   {
-    int base_aoe = aoe;
     if ( p() -> buff.incarnation_bear -> up() )
-      aoe = p() -> buff.incarnation_bear -> data().effectN( 4 ).base_value();
+      return p() -> buff.incarnation_bear -> data().effectN( 4 ).base_value();
 
-    bear_attack_t::execute();
-
-    aoe = base_aoe;
+    return bear_attack_t::n_targets();
   }
 
   void impact( action_state_t* s ) override
@@ -4321,16 +4318,14 @@ struct wild_growth_t : public druid_heal_t
     ignore_false_positive = true;
   }
 
-  virtual void execute() override
+  int n_targets() const override
   {
-    int save = aoe;
+    int n = druid_heal_t::n_targets();
+
     if ( p() -> buff.incarnation_tree -> check() )
-      aoe += 2;
+      n += 2;
 
-    druid_heal_t::execute();
-
-    // Reset AoE
-    aoe = save;
+    return n;
   }
 };
 
@@ -6400,7 +6395,7 @@ void druid_t::create_buffs()
 
   buff.incarnation_cat       = new incarnation_cat_buff_t( *this );
 
-  buff.incarnation_bear      = buff_creator_t( this, "incarnation_son_of_ursoc", talent.incarnation_bear )
+  buff.incarnation_bear      = buff_creator_t( this, "incarnation_guardian_of_ursoc", talent.incarnation_bear )
                                .cd( timespan_t::zero() );
 
   buff.incarnation_tree      = buff_creator_t( this, "incarnation_tree_of_life", talent.incarnation_tree )
