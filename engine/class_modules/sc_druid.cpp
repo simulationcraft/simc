@@ -2345,7 +2345,7 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
   {
     double tc = base_t::composite_target_crit( t );
 
-    if ( t -> debuffs.bleeding -> check() )
+    if ( special && t -> debuffs.bleeding -> check() )
       tc += p() -> talent.blood_scent -> effectN( 1 ).percent();
 
     return tc;
