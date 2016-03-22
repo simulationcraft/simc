@@ -1817,6 +1817,11 @@ public:
         hasted_cd = ab::data().affected_by( p() -> passives.aura_brewmaster_monk -> effectN( 2 ) );
         break;
       }
+      case MONK_MISTWEAVER:
+      {
+        hasted_cd = ab::data().affected_by( p() -> passives.aura_mistweaver_monk -> effectN( 5 ) );
+        break;
+      }
       case MONK_WINDWALKER:
       {
         hasted_cd = ab::data().affected_by( p() -> passives.aura_monk -> effectN( 1 ) );
