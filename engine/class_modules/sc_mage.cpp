@@ -354,7 +354,7 @@ public:
                       * controlled_burn,
                       * ice_nova,
                       * frozen_touch,
-                      * bitter_cold; // NYI
+                      * bitter_cold;
 
     // Tier 75
     const spell_data_t* ice_floes,
