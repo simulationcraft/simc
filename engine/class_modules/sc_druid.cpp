@@ -1583,7 +1583,7 @@ public:
         trigger_clearcasting();
     }
 
-    if ( dbc::is_school( school, SCHOOL_PHYSICAL ) && ! direct_bleed && s -> result_amount > 0 )
+    if ( dbc::is_school( ab::school, SCHOOL_PHYSICAL ) && ! direct_bleed && s -> result_amount > 0 )
       ab::p() -> buff.open_wounds -> up();
   }
 
