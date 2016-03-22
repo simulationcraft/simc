@@ -353,7 +353,7 @@ public:
                       * flame_on,
                       * controlled_burn,
                       * ice_nova,
-                      * frozen_touch, // NYI
+                      * frozen_touch,
                       * bitter_cold; // NYI
 
     // Tier 75
@@ -579,7 +579,7 @@ struct buff_source_benefit_t
     buff( _buff ), trigger_count( 0 )
   { }
 
-  void update( const std::string& source )
+  void update( const std::string& source, int stacks = 1 )
   {
     mage_t* mage = static_cast<mage_t*>( buff -> player );
 
@@ -587,14 +587,15 @@ struct buff_source_benefit_t
     int index = -1;
     for ( size_t i = 0; i < sources.size(); i++ )
     {
-      if ( sources[i] == source )
+      bool source_matches = ( sources[i] == source );
+      if ( source_matches )
       {
-        buff_source_benefit[i] -> update( true );
         index = i;
       }
-      else
+
+      for ( int i = 0; i < stacks; i++ )
       {
-        buff_source_benefit[i] -> update( false );
+        buff_source_benefit[i] -> update( source_matches );
       }
     }
 
@@ -610,11 +611,15 @@ struct buff_source_benefit_t
       {
         source_benefit -> update( false );
       }
-      source_benefit -> update( true );
+      for ( int i = 0; i < stacks; i++ )
+      {
+        source_benefit -> update( true );
+      }
+
       buff_source_benefit.push_back( source_benefit );
     }
 
-    trigger_count++;
+    trigger_count += stacks;
   }
 };
 
@@ -1591,10 +1596,10 @@ struct frost_mage_spell_t : public mage_spell_t
     mage_spell_t( n, p, s )
   {}
 
-  void trigger_fof( const std::string& source, double chance )
+  void trigger_fof( const std::string& source, double chance, int stacks = 1 )
   {
     bool success = p() -> buffs.fingers_of_frost
-                       -> trigger( 1, buff_t::DEFAULT_VALUE(), chance );
+                       -> trigger( stacks, buff_t::DEFAULT_VALUE(), chance );
 
     if ( success )
     {
@@ -2880,6 +2885,12 @@ struct frozen_orb_t : public frost_mage_spell_t
     add_child( frozen_orb_bolt );
     may_miss       = false;
     may_crit       = false;
+
+    if ( p -> talents.bitter_cold -> ok() )
+    {
+      base_multiplier =
+        1.0 + p -> talents.bitter_cold -> effectN( 1 ).percent();
+    }
   }
 
   void tick( dot_t* d ) override
@@ -2910,12 +2921,35 @@ struct frozen_orb_t : public frost_mage_spell_t
     if ( result_is_hit( s -> result ) )
     {
       trigger_fof( "Frozen Orb Initial Impact", 1.0 );
+      if ( p() -> talents.bitter_cold -> ok() )
+      {
+        trigger_fof( "Bitter Cold", 1.0 );
+      }
     }
   }
 };
 
 
-// Ice Floes Spell ==========================================================
+// Frozen Touch Spell =========================================================
+
+struct frozen_touch_t : public frost_mage_spell_t
+{
+  frozen_touch_t( mage_t* p, const std::string& options_str ) :
+    frost_mage_spell_t("frozen_touch", p, p -> talents.frozen_touch )
+  {
+    parse_options( options_str );
+  }
+
+  virtual void execute() override
+  {
+    frost_mage_spell_t::execute();
+
+    trigger_fof( "Frozen Touch", 1.0, 2 );
+  }
+};
+
+
+// Ice Floes Spell ============================================================
 
 struct ice_floes_t : public mage_spell_t
 {
