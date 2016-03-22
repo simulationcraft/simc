@@ -2679,7 +2679,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
   spinning_crane_kick_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( "spinning_crane_kick", p, p -> spec.spinning_crane_kick )
   {
-
+    parse_options( options_str );
 
     sef_ability = SEF_SPINNING_CRANE_KICK;
 
