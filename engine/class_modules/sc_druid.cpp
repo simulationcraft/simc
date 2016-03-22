@@ -461,14 +461,6 @@ public:
     gain_t* guardian_tier18_2pc;
   } gain;
 
-  // Glyphs
-  struct glyphs_t
-  {
-    // TOCHECK: Things that may still exist in Legion.
-    const spell_data_t* stampeding_roar;
-    const spell_data_t* regrowth;
-  } glyph;
-
   // Masteries
   struct masteries_t
   {
@@ -731,7 +723,6 @@ public:
     buff( buffs_t() ),
     cooldown( cooldowns_t() ),
     gain( gains_t() ),
-    glyph( glyphs_t() ),
     mastery( masteries_t() ),
     proc( procs_t() ),
     spec( specializations_t() ),
@@ -1489,9 +1480,7 @@ public:
     {
       p() -> proc.gore -> occur();
       p() -> cooldown.mangle -> reset( true );
-      // TOCHECK: Tooltip says 40 but spell data says 25? Maybe I'm missing something.
-      p() -> resource_gain( RESOURCE_RAGE,
-        p() -> spec.gore -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.gore );
+      p() -> resource_gain( RESOURCE_RAGE, 4.0, p() -> gain.gore ); // FIXME: Not in spell data.
 
       return true;
     }
@@ -4148,12 +4137,6 @@ struct regrowth_t : public druid_heal_t
   {
     base_crit += 0.60;
 
-    if ( p -> glyph.regrowth -> ok() )
-    {
-      base_crit += p -> glyph.regrowth -> effectN( 1 ).percent();
-      dot_duration  = timespan_t::zero();
-    }
-
     ignore_false_positive = true;
     init_living_seed();
   }
@@ -4283,7 +4266,6 @@ struct swiftmend_t : public druid_heal_t
   {
     player_t* t = ( execute_state ) ? execute_state -> target : target;
 
-    // Note: with the glyph you can use other people's regrowth/rejuv
     if ( ! ( td( t ) -> dots.regrowth -> is_ticking() ||
              td( t ) -> dots.rejuvenation -> is_ticking() ) )
       return false;
@@ -4907,7 +4889,7 @@ struct incarnation_t : public druid_spell_t
     druid_spell_t::execute();
 
     spec_buff -> trigger();
-    p() -> buff.feral_instinct -> trigger(); // TOCHECK
+    p() -> buff.feral_instinct -> trigger();
 
     if ( ! p() -> in_combat )
     {
@@ -6268,11 +6250,6 @@ void druid_t::init_spells()
     spell.yseras_gift = find_spell( 145108 );
   }
 
-  // Glyphs =================================================================
-
-  glyph.regrowth              = find_glyph_spell( "Glyph of Regrowth" );
-  glyph.stampeding_roar       = find_glyph_spell( "Glyph of Stampeding Roar" );
-
   if ( sets.has_set_bonus( SET_CASTER, T16, B2 ) )
   {
     t16_2pc_starfall_bolt = new spells::t16_2pc_starfall_bolt_t( this );
@@ -6538,7 +6515,6 @@ void druid_t::create_buffs()
   buff.mark_of_ursol         = buff_creator_t( this, "mark_of_ursol", find_specialization_spell( "Mark of Ursol" ) )
                                .default_value( find_specialization_spell( "Mark of Ursol" ) -> effectN( 1 ).percent() )
                                .cd( timespan_t::zero() ) // cooldown handled by spell
-                               .refresh_behavior( BUFF_REFRESH_EXTEND ) // Legion TOCHECK
                                .duration( find_specialization_spell( "Mark of Ursol" ) -> duration() );
 
   buff.pulverize             = buff_creator_t( this, "pulverize", find_spell( 158792 ) )
