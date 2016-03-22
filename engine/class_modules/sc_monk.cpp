@@ -1765,13 +1765,16 @@ public:
       p() -> buff.masterful_strikes -> decrement();
   }
 
-  double cost() const
+  virtual double cost() const
   {
     double c = ab::cost();
+
     if ( c == 0 )
       return c;
+
     c *= 1.0 + cost_reduction();
     if ( c < 0 ) c = 0;
+
     return c;
   }
 
@@ -1779,12 +1782,25 @@ public:
   {
     double c = 0.0;
 
-    if ( p() -> specialization() == MONK_MISTWEAVER && p() -> buff.mana_tea -> up() )
-      c += p() -> buff.mana_tea -> value();
+    if ( p() -> buff.mana_tea -> up() && ab::data().affected_by( p() -> talent.mana_tea -> effectN( 1 ) ) )
+      c += p() -> buff.mana_tea -> value(); // saved as -50%
+
+    if ( p() -> buff.serenity -> check() && ab::data().affected_by( p() -> talent.serenity -> effectN( 1 ) ) )
+      c += p() -> talent.serenity -> effectN( 1 ).percent(); // Saved as -100
 
     return c;
   }
 
+  virtual void update_ready( timespan_t ) override
+  {
+    timespan_t cd = cooldown -> duration;
+
+    // Update the cooldown while Serenity is active
+    if ( p() -> buff.serenity -> check() && ab::data().affected_by( p() -> talent.serenity -> effectN( 4 ) ) )
+      cd *= 1 + p() -> talent.serenity -> effectN( 4 ).percent(); // saved as -50
+
+    ab::update_ready( cd );
+  }
 
   virtual double cooldown_reduction() const override
   {
@@ -2259,18 +2275,6 @@ struct rising_sun_kick_t: public monk_melee_attack_t
       rsk_proc = new rising_sun_kick_proc_t( p, p -> passives.rising_sun_kick_trinket );
   }
 
-/*  virtual void update_ready( timespan_t ) override
-  {
-    timespan_t cd = cooldown -> duration;
-
-    // Update the cooldown while Serenity is active
-    if ( p() -> buff.serenity -> check() )
-      cd *= 1 + p() -> talent.serenity -> effectN( 4 ).percent(); // saved as -50
-
-    monk_melee_attack_t::update_ready( cd );
-  }
-*/
-
   virtual double action_multiplier() const
   {
     double am = monk_melee_attack_t::action_multiplier();
@@ -2334,14 +2338,6 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     }
   }
 
-  virtual double cost() const override
-  {
-    if ( p() -> buff.serenity -> check() )
-      return monk_melee_attack_t::cost() * ( 1 + p() -> talent.serenity -> effectN ( 1 ).percent() );
-
-    return monk_melee_attack_t::cost();
-  }
-
   virtual void impact( action_state_t* s ) override
   {
     monk_melee_attack_t::impact( s );
@@ -2398,17 +2394,6 @@ struct blackout_kick_t: public monk_melee_attack_t
       cooldown -> duration *= 1 + p -> spec.combat_conditioning -> effectN( 2 ).percent(); // -100% for Windwalkers
 
     sef_ability = SEF_BLACKOUT_KICK;
-  }
-
-  virtual void update_ready( timespan_t ) override
-  {
-    timespan_t cd = cooldown -> duration;
-
-    // Update the cooldown while Serenity is active
-    if ( p() -> buff.serenity -> check() )
-      cd *= 1 + p() -> talent.serenity -> effectN( 4 ).percent(); // saved as -50
-
-    monk_melee_attack_t::update_ready( cd );
   }
 
   virtual void impact( action_state_t* s ) override
@@ -2483,9 +2468,6 @@ struct blackout_kick_t: public monk_melee_attack_t
     if ( p() -> buff.bok_proc -> check() )
       return monk_melee_attack_t::cost() * ( 1 + p() -> passives.bok_proc -> effectN ( 1 ).percent() );
 
-    if ( p() -> buff.serenity -> check() )
-      return monk_melee_attack_t::cost() * ( 1 + p() -> talent.serenity -> effectN ( 1 ).percent() );
-
     return monk_melee_attack_t::cost();
   }
 
@@ -2535,26 +2517,6 @@ struct blackout_strike_t: public monk_melee_attack_t
     // Windwalkers cannot learn this but the auras are in the database. just being a completionist about this
     else if ( p -> specialization() == MONK_WINDWALKER ) 
       cooldown -> duration *= 1 + p -> spec.combat_conditioning -> effectN( 2 ).percent(); // -100% for Windwalkers
-  }
-
-  virtual void update_ready( timespan_t ) override
-  {
-    timespan_t cd = cooldown -> duration;
-
-    // Update the cooldown while Serenity is active
-    // Windwalkers cannot learn this but the auras are in the database. just being a completionist about this
-    if ( p() -> buff.serenity -> check() )
-      cd *= 1 + p() -> talent.serenity -> effectN( 4 ).percent(); // saved as -50
-
-    monk_melee_attack_t::update_ready( cd );
-  }
-
-  virtual double cost() const override
-  {
-    if ( p() -> buff.serenity -> check() )
-      return monk_melee_attack_t::cost() * ( 1 + p() -> talent.serenity -> effectN ( 1 ).percent() );
-
-    return monk_melee_attack_t::cost();
   }
 
   virtual void consume_resource() override
@@ -2612,19 +2574,6 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     tick_action = new tick_action_t( "rushing_jade_wind_tick", p, p -> talent.rushing_jade_wind -> effectN( 1 ).trigger() );
   }
 
-  virtual void update_ready( timespan_t ) override
-  {
-    timespan_t cd = cooldown -> duration;
-
-    // Update the cooldown while Serenity is active
-    if ( p() -> buff.serenity -> check() )
-      cd *= 1 + p() -> talent.serenity -> effectN( 4 ).percent(); // saved as -50
-
-    cd *= p() -> cache.attack_haste();
-
-    monk_melee_attack_t::update_ready( cd );
-  }
-
   // N full ticks, but never additional ones.
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
@@ -2646,14 +2595,6 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
         buff_t::DEFAULT_VALUE(),
         1.0,
         composite_dot_duration( execute_state ) );
-  }
-
-  virtual double cost() const override
-  {
-    if ( p() -> buff.serenity -> check() )
-      return monk_melee_attack_t::cost() * ( 1 + p() -> talent.serenity -> effectN ( 1 ).percent() );
-
-    return monk_melee_attack_t::cost();
   }
 
   virtual void consume_resource() override
@@ -2703,14 +2644,6 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
       am *= 1 + p() -> artifact.power_of_a_thousand_cranes.percent();
 
     return am;
-  }
-
-  virtual double cost() const override
-  {
-    if ( p() -> buff.serenity -> check() )
-      return monk_melee_attack_t::cost() * ( 1 + p() -> talent.serenity -> effectN ( 1 ).percent() );
-
-    return monk_melee_attack_t::cost();
   }
 
   virtual void consume_resource() override
@@ -2839,25 +2772,6 @@ struct fists_of_fury_t: public monk_melee_attack_t
 
     if ( p -> artifact.crosswinds.rank() )
       crosswinds = new crosswinds_t( p );
-  }
-
-  virtual void update_ready( timespan_t ) override
-  {
-    timespan_t cd = cooldown -> duration;
-
-    // Update the cooldown while Serenity is active
-    if ( p() -> buff.serenity -> check() )
-      cd *= 1 + p() -> talent.serenity -> effectN( 4 ).percent(); // saved as -50
-
-    monk_melee_attack_t::update_ready( cd );
-  }
-
-  virtual double cost() const override
-  {
-    if ( p() -> buff.serenity -> check() )
-      return monk_melee_attack_t::cost() * ( 1 + p() -> talent.serenity -> effectN ( 1 ).percent() );
-
-    return monk_melee_attack_t::cost();
   }
 
   virtual void consume_resource() override
@@ -3077,14 +2991,6 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
     }
 
     return 1.0;
-  }
-
-  virtual double cost() const override
-  {
-    if ( p() -> buff.serenity -> check() )
-      return monk_melee_attack_t::cost() * ( 1 + p() -> talent.serenity -> effectN ( 1 ).percent() );
-
-    return monk_melee_attack_t::cost();
   }
 
   virtual void consume_resource() override
