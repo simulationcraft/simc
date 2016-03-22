@@ -479,6 +479,7 @@ public:
   struct passives_t
   {
     // General
+    const spell_data_t* aura_monk;
     const spell_data_t* chi_burst_damage;
     const spell_data_t* chi_burst_heal;
     const spell_data_t* chi_torpedo;
@@ -1516,7 +1517,8 @@ private:
 
   struct crackling_tiger_lightning_driver_t: public spell_t
   {
-    crackling_tiger_lightning_driver_t( xuen_pet_t *p, const std::string& options_str ): spell_t( "crackling_tiger_lightning_driver", p, p -> o() -> passives.crackling_tiger_lightning_driver )
+    crackling_tiger_lightning_driver_t( xuen_pet_t *p, const std::string& options_str ): 
+      spell_t( "crackling_tiger_lightning_driver", p, p -> o() -> passives.crackling_tiger_lightning_driver )
     {
       parse_options( options_str );
 
@@ -1533,7 +1535,8 @@ private:
 
   struct crackling_tiger_lightning_t: public melee_attack_t
   {
-    crackling_tiger_lightning_t( xuen_pet_t* player, const std::string& options_str ): melee_attack_t( "crackling_tiger_lightning", player, player -> o() -> passives.crackling_tiger_lightning )
+    crackling_tiger_lightning_t( xuen_pet_t* player, const std::string& options_str ): 
+      melee_attack_t( "crackling_tiger_lightning", player, player -> o() -> passives.crackling_tiger_lightning )
     {
       parse_options( options_str );
 
@@ -1639,12 +1642,13 @@ public:
     range::fill( _resource_by_stance, RESOURCE_MAX );
     ab::min_gcd = timespan_t::from_seconds( 1.0 );
     ab::trigger_gcd = timespan_t::from_seconds( 1.5 );
-    if ( player -> specialization() != MONK_MISTWEAVER )
+    if ( player -> specialization() == MONK_BREWMASTER )
     {
-      if ( player -> spec.stagger -> ok() )
-        ab::trigger_gcd -= timespan_t::from_millis( player -> spec.stagger -> effectN( 11 ).base_value() * -1 ); // Saved as -500 milliseconds
-      if ( player -> spec.stance_of_the_fierce_tiger -> ok() )
-        ab::trigger_gcd -= timespan_t::from_millis( player -> spec.stance_of_the_fierce_tiger -> effectN( 6 ).base_value() * -1); // Saved as -500 milliseconds
+      ab::trigger_gcd -= timespan_t::from_millis( player -> spec.stagger -> effectN( 11 ).base_value() * -1 ); // Saved as -500 milliseconds
+    }
+    if ( player -> specialization() == MONK_WINDWALKER )
+    {
+      ab::trigger_gcd -= timespan_t::from_millis( player -> spec.stance_of_the_fierce_tiger -> effectN( 6 ).base_value() * -1); // Saved as -500 milliseconds
     }
   }
   virtual ~monk_action_t() {}
@@ -1779,6 +1783,31 @@ public:
       c += p() -> buff.mana_tea -> value();
 
     return c;
+  }
+
+
+  virtual double cooldown_reduction() const override
+  {
+    double cdr = ab::cooldown_reduction();
+
+    bool hasted_cd = false;
+    switch ( p() -> specialization() )
+    {
+      case MONK_BREWMASTER:
+      {
+        hasted_cd = ab::data().affected_by( p() -> passives.aura_brewmaster_monk -> effectN( 2 ) );
+        break;
+      }
+      case MONK_WINDWALKER:
+      {
+        hasted_cd = ab::data().affected_by( p() -> passives.aura_monk -> effectN( 1 ) );
+        break;
+      }
+    }
+    if ( hasted_cd ) 
+      cdr *= ab::player -> cache.attack_haste();
+
+    return cdr;
   }
 
   virtual void consume_resource()
@@ -2098,7 +2127,7 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
   {
     sef_ability = SEF_RISING_SUN_KICK_TRINKET;
 
-    cooldown -> duration = timespan_t::from_millis( 250 );
+    cooldown -> duration = timespan_t::zero();
     background = true;
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
@@ -2169,7 +2198,7 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
 
     may_miss = may_dodge = may_parry = may_crit = may_block = true;
 
-    cooldown -> duration = timespan_t::from_millis( 250 );
+    cooldown -> duration = timespan_t::zero();
     background = true;
     trigger_gcd = timespan_t::zero();
   }
@@ -2241,14 +2270,6 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     monk_melee_attack_t::update_ready( cd );
   }
 */
-  virtual double cooldown_reduction() const override
-  {
-    double cdr = base_t::cooldown_reduction();
-
-    cdr *= p() -> cache.attack_haste();
-
-    return cdr;
-  }
 
   virtual double action_multiplier() const
   {
@@ -2591,15 +2612,6 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     tick_action = new tick_action_t( "rushing_jade_wind_tick", p, p -> talent.rushing_jade_wind -> effectN( 1 ).trigger() );
   }
 
-  virtual double cooldown_reduction() const override
-  {
-    double cdr = base_t::cooldown_reduction();
-
-    cdr *= p() -> cache.attack_haste();
-
-    return cdr;
-  }
-
   virtual void update_ready( timespan_t ) override
   {
     timespan_t cd = cooldown -> duration;
@@ -2667,7 +2679,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
   spinning_crane_kick_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( "spinning_crane_kick", p, p -> spec.spinning_crane_kick )
   {
-    parse_options( options_str );
+
 
     sef_ability = SEF_SPINNING_CRANE_KICK;
 
@@ -2829,15 +2841,6 @@ struct fists_of_fury_t: public monk_melee_attack_t
       crosswinds = new crosswinds_t( p );
   }
 
-  virtual double cooldown_reduction() const override
-  {
-    double cdr = base_t::cooldown_reduction();
-
-    cdr *= p() -> cache.attack_haste();
-
-    return cdr;
-  }
-
   virtual void update_ready( timespan_t ) override
   {
     timespan_t cd = cooldown -> duration;
@@ -2976,15 +2979,6 @@ struct whirling_dragon_punch_t: public monk_melee_attack_t
 
     if ( p -> furious_sun )
       rsk_proc = new rising_sun_kick_proc_t( p, p -> passives.rising_sun_kick_trinket );
-  }
-
-  virtual double cooldown_reduction() const override
-  {
-    double cdr = base_t::cooldown_reduction();
-
-    cdr *= p() -> cache.attack_haste();
-
-    return cdr;
   }
 
   void execute() override
@@ -4406,11 +4400,29 @@ struct effuse_t: public monk_heal_t
   {
     double am = monk_heal_t::action_multiplier();
 
-    if ( p() -> buff.thunder_focus_tea -> up() )
-      am *= 1 + p() -> spec.thunder_focus_tea -> effectN( 2 ).percent(); // saved as -100
+    switch( p() -> specialization() )
+    {
+      case MONK_MISTWEAVER:
+      {
+        if ( p() -> buff.thunder_focus_tea -> up() )
+          am *= 1 + p() -> spec.thunder_focus_tea -> effectN( 2 ).percent(); // saved as -100
 
-    if ( p() -> artifact.coalescing_mists.rank() )
-      am *= 1 + p() -> artifact.coalescing_mists.percent();
+        if ( p() -> artifact.coalescing_mists.rank() )
+          am *= 1 + p() -> artifact.coalescing_mists.percent();
+        break;
+      }
+      // Apply healing adjustments for Brewmasters and Windwalkers
+      case MONK_BREWMASTER:
+      {
+        am *= p() -> passives.aura_brewmaster_monk -> effectN( 1 ).percent();
+        break;
+      }
+      case MONK_WINDWALKER:
+      {
+        am *= p() -> passives.aura_windwalker_monk -> effectN( 1 ).percent();
+        break;
+      }
+    }
 
     return am;
   }
@@ -5770,6 +5782,7 @@ void monk_t::init_spells()
 
   // Passives =========================================
   // General
+  passives.aura_monk                        = find_spell( 137022 );
   passives.chi_burst_damage                 = find_spell( 148135 );
   passives.chi_burst_heal                   = find_spell( 130654 );
   passives.chi_torpedo                      = find_spell( 119085 );
@@ -5810,6 +5823,7 @@ void monk_t::init_spells()
   passives.tier18_2pc_heal                  = find_spell( 185158 ); // Extend Life
 
   // Windwalker
+  passives.aura_windwalker_monk             = find_spell( 137025 );
   passives.chi_orbit                        = find_spell( 196748 );
   passives.bok_proc                         = find_spell( 116768 );
   passives.crackling_tiger_lightning        = find_spell( 123996 );
@@ -5818,7 +5832,7 @@ void monk_t::init_spells()
   passives.dizzying_kicks                   = find_spell( 196723 );
   passives.hit_combo                        = find_spell( 196741 );
   passives.rising_sun_kick_trinket          = find_spell( 185099 );
-  passives.whirling_dragon_punch           = find_spell( 158221 );
+  passives.whirling_dragon_punch            = find_spell( 158221 );
 //  passives.swift_as_the_wind                = find_spell( 195599 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
   passives.tier15_2pc_melee                 = find_spell( 138311 );
