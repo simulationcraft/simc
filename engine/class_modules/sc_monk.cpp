@@ -1086,19 +1086,19 @@ struct storm_earth_and_fire_pet_t : public pet_t
       }
     }
 
+    virtual bool ready() override
+    {
+      if ( player -> is_moving() ) return false;
+
+      return ( player -> main_hand_attack -> execute_event == nullptr ); // not swinging
+    }
+
     virtual void execute() override
     {
       player -> main_hand_attack -> schedule_execute();
 
       if ( player -> off_hand_attack )
         player -> off_hand_attack -> schedule_execute();
-    }
-
-    virtual bool ready() override
-    {
-      if ( player -> is_moving() ) return false;
-
-      return ( player -> main_hand_attack -> execute_event == nullptr ); // not swinging
     }
   };
 
@@ -1560,19 +1560,19 @@ private:
       trigger_gcd = timespan_t::zero();
     }
 
+    virtual bool ready() override
+    {
+      if ( player -> is_moving() ) return false;
+
+      return ( player->main_hand_attack -> execute_event == nullptr ); // not swinging
+    }
+
     virtual void execute() override
     {
       player -> main_hand_attack -> schedule_execute();
 
       if ( player -> off_hand_attack )
         player -> off_hand_attack -> schedule_execute();
-    }
-
-    virtual bool ready() override
-    {
-      if ( player -> is_moving() ) return false;
-
-      return ( player->main_hand_attack -> execute_event == nullptr ); // not swinging
     }
   };
 
@@ -1788,6 +1788,9 @@ public:
     if ( p() -> buff.serenity -> check() && ab::data().affected_by( p() -> talent.serenity -> effectN( 1 ) ) )
       c += p() -> talent.serenity -> effectN( 1 ).percent(); // Saved as -100
 
+    if ( p() -> buff.bok_proc -> check() && ab::data().affected_by( p() -> passives.bok_proc -> effectN( 1 ) ) )
+      c += p() -> passives.bok_proc -> effectN ( 1 ).percent(); // Saved as -100
+
     return c;
   }
 
@@ -1848,6 +1851,9 @@ public:
 
       p() -> resource_gain( RESOURCE_ENERGY, energy_restored, p() -> gain.energy_refund );
     }
+
+    if ( p() -> buff.serenity -> up() )
+      p() -> gain.serenity -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] - cost() );
   }
 
   virtual void execute()
@@ -2076,57 +2082,65 @@ struct tiger_palm_t: public monk_melee_attack_t
       eye_of_the_tiger_heal -> execute();
     }
 
-    if ( p() -> specialization() == MONK_MISTWEAVER)
-      p() -> buff.teachings_of_the_monastery -> trigger();
-    else if ( p() -> specialization () == MONK_WINDWALKER)
+    switch ( p() -> specialization() )
     {
-      // If A'Buraq is equipped, chance to trigger the weapon effect buff
-/*      if ( p() -> aburaq )
+      case MONK_MISTWEAVER:
       {
-        if ( p() -> real_ppm.swift_as_the_wind.trigger() )
-          p() -> buff.swift_as_the_wind -> trigger();
+        p() -> buff.teachings_of_the_monastery -> trigger();
+        break;
       }
+      case MONK_WINDWALKER:
+      {
+        // If A'Buraq is equipped, chance to trigger the weapon effect buff
+/*        if ( p() -> aburaq )
+        {
+          if ( p() -> real_ppm.swift_as_the_wind.trigger() )
+            p() -> buff.swift_as_the_wind -> trigger();
+        }
 */
 
-      // Calculate how much Chi is generated
-      double chi_gain = data().effectN( 2 ).base_value();
-      chi_gain += p() -> spec.stance_of_the_fierce_tiger -> effectN( 4 ).base_value();
+        // Calculate how much Chi is generated
+        double chi_gain = data().effectN( 2 ).base_value();
+        chi_gain += p() -> spec.stance_of_the_fierce_tiger -> effectN( 4 ).base_value();
 
-      // Power Strike activation
-      // Legion change = The buff will no longer summon a chi sphere at max chi. It will hold the buff until you can actually use the power strike
-      // TODO: Currently there appears to be a bug with Power Strikes and overflow
-      if ( p() -> buff.power_strikes -> up() && ( p() -> resources.current[RESOURCE_CHI] + chi_gain <= p() -> resources.max[RESOURCE_CHI] ) )
-      {
-        player -> resource_gain( RESOURCE_CHI, p() -> buff.power_strikes -> value(), p() -> gain.power_strikes, this );
-        p() -> buff.power_strikes -> expire();
+        // Power Strike activation
+        // Legion change = The buff will no longer summon a chi sphere at max chi. It will hold the buff until you can actually use the power strike
+        // TODO: Currently there appears to be a bug with Power Strikes and overflow
+        if ( p() -> buff.power_strikes -> up() && ( p() -> resources.current[RESOURCE_CHI] + chi_gain <= p() -> resources.max[RESOURCE_CHI] ) )
+        {
+          player -> resource_gain( RESOURCE_CHI, p() -> buff.power_strikes -> value(), p() -> gain.power_strikes, this );
+          p() -> buff.power_strikes -> expire();
+        }
+
+        player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.tiger_palm, this );
+
+        // Combo Breaker calculation
+        if ( p() -> buff.bok_proc -> trigger( 1, buff_t::DEFAULT_VALUE(), p() -> spec.combo_breaker -> effectN( 1 ).percent() ) )
+          p() -> proc.bok_proc -> occur();
+
+        //  Your Chi generating abilities have a 15% chance to generate an Energy Sphere, which will grant you 10 Energy when you walk through it.
+        if ( rng().roll( p() -> sets.set( SET_MELEE, T15, B2) -> proc_chance() ) )
+        {
+          p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc_melee -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc_melee );
+          p() -> proc.tier15_2pc_melee -> occur();
+        }
+        break;
       }
-
-      player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.tiger_palm, this );
-
-      // Combo Breaker calculation
-      if ( p() -> buff.bok_proc -> trigger( 1, buff_t::DEFAULT_VALUE(), p() -> spec.combo_breaker -> effectN( 1 ).percent() ) )
-        p() -> proc.bok_proc -> occur();
-
-      //  Your Chi generating abilities have a 15% chance to generate an Energy Sphere, which will grant you 10 Energy when you walk through it.
-      if ( rng().roll( p() -> sets.set( SET_MELEE, T15, B2) -> proc_chance() ) )
+      case MONK_BREWMASTER:
       {
-        p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc_melee -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc_melee );
-        p() -> proc.tier15_2pc_melee -> occur();
-      }
-    }
-    else if ( p() -> specialization() == MONK_BREWMASTER )
-    {
-      // Reduces the remaining cooldown on your Brews by 1 sec
-      if ( p() -> cooldown.brewmaster_active_mitigation -> down() )
-      {
-        double time_reduction = data().effectN( 3 ).base_value()
-          + ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T19, B4 ) ? p() -> sets.set( MONK_BREWMASTER, T19, B4 ) -> effectN( 1 ).base_value() : 0 );
-        p() -> cooldown.brewmaster_active_mitigation -> adjust( timespan_t::from_seconds( time_reduction ) );
-      }
+        // Reduces the remaining cooldown on your Brews by 1 sec
+        if ( p() -> cooldown.brewmaster_active_mitigation -> down() )
+        {
+          double time_reduction = data().effectN( 3 ).base_value()
+            + ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T19, B4 ) ? p() -> sets.set( MONK_BREWMASTER, T19, B4 ) -> effectN( 1 ).base_value() : 0 );
+          p() -> cooldown.brewmaster_active_mitigation -> adjust( timespan_t::from_seconds( time_reduction ) );
+        }
 
-      // Tiger Palm has a 30% chance to reset the cooldown of Keg Smash.
-      if ( p() -> talent.secret_ingredients -> ok() )
-        p() -> buff.keg_smash_talent -> trigger();
+        // Tiger Palm has a 30% chance to reset the cooldown of Keg Smash.
+        if ( p() -> talent.secret_ingredients -> ok() )
+          p() -> buff.keg_smash_talent -> trigger();
+        break;
+      }
     }
   }
 };
@@ -2268,7 +2282,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     attack_power_mod.direct = p -> passives.rising_sun_kick_trinket -> effectN( 1 ).ap_coeff();
     spell_power_mod.direct = 0.0;
 
-    if (p -> artifact.tornado_kicks.rank() )
+    if ( p -> artifact.tornado_kicks.rank() )
       rsk_tornado_kick = new rising_sun_kick_tornado_kick_t( p, p -> spec.rising_sun_kick -> effectN( 1 ).trigger() );
 
     if ( p -> furious_sun )
@@ -2290,6 +2304,21 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     return am;
   }
 
+  virtual void consume_resource() override
+  {
+    monk_melee_attack_t::consume_resource();
+
+    // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
+    // of the special effect.
+    if ( p() -> furious_sun )
+    {
+      double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item) / 100.0;
+
+      if ( rng().roll( proc_chance ) )
+        rsk_proc -> execute();
+    }
+  }
+
   virtual void execute() override
   {
     monk_melee_attack_t::execute();
@@ -2301,40 +2330,26 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     if ( result_is_miss( execute_state -> result ) )
       return;
 
-    if ( p() -> specialization() == MONK_MISTWEAVER )
+    switch ( p() -> specialization() )
     {
-      if ( p() -> talent.rising_thunder -> ok() )
-        p() -> cooldown.thunder_focus_tea -> reset( true );
-    }
-    else if ( p() -> specialization() == MONK_WINDWALKER )
-    {
-      p() -> debuffs.mortal_wounds -> trigger();
+      case MONK_MISTWEAVER:
+      {
+        if ( p() -> talent.rising_thunder -> ok() )
+          p() -> cooldown.thunder_focus_tea -> reset( true );
+        break;
+      }
+      case MONK_WINDWALKER:
+      {
+        p() -> debuffs.mortal_wounds -> trigger();
 
-      // Activate A'Buraq's Trait
-      if ( p() -> artifact.transfer_the_power.rank() )
-        p() -> buff.transfer_the_power -> trigger();
+        // Activate A'Buraq's Trait
+        if ( p() -> artifact.transfer_the_power.rank() )
+          p() -> buff.transfer_the_power -> trigger();
 
-      if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B2 ) )
-        p() -> buff.masterful_strikes -> trigger( p() -> sets.set( MONK_WINDWALKER,T18, B2 ) -> effect_count() );
-
-    }
-  }
-
-  virtual void consume_resource() override
-  {
-    monk_melee_attack_t::consume_resource();
-
-    if ( p() -> buff.serenity -> up() )
-      p() -> gain.serenity -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] - cost() );
-
-    // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
-    // of the special effect.
-    if ( p() -> furious_sun )
-    {
-      double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item) / 100.0;
-
-      if ( rng().roll( proc_chance ) )
-        rsk_proc -> execute();
+        if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B2 ) )
+          p() -> buff.masterful_strikes -> trigger( p() -> sets.set( MONK_WINDWALKER,T18, B2 ) -> effect_count() );
+        break;
+      }
     }
   }
 
@@ -2352,15 +2367,12 @@ struct rising_sun_kick_t: public monk_melee_attack_t
         p() -> resource_gain( RESOURCE_MANA, ( p() -> resources.max[RESOURCE_MANA] * p() -> passives.spirit_of_the_crane -> effectN( 1 ).percent() ), p() -> gain.spirit_of_the_crane );
     }
 
-    if ( p() -> artifact.tornado_kicks.rank() )
+    if ( p() -> artifact.tornado_kicks.rank() && result_is_hit( s -> result ) )
     {
-      if ( result_is_hit( s -> result ) )
-      {
-        rsk_tornado_kick -> target = s -> target;
-        rsk_tornado_kick -> base_dd_max = s -> result_raw;
-        rsk_tornado_kick -> base_dd_min = s -> result_raw;
-        rsk_tornado_kick -> execute();
-      }
+      rsk_tornado_kick -> target = s -> target;
+      rsk_tornado_kick -> base_dd_max = s -> result_raw;
+      rsk_tornado_kick -> base_dd_min = s -> result_raw;
+      rsk_tornado_kick -> execute();
     }
   }
 };
@@ -2396,6 +2408,85 @@ struct blackout_kick_t: public monk_melee_attack_t
     sef_ability = SEF_BLACKOUT_KICK;
   }
 
+  virtual double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    switch ( p() -> specialization() )
+    {
+      case MONK_MISTWEAVER:
+      {
+        if ( p() -> buff.teachings_of_the_monastery -> up() )
+          am *= 1 + p() -> buff.teachings_of_the_monastery -> value();
+        break;
+      }
+      case MONK_WINDWALKER:
+      {
+        if ( p() -> artifact.dark_skies.rank() )
+          am *= 1 + p() -> artifact.dark_skies.percent();
+
+        // check for T16 melee 2p and CB: BoK, for the 50% dmg bonus
+        if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) && p() -> buff.bok_proc -> up() )
+          // damage increased by 40% for WW 2pc upon CB
+          am *= 1 + ( p() -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent() );
+        break;
+      }
+    }
+    return am;
+  }
+
+  virtual void consume_resource() override
+  {
+    monk_melee_attack_t::consume_resource();
+
+    if ( p() -> buff.bok_proc -> up() )
+    {
+      p() -> buff.bok_proc -> expire();
+      p() -> gain.bok_proc -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] - cost() );
+    }
+
+    // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
+    // of the special effect.
+    if ( p() -> furious_sun )
+    {
+      double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item ) / 100.0;
+
+      if ( rng().roll( proc_chance ) )
+        rsk_proc -> execute();
+    }
+  }
+
+  void execute() override
+  {
+    monk_melee_attack_t::execute();
+
+    // Trigger Combo Strikes
+    // registers even on a miss
+    combo_strikes_trigger( CS_BLACKOUT_KICK );
+
+    if ( result_is_miss( execute_state -> result ) )
+      return;
+
+    switch ( p() -> specialization() )
+    {
+      case MONK_MISTWEAVER:
+      {
+        if ( p() -> buff.teachings_of_the_monastery -> up() )
+        {
+          if ( rng().roll( p() -> spec.teachings_of_the_monastery -> effectN( 1 ).percent() ) )
+            p() -> cooldown.rising_sun_kick -> reset( true );
+        }
+        break;
+      }
+      case MONK_WINDWALKER:
+      {
+        if ( p() -> artifact.transfer_the_power.rank() )
+          p() -> buff.transfer_the_power -> trigger();
+        break;
+      }
+    }
+  }
+
   virtual void impact( action_state_t* s ) override
   {
     monk_melee_attack_t::impact( s );
@@ -2412,87 +2503,6 @@ struct blackout_kick_t: public monk_melee_attack_t
       // this onto the removal of that buff.
       if ( p() -> talent.spirit_of_the_crane -> ok() )
         p() -> resource_gain( RESOURCE_MANA, ( p() -> resources.max[RESOURCE_MANA] * p() -> passives.spirit_of_the_crane -> effectN( 1 ).percent() ), p() -> gain.spirit_of_the_crane );
-    }
-  }
-
-  void execute() override
-  {
-    monk_melee_attack_t::execute();
-
-    // Trigger Combo Strikes
-    // registers even on a miss
-    combo_strikes_trigger( CS_BLACKOUT_KICK );
-
-    if ( result_is_miss( execute_state -> result ) )
-      return;
-
-    if ( p() -> specialization() == MONK_MISTWEAVER )
-    {
-      if ( p() -> buff.teachings_of_the_monastery -> up() )
-      {
-        if ( rng().roll( p() -> spec.teachings_of_the_monastery -> effectN( 1 ).percent() ) )
-          p() -> cooldown.rising_sun_kick -> reset( true );
-      }
-    }
-    else if ( p() -> specialization() == MONK_WINDWALKER )
-    {
-      if ( p() -> artifact.transfer_the_power.rank() )
-        p() -> buff.transfer_the_power -> trigger();
-    }
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
-    if ( p() -> buff.teachings_of_the_monastery -> up() )
-    {
-      am *= 1 + p() -> buff.teachings_of_the_monastery -> value();
-    }
-    if ( p() -> specialization() == MONK_WINDWALKER )
-    {
-      if ( p() -> artifact.dark_skies.rank() )
-        am *= 1 + p() -> artifact.dark_skies.percent();
-
-      // check for T16 melee 2p and CB: BoK, for the 50% dmg bonus
-      if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) && p() -> buff.bok_proc -> up() ) {
-        // damage increased by 40% for WW 2pc upon CB
-        am *= 1 + ( p() -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent() );
-      }
-    }
-    return am;
-  }
-
-  virtual double cost() const override
-  {
-    if ( p() -> buff.bok_proc -> check() )
-      return monk_melee_attack_t::cost() * ( 1 + p() -> passives.bok_proc -> effectN ( 1 ).percent() );
-
-    return monk_melee_attack_t::cost();
-  }
-
-  virtual void consume_resource() override
-  {
-    monk_melee_attack_t::consume_resource();
-
-    double savings = base_costs[RESOURCE_CHI] - cost();
-
-    if ( p() -> buff.bok_proc -> up() )
-    {
-      p() -> buff.bok_proc -> expire();
-      p() -> gain.bok_proc -> add( RESOURCE_CHI, savings );
-    }
-    else if ( p() -> buff.serenity -> up() )
-      p() -> gain.serenity -> add( RESOURCE_CHI, savings );
-
-    // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
-    // of the special effect.
-    if ( p() -> furious_sun )
-    {
-      double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item ) / 100.0;
-
-      if ( rng().roll( proc_chance ) )
-        rsk_proc -> execute();
     }
   }
 };
@@ -2517,14 +2527,6 @@ struct blackout_strike_t: public monk_melee_attack_t
     // Windwalkers cannot learn this but the auras are in the database. just being a completionist about this
     else if ( p -> specialization() == MONK_WINDWALKER ) 
       cooldown -> duration *= 1 + p -> spec.combat_conditioning -> effectN( 2 ).percent(); // -100% for Windwalkers
-  }
-
-  virtual void consume_resource() override
-  {
-    monk_melee_attack_t::consume_resource();
-
-    if ( p() -> buff.serenity -> up() )
-      p() -> gain.serenity -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] - cost() );
   }
 };
 
@@ -2574,6 +2576,13 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     tick_action = new tick_action_t( "rushing_jade_wind_tick", p, p -> talent.rushing_jade_wind -> effectN( 1 ).trigger() );
   }
 
+  void init() override
+  {
+    monk_melee_attack_t::init();
+
+    update_flags &= ~STATE_HASTE;
+  }
+
   // N full ticks, but never additional ones.
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
@@ -2595,21 +2604,6 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
         buff_t::DEFAULT_VALUE(),
         1.0,
         composite_dot_duration( execute_state ) );
-  }
-
-  virtual void consume_resource() override
-  {
-    monk_melee_attack_t::consume_resource();
-
-    if ( p() -> buff.serenity -> up() )
-      p() -> gain.serenity -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] - cost() );
-  }
-
-  void init() override
-  {
-    monk_melee_attack_t::init();
-
-    update_flags &= ~STATE_HASTE;
   }
 };
 
@@ -2644,14 +2638,6 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
       am *= 1 + p() -> artifact.power_of_a_thousand_cranes.percent();
 
     return am;
-  }
-
-  virtual void consume_resource() override
-  {
-    monk_melee_attack_t::consume_resource();
-
-    if ( p() -> buff.serenity -> up() )
-      p() -> gain.serenity -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] - cost() );
   }
 
   void execute() override
@@ -2774,14 +2760,6 @@ struct fists_of_fury_t: public monk_melee_attack_t
       crosswinds = new crosswinds_t( p );
   }
 
-  virtual void consume_resource() override
-  {
-    monk_melee_attack_t::consume_resource();
-
-    if ( p() -> buff.serenity -> up() )
-      p() -> gain.serenity -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] - cost() );
-  }
-
   virtual double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
@@ -2895,6 +2873,21 @@ struct whirling_dragon_punch_t: public monk_melee_attack_t
       rsk_proc = new rising_sun_kick_proc_t( p, p -> passives.rising_sun_kick_trinket );
   }
 
+  virtual bool ready() override
+  {
+    // Only usable while Fists of Fury and Rising Sun Kick are on cooldown.
+    if ( p() -> cooldown.fists_of_fury -> down() && p() -> cooldown.rising_sun_kick -> down() )
+      return monk_melee_attack_t::ready();
+
+    return false;
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    timespan_t tt = tick_time( s -> haste );
+    return tt * 3;
+  }
+
   void execute() override
   {
     monk_melee_attack_t::execute();
@@ -2902,12 +2895,6 @@ struct whirling_dragon_punch_t: public monk_melee_attack_t
     // Trigger Combo Strikes
     // registers even on a miss
     combo_strikes_trigger( CS_WHIRLING_DRAGON_PUNCH );
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    timespan_t tt = tick_time( s -> haste );
-    return tt * 3;
   }
 
   virtual void last_tick(dot_t* dot) override
@@ -2926,15 +2913,6 @@ struct whirling_dragon_punch_t: public monk_melee_attack_t
           rsk_proc -> execute();
       }
     }
-  }
-
-  virtual bool ready() override
-  {
-    // Only usable while Fists of Fury and Rising Sun Kick are on cooldown.
-    if ( p() -> cooldown.fists_of_fury -> down() && p() -> cooldown.rising_sun_kick -> down() )
-      return monk_melee_attack_t::ready();
-
-    return false;
   }
 };
 
@@ -2983,6 +2961,14 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
     add_child( oh_attack );
   }
 
+  bool ready() override
+  {
+    if ( p() -> main_hand_weapon.type == WEAPON_NONE )
+      return false;
+
+    return monk_melee_attack_t::ready();
+  }
+
   double composite_aoe_multiplier(const action_state_t* state) const override
   {
     if ( state -> target != target )
@@ -2991,14 +2977,6 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
     }
 
     return 1.0;
-  }
-
-  virtual void consume_resource() override
-  {
-    monk_melee_attack_t::consume_resource();
-
-    if ( p() -> buff.serenity -> up() )
-      p() -> gain.serenity -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] - cost() );
   }
 
   void execute() override
@@ -3012,14 +2990,6 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
     // Trigger Combo Strikes
     // registers even on a miss
     combo_strikes_trigger( CS_STRIKE_OF_THE_WINDLORD );
-  }
-
-  bool ready() override
-  {
-    if ( p() -> main_hand_weapon.type == WEAPON_NONE )
-      return false;
-
-    return monk_melee_attack_t::ready();
   }
 };
 
@@ -3122,6 +3092,14 @@ struct auto_attack_t: public monk_melee_attack_t
     trigger_gcd = timespan_t::zero();
   }
 
+  bool ready() override
+  {
+    if ( p() -> current.distance_to_move > 5 )
+      return false;
+
+    return( p() -> main_hand_attack -> execute_event == nullptr ); // not swinging
+  }
+
   virtual void execute() override
   {
     if ( player -> main_hand_attack )
@@ -3129,14 +3107,6 @@ struct auto_attack_t: public monk_melee_attack_t
 
     if ( player -> off_hand_attack )
       p() -> off_hand_attack -> schedule_execute();
-  }
-
-  bool ready() override
-  {
-    if ( p() -> current.distance_to_move > 5 )
-      return false;
-
-    return( p() -> main_hand_attack -> execute_event == nullptr ); // not swinging
   }
 };
 
@@ -3356,6 +3326,15 @@ struct tigereye_brew_t: public monk_spell_t
     cooldown -> duration = data().duration();
   }
 
+  virtual bool ready() override
+  {
+    // Tigereye Brew cannot be activated while the buff is currently up
+    if ( p() -> buff.tigereye_brew -> up() )
+      return false;
+
+    return monk_spell_t::ready();
+  }
+
   virtual void execute() override
   {
     monk_spell_t::execute();
@@ -3474,7 +3453,6 @@ struct serenity_t: public monk_spell_t
     // Since Serenity takes replaces Tigereye Brew, placing this here for the time being.
     if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T17, B4 ) )
       p() -> buff.forceful_winds -> trigger();
-
   }
 };
 
@@ -3907,6 +3885,15 @@ struct purifying_brew_t: public monk_spell_t
     cooldown -> charges  = p.find_spell( id ) -> charges() + p.talent.light_brewing -> effectN( 2 ).base_value();
   }
 
+  bool ready() override
+  {
+    // Irrealistic of in-game, but let's make sure stagger is actually present
+    if ( !p() -> active_actions.stagger_self_damage -> stagger_ticking() )
+      return false;
+
+    return monk_spell_t::ready();
+  }
+
   void execute() override
   {
     monk_spell_t::execute();
@@ -3952,15 +3939,6 @@ struct purifying_brew_t: public monk_spell_t
       if ( rng().roll( p() -> talent.special_delivery -> proc_chance() ) )
         delivery -> execute();
     */
-  }
-
-  bool ready() override
-  {
-    // Irrealistic of in-game, but let's make sure stagger is actually present
-    if ( !p() -> active_actions.stagger_self_damage -> stagger_ticking() )
-      return false;
-
-    return monk_spell_t::ready();
   }
 };
 
@@ -4136,6 +4114,14 @@ struct soothing_mist_t: public monk_heal_t
     tick_zero = true;
   }
 
+  virtual bool ready() override
+  {
+    if ( p() -> buff.channeling_soothing_mist -> check() )
+      return false;
+
+    return monk_heal_t::ready();
+  }
+
   double action_multiplier() const override
   {
     double am = monk_heal_t::action_multiplier();
@@ -4145,13 +4131,6 @@ struct soothing_mist_t: public monk_heal_t
 
     return am;
   }
-  virtual void tick( dot_t* d ) override
-  {
-    monk_heal_t::tick( d );
-
-    if ( p() -> sets.has_set_bonus ( MONK_MISTWEAVER, T17, B2 ) )
-      p() -> buff.mistweaving -> trigger();
-  }
 
   virtual void impact( action_state_t* s ) override
   {
@@ -4160,20 +4139,20 @@ struct soothing_mist_t: public monk_heal_t
     p() -> buff.channeling_soothing_mist -> trigger();
   }
 
+  virtual void tick( dot_t* d ) override
+  {
+    monk_heal_t::tick( d );
+
+    if ( p() -> sets.has_set_bonus ( MONK_MISTWEAVER, T17, B2 ) )
+      p() -> buff.mistweaving -> trigger();
+  }
+
   virtual void last_tick( dot_t* d ) override
   {
     monk_heal_t::last_tick( d );
 
     p() -> buff.channeling_soothing_mist -> expire();
     p() -> buff.mistweaving -> expire();
-  }
-
-  virtual bool ready() override
-  {
-    if ( p() -> buff.channeling_soothing_mist -> check() )
-      return false;
-
-    return monk_heal_t::ready();
   }
 };
 
