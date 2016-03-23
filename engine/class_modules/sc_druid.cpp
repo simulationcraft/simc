@@ -22,7 +22,6 @@ namespace { // UNNAMED NAMESPACE
   Predator vs. adds
   Artifact utility traits
   Brutal Slash hasted recharge
-  Accurate Ashamane's Frenzy
 
   SR/TF as a player multiplier? Fun.
 
@@ -32,7 +31,6 @@ namespace { // UNNAMED NAMESPACE
   Shooting Stars AsP react
   Check Echoing Stars
   Check Fury of Elune
-  Moon and Stars update
 
   Touch of the Moon
   Light of the Sun
@@ -42,7 +40,6 @@ namespace { // UNNAMED NAMESPACE
   Statistics?
   Primal Fury gone or bugged?
   Incarnation CD modifier rework
-  Embrace of the Nightmare rage gain?
   Gory Fur
   Remove Blood Claws
 
@@ -2464,86 +2461,33 @@ struct rip_state_t : public action_state_t
 };
 
 // Ashamane's Frenzy ========================================================
-/* TOCHECK: How exactly does the bleed/ignite work? And what does/doesn't snapshot?
-     May be able to simplify implementation a bit if only AP snapshots. 
-     
-     Currently implemented:
-       - Snapshot on application: AP, persistent multipliers, player multipliers, and
-        target vulnerabilities.
-       - Snapshot on tick: Crit, vers, mastery, Open Wounds.
-      
-     Note that as of build 21071, the spell data for Razor Claws and Open Wounds
-     suggest that Ashamane's Frenzy does *not* benefit from them, so this
-     implementation respects that. */
+// FIXME: First tick sometimes occurs at 11 stacks.
+// Mar 23 2016: Does not snapshot Savage Roar or Tiger's Fury. (bug?)
 
 struct ashamanes_frenzy_t : public cat_attack_t
 {
-  struct ashamanes_frenzy_ignite_driver_t : public cat_attack_t
+  struct ashamanes_frenzy_hit_t : public cat_attack_t
   {
-    struct ashamanes_frenzy_ignite_t : public residual_action::residual_periodic_action_t<cat_attack_t>
-    {
-      ashamanes_frenzy_ignite_t( druid_t* p, const spell_data_t* spell ) :
-        residual_action::residual_periodic_action_t<cat_attack_t>( "ashamanes_frenzy_bleed", p, spell )
-      {
-        background = dual = tick_may_crit = true;
-        may_dodge = may_parry = may_block = may_miss = false;
-      }
-
-      void init() override
-      {
-        residual_action::residual_periodic_action_t<cat_attack_t>::init();
-
-        // Only benefit from vers, crit, and mastery.
-        snapshot_flags = update_flags = STATE_CRIT | STATE_TGT_CRIT | STATE_VERSATILITY | STATE_MUL_TA;
-      }
-    };
-
-    ashamanes_frenzy_ignite_t* ignite;
-    double persistent_multiplier;
-
-    ashamanes_frenzy_ignite_driver_t( druid_t* p, const spell_data_t* spell, ashamanes_frenzy_t* parent ) :
-      cat_attack_t( "ashamanes_frenzy_ignite_driver", p, spell ), persistent_multiplier( 1.0 )
+    ashamanes_frenzy_hit_t( druid_t* player, const spell_data_t* s ) :
+      cat_attack_t( "ashamanes_frenzy_hit", player, s -> effectN( 1 ).trigger() )
     {
       background = dual = true;
-      may_crit = tick_may_crit = may_dodge = may_parry = may_block = may_miss = false;
-
-      attack_power_mod.direct = data().effectN( 2 ).ap_coeff();
-      attack_power_mod.direct *= dot_duration / base_tick_time; // We want to calculate the total damage.
-      dot_duration = timespan_t::zero(); // We don't want to apply a DoT here.
-      razor_claws.direct = razor_claws.tick = false; // Don't benefit from mastery or Open Wounds here.
-
-      ignite = new ashamanes_frenzy_ignite_t( p, spell );
-      parent -> add_child( ignite );
+      dot_max_stack = s -> duration() / s -> effectN( 1 ).period();
+      direct_bleed = true;
     }
-
-    void init() override
-    {
-      cat_attack_t::init();
-
-      /* Don't benefit from crit or vers. Penetrate target armor. direct_bleed from spell
-      data handles this automatically, but this way we can short circuit some calculations. */
-      snapshot_flags = update_flags &= ~( STATE_CRIT | STATE_TGT_CRIT | STATE_VERSATILITY | STATE_TGT_ARMOR );
-      // Enable persistent multiplier.
-      snapshot_flags = update_flags |= STATE_MUL_PERSISTENT;
-    }
-
-    // Use snapshotted modifiers from parent. Bloodtalons, SR, and Tiger's Fury apply here.
-    double composite_persistent_multiplier( const action_state_t* ) const override
-    { return persistent_multiplier; }
-
-    void impact( action_state_t* s ) override
-    { residual_action::trigger( ignite, target, s -> result_amount ); }
+    
+    // Emulate old DoT refresh behavior.
+    virtual timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
+    { return dot -> time_to_next_tick() + triggered_duration; }
   };
-
-  ashamanes_frenzy_ignite_driver_t* ignite_driver;
 
   ashamanes_frenzy_t( druid_t* player, const std::string& options_str ) :
     cat_attack_t( "ashamanes_frenzy", player, &player -> artifact.ashamanes_frenzy.data(), options_str )
   {
-    const spell_data_t* tick_spell = data().effectN( 1 ).trigger();
+    tick_action = new ashamanes_frenzy_hit_t( player, &data() );
+    add_child( tick_action );
 
-    attack_power_mod.tick = tick_spell -> effectN( 1 ).ap_coeff();
-    ignite_driver = new ashamanes_frenzy_ignite_driver_t( player, tick_spell, this );
+    may_miss = may_parry = may_dodge = false;
   }
 
   void init() override
@@ -2551,15 +2495,6 @@ struct ashamanes_frenzy_t : public cat_attack_t
     cat_attack_t::init();
 
     consume_bloodtalons = false;
-  }
-
-  void tick( dot_t* d ) override
-  {
-    cat_attack_t::tick( d );
-
-    ignite_driver -> target = target;
-    ignite_driver -> persistent_multiplier = d -> state -> persistent_multiplier;
-    ignite_driver -> execute();
   }
 
   virtual void execute() override
