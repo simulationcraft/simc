@@ -182,12 +182,16 @@ public:
 
     // Brewmaster
     buff_t* bladed_armor;
+    buff_t* brew_stache;
     buff_t* elusive_brawler;
     buff_t* elusive_dance;
+    buff_t* fortification;
     buff_t* fortifying_brew;
     buff_t* gift_of_the_ox;
+    buff_t* greater_gift_of_the_ox;
     buff_t* ironskin_brew;
     buff_t* keg_smash_talent;
+    buff_t* swift_as_a_coursing_river;
     buff_t* zen_meditation;
 
     // Mistweaver
@@ -2522,25 +2526,19 @@ struct blackout_strike_t: public monk_melee_attack_t
       case MONK_BREWMASTER:
       {
         base_costs[RESOURCE_CHI] *= 1 + p -> spec.stagger -> effectN( 15 ).percent(); // -100% for Brewmasters
+        if ( p -> artifact.obsidian_fists.rank() )
+          base_crit += p -> artifact.obsidian_fists.percent();
+
         break;
       }
-      // Windwalkers cannot learn this but the auras are in the database. just being a completionist about this
+      // Windwalkers cannot learn this spell. However the effect to adjust this spell is in the database.
+      // Just being a completionist about this.
       case MONK_WINDWALKER:
       {
         cooldown -> duration *= 1 + p -> spec.combat_conditioning -> effectN( 2 ).percent(); // -100% for Windwalkers
         break;
       }
     }
-  }
-
-  double composite_crit() const override
-  {
-    double c = monk_melee_attack_t::composite_crit();
-
-    if ( p() -> artifact.obsidian_fists.rank() )
-      c += p() -> artifact.obsidian_fists.percent();
-
-    return c;
   }
 };
 
@@ -3802,6 +3800,15 @@ struct fortifying_brew_t: public monk_spell_t
     monk_spell_t::execute();
 
     p() -> buff.fortifying_brew -> trigger();
+
+    if ( p() -> artifact.swift_as_a_coursing_river.rank() )
+      p() -> buff.swift_as_a_coursing_river -> trigger();
+
+    if ( p() -> artifact.brew_stache.rank() )
+      p() -> buff.brew_stache -> trigger();
+
+    if ( p() -> artifact.fortification.rank() )
+      p() -> buff.fortification -> trigger();
   }
 };
 
@@ -3898,6 +3905,12 @@ struct ironskin_brew_t : public monk_spell_t
       if ( rng().roll( p() -> talent.special_delivery -> proc_chance() ) )
         delivery -> execute();
     */
+
+    if ( p() -> artifact.swift_as_a_coursing_river.rank() )
+      p() -> buff.swift_as_a_coursing_river -> trigger();
+
+    if ( p() -> artifact.brew_stache.rank() )
+      p() -> buff.brew_stache -> trigger();
   }
 };
 
@@ -3977,6 +3990,12 @@ struct purifying_brew_t: public monk_spell_t
       if ( rng().roll( p() -> talent.special_delivery -> proc_chance() ) )
         delivery -> execute();
     */
+
+    if ( p() -> artifact.swift_as_a_coursing_river.rank() )
+      p() -> buff.swift_as_a_coursing_river -> trigger();
+
+    if ( p() -> artifact.brew_stache.rank() )
+      p() -> buff.brew_stache -> trigger();
   }
 };
 
@@ -4823,6 +4842,46 @@ struct gift_of_the_ox_t: public monk_heal_t
       monk_heal_t::execute();
 
       p() -> buff.gift_of_the_ox -> decrement();
+    }
+  }
+};
+
+// ==========================================================================
+// Greater Gift of the Ox
+// ==========================================================================
+
+struct greater_gift_of_the_ox_t: public monk_heal_t
+{
+  greater_gift_of_the_ox_t( monk_t& p, const std::string& options_str ):
+    monk_heal_t( "greater_gift_of_the_ox", p, p.passives.gift_of_the_ox_heal )
+  {
+    parse_options( options_str );
+    harmful = false;
+    background = true;
+    target = &p;
+    trigger_gcd = timespan_t::zero();
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_heal_t::action_multiplier();
+
+    // TODO: Hard code this for the time being
+    am *= 2;
+
+    if ( p() -> artifact.gifted_student.rank() )
+      am *= 1 + p() -> artifact.gifted_student.percent();
+
+    return am;
+  }
+
+  virtual void execute() override
+  {
+    if ( p() -> buff.greater_gift_of_the_ox -> up() )
+    {
+      monk_heal_t::execute();
+
+      p() -> buff.greater_gift_of_the_ox -> decrement();
     }
   }
 };
@@ -5775,7 +5834,7 @@ void monk_t::init_base_stats()
     else
     {
       if ( artifact.healthy_appetite.rank() )
-        resources.current[RESOURCE_HEALTH] *= 1 + artifact.healthy_appetite.percent();
+        resources.base[RESOURCE_HEALTH] *= 1 + artifact.healthy_appetite.percent();
     }
   }
 
@@ -5843,6 +5902,10 @@ void monk_t::create_buffs()
     .default_value( spec.bladed_armor -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_ATTACK_POWER );
 
+  buff.brew_stache = buff_creator_t( this, "brew_stache", artifact.brew_stache.data().effectN( 1 ).trigger() )
+    .default_value( artifact.brew_stache.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+    .add_invalidate( CACHE_DODGE );
+
   buff.elusive_brawler = buff_creator_t( this, "elusive_brawler", passives.elusive_brawler )
     .max_stack( specialization() == MONK_BREWMASTER ? static_cast<int>( ceil( 1 / ( mastery.elusive_brawler -> effectN( 1 ).mastery_value() * 8 ) ) ) : 1 )
     .add_invalidate( CACHE_DODGE );
@@ -5850,6 +5913,10 @@ void monk_t::create_buffs()
   buff.elusive_dance = buff_creator_t(this, "elusive_dance", passives.elusive_dance)
     .default_value( talent.elusive_dance -> effectN( 1 ).percent() ) // 5% per stack
     .max_stack( 3 ) // Cap of 15%
+    .add_invalidate( CACHE_DODGE );
+
+  buff.brew_stache = buff_creator_t( this, "fortification", artifact.fortification.data().effectN( 1 ).trigger() )
+    .default_value( artifact.fortification.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_DODGE );
 
   buff.ironskin_brew = buff_creator_t(this, "ironskin_brew", spec.ironskin_brew )
@@ -5865,6 +5932,14 @@ void monk_t::create_buffs()
     .duration( passives.gift_of_the_ox_summon -> duration() )
     .refresh_behavior( BUFF_REFRESH_NONE )
     .max_stack( 99 );
+
+  buff.greater_gift_of_the_ox = buff_creator_t( this, "greater_gift_of_the_ox" , passives.gift_of_the_ox_summon )
+    .duration( passives.gift_of_the_ox_summon -> duration() )
+    .refresh_behavior( BUFF_REFRESH_NONE )
+    .max_stack( 99 );
+
+  buff.swift_as_a_coursing_river = buff_creator_t( this, "swift_as_a_coursing_river", artifact.swift_as_a_coursing_river.data().effectN( 1 ).trigger() )
+    .default_value( artifact.swift_as_a_coursing_river.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
   // Mistweaver
   buff.channeling_soothing_mist = buff_creator_t( this, "channeling_soothing_mist", passives.soothing_mist_heal );
@@ -6119,7 +6194,7 @@ double monk_t::composite_melee_crit() const
   return crit;
 }
 
-// monk_t::composte_melee_crit_multiplier===================================
+// monk_t::composite_melee_crit_multiplier===================================
 
 double monk_t::composite_melee_crit_multiplier() const
 {
@@ -6269,11 +6344,17 @@ double monk_t::composite_dodge() const
 {
   double d = base_t::composite_dodge();
 
+  if ( buff.brew_stache -> up() )
+    d += buff.brew_stache -> value();
+
   if ( buff.elusive_brawler -> up() )
     d += buff.elusive_brawler -> current_stack * ( cache.mastery() * mastery.elusive_brawler -> effectN( 1 ).mastery_value() );
 
   if ( buff.elusive_dance -> up() )
     d += buff.elusive_dance -> stack_value();
+
+  if ( buff.fortification -> up() )
+    d += buff.fortification -> value();
 
   if ( artifact.light_on_your_feet_ww.rank() )
     d += artifact.light_on_your_feet_ww.percent();
@@ -6549,9 +6630,32 @@ void monk_t::assess_damage(school_e school,
       if ( school == SCHOOL_PHYSICAL )
         buff.elusive_brawler -> trigger();
 
+      // TODO: 35% HP is hard-coded until otherwise changed
+      if ( artifact.obstinate_determination.rank() && resources.pct( RESOURCE_HEALTH ) < 0.35 )
+      {
+        if ( artifact.overflow.rank() )
+        { 
+          if ( rng().roll( artifact.overflow.percent() ) )
+            buff.greater_gift_of_the_ox -> trigger();
+          else
+            buff.gift_of_the_ox -> trigger();
+        }
+        else
+          buff.gift_of_the_ox -> trigger();
+      }
       // TODO: Check if 35% chance is baseline and increased by HP percent from there
-      if ( rng().roll( fmax( spec.gift_of_the_ox -> effectN( 1 ).percent(), 1 - fmax( resources.pct( RESOURCE_HEALTH ), 0 ) ) ) )
-        buff.gift_of_the_ox -> trigger();
+      else if ( rng().roll( fmax( spec.gift_of_the_ox -> effectN( 1 ).percent(), 1 - fmax( resources.pct( RESOURCE_HEALTH ), 0 ) ) ) )
+      {
+        if ( artifact.overflow.rank() )
+        { 
+          if ( rng().roll( artifact.overflow.percent() ) )
+            buff.greater_gift_of_the_ox -> trigger();
+          else
+            buff.gift_of_the_ox -> trigger();
+        }
+        else
+          buff.gift_of_the_ox -> trigger();
+      }
     }
   }
 
@@ -7100,7 +7204,7 @@ double monk_t::stagger_pct()
     if ( talent.high_tolerance -> ok() )
       stagger += talent.high_tolerance -> effectN( 1 ).percent();
 
-    if ( specialization() == MONK_BREWMASTER && buff.fortifying_brew -> check() )
+    if ( buff.fortifying_brew -> check() )
     {
       stagger += spec.fortifying_brew -> effectN( 1 ).percent();
 
