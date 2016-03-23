@@ -1877,16 +1877,17 @@ public:
 }; // end druid_spell_t
 
 // Shooting Stars ===========================================================
+// TOCHECK: Can it proc from direct damage now?
 
 struct shooting_stars_t : public druid_spell_t
 {
   double proc_chance;
 
   shooting_stars_t( druid_t* player ) :
-    druid_spell_t( "shooting_stars", player, player -> find_spell( 202497 ) ),
-    proc_chance( 0.20 ) // 01/24/2015: From in-game testing.
+    druid_spell_t( "shooting_stars", player, player -> find_spell( 202497 ) )
   {
     background = true;
+    proc_chance = player -> talent.shooting_stars -> effectN( 1 ).percent();
     ap_per_cast = data().effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
   }
 };
