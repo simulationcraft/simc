@@ -33,7 +33,6 @@ namespace { // UNNAMED NAMESPACE
   Check Echoing Stars
   Check Fury of Elune
   Moon and Stars update
-  Remove Moonfang
 
   Touch of the Moon
   Light of the Sun
@@ -5155,15 +5154,6 @@ struct mark_of_ursol_t : public druid_spell_t
   }
 };
 
-// Moonfang ============================================================
-
-struct moonfang_t : public druid_spell_t
-{
-  moonfang_t( druid_t* player ) :
-    druid_spell_t( "moonfang", player, player -> scythe_of_elune -> driver() -> effectN( 1 ).trigger() )
-  {}
-};
-
 // New Moon Spell ===========================================================
 
 struct new_moon_t : public druid_spell_t
@@ -8120,22 +8110,8 @@ static void flourish( special_effect_t& effect )
 // Scythe of Elune
 static void scythe_of_elune( special_effect_t& effect )
 {
-  struct moonfang_proc_callback_t : public dbc_proc_callback_t
-  {
-    spells::moonfang_t* moonfang;
-
-    moonfang_proc_callback_t( const item_t* i, const special_effect_t& effect ) :
-      dbc_proc_callback_t( i, effect ), moonfang( new spells::moonfang_t( debug_cast<druid_t*>( i -> player ) ) )
-    {}
-
-    void execute( action_t* a, action_state_t* state ) override
-    {
-      moonfang -> target = state -> target;
-      moonfang -> execute();
-    }
-  };
-
-  new moonfang_proc_callback_t( effect.item, effect );
+  druid_t* s = debug_cast<druid_t*>( effect.player );
+  do_trinket_init( s, DRUID_BALANCE, s -> scythe_of_elune, effect );
 }
 
 // Fangs of Ashamane
