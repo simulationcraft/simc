@@ -683,6 +683,7 @@ public:
 
     // Guardian -- Claws of Ursoc
     artifact_power_t adaptive_fur;
+    artifact_power_t bear_hug;
     artifact_power_t embrace_of_the_nightmare;
     artifact_power_t rage_of_the_sleeper;
 
@@ -693,7 +694,6 @@ public:
     artifact_power_t ion_cannon; // disabled
     artifact_power_t bestial_fortitude;
     artifact_power_t perpetual_spring;
-    artifact_power_t right_to_bear_arms;
     artifact_power_t ursocs_endurance;
     artifact_power_t sharpened_instincts;
     artifact_power_t vicious_bites;
@@ -1477,7 +1477,7 @@ public:
 
   bool trigger_gore()
   {
-    if ( this -> rng().roll( p() -> spec.gore -> proc_chance() ) )
+    if ( this -> rng().roll( p() -> spec.gore -> proc_chance() + p() -> artifact.bear_hug.percent() ) )
     {
       p() -> proc.gore -> occur();
       p() -> cooldown.mangle -> reset( true );
@@ -6208,7 +6208,7 @@ void druid_t::init_spells()
   artifact.ion_cannon                   = find_artifact_spell( "Ion Cannon" );
   artifact.bestial_fortitude            = find_artifact_spell( "Bestial Fortitude" );
   artifact.perpetual_spring             = find_artifact_spell( "Perpetual Spring" );
-  artifact.right_to_bear_arms           = find_artifact_spell( "Right to Bear Arms" );
+  artifact.bear_hug                     = find_artifact_spell( "Bear Hug" );
   artifact.ursocs_endurance             = find_artifact_spell( "Ursoc's Endurance" );
   artifact.sharpened_instincts          = find_artifact_spell( "Sharpened Instincts" );
   artifact.vicious_bites                = find_artifact_spell( "Vicious Bites" );
