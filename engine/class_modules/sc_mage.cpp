@@ -407,7 +407,7 @@ public:
     // Fire
     artifact_power_t aftershocks, //NYI
                      scorched_earth, //NYI
-                     everburning_consumption, //NYI
+                     everburning_consumption,
                      blue_flame_special, //NYI
                      molten_skin, //NYI
                      phoenix_reborn, //NYI
@@ -1564,6 +1564,8 @@ struct fire_mage_spell_t : public mage_spell_t
       // TODO: Use client data from hot streak
       amount *= 2.0;
     }
+
+    amount *= 1.0 + p -> artifact.everburning_consumption.percent();
 
     bool ignite_exists = p -> ignite -> get_dot( s -> target ) -> is_ticking();
 
