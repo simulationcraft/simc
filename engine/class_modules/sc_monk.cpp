@@ -2120,6 +2120,13 @@ struct tiger_palm_t: public monk_melee_attack_t
         {
           double time_reduction = data().effectN( 3 ).base_value()
             + ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T19, B4 ) ? p() -> sets.set( MONK_BREWMASTER, T19, B4 ) -> effectN( 1 ).base_value() : 0 );
+
+          if ( p() -> artifact.face_palm.rank() )
+          {
+            if ( rng().roll( p() -> artifact.face_palm.percent() ) )
+              time_reduction += 1;
+          }
+
           p() -> cooldown.brewmaster_active_mitigation -> adjust( timespan_t::from_seconds( time_reduction ) );
         }
 
@@ -3111,6 +3118,10 @@ struct keg_smash_t: public monk_melee_attack_t
 
     aoe = -1;
     radius = p.spec.keg_smash -> effectN( 1 ).radius();
+
+    if ( p.artifact.smashed.rank() )
+      radius += p.artifact.smashed.value();
+
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     cooldown -> duration = p.spec.keg_smash -> cooldown();
@@ -3123,6 +3134,16 @@ struct keg_smash_t: public monk_melee_attack_t
       return true;
 
     return monk_melee_attack_t::ready();
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    if ( p() -> artifact.kegerator.rank() )
+      am *= 1 + p() -> artifact.kegerator.percent();
+
+    return am;
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3703,6 +3724,16 @@ struct breath_of_fire_t: public monk_spell_t
       background = true;
       tick_may_crit = may_crit = true;
       hasted_ticks = false;
+    }
+
+    double action_multiplier() const override
+    {
+      double am = monk_spell_t::action_multiplier();
+
+      if ( p() -> artifact.adjunct_advantage.rank() )
+        am *= 1 + p() -> artifact.adjunct_advantage.percent();
+
+      return am;
     }
   };
 
@@ -4755,6 +4786,16 @@ struct gift_of_the_ox_t: public monk_heal_t
     trigger_gcd = timespan_t::zero();
   }
 
+  double action_multiplier() const override
+  {
+    double am = monk_heal_t::action_multiplier();
+
+    if ( p() -> artifact.gifted_student.rank() )
+      am *= 1 + p() -> artifact.gifted_student.percent();
+
+    return am;
+  }
+
   virtual void execute() override
   {
     if ( p() -> buff.gift_of_the_ox -> up() )
@@ -5789,6 +5830,7 @@ void monk_t::create_buffs()
   buff.ironskin_brew = buff_creator_t(this, "ironskin_brew", spec.ironskin_brew )
     .default_value( spec.ironskin_brew -> effectN( 1 ).percent() 
       + ( sets.has_set_bonus( MONK_BREWMASTER, T19, B2 ) ? sets.set( MONK_BREWMASTER, T19, B2 ) -> effectN( 1 ).percent() : 0 ) )
+    .duration( spec.ironskin_brew -> duration() + ( artifact.potent_kick.rank() ? timespan_t::from_seconds( artifact.potent_kick.value() ) : timespan_t::zero() ) )
     .refresh_behavior( BUFF_REFRESH_EXTEND );
 
   buff.keg_smash_talent = buff_creator_t( this, "keg_smash", passives.keg_smash_buff )
@@ -7034,7 +7076,12 @@ double monk_t::stagger_pct()
       stagger += talent.high_tolerance -> effectN( 1 ).percent();
 
     if ( specialization() == MONK_BREWMASTER && buff.fortifying_brew -> check() )
+    {
       stagger += spec.fortifying_brew -> effectN( 1 ).percent();
+
+      if ( artifact.staggering_around.rank() )
+        stagger += artifact.staggering_around.percent();
+    }
 
     if ( buff.ironskin_brew -> up() )
       stagger += buff.ironskin_brew -> value();
