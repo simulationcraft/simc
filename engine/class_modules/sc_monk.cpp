@@ -6632,8 +6632,11 @@ void monk_t::assess_damage(school_e school,
         buff.elusive_brawler -> trigger();
 
       // TODO: 35% HP for Obstinate Determination is hard-coded until otherwise changed
+      // Possibly put Obstinate Determination in the assess_damage_imminent_pre_absorb function
+      // if ( artifact.obstinate_determination.rank() && s -> result_amount > 0 && resources.pct(RESORUCE_HEALTH) > 0.35 && (resources.current[RESOURCE_HEALTH] - s -> result_amount)/100 <= 0.35)
+      // factor in absorbs
       // TODO: Check if 35% chance to proc GotO is baseline and increased by HP percent from there
-      else if ( rng().roll( fmax( spec.gift_of_the_ox -> effectN( 1 ).percent(), 1 - fmax( resources.pct( RESOURCE_HEALTH ), ( artifact.obstinate_determination.rank(), 0.35, 0 ) ) ) ) )
+      else if ( rng().roll( 1 - ( ( 1 - spec.gift_of_the_ox -> effectN( 1 ).percent() ) * fmax( resources.pct( RESOURCE_HEALTH ), 0 ) ) ) )
       {
         if ( artifact.overflow.rank() )
         { 
