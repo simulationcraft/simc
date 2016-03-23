@@ -456,7 +456,6 @@ public:
     gain_t* galactic_guardian;
     gain_t* gore;
     gain_t* stalwart_guardian;
-    gain_t* rage_of_the_sleeper;
     gain_t* rage_refund;
     gain_t* guardian_tier17_2pc;
     gain_t* guardian_tier18_2pc;
@@ -814,7 +813,6 @@ public:
   virtual void      create_options() override;
   virtual action_t* create_proc_action( const std::string& name, const special_effect_t& ) override;
   virtual std::string      create_profile( save_e type = SAVE_ALL ) override;
-  virtual double    resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
 
   void              apl_precombat();
   void              apl_default();
@@ -3754,7 +3752,7 @@ struct rage_of_the_sleeper_reflect_t : public bear_attack_t
   {
     background = true;
     may_block = may_dodge = may_parry = may_miss = may_crit = false;
-    base_multiplier *= p -> artifact.rage_of_the_sleeper.data().effectN( 3 ).percent();
+    base_multiplier *= p -> artifact.rage_of_the_sleeper.data().effectN( 2 ).percent();
     school = SCHOOL_NATURE; // school gets set on execute, but let's make it nature so the pie chart is pretty
   }
 };
@@ -7043,7 +7041,6 @@ void druid_t::init_gains()
   gain.bristling_fur         = get_gain( "bristling_fur"         );
   gain.galactic_guardian     = get_gain( "galactic_guardian"     );
   gain.gore                  = get_gain( "gore"                  );
-  gain.rage_of_the_sleeper   = get_gain( "rage_of_the_sleeper"   );
   gain.rage_refund           = get_gain( "rage_refund"           );
   gain.stalwart_guardian     = get_gain( "stalwart_guardian"     );
 
@@ -7374,7 +7371,7 @@ double druid_t::composite_player_multiplier( school_e school ) const
   m *= 1.0 + buff.feral_instinct -> check_value();
 
   if ( artifact.embrace_of_the_nightmare.rank() )
-    m *= 1.0 + buff.rage_of_the_sleeper -> check() * buff.rage_of_the_sleeper -> data().effectN( 7 ).percent();
+    m *= 1.0 + buff.rage_of_the_sleeper -> check() * buff.rage_of_the_sleeper -> data().effectN( 4 ).percent();
 
   return m;
 }
@@ -7571,7 +7568,7 @@ double druid_t::composite_leech() const
   double l = player_t::composite_leech();
 
   if ( artifact.embrace_of_the_nightmare.rank() )
-    l += buff.rage_of_the_sleeper -> check() * buff.rage_of_the_sleeper -> data().effectN( 8 ).percent();
+    l += buff.rage_of_the_sleeper -> check() * buff.rage_of_the_sleeper -> data().effectN( 5 ).percent();
 
   return l;
 }
@@ -7818,7 +7815,7 @@ void druid_t::target_mitigation( school_e school, dmg_e type, action_state_t* s 
     active.rage_of_the_sleeper -> target = s -> action -> player;
     active.rage_of_the_sleeper -> school = s -> action -> school; // TOCHECK
     active.rage_of_the_sleeper -> execute();
-    s -> result_amount *= 1.0 - buff.rage_of_the_sleeper -> data().effectN( 3 ).percent();
+    s -> result_amount *= 1.0 - buff.rage_of_the_sleeper -> data().effectN( 2 ).percent();
   }
 }
 
@@ -7887,25 +7884,7 @@ void druid_t::assess_heal( school_e school,
   if ( mastery.natures_guardian -> ok() )
     s -> result_total *= 1.0 + cache.mastery_value();
 
-  if ( buff.rage_of_the_sleeper -> up() )
-  {
-    gain.rage_of_the_sleeper -> add( RESOURCE_HEALTH, 0, s -> result_total * buff.rage_of_the_sleeper -> data().effectN( 2 ).percent() );
-    s -> result_total *= 1.0 + buff.rage_of_the_sleeper -> data().effectN( 2 ).percent();
-  }
-
   player_t::assess_heal( school, dmg_type, s );
-}
-
-// druid_t::resource_gain ===================================================
-
-double druid_t::resource_gain( resource_e rt, double amount, gain_t* g, action_t* a )
-{
-  double result = player_t::resource_gain( rt, amount, g, a );
-
-  if ( rt == RESOURCE_RAGE && buff.rage_of_the_sleeper -> up() )
-    player_t::resource_gain( rt, amount * buff.rage_of_the_sleeper -> data().effectN( 4 ).percent(), gain.rage_of_the_sleeper );
-
-  return result;
 }
 
 druid_td_t::druid_td_t( player_t& target, druid_t& source )
