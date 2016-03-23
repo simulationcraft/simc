@@ -5057,9 +5057,9 @@ struct lunar_strike_t : public druid_spell_t
     parse_options( options_str );
 
     aoe = -1;
-    base_aoe_multiplier  = data().effectN( 1 ).percent();
+    base_aoe_multiplier = data().effectN( 3 ).percent();
 
-    ap_per_cast = data().effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
+    ap_per_cast = data().effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
     consumes_owlkin_frenzy = true;
 
     base_execute_time *= 1 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
