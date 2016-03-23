@@ -397,7 +397,7 @@ public:
                      aegwynns_wrath, //NYI
                      crackling_energy, //NYI
                      blasting_rod,
-                     ethereal_sensitivity, //NYI
+                     ethereal_sensitivity,
                      aegwynns_fury, //NYI
                      echoes_of_aegwynn, //NYI
                      rule_of_threes,
@@ -4784,6 +4784,40 @@ struct incanters_flow_t : public buff_t
   }
 };
 
+struct arcane_missiles_buff_t : public buff_t
+{
+  arcane_missiles_buff_t( mage_t* p ) :
+    buff_t( buff_creator_t( p, "arcane_missiles", p -> find_spell( 79683 ) ) )
+  {
+    default_chance = p -> find_spell( 79684 ) -> effectN( 1 ).percent();
+  }
+
+  bool trigger( int stacks, double value,
+                double chance, timespan_t duration ) override
+  {
+    mage_t* p = static_cast<mage_t*>( player );
+
+    if ( chance < 0 )
+    {
+      chance = default_chance;
+    }
+
+    if ( p -> talents.words_of_power -> ok() )
+    {
+      double mult = p -> resources.pct( RESOURCE_MANA ) /
+                    p -> talents.words_of_power -> effectN( 2 ).percent();
+      chance += mult * p -> talents.words_of_power -> effectN( 1 ).percent();
+    }
+
+    if ( p -> artifact.ethereal_sensitivity.rank() )
+    {
+      chance += p -> artifact.ethereal_sensitivity.percent();
+    }
+
+    return buff_t::trigger( stacks, value, chance, duration );
+  }
+};
+
 // mage_t::create_buffs =======================================================
 
 void mage_t::create_buffs()
@@ -4796,8 +4830,7 @@ void mage_t::create_buffs()
 
   // Arcane
   buffs.arcane_charge         = buff_creator_t( this, "arcane_charge", spec.arcane_charge );
-  buffs.arcane_missiles       = buff_creator_t( this, "arcane_missiles", find_spell( 79683 ) )
-                                  .chance( find_spell( 79684 ) -> effectN( 1 ).percent() );
+  buffs.arcane_missiles       = new arcane_missiles_buff_t( this );
   buffs.arcane_power          = buff_creator_t( this, "arcane_power", find_spell( 12042 ) )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   if ( artifact.aegwynns_imperative.rank() )
