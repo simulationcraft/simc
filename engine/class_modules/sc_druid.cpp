@@ -33,8 +33,6 @@ namespace { // UNNAMED NAMESPACE
   Check Echoing Stars
   Check Fury of Elune
   Moon and Stars update
-  Check Power of Goldrinn
-  Implement Skywrath
   Remove Moonfang
 
   Touch of the Moon
@@ -648,6 +646,7 @@ public:
     artifact_power_t new_moon;
     artifact_power_t power_of_goldrinn;
     artifact_power_t scythe_of_the_stars;
+    artifact_power_t skywrath;
     artifact_power_t solar_stabbing;
     artifact_power_t sunfire_burns;
     artifact_power_t twilight_glow;
@@ -5060,13 +5059,14 @@ struct lunar_strike_t : public druid_spell_t
 
     aoe = -1;
     base_aoe_multiplier = data().effectN( 3 ).percent();
-
     ap_per_cast = data().effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
     consumes_owlkin_frenzy = true;
 
+    natures_balance    = timespan_t::from_seconds( player -> talent.natures_balance -> effectN( 1 ).base_value() );
+    
     base_execute_time *= 1 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
     base_crit         += player -> artifact.dark_side_of_the_moon.percent();
-    natures_balance    = timespan_t::from_seconds( player -> talent.natures_balance -> effectN( 1 ).base_value() );
+    base_multiplier   *= 1.0 + player -> artifact.skywrath.percent();
   }
 
   double action_multiplier() const override
@@ -5357,11 +5357,12 @@ struct solar_wrath_t : public druid_spell_t
     ap_per_cast = data().effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
     consumes_owlkin_frenzy = true;
 
+    natures_balance    = timespan_t::from_seconds( player -> talent.natures_balance -> effectN( 2 ).base_value() );
+
     base_execute_time *= 1.0 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
     base_multiplier   *= 1.0 + player -> sets.set( SET_CASTER, T13, B2 ) -> effectN( 1 ).percent();
+    base_multiplier   *= 1.0 + player -> artifact.skywrath.percent();
     base_multiplier   *= 1.0 + player -> artifact.solar_stabbing.percent();
-
-    natures_balance    = timespan_t::from_seconds( player -> talent.natures_balance -> effectN( 2 ).base_value() );
   }
 
   double action_multiplier() const override
@@ -6173,6 +6174,7 @@ void druid_t::init_spells()
   artifact.rejuvenating_innervation     = find_artifact_spell( "Rejuvenating Innervation" );
   artifact.twilight_glow                = find_artifact_spell( "Twilight Glow" );
   artifact.scythe_of_the_stars          = find_artifact_spell( "Scythe of the Stars" );
+  // artifact.skywrath                     = find_artifact_spell( "Skywrath" );
   artifact.sunblind                     = find_artifact_spell( "Sunblind" );
   artifact.light_of_the_sun             = find_artifact_spell( "Light of the Sun" );
   artifact.empowerment                  = find_artifact_spell( "Empowerment" );
