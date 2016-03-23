@@ -6631,21 +6631,9 @@ void monk_t::assess_damage(school_e school,
       if ( school == SCHOOL_PHYSICAL )
         buff.elusive_brawler -> trigger();
 
-      // TODO: 35% HP is hard-coded until otherwise changed
-      if ( artifact.obstinate_determination.rank() && resources.pct( RESOURCE_HEALTH ) < 0.35 )
-      {
-        if ( artifact.overflow.rank() )
-        { 
-          if ( rng().roll( artifact.overflow.percent() ) )
-            buff.greater_gift_of_the_ox -> trigger();
-          else
-            buff.gift_of_the_ox -> trigger();
-        }
-        else
-          buff.gift_of_the_ox -> trigger();
-      }
-      // TODO: Check if 35% chance is baseline and increased by HP percent from there
-      else if ( rng().roll( fmax( spec.gift_of_the_ox -> effectN( 1 ).percent(), 1 - fmax( resources.pct( RESOURCE_HEALTH ), 0 ) ) ) )
+      // TODO: 35% HP for Obstinate Determination is hard-coded until otherwise changed
+      // TODO: Check if 35% chance to proc GotO is baseline and increased by HP percent from there
+      else if ( rng().roll( fmax( spec.gift_of_the_ox -> effectN( 1 ).percent(), 1 - fmax( resources.pct( RESOURCE_HEALTH ), ( artifact.obstinate_determination.rank(), 0.35, 0 ) ) ) ) )
       {
         if ( artifact.overflow.rank() )
         { 
