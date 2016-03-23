@@ -29,7 +29,6 @@ namespace { // UNNAMED NAMESPACE
   Force of Nature
   Shooting Stars AsP react
   Check Echoing Stars
-  Check Starlord
   Check Fury of Elune
   Moon and Stars update
   Check Power of Goldrinn
@@ -4825,6 +4824,7 @@ struct half_moon_t : public druid_spell_t
     parse_options( options_str );
 
     cooldown = player -> cooldown.moon_cd;
+    ap_per_cast = data().effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
   }
 
   void execute() override
@@ -5171,6 +5171,8 @@ struct new_moon_t : public druid_spell_t
     druid_spell_t( "new_moon", player, player -> artifact.new_moon.spell_ )
   {
     parse_options( options_str );
+
+    ap_per_cast = data().effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
     
     cooldown = player -> cooldown.moon_cd;
     cooldown -> duration = data().charge_cooldown();
@@ -5596,16 +5598,17 @@ struct starsurge_t : public druid_spell_t
   struct goldrinns_fang_t : public druid_spell_t
   {
     goldrinns_fang_t( druid_t* player ) :
-      druid_spell_t( "goldrinns_fang", player, player -> find_spell( 203001 ) )
+      druid_spell_t( "goldrinns_fang", player, player -> artifact.power_of_goldrinn.data().effectN( 1 ).trigger() )
     {
       background = true;
       may_miss = false;
       aoe = -1;
-      radius = 5.0; // placeholder radius since the spell data has none
+      radius = 5.0; // FIXME: placeholder radius since the spell data has none
     }
   };
 
   double starshards_chance;
+  goldrinns_fang_t* goldrinns_fang;
 
   starsurge_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "starsurge", player, player -> find_specialization_spell( "Starsurge" ) ),
@@ -5625,8 +5628,8 @@ struct starsurge_t : public druid_spell_t
 
     if ( player -> artifact.power_of_goldrinn.rank() )
     {
-      impact_action = new goldrinns_fang_t( player );
-      add_child( impact_action );
+      goldrinns_fang = new goldrinns_fang_t( player );
+      add_child( goldrinns_fang );
     }
   }
 
@@ -5655,6 +5658,13 @@ struct starsurge_t : public druid_spell_t
     {
       p() -> proc.starshards -> occur();
       p() -> active.starshards -> execute();
+    }
+
+    // TOCHECK: Needs hit?
+    if ( goldrinns_fang && rng().roll( p() -> artifact.power_of_goldrinn.data().proc_chance() ) )
+    {
+      goldrinns_fang -> target = target;
+      goldrinns_fang -> execute();
     }
   }
 };
