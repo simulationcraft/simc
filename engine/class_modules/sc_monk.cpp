@@ -2516,11 +2516,31 @@ struct blackout_strike_t: public monk_melee_attack_t
     oh = &( player -> off_hand_weapon );
     spell_power_mod.direct = 0.0;
     cooldown -> duration = data().cooldown();
-    if ( p -> specialization() == MONK_BREWMASTER )
-      base_costs[RESOURCE_CHI] *= 1 + p -> spec.stagger -> effectN( 15 ).percent(); // -100% for Brewmasters
-    // Windwalkers cannot learn this but the auras are in the database. just being a completionist about this
-    else if ( p -> specialization() == MONK_WINDWALKER ) 
-      cooldown -> duration *= 1 + p -> spec.combat_conditioning -> effectN( 2 ).percent(); // -100% for Windwalkers
+
+    switch ( p -> specialization() )
+    {
+      case MONK_BREWMASTER:
+      {
+        base_costs[RESOURCE_CHI] *= 1 + p -> spec.stagger -> effectN( 15 ).percent(); // -100% for Brewmasters
+        break;
+      }
+      // Windwalkers cannot learn this but the auras are in the database. just being a completionist about this
+      case MONK_WINDWALKER:
+      {
+        cooldown -> duration *= 1 + p -> spec.combat_conditioning -> effectN( 2 ).percent(); // -100% for Windwalkers
+        break;
+      }
+    }
+  }
+
+  double composite_crit() const override
+  {
+    double c = monk_melee_attack_t::composite_crit();
+
+    if ( p() -> artifact.obsidian_fists.rank() )
+      c += p() -> artifact.obsidian_fists.percent();
+
+    return c;
   }
 };
 
@@ -5745,12 +5765,17 @@ void monk_t::init_base_stats()
   {
     base.attack_power_per_agility = 1.0;
     resources.base[RESOURCE_ENERGY] = 100;
-    if (specialization() == MONK_WINDWALKER)
+    if ( specialization() == MONK_WINDWALKER )
     {
       resources.base[RESOURCE_CHI] = 5 + talent.ascension -> effectN( 1 ).base_value();
       resources.base[RESOURCE_ENERGY] += sets.set(MONK_WINDWALKER, T18, B4) -> effectN( 2 ).base_value();
       if ( artifact.inner_peace.rank() )
         resources.base[RESOURCE_ENERGY] += artifact.inner_peace.value();
+    }
+    else
+    {
+      if ( artifact.healthy_appetite.rank() )
+        resources.current[RESOURCE_HEALTH] *= 1 + artifact.healthy_appetite.percent();
     }
   }
 
