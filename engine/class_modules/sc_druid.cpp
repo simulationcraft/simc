@@ -7345,7 +7345,8 @@ double druid_t::composite_persistent_multiplier( school_e school ) const
 {
   double pm = player_t::composite_persistent_multiplier( school );
 
-  pm *= 1.0 + buff.tigers_fury -> check_value();
+  if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
+    pm *= 1.0 + buff.tigers_fury -> check_value();
 
   return pm;
 }
