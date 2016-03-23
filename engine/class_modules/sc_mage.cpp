@@ -398,7 +398,7 @@ public:
                      crackling_energy, //NYI
                      blasting_rod,
                      ethereal_sensitivity,
-                     aegwynns_fury, //NYI
+                     aegwynns_fury,
                      echoes_of_aegwynn, //NYI
                      rule_of_threes,
                      torrential_barrage,
@@ -2063,6 +2063,8 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     may_miss = false;
 
     temporal_hero_duration = p -> find_spell( 188117 ) -> duration();
+
+    base_multiplier *= 1.0 + p -> artifact.aegwynns_fury.percent();
   }
 
   virtual double action_multiplier() const override
