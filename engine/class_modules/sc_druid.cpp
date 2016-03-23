@@ -1747,7 +1747,8 @@ public:
 
     trigger_astral_power_gain( ap_per_cast );
 
-    if ( p() -> artifact.moon_and_stars.rank() && p() -> buff.celestial_alignment -> check() && ! background )
+    if ( p() -> artifact.moon_and_stars.rank() && ! background &&
+       ( p() -> buff.celestial_alignment -> check() || p() -> buff.incarnation_moonkin -> check() ) )
       p() -> buff.star_power -> trigger();
   }
 
@@ -6441,7 +6442,7 @@ void druid_t::create_buffs()
                                  + artifact.empowerment.percent() );
 
   buff.star_power            = buff_creator_t( this, "star_power", find_spell( 202942 ) )
-                               .default_value( find_spell( 202942 ) -> effectN( 1 ).percent() )
+                               .default_value( find_spell( 202942 ) -> effectN( 1 ).percent() * ( talent.incarnation_moonkin -> ok() ? 0.5 : 1.0 ) )
                                .add_invalidate( CACHE_SPELL_HASTE );
 
   buff.warrior_of_elune      = new warrior_of_elune_buff_t( *this );
