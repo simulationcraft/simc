@@ -21,8 +21,10 @@ namespace { // UNNAMED NAMESPACE
   Feral =====================================================================
   Predator vs. adds
   Artifact utility traits
+  Brutal Slash hasted recharge
+  Accurate Ashamane's Frenzy
 
-  SR as a player multiplier? Fun.
+  SR/TF as a player multiplier? Fun.
 
   Balance ===================================================================
   Stellar Drift cast while moving
@@ -2618,7 +2620,8 @@ public:
     aoe = -1;
     cooldown -> charges = data().charges();
     cooldown -> duration = data().charge_cooldown();
-    
+    combo_point_gain = 1; // not in spell data
+
     base_multiplier *= 1.0 + p -> artifact.sharpened_claws.percent();
   }
 
