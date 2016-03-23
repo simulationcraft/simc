@@ -1460,7 +1460,9 @@ struct fire_mage_spell_t : public mage_spell_t
     mage_spell_t( n, p, s ),
     triggers_hot_streak( false ),
     triggers_ignite( false )
-  {}
+  {
+    base_multiplier *= 1.0 + p -> artifact.burning_gaze.percent();
+  }
 
   virtual void impact( action_state_t* s ) override
   {
@@ -1572,15 +1574,6 @@ struct fire_mage_spell_t : public mage_spell_t
       p -> procs.ignite_applied -> occur();
     }
   }
-
-  virtual double action_multiplier() const override
-  {
-    double am = mage_spell_t::action_multiplier();
-
-    am *= 1.0 + p() -> artifact.burning_gaze.percent();
-    return am;
-  }
-
 };
 
 
@@ -1988,6 +1981,8 @@ struct arcane_explosion_t : public arcane_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
+
+    base_multiplier *= 1.0 + p -> artifact.arcane_purification.percent();
   }
 
   virtual void execute() override
@@ -2025,11 +2020,6 @@ struct arcane_explosion_t : public arcane_mage_spell_t
     double am = arcane_mage_spell_t::action_multiplier();
 
     am *= arcane_charge_damage_bonus();
-
-    if ( p() -> artifact.arcane_purification.rank() )
-    {
-      am *= 1.0 + p() -> artifact.arcane_purification.percent();
-    }
 
     return am;
   }
@@ -2267,9 +2257,11 @@ struct blast_wave_t : public fire_mage_spell_t
   {
     parse_options( options_str );
 
-    base_multiplier = 1.0 + p -> talents.blast_wave -> effectN( 1 ).percent();
-    base_aoe_multiplier = 1.0 / base_multiplier;
     aoe = -1;
+
+    double bw_mult = 1.0 + p -> talents.blast_wave -> effectN( 1 ).percent();
+    base_multiplier *= bw_mult;
+    base_aoe_multiplier = 1.0 / bw_mult;
   }
 };
 
@@ -2531,8 +2523,10 @@ struct fireball_t : public fire_mage_spell_t
     timespan_t t = fire_mage_spell_t::execute_time();
 
     if ( p() -> artifact.fire_at_will.rank() )
-      // Spellvalue is -100ms
-      t -= - ( p() -> artifact.fire_at_will.time_value() );
+    {
+      t += p() -> artifact.fire_at_will.time_value();
+    }
+
     return t;
   }
 
@@ -2545,9 +2539,6 @@ struct fireball_t : public fire_mage_spell_t
   virtual void impact( action_state_t* s ) override
   {
     fire_mage_spell_t::impact( s );
-
-    if ( sim -> debug )
-      sim -> out_debug.printf( "%d GBOF multiplier",  p() -> artifact.great_balls_of_fire.percent() );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -2895,7 +2886,7 @@ struct frozen_orb_t : public frost_mage_spell_t
 
     if ( p -> talents.bitter_cold -> ok() )
     {
-      base_multiplier =
+      base_multiplier *=
         1.0 + p -> talents.bitter_cold -> effectN( 1 ).percent();
     }
   }
@@ -3112,9 +3103,11 @@ struct ice_nova_t : public frost_mage_spell_t
   {
     parse_options( options_str );
 
-    base_multiplier = 1.0 + p -> talents.ice_nova -> effectN( 1 ).percent();
-    base_aoe_multiplier = 1.0 / base_multiplier;
     aoe = -1;
+
+    double in_mult = 1.0 + p -> talents.ice_nova -> effectN( 1 ).percent();
+    base_multiplier *= in_mult;
+    base_aoe_multiplier = 1.0 / in_mult;
   }
 };
 
@@ -3525,7 +3518,7 @@ struct nether_tempest_t : public arcane_mage_spell_t
 struct phoenix_reborn_t : public fire_mage_spell_t
 {
   phoenix_reborn_t( mage_t* p, const std::string& options_str ) :
-    fire_mage_spell_t( "phoenix_reborn", p, &( p -> artifact.phoenix_reborn.data() ) )
+    fire_mage_spell_t( "phoenix_reborn", p, p -> artifact.phoenix_reborn )
   {
     parse_options( options_str );
     base_dd_min = base_dd_max = p -> find_spell( 205409 ) -> effectN( 1 ).base_value();
@@ -3605,7 +3598,7 @@ struct pyroblast_t : public fire_mage_spell_t
       add_child( conjure_phoenix );
     }
 
-    base_multiplier = 1.0 + p -> artifact.pyroclasmic_paranoia.percent();
+    base_multiplier *= 1.0 + p -> artifact.pyroclasmic_paranoia.percent();
   }
 
   virtual action_state_t* new_state() override
@@ -3792,8 +3785,10 @@ struct supernova_t : public arcane_mage_spell_t
     parse_options( options_str );
 
     aoe = -1;
-    base_multiplier = 1.0 + p -> talents.supernova -> effectN( 1 ).percent();
-    base_aoe_multiplier = 1.0 / base_multiplier;
+
+    double sn_mult = 1.0 + p -> talents.supernova -> effectN( 1 ).percent();
+    base_multiplier *= sn_mult;
+    base_aoe_multiplier = 1.0 / sn_mult;
   }
 
   virtual void execute() override
