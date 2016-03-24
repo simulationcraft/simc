@@ -622,7 +622,7 @@ public:
     }
 
     if ( ab::result_is_miss( ab::execute_state -> result ) && rage > 0 && !ab::aoe )
-      p() -> resource_gain( RESOURCE_RAGE, rage*0.8, p() -> gain.avoided_attacks );
+      rage_resource_gain( RESOURCE_RAGE, rage*0.8, p() -> gain.avoided_attacks );
   }
 
   virtual void anger_management( double rage )
@@ -645,9 +645,17 @@ public:
 
   void enrage()
   {
-    // Crit BTs give rage, and refresh enrage
-    p() -> resource_gain( RESOURCE_RAGE, p() -> buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ) );
     p() -> buff.enrage -> trigger();
+  }
+
+  void rage_resource_gain( resource_e resource_type, double amount, gain_t* gain )
+  {
+    p() -> resource_gain( resource_type, amount, gain );
+
+    if ( p() -> talents.frothing_berserker -> ok() && p() -> resources.current[RESOURCE_RAGE] > 99 )
+    {
+       p() -> buff.frothing_berserker -> trigger(); 
+    }
   }
 };
 
@@ -874,13 +882,13 @@ struct melee_t: public warrior_attack_t
 
     if ( p() -> specialization() == WARRIOR_ARMS && s -> result == RESULT_CRIT )
     {
-      p() -> resource_gain( RESOURCE_RAGE,
+      rage_resource_gain( RESOURCE_RAGE,
                             rage_gain,
                             p() -> gain.melee_crit );
     }
     else
     {
-      p() -> resource_gain( RESOURCE_RAGE,
+      rage_resource_gain( RESOURCE_RAGE,
                             rage_gain,
                             w -> slot == SLOT_OFF_HAND ? p() -> gain.melee_off_hand : p() -> gain.melee_main_hand );
     }
@@ -1080,7 +1088,7 @@ struct bloodthirst_t: public warrior_attack_t
         enrage();
     }
 
-    p() -> resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.bloodthirst );
+    rage_resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.bloodthirst );
   }
 };
 
@@ -1121,7 +1129,7 @@ struct charge_t: public warrior_attack_t
       first_charge = !first_charge;
 
     p() -> cooldown.rage_from_charge -> start();
-    p() -> resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.charge );
+    rage_resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.charge );
   }
 
   void reset() override
@@ -1205,7 +1213,7 @@ struct cleave_t: public warrior_attack_t
 
       if ( p() -> talents.fervor_of_battle -> ok() )
       {
-        p() -> resource_gain( RESOURCE_RAGE, p() -> spell.fervor_of_battle -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.fervor_of_battle );
+        rage_resource_gain( RESOURCE_RAGE, p() -> spell.fervor_of_battle -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.fervor_of_battle );
       }
     }
   }
@@ -2417,14 +2425,14 @@ struct shield_slam_t: public warrior_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      p() -> resource_gain( RESOURCE_RAGE,
+      rage_resource_gain( RESOURCE_RAGE,
                             rage_gain,
                             p() -> gain.shield_slam );
 
       if ( p() -> buff.sword_and_board -> up() )
       {
         rage_from_snb = p() -> buff.sword_and_board -> data().effectN( 1 ).resource( RESOURCE_RAGE );
-        p() -> resource_gain( RESOURCE_RAGE,
+        rage_resource_gain( RESOURCE_RAGE,
                               rage_from_snb,
                               p() -> gain.sword_and_board );
       }
@@ -2617,7 +2625,7 @@ struct whirlwind_mh_t: public warrior_attack_t
     warrior_attack_t::impact( s );
 
     if ( p() -> talents.fervor_of_battle -> ok() )
-      p() -> resource_gain( RESOURCE_RAGE, p() -> spell.fervor_of_battle -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.fervor_of_battle );
+      rage_resource_gain( RESOURCE_RAGE, p() -> spell.fervor_of_battle -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.fervor_of_battle );
   }
 
   double action_multiplier() const override
@@ -2908,7 +2916,7 @@ struct battle_cry_t: public warrior_spell_t
 
     if ( p() -> talents.reckless_abandon -> ok() )
     {
-      p() -> resource_gain( RESOURCE_RAGE,
+      rage_resource_gain( RESOURCE_RAGE,
                             p() -> talents.reckless_abandon -> effectN( 2 ).resource( RESOURCE_RAGE ),
                             p() -> gain.battle_cry );
     }
@@ -3792,6 +3800,10 @@ void warrior_t::create_buffs()
 
   buff.berserker_rage = buff_creator_t( this, "berserker_rage", find_class_spell( "Berserker Rage" ) );
 
+  buff.frothing_berserker = buff_creator_t( this, "frothing_berserker", talents.frothing_berserker -> effectN( 1 ).trigger() )
+    .default_value( talents.frothing_berserker -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
   buff.bounding_stride = buff_creator_t( this, "bounding_stride", find_spell( 202164 ) )
     .chance( talents.bounding_stride -> ok() )
     .default_value( find_spell( 202164 ) -> effectN( 1 ).percent() );
@@ -3830,7 +3842,8 @@ void warrior_t::create_buffs()
     .add_invalidate( CACHE_PARRY );
 
   buff.dragon_roar = buff_creator_t( this, "dragon_roar", talents.dragon_roar )
-    .default_value( talents.dragon_roar -> effectN( 2 ).percent() );
+    .default_value( talents.dragon_roar -> effectN( 2 ).percent() )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.enrage = buff_creator_t( this, "enrage", spec.enrage -> effectN( 2 ).trigger() )
     .can_cancel( false )
@@ -4160,6 +4173,9 @@ double warrior_t::composite_player_multiplier( school_e school ) const
   if ( buff.dragon_roar -> check() )
     m *= 1.0 + buff.dragon_roar -> default_value;
 
+  if ( buff.frothing_berserker -> check() )
+    m *= 1.0 + buff.frothing_berserker -> default_value;
+
   return m;
 }
 
@@ -4424,8 +4440,10 @@ double warrior_t::temporary_movement_modifier() const
     temporary = std::max( buff.charge_movement -> value(), temporary );
   else if ( buff.intervene_movement -> up() )
     temporary = std::max( buff.intervene_movement -> value(), temporary );
-  else if ( buff.bounding_stride -> up () )
+  else if ( buff.bounding_stride -> up() )
     temporary = std::max( buff.bounding_stride -> value(), temporary );
+  else if ( buff.frothing_berserker -> up() )
+    temporary = std::max( buff.frothing_berserker -> data().effectN( 2 ).percent(), temporary );
 
   return temporary;
 }
