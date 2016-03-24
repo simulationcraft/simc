@@ -5068,8 +5068,11 @@ void mage_t::init_benefits()
 {
   player_t::init_benefits();
 
-  benefits.incanters_flow =
-    new buff_stack_benefit_t( buffs.incanters_flow, "Incanter's Flow" );
+  if ( talents.incanters_flow -> ok() )
+  {
+    benefits.incanters_flow =
+      new buff_stack_benefit_t( buffs.incanters_flow, "Incanter's Flow" );
+  }
 
   if ( specialization() == MAGE_ARCANE )
   {
@@ -5091,8 +5094,11 @@ void mage_t::init_benefits()
   benefits.fingers_of_frost =
     new buff_source_benefit_t( buffs.fingers_of_frost );
 
-  benefits.ray_of_frost =
-    new buff_stack_benefit_t( buffs.ray_of_frost, "Ray of Frost" );
+  if ( talents.ray_of_frost -> ok() )
+  {
+    benefits.ray_of_frost =
+      new buff_stack_benefit_t( buffs.ray_of_frost, "Ray of Frost" );
+  }
 }
 
 // mage_t::init_stats =========================================================
