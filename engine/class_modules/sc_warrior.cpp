@@ -135,7 +135,6 @@ public:
     // All Warriors
     gain_t* avoided_attacks;
     gain_t* charge;
-    gain_t* enrage;
     gain_t* melee_main_hand;
     // Fury Only
     gain_t* bloodthirst;
@@ -3931,7 +3930,6 @@ void warrior_t::init_gains()
   gain.bloodthirst = get_gain( "bloodthirst" );
   gain.charge = get_gain( "charge" );
   gain.critical_block = get_gain( "critical_block" );
-  gain.enrage = get_gain( "enrage" );
   gain.melee_crit = get_gain( "melee_crit" );
   gain.fervor_of_battle = get_gain( "fervor_of_battle" );
   gain.melee_main_hand = get_gain( "melee_main_hand" );
@@ -4160,8 +4158,6 @@ double warrior_t::composite_player_multiplier( school_e school ) const
   // --- Enrages ---
   if ( buff.enrage -> check() )
   {
-    m *= 1.0 + buff.enrage -> data().effectN( 2 ).percent();
-
     if ( mastery.unshackled_fury -> ok() )
       m *= 1.0 + cache.mastery_value();
   }
