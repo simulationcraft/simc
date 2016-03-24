@@ -645,7 +645,7 @@ public:
   void enrage()
   {
     // Crit BTs give rage, and refresh enrage
-    p() -> resource_gain( RESOURCE_RAGE, p() -> buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ) * ( 1.0 + p() -> talents.endless_rage -> effectN( 1 ).percent() ), p() -> gain.enrage );
+    p() -> resource_gain( RESOURCE_RAGE, p() -> buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE );
     p() -> buff.enrage -> trigger();
   }
 };
@@ -1030,8 +1030,7 @@ struct bloodthirst_t: public warrior_attack_t
     warrior_attack_t( "bloodthirst", p, p -> spec.bloodthirst ),
     bloodthirst_heal( nullptr ),
     crit_chance( data().effectN( 4 ).percent() ),
-    rage_gain( ( data().effectN( 3 ).resource( RESOURCE_RAGE ) + p -> talents.unquenchable_thirst -> effectN( 1 ).resource( RESOURCE_RAGE ) )
-               * ( 1.0 + p -> talents.endless_rage -> effectN( 1 ).percent() ) )
+    rage_gain( data().effectN( 3 ).resource( RESOURCE_RAGE ) + p -> talents.unquenchable_thirst -> effectN( 1 ).resource( RESOURCE_RAGE ) )
   {
     parse_options( options_str );
 
@@ -1084,7 +1083,7 @@ struct charge_t: public warrior_attack_t
     first_charge( true ),
     movement_speed_increase( 5.0 ),
     min_range( data().min_range() ),
-    rage_gain( data().effectN( 2 ).resource( RESOURCE_RAGE ) * ( 1.0 + p -> talents.endless_rage -> effectN( 1 ).percent() ) )
+    rage_gain( data().effectN( 2 ).resource( RESOURCE_RAGE ) )
   {
     parse_options( options_str );
     ignore_false_positive = true;
@@ -2063,7 +2062,7 @@ struct raging_blow_t: public warrior_attack_t
       if ( p() -> talents.enraging_blows -> ok() )
       {
         p() -> resource_gain( RESOURCE_RAGE,
-                              p() -> talents.enraging_blows -> effectN( 2 ).resource( RESOURCE_RAGE ) * ( 1.0 + p() -> talents.endless_rage -> effectN( 1 ).percent() ),
+                              p() -> talents.enraging_blows -> effectN( 2 ).resource( RESOURCE_RAGE ),
                               p() -> gain.raging_blow );
       }
     }
