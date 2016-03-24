@@ -595,7 +595,7 @@ struct buff_source_benefit_t
         index = i;
       }
 
-      for ( int i = 0; i < stacks; i++ )
+      for ( int j = 0; j < stacks; j++ )
       {
         buff_source_benefit[i] -> update( source_matches );
       }
@@ -1600,7 +1600,7 @@ struct frost_mage_spell_t : public mage_spell_t
 
     if ( success )
     {
-      p() -> benefits.fingers_of_frost -> update( source );
+      p() -> benefits.fingers_of_frost -> update( source, stacks );
     }
   }
 
