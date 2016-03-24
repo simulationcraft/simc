@@ -1387,6 +1387,11 @@ public:
     {
       p() -> buffs.arcane_missiles -> trigger();
     }
+
+    if ( harmful && !background && p() -> talents.incanters_flow -> ok() )
+    {
+      p() -> benefits.incanters_flow -> update();
+    }
   }
 
   void trigger_unstable_magic( action_state_t* state );
