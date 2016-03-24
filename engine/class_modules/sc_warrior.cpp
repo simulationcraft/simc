@@ -1488,13 +1488,20 @@ struct execute_t: public warrior_attack_t
   {
     warrior_attack_t::impact( s );
 
-    if ( s -> result == RESULT_CRIT && td( s -> target ) -> debuffs_colossus_smash -> check() )
+    if ( s -> result == RESULT_CRIT )
     {
-      td( s -> target ) -> debuffs_colossus_smash -> extend_duration( p(),
-        timespan_t::from_seconds( p() -> artifact.exploit_the_weakness.value() ) );
-      
-      timespan_t remains = std::max( td( s -> target ) -> debuffs_colossus_smash -> remains(), p() -> buff.colossus_smash -> remains() );
-      p() -> buff.colossus_smash -> extend_duration( p(), remains - p() -> buff.colossus_smash -> remains() );
+      if ( td( s -> target ) -> debuffs_colossus_smash -> check() )
+      {
+        td( s -> target ) -> debuffs_colossus_smash -> extend_duration( p(),
+                                                                        timespan_t::from_seconds( p() -> artifact.exploit_the_weakness.value() ) );
+
+        timespan_t remains = std::max( td( s -> target ) -> debuffs_colossus_smash -> remains(), p() -> buff.colossus_smash -> remains() );
+        p() -> buff.colossus_smash -> extend_duration( p(), remains - p() -> buff.colossus_smash -> remains() );
+      }
+      else
+      {
+        p() -> buff.massacre -> trigger();
+      }
     }
   }
 
@@ -2146,12 +2153,6 @@ struct rampage_attack_t: public warrior_attack_t
   double action_multiplier() const override
   {
     double dam = warrior_attack_t::action_multiplier();
-
-    if ( !p() -> buff.enrage -> check() ) // If enrage is not up, it still does damage as if the player is enraged. 
-    {
-      dam *= 1.0 + p() -> buff.enrage -> data().effectN( 2 ).percent();
-      dam *= 1.0 + p() -> cache.mastery_value();
-    }
     return dam;
   }
 
@@ -2178,7 +2179,7 @@ struct rampage_event_t: public event_t
 
   timespan_t next_execute() const
   {
-    return timespan_t::from_millis( ( warrior -> spec.rampage -> effectN( attacks + 5 ).misc_value1() - ( attacks > 0 ? warrior -> spec.rampage -> effectN( attacks + 4 ).misc_value1() : 0 ) ) * warrior -> cache.attack_haste() );
+    return timespan_t::from_millis( warrior -> spec.rampage -> effectN( attacks + 5 ).misc_value1() - ( attacks > 0 ? warrior -> spec.rampage -> effectN( attacks + 4 ).misc_value1() : 0 ) );
   }
 
   void execute() override
@@ -2205,9 +2206,20 @@ struct rampage_parent_t: public warrior_attack_t
     }
   }
 
+  double cost() const override
+  {
+    if ( p() -> buff.massacre -> check() )
+      return 0;
+    return warrior_attack_t::cost();
+  }
+
   void execute() override
   {
+    enrage();
+
     warrior_attack_t::execute();
+
+    p() -> buff.massacre -> expire();
 
     if ( result_is_hit( execute_state -> result ) ) // If the first attack fails to land, the rest do too. 
     {
