@@ -331,7 +331,7 @@ public:
                       * pyromaniac,
                       * conflagration,
                       * fire_starter,
-                      * ray_of_frost, // NYI
+                      * ray_of_frost,
                       * lonely_winter, // NYI
                       * bone_chilling; // NYI
 
