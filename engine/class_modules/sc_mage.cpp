@@ -236,7 +236,8 @@ public:
 
 
     // Talents
-    buff_t* ice_floes,
+    buff_t* bone_chilling,
+          * ice_floes,
           * incanters_flow,
           * ray_of_frost,
           * rune_of_power;
@@ -1626,6 +1627,17 @@ struct frost_mage_spell_t : public mage_spell_t
                                       amount,
                                       as<unsigned>(p() -> icicles.size() ) );
   }
+
+  virtual double action_multiplier() const override
+  {
+    double am = mage_spell_t::action_multiplier();
+
+    am *= 1.0 + ( p() -> buffs.bone_chilling -> current_stack * p() -> talents.bone_chilling -> effectN(1).percent() );
+
+    return am;
+  }
+
+
 };
 
 
@@ -2318,6 +2330,18 @@ struct blizzard_shard_t : public frost_mage_spell_t
       trigger_fof( "Blizzard", fof_proc_chance);
     }
   }
+  
+  virtual void impact( action_state_t* s ) override
+  {
+    frost_mage_spell_t::impact( s );
+    if ( result_is_hit ( s -> result ) )
+    {
+      if ( p() -> talents.bone_chilling -> ok() )
+      {
+        p() -> buffs.bone_chilling -> trigger();
+      }
+    }
+  }
 };
 
 struct blizzard_t : public frost_mage_spell_t
@@ -2816,6 +2840,10 @@ struct frostbolt_t : public frost_mage_spell_t
         trigger_unstable_magic( s );
       }
 
+      if ( p() -> talents.bone_chilling -> ok() )
+      {
+        p() -> buffs.bone_chilling -> trigger();
+      }
       trigger_icicle_gain( s, icicle );
     }
   }
@@ -2859,6 +2887,10 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
       double fof_proc_chance = p() -> spec.fingers_of_frost
                                    -> effectN( 2 ).percent();
       trigger_fof( "Frozen Orb Tick", fof_proc_chance );
+      if ( p() -> talents.bone_chilling -> ok() )
+      {
+        p() -> buffs.bone_chilling -> trigger();
+      }
     }
   }
 
@@ -4943,6 +4975,7 @@ void mage_t::create_buffs()
                                   .chance( sets.has_set_bonus( MAGE_FIRE, T17, B4 ) );
 
   // Frost
+  buffs.bone_chilling         = buff_creator_t( this, "bone_chilling", find_spell( 205766 ) );
   buffs.fingers_of_frost      = buff_creator_t( this, "fingers_of_frost", find_spell( 44544 ) )
                                   .max_stack( find_spell( 44544 ) -> max_stacks() +
                                               sets.set( MAGE_FROST, T18, B4 ) -> effectN( 2 ).base_value() );
