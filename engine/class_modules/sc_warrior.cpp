@@ -61,6 +61,9 @@ public:
   struct buffs_t
   {
     buff_t* fury_trinket;
+    buff_t* bounding_stride;
+    buff_t* massacre;
+    buff_t* frothing_berserker;
     // All Warriors
     buff_t* berserker_rage;
     buff_t* bladestorm;
@@ -80,6 +83,7 @@ public:
     buff_t* enrage;
     buff_t* frenzy;
     buff_t* meat_cleaver;
+    buff_t* wrecking_ball;
     // Arms only
     buff_t* colossus_smash;
     buff_t* corrupted_blood_of_zakajz;
@@ -190,6 +194,7 @@ public:
   {
     std::unique_ptr<real_ppm_t> overpower;
     std::unique_ptr<real_ppm_t> shadow_slash;
+    std::unique_ptr<real_ppm_t> wrecking_ball;
   } rppm;
 
   // Spec Passives
@@ -242,57 +247,61 @@ public:
   // Talents
   struct talents_t
   {
-    const spell_data_t* sweeping_strikes;
-
-    const spell_data_t* double_time;
-    const spell_data_t* warbringer;
-
-    const spell_data_t* second_wind;
-    const spell_data_t* impending_victory;
-
-    const spell_data_t* unquenchable_thirst;
-    const spell_data_t* heavy_repercussions;
-
-    const spell_data_t* storm_bolt;
-    const spell_data_t* shockwave;
-    const spell_data_t* dragon_roar;
-
-    const spell_data_t* vigilance;
-
-    const spell_data_t* avatar;
-    const spell_data_t* bladestorm;
-
-    const spell_data_t* anger_management;
-    const spell_data_t* ravager;
-    const spell_data_t* siegebreaker; // Arms/Fury talent
-
-
-    // at the end = needs to be added
-    const spell_data_t* rend;
-    const spell_data_t* die_by_the_sword;
-    const spell_data_t* bounding_strike; //
-    const spell_data_t* seething_rage; //
-    const spell_data_t* renewed_fury; //
+    const spell_data_t* war_machine;
+    const spell_data_t* endless_rage;
+    const spell_data_t* fresh_meat;
     const spell_data_t* dauntless;
     const spell_data_t* overpower;
-    const spell_data_t* imposing_roar; // 
+    const spell_data_t* sweeping_strikes;
+    const spell_data_t* warbringer;
+
+    const spell_data_t* shockwave;
+    const spell_data_t* storm_bolt;
+    const spell_data_t* double_time;
+    const spell_data_t* inspiring_presence;
+
+    const spell_data_t* wrecking_ball;
+    const spell_data_t* outburst;
+    const spell_data_t* avatar;
     const spell_data_t* fervor_of_battle;
-    const spell_data_t* enraging_blows;
-    const spell_data_t* frenzy;
-    const spell_data_t* best_served_cold; //
-    const spell_data_t* never_surrender;//
-    const spell_data_t* heroic_strike;
-    const spell_data_t* vengeance;//
+    const spell_data_t* rend;
+    const spell_data_t* renewed_fury;
+    const spell_data_t* ultimatum;
+
+    const spell_data_t* furious_charge;
+    const spell_data_t* bounding_stride;
+    const spell_data_t* warpaint;
+    const spell_data_t* second_wind;
+    const spell_data_t* die_by_the_sword;
+    const spell_data_t* vigilance;
+    const spell_data_t* crackling_thunder;
+
+    const spell_data_t* massacre;
+    const spell_data_t* frothing_berserker;
+    const spell_data_t* bladestorm;
+    const spell_data_t* in_for_the_kill;
     const spell_data_t* mortal_combo;
-    const spell_data_t* into_the_fray; //
-    const spell_data_t* titanic_might; // 
-    const spell_data_t* booming_voice; //
+    const spell_data_t* best_served_cold;
+    const spell_data_t* never_surrender;
+    const spell_data_t* indomitable;
+
+    const spell_data_t* meat_grinder;
+    const spell_data_t* frenzy;
+    const spell_data_t* inner_rage;
+    const spell_data_t* focused_rage;
+    const spell_data_t* trauma;
+    const spell_data_t* titanic_might;
+    const spell_data_t* vengeance;
+    const spell_data_t* into_the_fray;
+    const spell_data_t* booming_voice;
+
+    const spell_data_t* carnage;
     const spell_data_t* reckless_abandon;
-    const spell_data_t* carnage;//
-    const spell_data_t* opportunity_strikes;//
-    const spell_data_t* furious_charge; //
-    const spell_data_t* crackling_thunder;//
-    const spell_data_t* endless_rage; //
+    const spell_data_t* dragon_roar;
+    const spell_data_t* anger_management;
+    const spell_data_t* opportunity_strikes;
+    const spell_data_t* ravager;
+    const spell_data_t* heavy_repercussions;
   } talents;
 
   // Artifacts
@@ -319,13 +328,6 @@ public:
     artifact_power_t tactical_advance;
   } artifact;
 
-  // Perks
-  struct perks_t
-  {
-    const spell_data_t* improved_block;
-    const spell_data_t* improved_defensive_stance;
-  } perk;
-
   warrior_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ):
     player_t( sim, WARRIOR, name, r ),
     stromkar_the_warbreaker(),
@@ -341,8 +343,7 @@ public:
     proc( procs_t() ),
     rppm( realppm_t() ),
     spec( spec_t() ),
-    talents( talents_t() ),
-    perk( perks_t() )
+    talents( talents_t() )
   {
     initial_rage = 0;
     bloodthirst_crit_multiplier = 0.0;
@@ -645,7 +646,7 @@ public:
   void enrage()
   {
     // Crit BTs give rage, and refresh enrage
-    p() -> resource_gain( RESOURCE_RAGE, p() -> buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE );
+    p() -> resource_gain( RESOURCE_RAGE, p() -> buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ) );
     p() -> buff.enrage -> trigger();
   }
 };
@@ -687,6 +688,16 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
   virtual void assess_damage( dmg_e type, action_state_t* s ) override
   {
     base_t::assess_damage( type, s );
+  }
+
+  virtual void execute() override
+  {
+    base_t::execute();
+
+    if ( p() -> rppm.wrecking_ball -> trigger() )
+    {
+      p() -> buff.wrecking_ball -> trigger();
+    }
   }
 
   virtual void impact( action_state_t* s ) override
@@ -1024,13 +1035,13 @@ struct bloodthirst_heal_t: public warrior_heal_t
 struct bloodthirst_t: public warrior_attack_t
 {
   bloodthirst_heal_t* bloodthirst_heal;
-  double crit_chance;
+  double fresh_meat_crit_chance;
   double rage_gain;
   bloodthirst_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "bloodthirst", p, p -> spec.bloodthirst ),
     bloodthirst_heal( nullptr ),
-    crit_chance( data().effectN( 4 ).percent() ),
-    rage_gain( data().effectN( 3 ).resource( RESOURCE_RAGE ) + p -> talents.unquenchable_thirst -> effectN( 1 ).resource( RESOURCE_RAGE ) )
+    fresh_meat_crit_chance( p -> talents.endless_rage -> effectN( 1 ).percent() ),
+    rage_gain( data().effectN( 3 ).resource( RESOURCE_RAGE ) )
   {
     parse_options( options_str );
 
@@ -1048,7 +1059,8 @@ struct bloodthirst_t: public warrior_attack_t
     if ( p()-> bloodthirst_crit_multiplier > 0 )
       c *= p()-> bloodthirst_crit_multiplier;
 
-    c += crit_chance;
+    if ( fresh_meat_crit_chance > 0 && execute_state -> target -> health_percentage() >= 80.0 )
+      c += fresh_meat_crit_chance;
 
     return c;
   }
@@ -1540,7 +1552,7 @@ struct hamstring_t: public warrior_attack_t
 struct heroic_strike_t: public warrior_attack_t
 {
   heroic_strike_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "heroic_strike", p, p -> talents.heroic_strike )
+    warrior_attack_t( "heroic_strike", p, 0 )
   {
     parse_options( options_str );
     use_off_gcd = true;
@@ -1616,7 +1628,7 @@ struct heroic_leap_t: public warrior_attack_t
     attack_power_mod.direct = heroic_leap_damage -> effectN( 1 ).ap_coeff();
 
     cooldown -> duration = data().cooldown();
-    cooldown -> duration *= p -> buffs.cooldown_reduction -> default_value;
+    cooldown -> duration += p -> talents.bounding_stride -> effectN( 1 ).time_value();
   }
 
   timespan_t travel_time() const override
@@ -1673,7 +1685,7 @@ struct impending_victory_t: public warrior_attack_t
 {
   impending_victory_heal_t* impending_victory_heal;
   impending_victory_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "impending_victory", p, p -> talents.impending_victory ),
+    warrior_attack_t( "impending_victory", p, 0 ),
     impending_victory_heal( nullptr )
   {
     parse_options( options_str );
@@ -2046,9 +2058,6 @@ struct raging_blow_t: public warrior_attack_t
     oh_attack = new raging_blow_attack_t( p, "raging_blow_offhand", data().effectN( 2 ).trigger() );
     oh_attack -> weapon = &( p -> off_hand_weapon );
     add_child( oh_attack );
-
-    if ( p -> talents.enraging_blows -> ok() )
-      base_costs[RESOURCE_RAGE] = 0;
   }
 
   void execute() override
@@ -2059,12 +2068,6 @@ struct raging_blow_t: public warrior_attack_t
     {
       mh_attack -> execute();
       oh_attack -> execute();
-      if ( p() -> talents.enraging_blows -> ok() )
-      {
-        p() -> resource_gain( RESOURCE_RAGE,
-                              p() -> talents.enraging_blows -> effectN( 2 ).resource( RESOURCE_RAGE ),
-                              p() -> gain.raging_blow );
-      }
     }
   }
 
@@ -2326,54 +2329,6 @@ struct rend_t: public warrior_attack_t
 
     if ( rng().roll( t18_2pc_chance ) )
       p() -> cooldown.mortal_strike -> reset( true );
-  }
-
-  bool ready() override
-  {
-    if ( p() -> main_hand_weapon.type == WEAPON_NONE )
-      return false;
-
-    return warrior_attack_t::ready();
-  }
-};
-
-// Siegebreaker ===============================================================
-
-struct siegebreaker_off_hand_t: public warrior_attack_t
-{
-  siegebreaker_off_hand_t( warrior_t* p, const char* name, const spell_data_t* s ):
-    warrior_attack_t( name, p, s )
-  {
-    may_dodge = may_parry = may_block = may_miss = false;
-    dual = true;
-    weapon = &( p -> off_hand_weapon );
-  }
-};
-
-struct siegebreaker_t: public warrior_attack_t
-{
-  siegebreaker_off_hand_t* oh_attack;
-  siegebreaker_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "siegebreaker", p, p -> talents.siegebreaker ),
-    oh_attack( nullptr )
-  {
-    parse_options( options_str );
-    may_dodge = may_parry = may_block = false;
-    weapon = &( p -> main_hand_weapon );
-    if ( p -> specialization() == WARRIOR_FURY )
-    {
-      oh_attack = new siegebreaker_off_hand_t( p, "siegebreaker_oh", data().effectN( 5 ).trigger() );
-      add_child( oh_attack );
-    }
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute(); // for fury, this is the MH attack
-
-    if ( oh_attack && result_is_hit( execute_state -> result ) &&
-         p() -> off_hand_weapon.type != WEAPON_NONE ) // If MH fails to land, OH does not execute.
-      oh_attack -> execute();
   }
 
   bool ready() override
@@ -2672,7 +2627,8 @@ struct whirlwind_parent_t: public warrior_attack_t
     warrior_attack_t( "whirlwind", p, p -> spec.whirlwind ),
     oh_attack( nullptr ),
     mh_attack( nullptr ),
-    spin_time( timespan_t::from_millis( p -> spec.whirlwind -> effectN( 3 ).misc_value1() ) ) // The misc value in the 3rd effect works for arms and fury.
+    spin_time( timespan_t::from_millis( p -> specialization() == WARRIOR_ARMS ? p -> spec.whirlwind -> effectN( 2 ).misc_value1() :
+                                                                              p -> spec.whirlwind -> effectN( 3 ).misc_value1() ) )
   {
     parse_options( options_str );
     radius = data().effectN( 1 ).trigger() -> effectN( 1 ).radius_max();
@@ -2705,6 +2661,24 @@ struct whirlwind_parent_t: public warrior_attack_t
     dot_duration = base_tick_time * 2;
   }
 
+  double cost() const override
+  {
+    if ( p() -> buff.wrecking_ball -> check() )
+      return 0;
+
+    return warrior_attack_t::cost();
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    if ( p() -> buff.wrecking_ball -> check() )
+      am *= 1.0 + p() -> buff.wrecking_ball -> data().effectN( 2 ).percent();
+
+    return am;
+  }
+
   void tick( dot_t* d ) override
   {
     // Only the first whirl procs tactician.
@@ -2725,6 +2699,7 @@ struct whirlwind_parent_t: public warrior_attack_t
     warrior_attack_t::last_tick( d );
 
     p() -> buff.cleave -> expire();
+    p() -> buff.wrecking_ball -> expire();
   }
 
   void execute() override
@@ -2781,7 +2756,7 @@ struct berserker_rage_t: public warrior_spell_t
     warrior_spell_t::execute();
 
     p() -> buff.berserker_rage -> trigger();
-    if ( p() -> specialization() == WARRIOR_FURY )
+    if ( p() -> talents.outburst -> ok() )
       enrage();
   }
 };
@@ -3071,7 +3046,6 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "battle_cry"           ) return new battle_cry_t           ( this, options_str );
   if ( name == "rend"                 ) return new rend_t                 ( this, options_str );
   if ( name == "revenge"              ) return new revenge_t              ( this, options_str );
-  if ( name == "siegebreaker"         ) return new siegebreaker_t         ( this, options_str );
   if ( name == "shield_block"         ) return new shield_block_t         ( this, options_str );
   if ( name == "shield_slam"          ) return new shield_slam_t          ( this, options_str );
   if ( name == "shield_wall"          ) return new shield_wall_t          ( this, options_str );
@@ -3101,10 +3075,12 @@ void warrior_t::init_spells()
 
   // Spec Passives
   spec.bastion_of_defense       = find_specialization_spell( "Bastion of Defense" );
+  spec.battle_cry               = find_specialization_spell( "Battle Cry" );
   spec.bladed_armor             = find_specialization_spell( "Bladed Armor" );
   spec.bloodthirst              = find_specialization_spell( "Bloodthirst" );
   spec.cleave                   = find_specialization_spell( "Cleave" );
   spec.colossus_smash           = find_specialization_spell( "Colossus Smash" );
+  spec.commanding_shout         = find_specialization_spell( "Commanding Shout" );
   spec.deep_wounds              = find_specialization_spell( "Deep Wounds" );
   spec.demoralizing_shout       = find_specialization_spell( "Demoralizing Shout" );
   spec.devastate                = find_specialization_spell( "Devastate" );
@@ -3118,10 +3094,8 @@ void warrior_t::init_spells()
   spec.mortal_strike            = find_specialization_spell( "Mortal Strike" );
   spec.piercing_howl            = find_specialization_spell( "Piercing Howl" );
   spec.protection               = find_specialization_spell( "Protection" );
-  spec.rampage                  = find_specialization_spell( "Rampage" );
   spec.raging_blow              = find_specialization_spell( "Raging Blow" );
-  spec.commanding_shout         = find_specialization_spell( "Commanding Shout" );
-  spec.battle_cry             = find_specialization_spell( "Battle Cry" );
+  spec.rampage                  = find_specialization_spell( "Rampage" );
   spec.resolve                  = find_specialization_spell( "Resolve" );
   spec.revenge                  = find_specialization_spell( "Revenge" );
   spec.riposte                  = find_specialization_spell( "Riposte" );
@@ -3133,84 +3107,78 @@ void warrior_t::init_spells()
   spec.slam                     = find_specialization_spell( "Slam" );
   spec.sword_and_board          = find_specialization_spell( "Sword and Board" );
   spec.tactician                = find_specialization_spell( "Tactician" );
-  spec.titans_grip              = find_specialization_spell( "Titan's Grip" );
   spec.thunder_clap             = find_specialization_spell( "Thunder Clap" );
+  spec.titans_grip              = find_specialization_spell( "Titan's Grip" );
   spec.unwavering_sentinel      = find_specialization_spell( "Unwavering Sentinel" );
   spec.whirlwind                = find_specialization_spell( "Whirlwind" );
 
-  // Talents
-  talents.sweeping_strikes      = find_talent_spell( "Sweeping Strikes" );
-  talents.double_time           = find_talent_spell( "Double Time" );
-  talents.warbringer            = find_talent_spell( "Warbringer" );
-
-  talents.second_wind           = find_talent_spell( "Second Wind" );
-  talents.impending_victory     = find_talent_spell( "Impending Victory" );
-
-  talents.heavy_repercussions   = find_talent_spell( "Heavy Repercussions" );
-  talents.unquenchable_thirst   = find_talent_spell( "Unquenchable Thirst" );
-
-  talents.storm_bolt            = find_talent_spell( "Storm Bolt" );
-  talents.shockwave             = find_talent_spell( "Shockwave" );
-  talents.dragon_roar           = find_talent_spell( "Dragon Roar" );
-
-  talents.vigilance             = find_talent_spell( "Vigilance" );
-
-  talents.avatar                = find_talent_spell( "Avatar" );//
-  talents.bladestorm            = find_talent_spell( "Bladestorm" );
-
-  talents.anger_management      = find_talent_spell( "Anger Management" );
-  talents.ravager               = find_talent_spell( "Ravager" );
-  talents.siegebreaker          = find_talent_spell( "Siegebreaker" );
   
-  talents.rend                  = find_talent_spell( "Rend" );
-  talents.die_by_the_sword      = find_talent_spell( "Die by the Sword" );
-  talents.bounding_strike       = find_talent_spell( "Bounding Strike" );
-  talents.seething_rage         = find_talent_spell( "Seething Rage" );
-  talents.renewed_fury          = find_talent_spell( "Renewed Fury" );
-  talents.dauntless             = find_talent_spell( "Dauntless" );
-  talents.overpower             = find_talent_spell( "Overpower" );
-  talents.imposing_roar         = find_talent_spell( "Imposing Roar" );
-  talents.fervor_of_battle      = find_talent_spell( "Fervor of Battle" );
-  talents.enraging_blows        = find_talent_spell( "Enraging Blows" );
-  talents.frenzy                = find_talent_spell( "Frenzy" );
+  // Talents
+  talents.anger_management      = find_talent_spell( "Anger Management" );
+  talents.avatar                = find_talent_spell( "Avatar" );//
   talents.best_served_cold      = find_talent_spell( "Best Served Cold" );
-  talents.never_surrender       = find_talent_spell( "Never Surrender" );
-  talents.heroic_strike         = find_talent_spell( "Heroic Strike" );
-  talents.vengeance             = find_talent_spell( "Vengeance" );
-  talents.mortal_combo          = find_talent_spell( "Mortal Combo" );
-  talents.into_the_fray         = find_talent_spell( "Into The Fray" );
-  talents.titanic_might         = find_talent_spell( "Titanic Might" );
+  talents.bladestorm            = find_talent_spell( "Bladestorm" );
   talents.booming_voice         = find_talent_spell( "Booming Voice" );
-  talents.reckless_abandon      = find_talent_spell( "Reckless Abandon" );
+  talents.bounding_stride       = find_talent_spell( "Bounding Stride" );
   talents.carnage               = find_talent_spell( "Carnage" );
-  talents.opportunity_strikes   = find_talent_spell( "Opportunity Strikes" );
-  talents.furious_charge        = find_talent_spell( "Furious Charge");
   talents.crackling_thunder     = find_talent_spell( "Crackling Thunder" );
+  talents.dauntless             = find_talent_spell( "Dauntless" );
+  talents.die_by_the_sword      = find_talent_spell( "Die by the Sword" );
+  talents.double_time           = find_talent_spell( "Double Time" );
+  talents.dragon_roar           = find_talent_spell( "Dragon Roar" );
   talents.endless_rage          = find_talent_spell( "Endless Rage" );
+  talents.fervor_of_battle      = find_talent_spell( "Fervor of Battle" );
+  talents.focused_rage          = find_talent_spell( "Focused Rage" );
+  talents.frenzy                = find_talent_spell( "Frenzy" );
+  talents.fresh_meat            = find_talent_spell( "Fresh Meat" );
+  talents.frothing_berserker    = find_talent_spell( "Frothing Berserker" );
+  talents.furious_charge        = find_talent_spell( "Furious Charge");
+  talents.heavy_repercussions   = find_talent_spell( "Heavy Repercussions" );
+  talents.in_for_the_kill       = find_talent_spell( "In For The Kill" );
+  talents.inner_rage            = find_talent_spell( "Inner Rage" );
+  talents.into_the_fray         = find_talent_spell( "Into The Fray" );
+  talents.massacre              = find_talent_spell( "Massacre" );
+  talents.meat_grinder          = find_talent_spell( "Meat Grinder" );
+  talents.mortal_combo          = find_talent_spell( "Mortal Combo" );
+  talents.never_surrender       = find_talent_spell( "Never Surrender" );
+  talents.opportunity_strikes   = find_talent_spell( "Opportunity Strikes" );
+  talents.outburst              = find_talent_spell( "Outburst" );
+  talents.overpower             = find_talent_spell( "Overpower" );
+  talents.ravager               = find_talent_spell( "Ravager" );
+  talents.reckless_abandon      = find_talent_spell( "Reckless Abandon" );
+  talents.rend                  = find_talent_spell( "Rend" );
+  talents.renewed_fury          = find_talent_spell( "Renewed Fury" );
+  talents.second_wind           = find_talent_spell( "Second Wind" );
+  talents.shockwave             = find_talent_spell( "Shockwave" );
+  talents.storm_bolt            = find_talent_spell( "Storm Bolt" );
+  talents.sweeping_strikes      = find_talent_spell( "Sweeping Strikes" );
+  talents.sweeping_strikes      = find_talent_spell( "Sweeping Strikes" );
+  talents.titanic_might         = find_talent_spell( "Titanic Might" );
+  talents.trauma                = find_talent_spell( "Trauma" );
+  talents.vengeance             = find_talent_spell( "Vengeance" );
+  talents.vigilance             = find_talent_spell( "Vigilance" );
+  talents.war_machine           = find_talent_spell( "War Machine" );
+  talents.warbringer            = find_talent_spell( "Warbringer" );
+  talents.warpaint              = find_talent_spell( "Warpaint" );
+  talents.wrecking_ball         = find_talent_spell( "Wrecking Ball" );
 
   // Artifact
+  artifact.corrupted_blood_of_zakajz = find_artifact_spell( "Corrupted Blood of Zakajz" );
   artifact.corrupted_rage            = find_artifact_spell( "Corrupted Rage" );
-  artifact.exploit_the_weakness      = find_artifact_spell( "Exploit the Weakness" );
-  artifact.war_veteran               = find_artifact_spell( "War Veteran" );
-  artifact.touch_of_zakajz           = find_artifact_spell( "Touch of Zakajz" );
-  artifact.shattered_defenses        = find_artifact_spell( "Shattered Defenses" );
+  artifact.crushing_blows            = find_artifact_spell( "Crushing Blows" );
   artifact.deathblow                 = find_artifact_spell( "Deathblow" );
   artifact.defensive_measures        = find_artifact_spell( "Defensive Measures" );
+  artifact.exploit_the_weakness      = find_artifact_spell( "Exploit the Weakness" );
+  artifact.focus_in_battle           = find_artifact_spell( "Focus in Battle" );
   artifact.one_against_many          = find_artifact_spell( "One Against Many" );
-  artifact.crushing_blows            = find_artifact_spell( "Crushing Blows" );
+  artifact.precise_strikes           = find_artifact_spell( "Precise Strikes" );
+  artifact.shattered_defenses        = find_artifact_spell( "Shattered Defenses" );
+  artifact.tactical_advance          = find_artifact_spell( "Tactical Advance" );
+  artifact.thoradins_might           = find_artifact_spell( "Thoradin's Might" );
+  artifact.touch_of_zakajz           = find_artifact_spell( "Touch of Zakajz" );
   artifact.unending_rage             = find_artifact_spell( "Unending Rage" );
   artifact.void_cleave               = find_artifact_spell( "Void Cleave" );
-  artifact.thoradins_might           = find_artifact_spell( "Thoradin's Might" );
-  artifact.focus_in_battle           = find_artifact_spell( "Focus in Battle" );
-  artifact.precise_strikes           = find_artifact_spell( "Precise Strikes" );
-  artifact.corrupted_blood_of_zakajz = find_artifact_spell( "Corrupted Blood of Zakajz" );
-  artifact.tactical_advance          = find_artifact_spell( "Tactical Advance" );
-
-  //Perks
-  perk.improved_defensive_stance     = find_perk_spell( "Improved Defensive Stance" );
-  perk.improved_block                = find_perk_spell( "Improved Block" );
-
-  // Glyphs
+  artifact.war_veteran               = find_artifact_spell( "War Veteran" );
 
   // Generic spells
   spell.charge                  = find_class_spell( "Charge" );
@@ -3683,6 +3651,13 @@ struct shadow_slash_t: public warrior_real_ppm_t < real_ppm_t >
     base_t( p, real_ppm_t( p, p.stromkar_the_warbreaker -> driver() -> real_ppm(), 1.0, RPPM_NONE ) )
   {}
 };
+
+struct wrecking_ball_t : public warrior_real_ppm_t < real_ppm_t >
+{
+  wrecking_ball_t( warrior_t& p ):
+    base_t( p, real_ppm_t( p, p.talents.wrecking_ball -> real_ppm(), 1.0, RPPM_HASTE ) )
+  {}
+};
 };
 
 // ==========================================================================
@@ -3797,11 +3772,17 @@ void warrior_t::create_buffs()
 
   using namespace buffs;
 
+  buff.massacre = buff_creator_t( this, "massacre", talents.massacre -> effectN( 1 ).trigger() );
+
   buff.avatar = buff_creator_t( this, "avatar", talents.avatar )
     .cd( timespan_t::zero() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.berserker_rage = buff_creator_t( this, "berserker_rage", find_class_spell( "Berserker Rage" ) );
+
+  buff.bounding_stride = buff_creator_t( this, "bounding_stride", find_spell( 202164 ) )
+    .chance( talents.bounding_stride -> ok() )
+    .default_value( find_spell( 202164 ) -> effectN( 1 ).percent() );
 
   buff.bladestorm = buff_creator_t( this, "bladestorm", talents.bladestorm )
     .period( timespan_t::zero() )
@@ -3848,9 +3829,6 @@ void warrior_t::create_buffs()
     .add_invalidate( CACHE_HASTE )
     .default_value( talents.frenzy -> effectN( 2 ).percent() );
 
-  buff.heroic_strike = buff_creator_t( this, "heroic_strike", talents.heroic_strike )
-    .cd( timespan_t::zero() );
-
   buff.heroic_leap_movement = buff_creator_t( this, "heroic_leap_movement" );
   buff.charge_movement = buff_creator_t( this, "charge_movement" );
   buff.intervene_movement = buff_creator_t( this, "intervene_movement" );
@@ -3862,6 +3840,8 @@ void warrior_t::create_buffs()
   buff.commanding_shout = new buffs::commanding_shout_t( *this, "commanding_shout", find_spell( 97463 ) );
 
   buff.overpower = buff_creator_t( this, "overpower", spell.overpower_driver -> effectN( 1 ).trigger() );
+
+  buff.wrecking_ball = buff_creator_t( this, "wrecking_ball", talents.wrecking_ball -> effectN( 1 ).trigger() );
 
   buff.precise_strikes = buff_creator_t( this, "precise_strikes", artifact.precise_strikes.data().effectN( 1 ).trigger() )
     .default_value( artifact.precise_strikes.percent() )
@@ -3972,10 +3952,12 @@ void warrior_t::init_rng()
 {
   player_t::init_rng();
 
-  rppm.overpower = std::unique_ptr<rppm::overpower_t>( new rppm::overpower_t( *this ) );
-
+  if ( talents.overpower )
+    rppm.overpower = std::unique_ptr<rppm::overpower_t>( new rppm::overpower_t( *this ) );
   if ( stromkar_the_warbreaker )
     rppm.shadow_slash = std::unique_ptr<rppm::shadow_slash_t>( new rppm::shadow_slash_t( *this ) );
+  if ( talents.wrecking_ball )
+    rppm.wrecking_ball = std::unique_ptr<rppm::wrecking_ball_t>( new rppm::wrecking_ball_t( *this ) );
 }
 
 // warrior_t::init_resources ================================================
@@ -4088,13 +4070,13 @@ void warrior_t::reset()
   heroic_charge = nullptr;
   rampage_driver = nullptr;
   if ( rppm.overpower )
-  {
     rppm.overpower -> reset();
-  }
+
   if ( rppm.shadow_slash )
-  {
     rppm.shadow_slash -> reset();
-  }
+
+  if ( rppm.wrecking_ball )
+  rppm.wrecking_ball -> reset();
 }
 
 // Movement related overrides. =============================================
@@ -4211,11 +4193,6 @@ double warrior_t::composite_armor_multiplier() const
 {
   double a = player_t::composite_armor_multiplier();
 
-  if ( buff.defensive_stance -> up() )
-  {
-    a *= 1.0 + perk.improved_defensive_stance -> effectN( 1 ).percent();
-  }
-
   return a;
 }
 
@@ -4266,9 +4243,8 @@ double warrior_t::composite_block() const
   double block_subject_to_dr = cache.mastery() * mastery.critical_block -> effectN( 2 ).mastery_value();
   double b = player_t::composite_block_dr( block_subject_to_dr );
 
-  // add in spec- and perk-specific block bonuses not subject to DR
+  // add in spec-specific block bonuses not subject to DR
   b += spec.bastion_of_defense -> effectN( 1 ).percent();
-  b += perk.improved_block -> effectN( 1 ).percent();
 
   // shield block adds 100% block chance
   if ( buff.shield_block -> check() )
@@ -4436,6 +4412,8 @@ double warrior_t::temporary_movement_modifier() const
     temporary = std::max( buff.charge_movement -> value(), temporary );
   else if ( buff.intervene_movement -> up() )
     temporary = std::max( buff.intervene_movement -> value(), temporary );
+  else if ( buff.bounding_stride -> up () )
+    temporary = std::max( buff.bounding_stride -> value(), temporary );
 
   return temporary;
 }
@@ -4509,8 +4487,7 @@ void warrior_t::assess_damage( school_e school,
        s -> result == RESULT_GLANCE )
   {
     if ( buff.defensive_stance -> up() )
-      s -> result_amount *= 1.0 + ( buff.defensive_stance -> data().effectN( 1 ).percent() +
-                                    perk.improved_defensive_stance -> effectN( 2 ).percent() );
+      s -> result_amount *= 1.0 + buff.defensive_stance -> data().effectN( 1 ).percent();
 
     warrior_td_t* td = get_target_data( s -> action -> player );
 
