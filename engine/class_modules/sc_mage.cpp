@@ -227,8 +227,7 @@ public:
           * icarus_uprising;       // T18 4pc Fire
 
     // Frost
-    buff_t* brain_freeze,
-          * fingers_of_frost,
+    buff_t* fingers_of_frost,
           * frost_armor,
           * icy_veins,
           * ice_shard,             // T17 2pc Frost
@@ -256,7 +255,8 @@ public:
               * dragons_breath,
               * frozen_orb,
               * inferno_blast,
-              * presence_of_mind;
+              * presence_of_mind,
+              * ray_of_frost;
   } cooldowns;
 
   // Gains
@@ -466,12 +466,13 @@ public:
     talents( talents_list_t() )
   {
     // Cooldowns
-    cooldowns.combustion         = get_cooldown( "combustion"         );
-    cooldowns.cone_of_cold       = get_cooldown( "cone_of_cold"       );
-    cooldowns.dragons_breath     = get_cooldown( "dragons_breath"     );
-    cooldowns.frozen_orb         = get_cooldown( "frozen_orb"         );
-    cooldowns.inferno_blast      = get_cooldown( "inferno_blast"      );
-    cooldowns.presence_of_mind   = get_cooldown( "presence_of_mind"   );
+    cooldowns.combustion       = get_cooldown( "combustion"       );
+    cooldowns.cone_of_cold     = get_cooldown( "cone_of_cold"     );
+    cooldowns.dragons_breath   = get_cooldown( "dragons_breath"   );
+    cooldowns.frozen_orb       = get_cooldown( "frozen_orb"       );
+    cooldowns.inferno_blast    = get_cooldown( "inferno_blast"    );
+    cooldowns.presence_of_mind = get_cooldown( "presence_of_mind" );
+    cooldowns.ray_of_frost     = get_cooldown( "ray_of_frost"     );
 
     // Miscellaneous
     incanters_flow_stack_mult = find_spell( 116267 ) -> effectN( 1 ).percent();
@@ -2796,9 +2797,6 @@ struct frostbolt_t : public frost_mage_spell_t
                                    -> effectN( 1 ).percent();
 
       trigger_fof( "Frostbolt", fof_proc_chance );
-      p() -> buffs.brain_freeze
-          -> trigger( 1, buff_t::DEFAULT_VALUE(),
-                      p() -> spec.brain_freeze -> effectN( 1 ).percent() );
 
       if ( p() -> shatterlance )
       {
@@ -3705,7 +3703,61 @@ struct pyroblast_t : public fire_mage_spell_t
 };
 
 
-// Rune of Power ============================================================
+// Ray of Frost ===============================================================
+
+struct ray_of_frost_t : public frost_mage_spell_t
+{
+  ray_of_frost_t( mage_t* p, const std::string& options_str ) :
+    frost_mage_spell_t( "ray_of_frost", p, p -> talents.ray_of_frost )
+  {
+    parse_options( options_str );
+
+    channeled         = true;
+    hasted_ticks      = true;
+  }
+
+  virtual void execute() override
+  {
+    frost_mage_spell_t::execute();
+
+    p() -> cooldowns.ray_of_frost -> reset( false );
+
+    // Technically, the "castable duration" buff should be ID:208166
+    // To keep things simple, we just apply a 0 stack of the damage buff 208141
+    if ( !p() -> buffs.ray_of_frost -> check() )
+    {
+      p() -> buffs.ray_of_frost -> trigger( 0 );
+    }
+  }
+
+  virtual timespan_t composite_dot_duration( const action_state_t* /* s */ )
+    const override
+  {
+    return data().duration();
+  }
+
+  virtual void tick( dot_t* d ) override
+  {
+    p() -> benefits.ray_of_frost -> update();
+
+    frost_mage_spell_t::tick( d );
+
+    p() -> buffs.ray_of_frost -> bump();
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = frost_mage_spell_t::action_multiplier();
+
+    am *= 1.0 + p() -> buffs.ray_of_frost -> check() *
+                p() -> buffs.ray_of_frost -> data().effectN( 1 ).percent();
+
+    return am;
+  }
+};
+
+
+// Rune of Power ==============================================================
 
 struct rune_of_power_t : public mage_spell_t
 {
@@ -4508,6 +4560,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "ice_lance"         ) return new               ice_lance_t( this, options_str );
   if ( name == "ice_nova"          ) return new                ice_nova_t( this, options_str );
   if ( name == "icy_veins"         ) return new               icy_veins_t( this, options_str );
+  if ( name == "ray_of_frost"      ) return new            ray_of_frost_t( this, options_str );
   if ( name == "water_elemental"   ) return new  summon_water_elemental_t( this, options_str );
 
   // Artifact Specific Spells
@@ -4817,6 +4870,32 @@ struct arcane_missiles_buff_t : public buff_t
   }
 };
 
+struct ray_of_frost_buff_t : public buff_t
+{
+  timespan_t rof_cd;
+
+  ray_of_frost_buff_t( mage_t* p ) :
+    buff_t( buff_creator_t( p, "ray_of_frost", p -> find_spell( 208141 ) ) )
+  {
+    const spell_data_t* rof_data = p -> find_spell( 205021 );
+    rof_cd = rof_data -> cooldown() - rof_data -> duration();
+  }
+
+  virtual void aura_loss() override
+  {
+    buff_t::aura_loss();
+
+    mage_t* p = static_cast<mage_t*>( player );
+    p -> cooldowns.ray_of_frost -> start( rof_cd );
+
+    if ( p -> channeling && p -> channeling -> name_str == "ray_of_frost" )
+    {
+      p -> channeling -> interrupt_action();
+    }
+  }
+};
+
+
 // mage_t::create_buffs =======================================================
 
 void mage_t::create_buffs()
@@ -4864,7 +4943,6 @@ void mage_t::create_buffs()
                                   .chance( sets.has_set_bonus( MAGE_FIRE, T17, B4 ) );
 
   // Frost
-  buffs.brain_freeze          = buff_creator_t( this, "brain_freeze", find_spell( 57761 ) );
   buffs.fingers_of_frost      = buff_creator_t( this, "fingers_of_frost", find_spell( 44544 ) )
                                   .max_stack( find_spell( 44544 ) -> max_stacks() +
                                               sets.set( MAGE_FROST, T18, B4 ) -> effectN( 2 ).base_value() );
@@ -4887,6 +4965,7 @@ void mage_t::create_buffs()
                                   }
                                 );
   buffs.ice_shard             = buff_creator_t( this, "ice_shard", find_spell( 166869 ) );
+  buffs.ray_of_frost          = new ray_of_frost_buff_t( this );
   buffs.shatterlance          = buff_creator_t( this, "shatterlance")
                                   .duration( timespan_t::from_seconds( 0.9 ) )
                                   .cd( timespan_t::zero() )
@@ -4898,7 +4977,6 @@ void mage_t::create_buffs()
   buffs.rune_of_power         = buff_creator_t( this, "rune_of_power", find_spell( 116014 ) )
                                   .duration( find_spell( 116011 ) -> duration() )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buffs.ray_of_frost          = buff_creator_t( this, "ray_of_frost", talents.ray_of_frost );
 
   // Artifact
   // Period contained in 194462 ( Highborn's Will ), Stack information contained in 194461 ( Flame Orb )
