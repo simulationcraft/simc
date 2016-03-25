@@ -251,6 +251,7 @@ public:
               * cone_of_cold,
               * dragons_breath,
               * frozen_orb,
+              * icy_veins,
               * inferno_blast,
               * presence_of_mind,
               * ray_of_frost;
@@ -415,13 +416,13 @@ public:
                      reignition_overdrive, //NYI
                      pyretic_incantation, //NYI
                      burning_gaze,
-                     by_fire_be_purged, //NYI
+                     big_mouth, //NYI
                      blast_furnace; //NYI
 
     // Frost
     artifact_power_t ebonbolt,
                      let_it_go,
-                     frozen_veins, //NYI
+                     frozen_veins, // NYI
                      permafrost, //NYI
                      the_storm_rages, //NYI
                      black_icicle, //NYI
@@ -430,7 +431,7 @@ public:
                      chain_reaction, //NYI
                      clarity_of_thought, //NYI
                      flash_freeze, //NYI
-                     placeholder_frost, //NYI
+                     shattering_bolts, //NYI
                      orbital_strike,
                      ice_age, //NYI
                      chilled_to_the_core; //NYI
@@ -467,6 +468,7 @@ public:
     cooldowns.cone_of_cold     = get_cooldown( "cone_of_cold"     );
     cooldowns.dragons_breath   = get_cooldown( "dragons_breath"   );
     cooldowns.frozen_orb       = get_cooldown( "frozen_orb"       );
+    cooldowns.icy_veins        = get_cooldown( "icy_veins"        );
     cooldowns.inferno_blast    = get_cooldown( "inferno_blast"    );
     cooldowns.presence_of_mind = get_cooldown( "presence_of_mind" );
     cooldowns.ray_of_frost     = get_cooldown( "ray_of_frost"     );
@@ -2823,6 +2825,7 @@ struct frostbolt_t : public frost_mage_spell_t
     icicle -> school = school;
     icicle -> action_list.push_back( p -> icicle );
     base_multiplier *= 1.0 + p -> talents.lonely_winter -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> artifact.icy_caress.percent();
   }
 
   virtual timespan_t execute_time() const override
@@ -4797,6 +4800,7 @@ void mage_t::init_spells()
   //Fire
   artifact.aftershocks             = find_artifact_spell( "Aftershocks"            );
   artifact.scorched_earth          = find_artifact_spell( "Scorched Earth"         );
+  artifact.big_mouth               = find_artifact_spell( "Big Mouth"              );
   artifact.blue_flame_special      = find_artifact_spell( "Blue Flame Special"     );
   artifact.everburning_consumption = find_artifact_spell( "Everburning Consumption");
   artifact.molten_skin             = find_artifact_spell( "Molten Skin"            );
@@ -4824,6 +4828,7 @@ void mage_t::init_spells()
   artifact.orbital_strike          = find_artifact_spell( "Orbital Strike"         );
   artifact.ice_age                 = find_artifact_spell( "Ice Age"                );
   artifact.chilled_to_the_core     = find_artifact_spell( "Chilled To The Core"    );
+  artifact.shattering_bolts        = find_artifact_spell( "Shattering Bolts"       );
 
 
   // Spec Spells
