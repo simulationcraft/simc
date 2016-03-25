@@ -2520,6 +2520,14 @@ struct ebonbolt_t : public frost_mage_spell_t
     trigger_fof( "Ebonbolt FoF Gain", 1.0, 2 );
   }
 
+  virtual bool ready() override
+  {
+    if ( !p() -> artifact.ebonbolt.rank() )
+    {
+      return false;
+    }
+    return frost_mage_spell_t::ready();;
+  }
 };
 // Evocation Spell ==========================================================
 
@@ -2904,8 +2912,11 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     background = true;
     dual = true;
     cooldown -> duration = timespan_t::zero(); // dbc has CD of 6 seconds
+
+    //TODO: Is this actually how these modifiers work?
     base_multiplier *= 1.0 + p -> talents.lonely_winter -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> talents.bitter_cold -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> artifact.orbital_strike.percent();
 
   }
 
