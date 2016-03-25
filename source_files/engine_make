@@ -86,6 +86,7 @@ SRC += \
     class_modules$(PATHSEP)sc_hunter.cpp \
     class_modules$(PATHSEP)sc_enemy.cpp \
     class_modules$(PATHSEP)sc_druid.cpp \
+    class_modules$(PATHSEP)sc_demon_hunter.cpp \
     class_modules$(PATHSEP)sc_death_knight.cpp \
     buff$(PATHSEP)sc_buff.cpp \
     action$(PATHSEP)sc_stats.cpp \

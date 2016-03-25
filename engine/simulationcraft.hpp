@@ -1914,6 +1914,7 @@ struct module_t
   virtual void combat_end( sim_t* ) const = 0;
 
   static const module_t* death_knight();
+  static const module_t* demon_hunter();
   static const module_t* druid();
   static const module_t* hunter();
   static const module_t* mage();
@@ -1934,6 +1935,7 @@ struct module_t
     switch ( t )
     {
       case DEATH_KNIGHT: return death_knight();
+      case DEMON_HUNTER: return demon_hunter();
       case DRUID:        return druid();
       case HUNTER:       return hunter();
       case MAGE:         return mage();

@@ -87,6 +87,7 @@
  SOURCES += engine/class_modules/sc_hunter.cpp
  SOURCES += engine/class_modules/sc_enemy.cpp
  SOURCES += engine/class_modules/sc_druid.cpp
+ SOURCES += engine/class_modules/sc_demon_hunter.cpp
  SOURCES += engine/class_modules/sc_death_knight.cpp
  SOURCES += engine/buff/sc_buff.cpp
  SOURCES += engine/action/sc_stats.cpp

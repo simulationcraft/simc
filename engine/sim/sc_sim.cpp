@@ -2766,7 +2766,7 @@ void sim_t::create_options()
   add_option( opt_float( "tmi_bin_size", tmi_bin_size ) );
   add_option( opt_bool( "enable_taunts", enable_taunts ) );
   // Character Creation
-  add_option( opt_func( "death_knight", parse_player ) );
+  add_option( opt_func( "demonhunter", parse_player ) );
   add_option( opt_func( "deathknight", parse_player ) );
   add_option( opt_func( "druid", parse_player ) );
   add_option( opt_func( "hunter", parse_player ) );
