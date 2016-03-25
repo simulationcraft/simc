@@ -1036,6 +1036,8 @@ struct execution_sentence_t : public paladin_spell_t
     travel_speed   = 0;
     tick_may_crit  = true;
 
+    hasted_cd = true;
+
     // disable if not talented
     if ( ! ( p -> talents.execution_sentence -> ok() ) )
       background = true;
