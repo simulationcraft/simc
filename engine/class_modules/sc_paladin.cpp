@@ -1678,7 +1678,7 @@ struct wake_of_ashes_t : public paladin_spell_t
 
   virtual timespan_t travel_time() const override
   {
-    return timespan_t::from_seconds( 1.5 );
+    return timespan_t::from_seconds( 0.9 );
   }
 };
 
