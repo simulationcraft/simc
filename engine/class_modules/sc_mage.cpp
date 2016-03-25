@@ -242,6 +242,10 @@ public:
           * ray_of_frost,
           * rune_of_power;
 
+    // Artifact
+    // Frost
+    buff_t* empowered_ice_lance;
+
   } buffs;
 
   // Cooldowns
@@ -2939,6 +2943,18 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
   {
     return DMG_OVER_TIME;
   }
+
+  double calculate_direct_amount( action_state_t* s ) const override
+  {
+    frost_mage_spell_t::calculate_direct_amount( s );
+
+    if ( result_is_hit( s -> result ) && s -> result == RESULT_CRIT )
+    {
+      s -> result_total *= 1.0 + p() -> artifact.ice_age.percent();
+    }
+
+    return s -> result_total;
+  }
 };
 
 struct frozen_orb_t : public frost_mage_spell_t
@@ -5052,6 +5068,10 @@ void mage_t::create_buffs()
   buffs.rune_of_power         = buff_creator_t( this, "rune_of_power", find_spell( 116014 ) )
                                   .duration( find_spell( 116011 ) -> duration() )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  // Artifact
+  // Frost
+  buffs.empowered_ice_lance   = buff_creator_t( this, "empowered_ice_lance", find_spell( 195418 ) );
 }
 
 // mage_t::init_gains =======================================================
