@@ -419,8 +419,8 @@ public:
                      blast_furnace; //NYI
 
     // Frost
-    artifact_power_t ebonbolt, //NYI
-                     let_it_go, //NYI
+    artifact_power_t ebonbolt,
+                     let_it_go,
                      frozen_veins, //NYI
                      permafrost, //NYI
                      the_storm_rages, //NYI
@@ -431,7 +431,7 @@ public:
                      clarity_of_thought, //NYI
                      flash_freeze, //NYI
                      placeholder_frost, //NYI
-                     orbital_strike, //NYI
+                     orbital_strike,
                      ice_age, //NYI
                      chilled_to_the_core; //NYI
   } artifact;
@@ -2512,21 +2512,16 @@ struct ebonbolt_t : public frost_mage_spell_t
     frost_mage_spell_t( "ebonbolt", p, p -> artifact.ebonbolt )
   {
     parse_options( options_str );
+    if ( !p -> artifact.ebonbolt.rank() )
+    {
+      background=true;
+    }
   }
 
   virtual void execute() override
   {
     frost_mage_spell_t::execute();
     trigger_fof( "Ebonbolt FoF Gain", 1.0, 2 );
-  }
-
-  virtual bool ready() override
-  {
-    if ( !p() -> artifact.ebonbolt.rank() )
-    {
-      return false;
-    }
-    return frost_mage_spell_t::ready();;
   }
 };
 // Evocation Spell ==========================================================
@@ -3088,6 +3083,17 @@ struct ice_lance_t : public frost_mage_spell_t
     base_multiplier *= 1.0 + p -> talents.lonely_winter -> effectN( 1 ).percent();
   }
 
+  double calculate_direct_amount( action_state_t* s ) const override
+  {
+    frost_mage_spell_t::calculate_direct_amount( s );
+
+    if ( result_is_hit( s -> result ) && s -> result == RESULT_CRIT )
+    {
+      s -> result_total *= 1.0 + p() -> artifact.let_it_go.percent();
+    }
+
+    return s -> result_total;
+  }
   virtual void execute() override
   {
     // Ice Lance treats the target as frozen with FoF up
