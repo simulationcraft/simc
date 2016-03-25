@@ -2018,24 +2018,19 @@ struct pummel_t: public warrior_attack_t
 struct raging_blow_attack_t: public warrior_attack_t
 {
   int aoe_targets;
-  int sweeping_strikes;
   raging_blow_attack_t( warrior_t* p, const char* name, const spell_data_t* s ):
-    warrior_attack_t( name, p, s ), aoe_targets( p -> buff.meat_cleaver -> data().effectN( 1 ).base_value() ),
-    sweeping_strikes( p -> talents.sweeping_strikes -> effectN( 1 ).base_value() )
+    warrior_attack_t( name, p, s ), aoe_targets( p -> buff.meat_cleaver -> data().effectN( 1 ).base_value() )
   {
     may_miss = may_dodge = may_parry = may_block = false;
     dual = true;
     radius = 5; // Meat cleaver RBs have a 5 yard range. Not found in spell data.
     aoe_targets++;
-    sweeping_strikes++;
   }
 
   int n_targets() const override
   {
     if ( p() -> buff.meat_cleaver -> up() )
       return aoe_targets;
-    // Currently, SS will not add another target or attack to meat cleaver. If SS is not talented, this will return 1 
-    return sweeping_strikes;
   }
 
   void impact( action_state_t* s ) override
@@ -3170,7 +3165,6 @@ void warrior_t::init_spells()
   talents.second_wind           = find_talent_spell( "Second Wind" );
   talents.shockwave             = find_talent_spell( "Shockwave" );
   talents.storm_bolt            = find_talent_spell( "Storm Bolt" );
-  talents.sweeping_strikes      = find_talent_spell( "Sweeping Strikes" );
   talents.sweeping_strikes      = find_talent_spell( "Sweeping Strikes" );
   talents.titanic_might         = find_talent_spell( "Titanic Might" );
   talents.trauma                = find_talent_spell( "Trauma" );
