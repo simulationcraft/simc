@@ -333,7 +333,7 @@ public:
                       * conflagration,
                       * fire_starter,
                       * ray_of_frost,
-                      * lonely_winter, // TODO: Add extra damage
+                      * lonely_winter, // TODO: Add extra damage to icicles
                       * bone_chilling;
 
     // Tier 30
@@ -439,7 +439,7 @@ public:
                      ice_age, //NYI
                      chilled_to_the_core; //NYI
   } artifact;
- 
+
 public:
   mage_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, MAGE, name, r ),
@@ -2264,7 +2264,7 @@ struct arcane_power_t : public arcane_mage_spell_t
 
   virtual void execute() override
   {
-    arcane_mage_spell_t::execute();   
+    arcane_mage_spell_t::execute();
     p() -> buffs.arcane_power -> trigger( 1, data().effectN( 1 ).percent() );
   }
 };
@@ -2335,7 +2335,7 @@ struct blizzard_shard_t : public frost_mage_spell_t
       trigger_fof( "Blizzard", fof_proc_chance);
     }
   }
-  
+
   virtual void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
@@ -2458,6 +2458,14 @@ struct cone_of_cold_t : public mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
+  }
+  virtual void impact( action_state_t* s ) override
+  {
+    mage_spell_t::impact( s );
+    if ( p() -> talents.bone_chilling -> ok() )
+    {
+      p() -> buffs.bone_chilling -> trigger();
+    }
   }
 };
 
@@ -2793,7 +2801,6 @@ struct frostbolt_t : public frost_mage_spell_t
     icicle( p -> get_stats( "icicle_fb" ) )
   {
     parse_options( options_str );
-
     stats -> add_child( icicle );
     icicle -> school = school;
     icicle -> action_list.push_back( p -> icicle );
@@ -2942,7 +2949,7 @@ struct frozen_orb_t : public frost_mage_spell_t
   virtual void execute() override
   {
     frost_mage_spell_t::execute();
-    
+
     if ( p() -> sets.has_set_bonus( MAGE_FROST, T17, B4 ) )
     {
       p() -> buffs.frost_t17_4pc -> trigger();
@@ -3576,22 +3583,12 @@ struct phoenixs_flames_t : public fire_mage_spell_t
     aoe = -1;
     base_aoe_multiplier = data().effectN( 2 ).sp_coeff() /
                           data().effectN( 1 ).sp_coeff();
+
+    cooldown -> charges = data().charges();
+    // TODO: Recharge time is reduced by haste?
+    cooldown -> duration = data().charge_cooldown();
   }
 
-  virtual bool ready() override
-  {
-    if (  !p() -> buffs.flame_orb -> check() )
-      return false;
-
-    return fire_mage_spell_t::ready();
-  }
-
-  virtual void execute() override
-  {
-    fire_mage_spell_t::execute();
-
-    p() -> buffs.flame_orb -> decrement();
-  }
 };
 
 
@@ -5015,12 +5012,6 @@ void mage_t::create_buffs()
   buffs.rune_of_power         = buff_creator_t( this, "rune_of_power", find_spell( 116014 ) )
                                   .duration( find_spell( 116011 ) -> duration() )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-
-  // Artifact
-  // Period contained in 194462 ( Highborn's Will ), Stack information contained in 194461 ( Flame Orb )
-  buffs.highborns_will = buff_creator_t( this, "flame_orb_driver", find_spell( 194462 ) )
-    .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) { buffs.flame_orb -> trigger( 1 ); } );
-  buffs.flame_orb      = buff_creator_t( this, "flame_orb", find_spell( 194461 ) );
 }
 
 // mage_t::init_gains =======================================================
