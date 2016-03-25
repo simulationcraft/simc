@@ -242,10 +242,6 @@ public:
           * ray_of_frost,
           * rune_of_power;
 
-    // Artifact
-    buff_t* flame_orb,
-          * highborns_will; // Flame orb driver
-
   } buffs;
 
   // Cooldowns
@@ -369,7 +365,7 @@ public:
                       * unstable_magic,
                       * erosion, // NYI
                       * flame_patch,
-                      * arctic_gale; // NYI
+                      * arctic_gale;
 
     // Tier 100
     const spell_data_t* overpowered,
@@ -2508,6 +2504,23 @@ struct dragons_breath_t : public fire_mage_spell_t
   }
 };
 
+// Ebonbolt Spell ===========================================================
+// TODO: Is ebonbolt buffed by things like bone chilled?
+struct ebonbolt_t : public frost_mage_spell_t
+{
+  ebonbolt_t( mage_t* p, const std::string& options_str ) :
+    frost_mage_spell_t( "ebonbolt", p, p -> artifact.ebonbolt )
+  {
+    parse_options( options_str );
+  }
+
+  virtual void execute() override
+  {
+    frost_mage_spell_t::execute();
+    trigger_fof( "Ebonbolt FoF Gain", 1.0, 2 );
+  }
+
+};
 // Evocation Spell ==========================================================
 
 struct evocation_t : public arcane_mage_spell_t
@@ -4604,6 +4617,9 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "phoenix_reborn"    ) return new           phoenix_reborn_t( this, options_str );
   if ( name == "phoenixs_flames"   ) return new          phoenixs_flames_t( this, options_str );
 
+  // Frost
+  if ( name == "ebonbolt"          ) return new                 ebonbolt_t( this, options_str );
+
   // Shared spells
   if ( name == "blink"             ) return new                   blink_t( this, options_str );
   if ( name == "cone_of_cold"      ) return new            cone_of_cold_t( this, options_str );
@@ -6042,12 +6058,6 @@ void mage_t::arise()
     buffs.frost_armor -> trigger();
   else if ( spec.mage_armor -> ok() )
     buffs.mage_armor -> trigger();
-
-  if ( artifact.phoenix_reborn.rank() )
-  {
-    buffs.highborns_will -> trigger();
-    buffs.flame_orb -> trigger( buffs.flame_orb -> max_stack() );
-  }
 
   if ( spec.ignite -> ok()  )
   {
