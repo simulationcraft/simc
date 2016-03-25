@@ -142,6 +142,7 @@ public:
     gain_t* raging_blow;
     gain_t* battle_cry;
     // Arms Only
+    gain_t* in_for_the_kill;
     gain_t* melee_crit;
     gain_t* fervor_of_battle;
     // Prot Only
@@ -264,16 +265,16 @@ public:
     const spell_data_t* avatar;
     const spell_data_t* fervor_of_battle;
     const spell_data_t* rend;
-    const spell_data_t* renewed_fury;
-    const spell_data_t* ultimatum;
+    const spell_data_t* renewed_fury; //
+    const spell_data_t* ultimatum; //
 
-    const spell_data_t* furious_charge;
+    const spell_data_t* furious_charge; //
     const spell_data_t* bounding_stride;
-    const spell_data_t* warpaint;
-    const spell_data_t* second_wind;
-    const spell_data_t* die_by_the_sword;
-    const spell_data_t* vigilance;
-    const spell_data_t* crackling_thunder;
+    const spell_data_t* warpaint; //
+    const spell_data_t* second_wind; //
+    const spell_data_t* die_by_the_sword; //
+    const spell_data_t* vigilance; //
+    const spell_data_t* crackling_thunder; //
 
     const spell_data_t* massacre;
     const spell_data_t* frothing_berserker;
@@ -1949,6 +1950,12 @@ struct mortal_strike_t: public warrior_attack_t
         execute_state -> target -> debuffs.mortal_wounds -> trigger();
       }
 
+      if ( p() -> talents.in_for_the_kill -> ok() && execute_state -> target -> health_percentage() <= 20 )
+      {
+        rage_resource_gain( RESOURCE_RAGE, p() -> talents.in_for_the_kill -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
+                            p() -> gain.in_for_the_kill );
+      }
+
       p() -> buff.heroic_strike -> expire();
     }
 
@@ -1959,11 +1966,8 @@ struct mortal_strike_t: public warrior_attack_t
       shadow_slash -> execute();
     }
 
-    if ( p() -> buff.shattered_defenses -> up() )
-      p() -> buff.shattered_defenses -> expire();
-
-    if ( p() -> buff.precise_strikes -> up() )
-      p() -> buff.precise_strikes -> expire();
+    p() -> buff.shattered_defenses -> expire();
+    p() -> buff.precise_strikes -> expire();
   }
 
   void impact( action_state_t* s ) override
@@ -2031,6 +2035,7 @@ struct raging_blow_attack_t: public warrior_attack_t
   {
     if ( p() -> buff.meat_cleaver -> up() )
       return aoe_targets;
+    return 1;
   }
 
   void impact( action_state_t* s ) override
@@ -3230,6 +3235,7 @@ void warrior_t::init_spells()
   }
 
   // Cooldowns
+  cooldown.battle_cry               = get_cooldown( "battle_cry" );
   cooldown.charge                   = get_cooldown( "charge" );
   cooldown.colossus_smash           = get_cooldown( "colossus_smash" );
   cooldown.demoralizing_shout       = get_cooldown( "demoralizing_shout" );
@@ -3240,7 +3246,6 @@ void warrior_t::init_spells()
   cooldown.rage_from_charge -> duration = timespan_t::from_seconds( 12.0 );
   cooldown.rage_from_crit_block     = get_cooldown( "rage_from_crit_block" );
   cooldown.rage_from_crit_block -> duration = timespan_t::from_seconds( 3.0 );
-  cooldown.battle_cry               = get_cooldown( "battle_cry" );
   cooldown.revenge                  = get_cooldown( "revenge" );
   cooldown.revenge_reset            = get_cooldown( "revenge_reset" );
   cooldown.revenge_reset -> duration = spell.revenge_trigger -> internal_cooldown();
@@ -3924,6 +3929,7 @@ void warrior_t::init_gains()
   gain.bloodthirst = get_gain( "bloodthirst" );
   gain.charge = get_gain( "charge" );
   gain.critical_block = get_gain( "critical_block" );
+  gain.in_for_the_kill = get_gain( "in_for_the_kill" );
   gain.melee_crit = get_gain( "melee_crit" );
   gain.fervor_of_battle = get_gain( "fervor_of_battle" );
   gain.melee_main_hand = get_gain( "melee_main_hand" );
