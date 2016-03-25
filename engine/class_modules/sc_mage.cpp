@@ -333,8 +333,8 @@ public:
                       * conflagration,
                       * fire_starter,
                       * ray_of_frost,
-                      * lonely_winter, // NYI
-                      * bone_chilling; // NYI
+                      * lonely_winter, // TODO: Add extra damage
+                      * bone_chilling;
 
     // Tier 30
     const spell_data_t* shimmer, // NYI
@@ -1632,7 +1632,7 @@ struct frost_mage_spell_t : public mage_spell_t
   {
     double am = mage_spell_t::action_multiplier();
 
-    am *= 1.0 + ( p() -> buffs.bone_chilling -> current_stack * p() -> talents.bone_chilling -> effectN(1).percent() );
+    am *= 1.0 + ( p() -> buffs.bone_chilling -> current_stack * p() -> talents.bone_chilling -> effectN( 1 ).percent() );
 
     return am;
   }
@@ -2792,6 +2792,7 @@ struct frostbolt_t : public frost_mage_spell_t
     stats -> add_child( icicle );
     icicle -> school = school;
     icicle -> action_list.push_back( p -> icicle );
+    base_multiplier *= 1.0 + p -> talents.lonely_winter -> effectN( 1 ).percent();
   }
 
   virtual timespan_t execute_time() const override
@@ -2876,6 +2877,9 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     background = true;
     dual = true;
     cooldown -> duration = timespan_t::zero(); // dbc has CD of 6 seconds
+    base_multiplier *= 1.0 + p -> talents.lonely_winter -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> talents.bitter_cold -> effectN( 1 ).percent();
+
   }
 
   virtual void impact( action_state_t* s ) override
@@ -2903,6 +2907,7 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
 
 struct frozen_orb_t : public frost_mage_spell_t
 {
+  //TODO: Redo how frozen_orb_bolt is set up to take base_multipler from parent.
   frozen_orb_bolt_t* frozen_orb_bolt;
   frozen_orb_t( mage_t* p, const std::string& options_str ) :
     frost_mage_spell_t( "frozen_orb", p,
@@ -2910,19 +2915,12 @@ struct frozen_orb_t : public frost_mage_spell_t
     frozen_orb_bolt( new frozen_orb_bolt_t( p ) )
   {
     parse_options( options_str );
-
     hasted_ticks = false;
     base_tick_time    = timespan_t::from_seconds( 1.0 );
     dot_duration      = data().duration();
     add_child( frozen_orb_bolt );
     may_miss       = false;
     may_crit       = false;
-
-    if ( p -> talents.bitter_cold -> ok() )
-    {
-      base_multiplier *=
-        1.0 + p -> talents.bitter_cold -> effectN( 1 ).percent();
-    }
   }
 
   void tick( dot_t* d ) override
@@ -2939,7 +2937,7 @@ struct frozen_orb_t : public frost_mage_spell_t
   virtual void execute() override
   {
     frost_mage_spell_t::execute();
-
+    
     if ( p() -> sets.has_set_bonus( MAGE_FROST, T17, B4 ) )
     {
       p() -> buffs.frost_t17_4pc -> trigger();
@@ -3048,6 +3046,8 @@ struct ice_lance_t : public frost_mage_spell_t
     {
       frost_bomb_explosion = new frost_bomb_explosion_t( p );
     }
+
+    base_multiplier *= 1.0 + p -> talents.lonely_winter -> effectN( 1 ).percent();
   }
 
   virtual void execute() override
@@ -3956,7 +3956,7 @@ struct summon_water_elemental_t : public frost_mage_spell_t
 
   virtual bool ready() override
   {
-    if ( !frost_mage_spell_t::ready() )
+    if ( !frost_mage_spell_t::ready() || p() -> talents.lonely_winter -> ok() )
       return false;
 
     // TODO: Check this
