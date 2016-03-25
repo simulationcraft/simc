@@ -1782,7 +1782,7 @@ public:
 
   virtual void update_ready( timespan_t ) override
   {
-    timespan_t cd = cooldown -> duration;
+    timespan_t cd = ab::cooldown -> duration;
 
     // Update the cooldown while Serenity is active
     if ( p() -> buff.serenity -> check() && ab::data().affected_by( p() -> talent.serenity -> effectN( 4 ) ) )
@@ -1844,7 +1844,7 @@ public:
     }
 
     if ( p() -> buff.serenity -> up() )
-      p() -> gain.serenity -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] - cost() );
+      p() -> gain.serenity -> add( RESOURCE_CHI, ab::base_costs[RESOURCE_CHI] - cost() );
   }
 
   virtual void execute()
