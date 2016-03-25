@@ -3,9 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "sc_report.hpp"
 #include "simulationcraft.hpp"
-
 
 std::array<std::string, SCALE_METRIC_MAX> gear_weights::lootrank(
     const player_t& p )

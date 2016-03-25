@@ -4156,10 +4156,9 @@ double warrior_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + spec.seasoned_soldier -> effectN( 1 ).percent();
 
   // --- Enrages ---
-  if ( buff.enrage -> check() )
+  if ( buff.enrage -> check() && mastery.unshackled_fury -> ok() )
   {
-    if ( mastery.unshackled_fury -> ok() )
-      m *= 1.0 + cache.mastery_value();
+    m *= 1.0 + cache.mastery_value();
   }
 
   if ( main_hand_weapon.group() == WEAPON_1H &&

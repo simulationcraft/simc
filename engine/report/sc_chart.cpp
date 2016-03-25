@@ -3,7 +3,6 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "sc_report.hpp"
 #include "sc_highchart.hpp"
 #include "simulationcraft.hpp"
 

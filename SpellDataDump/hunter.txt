@@ -6139,7 +6139,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Fires a Black Arrow at the target, dealing $3674o1 Shadow damage over $3674d and summoning a skeletal minion to taunt it for the duration.
 
-Black Arrowâ€™s cooldown is reset when you kill an enemy.
+Black Arrow’s cooldown is reset when you kill an enemy.
 Tooltip          : Taking $w1 Shadow damage every $t1 seconds.
 
 Name             : Sidewinders (id=214579) [Spell Family (9)] 
