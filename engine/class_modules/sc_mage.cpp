@@ -2311,11 +2311,12 @@ struct blink_t : public mage_spell_t
 struct blizzard_shard_t : public frost_mage_spell_t
 {
   blizzard_shard_t( mage_t* p ) :
-    frost_mage_spell_t( "blizzard_shard", p, p -> find_class_spell( "Blizzard" ) -> effectN( 2 ).trigger() )
+    frost_mage_spell_t( "blizzard_shard", p, p -> find_spell( 190357 ) )
   {
     aoe = -1;
     background = true;
     ground_aoe = true;
+    base_multiplier *= 1.0 + p -> talents.arctic_gale -> effectN( 1 ).percent();
   }
 
   // Override damage type because Blizzard is considered a DOT
@@ -2332,13 +2333,14 @@ struct blizzard_shard_t : public frost_mage_spell_t
     {
       double fof_proc_chance = p() -> spec.fingers_of_frost
                                    -> effectN( 2 ).percent();
-      trigger_fof( "Blizzard", fof_proc_chance);
+      trigger_fof( "Blizzard", fof_proc_chance );
     }
   }
 
   virtual void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
+
     if ( result_is_hit ( s -> result ) )
     {
       if ( p() -> talents.bone_chilling -> ok() )
@@ -2354,13 +2356,13 @@ struct blizzard_t : public frost_mage_spell_t
   blizzard_shard_t* shard;
 
   blizzard_t( mage_t* p, const std::string& options_str ) :
-    frost_mage_spell_t( "blizzard", p, p -> find_specialization_spell( "Blizzard" ) ),
+    frost_mage_spell_t( "blizzard", p, p -> find_spell( 190356 ) ),
     shard( new blizzard_shard_t( p ) )
   {
     parse_options( options_str );
-
-    channeled    = true;
-    hasted_ticks = false;
+    dot_duration = data().duration();
+    base_tick_time = timespan_t::from_seconds( data().cooldown() / data().duration() );
+    hasted_ticks = true;
     may_miss     = false;
     ignore_false_positive = true;
 
@@ -3737,7 +3739,7 @@ struct pyroblast_t : public fire_mage_spell_t
 };
 
 
-// Ray of Frost ===============================================================
+// Ray of Frost Spell ===============================================================
 
 struct ray_of_frost_t : public frost_mage_spell_t
 {
