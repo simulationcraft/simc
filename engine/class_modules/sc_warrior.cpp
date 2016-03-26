@@ -64,6 +64,7 @@ public:
     buff_t* bounding_stride;
     buff_t* massacre;
     buff_t* frothing_berserker;
+    buff_t* meat_grinder;
     // All Warriors
     buff_t* berserker_rage;
     buff_t* bladestorm;
@@ -281,9 +282,9 @@ public:
     const spell_data_t* bladestorm;
     const spell_data_t* in_for_the_kill;
     const spell_data_t* mortal_combo;
-    const spell_data_t* best_served_cold;
-    const spell_data_t* never_surrender;
-    const spell_data_t* indomitable;
+    const spell_data_t* best_served_cold; //
+    const spell_data_t* never_surrender; //
+    const spell_data_t* indomitable; //
 
     const spell_data_t* meat_grinder;
     const spell_data_t* frenzy;
@@ -2144,6 +2145,14 @@ struct rampage_attack_t: public warrior_attack_t
     warrior_attack_t( name, p, rampage )
   {
     dual = true;
+    base_aoe_multiplier = 0.5; // No spelldata for this, only matters when Meat Grinder is talented. 
+  }
+
+  int n_targets() const override
+  {
+    if ( p() -> buff.meat_grinder -> up() )
+      return 5;
+    return 1;
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -2196,6 +2205,10 @@ struct rampage_event_t: public event_t
     if ( attacks < warrior -> rampage_attacks.size() )
     {
       warrior -> rampage_driver = new ( sim() ) rampage_event_t( warrior, attacks );
+    }
+    else
+    {
+      warrior -> buff.meat_grinder -> expire();
     }
   }
 };
@@ -2725,6 +2738,7 @@ struct whirlwind_parent_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
     p() -> buff.meat_cleaver -> trigger();
+    p() -> buff.meat_grinder -> trigger();
   }
 
   bool ready() override
@@ -3856,6 +3870,9 @@ void warrior_t::create_buffs()
   buff.charge_movement = buff_creator_t( this, "charge_movement" );
   buff.intervene_movement = buff_creator_t( this, "intervene_movement" );
 
+  buff.meat_grinder = buff_creator_t( this, "meat_grinder", find_spell( 213283 ) )
+    .chance( talents.meat_grinder -> ok() );
+
   buff.last_stand = new buffs::last_stand_t( *this, "last_stand", spec.last_stand );
 
   buff.meat_cleaver = buff_creator_t( this, "meat_cleaver", spec.meat_cleaver -> effectN( 1 ).trigger() );
@@ -4099,7 +4116,7 @@ void warrior_t::reset()
     rppm.shadow_slash -> reset();
 
   if ( rppm.wrecking_ball )
-  rppm.wrecking_ball -> reset();
+    rppm.wrecking_ball -> reset();
 }
 
 // Movement related overrides. =============================================
