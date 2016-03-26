@@ -56,6 +56,7 @@ public:
   {
     action_t* deep_wounds;
     action_t* corrupted_blood_of_zakajz;
+    action_t* opportunity_strikes;
     action_t* trauma;
   } active;
 
@@ -171,7 +172,6 @@ public:
     const spell_data_t* heroic_leap;
     const spell_data_t* overpower_driver;
     const spell_data_t* revenge_trigger;
-    const spell_data_t* trauma;
     const spell_data_t* t17_prot_2p;
   } spell;
 
@@ -632,7 +632,7 @@ public:
       rage_resource_gain( RESOURCE_RAGE, rage*0.8, p() -> gain.avoided_attacks );
   }
 
-  virtual void anger_management( double rage )
+  void anger_management( double rage )
   {
     if ( rage > 0 )
     {
@@ -712,6 +712,11 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     if ( p() -> rppm.wrecking_ball -> trigger() )
     {
       p() -> buff.wrecking_ball -> trigger();
+    }
+    if ( p() -> talents.opportunity_strikes -> ok() )
+    {
+      if ( rng().roll( ( 1 - execute_state -> target -> health_percentage() ) * p() -> talents.opportunity_strikes -> proc_chance() ) )
+        p() -> active.opportunity_strikes -> execute(); // Blizzard Employee "What can we do to make this talent really awkward?"
     }
   }
 
@@ -1355,6 +1360,17 @@ struct deep_wounds_t: public warrior_attack_t
   {
     background = tick_may_crit = true;
     hasted_ticks = false;
+  }
+};
+
+// Opportunity Strikes ==============================================================
+
+struct opportunity_strikes_t : public warrior_attack_t
+{
+  opportunity_strikes_t( warrior_t* p ):
+    warrior_attack_t( "opportunity_strikes", p, p -> talents.opportunity_strikes -> effectN( 2 ).trigger() )
+  {
+    background = true;
   }
 };
 
@@ -2186,6 +2202,7 @@ struct rampage_parent_t: public warrior_attack_t
     {
       add_child( p -> rampage_attacks[i] );
     }
+    base_costs[RESOURCE_RAGE] += p -> talents.carnage -> effectN( 1 ).resource(RESOURCE_RAGE);
   }
 
   double cost() const override
@@ -2905,7 +2922,6 @@ struct battle_cry_t: public warrior_spell_t
     parse_options( options_str );
     bonus_crit = data().effectN( 1 ).percent();
     callbacks = false;
-    cooldown -> duration *= 1.0 + p -> talents.reckless_abandon -> effectN( 1 ).percent();
   }
 
   void execute() override
@@ -3219,8 +3235,10 @@ void warrior_t::init_spells()
   active.deep_wounds        = nullptr;
   active.corrupted_blood_of_zakajz = nullptr;
   active.trauma = nullptr;
+  active.opportunity_strikes = nullptr;
 
   if ( spec.deep_wounds -> ok() ) active.deep_wounds = new deep_wounds_t( this );
+  if ( talents.opportunity_strikes -> ok() ) active.opportunity_strikes = new opportunity_strikes_t( this );
   if ( talents.trauma -> ok() ) active.trauma = new trauma_dot_t( this );
   if ( artifact.corrupted_blood_of_zakajz.rank() ) active.corrupted_blood_of_zakajz = new corrupted_blood_of_zakajz_t( this );
   if ( sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) )  spell.t17_prot_2p = find_spell( 169688 );
