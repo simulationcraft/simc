@@ -1910,6 +1910,8 @@ struct crusader_strike_t : public holy_power_generator_t
   {
     parse_options( options_str );
 
+    hasted_cd = hasted_gcd = true;
+
     // Guarded by the Light and Sword of Light reduce base mana cost; spec-limited so only one will ever be active
     base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent()
                                        +  p -> passives.sword_of_light -> effectN( 4 ).percent();
@@ -2079,6 +2081,8 @@ struct blade_of_justice_t : public holy_power_generator_t
   {
     parse_options( options_str );
 
+    hasted_cd = hasted_gcd = true;
+
     // Guarded by the Light and Sword of Light reduce base mana cost; spec-limited so only one will ever be active
     base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent()
                                        +  p -> passives.sword_of_light -> effectN( 4 ).percent();
@@ -2118,6 +2122,8 @@ struct blade_of_wrath_t : public holy_power_generator_t
   {
     parse_options( options_str );
 
+
+    hasted_cd = hasted_gcd = true;
     // Guarded by the Light and Sword of Light reduce base mana cost; spec-limited so only one will ever be active
     base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent()
                                        +  p -> passives.sword_of_light -> effectN( 4 ).percent();
@@ -2172,6 +2178,7 @@ struct divine_hammer_t : public paladin_spell_t
     hasted_ticks   = true;
     may_miss       = false;
     tick_zero      = true;
+    hasted_cd = hasted_gcd = true;
 
     tick_action = new divine_hammer_tick_t( p );
   }
@@ -2233,6 +2240,8 @@ struct divine_storm_t: public holy_power_consumer_t
       echoed_spell( new echoed_divine_storm_t( p, options_str ) )
   {
     parse_options( options_str );
+
+    hasted_gcd = true;
 
     weapon = &( p -> main_hand_weapon );
 
@@ -2409,6 +2418,8 @@ struct judgment_t : public paladin_melee_attack_t
   {
     parse_options( options_str );
 
+    hasted_cd = hasted_gcd = true;
+
     // no weapon multiplier
     weapon_multiplier = 0.0;
 
@@ -2573,6 +2584,8 @@ struct templars_verdict_t : public holy_power_consumer_t
       echoed_spell( new echoed_templars_verdict_t( p, options_str ) )
   {
     parse_options( options_str );
+
+    hasted_gcd = true;
 
     base_multiplier *= 1.0 + p -> artifact.might_of_the_templar.percent();
     if ( p -> talents.final_verdict -> ok() )
@@ -4469,3 +4482,5 @@ const module_t* module_t::paladin()
   static paladin_module_t m;
   return &m;
 }
+
+
