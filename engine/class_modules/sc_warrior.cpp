@@ -83,6 +83,7 @@ public:
     buff_t* enrage;
     buff_t* frenzy;
     buff_t* meat_cleaver;
+    buff_t* taste_for_blood;
     buff_t* wrecking_ball;
     // Arms only
     buff_t* colossus_smash;
@@ -220,6 +221,7 @@ public:
     const spell_data_t* bloodthirst;
     const spell_data_t* enrage;
     const spell_data_t* enraged_regeneration;
+    const spell_data_t* furious_slash;
     const spell_data_t* meat_cleaver;
     const spell_data_t* piercing_howl;
     const spell_data_t* raging_blow;
@@ -1047,19 +1049,29 @@ struct bloodthirst_t: public warrior_attack_t
   bloodthirst_heal_t* bloodthirst_heal;
   double fresh_meat_crit_chance;
   double rage_gain;
+  int aoe_targets;
   bloodthirst_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "bloodthirst", p, p -> spec.bloodthirst ),
     bloodthirst_heal( nullptr ),
     fresh_meat_crit_chance( p -> talents.endless_rage -> effectN( 1 ).percent() ),
-    rage_gain( data().effectN( 3 ).resource( RESOURCE_RAGE ) )
+    rage_gain( data().effectN( 3 ).resource( RESOURCE_RAGE ) ),
+    aoe_targets( p -> buff.meat_cleaver -> data().effectN( 1 ).base_value() )
   {
     parse_options( options_str );
 
     weapon = &( p -> main_hand_weapon );
+    radius = 5;
     if ( p -> non_dps_mechanics )
     {
       bloodthirst_heal = new bloodthirst_heal_t( p );
     }
+  }
+
+    int n_targets() const override
+  {
+    if ( p() -> buff.meat_cleaver -> up() )
+      return aoe_targets + 1;
+    return 1;
   }
 
   double composite_crit() const override
@@ -1071,6 +1083,8 @@ struct bloodthirst_t: public warrior_attack_t
 
     if ( fresh_meat_crit_chance > 0 && execute_state -> target -> health_percentage() >= 80.0 )
       c += fresh_meat_crit_chance;
+
+    c += p() -> buff.taste_for_blood -> check_value();
 
     return c;
   }
@@ -1091,6 +1105,25 @@ struct bloodthirst_t: public warrior_attack_t
     }
 
     rage_resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.bloodthirst );
+  }
+};
+
+// Furious Slash ==============================================================
+
+struct furious_slash_t: public warrior_attack_t
+{
+  furious_slash_t( warrior_t* p, const std::string& options_str ):
+    warrior_attack_t( "furious_slash", p, p -> spec.furious_slash )
+  {
+    parse_options( options_str );
+
+    weapon = &( p -> off_hand_weapon );
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+    p() -> buff.taste_for_blood -> trigger( 1 );
   }
 };
 
@@ -1525,30 +1558,6 @@ struct execute_t: public warrior_attack_t
       return true;
     else
       return false;
-  }
-};
-
-// Frenzy ==============================================================
-
-struct frenzy_t: public warrior_attack_t
-{
-  frenzy_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "frenzy", p, p -> talents.frenzy )
-  {
-    parse_options( options_str );
-    weapon = &( p -> main_hand_weapon );
-    min_gcd = timespan_t::from_millis( 750 );
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-    p() -> buff.frenzy -> trigger( 1 );
-  }
-
-  timespan_t gcd() const override
-  {
-    return timespan_t::from_millis( 750 );
   }
 };
 
@@ -1995,21 +2004,11 @@ struct pummel_t: public warrior_attack_t
 
 struct raging_blow_attack_t: public warrior_attack_t
 {
-  int aoe_targets;
   raging_blow_attack_t( warrior_t* p, const char* name, const spell_data_t* s ):
-    warrior_attack_t( name, p, s ), aoe_targets( p -> buff.meat_cleaver -> data().effectN( 1 ).base_value() )
+    warrior_attack_t( name, p, s )
   {
     may_miss = may_dodge = may_parry = may_block = false;
     dual = true;
-    radius = 5; // Meat cleaver RBs have a 5 yard range. Not found in spell data.
-    aoe_targets++;
-  }
-
-  int n_targets() const override
-  {
-    if ( p() -> buff.meat_cleaver -> up() )
-      return aoe_targets;
-    return 1;
   }
 
   void impact( action_state_t* s ) override
@@ -2361,11 +2360,11 @@ struct shield_slam_t: public warrior_attack_t
     parse_options( options_str );
     rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
 
-    attack_power_mod.direct = 0.366; // Low level value for shield slam.
+    attack_power_mod.direct = 0.561; // Low level value for shield slam.
     if ( p -> level() >= 80 )
       attack_power_mod.direct += 0.426; // Adds 42.6% ap once the character is level 80
     if ( p -> level() >= 85 )
-      attack_power_mod.direct += 2.46; // Adds another 246% ap at level 85
+      attack_power_mod.direct += 3.46; // Adds another 246% ap at level 85
     //Shield slam is just the best.
   }
 
@@ -2595,6 +2594,9 @@ struct whirlwind_mh_t: public warrior_attack_t
 
     if ( p() -> talents.fervor_of_battle -> ok() )
       rage_resource_gain( RESOURCE_RAGE, p() -> spell.fervor_of_battle -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.fervor_of_battle );
+
+    if ( s -> result_amount > 0 )// Only triggers if damage is done.
+      p() -> buff.meat_cleaver -> trigger();
   }
 
   double action_multiplier() const override
@@ -2694,7 +2696,6 @@ struct whirlwind_parent_t: public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
-    p() -> buff.meat_cleaver -> trigger();
     p() -> buff.meat_grinder -> trigger();
   }
 
@@ -3018,7 +3019,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "enraged_regeneration" ) return new enraged_regeneration_t ( this, options_str );
   if ( name == "execute"              ) return new execute_t              ( this, options_str );
   if ( name == "focused_rage"         ) return new focused_rage_t         ( this, options_str );
-  if ( name == "frenzy"               ) return new frenzy_t               ( this, options_str );
+  if ( name == "furious_slash"        ) return new furious_slash_t        ( this, options_str );
   if ( name == "hamstring"            ) return new hamstring_t            ( this, options_str );
   if ( name == "heroic_charge"        ) return new heroic_charge_t        ( this, options_str );
   if ( name == "heroic_leap"          ) return new heroic_leap_t          ( this, options_str );
@@ -3078,6 +3079,7 @@ void warrior_t::init_spells()
   spec.enrage                   = find_specialization_spell( "Enrage" );
   spec.enraged_regeneration     = find_specialization_spell( "Enraged Regeneration" );
   spec.execute                  = find_specialization_spell( "Execute" );
+  spec.furious_slash            = find_specialization_spell( "Furious Slash" );
   spec.hamstring                = find_specialization_spell( "Hamstring" );
   spec.last_stand               = find_specialization_spell( "Last Stand" );
   spec.meat_cleaver             = find_specialization_spell( "Meat Cleaver" );
@@ -3103,7 +3105,6 @@ void warrior_t::init_spells()
   spec.unwavering_sentinel      = find_specialization_spell( "Unwavering Sentinel" );
   spec.whirlwind                = find_specialization_spell( "Whirlwind" );
 
-  
   // Talents
   talents.anger_management      = find_talent_spell( "Anger Management" );
   talents.avatar                = find_talent_spell( "Avatar" );//
@@ -3836,6 +3837,9 @@ void warrior_t::create_buffs()
   buff.last_stand = new buffs::last_stand_t( *this, "last_stand", spec.last_stand );
 
   buff.meat_cleaver = buff_creator_t( this, "meat_cleaver", spec.meat_cleaver -> effectN( 1 ).trigger() );
+
+  buff.taste_for_blood = buff_creator_t( this, "taste_for_blood", spec.furious_slash -> effectN( 3 ).trigger() )
+    .default_value( spec.furious_slash -> effectN( 3 ).trigger() -> effectN( 1 ).percent() );
 
   buff.commanding_shout = new buffs::commanding_shout_t( *this, "commanding_shout", find_spell( 97463 ) );
 
