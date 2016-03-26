@@ -24,6 +24,7 @@ struct warrior_td_t: public actor_target_data_t
   dot_t* dots_deep_wounds;
   dot_t* dots_ravager;
   dot_t* dots_rend;
+  dot_t* dots_trauma;
   buff_t* debuffs_colossus_smash;
   buff_t* debuffs_demoralizing_shout;
   buff_t* debuffs_taunt;
@@ -55,6 +56,7 @@ public:
   {
     action_t* deep_wounds;
     action_t* corrupted_blood_of_zakajz;
+    action_t* trauma;
   } active;
 
   // Buffs
@@ -169,6 +171,7 @@ public:
     const spell_data_t* heroic_leap;
     const spell_data_t* overpower_driver;
     const spell_data_t* revenge_trigger;
+    const spell_data_t* trauma;
     const spell_data_t* t17_prot_2p;
   } spell;
 
@@ -2009,6 +2012,7 @@ struct raging_blow_attack_t: public warrior_attack_t
   {
     may_miss = may_dodge = may_parry = may_block = false;
     dual = true;
+    weapon_multiplier *= 1.0 + p -> talents.inner_rage -> effectN( 3 ).percent();
   }
 
   void impact( action_state_t* s ) override
@@ -2045,6 +2049,7 @@ struct raging_blow_t: public warrior_attack_t
     oh_attack = new raging_blow_attack_t( p, "raging_blow_offhand", data().effectN( 2 ).trigger() );
     oh_attack -> weapon = &( p -> off_hand_weapon );
     add_child( oh_attack );
+    cooldown -> duration += p -> talents.inner_rage -> effectN( 1 ).time_value();
   }
 
   void execute() override
@@ -2060,12 +2065,15 @@ struct raging_blow_t: public warrior_attack_t
 
   bool ready() override
   {
-    if ( !p() -> buff.enrage -> check() )
-      return false;
-
-    // Needs weapons in both hands
+        // Needs weapons in both hands
     if ( p() -> main_hand_weapon.type == WEAPON_NONE ||
          p() -> off_hand_weapon.type == WEAPON_NONE )
+      return false;
+
+    if ( p() -> talents.inner_rage -> ok() )
+      return warrior_attack_t::ready();
+
+    if ( !p() -> buff.enrage -> check() )
       return false;
 
     return warrior_attack_t::ready();
@@ -2430,12 +2438,35 @@ struct slam_t: public warrior_attack_t
     base_multiplier *= 1.0 + p -> artifact.crushing_blows.percent();
   }
 
+  void assess_damage( dmg_e type, action_state_t* s ) override
+  {
+    warrior_attack_t::assess_damage( type, s );
+    if ( p() -> talents.trauma -> ok() )
+    {
+      residual_action::trigger(
+        p() -> active.trauma, // ignite spell
+        s -> target, // target
+        p() -> talents.trauma -> effectN( 1 ).percent() * s -> result_amount );
+    }
+  }
+
   bool ready() override
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
 
     return warrior_attack_t::ready();
+  }
+};
+
+// Trauma Dot ============================================================
+
+struct trauma_dot_t: public residual_action::residual_periodic_action_t < warrior_attack_t >
+{
+  trauma_dot_t( warrior_t* p ):
+    base_t( "trauma", p, p -> find_spell( 215537 ) )
+  {
+    dual = true;
   }
 };
 
@@ -3187,8 +3218,10 @@ void warrior_t::init_spells()
   // Active spells
   active.deep_wounds        = nullptr;
   active.corrupted_blood_of_zakajz = nullptr;
+  active.trauma = nullptr;
 
   if ( spec.deep_wounds -> ok() ) active.deep_wounds = new deep_wounds_t( this );
+  if ( talents.trauma -> ok() ) active.trauma = new trauma_dot_t( this );
   if ( artifact.corrupted_blood_of_zakajz.rank() ) active.corrupted_blood_of_zakajz = new corrupted_blood_of_zakajz_t( this );
   if ( sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) )  spell.t17_prot_2p = find_spell( 169688 );
   if ( spec.rampage -> ok() )
@@ -3743,6 +3776,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ):
   dots_deep_wounds = target -> get_dot( "deep_wounds", &p );
   dots_ravager = target -> get_dot( "ravager", &p );
   dots_rend = target -> get_dot( "rend", &p );
+  dots_trauma = target -> get_dot( "trauma", &p );
 
   debuffs_colossus_smash = buff_creator_t( *this, "colossus_smash" )
     .default_value( p.spell.colossus_smash_debuff -> effectN( 3 ).percent() )
