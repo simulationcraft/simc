@@ -46,6 +46,7 @@ public:
   struct
   {
     buff_t* blade_dance;
+    buff_t* blur;
   } buff;
 
   // Talents
@@ -57,6 +58,8 @@ public:
   struct
   {
     const spell_data_t* blade_dance;
+    const spell_data_t* blur;
+    const spell_data_t* chaos_nova;
     const spell_data_t* chaos_strike;
     const spell_data_t* chaos_strike_refund;
   } spec;
@@ -318,6 +321,29 @@ struct demon_hunter_spell_t: public demon_hunter_action_t < spell_t >
   }
 };
 
+namespace spells
+{
+
+// Blur ===============================================================
+
+struct blur_t : public demon_hunter_spell_t
+{
+  blur_t( demon_hunter_t* p, const std::string& options_str ) :
+    demon_hunter_spell_t( "blur", p, p -> spec.blur )
+  {
+    parse_options( options_str );
+  }
+
+  void execute() override
+  {
+    demon_hunter_spell_t::execute();
+
+    p() -> buff.blur -> trigger();
+  }
+};
+
+} // end namespace spells
+
 // ==========================================================================
 // Demon Hunter attacks
 // ==========================================================================
@@ -541,6 +567,19 @@ struct blade_dance_parent_t: public demon_hunter_attack_t
   }
 };
 
+// Chaos Nova ===============================================================
+
+struct chaos_nova_t : public demon_hunter_attack_t
+{
+  chaos_nova_t( demon_hunter_t* p, const std::string& options_str ) :
+    demon_hunter_attack_t( "chaos_nova", p, p -> spec.chaos_nova )
+  {
+    parse_options( options_str );
+
+    aoe = -1;
+  }
+};
+
 // Chaos Strike =============================================================
 
 struct chaos_strike_t : public demon_hunter_attack_t
@@ -696,9 +735,9 @@ struct eye_beam_t : public demon_hunter_attack_t
 };
 
 
-}  // attacks namespace
+}  // end namespace attacks
 
-}  // NAMESPACE actions
+}  // end namespace actions
 
 namespace buffs
 {
@@ -804,8 +843,12 @@ stat_e demon_hunter_t::convert_hybrid_stat( stat_e s ) const
 
 double demon_hunter_t::matching_gear_multiplier( attribute_e attr ) const
 {
-  // TODO: implement
-  (void) attr;
+  // TODO: Find in spell data... somewhere.
+  if ( attr == STAT_AGILITY && specialization() == DEMON_HUNTER_HAVOC )
+    return 0.05;
+
+  if ( attr == STAT_STAMINA && specialization() == DEMON_HUNTER_VENGEANCE ) // TOCHECK
+    return 0.05;
 
   return 0.0;
 }
@@ -817,6 +860,8 @@ double demon_hunter_t::composite_dodge() const
   double d = player_t::composite_dodge();
 
   d += buff.blade_dance -> check_value();
+  
+  d += buff.blur -> check() * buff.blur -> data().effectN( 2 ).percent();
 
   return d;
 }
@@ -826,10 +871,12 @@ double demon_hunter_t::composite_dodge() const
 action_t* demon_hunter_t::create_action( const std::string& name,
                                          const std::string& options_str )
 {
+  using namespace actions::spells;
+  if ( name == "blur"         ) return new blur_t              ( this, options_str );
   using namespace actions::attacks;
-
   if ( name == "auto_attack"  ) return new auto_attack_t       ( this, options_str );
   if ( name == "blade_dance"  ) return new blade_dance_parent_t( this, options_str );
+  if ( name == "chaos_nova"   ) return new chaos_nova_t        ( this, options_str );
   if ( name == "chaos_strike" ) return new chaos_strike_t      ( this, options_str );
   if ( name == "demons_bite"  ) return new demons_bite_t       ( this, options_str );
   if ( name == "eye_beam"     ) return new eye_beam_t          ( this, options_str );
@@ -928,7 +975,10 @@ void demon_hunter_t::init_spells()
 {
   base_t::init_spells();
 
+  // General
   spec.blade_dance         = find_class_spell( "Blade Dance" );
+  spec.blur                = find_class_spell( "Blur" );
+  spec.chaos_nova          = find_class_spell( "Chaos Nova" );
   spec.chaos_strike        = find_class_spell( "Chaos Strike" );
   spec.chaos_strike_refund = find_spell( 197125 );
 
@@ -950,9 +1000,14 @@ void demon_hunter_t::create_buffs()
   base_t::create_buffs();
 
   // General
+
   buff.blade_dance = buff_creator_t( this, "blade_dance", spec.blade_dance )
                      .default_value( spec.blade_dance -> effectN( 3 ).percent() )
                      .add_invalidate( CACHE_DODGE );
+
+  buff.blur        = buff_creator_t( this, "blur", spec.blur -> effectN( 1 ).trigger() )
+                     .default_value( spec.blur -> effectN( 1 ).trigger() -> effectN( 3 ).percent() )
+                     .cd( timespan_t::zero() );
 
   // Havoc
 
@@ -1072,6 +1127,8 @@ void demon_hunter_t::target_mitigation( school_e school, dmg_e dt,
                                         action_state_t* s )
 {
   base_t::target_mitigation( school, dt, s );
+
+  s -> result_amount *= 1.0 + buff.blur -> value();
 }
 
 void demon_hunter_t::invalidate_cache( cache_e c )
