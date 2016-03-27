@@ -18,7 +18,7 @@ WINDWALKER:
 - Serenity - Double check if Strength of Xuen Artifact trait works with Serenity
 - Transfer of Power - Get actual duration and max stacks of the buff
 - Check if SEF uses Strike of the Windlord
-- Update Crosswind's targeting system.
+- Update Crosswinds targeting system.
 
 MISTWEAVER: 
 - Gusts of Mists - Check calculations
@@ -2825,8 +2825,11 @@ struct fists_of_fury_t: public monk_melee_attack_t
     monk_melee_attack_t::tick( d );
 
     // Trigger after the first tick
-    if ( crosswinds_trigger && p() -> artifact.crosswinds.rank() )
-      crosswinds -> execute();
+    if ( crosswinds_trigger )
+    {
+      if ( p() -> artifact.crosswinds.rank() )
+        crosswinds -> execute();
+    }
 
     crosswinds_trigger = false;
   }
@@ -5729,7 +5732,7 @@ void monk_t::init_spells()
 
   // Windwalker
   artifact.acrobatics                 = find_artifact_spell( "Acrobatics" );
-  artifact.crosswinds                 = find_artifact_spell( "Crosswind" );
+  artifact.crosswinds                 = find_artifact_spell( "Crosswinds" );
   artifact.dark_skies                 = find_artifact_spell( "Dark Skies" );
   artifact.death_art                  = find_artifact_spell( "Death Art" );
   artifact.fists_of_the_wind          = find_artifact_spell( "Fists of the Wind" );
@@ -6013,7 +6016,7 @@ void monk_t::create_buffs()
     .duration( spec.ironskin_brew -> duration() + ( artifact.potent_kick.rank() ? timespan_t::from_seconds( artifact.potent_kick.value() ) : timespan_t::zero() ) )
     .refresh_behavior( BUFF_REFRESH_EXTEND );
 
-  buff.keg_smash_talent = buff_creator_t( this, "keg_smash", talent.secret_ingredients->effectN( 1 ).trigger() )
+  buff.keg_smash_talent = buff_creator_t( this, "keg_smash", talent.secret_ingredients -> effectN( 1 ).trigger() )
     .chance( talent.secret_ingredients -> proc_chance() ); 
 
   buff.gift_of_the_ox = buff_creator_t( this, "gift_of_the_ox" , passives.gift_of_the_ox_summon )
