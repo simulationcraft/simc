@@ -62,6 +62,7 @@ public:
     const spell_data_t* chaos_nova;
     const spell_data_t* chaos_strike;
     const spell_data_t* chaos_strike_refund;
+    const spell_data_t* consume_magic;
   } spec;
 
   // Mastery Spells
@@ -324,7 +325,7 @@ struct demon_hunter_spell_t: public demon_hunter_action_t < spell_t >
 namespace spells
 {
 
-// Blur ===============================================================
+// Blur =====================================================================
 
 struct blur_t : public demon_hunter_spell_t
 {
@@ -339,6 +340,38 @@ struct blur_t : public demon_hunter_spell_t
     demon_hunter_spell_t::execute();
 
     p() -> buff.blur -> trigger();
+  }
+};
+
+// Consume Magic ============================================================
+
+struct consume_magic_t : public demon_hunter_spell_t
+{
+  consume_magic_t( demon_hunter_t* p, const std::string& options_str ) :
+    demon_hunter_spell_t( "consume_magic", p, p -> spec.consume_magic )
+  {
+    parse_options( options_str );
+
+    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+    ignore_false_positive = true;
+  }
+
+  void execute() override
+  {
+    demon_hunter_spell_t::execute();
+
+    if ( p() -> specialization() == DEMON_HUNTER_HAVOC )
+    {
+      p() -> resource_gain( RESOURCE_FURY, p() -> resources.max[ RESOURCE_FURY ], action_gain );
+    }
+  }
+
+  bool ready() override
+  {
+    if ( ! target -> debuffs.casting -> check() )
+      return false;
+
+    return demon_hunter_spell_t::ready();
   }
 };
 
@@ -872,14 +905,15 @@ action_t* demon_hunter_t::create_action( const std::string& name,
                                          const std::string& options_str )
 {
   using namespace actions::spells;
-  if ( name == "blur"         ) return new blur_t              ( this, options_str );
+  if ( name == "blur"          ) return new blur_t              ( this, options_str );
+  if ( name == "consume_magic" ) return new consume_magic_t     ( this, options_str );
   using namespace actions::attacks;
-  if ( name == "auto_attack"  ) return new auto_attack_t       ( this, options_str );
-  if ( name == "blade_dance"  ) return new blade_dance_parent_t( this, options_str );
-  if ( name == "chaos_nova"   ) return new chaos_nova_t        ( this, options_str );
-  if ( name == "chaos_strike" ) return new chaos_strike_t      ( this, options_str );
-  if ( name == "demons_bite"  ) return new demons_bite_t       ( this, options_str );
-  if ( name == "eye_beam"     ) return new eye_beam_t          ( this, options_str );
+  if ( name == "auto_attack"   ) return new auto_attack_t       ( this, options_str );
+  if ( name == "blade_dance"   ) return new blade_dance_parent_t( this, options_str );
+  if ( name == "chaos_nova"    ) return new chaos_nova_t        ( this, options_str );
+  if ( name == "chaos_strike"  ) return new chaos_strike_t      ( this, options_str );
+  if ( name == "demons_bite"   ) return new demons_bite_t       ( this, options_str );
+  if ( name == "eye_beam"      ) return new eye_beam_t          ( this, options_str );
 
   return base_t::create_action( name, options_str );
 }
@@ -981,6 +1015,7 @@ void demon_hunter_t::init_spells()
   spec.chaos_nova          = find_class_spell( "Chaos Nova" );
   spec.chaos_strike        = find_class_spell( "Chaos Strike" );
   spec.chaos_strike_refund = find_spell( 197125 );
+  spec.consume_magic       = find_class_spell( "Consume Magic" );
 
   if ( spec.blade_dance -> ok() )
   {
