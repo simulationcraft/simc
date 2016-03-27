@@ -3234,29 +3234,6 @@ struct flaming_keg_t: public monk_melee_attack_t
 };
 
 // ==========================================================================
-// Special Delivery
-// ==========================================================================
-
-struct special_delivery_t : public monk_melee_attack_t
-{
-  special_delivery_t( monk_t* p ) :
-    monk_melee_attack_t( "special_delivery", p, p -> passives.special_delivery )
-  {
-    background = true;
-    mh = &( player -> main_hand_weapon );
-    oh = &( player -> off_hand_weapon );
-    trigger_gcd = timespan_t::zero();
-    aoe = -1;
-    radius = data().effectN( 1 ).radius();
-  }
-
-  virtual double cost() const override
-  {
-    return 0;
-  }
-};
-
-// ==========================================================================
 // Touch of Death
 // ==========================================================================
 // TODO: Figure out how Gale Burst is registered in the combat logs.
@@ -3959,16 +3936,47 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
 };
 
 // ==========================================================================
+// Special Delivery
+// ==========================================================================
+
+struct special_delivery_t : public monk_spell_t
+{
+  special_delivery_t( monk_t& p ) :
+    monk_spell_t( "special_delivery", &p, p.passives.special_delivery )
+  {
+    background = true;
+    trigger_gcd = timespan_t::zero();
+    aoe = -1;
+    attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
+    radius = data().effectN( 1 ).radius();
+  }
+
+  virtual bool ready() override
+  {
+    return p() -> talent.special_delivery -> ok();
+  }
+
+  timespan_t travel_time() const override
+  {
+    return timespan_t::from_seconds( p() -> talent.special_delivery -> effectN( 1 ).base_value() );
+  }
+
+  virtual double cost() const override
+  {
+    return 0;
+  }
+};
+
+// ==========================================================================
 // Ironskin Brew
 // ==========================================================================
 
 struct ironskin_brew_t : public monk_spell_t
 {
-//  special_delivery_t* delivery;
+  special_delivery_t* delivery;
 
   ironskin_brew_t( monk_t& p, const std::string& options_str ):
     monk_spell_t( "ironskin_brew", &p, p.spec.ironskin_brew )
-//    delivery( new special_delivery_t( &p ) )
   {
     parse_options( options_str );
 
@@ -3978,6 +3986,9 @@ struct ironskin_brew_t : public monk_spell_t
     cooldown             = p.cooldown.brewmaster_active_mitigation;
     cooldown -> duration = p.find_spell( id ) -> cooldown() + p.talent.light_brewing -> effectN( 1 ).time_value(); // Saved as -5000
     cooldown -> charges  = p.find_spell( id ) -> charges() + p.talent.light_brewing -> effectN( 2 ).base_value();
+
+    if ( p.talent.special_delivery -> ok() )
+      delivery = new special_delivery_t( p );
   }
 
   void execute() override
@@ -3990,6 +4001,12 @@ struct ironskin_brew_t : public monk_spell_t
     {
       if ( p() -> cooldown.healing_elixirs -> up() )
         p() -> active_actions.healing_elixir -> execute();
+    }
+
+    if ( p() -> talent.special_delivery -> ok() )
+    {
+      if ( rng().roll( p() ->talent.special_delivery -> proc_chance() ) )
+        delivery -> execute();
     }
 
     if ( p() -> artifact.swift_as_a_coursing_river.rank() )
@@ -4006,11 +4023,10 @@ struct ironskin_brew_t : public monk_spell_t
 
 struct purifying_brew_t: public monk_spell_t
 {
-//  special_delivery_t* delivery;
+  special_delivery_t* delivery;
 
   purifying_brew_t( monk_t& p, const std::string& options_str ):
     monk_spell_t( "purifying_brew", &p, p.spec.purifying_brew )
-//    delivery( new special_delivery_t( &p ) )
   {
     parse_options( options_str );
 
@@ -4020,6 +4036,9 @@ struct purifying_brew_t: public monk_spell_t
     cooldown             = p.cooldown.brewmaster_active_mitigation;
     cooldown -> duration = p.find_spell( id ) -> cooldown() + p.talent.light_brewing -> effectN( 1 ).time_value(); // Saved as -5000
     cooldown -> charges  = p.find_spell( id ) -> charges() + p.talent.light_brewing -> effectN( 2 ).base_value();
+
+    if ( p.talent.special_delivery -> ok() )
+      delivery = new special_delivery_t( p );
   }
 
   bool ready() override
@@ -4079,6 +4098,12 @@ struct purifying_brew_t: public monk_spell_t
     {
       if ( p() -> cooldown.healing_elixirs -> up() )
         p() -> active_actions.healing_elixir -> execute();
+    }
+
+    if ( p() -> talent.special_delivery -> ok() )
+    {
+      if ( rng().roll( p() ->talent.special_delivery -> proc_chance() ) )
+        delivery -> execute();
     }
 
     if ( p() -> artifact.swift_as_a_coursing_river.rank() )
@@ -4538,6 +4563,11 @@ struct extend_life_t: public monk_heal_t
     dot_duration = timespan_t::zero();
   }
 
+  virtual bool ready() override
+  {
+    return p() -> specialization() == MONK_MISTWEAVER;
+  }
+
   virtual double cost() const override
   {
     return 0;
@@ -4915,6 +4945,11 @@ struct gift_of_the_ox_t: public monk_heal_t
     trigger_gcd = timespan_t::zero();
   }
 
+  virtual bool ready() override
+  {
+    return p() -> specialization() == MONK_BREWMASTER;
+  }
+
   double action_multiplier() const override
   {
     double am = monk_heal_t::action_multiplier();
@@ -4950,6 +4985,11 @@ struct greater_gift_of_the_ox_t: public monk_heal_t
     background = true;
     target = &p;
     trigger_gcd = timespan_t::zero();
+  }
+
+  virtual bool ready() override
+  {
+    return p() -> specialization() == MONK_BREWMASTER;
   }
 
   double action_multiplier() const override
@@ -5161,6 +5201,14 @@ struct chi_burst_t: public monk_spell_t
     attack_power_mod.direct = 2.75; // hardcoded
   }
 
+  virtual bool ready() override
+  {
+    if ( p() -> talent.chi_burst -> ok() )
+      return monk_spell_t::ready();
+
+    return false;
+  }
+
   virtual void execute() override
   {
     monk_spell_t::execute();
@@ -5257,6 +5305,11 @@ struct celestial_fortune_t : public monk_heal_t
     return am;
   }
 */
+
+  virtual bool ready() override
+  {
+    return p() -> specialization() == MONK_BREWMASTER;
+  }
 
   virtual void execute() override
   {
