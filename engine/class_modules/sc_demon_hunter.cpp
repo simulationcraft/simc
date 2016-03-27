@@ -616,6 +616,26 @@ struct demons_bite_t : public demon_hunter_attack_t
   }
 };
 
+// Eye Beam =================================================================
+/* TODO: Eye Beam haste mechanics. Verify # of ticks (spell data says 2 sec duration, 
+  200 ms interval, but obviously that doesn't work out to the 9 ticks the tooltip states. */
+
+struct eye_beam_t : public demon_hunter_attack_t
+{
+  eye_beam_t( demon_hunter_t* p, const std::string& options_str ) :
+    demon_hunter_attack_t( "eye_beam", p, p -> find_class_spell( "Eye Beam" ) )
+  {
+    parse_options( options_str );
+
+    const spell_data_t* damage_spell = p -> find_spell( 198030 );
+    attack_power_mod.tick = damage_spell -> effectN( 1 ).ap_coeff();
+    school = damage_spell -> get_school_type();
+
+    direct_tick = tick_zero = true;
+    aoe = -1;
+  }
+};
+
 
 }  // attacks namespace
 
@@ -734,9 +754,10 @@ action_t* demon_hunter_t::create_action( const std::string& name,
   using namespace actions::attacks;
 
   if ( name == "auto_attack"  ) return new auto_attack_t       ( this, options_str );
+  if ( name == "blade_dance"  ) return new blade_dance_parent_t( this, options_str );
   if ( name == "chaos_strike" ) return new chaos_strike_t      ( this, options_str );
   if ( name == "demons_bite"  ) return new demons_bite_t       ( this, options_str );
-  if ( name == "blade_dance"  ) return new blade_dance_parent_t( this, options_str );
+  if ( name == "eye_beam"     ) return new eye_beam_t          ( this, options_str );
 
   return base_t::create_action( name, options_str );
 }
