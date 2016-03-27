@@ -45,7 +45,8 @@ public:
   // Buffs
   struct
   {
-  } buffs;
+    buff_t* blade_dance;
+  } buff;
 
   // Talents
   struct
@@ -56,6 +57,8 @@ public:
   struct
   {
     const spell_data_t* blade_dance;
+    const spell_data_t* chaos_strike;
+    const spell_data_t* chaos_strike_refund;
   } spec;
 
   // Mastery Spells
@@ -71,7 +74,8 @@ public:
   // Gains
   struct
   {
-  } gains;
+    gain_t* fury_refund;
+  } gain;
 
   // Benefits
   struct
@@ -107,6 +111,7 @@ public:
   demon_hunter_t( sim_t* sim, const std::string& name, race_e r );
 
   // player_t overrides
+  void init() override;
   void init_base_stats() override;
   void init_procs() override;
   void init_resources( bool force ) override;
@@ -130,6 +135,7 @@ public:
   role_e primary_role() const override;
   stat_e convert_hybrid_stat( stat_e s ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
+  double composite_dodge() const override;
   void invalidate_cache( cache_e ) override;
   void target_mitigation( school_e, dmg_e, action_state_t* ) override;
   void init_action_list() override;
@@ -142,6 +148,8 @@ private:
   void create_benefits();
   void apl_precombat();
   void apl_default();
+  void apl_havoc();
+  void apl_vengeance();
   demon_hunter_td_t* find_target_data( player_t* target ) const;
 
   target_specific_t<demon_hunter_td_t> _target_data;
@@ -321,6 +329,21 @@ struct demon_hunter_attack_t: public demon_hunter_action_t < melee_attack_t >
   {
     special = true;
   }
+  
+  virtual void execute() override
+  {
+    base_t::execute();
+
+    if ( ! result_is_hit( execute_state -> result ) && resource_consumed > 0 )
+    {
+      trigger_fury_refund();
+    }
+  }
+
+  void trigger_fury_refund()
+  {
+    player -> resource_gain( RESOURCE_FURY, resource_consumed * 0.80, p() -> gain.fury_refund );
+  }
 };
 
 namespace attacks
@@ -397,15 +420,6 @@ struct melee_t : public demon_hunter_attack_t
 
     demon_hunter_attack_t::execute();
   }
-
-  void impact( action_state_t* s ) override
-  {
-    demon_hunter_attack_t::impact( s );
-
-    // FIXME: Pulled this number out of my ass for testing purposes.
-    if ( result_is_hit( s -> result ) )
-      p() -> resource_gain( RESOURCE_FURY, weapon -> swing_time.total_seconds() * 2, action_gain );
-  }
 };
 
 // Auto Attack ==============================================================
@@ -416,7 +430,6 @@ struct auto_attack_t : public demon_hunter_attack_t
     demon_hunter_attack_t( "auto_attack", p )
   {
     parse_options( options_str );
-    assert( p -> main_hand_weapon.type != WEAPON_NONE );
 
     ignore_false_positive = true;
     range = 5;
@@ -426,13 +439,10 @@ struct auto_attack_t : public demon_hunter_attack_t
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
     p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
 
-    if ( p -> off_hand_weapon.type != WEAPON_NONE )
-    {
-      p -> off_hand_attack = new melee_t( "auto_attack_oh", p );
-      p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
-      p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
-      p -> off_hand_attack -> id = 1;
-    }
+    p -> off_hand_attack = new melee_t( "auto_attack_oh", p );
+    p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
+    p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
+    p -> off_hand_attack -> id = 1;
   }
 
   void execute() override
@@ -442,7 +452,7 @@ struct auto_attack_t : public demon_hunter_attack_t
       p() -> main_hand_attack -> schedule_execute();
     }
 
-    if ( p() -> off_hand_attack && p() -> off_hand_attack -> execute_event == nullptr )
+    if ( p() -> off_hand_attack -> execute_event == nullptr )
     {
       p() -> off_hand_attack -> schedule_execute();
     }
@@ -457,8 +467,7 @@ struct auto_attack_t : public demon_hunter_attack_t
       if ( p() -> main_hand_attack -> execute_event == nullptr )
         return ready;
 
-      // Don't check for execute_event if we don't have an offhand.
-      if ( p() -> off_hand_attack && p() -> off_hand_attack -> execute_event == nullptr )
+      if ( p() -> off_hand_attack -> execute_event == nullptr )
         return ready;
     }
 
@@ -483,7 +492,7 @@ struct blade_dance_event_t: public event_t
   demon_hunter_t* dh;
   size_t attacks;
 
-  blade_dance_event_t( demon_hunter_t*p, size_t current_attack ):
+  blade_dance_event_t( demon_hunter_t* p, size_t current_attack ):
     event_t( *p -> sim ), dh( p ), attacks( current_attack )
   {
     duration = next_execute();
@@ -513,7 +522,6 @@ struct blade_dance_parent_t: public demon_hunter_attack_t
     demon_hunter_attack_t( "blade_dance", p, p -> spec.blade_dance )
   {
     parse_options( options_str );
-    weapon = &( p -> main_hand_weapon );
 
     for ( size_t i = 0; i < p -> blade_dance_attacks.size(); i++ )
     {
@@ -525,18 +533,11 @@ struct blade_dance_parent_t: public demon_hunter_attack_t
   {
     demon_hunter_attack_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) ) // If the first attack fails to land, the rest do too. 
+    if ( result_is_hit( execute_state -> result ) ) // If the first attack fails to land, the rest do too. TOCHECK
     {
       p() -> blade_dance_driver = new ( *sim ) blade_dance_event_t( p(), 0 );
+      p() -> buff.blade_dance -> trigger();
     }
-  }
-
-  bool ready() override
-  {
-    if ( p() -> main_hand_weapon.type == WEAPON_NONE )
-      return false;
-
-    return demon_hunter_attack_t::ready();
   }
 };
 
@@ -546,45 +547,81 @@ struct chaos_strike_t : public demon_hunter_attack_t
 {
   struct chaos_strike_oh_t : public demon_hunter_attack_t
   {
-    chaos_strike_oh_t( demon_hunter_t* p ) :
-      demon_hunter_attack_t( "chaos_strike", p, p -> find_spell( 199547 ) )
+    chaos_strike_t* parent;
+    double refund_amount;
+
+    chaos_strike_oh_t( demon_hunter_t* p, chaos_strike_t* mh ) :
+      demon_hunter_attack_t( "chaos_strike_oh", p, p -> find_spell( 199547 ) ),
+      parent( mh )
     {
       may_miss = may_parry = may_dodge = false;
       weapon = &( p -> off_hand_weapon );
+
+      refund_amount = p -> spec.chaos_strike_refund -> effectN( 1 ).resource( RESOURCE_FURY );
+    }
+
+    // Use crit roll of the primary hit.
+    double composite_crit() const override
+    { return parent -> is_critical; }
+
+    void execute() override
+    {
+      if ( parent -> is_critical )
+      {
+        p() -> resource_gain( RESOURCE_FURY, refund_amount, parent -> action_gain );
+      }
+
+      demon_hunter_attack_t::execute();
     }
   };
 
+  struct chaos_strike_event_t: public event_t
+  {
+    chaos_strike_oh_t* off_hand;
+
+    chaos_strike_event_t( demon_hunter_t* p, chaos_strike_oh_t* oh ) :
+      event_t( *p -> sim ), off_hand( oh )
+    {
+      add_event( timespan_t::from_millis( p -> spec.chaos_strike -> effectN( 3 ).misc_value1() ) );
+    }
+
+    const char* name() const override
+    { return "Chaos Strike"; }
+
+    void execute() override
+    { off_hand -> execute(); }
+  };
+
   chaos_strike_oh_t* off_hand;
+  bool is_critical;
 
   chaos_strike_t( demon_hunter_t* p, const std::string& options_str ) :
     demon_hunter_attack_t( "chaos_strike", p, p -> find_class_spell( "Chaos Strike" ) )
   {
     parse_options( options_str );
 
-    if ( p -> off_hand_weapon.type != WEAPON_NONE )
-    {
-      off_hand = new chaos_strike_oh_t( p );
-      add_child( off_hand );
-    }
+    off_hand = new chaos_strike_oh_t( p, this );
+    add_child( off_hand );
   }
 
   void impact( action_state_t* s ) override
   {
     demon_hunter_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) && p() -> off_hand_weapon.type != WEAPON_NONE ) // TOCHECK
-    {
-      off_hand -> target = target;
-      off_hand -> execute();
-    }
+    if ( s -> result == RESULT_CRIT )
+      is_critical = true;
   }
 
-  void consume_resource() override
+  void execute() override
   {
-    if ( execute_state -> result == RESULT_CRIT )
-      return;
+    is_critical = false;
 
-    demon_hunter_attack_t::consume_resource();
+    demon_hunter_attack_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      new ( *sim ) chaos_strike_event_t( p(), off_hand );
+    }
   }
 };
 
@@ -622,17 +659,39 @@ struct demons_bite_t : public demon_hunter_attack_t
 
 struct eye_beam_t : public demon_hunter_attack_t
 {
+  // TOCHECK: Direct or tick?
+  struct eye_beam_tick_t : public demon_hunter_attack_t
+  {
+    eye_beam_tick_t( demon_hunter_t* p ) :
+      demon_hunter_attack_t( "eye_beam_tick", p, p -> find_spell( 198030 ) )
+    {
+      aoe = -1;
+      dual = background = true;
+    }
+  };
+
+  eye_beam_tick_t* beam;
+
   eye_beam_t( demon_hunter_t* p, const std::string& options_str ) :
     demon_hunter_attack_t( "eye_beam", p, p -> find_class_spell( "Eye Beam" ) )
   {
     parse_options( options_str );
 
-    const spell_data_t* damage_spell = p -> find_spell( 198030 );
-    attack_power_mod.tick = damage_spell -> effectN( 1 ).ap_coeff();
-    school = damage_spell -> get_school_type();
+    beam = new eye_beam_tick_t( p );
+    beam -> stats = stats;
 
-    direct_tick = tick_zero = true;
-    aoe = -1;
+    hasted_ticks = false;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    demon_hunter_attack_t::tick( d );
+
+    if ( d -> current_tick > 1 ) // first "tick" doesn't deal damage
+    {
+      beam -> target = target;
+      beam -> execute();
+    }
   }
 };
 
@@ -660,12 +719,12 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
 
 demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r ) :
   player_t( sim, DEMON_HUNTER, name, r ),
-  buffs(),
+  buff(),
   talents(),
   spec(),
   mastery_spells(),
   cooldowns(),
-  gains(),
+  gain(),
   benefits(),
   proc(),
   active_spells(),
@@ -696,6 +755,7 @@ void demon_hunter_t::create_cooldowns()
  */
 void demon_hunter_t::create_gains()
 {
+  gain.fury_refund = get_gain( "fury_refund" );
 }
 
 /* Construct benefits
@@ -740,6 +800,8 @@ stat_e demon_hunter_t::convert_hybrid_stat( stat_e s ) const
   }
 }
 
+// demon_hunter_t::matching_gear_multiplier =================================
+
 double demon_hunter_t::matching_gear_multiplier( attribute_e attr ) const
 {
   // TODO: implement
@@ -747,6 +809,19 @@ double demon_hunter_t::matching_gear_multiplier( attribute_e attr ) const
 
   return 0.0;
 }
+
+// demon_hunter_t::composite_dodge ==========================================
+
+double demon_hunter_t::composite_dodge() const
+{
+  double d = player_t::composite_dodge();
+
+  d += buff.blade_dance -> check_value();
+
+  return d;
+}
+
+// demon_hunter_t::create_action ============================================
 
 action_t* demon_hunter_t::create_action( const std::string& name,
                                          const std::string& options_str )
@@ -783,6 +858,18 @@ pet_t* demon_hunter_t::create_pet( const std::string& pet_name,
 void demon_hunter_t::create_pets()
 {
   base_t::create_pets();
+}
+
+// demon_hunter_t::init ============================================================
+
+void demon_hunter_t::init()
+{
+  player_t::init();
+
+  if ( specialization() == DEMON_HUNTER_VENGEANCE )
+  {
+    sim -> errorf( "%s is using an unsupported spec.", name() );
+  }
 }
 
 // demon_hunter_t::init_base_stats ==========================================
@@ -827,8 +914,7 @@ void demon_hunter_t::init_scaling()
 {
   base_t::init_scaling();
 
-  if ( off_hand_weapon.type != WEAPON_NONE )
-    scales_with[ STAT_WEAPON_OFFHAND_DPS ] = true;
+  scales_with[ STAT_WEAPON_OFFHAND_DPS ] = true;
 
   if ( specialization() == DEMON_HUNTER_VENGEANCE )
     scales_with[ STAT_BONUS_ARMOR ] = true;
@@ -842,13 +928,15 @@ void demon_hunter_t::init_spells()
 {
   base_t::init_spells();
 
-  spec.blade_dance = find_class_spell( "Blade Dance" );
+  spec.blade_dance         = find_class_spell( "Blade Dance" );
+  spec.chaos_strike        = find_class_spell( "Chaos Strike" );
+  spec.chaos_strike_refund = find_spell( 197125 );
 
   if ( spec.blade_dance -> ok() )
   {
-    actions::attacks::blade_dance_attack_t* first = new actions::attacks::blade_dance_attack_t( this, spec.blade_dance -> effectN( 5 ).trigger(), "blade_dance1" );
-    actions::attacks::blade_dance_attack_t* second = new actions::attacks::blade_dance_attack_t( this, spec.blade_dance -> effectN( 6 ).trigger(), "blade_dance2" );
-    actions::attacks::blade_dance_attack_t* third = new actions::attacks::blade_dance_attack_t( this, spec.blade_dance -> effectN( 7 ).trigger(), "blade_dance3" );
+    actions::attacks::blade_dance_attack_t* first = new actions::attacks::blade_dance_attack_t( this, spec.blade_dance -> effectN( 5 ).trigger(), "blade_dance2" );
+    actions::attacks::blade_dance_attack_t* second = new actions::attacks::blade_dance_attack_t( this, spec.blade_dance -> effectN( 6 ).trigger(), "blade_dance3" );
+    actions::attacks::blade_dance_attack_t* third = new actions::attacks::blade_dance_attack_t( this, spec.blade_dance -> effectN( 7 ).trigger(), "blade_dance4" );
     this -> blade_dance_attacks.push_back( first );
     this -> blade_dance_attacks.push_back( second );
     this -> blade_dance_attacks.push_back( third );
@@ -860,6 +948,15 @@ void demon_hunter_t::init_spells()
 void demon_hunter_t::create_buffs()
 {
   base_t::create_buffs();
+
+  // General
+  buff.blade_dance = buff_creator_t( this, "blade_dance", spec.blade_dance )
+                     .default_value( spec.blade_dance -> effectN( 3 ).percent() )
+                     .add_invalidate( CACHE_DODGE );
+
+  // Havoc
+
+  // Vengeance
 }
 
 // ALL Spec Pre-Combat Action Priority List
@@ -877,6 +974,20 @@ bool demon_hunter_t::has_t18_class_trinket() const
 // NO Spec Combat Action Priority List
 
 void demon_hunter_t::apl_default()
+{
+  //action_priority_list_t* def = get_action_priority_list( "default" );
+}
+
+// Havoc Combat Action Priority List
+
+void demon_hunter_t::apl_havoc()
+{
+  //action_priority_list_t* def = get_action_priority_list( "default" );
+}
+
+// Vengeance Combat Action Priority List
+
+void demon_hunter_t::apl_vengeance()
 {
   //action_priority_list_t* def = get_action_priority_list( "default" );
 }
@@ -902,6 +1013,17 @@ demon_hunter_td_t* demon_hunter_t::find_target_data( player_t* target ) const
 
 void demon_hunter_t::init_action_list()
 {
+  // FIXME
+  /* if ( main_hand_weapon.type == WEAPON_NONE || off_hand_weapon.type == WEAPON_NONE )
+  {
+    if ( ! quiet )
+    {
+      sim -> errorf( "Player %s does not have a valid main-hand and off-hand weapon.", name() );
+    }
+    quiet = true;
+    return;
+  } */
+
   if ( !action_list_str.empty() )
   {
     player_t::init_action_list();
@@ -909,12 +1031,18 @@ void demon_hunter_t::init_action_list()
   }
   clear_action_priority_lists();
 
-  apl_precombat();  // PRE-COMBAT
+  apl_precombat(); // PRE-COMBAT
 
   switch ( specialization() )
   {
+    case DEMON_HUNTER_HAVOC:
+      apl_havoc();
+      break;
+    case DEMON_HUNTER_VENGEANCE:
+      apl_vengeance();
+      break;
     default:
-      apl_default();  // DEFAULT
+      apl_default(); // DEFAULT
       break;
   }
 

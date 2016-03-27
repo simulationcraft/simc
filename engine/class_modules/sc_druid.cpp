@@ -6932,6 +6932,7 @@ void druid_t::init()
   if ( specialization() == DRUID_RESTORATION )
     sim -> errorf( "%s is using an unsupported spec.", name() );
 }
+
 // druid_t::init_gains ======================================================
 
 void druid_t::init_gains()
