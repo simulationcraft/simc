@@ -8097,9 +8097,7 @@ struct druid_module_t : public module_t
     unique_gear::register_special_effect( 200815, claws_of_ursoc );
   }
 
-  virtual void register_hotfixes() const override
-  {
-  }
+  virtual void register_hotfixes() const override {}
 
   virtual void combat_begin( sim_t* ) const override {}
   virtual void combat_end( sim_t* ) const override {}
