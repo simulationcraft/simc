@@ -3209,7 +3209,7 @@ void warrior_t::init_spells()
   if ( specialization() == WARRIOR_FURY )
   { spell.indomitable = find_spell( 202095 ); }
   spell.intervene               = find_class_spell( "Intervene" );
-  spell.headlong_rush           = find_spell( 158836 ); // Stop changing this, stupid. find_spell( "headlong rush" ) will never work.
+  spell.headlong_rush           = find_spell( 137047 ); // Also may be used for other crap in the future.
   spell.heroic_leap             = find_class_spell( "Heroic Leap" );
   spell.overpower_driver = find_spell( 119938 );
   spell.revenge_trigger         = find_class_spell( "Revenge Trigger" );
