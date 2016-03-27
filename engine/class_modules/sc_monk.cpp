@@ -5705,6 +5705,7 @@ void monk_t::init_spells()
   artifact.healthy_appetite           = find_artifact_spell( "Healthy Appetite" );
   artifact.kegerator                  = find_artifact_spell( "Kegerator" );
   artifact.obsidian_fists             = find_artifact_spell( "Obsidian Fists" );
+  artifact.obstinate_determination    = find_artifact_spell( "Obstinate Determination" );
   artifact.overflow                   = find_artifact_spell( "Overflow" );
   artifact.potent_kick                = find_artifact_spell( "Potent Kick" );
   artifact.smashed                    = find_artifact_spell( "Smashed" );
