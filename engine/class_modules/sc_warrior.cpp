@@ -709,7 +709,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
   {
     base_t::execute();
 
-    if ( p() -> rppm.wrecking_ball -> trigger() )
+    if ( p() -> talents.wrecking_ball -> ok() && p() -> rppm.wrecking_ball -> trigger() )
     {
       p() -> buff.wrecking_ball -> trigger();
     }
@@ -1075,11 +1075,21 @@ struct bloodthirst_t: public warrior_attack_t
     }
   }
 
-    int n_targets() const override
+  int n_targets() const override
   {
     if ( p() -> buff.meat_cleaver -> up() )
       return aoe_targets + 1;
     return 1;
+  }
+
+  double composite_target_crit( player_t* target ) const override
+  {
+    double tc = warrior_attack_t::composite_target_crit( target );
+
+    if ( fresh_meat_crit_chance > 0 && target -> health_percentage() >= 80.0 )
+      tc += fresh_meat_crit_chance;
+
+    return tc;
   }
 
   double composite_crit() const override
@@ -1088,9 +1098,6 @@ struct bloodthirst_t: public warrior_attack_t
 
     if ( p()-> bloodthirst_crit_multiplier > 0 )
       c *= p()-> bloodthirst_crit_multiplier;
-
-    if ( fresh_meat_crit_chance > 0 && execute_state -> target -> health_percentage() >= 80.0 )
-      c += fresh_meat_crit_chance;
 
     c += p() -> buff.taste_for_blood -> check_value();
 
