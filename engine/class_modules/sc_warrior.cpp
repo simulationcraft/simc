@@ -2065,6 +2065,7 @@ struct raging_blow_t: public warrior_attack_t
     oh_attack -> weapon = &( p -> off_hand_weapon );
     add_child( oh_attack );
     cooldown -> duration += p -> talents.inner_rage -> effectN( 1 ).time_value();
+    weapon_multiplier *= 1.0 + p -> talents.inner_rage -> effectN( 3 ).percent();
   }
 
   void impact( action_state_t* s ) override
