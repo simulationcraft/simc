@@ -2055,9 +2055,11 @@ struct raging_blow_attack_t: public warrior_attack_t
 struct raging_blow_t: public warrior_attack_t
 {
   raging_blow_attack_t* oh_attack;
+  double rage_gain;
   raging_blow_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "raging_blow", p, p -> spec.raging_blow ),
-    oh_attack( nullptr )
+    oh_attack( nullptr ),
+    rage_gain( data().effectN( 2 ).resource( RESOURCE_RAGE ) )
   {
     parse_options( options_str );
 
@@ -2088,6 +2090,7 @@ struct raging_blow_t: public warrior_attack_t
     if ( result_is_hit( execute_state -> result ) )
     {
       oh_attack -> execute();
+      rage_resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.raging_blow );
     }
   }
 
