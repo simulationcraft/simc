@@ -183,8 +183,10 @@ public:
     // Brewmaster
     buff_t* bladed_armor;
     buff_t* brew_stache;
+    buff_t* dragonfire_brew;
     buff_t* elusive_brawler;
     buff_t* elusive_dance;
+    buff_t* flaming_keg;
     buff_t* fortification;
     buff_t* fortifying_brew;
     buff_t* gift_of_the_ox;
@@ -494,6 +496,8 @@ public:
     const spell_data_t* aura_brewmaster_monk;
     const spell_data_t* breath_of_fire_dot;
     const spell_data_t* celestial_fortune;
+    const spell_data_t* dragonfire_brew_damage;
+    const spell_data_t* dragonfire_brew_reduction;
     const spell_data_t* elusive_brawler;
     const spell_data_t* elusive_dance;
     const spell_data_t* gift_of_the_ox_heal;
@@ -2132,6 +2136,10 @@ struct tiger_palm_t: public monk_melee_attack_t
           }
 
           p() -> cooldown.brewmaster_active_mitigation -> adjust( timespan_t::from_seconds( time_reduction ) );
+
+          // TODO: Get the actual amount that Fortified Mind reduces Fortifying Brew's cooldown by
+          if ( p() -> talent.fortified_mind -> ok() )
+            p() -> cooldown.fortifying_brew -> adjust( timespan_t::zero() );
         }
 
         // Tiger Palm has a 30% chance to reset the cooldown of Keg Smash.
@@ -2822,8 +2830,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
 
     crosswinds_trigger = false;
   }
-
-
+  
   virtual void last_tick( dot_t* dot ) override
   {
     monk_melee_attack_t::last_tick( dot );
@@ -3182,6 +3189,36 @@ struct keg_smash_t: public monk_melee_attack_t
     // Reduces the remaining cooldown on your Brews by 4 sec.
     if ( p() -> cooldown.brewmaster_active_mitigation -> down() )
       p() -> cooldown.brewmaster_active_mitigation -> adjust( timespan_t::from_seconds( p() -> spec.keg_smash -> effectN( 3 ).base_value() ) );
+
+    // TODO: Get the actual amount that Fortified Mind reduces Fortifying Brew's cooldown by
+    if ( p() -> talent.fortified_mind -> ok() )
+      p() -> cooldown.fortifying_brew ->adjust ( timespan_t::zero() );
+  }
+};
+
+// ==========================================================================
+// Flaming Keg
+// ==========================================================================
+
+struct flaming_keg_t: public monk_melee_attack_t
+{
+
+  flaming_keg_t( monk_t& p, const std::string& options_str ):
+    monk_melee_attack_t( "flaming_keg", &p, p.artifact.flaming_keg )
+  {
+    parse_options( options_str );
+
+    aoe = -1;
+
+    mh = &( player -> main_hand_weapon );
+    oh = &( player -> off_hand_weapon );
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    monk_melee_attack_t::impact( s );
+
+    p() -> buff.flaming_keg -> trigger();
   }
 };
 
@@ -3732,6 +3769,40 @@ struct chi_orbit_t: public monk_spell_t
 // Breath of Fire
 // ==========================================================================
 
+struct dragonfire_brew : public monk_spell_t
+{
+  struct dragonfire_brew_tick : public monk_spell_t
+  {
+    dragonfire_brew_tick( monk_t& p ) :
+      monk_spell_t( "dragonfire_brew_tick", &p, p.passives.dragonfire_brew_damage )
+    {
+      background = true;
+      tick_may_crit = may_crit = true;
+      hasted_ticks = false;
+
+      // TODO: Suspect the damage part is a placeholder
+      base_dd_min = base_dd_max = p.passives.dragonfire_brew_damage -> effectN( 1 ).base_value();
+    }
+
+    virtual void execute() override
+    {
+      monk_spell_t::execute();
+
+      p() -> buff.dragonfire_brew -> trigger();
+    }
+  };
+
+  dragonfire_brew( monk_t& p ) :
+    monk_spell_t( "dragonfire_brew", &p, p.artifact.dragonfire_brew.data().effectN( 1 ).trigger() )
+  {
+    background = true;
+    tick_may_crit = may_crit = false;
+    hasted_ticks = false;
+
+    tick_action = new dragonfire_brew_tick( p );
+  }
+};
+
 struct breath_of_fire_t: public monk_spell_t
 {
   struct periodic_t: public monk_spell_t
@@ -3755,10 +3826,12 @@ struct breath_of_fire_t: public monk_spell_t
     }
   };
 
+  dragonfire_brew* dragonfire;
   periodic_t* dot_action;
   breath_of_fire_t( monk_t& p, const std::string& options_str ):
     monk_spell_t( "breath_of_fire", &p, p.spec.breath_of_fire ),
-    dot_action( new periodic_t( p ) )
+    dot_action( new periodic_t( p ) ),
+    dragonfire( new dragonfire_brew( p ) )
   {
     parse_options( options_str );
     aoe = -1;
@@ -3776,6 +3849,9 @@ struct breath_of_fire_t: public monk_spell_t
       dot_action -> target = s -> target;
       dot_action -> execute();
     }
+
+    if ( p() -> artifact.dragonfire_brew.rank() )
+      dragonfire -> execute();
   }
 };
 
@@ -3896,15 +3972,11 @@ struct ironskin_brew_t : public monk_spell_t
 
     p() -> buff.ironskin_brew -> trigger();
 
-    // TODO: Get the actual amount that Fortified Mind reduces Fortifying Brew's cooldown by
-    if ( p() -> talent.fortified_mind -> ok() )
-      p() -> cooldown.fortifying_brew -> duration += timespan_t::zero();
-
-    /*
-    if ( p() -> talent.special_delivery -> ok() )
-      if ( rng().roll( p() -> talent.special_delivery -> proc_chance() ) )
-        delivery -> execute();
-    */
+    if ( p() -> talent.healing_elixirs -> ok() )
+    {
+      if ( p() -> cooldown.healing_elixirs -> up() )
+        p() -> active_actions.healing_elixir -> execute();
+    }
 
     if ( p() -> artifact.swift_as_a_coursing_river.rank() )
       p() -> buff.swift_as_a_coursing_river -> trigger();
@@ -3965,12 +4037,20 @@ struct purifying_brew_t: public monk_spell_t
       if ( p() -> talent.elusive_dance -> ok() )
         p() -> buff.elusive_dance-> trigger( 3 );
       p() -> sample_datas.heavy_stagger_total_damage -> add( stagger_dmg );
+
+      // When clearing Moderate Stagger with Purifying Brew, you generate 1 stack of Elusive Brawler.
+      if ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T17, B4 ) )
+        p() -> buff.elusive_brawler -> trigger( p() -> sets.set( MONK_BREWMASTER, T17, B4) -> effectN( 1 ).base_value() );
     }
     else if ( stagger_pct > p() -> moderate_stagger_threshold )
     {
       if ( p() -> talent.elusive_dance -> ok() )
         p() -> buff.elusive_dance-> trigger( 2 );
       p() -> sample_datas.moderate_stagger_total_damage -> add( stagger_dmg );
+
+      // When clearing Moderate Stagger with Purifying Brew, you generate 1 stack of Elusive Brawler.
+      if ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T17, B4 ) )
+        p() -> buff.elusive_brawler -> trigger( p() -> sets.set( MONK_BREWMASTER, T17, B4) -> effectN( 1 ).base_value() );
     }
     else
     {
@@ -3981,15 +4061,11 @@ struct purifying_brew_t: public monk_spell_t
 
     p() -> sample_datas.purified_damage -> add( stagger_dmg );
 
-    // TODO: Get the actual amount that Fortified Mind reduces Fortifying Brew's cooldown by
-    if ( p() -> talent.fortified_mind -> ok() )
-      p() -> cooldown.fortifying_brew -> duration += timespan_t::zero();
-
-    /*
-    if ( p() -> talent.special_delivery -> ok() )
-      if ( rng().roll( p() -> talent.special_delivery -> proc_chance() ) )
-        delivery -> execute();
-    */
+    if ( p() -> talent.healing_elixirs -> ok() )
+    {
+      if ( p() -> cooldown.healing_elixirs -> up() )
+        p() -> active_actions.healing_elixir -> execute();
+    }
 
     if ( p() -> artifact.swift_as_a_coursing_river.rank() )
       p() -> buff.swift_as_a_coursing_river -> trigger();
@@ -5408,12 +5484,14 @@ monk( *p )
   debuff.dizzing_kicks = buff_creator_t( *this, "dizzying_kicks" )
     .spell( p -> passives.dizzying_kicks )
     .default_value( p-> passives.dizzying_kicks -> effectN( 1 ).percent() );
+
   if ( p -> specialization() == MONK_BREWMASTER )
   {
     debuff.keg_smash = buff_creator_t( *this, "keg_smash" )
       .spell( p -> spec.keg_smash )
       .default_value( p -> spec.keg_smash -> effectN( 2 ).percent() );
   }
+
   debuff.storm_earth_and_fire = buff_creator_t( *this, "storm_earth_and_fire_target" )
     .cd( timespan_t::zero() );
 
@@ -5440,6 +5518,7 @@ action_t* monk_t::create_action( const std::string& name,
   // Brewmaster
   if ( name == "blackout_strike" ) return new           blackout_strike_t( this, options_str );
   if ( name == "breath_of_fire" ) return new            breath_of_fire_t( *this, options_str );
+  if ( name == "flaming_keg" ) return new               flaming_keg_t( *this, options_str );
   if ( name == "fortifying_brew" ) return new           fortifying_brew_t( *this, options_str );
   if ( name == "gift_of_the_ox" ) return new            gift_of_the_ox_t( *this, options_str );
   if ( name == "greater_gift_of_the_ox" ) return new    greater_gift_of_the_ox_t( *this, options_str );
@@ -5738,6 +5817,8 @@ void monk_t::init_spells()
   passives.aura_brewmaster_monk             = find_spell( 137023 );
   passives.breath_of_fire_dot               = find_spell( 123725 );
   passives.celestial_fortune                = find_spell( 216521 );
+  passives.dragonfire_brew_damage           = find_spell( 213185 ); // artifact.dragonfire_brew.data().effectN( 1 ).trigger() -> effectN( 1 ).trigger()
+  passives.dragonfire_brew_reduction        = find_spell( 213186 ); // artifact.dragonfire_brew.data().effectN( 1 ).trigger() -> effectN( 2 ).trigger()
   passives.elusive_brawler                  = find_spell( 195630 );
   passives.elusive_dance                    = find_spell( 196739 );
   passives.gift_of_the_ox_heal              = find_spell( 124507 );
@@ -5907,7 +5988,10 @@ void monk_t::create_buffs()
     .default_value( artifact.brew_stache.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_DODGE );
 
-  buff.elusive_brawler = buff_creator_t( this, "elusive_brawler", passives.elusive_brawler )
+  buff.dragonfire_brew = buff_creator_t( this, "dragonfire_brew", passives.dragonfire_brew_reduction )
+    .default_value( passives.dragonfire_brew_reduction -> effectN( 1 ).percent() ); // Saved as -2%
+
+  buff.elusive_brawler = buff_creator_t( this, "elusive_brawler", mastery.elusive_brawler -> effectN( 3 ).trigger() )
     .max_stack( specialization() == MONK_BREWMASTER ? static_cast<int>( ceil( 1 / ( mastery.elusive_brawler -> effectN( 1 ).mastery_value() * 8 ) ) ) : 1 )
     .add_invalidate( CACHE_DODGE );
 
@@ -5916,7 +6000,10 @@ void monk_t::create_buffs()
     .max_stack( 3 ) // Cap of 15%
     .add_invalidate( CACHE_DODGE );
 
-  buff.brew_stache = buff_creator_t( this, "fortification", artifact.fortification.data().effectN( 1 ).trigger() )
+  buff.flaming_keg = buff_creator_t( this, "flaming_keg", artifact.flaming_keg )
+    .default_value( artifact.flaming_keg.data().effectN( 2 ).percent() );
+
+  buff.fortification = buff_creator_t( this, "fortification", artifact.fortification.data().effectN( 1 ).trigger() )
     .default_value( artifact.fortification.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_DODGE );
 
@@ -5926,7 +6013,7 @@ void monk_t::create_buffs()
     .duration( spec.ironskin_brew -> duration() + ( artifact.potent_kick.rank() ? timespan_t::from_seconds( artifact.potent_kick.value() ) : timespan_t::zero() ) )
     .refresh_behavior( BUFF_REFRESH_EXTEND );
 
-  buff.keg_smash_talent = buff_creator_t( this, "keg_smash", passives.keg_smash_buff )
+  buff.keg_smash_talent = buff_creator_t( this, "keg_smash", talent.secret_ingredients->effectN( 1 ).trigger() )
     .chance( talent.secret_ingredients -> proc_chance() ); 
 
   buff.gift_of_the_ox = buff_creator_t( this, "gift_of_the_ox" , passives.gift_of_the_ox_summon )
@@ -6624,34 +6711,16 @@ void monk_t::assess_damage(school_e school,
       if ( sets.has_set_bonus( MONK_BREWMASTER, T17, B2 ) )
         resource_gain( RESOURCE_ENERGY, passives.tier17_2pc_tank -> effectN( 1 ).base_value(), gain.energy_refund );
     }
-
-    if ( action_t::result_is_hit( s -> result ) && s -> action -> id != passives.stagger_self_damage -> id() )
-    {
-      // trigger the mastery if the player gets hit by a physical attack; but not from stagger
-      if ( school == SCHOOL_PHYSICAL )
-        buff.elusive_brawler -> trigger();
-
-      // TODO: 35% HP for Obstinate Determination is hard-coded until otherwise changed
-      // Possibly put Obstinate Determination in the assess_damage_imminent_pre_absorb function
-      // if ( artifact.obstinate_determination.rank() && s -> result_amount > 0 && resources.pct(RESORUCE_HEALTH) > 0.35 && (resources.current[RESOURCE_HEALTH] - s -> result_amount)/100 <= 0.35)
-      // factor in absorbs
-      // TODO: Check if 35% chance to proc GotO is baseline and increased by HP percent from there
-      else if ( rng().roll( 1 - ( ( 1 - spec.gift_of_the_ox -> effectN( 1 ).percent() ) * fmax( resources.pct( RESOURCE_HEALTH ), 0 ) ) ) )
-      {
-        if ( artifact.overflow.rank() )
-        { 
-          if ( rng().roll( artifact.overflow.percent() ) )
-            buff.greater_gift_of_the_ox -> trigger();
-          else
-            buff.gift_of_the_ox -> trigger();
-        }
-        else
-          buff.gift_of_the_ox -> trigger();
-      }
-    }
   }
 
-  base_t::assess_damage(school, dtype, s);
+  if ( action_t::result_is_hit( s -> result ) && s -> action -> id != passives.stagger_self_damage -> id() )
+  {
+    // trigger the mastery if the player gets hit by a physical attack; but not from stagger
+    if ( school == SCHOOL_PHYSICAL )
+      buff.elusive_brawler -> trigger();
+  }
+
+  base_t::assess_damage( school, dtype, s );
 }
 
 // monk_t::target_mitigation ====================================================
@@ -6668,22 +6737,9 @@ void monk_t::target_mitigation( school_e school,
     return;
   }
 
-  // Passive sources (Sturdy Ox)
-  if ( school != SCHOOL_PHYSICAL && specialization() == MONK_BREWMASTER )
-    // TODO: Double Check that Brewmasters mitigate 15% of Magical Damage
-    s -> result_amount *= 1.0 + spec.stagger -> effectN( 5 ).percent();
-
-  if ( artifact.shroud_of_mist.rank() )
-    s -> result_amount *= 1.0 + artifact.shroud_of_mist.value();
-
-  // Damage Reduction Cooldowns
-  if ( buff.fortifying_brew -> up() )
-    s -> result_amount *= 1.0 - spec.fortifying_brew -> effectN( 1 ).percent();
-
   // Dampen Harm // Currently reduces hits below 15% hp as well
   double dampen_health = max_health() * buff.dampen_harm -> data().effectN( 1 ).percent();
-  double dampen_result_amount = s -> result_amount;
-  if ( buff.dampen_harm -> up() && dampen_result_amount >= dampen_health )
+  if ( buff.dampen_harm -> up() && s -> result_amount >= dampen_health )
   {
     s -> result_amount *= 1.0 - buff.dampen_harm -> data().effectN( 2 ).percent(); // Dampen Harm reduction is stored as +50
     buff.dampen_harm -> decrement(); // A stack will only be removed if the reduction was applied.
@@ -6691,9 +6747,85 @@ void monk_t::target_mitigation( school_e school,
 
   // Diffuse Magic
   if ( buff.diffuse_magic -> up() && school != SCHOOL_PHYSICAL )
-    s -> result_amount *= 1.0 + buff.diffuse_magic -> default_value; // Stored as -90%
+    s -> result_amount *= 1.0 + buff.diffuse_magic -> default_value; // Stored as -60%
 
-  player_t::target_mitigation(school, dt, s);
+  // Damage Reduction Cooldowns
+  if ( buff.fortifying_brew -> up() )
+    s -> result_amount *= 1.0 - spec.fortifying_brew -> effectN( 1 ).percent();
+
+  switch ( specialization() )
+  {
+    case MONK_BREWMASTER:
+    {
+      if ( buff.flaming_keg -> up() ) 
+        s -> result_amount *= 1.0 + buff.flaming_keg -> value();
+
+      if ( buff.dragonfire_brew -> up() )
+        s -> result_amount *= 1.0 + buff.dragonfire_brew -> stack_value();
+
+      // Passive sources (Sturdy Ox)
+      if ( school != SCHOOL_PHYSICAL )
+        // TODO: Magical Damage reduction (currently set to zero, but effect is still in place)
+        s -> result_amount *= 1.0 + spec.stagger -> effectN( 5 ).percent();
+      break;
+    }
+    case MONK_MISTWEAVER:
+    {
+      if ( artifact.shroud_of_mist.rank() )
+        s -> result_amount *= 1.0 + artifact.shroud_of_mist.value();
+      break;
+    }
+  }
+
+  player_t::target_mitigation( school, dt, s );
+
+  // cap HP% at 0 HP since SimC can fall below 0 HP
+  double health_percent_after_the_hit = fmax( ( resources.current[RESOURCE_HEALTH] - s -> result_amount ) / max_health(), 0 );
+
+  if ( talent.healing_elixirs -> ok() )
+  {
+    // TODO: 35% HP for Healing Elixirs is hard-coded until otherwise changed
+    if ( resources.pct(RESOURCE_HEALTH) > 0.35 && health_percent_after_the_hit <= 0.35 && cooldown.healing_elixirs -> up() )
+      active_actions.healing_elixir -> execute();
+  }
+
+
+  // Gift of the Ox Trigger Calculations ===========================================================
+
+  if ( specialization() == MONK_BREWMASTER )
+  {
+    // Obstinate Determination is a separate roll to the normal GotO chance to proc.
+    // TODO: 35% HP for Obstinate Determination is hard-coded until otherwise changed
+    if ( artifact.obstinate_determination.rank() && s -> result_amount > 0 
+      && resources.pct(RESOURCE_HEALTH) > 0.35 && health_percent_after_the_hit <= 0.35 )
+    {
+      if ( artifact.overflow.rank() )
+      { 
+        if ( rng().roll( artifact.overflow.percent() ) )
+          buff.greater_gift_of_the_ox -> trigger();
+        else
+          buff.gift_of_the_ox -> trigger();
+      }
+      else
+        buff.gift_of_the_ox -> trigger();
+    }
+
+    double percent_of_health_lost_to_the_hit = s -> result_amount / max_health();
+    // (0.75 * PercentOfHealthLostToTheHit) * (3 - 2*HealthPercentAfterTheHit)
+    // Cap at 100% proc rate, since formula can go above 100%
+    if ( rng().roll( fmin( ( 0.75 * percent_of_health_lost_to_the_hit ) * ( 3 - 2 * health_percent_after_the_hit ), 1 ) ) )
+    {
+      if ( artifact.overflow.rank() )
+      { 
+        if ( rng().roll( artifact.overflow.percent() ) )
+          buff.greater_gift_of_the_ox -> trigger();
+        else
+          buff.gift_of_the_ox -> trigger();
+      }
+      else
+        buff.gift_of_the_ox -> trigger();
+    }
+  }
 }
 
 // monk_t::assess_damage_imminent_pre_absorb ==============================
@@ -6705,31 +6837,32 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school,
   base_t::assess_damage_imminent_pre_absorb( school, dtype, s );
 
   if ( specialization() == MONK_BREWMASTER )
-    return;
-
-  // Stagger damage can't be staggered!
-  if ( s -> action -> id == passives.stagger_self_damage -> id() )
-    return;
-
-  // Stagger Calculation
-  double stagger_dmg = 0;
-
-  if ( s -> result_amount > 0 )
   {
-    if ( school == SCHOOL_PHYSICAL )
-      stagger_dmg += s -> result_amount * stagger_pct();
+    // Stagger damage can't be staggered!
+    if ( s -> action -> id == passives.stagger_self_damage -> id() )
+      return;
 
-//    if ( school != SCHOOL_PHYSICAL && talent.soul_dance )
-//      stagger_dmg += s -> result_amount * ( stagger_pct() * talent.soul_dance -> effectN( 1 ).percent() );
+    // Stagger Calculation
+    double stagger_dmg = 0;
 
-    s -> result_amount -= stagger_dmg;
-    s -> result_mitigated -= stagger_dmg;
-  }
-  // Hook up Stagger Mechanism
-  if ( stagger_dmg > 0 )
-  {
-    sample_datas.stagger_total_damage -> add( stagger_dmg );
-    residual_action::trigger( active_actions.stagger_self_damage, this, stagger_dmg );
+    if ( s -> result_amount > 0 )
+    {
+      if ( school == SCHOOL_PHYSICAL )
+        stagger_dmg += s -> result_amount * stagger_pct();
+
+      else if ( school != SCHOOL_PHYSICAL )
+        // hard code the 50% effectiveness of stagger
+        stagger_dmg += s -> result_amount * ( stagger_pct() * 0.5 );
+
+      s -> result_amount -= stagger_dmg;
+      s -> result_mitigated -= stagger_dmg;
+    }
+    // Hook up Stagger Mechanism
+    if ( stagger_dmg > 0 )
+    {
+      sample_datas.stagger_total_damage -> add( stagger_dmg );
+      residual_action::trigger( active_actions.stagger_self_damage, this, stagger_dmg );
+    }
   }
 }
 
@@ -7208,7 +7341,8 @@ double monk_t::stagger_pct()
       stagger += buff.ironskin_brew -> value();
   }
 
-  return stagger;
+  // TODO: Cap stagger at 100% stagger since one can currently hit 105% stagger
+  return fmin( stagger, 1 );
 }
 
 // monk_t::current_stagger_tick_dmg ==================================================

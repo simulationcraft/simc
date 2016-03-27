@@ -2103,7 +2103,8 @@ struct eviscerate_t : public eviscerate_base_t
     eviscerate_base_t( p, "eviscerate", p -> find_specialization_spell( "Eviscerate" ), options_str ),
     finality( p -> artifact.finality.rank() ? new finality_eviscerate_t( p ) : nullptr )
   {
-    add_child( finality );
+    if ( finality )
+      add_child( finality );
   }
 
   double action_multiplier() const override

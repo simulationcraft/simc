@@ -32,7 +32,6 @@ actions+=/berserking,if=debuff.colossus_smash.up|buff.battle_cry.up
 actions+=/arcane_torrent,if=rage<rage.max-40
 
 actions.single=rend,if=remains<gcd
-actions.single+=/heroic_strike,if=buff.heroic_strike.stack<3&(rage.deficit<35|buff.battle_cry.up)
 actions.single+=/battle_cry,sync=colossus_smash
 actions.single+=/battle_cry,if=buff.colossus_smash_up.remains>=5|(buff.colossus_smash_up.up&cooldown.colossus_smash.remains=0)
 actions.single+=/avatar,sync=colossus_smash

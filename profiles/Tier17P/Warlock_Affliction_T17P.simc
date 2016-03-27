@@ -3,7 +3,7 @@ level=100
 race=troll
 role=spell
 position=back
-talents=0000223
+talents=0000213
 talent_override=grimoire_of_service,if=talent.demonic_servitude.enabled
 talent_override=soulburn_haunt,if=enemies=2
 talent_override=cataclysm,if=enemies>2

@@ -22,8 +22,7 @@ actions.precombat+=/potion,name=draenic_strength
 
 # Executed every time the actor is available.
 
-actions=charge,if=debuff.charge.down
-actions+=/auto_attack
+actions=auto_attack
 # This is mostly to prevent cooldowns from being accidentally used during movement.
 actions+=/run_action_list,name=movement,if=movement.distance>5
 actions+=/berserker_rage,if=buff.enrage.down
@@ -32,7 +31,7 @@ actions+=/use_item,name=thorasus_the_stone_heart_of_draenor,if=(spell_targets.wh
 actions+=/potion,name=draenic_strength,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<=30
 # Skip cooldown usage if we can line them up with bladestorm on a large set of adds, or if movement is coming soon.
 actions+=/run_action_list,name=single_target,if=(raid_event.adds.cooldown<60&raid_event.adds.count>2&spell_targets.whirlwind=1)|raid_event.movement.cooldown<5
-actions+=/battle_cry,if=target.time_to_die<15)&((talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled)
+actions+=/battle_cry,if=target.time_to_die<15&(talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled
 actions+=/call_action_list,name=reck_anger_management,if=talent.anger_management.enabled&((talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled)
 actions+=/call_action_list,name=reck_no_anger,if=!talent.anger_management.enabled&((talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled)
 actions+=/avatar,if=buff.battle_cry.up|cooldown.battle_cry.remains>60|target.time_to_die<30

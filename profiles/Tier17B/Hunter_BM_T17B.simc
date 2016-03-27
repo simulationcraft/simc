@@ -39,6 +39,13 @@ actions+=/barrage,if=spell_targets.barrage>1
 actions+=/multishot,if=spell_targets.multi_shot>5
 actions+=/kill_command
 actions+=/a_murder_of_crows
+# Cast a second shot for steady focus if that won't cap us.
+actions+=/cobra_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<7&(14+cast_regen)<focus.deficit
+# Prepare for steady focus refresh if it is running out.
+actions+=/cobra_shot,if=talent.steady_focus.enabled&buff.steady_focus.remains<4&focus<50
+actions+=/barrage
+actions+=/cobra_shot,if=spell_targets.multi_shot>5
+actions+=/cobra_shot
 
 head=rylakstalkers_headguard,id=115545,bonus_id=41/562/565/567,gem_id=115812
 neck=engineers_grounded_gorget,id=113892,bonus_id=41/562/565/567,gem_id=115812,enchant_id=5319

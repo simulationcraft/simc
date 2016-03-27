@@ -40,6 +40,13 @@ actions+=/barrage,if=spell_targets.barrage>1
 actions+=/multishot,if=spell_targets.multi_shot>5
 actions+=/kill_command
 actions+=/a_murder_of_crows
+# Cast a second shot for steady focus if that won't cap us.
+actions+=/cobra_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<7&(14+cast_regen)<focus.deficit
+# Prepare for steady focus refresh if it is running out.
+actions+=/cobra_shot,if=talent.steady_focus.enabled&buff.steady_focus.remains<4&focus<50
+actions+=/barrage
+actions+=/cobra_shot,if=spell_targets.multi_shot>5
+actions+=/cobra_shot
 
 head=hood_of_the_savage_hunt,id=124296,bonus_id=567,upgrade=2
 neck=chain_of_lidless_eyes,id=124209,bonus_id=567,upgrade=2,enchant_id=5319
