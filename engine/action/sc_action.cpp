@@ -2519,12 +2519,6 @@ expr_t* action_t::create_expression( const std::string& name_str )
             }
             return num_targets;
           }
-
-          void reset()
-          {
-            active_enemies_t::reset();
-            num_targets = 0;
-          }
         };
         return new active_enemies_t( this, splits[1] );
       }
