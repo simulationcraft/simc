@@ -5184,21 +5184,32 @@ struct chi_burst_heal_t: public monk_heal_t
   }
 };
 
+struct chi_burst_damage_t: public monk_spell_t
+{
+  chi_burst_damage_t( monk_t& player ):
+    monk_spell_t( "chi_burst_damage", &player, player.passives.chi_burst_damage)
+  {
+    background = true;
+    target = p();
+    attack_power_mod.direct = 2.75;
+  }
+};
+
 struct chi_burst_t: public monk_spell_t
 {
   chi_burst_heal_t* heal;
+  chi_burst_damage_t* damage;
   chi_burst_t( monk_t* player, const std::string& options_str ):
-    monk_spell_t( "chi_burst", player, player -> passives.chi_burst_damage ),
+    monk_spell_t( "chi_burst", player, player -> talent.chi_burst ),
     heal( nullptr )
   {
     sef_ability = SEF_CHI_BURST;
 
     parse_options( options_str );
     heal = new chi_burst_heal_t( *player );
-    execute_action = heal;
+    damage = new chi_burst_damage_t( *player );
     aoe = -1;
     interrupt_auto_attack = false;
-    attack_power_mod.direct = 2.75; // hardcoded
   }
 
   virtual bool ready() override
@@ -5216,6 +5227,9 @@ struct chi_burst_t: public monk_spell_t
     // Trigger Combo Strikes
     // registers even on a miss
     combo_strikes_trigger( CS_CHI_BURST );
+
+    heal -> execute();
+    damage -> execute();
   }
 };
 
