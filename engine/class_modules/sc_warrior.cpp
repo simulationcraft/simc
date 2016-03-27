@@ -2054,34 +2054,38 @@ struct raging_blow_attack_t: public warrior_attack_t
 
 struct raging_blow_t: public warrior_attack_t
 {
-  raging_blow_attack_t* mh_attack;
   raging_blow_attack_t* oh_attack;
-
   raging_blow_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "raging_blow", p, p -> spec.raging_blow ),
-    mh_attack( nullptr ), oh_attack( nullptr )
+    oh_attack( nullptr )
   {
-    // Parent attack is only to determine miss/dodge/parry
-    weapon_multiplier = attack_power_mod.direct = 0;
     parse_options( options_str );
-    callbacks = false;
-    mh_attack = new raging_blow_attack_t( p, "raging_blow_mh", data().effectN( 1 ).trigger() );
-    mh_attack -> weapon = &( p -> main_hand_weapon );
-    add_child( mh_attack );
 
-    oh_attack = new raging_blow_attack_t( p, "raging_blow_offhand", data().effectN( 2 ).trigger() );
+    oh_attack = new raging_blow_attack_t( p, "raging_blow_offhand", data().effectN( 1 ).trigger() );
     oh_attack -> weapon = &( p -> off_hand_weapon );
     add_child( oh_attack );
     cooldown -> duration += p -> talents.inner_rage -> effectN( 1 ).time_value();
   }
 
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+    if ( s -> result == RESULT_CRIT )
+    { // Can proc off MH/OH individually from each meat cleaver hit.
+      if ( rng().roll( p() -> sets.set( WARRIOR_FURY, T17, B2 ) -> proc_chance() ) )
+      {
+        enrage();
+        p() -> proc.t17_2pc_fury -> occur();
+      }
+    }
+  }
+
   void execute() override
   {
     // check attack
-    attack_t::execute();
+    warrior_attack_t::execute();
     if ( result_is_hit( execute_state -> result ) )
     {
-      mh_attack -> execute();
       oh_attack -> execute();
     }
   }
