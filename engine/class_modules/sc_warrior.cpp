@@ -2516,45 +2516,13 @@ struct shockwave_t: public warrior_attack_t
 
 // Storm Bolt ===============================================================
 
-struct storm_bolt_off_hand_t: public warrior_attack_t
-{
-  storm_bolt_off_hand_t( warrior_t* p, const char* name, const spell_data_t* s ):
-    warrior_attack_t( name, p, s )
-  {
-    may_dodge = may_parry = may_block = may_miss = false;
-    dual = true;
-    weapon = &( p -> off_hand_weapon );
-    // assume the target is stun-immune
-    weapon_multiplier *= 4.00;
-  }
-};
-
 struct storm_bolt_t: public warrior_attack_t
 {
-  storm_bolt_off_hand_t* oh_attack;
   storm_bolt_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "storm_bolt", p, p -> talents.storm_bolt ),
-    oh_attack( nullptr )
+    warrior_attack_t( "storm_bolt", p, p -> talents.storm_bolt )
   {
     parse_options( options_str );
     may_dodge = may_parry = may_block = false;
-    // Assuming that our target is stun immune
-    weapon_multiplier *= 4.00;
-
-    if ( p -> specialization() == WARRIOR_FURY )
-    {
-      oh_attack = new storm_bolt_off_hand_t( p, "storm_bolt_offhand", data().effectN( 4 ).trigger() );
-      add_child( oh_attack );
-    }
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute(); // for fury, this is the MH attack
-
-    if ( oh_attack && result_is_hit( execute_state -> result ) &&
-         p() -> off_hand_weapon.type != WEAPON_NONE ) // If MH fails to land, OH does not execute.
-      oh_attack -> execute();
   }
 
   bool ready() override
