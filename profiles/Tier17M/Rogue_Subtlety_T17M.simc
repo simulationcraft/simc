@@ -34,6 +34,31 @@ actions+=/berserking,if=buff.shadow_dance.up
 actions+=/arcane_torrent,if=energy<80&buff.shadow_dance.up
 actions+=/vanish,if=set_bonus.tier18_4pc=1&time<1
 actions+=/wait,sec=buff.subterfuge.remains-0.1,if=buff.subterfuge.remains>0.5&buff.subterfuge.remains<1.6&time>6
+actions+=/pool_resource,if=energy<110&cooldown.shadow_dance.remains<3.5
+actions+=/pool_resource,for_next=1,extra_amount=110
+actions+=/shadow_dance,if=energy>=110&buff.stealth.down&buff.vanish.down&debuff.find_weakness.down|(buff.bloodlust.up&(dot.hemorrhage.ticking|dot.garrote.ticking|dot.rupture.ticking))
+actions+=/pool_resource,for_next=1,extra_amount=50
+actions+=/shadowmeld,if=talent.shadow_focus.enabled&energy>=45&energy<=75&combo_points<4-talent.anticipation.enabled&buff.stealth.down&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
+actions+=/pool_resource,for_next=1,extra_amount=50
+actions+=/vanish,if=talent.shadow_focus.enabled&energy>=45&energy<=75&combo_points<4-talent.anticipation.enabled&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
+actions+=/pool_resource,for_next=1,extra_amount=115
+actions+=/shadowmeld,if=talent.subterfuge.enabled&energy>=115&combo_points<4-talent.anticipation.enabled&buff.stealth.down&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
+actions+=/pool_resource,for_next=1,extra_amount=115
+actions+=/vanish,if=talent.subterfuge.enabled&energy>=115&combo_points<4-talent.anticipation.enabled&buff.shadow_dance.down
+actions+=/marked_for_death,if=combo_points=0
+actions+=/run_action_list,name=finisher,if=combo_points=5&debuff.find_weakness.remains&buff.shadow_reflection.remains
+actions+=/run_action_list,name=finisher,if=combo_points=5
+actions+=/run_action_list,name=generator,if=combo_points<4|(talent.anticipation.enabled&anticipation_charges<3&debuff.find_weakness.down)
+
+# Combo point generators
+
+actions.generator=backstab,if=debuff.find_weakness.up|buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up
+actions.generator+=/backstab,if=energy.time_to_max<=gcd*2
+
+# Combo point finishers
+
+actions.finisher=death_from_above
+actions.finisher+=/eviscerate,if=(energy.time_to_max<=cooldown.death_from_above.remains+action.death_from_above.execute_time)|!talent.death_from_above.enabled
 
 head=poisoners_helmet,id=115572,bonus_id=567
 neck=engineers_grounded_gorget,id=113892,bonus_id=567,enchant=gift_of_multistrike

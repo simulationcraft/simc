@@ -60,13 +60,12 @@ actions.finisher+=/rip,cycle_targets=1,if=remains<7.2&persistent_multiplier=dot.
 actions.finisher+=/ferocious_bite,max_energy=1,if=(set_bonus.tier18_4pc&energy>50)|(set_bonus.tier18_2pc&buff.clearcasting.react)|energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3
 
 actions.maintain=shadowmeld,if=energy>=35&dot.rake.pmultiplier<2.1&buff.tigers_fury.up&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>18)&!buff.incarnation.up
-actions.maintain+=/rake,cycle_targets=1,if=remains<3&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)
-actions.maintain+=/rake,cycle_targets=1,if=remains<4.5&(persistent_multiplier>=dot.rake.pmultiplier|(talent.bloodtalons.enabled&(buff.bloodtalons.up|!buff.predatory_swiftness.up)))&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)
-actions.maintain+=/moonfire_cat,cycle_targets=1,if=remains<4.2&spell_targets.swipe<=5&target.time_to_die-remains>tick_time*5
-actions.maintain+=/rake,cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&spell_targets.swipe=1&((target.time_to_die-remains>3&spell_targets.swipe<3)|target.time_to_die-remains>6)
+actions.maintain+=/rake,cycle_targets=1,if=remains<3&((target.time_to_die-remains>3&spell_targets.swipe_cat<3)|target.time_to_die-remains>6)
+actions.maintain+=/rake,cycle_targets=1,if=remains<4.5&(persistent_multiplier>=dot.rake.pmultiplier|(talent.bloodtalons.enabled&(buff.bloodtalons.up|!buff.predatory_swiftness.up)))&((target.time_to_die-remains>3&spell_targets.swipe_cat<3)|target.time_to_die-remains>6)
+actions.maintain+=/moonfire_cat,cycle_targets=1,if=remains<4.2&spell_targets.swipe_cat<=5&target.time_to_die-remains>tick_time*5
+actions.maintain+=/rake,cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&spell_targets.swipe_cat=1&((target.time_to_die-remains>3&spell_targets.swipe_cat<3)|target.time_to_die-remains>6)
 
-actions.generator=swipe,if=spell_targets.swipe>=4|(spell_targets.swipe>=3&buff.incarnation.down)
-actions.generator+=/shred,if=spell_targets.swipe<3|(spell_targets.swipe=3&buff.incarnation.up)
+actions.generator=shred,if=spell_targets.swipe_cat<3|(spell_targets.swipe_cat=3&buff.incarnation.up)
 
 head=acidic_jaws,id=113880
 neck=darklight_necklace,id=113865,enchant=gift_of_critical_strike

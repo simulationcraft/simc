@@ -39,8 +39,6 @@ actions+=/lunar_beam
 actions+=/incarnation
 actions+=/thrash_bear,if=active_enemies>=2
 actions+=/pulverize,cycle_targets=1,if=buff.pulverize.remains<3.6
-actions+=/lacerate,cycle_targets=1,if=dot.lacerate.stack<3
-actions+=/lacerate
 actions+=/thrash_bear,if=talent.pulverize.enabled&buff.pulverize.remains<3.6
 actions+=/moonfire,cycle_targets=1,if=!ticking
 actions+=/moonfire,cycle_targets=1,if=remains<3.6

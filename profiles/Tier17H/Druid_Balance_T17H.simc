@@ -39,12 +39,12 @@ actions+=/sunfire,if=remains<2
 actions+=/astral_communion,if=astral_power.deficit>=75
 actions+=/incarnation,if=astral_power>=40
 actions+=/celestial_alignment,if=astral_power>=40
-actions+=/collapsing_stars,if=astral_power.deficit<=10
+actions+=/fury_of_elune,if=astral_power.deficit<=10
 actions+=/lunar_strike,if=talent.natures_balance.enabled&dot.moonfire.remains<5
 actions+=/solar_wrath,if=talent.natures_balance.enabled&dot.sunfire.remains<5
 actions+=/lunar_strike,if=buff.lunar_empowerment.stack=3
 actions+=/solar_wrath,if=buff.solar_empowerment.stack=3
-actions+=/starsurge,if=!talent.collapsing_stars.enabled|(buff.collapsing_stars_up.down&(cooldown.collapsing_stars.remains>10|astral_power.deficit<=10))
+actions+=/starsurge,if=!talent.fury_of_elune.enabled|(buff.fury_of_elune_up.down&(cooldown.fury_of_elune.remains>10|astral_power.deficit<=10))
 actions+=/lunar_strike,if=buff.lunar_empowerment.up&(!talent.warrior_of_elune.enabled|buff.warrior_of_elune.up)
 actions+=/solar_wrath,if=buff.solar_empowerment.up
 actions+=/lunar_strike,if=talent.full_moon.enabled|action.solar_wrath.cast_time<1

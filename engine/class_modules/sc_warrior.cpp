@@ -1368,7 +1368,7 @@ struct deep_wounds_t: public warrior_attack_t
 struct opportunity_strikes_t : public warrior_attack_t
 {
   opportunity_strikes_t( warrior_t* p ):
-    warrior_attack_t( "opportunity_strikes", p, p -> talents.opportunity_strikes -> effectN( 2 ).trigger() )
+    warrior_attack_t( "opportunity_strikes", p, p -> talents.opportunity_strikes -> effectN( 1 ).trigger() )
   {
     background = true;
   }
@@ -3874,7 +3874,7 @@ void warrior_t::create_buffs()
 
   buff.frenzy = buff_creator_t( this, "frenzy", talents.frenzy )
     .add_invalidate( CACHE_HASTE )
-    .default_value( talents.frenzy -> effectN( 2 ).percent() );
+    .default_value( talents.frenzy -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
   buff.heroic_leap_movement = buff_creator_t( this, "heroic_leap_movement" );
   buff.charge_movement = buff_creator_t( this, "charge_movement" );

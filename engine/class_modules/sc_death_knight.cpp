@@ -4805,8 +4805,7 @@ struct blood_boil_t : public death_knight_spell_t
       convert_runes = 1.0;
 
     base_multiplier *= 1.0 + p -> spec.crimson_scourge -> effectN( 1 ).percent();
-    rp_gain = data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
-
+    
     aoe = -1;
   }
 

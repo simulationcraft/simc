@@ -39,6 +39,7 @@ actions.prot+=/avatar,if=talent.avatar.enabled&((cooldown.ravager.remains=0&tale
 actions.prot+=/shield_slam
 actions.prot+=/revenge
 actions.prot+=/ravager
+actions.prot+=/storm_bolt
 actions.prot+=/victory_rush,if=!talent.impending_victory.enabled&cooldown.shield_slam.remains<=execute_time
 actions.prot+=/devastate
 
@@ -51,6 +52,7 @@ actions.prot_aoe+=/shockwave
 actions.prot_aoe+=/revenge
 actions.prot_aoe+=/thunder_clap
 actions.prot_aoe+=/shield_slam
+actions.prot_aoe+=/storm_bolt
 actions.prot_aoe+=/shield_slam
 actions.prot_aoe+=/devastate
 

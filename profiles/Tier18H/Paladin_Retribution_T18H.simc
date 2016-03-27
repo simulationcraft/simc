@@ -34,12 +34,11 @@ actions+=/call_action_list,name=single
 
 actions.single=judgment
 actions.single+=/templars_verdict,if=holy_power>=4
-actions.single+=/templars_verdict,if=(holy_power>=2)&(buff.conviction.up)
+actions.single+=/templars_verdict,if=(holy_power>=2)&(buff.the_fires_of_justice.up)
 actions.single+=/divine_hammer
 actions.single+=/blade_of_justice
 actions.single+=/execution_sentence
 actions.single+=/consecration
-actions.single+=/turalyons_might
 actions.single+=/crusader_flurry,if=charges=3
 actions.single+=/zeal
 actions.single+=/templars_verdict,if=holy_power>=3
@@ -49,11 +48,10 @@ actions.single+=/wake_of_ashes
 
 actions.cleave=judgment
 actions.cleave+=/divine_storm,if=holy_power>=4
-actions.cleave+=/divine_storm,if=(holy_power>=2)&(buff.conviction.up)
+actions.cleave+=/divine_storm,if=(holy_power>=2)&(buff.the_fires_of_justice.up)
 actions.cleave+=/divine_hammer
 actions.cleave+=/blade_of_justice
 actions.cleave+=/consecration
-actions.cleave+=/turalyons_might
 actions.cleave+=/execution_sentence
 actions.cleave+=/zeal
 actions.cleave+=/crusader_flurry,if=charges=3
