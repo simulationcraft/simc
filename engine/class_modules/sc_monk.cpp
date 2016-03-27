@@ -2110,7 +2110,7 @@ struct tiger_palm_t: public monk_melee_attack_t
         player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.tiger_palm, this );
 
         // Combo Breaker calculation
-        if ( p() -> buff.bok_proc -> trigger( 1, buff_t::DEFAULT_VALUE(), p() -> spec.combo_breaker -> effectN( 1 ).percent() ) )
+        if ( p() -> buff.bok_proc -> trigger() )
           p() -> proc.bok_proc -> occur();
 
         //  Your Chi generating abilities have a 15% chance to generate an Energy Sphere, which will grant you 10 Energy when you walk through it.
@@ -2414,6 +2414,14 @@ struct blackout_kick_t: public monk_melee_attack_t
     sef_ability = SEF_BLACKOUT_KICK;
   }
 
+  virtual bool ready() override
+  {
+    if ( p() -> specialization() == MONK_BREWMASTER )
+      return false;
+
+    return monk_melee_attack_t::ready();
+  }
+
   virtual double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
@@ -2448,7 +2456,7 @@ struct blackout_kick_t: public monk_melee_attack_t
     if ( p() -> buff.bok_proc -> up() )
     {
       p() -> buff.bok_proc -> expire();
-      p() -> gain.bok_proc -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] - cost() );
+      p() -> gain.bok_proc -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] );
     }
 
     // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
@@ -3396,6 +3404,9 @@ struct tigereye_brew_t: public monk_spell_t
   {
     // Tigereye Brew cannot be activated while the buff is currently up
     if ( p() -> buff.tigereye_brew -> up() )
+      return false;
+
+    if ( p() -> talent.serenity -> ok() )
       return false;
 
     return monk_spell_t::ready();
@@ -6079,7 +6090,8 @@ void monk_t::create_buffs()
     .default_value( passives.chi_orbit -> effectN( 1 ).ap_coeff() )
     .max_stack( 4 );
 
-  buff.bok_proc = buff_creator_t( this, "bok_proc", passives.bok_proc );
+  buff.bok_proc = buff_creator_t( this, "bok_proc", passives.bok_proc )
+    .chance( spec.combo_breaker -> effectN( 1 ).percent() );
 
   buff.combo_master = buff_creator_t( this, "combo_master", passives.tier19_4pc_melee )
     .default_value( passives.tier19_4pc_melee -> effectN( 1 ).base_value() )
@@ -6123,7 +6135,7 @@ void monk_t::create_buffs()
   buff.tigereye_brew = buff_creator_t( this, "tigereye_brew", spec.tigereye_brew )
     .period( timespan_t::zero() ) // Tigereye Brew does not tick, despite what the spelldata implies.
     .duration( spec.tigereye_brew -> duration() + 
-      ( artifact.strength_of_xuen.rank() ? timespan_t::from_seconds( artifact.strength_of_xuen.value() ) : timespan_t::zero() ) )
+      ( artifact.strength_of_xuen.rank() ? artifact.strength_of_xuen.time_value() : timespan_t::zero() ) )
     .default_value( spec.tigereye_brew -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
