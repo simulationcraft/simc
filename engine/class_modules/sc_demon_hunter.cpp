@@ -290,6 +290,20 @@ public:
     return ab::player -> get_target_data( t );
   }
 
+  timespan_t gcd() const override
+  {
+    timespan_t g = ab::gcd();
+
+    if ( g == timespan_t::zero() )
+      return timespan_t::zero();
+
+    g *= p() -> cache.attack_haste();
+    if ( g < ab::min_gcd )
+      g = ab::min_gcd;
+
+    return g;
+  }
+
 protected:
   /// typedef for demon_hunter_action_t<action_base_t>
   typedef demon_hunter_action_t base_t;
@@ -609,6 +623,15 @@ struct blade_dance_parent_t: public demon_hunter_attack_t
     }
   }
 
+  double cooldown_reduction() const override
+  {
+    double cdr = demon_hunter_attack_t::cooldown_reduction();
+
+    cdr *= p() -> cache.attack_haste();
+
+    return cdr;
+  }
+
   void execute() override
   {
     demon_hunter_attack_t::execute();
@@ -788,6 +811,48 @@ struct eye_beam_t : public demon_hunter_attack_t
   }
 };
 
+// Fel Rush =================================================================
+
+struct fel_rush_t : public demon_hunter_attack_t
+{
+  fel_rush_t( demon_hunter_t* p, const std::string& options_str ) :
+    demon_hunter_attack_t( "fel_rush", p, p -> find_class_spell( "Fel Rush" ) )
+  {
+    parse_options( options_str );
+
+    cooldown -> charges  = data().charges();
+    cooldown -> duration = data().charge_cooldown();
+
+    const spell_data_t* damage_spell = p -> find_spell( 192611 );
+    school = damage_spell -> get_school_type();
+    attack_power_mod.direct = damage_spell -> effectN( 1 ).ap_coeff();
+    aoe = -1;
+    
+    base_teleport_distance = data().effectN( 1 ).base_value();
+    movement_directionality = MOVEMENT_OMNI;
+    ignore_false_positive = true;
+  }
+
+  void execute() override
+  {
+    double dtm = p() -> current.distance_to_move;
+
+    demon_hunter_attack_t::execute();
+
+    // If we're not moving to cover distance, let's assume we're Fel Rushing for damage.
+    if ( dtm == 0.0 )
+    {
+      p() -> current.distance = std::abs( p() -> current.distance - composite_teleport_distance( execute_state ) );
+
+      // If new distance after rushing is too far away to melee from, then trigger movement back into melee range.
+      if ( p() -> current.distance > 5.0 )
+      {
+        p() -> trigger_movement( p() -> current.distance - 5.0, MOVEMENT_TOWARDS );
+      }
+    }
+  }
+};
+
 // Throw Glaive =============================================================
 
 struct throw_glaive_t : public demon_hunter_attack_t
@@ -963,6 +1028,7 @@ action_t* demon_hunter_t::create_action( const std::string& name,
   if ( name == "chaos_strike"  ) return new chaos_strike_t      ( this, options_str );
   if ( name == "demons_bite"   ) return new demons_bite_t       ( this, options_str );
   if ( name == "eye_beam"      ) return new eye_beam_t          ( this, options_str );
+  if ( name == "fel_rush"      ) return new fel_rush_t          ( this, options_str );
   if ( name == "throw_glaive"  ) return new throw_glaive_t      ( this, options_str );
 
   return base_t::create_action( name, options_str );
