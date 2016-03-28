@@ -426,13 +426,19 @@ specialization_e dbc::translate_spec_str( player_e ptype, const std::string& spe
     {
       if ( str_compare_ci( spec_str, "brewmaster" ) )
         return MONK_BREWMASTER;
-      if ( str_compare_ci( spec_str, "tank" ) )
+      else if ( str_compare_ci( spec_str, "brm" ) )
+        return MONK_BREWMASTER;
+      else if ( str_compare_ci( spec_str, "tank" ) )
         return MONK_BREWMASTER;
       else if ( str_compare_ci( spec_str, "mistweaver" ) )
+        return MONK_MISTWEAVER;
+      else if ( str_compare_ci( spec_str, "mw" ) )
         return MONK_MISTWEAVER;
       else if ( str_compare_ci( spec_str, "healer" ) )
         return MONK_MISTWEAVER;
       else if ( str_compare_ci( spec_str, "windwalker" ) )
+        return MONK_WINDWALKER;
+      else if ( str_compare_ci( spec_str, "ww" ) )
         return MONK_WINDWALKER;
       else if ( str_compare_ci( spec_str, "dps" ) )
         return MONK_WINDWALKER;

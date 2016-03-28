@@ -1860,8 +1860,14 @@ public:
 
   virtual void impact( action_state_t* s ) override
   {
-    if ( p() -> artifact.gale_burst.rank() && td( s -> target ) -> dots.touch_of_death -> is_ticking() && s -> action -> harmful )
-      p() -> gale_burst_touch_of_death_bonus += p() -> artifact.gale_burst.value() * s -> result_amount;
+    if ( p() -> artifact.gale_burst.rank() )
+    {
+      if ( td( s -> target ) -> dots.touch_of_death -> is_ticking() )
+      {
+        if ( s -> action -> harmful )
+          p() -> gale_burst_touch_of_death_bonus += p() -> artifact.gale_burst.value() * s -> result_amount;
+      }
+    }
     ab::impact( s );
   }
 
