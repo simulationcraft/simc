@@ -95,7 +95,7 @@ struct rogue_td_t : public actor_target_data_t
     buff_t* wound_poison;
     buff_t* crippling_poison;
     buff_t* leeching_poison;
-    buff_t* numbing_poison;
+    buff_t* agonizing_poison;
     buffs::marked_for_death_debuff_t* marked_for_death;
     buff_t* ghostly_strike;
     buff_t* dreadblades_fate;
@@ -110,7 +110,7 @@ struct rogue_td_t : public actor_target_data_t
            debuffs.wound_poison -> check() ||
            debuffs.crippling_poison -> check() ||
            debuffs.leeching_poison -> check() ||
-           debuffs.numbing_poison -> check();
+           debuffs.agonizing_poison -> check();
   }
 };
 
@@ -334,7 +334,7 @@ struct rogue_t : public player_t
     const spell_data_t* internal_bleeding;
 
     // Assassination - Level 90
-    const spell_data_t* numbing_poison;
+    const spell_data_t* agonizing_poison;
     const spell_data_t* blood_sweat;
 
     // Assassination - Level 100
@@ -822,7 +822,7 @@ struct rogue_attack_t : public melee_attack_t
 
     m *= 1.0 + tdata -> debuffs.vendetta -> value();
 
-    m *= 1.0 + tdata -> debuffs.numbing_poison -> stack_value();
+    m *= 1.0 + tdata -> debuffs.agonizing_poison -> stack_value();
 
     m *= 1.0 + tdata -> debuffs.ghostly_strike -> stack_value();
 
@@ -1309,27 +1309,27 @@ struct leeching_poison_t : public rogue_poison_t
 
 // Numbing poison =========================================================
 
-struct numbing_poison_t : public rogue_poison_t
+struct agonizing_poison_t : public rogue_poison_t
 {
-  struct numbing_poison_proc_t : public rogue_poison_t
+  struct agonizing_poison_proc_t : public rogue_poison_t
   {
-    numbing_poison_proc_t( rogue_t* rogue ) :
-      rogue_poison_t( "numbing_poison", rogue, rogue -> find_spell( 200803 ) )
+    agonizing_poison_proc_t( rogue_t* rogue ) :
+      rogue_poison_t( "agonizing_poison", rogue, rogue -> find_spell( 200803 ) )
     { }
 
     void impact( action_state_t* state ) override
     {
       rogue_poison_t::impact( state );
 
-      td( state -> target ) -> debuffs.numbing_poison -> trigger();
+      td( state -> target ) -> debuffs.agonizing_poison -> trigger();
     }
   };
 
-  numbing_poison_proc_t* proc;
+  agonizing_poison_proc_t* proc;
 
-  numbing_poison_t( rogue_t* player ) :
-    rogue_poison_t( "numbing_poison_driver", player, player -> find_talent_spell( "Numbing Poison" ) ),
-    proc( new numbing_poison_proc_t( player ) )
+  agonizing_poison_t( rogue_t* player ) :
+    rogue_poison_t( "agonizing_poison_driver", player, player -> find_talent_spell( "Numbing Poison" ) ),
+    proc( new agonizing_poison_proc_t( player ) )
   {
     dual = true;
     may_miss = may_crit = false;
@@ -1355,7 +1355,7 @@ struct apply_poison_t : public action_t
     WOUND_POISON,
     CRIPPLING_POISON,
     LEECHING_POISON,
-    NUMBING_POISON
+    AGONIZING_POISON
   };
 
   poison_e lethal_poison;
@@ -1382,7 +1382,7 @@ struct apply_poison_t : public action_t
     {
       if ( lethal_str == "deadly"    ) lethal_poison = DEADLY_POISON;
       if ( lethal_str == "wound"     ) lethal_poison = WOUND_POISON;
-      if ( lethal_str == "numbing"   ) lethal_poison = NUMBING_POISON;
+      if ( lethal_str == "agonizing" ) lethal_poison = AGONIZING_POISON;
 
       if ( nonlethal_str == "crippling" ) nonlethal_poison = CRIPPLING_POISON;
       if ( nonlethal_str == "leeching"  ) nonlethal_poison = LEECHING_POISON;
@@ -1392,7 +1392,7 @@ struct apply_poison_t : public action_t
     {
       if ( lethal_poison == DEADLY_POISON  ) p -> active_lethal_poison = new deadly_poison_t( p );
       if ( lethal_poison == WOUND_POISON   ) p -> active_lethal_poison = new wound_poison_t( p );
-      if ( lethal_poison == NUMBING_POISON ) p -> active_lethal_poison = new numbing_poison_t( p );
+      if ( lethal_poison == AGONIZING_POISON ) p -> active_lethal_poison = new agonizing_poison_t( p );
     }
 
     if ( ! p -> active_nonlethal_poison )
@@ -4378,10 +4378,10 @@ struct leeching_poison_t : public rogue_poison_buff_t
   { }
 };
 
-struct numbing_poison_t : public rogue_poison_buff_t
+struct agonizing_poison_t : public rogue_poison_buff_t
 {
-  numbing_poison_t( rogue_td_t& r ) :
-    rogue_poison_buff_t( r, "numbing_poison", r.source -> find_spell( 200803 ) )
+  agonizing_poison_t( rogue_td_t& r ) :
+    rogue_poison_buff_t( r, "agonizing_poison", r.source -> find_spell( 200803 ) )
   {
     default_value = data().effectN( 1 ).percent();
   }
@@ -4584,7 +4584,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
                                            source -> sets.set( SET_MELEE, T13, B4 ) -> effectN( 3 ).time_value() )
                                .default_value( vd -> effectN( 1 ).percent() );
 
-  debuffs.numbing_poison = new buffs::numbing_poison_t( *this );
+  debuffs.agonizing_poison = new buffs::agonizing_poison_t( *this );
   debuffs.wound_poison = new buffs::wound_poison_t( *this );
   debuffs.crippling_poison = new buffs::crippling_poison_t( *this );
   debuffs.leeching_poison = new buffs::leeching_poison_t( *this );
@@ -5226,7 +5226,7 @@ void rogue_t::init_spells()
   talent.thuggee            = find_talent_spell( "Thuggee" );
   talent.internal_bleeding  = find_talent_spell( "Internal Bleeding" );
 
-  talent.numbing_poison     = find_talent_spell( "Numbing Poison" );
+  talent.agonizing_poison   = find_talent_spell( "Agonizing Poison" );
   talent.blood_sweat        = find_talent_spell( "Blood Sweat" );
 
   talent.venom_rush         = find_talent_spell( "Venom Rush" );
