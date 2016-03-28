@@ -3374,13 +3374,13 @@ namespace spells {
 struct tigereye_brew_t: public monk_spell_t
 {
   tigereye_brew_t( monk_t* player, const std::string& options_str ):
-    monk_spell_t( "tigereye_brew", player, ( player -> talent.serenity -> ok() ? spell_data_t::nil() : player -> spec.tigereye_brew ) )
+    monk_spell_t( "tigereye_brew", player, player -> spec.tigereye_brew )
   {
     parse_options( options_str );
     harmful = false;
     trigger_gcd = timespan_t::zero();
     cooldown -> charges = data().charges();
-    cooldown -> duration = data().duration();
+    cooldown -> duration = data().charge_cooldown();
   }
 
   virtual bool ready() override
