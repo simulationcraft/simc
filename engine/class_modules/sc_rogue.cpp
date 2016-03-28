@@ -99,6 +99,7 @@ struct rogue_td_t : public actor_target_data_t
     buffs::marked_for_death_debuff_t* marked_for_death;
     buff_t* ghostly_strike;
     buff_t* dreadblades_fate;
+    buff_t* garrote; // Hidden proxy buff for garrote to get Thuggee working easily(ish)
   } debuffs;
 
   rogue_td_t( player_t* target, rogue_t* source );
@@ -400,7 +401,6 @@ struct rogue_t : public player_t
     proc_t* seal_fate;
     proc_t* t16_2pc_melee;
     proc_t* t18_2pc_combat;
-    proc_t* thuggee;
     proc_t* weaponmaster;
 
     proc_t* roll_the_bones_1;
@@ -517,7 +517,6 @@ struct rogue_t : public player_t
   void spend_combo_points( const action_state_t* );
   bool trigger_t17_4pc_combat( const action_state_t* );
   void trigger_elaborate_planning( const action_state_t* );
-  void trigger_thuggee( const action_state_t* );
   void trigger_alacrity( const action_state_t* );
   void trigger_deepening_shadows( const action_state_t* );
   void trigger_shadow_techniques( const action_state_t* );
@@ -2223,12 +2222,18 @@ struct garrote_t : public rogue_attack_t
     }
   }
 
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    td( execute_state -> target ) -> debuffs.garrote -> trigger();
+  }
+
   void tick( dot_t* d ) override
   {
     rogue_attack_t::tick( d );
 
     p() -> trigger_venomous_wounds( d -> state );
-    p() -> trigger_thuggee( d -> state );
   }
 };
 
@@ -2869,7 +2874,6 @@ struct rupture_t : public rogue_attack_t
     rogue_attack_t::tick( d );
 
     p() -> trigger_venomous_wounds( d -> state );
-    p() -> trigger_thuggee( d -> state );
   }
 };
 
@@ -4127,20 +4131,6 @@ void rogue_t::trigger_elaborate_planning( const action_state_t* s )
   buffs.elaborate_planning -> trigger();
 }
 
-void rogue_t::trigger_thuggee( const action_state_t* )
-{
-  if ( ! talent.thuggee -> ok() )
-  {
-    return;
-  }
-
-  if ( rng().roll( talent.thuggee -> proc_chance() ) )
-  {
-    cooldowns.garrote -> reset( true );
-    procs.thuggee -> occur();
-  }
-}
-
 void rogue_t::trigger_alacrity( const action_state_t* s )
 {
   using namespace actions;
@@ -4206,6 +4196,28 @@ namespace buffs {
 // ==========================================================================
 // Buffs
 // ==========================================================================
+
+struct proxy_garrote_t : public buff_t
+{
+  proxy_garrote_t( rogue_td_t& r ) :
+    buff_t( buff_creator_t( r, "garrote", r.source -> find_specialization_spell( "Garrote" ) )
+            .quiet( true ).cd( timespan_t::zero() ) )
+  { }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    if ( remaining_duration > timespan_t::zero() )
+    {
+      rogue_t* rogue = debug_cast<rogue_t*>( source );
+      if ( rogue -> talent.thuggee -> ok() )
+      {
+        rogue -> cooldowns.garrote -> reset( false );
+      }
+    }
+  }
+};
 
 struct shadow_dance_t : public buff_t
 {
@@ -4609,6 +4621,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     .default_value( source -> talent.ghostly_strike -> effectN( 5 ).percent() );
   debuffs.dreadblades_fate = buff_creator_t( *this, "dreadblades_fate", source -> find_spell( 202710 ) )
                              .chance( source -> dreadblades_fate != nullptr );
+  debuffs.garrote = new buffs::proxy_garrote_t( *this );
 }
 
 // ==========================================================================
@@ -5338,7 +5351,6 @@ void rogue_t::init_procs()
   procs.seal_fate                = get_proc( "Seal Fate"           );
   procs.t16_2pc_melee            = get_proc( "Silent Blades (T16 2PC)" );
   procs.t18_2pc_combat           = get_proc( "Adrenaline Rush (T18 2PC)" );
-  procs.thuggee                  = get_proc( "Thuggee" );
   procs.weaponmaster             = get_proc( "Weaponmaster" );
 
   procs.roll_the_bones_1         = get_proc( "Roll the Bones: 1 buff" );
