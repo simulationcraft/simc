@@ -1020,7 +1020,10 @@ struct rogue_poison_t : public rogue_attack_t
     weapon_multiplier = 0;
 
     proc_chance_  = data().proc_chance();
-    proc_chance_ += p -> spec.improved_poisons -> effectN( 1 ).percent();
+    if ( s -> affected_by( p -> spec.improved_poisons -> effectN( 1 ) ) )
+    {
+      proc_chance_ += p -> spec.improved_poisons -> effectN( 1 ).percent();
+    }
   }
 
   timespan_t execute_time() const override
@@ -1093,7 +1096,7 @@ struct deadly_poison_t : public rogue_poison_t
     {
       double m = rogue_poison_t::action_multiplier();
 
-      m *= 1.0 + p() -> talent.master_poisoner -> effectN( 2 ).percent();
+      m *= 1.0 + p() -> talent.master_poisoner -> effectN( 1 ).percent();
 
       return m;
     }
@@ -1112,7 +1115,7 @@ struct deadly_poison_t : public rogue_poison_t
     {
       double m = rogue_poison_t::action_multiplier();
 
-      m *= 1.0 + p() -> talent.master_poisoner -> effectN( 2 ).percent();
+      m *= 1.0 + p() -> talent.master_poisoner -> effectN( 1 ).percent();
 
       return m;
     }
@@ -1154,15 +1157,6 @@ struct deadly_poison_t : public rogue_poison_t
 
     proc_instant = new deadly_poison_dd_t( player );
     proc_dot     = new deadly_poison_dot_t( player );
-  }
-
-  double proc_chance( const action_state_t* s ) const override
-  {
-    double chance = rogue_poison_t::proc_chance( s );
-
-    chance += p() -> spec.improved_poisons -> effectN( 1 ).percent();
-
-    return chance;
   }
 
   void impact( action_state_t* state ) override
@@ -1228,15 +1222,6 @@ struct wound_poison_t : public rogue_poison_t
     may_miss = may_crit = false;
 
     proc_dd = new wound_poison_dd_t( player );
-  }
-
-  double proc_chance( const action_state_t* s ) const override
-  {
-    double chance = rogue_poison_t::proc_chance( s );
-
-    chance += p() -> spec.improved_poisons -> effectN( 1 ).percent();
-
-    return chance;
   }
 
   void impact( action_state_t* state ) override
@@ -2175,18 +2160,7 @@ struct fan_of_knives_t: public rogue_attack_t
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
     aoe = -1;
-    adds_combo_points = 1;
-  }
-
-  // TODO: Generate_cp
-  void impact( action_state_t* state ) override
-  {
-    rogue_attack_t::impact( state );
-    // Don't generate a combo point on the first target hit, since that's
-    // already covered by the action execution logic.
-    if ( state -> chain_target > 0 &&
-         result_is_hit( state -> result ) )
-      p() -> trigger_combo_point_gain( state, 1, p() -> gains.empowered_fan_of_knives );
+    adds_combo_points = data().effectN( 2 ).base_value();
   }
 };
 
