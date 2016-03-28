@@ -363,6 +363,14 @@ specialization_e dbc::translate_spec_str( player_e ptype, const std::string& spe
         return DEATH_KNIGHT_UNHOLY;
       break;
     }
+    case DEMON_HUNTER:
+    {
+      if ( str_compare_ci( spec_str, "havoc" ) )
+        return DEMON_HUNTER_HAVOC;
+      else if ( str_compare_ci( spec_str, "vengeance" ) )
+        return DEMON_HUNTER_VENGEANCE;
+      break;
+    }
     case DRUID:
     {
       if ( str_compare_ci( spec_str, "balance" ) )

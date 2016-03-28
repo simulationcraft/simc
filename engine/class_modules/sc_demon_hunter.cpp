@@ -68,7 +68,9 @@ public:
   // Mastery Spells
   struct
   {
-  } mastery_spells;
+    const spell_data_t* demonic_presence;
+    const spell_data_t* fel_blood;
+  } mastery_spell;
 
   // Cooldowns
   struct
@@ -122,6 +124,7 @@ public:
   void init_spells() override;
   void create_buffs() override;
   void init_scaling() override;
+  void invalidate_cache( cache_e ) override;
   void reset() override;
   void interrupt() override;
   void create_options() override;
@@ -140,7 +143,7 @@ public:
   stat_e convert_hybrid_stat( stat_e s ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   double composite_dodge() const override;
-  void invalidate_cache( cache_e ) override;
+  double passive_movement_modifier() const override;
   void target_mitigation( school_e, dmg_e, action_state_t* ) override;
   void init_action_list() override;
   demon_hunter_td_t* get_target_data( player_t* target ) const override;
@@ -383,10 +386,25 @@ struct consume_magic_t : public demon_hunter_spell_t
 
 struct demon_hunter_attack_t: public demon_hunter_action_t < melee_attack_t >
 {
+  bool demonic_presence;
+
   demon_hunter_attack_t( const std::string& n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( n, p, s )
+    base_t( n, p, s ),
+    demonic_presence( data().affected_by( p -> mastery_spell.demonic_presence -> effectN( 1 ) ) )
   {
     special = true;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = base_t::action_multiplier();
+
+    if ( demonic_presence )
+    {
+      am *= 1.0 + p() -> cache.mastery_value();
+    }
+
+    return am;
   }
   
   virtual void execute() override
@@ -794,7 +812,7 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r ) 
   buff(),
   talents(),
   spec(),
-  mastery_spells(),
+  mastery_spell(),
   cooldowns(),
   gain(),
   benefits(),
@@ -897,6 +915,18 @@ double demon_hunter_t::composite_dodge() const
   d += buff.blur -> check() * buff.blur -> data().effectN( 2 ).percent();
 
   return d;
+}
+
+// demon_hunter_t::passive_movement_modifier ================================
+
+double demon_hunter_t::passive_movement_modifier() const
+{
+  double ms = player_t::passive_movement_modifier();
+
+  if ( mastery_spell.demonic_presence -> ok() )
+    ms += cache.mastery() * mastery_spell.demonic_presence -> effectN( 2 ).mastery_value();
+
+  return ms;
 }
 
 // demon_hunter_t::create_action ============================================
@@ -1009,13 +1039,18 @@ void demon_hunter_t::init_spells()
 {
   base_t::init_spells();
 
-  // General
+  // General ================================================================
   spec.blade_dance         = find_class_spell( "Blade Dance" );
   spec.blur                = find_class_spell( "Blur" );
   spec.chaos_nova          = find_class_spell( "Chaos Nova" );
   spec.chaos_strike        = find_class_spell( "Chaos Strike" );
   spec.chaos_strike_refund = find_spell( 197125 );
   spec.consume_magic       = find_class_spell( "Consume Magic" );
+
+  // Masteries ==============================================================
+
+  mastery_spell.demonic_presence = find_mastery_spell( DEMON_HUNTER_HAVOC );
+  mastery_spell.fel_blood        = find_mastery_spell( DEMON_HUNTER_VENGEANCE );
 
   if ( spec.blade_dance -> ok() )
   {
@@ -1166,9 +1201,23 @@ void demon_hunter_t::target_mitigation( school_e school, dmg_e dt,
   s -> result_amount *= 1.0 + buff.blur -> value();
 }
 
+// demon_hunter_t::invalidate_cache =========================================
+
 void demon_hunter_t::invalidate_cache( cache_e c )
 {
   player_t::invalidate_cache( c );
+
+  switch ( c )
+  {
+  case CACHE_MASTERY:
+    if ( mastery_spell.demonic_presence -> ok() )
+    {
+      player_t::invalidate_cache( CACHE_RUN_SPEED );
+    }
+    break;
+  default:
+    break;
+  }
 }
 
 void demon_hunter_t::create_options()
