@@ -828,9 +828,10 @@ struct fel_rush_t : public demon_hunter_attack_t
     attack_power_mod.direct = damage_spell -> effectN( 1 ).ap_coeff();
     aoe = -1;
     
-    base_teleport_distance = data().effectN( 1 ).base_value();
+    base_teleport_distance = damage_spell -> effectN( 1 ).radius();
     movement_directionality = MOVEMENT_OMNI;
     ignore_false_positive = true;
+    min_gcd = timespan_t::from_seconds( 0.40 ); // loss of control lasts longer than GCD from spell data
   }
 
   void execute() override
@@ -867,6 +868,52 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
     aoe = 3; // Ricochets to 2 additional enemies
     radius = 10.0; // with 10 yards.
+  }
+};
+
+// Vengeful Retreat =================================================================
+
+struct vengeful_retreat_t : public demon_hunter_attack_t
+{
+  vengeful_retreat_t( demon_hunter_t* p, const std::string& options_str ) :
+    demon_hunter_attack_t( "vengeful_retreat", p, p -> find_class_spell( "Vengeful Retreat" ) )
+  {
+    parse_options( options_str );
+
+    const spell_data_t* damage_spell = p -> find_spell( 198813 );
+    school = damage_spell -> get_school_type();
+    normalize_weapon_speed = damage_spell -> effectN( 2 ).type() == E_NORMALIZED_WEAPON_DMG;
+    weapon_power_mod = damage_spell -> effectN( 3 ).percent();
+    weapon = &( p -> main_hand_weapon );
+    radius = damage_spell -> effectN( 3 ).radius();
+    aoe = -1;
+    
+    base_teleport_distance = 20.0;
+    movement_directionality = MOVEMENT_OMNI;
+    ignore_false_positive = true;
+    // FIXME: There's a more elegant way to do this. You can still act during the retreat since it has no GCD.
+    min_gcd = timespan_t::from_seconds( 0.40 ); // travel time
+  }
+
+  void execute() override
+  {
+    double dtm = p() -> current.distance_to_move;
+
+    p() -> interrupt();
+
+    demon_hunter_attack_t::execute();
+
+    // If we're not moving to cover distance, let's assume we're retreating for damage.
+    if ( dtm == 0.0 )
+    {
+      p() -> current.distance = std::abs( p() -> current.distance - composite_teleport_distance( execute_state ) );
+
+      // If new distance after retreating is too far away to melee from, then trigger movement back into melee range.
+      if ( p() -> current.distance > 5.0 )
+      {
+        p() -> trigger_movement( p() -> current.distance - 5.0, MOVEMENT_TOWARDS );
+      }
+    }
   }
 };
 
@@ -1019,17 +1066,18 @@ action_t* demon_hunter_t::create_action( const std::string& name,
                                          const std::string& options_str )
 {
   using namespace actions::spells;
-  if ( name == "blur"          ) return new blur_t              ( this, options_str );
-  if ( name == "consume_magic" ) return new consume_magic_t     ( this, options_str );
+  if ( name == "blur"             ) return new blur_t              ( this, options_str );
+  if ( name == "consume_magic"    ) return new consume_magic_t     ( this, options_str );
   using namespace actions::attacks;
-  if ( name == "auto_attack"   ) return new auto_attack_t       ( this, options_str );
-  if ( name == "blade_dance"   ) return new blade_dance_parent_t( this, options_str );
-  if ( name == "chaos_nova"    ) return new chaos_nova_t        ( this, options_str );
-  if ( name == "chaos_strike"  ) return new chaos_strike_t      ( this, options_str );
-  if ( name == "demons_bite"   ) return new demons_bite_t       ( this, options_str );
-  if ( name == "eye_beam"      ) return new eye_beam_t          ( this, options_str );
-  if ( name == "fel_rush"      ) return new fel_rush_t          ( this, options_str );
-  if ( name == "throw_glaive"  ) return new throw_glaive_t      ( this, options_str );
+  if ( name == "auto_attack"      ) return new auto_attack_t       ( this, options_str );
+  if ( name == "blade_dance"      ) return new blade_dance_parent_t( this, options_str );
+  if ( name == "chaos_nova"       ) return new chaos_nova_t        ( this, options_str );
+  if ( name == "chaos_strike"     ) return new chaos_strike_t      ( this, options_str );
+  if ( name == "demons_bite"      ) return new demons_bite_t       ( this, options_str );
+  if ( name == "eye_beam"         ) return new eye_beam_t          ( this, options_str );
+  if ( name == "fel_rush"         ) return new fel_rush_t          ( this, options_str );
+  if ( name == "throw_glaive"     ) return new throw_glaive_t      ( this, options_str );
+  if ( name == "vengeful_retreat" ) return new vengeful_retreat_t  ( this, options_str );
 
   return base_t::create_action( name, options_str );
 }
