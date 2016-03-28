@@ -560,6 +560,7 @@ struct blade_dance_attack_t: public demon_hunter_attack_t
     demon_hunter_attack_t( name, p, blade_dance )
   {
     dual = true;
+    aoe = -1;
   }
 };
 
@@ -599,6 +600,8 @@ struct blade_dance_parent_t: public demon_hunter_attack_t
     demon_hunter_attack_t( "blade_dance", p, p -> spec.blade_dance )
   {
     parse_options( options_str );
+
+    aoe = -1;
 
     for ( size_t i = 0; i < p -> blade_dance_attacks.size(); i++ )
     {
@@ -785,6 +788,22 @@ struct eye_beam_t : public demon_hunter_attack_t
   }
 };
 
+// Throw Glaive =============================================================
+
+struct throw_glaive_t : public demon_hunter_attack_t
+{
+  throw_glaive_t( demon_hunter_t* p, const std::string& options_str ) :
+    demon_hunter_attack_t( "throw_glaive", p, p -> find_class_spell( "Throw Glaive" ) )
+  {
+    parse_options( options_str );
+
+    cooldown -> charges  = data().charges();
+    cooldown -> duration = data().charge_cooldown();
+
+    aoe = 3; // Ricochets to 2 additional enemies
+    radius = 10.0; // with 10 yards.
+  }
+};
 
 }  // end namespace attacks
 
@@ -944,6 +963,7 @@ action_t* demon_hunter_t::create_action( const std::string& name,
   if ( name == "chaos_strike"  ) return new chaos_strike_t      ( this, options_str );
   if ( name == "demons_bite"   ) return new demons_bite_t       ( this, options_str );
   if ( name == "eye_beam"      ) return new eye_beam_t          ( this, options_str );
+  if ( name == "throw_glaive"  ) return new throw_glaive_t      ( this, options_str );
 
   return base_t::create_action( name, options_str );
 }
