@@ -95,6 +95,164 @@ struct counter_t
   }
 };
 
+struct ground_aoe_params_t
+{
+  enum hasted_with
+  {
+    NOTHING = 0,
+    SPELL_HASTE,
+    SPELL_SPEED,
+    ATTACK_HASTE,
+    ATTACK_SPEED
+  };
+
+  player_t* target_;
+  double x_, y_;
+  hasted_with hasted_;
+  action_t* action_;
+  timespan_t pulse_time_, start_time_, duration_;
+
+  ground_aoe_params_t() :
+    target_( nullptr ), x_( 0 ), y_( 0 ), hasted_( NOTHING ), action_( nullptr ),
+    pulse_time_( timespan_t::from_seconds( 1.0 ) ), start_time_( timespan_t::min() ),
+    duration_( timespan_t::zero() )
+  { }
+
+  player_t* target() const { return target_; }
+  double x() const { return x_; }
+  double y() const { return y_; }
+  hasted_with hasted() const { return hasted_; }
+  action_t* action() const { return action_; }
+  const timespan_t& pulse_time() const { return pulse_time_; }
+  const timespan_t& start_time() const { return start_time_; }
+  const timespan_t& duration() const { return duration_; }
+
+  ground_aoe_params_t& target( player_t* p )
+  { target_ = p; return *this; }
+
+  ground_aoe_params_t& x( double x )
+  { x_ = x; return *this; }
+
+  ground_aoe_params_t& y( double y )
+  { y_ = y; return *this; }
+
+  ground_aoe_params_t& hasted( hasted_with state )
+  { hasted_ = state; return *this; }
+
+  ground_aoe_params_t& action( action_t* a )
+  { action_ = a; return *this; }
+
+  ground_aoe_params_t& pulse_time( const timespan_t& t )
+  { pulse_time_ = t; return *this; }
+
+  ground_aoe_params_t& start_time( const timespan_t& t )
+  { start_time_ = t; return *this; }
+
+  ground_aoe_params_t& duration( const timespan_t& t )
+  { duration_ = t; return *this; }
+};
+
+// Fake "ground aoe object" for things. Pulses until duration runs out, does not perform partial
+// ticks (fits as many ticks as possible into the duration). Intended to be able to spawn multiple
+// ground aoe objects, each will have separate state. Currently does not snapshot stats upon object
+// creation. Parametrization through object above (ground_aoe_params_t).
+struct ground_aoe_event_t : public player_event_t
+{
+  // Pointer needed here, as simc event system cannot fit all params into event_t
+  const ground_aoe_params_t* params;
+
+  // Make a copy of the parameters, and use that object until this event expires
+  ground_aoe_event_t( player_t* p, const ground_aoe_params_t& param, bool first_tick = false ) :
+    ground_aoe_event_t( p, new ground_aoe_params_t( param ), first_tick )
+  { }
+
+  ground_aoe_event_t( player_t* p, const ground_aoe_params_t* param, bool first_tick = false ) :
+    player_event_t( *p ), params( param )
+  {
+    // Ensure we have enough information to start pulsing.
+    assert( params -> target() != nullptr );
+    assert( params -> action() != nullptr );
+    assert( params -> pulse_time() > timespan_t::zero() );
+    assert( params -> start_time() >= timespan_t::zero() );
+    assert( params -> duration() > timespan_t::zero() );
+
+    add_event( first_tick ? timespan_t::zero() : pulse_time() );
+  }
+
+  // Cleans up memory for any on-going ground aoe events when the iteration ends, or when the ground
+  // aoe finishes during iteration.
+  ~ground_aoe_event_t()
+  {
+    delete params;
+  }
+
+  timespan_t pulse_time() const
+  {
+    timespan_t tick = params -> pulse_time();
+    switch ( params -> hasted() )
+    {
+      case ground_aoe_params_t::SPELL_SPEED:
+        tick *= _player -> cache.spell_speed();
+        break;
+      case ground_aoe_params_t::SPELL_HASTE:
+        tick *= _player -> cache.spell_haste();
+        break;
+      case ground_aoe_params_t::ATTACK_SPEED:
+        tick *= _player -> cache.attack_speed();
+        break;
+      case ground_aoe_params_t::ATTACK_HASTE:
+        tick *= _player -> cache.attack_haste();
+        break;
+      default:
+        break;
+    }
+
+    return tick;
+  }
+
+  bool may_pulse() const
+  {
+    return params -> duration() - ( sim().current_time() - params -> start_time() ) >= pulse_time();
+  }
+
+  const char* name() const override
+  { return "ground_aoe_event"; }
+
+  void execute() override
+  {
+    action_t* spell_ = params -> action();
+
+    if ( sim().debug )
+    {
+      sim().out_debug.printf( "%s %s pulse start_time=%.3f remaining_time=%.3f tick_time=%.3f",
+          player() -> name(), spell_ -> name(), params -> start_time().total_seconds(),
+          ( params -> duration() - ( sim().current_time() - params -> start_time() ) ).total_seconds(),
+          pulse_time().total_seconds() );
+    }
+
+    // Manually snapshot the state so we can adjust the x and y coordinates of the snapshotted
+    // object. This is relevant if sim -> distance_targeting_enabled is set, since then we need to
+    // use the ground object's x, y coordinates, instead of the source actor's.
+    action_state_t* state = spell_ -> get_state();
+
+    spell_ -> snapshot_state( state, spell_ -> amount_type( state ) );
+    state -> target = params -> target();
+    state -> original_x = params -> x();
+    state -> original_y = params -> y();
+
+    spell_ -> schedule_execute( state );
+
+    // Schedule next tick, if it can fit into the duration
+    if ( may_pulse() )
+    {
+      new ( sim() ) ground_aoe_event_t( _player, params );
+      // Ugly hack-ish, but we want to re-use the parmas object while this ground aoe is pulsing, so
+      // nullptr the params from this (soon to be recycled) event.
+      params = nullptr;
+    }
+  }
+};
+
 struct shaman_t : public player_t
 {
 public:
@@ -108,7 +266,6 @@ public:
 
   // Cached actions
   std::array<action_t*, 2> unleash_doom;
-  action_t* doom_vortex;
   action_t* ancestral_awakening;
   action_t* lightning_strike;
   spell_t*  electrocute;
@@ -116,6 +273,7 @@ public:
   spell_t*  lightning_shield;
   spell_t*  earthen_rage;
   spell_t* crashing_storm;
+  spell_t* doom_vortex;
 
   // Pets
   std::vector<pet_t*> pet_feral_spirit;
@@ -474,6 +632,7 @@ public:
   void trigger_lightning_shield( const action_state_t* state );
   void trigger_earthen_rage( const action_state_t* state );
   void trigger_stormlash( const action_state_t* state );
+  void trigger_doom_vortex( const action_state_t* state );
 
   // Character Definition
   void      init_spells() override;
@@ -2066,17 +2225,6 @@ struct unleash_doom_spell_t : public shaman_spell_t
   }
 };
 
-struct doom_vortex_t : public shaman_spell_t
-{
-  doom_vortex_t( shaman_t* p ) :
-    shaman_spell_t( "doom_vortex", p, p -> find_spell( 199116 ) )
-  {
-    aoe = -1;
-    callbacks = false;
-    background = may_crit = true;
-  }
-};
-
 struct elemental_overload_spell_t : public shaman_spell_t
 {
   double fulmination_gain;
@@ -2199,90 +2347,15 @@ struct earthen_rage_driver_t : public spell_t
   { return data().duration(); }
 };
 
-struct crashing_storm_spell_t : public shaman_spell_t
+// Ground AOE pulse
+struct ground_aoe_spell_t : public spell_t
 {
-  double x, y;
-  timespan_t duration;
-
-  crashing_storm_spell_t( shaman_t* p ) :
-    shaman_spell_t( "crashing_storm", p, p -> find_spell( 210801 ) ),
-    x( -1 ), y( -1 ), duration( p -> find_spell( 210797 ) -> duration() )
+  ground_aoe_spell_t( shaman_t* p, const std::string& name, const spell_data_t* spell ) :
+    spell_t( name, p, spell )
   {
+    aoe = -1;
     callbacks = false;
-    ground_aoe = background = true;
-  }
-
-  void snapshot_internal( action_state_t* state, unsigned flags, dmg_e rt ) override
-  {
-    assert( x >= 0 && y >= 0 );
-
-    shaman_spell_t::snapshot_internal( state, flags, rt );
-
-    state -> original_x = x;
-    state -> original_y = y;
-  }
-};
-
-// Fake "ground aoe object" for Crashing Storm talent
-struct crashing_storm_event_t : public player_event_t
-{
-  timespan_t start_time;
-
-  // Ground AOE state
-  player_t* target;
-  double x, y;
-
-  crashing_storm_event_t( shaman_t* p, player_t* t, double x_, double y_, const timespan_t& time_, bool first_tick = false ) :
-    player_event_t( *p ),
-    start_time( time_ ), target( t ), x( x_ ), y( y_ )
-  {
-    if ( first_tick )
-    {
-      add_event( timespan_t::zero() );
-    }
-    else
-    {
-      // Base tick time is 1 second, affected by speed
-      add_event( timespan_t::from_seconds( p -> cache.spell_speed() ) );
-    }
-  }
-
-  const char* name() const override
-  { return "crashing_storm"; }
-
-  shaman_t* shaman()
-  { return debug_cast<shaman_t*>( player() ); }
-
-  crashing_storm_spell_t* spell()
-  { return debug_cast<crashing_storm_spell_t*>( shaman() -> crashing_storm ); }
-
-  void execute() override
-  {
-    crashing_storm_spell_t* spell_ = spell();
-
-    // Ticks are 1 second base, affected by haste.
-    timespan_t next_tick = timespan_t::from_seconds( player() -> cache.attack_haste() );
-
-    if ( sim().debug )
-    {
-      sim().out_debug.printf( "%s crashing_storm pulse start_time=%.3f remaining_time=%.3f tick_time=%.3f",
-          player() -> name(), start_time.total_seconds(),
-          ( spell_ -> duration - ( sim().current_time() - start_time ) ).total_seconds(),
-          next_tick.total_seconds() );
-    }
-
-    // Setup spell state, and execute
-    spell_ -> target = target;
-    spell_ -> x = x;
-    spell_ -> y = y;
-
-    spell_ -> schedule_execute();
-
-    // Schedule next tick, if it can fit into the duration
-    if ( spell_ -> duration - ( sim().current_time() - start_time ) >= next_tick )
-    {
-      new ( sim() ) crashing_storm_event_t( shaman(), target, x, y, start_time );
-    }
+    ground_aoe = background = may_crit = true;
   }
 };
 
@@ -2525,11 +2598,8 @@ struct lava_lash_t : public shaman_attack_t
       cl -> schedule_execute();
     }
 
-    if ( p() -> artifact.doom_vortex.rank() && p() -> real_ppm.doom_vortex.trigger() )
-    {
-      p() -> doom_vortex -> target = state -> target;
-      p() -> doom_vortex -> schedule_execute();
-    }
+    p() -> trigger_doom_vortex( state );
+
   }
 };
 
@@ -2793,8 +2863,14 @@ struct crash_lightning_t : public shaman_attack_t
 
     if ( p() -> talent.crashing_storm -> ok() )
     {
-      new ( *sim ) crashing_storm_event_t( p(), execute_state -> target,
-          player -> x_position, player -> y_position, sim -> current_time(), true );
+      new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+          .target( execute_state -> target )
+          .x( player -> x_position )
+          .y( player -> y_position )
+          .duration( p() -> find_spell( 210797 ) -> duration() )
+          .start_time( sim -> current_time() )
+          .action( p() -> crashing_storm )
+          .hasted( ground_aoe_params_t::ATTACK_HASTE ), true );
     }
 
     if ( result_is_hit( execute_state -> result ) )
@@ -3426,11 +3502,10 @@ struct lightning_bolt_t : public shaman_spell_t
     p() -> buff.stormkeeper -> decrement();
     p() -> buff.power_of_the_maelstrom -> decrement();
 
-    if ( p() -> artifact.doom_vortex.rank() && p() -> talent.overcharge -> ok() &&
-         p() -> real_ppm.doom_vortex.trigger() )
+    // Additional check here for lightning bolt
+    if ( p() -> talent.overcharge -> ok() )
     {
-      p() -> doom_vortex -> target = execute_state -> target;
-      p() -> doom_vortex -> schedule_execute();
+      p() -> trigger_doom_vortex( execute_state );
     }
   }
 
@@ -4940,7 +5015,7 @@ void shaman_t::init_spells()
 
   if ( talent.crashing_storm -> ok() )
   {
-    crashing_storm = new crashing_storm_spell_t( this );
+    crashing_storm = new ground_aoe_spell_t( this, "crashing_storm", find_spell( 210801 ) );
   }
 
   if ( talent.earthen_rage -> ok() )
@@ -4956,7 +5031,7 @@ void shaman_t::init_spells()
 
   if ( artifact.doom_vortex.rank() )
   {
-    doom_vortex = new doom_vortex_t( this );
+    doom_vortex = new ground_aoe_spell_t( this, "doom_vortex", find_spell( 199116 ) );
   }
 
   if ( artifact.volcanic_inferno.rank() )
@@ -5143,6 +5218,28 @@ void shaman_t::trigger_stormlash( const action_state_t* state )
 
   // TODO: Pick someone, maybe, perhaps?
   buff.stormlash -> trigger_stormlash( this );
+}
+
+void shaman_t::trigger_doom_vortex( const action_state_t* state )
+{
+  if ( artifact.doom_vortex.rank() == 0 )
+  {
+    return;
+  }
+
+  if ( ! real_ppm.doom_vortex.trigger() )
+  {
+    return;
+  }
+
+  new ( *sim ) ground_aoe_event_t( this, ground_aoe_params_t()
+      .target( state -> target )
+      // Spawn vortices at target instead of player (like with crashing storm)
+      .x( state -> target -> x_position )
+      .y( state -> target -> y_position )
+      .duration( find_spell( 199121 ) -> duration() )
+      .start_time( sim -> current_time() )
+      .action( doom_vortex ) );
 }
 
 void shaman_t::trigger_unleash_doom( const action_state_t* state )
