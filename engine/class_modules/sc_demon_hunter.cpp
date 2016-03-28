@@ -63,6 +63,7 @@ public:
     const spell_data_t* chaos_strike;
     const spell_data_t* chaos_strike_refund;
     const spell_data_t* consume_magic;
+    const spell_data_t* demonic_instincts;
   } spec;
 
   // Mastery Spells
@@ -266,42 +267,54 @@ class demon_hunter_action_t : public Base
 {
 public:
   gain_t* action_gain;
+  struct {
+    bool gcd, cd;
+  } demonic_instincts;
    
   demon_hunter_action_t( const std::string& n, demon_hunter_t* p,
                          const spell_data_t* s = spell_data_t::nil() )
     : ab( n, p, s ), action_gain( p -> get_gain( n ) )
   {
-    ab::may_crit          = true;
-    ab::tick_may_crit     = true;
+    ab::may_crit         = true;
+    ab::tick_may_crit    = true;
+    demonic_instincts.gcd = ab::data().affected_by( p -> spec.demonic_instincts -> effectN( 1 ) );
+    demonic_instincts.cd  = ab::data().affected_by( p -> spec.demonic_instincts -> effectN( 2 ) );
   }
 
   demon_hunter_t* p()
-  {
-    return static_cast<demon_hunter_t*>( ab::player );
-  }
+  { return static_cast<demon_hunter_t*>( ab::player ); }
 
   const demon_hunter_t* p() const
-  {
-    return static_cast<const demon_hunter_t*>( ab::player );
-  }
+  { return static_cast<const demon_hunter_t*>( ab::player ); }
 
   demon_hunter_td_t* get_td( player_t* t ) const
-  {
-    return ab::player -> get_target_data( t );
-  }
+  { return ab::player -> get_target_data( t ); }
 
   timespan_t gcd() const override
   {
     timespan_t g = ab::gcd();
 
-    if ( g == timespan_t::zero() )
-      return timespan_t::zero();
+    if ( demonic_instincts.gcd )
+    {
+      g *= p() -> cache.attack_haste();
 
-    g *= p() -> cache.attack_haste();
-    if ( g < ab::min_gcd )
-      g = ab::min_gcd;
+      if ( g < ab::min_gcd )
+        g = ab::min_gcd;
+    }
 
     return g;
+  }
+
+  double cooldown_reduction() const override
+  {
+    double cdr = ab::cooldown_reduction();
+
+    if ( demonic_instincts.cd )
+    {
+      cdr *= p() -> cache.attack_haste();
+    }
+
+    return cdr;
   }
 
 protected:
@@ -573,7 +586,7 @@ struct blade_dance_attack_t: public demon_hunter_attack_t
   blade_dance_attack_t( demon_hunter_t* p, const spell_data_t* blade_dance, const std::string& name ):
     demon_hunter_attack_t( name, p, blade_dance )
   {
-    dual = true;
+    dual = background = true;
     aoe = -1;
   }
 };
@@ -608,9 +621,9 @@ struct blade_dance_event_t: public event_t
   }
 };
 
-struct blade_dance_parent_t: public demon_hunter_attack_t
+struct blade_dance_t: public demon_hunter_attack_t
 {
-  blade_dance_parent_t( demon_hunter_t* p, const std::string& options_str ):
+  blade_dance_t( demon_hunter_t* p, const std::string& options_str ):
     demon_hunter_attack_t( "blade_dance", p, p -> spec.blade_dance )
   {
     parse_options( options_str );
@@ -623,13 +636,14 @@ struct blade_dance_parent_t: public demon_hunter_attack_t
     }
   }
 
-  double cooldown_reduction() const override
+  bool init_finished() override
   {
-    double cdr = demon_hunter_attack_t::cooldown_reduction();
+    bool f = demon_hunter_attack_t::init_finished();
+    
+    for ( size_t i = 0; i < p() -> blade_dance_attacks.size(); i++ )
+      p() -> blade_dance_attacks[ i ] -> stats = stats;
 
-    cdr *= p() -> cache.attack_haste();
-
-    return cdr;
+    return f;
   }
 
   void execute() override
@@ -670,6 +684,7 @@ struct chaos_strike_t : public demon_hunter_attack_t
       demon_hunter_attack_t( "chaos_strike_oh", p, p -> find_spell( 199547 ) ),
       parent( mh )
     {
+      dual = background = true;
       may_miss = may_parry = may_dodge = false;
       weapon = &( p -> off_hand_weapon );
 
@@ -718,6 +733,16 @@ struct chaos_strike_t : public demon_hunter_attack_t
 
     off_hand = new chaos_strike_oh_t( p, this );
     add_child( off_hand );
+  }
+
+  bool init_finished() override
+  {
+    bool f = demon_hunter_attack_t::init_finished();
+
+    // Use 1 stats object for both actions.
+    off_hand -> stats = stats;
+
+    return f;
   }
 
   void impact( action_state_t* s ) override
@@ -899,8 +924,6 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
   {
     double dtm = p() -> current.distance_to_move;
 
-    p() -> interrupt();
-
     demon_hunter_attack_t::execute();
 
     // If we're not moving to cover distance, let's assume we're retreating for damage.
@@ -1070,7 +1093,7 @@ action_t* demon_hunter_t::create_action( const std::string& name,
   if ( name == "consume_magic"    ) return new consume_magic_t     ( this, options_str );
   using namespace actions::attacks;
   if ( name == "auto_attack"      ) return new auto_attack_t       ( this, options_str );
-  if ( name == "blade_dance"      ) return new blade_dance_parent_t( this, options_str );
+  if ( name == "blade_dance"      ) return new blade_dance_t       ( this, options_str );
   if ( name == "chaos_nova"       ) return new chaos_nova_t        ( this, options_str );
   if ( name == "chaos_strike"     ) return new chaos_strike_t      ( this, options_str );
   if ( name == "demons_bite"      ) return new demons_bite_t       ( this, options_str );
@@ -1174,12 +1197,14 @@ void demon_hunter_t::init_spells()
   base_t::init_spells();
 
   // General ================================================================
+
   spec.blade_dance         = find_class_spell( "Blade Dance" );
   spec.blur                = find_class_spell( "Blur" );
   spec.chaos_nova          = find_class_spell( "Chaos Nova" );
   spec.chaos_strike        = find_class_spell( "Chaos Strike" );
   spec.chaos_strike_refund = find_spell( 197125 );
   spec.consume_magic       = find_class_spell( "Consume Magic" );
+  spec.demonic_instincts   = find_class_spell( "Demonic Instincts" );
 
   // Masteries ==============================================================
 
