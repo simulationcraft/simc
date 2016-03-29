@@ -52,7 +52,37 @@ public:
   // Talents
   struct
   {
-  } talents;
+    // Havoc
+
+    // NYI
+    const spell_data_t* fel_mastery;
+    const spell_data_t* demonic_appetite;
+    const spell_data_t* blind_fury;
+    
+    const spell_data_t* prepared;
+    const spell_data_t* chaos_cleave;
+    const spell_data_t* fel_eruption;
+
+    const spell_data_t* felblade;
+    const spell_data_t* first_blood;
+    const spell_data_t* bloodlet;
+
+    const spell_data_t* netherwalk;
+    const spell_data_t* desperate_instincts;
+    const spell_data_t* soul_rending;
+
+    const spell_data_t* momentum;
+    const spell_data_t* demonic;
+    const spell_data_t* nemesis;
+
+    const spell_data_t* master_of_the_glaive;
+    const spell_data_t* unleashed_power;
+    const spell_data_t* demon_blades;
+
+    const spell_data_t* chaos_blades;
+    const spell_data_t* fel_barrage;
+    const spell_data_t* demon_reborn;
+  } talent;
 
   // Specialization Spells
   struct
@@ -993,7 +1023,7 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
 demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r ) :
   player_t( sim, DEMON_HUNTER, name, r ),
   buff(),
-  talents(),
+  talent(),
   spec(),
   mastery_spell(),
   cooldowns(),
@@ -1250,6 +1280,36 @@ void demon_hunter_t::init_spells()
     this -> blade_dance_attacks.push_back( second );
     this -> blade_dance_attacks.push_back( third );
   }
+
+  // Talents ================================================================
+
+  talent.fel_mastery          = find_talent_spell( "Fel Mastery" );
+  talent.demonic_appetite     = find_talent_spell( "Demonic Appetite" );
+  talent.blind_fury           = find_talent_spell( "Blind Fury" );
+    
+  talent.prepared             = find_talent_spell( "Prepared" );
+  talent.chaos_cleave         = find_talent_spell( "Chaos Cleave" );
+  talent.fel_eruption         = find_talent_spell( "Fel Eruption" );
+
+  talent.felblade             = find_talent_spell( "Felblade" );
+  talent.first_blood          = find_talent_spell( "First Blood" );
+  talent.bloodlet             = find_talent_spell( "Bloodlet" );
+
+  talent.netherwalk           = find_talent_spell( "Netherwalk" );
+  talent.desperate_instincts  = find_talent_spell( "Desperate Intincts" );
+  talent.soul_rending         = find_talent_spell( "Soul Rending" );
+
+  talent.momentum             = find_talent_spell( "Momemntum" );
+  talent.demonic              = find_talent_spell( "Demonic" );
+  talent.nemesis              = find_talent_spell( "Nemesis" );
+
+  talent.master_of_the_glaive = find_talent_spell( "Master of the Glaive" );
+  talent.unleashed_power      = find_talent_spell( "Unleashed Power" );
+  talent.demon_blades         = find_talent_spell( "Demon Blades" );
+
+  talent.chaos_blades         = find_talent_spell( "Chaos Blades" );
+  talent.fel_barrage          = find_talent_spell( "Fel Barrage (NYI)" );
+  talent.demon_reborn         = find_talent_spell( "Demon Reborn" );
 }
 
 // demon_hunter_t::create_buffs =============================================
