@@ -53,11 +53,11 @@ public:
   struct
   {
     // Havoc
+    const spell_data_t* fel_mastery;
+    const spell_data_t* blind_fury;
 
     // NYI
-    const spell_data_t* fel_mastery;
     const spell_data_t* demonic_appetite;
-    const spell_data_t* blind_fury;
     
     const spell_data_t* prepared;
     const spell_data_t* chaos_cleave;
@@ -851,6 +851,7 @@ struct demons_bite_t : public demon_hunter_attack_t
 };
 
 // Eye Beam =================================================================
+// FIXME: Eye Beam stats show 15 hits/execute.
 
 struct eye_beam_t : public demon_hunter_attack_t
 {
@@ -871,11 +872,12 @@ struct eye_beam_t : public demon_hunter_attack_t
     demon_hunter_attack_t( "eye_beam", p, p -> find_class_spell( "Eye Beam" ) )
   {
     parse_options( options_str );
-
+    
+    channeled = true;
     beam = new eye_beam_tick_t( p );
     beam -> stats = stats;
 
-    channeled = true;
+    dot_duration *= 1.0 + p -> talent.blind_fury -> effectN( 1 ).percent();
   }
 
   // Channel is not hasted.
@@ -886,8 +888,8 @@ struct eye_beam_t : public demon_hunter_attack_t
   {
     demon_hunter_attack_t::tick( d );
 
-    // First 400ms of the channel is animation and doesn't actually deal damage.
-    if ( d -> current_tick > 1 )
+    // Until 400ms through the channel, it's just animation and doesn't actually deal damage.
+    if ( d -> current_tick >= 2 )
     {
       beam -> target = target;
       beam -> execute();
@@ -916,6 +918,8 @@ struct fel_rush_t : public demon_hunter_attack_t
     movement_directionality = MOVEMENT_OMNI;
     ignore_false_positive = true;
     min_gcd = timespan_t::from_seconds( 0.40 ); // loss of control lasts longer than GCD from spell data
+
+    base_crit += p -> talent.fel_mastery -> effectN( 2 ).percent();
   }
 
   void execute() override
@@ -934,6 +938,11 @@ struct fel_rush_t : public demon_hunter_attack_t
       {
         p() -> trigger_movement( p() -> current.distance - 5.0, MOVEMENT_TOWARDS );
       }
+    }
+
+    if ( p() -> talent.fel_mastery -> ok() && result_is_hit( execute_state -> result ) )
+    {
+      p() -> resource_gain( RESOURCE_FURY, p() -> talent.fel_mastery -> effectN( 1 ).resource( RESOURCE_FURY ), action_gain );
     }
   }
 };
