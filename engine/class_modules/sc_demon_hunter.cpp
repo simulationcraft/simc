@@ -92,7 +92,8 @@ public:
   // Procs
   struct
   {
-    proc_t* delayed_auto_attack;
+    proc_t* delayed_aa_range;
+    proc_t* delayed_aa_channel;
   } proc;
 
   // Special
@@ -457,16 +458,25 @@ namespace attacks
 
 struct melee_t : public demon_hunter_attack_t
 {
-  bool mh_lost_melee_contact, oh_lost_melee_contact;
+  enum status_e {
+    MELEE_CONTACT,
+    LOST_CONTACT_CHANNEL,
+    LOST_CONTACT_RANGE,
+  };
+
+  struct {
+    status_e main_hand, off_hand;
+  } status;
 
   melee_t( const std::string& name, demon_hunter_t* p ) :
-    demon_hunter_attack_t( name, p, spell_data_t::nil() ),
-    mh_lost_melee_contact( true ), oh_lost_melee_contact( true )
+    demon_hunter_attack_t( name, p, spell_data_t::nil() )
   {
     school = SCHOOL_PHYSICAL;
     special = false;
     background = repeating = auto_attack = may_glance = true;
     trigger_gcd = timespan_t::zero();
+
+    status.main_hand = status.off_hand = LOST_CONTACT_RANGE;
 
     if ( p -> dual_wield() )
       base_hit -= 0.19;
@@ -475,21 +485,26 @@ struct melee_t : public demon_hunter_attack_t
   void reset() override
   {
     demon_hunter_attack_t::reset();
-
-    mh_lost_melee_contact = true;
-    oh_lost_melee_contact = true;
+    
+    status.main_hand = status.off_hand = LOST_CONTACT_RANGE;
   }
 
   timespan_t execute_time() const override
   {
-    timespan_t t = demon_hunter_attack_t::execute_time();
+    status_e s = weapon -> slot == SLOT_MAIN_HAND ? status.main_hand : status.off_hand;
 
-    if ( weapon -> slot == SLOT_MAIN_HAND && mh_lost_melee_contact )
-      return timespan_t::zero(); // If contact is lost, the attack is instant.
-    else if ( weapon -> slot == SLOT_OFF_HAND && oh_lost_melee_contact ) // Also used for the first attack.
-      return timespan_t::zero();
-    else
-      return t;
+    switch( s )
+    {
+    /* Autoattacks after a channel occur around 350ms later. channel_lag
+       takes care of the first 250, but add an extra 100 here. */
+    case LOST_CONTACT_CHANNEL:
+      return timespan_t::from_millis( 100 );
+    // Position lag stuff
+    case LOST_CONTACT_RANGE:
+      return rng().gauss( timespan_t::from_millis( 250 ), timespan_t::from_millis( 62 ) );
+    default:
+      return demon_hunter_attack_t::execute_time();
+    }
   }
 
   void schedule_execute( action_state_t* s ) override
@@ -497,26 +512,37 @@ struct melee_t : public demon_hunter_attack_t
     demon_hunter_attack_t::schedule_execute( s );
 
     if ( weapon -> slot == SLOT_MAIN_HAND )
-      mh_lost_melee_contact = false;
+      status.main_hand = MELEE_CONTACT;
     else if ( weapon -> slot == SLOT_OFF_HAND )
-      oh_lost_melee_contact = false;
+      status.off_hand = MELEE_CONTACT;
   }
 
   void execute() override
   {
-    if ( p() -> current.distance_to_move > 5 )
+    if ( p() -> current.distance_to_move > 5 || p() -> channeling )
     {
-      // Cancel autoattacks, auto_attack_t will restart them when we're back in range.
+      status_e s;
+
+      // Cancel autoattacks, auto_attack_t will restart them when we're able to attack again.
+      if ( p() -> current.distance_to_move > 5 )
+      {
+        p() -> proc.delayed_aa_range -> occur();
+        s = LOST_CONTACT_RANGE;
+      }
+      else
+      {
+        p() -> proc.delayed_aa_channel -> occur();
+        s = LOST_CONTACT_CHANNEL;
+      }
+
       if ( weapon -> slot == SLOT_MAIN_HAND )
       {
-        p() -> proc.delayed_auto_attack -> occur();
-        mh_lost_melee_contact = true;
+        status.main_hand = s;
         player -> main_hand_attack -> cancel();
       }
       else
       {
-        p() -> proc.delayed_auto_attack -> occur();
-        oh_lost_melee_contact = true;
+        status.off_hand = s;
         player -> off_hand_attack -> cancel();
       }
       return;
@@ -795,8 +821,6 @@ struct demons_bite_t : public demon_hunter_attack_t
 };
 
 // Eye Beam =================================================================
-/* TODO: Eye Beam haste mechanics. Verify # of ticks (spell data says 2 sec duration, 
-  200 ms interval, but obviously that doesn't work out to the 9 ticks the tooltip states. */
 
 struct eye_beam_t : public demon_hunter_attack_t
 {
@@ -821,14 +845,19 @@ struct eye_beam_t : public demon_hunter_attack_t
     beam = new eye_beam_tick_t( p );
     beam -> stats = stats;
 
-    hasted_ticks = false;
+    channeled = true;
   }
+
+  // Channel is not hasted.
+  timespan_t tick_time( double ) const override
+  { return base_tick_time; }
 
   void tick( dot_t* d ) override
   {
     demon_hunter_attack_t::tick( d );
 
-    if ( d -> current_tick > 1 ) // first "tick" doesn't deal damage
+    // First 400ms of the channel is animation and doesn't actually deal damage.
+    if ( d -> current_tick > 1 )
     {
       beam -> target = target;
       beam -> execute();
@@ -1173,7 +1202,8 @@ void demon_hunter_t::init_procs()
 {
   base_t::init_procs();
 
-  proc.delayed_auto_attack = get_proc( "delayed_auto_attack" );
+  proc.delayed_aa_range   = get_proc( "delayed_swing__out_of_range" );
+  proc.delayed_aa_channel = get_proc( "delayed_swing__channeling" );
 }
 
 // demon_hunter_t::init_scaling =============================================
