@@ -2228,7 +2228,7 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
       return;
 
     // Apply Mortal Wonds
-    p() -> debuffs.mortal_wounds -> trigger();
+    execute_state -> target -> debuffs.mortal_wounds -> trigger();
 
     // Activate A'Buraq's Trait
     if ( p() -> artifact.transfer_the_power.rank() )
@@ -2279,6 +2279,17 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
   virtual double cost() const override
   {
     return 0;
+  }
+
+  virtual void execute() override
+  {
+    monk_melee_attack_t::execute();
+
+    if ( result_is_miss( execute_state -> result ) )
+      return;
+
+    // Apply Mortal Wonds
+    execute_state -> target -> debuffs.mortal_wounds -> trigger();
   }
 };
 
@@ -2369,7 +2380,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
       }
       case MONK_WINDWALKER:
       {
-        p() -> debuffs.mortal_wounds -> trigger();
+        execute_state -> target -> debuffs.mortal_wounds -> trigger();
 
         // Activate A'Buraq's Trait
         if ( p() -> artifact.transfer_the_power.rank() )
@@ -3469,13 +3480,8 @@ struct black_ox_brew_t: public monk_spell_t
   {
     monk_spell_t::execute();
 
-    // Effect says 200 so figure out the max between Max Energy and 200
-    int energy_max_refund = std::min( p() -> talent.black_ox_brew -> effectN( 1 ).base_value(), static_cast<int>( p() -> resources.max[RESOURCE_ENERGY] ) );
-    // Then refund the difference between the max energy that can be refunded and the current energy
-    int energy_refund = energy_max_refund - static_cast<int>( p() -> resources.current[RESOURCE_ENERGY] );
-
     // Chug some Black Ox Brew, which instantly refills your Energy, and your Ironskin Brew and Purifying Brew charges.
-    p() -> resource_gain( RESOURCE_ENERGY, energy_refund, p() -> gain.energy_refund );
+    p() -> resource_gain( RESOURCE_ENERGY, p() -> talent.black_ox_brew -> effectN( 1 ).base_value(), p() -> gain.energy_refund );
 
     p() -> cooldown.brewmaster_active_mitigation -> reset( true );
   }
@@ -3843,6 +3849,8 @@ struct breath_of_fire_t: public monk_spell_t
   {
     parse_options( options_str );
     aoe = -1;
+
+    add_child( dragonfire );
   }
 
   virtual void impact( action_state_t* s ) override
@@ -5997,7 +6005,7 @@ void monk_t::init_base_stats()
     case MONK_BREWMASTER:
     {
       base.distance = 3;
-      base_gcd += timespan_t::from_millis( spec.stagger -> effectN( 11 ).base_value() ); // Saved as -500 milliseconds
+      base_gcd += spec.stagger -> effectN( 11 ).time_value(); // Saved as -500 milliseconds
       base.attack_power_per_agility = 1.0;
       resources.base[RESOURCE_ENERGY] = 100;
       resources.base[RESOURCE_MANA] = 0;
@@ -6020,7 +6028,7 @@ void monk_t::init_base_stats()
     case MONK_WINDWALKER:
     {
       base.distance = 3;
-      base_gcd += timespan_t::from_millis( spec.stance_of_the_fierce_tiger -> effectN( 6 ).base_value() ); // Saved as -500 milliseconds
+      base_gcd += spec.stance_of_the_fierce_tiger -> effectN( 6 ).time_value(); // Saved as -500 milliseconds
       base.attack_power_per_agility = 1.0;
       resources.base[RESOURCE_ENERGY] = 100;
       resources.base[RESOURCE_ENERGY] += sets.set(MONK_WINDWALKER, T18, B4) -> effectN( 2 ).base_value();
