@@ -50,6 +50,7 @@ public:
     buff_t* blur;
     buff_t* death_sweep;
     buff_t* metamorphosis;
+    buff_t* momentum;
     buff_t* prepared;
     buff_t* vengeful_retreat_jump_cancel;
   } buff;
@@ -193,6 +194,7 @@ public:
   stat_e convert_hybrid_stat( stat_e s ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   double composite_dodge() const override;
+  double composite_player_multiplier( school_e ) const override;
   double passive_movement_modifier() const override;
   void target_mitigation( school_e, dmg_e, action_state_t* ) override;
   void init_action_list() override;
@@ -1140,6 +1142,8 @@ struct fel_rush_t : public demon_hunter_attack_t
     // Buff to track the rush's movement. This lets us delay autoattacks.
     p() -> buffs.self_movement -> trigger( 1, 0, -1.0, data().gcd() );
 
+    p() -> buff.momentum -> trigger();
+
     // If we're not moving to cover distance, let's assume we're Fel Rushing for damage.
     if ( dtm == 0.0 )
     {
@@ -1284,6 +1288,7 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
     demon_hunter_attack_t::execute();
 
     p() -> buff.prepared -> trigger();
+    p() -> buff.momentum -> trigger();
     
     // Buff to track the movement. This lets us delay autoattacks and other things.
     if ( jump_cancel )
@@ -1442,6 +1447,17 @@ double demon_hunter_t::composite_dodge() const
   d += buff.blur -> check() * buff.blur -> data().effectN( 2 ).percent();
 
   return d;
+}
+
+// demon_hunter_t::composite_player_multiplier =====================================
+
+double demon_hunter_t::composite_player_multiplier( school_e school ) const
+{
+  double m = player_t::composite_player_multiplier( school );
+
+  m *= 1.0 + buff.momentum -> check_value();
+
+  return m;
 }
 
 // demon_hunter_t::passive_movement_modifier ================================
@@ -1673,6 +1689,11 @@ void demon_hunter_t::create_buffs()
 
   buff.metamorphosis = buff_creator_t( this, "metamorphosis", spec.metamorphosis_buff )
                        .cd( timespan_t::zero() );
+
+  buff.momentum      = buff_creator_t( this, "momentum", find_spell( 208628 ) )
+                       .default_value( find_spell( 208628 ) -> effectN( 1 ).percent() )
+                       .chance( talent.momentum -> ok() )
+                       .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.prepared      = buff_creator_t( this, "prepared", talent.prepared -> effectN( 1 ).trigger() )
                        .chance( talent.prepared -> ok() )
