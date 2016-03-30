@@ -141,7 +141,7 @@ public:
     const spell_data_t* lightbringer;
     const spell_data_t* plate_specialization;
     const spell_data_t* riposte;   // hidden
-    const spell_data_t* sanctity_of_battle;
+    const spell_data_t* paladin;
     const spell_data_t* sanctuary;
     const spell_data_t* sword_of_light;
     const spell_data_t* sword_of_light_value;
@@ -507,15 +507,15 @@ private:
 public:
   typedef paladin_action_t base_t;
 
-  // Sanctity of Battle bools
+  // haste scaling bools
   bool hasted_cd;
   bool hasted_gcd;
 
   paladin_action_t( const std::string& n, paladin_t* player,
                     const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
-    hasted_cd( ab::data().affected_by( player -> passives.sanctity_of_battle -> effectN( 1 ) ) ),
-    hasted_gcd( ab::data().affected_by( player -> passives.sanctity_of_battle -> effectN( 2 ) ) )
+    hasted_cd( ab::data().affected_by( player -> passives.paladin -> effectN( 1 ) ) ),
+    hasted_gcd( ab::data().affected_by( player -> passives.paladin -> effectN( 2 ) ) )
   {
   }
 
@@ -909,7 +909,6 @@ struct consecration_t : public paladin_spell_t
     }
 
     hasted_ticks   = true;
-    hasted_cd = true;
     may_miss       = false;
 
     tick_action = new consecration_tick_t( p );
@@ -1035,8 +1034,6 @@ struct execution_sentence_t : public paladin_spell_t
     hasted_ticks   = true;
     travel_speed   = 0;
     tick_may_crit  = true;
-
-    hasted_cd = true;
 
     // disable if not talented
     if ( ! ( p -> talents.execution_sentence -> ok() ) )
@@ -1910,8 +1907,6 @@ struct crusader_strike_t : public holy_power_generator_t
   {
     parse_options( options_str );
 
-    hasted_cd = hasted_gcd = true;
-
     // Guarded by the Light and Sword of Light reduce base mana cost; spec-limited so only one will ever be active
     base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent()
                                        +  p -> passives.sword_of_light -> effectN( 4 ).percent();
@@ -1978,8 +1973,6 @@ struct crusader_flurry_t : public holy_power_generator_t
     cooldown -> charges = data().charges();
 
     base_multiplier *= 1.0 + p -> artifact.blade_of_light.percent();
-
-    hasted_cd = hasted_gcd = true;
   }
 
   double composite_crit() const override
@@ -2024,8 +2017,6 @@ struct zeal_t : public holy_power_generator_t
     base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent()
                                        +  p -> passives.sword_of_light -> effectN( 4 ).percent();
     base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
-
-    hasted_cd = hasted_gcd = true;
 
     cooldown -> duration = data().charge_cooldown();
     cooldown -> charges = data().charges();
@@ -2081,8 +2072,6 @@ struct blade_of_justice_t : public holy_power_generator_t
   {
     parse_options( options_str );
 
-    hasted_cd = hasted_gcd = true;
-
     // Guarded by the Light and Sword of Light reduce base mana cost; spec-limited so only one will ever be active
     base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent()
                                        +  p -> passives.sword_of_light -> effectN( 4 ).percent();
@@ -2122,8 +2111,6 @@ struct blade_of_wrath_t : public holy_power_generator_t
   {
     parse_options( options_str );
 
-
-    hasted_cd = hasted_gcd = true;
     // Guarded by the Light and Sword of Light reduce base mana cost; spec-limited so only one will ever be active
     base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent()
                                        +  p -> passives.sword_of_light -> effectN( 4 ).percent();
@@ -2178,7 +2165,6 @@ struct divine_hammer_t : public paladin_spell_t
     hasted_ticks   = true;
     may_miss       = false;
     tick_zero      = true;
-    hasted_cd = hasted_gcd = true;
 
     tick_action = new divine_hammer_tick_t( p );
   }
@@ -2417,8 +2403,6 @@ struct judgment_t : public paladin_melee_attack_t
     : paladin_melee_attack_t( "judgment", p, p -> find_spell( "Judgment" ), true )
   {
     parse_options( options_str );
-
-    hasted_cd = hasted_gcd = true;
 
     // no weapon multiplier
     weapon_multiplier = 0.0;
@@ -3628,7 +3612,7 @@ void paladin_t::init_spells()
   // Shared Passives
   passives.boundless_conviction   = find_spell( 115675 ); // find_spell fails here
   passives.plate_specialization   = find_specialization_spell( "Plate Specialization" );
-  passives.sanctity_of_battle     = find_spell( 25956 );  // find_spell fails here
+  passives.paladin                = find_spell( 137026 );  // find_spell fails here
 
   // Holy Passives
   passives.holy_insight           = find_specialization_spell( "Holy Insight" );
