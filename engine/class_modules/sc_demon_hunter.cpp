@@ -50,6 +50,7 @@ public:
     buff_t* blur;
     buff_t* death_sweep;
     buff_t* metamorphosis;
+    buff_t* prepared;
     buff_t* vengeful_retreat_jump_cancel;
   } buff;
 
@@ -118,6 +119,7 @@ public:
   struct
   {
     gain_t* fury_refund;
+    gain_t* prepared;
   } gain;
 
   // Benefits
@@ -685,13 +687,13 @@ struct blade_dance_event_t: public event_t
   size_t current;
   bool in_metamorphosis;
   const spell_data_t* timing_passive;
-  std::vector<attack_t*> attacks;
+  std::vector<attack_t*>* attacks;
 
   blade_dance_event_t( demon_hunter_t* p, size_t ca, bool meta = false ):
     event_t( *p -> sim ), dh( p ), current( ca ), in_metamorphosis( meta )
   {
     timing_passive = in_metamorphosis ? p -> spec.death_sweep : p -> spec.blade_dance;
-    attacks = in_metamorphosis ? p -> death_sweep_attacks : p -> blade_dance_attacks;
+    attacks = in_metamorphosis ? &p -> death_sweep_attacks : &p -> blade_dance_attacks;
 
     add_event( next_execute() );
   }
@@ -700,16 +702,14 @@ struct blade_dance_event_t: public event_t
   { return "Blade Dance"; }
 
   timespan_t next_execute() const
-  {
-    return timespan_t::from_millis( timing_passive -> effectN( current + 5 ).misc_value1() - ( current > 0 ? timing_passive -> effectN( current + 4 ).misc_value1() : 0 ) );
-  }
+  { return timespan_t::from_millis( timing_passive -> effectN( current + 5 ).misc_value1() - ( current > 0 ? timing_passive -> effectN( current + 4 ).misc_value1() : 0 ) ); }
 
   void execute() override
   {
-    attacks[ current ] -> execute();
+    attacks -> at( current ) -> execute();
     current++;
 
-    if ( current < attacks.size() )
+    if ( current < attacks -> size() )
     {
       dh -> blade_dance_driver = new ( sim() ) blade_dance_event_t( dh, current, in_metamorphosis );
     }
@@ -721,7 +721,7 @@ struct blade_dance_template_t: public demon_hunter_attack_t
   std::vector<attack_t*> attacks;
   buff_t* dodge_buff;
 
-  blade_dance_template_t( const std::string n, demon_hunter_t* p, const spell_data_t* s ):
+  blade_dance_template_t( const std::string& n, demon_hunter_t* p, const spell_data_t* s ):
     demon_hunter_attack_t( n, p, s )
   {
     aoe = -1;
@@ -753,10 +753,10 @@ struct blade_dance_template_t: public demon_hunter_attack_t
 
 struct blade_dance_t: public blade_dance_template_t
 {
-  blade_dance_t( demon_hunter_t* p, const std::string options ):
+  blade_dance_t( demon_hunter_t* p, const std::string& options_str ):
     blade_dance_template_t( "blade_dance", p, p -> spec.blade_dance )
   {
-    parse_options( options );
+    parse_options( options_str );
 
     attacks = p -> blade_dance_attacks;
     dodge_buff = p -> buff.blade_dance;
@@ -799,6 +799,8 @@ struct chaos_strike_template_t : public demon_hunter_attack_t
       dual = background = true;
       may_miss = may_parry = may_dodge = false;
       weapon = &( p -> off_hand_weapon );
+      if ( p -> talent.chaos_cleave -> ok() )
+        aoe = 1 + p -> talent.chaos_cleave -> effectN( 1 ).base_value(); // Bugged as of build 21287
       aoe = radius > 0 ? -1 : aoe;
     }
 
@@ -837,7 +839,7 @@ struct chaos_strike_template_t : public demon_hunter_attack_t
   chaos_strike_oh_t* off_hand;
   bool is_critical;
 
-  chaos_strike_template_t( const std::string n, demon_hunter_t* p, const spell_data_t* s  ) :
+  chaos_strike_template_t( const std::string& n, demon_hunter_t* p, const spell_data_t* s  ) :
     demon_hunter_attack_t( n, p, s )
   {
     off_hand = new chaos_strike_oh_t( p, data().effectN( 3 ).trigger(), this );
@@ -879,10 +881,12 @@ struct chaos_strike_template_t : public demon_hunter_attack_t
 
 struct chaos_strike_t : public chaos_strike_template_t
 {
-  chaos_strike_t( demon_hunter_t* p, const std::string options ) :
+  chaos_strike_t( demon_hunter_t* p, const std::string& options_str ) :
     chaos_strike_template_t( "chaos_strike", p, p -> spec.chaos_strike )
   {
-    parse_options( options );
+    parse_options( options_str );
+
+    aoe += p -> talent.chaos_cleave -> effectN( 1 ).base_value();
   }
 
   bool ready() override
@@ -895,13 +899,14 @@ struct chaos_strike_t : public chaos_strike_template_t
 };
 
 // Annihilation =============================================================
+// TOCHECK: Refund mechanics on multiple targets.
 
 struct annihilation_t : public chaos_strike_template_t
 {
-  annihilation_t( demon_hunter_t* p, const std::string options ) :
+  annihilation_t( demon_hunter_t* p, const std::string& options_str ) :
     chaos_strike_template_t( "annihilation", p, p -> spec.annihilation )
   {
-    parse_options( options );
+    parse_options( options_str );
   }
 
   bool ready() override
@@ -917,10 +922,10 @@ struct annihilation_t : public chaos_strike_template_t
 
 struct death_sweep_t: public blade_dance_template_t
 {
-  death_sweep_t( demon_hunter_t* p, const std::string options ):
+  death_sweep_t( demon_hunter_t* p, const std::string& options_str ):
     blade_dance_template_t( "death_sweep", p, p -> spec.death_sweep )
   {
-    parse_options( options );
+    parse_options( options_str );
 
     attacks = p -> death_sweep_attacks;
     dodge_buff = p -> buff.death_sweep;
@@ -1007,6 +1012,17 @@ struct eye_beam_t : public demon_hunter_attack_t
       beam -> target = target;
       beam -> execute();
     }
+  }
+};
+
+// Fel Eruption =============================================================
+
+struct fel_eruption_t : public demon_hunter_attack_t
+{
+  fel_eruption_t( demon_hunter_t* p, const std::string& options_str ) :
+    demon_hunter_attack_t( "fel_eruption", p, p -> talent.fel_eruption )
+  {
+    parse_options( options_str );
   }
 };
 
@@ -1153,11 +1169,15 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
     }
     ignore_false_positive = true;
     use_off_gcd = true;
+
+    cooldown -> duration += p -> talent.prepared -> effectN( 2 ).time_value();
   }
 
   void execute() override
   {
     demon_hunter_attack_t::execute();
+
+    p() -> buff.prepared -> trigger();
     
     // Buff to track the movement. This lets us delay autoattacks and other things.
     if ( jump_cancel )
@@ -1244,6 +1264,7 @@ void demon_hunter_t::create_cooldowns()
 void demon_hunter_t::create_gains()
 {
   gain.fury_refund = get_gain( "fury_refund" );
+  gain.prepared    = get_gain( "prepared" );
 }
 
 /* Construct benefits
@@ -1345,6 +1366,7 @@ action_t* demon_hunter_t::create_action( const std::string& name,
   if ( name == "death_sweep"      ) return new death_sweep_t       ( this, options_str );
   if ( name == "demons_bite"      ) return new demons_bite_t       ( this, options_str );
   if ( name == "eye_beam"         ) return new eye_beam_t          ( this, options_str );
+  if ( name == "fel_eruption"     ) return new fel_eruption_t      ( this, options_str );
   if ( name == "fel_rush"         ) return new fel_rush_t          ( this, options_str );
   if ( name == "metamorphosis" ||
        name == "meta"             ) return new metamorphosis_t     ( this, options_str );
@@ -1532,6 +1554,12 @@ void demon_hunter_t::create_buffs()
 
   buff.metamorphosis = buff_creator_t( this, "metamorphosis", spec.metamorphosis_buff )
                        .cd( timespan_t::zero() );
+
+  buff.prepared      = buff_creator_t( this, "prepared", talent.prepared -> effectN( 1 ).trigger() )
+                       .chance( talent.prepared -> ok() )
+                       .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
+                         resource_gain( RESOURCE_FURY, b -> data().effectN( 1 ).resource( RESOURCE_FURY ),
+                         gain.prepared ); } );
 
   buff.vengeful_retreat_jump_cancel = buff_creator_t( this, "vengeful_retreat_jump_cancel", spell_data_t::nil() )
                        .chance( 1.0 )
