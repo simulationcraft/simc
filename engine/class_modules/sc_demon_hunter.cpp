@@ -1030,10 +1030,13 @@ struct fel_rush_t : public demon_hunter_attack_t
     base_teleport_distance = damage_spell -> effectN( 1 ).radius();
     movement_directionality = MOVEMENT_OMNI;
     ignore_false_positive = true;
-    min_gcd = timespan_t::from_seconds( 0.40 ); // loss of control lasts longer than GCD from spell data
-
+    
     base_crit += p -> talent.fel_mastery -> effectN( 2 ).percent();
   }
+
+  // Fel Rush's loss of control causes a GCD lag after the loss ends.
+  timespan_t gcd() const override
+  { return data().gcd() + rng().gauss( sim -> gcd_lag, sim -> gcd_lag_stddev ); }
 
   void execute() override
   {
