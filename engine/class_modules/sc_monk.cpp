@@ -5985,36 +5985,51 @@ void monk_t::init_base_stats()
 {
   base_t::init_base_stats();
 
-  base.distance = ( specialization() == MONK_MISTWEAVER ) ? 40 : 3;
   base_gcd = timespan_t::from_seconds( 1.5 );
-  if ( spec.stagger -> ok() )
-    base_gcd -= timespan_t::from_millis( spec.stagger -> effectN( 11 ).base_value() * -1 ); // Saved as -500 milliseconds
-  if ( spec.stance_of_the_fierce_tiger -> ok() )
-    base_gcd -= timespan_t::from_millis( spec.stance_of_the_fierce_tiger -> effectN( 6 ).base_value() * -1); // Saved as -500 milliseconds
 
-  resources.base[RESOURCE_CHI] = 0;
-  if ( specialization() == MONK_MISTWEAVER )
-    base.spell_power_per_intellect = 1.0;
-  else
+  switch( specialization() )
   {
-    base.attack_power_per_agility = 1.0;
-    resources.base[RESOURCE_ENERGY] = 100;
-    if ( specialization() == MONK_WINDWALKER )
+    case MONK_BREWMASTER:
     {
-      resources.base[RESOURCE_CHI] = 5 + talent.ascension -> effectN( 1 ).base_value();
-      resources.base[RESOURCE_ENERGY] += sets.set(MONK_WINDWALKER, T18, B4) -> effectN( 2 ).base_value();
-      if ( artifact.inner_peace.rank() )
-        resources.base[RESOURCE_ENERGY] += artifact.inner_peace.value();
-    }
-    else
-    {
+      base.distance = 3;
+      base_gcd += timespan_t::from_millis( spec.stagger -> effectN( 11 ).base_value() ); // Saved as -500 milliseconds
+      base.attack_power_per_agility = 1.0;
+      resources.base[RESOURCE_ENERGY] = 100;
+      resources.base[RESOURCE_MANA] = 0;
+      resources.base[RESOURCE_CHI] = 0;
+      base_energy_regen_per_second = 10.0;
+
       if ( artifact.healthy_appetite.rank() )
         resources.base[RESOURCE_HEALTH] *= 1 + artifact.healthy_appetite.percent();
+      break;
+    }
+    case MONK_MISTWEAVER:
+    {
+      base.distance = 40;
+      base.spell_power_per_intellect = 1.0;
+      resources.base[RESOURCE_ENERGY] = 0;
+      resources.base[RESOURCE_CHI] = 0;
+      base_energy_regen_per_second = 0;
+      break;
+    }
+    case MONK_WINDWALKER:
+    {
+      base.distance = 3;
+      base_gcd += timespan_t::from_millis( spec.stance_of_the_fierce_tiger -> effectN( 6 ).base_value() ); // Saved as -500 milliseconds
+      base.attack_power_per_agility = 1.0;
+      resources.base[RESOURCE_ENERGY] = 100;
+      resources.base[RESOURCE_ENERGY] += sets.set(MONK_WINDWALKER, T18, B4) -> effectN( 2 ).base_value();
+      resources.base[RESOURCE_MANA] = 0;
+      resources.base[RESOURCE_CHI] = 5 + talent.ascension -> effectN( 1 ).base_value();
+      base_energy_regen_per_second = 10.0;
+
+      if ( artifact.inner_peace.rank() )
+        resources.base[RESOURCE_ENERGY] += artifact.inner_peace.value();
+      break;
     }
   }
 
   base_chi_regen_per_second = 0;
-  base_energy_regen_per_second = 10.0;
 }
 
 // monk_t::init_scaling =====================================================
