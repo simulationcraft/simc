@@ -61,9 +61,6 @@ public:
     const spell_data_t* fel_mastery;
     const spell_data_t* blind_fury;
 
-    // NYI
-    const spell_data_t* demonic_appetite;
-    
     const spell_data_t* prepared;
     const spell_data_t* chaos_cleave;
     const spell_data_t* fel_eruption;
@@ -71,6 +68,9 @@ public:
     const spell_data_t* felblade;
     const spell_data_t* first_blood;
     const spell_data_t* bloodlet;
+
+    // NYI
+    const spell_data_t* demonic_appetite;
 
     const spell_data_t* netherwalk;
     const spell_data_t* desperate_instincts;
@@ -690,16 +690,16 @@ struct blade_dance_attack_t: public demon_hunter_attack_t
     aoe = -1;
   }
 
-  double composite_target_multiplier( player_t* t ) const override
+  double composite_da_multiplier( const action_state_t* s ) const override
   {
-    double tm = demon_hunter_attack_t::composite_target_multiplier( t );
+    double dm = demon_hunter_attack_t::composite_da_multiplier( s );
 
-    if ( p() -> talent.first_blood -> ok() && t == target_list()[ 0 ] )
+    if ( p() -> talent.first_blood -> ok() && s -> chain_target == 0 )
     {
-      tm *= 1.0 + p() -> talent.first_blood -> effectN( 1 ).percent();
+      dm *= 1.0 + p() -> talent.first_blood -> effectN( 1 ).percent();
     }
 
-    return tm;
+    return dm;
   }
 };
 
@@ -764,16 +764,16 @@ struct blade_dance_template_t: public demon_hunter_attack_t
     return f;
   }
 
-  double composite_target_multiplier( player_t* t ) const override
+  double composite_da_multiplier( const action_state_t* s ) const override
   {
-    double tm = demon_hunter_attack_t::composite_target_multiplier( t );
+    double dm = demon_hunter_attack_t::composite_da_multiplier( s );
 
-    if ( p() -> talent.first_blood -> ok() && t == target_list()[ 0 ] )
+    if ( p() -> talent.first_blood -> ok() && s -> chain_target == 0 )
     {
-      tm *= 1.0 + p() -> talent.first_blood -> effectN( 1 ).percent();
+      dm *= 1.0 + p() -> talent.first_blood -> effectN( 1 ).percent();
     }
 
-    return tm;
+    return dm;
   }
 
   void execute() override
