@@ -2214,13 +2214,15 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
     if ( result_is_miss( execute_state -> result ) )
       return;
 
+    // Apply Mortal Wonds
+    p() -> debuffs.mortal_wounds -> trigger();
+
     // Activate A'Buraq's Trait
     if ( p() -> artifact.transfer_the_power.rank() )
       p() -> buff.transfer_the_power -> trigger();
 
-    // Apply Mortal Wonds
-    if ( p() -> specialization() == MONK_WINDWALKER )
-      p() -> debuffs.mortal_wounds -> trigger();
+    if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B2 ) )
+      p() -> buff.masterful_strikes -> trigger( p() -> sets.set( MONK_WINDWALKER,T18, B2 ) -> effect_count() );
   }
 
   virtual double cost() const override
@@ -2274,7 +2276,9 @@ struct rising_sun_kick_t: public monk_melee_attack_t
   rising_sun_kick_tornado_kick_t* rsk_tornado_kick;
 
   rising_sun_kick_t( monk_t* p, const std::string& options_str ):
-    monk_melee_attack_t( "rising_sun_kick", p, p -> spec.rising_sun_kick )
+    monk_melee_attack_t( "rising_sun_kick", p, p -> spec.rising_sun_kick ),
+    rsk_proc( new rising_sun_kick_proc_t( p, p -> passives.rising_sun_kick_trinket ) ),
+    rsk_tornado_kick( new rising_sun_kick_tornado_kick_t( p, p -> spec.rising_sun_kick -> effectN( 1 ).trigger() ) )
   {
     parse_options( options_str );
 
@@ -2295,10 +2299,10 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     spell_power_mod.direct = 0.0;
 
     if ( p -> artifact.tornado_kicks.rank() )
-      rsk_tornado_kick = new rising_sun_kick_tornado_kick_t( p, p -> spec.rising_sun_kick -> effectN( 1 ).trigger() );
+      add_child( rsk_tornado_kick );
 
     if ( p -> furious_sun )
-      rsk_proc = new rising_sun_kick_proc_t( p, p -> passives.rising_sun_kick_trinket );
+      add_child( rsk_proc );
   }
 
   virtual double action_multiplier() const
@@ -2769,6 +2773,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
 
   fists_of_fury_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( "fists_of_fury", p, p -> spec.fists_of_fury ),
+    crosswinds( new crosswinds_t( p ) ),
     crosswinds_trigger( true )
   {
     parse_options( options_str );
@@ -2791,7 +2796,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
       rsk_proc = new rising_sun_kick_proc_t( p, p -> passives.rising_sun_kick_trinket );
 
     if ( p -> artifact.crosswinds.rank() )
-      crosswinds = new crosswinds_t( p );
+      add_child( crosswinds );
   }
 
   virtual double action_multiplier() const override
@@ -2888,7 +2893,7 @@ struct whirling_dragon_punch_tick_t: public monk_melee_attack_t
 
 struct whirling_dragon_punch_t: public monk_melee_attack_t
 {
-  rising_sun_kick_proc_t* rsk_proc;
+//  rising_sun_kick_proc_t* rsk_proc;
 
   whirling_dragon_punch_t(monk_t* p, const std::string& options_str) :
     monk_melee_attack_t( "whirling_dragon_punch", p, p -> talent.whirling_dragon_punch )
@@ -2905,8 +2910,8 @@ struct whirling_dragon_punch_t: public monk_melee_attack_t
 
     tick_action = new whirling_dragon_punch_tick_t( "whirling_dragon_punch_tick", p, p -> passives.whirling_dragon_punch );
 
-    if ( p -> furious_sun )
-      rsk_proc = new rising_sun_kick_proc_t( p, p -> passives.rising_sun_kick_trinket );
+//    if ( p -> furious_sun )
+//      rsk_proc = new rising_sun_kick_proc_t( p, p -> passives.rising_sun_kick_trinket );
   }
 
   virtual bool ready() override
@@ -2936,19 +2941,19 @@ struct whirling_dragon_punch_t: public monk_melee_attack_t
   virtual void last_tick(dot_t* dot) override
   {
     monk_melee_attack_t::last_tick(dot); 
-    if ( p() -> furious_sun )
-    {
-      double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item) / 100.0;
+//    if ( p() -> furious_sun )
+//    {
+//      double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item) / 100.0;
       // Hurricane Strike's proc chance is reduced in half
-      proc_chance *= 0.50;
+//      proc_chance *= 0.50;
 
       // Each chi spent has a chance of proccing a Rising Sun Kick. Plausible to see up to 3 RSK procs; though highly unlikely
-      for ( int i = 1; i <= 3; i++ ) // TODO: Hard code the 3 for the time being until final word on how this works
-      {
-        if ( rng().roll( proc_chance ) )
-          rsk_proc -> execute();
-      }
-    }
+//      for ( int i = 1; i <= 3; i++ ) // TODO: Hard code the 3 for the time being until final word on how this works
+//      {
+//        if ( rng().roll( proc_chance ) )
+//          rsk_proc -> execute();
+//      }
+//    }
   }
 };
 
