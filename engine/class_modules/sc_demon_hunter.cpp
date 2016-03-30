@@ -50,6 +50,7 @@ public:
     buff_t* blur;
     buff_t* death_sweep;
     buff_t* metamorphosis;
+    buff_t* vengeful_retreat_jump_cancel;
   } buff;
 
   // Talents
@@ -333,6 +334,9 @@ public:
   {
     timespan_t g = ab::gcd();
 
+    if ( g == timespan_t::zero() )
+      return g;
+
     if ( metamorphosis_gcd && p() -> buff.metamorphosis -> up() )
     {
       g += p() -> spec.metamorphosis_buff -> effectN( 7 ).time_value();
@@ -341,10 +345,10 @@ public:
     if ( demonic_instincts.gcd )
     {
       g *= p() -> cache.attack_haste();
-
-      if ( g < ab::min_gcd )
-        g = ab::min_gcd;
     }
+
+    if ( g < ab::min_gcd )
+      g = ab::min_gcd;
 
     return g;
   }
@@ -492,6 +496,20 @@ struct demon_hunter_attack_t: public demon_hunter_action_t < melee_attack_t >
   {
     player -> resource_gain( RESOURCE_FURY, resource_consumed * 0.80, p() -> gain.fury_refund );
   }
+
+  virtual bool usable_moving() const override
+  {
+    if ( execute_time() > timespan_t::zero() )
+      return false;
+
+    if ( channeled )
+      return false;
+
+    if ( p() -> buff.vengeful_retreat_jump_cancel -> check() )
+      return true;
+
+    return base_t::usable_moving();
+  }
 };
 
 namespace attacks
@@ -562,20 +580,21 @@ struct melee_t : public demon_hunter_attack_t
 
   void execute() override
   {
-    if ( p() -> current.distance_to_move > 5 || p() -> buffs.self_movement -> check() || p() -> channeling )
+    if ( p() -> current.distance_to_move > 5 || p() -> channeling
+      || ( p() -> buffs.self_movement -> check() && ! p() -> buff.vengeful_retreat_jump_cancel -> check() ) )
     {
       status_e s;
 
       // Cancel autoattacks, auto_attack_t will restart them when we're able to attack again.
-      if ( p() -> current.distance_to_move > 5 || p() -> buffs.self_movement -> check() )
-      {
-        p() -> proc.delayed_aa_range -> occur();
-        s = LOST_CONTACT_RANGE;
-      }
-      else
+      if ( p() -> channeling )
       {
         p() -> proc.delayed_aa_channel -> occur();
         s = LOST_CONTACT_CHANNEL;
+      }
+      else
+      {
+        p() -> proc.delayed_aa_range -> occur();
+        s = LOST_CONTACT_RANGE;
       }
 
       if ( weapon -> slot == SLOT_MAIN_HAND )
@@ -1042,6 +1061,14 @@ struct fel_rush_t : public demon_hunter_attack_t
       p() -> resource_gain( RESOURCE_FURY, p() -> talent.fel_mastery -> effectN( 1 ).resource( RESOURCE_FURY ), action_gain );
     }
   }
+
+  bool ready() override
+  {
+    if ( p() -> buffs.self_movement -> check() )
+      return false;
+
+    return demon_hunter_attack_t::ready();
+  }
 };
 
 // Metamorphosis ============================================================
@@ -1100,9 +1127,12 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
 struct vengeful_retreat_t : public demon_hunter_attack_t
 {
+  bool jump_cancel;
+
   vengeful_retreat_t( demon_hunter_t* p, const std::string& options_str ) :
     demon_hunter_attack_t( "vengeful_retreat", p, p -> find_class_spell( "Vengeful Retreat" ) )
   {
+    add_option( opt_bool( "jump_cancel", jump_cancel ) );
     parse_options( options_str );
 
     const spell_data_t* damage_spell = p -> find_spell( 198813 );
@@ -1113,32 +1143,40 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
     radius = damage_spell -> effectN( 3 ).radius();
     aoe = -1;
     
-    base_teleport_distance = 20.0;
-    movement_directionality = MOVEMENT_OMNI;
+    if ( ! jump_cancel )
+    {
+      base_teleport_distance = 20.0;
+      movement_directionality = MOVEMENT_OMNI;
+    }
     ignore_false_positive = true;
     use_off_gcd = true;
   }
 
   void execute() override
   {
-    double dtm = p() -> current.distance_to_move;
-
     demon_hunter_attack_t::execute();
     
-    // Buff to track the movement. This lets us delay autoattacks. Very rough value from in-game testing.
-    p() -> buffs.self_movement -> trigger( 1, 0, -1.0, timespan_t::from_seconds( 0.40 ) );
-
-    // If we're not moving to cover distance, let's assume we're retreating for damage.
-    if ( dtm == 0.0 )
+    // Buff to track the movement. This lets us delay autoattacks and other things.
+    if ( jump_cancel )
     {
-      p() -> current.distance = std::abs( p() -> current.distance - composite_teleport_distance( execute_state ) );
-
-      // If new distance after retreating is too far away to melee from, then trigger movement back into melee range.
-      if ( p() -> current.distance > 5.0 )
-      {
-        p() -> trigger_movement( p() -> current.distance - 5.0, MOVEMENT_TOWARDS );
-      }
+      p() -> buff.vengeful_retreat_jump_cancel -> trigger();
+      p() -> buffs.self_movement -> trigger( 1, 0, -1.0, p() -> buff.vengeful_retreat_jump_cancel -> buff_duration );
     }
+    else
+    {
+      p() -> buffs.self_movement -> trigger( 1, 0, -1.0, timespan_t::from_seconds( 1.0 ) );
+    }
+  }
+
+  bool ready() override
+  {
+    if ( p() -> buffs.self_movement -> check() )
+      return false;
+    // Don't let the player try to jump cancel while out of range.
+    if ( jump_cancel && p() -> current.distance_to_move > 5 )
+      return false;
+
+    return demon_hunter_attack_t::ready();
   }
 };
 
@@ -1491,6 +1529,10 @@ void demon_hunter_t::create_buffs()
 
   buff.metamorphosis = buff_creator_t( this, "metamorphosis", spec.metamorphosis_buff )
                        .cd( timespan_t::zero() );
+
+  buff.vengeful_retreat_jump_cancel = buff_creator_t( this, "vengeful_retreat_jump_cancel", spell_data_t::nil() )
+                       .chance( 1.0 )
+                       .duration( timespan_t::from_seconds( 1.25 ) );
 
   // Havoc
 
