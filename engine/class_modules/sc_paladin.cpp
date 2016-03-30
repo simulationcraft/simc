@@ -1913,18 +1913,12 @@ struct crusader_strike_t : public holy_power_generator_t
     base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
 
     base_multiplier *= 1.0 + p -> artifact.blade_of_light.percent();
+    base_crit += p() -> artifact.sharpened_edge.percent();
 
     cooldown -> duration = data().charge_cooldown();
     cooldown -> charges = data().charges();
 
     background = ( p -> talents.crusader_flurry -> ok() ) || ( p -> talents.zeal -> ok() );
-  }
-
-  double composite_crit() const override
-  {
-    double c = holy_power_generator_t::composite_crit();
-    c += p() -> artifact.sharpened_edge.percent();
-    return c;
   }
 
   void execute() override
@@ -1973,13 +1967,7 @@ struct crusader_flurry_t : public holy_power_generator_t
     cooldown -> charges = data().charges();
 
     base_multiplier *= 1.0 + p -> artifact.blade_of_light.percent();
-  }
-
-  double composite_crit() const override
-  {
-    double c = holy_power_generator_t::composite_crit();
-    c += p() -> artifact.sharpened_edge.percent();
-    return c;
+    base_crit += p() -> artifact.sharpened_edge.percent();
   }
 
   void execute() override
@@ -2022,13 +2010,7 @@ struct zeal_t : public holy_power_generator_t
     cooldown -> charges = data().charges();
 
     base_multiplier *= 1.0 + p -> artifact.blade_of_light.percent();
-  }
-
-  double composite_crit() const override
-  {
-    double c = holy_power_generator_t::composite_crit();
-    c += p() -> artifact.sharpened_edge.percent();
-    return c;
+    base_crit += p() -> artifact.sharpened_edge.percent();
   }
 
   virtual int n_targets() const override
