@@ -1206,6 +1206,18 @@ struct metamorphosis_t : public demon_hunter_attack_t
 
 struct throw_glaive_t : public demon_hunter_attack_t
 {
+  struct bloodlet_t : public residual_action::residual_periodic_action_t<demon_hunter_attack_t>
+  {
+    bloodlet_t( demon_hunter_t* p ) :
+      residual_action::residual_periodic_action_t<demon_hunter_attack_t>( "bloodlet", p, p -> find_spell( 207690 ) )
+    {
+      background = dual = proc = true;
+      may_miss = may_dodge = may_parry = false;
+    }
+  };
+
+  bloodlet_t* bloodlet;
+
   throw_glaive_t( demon_hunter_t* p, const std::string& options_str ) :
     demon_hunter_attack_t( "throw_glaive", p, p -> find_class_spell( "Throw Glaive" ) )
   {
@@ -1216,6 +1228,23 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
     aoe = 3; // Ricochets to 2 additional enemies
     radius = 10.0; // with 10 yards.
+
+    if ( p -> talent.bloodlet -> ok() )
+    {
+      bloodlet = new bloodlet_t( p );
+      add_child( bloodlet );
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    demon_hunter_attack_t::impact( s );
+
+    if ( p() -> talent.bloodlet -> ok() && result_is_hit( s -> result ) )
+    {
+      residual_action::trigger( bloodlet, s -> target, 
+        s -> result_amount * p() -> talent.bloodlet -> effectN( 1 ).percent() );
+    }
   }
 };
 
