@@ -113,7 +113,8 @@ public:
   // Cooldowns
   struct
   {
-  } cooldowns;
+    cooldown_t* felblade;
+  } cooldown;
 
   // Gains
   struct
@@ -132,7 +133,15 @@ public:
   {
     proc_t* delayed_aa_range;
     proc_t* delayed_aa_channel;
+    proc_t* felblade_reset;
   } proc;
+
+  // RPPM objects
+  struct rppms_t
+  {
+    // Havoc
+    real_ppm_t felblade;
+  } rppm;
 
   // Special
   struct
@@ -161,6 +170,7 @@ public:
   void init_base_stats() override;
   void init_procs() override;
   void init_resources( bool force ) override;
+  void init_rng() override;
   void init_spells() override;
   void create_buffs() override;
   void init_scaling() override;
@@ -679,6 +689,18 @@ struct blade_dance_attack_t: public demon_hunter_attack_t
     dual = background = true;
     aoe = -1;
   }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double tm = demon_hunter_attack_t::composite_target_multiplier( t );
+
+    if ( p() -> talent.first_blood -> ok() && t == target_list()[ 0 ] )
+    {
+      tm *= 1.0 + p() -> talent.first_blood -> effectN( 1 ).percent();
+    }
+
+    return tm;
+  }
 };
 
 struct blade_dance_event_t: public event_t
@@ -740,6 +762,18 @@ struct blade_dance_template_t: public demon_hunter_attack_t
       attacks[ i ] -> stats = stats;
 
     return f;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double tm = demon_hunter_attack_t::composite_target_multiplier( t );
+
+    if ( p() -> talent.first_blood -> ok() && t == target_list()[ 0 ] )
+    {
+      tm *= 1.0 + p() -> talent.first_blood -> effectN( 1 ).percent();
+    }
+
+    return tm;
   }
 
   void execute() override
@@ -965,6 +999,12 @@ struct demons_bite_t : public demon_hunter_attack_t
     {
       p() -> resource_gain( RESOURCE_FURY, fury.base + rng().real() * fury.range, action_gain );
     }
+
+    if ( p() -> talent.felblade -> ok() && p() -> rppm.felblade.trigger() )
+    {
+      p() -> proc.felblade_reset -> occur();
+      p() -> cooldown.felblade -> reset( true );
+    }
   }
 };
 
@@ -1011,6 +1051,41 @@ struct eye_beam_t : public demon_hunter_attack_t
     {
       beam -> target = target;
       beam -> execute();
+    }
+  }
+};
+
+// Felblade =============================================================
+// TODO: Real movement stuff.
+
+struct felblade_t : public demon_hunter_attack_t
+{
+  const spell_data_t* damage_spell;
+
+  felblade_t( demon_hunter_t* p, const std::string& options_str ) :
+    demon_hunter_attack_t( "felblade", p, p -> talent.felblade )
+  {
+    parse_options( options_str );
+
+    damage_spell = p -> find_spell( 213243 );
+    school = damage_spell -> get_school_type();
+    normalize_weapon_speed = true;
+    weapon_power_mod = damage_spell -> effectN( 2 ).percent();
+    weapon = &( p -> main_hand_weapon );
+
+    movement_directionality = MOVEMENT_TOWARDS;
+  }
+
+  void execute() override
+  {
+    demon_hunter_attack_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      if ( p() -> specialization() == DEMON_HUNTER_HAVOC )
+      {
+        p() -> resource_gain( RESOURCE_FURY, damage_spell -> effectN( 4 ).resource( RESOURCE_FURY ), action_gain );
+      }
     }
   }
 };
@@ -1230,7 +1305,7 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r ) 
   talent(),
   spec(),
   mastery_spell(),
-  cooldowns(),
+  cooldown(),
   gain(),
   benefits(),
   proc(),
@@ -1256,6 +1331,7 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r ) 
  */
 void demon_hunter_t::create_cooldowns()
 {
+  cooldown.felblade = get_cooldown( "felblade" );
 }
 
 /* Construct gains
@@ -1366,6 +1442,7 @@ action_t* demon_hunter_t::create_action( const std::string& name,
   if ( name == "death_sweep"      ) return new death_sweep_t       ( this, options_str );
   if ( name == "demons_bite"      ) return new demons_bite_t       ( this, options_str );
   if ( name == "eye_beam"         ) return new eye_beam_t          ( this, options_str );
+  if ( name == "felblade"         ) return new felblade_t          ( this, options_str );
   if ( name == "fel_eruption"     ) return new fel_eruption_t      ( this, options_str );
   if ( name == "fel_rush"         ) return new fel_rush_t          ( this, options_str );
   if ( name == "metamorphosis" ||
@@ -1438,6 +1515,16 @@ void demon_hunter_t::init_resources( bool force )
   resources.current[ RESOURCE_FURY ] = 0;
 }
 
+// demon_hunter_t::init_rng ========================================================
+
+void demon_hunter_t::init_rng()
+{
+  // RPPM objects
+  rppm.felblade = real_ppm_t( *this, find_spell( 203557 ) -> real_ppm(), 1.0, RPPM_HASTE );
+
+  player_t::init_rng();
+}
+
 // demon_hunter_t::init_procs ===============================================
 
 void demon_hunter_t::init_procs()
@@ -1446,6 +1533,7 @@ void demon_hunter_t::init_procs()
 
   proc.delayed_aa_range   = get_proc( "delayed_swing__out_of_range" );
   proc.delayed_aa_channel = get_proc( "delayed_swing__channeling" );
+  proc.felblade_reset     = get_proc( "felblade_reset" );
 }
 
 // demon_hunter_t::init_scaling =============================================
@@ -1667,6 +1755,7 @@ void demon_hunter_t::reset()
   base_t::reset();
 
   blade_dance_driver = nullptr;
+  rppm.felblade.reset();
 }
 
 void demon_hunter_t::interrupt()

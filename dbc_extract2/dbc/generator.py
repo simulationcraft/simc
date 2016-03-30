@@ -1638,6 +1638,12 @@ class SpellDataGenerator(DataGenerator):
 		  ( 211547, 1 ),       # Fury of Elune move spell
 		  ( 213771, 3 ),       # Swipe (Bear)
         ),
+		
+		# Demon Hunter:
+		(
+		  # Havoc
+		  ( 203557, 1 ), # Felblade proc rate
+		),
     ]
 
     # Class specific item sets, T13, T14, T15
