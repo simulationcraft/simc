@@ -1632,15 +1632,25 @@ public:
     range::fill( _resource_by_stance, RESOURCE_MAX );
     ab::min_gcd = timespan_t::from_seconds( 1.0 );
     ab::trigger_gcd = timespan_t::from_seconds( 1.5 );
-    if ( player -> specialization() == MONK_BREWMASTER )
+    switch( player -> specialization() )
     {
-      ab::trigger_gcd -= timespan_t::from_millis( player -> spec.stagger -> effectN( 11 ).base_value() * -1 ); // Saved as -500 milliseconds
-    }
-    if ( player -> specialization() == MONK_WINDWALKER )
-    {
-      ab::trigger_gcd -= timespan_t::from_millis( player -> spec.stance_of_the_fierce_tiger -> effectN( 6 ).base_value() * -1); // Saved as -500 milliseconds
+      case MONK_BREWMASTER:
+      {
+        if ( ab::data().affected_by( player -> spec.stagger -> effectN( 11 ) ) )
+          ab::trigger_gcd += player -> spec.stagger -> effectN( 11 ).time_value(); // Saved as -500 milliseconds
+        if ( ab::data().affected_by( player -> spec.stagger -> effectN( 15 ) ) )
+          ab::base_costs[RESOURCE_CHI] *= 1 + player -> spec.stagger -> effectN( 15 ).percent(); // -100% for Brewmasters
+        break;
+      }
+      case MONK_WINDWALKER:
+      {
+        if ( ab::data().affected_by( player -> spec.stance_of_the_fierce_tiger -> effectN( 6 ) ) )
+          ab::trigger_gcd += player -> spec.stance_of_the_fierce_tiger -> effectN( 6 ).time_value(); // Saved as -500 milliseconds
+        break;
+      }
     }
   }
+
   virtual ~monk_action_t() {}
 
   monk_t* p()
@@ -2062,7 +2072,10 @@ struct tiger_palm_t: public monk_melee_attack_t
     sef_ability = SEF_TIGER_PALM;
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    base_costs[RESOURCE_ENERGY] *= 1 + ( p -> specialization() == MONK_BREWMASTER ? p -> spec.stagger -> effectN( 16 ).percent() : 0 ); // -50% for Brewmasters
+
+    if ( p -> specialization() == MONK_BREWMASTER )
+      base_costs[RESOURCE_ENERGY] *= 1 + p -> spec.stagger -> effectN( 16 ).percent(); // -50% for Brewmasters
+
     spell_power_mod.direct = 0.0;
   }
 
@@ -2415,10 +2428,7 @@ struct blackout_kick_t: public monk_melee_attack_t
     oh = &( player -> off_hand_weapon );
     spell_power_mod.direct = 0.0;
     cooldown -> duration = data().cooldown();
-    // Brewmasters cannot learn this but the auras are in the database. just being a completionist about this
-    if ( p -> specialization() == MONK_BREWMASTER )
-      base_costs[RESOURCE_CHI] *= 1 + p -> spec.stagger -> effectN( 15 ).percent(); // -100% for Brewmasters
-    else if ( p -> specialization() == MONK_WINDWALKER )
+    if ( p -> specialization() == MONK_WINDWALKER )
       cooldown -> duration *= 1 + p -> spec.combat_conditioning -> effectN( 2 ).percent(); // -100% for Windwalkers
 
     sef_ability = SEF_BLACKOUT_KICK;
@@ -2551,7 +2561,6 @@ struct blackout_strike_t: public monk_melee_attack_t
     {
       case MONK_BREWMASTER:
       {
-        base_costs[RESOURCE_CHI] *= 1 + p -> spec.stagger -> effectN( 15 ).percent(); // -100% for Brewmasters
         if ( p -> artifact.obsidian_fists.rank() )
           base_crit += p -> artifact.obsidian_fists.percent();
 
@@ -2607,7 +2616,6 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
     tick_zero = hasted_ticks = true;
 
-    base_costs[RESOURCE_CHI] *= 1 + ( p -> specialization() == MONK_BREWMASTER ? p -> spec.stagger -> effectN( 15 ).percent() : 0 ); // -100% for Brewmasters
     spell_power_mod.direct = 0.0;
     dot_behavior = DOT_REFRESH; // Spell uses Pandemic Mechanics.
 
@@ -2659,8 +2667,6 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
     tick_zero = channeled = true;
 
-    // Brewmasters cannot learn this but the auras are in the database. just being a completionist about this
-    base_costs[RESOURCE_CHI] *= 1 + ( p -> specialization() == MONK_BREWMASTER ? p -> spec.stagger -> effectN( 15 ).percent() : 0 ); // -100% for Brewmasters
     spell_power_mod.direct = 0.0;
 
     dot_behavior = DOT_REFRESH; // Spell uses Pandemic Mechanics
@@ -3837,7 +3843,6 @@ struct breath_of_fire_t: public monk_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-    base_costs[RESOURCE_CHI] *= 1 + p.spec.stagger -> effectN( 15 ).percent(); // -100% for Brewmasters
   }
 
   virtual void impact( action_state_t* s ) override
@@ -6020,7 +6025,9 @@ void monk_t::init_base_stats()
       resources.base[RESOURCE_ENERGY] = 100;
       resources.base[RESOURCE_ENERGY] += sets.set(MONK_WINDWALKER, T18, B4) -> effectN( 2 ).base_value();
       resources.base[RESOURCE_MANA] = 0;
-      resources.base[RESOURCE_CHI] = 5 + talent.ascension -> effectN( 1 ).base_value();
+      resources.base[RESOURCE_CHI] = 4;
+      resources.base[RESOURCE_CHI] += spec.stance_of_the_fierce_tiger -> effectN( 7 ).base_value();
+      resources.base[RESOURCE_CHI] += talent.ascension -> effectN( 1 ).base_value();
       base_energy_regen_per_second = 10.0;
 
       if ( artifact.inner_peace.rank() )
