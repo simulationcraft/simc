@@ -818,6 +818,16 @@ struct chaos_nova_t : public demon_hunter_attack_t
 
     aoe = -1;
   }
+
+  void execute() override
+  {
+    demon_hunter_attack_t::execute();
+
+    if ( p() -> talent.demonic -> ok() )
+    {
+      p() -> buff.metamorphosis -> trigger( 1, p() -> buff.metamorphosis -> default_value, -1.0, timespan_t::from_seconds( 5.0 ) );
+    }
+  }
 };
 
 // Chaos Strike =============================================================
@@ -1053,6 +1063,16 @@ struct eye_beam_t : public demon_hunter_attack_t
     {
       beam -> target = target;
       beam -> execute();
+    }
+  }
+
+  void execute() override
+  {
+    demon_hunter_attack_t::execute();
+
+    if ( p() -> talent.demonic -> ok() )
+    {
+      p() -> buff.metamorphosis -> trigger( 1, p() -> buff.metamorphosis -> default_value, -1.0, timespan_t::from_seconds( 5.0 ) );
     }
   }
 };
