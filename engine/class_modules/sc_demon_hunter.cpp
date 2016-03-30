@@ -313,7 +313,7 @@ public:
   demon_hunter_action_t( const std::string& n, demon_hunter_t* p,
                          const spell_data_t* s = spell_data_t::nil() )
     : ab( n, p, s ), action_gain( p -> get_gain( n ) ),
-    metamorphosis_gcd( data().affected_by( p -> spec.metamorphosis_buff -> effectN( 7 ) ) )
+    metamorphosis_gcd( Base::data().affected_by( p -> spec.metamorphosis_buff -> effectN( 7 ) ) )
   {
     ab::may_crit         = true;
     ab::tick_may_crit    = true;
