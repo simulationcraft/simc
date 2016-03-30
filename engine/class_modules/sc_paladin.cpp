@@ -3266,7 +3266,7 @@ void paladin_t::generate_action_prio_list_ret()
   // CF3 >
   single -> add_talent( this, "Crusader Flurry", "if=charges=3" );
   single -> add_talent( this, "Zeal" );
-  single -> add_talent( this, "Crusader Strike" );
+  single -> add_action( this, "Crusader Strike" );
 
   // TV3 >
   single -> add_action( this, "Templar's Verdict", "if=holy_power>=3" );
