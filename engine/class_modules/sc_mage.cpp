@@ -334,7 +334,7 @@ public:
                       * conflagration,
                       * fire_starter,
                       * ray_of_frost,
-                      * lonely_winter, // TODO: Add extra damage to icicles
+                      * lonely_winter,
                       * bone_chilling;
 
     // Tier 30
@@ -1727,7 +1727,22 @@ struct icicle_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::init();
 
-    snapshot_flags &= ~( STATE_MUL_DA | STATE_SP | STATE_CRIT | STATE_TGT_CRIT );
+    snapshot_flags &= ~( STATE_SP | STATE_CRIT | STATE_TGT_CRIT );
+  }
+
+  virtual double action_multiplier() const override
+  {
+    // Ignores all regular multipliers
+    double am = 1.0;
+
+    // NOTE: We use action_multiplier instead of modifying icicle size to
+    //       prevent Glacial Spike from double dipping on lonely winter
+    if ( p() -> talents.lonely_winter -> ok() )
+    {
+      am *= 1.0 + p() -> talents.lonely_winter -> effectN( 1 ).percent();
+    }
+
+    return am;
   }
 };
 
