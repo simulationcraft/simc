@@ -1098,6 +1098,8 @@ struct fel_eruption_t : public demon_hunter_attack_t
     demon_hunter_attack_t( "fel_eruption", p, p -> talent.fel_eruption )
   {
     parse_options( options_str );
+
+    resource_current = RESOURCE_FURY; // FIXME: Have to force it to use Fury for now.
   }
 };
 
