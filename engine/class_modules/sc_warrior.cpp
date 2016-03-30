@@ -3211,14 +3211,14 @@ void warrior_t::init_spells()
   spell.intervene               = find_class_spell( "Intervene" );
   spell.headlong_rush           = find_spell( 137047 ); // Also may be used for other crap in the future.
   spell.heroic_leap             = find_class_spell( "Heroic Leap" );
-  spell.overpower_driver = find_spell( 119938 );
+  spell.overpower_driver        = find_spell( 119938 );
   spell.revenge_trigger         = find_class_spell( "Revenge Trigger" );
 
   // Active spells
-  active.deep_wounds        = nullptr;
+  active.deep_wounds               = nullptr;
   active.corrupted_blood_of_zakajz = nullptr;
-  active.trauma = nullptr;
-  active.opportunity_strikes = nullptr;
+  active.trauma                    = nullptr;
+  active.opportunity_strikes       = nullptr;
 
   if ( spec.deep_wounds -> ok() ) active.deep_wounds = new deep_wounds_t( this );
   if ( talents.opportunity_strikes -> ok() ) active.opportunity_strikes = new opportunity_strikes_t( this );

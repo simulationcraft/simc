@@ -1183,6 +1183,24 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1612
 Description      : Throw Glaive now has ${$m2+1} charges, and snares all enemies hit by $213405s1% for $213405d.
 
+Name             : Felblade (id=203557) [Spell Family (107), Passive, Hidden] 
+Class            : Demon Hunter
+School           : Physical
+Proc Chance      : 101%
+Real PPM         : 3 (Haste multiplier)
+Proc Flags       : ....x... ....x... ........ ........ 
+                 : Yellow Melee, AOE Hostile Spell
+Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=300264)   : Apply Aura (6) | Proc Trigger Spell: Felblade (42)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 204497
+
 Name             : Demonic Instincts (id=203569) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
 School           : Physical
@@ -1553,6 +1571,26 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Radius: 10 yards | Mechanic: Unknown(72)
 Description      : Silence affected enemies for $d.
 Tooltip          : Silenced.
+
+Name             : Felblade (id=204497) [Spell Family (107), Hidden] 
+Class            : Demon Hunter
+School           : Physical
+Duration         : 3 seconds
+Proc Chance      : 100%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Triggered by     : Felblade (203557)
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7)
+Effects          :
+#1 (id=301821)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14
+Description      : $@spelldesc203557
 
 Name             : Sigil of Flame (id=204596) [Spell Family (107)] 
 Replaces         : Blade Dance (id=188499)
