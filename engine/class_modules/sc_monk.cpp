@@ -2174,19 +2174,46 @@ struct tiger_palm_t: public monk_melee_attack_t
 // Rising Sun Kick
 // ==========================================================================
 
+// Dummy Mortal Wounds Application
+struct mortal_wounds_t : public monk_melee_attack_t
+{
+  mortal_wounds_t( monk_t* p ) :
+    monk_melee_attack_t( "mortal_wounds", p, p -> debuffs.mortal_wounds-> s_data )
+  {
+    cooldown -> duration = timespan_t::zero();
+    background = dual = true;
+    trigger_gcd = timespan_t::zero();
+    aoe = -1;
+    quiet = true;
+    range = p -> spec.rising_sun_kick -> max_range();
+    base_dd_min = base_dd_max = 0;
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    monk_melee_attack_t::impact( s );
+
+    s -> target -> debuffs.mortal_wounds -> trigger();
+  }
+};
+
 // Rising Sun Kick T18 Windwalker Trinket Proc ==============================
 struct rising_sun_kick_proc_t : public monk_melee_attack_t
 {
-  rising_sun_kick_proc_t( monk_t* p, const spell_data_t* s ) :
-    monk_melee_attack_t( "rising_sun_kick_trinket", p, s )
+  mortal_wounds_t* mortal_wounds;
+
+  rising_sun_kick_proc_t( monk_t* p ) :
+    monk_melee_attack_t( "rising_sun_kick_trinket", p, p -> passives.rising_sun_kick_trinket )
   {
     sef_ability = SEF_RISING_SUN_KICK_TRINKET;
 
     cooldown -> duration = timespan_t::zero();
-    background = true;
+    background = dual = true;
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     trigger_gcd = timespan_t::zero();
+
+    mortal_wounds = new mortal_wounds_t(p);
   }
 
   bool init_finished()
@@ -2228,7 +2255,7 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
       return;
 
     // Apply Mortal Wonds
-    execute_state -> target -> debuffs.mortal_wounds -> trigger();
+    mortal_wounds -> execute();
 
     // Activate A'Buraq's Trait
     if ( p() -> artifact.transfer_the_power.rank() )
@@ -2247,17 +2274,20 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
 // Rising Sun Kick Tornado Kick Windwalker Artifact Trait ==================
 struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
 {
+  mortal_wounds_t* mortal_wounds;
 
-  rising_sun_kick_tornado_kick_t( monk_t* p, const spell_data_t* s ) :
-    monk_melee_attack_t( "rising_sun_kick_torndo_kick", p, s )
+  rising_sun_kick_tornado_kick_t( monk_t* p ) :
+    monk_melee_attack_t( "rising_sun_kick_torndo_kick", p, p -> spec.rising_sun_kick -> effectN( 1 ).trigger() )
   {
 //    sef_ability = SEF_RISING_SUN_KICK_TORNADO_KICK; // Right now SEF does not benefit from Tornado Kicks
 
     may_miss = may_dodge = may_parry = may_crit = may_block = true;
 
     cooldown -> duration = timespan_t::zero();
-    background = true;
+    background = dual = true;
     trigger_gcd = timespan_t::zero();
+
+    mortal_wounds = new mortal_wounds_t( p );
   }
 
   // Force 250 milliseconds for the animation, but not delay the overall GCD
@@ -2289,7 +2319,7 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
       return;
 
     // Apply Mortal Wonds
-    execute_state -> target -> debuffs.mortal_wounds -> trigger();
+    mortal_wounds -> execute();
   }
 };
 
@@ -2298,11 +2328,13 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 {
   rising_sun_kick_proc_t* rsk_proc;
   rising_sun_kick_tornado_kick_t* rsk_tornado_kick;
+  mortal_wounds_t* mortal_wounds;
 
   rising_sun_kick_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( "rising_sun_kick", p, p -> spec.rising_sun_kick ),
-    rsk_proc( new rising_sun_kick_proc_t( p, p -> passives.rising_sun_kick_trinket ) ),
-    rsk_tornado_kick( new rising_sun_kick_tornado_kick_t( p, p -> spec.rising_sun_kick -> effectN( 1 ).trigger() ) )
+    rsk_proc( new rising_sun_kick_proc_t( p ) ),
+    rsk_tornado_kick( new rising_sun_kick_tornado_kick_t( p ) ),
+    mortal_wounds( new mortal_wounds_t( p ) )
   {
     parse_options( options_str );
 
@@ -2321,6 +2353,8 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     oh = &( player -> off_hand_weapon );
     attack_power_mod.direct = p -> passives.rising_sun_kick_trinket -> effectN( 1 ).ap_coeff();
     spell_power_mod.direct = 0.0;
+
+    add_child( mortal_wounds );
 
     if ( p -> artifact.tornado_kicks.rank() )
       add_child( rsk_tornado_kick );
@@ -2380,7 +2414,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
       }
       case MONK_WINDWALKER:
       {
-        execute_state -> target -> debuffs.mortal_wounds -> trigger();
+        mortal_wounds -> execute();
 
         // Activate A'Buraq's Trait
         if ( p() -> artifact.transfer_the_power.rank() )
@@ -2432,7 +2466,7 @@ struct blackout_kick_t: public monk_melee_attack_t
 
     if ( p -> furious_sun )
     {
-      rsk_proc = new rising_sun_kick_proc_t( p, p -> passives.rising_sun_kick_trinket );
+      rsk_proc = new rising_sun_kick_proc_t( p );
     }
 
     mh = &( player -> main_hand_weapon );
@@ -2810,7 +2844,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
     tick_action = new fists_of_fury_tick_t( p, "fists_of_fury_tick" );
 
     if ( p -> furious_sun )
-      rsk_proc = new rising_sun_kick_proc_t( p, p -> passives.rising_sun_kick_trinket );
+      rsk_proc = new rising_sun_kick_proc_t( p );
 
     if ( p -> artifact.crosswinds.rank() )
       add_child( crosswinds );
