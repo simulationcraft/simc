@@ -846,7 +846,7 @@ struct chaos_strike_template_t : public demon_hunter_attack_t
     {
       if ( parent -> is_critical )
       {
-        p() -> resource_gain( RESOURCE_FURY, base_costs[ RESOURCE_FURY ], parent -> action_gain );
+        p() -> resource_gain( RESOURCE_FURY, parent -> base_costs[ RESOURCE_FURY ], parent -> action_gain );
       }
 
       demon_hunter_attack_t::execute();
@@ -873,7 +873,7 @@ struct chaos_strike_template_t : public demon_hunter_attack_t
   chaos_strike_oh_t* off_hand;
   bool is_critical;
 
-  chaos_strike_template_t( const std::string& n, demon_hunter_t* p, const spell_data_t* s  ) :
+  chaos_strike_template_t( const std::string& n, demon_hunter_t* p, const spell_data_t* s ) :
     demon_hunter_attack_t( n, p, s )
   {
     off_hand = new chaos_strike_oh_t( p, data().effectN( 3 ).trigger(), this );
