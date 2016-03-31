@@ -1012,7 +1012,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       198793, // Vengeful Retreat
            0,
     },
+    // Havoc tree, 1 abilities
     {
+      208605, // Nemesis
            0,
     },
     // Vengeance tree, 12 abilities

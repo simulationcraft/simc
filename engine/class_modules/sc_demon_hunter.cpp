@@ -21,10 +21,11 @@ public:
   struct dots_t
   {
   } dots;
-
-  struct buffs_t
+  
+  struct debuffs_t
   {
-  } buffs;
+    buff_t* nemesis;
+  } debuffs;
 
   demon_hunter_td_t( player_t* target, demon_hunter_t& p );
 };
@@ -51,6 +52,7 @@ public:
     buff_t* death_sweep;
     buff_t* metamorphosis;
     buff_t* momentum;
+    buff_t* nemesis;
     buff_t* prepared;
     buff_t* vengeful_retreat_jump_cancel;
   } buff;
@@ -341,8 +343,8 @@ public:
   const demon_hunter_t* p() const
   { return static_cast<const demon_hunter_t*>( ab::player ); }
 
-  demon_hunter_td_t* get_td( player_t* t ) const
-  { return ab::player -> get_target_data( t ); }
+  demon_hunter_td_t* td( player_t* t ) const
+  { return p() -> get_target_data( t ); }
 
   timespan_t gcd() const override
   {
@@ -467,6 +469,26 @@ struct consume_magic_t : public demon_hunter_spell_t
   }
 };
 
+// Nemesis ==================================================================
+
+struct nemesis_t : public demon_hunter_spell_t
+{
+  nemesis_t( demon_hunter_t* p, const std::string& options_str ) :
+    demon_hunter_spell_t( "nemesis", p, p -> talent.nemesis )
+  {
+    parse_options( options_str );
+
+    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+  }
+
+  void execute() override
+  {
+    demon_hunter_spell_t::execute();
+
+    td( target ) -> debuffs.nemesis -> trigger();
+  }
+};
+
 } // end namespace spells
 
 // ==========================================================================
@@ -494,6 +516,15 @@ struct demon_hunter_attack_t: public demon_hunter_action_t < melee_attack_t >
     }
 
     return am;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double tm = base_t::composite_target_multiplier( t );
+
+    tm *= 1.0 + p() -> get_target_data( t ) -> debuffs.nemesis -> value();
+
+    return tm;
   }
   
   virtual void execute() override
@@ -1340,6 +1371,43 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
 
 namespace buffs
 {
+  
+template <typename BuffBase>
+struct demon_hunter_buff_t : public BuffBase
+{
+protected:
+  typedef demon_hunter_buff_t base_t;
+  demon_hunter_t& dh;
+
+public:
+  demon_hunter_buff_t( demon_hunter_t& p, const buff_creator_basics_t& params ) :
+    BuffBase( params ), dh( p )
+  {}
+
+  demon_hunter_t& p() const { return dh; }
+};
+
+// Nemesis ==================================================================
+
+struct nemesis_buff_t : public demon_hunter_buff_t<buff_t>
+{
+  nemesis_buff_t( demon_hunter_t* p, player_t* target ) :
+    demon_hunter_buff_t<buff_t>( *p, buff_creator_t( target, "nemesis", p -> talent.nemesis )
+      .default_value( p -> talent.nemesis -> effectN( 1 ).percent() )
+      .cd( timespan_t::zero() ) )
+  {}
+
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    demon_hunter_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
+
+    if ( remaining_duration > timespan_t::zero() )
+    {
+      p().buff.nemesis -> trigger( 1, player -> race, -1.0, remaining_duration );
+    }
+  }
+};
+
 }  // end namespace buffs
 
 // ==========================================================================
@@ -1347,8 +1415,9 @@ namespace buffs
 // ==========================================================================
 
 demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
-  : actor_target_data_t( target, &p ), dots(), buffs()
+  : actor_target_data_t( target, &p ), dots( dots_t() ), debuffs( debuffs_t() )
 {
+  debuffs.nemesis = new buffs::nemesis_buff_t( &p, target );
 }
 
 // ==========================================================================
@@ -1477,6 +1546,9 @@ double demon_hunter_t::composite_player_multiplier( school_e school ) const
 
   m *= 1.0 + buff.momentum -> check_value();
 
+  // TODO: Figure out how to access target's race.
+  m *= 1.0 + buff.nemesis -> check() * buff.nemesis -> data().effectN( 1 ).percent();
+
   return m;
 }
 
@@ -1514,6 +1586,7 @@ action_t* demon_hunter_t::create_action( const std::string& name,
   if ( name == "fel_rush"         ) return new fel_rush_t          ( this, options_str );
   if ( name == "metamorphosis" ||
        name == "meta"             ) return new metamorphosis_t     ( this, options_str );
+  if ( name == "nemesis"          ) return new nemesis_t           ( this, options_str );
   if ( name == "throw_glaive"     ) return new throw_glaive_t      ( this, options_str );
   if ( name == "vengeful_retreat" ) return new vengeful_retreat_t  ( this, options_str );
 
@@ -1713,6 +1786,10 @@ void demon_hunter_t::create_buffs()
   buff.momentum      = buff_creator_t( this, "momentum", find_spell( 208628 ) )
                        .default_value( find_spell( 208628 ) -> effectN( 1 ).percent() )
                        .chance( talent.momentum -> ok() )
+                       .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  // TODO: Buffs for each race?
+  buff.nemesis       = buff_creator_t( this, "nemesis", find_spell( 208605 ) )
                        .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.prepared      = buff_creator_t( this, "prepared", talent.prepared -> effectN( 1 ).trigger() )
