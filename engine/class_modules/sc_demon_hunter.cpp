@@ -859,7 +859,7 @@ struct chaos_nova_t : public demon_hunter_attack_t
 
     if ( p() -> talent.demonic -> ok() )
     {
-      p() -> buff.metamorphosis -> trigger( 1, p() -> buff.metamorphosis -> default_value, -1.0, timespan_t::from_seconds( 5.0 ) );
+      p() -> buff.metamorphosis -> trigger( 1, p() -> buff.metamorphosis -> default_value, -1.0, timespan_t::from_seconds( 5.0 ) + gcd() );
     }
   }
 };
@@ -1106,7 +1106,7 @@ struct eye_beam_t : public demon_hunter_attack_t
 
     if ( p() -> talent.demonic -> ok() )
     {
-      p() -> buff.metamorphosis -> trigger( 1, p() -> buff.metamorphosis -> default_value, -1.0, timespan_t::from_seconds( 5.0 ) );
+      p() -> buff.metamorphosis -> trigger( 1, p() -> buff.metamorphosis -> default_value, -1.0, timespan_t::from_seconds( 5.0 ) + execute_time() );
     }
   }
 };
