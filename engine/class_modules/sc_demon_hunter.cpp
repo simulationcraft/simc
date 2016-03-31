@@ -10,6 +10,14 @@ namespace  // UNNAMED NAMESPACE
 /* Forward declarations
  */
 class demon_hunter_t;
+namespace actions
+{
+  namespace attacks
+  {
+    struct melee_t;
+    struct chaos_blade_t;
+  }
+}
 
 /**
  * Demon Hunter target data
@@ -44,11 +52,18 @@ public:
   std::vector<attack_t*> blade_dance_attacks;
   std::vector<attack_t*> death_sweep_attacks;
 
+  // Autoattacks
+  actions::attacks::melee_t* melee_main_hand;
+  actions::attacks::melee_t* melee_off_hand;
+  actions::attacks::chaos_blade_t* chaos_blade_main_hand;
+  actions::attacks::chaos_blade_t* chaos_blade_off_hand;
+
   // Buffs
   struct
   {
     buff_t* blade_dance;
     buff_t* blur;
+    buff_t* chaos_blades;
     buff_t* death_sweep;
     buff_t* metamorphosis;
     buff_t* momentum;
@@ -65,12 +80,23 @@ public:
     const spell_data_t* blind_fury;
 
     const spell_data_t* prepared;
-    const spell_data_t* chaos_cleave;
+    const spell_data_t* demon_blades;
     const spell_data_t* fel_eruption;
 
     const spell_data_t* felblade;
     const spell_data_t* first_blood;
+    const spell_data_t* demon_reborn;
+    
+    const spell_data_t* momentum;
     const spell_data_t* bloodlet;
+    const spell_data_t* nemesis;
+    
+    const spell_data_t* master_of_the_glaive;
+    const spell_data_t* unleashed_power;
+    const spell_data_t* chaos_cleave;
+    
+    const spell_data_t* chaos_blades;
+    const spell_data_t* demonic;
 
     // NYI
     const spell_data_t* demonic_appetite;
@@ -79,17 +105,7 @@ public:
     const spell_data_t* desperate_instincts;
     const spell_data_t* soul_rending;
 
-    const spell_data_t* momentum;
-    const spell_data_t* demonic;
-    const spell_data_t* nemesis;
-
-    const spell_data_t* master_of_the_glaive;
-    const spell_data_t* unleashed_power;
-    const spell_data_t* demon_blades;
-
-    const spell_data_t* chaos_blades;
     const spell_data_t* fel_barrage;
-    const spell_data_t* demon_reborn;
   } talent;
 
   // Specialization Spells
@@ -116,7 +132,18 @@ public:
   // Cooldowns
   struct
   {
+    cooldown_t* blade_dance;
+    cooldown_t* blur;
+    cooldown_t* death_sweep;
+    cooldown_t* chaos_nova;
+    cooldown_t* consume_magic;
+    cooldown_t* eye_beam;
     cooldown_t* felblade;
+    cooldown_t* fel_eruption;
+    cooldown_t* fel_rush;
+    cooldown_t* fury_of_the_illidari;
+    cooldown_t* throw_glaive;
+    cooldown_t* vengeful_retreat;
   } cooldown;
 
   // Gains
@@ -137,6 +164,7 @@ public:
     proc_t* delayed_aa_range;
     proc_t* delayed_aa_channel;
     proc_t* felblade_reset;
+    proc_t* demon_blade_supp;
   } proc;
 
   // RPPM objects
@@ -190,7 +218,7 @@ public:
   void copy_from( player_t* source ) override;
   resource_e primary_resource() const override
   {
-    return RESOURCE_MANA;
+    return RESOURCE_FURY;
   }
   role_e primary_role() const override;
   stat_e convert_hybrid_stat( stat_e s ) const override;
@@ -437,6 +465,26 @@ struct blur_t : public demon_hunter_spell_t
   }
 };
 
+// Chaos Blades =============================================================
+
+struct chaos_blades_t : public demon_hunter_spell_t
+{
+  chaos_blades_t( demon_hunter_t* p, const std::string& options_str ) :
+    demon_hunter_spell_t( "chaos_blades", p, p -> talent.chaos_blades )
+  {
+    parse_options( options_str );
+
+    harmful = may_miss = may_crit = false;
+  }
+
+  void execute() override
+  {
+    demon_hunter_spell_t::execute();
+
+    p() -> buff.chaos_blades -> trigger();
+  }
+};
+
 // Consume Magic ============================================================
 
 struct consume_magic_t : public demon_hunter_spell_t
@@ -497,11 +545,12 @@ struct nemesis_t : public demon_hunter_spell_t
 
 struct demon_hunter_attack_t: public demon_hunter_action_t < melee_attack_t >
 {
-  bool demonic_presence;
+  bool demonic_presence, chaos_blades;
 
   demon_hunter_attack_t( const std::string& n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, p, s ),
-    demonic_presence( data().affected_by( p -> mastery_spell.demonic_presence -> effectN( 1 ) ) )
+    demonic_presence( data().affected_by( p -> mastery_spell.demonic_presence -> effectN( 1 ) ) ),
+    chaos_blades( data().affected_by( p -> talent.chaos_blades -> effectN( 2 ) ) )
   {
     special = true;
   }
@@ -511,6 +560,11 @@ struct demon_hunter_attack_t: public demon_hunter_action_t < melee_attack_t >
     double am = base_t::action_multiplier();
 
     if ( demonic_presence )
+    {
+      am *= 1.0 + p() -> cache.mastery_value();
+    }
+
+    if ( chaos_blades && p() -> buff.chaos_blades -> check() )
     {
       am *= 1.0 + p() -> cache.mastery_value();
     }
@@ -564,6 +618,44 @@ namespace attacks
 
 struct melee_t : public demon_hunter_attack_t
 {
+  struct demon_blade_t : public demon_hunter_attack_t
+  {
+    struct {
+      double base, range;
+    } fury;
+
+    // FIXME: Need spell data to replace hardcoded values.
+    demon_blade_t( demon_hunter_t* p ) :
+      demon_hunter_attack_t( "demon_blade", p, /* p -> find_spell( 203796 ) */ spell_data_t::nil() )
+    {
+      cooldown -> duration = timespan_t::from_millis( 200 ); // Rough value from testing.
+
+      weapon_multiplier = 1.0;
+      normalize_weapon_speed = true;
+      weapon = &( p -> main_hand_weapon );
+      school = SCHOOL_SHADOW;
+
+      fury.base  = 20;
+      fury.range = 10;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      demon_hunter_attack_t::impact( s );
+
+      if ( result_is_hit( s -> result ) )
+      {
+        p() -> resource_gain( RESOURCE_FURY, fury.base + rng().real() * fury.range, action_gain );
+      }
+
+      if ( p() -> talent.felblade -> ok() && p() -> rppm.felblade.trigger() )
+      {
+        p() -> proc.felblade_reset -> occur();
+        p() -> cooldown.felblade -> reset( true );
+      }
+    }
+  };
+
   enum status_e {
     MELEE_CONTACT,
     LOST_CONTACT_CHANNEL,
@@ -573,6 +665,8 @@ struct melee_t : public demon_hunter_attack_t
   struct {
     status_e main_hand, off_hand;
   } status;
+
+  demon_blade_t* demon_blade;
 
   melee_t( const std::string& name, demon_hunter_t* p ) :
     demon_hunter_attack_t( name, p, spell_data_t::nil() )
@@ -586,6 +680,12 @@ struct melee_t : public demon_hunter_attack_t
 
     if ( p -> dual_wield() )
       base_hit -= 0.19;
+
+    if ( p -> talent.demon_blades -> ok() )
+    {
+      demon_blade = new demon_blade_t( p );
+      add_child( demon_blade );
+    }
   }
 
   void reset() override
@@ -610,6 +710,27 @@ struct melee_t : public demon_hunter_attack_t
       return rng().gauss( timespan_t::from_millis( 250 ), timespan_t::from_millis( 62 ) );
     default:
       return demon_hunter_attack_t::execute_time();
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    demon_hunter_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      if ( p() -> talent.demon_blades -> ok() && ! demon_blade -> cooldown -> down() )
+      {
+        if ( p() -> in_gcd() )
+        {
+          p() -> proc.demon_blade_supp -> occur();
+        }
+        else
+        {
+          demon_blade -> target = target;
+          demon_blade -> execute();
+        }
+      }
     }
   }
 
@@ -672,11 +793,13 @@ struct auto_attack_t : public demon_hunter_attack_t
     range = 5;
     trigger_gcd = timespan_t::zero();
 
-    p -> main_hand_attack = new melee_t( "auto_attack_mh", p );
+    p -> melee_main_hand = new melee_t( "auto_attack_mh", p );
+    p -> main_hand_attack = p -> melee_main_hand;
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
     p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
 
-    p -> off_hand_attack = new melee_t( "auto_attack_oh", p );
+    p -> melee_off_hand = new melee_t( "auto_attack_oh", p );
+    p -> off_hand_attack = p -> melee_off_hand;
     p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
     p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
     p -> off_hand_attack -> id = 1;
@@ -835,6 +958,19 @@ struct blade_dance_t: public blade_dance_template_t
       return false;
 
     return blade_dance_template_t::ready();
+  }
+};
+
+// Chaos Blades ============================================================
+
+struct chaos_blade_t : public demon_hunter_attack_t
+{
+  chaos_blade_t( const std::string& n, demon_hunter_t* p, const spell_data_t* s, weapon_t* w ) :
+    demon_hunter_attack_t( n, p, s )
+  {
+    special = may_glance = false; // TOCHECK may_glance
+    repeating = background = true;
+    base_execute_time = w -> swing_time;
   }
 };
 
@@ -1052,6 +1188,16 @@ struct demons_bite_t : public demon_hunter_attack_t
       p() -> cooldown.felblade -> reset( true );
     }
   }
+
+  bool ready() override
+  {
+    if ( p() -> talent.demon_blades -> ok() )
+    {
+      return false;
+    }
+
+    return demon_hunter_attack_t::ready();
+  }
 };
 
 // Eye Beam =================================================================
@@ -1126,8 +1272,11 @@ struct felblade_t : public demon_hunter_attack_t
     damage_spell = p -> find_spell( 213243 );
     school = damage_spell -> get_school_type();
     normalize_weapon_speed = true;
-    weapon_power_mod = damage_spell -> effectN( 2 ).percent();
+    weapon_multiplier = damage_spell -> effectN( 2 ).percent();
     weapon = &( p -> main_hand_weapon );
+
+    // Special handling for Chaos Blades damage modifier.
+    chaos_blades = damage_spell -> affected_by( p -> talent.chaos_blades -> effectN( 2 ) );
 
     movement_directionality = MOVEMENT_TOWARDS;
   }
@@ -1175,6 +1324,9 @@ struct fel_rush_t : public demon_hunter_attack_t
     school = damage_spell -> get_school_type();
     attack_power_mod.direct = damage_spell -> effectN( 1 ).ap_coeff();
     aoe = -1;
+
+    // Special handling for Chaos Blades damage modifier.
+    chaos_blades = damage_spell -> affected_by( p -> talent.chaos_blades -> effectN( 2 ) );
     
     base_teleport_distance = damage_spell -> effectN( 1 ).radius();
     movement_directionality = MOVEMENT_OMNI;
@@ -1239,6 +1391,9 @@ struct metamorphosis_t : public demon_hunter_attack_t
     attack_power_mod.direct = damage_spell -> effectN( 2 ).ap_coeff();
     radius                  = damage_spell -> effectN( 2 ).radius();
     aoe                     = -1;
+
+    // Special handling for Chaos Blades damage modifier.
+    chaos_blades = damage_spell -> affected_by( p -> talent.chaos_blades -> effectN( 2 ) );
     
     base_teleport_distance  = data().max_range();
     movement_directionality = MOVEMENT_OMNI;
@@ -1254,6 +1409,22 @@ struct metamorphosis_t : public demon_hunter_attack_t
 
     // Buff is gained at the start of the leap.
     p() -> buff.metamorphosis -> trigger();
+
+    if ( p() -> talent.demon_reborn -> ok() )
+    {
+      p() -> cooldown.blade_dance          -> reset( false );
+      p() -> cooldown.blur                 -> reset( false );
+      p() -> cooldown.chaos_nova           -> reset( false );
+      p() -> cooldown.consume_magic        -> reset( false );
+      p() -> cooldown.death_sweep          -> reset( false );
+      p() -> cooldown.eye_beam             -> reset( false );
+      p() -> cooldown.felblade             -> reset( false );
+      p() -> cooldown.fel_eruption         -> reset( false );
+      p() -> cooldown.fel_rush             -> reset( false ); // TOCHECK
+      p() -> cooldown.fury_of_the_illidari -> reset( false );
+      p() -> cooldown.throw_glaive         -> reset( false ); // TOCHECK
+      p() -> cooldown.vengeful_retreat     -> reset( false );
+    }
     
     // Buff to track the actual leap. This lets us delay autoattacks.
     p() -> buffs.self_movement -> trigger( 1, 0, -1.0, travel_time() );
@@ -1321,10 +1492,13 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
     const spell_data_t* damage_spell = p -> find_spell( 198813 );
     school = damage_spell -> get_school_type();
     normalize_weapon_speed = damage_spell -> effectN( 2 ).type() == E_NORMALIZED_WEAPON_DMG;
-    weapon_power_mod = damage_spell -> effectN( 3 ).percent();
+    weapon_multiplier = damage_spell -> effectN( 3 ).percent();
     weapon = &( p -> main_hand_weapon );
     radius = damage_spell -> effectN( 3 ).radius();
     aoe = -1;
+
+    // Special handling for Chaos Blades damage modifier.
+    chaos_blades = damage_spell -> affected_by( p -> talent.chaos_blades -> effectN( 2 ) );
     
     if ( ! jump_cancel )
     {
@@ -1390,6 +1564,63 @@ public:
   demon_hunter_t& p() const { return dh; }
 };
 
+struct chaos_blades_t : public demon_hunter_buff_t<buff_t>
+{
+  chaos_blades_t( demon_hunter_t* p ) :
+    demon_hunter_buff_t<buff_t>( *p, buff_creator_t( p, "chaos_blades", p -> talent.chaos_blades )
+        .cd( timespan_t::zero() ) )
+  {}
+
+  void change_auto_attack( attack_t*& hand, attack_t* a )
+  {
+    if ( hand == 0 )
+      return;
+
+    bool executing = hand -> execute_event != 0;
+    timespan_t time_to_hit = timespan_t::zero();
+
+    if ( executing )
+    {
+      time_to_hit = hand -> execute_event -> occurs() - sim -> current_time();
+      event_t::cancel( hand -> execute_event );
+    }
+
+    hand = a;
+
+    // Kick off the new attack, by instantly scheduling and rescheduling it to
+    // the remaining time to hit. We cannot use normal reschedule mechanism
+    // here (i.e., simply use event_t::reschedule() and leave it be), because
+    // the rescheduled event would be triggered before the full swing time
+    // (of the new auto attack) in most cases.
+    if ( executing )
+    {
+      timespan_t old_swing_time = hand -> base_execute_time;
+      hand -> base_execute_time = timespan_t::zero();
+      hand -> schedule_execute();
+      hand -> base_execute_time = old_swing_time;
+      hand -> execute_event -> reschedule( time_to_hit );
+    }
+  }
+
+  void execute( int stacks = 1, double value = buff_t::DEFAULT_VALUE(), timespan_t duration = timespan_t::min() )
+  {
+    buff_t::execute( stacks, value, duration );
+
+    change_auto_attack( p().main_hand_attack, p().chaos_blade_main_hand );
+    if ( p().off_hand_attack )
+      change_auto_attack( p().off_hand_attack, p().chaos_blade_off_hand );
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    change_auto_attack( p().main_hand_attack, p().melee_main_hand );
+    if ( p().off_hand_attack )
+      change_auto_attack( p().off_hand_attack, p().melee_off_hand );
+  }
+};
+
 // Nemesis ==================================================================
 
 struct nemesis_buff_t : public demon_hunter_buff_t<buff_t>
@@ -1443,7 +1674,11 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r ) 
   glyphs(),
   blade_dance_driver( nullptr ),
   blade_dance_attacks( 0 ),
-  death_sweep_attacks( 0 )
+  death_sweep_attacks( 0 ),
+  melee_main_hand( nullptr ),
+  melee_off_hand( nullptr ),
+  chaos_blade_main_hand( nullptr ),
+  chaos_blade_off_hand( nullptr )
 {
   base.distance = 5.0;
 
@@ -1459,7 +1694,18 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r ) 
  */
 void demon_hunter_t::create_cooldowns()
 {
-  cooldown.felblade = get_cooldown( "felblade" );
+  cooldown.blade_dance          = get_cooldown( "blade_dance" );
+  cooldown.blur                 = get_cooldown( "blur" );
+  cooldown.chaos_nova           = get_cooldown( "chaos_nova" );
+  cooldown.consume_magic        = get_cooldown( "consume_magic" );
+  cooldown.death_sweep          = get_cooldown( "death_sweep" );
+  cooldown.eye_beam             = get_cooldown( "eye_beam" );
+  cooldown.felblade             = get_cooldown( "felblade" );
+  cooldown.fel_eruption         = get_cooldown( "fel_eruption" );
+  cooldown.fel_rush             = get_cooldown( "fel_rush" );
+  cooldown.fury_of_the_illidari = get_cooldown( "fury_of_the_illidari" );
+  cooldown.throw_glaive         = get_cooldown( "throw_glaive" );
+  cooldown.vengeful_retreat     = get_cooldown( "vengeful_retreat" );
 }
 
 /* Construct gains
@@ -1579,6 +1825,7 @@ action_t* demon_hunter_t::create_action( const std::string& name,
   if ( name == "auto_attack"      ) return new auto_attack_t       ( this, options_str );
   if ( name == "annihilation"     ) return new annihilation_t      ( this, options_str );
   if ( name == "blade_dance"      ) return new blade_dance_t       ( this, options_str );
+  if ( name == "chaos_blades"     ) return new chaos_blades_t      ( this, options_str );
   if ( name == "chaos_nova"       ) return new chaos_nova_t        ( this, options_str );
   if ( name == "chaos_strike"     ) return new chaos_strike_t      ( this, options_str );
   if ( name == "death_sweep"      ) return new death_sweep_t       ( this, options_str );
@@ -1677,6 +1924,7 @@ void demon_hunter_t::init_procs()
   proc.delayed_aa_range   = get_proc( "delayed_swing__out_of_range" );
   proc.delayed_aa_channel = get_proc( "delayed_swing__channeling" );
   proc.felblade_reset     = get_proc( "felblade_reset" );
+  proc.demon_blade_supp   = get_proc( "demon_blade_suppressed" );
 }
 
 // demon_hunter_t::init_scaling =============================================
@@ -1716,22 +1964,6 @@ void demon_hunter_t::init_spells()
   mastery_spell.demonic_presence = find_mastery_spell( DEMON_HUNTER_HAVOC );
   mastery_spell.fel_blood        = find_mastery_spell( DEMON_HUNTER_VENGEANCE );
 
-  using namespace actions::attacks;
-
-  if ( spec.blade_dance -> ok() )
-  {
-    blade_dance_attacks.push_back( new blade_dance_attack_t( this, spec.blade_dance -> effectN( 5 ).trigger(), "blade_dance2" ) );
-    blade_dance_attacks.push_back( new blade_dance_attack_t( this, spec.blade_dance -> effectN( 6 ).trigger(), "blade_dance3" ) );
-    blade_dance_attacks.push_back( new blade_dance_attack_t( this, spec.blade_dance -> effectN( 7 ).trigger(), "blade_dance4" ) );
-  }
-
-  if ( spec.death_sweep -> ok() )
-  {
-    death_sweep_attacks.push_back( new blade_dance_attack_t( this, spec.death_sweep -> effectN( 5 ).trigger(), "death_sweep2" ) );
-    death_sweep_attacks.push_back( new blade_dance_attack_t( this, spec.death_sweep -> effectN( 6 ).trigger(), "death_sweep3" ) );
-    death_sweep_attacks.push_back( new blade_dance_attack_t( this, spec.death_sweep -> effectN( 7 ).trigger(), "death_sweep4" ) );
-  }
-
   // Talents ================================================================
 
   talent.fel_mastery          = find_talent_spell( "Fel Mastery" );
@@ -1761,6 +1993,31 @@ void demon_hunter_t::init_spells()
   talent.chaos_blades         = find_talent_spell( "Chaos Blades" );
   talent.fel_barrage          = find_talent_spell( "Fel Barrage (NYI)" );
   talent.demon_reborn         = find_talent_spell( "Demon Reborn" );
+  
+  using namespace actions::attacks;
+
+  if ( spec.blade_dance -> ok() )
+  {
+    blade_dance_attacks.push_back( new blade_dance_attack_t( this, spec.blade_dance -> effectN( 5 ).trigger(), "blade_dance2" ) );
+    blade_dance_attacks.push_back( new blade_dance_attack_t( this, spec.blade_dance -> effectN( 6 ).trigger(), "blade_dance3" ) );
+    blade_dance_attacks.push_back( new blade_dance_attack_t( this, spec.blade_dance -> effectN( 7 ).trigger(), "blade_dance4" ) );
+  }
+
+  if ( spec.death_sweep -> ok() )
+  {
+    death_sweep_attacks.push_back( new blade_dance_attack_t( this, spec.death_sweep -> effectN( 5 ).trigger(), "death_sweep2" ) );
+    death_sweep_attacks.push_back( new blade_dance_attack_t( this, spec.death_sweep -> effectN( 6 ).trigger(), "death_sweep3" ) );
+    death_sweep_attacks.push_back( new blade_dance_attack_t( this, spec.death_sweep -> effectN( 7 ).trigger(), "death_sweep4" ) );
+  }
+  
+  if ( talent.chaos_blades -> ok() )
+  {
+    chaos_blade_main_hand = new chaos_blade_t( "chaos_blade_mh",
+      this, find_spell( talent.chaos_blades -> effectN( 1 ).misc_value1() ), &( main_hand_weapon ) );
+
+    chaos_blade_off_hand = new chaos_blade_t( "chaos_blade_oh",
+      this, talent.chaos_blades -> effectN( 1 ).trigger(), &( off_hand_weapon ) );
+  }
 }
 
 // demon_hunter_t::create_buffs =============================================
@@ -1768,6 +2025,8 @@ void demon_hunter_t::init_spells()
 void demon_hunter_t::create_buffs()
 {
   base_t::create_buffs();
+
+  using namespace buffs;
 
   // General
 
@@ -1800,6 +2059,8 @@ void demon_hunter_t::create_buffs()
                        .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
                          resource_gain( RESOURCE_FURY, b -> data().effectN( 1 ).resource( RESOURCE_FURY ),
                          gain.prepared ); } );
+
+  buff.chaos_blades  = new chaos_blades_t( this );
 
   buff.vengeful_retreat_jump_cancel = buff_creator_t( this, "vengeful_retreat_jump_cancel", spell_data_t::nil() )
                        .chance( 1.0 )

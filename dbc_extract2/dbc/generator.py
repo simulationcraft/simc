@@ -1644,6 +1644,7 @@ class SpellDataGenerator(DataGenerator):
 		  # Havoc
 		  ( 203557, 1 ), # Felblade proc rate
 		  ( 208605, 1 ), # Nemesis player buff
+		  ( 203796, 1 ), # Demon Blade proc
 		),
     ]
 
