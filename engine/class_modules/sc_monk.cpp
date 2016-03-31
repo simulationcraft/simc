@@ -441,7 +441,6 @@ public:
     artifact_power_t way_of_the_mistweaver;
 
     // Windwalker Artifact
-    artifact_power_t acrobatics;
     artifact_power_t crosswinds;
     artifact_power_t dark_skies;
     artifact_power_t death_art;
@@ -453,10 +452,12 @@ public:
     artifact_power_t light_on_your_feet_ww;
     artifact_power_t power_of_a_thousand_cranes;
     artifact_power_t rising_winds;
+    artifact_power_t spiritual_focus;
     artifact_power_t strike_of_the_windlord;
     artifact_power_t strength_of_xuen;
-    artifact_power_t transfer_the_power;
+    artifact_power_t tiger_claws;
     artifact_power_t tornado_kicks;
+    artifact_power_t transfer_the_power;
   } artifact;
 
   struct mastery_spells_t
@@ -2079,6 +2080,16 @@ struct tiger_palm_t: public monk_melee_attack_t
     spell_power_mod.direct = 0.0;
   }
 
+  virtual double action_multiplier() const
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    if ( p() -> artifact.tiger_claws.rank() )
+      am *= 1 + p() -> artifact.tiger_claws.percent();
+
+    return am;
+  }
+
   virtual void execute() override
   {
     monk_melee_attack_t::execute();
@@ -3535,8 +3546,6 @@ struct chi_torpedo_t: public monk_spell_t
     trigger_gcd = timespan_t::zero();
     cooldown -> duration = p() -> talent.chi_torpedo -> charge_cooldown();
     cooldown -> charges = p() -> talent.chi_torpedo -> charges();
-    if ( p() -> artifact.acrobatics.rank() )
-      cooldown -> charges += p() -> artifact.acrobatics.value();
   }
 };
 
@@ -5868,7 +5877,6 @@ void monk_t::init_spells()
   artifact.way_of_the_mistweaver      = find_artifact_spell( "Way of the Mistweaver" );
 
   // Windwalker
-  artifact.acrobatics                 = find_artifact_spell( "Acrobatics" );
   artifact.crosswinds                 = find_artifact_spell( "Crosswinds" );
   artifact.dark_skies                 = find_artifact_spell( "Dark Skies" );
   artifact.death_art                  = find_artifact_spell( "Death Art" );
@@ -5880,10 +5888,12 @@ void monk_t::init_spells()
   artifact.light_on_your_feet_ww      = find_artifact_spell( "Light on Your Feet" );
   artifact.power_of_a_thousand_cranes = find_artifact_spell( "Power of a Thousand Cranes" );
   artifact.rising_winds               = find_artifact_spell( "Rising Winds" );
+  artifact.spiritual_focus            = find_artifact_spell( "Spiritual Focus" );
   artifact.strike_of_the_windlord     = find_artifact_spell( "Strike of the Windlord" );
   artifact.strength_of_xuen           = find_artifact_spell( "Strength of Xuen" );
-  artifact.transfer_the_power         = find_artifact_spell( "Transfer the Power" );
+  artifact.tiger_claws                = find_artifact_spell( "Tiger Claws" );
   artifact.tornado_kicks              = find_artifact_spell( "Tornado Kicks" );
+  artifact.transfer_the_power         = find_artifact_spell( "Transfer the Power" );
 
   // Specialization spells ====================================
   // Multi-Specialization & Class Spells
@@ -6496,7 +6506,12 @@ double monk_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buff.serenity -> value();
 
   if ( buff.storm_earth_and_fire -> up() )
-    m *= 1.0 + spec.storm_earth_and_fire -> effectN( 1 ).percent();
+  {
+    if ( artifact.spiritual_focus.rank() )
+      m *= 1.0 + spec.storm_earth_and_fire -> effectN( 2 ).percent() + artifact.spiritual_focus.percent();
+    else
+      m *= 1.0 + spec.storm_earth_and_fire -> effectN( 2 ).percent();
+  }
 
   // Brewmaster Tier 18 (WoD 6.2) trinket effect is in use, Elusive Brew increases damage based on spell data of the special effect.
 /*  if ( eluding_movements )
@@ -6532,7 +6547,12 @@ double monk_t::composite_player_heal_multiplier( const action_state_t* s ) const
     m *= 1.0 + talent.serenity -> effectN( 3 ).percent();
 
   if ( buff.storm_earth_and_fire -> up() )
-    m *= 1.0 + spec.storm_earth_and_fire -> effectN( 2 ).percent();
+  {
+    if ( artifact.spiritual_focus.rank() )
+      m *= 1.0 + spec.storm_earth_and_fire -> effectN( 2 ).percent() + artifact.spiritual_focus.percent();
+    else
+      m *= 1.0 + spec.storm_earth_and_fire -> effectN( 2 ).percent();
+  }
 
   return m;
 }
