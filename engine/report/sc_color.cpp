@@ -380,10 +380,7 @@ rgb school_color( school_e type )
              school_color( SCHOOL_ARCANE ) + school_color( SCHOOL_NATURE ) +
              school_color( SCHOOL_SHADOW ) + school_color( SCHOOL_HOLY );
     case SCHOOL_CHAOS:
-      return school_color( SCHOOL_PHYSICAL ) + school_color( SCHOOL_FIRE ) +
-             school_color( SCHOOL_FROST ) + school_color( SCHOOL_ARCANE ) +
-             school_color( SCHOOL_NATURE ) + school_color( SCHOOL_SHADOW ) +
-             school_color( SCHOOL_HOLY );
+      return color::CHAOS;
 
     default:
       return GREY2;
