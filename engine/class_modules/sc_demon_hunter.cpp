@@ -847,6 +847,9 @@ struct chaos_nova_t : public demon_hunter_attack_t
   {
     parse_options( options_str );
 
+    cooldown -> duration -= p -> talent.unleashed_power -> effectN( 1 ).time_value();
+    base_costs[ RESOURCE_FURY ] *= 1.0 + p -> talent.unleashed_power -> effectN( 2 ).percent();
+
     aoe = -1;
   }
 
@@ -1278,7 +1281,7 @@ struct throw_glaive_t : public demon_hunter_attack_t
   {
     parse_options( options_str );
 
-    cooldown -> charges  = data().charges();
+    cooldown -> charges  = data().charges() + p -> talent.master_of_the_glaive -> effectN( 2 ).base_value();
     cooldown -> duration = data().charge_cooldown();
 
     aoe = 3; // Ricochets to 2 additional enemies
