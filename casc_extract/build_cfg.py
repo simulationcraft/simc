@@ -37,6 +37,9 @@ class DBFileList(collections.Mapping):
 				cleaned_file = line.strip().replace('/', '\\')
 				base_fname = os.path.splitext(cleaned_file)[0]
 
+				hash_value = jenkins.hashlittle2(cleaned_file.upper())
+				self.files[(hash_value[0] << 32) | hash_value[1]] = cleaned_file
+
 				for ext in [ '.db2', '.dbc' ]:
 					final_file = base_fname + ext
 					hash_value = jenkins.hashlittle2(final_file.upper())

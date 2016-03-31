@@ -65,6 +65,10 @@
     { "data_type": "H", "field": "curve_index",     "formats": { "cpp": "%2u"   } }
 
   ],
+  "FileDataComplete.db2": [
+    { "data_type": "S", "field": "path" },
+    { "data_type": "S", "field": "file_name" }
+  ],
   "GemProperties.db2": [
     { "data_type": "I", "field": "color",      "formats": { "cpp": "%#.8x" } },
     { "data_type": "H", "field": "id_enchant", "formats": { "cpp": "%5u"   } },

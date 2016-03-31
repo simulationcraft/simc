@@ -3,6 +3,7 @@
 import optparse, sys, os
 
 import build_cfg, casc
+import binascii
 
 parser = optparse.OptionParser( usage = 'Usage: %prog -d wow_install_dir [options] file_path ...')
 parser.add_option( '--cdn', dest = 'online', action = 'store_true', help = 'Fetch data from Blizzard CDN [only used for mode=batch/extract]' )
@@ -153,15 +154,19 @@ if __name__ == '__main__':
 		keys = []
 		md5s = None
 		if 'key:' in args[0]:
-			keys.append(args[0][4:].decode('hex'))
+			keys.append(binascii.unhexlify(args[0][4:]))
+			file_name = args[0][4:]
 		elif 'md5:' in args[0]:
 			md5s = args[0][4:]
-			keys = encoding.GetFileKeys(args[0][4:].decode('hex'))
+			keys = encoding.GetFileKeys(binascii.unhexlify(args[0][4:]))
 			if len(keys) == 0:
 				parser.error('No file found with md5sum %s' % args[0][4:])
+			else:
+				file_name = binascii.hexlify(keys[0]).decode('utf-8')
 		else:
 			file_md5s = root.GetFileMD5(args[0])
 			keys = encoding.GetFileKeys(file_md5s[0])
+			file_name = args[0]
 			#print args[0], len(file_md5s) and file_md5s[0].encode('hex') or 0, len(keys)
 			#sys.exit(0)
 
@@ -181,7 +186,6 @@ if __name__ == '__main__':
 			if not blte.extract_file(keys[0], md5s and md5s.decode('hex') or None, None, *file_location):
 				sys.exit(1)
 		else:
-			file_name = args[0]
 			data = build.fetch_file(keys[0])
 			if not data:
 				print('No data for a given key %s' % keys[0].encode('hex'))
