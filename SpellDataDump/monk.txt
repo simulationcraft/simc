@@ -32,9 +32,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=755)      : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
-Description      : Raise your shield, blocking every melee attack against you for $132404d. These blocks can be critical blocks.
-
-Shield Slam deals $132404s2% additional damage while Shield Block is active.
+Description      : Raise your shield, blocking every melee attack against you for $132404d. These blocks can be critical blocks. Increases Shield Slam damage by $132404s2% while active.
 
 Name             : Growl (Basic Ability) (id=2649) [Scaling Spell (4), Spell Family (9)] 
 Class            : Monk
@@ -447,7 +445,7 @@ Resource         : 50 Energy w/ Windwalker Monk (id=137025)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Mistweaver Monk (137024), Mana Tea (197908)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Mistweaver Monk (137024), Mana Tea (197908), Tiger Claws (218607)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -463,7 +461,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1
 Description      : Attack with the palm of your hand, dealing $s1 damage.$?a137025[
 
-Tiger Palm has an $137384m1% chance to make your next Blackout Kick cost no Chi][].$?a137023&?s196736[
+Tiger Palm has an $137384m1% chance to make your next Blackout Kick cost no Chi.][]$?a137023&?s196736[
 
 Reduces the remaining cooldown on your Brews by $s3 sec.]?a137023[
 
@@ -552,8 +550,8 @@ If used again while active, you will land, dealing $123586m1 damage to all enemi
 Name             : Spinning Crane Kick (id=101546) [Spell Family (53)] 
 Class            : Mistweaver Windwalker Monk
 School           : Physical
-Resource         : 1 Chi w/ Brewmaster Monk (id=137023)
 Resource         : 1 Chi w/ Windwalker Monk (id=137025)
+Resource         : 1 Chi w/ Brewmaster Monk (id=137023)
 Resource         : 1% Base Mana (11000 @Level 110) w/ Mistweaver Monk (id=137024)
 Spell Level      : 40
 GCD              : 1.5 seconds
@@ -629,7 +627,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Radius: 10 yards
 #6 (id=214834)   : Apply Aura (6) | Add Flat Modifier: Spell Global Cooldown (107)
                    Base Value: -500 | Scaled Value: -500 | Misc Value: 21
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Transcendence: Transfer (119996), Chi Burst (123986), Zen Pulse (124081), Chi Burst (130654), Chi Burst (148135), Rushing Jade Wind (148187), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Song of Chi-Ji (198898), Blackout Strike (205523)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Transcendence: Transfer (119996), Chi Burst (123986), Zen Pulse (124081), Chi Burst (130654), Chi Burst (148135), Rushing Jade Wind (148187), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Song of Chi-Ji (198898), Blackout Strike (205523), Detox (218164)
 #7 (id=257979)   : Apply Aura (6) | Increase Energy (35)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12
 Description      : Increases all damage dealt by $s3%.
@@ -658,7 +656,7 @@ Name             : Rising Sun Kick (id=107428) [Spell Family (53)]
 Class            : Mistweaver Windwalker Monk
 School           : Physical
 Resource         : 2 Chi w/ Windwalker Monk (id=137025)
-Resource         : 2% Base Mana (22000 @Level 110) w/ Mistweaver Monk (id=137024)
+Resource         : 3% Base Mana (33000 @Level 110) w/ Mistweaver Monk (id=137024)
 Spell Level      : 18
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -763,7 +761,7 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 Name             : Chi Torpedo (id=115008) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Spell Level      : 75
+Spell Level      : 1
 Duration         : 1.1 seconds
 Charges          : 2 (20 seconds cooldown)
 Attributes       : ....x... ........ x......x ........   .....x.. ..x..... .x...... ....x... 
@@ -838,7 +836,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3
 #11 (id=218370)   : Apply Aura (6) | Add Flat Modifier: Spell Global Cooldown (107)
                    Base Value: -500 | Scaled Value: -500 | Misc Value: 21
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Transcendence: Transfer (119996), Chi Burst (123986), Zen Pulse (124081), Chi Burst (130654), Chi Burst (148135), Rushing Jade Wind (148187), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Song of Chi-Ji (198898), Blackout Strike (205523)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Transcendence: Transfer (119996), Chi Burst (123986), Zen Pulse (124081), Chi Burst (130654), Chi Burst (148135), Rushing Jade Wind (148187), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Song of Chi-Ji (198898), Blackout Strike (205523), Detox (218164)
 #12 (id=235531)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 3 | Scaled Value: 3
 #13 (id=255479)   : Dummy (3)
@@ -851,7 +849,7 @@ Effects          :
 #16 (id=287166)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 14
                    Affected Spells: Tiger Palm (100780)
-Description      : You shrug off attacks, delaying ${$115069m9}% of Physical damage, instead taking it over $124273d. Affects magical attacks at half effectiveness.
+Description      : You shrug off attacks, delaying $115069s9% of Physical damage, instead taking it over $124273d. Affects magical attacks at half effectiveness.
 
 Name             : Paralysis (id=115078) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
@@ -912,7 +910,7 @@ Tooltip          : Taking $w1 damage when this effect expires.
 Name             : Chi Wave (id=115098) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
 School           : Nature
-Spell Level      : 18
+Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
@@ -927,7 +925,7 @@ Attributes       : ........ ........ ........ ...x....   .......x ........ .....
 Effects          :
 #1 (id=128771)   : Dummy (3)
                    Base Value: 7 | Scaled Value: 7
-Description      : A wave of Chi energy to flows through friends and foes, dealing $<damage> Nature damage or $<healing> healing. Bounces up to $115098s1 times to targets within $132466a2 yards.
+Description      : A wave of Chi energy flows through friends and foes, dealing $<damage> Nature damage or $<healing> healing. Bounces up to $115098s1 times to targets within $132466a2 yards.
 Variables        : $dmgMult=$?a103985[${1.05}][${1.0}]
 $healMult=$?a115070[${1.2}][${1.0}]
 $damage=${$<dmgMult>*$AP*0.500*(1+$@versadmg)}
@@ -967,7 +965,7 @@ Class            : Monk
 School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1070,7 +1068,7 @@ $damage=$?s124997[${25}][${20}]
 Name             : Energizing Elixir (id=115288) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Spell Level      : 36
+Spell Level      : 1
 Cooldown         : 60 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
@@ -1136,7 +1134,7 @@ Description      : Heals all party and raid members within $A1 yards for $m1 and
 Name             : Summon Jade Serpent Statue (id=115313) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Spell Level      : 70
+Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 900 seconds
@@ -1157,7 +1155,7 @@ Description      : Summons a Jade Serpent Statue at the target location. When yo
 Name             : Summon Black Ox Statue (id=115315) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Spell Level      : 70
+Spell Level      : 1
 Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 900 seconds
@@ -1182,7 +1180,7 @@ Class            : Monk
 School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1232,14 +1230,12 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 4
 #3 (id=129276)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1
-#4 (id=200398)   : Direct Heal% (136)
-                   Base Value: 0 | Scaled Value: 0
 Description      : Removes all Magic, Poison, and Disease effects from the target.
 
 Name             : Provoke (id=115546) [Scaling Spell (6), Spell Family (53)] 
-Class            : Brewmaster Monk
+Class            : Monk
 School           : Physical
-Spell Level      : 14
+Spell Level      : 13
 Range            : 30 yards
 Cooldown         : 8 seconds
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
@@ -1591,7 +1587,7 @@ Description      : Gives a chance to parry enemy melee attacks.
 Name             : Tiger's Lust (id=116841) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Spell Level      : 15
+Spell Level      : 1
 Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
@@ -1828,7 +1824,7 @@ Tooltip          : Taunted. Movement speed increased by $s3%.
 Name             : Chi Torpedo (id=119085) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Spell Level      : 15
+Spell Level      : 1
 Duration         : 10 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
@@ -1842,13 +1838,13 @@ Attributes       : ........ ........ x....... ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=135958)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 30 | Scaled Value: 30
-Description      : $@spelldesc115174
+Description      : $@spelldesc115008
 Tooltip          : Movement speed increased by $w1%.
 
 Name             : Leg Sweep (id=119381) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Spell Level      : 45
+Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 45 seconds
@@ -2131,7 +2127,7 @@ Class            : Monk
 School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2144,7 +2140,7 @@ Description      : Every $t1 sec, your next Tiger Palm generates $s1 additional 
 Name             : Dampen Harm (id=122278) [Scaling Spell (10), Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Spell Level      : 60
+Spell Level      : 1
 Duration         : 45 seconds
 Cooldown         : 120 seconds
 Stacks           : 3 initial, 3 maximum
@@ -2171,7 +2167,7 @@ Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ .......x ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2224,7 +2220,7 @@ Tooltip          : All damage dealt to the Monk is redirected to you as Nature d
 Name             : Diffuse Magic (id=122783) [Scaling Spell (10), Spell Family (53)] 
 Class            : Monk
 School           : Nature
-Spell Level      : 60
+Spell Level      : 1
 Duration         : 6 seconds
 Cooldown         : 120 seconds
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -2310,7 +2306,7 @@ Tooltip          : Burning for $123725o1 Fire damage.
 Name             : Invoke Xuen, the White Tiger (id=123904) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
-Spell Level      : 49
+Spell Level      : 1
 Range            : 40 yards
 Duration         : 45 seconds
 Cooldown         : 180 seconds
@@ -2328,7 +2324,7 @@ Description      : Summons an effigy of Xuen, the White Tiger for $d. Xuen attac
 Name             : Chi Burst (id=123986) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
 School           : Nature
-Spell Level      : 30
+Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1 seconds
 GCD              : 1.5 seconds
@@ -2416,7 +2412,7 @@ Description      : Trigger a Zen Pulse around an ally.  Deals $s2 damage to all 
 Name             : Dual Wield (id=124146) [Passive] 
 Class            : Windwalker Monk
 School           : Physical
-Spell Level      : 10
+Spell Level      : 1
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2977,7 +2973,7 @@ Tooltip          : Silenced.
 Name             : Power Strikes (id=129914) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Spell Level      : 24
+Spell Level      : 1
 Duration         : Aura (infinite)
 Triggered by     : Power Strikes (121817)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3113,7 +3109,7 @@ Description      : $@spelldesc115098
 Name             : Invoke Niuzao, the Black Ox (id=132578) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
-Spell Level      : 49
+Spell Level      : 1
 Range            : 40 yards
 Duration         : 45 seconds
 Cooldown         : 180 seconds
@@ -3131,7 +3127,7 @@ Description      : Summons an effigy of Niuzao, the Black Ox for $d. Niuzao atta
 Name             : Healing Elixirs (id=134563) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Spell Level      : 24
+Spell Level      : 1
 Duration         : Aura (infinite)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
@@ -3368,7 +3364,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=180339)   : Apply Aura (6) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8
-Description      : You have a $m1% chance when you Jab to cause your next Tiger Palm or Blackout Kick to cost no Chi within $118864d.
+Description      : You have a $m1% chance when you Jab to cause your next Tiger Palm or Blackout Kick to cost no Chi within $116768d.
 
 Name             : Storm, Earth, and Fire (id=137639) [Spell Family (53)] 
 Class            : Windwalker Monk
@@ -3380,30 +3376,31 @@ Stacks           : 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x.x. x.x.x.x. x.x..x.. .x...... 
                  : Yellow Melee, White Ranged, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic, Trap Triggered, Proc on jump
+Affecting spells : Spiritual Focus (195298), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=180816)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 0x7f
+                   Base Value: -25 | Scaled Value: -25 | Misc Value: 0x7f
 #2 (id=181516)   : Apply Aura (6) | Modify Healing% Done (136)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 127
+                   Base Value: -25 | Scaled Value: -25 | Misc Value: 127
 #3 (id=181626)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: -50 | Scaled Value: -50
+                   Base Value: -25 | Scaled Value: -25
                    Affected Spells: Chi Burst (130654), Chi Wave (132463)
 #4 (id=289040)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 22
+                   Base Value: -25 | Scaled Value: -25 | Misc Value: 22
                    Affected Spells: Chi Burst (130654), Chi Wave (132463)
-Description      : Split into 3 elemental spirits, suited to attacking 3 or more enemies. Each spirit deals ${100+$m1}% of normal damage and healing.
+Description      : Split into 3 elemental spirits, suited to attacking multiple enemies. Each spirit deals ${100+$m1}% of normal damage and healing.
 
 You directly control the Storm spirit, while Earth and Fire spirits mimic your attacks on different nearby enemies. They will not attack the same target as you.
 
 Lasts until toggled off, or either Earth or Fire spirit is destroyed.
 Tooltip          : Elemental spirits summoned, mirroring all of the Monk's attacks.
-The Monk and spirits each do ${100+$w1}% of normal damage and healing.
+The Monk and spirits each do $s1% of normal damage and healing.
 
 Name             : Player Damage Reduction Level 90 (id=142689) [Passive, Hidden] 
 Class            : Death Knight, Shaman, Mage, Warlock, Monk
@@ -3424,7 +3421,7 @@ Description      : Reduces all damage taken from players or their pets by ${$m1/
 Name             : Chi Burst (id=148135) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
-Spell Level      : 30
+Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Extend Life (185158)
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
@@ -3566,7 +3563,7 @@ Description      : You and your allies within $m1 yards have $166646s1% increase
 Name             : Critical Strikes (Passive) (id=157445) [Passive] 
 Class            : Brewmaster Windwalker Monk
 School           : Physical
-Spell Level      : 10
+Spell Level      : 1
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3596,7 +3593,7 @@ Description      : $@spelldesc152175
 Name             : Bladed Armor (id=161608) [Passive] 
 Class            : Protection Protection Brewmaster Guardian Warrior, Paladin, Monk, Druid
 School           : Physical
-Spell Level      : 10
+Spell Level      : 1
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3624,7 +3621,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=228215)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.39500 | Radius: 0 - 10 yards
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Radius: 0 - 10 yards
 Description      : $@spelldesc196725
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
@@ -3682,7 +3679,7 @@ Effects          :
 Name             : Summon Black Ox Statue (id=163178) [Spell Family (53), Hidden] 
 Class            : Monk
 School           : Physical
-Spell Level      : 70
+Spell Level      : 1
 Range            : 40 yards
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3748,6 +3745,22 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 Description      : $@spelldesc165404
 Tooltip          : Critical strike chance increased by $s1%.
+
+Name             : Disabling Technique (id=175697) 
+Class            : Monk
+School           : Physical
+Spell Level      : 1
+GCD              : 1.5 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ...x.... ........ ........ ........ 
+Effects          :
+#1 (id=251171)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0
+Description      : Placeholder for level 60 talented active ability.
 
 Name             : Gift of the Ox (id=178173) [Spell Family (53)] 
 Class            : Monk
@@ -3860,7 +3873,7 @@ Resource         : 8% Base Mana (88000 @Level 110)
 Spell Level      : 58
 GCD              : 1.5 seconds
 Duration         : 3 seconds
-Affecting spells : Thunder Focus Tea (116680), Thunder Focus Tea (197218), Mana Tea (197908), PH - Essence Font Channeled While Moving (208785)
+Affecting spells : Thunder Focus Tea (116680), Thunder Focus Tea (197218), Mana Tea (197908)
 Attributes       : ........ ........ x....... ........   ..x...x. ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -3881,7 +3894,7 @@ Velocity         : 40 yards/sec
 Duration         : 6 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Enveloping Mist (124682), Essence of the Mists (199485), The Mists of Sheilun (199888)
+Affecting spells : Enveloping Mist (124682), Refreshing Jade Wind (196725), Essence of the Mists (199485), The Mists of Sheilun (199888)
 Triggered by     : Essence Font (191837)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4036,7 +4049,7 @@ Proc Flags       : ....x... ........ ........ ........
                  : Yellow Melee
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4074,7 +4087,7 @@ Proc Flags       : ....x... ........ ........ ........
                  : Yellow Melee
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4110,7 +4123,7 @@ Class            : Monk
 School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4130,7 +4143,7 @@ Proc Flags       : ....x... ........ ........ ........
                  : Yellow Melee
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4162,7 +4175,7 @@ Tooltip          : Movement slowed by $s1%.
 Name             : Refreshing Jade Wind (id=196725) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
-Resource         : 7.5% Base Mana (82500 @Level 110)
+Resource         : 5% Base Mana (55000 @Level 110)
 Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 6 seconds
@@ -4177,7 +4190,13 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=288818)   : Apply Aura (6) | Periodic Trigger Spell: Refreshing Jade Wind every 0.75 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 162530
-Description      : Summon a whirling tornado around you, causing ${$162530m1*9} healing over $d to up to 6 allies within $107270A1 yards.
+#2 (id=324020)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 20 | Scaled Value: 20
+                   Affected Spells: Essence Font (191840)
+#3 (id=324021)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22
+                   Affected Spells: Essence Font (191840)
+Description      : Summon a whirling tornado around you, causing ${$162530m1*9} healing over $d to up to 6 allies within $107270A1 yards, and increasing the healing of Essence Font by $s2% while active.
 Tooltip          : Dealing healing to nearby allies every $116847t1 sec.
 
 Name             : Special Delivery (id=196730) [Spell Family (53), Passive] 
@@ -4188,7 +4207,7 @@ Proc Flags       : ........ ..x...x. ........ ........
                  : AOE Heal, Heal
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4248,7 +4267,7 @@ Class            : Monk
 School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4263,7 +4282,7 @@ Class            : Monk
 School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4278,7 +4297,7 @@ Class            : Monk
 School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4309,7 +4328,7 @@ Class            : Monk
 School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4342,7 +4361,7 @@ Class            : Monk
 School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4468,7 +4487,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=290828)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 14
-                   Affected Spells: Tiger Palm (100780), Spinning Crane Kick (101546), Rising Sun Kick (107428), Renewing Mist (115151), Revival (115310), Detox (115450), Vivify (116670), Effuse (116694), Rushing Jade Wind (116847), Life Cocoon (116849), Crackling Jade Lightning (117952), Renewing Mist (119611), Enveloping Mist (124682), Rushing Jade Wind (148187), Rising Sun Kick (185099), Essence Font (191837), Refreshing Jade Wind (196725), Reawaken (212051)
+                   Affected Spells: Tiger Palm (100780), Spinning Crane Kick (101546), Rising Sun Kick (107428), Renewing Mist (115151), Revival (115310), Detox (115450), Vivify (116670), Effuse (116694), Rushing Jade Wind (116847), Life Cocoon (116849), Crackling Jade Lightning (117952), Renewing Mist (119611), Enveloping Mist (124682), Rushing Jade Wind (148187), Rising Sun Kick (185099), Essence Font (191837), Refreshing Jade Wind (196725), Reawaken (212051), Detox (218164)
 Description      : Reduces the mana cost of your spells by $s1% for $d.
 Tooltip          : Mana cost of spells reduced by $s1%.
 
@@ -4514,7 +4533,7 @@ Description      : Instantly dash to an ally and heal them for $s2.
 Name             : Invoke Chi-Ji, the Red Crane (id=198664) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
-Spell Level      : 49
+Spell Level      : 1
 Range            : 40 yards
 Duration         : 45 seconds
 Cooldown         : 180 seconds
@@ -4545,12 +4564,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 8
 #2 (id=316503)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.50000
-Description      : Chi'Ji dashes to three allies, healing them for $s2.
+Description      : Chi-Ji dashes to three allies, healing them for $s2.
 
 Name             : Song of Chi-Ji (id=198898) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
-Spell Level      : 30
+Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.8 seconds
 GCD              : 1.5 seconds
@@ -4571,7 +4590,7 @@ Description      : Conjures a cloud of hypnotic mist that slowly travels forward
 Name             : Song of Chi-Ji (id=198909) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
-Spell Level      : 10
+Spell Level      : 1
 Range            : 100 yards
 Duration         : 20 seconds
 Stacks           : 1 initial, 1 maximum
@@ -4646,7 +4665,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30
                    Affected Spells: Blackout Kick (100784), Rising Sun Kick (107428), Rising Sun Kick (185099), Blackout Strike (205523)
 Description      : $@spelldesc116645
-Tooltip          : Your next Blackout Kick or Rising Sun Kick deals $s1% additional damage$?s210802[ and restores $210803s1% mana][].
+Tooltip          : Your next Blackout Kick or Rising Sun Kick deals $s1% additional damage$?s210802[ and restores ${$210803m1/100}.2% mana][].
 
 Name             : Blackout Strike (id=205523) [Spell Family (53)] 
 Replaces         : Blackout Kick (id=100784)
@@ -4682,13 +4701,13 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 Name             : Spirit of the Crane (id=210802) [Spell Family (53), Passive] 
 Class            : Monk
 School           : Physical
-Spell Level      : 10
+Spell Level      : 1
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4696,7 +4715,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=312259)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
-Description      : Tiger Palm causes your next Blackout Kick or Rising Sun Kick to restore $210803s1% mana.
+Description      : Tiger Palm causes your next Blackout Kick or Rising Sun Kick to restore ${$210803m1/100}.2% mana.
 
 Name             : Spirit of the Crane (id=210803) [Spell Family (53)] 
 Class            : Monk
@@ -4711,19 +4730,19 @@ Attributes       : ........ ........ ........ x..x....   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=312261)   : Energize Power% (137)
-                   Base Value: 1 | Scaled Value: 1
+                   Base Value: 75 | Scaled Value: 75
 Description      : $@spelldesc210802
 
 Name             : Rising Thunder (id=210804) [Spell Family (53), Passive] 
 Class            : Monk
 School           : Physical
-Spell Level      : 10
+Spell Level      : 1
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4746,7 +4765,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=313194)   : Apply Aura (6) | Dummy (4)
                    Base Value: -2000 | Scaled Value: -2000 | Misc Value: 11
-Description      : Using 3 sequentially different abilities grants $s1 Mastery for $d.
+Description      : Using 3 sequentially different abilities grants $211432s1 Mastery for $211432d.
 
 Name             : Combo Master (id=211432) [Spell Family (9)] 
 Class            : Monk
@@ -4768,7 +4787,7 @@ Name             : Reawaken (id=212051) [Spell Family (53)]
 Class            : Mistweaver Monk
 School           : Nature
 Resource         : 0.8% Base Mana (8800 @Level 110)
-Spell Level      : 14
+Spell Level      : 44
 Range            : 40 yards
 Cast Time        : 10 seconds
 GCD              : 1.5 seconds
@@ -4824,5 +4843,27 @@ Effects          :
 #1 (id=322186)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 15
 Description      : You have a chance equal to your critical strike chance to duplicate all healing that you receive.
+
+Name             : Detox (id=218164) [Spell Family (53)] 
+Class            : Brewmaster Windwalker Monk
+School           : Nature
+Resource         : 20 Energy
+Spell Level      : 22
+Range            : 40 yards
+GCD              : 1.5 seconds
+Charges          : 1 (8 seconds cooldown)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Lucidity (137331), Mana Tea (197908)
+Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .......x ...x....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ....x... ........ ........ ........ 
+Effects          :
+#1 (id=324806)   : Dispel (38)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 3
+#2 (id=324807)   : Dispel (38)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 4
+Description      : Removes all Poison and Disease effects from the target.
 
 
