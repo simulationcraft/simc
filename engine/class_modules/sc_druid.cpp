@@ -2107,6 +2107,7 @@ namespace cat_attacks {
 struct cat_attack_t : public druid_attack_t < melee_attack_t >
 {
   bool   requires_stealth;
+  bool   consumes_combo_points;
   int    combo_point_gain;
   double base_dd_bonus;
   double base_td_bonus;
@@ -2122,14 +2123,14 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
     base_t( token, p, s ),
     requires_stealth( false ), combo_point_gain( 0 ),
     base_dd_bonus( 0.0 ), base_td_bonus( 0.0 ), consume_ooc( true ),
-    trigger_tier17_2pc( false )
+    trigger_tier17_2pc( false ), consumes_combo_points( false )
   {
     parse_options( options );
 
     parse_special_effect_data();
 
     // Skills that cost combo points can't be cast outside of Cat Form.
-    if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 )
+    if ( consumes_combo_points )
       form_mask |= CAT_FORM;
 
     razor_claws.direct = data().affected_by( p -> mastery.razor_claws -> effectN( 1 ) );
@@ -2138,6 +2139,9 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
 
   void parse_special_effect_data()
   {
+    if ( data().cost( POWER_COMBO_POINT ) )
+      consumes_combo_points = true;
+
     for ( size_t i = 1; i <= data().effect_count(); i++ )
     {
       const spelleffect_data_t& ed = data().effectN( i );
@@ -2197,7 +2201,7 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
   {
     base_t::execute();
 
-    if ( this -> base_costs[ RESOURCE_COMBO_POINT ] > 0 )
+    if ( consumes_combo_points )
     {
       if ( player -> sets.has_set_bonus( SET_MELEE, T15, B2 ) &&
            rng().roll( cost() * 0.15 ) )
@@ -2236,7 +2240,7 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( p() -> spec.predatory_swiftness -> ok() && base_costs[ RESOURCE_COMBO_POINT ] )
+      if ( consumes_combo_points && p() -> spec.predatory_swiftness -> ok() )
         p() -> buff.predatory_swiftness -> trigger( 1, 1, p() -> resources.current[ RESOURCE_COMBO_POINT ] * 0.20 );
 
       // Only manage for single target generators because AoE generators need special logic.
@@ -2270,7 +2274,7 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
     if ( base_t::cost() > 0 && consume_ooc )
       p() -> buff.clearcasting -> decrement();
 
-    if ( base_costs[ RESOURCE_COMBO_POINT ] && result_is_hit( execute_state -> result ) )
+    if ( consumes_combo_points && result_is_hit( execute_state -> result ) )
     {
       int consumed = ( int ) p() -> resources.current[ RESOURCE_COMBO_POINT ];
 
@@ -2301,7 +2305,7 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
     if ( requires_stealth && ! stealthed() )
       return false;
 
-    if ( p() -> resources.current[ RESOURCE_COMBO_POINT ] < base_costs[ RESOURCE_COMBO_POINT ] )
+    if ( consumes_combo_points && p() -> resources.current[ RESOURCE_COMBO_POINT ] < 1 )
       return false;
 
     return true;
@@ -2641,8 +2645,6 @@ struct ferocious_bite_t : public cat_attack_t
     add_option( opt_bool( "max_energy" , max_energy ) );
     parse_options( options_str );
 
-    base_costs[ RESOURCE_COMBO_POINT ] = 1;
-
     max_excess_energy      = -1 * data().effectN( 2 ).base_value();
     special                = true;
 
@@ -2787,14 +2789,13 @@ struct gushing_wound_t : public residual_action::residual_periodic_action_t<cat_
   }
 };
 
-// Maim =====================================================================
+// Maim =============================== ======================================
 
 struct maim_t : public cat_attack_t
 {
   maim_t( druid_t* player, const std::string& options_str ) :
     cat_attack_t( "maim", player, player -> find_specialization_spell( "Maim" ), options_str )
   {
-    base_costs[ RESOURCE_COMBO_POINT ] = 1;
     weapon_multiplier = data().effectN( 3 ).pp_combo_points() / 100.0;
   }
 
@@ -2867,8 +2868,6 @@ struct rip_t : public cat_attack_t
   rip_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "rip", p, p -> find_specialization_spell( "Rip" ), options_str )
   {
-    base_costs[ RESOURCE_COMBO_POINT ] = 1;
-
     special      = true;
     may_crit     = false;
     dot_duration += player -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
@@ -2923,7 +2922,7 @@ struct savage_roar_t : public cat_attack_t
   savage_roar_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "savage_roar", p, p -> talent.savage_roar, options_str )
   {
-    base_costs[ RESOURCE_COMBO_POINT ] = 1;
+    consumes_combo_points = true; // Missing from spell data.
     may_crit = may_miss = harmful = false;
     dot_duration = base_tick_time = timespan_t::zero();
   }
