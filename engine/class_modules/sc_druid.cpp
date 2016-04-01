@@ -2251,7 +2251,7 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
   virtual void consume_resource() override
   {
     // Treat Omen of Clarity energy savings like an energy gain for tracking purposes.
-    if ( base_t::cost() > 0 && consume_ooc && p() -> buff.clearcasting -> up() )
+    if ( current_resource() == RESOURCE_ENERGY && base_t::cost() > 0 && consume_ooc && p() -> buff.clearcasting -> up() )
     {
       // Base cost doesn't factor in Berserk, but Omen of Clarity does net us less energy during it, so account for that here.
       double eff_cost = base_t::cost() * ( 1.0 + p() -> buff.berserk -> value() ) * ( 1.0 + p() -> buff.incarnation_cat -> check_value() );
@@ -2266,12 +2266,12 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
 
     base_t::consume_resource();
 
-    if ( base_t::cost() > 0 && consume_ooc )
+    if ( current_resource() == RESOURCE_ENERGY && base_t::cost() > 0 && consume_ooc )
       p() -> buff.clearcasting -> decrement();
 
     if ( consumes_combo_points && result_is_hit( execute_state -> result ) )
     {
-      int consumed = ( int ) p() -> resources.current[ RESOURCE_COMBO_POINT ];
+      int consumed = (int) p() -> resources.current[ RESOURCE_COMBO_POINT ];
 
       p() -> resource_loss( RESOURCE_COMBO_POINT, consumed, nullptr, this );
 
@@ -2287,7 +2287,7 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
 
       if ( p() -> talent.soul_of_the_forest -> ok() && p() -> specialization() == DRUID_FERAL )
         p() -> resource_gain( RESOURCE_ENERGY,
-                              consumed * p() -> talent.soul_of_the_forest -> effectN( 1 ).base_value(),
+                              consumed * p() -> talent.soul_of_the_forest -> effectN( 1 ).resource( RESOURCE_ENERGY ),
                               p() -> gain.soul_of_the_forest );
     }
   }
