@@ -1015,9 +1015,9 @@ struct chaos_strike_template_t : public demon_hunter_attack_t
       dual = background = true;
       may_miss = may_parry = may_dodge = false;
       weapon = &( p -> off_hand_weapon );
+
       if ( p -> talent.chaos_cleave -> ok() )
         aoe = 1 + p -> talent.chaos_cleave -> effectN( 1 ).base_value(); // Bugged as of build 21287
-      aoe = radius > 0 ? -1 : aoe;
     }
 
     // Use crit roll of the primary hit.
@@ -1060,8 +1060,6 @@ struct chaos_strike_template_t : public demon_hunter_attack_t
   {
     off_hand = new chaos_strike_oh_t( p, data().effectN( 3 ).trigger(), this );
     add_child( off_hand );
-
-    aoe = radius > 0 ? -1 : aoe;
   }
 
   bool init_finished() override
