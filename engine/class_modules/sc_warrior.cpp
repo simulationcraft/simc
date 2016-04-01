@@ -1550,7 +1550,7 @@ struct execute_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    if ( p() -> rppm.rage_of_the_valarjar -> trigger() )
+    if ( p() -> rppm.rage_of_the_valarjar && p() -> rppm.rage_of_the_valarjar -> trigger() )
     {
       p() -> buff.berserking_driver -> trigger();
     }
@@ -2201,7 +2201,7 @@ struct rampage_event_t: public event_t
 
   timespan_t next_execute() const
   {
-    return timespan_t::from_millis( warrior -> spec.rampage -> effectN( attacks + 5 ).misc_value1() - ( attacks > 0 ? warrior -> spec.rampage -> effectN( attacks + 4 ).misc_value1() : 0 ) );
+    return timespan_t::from_millis( warrior -> spec.rampage -> effectN( attacks + 4 ).misc_value1() - ( attacks > 0 ? warrior -> spec.rampage -> effectN( attacks + 3 ).misc_value1() : 0 ) );
   }
 
   void execute() override
@@ -2222,7 +2222,7 @@ struct rampage_event_t: public event_t
 struct rampage_parent_t: public warrior_attack_t
 {
   rampage_parent_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "rampage", p, p -> spec.rampage -> effectN( 3 ).trigger() )
+    warrior_attack_t( "rampage", p, p -> spec.rampage )
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
@@ -2247,7 +2247,7 @@ struct rampage_parent_t: public warrior_attack_t
     warrior_attack_t::execute();
 
     p() -> buff.massacre -> expire();
-    if ( p() -> rppm.rage_of_the_valarjar -> trigger() )
+    if ( p() -> rppm.rage_of_the_valarjar && p() -> rppm.rage_of_the_valarjar -> trigger() )
     {
       p() -> buff.berserking_driver -> trigger();
     }
@@ -3897,7 +3897,7 @@ void warrior_t::create_buffs()
     .add_invalidate( CACHE_ATTACK_SPEED )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buff.frenzy = buff_creator_t( this, "frenzy", talents.frenzy )
+  buff.frenzy = buff_creator_t( this, "frenzy", talents.frenzy -> effectN( 1 ).trigger() )
     .add_invalidate( CACHE_HASTE )
     .default_value( talents.frenzy -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
@@ -3934,6 +3934,7 @@ void warrior_t::create_buffs()
     .add_invalidate( CACHE_PARRY );
 
   buff.battle_cry = buff_creator_t( this, "battle_cry", spec.battle_cry )
+    .add_invalidate( CACHE_CRIT )
     .cd( timespan_t::zero() );
 
   buff.shattered_defenses = buff_creator_t( this, "shattered_defenses", artifact.shattered_defenses.data().effectN( 1 ).trigger() )
