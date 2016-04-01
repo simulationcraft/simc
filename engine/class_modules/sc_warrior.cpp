@@ -40,7 +40,6 @@ public:
   event_t* rampage_driver;
   std::vector<attack_t*> rampage_attacks;
   int initial_rage;
-  double bloodthirst_crit_multiplier;
   bool non_dps_mechanics, warrior_fixed_time;
 
   // Tier 18 (WoD 6.2) class specific trinket effects
@@ -375,7 +374,6 @@ public:
     talents( talents_t() )
   {
     initial_rage = 0;
-    bloodthirst_crit_multiplier = 0.0;
     non_dps_mechanics = false; // When set to false, disables stuff that isn't important, such as second wind, bloodthirst heal, etc.
     warrior_fixed_time = true;
     base.distance = 5.0;
@@ -1042,8 +1040,6 @@ struct bladestorm_t: public warrior_attack_t
     warrior_attack_t::last_tick( d );
     p() -> buff.bladestorm -> expire();
   }
-  // Bladestorm is not modified by haste effects
-  double composite_haste() const override { return 1.0; }
 };
 
 // Bloodthirst Heal =========================================================
@@ -1105,9 +1101,6 @@ struct bloodthirst_t: public warrior_attack_t
   double composite_crit() const override
   {
     double c = warrior_attack_t::composite_crit();
-
-    if ( p()-> bloodthirst_crit_multiplier > 0 )
-      c *= p()-> bloodthirst_crit_multiplier;
 
     c += p() -> buff.taste_for_blood -> check_value();
 
@@ -4630,7 +4623,6 @@ void warrior_t::create_options()
   player_t::create_options();
 
   add_option( opt_int( "initial_rage", initial_rage ) );
-  add_option( opt_float( "bloodthirst_crit_multiplier", bloodthirst_crit_multiplier ) );
   add_option( opt_bool( "non_dps_mechanics", non_dps_mechanics ) );
   add_option( opt_bool( "warrior_fixed_time", warrior_fixed_time ) );
 }
@@ -4674,7 +4666,7 @@ void warrior_t::copy_from( player_t* source )
   warrior_t* p = debug_cast<warrior_t*>( source );
 
   initial_rage = p -> initial_rage;
-  bloodthirst_crit_multiplier = p -> bloodthirst_crit_multiplier;
+  non_dps_mechanics = p -> non_dps_mechanics;
   warrior_fixed_time = p -> warrior_fixed_time;
 }
 
