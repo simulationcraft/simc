@@ -2645,7 +2645,6 @@ struct ferocious_bite_t : public cat_attack_t
 
     max_excess_energy      = -1 * data().effectN( 2 ).base_value();
     special                = true;
-    spell_power_mod.direct = 0;
 
     crit_bonus_multiplier *= 1.0 + p -> artifact.powerful_bite.percent(); // TOCHECK
 
@@ -5465,6 +5464,8 @@ struct starfall_t : public druid_spell_t
     radius *= 1.0 + player -> talent.stellar_drift -> effectN( 1 ).percent();
 
     add_child( pulse );
+
+    base_costs[ RESOURCE_ASTRAL_POWER ] += player -> talent.soul_of_the_forest -> effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
   }
 
   virtual void execute() override
