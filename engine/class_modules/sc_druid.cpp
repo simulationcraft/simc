@@ -355,7 +355,6 @@ public:
     buff_t* elunes_guidance;
     buff_t* feral_instinct;
     buff_t* incarnation_cat;
-    buff_t* open_wounds;
     buff_t* predatory_swiftness;
     buff_t* protection_of_ashamane;
     buff_t* savage_roar;
@@ -1580,9 +1579,6 @@ public:
       if ( ab::result_is_hit( s -> result ) )
         trigger_clearcasting();
     }
-
-    if ( dbc::is_school( ab::school, SCHOOL_PHYSICAL ) && ! direct_bleed && s -> result_amount > 0 )
-      ab::p() -> buff.open_wounds -> up();
   }
 
   virtual void tick( dot_t* d )
@@ -2906,12 +2902,18 @@ struct rip_t : public cat_attack_t
     if ( result_is_hit( s -> result ) )
     {
       td( s -> target ) -> buffs.open_wounds -> trigger(); // TOCHECK
-      p() -> buff.open_wounds -> trigger();
 
       // Store rip's damage value for use with Ashamane's Bite.
       if ( p() -> artifact.ashamanes_bite.rank() )
         td( s -> target ) -> rip_zero = calculate_tick_amount( s, 1.0 );
     }
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    cat_attack_t::last_tick( d );
+
+    td( d -> target ) -> buffs.open_wounds -> expire();
   }
 };
 
@@ -6379,10 +6381,6 @@ void druid_t::create_buffs()
 
   buff.berserk               = new berserk_buff_t( *this );
 
-  buff.open_wounds           = buff_creator_t( this, "open_wounds_up", spell_data_t::nil() )
-                               .chance( artifact.open_wounds.rank() > 0 )
-                               .duration( artifact.open_wounds.data().effectN( 1 ).trigger() -> duration() );
-
   buff.predatory_swiftness   = buff_creator_t( this, "predatory_swiftness", find_spell( 69369 ) )
                                .chance( spec.predatory_swiftness -> ok() );
 
@@ -7834,8 +7832,8 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   buffs.bloodletting    = buff_creator_t( *this, "bloodletting", source.find_spell( 165699 ) )
                           .default_value( source.find_spell( 165699 ) -> effectN( 1 ).percent() );
   buffs.lifebloom       = buff_creator_t( *this, "lifebloom", source.find_class_spell( "Lifebloom" ) );
-  buffs.open_wounds     = buff_creator_t( *this, "open_wounds", source.artifact.open_wounds.data().effectN( 1 ).trigger() )
-                          .default_value( source.artifact.open_wounds.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+  buffs.open_wounds     = buff_creator_t( *this, "open_wounds", source.find_spell( 210670 ) )
+                          .default_value( source.find_spell( 210670 ) -> effectN( 1 ).percent() )
                           .chance( source.artifact.open_wounds.rank() > 0 );
   buffs.starfall        = buff_creator_t( *this, "starfall", source.find_spell( 197637 ) )
                           .default_value( source.find_spell( 197637 ) -> effectN( 1 ).percent() + source.artifact.falling_star.percent() );
