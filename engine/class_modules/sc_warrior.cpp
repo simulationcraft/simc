@@ -443,8 +443,7 @@ namespace
 template <class Base>
 struct warrior_action_t: public Base
 {
-  bool headlongrush, headlongrushgcd, battle_cry,
-    colossal_might, sweeping_strikes, dauntless, war_veteran;
+  bool headlongrush, headlongrushgcd, colossal_might, sweeping_strikes, dauntless, war_veteran;
 private:
   typedef Base ab; // action base, eg. spell_t
 public:
@@ -454,7 +453,6 @@ public:
     ab( n, player, s ),
     headlongrush( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 1 ) ) ),
     headlongrushgcd( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 2 ) ) ),
-    battle_cry( ab::data().affected_by( player -> spec.battle_cry -> effectN( 1 ) ) ),
     colossal_might( ab::data().affected_by( player -> spell.colossus_smash_debuff -> effectN( 3 ) ) ),
     sweeping_strikes( ab::data().affected_by( player -> talents.sweeping_strikes -> effectN( 1 ) ) ),
     dauntless( ab::data().affected_by( player -> talents.dauntless -> effectN( 1 ) ) ),
@@ -512,16 +510,6 @@ public:
     }
 
     return am;
-  }
-
-  virtual double composite_crit() const override
-  {
-    double cc = ab::composite_crit();
-
-    if ( battle_cry )
-      cc += p() -> buff.battle_cry -> value();
-
-    return cc;
   }
 
   virtual void execute() override
@@ -4413,6 +4401,8 @@ double warrior_t::composite_melee_crit() const
     c += buff.tier17_4pc_fury -> current_stack *
       sets.set( WARRIOR_FURY, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() -> effectN( 1 ).percent();
   }
+
+  c += buff.battle_cry -> check_value();
 
   return c;
 }
