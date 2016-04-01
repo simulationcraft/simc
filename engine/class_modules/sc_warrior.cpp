@@ -1145,6 +1145,7 @@ struct furious_slash_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
     p() -> buff.taste_for_blood -> trigger( 1 );
+    p() -> buff.frenzy -> trigger( 1 );
   }
 };
 
