@@ -270,7 +270,6 @@ public:
   struct rppms_t
   {
     // Feral
-    real_ppm_t ashamanes_bite;
     real_ppm_t predator; // Optional RPPM approximation
     real_ppm_t shadow_thrash;
 
@@ -2713,18 +2712,8 @@ struct ferocious_bite_t : public cat_attack_t
           target_td -> dots.rip -> extend_duration( sabertooth_total ); // TOCHECK: Sabertooth before or after BitW?
       }
 
-      // TOCHECK: Does the target need to have Rip/Rake on them to be eligible to proc?
       // Ashamane's Bite procs after Sabertooth.
-      if ( p() -> artifact.ashamanes_bite.rank() && p() -> rppm.ashamanes_bite.trigger() )
-      {
-        p() -> proc.ashamanes_bite -> occur();
-
-        if ( td( state -> target ) -> dots.rip -> is_ticking() )
-        {
-          ashamanes_rip -> target = state -> target;
-          ashamanes_rip -> execute();
-        }
-      }
+      trigger_ashamanes_bite( state );
     }
   }
 
@@ -2769,6 +2758,29 @@ struct ferocious_bite_t : public cat_attack_t
       cm *= 2.0;
 
     return cm;
+  }
+
+  void trigger_ashamanes_bite( action_state_t* s )
+  {
+    if ( ! p() -> artifact.ashamanes_bite.rank() )
+      return;
+    if ( ! td( s -> target ) -> dots.rip -> is_ticking() )
+      return;
+
+    double base_excess_energy = excess_energy;
+    base_excess_energy /= 1.0 + p() -> buff.berserk -> check_value();
+    base_excess_energy /= 1.0 + p() -> buff.incarnation_cat -> check_value();
+
+    // TOCHECK: Is the extra energy portion really per 5 energy?
+    double chance = ( p() -> resources.current[ RESOURCE_COMBO_POINT ] + std::floor( base_excess_energy / 5.0 ) ) * 0.015;
+
+    if ( ! rng().roll( chance ) )
+      return;
+
+    p() -> proc.ashamanes_bite -> occur();
+
+    ashamanes_rip -> target = s -> target;
+    ashamanes_rip -> execute();
   }
 };
 
@@ -7004,7 +7016,6 @@ void druid_t::init_rng()
   // RPPM objects
   rppm.balance_tier18_2pc = real_ppm_t( *this, sets.set( DRUID_BALANCE, T18, B2 ) -> real_ppm() );
   rppm.predator           = real_ppm_t( *this, predator_rppm_rate ); // Predator: optional RPPM approximation.
-  rppm.ashamanes_bite     = real_ppm_t( *this, artifact.ashamanes_bite.data().real_ppm(), 1.0, RPPM_HASTE );
   rppm.shadow_thrash      = real_ppm_t( *this, artifact.shadow_thrash.data().real_ppm(), 1.0, RPPM_HASTE );
 
   player_t::init_rng();
@@ -7089,7 +7100,6 @@ void druid_t::reset()
   if ( mastery.natures_guardian -> ok() )
     recalculate_resource_max( RESOURCE_HEALTH );
   
-  rppm.ashamanes_bite.reset();
   rppm.predator.reset();
   rppm.shadow_thrash.reset();
   rppm.balance_tier18_2pc.reset();
