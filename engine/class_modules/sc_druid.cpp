@@ -1265,6 +1265,24 @@ struct incarnation_cat_buff_t : public berserk_buff_template_t
   }
 };
 
+// Incarnation: Chosen of Elune ==========================================
+
+struct incarnation_moonkin_buff_t : public druid_buff_t< buff_t >
+{
+  incarnation_moonkin_buff_t( druid_t& p ) :
+    base_t( p, buff_creator_t( &p, "incarnation_chosen_of_elune", p.talent.incarnation_moonkin )
+      .default_value( p.talent.incarnation_moonkin -> effectN( 1 ).percent() )
+      .cd( timespan_t::zero() ) )
+  {}
+
+  void expire_override( int stacks, timespan_adl_barrier::timespan_t duration )
+  {
+    druid_buff_t<buff_t>::expire_override( stacks, duration );
+
+    druid.buff.star_power -> expire();
+  }
+};
+
 // Cat Form =================================================================
 
 struct cat_form_t : public druid_buff_t< buff_t >
@@ -1299,20 +1317,17 @@ struct cat_form_t : public druid_buff_t< buff_t >
 
 struct celestial_alignment_buff_t : public druid_buff_t < buff_t >
 {
-  druid_t* druid;
-
   celestial_alignment_buff_t( druid_t& p ) :
     druid_buff_t<buff_t>( p, buff_creator_t( &p, "celestial_alignment", p.spec.celestial_alignment )
                           .cd( timespan_t::zero() ) // handled by spell
-                          .default_value( p.spec.celestial_alignment -> effectN( 1 ).percent() ) ),
-    druid( &p )
+                          .default_value( p.spec.celestial_alignment -> effectN( 1 ).percent() ) )
   {}
 
   void expire_override( int stacks, timespan_adl_barrier::timespan_t duration )
   {
     druid_buff_t<buff_t>::expire_override( stacks, duration );
 
-    druid -> buff.star_power -> expire();
+    druid.buff.star_power -> expire();
   }
 };
 
@@ -1675,9 +1690,8 @@ private:
   bool consumed_owlkin_frenzy;
 public:
   double ap_per_hit, ap_per_tick, ap_per_cast;
-  struct {
-    bool direct, tick, astral_power;
-  } celestial_alignment, incarnation;
+  bool incarnation;
+  bool celestial_alignment;
   bool blessing_of_elune;
   bool consumes_owlkin_frenzy;
   gain_t* ap_gain;
@@ -1690,18 +1704,12 @@ public:
       ap_per_tick( 0 ),
       ap_per_cast( 0 ),
       blessing_of_elune( data().affected_by( p -> spell.blessing_of_elune -> effectN( 1 ) ) ),
+      celestial_alignment( data().affected_by( p -> spec.celestial_alignment -> effectN( 3 ) ) ),
+      incarnation( data().affected_by( p -> talent.incarnation_moonkin -> effectN( 3 ) ) ),
       consumes_owlkin_frenzy( false ),
       ap_gain( p->get_gain( name() ) )
   {
     parse_options( options );
-
-    incarnation.direct = data().affected_by( p -> talent.incarnation_moonkin -> effectN( 1 ) );
-    incarnation.tick = data().affected_by( p -> talent.incarnation_moonkin -> effectN( 2 ) );
-    incarnation.astral_power = data().affected_by( p -> talent.incarnation_moonkin -> effectN( 3 ) );
-
-    celestial_alignment.direct = data().affected_by( p -> spec.celestial_alignment -> effectN( 1 ) );
-    celestial_alignment.tick = data().affected_by( p -> spec.celestial_alignment -> effectN( 2 ) );
-    celestial_alignment.astral_power = data().affected_by( p -> spec.celestial_alignment -> effectN( 3 ) );
   }
 
   virtual void reset()
@@ -1767,32 +1775,6 @@ public:
       trigger_astral_power_gain( ap_per_tick );
   }
 
-  virtual double action_da_multiplier() const override
-  {
-    double dm = spell_t::action_da_multiplier();
-
-    if ( celestial_alignment.direct )
-      dm *= 1.0 + p() -> buff.celestial_alignment -> check_value();
-
-    if ( incarnation.direct )
-      dm *= 1.0 + p() -> buff.incarnation_moonkin -> check_value();
-
-    return dm;
-  }
-
-  virtual double action_ta_multiplier() const override
-  {
-    double tm = spell_t::action_ta_multiplier();
-
-    if ( celestial_alignment.tick )
-      tm *= 1.0 + p() -> buff.celestial_alignment -> check_value();
-
-    if ( incarnation.tick )
-      tm *= 1.0 + p() -> buff.incarnation_moonkin -> check_value();
-
-    return tm;
-  }
-
   virtual timespan_t execute_time() const
   {
     if ( consumes_owlkin_frenzy && p() -> buff.owlkin_frenzy -> check() )
@@ -1816,7 +1798,7 @@ public:
     double ap = base_ap;
     double bonus_pct = 0;
 
-    if ( celestial_alignment.astral_power && p() -> buff.celestial_alignment -> check() )
+    if ( celestial_alignment && p() -> buff.celestial_alignment -> check() )
     {
       ap *= 1.0 + p() -> spec.celestial_alignment -> effectN( 3 ).percent();
       bonus_pct += p() -> spec.celestial_alignment -> effectN( 3 ).percent();
@@ -1830,8 +1812,8 @@ public:
 
     if ( blessing_of_elune && p() -> buff.blessing_of_elune -> check() )
     {
-      ap *= 1.0 + p() -> spell.blessing_of_elune -> effectN( 2 ).percent();
-      bonus_pct += p() -> spec.celestial_alignment -> effectN( 3 ).percent();
+      ap *= 1.0 + p() -> spell.blessing_of_elune -> effectN( 1 ).percent();
+      bonus_pct += p() -> spell.blessing_of_elune -> effectN( 1 ).percent();
     }
 
     // Gain the base AP amount and attribute it to the spell cast.
@@ -1841,16 +1823,16 @@ public:
     ap -= base_ap;
 
     // Divide the remaining AP gain among the buffs based on their modifier / bonus_pct ratio.
-    if ( celestial_alignment.astral_power && p() -> buff.celestial_alignment -> check() )
+    if ( celestial_alignment && p() -> buff.celestial_alignment -> check() )
       p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * ( p() -> spec.celestial_alignment -> effectN( 3 ).percent() / bonus_pct ),
                             p() -> gain.celestial_alignment );
 
-    if ( incarnation.astral_power && p() -> buff.incarnation_moonkin -> check() )
+    if ( incarnation && p() -> buff.incarnation_moonkin -> check() )
       p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * ( p() -> buff.incarnation_moonkin -> data().effectN( 3 ).percent() / bonus_pct ),
                             p() -> gain.incarnation );
 
     if ( blessing_of_elune && p() -> buff.blessing_of_elune -> check() )
-      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * ( p() -> spell.blessing_of_elune -> effectN( 2 ).percent() / bonus_pct ),
+      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * ( p() -> spell.blessing_of_elune -> effectN( 1 ).percent() / bonus_pct ),
                             p() -> gain.blessing_of_elune );
   }
 
@@ -6156,7 +6138,7 @@ void druid_t::init_spells()
   spell.cat_form          = find_class_spell( "Cat Form"                    ) -> ok() ? find_spell( 3025   ) : spell_data_t::not_found();
   spell.cat_form_speed    = find_class_spell( "Cat Form"                    ) -> ok() ? find_spell( 113636 ) : spell_data_t::not_found();
 
-  spell.thrash_bear_dot      = find_spell( 192090 );
+  spell.thrash_bear_dot   = find_spell( 192090 );
   spell.blessing_of_anshe = find_spell( 202739 );
   spell.blessing_of_elune = find_spell( 202737 );
 
@@ -6305,9 +6287,7 @@ void druid_t::create_buffs()
                                .quiet( true )
                                .chance( 1 );
 
-  buff.incarnation_moonkin   = buff_creator_t( this, "incarnation_chosen_of_elune", talent.incarnation_moonkin )
-                               .default_value( talent.incarnation_moonkin -> effectN( 1 ).percent() )
-                               .cd( timespan_t::zero() );
+  buff.incarnation_moonkin   = new incarnation_moonkin_buff_t( *this );
 
   buff.incarnation_cat       = new incarnation_cat_buff_t( *this );
 
@@ -7295,6 +7275,9 @@ double druid_t::composite_player_multiplier( school_e school ) const
         m *= 1.0 + buff.moonkin_form -> data().effectN( 9 ).percent();
     }
   }
+
+  m *= 1.0 + buff.celestial_alignment -> check_value();
+  m *= 1.0 + buff.incarnation_moonkin -> check_value();
 
   m *= 1.0 + buff.feral_instinct -> check_value();
 
