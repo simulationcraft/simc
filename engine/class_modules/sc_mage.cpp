@@ -380,7 +380,7 @@ public:
                       * cinderstorm, // NYI
                       * meteor,
                       * thermal_void,
-                      * glacial_spike, // NYI
+                      * glacial_spike,
                       * comet_storm;
   } talents;
 
@@ -2542,7 +2542,7 @@ struct ebonbolt_t : public frost_mage_spell_t
   virtual void execute() override
   {
     frost_mage_spell_t::execute();
-    trigger_fof( "Ebonbolt FoF Gain", 1.0, 2 );
+    trigger_fof( "Ebonbolt", 1.0, 2 );
   }
 };
 // Evocation Spell ==========================================================
@@ -3046,6 +3046,52 @@ struct frozen_touch_t : public frost_mage_spell_t
 };
 
 
+// Glacial Spike ==============================================================
+
+struct glacial_spike_t : public frost_mage_spell_t
+{
+  glacial_spike_t( mage_t* p, const std::string& options_str ) :
+    frost_mage_spell_t( "glacial_spike", p, p -> talents.glacial_spike )
+  {
+    parse_options( options_str );
+  }
+
+  virtual bool ready() override
+  {
+    // TODO: Avoid hardcoding icicle cap requirement
+    if ( p() -> icicles.size() < 5 )
+    {
+      return false;
+    }
+
+    return frost_mage_spell_t::ready();
+  }
+
+  virtual void execute() override
+  {
+    double icicle_damage_sum = 0;
+    unsigned icicle_count = p() -> icicles.size();
+    assert( icicle_count == 5 );
+    for ( size_t i = 0; i < p() -> icicles.size(); i++ )
+    {
+      icicle_data_t d = p() -> get_icicle_object();
+      icicle_damage_sum += d.first;
+    }
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf("Add %u icicles to glacial_spike for %f damage",
+                              icicle_count, icicle_damage_sum);
+    }
+
+    // Sum icicle damage
+    base_dd_min = icicle_damage_sum;
+    base_dd_max = icicle_damage_sum;
+
+    frost_mage_spell_t::execute();
+  }
+};
+
+
 // Ice Floes Spell ============================================================
 
 struct ice_floes_t : public mage_spell_t
@@ -3097,7 +3143,6 @@ struct ice_lance_t : public frost_mage_spell_t
 
   ice_lance_t( mage_t* p, const std::string& options_str ) :
     frost_mage_spell_t( "ice_lance", p, p -> find_class_spell( "Ice Lance" ) ),
-    frost_bomb_explosion( nullptr ),
     shatterlance_effect( 0.0 )
   {
     parse_options( options_str );
@@ -3158,7 +3203,10 @@ struct ice_lance_t : public frost_mage_spell_t
     // Icicles are gone, including new ones that accumulate while they're being
     // fired. If target dies, Icicles stop. If Ice Lance is cast again, the
     // current sequence is interrupted and a new one begins.
-    p() -> trigger_icicle( execute_state, true, target );
+    if ( !p() -> talents.lonely_winter -> ok() )
+    {
+      p() -> trigger_icicle( execute_state, true, target );
+    }
 
     p() -> buffs.fingers_of_frost -> decrement();
   }
@@ -4418,7 +4466,7 @@ struct icicle_event_t : public event_t
   { return "icicle_event"; }
   void execute() override
   {
-    // If the target of the icicle is ded, stop the chain
+    // If the target of the icicle is dead, stop the chain
     if ( target -> is_sleeping() )
     {
       if ( mage -> sim -> debug )
@@ -4657,6 +4705,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "frost_bomb"        ) return new              frost_bomb_t( this, options_str );
   if ( name == "frostbolt"         ) return new               frostbolt_t( this, options_str );
   if ( name == "frozen_orb"        ) return new              frozen_orb_t( this, options_str );
+  if ( name == "glacial_spike"     ) return new           glacial_spike_t( this, options_str );
   if ( name == "ice_lance"         ) return new               ice_lance_t( this, options_str );
   if ( name == "ice_nova"          ) return new                ice_nova_t( this, options_str );
   if ( name == "icy_veins"         ) return new               icy_veins_t( this, options_str );
@@ -6418,7 +6467,7 @@ icicle_data_t mage_t::get_icicle_object()
   timespan_t threshold = spec.icicles_driver -> duration();
 
   auto idx = icicles.begin(),
-                                         end = icicles.end();
+       end = icicles.end();
   for ( ; idx < end; ++idx )
   {
     if ( sim -> current_time() - ( *idx ).first < threshold )
@@ -6444,7 +6493,7 @@ void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain, pl
   if ( ! spec.icicles -> ok() )
     return;
 
-  if (icicles.size() == 0 )
+  if ( icicles.size() == 0 )
     return;
 
   std::pair<double, stats_t*> d;
