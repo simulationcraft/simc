@@ -2788,7 +2788,6 @@ struct gushing_wound_t : public residual_action::residual_periodic_action_t<cat_
 };
 
 // Maim =====================================================================
-// FIXME: Deals totally incorrect damage.
 
 struct maim_t : public cat_attack_t
 {
@@ -2796,7 +2795,16 @@ struct maim_t : public cat_attack_t
     cat_attack_t( "maim", player, player -> find_specialization_spell( "Maim" ), options_str )
   {
     base_costs[ RESOURCE_COMBO_POINT ] = 1;
-    special          = true;
+    weapon_multiplier = data().effectN( 3 ).pp_combo_points() / 100.0;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = cat_attack_t::action_multiplier();
+
+    am *= p() -> resources.current[ RESOURCE_COMBO_POINT ];
+
+    return am;
   }
 };
 
