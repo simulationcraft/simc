@@ -50,6 +50,7 @@ public:
 
   // Artifacts
   const special_effect_t* stromkar_the_warbreaker;
+  const special_effect_t* warswords_of_the_valarjar;
 
   // Active
   struct active_t
@@ -68,6 +69,8 @@ public:
     buff_t* massacre;
     buff_t* frothing_berserker;
     buff_t* meat_grinder;
+    buff_t* berserking; // Artifact Weapon
+    buff_t* berserking_driver;
     // All Warriors
     buff_t* berserker_rage;
     buff_t* bladestorm;
@@ -199,6 +202,7 @@ public:
   {
     std::unique_ptr<real_ppm_t> overpower;
     std::unique_ptr<real_ppm_t> shadow_slash;
+    std::unique_ptr<real_ppm_t> rage_of_the_valarjar;
     std::unique_ptr<real_ppm_t> wrecking_ball;
   } rppm;
 
@@ -329,6 +333,23 @@ public:
     artifact_power_t unending_rage;
     artifact_power_t corrupted_blood_of_zakajz;
 
+    artifact_power_t odyns_fury;
+    artifact_power_t thirst_for_battle;
+    artifact_power_t unstoppable;
+    artifact_power_t raging_berserker;
+    artifact_power_t battle_scars;
+    artifact_power_t unrivaled_strength;
+    artifact_power_t uncontrolled_rage;
+    artifact_power_t rage_of_the_valarjar;
+    artifact_power_t bloodcraze;
+    artifact_power_t sense_death;
+    artifact_power_t focus_in_chaos;
+    artifact_power_t helyas_wrath;
+    artifact_power_t odyns_champion;
+    artifact_power_t wrath_and_fury;
+    artifact_power_t deathdealer;
+    artifact_power_t juggernaut;
+
     // NYI
     artifact_power_t touch_of_zakajz;
     artifact_power_t defensive_measures;
@@ -338,6 +359,7 @@ public:
   warrior_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ):
     player_t( sim, WARRIOR, name, r ),
     stromkar_the_warbreaker(),
+    warswords_of_the_valarjar(),
     heroic_charge( nullptr ),
     rampage_driver( nullptr ),
     rampage_attacks( 0 ),
@@ -1104,7 +1126,10 @@ struct bloodthirst_t: public warrior_attack_t
       }
 
       if ( execute_state -> result == RESULT_CRIT )
+      {
         enrage();
+        p() -> buff.taste_for_blood -> expire();
+      }
     }
 
     rage_resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.bloodthirst );
@@ -1530,6 +1555,11 @@ struct execute_t: public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
+
+    if ( p() -> rppm.rage_of_the_valarjar -> trigger() )
+    {
+      p() -> buff.berserking_driver -> trigger();
+    }
 
     if ( p() -> specialization() == WARRIOR_FURY && result_is_hit( execute_state -> result ) &&
          p() -> off_hand_weapon.type != WEAPON_NONE ) // If MH fails to land, or if there is no OH weapon for Fury, oh attack does not execute.
@@ -2198,7 +2228,7 @@ struct rampage_event_t: public event_t
 struct rampage_parent_t: public warrior_attack_t
 {
   rampage_parent_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "rampage", p, p -> spec.rampage )
+    warrior_attack_t( "rampage", p, p -> spec.rampage -> effectN( 3 ).trigger() )
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
@@ -2223,6 +2253,10 @@ struct rampage_parent_t: public warrior_attack_t
     warrior_attack_t::execute();
 
     p() -> buff.massacre -> expire();
+    if ( p() -> rppm.rage_of_the_valarjar -> trigger() )
+    {
+      p() -> buff.berserking_driver -> trigger();
+    }
 
     if ( result_is_hit( execute_state -> result ) ) // If the first attack fails to land, the rest do too. 
     {
@@ -3190,6 +3224,24 @@ void warrior_t::init_spells()
   artifact.void_cleave               = find_artifact_spell( "Void Cleave" );
   artifact.war_veteran               = find_artifact_spell( "War Veteran" );
 
+  artifact.odyns_fury                = find_artifact_spell( "Odyn's Fury" );
+  artifact.thirst_for_battle         = find_artifact_spell( "Thirst for Battle" );
+  artifact.unstoppable               = find_artifact_spell( "Unstoppable" );
+  artifact.raging_berserker          = find_artifact_spell( "Raging Berserker" );
+  artifact.battle_scars              = find_artifact_spell( "Battle Scars" );
+  artifact.unrivaled_strength        = find_artifact_spell( "Unrivaled Strength" );
+  artifact.uncontrolled_rage         = find_artifact_spell( "Uncontrolled Rage" );
+  artifact.rage_of_the_valarjar      = find_artifact_spell( "Rage of the Valarjar" );
+  artifact.bloodcraze                = find_artifact_spell( "Bloodcraze" );
+  artifact.sense_death               = find_artifact_spell( "Sense Death" );
+  artifact.focus_in_chaos            = find_artifact_spell( "Focus in Chaos" );
+  artifact.helyas_wrath              = find_artifact_spell( "Helya's Wrath" );
+  artifact.odyns_champion            = find_artifact_spell( "Odyn's Champion" );
+  artifact.wrath_and_fury            = find_artifact_spell( "Wrath and Fury" );
+  artifact.deathdealer               = find_artifact_spell( "Deathdealer" );
+  artifact.juggernaut                = find_artifact_spell( "Juggernaut" );
+
+
   // Generic spells
   spell.charge                  = find_class_spell( "Charge" );
   spell.colossus_smash_debuff   = find_spell( 208086 );
@@ -3665,6 +3717,13 @@ struct shadow_slash_t: public warrior_real_ppm_t < real_ppm_t >
   {}
 };
 
+struct rage_of_the_valarjar_t: public warrior_real_ppm_t < real_ppm_t >
+{
+  rage_of_the_valarjar_t( warrior_t& p ):
+    base_t( p, real_ppm_t( p, p.warswords_of_the_valarjar -> driver() -> real_ppm(), 1.0, RPPM_NONE ) )
+  {}
+};
+
 struct wrecking_ball_t : public warrior_real_ppm_t < real_ppm_t >
 {
   wrecking_ball_t( warrior_t& p ):
@@ -3952,6 +4011,13 @@ void warrior_t::init_gains()
     buff.fury_trinket = buff_creator_t( this, "berserkers_fury" )
       .chance( 0 );
   }
+  if ( !warswords_of_the_valarjar )
+  {
+    buff.berserking = buff_creator_t( this, "berserking" )
+      .chance( 0 );
+    buff.berserking_driver = buff_creator_t( this, "berserking_driver" )
+      .chance( 0 );
+  }
 }
 
 // warrior_t::init_position ====================================================
@@ -3984,6 +4050,8 @@ void warrior_t::init_rng()
     rppm.overpower = std::unique_ptr<rppm::overpower_t>( new rppm::overpower_t( *this ) );
   if ( stromkar_the_warbreaker )
     rppm.shadow_slash = std::unique_ptr<rppm::shadow_slash_t>( new rppm::shadow_slash_t( *this ) );
+  if ( warswords_of_the_valarjar )
+    rppm.rage_of_the_valarjar = std::unique_ptr<rppm::rage_of_the_valarjar_t>( new rppm::rage_of_the_valarjar_t( *this ) );
   if ( talents.wrecking_ball )
     rppm.wrecking_ball = std::unique_ptr<rppm::wrecking_ball_t>( new rppm::wrecking_ball_t( *this ) );
 }
@@ -4102,6 +4170,9 @@ void warrior_t::reset()
 
   if ( rppm.shadow_slash )
     rppm.shadow_slash -> reset();
+
+  if ( rppm.rage_of_the_valarjar )
+    rppm.rage_of_the_valarjar -> reset();
 
   if ( rppm.wrecking_ball )
     rppm.wrecking_ball -> reset();
@@ -4681,6 +4752,21 @@ static void stromkar_the_warbreaker( special_effect_t& effect )
   do_trinket_init( s, WARRIOR_ARMS, s -> stromkar_the_warbreaker, effect );
 }
 
+static void warswords_of_the_valarjar( special_effect_t& effect )
+{
+  warrior_t* s = debug_cast<warrior_t*>( effect.player );
+  do_trinket_init( s, WARRIOR_FURY, s -> warswords_of_the_valarjar, effect );
+  if ( s -> warswords_of_the_valarjar )
+  {
+    s -> buff.berserking_driver = buff_creator_t( s, "berserking_driver", s -> warswords_of_the_valarjar -> driver() -> effectN( 1 ).trigger() )
+      .tick_callback( [ s ]( buff_t*, int, const timespan_t& ) { s -> buff.berserking -> trigger( 1 ); } );
+    s -> buff.berserking = buff_creator_t( s, "berserking", s -> warswords_of_the_valarjar -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
+      .default_value( s -> warswords_of_the_valarjar -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+      .add_invalidate( CACHE_ATTACK_SPEED )
+      .add_invalidate( CACHE_CRIT );
+  }
+}
+
 // WARRIOR MODULE INTERFACE =================================================
 
 struct warrior_module_t: public module_t
@@ -4702,6 +4788,7 @@ struct warrior_module_t: public module_t
     unique_gear::register_special_effect( 184925, arms_trinket );
     unique_gear::register_special_effect( 184927, prot_trinket );
     unique_gear::register_special_effect( 209579, stromkar_the_warbreaker );
+    unique_gear::register_special_effect( 200845, warswords_of_the_valarjar );
   }
 
   virtual void register_hotfixes() const override
