@@ -1689,8 +1689,7 @@ public:
       ap_per_hit( 0 ),
       ap_per_tick( 0 ),
       ap_per_cast( 0 ),
-      blessing_of_elune( data().affected_by( p -> spell.blessing_of_elune -> effectN( 1 ) )
-                         || data().affected_by( p -> spell.blessing_of_elune -> effectN( 2 ) ) ),
+      blessing_of_elune( data().affected_by( p -> spell.blessing_of_elune -> effectN( 1 ) ) ),
       consumes_owlkin_frenzy( false ),
       ap_gain( p->get_gain( name() ) )
   {

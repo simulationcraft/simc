@@ -39,10 +39,9 @@ actions.single+=/divine_hammer
 actions.single+=/blade_of_justice
 actions.single+=/execution_sentence
 actions.single+=/consecration
-actions.single+=/crusader_flurry,if=charges=3
 actions.single+=/zeal
+actions.single+=/crusader_strike
 actions.single+=/templars_verdict,if=holy_power>=3
-actions.single+=/crusader_flurry
 actions.single+=/blade_of_wrath
 actions.single+=/wake_of_ashes
 
@@ -54,10 +53,8 @@ actions.cleave+=/blade_of_justice
 actions.cleave+=/consecration
 actions.cleave+=/execution_sentence
 actions.cleave+=/zeal
-actions.cleave+=/crusader_flurry,if=charges=3
 actions.cleave+=/crusader_strike
 actions.cleave+=/divine_storm,if=holy_power>=3
-actions.cleave+=/crusader_flurry
 actions.cleave+=/wake_of_ashes
 actions.cleave+=/blade_of_wrath
 

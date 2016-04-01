@@ -216,6 +216,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <FloatingPointExceptions>true</FloatingPointExceptions>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
       <AdditionalOptions>wininet.lib %(AdditionalOptions)</AdditionalOptions>
