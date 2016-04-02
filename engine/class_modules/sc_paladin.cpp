@@ -216,7 +216,7 @@ public:
     const spell_data_t* execution_sentence;
     const spell_data_t* consecration;
     const spell_data_t* fires_of_justice;
-    const spell_data_t* crusader_flurry;
+    const spell_data_t* greater_judgment;
     const spell_data_t* zeal;
     const spell_data_t* fist_of_justice;
     const spell_data_t* repentance;
@@ -564,13 +564,15 @@ public:
     if ( p() -> buffs.blessing_of_might -> up() )
     {
       double chance = p() -> buffs.blessing_of_might -> data().effectN( 1 ).percent();
-      if ( p() -> talents.blessings_of_justice -> ok() )
-        chance *= ( 1 + p() -> talents.blessings_of_justice -> effectN( 1 ).percent() );
-
       if ( p() -> rng().roll( chance ) )
       {
         double amount = s -> result_amount;
-        amount *= p() -> buffs.blessing_of_might -> data().effectN( 2 ).percent();
+        double multiplier = p() -> buffs.blessing_of_might -> data().effectN( 2 ).percent();
+        if ( p() -> talents.blessings_of_justice -> ok() )
+        {
+          multiplier *= ( 1 + p() -> talents.blessings_of_justice -> effectN( 1 ).percent() );
+        }
+        amount *= multiplier;
         p() -> active_blessing_of_might_proc -> base_dd_max = p() -> active_blessing_of_might_proc -> base_dd_min = amount;
         p() -> active_blessing_of_might_proc -> target = s -> target;
         p() -> active_blessing_of_might_proc -> execute();
@@ -1628,36 +1630,20 @@ struct lights_hammer_t : public paladin_spell_t
   }
 };
 
-struct wake_of_ashes_impact_t : public paladin_spell_t
-{
-  wake_of_ashes_impact_t( paladin_t* p )
-    : paladin_spell_t( "wake_of_ashes_impact", p, p -> find_spell( 205290 ))
-  {
-    aoe = -1;
-    background = true;
-
-    // TODO: is this correct?
-    weapon_power_mod = 1.0 / 3.5;
-  }
-
-  void execute() override
-  {
-    paladin_spell_t::execute();
-    p() -> resource_gain( RESOURCE_HOLY_POWER, 5, p() -> gains.hp_wake_of_ashes );
-  }
-};
-
 struct wake_of_ashes_t : public paladin_spell_t
 {
-  wake_of_ashes_impact_t* impact_spell;
   wake_of_ashes_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "wake_of_ashes", p, p -> find_spell( 205273 ) ),
-      impact_spell( new wake_of_ashes_impact_t( p ) )
+    : paladin_spell_t( "wake_of_ashes", p, p -> find_spell( 205273 ) )
   {
     parse_options( options_str );
-    add_child( impact_spell );
-    impact_action = impact_spell;
-    school = SCHOOL_HOLY;
+
+    may_crit = true;
+
+    if ( p -> artifact.ashes_to_ashes.rank() == 0 )
+    {
+       attack_power_mod.tick = 0;
+       dot_duration = timespan_t::zero();
+    }
   }
 
   bool ready()
@@ -1675,9 +1661,14 @@ struct wake_of_ashes_t : public paladin_spell_t
     return paladin_spell_t::ready();
   }
 
-  virtual timespan_t travel_time() const override
+  void execute() override
   {
-    return timespan_t::from_seconds( 0.9 );
+    paladin_spell_t::execute();
+    if ( p() -> artifact.ashes_to_ashes.rank() > 0 )
+    {
+      // TODO: find the spell that has this 5 in its data
+      p() -> resource_gain( RESOURCE_HOLY_POWER, 5, p() -> gains.hp_wake_of_ashes );
+    }
   }
 };
 
@@ -1916,9 +1907,11 @@ struct crusader_strike_t : public holy_power_generator_t
     base_crit += p -> artifact.sharpened_edge.percent();
 
     cooldown -> duration = data().charge_cooldown();
+    if ( p -> talents.fires_of_justice -> ok() )
+      cooldown -> duration += timespan_t::from_millis( p -> talents.fires_of_justice -> effectN( 2 ).base_value() );
     cooldown -> charges = data().charges();
 
-    background = ( p -> talents.crusader_flurry -> ok() ) || ( p -> talents.zeal -> ok() );
+    background = ( p -> talents.zeal -> ok() );
   }
 
   void execute() override
@@ -1943,49 +1936,6 @@ struct crusader_strike_t : public holy_power_generator_t
       {
         p() -> buffs.the_fires_of_justice -> trigger();
       }
-    }
-  }
-};
-
-// Crusader Flurry ==========================================================
-
-struct crusader_flurry_t : public holy_power_generator_t
-{
-  const spell_data_t* sword_of_light;
-  crusader_flurry_t( paladin_t* p, const std::string& options_str )
-    : holy_power_generator_t( "crusader_flurry", p, p -> find_talent_spell( "Crusader Flurry" ), true ),
-      sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
-  {
-    parse_options( options_str );
-
-    // Guarded by the Light and Sword of Light reduce base mana cost; spec-limited so only one will ever be active
-    base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent()
-                                       +  p -> passives.sword_of_light -> effectN( 4 ).percent();
-    base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
-
-    cooldown -> duration = data().charge_cooldown();
-    cooldown -> charges = data().charges();
-
-    base_multiplier *= 1.0 + p -> artifact.blade_of_light.percent();
-    base_crit += p -> artifact.sharpened_edge.percent();
-  }
-
-  void execute() override
-  {
-    holy_power_generator_t::execute();
-    retribution_trinket_trigger();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    holy_power_generator_t::impact( s );
-
-    // Special things that happen when CF connects
-    if ( result_is_hit( s -> result ) )
-    {
-      // Holy Power gains, only relevant if CF connects
-      int g = data().effectN( 3 ).base_value(); // default is a gain of 1 Holy Power
-      p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_crusader_strike ); // apply gain, record as due to CS
     }
   }
 };
@@ -2337,7 +2287,7 @@ struct blessing_of_might_proc_t : public paladin_melee_attack_t
     may_dodge   = false;
     may_parry   = false;
     may_glance  = false;
-    may_crit    = true;
+    may_crit    = false;
     background  = true;
     trigger_gcd = timespan_t::zero();
     id          = 205729;
@@ -2360,27 +2310,10 @@ struct blessing_of_might_proc_t : public paladin_melee_attack_t
   }
 };
 
-// Ashes to Ashes
-// TODO: Does this benefit from SoL? Can it trigger BoM? etc
-struct ashen_strike_impact_t : public paladin_melee_attack_t
-{
-  ashen_strike_impact_t( paladin_t* p )
-    : paladin_melee_attack_t( "ashen_strike_impact", p, p -> find_spell( 180290 ), true )
-  {
-    background = true;
-    weapon_multiplier = 0.0;
-
-    school = SCHOOL_HOLY;
-  }
-};
-
 // Judgment =================================================================
 
 struct judgment_t : public paladin_melee_attack_t
 {
-  // TODO: remove this hack once the missile-spawning spells can be found
-  ashen_strike_impact_t* ashen_strike_impact_spell;
-
   judgment_t( paladin_t* p, const std::string& options_str )
     : paladin_melee_attack_t( "judgment", p, p -> find_spell( "Judgment" ), true )
   {
@@ -2397,7 +2330,12 @@ struct judgment_t : public paladin_melee_attack_t
 
     base_multiplier *= 1.0 + p -> artifact.highlords_judgment.percent();
 
-    ashen_strike_impact_spell = new ashen_strike_impact_t( p );
+    if ( p -> talents.greater_judgment -> ok() )
+    {
+      base_multiplier *= 1.0 + p -> talents.greater_judgment -> effectN( 3 ).percent();
+      aoe = 1 + p -> talents.greater_judgment -> effectN( 2 ).base_value();
+      base_add_multiplier = data().effectN( 1 ).chain_multiplier();
+    }
   }
 
   // Special things that happen when Judgment damages target
@@ -2406,22 +2344,6 @@ struct judgment_t : public paladin_melee_attack_t
     if ( result_is_hit( s->result ) )
     {
       td( s -> target ) -> buffs.debuffs_judgment -> trigger();
-
-      if ( p() -> artifact.ashes_to_ashes.rank() )
-      {
-        // Ashes to Ashes
-        // For some reason the proc chance is effect 2, go figure
-        if ( rng().roll( p() -> artifact.ashes_to_ashes.percent( 2 ) ) )
-        {
-          for (unsigned i = 0; i < 4; i++)
-          {
-            // as mentioned above - simc can't find the original missile spells, so we are
-            // directly triggering the impact spell. This should be fixed.
-            ashen_strike_impact_spell -> target = s -> target;
-            ashen_strike_impact_spell -> schedule_execute();
-          }
-        }
-      }
     }
 
     paladin_melee_attack_t::impact( s );
@@ -2430,6 +2352,7 @@ struct judgment_t : public paladin_melee_attack_t
   double action_multiplier() const override
   {
     double am = paladin_melee_attack_t::action_multiplier();
+    // todo: refer to actual spelldata instead of magic constant
     am *= 1.0 + 2 * p() -> get_divine_judgment();
     return am;
   }
@@ -2598,11 +2521,6 @@ struct justicars_vengeance_t : public holy_power_consumer_t
     : holy_power_consumer_t( "justicars_vengeance", p, p -> find_talent_spell( "Justicar's Vengeance" ), true )
   {
     parse_options( options_str );
-
-    // spelldata claims it is modified by these passives
-    base_multiplier *= 1.0 + p -> artifact.might_of_the_templar.percent();
-    if ( p -> talents.final_verdict -> ok() )
-      base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 1 ).percent();
   }
 
   virtual double cost() const override
@@ -2646,7 +2564,7 @@ struct seal_of_light_t : public paladin_spell_t
 
   virtual double cost() const override
   {
-    double base_cost = paladin_spell_t::cost();
+    double base_cost = std::max( base_costs[ RESOURCE_HOLY_POWER ], p() -> resources.current[ RESOURCE_HOLY_POWER ] );
     if ( p() -> buffs.the_fires_of_justice -> up() )
       return base_cost - 1;
     return base_cost;
@@ -2654,13 +2572,17 @@ struct seal_of_light_t : public paladin_spell_t
 
   virtual void execute() override
   {
+    double c = cost();
     paladin_spell_t::execute();
 
-    if ( ! ( p() -> bugs ) )
-      if ( p() -> buffs.the_fires_of_justice -> up() )
-        p() -> buffs.the_fires_of_justice -> expire();
+    if ( p() -> buffs.the_fires_of_justice -> up() )
+    {
+      p() -> buffs.the_fires_of_justice -> expire();
+      c += 1.0;
+    }
 
-    p() -> buffs.seal_of_light -> trigger();
+    p() -> buffs.seal_of_light -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0,
+      c * ( p() -> buffs.seal_of_light -> data().duration() ) );
   }
 };
 
@@ -2695,7 +2617,8 @@ struct holy_wrath_t : public paladin_spell_t
   {
     paladin_spell_t::tick( d );
 
-    int g = data().effectN( 2 ).trigger() -> effectN( 2 ).base_value(); // default is a gain of 1 Holy Power
+    // TODO: find where this spelldata went
+    int g = 1.0; // default is a gain of 1 Holy Power
     // apply gain, record as due to Holy Wrath
     p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_holy_wrath );
   }
@@ -2814,7 +2737,11 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   actor_target_data_t( target, paladin )
 {
   dots.execution_sentence = target -> get_dot( "execution_sentence", paladin );
-  buffs.debuffs_judgment = buff_creator_t( *this, "judgment", paladin -> find_spell( 197277 ));
+  float judgment_duration_multiplier = 1.0;
+  if ( paladin -> talents.greater_judgment -> ok() )
+    judgment_duration_multiplier += paladin -> talents.greater_judgment -> effectN( 1 ).percent();
+  buffs.debuffs_judgment = buff_creator_t( *this, "judgment", paladin -> find_spell( 197277 ))
+    .duration( judgment_duration_multiplier * paladin -> find_spell( 197277 ) -> duration() );
 }
 
 // paladin_t::create_action =================================================
@@ -2830,7 +2757,6 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "beacon_of_light"           ) return new beacon_of_light_t          ( this, options_str );
   if ( name == "consecration"              ) return new consecration_t             ( this, options_str );
   if ( name == "crusader_strike"           ) return new crusader_strike_t          ( this, options_str );
-  if ( name == "crusader_flurry"           ) return new crusader_flurry_t          ( this, options_str );
   if ( name == "zeal"                      ) return new zeal_t                     ( this, options_str );
   if ( name == "blade_of_justice"          ) return new blade_of_justice_t         ( this, options_str );
   if ( name == "blade_of_wrath"            ) return new blade_of_wrath_t           ( this, options_str );
@@ -3547,7 +3473,7 @@ void paladin_t::init_spells()
   talents.execution_sentence         = find_talent_spell( "Execution Sentence" );
   talents.consecration               = find_talent_spell( "Consecration" );
   talents.fires_of_justice           = find_talent_spell( "The Fires of Justice" );
-  talents.crusader_flurry            = find_talent_spell( "Crusader Flurry" );
+  talents.greater_judgment           = find_talent_spell( "Greater Judgment" );
   talents.zeal                       = find_talent_spell( "Zeal" );
   talents.fist_of_justice            = find_talent_spell( "Fist of Justice" );
   talents.repentance                 = find_talent_spell( "Repentance" );
