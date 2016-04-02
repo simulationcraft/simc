@@ -2710,7 +2710,7 @@ struct ferocious_bite_t : public cat_attack_t
           target_td -> dots.rip -> refresh_duration( 0 );
 
         if ( sabertooth_total > timespan_t::zero() )
-          target_td -> dots.rip -> extend_duration( sabertooth_total, p() -> spec.rip -> duration() * 1.30 ); // TOCHECK: Sabertooth before or after BitW?
+          target_td -> dots.rip -> extend_duration( sabertooth_total, p() -> spec.rip -> duration() * 1.3 ); // TOCHECK: Sabertooth before or after BitW?
       }
 
       // Ashamane's Bite procs after Sabertooth.

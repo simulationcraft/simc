@@ -1726,9 +1726,15 @@ void demon_hunter_t::create_benefits()
  */
 role_e demon_hunter_t::primary_role() const
 {
-  // TODO: handle tank/dps choice
-
-  return ROLE_DPS;
+  switch ( specialization() )
+  {
+  case DEMON_HUNTER_HAVOC:
+    return ROLE_ATTACK;
+  case DEMON_HUNTER_VENGEANCE:
+    return ROLE_TANK;
+  default:
+    return ROLE_NONE;
+  }
 }
 
 /**
@@ -1954,7 +1960,7 @@ void demon_hunter_t::init_spells()
   spec.chaos_strike        = find_class_spell( "Chaos Strike" );
   spec.consume_magic       = find_class_spell( "Consume Magic" );
   spec.death_sweep         = find_spell( 210152 );
-  spec.demonic_instincts   = find_class_spell( "Demonic Instincts" );
+  spec.demonic_instincts   = find_spell( 203569 ); // not a class spell
   spec.metamorphosis_buff  = find_spell( 162264 );
 
   // Masteries ==============================================================
