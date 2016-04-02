@@ -2771,8 +2771,7 @@ struct ferocious_bite_t : public cat_attack_t
     base_excess_energy /= 1.0 + p() -> buff.berserk -> check_value();
     base_excess_energy /= 1.0 + p() -> buff.incarnation_cat -> check_value();
 
-    // TOCHECK: Is the extra energy portion really per 5 energy?
-    double chance = ( p() -> resources.current[ RESOURCE_COMBO_POINT ] + std::floor( base_excess_energy / 5.0 ) ) * 0.015;
+    double chance = ( p() -> resources.current[ RESOURCE_COMBO_POINT ] + base_excess_energy / 5.0 ) * 0.015;
 
     if ( ! rng().roll( chance ) )
       return;
