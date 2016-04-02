@@ -503,6 +503,7 @@ public:
     const spell_data_t* feral_passive; // Feral Overrides Passive
     const spell_data_t* sharpened_claws;
     const spell_data_t* predatory_swiftness;
+    const spell_data_t* rip;
     const spell_data_t* swipe_cat;
 
     // Balance
@@ -2709,7 +2710,7 @@ struct ferocious_bite_t : public cat_attack_t
           target_td -> dots.rip -> refresh_duration( 0 );
 
         if ( sabertooth_total > timespan_t::zero() )
-          target_td -> dots.rip -> extend_duration( sabertooth_total ); // TOCHECK: Sabertooth before or after BitW?
+          target_td -> dots.rip -> extend_duration( sabertooth_total, p() -> spec.rip -> duration() * 1.30 ); // TOCHECK: Sabertooth before or after BitW?
       }
 
       // Ashamane's Bite procs after Sabertooth.
@@ -2873,7 +2874,7 @@ struct rake_t : public cat_attack_t
 struct rip_t : public cat_attack_t
 {
   rip_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "rip", p, p -> find_specialization_spell( "Rip" ), options_str )
+    cat_attack_t( "rip", p, p -> spec.rip, options_str )
   {
     special      = true;
     may_crit     = false;
@@ -5989,6 +5990,7 @@ void druid_t::init_spells()
   spec.predatory_swiftness     = find_specialization_spell( "Predatory Swiftness" );
   spec.nurturing_instinct      = find_specialization_spell( "Nurturing Instinct" );
   spec.predatory_swiftness     = find_specialization_spell( "Predatory Swiftness" );
+  spec.rip                     = find_specialization_spell( "Rip" );
   spec.sharpened_claws         = find_specialization_spell( "Sharpened Claws" );
   spec.swipe_cat               = find_spell( 106785 );
 
