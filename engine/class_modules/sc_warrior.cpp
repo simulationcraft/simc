@@ -70,6 +70,7 @@ public:
     buff_t* meat_grinder;
     buff_t* berserking; // Artifact Weapon
     buff_t* berserking_driver;
+    buff_t* sense_death;
     // All Warriors
     buff_t* berserker_rage;
     buff_t* bladestorm;
@@ -723,7 +724,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     }
     if ( p() -> talents.opportunity_strikes -> ok() )
     {
-      if ( rng().roll( ( 1 - execute_state -> target -> health_percentage() ) * p() -> talents.opportunity_strikes -> proc_chance() ) )
+      if ( rng().roll( ( 100 - execute_state -> target -> health_percentage() ) * p() -> talents.opportunity_strikes -> proc_chance() ) )
         p() -> active.opportunity_strikes -> execute(); // Blizzard Employee "What can we do to make this talent really awkward?"
     }
   }
@@ -740,7 +741,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
       }
 
       // TOCHECK: Does Sweeping Strikes grant MS/Execute 2 chances to proc Tactician?
-      if ( procs_tactician && rng().roll( p() -> spec.tactician -> proc_chance() ) )
+      if ( procs_tactician && rng().roll( p() -> spec.tactician -> effectN( 2 ).percent() ) )
       {
         p() -> cooldown.colossus_smash -> reset( true );
         p() -> proc.tactician -> occur();
@@ -840,6 +841,13 @@ struct melee_t: public warrior_attack_t
       mh_lost_melee_contact = false;
     else if ( weapon -> slot == SLOT_OFF_HAND )
       oh_lost_melee_contact = false;
+  }
+
+  double composite_hit() const override
+  {
+    if ( p() -> artifact.focus_in_chaos.rank() && p() -> buff.enrage -> up() )
+      return 1.0;
+    return warrior_attack_t::composite_hit();
   }
 
   void execute() override
@@ -1075,6 +1083,8 @@ struct bloodthirst_t: public warrior_attack_t
 
     weapon = &( p -> main_hand_weapon );
     radius = 5;
+
+    weapon_multiplier *= 1.0 + p -> artifact.thirst_for_battle.percent();
     if ( p -> non_dps_mechanics )
     {
       bloodthirst_heal = new bloodthirst_heal_t( p );
@@ -1165,7 +1175,7 @@ struct charge_t: public warrior_attack_t
     parse_options( options_str );
     ignore_false_positive = true;
     movement_directionality = MOVEMENT_OMNI;
-
+    rage_gain += p -> artifact.uncontrolled_rage.value();
     cooldown -> duration = data().cooldown();
     if ( p -> talents.double_time -> ok() )
       cooldown -> charges = p -> talents.double_time -> effectN( 1 ).base_value();
@@ -1504,6 +1514,7 @@ struct execute_t: public warrior_attack_t
     }
 
     base_crit += p -> artifact.deathblow.percent();
+    base_crit += p -> artifact.deathdealer.percent();
   }
 
   double action_multiplier() const override
@@ -1543,6 +1554,9 @@ struct execute_t: public warrior_attack_t
 
     c *= 1.0 + p() -> buff.precise_strikes -> check_value();
 
+    if ( p() -> buff.sense_death -> check() )
+      c *= 1.0 + p() -> buff.sense_death -> data().effectN( 1 ).percent();
+
     return c;
   }
 
@@ -1554,6 +1568,9 @@ struct execute_t: public warrior_attack_t
     {
       p() -> buff.berserking_driver -> trigger();
     }
+
+    p() -> buff.sense_death -> expire();
+    p() -> buff.sense_death -> trigger();
 
     if ( p() -> specialization() == WARRIOR_FURY && result_is_hit( execute_state -> result ) &&
          p() -> off_hand_weapon.type != WEAPON_NONE ) // If MH fails to land, or if there is no OH weapon for Fury, oh attack does not execute.
@@ -2049,6 +2066,7 @@ struct raging_blow_attack_t: public warrior_attack_t
     may_miss = may_dodge = may_parry = may_block = false;
     dual = true;
     weapon_multiplier *= 1.0 + p -> talents.inner_rage -> effectN( 3 ).percent();
+    weapon_multiplier *= 1.0 + p -> artifact.wrath_and_fury.percent();
   }
 
   void impact( action_state_t* s ) override
@@ -2226,6 +2244,7 @@ struct rampage_parent_t: public warrior_attack_t
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
+    weapon_multiplier *= 1.0 + p -> artifact.unstoppable.percent();
     for ( size_t i = 0; i < p -> rampage_attacks.size(); i++ )
     {
       add_child( p -> rampage_attacks[i] );
@@ -2922,6 +2941,7 @@ struct battle_cry_t: public warrior_spell_t
     parse_options( options_str );
     bonus_crit = data().effectN( 1 ).percent();
     callbacks = false;
+    cooldown -> duration += p -> artifact.helyas_wrath.time_value();
   }
 
   void execute() override
@@ -3270,6 +3290,10 @@ void warrior_t::init_spells()
     second -> weapon = &( this -> main_hand_weapon );
     third -> weapon = &( this -> off_hand_weapon );
     fourth -> weapon = &( this -> main_hand_weapon );
+    first -> weapon_multiplier *= 1.0 + artifact.unstoppable.percent();
+    second -> weapon_multiplier *= 1.0 + artifact.unstoppable.percent();
+    third -> weapon_multiplier *= 1.0 + artifact.unstoppable.percent();
+    fourth -> weapon_multiplier *= 1.0 + artifact.unstoppable.percent();
     this -> rampage_attacks.push_back( first );
     this -> rampage_attacks.push_back( second );
     this -> rampage_attacks.push_back( third );
@@ -3933,6 +3957,9 @@ void warrior_t::create_buffs()
   buff.ravager_protection = buff_creator_t( this, "ravager_protection", talents.ravager )
     .add_invalidate( CACHE_PARRY );
 
+  buff.sense_death = buff_creator_t( this, "sense_death", artifact.sense_death.data().effectN( 1 ).trigger() )
+    .chance( artifact.sense_death.percent() );
+
   buff.battle_cry = buff_creator_t( this, "battle_cry", spec.battle_cry )
     .add_invalidate( CACHE_CRIT )
     .cd( timespan_t::zero() );
@@ -4229,6 +4256,7 @@ double warrior_t::composite_player_multiplier( school_e school ) const
   // --- Enrages ---
   if ( buff.enrage -> check() && mastery.unshackled_fury -> ok() )
   {
+    m *= 1.0 + artifact.raging_berserker.percent();
     m *= 1.0 + cache.mastery_value();
   }
 
@@ -4477,6 +4505,10 @@ double warrior_t::composite_melee_crit() const
 
 double warrior_t::composite_player_critical_damage_multiplier() const
 {
+  double cdm = player_t::composite_player_critical_damage_multiplier();
+  
+  cdm *= 1.0 + artifact.unrivaled_strength.percent();
+
   return player_t::composite_player_critical_damage_multiplier();
 }
 
