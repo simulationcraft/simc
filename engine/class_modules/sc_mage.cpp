@@ -432,6 +432,7 @@ public:
                      black_ice,
                      shield_of_alodi, //NYI
                      icy_caress, //NYI
+                     ice_nine,
                      chain_reaction, //NYI
                      clarity_of_thought, //NYI
                      flash_freeze, //NYI
@@ -2912,7 +2913,13 @@ struct frostbolt_t : public frost_mage_spell_t
       {
         p() -> buffs.bone_chilling -> trigger();
       }
+
       trigger_icicle_gain( s, icicle );
+      if ( p() -> artifact.ice_nine.rank() &&
+           rng().roll( p() -> artifact.ice_nine.percent() ) )
+      {
+        trigger_icicle_gain( s, icicle );
+      }
     }
   }
 
@@ -4924,6 +4931,7 @@ void mage_t::init_spells()
   artifact.ice_age                 = find_artifact_spell( "Ice Age"                );
   artifact.chilled_to_the_core     = find_artifact_spell( "Chilled To The Core"    );
   artifact.shattering_bolts        = find_artifact_spell( "Shattering Bolts"       );
+  artifact.ice_nine                = find_artifact_spell( "Ice Nine"               );
 
 
   // Spec Spells
