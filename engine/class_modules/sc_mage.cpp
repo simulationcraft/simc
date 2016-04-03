@@ -595,7 +595,7 @@ struct buff_source_benefit_t
       bool source_matches = ( sources[i] == source );
       if ( source_matches )
       {
-        index = i;
+        index = as<int>( i );
       }
 
       for ( int j = 0; j < stacks; j++ )
@@ -1879,8 +1879,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
 
     if ( p() -> talents.torrent -> ok() )
     {
-      int targets = std::min( static_cast< size_t >( n_targets() ),
-                              target_list().size() );
+      int targets = std::min( n_targets(), as<int>( target_list().size() ) );
       am *= 1.0 + p() -> talents.torrent -> effectN( 1 ).percent() * targets;
     }
 
@@ -4602,7 +4601,7 @@ struct ignite_spread_event_t : public event_t
       if ( !candidates.empty() )
       {
         // Skip candidates that have equal ignite bank size to the source
-        int index = candidates.size() - 1;
+        int index = as<int>( candidates.size() ) - 1;
         while ( index >= 0 )
         {
           if ( ignite_bank( candidates[ index ] ) < source_bank )
