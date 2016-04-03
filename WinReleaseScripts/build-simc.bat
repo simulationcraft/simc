@@ -165,8 +165,10 @@ goto :end
 
 :end
 endlocal
+pause
 exit /b 0
 
 :enderror
 endlocal
+pause
 exit /b 1
