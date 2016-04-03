@@ -3091,9 +3091,8 @@ struct glacial_spike_t : public frost_mage_spell_t
   virtual void execute() override
   {
     double icicle_damage_sum = 0;
-    unsigned icicle_count = p() -> icicles.size();
-    assert( as<int>( icicle_count ) ==
-            p() -> spec.icicles -> effectN( 2 ).base_value() );
+    int icicle_count = as<int>( p() -> icicles.size() );
+    assert( icicle_count == p() -> spec.icicles -> effectN( 2 ).base_value() );
     for ( size_t i = 0; i < p() -> icicles.size(); i++ )
     {
       icicle_data_t d = p() -> get_icicle_object();
