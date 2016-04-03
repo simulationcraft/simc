@@ -2042,14 +2042,14 @@ struct voidform_t : public priest_spell_t
         (priest.resources.current[RESOURCE_INSANITY] >= priest.resources.max[RESOURCE_INSANITY] ||
           (priest.talents.legacy_of_the_void->ok() && (priest.resources.current[RESOURCE_INSANITY] >= priest.resources.max[RESOURCE_INSANITY] + priest.talents.legacy_of_the_void->effectN(2).base_value()))))
     {
-      priest_spell_t::ready();
+      return priest_spell_t::ready();
     }
     else
     {
       return false;
     }
 
-    priest_spell_t::ready();
+    return priest_spell_t::ready();
   }
 };
 
