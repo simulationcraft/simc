@@ -429,7 +429,7 @@ public:
                      frozen_veins, // NYI
                      permafrost, //NYI
                      the_storm_rages, //NYI
-                     black_icicle, //NYI
+                     black_ice,
                      shield_of_alodi, //NYI
                      icy_caress, //NYI
                      chain_reaction, //NYI
@@ -1620,19 +1620,34 @@ struct frost_mage_spell_t : public mage_spell_t
       return;
 
     // Icicles do not double dip on target based multipliers
-    double amount = state -> result_amount / ( state -> target_da_multiplier * state -> versatility ) * p() -> cache.mastery_value();
+    double m = state -> target_da_multiplier * state -> versatility;
+    double amount = state -> result_amount / m * p() -> cache.mastery_value();
+    if ( p() -> artifact.black_ice.rank() && rng().roll( 0.2 ) )
+    {
+      amount *= 2;
+    }
 
-    assert( as<int>( p() -> icicles.size() ) <= p() -> spec.icicles -> effectN( 2 ).base_value() );
-    // Shoot one
-    if ( as<int>( p() -> icicles.size() ) == p() -> spec.icicles -> effectN( 2 ).base_value() )
+    assert( as<int>( p() -> icicles.size() ) <=
+            p() -> spec.icicles -> effectN( 2 ).base_value() );
+
+    // Shoot one if capped
+    if ( as<int>( p() -> icicles.size() ) ==
+         p() -> spec.icicles -> effectN( 2 ).base_value() )
+    {
       p() -> trigger_icicle( state );
-    p() -> icicles.push_back( icicle_tuple_t( p() -> sim -> current_time(), icicle_data_t( amount, stats ) ) );
+    }
+
+    icicle_tuple_t tuple = icicle_tuple_t( p() -> sim -> current_time(),
+                                           icicle_data_t( amount, stats ) );
+    p() -> icicles.push_back( tuple );
 
     if ( p() -> sim -> debug )
+    {
       p() -> sim -> out_debug.printf( "%s icicle gain, damage=%f, total=%u",
                                       p() -> name(),
                                       amount,
-                                      as<unsigned>(p() -> icicles.size() ) );
+                                      as<unsigned>( p() -> icicles.size() ) );
+    }
   }
 
   virtual double action_multiplier() const override
@@ -2837,7 +2852,7 @@ struct frostbolt_t : public frost_mage_spell_t
   frostbolt_t( mage_t* p, const std::string& options_str ) :
     frost_mage_spell_t( "frostbolt", p,
                         p -> find_specialization_spell( "Frostbolt" ) ),
-    icicle( p -> get_stats( "icicle_fb" ) )
+    icicle( p -> get_stats( "icicle" ) )
   {
     parse_options( options_str );
     stats -> add_child( icicle );
@@ -4899,7 +4914,7 @@ void mage_t::init_spells()
   artifact.frozen_veins            = find_artifact_spell( "Frozen Veins"           );
   artifact.permafrost              = find_artifact_spell( "Permafrost"             );
   artifact.the_storm_rages         = find_artifact_spell( "The Storm Rages"        );
-  artifact.black_icicle            = find_artifact_spell( "Black Icicle"           );
+  artifact.black_ice               = find_artifact_spell( "Black Ice"              );
   artifact.shield_of_alodi         = find_artifact_spell( "Shield of Alodi"        );
   artifact.clarity_of_thought      = find_artifact_spell( "Clarity of Thought"     );
   artifact.flash_freeze            = find_artifact_spell( "Flash Freeze"           );
