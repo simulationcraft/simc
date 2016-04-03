@@ -6139,10 +6139,19 @@ void priest_t::apl_shadow()
 
   default_list->add_action( "call_action_list,name=main" );
 
-  main->add_action( "mind_blast" );
-  main->add_action( "shadow_word_pain,if=!ticking" );
-  main->add_action( "vampiric_touch,if=!ticking" );
-  main->add_action( "mind_flay" );
+  main->add_action("voidform");
+  main->add_action("power_infusion,if=talent.power_infusion.enabled");
+  main->add_action("void_bolt");
+  main->add_action("mind_blast");
+  main->add_action("shadow_word_death");
+  main->add_action("shadow_word_void,if=talent.shadow_word_void.enabled");
+  main->add_action("mindbender,if=talent.mindbender.enabled");
+  main->add_action("shadow_word_pain,if=!ticking");
+  main->add_action("vampiric_touch,if=!ticking");
+  main->add_action("shadow_crash,if=talent.shadow_crash.enabled");
+  main->add_action("shadowfiend,if=!talent.mindbender.enabled");
+  main->add_action("mind_flay,if=!talent.mind_spike.enabled");
+  main->add_action("mind_spike,if=talent.mind_spike.enabled");
 }
 
 // Discipline Heal Combat Action Priority List
