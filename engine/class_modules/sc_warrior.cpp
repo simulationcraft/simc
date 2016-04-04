@@ -466,7 +466,7 @@ namespace
 template <class Base>
 struct warrior_action_t: public Base
 {
-  bool headlongrush, headlongrushgcd, colossal_might, sweeping_strikes, dauntless, war_veteran;
+  bool headlongrush, headlongrushgcd, sweeping_strikes, dauntless, war_veteran;
 private:
   typedef Base ab; // action base, eg. spell_t
 public:
@@ -476,7 +476,6 @@ public:
     ab( n, player, s ),
     headlongrush( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 1 ) ) ),
     headlongrushgcd( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 2 ) ) ),
-    colossal_might( ab::data().affected_by( player -> spell.colossus_smash_debuff -> effectN( 3 ) ) ),
     sweeping_strikes( ab::data().affected_by( player -> talents.sweeping_strikes -> effectN( 1 ) ) ),
     dauntless( ab::data().affected_by( player -> talents.dauntless -> effectN( 1 ) ) ),
     war_veteran( ab::data().affected_by( player -> artifact.war_veteran.data().effectN( 1 ).trigger() -> effectN( 1 ) ) )
@@ -526,7 +525,7 @@ public:
   {
     double am = ab::composite_target_multiplier( target );
 
-    if ( colossal_might && td( target ) -> debuffs_colossus_smash -> up() )
+    if ( td( target ) -> debuffs_colossus_smash -> up() )
     {
       am *= 1.0 + ( td( target ) -> debuffs_colossus_smash -> value() + p() -> cache.mastery_value() )
                 * ( 1.0 + p() -> talents.titanic_might -> effectN( 2 ).percent() );
@@ -1182,6 +1181,11 @@ struct charge_t: public warrior_attack_t
     movement_directionality = MOVEMENT_OMNI;
     rage_gain += p -> artifact.uncontrolled_rage.value();
     cooldown -> duration = data().cooldown();
+    if ( p -> talents.warbringer -> ok() )
+    {
+      aoe = -1;
+      parse_effect_data( p -> find_spell( 7922 ) -> effectN( 1 ) );
+    }
     if ( p -> talents.double_time -> ok() )
     {
       cooldown -> charges += p -> talents.double_time -> effectN( 1 ).base_value();
