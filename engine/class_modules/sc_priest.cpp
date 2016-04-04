@@ -2220,7 +2220,7 @@ struct shadowy_apparition_spell_t : public priest_spell_t
 
   shadowy_apparition_spell_t( priest_t& p )
     : priest_spell_t("shadowy_apparitions", p, p.find_spell(78203)),
-    insanity_gain(0)
+    insanity_gain(4) //Spell Data missing? data().effectN(2).resource(RESOURCE_INSANITY) * priest.talents.auspicious_spirits->effectN(2).percent() ) )
   {
     background          = true;
     proc                = false;
@@ -2242,7 +2242,6 @@ struct shadowy_apparition_spell_t : public priest_spell_t
 
     if (priest.talents.auspicious_spirits->ok())
     {
-      insanity_gain += 4.0; // * (1.0 + priest.talents.auspicious_spirits->effectN(1).percent())
       generate_insanity(insanity_gain, priest.gains.insanity_auspicious_spirits);
     }
 
@@ -2545,16 +2544,6 @@ struct shadow_word_death_t : public priest_spell_t
 	  insanity_gain( p.find_spell( 190714 )->effectN( 1 ).resource(RESOURCE_INSANITY) )
   {
     parse_options( options_str );
-
-	  // FIXME remove when spelldata is fixed
-	  if (p.talents.reaper_of_souls->ok())
-	  {
-	    base_multiplier *= 1.5;
-	  }
-	  else
-	  {
-	    base_multiplier *= 4.0;
-	  }
 
     base_multiplier *= 1.0 + p.sets.set( SET_CASTER, T13, B2 )->effectN( 1 ).percent();
 
