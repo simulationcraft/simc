@@ -2397,7 +2397,12 @@ struct mind_spike_t : public priest_spell_t
       insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) * (1.0 + p.talents.fortress_of_the_mind->effectN(1).percent() ))
   {
     parse_options( options_str );
-    is_mind_spell       = true;
+    is_mind_spell = true;
+
+    if (p.artifact.void_siphon.rank())
+    {
+      base_multiplier *= 1.0 + p.artifact.void_siphon.percent();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -2633,10 +2638,10 @@ struct mind_flay_t : public priest_spell_t
     use_off_gcd   = true;
     is_mind_spell = true;
 
-    /*if (p.artifact.void_siphon.rank())
+    if (p.artifact.void_siphon.rank())
     {
       base_multiplier *= 1.0 + p.artifact.void_siphon.percent();
-    }*/
+    }
 
     spell_power_mod.tick *= 1.0 + p.talents.fortress_of_the_mind->effectN( 3 ).percent();
   }
@@ -5833,7 +5838,7 @@ void priest_t::init_spells()
   artifact.tremble_in_fear = find_artifact_spell("Tremble in Fear");
   artifact.unleash_the_shadows = find_artifact_spell("Unleash the Shadows");
   artifact.void_corruption = find_artifact_spell("Void Corruption");
-  //artifact.void_siphon = find_artifact_spell("Void Siphon"); //Crashing
+  artifact.void_siphon = find_artifact_spell("Void Siphon");
   artifact.void_torrent = find_artifact_spell("Void Torrent");
 
   // General Spells

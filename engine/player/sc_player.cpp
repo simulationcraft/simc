@@ -7409,7 +7409,7 @@ bool player_t::parse_artifact_wowdb( const std::string& artifact_string )
     return false;
   }
 
-  std::string artifact_data = artifact_string.substr( data_offset + 2, 8 );
+  std::string artifact_data = artifact_string.substr( data_offset + 2, 10 );
 
   for ( size_t idx = 0; idx < artifact_data.size(); ++idx )
   {

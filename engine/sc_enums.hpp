@@ -13,7 +13,7 @@
 
 enum
 {
-  MAX_ARTIFACT_POWER = 16, /// Maximum number of artifact perks per weapon
+  MAX_ARTIFACT_POWER = 20, /// Maximum number of artifact perks per weapon. Looks like max is 17 on weapons but setting higher just in case -- 2016/04/04 - Twintop
   MAX_ARTIFACT_POWER_RANK = 6
 };
 
