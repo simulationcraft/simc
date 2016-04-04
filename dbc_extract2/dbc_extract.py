@@ -342,7 +342,12 @@ elif options.type == 'csv':
         print(record.csv(options.delim, first))
 
 elif options.type == 'scale':
-    g = dbc.generator.LevelScalingDataGenerator(options, [ 'gtOCTHpPerStamina' ] )
+    g = dbc.generator.CSVDataGenerator(options, {
+        'file': 'HpPerSta.txt',
+        'comment': '// Hit points per stamina for level 1 - %d, wow build %d\n' % (
+            options.level, options.build),
+        'values': [ 'Health', ]
+    })
     if not g.initialize():
         sys.exit(1)
     g.generate()
@@ -352,29 +357,68 @@ elif options.type == 'scale':
         options.append = options.output
         options.output = None
 
-    g = dbc.generator.SpellScalingDataGenerator(options)
+    g = dbc.generator.CSVDataGenerator(options, {
+        'file': 'SpellScaling.txt',
+        'comment': '// Spell scaling multipliers for levels 1 - %d, wow build %d\n' % (
+            options.level, options.build),
+        'values': dbc.generator.DataGenerator._class_names + [ 'Item', 'Consumable', 'Gem1', 'Gem2', 'Gem3' ]
+    })
     if not g.initialize():
         sys.exit(1)
     g.generate()
 
-    tables = [ 'gtOCTBaseMPByClass' ]
-    g = dbc.generator.ClassScalingDataGenerator(options, tables)
+    g = dbc.generator.CSVDataGenerator(options, {
+        'file': 'BaseMp.txt',
+        'comment': '// Base mana points for levels 1 - %d, wow build %d\n' % (
+            options.level, options.build),
+        'values': dbc.generator.DataGenerator._class_names
+    })
     if not g.initialize():
         sys.exit(1)
     g.generate()
 
-    g = dbc.generator.CombatRatingsDataGenerator(options)
+    g = dbc.generator.CSVDataGenerator(options, {
+        'file': 'CombatRatings.txt',
+        'comment': '// Combat rating values for level 1 - %d, wow build %d\n' % (
+            options.level, options.build),
+        'values': [ 'Dodge', 'Parry', 'Block', 'Hit - Melee', 'Hit - Ranged',
+                    'Hit - Spell', 'Crit - Melee', 'Crit - Ranged', 'Crit - Spell',
+                    'Resilience - Player Damage', 'Lifesteal', 'Haste - Melee', 'Haste - Ranged',
+                    'Haste - Spell', 'Expertise', 'Mastery', 'PvP Power',
+                    'Versatility - Damage Done', 'Versatility - Healing Done',
+                    'Versatility - Damage Taken', 'Speed', 'Avoidance' ]
+    })
     if not g.initialize():
         sys.exit(1)
     g.generate()
 
-    g = dbc.generator.IlevelScalingDataGenerator(options, 'gtItemSocketCostPerLevel', 'gtCombatRatingsMultByILvl' )
+    g = dbc.generator.CSVDataGenerator(options, [ {
+        'file': 'ItemSocketCostPerLevel.txt',
+        'key': '5.0 Level',
+        'comment': '// Item socket costs for item levels 1 - %d, wow build %d\n' % (
+            options.max_ilevel, options.build),
+        'values': [ 'Socket Cost' ],
+        'max_rows': options.max_ilevel
+    }, {
+        'file': 'CombatRatingsMultByILvl.txt',
+        'key': 'Item Level',
+        'comment': '// Combat rating multipliers for item level 1 - %d, wow build %d\n' % (
+            options.max_ilevel, options.build),
+        'values': [ 'Rating Multiplier' ],
+        'max_rows': options.max_ilevel
+    }])
     if not g.initialize():
         sys.exit(1)
 
     g.generate()
 
-    g = dbc.generator.MonsterLevelScalingDataGenerator(options, 'gtArmorMitigationByLvl')
+    g = dbc.generator.CSVDataGenerator(options, {
+        'file': 'ArmorMitigationByLvl.txt',
+        'comment': '// Enemy armor mitigation constants (K-value) for level 1 - %d, wow build %d\n' % (
+            options.level + 3, options.build),
+        'values': [ 'Mitigation' ],
+        'max_rows': options.level + 3
+    })
     if not g.initialize():
         sys.exit(1)
 

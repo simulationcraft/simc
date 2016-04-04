@@ -1,4 +1,4 @@
-import sys, os, re, types, html.parser, urllib, datetime, signal, json, pdb, pathlib
+import sys, os, re, types, html.parser, urllib, datetime, signal, json, pdb, pathlib, csv
 
 import dbc.db, dbc.data, dbc.constants, dbc.parser
 
@@ -9,6 +9,137 @@ def _rune_cost(generator, filter_data, record, *args):
             cost |= 1 << (rune_type * 2 + i)
 
     return args[0] % cost
+
+class CSVDataGenerator(object):
+    def __init__(self, options, csvs):
+        self._options = options
+        self._csv_options = {}
+        if type(csvs) == dict:
+            self._csv_options[csvs['file']] = csvs
+            self._dbc = [ csvs['file'], ]
+        else:
+            for v in csvs:
+                self._csv_options[v['file']] = v
+            self._dbc = self._csv_options.keys()
+
+    def struct_name(self, dbc = None):
+        d = (dbc and dbc or self._dbc[0]).split('.')[0]
+        return re.sub(r'([A-Z]+)', r'_\1', d).lower()
+
+    def generate_header(self, dbc):
+        dimensions = ''
+        if len(self.values(dbc)) > 1:
+            dimensions = '[][%d]' % self.max_rows(dbc)
+        else:
+            dimensions = '[%d]' % self.max_rows(dbc)
+        return 'static double _%s%s%s%s = {\n' % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self.struct_name(dbc),
+            self._options.suffix and ('_%s' % self._options.suffix) or '',
+            dimensions)
+
+    def generate(self):
+        for dbc in self._dbc:
+            data = list(getattr(self, self.dbname(dbc)))
+            max_rows = self.max_rows(dbc)
+
+            if self.comment(dbc):
+                self._out.write(self.comment(dbc))
+            self._out.write(self.generate_header(dbc))
+
+            segments = self.values(dbc)
+            segment_formats = self.value_formats(dbc)
+            for segment_idx in range(0, len(segments)):
+                # Last entry is the fixed data
+                if len(segments) > 1 and segment_idx < len(segments) and segments[segment_idx] != None:
+                    self._out.write('  // %s\n' % segments[segment_idx])
+
+                if len(segments) > 1:
+                    self._out.write('  {\n')
+                self._out.write('    ')
+
+                fmt = segment_formats[segment_idx]
+                name = segments[segment_idx]
+
+                for row in data:
+                    level = int(row[self.key(dbc)])
+                    self._out.write('%s,\t' % (fmt % row.get(name, 0)))
+                    if level % 5 == 0:
+                        self._out.write('// %4u\n' % level)
+                        if level < max_rows - 1:
+                            self._out.write('    ')
+
+                    if level >= max_rows:
+                        break
+
+                if len(segments) > 1:
+                    self._out.write('  },\n')
+
+            self._out.write('};\n\n')
+
+    def key(self, dbc = None):
+        k = dbc and dbc or list(self._csv_options.keys())[0]
+        return self._csv_options.get(k, {}).get('key', 'Level')
+
+    def max_rows(self, dbc = None):
+        k = dbc and dbc or list(self._csv_options.keys())[0]
+        return self._csv_options.get(k, {}).get('max_rows', self._options.level)
+
+    def comment(self, dbc = None):
+        k = dbc and dbc or list(self._csv_options.keys())[0]
+        return self._csv_options.get(k, {}).get('comment', '')
+
+    def values(self, dbc = None):
+        k = dbc and dbc or list(self._csv_options.keys())[0]
+        return self._csv_options.get(k, {}).get('values', [])
+
+    def value_keys(self, dbc = None):
+        k = dbc and dbc or list(self._csv_options.keys())[0]
+        values = []
+        for v in self._csv_options.get(k, {}).get('values', []):
+            if type(v) == tuple:
+                values.append(v[0])
+            else:
+                values.append(v)
+
+        return values
+
+    def value_formats(self, dbc = None):
+        k = dbc and dbc or list(self._csv_options.keys())[0]
+        values = []
+        for v in self._csv_options.get(k, {}).get('values', []):
+            if type(v) == tuple:
+                values.append(v[1])
+            else:
+                values.append('%s')
+
+        return values
+
+    def dbname(self, csvfile):
+        return '_' + csvfile.split('.')[0].lower().replace('-', '_') + '_db'
+
+    def initialize(self):
+        if self._options.output:
+            self._out = pathlib.Path(self._options.output).open('w')
+            if not self._out.writable():
+                print('Unable to write to file "%s"' % self._options.output)
+                return False
+        elif self._options.append:
+            self._out = pathlib.Path(self._options.append).open('a')
+            if not self._out.writable():
+                print('Unable to write to file "%s"' % self._options.append)
+                return False
+        else:
+            self._out = sys.stdout
+
+        for i in self._dbc:
+            v = os.path.abspath(os.path.join(self._options.path, i))
+            dbcp = csv.DictReader(open(v, 'r'), delimiter = '\t')
+
+            if self.dbname(i) not in dir(self):
+                setattr(self, self.dbname(i), dbcp)
+
+        return True
 
 class DataGenerator(object):
     _class_names = [ None, 'Warrior', 'Paladin', 'Hunter', 'Rogue',     'Priest', 'Death Knight', 'Shaman', 'Mage',  'Warlock', 'Monk',       'Druid', 'Demon Hunter'  ]
@@ -72,7 +203,6 @@ class DataGenerator(object):
             self._out = sys.stdout
 
         for i in self._dbc:
-            dbcname = i.replace('-', '_').lower()
             dbcp = dbc.parser.get_parser(self._options, os.path.abspath(os.path.join(self._options.path, i)))
 
             if not dbcp.open_dbc():
@@ -381,253 +511,6 @@ class SpecializationListGenerator(DataGenerator):
 
                 self._out.write('    %s,\n' % enum_ids[cls][spec]['name'])
 
-            self._out.write('  },\n')
-
-        self._out.write('};\n\n')
-
-class BaseScalingDataGenerator(DataGenerator):
-    def __init__(self, options, scaling_data):
-        if isinstance(scaling_data, str):
-            self._dbc = [ scaling_data ]
-        else:
-            self._dbc = scaling_data
-
-        DataGenerator.__init__(self, options)
-
-    def generate(self, ids = None):
-        for i in self._dbc:
-            self._out.write('// Base scaling data for classes, wow build %d\n' % self._options.build)
-            self._out.write('static double __%s%s%s[] = {\n' % (
-                self._options.prefix and ('%s_' % self._options.prefix) or '',
-                re.sub(r'([A-Z]+)', r'_\1', i).lower(),
-                self._options.suffix and ('_%s' % self._options.suffix) or '' ))
-            self._out.write('%20.15f, ' % 0)
-
-            for k in range(0, len(self._class_names) - 1):
-                val = getattr(self, '_%s_db' % i.lower())[k]
-
-                self._out.write('%20.15f, ' % val.gt_value)
-
-                if k > 0 and (k + 2) % 5 == 0:
-                    self._out.write('\n')
-
-            self._out.write('\n};\n\n')
-
-class LevelScalingDataGenerator(DataGenerator):
-    def __init__(self, options, scaling_data):
-        if isinstance(scaling_data, str):
-            self._dbc = [ scaling_data ]
-        else:
-            self._dbc = scaling_data
-
-        DataGenerator.__init__(self, options)
-
-    def generate(self, ids = None):
-        for i in self._dbc:
-            self._out.write('// Level scaling data, wow build %d\n' % self._options.build)
-            self._out.write('static double __%s%s%s[%u] = {\n' % (
-                self._options.prefix and ('%s_' % self._options.prefix) or '',
-                re.sub(r'([A-Z]+)', r'_\1', i).lower(),
-                self._options.suffix and ('_%s' % self._options.suffix) or '',
-                self._options.level))
-
-            for k in range(0, self._options.level):
-                val = getattr(self, '_%s_db' % i.lower())[k]
-
-                self._out.write('%10.5f' % val.gt_value)
-                if k < self._options.level - 1:
-                    self._out.write(', ')
-
-                if k > 0 and (k + 1) % 5 == 0:
-                    self._out.write('\t// %4u\n' % (k + 1))
-
-            self._out.write('};\n\n')
-
-class MonsterLevelScalingDataGenerator(DataGenerator):
-    def __init__(self, options, scaling_data):
-        if isinstance(scaling_data, str):
-            self._dbc = [ scaling_data ]
-        else:
-            self._dbc = scaling_data
-
-        DataGenerator.__init__(self, options)
-
-    def generate(self, ids = None):
-        for i in self._dbc:
-            self._out.write('// Monster(?) Level scaling data, wow build %d\n' % self._options.build)
-            self._out.write('static double __%s%s%s[%u] = {\n' % (
-                self._options.prefix and ('%s_' % self._options.prefix) or '',
-                re.sub(r'([A-Z]+)', r'_\1', i).lower(),
-                self._options.suffix and ('_%s' % self._options.suffix) or '',
-                self._options.level + 3))
-
-            for k in range(0, self._options.level + 3):
-                val = getattr(self, '_%s_db' % i.lower())[k]
-
-                self._out.write('%20.10f' % val.gt_value)
-                if k < self._options.level + 3 - 1:
-                    self._out.write(', ')
-
-                if k > 0 and (k + 1) % 5 == 0:
-                    self._out.write('\t// %4u\n' % (k + 1))
-
-            self._out.write('\n};\n\n')
-
-class IlevelScalingDataGenerator(DataGenerator):
-    def __init__(self, options, *args):
-        self._dbc = args
-
-        DataGenerator.__init__(self, options)
-
-    def generate(self, ids = None):
-        for i in self._dbc:
-            self._out.write('// Item Level scaling data, wow build %d\n' % self._options.build)
-            self._out.write('static double __%s%s%s[%u] = {\n' % (
-                self._options.prefix and ('%s_' % self._options.prefix) or '',
-                re.sub(r'([A-Z]+)', r'_\1', i).lower(),
-                self._options.suffix and ('_%s' % self._options.suffix) or '',
-                self._options.scale_ilevel))
-
-            for k in range(0, self._options.scale_ilevel):
-                val = getattr(self, '_%s_db' % i.lower())[k]
-
-                self._out.write('%15.5f, ' % val.gt_value)
-
-                if k > 0 and (k + 1) % 5 == 0:
-                    self._out.write('\t// %4u\n' % (k + 1))
-
-            self._out.write('\n};\n\n')
-
-class CombatRatingsDataGenerator(DataGenerator):
-    # From UIParent.lua, seems to match to gtCombatRatings too for lvl80 stuff
-    _combat_ratings = [ 'Dodge',               'Parry',                  'Block',       'Melee hit',   'Ranged hit',
-                        'Spell hit',           'Melee crit',             'Ranged crit', 'Spell crit',
-                        'PvP Resilience',      'Leech',                  'Melee haste', 'Ranged haste',
-                        'Spell haste',         'Expertise',              'Mastery',     'PvP Power',   'Damage Versatility',
-                        'Healing Versatility', 'Mitigation Versatility', 'Speed',       'Avoidance' ]
-    _combat_rating_ids = [  2,  3,  4,  5,  6,
-                            7,  8,  9, 10,
-                           15, 16, 17, 18,
-                           19, 23, 25, 26, 28,
-                           29, 30, 13, 20 ]
-    def __init__(self, options):
-        # Hardcode these, as we need two different kinds of databases for output, using the same combat rating ids
-        self._dbc = [ 'gtCombatRatings' ]
-
-        DataGenerator.__init__(self, options)
-
-    def generate(self, ids = None):
-        db = self._gtcombatratings_db
-        self._out.write('// Combat ratings for levels 1 - %d, wow build %d \n' % (
-            self._options.level, self._options.build ))
-        self._out.write('static double __%s%s%s[][%d] = {\n' % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            re.sub(r'([A-Z]+)', r'_\1', self._dbc[0]).lower(),
-            self._options.suffix and ('_%s' % self._options.suffix) or '',
-            self._options.level ))
-        for j in range(0, len(CombatRatingsDataGenerator._combat_rating_ids)):
-            self._out.write('  // %s rating multipliers\n' % CombatRatingsDataGenerator._combat_ratings[j])
-            self._out.write('  {\n')
-            m  = CombatRatingsDataGenerator._combat_rating_ids[j]
-            for k in range(m * 123, m * 123 + self._options.level, 5):
-                self._out.write('    %10.5f, %10.5f, %10.5f, %10.5f, %10.5f,\t// %4u\n' % (
-                    db[k].gt_value, db[k + 1].gt_value, db[k + 2].gt_value,
-                    db[k + 3].gt_value, db[k + 4].gt_value, (k + 5 - m * 123)))
-
-            self._out.write('  },\n')
-
-        self._out.write('};\n\n')
-
-#        db = self._gtoctclasscombatratingscalar_db
-#        s += '// Combat Rating scalar multipliers for classes, wow build %d\n' % self._options.build
-#        s += 'static double __%s%s%s[][%d] = {\n' % (
-#            self._options.prefix and ('%s_' % self._options.prefix) or '',
-#            re.sub(r'([A-Z]+)', r'_\1', self._dbc[1]).lower(),
-#            self._options.suffix and ('_%s' % self._options.suffix) or '',
-#            len(self._class_names))
-#        for i in range(0, len(CombatRatingsDataGenerator._combat_rating_ids)):
-#            id = CombatRatingsDataGenerator._combat_rating_ids[i]
-#            s += '  // %s rating class scalar multipliers\n' % CombatRatingsDataGenerator._combat_ratings[i]
-#            s += '  { \n'
-#            s += '    %20.15f, %20.15f, %20.15f, %20.15f, %20.15f,\n' % (
-#                0.0, db[id * 10 + 1].gt_value, db[id * 10 + 2].gt_value, db[id * 10 + 3].gt_value,
-#                db[id * 10 + 4].gt_value)
-#
-#            s += '    %20.15f, %20.15f, %20.15f, %20.15f, %20.15f,\n' % (
-#                db[id * 10 + 5].gt_value, db[id * 10 + 6].gt_value, db[id * 10 + 7].gt_value,
-#                db[id * 10 + 8].gt_value, db[id * 10 + 9].gt_value )
-#
-#            s += '    %20.15f, %20.15f\n' % ( db[i * 10 + 10].gt_value, db[i * 10 + 11].gt_value )
-#
-#            s += '  },\n'
-#
-#       s += '};\n\n'
-
-class ClassScalingDataGenerator(DataGenerator):
-    def __init__(self, options, scaling_data):
-        if isinstance(scaling_data, str):
-            self._dbc = [ scaling_data ]
-        else:
-            self._dbc = scaling_data
-
-        DataGenerator.__init__(self, options)
-
-    def generate(self, ids = None):
-        for i in self._dbc:
-            db = getattr(self, '_%s_db' % i.lower())
-            self._out.write('// Class based scaling multipliers for levels 1 - %d, wow build %d\n' % (
-                self._options.level, self._options.build ))
-            self._out.write('static double __%s%s%s[][%d] = {\n' % (
-                self._options.prefix and ('%s_' % self._options.prefix) or '',
-                re.sub(r'([A-Z]+)', r'_\1', i).lower(),
-                self._options.suffix and ('_%s' % self._options.suffix) or '',
-                self._options.level ))
-
-            for j in range(0, len(self._class_names)):
-                # Last entry is the fixed data
-                if j < len(self._class_names) and self._class_names[j] != None:
-                    self._out.write('  // %s\n' % self._class_names[j])
-
-                self._out.write('  {\n')
-                for k in range((j - 1) * 123, (j - 1) * 123 + self._options.level, 5):
-                    self._out.write('    %15.5f, %15.5f, %15.5f, %15.5f, %15.5f,\t// %4u\n' % (
-                        db[k].gt_value, db[k + 1].gt_value, db[k + 2].gt_value,
-                        db[k + 3].gt_value, db[k + 4].gt_value, k - (j - 1) * 123 + 5
-                    ))
-                self._out.write('  },\n')
-
-            self._out.write('};\n\n')
-
-class SpellScalingDataGenerator(DataGenerator):
-    def __init__(self, options):
-        self._dbc = [ 'gtSpellScaling' ]
-
-        DataGenerator.__init__(self, options)
-
-    def generate(self, ids = None):
-        db = self._gtspellscaling_db
-
-        self._out.write('// Spell scaling multipliers for levels 1 - %d, wow build %d\n' % (
-            self._options.level, self._options.build ))
-        self._out.write('static double __%s%s%s[][%d] = {\n' % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            re.sub(r'([A-Z]+)', r'_\1', self._dbc[0]).lower(),
-            self._options.suffix and ('_%s' % self._options.suffix) or '',
-            self._options.level ))
-
-        for j in range(0, len(self._class_names) + 5):
-            # Last entry is the fixed data
-            if j < len(self._class_names) and self._class_names[j] != None:
-                self._out.write('  // %s\n' % self._class_names[j])
-            else:
-                self._out.write('  // Constant scaling\n')
-
-            self._out.write('  {\n')
-            for k in range((j - 1) * 123, (j - 1) * 123 + self._options.level, 5):
-                self._out.write('    %15.5f, %15.5f, %15.5f, %15.5f, %15.5f,\t// %4u\n' % (
-                    db[k].gt_value, db[k + 1].gt_value, db[k + 2].gt_value,
-                    db[k + 3].gt_value, db[k + 4].gt_value, k - (j - 1) * 123 + 5
-                ))
             self._out.write('  },\n')
 
         self._out.write('};\n\n')

@@ -827,10 +827,10 @@ double dbc_t::combat_rating_multiplier( unsigned item_level ) const
 {
   assert( item_level > 0 && item_level <= MAX_ILEVEL );
 #if SC_USE_PTR
-  return ptr ? __ptr_gt_combat_ratings_mult_by_ilvl[ item_level - 1 ]
-    : __gt_combat_ratings_mult_by_ilvl[ item_level - 1 ];
+  return ptr ? __ptr_combat_ratings_mult_by_ilvl[ item_level - 1 ]
+    : __combat_ratings_mult_by_ilvl[ item_level - 1 ];
 #else
-  return __gt_combat_ratings_mult_by_ilvl[ item_level - 1 ];
+  return __combat_ratings_mult_by_ilvl[ item_level - 1 ];
 #endif
 }
 
@@ -957,10 +957,10 @@ double dbc_t::spell_scaling( player_e t, unsigned level ) const
 
   assert( class_id < dbc_t::class_max_size() + 5 && level > 0 && level <= MAX_SCALING_LEVEL );
 #if SC_USE_PTR
-  return ptr ? __ptr_gt_spell_scaling[ class_id ][ level - 1 ]
-             : __gt_spell_scaling[ class_id ][ level - 1 ];
+  return ptr ? __ptr_spell_scaling[ class_id ][ level - 1 ]
+             : __spell_scaling[ class_id ][ level - 1 ];
 #else
-  return __gt_spell_scaling[ class_id ][ level - 1 ];
+  return __spell_scaling[ class_id ][ level - 1 ];
 #endif
 }
 
@@ -1079,10 +1079,10 @@ double dbc_t::resource_base( player_e t, unsigned level ) const
 
   assert( class_id < MAX_CLASS && level > 0 && level <= MAX_SCALING_LEVEL );
 #if SC_USE_PTR
-  return ptr ? __ptr_gt_octbase_mpby_class[ class_id ][ level - 1 ]
-             : __gt_octbase_mpby_class[ class_id ][ level - 1 ];
+  return ptr ? __ptr_base_mp[ class_id ][ level - 1 ]
+             : __base_mp[ class_id ][ level - 1 ];
 #else
-  return __gt_octbase_mpby_class[ class_id ][ level - 1 ];
+  return __base_mp[ class_id ][ level - 1 ];
 #endif
 }
 
@@ -1102,10 +1102,10 @@ double dbc_t::health_per_stamina( unsigned level ) const
 {
   assert( level > 0 && level <= MAX_SCALING_LEVEL );
 #if SC_USE_PTR
-  return ptr ? __ptr_gt_octhp_per_stamina[ level - 1 ]
-             : __gt_octhp_per_stamina[ level - 1 ];
+  return ptr ? __ptr_hp_per_sta[ level - 1 ]
+             : __hp_per_sta[ level - 1 ];
 #else
-  return __gt_octhp_per_stamina[ level - 1 ];
+  return __hp_per_sta[ level - 1 ];
 #endif
 }
 
@@ -1134,10 +1134,10 @@ double dbc_t::combat_rating( unsigned combat_rating_id, unsigned level ) const
   assert( combat_rating_id < RATING_MAX );
   assert( level <= MAX_SCALING_LEVEL );
 #if SC_USE_PTR
-  return ptr ? __ptr_gt_combat_ratings[ combat_rating_id ][ level - 1 ] * 100.0
-             : __gt_combat_ratings[ combat_rating_id ][ level - 1 ] * 100.0;
+  return ptr ? __ptr_combat_ratings[ combat_rating_id ][ level - 1 ] * 100.0
+             : __combat_ratings[ combat_rating_id ][ level - 1 ] * 100.0;
 #else
-  return __gt_combat_ratings[ combat_rating_id ][ level - 1 ] * 100.0 ;
+  return __combat_ratings[ combat_rating_id ][ level - 1 ] * 100.0 ;
 #endif
 }
 
@@ -1490,10 +1490,10 @@ double dbc_t::item_socket_cost( unsigned ilevel ) const
 {
   assert( ilevel > 0 && ( ilevel <= random_property_max_level() ) );
 #if SC_USE_PTR
-  return ptr ? __ptr_gt_item_socket_cost_per_level[ ilevel - 1 ]
-             : __gt_item_socket_cost_per_level[ ilevel - 1 ];
+  return ptr ? __ptr_item_socket_cost_per_level[ ilevel - 1 ]
+             : __item_socket_cost_per_level[ ilevel - 1 ];
 #else
-  return __gt_item_socket_cost_per_level[ ilevel - 1 ];
+  return __item_socket_cost_per_level[ ilevel - 1 ];
 #endif
 }
 
@@ -1501,9 +1501,9 @@ double dbc_t::armor_mitigation_constant( unsigned level ) const
 {
   assert( level > 0 && level <= ( MAX_SCALING_LEVEL + 3 ) );
 #if SC_USE_PTR
-  return ptr ? __ptr_gt_armor_mitigation_by_lvl[ level - 1 ] : __gt_armor_mitigation_by_lvl[ level - 1 ];
+  return ptr ? __ptr_armor_mitigation_by_lvl[ level - 1 ] : __armor_mitigation_by_lvl[ level - 1 ];
 #else
-  return __gt_armor_mitigation_by_lvl[ level - 1 ];
+  return __armor_mitigation_by_lvl[ level - 1 ];
 #endif
 }
 
