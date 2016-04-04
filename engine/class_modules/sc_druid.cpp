@@ -3268,7 +3268,7 @@ public:
 
     p() -> buff.scent_of_blood -> trigger( 1, targets_hit * p() -> buff.scent_of_blood -> default_value );
 
-    if ( shadow_thrash && p() -> rppm.shadow_thrash.trigger() )
+    if ( shadow_thrash && targets_hit >= 2 && p() -> rppm.shadow_thrash.trigger() )
       shadow_thrash -> execute();
 
     if ( attack_hit && p() -> sets.has_set_bonus( DRUID_FERAL, T19, B2 ) )
@@ -4495,6 +4495,17 @@ struct cat_form_t : public druid_spell_t
     {
       player -> init_beast_weapon( player -> cat_weapon, 1.0 );
       player -> cat_melee_attack = new cat_attacks::cat_melee_t( player );
+
+      // Fangs of Ashamane act as a 2 handed weapon when in Cat Form.
+      if ( player -> fangs_of_ashamane )
+      {
+        unsigned ilevel = player -> items[ SLOT_MAIN_HAND ].item_level();
+        double mod = sim -> dbc.item_damage_2h( ilevel ).values[ ITEM_QUALITY_ARTIFACT ]
+                   / sim -> dbc.item_damage_1h( ilevel ).values[ ITEM_QUALITY_ARTIFACT ];
+        player -> cat_weapon.min_dmg *= mod;
+        player -> cat_weapon.max_dmg *= mod;
+        player -> cat_weapon.damage  *= mod;
+      }
     }
   }
 
@@ -8092,9 +8103,9 @@ struct druid_module_t : public module_t
     unique_gear::register_special_effect( 184877, wildcat_celerity );
     unique_gear::register_special_effect( 184878, stalwart_guardian );
     unique_gear::register_special_effect( 184879, flourish );
-    unique_gear::register_special_effect( 202509, scythe_of_elune );
-    unique_gear::register_special_effect( 210719, fangs_of_ashamane );
-    unique_gear::register_special_effect( 200815, claws_of_ursoc );
+    unique_gear::register_special_effect( 214842, scythe_of_elune );
+    unique_gear::register_special_effect( 214843, fangs_of_ashamane );
+    unique_gear::register_special_effect( 214844, claws_of_ursoc );
   }
 
   virtual void register_hotfixes() const override {}

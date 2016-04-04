@@ -326,6 +326,19 @@ enum inventory_type
     INVTYPE_MAX                               = 29
 };
 
+enum item_quality
+{
+  ITEM_QUALITY_NONE      = -1,
+  ITEM_QUALITY_POOR      = 0,
+  ITEM_QUALITY_COMMON    = 1,
+  ITEM_QUALITY_UNCOMMON  = 2,
+  ITEM_QUALITY_RARE      = 3,
+  ITEM_QUALITY_EPIC      = 4,
+  ITEM_QUALITY_LEGENDARY = 5,
+  ITEM_QUALITY_ARTIFACT  = 6,
+  ITEM_QUALITY_MAX       = 7
+};
+
 enum item_enchantment
 {
     ITEM_ENCHANTMENT_NONE             = 0,
