@@ -373,7 +373,7 @@ bool parse_artifact( sim_t* sim, const std::string&, const std::string& value )
   {
     ret = sim -> active_player -> parse_artifact_wowdb( value );
   }
-  else if ( util::str_in_str_ci( value, ".wowhead.com/artifact-calc#" ) )
+  else if ( util::str_in_str_ci( value, ".wowhead.com/artifact-calc" ) )
   {
     ret = sim -> active_player -> parse_artifact_wowhead( value );
   }
