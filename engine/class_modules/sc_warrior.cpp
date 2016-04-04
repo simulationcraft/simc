@@ -723,14 +723,6 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     {
       p() -> buff.wrecking_ball -> trigger();
     }
-    if ( p() -> talents.opportunity_strikes -> ok() )
-    {
-      if ( rng().roll( ( 1 - ( execute_state -> target -> health_percentage() / 100 ) ) * p() -> talents.opportunity_strikes -> proc_chance() ) )
-      {
-        p() -> active.opportunity_strikes -> target = execute_state -> target;
-        p() -> active.opportunity_strikes -> execute(); // Blizzard Employee "What can we do to make this talent really awkward?"
-      }
-    }
   }
 
   virtual void impact( action_state_t* s ) override
@@ -757,6 +749,14 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
           p() -> active.corrupted_blood_of_zakajz, // ignite spell
           target, // target
           s -> result_amount * p() -> buff.corrupted_blood_of_zakajz -> check_value() );
+      }
+      if ( p() -> talents.opportunity_strikes -> ok() && s -> result_amount > 0 )
+      {
+        if ( rng().roll( ( 1 - ( s -> target -> health_percentage() / 100 ) ) * p() -> talents.opportunity_strikes -> proc_chance() ) )
+        {
+          p() -> active.opportunity_strikes -> target = s -> target;
+          p() -> active.opportunity_strikes -> execute(); // Blizzard Employee "What can we do to make this talent really awkward?"
+        }
       }
     }
   }

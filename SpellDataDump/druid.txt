@@ -1898,7 +1898,7 @@ Description      : Strikes all enemy targets within $A1 yards, dealing $s1 Bleed
 Name             : Starsurge (id=78674) [Spell Family (7)] 
 Class            : Balance Druid
 School           : Spellstorm
-Resource         : 400 Eclipse
+Resource         : 40 Eclipse
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -4611,7 +4611,7 @@ Description      : Hurl a ball of solar energy at the target, dealing $s1 Nature
 Name             : Starfall (id=191034) [Spell Family (7)] 
 Class            : Balance Druid
 School           : Spellstorm
-Resource         : 600 Eclipse
+Resource         : 60 Eclipse
 Spell Level      : 40
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -5649,7 +5649,7 @@ Tooltip          : Deals $m1 Arcane damage to your current target and grants $s3
 Name             : Fury of Elune (id=202770) [Spell Family (7)] 
 Class            : Druid
 School           : Spellstorm
-Resource         : 60 Eclipse and 120 Eclipse per second or tick
+Resource         : 6 Eclipse and 12 Eclipse per second or tick
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
