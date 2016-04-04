@@ -11,12 +11,10 @@ TODO:
 GENERAL:
 
 WINDWALKER:
-- Add the cooldown reduction while Serenity is active
 - Check if the Tornado Kick can proc the T18 trinket
-- Check if Spinning Dragon Kick works with T18 trinket
+- Check if Whirling Dragon Punch works with T18 trinket
 - Strike of the Windlord - make sure AoE is using the n^2 calculation or straight up AoE
 - Serenity - Double check if Strength of Xuen Artifact trait works with Serenity
-- Transfer of Power - Get actual duration and max stacks of the buff
 - Check if SEF uses Strike of the Windlord
 - Update Crosswinds targeting system.
 
@@ -31,7 +29,6 @@ MISTWEAVER:
 -- Summon Jade Serpent Statue
 
 BREWMASTER:
-- Get the actual amount that Fortified Mind reduces Fortifying Brew's cooldown by
 - Fortuitous Sphers - Finish implementing
 - Break up Healing Elixers and Fortuitous into two spells; one for proc and one for heal
 - Gift of the Ox - Check if 35% chance is baseline and increased by HP percent from there
@@ -40,7 +37,6 @@ BREWMASTER:
 - Not Modeled:
 -- Summon Black Ox Statue
 -- Invoke Niuzao
--- Fortified Mind
 -- Zen Meditation
 -  Celestial Fortune - Double check if this works similar to Prot Paladin's Shining Protector
 */
@@ -205,6 +201,7 @@ public:
     buff_t* lifecycles_vivify;
     buff_t* mana_tea;
     buff_t* mistweaving;
+    buff_t* refreshing_jade_wind;
     buff_t* the_mists_of_sheilun;
     buff_t* teachings_of_the_monastery;
     buff_t* thunder_focus_tea;
@@ -2074,6 +2071,9 @@ struct tiger_palm_t: public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
 
+    add_child( eye_of_the_tiger_damage );
+    add_child( eye_of_the_tiger_heal );
+
     if ( p -> specialization() == MONK_BREWMASTER )
       base_costs[RESOURCE_ENERGY] *= 1 + p -> spec.stagger -> effectN( 16 ).percent(); // -50% for Brewmasters
 
@@ -2167,9 +2167,9 @@ struct tiger_palm_t: public monk_melee_attack_t
 
           p() -> cooldown.brewmaster_active_mitigation -> adjust( timespan_t::from_seconds( time_reduction ) );
 
-          // TODO: Get the actual amount that Fortified Mind reduces Fortifying Brew's cooldown by
+          // Fortified Mind reduces Fortifying Brew's cooldown
           if ( p() -> talent.fortified_mind -> ok() )
-            p() -> cooldown.fortifying_brew -> adjust( timespan_t::zero() );
+            p() -> cooldown.fortifying_brew -> adjust( timespan_t::from_seconds( time_reduction ) );
         }
 
         // Tiger Palm has a 30% chance to reset the cooldown of Keg Smash.
@@ -3274,9 +3274,9 @@ struct keg_smash_t: public monk_melee_attack_t
     if ( p() -> cooldown.brewmaster_active_mitigation -> down() )
       p() -> cooldown.brewmaster_active_mitigation -> adjust( timespan_t::from_seconds( p() -> spec.keg_smash -> effectN( 3 ).base_value() ) );
 
-    // TODO: Get the actual amount that Fortified Mind reduces Fortifying Brew's cooldown by
+    // Fortified Mind talent reduces Fortifying Brew's cooldown by 4 sec.
     if ( p() -> talent.fortified_mind -> ok() )
-      p() -> cooldown.fortifying_brew ->adjust ( timespan_t::zero() );
+      p() -> cooldown.fortifying_brew ->adjust ( timespan_t::from_seconds( p() -> spec.keg_smash -> effectN( 3 ).base_value() ) );
   }
 };
 
@@ -4051,7 +4051,8 @@ struct ironskin_brew_t : public monk_spell_t
     trigger_gcd = timespan_t::zero();
 
     cooldown             = p.cooldown.brewmaster_active_mitigation;
-    cooldown -> duration = p.find_spell( id ) -> cooldown() + p.talent.light_brewing -> effectN( 1 ).time_value(); // Saved as -5000
+    // TODO: Fix for next build
+    cooldown -> duration = timespan_t::from_seconds( 21 ) /*p.find_spell( id ) -> charge_cooldown()*/  + p.talent.light_brewing -> effectN( 1 ).time_value(); // Saved as -5000
     cooldown -> charges  = p.find_spell( id ) -> charges() + p.talent.light_brewing -> effectN( 2 ).base_value();
 
     if ( p.talent.special_delivery -> ok() )
@@ -4101,7 +4102,8 @@ struct purifying_brew_t: public monk_spell_t
     trigger_gcd = timespan_t::zero();
 
     cooldown             = p.cooldown.brewmaster_active_mitigation;
-    cooldown -> duration = p.find_spell( id ) -> cooldown() + p.talent.light_brewing -> effectN( 1 ).time_value(); // Saved as -5000
+    // TODO fix for next build
+    cooldown -> duration = timespan_t::from_seconds( 21 ) /*p.find_spell( id ) -> charge_cooldown()*/  + p.talent.light_brewing -> effectN( 1 ).time_value(); // Saved as -5000
     cooldown -> charges  = p.find_spell( id ) -> charges() + p.talent.light_brewing -> effectN( 2 ).base_value();
 
     if ( p.talent.special_delivery -> ok() )
@@ -4869,6 +4871,9 @@ struct essence_font_t: public monk_spell_t
     double action_multiplier() const override
     {
       double am = monk_heal_t::action_multiplier();
+
+      if ( p() -> buff.refreshing_jade_wind -> up() )
+        am *= 1 + p() -> buff.refreshing_jade_wind -> value();
 
       if ( p() -> artifact.essence_of_the_mists.rank() )
         am *= 1 + p() -> artifact.essence_of_the_mists.percent();
@@ -6214,6 +6219,9 @@ void monk_t::create_buffs()
 
   buff.light_on_your_feet = buff_creator_t( this, "light_on_your_feet", find_spell( 199407 ) )
     .default_value( artifact.light_on_your_feet_mw.rank() ? artifact.light_on_your_feet_mw.percent() : 0 );
+
+  buff.refreshing_jade_wind = buff_creator_t( this, "refreshing_jade_wind", talent.refreshing_jade_wind )
+    .default_value( talent.refreshing_jade_wind->effectN( 2 ).percent() );
 
   buff.teachings_of_the_monastery = buff_creator_t( this, "teachings_of_the_monastery", passives.teachings_of_the_monastery_buff )
     .default_value( passives.teachings_of_the_monastery_buff -> effectN( 1 ).percent() );
