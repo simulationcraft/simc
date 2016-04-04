@@ -1636,8 +1636,8 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
   timespan_t gcd() const override
   {
-    timespan_t g = priest_action_t<spell_t>::gcd();
-    timespan_t m = priest_action_t<spell_t>::min_gcd;
+    timespan_t g = action_t::gcd();
+    timespan_t m = action_t::min_gcd;
 
     if (g == timespan_t::zero())
     {
