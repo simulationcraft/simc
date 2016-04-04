@@ -153,6 +153,7 @@ public:
     gain_t* in_for_the_kill;
     gain_t* melee_crit;
     gain_t* fervor_of_battle;
+    gain_t* will_of_the_first_king;
     // Prot Only
     gain_t* critical_block;
     gain_t* revenge;
@@ -332,6 +333,7 @@ public:
     artifact_power_t focus_in_battle;
     artifact_power_t unending_rage;
     artifact_power_t corrupted_blood_of_zakajz;
+    artifact_power_t will_of_the_first_king;
 
     artifact_power_t odyns_fury;
     artifact_power_t thirst_for_battle;
@@ -724,8 +726,11 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     }
     if ( p() -> talents.opportunity_strikes -> ok() )
     {
-      if ( rng().roll( ( 100 - execute_state -> target -> health_percentage() ) * p() -> talents.opportunity_strikes -> proc_chance() ) )
+      if ( rng().roll( ( 1 - ( execute_state -> target -> health_percentage() / 100 ) ) * p() -> talents.opportunity_strikes -> proc_chance() ) )
+      {
+        p() -> active.opportunity_strikes -> target = execute_state -> target;
         p() -> active.opportunity_strikes -> execute(); // Blizzard Employee "What can we do to make this talent really awkward?"
+      }
     }
   }
 
@@ -1178,7 +1183,10 @@ struct charge_t: public warrior_attack_t
     rage_gain += p -> artifact.uncontrolled_rage.value();
     cooldown -> duration = data().cooldown();
     if ( p -> talents.double_time -> ok() )
-      cooldown -> charges = p -> talents.double_time -> effectN( 1 ).base_value();
+    {
+      cooldown -> charges += p -> talents.double_time -> effectN( 1 ).base_value();
+      cooldown -> duration += p -> talents.double_time -> effectN( 2 ).time_value();
+    }
   }
 
   void execute() override
@@ -1295,6 +1303,7 @@ struct colossus_smash_t: public warrior_attack_t
   {
     parse_options( options_str );
     weapon = &( player -> main_hand_weapon );
+    weapon_multiplier *= 1.0 + p -> artifact.focus_in_battle.percent();
   }
 
   void execute() override
@@ -1940,12 +1949,6 @@ struct mortal_strike_t: public warrior_attack_t
     {
       shadow_slash = new shadow_slash_t( p );
       add_child( shadow_slash );
-
-      if ( p -> artifact.focus_in_battle.rank() )
-      {
-        assert( p -> artifact.focus_in_battle.data().proc_chance() == p -> spec.tactician -> proc_chance() );
-        procs_tactician = true;
-      }
     }
   }
 
@@ -2662,6 +2665,9 @@ struct whirlwind_mh_t: public warrior_attack_t
     if ( p() -> talents.fervor_of_battle -> ok() )
       rage_resource_gain( RESOURCE_RAGE, p() -> spell.fervor_of_battle -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.fervor_of_battle );
 
+    if ( p() -> artifact.will_of_the_first_king.rank() )
+      rage_resource_gain( RESOURCE_RAGE, p() -> artifact.will_of_the_first_king.data().effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.will_of_the_first_king );
+
     if ( s -> result_amount > 0 )// Only triggers if damage is done.
       p() -> buff.meat_cleaver -> trigger();
   }
@@ -3254,7 +3260,7 @@ void warrior_t::init_spells()
   artifact.wrath_and_fury            = find_artifact_spell( "Wrath and Fury" );
   artifact.deathdealer               = find_artifact_spell( "Deathdealer" );
   artifact.juggernaut                = find_artifact_spell( "Juggernaut" );
-
+  artifact.will_of_the_first_king    = find_artifact_spell( "Will of the First King" );
 
   // Generic spells
   spell.charge                  = find_class_spell( "Charge" );
@@ -4025,6 +4031,7 @@ void warrior_t::init_gains()
   gain.revenge = get_gain( "revenge" );
   gain.shield_slam = get_gain( "shield_slam" );
   gain.sword_and_board = get_gain( "sword_and_board" );
+  gain.will_of_the_first_king = get_gain( "will_of_the_first_king" );
 
   gain.tier17_4pc_arms = get_gain( "tier17_4pc_arms" );
 
