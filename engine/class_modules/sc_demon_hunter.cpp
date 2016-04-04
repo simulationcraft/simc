@@ -136,12 +136,16 @@ public:
     cooldown_t* blur;
     cooldown_t* death_sweep;
     cooldown_t* chaos_nova;
+    cooldown_t* chaos_blades;
     cooldown_t* consume_magic;
     cooldown_t* eye_beam;
     cooldown_t* felblade;
+    cooldown_t* fel_barrage;
     cooldown_t* fel_eruption;
     cooldown_t* fel_rush;
     cooldown_t* fury_of_the_illidari;
+    cooldown_t* nemesis;
+    cooldown_t* netherwalk;
     cooldown_t* throw_glaive;
     cooldown_t* vengeful_retreat;
   } cooldown;
@@ -1412,20 +1416,24 @@ struct metamorphosis_t : public demon_hunter_attack_t
     {
       p() -> cooldown.blade_dance          -> reset( false );
       p() -> cooldown.blur                 -> reset( false );
+      p() -> cooldown.chaos_blades         -> reset( false );
       p() -> cooldown.chaos_nova           -> reset( false );
       p() -> cooldown.consume_magic        -> reset( false );
       p() -> cooldown.death_sweep          -> reset( false );
       p() -> cooldown.eye_beam             -> reset( false );
       p() -> cooldown.felblade             -> reset( false );
+      p() -> cooldown.fel_barrage          -> reset( false );
       p() -> cooldown.fel_eruption         -> reset( false );
       p() -> cooldown.fel_rush             -> reset( false ); // TOCHECK
+      p() -> cooldown.nemesis              -> reset( false );
+      p() -> cooldown.netherwalk           -> reset( false );
       p() -> cooldown.fury_of_the_illidari -> reset( false );
       p() -> cooldown.throw_glaive         -> reset( false ); // TOCHECK
       p() -> cooldown.vengeful_retreat     -> reset( false );
     }
     
     // Buff to track the actual leap. This lets us delay autoattacks.
-    p() -> buffs.self_movement -> trigger( 1, 0, -1.0, travel_time() );
+    p() -> buffs.self_movement -> trigger( 1, 0, -1.0, travel_time() ); // TOCHECK
   }
 };
 
@@ -1694,14 +1702,18 @@ void demon_hunter_t::create_cooldowns()
 {
   cooldown.blade_dance          = get_cooldown( "blade_dance" );
   cooldown.blur                 = get_cooldown( "blur" );
+  cooldown.chaos_blades         = get_cooldown( "chaos_blades" );
   cooldown.chaos_nova           = get_cooldown( "chaos_nova" );
   cooldown.consume_magic        = get_cooldown( "consume_magic" );
   cooldown.death_sweep          = get_cooldown( "death_sweep" );
   cooldown.eye_beam             = get_cooldown( "eye_beam" );
+  cooldown.fel_barrage          = get_cooldown( "fel_barrage" );
   cooldown.felblade             = get_cooldown( "felblade" );
   cooldown.fel_eruption         = get_cooldown( "fel_eruption" );
   cooldown.fel_rush             = get_cooldown( "fel_rush" );
   cooldown.fury_of_the_illidari = get_cooldown( "fury_of_the_illidari" );
+  cooldown.nemesis              = get_cooldown( "nemesis" );
+  cooldown.netherwalk           = get_cooldown( "netherwalk" );
   cooldown.throw_glaive         = get_cooldown( "throw_glaive" );
   cooldown.vengeful_retreat     = get_cooldown( "vengeful_retreat" );
 }
