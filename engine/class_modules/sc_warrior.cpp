@@ -803,7 +803,7 @@ struct melee_t: public warrior_attack_t
     mh_lost_melee_contact( true ), oh_lost_melee_contact( true ),
     base_rage_generation( 1.75 ),
     arms_rage_multiplier( 3.40 ),
-    fury_rage_multiplier( 2.00 ),
+    fury_rage_multiplier( 1.00 ),
     arms_trinket_chance( 0 )
   {
     school = SCHOOL_PHYSICAL;
