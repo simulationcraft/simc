@@ -11,12 +11,24 @@ Disc / Holy
  Everything
 
 Shadow
- Artifacts Traits
- Shadowmend
- Update Mind Spike implementation to match changes from March 30th
-
- Setbonuses - Several Setbonuses have to be updated by Blizzard: T17, T16 no
-longer work.
+  - Finish ("required") Artifacts Traits:
+      - Void Torrent
+          - Uses some hardcoded values
+          - Has a delay of several hundred milliseconds after the channel finishes that should not be there.
+      - Call to the Void
+          - Need RPPM driver and pet
+      - Mental Fortitude
+          - Need to create a new absorb and track it.
+      - Sphere of Insanity
+          - HOW?
+      - Thoughts of Insanity
+          - Need to implement Shadowmend first.
+      - Thrive in the Shadows
+  - Shadowmend
+  - Mind Spike
+      - Update implementation to match changes from March 30th build
+  - Setbonuses
+    - Several Setbonuses have to be updated by Blizzard: T17, T16 no longer work.
 
 */
 namespace  // UNNAMED NAMESPACE
@@ -101,16 +113,15 @@ public:
     buff_t* focused_will;
 
     // Shadow
-    buff_t* insanity;
-    buff_t* shadowy_insight;
-    buff_t* surrender_to_madness;
-    buff_t* void_ray;
-    buff_t* mind_sear_on_hit_reset;
-    buff_t* voidform;
-    buff_t* vampiric_embrace;
-    buff_t* surge_of_darkness;
     buff_t* dispersion;
     buff_t* lingering_insanity;
+    buff_t* mind_sear_on_hit_reset;
+    buff_t* shadowy_insight;
+    buff_t* surrender_to_madness;
+    buff_t* vampiric_embrace;
+    buff_t* void_ray;
+    buff_t* void_torrent;
+    buff_t* voidform;
 
     // Set Bonus
     buff_t* empowered_shadows;  // t16 4pc caster
@@ -226,7 +237,7 @@ public:
     artifact_power_t unleash_the_shadows;
     artifact_power_t void_corruption;
     artifact_power_t void_siphon;
-    artifact_power_t void_torrent;          //NYI
+    artifact_power_t void_torrent;
   } artifact;
 
   // Specialization Spells
@@ -340,7 +351,6 @@ public:
   // Special
   struct
   {
-    const spell_data_t* surge_of_darkness;
     action_t* echo_of_light;
     actions::spells::shadowy_apparition_spell_t* shadowy_apparitions;
     spell_t* voidform;
@@ -2676,6 +2686,61 @@ struct mind_flay_t : public priest_spell_t
   }
 };
 
+// Void Torrent Spell ==========================================================
+struct void_torrent_t : public priest_spell_t
+{
+  void_torrent_t(priest_t& p, const std::string& options_str)
+    : priest_spell_t("void_torrent", p,
+    p.artifact.void_torrent)
+  {
+    parse_options(options_str);
+
+    may_crit = false;
+    channeled = true;
+    hasted_ticks = false;
+    use_off_gcd = true;
+    is_mind_spell = false;
+    tick_zero = false;
+
+    base_tick_time = timespan_t::from_seconds(0.5);
+    dot_duration = timespan_t::from_seconds(4.0);
+  }
+
+  timespan_t composite_dot_duration(const action_state_t*) const override
+  {
+    return timespan_t::from_seconds(4.0);
+  }
+
+  timespan_t tick_time(double h) const
+  {
+    return timespan_t::from_seconds(0.5);
+  }
+
+  void last_tick(dot_t* d) override
+  {
+    priest_spell_t::last_tick(d);
+
+    priest.buffs.void_torrent->expire();
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    priest.buffs.void_torrent->trigger();
+  }
+
+  virtual bool ready() override
+  {
+    if (!priest.buffs.voidform->check())
+    {
+      return false;
+    }
+
+    return priest_spell_t::ready();
+  }
+};
+
 // Shadow Crash Spell ===================================================
 
 struct shadow_crash_t : public priest_spell_t
@@ -2955,6 +3020,7 @@ struct void_bolt_t : public priest_spell_t
 	  insanity_gain(data().effectN(3).resource(RESOURCE_INSANITY))
   {
     parse_options(options_str);
+    use_off_gcd = true;
 
     if (player.artifact.sinister_thoughts.rank())
     {
@@ -4784,6 +4850,11 @@ struct voidform_t : public priest_buff_t<buff_t>
         priest->resource_gain(RESOURCE_INSANITY, insanity_loss, priest->gains.insanity_dispersion);
       }
 
+      if (priest->buffs.void_torrent->check())
+      {
+        priest->resource_gain(RESOURCE_INSANITY, insanity_loss, priest->gains.insanity_void_torrent);
+      }
+
       if (priest->resources.current[RESOURCE_INSANITY] <= 0.0)
       {
         if (sim().debug)
@@ -5571,8 +5642,10 @@ action_t* priest_t::create_action( const std::string& name,
     return new shadow_word_void_t(*this, options_str);
   if (name == "vampiric_touch")
     return new vampiric_touch_t(*this, options_str);
-  if ( name == "void_bolt" )
-    return new void_bolt_t( *this, options_str );
+  if (name == "void_bolt")
+    return new void_bolt_t(*this, options_str);
+  if (name == "void_torrent")
+    return new void_torrent_t(*this, options_str);
   if (name == "voidform")
     return new voidform_t(*this, options_str);
 
@@ -5948,6 +6021,9 @@ void priest_t::create_buffs()
   buffs.void_ray = buff_creator_t( this, "void_ray" )
                        .spell( talents.void_ray->effectN( 1 ).trigger() );
 
+  buffs.void_torrent = buff_creator_t(this, "void_torrent")
+                          .spell(artifact.void_torrent);
+
   buffs.surrender_to_madness = buff_creator_t( this, "surrender_to_madness" )
                                    .spell( talents.surrender_to_madness );
 
@@ -6246,6 +6322,8 @@ void priest_t::apl_shadow()
   main->add_action("voidform");
   main->add_action("power_infusion,if=talent.power_infusion.enabled");
   main->add_action("void_bolt");
+  main->add_action("dispersion,if=buff.voidform.up&buff.voidform.stack>20");
+  main->add_action("void_torrent,if=buff.voidform.up&buff.voidform.stack>20");
   main->add_action("mind_blast");
   main->add_action("shadow_word_death");
   main->add_action("shadow_word_void,if=talent.shadow_word_void.enabled");
@@ -6254,7 +6332,7 @@ void priest_t::apl_shadow()
   main->add_action("vampiric_touch,if=!ticking");
   main->add_action("shadow_crash,if=talent.shadow_crash.enabled");
   main->add_action("shadowfiend,if=!talent.mindbender.enabled");
-  main->add_action("mind_flay,if=!talent.mind_spike.enabled");
+  main->add_action("mind_flay,if=!talent.mind_spike.enabled,interrupt=1,chain=1");
   main->add_action("mind_spike,if=talent.mind_spike.enabled");
 }
 
