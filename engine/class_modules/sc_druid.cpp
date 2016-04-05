@@ -2751,16 +2751,6 @@ struct ferocious_bite_t : public cat_attack_t
     return c;
   }
 
-  double composite_crit_multiplier() const override
-  {
-    double cm = cat_attack_t::composite_crit_multiplier();
-
-    if ( target -> debuffs.bleeding -> check() )
-      cm *= 2.0;
-
-    return cm;
-  }
-
   void trigger_ashamanes_bite( action_state_t* s )
   {
     if ( ! p() -> artifact.ashamanes_bite.rank() )
@@ -2768,11 +2758,13 @@ struct ferocious_bite_t : public cat_attack_t
     if ( ! td( s -> target ) -> dots.rip -> is_ticking() )
       return;
 
-    double base_excess_energy = excess_energy;
-    base_excess_energy /= 1.0 + p() -> buff.berserk -> check_value();
-    base_excess_energy /= 1.0 + p() -> buff.incarnation_cat -> check_value();
+    // 1.5% chance per 5 extra energy.
+    double energy_divisor = 5.0;
+    // Lower divisor if Berserk or Incarnation is active.
+    energy_divisor *= 1.0 + p() -> buff.berserk -> check_value();
+    energy_divisor *= 1.0 + p() -> buff.incarnation_cat -> check_value();
 
-    double chance = ( p() -> resources.current[ RESOURCE_COMBO_POINT ] + base_excess_energy / 5.0 ) * 0.015;
+    double chance = ( p() -> resources.current[ RESOURCE_COMBO_POINT ] + excess_energy / energy_divisor ) * 0.015;
 
     if ( ! rng().roll( chance ) )
       return;
