@@ -5,16 +5,13 @@
 
 #include "simulationcraft.hpp"
 /*
-TODO - Updated 2016/04/03 by Twintop:
+TODO - Updated 2016/04/05 by Twintop:
 
 Disc / Holy
  Everything
 
 Shadow
   - Finish ("required") Artifacts Traits:
-      - Void Torrent
-          - Uses some hardcoded values
-          - Has a delay of several hundred milliseconds after the channel finishes that should not be there.
       - Call to the Void
           - Need RPPM driver and pet
       - Mental Fortitude
@@ -1669,6 +1666,16 @@ struct priest_spell_t : public priest_action_t<spell_t>
     return g;
   }
 
+  bool usable_moving() const override
+  {
+    if (priest.buffs.surrender_to_madness->check())
+    {
+      return true;
+    }
+    
+    return spell_t::usable_moving();
+  }
+
   void init() override
   {
     base_t::init();
@@ -2702,6 +2709,7 @@ struct void_torrent_t : public priest_spell_t
     tick_zero = false;
 
     dot_duration = timespan_t::from_seconds(4.0);
+    
   }
 
   timespan_t composite_dot_duration(const action_state_t*) const override
@@ -4899,7 +4907,7 @@ struct voidform_t : public priest_buff_t<buff_t>
     {
       priest.demise();
       // FIXME Add some waiting time here
-      priest.arise();
+      //priest.arise();
     }
 
     event_t::cancel( insanity_loss );
@@ -6313,13 +6321,15 @@ void priest_t::apl_shadow()
   default_list->add_action( "call_action_list,name=main" );
 
   main->add_action("voidform");
+  main->add_action("surrender_to_madness,if=talent.surrender_to_madness.enabled,buff.voidform.stack<10,time_to_die<100");
   main->add_action("power_infusion,if=talent.power_infusion.enabled");
   main->add_action("void_bolt");
   main->add_action("dispersion,if=buff.voidform.up&buff.voidform.stack>20");
   main->add_action("void_torrent,if=buff.voidform.up&buff.voidform.stack>20");
+  main->add_action("shadow_word_death,if=talent.reaper_of_souls.enabled")
   main->add_action("mind_blast");
-  main->add_action("shadow_word_death");
   main->add_action("shadow_word_void,if=talent.shadow_word_void.enabled");
+  main->add_action("shadow_word_death");
   main->add_action("mindbender,if=talent.mindbender.enabled");
   main->add_action("shadow_word_pain,if=!ticking");
   main->add_action("vampiric_touch,if=!ticking");
