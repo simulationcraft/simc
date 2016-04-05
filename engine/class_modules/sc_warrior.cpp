@@ -1508,10 +1508,8 @@ struct execute_off_hand_t: public warrior_attack_t
 struct execute_t: public warrior_attack_t
 {
   execute_off_hand_t* oh_attack;
-  double arms_bonus_damage;
   execute_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "execute", p, p -> spec.execute ),
-    arms_bonus_damage( p -> find_spell( 168874 ) -> effectN( 2 ).percent() )
+    warrior_attack_t( "execute", p, p -> spec.execute )
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
@@ -1536,9 +1534,7 @@ struct execute_t: public warrior_attack_t
 
     if ( p() -> mastery.colossal_might -> ok() )
     {
-      double added_weapon_damage;
-      added_weapon_damage = ( std::min( 30.0, ( p() -> resources.current[RESOURCE_RAGE] ) ) / 30 ) * arms_bonus_damage;
-      
+      am *= 4.0 * ( std::min( 40.0, ( p() -> resources.current[RESOURCE_RAGE] ) ) / 40 );
     }
     else if ( p() -> has_shield_equipped() )
     { am *= 1.0 + p() -> spec.protection -> effectN( 2 ).percent(); }
