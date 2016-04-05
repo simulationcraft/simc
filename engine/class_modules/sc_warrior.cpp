@@ -1704,7 +1704,7 @@ struct heroic_leap_t: public warrior_attack_t
     range = -1;
     attack_power_mod.direct = heroic_leap_damage -> effectN( 1 ).ap_coeff();
 
-    cooldown -> duration = data().cooldown();
+    cooldown -> duration = data().charge_cooldown(); // Fixes bug in spelldata for now. 
     cooldown -> duration += p -> talents.bounding_stride -> effectN( 1 ).time_value();
   }
 
@@ -3949,8 +3949,8 @@ void warrior_t::create_buffs()
 
   buff.meat_cleaver = buff_creator_t( this, "meat_cleaver", spec.meat_cleaver -> effectN( 1 ).trigger() );
 
-  buff.taste_for_blood = buff_creator_t( this, "taste_for_blood", spec.furious_slash -> effectN( 3 ).trigger() )
-    .default_value( spec.furious_slash -> effectN( 3 ).trigger() -> effectN( 1 ).percent() );
+  buff.taste_for_blood = buff_creator_t( this, "taste_for_blood", spec.furious_slash -> effectN( 4 ).trigger() )
+    .default_value( spec.furious_slash -> effectN( 4 ).trigger() -> effectN( 1 ).percent() );
 
   buff.commanding_shout = new buffs::commanding_shout_t( *this, "commanding_shout", find_spell( 97463 ) );
 
