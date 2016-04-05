@@ -2697,23 +2697,16 @@ struct void_torrent_t : public priest_spell_t
 
     may_crit = false;
     channeled = true;
-    hasted_ticks = false;
     use_off_gcd = true;
     is_mind_spell = false;
     tick_zero = false;
 
-    base_tick_time = timespan_t::from_seconds(0.5);
     dot_duration = timespan_t::from_seconds(4.0);
   }
 
   timespan_t composite_dot_duration(const action_state_t*) const override
   {
     return timespan_t::from_seconds(4.0);
-  }
-
-  timespan_t tick_time(double h) const
-  {
-    return timespan_t::from_seconds(0.5);
   }
 
   void last_tick(dot_t* d) override
