@@ -353,6 +353,32 @@ class CASCObject(object):
 
 		return handle
 
+class BuildCfg:
+	def __init__(self, handle):
+		self.handle = handle
+
+		for line in self.handle:
+			mobj = re.match('^([^ ]+)[ ]*=[^A-z0-9]*(.+)', line.decode('utf-8'))
+			if not mobj:
+				continue
+
+			data = mobj.group(2)
+			if ' ' in data:
+				data = data.split(' ')
+
+			key = mobj.group(1).replace('-', '_')
+
+			setattr(self, key, data)
+
+		self.parse_build_name()
+
+	def parse_build_name(self):
+		mobj = re.match('^WOW-([0-9]+)patch([0-9.]+)_([A-Za-z]+)', self.build_name)
+
+		self.build = int(mobj.group(1))
+		self.build_patch = mobj.group(2)
+		self.build_type = mobj.group(3).lower()
+
 class CDNIndex(CASCObject):
 	PATCH_BASE_URL = 'http://us.patch.battle.net:1119'
 
@@ -367,22 +393,32 @@ class CDNIndex(CASCObject):
 		self.cdn_host = None
 		self.cdn_path = None
 		self.cdn_version = None
-		self.build_cfg_hash = None
+		self.build_cfg_hash = []
 		self.archives = []
-		self.build_info = {}
 		self.cdn_index = {}
+		self.builds = []
+
+	# TODO: (More) Option based selectors
+	def get_build_cfg(self):
+		for build_cfg in self.builds:
+			if self.options.beta and build_cfg.build_type == 'beta':
+				return build_cfg
+			elif self.options.ptr and build_cfg.build_type == 'ptr':
+				return build_cfg
+			elif not self.options.ptr and not self.options.beta and build_cfg.build_type == 'retail':
+				return build_cfg
 
 	def build(self):
-		return self.build_info['build-name']
+		return self.get_build_cfg().build_name
 
 	def root_file(self):
-		return self.build_info['root']
+		return self.get_build_cfg().root
 
 	def encoding_file(self):
-		return self.build_info['encoding'][0]
+		return self.get_build_cfg().encoding[0]
 
 	def encoding_blte_url(self):
-		return self.cdn_url('data', self.build_info['encoding'][1])
+		return self.cdn_url('data', self.get_build_cfg().encoding[1])
 
 	def patch_base_url(self):
 		if self.options.ptr:
@@ -449,25 +485,18 @@ class CDNIndex(CASCObject):
 				self.archives = mobj.group(1).split(' ')
 				continue
 
-			#mobj = re.match('^builds = (.+)', line)
-			#if mobj:
-			#	# Always take the first build configuration
-			#	self.build_cfg_hash = mobj.group(1).split(' ')[0]
-			#	continue
-
-	def open_build_cfg(self):
-		path = os.path.join(self.cache_dir('config'), self.build_cfg_hash)
-		url = self.cdn_url('config', self.build_cfg_hash)
-
-		for line in self.cached_open(path, url):
-			mobj = re.match('^([^ ]+)[ ]*=[^A-z0-9]*(.+)', line.decode('utf-8'))
-			if not mobj:
+			mobj = re.match('^builds = (.+)', line.decode('utf-8'))
+			if mobj:
+				# Always take the first build configuration
+				self.build_cfg_hash = mobj.group(1).split(' ')
 				continue
 
-			data = mobj.group(2)
-			if ' ' in data:
-				data = data.split(' ')
-			self.build_info[mobj.group(1)] = data
+	def open_build_cfg(self):
+		for cfg in self.build_cfg_hash:
+			path = os.path.join(self.cache_dir('config'), cfg)
+			url = self.cdn_url('config', cfg)
+
+			self.builds.append(BuildCfg(self.cached_open(path, url)))
 
 		print('Current CDN version: %s' % self.build())
 

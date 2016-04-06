@@ -75,7 +75,7 @@ class BuildCfg(object):
 			self.options.parser.error('Unknown file format for .build.info file, expected 2 lines, got %u' % len(build_lines))
 
 		line_split = build_lines[1].strip().split('|')
-		if len(line_split) != 14:
+		if len(line_split) != 12:
 			self.options.parser.error('Unknown file format for .build.info file, expected 14 fields, got %u' % len(line_split))
 
 		self.build_cfg_file = line_split[2]

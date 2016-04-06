@@ -7,7 +7,7 @@ import binascii
 
 parser = optparse.OptionParser( usage = 'Usage: %prog -d wow_install_dir [options] file_path ...')
 parser.add_option( '--cdn', dest = 'online', action = 'store_true', help = 'Fetch data from Blizzard CDN [only used for mode=batch/extract]' )
-parser.add_option( '-m', '--mode', dest = 'mode', choices = [ 'batch', 'unpack', 'extract' ],
+parser.add_option( '-m', '--mode', dest = 'mode', choices = [ 'batch', 'unpack', 'extract', 'fieldlist' ],
 		help = 'Extraction mode: "batch" for file extraction, "unpack" for BLTE file unpack, "extract" for key or MD5 based file extract from local game client files' )
 parser.add_option( '-b', '--dbfile', dest = 'dbfile', type = 'string', default = 'dbfile',
 		help = "A textual file containing a list of file paths to extract [default dbfile, only needed for mode=batch]" )
@@ -32,6 +32,18 @@ if __name__ == '__main__':
 		cdn = casc.CDNIndex(opts)
 		cdn.CheckVersion()
 		sys.exit(0)
+	#elif opts.mode == 'fieldlist':
+	#	build = build_cfg.BuildCfg(opts)
+	#	if not build.open():
+	#		sys.exit(1)
+
+	#	bin = pe.Pe32Parser(opts)
+	#	if not bin.open():
+	#		sys.exit(1)
+	#
+	#	bin.parse()
+	#	bin.generate()
+
 	elif opts.mode == 'batch':
 		if not opts.output:
 			parser.error("Batch mode requires an output directory for the files")
@@ -165,6 +177,9 @@ if __name__ == '__main__':
 				file_name = binascii.hexlify(keys[0]).decode('utf-8')
 		else:
 			file_md5s = root.GetFileMD5(args[0])
+			if len(file_md5s) == 0:
+				parser.error('No file named %s found' % args[0])
+
 			keys = encoding.GetFileKeys(file_md5s[0])
 			file_name = args[0]
 			#print args[0], len(file_md5s) and file_md5s[0].encode('hex') or 0, len(keys)
