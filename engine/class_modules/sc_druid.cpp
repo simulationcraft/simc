@@ -1501,20 +1501,20 @@ template <class Base>
 struct druid_attack_t : public druid_action_t< Base >
 {
 protected:
-  bool attack_hit;
+  unsigned targets_hit;
 private:
   typedef druid_action_t< Base > ab;
 public:
   typedef druid_attack_t base_t;
 
-  bool consume_bloodtalons;
+  bool consumes_bloodtalons;
   snapshot_counter_t* bt_counter;
   snapshot_counter_t* tf_counter;
   bool direct_bleed;
 
   druid_attack_t( const std::string& n, druid_t* player,
                   const spell_data_t* s = spell_data_t::nil() ) :
-    ab( n, player, s ), attack_hit( false ), consume_bloodtalons( false ),
+    ab( n, player, s ), consumes_bloodtalons( false ),
     bt_counter( nullptr ), tf_counter( nullptr ), direct_bleed( false )
   {
     ab::may_glance    = false;
@@ -1543,9 +1543,9 @@ public:
   {
     ab::init();
 
-    consume_bloodtalons = ab::harmful && ab::special && ab::trigger_gcd > timespan_t::zero();
+    consumes_bloodtalons = ab::harmful && ab::special && ab::trigger_gcd > timespan_t::zero();
 
-    if ( consume_bloodtalons )
+    if ( consumes_bloodtalons )
     {
       bt_counter = new snapshot_counter_t( ab::p() , ab::p() -> buff.bloodtalons );
       tf_counter = new snapshot_counter_t( ab::p() , ab::p() -> buff.tigers_fury );
@@ -1554,11 +1554,11 @@ public:
 
   virtual void execute()
   {
-    attack_hit = false;
+    targets_hit = 0;
 
     ab::execute();
 
-    if ( consume_bloodtalons && attack_hit )
+    if ( consumes_bloodtalons && targets_hit > 0 )
     {
       bt_counter -> count_execute();
       tf_counter -> count_execute();
@@ -1572,11 +1572,10 @@ public:
     ab::impact( s );
 
     if ( ab::result_is_hit( s -> result ) )
-      attack_hit = true;
-
-    if ( ! ab::special )
     {
-      if ( ab::result_is_hit( s -> result ) )
+      targets_hit++;
+
+      if ( ! ab::special )
         trigger_clearcasting();
     }
   }
@@ -1585,7 +1584,7 @@ public:
   {
     ab::tick( d );
 
-    if ( consume_bloodtalons )
+    if ( consumes_bloodtalons )
     {
       bt_counter -> count_tick();
       tf_counter -> count_tick();
@@ -1604,7 +1603,7 @@ public:
   {
     double pm = ab::composite_persistent_multiplier( s );
 
-    if ( consume_bloodtalons )
+    if ( consumes_bloodtalons )
       pm *= 1.0 + ab::p() -> buff.bloodtalons -> check_value();
 
     pm *= 1.0 + ab::p() -> buff.savage_roar -> check_value(); // Avoid using value() to prevent skewing benefit_pct.
@@ -1631,7 +1630,8 @@ public:
       return;
     if ( ! ( ab::p() -> specialization() == DRUID_FERAL && ab::p() -> spec.omen_of_clarity -> ok() ) )
       return;
-
+    
+    // 3.5 PPM via https://twitter.com/Celestalon/status/482329896404799488
     double chance = ab::weapon -> proc_chance_on_swing( 3.5 );
 
     if ( ab::p() -> sets.has_set_bonus( DRUID_FERAL, T18, B2 ) )
@@ -1639,7 +1639,6 @@ public:
 
     int active = ab::p() -> buff.clearcasting -> check();
 
-    // 3.5 PPM via https://twitter.com/Celestalon/status/482329896404799488
     if ( ab::p() -> buff.clearcasting -> trigger(
            ab::p() -> buff.clearcasting -> max_stack(),
            buff_t::DEFAULT_VALUE(),
@@ -2102,13 +2101,17 @@ namespace cat_attacks {
 
 struct cat_attack_t : public druid_attack_t < melee_attack_t >
 {
-  bool   requires_stealth;
-  bool   consumes_combo_points;
-  int    combo_point_gain;
-  double base_dd_bonus;
-  double base_td_bonus;
-  bool   consume_ooc;
-  bool   trigger_tier17_2pc;
+protected:
+  bool    attack_critical;
+public:
+  bool    requires_stealth;
+  int     combo_point_gain;
+  bool    consumes_combo_points;
+  double  base_dd_bonus;
+  double  base_td_bonus;
+  gain_t* action_gain;
+  bool    consumes_clearcasting;
+  bool    trigger_tier17_2pc;
   struct {
     bool direct, tick;
   } razor_claws;
@@ -2118,8 +2121,9 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
                 const std::string& options = std::string() ) :
     base_t( token, p, s ),
     requires_stealth( false ), combo_point_gain( 0 ),
-    base_dd_bonus( 0.0 ), base_td_bonus( 0.0 ), consume_ooc( true ),
-    trigger_tier17_2pc( false ), consumes_combo_points( false )
+    base_dd_bonus( 0.0 ), base_td_bonus( 0.0 ), consumes_clearcasting( true ),
+    trigger_tier17_2pc( false ), consumes_combo_points( false ),
+    action_gain( p -> get_gain( token ) )
   {
     parse_options( options );
 
@@ -2165,7 +2169,7 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
     if ( c == 0 )
       return 0;
 
-    if ( consume_ooc && p() -> buff.clearcasting -> check() )
+    if ( consumes_clearcasting && current_resource() == RESOURCE_ENERGY && p() -> buff.clearcasting -> check() )
       return 0;
 
     c *= 1.0 + p() -> buff.berserk -> check_value();
@@ -2195,6 +2199,8 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
 
   virtual void execute() override
   {
+    attack_critical = false;
+
     base_t::execute();
 
     if ( consumes_combo_points )
@@ -2211,6 +2217,14 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
         p() -> resource_gain( RESOURCE_COMBO_POINT, p() -> buff.feral_tier16_4pc -> check_value(), p() -> gain.feral_tier16_4pc );
         p() -> buff.feral_tier16_4pc -> expire();
       }
+    }
+
+    if ( combo_point_gain && targets_hit > 0 )
+    {
+      p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, action_gain );
+
+      if ( p() -> spell.primal_fury -> ok() && attack_critical )
+        trigger_primal_fury();
     }
 
     if ( ! result_is_hit( execute_state -> result ) )
@@ -2236,23 +2250,18 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
 
     if ( result_is_hit( s -> result ) )
     {
+      if ( s -> result == RESULT_CRIT )
+        attack_critical = true;
+
       if ( consumes_combo_points && p() -> spec.predatory_swiftness -> ok() )
         p() -> buff.predatory_swiftness -> trigger( 1, 1, p() -> resources.current[ RESOURCE_COMBO_POINT ] * 0.20 );
-
-      // Only manage for single target generators because AoE generators need special logic.
-      if ( combo_point_gain && p() -> spell.primal_fury -> ok() &&
-           s -> result == RESULT_CRIT && aoe == 0 )
-      {
-        p() -> proc.primal_fury -> occur();
-        p() -> resource_gain( RESOURCE_COMBO_POINT, p() -> spell.primal_fury -> effectN( 1 ).base_value(), p() -> gain.primal_fury );
-      }
     }
   }
 
   virtual void consume_resource() override
   {
     // Treat Omen of Clarity energy savings like an energy gain for tracking purposes.
-    if ( current_resource() == RESOURCE_ENERGY && base_t::cost() > 0 && consume_ooc && p() -> buff.clearcasting -> up() )
+    if ( consumes_clearcasting && current_resource() == RESOURCE_ENERGY && base_t::cost() > 0 && p() -> buff.clearcasting -> up() )
     {
       // Base cost doesn't factor in Berserk, but Omen of Clarity does net us less energy during it, so account for that here.
       double eff_cost = base_t::cost() * ( 1.0 + p() -> buff.berserk -> value() ) * ( 1.0 + p() -> buff.incarnation_cat -> check_value() );
@@ -2267,7 +2276,7 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
 
     base_t::consume_resource();
 
-    if ( current_resource() == RESOURCE_ENERGY && base_t::cost() > 0 && consume_ooc )
+    if ( consumes_clearcasting && current_resource() == RESOURCE_ENERGY && base_t::cost() > 0 )
       p() -> buff.clearcasting -> decrement();
 
     if ( consumes_combo_points && result_is_hit( execute_state -> result ) )
@@ -2356,6 +2365,12 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
 
     if ( p() -> predator_rppm_rate && p() -> talent.predator -> ok() )
       trigger_predator();
+  }
+
+  void trigger_primal_fury()
+  {
+    p() -> proc.primal_fury -> occur();
+    p() -> resource_gain( RESOURCE_COMBO_POINT, p() -> spell.primal_fury -> effectN( 1 ).base_value(), p() -> gain.primal_fury );
   }
 
   void trigger_predator()
@@ -2449,8 +2464,11 @@ struct ashamanes_frenzy_t : public cat_attack_t
 {
   struct ashamanes_frenzy_hit_t : public cat_attack_t
   {
+    bool critical;
+
     ashamanes_frenzy_hit_t( druid_t* player, const spell_data_t* s ) :
-      cat_attack_t( "ashamanes_frenzy_hit", player, s -> effectN( 1 ).trigger() )
+      cat_attack_t( "ashamanes_frenzy_hit", player, s -> effectN( 1 ).trigger() ),
+      critical( false )
     {
       background = dual = true;
       dot_max_stack = s -> duration() / s -> effectN( 1 ).period();
@@ -2460,6 +2478,17 @@ struct ashamanes_frenzy_t : public cat_attack_t
     // Emulate old DoT refresh behavior.
     virtual timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
     { return dot -> time_to_next_tick() + triggered_duration; }
+
+    void impact( action_state_t* s ) override
+    {
+      cat_attack_t::impact( s );
+
+      if ( ! critical && s -> result == RESULT_CRIT )
+      {
+        trigger_primal_fury();
+        critical = true;
+      }
+    }
   };
 
   ashamanes_frenzy_t( druid_t* player, const std::string& options_str ) :
@@ -2468,22 +2497,21 @@ struct ashamanes_frenzy_t : public cat_attack_t
     tick_action = new ashamanes_frenzy_hit_t( player, &data() );
     add_child( tick_action );
 
-    may_miss = may_parry = may_dodge = false;
+    may_miss = may_parry = may_dodge = may_crit = false;
   }
 
   void init() override
   {
     cat_attack_t::init();
 
-    consume_bloodtalons = false;
+    consumes_bloodtalons = false;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     cat_attack_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) )
-      p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.ashamanes_frenzy );
+    debug_cast<ashamanes_frenzy_hit_t*> ( tick_action ) -> critical = false;
   }
 };
 
@@ -2494,7 +2522,7 @@ struct berserk_t : public cat_attack_t
   berserk_t( druid_t* player, const std::string& options_str ) :
     cat_attack_t( "berserk", player, player -> find_specialization_spell( "Berserk" ), options_str )
   {
-    harmful = consume_ooc = may_miss = may_parry = may_dodge = may_crit = false;
+    harmful = consumes_clearcasting = may_miss = may_parry = may_dodge = may_crit = false;
   }
 
   void execute() override
@@ -2521,12 +2549,8 @@ struct berserk_t : public cat_attack_t
 
 struct brutal_slash_t : public cat_attack_t
 {
-private:
-  bool attack_critical;
-public:
   brutal_slash_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "brutal_slash", p, p -> talent.brutal_slash ),
-    attack_critical( false )
+    cat_attack_t( "brutal_slash", p, p -> talent.brutal_slash )
   {
     parse_options( options_str );
 
@@ -2549,31 +2573,6 @@ public:
     c += reduction;
 
     return c;
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    cat_attack_t::impact( s );
-
-    if ( s -> result == RESULT_CRIT )
-      attack_critical = true;
-  }
-
-  virtual void execute() override
-  {
-    attack_critical = false;
-
-    cat_attack_t::execute();
-
-    if ( attack_hit )
-    {
-      p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.brutal_slash );
-      if ( attack_critical && p() -> spell.primal_fury -> ok() )
-      {
-        p() -> proc.primal_fury -> occur();
-        p() -> resource_gain( RESOURCE_COMBO_POINT, p() -> spell.primal_fury -> effectN( 1 ).base_value(), p() -> gain.primal_fury );
-      }
-    }
   }
 };
 
@@ -2784,12 +2783,40 @@ struct gushing_wound_t : public residual_action::residual_periodic_action_t<cat_
     residual_action::residual_periodic_action_t<cat_attack_t>( "gushing_wound", p, p -> find_spell( 166638 ) )
   {
     background = dual = proc = true;
-    consume_ooc = may_miss = may_dodge = may_parry = false;
+    consumes_clearcasting = may_miss = may_dodge = may_parry = false;
     trigger_tier17_2pc = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
   }
 };
 
-// Maim =============================== ======================================
+
+
+// Lunar Inspiration ========================================================
+
+struct lunar_inspiration_t : public cat_attack_t
+{
+  lunar_inspiration_t( druid_t* player, const std::string& options_str ) :
+    cat_attack_t( "lunar_inspiration", player, player -> find_spell( 155625 ), options_str )
+  {
+    may_dodge = may_parry = may_block = may_glance = false;
+  }
+
+  void init() override
+  {
+    cat_attack_t::init();
+
+    consumes_bloodtalons = false;
+  }
+
+  virtual bool ready() override
+  {
+    if ( ! p() -> talent.lunar_inspiration -> ok() )
+      return false;
+
+    return cat_attack_t::ready();
+  }
+};
+
+// Maim =====================================================================
 
 struct maim_t : public cat_attack_t
 {
@@ -2850,14 +2877,6 @@ struct rake_t : public cat_attack_t
       pm *= 1.0 + stealth_multiplier;
 
     return pm;
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    cat_attack_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-      p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.rake );
   }
 };
 
@@ -2995,13 +3014,8 @@ struct shred_t : public cat_attack_t
   {
     cat_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
-    {
-      p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.shred );
-
-      if ( s -> result == RESULT_CRIT && p() -> sets.has_set_bonus( DRUID_FERAL, PVP, B4 ) )
-        td( s -> target ) -> buffs.bloodletting -> trigger(); // Druid module debuff
-    }
+    if ( s -> result == RESULT_CRIT && p() -> sets.has_set_bonus( DRUID_FERAL, PVP, B4 ) )
+      td( s -> target ) -> buffs.bloodletting -> trigger(); // Druid module debuff
   }
 
   virtual double composite_target_multiplier( player_t* t ) const override
@@ -3053,12 +3067,9 @@ struct shred_t : public cat_attack_t
 
 struct swipe_cat_t : public cat_attack_t
 {
-private:
-  bool attack_critical;
 public:
   swipe_cat_t( druid_t* player, const std::string& options_str ) :
-    cat_attack_t( "swipe_cat", player, player -> spec.swipe_cat, options_str ),
-    attack_critical( false )
+    cat_attack_t( "swipe_cat", player, player -> spec.swipe_cat, options_str )
   {
     aoe = -1;
     combo_point_gain = data().effectN( 1 ).base_value(); // Effect is not labelled correctly as CP gain
@@ -3079,29 +3090,9 @@ public:
     return c;
   }
 
-  virtual void impact( action_state_t* s ) override
-  {
-    cat_attack_t::impact( s );
-
-    if ( s -> result == RESULT_CRIT )
-      attack_critical = true;
-  }
-
   virtual void execute() override
   {
-    attack_critical = false;
-
     cat_attack_t::execute();
-
-    if ( attack_hit )
-    {
-      p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.swipe_cat );
-      if ( attack_critical && p() -> spell.primal_fury -> ok() )
-      {
-        p() -> proc.primal_fury -> occur();
-        p() -> resource_gain( RESOURCE_COMBO_POINT, p() -> spell.primal_fury -> effectN( 1 ).base_value(), p() -> gain.primal_fury );
-      }
-    }
 
     p() -> buff.feral_tier16_2pc -> up();
     p() -> buff.scent_of_blood -> up();
@@ -3160,7 +3151,7 @@ struct tigers_fury_t : public cat_attack_t
     cat_attack_t( "tigers_fury", p, p -> find_specialization_spell( "Tiger's Fury" ), options_str ),
     duration( p -> buff.tigers_fury -> buff_duration )
   {
-    harmful = consume_ooc = may_miss = may_parry = may_dodge = may_crit = false;
+    harmful = consumes_clearcasting = may_miss = may_parry = may_dodge = may_crit = false;
     autoshift = form_mask = CAT_FORM;
 
     /* If Druid Tier 18 (WoD 6.2) trinket effect is in use, adjust Tiger's Fury duration
@@ -3216,23 +3207,22 @@ struct thrash_cat_t : public cat_attack_t
     }
   };
 
-private:
-  bool attack_critical;
-public:
   shadow_thrash_t* shadow_thrash;
-  int targets_hit;
 
   thrash_cat_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "thrash_cat", p, p -> find_spell( 106830 ), options_str ),
-    attack_critical( false )
+    cat_attack_t( "thrash_cat", p, p -> find_spell( 106830 ), options_str )
   {
-    aoe                    = -1;
+    aoe = -1;
     spell_power_mod.direct = 0;
-
-    trigger_tier17_2pc = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
 
     base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
     dot_duration   *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
+    
+    trigger_tier17_2pc = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
+
+    // TODO: Get CP value from spell data when its available.
+    if ( p -> sets.has_set_bonus( DRUID_FERAL, T19, B2 ) )
+      combo_point_gain = 1; 
 
     if ( p -> artifact.shadow_thrash.rank() )
     {
@@ -3241,37 +3231,14 @@ public:
     }
   }
 
-  void impact( action_state_t* s ) override
-  {
-    cat_attack_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-      targets_hit++;
-
-    if ( s -> result == RESULT_CRIT )
-      attack_critical = true;
-  }
-
   void execute() override
   {
-    targets_hit = attack_critical = false;
-
     cat_attack_t::execute();
 
     p() -> buff.scent_of_blood -> trigger( 1, targets_hit * p() -> buff.scent_of_blood -> default_value );
 
     if ( shadow_thrash && targets_hit >= 2 && p() -> rppm.shadow_thrash.trigger() )
       shadow_thrash -> execute();
-
-    if ( attack_hit && p() -> sets.has_set_bonus( DRUID_FERAL, T19, B2 ) )
-    {
-      p() -> resource_gain( RESOURCE_COMBO_POINT, 1, p() -> gain.feral_tier19_2pc ); // TODO: Get CP value from spell data when its available.
-      if ( attack_critical && p() -> spell.primal_fury -> ok() ) // TOCHECK
-      {
-        p() -> proc.primal_fury -> occur();
-        p() -> resource_gain( RESOURCE_COMBO_POINT, p() -> spell.primal_fury -> effectN( 1 ).base_value(), p() -> gain.primal_fury );
-      }
-    }
   }
 };
 
@@ -3379,17 +3346,13 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
   {
     base_t::execute();
 
-    if ( attack_hit )
+    if ( targets_hit > 0 )
     {
       if ( rage_amount )
-      {
         p() -> resource_gain( RESOURCE_RAGE, rage_amount, rage_gain );
-      }
 
       if ( gore ) // TOCHECK: Does it need to hit?
-      {
         trigger_gore();
-      }
     }
   }
 
@@ -4949,39 +4912,6 @@ struct lunar_beam_t : public druid_spell_t
       if ( ! sim -> distance_targeting_enabled || p() -> get_ground_aoe_distance( *d -> state ) <= radius )
         heal -> execute();
     }
-  }
-};
-
-// Lunar Inspiration ========================================================
-
-struct lunar_inspiration_t : public druid_spell_t
-{
-  lunar_inspiration_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "lunar_inspiration", player, player -> find_spell( 155625 ), options_str )
-  {}
-
-  virtual void impact( action_state_t* s ) override
-  {
-    druid_spell_t::impact( s );
-
-    // Grant combo points
-    if ( result_is_hit( s -> result ) )
-    {
-      p() -> resource_gain( RESOURCE_COMBO_POINT, 1, p() -> gain.moonfire );
-      if ( p() -> spell.primal_fury -> ok() && s -> result == RESULT_CRIT )
-      {
-        p() -> proc.primal_fury -> occur();
-        p() -> resource_gain( RESOURCE_COMBO_POINT, p() -> spell.primal_fury -> effectN( 1 ).base_value(), p() -> gain.primal_fury );
-      }
-    }
-  }
-
-  virtual bool ready() override
-  {
-    if ( ! p() -> talent.lunar_inspiration -> ok() )
-      return false;
-
-    return druid_spell_t::ready();
   }
 };
 
@@ -7912,7 +7842,7 @@ public:
         if ( ! a )
           continue;
 
-        if ( ! a -> consume_bloodtalons )
+        if ( ! a -> consumes_bloodtalons )
           continue;
 
         tf_exe_up += a -> tf_counter -> mean_exe_up();
