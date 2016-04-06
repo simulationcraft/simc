@@ -37,7 +37,8 @@ namespace actions
 {
 namespace spells
 {
-struct shadowy_apparition_spell_t;
+  struct shadowy_apparition_spell_t;
+  struct sphere_of_insanity_spell_t;
 }
 }
 
@@ -114,6 +115,7 @@ public:
     buff_t* lingering_insanity;
     buff_t* mind_sear_on_hit_reset;
     buff_t* shadowy_insight;
+    buff_t* sphere_of_insanity;
     buff_t* surrender_to_madness;
     buff_t* vampiric_embrace;
     buff_t* void_ray;
@@ -225,7 +227,7 @@ public:
     artifact_power_t mental_fortitude;      //NYI
     artifact_power_t mind_shattering;
     artifact_power_t sinister_thoughts;
-    artifact_power_t sphere_of_insanity;    //NYI
+    artifact_power_t sphere_of_insanity;
     artifact_power_t thoughts_of_insanity;  //NYI
     artifact_power_t thrive_in_the_shadows; //NYI
     artifact_power_t to_the_pain;
@@ -264,6 +266,7 @@ public:
     // Shadow
     const spell_data_t* voidform;
     const spell_data_t* shadowy_apparitions;
+    const spell_data_t* sphere_of_insanity;
   } specs;
 
   // Mastery Spells
@@ -350,6 +353,7 @@ public:
   {
     action_t* echo_of_light;
     actions::spells::shadowy_apparition_spell_t* shadowy_apparitions;
+    actions::spells::sphere_of_insanity_spell_t* sphere_of_insanity;
     spell_t* voidform;
   } active_spells;
 
@@ -1726,6 +1730,11 @@ struct priest_spell_t : public priest_action_t<spell_t>
       {
         priest.buffs.twist_of_fate->trigger();
       }
+
+      if (priest.buffs.sphere_of_insanity->up() && s->result_amount > 0 && s->action->name_str != "sphere_of_insanity")
+      {
+        priest.buffs.sphere_of_insanity->current_value += s->result_amount;
+      }
     }
   }
 
@@ -2076,6 +2085,12 @@ struct voidform_t : public priest_spell_t
 
     priest.buffs.voidform->trigger();
 
+    if (priest.artifact.sphere_of_insanity.rank())
+    {
+      priest.buffs.sphere_of_insanity->trigger();
+      priest.buffs.sphere_of_insanity->current_value = 0.0;
+    }
+
     if (priest.talents.void_lord->ok() && priest.buffs.lingering_insanity->up())
     {
       timespan_t time = priest.buffs.lingering_insanity->remains() - (priest.talents.void_lord->effectN(1).time_value() * 1000);
@@ -2303,6 +2318,53 @@ struct shadowy_apparition_spell_t : public priest_spell_t
                             << " triggered shadowy apparition.";
 
     priest.procs.shadowy_apparition->occur();
+    schedule_execute();
+  }
+};
+
+// Sphere of Insanity Spell =================================================
+
+struct sphere_of_insanity_spell_t : public priest_spell_t
+{
+  double damage_amount;
+
+  sphere_of_insanity_spell_t(priest_t& p)
+    : priest_spell_t("sphere_of_insanity", p, p.find_spell(194182)),
+    damage_amount(0.0)
+  {
+    may_crit = false;
+    background = true;
+    proc = false;
+    callbacks = true;
+    may_miss = false;
+    aoe = -1;
+    range = 0.0;
+    radius = 100.0;
+    school = SCHOOL_SHADOW;
+  }
+
+  double calculate_direct_amount(action_state_t* state) const override
+  {
+    dot_t* d = state->target->get_dot("shadow_word_pain", &priest);
+
+    if (d) //Shadow Word: Pain is ticking on the target; deal damage
+    {
+      return damage_amount * 0.05; //TODO: replace with data from spell 194182, effect #3
+    }
+    else
+    {
+      return 0.0;
+    }
+  }
+
+  /* Trigger a sphere of insanity damage
+  */
+  void trigger(double amount)
+  {
+    if (priest.sim->debug)
+      priest.sim->out_debug << priest.name()
+      << " triggered Sphere of Insanity.";
+    damage_amount = amount;
     schedule_execute();
   }
 };
@@ -2803,11 +2865,23 @@ struct shadow_word_pain_t : public priest_spell_t
         add_child( priest.active_spells.shadowy_apparitions );
       }
     }
+
+    if (priest.artifact.sphere_of_insanity.rank())
+    {
+      priest.active_spells.sphere_of_insanity = new sphere_of_insanity_spell_t(p);
+      add_child(priest.active_spells.sphere_of_insanity);
+    }
   }
 
   void impact(action_state_t* s) override
   {
     priest_spell_t::impact(s);
+
+    if (priest.buffs.sphere_of_insanity->up())
+    {
+      priest.active_spells.sphere_of_insanity->trigger(priest.buffs.sphere_of_insanity->current_value);
+      priest.buffs.sphere_of_insanity->current_value = 0;
+    }
 
     generate_insanity(insanity_gain, priest.gains.insanity_shadow_word_pain_onhit);
   }
@@ -2831,6 +2905,12 @@ struct shadow_word_pain_t : public priest_spell_t
       {
         priest.procs.shadowy_insight->occur();
       }
+    }
+
+    if (priest.buffs.sphere_of_insanity->up())
+    {
+      priest.active_spells.sphere_of_insanity->trigger(priest.buffs.sphere_of_insanity->current_value);
+      priest.buffs.sphere_of_insanity->current_value = 0;
     }
   }
 
@@ -4822,8 +4902,7 @@ struct voidform_t : public priest_buff_t<buff_t>
     insanity_loss_event_t( voidform_t* s )
       : player_event_t( *s->player ), vf( s )
     {
-      add_event( timespan_t::from_seconds(
-          0.1 ) );  // FIXME Is there spelldata for tick intervall ?
+      add_event( timespan_t::from_seconds( 0.2 ) );  // FIXME Is there spelldata for tick intervall ?
     }
 
     virtual const char* name() const override
@@ -4837,26 +4916,27 @@ struct voidform_t : public priest_buff_t<buff_t>
       // ----
       // Updated 2016-04-03 by Twintop:
       // Drain starts at 8 over 1 second and increases by 1 over 2 seconds per stack of Voidform.
-      // Ticks happen ever 0.1 sec.
+      // Ticks happen every 0.2 sec.
       // CHECK ME: Triggering Voidform in-game and not using any abilities results in 11 stacks. The implementation below results in 11 stacks as well by subtracting 1 from the current stackcount.
       // TODO: Use Spelldata
       auto priest = debug_cast<priest_t*>( player() );
 
-      double insanity_loss = (8 * 0.1) + ((priest->buffs.voidform->check() - 1) / 2) * 0.1;
+      double insanity_loss = (8 * 0.2) + ((priest->buffs.voidform->check() - 1) / 2) * 0.2;
 
-      priest->resource_loss(RESOURCE_INSANITY, insanity_loss, priest->gains.insanity_drain);
-      
-      if (priest->buffs.dispersion->check())
-      {
-        priest->resource_gain(RESOURCE_INSANITY, insanity_loss, priest->gains.insanity_dispersion);
+      if (insanity_loss <= priest->resources.current[RESOURCE_INSANITY]) {
+        priest->resource_loss(RESOURCE_INSANITY, insanity_loss, priest->gains.insanity_drain);
+
+        if (priest->buffs.dispersion->check())
+        {
+          priest->resource_gain(RESOURCE_INSANITY, insanity_loss, priest->gains.insanity_dispersion);
+        }
+
+        if (priest->buffs.void_torrent->check())
+        {
+          priest->resource_gain(RESOURCE_INSANITY, insanity_loss, priest->gains.insanity_void_torrent);
+        }
       }
-
-      if (priest->buffs.void_torrent->check())
-      {
-        priest->resource_gain(RESOURCE_INSANITY, insanity_loss, priest->gains.insanity_void_torrent);
-      }
-
-      if (priest->resources.current[RESOURCE_INSANITY] <= 0.0)
+      else //If you don't have enough insanity for the drain, you drop out with however much insanity you had left
       {
         if (sim().debug)
         {
@@ -4864,6 +4944,7 @@ struct voidform_t : public priest_buff_t<buff_t>
         }
         vf->insanity_loss = nullptr; // avoid double-canceling
         priest->buffs.voidform->expire();
+        priest->buffs.sphere_of_insanity->expire();
         return;
       }
 
@@ -5937,32 +6018,7 @@ void priest_t::init_spells()
   mastery_spells.shield_discipline = find_mastery_spell( PRIEST_DISCIPLINE );
   mastery_spells.echo_of_light     = find_mastery_spell( PRIEST_HOLY );
   mastery_spells.madness           = find_mastery_spell( PRIEST_SHADOW );
-
-  ///////////////
-  // Glyphs    //
-  ///////////////
-
-  // All Specs
-  glyphs.angels            = find_glyph_spell( "Glyph of Angels" );
-  glyphs.confession        = find_glyph_spell( "Glyph of Confession" );
-  glyphs.holy_resurrection = find_glyph_spell( "Glyph of Holy Resurrection" );
-  glyphs.shackle_undead    = find_glyph_spell( "Glyph of Shackle Undead" );
-  glyphs.the_heavens       = find_glyph_spell( "Glyph of the Heavens" );
-  glyphs.the_sha           = find_glyph_spell( "Glyph of the Sha" );
-
-  // Discipline
-  glyphs.borrowed_time = find_glyph_spell( "Glyph of Borrowed Time" );
-
-  // Holy
-  glyphs.inspired_hymns = find_glyph_spell( "Glyph of Inspired Hymns" );
-  glyphs.the_valkyr     = find_glyph_spell( "Glyph of the Val'kyr" );
-
-  // Shadow
-  glyphs.dark_archangel  = find_glyph_spell( "Glyph of Dark Archangel" );
-  glyphs.shadow          = find_glyph_spell( "Glyph of Shadow" );
-  glyphs.shadow_ravens   = find_glyph_spell( "Glyph of Shadow Ravens" );
-  glyphs.shadowy_friends = find_glyph_spell( "Glyph of Shadowy Friends" );
-
+  
   if ( mastery_spells.echo_of_light->ok() )
     active_spells.echo_of_light = new actions::heals::echo_of_light_t( *this );
 
@@ -6027,6 +6083,12 @@ void priest_t::create_buffs()
 
   buffs.surrender_to_madness = buff_creator_t( this, "surrender_to_madness" )
                                    .spell( talents.surrender_to_madness );
+
+  buffs.sphere_of_insanity = buff_creator_t(this, "sphere_of_insanity")
+                                  .spell( find_spell(194182) )
+                                  .chance(1)
+                                  .duration( timespan_t::zero() )
+                                  .default_value(0.0);
 
   // Discipline
   buffs.archangel = new buffs::archangel_t( *this );
@@ -6325,8 +6387,8 @@ void priest_t::apl_shadow()
   main->add_action("power_infusion,if=talent.power_infusion.enabled");
   main->add_action("void_bolt");
   main->add_action("dispersion,if=buff.voidform.up&buff.voidform.stack>20");
-  main->add_action("void_torrent,if=buff.voidform.up&buff.voidform.stack>20");
-  main->add_action("shadow_word_death,if=talent.reaper_of_souls.enabled")
+  main->add_action("void_torrent,if=buff.voidform.up&buff.voidform.stack>17");
+  main->add_action("shadow_word_death,if=talent.reaper_of_souls.enabled");
   main->add_action("mind_blast");
   main->add_action("shadow_word_void,if=talent.shadow_word_void.enabled");
   main->add_action("shadow_word_death");
@@ -6337,6 +6399,7 @@ void priest_t::apl_shadow()
   main->add_action("shadowfiend,if=!talent.mindbender.enabled");
   main->add_action("mind_flay,if=!talent.mind_spike.enabled,interrupt=1,chain=1");
   main->add_action("mind_spike,if=talent.mind_spike.enabled");
+  main->add_action("shadow_word_pain"); //moving
 }
 
 // Discipline Heal Combat Action Priority List
