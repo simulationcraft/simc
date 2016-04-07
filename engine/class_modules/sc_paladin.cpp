@@ -3537,12 +3537,7 @@ void paladin_t::init_spells()
   passives.sword_of_light         = find_specialization_spell( "Sword of Light" );
   passives.sword_of_light_value   = find_spell( passives.sword_of_light -> ok() ? 20113 : 0 );
 
-  if ( specialization() == PALADIN_RETRIBUTION )
-  {
-    extra_regen_period  = passives.sword_of_light -> effectN( 2 ).period();
-    extra_regen_percent = passives.sword_of_light -> effectN( 2 ).percent();
-  }
-  else if ( specialization() == PALADIN_PROTECTION )
+  if ( specialization() == PALADIN_PROTECTION )
   {
     extra_regen_period  = passives.sanctuary -> effectN( 5 ).period();
     extra_regen_percent = passives.sanctuary -> effectN( 5 ).percent();
