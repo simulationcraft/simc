@@ -495,7 +495,6 @@ public:
     const spell_data_t* killer_instinct;        // Feral & Guardian
     const spell_data_t* nurturing_instinct;     // Balance & Restoration
     const spell_data_t* leather_specialization; // All Specializations
-    const spell_data_t* mana_attunement;        // Feral & Guardian
     const spell_data_t* omen_of_clarity;        // Feral & Restoration
 
     // Feral
@@ -520,7 +519,6 @@ public:
     const spell_data_t* celestial_alignment;
     const spell_data_t* moonkin_form;
     const spell_data_t* starfall;
-    const spell_data_t* natural_insight;
 
     // Guardian
     const spell_data_t* guardian;
@@ -5878,7 +5876,6 @@ void druid_t::init_spells()
   spec.druid                      = find_spell( 137009 );
   spec.killer_instinct            = find_specialization_spell( "Killer Instinct" );
   spec.leather_specialization     = find_specialization_spell( "Leather Specialization" );
-  spec.mana_attunement            = find_specialization_spell( "Mana Attunement" );
   spec.nurturing_instinct         = find_specialization_spell( "Nurturing Instinct" );
   spec.omen_of_clarity            = find_specialization_spell( "Omen of Clarity" );
 
@@ -5889,7 +5886,6 @@ void druid_t::init_spells()
   spec.blessing_of_elune          = find_talent_spell( "Blessing of the Ancients" ) -> ok() ? find_spell( 202737 ) : spell_data_t::not_found();
   spec.celestial_alignment        = find_specialization_spell( "Celestial Alignment" );
   spec.moonkin_form               = find_specialization_spell( "Moonkin Form" );
-  spec.natural_insight            = find_specialization_spell( "Natural Insight" );
   spec.starfall                   = find_specialization_spell( "Starfall" );
 
   // Feral
@@ -6148,9 +6144,8 @@ void druid_t::init_base_stats()
   base_energy_regen_per_second = 10;
 
   // Max Mana & Mana Regen modifiers
-  resources.base_multiplier[ RESOURCE_MANA ] *= 1.0 + spec.natural_insight -> effectN( 1 ).percent();
-  base.mana_regen_per_second *= 1.0 + spec.natural_insight -> effectN( 1 ).percent();
-  base.mana_regen_per_second *= 1.0 + spec.mana_attunement -> effectN( 1 ).percent();
+  resources.base_multiplier[ RESOURCE_MANA ] *= 1.0 + spec.druid -> effectN( 5 ).percent();
+  base.mana_regen_per_second *= 1.0 + spec.druid -> effectN( 5 ).percent();
 
   base_gcd = timespan_t::from_seconds( 1.5 );
 
@@ -7012,10 +7007,8 @@ double druid_t::mana_regen_per_second() const
 {
   double mp5 = player_t::mana_regen_per_second();
 
-  if ( buff.moonkin_form -> check() ) // Boomkins get 150% increased mana regeneration, scaling with haste.
+  if ( buff.moonkin_form -> check() ) // Boomkins get 150% increased mana regeneration, scaling with haste. Legion TOCHECK
     mp5 *= 1.0 + buff.moonkin_form -> data().effectN( 5 ).percent() + ( 1 / cache.spell_haste() );
-
-  mp5 *= 1.0 + spec.mana_attunement -> effectN( 1 ).percent();
 
   return mp5;
 }
