@@ -16,14 +16,10 @@ Shadow
           - Need RPPM driver and pet
       - Mental Fortitude
           - Need to create a new absorb and track it.
-      - Sphere of Insanity
-          - HOW?
       - Thoughts of Insanity
           - Need to implement Shadowmend first.
       - Thrive in the Shadows
   - Shadowmend
-  - Mind Spike
-      - Update implementation to match changes from March 30th build
   - Setbonuses
     - Several Setbonuses have to be updated by Blizzard: T17, T16 no longer work.
 
@@ -37,6 +33,7 @@ namespace actions
 {
 namespace spells
 {
+  struct mind_spike_detonation_t;
   struct shadowy_apparition_spell_t;
   struct sphere_of_insanity_spell_t;
 }
@@ -352,6 +349,7 @@ public:
   struct
   {
     action_t* echo_of_light;
+    actions::spells::mind_spike_detonation_t* mind_spike_detonation;
     actions::spells::shadowy_apparition_spell_t* shadowy_apparitions;
     actions::spells::sphere_of_insanity_spell_t* sphere_of_insanity;
     spell_t* voidform;
@@ -2257,9 +2255,8 @@ struct shadowy_apparition_spell_t : public priest_spell_t
     background          = true;
     proc                = false;
     callbacks           = true;
-    may_miss            = false;
-
-    trigger_gcd  = timespan_t::zero();
+    may_miss = false;
+    trigger_gcd = timespan_t::zero();
     travel_speed = 6.0;
     const spell_data_t* dmg_data =
         p.find_spell( 148859 );  // Hardcoded into tooltip 2014/06/01
@@ -2340,6 +2337,7 @@ struct sphere_of_insanity_spell_t : public priest_spell_t
     aoe = -1;
     range = 0.0;
     radius = 100.0;
+    trigger_gcd = timespan_t::zero();
     school = SCHOOL_SHADOW;
   }
 
@@ -2363,8 +2361,59 @@ struct sphere_of_insanity_spell_t : public priest_spell_t
   {
     if (priest.sim->debug)
       priest.sim->out_debug << priest.name()
-      << " triggered Sphere of Insanity.";
+      << " triggered Sphere of Insanity damage.";
     damage_amount = amount;
+    schedule_execute();
+  }
+};
+
+// Mind Spike Detonation Spell =================================================
+
+struct mind_spike_detonation_t : public priest_spell_t
+{
+  mind_spike_detonation_t(priest_t& p)
+    : priest_spell_t("mind_spike_detonation", p, p.talents.mind_spike)
+  {
+    may_crit = false;
+    background = true;
+    proc = false;
+    callbacks = true;
+    may_miss = false;
+    range = 0.0;
+    trigger_gcd = timespan_t::zero();
+    school = SCHOOL_SHADOWFROST;
+  }
+
+  double calculate_direct_amount(action_state_t* state) const override
+  {
+    priest_td_t& td = get_td(state->target);
+
+    if (td.buffs.mind_spike->check()) //Mind Spike debuff actuall exists; detonate.
+    {
+      return td.buffs.mind_spike->value();
+    }
+    else
+    {
+      return 0.0;
+    }
+  }
+
+  void impact(action_state_t* s) override
+  {
+    priest_spell_t::impact(s);
+
+    priest_td_t& td = get_td(s->target);
+
+    td.buffs.mind_spike->expire();
+  }
+
+  /* Trigger a sphere of insanity damage
+  */
+  void trigger()
+  {
+    if (priest.sim->debug)
+      priest.sim->out_debug << priest.name()
+      << " triggered Mind Spike Detonation.";
     schedule_execute();
   }
 };
@@ -2392,6 +2441,12 @@ struct mind_blast_t : public priest_spell_t
     {
       base_multiplier *= 1.0 + player.artifact.mind_shattering.percent();
     }
+
+    if (priest.talents.mind_spike->ok())
+    {
+      priest.active_spells.mind_spike_detonation = new mind_spike_detonation_t(player);
+      add_child(priest.active_spells.mind_spike_detonation);
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -2403,8 +2458,10 @@ struct mind_blast_t : public priest_spell_t
     {
       priest_td_t& td = get_td( s->target );
 
-      td.buffs.mind_spike->up();  // benefit tracking
-      td.buffs.mind_spike->expire();
+      if (td.buffs.mind_spike->up())
+      {
+        priest.active_spells.mind_spike_detonation->trigger();
+      }
     }
   }
 
@@ -2434,19 +2491,6 @@ struct mind_blast_t : public priest_spell_t
 
     priest.buffs.empowered_shadows->up();  // benefit tracking
     priest.buffs.empowered_shadows->expire();
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double am = base_t::composite_target_multiplier( t );
-
-    priest_td_t& td = get_td( t );
-    if ( priest.talents.mind_spike->ok() && td.buffs.mind_spike->check() )
-    {
-      am *= 1.0 + td.buffs.mind_spike->check_stack_value();
-    }
-
-    return am;
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -2492,7 +2536,31 @@ struct mind_spike_t : public priest_spell_t
     if ( result_is_hit( s->result ) )
     {
       priest_td_t& td = get_td( s->target );
-      td.buffs.mind_spike->trigger();
+
+      int prev_stacks = 0;
+      double prev_damage = 0.0;
+      
+      if (td.buffs.mind_spike->up())
+      {
+        prev_stacks = td.buffs.mind_spike->check();
+        prev_damage = td.buffs.mind_spike->value();
+        td.buffs.mind_spike->increment();
+      }
+      else
+      {
+        td.buffs.mind_spike->trigger();
+      }
+
+      if (td.buffs.mind_spike->check() == td.buffs.mind_spike->max_stack() && td.buffs.mind_spike->check() == prev_stacks)
+      {
+        td.buffs.mind_spike->current_value = round((prev_damage / td.buffs.mind_spike->max_stack())*(td.buffs.mind_spike->max_stack() - 1) + (s->result_amount * priest.talents.mind_spike->effectN(2).percent()));
+      }
+      else
+      {
+        td.buffs.mind_spike->current_value = prev_damage + s->result_amount * priest.talents.mind_spike->effectN(2).percent();
+        if (priest.sim->debug)
+          priest.sim->out_debug.printf("%s adds %d to mind_spike_detonation, now %d total at %i stacks", priest.name(), s->result_amount * priest.talents.mind_spike->effectN(2).percent(), td.buffs.mind_spike->current_value, td.buffs.mind_spike->stack());
+      }
     }
   }
 
@@ -5171,7 +5239,9 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p )
   if ( priest.talents.mind_spike->ok() )
     buffs.mind_spike = buff_creator_t( *this, "mind_spike" )
                            .spell( p.talents.mind_spike )
-                           .default_value( 0.5 );  // FIXME no value in Data?
+                           .default_value( 0.0 )
+                           .duration( timespan_t::from_seconds( 10 ) )
+                           .max_stack( 10 );  // FIXME no value in Data?
 
   target->callbacks_on_demise.push_back(
       std::bind( &priest_td_t::target_demise, this ) );
