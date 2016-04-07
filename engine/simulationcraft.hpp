@@ -6096,6 +6096,7 @@ public:
   void   reset();
   void   cancel();
   void   trigger( timespan_t duration );
+  void   decrement( int stacks );
   void   copy( player_t* destination, dot_copy_e = DOT_COPY_START );
   void   copy( dot_t* dest_dot );
   expr_t* create_expression( action_t* action, const std::string& name_str, bool dynamic );

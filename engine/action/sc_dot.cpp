@@ -188,6 +188,24 @@ void dot_t::trigger( timespan_t duration )
   }
 }
 
+void dot_t::decrement( int stacks )
+{
+  if ( max_stack == 0 || stack <= 0 ) return;
+
+  if ( stacks == 0 || stack <= stacks )
+  {
+    cancel();
+  }
+  else
+  {
+    stack -= stacks;
+
+    if ( sim.debug )
+      sim.out_debug.printf( "dot %s decremented by %d to %d stacks",
+                     name_str.c_str(), stacks, stack );
+  }
+}
+
 // For copying a DoT to a different target.
 void dot_t::copy( player_t* other_target, dot_copy_e copy_type )
 {
