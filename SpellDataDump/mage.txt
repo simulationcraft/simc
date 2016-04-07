@@ -47,6 +47,34 @@ Effects          :
 Description      : Launches a bolt of frost at the enemy, causing $s1 Frost damage and slowing movement speed by $205708s1% for $205708d.
 Tooltip          : $?$w1=0[][Movement slowed by $205708w1%.]
 
+Name             : Polymorph (Sheep) (id=118) [Spell Family (3)] 
+Class            : Mage
+School           : Arcane
+Resource         : 2% Base Mana (22000 @Level 110)
+Spell Level      : 18
+Range            : 30 yards
+Cast Time        : 1.7 seconds
+GCD              : 1.5 seconds
+Duration         : 50 seconds
+Proc Chance      : 100%
+Mechanic         : Unknown(141)
+Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
+Affecting spells : Icy Veins (12472), Ice Floes (108839)
+Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
+                 : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
+                 : ........ ...x.... ........ .....x..   .....x.. ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#3 (id=327281)   : Apply Aura (6) | Scale% (61)
+                   Base Value: 0 | Scaled Value: 0
+Description      : Transforms the enemy into a sheep, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
+
+Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
+Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
+
 Name             : Cone of Cold (id=120) [Scaling Spell (5), Spell Family (3)] 
 Class            : Frost Mage
 School           : Frost
@@ -229,7 +257,7 @@ Name             : Counterspell (id=2139) [Spell Family (3)]
 Class            : Mage
 School           : Arcane
 Resource         : 2% Base Mana (22000 @Level 110)
-Spell Level      : 26
+Spell Level      : 34
 Range            : 40 yards
 Duration         : 6 seconds
 Cooldown         : 24 seconds
@@ -314,7 +342,7 @@ Description      : Launches five waves of Arcane Missiles at the enemy over $514
 
 Damage increased by $36032s1% per Arcane Charge.
 
-Each damaging spell cast has a $79684s1% chance to activate Arcane Missiles. Limit $79683s1 charges.
+Each damaging spell cast has a $79684s1% chance to activate Arcane Missiles. Chance doubled for Arcane Blast. Limit $79683s1 charges.
 
 |cFFFFFFFFGenerates 1 Arcane Charge.|r
 
@@ -473,7 +501,7 @@ Effects          :
 #5 (id=269262)   : Apply Aura (6) | Add Percent Modifier: Spell Global Cooldown (108)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 21
                    Affected Spells: Arcane Blast (30451)
-Description      : For $d, you deal $s1% more spell damage and your damaging spells cost $s2% less mana.
+Description      : For $d, you deal $s1% more spell damage and your spells cost $s2% less mana.
 Tooltip          : Spell damage increased by $w1%.
 Mana costs of your damaging spells reduced by $w2%.
 
@@ -516,7 +544,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30
 #2 (id=5359)     : Apply Aura (6) | Add Percent Modifier: Spell Pushback (108)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 9
-                   Affected Spells: Frostbolt (116), Fireball (133), Flamestrike (2120), Scorch (2948), Arcane Missiles (5143), Pyroblast (11366), Arcane Power (12042), Evocation (12051), Arcane Blast (30451), Arcane Missiles! (79683), Conjure Familiar (126578), Cannonball Barrage (185779), Conjure Refreshment (190336), Blizzard (190356), Blizzard (190357), Phoenix's Flames (194466), Displacement (195676), Displacement Beacon (212799)
+                   Affected Spells: Frostbolt (116), Polymorph (118), Fireball (133), Flamestrike (2120), Scorch (2948), Arcane Missiles (5143), Pyroblast (11366), Arcane Power (12042), Evocation (12051), Polymorph (28271), Polymorph (28272), Arcane Blast (30451), Polymorph (61025), Polymorph (61305), Polymorph (61721), Polymorph (61780), Arcane Missiles! (79683), Conjure Familiar (126578), Polymorph (126819), Polymorph (161353), Polymorph (161354), Polymorph (161355), Polymorph (161372), Cannonball Barrage (185779), Conjure Refreshment (190336), Blizzard (190356), Blizzard (190357), Phoenix's Flames (194466), Displacement (195676), Displacement Beacon (212799)
 Description      : Accelerates your spellcasting for $d, granting $m1% haste and preventing damage from delaying your spellcasts.
 Tooltip          : Haste increased by $w1% and immune to pushback.
 
@@ -619,6 +647,62 @@ Effects          :
 #1 (id=12247)    : Apply Aura (6) | Unknown effect sub type (429)
                    Base Value: 1 | Scaled Value: 1
 Description      : Damage dealt by pets increased by $s1%.
+
+Name             : Polymorph (Turtle) (id=28271) [Spell Family (3)] 
+Class            : Mage
+School           : Arcane
+Resource         : 2% Base Mana (22000 @Level 110)
+Spell Level      : 60
+Range            : 30 yards
+Cast Time        : 1.7 seconds
+GCD              : 1.5 seconds
+Duration         : 50 seconds
+Proc Chance      : 100%
+Mechanic         : Unknown(141)
+Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
+Affecting spells : Icy Veins (12472), Ice Floes (108839)
+Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
+                 : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
+                 : ........ ...x.... ........ .....x..   .....x.. ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ......x. 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#3 (id=327294)   : Apply Aura (6) | Scale% (61)
+                   Base Value: 0 | Scaled Value: 0
+Description      : Transforms the enemy into a turtle, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
+
+Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
+Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
+
+Name             : Polymorph (Pig) (id=28272) [Spell Family (3)] 
+Class            : Mage
+School           : Arcane
+Resource         : 2% Base Mana (22000 @Level 110)
+Spell Level      : 60
+Range            : 30 yards
+Cast Time        : 1.7 seconds
+GCD              : 1.5 seconds
+Duration         : 50 seconds
+Proc Chance      : 100%
+Mechanic         : Unknown(141)
+Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
+Affecting spells : Icy Veins (12472), Ice Floes (108839)
+Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
+                 : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
+                 : ........ ...x.... ........ .....x..   .....x.. ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ......x. 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#3 (id=327289)   : Apply Aura (6) | Scale% (61)
+                   Base Value: 0 | Scaled Value: 0
+Description      : Transforms the enemy into a pig, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
+
+Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
+Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
 
 Name             : Arcane Torrent (Racial) (id=28730) 
 Class            : Priest, Mage, Warlock
@@ -1117,7 +1201,7 @@ Name             : Ice Block (id=45438) [Spell Family (3)]
 Class            : Mage
 School           : Frost
 Resource         : 15% Base Mana (165000 @Level 110)
-Spell Level      : 34
+Spell Level      : 26
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Charges          : 1 (300 seconds cooldown)
@@ -1212,7 +1296,7 @@ Attributes       : ........ ........ x....... .......x   ........ ..x..... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=48273)    : Apply Aura (6) | Unknown effect sub type (103)
-                   Base Value: -90000000 | Scaled Value: -9e+07
+                   Base Value: -90000000 | Scaled Value: -9e+007
 #2 (id=48274)    : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
 Description      : Creates $s2 copies of you nearby, which cast spells and attack your enemies. Lasts $55342d.
@@ -1339,6 +1423,118 @@ Effects          :
 Description      : Inflicts Frost damage to an enemy and reduces its movement speed for $d.
 Tooltip          : Reduced movement speed.
 
+Name             : Polymorph (Serpent) (id=61025) [Spell Family (3)] 
+Class            : Mage
+School           : Arcane
+Resource         : 2% Base Mana (22000 @Level 110)
+Spell Level      : 60
+Range            : 30 yards
+Cast Time        : 1.7 seconds
+GCD              : 1.5 seconds
+Duration         : 50 seconds
+Proc Chance      : 100%
+Mechanic         : Unknown(141)
+Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
+Affecting spells : Icy Veins (12472), Ice Floes (108839)
+Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
+                 : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
+                 : ........ ...x.... ........ .....x..   .....x.. ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ......x. 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#3 (id=327296)   : Apply Aura (6) | Scale% (61)
+                   Base Value: 0 | Scaled Value: 0
+Description      : Transforms the enemy into a harmless serpent, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
+
+Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
+Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
+
+Name             : Polymorph (Black Cat) (id=61305) [Spell Family (3)] 
+Class            : Mage
+School           : Arcane
+Resource         : 2% Base Mana (22000 @Level 110)
+Spell Level      : 60
+Range            : 30 yards
+Cast Time        : 1.7 seconds
+GCD              : 1.5 seconds
+Duration         : 50 seconds
+Proc Chance      : 100%
+Mechanic         : Unknown(141)
+Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
+Affecting spells : Icy Veins (12472), Ice Floes (108839)
+Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
+                 : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
+                 : ........ ...x.... ........ .....x..   .....x.. ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ......x. 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#3 (id=327291)   : Apply Aura (6) | Scale% (61)
+                   Base Value: 0 | Scaled Value: 0
+Description      : Transforms the enemy into a harmless black cat, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
+
+Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
+Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
+
+Name             : Polymorph (Rabbit) (id=61721) [Spell Family (3)] 
+Class            : Mage
+School           : Arcane
+Resource         : 2% Base Mana (22000 @Level 110)
+Spell Level      : 60
+Range            : 30 yards
+Cast Time        : 1.7 seconds
+GCD              : 1.5 seconds
+Duration         : 50 seconds
+Proc Chance      : 100%
+Mechanic         : Unknown(141)
+Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
+Affecting spells : Icy Veins (12472), Ice Floes (108839)
+Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
+                 : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
+                 : ........ ...x.... ........ .....x..   .....x.. ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#3 (id=327297)   : Apply Aura (6) | Scale% (61)
+                   Base Value: 0 | Scaled Value: 0
+Description      : Transforms the enemy into a harmless rabbit, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
+
+Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
+Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
+
+Name             : Polymorph (Turkey) (id=61780) [Spell Family (3)] 
+Class            : Mage
+School           : Arcane
+Resource         : 2% Base Mana (22000 @Level 110)
+Spell Level      : 60
+Range            : 30 yards
+Cast Time        : 1.7 seconds
+GCD              : 1.5 seconds
+Duration         : 50 seconds
+Proc Chance      : 100%
+Mechanic         : Unknown(141)
+Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
+Affecting spells : Icy Veins (12472), Ice Floes (108839)
+Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
+                 : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
+                 : ........ ...x.... ........ .....x..   .....x.. ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#3 (id=327295)   : Apply Aura (6) | Scale% (61)
+                   Base Value: 0 | Scaled Value: 0
+Description      : Transforms the enemy into a turkey, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
+
+Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
+Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
+
 Name             : Avoidance (Passive) (id=65220) [Passive] 
 Class            : Shaman, Mage, Monk
 School           : Physical
@@ -1433,7 +1629,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 911
 #3 (id=202642)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000
-                   Affected Spells: Waterbolt (31707)
+                   Affected Spells: Waterbolt (31707), Jagged Shard (214777)
 #4 (id=279323)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | Misc Value: 22
 Description      : When you damage enemies with Frostbolt, ${$m1}.1% of the damage done is stored as an Icicle for $148012d. Also increases the damage done by your Water Elemental by ${$m3}.1%.
@@ -1468,7 +1664,7 @@ Tooltip          : Arcane Missiles activated.
 Name             : Arcane Missiles (id=79684) [Spell Family (3), Passive, Hidden] 
 Class            : Arcane Mage
 School           : Physical
-Spell Level      : 24
+Spell Level      : 16
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
@@ -1482,7 +1678,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=68492)    : Apply Aura (6) | Proc Trigger Spell: Arcane Missiles! (42)
-                   Base Value: 30 | Scaled Value: 30 | Trigger Spell: 79683
+                   Base Value: 15 | Scaled Value: 15 | Trigger Spell: 79683
 
 Name             : Time Warp (id=80353) [Spell Family (3)] 
 Class            : Mage
@@ -1616,7 +1812,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=88723)    : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 100000000 | Scaled Value: 1e+08 | Misc Value: 127
+                   Base Value: 100000000 | Scaled Value: 1e+008 | Misc Value: 127
 #2 (id=88811)    : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35
 #3 (id=302842)   : Trigger Spell: Blazing Speed (64)
@@ -1772,7 +1968,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=120042)   : Apply Aura (6) | Unknown effect sub type (330)
                    Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Frostbolt (116), Fireball (133), Flamestrike (2120), Arcane Missiles (5143), Mage Armor (6117), Frost Armor (7302), Pyroblast (11366), Evocation (12051), Arcane Blast (30451), Molten Armor (30482), Summon Water Elemental (31687), Arcane Missiles! (79683), Frost Bomb (112948), Ring of Frost (113724), Rune of Power (116011), Ancient Teleport: Dalaran (120145), Conjure Familiar (126578), Cannonball Barrage (185779), Conjure Refreshment (190336), Blizzard (190356), Blizzard (190357), Phoenix's Flames (194466), Glacial Spike (199786)
+                   Affected Spells: Frostbolt (116), Polymorph (118), Fireball (133), Flamestrike (2120), Arcane Missiles (5143), Mage Armor (6117), Frost Armor (7302), Pyroblast (11366), Evocation (12051), Polymorph (28271), Polymorph (28272), Arcane Blast (30451), Molten Armor (30482), Summon Water Elemental (31687), Polymorph (61025), Polymorph (61305), Polymorph (61721), Polymorph (61780), Arcane Missiles! (79683), Frost Bomb (112948), Ring of Frost (113724), Rune of Power (116011), Ancient Teleport: Dalaran (120145), Conjure Familiar (126578), Polymorph (126819), Polymorph (161353), Polymorph (161354), Polymorph (161355), Polymorph (161372), Cannonball Barrage (185779), Conjure Refreshment (190336), Blizzard (190356), Blizzard (190357), Phoenix's Flames (194466), Glacial Spike (199786)
 Description      : Makes your next Mage spell castable while moving. Unaffected by the global cooldown and castable while casting. Max 3 charges.
 Tooltip          : Able to move while casting spells.
 
@@ -2072,7 +2268,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #3 (id=150698)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 50 | Scaled Value: 50
-                   Affected Spells: Waterbolt (31707), Freeze (33395)
+                   Affected Spells: Waterbolt (31707), Freeze (33395), Jagged Shard (214777)
 Description      : $@spelldesc116011
 Tooltip          : Spell damage increased by $w1%.$?$w2=0[][
 Health restored by $w2% per second.]
@@ -2095,7 +2291,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 0x7e
 #2 (id=168860)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 5 | Scaled Value: 5
-                   Affected Spells: Waterbolt (31707), Freeze (33395)
+                   Affected Spells: Waterbolt (31707), Freeze (33395), Jagged Shard (214777)
 Description      : $@spelldesc1463
 Tooltip          : Increases spell damage by $w1%.
 
@@ -2153,6 +2349,34 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50
 Description      : Your mana regeneration is increased by $s1%.
 Tooltip          : Increases your mana regeneration by $s1%.
+
+Name             : Polymorph (Pig) (id=126819) [Spell Family (3)] 
+Class            : Mage
+School           : Arcane
+Resource         : 2% Base Mana (22000 @Level 110)
+Spell Level      : 60
+Range            : 30 yards
+Cast Time        : 1.7 seconds
+GCD              : 1.5 seconds
+Duration         : 50 seconds
+Proc Chance      : 100%
+Mechanic         : Unknown(141)
+Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
+Affecting spells : Icy Veins (12472), Ice Floes (108839)
+Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
+                 : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
+                 : ........ ...x.... ........ .....x..   .....x.. ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ......x. 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#3 (id=327292)   : Apply Aura (6) | Scale% (61)
+                   Base Value: 0 | Scaled Value: 0
+Description      : Transforms the enemy into a porcupine, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
+
+Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
+Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
 
 Name             : Lightweight Retinal Armor (id=127117) 
 Class            : Priest, Mage, Warlock
@@ -2847,7 +3071,7 @@ Spell Level      : 1
 Range            : 100 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ..x..... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2863,7 +3087,7 @@ Spell Level      : 1
 Range            : 100 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ..x..... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2879,7 +3103,7 @@ Spell Level      : 1
 Range            : 100 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ..x..... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2961,6 +3185,118 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Mechanic: Unknown(58)
 Description      : Causes a whirl of icy wind around the target enemy or ally, dealing $s2 Frost damage to all enemies within $A2 yards, and freezing them in place for $d. A primary enemy target will take $s1% increased damage.
 Tooltip          : Frozen.
+
+Name             : Polymorph (Polar Bear Cub) (id=161353) [Spell Family (3)] 
+Class            : Mage
+School           : Arcane
+Resource         : 2% Base Mana (22000 @Level 110)
+Spell Level      : 60
+Range            : 30 yards
+Cast Time        : 1.7 seconds
+GCD              : 1.5 seconds
+Duration         : 50 seconds
+Proc Chance      : 100%
+Mechanic         : Unknown(141)
+Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
+Affecting spells : Icy Veins (12472), Ice Floes (108839)
+Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
+                 : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
+                 : ........ ...x.... ........ .....x..   .....x.. ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ......x. 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#3 (id=327288)   : Apply Aura (6) | Scale% (61)
+                   Base Value: 0 | Scaled Value: 0
+Description      : Transforms the enemy into a polar bear cub, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
+
+Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
+Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
+
+Name             : Polymorph (Monkey) (id=161354) [Spell Family (3)] 
+Class            : Mage
+School           : Arcane
+Resource         : 2% Base Mana (22000 @Level 110)
+Spell Level      : 60
+Range            : 30 yards
+Cast Time        : 1.7 seconds
+GCD              : 1.5 seconds
+Duration         : 50 seconds
+Proc Chance      : 100%
+Mechanic         : Unknown(141)
+Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
+Affecting spells : Icy Veins (12472), Ice Floes (108839)
+Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
+                 : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
+                 : ........ ...x.... ........ .....x..   .....x.. ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ......x. 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#3 (id=327287)   : Apply Aura (6) | Scale% (61)
+                   Base Value: 0 | Scaled Value: 0
+Description      : Transforms the enemy into a monkey, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
+
+Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
+Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
+
+Name             : Polymorph (Penguin) (id=161355) [Spell Family (3)] 
+Class            : Mage
+School           : Arcane
+Resource         : 2% Base Mana (22000 @Level 110)
+Spell Level      : 60
+Range            : 30 yards
+Cast Time        : 1.7 seconds
+GCD              : 1.5 seconds
+Duration         : 50 seconds
+Proc Chance      : 100%
+Mechanic         : Unknown(141)
+Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
+Affecting spells : Icy Veins (12472), Ice Floes (108839)
+Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
+                 : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
+                 : ........ ...x.... ........ .....x..   .....x.. ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ......x. 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#3 (id=327293)   : Apply Aura (6) | Scale% (61)
+                   Base Value: 0 | Scaled Value: 0
+Description      : Transforms the enemy into a penguin, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
+
+Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
+Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
+
+Name             : Polymorph (Turtle) (id=161372) [Spell Family (3)] 
+Class            : Mage
+School           : Arcane
+Resource         : 2% Base Mana (22000 @Level 110)
+Spell Level      : 60
+Range            : 30 yards
+Cast Time        : 1.7 seconds
+GCD              : 1.5 seconds
+Duration         : 50 seconds
+Proc Chance      : 100%
+Mechanic         : Unknown(141)
+Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
+Affecting spells : Icy Veins (12472), Ice Floes (108839)
+Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
+                 : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
+                 : ........ ...x.... ........ .....x..   .....x.. ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ......x. 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#3 (id=327290)   : Apply Aura (6) | Scale% (61)
+                   Base Value: 0 | Scaled Value: 0
+Description      : Transforms the enemy into a peacock, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
+
+Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
+Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
 
 Name             : Stat Negation Aura - Intellect DPS (id=162699) [Passive, Hidden] 
 Class            : Elemental Arcane Fire Frost Affliction Demonology Destruction Balance Shaman, Mage, Warlock, Druid
@@ -3268,9 +3604,8 @@ Effects          :
 #1 (id=285474)   : School Damage: fire (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.50000
 #2 (id=303223)   : School Damage: fire (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Radius: 0 - 4 yards
-Description      : Hurls a Phoenix that causes $s1 Fire damage to its primary target and splashes $s2 damage to enemies within 4 yards.
-Tooltip          : Hurls a Phoenix that causes $s1 Fire damage to its primary target and splashes $s2 damage to enemies within 4 yards.
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Radius: 0 - 8 yards
+Description      : Hurls a Phoenix that causes $s1 Fire damage to the target and splashes $s2 Fire damage to nearby enemies.
 
 Name             : Hot Streak (id=195283) [Spell Family (3), Passive] 
 Class            : Fire Mage
@@ -3564,7 +3899,7 @@ School           : Arcane
 Spell Level      : 1
 Duration         : Aura (infinite)
 Cooldown         : 60 seconds
-Stacks           : 3 initial, 3 maximum
+Stacks           : 2 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ......x. x...x... x....... ........ 
                  : White Ranged, Yellow Ranged, AOE Hostile Spell, Hostile Spell
@@ -3579,6 +3914,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10
                    Affected Spells: Arcane Blast (30451)
 Description      : Causes your next $n Arcane Blasts to be instant cast.
+Tooltip          : Arcane Blast is instant cast.
 
 Name             : Fire Starter (id=205026) [Spell Family (3), Passive] 
 Class            : Mage
@@ -3730,7 +4066,7 @@ Effects          :
 #1 (id=302662)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12
 #2 (id=315404)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 12
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 12
 Description      : Grants $s1% increased chance to trigger Arcane Missiles per $s2%  of your mana you have unspent.
 
 Name             : Ice Ward (id=205036) [Spell Family (3), Passive] 
