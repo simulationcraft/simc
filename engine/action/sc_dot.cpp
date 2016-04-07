@@ -188,7 +188,7 @@ void dot_t::trigger( timespan_t duration )
   }
 }
 
-void dot_t::decrement( int stacks )
+void dot_t::decrement( int stacks = 1 )
 {
   if ( max_stack == 0 || stack <= 0 ) return;
 
