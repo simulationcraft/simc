@@ -923,6 +923,8 @@ struct blade_dance_template_t: public demon_hunter_attack_t
   {
     aoe = -1;
 
+    cooldown = p -> get_cooldown( "blade_dance" ); // shared cooldown
+
     for ( size_t i = 0; i < attacks.size(); i++ )
     {
       add_child( attacks[ i ] );
