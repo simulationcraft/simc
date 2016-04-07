@@ -909,8 +909,8 @@ public:
   shaman_action_t( const std::string& n, shaman_t* player,
                    const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
-    hasted_cd( ab::data().affected_by( player -> spec.shaman -> effectN( 1 ) ) ),
-    hasted_gcd( ab::data().affected_by( player -> spec.shaman -> effectN( 2 ) ) ),
+    hasted_cd( ab::data().affected_by( player -> spec.shaman -> effectN( 2 ) ) ),
+    hasted_gcd( ab::data().affected_by( player -> spec.shaman -> effectN( 3 ) ) ),
     track_cd_waste( s -> cooldown() > timespan_t::zero() || s -> charge_cooldown() > timespan_t::zero() ),
     cd_wasted_exec( nullptr ), cd_wasted_cumulative( nullptr ), cd_wasted_iter( nullptr ),
     unshift_ghost_wolf( true ),
@@ -5056,7 +5056,6 @@ void shaman_t::init_base_stats()
   base.attack_power_per_agility  = 1.0;
   base.spell_power_per_intellect = 1.0;
 
-  resources.initial_multiplier[ RESOURCE_MANA ] = 1.0 + spec.spiritual_insight -> effectN( 1 ).percent();
   if ( specialization() == SHAMAN_ELEMENTAL || specialization() == SHAMAN_ENHANCEMENT )
     resources.base[ RESOURCE_MAELSTROM ] = 100;
 
