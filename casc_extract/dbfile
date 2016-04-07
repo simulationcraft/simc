@@ -245,6 +245,7 @@ DBFilesClient\ItemBonusTreeNode.db2
 DBFilesClient\ItemChildEquipment.db2
 DBFilesClient\ItemChildEquipment_internal.db2
 DBFilesClient\ItemClass.db2
+DBFilesClient\ItemContextPickerEntry.db2
 DBFilesClient\ItemCurrencyCost.db2
 DBFilesClient\ItemCurrencyCost_internal.db2
 DBFilesClient\ItemDamageAmmo.db2
@@ -334,6 +335,7 @@ DBFilesClient\MinorTalent.db2
 DBFilesClient\ModelFileData.db2
 DBFilesClient\ModelManifest.db2
 DBFilesClient\ModelNameToManifest.db2
+DBFilesClient\ModelRibbonQuality.db2
 DBFilesClient\ModifierTree.db2
 DBFilesClient\Mount.db2
 DBFilesClient\MountCapability.db2
@@ -365,6 +367,7 @@ DBFilesClient\PathProperty.db2
 DBFilesClient\Phase.db2
 DBFilesClient\PhaseShiftZoneSounds.db2
 DBFilesClient\PhaseXPhaseGroup.db2
+DBFilesClient\Phase_internal.db2
 DBFilesClient\PlayerCondition.db2
 DBFilesClient\Positioner.db2
 DBFilesClient\PositionerState.db2
@@ -407,6 +410,7 @@ DBFilesClient\RewardPackXItem.db2
 DBFilesClient\RibbonQuality.db2
 DBFilesClient\RulesetItemUpgrade.db2
 DBFilesClient\ScalingStatDistribution.db2
+DBFilesClient\ScalingStatDistribution_internal.db2
 DBFilesClient\Scenario.db2
 DBFilesClient\ScenarioEventEntry.db2
 DBFilesClient\ScenarioStep.db2
