@@ -127,6 +127,7 @@ public:
     buff_t* clear_thoughts;     // t17 4pc disc
     buff_t* reperation;         // T18 Disc 2p
     buff_t* premonition;        // T18 Shadow 4pc
+    buff_t* shadow_t19_4p;      // T19 Shadow 4pc
   } buffs;
 
   // Talents
@@ -301,15 +302,18 @@ public:
     gain_t* insanity_drain;
 	  gain_t* insanity_mind_blast;
 	  gain_t* insanity_mind_flay;
-	  gain_t* insanity_mind_sear;
+    gain_t* insanity_mind_sear;
+    gain_t* insanity_mind_spike;
     gain_t* insanity_mindbender;
     gain_t* insanity_power_infusion;
     gain_t* insanity_shadow_crash;
     gain_t* insanity_shadow_word_death;
+    gain_t* insanity_shadow_word_pain_ondamage;
     gain_t* insanity_shadow_word_pain_onhit;
     gain_t* insanity_shadow_word_void;
     gain_t* insanity_surrender_to_madness;
-	  gain_t* insanity_vampiric_touch_onhit;
+    gain_t* insanity_vampiric_touch_ondamage;
+    gain_t* insanity_vampiric_touch_onhit;
 	  gain_t* insanity_void_bolt;
     gain_t* shadowy_insight;
     gain_t* vampiric_touch_health;
@@ -2083,6 +2087,12 @@ struct voidform_t : public priest_spell_t
 
     priest.buffs.voidform->trigger();
 
+    if (priest.sets.has_set_bonus(SET_CASTER, T19, B4))
+    {
+      priest.buffs.shadow_t19_4p->trigger();
+    }
+    //priest.buffs.shadow_t19_4p->trigger(); //For testing until set bonuses are available in SimC
+
     if (priest.artifact.sphere_of_insanity.rank())
     {
       priest.buffs.sphere_of_insanity->trigger();
@@ -2531,7 +2541,7 @@ struct mind_spike_t : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    generate_insanity( insanity_gain, priest.gains.insanity_mind_flay );
+    generate_insanity( insanity_gain, priest.gains.insanity_mind_spike );
 
     if ( result_is_hit( s->result ) )
     {
@@ -2952,6 +2962,12 @@ struct shadow_word_pain_t : public priest_spell_t
     }
 
     generate_insanity(insanity_gain, priest.gains.insanity_shadow_word_pain_onhit);
+
+    if (priest.sets.has_set_bonus(SET_CASTER, T19, B2))
+    {
+    generate_insanity(priest.sets.set(SET_CASTER, T19, B2)->effectN(1).base_value(), priest.gains.insanity_shadow_word_pain_ondamage);
+    }
+    //generate_insanity(1, priest.gains.insanity_shadow_word_pain_ondamage); //For testing until set bonuses are available in SimC
   }
 
   void tick( dot_t* d ) override
@@ -2980,6 +2996,12 @@ struct shadow_word_pain_t : public priest_spell_t
       priest.active_spells.sphere_of_insanity->trigger(priest.buffs.sphere_of_insanity->current_value);
       priest.buffs.sphere_of_insanity->current_value = 0;
     }
+
+    if (priest.sets.has_set_bonus(SET_CASTER, T19, B2))
+    {
+      generate_insanity(priest.sets.set(SET_CASTER, T19, B2)->effectN(1).base_value(), priest.gains.insanity_shadow_word_pain_ondamage);
+    }
+    //generate_insanity(1, priest.gains.insanity_shadow_word_pain_ondamage); //For testing until set bonuses are available in SimC
   }
 
   double cost() const override
@@ -3137,6 +3159,12 @@ struct vampiric_touch_t : public priest_spell_t
         }
       }
     }
+
+    if (priest.sets.has_set_bonus(SET_CASTER, T19, B2))
+    {
+      generate_insanity(priest.sets.set(SET_CASTER, T19, B2)->effectN(1).base_value(), priest.gains.insanity_vampiric_touch_ondamage);
+    }
+    //generate_insanity(1, priest.gains.insanity_vampiric_touch_ondamage); //For testing until set bonuses are available in SimC
   }
 
   virtual double action_multiplier() const override
@@ -3174,6 +3202,16 @@ struct void_bolt_t : public priest_spell_t
     if (player.artifact.sinister_thoughts.rank())
     {
       base_multiplier *= 1.0 + player.artifact.sinister_thoughts.percent();
+    }
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    if (priest.buffs.shadow_t19_4p->up())
+    {
+      cooldown->reset(false);
     }
   }
 
@@ -5334,15 +5372,18 @@ void priest_t::create_gains()
   gains.insanity_dispersion = get_gain("Insanity Saved by Dispersion");
   gains.insanity_drain = get_gain("Insanity Drained by Voidform");
   gains.insanity_mind_blast = get_gain("Insanity Gained from Mind Blast");
-  gains.insanity_mind_flay = get_gain("Insanity Gained from Mind Flay or Mind Spike");
+  gains.insanity_mind_flay = get_gain("Insanity Gained from Mind Flay");
   gains.insanity_mind_sear = get_gain("Insanity Gained from Mind Sear");
+  gains.insanity_mind_spike = get_gain("Insanity Gained from Mind Spike");
   gains.insanity_mindbender = get_gain("Insanity Gained from Mindbender");
   gains.insanity_power_infusion = get_gain("Insanity Gained from Power Infusion");
   gains.insanity_shadow_crash = get_gain("Insanity Gained from Shadow Crash");
   gains.insanity_shadow_word_death = get_gain("Insanity Gained from Shadow Word: Death");
+  gains.insanity_shadow_word_pain_ondamage = get_gain("Insanity Gained from Shadow Word: Pain Damage (T19 2P)");
   gains.insanity_shadow_word_pain_onhit = get_gain("Insanity Gained from Shadow Word: Pain Casts");
   gains.insanity_shadow_word_void = get_gain("Insanity Gained from Shadow Word: Void");
   gains.insanity_surrender_to_madness = get_gain("Insanity Gained from Surrender to Madness");
+  gains.insanity_vampiric_touch_ondamage = get_gain("Insanity Gained from Vampiric Touch Damage (T19 2P)");
   gains.insanity_vampiric_touch_onhit = get_gain("Insanity Gained from Vampiric Touch Casts");
   gains.insanity_void_bolt = get_gain("Insanity Gained from Void Bolt");
   gains.insanity_void_torrent = get_gain("Insanity Saved by Void Torrent");
@@ -6269,6 +6310,13 @@ void priest_t::create_buffs()
       buff_creator_t( this, "premonition" )
           .spell( find_spell( 188779 ) )
           .chance( sets.has_set_bonus( PRIEST_SHADOW, T18, B4 ) );
+
+  buffs.shadow_t19_4p =
+    buff_creator_t(this, "shadow_t19_4p" )
+          .spell( find_spell( 211654 ) )
+          .chance(1.0)
+          .duration(timespan_t::from_seconds(6.0)); //TODO Update with spelldata once available
+
 }
 
 // ALL Spec Pre-Combat Action Priority List
