@@ -23,8 +23,6 @@ namespace { // UNNAMED NAMESPACE
   Artifact utility traits
   Brutal Slash hasted recharge
 
-  SR/TF as a player multiplier? Fun.
-
   Balance ===================================================================
   Stellar Drift cast while moving
   Force of Nature
@@ -783,7 +781,6 @@ public:
   virtual double    composite_melee_crit() const override;
   virtual double    composite_melee_expertise( const weapon_t* ) const override;
   virtual double    composite_parry() const override { return 0; }
-  virtual double    composite_persistent_multiplier( school_e ) const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
   virtual double    composite_spell_crit() const override;
   virtual double    composite_spell_haste() const override;
@@ -805,7 +802,6 @@ public:
   virtual void      assess_heal( school_e, dmg_e, action_state_t* ) override;
   virtual void      recalculate_resource_max( resource_e ) override;
   virtual void      create_options() override;
-  virtual action_t* create_proc_action( const std::string& name, const special_effect_t& ) override;
   virtual std::string      create_profile( save_e type = SAVE_ALL ) override;
 
   void              apl_precombat();
@@ -1599,18 +1595,6 @@ public:
       return ab::target_armor( t );
   }
 
-  virtual double composite_persistent_multiplier( const action_state_t* s ) const
-  {
-    double pm = ab::composite_persistent_multiplier( s );
-
-    if ( consumes_bloodtalons )
-      pm *= 1.0 + ab::p() -> buff.bloodtalons -> check_value();
-
-    pm *= 1.0 + ab::p() -> buff.savage_roar -> check_value(); // Avoid using value() to prevent skewing benefit_pct.
-
-    return pm;
-  }
-
   virtual double composite_target_multiplier( player_t* t ) const
   {
     double tm = ab::composite_target_multiplier( t );
@@ -1664,11 +1648,29 @@ private:
   typedef druid_action_t< Base > ab;
 public:
   typedef druid_spell_base_t base_t;
+  
+  bool cat_form_gcd;
 
   druid_spell_base_t( const std::string& n, druid_t* player,
                       const spell_data_t* s = spell_data_t::nil() ) :
-    ab( n, player, s )
+    ab( n, player, s ),
+    cat_form_gcd( ab::data().affected_by( player -> spell.cat_form -> effectN( 4 ) ) )
   {}
+
+  virtual timespan_t gcd() const override
+  {
+    timespan_t g = ab::trigger_gcd;
+
+    if ( cat_form_gcd && ab::p() -> buff.cat_form -> check() )
+      g += ab::p() -> spell.cat_form -> effectN( 4 ).time_value();
+
+    g *= ab::composite_haste();
+
+    if ( g < ab::min_gcd )
+      return ab::min_gcd;
+    else
+      return g;
+  }
 };
 
 namespace spells {
@@ -2324,6 +2326,34 @@ public:
       tc += p() -> talent.blood_scent -> effectN( 1 ).percent();
 
     return tc;
+  }
+
+  virtual double action_multiplier() const
+  {
+    double am = base_t::action_multiplier();
+
+    // Cancel out the multipliers from druid_t::composite_player_multiplier.
+    if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
+      am /= 1.0 + p() -> buff.tigers_fury -> check_value();
+
+    am /= 1.0 + p() -> buff.savage_roar -> check_value();
+
+    return am;
+  }
+
+  virtual double composite_persistent_multiplier( const action_state_t* s ) const
+  {
+    double pm = base_t::composite_persistent_multiplier( s );
+
+    if ( consumes_bloodtalons )
+      pm *= 1.0 + p() -> buff.bloodtalons -> check_value();
+    
+    if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
+      pm *= 1.0 + p() -> buff.tigers_fury -> check_value();
+
+    pm *= 1.0 + p() -> buff.savage_roar -> check_value();
+
+    return pm;
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -3242,59 +3272,6 @@ struct thrash_cat_t : public cat_attack_t
   }
 };
 
-// Flurry of Xuen (Fen-yu Legendary Cloak proc) =============================
-
-struct flurry_of_xuen_t : public cat_attack_t
-{
-  flurry_of_xuen_t( druid_t* p ) :
-    cat_attack_t( "flurry_of_xuen", p, p -> find_spell( 147891 ) )
-  {
-    special = may_miss = may_parry = may_block = may_dodge = may_crit = background = true;
-    proc = false;
-    aoe = 5;
-  }
-};
-
-// Mark of the Shattered Hand ===============================================
-
-struct shattered_bleed_t : public cat_attack_t
-{
-  shattered_bleed_t( druid_t* p ):
-    cat_attack_t( "shattered_bleed", p, p -> find_spell( 159238 ) )
-  {
-    hasted_ticks = false;
-    background = true;
-    callbacks = false;
-    special = true;
-    may_miss = may_block = may_dodge = may_parry = false;
-    may_crit = true;
-    tick_may_crit = false;
-  }
-
-  void init() override
-  {
-    cat_attack_t::init();
-
-    snapshot_flags |= STATE_MUL_TA;
-  }
-
-  double target_armor( player_t* ) const override
-  { return 0.0; }
-
-  timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
-  {
-    timespan_t new_duration = std::min( triggered_duration * 0.3, dot -> remains() ) + triggered_duration;
-    timespan_t period_mod = new_duration % base_tick_time;
-    new_duration += ( base_tick_time - period_mod );
-
-    return new_duration;
-  }
-
-  // Override to prevent benefitting from mastery.
-  double composite_ta_multiplier( const action_state_t* /*s*/ ) const override
-  { return action_multiplier(); }
-};
-
 } // end namespace cat_attacks
 
 namespace bear_attacks {
@@ -3935,16 +3912,6 @@ struct healing_touch_t : public druid_heal_t
       p() -> buff.bloodtalons -> trigger( 2 );
 
     p() -> buff.predatory_swiftness -> expire();
-  }
-
-  virtual timespan_t gcd() const override
-  {
-    const druid_t& p = *this -> p();
-    if ( p.buff.cat_form -> check() )
-      if ( timespan_t::from_seconds( 1.0 ) < druid_heal_t::gcd() )
-        return timespan_t::from_seconds( 1.0 );
-
-    return druid_heal_t::gcd();
   }
 };
 
@@ -6349,7 +6316,7 @@ void druid_t::create_buffs()
   buff.tigers_fury           = buff_creator_t( this, "tigers_fury", find_specialization_spell( "Tiger's Fury" ) )
                                .default_value( find_specialization_spell( "Tiger's Fury" ) -> effectN( 1 ).percent() )
                                .cd( timespan_t::zero() )
-                               .refresh_behavior( BUFF_REFRESH_PANDEMIC ); // Legion TOCHECK
+                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ); 
 
   // Guardian
   buff.adaptive_fur          = new adaptive_fur_t( *this );
@@ -7197,18 +7164,6 @@ double druid_t::composite_armor_multiplier() const
   return a;
 }
 
-// druid_t::composite_persistent_multiplier =================================
-
-double druid_t::composite_persistent_multiplier( school_e school ) const
-{
-  double pm = player_t::composite_persistent_multiplier( school );
-
-  if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
-    pm *= 1.0 + buff.tigers_fury -> check_value();
-
-  return pm;
-}
-
 // druid_t::composite_player_multiplier =====================================
 
 double druid_t::composite_player_multiplier( school_e school ) const
@@ -7225,6 +7180,12 @@ double druid_t::composite_player_multiplier( school_e school ) const
         m *= 1.0 + buff.moonkin_form -> data().effectN( 9 ).percent();
     }
   }
+
+  // Tiger's Fury and Savage Roar are player multipliers. Their "snapshotting" for cat abilities is handled in cat_attack_t.
+  if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
+    m *= 1.0 + buff.tigers_fury -> check_value();
+
+  m *= 1.0 + buff.savage_roar -> check_value();
 
   m *= 1.0 + buff.celestial_alignment -> check_value();
   m *= 1.0 + buff.incarnation_moonkin -> check_value();
@@ -7500,18 +7461,6 @@ void druid_t::create_options()
   add_option( opt_float( "predator_rppm", predator_rppm_rate ) );
   add_option( opt_float( "initial_astral_power", initial_astral_power ) );
   add_option( opt_int( "initial_moon_stage", initial_moon_stage ) );
-}
-
-// druid_t::create_proc_action ==============================================
-
-action_t* druid_t::create_proc_action( const std::string& name, const special_effect_t& )
-{
-  if ( util::str_compare_ci( name, "shattered_bleed" ) && specialization() == DRUID_FERAL )
-    return new cat_attacks::shattered_bleed_t( this );
-  if ( util::str_compare_ci( name, "flurry_of_xuen" ) && specialization() == DRUID_FERAL )
-    return new cat_attacks::flurry_of_xuen_t( this );
-
-  return nullptr;
 }
 
 // druid_t::create_profile ==================================================
