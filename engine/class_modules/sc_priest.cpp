@@ -6507,7 +6507,7 @@ void priest_t::apl_shadow()
   default_list->add_action( "call_action_list,name=main" );
 
   main->add_action("voidform");
-  main->add_action("surrender_to_madness,if=talent.surrender_to_madness.enabled,buff.voidform.stack<10,time_to_die<100");
+  main->add_action("surrender_to_madness,if=talent.surrender_to_madness.enabled&buff.voidform.stack<10&time_to_die<100");
   main->add_action("power_infusion,if=talent.power_infusion.enabled");
   main->add_action("void_bolt");
   main->add_action("dispersion,if=buff.voidform.up&buff.voidform.stack>20");
