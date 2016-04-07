@@ -955,6 +955,8 @@ struct blade_dance_template_t: public demon_hunter_attack_t
 
   void execute() override
   {
+    cooldown -> duration = data().cooldown();
+
     demon_hunter_attack_t::execute();
 
     p() -> blade_dance_driver = new ( *sim ) blade_dance_event_t( p(), 0, p() -> buff.metamorphosis -> up() );
