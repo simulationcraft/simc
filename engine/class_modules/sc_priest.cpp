@@ -222,6 +222,7 @@ public:
   {
     // Shadow - Xal'atath, Blade of the Black Empire
     artifact_power_t call_to_the_void;      //NYI
+    artifact_power_t darkening_whispers;
     artifact_power_t deaths_embrace;
     artifact_power_t from_the_shadows;
     artifact_power_t mass_hysteria;
@@ -2314,7 +2315,7 @@ struct shadowy_apparition_spell_t : public priest_spell_t
   {
     double d = priest_spell_t::composite_da_multiplier( state );
 
-    d *= 1.0 + priest.talents.auspicious_spirits->effectN( 1 ).percent();
+    d *= 1.0 + priest.talents.auspicious_spirits->effectN(1).percent();
 
     return d;
   }
@@ -5666,13 +5667,14 @@ double priest_t::composite_player_multiplier( school_e school ) const
 {
   double m = base_t::composite_player_multiplier( school );
 
-  if ( specs.voidform->ok() && dbc::is_school( SCHOOL_SHADOWFROST, school ) &&
-       buffs.voidform->check() )
+  if (specs.voidform->ok() && buffs.voidform->check() && (dbc::is_school(SCHOOL_SHADOW, school) || dbc::is_school(SCHOOL_SHADOWFROST, school)))
   {
-    if ( talents.void_lord->ok() )
-      m *= 1.0 + talents.void_lord->effectN( 1 ).percent();
-    else
-      m *= 1.0 + buffs.voidform->data().effectN( 1 ).percent();
+    m *= 1.0 + buffs.voidform->data().effectN( 1 ).percent();
+  }
+
+  if (specialization() == PRIEST_SHADOW && artifact.darkening_whispers.rank() && (dbc::is_school(SCHOOL_SHADOW, school) || dbc::is_school(SCHOOL_SHADOWFROST, school)))
+  {
+    m *= 1.0 + artifact.darkening_whispers.percent();
   }
 
   if ( dbc::is_school( SCHOOL_SHADOWLIGHT, school ) )
@@ -6082,6 +6084,7 @@ void priest_t::init_spells()
   // Shadow - Xal'atath, Blade of the Black Empire
 
   artifact.call_to_the_void = find_artifact_spell("Call to the Void");
+  artifact.darkening_whispers = find_artifact_spell("Darkening Whispers");
   artifact.deaths_embrace = find_artifact_spell("Death's Embrace");
   artifact.from_the_shadows = find_artifact_spell("From the Shadows");
   artifact.mass_hysteria = find_artifact_spell("Mass Hysteria");
