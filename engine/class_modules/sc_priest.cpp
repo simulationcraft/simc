@@ -19,6 +19,9 @@ Shadow
       - Thoughts of Insanity
           - Need to implement Shadowmend first.
       - Thrive in the Shadows
+      - Mass Hysteria
+          - Need to change in to own buff for the rare case that Voidform stacks go over 100. Probably won't happen but still need to handle it incase Voidform's stack tick rate changes from 1.0sec.
+  - Update GCD formula to match changes from 2016/04/06 once confirmed by devs.
   - Shadowmend
   - Setbonuses
     - Several Setbonuses have to be updated by Blizzard: T17, T16 no longer work.
