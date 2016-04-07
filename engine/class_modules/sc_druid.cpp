@@ -504,6 +504,7 @@ public:
     // Feral
     const spell_data_t* feral;
     const spell_data_t* feral_overrides;
+    const spell_data_t* feral_overrides2;
     const spell_data_t* cat_form; // Cat form hidden effects
     const spell_data_t* cat_form_speed;
     const spell_data_t* feline_swiftness; // Feral Affinity
@@ -1919,6 +1920,8 @@ struct moonfire_t : public druid_spell_t
     ap_per_cast            = data().effectN( 3 ).resource( RESOURCE_ASTRAL_POWER )
                            + player -> spec.balance -> effectN( 2 ).resource( RESOURCE_ASTRAL_POWER ); // TOCHECK
     base_multiplier       *= 1.0 + player -> spec.guardian -> effectN( 3 ).percent();
+    base_dd_multiplier    *= 1.0 + player -> spec.feral_overrides -> effectN( 1 ).percent();
+    base_td_multiplier    *= 1.0 + player -> spec.feral_overrides -> effectN( 2 ).percent();
 
     base_multiplier *= 1.0 + player -> artifact.twilight_glow.percent();
     galactic_guardian = player -> talent.galactic_guardian -> ok();
@@ -5563,7 +5566,7 @@ struct survival_instincts_t : public druid_spell_t
     use_off_gcd = true;
 
     // Spec-based cooldown modifiers
-    cooldown -> duration += player -> spec.feral_overrides -> effectN( 6 ).time_value();
+    cooldown -> duration += player -> spec.feral_overrides2 -> effectN( 6 ).time_value();
     cooldown -> duration += player -> spec.guardian_overrides -> effectN( 5 ).time_value();
 
     cooldown -> charges = 2;
@@ -5903,7 +5906,8 @@ void druid_t::init_spells()
   spec.cat_form                   = find_class_spell( "Cat Form" ) -> ok() ? find_spell( 3025   ) : spell_data_t::not_found();
   spec.cat_form_speed             = find_class_spell( "Cat Form" ) -> ok() ? find_spell( 113636 ) : spell_data_t::not_found();
   spec.feral                      = find_specialization_spell( "Feral Druid" );
-  spec.feral_overrides            = find_specialization_spell( "Feral Overrides Passive" );
+  spec.feral_overrides            = find_spell( 197692 );
+  spec.feral_overrides2           = find_spell( 106733 );
   spec.gushing_wound              = sets.has_set_bonus( DRUID_FERAL, T17, B4 ) ? find_spell( 165432 ) : spell_data_t::not_found();
   spec.nurturing_instinct         = find_specialization_spell( "Nurturing Instinct" );
   spec.predatory_swiftness        = find_specialization_spell( "Predatory Swiftness" );
