@@ -1932,8 +1932,8 @@ struct moonfire_t : public druid_spell_t
     double tm = druid_spell_t::composite_target_multiplier( t );
 
     if ( td( t ) -> debuff.stellar_empowerment -> up() )
-      tm *= 1.0 + td( t ) -> debuff.stellar_empowerment -> check_value()
-            + ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
+      tm *= 1.0 + ( td( t ) -> debuff.stellar_empowerment -> check_value()
+            + p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() ) * ( 1.0 + p() -> artifact.falling_star.percent() );
 
     return tm;
   }
@@ -5073,8 +5073,8 @@ struct sunfire_t : public druid_spell_t
     double tm = druid_spell_t::composite_target_multiplier( t );
 
     if ( td( t ) -> debuff.stellar_empowerment -> up() )
-      tm *= 1.0 + td( t ) -> debuff.stellar_empowerment -> check_value()
-            + ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
+      tm *= 1.0 + ( td( t ) -> debuff.stellar_empowerment -> check_value()
+            + p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() ) * ( 1.0 + p() -> artifact.falling_star.percent() );
 
     return tm;
   }
@@ -7727,7 +7727,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
                                .default_value( source.find_spell( 210670 ) -> effectN( 1 ).percent() )
                                .chance( source.artifact.open_wounds.rank() > 0 );
   debuff.stellar_empowerment = buff_creator_t( *this, "stellar_empowerment", source.find_spell( 197637 ) )
-                               .default_value( source.find_spell( 197637 ) -> effectN( 1 ).percent() + source.artifact.falling_star.percent() );
+                               .default_value( source.find_spell( 197637 ) -> effectN( 1 ).percent() );
 }
 
 // Copypasta for reporting
