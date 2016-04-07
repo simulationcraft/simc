@@ -111,6 +111,9 @@ public:
   // Specialization Spells
   struct
   {
+    const spell_data_t* demon_hunter;
+
+    const spell_data_t* havoc;
     const spell_data_t* annihilation;
     const spell_data_t* blade_dance;
     const spell_data_t* blur;
@@ -120,6 +123,8 @@ public:
     const spell_data_t* death_sweep;
     const spell_data_t* demonic_instincts;
     const spell_data_t* metamorphosis_buff;
+
+    const spell_data_t* vengeance;
   } spec;
 
   // Mastery Spells
@@ -353,9 +358,7 @@ class demon_hunter_action_t : public Base
 public:
   gain_t* action_gain;
   bool metamorphosis_gcd;
-  struct {
-    bool gcd, cd;
-  } demonic_instincts;
+  bool hasted_gcd, hasted_cd;
   
    
   demon_hunter_action_t( const std::string& n, demon_hunter_t* p,
@@ -365,8 +368,18 @@ public:
   {
     ab::may_crit         = true;
     ab::tick_may_crit    = true;
-    demonic_instincts.gcd = ab::data().affected_by( p -> spec.demonic_instincts -> effectN( 1 ) );
-    demonic_instincts.cd  = ab::data().affected_by( p -> spec.demonic_instincts -> effectN( 2 ) );
+
+    switch ( p -> specialization() )
+    {
+    case DEMON_HUNTER_HAVOC:
+      hasted_gcd = ab::data().affected_by( p -> spec.havoc -> effectN( 1 ) );
+      hasted_cd  = ab::data().affected_by( p -> spec.havoc -> effectN( 2 ) );
+      break;
+    case DEMON_HUNTER_VENGEANCE:
+      hasted_gcd = ab::data().affected_by( p -> spec.vengeance -> effectN( 1 ) );
+      hasted_cd  = ab::data().affected_by( p -> spec.vengeance -> effectN( 2 ) );
+      break;
+    }
   }
 
   demon_hunter_t* p()
@@ -390,7 +403,7 @@ public:
       g += p() -> spec.metamorphosis_buff -> effectN( 7 ).time_value();
     }
 
-    if ( demonic_instincts.gcd )
+    if ( hasted_gcd )
     {
       g *= p() -> cache.attack_haste();
     }
@@ -405,7 +418,7 @@ public:
   {
     double cdr = ab::cooldown_reduction();
 
-    if ( demonic_instincts.cd )
+    if ( hasted_cd )
     {
       cdr *= p() -> cache.attack_haste();
     }
@@ -1965,6 +1978,8 @@ void demon_hunter_t::init_spells()
 
   // General ================================================================
 
+  spec.demon_hunter        = find_class_spell( "Demon Hunter" );
+
   spec.annihilation        = find_spell( 201427 );
   spec.blade_dance         = find_class_spell( "Blade Dance" );
   spec.blur                = find_class_spell( "Blur" );
@@ -1973,7 +1988,10 @@ void demon_hunter_t::init_spells()
   spec.consume_magic       = find_class_spell( "Consume Magic" );
   spec.death_sweep         = find_spell( 210152 );
   spec.demonic_instincts   = find_spell( 203569 ); // not a class spell
+  spec.havoc               = find_specialization_spell( "Havoc Demon Hunter" );
   spec.metamorphosis_buff  = find_spell( 162264 );
+
+  spec.vengeance           = find_specialization_spell( "Vengeance Demon Hunter" );
 
   // Masteries ==============================================================
 
