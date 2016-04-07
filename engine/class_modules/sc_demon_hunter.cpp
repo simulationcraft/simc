@@ -77,6 +77,7 @@ public:
   {
     // Havoc
     const spell_data_t* fel_mastery;
+    const spell_data_t* demonic_appetite;
     const spell_data_t* blind_fury;
 
     const spell_data_t* prepared;
@@ -99,8 +100,6 @@ public:
     const spell_data_t* demonic;
 
     // NYI
-    const spell_data_t* demonic_appetite;
-
     const spell_data_t* netherwalk;
     const spell_data_t* desperate_instincts;
     const spell_data_t* soul_rending;
@@ -143,6 +142,7 @@ public:
     cooldown_t* chaos_nova;
     cooldown_t* chaos_blades;
     cooldown_t* consume_magic;
+    cooldown_t* demonic_appetite;
     cooldown_t* eye_beam;
     cooldown_t* felblade;
     cooldown_t* fel_barrage;
@@ -159,6 +159,7 @@ public:
   struct
   {
     gain_t* fury_refund;
+    gain_t* demonic_appetite;
     gain_t* prepared;
   } gain;
 
@@ -172,6 +173,7 @@ public:
   {
     proc_t* delayed_aa_range;
     proc_t* delayed_aa_channel;
+    proc_t* demonic_appetite;
     proc_t* felblade_reset;
     proc_t* demon_blade_supp;
   } proc;
@@ -1106,6 +1108,15 @@ struct chaos_strike_template_t : public demon_hunter_attack_t
     if ( result_is_hit( execute_state -> result ) )
     {
       new ( *sim ) chaos_strike_event_t( p(), off_hand, timespan_t::from_millis( data().effectN( 3 ).misc_value1() ) );
+
+      // TODO: Travel time
+      if ( p() -> talent.demonic_appetite -> ok() && ! p() -> cooldown.demonic_appetite -> down() &&
+        p() -> rng().roll( p() -> talent.demonic_appetite -> proc_chance() ) )
+      {
+        p() -> cooldown.demonic_appetite -> start();
+        p() -> proc.demonic_appetite -> occur();
+        p() -> resource_gain( RESOURCE_FURY, 30, p() -> gain.demonic_appetite ); // FIXME
+      }
     }
   }
 };
@@ -1719,6 +1730,7 @@ void demon_hunter_t::create_cooldowns()
   cooldown.chaos_nova           = get_cooldown( "chaos_nova" );
   cooldown.consume_magic        = get_cooldown( "consume_magic" );
   cooldown.death_sweep          = get_cooldown( "death_sweep" );
+  cooldown.demonic_appetite     = get_cooldown( "demonic_appetite" );
   cooldown.eye_beam             = get_cooldown( "eye_beam" );
   cooldown.fel_barrage          = get_cooldown( "fel_barrage" );
   cooldown.felblade             = get_cooldown( "felblade" );
@@ -1736,8 +1748,9 @@ void demon_hunter_t::create_cooldowns()
  */
 void demon_hunter_t::create_gains()
 {
-  gain.fury_refund = get_gain( "fury_refund" );
-  gain.prepared    = get_gain( "prepared" );
+  gain.fury_refund      = get_gain( "fury_refund" );
+  gain.demonic_appetite = get_gain( "demonic_appetite" );
+  gain.prepared         = get_gain( "prepared" );
 }
 
 /* Construct benefits
@@ -1952,6 +1965,7 @@ void demon_hunter_t::init_procs()
 
   proc.delayed_aa_range   = get_proc( "delayed_swing__out_of_range" );
   proc.delayed_aa_channel = get_proc( "delayed_swing__channeling" );
+  proc.demonic_appetite   = get_proc( "demonic_appetite" );
   proc.felblade_reset     = get_proc( "felblade_reset" );
   proc.demon_blade_supp   = get_proc( "demon_blade_suppressed" );
 }
@@ -2027,6 +2041,11 @@ void demon_hunter_t::init_spells()
   talent.chaos_blades         = find_talent_spell( "Chaos Blades" );
   talent.fel_barrage          = find_talent_spell( "Fel Barrage (NYI)" );
   talent.demon_reborn         = find_talent_spell( "Demon Reborn" );
+
+  if ( talent.demonic_appetite -> ok() )
+  {
+    cooldown.demonic_appetite -> duration = talent.demonic_appetite -> internal_cooldown();
+  }
   
   using namespace actions::attacks;
 
