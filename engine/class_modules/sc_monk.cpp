@@ -698,6 +698,7 @@ public:
   void trigger_celestial_fortune( action_state_t* );
   double weapon_power_mod;
   double clear_stagger();
+  double partial_clear_stagger( double );
   bool has_stagger();
 
   // Tier 18 (WoD 6.2) trinket effects
@@ -1646,6 +1647,7 @@ public:
           ab::trigger_gcd += player -> spec.stance_of_the_fierce_tiger -> effectN( 6 ).time_value(); // Saved as -500 milliseconds
         break;
       }
+      default: break;
     }
   }
 
@@ -1730,10 +1732,10 @@ public:
     return ( p() -> previous_combo_strike == new_ability );
   }
 
-  // Used to trigger Windwalker's Combo Strike Mastery
+  // Used to trigger Windwalker's Combo Strike Mastery; Triggers prior to calculating damage
   void combo_strikes_trigger( combo_strikes_e new_ability )
   {
-    if ( !compare_previous_combo_strikes( new_ability ) && p() -> mastery.combo_strikes -> ok() )
+    if ( ( !compare_previous_combo_strikes( new_ability ) && p() -> previous_combo_strike != CS_NONE ) && p() -> mastery.combo_strikes -> ok() )
     {
       if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T19, B4 ) )
       {
@@ -1825,6 +1827,7 @@ public:
         hasted_cd = ab::data().affected_by( p() -> passives.aura_monk -> effectN( 1 ) );
         break;
       }
+      default: break;
     }
     if ( hasted_cd ) 
       cdr *= ab::player -> cache.attack_haste();
@@ -2087,16 +2090,19 @@ struct tiger_palm_t: public monk_melee_attack_t
     if ( p() -> artifact.tiger_claws.rank() )
       am *= 1 + p() -> artifact.tiger_claws.percent();
 
+    if ( p() -> specialization() == MONK_MISTWEAVER )
+      am *= 1 + p() -> passives.aura_mistweaver_monk -> effectN( 10 ).percent();
+
     return am;
   }
 
   virtual void execute() override
   {
-    monk_melee_attack_t::execute();
-
     // Trigger Combo Strikes
     // registers even on a miss
     combo_strikes_trigger( CS_TIGER_PALM );
+
+    monk_melee_attack_t::execute();
 
     if ( result_is_miss( execute_state -> result ) )
       return;
@@ -2177,6 +2183,7 @@ struct tiger_palm_t: public monk_melee_attack_t
           p() -> buff.keg_smash_talent -> trigger();
         break;
       }
+      default: break;
     }
   }
 };
@@ -2381,9 +2388,14 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     if ( p() -> artifact.rising_winds.rank() )
       am *= 1 + p() -> artifact.rising_winds.percent();
 
-    if ( p() -> buff.teachings_of_the_monastery -> up() )
+    if ( p() -> specialization() == MONK_MISTWEAVER )
     {
-      am *= 1 + p() -> buff.teachings_of_the_monastery -> value();
+      am *= 1 + p() -> passives.aura_mistweaver_monk->effectN( 9 ).percent();
+
+      if ( p() -> buff.teachings_of_the_monastery -> up() )
+      {
+        am *= 1 + p() -> buff.teachings_of_the_monastery -> value();
+      }
     }
 
     return am;
@@ -2406,11 +2418,11 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 
   virtual void execute() override
   {
-    monk_melee_attack_t::execute();
-
     // Trigger Combo Strikes
     // registers even on a miss
     combo_strikes_trigger( CS_RISING_SUN_KICK );
+
+    monk_melee_attack_t::execute();
 
     if ( result_is_miss( execute_state -> result ) )
       return;
@@ -2435,6 +2447,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
           p() -> buff.masterful_strikes -> trigger( p() -> sets.set( MONK_WINDWALKER,T18, B2 ) -> effect_count() );
         break;
       }
+      default: break;
     }
   }
 
@@ -2521,6 +2534,7 @@ struct blackout_kick_t: public monk_melee_attack_t
           am *= 1 + ( p() -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent() );
         break;
       }
+      default: break;
     }
     return am;
   }
@@ -2548,11 +2562,11 @@ struct blackout_kick_t: public monk_melee_attack_t
 
   void execute() override
   {
-    monk_melee_attack_t::execute();
-
     // Trigger Combo Strikes
     // registers even on a miss
     combo_strikes_trigger( CS_BLACKOUT_KICK );
+
+    monk_melee_attack_t::execute();
 
     if ( result_is_miss( execute_state -> result ) )
       return;
@@ -2574,6 +2588,7 @@ struct blackout_kick_t: public monk_melee_attack_t
           p() -> buff.transfer_the_power -> trigger();
         break;
       }
+      default: break;
     }
   }
 
@@ -2629,6 +2644,7 @@ struct blackout_strike_t: public monk_melee_attack_t
         cooldown -> duration *= 1 + p -> spec.combat_conditioning -> effectN( 2 ).percent(); // -100% for Windwalkers
         break;
       }
+      default: break;
     }
   }
 };
@@ -2693,11 +2709,11 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
 
   void execute() override
   {
-    monk_melee_attack_t::execute();
-
     // Trigger Combo Strikes
     // registers even on a miss
     combo_strikes_trigger( CS_RUSHING_JADE_WIND );
+
+    monk_melee_attack_t::execute();
 
     if ( result_is_miss( execute_state -> result ) )
       return;
@@ -2737,16 +2753,19 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     if ( p() -> artifact.power_of_a_thousand_cranes.rank() )
       am *= 1 + p() -> artifact.power_of_a_thousand_cranes.percent();
 
+    if ( p() -> specialization() == MONK_MISTWEAVER )
+      am *= 1 + p() -> passives.aura_mistweaver_monk -> effectN( 10 ).percent();
+
     return am;
   }
 
   void execute() override
   {
-    monk_melee_attack_t::execute();
-
     // Trigger Combo Strikes
     // registers even on a miss
     combo_strikes_trigger( CS_SPINNING_CRANE_KICK );
+
+    monk_melee_attack_t::execute();
   }
 };
 
@@ -2879,13 +2898,13 @@ struct fists_of_fury_t: public monk_melee_attack_t
 
   void execute() override
   {
-    monk_melee_attack_t::execute();
-
-    crosswinds_trigger = true;
-
     // Trigger Combo Strikes
     // registers even on a miss
     combo_strikes_trigger( CS_FISTS_OF_FURY );
+
+    monk_melee_attack_t::execute();
+
+    crosswinds_trigger = true;
 
     // Reduces the cooldown of Tigereye Brew by 9 Seconds
     if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T17, B2 ) )
@@ -2993,11 +3012,11 @@ struct whirling_dragon_punch_t: public monk_melee_attack_t
 
   void execute() override
   {
-    monk_melee_attack_t::execute();
-
     // Trigger Combo Strikes
     // registers even on a miss
     combo_strikes_trigger( CS_WHIRLING_DRAGON_PUNCH );
+
+    monk_melee_attack_t::execute();
   }
 
   virtual void last_tick(dot_t* dot) override
@@ -3084,15 +3103,15 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
 
   void execute() override
   {
+    // Trigger Combo Strikes
+    // registers even on a miss
+    combo_strikes_trigger( CS_STRIKE_OF_THE_WINDLORD );
+
     monk_melee_attack_t::execute(); // this is the MH attack
 
     if ( oh_attack && result_is_hit( execute_state -> result ) &&
          p() -> off_hand_weapon.type != WEAPON_NONE ) // If MH fails to land, OH does not execute.
       oh_attack -> execute();
-
-    // Trigger Combo Strikes
-    // registers even on a miss
-    combo_strikes_trigger( CS_STRIKE_OF_THE_WINDLORD );
   }
 };
 
@@ -3981,8 +4000,26 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
     if ( d -> is_ticking() )
       damage_remaining += d -> state -> result_amount; // Assumes base_td == damage, no modifiers or crits
 
-    cancel();
     d -> cancel();
+    cancel();
+
+    return damage_remaining;
+  }
+
+  /* Clears part of the stagger dot. Used by Purifying Brew
+  * Returns amount purged
+  */
+  double clear_partial_damage( double percent_amount )
+  {
+    dot_t* d = get_dot();
+    double damage_remaining = 0.0;
+
+    if ( d -> is_ticking() )
+    {
+      damage_remaining += d -> state -> result_amount; // Assumes base_td == damage, no modifiers or crits
+      damage_remaining *= percent_amount;
+      d -> state -> result_amount -= damage_remaining;
+    }
 
     return damage_remaining;
   }
@@ -4051,12 +4088,16 @@ struct ironskin_brew_t : public monk_spell_t
     trigger_gcd = timespan_t::zero();
 
     cooldown             = p.cooldown.brewmaster_active_mitigation;
-    // TODO: Fix for next build
-    cooldown -> duration = timespan_t::from_seconds( 21 ) /*p.find_spell( id ) -> charge_cooldown()*/  + p.talent.light_brewing -> effectN( 1 ).time_value(); // Saved as -5000
+    cooldown -> duration = p.find_spell( id ) -> charge_cooldown() + p.talent.light_brewing -> effectN( 1 ).time_value(); // Saved as -3000
     cooldown -> charges  = p.find_spell( id ) -> charges() + p.talent.light_brewing -> effectN( 2 ).base_value();
 
     if ( p.talent.special_delivery -> ok() )
       delivery = new special_delivery_t( p );
+  }
+
+  virtual double cooldown_reduction() const override
+  {
+    return monk_spell_t::cooldown_reduction() * player -> cache.attack_haste(); 
   }
 
   void execute() override
@@ -4102,8 +4143,7 @@ struct purifying_brew_t: public monk_spell_t
     trigger_gcd = timespan_t::zero();
 
     cooldown             = p.cooldown.brewmaster_active_mitigation;
-    // TODO fix for next build
-    cooldown -> duration = timespan_t::from_seconds( 21 ) /*p.find_spell( id ) -> charge_cooldown()*/  + p.talent.light_brewing -> effectN( 1 ).time_value(); // Saved as -5000
+    cooldown -> duration = p.find_spell( id ) -> charge_cooldown() + p.talent.light_brewing -> effectN( 1 ).time_value(); // Saved as -3000
     cooldown -> charges  = p.find_spell( id ) -> charges() + p.talent.light_brewing -> effectN( 2 ).base_value();
 
     if ( p.talent.special_delivery -> ok() )
@@ -4119,12 +4159,17 @@ struct purifying_brew_t: public monk_spell_t
     return monk_spell_t::ready();
   }
 
+  virtual double cooldown_reduction() const override
+  {
+    return monk_spell_t::cooldown_reduction() * player -> cache.attack_haste(); 
+  }
+
   void execute() override
   {
     monk_spell_t::execute();
 
     double stagger_pct = p() -> current_stagger_tick_dmg_percent();
-    double stagger_dmg = p() -> clear_stagger();
+    double stagger_dmg = p() -> partial_clear_stagger( p() -> spec.purifying_brew -> effectN( 1 ).percent() );
 
     // Tier 16 4 pieces Brewmaster: Purifying Brew also heals you for 15% of the amount of staggered damage cleared.
     if ( p() -> sets.has_set_bonus( SET_TANK, T16, B4 ) )
@@ -4512,6 +4557,7 @@ struct effuse_t: public monk_heal_t
         am *= p() -> passives.aura_windwalker_monk -> effectN( 1 ).percent();
         break;
       }
+      default: break;
     }
 
     return am;
@@ -5214,11 +5260,11 @@ struct chi_wave_t: public monk_spell_t
 
   virtual void execute() override
   {
-    monk_spell_t::execute();
-
     // Trigger Combo Strikes
     // registers even on a miss
     combo_strikes_trigger( CS_CHI_WAVE );
+
+    monk_spell_t::execute();
   }
 
   void impact( action_state_t* s ) override
@@ -5294,11 +5340,11 @@ struct chi_burst_t: public monk_spell_t
 
   virtual void execute() override
   {
-    monk_spell_t::execute();
-
     // Trigger Combo Strikes
     // registers even on a miss
     combo_strikes_trigger( CS_CHI_BURST );
+
+    monk_spell_t::execute();
 
     heal -> execute();
     damage -> execute();
@@ -6091,6 +6137,7 @@ void monk_t::init_base_stats()
         resources.base[RESOURCE_ENERGY] += artifact.inner_peace.value();
       break;
     }
+    default: break;
   }
 
   base_chi_regen_per_second = 0;
@@ -6437,6 +6484,16 @@ bool monk_t::has_stagger()
 {
   return active_actions.stagger_self_damage -> stagger_ticking();
 }
+
+// monk_t::partial_clear_stagger ====================================================
+
+double monk_t::partial_clear_stagger( double clear_percent )
+{
+  return active_actions.stagger_self_damage -> clear_partial_damage( clear_percent );
+}
+
+// monk_t::clear_stagger ==================================================
+
 double monk_t::clear_stagger()
 {
   return active_actions.stagger_self_damage -> clear_all_damage();
@@ -6961,6 +7018,7 @@ void monk_t::target_mitigation( school_e school,
         s -> result_amount *= 1.0 + artifact.shroud_of_mist.value();
       break;
     }
+    default: break;
   }
 
   player_t::target_mitigation( school, dt, s );
