@@ -117,11 +117,15 @@ struct druid_td_t : public actor_target_data_t
 
   struct buffs_t
   {
-    buff_t* bloodletting;
     buff_t* lifebloom;
+  } buff;
+
+  struct debuffs_t
+  {
+    buff_t* bloodletting;
     buff_t* open_wounds;
-    buff_t* starfall;
-  } buffs;
+    buff_t* stellar_empowerment;
+  } debuff;
 
   druid_td_t( player_t& target, druid_t& source );
 
@@ -1407,7 +1411,7 @@ public:
   {
     double a = ab::target_armor( t );
     
-    a *= 1.0 - td( t ) -> buffs.open_wounds -> value();
+    a *= 1.0 - td( t ) -> debuff.open_wounds -> value();
 
     return a;
   }
@@ -1625,7 +1629,7 @@ public:
        that it scales direct "bleed" damage. This is a bad assumption if there is an action
        that applies a dot but does plain physical direct damage, but there are none of those. */
     if ( dbc::is_school( ab::school, SCHOOL_PHYSICAL ) && ab::dot_duration > timespan_t::zero() )
-      tm *= 1.0 + ab::td( t ) -> buffs.bloodletting -> value();
+      tm *= 1.0 + ab::td( t ) -> debuff.bloodletting -> value();
 
     return tm;
   }
@@ -1921,8 +1925,8 @@ struct moonfire_t : public druid_spell_t
   {
     double tm = druid_spell_t::composite_target_multiplier( t );
 
-    if ( td( t ) -> buffs.starfall -> up() )
-      tm *= 1.0 + td( t ) -> buffs.starfall -> check_value()
+    if ( td( t ) -> debuff.stellar_empowerment -> up() )
+      tm *= 1.0 + td( t ) -> debuff.stellar_empowerment -> check_value()
             + ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
 
     return tm;
@@ -2057,8 +2061,8 @@ public:
     {
       td.dots.lifebloom -> refresh_duration();
 
-      if ( td.buffs.lifebloom -> check() )
-        td.buffs.lifebloom -> refresh();
+      if ( td.buff.lifebloom -> check() )
+        td.buff.lifebloom -> refresh();
     }
   }
 
@@ -2979,7 +2983,7 @@ struct rip_t : public cat_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      td( s -> target ) -> buffs.open_wounds -> trigger(); // TOCHECK
+      td( s -> target ) -> debuff.open_wounds -> trigger(); // TOCHECK
 
       // Store rip's damage value for use with Ashamane's Bite.
       if ( p() -> artifact.ashamanes_bite.rank() )
@@ -2991,7 +2995,7 @@ struct rip_t : public cat_attack_t
   {
     cat_attack_t::last_tick( d );
 
-    td( d -> target ) -> buffs.open_wounds -> expire();
+    td( d -> target ) -> debuff.open_wounds -> expire();
   }
 };
 
@@ -3070,7 +3074,7 @@ struct shred_t : public cat_attack_t
     cat_attack_t::impact( s );
 
     if ( s -> result == RESULT_CRIT && p() -> sets.has_set_bonus( DRUID_FERAL, PVP, B4 ) )
-      td( s -> target ) -> buffs.bloodletting -> trigger(); // Druid module debuff
+      td( s -> target ) -> debuff.bloodletting -> trigger(); // Druid module debuff
   }
 
   virtual double composite_target_multiplier( player_t* t ) const override
@@ -3931,7 +3935,7 @@ struct lifebloom_bloom_t : public druid_heal_t
   {
     double ctm = druid_heal_t::composite_target_multiplier( target );
 
-    ctm *= td( target ) -> buffs.lifebloom -> check();
+    ctm *= td( target ) -> buff.lifebloom -> check();
 
     return ctm;
   }
@@ -3958,20 +3962,20 @@ struct lifebloom_t : public druid_heal_t
       if ( state -> target == t )
         continue;
       get_dot( t ) -> cancel();
-      td( t ) -> buffs.lifebloom -> expire();
+      td( t ) -> buff.lifebloom -> expire();
     }
 
     druid_heal_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
-      td( state -> target ) -> buffs.lifebloom -> trigger();
+      td( state -> target ) -> buff.lifebloom -> trigger();
   }
 
   virtual void last_tick( dot_t* d ) override
   {
     if ( ! d -> state -> target -> is_sleeping() ) // Prevent crash at end of simulation
       bloom -> execute();
-    td( d -> state -> target ) -> buffs.lifebloom -> expire();
+    td( d -> state -> target ) -> buff.lifebloom -> expire();
 
     druid_heal_t::last_tick( d );
   }
@@ -5058,8 +5062,8 @@ struct sunfire_t : public druid_spell_t
   {
     double tm = druid_spell_t::composite_target_multiplier( t );
 
-    if ( td( t ) -> buffs.starfall -> up() )
-      tm *= 1.0 + td( t ) -> buffs.starfall -> check_value()
+    if ( td( t ) -> debuff.stellar_empowerment -> up() )
+      tm *= 1.0 + td( t ) -> debuff.stellar_empowerment -> check_value()
             + ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
 
     return tm;
@@ -5403,7 +5407,7 @@ struct starfall_t : public druid_spell_t
   {
     druid_spell_t::impact( s );
 
-    td( s -> target ) -> buffs.starfall -> trigger();
+    td( s -> target ) -> debuff.stellar_empowerment -> trigger();
   }
 };
 
@@ -7681,7 +7685,8 @@ void druid_t::assess_heal( school_e school,
 druid_td_t::druid_td_t( player_t& target, druid_t& source )
   : actor_target_data_t( &target, &source ),
     dots( dots_t() ),
-    buffs( buffs_t() )
+    buff( buffs_t() ),
+    debuff( debuffs_t() )
 {
   dots.ashamanes_frenzy = target.get_dot( "ashamanes_frenzy", &source );
   dots.blood_claws      = target.get_dot( "blood_claws",      &source );
@@ -7703,14 +7708,15 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   dots.thrash_cat       = target.get_dot( "thrash_cat",       &source );
   dots.wild_growth      = target.get_dot( "wild_growth",      &source );
 
-  buffs.bloodletting    = buff_creator_t( *this, "bloodletting", source.find_spell( 165699 ) )
-                          .default_value( source.find_spell( 165699 ) -> effectN( 1 ).percent() );
-  buffs.lifebloom       = buff_creator_t( *this, "lifebloom", source.find_class_spell( "Lifebloom" ) );
-  buffs.open_wounds     = buff_creator_t( *this, "open_wounds", source.find_spell( 210670 ) )
-                          .default_value( source.find_spell( 210670 ) -> effectN( 1 ).percent() )
-                          .chance( source.artifact.open_wounds.rank() > 0 );
-  buffs.starfall        = buff_creator_t( *this, "starfall", source.find_spell( 197637 ) )
-                          .default_value( source.find_spell( 197637 ) -> effectN( 1 ).percent() + source.artifact.falling_star.percent() );
+  buff.lifebloom = buff_creator_t( *this, "lifebloom", source.find_class_spell( "Lifebloom" ) );
+
+  debuff.bloodletting        = buff_creator_t( *this, "bloodletting", source.find_spell( 165699 ) )
+                               .default_value( source.find_spell( 165699 ) -> effectN( 1 ).percent() );
+  debuff.open_wounds         = buff_creator_t( *this, "open_wounds", source.find_spell( 210670 ) )
+                               .default_value( source.find_spell( 210670 ) -> effectN( 1 ).percent() )
+                               .chance( source.artifact.open_wounds.rank() > 0 );
+  debuff.stellar_empowerment = buff_creator_t( *this, "stellar_empowerment", source.find_spell( 197637 ) )
+                               .default_value( source.find_spell( 197637 ) -> effectN( 1 ).percent() + source.artifact.falling_star.percent() );
 }
 
 // Copypasta for reporting
