@@ -490,6 +490,7 @@ public:
   struct specializations_t
   {
     // Generic
+    const spell_data_t* druid;
     const spell_data_t* critical_strikes;       // Feral & Guardian
     const spell_data_t* killer_instinct;        // Feral & Guardian
     const spell_data_t* nurturing_instinct;     // Balance & Restoration
@@ -498,49 +499,43 @@ public:
     const spell_data_t* omen_of_clarity;        // Feral & Restoration
 
     // Feral
-    const spell_data_t* feral_passive; // Feral Overrides Passive
-    const spell_data_t* sharpened_claws;
+    const spell_data_t* feral;
+    const spell_data_t* feral_overrides;
+    const spell_data_t* cat_form; // Cat form hidden effects
+    const spell_data_t* cat_form_speed;
+    const spell_data_t* feline_swiftness; // Feral Affinity
+    const spell_data_t* gushing_wound; // tier17_4pc
     const spell_data_t* predatory_swiftness;
+    const spell_data_t* primal_fury;
     const spell_data_t* rip;
+    const spell_data_t* sharpened_claws;
     const spell_data_t* swipe_cat;
 
     // Balance
-    const spell_data_t* balance_passive; // Balance Overrides Passive
+    const spell_data_t* balance;
+    const spell_data_t* balance_overrides;
+    const spell_data_t* astral_influence; // Balance Affinity
+    const spell_data_t* blessing_of_anshe;
+    const spell_data_t* blessing_of_elune;
     const spell_data_t* celestial_alignment;
     const spell_data_t* moonkin_form;
     const spell_data_t* starfall;
     const spell_data_t* natural_insight;
 
     // Guardian
+    const spell_data_t* guardian;
+    const spell_data_t* guardian_overrides;
+    const spell_data_t* bear_form;
     const spell_data_t* bladed_armor;
     const spell_data_t* gore;
-    const spell_data_t* guardian_passive; // Guardian Overrides Passive
     const spell_data_t* ironfur;
     const spell_data_t* resolve;
-  } spec;
-
-  struct spells_t
-  {
-    // Cat
-    const spell_data_t* feline_swiftness; // Feral Affinity passive
-    const spell_data_t* cat_form; // Cat form hidden effects
-    const spell_data_t* cat_form_speed;
-    const spell_data_t* primal_fury; // Primal fury gain
-    const spell_data_t* gushing_wound; // Feral t17 4pc driver
-
-    // Bear
-    const spell_data_t* bear_form_passive; // Bear form passive buff
+    const spell_data_t* thick_hide; // Guardian Affinity
     const spell_data_t* thrash_bear_dot; // For Rend and Tear modifier
-    const spell_data_t* thick_hide; // Guardian Affinity passive
-
-    // Moonkin
-    const spell_data_t* astral_influence; // Balance Affinity passive
-    const spell_data_t* blessing_of_anshe;
-    const spell_data_t* blessing_of_elune;
 
     // Resto
-    const spell_data_t* yseras_gift; // Restoration Affinity passive
-  } spell;
+    const spell_data_t* yseras_gift; // Restoration Affinity
+  } spec;
 
   // Talents
   struct talents_t
@@ -718,7 +713,6 @@ public:
     mastery( masteries_t() ),
     proc( procs_t() ),
     spec( specializations_t() ),
-    spell( spells_t() ),
     talent( talents_t() )
   {
     t16_2pc_starfall_bolt = nullptr;
@@ -1378,12 +1372,16 @@ public:
   typedef druid_action_t base_t;
 
   bool rend_and_tear;
+  bool hasted_cd;
+  bool hasted_gcd;
 
   druid_action_t( const std::string& n, druid_t* player,
                   const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
     form_mask( ab::data().stance_mask() ), may_autounshift( true ), autoshift( 0 ),
-    rend_and_tear( ab::data().affected_by( player -> spell.thrash_bear_dot -> effectN( 2 ) ) )
+    rend_and_tear( ab::data().affected_by( player -> spec.thrash_bear_dot -> effectN( 2 ) ) ),
+    hasted_cd( ab::data().affected_by( player -> spec.druid -> effectN( 3 ) ) ),
+    hasted_gcd( ab::data().affected_by( player -> spec.druid -> effectN( 4 ) ) )
   {
     ab::may_crit      = true;
     ab::tick_may_crit = true;
@@ -1396,6 +1394,16 @@ public:
 
   druid_td_t* td( player_t* t ) const
   { return p() -> get_target_data( t ); }
+
+  virtual double cooldown_reduction() const override
+  {
+    double cdr = ab::cooldown_reduction();
+
+    if ( hasted_cd )
+      cdr *= ab::composite_haste();
+
+    return cdr;
+  }
 
   virtual double target_armor( player_t* t ) const override
   {
@@ -1475,7 +1483,7 @@ public:
     residual_action::trigger(
       p() -> active.gushing_wound, // ignite spell
       t, // target
-      p() -> spell.gushing_wound -> effectN( 1 ).percent() * dmg );
+      p() -> spec.gushing_wound -> effectN( 1 ).percent() * dmg );
   }
 
   bool trigger_gore()
@@ -1543,9 +1551,25 @@ public:
 
     if ( consumes_bloodtalons )
     {
-      bt_counter = new snapshot_counter_t( ab::p() , ab::p() -> buff.bloodtalons );
-      tf_counter = new snapshot_counter_t( ab::p() , ab::p() -> buff.tigers_fury );
+      bt_counter = new snapshot_counter_t( ab::p(), ab::p() -> buff.bloodtalons );
+      tf_counter = new snapshot_counter_t( ab::p(), ab::p() -> buff.tigers_fury );
     }
+  }
+
+  virtual timespan_t gcd() const override
+  {
+    timespan_t g = ab::gcd();
+
+    if ( g == timespan_t::zero() )
+      return g;
+
+    if ( ab::hasted_gcd )
+      g *= ab::p() -> cache.attack_haste();
+
+    if ( g < ab::min_gcd )
+      return ab::min_gcd;
+    else
+      return g;
   }
 
   virtual void execute()
@@ -1654,7 +1678,7 @@ public:
   druid_spell_base_t( const std::string& n, druid_t* player,
                       const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
-    cat_form_gcd( ab::data().affected_by( player -> spell.cat_form -> effectN( 4 ) ) )
+    cat_form_gcd( ab::data().affected_by( player -> spec.cat_form -> effectN( 4 ) ) )
   {}
 
   virtual timespan_t gcd() const override
@@ -1662,7 +1686,7 @@ public:
     timespan_t g = ab::trigger_gcd;
 
     if ( cat_form_gcd && ab::p() -> buff.cat_form -> check() )
-      g += ab::p() -> spell.cat_form -> effectN( 4 ).time_value();
+      g += ab::p() -> spec.cat_form -> effectN( 4 ).time_value();
 
     g *= ab::composite_haste();
 
@@ -1700,7 +1724,7 @@ public:
       ap_per_hit( 0 ),
       ap_per_tick( 0 ),
       ap_per_cast( 0 ),
-      blessing_of_elune( data().affected_by( p -> spell.blessing_of_elune -> effectN( 1 ) ) ),
+      blessing_of_elune( data().affected_by( p -> spec.blessing_of_elune -> effectN( 1 ) ) ),
       celestial_alignment( data().affected_by( p -> spec.celestial_alignment -> effectN( 3 ) ) ),
       incarnation( data().affected_by( p -> talent.incarnation_moonkin -> effectN( 3 ) ) ),
       consumes_owlkin_frenzy( false ),
@@ -1809,8 +1833,8 @@ public:
 
     if ( blessing_of_elune && p() -> buff.blessing_of_elune -> check() )
     {
-      ap *= 1.0 + p() -> spell.blessing_of_elune -> effectN( 1 ).percent();
-      bonus_pct += p() -> spell.blessing_of_elune -> effectN( 1 ).percent();
+      ap *= 1.0 + p() -> spec.blessing_of_elune -> effectN( 1 ).percent();
+      bonus_pct += p() -> spec.blessing_of_elune -> effectN( 1 ).percent();
     }
 
     // Gain the base AP amount and attribute it to the spell cast.
@@ -1829,7 +1853,7 @@ public:
                             p() -> gain.incarnation );
 
     if ( blessing_of_elune && p() -> buff.blessing_of_elune -> check() )
-      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * ( p() -> spell.blessing_of_elune -> effectN( 1 ).percent() / bonus_pct ),
+      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * ( p() -> spec.blessing_of_elune -> effectN( 1 ).percent() / bonus_pct ),
                             p() -> gain.blessing_of_elune );
   }
 
@@ -1880,13 +1904,16 @@ struct moonfire_t : public druid_spell_t
     parse_options( options_str );
 
     const spell_data_t* dmg_spell = player -> find_spell( 164812 );
-
-    dot_duration                  = dmg_spell -> duration();
-    dot_duration                 += player -> sets.set( SET_CASTER, T14, B4 ) -> effectN( 1 ).time_value();
-    dot_duration                 += player -> spec.balance_passive -> effectN( 4 ).time_value();
-    base_tick_time                = dmg_spell -> effectN( 2 ).period();
-    spell_power_mod.tick          = dmg_spell -> effectN( 2 ).sp_coeff();
-    spell_power_mod.direct        = dmg_spell -> effectN( 1 ).sp_coeff();
+    
+    dot_duration           = dmg_spell -> duration();
+    dot_duration          += player -> sets.set( SET_CASTER, T14, B4 ) -> effectN( 1 ).time_value();
+    dot_duration          += player -> spec.balance_overrides -> effectN( 4 ).time_value();
+    base_tick_time         = dmg_spell -> effectN( 2 ).period();
+    spell_power_mod.tick   = dmg_spell -> effectN( 2 ).sp_coeff();
+    spell_power_mod.direct = dmg_spell -> effectN( 1 ).sp_coeff();
+    ap_per_cast            = data().effectN( 3 ).resource( RESOURCE_ASTRAL_POWER )
+                           + player -> spec.balance -> effectN( 2 ).resource( RESOURCE_ASTRAL_POWER ); // TOCHECK
+    base_multiplier       *= 1.0 + player -> spec.guardian -> effectN( 3 ).percent();
 
     base_multiplier *= 1.0 + player -> artifact.twilight_glow.percent();
     galactic_guardian = player -> talent.galactic_guardian -> ok();
@@ -2225,7 +2252,7 @@ public:
     {
       p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, action_gain );
 
-      if ( p() -> spell.primal_fury -> ok() && attack_critical )
+      if ( p() -> spec.primal_fury -> ok() && attack_critical )
         trigger_primal_fury();
     }
 
@@ -2400,7 +2427,7 @@ public:
   void trigger_primal_fury()
   {
     p() -> proc.primal_fury -> occur();
-    p() -> resource_gain( RESOURCE_COMBO_POINT, p() -> spell.primal_fury -> effectN( 1 ).base_value(), p() -> gain.primal_fury );
+    p() -> resource_gain( RESOURCE_COMBO_POINT, p() -> spec.primal_fury -> effectN( 1 ).base_value(), p() -> gain.primal_fury );
   }
 
   void trigger_predator()
@@ -3292,33 +3319,6 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
     gore( false )
   {}
 
-  virtual timespan_t gcd() const override
-  {
-    if ( p() -> specialization() != DRUID_GUARDIAN ) // TOCHECK
-      return base_t::gcd();
-
-    timespan_t t = base_t::gcd();
-
-    if ( t == timespan_t::zero() )
-      return timespan_t::zero();
-
-    t *= player -> cache.attack_haste();
-
-    if ( t < min_gcd )
-      t = min_gcd;
-
-    return t;
-  }
-
-  virtual double cooldown_reduction() const override
-  {
-    double cdr = base_t::cooldown_reduction();
-
-    cdr *= p() -> cache.attack_haste();
-
-    return cdr;
-  }
-
   virtual void execute() override
   {
     base_t::execute();
@@ -3339,11 +3339,11 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( p() -> spell.primal_fury -> ok() && s -> target == target
+      if ( p() -> spec.primal_fury -> ok() && s -> target == target
            && s -> result == RESULT_CRIT && s -> result_amount > 0 ) // Only trigger from primary target. Legion TOCHECK
       {
         p() -> resource_gain( RESOURCE_RAGE,
-                              p() -> spell.primal_fury -> effectN( 1 ).resource( RESOURCE_RAGE ),
+                              p() -> spec.primal_fury -> effectN( 1 ).resource( RESOURCE_RAGE ),
                               p() -> gain.primal_fury );
         p() -> proc.primal_fury -> occur();
       }
@@ -3651,14 +3651,14 @@ struct thrash_bear_t : public bear_attack_t
     spell_power_mod.direct = 0;
 
     // Apply hidden passive damage multiplier
-    base_dd_multiplier *= 1.0 + p -> spec.guardian_passive -> effectN( 6 ).percent();
+    base_dd_multiplier *= 1.0 + p -> spec.guardian_overrides -> effectN( 6 ).percent();
     
     rage_amount = data().effectN( 2 ).resource( RESOURCE_RAGE );
     gore = true;
 
-    dot_duration = p -> spell.thrash_bear_dot -> duration();
-    base_tick_time = p -> spell.thrash_bear_dot -> effectN( 1 ).period();
-    attack_power_mod.tick = p -> spell.thrash_bear_dot -> effectN( 1 ).ap_coeff();
+    dot_duration = p -> spec.thrash_bear_dot -> duration();
+    base_tick_time = p -> spec.thrash_bear_dot -> effectN( 1 ).period();
+    attack_power_mod.tick = p -> spec.thrash_bear_dot -> effectN( 1 ).ap_coeff();
     dot_max_stack = 3;
 
     if ( p -> talent.blood_frenzy -> ok() )
@@ -4272,6 +4272,7 @@ struct barkskin_t : public druid_spell_t
     harmful = false;
     use_off_gcd = true;
 
+    cooldown -> duration *= 1.0 + player -> spec.guardian -> effectN( 1 ).percent();
     cooldown -> duration *= 1.0 + player -> talent.survival_of_the_fittest -> effectN( 1 ).percent();
     dot_duration = timespan_t::zero();
 
@@ -4321,7 +4322,7 @@ struct bear_form_t : public druid_spell_t
 struct blessing_of_anshe_t : public druid_spell_t
 {
   blessing_of_anshe_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "blessing_of_anshe", player, player -> spell.blessing_of_anshe )
+    druid_spell_t( "blessing_of_anshe", player, player -> spec.blessing_of_anshe )
   {
     parse_options( options_str );
 
@@ -4353,7 +4354,7 @@ struct blessing_of_anshe_t : public druid_spell_t
 struct blessing_of_elune_t : public druid_spell_t
 {
   blessing_of_elune_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "blessing_of_elune", player, player -> spell.blessing_of_elune )
+    druid_spell_t( "blessing_of_elune", player, player -> spec.blessing_of_elune )
   {
     parse_options( options_str );
 
@@ -5034,7 +5035,7 @@ struct sunfire_t : public druid_spell_t
   shooting_stars_t* shooting_stars;
 
   sunfire_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "sunfire", player, player -> find_spell( 93402 ) ),
+    druid_spell_t( "sunfire", player, player -> find_specialization_spell( "Sunfire" ) ),
     shooting_stars( new shooting_stars_t( player ) )
   {
     parse_options( options_str );
@@ -5043,11 +5044,13 @@ struct sunfire_t : public druid_spell_t
 
     dot_duration           = dmg_spell -> duration();
     dot_duration          += player -> sets.set( SET_CASTER, T14, B4 ) -> effectN( 1 ).time_value();
-    dot_duration          += player -> spec.balance_passive -> effectN( 4 ).time_value();
+    dot_duration          += player -> spec.balance_overrides -> effectN( 4 ).time_value();
     base_tick_time         = dmg_spell -> effectN( 2 ).period();
     spell_power_mod.direct = dmg_spell -> effectN( 1 ).sp_coeff();
     spell_power_mod.tick   = dmg_spell -> effectN( 2 ).sp_coeff();
     aoe                    = -1;
+    ap_per_cast            = data().effectN( 3 ).resource( RESOURCE_ASTRAL_POWER )
+                           + player -> spec.balance -> effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
 
     base_multiplier *= 1.0 + player -> artifact.sunfire_burns.percent();
     radius += player -> artifact.sunblind.value();
@@ -5551,8 +5554,8 @@ struct survival_instincts_t : public druid_spell_t
     use_off_gcd = true;
 
     // Spec-based cooldown modifiers
-    cooldown -> duration += player -> spec.feral_passive -> effectN( 6 ).time_value();
-    cooldown -> duration += player -> spec.guardian_passive -> effectN( 5 ).time_value();
+    cooldown -> duration += player -> spec.feral_overrides -> effectN( 6 ).time_value();
+    cooldown -> duration += player -> spec.guardian_overrides -> effectN( 5 ).time_value();
 
     cooldown -> charges = 2;
     cooldown -> duration *= 1.0 + player -> talent.survival_of_the_fittest -> effectN( 1 ).percent();
@@ -5871,36 +5874,47 @@ void druid_t::init_spells()
   // Specializations ========================================================
 
   // Generic / Multiple specs
-  spec.critical_strikes        = find_specialization_spell( "Critical Strikes" );
-  spec.leather_specialization  = find_specialization_spell( "Leather Specialization" );
-  spec.omen_of_clarity         = find_specialization_spell( "Omen of Clarity" );
-  spec.killer_instinct         = find_specialization_spell( "Killer Instinct" );
-  spec.mana_attunement         = find_specialization_spell( "Mana Attunement" );
-  spec.nurturing_instinct      = find_specialization_spell( "Nurturing Instinct" );
+  spec.critical_strikes           = find_specialization_spell( "Critical Strikes" );
+  spec.druid                      = find_spell( 137009 );
+  spec.killer_instinct            = find_specialization_spell( "Killer Instinct" );
+  spec.leather_specialization     = find_specialization_spell( "Leather Specialization" );
+  spec.mana_attunement            = find_specialization_spell( "Mana Attunement" );
+  spec.nurturing_instinct         = find_specialization_spell( "Nurturing Instinct" );
+  spec.omen_of_clarity            = find_specialization_spell( "Omen of Clarity" );
 
-  // Boomkin
-  spec.balance_passive         = find_specialization_spell( "Balance Overrides Passive" );
-  spec.celestial_alignment     = find_specialization_spell( "Celestial Alignment" );
-  spec.moonkin_form            = find_specialization_spell( "Moonkin Form" );
-  spec.starfall                = find_specialization_spell( "Starfall" );
-  spec.natural_insight         = find_specialization_spell( "Natural Insight" );
+  // Balance
+  spec.balance                    = find_specialization_spell( "Balance Druid" );
+  spec.balance_overrides          = find_specialization_spell( "Balance Overrides Passive" );
+  spec.blessing_of_anshe          = find_talent_spell( "Blessing of the Ancients" ) -> ok() ? find_spell( 202739 ) : spell_data_t::not_found();
+  spec.blessing_of_elune          = find_talent_spell( "Blessing of the Ancients" ) -> ok() ? find_spell( 202737 ) : spell_data_t::not_found();
+  spec.celestial_alignment        = find_specialization_spell( "Celestial Alignment" );
+  spec.moonkin_form               = find_specialization_spell( "Moonkin Form" );
+  spec.natural_insight            = find_specialization_spell( "Natural Insight" );
+  spec.starfall                   = find_specialization_spell( "Starfall" );
 
   // Feral
-  spec.feral_passive           = find_specialization_spell( "Feral Overrides Passive" );
-  spec.predatory_swiftness     = find_specialization_spell( "Predatory Swiftness" );
-  spec.nurturing_instinct      = find_specialization_spell( "Nurturing Instinct" );
-  spec.predatory_swiftness     = find_specialization_spell( "Predatory Swiftness" );
-  spec.rip                     = find_specialization_spell( "Rip" );
-  spec.sharpened_claws         = find_specialization_spell( "Sharpened Claws" );
-  spec.swipe_cat               = find_spell( 106785 );
+  spec.cat_form                   = find_class_spell( "Cat Form" ) -> ok() ? find_spell( 3025   ) : spell_data_t::not_found();
+  spec.cat_form_speed             = find_class_spell( "Cat Form" ) -> ok() ? find_spell( 113636 ) : spell_data_t::not_found();
+  spec.feral                      = find_specialization_spell( "Feral Druid" );
+  spec.feral_overrides            = find_specialization_spell( "Feral Overrides Passive" );
+  spec.gushing_wound              = sets.has_set_bonus( DRUID_FERAL, T17, B4 ) ? find_spell( 165432 ) : spell_data_t::not_found();
+  spec.nurturing_instinct         = find_specialization_spell( "Nurturing Instinct" );
+  spec.predatory_swiftness        = find_specialization_spell( "Predatory Swiftness" );
+  spec.primal_fury                = find_spell( 16953 );
+  spec.rip                        = find_specialization_spell( "Rip" );
+  spec.sharpened_claws            = find_specialization_spell( "Sharpened Claws" );
+  spec.swipe_cat                  = find_specialization_spell( "Swipe" ) -> ok() ? find_spell( 106785 ) : spell_data_t::not_found();
 
   // Guardian
-  spec.bladed_armor            = find_specialization_spell( "Bladed Armor" );
-  spec.gore                    = find_specialization_spell( "Gore" );
-  spec.guardian_passive        = find_specialization_spell( "Guardian Overrides Passive" );
-  spec.ironfur                 = find_specialization_spell( "Ironfur" );
-  spec.resolve                 = find_specialization_spell( "Resolve" );
-
+  spec.bear_form                  = find_class_spell( "Bear Form" ) -> ok() ? find_spell( 1178 ) : spell_data_t::not_found();
+  spec.bladed_armor               = find_specialization_spell( "Bladed Armor" );
+  spec.gore                       = find_specialization_spell( "Gore" );
+  spec.guardian                   = find_specialization_spell( "Guardian Druid" );
+  spec.guardian_overrides         = find_specialization_spell( "Guardian Overrides Passive" );
+  spec.ironfur                    = find_specialization_spell( "Ironfur" );
+  spec.resolve                    = find_specialization_spell( "Resolve" );
+  spec.thrash_bear_dot            = find_specialization_spell( "Thrash" ) -> ok() ? find_spell( 192090 ) : spell_data_t::not_found();
+  
   // Talents ================================================================
 
   // Multiple Specs
@@ -5988,6 +6002,28 @@ void druid_t::init_spells()
     instant_absorb_list[ talent.earthwarden -> id() ] =
       new instant_absorb_t( this, find_spell( 203975 ), "earthwarden", &earthwarden_handler );
 
+  // Affinities =============================================================
+
+  if ( specialization() == DRUID_FERAL || talent.feral_affinity -> ok() )
+    spec.feline_swiftness = find_spell( 131768 );
+
+  if ( specialization() == DRUID_BALANCE || talent.balance_affinity -> ok() )
+    spec.astral_influence = find_spell( 197524 );
+  
+  if ( specialization() == DRUID_GUARDIAN || talent.guardian_affinity -> ok() )
+    spec.thick_hide       = find_spell( 16931 );
+  
+  if ( specialization() == DRUID_RESTORATION || talent.restoration_affinity -> ok() )
+    spec.yseras_gift      = find_spell( 145108 );
+
+  // Masteries ==============================================================
+
+  mastery.razor_claws         = find_mastery_spell( DRUID_FERAL );
+  mastery.harmony             = find_mastery_spell( DRUID_RESTORATION );
+  mastery.natures_guardian    = find_mastery_spell( DRUID_GUARDIAN );
+  mastery.natures_guardian_AP = find_spell( 159195 );
+  mastery.starlight           = find_mastery_spell( DRUID_BALANCE );
+
   // Artifact ===============================================================
 
   // Balance -- Scythe of Elune
@@ -6004,7 +6040,7 @@ void druid_t::init_spells()
   artifact.rejuvenating_innervation     = find_artifact_spell( "Rejuvenating Innervation" );
   artifact.twilight_glow                = find_artifact_spell( "Twilight Glow" );
   artifact.scythe_of_the_stars          = find_artifact_spell( "Scythe of the Stars" );
-  // artifact.skywrath                     = find_artifact_spell( "Skywrath" );
+  artifact.skywrath                     = find_artifact_spell( "Skywrath" );
   artifact.sunblind                     = find_artifact_spell( "Sunblind" );
   artifact.light_of_the_sun             = find_artifact_spell( "Light of the Sun" );
   artifact.empowerment                  = find_artifact_spell( "Empowerment" );
@@ -6020,7 +6056,7 @@ void druid_t::init_spells()
   artifact.powerful_bite                = find_artifact_spell( "Powerful Bite" );
   artifact.feral_power                  = find_artifact_spell( "Feral Power" );
   artifact.sharpened_claws              = find_artifact_spell( "Sharpened Claws" );
-  // artifact.shredder_fangs               = find_artifact_spell( "Shredder Fangs" );
+  artifact.shredder_fangs               = find_artifact_spell( "Shredder Fangs" );
   artifact.tear_the_flesh               = find_artifact_spell( "Tear the Flesh" );
   artifact.honed_instincts              = find_artifact_spell( "Honed Instincts" );
   artifact.protection_of_ashamane       = find_artifact_spell( "Protection of Ashamane" );
@@ -6046,53 +6082,7 @@ void druid_t::init_spells()
   artifact.wildflesh                    = find_artifact_spell( "Wildflesh" );
   artifact.gory_fur                     = find_artifact_spell( "Gory Fur" );
 
-  // Masteries ==============================================================
-
-  mastery.razor_claws         = find_mastery_spell( DRUID_FERAL );
-  mastery.harmony             = find_mastery_spell( DRUID_RESTORATION );
-  mastery.natures_guardian    = find_mastery_spell( DRUID_GUARDIAN );
-  mastery.natures_guardian_AP = find_spell( 159195 );
-  mastery.starlight           = find_mastery_spell( DRUID_BALANCE );
-
-  // Spells =================================================================
-
-  spell.bear_form_passive = find_class_spell( "Bear Form"                   ) -> ok() ? find_spell( 1178   ) :
-                            spell_data_t::not_found(); // This is the passive applied on shapeshift!
-  spell.cat_form          = find_class_spell( "Cat Form"                    ) -> ok() ? find_spell( 3025   ) : spell_data_t::not_found();
-  spell.cat_form_speed    = find_class_spell( "Cat Form"                    ) -> ok() ? find_spell( 113636 ) : spell_data_t::not_found();
-
-  spell.thrash_bear_dot   = find_spell( 192090 );
-  spell.blessing_of_anshe = find_spell( 202739 );
-  spell.blessing_of_elune = find_spell( 202737 );
-
-  if ( specialization() == DRUID_FERAL )
-  {
-    spell.primal_fury   = find_spell( 16953 );
-    spell.gushing_wound = find_spell( 165432 );
-  }
-  else if ( specialization() == DRUID_GUARDIAN )
-  {
-    spell.primal_fury   = find_spell( 16959 );
-  }
-
-  // Affinities =============================================================
-
-  if ( specialization() == DRUID_FERAL || talent.feral_affinity -> ok() )
-  {
-    spell.feline_swiftness = find_specialization_spell( "Feline Swiftness" );
-  }
-  if ( specialization() == DRUID_BALANCE || talent.balance_affinity -> ok() )
-  {
-    spell.astral_influence = find_specialization_spell( "Astral Influence" );
-  }
-  if ( specialization() == DRUID_GUARDIAN || talent.guardian_affinity -> ok() )
-  {
-    spell.thick_hide = find_specialization_spell( "Thick Hide" );
-  }
-  if ( specialization() == DRUID_RESTORATION || talent.restoration_affinity -> ok() )
-  {
-    spell.yseras_gift = find_spell( 145108 );
-  }
+  // Active Actions =========================================================
 
   if ( sets.has_set_bonus( SET_CASTER, T16, B2 ) )
   {
@@ -6102,11 +6092,9 @@ void druid_t::init_spells()
 
   caster_melee_attack = new caster_attacks::druid_melee_t( this );
 
-  // Active Actions =========================================================
-
   if ( talent.cenarion_ward -> ok() )
     active.cenarion_ward_hot  = new heals::cenarion_ward_hot_t( this );
-  if ( spell.yseras_gift )
+  if ( spec.yseras_gift )
     active.yseras_gift        = new heals::yseras_tick_t( this );
   if ( sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
     active.gushing_wound      = new cat_attacks::gushing_wound_t( this );
@@ -6250,13 +6238,13 @@ void druid_t::create_buffs()
 
   // Balance
 
-  buff.blessing_of_anshe     = buff_creator_t( this, "blessing_of_anshe", spell.blessing_of_anshe )
+  buff.blessing_of_anshe     = buff_creator_t( this, "blessing_of_anshe", spec.blessing_of_anshe )
                                .tick_time_behavior( BUFF_TICK_TIME_HASTED )
                                .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
-                                 resource_gain( RESOURCE_ASTRAL_POWER, spell.blessing_of_anshe -> effectN( 1 ).resource( RESOURCE_ASTRAL_POWER ),
+                                 resource_gain( RESOURCE_ASTRAL_POWER, spec.blessing_of_anshe -> effectN( 1 ).resource( RESOURCE_ASTRAL_POWER ),
                                  gain.blessing_of_anshe ); } );
 
-  buff.blessing_of_elune     = buff_creator_t( this, "blessing_of_elune", spell.blessing_of_elune );
+  buff.blessing_of_elune     = buff_creator_t( this, "blessing_of_elune", spec.blessing_of_elune );
 
   buff.celestial_alignment   = new celestial_alignment_buff_t( *this );
 
@@ -6379,9 +6367,9 @@ void druid_t::create_buffs()
 
   if ( specialization() == DRUID_RESTORATION || talent.restoration_affinity -> ok() )
   {
-    buff.yseras_gift         = buff_creator_t( this, "yseras_gift_driver", spell.yseras_gift )
+    buff.yseras_gift         = buff_creator_t( this, "yseras_gift_driver", spec.yseras_gift )
                                .quiet( true )
-                               .default_value( spell.yseras_gift -> effectN( 1 ).percent() )
+                               .default_value( spec.yseras_gift -> effectN( 1 ).percent() )
                                .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
                                  active.yseras_gift -> base_dd_min = b -> value() * resources.max[ RESOURCE_HEALTH ];
                                  active.yseras_gift -> execute(); } )
@@ -7257,9 +7245,9 @@ double druid_t::passive_movement_modifier() const
   double ms = player_t::passive_movement_modifier();
 
   if ( buff.cat_form -> up() )
-    ms += spell.cat_form_speed -> effectN( 1 ).percent();
+    ms += spec.cat_form_speed -> effectN( 1 ).percent();
 
-  ms += spell.feline_swiftness -> effectN( 1 ).percent();
+  ms += spec.feline_swiftness -> effectN( 1 ).percent();
 
   return ms;
 }
@@ -7327,7 +7315,7 @@ double druid_t::composite_attribute_multiplier( attribute_e attr ) const
   {
   case ATTR_STAMINA:
     if ( buff.bear_form -> check() )
-      m *= 1.0 + spell.bear_form_passive -> effectN( 2 ).percent();
+      m *= 1.0 + spec.bear_form -> effectN( 2 ).percent();
     break;
   default:
     break;
@@ -7593,8 +7581,8 @@ void druid_t::target_mitigation( school_e school, dmg_e type, action_state_t* s 
 
   s -> result_amount *= 1.0 + buff.pulverize -> value();
 
-  if ( spell.thick_hide )
-    s -> result_amount *= 1.0 + spell.thick_hide -> effectN( 1 ).percent();
+  if ( spec.thick_hide )
+    s -> result_amount *= 1.0 + spec.thick_hide -> effectN( 1 ).percent();
 
   if ( talent.rend_and_tear -> ok() )
     s -> result_amount *= 1.0 - talent.rend_and_tear -> effectN( 2 ).percent()
