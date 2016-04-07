@@ -1952,8 +1952,7 @@ struct zeal_t : public holy_power_generator_t
     parse_options( options_str );
 
     // Guarded by the Light and Sword of Light reduce base mana cost; spec-limited so only one will ever be active
-    base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent()
-                                       +  p -> passives.sword_of_light -> effectN( 4 ).percent();
+    base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent();
     base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
 
     cooldown -> duration = data().charge_cooldown();
