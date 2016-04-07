@@ -26,7 +26,7 @@ actions.precombat+=/mind_blast
 actions=call_action_list,name=main
 
 actions.main=voidform
-actions.main+=/surrender_to_madness,if=talent.surrender_to_madness.enabled,buff.voidform.stack<10,time_to_die<100
+actions.main+=/surrender_to_madness,if=talent.surrender_to_madness.enabled&buff.voidform.stack<10&time_to_die<100
 actions.main+=/power_infusion,if=talent.power_infusion.enabled
 actions.main+=/void_bolt
 actions.main+=/dispersion,if=buff.voidform.up&buff.voidform.stack>20

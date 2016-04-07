@@ -19,16 +19,30 @@ actions.precombat+=/food,type=pickled_eel
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_intellect
-actions.precombat+=/vampiric_touch
+actions.precombat+=/mind_blast
 
 # Executed every time the actor is available.
 
 actions=call_action_list,name=main
 
-actions.main=mind_blast
+actions.main=voidform
+actions.main+=/surrender_to_madness,if=talent.surrender_to_madness.enabled&buff.voidform.stack<10&time_to_die<100
+actions.main+=/power_infusion,if=talent.power_infusion.enabled
+actions.main+=/void_bolt
+actions.main+=/dispersion,if=buff.voidform.up&buff.voidform.stack>20
+actions.main+=/void_torrent,if=buff.voidform.up&buff.voidform.stack>17
+actions.main+=/shadow_word_death,if=talent.reaper_of_souls.enabled
+actions.main+=/mind_blast
+actions.main+=/shadow_word_void,if=talent.shadow_word_void.enabled
+actions.main+=/shadow_word_death
+actions.main+=/mindbender,if=talent.mindbender.enabled
 actions.main+=/shadow_word_pain,if=!ticking
 actions.main+=/vampiric_touch,if=!ticking
-actions.main+=/mind_flay
+actions.main+=/shadow_crash,if=talent.shadow_crash.enabled
+actions.main+=/shadowfiend,if=!talent.mindbender.enabled
+actions.main+=/mind_flay,if=!talent.mind_spike.enabled,interrupt=1,chain=1
+actions.main+=/mind_spike,if=talent.mind_spike.enabled
+actions.main+=/shadow_word_pain
 
 head=pious_cowl,id=124161,bonus_id=566
 neck=glowing_firestone,id=124211,bonus_id=566,enchant=gift_of_critical_strike
