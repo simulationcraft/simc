@@ -2182,6 +2182,41 @@ struct overpower_t: public warrior_attack_t
   }
 };
 
+struct odyns_damage_t: public warrior_attack_t
+{
+  odyns_damage_t( warrior_t* p, spell_data_t* spell ):
+    warrior_attack_t( "odyns_fury", p, spell )
+  {
+    aoe = -1;
+    background = dual = true;
+  }
+};
+
+struct odyns_fury_t: public warrior_attack_t
+{
+  odyns_damage_t* mh;
+  odyns_damage_t* oh;
+  odyns_fury_t( warrior_t* p, const std::string& options_str ):
+    warrior_attack_t( "odyns_fury", p, p -> artifact.odyns_fury ),
+    mh( 0 ), oh( 0 )
+  {
+    parse_options( options_str );
+    mh = new odyns_damage_t( p, p -> artifact.odyns_fury.data().effectN( 1 ).trigger() );
+    mh -> weapon = &( p -> main_hand_weapon );
+    oh =  new odyns_damage_t( p, p -> artifact.odyns_fury.data().effectN( 2 ).trigger() );
+    oh -> weapon = &( p -> off_hand_weapon );
+    add_child( mh );
+    add_child( oh );
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+    mh -> execute();
+    oh -> execute();
+  }
+};
+
 // Rampage ================================================================
 
 struct rampage_attack_t: public warrior_attack_t
@@ -3103,6 +3138,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "mortal_strike"        ) return new mortal_strike_t        ( this, options_str );
   if ( name == "pummel"               ) return new pummel_t               ( this, options_str );
   if ( name == "overpower"            ) return new overpower_t            ( this, options_str );
+  if ( name == "odyns_fury"           ) return new odyns_fury_t           ( this, options_str );
   if ( name == "rampage"              ) return new rampage_parent_t       ( this, options_str );
   if ( name == "raging_blow"          ) return new raging_blow_t          ( this, options_str );
   if ( name == "commanding_shout"     ) return new commanding_shout_t     ( this, options_str );
