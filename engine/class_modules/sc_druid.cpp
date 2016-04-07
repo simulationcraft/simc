@@ -1687,6 +1687,9 @@ public:
   {
     timespan_t g = ab::trigger_gcd;
 
+    if ( g == timespan_t::zero() )
+      return g;
+
     if ( cat_form_gcd && ab::p() -> buff.cat_form -> check() )
       g += ab::p() -> spec.cat_form -> effectN( 4 ).time_value();
 
@@ -3562,10 +3565,14 @@ struct maul_t : public bear_attack_t
 
 struct pulverize_t : public bear_attack_t
 {
+  int stacks_consumed;
+
   pulverize_t( druid_t* player, const std::string& options_str ) :
     bear_attack_t( "pulverize", player, player -> talent.pulverize )
   {
     parse_options( options_str );
+    
+    stacks_consumed = data().effectN( 3 ).base_value();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3574,8 +3581,8 @@ struct pulverize_t : public bear_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      // consumes 3 stacks of Thrash on the target
-      td( s -> target ) -> dots.thrash_bear -> cancel();
+      // consumes x stacks of Thrash on the target
+      td( s -> target ) -> dots.thrash_bear -> decrement( stacks_consumed );
 
       // and reduce damage taken by x% for y sec.
       p() -> buff.pulverize -> trigger();
@@ -3586,7 +3593,7 @@ struct pulverize_t : public bear_attack_t
   {
     // Call bear_attack_t::ready() first for proper targeting support.
     // Hardcode stack max since it may not be set if this code runs before Thrash is cast.
-    if ( bear_attack_t::ready() && td( target ) -> dots.thrash_bear -> current_stack() == 3 )
+    if ( bear_attack_t::ready() && td( target ) -> dots.thrash_bear -> current_stack() >= stacks_consumed )
       return true;
     else
       return false;
@@ -4195,7 +4202,7 @@ struct yseras_tick_t : public druid_heal_t
     double am = druid_heal_t::action_multiplier();
 
     if ( p() -> buff.bear_form -> check() )
-      am *= 1.0 + p() -> buff.bear_form -> data().effectN( 10 ).percent();
+      am *= 1.0 + p() -> buff.bear_form -> data().effectN( 8 ).percent();
 
     return am;
   }
@@ -6140,7 +6147,7 @@ void druid_t::init_base_stats()
   resources.active_resource[ RESOURCE_ASTRAL_POWER ] = specialization() == DRUID_BALANCE;
   resources.active_resource[ RESOURCE_HEALTH       ] = primary_role() == ROLE_TANK || talent.guardian_affinity -> ok();
   resources.active_resource[ RESOURCE_MANA         ] = primary_role() == ROLE_HEAL || talent.restoration_affinity -> ok()
-      || talent.balance_affinity -> ok();
+      || talent.balance_affinity -> ok() || specialization() == DRUID_GUARDIAN;
   resources.active_resource[ RESOURCE_ENERGY       ] = primary_role() == ROLE_ATTACK || talent.feral_affinity -> ok();
   resources.active_resource[ RESOURCE_COMBO_POINT  ] = primary_role() == ROLE_ATTACK || talent.feral_affinity -> ok();
   resources.active_resource[ RESOURCE_RAGE         ] = primary_role() == ROLE_TANK || talent.guardian_affinity -> ok();
@@ -6312,7 +6319,7 @@ void druid_t::create_buffs()
                                .cd( timespan_t::zero() )
                                .default_value( find_specialization_spell( "Barkskin" ) -> effectN( 2 ).percent() )
                                .tick_behavior( talent.brambles -> ok() ? BUFF_TICK_REFRESH : BUFF_TICK_NONE )
-                               .tick_callback( [ this ] ( buff_t*, int, const timespan_t& ) { active.brambles_pulse -> execute(); } );
+                               .tick_callback( [ this ] ( buff_t*, int, const timespan_t& ) { if ( talent.brambles -> ok() ) active.brambles_pulse -> execute(); } ); // Ugly fix, don't know why the tick behavior isn't set correctly...
 
   buff.bladed_armor          = buff_creator_t( this, "bladed_armor", spec.bladed_armor )
                                .default_value( spec.bladed_armor -> effectN( 1 ).percent() )
@@ -7190,7 +7197,7 @@ double druid_t::composite_melee_expertise( const weapon_t* ) const
   double exp = player_t::composite_melee_expertise();
 
   if ( buff.bear_form -> check() )
-    exp += buff.bear_form -> data().effectN( 8 ).base_value();
+    exp += buff.bear_form -> data().effectN( 6 ).base_value();
 
   return exp;
 }
@@ -7352,7 +7359,7 @@ double druid_t::composite_crit_avoidance() const
   double c = player_t::composite_crit_avoidance();
 
   if ( buff.bear_form -> check() )
-    c += buff.bear_form -> data().effectN( 7 ).percent();
+    c += buff.bear_form -> data().effectN( 2 ).percent();
 
   return c;
 }
