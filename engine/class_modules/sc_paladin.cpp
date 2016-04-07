@@ -12,7 +12,8 @@
     - A few Artifact Powers
     - Verify speculative implementations of some artifact powers + BoM
     - BoK/BoW
-
+    - Check mana/mana regen for ret, sword of light has been significantly changed to no longer have the mana regen stuff, or the bonus to healing, reduction in mana costs, etc.
+    - In fact, just check everything about sword of light.
   TODO (prot):
     - everything, pretty much :(
 */
@@ -1097,7 +1098,7 @@ struct flash_of_light_t : public paladin_heal_t
     parse_options( options_str );
 
     // Sword of light
-    base_multiplier *= 1.0 + p -> passives.sword_of_light -> effectN( 6 ).percent();
+    //base_multiplier *= 1.0 + p -> passives.sword_of_light -> effectN( 6 ).percent();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -1899,8 +1900,7 @@ struct crusader_strike_t : public holy_power_generator_t
     parse_options( options_str );
 
     // Guarded by the Light and Sword of Light reduce base mana cost; spec-limited so only one will ever be active
-    base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent()
-                                       +  p -> passives.sword_of_light -> effectN( 4 ).percent();
+    base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent();
     base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
 
     base_multiplier *= 1.0 + p -> artifact.blade_of_light.percent();
@@ -2005,8 +2005,7 @@ struct blade_of_justice_t : public holy_power_generator_t
     parse_options( options_str );
 
     // Guarded by the Light and Sword of Light reduce base mana cost; spec-limited so only one will ever be active
-    base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent()
-                                       +  p -> passives.sword_of_light -> effectN( 4 ).percent();
+    base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent();
     base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
 
     base_multiplier *= 1.0 + p -> artifact.deliver_the_justice.percent();
@@ -2044,8 +2043,7 @@ struct blade_of_wrath_t : public holy_power_generator_t
     parse_options( options_str );
 
     // Guarded by the Light and Sword of Light reduce base mana cost; spec-limited so only one will ever be active
-    base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent()
-                                       +  p -> passives.sword_of_light -> effectN( 4 ).percent();
+    base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent();
     base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
 
     base_multiplier *= 1.0 + p -> artifact.deliver_the_justice.percent();
