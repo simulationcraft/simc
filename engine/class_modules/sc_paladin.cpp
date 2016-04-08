@@ -565,14 +565,14 @@ public:
     if ( p() -> buffs.blessing_of_might -> up() )
     {
       double chance = p() -> buffs.blessing_of_might -> data().effectN( 1 ).percent();
+      if ( p() -> talents.blessings_of_justice -> ok() )
+      {
+        chance *= ( 1 + p() -> talents.blessings_of_justice -> effectN( 1 ).percent();
+      }
       if ( p() -> rng().roll( chance ) )
       {
         double amount = s -> result_amount;
         double multiplier = p() -> buffs.blessing_of_might -> data().effectN( 2 ).percent();
-        if ( p() -> talents.blessings_of_justice -> ok() )
-        {
-          multiplier *= ( 1 + p() -> talents.blessings_of_justice -> effectN( 1 ).percent() );
-        }
         amount *= multiplier;
         p() -> active_blessing_of_might_proc -> base_dd_max = p() -> active_blessing_of_might_proc -> base_dd_min = amount;
         p() -> active_blessing_of_might_proc -> target = s -> target;
