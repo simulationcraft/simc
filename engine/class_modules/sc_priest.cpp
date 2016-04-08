@@ -19,8 +19,6 @@ Shadow
       - Thoughts of Insanity
           - Need to implement Shadowmend first.
       - Thrive in the Shadows
-      - Mass Hysteria
-          - Need to change in to own buff for the rare case that Voidform stacks go over 100. Probably won't happen but still need to handle it incase Voidform's stack tick rate changes from 1.0sec.
   - Update GCD formula to match changes from 2016/04/06 once confirmed by devs.
   - Shadowmend
   - Setbonuses
@@ -113,6 +111,7 @@ public:
     // Shadow
     buff_t* dispersion;
     buff_t* lingering_insanity;
+    buff_t* mass_hysteria;
     buff_t* mind_sear_on_hit_reset;
     buff_t* shadowy_insight;
     buff_t* sphere_of_insanity;
@@ -2103,6 +2102,11 @@ struct voidform_t : public priest_spell_t
       priest.buffs.sphere_of_insanity->current_value = 0.0;
     }
 
+    if (priest.artifact.mass_hysteria.rank())
+    {
+      priest.buffs.mass_hysteria->trigger();
+    }
+
     if (priest.talents.void_lord->ok() && priest.buffs.lingering_insanity->up())
     {
       timespan_t time = priest.buffs.lingering_insanity->remains() - (priest.talents.void_lord->effectN(1).time_value() * 1000);
@@ -3029,7 +3033,7 @@ struct shadow_word_pain_t : public priest_spell_t
 
     if (priest.artifact.mass_hysteria.rank())
     {
-      m *= 1.0 + (priest.artifact.mass_hysteria.percent() * priest.buffs.voidform->stack());
+      m *= 1.0 + (priest.artifact.mass_hysteria.percent() * priest.buffs.mass_hysteria->stack());
     }
 
     return m;
@@ -3182,7 +3186,7 @@ struct vampiric_touch_t : public priest_spell_t
 
     if (priest.artifact.mass_hysteria.rank())
     {
-      m *= 1.0 + (priest.artifact.mass_hysteria.percent() * priest.buffs.voidform->stack());
+      m *= 1.0 + (priest.artifact.mass_hysteria.percent() * priest.buffs.mass_hysteria->stack());
     }
 
     return m;
@@ -5055,6 +5059,7 @@ struct voidform_t : public priest_buff_t<buff_t>
         vf->insanity_loss = nullptr; // avoid double-canceling
         priest->buffs.voidform->expire();
         priest->buffs.sphere_of_insanity->expire();
+        priest->buffs.mass_hysteria->expire();
         return;
       }
 
@@ -6203,7 +6208,7 @@ void priest_t::create_buffs()
 
   buffs.sphere_of_insanity = buff_creator_t(this, "sphere_of_insanity")
                                   .spell( find_spell(194182) )
-                                  .chance(1)
+                                  .chance(1.0)
                                   .duration( timespan_t::zero() )
                                   .default_value(0.0);
 
@@ -6261,6 +6266,15 @@ void priest_t::create_buffs()
   buffs.lingering_insanity = buff_creator_t( this, "lingering_insanity" )
                                  .spell( find_spell( 197937 ) )
                                  .add_invalidate( CACHE_HASTE );
+
+  buffs.mass_hysteria = buff_creator_t(this, "mass_hysteria")
+    .spell(find_spell(194378))
+    .chance(1.0)
+    .max_stack(999)
+    .duration(timespan_t::zero());
+
+  buffs.mass_hysteria->buff_period = timespan_t::from_seconds(1.0);
+  buffs.mass_hysteria->tick_behavior = BUFF_TICK_REFRESH;
 
   buffs.vampiric_embrace =
       buff_creator_t( this, "vampiric_embrace",
