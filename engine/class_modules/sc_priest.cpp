@@ -781,21 +781,14 @@ public:
   void_tendril_pet_t(sim_t* sim, priest_t& p)
     : priest_pet_t(sim, p, "void_tendril", PET_VOID_TENDRIL, true)
   {
-    action_priority_list_t* precombat = get_action_priority_list("precombat");
-    // Snapshot stats
-    precombat->add_action(
-      "snapshot_stats",
-      "Snapshot raid buffed stats before combat begins and "
-      "pre-potting is done.");
-
-    action_priority_list_t* def = get_action_priority_list("default");
-    def->add_action("void_tendril_mind_flay");
 
     owner_coeff.sp_from_sp = 1.0;
   }
 
   action_t* create_action(const std::string& name,
     const std::string& options_str) override;
+
+  void init_action_list() override;
 
   void summon(timespan_t duration) override
   {
@@ -1095,6 +1088,24 @@ action_t* lightwell_pet_t::create_action( const std::string& name,
     return new actions::lightwell_renew_t( *this );
 
   return priest_pet_t::create_action( name, options_str );
+}
+
+void void_tendril_pet_t::init_action_list()
+{
+  if (action_list_str.empty())
+  {
+    action_priority_list_t* precombat = get_action_priority_list("precombat");
+    // Snapshot stats
+    precombat->add_action(
+      "snapshot_stats",
+      "Snapshot raid buffed stats before combat begins and "
+      "pre-potting is done.");
+
+    action_priority_list_t* def = get_action_priority_list("default");
+    def->add_action("void_tendril_mind_flay");
+  }
+
+  priest_pet_t::init_action_list();
 }
 
 action_t* void_tendril_pet_t::create_action(const std::string& name,
