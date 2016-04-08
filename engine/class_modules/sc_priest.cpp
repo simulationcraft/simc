@@ -288,6 +288,7 @@ public:
     cooldown_t* power_word_shield;
     cooldown_t* shadowfiend;
     cooldown_t* silence;
+    cooldown_t* void_tendril;
 
 	  cooldown_t* mind_blast;
 	  cooldown_t* shadow_word_death;
@@ -352,6 +353,11 @@ public:
 
   } procs;
 
+  struct realppm_t
+  {
+    std::unique_ptr<real_ppm_t> call_to_the_void;
+  } rppm;
+
   // Special
   struct
   {
@@ -374,6 +380,7 @@ public:
   {
     pet_t* shadowfiend;
     pet_t* mindbender;
+    pet_t* void_tendril;
     pet_t* lightwell;
   } pets;
 
@@ -736,7 +743,7 @@ public:
   int charges;
 
   lightwell_pet_t( sim_t* sim, priest_t& p )
-    : priest_pet_t( sim, p, "lightwell", PET_NONE, true ), charges( 0 )
+    : priest_pet_t( sim, p, "lightwell", PET_LIGHTWELL, true ), charges( 0 )
   {
     role = ROLE_HEAL;
 
@@ -760,6 +767,39 @@ public:
   void summon( timespan_t duration ) override
   {
     priest_pet_t::summon( duration );
+  }
+};
+
+// ==========================================================================
+// Pet Void Tendril
+// ==========================================================================
+
+struct void_tendril_pet_t : public priest_pet_t
+{
+public:
+
+  void_tendril_pet_t(sim_t* sim, priest_t& p)
+    : priest_pet_t(sim, p, "void_tendril", PET_VOID_TENDRIL, true)
+  {
+    action_priority_list_t* precombat = get_action_priority_list("precombat");
+    // Snapshot stats
+    precombat->add_action(
+      "snapshot_stats",
+      "Snapshot raid buffed stats before combat begins and "
+      "pre-potting is done.");
+
+    action_priority_list_t* def = get_action_priority_list("default");
+    def->add_action("void_tendril_mind_flay");
+
+    owner_coeff.sp_from_sp = 1.0;
+  }
+
+  action_t* create_action(const std::string& name,
+    const std::string& options_str) override;
+
+  void summon(timespan_t duration) override
+  {
+    priest_pet_t::summon(duration);
   }
 };
 
@@ -921,6 +961,44 @@ struct fiend_melee_t : public priest_pet_melee_t
   }
 };
 
+struct void_tendril_mind_flay_t : public priest_pet_spell_t
+{
+  void_tendril_mind_flay_t(void_tendril_pet_t& p) : priest_pet_spell_t("void_tendril_mind_flay", &p, p.o().find_spell(15407)) //Need to whitelist spell ID 193473
+  {
+    may_crit = false;
+    may_miss = false;
+    channeled = true;
+    hasted_ticks = false;
+    use_off_gcd = true;
+
+    //TODO: Doublecheck the actual damage value per tick. Tooltip says 200% SP total, but it looks like it might be 66% SP per tick, or 198% SP total -- 2016/04/07 Twintop
+    //Void Tendril's Mind Flay damage is increased by FotM and VR talents.
+    spell_power_mod.tick = 0.66;
+    spell_power_mod.tick *= 1.0 + p.o().talents.fortress_of_the_mind->effectN(3).percent();
+  }
+
+  void_tendril_pet_t& p()
+  {
+    return static_cast<void_tendril_pet_t&>(*player);
+  }
+  const void_tendril_pet_t& p() const
+  {
+    return static_cast<void_tendril_pet_t&>(*player);
+  }
+
+  double action_multiplier() const override
+  {
+    double am = priest_pet_spell_t::action_multiplier();
+
+    if (p().o().talents.void_ray->ok() && p().o().buffs.void_ray->check())
+    {
+      am *= 1.0 + p().o().buffs.void_ray->check() * p().o().buffs.void_ray->data().effectN(1).percent();
+    }
+
+    return am;
+  }
+};
+
 struct lightwell_renew_t : public heal_t
 {
   lightwell_renew_t( lightwell_pet_t& p )
@@ -1017,6 +1095,15 @@ action_t* lightwell_pet_t::create_action( const std::string& name,
     return new actions::lightwell_renew_t( *this );
 
   return priest_pet_t::create_action( name, options_str );
+}
+
+action_t* void_tendril_pet_t::create_action(const std::string& name,
+  const std::string& options_str)
+{
+  if (name == "void_tendril_mind_flay")
+    return new actions::void_tendril_mind_flay_t(*this);
+
+  return priest_pet_t::create_action(name, options_str);
 }
 
 }  // END pets NAMESPACE
@@ -2253,6 +2340,19 @@ struct summon_mindbender_t : public summon_pet_t
     cooldown->duration = data().cooldown();
     cooldown->duration +=
         priest.sets.set( PRIEST_SHADOW, T18, B2 )->effectN( 2 ).time_value();
+  }
+};
+
+struct summon_void_tendril_t : public summon_pet_t
+{
+  summon_void_tendril_t(priest_t& p, const std::string& options_str)
+    : summon_pet_t("void_tendril", p, p.find_artifact_spell("Call to the Void"))
+  {
+    parse_options(options_str);
+    harmful = false;
+    summoning_duration = timespan_t::from_seconds(10);// data().duration();
+    cooldown = p.cooldowns.void_tendril;
+    cooldown->duration = timespan_t::from_seconds(30);
   }
 };
 
@@ -5352,6 +5452,7 @@ void priest_t::create_cooldowns()
   cooldowns.power_word_shield = get_cooldown( "power_word_shield" );
   cooldowns.shadowfiend       = get_cooldown( "shadowfiend" );
   cooldowns.silence           = get_cooldown( "silence" );
+  cooldowns.void_tendril = get_cooldown("void_tendril");
 
   cooldowns.mind_blast = get_cooldown("mind_blast");
   cooldowns.shadow_word_death = get_cooldown("shadow_word_death");
@@ -5860,6 +5961,9 @@ action_t* priest_t::create_action( const std::string& name,
       return new summon_shadowfiend_t(*this, options_str);
   }
 
+  if (name == "void_tendril")
+    return new summon_void_tendril_t(*this, options_str);
+
   //Disc+Holy
   if (name == "penance")
     return new penance_t(*this, options_str);
@@ -5929,7 +6033,9 @@ pet_t* priest_t::create_pet( const std::string& pet_name,
   if ( pet_name == "shadowfiend" )
     return new pets::shadowfiend_pet_t( sim, *this );
   if ( pet_name == "mindbender" )
-    return new pets::mindbender_pet_t( sim, *this );
+    return new pets::mindbender_pet_t(sim, *this);
+  if (pet_name == "void_tendril")
+    return new pets::void_tendril_pet_t(sim, *this);
   if ( pet_name == "lightwell" )
     return new pets::lightwell_pet_t( sim, *this );
 
@@ -5953,6 +6059,11 @@ void priest_t::create_pets()
        talents.mindbender->ok() )
   {
     pets.mindbender = create_pet( "mindbender" );
+  }
+
+  if ((find_action("void_tendril")))
+  {
+    pets.void_tendril = create_pet("void_tendril");
   }
 
   if ( find_class_spell( "Lightwell" )->ok() )
@@ -6521,6 +6632,7 @@ void priest_t::apl_shadow()
   default_list->add_action( "call_action_list,name=main" );
 
   main->add_action("voidform");
+  main->add_action("void_tendril"); //TODO Remove this, this is just to be able to call this like any other pet for testing purposes.
   main->add_action("surrender_to_madness,if=talent.surrender_to_madness.enabled&buff.voidform.stack<10&time_to_die<100");
   main->add_action("power_infusion,if=talent.power_infusion.enabled");
   main->add_action("void_bolt");
