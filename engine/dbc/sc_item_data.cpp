@@ -504,6 +504,11 @@ std::pair<const curve_point_t*, const curve_point_t*> dbc_t::curve_point( unsign
     lower_bound = upper_bound;
   }
 
+  if ( upper_bound == nullptr )
+  {
+    upper_bound = lower_bound;
+  }
+
   return std::pair<const curve_point_t*, const curve_point_t*>( lower_bound, upper_bound );
 }
 
@@ -559,6 +564,11 @@ bool item_database::apply_item_scaling( item_t& item, unsigned scaling_id )
   if ( curve_data.first -> val1 == base_value )
   {
     scaled_result = curve_data.first -> val2;
+  }
+  // Scaling value goes past the curve data, use the maximum value
+  else if ( curve_data.second -> val1 < base_value )
+  {
+    scaled_result = curve_data.second -> val2;
   }
   else if ( curve_data.second -> val1 == base_value )
   {
