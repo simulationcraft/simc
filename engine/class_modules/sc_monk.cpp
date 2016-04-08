@@ -29,6 +29,7 @@ MISTWEAVER:
 -- Summon Jade Serpent Statue
 
 BREWMASTER:
+- Change the intial midigation % of stagger into an absorb (spell id 115069)
 - Fortuitous Sphers - Finish implementing
 - Break up Healing Elixers and Fortuitous into two spells; one for proc and one for heal
 - Gift of the Ox - Check if 35% chance is baseline and increased by HP percent from there
@@ -38,7 +39,6 @@ BREWMASTER:
 -- Summon Black Ox Statue
 -- Invoke Niuzao
 -- Zen Meditation
--  Celestial Fortune - Double check if this works similar to Prot Paladin's Shining Protector
 */
 #include "simulationcraft.hpp"
 
@@ -500,6 +500,7 @@ public:
     const spell_data_t* elusive_dance;
     const spell_data_t* gift_of_the_ox_heal;
     const spell_data_t* gift_of_the_ox_summon;
+    const spell_data_t* greater_gift_of_the_ox_heal;
     const spell_data_t* keg_smash_buff;
     const spell_data_t* special_delivery;
     const spell_data_t* stagger_self_damage;
@@ -5096,7 +5097,7 @@ struct gift_of_the_ox_t: public monk_heal_t
 struct greater_gift_of_the_ox_t: public monk_heal_t
 {
   greater_gift_of_the_ox_t( monk_t& p, const std::string& options_str ):
-    monk_heal_t( "greater_gift_of_the_ox", p, p.passives.gift_of_the_ox_heal )
+    monk_heal_t( "greater_gift_of_the_ox", p, p.passives.greater_gift_of_the_ox_heal )
   {
     parse_options( options_str );
     harmful = false;
@@ -5113,9 +5114,6 @@ struct greater_gift_of_the_ox_t: public monk_heal_t
   double action_multiplier() const override
   {
     double am = monk_heal_t::action_multiplier();
-
-    // TODO: Hard code this for the time being
-    am *= 2;
 
     if ( p() -> artifact.gifted_student.rank() )
       am *= 1 + p() -> artifact.gifted_student.percent();
@@ -5430,13 +5428,14 @@ struct celestial_fortune_t : public monk_heal_t
     snapshot_flags |= STATE_MUL_DA;
   }
 
-/*  virtual double action_multiplier() const override
+  virtual double action_multiplier() const override
   {
-    double am = p() -> passives.shining_protector -> effectN( 1 ).percent();
+//    double am = p() -> passives.shining_protector -> effectN( 1 ).percent();
 
-    return am;
+    // Hard code 115% multiplier since that is what is being observerd.
+    return 1.15;//am;
   }
-*/
+
 
   virtual bool ready() override
   {
@@ -6024,6 +6023,7 @@ void monk_t::init_spells()
   passives.elusive_dance                    = find_spell( 196739 );
   passives.gift_of_the_ox_heal              = find_spell( 124507 );
   passives.gift_of_the_ox_summon            = find_spell( 124503 );
+  passives.greater_gift_of_the_ox_heal      = find_spell( 214416 );
   passives.keg_smash_buff                   = find_spell( 196720 );
   passives.special_delivery                 = find_spell( 196733 );
   passives.stagger_self_damage              = find_spell( 124255 );
@@ -7115,8 +7115,13 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school,
 void monk_t::assess_heal( school_e school, dmg_e dmg_type, action_state_t* s )
 {
   // Celestial Fortune procs a heal every now and again
-  if ( spec.celestial_fortune -> ok() )
-    trigger_celestial_fortune( s );
+  if ( s -> action -> id != passives.healing_elixirs -> id() 
+    || s -> action -> id != passives.gift_of_the_ox_heal -> id()
+    || s -> action -> id != passives.greater_gift_of_the_ox_heal -> id() )
+  {
+    if ( spec.celestial_fortune -> ok() )
+      trigger_celestial_fortune( s );
+  }
 
   player_t::assess_heal( school, dmg_type, s );
 }
