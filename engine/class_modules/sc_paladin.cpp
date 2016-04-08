@@ -567,7 +567,7 @@ public:
       double chance = p() -> buffs.blessing_of_might -> data().effectN( 1 ).percent();
       if ( p() -> talents.blessings_of_justice -> ok() )
       {
-        chance *= ( 1 + p() -> talents.blessings_of_justice -> effectN( 1 ).percent();
+        chance *= ( 1 + p() -> talents.blessings_of_justice -> effectN( 1 ).percent() );
       }
       if ( p() -> rng().roll( chance ) )
       {
