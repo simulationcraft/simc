@@ -5428,14 +5428,14 @@ struct celestial_fortune_t : public monk_heal_t
     snapshot_flags |= STATE_MUL_DA;
   }
 
-  virtual double action_multiplier() const override
+/*  virtual double action_multiplier() const override
   {
 //    double am = p() -> passives.shining_protector -> effectN( 1 ).percent();
 
-    // Hard code 115% multiplier since that is what is being observerd.
-    return 1.15;//am;
+    
+    return am;
   }
-
+*/
 
   virtual bool ready() override
   {
