@@ -1,9 +1,9 @@
-priest="Priest_Shadow_T18H_COP"
+priest="Priest_Shadow_T17N"
 level=100
 race=troll
 role=spell
 position=back
-talents=1133231
+talents=1133131
 spec=shadow
 
 # This default action priority list is automatically created based on your character.
@@ -15,7 +15,7 @@ spec=shadow
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=greater_draenic_intellect_flask
-actions.precombat+=/food,type=pickled_eel
+actions.precombat+=/food,type=buttered_sturgeon
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_intellect
@@ -44,31 +44,31 @@ actions.main+=/mind_flay,if=!talent.mind_spike.enabled,interrupt=1,chain=1
 actions.main+=/mind_spike,if=talent.mind_spike.enabled
 actions.main+=/shadow_word_pain
 
-head=demon_princes_ascendant_crown,id=124159,bonus_id=566
-neck=vial_of_immiscible_liquid,id=124212,bonus_id=566,enchant=gift_of_mastery
-shoulders=pious_mantle,id=124178,bonus_id=566
-back=cloak_of_hideous_unity,id=124138,bonus_id=566,enchant=gift_of_mastery
-chest=pious_raiment,id=124172,bonus_id=566
-wrists=contemptuous_wristguards,id=124186,bonus_id=566
-hands=pious_handwraps,id=124155,bonus_id=566
-waist=demonbuckle_sash_of_argus,id=124200,bonus_id=566
-legs=pious_leggings,id=124166,bonus_id=566
-feet=dessicated_soulrender_slippers,id=124150,bonus_id=566
-finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_mastery
-finger2=loathful_encrusted_band,id=124192,bonus_id=566,enchant=gift_of_mastery
-trinket1=repudiation_of_war,id=124519,bonus_id=566
-trinket2=desecrated_shadowmoon_insignia,id=124228,bonus_id=566
-main_hand=edict_of_argus,id=124382,bonus_id=566,enchant=mark_of_warsong
+head=slagbombers_hood,id=113981
+neck=gruuls_lip_ring,id=113872,enchant=gift_of_mastery
+shoulders=soul_priests_shoulderguards,id=115561
+back=runefrenzy_greatcloak,id=113937,enchant=gift_of_mastery
+chest=soul_priests_raiment,id=115560
+wrists=bracers_of_darkened_skies,id=119332
+hands=soul_priests_gloves,id=115562
+waist=seeking_ember_girdle,id=113941
+legs=soul_priests_leggings,id=115564
+feet=cavedwellers_climbers,id=113864
+finger1=ukuroggs_corrupted_seal,id=113975,enchant=gift_of_mastery
+finger2=timeless_solium_band_of_the_archmage,id=118296,enchant=gift_of_mastery
+trinket1=darmacs_unstable_talisman,id=113948
+trinket2=goren_soul_repository,id=119194
+main_hand=infernoflame_staff,id=113869,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_ilvl=714.00
-# gear_stamina=5394
-# gear_intellect=3595
-# gear_spell_power=2214
-# gear_crit_rating=1242
-# gear_haste_rating=1542
-# gear_mastery_rating=2177
-# gear_versatility_rating=108
-# gear_armor=994
-# set_bonus=tier18_2pc=1
-# set_bonus=tier18_4pc=1
+# gear_ilvl=670.67
+# gear_stamina=3589
+# gear_intellect=2824
+# gear_spell_power=1389
+# gear_crit_rating=391
+# gear_haste_rating=1209
+# gear_mastery_rating=1458
+# gear_versatility_rating=78
+# gear_armor=727
+# set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1

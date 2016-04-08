@@ -6,7 +6,7 @@
 # talent_format=numbers
 
 
-priest="Priest_Shadow_T17P_COP"
+priest="Priest_Shadow_T17P"
 talents=1133131
 level=100
 race=troll
@@ -29,44 +29,4 @@ finger2=mark_of_ice,id=109764,bonus_id=524,enchant=gift_of_mastery
 trinket1=tovras_lightning_repository,id=110001,bonus_id=524
 trinket2=coagulated_genesaur_blood,id=110004,bonus_id=524
 main_hand=spire_of_the_furious_construct,id=110031,bonus_id=524,enchant=mark_of_bleeding_hollow
-save=Priest_Shadow_T17P_COP.simc
-
-copy="Priest_Shadow_T17P_VE"
-talents=1133132
-race=troll
-head=frosttouched_hood,id=109971,bonus_id=524
-neck=demonbinder_cabochon,id=109955,bonus_id=524,enchant=gift_of_haste
-shoulders=mantle_of_arcane_mystery,id=109930,bonus_id=524
-back=felbone_drape,id=109907,bonus_id=524,enchant=gift_of_haste
-chest=robes_of_arcane_mystery,id=109899,bonus_id=524
-wrists=bracers_of_arcane_mystery,id=109864,bonus_id=524
-hands=lightbinder_gloves,id=109847,bonus_id=524
-waist=cord_of_arcane_mystery,id=109824,bonus_id=524
-legs=trousers_of_arcane_mystery,id=109804,bonus_id=524
-feet=felflame_sandals,id=109797,bonus_id=524
-finger1=diamondglow_circle,id=109763,bonus_id=524,enchant=gift_of_haste
-finger2=darkflame_loop,id=109766,bonus_id=524,enchant=gift_of_haste
-trinket1=tovras_lightning_repository,id=110001,bonus_id=524
-trinket2=coagulated_genesaur_blood,id=110004,bonus_id=524
-main_hand=thunderlord_flamestaff,id=110054,bonus_id=524,enchant=mark_of_the_thunderlord
-save=Priest_Shadow_T17P_VE.simc
-
-copy="Priest_Shadow_T17P_AS"
-talents=1133133
-race=worgen
-head=frosttouched_hood,id=109971,bonus_id=524
-neck=magisters_chain,id=109954,bonus_id=524,enchant=gift_of_critical_strike
-shoulders=lightbinder_shoulderpads,id=109933,bonus_id=524
-back=felbone_drape,id=109907,bonus_id=524,enchant=gift_of_critical_strike
-chest=robes_of_arcane_mystery,id=109899,bonus_id=524
-wrists=bracers_of_arcane_mystery,id=109864,bonus_id=524
-hands=lightbinder_gloves,id=109847,bonus_id=524
-waist=cord_of_arcane_mystery,id=109824,bonus_id=524
-legs=trousers_of_arcane_mystery,id=109804,bonus_id=524
-feet=felflame_sandals,id=109797,bonus_id=524
-finger1=diamondglow_circle,id=109763,bonus_id=524,enchant=gift_of_critical_strike
-finger2=darkflame_loop,id=109766,bonus_id=524,enchant=gift_of_critical_strike
-trinket1=coagulated_genesaur_blood,id=110004,bonus_id=524
-trinket2=crushtos_runic_alarm,id=110000,bonus_id=524
-main_hand=thunderlord_flamestaff,id=110054,bonus_id=524,enchant=mark_of_the_thunderlord
-save=Priest_Shadow_T17P_AS.simc
+save=Priest_Shadow_T17P.simc

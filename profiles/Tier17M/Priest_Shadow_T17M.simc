@@ -1,9 +1,10 @@
-priest="Priest_Shadow_T17P_VE"
+priest="Priest_Shadow_T17M
+"
 level=100
 race=troll
 role=spell
 position=back
-talents=1133132
+talents=1133131
 spec=shadow
 
 # This default action priority list is automatically created based on your character.
@@ -44,29 +45,31 @@ actions.main+=/mind_flay,if=!talent.mind_spike.enabled,interrupt=1,chain=1
 actions.main+=/mind_spike,if=talent.mind_spike.enabled
 actions.main+=/shadow_word_pain
 
-head=frosttouched_hood,id=109971,bonus_id=524
-neck=demonbinder_cabochon,id=109955,bonus_id=524,enchant=gift_of_haste
-shoulders=mantle_of_arcane_mystery,id=109930,bonus_id=524
-back=felbone_drape,id=109907,bonus_id=524,enchant=gift_of_haste
-chest=robes_of_arcane_mystery,id=109899,bonus_id=524
-wrists=bracers_of_arcane_mystery,id=109864,bonus_id=524
-hands=lightbinder_gloves,id=109847,bonus_id=524
-waist=cord_of_arcane_mystery,id=109824,bonus_id=524
-legs=trousers_of_arcane_mystery,id=109804,bonus_id=524
-feet=felflame_sandals,id=109797,bonus_id=524
-finger1=diamondglow_circle,id=109763,bonus_id=524,enchant=gift_of_haste
-finger2=darkflame_loop,id=109766,bonus_id=524,enchant=gift_of_haste
-trinket1=tovras_lightning_repository,id=110001,bonus_id=524
-trinket2=coagulated_genesaur_blood,id=110004,bonus_id=524
-main_hand=thunderlord_flamestaff,id=110054,bonus_id=524,enchant=mark_of_the_thunderlord
+head=slagbombers_hood,id=113981,bonus_id=567
+neck=gruuls_lip_ring,id=113872,bonus_id=567,enchant=gift_of_mastery
+shoulders=soul_priests_shoulderguards,id=115561,bonus_id=567
+back=runefrenzy_greatcloak,id=113937,bonus_id=567,enchant=gift_of_mastery
+chest=soul_priests_raiment,id=115560,bonus_id=567
+wrists=bracers_of_darkened_skies,id=119332,bonus_id=567
+hands=soul_priests_gloves,id=115562,bonus_id=567
+waist=seeking_ember_girdle,id=113941,bonus_id=567
+legs=soul_priests_leggings,id=115564,bonus_id=567
+feet=cavedwellers_climbers,id=113864,bonus_id=567
+finger1=ukuroggs_corrupted_seal,id=113975,bonus_id=567,enchant=gift_of_mastery
+finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_mastery
+trinket1=darmacs_unstable_talisman,id=113948,bonus_id=567
+trinket2=goren_soul_repository,id=119194,bonus_id=567
+main_hand=infernoflame_staff,id=113869,bonus_id=567,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_ilvl=630.00
-# gear_stamina=2465
-# gear_intellect=1889
-# gear_spell_power=958
-# gear_crit_rating=1013
-# gear_haste_rating=1015
-# gear_mastery_rating=224
-# gear_versatility_rating=48
-# gear_armor=552
+# gear_ilvl=701.00
+# gear_stamina=4763
+# gear_intellect=3751
+# gear_spell_power=1837
+# gear_crit_rating=518
+# gear_haste_rating=1603
+# gear_mastery_rating=1935
+# gear_versatility_rating=108
+# gear_armor=900
+# set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1

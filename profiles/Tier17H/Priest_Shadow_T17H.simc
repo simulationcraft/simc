@@ -1,9 +1,9 @@
-priest="Priest_Shadow_T17N_AS"
+priest="Priest_Shadow_T17H"
 level=100
-race=worgen
+race=troll
 role=spell
 position=back
-talents=1133133
+talents=1133131
 spec=shadow
 
 # This default action priority list is automatically created based on your character.
@@ -44,31 +44,31 @@ actions.main+=/mind_flay,if=!talent.mind_spike.enabled,interrupt=1,chain=1
 actions.main+=/mind_spike,if=talent.mind_spike.enabled
 actions.main+=/shadow_word_pain
 
-head=soul_priests_hood,id=115563
-neck=choker_of_bloody_flame,id=120077,enchant=gift_of_critical_strike
-shoulders=soul_priests_shoulderguards,id=115561
-back=runescribed_gronncloak,id=120078,enchant=gift_of_critical_strike
-chest=soul_priests_raiment,id=115560
-wrists=bracers_of_spattered_steel,id=113887
-hands=soul_priests_gloves,id=115562
-waist=deckhands_rope_belt,id=113967
-legs=turret_mechanics_legwraps,id=113970
-feet=cavedwellers_climbers,id=113864
-finger1=timeless_solium_band_of_the_archmage,id=118296,enchant=gift_of_critical_strike
-finger2=epicenter_loop,id=113947,enchant=gift_of_critical_strike
-trinket1=darmacs_unstable_talisman,id=113948
-trinket2=goren_soul_repository,id=119194
-main_hand=blackhand_doomstaff,id=113988,enchant=mark_of_the_thunderlord
+head=slagbombers_hood,id=113981,bonus_id=566
+neck=gruuls_lip_ring,id=113872,bonus_id=566,enchant=gift_of_mastery
+shoulders=soul_priests_shoulderguards,id=115561,bonus_id=566
+back=runefrenzy_greatcloak,id=113937,bonus_id=566,enchant=gift_of_mastery
+chest=soul_priests_raiment,id=115560,bonus_id=566
+wrists=bracers_of_darkened_skies,id=119332,bonus_id=566
+hands=soul_priests_gloves,id=115562,bonus_id=566
+waist=seeking_ember_girdle,id=113941,bonus_id=566
+legs=soul_priests_leggings,id=115564,bonus_id=566
+feet=cavedwellers_climbers,id=113864,bonus_id=566
+finger1=ukuroggs_corrupted_seal,id=113975,bonus_id=566,enchant=gift_of_mastery
+finger2=spellbound_solium_band_of_the_kirintor,id=118301,enchant=gift_of_mastery
+trinket1=darmacs_unstable_talisman,id=113948,bonus_id=566
+trinket2=goren_soul_repository,id=119194,bonus_id=566
+main_hand=infernoflame_staff,id=113869,bonus_id=566,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_ilvl=670.67
-# gear_stamina=3589
-# gear_intellect=2824
-# gear_spell_power=1389
-# gear_crit_rating=1300
-# gear_haste_rating=632
-# gear_mastery_rating=928
-# gear_versatility_rating=251
-# gear_armor=727
+# gear_ilvl=685.33
+# gear_stamina=4114
+# gear_intellect=3244
+# gear_spell_power=1596
+# gear_crit_rating=450
+# gear_haste_rating=1394
+# gear_mastery_rating=1669
+# gear_versatility_rating=86
+# gear_armor=809
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

@@ -1,9 +1,9 @@
-priest="Priest_Shadow_T18M_AS"
+priest="Priest_Shadow_T17B"
 level=100
-race=troll
+race=draenei
 role=spell
 position=back
-talents=1133233
+talents=1133131
 spec=shadow
 
 # This default action priority list is automatically created based on your character.
@@ -15,7 +15,7 @@ spec=shadow
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=greater_draenic_intellect_flask
-actions.precombat+=/food,type=pickled_eel
+actions.precombat+=/food,type=buttered_sturgeon
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_intellect
@@ -23,8 +23,7 @@ actions.precombat+=/mind_blast
 
 # Executed every time the actor is available.
 
-actions=use_item,slot=finger1
-actions+=/call_action_list,name=main
+actions=call_action_list,name=main
 
 actions.main=voidform
 actions.main+=/surrender_to_madness,if=talent.surrender_to_madness.enabled&buff.voidform.stack<10&time_to_die<100
@@ -45,32 +44,32 @@ actions.main+=/mind_flay,if=!talent.mind_spike.enabled,interrupt=1,chain=1
 actions.main+=/mind_spike,if=talent.mind_spike.enabled
 actions.main+=/shadow_word_pain
 
-head=pious_cowl,id=124161,bonus_id=567,upgrade=2
-neck=glowing_firestone,id=124211,bonus_id=567,upgrade=2,enchant=gift_of_critical_strike
-shoulders=pious_mantle,id=124178,bonus_id=567,upgrade=2
-back=cloak_of_hideous_unity,id=124138,bonus_id=567,upgrade=2,enchant=gift_of_critical_strike
-chest=pious_raiment,id=124172,bonus_id=567,upgrade=2
-wrists=contemptuous_wristguards,id=124186,bonus_id=567,upgrade=2
-hands=pious_handwraps,id=124155,bonus_id=567,upgrade=2
-waist=cord_of_unhinged_malice,id=124182,bonus_id=567,upgrade=2
-legs=leggings_of_the_iron_summoner,id=124164,bonus_id=567,upgrade=2
-feet=bloody_daggerheeled_pumps,id=124149,bonus_id=567,upgrade=2
-finger1=nithramus_the_allseer,id=124635,bonus_id=641,enchant=gift_of_critical_strike
-finger2=seal_of_the_traitorous_councilor,id=124191,bonus_id=567,upgrade=2,enchant=gift_of_critical_strike
-trinket1=repudiation_of_war,id=124519,bonus_id=567,upgrade=2
-trinket2=iron_reaver_piston,id=124227,bonus_id=567,upgrade=2
-main_hand=gavel_of_the_eredar,id=124372,bonus_id=567,upgrade=2,enchant=mark_of_the_thunderlord
-off_hand=gibbering_madness,id=124205,bonus_id=567,upgrade=2
+head=soul_priests_hood,id=115563,bonus_id=567/523/448/42,gem_id=115812
+neck=gruuls_lip_ring,id=113872,bonus_id=567/523/448/42,gem_id=115812,enchant=gift_of_mastery
+shoulders=earthripple_shoulderpads,id=113928,bonus_id=567/523/448/42,gem_id=115812
+back=runefrenzy_greatcloak,id=113937,bonus_id=567/523/448/42,gem_id=115812,enchant=gift_of_mastery
+chest=soul_priests_raiment,id=115560,bonus_id=567/523/448/42,gem_id=115812
+wrists=bracers_of_darkened_skies,id=119332,bonus_id=567/523/448/42,gem_id=115812
+hands=soul_priests_gloves,id=115562,bonus_id=567/523/448/42,gem_id=115812
+waist=seeking_ember_girdle,id=113941,bonus_id=567/523/448/42,gem_id=115812
+legs=soul_priests_leggings,id=115564,bonus_id=567/523/448/42,gem_id=115812
+feet=cavedwellers_climbers,id=113864,bonus_id=567/523/448/42,gem_id=115812
+finger1=ukuroggs_corrupted_seal,id=113975,bonus_id=567/523/448/42,gem_id=115812,enchant=gift_of_mastery
+finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_mastery
+trinket1=darmacs_unstable_talisman,id=113948,bonus_id=567/523/448/42,gem_id=115812
+trinket2=goren_soul_repository,id=119194,bonus_id=567/523/448/42,gem_id=115812
+main_hand=infernoflame_staff,id=113869,bonus_id=567/523/448/42,gem_id=115812,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_ilvl=740.63
-# gear_stamina=6918
-# gear_intellect=4890
-# gear_spell_power=2790
-# gear_crit_rating=2934
-# gear_haste_rating=2123
-# gear_mastery_rating=1062
-# gear_versatility_rating=556
-# gear_armor=1196
-# set_bonus=tier18_2pc=1
-# set_bonus=tier18_4pc=1
+# gear_ilvl=706.60
+# gear_stamina=5019
+# gear_intellect=3955
+# gear_spell_power=1943
+# gear_crit_rating=818
+# gear_haste_rating=1609
+# gear_mastery_rating=3545
+# gear_versatility_rating=108
+# gear_speed_rating=2082
+# gear_armor=943
+# set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1

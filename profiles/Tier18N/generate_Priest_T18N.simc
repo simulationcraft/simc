@@ -10,7 +10,7 @@
 # talent_format=numbers
 
 # Shadow
-priest="Priest_Shadow_T18N_COP"
+priest="Priest_Shadow_T18N"
 talents=1133231
 level=100
 race=troll
@@ -34,49 +34,7 @@ trinket1=repudiation_of_war,id=124519
 trinket2=desecrated_shadowmoon_insignia,id=124228
 main_hand=edict_of_argus,id=124382,enchant=mark_of_warsong
 off_hand=
-save=Priest_Shadow_T18N_COP.simc
-
-copy="Priest_Shadow_T18N_VE"
-talents=1133232
-race=troll
-head=pious_cowl,id=124161
-neck=choker_of_forbidden_indulgence,id=124391,enchant=gift_of_haste
-shoulders=pious_mantle,id=124178
-back=cloak_of_hideous_unity,id=124138,enchant=gift_of_haste
-chest=pious_raiment,id=124172
-wrists=bracers_of_perfect_discomfort,id=127981
-hands=pious_handwraps,id=124155
-waist=sludgesoaked_waistband,id=124180
-legs=leggings_of_the_iron_summoner,id=124164
-feet=dessicated_soulrender_slippers,id=124150
-finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_haste
-finger2=seal_of_the_traitorous_councilor,id=124191,enchant=gift_of_haste
-trinket1=repudiation_of_war,id=124519
-trinket2=desecrated_shadowmoon_insignia,id=124228
-main_hand=gavel_of_the_eredar,id=124372,enchant=mark_of_warsong
-off_hand=gibbering_madness,id=124205
-save=Priest_Shadow_T18N_VE.simc
-
-copy="Priest_Shadow_T18N_AS"
-talents=1133233
-race=troll
-head=pious_cowl,id=124161
-neck=glowing_firestone,id=124211,enchant=gift_of_critical_strike
-shoulders=pious_mantle,id=124178
-back=cloak_of_hideous_unity,id=124138,enchant=gift_of_critical_strike
-chest=pious_raiment,id=124172
-wrists=contemptuous_wristguards,id=124186
-hands=pious_handwraps,id=124155
-waist=cord_of_unhinged_malice,id=124182
-legs=leggings_of_the_iron_summoner,id=124164
-feet=bloody_daggerheeled_pumps,id=124149
-finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_critical_strike
-finger2=seal_of_the_traitorous_councilor,id=124191,enchant=gift_of_critical_strike
-trinket1=repudiation_of_war,id=124519
-trinket2=iron_reaver_piston,id=124227
-main_hand=gavel_of_the_eredar,id=124372,enchant=mark_of_the_thunderlord
-off_hand=gibbering_madness,id=124205
-save=Priest_Shadow_T18N_AS.simc
+save=Priest_Shadow_T18N.simc
 
 # Holy Heal
 priest="Priest_Holy_T18N_Heal"

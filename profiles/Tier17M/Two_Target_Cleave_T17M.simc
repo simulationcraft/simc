@@ -36,9 +36,7 @@ talents=2000323
 #Priest_Discipline_T17M_Heal.simc
 #Priest_Holy_T17M_Heal.simc
 #Priest_Holy_T17M_Dmg.simc
-Priest_Shadow_T17M_COP.simc
-Priest_Shadow_T17M_VE.simc
-Priest_Shadow_T17M_AS.simc
+Priest_Shadow_T17M.simc
 
 Rogue_Assassination_T17M.simc
 Rogue_Combat_T17M.simc

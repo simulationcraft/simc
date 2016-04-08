@@ -45,15 +45,9 @@ trinket2=mirror_of_the_blademaster,id=124224
 Paladin_Retribution_T18N.simc
 
 # Priest
-Priest_Shadow_T18N_AS.simc
+Priest_Shadow_T18Nsimc
 trinket1=unblinking_gaze_of_sethe,id=124229
 trinket2=prophecy_of_fear,id=124230
-Priest_Shadow_T18N_COP.simc
-trinket2=prophecy_of_fear,id=124230
-Priest_Shadow_T18N_VE.simc
-trinket1=unblinking_gaze_of_sethe,id=124229
-trinket2=prophecy_of_fear,id=124230
-
 # Rogue
 Rogue_Assassination_T18N.simc
 Rogue_Combat_T18N.simc

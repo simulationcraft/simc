@@ -1,4 +1,4 @@
-priest="Priest_Shadow_T17M_COP"
+priest="Priest_Shadow_T17P"
 level=100
 race=troll
 role=spell
@@ -44,31 +44,28 @@ actions.main+=/mind_flay,if=!talent.mind_spike.enabled,interrupt=1,chain=1
 actions.main+=/mind_spike,if=talent.mind_spike.enabled
 actions.main+=/shadow_word_pain
 
-head=slagbombers_hood,id=113981,bonus_id=567
-neck=gruuls_lip_ring,id=113872,bonus_id=567,enchant=gift_of_mastery
-shoulders=soul_priests_shoulderguards,id=115561,bonus_id=567
-back=runefrenzy_greatcloak,id=113937,bonus_id=567,enchant=gift_of_mastery
-chest=soul_priests_raiment,id=115560,bonus_id=567
-wrists=bracers_of_darkened_skies,id=119332,bonus_id=567
-hands=soul_priests_gloves,id=115562,bonus_id=567
-waist=seeking_ember_girdle,id=113941,bonus_id=567
-legs=soul_priests_leggings,id=115564,bonus_id=567
-feet=cavedwellers_climbers,id=113864,bonus_id=567
-finger1=ukuroggs_corrupted_seal,id=113975,bonus_id=567,enchant=gift_of_mastery
-finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_mastery
-trinket1=darmacs_unstable_talisman,id=113948,bonus_id=567
-trinket2=goren_soul_repository,id=119194,bonus_id=567
-main_hand=infernoflame_staff,id=113869,bonus_id=567,enchant=mark_of_bleeding_hollow
+head=hood_of_arcane_mystery,id=109970,bonus_id=524
+neck=magisters_chain,id=109954,bonus_id=524,enchant=gift_of_mastery
+shoulders=felflame_spaulders,id=109948,bonus_id=524
+back=cloak_of_arcane_mysteries,id=109908,bonus_id=524,enchant=gift_of_mastery
+chest=lightbinder_robes,id=109902,bonus_id=524
+wrists=bracers_of_arcane_mystery,id=109864,bonus_id=524
+hands=gloves_of_arcane_mystery,id=109844,bonus_id=524
+waist=frosttouched_cord,id=109825,bonus_id=524
+legs=leggings_of_swirling_light,id=109806,bonus_id=524
+feet=lightbinder_treads,id=109796,bonus_id=524
+finger1=darkflame_loop,id=109766,bonus_id=524,enchant=gift_of_mastery
+finger2=mark_of_ice,id=109764,bonus_id=524,enchant=gift_of_mastery
+trinket1=tovras_lightning_repository,id=110001,bonus_id=524
+trinket2=coagulated_genesaur_blood,id=110004,bonus_id=524
+main_hand=spire_of_the_furious_construct,id=110031,bonus_id=524,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_ilvl=701.00
-# gear_stamina=4763
-# gear_intellect=3751
-# gear_spell_power=1837
-# gear_crit_rating=518
-# gear_haste_rating=1603
-# gear_mastery_rating=1935
-# gear_versatility_rating=108
-# gear_armor=900
-# set_bonus=tier17_2pc=1
-# set_bonus=tier17_4pc=1
+# gear_ilvl=630.00
+# gear_stamina=2465
+# gear_intellect=1889
+# gear_spell_power=958
+# gear_crit_rating=675
+# gear_haste_rating=431
+# gear_mastery_rating=1218
+# gear_armor=552

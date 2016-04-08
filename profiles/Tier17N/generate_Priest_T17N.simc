@@ -11,7 +11,7 @@
 # talent_format=numbers
 
 # Shadow
-priest="Priest_Shadow_T17N_COP"
+priest="Priest_Shadow_T17N"
 talents=1133131
 level=100
 race=troll
@@ -35,49 +35,7 @@ trinket1=darmacs_unstable_talisman,id=113948
 trinket2=goren_soul_repository,id=119194
 main_hand=infernoflame_staff,id=113869,enchant=mark_of_bleeding_hollow
 off_hand=
-save=Priest_Shadow_T17N_COP.simc
-
-copy="Priest_Shadow_T17N_VE"
-talents=1123232
-race=troll
-head=soul_priests_hood,id=115563
-neck=whispering_taladite_pendant,id=115801,bonus_id=19/527,enchant=gift_of_haste
-shoulder=soul_priests_shoulderguards,id=115561
-back=runescribed_gronncloak,id=120078,enchant=gift_of_haste
-chest=ebonflame_robes,id=120375
-wrist=bracers_of_enkindled_power,id=113956
-hands=soul_priests_gloves,id=115562
-waist=hexweave_belt,id=114816,bonus_id=19/527
-legs=soul_priests_leggings,id=115564
-feet=ebonflame_sandals,id=120378
-finger1=whispering_taladite_ring,id=115798,bonus_id=19/527,enchant=gift_of_haste
-finger2=timeless_solium_band_of_the_archmage,id=118296,enchant=gift_of_haste
-trinket1=darmacs_unstable_talisman,id=113948
-trinket2=goren_soul_repository,id=119194
-main_hand=franzoks_headsmasher,id=113904,enchant=mark_of_warsong
-off_hand=enginestokers_lantern,id=113960
-save=Priest_Shadow_T17N_VE.simc
-
-copy="Priest_Shadow_T17N_AS"
-talents=1133133
-race=worgen
-head=soul_priests_hood,id=115563
-neck=choker_of_bloody_flame,id=120077,enchant=gift_of_critical_strike
-shoulders=soul_priests_shoulderguards,id=115561
-back=runescribed_gronncloak,id=120078,enchant=gift_of_critical_strike
-chest=soul_priests_raiment,id=115560
-wrists=bracers_of_spattered_steel,id=113887
-hands=soul_priests_gloves,id=115562
-waist=deckhands_rope_belt,id=113967
-legs=turret_mechanics_legwraps,id=113970
-feet=cavedwellers_climbers,id=113864
-finger1=timeless_solium_band_of_the_archmage,id=118296,enchant=gift_of_critical_strike
-finger2=epicenter_loop,id=113947,enchant=gift_of_critical_strike
-trinket1=darmacs_unstable_talisman,id=113948
-trinket2=goren_soul_repository,id=119194
-main_hand=blackhand_doomstaff,id=113988,enchant=mark_of_the_thunderlord
-off_hand=
-save=Priest_Shadow_T17N_AS.simc
+save=Priest_Shadow_T17N.simc
 
 # Holy Heal
 priest="Priest_Holy_T17N_Heal"

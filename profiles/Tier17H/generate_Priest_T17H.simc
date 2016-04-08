@@ -11,7 +11,7 @@
 # talent_format=numbers
 
 # Shadow
-priest="Priest_Shadow_T17H_COP"
+priest="Priest_Shadow_T17H"
 talents=1133131
 level=100
 race=troll
@@ -35,49 +35,7 @@ trinket1=darmacs_unstable_talisman,id=113948,bonus_id=566
 trinket2=goren_soul_repository,id=119194,bonus_id=566
 main_hand=infernoflame_staff,id=113869,bonus_id=566,enchant=mark_of_bleeding_hollow
 off_hand=
-save=Priest_Shadow_T17H_COP.simc
-
-copy="Priest_Shadow_T17H_VE"
-talents=1123232
-race=troll
-head=soul_priests_hood,id=115563,bonus_id=566
-neck=whispering_taladite_pendant,id=115801,bonus_id=30/593,enchant=gift_of_haste
-shoulder=soul_priests_shoulderguards,id=115561,bonus_id=566
-back=runescribed_gronncloak,id=120078,bonus_id=566,enchant=gift_of_haste
-chest=eyecatching_gilded_robe,id=113898,bonus_id=566
-wrist=bracers_of_enkindled_power,id=113956,bonus_id=566
-hands=soul_priests_gloves,id=115562,bonus_id=566
-waist=hexweave_belt,id=114816,bonus_id=19/593
-legs=soul_priests_leggings,id=115564,bonus_id=566
-feet=inferno_breath_sandals,id=113942,bonus_id=566
-finger1=whispering_taladite_ring,id=115798,bonus_id=30/593,enchant=gift_of_haste
-finger2=spellbound_solium_band_of_the_kirintor,id=118301,enchant=gift_of_haste
-trinket1=darmacs_unstable_talisman,id=113948,bonus_id=566
-trinket2=goren_soul_repository,id=119194,bonus_id=566
-main_hand=franzoks_headsmasher,id=113904,bonus_id=566,enchant=mark_of_warsong
-off_hand=enginestokers_lantern,id=113960,bonus_id=566
-save=Priest_Shadow_T17H_VE.simc
-
-copy="Priest_Shadow_T17H_AS"
-talents=1133133
-race=worgen
-head=soul_priests_hood,id=115563,bonus_id=566
-neck=choker_of_bloody_flame,id=120077,bonus_id=566,enchant=gift_of_critical_strike
-shoulders=soul_priests_shoulderguards,id=115561,bonus_id=566
-back=runescribed_gronncloak,id=120078,bonus_id=566,enchant=gift_of_critical_strike
-chest=soul_priests_raiment,id=115560,bonus_id=566
-wrists=bracers_of_spattered_steel,id=113887,bonus_id=566
-hands=soul_priests_gloves,id=115562,bonus_id=566
-waist=deckhands_rope_belt,id=113967,bonus_id=566
-legs=turret_mechanics_legwraps,id=113970,bonus_id=566
-feet=cavedwellers_climbers,id=113864,bonus_id=566
-finger1=spellbound_solium_band_of_the_kirintor,id=118301,enchant=gift_of_critical_strike
-finger2=epicenter_loop,id=113947,bonus_id=566,enchant=gift_of_critical_strike
-trinket1=darmacs_unstable_talisman,id=113948,bonus_id=566
-trinket2=goren_soul_repository,id=119194,bonus_id=566
-main_hand=blackhand_doomstaff,id=113988,bonus_id=566,enchant=mark_of_the_thunderlord
-off_hand=
-save=Priest_Shadow_T17H_AS.simc
+save=Priest_Shadow_T17H.simc
 
 # Holy Heal
 priest="Priest_Holy_T17H_Heal"

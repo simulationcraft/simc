@@ -1,9 +1,9 @@
-priest="Priest_Shadow_T17B_VE"
+priest="Priest_Shadow_T18H"
 level=100
-race=draenei
+race=troll
 role=spell
 position=back
-talents=1123232
+talents=1133231
 spec=shadow
 
 # This default action priority list is automatically created based on your character.
@@ -44,33 +44,31 @@ actions.main+=/mind_flay,if=!talent.mind_spike.enabled,interrupt=1,chain=1
 actions.main+=/mind_spike,if=talent.mind_spike.enabled
 actions.main+=/shadow_word_pain
 
-head=soul_priests_hood,id=115563,bonus_id=567
-neck=choker_of_bloody_flame,id=120077,bonus_id=567/523/448/42,gem_id=115811,enchant=gift_of_haste
-shoulders=soul_priests_shoulderguards,id=115561,bonus_id=567/523/448/42,gem_id=115811
-back=runescribed_gronncloak,id=120078,bonus_id=567/523/448/42,gem_id=115811,enchant=gift_of_haste
-chest=eyecatching_gilded_robe,id=113898,bonus_id=567/523/448/42,gem_id=115811
-wrists=bracers_of_enkindled_power,id=113956,bonus_id=567/523/448/42,gem_id=115811
-hands=soul_priests_gloves,id=115562,bonus_id=567/523/448/42,gem_id=115811
-waist=deckhands_rope_belt,id=113967,bonus_id=567/523/448/42,gem_id=115811
-legs=soul_priests_leggings,id=115564,bonus_id=567/523/448/42,gem_id=115811
-feet=inferno_breath_sandals,id=113942,bonus_id=567/523/448/42,gem_id=115811
-finger1=epicenter_loop,id=113947,bonus_id=567/523/448/42,gem_id=115811,enchant=gift_of_haste
-finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_haste
-trinket1=darmacs_unstable_talisman,id=113948,bonus_id=567/523/448/42,gem_id=115811
-trinket2=goren_soul_repository,id=119194,bonus_id=567/523/448/42,gem_id=115811
-main_hand=franzoks_headsmasher,id=113904,bonus_id=567/523/448/42,gem_id=115811,enchant=mark_of_warsong
-off_hand=enginestokers_lantern,id=113960,bonus_id=567/523/448/42,gem_id=115811
+head=demon_princes_ascendant_crown,id=124159,bonus_id=566
+neck=vial_of_immiscible_liquid,id=124212,bonus_id=566,enchant=gift_of_mastery
+shoulders=pious_mantle,id=124178,bonus_id=566
+back=cloak_of_hideous_unity,id=124138,bonus_id=566,enchant=gift_of_mastery
+chest=pious_raiment,id=124172,bonus_id=566
+wrists=contemptuous_wristguards,id=124186,bonus_id=566
+hands=pious_handwraps,id=124155,bonus_id=566
+waist=demonbuckle_sash_of_argus,id=124200,bonus_id=566
+legs=pious_leggings,id=124166,bonus_id=566
+feet=dessicated_soulrender_slippers,id=124150,bonus_id=566
+finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_mastery
+finger2=loathful_encrusted_band,id=124192,bonus_id=566,enchant=gift_of_mastery
+trinket1=repudiation_of_war,id=124519,bonus_id=566
+trinket2=desecrated_shadowmoon_insignia,id=124228,bonus_id=566
+main_hand=edict_of_argus,id=124382,bonus_id=566,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_ilvl=706.19
-# gear_stamina=4986
-# gear_intellect=3934
-# gear_spell_power=1940
-# gear_crit_rating=1472
-# gear_haste_rating=3437
-# gear_mastery_rating=748
-# gear_versatility_rating=352
-# gear_speed_rating=1886
-# gear_armor=937
-# set_bonus=tier17_2pc=1
-# set_bonus=tier17_4pc=1
+# gear_ilvl=714.00
+# gear_stamina=5394
+# gear_intellect=3595
+# gear_spell_power=2214
+# gear_crit_rating=1242
+# gear_haste_rating=1542
+# gear_mastery_rating=2177
+# gear_versatility_rating=108
+# gear_armor=994
+# set_bonus=tier18_2pc=1
+# set_bonus=tier18_4pc=1
