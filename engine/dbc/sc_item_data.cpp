@@ -1359,7 +1359,7 @@ static std::pair<std::pair<int, double>, std::pair<int, double> > get_bonus_id_s
       continue;
     }
 
-    if ( entries[ i ] -> type == ITEM_BONUS_SCALING )
+    if ( entries[ i ] -> type == ITEM_BONUS_SCALING || entries[ i ] -> type == ITEM_BONUS_SCALING_2 )
     {
       const scaling_stat_distribution_t* data = dbc.scaling_stat_distribution( entries[ i ] -> value_1 );
       assert( data );
@@ -1442,7 +1442,8 @@ std::string dbc::bonus_ids_str( dbc_t& dbc)
 
     // Need at least one "relevant" type for us
     if ( e -> type != ITEM_BONUS_ILEVEL && e -> type != ITEM_BONUS_MOD &&
-         e -> type != ITEM_BONUS_SOCKET && e -> type != ITEM_BONUS_SCALING )
+         e -> type != ITEM_BONUS_SOCKET && e -> type != ITEM_BONUS_SCALING &&
+         e -> type != ITEM_BONUS_SCALING_2 )
     {
       e++;
       continue;
