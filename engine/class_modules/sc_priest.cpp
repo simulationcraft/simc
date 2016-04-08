@@ -963,6 +963,7 @@ struct void_tendril_mind_flay_t : public priest_pet_spell_t
     channeled = true;
     hasted_ticks = false;
     use_off_gcd = true;
+    background = false;
 
     //TODO: Doublecheck the actual damage value per tick. Tooltip says 200% SP total, but it looks like it might be 66% SP per tick, or 198% SP total -- 2016/04/07 Twintop
     //Void Tendril's Mind Flay damage is increased by FotM and VR talents.
