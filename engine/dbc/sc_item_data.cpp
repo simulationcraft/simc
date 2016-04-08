@@ -1344,6 +1344,11 @@ static std::pair<std::pair<int, double>, std::pair<int, double> > get_bonus_id_s
 {
   for ( size_t i = 0; i < entries.size(); ++i )
   {
+    if ( entries[ i ] -> value_1 == 0 )
+    {
+      continue;
+    }
+
     if ( entries[ i ] -> type == ITEM_BONUS_SCALING )
     {
       const scaling_stat_distribution_t* data = dbc.scaling_stat_distribution( entries[ i ] -> value_1 );
