@@ -1190,7 +1190,7 @@ void enemy_t::init_defense()
     else if ( level() < 110 )
       a = 134*level()-11864;
     else
-      a = 17370; // hard code this until we can get a finalized equation
+      a = 3474; // Apr 9 2016: hard code this until we can get a finalized equation
 
   }
 
