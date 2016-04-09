@@ -723,7 +723,7 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
                           .chance( static_cast< double >( p -> sets.has_set_bonus( SET_CASTER, T16, B2 ) ) );
   debuff.earthen_spike  = buff_creator_t( *this, "earthen_spike", p -> talent.earthen_spike )
                           // -10% resistance in spell data, treat it as a multiplier instead
-                          .default_value( 1.0 - p -> talent.earthen_spike -> effectN( 2 ).percent() );
+                          .default_value( 1.0 + p -> talent.earthen_spike -> effectN( 2 ).percent() );
   debuff.lightning_rod = buff_creator_t( *this, "lightning_rod", p -> talent.lightning_rod )
                          .default_value( 1.0 + p -> talent.lightning_rod -> effectN( 1 ).percent() )
                          .cd( timespan_t::zero() ); // Cooldown handled by action
@@ -2834,6 +2834,9 @@ struct frostbrand_t : public shaman_spell_t
     shaman_spell_t( "frostbrand", player, player -> find_specialization_spell( "Frostbrand" ), options_str )
   {
     base_multiplier *= 1.0 + player -> artifact.surge_of_elements.percent();
+
+    if ( player -> hailstorm )
+      add_child( player -> hailstorm );
   }
 
   void execute() override
@@ -2945,12 +2948,12 @@ struct boulderfist_t : public shaman_spell_t
 {
   boulderfist_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "boulderfist", player, player -> talent.boulderfist, options_str )
-  {
-    harmful = may_crit = may_miss = false;
-  }
+  { }
 
   void execute() override
   {
+    p() -> buff.rockbiter -> trigger();
+
     shaman_spell_t::execute();
 
     p() -> buff.boulderfist -> trigger();
@@ -2976,8 +2979,6 @@ struct fury_of_air_aoe_t : public shaman_attack_t
     aoe = -1;
     school = SCHOOL_NATURE;
     may_proc_windfury = may_proc_flametongue = may_proc_stormbringer = may_proc_frostbrand = false;
-
-    weapon = &( player -> main_hand_weapon );
   }
 };
 
@@ -3001,9 +3002,6 @@ struct earthen_spike_t : public shaman_attack_t
   earthen_spike_t( shaman_t* player, const std::string& options_str ) :
     shaman_attack_t( "earthen_spike", player, player -> talent.earthen_spike )
   {
-    weapon = &( player -> main_hand_weapon );
-    may_crit = true;
-
     parse_options( options_str );
   }
 
@@ -5545,7 +5543,7 @@ void shaman_t::create_buffs()
   buff.crash_lightning = buff_creator_t( this, "crash_lightning", find_spell( 187878 ) );
   buff.windsong = haste_buff_creator_t( this, "windsong", talent.windsong )
                   .default_value( 1.0 / ( 1.0 + talent.windsong -> effectN( 2 ).percent() ) );
-  buff.boulderfist = buff_creator_t( this, "boulderfist", talent.boulderfist )
+  buff.boulderfist = buff_creator_t( this, "boulderfist", talent.boulderfist -> effectN( 3 ).trigger() )
                         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                         .add_invalidate( CACHE_CRIT );
   buff.rockbiter = buff_creator_t( this, "rockbiter", find_spell( 202004 ) )
@@ -6050,7 +6048,7 @@ double shaman_t::composite_spell_crit() const
 
   if ( buff.boulderfist -> up() )
   {
-    m += buff.boulderfist -> data().effectN( 2 ).percent();
+    m += buff.boulderfist -> data().effectN( 1 ).percent();
   }
 
   m += spec.critical_strikes -> effectN( 1 ).percent();
@@ -6086,7 +6084,7 @@ double shaman_t::composite_melee_crit() const
 
   if ( buff.boulderfist -> up() )
   {
-    m += buff.boulderfist -> data().effectN( 2 ).percent();
+    m += buff.boulderfist -> data().effectN( 1 ).percent();
   }
 
   m += spec.critical_strikes -> effectN( 1 ).percent();
@@ -6190,7 +6188,7 @@ double shaman_t::composite_player_multiplier( school_e school ) const
 
   if ( buff.boulderfist -> up() )
   {
-    m *= 1.0 + buff.boulderfist -> data().effectN( 3 ).percent();
+    m *= 1.0 + buff.boulderfist -> data().effectN( 2 ).percent();
   }
 
   if ( artifact.call_the_thunder.rank() > 0 && dbc::is_school( school, SCHOOL_NATURE ) )
