@@ -439,10 +439,10 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         8092, // Mind Blast
        15407, // Mind Flay
        48045, // Mind Sear
+      217676, // Mind Spike Detonation
           17, // Power Word: Shield
         8122, // Psychic Scream
       213634, // Purify Disease
-      179338, // Searing Insanity
       186263, // Shadow Mend
        32379, // Shadow Word: Death
          589, // Shadow Word: Pain
@@ -457,8 +457,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 1 abilities
+    // Pet tree, 2 abilities
     {
+      193473, // Mind Flay
        63619, // Shadowcrawl
            0,
     },
