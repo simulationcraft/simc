@@ -785,7 +785,7 @@ struct void_tendril_pet_t : public priest_pet_t
 public:
   void_tendril_pet_t( sim_t* sim, priest_t& p, void_tendril_pet_t* front_pet )
     : priest_pet_t( sim, p, "void_tendril", PET_VOID_TENDRIL, true ),
-      front_pet(front_pet)
+      front_pet( front_pet )
   {
     owner_coeff.sp_from_sp = 1.0;
   }
@@ -1002,9 +1002,10 @@ struct void_tendril_mind_flay_t : public priest_pet_spell_t
   void init() override
   {
     priest_pet_spell_t::init();
-    if (!player->sim->report_pets_separately && player != p().o().pets.void_tendril[0])
+    if ( !player->sim->report_pets_separately &&
+         player != p().o().pets.void_tendril[ 0 ] )
     {
-      stats = p().o().pets.void_tendril[0]->get_stats(name(), this);
+      stats = p().o().pets.void_tendril[ 0 ]->get_stats( name(), this );
     }
   }
 
@@ -1821,33 +1822,56 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     double usable_haste = priest.cache.spell_haste();
 
-    // For Shadow, GCD reduction can only scale below 1.0sec if they are in Voidform or have the Lingering Insanity buff up.
-    // When either of these are up, the floor is decreased by 0.33sec to 0.67sec.
-    // For calculating the new GCD, you can only get up to a 50% haste (base GCD floor) from non-Voidform or Lingering Insanity sources.
-    // If the value of haste without VF or LI is abvoe 50%, set it to 50% then factor in VF and LI stacks.
-    if (priest.specialization() == PRIEST_SHADOW && (priest.buffs.voidform->up() || priest.buffs.lingering_insanity->up()))
+    // For Shadow, GCD reduction can only scale below 1.0sec if they are in
+    // Voidform or have the Lingering Insanity buff up.
+    // When either of these are up, the floor is decreased by 0.33sec to
+    // 0.67sec.
+    // For calculating the new GCD, you can only get up to a 50% haste (base GCD
+    // floor) from non-Voidform or Lingering Insanity sources.
+    // If the value of haste without VF or LI is abvoe 50%, set it to 50% then
+    // factor in VF and LI stacks.
+    if ( priest.specialization() == PRIEST_SHADOW &&
+         ( priest.buffs.voidform->up() ||
+           priest.buffs.lingering_insanity->up() ) )
     {
-      double haste_without_vf_li = priest.cache.spell_haste(); //Need to calculate Haste without Voidform or Lingering Insanity included
+      double haste_without_vf_li =
+          priest.cache.spell_haste();  // Need to calculate Haste without
+                                       // Voidform or Lingering Insanity
+                                       // included
       double vf_li_modifier = 1.0;
 
-      if (priest.buffs.voidform->check())
+      if ( priest.buffs.voidform->check() )
       {
-        haste_without_vf_li *= 1.0 + priest.buffs.voidform->check() * priest.buffs.voidform->data().effectN(3).percent();
-        vf_li_modifier /= 1.0 + priest.buffs.voidform->check() * priest.buffs.voidform->data().effectN(3).percent();
+        haste_without_vf_li *=
+            1.0 +
+            priest.buffs.voidform->check() *
+                priest.buffs.voidform->data().effectN( 3 ).percent();
+        vf_li_modifier /=
+            1.0 +
+            priest.buffs.voidform->check() *
+                priest.buffs.voidform->data().effectN( 3 ).percent();
       }
 
-      if (priest.buffs.lingering_insanity->check())
+      if ( priest.buffs.lingering_insanity->check() )
       {
-        haste_without_vf_li *= 1.0 + priest.buffs.lingering_insanity->check() * priest.buffs.lingering_insanity->data().effectN(1).percent();
-        vf_li_modifier /= 1.0 + priest.buffs.lingering_insanity->check() * priest.buffs.lingering_insanity->data().effectN(1).percent();
+        haste_without_vf_li *=
+            1.0 +
+            priest.buffs.lingering_insanity->check() *
+                priest.buffs.lingering_insanity->data().effectN( 1 ).percent();
+        vf_li_modifier /=
+            1.0 +
+            priest.buffs.lingering_insanity->check() *
+                priest.buffs.lingering_insanity->data().effectN( 1 ).percent();
       }
 
-      if (haste_without_vf_li < (1.0/1.5)) //over 50%, cap it at 50% for GCD purposes.
+      if ( haste_without_vf_li <
+           ( 1.0 / 1.5 ) )  // over 50%, cap it at 50% for GCD purposes.
       {
-        usable_haste = (1.0 / 1.5) * vf_li_modifier;
+        usable_haste = ( 1.0 / 1.5 ) * vf_li_modifier;
       }
 
-      m = m - (m * 0.33); //TODO: Fix when spelldata is playing nice (1.0 + priest.specs.voidform->effectN(4).percent());
+      m = m - ( m * 0.33 );  // TODO: Fix when spelldata is playing nice (1.0 +
+                             // priest.specs.voidform->effectN(4).percent());
     }
 
     g *= usable_haste;
@@ -2293,7 +2317,7 @@ struct voidform_t : public priest_spell_t
     {
       priest.buffs.shadow_t19_4p->trigger();
     }
-    priest.buffs.shadow_t19_4p->trigger(); //For testing until set bonuses
+    priest.buffs.shadow_t19_4p->trigger();  // For testing until set bonuses
     // are available in SimC
 
     if ( priest.artifact.sphere_of_insanity.rank() )
@@ -3237,7 +3261,7 @@ struct shadow_word_pain_t : public priest_spell_t
           priest.sets.set( SET_CASTER, T19, B2 )->effectN( 1 ).base_value(),
           priest.gains.insanity_shadow_word_pain_ondamage );
     }
-    //generate_insanity(1, priest.gains.insanity_shadow_word_pain_ondamage);
+    // generate_insanity(1, priest.gains.insanity_shadow_word_pain_ondamage);
     // //For testing until set bonuses are available in SimC
   }
 
@@ -3275,7 +3299,7 @@ struct shadow_word_pain_t : public priest_spell_t
           priest.sets.set( SET_CASTER, T19, B2 )->effectN( 1 ).base_value(),
           priest.gains.insanity_shadow_word_pain_ondamage );
     }
-    //generate_insanity(1, priest.gains.insanity_shadow_word_pain_ondamage);
+    // generate_insanity(1, priest.gains.insanity_shadow_word_pain_ondamage);
     // //For testing until set bonuses are available in SimC
   }
 
@@ -3449,7 +3473,7 @@ struct vampiric_touch_t : public priest_spell_t
           priest.sets.set( SET_CASTER, T19, B2 )->effectN( 1 ).base_value(),
           priest.gains.insanity_vampiric_touch_ondamage );
     }
-    //generate_insanity(1, priest.gains.insanity_vampiric_touch_ondamage);
+    // generate_insanity(1, priest.gains.insanity_vampiric_touch_ondamage);
     // //For testing until set bonuses are available in SimC
   }
 
@@ -5318,7 +5342,8 @@ struct voidform_t : public priest_buff_t<buff_t>
       // TODO: Use Spelldata
       auto priest = debug_cast<priest_t*>( player() );
 
-      double insanity_loss = (8 * 0.2) + ((priest->buffs.voidform->check()) / 2) * 0.2;
+      double insanity_loss =
+          ( 8 * 0.2 ) + ( ( priest->buffs.voidform->check() ) / 2 ) * 0.2;
 
       if ( insanity_loss <= priest->resources.current[ RESOURCE_INSANITY ] )
       {
@@ -5528,28 +5553,14 @@ void init()
 
 namespace rppm
 {
-template <typename Base>
-struct priest_real_ppm_t : public Base
-{
-public:
-  typedef priest_real_ppm_t base_t;
-
-  priest_real_ppm_t( priest_t& p, const real_ppm_t& params )
-    : Base( params ), priest( p )
-  {
-  }
-
-protected:
-  priest_t& priest;
-};
-
-struct call_to_the_void_t : public priest_real_ppm_t<real_ppm_t>
+struct call_to_the_void_t : public real_ppm_t
 {
   call_to_the_void_t( priest_t& p )
-    : base_t( p,
-              real_ppm_t(
-                  p, p.artifacts.xalatath_blade_of_the_black_empire->driver()->real_ppm(),
-                  1.0, RPPM_NONE ) )
+    : real_ppm_t(
+          p,
+          p.find_spell( 193371 )->real_ppm(),
+          //p.artifacts.xalatath_blade_of_the_black_empire->driver()->real_ppm(),
+          1.0, RPPM_NONE )
   {
   }
 };
@@ -6303,7 +6314,8 @@ void priest_t::create_pets()
   {
     for ( size_t i = 0; i < pets.void_tendril.size(); i++ )
     {
-      pets.void_tendril[ i ] = new pets::void_tendril_pet_t( sim, *this, pets.void_tendril.front() );
+      pets.void_tendril[ i ] =
+          new pets::void_tendril_pet_t( sim, *this, pets.void_tendril.front() );
 
       if ( i > 0 )
       {
@@ -6698,10 +6710,7 @@ void priest_t::create_buffs()
 
 void priest_t::init_rng()
 {
-  rppm.call_to_the_void =
-      real_ppm_t( *this, find_spell( 193371 )->real_ppm(), 1.0,
-                  RPPM_NONE );  // std::unique_ptr<rppm::call_to_the_void_t>(new
-                                // rppm::call_to_the_void_t(*this));
+  rppm.call_to_the_void = rppm::call_to_the_void_t( *this );
 
   player_t::init_rng();
 }
