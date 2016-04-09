@@ -20,7 +20,8 @@ Shadow
   - Update GCD formula to match changes from 2016/04/06 once confirmed by devs.
   - Shadowmend
   - Setbonuses
-    - Several Setbonuses have to be updated by Blizzard: T17, T16 no longer work.
+    - Several Setbonuses have to be updated by Blizzard: T17, T16 no longer
+work.
 
 */
 namespace  // UNNAMED NAMESPACE
@@ -32,17 +33,16 @@ namespace actions
 {
 namespace spells
 {
-  struct mind_spike_detonation_t;
-  struct shadowy_apparition_spell_t;
-  struct sphere_of_insanity_spell_t;
+struct mind_spike_detonation_t;
+struct shadowy_apparition_spell_t;
+struct sphere_of_insanity_spell_t;
 }
 }
 
 namespace pets
 {
-  struct void_tendril_pet_t;
+struct void_tendril_pet_t;
 }
-
 
 /**
  * Priest target data
@@ -138,22 +138,22 @@ public:
 
   // Talents
   struct
-  {    
+  {
     const spell_data_t* shining_force;
     const spell_data_t* divine_star;
     const spell_data_t* halo;
 
-	  const spell_data_t* twist_of_fate;
+    const spell_data_t* twist_of_fate;
 
-	  const spell_data_t* angelic_feather;
-	  const spell_data_t* body_and_soul;
-	  const spell_data_t* masochism;
+    const spell_data_t* angelic_feather;
+    const spell_data_t* body_and_soul;
+    const spell_data_t* masochism;
 
-	  const spell_data_t* psychic_voice;
-	  const spell_data_t* dominant_mind;
+    const spell_data_t* psychic_voice;
+    const spell_data_t* dominant_mind;
 
-	  const spell_data_t* power_infusion;
-	  const spell_data_t* mindbender;
+    const spell_data_t* power_infusion;
+    const spell_data_t* mindbender;
 
     // Discipline
     const spell_data_t* the_penitent;
@@ -218,26 +218,24 @@ public:
     const spell_data_t* surrender_to_madness;
   } talents;
 
-
-
   // Artifacts
   struct artifact_spell_data_t
   {
     // Shadow - Xal'atath, Blade of the Black Empire
-    artifact_power_t call_to_the_void;      //NYI
+    artifact_power_t call_to_the_void;  // NYI
     artifact_power_t darkening_whispers;
     artifact_power_t deaths_embrace;
     artifact_power_t from_the_shadows;
     artifact_power_t mass_hysteria;
-    artifact_power_t mental_fortitude;      //NYI
+    artifact_power_t mental_fortitude;  // NYI
     artifact_power_t mind_shattering;
     artifact_power_t sinister_thoughts;
     artifact_power_t sphere_of_insanity;
-    artifact_power_t thoughts_of_insanity;  //NYI
-    artifact_power_t thrive_in_the_shadows; //NYI
+    artifact_power_t thoughts_of_insanity;  // NYI
+    artifact_power_t thrive_in_the_shadows;  // NYI
     artifact_power_t to_the_pain;
     artifact_power_t touch_of_darkness;
-    artifact_power_t tremble_in_fear;       //NYI
+    artifact_power_t tremble_in_fear;  // NYI
     artifact_power_t unleash_the_shadows;
     artifact_power_t void_corruption;
     artifact_power_t void_siphon;
@@ -292,9 +290,9 @@ public:
     cooldown_t* shadowfiend;
     cooldown_t* silence;
 
-	  cooldown_t* mind_blast;
-	  cooldown_t* shadow_word_death;
-	  cooldown_t* shadow_word_void;
+    cooldown_t* mind_blast;
+    cooldown_t* shadow_word_death;
+    cooldown_t* shadow_word_void;
   } cooldowns;
 
   // Gains
@@ -306,8 +304,8 @@ public:
     gain_t* insanity_dispersion;
     gain_t* insanity_void_torrent;
     gain_t* insanity_drain;
-	  gain_t* insanity_mind_blast;
-	  gain_t* insanity_mind_flay;
+    gain_t* insanity_mind_blast;
+    gain_t* insanity_mind_flay;
     gain_t* insanity_mind_sear;
     gain_t* insanity_mind_spike;
     gain_t* insanity_mindbender;
@@ -320,7 +318,7 @@ public:
     gain_t* insanity_surrender_to_madness;
     gain_t* insanity_vampiric_touch_ondamage;
     gain_t* insanity_vampiric_touch_onhit;
-	  gain_t* insanity_void_bolt;
+    gain_t* insanity_void_bolt;
     gain_t* shadowy_insight;
     gain_t* vampiric_touch_health;
   } gains;
@@ -367,7 +365,6 @@ public:
     actions::spells::mind_spike_detonation_t* mind_spike_detonation;
     actions::spells::shadowy_apparition_spell_t* shadowy_apparitions;
     actions::spells::sphere_of_insanity_spell_t* sphere_of_insanity;
-    spell_t* voidform;
   } active_spells;
 
   struct
@@ -382,7 +379,11 @@ public:
   {
     pet_t* shadowfiend;
     pet_t* mindbender;
-    std::array<pets::void_tendril_pet_t*, 10> void_tendril; //Multiple can be up at one time. 10 should be more than enough.
+    std::array<pets::void_tendril_pet_t*, 10> void_tendril;  // Multiple can be
+                                                             // up at one time.
+                                                             // 10 should be
+                                                             // more than
+                                                             // enough.
     pet_t* lightwell;
   } pets;
 
@@ -624,7 +625,7 @@ struct base_fiend_pet_t : public priest_pet_t
     switch ( pet_type )
     {
       case PET_MINDBENDER:
-        if (o().specialization() == PRIEST_SHADOW)
+        if ( o().specialization() == PRIEST_SHADOW )
         {
           gains.fiend = o().gains.insanity_mindbender;
         }
@@ -780,26 +781,25 @@ public:
 struct void_tendril_pet_t : public priest_pet_t
 {
 public:
-
-  void_tendril_pet_t(sim_t* sim, priest_t& p)
-    : priest_pet_t(sim, p, "void_tendril", PET_VOID_TENDRIL, true)
+  void_tendril_pet_t( sim_t* sim, priest_t& p )
+    : priest_pet_t( sim, p, "void_tendril", PET_VOID_TENDRIL, true )
   {
     owner_coeff.sp_from_sp = 1.0;
   }
 
-  action_t* create_action(const std::string& name,
-    const std::string& options_str) override;
+  action_t* create_action( const std::string& name,
+                           const std::string& options_str ) override;
 
   void init_action_list() override;
 
-  void summon(timespan_t duration) override
+  void summon( timespan_t duration ) override
   {
-    priest_pet_t::summon(duration);
+    priest_pet_t::summon( duration );
   }
 
   void trigger()
   {
-    summon(timespan_t::from_seconds(10));
+    summon( timespan_t::from_seconds( 10 ) );
   }
 };
 
@@ -965,29 +965,31 @@ struct void_tendril_mind_flay_t : public priest_pet_spell_t
 {
   void_tendril_mind_flay_t(void_tendril_pet_t& p) : priest_pet_spell_t("mind_flay_void_tendril)", &p, p.o().find_spell(193473))
   {
-    may_crit = false;
-    may_miss = false;
-    channeled = true;
+    may_crit     = false;
+    may_miss     = false;
+    channeled    = true;
     hasted_ticks = false;
     tick_may_crit = true;
   }
 
   void_tendril_pet_t& p()
   {
-    return static_cast<void_tendril_pet_t&>(*player);
+    return static_cast<void_tendril_pet_t&>( *player );
   }
   const void_tendril_pet_t& p() const
   {
-    return static_cast<void_tendril_pet_t&>(*player);
+    return static_cast<void_tendril_pet_t&>( *player );
   }
 
   double action_multiplier() const override
   {
     double am = priest_pet_spell_t::action_multiplier();
 
-    if (p().o().talents.void_ray->ok() && p().o().buffs.void_ray->check())
+    if ( p().o().talents.void_ray->ok() && p().o().buffs.void_ray->check() )
     {
-      am *= 1.0 + p().o().buffs.void_ray->check() * p().o().buffs.void_ray->data().effectN(1).percent();
+      am *= 1.0 +
+            p().o().buffs.void_ray->check() *
+                p().o().buffs.void_ray->data().effectN( 1 ).percent();
     }
 
     return am;
@@ -1094,14 +1096,14 @@ action_t* lightwell_pet_t::create_action( const std::string& name,
 
 void void_tendril_pet_t::init_action_list()
 {
-  if (action_list_str.empty())
+  if ( action_list_str.empty() )
   {
-    action_priority_list_t* precombat = get_action_priority_list("precombat");
+    action_priority_list_t* precombat = get_action_priority_list( "precombat" );
     // Snapshot stats
     precombat->add_action(
-      "snapshot_stats",
-      "Snapshot raid buffed stats before combat begins and "
-      "pre-potting is done.");
+        "snapshot_stats",
+        "Snapshot raid buffed stats before combat begins and "
+        "pre-potting is done." );
 
     action_priority_list_t* def = get_action_priority_list("default");
     def->add_action("mind_flay");
@@ -1110,13 +1112,13 @@ void void_tendril_pet_t::init_action_list()
   priest_pet_t::init_action_list();
 }
 
-action_t* void_tendril_pet_t::create_action(const std::string& name,
-  const std::string& options_str)
+action_t* void_tendril_pet_t::create_action( const std::string& name,
+                                             const std::string& options_str )
 {
   if (name == "mind_flay")
     return new actions::void_tendril_mind_flay_t(*this);
 
-  return priest_pet_t::create_action(name, options_str);
+  return priest_pet_t::create_action( name, options_str );
 }
 
 }  // END pets NAMESPACE
@@ -1280,9 +1282,9 @@ public:
                    const spell_data_t* s = spell_data_t::nil() )
     : base_t( n, player, s )
   {
-    may_crit        = true;
-    tick_may_crit   = false;
-    may_miss        = false;
+    may_crit      = true;
+    tick_may_crit = false;
+    may_miss      = false;
   }
 
   double action_multiplier() const override
@@ -1773,19 +1775,22 @@ struct priest_spell_t : public priest_action_t<spell_t>
     timespan_t g = action_t::gcd();
     timespan_t m = action_t::min_gcd;
 
-    if (g == timespan_t::zero())
+    if ( g == timespan_t::zero() )
     {
       return timespan_t::zero();
     }
 
-    if (priest.specialization() == PRIEST_SHADOW && (priest.buffs.voidform->up() || priest.buffs.lingering_insanity->up()))
+    if ( priest.specialization() == PRIEST_SHADOW &&
+         ( priest.buffs.voidform->up() ||
+           priest.buffs.lingering_insanity->up() ) )
     {
-      m = m - (m * 0.33); //TODO: Fix when spelldata is playing nice (1.0 + priest.specs.voidform->effectN(4).percent());
+      m = m - ( m * 0.33 );  // TODO: Fix when spelldata is playing nice (1.0 +
+                             // priest.specs.voidform->effectN(4).percent());
     }
 
     g *= priest.cache.spell_haste();
 
-    if (g < m)
+    if ( g < m )
     {
       g = m;
     }
@@ -1795,11 +1800,11 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
   bool usable_moving() const override
   {
-    if (priest.buffs.surrender_to_madness->check())
+    if ( priest.buffs.surrender_to_madness->check() )
     {
       return true;
     }
-    
+
     return spell_t::usable_moving();
   }
 
@@ -1854,7 +1859,8 @@ struct priest_spell_t : public priest_action_t<spell_t>
         priest.buffs.twist_of_fate->trigger();
       }
 
-      if (priest.buffs.sphere_of_insanity->up() && s->result_amount > 0 && s->action->name_str != "sphere_of_insanity")
+      if ( priest.buffs.sphere_of_insanity->up() && s->result_amount > 0 &&
+           s->action->name_str != "sphere_of_insanity" )
       {
         priest.buffs.sphere_of_insanity->current_value += s->result_amount;
       }
@@ -1913,33 +1919,44 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
   void generate_insanity( double num_amount, gain_t* g = nullptr )
   {
-    if (priest.specialization() == PRIEST_SHADOW)
+    if ( priest.specialization() == PRIEST_SHADOW )
     {
-      double amount = num_amount;
-      double amount_from_power_infusion = 0.0;
+      double amount                           = num_amount;
+      double amount_from_power_infusion       = 0.0;
       double amount_from_surrender_to_madness = 0.0;
 
-      if (priest.buffs.power_infusion->check())
+      if ( priest.buffs.power_infusion->check() )
       {
-        amount_from_power_infusion = (amount * (1.0 + priest.buffs.power_infusion->data().effectN(3).percent())) - amount;
+        amount_from_power_infusion =
+            ( amount *
+              ( 1.0 +
+                priest.buffs.power_infusion->data().effectN( 3 ).percent() ) ) -
+            amount;
       }
 
-      if (priest.buffs.surrender_to_madness->check())
+      if ( priest.buffs.surrender_to_madness->check() )
       {
-        amount_from_surrender_to_madness = (amount * (1.0 + priest.talents.surrender_to_madness->effectN(1).percent())) - amount;
+        amount_from_surrender_to_madness =
+            ( amount * ( 1.0 +
+                         priest.talents.surrender_to_madness->effectN( 1 )
+                             .percent() ) ) -
+            amount;
       }
 
-      priest.resource_gain(RESOURCE_INSANITY, amount, g, this);
+      priest.resource_gain( RESOURCE_INSANITY, amount, g, this );
 
-      if (amount_from_power_infusion > 0.0)
+      if ( amount_from_power_infusion > 0.0 )
       {
-        priest.resource_gain(RESOURCE_INSANITY, amount_from_power_infusion, priest.gains.insanity_power_infusion, this);
+        priest.resource_gain( RESOURCE_INSANITY, amount_from_power_infusion,
+                              priest.gains.insanity_power_infusion, this );
       }
 
-      if (amount_from_surrender_to_madness > 0.0)
+      if ( amount_from_surrender_to_madness > 0.0 )
       {
-        priest.resource_gain(RESOURCE_INSANITY, amount_from_surrender_to_madness, priest.gains.insanity_surrender_to_madness, this);
-      }    
+        priest.resource_gain(
+            RESOURCE_INSANITY, amount_from_surrender_to_madness,
+            priest.gains.insanity_surrender_to_madness, this );
+      }
     }
   }
 };
@@ -2106,9 +2123,10 @@ struct dispersion_t : public priest_spell_t
     tick_may_crit         = false;
     // hasted_ticks      = false;
 
-    if (priest.artifact.from_the_shadows.rank())
+    if ( priest.artifact.from_the_shadows.rank() )
     {
-      cooldown->duration = data().cooldown() + priest.artifact.from_the_shadows.time_value();
+      cooldown->duration =
+          data().cooldown() + priest.artifact.from_the_shadows.time_value();
     }
   }
 
@@ -2196,10 +2214,11 @@ struct power_infusion_t : public priest_spell_t
 
 struct voidform_t : public priest_spell_t
 {
-  voidform_t(priest_t& p, const std::string& options_str)
-    : priest_spell_t("voidform", p, p.specs.voidform)
+  voidform_t( priest_t& p, const std::string& options_str )
+    : priest_spell_t( "voidform", p, p.specs.voidform )
   {
-    base_costs[RESOURCE_INSANITY] = 0.0;
+    parse_options( options_str );
+    base_costs[ RESOURCE_INSANITY ] = 0.0;
   }
 
   void execute() override
@@ -2208,27 +2227,31 @@ struct voidform_t : public priest_spell_t
 
     priest.buffs.voidform->trigger();
 
-    if (priest.sets.has_set_bonus(SET_CASTER, T19, B4))
+    if ( priest.sets.has_set_bonus( SET_CASTER, T19, B4 ) )
     {
       priest.buffs.shadow_t19_4p->trigger();
     }
-    //priest.buffs.shadow_t19_4p->trigger(); //For testing until set bonuses are available in SimC
+    // priest.buffs.shadow_t19_4p->trigger(); //For testing until set bonuses
+    // are available in SimC
 
-    if (priest.artifact.sphere_of_insanity.rank())
+    if ( priest.artifact.sphere_of_insanity.rank() )
     {
       priest.buffs.sphere_of_insanity->trigger();
       priest.buffs.sphere_of_insanity->current_value = 0.0;
     }
 
-    if (priest.artifact.mass_hysteria.rank())
+    if ( priest.artifact.mass_hysteria.rank() )
     {
       priest.buffs.mass_hysteria->trigger();
     }
 
-    if (priest.talents.void_lord->ok() && priest.buffs.lingering_insanity->up())
+    if ( priest.talents.void_lord->ok() &&
+         priest.buffs.lingering_insanity->up() )
     {
-      timespan_t time = priest.buffs.lingering_insanity->remains() - (priest.talents.void_lord->effectN(1).time_value() * 1000);
-      priest.buffs.lingering_insanity->extend_duration(player, -time);
+      timespan_t time =
+          priest.buffs.lingering_insanity->remains() -
+          ( priest.talents.void_lord->effectN( 1 ).time_value() * 1000 );
+      priest.buffs.lingering_insanity->extend_duration( player, -time );
     }
     else
     {
@@ -2238,9 +2261,14 @@ struct voidform_t : public priest_spell_t
 
   bool ready() override
   {
-    if (!priest.buffs.voidform->check() && 
-        (priest.resources.current[RESOURCE_INSANITY] >= priest.resources.max[RESOURCE_INSANITY] ||
-          (priest.talents.legacy_of_the_void->ok() && (priest.resources.current[RESOURCE_INSANITY] >= priest.resources.max[RESOURCE_INSANITY] + priest.talents.legacy_of_the_void->effectN(2).base_value()))))
+    if ( !priest.buffs.voidform->check() &&
+         ( priest.resources.current[ RESOURCE_INSANITY ] >=
+               priest.resources.max[ RESOURCE_INSANITY ] ||
+           ( priest.talents.legacy_of_the_void->ok() &&
+             ( priest.resources.current[ RESOURCE_INSANITY ] >=
+               priest.resources.max[ RESOURCE_INSANITY ] +
+                   priest.talents.legacy_of_the_void->effectN( 2 )
+                       .base_value() ) ) ) )
     {
       return priest_spell_t::ready();
     }
@@ -2385,14 +2413,17 @@ struct shadowy_apparition_spell_t : public priest_spell_t
   double insanity_gain;
 
   shadowy_apparition_spell_t( priest_t& p )
-    : priest_spell_t("shadowy_apparitions", p, p.find_spell(78203)),
-    insanity_gain(4) //Spell Data missing? data().effectN(2).resource(RESOURCE_INSANITY) * priest.talents.auspicious_spirits->effectN(2).percent() ) )
+    : priest_spell_t( "shadowy_apparitions", p, p.find_spell( 78203 ) ),
+      insanity_gain(
+          4 )  // Spell Data missing?
+               // data().effectN(2).resource(RESOURCE_INSANITY) *
+               // priest.talents.auspicious_spirits->effectN(2).percent() ) )
   {
-    background          = true;
-    proc                = false;
-    callbacks           = true;
-    may_miss = false;
-    trigger_gcd = timespan_t::zero();
+    background   = true;
+    proc         = false;
+    callbacks    = true;
+    may_miss     = false;
+    trigger_gcd  = timespan_t::zero();
     travel_speed = 6.0;
     const spell_data_t* dmg_data =
         p.find_spell( 148859 );  // Hardcoded into tooltip 2014/06/01
@@ -2405,9 +2436,10 @@ struct shadowy_apparition_spell_t : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    if (priest.talents.auspicious_spirits->ok())
+    if ( priest.talents.auspicious_spirits->ok() )
     {
-      generate_insanity(insanity_gain, priest.gains.insanity_auspicious_spirits);
+      generate_insanity( insanity_gain,
+                         priest.gains.insanity_auspicious_spirits );
     }
 
     if ( rng().roll(
@@ -2437,7 +2469,7 @@ struct shadowy_apparition_spell_t : public priest_spell_t
   {
     double d = priest_spell_t::composite_da_multiplier( state );
 
-    d *= 1.0 + priest.talents.auspicious_spirits->effectN(1).percent();
+    d *= 1.0 + priest.talents.auspicious_spirits->effectN( 1 ).percent();
 
     return d;
   }
@@ -2461,29 +2493,30 @@ struct sphere_of_insanity_spell_t : public priest_spell_t
 {
   double damage_amount;
 
-  sphere_of_insanity_spell_t(priest_t& p)
-    : priest_spell_t("sphere_of_insanity", p, p.find_spell(194182)),
-    damage_amount(0.0)
+  sphere_of_insanity_spell_t( priest_t& p )
+    : priest_spell_t( "sphere_of_insanity", p, p.find_spell( 194182 ) ),
+      damage_amount( 0.0 )
   {
-    may_crit = false;
-    background = true;
-    proc = false;
-    callbacks = true;
-    may_miss = false;
-    aoe = -1;
-    range = 0.0;
-    radius = 100.0;
+    may_crit    = false;
+    background  = true;
+    proc        = false;
+    callbacks   = true;
+    may_miss    = false;
+    aoe         = -1;
+    range       = 0.0;
+    radius      = 100.0;
     trigger_gcd = timespan_t::zero();
-    school = SCHOOL_SHADOW;
+    school      = SCHOOL_SHADOW;
   }
 
-  double calculate_direct_amount(action_state_t* state) const override
+  double calculate_direct_amount( action_state_t* state ) const override
   {
-    dot_t* d = state->target->get_dot("shadow_word_pain", &priest);
+    dot_t* d = state->target->get_dot( "shadow_word_pain", &priest );
 
-    if (d) //Shadow Word: Pain is ticking on the target; deal damage
+    if ( d )  // Shadow Word: Pain is ticking on the target; deal damage
     {
-      return damage_amount * 0.05; //TODO: replace with data from spell 194182, effect #3
+      return damage_amount *
+             0.05;  // TODO: replace with data from spell 194182, effect #3
     }
     else
     {
@@ -2493,11 +2526,11 @@ struct sphere_of_insanity_spell_t : public priest_spell_t
 
   /* Trigger a sphere of insanity damage
   */
-  void trigger(double amount)
+  void trigger( double amount )
   {
-    if (priest.sim->debug)
+    if ( priest.sim->debug )
       priest.sim->out_debug << priest.name()
-      << " triggered Sphere of Insanity damage.";
+                            << " triggered Sphere of Insanity damage.";
     damage_amount = amount;
     schedule_execute();
   }
@@ -2507,24 +2540,26 @@ struct sphere_of_insanity_spell_t : public priest_spell_t
 
 struct mind_spike_detonation_t : public priest_spell_t
 {
-  mind_spike_detonation_t(priest_t& p)
-    : priest_spell_t("mind_spike_detonation", p, p.find_spell(217676))//.talents.mind_spike)
+  mind_spike_detonation_t( priest_t& p )
+    : priest_spell_t( "mind_spike_detonation", p,
+                      p.find_spell( 217676 ) )  //.talents.mind_spike)
   {
-    may_crit = false;
-    background = true;
-    proc = false;
-    callbacks = true;
-    may_miss = false;
-    range = 0.0;
+    may_crit    = false;
+    background  = true;
+    proc        = false;
+    callbacks   = true;
+    may_miss    = false;
+    range       = 0.0;
     trigger_gcd = timespan_t::zero();
-    school = SCHOOL_SHADOWFROST;
+    school      = SCHOOL_SHADOWFROST;
   }
 
-  double calculate_direct_amount(action_state_t* state) const override
+  double calculate_direct_amount( action_state_t* state ) const override
   {
-    priest_td_t& td = get_td(state->target);
+    priest_td_t& td = get_td( state->target );
 
-    if (td.buffs.mind_spike->check()) //Mind Spike debuff actuall exists; detonate.
+    if ( td.buffs.mind_spike
+             ->check() )  // Mind Spike debuff actuall exists; detonate.
     {
       return td.buffs.mind_spike->value();
     }
@@ -2534,11 +2569,11 @@ struct mind_spike_detonation_t : public priest_spell_t
     }
   }
 
-  void impact(action_state_t* s) override
+  void impact( action_state_t* s ) override
   {
-    priest_spell_t::impact(s);
+    priest_spell_t::impact( s );
 
-    priest_td_t& td = get_td(s->target);
+    priest_td_t& td = get_td( s->target );
 
     td.buffs.mind_spike->expire();
   }
@@ -2547,9 +2582,9 @@ struct mind_spike_detonation_t : public priest_spell_t
   */
   void trigger()
   {
-    if (priest.sim->debug)
+    if ( priest.sim->debug )
       priest.sim->out_debug << priest.name()
-      << " triggered Mind Spike Detonation.";
+                            << " triggered Mind Spike Detonation.";
     schedule_execute();
   }
 };
@@ -2563,25 +2598,30 @@ struct mind_blast_t : public priest_spell_t
   mind_blast_t( priest_t& player, const std::string& options_str )
     : priest_spell_t( "mind_blast", player,
                       player.find_class_spell( "Mind Blast" ) ),
-      insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) * ( 1.0 + player.talents.fortress_of_the_mind->effectN( 2 ).percent() ) )
+      insanity_gain(
+          data().effectN( 2 ).resource( RESOURCE_INSANITY ) *
+          ( 1.0 +
+            player.talents.fortress_of_the_mind->effectN( 2 ).percent() ) )
   {
     parse_options( options_str );
-    is_mind_spell       = true;
+    is_mind_spell = true;
 
-	  cooldown->charges = data().charges();
-	  cooldown->duration = data().charge_cooldown();
+    cooldown->charges  = data().charges();
+    cooldown->duration = data().charge_cooldown();
 
-    spell_power_mod.direct *= 1.0 + player.talents.fortress_of_the_mind->effectN(4).percent();
+    spell_power_mod.direct *=
+        1.0 + player.talents.fortress_of_the_mind->effectN( 4 ).percent();
 
-    if (player.artifact.mind_shattering.rank())
+    if ( player.artifact.mind_shattering.rank() )
     {
       base_multiplier *= 1.0 + player.artifact.mind_shattering.percent();
     }
 
-    if (priest.talents.mind_spike->ok())
+    if ( priest.talents.mind_spike->ok() )
     {
-      priest.active_spells.mind_spike_detonation = new mind_spike_detonation_t(player);
-      add_child(priest.active_spells.mind_spike_detonation);
+      priest.active_spells.mind_spike_detonation =
+          new mind_spike_detonation_t( player );
+      add_child( priest.active_spells.mind_spike_detonation );
     }
   }
 
@@ -2594,7 +2634,7 @@ struct mind_blast_t : public priest_spell_t
     {
       priest_td_t& td = get_td( s->target );
 
-      if (td.buffs.mind_spike->up())
+      if ( td.buffs.mind_spike->up() )
       {
         priest.active_spells.mind_spike_detonation->trigger();
       }
@@ -2621,7 +2661,10 @@ struct mind_blast_t : public priest_spell_t
     // CD is now always reduced by haste. Documented in the WoD Alpha Patch
     // Notes, unfortunately not in any tooltip!
     // 2014-06-17
-    cd_duration = ( cooldown->duration + priest.specs.voidform->effectN( 4 ).time_value() * priest.buffs.voidform->up() ) * composite_haste();
+    cd_duration = ( cooldown->duration +
+                    priest.specs.voidform->effectN( 4 ).time_value() *
+                        priest.buffs.voidform->up() ) *
+                  composite_haste();
 
     priest_spell_t::update_ready( cd_duration );
 
@@ -2652,12 +2695,14 @@ struct mind_spike_t : public priest_spell_t
 
   mind_spike_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "mind_spike", p, p.talents.mind_spike ),
-      insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) * (1.0 + p.talents.fortress_of_the_mind->effectN(1).percent() ))
+      insanity_gain(
+          data().effectN( 3 ).resource( RESOURCE_INSANITY ) *
+          ( 1.0 + p.talents.fortress_of_the_mind->effectN( 1 ).percent() ) )
   {
     parse_options( options_str );
     is_mind_spell = true;
 
-    if (p.artifact.void_siphon.rank())
+    if ( p.artifact.void_siphon.rank() )
     {
       base_multiplier *= 1.0 + p.artifact.void_siphon.percent();
     }
@@ -2673,10 +2718,10 @@ struct mind_spike_t : public priest_spell_t
     {
       priest_td_t& td = get_td( s->target );
 
-      int prev_stacks = 0;
+      int prev_stacks    = 0;
       double prev_damage = 0.0;
-      
-      if (td.buffs.mind_spike->up())
+
+      if ( td.buffs.mind_spike->up() )
       {
         prev_stacks = td.buffs.mind_spike->check();
         prev_damage = td.buffs.mind_spike->value();
@@ -2687,15 +2732,29 @@ struct mind_spike_t : public priest_spell_t
         td.buffs.mind_spike->trigger();
       }
 
-      if (td.buffs.mind_spike->check() == td.buffs.mind_spike->max_stack() && td.buffs.mind_spike->check() == prev_stacks)
+      if ( td.buffs.mind_spike->check() == td.buffs.mind_spike->max_stack() &&
+           td.buffs.mind_spike->check() == prev_stacks )
       {
-        td.buffs.mind_spike->current_value = round((prev_damage / td.buffs.mind_spike->max_stack())*(td.buffs.mind_spike->max_stack() - 1) + (s->result_amount * priest.talents.mind_spike->effectN(2).percent()));
+        td.buffs.mind_spike->current_value =
+            round( ( prev_damage / td.buffs.mind_spike->max_stack() ) *
+                       ( td.buffs.mind_spike->max_stack() - 1 ) +
+                   ( s->result_amount *
+                     priest.talents.mind_spike->effectN( 2 ).percent() ) );
       }
       else
       {
-        td.buffs.mind_spike->current_value = prev_damage + s->result_amount * priest.talents.mind_spike->effectN(2).percent();
-        if (priest.sim->debug)
-          priest.sim->out_debug.printf("%s adds %d to mind_spike_detonation, now %d total at %i stacks", priest.name(), s->result_amount * priest.talents.mind_spike->effectN(2).percent(), td.buffs.mind_spike->current_value, td.buffs.mind_spike->stack());
+        td.buffs.mind_spike->current_value =
+            prev_damage +
+            s->result_amount *
+                priest.talents.mind_spike->effectN( 2 ).percent();
+        if ( priest.sim->debug )
+          priest.sim->out_debug.printf(
+              "%s adds %d to mind_spike_detonation, now %d total at %i stacks",
+              priest.name(),
+              s->result_amount *
+                  priest.talents.mind_spike->effectN( 2 ).percent(),
+              td.buffs.mind_spike->current_value,
+              td.buffs.mind_spike->stack() );
       }
     }
 
@@ -2706,7 +2765,7 @@ struct mind_spike_t : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    if (priest.talents.void_ray->ok())
+    if ( priest.talents.void_ray->ok() )
       priest.buffs.void_ray->trigger();
   }
 
@@ -2714,10 +2773,10 @@ struct mind_spike_t : public priest_spell_t
   {
     double am = priest_spell_t::action_multiplier();
 
-    if (priest.talents.void_ray->ok() && priest.buffs.void_ray->check())
+    if ( priest.talents.void_ray->ok() && priest.buffs.void_ray->check() )
       am *= 1.0 +
-      priest.buffs.void_ray->check() *
-      priest.buffs.void_ray->data().effectN(1).percent();
+            priest.buffs.void_ray->check() *
+                priest.buffs.void_ray->data().effectN( 1 ).percent();
 
     return am;
   }
@@ -2737,23 +2796,24 @@ struct mind_sear_tick_t : public priest_spell_t
 {
   double insanity_gain;
 
-  //TODO: Mind Sear is missing damage information in spell data
+  // TODO: Mind Sear is missing damage information in spell data
   mind_sear_tick_t( priest_t& p, const spell_data_t* mind_sear )
     : priest_spell_t( "mind_sear_tick", p, mind_sear->effectN( 1 ).trigger() ),
-    insanity_gain(1) //TODO: Missing from spell data
+      insanity_gain( 1 )  // TODO: Missing from spell data
   {
-    radius              = data().effectN( 1 ).radius();
-    background          = true;
-    dual                = true;
-    aoe                 = -1;
-    callbacks           = false;
-    direct_tick         = true;
-    use_off_gcd         = true;
+    radius      = data().effectN( 1 ).radius();
+    background  = true;
+    dual        = true;
+    aoe         = -1;
+    callbacks   = false;
+    direct_tick = true;
+    use_off_gcd = true;
   }
 
-  void impact(action_state_t* s) override
+  void impact( action_state_t* ) override
   {
-    generate_insanity(insanity_gain, priest.gains.insanity_mind_sear);
+    // TODO: does this really not need a is_hit check?
+    generate_insanity( insanity_gain, priest.gains.insanity_mind_sear );
   }
 };
 
@@ -2771,7 +2831,7 @@ struct mind_sear_t : public priest_spell_t
     tick_zero           = false;
     is_mind_spell       = true;
 
-    if (p.artifact.void_corruption.rank())
+    if ( p.artifact.void_corruption.rank() )
     {
       base_multiplier *= 1.0 + p.artifact.void_corruption.percent();
     }
@@ -2826,13 +2886,15 @@ struct shadow_word_death_t : public priest_spell_t
   shadow_word_death_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "shadow_word_death", p,
                       p.find_class_spell( "Shadow Word: Death" ) ),
-	  insanity_gain( p.find_spell( 190714 )->effectN( 1 ).resource(RESOURCE_INSANITY) )
+      insanity_gain(
+          p.find_spell( 190714 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
 
-    base_multiplier *= 1.0 + p.sets.set( SET_CASTER, T13, B2 )->effectN( 1 ).percent();
+    base_multiplier *=
+        1.0 + p.sets.set( SET_CASTER, T13, B2 )->effectN( 1 ).percent();
 
-    if (p.artifact.deaths_embrace.rank())
+    if ( p.artifact.deaths_embrace.rank() )
     {
       base_multiplier *= 1.0 + p.artifact.deaths_embrace.percent();
     }
@@ -2848,28 +2910,32 @@ struct shadow_word_death_t : public priest_spell_t
 
   void impact( action_state_t* s ) override
   {
-	double save_health_percentage = s->target->health_percentage();
+    double save_health_percentage = s->target->health_percentage();
 
     priest_spell_t::impact( s );
 
-	if (result_is_hit(s->result))
-	{
-		if (priest.talents.reaper_of_souls->ok() ||
-			((save_health_percentage > 0.0) && (s->target->health_percentage() <= 0.0)))
-		{
-			generate_insanity(insanity_gain, priest.gains.insanity_shadow_word_death);
-		}
-	}
+    if ( result_is_hit( s->result ) )
+    {
+      if ( priest.talents.reaper_of_souls->ok() ||
+           ( ( save_health_percentage > 0.0 ) &&
+             ( s->target->health_percentage() <= 0.0 ) ) )
+      {
+        generate_insanity( insanity_gain,
+                           priest.gains.insanity_shadow_word_death );
+      }
+    }
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double d = priest_spell_t::composite_da_multiplier( state );
 
-	if ( priest.buffs.empowered_shadows->check() )
-	{
-	  d *= 1.0 + priest.buffs.empowered_shadows->current_value * priest.buffs.empowered_shadows->check();
-	}
+    if ( priest.buffs.empowered_shadows->check() )
+    {
+      d *= 1.0 +
+           priest.buffs.empowered_shadows->current_value *
+               priest.buffs.empowered_shadows->check();
+    }
 
     return d;
   }
@@ -2884,11 +2950,12 @@ struct shadow_word_death_t : public priest_spell_t
     if ( !priest_spell_t::ready() )
       return false;
 
-	if ( priest.talents.reaper_of_souls->ok() && target->health_percentage() < 35.0 
-		|| target->health_percentage() < 20.0 )  // FIXME Spelldata effectN(2)?
-	{
-	  return true;
-	}
+    if ( ( priest.talents.reaper_of_souls->ok() &&
+           target->health_percentage() < 35.0 ) ||
+         target->health_percentage() < 20.0 )  // FIXME Spelldata effectN(2)?
+    {
+      return true;
+    }
 
     return false;
   }
@@ -2902,7 +2969,9 @@ struct mind_flay_t : public priest_spell_t
   mind_flay_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "mind_flay", p,
                       p.find_specialization_spell( "Mind Flay" ) ),
-                      insanity_gain(data().effectN(3).resource(RESOURCE_INSANITY) * (1.0 + p.talents.fortress_of_the_mind->effectN(1).percent()))
+      insanity_gain(
+          data().effectN( 3 ).resource( RESOURCE_INSANITY ) *
+          ( 1.0 + p.talents.fortress_of_the_mind->effectN( 1 ).percent() ) )
   {
     parse_options( options_str );
 
@@ -2912,12 +2981,13 @@ struct mind_flay_t : public priest_spell_t
     use_off_gcd   = true;
     is_mind_spell = true;
 
-    if (p.artifact.void_siphon.rank())
+    if ( p.artifact.void_siphon.rank() )
     {
       base_multiplier *= 1.0 + p.artifact.void_siphon.percent();
     }
 
-    spell_power_mod.tick *= 1.0 + p.talents.fortress_of_the_mind->effectN( 3 ).percent();
+    spell_power_mod.tick *=
+        1.0 + p.talents.fortress_of_the_mind->effectN( 3 ).percent();
   }
 
   double action_multiplier() const override
@@ -2968,30 +3038,28 @@ struct mind_flay_t : public priest_spell_t
 // Void Torrent Spell ==========================================================
 struct void_torrent_t : public priest_spell_t
 {
-  void_torrent_t(priest_t& p, const std::string& options_str)
-    : priest_spell_t("void_torrent", p,
-    p.artifact.void_torrent)
+  void_torrent_t( priest_t& p, const std::string& options_str )
+    : priest_spell_t( "void_torrent", p, p.artifact.void_torrent )
   {
-    parse_options(options_str);
+    parse_options( options_str );
 
-    may_crit = false;
-    channeled = true;
-    use_off_gcd = true;
+    may_crit      = false;
+    channeled     = true;
+    use_off_gcd   = true;
     is_mind_spell = false;
-    tick_zero = false;
+    tick_zero     = false;
 
-    dot_duration = timespan_t::from_seconds(4.0);
-    
+    dot_duration = timespan_t::from_seconds( 4.0 );
   }
 
-  timespan_t composite_dot_duration(const action_state_t*) const override
+  timespan_t composite_dot_duration( const action_state_t* ) const override
   {
-    return timespan_t::from_seconds(4.0);
+    return timespan_t::from_seconds( 4.0 );
   }
 
-  void last_tick(dot_t* d) override
+  void last_tick( dot_t* d ) override
   {
-    priest_spell_t::last_tick(d);
+    priest_spell_t::last_tick( d );
 
     priest.buffs.void_torrent->expire();
   }
@@ -3005,7 +3073,7 @@ struct void_torrent_t : public priest_spell_t
 
   virtual bool ready() override
   {
-    if (!priest.buffs.voidform->check())
+    if ( !priest.buffs.voidform->check() )
     {
       return false;
     }
@@ -3045,61 +3113,71 @@ struct shadow_word_pain_t : public priest_spell_t
 
   shadow_word_pain_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "shadow_word_pain", p,
-                      p.find_class_spell("Shadow Word: Pain")),
-                      insanity_gain(data().effectN(3).resource(RESOURCE_INSANITY))
+                      p.find_class_spell( "Shadow Word: Pain" ) ),
+      insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
 
     may_crit  = true;
     tick_zero = false;
 
-    base_multiplier *= 1.0 + p.sets.set( SET_CASTER, T13, B4 )->effectN( 1 ).percent();
+    base_multiplier *=
+        1.0 + p.sets.set( SET_CASTER, T13, B4 )->effectN( 1 ).percent();
 
-    if (p.artifact.to_the_pain.rank())
+    if ( p.artifact.to_the_pain.rank() )
     {
       base_multiplier *= 1.0 + p.artifact.to_the_pain.percent();
     }
 
     base_crit += p.sets.set( SET_CASTER, T14, B2 )->effectN( 1 ).percent();
 
-    dot_duration += p.sets.set( SET_CASTER, T14, B4 )->effectN( 1 ).time_value();
+    dot_duration +=
+        p.sets.set( SET_CASTER, T14, B4 )->effectN( 1 ).time_value();
 
     if ( priest.specs.shadowy_apparitions->ok() &&
          !priest.active_spells.shadowy_apparitions )
     {
       priest.active_spells.shadowy_apparitions =
           new shadowy_apparition_spell_t( p );
-      if ( !priest.artifact.unleash_the_shadows.rank() && !priest.sets.has_set_bonus( SET_CASTER, T15, B4 ) )
+      if ( !priest.artifact.unleash_the_shadows.rank() &&
+           !priest.sets.has_set_bonus( SET_CASTER, T15, B4 ) )
       {
-        // If SW:P is the only action having SA, then we can add it as a child stat
+        // If SW:P is the only action having SA, then we can add it as a child
+        // stat
         add_child( priest.active_spells.shadowy_apparitions );
       }
     }
 
-    if (priest.artifact.sphere_of_insanity.rank())
+    if ( priest.artifact.sphere_of_insanity.rank() )
     {
-      priest.active_spells.sphere_of_insanity = new sphere_of_insanity_spell_t(p);
-      add_child(priest.active_spells.sphere_of_insanity);
+      priest.active_spells.sphere_of_insanity =
+          new sphere_of_insanity_spell_t( p );
+      add_child( priest.active_spells.sphere_of_insanity );
     }
   }
 
-  void impact(action_state_t* s) override
+  void impact( action_state_t* s ) override
   {
-    priest_spell_t::impact(s);
+    priest_spell_t::impact( s );
 
-    if (priest.buffs.sphere_of_insanity->up())
+    if ( priest.buffs.sphere_of_insanity->up() )
     {
-      priest.active_spells.sphere_of_insanity->trigger(priest.buffs.sphere_of_insanity->current_value);
+      priest.active_spells.sphere_of_insanity->trigger(
+          priest.buffs.sphere_of_insanity->current_value );
       priest.buffs.sphere_of_insanity->current_value = 0;
     }
 
-    generate_insanity(insanity_gain, priest.gains.insanity_shadow_word_pain_onhit);
+    generate_insanity( insanity_gain,
+                       priest.gains.insanity_shadow_word_pain_onhit );
 
-    if (priest.sets.has_set_bonus(SET_CASTER, T19, B2))
+    if ( priest.sets.has_set_bonus( SET_CASTER, T19, B2 ) )
     {
-    generate_insanity(priest.sets.set(SET_CASTER, T19, B2)->effectN(1).base_value(), priest.gains.insanity_shadow_word_pain_ondamage);
+      generate_insanity(
+          priest.sets.set( SET_CASTER, T19, B2 )->effectN( 1 ).base_value(),
+          priest.gains.insanity_shadow_word_pain_ondamage );
     }
-    //generate_insanity(1, priest.gains.insanity_shadow_word_pain_ondamage); //For testing until set bonuses are available in SimC
+    // generate_insanity(1, priest.gains.insanity_shadow_word_pain_ondamage);
+    // //For testing until set bonuses are available in SimC
   }
 
   void tick( dot_t* d ) override
@@ -3115,49 +3193,54 @@ struct shadow_word_pain_t : public priest_spell_t
       }
     }
 
-    if (d->state->result_amount > 0)
+    if ( d->state->result_amount > 0 )
     {
-      if (trigger_shadowy_insight())
+      if ( trigger_shadowy_insight() )
       {
         priest.procs.shadowy_insight->occur();
       }
     }
 
-    if (priest.buffs.sphere_of_insanity->up())
+    if ( priest.buffs.sphere_of_insanity->up() )
     {
-      priest.active_spells.sphere_of_insanity->trigger(priest.buffs.sphere_of_insanity->current_value);
+      priest.active_spells.sphere_of_insanity->trigger(
+          priest.buffs.sphere_of_insanity->current_value );
       priest.buffs.sphere_of_insanity->current_value = 0;
     }
 
-    if (priest.sets.has_set_bonus(SET_CASTER, T19, B2))
+    if ( priest.sets.has_set_bonus( SET_CASTER, T19, B2 ) )
     {
-      generate_insanity(priest.sets.set(SET_CASTER, T19, B2)->effectN(1).base_value(), priest.gains.insanity_shadow_word_pain_ondamage);
+      generate_insanity(
+          priest.sets.set( SET_CASTER, T19, B2 )->effectN( 1 ).base_value(),
+          priest.gains.insanity_shadow_word_pain_ondamage );
     }
-    //generate_insanity(1, priest.gains.insanity_shadow_word_pain_ondamage); //For testing until set bonuses are available in SimC
+    // generate_insanity(1, priest.gains.insanity_shadow_word_pain_ondamage);
+    // //For testing until set bonuses are available in SimC
   }
 
   double cost() const override
   {
-	  double c = priest_spell_t::cost();
+    double c = priest_spell_t::cost();
 
-	  if (priest.specialization() == PRIEST_SHADOW)
-		  return 0.0;
+    if ( priest.specialization() == PRIEST_SHADOW )
+      return 0.0;
 
-	  return c;
+    return c;
   }
 
   virtual double action_multiplier() const override
   {
     double m = priest_spell_t::action_multiplier();
 
-    if (priest.mastery_spells.madness->ok())
+    if ( priest.mastery_spells.madness->ok() )
     {
       m *= 1.0 + priest.cache.mastery_value();
     }
 
-    if (priest.artifact.mass_hysteria.rank())
+    if ( priest.artifact.mass_hysteria.rank() )
     {
-      m *= 1.0 + (priest.artifact.mass_hysteria.percent() * priest.buffs.mass_hysteria->stack());
+      m *= 1.0 + ( priest.artifact.mass_hysteria.percent() *
+                   priest.buffs.mass_hysteria->stack() );
     }
 
     return m;
@@ -3177,7 +3260,7 @@ struct shadow_word_void_t : public priest_spell_t
   {
     parse_options( options_str );
 
-    cooldown->charges = data().charges();
+    cooldown->charges  = data().charges();
     cooldown->duration = data().charge_cooldown();
   }
 
@@ -3237,8 +3320,8 @@ struct vampiric_touch_t : public priest_spell_t
 
   vampiric_touch_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "vampiric_touch", p,
-                      p.find_class_spell("Vampiric Touch")),
-                      insanity_gain(data().effectN(3).resource(RESOURCE_INSANITY))
+                      p.find_class_spell( "Vampiric Touch" ) ),
+      insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
     may_crit = false;
@@ -3247,25 +3330,28 @@ struct vampiric_touch_t : public priest_spell_t
         p.sets.set( SET_CASTER, T14, B4 )->effectN( 1 ).time_value();
 
     spell_power_mod.tick *= 1.0 + p.talents.sanlayn->effectN( 1 ).percent();
-    
-    if (p.artifact.touch_of_darkness.rank())
+
+    if ( p.artifact.touch_of_darkness.rank() )
     {
       base_multiplier *= 1.0 + p.artifact.touch_of_darkness.percent();
     }
 
-    if (!priest.active_spells.shadowy_apparitions &&
-        priest.specs.shadowy_apparitions->ok() && 
-        (p.artifact.unleash_the_shadows.rank() || priest.sets.has_set_bonus( SET_CASTER, T15, B4 )))
+    if ( !priest.active_spells.shadowy_apparitions &&
+         priest.specs.shadowy_apparitions->ok() &&
+         ( p.artifact.unleash_the_shadows.rank() ||
+           priest.sets.has_set_bonus( SET_CASTER, T15, B4 ) ) )
     {
-      priest.active_spells.shadowy_apparitions = new shadowy_apparition_spell_t( p );
+      priest.active_spells.shadowy_apparitions =
+          new shadowy_apparition_spell_t( p );
     }
   }
-  
-  void impact(action_state_t* s) override
-  {
-    priest_spell_t::impact(s);
 
-    generate_insanity(insanity_gain, priest.gains.insanity_vampiric_touch_onhit);
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    generate_insanity( insanity_gain,
+                       priest.gains.insanity_vampiric_touch_onhit );
   }
 
   void tick( dot_t* d ) override
@@ -3275,15 +3361,19 @@ struct vampiric_touch_t : public priest_spell_t
     priest.resource_gain( RESOURCE_HEALTH, d->state->result_amount,
                           priest.gains.vampiric_touch_health );
 
-    if ( priest.artifact.unleash_the_shadows.rank() || priest.sets.has_set_bonus( SET_CASTER, T15, B4 ) )
+    if ( priest.artifact.unleash_the_shadows.rank() ||
+         priest.sets.has_set_bonus( SET_CASTER, T15, B4 ) )
     {
-      if ( priest.active_spells.shadowy_apparitions && ( d->state->result_amount > 0 ) )
+      if ( priest.active_spells.shadowy_apparitions &&
+           ( d->state->result_amount > 0 ) )
       {
-        if (d->state->result == RESULT_CRIT && rng().roll(priest.artifact.unleash_the_shadows.percent()))
+        if ( d->state->result == RESULT_CRIT &&
+             rng().roll( priest.artifact.unleash_the_shadows.percent() ) )
         {
           priest.active_spells.shadowy_apparitions->trigger();
         }
-        else if ( rng().roll(priest.sets.set( SET_CASTER, T15, B4 )->proc_chance() ) )
+        else if ( rng().roll(
+                      priest.sets.set( SET_CASTER, T15, B4 )->proc_chance() ) )
         {
           priest.procs.t15_4pc_caster->occur();
 
@@ -3292,25 +3382,29 @@ struct vampiric_touch_t : public priest_spell_t
       }
     }
 
-    if (priest.sets.has_set_bonus(SET_CASTER, T19, B2))
+    if ( priest.sets.has_set_bonus( SET_CASTER, T19, B2 ) )
     {
-      generate_insanity(priest.sets.set(SET_CASTER, T19, B2)->effectN(1).base_value(), priest.gains.insanity_vampiric_touch_ondamage);
+      generate_insanity(
+          priest.sets.set( SET_CASTER, T19, B2 )->effectN( 1 ).base_value(),
+          priest.gains.insanity_vampiric_touch_ondamage );
     }
-    //generate_insanity(1, priest.gains.insanity_vampiric_touch_ondamage); //For testing until set bonuses are available in SimC
+    // generate_insanity(1, priest.gains.insanity_vampiric_touch_ondamage);
+    // //For testing until set bonuses are available in SimC
   }
 
   virtual double action_multiplier() const override
   {
     double m = priest_spell_t::action_multiplier();
 
-    if (priest.mastery_spells.madness->ok())
+    if ( priest.mastery_spells.madness->ok() )
     {
       m *= 1.0 + priest.cache.mastery_value();
     }
 
-    if (priest.artifact.mass_hysteria.rank())
+    if ( priest.artifact.mass_hysteria.rank() )
     {
-      m *= 1.0 + (priest.artifact.mass_hysteria.percent() * priest.buffs.mass_hysteria->stack());
+      m *= 1.0 + ( priest.artifact.mass_hysteria.percent() *
+                   priest.buffs.mass_hysteria->stack() );
     }
 
     return m;
@@ -3326,12 +3420,12 @@ struct void_bolt_t : public priest_spell_t
   void_bolt_t( priest_t& player, const std::string& options_str )
     : priest_spell_t( "void_bolt", player,
                       player.find_specialization_spell( "Void Bolt" ) ),
-	  insanity_gain(data().effectN(3).resource(RESOURCE_INSANITY))
+      insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) )
   {
-    parse_options(options_str);
+    parse_options( options_str );
     use_off_gcd = true;
 
-    if (player.artifact.sinister_thoughts.rank())
+    if ( player.artifact.sinister_thoughts.rank() )
     {
       base_multiplier *= 1.0 + player.artifact.sinister_thoughts.percent();
     }
@@ -3341,9 +3435,9 @@ struct void_bolt_t : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    if (priest.buffs.shadow_t19_4p->up())
+    if ( priest.buffs.shadow_t19_4p->up() )
     {
-      cooldown->reset(false);
+      cooldown->reset( false );
     }
   }
 
@@ -3352,8 +3446,8 @@ struct void_bolt_t : public priest_spell_t
     priest_spell_t::impact( s );
 
     priest_td_t& td = get_td( s->target );
-    timespan_t extend_duration =
-        timespan_t::from_seconds( data().effectN( 2 ).base_value() );
+    //timespan_t extend_duration =
+    //    timespan_t::from_seconds( data().effectN( 2 ).base_value() );
     // extend_duration *= composite_haste(); FIXME Check is it is reduced by
     // haste or not.
     if ( td.dots.shadow_word_pain->is_ticking() )
@@ -3366,7 +3460,7 @@ struct void_bolt_t : public priest_spell_t
       td.dots.vampiric_touch->refresh_duration();
     }
 
-    generate_insanity(insanity_gain, priest.gains.insanity_void_bolt);
+    generate_insanity( insanity_gain, priest.gains.insanity_void_bolt );
   }
 
   double cooldown_reduction() const override
@@ -5048,7 +5142,7 @@ struct renew_t : public priest_heal_t
       dot_t* d         = get_dot( s->target );
       result_e r       = d->state->result;
       d->state->result = RESULT_HIT;
-      double tick_dmg  = calculate_tick_amount( d->state, d->current_stack() );
+      double tick_dmg = calculate_tick_amount( d->state, d->current_stack() );
       d->state->result = r;
       tick_dmg *=
           d->ticks_left();  // Gets multiplied by the hasted amount of ticks
@@ -5140,7 +5234,8 @@ struct voidform_t : public priest_buff_t<buff_t>
     insanity_loss_event_t( voidform_t* s )
       : player_event_t( *s->player ), vf( s )
     {
-      add_event( timespan_t::from_seconds( 0.2 ) );  // FIXME Is there spelldata for tick intervall ?
+      add_event( timespan_t::from_seconds(
+          0.2 ) );  // FIXME Is there spelldata for tick intervall ?
     }
 
     virtual const char* name() const override
@@ -5153,41 +5248,51 @@ struct voidform_t : public priest_buff_t<buff_t>
       // http://howtopriest.com/viewtopic.php?f=95&t=8069&start=20#p69794
       // ----
       // Updated 2016-04-03 by Twintop:
-      // Drain starts at 8 over 1 second and increases by 1 over 2 seconds per stack of Voidform.
+      // Drain starts at 8 over 1 second and increases by 1 over 2 seconds per
+      // stack of Voidform.
       // Ticks happen every 0.2 sec.
-      // CHECK ME: Triggering Voidform in-game and not using any abilities results in 11 stacks. The implementation below results in 11 stacks as well by subtracting 1 from the current stackcount.
+      // CHECK ME: Triggering Voidform in-game and not using any abilities
+      // results in 11 stacks. The implementation below results in 11 stacks as
+      // well by subtracting 1 from the current stackcount.
       // TODO: Use Spelldata
       auto priest = debug_cast<priest_t*>( player() );
 
-      double insanity_loss = (8 * 0.2) + ((priest->buffs.voidform->check() - 1) / 2) * 0.2;
+      double insanity_loss =
+          ( 8 * 0.2 ) + ( ( priest->buffs.voidform->check() - 1 ) / 2 ) * 0.2;
 
-      if (insanity_loss <= priest->resources.current[RESOURCE_INSANITY]) {
-        priest->resource_loss(RESOURCE_INSANITY, insanity_loss, priest->gains.insanity_drain);
+      if ( insanity_loss <= priest->resources.current[ RESOURCE_INSANITY ] )
+      {
+        priest->resource_loss( RESOURCE_INSANITY, insanity_loss,
+                               priest->gains.insanity_drain );
 
-        if (priest->buffs.dispersion->check())
+        if ( priest->buffs.dispersion->check() )
         {
-          priest->resource_gain(RESOURCE_INSANITY, insanity_loss, priest->gains.insanity_dispersion);
+          priest->resource_gain( RESOURCE_INSANITY, insanity_loss,
+                                 priest->gains.insanity_dispersion );
         }
 
-        if (priest->buffs.void_torrent->check())
+        if ( priest->buffs.void_torrent->check() )
         {
-          priest->resource_gain(RESOURCE_INSANITY, insanity_loss, priest->gains.insanity_void_torrent);
+          priest->resource_gain( RESOURCE_INSANITY, insanity_loss,
+                                 priest->gains.insanity_void_torrent );
         }
       }
-      else //If you don't have enough insanity for the drain, you drop out with however much insanity you had left
+      else  // If you don't have enough insanity for the drain, you drop out
+            // with however much insanity you had left
       {
-        if (sim().debug)
+        if ( sim().debug )
         {
-          sim().out_debug << "Insanity-loss event cancels voidform because priest is out of insanity.";
+          sim().out_debug << "Insanity-loss event cancels voidform because "
+                             "priest is out of insanity.";
         }
-        vf->insanity_loss = nullptr; // avoid double-canceling
+        vf->insanity_loss = nullptr;  // avoid double-canceling
         priest->buffs.voidform->expire();
         priest->buffs.sphere_of_insanity->expire();
         priest->buffs.mass_hysteria->expire();
         return;
       }
 
-      vf->insanity_loss = new (sim()) insanity_loss_event_t(vf);
+      vf->insanity_loss = new ( sim() ) insanity_loss_event_t( vf );
     }
   };
 
@@ -5221,13 +5326,12 @@ struct voidform_t : public priest_buff_t<buff_t>
       priest.buffs.lingering_insanity->expire();
 
     priest.buffs.lingering_insanity->trigger( expiration_stacks );
-    priest.active_spells.voidform->cancel();
 
     if ( priest.buffs.surrender_to_madness->check() )
     {
       priest.demise();
       // FIXME Add some waiting time here
-      //priest.arise();
+      // priest.arise();
     }
 
     event_t::cancel( insanity_loss );
@@ -5364,27 +5468,31 @@ void init()
 
 namespace rppm
 {
+template <typename Base>
+struct priest_real_ppm_t : public Base
+{
+public:
+  typedef priest_real_ppm_t base_t;
 
-  template <typename Base>
-  struct priest_real_ppm_t : public Base
+  priest_real_ppm_t( priest_t& p, const real_ppm_t& params )
+    : Base( params ), priest( p )
   {
-  public:
-    typedef priest_real_ppm_t base_t;
+  }
 
-    priest_real_ppm_t(priest_t& p, const real_ppm_t& params) :
-      Base(params), priest(p)
-    {}
+protected:
+  priest_t& priest;
+};
 
-  protected:
-    priest_t& priest;
-  };
-
-  struct call_to_the_void_t : public priest_real_ppm_t < real_ppm_t >
+struct call_to_the_void_t : public priest_real_ppm_t<real_ppm_t>
+{
+  call_to_the_void_t( priest_t& p )
+    : base_t( p,
+              real_ppm_t(
+                  p, p.xalatath_blade_of_the_black_empire->driver()->real_ppm(),
+                  1.0, RPPM_NONE ) )
   {
-    call_to_the_void_t(priest_t& p) :
-      base_t(p, real_ppm_t(p, p.xalatath_blade_of_the_black_empire -> driver() -> real_ppm(), 1.0, RPPM_NONE))
-    {}
-  };
+  }
+};
 };
 
 // ==========================================================================
@@ -5465,6 +5573,7 @@ void priest_td_t::target_demise()
 
 priest_t::priest_t( sim_t* sim, const std::string& name, race_e r )
   : player_t( sim, PRIEST, name, r ),
+    xalatath_blade_of_the_black_empire(),
     buffs(),
     talents(),
     specs(),
@@ -5473,8 +5582,7 @@ priest_t::priest_t( sim_t* sim, const std::string& name, race_e r )
     gains(),
     benefits(),
     procs(),
-    rppm(realppm_t()),
-    xalatath_blade_of_the_black_empire(),
+    rppm( realppm_t() ),
     active_spells(),
     active_items(),
     pets(),
@@ -5503,9 +5611,8 @@ void priest_t::create_cooldowns()
   cooldowns.power_word_shield = get_cooldown( "power_word_shield" );
   cooldowns.shadowfiend       = get_cooldown( "shadowfiend" );
   cooldowns.silence           = get_cooldown( "silence" );
-
-  cooldowns.mind_blast = get_cooldown("mind_blast");
-  cooldowns.shadow_word_death = get_cooldown("shadow_word_death");
+  cooldowns.mind_blast        = get_cooldown( "mind_blast" );
+  cooldowns.shadow_word_death = get_cooldown( "shadow_word_death" );
   cooldowns.shadow_word_void  = get_cooldown( "shadow_word_void" );
 
   cooldowns.angelic_feather->charges  = 3;
@@ -5526,28 +5633,37 @@ void priest_t::create_cooldowns()
  */
 void priest_t::create_gains()
 {
-  gains.mindbender = get_gain("Mana Gained from Mindbender");
-  gains.power_word_solace = get_gain("Mana Gained from Power Word: Solace");
-  gains.insanity_auspicious_spirits = get_gain("Insanity Gained from Auspicious Spirits");
-  gains.insanity_dispersion = get_gain("Insanity Saved by Dispersion");
-  gains.insanity_drain = get_gain("Insanity Drained by Voidform");
-  gains.insanity_mind_blast = get_gain("Insanity Gained from Mind Blast");
-  gains.insanity_mind_flay = get_gain("Insanity Gained from Mind Flay");
-  gains.insanity_mind_sear = get_gain("Insanity Gained from Mind Sear");
-  gains.insanity_mind_spike = get_gain("Insanity Gained from Mind Spike");
-  gains.insanity_mindbender = get_gain("Insanity Gained from Mindbender");
-  gains.insanity_power_infusion = get_gain("Insanity Gained from Power Infusion");
-  gains.insanity_shadow_crash = get_gain("Insanity Gained from Shadow Crash");
-  gains.insanity_shadow_word_death = get_gain("Insanity Gained from Shadow Word: Death");
-  gains.insanity_shadow_word_pain_ondamage = get_gain("Insanity Gained from Shadow Word: Pain Damage (T19 2P)");
-  gains.insanity_shadow_word_pain_onhit = get_gain("Insanity Gained from Shadow Word: Pain Casts");
-  gains.insanity_shadow_word_void = get_gain("Insanity Gained from Shadow Word: Void");
-  gains.insanity_surrender_to_madness = get_gain("Insanity Gained from Surrender to Madness");
-  gains.insanity_vampiric_touch_ondamage = get_gain("Insanity Gained from Vampiric Touch Damage (T19 2P)");
-  gains.insanity_vampiric_touch_onhit = get_gain("Insanity Gained from Vampiric Touch Casts");
-  gains.insanity_void_bolt = get_gain("Insanity Gained from Void Bolt");
-  gains.insanity_void_torrent = get_gain("Insanity Saved by Void Torrent");
-  gains.vampiric_touch_health = get_gain("Health from Vampiric Touch Ticks");
+  gains.mindbender        = get_gain( "Mana Gained from Mindbender" );
+  gains.power_word_solace = get_gain( "Mana Gained from Power Word: Solace" );
+  gains.insanity_auspicious_spirits =
+      get_gain( "Insanity Gained from Auspicious Spirits" );
+  gains.insanity_dispersion = get_gain( "Insanity Saved by Dispersion" );
+  gains.insanity_drain      = get_gain( "Insanity Drained by Voidform" );
+  gains.insanity_mind_blast = get_gain( "Insanity Gained from Mind Blast" );
+  gains.insanity_mind_flay  = get_gain( "Insanity Gained from Mind Flay" );
+  gains.insanity_mind_sear  = get_gain( "Insanity Gained from Mind Sear" );
+  gains.insanity_mind_spike = get_gain( "Insanity Gained from Mind Spike" );
+  gains.insanity_mindbender = get_gain( "Insanity Gained from Mindbender" );
+  gains.insanity_power_infusion =
+      get_gain( "Insanity Gained from Power Infusion" );
+  gains.insanity_shadow_crash = get_gain( "Insanity Gained from Shadow Crash" );
+  gains.insanity_shadow_word_death =
+      get_gain( "Insanity Gained from Shadow Word: Death" );
+  gains.insanity_shadow_word_pain_ondamage =
+      get_gain( "Insanity Gained from Shadow Word: Pain Damage (T19 2P)" );
+  gains.insanity_shadow_word_pain_onhit =
+      get_gain( "Insanity Gained from Shadow Word: Pain Casts" );
+  gains.insanity_shadow_word_void =
+      get_gain( "Insanity Gained from Shadow Word: Void" );
+  gains.insanity_surrender_to_madness =
+      get_gain( "Insanity Gained from Surrender to Madness" );
+  gains.insanity_vampiric_touch_ondamage =
+      get_gain( "Insanity Gained from Vampiric Touch Damage (T19 2P)" );
+  gains.insanity_vampiric_touch_onhit =
+      get_gain( "Insanity Gained from Vampiric Touch Casts" );
+  gains.insanity_void_bolt    = get_gain( "Insanity Gained from Void Bolt" );
+  gains.insanity_void_torrent = get_gain( "Insanity Saved by Void Torrent" );
+  gains.vampiric_touch_health = get_gain( "Health from Vampiric Touch Ticks" );
 }
 
 /* Construct priest procs
@@ -5824,12 +5940,17 @@ double priest_t::composite_player_multiplier( school_e school ) const
 {
   double m = base_t::composite_player_multiplier( school );
 
-  if (specs.voidform->ok() && buffs.voidform->check() && (dbc::is_school(SCHOOL_SHADOW, school) || dbc::is_school(SCHOOL_SHADOWFROST, school)))
+  if ( specs.voidform->ok() && buffs.voidform->check() &&
+       ( dbc::is_school( SCHOOL_SHADOW, school ) ||
+         dbc::is_school( SCHOOL_SHADOWFROST, school ) ) )
   {
     m *= 1.0 + buffs.voidform->data().effectN( 1 ).percent();
   }
 
-  if (specialization() == PRIEST_SHADOW && artifact.darkening_whispers.rank() && (dbc::is_school(SCHOOL_SHADOW, school) || dbc::is_school(SCHOOL_SHADOWFROST, school)))
+  if ( specialization() == PRIEST_SHADOW &&
+       artifact.darkening_whispers.rank() &&
+       ( dbc::is_school( SCHOOL_SHADOW, school ) ||
+         dbc::is_school( SCHOOL_SHADOWFROST, school ) ) )
   {
     m *= 1.0 + artifact.darkening_whispers.percent();
   }
@@ -5994,22 +6115,22 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "shadow_word_pain" )
     return new shadow_word_pain_t( *this, options_str );
   if ( name == "shadow_word_void" )
-    return new shadow_word_void_t(*this, options_str);
-  if (name == "vampiric_touch")
-    return new vampiric_touch_t(*this, options_str);
-  if (name == "void_bolt")
-    return new void_bolt_t(*this, options_str);
-  if (name == "void_torrent")
-    return new void_torrent_t(*this, options_str);
-  if (name == "voidform")
-    return new voidform_t(*this, options_str);
+    return new shadow_word_void_t( *this, options_str );
+  if ( name == "vampiric_touch" )
+    return new vampiric_touch_t( *this, options_str );
+  if ( name == "void_bolt" )
+    return new void_bolt_t( *this, options_str );
+  if ( name == "void_torrent" )
+    return new void_torrent_t( *this, options_str );
+  if ( name == "voidform" )
+    return new voidform_t( *this, options_str );
 
-  if ((name == "shadowfiend") || (name == "mindbender"))
+  if ( ( name == "shadowfiend" ) || ( name == "mindbender" ) )
   {
-    if (talents.mindbender->ok())
-      return new summon_mindbender_t(*this, options_str);
+    if ( talents.mindbender->ok() )
+      return new summon_mindbender_t( *this, options_str );
     else
-      return new summon_shadowfiend_t(*this, options_str);
+      return new summon_shadowfiend_t( *this, options_str );
   }
 
   //Disc+Holy
@@ -6075,13 +6196,13 @@ pet_t* priest_t::create_pet( const std::string& pet_name,
 {
   pet_t* p = find_pet( pet_name );
 
-  if ( p && pet_name != "void_tendril")
+  if ( p && pet_name != "void_tendril" )
     return p;
 
   if ( pet_name == "shadowfiend" )
     return new pets::shadowfiend_pet_t( sim, *this );
   if ( pet_name == "mindbender" )
-    return new pets::mindbender_pet_t(sim, *this);
+    return new pets::mindbender_pet_t( sim, *this );
   if ( pet_name == "lightwell" )
     return new pets::lightwell_pet_t( sim, *this );
 
@@ -6107,15 +6228,15 @@ void priest_t::create_pets()
     pets.mindbender = create_pet( "mindbender" );
   }
 
-  if (artifact.call_to_the_void.rank())
+  if ( artifact.call_to_the_void.rank() )
   {
-    for (size_t i = 0; i < pets.void_tendril.size(); i++)
+    for ( size_t i = 0; i < pets.void_tendril.size(); i++ )
     {
-      pets.void_tendril[i] = new pets::void_tendril_pet_t(sim, *this);
+      pets.void_tendril[ i ] = new pets::void_tendril_pet_t( sim, *this );
 
-      if (i > 0)
+      if ( i > 0 )
       {
-        pets.void_tendril[i]->quiet = 1;
+        pets.void_tendril[ i ]->quiet = 1;
       }
     }
   }
@@ -6253,24 +6374,25 @@ void priest_t::init_spells()
   // Artifacts
   // Shadow - Xal'atath, Blade of the Black Empire
 
-  artifact.call_to_the_void = find_artifact_spell("Call to the Void");
-  artifact.darkening_whispers = find_artifact_spell("Darkening Whispers");
-  artifact.deaths_embrace = find_artifact_spell("Death's Embrace");
-  artifact.from_the_shadows = find_artifact_spell("From the Shadows");
-  artifact.mass_hysteria = find_artifact_spell("Mass Hysteria");
-  artifact.mental_fortitude = find_artifact_spell("Mental Fortitude");
-  artifact.mind_shattering = find_artifact_spell("Mind Shattering");
-  artifact.sinister_thoughts = find_artifact_spell("Sinister Thoughts");
-  artifact.sphere_of_insanity = find_artifact_spell("Sphere of Insanity");
-  artifact.thoughts_of_insanity = find_artifact_spell("Thoughts of Insanity");
-  artifact.thrive_in_the_shadows = find_artifact_spell("Thrive in the Shadows");
-  artifact.to_the_pain = find_artifact_spell("To the Pain");
-  artifact.touch_of_darkness = find_artifact_spell("Touch of Darkness");
-  artifact.tremble_in_fear = find_artifact_spell("Tremble in Fear");
-  artifact.unleash_the_shadows = find_artifact_spell("Unleash the Shadows");
-  artifact.void_corruption = find_artifact_spell("Void Corruption");
-  artifact.void_siphon = find_artifact_spell("Void Siphon");
-  artifact.void_torrent = find_artifact_spell("Void Torrent");
+  artifact.call_to_the_void     = find_artifact_spell( "Call to the Void" );
+  artifact.darkening_whispers   = find_artifact_spell( "Darkening Whispers" );
+  artifact.deaths_embrace       = find_artifact_spell( "Death's Embrace" );
+  artifact.from_the_shadows     = find_artifact_spell( "From the Shadows" );
+  artifact.mass_hysteria        = find_artifact_spell( "Mass Hysteria" );
+  artifact.mental_fortitude     = find_artifact_spell( "Mental Fortitude" );
+  artifact.mind_shattering      = find_artifact_spell( "Mind Shattering" );
+  artifact.sinister_thoughts    = find_artifact_spell( "Sinister Thoughts" );
+  artifact.sphere_of_insanity   = find_artifact_spell( "Sphere of Insanity" );
+  artifact.thoughts_of_insanity = find_artifact_spell( "Thoughts of Insanity" );
+  artifact.thrive_in_the_shadows =
+      find_artifact_spell( "Thrive in the Shadows" );
+  artifact.to_the_pain         = find_artifact_spell( "To the Pain" );
+  artifact.touch_of_darkness   = find_artifact_spell( "Touch of Darkness" );
+  artifact.tremble_in_fear     = find_artifact_spell( "Tremble in Fear" );
+  artifact.unleash_the_shadows = find_artifact_spell( "Unleash the Shadows" );
+  artifact.void_corruption     = find_artifact_spell( "Void Corruption" );
+  artifact.void_siphon         = find_artifact_spell( "Void Siphon" );
+  artifact.void_torrent        = find_artifact_spell( "Void Torrent" );
 
   // General Spells
 
@@ -6305,12 +6427,9 @@ void priest_t::init_spells()
   mastery_spells.shield_discipline = find_mastery_spell( PRIEST_DISCIPLINE );
   mastery_spells.echo_of_light     = find_mastery_spell( PRIEST_HOLY );
   mastery_spells.madness           = find_mastery_spell( PRIEST_SHADOW );
-  
+
   if ( mastery_spells.echo_of_light->ok() )
     active_spells.echo_of_light = new actions::heals::echo_of_light_t( *this );
-
-  if ( specs.voidform->ok() )
-    active_spells.voidform = new actions::spells::voidform_t( *this, "" );
 
   // Range Based on Talents
   if ( talents.divine_star->ok() )
@@ -6365,17 +6484,17 @@ void priest_t::create_buffs()
   buffs.void_ray = buff_creator_t( this, "void_ray" )
                        .spell( talents.void_ray->effectN( 1 ).trigger() );
 
-  buffs.void_torrent = buff_creator_t(this, "void_torrent")
-                          .spell(artifact.void_torrent);
+  buffs.void_torrent =
+      buff_creator_t( this, "void_torrent" ).spell( artifact.void_torrent );
 
   buffs.surrender_to_madness = buff_creator_t( this, "surrender_to_madness" )
                                    .spell( talents.surrender_to_madness );
 
-  buffs.sphere_of_insanity = buff_creator_t(this, "sphere_of_insanity")
-                                  .spell( find_spell(194182) )
-                                  .chance(1.0)
-                                  .duration( timespan_t::zero() )
-                                  .default_value(0.0);
+  buffs.sphere_of_insanity = buff_creator_t( this, "sphere_of_insanity" )
+                                 .spell( find_spell( 194182 ) )
+                                 .chance( 1.0 )
+                                 .duration( timespan_t::zero() )
+                                 .default_value( 0.0 );
 
   // Discipline
   buffs.archangel = new buffs::archangel_t( *this );
@@ -6432,13 +6551,13 @@ void priest_t::create_buffs()
                                  .spell( find_spell( 197937 ) )
                                  .add_invalidate( CACHE_HASTE );
 
-  buffs.mass_hysteria = buff_creator_t(this, "mass_hysteria")
-    .spell(find_spell(194378))
-    .chance(1.0)
-    .max_stack(999)
-    .duration(timespan_t::zero());
+  buffs.mass_hysteria = buff_creator_t( this, "mass_hysteria" )
+                            .spell( find_spell( 194378 ) )
+                            .chance( 1.0 )
+                            .max_stack( 999 )
+                            .duration( timespan_t::zero() );
 
-  buffs.mass_hysteria->buff_period = timespan_t::from_seconds(1.0);
+  buffs.mass_hysteria->buff_period   = timespan_t::from_seconds( 1.0 );
   buffs.mass_hysteria->tick_behavior = BUFF_TICK_REFRESH;
 
   buffs.vampiric_embrace =
@@ -6497,11 +6616,11 @@ void priest_t::create_buffs()
           .chance( sets.has_set_bonus( PRIEST_SHADOW, T18, B4 ) );
 
   buffs.shadow_t19_4p =
-    buff_creator_t(this, "shadow_t19_4p" )
+      buff_creator_t( this, "shadow_t19_4p" )
           .spell( find_spell( 211654 ) )
-          .chance(1.0)
-          .duration(timespan_t::from_seconds(6.0)); //TODO Update with spelldata once available
-
+          .chance( 1.0 )
+          .duration( timespan_t::from_seconds(
+              6.0 ) );  // TODO Update with spelldata once available
 }
 
 // priest_t::init_rng ==================================================
@@ -6512,7 +6631,6 @@ void priest_t::init_rng()
 
   player_t::init_rng();
 }
-
 
 // ALL Spec Pre-Combat Action Priority List
 

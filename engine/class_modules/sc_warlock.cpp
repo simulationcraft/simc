@@ -1839,14 +1839,12 @@ struct demonic_empowerment_t: public warlock_spell_t
 		warlock_spell_t::execute();
 
 		//cycle through all pets and trigger the demonic_empowerment buff
-		for (int size = 0; size < p()->pets.wild_imps.size(); size++)
+		for (auto& imp: p()->pets.wild_imps)
 		{
-			pets::wild_imp_pet_t* imp = p()->pets.wild_imps[size];
 			imp->buffs.demonic_empowerment->trigger();
 		}
-		for (int size = 0; size < p()->pets.dreadstalkers.size(); size++)
+		for (auto& dreadstalker : p()->pets.dreadstalkers)
 		{
-			pets::dreadstalker_pet_t* dreadstalker = p()->pets.dreadstalkers[size];
 			dreadstalker->buffs.demonic_empowerment->trigger();
 		}
 		pets::warlock_pet_t* my_pet = static_cast<pets::warlock_pet_t*>(p()->pets.active); //get active pet

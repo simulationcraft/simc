@@ -3343,7 +3343,7 @@ struct touch_of_death_t: public monk_spell_t
 
   virtual double target_armor( player_t* ) const override { return 0; }
 
-  virtual double calculate_tick_amount( action_state_t* state, double dot_multiplier ) const
+  virtual double calculate_tick_amount( action_state_t*, double /*dot_multiplier*/ ) const
   {
     return p() -> resources.max[RESOURCE_HEALTH];
   }
@@ -3905,10 +3905,11 @@ struct breath_of_fire_t: public monk_spell_t
 
   dragonfire_brew* dragonfire;
   periodic_t* dot_action;
+
   breath_of_fire_t( monk_t& p, const std::string& options_str ):
     monk_spell_t( "breath_of_fire", &p, p.spec.breath_of_fire ),
-    dot_action( new periodic_t( p ) ),
-    dragonfire( new dragonfire_brew( p ) )
+    dragonfire( new dragonfire_brew( p ) ),
+    dot_action( new periodic_t( p ) )
   {
     parse_options( options_str );
     aoe = -1;
@@ -6441,7 +6442,7 @@ void monk_t::reset()
 
 void monk_t::regen( timespan_t periodicity )
 {
-  resource_e resource_type = primary_resource();
+  // resource_e resource_type = primary_resource();
 
   base_t::regen( periodicity );
 }
