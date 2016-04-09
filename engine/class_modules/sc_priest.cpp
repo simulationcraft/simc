@@ -781,8 +781,9 @@ public:
 struct void_tendril_pet_t : public priest_pet_t
 {
 public:
-  void_tendril_pet_t( sim_t* sim, priest_t& p )
-    : priest_pet_t( sim, p, "void_tendril", PET_VOID_TENDRIL, true )
+  void_tendril_pet_t( sim_t* sim, priest_t& p, void_tendril_pet_t* front_pet )
+    : priest_pet_t( sim, p, "void_tendril", PET_VOID_TENDRIL, true ),
+      front_pet(front_pet)
   {
     owner_coeff.sp_from_sp = 1.0;
   }
@@ -801,6 +802,28 @@ public:
   {
     summon( timespan_t::from_seconds( 10 ) );
   }
+
+  bool init_actions() override
+  {
+    auto r = priest_pet_t::init_actions();
+
+    // Add all stats as child_stats to front_pet
+    if ( front_pet )
+    {
+      for ( auto& stat : stats_list )
+      {
+        if ( auto front_stat = front_pet->find_stats( stat->name_str ) )
+        {
+          front_stat->add_child( stat );
+        }
+      }
+    }
+
+    return r;
+  }
+
+private:
+  void_tendril_pet_t* front_pet;
 };
 
 namespace actions
@@ -6247,7 +6270,7 @@ void priest_t::create_pets()
   {
     for ( size_t i = 0; i < pets.void_tendril.size(); i++ )
     {
-      pets.void_tendril[ i ] = new pets::void_tendril_pet_t( sim, *this );
+      pets.void_tendril[ i ] = new pets::void_tendril_pet_t( sim, *this, pets.void_tendril.front() );
 
       if ( i > 0 )
       {
