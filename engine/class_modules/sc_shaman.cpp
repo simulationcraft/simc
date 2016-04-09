@@ -5196,7 +5196,7 @@ void shaman_t::trigger_earthen_rage( const action_state_t* state )
   earthen_rage -> schedule_execute();
 }
 
-void shaman_t::trigger_stormlash( const action_state_t* state )
+void shaman_t::trigger_stormlash( const action_state_t* )
 {
   if ( ! spec.stormlash -> ok() )
   {

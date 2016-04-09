@@ -381,6 +381,8 @@ public:
       hasted_gcd = ab::data().affected_by( p -> spec.vengeance -> effectN( 1 ) );
       hasted_cd  = ab::data().affected_by( p -> spec.vengeance -> effectN( 2 ) );
       break;
+    default:
+      break;
     }
   }
 
@@ -1694,6 +1696,13 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
 
 demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r ) :
   player_t( sim, DEMON_HUNTER, name, r ),
+  blade_dance_driver( nullptr ),
+  blade_dance_attacks( 0 ),
+  death_sweep_attacks( 0 ),
+  melee_main_hand( nullptr ),
+  melee_off_hand( nullptr ),
+  chaos_blade_main_hand( nullptr ),
+  chaos_blade_off_hand( nullptr ),
   buff(),
   talent(),
   spec(),
@@ -1705,14 +1714,7 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r ) 
   active_spells(),
   pets(),
   options(),
-  glyphs(),
-  blade_dance_driver( nullptr ),
-  blade_dance_attacks( 0 ),
-  death_sweep_attacks( 0 ),
-  melee_main_hand( nullptr ),
-  melee_off_hand( nullptr ),
-  chaos_blade_main_hand( nullptr ),
-  chaos_blade_off_hand( nullptr )
+  glyphs()
 {
   base.distance = 5.0;
 
@@ -1810,10 +1812,10 @@ stat_e demon_hunter_t::convert_hybrid_stat( stat_e s ) const
 double demon_hunter_t::matching_gear_multiplier( attribute_e attr ) const
 {
   // TODO: Find in spell data... somewhere.
-  if ( attr == STAT_AGILITY && specialization() == DEMON_HUNTER_HAVOC )
+  if ( stat_from_attr(attr) == STAT_AGILITY && specialization() == DEMON_HUNTER_HAVOC )
     return 0.05;
 
-  if ( attr == STAT_STAMINA && specialization() == DEMON_HUNTER_VENGEANCE ) // TOCHECK
+  if ( stat_from_attr(attr) == STAT_STAMINA && specialization() == DEMON_HUNTER_VENGEANCE ) // TOCHECK
     return 0.05;
 
   return 0.0;

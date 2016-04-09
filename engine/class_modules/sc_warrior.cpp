@@ -360,11 +360,11 @@ public:
 
   warrior_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ):
     player_t( sim, WARRIOR, name, r ),
-    stromkar_the_warbreaker(),
-    warswords_of_the_valarjar(),
     heroic_charge( nullptr ),
     rampage_driver( nullptr ),
     rampage_attacks( 0 ),
+    stromkar_the_warbreaker(),
+    warswords_of_the_valarjar(),
     active( active_t() ),
     buff( buffs_t() ),
     cooldown( cooldowns_t() ),

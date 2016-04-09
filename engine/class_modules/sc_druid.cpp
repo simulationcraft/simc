@@ -1730,9 +1730,9 @@ public:
       ap_per_hit( 0 ),
       ap_per_tick( 0 ),
       ap_per_cast( 0 ),
-      blessing_of_elune( data().affected_by( p -> spec.blessing_of_elune -> effectN( 1 ) ) ),
-      celestial_alignment( data().affected_by( p -> spec.celestial_alignment -> effectN( 3 ) ) ),
       incarnation( data().affected_by( p -> talent.incarnation_moonkin -> effectN( 3 ) ) ),
+      celestial_alignment( data().affected_by( p -> spec.celestial_alignment -> effectN( 3 ) ) ),
+      blessing_of_elune( data().affected_by( p -> spec.blessing_of_elune -> effectN( 1 ) ) ),
       consumes_owlkin_frenzy( false ),
       ap_gain( p->get_gain( name() ) )
   {
@@ -2157,10 +2157,14 @@ public:
                 const spell_data_t* s = spell_data_t::nil(),
                 const std::string& options = std::string() ) :
     base_t( token, p, s ),
-    requires_stealth( false ), combo_point_gain( 0 ),
-    base_dd_bonus( 0.0 ), base_td_bonus( 0.0 ), consumes_clearcasting( true ),
-    trigger_tier17_2pc( false ), consumes_combo_points( false ),
-    action_gain( p -> get_gain( token ) )
+    requires_stealth( false ),
+    combo_point_gain( 0 ),
+    consumes_combo_points( false ),
+    base_dd_bonus( 0.0 ),
+    base_td_bonus( 0.0 ),
+    action_gain( p -> get_gain( token ) ),
+    consumes_clearcasting( true ),
+    trigger_tier17_2pc( false )
   {
     parse_options( options );
 
@@ -3322,9 +3326,11 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
 
   bear_attack_t( const std::string& n, druid_t* p,
                  const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( n, p, s ), rage_amount( 0.0 ),
-    rage_tick_amount( 0.0 ),  rage_gain( p -> get_gain( name() ) ),
-    gore( false )
+    base_t( n, p, s ),
+    rage_amount( 0.0 ),
+    rage_tick_amount( 0.0 ),
+    gore( false ),
+    rage_gain( p -> get_gain( name() ) )
   {}
 
   virtual void execute() override
@@ -4566,7 +4572,9 @@ struct fury_of_elune_move_t : public druid_spell_t
 {
   fury_of_elune_move_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "move_fury_of_elune", player, player -> find_spell( 211547 ) )
-  {}
+  {
+    parse_options( options_str );
+  }
 
   void execute() override
   {
@@ -5333,16 +5341,27 @@ struct starfall_t : public druid_spell_t
     double x, y; // starfall position
 
     starfall_dot_event_t( druid_t* p, starfall_t* a ) :
-      event_t( *p ), druid( p ), starfall( a ), current_tick( 1 ), id( p -> starfall_counter ),
+      event_t( *p ),
+      druid( p ),
+      starfall( a ),
       expiration( p -> sim -> current_time() + a -> starfall_duration ),
-      x( a -> execute_state -> original_x ), y( a -> execute_state -> original_y )
+      current_tick( 1 ),
+      id( p -> starfall_counter ),
+      x( a -> execute_state -> original_x ),
+      y( a -> execute_state -> original_y )
     {
       add_event( tick_time() );
     }
 
     starfall_dot_event_t( druid_t* p, unsigned ct, unsigned i, starfall_t* a, timespan_t exp, double prev_x, double prev_y ) :
-      event_t( *p ), current_tick( ct + 1 ), id( i ), druid( p ), starfall( a ),
-      expiration( exp ), x( prev_x ), y( prev_y )
+      event_t( *p ),
+      druid( p ),
+      starfall( a ),
+      expiration( exp ),
+      current_tick( ct + 1 ),
+      id( i ),
+      x( prev_x ),
+      y( prev_y )
     {
       add_event( tick_time() );
     }
