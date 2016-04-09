@@ -17,7 +17,6 @@ Shadow
       - Thoughts of Insanity
           - Need to implement Shadowmend first.
       - Thrive in the Shadows
-  - Update GCD formula to match changes from 2016/04/06 once confirmed by devs.
   - Shadowmend
   - Setbonuses
     - Several Setbonuses have to be updated by Blizzard: T17, T16 no longer work.
@@ -1778,12 +1777,38 @@ struct priest_spell_t : public priest_action_t<spell_t>
       return timespan_t::zero();
     }
 
+    double usable_haste = priest.cache.spell_haste();
+
+    // For Shadow, GCD reduction can only scale below 1.0sec if they are in Voidform or have the Lingering Insanity buff up.
+    // When either of these are up, the floor is decreased by 0.33sec to 0.67sec.
+    // For calculating the new GCD, you can only get up to a 50% haste (base GCD floor) from non-Voidform or Lingering Insanity sources.
+    // If the value of haste without VF or LI is abvoe 50%, set it to 50% then factor in VF and LI stacks.
     if (priest.specialization() == PRIEST_SHADOW && (priest.buffs.voidform->up() || priest.buffs.lingering_insanity->up()))
     {
+      double haste_without_vf_li = priest.cache.spell_haste(); //Need to calculate Haste without Voidform or Lingering Insanity included
+      double vf_li_modifier = 1.0;
+
+      if (priest.buffs.voidform->check())
+      {
+        haste_without_vf_li *= 1.0 + priest.buffs.voidform->check() * priest.buffs.voidform->data().effectN(3).percent();
+        vf_li_modifier /= 1.0 + priest.buffs.voidform->check() * priest.buffs.voidform->data().effectN(3).percent();
+      }
+
+      if (priest.buffs.lingering_insanity->check())
+      {
+        haste_without_vf_li *= 1.0 + priest.buffs.lingering_insanity->check() * priest.buffs.lingering_insanity->data().effectN(1).percent();
+        vf_li_modifier /= 1.0 + priest.buffs.lingering_insanity->check() * priest.buffs.lingering_insanity->data().effectN(1).percent();
+      }
+
+      if (haste_without_vf_li < (1.0/1.5)) //over 50%, cap it at 50% for GCD purposes.
+      {
+        usable_haste = (1.0 / 1.5) * vf_li_modifier;
+      }
+
       m = m - (m * 0.33); //TODO: Fix when spelldata is playing nice (1.0 + priest.specs.voidform->effectN(4).percent());
     }
 
-    g *= priest.cache.spell_haste();
+    g *= usable_haste;
 
     if (g < m)
     {
@@ -5159,7 +5184,7 @@ struct voidform_t : public priest_buff_t<buff_t>
       // TODO: Use Spelldata
       auto priest = debug_cast<priest_t*>( player() );
 
-      double insanity_loss = (8 * 0.2) + ((priest->buffs.voidform->check() - 1) / 2) * 0.2;
+      double insanity_loss = (8 * 0.2) + ((priest->buffs.voidform->check()) / 2) * 0.2;
 
       if (insanity_loss <= priest->resources.current[RESOURCE_INSANITY]) {
         priest->resource_loss(RESOURCE_INSANITY, insanity_loss, priest->gains.insanity_drain);
@@ -5708,14 +5733,14 @@ double priest_t::composite_spell_haste() const
   if ( buffs.lingering_insanity->check() )
   {
     h /= 1.0 +
-         ( buffs.lingering_insanity->check() - 1 ) *
+         ( buffs.lingering_insanity->check() ) *
              buffs.lingering_insanity->data().effectN( 1 ).percent();
   }
 
   if ( buffs.voidform->check() )
   {
     h /= 1.0 +
-         ( buffs.voidform->check() - 1 ) *
+         ( buffs.voidform->check() ) *
              buffs.voidform->data().effectN( 3 ).percent();
   }
 
