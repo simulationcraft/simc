@@ -512,11 +512,14 @@ public:
   bool hasted_cd;
   bool hasted_gcd;
 
+  bool should_trigger_bom;
+
   paladin_action_t( const std::string& n, paladin_t* player,
                     const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
     hasted_cd( ab::data().affected_by( player -> passives.paladin -> effectN( 1 ) ) ),
-    hasted_gcd( ab::data().affected_by( player -> passives.paladin -> effectN( 2 ) ) )
+    hasted_gcd( ab::data().affected_by( player -> passives.paladin -> effectN( 2 ) ) ),
+    should_trigger_bom( true )
   {
   }
 
@@ -585,7 +588,8 @@ public:
   {
     ab::impact( s );
 
-    trigger_blessing_of_might(s);
+    if ( should_trigger_bom )
+      trigger_blessing_of_might(s);
   }
 
   virtual double cooldown_multiplier() { return 1.0; }
@@ -2296,6 +2300,8 @@ struct blessing_of_might_proc_t : public paladin_melee_attack_t
     // to do it specifically in init().
     // Alternate solution is to set weapon = NULL, but we have to use init() to disable
     // other multipliers (Versatility) anyway.
+
+    should_trigger_bom = false;
   }
 
   // Disable multipliers in init() so that it doesn't double-dip on anything
