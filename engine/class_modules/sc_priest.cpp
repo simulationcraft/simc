@@ -86,7 +86,10 @@ public:
   typedef player_t base_t;
 
   // Artifacts
-  const special_effect_t* xalatath_blade_of_the_black_empire;
+  struct
+  {
+    const special_effect_t* xalatath_blade_of_the_black_empire;
+  } artifacts;
 
   // Buffs
   struct
@@ -5515,7 +5518,7 @@ struct call_to_the_void_t : public priest_real_ppm_t<real_ppm_t>
   call_to_the_void_t( priest_t& p )
     : base_t( p,
               real_ppm_t(
-                  p, p.xalatath_blade_of_the_black_empire->driver()->real_ppm(),
+                  p, p.artifacts.xalatath_blade_of_the_black_empire->driver()->real_ppm(),
                   1.0, RPPM_NONE ) )
   {
   }
@@ -5600,7 +5603,7 @@ void priest_td_t::target_demise()
 
 priest_t::priest_t( sim_t* sim, const std::string& name, race_e r )
   : player_t( sim, PRIEST, name, r ),
-    xalatath_blade_of_the_black_empire(),
+    artifacts(),
     buffs(),
     talents(),
     specs(),
