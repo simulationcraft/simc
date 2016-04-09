@@ -231,7 +231,7 @@ public:
     artifact_power_t mind_shattering;
     artifact_power_t sinister_thoughts;
     artifact_power_t sphere_of_insanity;
-    artifact_power_t thoughts_of_insanity;  // NYI
+    artifact_power_t thoughts_of_insanity;   // NYI
     artifact_power_t thrive_in_the_shadows;  // NYI
     artifact_power_t to_the_pain;
     artifact_power_t touch_of_darkness;
@@ -963,12 +963,14 @@ struct fiend_melee_t : public priest_pet_melee_t
 
 struct void_tendril_mind_flay_t : public priest_pet_spell_t
 {
-  void_tendril_mind_flay_t(void_tendril_pet_t& p) : priest_pet_spell_t("mind_flay_void_tendril)", &p, p.o().find_spell(193473))
+  void_tendril_mind_flay_t( void_tendril_pet_t& p )
+    : priest_pet_spell_t( "mind_flay_void_tendril)", &p,
+                          p.o().find_spell( 193473 ) )
   {
-    may_crit     = false;
-    may_miss     = false;
-    channeled    = true;
-    hasted_ticks = false;
+    may_crit      = false;
+    may_miss      = false;
+    channeled     = true;
+    hasted_ticks  = false;
     tick_may_crit = true;
   }
 
@@ -1105,8 +1107,8 @@ void void_tendril_pet_t::init_action_list()
         "Snapshot raid buffed stats before combat begins and "
         "pre-potting is done." );
 
-    action_priority_list_t* def = get_action_priority_list("default");
-    def->add_action("mind_flay");
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def->add_action( "mind_flay" );
   }
 
   priest_pet_t::init_action_list();
@@ -1115,8 +1117,8 @@ void void_tendril_pet_t::init_action_list()
 action_t* void_tendril_pet_t::create_action( const std::string& name,
                                              const std::string& options_str )
 {
-  if (name == "mind_flay")
-    return new actions::void_tendril_mind_flay_t(*this);
+  if ( name == "mind_flay" )
+    return new actions::void_tendril_mind_flay_t( *this );
 
   return priest_pet_t::create_action( name, options_str );
 }
@@ -1175,19 +1177,22 @@ public:
 
   void trigger_void_tendril()
   {
-    if (priest.artifact.call_to_the_void.rank() && priest.rppm.call_to_the_void.trigger())
+    if ( priest.artifact.call_to_the_void.rank() &&
+         priest.rppm.call_to_the_void.trigger() )
     {
-      for (size_t i = 0; i < priest.pets.void_tendril.size(); i++)
+      for ( size_t i = 0; i < priest.pets.void_tendril.size(); i++ )
       {
-        if (priest.pets.void_tendril[i]->is_sleeping())
+        if ( priest.pets.void_tendril[ i ]->is_sleeping() )
         {
-          priest.pets.void_tendril[i]->trigger();
+          priest.pets.void_tendril[ i ]->trigger();
           priest.procs.void_tendril->occur();
           return;
         }
       }
-      priest.sim->errorf("Player %s ran out of void tendrils.\n", priest.name());
-      assert(false); // Will only get here if there are no available void tendrils
+      priest.sim->errorf( "Player %s ran out of void tendrils.\n",
+                          priest.name() );
+      assert( false );  // Will only get here if there are no available void
+                        // tendrils
     }
   }
 
@@ -2414,10 +2419,9 @@ struct shadowy_apparition_spell_t : public priest_spell_t
 
   shadowy_apparition_spell_t( priest_t& p )
     : priest_spell_t( "shadowy_apparitions", p, p.find_spell( 78203 ) ),
-      insanity_gain(
-          4 )  // Spell Data missing?
-               // data().effectN(2).resource(RESOURCE_INSANITY) *
-               // priest.talents.auspicious_spirits->effectN(2).percent() ) )
+      insanity_gain( 4 )  // Spell Data missing?
+                          // data().effectN(2).resource(RESOURCE_INSANITY) *
+  // priest.talents.auspicious_spirits->effectN(2).percent() ) )
   {
     background   = true;
     proc         = false;
@@ -3016,7 +3020,7 @@ struct mind_flay_t : public priest_spell_t
       }
     }
 
-    if (priest.talents.void_ray->ok())
+    if ( priest.talents.void_ray->ok() )
     {
       priest.buffs.void_ray->trigger();
     }
@@ -3446,7 +3450,7 @@ struct void_bolt_t : public priest_spell_t
     priest_spell_t::impact( s );
 
     priest_td_t& td = get_td( s->target );
-    //timespan_t extend_duration =
+    // timespan_t extend_duration =
     //    timespan_t::from_seconds( data().effectN( 2 ).base_value() );
     // extend_duration *= composite_haste(); FIXME Check is it is reduced by
     // haste or not.
@@ -5671,26 +5675,37 @@ void priest_t::create_gains()
  */
 void priest_t::create_procs()
 {
-  procs.shadowy_apparition = get_proc("Shadowy Apparition Procced");
-  procs.shadowy_apparition = get_proc("Shadowy Apparition Insanity lost to overflow");
-  procs.divine_insight = get_proc("Divine Insight Instant Prayer of Mending");
-  procs.divine_insight_overflow = get_proc("Divine Insight Instant Prayer of Mending lost to overflow");
-  procs.shadowy_insight = get_proc("Shadowy Insight Mind Blast CD Reset from Shadow Word: Pain");
-  procs.shadowy_insight_overflow = get_proc("Shadowy Insight Mind Blast CD Reset lost to overflow");
-  procs.surge_of_light = get_proc("Surge of Light");
-  procs.surge_of_light_overflow = get_proc("Surge of Light lost to overflow");
-  procs.t15_2pc_caster = get_proc("Tier15 2pc caster");
-  procs.t15_4pc_caster = get_proc("Tier15 4pc caster");
-  procs.t15_2pc_caster_shadow_word_pain = get_proc("Tier15 2pc caster Shadow Word: Pain Extra Tick");
-  procs.t15_2pc_caster_vampiric_touch = get_proc("Tier15 2pc caster Vampiric Touch Extra Tick");
-  procs.t17_2pc_caster_mind_blast_reset = get_proc("Tier17 2pc Mind Blast CD Reduction occurances");
-  procs.t17_2pc_caster_mind_blast_reset_overflow = get_proc("Tier17 2pc Mind Blast CD Reduction occurances lost to overflow");
-  procs.t17_2pc_caster_mind_blast_reset_overflow_seconds = get_proc("Tier17 2pc Mind Blast CD Reduction in seconds (total)");
-  procs.serendipity = get_proc("Serendipity (Non-Tier 17 4pc)");
-  procs.serendipity_overflow = get_proc("Serendipity lost to overflow (Non-Tier 17 4pc)");
-  procs.t17_4pc_holy = get_proc("Tier17 4pc Serendipity");
-  procs.t17_4pc_holy_overflow = get_proc("Tier17 4pc Serendipity lost to overflow");
-  procs.void_tendril = get_proc("Void Tendril spawned from Call to the Void");
+  procs.shadowy_apparition = get_proc( "Shadowy Apparition Procced" );
+  procs.shadowy_apparition =
+      get_proc( "Shadowy Apparition Insanity lost to overflow" );
+  procs.divine_insight = get_proc( "Divine Insight Instant Prayer of Mending" );
+  procs.divine_insight_overflow =
+      get_proc( "Divine Insight Instant Prayer of Mending lost to overflow" );
+  procs.shadowy_insight =
+      get_proc( "Shadowy Insight Mind Blast CD Reset from Shadow Word: Pain" );
+  procs.shadowy_insight_overflow =
+      get_proc( "Shadowy Insight Mind Blast CD Reset lost to overflow" );
+  procs.surge_of_light          = get_proc( "Surge of Light" );
+  procs.surge_of_light_overflow = get_proc( "Surge of Light lost to overflow" );
+  procs.t15_2pc_caster          = get_proc( "Tier15 2pc caster" );
+  procs.t15_4pc_caster          = get_proc( "Tier15 4pc caster" );
+  procs.t15_2pc_caster_shadow_word_pain =
+      get_proc( "Tier15 2pc caster Shadow Word: Pain Extra Tick" );
+  procs.t15_2pc_caster_vampiric_touch =
+      get_proc( "Tier15 2pc caster Vampiric Touch Extra Tick" );
+  procs.t17_2pc_caster_mind_blast_reset =
+      get_proc( "Tier17 2pc Mind Blast CD Reduction occurances" );
+  procs.t17_2pc_caster_mind_blast_reset_overflow = get_proc(
+      "Tier17 2pc Mind Blast CD Reduction occurances lost to overflow" );
+  procs.t17_2pc_caster_mind_blast_reset_overflow_seconds =
+      get_proc( "Tier17 2pc Mind Blast CD Reduction in seconds (total)" );
+  procs.serendipity = get_proc( "Serendipity (Non-Tier 17 4pc)" );
+  procs.serendipity_overflow =
+      get_proc( "Serendipity lost to overflow (Non-Tier 17 4pc)" );
+  procs.t17_4pc_holy = get_proc( "Tier17 4pc Serendipity" );
+  procs.t17_4pc_holy_overflow =
+      get_proc( "Tier17 4pc Serendipity lost to overflow" );
+  procs.void_tendril = get_proc( "Void Tendril spawned from Call to the Void" );
 }
 
 /* Construct priest benefits
@@ -6133,9 +6148,9 @@ action_t* priest_t::create_action( const std::string& name,
       return new summon_shadowfiend_t( *this, options_str );
   }
 
-  //Disc+Holy
-  if (name == "penance")
-    return new penance_t(*this, options_str);
+  // Disc+Holy
+  if ( name == "penance" )
+    return new penance_t( *this, options_str );
   if ( name == "smite" )
     return new smite_t( *this, options_str );
   if ( ( name == "holy_fire" ) || ( name == "power_word_solace" ) )
@@ -6627,7 +6642,10 @@ void priest_t::create_buffs()
 
 void priest_t::init_rng()
 {
-  rppm.call_to_the_void = real_ppm_t(*this, find_spell(193371)->real_ppm(), 1.0, RPPM_NONE);// std::unique_ptr<rppm::call_to_the_void_t>(new rppm::call_to_the_void_t(*this));
+  rppm.call_to_the_void =
+      real_ppm_t( *this, find_spell( 193371 )->real_ppm(), 1.0,
+                  RPPM_NONE );  // std::unique_ptr<rppm::call_to_the_void_t>(new
+                                // rppm::call_to_the_void_t(*this));
 
   player_t::init_rng();
 }
@@ -6813,24 +6831,27 @@ void priest_t::apl_shadow()
 
   default_list->add_action( "call_action_list,name=main" );
 
-  main->add_action("voidform");
-  main->add_action("surrender_to_madness,if=talent.surrender_to_madness.enabled&buff.voidform.stack<10&time_to_die<100");
-  main->add_action("power_infusion,if=talent.power_infusion.enabled");
-  main->add_action("void_bolt");
-  main->add_action("dispersion,if=buff.voidform.up&buff.voidform.stack>20");
-  main->add_action("void_torrent,if=buff.voidform.up&buff.voidform.stack>17");
-  main->add_action("shadow_word_death,if=talent.reaper_of_souls.enabled");
-  main->add_action("mind_blast");
-  main->add_action("shadow_word_void,if=talent.shadow_word_void.enabled");
-  main->add_action("shadow_word_death");
-  main->add_action("mindbender,if=talent.mindbender.enabled");
-  main->add_action("shadow_word_pain,if=!ticking");
-  main->add_action("vampiric_touch,if=!ticking");
-  main->add_action("shadow_crash,if=talent.shadow_crash.enabled");
-  main->add_action("shadowfiend,if=!talent.mindbender.enabled");
-  main->add_action("mind_flay,if=!talent.mind_spike.enabled,interrupt=1,chain=1");
-  main->add_action("mind_spike,if=talent.mind_spike.enabled");
-  main->add_action("shadow_word_pain"); //moving
+  main->add_action( "voidform" );
+  main->add_action(
+      "surrender_to_madness,if=talent.surrender_to_madness.enabled&buff."
+      "voidform.stack<10&time_to_die<100" );
+  main->add_action( "power_infusion,if=talent.power_infusion.enabled" );
+  main->add_action( "void_bolt" );
+  main->add_action( "dispersion,if=buff.voidform.up&buff.voidform.stack>20" );
+  main->add_action( "void_torrent,if=buff.voidform.up&buff.voidform.stack>17" );
+  main->add_action( "shadow_word_death,if=talent.reaper_of_souls.enabled" );
+  main->add_action( "mind_blast" );
+  main->add_action( "shadow_word_void,if=talent.shadow_word_void.enabled" );
+  main->add_action( "shadow_word_death" );
+  main->add_action( "mindbender,if=talent.mindbender.enabled" );
+  main->add_action( "shadow_word_pain,if=!ticking" );
+  main->add_action( "vampiric_touch,if=!ticking" );
+  main->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
+  main->add_action( "shadowfiend,if=!talent.mindbender.enabled" );
+  main->add_action(
+      "mind_flay,if=!talent.mind_spike.enabled,interrupt=1,chain=1" );
+  main->add_action( "mind_spike,if=talent.mind_spike.enabled" );
+  main->add_action( "shadow_word_pain" );  // moving
 }
 
 // Discipline Heal Combat Action Priority List
