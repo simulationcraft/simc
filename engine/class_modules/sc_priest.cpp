@@ -12,8 +12,6 @@ Disc / Holy
 
 Shadow
   - Finish ("required") Artifacts Traits:
-      - Call to the Void
-          - Need RPPM driver and pet
       - Mental Fortitude
           - Need to create a new absorb and track it.
       - Thoughts of Insanity
@@ -271,9 +269,8 @@ public:
     const spell_data_t* focused_will;
 
     // Shadow
-    const spell_data_t* voidform;
     const spell_data_t* shadowy_apparitions;
-    const spell_data_t* sphere_of_insanity;
+    const spell_data_t* voidform;
   } specs;
 
   // Mastery Spells
@@ -294,7 +291,6 @@ public:
     cooldown_t* power_word_shield;
     cooldown_t* shadowfiend;
     cooldown_t* silence;
-    cooldown_t* void_tendril;
 
 	  cooldown_t* mind_blast;
 	  cooldown_t* shadow_word_death;
@@ -361,7 +357,7 @@ public:
 
   struct realppm_t
   {
-    std::unique_ptr<real_ppm_t> call_to_the_void;
+    real_ppm_t call_to_the_void;
   } rppm;
 
   // Special
@@ -967,7 +963,7 @@ struct fiend_melee_t : public priest_pet_melee_t
 
 struct void_tendril_mind_flay_t : public priest_pet_spell_t
 {
-  void_tendril_mind_flay_t(void_tendril_pet_t& p) : priest_pet_spell_t("void_tendril_mind_flay", &p, p.o().find_spell(193473)) //Need to whitelist spell ID 193473
+  void_tendril_mind_flay_t(void_tendril_pet_t& p) : priest_pet_spell_t("mind_flay_void_tendril)", &p, p.o().find_spell(193473)) //Need to whitelist spell ID 193473
   {
     may_crit = false;
     may_miss = false;
@@ -975,12 +971,6 @@ struct void_tendril_mind_flay_t : public priest_pet_spell_t
     hasted_ticks = false;
     use_off_gcd = true;
     background = false;
-
-    //TODO: Doublecheck the actual damage value per tick. Tooltip says 200% SP total, but it looks like it might be 66% SP per tick, or 198% SP total -- 2016/04/07 Twintop
-    //Void Tendril's Mind Flay damage is increased by FotM and VR talents.
-    base_tick_time = timespan_t::from_seconds(1.0);
-    spell_power_mod.tick = 0.66;
-    spell_power_mod.tick *= 1.0 + p.o().talents.fortress_of_the_mind->effectN(3).percent();
   }
 
   void_tendril_pet_t& p()
@@ -1115,7 +1105,7 @@ void void_tendril_pet_t::init_action_list()
       "pre-potting is done.");
 
     action_priority_list_t* def = get_action_priority_list("default");
-    def->add_action("void_tendril_mind_flay");
+    def->add_action("mind_flay");
   }
 
   priest_pet_t::init_action_list();
@@ -1124,7 +1114,7 @@ void void_tendril_pet_t::init_action_list()
 action_t* void_tendril_pet_t::create_action(const std::string& name,
   const std::string& options_str)
 {
-  if (name == "void_tendril_mind_flay")
+  if (name == "mind_flay")
     return new actions::void_tendril_mind_flay_t(*this);
 
   return priest_pet_t::create_action(name, options_str);
@@ -1184,17 +1174,20 @@ public:
 
   void trigger_void_tendril()
   {
-    for (size_t i = 0; i < priest.pets.void_tendril.size(); i++)
+    if (priest.rppm.call_to_the_void.trigger())
     {
-      if (priest.pets.void_tendril[i]->is_sleeping())
+      for (size_t i = 0; i < priest.pets.void_tendril.size(); i++)
       {
-        priest.pets.void_tendril[i]->trigger();
-        priest.procs.void_tendril->occur();
-        return;
+        if (priest.pets.void_tendril[i]->is_sleeping())
+        {
+          priest.pets.void_tendril[i]->trigger();
+          priest.procs.void_tendril->occur();
+          return;
+        }
       }
+      priest.sim->errorf("Player %s ran out of void tendrils.\n", priest.name());
+      assert(false); // Will only get here if there are no available void tendrils
     }
-    priest.sim->errorf("Player %s ran out of void tendrils.\n", priest.name());
-    assert(false); // Will only get here if there are no available void tendrils
   }
 
   bool trigger_shadowy_insight()
@@ -2382,19 +2375,6 @@ struct summon_mindbender_t : public summon_pet_t
   }
 };
 
-struct summon_void_tendril_t : public summon_pet_t
-{
-  summon_void_tendril_t(priest_t& p, const std::string& options_str)
-    : summon_pet_t("void_tendril", p, p.find_artifact_spell("Call to the Void"))
-  {
-    parse_options(options_str);
-    harmful = false;
-    summoning_duration = timespan_t::from_seconds(10);// data().duration();
-    //cooldown = p.cooldowns.void_tendril;
-    //cooldown->duration = timespan_t::from_seconds(30);
-  }
-};
-
 // ==========================================================================
 // Priest Damage Spells
 // ==========================================================================
@@ -2720,10 +2700,7 @@ struct mind_spike_t : public priest_spell_t
       }
     }
 
-    if (priest.rppm.call_to_the_void && priest.rppm.call_to_the_void->trigger())
-    {
-      trigger_void_tendril();
-    }
+    trigger_void_tendril();
   }
 
   void execute() override
@@ -2970,13 +2947,12 @@ struct mind_flay_t : public priest_spell_t
       }
     }
 
-    if ( priest.talents.void_ray->ok() )
-      priest.buffs.void_ray->trigger();
-
-    if (priest.rppm.call_to_the_void && priest.rppm.call_to_the_void->trigger())
+    if (priest.talents.void_ray->ok())
     {
-      trigger_void_tendril();
+      priest.buffs.void_ray->trigger();
     }
+
+    trigger_void_tendril();
 
     generate_insanity( insanity_gain, priest.gains.insanity_mind_flay );
   }
@@ -5378,22 +5354,11 @@ void shadow_trinket( special_effect_t& effect )
   do_trinket_init( s, PRIEST_SHADOW, s->active_items.mental_fatigue, effect );
 }
 
-static void xalatath_blade_of_the_black_empire(special_effect_t& effect)
-{
-  priest_t* s = debug_cast<priest_t*>(effect.player);
-  do_trinket_init(s, PRIEST_SHADOW, s->xalatath_blade_of_the_black_empire, effect);
-  if (s->xalatath_blade_of_the_black_empire)
-  {
-
-  }
-}
-
 void init()
 {
   unique_gear::register_special_effect( 184912, discipline_trinket );
   unique_gear::register_special_effect( 184914, holy_trinket );
   unique_gear::register_special_effect( 184915, shadow_trinket );
-  unique_gear::register_special_effect(193371, xalatath_blade_of_the_black_empire);
 }
 
 }  // items
@@ -5539,7 +5504,6 @@ void priest_t::create_cooldowns()
   cooldowns.power_word_shield = get_cooldown( "power_word_shield" );
   cooldowns.shadowfiend       = get_cooldown( "shadowfiend" );
   cooldowns.silence           = get_cooldown( "silence" );
-  cooldowns.void_tendril = get_cooldown("void_tendril");
 
   cooldowns.mind_blast = get_cooldown("mind_blast");
   cooldowns.shadow_word_death = get_cooldown("shadow_word_death");
@@ -5611,7 +5575,7 @@ void priest_t::create_procs()
   procs.serendipity_overflow = get_proc("Serendipity lost to overflow (Non-Tier 17 4pc)");
   procs.t17_4pc_holy = get_proc("Tier17 4pc Serendipity");
   procs.t17_4pc_holy_overflow = get_proc("Tier17 4pc Serendipity lost to overflow");
-  procs.void_tendril = get_proc("Void Tendril spawned from Call to the Shadows");
+  procs.void_tendril = get_proc("Void Tendril spawned from Call to the Void");
 }
 
 /* Construct priest benefits
@@ -6048,9 +6012,6 @@ action_t* priest_t::create_action( const std::string& name,
     else
       return new summon_shadowfiend_t(*this, options_str);
   }
-
-  if (name == "void_tendril")
-    return new summon_void_tendril_t(*this, options_str);
 
   //Disc+Holy
   if (name == "penance")
@@ -6548,12 +6509,9 @@ void priest_t::create_buffs()
 
 void priest_t::init_rng()
 {
-  player_t::init_rng();
+  rppm.call_to_the_void = real_ppm_t(*this, find_spell(193371)->real_ppm(), 1.0, RPPM_NONE);// std::unique_ptr<rppm::call_to_the_void_t>(new rppm::call_to_the_void_t(*this));
 
-  if (xalatath_blade_of_the_black_empire)
-  {
-    rppm.call_to_the_void = std::unique_ptr<rppm::call_to_the_void_t>(new rppm::call_to_the_void_t(*this));
-  }
+  player_t::init_rng();
 }
 
 
@@ -6739,7 +6697,6 @@ void priest_t::apl_shadow()
   default_list->add_action( "call_action_list,name=main" );
 
   main->add_action("voidform");
-  main->add_action("void_tendril"); //TODO Remove this, this is just to be able to call this like any other pet for testing purposes.
   main->add_action("surrender_to_madness,if=talent.surrender_to_madness.enabled&buff.voidform.stack<10&time_to_die<100");
   main->add_action("power_infusion,if=talent.power_infusion.enabled");
   main->add_action("void_bolt");
@@ -7052,10 +7009,7 @@ void priest_t::reset()
     }
   }
 
-  if (rppm.call_to_the_void)
-  {
-    rppm.call_to_the_void->reset();
-  }
+  rppm.call_to_the_void.reset();
 }
 
 /* Copy stats from the trigger spell to the atonement spell
