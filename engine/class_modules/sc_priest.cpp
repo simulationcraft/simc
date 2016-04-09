@@ -963,14 +963,13 @@ struct fiend_melee_t : public priest_pet_melee_t
 
 struct void_tendril_mind_flay_t : public priest_pet_spell_t
 {
-  void_tendril_mind_flay_t(void_tendril_pet_t& p) : priest_pet_spell_t("mind_flay_void_tendril)", &p, p.o().find_spell(193473)) //Need to whitelist spell ID 193473
+  void_tendril_mind_flay_t(void_tendril_pet_t& p) : priest_pet_spell_t("mind_flay_void_tendril)", &p, p.o().find_spell(193473))
   {
     may_crit = false;
     may_miss = false;
     channeled = true;
     hasted_ticks = false;
-    use_off_gcd = true;
-    background = false;
+    tick_may_crit = true;
   }
 
   void_tendril_pet_t& p()
@@ -1174,7 +1173,7 @@ public:
 
   void trigger_void_tendril()
   {
-    if (priest.rppm.call_to_the_void.trigger())
+    if (priest.artifact.call_to_the_void.rank() && priest.rppm.call_to_the_void.trigger())
     {
       for (size_t i = 0; i < priest.pets.void_tendril.size(); i++)
       {
