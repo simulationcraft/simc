@@ -1903,10 +1903,6 @@ struct crusader_strike_t : public holy_power_generator_t
   {
     parse_options( options_str );
 
-    // Guarded by the Light and Sword of Light reduce base mana cost; spec-limited so only one will ever be active
-    base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent();
-    base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
-
     base_multiplier *= 1.0 + p -> artifact.blade_of_light.percent();
     base_crit += p -> artifact.sharpened_edge.percent();
 
@@ -1954,10 +1950,6 @@ struct zeal_t : public holy_power_generator_t
       sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
   {
     parse_options( options_str );
-
-    // Guarded by the Light and Sword of Light reduce base mana cost; spec-limited so only one will ever be active
-    base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent();
-    base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
 
     cooldown -> duration = data().charge_cooldown();
     cooldown -> charges = data().charges();
@@ -2328,8 +2320,9 @@ struct judgment_t : public paladin_melee_attack_t
     // Special melee attack that can only miss
     may_glance = may_block = may_parry = may_dodge = false;
 
-    // Guarded by the Light reduces mana cost
-    base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 8 ).percent();
+    // TODO: this is a hack; figure out what's really going on here.
+    if ( ( p -> specialization() == PALADIN_RETRIBUTION ) )
+      base_costs[ RESOURCE_MANA ] = 0;
 
     base_multiplier *= 1.0 + p -> artifact.highlords_judgment.percent();
 
