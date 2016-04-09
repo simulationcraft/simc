@@ -7096,7 +7096,8 @@ void druid_t::combat_begin()
 void druid_t::recalculate_resource_max( resource_e rt )
 {
   double pct_health, current_health;
-  if ( mastery.natures_guardian -> ok() && rt == RESOURCE_HEALTH )
+  bool adjust_natures_guardian_health = mastery.natures_guardian -> ok() && rt == RESOURCE_HEALTH;
+  if ( adjust_natures_guardian_health )
   {
     current_health = resources.current[ rt ];
     pct_health = resources.pct( rt );
@@ -7104,7 +7105,7 @@ void druid_t::recalculate_resource_max( resource_e rt )
 
   player_t::recalculate_resource_max( rt );
 
-  if ( mastery.natures_guardian -> ok() && rt == RESOURCE_HEALTH )
+  if ( adjust_natures_guardian_health )
   {
     resources.max[ rt ] *= 1.0 + cache.mastery_value();
     // Maintain current health pct.

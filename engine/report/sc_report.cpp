@@ -61,33 +61,6 @@ struct buff_comp
   }
 };
 
-size_t player_chart_length( const player_t& p )
-{
-  const player_t* a = p.get_owner_or_self();
-  assert( a );
-
-  if ( !a )
-    return 0;  // For release builds.
-
-  return static_cast<size_t>( a->collected_data.fight_length.max() );
-}
-
-char stat_type_letter( stats_e type )
-{
-  switch ( type )
-  {
-    case STATS_ABSORB:
-      return 'A';
-    case STATS_DMG:
-      return 'D';
-    case STATS_HEAL:
-      return 'H';
-    case STATS_NEUTRAL:
-    default:
-      return 'X';
-  }
-}
-
 class tooltip_parser_t
 {
   struct error

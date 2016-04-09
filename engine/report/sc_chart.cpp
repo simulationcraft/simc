@@ -3,8 +3,8 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "sc_highchart.hpp"
 #include "simulationcraft.hpp"
+#include "sc_highchart.hpp"
 
 #include <cmath>
 #include <clocale>
@@ -15,18 +15,6 @@ namespace
 {  // anonymous namespace ==========================================
 
 const std::string amp = "&amp;";
-
-// chart option overview:
-// http://code.google.com/intl/de-DE/apis/chart/image/docs/chart_params.html
-
-// color_temperature_gradient ===============================================
-
-std::string color_temperature_gradient( double n, double min, double range )
-{
-  int red = (int)floor( 255.0 * ( n - min ) / range );
-  int blue = 255 - red;
-  return str::format( "%.2X00%.2X", red, blue );
-}
 
 struct compare_downtime
 {

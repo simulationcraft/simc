@@ -3443,7 +3443,7 @@ struct dire_beast_t: public hunter_spell_t
     timespan_t t = timespan_t::from_seconds( p() -> specs.dire_beast -> effectN( 1 ).base_value() );
     p() -> cooldowns.bestial_wrath -> adjust( -t );
 
-    pet_t* beast;
+    pet_t* beast = nullptr;
     for( size_t i = 0; i < p() -> pet_dire_beasts.size(); i++ )
     {
       if ( p() -> pet_dire_beasts[i] -> is_sleeping() )
@@ -3473,6 +3473,7 @@ struct dire_beast_t: public hunter_spell_t
       base_attacks_per_summon += 1;
 
     timespan_t duration = base_attacks_per_summon * swing_time;
+    assert( beast );
     beast -> summon( duration );
   }
 };

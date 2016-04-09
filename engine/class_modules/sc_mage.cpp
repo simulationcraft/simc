@@ -5961,8 +5961,8 @@ void mage_t::invalidate_cache( cache_e c )
 void mage_t::recalculate_resource_max( resource_e rt )
 {
   double current_mana, current_mana_max, mana_percent;
-
-  if ( rt == RESOURCE_MANA && spec.savant -> ok() )
+  bool savant_adjust_mana = rt == RESOURCE_MANA && spec.savant -> ok();
+  if ( savant_adjust_mana )
   {
     current_mana = resources.current[ rt ];
     current_mana_max = resources.max[ rt ];
@@ -5971,7 +5971,7 @@ void mage_t::recalculate_resource_max( resource_e rt )
 
   player_t::recalculate_resource_max( rt );
 
-  if ( rt == RESOURCE_MANA && spec.savant -> ok())
+  if (savant_adjust_mana)
   {
     resources.max[ rt ] *= 1.0 + cache.mastery_value() * spec.savant -> effectN( 1 ).percent();
     resources.current[ rt ] = resources.max[ rt ] * mana_percent;
