@@ -1365,16 +1365,12 @@ class SpellDataGenerator(DataGenerator):
         ),
 
         # Priest:
-        (   (  63619, 5 ), # Shadowfiend "Shadowcrawl"
-            (  94472, 0 ), # Atonement Crit
-            ( 114908, 0, False ), # Spirit Shell absorb
-            ( 124464, 0, False ), ( 124465, 0, False ), ( 124467, 0, False ), ( 124468, 0, False ), ( 124469, 0, False ), # Shadow Mastery "duplicate" ticks
-            ( 127627, 3 ),
-            ( 127626, 0, False ), # Devouring Plague heal (deactive)
-            ( 129197, 3 ), # Mind Flay (Insanity)
-            ( 179338, 3 ), # Searing Insanity
-            ( 165623, 0 ), # Item - Priest T17 Shadow 2P Bonus - dot spell
-            ( 190714, 3, False ), # Shadow Word: Death - Insanity gain
+        (   (  63619, 5 ), 			# Shadowfiend "Shadowcrawl"
+            (  94472, 0 ), 			# Atonement Crit
+            ( 114908, 0, False ), 	# Spirit Shell absorb
+            ( 190714, 3, False ), 	# Shadow Word: Death - Insanity gain
+			( 193473, 5 ),			# Void Tendril "Mind Flay"
+			( 217676, 3 )			# Mind Spike Detonation
         ),
 
         # Death Knight:
