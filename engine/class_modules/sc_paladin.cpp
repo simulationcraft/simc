@@ -517,8 +517,8 @@ public:
   paladin_action_t( const std::string& n, paladin_t* player,
                     const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
-    hasted_cd( ab::data().affected_by( player -> passives.paladin -> effectN( 1 ) ) ),
-    hasted_gcd( ab::data().affected_by( player -> passives.paladin -> effectN( 2 ) ) ),
+    hasted_cd( ab::data().affected_by( player -> passives.paladin -> effectN( 2 ) ) ),
+    hasted_gcd( ab::data().affected_by( player -> passives.paladin -> effectN( 3 ) ) ),
     should_trigger_bom( true )
   {
   }
