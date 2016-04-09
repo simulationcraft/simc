@@ -1171,7 +1171,7 @@ public:
 
   void trigger_maelstrom_weapon( const action_state_t* source_state, double amount = 0 )
   {
-    if ( may_proc_maelstrom_weapon )
+    if ( ! may_proc_maelstrom_weapon )
     {
       return;
     }
