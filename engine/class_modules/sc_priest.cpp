@@ -999,6 +999,15 @@ struct void_tendril_mind_flay_t : public priest_pet_spell_t
     tick_may_crit = true;
   }
 
+  void init() override
+  {
+    priest_pet_spell_t::init();
+    if (!player->sim->report_pets_separately && player != p().o().pets.void_tendril[0])
+    {
+      stats = p().o().pets.void_tendril[0]->get_stats(name(), this);
+    }
+  }
+
   void_tendril_pet_t& p()
   {
     return static_cast<void_tendril_pet_t&>( *player );
@@ -2284,7 +2293,7 @@ struct voidform_t : public priest_spell_t
     {
       priest.buffs.shadow_t19_4p->trigger();
     }
-    // priest.buffs.shadow_t19_4p->trigger(); //For testing until set bonuses
+    priest.buffs.shadow_t19_4p->trigger(); //For testing until set bonuses
     // are available in SimC
 
     if ( priest.artifact.sphere_of_insanity.rank() )
@@ -3228,7 +3237,7 @@ struct shadow_word_pain_t : public priest_spell_t
           priest.sets.set( SET_CASTER, T19, B2 )->effectN( 1 ).base_value(),
           priest.gains.insanity_shadow_word_pain_ondamage );
     }
-    // generate_insanity(1, priest.gains.insanity_shadow_word_pain_ondamage);
+    //generate_insanity(1, priest.gains.insanity_shadow_word_pain_ondamage);
     // //For testing until set bonuses are available in SimC
   }
 
@@ -3266,7 +3275,7 @@ struct shadow_word_pain_t : public priest_spell_t
           priest.sets.set( SET_CASTER, T19, B2 )->effectN( 1 ).base_value(),
           priest.gains.insanity_shadow_word_pain_ondamage );
     }
-    // generate_insanity(1, priest.gains.insanity_shadow_word_pain_ondamage);
+    //generate_insanity(1, priest.gains.insanity_shadow_word_pain_ondamage);
     // //For testing until set bonuses are available in SimC
   }
 
@@ -3440,7 +3449,7 @@ struct vampiric_touch_t : public priest_spell_t
           priest.sets.set( SET_CASTER, T19, B2 )->effectN( 1 ).base_value(),
           priest.gains.insanity_vampiric_touch_ondamage );
     }
-    // generate_insanity(1, priest.gains.insanity_vampiric_touch_ondamage);
+    //generate_insanity(1, priest.gains.insanity_vampiric_touch_ondamage);
     // //For testing until set bonuses are available in SimC
   }
 
