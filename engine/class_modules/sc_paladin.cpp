@@ -3696,9 +3696,6 @@ double paladin_t::composite_melee_haste() const
   // Infusion of Light (Holy) adds 10% haste
   h /= 1.0 + passives.infusion_of_light -> effectN( 2 ).percent();
 
-  if ( buffs.zeal -> up() )
-    h /= ( 1.0 + buffs.zeal -> stack() * buffs.zeal -> data().effectN( 4 ).percent() );
-
   return h;
 }
 
@@ -3734,10 +3731,6 @@ double paladin_t::composite_spell_haste() const
 
   // Infusion of Light (Holy) adds 10% haste
   h /= 1.0 + passives.infusion_of_light -> effectN( 2 ).percent();
-
-  // zeal adds 20% haste per stack
-  if ( buffs.zeal -> up() )
-    h /= ( 1.0 + buffs.zeal -> stack() * buffs.zeal -> data().effectN( 4 ).percent() );
 
   return h;
 }
