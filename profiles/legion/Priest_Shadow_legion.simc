@@ -1,6 +1,7 @@
 priest="Priest_Shadow_legion"
 spec=shadow
 level=110
+artifact=http://beta.wowdb.com/artifact-calculator#XBZJZbbbDIAAAAAAAAAA
 
 # Gear Summary
 gear_stamina=5000

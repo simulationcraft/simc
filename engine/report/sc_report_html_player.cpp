@@ -3654,7 +3654,7 @@ void output_player_damage_summary( report::sc_html_stream& os,
       if ( !is_output_stat( MASK_DMG, false, *stat ) )
         continue;
 
-      if ( stat->parent && stat->parent->player == pet )
+      if ( stat->parent )
         continue;
 
       if ( stat->compound_amount == 0 )

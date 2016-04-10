@@ -1071,6 +1071,7 @@ public:
     // Add all stats as child_stats to front_pet
     if ( front_pet )
     {
+      quiet = true;
       for ( auto& stat : stats_list )
       {
         if ( auto front_stat = front_pet->find_stats( stat->name_str ) )
@@ -1098,16 +1099,6 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
     channeled     = true;
     hasted_ticks  = false;
     tick_may_crit = true;
-  }
-
-  void init() override
-  {
-    priest_pet_spell_t::init();
-    if ( !player->sim->report_pets_separately &&
-         player != p().o().pets.void_tendril[ 0 ] )
-    {
-      stats = p().o().pets.void_tendril[ 0 ]->get_stats( name(), this );
-    }
   }
 
   void_tendril_pet_t& p()
