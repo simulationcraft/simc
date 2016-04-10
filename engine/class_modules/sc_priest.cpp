@@ -84,12 +84,6 @@ struct priest_t : public player_t
 public:
   typedef player_t base_t;
 
-  // Artifacts
-  struct
-  {
-    const special_effect_t* xalatath_blade_of_the_black_empire;
-  } artifacts;
-
   // Buffs
   struct
   {
@@ -2609,13 +2603,14 @@ struct sphere_of_insanity_spell_t : public priest_spell_t
     }
   }
 
-  /* Trigger a sphere of insanity damage
-  */
+  /// Trigger a sphere of insanity damage
   void trigger( double amount )
   {
     if ( priest.sim->debug )
+    {
       priest.sim->out_debug << priest.name()
                             << " triggered Sphere of Insanity damage.";
+    }
     damage_amount = amount;
     schedule_execute();
   }
@@ -2663,8 +2658,7 @@ struct mind_spike_detonation_t : public priest_spell_t
     td.buffs.mind_spike->expire();
   }
 
-  /* Trigger a sphere of insanity damage
-  */
+  /// Trigger mind spike explosion
   void trigger()
   {
     if ( priest.sim->debug )
@@ -2678,18 +2672,19 @@ struct mind_spike_detonation_t : public priest_spell_t
 
 struct mind_blast_t : public priest_spell_t
 {
+private:
   double insanity_gain;
-
+public:
   mind_blast_t( priest_t& player, const std::string& options_str )
     : priest_spell_t( "mind_blast", player,
-                      player.find_class_spell( "Mind Blast" ) ),
-      insanity_gain(
-          data().effectN( 2 ).resource( RESOURCE_INSANITY ) *
-          ( 1.0 +
-            player.talents.fortress_of_the_mind->effectN( 2 ).percent() ) )
+                      player.find_class_spell( "Mind Blast" ) )
   {
     parse_options( options_str );
     is_mind_spell = true;
+
+    insanity_gain = data().effectN( 2 ).resource( RESOURCE_INSANITY );
+    insanity_gain *=
+        ( 1.0 + priest.talents.fortress_of_the_mind->effectN( 2 ).percent() );
 
     cooldown->charges  = data().charges();
     cooldown->duration = data().charge_cooldown();
@@ -2702,7 +2697,8 @@ struct mind_blast_t : public priest_spell_t
       base_multiplier *= 1.0 + player.artifact.mind_shattering.percent();
     }
 
-    if ( priest.talents.mind_spike->ok() )
+    if ( !priest.active_spells.mind_spike_detonation &&
+         priest.talents.mind_spike->ok() )
     {
       priest.active_spells.mind_spike_detonation =
           new mind_spike_detonation_t( player );
@@ -2715,7 +2711,7 @@ struct mind_blast_t : public priest_spell_t
     priest_spell_t::impact( s );
     generate_insanity( insanity_gain, priest.gains.insanity_mind_blast );
 
-    if ( priest.talents.mind_spike->ok() )
+    if ( priest.active_spells.mind_spike_detonation )
     {
       priest_td_t& td = get_td( s->target );
 
@@ -2922,13 +2918,6 @@ struct mind_sear_t : public priest_spell_t
     }
 
     tick_action = new mind_sear_tick_t( p, p.find_class_spell( "Mind Sear" ) );
-  }
-
-  double action_multiplier() const override
-  {
-    double am = priest_spell_t::action_multiplier();
-
-    return am;
   }
 
   void last_tick( dot_t* d ) override
@@ -5557,9 +5546,8 @@ struct call_to_the_void_t : public real_ppm_t
 {
   call_to_the_void_t( priest_t& p )
     : real_ppm_t(
-          p,
-          p.find_spell( 193371 )->real_ppm(),
-          //p.artifacts.xalatath_blade_of_the_black_empire->driver()->real_ppm(),
+          p, p.artifact.call_to_the_void.data().real_ppm(),
+          // p.artifacts.xalatath_blade_of_the_black_empire->driver()->real_ppm(),
           1.0, RPPM_NONE )
   {
   }
@@ -5644,7 +5632,6 @@ void priest_td_t::target_demise()
 
 priest_t::priest_t( sim_t* sim, const std::string& name, race_e r )
   : player_t( sim, PRIEST, name, r ),
-    artifacts(),
     buffs(),
     talents(),
     specs(),
