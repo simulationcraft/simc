@@ -7,7 +7,8 @@
     - everything, pretty much :(
 
   TODO (ret):
-    - Equality & Justicar's (correctly) & Eye for an Eye
+    - Justicar's (correctly) & Eye for an Eye
+    - Provide a way to make equality actually do damage (that is, a way for the ret paladin to take damage)
     - bugfixes & cleanup
     - A few Artifact Powers
     - Verify speculative implementations of some artifact powers + BoM
@@ -345,6 +346,8 @@ public:
   virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
   virtual void      regen( timespan_t periodicity ) override;
   virtual void      combat_begin() override;
+
+  virtual double current_health() const override;
 
   double  get_divine_judgment() const;
   void    trigger_grand_crusader();
@@ -1679,6 +1682,34 @@ struct wake_of_ashes_t : public paladin_spell_t
   }
 };
 
+struct equality_t : public paladin_spell_t
+{
+  equality_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "equality", p, p -> find_talent_spell( "Equality" ) )
+  {
+    parse_options( options_str );
+
+    aoe = 3;
+
+    if ( ! ( p -> talents.equality -> ok() ) )
+      background = true;
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    s -> result_amount = p() -> max_health() - p() -> current_health();
+    paladin_spell_t::impact( s );
+  }
+
+  bool ready()
+  {
+    if ( player -> current_health() >= player -> max_health() )
+      return false;
+
+    return paladin_spell_t::ready();
+  }
+};
+
 struct blinding_light_effect_t : public paladin_spell_t
 {
   blinding_light_effect_t( paladin_t* p )
@@ -2776,6 +2807,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "shield_of_the_righteous"   ) return new shield_of_the_righteous_t  ( this, options_str );
   if ( name == "templars_verdict"          ) return new templars_verdict_t         ( this, options_str );
   if ( name == "holy_wrath"                ) return new holy_wrath_t               ( this, options_str );
+  if ( name == "equality"                  ) return new equality_t                 ( this, options_str );
   if ( name == "holy_prism"                ) return new holy_prism_t               ( this, options_str );
   if ( name == "wake_of_ashes"             ) return new wake_of_ashes_t            ( this, options_str );
   if ( name == "seal_of_light"             ) return new seal_of_light_t            ( this, options_str );
@@ -2946,8 +2978,7 @@ void paladin_t::create_buffs()
   buffs.ardent_defender                = new buffs::ardent_defender_buff_t( this );
 
   // Ret
-  buffs.zeal                           = buff_creator_t( this, "zeal" ).spell( find_spell( 217020 ) )
-                                          .add_invalidate( CACHE_HASTE );
+  buffs.zeal                           = buff_creator_t( this, "zeal" ).spell( find_spell( 217020 ) );
   buffs.seal_of_light                  = buff_creator_t( this, "seal_of_light" ).spell( find_spell( 202273 ) );
   buffs.the_fires_of_justice           = buff_creator_t( this, "the_fires_of_justice" ).spell( find_spell( 209785 ) );
   buffs.blessing_of_might              = buff_creator_t( this, "blessing_of_might" ).spell( find_spell( 203528 ) );
@@ -4175,6 +4206,11 @@ void paladin_t::assess_heal( school_e school, dmg_e dmg_type, action_state_t* s 
 void paladin_t::create_options()
 {
   player_t::create_options();
+}
+
+double paladin_t::current_health() const
+{
+  return player_t::current_health();
 }
 
 // paladin_t::combat_begin ==================================================
