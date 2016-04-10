@@ -266,6 +266,8 @@ public:
   timespan_t extra_regen_period;
   double extra_regen_percent;
 
+  double fixed_equality_health_pct;
+
   paladin_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN ) :
     player_t( sim, PALADIN, name, r ),
     active( active_actions_t() ),
@@ -280,7 +282,8 @@ public:
     beacon_target( nullptr ),
     last_extra_regen( timespan_t::from_seconds( 0.0 ) ),
     extra_regen_period( timespan_t::from_seconds( 0.0 ) ),
-    extra_regen_percent( 0.0 )
+    extra_regen_percent( 0.0 ),
+    fixed_equality_health_pct( -1.0 )
   {
     last_retribution_trinket_target = nullptr;
     retribution_trinket = nullptr;
@@ -1697,12 +1700,18 @@ struct equality_t : public paladin_spell_t
 
   virtual void impact( action_state_t* s ) override
   {
-    s -> result_amount = p() -> max_health() - p() -> current_health();
+    if ( p() -> fixed_equality_health_pct > 0 )
+      s -> result_amount = p() -> max_health() * ( 100 - p() -> fixed_equality_health_pct ) / 100.0;
+    else
+      s -> result_amount = p() -> max_health() - p() -> current_health();
     paladin_spell_t::impact( s );
   }
 
   bool ready()
   {
+    if ( p() -> fixed_equality_health_pct > 0 && p() -> fixed_equality_health_pct < 100 )
+      return paladin_spell_t::ready();
+
     if ( player -> current_health() >= player -> max_health() )
       return false;
 
@@ -4205,6 +4214,8 @@ void paladin_t::assess_heal( school_e school, dmg_e dmg_type, action_state_t* s 
 
 void paladin_t::create_options()
 {
+  // TODO: figure out a better solution for this.
+  add_option( opt_float( "paladin_fixed_equality_health_pct", fixed_equality_health_pct ) );
   player_t::create_options();
 }
 
