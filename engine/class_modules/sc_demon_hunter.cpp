@@ -863,7 +863,7 @@ struct blade_dance_event_t: public event_t
 
   void execute() override
   {
-    attacks -> at( current ) -> execute();
+    attacks -> at( current ) -> schedule_execute();
     current++;
 
     if ( current < attacks -> size() )
@@ -1021,9 +1021,10 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
   struct chaos_strike_event_t: public event_t
   {
     chaos_strike_oh_t* off_hand;
+    player_t* target;
 
-    chaos_strike_event_t( demon_hunter_t* p, chaos_strike_oh_t* oh, timespan_t delay ) :
-      event_t( *p -> sim ), off_hand( oh )
+    chaos_strike_event_t( demon_hunter_t* p, chaos_strike_oh_t* oh, player_t* t, timespan_t delay ) :
+      event_t( *p -> sim ), off_hand( oh ), target( t )
     {
       add_event( delay );
     }
@@ -1032,15 +1033,20 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     { return "Chaos Strike"; }
 
     void execute() override
-    { off_hand -> execute(); }
+    {
+      off_hand -> target = target;
+      off_hand -> schedule_execute();
+    }
   };
 
   chaos_strike_oh_t* off_hand;
   bool is_critical;
+  timespan_t delay;
 
   chaos_strike_base_t( const std::string& n, demon_hunter_t* p, const spell_data_t* s ) :
     demon_hunter_attack_t( n, p, s )
   {
+    delay = timespan_t::from_millis( data().effectN( 3 ).misc_value1() );
     off_hand = new chaos_strike_oh_t( p, data().effectN( 3 ).trigger(), this );
     add_child( off_hand );
   }
@@ -1060,7 +1066,9 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     demon_hunter_attack_t::impact( s );
 
     if ( s -> result == RESULT_CRIT )
+    {
       is_critical = true;
+    }
   }
 
   virtual void execute() override
@@ -1071,7 +1079,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      new ( *sim ) chaos_strike_event_t( p(), off_hand, timespan_t::from_millis( data().effectN( 3 ).misc_value1() ) );
+      new ( *sim ) chaos_strike_event_t( p(), off_hand, execute_state -> target, delay );
 
       // TODO: Travel time
       if ( p() -> talent.demonic_appetite -> ok() && ! p() -> cooldown.demonic_appetite -> down() &&
@@ -1098,7 +1106,9 @@ struct chaos_strike_t : public chaos_strike_base_t
   bool ready() override
   {
     if ( p() -> buff.metamorphosis -> check() )
+    {
       return false;
+    }
 
     return chaos_strike_base_t::ready();
   }
@@ -1117,7 +1127,9 @@ struct annihilation_t : public chaos_strike_base_t
   bool ready() override
   {
     if ( ! p() -> buff.metamorphosis -> check() )
+    {
       return false;
+    }
 
     return chaos_strike_base_t::ready();
   }
@@ -1139,7 +1151,9 @@ struct death_sweep_t: public blade_dance_base_t
   bool ready() override
   {
     if ( ! p() -> buff.metamorphosis -> check() )
+    {
       return false;
+    }
 
     return blade_dance_base_t::ready();
   }
@@ -1265,7 +1279,7 @@ struct eye_beam_t : public demon_hunter_attack_t
     if ( d -> current_tick >= 2 )
     {
       beam -> target = target;
-      beam -> execute();
+      beam -> schedule_execute();
     }
   }
 
@@ -1421,7 +1435,7 @@ struct metamorphosis_t : public demon_hunter_attack_t
     movement_directionality = MOVEMENT_OMNI;
   }
 
-  // leap travel time, indepedent of distance
+  // leap travel time, independent of distance
   timespan_t travel_time() const override
   { return timespan_t::from_seconds( 1.0 ); }
 
