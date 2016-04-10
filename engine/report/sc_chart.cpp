@@ -1478,6 +1478,7 @@ bool chart::generate_scaling_plot( highchart::chart_t& ac, const player_t& p,
   ac.set( "legend.margin", 5 );
   ac.set( "legend.padding", 0 );
   ac.set( "legend.itemMarginBottom", 5 );
+  ac.height_ = 500;
   if ( p.sim->player_no_pet_list.size() > 1 )
   {
     ac.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
