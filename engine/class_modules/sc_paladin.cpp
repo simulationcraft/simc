@@ -1956,6 +1956,9 @@ struct zeal_t : public holy_power_generator_t
 
     base_multiplier *= 1.0 + p -> artifact.blade_of_light.percent();
     base_crit += p -> artifact.sharpened_edge.percent();
+
+    // TODO: remove this once it's back in the spelldata.
+    hasted_cd = true;
   }
 
   virtual int n_targets() const override
