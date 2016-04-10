@@ -2257,7 +2257,25 @@ struct rampage_event_t: public event_t
 
   timespan_t next_execute() const
   {
-    return timespan_t::from_millis( warrior -> spec.rampage -> effectN( attacks + 4 ).misc_value1() - ( attacks > 0 ? warrior -> spec.rampage -> effectN( attacks + 3 ).misc_value1() : 0 ) );
+    timespan_t time_till_next_attack = timespan_t::zero();
+    switch ( attacks )
+    {
+    case 0:
+    break; // First attack is instant.
+    case 1:
+    time_till_next_attack = timespan_t::from_millis( warrior -> spec.rampage -> effectN( 4 ).misc_value1() );
+    break;
+    case 2:
+    time_till_next_attack = timespan_t::from_millis( warrior -> spec.rampage -> effectN( 5 ).misc_value1() - warrior -> spec.rampage -> effectN( 4 ).misc_value1() );
+    break;
+    case 3:
+    time_till_next_attack = timespan_t::from_millis( warrior -> spec.rampage -> effectN( 6 ).misc_value1() - warrior -> spec.rampage -> effectN( 5 ).misc_value1() );
+    break;
+    case 4:
+    time_till_next_attack = timespan_t::from_millis( warrior -> spec.rampage -> effectN( 7 ).misc_value1() - warrior -> spec.rampage -> effectN( 6 ).misc_value1() );
+    break;
+    }
+    return time_till_next_attack;
   }
 
   void execute() override
@@ -3324,22 +3342,26 @@ void warrior_t::init_spells()
   if ( sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) )  spell.t17_prot_2p = find_spell( 169688 );
   if ( spec.rampage -> ok() )
   {
-    rampage_attack_t* first = new rampage_attack_t( this, spec.rampage -> effectN( 4 ).trigger(), "rampage1" );
-    rampage_attack_t* second = new rampage_attack_t( this, spec.rampage -> effectN( 5 ).trigger(), "rampage2" );
-    rampage_attack_t* third = new rampage_attack_t( this, spec.rampage -> effectN( 6 ).trigger(), "rampage3" );
-    rampage_attack_t* fourth = new rampage_attack_t( this, spec.rampage -> effectN( 7 ).trigger(), "rampage4" );
-    first -> weapon = &( this -> off_hand_weapon );
-    second -> weapon = &( this -> main_hand_weapon );
-    third -> weapon = &( this -> off_hand_weapon );
-    fourth -> weapon = &( this -> main_hand_weapon );
+    rampage_attack_t* first = new rampage_attack_t( this, spec.rampage -> effectN( 3 ).trigger(), "rampage1" );
+    rampage_attack_t* second = new rampage_attack_t( this, spec.rampage -> effectN( 4 ).trigger(), "rampage2" );
+    rampage_attack_t* third = new rampage_attack_t( this, spec.rampage -> effectN( 5 ).trigger(), "rampage3" );
+    rampage_attack_t* fourth = new rampage_attack_t( this, spec.rampage -> effectN( 6 ).trigger(), "rampage4" );
+    rampage_attack_t* fifth = new rampage_attack_t( this, spec.rampage -> effectN( 7 ).trigger(), "rampage5" );
+    first -> weapon = &( this -> main_hand_weapon );
+    second -> weapon = &( this -> off_hand_weapon );
+    third -> weapon = &( this -> main_hand_weapon );
+    fourth -> weapon = &( this -> off_hand_weapon );
+    fifth -> weapon = &( this -> main_hand_weapon );
     first -> weapon_multiplier *= 1.0 + artifact.unstoppable.percent();
     second -> weapon_multiplier *= 1.0 + artifact.unstoppable.percent();
     third -> weapon_multiplier *= 1.0 + artifact.unstoppable.percent();
     fourth -> weapon_multiplier *= 1.0 + artifact.unstoppable.percent();
+    fifth -> weapon_multiplier *= 1.0 + artifact.unstoppable.percent();
     this -> rampage_attacks.push_back( first );
     this -> rampage_attacks.push_back( second );
     this -> rampage_attacks.push_back( third );
     this -> rampage_attacks.push_back( fourth );
+    this -> rampage_attacks.push_back( fifth );
   }
 
   // Cooldowns
