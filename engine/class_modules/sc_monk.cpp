@@ -7134,6 +7134,10 @@ expr_t* monk_t::create_expression( action_t* a, const std::string& name_str )
     else if ( splits[1] == "remains" )
       return new stagger_remains_expr_t( *this );
   }
+  else if (util::str_compare_ci(name_str, "chi_to_teb_counter"))
+  {
+    return make_ref_expr( name_str, track_chi_consumption );
+  }
 
   return base_t::create_expression( a, name_str );
 }
