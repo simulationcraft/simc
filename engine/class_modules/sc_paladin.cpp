@@ -1643,6 +1643,8 @@ struct wake_of_ashes_t : public paladin_spell_t
     parse_options( options_str );
 
     may_crit = true;
+    aoe = -1;
+    hasted_ticks = false;
 
     if ( p -> artifact.ashes_to_ashes.rank() == 0 )
     {
@@ -2948,7 +2950,7 @@ void paladin_t::create_buffs()
   buffs.ardent_defender                = new buffs::ardent_defender_buff_t( this );
 
   // Ret
-  buffs.zeal                           = buff_creator_t( this, "zeal" ).spell( find_spell( 203317 ) )
+  buffs.zeal                           = buff_creator_t( this, "zeal" ).spell( find_spell( 217020 ) )
                                           .add_invalidate( CACHE_HASTE );
   buffs.seal_of_light                  = buff_creator_t( this, "seal_of_light" ).spell( find_spell( 202273 ) );
   buffs.the_fires_of_justice           = buff_creator_t( this, "the_fires_of_justice" ).spell( find_spell( 209785 ) );
