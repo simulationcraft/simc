@@ -2158,8 +2158,6 @@ struct divine_hammer_t : public paladin_spell_t
 
 // Divine Storm =============================================================
 
-// TODO(mserrano): this is wrong
-// TODO(mserrano): supposedly this has a 77.15% attack power coefficient
 struct echoed_divine_storm_t: public paladin_melee_attack_t
 {
   echoed_divine_storm_t( paladin_t* p, const std::string& options_str )
@@ -2168,6 +2166,10 @@ struct echoed_divine_storm_t: public paladin_melee_attack_t
     parse_options( options_str );
 
     weapon = &( p -> main_hand_weapon );
+
+    // TODO: what in the world does this come from
+    weapon_multiplier = 0;
+    attack_power_mod.direct = 0.7715;
 
     base_multiplier *= 1.0 + p -> artifact.righteous_blade.percent();
     base_multiplier *= 1.0 + p -> artifact.divine_tempest.percent( 2 );
@@ -2480,14 +2482,16 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
 
 // Templar's Verdict ========================================================================
 
-// TODO(mserrano): Are any of these multipliers correct?
-// TODO(mserrano): supposedly this has a 85.72% attack power base coefficient
 struct echoed_templars_verdict_t : public paladin_melee_attack_t
 {
   echoed_templars_verdict_t( paladin_t* p, const std::string& options_str )
     : paladin_melee_attack_t( "echoed_verdict", p, p -> find_spell( 186805 ) , false )
   {
     parse_options( options_str );
+
+    // TODO: what in the world does this come from
+    attack_power_mod.direct = 0.8572;
+    weapon_multiplier = 0;
 
     background = true;
     base_multiplier *= 1.0 + p -> artifact.might_of_the_templar.percent();
@@ -2555,7 +2559,7 @@ struct templars_verdict_t : public holy_power_consumer_t
 struct justicars_vengeance_t : public holy_power_consumer_t
 {
   justicars_vengeance_t( paladin_t* p, const std::string& options_str )
-    : holy_power_consumer_t( "justicars_vengeance", p, p -> find_talent_spell( "Justicar's Vengeance" ), true )
+    : holy_power_consumer_t( "justicars_vengeance", p, p -> find_spell( 215661 ), true )
   {
     parse_options( options_str );
   }
