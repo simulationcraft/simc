@@ -47,7 +47,7 @@ struct void_tendril_pet_t;
  * Priest target data
  * Contains target specific things
  */
-struct priest_td_t : public actor_target_data_t
+struct priest_td_t final : public actor_target_data_t
 {
 public:
   struct dots_t
@@ -79,7 +79,7 @@ public:
  *
  * Derived from player_t. Contains everything that defines the priest class.
  */
-struct priest_t : public player_t
+struct priest_t final : public player_t
 {
 public:
   typedef player_t base_t;
@@ -680,7 +680,7 @@ struct base_fiend_pet_t : public priest_pet_t
 // Pet Shadowfiend
 // ==========================================================================
 
-struct shadowfiend_pet_t : public base_fiend_pet_t
+struct shadowfiend_pet_t final : public base_fiend_pet_t
 {
   shadowfiend_pet_t( sim_t* sim, priest_t& owner,
                      const std::string& name = "shadowfiend" )
@@ -707,7 +707,7 @@ struct shadowfiend_pet_t : public base_fiend_pet_t
 // Pet Mindbender
 // ==========================================================================
 
-struct mindbender_pet_t : public base_fiend_pet_t
+struct mindbender_pet_t final : public base_fiend_pet_t
 {
   const spell_data_t* mindbender_spell;
 
@@ -737,7 +737,7 @@ struct mindbender_pet_t : public base_fiend_pet_t
 // Pet Lightwell
 // ==========================================================================
 
-struct lightwell_pet_t : public priest_pet_t
+struct lightwell_pet_t final : public priest_pet_t
 {
 public:
   int charges;
@@ -774,7 +774,7 @@ public:
 // Pet Void Tendril
 // ==========================================================================
 
-struct void_tendril_pet_t : public priest_pet_t
+struct void_tendril_pet_t final : public priest_pet_t
 {
 public:
   void_tendril_pet_t( sim_t* sim, priest_t& p, void_tendril_pet_t* front_pet )
@@ -896,7 +896,7 @@ struct priest_pet_spell_t : public spell_t
   }
 };
 
-struct shadowcrawl_t : public priest_pet_spell_t
+struct shadowcrawl_t final : public priest_pet_spell_t
 {
   shadowcrawl_t( base_fiend_pet_t& p ) : priest_pet_spell_t( p, "Shadowcrawl" )
   {
@@ -980,7 +980,7 @@ struct fiend_melee_t : public priest_pet_melee_t
   }
 };
 
-struct void_tendril_mind_flay_t : public priest_pet_spell_t
+struct void_tendril_mind_flay_t final : public priest_pet_spell_t
 {
   void_tendril_mind_flay_t( void_tendril_pet_t& p )
     : priest_pet_spell_t( "mind_flay_void_tendril)", &p,
@@ -1027,7 +1027,7 @@ struct void_tendril_mind_flay_t : public priest_pet_spell_t
   }
 };
 
-struct lightwell_renew_t : public heal_t
+struct lightwell_renew_t final : public heal_t
 {
   lightwell_renew_t( lightwell_pet_t& p )
     : heal_t( "lightwell_renew", &p, p.find_spell( 126154 ) )
@@ -1156,7 +1156,7 @@ action_t* void_tendril_pet_t::create_action( const std::string& name,
 
 namespace buffs
 {
-struct weakened_soul_t : public buff_t
+struct weakened_soul_t final : public buff_t
 {
   weakened_soul_t( player_t* p )
     : buff_t(
@@ -2064,7 +2064,7 @@ int cancel_dot( dot_t& dot )
 
 // Angelic Feather===========================================================
 
-struct angelic_feather_t : public priest_spell_t
+struct angelic_feather_t final : public priest_spell_t
 {
   angelic_feather_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "angelic_feather", p,
@@ -2084,7 +2084,7 @@ struct angelic_feather_t : public priest_spell_t
 
 // Archangel Spell ==========================================================
 
-struct archangel_t : public priest_spell_t
+struct archangel_t final : public priest_spell_t
 {
   archangel_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "archangel", p, p.specs.archangel )
@@ -2142,7 +2142,7 @@ struct chakra_base_t : public priest_spell_t
   }
 };
 
-struct chakra_chastise_t : public chakra_base_t
+struct chakra_chastise_t final : public chakra_base_t
 {
   chakra_chastise_t( priest_t& p, const std::string& options_str )
     : chakra_base_t( p, p.find_class_spell( "Chakra: Chastise" ), options_str )
@@ -2156,7 +2156,7 @@ struct chakra_chastise_t : public chakra_base_t
   }
 };
 
-struct chakra_sanctuary_t : public chakra_base_t
+struct chakra_sanctuary_t final : public chakra_base_t
 {
   chakra_sanctuary_t( priest_t& p, const std::string& options_str )
     : chakra_base_t( p, p.find_class_spell( "Chakra: Sanctuary" ), options_str )
@@ -2170,7 +2170,7 @@ struct chakra_sanctuary_t : public chakra_base_t
   }
 };
 
-struct chakra_serenity_t : public chakra_base_t
+struct chakra_serenity_t final : public chakra_base_t
 {
   chakra_serenity_t( priest_t& p, const std::string& options_str )
     : chakra_base_t( p, p.find_class_spell( "Chakra: Serenity" ), options_str )
@@ -2186,7 +2186,7 @@ struct chakra_serenity_t : public chakra_base_t
 
 // Dispersion Spell =========================================================
 
-struct dispersion_t : public priest_spell_t
+struct dispersion_t final : public priest_spell_t
 {
   dispersion_t( priest_t& player, const std::string& options_str )
     : priest_spell_t( "dispersion", player,
@@ -2234,7 +2234,7 @@ struct dispersion_t : public priest_spell_t
 
 // Levitate =================================================================
 
-struct levitate_t : public priest_spell_t
+struct levitate_t final : public priest_spell_t
 {
   levitate_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "levitate", p, p.find_class_spell( "Levitate" ) )
@@ -2246,7 +2246,7 @@ struct levitate_t : public priest_spell_t
 
 // Pain Supression ==========================================================
 
-struct pain_suppression_t : public priest_spell_t
+struct pain_suppression_t final : public priest_spell_t
 {
   pain_suppression_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "pain_suppression", p,
@@ -2274,7 +2274,7 @@ struct pain_suppression_t : public priest_spell_t
 
 // Power Infusion Spell =====================================================
 
-struct power_infusion_t : public priest_spell_t
+struct power_infusion_t final : public priest_spell_t
 {
   power_infusion_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "power_infusion", p, p.talents.power_infusion )
@@ -2292,7 +2292,7 @@ struct power_infusion_t : public priest_spell_t
 
 // Voidform Spell ========================================================
 
-struct voidform_t : public priest_spell_t
+struct voidform_t final : public priest_spell_t
 {
   voidform_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "voidform", p, p.specs.voidform )
@@ -2363,7 +2363,7 @@ struct voidform_t : public priest_spell_t
 
 // Surrender to Madness =======================================================
 
-struct surrender_to_madness_t : public priest_spell_t
+struct surrender_to_madness_t final : public priest_spell_t
 {
   surrender_to_madness_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "surrender_to_madness", p,
@@ -2391,7 +2391,7 @@ struct surrender_to_madness_t : public priest_spell_t
 
 // Spirit Shell Spell =======================================================
 
-struct spirit_shell_t : public priest_spell_t
+struct spirit_shell_t final : public priest_spell_t
 {
   spirit_shell_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "spirit_shell", p, p.specs.spirit_shell )
@@ -2452,7 +2452,7 @@ public:
   }
 };
 
-struct summon_shadowfiend_t : public summon_pet_t
+struct summon_shadowfiend_t final : public summon_pet_t
 {
   summon_shadowfiend_t( priest_t& p, const std::string& options_str )
     : summon_pet_t( "shadowfiend", p, p.find_class_spell( "Shadowfiend" ) )
@@ -2467,7 +2467,7 @@ struct summon_shadowfiend_t : public summon_pet_t
   }
 };
 
-struct summon_mindbender_t : public summon_pet_t
+struct summon_mindbender_t final : public summon_pet_t
 {
   summon_mindbender_t( priest_t& p, const std::string& options_str )
     : summon_pet_t( "mindbender", p, p.find_talent_spell( "Mindbender" ) )
@@ -2488,7 +2488,7 @@ struct summon_mindbender_t : public summon_pet_t
 
 // Shadowy Apparition Spell =================================================
 
-struct shadowy_apparition_spell_t : public priest_spell_t
+struct shadowy_apparition_spell_t final : public priest_spell_t
 {
   double insanity_gain;
 
@@ -2568,7 +2568,7 @@ struct shadowy_apparition_spell_t : public priest_spell_t
 
 // Sphere of Insanity Spell =================================================
 
-struct sphere_of_insanity_spell_t : public priest_spell_t
+struct sphere_of_insanity_spell_t final : public priest_spell_t
 {
   double damage_amount;
 
@@ -2618,7 +2618,7 @@ struct sphere_of_insanity_spell_t : public priest_spell_t
 
 // Mind Spike Detonation Spell =================================================
 
-struct mind_spike_detonation_t : public priest_spell_t
+struct mind_spike_detonation_t final : public priest_spell_t
 {
   mind_spike_detonation_t( priest_t& p )
     : priest_spell_t( "mind_spike_detonation", p,
@@ -2670,10 +2670,11 @@ struct mind_spike_detonation_t : public priest_spell_t
 
 // Mind Blast Spell =========================================================
 
-struct mind_blast_t : public priest_spell_t
+struct mind_blast_t final : public priest_spell_t
 {
 private:
   double insanity_gain;
+
 public:
   mind_blast_t( priest_t& player, const std::string& options_str )
     : priest_spell_t( "mind_blast", player,
@@ -2770,7 +2771,7 @@ public:
 
 // Mind Spike Spell =========================================================
 
-struct mind_spike_t : public priest_spell_t
+struct mind_spike_t final : public priest_spell_t
 {
   double insanity_gain;
 
@@ -2873,7 +2874,7 @@ struct mind_spike_t : public priest_spell_t
 
 // Mind Sear Spell ==========================================================
 
-struct mind_sear_tick_t : public priest_spell_t
+struct mind_sear_tick_t final : public priest_spell_t
 {
   double insanity_gain;
 
@@ -2898,7 +2899,7 @@ struct mind_sear_tick_t : public priest_spell_t
   }
 };
 
-struct mind_sear_t : public priest_spell_t
+struct mind_sear_t final : public priest_spell_t
 {
   mind_sear_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "mind_sear", p,
@@ -2953,7 +2954,7 @@ struct mind_sear_t : public priest_spell_t
 
 // Shadow Word Death Spell ==================================================
 
-struct shadow_word_death_t : public priest_spell_t
+struct shadow_word_death_t final : public priest_spell_t
 {
   double insanity_gain;
 
@@ -3036,7 +3037,7 @@ struct shadow_word_death_t : public priest_spell_t
 };
 
 // Mind Flay Spell ==========================================================
-struct mind_flay_t : public priest_spell_t
+struct mind_flay_t final : public priest_spell_t
 {
   double insanity_gain;
 
@@ -3110,7 +3111,7 @@ struct mind_flay_t : public priest_spell_t
 };
 
 // Void Torrent Spell ==========================================================
-struct void_torrent_t : public priest_spell_t
+struct void_torrent_t final : public priest_spell_t
 {
   void_torrent_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "void_torrent", p, p.artifact.void_torrent )
@@ -3158,7 +3159,7 @@ struct void_torrent_t : public priest_spell_t
 
 // Shadow Crash Spell ===================================================
 
-struct shadow_crash_t : public priest_spell_t
+struct shadow_crash_t final : public priest_spell_t
 {
   double insanity_gain;
 
@@ -3181,7 +3182,7 @@ struct shadow_crash_t : public priest_spell_t
 
 // Shadow Word Pain Spell ===================================================
 
-struct shadow_word_pain_t : public priest_spell_t
+struct shadow_word_pain_t final : public priest_spell_t
 {
   double insanity_gain;
 
@@ -3323,7 +3324,7 @@ struct shadow_word_pain_t : public priest_spell_t
 
 // Shadow Word Void Spell ==================================================
 
-struct shadow_word_void_t : public priest_spell_t
+struct shadow_word_void_t final : public priest_spell_t
 {
   double insanity_gain;
 
@@ -3360,7 +3361,7 @@ struct shadow_word_void_t : public priest_spell_t
 
 // Vampiric Embrace Spell ===================================================
 
-struct vampiric_embrace_t : public priest_spell_t
+struct vampiric_embrace_t final : public priest_spell_t
 {
   vampiric_embrace_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "vampiric_embrace", p,
@@ -3388,7 +3389,7 @@ struct vampiric_embrace_t : public priest_spell_t
 
 // Vampiric Touch Spell =====================================================
 
-struct vampiric_touch_t : public priest_spell_t
+struct vampiric_touch_t final : public priest_spell_t
 {
   double insanity_gain;
 
@@ -3487,7 +3488,7 @@ struct vampiric_touch_t : public priest_spell_t
 
 // Void Bolt Spell =========================================================
 
-struct void_bolt_t : public priest_spell_t
+struct void_bolt_t final : public priest_spell_t
 {
   double insanity_gain;
 
@@ -3664,7 +3665,7 @@ struct holy_fire_base_t : public priest_spell_t
 
 // Power Word: Solace Spell =================================================
 
-struct power_word_solace_t : public holy_fire_base_t
+struct power_word_solace_t final : public holy_fire_base_t
 {
   power_word_solace_t( priest_t& player, const std::string& options_str )
     : holy_fire_base_t( "power_word_solace", player,
@@ -3690,7 +3691,7 @@ struct power_word_solace_t : public holy_fire_base_t
 
 // Holy Fire Spell ==========================================================
 
-struct holy_fire_t : public holy_fire_base_t
+struct holy_fire_t final : public holy_fire_base_t
 {
   holy_fire_t( priest_t& player, const std::string& options_str )
     : holy_fire_base_t( "holy_fire", player,
@@ -3702,9 +3703,9 @@ struct holy_fire_t : public holy_fire_base_t
 
 // Penance Spell ============================================================
 
-struct penance_t : public priest_spell_t
+struct penance_t final : public priest_spell_t
 {
-  struct penance_tick_t : public priest_spell_t
+  struct penance_tick_t final : public priest_spell_t
   {
     penance_tick_t( priest_t& p, stats_t* stats )
       : priest_spell_t( "penance_tick", p, p.find_spell( 47666 ) )
@@ -3794,7 +3795,7 @@ struct penance_t : public priest_spell_t
 
 // Smite Spell ==============================================================
 
-struct smite_t : public priest_spell_t
+struct smite_t final : public priest_spell_t
 {
   cooldown_t* hw_chastise;
 
@@ -4034,7 +4035,7 @@ public:
   }
 };
 
-struct cascade_t : public cascade_base_t<priest_spell_t>
+struct cascade_t final : public cascade_base_t<priest_spell_t>
 {
   cascade_t( priest_t& p, const std::string& options_str )
     : base_t( "cascade", p, options_str, get_spell_data( p ) )
@@ -4134,7 +4135,7 @@ public:
   }
 };
 
-struct halo_t : public priest_spell_t
+struct halo_t final : public priest_spell_t
 {
   halo_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "halo", p, p.talents.halo ),
@@ -4222,7 +4223,7 @@ public:
   }
 };
 
-struct divine_star_t : public priest_spell_t
+struct divine_star_t final : public priest_spell_t
 {
   divine_star_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "divine_star", p, p.talents.divine_star ),
@@ -4269,7 +4270,7 @@ private:
 
 // Silence Spell =======================================================
 
-struct silence_t : public priest_spell_t
+struct silence_t final : public priest_spell_t
 {
   silence_t( priest_t& player, const std::string& options_str )
     : priest_spell_t( "silence", player, player.find_class_spell( "Silence" ) )
@@ -4311,7 +4312,7 @@ namespace heals
 {
 // Binding Heal Spell =======================================================
 
-struct binding_heal_t : public priest_heal_t
+struct binding_heal_t final : public priest_heal_t
 {
   binding_heal_t( priest_t& p, const std::string& options_str )
     : priest_heal_t( "binding_heal", p, p.find_class_spell( "Binding Heal" ) )
@@ -4351,7 +4352,7 @@ struct binding_heal_t : public priest_heal_t
 
 // Circle of Healing ========================================================
 
-struct circle_of_healing_t : public priest_heal_t
+struct circle_of_healing_t final : public priest_heal_t
 {
   circle_of_healing_t( priest_t& p, const std::string& options_str )
     : priest_heal_t( "circle_of_healing", p,
@@ -4394,7 +4395,7 @@ struct circle_of_healing_t : public priest_heal_t
 // Desperate Prayer =========================================================
 
 // TODO: Check and see if Desperate Prayer can trigger Surge of Light for Holy
-struct desperate_prayer_t : public priest_heal_t
+struct desperate_prayer_t final : public priest_heal_t
 {
   desperate_prayer_t( priest_t& p, const std::string& options_str )
     : priest_heal_t( "desperate_prayer", p, p.talents.desperate_prayer )
@@ -4407,7 +4408,7 @@ struct desperate_prayer_t : public priest_heal_t
 
 // Divine Hymn Spell ========================================================
 
-struct divine_hymn_tick_t : public priest_heal_t
+struct divine_hymn_tick_t final : public priest_heal_t
 {
   divine_hymn_tick_t( priest_t& player, int nr_targets )
     : priest_heal_t( "divine_hymn_tick", player, player.find_spell( 64844 ) )
@@ -4418,7 +4419,7 @@ struct divine_hymn_tick_t : public priest_heal_t
   }
 };
 
-struct divine_hymn_t : public priest_heal_t
+struct divine_hymn_t final : public priest_heal_t
 {
   divine_hymn_t( priest_t& p, const std::string& options_str )
     : priest_heal_t( "divine_hymn", p, p.find_class_spell( "Divine Hymn" ) )
@@ -4453,7 +4454,7 @@ struct divine_hymn_t : public priest_heal_t
 
 // Echo of Light
 
-struct echo_of_light_t
+struct echo_of_light_t final
     : public residual_action::residual_periodic_action_t<priest_heal_t>
 {
   echo_of_light_t( priest_t& p )
@@ -4466,7 +4467,7 @@ struct echo_of_light_t
 
 // Flash Heal Spell =========================================================
 
-struct flash_heal_t : public priest_heal_t
+struct flash_heal_t final : public priest_heal_t
 {
   flash_heal_t( priest_t& p, const std::string& options_str )
     : priest_heal_t( "flash_heal", p, p.find_class_spell( "Flash Heal" ) )
@@ -4517,7 +4518,7 @@ struct flash_heal_t : public priest_heal_t
 
 // Guardian Spirit ==========================================================
 
-struct guardian_spirit_t : public priest_heal_t
+struct guardian_spirit_t final : public priest_heal_t
 {
   guardian_spirit_t( priest_t& p, const std::string& options_str )
     : priest_heal_t( "guardian_spirit", p,
@@ -4540,7 +4541,7 @@ struct guardian_spirit_t : public priest_heal_t
 
 // starts with underscore because of name conflict with heal_t
 
-struct _heal_t : public priest_heal_t
+struct _heal_t final : public priest_heal_t
 {
   _heal_t( priest_t& p, const std::string& options_str )
     : priest_heal_t( "heal", p, p.find_class_spell( "Heal" ) )
@@ -4638,9 +4639,9 @@ struct _heal_t : public priest_heal_t
 
 // Holy Word Sanctuary ======================================================
 
-struct holy_word_sanctuary_t : public priest_heal_t
+struct holy_word_sanctuary_t final : public priest_heal_t
 {
-  struct holy_word_sanctuary_tick_t : public priest_heal_t
+  struct holy_word_sanctuary_tick_t final : public priest_heal_t
   {
     holy_word_sanctuary_tick_t( priest_t& player )
       : priest_heal_t( "holy_word_sanctuary_tick", player,
@@ -4710,7 +4711,7 @@ struct holy_word_sanctuary_t : public priest_heal_t
 
 // Holy Word Chastise =======================================================
 
-struct holy_word_chastise_t : public priest_spell_t
+struct holy_word_chastise_t final : public priest_spell_t
 {
   holy_word_chastise_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "holy_word_chastise", p,
@@ -4760,7 +4761,7 @@ struct holy_word_chastise_t : public priest_spell_t
 
 // Holy Word Serenity =======================================================
 
-struct holy_word_serenity_t : public priest_heal_t
+struct holy_word_serenity_t final : public priest_heal_t
 {
   holy_word_serenity_t( priest_t& p, const std::string& options_str )
     : priest_heal_t( "holy_word_serenity", p, p.find_spell( 88684 ) )
@@ -4816,7 +4817,7 @@ struct holy_word_serenity_t : public priest_heal_t
 
 // Holy Word ================================================================
 
-struct holy_word_t : public priest_spell_t
+struct holy_word_t final : public priest_spell_t
 {
   holy_word_sanctuary_t* hw_sanctuary;
   holy_word_chastise_t* hw_chastise;
@@ -4876,7 +4877,7 @@ struct holy_word_t : public priest_spell_t
 /* Lightwell Spell
  * Create only if ( p.pets.lightwell )
  */
-struct lightwell_t : public priest_spell_t
+struct lightwell_t final : public priest_spell_t
 {
   timespan_t consume_interval;
   cooldown_t* lightwell_renew_cd;
@@ -4914,9 +4915,9 @@ struct lightwell_t : public priest_spell_t
 
 // Penance Heal Spell =======================================================
 
-struct penance_heal_t : public priest_heal_t
+struct penance_heal_t final : public priest_heal_t
 {
-  struct penance_heal_tick_t : public priest_heal_t
+  struct penance_heal_tick_t final : public priest_heal_t
   {
     penance_heal_tick_t( priest_t& player )
       : priest_heal_t( "penance_heal_tick", player, player.find_spell( 47750 ) )
@@ -4984,7 +4985,7 @@ struct penance_heal_t : public priest_heal_t
 
 // Power Word: Shield Spell =================================================
 
-struct power_word_shield_t : public priest_absorb_t
+struct power_word_shield_t final : public priest_absorb_t
 {
   bool ignore_debuff;
 
@@ -5024,7 +5025,7 @@ struct power_word_shield_t : public priest_absorb_t
 
 // Prayer of Healing Spell ==================================================
 
-struct prayer_of_healing_t : public priest_heal_t
+struct prayer_of_healing_t final : public priest_heal_t
 {
   prayer_of_healing_t( priest_t& p, const std::string& options_str )
     : priest_heal_t( "prayer_of_healing", p,
@@ -5102,7 +5103,7 @@ struct prayer_of_healing_t : public priest_heal_t
 
 // Prayer of Mending Spell ==================================================
 
-struct prayer_of_mending_t : public priest_heal_t
+struct prayer_of_mending_t final : public priest_heal_t
 {
   bool single;
 
@@ -5156,9 +5157,9 @@ struct prayer_of_mending_t : public priest_heal_t
 
 // Renew Spell ==============================================================
 
-struct renew_t : public priest_heal_t
+struct renew_t final : public priest_heal_t
 {
-  struct rapid_renewal_t : public priest_heal_t
+  struct rapid_renewal_t final : public priest_heal_t
   {
     rapid_renewal_t( priest_t& p )
       : priest_heal_t( "rapid_renewal", p, p.specs.rapid_renewal )
@@ -5225,7 +5226,7 @@ struct renew_t : public priest_heal_t
   }
 };
 
-struct clarity_of_will_t : public priest_absorb_t
+struct clarity_of_will_t final : public priest_absorb_t
 {
   clarity_of_will_t( priest_t& p, const std::string& options_str )
     : priest_absorb_t( "clarity_of_will", p, p.talents.clarity_of_will )
@@ -5239,7 +5240,7 @@ struct clarity_of_will_t : public priest_absorb_t
   }
 };
 
-struct clarity_of_purpose_t : public priest_heal_t
+struct clarity_of_purpose_t final : public priest_heal_t
 {
   clarity_of_purpose_t( priest_t& p, const std::string& options_str )
     : priest_heal_t( "clarity_of_purpose", p,
@@ -5299,9 +5300,9 @@ protected:
 
 /* Custom voidform buff
  */
-struct voidform_t : public priest_buff_t<buff_t>
+struct voidform_t final : public priest_buff_t<buff_t>
 {
-  struct insanity_loss_event_t : player_event_t
+  struct insanity_loss_event_t final : public player_event_t
   {
     voidform_t* vf;
 
@@ -5424,7 +5425,7 @@ struct voidform_t : public priest_buff_t<buff_t>
 /* Custom archangel buff
  * snapshots evangelism stacks and expires it
  */
-struct archangel_t : public priest_buff_t<buff_t>
+struct archangel_t final : public priest_buff_t<buff_t>
 {
   archangel_t( priest_t& p )
     : base_t( p, buff_creator_t( &p, "archangel" )
@@ -5467,7 +5468,7 @@ struct dispersion_t : public priest_buff_t<buff_t>
   }
 };
 
-struct spirit_shell_t : public priest_buff_t<buff_t>
+struct spirit_shell_t final : public priest_buff_t<buff_t>
 {
   spirit_shell_t( priest_t& p )
     : base_t( p, buff_creator_t( &p, "spirit_shell" )
@@ -5542,7 +5543,7 @@ void init()
 
 namespace rppm
 {
-struct call_to_the_void_t : public real_ppm_t
+struct call_to_the_void_t final : public real_ppm_t
 {
   call_to_the_void_t( priest_t& p )
     : real_ppm_t(
@@ -7319,7 +7320,7 @@ void priest_t::copy_from( player_t* source )
 /* Report Extension Class
  * Here you can define class specific report extensions/overrides
  */
-class priest_report_t : public player_report_extension_t
+class priest_report_t final : public player_report_extension_t
 {
 public:
   priest_report_t( priest_t& player ) : p( player )
@@ -7345,7 +7346,7 @@ private:
 
 // PRIEST MODULE INTERFACE ==================================================
 
-struct priest_module_t : public module_t
+struct priest_module_t final : public module_t
 {
   priest_module_t() : module_t( PRIEST )
   {
