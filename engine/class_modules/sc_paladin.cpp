@@ -1974,22 +1974,14 @@ struct zeal_t : public holy_power_generator_t
   {
     holy_power_generator_t::execute();
     retribution_trinket_trigger();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    holy_power_generator_t::impact( s );
 
     // Special things that happen when Zeal connects
-    if ( result_is_hit( s -> result ) )
-    {
-      // Apply Zeal stacks
-      p() -> buffs.zeal -> trigger();
+    // Apply Zeal stacks
+    p() -> buffs.zeal -> trigger();
 
-      // Holy Power gains, only relevant if Zeal connects
-      int g = data().effectN( 3 ).base_value(); // default is a gain of 1 Holy Power
-      p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_crusader_strike ); // apply gain, record as due to CS
-    }
+    // Holy Power gains, only relevant if Zeal connects
+    int g = data().effectN( 3 ).base_value(); // default is a gain of 1 Holy Power
+    p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_crusader_strike ); // apply gain, record as due to CS
   }
 };
 
