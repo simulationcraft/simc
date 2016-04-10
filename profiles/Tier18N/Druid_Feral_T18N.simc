@@ -87,7 +87,7 @@ feet=spiked_irontoe_slippers,id=124249
 finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5324
 finger2=portal_key_signet,id=124189,enchant_id=5324
 trinket1=seed_of_creation,id=124514
-trinket2=soul_capacitor,id=124225
+trinket2=soul_capacitor,id=124225,initial_cd=4.5
 main_hand=xutenash_glaive_of_ruin,id=124378,enchant_id=5330
 
 # Gear Summary

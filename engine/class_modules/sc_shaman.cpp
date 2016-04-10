@@ -5765,7 +5765,7 @@ void shaman_t::init_action_list()
     }
     // Sync berserking with ascendance as they share a cooldown, but making sure
     // that no two haste cooldowns overlap, within reason
-    def -> add_action( "berserking,if=!buff.bloodlust.up&!buff.elemental_mastery.up&(set_bonus.tier15_4pc_caster=1|(buff.ascendance.cooldown_remains=0&(dot.flame_shock.remains>buff.ascendance.duration|level<87)))" );
+    def -> add_action( "berserking,if=!buff.bloodlust.up&!buff.elemental_mastery.up&buff.ascendance.cooldown_remains=0&(dot.flame_shock.remains>buff.ascendance.duration|level<87)" );
     // Sync blood fury with ascendance or fire elemental as long as one is ready
     // soon after blood fury is.
     def -> add_action( "blood_fury,if=buff.bloodlust.up|buff.ascendance.up|((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)" );
@@ -5782,12 +5782,7 @@ void shaman_t::init_action_list()
     // Use Ascendance preferably with a haste CD up, but dont overdo the
     // delaying. Make absolutely sure that Ascendance can be used so that
     // only Lava Bursts need to be cast during it's duration
-    std::string ascendance_opts = "if=spell_targets.chain_lightning>1|(dot.flame_shock.remains>buff.ascendance.duration&(target.time_to_die<20|buff.bloodlust.up";
-    if ( race == RACE_TROLL )
-      ascendance_opts += "|buff.berserking.up|set_bonus.tier15_4pc_caster=1";
-    else
-      ascendance_opts += "|time>=60";
-    ascendance_opts += ")&cooldown.lava_burst.remains>0)";
+    std::string ascendance_opts = "if=spell_targets.chain_lightning>1|(dot.flame_shock.remains>buff.ascendance.duration&(target.time_to_die<20|buff.bloodlust.up|buff.berserking.up|time>=60)&cooldown.lava_burst.remains>0)";
 
     def -> add_action( this, "Ascendance", ascendance_opts );
 

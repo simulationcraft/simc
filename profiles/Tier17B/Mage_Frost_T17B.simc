@@ -34,11 +34,11 @@ actions+=/call_action_list,name=movement,if=raid_event.movement.exists
 actions+=/mirror_image
 actions+=/rune_of_power,if=buff.rune_of_power.remains<cast_time
 actions+=/rune_of_power,if=(cooldown.icy_veins.remains<gcd.max&buff.rune_of_power.remains<20)|(cooldown.prismatic_crystal.remains<gcd.max&buff.rune_of_power.remains<10)
-actions+=/call_action_list,name=cooldowns,if=target.time_to_die<24
-actions+=/call_action_list,name=crystal_sequence,if=talent.prismatic_crystal.enabled&(cooldown.prismatic_crystal.remains<=gcd.max|pet.prismatic_crystal.active)
-actions+=/call_action_list,name=water_jet,if=prev_off_gcd.water_jet|debuff.water_jet.remains>0
 # Water jet on pull for non PC talent combos
-actions+=/water_jet,if=time<1&active_enemies<4&!(talent.ice_nova.enabled&talent.prismatic_crystal.enabled)
+actions+=/water_jet,if=time<1&active_enemies<4&!talent.prismatic_crystal.enabled
+actions+=/call_action_list,name=cooldowns,if=target.time_to_die<24
+actions+=/call_action_list,name=crystal_sequence,if=talent.prismatic_crystal.enabled&(cooldown.prismatic_crystal.remains<=gcd.max|pet.prismatic_crystal.active)&(legendary_ring.cooldown.remains<gcd.max|legendary_ring.cooldown.remains+15>target.time_to_die|!legendary_ring.has_cooldown)
+actions+=/call_action_list,name=water_jet,if=prev_off_gcd.water_jet|debuff.water_jet.remains>0
 actions+=/call_action_list,name=aoe,if=active_enemies>=4
 actions+=/call_action_list,name=single_target
 
@@ -50,10 +50,10 @@ actions.movement+=/ice_floes,if=buff.ice_floes.down&(raid_event.movement.distanc
 actions.crystal_sequence=frost_bomb,if=active_enemies=1&current_target!=pet.prismatic_crystal&remains<10
 actions.crystal_sequence+=/frozen_orb,target_if=max:target.time_to_die&target!=pet.prismatic_crystal
 actions.crystal_sequence+=/prismatic_crystal
+actions.crystal_sequence+=/water_jet,if=pet.prismatic_crystal.remains>(5+10*set_bonus.tier18_4pc)*spell_haste*0.9
 actions.crystal_sequence+=/call_action_list,name=cooldowns
 actions.crystal_sequence+=/frost_bomb,if=talent.prismatic_crystal.enabled&current_target=pet.prismatic_crystal&active_enemies>1&!ticking
 actions.crystal_sequence+=/ice_lance,if=!t18_class_trinket&(buff.fingers_of_frost.react>=2+set_bonus.tier18_4pc*2|(buff.fingers_of_frost.react>set_bonus.tier18_4pc*2&active_dot.frozen_orb))
-actions.crystal_sequence+=/water_jet,if=pet.prismatic_crystal.remains>(5+10*set_bonus.tier18_4pc)*spell_haste*0.8
 actions.crystal_sequence+=/ice_nova,if=charges=2|pet.prismatic_crystal.remains<4
 actions.crystal_sequence+=/ice_lance,if=buff.fingers_of_frost.react&buff.shatterlance.up
 actions.crystal_sequence+=/frostfire_bolt,if=buff.brain_freeze.react=2
@@ -95,13 +95,13 @@ actions.aoe+=/ice_nova
 actions.aoe+=/blizzard,interrupt_if=cooldown.frozen_orb.up|(talent.frost_bomb.enabled&buff.fingers_of_frost.react>=2)
 
 # Single target sequence
-actions.single_target=call_action_list,name=cooldowns,if=!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>15
+actions.single_target=call_action_list,name=cooldowns,if=!talent.prismatic_crystal.enabled|(cooldown.prismatic_crystal.remains>15&!legendary_ring.has_cooldown)
 # Safeguards against losing FoF and BF to buff expiry
 actions.single_target+=/ice_lance,if=buff.fingers_of_frost.react&(buff.fingers_of_frost.remains<action.frostbolt.execute_time|buff.fingers_of_frost.remains<buff.fingers_of_frost.react*gcd.max)
 actions.single_target+=/frostfire_bolt,if=buff.brain_freeze.react&(buff.brain_freeze.remains<action.frostbolt.execute_time|buff.brain_freeze.remains<buff.brain_freeze.react*gcd.max)
 # Frozen Orb usage without Prismatic Crystal
-actions.single_target+=/frost_bomb,if=!talent.prismatic_crystal.enabled&cooldown.frozen_orb.remains<gcd.max&debuff.frost_bomb.remains<10
-actions.single_target+=/frozen_orb,if=!talent.prismatic_crystal.enabled&buff.fingers_of_frost.stack<2&cooldown.icy_veins.remains>45-20*talent.thermal_void.enabled
+actions.single_target+=/frost_bomb,if=(!talent.prismatic_crystal.enabled|legendary_ring.cooldown.remains>45)&cooldown.frozen_orb.remains<gcd.max&debuff.frost_bomb.remains<10
+actions.single_target+=/frozen_orb,if=(!talent.prismatic_crystal.enabled|legendary_ring.cooldown.remains>45)&buff.fingers_of_frost.stack<2&cooldown.icy_veins.remains>45-20*talent.thermal_void.enabled
 # Single target routine; Rough summary: IN2 > FoF2 > CmS > IN > BF > FoF
 actions.single_target+=/ice_lance,if=buff.fingers_of_frost.react&buff.shatterlance.up
 actions.single_target+=/frost_bomb,if=remains<action.ice_lance.travel_time+t18_class_trinket*action.frostbolt.execute_time&(buff.fingers_of_frost.react>=(2+set_bonus.tier18_4pc*2)%(1+t18_class_trinket)|(buff.fingers_of_frost.react&(talent.thermal_void.enabled|buff.fingers_of_frost.remains<gcd.max*(buff.fingers_of_frost.react+1))))

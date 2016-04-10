@@ -116,7 +116,7 @@ std::vector<size_t> create_histogram( Range r, size_t num_buckets,
   assert( min <= *range::min_element( r ) );
   assert( max >= *range::max_element( r ) );
 
-  if ( max >= min )
+  if ( max <= min )
     return result;
 
   auto range = max - min;

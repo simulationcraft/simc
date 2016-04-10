@@ -62,7 +62,7 @@ actions.crystal_sequence+=/call_action_list,name=single_target
 # Meteor Combustion
 actions.init_combust=start_pyro_chain,if=talent.meteor.enabled&cooldown.meteor.up&(legendary_ring.cooldown.remains<gcd.max|legendary_ring.cooldown.remains>target.time_to_die+15|!legendary_ring.has_cooldown)&((cooldown.combustion.remains<gcd.max*3&buff.pyroblast.up&(buff.heating_up.up^action.fireball.in_flight))|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*gcd.max)))
 # Prismatic Crystal Combustion
-actions.init_combust+=/start_pyro_chain,if=talent.prismatic_crystal.enabled&cooldown.prismatic_crystal.up&(legendary_ring.cooldown.remains<gcd.max|legendary_ring.cooldown.remains>target.time_to_die+15|!legendary_ring.has_cooldown)&((cooldown.combustion.remains<gcd.max*2&buff.pyroblast.up&(buff.heating_up.up^action.fireball.in_flight))|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*gcd.max)))
+actions.init_combust+=/start_pyro_chain,if=talent.prismatic_crystal.enabled&cooldown.prismatic_crystal.up&(legendary_ring.cooldown.remains<gcd.max&(!equipped.112320|trinket.proc.crit.react)|legendary_ring.cooldown.remains+20>target.time_to_die|!legendary_ring.has_cooldown)&((cooldown.combustion.remains<gcd.max*2&buff.pyroblast.up&(buff.heating_up.up^action.fireball.in_flight))|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*gcd.max)))
 # Unglyphed Combustions between Prismatic Crystals
 actions.init_combust+=/start_pyro_chain,if=talent.prismatic_crystal.enabled&!glyph.combustion.enabled&cooldown.prismatic_crystal.remains>20&((cooldown.combustion.remains<gcd.max*2&buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight)|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*gcd.max)))
 # Kindling or Level 90 Combustion
@@ -79,6 +79,7 @@ actions.combust_sequence+=/meteor,if=active_enemies<=2
 actions.combust_sequence+=/pyroblast,if=set_bonus.tier17_4pc&buff.pyromaniac.up
 actions.combust_sequence+=/inferno_blast,if=set_bonus.tier16_4pc_caster&(buff.pyroblast.up^buff.heating_up.up)
 actions.combust_sequence+=/fireball,if=!dot.ignite.ticking&!in_flight
+actions.combust_sequence+=/fireball,if=crit_pct_current-1>(1000%13)&prev_gcd.pyroblast&buff.pyroblast.up&buff.heating_up.up&12-pet.prismatic_crystal.remains<action.fireball.execute_time+3*gcd.max&spell_haste<0.7
 actions.combust_sequence+=/pyroblast,if=buff.pyroblast.up&dot.ignite.tick_dmg*(6-ceil(dot.ignite.remains-travel_time))<crit_damage*mastery_value
 # Meteor Combustions can run out of Pyro procs before impact. Use IB to delay Combustion
 actions.combust_sequence+=/inferno_blast,if=talent.meteor.enabled&cooldown.meteor.duration-cooldown.meteor.remains<gcd.max*3
@@ -89,7 +90,7 @@ actions.combust_sequence+=/combustion
 actions.active_talents=meteor,if=active_enemies>=3|(glyph.combustion.enabled&(!talent.incanters_flow.enabled|buff.incanters_flow.stack+incanters_flow_dir>=4)&cooldown.meteor.duration-cooldown.combustion.remains<10)
 actions.active_talents+=/call_action_list,name=living_bomb,if=talent.living_bomb.enabled&(active_enemies>1|raid_event.adds.in<10)
 actions.active_talents+=/cold_snap,if=glyph.dragons_breath.enabled&!talent.prismatic_crystal.enabled&!cooldown.dragons_breath.up
-actions.active_talents+=/dragons_breath,if=glyph.dragons_breath.enabled&(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>8)
+actions.active_talents+=/dragons_breath,if=glyph.dragons_breath.enabled&(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>8|legendary_ring.cooldown.remains>10)
 actions.active_talents+=/blast_wave,if=(!talent.incanters_flow.enabled|buff.incanters_flow.stack>=4)&(target.time_to_die<10|!talent.prismatic_crystal.enabled|(charges>=1&cooldown.prismatic_crystal.remains>recharge_time))
 
 # Living Bomb application
@@ -120,7 +121,7 @@ actions.single_target+=/inferno_blast,if=buff.pyroblast.up&buff.heating_up.down&
 actions.single_target+=/fireball
 actions.single_target+=/scorch,moving=1
 
-head=cowl_of_the_arcanic_conclave,id=124160,bonus_id=567,upgrade=2
+head=demon_princes_ascendant_crown,id=124159,bonus_id=567,upgrade=2
 neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,upgrade=2,enchant=gift_of_critical_strike
 shoulders=mantle_of_the_arcanic_conclave,id=124177,bonus_id=567,upgrade=2
 back=cloak_of_hideous_unity,id=124138,bonus_id=567,upgrade=2,enchant=gift_of_critical_strike
@@ -128,24 +129,24 @@ chest=robe_of_the_arcanic_conclave,id=124171,bonus_id=567,upgrade=2
 wrists=contemptuous_wristguards,id=124186,bonus_id=567,upgrade=2
 hands=gloves_of_the_arcanic_conclave,id=124154,bonus_id=567,upgrade=2
 waist=demonbuckle_sash_of_argus,id=124200,bonus_id=567,upgrade=2
-legs=leggings_of_the_iron_summoner,id=124164,bonus_id=567,upgrade=2
+legs=pantaloons_of_the_arcanic_conclave,id=124165,bonus_id=567,upgrade=2
 feet=bloody_daggerheeled_pumps,id=124149,bonus_id=567,upgrade=2
 finger1=seal_of_the_traitorous_councilor,id=124191,bonus_id=567,upgrade=2,enchant=gift_of_critical_strike
 finger2=nithramus_the_allseer,id=124635,bonus_id=641,enchant=gift_of_critical_strike
 trinket1=sandmans_pouch,id=112320,bonus_id=618,upgrade=2
 trinket2=desecrated_shadowmoon_insignia,id=124228,bonus_id=567,upgrade=2
-main_hand=edict_of_argus,id=124382,bonus_id=567,upgrade=2,enchant=mark_of_the_thunderlord
+main_hand=edict_of_argus,id=124382,bonus_id=567,upgrade=2,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_ilvl=741.00
-# gear_stamina=7045
-# gear_intellect=5080
+# gear_ilvl=741.33
+# gear_stamina=7078
+# gear_intellect=5103
 # gear_spell_power=2792
-# gear_crit_rating=2058
-# gear_haste_rating=1806
-# gear_mastery_rating=2181
-# gear_multistrike_rating=590
+# gear_crit_rating=1641
+# gear_haste_rating=1443
+# gear_mastery_rating=2745
+# gear_multistrike_rating=835
 # gear_versatility_rating=391
-# gear_armor=1204
+# gear_armor=1210
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

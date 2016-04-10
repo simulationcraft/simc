@@ -34,7 +34,6 @@ namespace enchants
   void mark_of_the_thunderlord( special_effect_t& );
   void mark_of_the_shattered_hand( special_effect_t& );
   void mark_of_the_frostwolf( special_effect_t& );
-  void mark_of_shadowmoon( special_effect_t& );
   void mark_of_blackrock( special_effect_t& );
   void mark_of_warsong( special_effect_t& );
   void megawatt_filament( special_effect_t& );
@@ -281,28 +280,6 @@ void enchants::hemets_heartseeker( special_effect_t& effect )
   effect.trigger_spell_id = 173288;
 
   new dbc_proc_callback_t( effect.item, effect );
-}
-
-void enchants::mark_of_shadowmoon( special_effect_t& effect )
-{
-  effect.type = SPECIAL_EFFECT_EQUIP;
-
-  struct mos_proc_callback_t : public dbc_proc_callback_t
-  {
-    mos_proc_callback_t( const item_t* i, const special_effect_t& effect ) :
-      dbc_proc_callback_t( i, effect )
-    { }
-
-    void trigger( action_t* a, void* call_data ) override
-    {
-      if ( listener -> resources.pct( RESOURCE_MANA ) > 0.5 )
-        return;
-
-      dbc_proc_callback_t::trigger( a, call_data );
-    }
-  };
-
-  new mos_proc_callback_t( effect.item, effect );
 }
 
 void enchants::mark_of_blackrock( special_effect_t& effect )
@@ -2050,25 +2027,50 @@ void item::legendary_ring( special_effect_t& effect )
 
     struct legendary_ring_buff_t: public buff_t
     {
+      struct legendary_ring_delay_event_t : public event_t
+      {
+        player_t* player;
+        action_t* boom;
+        double value;
+
+        legendary_ring_delay_event_t( player_t* p, action_t* b, double v ) :
+          event_t( *p ), player( p ), boom( b ), value( v )
+        { add_event( timespan_t::from_seconds( 1.0 ) ); }
+
+        const char* name() const override
+        { return "legendary_ring_boom_delay"; }
+
+        void execute() override
+        {
+          if ( ! player -> is_sleeping() )
+          {
+            boom -> base_dd_min = boom -> base_dd_max = value;
+            boom -> execute();
+          }
+        }
+      };
+
       action_t* boom;
+      player_t* p;
+
       legendary_ring_buff_t( special_effect_t& originaleffect, std::string name, const spell_data_t* buff, const spell_data_t* damagespell ):
         buff_t( buff_creator_t( originaleffect.player, name, buff, originaleffect.item )
         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
         .default_value( originaleffect.player -> find_spell( originaleffect.spell_id ) -> effectN( 1 ).average( originaleffect.item ) / 10000.0 ) ),
-        boom( 0 )
+        boom( 0 ), p( originaleffect.player )
       {
-        boom = originaleffect.player -> find_action( damagespell -> name_cstr() );
+        boom = p -> find_action( damagespell -> name_cstr() );
 
         if ( !boom )
         {
-          boom = originaleffect.player -> create_proc_action( damagespell -> name_cstr(), originaleffect );
+          boom = p -> create_proc_action( damagespell -> name_cstr(), originaleffect );
         }
 
         if ( !boom )
         {
           boom = new legendary_ring_damage_t( originaleffect, damagespell );
         }
-        originaleffect.player -> buffs.legendary_aoe_ring = this;
+        p -> buffs.legendary_aoe_ring = this;
       }
 
       void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -2077,11 +2079,8 @@ void item::legendary_ring( special_effect_t& effect )
 
         buff_t::expire_override( expiration_stacks, remaining_duration );
 
-        if ( cv > 0 && !player -> is_sleeping() )
-        {
-          boom -> base_dd_min = boom -> base_dd_max = cv;
-          boom -> execute();
-        }
+        if ( cv > 0 )
+          new ( *sim ) legendary_ring_delay_event_t( p, boom, cv );
       }
   };
 
@@ -3319,14 +3318,21 @@ struct felstorm_tick_t : public melee_attack_t
 
 struct felstorm_t : public melee_attack_t
 {
-  felstorm_t( pet_t* p ) :
+  felstorm_t( pet_t* p, const std::string& opts ) :
     melee_attack_t( "felstorm", p, p -> find_spell( 184279 ) )
   {
+    parse_options( opts );
+
     callbacks = may_miss = may_block = may_parry = false;
-    channeled = true;
+    dynamic_tick_action = hasted_ticks = true;
+    trigger_gcd = timespan_t::from_seconds( 1.0 );
 
     tick_action = new felstorm_tick_t( p );
   }
+
+  // Make dot long enough to last for the duration of the summon
+  timespan_t composite_dot_duration( const action_state_t* ) const override
+  { return sim -> expected_iteration_time; }
 
   bool init_finished() override
   {
@@ -3342,8 +3348,11 @@ struct felstorm_t : public melee_attack_t
 
 struct blademaster_pet_t : public pet_t
 {
+  action_t* felstorm;
+
   blademaster_pet_t( player_t* owner ) :
-    pet_t( owner -> sim, owner, BLADEMASTER_PET_NAME, true, true )
+    pet_t( owner -> sim, owner, BLADEMASTER_PET_NAME, true, true ),
+    felstorm( nullptr )
   {
     main_hand_weapon.type = WEAPON_BEAST;
     // Verified 5/11/15, TODO: Check if this is still the same on live
@@ -3359,17 +3368,34 @@ struct blademaster_pet_t : public pet_t
     main_hand_weapon.max_dmg =  max_dps * main_hand_weapon.swing_time.total_seconds();
   }
 
+  timespan_t available() const override
+  { return timespan_t::from_seconds( 20.0 ); }
+
   void init_action_list() override
   {
-    action_list_str = "felstorm";
+    action_list_str = "felstorm,if=!ticking";
 
     pet_t::init_action_list();
+  }
+
+  void dismiss( bool expired = false ) override
+  {
+    pet_t::dismiss( expired );
+
+    if ( dot_t* d = felstorm -> find_dot( felstorm -> target ) )
+    {
+      d -> cancel();
+    }
   }
 
   action_t* create_action( const std::string& name,
                            const std::string& options_str ) override
   {
-    if ( name == "felstorm" ) return new felstorm_t( this );
+    if ( name == "felstorm" )
+    {
+      felstorm = new felstorm_t( this, options_str );
+      return felstorm;
+    }
 
     return pet_t::create_action( name, options_str );
   }
@@ -4302,7 +4328,6 @@ void unique_gear::register_special_effects()
   register_special_effect( 159243, enchants::mark_of_the_thunderlord    );
   register_special_effect( 159682, enchants::mark_of_warsong            );
   register_special_effect( 159683, enchants::mark_of_the_frostwolf      );
-  register_special_effect( 159684, enchants::mark_of_shadowmoon         );
   register_special_effect( 159685, enchants::mark_of_blackrock          );
   register_special_effect( 156059, enchants::megawatt_filament          );
   register_special_effect( 156052, enchants::oglethorpes_missile_splitter );

@@ -45,11 +45,14 @@ actions.movement+=/ice_floes,if=buff.ice_floes.down&(raid_event.movement.distanc
 
 # Regular burn with evocation
 actions.init_burn=start_burn_phase,if=buff.arcane_charge.stack>=4&(legendary_ring.cooldown.remains<gcd.max|legendary_ring.cooldown.remains>target.time_to_die+15|!legendary_ring.has_cooldown)&(cooldown.prismatic_crystal.up|!talent.prismatic_crystal.enabled)&(cooldown.arcane_power.up|(glyph.arcane_power.enabled&cooldown.arcane_power.remains>60))&(cooldown.evocation.remains-2*buff.arcane_missiles.stack*spell_haste-gcd.max*talent.prismatic_crystal.enabled)*0.75*(1-0.1*(cooldown.arcane_power.remains<5))*(1-0.1*(talent.nether_tempest.enabled|talent.supernova.enabled))*(10%action.arcane_blast.execute_time)<mana.pct-20-2.5*active_enemies*(9-active_enemies)+(cooldown.evocation.remains*1.8%spell_haste)
+# PC + ToSW + PoF opener burn
+actions.init_burn+=/start_burn_phase,if=talent.prismatic_crystal.enabled&t18_class_trinket&equipped.124230&time<1
 # End of fight burn
 actions.init_burn+=/start_burn_phase,if=target.time_to_die*0.75*(1-0.1*(talent.nether_tempest.enabled|talent.supernova.enabled))*(10%action.arcane_blast.execute_time)*1.1<mana.pct-10+(target.time_to_die*1.8%spell_haste)
 
+actions.init_crystal=prismatic_crystal,if=t18_class_trinket&equipped.124230&time<2
 # Conditions for initiating Prismatic Crystal
-actions.init_crystal=call_action_list,name=conserve,if=buff.arcane_charge.stack<4|(buff.arcane_missiles.react&debuff.mark_of_doom.remains>2*spell_haste+(target.distance%20))
+actions.init_crystal+=/call_action_list,name=conserve,if=buff.arcane_charge.stack<4|(buff.arcane_missiles.react&debuff.mark_of_doom.remains>2*spell_haste+(target.distance%20))
 actions.init_crystal+=/arcane_missiles,if=buff.arcane_missiles.react&t18_class_trinket
 actions.init_crystal+=/prismatic_crystal
 

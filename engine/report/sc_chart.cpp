@@ -1466,6 +1466,7 @@ std::vector<std::pair<unsigned,std::string>> chart::reforge_dps( const player_t&
     std::pair<unsigned,std::string> p(stat_indices.size(), s.str());
     result.push_back( p );
   }
+  return result;
 }
 
 // chart::timeline ==========================================================

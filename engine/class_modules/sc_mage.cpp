@@ -88,6 +88,14 @@ struct unstable_magic_explosion_t;
 } // actions
 
 namespace pets {
+enum hero_e
+{
+  ARTHAS,
+  JAINA,
+  SYLVANAS,
+  TYRANDE
+};
+
 struct water_elemental_pet_t;
 }
 
@@ -141,6 +149,9 @@ public:
   real_ppm_t rppm_pyromaniac;         // T17 Fire 4pc
   real_ppm_t rppm_arcane_instability; // T17 Arcane 4pc
 
+  // Tier 18 Arcane pet order tracking
+  pets::hero_e last_summoned;
+
   // Tier 18 (WoD 6.2) trinket effects
   const special_effect_t* wild_arcanist; // Arcane
   const special_effect_t* pyrosurge;     // Fire
@@ -160,7 +171,6 @@ public:
   struct benefits_t
   {
     benefit_t* arcane_charge[ 4 ]; // CHANGED 2014/4/15 - Arcane Charges max stack is 4 now, not 7.
-    benefit_t* water_elemental;
   } benefits;
 
   // Buffs
@@ -478,9 +488,6 @@ public:
     }
     return td;
   }
-
-  // Event Tracking
-  virtual void   regen( timespan_t periodicity ) override;
 
   // Public mage functions:
   icicle_data_t get_icicle_object();
@@ -1123,16 +1130,7 @@ struct prismatic_crystal_t : public pet_t
 
 struct temporal_hero_t : public pet_t
 {
-  enum hero_e
-  {
-    ARTHAS,
-    JAINA,
-    SYLVANAS,
-    TYRANDE
-  };
-
   hero_e hero_type;
-  static hero_e last_summoned;
 
   struct temporal_hero_melee_attack_t : public mage_pet_melee_attack_t
   {
@@ -1319,12 +1317,12 @@ struct temporal_hero_t : public pet_t
   void arise() override
   {
     pet_t::arise();
+    mage_t* m = debug_cast<mage_t*>( owner );
 
     // Summoned heroes follow Jaina -> Arthas -> Sylvanas -> Tyrande order
-    if ( last_summoned == JAINA )
+    if ( m -> last_summoned == JAINA )
     {
       hero_type = ARTHAS;
-      last_summoned = hero_type;
       temporal_hero_multiplier = 0.1964;
 
       if ( sim -> debug )
@@ -1333,10 +1331,9 @@ struct temporal_hero_t : public pet_t
                                  owner -> name() );
       }
     }
-    else if ( last_summoned == TYRANDE )
+    else if ( m -> last_summoned == TYRANDE )
     {
       hero_type = JAINA;
-      last_summoned = hero_type;
       temporal_hero_multiplier = 0.6;
 
       if ( sim -> debug )
@@ -1345,10 +1342,9 @@ struct temporal_hero_t : public pet_t
                                  owner -> name() );
       }
     }
-    else if ( last_summoned == ARTHAS )
+    else if ( m -> last_summoned == ARTHAS )
     {
       hero_type = SYLVANAS;
-      last_summoned = hero_type;
       temporal_hero_multiplier = 0.5283;
 
       if ( sim -> debug )
@@ -1360,7 +1356,6 @@ struct temporal_hero_t : public pet_t
     else
     {
       hero_type = TYRANDE;
-      last_summoned = hero_type;
       temporal_hero_multiplier = 0.5283;
 
       if ( sim -> debug )
@@ -1370,13 +1365,15 @@ struct temporal_hero_t : public pet_t
       }
     }
 
+    m -> last_summoned = hero_type;
+
     if ( owner -> sets.has_set_bonus( MAGE_ARCANE, T18, B4 ) )
     {
       mage_t* m = debug_cast<mage_t*>( owner );
       m -> buffs.temporal_power -> trigger();
-    }
 
-    owner -> invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+      owner -> invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    }
   }
 
   void demise() override
@@ -1389,29 +1386,27 @@ struct temporal_hero_t : public pet_t
     owner -> invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
-  static void randomize_last_summoned( const mage_t* p )
+  static void randomize_last_summoned( mage_t* m )
   {
-    double rand = p -> rng().real();
+    double rand = m -> rng().real();
     if ( rand < 0.25 )
     {
-      last_summoned = ARTHAS;
+      m -> last_summoned = ARTHAS;
     }
     else if ( rand < 0.5 )
     {
-      last_summoned = JAINA;
+      m -> last_summoned = JAINA;
     }
     else if ( rand < 0.75 )
     {
-      last_summoned = SYLVANAS;
+      m -> last_summoned = SYLVANAS;
     }
     else
     {
-      last_summoned = TYRANDE;
+      m -> last_summoned = TYRANDE;
     }
   }
 };
-
-temporal_hero_t::hero_e temporal_hero_t::last_summoned;
 
 } // pets
 
@@ -2566,6 +2561,13 @@ struct combustion_t : public mage_spell_t
     }
   }
 
+  void init() override
+  {
+    mage_spell_t::init();
+
+    update_flags &= ~(STATE_CRIT | STATE_TGT_CRIT);
+  }
+
   action_state_t* new_state() override
   { return new residual_periodic_state_t( this, target ); }
 
@@ -3398,7 +3400,7 @@ struct frozen_orb_bolt_t : public mage_spell_t
     if ( result_is_hit( s -> result ) )
     {
       double fof_proc_chance = p() -> spec.fingers_of_frost
-                                   -> effectN( 1 ).percent();
+                                   -> effectN( 2 ).percent();
       p() -> buffs.fingers_of_frost
           -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
     }
@@ -4517,7 +4519,6 @@ struct prismatic_crystal_t : public mage_spell_t
   {
     parse_options( options_str );
     may_miss = may_crit = harmful = callbacks = false;
-    min_gcd = data().gcd();
     ignore_false_positive = true;
     action_skill = 1;
   }
@@ -5281,7 +5282,6 @@ void mage_t::create_pets()
     for ( unsigned i = 0; i < sizeof_array( pets.temporal_heroes ); i++ )
     {
       pets.temporal_heroes[ i ] = new pets::temporal_hero_t( sim, this );
-      pets::temporal_hero_t::randomize_last_summoned( this );
     }
   }
 }
@@ -5593,7 +5593,6 @@ void mage_t::init_benefits()
   {
     benefits.arcane_charge[ i ] = get_benefit( "Arcane Charge " + util::to_string( i )  );
   }
-  benefits.water_elemental   = get_benefit( "water_elemental" );
 }
 
 // mage_t::init_stats =========================================================
@@ -5807,10 +5806,14 @@ void mage_t::apl_arcane()
 
   init_burn -> add_action( "start_burn_phase,if=buff.arcane_charge.stack>=4&(legendary_ring.cooldown.remains<gcd.max|legendary_ring.cooldown.remains>target.time_to_die+15|!legendary_ring.has_cooldown)&(cooldown.prismatic_crystal.up|!talent.prismatic_crystal.enabled)&(cooldown.arcane_power.up|(glyph.arcane_power.enabled&cooldown.arcane_power.remains>60))&(cooldown.evocation.remains-2*buff.arcane_missiles.stack*spell_haste-gcd.max*talent.prismatic_crystal.enabled)*0.75*(1-0.1*(cooldown.arcane_power.remains<5))*(1-0.1*(talent.nether_tempest.enabled|talent.supernova.enabled))*(10%action.arcane_blast.execute_time)<mana.pct-20-2.5*active_enemies*(9-active_enemies)+(cooldown.evocation.remains*1.8%spell_haste)",
                            "Regular burn with evocation" );
+  init_burn -> add_action( "start_burn_phase,if=talent.prismatic_crystal.enabled&t18_class_trinket&equipped.124230&time<1",
+                           "PC + ToSW + PoF opener burn" );
   init_burn -> add_action( "start_burn_phase,if=target.time_to_die*0.75*(1-0.1*(talent.nether_tempest.enabled|talent.supernova.enabled))*(10%action.arcane_blast.execute_time)*1.1<mana.pct-10+(target.time_to_die*1.8%spell_haste)",
                            "End of fight burn" );
 
 
+  init_crystal -> add_talent( this, "Prismatic Crystal",
+                              "if=t18_class_trinket&equipped.124230&time<2" );
   init_crystal -> add_action( "call_action_list,name=conserve,if=buff.arcane_charge.stack<4|(buff.arcane_missiles.react&debuff.mark_of_doom.remains>2*spell_haste+(target.distance%20))",
                               "Conditions for initiating Prismatic Crystal" );
   init_crystal -> add_action( this, "Arcane Missiles",
@@ -6012,7 +6015,7 @@ void mage_t::apl_fire()
                               "Combustion sequence initialization\n"
                               "# This sequence lists the requirements for preparing a Combustion combo with each talent choice\n"
                               "# Meteor Combustion" );
-  init_combust -> add_action( "start_pyro_chain,if=talent.prismatic_crystal.enabled&cooldown.prismatic_crystal.up&(legendary_ring.cooldown.remains<gcd.max|legendary_ring.cooldown.remains>target.time_to_die+15|!legendary_ring.has_cooldown)&((cooldown.combustion.remains<gcd.max*2&buff.pyroblast.up&(buff.heating_up.up^action.fireball.in_flight))|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*gcd.max)))",
+  init_combust -> add_action( "start_pyro_chain,if=talent.prismatic_crystal.enabled&cooldown.prismatic_crystal.up&(legendary_ring.cooldown.remains<gcd.max&(!equipped.112320|trinket.proc.crit.react)|legendary_ring.cooldown.remains+20>target.time_to_die|!legendary_ring.has_cooldown)&((cooldown.combustion.remains<gcd.max*2&buff.pyroblast.up&(buff.heating_up.up^action.fireball.in_flight))|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*gcd.max)))",
                               "Prismatic Crystal Combustion" );
   init_combust -> add_action( "start_pyro_chain,if=talent.prismatic_crystal.enabled&!glyph.combustion.enabled&cooldown.prismatic_crystal.remains>20&((cooldown.combustion.remains<gcd.max*2&buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight)|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*gcd.max)))",
                               "Unglyphed Combustions between Prismatic Crystals" );
@@ -6034,6 +6037,8 @@ void mage_t::apl_fire()
                                   "if=set_bonus.tier16_4pc_caster&(buff.pyroblast.up^buff.heating_up.up)" );
   combust_sequence -> add_action( this, "Fireball",
                                   "if=!dot.ignite.ticking&!in_flight" );
+  combust_sequence -> add_action( this, "Fireball",
+                                  "if=crit_pct_current-1>(1000%13)&prev_gcd.pyroblast&buff.pyroblast.up&buff.heating_up.up&12-pet.prismatic_crystal.remains<action.fireball.execute_time+3*gcd.max&spell_haste<0.7" );
   combust_sequence -> add_action( this, "Pyroblast",
                                   "if=buff.pyroblast.up&dot.ignite.tick_dmg*(6-ceil(dot.ignite.remains-travel_time))<crit_damage*mastery_value" );
   combust_sequence -> add_action( this, "Inferno Blast",
@@ -6051,7 +6056,7 @@ void mage_t::apl_fire()
   active_talents -> add_talent( this, "Cold Snap",
                                 "if=glyph.dragons_breath.enabled&!talent.prismatic_crystal.enabled&!cooldown.dragons_breath.up" );
   active_talents -> add_action( this, "Dragon's Breath",
-                                "if=glyph.dragons_breath.enabled&(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>8)" );
+                                "if=glyph.dragons_breath.enabled&(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>8|legendary_ring.cooldown.remains>10)" );
   active_talents -> add_talent( this, "Blast Wave",
                                 "if=(!talent.incanters_flow.enabled|buff.incanters_flow.stack>=4)&(target.time_to_die<10|!talent.prismatic_crystal.enabled|(charges>=1&cooldown.prismatic_crystal.remains>recharge_time))" );
 
@@ -6128,11 +6133,11 @@ void mage_t::apl_frost()
                               "if=buff.rune_of_power.remains<cast_time" );
   default_list -> add_talent( this, "Rune of Power",
                               "if=(cooldown.icy_veins.remains<gcd.max&buff.rune_of_power.remains<20)|(cooldown.prismatic_crystal.remains<gcd.max&buff.rune_of_power.remains<10)" );
-  default_list -> add_action( "call_action_list,name=cooldowns,if=target.time_to_die<24" );
-  default_list -> add_action( "call_action_list,name=crystal_sequence,if=talent.prismatic_crystal.enabled&(cooldown.prismatic_crystal.remains<=gcd.max|pet.prismatic_crystal.active)" );
-  default_list -> add_action( "call_action_list,name=water_jet,if=prev_off_gcd.water_jet|debuff.water_jet.remains>0" );
-  default_list -> add_action( "water_jet,if=time<1&active_enemies<4&!(talent.ice_nova.enabled&talent.prismatic_crystal.enabled)",
+  default_list -> add_action( "water_jet,if=time<1&active_enemies<4&!talent.prismatic_crystal.enabled",
                               "Water jet on pull for non PC talent combos" );
+  default_list -> add_action( "call_action_list,name=cooldowns,if=target.time_to_die<24" );
+  default_list -> add_action( "call_action_list,name=crystal_sequence,if=talent.prismatic_crystal.enabled&(cooldown.prismatic_crystal.remains<=gcd.max|pet.prismatic_crystal.active)&(legendary_ring.cooldown.remains<gcd.max|legendary_ring.cooldown.remains+15>target.time_to_die|!legendary_ring.has_cooldown)" );
+  default_list -> add_action( "call_action_list,name=water_jet,if=prev_off_gcd.water_jet|debuff.water_jet.remains>0" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
   default_list -> add_action( "call_action_list,name=single_target" );
 
@@ -6151,12 +6156,12 @@ void mage_t::apl_frost()
   crystal_sequence -> add_action( this, "Frozen Orb",
                                   "target_if=max:target.time_to_die&target!=pet.prismatic_crystal" );
   crystal_sequence -> add_talent( this, "Prismatic Crystal" );
+  crystal_sequence -> add_action( "water_jet,if=pet.prismatic_crystal.remains>(5+10*set_bonus.tier18_4pc)*spell_haste*0.9" );
   crystal_sequence -> add_action( "call_action_list,name=cooldowns" );
   crystal_sequence -> add_talent( this, "Frost Bomb",
                                   "if=talent.prismatic_crystal.enabled&current_target=pet.prismatic_crystal&active_enemies>1&!ticking" );
   crystal_sequence -> add_action( this, "Ice Lance",
                                   "if=!t18_class_trinket&(buff.fingers_of_frost.react>=2+set_bonus.tier18_4pc*2|(buff.fingers_of_frost.react>set_bonus.tier18_4pc*2&active_dot.frozen_orb))" );
-  crystal_sequence -> add_action( "water_jet,if=pet.prismatic_crystal.remains>(5+10*set_bonus.tier18_4pc)*spell_haste*0.8" );
   crystal_sequence -> add_talent( this, "Ice Nova",
                                   "if=charges=2|pet.prismatic_crystal.remains<4" );
   crystal_sequence -> add_action( this, "Ice Lance",
@@ -6224,7 +6229,7 @@ void mage_t::apl_frost()
                      "interrupt_if=cooldown.frozen_orb.up|(talent.frost_bomb.enabled&buff.fingers_of_frost.react>=2)" );
 
 
-  single_target -> add_action( "call_action_list,name=cooldowns,if=!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>15",
+  single_target -> add_action( "call_action_list,name=cooldowns,if=!talent.prismatic_crystal.enabled|(cooldown.prismatic_crystal.remains>15&!legendary_ring.has_cooldown)",
                                "Single target sequence" );
   single_target -> add_action( this, "Ice Lance",
                                "if=buff.fingers_of_frost.react&(buff.fingers_of_frost.remains<action.frostbolt.execute_time|buff.fingers_of_frost.remains<buff.fingers_of_frost.react*gcd.max)",
@@ -6232,10 +6237,10 @@ void mage_t::apl_frost()
   single_target -> add_action( this, "Frostfire Bolt",
                                "if=buff.brain_freeze.react&(buff.brain_freeze.remains<action.frostbolt.execute_time|buff.brain_freeze.remains<buff.brain_freeze.react*gcd.max)" );
   single_target -> add_talent( this, "Frost Bomb",
-                               "if=!talent.prismatic_crystal.enabled&cooldown.frozen_orb.remains<gcd.max&debuff.frost_bomb.remains<10",
+                               "if=(!talent.prismatic_crystal.enabled|legendary_ring.cooldown.remains>45)&cooldown.frozen_orb.remains<gcd.max&debuff.frost_bomb.remains<10",
                                "Frozen Orb usage without Prismatic Crystal" );
   single_target -> add_action( this, "Frozen Orb",
-                               "if=!talent.prismatic_crystal.enabled&buff.fingers_of_frost.stack<2&cooldown.icy_veins.remains>45-20*talent.thermal_void.enabled" );
+                               "if=(!talent.prismatic_crystal.enabled|legendary_ring.cooldown.remains>45)&buff.fingers_of_frost.stack<2&cooldown.icy_veins.remains>45-20*talent.thermal_void.enabled" );
   single_target -> add_action( this, "Ice Lance",
                                "if=buff.fingers_of_frost.react&buff.shatterlance.up",
                                "Single target routine; Rough summary: IN2 > FoF2 > CmS > IN > BF > FoF" );
@@ -6457,16 +6462,6 @@ void mage_t::reset()
   {
     pets::temporal_hero_t::randomize_last_summoned( this );
   }
-}
-
-// mage_t::regen  ===========================================================
-
-void mage_t::regen( timespan_t periodicity )
-{
-  player_t::regen( periodicity );
-
-  if ( pets.water_elemental )
-    benefits.water_elemental -> update( pets.water_elemental -> is_sleeping() == 0 );
 }
 
 // mage_t::stun =============================================================

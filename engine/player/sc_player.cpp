@@ -6731,17 +6731,17 @@ struct cancel_buff_t : public action_t
       buff = buff_t::find( player -> get_target_data( player ) -> target, buff_name );
     }
 
-    if ( !buff -> can_cancel )
-    {
-      sim -> errorf( "Player %s uses cancel_buff on %s, which cannot be cancelled in game\n", player -> name(), buff_name.c_str() );
-      sim -> cancel();
-    }
-
     if ( ! buff )
     {
       sim -> errorf( "Player %s uses cancel_buff with unknown buff %s\n", player -> name(), buff_name.c_str() );
       sim -> cancel();
     }
+    else if ( !buff -> can_cancel )
+    {
+      sim -> errorf( "Player %s uses cancel_buff on %s, which cannot be cancelled in game\n", player -> name(), buff_name.c_str() );
+      sim -> cancel();
+    }
+
     trigger_gcd = timespan_t::zero();
   }
 
@@ -6839,20 +6839,21 @@ struct pool_resource_t : public action_t
   timespan_t wait;
   int for_next;
   action_t* next_action;
-  double amount;
+  std::string amount_str;
+  expr_t* amount_expr;
 
   pool_resource_t( player_t* p, const std::string& options_str, resource_e r = RESOURCE_NONE ) :
     action_t( ACTION_OTHER, "pool_resource", p ),
     resource( r != RESOURCE_NONE ? r : p -> primary_resource() ),
     wait( timespan_t::from_seconds( 0.251 ) ),
     for_next( 0 ),
-    next_action( 0 ), amount( 0 )
+    next_action( 0 ), amount_expr( nullptr )
   {
     quiet = true;
     add_option( opt_timespan( "wait", wait ) );
     add_option( opt_bool( "for_next", for_next ) );
     add_option( opt_string( "resource", resource_str ) );
-    add_option( opt_float( "extra_amount", amount ) );
+    add_option( opt_string( "extra_amount", amount_str ) );
     parse_options( options_str );
 
     if ( !resource_str.empty() )
@@ -6861,6 +6862,21 @@ struct pool_resource_t : public action_t
       if ( res != RESOURCE_NONE )
         resource = res;
     }
+  }
+
+  bool init_finished() override
+  {
+    if ( ! action_t::init_finished() )
+    {
+      return false;
+    }
+
+    if ( ! amount_str.empty() )
+    {
+      return ( amount_expr = expr_t::parse( this, amount_str, sim -> optimize_expressions ) ) != 0;
+    }
+
+    return true;
   }
 
   virtual void reset() override
@@ -6919,7 +6935,7 @@ struct pool_resource_t : public action_t
       // If the next action in the list would be "ready" if it was not constrained by energy,
       // then this command will pool energy until we have enough.
 
-      double theoretical_cost = next_action -> cost() + amount;
+      double theoretical_cost = next_action -> cost() + ( amount_expr ? amount_expr -> eval() : 0 );
       player -> resources.current[ resource ] += theoretical_cost;
 
       bool resource_limited = next_action -> ready();

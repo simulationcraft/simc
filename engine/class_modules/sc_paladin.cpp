@@ -6905,6 +6905,11 @@ struct paladin_module_t : public module_t
 
   virtual void register_hotfixes() const override
   {
+    hotfix::register_effect( "Paladin", "2016-01-30", "Hammer of Wrath did not receive a 8% damage buff in 6.2.3.", 14488 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 2.4 )
+      .verification_value( 2.592 );
   }
 
   virtual void combat_begin( sim_t* ) const override {}

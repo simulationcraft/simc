@@ -39,11 +39,12 @@ actions+=/call_action_list,name=single_target,if=spell_targets.starfall_pulse=1&
 actions.single_target=starsurge,if=charges=3
 actions.single_target+=/starsurge,if=buff.lunar_empowerment.down&eclipse_energy>40
 actions.single_target+=/starsurge,if=buff.solar_empowerment.down&eclipse_energy<-40
-actions.single_target+=/sunfire,if=(remains<solar_max&eclipse_dir.solar)|(buff.solar_peak.up&buff.solar_peak.remains<action.wrath.cast_time&!talent.balance_of_power.enabled)
+actions.single_target+=/sunfire,if=!talent.balance_of_power.enabled&((remains<solar_max&eclipse_dir.solar)|(buff.solar_peak.up&buff.solar_peak.remains<action.wrath.cast_time))
+actions.single_target+=/sunfire,if=talent.balance_of_power.enabled&(remains<lunar_max+10|remains<action.wrath.cast_time)
 actions.single_target+=/stellar_flare,if=remains<7
-actions.single_target+=/moonfire,if=!talent.euphoria.enabled&(remains<lunar_max&eclipse_dir.lunar)|(buff.lunar_peak.up&buff.lunar_peak.remains<action.starfire.cast_time&remains<eclipse_change+20)&!talent.balance_of_power.enabled
-actions.single_target+=/moonfire,if=talent.euphoria.enabled&(remains<lunar_max&eclipse_dir.lunar)|(buff.lunar_peak.up&buff.lunar_peak.remains<action.starfire.cast_time&remains<eclipse_change+10)&!talent.balance_of_power.enabled
-actions.single_target+=/moonfire,if=talent.balance_of_power.enabled&remains<eclipse_change+14
+actions.single_target+=/moonfire,if=!talent.euphoria.enabled&!talent.balance_of_power.enabled&((remains<lunar_max&eclipse_dir.lunar)|(buff.lunar_peak.up&buff.lunar_peak.remains<action.starfire.cast_time&remains<eclipse_change+20))
+actions.single_target+=/moonfire,if=talent.euphoria.enabled&((remains<lunar_max&eclipse_dir.lunar)|(buff.lunar_peak.up&buff.lunar_peak.remains<action.starfire.cast_time&remains<eclipse_change+10))
+actions.single_target+=/moonfire,if=talent.balance_of_power.enabled&(remains<solar_max+10|remains<action.starfire.cast_time)
 actions.single_target+=/wrath,if=(eclipse_energy<0&eclipse_change>action.starfire.cast_time)|(eclipse_energy>0&cast_time>eclipse_change)
 actions.single_target+=/starfire
 

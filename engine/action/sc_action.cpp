@@ -1419,6 +1419,12 @@ void action_t::multistrike_direct( const action_state_t* source_state, action_st
 
 void action_t::tick( dot_t* d )
 {
+  assert( ! d -> target -> is_sleeping() );
+
+  // Always update the state of the base dot. This is required to allow tick action-based dots to
+  // update the driver's state per tick (for example due to haste changes -> tick time).
+  update_state( d -> state, amount_type( d -> state, true ) );
+
   if ( tick_action )
   {
     if ( tick_action -> pre_execute_state )
@@ -1436,10 +1442,6 @@ void action_t::tick( dot_t* d )
   }
   else
   {
-    assert( ! d -> target -> is_sleeping() );
-
-    update_state( d -> state, amount_type( d -> state, true ) );
-
     d -> state -> result = RESULT_HIT;
 
     if ( tick_may_crit && rng().roll( d -> state -> composite_crit() ) )
@@ -1594,7 +1596,7 @@ void action_t::assess_damage( dmg_e    type,
       player -> priority_iteration_dmg += s -> result_amount;
     }
 
-    if ( target -> is_enemy() )
+    if ( s -> target -> is_enemy() )
     {
       if ( player -> buffs.legendary_aoe_ring && player -> buffs.legendary_aoe_ring -> check() )
       {

@@ -1,0 +1,141 @@
+deathknight="Death_Knight_Blood_T18M"
+level=100
+race=blood_elf
+role=tank
+position=front
+talents=2311113
+spec=blood
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_strength_flask
+actions.precombat+=/food,type=salty_squid_roll
+actions.precombat+=/blood_presence
+actions.precombat+=/horn_of_winter
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=draenic_armor
+actions.precombat+=/bone_shield
+actions.precombat+=/army_of_the_dead
+
+# Executed every time the actor is available.
+
+actions=auto_attack
+actions+=/dancing_rune_weapon,if=target.time_to_die>90|buff.draenic_armor_potion.remains<=buff.dancing_rune_weapon.duration
+actions+=/potion,name=draenic_armor,if=target.time_to_die<(buff.draenic_armor_potion.duration+13)
+actions+=/bone_shield,if=buff.army_of_the_dead.down&buff.bone_shield.down&buff.dancing_rune_weapon.down&buff.icebound_fortitude.down&buff.rune_tap.down
+actions+=/death_strike,if=incoming_damage_5s>=health.max*0.70
+actions+=/lichborne,if=health.pct<30
+actions+=/vampiric_blood,if=health.pct<40
+actions+=/icebound_fortitude,if=health.pct<30&buff.army_of_the_dead.down&buff.dancing_rune_weapon.down&buff.bone_shield.down&buff.rune_tap.down
+actions+=/rune_tap,if=health.pct<50&buff.army_of_the_dead.down&buff.dancing_rune_weapon.down&buff.bone_shield.down&buff.vampiric_blood.down&buff.icebound_fortitude.down
+actions+=/death_pact,if=health.pct<30
+actions+=/run_action_list,name=last,if=target.time_to_die<8|target.time_to_die<13&cooldown.empower_rune_weapon.remains<4
+actions+=/run_action_list,name=bos,if=dot.breath_of_sindragosa.ticking
+actions+=/run_action_list,name=nbos,if=!dot.breath_of_sindragosa.ticking&cooldown.breath_of_sindragosa.remains<4
+actions+=/run_action_list,name=cdbos,if=!dot.breath_of_sindragosa.ticking&cooldown.breath_of_sindragosa.remains>=4
+
+actions.bos=blood_tap,if=buff.blood_charge.stack>=10&(!unholy|!frost|!blood)
+actions.bos+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<35&runic_power>5
+actions.bos+=/blood_tap,if=buff.blood_charge.stack>=9&runic_power>80&(blood.frac>1.8|frost.frac>1.8|unholy.frac>1.8)
+actions.bos+=/blood_tap,if=buff.blood_charge.stack>=9&runic_power>85&(buff.convulsive_shadows.remains>5|buff.convulsive_shadows.remains>2&buff.bloodlust.up)
+actions.bos+=/outbreak,if=(!dot.blood_plague.ticking|!dot.frost_fever.ticking)&runic_power>21&!glyph.outbreak.enabled
+actions.bos+=/antimagic_shell,damage=100000,if=runic_power<31
+actions.bos+=/death_strike,if=runic_power<31
+actions.bos+=/icy_touch,if=!dot.frost_fever.ticking&runic_power>5
+actions.bos+=/plague_strike,if=!dot.blood_plague.ticking&runic_power>5
+actions.bos+=/blood_tap,if=runic_power<31
+actions.bos+=/blood_boil,if=runic_power<31&runic_power>5&buff.crimson_scourge.down&(blood>=1&blood.death=0|blood=2&blood.death<2)
+actions.bos+=/blood_boil,if=runic_power<31&buff.crimson_scourge.down&(blood>=1&blood.death=0|blood=2&blood.death<2)
+actions.bos+=/icy_touch,if=runic_power<31
+actions.bos+=/plague_strike,if=runic_power<31
+actions.bos+=/plague_leech,if=((!blood&!unholy)|(!blood&!frost)|(!unholy&!frost))
+actions.bos+=/rune_tap,if=runic_power<31&blood>=1&blood.death=0&frost=0&unholy=0&buff.crimson_scourge.up
+actions.bos+=/empower_rune_weapon,if=runic_power<31&blood=0&frost=0&unholy=0
+actions.bos+=/death_strike,if=(blood.frac>1.8&blood.death>=1|frost.frac>1.8|unholy.frac>1.8|buff.blood_charge.stack>=11)
+actions.bos+=/blood_tap,if=(blood.frac>1.8&blood.death>=1|frost.frac>1.8|unholy.frac>1.8)
+actions.bos+=/blood_boil,if=(blood>=1&blood.death=0&target.health.pct-3*(target.health.pct%target.time_to_die)>35|blood=2&blood.death<2)&buff.crimson_scourge.down
+actions.bos+=/plague_leech,if=runic_power<65
+actions.bos+=/outbreak,if=!dot.blood_plague.ticking&!glyph.outbreak.enabled
+actions.bos+=/outbreak,if=pet.dancing_rune_weapon.active&!pet.dancing_rune_weapon.dot.blood_plague.ticking&!glyph.outbreak.enabled
+actions.bos+=/death_and_decay,if=buff.crimson_scourge.up
+actions.bos+=/blood_boil,if=buff.crimson_scourge.up
+
+actions.cdbos=soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35
+actions.cdbos+=/outbreak,if=(!talent.necrotic_plague.enabled&disease.min_remains<8)|!disease.ticking
+actions.cdbos+=/death_coil,if=runic_power>90
+actions.cdbos+=/icy_touch,if=(!talent.necrotic_plague.enabled&!dot.frost_fever.ticking)|(talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking)
+actions.cdbos+=/plague_strike,if=(!talent.necrotic_plague.enabled&!dot.blood_plague.ticking)|(talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking)
+actions.cdbos+=/plague_leech,if=((!blood&!unholy)|(!blood&!frost)|(!unholy&!frost))&cooldown.outbreak.remains<=gcd
+actions.cdbos+=/death_strike,if=unholy=2|frost=2|(blood=2&blood.death>=1)|(buff.blood_charge.stack>=10&unholy&frost)
+actions.cdbos+=/blood_tap,if=buff.blood_charge.stack>=10&!unholy&!frost
+actions.cdbos+=/blood_tap,if=buff.blood_charge.stack>=5&(!unholy|!frost|!blood)
+actions.cdbos+=/death_coil,if=runic_power>65
+actions.cdbos+=/blood_boil,if=blood=2&blood.death<2
+actions.cdbos+=/outbreak,if=pet.dancing_rune_weapon.active&!pet.dancing_rune_weapon.dot.blood_plague.ticking
+actions.cdbos+=/blood_boil,if=((dot.frost_fever.remains<4&dot.frost_fever.ticking)|(dot.blood_plague.remains<4&dot.blood_plague.ticking))
+actions.cdbos+=/death_and_decay,if=buff.crimson_scourge.up
+actions.cdbos+=/blood_boil,if=buff.crimson_scourge.up
+actions.cdbos+=/death_coil,if=runic_power>45
+actions.cdbos+=/death_strike
+actions.cdbos+=/blood_boil,if=blood>=1&blood.death=0
+actions.cdbos+=/death_coil
+
+actions.last=antimagic_shell,if=runic_power<90
+actions.last+=/blood_tap
+actions.last+=/soul_reaper,if=target.time_to_die>7
+actions.last+=/death_coil,if=runic_power>80
+actions.last+=/death_strike
+actions.last+=/blood_boil,if=blood=2|target.time_to_die<=7
+actions.last+=/death_coil,if=runic_power>75|target.time_to_die<4|!dot.breath_of_sindragosa.ticking
+actions.last+=/plague_strike,if=target.time_to_die<2|cooldown.empower_rune_weapon.remains<2
+actions.last+=/icy_touch,if=target.time_to_die<2|cooldown.empower_rune_weapon.remains<2
+actions.last+=/empower_rune_weapon,if=!blood&!unholy&!frost&runic_power<76|target.time_to_die<5
+actions.last+=/plague_leech
+
+actions.nbos=use_item,name=sanctus_sigil_of_the_unbroken,if=runic_power>=60
+actions.nbos+=/use_item,name=vial_of_convulsive_shadows,if=runic_power>=60
+actions.nbos+=/blood_fury,if=runic_power>=60
+actions.nbos+=/berserking,if=runic_power>=60
+actions.nbos+=/breath_of_sindragosa,if=runic_power>=60
+actions.nbos+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35
+actions.nbos+=/icy_touch,if=!dot.frost_fever.ticking
+actions.nbos+=/plague_strike,if=!dot.blood_plague.ticking
+actions.nbos+=/death_strike,if=(blood.frac>1.8&blood.death>=1|frost.frac>1.8|unholy.frac>1.8)&runic_power<80
+actions.nbos+=/death_and_decay,if=buff.crimson_scourge.up
+actions.nbos+=/blood_boil,if=buff.crimson_scourge.up|(blood=2&runic_power<80&blood.death<2)
+
+head=casque_of_foul_concentration,id=124331,bonus_id=567,upgrade=2
+neck=world_enders_gorget,id=124222,bonus_id=567,upgrade=2,enchant=75mult
+shoulders=demongaze_pauldrons,id=124344,bonus_id=567,upgrade=2
+back=void_lords_wizened_cloak,id=124147,bonus_id=567,upgrade=2,enchant=gift_of_multistrike
+chest=demongaze_chestplate,id=124317,bonus_id=567,upgrade=2
+wrists=hotrolled_iron_bracers,id=124351,bonus_id=567,upgrade=2
+hands=gauntlets_of_derision,id=124326,bonus_id=567,upgrade=2
+waist=ravenous_girdle,id=124348,bonus_id=567,upgrade=2
+legs=legguards_of_grievous_consonances,id=124337,bonus_id=567,upgrade=2
+feet=treads_of_the_defiler,id=124322,bonus_id=567,upgrade=2
+finger1=sanctus_sigil_of_the_unbroken,id=124637,bonus_id=641,enchant=50mult
+finger2=zakuuns_signet_of_command,id=124203,bonus_id=567,upgrade=2,enchant=50mult
+trinket1=vial_of_convulsive_shadows,id=113969,bonus_id=567
+trinket2=empty_drinking_horn,id=124238,bonus_id=567,upgrade=2
+main_hand=hellrender,id=124360,bonus_id=567,upgrade=2,enchant=rune_of_the_fallen_crusader
+
+# Gear Summary
+# gear_ilvl=739.67
+# gear_strength=5691
+# gear_stamina=7012
+# gear_crit_rating=400
+# gear_haste_rating=724
+# gear_mastery_rating=876
+# gear_multistrike_rating=3061
+# gear_versatility_rating=388
+# gear_armor=2584
+# gear_bonus_armor=1038
+# set_bonus=tier18_2pc=1

@@ -34,26 +34,28 @@ actions.precombat+=/honor_among_thieves,cooldown=2.2,cooldown_stddev=0.1
 
 actions=potion,name=draenic_agility,if=buff.bloodlust.react|target.time_to_die<40|(buff.shadow_reflection.up|(!talent.shadow_reflection.enabled&buff.shadow_dance.up))&(trinket.stat.agi.react|trinket.stat.multistrike.react|buff.archmages_greater_incandescence_agi.react)|((buff.shadow_reflection.up|(!talent.shadow_reflection.enabled&buff.shadow_dance.up))&target.time_to_die<136)
 actions+=/kick
-actions+=/shadow_reflection,if=buff.shadow_dance.up|time<2
+actions+=/shadow_reflection,if=buff.shadow_dance.up|(set_bonus.tier18_4pc=1&time<2)
 actions+=/blood_fury,if=buff.shadow_dance.up
 actions+=/berserking,if=buff.shadow_dance.up
 actions+=/arcane_torrent,if=energy<80&buff.shadow_dance.up
 actions+=/premeditation,if=combo_points<4
 actions+=/vanish,if=set_bonus.tier18_4pc=1&time<1
+actions+=/hemorrhage,if=set_bonus.tier18_4pc=0&glyph.hemorrhaging_veins.enabled&time<1&!ticking&!dot.rupture.ticking&!dot.crimson_tempest.ticking&!dot.garrote.ticking
+actions+=/garrote,if=set_bonus.tier18_4pc=0&time<1&!ticking&!dot.rupture.ticking&!dot.crimson_tempest.ticking&!dot.hemorrhage.ticking
 actions+=/wait,sec=buff.subterfuge.remains-0.1,if=buff.subterfuge.remains>0.5&buff.subterfuge.remains<1.6&time>6
-actions+=/pool_resource,if=energy<110&cooldown.shadow_dance.remains<3.5
-actions+=/pool_resource,for_next=1,extra_amount=110
-actions+=/shadow_dance,if=energy>=110&buff.stealth.down&buff.vanish.down&debuff.find_weakness.down|(buff.bloodlust.up&(dot.hemorrhage.ticking|dot.garrote.ticking|dot.rupture.ticking))
+actions+=/pool_resource,if=energy<energy.max-10&cooldown.shadow_dance.remains<3.5
+actions+=/pool_resource,for_next=1,extra_amount=energy.max-10
+actions+=/shadow_dance,if=energy>=energy.max-10&buff.stealth.down&buff.vanish.down&debuff.find_weakness.down|(buff.bloodlust.up&(dot.hemorrhage.ticking|dot.garrote.ticking|dot.rupture.ticking))
 actions+=/pool_resource,for_next=1,extra_amount=50
 actions+=/shadowmeld,if=talent.shadow_focus.enabled&energy>=45&energy<=75&combo_points<4-talent.anticipation.enabled&buff.stealth.down&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
 actions+=/pool_resource,for_next=1,extra_amount=50
 actions+=/vanish,if=talent.shadow_focus.enabled&energy>=45&energy<=75&combo_points<4-talent.anticipation.enabled&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
-actions+=/pool_resource,for_next=1,extra_amount=115
-actions+=/shadowmeld,if=talent.subterfuge.enabled&energy>=115&combo_points<4-talent.anticipation.enabled&buff.stealth.down&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
-actions+=/pool_resource,for_next=1,extra_amount=115
-actions+=/vanish,if=talent.subterfuge.enabled&energy>=115&combo_points<4-talent.anticipation.enabled&buff.shadow_dance.down
+actions+=/pool_resource,for_next=1,extra_amount=energy.max-5
+actions+=/shadowmeld,if=talent.subterfuge.enabled&energy>=energy.max-5&combo_points<4-talent.anticipation.enabled&buff.stealth.down&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
+actions+=/pool_resource,for_next=1,extra_amount=energy.max-5
+actions+=/vanish,if=talent.subterfuge.enabled&energy>=energy.max-5&combo_points<4-talent.anticipation.enabled&buff.shadow_dance.down&(!cooldown.shadow_dance.up|set_bonus.tier18_4pc=1)
 actions+=/marked_for_death,if=combo_points=0
-actions+=/run_action_list,name=finisher,if=combo_points=5&debuff.find_weakness.remains&buff.shadow_reflection.remains
+actions+=/run_action_list,name=finisher,if=combo_points=5&debuff.find_weakness.remains&buff.shadow_reflection.remains&buff.shadowmeld.down
 actions+=/pool_resource,for_next=1
 actions+=/ambush,if=talent.anticipation.enabled&combo_points+anticipation_charges<8&time>2
 actions+=/run_action_list,name=finisher,if=combo_points=5
@@ -69,17 +71,18 @@ actions.generator+=/ambush
 actions.generator+=/fan_of_knives,if=spell_targets.fan_of_knives>2
 actions.generator+=/backstab,if=debuff.find_weakness.up|buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up
 actions.generator+=/shuriken_toss,if=energy<65&energy.regen<16
-actions.generator+=/hemorrhage,if=glyph.hemorrhaging_veins.enabled&((talent.anticipation.enabled&combo_points+anticipation_charges<=2)|combo_points<=2)&!ticking&!dot.rupture.ticking&!dot.crimson_tempest.ticking&!dot.garrote.ticking
-actions.generator+=/backstab,if=energy.time_to_max<=gcd*2
-actions.generator+=/hemorrhage,if=energy.time_to_max<=gcd*1.5&position_front
+actions.generator+=/hemorrhage,if=glyph.hemorrhaging_veins.enabled&((talent.anticipation.enabled&combo_points+anticipation_charges<=2)|combo_points<=2|target.time_to_die<=6)&!ticking&!dot.rupture.ticking&!dot.crimson_tempest.ticking&!dot.garrote.ticking
+actions.generator+=/backstab,if=energy.time_to_max<=gcd*2.5
+actions.generator+=/hemorrhage,if=energy.time_to_max<=gcd*2&position_front
 actions.generator+=/run_action_list,name=pool
 
 # Combo point finishers
 
-actions.finisher=rupture,cycle_targets=1,if=(!ticking|remains<duration*0.3|(buff.shadow_reflection.remains>8&dot.rupture.remains<12&time>20))
+actions.finisher=rupture,if=(!ticking|remains<duration*0.3|(buff.shadow_reflection.remains>8&dot.rupture.remains<12&time>20))&(!glyph.hemorrhaging_veins.enabled|target.time_to_die>6)
+actions.finisher+=/rupture,cycle_targets=1,target_if=max:target.time_to_die,if=spell_targets.crimson_tempest<8&active_dot.rupture<6&target.time_to_die>6&(!ticking|remains<duration*0.3|(buff.shadow_reflection.remains>8&dot.rupture.remains<12&time>20))
 actions.finisher+=/slice_and_dice,if=((buff.slice_and_dice.remains<10.8&debuff.find_weakness.down)|buff.slice_and_dice.remains<6)&buff.slice_and_dice.remains<target.time_to_die
 actions.finisher+=/death_from_above
-actions.finisher+=/crimson_tempest,if=(spell_targets.crimson_tempest>=2&debuff.find_weakness.down)|spell_targets.crimson_tempest>=3&(cooldown.death_from_above.remains>0|!talent.death_from_above.enabled)
+actions.finisher+=/crimson_tempest,if=spell_targets.crimson_tempest>=3&(cooldown.death_from_above.remains>0|!talent.death_from_above.enabled)
 actions.finisher+=/eviscerate,if=(energy.time_to_max<=cooldown.death_from_above.remains+action.death_from_above.execute_time)|!talent.death_from_above.enabled
 actions.finisher+=/run_action_list,name=pool
 

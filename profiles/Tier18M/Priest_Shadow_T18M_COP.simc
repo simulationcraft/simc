@@ -38,8 +38,11 @@ actions+=/arcane_torrent
 actions+=/call_action_list,name=pvp_dispersion,if=set_bonus.pvp_2pc
 actions+=/call_action_list,name=decision
 
-actions.decision=call_action_list,name=main,if=(!talent.clarity_of_power.enabled&!talent.void_entropy.enabled)|(talent.clarity_of_power.enabled&buff.bloodlust.up&buff.power_infusion.up)
+actions.decision=call_action_list,name=main,if=(!talent.clarity_of_power.enabled&!talent.void_entropy.enabled)|(talent.clarity_of_power.enabled&!t18_class_trinket&buff.bloodlust.up&buff.power_infusion.up)
 actions.decision+=/call_action_list,name=vent,if=talent.void_entropy.enabled&!talent.clarity_of_power.enabled&!talent.auspicious_spirits.enabled
+actions.decision+=/call_action_list,name=cop_row_insanity_spend,if=active_enemies=1&talent.clarity_of_power.enabled&talent.insanity.enabled&t18_class_trinket&target.health.pct>20&shadow_orb=5
+actions.decision+=/call_action_list,name=cop_row_insanity_build,if=active_enemies=1&talent.clarity_of_power.enabled&talent.insanity.enabled&t18_class_trinket&target.health.pct>20&shadow_orb<5
+actions.decision+=/call_action_list,name=cop_row_insanity_death,if=active_enemies=1&talent.clarity_of_power.enabled&talent.insanity.enabled&t18_class_trinket&target.health.pct<=20
 actions.decision+=/call_action_list,name=cop,if=talent.clarity_of_power.enabled&!talent.insanity.enabled
 actions.decision+=/call_action_list,name=cop_dotweave,if=talent.clarity_of_power.enabled&talent.insanity.enabled&target.health.pct>20&active_enemies<=6
 actions.decision+=/call_action_list,name=cop_insanity,if=talent.clarity_of_power.enabled&talent.insanity.enabled
@@ -189,10 +192,7 @@ actions.cop_dotweave+=/vampiric_touch,if=primary_target=0&!ticking,cycle_targets
 actions.cop_dotweave+=/divine_star,if=talent.divine_star.enabled&cooldown.mind_blast.remains>0.5*gcd&active_enemies=3&target.distance<=24
 actions.cop_dotweave+=/shadow_word_pain,if=primary_target=0&(!ticking|remains<=18*0.3)&target.time_to_die>(18*0.75),cycle_targets=1,max_cycle_targets=5
 actions.cop_dotweave+=/vampiric_touch,if=primary_target=0&(!ticking|remains<=15*0.3+cast_time)&target.time_to_die>(15*0.75+cast_time),cycle_targets=1,max_cycle_targets=5
-actions.cop_dotweave+=/insanity,if=t18_class_trinket&target.debuff.mental_fatigue.remains<gcd,interrupt_if=target.debuff.mental_fatigue.remains>gcd
 actions.cop_dotweave+=/mind_sear,if=active_enemies>=8,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1),target_if=max:spell_targets.mind_sear_tick
-actions.cop_dotweave+=/mind_flay,if=t18_class_trinket&(target.debuff.mental_fatigue.remains<gcd|(cooldown.mind_blast.remains<2*gcd&target.debuff.mental_fatigue.remains<2*gcd)),interrupt_if=target.debuff.mental_fatigue.remains>gcd
-actions.cop_dotweave+=/mind_flay,if=t18_class_trinket&target.debuff.mental_fatigue.stack<5
 actions.cop_dotweave+=/mind_spike
 actions.cop_dotweave+=/shadow_word_death,moving=1,if=!target.dot.shadow_word_pain.ticking&!target.dot.vampiric_touch.ticking,cycle_targets=1
 actions.cop_dotweave+=/shadow_word_death,moving=1,if=movement.remains>=1*gcd
@@ -209,7 +209,6 @@ actions.cop_insanity+=/mind_blast,if=glyph.mind_harvest.enabled&mind_harvest=0,c
 actions.cop_insanity+=/mind_blast,if=active_enemies<=5&cooldown_react
 actions.cop_insanity+=/shadow_word_death,if=target.health.pct<20&!target.dot.shadow_word_pain.ticking&!target.dot.vampiric_touch.ticking,cycle_targets=1
 actions.cop_insanity+=/shadow_word_death,if=target.health.pct<20,cycle_targets=1
-actions.cop_insanity+=/insanity,if=t18_class_trinket&target.debuff.mental_fatigue.remains<gcd,interrupt_if=target.debuff.mental_fatigue.remains>gcd
 actions.cop_insanity+=/devouring_plague,if=shadow_orb>=3&!set_bonus.tier17_2pc&!set_bonus.tier17_4pc&(cooldown.mind_blast.remains<gcd|(target.health.pct<20&cooldown.shadow_word_death.remains<gcd)),cycle_targets=1
 actions.cop_insanity+=/devouring_plague,if=shadow_orb>=3&set_bonus.tier17_2pc&!set_bonus.tier17_4pc&(cooldown.mind_blast.remains<=2|(target.health.pct<20&cooldown.shadow_word_death.remains<gcd)),cycle_targets=1
 actions.cop_insanity+=/shadowfiend,if=!talent.mindbender.enabled&set_bonus.tier18_2pc
@@ -218,7 +217,6 @@ actions.cop_insanity+=/searing_insanity,if=buff.insanity.remains<0.5*gcd&active_
 actions.cop_insanity+=/searing_insanity,if=active_enemies>=5,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1),target_if=max:spell_targets.mind_sear_tick
 actions.cop_insanity+=/mindbender,if=talent.mindbender.enabled
 actions.cop_insanity+=/shadowfiend,if=!talent.mindbender.enabled
-actions.cop_insanity+=/mind_flay,if=t18_class_trinket&(target.debuff.mental_fatigue.remains<gcd|(cooldown.mind_blast.remains<2*gcd&target.debuff.mental_fatigue.remains<2*gcd)),interrupt_if=target.debuff.mental_fatigue.remains>gcd
 actions.cop_insanity+=/shadow_word_pain,if=remains<(18*0.3)&target.time_to_die>(18*0.75)&miss_react&active_enemies<=5&primary_target=0,cycle_targets=1,max_cycle_targets=5
 actions.cop_insanity+=/vampiric_touch,if=remains<(15*0.3+cast_time)&target.time_to_die>(15*0.75+cast_time)&miss_react&active_enemies<=5&primary_target=0,cycle_targets=1,max_cycle_targets=5
 actions.cop_insanity+=/insanity,if=buff.insanity.remains<0.5*gcd&active_enemies<=2,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|(cooldown.shadow_word_death.remains<=0.1&target.health.pct<20))
@@ -229,9 +227,7 @@ actions.cop_insanity+=/divine_star,if=talent.divine_star.enabled&!set_bonus.tier
 actions.cop_insanity+=/halo,if=talent.halo.enabled&set_bonus.tier18_4pc&buff.premonition.up&target.distance<=30&target.distance>=17
 actions.cop_insanity+=/cascade,if=talent.cascade.enabled&set_bonus.tier18_4pc&buff.premonition.up&((active_enemies>1|target.distance>=28)&target.distance<=40&target.distance>=11)
 actions.cop_insanity+=/divine_star,if=talent.divine_star.enabled&set_bonus.tier18_4pc&buff.premonition.up&active_enemies>2&target.distance<=24
-actions.cop_insanity+=/mind_flay,if=t18_class_trinket&(target.debuff.mental_fatigue.remains<gcd|(cooldown.mind_blast.remains<2*gcd&target.debuff.mental_fatigue.remains<2*gcd)),interrupt_if=target.debuff.mental_fatigue.remains>gcd
 actions.cop_insanity+=/mind_sear,if=active_enemies>=8,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1),target_if=max:spell_targets.mind_sear_tick
-actions.cop_insanity+=/mind_flay,if=t18_class_trinket&target.debuff.mental_fatigue.stack<5
 actions.cop_insanity+=/mind_spike
 actions.cop_insanity+=/shadow_word_death,moving=1,if=!target.dot.shadow_word_pain.ticking&!target.dot.vampiric_touch.ticking,cycle_targets=1
 actions.cop_insanity+=/shadow_word_death,moving=1,if=movement.remains>=1*gcd
@@ -241,6 +237,29 @@ actions.cop_insanity+=/divine_star,if=talent.divine_star.enabled&target.distance
 actions.cop_insanity+=/cascade,if=talent.cascade.enabled&target.distance<=40,moving=1
 actions.cop_insanity+=/devouring_plague,moving=1
 actions.cop_insanity+=/shadow_word_pain,if=primary_target=0,moving=1,cycle_targets=1
+
+actions.cop_row_insanity_spend=wait,sec=cooldown.mind_blast.remains,if=cooldown.mind_blast.remains<0.3&cooldown.mind_blast.remains
+actions.cop_row_insanity_spend+=/mind_blast
+actions.cop_row_insanity_spend+=/insanity,interrupt=1
+actions.cop_row_insanity_spend+=/devouring_plague,if=cooldown.mind_blast.remains<=gcd*2&!target.debuff.mental_fatigue.remains<=gcd
+actions.cop_row_insanity_spend+=/shadowfiend,if=!(!target.debuff.mental_fatigue.up|target.debuff.mental_fatigue.stack<5|(target.debuff.mental_fatigue.remains<=gcd|(target.debuff.mental_fatigue.remains<=gcd*2&cooldown.mindblast.remains<=gcd)))
+actions.cop_row_insanity_spend+=/mind_spike,if=!(!target.debuff.mental_fatigue.up|target.debuff.mental_fatigue.stack<5|(target.debuff.mental_fatigue.remains<=gcd|(target.debuff.mental_fatigue.remains<=gcd*2&cooldown.mindblast.remains<=gcd)))
+actions.cop_row_insanity_spend+=/mind_flay,if=(!target.debuff.mental_fatigue.up|target.debuff.mental_fatigue.stack<5|(target.debuff.mental_fatigue.remains<=gcd|(target.debuff.mental_fatigue.remains<=gcd*2&cooldown.mindblast.remains<=gcd))),interrupt=1,chain=1
+
+actions.cop_row_insanity_build=wait,sec=cooldown.mind_blast.remains,if=cooldown.mind_blast.remains<0.3&cooldown.mind_blast.remains
+actions.cop_row_insanity_build+=/mind_blast
+actions.cop_row_insanity_build+=/insanity,interrupt=1
+actions.cop_row_insanity_build+=/shadowfiend,if=!(!target.debuff.mental_fatigue.up|target.debuff.mental_fatigue.stack<5|(target.debuff.mental_fatigue.remains<=gcd|(target.debuff.mental_fatigue.remains<=gcd*2&cooldown.mindblast.remains<=gcd)))
+actions.cop_row_insanity_build+=/mind_spike,if=!(!target.debuff.mental_fatigue.up|target.debuff.mental_fatigue.stack<5|(target.debuff.mental_fatigue.remains<=gcd|(target.debuff.mental_fatigue.remains<=gcd*2&cooldown.mindblast.remains<=gcd)))
+actions.cop_row_insanity_build+=/mind_flay,if=(!target.debuff.mental_fatigue.up|target.debuff.mental_fatigue.stack<5|(target.debuff.mental_fatigue.remains<=gcd|(target.debuff.mental_fatigue.remains<=gcd*2&cooldown.mindblast.remains<=gcd))),interrupt=1,chain=1
+
+actions.cop_row_insanity_death=wait,sec=cooldown.mind_blast.remains,if=cooldown.mind_blast.remains<0.3&cooldown.mind_blast.remains
+actions.cop_row_insanity_death+=/mind_blast
+actions.cop_row_insanity_death+=/insanity,interrupt=1
+actions.cop_row_insanity_death+=/devouring_plague,if=cooldown.mind_blast.remains<=gcd*2&!target.debuff.mental_fatigue.remains<=gcd
+actions.cop_row_insanity_death+=/shadowfiend,if=!(!target.debuff.mental_fatigue.up|target.debuff.mental_fatigue.stack<5|(target.debuff.mental_fatigue.remains<=gcd|(target.debuff.mental_fatigue.remains<=gcd*2&cooldown.mindblast.remains<=gcd)))
+actions.cop_row_insanity_death+=/mind_spike,if=!(!target.debuff.mental_fatigue.up|target.debuff.mental_fatigue.stack<5|(target.debuff.mental_fatigue.remains<=gcd|(target.debuff.mental_fatigue.remains<=gcd*2&cooldown.mindblast.remains<=gcd)))
+actions.cop_row_insanity_death+=/mind_flay,if=(!target.debuff.mental_fatigue.up|target.debuff.mental_fatigue.stack<5|(target.debuff.mental_fatigue.remains<=gcd|(target.debuff.mental_fatigue.remains<=gcd*2&cooldown.mindblast.remains<=gcd))),interrupt=1,chain=1
 
 actions.cop=shadowfiend,if=!talent.mindbender.enabled&set_bonus.tier18_2pc
 actions.cop+=/mindbender,if=talent.mindbender.enabled&set_bonus.tier18_2pc
@@ -272,12 +291,10 @@ actions.cop+=/divine_star,if=talent.divine_star.enabled&set_bonus.tier18_4pc&buf
 actions.cop+=/shadow_word_pain,if=remains<(18*0.3)&target.time_to_die>(18*0.75)&miss_react&!ticking&active_enemies<=5&primary_target=0,cycle_targets=1,max_cycle_targets=5
 actions.cop+=/vampiric_touch,if=remains<(15*0.3+cast_time)&target.time_to_die>(15*0.75+cast_time)&miss_react&active_enemies<=5&primary_target=0,cycle_targets=1,max_cycle_targets=5
 actions.cop+=/divine_star,if=talent.divine_star.enabled&active_enemies=3&target.distance<=24
-actions.cop+=/mind_flay,if=t18_class_trinket&target.debuff.mental_fatigue.remains<gcd
 actions.cop+=/mind_spike,if=active_enemies<=4&buff.surge_of_darkness.react
 actions.cop+=/mind_sear,if=active_enemies>=8,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1),target_if=max:spell_targets.mind_sear_tick
 actions.cop+=/mind_spike,if=target.dot.devouring_plague_tick.remains&target.dot.devouring_plague_tick.remains<cast_time
 actions.cop+=/mind_flay,if=target.dot.devouring_plague_tick.ticks_remain>1&active_enemies>1,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)
-actions.cop+=/mind_flay,if=t18_class_trinket&target.debuff.mental_fatigue.stack<5
 actions.cop+=/mind_spike
 actions.cop+=/shadow_word_death,moving=1,if=!target.dot.shadow_word_pain.ticking&!target.dot.vampiric_touch.ticking,cycle_targets=1
 actions.cop+=/shadow_word_death,moving=1,if=movement.remains>=1*gcd

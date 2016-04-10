@@ -14,8 +14,8 @@ spec=blood
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenic_stamina_flask
-actions.precombat+=/food,type=whiptail_fillet
+actions.precombat=flask,type=greater_draenic_strength_flask
+actions.precombat+=/food,type=salty_squid_roll
 actions.precombat+=/blood_presence
 actions.precombat+=/horn_of_winter
 # Snapshot raid buffed stats before combat begins and pre-potting is done.

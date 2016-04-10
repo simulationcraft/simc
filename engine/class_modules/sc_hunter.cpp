@@ -744,14 +744,21 @@ struct felstorm_tick_t : public melee_attack_t
 
 struct felstorm_t : public melee_attack_t
 {
-  felstorm_t( pet_t* p ) :
+  felstorm_t( pet_t* p, const std::string& opts ) :
     melee_attack_t( "felstorm", p, p -> find_spell( 184279 ) )
   {
+    parse_options( opts );
+
     callbacks = may_miss = may_block = may_parry = false;
-    channeled = true;
+    dynamic_tick_action = hasted_ticks = true;
+    trigger_gcd = timespan_t::from_seconds( 1.0 );
 
     tick_action = new felstorm_tick_t( p );
   }
+
+  // Make dot long enough to last for the duration of the summon
+  timespan_t composite_dot_duration( const action_state_t* ) const override
+  { return sim -> expected_iteration_time; }
 
   bool init_finished() override
   {
@@ -767,10 +774,11 @@ struct felstorm_t : public melee_attack_t
 
 struct blademaster_pet_t : public hunter_pet_t
 {
-  // hunter_pet_t( sim_t& sim, hunter_t& owner, const std::string& pet_name, pet_e pt = PET_HUNTER, bool guardian = false ):
+  action_t* felstorm;
 
   blademaster_pet_t( player_t* owner ) :
-    hunter_pet_t( *(owner -> sim), *static_cast<hunter_t*>(owner), BLADEMASTER_PET_NAME, PET_NONE, true, true )
+    hunter_pet_t( *(owner -> sim), *static_cast<hunter_t*>(owner), BLADEMASTER_PET_NAME, PET_NONE, true, true ),
+    felstorm( nullptr )
   {
     main_hand_weapon.type = WEAPON_BEAST;
     // Verified 5/11/15, TODO: Check if this is still the same on live
@@ -786,17 +794,34 @@ struct blademaster_pet_t : public hunter_pet_t
     main_hand_weapon.max_dmg =  max_dps * main_hand_weapon.swing_time.total_seconds();
   }
 
+  timespan_t available() const override
+  { return timespan_t::from_seconds( 20.0 ); }
+
   void init_action_list() override
   {
-    action_list_str = "felstorm";
+    action_list_str = "felstorm,if=!ticking";
 
     pet_t::init_action_list();
+  }
+
+  void dismiss( bool expired = false ) override
+  {
+    hunter_pet_t::dismiss( expired );
+
+    if ( dot_t* d = felstorm -> find_dot( felstorm -> target ) )
+    {
+      d -> cancel();
+    }
   }
 
   action_t* create_action( const std::string& name,
                            const std::string& options_str ) override
   {
-    if ( name == "felstorm" ) return new felstorm_t( this );
+    if ( name == "felstorm" )
+    {
+      felstorm = new felstorm_t( this, options_str );
+      return felstorm;
+    }
 
     return pet_t::create_action( name, options_str );
   }
