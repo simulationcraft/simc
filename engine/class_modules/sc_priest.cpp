@@ -40,7 +40,10 @@ struct sphere_of_insanity_spell_t;
 
 namespace pets
 {
+namespace void_tendril
+{
 struct void_tendril_pet_t;
+}
 }
 
 /**
@@ -375,11 +378,12 @@ public:
   {
     pet_t* shadowfiend;
     pet_t* mindbender;
-    std::array<pets::void_tendril_pet_t*, 10> void_tendril;  // Multiple can be
-                                                             // up at one time.
-                                                             // 10 should be
-                                                             // more than
-                                                             // enough.
+    std::array<pets::void_tendril::void_tendril_pet_t*, 10>
+        void_tendril;  // Multiple can be
+                       // up at one time.
+                       // 10 should be
+                       // more than
+                       // enough.
     pet_t* lightwell;
   } pets;
 
@@ -569,6 +573,79 @@ struct priest_pet_t : public pet_t
   }
 };
 
+// ==========================================================================
+// Priest Pet Melee
+// ==========================================================================
+
+struct priest_pet_melee_t : public melee_attack_t
+{
+  bool first_swing;
+
+  priest_pet_melee_t( priest_pet_t& p, const char* name )
+    : melee_attack_t( name, &p, spell_data_t::nil() ), first_swing( true )
+  {
+    school            = SCHOOL_SHADOW;
+    weapon            = &( p.main_hand_weapon );
+    base_execute_time = weapon->swing_time;
+    may_crit          = true;
+    background        = true;
+    repeating         = true;
+  }
+
+  void reset() override
+  {
+    melee_attack_t::reset();
+    first_swing = true;
+  }
+
+  timespan_t execute_time() const override
+  {
+    // First swing comes instantly after summoning the pet
+    if ( first_swing )
+      return timespan_t::zero();
+
+    return melee_attack_t::execute_time();
+  }
+
+  void schedule_execute( action_state_t* state = nullptr ) override
+  {
+    melee_attack_t::schedule_execute( state );
+
+    first_swing = false;
+  }
+};
+
+// ==========================================================================
+// Priest Pet Spell
+// ==========================================================================
+
+struct priest_pet_spell_t : public spell_t
+{
+  priest_pet_spell_t( priest_pet_t& p, const std::string& n )
+    : spell_t( n, &p, p.find_pet_spell( n ) )
+  {
+    may_crit = true;
+  }
+
+  priest_pet_spell_t( const std::string& token, priest_pet_t* p,
+                      const spell_data_t* s = spell_data_t::nil() )
+    : spell_t( token, p, s )
+  {
+    may_crit = true;
+  }
+
+  priest_pet_t& p()
+  {
+    return static_cast<priest_pet_t&>( *player );
+  }
+  const priest_pet_t& p() const
+  {
+    return static_cast<priest_pet_t&>( *player );
+  }
+};
+
+namespace fiend
+{
 /* Abstract base class for Shadowfiend and Mindbender
  *
  */
@@ -733,168 +810,8 @@ struct mindbender_pet_t final : public base_fiend_pet_t
   }
 };
 
-// ==========================================================================
-// Pet Lightwell
-// ==========================================================================
-
-struct lightwell_pet_t final : public priest_pet_t
-{
-public:
-  int charges;
-
-  lightwell_pet_t( sim_t* sim, priest_t& p )
-    : priest_pet_t( sim, p, "lightwell", PET_LIGHTWELL, true ), charges( 0 )
-  {
-    role = ROLE_HEAL;
-
-    action_priority_list_t* precombat = get_action_priority_list( "precombat" );
-    // Snapshot stats
-    precombat->add_action(
-        "snapshot_stats",
-        "Snapshot raid buffed stats before combat begins and "
-        "pre-potting is done." );
-
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    def->add_action( "lightwell_renew" );
-    // def -> add_action( "wait,sec=cooldown.lightwell_renew.remains" );
-
-    owner_coeff.sp_from_sp = 1.0;
-  }
-
-  action_t* create_action( const std::string& name,
-                           const std::string& options_str ) override;
-
-  void summon( timespan_t duration ) override
-  {
-    priest_pet_t::summon( duration );
-  }
-};
-
-// ==========================================================================
-// Pet Void Tendril
-// ==========================================================================
-
-struct void_tendril_pet_t final : public priest_pet_t
-{
-public:
-  void_tendril_pet_t( sim_t* sim, priest_t& p, void_tendril_pet_t* front_pet )
-    : priest_pet_t( sim, p, "void_tendril", PET_VOID_TENDRIL, true ),
-      front_pet( front_pet )
-  {
-    owner_coeff.sp_from_sp = 1.0;
-  }
-
-  action_t* create_action( const std::string& name,
-                           const std::string& options_str ) override;
-
-  void init_action_list() override;
-
-  void summon( timespan_t duration ) override
-  {
-    priest_pet_t::summon( duration );
-  }
-
-  void trigger()
-  {
-    summon( timespan_t::from_seconds( 10 ) );
-  }
-
-  bool init_actions() override
-  {
-    auto r = priest_pet_t::init_actions();
-
-    // Add all stats as child_stats to front_pet
-    if ( front_pet )
-    {
-      for ( auto& stat : stats_list )
-      {
-        if ( auto front_stat = front_pet->find_stats( stat->name_str ) )
-        {
-          front_stat->add_child( stat );
-        }
-      }
-    }
-
-    return r;
-  }
-
-private:
-  void_tendril_pet_t* front_pet;
-};
-
 namespace actions
-{  // namespace for pet actions
-
-// ==========================================================================
-// Priest Pet Melee
-// ==========================================================================
-
-struct priest_pet_melee_t : public melee_attack_t
-{
-  bool first_swing;
-
-  priest_pet_melee_t( priest_pet_t& p, const char* name )
-    : melee_attack_t( name, &p, spell_data_t::nil() ), first_swing( true )
-  {
-    school            = SCHOOL_SHADOW;
-    weapon            = &( p.main_hand_weapon );
-    base_execute_time = weapon->swing_time;
-    may_crit          = true;
-    background        = true;
-    repeating         = true;
-  }
-
-  void reset() override
-  {
-    melee_attack_t::reset();
-    first_swing = true;
-  }
-
-  timespan_t execute_time() const override
-  {
-    // First swing comes instantly after summoning the pet
-    if ( first_swing )
-      return timespan_t::zero();
-
-    return melee_attack_t::execute_time();
-  }
-
-  void schedule_execute( action_state_t* state = nullptr ) override
-  {
-    melee_attack_t::schedule_execute( state );
-
-    first_swing = false;
-  }
-};
-
-// ==========================================================================
-// Priest Pet Spell
-// ==========================================================================
-
-struct priest_pet_spell_t : public spell_t
-{
-  priest_pet_spell_t( priest_pet_t& p, const std::string& n )
-    : spell_t( n, &p, p.find_pet_spell( n ) )
-  {
-    may_crit = true;
-  }
-
-  priest_pet_spell_t( const std::string& token, priest_pet_t* p,
-                      const spell_data_t* s = spell_data_t::nil() )
-    : spell_t( token, p, s )
-  {
-    may_crit = true;
-  }
-
-  priest_pet_t& p()
-  {
-    return static_cast<priest_pet_t&>( *player );
-  }
-  const priest_pet_t& p() const
-  {
-    return static_cast<priest_pet_t&>( *player );
-  }
-};
+{  // pets/fiend/actions
 
 struct shadowcrawl_t final : public priest_pet_spell_t
 {
@@ -980,50 +897,81 @@ struct fiend_melee_t : public priest_pet_melee_t
   }
 };
 
-struct void_tendril_mind_flay_t final : public priest_pet_spell_t
+}  // pets/fiend/actions
+
+void base_fiend_pet_t::init_action_list()
 {
-  void_tendril_mind_flay_t( void_tendril_pet_t& p )
-    : priest_pet_spell_t( "mind_flay_void_tendril)", &p,
-                          p.o().find_spell( 193473 ) )
+  main_hand_attack = new actions::fiend_melee_t( *this );
+
+  if ( action_list_str.empty() )
   {
-    may_crit      = false;
-    may_miss      = false;
-    channeled     = true;
-    hasted_ticks  = false;
-    tick_may_crit = true;
+    action_priority_list_t* precombat = get_action_priority_list( "precombat" );
+    // Snapshot stats
+    precombat->add_action(
+        "snapshot_stats",
+        "Snapshot raid buffed stats before combat begins and "
+        "pre-potting is done." );
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def->add_action( "shadowcrawl" );
+    def->add_action( "wait_for_shadowcrawl" );
   }
 
-  void init() override
+  priest_pet_t::init_action_list();
+}
+
+action_t* base_fiend_pet_t::create_action( const std::string& name,
+                                           const std::string& options_str )
+{
+  if ( name == "shadowcrawl" )
   {
-    priest_pet_spell_t::init();
-    if ( !player->sim->report_pets_separately &&
-         player != p().o().pets.void_tendril[ 0 ] )
-    {
-      stats = p().o().pets.void_tendril[ 0 ]->get_stats( name(), this );
-    }
+    shadowcrawl_action = new actions::shadowcrawl_t( *this );
+    return shadowcrawl_action;
   }
 
-  void_tendril_pet_t& p()
+  if ( name == "wait_for_shadowcrawl" )
+    return new wait_for_cooldown_t( this, "shadowcrawl" );
+
+  return priest_pet_t::create_action( name, options_str );
+}
+}  // pets/fiend
+
+namespace lightwell
+{
+// ==========================================================================
+// Pet Lightwell
+// ==========================================================================
+
+struct lightwell_pet_t final : public priest_pet_t
+{
+public:
+  int charges;
+
+  lightwell_pet_t( sim_t* sim, priest_t& p )
+    : priest_pet_t( sim, p, "lightwell", PET_LIGHTWELL, true ), charges( 0 )
   {
-    return static_cast<void_tendril_pet_t&>( *player );
+    role = ROLE_HEAL;
+
+    action_priority_list_t* precombat = get_action_priority_list( "precombat" );
+    // Snapshot stats
+    precombat->add_action(
+        "snapshot_stats",
+        "Snapshot raid buffed stats before combat begins and "
+        "pre-potting is done." );
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def->add_action( "lightwell_renew" );
+    // def -> add_action( "wait,sec=cooldown.lightwell_renew.remains" );
+
+    owner_coeff.sp_from_sp = 1.0;
   }
-  const void_tendril_pet_t& p() const
+
+  action_t* create_action( const std::string& name,
+                           const std::string& options_str ) override;
+
+  void summon( timespan_t duration ) override
   {
-    return static_cast<void_tendril_pet_t&>( *player );
-  }
-
-  double action_multiplier() const override
-  {
-    double am = priest_pet_spell_t::action_multiplier();
-
-    if ( p().o().talents.void_ray->ok() && p().o().buffs.void_ray->check() )
-    {
-      am *= 1.0 +
-            p().o().buffs.void_ray->check() *
-                p().o().buffs.void_ray->data().effectN( 1 ).percent();
-    }
-
-    return am;
+    priest_pet_t::summon( duration );
   }
 };
 
@@ -1074,56 +1022,117 @@ struct lightwell_renew_t final : public heal_t
   }
 };
 
-}  // end namespace actions ( for pets )
-
-// ==========================================================================
-// Pet Shadowfiend/Mindbender Base
-// ==========================================================================
-
-void base_fiend_pet_t::init_action_list()
-{
-  main_hand_attack = new actions::fiend_melee_t( *this );
-
-  if ( action_list_str.empty() )
-  {
-    action_priority_list_t* precombat = get_action_priority_list( "precombat" );
-    // Snapshot stats
-    precombat->add_action(
-        "snapshot_stats",
-        "Snapshot raid buffed stats before combat begins and "
-        "pre-potting is done." );
-
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    def->add_action( "shadowcrawl" );
-    def->add_action( "wait_for_shadowcrawl" );
-  }
-
-  priest_pet_t::init_action_list();
-}
-
-action_t* base_fiend_pet_t::create_action( const std::string& name,
-                                           const std::string& options_str )
-{
-  if ( name == "shadowcrawl" )
-  {
-    shadowcrawl_action = new actions::shadowcrawl_t( *this );
-    return shadowcrawl_action;
-  }
-
-  if ( name == "wait_for_shadowcrawl" )
-    return new wait_for_cooldown_t( this, "shadowcrawl" );
-
-  return priest_pet_t::create_action( name, options_str );
-}
-
 action_t* lightwell_pet_t::create_action( const std::string& name,
                                           const std::string& options_str )
 {
   if ( name == "lightwell_renew" )
-    return new actions::lightwell_renew_t( *this );
+    return new lightwell_renew_t( *this );
 
   return priest_pet_t::create_action( name, options_str );
 }
+
+}  // pets/lightwell
+
+namespace void_tendril
+{
+// ==========================================================================
+// Pet Void Tendril
+// ==========================================================================
+
+struct void_tendril_pet_t final : public priest_pet_t
+{
+public:
+  void_tendril_pet_t( sim_t* sim, priest_t& p, void_tendril_pet_t* front_pet )
+    : priest_pet_t( sim, p, "void_tendril", PET_VOID_TENDRIL, true ),
+      front_pet( front_pet )
+  {
+    owner_coeff.sp_from_sp = 1.0;
+  }
+
+  action_t* create_action( const std::string& name,
+                           const std::string& options_str ) override;
+
+  void init_action_list() override;
+
+  void summon( timespan_t duration ) override
+  {
+    priest_pet_t::summon( duration );
+  }
+
+  void trigger()
+  {
+    summon( timespan_t::from_seconds( 10 ) );
+  }
+
+  bool init_actions() override
+  {
+    auto r = priest_pet_t::init_actions();
+
+    // Add all stats as child_stats to front_pet
+    if ( front_pet )
+    {
+      for ( auto& stat : stats_list )
+      {
+        if ( auto front_stat = front_pet->find_stats( stat->name_str ) )
+        {
+          front_stat->add_child( stat );
+        }
+      }
+    }
+
+    return r;
+  }
+
+private:
+  void_tendril_pet_t* front_pet;
+};
+
+struct void_tendril_mind_flay_t final : public priest_pet_spell_t
+{
+  void_tendril_mind_flay_t( void_tendril_pet_t& p )
+    : priest_pet_spell_t( "mind_flay_void_tendril)", &p,
+                          p.o().find_spell( 193473 ) )
+  {
+    may_crit      = false;
+    may_miss      = false;
+    channeled     = true;
+    hasted_ticks  = false;
+    tick_may_crit = true;
+  }
+
+  void init() override
+  {
+    priest_pet_spell_t::init();
+    if ( !player->sim->report_pets_separately &&
+         player != p().o().pets.void_tendril[ 0 ] )
+    {
+      stats = p().o().pets.void_tendril[ 0 ]->get_stats( name(), this );
+    }
+  }
+
+  void_tendril_pet_t& p()
+  {
+    return static_cast<void_tendril_pet_t&>( *player );
+  }
+  const void_tendril_pet_t& p() const
+  {
+    return static_cast<void_tendril_pet_t&>( *player );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = priest_pet_spell_t::action_multiplier();
+
+    if ( p().o().talents.void_ray->ok() && p().o().buffs.void_ray->check() )
+    {
+      am *= 1.0 +
+            p().o().buffs.void_ray->check() *
+                p().o().buffs.void_ray->data().effectN( 1 ).percent();
+    }
+
+    return am;
+  }
+};
 
 void void_tendril_pet_t::init_action_list()
 {
@@ -1147,10 +1156,12 @@ action_t* void_tendril_pet_t::create_action( const std::string& name,
                                              const std::string& options_str )
 {
   if ( name == "mind_flay" )
-    return new actions::void_tendril_mind_flay_t( *this );
+    return new void_tendril_mind_flay_t( *this );
 
   return priest_pet_t::create_action( name, options_str );
 }
+
+}  // pets/void_tendril
 
 }  // END pets NAMESPACE
 
@@ -6270,11 +6281,11 @@ pet_t* priest_t::create_pet( const std::string& pet_name,
     return p;
 
   if ( pet_name == "shadowfiend" )
-    return new pets::shadowfiend_pet_t( sim, *this );
+    return new pets::fiend::shadowfiend_pet_t( sim, *this );
   if ( pet_name == "mindbender" )
-    return new pets::mindbender_pet_t( sim, *this );
+    return new pets::fiend::mindbender_pet_t( sim, *this );
   if ( pet_name == "lightwell" )
-    return new pets::lightwell_pet_t( sim, *this );
+    return new pets::lightwell::lightwell_pet_t( sim, *this );
 
   sim->errorf( "Tried to create priest pet %s.", pet_name.c_str() );
 
@@ -6302,8 +6313,8 @@ void priest_t::create_pets()
   {
     for ( size_t i = 0; i < pets.void_tendril.size(); i++ )
     {
-      pets.void_tendril[ i ] =
-          new pets::void_tendril_pet_t( sim, *this, pets.void_tendril.front() );
+      pets.void_tendril[ i ] = new pets::void_tendril::void_tendril_pet_t(
+          sim, *this, pets.void_tendril.front() );
 
       if ( i > 0 )
       {
