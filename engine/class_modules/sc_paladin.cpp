@@ -1958,6 +1958,11 @@ struct zeal_t : public holy_power_generator_t
 
     base_multiplier *= 1.0 + p -> artifact.blade_of_light.percent();
     base_crit += p -> artifact.sharpened_edge.percent();
+    base_add_multiplier = data().effectN( 1 ).chain_multiplier();
+
+    // TODO: figure out where in the spelldata this thing comes from
+    base_aoe_multiplier *= 1.0 / 3.0;
+    base_aoe_multiplier /= base_add_multiplier;
 
     // TODO: remove this once it's back in the spelldata.
     hasted_cd = true;
