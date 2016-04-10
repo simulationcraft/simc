@@ -1502,6 +1502,8 @@ struct execute_off_hand_t: public warrior_attack_t
     {
       weapon_multiplier *= 1.0 + p -> spec.singleminded_fury -> effectN( 3 ).percent();
     }
+    base_crit += p -> artifact.deathblow.percent();
+    base_crit += p -> artifact.deathdealer.percent();
   }
 };
 
