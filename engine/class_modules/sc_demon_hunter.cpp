@@ -1531,6 +1531,7 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
     const spell_data_t* damage_spell = p -> find_spell( 198813 );
     school = damage_spell -> get_school_type();
     normalize_weapon_speed = true;
+    weapon = &( p -> main_hand_weapon );
     weapon_multiplier = damage_spell -> effectN( 3 ).percent();
     radius = damage_spell -> effectN( 3 ).radius();
     aoe = -1;
