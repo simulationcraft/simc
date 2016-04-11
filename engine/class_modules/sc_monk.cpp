@@ -3950,7 +3950,7 @@ struct chi_torpedo_t: public monk_spell_t
 
     heal = new chi_torpedo_heal_t( *player );
     execute_action = heal;
-    trigger_gcd = timespan_t::zero();
+    trigger_gcd = timespan_t::from_millis( 750 );
     cooldown -> duration = p() -> talent.chi_torpedo -> charge_cooldown();
     cooldown -> charges = p() -> talent.chi_torpedo -> charges();
     cooldown -> duration += p() -> talent.celerity -> effectN( 1 ).time_value();
@@ -6797,7 +6797,8 @@ void monk_t::apl_combat_windwalker()
   st -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2&buff.serenity.down" );
   st -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2&buff.serenity.down" );
   st -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=energy.time_to_max>2&!dot.zen_sphere.ticking&buff.serenity.down" );
-  st -> add_talent( this, "Chi Torpedo", "if=energy.time_to_max>2&buff.serenity.down&(((charges=2|(charges=1&recharge_time<=4))&!talent.celerity.enabled)|((charges=3|(charges=2&recharge_time<=4))&talent.celerity.enabled))" );
+  st -> add_talent( this, "Chi Torpedo", "if=buff.tigereye_brew_use.up|buff.spirit_eruption.up" );
+  st -> add_talent( this, "Chi Torpedo", "if=energy.time_to_max>2&(((charges=2|(charges=1&recharge_time<=4))&!talent.celerity.enabled)|((charges=3|(charges=2&recharge_time<=4))&talent.celerity.enabled))" );
   st -> add_action( this, "Blackout Kick", "if=chi.max-chi<2" );
   st -> add_action( this, "Expel Harm", "if=chi.max-chi>=2&health.percent<95" );
   st -> add_action( this, "Jab", "if=chi.max-chi>=2" );
@@ -6812,6 +6813,7 @@ void monk_t::apl_combat_windwalker()
   st_chix -> add_action( this, "Expel Harm", "if=chi.max-chi>=2&health.percent<95" );
   st_chix -> add_action( this, "Jab", "if=chi.max-chi>=2" );
   st_chix -> add_talent( this, "Chi Explosion", "if=chi>=5&cooldown.fists_of_fury.remains>4" );
+  st_chix -> add_talent( this, "Chi Torpedo", "if=buff.tigereye_brew_use.up|buff.spirit_eruption.up" );
   st_chix -> add_talent( this, "Chi Torpedo", "if=energy.time_to_max>2&(((charges=2|(charges=1&recharge_time<=4))&!talent.celerity.enabled)|((charges=3|(charges=2&recharge_time<=4))&talent.celerity.enabled))" );
   st_chix -> add_action( this, "Tiger Palm", "if=chi=4&!buff.combo_breaker_tp.react" );
 
@@ -6821,6 +6823,7 @@ void monk_t::apl_combat_windwalker()
   cleave_chix -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2" );
   cleave_chix -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2" );
   cleave_chix -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=energy.time_to_max>2&!dot.zen_sphere.ticking" );
+  cleave_chix -> add_talent( this, "Chi Torpedo", "if=buff.tigereye_brew_use.up|buff.spirit_eruption.up" );
   cleave_chix -> add_talent( this, "Chi Torpedo", "if=energy.time_to_max>2&(((charges=2|(charges=1&recharge_time<=4))&!talent.celerity.enabled)|((charges=3|(charges=2&recharge_time<=4))&talent.celerity.enabled))" );
   cleave_chix -> add_action( this, "Expel Harm", "if=chi.max-chi>=2&health.percent<95" );
   cleave_chix -> add_action( this, "Jab", "if=chi.max-chi>=2" );
@@ -6832,6 +6835,7 @@ void monk_t::apl_combat_windwalker()
   aoe_norjw -> add_action( this, "Blackout Kick", "if=buff.combo_breaker_bok.react|buff.serenity.up" );
   aoe_norjw -> add_action( this, "Tiger Palm", "if=buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2" );
   aoe_norjw -> add_action( this, "Blackout Kick", "if=chi.max-chi<2&cooldown.fists_of_fury.remains>3" );
+  aoe_norjw -> add_talent( this, "Chi Torpedo", "if=buff.tigereye_brew_use.up|buff.spirit_eruption.up" );
   aoe_norjw -> add_talent( this, "Chi Torpedo", "if=energy.time_to_max>2&(((charges=2|(charges=1&recharge_time<=4))&!talent.celerity.enabled)|((charges=3|(charges=2&recharge_time<=4))&talent.celerity.enabled))" );
   aoe_norjw -> add_action( this, "Spinning Crane Kick" );
 
@@ -6841,6 +6845,7 @@ void monk_t::apl_combat_windwalker()
   aoe_norjw_chix -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2" );
   aoe_norjw_chix -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2" );
   aoe_norjw_chix -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=energy.time_to_max>2&!dot.zen_sphere.ticking" );
+  aoe_norjw_chix -> add_talent( this, "Chi Torpedo", "if=buff.tigereye_brew_use.up|buff.spirit_eruption.up" );
   aoe_norjw_chix -> add_talent( this, "Chi Torpedo", "if=energy.time_to_max>2&(((charges=2|(charges=1&recharge_time<=4))&!talent.celerity.enabled)|((charges=3|(charges=2&recharge_time<=4))&talent.celerity.enabled))" );
   aoe_norjw_chix -> add_action( this, "Spinning Crane Kick" );
   
@@ -6853,6 +6858,7 @@ void monk_t::apl_combat_windwalker()
   aoe_rjw -> add_action( this, "Blackout Kick", "if=buff.combo_breaker_bok.react|buff.serenity.up" );
   aoe_rjw -> add_action( this, "Tiger Palm", "if=buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2" );
   aoe_rjw -> add_action( this, "Blackout Kick", "if=chi.max-chi<2&cooldown.fists_of_fury.remains>3" );
+  aoe_rjw -> add_talent( this, "Chi Torpedo", "if=buff.tigereye_brew_use.up|buff.spirit_eruption.up" );
   aoe_rjw -> add_talent( this, "Chi Torpedo", "if=energy.time_to_max>2&(((charges=2|(charges=1&recharge_time<=4))&!talent.celerity.enabled)|((charges=3|(charges=2&recharge_time<=4))&talent.celerity.enabled))" );
   aoe_rjw -> add_action( this, "Expel Harm", "if=chi.max-chi>=2&health.percent<95" );
   aoe_rjw -> add_action( this, "Jab", "if=chi.max-chi>=2" );
@@ -6861,11 +6867,16 @@ void monk_t::apl_combat_windwalker()
   opener -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=9" );
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
-    if ( racial_actions[i] == "arcane_torrent" )
-      opener -> add_action( racial_actions[i] + ",if=buff.tigereye_brew_use.up&chi.max-chi>=1" );
-    else
+    if ( racial_actions[i] != "arcane_torrent" )
       opener -> add_action( racial_actions[i] + ",if=buff.tigereye_brew_use.up" );
   }
+  opener -> add_talent( this, "Chi Torpedo", "if=buff.tigereye_brew_use.up" );
+  for ( size_t i = 0; i < racial_actions.size(); i++ )
+  {
+    if ( racial_actions[i] == "arcane_torrent" )
+      opener->add_action( racial_actions[i] + ",if=buff.tigereye_brew_use.up&chi.max-chi>=1" );
+  }
+  opener -> add_talent( this, "if=buff.tigereye_brew_use.up" );
   opener -> add_action( this, "Fists of Fury", "if=buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&buff.serenity.up&buff.serenity.remains<1.5" );
   opener -> add_action( this, "Tiger Palm", "if=buff.tiger_power.remains<2" );
   for (int i = 0; i < num_items; i++)
