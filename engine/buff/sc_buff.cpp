@@ -1805,42 +1805,71 @@ haste_buff_t::haste_buff_t( const haste_buff_creator_t& params ) :
 
 // haste_buff_t::execute ====================================================
 
-void haste_buff_t::execute( int stacks, double value, timespan_t duration )
+void haste_buff_t::increment( int stacks, double value, timespan_t duration )
 {
-  int is_up = check();
+  int is_changed = check() < max_stack() || value != current_value;
   double old_attack_speed = 0;
 
-  if ( ! is_up && ( player -> main_hand_attack || player -> off_hand_attack ) )
+  if ( is_changed && ( player -> main_hand_attack || player -> off_hand_attack ) )
     old_attack_speed = player -> cache.attack_speed();
 
-  buff_t::execute( stacks, value, duration );
+  buff_t::increment( stacks, value, duration );
 
-  // Down -> Up, haste remaining swing speeds
-  if ( ! is_up )
+  if ( is_changed )
   {
     if ( player -> main_hand_attack )
       player -> main_hand_attack -> reschedule_auto_attack( old_attack_speed );
     if ( player -> off_hand_attack )
       player -> off_hand_attack -> reschedule_auto_attack( old_attack_speed );
+
+    player -> adjust_dynamic_cooldowns();
   }
 }
 
-// haste_buff_t::expire =====================================================
+// haste_buff_t::decrement =====================================================
 
-void haste_buff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
+void haste_buff_t::decrement( int stacks, double value )
 {
   double old_attack_speed = 0;
+  bool is_changed = check() > 1; // Only do dynamic stuff if decrement is called on >1 stacks.
 
-  if ( player -> main_hand_attack || player -> off_hand_attack )
+  if ( is_changed && ( player -> main_hand_attack || player -> off_hand_attack ) )
     old_attack_speed = player -> cache.attack_speed();
 
-  buff_t::expire_override( expiration_stacks, remaining_duration );
+  buff_t::decrement( stacks, value );
 
-  // Up -> Down, slow down remaining swing speeds
-  if ( player -> main_hand_attack )
-    player -> main_hand_attack -> reschedule_auto_attack( old_attack_speed );
-  if ( player -> off_hand_attack )
-    player -> off_hand_attack -> reschedule_auto_attack( old_attack_speed );
+  if ( is_changed )
+  {
+    if ( player -> main_hand_attack )
+      player -> main_hand_attack -> reschedule_auto_attack( old_attack_speed );
+    if ( player -> off_hand_attack )
+      player -> off_hand_attack -> reschedule_auto_attack( old_attack_speed );
+
+    player -> adjust_dynamic_cooldowns();
+  }
+}
+
+// haste_buff_t::expire_override ==============================================
+
+void haste_buff_t::expire( timespan_t delay )
+{
+  double old_attack_speed = 0;
+  bool is_changed = check() != 0;
+
+  if ( is_changed && ( player -> main_hand_attack || player -> off_hand_attack ) )
+    old_attack_speed = player -> cache.attack_speed();
+
+  buff_t::expire( delay );
+
+  if ( is_changed )
+  {
+    if ( player -> main_hand_attack )
+      player -> main_hand_attack -> reschedule_auto_attack( old_attack_speed );
+    if ( player -> off_hand_attack )
+      player -> off_hand_attack -> reschedule_auto_attack( old_attack_speed );
+
+    player -> adjust_dynamic_cooldowns();
+  }
 }
 
 // tick_buff_t::trigger =====================================================

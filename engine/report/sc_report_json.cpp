@@ -161,7 +161,6 @@ js::sc_js_t to_json( const cooldown_t& cd )
   node.set( "name", cd.name() );
   node.set( "duration", to_json( cd.duration ) );
   node.set( "charges", cd.charges );
-  node.set( "recharge_multiplier", cd.get_recharge_multiplier() );
   return node;
 }
 

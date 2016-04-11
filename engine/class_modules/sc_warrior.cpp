@@ -489,6 +489,8 @@ public:
 
     if ( sweeping_strikes )
       ab::aoe = p() -> talents.sweeping_strikes -> effectN( 1 ).base_value() + 1;
+
+    ab::cooldown -> hasted = headlongrush;
   }
 
   virtual ~warrior_action_t() {}
@@ -552,18 +554,6 @@ public:
       t = ab::min_gcd;
 
     return t;
-  }
-
-  virtual double cooldown_reduction() const override
-  {
-    double cdr = ab::cooldown_reduction();
-
-    if ( headlongrush )
-    {
-      cdr *= ab::player -> cache.attack_haste();
-    }
-
-    return cdr;
   }
 
   virtual bool ready() override
@@ -2028,9 +2018,9 @@ struct mortal_strike_t: public warrior_attack_t
     }
   }
 
-  double cooldown_reduction() const override
+  double recharge_multiplier() const override
   {
-    double cdr = warrior_attack_t::cooldown_reduction();
+    double cdr = warrior_attack_t::recharge_multiplier();
 
     if ( p() -> buff.tier17_2pc_arms -> up() )
       cdr *= 1.0 + p() -> buff.tier17_2pc_arms -> data().effectN( 1 ).percent();

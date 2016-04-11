@@ -948,6 +948,8 @@ public:
       ab::cooldown -> duration = ab::data().charge_cooldown();
       ab::cooldown -> charges = ab::data().charges();
     }
+
+    ab::cooldown -> hasted = hasted_cd;
   }
 
   shaman_t* p()
@@ -973,18 +975,6 @@ public:
     }
 
     return m;
-  }
-
-  double cooldown_reduction() const override
-  {
-    double cdr = ab::cooldown_reduction();
-
-    if ( hasted_cd )
-    {
-      cdr *= ab::player -> cache.attack_haste();
-    }
-
-    return cdr;
   }
 
   void execute() override
@@ -2948,7 +2938,10 @@ struct boulderfist_t : public shaman_spell_t
 {
   boulderfist_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "boulderfist", player, player -> talent.boulderfist, options_str )
-  { }
+  {
+    // TODO: SpellCategory + SpellEffect based detection
+    hasted_cd = true;
+  }
 
   void execute() override
   {

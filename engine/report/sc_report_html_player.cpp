@@ -766,8 +766,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
           a->travel_speed, a->trigger_gcd.total_seconds(),
           a->min_gcd.total_seconds(), a->base_costs[ a->current_resource() ],
           a->secondary_costs[ a->current_resource() ],
-          a->cooldown->duration.total_seconds() *
-              a->cooldown->get_recharge_multiplier(),
+          a->cooldown->duration.total_seconds(),
           a->base_execute_time.total_seconds(), a->base_crit,
           a->target ? a->target->name() : "", a->harmful ? "true" : "false",
           util::encode_html( a->if_expr_str ).c_str() );

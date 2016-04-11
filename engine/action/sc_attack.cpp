@@ -288,10 +288,12 @@ void attack_t::reschedule_auto_attack( double old_swing_haste )
 
     if ( sim -> debug )
     {
-      sim -> out_debug.printf( "Haste change, reschedule %s attack from %f to %f",
+      sim -> out_debug.printf( "Haste change, reschedule %s attack from %f to %f (speed %f -> %f, remains %.3f)",
                      name(),
                      execute_event -> remains().total_seconds(),
-                     new_time_to_hit.total_seconds() );
+                     new_time_to_hit.total_seconds(),
+                     old_swing_haste, player -> cache.attack_speed(),
+                     time_to_hit.total_seconds());
     }
 
     if ( new_time_to_hit > time_to_hit )

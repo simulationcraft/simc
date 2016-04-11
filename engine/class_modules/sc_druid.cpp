@@ -1040,11 +1040,7 @@ struct fey_moonwing_t: public pet_t
 
       // Casts have a delay that decreases with haste. This is a very rough approximation.
       cooldown -> duration = timespan_t::from_millis( 600 );
-    }
-
-    double cooldown_reduction() const override
-    {
-      return spell_t::cooldown_reduction() * composite_haste();
+      cooldown -> hasted = true;
     }
   };
   druid_t* o() { return static_cast<druid_t*>( owner ); }
@@ -1375,7 +1371,6 @@ public:
   typedef druid_action_t base_t;
 
   bool rend_and_tear;
-  bool hasted_cd;
   bool hasted_gcd;
 
   druid_action_t( const std::string& n, druid_t* player,
@@ -1383,11 +1378,12 @@ public:
     ab( n, player, s ),
     form_mask( ab::data().stance_mask() ), may_autounshift( true ), autoshift( 0 ),
     rend_and_tear( ab::data().affected_by( player -> spec.thrash_bear_dot -> effectN( 2 ) ) ),
-    hasted_cd( ab::data().affected_by( player -> spec.druid -> effectN( 3 ) ) ),
     hasted_gcd( ab::data().affected_by( player -> spec.druid -> effectN( 4 ) ) )
   {
     ab::may_crit      = true;
     ab::tick_may_crit = true;
+
+    ab::cooldown -> hasted = ab::data().affected_by( player -> spec.druid -> effectN( 3 ) );
   }
 
   druid_t* p()
@@ -1397,16 +1393,6 @@ public:
 
   druid_td_t* td( player_t* t ) const
   { return p() -> get_target_data( t ); }
-
-  virtual double cooldown_reduction() const override
-  {
-    double cdr = ab::cooldown_reduction();
-
-    if ( hasted_cd )
-      cdr *= ab::composite_haste();
-
-    return cdr;
-  }
 
   virtual double target_armor( player_t* t ) const override
   {

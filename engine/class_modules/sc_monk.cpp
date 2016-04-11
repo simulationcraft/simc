@@ -1650,6 +1650,26 @@ public:
       }
       default: break;
     }
+
+    switch ( p() -> specialization() )
+    {
+      case MONK_BREWMASTER:
+      {
+        ab::cooldown -> hasted = ab::data().affected_by( p() -> passives.aura_brewmaster_monk -> effectN( 2 ) );
+        break;
+      }
+      case MONK_MISTWEAVER:
+      {
+        ab::cooldown -> hasted = ab::data().affected_by( p() -> passives.aura_mistweaver_monk -> effectN( 5 ) );
+        break;
+      }
+      case MONK_WINDWALKER:
+      {
+        ab::cooldown -> hasted = ab::data().affected_by( p() -> passives.aura_monk -> effectN( 1 ) );
+        break;
+      }
+      default: break;
+    }
   }
 
   virtual ~monk_action_t() {}
@@ -1804,36 +1824,6 @@ public:
       cd *= 1 + p() -> talent.serenity -> effectN( 4 ).percent(); // saved as -50
 
     ab::update_ready( cd );
-  }
-
-  virtual double cooldown_reduction() const override
-  {
-    double cdr = ab::cooldown_reduction();
-
-    bool hasted_cd = false;
-    switch ( p() -> specialization() )
-    {
-      case MONK_BREWMASTER:
-      {
-        hasted_cd = ab::data().affected_by( p() -> passives.aura_brewmaster_monk -> effectN( 2 ) );
-        break;
-      }
-      case MONK_MISTWEAVER:
-      {
-        hasted_cd = ab::data().affected_by( p() -> passives.aura_mistweaver_monk -> effectN( 5 ) );
-        break;
-      }
-      case MONK_WINDWALKER:
-      {
-        hasted_cd = ab::data().affected_by( p() -> passives.aura_monk -> effectN( 1 ) );
-        break;
-      }
-      default: break;
-    }
-    if ( hasted_cd ) 
-      cdr *= ab::player -> cache.attack_haste();
-
-    return cdr;
   }
 
   virtual void consume_resource()
@@ -4092,14 +4082,10 @@ struct ironskin_brew_t : public monk_spell_t
     cooldown             = p.cooldown.brewmaster_active_mitigation;
     cooldown -> duration = p.find_spell( id ) -> charge_cooldown() + p.talent.light_brewing -> effectN( 1 ).time_value(); // Saved as -3000
     cooldown -> charges  = p.find_spell( id ) -> charges() + p.talent.light_brewing -> effectN( 2 ).base_value();
+    cooldown -> hasted   = true;
 
     if ( p.talent.special_delivery -> ok() )
       delivery = new special_delivery_t( p );
-  }
-
-  virtual double cooldown_reduction() const override
-  {
-    return monk_spell_t::cooldown_reduction() * player -> cache.attack_haste(); 
   }
 
   void execute() override
@@ -4147,6 +4133,7 @@ struct purifying_brew_t: public monk_spell_t
     cooldown             = p.cooldown.brewmaster_active_mitigation;
     cooldown -> duration = p.find_spell( id ) -> charge_cooldown() + p.talent.light_brewing -> effectN( 1 ).time_value(); // Saved as -3000
     cooldown -> charges  = p.find_spell( id ) -> charges() + p.talent.light_brewing -> effectN( 2 ).base_value();
+    cooldown -> hasted   = true;
 
     if ( p.talent.special_delivery -> ok() )
       delivery = new special_delivery_t( p );
@@ -4159,11 +4146,6 @@ struct purifying_brew_t: public monk_spell_t
       return false;
 
     return monk_spell_t::ready();
-  }
-
-  virtual double cooldown_reduction() const override
-  {
-    return monk_spell_t::cooldown_reduction() * player -> cache.attack_haste(); 
   }
 
   void execute() override

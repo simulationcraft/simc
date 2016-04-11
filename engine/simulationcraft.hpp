@@ -947,7 +947,9 @@ public:
   virtual void override_buff ( int stacks = 1, double value = DEFAULT_VALUE() );
   virtual bool may_react( int stacks = 1 );
   virtual int stack_react();
-  void expire( timespan_t delay = timespan_t::zero() );
+  // NOTE: If you need to override behavior on buff expire, use expire_override. Override "expire"
+  // method only if you _REALLY_ know what you are doing.
+  virtual void expire( timespan_t delay = timespan_t::zero() );
 
   // Called only if previously active buff expires
   virtual void expire_override( int /* expiration_stacks */, timespan_t /* remaining_duration */ ) {}
@@ -1061,8 +1063,9 @@ protected:
   haste_buff_t( const haste_buff_creator_t& params );
   friend struct buff_creation::haste_buff_creator_t;
 public:
-  virtual void execute( int stacks = 1, double value = -1.0, timespan_t duration = timespan_t::min() ) override;
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
+  void increment( int stacks = 1, double value = -1.0, timespan_t duration = timespan_t::min() ) override;
+  void decrement( int stacks = 1, double value = -1.0 ) override;
+  void expire( timespan_t delay = timespan_t::zero() ) override;
 };
 
 struct debuff_t : public buff_t
@@ -2842,6 +2845,9 @@ struct cooldown_t
   event_t* recharge_event;
   event_t* ready_trigger_event;
   timespan_t last_start, last_charged;
+  double recharge_multiplier;
+  bool hasted; // Hasted cooldowns will reschedule based on haste state changing (through buffs). TODO: Separate hastes?
+  action_t* action; // Dynamic cooldowns will need to know what action triggered the cd
 
   cooldown_t( const std::string& name, player_t& );
   cooldown_t( const std::string& name, sim_t& );
@@ -2849,6 +2855,7 @@ struct cooldown_t
   // Adjust the CD. If "requires_reaction" is true (or not provided), then the CD change is something
   // the user would react to rather than plan ahead for.
   void adjust( timespan_t, bool requires_reaction = true );
+  void adjust_recharge_multiplier(); // Reacquire cooldown recharge multiplier from the action to adjust the cooldown time
   void reset( bool require_reaction );
   void start( action_t* action, timespan_t override = timespan_t::min(), timespan_t delay = timespan_t::zero() );
   void start( timespan_t override = timespan_t::min(), timespan_t delay = timespan_t::zero() );
@@ -2872,20 +2879,12 @@ struct cooldown_t
   timespan_t reduced_cooldown() const
   { return ready - last_start; }
 
-  double get_recharge_multiplier() const
-  { return recharge_multiplier; }
-
-  void set_recharge_multiplier( double );
-
   expr_t* create_expression( action_t* a, const std::string& name_str );
 
   static timespan_t ready_init()
   { return timespan_t::from_seconds( -60 * 60 ); }
 
-  static timespan_t cooldown_duration( const cooldown_t* cd, const timespan_t& override_duration = timespan_t::min(), const action_t* cooldown_action = nullptr );
-
-private:
-  double recharge_multiplier;
+  static timespan_t cooldown_duration( const cooldown_t* cd, const timespan_t& override_duration = timespan_t::min() );
 };
 
 // Player Callbacks
@@ -3626,6 +3625,7 @@ struct player_t : public actor_t
   auto_dispose< std::vector<benefit_t*> > benefit_list;
   auto_dispose< std::vector<uptime_t*> > uptime_list;
   auto_dispose< std::vector<cooldown_t*> > cooldown_list;
+  std::vector<cooldown_t*> dynamic_cooldown_list;
   std::array< std::vector<plot_data_t>, STAT_MAX > dps_plot_data;
   std::vector<std::vector<plot_data_t> > reforge_plot_data;
   auto_dispose< std::vector<luxurious_sample_data_t*> > sample_data_list;
@@ -4340,6 +4340,9 @@ public:
 
     return active_dots[ action_id ];
   }
+
+  virtual void adjust_dynamic_cooldowns()
+  { range::for_each( dynamic_cooldown_list, []( cooldown_t* cd ) { cd -> adjust_recharge_multiplier(); } ); }
 
 private:
   // Update movement data, and also control the buff
@@ -5078,7 +5081,7 @@ public:
   bool normalize_weapon_speed;
 
   /// Static action cooldown duration multiplier
-  double base_cooldown_reduction;
+  double base_recharge_multiplier;
 
   /**
    * @brief Movement Direction
@@ -5269,8 +5272,8 @@ public:
   virtual double target_armor( player_t* t ) const
   { return t -> cache.armor(); }
 
-  virtual double cooldown_reduction() const
-  { return base_cooldown_reduction; }
+  virtual double recharge_multiplier() const
+  { return base_recharge_multiplier; }
 
   virtual resource_e current_resource() const
   { return resource_current; }
@@ -5665,6 +5668,18 @@ struct attack_t : public action_t
   virtual double composite_versatility( const action_state_t* state ) const override
   { return action_t::composite_versatility( state ) + player -> cache.damage_versatility(); }
 
+  double recharge_multiplier() const override
+  {
+    double m = action_t::recharge_multiplier();
+
+    if ( cooldown && cooldown -> hasted )
+    {
+      m *= player -> cache.attack_haste();
+    }
+
+    return m;
+  }
+
   virtual void reschedule_auto_attack( double old_swing_haste );
 
   virtual void reset() override
@@ -5748,6 +5763,18 @@ struct spell_base_t : public action_t
 
   virtual double composite_crit_multiplier() const override
   { return action_t::composite_crit_multiplier() * player -> composite_spell_crit_multiplier(); }
+
+  double recharge_multiplier() const override
+  {
+    double m = action_t::recharge_multiplier();
+
+    if ( cooldown && cooldown -> hasted )
+    {
+      m *= player -> cache.spell_haste();
+    }
+
+    return m;
+  }
 
   virtual proc_types proc_type() const override;
 };

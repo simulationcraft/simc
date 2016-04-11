@@ -377,11 +377,11 @@ public:
     {
     case DEMON_HUNTER_HAVOC:
       hasted_gcd = ab::data().affected_by( p -> spec.havoc -> effectN( 1 ) );
-      hasted_cd  = ab::data().affected_by( p -> spec.havoc -> effectN( 2 ) );
+      ab::cooldown -> hasted = ab::data().affected_by( p -> spec.havoc -> effectN( 2 ) );
       break;
     case DEMON_HUNTER_VENGEANCE:
       hasted_gcd = ab::data().affected_by( p -> spec.vengeance -> effectN( 1 ) );
-      hasted_cd  = ab::data().affected_by( p -> spec.vengeance -> effectN( 2 ) );
+      ab::cooldown -> hasted = ab::data().affected_by( p -> spec.vengeance -> effectN( 2 ) );
       break;
     default:
       break;
@@ -418,18 +418,6 @@ public:
       g = ab::min_gcd;
 
     return g;
-  }
-
-  double cooldown_reduction() const override
-  {
-    double cdr = ab::cooldown_reduction();
-
-    if ( hasted_cd )
-    {
-      cdr *= p() -> cache.attack_haste();
-    }
-
-    return cdr;
   }
 
 protected:

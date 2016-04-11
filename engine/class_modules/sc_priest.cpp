@@ -2707,6 +2707,8 @@ public:
           new mind_spike_detonation_t( player );
       add_child( priest.active_spells.mind_spike_detonation );
     }
+
+    cooldown -> hasted = true;
   }
 
   void impact( action_state_t* s ) override
@@ -2723,11 +2725,6 @@ public:
         priest.active_spells.mind_spike_detonation->trigger();
       }
     }
-  }
-
-  double cooldown_reduction() const override
-  {
-    return spell_t::cooldown_reduction() * composite_haste();
   }
 
   void schedule_execute( action_state_t* state = nullptr ) override
@@ -2975,6 +2972,8 @@ struct shadow_word_death_t final : public priest_spell_t
     {
       base_multiplier *= 1.0 + p.artifact.deaths_embrace.percent();
     }
+
+    cooldown -> hasted = true;
   }
 
   void update_ready( timespan_t cd_duration ) override
@@ -3015,11 +3014,6 @@ struct shadow_word_death_t final : public priest_spell_t
     }
 
     return d;
-  }
-
-  double cooldown_reduction() const override
-  {
-    return spell_t::cooldown_reduction() * composite_haste();
   }
 
   bool ready() override
@@ -3506,6 +3500,8 @@ struct void_bolt_t final : public priest_spell_t
     {
       base_multiplier *= 1.0 + player.artifact.sinister_thoughts.percent();
     }
+
+    cooldown -> hasted = true;
   }
 
   void execute() override
@@ -3538,11 +3534,6 @@ struct void_bolt_t final : public priest_spell_t
     }
 
     generate_insanity( insanity_gain, priest.gains.insanity_void_bolt );
-  }
-
-  double cooldown_reduction() const override
-  {
-    return spell_t::cooldown_reduction() * composite_haste();
   }
 
   bool ready() override

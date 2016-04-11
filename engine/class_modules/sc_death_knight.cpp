@@ -5492,8 +5492,10 @@ struct antimagic_shell_t : public death_knight_spell_t
     else
       interval_stddev = interval_stddev_opt;
 
+    /*
     if ( damage > 0 )
       cooldown -> set_recharge_multiplier( 1.0 );
+    */
 
     // Setup an Absorb stats tracker for AMS if it's used "for reals"
     if ( damage == 0 )
