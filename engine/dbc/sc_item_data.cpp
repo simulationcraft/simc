@@ -1374,6 +1374,7 @@ static std::pair<std::pair<int, double>, std::pair<int, double> > get_bonus_id_s
 
   return std::pair<std::pair<int, double>, std::pair<int, double> >( std::pair<int, double>( -1, 0 ), std::pair<int, double>( -1, 0 ) );
 }
+
 static int get_bonus_id_ilevel( const std::vector<const item_bonus_entry_t*>& entries )
 {
   for ( size_t i = 0; i < entries.size(); ++i )
@@ -1385,6 +1386,19 @@ static int get_bonus_id_ilevel( const std::vector<const item_bonus_entry_t*>& en
   }
 
   return 0;
+}
+
+static std::string get_bonus_id_quality( const std::vector<const item_bonus_entry_t*>& entries )
+{
+  for ( auto& entry : entries )
+  {
+    if ( entry -> type == ITEM_BONUS_QUALITY )
+    {
+      return util::item_quality_string( entry -> value_1 );
+    }
+  }
+
+  return "";
 }
 
 static int get_bonus_id_sockets( const std::vector<const item_bonus_entry_t*>& entries )
@@ -1467,6 +1481,7 @@ std::string dbc::bonus_ids_str( dbc_t& dbc)
     std::vector<const item_bonus_entry_t*> entries = dbc.item_bonus( bonus_ids[ i ] );
     std::string desc = get_bonus_id_desc( dbc.ptr, entries );
     std::string suffix = get_bonus_id_suffix( dbc.ptr, entries );
+    std::string quality = get_bonus_id_quality( entries );
     int ilevel = get_bonus_id_ilevel( entries );
     int sockets = get_bonus_id_sockets( entries );
     std::vector<std::pair<item_mod_type, double> > stats = get_bonus_id_stats( entries );
@@ -1483,6 +1498,11 @@ std::string dbc::bonus_ids_str( dbc_t& dbc)
     if ( ! suffix.empty() )
     {
       fields.push_back( "suffix={ " + suffix + " }" );
+    }
+
+    if ( ! quality.empty() )
+    {
+      fields.push_back( "quality={ " + quality + " }" );
     }
 
     if ( ilevel != 0 )
