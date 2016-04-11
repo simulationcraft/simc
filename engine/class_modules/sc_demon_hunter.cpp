@@ -1366,7 +1366,10 @@ struct fel_eruption_t : public demon_hunter_attack_t
   {
     parse_options( options_str );
 
-    resource_current = RESOURCE_FURY; // FIXME: Have to force it to use Fury for now.
+    // FIXME: Have to force it to use Fury for now.
+    resource_current = RESOURCE_FURY;
+    // Assume the target is stun immune.
+    base_multiplier *= 1.0 + data().effectN( 3 ).percent();
   }
 };
 
