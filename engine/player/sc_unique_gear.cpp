@@ -99,6 +99,9 @@ namespace item
   void gronntooth_war_horn( special_effect_t& );
   void orb_of_voidsight( special_effect_t& );
   void infallible_tracking_charm( special_effect_t& );
+
+  /* Legion 7.0 */
+  void nightmare_egg_shell( special_effect_t& );
 }
 
 namespace gem
@@ -2422,8 +2425,9 @@ void item::readiness( special_effect_t& effect )
       if ( cd -> cooldowns[ i ] == 0 )
         break;
 
-      cooldown_t* ability_cd = p -> get_cooldown( cd -> cooldowns[ i ] );
-      ability_cd -> set_recharge_multiplier( cdr );
+      // TODO: This should move to somewhere else.
+      //cooldown_t* ability_cd = p -> get_cooldown( cd -> cooldowns[ i ] );
+      //ability_cd -> set_recharge_multiplier( cdr );
     }
 
     break;
@@ -3545,6 +3549,75 @@ void item::warlords_unseeing_eye( special_effect_t& effect )
   effect.player -> absorb_priority.push_back( 184762 );
 }
 
+// Custom buff to model a 5 seconds of climbing + 5 seconds of full stacks + 5 seconds of decreasing
+struct down_draft_t : public stat_buff_t
+{
+  struct dd_event_t : public event_t
+  {
+    down_draft_t* buff;
+
+    dd_event_t( down_draft_t* b, const timespan_t& d ) :
+      event_t( *b -> player ), buff( b )
+    {
+      add_event( d );
+    }
+
+    void execute() override
+    {
+      sim().out_debug.printf( "%s buff %s swap to decreasing",
+          buff -> player -> name(), buff -> name() );
+      buff -> reverse = true;
+      buff -> event = nullptr;
+    }
+  };
+
+  event_t* event;
+
+  down_draft_t( const special_effect_t& effect ) :
+    stat_buff_t( stat_buff_creator_t( effect.player, "down_draft", effect.player -> find_spell( 214342 ), effect.item )
+      // Double the duration, in reality this should not be doubled but rather increased by
+      // max_stack * period
+      .duration( effect.player -> find_spell( 214342 ) -> duration() * 2 ) ), event( nullptr )
+  { }
+
+  void execute( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() )
+  {
+    stat_buff_t::execute( stacks, value, duration );
+
+    if ( event )
+    {
+      event_t::cancel( event );
+    }
+
+    // Allow 5 seconds of full buff, and then start the decrease
+    event = new ( *sim ) dd_event_t( this, timespan_t::from_seconds( 10.001 ) );
+    reverse = false;
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    stat_buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    event_t::cancel( event );
+    reverse = false;
+  }
+
+  void reset() override
+  {
+    stat_buff_t::reset();
+    event_t::cancel( event );
+    reverse = false;
+  }
+};
+
+void item::nightmare_egg_shell( special_effect_t& effect )
+{
+  effect.type = SPECIAL_EFFECT_CUSTOM;
+  effect.custom_buff = new down_draft_t( effect );
+
+  new dbc_proc_callback_t( effect.item, effect );
+}
+
 } // UNNAMED NAMESPACE
 
 /*
@@ -4212,6 +4285,9 @@ void unique_gear::register_special_effects()
 
   /* Misc effects */
   register_special_effect( 188534, item::felmouth_frenzy                );
+
+  /* Legion 7.0 */
+  register_special_effect( 214340, item::nightmare_egg_shell            );
 
   /* Warlords of Draenor 6.2 */
   register_special_effect( 184270, item::mirror_of_the_blademaster      );
