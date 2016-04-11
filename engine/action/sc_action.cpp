@@ -2632,7 +2632,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
     }
   }
 
-  if ( splits.size() > 1 && splits[0] == "spell_targets" )
+  if ( splits.size() <= 2 && splits[0] == "spell_targets" )
   {
     if ( sim -> distance_targeting_enabled )
     {
@@ -2640,11 +2640,11 @@ expr_t* action_t::create_expression( const std::string& name_str )
       {
         action_t* spell;
         action_t& original_spell;
-        spell_targets_t( action_t& a, const std::vector<std::string>& spell_name ): expr_t( "spell_targets" ), original_spell( a )
+        spell_targets_t( action_t& a, const std::string& spell_name ): expr_t( "spell_targets" ), original_spell( a )
         {
-          spell = a.player -> find_action( spell_name[1] );
+          spell = a.player -> find_action( spell_name );
           if ( ! spell )
-            a.sim -> errorf( "Warning: %s used invalid spell_targets action \"%s\"", a.player -> name(), spell_name[1].c_str() );
+            a.sim -> errorf( "Warning: %s used invalid spell_targets action \"%s\"", a.player -> name(), spell_name.c_str() );
         }
         double evaluate() override
         {
@@ -2658,7 +2658,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
           return 0;
         }
       };
-      return new spell_targets_t( *this, splits );
+      return new spell_targets_t( *this, splits.size() > 1 ? splits[ 1 ] : this -> name_str );
     }
     else
     { // If distance targeting is not enabled, default to active_enemies behavior. 
