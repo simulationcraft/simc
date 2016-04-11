@@ -24,8 +24,6 @@ namespace { // UNNAMED NAMESPACE
    Fel Blade movement mechanics
    Change Nemesis to be race specific instead of generic
    Nemesis buffs for each race?
-   Fel Eruption double damage
-   First Blood cost reduction
    Defensive talent tier
    Second look at Momentum skills' timings
    Fel Barrage
@@ -907,6 +905,7 @@ struct blade_dance_base_t: public demon_hunter_attack_t
   {
     aoe = -1;
     cooldown = p -> get_cooldown( "blade_dance" ); // shared cooldown
+    base_costs[ RESOURCE_FURY ] += p -> talent.first_blood -> effectN( 2 ).resource( RESOURCE_FURY );
 
     for ( size_t i = 0; i < attacks.size(); i++ )
     {
@@ -992,7 +991,7 @@ struct chaos_nova_t : public demon_hunter_attack_t
   {
     parse_options( options_str );
 
-    cooldown -> duration -= p -> talent.unleashed_power -> effectN( 1 ).time_value();
+    cooldown -> duration += p -> talent.unleashed_power -> effectN( 1 ).time_value();
     base_costs[ RESOURCE_FURY ] *= 1.0 + p -> talent.unleashed_power -> effectN( 2 ).percent();
 
     aoe = -1;
@@ -1407,8 +1406,6 @@ struct fel_rush_t : public demon_hunter_attack_t
 
   void execute() override
   {
-    double dtm = p() -> current.distance_to_move;
-
     demon_hunter_attack_t::execute();
     
     // Buff to track the rush's movement. This lets us delay autoattacks.
@@ -1416,16 +1413,13 @@ struct fel_rush_t : public demon_hunter_attack_t
 
     p() -> buff.momentum -> trigger();
 
-    // If we're not moving to cover distance, let's assume we're Fel Rushing for damage.
-    if ( dtm == 0.0 )
-    {
-      p() -> current.distance = std::abs( p() -> current.distance - composite_teleport_distance( execute_state ) );
+    // Adjust new distance from target.
+    p() -> current.distance = std::abs( p() -> current.distance - composite_teleport_distance( execute_state ) );
 
-      // If new distance after rushing is too far away to melee from, then trigger movement back into melee range.
-      if ( p() -> current.distance > 5.0 )
-      {
-        p() -> trigger_movement( p() -> current.distance - 5.0, MOVEMENT_TOWARDS );
-      }
+    // If new distance after rushing is too far away to melee from, then trigger movement back into melee range.
+    if ( p() -> current.distance > 5.0 )
+    {
+      p() -> trigger_movement( p() -> current.distance - 5.0, MOVEMENT_TOWARDS );
     }
 
     if ( p() -> talent.fel_mastery -> ok() && result_is_hit( execute_state -> result ) )
