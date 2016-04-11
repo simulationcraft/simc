@@ -3553,7 +3553,6 @@ struct chi_torpedo_t: public monk_spell_t
   {
     parse_options( options_str );
 
-    trigger_gcd = timespan_t::zero();
     cooldown -> duration = p() -> talent.chi_torpedo -> charge_cooldown();
     cooldown -> charges = p() -> talent.chi_torpedo -> charges();
   }
