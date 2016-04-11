@@ -3950,12 +3950,20 @@ struct chi_torpedo_t: public monk_spell_t
 
     heal = new chi_torpedo_heal_t( *player );
     execute_action = heal;
-    trigger_gcd = timespan_t::from_millis( 750 );
+    trigger_gcd = timespan_t::zero();
     cooldown -> duration = p() -> talent.chi_torpedo -> charge_cooldown();
     cooldown -> charges = p() -> talent.chi_torpedo -> charges();
     cooldown -> duration += p() -> talent.celerity -> effectN( 1 ).time_value();
     cooldown -> charges += p() -> talent.celerity -> effectN( 2 ).base_value();
   }
+
+  // Force 750 milliseconds for the animation, but not delay the overall GCD
+  timespan_t execute_time() const override
+  {
+    return timespan_t::from_millis( 750 );
+  }
+
+
 };
 
 // ==========================================================================
