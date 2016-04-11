@@ -66,6 +66,7 @@ actions.opener+=/chi_torpedo,if=buff.tigereye_brew_use.up
 actions.opener+=/arcane_torrent,if=buff.tigereye_brew_use.up&chi.max-chi>=1
 actions.opener+=/fists_of_fury,if=buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&buff.serenity.up&buff.serenity.remains<1.5
 actions.opener+=/tiger_palm,if=buff.tiger_power.remains<2
+actions.opener+=/use_item,name=beating_heart_of_the_mountain
 actions.opener+=/rising_sun_kick
 actions.opener+=/blackout_kick,if=chi.max-chi<=1&cooldown.chi_brew.up|buff.serenity.up
 actions.opener+=/chi_brew,if=chi.max-chi>=2
@@ -80,8 +81,8 @@ actions.st+=/tiger_palm,if=buff.combo_breaker_tp.react&buff.combo_breaker_tp.rem
 actions.st+=/chi_wave,if=energy.time_to_max>2&buff.serenity.down
 actions.st+=/chi_burst,if=energy.time_to_max>2&buff.serenity.down
 actions.st+=/zen_sphere,cycle_targets=1,if=energy.time_to_max>2&!dot.zen_sphere.ticking&buff.serenity.down
-actions.st+=/chi_torpedo,if=buff.tigereye_brew_use.up|buff.spirit_eruption.up
-actions.st+=/chi_torpedo,if=energy.time_to_max>2&(((charges=2|(charges=1&recharge_time<=4))&!talent.celerity.enabled)|((charges=3|(charges=2&recharge_time<=4))&talent.celerity.enabled))
+actions.st+=/chi_torpedo,if=buff.tigereye_brew_use.up
+actions.st+=/chi_torpedo,if=energy.time_to_max>2&buff.serenity.down&(((charges=2|(charges=1&recharge_time<=4))&!talent.celerity.enabled)|((charges=3|(charges=2&recharge_time<=4))&talent.celerity.enabled))
 actions.st+=/blackout_kick,if=chi.max-chi<2
 actions.st+=/expel_harm,if=chi.max-chi>=2&health.percent<95
 actions.st+=/jab,if=chi.max-chi>=2
@@ -95,8 +96,8 @@ actions.st_chix+=/zen_sphere,cycle_targets=1,if=energy.time_to_max>2&!dot.zen_sp
 actions.st_chix+=/expel_harm,if=chi.max-chi>=2&health.percent<95
 actions.st_chix+=/jab,if=chi.max-chi>=2
 actions.st_chix+=/chi_explosion,if=chi>=5&cooldown.fists_of_fury.remains>4
-actions.st_chix+=/chi_torpedo,if=buff.tigereye_brew_use.up|buff.spirit_eruption.up
-actions.st_chix+=/chi_torpedo,if=energy.time_to_max>2&(((charges=2|(charges=1&recharge_time<=4))&!talent.celerity.enabled)|((charges=3|(charges=2&recharge_time<=4))&talent.celerity.enabled))
+actions.st_chix+=/chi_torpedo,if=buff.tigereye_brew_use.up
+actions.st_chix+=/chi_torpedo,if=energy.time_to_max>2&buff.serenity.down&(((charges=2|(charges=1&recharge_time<=4))&!talent.celerity.enabled)|((charges=3|(charges=2&recharge_time<=4))&talent.celerity.enabled))
 actions.st_chix+=/tiger_palm,if=chi=4&!buff.combo_breaker_tp.react
 
 actions.cleave_chix=chi_explosion,if=chi>=4&cooldown.fists_of_fury.remains>2
@@ -104,8 +105,8 @@ actions.cleave_chix+=/tiger_palm,if=buff.combo_breaker_tp.react&buff.combo_break
 actions.cleave_chix+=/chi_wave,if=energy.time_to_max>2
 actions.cleave_chix+=/chi_burst,if=energy.time_to_max>2
 actions.cleave_chix+=/zen_sphere,cycle_targets=1,if=energy.time_to_max>2&!dot.zen_sphere.ticking
-actions.cleave_chix+=/chi_torpedo,if=buff.tigereye_brew_use.up|buff.spirit_eruption.up
-actions.cleave_chix+=/chi_torpedo,if=energy.time_to_max>2&(((charges=2|(charges=1&recharge_time<=4))&!talent.celerity.enabled)|((charges=3|(charges=2&recharge_time<=4))&talent.celerity.enabled))
+actions.cleave_chix+=/chi_torpedo,if=buff.tigereye_brew_use.up
+actions.cleave_chix+=/chi_torpedo,if=energy.time_to_max>2&buff.serenity.down&(((charges=2|(charges=1&recharge_time<=4))&!talent.celerity.enabled)|((charges=3|(charges=2&recharge_time<=4))&talent.celerity.enabled))
 actions.cleave_chix+=/expel_harm,if=chi.max-chi>=2&health.percent<95
 actions.cleave_chix+=/jab,if=chi.max-chi>=2
 
@@ -115,8 +116,8 @@ actions.aoe_norjw+=/zen_sphere,cycle_targets=1,if=energy.time_to_max>2&!dot.zen_
 actions.aoe_norjw+=/blackout_kick,if=buff.combo_breaker_bok.react|buff.serenity.up
 actions.aoe_norjw+=/tiger_palm,if=buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2
 actions.aoe_norjw+=/blackout_kick,if=chi.max-chi<2&cooldown.fists_of_fury.remains>3
-actions.aoe_norjw+=/chi_torpedo,if=buff.tigereye_brew_use.up|buff.spirit_eruption.up
-actions.aoe_norjw+=/chi_torpedo,if=energy.time_to_max>2&(((charges=2|(charges=1&recharge_time<=4))&!talent.celerity.enabled)|((charges=3|(charges=2&recharge_time<=4))&talent.celerity.enabled))
+actions.aoe_norjw+=/chi_torpedo,if=buff.tigereye_brew_use.up
+actions.aoe_norjw+=/chi_torpedo,if=energy.time_to_max>2&buff.serenity.down&(((charges=2|(charges=1&recharge_time<=4))&!talent.celerity.enabled)|((charges=3|(charges=2&recharge_time<=4))&talent.celerity.enabled))
 actions.aoe_norjw+=/spinning_crane_kick
 
 actions.aoe_norjw_chix=chi_explosion,if=chi>=4&cooldown.fists_of_fury.remains>4
@@ -124,8 +125,8 @@ actions.aoe_norjw_chix+=/rising_sun_kick,if=chi=chi.max
 actions.aoe_norjw_chix+=/chi_wave,if=energy.time_to_max>2
 actions.aoe_norjw_chix+=/chi_burst,if=energy.time_to_max>2
 actions.aoe_norjw_chix+=/zen_sphere,cycle_targets=1,if=energy.time_to_max>2&!dot.zen_sphere.ticking
-actions.aoe_norjw_chix+=/chi_torpedo,if=buff.tigereye_brew_use.up|buff.spirit_eruption.up
-actions.aoe_norjw_chix+=/chi_torpedo,if=energy.time_to_max>2&(((charges=2|(charges=1&recharge_time<=4))&!talent.celerity.enabled)|((charges=3|(charges=2&recharge_time<=4))&talent.celerity.enabled))
+actions.aoe_norjw_chix+=/chi_torpedo,if=buff.tigereye_brew_use.up
+actions.aoe_norjw_chix+=/chi_torpedo,if=energy.time_to_max>2&buff.serenity.down&(((charges=2|(charges=1&recharge_time<=4))&!talent.celerity.enabled)|((charges=3|(charges=2&recharge_time<=4))&talent.celerity.enabled))
 actions.aoe_norjw_chix+=/spinning_crane_kick
 
 actions.aoe_rjw=chi_explosion,if=chi>=4&cooldown.fists_of_fury.remains>4
@@ -136,8 +137,8 @@ actions.aoe_rjw+=/zen_sphere,cycle_targets=1,if=energy.time_to_max>2&!dot.zen_sp
 actions.aoe_rjw+=/blackout_kick,if=buff.combo_breaker_bok.react|buff.serenity.up
 actions.aoe_rjw+=/tiger_palm,if=buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2
 actions.aoe_rjw+=/blackout_kick,if=chi.max-chi<2&cooldown.fists_of_fury.remains>3
-actions.aoe_rjw+=/chi_torpedo,if=buff.tigereye_brew_use.up|buff.spirit_eruption.up
-actions.aoe_rjw+=/chi_torpedo,if=energy.time_to_max>2&(((charges=2|(charges=1&recharge_time<=4))&!talent.celerity.enabled)|((charges=3|(charges=2&recharge_time<=4))&talent.celerity.enabled))
+actions.aoe_rjw+=/chi_torpedo,if=buff.tigereye_brew_use.up
+actions.aoe_rjw+=/chi_torpedo,if=energy.time_to_max>2&buff.serenity.down&(((charges=2|(charges=1&recharge_time<=4))&!talent.celerity.enabled)|((charges=3|(charges=2&recharge_time<=4))&talent.celerity.enabled))
 actions.aoe_rjw+=/expel_harm,if=chi.max-chi>=2&health.percent<95
 actions.aoe_rjw+=/jab,if=chi.max-chi>=2
 
