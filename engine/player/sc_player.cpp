@@ -2252,14 +2252,6 @@ bool player_t::init_finished()
 
   std::sort( resource_thresholds.begin(), resource_thresholds.end() );
 
-  // Separate dynamic cooldowns into another list in the player
-  range::for_each( cooldown_list, [ this ]( cooldown_t* c ) {
-    if ( c -> hasted )
-    {
-      dynamic_cooldown_list.push_back( c );
-    }
-  } );
-
   return ret;
 }
 
@@ -4680,7 +4672,6 @@ void player_t::stat_gain( stat_e    stat,
         main_hand_attack -> reschedule_auto_attack( old_attack_speed );
       if ( off_hand_attack )
         off_hand_attack -> reschedule_auto_attack( old_attack_speed );
-      adjust_dynamic_cooldowns();
       break;
     }
 
@@ -4853,7 +4844,6 @@ void player_t::stat_loss( stat_e    stat,
         main_hand_attack -> reschedule_auto_attack( old_attack_speed );
       if ( off_hand_attack )
         off_hand_attack -> reschedule_auto_attack( old_attack_speed );
-      adjust_dynamic_cooldowns();
       break;
     }
 
