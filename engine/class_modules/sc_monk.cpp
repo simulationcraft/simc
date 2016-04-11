@@ -6874,9 +6874,8 @@ void monk_t::apl_combat_windwalker()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
     if ( racial_actions[i] == "arcane_torrent" )
-      opener->add_action( racial_actions[i] + ",if=buff.tigereye_brew_use.up&chi.max-chi>=1" );
+      opener -> add_action( racial_actions[i] + ",if=buff.tigereye_brew_use.up&chi.max-chi>=1" );
   }
-  opener -> add_talent( this, "if=buff.tigereye_brew_use.up" );
   opener -> add_action( this, "Fists of Fury", "if=buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&buff.serenity.up&buff.serenity.remains<1.5" );
   opener -> add_action( this, "Tiger Palm", "if=buff.tiger_power.remains<2" );
   for (int i = 0; i < num_items; i++)
