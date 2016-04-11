@@ -1336,6 +1336,7 @@ struct felblade_t : public demon_hunter_attack_t
     school = damage_spell -> get_school_type();
     normalize_weapon_speed = true;
     weapon_multiplier = damage_spell -> effectN( 2 ).percent();
+    weapon = &( p -> main_hand_weapon );
 
     // Special handling for Chaos Blades damage modifier.
     chaos_blades = damage_spell -> affected_by( p -> talent.chaos_blades -> effectN( 2 ) );
