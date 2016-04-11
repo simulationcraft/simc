@@ -3564,8 +3564,11 @@ struct down_draft_t : public stat_buff_t
 
     void execute() override
     {
-      sim().out_debug.printf( "%s buff %s swap to decreasing",
-          buff -> player -> name(), buff -> name() );
+      if ( sim().debug )
+      {
+        sim().out_debug.printf( "%s buff %s swap to decreasing",
+            buff -> player -> name(), buff -> name() );
+      }
       buff -> reverse = true;
       buff -> event = nullptr;
     }
