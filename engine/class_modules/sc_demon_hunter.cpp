@@ -5,8 +5,44 @@
 
 #include "simulationcraft.hpp"
 
-namespace  // UNNAMED NAMESPACE
-{
+namespace { // UNNAMED NAMESPACE
+// ==========================================================================
+// Demon Hunter
+// ==========================================================================
+
+/* ==========================================================================
+// Legion To-Do
+// ==========================================================================
+
+   General ------------------------------------------------------------------
+   Sort out Havoc vs. Vengeance mechanics in various places.
+
+   Havoc --------------------------------------------------------------------
+   Demonic Appetite travel time
+   Demonic Appetite fury from spell data
+   Eye Beam hit statistics
+   Fel Blade movement mechanics
+   Change Nemesis to be race specific instead of generic
+   Nemesis buffs for each race?
+   Fel Eruption double damage
+   First Blood cost reduction
+   Defensive talent tier
+   Second look at Momentum skills' timings
+   Fel Barrage
+   Artifact: Twinblades of the Deceiver
+
+   Vengeance ----------------------------------------------------------------
+   Hmm, let me think... well there's... oh yeah, everything.
+
+   Needs Documenting --------------------------------------------------------
+   Vengeful Retreat "jump_cancel" option
+
+   Things to Watch on Alpha -------------------------------------------------
+   Demon Blade mechanics
+   Chaos Cleave mechanics
+   Chaos Blades double dip
+*/
+
 /* Forward declarations
  */
 class demon_hunter_t;
@@ -925,7 +961,9 @@ struct blade_dance_t: public blade_dance_base_t
   bool ready() override
   {
     if ( p() -> buff.metamorphosis -> check() )
+    {
       return false;
+    }
 
     return blade_dance_base_t::ready();
   }
@@ -2179,8 +2217,7 @@ demon_hunter_td_t* demon_hunter_t::find_target_data( player_t* target ) const
 
 void demon_hunter_t::init_action_list()
 {
-  // FIXME
-  /* if ( main_hand_weapon.type == WEAPON_NONE || off_hand_weapon.type == WEAPON_NONE )
+  if ( main_hand_weapon.type == WEAPON_NONE || off_hand_weapon.type == WEAPON_NONE )
   {
     if ( ! quiet )
     {
@@ -2188,9 +2225,9 @@ void demon_hunter_t::init_action_list()
     }
     quiet = true;
     return;
-  } */
+  }
 
-  if ( !action_list_str.empty() )
+  if ( ! action_list_str.empty() )
   {
     player_t::init_action_list();
     return;
