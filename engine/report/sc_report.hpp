@@ -131,7 +131,7 @@ const rgb SHADOW     = PURPLE;
 const rgb ARCANE     = COLOR_MAGE;
 const rgb ELEMENTAL  = COLOR_MONK;
 const rgb FROSTFIRE  = "9900CC";
-const rgb CHAOS      = "00E100";
+const rgb CHAOS      = "00C800";
 
 // Item quality colors
 const rgb POOR      = "9D9D9D";
