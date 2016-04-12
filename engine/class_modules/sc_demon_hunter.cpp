@@ -177,6 +177,7 @@ public:
   {
     // Havoc -- Twinblades of the Deceiver
     artifact_power_t fury_of_the_illidari;
+    artifact_power_t inner_demons;
     artifact_power_t rage_of_the_illidari;
 
     // NYI
@@ -190,7 +191,6 @@ public:
     artifact_power_t demon_speed;
     artifact_power_t feast_on_the_souls;
     artifact_power_t illidari_knowledge;
-    artifact_power_t inner_demons;
     artifact_power_t overwhelming_power;
     artifact_power_t sharpened_glaives;
     artifact_power_t unleashed_demons;
@@ -248,6 +248,7 @@ public:
   {
     // Havoc
     real_ppm_t felblade;
+    real_ppm_t inner_demons;
   } rppm;
 
   // Special
@@ -1096,6 +1097,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
   chaos_strike_oh_t* off_hand;
   bool is_critical;
   timespan_t delay;
+  action_t* inner_demons;
 
   chaos_strike_base_t( const std::string& n, demon_hunter_t* p, const spell_data_t* s ) :
     demon_hunter_attack_t( n, p, s )
@@ -1103,6 +1105,11 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     delay = timespan_t::from_millis( data().effectN( 3 ).misc_value1() );
     off_hand = new chaos_strike_oh_t( p, data().effectN( 3 ).trigger(), this );
     add_child( off_hand );
+
+    if ( p -> artifact.inner_demons.rank() )
+    {
+      inner_demons = p -> find_action( "inner_demons" );
+    }
   }
 
   virtual bool init_finished() override
@@ -1142,6 +1149,12 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
         p() -> cooldown.demonic_appetite -> start();
         p() -> proc.demonic_appetite -> occur();
         p() -> resource_gain( RESOURCE_FURY, 30, p() -> gain.demonic_appetite ); // FIXME
+      }
+
+      if ( p() -> artifact.inner_demons.rank() && p() -> rppm.inner_demons.trigger() )
+      {
+        inner_demons -> target = target;
+        inner_demons -> schedule_execute();
       }
     }
   }
@@ -1577,6 +1590,19 @@ struct fury_of_the_illidari_t : public demon_hunter_attack_t
     {
       rage -> schedule_execute();
     }
+  }
+};
+
+// Inner Demons =============================================================
+
+struct inner_demons_t : public demon_hunter_attack_t
+{
+  inner_demons_t( demon_hunter_t* p ) :
+    demon_hunter_attack_t( "inner_demons", p, p -> find_spell( 202388 ) )
+  {
+    background = true;
+    time_to_travel = p -> artifact.inner_demons.data().effectN( 1 ).trigger() -> duration();
+    aoe = -1;
   }
 };
 
@@ -2129,7 +2155,8 @@ void demon_hunter_t::init_resources( bool force )
 void demon_hunter_t::init_rng()
 {
   // RPPM objects
-  rppm.felblade = real_ppm_t( *this, find_spell( 203557 ) -> real_ppm(), 1.0, RPPM_HASTE );
+  rppm.felblade     = real_ppm_t( *this, find_spell( 203557 ) -> real_ppm(), 1.0, RPPM_HASTE );
+  rppm.inner_demons = real_ppm_t( *this, artifact.inner_demons.data().real_ppm(), 1.0, RPPM_HASTE );
 
   player_t::init_rng();
 }
@@ -2276,6 +2303,11 @@ void demon_hunter_t::init_spells()
   if ( talent.demon_blades -> ok() )
   {
     demon_blade = new demon_blade_t( this );
+  }
+
+  if ( artifact.inner_demons.rank() )
+  {
+    new inner_demons_t( this );
   }
 }
 
@@ -2429,6 +2461,7 @@ void demon_hunter_t::reset()
 
   blade_dance_driver = nullptr;
   rppm.felblade.reset();
+  rppm.inner_demons.reset();
 }
 
 void demon_hunter_t::interrupt()
