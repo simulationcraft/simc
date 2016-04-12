@@ -1011,10 +1011,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       198793, // Vengeful Retreat
            0,
     },
-    // Havoc tree, 2 abilities
+    // Havoc tree, 4 abilities
     {
       203796, // Demon Blade
       208605, // Nemesis
+      217060, // Rage of the Illidari
+      217070, // Rage of the Illidari
            0,
     },
     // Vengeance tree, 13 abilities

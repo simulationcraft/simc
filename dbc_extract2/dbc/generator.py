@@ -1524,6 +1524,8 @@ class SpellDataGenerator(DataGenerator):
 		  ( 203557, 1 ), # Felblade proc rate
 		  ( 208605, 1 ), # Nemesis player buff
 		  ( 203796, 1 ), # Demon Blade proc
+		  ( 217070, 1 ), # Rage of the Illidari explosion
+		  ( 217060, 1 ), # Rage of the Illidari buff
 		),
     ]
 

@@ -39,6 +39,7 @@ namespace { // UNNAMED NAMESPACE
    Demon Blade mechanics
    Chaos Cleave mechanics
    Chaos Blades double dip
+   Rage of the Illidari school/armor pen
 */
 
 /* Forward declarations
@@ -106,6 +107,7 @@ public:
     buff_t* momentum;
     buff_t* nemesis;
     buff_t* prepared;
+    buff_t* rage_of_the_illidari;
     buff_t* vengeful_retreat_jump_cancel;
   } buff;
 
@@ -174,6 +176,8 @@ public:
   struct artifact_spell_data_t
   {
     // Havoc -- Twinblades of the Deceiver
+    artifact_power_t fury_of_the_illidari;
+    artifact_power_t rage_of_the_illidari;
 
     // NYI
     artifact_power_t anguish_of_the_deceiver;
@@ -185,11 +189,9 @@ public:
     artifact_power_t demon_rage;
     artifact_power_t demon_speed;
     artifact_power_t feast_on_the_souls;
-    artifact_power_t fury_of_the_illidari;
     artifact_power_t illidari_knowledge;
     artifact_power_t inner_demons;
     artifact_power_t overwhelming_power;
-    artifact_power_t rage_of_the_illidari;
     artifact_power_t sharpened_glaives;
     artifact_power_t unleashed_demons;
     artifact_power_t warglaives_of_chaos;
@@ -1473,13 +1475,57 @@ struct fel_rush_t : public demon_hunter_attack_t
 
 struct fury_of_the_illidari_t : public demon_hunter_attack_t
 {
+  struct rage_of_the_illidari_t : public demon_hunter_attack_t
+  {
+    rage_of_the_illidari_t( demon_hunter_t* p ) :
+      demon_hunter_attack_t( "rage_of_the_illidari", p, p -> find_spell( 217070 ) )
+    {
+      may_crit = false;
+      aoe = -1;
+      background = split_aoe_damage = true;
+      base_multiplier = 1.0; // 100% of damage dealt; not in spell data
+    }
+
+    void init() override
+    {
+      demon_hunter_attack_t::init();
+
+      // Assert to remind me to remove snapshot flag.
+      assert( school == SCHOOL_PHYSICAL );
+
+      snapshot_flags = STATE_TGT_ARMOR;
+      update_flags = 0;
+    }
+
+    void execute() override
+    {
+      // Manually apply base_multiplier since the flag it uses is disabled.
+      base_dd_min = base_dd_max = base_multiplier * p() -> buff.rage_of_the_illidari -> check_value();
+
+      demon_hunter_attack_t::execute();
+
+      p() -> buff.rage_of_the_illidari -> expire();
+    }
+  };
+
   struct fury_of_the_illidari_tick_t : public demon_hunter_attack_t
   {
     fury_of_the_illidari_tick_t( demon_hunter_t* p, const spell_data_t* s ) :
-      demon_hunter_attack_t( "fury_of_the_illidari", p, s )
+      demon_hunter_attack_t( "fury_of_the_illidari_tick", p, s )
     {
       background = dual = ground_aoe = true;
       aoe = -1;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      demon_hunter_attack_t::impact( s );
+
+      if ( result_is_hit( s -> result ) && p() -> artifact.rage_of_the_illidari.rank() )
+      {
+        p() -> buff.rage_of_the_illidari -> trigger( 1,
+          p() -> buff.rage_of_the_illidari -> current_value + s -> result_amount );
+      }
     }
 
     dmg_e amount_type( const action_state_t*, bool ) const override
@@ -1488,9 +1534,10 @@ struct fury_of_the_illidari_t : public demon_hunter_attack_t
 
   fury_of_the_illidari_tick_t* mh;
   fury_of_the_illidari_tick_t* oh;
+  rage_of_the_illidari_t* rage;
 
   fury_of_the_illidari_t( demon_hunter_t* p, const std::string& options_str ) :
-    demon_hunter_attack_t( "fury_of_the_illidari_driver", p, p -> artifact.fury_of_the_illidari )
+    demon_hunter_attack_t( "fury_of_the_illidari", p, p -> artifact.fury_of_the_illidari )
   {
     may_miss = may_crit = may_parry = may_block = may_dodge = false;
     dot_duration = data().duration();
@@ -1503,7 +1550,13 @@ struct fury_of_the_illidari_t : public demon_hunter_attack_t
 
     // Silly reporting things
     school = mh -> school;
-    stats = mh -> stats;
+    mh -> stats = oh -> stats = stats;
+
+    if ( p -> artifact.rage_of_the_illidari.rank() )
+    {
+      rage = new rage_of_the_illidari_t( p );
+      add_child( rage );
+    }
   }
 
   timespan_t travel_time() const override
@@ -1514,6 +1567,16 @@ struct fury_of_the_illidari_t : public demon_hunter_attack_t
     demon_hunter_attack_t::tick( d );
 
     oh -> schedule_execute();
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    demon_hunter_attack_t::last_tick( d );
+
+    if ( p() -> artifact.rage_of_the_illidari.rank() )
+    {
+      rage -> schedule_execute();
+    }
   }
 };
 
@@ -2226,41 +2289,43 @@ void demon_hunter_t::create_buffs()
 
   // General
 
-  buff.blade_dance   = buff_creator_t( this, "blade_dance", spec.blade_dance )
-                       .default_value( spec.blade_dance -> effectN( 3 ).percent() )
-                       .add_invalidate( CACHE_DODGE );
+  buff.blade_dance       = buff_creator_t( this, "blade_dance", spec.blade_dance )
+                           .default_value( spec.blade_dance -> effectN( 3 ).percent() )
+                           .add_invalidate( CACHE_DODGE );
 
-  buff.blur          = buff_creator_t( this, "blur", spec.blur -> effectN( 1 ).trigger() )
-                       .default_value( spec.blur -> effectN( 1 ).trigger() -> effectN( 3 ).percent() )
-                       .cd( timespan_t::zero() );
+  buff.blur              = buff_creator_t( this, "blur", spec.blur -> effectN( 1 ).trigger() )
+                           .default_value( spec.blur -> effectN( 1 ).trigger() -> effectN( 3 ).percent() )
+                           .cd( timespan_t::zero() );
+  
+  buff.chaos_blades      = new chaos_blades_t( this );
 
-  buff.death_sweep   = buff_creator_t( this, "death_sweep", spec.death_sweep )
-                       .default_value( spec.death_sweep -> effectN( 3 ).percent() )
-                       .add_invalidate( CACHE_DODGE );
+  buff.death_sweep       = buff_creator_t( this, "death_sweep", spec.death_sweep )
+                           .default_value( spec.death_sweep -> effectN( 3 ).percent() )
+                           .add_invalidate( CACHE_DODGE );
 
-  buff.metamorphosis = buff_creator_t( this, "metamorphosis", spec.metamorphosis_buff )
-                       .cd( timespan_t::zero() );
+  buff.metamorphosis     = buff_creator_t( this, "metamorphosis", spec.metamorphosis_buff )
+                           .cd( timespan_t::zero() );
 
-  buff.momentum      = buff_creator_t( this, "momentum", find_spell( 208628 ) )
-                       .default_value( find_spell( 208628 ) -> effectN( 1 ).percent() )
-                       .chance( talent.momentum -> ok() )
-                       .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.momentum          = buff_creator_t( this, "momentum", find_spell( 208628 ) )
+                           .default_value( find_spell( 208628 ) -> effectN( 1 ).percent() )
+                           .chance( talent.momentum -> ok() )
+                           .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // TODO: Buffs for each race?
-  buff.nemesis       = buff_creator_t( this, "nemesis", find_spell( 208605 ) )
-                       .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.nemesis           = buff_creator_t( this, "nemesis", find_spell( 208605 ) )
+                           .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buff.prepared      = buff_creator_t( this, "prepared", talent.prepared -> effectN( 1 ).trigger() )
-                       .chance( talent.prepared -> ok() )
-                       .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
-                         resource_gain( RESOURCE_FURY, b -> data().effectN( 1 ).resource( RESOURCE_FURY ),
-                         gain.prepared ); } );
+  buff.prepared          = buff_creator_t( this, "prepared", talent.prepared -> effectN( 1 ).trigger() )
+                           .chance( talent.prepared -> ok() )
+                           .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
+                             resource_gain( RESOURCE_FURY, b -> data().effectN( 1 ).resource( RESOURCE_FURY ),
+                             gain.prepared ); } );
 
-  buff.chaos_blades  = new chaos_blades_t( this );
+  buff.rage_of_the_illidari = buff_creator_t( this, "rage_of_the_illidari", find_spell( 217060 ) );
 
   buff.vengeful_retreat_jump_cancel = buff_creator_t( this, "vengeful_retreat_jump_cancel", spell_data_t::nil() )
-                       .chance( 1.0 )
-                       .duration( timespan_t::from_seconds( 1.25 ) );
+                           .chance( 1.0 )
+                           .duration( timespan_t::from_seconds( 1.25 ) );
 
   // Havoc
 
