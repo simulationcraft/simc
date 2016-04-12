@@ -92,7 +92,6 @@ public:
     buff_t* taste_for_blood;
     buff_t* wrecking_ball;
     // Arms only
-    buff_t* colossus_smash;
     buff_t* corrupted_blood_of_zakajz;
     buff_t* cleave;
     buff_t* focused_rage;
@@ -1308,13 +1307,8 @@ struct colossus_smash_t: public warrior_attack_t
     {
       td( execute_state -> target ) -> debuffs_colossus_smash -> trigger();
 
-      if ( p() -> buff.colossus_smash -> remains() < p() -> buff.colossus_smash -> buff_duration )
-        p() -> buff.colossus_smash -> trigger();
-
       p() -> buff.shattered_defenses -> trigger();
-
       p() -> buff.precise_strikes -> trigger();
-
       if ( p() -> sets.set( WARRIOR_ARMS, T17, B2 ) && p() -> buff.tier17_2pc_arms -> trigger() )
         p() -> proc.t17_2pc_arms -> occur();
     }
@@ -1361,10 +1355,7 @@ struct corrupted_rage_t: public warrior_attack_t
     if ( result_is_hit( s -> result ) )
     {
       td( s -> target ) -> debuffs_colossus_smash -> trigger();
-
-      if ( p() -> buff.colossus_smash -> remains() < p() -> buff.colossus_smash -> buff_duration )
-        p() -> buff.colossus_smash -> trigger();
-      
+    
       p() -> buff.shattered_defenses -> trigger();
     }
   }
@@ -1594,9 +1585,6 @@ struct execute_t: public warrior_attack_t
       {
         td( s -> target ) -> debuffs_colossus_smash -> extend_duration( p(),
                                                                         timespan_t::from_seconds( p() -> artifact.exploit_the_weakness.value() ) );
-
-        timespan_t remains = std::max( td( s -> target ) -> debuffs_colossus_smash -> remains(), p() -> buff.colossus_smash -> remains() );
-        p() -> buff.colossus_smash -> extend_duration( p(), remains - p() -> buff.colossus_smash -> remains() );
       }
       else
       {
@@ -1987,9 +1975,6 @@ struct mortal_strike_t: public warrior_attack_t
     {
       td( s -> target ) -> debuffs_colossus_smash -> extend_duration( p(),
         timespan_t::from_seconds( p() -> artifact.exploit_the_weakness.value() ) );
-      
-      timespan_t remains = std::max( td( s -> target ) -> debuffs_colossus_smash -> remains(), p() -> buff.colossus_smash -> remains() );
-      p() -> buff.colossus_smash -> extend_duration( p(), remains - p() -> buff.colossus_smash -> remains() );
     }
   }
 
@@ -3662,25 +3647,6 @@ void warrior_t::apl_arms()
 
   single_target -> add_talent( this, "Rend", "if=remains<gcd" );
   single_target -> add_action( this, "Battle Cry", "sync=colossus_smash" );
-  single_target -> add_action( this, "Battle Cry", "if=buff.colossus_smash_up.remains>=5|(buff.colossus_smash_up.up&cooldown.colossus_smash.remains=0)" );
-  single_target -> add_talent( this, "Avatar", "sync=colossus_smash" );
-  single_target -> add_talent( this, "Avatar", "if=buff.colossus_smash_up.remains>=5|(buff.colossus_smash_up.up&cooldown.colossus_smash.remains=0)" );
-  if ( artifact.corrupted_rage.rank() )
-    single_target -> add_action( "corrupted_rage,if=debuff.colossus_smash.down" );
-  single_target -> add_action( this, "Colossus Smash", "if=debuff.colossus_smash.down" );
-  single_target -> add_talent( this, "Bladestorm", "if=buff.battle_cry.up" );
-  single_target -> add_talent( this, "Overpower" );
-  single_target -> add_action( this, "Execute", "if=debuff.colossus_smash.up" );
-  single_target -> add_action( this, "Mortal Strike", "if=target.health.pct>20&(!talent.mortal_combo.enabled|(charges=2|debuff.colossus_smash.up))" );
-  single_target -> add_action( this, "Execute", "if=rage.deficit<50" );
-  single_target -> add_talent( this, "Storm Bolt" );
-  single_target -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down&buff.precise_strikes.down" );
-  single_target -> add_action( this, "Slam", "if=target.health.pct>20&(debuff.colossus_smash.up|rage.deficit<50)" );
-  single_target -> add_talent( this, "Rend", "if=remains<=duration*0.3" );
-  single_target -> add_action( this, "Execute" );
-  single_target -> add_action( this, "Slam", "if=target.health.pct>20" );
-  single_target -> add_action( "heroic_charge" );
-  single_target -> add_talent( this, "Shockwave" );
 
   aoe -> add_action( this, "Cleave", "if=buff.cleave.down" );
   aoe -> add_action( this, "Whirlwind" );
@@ -3944,11 +3910,6 @@ void warrior_t::create_buffs()
   buff.cleave = buff_creator_t( this, "cleave", find_spell( 188923 ) )
     .default_value( find_spell( 188923 ) -> effectN( 1 ).percent()
       + artifact.one_against_many.percent() );
-
-  buff.colossus_smash = buff_creator_t( this, "colossus_smash_up", spell.colossus_smash_debuff )
-    .duration( spell.colossus_smash_debuff -> duration()
-             * ( 1.0 + talents.titanic_might -> effectN( 1 ).percent() ) )
-    .cd( timespan_t::zero() );
 
   buff.corrupted_blood_of_zakajz = buff_creator_t( this, "corrupted_blood_of_zakajz",
     artifact.corrupted_blood_of_zakajz.data().effectN( 1 ).trigger() )
