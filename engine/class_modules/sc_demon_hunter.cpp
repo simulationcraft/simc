@@ -28,6 +28,7 @@ namespace { // UNNAMED NAMESPACE
    Second look at Momentum skills' timings
    Fel Barrage
    Artifact: Twinblades of the Deceiver
+   Fury of the Illidari distance targeting support
 
    Vengeance ----------------------------------------------------------------
    Hmm, let me think... well there's... oh yeah, everything.
@@ -85,6 +86,8 @@ public:
   event_t* blade_dance_driver;
   std::vector<attack_t*> blade_dance_attacks;
   std::vector<attack_t*> death_sweep_attacks;
+
+  event_t* fury_of_the_illidari_driver;
 
   // Autoattacks
   actions::attacks::melee_t* melee_main_hand;
@@ -169,6 +172,33 @@ public:
     const spell_data_t* demonic_presence;
     const spell_data_t* fel_blood;
   } mastery_spell;
+
+  // Artifacts
+  struct artifact_spell_data_t
+  {
+    // Havoc -- Twinblades of the Deceiver
+
+    // NYI
+    artifact_power_t anguish_of_the_deceiver;
+    artifact_power_t balanced_blades;
+    artifact_power_t chaos_vision;
+    artifact_power_t contained_fury;
+    artifact_power_t critical_chaos;
+    artifact_power_t deceivers_fury;
+    artifact_power_t demon_rage;
+    artifact_power_t demon_speed;
+    artifact_power_t feast_on_the_souls;
+    artifact_power_t fury_of_the_illidari;
+    artifact_power_t illidari_knowledge;
+    artifact_power_t inner_demons;
+    artifact_power_t overwhelming_power;
+    artifact_power_t rage_of_the_illidari;
+    artifact_power_t sharpened_glaives;
+    artifact_power_t unleashed_demons;
+    artifact_power_t warglaives_of_chaos;
+
+    // Vengeance -- The Aldrachi Warblades (NYI)
+  } artifact;
 
   // Cooldowns
   struct
@@ -1437,6 +1467,79 @@ struct fel_rush_t : public demon_hunter_attack_t
   }
 };
 
+// Fury of the Illidari ============================================================
+// TODO: Distance targeting support.
+
+struct fury_of_the_illidari_t : public demon_hunter_attack_t
+{
+  struct fury_of_the_illidari_tick_t : public demon_hunter_attack_t
+  {
+    fury_of_the_illidari_tick_t( demon_hunter_t* p, const spell_data_t* s ) :
+      demon_hunter_attack_t( "fury_of_the_illidari", p, s )
+    {
+      background = dual = ground_aoe = true;
+      aoe = -1;
+    }
+  };
+
+  struct fury_of_the_illidari_event_t : public event_t
+  {
+    demon_hunter_t* dh;
+    attack_t* mh;
+    attack_t* oh;
+    timespan_t expiration;
+
+    fury_of_the_illidari_event_t( demon_hunter_t* p, attack_t* m, attack_t* o, timespan_t end ):
+      event_t( *p -> sim ), mh( m ), oh( o ), expiration( end ), dh( p )
+    {
+      add_event( timespan_t::from_millis( 500 ) ); // not in spell data
+    }
+
+    void execute() override
+    {
+      mh -> schedule_execute();
+      oh -> schedule_execute();
+
+      if ( sim().current_time() + timespan_t::from_millis( 500 ) <= expiration )
+      {
+        dh -> fury_of_the_illidari_driver = new ( sim() ) fury_of_the_illidari_event_t( dh, mh, oh, expiration );
+      }
+    }
+  };
+
+  fury_of_the_illidari_tick_t* mh;
+  fury_of_the_illidari_tick_t* oh;
+
+  fury_of_the_illidari_t( demon_hunter_t* p, const std::string& options_str ) :
+    demon_hunter_attack_t( "fury_of_the_illidari_driver", p, p -> artifact.fury_of_the_illidari )
+  {
+    may_miss = may_crit = may_parry = may_block = may_dodge = false;
+
+    mh = new fury_of_the_illidari_tick_t( p, p -> find_spell( 201628 ) );
+    oh = new fury_of_the_illidari_tick_t( p, p -> find_spell( 201789 ) );
+    oh -> weapon = &( p -> off_hand_weapon );
+
+    // Silly reporting things
+    school = mh -> school;
+    // Hide this driver action from reporting.
+    quiet = true;
+  }
+
+  timespan_t travel_time() const override
+  { return timespan_t::zero(); }
+
+  void execute() override
+  {
+    demon_hunter_attack_t::execute();
+
+    /* Add a single execute to the stats. We can't just have the driver use the
+       same stats object because it interferes with hit count statistics. */
+    mh -> stats -> add_execute( time_to_execute, target );
+
+    p() -> fury_of_the_illidari_driver = new ( *sim ) fury_of_the_illidari_event_t( p(), mh, oh, sim -> current_time() + data().duration() );
+  }
+};
+
 // Metamorphosis ============================================================
 
 struct metamorphosis_t : public demon_hunter_attack_t
@@ -1894,26 +1997,27 @@ action_t* demon_hunter_t::create_action( const std::string& name,
                                          const std::string& options_str )
 {
   using namespace actions::spells;
-  if ( name == "blur"             ) return new blur_t              ( this, options_str );
-  if ( name == "consume_magic"    ) return new consume_magic_t     ( this, options_str );
+  if ( name == "blur"                 ) return new blur_t                ( this, options_str );
+  if ( name == "consume_magic"        ) return new consume_magic_t       ( this, options_str );
   using namespace actions::attacks;
-  if ( name == "auto_attack"      ) return new auto_attack_t       ( this, options_str );
-  if ( name == "annihilation"     ) return new annihilation_t      ( this, options_str );
-  if ( name == "blade_dance"      ) return new blade_dance_t       ( this, options_str );
-  if ( name == "chaos_blades"     ) return new chaos_blades_t      ( this, options_str );
-  if ( name == "chaos_nova"       ) return new chaos_nova_t        ( this, options_str );
-  if ( name == "chaos_strike"     ) return new chaos_strike_t      ( this, options_str );
-  if ( name == "death_sweep"      ) return new death_sweep_t       ( this, options_str );
-  if ( name == "demons_bite"      ) return new demons_bite_t       ( this, options_str );
-  if ( name == "eye_beam"         ) return new eye_beam_t          ( this, options_str );
-  if ( name == "felblade"         ) return new felblade_t          ( this, options_str );
-  if ( name == "fel_eruption"     ) return new fel_eruption_t      ( this, options_str );
-  if ( name == "fel_rush"         ) return new fel_rush_t          ( this, options_str );
+  if ( name == "auto_attack"          ) return new auto_attack_t         ( this, options_str );
+  if ( name == "annihilation"         ) return new annihilation_t        ( this, options_str );
+  if ( name == "blade_dance"          ) return new blade_dance_t         ( this, options_str );
+  if ( name == "chaos_blades"         ) return new chaos_blades_t        ( this, options_str );
+  if ( name == "chaos_nova"           ) return new chaos_nova_t          ( this, options_str );
+  if ( name == "chaos_strike"         ) return new chaos_strike_t        ( this, options_str );
+  if ( name == "death_sweep"          ) return new death_sweep_t         ( this, options_str );
+  if ( name == "demons_bite"          ) return new demons_bite_t         ( this, options_str );
+  if ( name == "eye_beam"             ) return new eye_beam_t            ( this, options_str );
+  if ( name == "felblade"             ) return new felblade_t            ( this, options_str );
+  if ( name == "fel_eruption"         ) return new fel_eruption_t        ( this, options_str );
+  if ( name == "fel_rush"             ) return new fel_rush_t            ( this, options_str );
+  if ( name == "fury_of_the_illidari" ) return new fury_of_the_illidari_t( this, options_str );
   if ( name == "metamorphosis" ||
-       name == "meta"             ) return new metamorphosis_t     ( this, options_str );
-  if ( name == "nemesis"          ) return new nemesis_t           ( this, options_str );
-  if ( name == "throw_glaive"     ) return new throw_glaive_t      ( this, options_str );
-  if ( name == "vengeful_retreat" ) return new vengeful_retreat_t  ( this, options_str );
+       name == "meta"                 ) return new metamorphosis_t       ( this, options_str );
+  if ( name == "nemesis"              ) return new nemesis_t             ( this, options_str );
+  if ( name == "throw_glaive"         ) return new throw_glaive_t        ( this, options_str );
+  if ( name == "vengeful_retreat"     ) return new vengeful_retreat_t    ( this, options_str );
 
   return base_t::create_action( name, options_str );
 }
@@ -2073,6 +2177,31 @@ void demon_hunter_t::init_spells()
   talent.chaos_blades         = find_talent_spell( "Chaos Blades" );
   talent.fel_barrage          = find_talent_spell( "Fel Barrage (NYI)" );
   talent.demon_reborn         = find_talent_spell( "Demon Reborn" );
+
+  // Artifacts ==============================================================
+  
+  // Havoc -- Twinblades of the Deceiver
+  artifact.anguish_of_the_deceiver = find_artifact_spell( "Anguish of the Deceiver" );
+  artifact.balanced_blades         = find_artifact_spell( "Balanced Blades" );
+  artifact.chaos_vision            = find_artifact_spell( "Chaos Vision" );
+  artifact.contained_fury          = find_artifact_spell( "Contained Fury" );
+  artifact.critical_chaos          = find_artifact_spell( "Critical Chaos" );
+  artifact.deceivers_fury          = find_artifact_spell( "Deceiver's Fury" );
+  artifact.demon_rage              = find_artifact_spell( "Demon Rage" );
+  artifact.demon_speed             = find_artifact_spell( "Demon Speed" );
+  artifact.feast_on_the_souls      = find_artifact_spell( "Feast on the Souls" );
+  artifact.fury_of_the_illidari    = find_artifact_spell( "Fury of the Illidari" );
+  artifact.illidari_knowledge      = find_artifact_spell( "Illidari Knowledge" );
+  artifact.inner_demons            = find_artifact_spell( "Inner Demons" );
+  artifact.overwhelming_power      = find_artifact_spell( "Overwhelming Power" );
+  artifact.rage_of_the_illidari    = find_artifact_spell( "Rage of the Illidari" );
+  artifact.sharpened_glaives       = find_artifact_spell( "Sharpened Glaives" );
+  artifact.unleashed_demons        = find_artifact_spell( "Unleashed Demons" );
+  artifact.warglaives_of_chaos     = find_artifact_spell( "Warglaives of Chaos" );
+
+  // Vengeance -- The Aldrachi Warblades
+
+  // Spell Initialization ===================================================
 
   if ( talent.demonic_appetite -> ok() )
   {
@@ -2257,6 +2386,7 @@ void demon_hunter_t::reset()
   base_t::reset();
 
   blade_dance_driver = nullptr;
+  fury_of_the_illidari_driver = nullptr;
   rppm.felblade.reset();
 }
 
