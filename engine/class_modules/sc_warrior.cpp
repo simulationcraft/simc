@@ -202,7 +202,6 @@ public:
   struct realppm_t
   {
     std::unique_ptr<real_ppm_t> overpower;
-    std::unique_ptr<real_ppm_t> shadow_slash;
     std::unique_ptr<real_ppm_t> rage_of_the_valarjar;
     std::unique_ptr<real_ppm_t> wrecking_ball;
   } rppm;
@@ -333,6 +332,7 @@ public:
     artifact_power_t focus_in_battle;
     artifact_power_t unending_rage;
     artifact_power_t corrupted_blood_of_zakajz;
+    artifact_power_t warbreaker;
     artifact_power_t will_of_the_first_king;
 
     artifact_power_t odyns_fury;
@@ -1914,18 +1914,6 @@ struct heroic_charge_t: public warrior_attack_t
 
 struct mortal_strike_t: public warrior_attack_t
 {
-  struct shadow_slash_t: public warrior_attack_t
-  {
-    shadow_slash_t( warrior_t* p ):
-      warrior_attack_t( "shadow_slash", p, p -> find_spell( 209733 ) )
-    {
-      background = true;
-      aoe = -1;
-    }
-  };
-
-  shadow_slash_t* shadow_slash;
-
   mortal_strike_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "mortal_strike", p, p -> spec.mortal_strike )
   {
@@ -1936,12 +1924,6 @@ struct mortal_strike_t: public warrior_attack_t
     base_costs[RESOURCE_RAGE] += p -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
     cooldown -> charges += p -> talents.mortal_combo -> effectN( 1 ).base_value();
     base_multiplier *= 1.0 + p -> artifact.thoradins_might.percent();
-
-    if ( p -> stromkar_the_warbreaker )
-    {
-      shadow_slash = new shadow_slash_t( p );
-      add_child( shadow_slash );
-    }
   }
 
   double composite_crit() const override
@@ -1991,13 +1973,6 @@ struct mortal_strike_t: public warrior_attack_t
       }
 
       p() -> buff.focused_rage -> expire();
-    }
-
-    // Does not require hit.
-    if ( p() -> stromkar_the_warbreaker && p() -> rppm.shadow_slash -> trigger() )
-    {
-      shadow_slash -> target = target;
-      shadow_slash -> execute();
     }
 
     p() -> buff.shattered_defenses -> expire();
@@ -2206,6 +2181,38 @@ struct odyns_fury_t: public warrior_attack_t
     warrior_attack_t::execute();
     mh -> execute();
     oh -> execute();
+  }
+};
+
+struct warbreaker_t: public warrior_attack_t
+{
+  warbreaker_t( warrior_t* p, const std::string& options_str ):
+    warrior_attack_t( "warbreaker", p, p -> artifact.warbreaker )
+  {
+    parse_options( options_str );
+    weapon = &( p -> main_hand_weapon );
+    aoe = -1;
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    p() -> buff.shattered_defenses -> trigger();
+    p() -> buff.precise_strikes -> trigger();
+
+    if ( p() -> sets.set( WARRIOR_ARMS, T17, B2 ) && p() -> buff.tier17_2pc_arms -> trigger() )
+      p() -> proc.t17_2pc_arms -> occur();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      td( s -> target ) -> debuffs_colossus_smash -> trigger();
+    }
   }
 };
 
@@ -3149,6 +3156,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "pummel"               ) return new pummel_t               ( this, options_str );
   if ( name == "overpower"            ) return new overpower_t            ( this, options_str );
   if ( name == "odyns_fury"           ) return new odyns_fury_t           ( this, options_str );
+  if ( name == "warbreaker"           ) return new warbreaker_t           ( this, options_str );
   if ( name == "rampage"              ) return new rampage_parent_t       ( this, options_str );
   if ( name == "raging_blow"          ) return new raging_blow_t          ( this, options_str );
   if ( name == "commanding_shout"     ) return new commanding_shout_t     ( this, options_str );
@@ -3289,6 +3297,7 @@ void warrior_t::init_spells()
   artifact.unending_rage             = find_artifact_spell( "Unending Rage" );
   artifact.void_cleave               = find_artifact_spell( "Void Cleave" );
   artifact.war_veteran               = find_artifact_spell( "War Veteran" );
+  artifact.warbreaker                = find_artifact_spell( "Warbreaker" );
 
   artifact.odyns_fury                = find_artifact_spell( "Odyn's Fury" );
   artifact.thirst_for_battle         = find_artifact_spell( "Thirst for Battle" );
@@ -3784,13 +3793,6 @@ struct overpower_t: public warrior_real_ppm_t < real_ppm_t >
   {}
 };
 
-struct shadow_slash_t: public warrior_real_ppm_t < real_ppm_t >
-{
-  shadow_slash_t( warrior_t& p ):
-    base_t( p, real_ppm_t( p, p.stromkar_the_warbreaker -> driver() -> real_ppm(), 1.0, RPPM_NONE ) )
-  {}
-};
-
 struct rage_of_the_valarjar_t: public warrior_real_ppm_t < real_ppm_t >
 {
   rage_of_the_valarjar_t( warrior_t& p ):
@@ -4127,8 +4129,6 @@ void warrior_t::init_rng()
 
   if ( talents.overpower )
     rppm.overpower = std::unique_ptr<rppm::overpower_t>( new rppm::overpower_t( *this ) );
-  if ( stromkar_the_warbreaker )
-    rppm.shadow_slash = std::unique_ptr<rppm::shadow_slash_t>( new rppm::shadow_slash_t( *this ) );
   if ( warswords_of_the_valarjar )
     rppm.rage_of_the_valarjar = std::unique_ptr<rppm::rage_of_the_valarjar_t>( new rppm::rage_of_the_valarjar_t( *this ) );
   if ( talents.wrecking_ball )
@@ -4246,9 +4246,6 @@ void warrior_t::reset()
   rampage_driver = nullptr;
   if ( rppm.overpower )
     rppm.overpower -> reset();
-
-  if ( rppm.shadow_slash )
-    rppm.shadow_slash -> reset();
 
   if ( rppm.rage_of_the_valarjar )
     rppm.rage_of_the_valarjar -> reset();
