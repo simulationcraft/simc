@@ -1873,7 +1873,7 @@ struct sim_t : private sc_thread_t
   cooldown_t* get_cooldown( const std::string& name );
   void      use_optimal_buffs_and_debuffs( int value );
   expr_t*   create_expression( action_t*, const std::string& name );
-  void      errorf( const char* format, ... ) PRINTF_ATTRIBUTE(2, 3);
+  void      errorf( const char* format, ... );
   void abort();
   void combat();
   void combat_begin();

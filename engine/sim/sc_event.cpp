@@ -101,8 +101,9 @@ event_manager_t::event_manager_t( sim_t* s ) :
   wheel_granularity( 0.0 ),
   wheel_time( timespan_t::zero() ),
   event_stopwatch( STOPWATCH_THREAD ),
-#ifdef EVENT_QUEUE_DEBUG
   monitor_cpu( false ),
+#ifdef EVENT_QUEUE_DEBUG
+  canceled( false),
   max_queue_depth( 0 ),
   n_allocated_events( 0 ),
   n_requested_events( 0 ),
@@ -110,7 +111,7 @@ event_manager_t::event_manager_t( sim_t* s ) :
   events_traversed( 0 ),
   events_added( 0 )
 #else
-  monitor_cpu( false )
+  canceled( false )
 #endif /* EVENT_QUEUE_DEBUG */
 {
   allocated_events.reserve( 100 );
