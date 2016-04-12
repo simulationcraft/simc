@@ -67,6 +67,7 @@ public:
   
   struct debuffs_t
   {
+    buff_t* anguish;
     buff_t* nemesis;
   } debuffs;
 
@@ -176,12 +177,12 @@ public:
   struct artifact_spell_data_t
   {
     // Havoc -- Twinblades of the Deceiver
+    artifact_power_t anguish_of_the_deceiver;
     artifact_power_t fury_of_the_illidari;
     artifact_power_t inner_demons;
     artifact_power_t rage_of_the_illidari;
 
     // NYI
-    artifact_power_t anguish_of_the_deceiver;
     artifact_power_t balanced_blades;
     artifact_power_t chaos_vision;
     artifact_power_t contained_fury;
@@ -866,6 +867,18 @@ struct auto_attack_t : public demon_hunter_attack_t
   }
 };
 
+// Anguish ==================================================================
+
+struct anguish_t : public demon_hunter_attack_t
+{
+  anguish_t( demon_hunter_t* p ) :
+    demon_hunter_attack_t( "anguish", p, p -> find_spell( 202446 ) )
+  {
+    background = dual = true;
+    base_dd_min = base_dd_max = 0;
+  }
+};
+
 // Blade Dance =============================================================
 
 struct blade_dance_attack_t: public demon_hunter_attack_t
@@ -1321,6 +1334,16 @@ struct eye_beam_t : public demon_hunter_attack_t
 
     dmg_e amount_type( const action_state_t*, bool ) const override
     { return DMG_OVER_TIME; } // TOCHECK
+
+    void impact( action_state_t* s ) override
+    {
+      demon_hunter_attack_t::impact( s );
+
+      if ( result_is_hit( s -> result ) && p() -> artifact.anguish_of_the_deceiver.rank() )
+      {
+        td( s -> target ) -> debuffs.anguish -> trigger();
+      }
+    }
   };
 
   eye_beam_tick_t* beam;
@@ -1336,6 +1359,11 @@ struct eye_beam_t : public demon_hunter_attack_t
     beam -> stats = stats;
 
     dot_duration *= 1.0 + p -> talent.blind_fury -> effectN( 1 ).percent();
+
+    if ( p -> artifact.anguish_of_the_deceiver.rank() )
+    {
+      add_child( p -> find_action( "anguish" ) );
+    }
   }
 
   // Channel is not hasted.
@@ -1796,6 +1824,38 @@ public:
   demon_hunter_t& p() const { return dh; }
 };
 
+// Anguish ==================================================================
+
+struct anguish_debuff_t : public demon_hunter_buff_t<buff_t>
+{
+  action_t* anguish;
+
+  anguish_debuff_t( demon_hunter_t* p, player_t* target ) :
+    demon_hunter_buff_t<buff_t>( *p, buff_creator_t( target, "anguish",
+      p -> artifact.anguish_of_the_deceiver.data().effectN( 1 ).trigger() ) )
+  {
+    anguish = p -> find_action( "anguish" );
+  }
+
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    demon_hunter_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
+
+    // Only if the debuff expires naturally; if the target dies it doesn't deal damage.
+    if ( remaining_duration == timespan_t::zero() )
+    {
+      // Schedule an execute, but snapshot state right now so we can apply the stack multiplier.
+      action_state_t* s = anguish -> get_state();
+      s -> target = player;
+      anguish -> snapshot_state( s, DMG_DIRECT );
+      s -> target_da_multiplier *= expiration_stacks;
+      anguish -> schedule_execute( s );
+    }
+  }
+};
+
+// Chaos Blades =============================================================
+
 struct chaos_blades_t : public demon_hunter_buff_t<buff_t>
 {
   chaos_blades_t( demon_hunter_t* p ) :
@@ -1855,9 +1915,9 @@ struct chaos_blades_t : public demon_hunter_buff_t<buff_t>
 
 // Nemesis ==================================================================
 
-struct nemesis_buff_t : public demon_hunter_buff_t<buff_t>
+struct nemesis_debuff_t : public demon_hunter_buff_t<buff_t>
 {
-  nemesis_buff_t( demon_hunter_t* p, player_t* target ) :
+  nemesis_debuff_t( demon_hunter_t* p, player_t* target ) :
     demon_hunter_buff_t<buff_t>( *p, buff_creator_t( target, "nemesis", p -> talent.nemesis )
       .default_value( p -> talent.nemesis -> effectN( 1 ).percent() )
       .cd( timespan_t::zero() ) )
@@ -1883,7 +1943,8 @@ struct nemesis_buff_t : public demon_hunter_buff_t<buff_t>
 demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   : actor_target_data_t( target, &p ), dots( dots_t() ), debuffs( debuffs_t() )
 {
-  debuffs.nemesis = new buffs::nemesis_buff_t( &p, target );
+  debuffs.anguish = new buffs::anguish_debuff_t( &p, target );
+  debuffs.nemesis = new buffs::nemesis_debuff_t( &p, target );
 }
 
 // ==========================================================================
@@ -2308,6 +2369,11 @@ void demon_hunter_t::init_spells()
   if ( artifact.inner_demons.rank() )
   {
     new inner_demons_t( this );
+  }
+
+  if ( artifact.anguish_of_the_deceiver.rank() )
+  {
+    new anguish_t( this );
   }
 }
 

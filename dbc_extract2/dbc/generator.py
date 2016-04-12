@@ -1526,6 +1526,7 @@ class SpellDataGenerator(DataGenerator):
 		  ( 203796, 1 ), # Demon Blade proc
 		  ( 217070, 1 ), # Rage of the Illidari explosion
 		  ( 217060, 1 ), # Rage of the Illidari buff
+		  ( 202446, 1 ), # Anguish damage spell
 		),
     ]
 
