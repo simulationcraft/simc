@@ -20,7 +20,6 @@ namespace { // UNNAMED NAMESPACE
    Havoc --------------------------------------------------------------------
    Demonic Appetite travel time
    Demonic Appetite fury from spell data
-   Eye Beam hit statistics
    Fel Blade movement mechanics
    Change Nemesis to be race specific instead of generic
    Nemesis buffs for each race?
@@ -1306,6 +1305,9 @@ struct eye_beam_t : public demon_hunter_attack_t
       aoe = -1;
       dual = background = true;
     }
+
+    dmg_e amount_type( const action_state_t*, bool ) const override
+    { return DMG_OVER_TIME; } // TOCHECK
   };
 
   eye_beam_tick_t* beam;
@@ -1315,6 +1317,7 @@ struct eye_beam_t : public demon_hunter_attack_t
   {
     parse_options( options_str );
     
+    may_miss = may_crit = may_parry = may_block = may_dodge = false;
     channeled = true;
     beam = new eye_beam_tick_t( p );
     beam -> stats = stats;
