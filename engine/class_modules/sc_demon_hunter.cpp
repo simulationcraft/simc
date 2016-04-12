@@ -1674,9 +1674,11 @@ struct inner_demons_t : public demon_hunter_attack_t
     demon_hunter_attack_t( "inner_demons", p, p -> find_spell( 202388 ) )
   {
     background = true;
-    time_to_travel = p -> artifact.inner_demons.data().effectN( 1 ).trigger() -> duration();
     aoe = -1;
   }
+
+  timespan_t travel_time() const override
+  { return p() -> artifact.inner_demons.data().effectN( 1 ).trigger() -> duration(); };
 };
 
 // Metamorphosis ============================================================
