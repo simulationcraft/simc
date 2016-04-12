@@ -26,8 +26,9 @@ namespace { // UNNAMED NAMESPACE
    Defensive talent tier
    Second look at Momentum skills' timings
    Fel Barrage
-   Artifact: Twinblades of the Deceiver
    Fury of the Illidari distance targeting support
+   Soul Fragment artifact traits
+   Defensive artifact traits
 
    Vengeance ----------------------------------------------------------------
    Hmm, let me think... well there's... oh yeah, everything.
@@ -178,24 +179,24 @@ public:
   {
     // Havoc -- Twinblades of the Deceiver
     artifact_power_t anguish_of_the_deceiver;
-    artifact_power_t fury_of_the_illidari;
-    artifact_power_t inner_demons;
-    artifact_power_t rage_of_the_illidari;
-
-    // NYI
     artifact_power_t balanced_blades;
     artifact_power_t chaos_vision;
     artifact_power_t contained_fury;
     artifact_power_t critical_chaos;
-    artifact_power_t deceivers_fury;
     artifact_power_t demon_rage;
     artifact_power_t demon_speed;
-    artifact_power_t feast_on_the_souls;
-    artifact_power_t illidari_knowledge;
-    artifact_power_t overwhelming_power;
+    artifact_power_t fury_of_the_illidari;
+    artifact_power_t inner_demons;
+    artifact_power_t rage_of_the_illidari;
     artifact_power_t sharpened_glaives;
     artifact_power_t unleashed_demons;
     artifact_power_t warglaives_of_chaos;
+
+    // NYI
+    artifact_power_t deceivers_fury;
+    artifact_power_t feast_on_the_souls;
+    artifact_power_t illidari_knowledge;
+    artifact_power_t overwhelming_power;
 
     // Vengeance -- The Aldrachi Warblades (NYI)
   } artifact;
@@ -538,6 +539,12 @@ struct blur_t : public demon_hunter_spell_t
     demon_hunter_spell_t::execute();
 
     p() -> buff.blur -> trigger();
+
+    if ( p() -> artifact.demon_speed.rank() )
+    {
+      p() -> cooldown.fel_rush -> reset( false );
+      p() -> cooldown.fel_rush -> reset( false );
+    }
   }
 };
 
@@ -565,6 +572,9 @@ struct chaos_blades_t : public demon_hunter_spell_t
 
 struct consume_magic_t : public demon_hunter_spell_t
 {
+  resource_e resource;
+  double resource_amount;
+
   consume_magic_t( demon_hunter_t* p, const std::string& options_str ) :
     demon_hunter_spell_t( "consume_magic", p, p -> spec.consume_magic )
   {
@@ -572,16 +582,17 @@ struct consume_magic_t : public demon_hunter_spell_t
 
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
     ignore_false_positive = true;
+
+    const spelleffect_data_t effect = p -> find_spell( 218903 ) -> effectN( p -> specialization() == DEMON_HUNTER_HAVOC ? 1 : 2 );
+    resource = effect.resource_gain_type();
+    resource_amount = effect.resource( resource );
   }
 
   void execute() override
   {
     demon_hunter_spell_t::execute();
 
-    if ( p() -> specialization() == DEMON_HUNTER_HAVOC )
-    {
-      p() -> resource_gain( RESOURCE_FURY, p() -> resources.max[ RESOURCE_FURY ], action_gain );
-    }
+    p() -> resource_gain( resource, resource_amount, action_gain );
   }
 
   bool ready() override
@@ -890,6 +901,18 @@ struct blade_dance_attack_t: public demon_hunter_attack_t
     aoe = -1;
   }
 
+  double action_multiplier() const override
+  {
+    double am = demon_hunter_attack_t::action_multiplier();
+
+    if ( p() -> artifact.balanced_blades.rank() )
+    {
+      am *= 1.0 + target_list().size() * p() -> artifact.balanced_blades.data().effectN( 1 ).percent();
+    }
+
+    return am;
+  }
+
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double dm = demon_hunter_attack_t::composite_da_multiplier( s );
@@ -966,6 +989,18 @@ struct blade_dance_base_t: public demon_hunter_attack_t
     return f;
   }
 
+  virtual double action_multiplier() const override
+  {
+    double am = demon_hunter_attack_t::action_multiplier();
+
+    if ( p() -> artifact.balanced_blades.rank() )
+    {
+      am *= 1.0 + target_list().size() * p() -> artifact.balanced_blades.data().effectN( 1 ).percent();
+    }
+
+    return am;
+  }
+
   virtual double composite_da_multiplier( const action_state_t* s ) const override
   {
     double dm = demon_hunter_attack_t::composite_da_multiplier( s );
@@ -1020,7 +1055,7 @@ struct chaos_blade_t : public demon_hunter_attack_t
   {
     weapon = w;
     base_execute_time = w -> swing_time;
-    special = may_glance = false; // TOCHECK may_glance
+    special = /* may_glance =*/ false; // Apr 12 2016: Cannot glance.
     repeating = background = true;
   }
 };
@@ -1069,6 +1104,9 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
 
       if ( p -> talent.chaos_cleave -> ok() )
         aoe = 1 + p -> talent.chaos_cleave -> effectN( 1 ).base_value(); // Bugged as of build 21287
+
+      base_multiplier *= 1.0 + p -> artifact.warglaives_of_chaos.percent();
+      crit_bonus_multiplier *= 1.0 + p -> artifact.critical_chaos.percent(); // TOCHECK
     }
 
     // Use crit roll of the primary hit.
@@ -1123,6 +1161,9 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     {
       inner_demons = p -> find_action( "inner_demons" );
     }
+    
+    base_multiplier *= 1.0 + p -> artifact.warglaives_of_chaos.percent();
+    crit_bonus_multiplier *= 1.0 + p -> artifact.critical_chaos.percent(); // TOCHECK
   }
 
   virtual bool init_finished() override
@@ -1254,6 +1295,8 @@ struct demons_bite_t : public demon_hunter_attack_t
     
     fury.base  = data().effectN( 3 ).resource( RESOURCE_FURY ) + 1.0;
     fury.range = data().effectN( 3 ).die_sides() - 1.0;
+
+    base_multiplier *= 1.0 + p -> artifact.demon_rage.percent();
   }
 
   void impact( action_state_t* s ) override
@@ -1330,6 +1373,8 @@ struct eye_beam_t : public demon_hunter_attack_t
     {
       aoe = -1;
       dual = background = true;
+
+      base_multiplier *= 1.0 + p -> artifact.chaos_vision.percent();
     }
 
     dmg_e amount_type( const action_state_t*, bool ) const override
@@ -1580,6 +1625,8 @@ struct fury_of_the_illidari_t : public demon_hunter_attack_t
   fury_of_the_illidari_t( demon_hunter_t* p, const std::string& options_str ) :
     demon_hunter_attack_t( "fury_of_the_illidari", p, p -> artifact.fury_of_the_illidari )
   {
+    parse_options( options_str );
+
     may_miss = may_crit = may_parry = may_block = may_dodge = false;
     dot_duration = data().duration();
     base_tick_time = timespan_t::from_millis( 500 );
@@ -1654,6 +1701,8 @@ struct metamorphosis_t : public demon_hunter_attack_t
     
     base_teleport_distance  = data().max_range();
     movement_directionality = MOVEMENT_OMNI;
+
+    cooldown -> duration += p -> artifact.unleashed_demons.time_value();
   }
 
   // leap travel time, independent of distance
@@ -1679,11 +1728,16 @@ struct metamorphosis_t : public demon_hunter_attack_t
       p() -> cooldown.felblade             -> reset( false );
       p() -> cooldown.fel_barrage          -> reset( false );
       p() -> cooldown.fel_eruption         -> reset( false );
-      p() -> cooldown.fel_rush             -> reset( false ); // TOCHECK
+      p() -> cooldown.fel_rush             -> reset( false );
+      p() -> cooldown.fel_rush             -> reset( false );
       p() -> cooldown.nemesis              -> reset( false );
       p() -> cooldown.netherwalk           -> reset( false );
       p() -> cooldown.fury_of_the_illidari -> reset( false );
-      p() -> cooldown.throw_glaive         -> reset( false ); // TOCHECK
+      p() -> cooldown.throw_glaive         -> reset( false );
+      if ( p() -> talent.master_of_the_glaive -> ok() )
+      {
+        p() -> cooldown.throw_glaive         -> reset( false );
+      }
       p() -> cooldown.vengeful_retreat     -> reset( false );
     }
     
@@ -1723,6 +1777,8 @@ struct throw_glaive_t : public demon_hunter_attack_t
       bloodlet = new bloodlet_t( p );
       add_child( bloodlet );
     }
+
+    base_multiplier *= 1.0 + p -> artifact.sharpened_glaives.percent();
   }
 
   void impact( action_state_t* s ) override
@@ -2190,7 +2246,7 @@ void demon_hunter_t::init_base_stats()
 {
   base_t::init_base_stats();
 
-  resources.base[ RESOURCE_FURY ] = 100;
+  resources.base[ RESOURCE_FURY ] = 100 + artifact.contained_fury.value();
 
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility = 1.0;

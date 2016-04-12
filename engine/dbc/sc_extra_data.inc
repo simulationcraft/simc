@@ -1827,7 +1827,7 @@ static stat_data_t __gt_race_stats[] =
   {   0,  0,  0,  0,  0 }, // Human
   {   3, -3,  1, -3,  0 }, // Orc
   {   5, -4,  1, -1,  0 }, // Dwarf
-  {  -4,  4,  0,  0,  0 }, // Night Elf
+  {   3, -3,  1, -3,  0 }, // Night Elf
   {  -1, -2,  0, -2,  0 }, // Undead
   {   5, -4,  1, -4,  0 }, // Tauren
   {  -5,  2,  0,  3,  0 }, // Gnome
