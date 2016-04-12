@@ -1361,11 +1361,9 @@ struct demon_blade_t : public demon_hunter_attack_t
 };
 
 // Eye Beam =================================================================
-// FIXME: Eye Beam stats show +1 hits/execute.
 
 struct eye_beam_t : public demon_hunter_attack_t
 {
-  // TOCHECK: Direct or tick?
   struct eye_beam_tick_t : public demon_hunter_attack_t
   {
     eye_beam_tick_t( demon_hunter_t* p ) :
@@ -2181,12 +2179,13 @@ action_t* demon_hunter_t::create_action( const std::string& name,
 {
   using namespace actions::spells;
   if ( name == "blur"                 ) return new blur_t                ( this, options_str );
+  if ( name == "chaos_blades"         ) return new chaos_blades_t        ( this, options_str );
   if ( name == "consume_magic"        ) return new consume_magic_t       ( this, options_str );
+  if ( name == "nemesis"              ) return new nemesis_t             ( this, options_str );
   using namespace actions::attacks;
   if ( name == "auto_attack"          ) return new auto_attack_t         ( this, options_str );
   if ( name == "annihilation"         ) return new annihilation_t        ( this, options_str );
   if ( name == "blade_dance"          ) return new blade_dance_t         ( this, options_str );
-  if ( name == "chaos_blades"         ) return new chaos_blades_t        ( this, options_str );
   if ( name == "chaos_nova"           ) return new chaos_nova_t          ( this, options_str );
   if ( name == "chaos_strike"         ) return new chaos_strike_t        ( this, options_str );
   if ( name == "death_sweep"          ) return new death_sweep_t         ( this, options_str );
@@ -2198,7 +2197,6 @@ action_t* demon_hunter_t::create_action( const std::string& name,
   if ( name == "fury_of_the_illidari" ) return new fury_of_the_illidari_t( this, options_str );
   if ( name == "metamorphosis" ||
        name == "meta"                 ) return new metamorphosis_t       ( this, options_str );
-  if ( name == "nemesis"              ) return new nemesis_t             ( this, options_str );
   if ( name == "throw_glaive"         ) return new throw_glaive_t        ( this, options_str );
   if ( name == "vengeful_retreat"     ) return new vengeful_retreat_t    ( this, options_str );
 
