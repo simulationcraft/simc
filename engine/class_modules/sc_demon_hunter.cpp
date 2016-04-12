@@ -86,8 +86,6 @@ public:
   std::vector<attack_t*> blade_dance_attacks;
   std::vector<attack_t*> death_sweep_attacks;
 
-  event_t* fury_of_the_illidari_driver;
-
   // Autoattacks
   actions::attacks::melee_t* melee_main_hand;
   actions::attacks::melee_t* melee_off_hand;
@@ -1483,31 +1481,9 @@ struct fury_of_the_illidari_t : public demon_hunter_attack_t
       background = dual = ground_aoe = true;
       aoe = -1;
     }
-  };
 
-  struct fury_of_the_illidari_event_t : public event_t
-  {
-    demon_hunter_t* dh;
-    attack_t* mh;
-    attack_t* oh;
-    timespan_t expiration;
-
-    fury_of_the_illidari_event_t( demon_hunter_t* p, attack_t* m, attack_t* o, timespan_t end ):
-      event_t( *p -> sim ), mh( m ), oh( o ), expiration( end ), dh( p )
-    {
-      add_event( timespan_t::from_millis( 500 ) ); // not in spell data
-    }
-
-    void execute() override
-    {
-      mh -> schedule_execute();
-      oh -> schedule_execute();
-
-      if ( sim().current_time() + timespan_t::from_millis( 500 ) <= expiration )
-      {
-        dh -> fury_of_the_illidari_driver = new ( sim() ) fury_of_the_illidari_event_t( dh, mh, oh, expiration );
-      }
-    }
+    dmg_e amount_type( const action_state_t*, bool ) const override
+    { return DMG_OVER_TIME; } // TOCHECK
   };
 
   fury_of_the_illidari_tick_t* mh;
@@ -1517,29 +1493,27 @@ struct fury_of_the_illidari_t : public demon_hunter_attack_t
     demon_hunter_attack_t( "fury_of_the_illidari_driver", p, p -> artifact.fury_of_the_illidari )
   {
     may_miss = may_crit = may_parry = may_block = may_dodge = false;
+    dot_duration = data().duration();
+    base_tick_time = timespan_t::from_millis( 500 );
 
     mh = new fury_of_the_illidari_tick_t( p, p -> find_spell( 201628 ) );
     oh = new fury_of_the_illidari_tick_t( p, p -> find_spell( 201789 ) );
     oh -> weapon = &( p -> off_hand_weapon );
+    tick_action = mh;
 
     // Silly reporting things
     school = mh -> school;
-    // Hide this driver action from reporting.
-    quiet = true;
+    stats = mh -> stats;
   }
 
   timespan_t travel_time() const override
   { return timespan_t::zero(); }
 
-  void execute() override
+  void tick( dot_t* d ) override
   {
-    demon_hunter_attack_t::execute();
+    demon_hunter_attack_t::tick( d );
 
-    /* Add a single execute to the stats. We can't just have the driver use the
-       same stats object because it interferes with hit count statistics. */
-    mh -> stats -> add_execute( time_to_execute, target );
-
-    p() -> fury_of_the_illidari_driver = new ( *sim ) fury_of_the_illidari_event_t( p(), mh, oh, sim -> current_time() + data().duration() );
+    oh -> schedule_execute();
   }
 };
 
@@ -2389,7 +2363,6 @@ void demon_hunter_t::reset()
   base_t::reset();
 
   blade_dance_driver = nullptr;
-  fury_of_the_illidari_driver = nullptr;
   rppm.felblade.reset();
 }
 
