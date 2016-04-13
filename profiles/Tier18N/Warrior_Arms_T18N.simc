@@ -33,23 +33,6 @@ actions+=/arcane_torrent,if=rage<rage.max-40
 
 actions.single=rend,if=remains<gcd
 actions.single+=/battle_cry,sync=colossus_smash
-actions.single+=/battle_cry,if=buff.colossus_smash_up.remains>=5|(buff.colossus_smash_up.up&cooldown.colossus_smash.remains=0)
-actions.single+=/avatar,sync=colossus_smash
-actions.single+=/avatar,if=buff.colossus_smash_up.remains>=5|(buff.colossus_smash_up.up&cooldown.colossus_smash.remains=0)
-actions.single+=/colossus_smash,if=debuff.colossus_smash.down
-actions.single+=/bladestorm,if=buff.battle_cry.up
-actions.single+=/overpower
-actions.single+=/execute,if=debuff.colossus_smash.up
-actions.single+=/mortal_strike,if=target.health.pct>20&(!talent.mortal_combo.enabled|(charges=2|debuff.colossus_smash.up))
-actions.single+=/execute,if=rage.deficit<50
-actions.single+=/storm_bolt
-actions.single+=/colossus_smash,if=buff.shattered_defenses.down&buff.precise_strikes.down
-actions.single+=/slam,if=target.health.pct>20&(debuff.colossus_smash.up|rage.deficit<50)
-actions.single+=/rend,if=remains<=duration*0.3
-actions.single+=/execute
-actions.single+=/slam,if=target.health.pct>20
-actions.single+=/heroic_charge
-actions.single+=/shockwave
 
 actions.aoe=cleave,if=buff.cleave.down
 actions.aoe+=/whirlwind
