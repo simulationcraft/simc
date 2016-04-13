@@ -408,7 +408,7 @@ public:
                      touch_of_the_magi; // NYI
 
     // Fire
-    artifact_power_t aftershocks, //NYI 
+    artifact_power_t aftershocks,
                      scorched_earth, //NYI
                      everburning_consumption,
                      blue_flame_special,
@@ -3041,8 +3041,8 @@ struct frostbolt_t : public frost_mage_spell_t
       }
       if ( s -> result == RESULT_CRIT && p() -> artifact.frozen_veins.rank() )
       {
-        p() -> cooldowns.icy_veins -> adjust( -1000 * p() -> artifact.frozen_veins.data()
-                                                             .effectN( 1 ).time_value() );
+        p() -> cooldowns.icy_veins -> adjust( -1000 *
+                                             p() -> artifact.frozen_veins.time_value() );
       }
     }
   }
