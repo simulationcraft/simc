@@ -124,7 +124,7 @@ Spell Level      : 1
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Affecting spells : Dark Soul (138483)
+Affecting spells : Dark Soul (138483), Demon Skin (219272)
 Attributes       : ........ ........ ........ ........   x....... ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -173,7 +173,7 @@ Spell Level      : 35
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Affecting spells : Dark Soul (138483)
+Affecting spells : Dark Soul (138483), Demon Skin (219272)
 Attributes       : ........ ........ ........ ........   x....... ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
@@ -196,7 +196,7 @@ Spell Level      : 8
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Affecting spells : Dark Soul (138483)
+Affecting spells : Dark Soul (138483), Demon Skin (219272)
 Attributes       : ........ ........ ........ ........   x....... ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
@@ -247,7 +247,7 @@ Spell Level      : 28
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Affecting spells : Dark Soul (138483)
+Affecting spells : Dark Soul (138483), Demon Skin (219272)
 Attributes       : ........ ........ ........ ........   x....... ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
@@ -278,8 +278,8 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
                  : Channeled (34)
 Effects          :
 #1 (id=302)      : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
-                   Base Value: 7 | Scaled Value: 7
-Description      : Transfers ${$m3*6}% of your maximum health to your summoned Demon over $d.
+                   Base Value: 4 | Scaled Value: 4
+Description      : Sacrifices ${$m3*6}% of your maximum health to heal your summoned Demon for twice as much over $d.
 Tooltip          : Transferring Life.
 
 Name             : Agony (id=980) [Spell Family (5)] 
@@ -308,6 +308,30 @@ Description      : Inflicts increasing agony on the target, causing up to ${$o1*
 
 |cFFFFFFFFAgony damage sometimes generates 1 Soul Shard.|r
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec. Damage increases over time.
+
+Name             : Enslave Demon (id=1098) [Spell Family (5)] 
+Class            : Warlock
+School           : Shadow
+Resource         : 5% Base Mana (55000 @Level 110)
+Spell Level      : 54
+Range            : 30 yards
+Cast Time        : 3 seconds
+GCD              : 1.5 seconds
+Duration         : 300 seconds
+Proc Chance      : 101%
+Mechanic         : Unknown(2)
+Affecting spells : Grimoire of Convert Demon (168800)
+Attributes       : ........ ........ x....... ......x.   x....... ........ .x...... ........ 
+                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ...x.... ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#2 (id=327741)   : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 0 | Scaled Value: 0
+Description      : Enslaves the target demon up to level $s1, forcing it to do your bidding for $d.
+Tooltip          : Enslaved.
 
 Name             : Summon Infernal (Guardian) (id=1122) [Spell Family (5)] 
 Class            : Warlock
@@ -823,7 +847,9 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.04100 | Chain Targets: 1
 #2 (id=9554)     : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: soul_shard
-Description      : Triggers an explosion on the target, dealing $s1 Fire damage.
+Description      : Triggers an explosion on the target, dealing $s1 Fire damage.$?s196406[
+
+Reduces the cast time of Incinerate and Chaos Bolt by $117828s1% for $117828d.][]
 
 |cFFFFFFFFGenerates 1 Soul Shard.|r
 
@@ -949,7 +975,7 @@ Duration         : 900 seconds
 Cooldown         : 600 seconds
 Stance Mask      : 0x80200000
 Attributes       : ........ ........ ........ ........   ........ ..x..... .x...... ........ 
-                 : x..x.... ........ ...x.... ........   ........ x....... ........ ........ 
+                 : x..x.... x....... ...x.... ........   ........ x....... ........ ........ 
                  : ........ ........ x....... ........   ..x..x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ .x...... ........ ...x.... 
@@ -1560,10 +1586,10 @@ GCD              : 1.5 seconds
 Duration         : 15 seconds
 Affecting spells : Unstable Affliction (30108), Mastery: Potent Afflictions (77215)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ........ 
+                 : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=57197)    : Apply Aura (6) | Periodic Health Leech (53)
@@ -1714,7 +1740,7 @@ Effects          :
 #2 (id=318370)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.66600
 #3 (id=318371)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 1000000000 | Scaled Value: 1e+09 | Misc Value: 127
+                   Base Value: 1000000000 | Scaled Value: 1e+009 | Misc Value: 127
 Description      : Your Destruction spells deal up to $s1% additional damage, randomly. You take up to $s2% reduced damage, randomly.
 
 Name             : Havoc (id=80240) [Spell Family (5)] 
@@ -2137,25 +2163,6 @@ Description      : Hardens your skin, reducing all damage you take by $s3% and g
 Tooltip          : Damage taken reduced by $w3%.
 Immune to interrupt and silence effects.
 
-Name             : Fel Armor (id=104938) [Spell Family (5), Passive] 
-Class            : Warlock
-School           : Physical
-Spell Level      : 72
-Affecting spells : Improved Rain of Fire/Hellfire (24430), Fel Skin (218565)
-Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=114559)   : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 2 | Misc Value 2: 0x4
-#2 (id=114560)   : Apply Aura (6) | Unknown effect sub type (118)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 127
-Description      : Fel energies protect you, increasing your Stamina by $s1% and increasing all healing you receive by $s2%.
-
 Name             : Hand of Gul'dan (id=105174) [Spell Family (5)] 
 Class            : Demonology Warlock
 School           : Shadowflame
@@ -2184,6 +2191,7 @@ Class            : Warlock
 School           : Shadow
 Range            : 50000 yards
 Duration         : 15 seconds
+Affecting spells : Demon Skin (219272)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2200,19 +2208,21 @@ Name             : Soul Leech (id=108370) [Spell Family (5), Passive]
 Class            : Warlock
 School           : Physical
 Proc Chance      : 100%
-Proc Flags       : ........ ........ x.x..... ........ 
-                 : Hostile Spell, Periodic
-Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
+Proc Flags       : ..x.x... ....x... x.x..... ........ 
+                 : White Melee, Yellow Melee, AOE Hostile Spell, Hostile Spell, Periodic
+Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=119452)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15
-Description      : Drain Life and $?c1[Drain Soul][]$?c2[Shadow Bolt][]$?c3[Incinerate][] grant you and your pet shadowy shields that absorb $?c1|c2[${$108370m1*2}%][]$?c3[$108370m1%][] of the damage they dealt for $108366d.
+#1 (id=119452)   : Unknown effect type (202) | Dummy (4)
+                   Base Value: 15 | Scaled Value: 15 | Radius: 100 yards
+#2 (id=326363)   : Unknown effect type (202) | Dummy (4)
+                   Base Value: 15 | Scaled Value: 15 | Radius: 100 yards
+Description      : All single-target damage done by you and your minions grants you and your pet shadowy shields that absorb $s1% of the damage dealt for $108366d, up to $s2% of maximum health.
 
 Name             : Mortal Coil (Talent) (id=108396) [Spell Family (5)] 
 Class            : Warlock
@@ -2246,7 +2256,7 @@ Attributes       : ......x. ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=119506)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
-Description      : $108446s1% of all damage you take is split with your demon pet. You are healed for $108446s2% and your demon is healed for $108446s3% of all damage you deal.
+Description      : $108446s1% of all damage you take is split with your demon pet. Soul Leech also heals you for $108446s2% and your pet for $108446s3% of the absorption granted.
 
 Name             : Dark Pact (id=108416) 
 Class            : Warlock
@@ -2275,10 +2285,7 @@ School           : Shadow
 Spell Level      : 20
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Proc Chance      : 100%
-Proc Flags       : ..x.x.x. x...x... x.x..x.. ........ 
-                 : White Melee, Yellow Melee, White Ranged, Yellow Ranged, AOE Hostile Spell, Hostile Spell, Periodic, Trap Triggered
-Attributes       : ........ ........ x.x..... .....x..   ........ ..x..... ........ ........ 
+Attributes       : ........ ........ x.x..... .....x..   ........ ..x..... ........ ....x... 
                  : ........ ........ ........ ....x...   ........ ........ x...x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ......x. ........   ..x..... ........ ........ ........ 
@@ -2288,9 +2295,9 @@ Attributes       : ........ ........ x.x..... .....x..   ........ ..x..... .....
 Effects          :
 #1 (id=119566)   : Apply Owner Area Aura (143) | Unknown effect sub type (81)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 127 | Radius: 100 yards
-#2 (id=119569)   : Apply Owner Area Aura (143) | Periodic Dummy: every 1 seconds (226)
+#2 (id=119569)   : Apply Owner Area Aura (143) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 127 | Radius: 100 yards
-#3 (id=311358)   : Apply Owner Area Aura (143) | Periodic Dummy: every 1 seconds (226)
+#3 (id=311358)   : Apply Owner Area Aura (143) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 127 | Radius: 100 yards
 Description      : $@spelldesc108415
 Tooltip          : $s1% of all damage taken is split with the Warlock's summoned demon.  
@@ -2347,7 +2354,7 @@ School           : Physical
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ xx...... ........ 
+                 : ........ x....... ........ ........   ........ ........ xx...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2600,7 +2607,7 @@ Attributes       : ........ ........ .......x x.xx.x..   .....x.. ........ .....
                  : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
 Effects          :
 #1 (id=127009)   : Apply Aura (6) | Dummy (4)
-                   Base Value: -1000000000 | Scaled Value: -1e+09 | Misc Value: 893
+                   Base Value: -1000000000 | Scaled Value: -1e+009 | Misc Value: 893
 Description      : Faded into the nether and unable to use another Demonic Gateway.
 Tooltip          : Faded into the nether and unable to use another Demonic Gateway.
 
@@ -2981,8 +2988,8 @@ Effects          :
                    Affected Spells: Channel Demonfire (196447)
 #2 (id=188983)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 672
-#3 (id=191035)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+#3 (id=191035)   : Apply Aura (6) | Unknown effect sub type (232)
+                   Base Value: -30 | Scaled Value: -30 | Misc Value: 26
 #4 (id=191036)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #5 (id=191037)   : Apply Aura (6) | Dummy (4)
@@ -3011,6 +3018,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #17 (id=320056)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
+#18 (id=326779)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
 
 Name             : Affliction Warlock (id=137043) [Spell Family (5), Passive, Hidden] 
 Class            : Affliction Warlock
@@ -3024,7 +3033,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179727)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 3
+                   Base Value: 0 | Scaled Value: 0
 #2 (id=191031)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=191032)   : Apply Aura (6) | Dummy (4)
@@ -3050,8 +3059,6 @@ Effects          :
 #13 (id=261084)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #14 (id=261085)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#15 (id=261086)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 
 Name             : Demonology Warlock (id=137044) [Spell Family (5), Passive, Hidden] 
@@ -3567,7 +3574,7 @@ Spell Level      : 1
 Range            : 100 yards
 Duration         : 15 seconds
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ x....... ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3614,7 +3621,7 @@ Name             : Item - Warlock T18 Demonology 4P Bonus (id=185964) [Spell Fam
 Class            : Warlock
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4577,5 +4584,28 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 0x7f
 Description      : $@spelldesc 108501
 Tooltip          : Summoned by a Grimoire of Service.  Damage increased by $s1%.
+
+Name             : Demon Skin (id=219272) [Spell Family (5), Passive] 
+Class            : Warlock
+School           : Physical
+Spell Level      : 44
+Proc Chance      : 101%
+Affecting spells : Improved Rain of Fire/Hellfire (24430), Fel Skin (218565)
+Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=326663)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
+                   Base Value: 1 | Scaled Value: 1
+#2 (id=326664)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20
+#3 (id=326678)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
+                   Base Value: -15001 | Scaled Value: -15001 | Misc Value: 1
+                   Affected Spells: Summon Imp (688), Summon Felhunter (691), Summon Voidwalker (697), Summon Succubus (712), Soul Leech (108366)
+Description      : Your Soul Leech absorption now passively recharges at a rate of $s1% of maximum health every $t1 sec, and may now absorb up to $s2% of maximum health.
 
 
