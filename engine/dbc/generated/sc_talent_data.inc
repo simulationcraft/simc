@@ -1,6 +1,6 @@
 #define TALENT_SIZE (606)
 
-// 606 talents, wow build 21384
+// 606 talents, wow build 21414
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   0,   3,   29838,       0,  0 },
@@ -35,17 +35,17 @@ static struct talent_data_t __talent_data[] = {
   { "Bladestorm"                        , 19140, 0x00, 0x0001,   0,   2,   4,   46924,       0,  0 },
   { "Bloodworms"                        , 19165, 0x00, 0x0020, 250,   0,   0,  195679,       0,  0 },
   { "Heart Strike"                      , 19166, 0x00, 0x0020, 250,   1,   0,  206930,   45902,  0 },
-  { "Consume Vitality"                  , 19217, 0x00, 0x0020, 250,   2,   0,  206931,       0,  0 },
+  { "Exsanguinate"                      , 19217, 0x00, 0x0020, 250,   2,   0,  206931,       0,  0 },
   { "Rapid Decomposition"               , 19218, 0x00, 0x0020, 250,   0,   1,  194662,       0,  0 },
   { "Soulgorge"                         , 19219, 0x00, 0x0020, 250,   1,   1,  212744,   50842,  0 },
-  { "Ossuary"                           , 19220, 0x00, 0x0020, 250,   2,   1,  195683,       0,  0 },
+  { "Ossuary"                           , 19220, 0x00, 0x0020, 250,   2,   1,  219786,       0,  0 },
   { "Spectral Deflection"               , 19221, 0x00, 0x0020, 250,   0,   2,  211078,       0,  0 },
   { "Tremble Before Me"                 , 19226, 0x00, 0x0020, 250,   1,   4,  206960,       0,  0 },
   { "Tightening Grasp"                  , 19227, 0x00, 0x0020, 250,   0,   4,  206970,       0,  0 },
-  { "March of the Damned"               , 19228, 0x00, 0x0020, 250,   2,   4,  194832,       0,  0 },
+  { "March of the Damned"               , 19228, 0x00, 0x0020, 250,   2,   4,  219779,       0,  0 },
   { "Will of the Necropolis"            , 19230, 0x00, 0x0020, 250,   0,   5,  206967,       0,  0 },
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
-  { "Exhume"                            , 19231, 0x00, 0x0020, 250,   1,   5,  194837,       0,  0 },
+  { "Mark of Blood"                     , 19231, 0x00, 0x0020, 250,   1,   5,  206940,       0,  0 },
   { "Foul Bulwark"                      , 19232, 0x00, 0x0020, 250,   2,   5,  206974,       0,  0 },
   { "Master of Subtlety"                , 19233, 0x00, 0x0008, 261,   0,   0,   31223,       0,  0 },
   { "Weaponmaster"                      , 19234, 0x00, 0x0008, 261,   1,   0,  193537,       0,  0 },
@@ -74,7 +74,7 @@ static struct talent_data_t __talent_data[] = {
   { "Echo of the Elements"              , 19273, 0x00, 0x0040,   0,   2,   3,  108283,       0,  0 },
   { "Lightning Surge Totem"             , 19275, 0x00, 0x0040,   0,   0,   2,  192058,  216965,  0 },
   { "Siphon Life"                       , 19279, 0x00, 0x0100,   0,   0,   3,   63106,       0,  0 },
-  { "Soul Leech"                        , 19280, 0x00, 0x0100,   0,   0,   2,  108370,       0,  0 },
+  { "Demon Skin"                        , 19280, 0x00, 0x0100,   0,   0,   2,  219272,       0,  0 },
   { "Phantom Singularity"               , 19281, 0x00, 0x0100,   0,   1,   6,  205179,       0,  0 },
   { "Renewal"                           , 19283, 0x00, 0x0400,   0,   0,   1,  108238,       0,  0 },
   { "Soul Effigy"                       , 19284, 0x00, 0x0100,   0,   0,   6,  205178,       0,  0 },
@@ -230,7 +230,7 @@ static struct talent_data_t __talent_data[] = {
   { "Barrage"                           , 22002, 0x00, 0x0004,   0,   1,   5,  120360,       0,  0 },
   { "Rune Tap"                          , 22013, 0x00, 0x0020, 250,   0,   3,  194679,       0,  0 },
   { "Purgatory"                         , 22014, 0x00, 0x0020, 250,   1,   3,  114556,       0,  0 },
-  { "Mark of Blood"                     , 22015, 0x00, 0x0020, 250,   2,   3,  206940,       0,  0 },
+  { "Tombstone"                         , 22015, 0x00, 0x0020, 250,   2,   3,  219809,       0,  0 },
   { "Shattering Strikes"                , 22016, 0x00, 0x0020, 251,   0,   0,  207057,       0,  0 },
   { "Icy Talons"                        , 22017, 0x00, 0x0020, 251,   1,   0,  194878,       0,  0 },
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
