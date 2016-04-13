@@ -180,7 +180,8 @@ public:
   state_switch_t burn_phase;
 
   // Miscellaneous
-  double distance_from_rune,
+  double cinder_count,
+         distance_from_rune,
          incanters_flow_stack_mult,
          iv_haste,
          pet_multiplier;
@@ -213,7 +214,8 @@ public:
           * presence_of_mind,
           * arcane_affinity,       // T17 2pc Arcane
           * arcane_instability,    // T17 4pc Arcane
-          * temporal_power;        // T18 4pc Arcane
+          * temporal_power,        // T18 4pc Arcane
+          * quickening;
 
     stat_buff_t* mage_armor;
 
@@ -349,8 +351,8 @@ public:
 
     // Tier 60
     const spell_data_t* supernova,
-                      * charged_up, // NYI
-                      * words_of_power, // NYI
+                      * charged_up,
+                      * words_of_power,
                       * blast_wave,
                       * flame_on,
                       * controlled_burn,
@@ -374,10 +376,10 @@ public:
 
     // Tier 100
     const spell_data_t* overpowered,
-                      * quickening, // NYI
+                      * quickening,
                       * arcane_orb,
                       * kindling,
-                      * cinderstorm, // NYI
+                      * cinderstorm,
                       * meteor,
                       * thermal_void,
                       * glacial_spike,
@@ -389,28 +391,27 @@ public:
   {
     // Arcane
     artifact_power_t arcane_rebound, //NYI
-                     archmages_fortitude, //NYI
-                     amethyst_awakening, //NYI
                      everywhere_at_once, //NYI
-                     arcane_purification, //NYI
-                     aegwynns_imperative, //NYI
-                     archmages_alacrity, //NYI
+                     arcane_purification,
+                     aegwynns_imperative,
                      aegwynns_ascendance, //NYI
-                     aegwynns_wrath, //NYI
-                     crackling_energy, //NYI
+                     aegwynns_wrath,
+                     crackling_energy,
                      blasting_rod,
                      ethereal_sensitivity,
                      aegwynns_fury,
-                     echoes_of_aegwynn, //NYI
-                     rule_of_threes,
+                     mana_shield, // NYI
+                     mark_of_aluneth,
+                     rule_of_threes, // NYI
+                     slooow_down, // NYI
                      torrential_barrage,
-                     power_of_aegwynn; //NYI
+                     touch_of_the_magi; // NYI
 
     // Fire
-    artifact_power_t aftershocks, //NYI
+    artifact_power_t aftershocks, //NYI 
                      scorched_earth, //NYI
                      everburning_consumption,
-                     blue_flame_special, //NYI
+                     blue_flame_special,
                      molten_skin, //NYI
                      phoenix_reborn, //NYI
                      great_balls_of_fire,
@@ -425,18 +426,18 @@ public:
 
     // Frost
     artifact_power_t ebonbolt,
+                     jouster, // NYI
                      let_it_go,
-                     frozen_veins, // NYI
-                     permafrost, //NYI
-                     the_storm_rages, //NYI
+                     frozen_veins,
+                     the_storm_rages,
                      black_ice,
                      shield_of_alodi, //NYI
-                     icy_caress, //NYI
+                     icy_caress,
                      ice_nine,
                      chain_reaction, //NYI
-                     clarity_of_thought, //NYI
+                     clarity_of_thought,
                      flash_freeze, //NYI
-                     shattering_bolts, //NYI
+                     shattering_bolts,
                      orbital_strike,
                      ice_age, //NYI
                      chilled_to_the_core; //NYI
@@ -459,6 +460,7 @@ public:
     distance_from_rune( 0.0 ),
     iv_haste( 1.0 ),
     pet_multiplier( 1.0 ),
+    cinder_count( 6.0 ),
     benefits( benefits_t() ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
@@ -520,6 +522,7 @@ public:
   virtual void      init_spells() override;
   virtual void      init_base_stats() override;
   virtual void      create_buffs() override;
+  virtual void      create_options() override;
   virtual void      init_gains() override;
   virtual void      init_procs() override;
   virtual void      init_benefits() override;
@@ -1955,6 +1958,11 @@ struct arcane_blast_t : public arcane_mage_spell_t
         p() -> cooldowns.presence_of_mind -> start( cd );
       }
     }
+
+    if ( p() -> talents.quickening -> ok() )
+    {
+      p() -> buffs.quickening -> trigger();
+    }
   }
 
   virtual double action_multiplier() const override
@@ -2033,8 +2041,8 @@ struct arcane_explosion_t : public arcane_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-
     base_multiplier *= 1.0 + p -> artifact.arcane_purification.percent();
+    radius += p -> artifact.crackling_energy.data().effectN( 1 ).base_value();
   }
 
   virtual void execute() override
@@ -2054,6 +2062,10 @@ struct arcane_explosion_t : public arcane_mage_spell_t
       {
         p() -> buffs.arcane_instability -> trigger();
       }
+    }
+    if ( p() -> talents.quickening -> ok() )
+    {
+      p() -> buffs.quickening -> trigger();
     }
   }
 
@@ -2148,12 +2160,13 @@ struct arcane_missiles_t : public arcane_mage_spell_t
       p() -> buffs.arcane_instability -> expire();
     }
 
-    if ( p() -> artifact.rule_of_threes.rank() )
+    //TODO: Fix this when spelldata is being parsed correctly...? effectN(1) returns 0.
+    if ( p() -> artifact.rule_of_threes.rank() &&  
+         rng().roll( p() -> artifact.rule_of_threes
+         .data().effectN( 1 ).percent() ) )
     {
-      base_tick_time *= 1.0 + p() -> artifact.rule_of_threes.data()
-                                             .effectN( 1 ).percent();
+      base_tick_time *= 1.0 + p() -> artifact.rule_of_threes.data().effectN( 1 ).percent();
     }
-
     arcane_mage_spell_t::execute();
 
     if ( p() -> buffs.arcane_power -> check() &&
@@ -2182,6 +2195,11 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     }
 
     p() -> buffs.arcane_missiles -> decrement();
+
+    if ( p() -> talents.quickening -> ok() )
+    {
+      p() -> buffs.quickening -> trigger();
+    }
   }
 
   virtual void last_tick ( dot_t * d ) override
@@ -2381,6 +2399,16 @@ struct blizzard_shard_t : public frost_mage_spell_t
       }
     }
   }
+
+  virtual double composite_crit() const override
+  {
+    double c = frost_mage_spell_t::composite_crit();
+    if ( p() -> artifact.the_storm_rages.rank() )
+    {
+      c+= p() -> artifact.the_storm_rages.percent();
+    }
+    return c;
+  }
 };
 
 struct blizzard_t : public frost_mage_spell_t
@@ -2409,7 +2437,80 @@ struct blizzard_t : public frost_mage_spell_t
   }
 };
 
+// Charged Up Spell =========================================================
 
+struct charged_up_t : public arcane_mage_spell_t
+{
+  charged_up_t( mage_t* p, const std::string& options_str ) :
+    arcane_mage_spell_t( "charged_up", p, p -> find_spell ("Charged Up" ) )
+  {
+    parse_options( options_str );
+    may_proc_missiles = false;
+  }
+
+  virtual void execute() override
+  {
+    arcane_mage_spell_t::execute();
+
+    p() -> buffs.arcane_charge -> trigger( 4.0 );
+  }
+
+};
+
+// Cinderstorm Spell ========================================================
+// NOTE: Due to the akward pathing of cinderstorm in game, Cinderstorm here is
+//       just a driver for the "cinders" which actually deal damage. By altering
+//       the loop inside cinderstorm_t execute() you can customize the number of
+//       cinder impacts.
+// TODO: Fix the extremly hack-ish way that the increased damage on ignite targets
+//       is done.
+struct cinders_t : public fire_mage_spell_t
+{
+  cinders_t( mage_t* p ) :
+    fire_mage_spell_t( "cinders", p )
+  {
+    background = true;
+    aoe = -1;
+    triggers_ignite = true;
+    spell_power_mod.direct = p -> find_spell( 198928 ) -> effectN( 1 ).sp_coeff();
+  }
+  virtual void execute() override
+  {
+    bool ignite_exists = p() -> ignite -> get_dot( p() -> target ) -> is_ticking();
+
+    if ( ignite_exists )
+    {
+      base_dd_multiplier *= 1.0 + p() -> talents.cinderstorm -> effectN( 1 ).percent();
+    }
+    fire_mage_spell_t::execute();
+    base_dd_multiplier = 1.0;
+  }
+};
+
+
+struct cinderstorm_t : public fire_mage_spell_t
+{
+  cinders_t* cinder;
+
+  cinderstorm_t( mage_t* p, const std::string& options_str ) :
+    fire_mage_spell_t( "cinderstorm", p, p -> talents.cinderstorm ),
+    cinder( new cinders_t( p ) )
+  {
+    parse_options( options_str );
+    triggers_ignite = false;
+  }
+  virtual void impact( action_state_t* s ) override
+  {
+    fire_mage_spell_t::impact( s );
+
+    cinder -> target = s -> target;
+
+    for ( int i = 0; i < p() -> cinder_count; i++ )
+    {
+      cinder -> execute();
+    }
+  }
+};
 // Combustion Spell =========================================================
 
 struct combustion_t : public fire_mage_spell_t
@@ -2726,6 +2827,8 @@ struct flamestrike_t : public fire_mage_spell_t
 
     triggers_ignite = true;
 
+    base_multiplier *= 1.0 + p -> artifact.blue_flame_special.percent();
+
     aoe = -1;
   }
 
@@ -2749,6 +2852,12 @@ struct flamestrike_t : public fire_mage_spell_t
     fire_mage_spell_t::execute();
 
     p() -> buffs.hot_streak -> expire();
+
+    //TODO: Add delay between intial impact and second impact
+    if ( p() -> artifact.aftershocks.rank() )
+    {
+      fire_mage_spell_t::execute();
+    }
   }
 
   virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
@@ -2848,7 +2957,6 @@ struct frostbolt_t : public frost_mage_spell_t
   // Icicle stats variable to parent icicle damage to Frostbolt, instead of
   // clumping FB/FFB icicle damage together in reports.
   stats_t* icicle;
-
   frostbolt_t( mage_t* p, const std::string& options_str ) :
     frost_mage_spell_t( "frostbolt", p,
                         p -> find_specialization_spell( "Frostbolt" ) ),
@@ -2887,6 +2995,18 @@ struct frostbolt_t : public frost_mage_spell_t
     {
       double fof_proc_chance = p() -> spec.fingers_of_frost
                                    -> effectN( 1 ).percent();
+      double bf_proc_chance = p() -> spec.brain_freeze
+                                  -> effectN( 1 ).percent();
+
+      if ( p() -> artifact.clarity_of_thought.rank() )
+      {
+        bf_proc_chance += p() -> artifact.clarity_of_thought.percent();
+      }
+
+      if( rng().roll( bf_proc_chance ) )
+      {
+        p() -> cooldowns.frozen_orb -> reset( false );
+      }
 
       trigger_fof( "Frostbolt", fof_proc_chance );
 
@@ -2919,6 +3039,11 @@ struct frostbolt_t : public frost_mage_spell_t
       {
         trigger_icicle_gain( s, icicle );
       }
+      if ( s -> result == RESULT_CRIT && p() -> artifact.frozen_veins.rank() )
+      {
+        p() -> cooldowns.icy_veins -> adjust( -1000 * p() -> artifact.frozen_veins.data()
+                                                             .effectN( 1 ).time_value() );
+      }
     }
   }
 
@@ -2932,6 +3057,18 @@ struct frostbolt_t : public frost_mage_spell_t
     }
 
     return am;
+  }
+
+  virtual double composite_crit() const override
+  {
+    double c = frost_mage_spell_t::composite_crit();
+
+    //TODO: Mult or Add?
+    if ( p() -> artifact.shattering_bolts.rank() )
+    {
+      c+= p() -> artifact.shattering_bolts.percent();
+    }
+    return c;
   }
 };
 
@@ -3458,7 +3595,57 @@ struct living_bomb_t : public fire_mage_spell_t
   }
 };
 
+// Mark of Aluneth Spell =============================================================
+// TODO: Tick times are inconsistent in game. Until fixed, remove hasted ticks
+//       and cap the DoT at 5 ticks, then an explosion.
 
+struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
+{
+  mark_of_aluneth_explosion_t( mage_t* p ) :
+    arcane_mage_spell_t( "mark_of_aluneth_explosion", p )
+  {
+    background = true;
+  }
+  virtual void init() override
+  {
+    arcane_mage_spell_t::init();
+    // disable the snapshot_flags for all multipliers
+    snapshot_flags &= STATE_NO_MULTIPLIER;
+    snapshot_flags |= STATE_TGT_MUL_DA;
+  }
+
+  virtual void execute() override
+  {
+    base_dd_max = p() -> resources.max[ RESOURCE_MANA ];
+    base_dd_min = p() -> resources.max[ RESOURCE_MANA ];
+
+    arcane_mage_spell_t::execute();
+  }
+};
+struct mark_of_aluneth_t : public arcane_mage_spell_t 
+{
+  mark_of_aluneth_explosion_t* mark_explosion;
+
+  mark_of_aluneth_t( mage_t* p, const std::string& options_str ) :
+    arcane_mage_spell_t( "mark_of_aluneth", p, p -> artifact.mark_of_aluneth ),
+    mark_explosion( new mark_of_aluneth_explosion_t( p ) )
+  {
+    parse_options( options_str );
+    may_proc_missiles = false;
+    dot_duration = p -> find_spell( 210726 ) -> duration();
+    base_tick_time = timespan_t::from_seconds( 1.2 ); // Hardcode until tick times are worked out
+    spell_power_mod.tick = p -> find_spell( 211088 ) -> effectN( 1 ).sp_coeff();
+    hasted_ticks = false;
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    arcane_mage_spell_t::last_tick( d );
+
+    mark_explosion -> target = d -> target;
+    mark_explosion -> execute();
+  }
+};
 // Meteor Spell ===============================================================
 
 // TODO: Have they fixed Meteor's implementation in Legion?
@@ -3474,7 +3661,7 @@ struct living_bomb_t : public fire_mage_spell_t
 // - Meteor (id=177345) contains the time between cast and impact
 // None of these specify the 1 second falling duration given by Celestalon, so
 // we're forced to hardcode it.
-
+// TODO: Why is meteor burn not a DoT here?
 struct meteor_burn_t : public fire_mage_spell_t
 {
   meteor_burn_t( mage_t* p, int targets ) :
@@ -4698,7 +4885,9 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "arcane_missiles"   ) return new         arcane_missiles_t( this, options_str );
   if ( name == "arcane_orb"        ) return new              arcane_orb_t( this, options_str );
   if ( name == "arcane_power"      ) return new            arcane_power_t( this, options_str );
+  if ( name == "charged_up"        ) return new             charged_up_t( this, options_str  );
   if ( name == "evocation"         ) return new               evocation_t( this, options_str );
+  if ( name == "mark_of_aluneth"   ) return new         mark_of_aluneth_t( this, options_str );
   if ( name == "nether_tempest"    ) return new          nether_tempest_t( this, options_str );
   if ( name == "presence_of_mind"  ) return new        presence_of_mind_t( this, options_str );
   if ( name == "slow"              ) return new                    slow_t( this, options_str );
@@ -4709,6 +4898,7 @@ action_t* mage_t::create_action( const std::string& name,
 
   // Fire
   if ( name == "blast_wave"        ) return new              blast_wave_t( this, options_str );
+  if ( name == "cinderstorm"       ) return new             cinderstorm_t( this, options_str );
   if ( name == "combustion"        ) return new              combustion_t( this, options_str );
   if ( name == "dragons_breath"    ) return new          dragons_breath_t( this, options_str );
   if ( name == "fireball"          ) return new                fireball_t( this, options_str );
@@ -4885,19 +5075,15 @@ void mage_t::init_spells()
   artifact.aegwynns_fury           = find_artifact_spell( "Aegwynn's Fury"        );
   artifact.aegwynns_imperative     = find_artifact_spell( "Aegwynn's Imperative"  );
   artifact.aegwynns_wrath          = find_artifact_spell( "Aegwynn's Wrath"       );
-  artifact.amethyst_awakening      = find_artifact_spell( "Amethyst Awakening"    );
   artifact.arcane_purification     = find_artifact_spell( "Arcane Purification"   );
   artifact.arcane_rebound          = find_artifact_spell( "Arcane Rebound"        );
-  artifact.archmages_fortitude     = find_artifact_spell( "Archmages Fortitude"   );
-  artifact.archmages_alacrity      = find_artifact_spell( "Archmages Alacrity"    );
   artifact.blasting_rod            = find_artifact_spell( "Blasting Rod"          );
   artifact.crackling_energy        = find_artifact_spell( "Crackling Energy"      );
+  artifact.mark_of_aluneth         = find_artifact_spell( "Mark of Aluneth"       );
   artifact.rule_of_threes          = find_artifact_spell( "Rule of Threes"        );
   artifact.torrential_barrage      = find_artifact_spell( "Torrential Barrage"    );
   artifact.everywhere_at_once      = find_artifact_spell( "Everywhere At Once"    );
   artifact.ethereal_sensitivity    = find_artifact_spell( "Ethereal Sensitivity"  );
-  artifact.power_of_aegwynn        = find_artifact_spell( "Power of Aegywnn"      );
-  artifact.echoes_of_aegwynn       = find_artifact_spell( "Echoes of Aegywnn"     );
   //Fire
   artifact.aftershocks             = find_artifact_spell( "Aftershocks"            );
   artifact.scorched_earth          = find_artifact_spell( "Scorched Earth"         );
@@ -4918,7 +5104,6 @@ void mage_t::init_spells()
   artifact.ebonbolt                = find_artifact_spell( "Ebonbolt"               );
   artifact.let_it_go               = find_artifact_spell( "Let It Go"              );
   artifact.frozen_veins            = find_artifact_spell( "Frozen Veins"           );
-  artifact.permafrost              = find_artifact_spell( "Permafrost"             );
   artifact.the_storm_rages         = find_artifact_spell( "The Storm Rages"        );
   artifact.black_ice               = find_artifact_spell( "Black Ice"              );
   artifact.shield_of_alodi         = find_artifact_spell( "Shield of Alodi"        );
@@ -5083,22 +5268,24 @@ void mage_t::create_buffs()
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
 
   // Arcane
+  buffs.arcane_affinity       = buff_creator_t( this, "arcane_affinity", find_spell( 166871 ) )
+                                  .chance( sets.has_set_bonus( MAGE_ARCANE, T17, B2 ) );
   buffs.arcane_charge         = buff_creator_t( this, "arcane_charge", spec.arcane_charge );
+  buffs.arcane_instability    = buff_creator_t( this, "arcane_instability", find_spell( 166872 ) )
+                                  .chance( sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) );
   buffs.arcane_missiles       = new arcane_missiles_buff_t( this );
   buffs.arcane_power          = buff_creator_t( this, "arcane_power", find_spell( 12042 ) )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   if ( artifact.aegwynns_imperative.rank() )
     buffs.arcane_power -> buff_duration += artifact.aegwynns_imperative.time_value();
-
+  buffs.mage_armor            = stat_buff_creator_t( this, "mage_armor", find_spell( 6117 ) );
   buffs.presence_of_mind      = buff_creator_t( this, "presence_of_mind", find_spell( 205025 ) )
                                   .activated( true )
                                   .cd( timespan_t::zero() )
                                   .duration( timespan_t::zero() );
-  buffs.mage_armor            = stat_buff_creator_t( this, "mage_armor", find_spell( 6117 ) );
-  buffs.arcane_affinity       = buff_creator_t( this, "arcane_affinity", find_spell( 166871 ))
-                                  .chance( sets.has_set_bonus( MAGE_ARCANE, T17, B2 ) );
-  buffs.arcane_instability    = buff_creator_t( this, "arcane_instability", find_spell( 166872 ) )
-                                  .chance( sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) );
+  buffs.quickening            = buff_creator_t( this, "quickening", find_spell( 198924 ) )
+                                  .add_invalidate( CACHE_SPELL_HASTE );
+
   // 4T18 Temporal Power buff has no duration and stacks multiplicatively
   buffs.temporal_power        = buff_creator_t( this, "temporal_power", find_spell( 190623 ) )
                                   .max_stack( 10 );
@@ -5158,6 +5345,14 @@ void mage_t::create_buffs()
   // Artifact
   // Frost
   buffs.empowered_ice_lance   = buff_creator_t( this, "empowered_ice_lance", find_spell( 195418 ) );
+}
+
+// mage_t::create_options ===================================================
+void mage_t::create_options()
+{
+  add_option( opt_float( "cinderstorm_cinder_count", cinder_count ) );
+
+  player_t::create_options();
 }
 
 // mage_t::init_gains =======================================================
@@ -6065,6 +6260,10 @@ double mage_t::composite_spell_crit() const
     c += buffs.combustion -> data().effectN( 1 ).percent();
   }
 
+  if ( artifact.aegwynns_wrath.rank() )
+  {
+    c += artifact.aegwynns_wrath.percent();
+  }
   return c;
 }
 
@@ -6088,6 +6287,12 @@ double mage_t::composite_spell_haste() const
   if ( buffs.icarus_uprising -> check() )
   {
     h /= 1.0 + buffs.icarus_uprising -> data().effectN( 1 ).percent();
+  }
+
+  // TODO: Double check scaling with hits.
+  if ( buffs.quickening -> check() )
+  {
+    h /= 1.0 + buffs.quickening -> data().effectN( 1 ).percent() * buffs.quickening -> current_stack;
   }
 
   return h;
