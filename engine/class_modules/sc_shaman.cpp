@@ -2070,7 +2070,7 @@ struct hailstorm_attack_t : public shaman_attack_t
   {
     weapon = w;
     background = true;
-    callbacks = may_proc_windfury = may_proc_frostbrand = may_proc_flametongue = may_proc_maelstrom_weapon = false;
+    callbacks = may_proc_windfury = may_proc_frostbrand = may_proc_flametongue = may_proc_maelstrom_weapon = may_proc_stormbringer = false;
   }
 };
 
