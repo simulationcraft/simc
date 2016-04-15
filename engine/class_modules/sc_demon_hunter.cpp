@@ -16,6 +16,7 @@ namespace { // UNNAMED NAMESPACE
 
    General ------------------------------------------------------------------
    Sort out Havoc vs. Vengeance mechanics in various places.
+   Leather Specialization (178976)
 
    Havoc --------------------------------------------------------------------
    Demonic Appetite travel time
@@ -29,6 +30,8 @@ namespace { // UNNAMED NAMESPACE
    Fury of the Illidari distance targeting support
    Soul Fragment artifact traits
    Defensive artifact traits
+   Implement Critical Strikes
+   Implement Prepared change
 
    Vengeance ----------------------------------------------------------------
    Hmm, let me think... well there's... oh yeah, everything.
@@ -905,10 +908,7 @@ struct blade_dance_attack_t: public demon_hunter_attack_t
   {
     double am = demon_hunter_attack_t::action_multiplier();
 
-    if ( p() -> artifact.balanced_blades.rank() )
-    {
-      am *= 1.0 + target_list().size() * p() -> artifact.balanced_blades.data().effectN( 1 ).percent();
-    }
+    am *= 1.0 + target_list().size() * p() -> artifact.balanced_blades.percent();
 
     return am;
   }
@@ -992,11 +992,8 @@ struct blade_dance_base_t: public demon_hunter_attack_t
   virtual double action_multiplier() const override
   {
     double am = demon_hunter_attack_t::action_multiplier();
-
-    if ( p() -> artifact.balanced_blades.rank() )
-    {
-      am *= 1.0 + target_list().size() * p() -> artifact.balanced_blades.data().effectN( 1 ).percent();
-    }
+    
+    am *= 1.0 + target_list().size() * p() -> artifact.balanced_blades.percent();
 
     return am;
   }
