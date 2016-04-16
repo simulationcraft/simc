@@ -9,11 +9,9 @@ namespace
 { // UNNAMED NAMESPACE
 // ==========================================================================
 // Warrior
-// Fix/check Arms autoattack rage gain when it is playable
 // try to not break protection
 // Add Intercept
 // Add back second wind
-// Check if endless rage affects white swing rage before or after rounding, whenever they fix it in game.
 // Check meat cleaver range as beta testing proceeds, it was 10, currently it's 5.
 // ==========================================================================
 
@@ -71,6 +69,8 @@ public:
     buff_t* berserking; // Artifact Weapon
     buff_t* berserking_driver;
     buff_t* sense_death;
+    buff_t* juggernaut;
+    buff_t* odyns_champion;
     // All Warriors
     buff_t* berserker_rage;
     buff_t* bladestorm;
@@ -118,9 +118,16 @@ public:
     // All Warriors
     cooldown_t* charge;
     cooldown_t* heroic_leap;
-    cooldown_t* rage_from_charge;
     // Talents
     cooldown_t* shockwave;
+    cooldown_t* bladestorm;
+    cooldown_t* odyns_fury;
+    cooldown_t* storm_bolt;
+    cooldown_t* avatar;
+    cooldown_t* dragon_roar;
+    cooldown_t* raging_blow;
+    cooldown_t* berserker_rage;
+    cooldown_t* bloodthirst;
     // Fury And Arms
     cooldown_t* battle_cry;
     // Arms only
@@ -203,6 +210,7 @@ public:
     std::unique_ptr<real_ppm_t> overpower;
     std::unique_ptr<real_ppm_t> rage_of_the_valarjar;
     std::unique_ptr<real_ppm_t> wrecking_ball;
+    std::unique_ptr<real_ppm_t> odyns_champion;
   } rppm;
 
   // Spec Passives
@@ -712,6 +720,26 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     {
       p() -> buff.wrecking_ball -> trigger();
     }
+    if ( special && p() -> buff.odyns_champion -> up() )
+    {
+      odyns_champion( timespan_t::from_seconds( p() -> buff.odyns_champion -> default_chance ) );
+    }
+  }
+
+  void odyns_champion( timespan_t reduction )
+  {
+    p() -> cooldown.avatar -> adjust( reduction );
+    p() -> cooldown.battle_cry -> adjust( reduction );
+    p() -> cooldown.berserker_rage -> adjust( reduction );
+    p() -> cooldown.bladestorm -> adjust( reduction );
+    p() -> cooldown.bloodthirst -> adjust( reduction );
+    p() -> cooldown.charge -> adjust( reduction );
+    p() -> cooldown.dragon_roar -> adjust( reduction );
+    p() -> cooldown.heroic_leap -> adjust( reduction );
+    p() -> cooldown.odyns_fury -> adjust( reduction );
+    p() -> cooldown.raging_blow -> adjust( reduction );
+    p() -> cooldown.shockwave -> adjust( reduction );
+    p() -> cooldown.storm_bolt -> adjust( reduction );
   }
 
   virtual void impact( action_state_t* s ) override
@@ -1196,7 +1224,6 @@ struct charge_t: public warrior_attack_t
     if ( first_charge )
       first_charge = !first_charge;
 
-    p() -> cooldown.rage_from_charge -> start();
     rage_resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.charge );
   }
 
@@ -1486,6 +1513,25 @@ struct execute_off_hand_t: public warrior_attack_t
     base_crit += p -> artifact.deathblow.percent();
     base_crit += p -> artifact.deathdealer.percent();
   }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    am *= 1.0 + p() -> buff.juggernaut -> stack_value();
+
+    return am;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    if ( s -> result == RESULT_CRIT )
+    {
+      p() -> buff.massacre -> trigger();
+    }
+  }
 };
 
 struct execute_t: public warrior_attack_t
@@ -1522,7 +1568,9 @@ struct execute_t: public warrior_attack_t
     else if ( p() -> has_shield_equipped() )
     { am *= 1.0 + p() -> spec.protection -> effectN( 2 ).percent(); }
 
-    am *= 1.0 + p() -> buff.shattered_defenses -> check_value();
+    am *= 1.0 + p() -> buff.shattered_defenses -> stack_value();
+
+    am *= 1.0 + p() -> buff.juggernaut -> stack_value();
 
     return am;
   }
@@ -1573,6 +1621,8 @@ struct execute_t: public warrior_attack_t
 
     if ( p() -> buff.precise_strikes -> up() )
       p() -> buff.precise_strikes -> expire();
+
+    p() -> buff.juggernaut -> trigger( 1 );
   }
 
   void impact( action_state_t* s ) override
@@ -1891,7 +1941,7 @@ struct heroic_charge_t: public warrior_attack_t
 
   bool ready() override
   {
-    if ( p() -> cooldown.rage_from_charge -> up() && p() -> cooldown.charge -> up() && !p() -> buffs.raid_movement -> check() )
+    if ( p() -> cooldown.charge -> up() && !p() -> buffs.raid_movement -> check() )
       return warrior_attack_t::ready();
     else
       return false;
@@ -2309,6 +2359,10 @@ struct rampage_parent_t: public warrior_attack_t
     if ( p() -> rppm.rage_of_the_valarjar && p() -> rppm.rage_of_the_valarjar -> trigger() )
     {
       p() -> buff.berserking_driver -> trigger();
+    }
+    if ( p() -> rppm.odyns_champion && p() -> rppm.odyns_champion -> trigger() )
+    {
+      p() -> buff.odyns_champion -> trigger();
     }
 
     if ( result_is_hit( execute_state -> result ) ) // If the first attack fails to land, the rest do too. 
@@ -3358,8 +3412,6 @@ void warrior_t::init_spells()
   cooldown.heroic_leap              = get_cooldown( "heroic_leap" );
   cooldown.last_stand               = get_cooldown( "last_stand" );
   cooldown.mortal_strike            = get_cooldown( "mortal_strike" );
-  cooldown.rage_from_charge         = get_cooldown( "rage_from_charge" );
-  cooldown.rage_from_charge -> duration = timespan_t::from_seconds( 12.0 );
   cooldown.rage_from_crit_block     = get_cooldown( "rage_from_crit_block" );
   cooldown.rage_from_crit_block -> duration = timespan_t::from_seconds( 3.0 );
   cooldown.revenge                  = get_cooldown( "revenge" );
@@ -3368,6 +3420,14 @@ void warrior_t::init_spells()
   cooldown.shield_slam              = get_cooldown( "shield_slam" );
   cooldown.shield_wall              = get_cooldown( "shield_wall" );
   cooldown.shockwave                = get_cooldown( "shockwave" );
+  cooldown.bladestorm               = get_cooldown( "bladestorm" );
+  cooldown.odyns_fury               = get_cooldown( "odyns_fury" );
+  cooldown.storm_bolt               = get_cooldown( "storm_bolt" );
+  cooldown.avatar                   = get_cooldown( "avatar" );
+  cooldown.dragon_roar              = get_cooldown( "dragon_roar" );
+  cooldown.raging_blow              = get_cooldown( "raging_blow" );
+  cooldown.berserker_rage           = get_cooldown( "berserker_rage" );
+  cooldown.bloodthirst              = get_cooldown( "bloodthirst" );
 }
 
 // warrior_t::init_base =====================================================
@@ -3772,6 +3832,13 @@ struct wrecking_ball_t : public warrior_real_ppm_t < real_ppm_t >
     base_t( p, real_ppm_t( p, p.talents.wrecking_ball -> real_ppm(), 1.0, RPPM_HASTE ) )
   {}
 };
+
+struct odyns_champion_t : public warrior_real_ppm_t < real_ppm_t >
+{
+  odyns_champion_t( warrior_t& p ):
+    base_t( p, real_ppm_t( p, p.artifact.odyns_champion.data().real_ppm(), 1.0, RPPM_NONE ) )
+  {}
+};
 };
 
 // ==========================================================================
@@ -3979,6 +4046,12 @@ void warrior_t::create_buffs()
   buff.sense_death = buff_creator_t( this, "sense_death", artifact.sense_death.data().effectN( 1 ).trigger() )
     .chance( artifact.sense_death.percent() );
 
+  buff.juggernaut = buff_creator_t( this, "juggernaut", artifact.juggernaut.data().effectN( 1 ).trigger() )
+    .default_value( artifact.juggernaut.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+
+  buff.odyns_champion = buff_creator_t( this, "odyns_champion", artifact.odyns_champion.data().effectN( 1 ).trigger() )
+    .default_value( artifact.odyns_champion.data().effectN( 1 ).base_value() );
+
   buff.battle_cry = buff_creator_t( this, "battle_cry", spec.battle_cry )
     .add_invalidate( CACHE_CRIT )
     .cd( timespan_t::zero() );
@@ -4094,6 +4167,8 @@ void warrior_t::init_rng()
     rppm.rage_of_the_valarjar = std::unique_ptr<rppm::rage_of_the_valarjar_t>( new rppm::rage_of_the_valarjar_t( *this ) );
   if ( talents.wrecking_ball )
     rppm.wrecking_ball = std::unique_ptr<rppm::wrecking_ball_t>( new rppm::wrecking_ball_t( *this ) );
+  if ( artifact.odyns_champion.rank() )
+    rppm.odyns_champion = std::unique_ptr<rppm::odyns_champion_t>( new rppm::odyns_champion_t( *this ) );
 }
 
 // warrior_t::init_resources ================================================
@@ -4213,6 +4288,9 @@ void warrior_t::reset()
 
   if ( rppm.wrecking_ball )
     rppm.wrecking_ball -> reset();
+
+  if ( rppm.odyns_champion )
+    rppm.odyns_champion -> reset();
 }
 
 // Movement related overrides. =============================================
