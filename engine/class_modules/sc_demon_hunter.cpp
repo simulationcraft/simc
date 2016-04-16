@@ -32,6 +32,7 @@ namespace { // UNNAMED NAMESPACE
    Defensive artifact traits
    Implement Critical Strikes
    Implement Prepared change
+   Chaos Strike rolled per target
 
    Vengeance ----------------------------------------------------------------
    Hmm, let me think... well there's... oh yeah, everything.
@@ -1439,6 +1440,8 @@ struct eye_beam_t : public demon_hunter_attack_t
 struct felblade_t : public demon_hunter_attack_t
 {
   const spell_data_t* damage_spell;
+  resource_e resource;
+  double amount;
 
   felblade_t( demon_hunter_t* p, const std::string& options_str ) :
     demon_hunter_attack_t( "felblade", p, p -> talent.felblade )
@@ -1454,6 +1457,10 @@ struct felblade_t : public demon_hunter_attack_t
     // Special handling for Chaos Blades damage modifier.
     chaos_blades = damage_spell -> affected_by( p -> talent.chaos_blades -> effectN( 2 ) );
 
+    const spelleffect_data_t effect = damage_spell -> effectN( p -> specialization() == DEMON_HUNTER_HAVOC ? 4 : 3 );
+    resource = effect.resource_gain_type();
+    amount = effect.resource( resource );
+
     movement_directionality = MOVEMENT_TOWARDS;
   }
 
@@ -1463,10 +1470,7 @@ struct felblade_t : public demon_hunter_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( p() -> specialization() == DEMON_HUNTER_HAVOC )
-      {
-        p() -> resource_gain( RESOURCE_FURY, damage_spell -> effectN( 4 ).resource( RESOURCE_FURY ), action_gain );
-      }
+      p() -> resource_gain( resource, amount, action_gain );
     }
   }
 };
