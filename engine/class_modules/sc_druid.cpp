@@ -29,6 +29,7 @@ namespace { // UNNAMED NAMESPACE
   Shooting Stars AsP react
   Check Echoing Stars
   Check Fury of Elune
+  Full Moon AoE & splits damage
 
   Touch of the Moon
   Light of the Sun
@@ -7645,9 +7646,10 @@ void druid_t::assess_damage( school_e school,
 
   player_t::assess_damage( school, dtype, s );
 
-  if ( artifact.adaptive_fur.rank() ) // TOCHECK
+  if ( artifact.adaptive_fur.rank() && ! dbc::is_school( school, SCHOOL_PHYSICAL ) ) // TOCHECK
   {
-    if ( buff.adaptive_fur -> trigger( 1, school ) && sim -> log )
+    buff.adaptive_fur -> trigger( 1, school );
+    if ( sim -> log )
     {
       sim -> out_log.printf( "%s %s adapts to %s (%d).", name(), buff.adaptive_fur -> name(),
         util::school_type_string( school ), school );
