@@ -342,22 +342,23 @@ public:
     artifact_power_t warbreaker;
     artifact_power_t will_of_the_first_king;
 
-    artifact_power_t odyns_fury;
-    artifact_power_t thirst_for_battle;
-    artifact_power_t unstoppable;
-    artifact_power_t raging_berserker;
     artifact_power_t battle_scars;
-    artifact_power_t unrivaled_strength;
-    artifact_power_t uncontrolled_rage;
-    artifact_power_t rage_of_the_valarjar;
     artifact_power_t bloodcraze;
-    artifact_power_t sense_death;
+    artifact_power_t deathdealer;
     artifact_power_t focus_in_chaos;
     artifact_power_t helyas_wrath;
-    artifact_power_t odyns_champion;
-    artifact_power_t wrath_and_fury;
-    artifact_power_t deathdealer;
     artifact_power_t juggernaut;
+    artifact_power_t odyns_champion;
+    artifact_power_t odyns_fury;
+    artifact_power_t rage_of_the_valarjar;
+    artifact_power_t raging_berserker;
+    artifact_power_t sense_death;
+    artifact_power_t thirst_for_battle;
+    artifact_power_t titanic_power;
+    artifact_power_t uncontrolled_rage;
+    artifact_power_t unrivaled_strength;
+    artifact_power_t unstoppable;
+    artifact_power_t wrath_and_fury;
 
     // NYI
     artifact_power_t touch_of_zakajz;
@@ -3338,23 +3339,24 @@ void warrior_t::init_spells()
   artifact.war_veteran               = find_artifact_spell( "War Veteran" );
   artifact.warbreaker                = find_artifact_spell( "Warbreaker" );
 
-  artifact.odyns_fury                = find_artifact_spell( "Odyn's Fury" );
-  artifact.thirst_for_battle         = find_artifact_spell( "Thirst for Battle" );
-  artifact.unstoppable               = find_artifact_spell( "Unstoppable" );
-  artifact.raging_berserker          = find_artifact_spell( "Raging Berserker" );
   artifact.battle_scars              = find_artifact_spell( "Battle Scars" );
-  artifact.unrivaled_strength        = find_artifact_spell( "Unrivaled Strength" );
-  artifact.uncontrolled_rage         = find_artifact_spell( "Uncontrolled Rage" );
-  artifact.rage_of_the_valarjar      = find_artifact_spell( "Rage of the Valarjar" );
   artifact.bloodcraze                = find_artifact_spell( "Bloodcraze" );
-  artifact.sense_death               = find_artifact_spell( "Sense Death" );
+  artifact.deathdealer               = find_artifact_spell( "Deathdealer" );
   artifact.focus_in_chaos            = find_artifact_spell( "Focus in Chaos" );
   artifact.helyas_wrath              = find_artifact_spell( "Helya's Wrath" );
-  artifact.odyns_champion            = find_artifact_spell( "Odyn's Champion" );
-  artifact.wrath_and_fury            = find_artifact_spell( "Wrath and Fury" );
-  artifact.deathdealer               = find_artifact_spell( "Deathdealer" );
   artifact.juggernaut                = find_artifact_spell( "Juggernaut" );
+  artifact.odyns_champion            = find_artifact_spell( "Odyn's Champion" );
+  artifact.odyns_fury                = find_artifact_spell( "Odyn's Fury" );
+  artifact.rage_of_the_valarjar      = find_artifact_spell( "Rage of the Valarjar" );
+  artifact.raging_berserker          = find_artifact_spell( "Raging Berserker" );
+  artifact.sense_death               = find_artifact_spell( "Sense Death" );
+  artifact.titanic_power             = find_artifact_spell( "Titanic Power" );
+  artifact.thirst_for_battle         = find_artifact_spell( "Thirst for Battle" );
+  artifact.uncontrolled_rage         = find_artifact_spell( "Uncontrolled Rage" );
+  artifact.unrivaled_strength        = find_artifact_spell( "Unrivaled Strength" );
+  artifact.unstoppable               = find_artifact_spell( "Unstoppable" );
   artifact.will_of_the_first_king    = find_artifact_spell( "Will of the First King" );
+  artifact.wrath_and_fury            = find_artifact_spell( "Wrath and Fury" );
 
   // Generic spells
   spell.charge                  = find_class_spell( "Charge" );
@@ -4357,11 +4359,9 @@ double warrior_t::composite_player_multiplier( school_e school ) const
        off_hand_weapon.group() == WEAPON_1H )
     m *= 1.0 + spec.singleminded_fury -> effectN( 1 ).percent();
 
-  if ( buff.dragon_roar -> check() )
-    m *= 1.0 + buff.dragon_roar -> default_value;
-
-  if ( buff.frothing_berserker -> check() )
-    m *= 1.0 + buff.frothing_berserker -> default_value;
+  m *= 1.0 + buff.dragon_roar -> check_value();
+  m *= 1.0 + buff.frothing_berserker -> check_value();
+  m *= 1.0 + artifact.titanic_power.percent();
 
   return m;
 }
