@@ -1523,7 +1523,7 @@ struct feral_spirit_pet_t : public pet_t
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
 
-    owner_coeff.ap_from_ap = 0.66;
+    owner_coeff.ap_from_ap = 1.33;
 
     command = owner -> find_spell( 65222 );
     wf_driver = owner -> find_spell( 170523 );
