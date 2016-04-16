@@ -30,7 +30,6 @@ namespace { // UNNAMED NAMESPACE
    Fury of the Illidari distance targeting support
    Soul Fragment artifact traits
    Defensive artifact traits
-   Implement Prepared change
    Chaos Strike rolled per target
 
    Vengeance ----------------------------------------------------------------
@@ -1833,7 +1832,11 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
   {
     demon_hunter_attack_t::execute();
 
-    p() -> buff.prepared -> trigger();
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      p() -> buff.prepared -> trigger();
+    }
+
     p() -> buff.momentum -> trigger();
     
     // Buff to track the movement. This lets us delay autoattacks and other things.
