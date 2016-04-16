@@ -3928,7 +3928,7 @@ struct enrage_t: public warrior_buff_t < buff_t >
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
-    if ( warrior.artifact.battle_scars.rank() )
+    if ( warrior.artifact.battle_scars.rank() && !warrior.buff.enrage -> check() )
     {
       health_gain = static_cast<int>( util::floor( warrior.resources.max[RESOURCE_HEALTH] * warrior.artifact.battle_scars.percent() ) );
       warrior.stat_gain( STAT_MAX_HEALTH, health_gain, ( gain_t* )nullptr, ( action_t* )nullptr, true );
@@ -3938,7 +3938,10 @@ struct enrage_t: public warrior_buff_t < buff_t >
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    warrior.stat_loss( STAT_MAX_HEALTH, health_gain, ( gain_t* )nullptr, ( action_t* )nullptr, true );
+    if ( warrior.artifact.battle_scars.rank() )
+    {
+      warrior.stat_loss( STAT_MAX_HEALTH, health_gain, ( gain_t* )nullptr, ( action_t* )nullptr, true );
+    }
     base_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
