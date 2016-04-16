@@ -748,8 +748,8 @@ void print_text_performance( FILE* file, sim_t* sim )
       "\nBaseline Performance:\n"
       "  RNG Engine    = %s%s\n"
       "  Iterations    = %d\n"
-      "  TotalEvents   = %" PRIu64 "\n"
-      "  MaxEventQueue = %" PRIu64 "\n"
+      "  TotalEvents   = %lu\n"
+      "  MaxEventQueue = %lu\n"
 #ifdef EVENT_QUEUE_DEBUG
       "  AllocEvents   = %u\n"
       "  EndInsert     = %u (%.3f%%)\n"
