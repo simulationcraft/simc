@@ -115,6 +115,7 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
+    cooldown_t* enraged_regeneration;
     // All Warriors
     cooldown_t* charge;
     cooldown_t* heroic_leap;
@@ -341,6 +342,7 @@ public:
     artifact_power_t corrupted_blood_of_zakajz;
     artifact_power_t warbreaker;
     artifact_power_t will_of_the_first_king;
+    artifact_power_t many_will_fall;
 
     artifact_power_t battle_scars;
     artifact_power_t bloodcraze;
@@ -355,6 +357,7 @@ public:
     artifact_power_t sense_death;
     artifact_power_t thirst_for_battle;
     artifact_power_t titanic_power;
+    artifact_power_t unbreakable_steel;
     artifact_power_t uncontrolled_rage;
     artifact_power_t unrivaled_strength;
     artifact_power_t unstoppable;
@@ -741,6 +744,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     p() -> cooldown.raging_blow -> adjust( reduction );
     p() -> cooldown.shockwave -> adjust( reduction );
     p() -> cooldown.storm_bolt -> adjust( reduction );
+    p() -> cooldown.enraged_regeneration -> adjust( reduction );
   }
 
   virtual void impact( action_state_t* s ) override
@@ -2811,10 +2815,10 @@ struct whirlwind_parent_t: public warrior_attack_t
       }
     }
     tick_zero = true;
-    callbacks = false;
+    callbacks = hasted_ticks = false;
     base_tick_time = spin_time;
-    hasted_ticks = false;
     dot_duration = base_tick_time * 2;
+    weapon_multiplier *= 1.0 + p -> artifact.many_will_fall.percent();
   }
 
   double cost() const override
@@ -3338,6 +3342,7 @@ void warrior_t::init_spells()
   artifact.void_cleave               = find_artifact_spell( "Void Cleave" );
   artifact.war_veteran               = find_artifact_spell( "War Veteran" );
   artifact.warbreaker                = find_artifact_spell( "Warbreaker" );
+  artifact.many_will_fall            = find_artifact_spell( "Many Will Fall" );
 
   artifact.battle_scars              = find_artifact_spell( "Battle Scars" );
   artifact.bloodcraze                = find_artifact_spell( "Bloodcraze" );
@@ -3352,6 +3357,7 @@ void warrior_t::init_spells()
   artifact.sense_death               = find_artifact_spell( "Sense Death" );
   artifact.titanic_power             = find_artifact_spell( "Titanic Power" );
   artifact.thirst_for_battle         = find_artifact_spell( "Thirst for Battle" );
+  artifact.unbreakable_steel         = find_artifact_spell( "Unbreakable Steel" );
   artifact.uncontrolled_rage         = find_artifact_spell( "Uncontrolled Rage" );
   artifact.unrivaled_strength        = find_artifact_spell( "Unrivaled Strength" );
   artifact.unstoppable               = find_artifact_spell( "Unstoppable" );
@@ -3363,8 +3369,6 @@ void warrior_t::init_spells()
   spell.colossus_smash_debuff   = find_spell( 208086 );
   spell.defensive_stance        = find_class_spell( "Defensive Stance" );
   spell.fervor_of_battle        = find_spell( 202317 );
-  if ( specialization() == WARRIOR_FURY )
-  { spell.indomitable = find_spell( 202095 ); }
   spell.intervene               = find_class_spell( "Intervene" );
   spell.headlong_rush           = find_spell( 137047 ); // Also may be used for other crap in the future.
   spell.heroic_leap             = find_class_spell( "Heroic Leap" );
@@ -3407,29 +3411,30 @@ void warrior_t::init_spells()
   }
 
   // Cooldowns
+  cooldown.avatar                   = get_cooldown( "avatar" );
   cooldown.battle_cry               = get_cooldown( "battle_cry" );
+  cooldown.berserker_rage           = get_cooldown( "berserker_rage" );
+  cooldown.bladestorm               = get_cooldown( "bladestorm" );
+  cooldown.bloodthirst              = get_cooldown( "bloodthirst" );
   cooldown.charge                   = get_cooldown( "charge" );
   cooldown.colossus_smash           = get_cooldown( "colossus_smash" );
   cooldown.demoralizing_shout       = get_cooldown( "demoralizing_shout" );
+  cooldown.dragon_roar              = get_cooldown( "dragon_roar" );
+  cooldown.enraged_regeneration     = get_cooldown( "enraged_regeneration" );
   cooldown.heroic_leap              = get_cooldown( "heroic_leap" );
   cooldown.last_stand               = get_cooldown( "last_stand" );
   cooldown.mortal_strike            = get_cooldown( "mortal_strike" );
+  cooldown.odyns_fury               = get_cooldown( "odyns_fury" );
   cooldown.rage_from_crit_block     = get_cooldown( "rage_from_crit_block" );
   cooldown.rage_from_crit_block -> duration = timespan_t::from_seconds( 3.0 );
+  cooldown.raging_blow              = get_cooldown( "raging_blow" );
   cooldown.revenge                  = get_cooldown( "revenge" );
   cooldown.revenge_reset            = get_cooldown( "revenge_reset" );
   cooldown.revenge_reset -> duration = spell.revenge_trigger -> internal_cooldown();
   cooldown.shield_slam              = get_cooldown( "shield_slam" );
   cooldown.shield_wall              = get_cooldown( "shield_wall" );
   cooldown.shockwave                = get_cooldown( "shockwave" );
-  cooldown.bladestorm               = get_cooldown( "bladestorm" );
-  cooldown.odyns_fury               = get_cooldown( "odyns_fury" );
   cooldown.storm_bolt               = get_cooldown( "storm_bolt" );
-  cooldown.avatar                   = get_cooldown( "avatar" );
-  cooldown.dragon_roar              = get_cooldown( "dragon_roar" );
-  cooldown.raging_blow              = get_cooldown( "raging_blow" );
-  cooldown.berserker_rage           = get_cooldown( "berserker_rage" );
-  cooldown.bloodthirst              = get_cooldown( "bloodthirst" );
 }
 
 // warrior_t::init_base =====================================================
@@ -3914,6 +3919,30 @@ struct last_stand_t: public warrior_buff_t < buff_t >
   }
 };
 
+struct enrage_t: public warrior_buff_t < buff_t >
+{
+  int health_gain;
+  enrage_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
+    base_t( p, buff_creator_t( &p, n, s ).can_cancel( false ).add_invalidate( CACHE_ATTACK_SPEED ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) ), health_gain( 0 )
+  {}
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    if ( warrior.artifact.battle_scars.rank() )
+    {
+      health_gain = static_cast<int>( util::floor( warrior.resources.max[RESOURCE_HEALTH] * warrior.artifact.battle_scars.percent() ) );
+      warrior.stat_gain( STAT_MAX_HEALTH, health_gain, ( gain_t* )nullptr, ( action_t* )nullptr, true );
+    }
+    return base_t::trigger( stacks, value, chance, duration );
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    warrior.stat_loss( STAT_MAX_HEALTH, health_gain, ( gain_t* )nullptr, ( action_t* )nullptr, true );
+    base_t::expire_override( expiration_stacks, remaining_duration );
+  }
+};
+
 struct debuff_demo_shout_t: public warrior_buff_t < buff_t >
 {
   debuff_demo_shout_t( warrior_td_t& p ):
@@ -4004,10 +4033,7 @@ void warrior_t::create_buffs()
     .default_value( talents.dragon_roar -> effectN( 2 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buff.enrage = buff_creator_t( this, "enrage", spec.enrage -> effectN( 2 ).trigger() )
-    .can_cancel( false )
-    .add_invalidate( CACHE_ATTACK_SPEED )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.enrage = new buffs::enrage_t( *this, "enrage", spec.enrage -> effectN( 2 ).trigger() );
 
   buff.frenzy = buff_creator_t( this, "frenzy", talents.frenzy -> effectN( 1 ).trigger() )
     .add_invalidate( CACHE_HASTE )
@@ -4362,6 +4388,7 @@ double warrior_t::composite_player_multiplier( school_e school ) const
   m *= 1.0 + buff.dragon_roar -> check_value();
   m *= 1.0 + buff.frothing_berserker -> check_value();
   m *= 1.0 + artifact.titanic_power.percent();
+  m *= 1.0 + artifact.unbreakable_steel.percent();
 
   return m;
 }
@@ -4377,8 +4404,7 @@ double warrior_t::composite_attribute( attribute_e attr ) const
   case ATTR_STAMINA:
   if ( buff.defensive_stance -> check() )
     a += spec.unwavering_sentinel -> effectN( 1 ).percent() * player_t::composite_attribute( ATTR_STAMINA );
-  if ( specialization() == WARRIOR_FURY )
-    a += spell.indomitable -> effectN( 1 ).percent() * player_t::composite_attribute( ATTR_STAMINA );
+  a += spec.titans_grip -> effectN( 2 ).percent() * player_t::composite_attribute( ATTR_STAMINA );
   break;
   default:
   break;
