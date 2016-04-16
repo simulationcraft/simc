@@ -7700,8 +7700,9 @@ const spell_data_t* player_t::find_glyph( const std::string& n ) const
 
 // player_t::find_glyph_spell ===============================================
 
-const spell_data_t* player_t::find_glyph_spell( const std::string& n, const std::string& token ) const
+const spell_data_t* player_t::find_glyph_spell( const std::string& /* n */, const std::string& /* token */ ) const
 {
+  /*
   if ( const spell_data_t* g = find_glyph( n ) )
   {
     for ( std::vector<const spell_data_t*>::const_iterator i = glyph_list.begin(); i != glyph_list.end(); ++i )
@@ -7716,7 +7717,7 @@ const spell_data_t* player_t::find_glyph_spell( const std::string& n, const std:
       }
     }
   }
-
+  */
   return spell_data_t::not_found();
 }
 
