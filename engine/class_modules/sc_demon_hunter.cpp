@@ -30,7 +30,6 @@ namespace { // UNNAMED NAMESPACE
    Fury of the Illidari distance targeting support
    Soul Fragment artifact traits
    Defensive artifact traits
-   Implement Critical Strikes
    Implement Prepared change
    Chaos Strike rolled per target
 
@@ -156,6 +155,8 @@ public:
   struct
   {
     const spell_data_t* demon_hunter;
+    const spell_data_t* critical_strikes;
+    const spell_data_t* metamorphosis_buff;
 
     const spell_data_t* havoc;
     const spell_data_t* annihilation;
@@ -165,8 +166,6 @@ public:
     const spell_data_t* chaos_strike;
     const spell_data_t* consume_magic;
     const spell_data_t* death_sweep;
-    const spell_data_t* demonic_instincts;
-    const spell_data_t* metamorphosis_buff;
 
     const spell_data_t* vengeance;
   } spec;
@@ -307,7 +306,9 @@ public:
   stat_e convert_hybrid_stat( stat_e s ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   double composite_dodge() const override;
+  double composite_melee_crit() const override;
   double composite_player_multiplier( school_e ) const override;
+  double composite_spell_crit() const override;
   double passive_movement_modifier() const override;
   void target_mitigation( school_e, dmg_e, action_state_t* ) override;
   void init_action_list() override;
@@ -2149,7 +2150,18 @@ double demon_hunter_t::composite_dodge() const
   return d;
 }
 
-// demon_hunter_t::composite_player_multiplier =====================================
+// demon_hunter_t::composite_melee_crit =====================================
+
+double demon_hunter_t::composite_melee_crit() const
+{
+  double mc = player_t::composite_melee_crit();
+
+  mc += spec.critical_strikes -> effectN( 1 ).percent();
+
+  return mc;
+}
+
+// demon_hunter_t::composite_player_multiplier ==============================
 
 double demon_hunter_t::composite_player_multiplier( school_e school ) const
 {
@@ -2161,6 +2173,17 @@ double demon_hunter_t::composite_player_multiplier( school_e school ) const
   m *= 1.0 + buff.nemesis -> check() * buff.nemesis -> data().effectN( 1 ).percent();
 
   return m;
+}
+
+// demon_hunter_t::composite_spell_crit =====================================
+
+double demon_hunter_t::composite_spell_crit() const
+{
+  double sc = player_t::composite_spell_crit();
+
+  sc += spec.critical_strikes -> effectN( 1 ).percent();
+
+  return sc;
 }
 
 // demon_hunter_t::passive_movement_modifier ================================
@@ -2314,6 +2337,7 @@ void demon_hunter_t::init_spells()
   // General ================================================================
 
   spec.demon_hunter        = find_class_spell( "Demon Hunter" );
+  spec.critical_strikes    = find_spell( 221351 ); // not a class spell
 
   spec.annihilation        = find_spell( 201427 );
   spec.blade_dance         = find_class_spell( "Blade Dance" );
@@ -2322,7 +2346,6 @@ void demon_hunter_t::init_spells()
   spec.chaos_strike        = find_class_spell( "Chaos Strike" );
   spec.consume_magic       = find_class_spell( "Consume Magic" );
   spec.death_sweep         = find_spell( 210152 );
-  spec.demonic_instincts   = find_spell( 203569 ); // not a class spell
   spec.havoc               = find_specialization_spell( "Havoc Demon Hunter" );
   spec.metamorphosis_buff  = find_spell( 162264 );
 
