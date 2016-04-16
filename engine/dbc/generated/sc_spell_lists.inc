@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 21414
+// Class based active abilities, wow build 21491
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -768,14 +768,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 27 abilities
+    // Pet tree, 26 abilities
     {
        89766, // Axe Toss (Special Ability)
       171011, // Burning Presence (Special Ability)
       119899, // Cauterize Master (Special Ability)
         3716, // Consuming Shadows (Basic Attack)
       170995, // Cripple
-       19658, // Devour Magic
        85692, // Doom Bolt
       104318, // Fel Firebolt (Basic Attack)
        89751, // Felstorm (Special Ability)
@@ -874,13 +873,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Druid
   {
-    // General tree, 16 abilities
+    // General tree, 15 abilities
     {
         5487, // Bear Form (Shapeshift)
          768, // Cat Form (Shapeshift)
       127757, // Charm Woodland Creature
         1850, // Dash
-      193753, // Dreamwalk
          339, // Entangling Roots
       164862, // Flap
       165962, // Flight Form (Shapeshift)
@@ -1050,7 +1048,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 };
 #define TREE_SPECIALIZATION_SIZE (29)
 
-// Talent tree specialization abilities, wow build 21414
+// Talent tree specialization abilities, wow build 21491
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1434,10 +1432,10 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
         5277, // Evasion
       196819, // Eviscerate
          408, // Kidney Shot
-      196976, // Master of Shadows
        76808, // Mastery: Executioner
       195452, // Nightblade
          921, // Pick Pocket
+       58423, // Relentless Strikes
         6770, // Sap
       121471, // Shadow Blades
       185313, // Shadow Dance
@@ -1871,6 +1869,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       128595, // Combat Conditioning
       137384, // Combo Breaker
       157445, // Critical Strikes
+      220357, // Cyclone Strikes
       218164, // Detox
       116095, // Disable
       124146, // Dual Wield
@@ -2020,6 +2019,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     // Specialization abilities for Havoc
     {
       212612, // Havoc Demon Hunter
+      185164, // Mastery: Demonic Presence
       178940, // Shattered Souls
            0,
     },
@@ -2032,6 +2032,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       178740, // Immolation Aura
       189926, // Increased Threat
       189110, // Infernal Strike
+      203747, // Mastery: Fel Blood
       187827, // Metamorphosis
       185244, // Pain
       207197, // Riposte
@@ -2057,7 +2058,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 21414
+// Class mastery abilities, wow build 21491
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2290,13 +2291,13 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
     },
   },
 };
-#define RACE_ABILITY_SIZE (4)
+#define RACE_ABILITY_SIZE (10)
 
 #ifndef MAX_RACE
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 21414
+// Racial abilities, wow build 21491
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2338,77 +2339,25 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     // Generic racial abilities
     {
+      33697, // Blood Fury
+      33702, // Blood Fury
+      20572, // Blood Fury
+      21563, // Command
       20573, // Hardiness
           0,
     },
-    // Racial abilities for Warrior class
-    {
-      20572, // Blood Fury
-      21563, // Command
-          0,
-    },
-    // Racial abilities for Paladin class
-    {
-      21563, // Command
-          0,
-    },
-    // Racial abilities for Hunter class
-    {
-      20572, // Blood Fury
-      21563, // Command
-          0,
-    },
-    // Racial abilities for Rogue class
-    {
-      20572, // Blood Fury
-      21563, // Command
-          0,
-    },
-    // Racial abilities for Priest class
-    {
-      21563, // Command
-          0,
-    },
-    // Racial abilities for Death Knight class
-    {
-      20572, // Blood Fury
-      21563, // Command
-          0,
-    },
-    // Racial abilities for Shaman class
-    {
-      33697, // Blood Fury
-      21563, // Command
-          0,
-    },
-    // Racial abilities for Mage class
-    {
-      33702, // Blood Fury
-      21563, // Command
-          0,
-    },
-    // Racial abilities for Warlock class
-    {
-      33702, // Blood Fury
-      21563, // Command
-          0,
-    },
-    // Racial abilities for Monk class
-    {
-      33697, // Blood Fury
-      21563, // Command
-          0,
-    },
-    // Racial abilities for Druid class
-    {
-      21563, // Command
-          0,
-    },
-    // Racial abilities for Demon Hunter class
-    {
-      21563, // Command
-          0,
-    },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
   },
   // Racial abilities for Dwarf
   {
@@ -2418,6 +2367,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
       20596, // Frost Resistance
       59224, // Might of the Mountain
       20594, // Stoneform
+          0,
     },
     {     0, },
     {     0, },
@@ -2436,17 +2386,11 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     // Generic racial abilities
     {
+      21009, // Elusiveness
       20583, // Nature Resistance
       20582, // Quickness
       58984, // Shadowmeld
       154748, // Touch of Elune
-    },
-    {     0, },
-    {     0, },
-    {     0, },
-    // Racial abilities for Rogue class
-    {
-      21009, // Elusiveness
           0,
     },
     {     0, },
@@ -2455,11 +2399,11 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
     {     0, },
     {     0, },
     {     0, },
-    // Racial abilities for Druid class
-    {
-      21009, // Elusiveness
-          0,
-    },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
     {     0, },
   },
   // Racial abilities for Undead
@@ -2470,6 +2414,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
       20579, // Shadow Resistance
        5227, // Touch of the Grave
        7744, // Will of the Forsaken
+          0,
     },
     {     0, },
     {     0, },
@@ -2492,6 +2437,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
       20550, // Endurance
       20551, // Nature Resistance
       20549, // War Stomp
+          0,
     },
     {     0, },
     {     0, },
@@ -2512,56 +2458,23 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
     {
       20592, // Arcane Resistance
       20589, // Escape Artist
+      20591, // Expansive Mind
+      154744, // Expansive Mind
+      154746, // Expansive Mind
+      154747, // Expansive Mind
       92680, // Nimble Fingers
           0,
     },
-    // Racial abilities for Warrior class
-    {
-      154746, // Expansive Mind
-          0,
-    },
-    // Racial abilities for Paladin class
-    {
-      20591, // Expansive Mind
-          0,
-    },
     {     0, },
-    // Racial abilities for Rogue class
-    {
-      154744, // Expansive Mind
-          0,
-    },
-    // Racial abilities for Priest class
-    {
-      20591, // Expansive Mind
-          0,
-    },
-    // Racial abilities for Death Knight class
-    {
-      154747, // Expansive Mind
-          0,
-    },
-    // Racial abilities for Shaman class
-    {
-      20591, // Expansive Mind
-          0,
-    },
-    // Racial abilities for Mage class
-    {
-      20591, // Expansive Mind
-          0,
-    },
-    // Racial abilities for Warlock class
-    {
-      20591, // Expansive Mind
-          0,
-    },
-    // Racial abilities for Monk class
-    {
-      20591, // Expansive Mind
-      154744, // Expansive Mind
-          0,
-    },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
     {     0, },
     {     0, },
   },
@@ -2573,6 +2486,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
       26297, // Berserking
       58943, // Da Voodoo Shuffle
       20555, // Regeneration
+          0,
     },
     {     0, },
     {     0, },
@@ -2615,111 +2529,53 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
     {
       154742, // Arcane Acuity
         822, // Arcane Resistance
-          0,
-    },
-    // Racial abilities for Warrior class
-    {
-      69179, // Arcane Torrent
-          0,
-    },
-    // Racial abilities for Paladin class
-    {
       155145, // Arcane Torrent
-          0,
-    },
-    // Racial abilities for Hunter class
-    {
-      80483, // Arcane Torrent
-          0,
-    },
-    // Racial abilities for Rogue class
-    {
-      25046, // Arcane Torrent
-          0,
-    },
-    // Racial abilities for Priest class
-    {
-      28730, // Arcane Torrent
-          0,
-    },
-    // Racial abilities for Death Knight class
-    {
       50613, // Arcane Torrent
-          0,
-    },
-    {     0, },
-    // Racial abilities for Mage class
-    {
       28730, // Arcane Torrent
-          0,
-    },
-    // Racial abilities for Warlock class
-    {
-      28730, // Arcane Torrent
-          0,
-    },
-    // Racial abilities for Monk class
-    {
-      129597, // Arcane Torrent
-          0,
-    },
-    {     0, },
-    // Racial abilities for Demon Hunter class
-    {
+      69179, // Arcane Torrent
+      80483, // Arcane Torrent
+      25046, // Arcane Torrent
       202719, // Arcane Torrent
-          0,
+      129597, // Arcane Torrent
     },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
   },
   // Racial abilities for Draenei
   {
     // Generic racial abilities
     {
+      121093, // Gift of the Naaru
+      59542, // Gift of the Naaru
+      59543, // Gift of the Naaru
+      59544, // Gift of the Naaru
+      59545, // Gift of the Naaru
+      59547, // Gift of the Naaru
+      59548, // Gift of the Naaru
+      28880, // Gift of the Naaru
        6562, // Heroic Presence
       59221, // Shadow Resistance
-          0,
-    },
-    // Racial abilities for Warrior class
-    {
-      28880, // Gift of the Naaru
-          0,
-    },
-    // Racial abilities for Paladin class
-    {
-      59542, // Gift of the Naaru
-          0,
-    },
-    // Racial abilities for Hunter class
-    {
-      59543, // Gift of the Naaru
-          0,
     },
     {     0, },
-    // Racial abilities for Priest class
-    {
-      59544, // Gift of the Naaru
-          0,
-    },
-    // Racial abilities for Death Knight class
-    {
-      59545, // Gift of the Naaru
-          0,
-    },
-    // Racial abilities for Shaman class
-    {
-      59547, // Gift of the Naaru
-          0,
-    },
-    // Racial abilities for Mage class
-    {
-      59548, // Gift of the Naaru
-          0,
-    },
     {     0, },
-    // Racial abilities for Monk class
-    {
-      121093, // Gift of the Naaru
-          0,
-    },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
     {     0, },
     {     0, },
   },
@@ -2875,78 +2731,25 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   },
   // Racial abilities for Worgen
   {
-    {     0, },
-    // Racial abilities for Warrior class
+    // Generic racial abilities
     {
       68976, // Aberration
       94293, // Altered Form
       68992, // Darkflight
       68975, // Viciousness
-    },
-    // Racial abilities for Paladin class
-    {
-      68976, // Aberration
-      94293, // Altered Form
-      68992, // Darkflight
-      68975, // Viciousness
-    },
-    // Racial abilities for Hunter class
-    {
-      68976, // Aberration
-      94293, // Altered Form
-      68992, // Darkflight
-      68975, // Viciousness
-    },
-    // Racial abilities for Rogue class
-    {
-      68976, // Aberration
-      94293, // Altered Form
-      68992, // Darkflight
-      68975, // Viciousness
-    },
-    // Racial abilities for Priest class
-    {
-      68976, // Aberration
-      94293, // Altered Form
-      68992, // Darkflight
-      68975, // Viciousness
-    },
-    // Racial abilities for Death Knight class
-    {
-      68976, // Aberration
-      94293, // Altered Form
-      68992, // Darkflight
-      68975, // Viciousness
-    },
-    // Racial abilities for Shaman class
-    {
-      68976, // Aberration
-      94293, // Altered Form
-      68992, // Darkflight
-      68975, // Viciousness
-    },
-    // Racial abilities for Mage class
-    {
-      68976, // Aberration
-      94293, // Altered Form
-      68992, // Darkflight
-      68975, // Viciousness
-    },
-    // Racial abilities for Warlock class
-    {
-      68976, // Aberration
-      94293, // Altered Form
-      68992, // Darkflight
-      68975, // Viciousness
+          0,
     },
     {     0, },
-    // Racial abilities for Druid class
-    {
-      68976, // Aberration
-      94293, // Altered Form
-      68992, // Darkflight
-      68975, // Viciousness
-    },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
+    {     0, },
     {     0, },
   },
   {
@@ -3028,207 +2831,121 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
     {     0, },
   },
 };
-#define GLYPH_ABILITIES_SIZE (7)
+#define GLYPH_ABILITIES_SIZE (0)
 
-// Glyph spells for classes, wow build 21414
+// Glyph spells for classes, wow build 21491
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
-           0,
     },
     {
-           0,
     },
     {
-           0,
     },
   },
   // Glyph spells for Warrior
   {
     {
-           0,
-    },
-    // Minor Glyphs (7 spells)
-    {
-      115946, // Glyph of Burning Anger
-       58099, // Glyph of Gushing Wound
-      115943, // Glyph of Hawk Feast
-       58104, // Glyph of Mighty Victory
-       68164, // Glyph of Thunder Strike
-      123779, // Glyph of the Blazing Trail
-      146974, // Glyph of the Weaponmaster
     },
     {
-           0,
+    },
+    {
     },
   },
   // Glyph spells for Paladin
   {
     {
-           0,
-    },
-    // Minor Glyphs (4 spells)
-    {
-       57954, // Glyph of Fire From the Heavens
-      146959, // Glyph of Pillar of Light
-       57979, // Glyph of Winged Vengeance
-       89401, // Glyph of the Luminous Charger
-           0,
     },
     {
-           0,
+    },
+    {
     },
   },
   // Glyph spells for Hunter
   {
     {
-           0,
-    },
-    // Minor Glyphs (1 spells)
-    {
-       57870, // Glyph of Lesser Proportion
-           0,
     },
     {
-           0,
+    },
+    {
     },
   },
   // Glyph spells for Rogue
   {
     {
-           0,
-    },
-    // Minor Glyphs (1 spells)
-    {
-       63268, // Glyph of Disguise
-           0,
     },
     {
-           0,
+    },
+    {
     },
   },
   // Glyph spells for Priest
   {
     {
-           0,
-    },
-    // Minor Glyphs (7 spells)
-    {
-      147072, // Glyph of Inspired Hymns
-       57986, // Glyph of Shackle Undead
-      107906, // Glyph of Shadow
-      126745, // Glyph of Shadowy Friends
-      120581, // Glyph of the Heavens
-      147776, // Glyph of the Sha
-      126094, // Glyph of the Val'kyr
     },
     {
-           0,
+    },
+    {
     },
   },
   // Glyph spells for Death Knight
   {
     {
-           0,
-    },
-    // Minor Glyphs (3 spells)
-    {
-       58642, // Glyph of Foul Menagerie
-       58640, // Glyph of the Geist
-      146652, // Glyph of the Skeleton
-           0,
     },
     {
-           0,
+    },
+    {
     },
   },
   // Glyph spells for Shaman
   {
     {
-           0,
-    },
-    // Minor Glyphs (4 spells)
-    {
-       63279, // Glyph of Deluge
-      147784, // Glyph of Lingering Ancestors
-      147783, // Glyph of Spirit Raptors
-       58135, // Glyph of the Spectral Wolf
-           0,
     },
     {
-           0,
+    },
+    {
     },
   },
   // Glyph spells for Mage
   {
     {
-           0,
-    },
-    // Minor Glyphs (3 spells)
-    {
-       56382, // Glyph of Crittermorph
-      146662, // Glyph of Evaporation
-      146976, // Glyph of the Unbound Elemental
-           0,
     },
     {
-           0,
+    },
+    {
     },
   },
   // Glyph spells for Warlock
   {
     {
-           0,
-    },
-    // Minor Glyphs (3 spells)
-    {
-       63312, // Glyph of Crimson Banish
-       56246, // Glyph of Felguard
-       58094, // Glyph of Soulwell
-           0,
     },
     {
-           0,
+    },
+    {
     },
   },
   // Glyph spells for Monk
   {
     {
-           0,
-    },
-    // Minor Glyphs (4 spells)
-    {
-      125931, // Glyph of Crackling Tiger Lightning
-      125872, // Glyph of Fighting Pose
-      125732, // Glyph of Honor
-      125151, // Glyph of Rising Tiger Kick
-           0,
     },
     {
-           0,
+    },
+    {
     },
   },
   // Glyph spells for Druid
   {
     {
-           0,
-    },
-    // Minor Glyphs (4 spells)
-    {
-      131113, // Glyph of the Cheetah
-      114333, // Glyph of the Orca
-      171803, // Glyph of the Sun
-      107059, // Glyph of the Ursol Chameleon
-           0,
     },
     {
-           0,
+    },
+    {
     },
   },
 };
 #define SET_BONUS_DATA_SIZE (518)
 
-// Set bonus data, wow build 21414
+// Set bonus data, wow build 21491
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,              {   0 },    0,   73, 165641, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -3772,7 +3489,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
 };
 #define PERK_SIZE (1)
 
-// Perk specialization abilities, wow build 21414
+// Perk specialization abilities, wow build 21491
 static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   {
     {
@@ -3958,8 +3675,8 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
     },
   },
 };
-// Glyph properties, wow build 21414
-static glyph_property_data_t __glyph_property_data[96] = {
+// Glyph properties, wow build 21491
+static glyph_property_data_t __glyph_property_data[106] = {
   {  1028, 125151 },
   {  1039, 125732 },
   {  1041, 125872 },
@@ -4009,6 +3726,7 @@ static glyph_property_data_t __glyph_property_data[96] = {
   {  1243, 212635 },
   {  1255, 219424 },
   {  1246, 218979 },
+  {   322,  56377 },
   {  1249, 219007 },
   {   328,  56382 },
   {  1250, 219011 },
@@ -4018,8 +3736,10 @@ static glyph_property_data_t __glyph_property_data[96] = {
   {  1239, 212462 },
   {  1257, 219445 },
   {  1240, 212524 },
+  {  1277, 220228 },
   {  1237, 212439 },
   {   432, 107059 },
+  {  1276, 220083 },
   {   440,  57870 },
   {   454,  57979 },
   {   457,  57954 },
@@ -4030,13 +3750,20 @@ static glyph_property_data_t __glyph_property_data[96] = {
   {   488,  58104 },
   {   514,  58640 },
   {   529,  58642 },
+  {  1284, 220831 },
   {  1238, 212451 },
   {  1224, 211899 },
+  {  1281, 220257 },
+  {  1279, 220240 },
   {  1247, 218989 },
   {  1241, 212526 },
   {   613, 114301 },
+  {  1282, 220262 },
   {  1248, 219000 },
+  {  1283, 220279 },
   {   733,  63268 },
+  {  1278, 220226 },
+  {  1280, 220244 },
   {   751,  63279 },
   {   761,  63312 },
   {  1242, 212631 },
@@ -4057,9 +3784,9 @@ static glyph_property_data_t __glyph_property_data[96] = {
   {  1020, 123779 },
   {     0,      0 }
 };
-#define RPPMMOD_SIZE (171)
+#define RPPMMOD_SIZE (169)
 
-// 171 RPPM Modifiers, wow build level 21414
+// 169 RPPM Modifiers, wow build level 21491
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  49530,    4,  1,  1.0000 },
   {  51128,    4,  1,  1.0000 },
@@ -4185,12 +3912,10 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 191048,    4,  1,  1.0000 },
   { 191602,    4,  1,  1.0000 },
   { 191760,    4,  1,  1.0000 },
-  { 191861,    4,  1,  1.0000 },
   { 192623,    4,  1,  1.0000 },
-  { 192630,    4,  1,  1.0000 },
   { 192657,    4,  1,  1.0000 },
   { 192923,    4,  1,  1.0000 },
-  { 194909,    4,  1,  1.0000 },
+  { 193371,    4,  1,  1.0000 },
   { 195255,    4,  1,  1.0000 },
   { 195679,    4,  2,  1.0000 },
   { 196099,    5,  1,  1.0000 },
@@ -4236,7 +3961,7 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
 };
 #define ARTIFACT_SIZE (41)
 
-// Artifact base data, wow build 21414
+// Artifact base data, wow build 21491
 static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
   {  2,  70 },
   {  3, 577 },
@@ -4282,7 +4007,7 @@ static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
 };
 #define ARTIFACT_POWER_SIZE (711)
 
-// Artifact power data, wow build 21414
+// Artifact power data, wow build 21491
 static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] = {
   {   40,   2,  0,   0, "Wake of Ashes"                      }, // Wake of Ashes (id=205273, n_ranks=1)
   {   41,   2,  4,   3, "Highlord's Judgment"                }, // Highlord's Judgment (id=186941, n_ranks=6)
@@ -4418,7 +4143,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1187,  15,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1331,  15,  0,   1, "Ancient Power"                      }, // Ancient Power (id=214810, n_ranks=1)
   { 1359,  15,  0,  20, "The Hungering Maw"                  }, // The Hungering Maw (id=214903, n_ranks=20)
-  {  149,  16,  0,   0, "Apocalypse"                         }, // Apocalypse (id=218143, n_ranks=1)
+  {  149,  16,  0,   0, "Apocalypse"                         }, // Apocalypse (id=220143, n_ranks=1)
   {  150,  16,  1,   1, "The Shambler"                       }, // The Shambler (id=191760, n_ranks=1)
   {  151,  16,  2,   1, "Double Doom"                        }, // Double Doom (id=191741, n_ranks=1)
   {  152,  16,  3,   1, "Scourge of Worlds"                  }, // Scourge of Worlds (id=191747, n_ranks=1)
@@ -4608,7 +4333,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1215,  41,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1351,  41,  0,   1, "Hammer of Storms"                   }, // Hammer of Storms (id=198228, n_ranks=1)
   { 1388,  41,  0,  20, "Earthshattering Blows"              }, // Earthshattering Blows (id=214932, n_ranks=20)
-  { 1102,  42,  0,   0, "Gift of the Queen"                  }, // Gift of the Queen (id=207366, n_ranks=1)
+  { 1102,  42,  0,   0, "Gift of the Queen"                  }, // Gift of the Queen (id=207778, n_ranks=1)
   { 1103,  42,  4,   3, "Tidal Chains"                       }, // Tidal Chains (id=207088, n_ranks=6)
   { 1104,  42,  5,   3, "Lord of Storms"                     }, // Lord of Storms (id=207092, n_ranks=6)
   { 1105,  42,  6,   3, "Pull of the Sea"                    }, // Pull of the Sea (id=207118, n_ranks=6)
@@ -4619,7 +4344,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1110,  42, 11,   3, "Ghost in the Mist"                  }, // Ghost in the Mist (id=207351, n_ranks=6)
   { 1111,  42, 12,   3, "Caress of the Tidemother"           }, // Caress of the Tidemother (id=207354, n_ranks=6)
   { 1112,  42,  0,   1, "Sense of Urgency"                   }, // Sense of Urgency (id=207355, n_ranks=1)
-  { 1113,  42,  0,   1, "Tidal Feedback"                     }, // Tidal Feedback (id=207356, n_ranks=1)
+  { 1113,  42,  0,   1, "Refreshing Currents"                }, // Refreshing Currents (id=207356, n_ranks=1)
   { 1114,  42,  0,   1, "Servant of the Queen"               }, // Servant of the Queen (id=207357, n_ranks=1)
   { 1115,  42,  1,   1, "Tidal Pools"                        }, // Tidal Pools (id=207358, n_ranks=1)
   { 1116,  42,  2,   1, "Decree of the Queen"                }, // Decree of the Queen (id=207360, n_ranks=1)
@@ -4834,7 +4559,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  792,  53, 12,   3, "Jouster"                            }, // Jouster (id=214626, n_ranks=6)
   {  793,  53,  0,   1, "Chain Reaction"                     }, // Chain Reaction (id=195419, n_ranks=1)
   {  794,  53,  0,   1, "Ice Nine"                           }, // Ice Nine (id=214664, n_ranks=1)
-  {  795,  53,  0,   1, "Denial of Service"                  }, // Denial of Service (id=195437, n_ranks=1)
+  {  795,  53,  0,   1, "Icy Hand"                           }, // Icy Hand (id=220817, n_ranks=1)
   {  796,  53,  1,   1, "It's Cold Outside"                  }, // It's Cold Outside (id=214776, n_ranks=1)
   {  797,  53,  2,   1, "Black Ice"                          }, // Black Ice (id=195615, n_ranks=1)
   {  798,  53,  3,   1, "Chilled to the Core"                }, // Chilled to the Core (id=195448, n_ranks=1)
@@ -4998,7 +4723,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
 };
 #define ARTIFACT_POWER_RANK_SIZE (3053)
 
-// Artifact power rank data, wow build 21414
+// Artifact power rank data, wow build 21491
 static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RANK_SIZE] = {
   { 2316,    40,  0, 205273,      0.000 },
   { 2317,    41,  0, 186941,      0.000 },
@@ -5236,11 +4961,11 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 2499,   128,  0, 189870,      0.000 },
   { 2500,   129,  0, 189787,      0.000 },
   { 2501,   130,  0, 189772,      0.000 },
-  { 3424,   130,  1, 189772,      6.000 },
-  { 3425,   130,  2, 189772,     10.000 },
-  { 3426,   130,  3, 189772,     13.000 },
-  { 3427,   130,  4, 189772,     16.000 },
-  { 3428,   130,  5, 189772,     20.000 },
+  { 3424,   130,  1, 189772,      4.000 },
+  { 3425,   130,  2, 189772,      6.000 },
+  { 3426,   130,  3, 189772,      8.000 },
+  { 3427,   130,  4, 189772,     10.000 },
+  { 3428,   130,  5, 189772,     12.000 },
   { 2504,   131,  0, 189768,      0.000 },
   { 3429,   131,  1, 189768,     20.000 },
   { 3430,   131,  2, 189768,     30.000 },
@@ -5253,12 +4978,12 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 3436,   132,  3, 189760,     20.000 },
   { 3437,   132,  4, 189760,     25.000 },
   { 3438,   132,  5, 189760,     30.000 },
-  { 2510,   133,  0, 189757,      0.000 },
-  { 3439,   133,  1, 189757,    -10.000 },
-  { 3440,   133,  2, 189757,    -15.000 },
-  { 3441,   133,  3, 189757,    -20.000 },
-  { 3442,   133,  4, 189757,    -25.000 },
-  { 3443,   133,  5, 189757,    -30.000 },
+  { 2510,   133,  0, 189757,     -3.000 },
+  { 3439,   133,  1, 189757,     -6.000 },
+  { 3440,   133,  2, 189757,    -10.000 },
+  { 3441,   133,  3, 189757,    -13.000 },
+  { 3442,   133,  4, 189757,    -16.000 },
+  { 3443,   133,  5, 189757,    -20.000 },
   { 2513,   134,  0, 189754,      0.000 },
   { 3444,   134,  1, 189754,     -4.000 },
   { 3445,   134,  2, 189754,     -6.000 },
@@ -5285,13 +5010,13 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 3463,   137,  5, 186396,   6000.000 },
   { 2525,   138,  0, 186393,      0.000 },
   { 2526,   139,  0, 186372,      0.000 },
-  { 2527,   140,  0, 186320,      0.000 },
-  { 3464,   140,  1, 186320,      6.000 },
-  { 3465,   140,  2, 186320,     10.000 },
-  { 3466,   140,  3, 186320,     13.000 },
-  { 3467,   140,  4, 186320,     16.000 },
-  { 3468,   140,  5, 186320,     20.000 },
-  { 2530,   149,  0, 218143,      0.000 },
+  { 2527,   140,  0, 186320,      1.000 },
+  { 3464,   140,  1, 186320,      2.000 },
+  { 3465,   140,  2, 186320,      3.000 },
+  { 3466,   140,  3, 186320,      4.000 },
+  { 3467,   140,  4, 186320,      5.000 },
+  { 3468,   140,  5, 186320,      6.000 },
+  { 2530,   149,  0, 220143,      0.000 },
   { 2531,   150,  0, 191760,      0.000 },
   { 2532,   151,  0, 191741,      0.000 },
   { 2533,   152,  0, 191747,      0.000 },
@@ -5431,11 +5156,11 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 3394,   300,  4, 191504,     16.000 },
   { 3395,   300,  5, 191504,     20.000 },
   { 2611,   301,  0, 191740,      0.000 },
-  { 5317,   301,  1, 191740,     10.000 },
-  { 5318,   301,  2, 191740,     15.000 },
-  { 5319,   301,  3, 191740,     20.000 },
-  { 5320,   301,  4, 191740,     25.000 },
-  { 5321,   301,  5, 191740,     30.000 },
+  { 5317,   301,  1, 191740,     20.000 },
+  { 5318,   301,  2, 191740,     30.000 },
+  { 5319,   301,  3, 191740,     40.000 },
+  { 5320,   301,  4, 191740,     50.000 },
+  { 5321,   301,  5, 191740,     60.000 },
   { 2614,   302,  0, 191569,      0.000 },
   { 3401,   302,  1, 191569,     30.000 },
   { 3402,   302,  2, 191569,     45.000 },
@@ -5461,11 +5186,11 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 5504,   305,  4, 191582,     22.000 },
   { 5505,   305,  5, 191582,     20.000 },
   { 2626,   306,  0, 191598,      0.000 },
-  { 3419,   306,  1, 191598,      6.000 },
-  { 3420,   306,  2, 191598,     10.000 },
-  { 3421,   306,  3, 191598,     13.000 },
-  { 3422,   306,  4, 191598,     16.000 },
-  { 3423,   306,  5, 191598,     20.000 },
+  { 3419,   306,  1, 191598,     10.000 },
+  { 3420,   306,  2, 191598,     15.000 },
+  { 3421,   306,  3, 191598,     20.000 },
+  { 3422,   306,  4, 191598,     25.000 },
+  { 3423,   306,  5, 191598,     30.000 },
   { 2629,   307,  0, 204147,      0.000 },
   { 2630,   308,  0, 204219,      0.000 },
   { 2631,   309,  0, 191328,      0.000 },
@@ -5657,11 +5382,11 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 3174,   765,  0, 194024,      0.000 },
   { 3175,   766,  0, 194026,      0.000 },
   { 3176,   767,  0, 194093,      0.000 },
-  { 3286,   767,  1, 194093,     20.000 },
-  { 3287,   767,  2, 194093,     30.000 },
-  { 3288,   767,  3, 194093,     40.000 },
-  { 3289,   767,  4, 194093,     50.000 },
-  { 3290,   767,  5, 194093,     60.000 },
+  { 3286,   767,  1, 194093,     30.000 },
+  { 3287,   767,  2, 194093,     45.000 },
+  { 3288,   767,  3, 194093,     60.000 },
+  { 3289,   767,  4, 194093,     75.000 },
+  { 3290,   767,  5, 194093,     90.000 },
   { 3177,   768,  0, 193371,      0.000 },
   { 3178,   769,  0, 194179,      0.000 },
   { 3179,   770,  0, 194378,      0.000 },
@@ -5672,17 +5397,17 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 3197,   771,  4, 193642, -50000.000 },
   { 3198,   771,  5, 193642, -60000.000 },
   { 3181,   772,  0, 193643,      0.000 },
-  { 3251,   772,  1, 193643,      6.000 },
-  { 3252,   772,  2, 193643,     10.000 },
-  { 3253,   772,  3, 193643,     13.000 },
-  { 3254,   772,  4, 193643,     16.000 },
-  { 3255,   772,  5, 193643,     20.000 },
+  { 3251,   772,  1, 193643,     10.000 },
+  { 3252,   772,  2, 193643,     15.000 },
+  { 3253,   772,  3, 193643,     20.000 },
+  { 3254,   772,  4, 193643,     25.000 },
+  { 3255,   772,  5, 193643,     30.000 },
   { 3182,   773,  0, 193644,      0.000 },
-  { 3256,   773,  1, 193644,      6.000 },
-  { 3257,   773,  2, 193644,     10.000 },
-  { 3258,   773,  3, 193644,     13.000 },
-  { 3259,   773,  4, 193644,     16.000 },
-  { 3260,   773,  5, 193644,     20.000 },
+  { 3256,   773,  1, 193644,     12.000 },
+  { 3257,   773,  2, 193644,     18.000 },
+  { 3258,   773,  3, 193644,     24.000 },
+  { 3259,   773,  4, 193644,     30.000 },
+  { 3260,   773,  5, 193644,     36.000 },
   { 3183,   774,  0, 193645,      0.000 },
   { 3261,   774,  1, 193645,      6.000 },
   { 3262,   774,  2, 193645,     10.000 },
@@ -5702,11 +5427,11 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 3274,   776,  4, 194002,      5.000 },
   { 3275,   776,  5, 194002,      6.000 },
   { 3186,   777,  0, 194007,      0.000 },
-  { 3276,   777,  1, 194007,      6.000 },
-  { 3277,   777,  2, 194007,     10.000 },
-  { 3278,   777,  3, 194007,     13.000 },
-  { 3279,   777,  4, 194007,     16.000 },
-  { 3280,   777,  5, 194007,     20.000 },
+  { 3276,   777,  1, 194007,     10.000 },
+  { 3277,   777,  2, 194007,     15.000 },
+  { 3278,   777,  3, 194007,     20.000 },
+  { 3279,   777,  4, 194007,     25.000 },
+  { 3280,   777,  5, 194007,     30.000 },
   { 3187,   778,  0, 194016,      0.000 },
   { 3281,   778,  1, 194016,     10.000 },
   { 3282,   778,  2, 194016,     15.000 },
@@ -5771,7 +5496,7 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 3835,   792,  5, 214626,    -24.000 },
   { 3836,   793,  0, 195419,      0.000 },
   { 5584,   794,  0, 214664,      0.000 },
-  { 3837,   795,  0, 195437,      0.000 },
+  { 3837,   795,  0, 220817,      0.000 },
   { 5618,   796,  0, 214776,      0.000 },
   { 5615,   797,  0, 195615,      0.000 },
   { 3838,   798,  0, 195448,      0.000 },
@@ -6561,30 +6286,30 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 4961,  1035,  3, 203018,     20.000 },
   { 4962,  1035,  4, 203018,     25.000 },
   { 4963,  1035,  5, 203018,     30.000 },
-  { 4677,  1036,  0, 202384,      3.000 },
-  { 4678,  1036,  1, 202384,      6.000 },
-  { 4679,  1036,  2, 202384,     10.000 },
-  { 4680,  1036,  3, 202384,     13.000 },
-  { 4681,  1036,  4, 202384,     16.000 },
-  { 4682,  1036,  5, 202384,     20.000 },
-  { 4683,  1037,  0, 202386,      3.000 },
-  { 4684,  1037,  1, 202386,      6.000 },
-  { 4685,  1037,  2, 202386,     10.000 },
-  { 4686,  1037,  3, 202386,     13.000 },
-  { 4687,  1037,  4, 202386,     16.000 },
-  { 4688,  1037,  5, 202386,     20.000 },
-  { 4689,  1038,  0, 202426,      3.000 },
-  { 4690,  1038,  1, 202426,      6.000 },
-  { 4691,  1038,  2, 202426,     10.000 },
-  { 4692,  1038,  3, 202426,     13.000 },
-  { 4693,  1038,  4, 202426,     16.000 },
-  { 4694,  1038,  5, 202426,     20.000 },
-  { 4695,  1039,  0, 202433,     10.000 },
-  { 4696,  1039,  1, 202433,     20.000 },
-  { 4697,  1039,  2, 202433,     30.000 },
-  { 4698,  1039,  3, 202433,     40.000 },
-  { 4699,  1039,  4, 202433,     50.000 },
-  { 4700,  1039,  5, 202433,     60.000 },
+  { 4677,  1036,  0, 202384,      5.000 },
+  { 4678,  1036,  1, 202384,     10.000 },
+  { 4679,  1036,  2, 202384,     15.000 },
+  { 4680,  1036,  3, 202384,     20.000 },
+  { 4681,  1036,  4, 202384,     25.000 },
+  { 4682,  1036,  5, 202384,     30.000 },
+  { 4683,  1037,  0, 202386,      5.000 },
+  { 4684,  1037,  1, 202386,     10.000 },
+  { 4685,  1037,  2, 202386,     15.000 },
+  { 4686,  1037,  3, 202386,     20.000 },
+  { 4687,  1037,  4, 202386,     25.000 },
+  { 4688,  1037,  5, 202386,     30.000 },
+  { 4689,  1038,  0, 202426,      5.000 },
+  { 4690,  1038,  1, 202426,     10.000 },
+  { 4691,  1038,  2, 202426,     15.000 },
+  { 4692,  1038,  3, 202426,     20.000 },
+  { 4693,  1038,  4, 202426,     25.000 },
+  { 4694,  1038,  5, 202426,     30.000 },
+  { 4695,  1039,  0, 202433,      6.000 },
+  { 4696,  1039,  1, 202433,     12.000 },
+  { 4697,  1039,  2, 202433,     18.000 },
+  { 4698,  1039,  3, 202433,     24.000 },
+  { 4699,  1039,  4, 202433,     30.000 },
+  { 4700,  1039,  5, 202433,     36.000 },
   { 4701,  1040,  0, 202445,     15.000 },
   { 4702,  1040,  1, 202445,     30.000 },
   { 4703,  1040,  2, 202445,     45.000 },
@@ -6773,7 +6498,7 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 4906,  1101,  3, 207352,     20.000 },
   { 4907,  1101,  4, 207352,     25.000 },
   { 4908,  1101,  5, 207352,     30.000 },
-  { 4909,  1102,  0, 207366,      0.000 },
+  { 4909,  1102,  0, 207778,      0.000 },
   { 4910,  1103,  0, 207088,     10.000 },
   { 4925,  1103,  1, 207088,     20.000 },
   { 4926,  1103,  2, 207088,     30.000 },
