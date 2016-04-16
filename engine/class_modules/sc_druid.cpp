@@ -29,7 +29,6 @@ namespace { // UNNAMED NAMESPACE
   Shooting Stars AsP react
   Check Echoing Stars
   Check Fury of Elune
-  Full Moon AoE & splits damage
 
   Touch of the Moon
   Light of the Sun
@@ -4667,6 +4666,8 @@ struct full_moon_t : public druid_spell_t
   {
     parse_options( options_str );
 
+    aoe = -1;
+    split_aoe_damage = true; // Apr 16 2016: Splits AoE damage even though tooltip does not say so.
     cooldown = player -> cooldown.moon_cd;
     ap_per_cast = data().effectN( 2 ).resource( RESOURCE_ASTRAL_POWER ); // TOCHECK
   }
