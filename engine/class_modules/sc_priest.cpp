@@ -2676,11 +2676,13 @@ struct mind_blast_t final : public priest_spell_t
 {
 private:
   double insanity_gain;
+  bool casted_with_shadowy_insight;
 
 public:
   mind_blast_t( priest_t& player, const std::string& options_str )
     : priest_spell_t( "mind_blast", player,
-                      player.find_class_spell( "Mind Blast" ) )
+                      player.find_class_spell( "Mind Blast" ) ),
+                      casted_with_shadowy_insight( false ) 
   {
     parse_options( options_str );
     is_mind_spell = true;
@@ -2711,6 +2713,13 @@ public:
     cooldown -> hasted = true;
   }
 
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    casted_with_shadowy_insight = false;
+  }
+
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
@@ -2729,9 +2738,33 @@ public:
 
   void schedule_execute( action_state_t* state = nullptr ) override
   {
-    priest_spell_t::schedule_execute( state );
+    if (priest.buffs.shadowy_insight->up())
+    {
+      casted_with_shadowy_insight = true;
+    }
+
+    priest_spell_t::schedule_execute(state);
 
     priest.buffs.shadowy_insight->expire();
+  }
+
+  timespan_t execute_time() const override
+  {
+    if (priest.buffs.shadowy_insight->check())
+    {
+      return timespan_t::zero();
+    }
+
+    timespan_t et = priest_spell_t::execute_time();
+
+    return et;
+  }
+
+  void reset() override
+  {
+    priest_spell_t::reset();
+
+    casted_with_shadowy_insight = false;
   }
 
   void update_ready( timespan_t cd_duration ) override
@@ -6541,9 +6574,8 @@ void priest_t::create_buffs()
           .chance( talents.surge_of_light->effectN( 1 ).percent() );
 
   buffs.shadowy_insight =
-      buff_creator_t( this, "shadowy_insight" )
-          .spell( talents.shadowy_insight )
-          .chance( talents.shadowy_insight->effectN( 4 ).percent() );
+      buff_creator_t(this, "shadowy_insight")
+          .spell(talents.shadowy_insight);
 
   buffs.void_ray = buff_creator_t( this, "void_ray" )
                        .spell( talents.void_ray->effectN( 1 ).trigger() );
