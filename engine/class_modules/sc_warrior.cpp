@@ -61,113 +61,95 @@ public:
   // Buffs
   struct buffs_t
   {
-    buff_t* fury_trinket;
-    buff_t* bounding_stride;
-    buff_t* massacre;
-    buff_t* frothing_berserker;
-    buff_t* meat_grinder;
-    buff_t* berserking; // Artifact Weapon
-    buff_t* berserking_driver;
-    buff_t* sense_death;
-    buff_t* juggernaut;
-    buff_t* odyns_champion;
-    // All Warriors
-    buff_t* berserker_rage;
-    buff_t* bladestorm;
-    buff_t* charge_movement;
-    buff_t* heroic_leap_movement;
-    buff_t* intervene_movement;
-    // Arms and Fury
     buff_t* avatar;
     buff_t* battle_cry;
+    buff_t* berserker_rage;
+    buff_t* berserking;
+    buff_t* berserking_driver;
+    buff_t* bladestorm;
+    buff_t* bounding_stride;
+    buff_t* charge_movement;
+    buff_t* cleave;
     buff_t* commanding_shout;
+    buff_t* corrupted_blood_of_zakajz;
+    buff_t* defensive_stance;
     buff_t* die_by_the_sword;
     buff_t* dragon_roar;
-    buff_t* overpower;
-    buff_t* ravager;
-    // Fury Only
     buff_t* enrage;
-    buff_t* frenzy;
-    buff_t* meat_cleaver;
-    buff_t* taste_for_blood;
-    buff_t* wrecking_ball;
-    // Arms only
-    buff_t* corrupted_blood_of_zakajz;
-    buff_t* cleave;
     buff_t* focused_rage;
-    buff_t* precise_strikes;
-    buff_t* shattered_defenses;
-    // Prot only
+    buff_t* frenzy;
+    buff_t* frothing_berserker;
+    buff_t* fury_trinket;
+    buff_t* heroic_leap_movement;
+    buff_t* intervene_movement;
+    buff_t* juggernaut;
     buff_t* last_stand;
+    buff_t* massacre;
+    buff_t* meat_cleaver;
+    buff_t* meat_grinder;
+    buff_t* odyns_champion;
+    buff_t* overpower;
+    buff_t* precise_strikes;
+    buff_t* ravager;
     buff_t* ravager_protection;
+    buff_t* sense_death;
+    buff_t* shattered_defenses;
     buff_t* shield_block;
     buff_t* shield_wall;
     buff_t* sword_and_board;
-    // Arms and Prot
-    buff_t* defensive_stance;
-
-    // Tier bonuses
+    buff_t* taste_for_blood;
     buff_t* tier17_2pc_arms;
     buff_t* tier17_4pc_fury;
     buff_t* tier17_4pc_fury_driver;
+    buff_t* wrecking_ball;
   } buff;
 
   // Cooldowns
   struct cooldowns_t
   {
-    cooldown_t* enraged_regeneration;
-    // All Warriors
-    cooldown_t* charge;
-    cooldown_t* heroic_leap;
-    // Talents
-    cooldown_t* shockwave;
-    cooldown_t* bladestorm;
-    cooldown_t* odyns_fury;
-    cooldown_t* storm_bolt;
     cooldown_t* avatar;
-    cooldown_t* dragon_roar;
-    cooldown_t* raging_blow;
-    cooldown_t* berserker_rage;
-    cooldown_t* bloodthirst;
-    // Fury And Arms
     cooldown_t* battle_cry;
-    // Arms only
+    cooldown_t* berserker_rage;
+    cooldown_t* bladestorm;
+    cooldown_t* bloodthirst;
+    cooldown_t* charge;
     cooldown_t* colossus_smash;
-    cooldown_t* mortal_strike;
-    // Prot Only
     cooldown_t* demoralizing_shout;
+    cooldown_t* dragon_roar;
+    cooldown_t* enraged_regeneration;
+    cooldown_t* heroic_leap;
     cooldown_t* last_stand;
+    cooldown_t* mortal_strike;
+    cooldown_t* odyns_fury;
     cooldown_t* rage_from_crit_block;
+    cooldown_t* raging_blow;
     cooldown_t* revenge;
     cooldown_t* revenge_reset;
     cooldown_t* shield_slam;
     cooldown_t* shield_wall;
+    cooldown_t* shockwave;
+    cooldown_t* storm_bolt;
   } cooldown;
 
   // Gains
   struct gains_t
   {
-    // All Warriors
     gain_t* avoided_attacks;
-    gain_t* charge;
-    gain_t* melee_main_hand;
-    // Fury Only
-    gain_t* bloodthirst;
-    gain_t* melee_off_hand;
-    gain_t* raging_blow;
     gain_t* battle_cry;
-    // Arms Only
+    gain_t* bloodthirst;
+    gain_t* charge;
+    gain_t* critical_block;
+    gain_t* fervor_of_battle;
     gain_t* in_for_the_kill;
     gain_t* melee_crit;
-    gain_t* fervor_of_battle;
-    gain_t* will_of_the_first_king;
-    // Prot Only
-    gain_t* critical_block;
+    gain_t* melee_main_hand;
+    gain_t* melee_off_hand;
+    gain_t* raging_blow;
     gain_t* revenge;
     gain_t* shield_slam;
     gain_t* sword_and_board;
-    // Tier bonuses
     gain_t* tier17_4pc_arms;
+    gain_t* will_of_the_first_king;
   } gain;
 
   // Spells
@@ -177,10 +159,10 @@ public:
     const spell_data_t* colossus_smash_debuff;
     const spell_data_t* defensive_stance;
     const spell_data_t* fervor_of_battle;
-    const spell_data_t* indomitable;
-    const spell_data_t* intervene;
     const spell_data_t* headlong_rush;
     const spell_data_t* heroic_leap;
+    const spell_data_t* indomitable;
+    const spell_data_t* intervene;
     const spell_data_t* overpower_driver;
     const spell_data_t* revenge_trigger;
     const spell_data_t* t17_prot_2p;
@@ -189,9 +171,9 @@ public:
   // Mastery
   struct mastery_t
   {
+    const spell_data_t* colossal_might; //Arms
     const spell_data_t* critical_block; //Protection
     const spell_data_t* unshackled_fury; //Fury
-    const spell_data_t* colossal_might; //Arms
   } mastery;
 
   // Procs
@@ -208,141 +190,136 @@ public:
 
   struct realppm_t
   {
+    std::unique_ptr<real_ppm_t> odyns_champion;
     std::unique_ptr<real_ppm_t> overpower;
     std::unique_ptr<real_ppm_t> rage_of_the_valarjar;
     std::unique_ptr<real_ppm_t> wrecking_ball;
-    std::unique_ptr<real_ppm_t> odyns_champion;
   } rppm;
 
   // Spec Passives
   struct spec_t
   {
-    //All specs
-    const spell_data_t* execute;
-    //Arms only
+    const spell_data_t* bastion_of_defense;
+    const spell_data_t* battle_cry;
+    const spell_data_t* bladed_armor;
+    const spell_data_t* bloodthirst;
     const spell_data_t* cleave;
     const spell_data_t* colossus_smash;
-    const spell_data_t* hamstring;
-    const spell_data_t* mortal_strike;
-    const spell_data_t* seasoned_soldier;
-    const spell_data_t* slam;
-    const spell_data_t* tactician;
-    //Arms and Fury
-    const spell_data_t* die_by_the_sword;
     const spell_data_t* commanding_shout;
-    const spell_data_t* battle_cry;
-    const spell_data_t* whirlwind;
-    //Fury only
-    const spell_data_t* bloodthirst;
-    const spell_data_t* enrage;
-    const spell_data_t* enraged_regeneration;
-    const spell_data_t* furious_slash;
-    const spell_data_t* meat_cleaver;
-    const spell_data_t* piercing_howl;
-    const spell_data_t* raging_blow;
-    const spell_data_t* rampage;
-    const spell_data_t* singleminded_fury;
-    const spell_data_t* titans_grip;
-    //Prot only
-    const spell_data_t* bastion_of_defense;
-    const spell_data_t* bladed_armor;
     const spell_data_t* deep_wounds;
     const spell_data_t* demoralizing_shout;
     const spell_data_t* devastate;
+    const spell_data_t* die_by_the_sword;
+    const spell_data_t* enrage;
+    const spell_data_t* enraged_regeneration;
+    const spell_data_t* execute;
     const spell_data_t* focused_rage;
+    const spell_data_t* furious_slash;
+    const spell_data_t* hamstring;
     const spell_data_t* last_stand;
+    const spell_data_t* meat_cleaver;
+    const spell_data_t* mortal_strike;
+    const spell_data_t* piercing_howl;
     const spell_data_t* protection; // Weird spec passive that increases damage of bladestorm/execute.
+    const spell_data_t* raging_blow;
+    const spell_data_t* rampage;
     const spell_data_t* resolve;
     const spell_data_t* revenge;
     const spell_data_t* riposte;
+    const spell_data_t* seasoned_soldier;
     const spell_data_t* shield_block;
     const spell_data_t* shield_slam;
     const spell_data_t* shield_wall;
+    const spell_data_t* singleminded_fury;
+    const spell_data_t* slam;
     const spell_data_t* sword_and_board;
+    const spell_data_t* tactician;
     const spell_data_t* thunder_clap;
+    const spell_data_t* titans_grip;
     const spell_data_t* unwavering_sentinel;
+    const spell_data_t* whirlwind;
   } spec;
 
   // Talents
   struct talents_t
   {
-    const spell_data_t* war_machine;
+    const spell_data_t* dauntless;
     const spell_data_t* endless_rage;
     const spell_data_t* fresh_meat;
-    const spell_data_t* dauntless;
     const spell_data_t* overpower;
     const spell_data_t* sweeping_strikes;
+    const spell_data_t* war_machine;
     const spell_data_t* warbringer;
 
-    const spell_data_t* shockwave;
-    const spell_data_t* storm_bolt;
     const spell_data_t* double_time;
     const spell_data_t* inspiring_presence;
+    const spell_data_t* shockwave;
+    const spell_data_t* storm_bolt;
 
-    const spell_data_t* wrecking_ball;
-    const spell_data_t* outburst;
     const spell_data_t* avatar;
     const spell_data_t* fervor_of_battle;
+    const spell_data_t* outburst;
     const spell_data_t* rend;
     const spell_data_t* renewed_fury; //
     const spell_data_t* ultimatum; //
+    const spell_data_t* wrecking_ball;
 
-    const spell_data_t* furious_charge; //
     const spell_data_t* bounding_stride;
-    const spell_data_t* warpaint; //
-    const spell_data_t* second_wind; //
-    const spell_data_t* die_by_the_sword; //
-    const spell_data_t* vigilance; //
     const spell_data_t* crackling_thunder; //
+    const spell_data_t* die_by_the_sword; //
+    const spell_data_t* furious_charge; //
+    const spell_data_t* second_wind; //
+    const spell_data_t* vigilance; //
+    const spell_data_t* warpaint; //
 
-    const spell_data_t* massacre;
-    const spell_data_t* frothing_berserker;
-    const spell_data_t* bladestorm;
-    const spell_data_t* in_for_the_kill;
-    const spell_data_t* mortal_combo;
     const spell_data_t* best_served_cold; //
-    const spell_data_t* never_surrender; //
+    const spell_data_t* bladestorm;
+    const spell_data_t* frothing_berserker;
+    const spell_data_t* in_for_the_kill;
     const spell_data_t* indomitable; //
+    const spell_data_t* massacre;
+    const spell_data_t* mortal_combo;
+    const spell_data_t* never_surrender; //
 
-    const spell_data_t* meat_grinder;
+    const spell_data_t* booming_voice;
+    const spell_data_t* focused_rage;
     const spell_data_t* frenzy;
     const spell_data_t* inner_rage;
-    const spell_data_t* focused_rage;
-    const spell_data_t* trauma;
-    const spell_data_t* titanic_might;
-    const spell_data_t* vengeance;
     const spell_data_t* into_the_fray;
-    const spell_data_t* booming_voice;
+    const spell_data_t* meat_grinder;
+    const spell_data_t* titanic_might;
+    const spell_data_t* trauma;
+    const spell_data_t* vengeance;
 
-    const spell_data_t* carnage;
-    const spell_data_t* reckless_abandon;
-    const spell_data_t* dragon_roar;
     const spell_data_t* anger_management;
+    const spell_data_t* carnage;
+    const spell_data_t* dragon_roar;
+    const spell_data_t* heavy_repercussions;
     const spell_data_t* opportunity_strikes;
     const spell_data_t* ravager;
-    const spell_data_t* heavy_repercussions;
+    const spell_data_t* reckless_abandon;
   } talents;
 
   // Artifacts
   struct artifact_spell_data_t
   {
     // Arms - Strom'kar the Warbreaker
-    artifact_power_t corrupted_rage;
-    artifact_power_t exploit_the_weakness;
-    artifact_power_t war_veteran;
-    artifact_power_t shattered_defenses;
-    artifact_power_t deathblow;
-    artifact_power_t one_against_many;
-    artifact_power_t crushing_blows;
-    artifact_power_t thoradins_might;
-    artifact_power_t void_cleave;
-    artifact_power_t precise_strikes;
-    artifact_power_t focus_in_battle;
-    artifact_power_t unending_rage;
     artifact_power_t corrupted_blood_of_zakajz;
+    artifact_power_t corrupted_rage;
+    artifact_power_t crushing_blows;
+    artifact_power_t deathblow;
+    artifact_power_t exploit_the_weakness;
+    artifact_power_t focus_in_battle;
+    artifact_power_t many_will_fall;
+    artifact_power_t one_against_many;
+    artifact_power_t precise_strikes;
+    artifact_power_t shattered_defenses;
+    artifact_power_t thoradins_might;
+    artifact_power_t unending_rage;
+    artifact_power_t void_cleave;
+    artifact_power_t war_veteran;
     artifact_power_t warbreaker;
     artifact_power_t will_of_the_first_king;
-    artifact_power_t many_will_fall;
 
     artifact_power_t battle_scars;
     artifact_power_t bloodcraze;
@@ -392,9 +369,7 @@ public:
     warrior_fixed_time = true;
     base.distance = 5.0;
 
-    fury_trinket = nullptr;
-    arms_trinket = nullptr;
-    prot_trinket = nullptr;
+    fury_trinket = arms_trinket = prot_trinket = nullptr;
     regen_type = REGEN_DISABLED;
   }
 
@@ -726,7 +701,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     }
     if ( special && p() -> buff.odyns_champion -> up() )
     {
-      odyns_champion( timespan_t::from_seconds( p() -> buff.odyns_champion -> default_chance ) );
+      odyns_champion( timespan_t::from_seconds( -1.0 * p() -> artifact.odyns_champion.data().effectN( 1 ).base_value() ) );
     }
   }
 
@@ -2109,6 +2084,7 @@ struct raging_blow_t: public warrior_attack_t
     add_child( oh_attack );
     cooldown -> duration += p -> talents.inner_rage -> effectN( 1 ).time_value();
     weapon_multiplier *= 1.0 + p -> talents.inner_rage -> effectN( 3 ).percent();
+    weapon_multiplier *= 1.0 + p -> artifact.wrath_and_fury.percent();
   }
 
   void impact( action_state_t* s ) override
@@ -2264,6 +2240,7 @@ struct rampage_attack_t: public warrior_attack_t
     warrior_attack_t( name, p, rampage )
   {
     dual = true;
+    weapon_multiplier *= 1.0 + p -> artifact.unstoppable.percent();
     base_aoe_multiplier = 0.5; // No spelldata for this, only matters when Meat Grinder is talented. 
   }
 
@@ -2272,12 +2249,6 @@ struct rampage_attack_t: public warrior_attack_t
     if ( p() -> buff.meat_grinder -> up() )
       return 5;
     return 1;
-  }
-
-  double action_multiplier() const override
-  {
-    double dam = warrior_attack_t::action_multiplier();
-    return dam;
   }
 };
 
@@ -2338,8 +2309,6 @@ struct rampage_parent_t: public warrior_attack_t
     warrior_attack_t( "rampage", p, p -> spec.rampage )
   {
     parse_options( options_str );
-    weapon = &( p -> main_hand_weapon );
-    weapon_multiplier *= 1.0 + p -> artifact.unstoppable.percent();
     for ( size_t i = 0; i < p -> rampage_attacks.size(); i++ )
     {
       add_child( p -> rampage_attacks[i] );
@@ -2370,10 +2339,7 @@ struct rampage_parent_t: public warrior_attack_t
       p() -> buff.odyns_champion -> trigger();
     }
 
-    if ( result_is_hit( execute_state -> result ) ) // If the first attack fails to land, the rest do too. 
-    {
-      p() -> rampage_driver = new ( *sim ) rampage_event_t( p(), 0 );
-    }
+    p() -> rampage_driver = new ( *sim ) rampage_event_t( p(), 0 );
   }
 
   bool ready() override
@@ -2393,8 +2359,7 @@ struct ravager_tick_t: public warrior_attack_t
     warrior_attack_t( name, p, p -> find_spell( 156287 ) )
   {
     aoe = -1;
-    dual = true;
-    ground_aoe = true;
+    dual = ground_aoe = true;
   }
 };
 
@@ -2744,6 +2709,16 @@ struct whirlwind_off_hand_t: public warrior_attack_t
   {
     aoe = -1;
   }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    if ( p() -> buff.wrecking_ball -> check() )
+      am *= 1.0 + p() -> buff.wrecking_ball -> data().effectN( 2 ).percent();
+
+    return am;
+  }
 };
 
 struct whirlwind_mh_t: public warrior_attack_t
@@ -2752,6 +2727,7 @@ struct whirlwind_mh_t: public warrior_attack_t
     warrior_attack_t( "whirlwind_mh", p, whirlwind )
   {
     aoe = -1;
+    weapon_multiplier *= 1.0 + p -> artifact.many_will_fall.percent();
   }
 
   void impact( action_state_t* s ) override
@@ -2774,6 +2750,9 @@ struct whirlwind_mh_t: public warrior_attack_t
 
     am *= 1.0 + p() -> buff.cleave -> check_value();
 
+    if ( p() -> buff.wrecking_ball -> up() )
+      am *= 1.0 + p() -> buff.wrecking_ball -> data().effectN( 2 ).percent();
+
     return am;
   }
 };
@@ -2785,8 +2764,7 @@ struct whirlwind_parent_t: public warrior_attack_t
   timespan_t spin_time;
   whirlwind_parent_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "whirlwind", p, p -> spec.whirlwind ),
-    oh_attack( nullptr ),
-    mh_attack( nullptr ),
+    oh_attack( nullptr ), mh_attack( nullptr ),
     spin_time( timespan_t::from_millis( p -> specialization() == WARRIOR_ARMS ? p -> spec.whirlwind -> effectN( 2 ).misc_value1() :
                                                                               p -> spec.whirlwind -> effectN( 3 ).misc_value1() ) )
   {
@@ -2799,11 +2777,13 @@ struct whirlwind_parent_t: public warrior_attack_t
       {
         mh_attack = new whirlwind_mh_t( p, data().effectN( 1 ).trigger() );
         mh_attack -> weapon = &( p -> main_hand_weapon );
+        mh_attack -> radius = radius;
         add_child( mh_attack );
         if ( p -> off_hand_weapon.type != WEAPON_NONE )
         {
           oh_attack = new whirlwind_off_hand_t( p, data().effectN( 2 ).trigger() );
           oh_attack -> weapon = &( p -> off_hand_weapon );
+          oh_attack -> radius = radius;
           add_child( oh_attack );
         }
       }
@@ -2811,6 +2791,7 @@ struct whirlwind_parent_t: public warrior_attack_t
       {
         mh_attack = new whirlwind_mh_t( p, data().effectN( 1 ).trigger() );
         mh_attack -> weapon = &( p -> main_hand_weapon );
+        mh_attack -> radius = radius;
         add_child( mh_attack );
       }
     }
@@ -2818,7 +2799,6 @@ struct whirlwind_parent_t: public warrior_attack_t
     callbacks = hasted_ticks = false;
     base_tick_time = spin_time;
     dot_duration = base_tick_time * 2;
-    weapon_multiplier *= 1.0 + p -> artifact.many_will_fall.percent();
   }
 
   double cost() const override
@@ -2827,16 +2807,6 @@ struct whirlwind_parent_t: public warrior_attack_t
       return 0;
 
     return warrior_attack_t::cost();
-  }
-
-  double action_multiplier() const override
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    if ( p() -> buff.wrecking_ball -> check() )
-      am *= 1.0 + p() -> buff.wrecking_ball -> data().effectN( 2 ).percent();
-
-    return am;
   }
 
   void tick( dot_t* d ) override
@@ -3140,8 +3110,7 @@ struct taunt_t: public warrior_spell_t
     warrior_spell_t( "taunt", p, p -> find_class_spell( "Taunt" ) )
   {
     parse_options( options_str );
-    use_off_gcd = true;
-    ignore_false_positive = true;
+    use_off_gcd = ignore_false_positive = true;
   }
 
   void impact( action_state_t* s ) override
@@ -3398,11 +3367,6 @@ void warrior_t::init_spells()
     third -> weapon = &( this -> main_hand_weapon );
     fourth -> weapon = &( this -> off_hand_weapon );
     fifth -> weapon = &( this -> main_hand_weapon );
-    first -> weapon_multiplier *= 1.0 + artifact.unstoppable.percent();
-    second -> weapon_multiplier *= 1.0 + artifact.unstoppable.percent();
-    third -> weapon_multiplier *= 1.0 + artifact.unstoppable.percent();
-    fourth -> weapon_multiplier *= 1.0 + artifact.unstoppable.percent();
-    fifth -> weapon_multiplier *= 1.0 + artifact.unstoppable.percent();
     this -> rampage_attacks.push_back( first );
     this -> rampage_attacks.push_back( second );
     this -> rampage_attacks.push_back( third );
@@ -3994,7 +3958,8 @@ void warrior_t::create_buffs()
     .cd( timespan_t::zero() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buff.berserker_rage = buff_creator_t( this, "berserker_rage", find_class_spell( "Berserker Rage" ) );
+  buff.berserker_rage = buff_creator_t( this, "berserker_rage", find_class_spell( "Berserker Rage" ) )
+    .cd( timespan_t::zero() );
 
   buff.frothing_berserker = buff_creator_t( this, "frothing_berserker", talents.frothing_berserker -> effectN( 1 ).trigger() )
     .default_value( talents.frothing_berserker -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
@@ -4034,7 +3999,8 @@ void warrior_t::create_buffs()
 
   buff.dragon_roar = buff_creator_t( this, "dragon_roar", talents.dragon_roar )
     .default_value( talents.dragon_roar -> effectN( 2 ).percent() )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    .cd( timespan_t::zero() );
 
   buff.enrage = new buffs::enrage_t( *this, "enrage", spec.enrage -> effectN( 2 ).trigger() );
 
@@ -4050,7 +4016,8 @@ void warrior_t::create_buffs()
     .chance( talents.meat_grinder -> ok() );
 
   buff.focused_rage = buff_creator_t( this, "focused_rage", specialization() == WARRIOR_ARMS ? talents.focused_rage : spec.focused_rage )
-    .default_value( specialization() == WARRIOR_ARMS ? talents.focused_rage -> effectN( 1 ).percent() : spec.focused_rage -> effectN( 1 ).percent() );
+    .default_value( specialization() == WARRIOR_ARMS ? talents.focused_rage -> effectN( 1 ).percent() : spec.focused_rage -> effectN( 1 ).percent() )
+    .cd( timespan_t::zero() );
 
   buff.last_stand = new buffs::last_stand_t( *this, "last_stand", spec.last_stand );
 
@@ -4080,8 +4047,7 @@ void warrior_t::create_buffs()
   buff.juggernaut = buff_creator_t( this, "juggernaut", artifact.juggernaut.data().effectN( 1 ).trigger() )
     .default_value( artifact.juggernaut.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
-  buff.odyns_champion = buff_creator_t( this, "odyns_champion", artifact.odyns_champion.data().effectN( 1 ).trigger() )
-    .default_value( artifact.odyns_champion.data().effectN( 1 ).base_value() );
+  buff.odyns_champion = buff_creator_t( this, "odyns_champion", artifact.odyns_champion.data().effectN( 1 ).trigger() );
 
   buff.battle_cry = buff_creator_t( this, "battle_cry", spec.battle_cry )
     .add_invalidate( CACHE_CRIT )
@@ -4306,7 +4272,7 @@ void warrior_t::reset()
 
   if ( specialization() == WARRIOR_PROTECTION )
     buff.defensive_stance -> trigger();
-  else if ( buff.defensive_stance -> check() ) // Arms probably doesn't want defensive stance up every time.
+  else // Arms probably doesn't want defensive stance up every time.
     buff.defensive_stance -> expire();
 
   heroic_charge = nullptr;
@@ -4939,9 +4905,7 @@ struct warrior_module_t: public module_t
     unique_gear::register_special_effect( 200845, warswords_of_the_valarjar );
   }
 
-  virtual void register_hotfixes() const override
-  {}
-
+  virtual void register_hotfixes() const override {}
   virtual void init( player_t* ) const override {}
   virtual void combat_begin( sim_t* ) const override {}
   virtual void combat_end( sim_t* ) const override {}
