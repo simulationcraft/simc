@@ -52,7 +52,7 @@ main_hand=edict_of_argus,id=124382,bonus_id=567,upgrade=2,enchant_id=5337
 # gear_haste_rating=2438
 # gear_mastery_rating=2803
 # gear_versatility_rating=228
-# gear_armor=1200
+# gear_armor=1196
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
 default_pet=felhunter
