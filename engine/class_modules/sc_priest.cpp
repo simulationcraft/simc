@@ -2734,10 +2734,6 @@ public:
     }
   }
 
-  void schedule_execute( action_state_t* state = nullptr ) override
-  {
-    priest_spell_t::schedule_execute(state);
-  }
 
   timespan_t execute_time() const override
   {
@@ -2749,11 +2745,6 @@ public:
     timespan_t et = priest_spell_t::execute_time();
 
     return et;
-  }
-
-  void reset() override
-  {
-    priest_spell_t::reset();
   }
 
   void update_ready( timespan_t cd_duration ) override
