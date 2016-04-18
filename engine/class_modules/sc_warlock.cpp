@@ -59,6 +59,7 @@ struct warlock_td_t: public actor_target_data_t
   buff_t* debuffs_eradication;
 
   int agony_stack;
+  int agony_ticks_since_last_proc;
   double soc_threshold;
 
   warlock_t& warlock;
@@ -78,6 +79,7 @@ struct warlock_t: public player_t
 public:
   player_t* havoc_target;
   int double_nightfall;
+  int agony_ticks_since_last_proc;
 
 
   // Active Pet
@@ -1605,33 +1607,30 @@ struct agony_t: public warlock_spell_t
 
   virtual void tick( dot_t* d ) override
   {
-    if ( p() -> talents.writhe_in_agony -> ok() && td( d -> state -> target ) -> agony_stack < ( 20 ) )
-      td( d -> state -> target ) -> agony_stack++;
-    else if ( td( d -> state -> target ) -> agony_stack < ( 10 ) ) 
+    if( p() -> talents.writhe_in_agony -> ok() && td( d -> state -> target ) -> agony_stack < ( 20 ) )
+      td( d -> state->target ) -> agony_stack++;
+    else if( td( d -> state->target ) -> agony_stack < ( 10 ) )
       td( d -> state -> target ) -> agony_stack++;
 
     td( d -> target ) -> debuffs_agony -> trigger();
 
-    //if ( p() -> spec.nightfall -> ok() )
-    //{
-      // FIXME currently no spelldata for nightfall.
-      // double nightfall_chance = p() -> spec.nightfall -> effectN( 1 ).percent() / 10;
-      double nightfall_chance = 0.1386;  // 211 procs out of 1522 ticks, estimate for now.
+    double nightfall_chance = 0.025 * p() -> agony_ticks_since_last_proc;
 
-      if ( rng().roll( nightfall_chance ) ) // Change to nightfall_chance once data exists
-      {
-          p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
+    if( rng().roll( nightfall_chance ) ) // Change to nightfall_chance once data exists
+    {
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
+      p() -> agony_ticks_since_last_proc = 0;
 
-        // If going from 0 to 1 shard was a surprise, the player would have to react to it
-        if ( p() -> resources.current[RESOURCE_SOUL_SHARD] == 1 )
-          p() -> shard_react = p() -> sim -> current_time() + p() -> total_reaction_time();
-        else if ( p() -> resources.current[RESOURCE_SOUL_SHARD] >= 1 )
-          p() -> shard_react = p() -> sim -> current_time();
-        else
-          p() -> shard_react = timespan_t::max();
-      }
-    //}
-
+      // If going from 0 to 1 shard was a surprise, the player would have to react to it
+      if( p()->resources.current[RESOURCE_SOUL_SHARD] == 1 )
+        p()->shard_react = p() -> sim -> current_time() + p() -> total_reaction_time();
+      else if( p() -> resources.current[RESOURCE_SOUL_SHARD] >= 1 )
+        p() -> shard_react = p() -> sim -> current_time();
+      else
+        p() -> shard_react = timespan_t::max();
+    }
+    else
+      p() -> agony_ticks_since_last_proc++;
     warlock_spell_t::tick( d );
   }
 
@@ -3005,6 +3004,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
   player_t( sim, WARLOCK, name, r ),
     havoc_target( nullptr ),
     double_nightfall( 0 ),
+    agony_ticks_since_last_proc( 0 ),
     pets( pets_t() ),
     active( active_t() ),
     talents( talents_t() ),
