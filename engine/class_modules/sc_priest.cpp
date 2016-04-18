@@ -5555,7 +5555,7 @@ struct call_to_the_void_t final : public real_ppm_t
     : real_ppm_t(
           p, p.artifact.call_to_the_void.data().real_ppm(),
           // p.artifacts.xalatath_blade_of_the_black_empire->driver()->real_ppm(),
-          1.0, RPPM_NONE )
+          1.0, RPPM_HASTE )
   {
   }
 };
