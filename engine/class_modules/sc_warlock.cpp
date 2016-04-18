@@ -19,6 +19,8 @@
 // Roaring Blaze
 // Use spelldata for wreak havoc
 // Channel Doomfire
+// Mastery
+// Talents
 //
 // Demo - Everything
 // 
@@ -127,7 +129,7 @@ public:
     const spell_data_t* mortal_coil;
     const spell_data_t* howl_of_terror;
 
-	const spell_data_t* power_trip;
+	  const spell_data_t* power_trip;
     const spell_data_t* siphon_life;
     const spell_data_t* sow_the_seeds;
     const spell_data_t* eradication;
@@ -195,7 +197,7 @@ public:
 
     // Demonology only
     const spell_data_t* doom;
-	const spell_data_t* demonic_empowerment;
+	  const spell_data_t* demonic_empowerment;
     const spell_data_t* wild_imps;
 
     // Destruction only
@@ -229,7 +231,7 @@ public:
     gain_t* drain_soul;
     gain_t* soul_harvest;
     gain_t* mana_tap;
-	gain_t* power_trip;
+	  gain_t* power_trip;
     gain_t* shadow_bolt;
   } gains;
 
@@ -404,7 +406,7 @@ namespace pets {
     struct buffs_t
     {
       buff_t* demonic_synergy;
-	  buff_t* demonic_empowerment;
+	    buff_t* demonic_empowerment;
     } buffs;
 
     struct travel_t: public action_t
@@ -933,8 +935,8 @@ double warlock_pet_t::composite_melee_speed() const
   // Make sure we get our overridden haste values applied to melee_speed
   double cmh =  player_t::composite_melee_speed();
 
-  if (buffs.demonic_empowerment->up())
-	  cmh *= 1.0 + buffs.demonic_empowerment->data().effectN(1).percent();
+  if ( buffs.demonic_empowerment -> up() )
+	  cmh *= 1.0 + buffs.demonic_empowerment -> data().effectN( 1 ).percent();
 
   return cmh;
 }
@@ -945,8 +947,8 @@ double warlock_pet_t::composite_spell_speed() const
   double css = player_t::composite_spell_speed();
 
 
-  if (buffs.demonic_empowerment->up())
-	  css *= 1.0 + buffs.demonic_empowerment->data().effectN(1).percent();
+  if ( buffs.demonic_empowerment -> up() )
+	  css *= 1.0 + buffs.demonic_empowerment -> data().effectN( 1 ).percent();
 
   return css;
 }
@@ -1614,7 +1616,7 @@ struct agony_t: public warlock_spell_t
 
     td( d -> target ) -> debuffs_agony -> trigger();
 
-    double nightfall_chance = 0.025 * p() -> agony_ticks_since_last_proc;
+    double nightfall_chance = 0.025 * ( 1 + p() -> agony_ticks_since_last_proc );
 
     if( rng().roll( nightfall_chance ) ) // Change to nightfall_chance once data exists
     {
@@ -1823,7 +1825,7 @@ struct doom_t: public warlock_spell_t
 struct demonic_empowerment_t: public warlock_spell_t
 {
 	demonic_empowerment_t (warlock_t* p) :
-		warlock_spell_t( "demonic empowerment", p, p -> spec.demonic_empowerment)
+		warlock_spell_t( "demonic empowerment", p, p -> spec.demonic_empowerment )
 	{
 		may_crit = false;
 	}
@@ -1838,25 +1840,25 @@ struct demonic_empowerment_t: public warlock_spell_t
 		warlock_spell_t::execute();
 
 		//cycle through all pets and trigger the demonic_empowerment buff
-		for (auto& imp: p()->pets.wild_imps)
+		for ( auto& imp: p() -> pets.wild_imps )
 		{
-			imp->buffs.demonic_empowerment->trigger();
+			imp -> buffs.demonic_empowerment -> trigger();
 		}
-		for (auto& dreadstalker : p()->pets.dreadstalkers)
+		for ( auto& dreadstalker : p() -> pets.dreadstalkers )
 		{
-			dreadstalker->buffs.demonic_empowerment->trigger();
+			dreadstalker -> buffs.demonic_empowerment -> trigger();
 		}
-		pets::warlock_pet_t* my_pet = static_cast<pets::warlock_pet_t*>(p()->pets.active); //get active pet
-		my_pet->buffs.demonic_empowerment->trigger();
+		pets::warlock_pet_t* my_pet = static_cast<pets::warlock_pet_t*>( p() -> pets.active ); //get active pet
+		my_pet -> buffs.demonic_empowerment -> trigger();
 
 		//TODO: Need to find the doomguard and the supremacy demon if they are active to buff them as well
 		// Do this before powertrip is calculated
 
 
 		double power_trip_rng = 0.5;
-		if (p()->talents.power_trip->ok()) {
-			if(rng().roll(power_trip_rng))
-				p()->resource_gain(RESOURCE_SOUL_SHARD, 1, p()->gains.power_trip);
+		if ( p() -> talents.power_trip -> ok() ) {
+			if( rng().roll( power_trip_rng ) )
+				p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.power_trip );
 		}
 	}
 
@@ -3276,7 +3278,7 @@ void warlock_t::init_spells()
   // Spezialization Spells
   spec.immolate               = find_specialization_spell( "Immolate" );
   spec.nightfall              = find_specialization_spell( "Nightfall" );
-  spec.demonic_empowerment    = find_specialization_spell("Demonic Empowerment");
+  spec.demonic_empowerment    = find_specialization_spell( "Demonic Empowerment" );
   spec.wild_imps              = find_specialization_spell( "Wild Imps" );
   spec.unstable_affliction    = find_specialization_spell( "Unstable Affliction" );
 
@@ -3316,7 +3318,7 @@ void warlock_t::init_spells()
   talents.eradication           = find_talent_spell( "Eradication" );
   talents.cataclysm             = find_talent_spell( "Cataclysm" );
 
-  talents.power_trip			= find_talent_spell("Power Trip");
+  talents.power_trip			      = find_talent_spell( "Power Trip" );
 
   talents.soul_harvest          = find_talent_spell( "Soul Harvest" );
 
