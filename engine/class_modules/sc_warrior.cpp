@@ -12,7 +12,6 @@ namespace
 // try to not break protection
 // Add Intercept
 // Add back second wind
-// Check meat cleaver range as beta testing proceeds, it was 10, currently it's 5.
 // ==========================================================================
 
 struct warrior_t;
@@ -34,20 +33,15 @@ struct warrior_td_t: public actor_target_data_t
 struct warrior_t: public player_t
 {
 public:
-  event_t* heroic_charge;
-  event_t* rampage_driver;
+  event_t* heroic_charge, *rampage_driver;
   std::vector<attack_t*> rampage_attacks;
   int initial_rage;
   bool non_dps_mechanics, warrior_fixed_time;
 
   // Tier 18 (WoD 6.2) class specific trinket effects
-  const special_effect_t* fury_trinket;
-  const special_effect_t* arms_trinket;
-  const special_effect_t* prot_trinket;
-
+  const special_effect_t* fury_trinket, *arms_trinket, *prot_trinket;
   // Artifacts
-  const special_effect_t* stromkar_the_warbreaker;
-  const special_effect_t* warswords_of_the_valarjar;
+  const special_effect_t* stromkar_the_warbreaker, *warswords_of_the_valarjar;
 
   // Active
   struct active_t
@@ -190,10 +184,7 @@ public:
 
   struct realppm_t
   {
-    std::unique_ptr<real_ppm_t> odyns_champion;
-    std::unique_ptr<real_ppm_t> overpower;
-    std::unique_ptr<real_ppm_t> rage_of_the_valarjar;
-    std::unique_ptr<real_ppm_t> wrecking_ball;
+    std::unique_ptr<real_ppm_t> odyns_champion, overpower, rage_of_the_valarjar, wrecking_ball;
   } rppm;
 
   // Spec Passives
@@ -349,10 +340,8 @@ public:
   warrior_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ):
     player_t( sim, WARRIOR, name, r ),
     heroic_charge( nullptr ),
-    rampage_driver( nullptr ),
-    rampage_attacks( 0 ),
-    stromkar_the_warbreaker(),
-    warswords_of_the_valarjar(),
+    rampage_driver( nullptr ), rampage_attacks( 0 ),
+    stromkar_the_warbreaker(), warswords_of_the_valarjar(),
     active( active_t() ),
     buff( buffs_t() ),
     cooldown( cooldowns_t() ),
@@ -474,7 +463,9 @@ public:
     ab::init();
 
     if ( sweeping_strikes )
+    {
       ab::aoe = p() -> talents.sweeping_strikes -> effectN( 1 ).base_value() + 1;
+    }
 
     ab::cooldown -> hasted = headlongrush;
   }
@@ -501,10 +492,14 @@ public:
     double c = ab::cost();
 
     if ( dauntless )
+    {
       c *= 1.0 + p() -> talents.dauntless -> effectN( 1 ).percent();
+    }
 
     if ( war_veteran && p() -> buff.battle_cry -> check() )
+    {
       c *= 1.0 + p() -> artifact.war_veteran.data().effectN( 1 ).trigger() -> effectN( 1 ).percent();
+    }
 
     return c;
   }
@@ -532,12 +527,18 @@ public:
     timespan_t t = ab::action_t::gcd();
 
     if ( t == timespan_t::zero() )
+    {
       return t;
+    }
 
     if ( headlongrushgcd )
+    {
       t *= ab::player -> cache.attack_haste();
+    }
     if ( t < ab::min_gcd )
+    {
       t = ab::min_gcd;
+    }
 
     return t;
   }
@@ -545,11 +546,15 @@ public:
   virtual bool ready() override
   {
     if ( !ab::ready() )
+    {
       return false;
+    }
 
     if ( p() -> current.distance_to_move > ab::range && ab::range != -1 )
+    {
       // -1 melee range implies that the ability can be used at any distance from the target.
       return false;
+    }
 
     return true;
   }
@@ -615,7 +620,9 @@ public:
     }
 
     if ( ab::result_is_miss( ab::execute_state -> result ) && rage > 0 && !ab::aoe )
+    {
       rage_resource_gain( RESOURCE_RAGE, rage*0.8, p() -> gain.avoided_attacks );
+    }
   }
 
   void anger_management( double rage )
@@ -627,7 +634,9 @@ public:
       rage *= -1;
 
       if ( p() -> specialization() != WARRIOR_PROTECTION )
+      {
         p() -> cooldown.battle_cry -> adjust( timespan_t::from_seconds( rage ) );
+      }
       else
       {
         p() -> cooldown.last_stand -> adjust( timespan_t::from_seconds( rage ) );
@@ -673,9 +682,7 @@ struct warrior_spell_t: public warrior_action_t < spell_t >
 
 struct warrior_attack_t: public warrior_action_t < melee_attack_t >
 { // Main Warrior Attack Class
-  bool procs_overpower;
-  bool procs_tactician;
-
+  bool procs_overpower, procs_tactician;
   warrior_attack_t( const std::string& n, warrior_t* p,
                     const spell_data_t* s = spell_data_t::nil() ):
     base_t( n, p, s ),
@@ -683,7 +690,9 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
   {
     special = true;
     if ( p -> talents.overpower -> ok() )
+    {
       procs_overpower = true;
+    }
   }
 
   virtual void assess_damage( dmg_e type, action_state_t* s ) override
@@ -726,7 +735,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
   {
     base_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
+    if ( result_is_hit( s -> result ) && p() -> specialization() == WARRIOR_ARMS )
     {
       if ( procs_overpower && p() -> rppm.overpower -> trigger() )
       {
@@ -798,9 +807,7 @@ struct melee_t: public warrior_attack_t
   melee_t( const std::string& name, warrior_t* p ):
     warrior_attack_t( name, p, spell_data_t::nil() ),
     mh_lost_melee_contact( true ), oh_lost_melee_contact( true ),
-    base_rage_generation( 1.75 ),
-    arms_rage_multiplier( 3.40 ),
-    fury_rage_multiplier( 0.80 ),
+    base_rage_generation( 1.75 ), arms_rage_multiplier( 3.40 ), fury_rage_multiplier( 0.80 ),
     arms_trinket_chance( 0 )
   {
     school = SCHOOL_PHYSICAL;
@@ -808,7 +815,9 @@ struct melee_t: public warrior_attack_t
     background = repeating = auto_attack = may_glance = true;
     trigger_gcd = timespan_t::zero();
     if ( p -> dual_wield() )
+    {
       base_hit -= 0.19;
+    }
 
     if ( p -> arms_trinket )
     {
@@ -820,34 +829,45 @@ struct melee_t: public warrior_attack_t
   void reset() override
   {
     warrior_attack_t::reset();
-    mh_lost_melee_contact = true;
-    oh_lost_melee_contact = true;
+    mh_lost_melee_contact = oh_lost_melee_contact = true;
   }
 
   timespan_t execute_time() const override
   {
     timespan_t t = warrior_attack_t::execute_time();
     if ( weapon -> slot == SLOT_MAIN_HAND && mh_lost_melee_contact )
+    {
       return timespan_t::zero(); // If contact is lost, the attack is instant.
+    }
     else if ( weapon -> slot == SLOT_OFF_HAND && oh_lost_melee_contact ) // Also used for the first attack.
+    {
       return timespan_t::zero();
+    }
     else
+    {
       return t;
+    }
   }
 
   void schedule_execute( action_state_t* s ) override
   {
     warrior_attack_t::schedule_execute( s );
     if ( weapon -> slot == SLOT_MAIN_HAND )
+    {
       mh_lost_melee_contact = false;
+    }
     else if ( weapon -> slot == SLOT_OFF_HAND )
+    {
       oh_lost_melee_contact = false;
+    }
   }
 
   double composite_hit() const override
   {
     if ( p() -> artifact.focus_in_chaos.rank() && p() -> buff.enrage -> up() )
+    {
       return 1.0;
+    }
     return warrior_attack_t::composite_hit();
   }
 
@@ -889,24 +909,29 @@ struct melee_t: public warrior_attack_t
 
   void trigger_rage_gain( action_state_t* s )
   {
-    weapon_t* w = weapon;
-    double rage_gain = w -> swing_time.total_seconds() * base_rage_generation;
+    double rage_gain = weapon -> swing_time.total_seconds() * base_rage_generation;
 
     if ( p() -> specialization() == WARRIOR_ARMS )
     {
       if ( s -> result == RESULT_CRIT )
+      {
         rage_gain *= rng().range( 7.4375, 7.875 ); // Wild random numbers appear! Accurate as of 2015/02/02
+      }
       else
+      {
         rage_gain *= arms_rage_multiplier;
+      }
     }
     else
     {
       rage_gain *= fury_rage_multiplier;
-      if ( w -> slot == SLOT_OFF_HAND )
+      if ( weapon -> slot == SLOT_OFF_HAND )
+      {
         rage_gain *= 0.5;
+      }
+      rage_gain *= 1.0 + p() -> talents.endless_rage -> effectN( 1 ).percent();
     }
 
-    rage_gain *= 1.0 + p() -> talents.endless_rage -> effectN( 1 ).percent();
     rage_gain = util::round( rage_gain, 1 );
 
     if ( p() -> specialization() == WARRIOR_ARMS && s -> result == RESULT_CRIT )
@@ -919,7 +944,7 @@ struct melee_t: public warrior_attack_t
     {
       rage_resource_gain( RESOURCE_RAGE,
                             rage_gain,
-                            w -> slot == SLOT_OFF_HAND ? p() -> gain.melee_off_hand : p() -> gain.melee_main_hand );
+                            weapon -> slot == SLOT_OFF_HAND ? p() -> gain.melee_off_hand : p() -> gain.melee_main_hand );
     }
   }
 };
@@ -960,7 +985,9 @@ struct auto_attack_t: public warrior_attack_t
   void execute() override
   {
     if ( p() -> main_hand_attack -> execute_event == nullptr )
+    {
       p() -> main_hand_attack -> schedule_execute();
+    }
     if ( p() -> off_hand_attack && p() -> off_hand_attack -> execute_event == nullptr )
     {
       p() -> off_hand_attack -> schedule_execute();
@@ -973,10 +1000,14 @@ struct auto_attack_t: public warrior_attack_t
     if ( ready ) // Range check
     {
       if ( p() -> main_hand_attack -> execute_event == nullptr )
+      {
         return ready;
+      }
       if ( p() -> off_hand_attack && p() -> off_hand_attack -> execute_event == nullptr )
+      {
         // Don't check for execute_event if we don't have an offhand.
         return ready;
+      }
     }
     return false;
   }
@@ -999,7 +1030,9 @@ struct bladestorm_tick_t: public warrior_attack_t
     double am = warrior_attack_t::action_multiplier();
 
     if ( p() -> has_shield_equipped() )
+    {
       am *= 1.0 + p() -> spec.protection -> effectN( 1 ).percent();
+    }
 
     return am;
   }
@@ -1007,12 +1040,10 @@ struct bladestorm_tick_t: public warrior_attack_t
 
 struct bladestorm_t: public warrior_attack_t
 {
-  attack_t* bladestorm_mh;
-  attack_t* bladestorm_oh;
+  attack_t* bladestorm_mh, *bladestorm_oh;
   bladestorm_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "bladestorm", p, p -> talents.bladestorm ),
-    bladestorm_mh( new bladestorm_tick_t( p, "bladestorm_mh" ) ),
-    bladestorm_oh( nullptr )
+    bladestorm_mh( new bladestorm_tick_t( p, "bladestorm_mh" ) ), bladestorm_oh( nullptr )
   {
     parse_options( options_str );
     channeled = tick_zero = true;
@@ -1041,7 +1072,9 @@ struct bladestorm_t: public warrior_attack_t
     bladestorm_mh -> execute();
 
     if ( bladestorm_mh -> result_is_hit( execute_state -> result ) && bladestorm_oh )
+    {
       bladestorm_oh -> execute();
+    }
   }
 
   void last_tick( dot_t*d ) override
@@ -1070,8 +1103,7 @@ struct bloodthirst_heal_t: public warrior_heal_t
 struct bloodthirst_t: public warrior_attack_t
 {
   bloodthirst_heal_t* bloodthirst_heal;
-  double fresh_meat_crit_chance;
-  double rage_gain;
+  double fresh_meat_crit_chance, rage_gain;
   int aoe_targets;
   bloodthirst_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "bloodthirst", p, p -> spec.bloodthirst ),
@@ -1095,7 +1127,9 @@ struct bloodthirst_t: public warrior_attack_t
   int n_targets() const override
   {
     if ( p() -> buff.meat_cleaver -> up() )
+    {
       return aoe_targets + 1;
+    }
     return 1;
   }
 
@@ -1104,7 +1138,9 @@ struct bloodthirst_t: public warrior_attack_t
     double tc = warrior_attack_t::composite_target_crit( target );
 
     if ( fresh_meat_crit_chance > 0 && target -> health_percentage() >= 80.0 )
+    {
       tc += fresh_meat_crit_chance;
+    }
 
     return tc;
   }
@@ -1148,7 +1184,6 @@ struct furious_slash_t: public warrior_attack_t
     warrior_attack_t( "furious_slash", p, p -> spec.furious_slash )
   {
     parse_options( options_str );
-
     weapon = &( p -> off_hand_weapon );
   }
 
@@ -1168,9 +1203,7 @@ struct charge_t: public warrior_attack_t
   double movement_speed_increase, min_range, rage_gain;
   charge_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "charge", p, p -> spell.charge ),
-    first_charge( true ),
-    movement_speed_increase( 5.0 ),
-    min_range( data().min_range() ),
+    first_charge( true ), movement_speed_increase( 5.0 ), min_range( data().min_range() ),
     rage_gain( data().effectN( 2 ).resource( RESOURCE_RAGE ) )
   {
     parse_options( options_str );
@@ -1202,7 +1235,9 @@ struct charge_t: public warrior_attack_t
     warrior_attack_t::execute();
 
     if ( first_charge )
+    {
       first_charge = !first_charge;
+    }
 
     rage_resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.charge );
   }
@@ -1216,14 +1251,19 @@ struct charge_t: public warrior_attack_t
   bool ready() override
   {
     if ( first_charge ) // Assumes that we charge into combat, instead of setting initial distance to 20 yards.
+    {
       return warrior_attack_t::ready();
+    }
 
     if ( p() -> current.distance_to_move < min_range ) // Cannot charge if too close to the target.
+    {
       return false;
+    }
 
-    if ( p() -> buff.charge_movement -> check() || p() -> buff.heroic_leap_movement -> check()
-         || p() -> buff.intervene_movement -> check() )
+    if ( p() -> buff.charge_movement -> check() || p() -> buff.heroic_leap_movement -> check() || p() -> buff.intervene_movement -> check() )
+    {
       return false;
+    }
 
     return warrior_attack_t::ready();
   }
@@ -1245,7 +1285,6 @@ struct cleave_t: public warrior_attack_t
 
   int targets_hit;
   void_cleave_t* void_cleave;
-
   cleave_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "cleave", p, p -> spec.cleave )
   {
@@ -1317,7 +1356,9 @@ struct colossus_smash_t: public warrior_attack_t
       p() -> buff.shattered_defenses -> trigger();
       p() -> buff.precise_strikes -> trigger();
       if ( p() -> sets.set( WARRIOR_ARMS, T17, B2 ) && p() -> buff.tier17_2pc_arms -> trigger() )
+      {
         p() -> proc.t17_2pc_arms -> occur();
+      }
     }
   }
 
@@ -1362,7 +1403,6 @@ struct corrupted_rage_t: public warrior_attack_t
     if ( result_is_hit( s -> result ) )
     {
       td( s -> target ) -> debuffs_colossus_smash -> trigger();
-    
       p() -> buff.shattered_defenses -> trigger();
     }
   }
@@ -1370,7 +1410,9 @@ struct corrupted_rage_t: public warrior_attack_t
   bool ready() override
   {
     if ( ! p() -> artifact.corrupted_rage.rank() )
+    {
       return false;
+    }
 
     return warrior_attack_t::ready();
   }
@@ -1432,17 +1474,18 @@ struct devastate_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) )
+    if ( result_is_hit( execute_state -> result ) && p() -> buff.sword_and_board -> trigger() )
     {
-      if ( p() -> buff.sword_and_board -> trigger() )
-        p() -> cooldown.shield_slam -> reset( true );
+      p() -> cooldown.shield_slam -> reset( true );
     }
   }
 
   bool ready() override
   {
     if ( !p() -> has_shield_equipped() )
+    {
       return false;
+    }
 
     return warrior_attack_t::ready();
   }
@@ -1463,7 +1506,6 @@ struct dragon_roar_t: public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
-
     p() -> buff.dragon_roar -> trigger();
   }
 
@@ -1530,7 +1572,9 @@ struct execute_t: public warrior_attack_t
       add_child( oh_attack );
       if ( p -> main_hand_weapon.group() == WEAPON_1H &&
            p -> off_hand_weapon.group() == WEAPON_1H )
+      {
         weapon_multiplier *= 1.0 + p -> spec.singleminded_fury -> effectN( 3 ).percent();
+      }
     }
 
     base_crit += p -> artifact.deathblow.percent();
@@ -1560,7 +1604,9 @@ struct execute_t: public warrior_attack_t
     double cc = warrior_attack_t::composite_crit();
 
     if ( p() -> buff.shattered_defenses -> check() )
+    {
       cc += p() -> buff.shattered_defenses -> data().effectN( 2 ).percent();
+    }
 
     return cc;
   }
@@ -1569,13 +1615,15 @@ struct execute_t: public warrior_attack_t
   {
     double c = warrior_attack_t::cost();
 
-    if ( p() -> mastery.colossal_might -> ok() )
+    if ( p() -> mastery.colossal_might -> ok() ) // Arms
+    {
       c = std::min( 40.0, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
-
-    c *= 1.0 + p() -> buff.precise_strikes -> check_value();
-
-    if ( p() -> buff.sense_death -> check() )
+      c *= 1.0 + p() -> buff.precise_strikes -> check_value();
+    }
+    else if ( p() -> buff.sense_death -> check() ) // Fury
+    {
       c *= 1.0 + p() -> buff.sense_death -> data().effectN( 1 ).percent();
+    }
 
     return c;
   }
@@ -1626,13 +1674,19 @@ struct execute_t: public warrior_attack_t
   bool ready() override
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
+    {
       return false;
+    }
 
     // Call warrior_attack_t::ready() first for proper targeting support.
     if ( warrior_attack_t::ready() && target -> health_percentage() < 20 )
+    {
       return true;
+    }
     else
+    {
       return false;
+    }
   }
 };
 
@@ -1683,10 +1737,14 @@ struct heroic_throw_t: public warrior_attack_t
   {
     if ( p() -> current.distance_to_move > range ||
          p() -> current.distance_to_move < data().min_range() ) // Cannot heroic throw unless target is in range.
+    {
       return false;
+    }
 
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
+    {
       return false;
+    }
 
     return warrior_attack_t::ready();
   }
@@ -1733,7 +1791,9 @@ struct heroic_leap_t: public warrior_attack_t
   void impact( action_state_t* s ) override
   {
     if ( p() -> current.distance_to_move > heroic_leap_damage -> effectN( 1 ).radius() )
+    {
       s -> result_amount = 0;
+    }
 
     warrior_attack_t::impact( s );
   }
@@ -1741,7 +1801,9 @@ struct heroic_leap_t: public warrior_attack_t
   bool ready() override
   {
     if ( p() -> buff.intervene_movement -> check() || p() -> buff.charge_movement -> check() )
+    {
       return false;
+    }
 
     return warrior_attack_t::ready();
   }
@@ -1822,7 +1884,9 @@ struct intervene_t: public warrior_attack_t
   bool ready() override
   {
     if ( p() -> buff.heroic_leap_movement -> check() || p() -> buff.charge_movement -> check() )
+    {
       return false;
+    }
 
     return warrior_attack_t::ready();
   }
@@ -1838,9 +1902,13 @@ struct heroic_charge_movement_ticker_t: public event_t
     event_t( s, p ), warrior( p )
   {
     if ( d > timespan_t::zero() )
+    {
       duration = d;
+    }
     else
+    {
       duration = next_execute();
+    }
 
     add_event( duration );
     if ( sim().debug ) sim().out_debug.printf( "New movement event" );
@@ -1856,26 +1924,38 @@ struct heroic_charge_movement_ticker_t: public event_t
       any_movement = true;
 
       if ( time_to_finish < min_time )
+      {
         min_time = time_to_finish;
+      }
     }
 
     if ( min_time > timespan_t::from_seconds( 0.05 ) ) // Update a little more than usual, since we're moving a lot faster.
+    {
       min_time = timespan_t::from_seconds( 0.05 );
+    }
 
     if ( !any_movement )
+    {
       return timespan_t::zero();
+    }
     else
+    {
       return min_time;
+    }
   }
 
   void execute() override
   {
     if ( warrior -> time_to_move() > timespan_t::zero() )
+    {
       warrior -> update_movement( duration );
+    }
 
     timespan_t next = next_execute();
     if ( next > timespan_t::zero() )
+    {
       warrior -> heroic_charge = new ( sim() ) heroic_charge_movement_ticker_t( sim(), warrior, next );
+    }
     else
     {
       warrior -> heroic_charge = nullptr;
@@ -1922,9 +2002,13 @@ struct heroic_charge_t: public warrior_attack_t
   bool ready() override
   {
     if ( p() -> cooldown.charge -> up() && !p() -> buffs.raid_movement -> check() )
+    {
       return warrior_attack_t::ready();
+    }
     else
+    {
       return false;
+    }
   }
 };
 
@@ -1949,7 +2033,9 @@ struct mortal_strike_t: public warrior_attack_t
     double cc = warrior_attack_t::composite_crit();
 
     if ( p() -> buff.shattered_defenses -> check() )
+    {
       cc += p() -> buff.shattered_defenses -> data().effectN( 2 ).percent();
+    }
 
     return cc;
   }
@@ -2013,7 +2099,9 @@ struct mortal_strike_t: public warrior_attack_t
     double cdr = warrior_attack_t::recharge_multiplier();
 
     if ( p() -> buff.tier17_2pc_arms -> up() )
+    {
       cdr *= 1.0 + p() -> buff.tier17_2pc_arms -> data().effectN( 1 ).percent();
+    }
 
     return cdr;
   }
@@ -2021,7 +2109,9 @@ struct mortal_strike_t: public warrior_attack_t
   bool ready() override
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
+    {
       return false;
+    }
 
     return warrior_attack_t::ready();
   }
@@ -2036,7 +2126,6 @@ struct pummel_t: public warrior_attack_t
   {
     parse_options( options_str );
     ignore_false_positive = true;
-
     may_miss = may_block = may_dodge = may_parry = false;
   }
 };
@@ -2116,13 +2205,19 @@ struct raging_blow_t: public warrior_attack_t
         // Needs weapons in both hands
     if ( p() -> main_hand_weapon.type == WEAPON_NONE ||
          p() -> off_hand_weapon.type == WEAPON_NONE )
+    {
       return false;
+    }
 
     if ( p() -> talents.inner_rage -> ok() )
+    {
       return warrior_attack_t::ready();
+    }
 
     if ( !p() -> buff.enrage -> check() )
+    {
       return false;
+    }
 
     return warrior_attack_t::ready();
   }
@@ -2160,7 +2255,9 @@ struct overpower_t: public warrior_attack_t
   bool ready() override
   {
     if ( p() -> buff.overpower -> check() )
+    {
       return warrior_attack_t::ready();
+    }
     return false;
   }
 };
@@ -2177,8 +2274,7 @@ struct odyns_damage_t: public warrior_attack_t
 
 struct odyns_fury_t: public warrior_attack_t
 {
-  odyns_damage_t* mh;
-  odyns_damage_t* oh;
+  odyns_damage_t* mh, *oh;
   odyns_fury_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "odyns_fury", p, p -> artifact.odyns_fury ),
     mh( 0 ), oh( 0 )
@@ -2218,7 +2314,9 @@ struct warbreaker_t: public warrior_attack_t
     p() -> buff.precise_strikes -> trigger();
 
     if ( p() -> sets.set( WARRIOR_ARMS, T17, B2 ) && p() -> buff.tier17_2pc_arms -> trigger() )
+    {
       p() -> proc.t17_2pc_arms -> occur();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -2247,7 +2345,9 @@ struct rampage_attack_t: public warrior_attack_t
   int n_targets() const override
   {
     if ( p() -> buff.meat_grinder -> up() )
+    {
       return 5;
+    }
     return 1;
   }
 };
@@ -2319,7 +2419,9 @@ struct rampage_parent_t: public warrior_attack_t
   double cost() const override
   {
     if ( p() -> buff.massacre -> check() )
+    {
       return 0;
+    }
     return warrior_attack_t::cost();
   }
 
@@ -2344,8 +2446,10 @@ struct rampage_parent_t: public warrior_attack_t
 
   bool ready() override
   {
-    if ( p() -> main_hand_weapon.type == WEAPON_NONE )
+    if ( p() -> main_hand_weapon.type == WEAPON_NONE || p() -> off_hand_weapon.type == WEAPON_NONE )
+    {
       return false;
+    }
 
     return warrior_attack_t::ready();
   }
@@ -2381,9 +2485,13 @@ struct ravager_t: public warrior_attack_t
   void execute() override
   {
     if ( p() -> specialization() == WARRIOR_PROTECTION )
+    {
       p() -> buff.ravager_protection -> trigger();
+    }
     else
+    {
       p() -> buff.ravager -> trigger();
+    }
 
     warrior_attack_t::execute();
   }
@@ -2414,7 +2522,9 @@ struct revenge_t: public warrior_attack_t
   bool ready() override
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
+    {
       return false;
+    }
 
     return warrior_attack_t::ready();
   }
@@ -2446,7 +2556,9 @@ struct rend_t: public warrior_attack_t
     tick_may_crit = true;
     base_tick_time /= 1.0 + p -> sets.set( WARRIOR_ARMS, T18, B4 ) -> effectN( 1 ).percent();
     if ( p -> sets.has_set_bonus( WARRIOR_ARMS, T18, B2 ) )
+    {
       t18_2pc_chance = p -> sets.set( WARRIOR_ARMS, T18, B2 ) -> proc_chance();
+    }
   }
 
   void tick( dot_t* d ) override
@@ -2454,13 +2566,17 @@ struct rend_t: public warrior_attack_t
     warrior_attack_t::tick( d );
 
     if ( rng().roll( t18_2pc_chance ) )
+    {
       p() -> cooldown.mortal_strike -> reset( true );
+    }
   }
 
   bool ready() override
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
+    {
       return false;
+    }
 
     return warrior_attack_t::ready();
   }
@@ -2482,9 +2598,13 @@ struct shield_block_2pc_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
     if ( p() -> buff.shield_block -> check() )
+    {
       p() -> buff.shield_block -> extend_duration( p(), p() -> buff.shield_block -> data().duration() );
+    }
     else
+    {
       p() -> buff.shield_block -> trigger();
+    }
   }
 };
 
@@ -2502,9 +2622,13 @@ struct shield_slam_t: public warrior_attack_t
 
     attack_power_mod.direct = 0.561; // Low level value for shield slam.
     if ( p -> level() >= 80 )
+    {
       attack_power_mod.direct += 0.426; // Adds 42.6% ap once the character is level 80
+    }
     if ( p -> level() >= 85 )
+    {
       attack_power_mod.direct += 3.46; // Adds another 246% ap at level 85
+    }
     //Shield slam is just the best.
   }
 
@@ -2513,7 +2637,9 @@ struct shield_slam_t: public warrior_attack_t
     double am = warrior_attack_t::action_multiplier();
 
     if ( p() -> buff.shield_block -> up() )
+    {
       am *= 1.0 + p() -> talents.heavy_repercussions -> effectN( 1 ).percent();
+    }
 
     am *= 1.0 + p() -> buff.focused_rage -> check_value();
 
@@ -2551,7 +2677,9 @@ struct shield_slam_t: public warrior_attack_t
   bool ready() override
   {
     if ( !p() -> has_shield_equipped() )
+    {
       return false;
+    }
 
     return warrior_attack_t::ready();
   }
@@ -2585,7 +2713,9 @@ struct slam_t: public warrior_attack_t
   bool ready() override
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
+    {
       return false;
+    }
 
     return warrior_attack_t::ready();
   }
@@ -2643,7 +2773,9 @@ struct storm_bolt_t: public warrior_attack_t
   bool ready() override
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
+    {
       return false;
+    }
 
     return warrior_attack_t::ready();
   }
@@ -2659,16 +2791,6 @@ struct thunder_clap_t: public warrior_attack_t
     parse_options( options_str );
     aoe = -1;
     may_dodge = may_parry = may_block = false;
-  }
-
-  double cost() const override
-  {
-    double c = base_t::cost();
-
-    if ( p() -> specialization() == WARRIOR_PROTECTION )
-      c = 0;
-
-    return c;
   }
 };
 
@@ -2695,7 +2817,9 @@ struct victory_rush_t: public warrior_attack_t
   {
     parse_options( options_str );
     if ( p -> non_dps_mechanics )
+    {
       execute_action = victory_rush_heal;
+    }
     cooldown -> duration = timespan_t::from_seconds( 1000.0 );
   }
 };
@@ -2715,7 +2839,9 @@ struct whirlwind_off_hand_t: public warrior_attack_t
     double am = warrior_attack_t::action_multiplier();
 
     if ( p() -> buff.wrecking_ball -> check() )
+    {
       am *= 1.0 + p() -> buff.wrecking_ball -> data().effectN( 2 ).percent();
+    }
 
     return am;
   }
@@ -2735,13 +2861,18 @@ struct whirlwind_mh_t: public warrior_attack_t
     warrior_attack_t::impact( s );
 
     if ( p() -> talents.fervor_of_battle -> ok() )
+    {
       rage_resource_gain( RESOURCE_RAGE, p() -> spell.fervor_of_battle -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.fervor_of_battle );
+    }
 
     if ( p() -> artifact.will_of_the_first_king.rank() )
+    {
       rage_resource_gain( RESOURCE_RAGE, p() -> artifact.will_of_the_first_king.data().effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.will_of_the_first_king );
-
-    if ( s -> result_amount > 0 )// Only triggers if damage is done.
+    }
+    else if ( s -> result_amount > 0 )// Only triggers if damage is done.
+    {
       p() -> buff.meat_cleaver -> trigger();
+    }
   }
 
   double action_multiplier() const override
@@ -2751,7 +2882,9 @@ struct whirlwind_mh_t: public warrior_attack_t
     am *= 1.0 + p() -> buff.cleave -> check_value();
 
     if ( p() -> buff.wrecking_ball -> up() )
+    {
       am *= 1.0 + p() -> buff.wrecking_ball -> data().effectN( 2 ).percent();
+    }
 
     return am;
   }
@@ -2804,7 +2937,9 @@ struct whirlwind_parent_t: public warrior_attack_t
   double cost() const override
   {
     if ( p() -> buff.wrecking_ball -> check() )
+    {
       return 0;
+    }
 
     return warrior_attack_t::cost();
   }
@@ -2820,7 +2955,9 @@ struct whirlwind_parent_t: public warrior_attack_t
     {
       mh_attack -> execute();
       if ( oh_attack )
+      {
         oh_attack -> execute();
+      }
     }
   }
 
@@ -2841,7 +2978,9 @@ struct whirlwind_parent_t: public warrior_attack_t
   bool ready() override
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
+    {
       return false;
+    }
 
     return warrior_attack_t::ready();
   }
@@ -2887,7 +3026,9 @@ struct berserker_rage_t: public warrior_spell_t
 
     p() -> buff.berserker_rage -> trigger();
     if ( p() -> talents.outburst -> ok() )
+    {
       enrage();
+    }
   }
 };
 
@@ -2905,9 +3046,13 @@ struct defensive_stance_t: public warrior_spell_t
     parse_options( options_str );
 
     if ( onoff == "on" )
+    {
       onoffbool = true;
+    }
     else if ( onoff == "off" )
+    {
       onoffbool = false;
+    }
     else
     {
       sim -> errorf( "Defensive stance must use the option 'toggle=on' or 'toggle=off'" );
@@ -2921,17 +3066,25 @@ struct defensive_stance_t: public warrior_spell_t
   {
     warrior_spell_t::execute();
     if ( onoffbool )
+    {
       p() -> buff.defensive_stance -> trigger();
+    }
     else
+    {
       p() -> buff.defensive_stance -> expire();
+    }
   }
 
   bool ready() override
   {
     if ( onoffbool && p() -> buff.defensive_stance -> check() )
+    {
       return false;
+    }
     else if ( !onoffbool && !p() -> buff.defensive_stance -> check() )
+    {
       return false;
+    }
 
     return warrior_spell_t::ready();
   }
@@ -2957,7 +3110,9 @@ struct die_by_the_sword_t: public warrior_spell_t
   bool ready() override
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
+    {
       return false;
+    }
 
     return warrior_spell_t::ready();
   }
@@ -3022,7 +3177,9 @@ struct battle_cry_t: public warrior_spell_t
 
     p() -> buff.battle_cry -> trigger( 1, bonus_crit );
     if ( p() -> sets.has_set_bonus( WARRIOR_FURY, T17, B4 ) )
+    {
       p() -> buff.tier17_4pc_fury_driver -> trigger();
+    }
 
     if ( p() -> talents.reckless_abandon -> ok() )
     {
@@ -3053,15 +3210,21 @@ struct shield_block_t: public warrior_spell_t
     warrior_spell_t::execute();
 
     if ( p() -> buff.shield_block -> check() )
+    {
       p() -> buff.shield_block -> extend_duration( p(), p() -> buff.shield_block -> data().duration() );
+    }
     else
+    {
       p() -> buff.shield_block -> trigger();
+    }
   }
 
   bool ready() override
   {
     if ( !p() -> has_shield_equipped() )
+    {
       return false;
+    }
 
     return warrior_spell_t::ready();
   }
@@ -3116,7 +3279,9 @@ struct taunt_t: public warrior_spell_t
   void impact( action_state_t* s ) override
   {
     if ( s -> target -> is_enemy() )
+    {
       target -> taunt( player );
+    }
 
     warrior_spell_t::impact( s );
   }
@@ -3422,7 +3587,9 @@ void warrior_t::init_base_stats()
 
   // initialize resolve for prot
   if ( specialization() == WARRIOR_PROTECTION )
+  {
     resolve_manager.init();
+  }
 }
 
 // warrior_t::has_t18_class_trinket ============================================
@@ -3457,16 +3624,24 @@ void warrior_t::apl_precombat()
     if ( true_level > 90 )
     {
       if ( primary_role() == ROLE_ATTACK )
+      {
         flask_action += "greater_draenic_strength_flask";
+      }
       else if ( primary_role() == ROLE_TANK )
+      {
         flask_action += "greater_draenic_stamina_flask";
+      }
     }
     else
     {
       if ( primary_role() == ROLE_ATTACK )
+      {
         flask_action += "winters_bite";
+      }
       else if ( primary_role() == ROLE_TANK )
+      {
         flask_action += "earth";
+      }
     }
     precombat -> add_action( flask_action );
   }
@@ -3478,23 +3653,35 @@ void warrior_t::apl_precombat()
     if ( specialization() == WARRIOR_FURY )
     {
       if ( level() > 90 )
+      {
         food_action += "pickled_eel";
+      }
       else
+      {
         food_action += "black_pepper_ribs_and_shrimp";
+      }
     }
     else if ( specialization() == WARRIOR_ARMS )
     {
       if ( level() > 90 )
+      {
         food_action += "sleeper_sushi";
+      }
       else
+      {
         food_action += "black_pepper_ribs_and_shrimp";
+      }
     }
     else
     {
       if ( level() > 90 )
+      {
         food_action += "sleeper_sushi";
+      }
       else
+      {
         food_action += "chun_tian_spring_rolls";
+      }
     }
     precombat -> add_action( food_action );
   }
@@ -3516,16 +3703,24 @@ void warrior_t::apl_precombat()
     if ( true_level > 90 )
     {
       if ( specialization() != WARRIOR_PROTECTION )
+      {
         precombat -> add_action( "potion,name=draenic_strength" );
+      }
       else
+      {
         precombat -> add_action( "potion,name=draenic_armor" );
+      }
     }
     else if ( true_level >= 80 )
     {
       if ( primary_role() == ROLE_ATTACK )
+      {
         precombat -> add_action( "potion,name=mogu_power" );
+      }
       else if ( primary_role() == ROLE_TANK )
+      {
         precombat -> add_action( "potion,name=mountains" );
+      }
     }
   }
 }
@@ -3555,19 +3750,29 @@ void warrior_t::apl_fury()
   for ( size_t i = 0; i < num_items; i++ )
   {
     if ( items[i].name_str == "scabbard_of_kyanos" )
+    {
       default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.avatar.up|target.time_to_die<25)" );
+    }
     else if ( items[i].name_str == "vial_of_convulsive_shadows" )
+    {
       default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.battle_cry.up|target.time_to_die<25|!talent.anger_management.enabled)" );
+    }
     else if ( items[i].name_str == "thorasus_the_stone_heart_of_draenor" )
+    {
       default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.battle_cry.up|target.time_to_die<25)" );
+    }
   }
 
   if ( sim -> allow_potions )
   {
     if ( true_level > 90 )
+    {
       default_list -> add_action( "potion,name=draenic_strength,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<=30" );
+    }
     else if ( true_level >= 80 )
+    {
       default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<=30" );
+    }
   }
 
   default_list -> add_action( "run_action_list,name=single_target,if=(raid_event.adds.cooldown<60&raid_event.adds.count>2&spell_targets.whirlwind=1)|raid_event.movement.cooldown<5", "Skip cooldown usage if we can line them up with bladestorm on a large set of adds, or if movement is coming soon." );
@@ -3583,9 +3788,13 @@ void warrior_t::apl_fury()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
     if ( racial_actions[i] == "arcane_torrent" )
+    {
       default_list -> add_action( racial_actions[i] + ",if=rage<rage.max-40" );
+    }
     else
+    {
       default_list -> add_action( racial_actions[i] + ",if=buff.battle_cry.up" );
+    }
   }
 
   default_list -> add_action( "call_action_list,name=two_targets,if=spell_targets.whirlwind=2" );
@@ -3663,17 +3872,25 @@ void warrior_t::apl_arms()
   if ( sim -> allow_potions )
   {
     if ( true_level > 90 )
+    {
       default_list -> add_action( "potion,name=draenic_strength,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<25" );
+    }
     else if ( true_level >= 80 )
+    {
       default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<25" );
+    }
   }
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
     if ( racial_actions[i] == "arcane_torrent" )
+    {
       default_list -> add_action( racial_actions[i] + ",if=rage<rage.max-40" );
+    }
     else
+    {
       default_list -> add_action( racial_actions[i] + ",if=debuff.colossus_smash.up|buff.battle_cry.up" );
+    }
   }
 
   single_target -> add_talent( this, "Rend", "if=remains<gcd" );
@@ -3705,7 +3922,9 @@ void warrior_t::apl_prot()
   for ( size_t i = 0; i < num_items; i++ )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    {
       default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=active_enemies=1|(active_enemies>=2&buff.ravager_protection.up)" );
+    }
   }
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] );
@@ -3722,9 +3941,13 @@ void warrior_t::apl_prot()
   if ( sim -> allow_potions )
   {
     if ( true_level > 90 )
+    {
       prot -> add_action( "potion,name=draenic_armor,if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.shield_block.up|buff.potion.up)|target.time_to_die<=25" );
+    }
     else if ( true_level >= 80 )
+    {
       prot -> add_action( "potion,name=mountains,if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.shield_block.up|buff.potion.up)|target.time_to_die<=25" );
+    }
   }
 
   //stoneform
@@ -4086,10 +4309,14 @@ void warrior_t::init_scaling()
   player_t::init_scaling();
 
   if ( specialization() == WARRIOR_FURY )
+  {
     scales_with[STAT_WEAPON_OFFHAND_DPS] = true;
+  }
 
   if ( specialization() == WARRIOR_PROTECTION )
+  {
     scales_with[STAT_BONUS_ARMOR] = true;
+  }
 
   scales_with[STAT_AGILITY] = false;
 }
@@ -4159,13 +4386,21 @@ void warrior_t::init_rng()
   player_t::init_rng();
 
   if ( talents.overpower )
+  {
     rppm.overpower = std::unique_ptr<rppm::overpower_t>( new rppm::overpower_t( *this ) );
+  }
   if ( warswords_of_the_valarjar )
+  {
     rppm.rage_of_the_valarjar = std::unique_ptr<rppm::rage_of_the_valarjar_t>( new rppm::rage_of_the_valarjar_t( *this ) );
+  }
   if ( talents.wrecking_ball )
+  {
     rppm.wrecking_ball = std::unique_ptr<rppm::wrecking_ball_t>( new rppm::wrecking_ball_t( *this ) );
+  }
   if ( artifact.odyns_champion.rank() )
+  {
     rppm.odyns_champion = std::unique_ptr<rppm::odyns_champion_t>( new rppm::odyns_champion_t( *this ) );
+  }
 }
 
 // warrior_t::init_resources ================================================
@@ -4191,7 +4426,9 @@ void warrior_t::init_action_list()
   if ( main_hand_weapon.type == WEAPON_NONE )
   {
     if ( !quiet )
+    {
       sim -> errorf( "Player %s has no weapon equipped at the Main-Hand slot.", name() );
+    }
 
     quiet = true;
     return;
@@ -4256,12 +4493,16 @@ void warrior_t::combat_begin()
   }
 
   if ( initial_rage > 0 )
+  {
     resources.current[RESOURCE_RAGE] = initial_rage; // User specified rage.
+  }
 
   player_t::combat_begin();
 
   if ( specialization() == WARRIOR_PROTECTION )
+  {
     resolve_manager.start();
+  }
 }
 
 // warrior_t::reset =========================================================
@@ -4271,23 +4512,35 @@ void warrior_t::reset()
   player_t::reset();
 
   if ( specialization() == WARRIOR_PROTECTION )
+  {
     buff.defensive_stance -> trigger();
+  }
   else // Arms probably doesn't want defensive stance up every time.
+  {
     buff.defensive_stance -> expire();
+  }
 
   heroic_charge = nullptr;
   rampage_driver = nullptr;
   if ( rppm.overpower )
+  {
     rppm.overpower -> reset();
+  }
 
   if ( rppm.rage_of_the_valarjar )
+  {
     rppm.rage_of_the_valarjar -> reset();
+  }
 
   if ( rppm.wrecking_ball )
+  {
     rppm.wrecking_ball -> reset();
+  }
 
   if ( rppm.odyns_champion )
+  {
     rppm.odyns_champion -> reset();
+  }
 }
 
 // Movement related overrides. =============================================
@@ -4338,13 +4591,16 @@ double warrior_t::composite_player_multiplier( school_e school ) const
   double m = player_t::composite_player_multiplier( school );
 
   if ( buff.avatar -> check() )
+  {
     m *= 1.0 + buff.avatar -> data().effectN( 1 ).percent();
+  }
 
   if ( main_hand_weapon.group() == WEAPON_2H && spec.seasoned_soldier -> ok() )
+  {
     m *= 1.0 + spec.seasoned_soldier -> effectN( 1 ).percent();
-
-  // --- Enrages ---
-  if ( buff.enrage -> check() && mastery.unshackled_fury -> ok() )
+  }
+  // Arms no longer has enrage, so no need to check for it.
+  else if ( buff.enrage -> check() && mastery.unshackled_fury -> ok() )
   {
     m *= 1.0 + artifact.raging_berserker.percent();
     m *= 1.0 + cache.mastery_value();
@@ -4352,7 +4608,9 @@ double warrior_t::composite_player_multiplier( school_e school ) const
 
   if ( main_hand_weapon.group() == WEAPON_1H &&
        off_hand_weapon.group() == WEAPON_1H )
+  {
     m *= 1.0 + spec.singleminded_fury -> effectN( 1 ).percent();
+  }
 
   m *= 1.0 + buff.dragon_roar -> check_value();
   m *= 1.0 + buff.frothing_berserker -> check_value();
@@ -4372,7 +4630,9 @@ double warrior_t::composite_attribute( attribute_e attr ) const
   {
   case ATTR_STAMINA:
   if ( buff.defensive_stance -> check() )
+  {
     a += spec.unwavering_sentinel -> effectN( 1 ).percent() * player_t::composite_attribute( ATTR_STAMINA );
+  }
   a += spec.titans_grip -> effectN( 2 ).percent() * player_t::composite_attribute( ATTR_STAMINA );
   break;
   default:
@@ -4413,7 +4673,9 @@ double warrior_t::composite_melee_expertise( const weapon_t* ) const
   double e = player_t::composite_melee_expertise();
 
   if ( buff.defensive_stance -> check() )
+  {
     e += spec.unwavering_sentinel -> effectN( 5 ).percent();
+  }
 
   return e;
 }
@@ -4437,10 +4699,14 @@ double warrior_t::composite_rating_multiplier( rating_e rating ) const
 double warrior_t::matching_gear_multiplier( attribute_e attr ) const
 {
   if ( ( attr == ATTR_STRENGTH ) && ( specialization() != WARRIOR_PROTECTION ) )
+  {
     return 0.05;
+  }
 
   if ( ( attr == ATTR_STAMINA ) && ( specialization() == WARRIOR_PROTECTION ) )
+  {
     return 0.05;
+  }
 
   return 0.0;
 }
@@ -4458,7 +4724,9 @@ double warrior_t::composite_block() const
 
   // shield block adds 100% block chance
   if ( buff.shield_block -> check() )
+  {
     b += buff.shield_block -> data().effectN( 1 ).percent();
+  }
 
   return b;
 }
@@ -4470,10 +4738,9 @@ double warrior_t::composite_block_reduction() const
   double br = player_t::composite_block_reduction();
 
   // Prot T17 4-pc increases block value by 5% while shield block is active (additive)
-  if ( buff.shield_block -> check() )
+  if ( buff.shield_block -> check() && sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) )
   {
-    if ( sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) )
-      br += spell.t17_prot_2p -> effectN( 1 ).percent();
+    br += spell.t17_prot_2p -> effectN( 1 ).percent();
   }
 
   return br;
@@ -4498,7 +4765,9 @@ double warrior_t::composite_parry_rating() const
 
   // add Riposte
   if ( spec.riposte -> ok() )
+  {
     p += composite_melee_crit_rating();
+  }
 
   return p;
 }
@@ -4510,10 +4779,13 @@ double warrior_t::composite_parry() const
   double parry = player_t::composite_parry();
 
   if ( buff.ravager_protection -> check() )
+  {
     parry += talents.ravager -> effectN( 1 ).percent();
-
-  if ( buff.die_by_the_sword -> check() )
+  }
+  else if ( buff.die_by_the_sword -> check() )
+  {
     parry += spec.die_by_the_sword -> effectN( 1 ).percent();
+  }
 
   return parry;
 }
@@ -4525,7 +4797,9 @@ double warrior_t::composite_attack_power_multiplier() const
   double ap = player_t::composite_attack_power_multiplier();
 
   if ( mastery.critical_block -> ok() )
+  {
     ap *= 1.0 + cache.mastery() * mastery.critical_block -> effectN( 5 ).mastery_value();
+  }
 
   return ap;
 }
@@ -4537,7 +4811,9 @@ double warrior_t::composite_crit_block() const
   double b = player_t::composite_crit_block();
 
   if ( mastery.critical_block -> ok() )
+  {
     b += cache.mastery() * mastery.critical_block -> effectN( 1 ).mastery_value();
+  }
 
   return b;
 }
@@ -4549,7 +4825,9 @@ double warrior_t::composite_crit_avoidance() const
   double c = player_t::composite_crit_avoidance();
 
   if ( buff.defensive_stance -> check() )
+  {
     c += spec.unwavering_sentinel -> effectN( 4 ).percent();
+  }
 
   return c;
 }
@@ -4567,7 +4845,9 @@ double warrior_t::composite_melee_speed() const
   }
 
   if ( buff.enrage -> check() )
+  {
     s /= 1.0 + buff.enrage -> data().effectN( 1 ).percent();
+  }
 
   return s;
 }
@@ -4595,9 +4875,12 @@ double warrior_t::composite_player_critical_damage_multiplier() const
 {
   double cdm = player_t::composite_player_critical_damage_multiplier();
   
-  cdm *= 1.0 + artifact.unrivaled_strength.percent();
+  if ( buff.battle_cry -> check() )
+  {
+    cdm *= 1.0 + artifact.unrivaled_strength.percent();
+  }
 
-  return player_t::composite_player_critical_damage_multiplier();
+  return cdm;
 }
 
 // warrior_t::composite_spell_crit =========================================
@@ -4623,15 +4906,25 @@ double warrior_t::temporary_movement_modifier() const
   // These are ordered in the highest speed movement increase to the lowest, there's no reason to check the rest as they will just be overridden.
   // Also gives correct benefit numbers.
   if ( buff.heroic_leap_movement -> up() )
+  {
     temporary = std::max( buff.heroic_leap_movement -> value(), temporary );
+  }
   else if ( buff.charge_movement -> up() )
+  {
     temporary = std::max( buff.charge_movement -> value(), temporary );
+  }
   else if ( buff.intervene_movement -> up() )
+  {
     temporary = std::max( buff.intervene_movement -> value(), temporary );
+  }
   else if ( buff.bounding_stride -> up() )
+  {
     temporary = std::max( buff.bounding_stride -> value(), temporary );
+  }
   else if ( buff.frothing_berserker -> up() )
+  {
     temporary = std::max( buff.frothing_berserker -> data().effectN( 2 ).percent(), temporary );
+  }
 
   return temporary;
 }
@@ -4643,7 +4936,9 @@ void warrior_t::invalidate_cache( cache_e c )
   player_t::invalidate_cache( c );
 
   if ( c == CACHE_ATTACK_CRIT && mastery.critical_block -> ok() )
+  {
     player_t::invalidate_cache( CACHE_PARRY );
+  }
 
   if ( c == CACHE_MASTERY && mastery.critical_block -> ok() )
   {
@@ -4652,10 +4947,14 @@ void warrior_t::invalidate_cache( cache_e c )
     player_t::invalidate_cache( CACHE_ATTACK_POWER );
   }
   if ( c == CACHE_MASTERY && mastery.unshackled_fury -> ok() )
+  {
     player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  }
 
   if ( c == CACHE_BONUS_ARMOR && spec.bladed_armor -> ok() )
+  {
     player_t::invalidate_cache( CACHE_ATTACK_POWER );
+  }
 }
 
 // warrior_t::primary_role() ================================================
@@ -4687,9 +4986,13 @@ stat_e warrior_t::convert_hybrid_stat( stat_e s ) const
   return STAT_NONE;
   case STAT_BONUS_ARMOR:
   if ( specialization() == WARRIOR_PROTECTION )
+  {
     return s;
+  }
   else
+  {
     return STAT_NONE;
+  }
   default: return s;
   }
 }
@@ -4705,19 +5008,26 @@ void warrior_t::assess_damage( school_e school,
        s -> result == RESULT_GLANCE )
   {
     if ( buff.defensive_stance -> up() )
+    {
       s -> result_amount *= 1.0 + buff.defensive_stance -> data().effectN( 1 ).percent();
+    }
 
     warrior_td_t* td = get_target_data( s -> action -> player );
 
     if ( td -> debuffs_demoralizing_shout -> up() )
+    {
       s -> result_amount *= 1.0 + td -> debuffs_demoralizing_shout -> value();
+    }
 
     //take care of dmg reduction CDs
     if ( buff.shield_wall -> up() )
+    {
       s -> result_amount *= 1.0 + buff.shield_wall -> value();
-
-    if ( buff.die_by_the_sword -> up() )
+    }
+    else if ( buff.die_by_the_sword -> up() )
+    {
       s -> result_amount *= 1.0 + buff.die_by_the_sword -> default_value;
+    }
   }
 
   if ( ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY ) && !s -> action -> is_aoe() ) // AoE attacks do not reset revenge.
@@ -4729,10 +5039,9 @@ void warrior_t::assess_damage( school_e school,
     }
   }
 
-  if ( prot_trinket )
+  if ( prot_trinket && school != SCHOOL_PHYSICAL && buff.shield_block -> check() )
   {
-    if ( school != SCHOOL_PHYSICAL && buff.shield_block -> check() )
-      s -> result_amount *= 1.0 + ( prot_trinket -> driver() -> effectN( 1 ).average( prot_trinket -> item ) / 100.0 );
+    s -> result_amount *= 1.0 + ( prot_trinket -> driver() -> effectN( 1 ).average( prot_trinket -> item ) / 100.0 );
   }
 
   player_t::assess_damage( school, dtype, s );
@@ -4774,7 +5083,9 @@ action_t* warrior_t::create_proc_action( const std::string& name, const special_
 std::string warrior_t::create_profile( save_e type )
 {
   if ( specialization() == WARRIOR_PROTECTION && primary_role() == ROLE_TANK )
+  {
     position_str = "front";
+  }
 
   return player_t::create_profile( type );
 }
