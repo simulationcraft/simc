@@ -27,9 +27,6 @@
 #  define SC_WINDOWS
 #  define WIN32_LEAN_AND_MEAN
 #  define VC_EXTRALEAN
-#if !defined(_USING_V110_SDK71_)
-#define VS_WIN_NONXP_TARGET //Toolkit targeting.
-#endif
 #  ifndef _CRT_SECURE_NO_WARNINGS
 #    define _CRT_SECURE_NO_WARNINGS
 #  endif
@@ -62,8 +59,8 @@
 // ==========================================================================
 // Compiler Minimal Limits
 // ==========================================================================
-#if defined( SC_VS ) && SC_VS < 11
-#  error "Visual Studio 10 ( 2010 ) or lower not supported"
+#if defined( SC_VS ) && SC_VS < 12
+#  error "Visual Studio 11 ( 2012 ) or lower not supported"
 #endif
 
 #if defined( SC_CLANG ) && SC_CLANG < 30100
