@@ -2313,8 +2313,8 @@ struct voidform_t final : public priest_spell_t
     {
       priest.buffs.shadow_t19_4p->trigger();
     }
-    priest.buffs.shadow_t19_4p->trigger();  // For testing until set bonuses
-    // are available in SimC
+    // priest.buffs.shadow_t19_4p->trigger();
+    // For testing until set bonuses are available in SimC
 
     if ( priest.artifact.sphere_of_insanity.rank() )
     {
@@ -2676,13 +2676,11 @@ struct mind_blast_t final : public priest_spell_t
 {
 private:
   double insanity_gain;
-  bool casted_with_shadowy_insight;
 
 public:
   mind_blast_t( priest_t& player, const std::string& options_str )
     : priest_spell_t( "mind_blast", player,
-                      player.find_class_spell( "Mind Blast" ) ),
-                      casted_with_shadowy_insight( false ) 
+                      player.find_class_spell( "Mind Blast" ) )
   {
     parse_options( options_str );
     is_mind_spell = true;
@@ -2717,7 +2715,7 @@ public:
   {
     priest_spell_t::execute();
 
-    casted_with_shadowy_insight = false;
+    priest.buffs.shadowy_insight->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -2738,14 +2736,7 @@ public:
 
   void schedule_execute( action_state_t* state = nullptr ) override
   {
-    if (priest.buffs.shadowy_insight->up())
-    {
-      casted_with_shadowy_insight = true;
-    }
-
     priest_spell_t::schedule_execute(state);
-
-    priest.buffs.shadowy_insight->expire();
   }
 
   timespan_t execute_time() const override
@@ -2763,8 +2754,6 @@ public:
   void reset() override
   {
     priest_spell_t::reset();
-
-    casted_with_shadowy_insight = false;
   }
 
   void update_ready( timespan_t cd_duration ) override
@@ -3299,10 +3288,7 @@ struct shadow_word_pain_t final : public priest_spell_t
 
     if ( d->state->result_amount > 0 )
     {
-      if ( trigger_shadowy_insight() )
-      {
-        priest.procs.shadowy_insight->occur();
-      }
+      trigger_shadowy_insight();
     }
 
     if ( priest.buffs.sphere_of_insanity->up() )
@@ -3541,6 +3527,8 @@ struct void_bolt_t final : public priest_spell_t
   {
     priest_spell_t::execute();
 
+    generate_insanity( insanity_gain, priest.gains.insanity_void_bolt );
+
     if ( priest.buffs.shadow_t19_4p->up() )
     {
       cooldown->reset( false );
@@ -3565,8 +3553,6 @@ struct void_bolt_t final : public priest_spell_t
     {
       td.dots.vampiric_touch->refresh_duration();
     }
-
-    generate_insanity( insanity_gain, priest.gains.insanity_void_bolt );
   }
 
   bool ready() override
@@ -5361,25 +5347,33 @@ struct voidform_t final : public priest_buff_t<buff_t>
       double insanity_loss =
           ( 8 * 0.2 ) + ( ( priest->buffs.voidform->check() ) / 2 ) * 0.2;
 
-      if ( insanity_loss <= priest->resources.current[ RESOURCE_INSANITY ] )
+      if (insanity_loss > priest->resources.current[RESOURCE_INSANITY])
       {
-        priest->resource_loss( RESOURCE_INSANITY, insanity_loss,
-                               priest->gains.insanity_drain );
-
-        if ( priest->buffs.dispersion->check() )
-        {
-          priest->resource_gain( RESOURCE_INSANITY, insanity_loss,
-                                 priest->gains.insanity_dispersion );
-        }
-
-        if ( priest->buffs.void_torrent->check() )
-        {
-          priest->resource_gain( RESOURCE_INSANITY, insanity_loss,
-                                 priest->gains.insanity_void_torrent );
-        }
+        insanity_loss = priest->resources.current[RESOURCE_INSANITY];
       }
-      else  // If you don't have enough insanity for the drain, you drop out
-            // with however much insanity you had left
+
+      priest->resource_loss( RESOURCE_INSANITY, insanity_loss,
+                              priest->gains.insanity_drain );
+
+      if ( priest->buffs.dispersion->check() )
+      {
+        priest->resource_gain( RESOURCE_INSANITY, insanity_loss,
+                                priest->gains.insanity_dispersion );
+      }
+
+      if ( priest->buffs.void_torrent->check() )
+      {
+        priest->resource_gain( RESOURCE_INSANITY, insanity_loss,
+                                priest->gains.insanity_void_torrent );
+      }
+
+      // If you don't have enough insanity for the drain, you drop out
+      // with however much insanity you had left. HOWEVER, there is a
+      // bug presently where this extra insanity doesn't count towards
+      // your next Voidform. We're going to just remove this extra
+      // insanity and drop down to 0 until this bug is fixed, one way
+      // or another. -- 2014/04/17 Twintop
+      if (priest->resources.current[RESOURCE_INSANITY] == 0)
       {
         if ( sim().debug )
         {
@@ -6575,7 +6569,8 @@ void priest_t::create_buffs()
 
   buffs.shadowy_insight =
       buff_creator_t(this, "shadowy_insight")
-          .spell(talents.shadowy_insight);
+          .spell(talents.shadowy_insight)
+          .max_stack(1); //Spell Data says 2, really is 1 -- 2016/04/17 Twintop
 
   buffs.void_ray = buff_creator_t( this, "void_ray" )
                        .spell( talents.void_ray->effectN( 1 ).trigger() );
