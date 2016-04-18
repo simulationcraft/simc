@@ -1342,11 +1342,6 @@ struct priest_heal_t : public priest_action_t<heal_t>
 {
   struct divine_aegis_t : public priest_absorb_t
   {
-    // Multistrike test results 14/12/05 by philoptik:
-    // triggers from hit -> critting multistrike
-    // does NOT trigger from crit -> normal multistrike
-    // contrary to general tooltip interpretation.
-
     divine_aegis_t( const std::string& n, priest_t& p )
       : priest_absorb_t( n + "_divine_aegis", p, p.find_spell( 47753 ) )
     {

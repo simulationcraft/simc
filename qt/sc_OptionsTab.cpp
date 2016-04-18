@@ -828,7 +828,7 @@ void SC_OptionsTab::createToolTips()
 
   choice.target_level -> setToolTip( tr( "Level of the target and any adds." ) );
 
-  choice.pvp_crit -> setToolTip( tr( "In PVP, critical strikes deal 150% damage instead of 200%. Multistrikes are also limited to one roll instead of two.\n"
+  choice.pvp_crit -> setToolTip( tr( "In PVP, critical strikes deal 150% damage instead of 200%.\n"
                                      "Enabling this option will set target level to max player level." ) );
 
   choice.player_skill -> setToolTip( tr( "Elite:       No mistakes.  No cheating either." ) + "\n" +

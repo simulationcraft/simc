@@ -321,7 +321,6 @@ public:
   {
     // Generic
     const spell_data_t* plate_specialization;
-    const spell_data_t* multistrike_attunement;
 
     // Blood
     const spell_data_t* bladed_armor;
@@ -6358,7 +6357,6 @@ void death_knight_t::init_spells()
 
   // Generic
   spec.plate_specialization       = find_specialization_spell( "Plate Specialization" );
-  spec.multistrike_attunement     = find_specialization_spell( "Multistrike Attunement" );
 
   // Blood
   spec.bladed_armor               = find_specialization_spell( "Bladed Armor" );
