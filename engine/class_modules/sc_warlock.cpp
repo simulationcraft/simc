@@ -1609,7 +1609,7 @@ struct agony_t: public warlock_spell_t
   {
     if( p() -> talents.writhe_in_agony -> ok() && td( d -> state -> target ) -> agony_stack < ( 20 ) )
       td( d -> state -> target ) -> agony_stack++;
-    else if( td( d -> state->target ) -> agony_stack < ( 10 ) )
+    else if( td( d -> state -> target ) -> agony_stack < ( 10 ) )
       td( d -> state -> target ) -> agony_stack++;
 
     td( d -> target ) -> debuffs_agony -> trigger();
@@ -3591,6 +3591,7 @@ void warlock_t::reset()
   shard_react = timespan_t::zero();
   havoc_target = nullptr;
   double_nightfall = 0;
+  agony_ticks_since_last_proc = 0;
 
   demonic_power_rppm.reset();
   grimoire_of_synergy.reset();
