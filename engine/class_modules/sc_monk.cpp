@@ -699,6 +699,7 @@ public:
   const double heavy_stagger_threshold;
 //  combo_strikes_e convert_expression_action_to_enum( action_t* a );
   void trigger_celestial_fortune( action_state_t* );
+  void trigger_cyclone_strikes( action_state_t* );
   double weapon_power_mod;
   double clear_stagger();
   double partial_clear_stagger( double );
@@ -1111,6 +1112,14 @@ struct storm_earth_and_fire_pet_t : public pet_t
     sef_tiger_palm_t( storm_earth_and_fire_pet_t* player ) :
       sef_melee_attack_t( "tiger_palm", player, player -> o() -> spec.tiger_palm )
     { }
+
+    void impact( action_state_t* state ) override
+    {
+      sef_melee_attack_t::impact( state );
+
+      if ( result_is_hit( state -> result ) )
+        o() -> trigger_cyclone_strikes( state );
+    }
   };
 
   struct sef_blackout_kick_t : public sef_melee_attack_t
@@ -1119,7 +1128,15 @@ struct storm_earth_and_fire_pet_t : public pet_t
     sef_blackout_kick_t( storm_earth_and_fire_pet_t* player ) :
       sef_melee_attack_t( "blackout_kick", player, player -> o() -> spec.blackout_kick )
     { }
-  };
+
+    void impact( action_state_t* state ) override
+    {
+      sef_melee_attack_t::impact( state );
+
+      if ( result_is_hit( state -> result ) )
+        o() -> trigger_cyclone_strikes( state );
+    }
+   };
 
   struct sef_rising_sun_kick_t : public sef_melee_attack_t
   {
@@ -1135,6 +1152,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
       if ( result_is_hit( state -> result ) )
       {
         state -> target -> debuffs.mortal_wounds -> trigger();
+        o() -> trigger_cyclone_strikes( state );
       }
     }
   };
@@ -1147,6 +1165,14 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       player -> find_action( "rising_sun_kick" ) -> add_child( this );
     }
+
+    void impact( action_state_t* state ) override
+    {
+      sef_melee_attack_t::impact( state );
+
+      if ( result_is_hit( state -> result ) )
+        o() -> trigger_cyclone_strikes( state );
+    }
   };
 
   struct sef_rising_sun_kick_tornado_kick_t : public sef_melee_attack_t
@@ -1156,6 +1182,14 @@ struct storm_earth_and_fire_pet_t : public pet_t
       sef_melee_attack_t( "rising_sun_kick_tornado_kick", player, player -> o() -> passives.rising_sun_kick_trinket )
     {
       player -> find_action( "rising_sun_kick" ) -> add_child( this );
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      sef_melee_attack_t::impact( state );
+
+      if ( result_is_hit( state -> result ) )
+        o() -> trigger_cyclone_strikes( state );
     }
   };
 
@@ -2193,13 +2227,13 @@ struct tiger_palm_t: public monk_melee_attack_t
     }
   }
 
-  virtual void impact(action_state_t* s) override
+  virtual void impact( action_state_t* s ) override
   {
     monk_melee_attack_t::impact( s );
 
     // Apply Mortal Wonds
     if ( p() -> specialization() == MONK_WINDWALKER && result_is_hit( s -> result ) )
-      td( s -> target ) ->debuff.cyclone_strikes -> trigger();  
+      p() -> trigger_cyclone_strikes( s );
   }
 };
 
@@ -2273,15 +2307,15 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
       p() -> buff.masterful_strikes -> trigger( p() -> sets.set( MONK_WINDWALKER,T18, B2 ) -> effect_count() );
   }
 
-  virtual void impact(action_state_t* s) override
+  virtual void impact( action_state_t* s ) override
   {
     monk_melee_attack_t::impact( s );
 
     // Apply Mortal Wonds
     if ( result_is_hit( s -> result ) )
     {
-      s -> target -> debuffs.mortal_wounds -> trigger();  
-      td( s -> target) -> debuff.cyclone_strikes -> trigger();
+      s -> target -> debuffs.mortal_wounds -> trigger(); 
+      p() -> trigger_cyclone_strikes( s );
     }
   }
 };
@@ -2331,7 +2365,7 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
       return;
   }
 
-  virtual void impact(action_state_t* s) override
+  virtual void impact( action_state_t* s ) override
   {
     monk_melee_attack_t::impact( s );
 
@@ -2339,7 +2373,7 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
     if ( result_is_hit( s -> result ) )
     {
       s -> target -> debuffs.mortal_wounds -> trigger();  
-      td( s -> target) -> debuff.cyclone_strikes -> trigger();
+      p() -> trigger_cyclone_strikes( s );
     }
   }
 };
@@ -2447,7 +2481,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     }
   }
 
-  virtual void impact(action_state_t* s) override
+  virtual void impact( action_state_t* s ) override
   {
     monk_melee_attack_t::impact(s);
 
@@ -2606,7 +2640,7 @@ struct blackout_kick_t: public monk_melee_attack_t
         td( s -> target ) -> debuff.dizzing_kicks -> trigger();
 
       if ( p() -> specialization() == MONK_WINDWALKER )
-        td( s -> target ) -> debuff.cyclone_strikes -> trigger();
+        p() -> trigger_cyclone_strikes( s );
 
       if ( p() -> buff.teachings_of_the_monastery -> up() )
       {
@@ -5778,6 +5812,11 @@ void monk_t::trigger_celestial_fortune( action_state_t* s )
     active_celestial_fortune_proc -> base_dd_max = active_celestial_fortune_proc -> base_dd_min = s -> result_amount;
     active_celestial_fortune_proc -> schedule_execute();
   }
+}
+
+void monk_t::trigger_cyclone_strikes( action_state_t* s )
+{
+  get_target_data( s -> target ) -> debuff.cyclone_strikes -> trigger();
 }
 
 // monk_t::create_pet =======================================================
