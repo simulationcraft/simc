@@ -128,6 +128,7 @@ public:
 
   struct buffs_t
   {
+    debuff_t* cyclone_strikes;
     debuff_t* dizzing_kicks;
     debuff_t* keg_smash;
     debuff_t* storm_earth_and_fire;
@@ -384,6 +385,7 @@ public:
     const spell_data_t* afterlife;
     const spell_data_t* combat_conditioning;
     const spell_data_t* combo_breaker;
+    const spell_data_t* cyclone_strikes;
     const spell_data_t* disable;
     const spell_data_t* fists_of_fury;
     const spell_data_t* flying_serpent_kick;
@@ -749,7 +751,14 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
     sef_td_t( player_t* target, storm_earth_and_fire_pet_t* source ) :
       actor_target_data_t( target, source )
-    { }
+    {
+/*      debuffs.cyclone_strikes = buff_creator_t( this, "cyclone_strikes" )
+        .spell( o() -> spec.cyclone_strikes )
+        .duration( timespan_t::from_seconds( o() -> spec.spinning_crane_kick -> effectN( 3 ).base_value() ) )
+        .default_value( o() -> spec.spinning_crane_kick -> effectN( 2 ).percent() )
+        .quiet( true );
+*/
+    }
   };
 
   // Storm, Earth, and Fire abilities begin =================================
@@ -1118,6 +1127,16 @@ struct storm_earth_and_fire_pet_t : public pet_t
     sef_rising_sun_kick_t( storm_earth_and_fire_pet_t* player ) :
       sef_melee_attack_t( "rising_sun_kick", player, player -> o() -> spec.rising_sun_kick )
     { }
+
+    void impact( action_state_t* state ) override
+    {
+      sef_melee_attack_t::impact( state );
+
+      if ( result_is_hit( state -> result ) )
+      {
+        state -> target -> debuffs.mortal_wounds -> trigger();
+      }
+    }
   };
 
   struct sef_rising_sun_kick_trinket_t : public sef_melee_attack_t
@@ -1182,17 +1201,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
     sef_fists_of_fury_tick_t( storm_earth_and_fire_pet_t* p ):
       sef_tick_action_t( "fists_of_fury_tick", p, p -> o() -> spec.fists_of_fury -> effectN( 3 ).trigger())
     { }
-
-    // Damage must be divided on non-main target by the number of targets
-    double composite_aoe_multiplier( const action_state_t* state ) const override
-    {
-      if ( state -> target != target )
-      {
-        return 1.0 / state -> n_targets;
-      }
-
-      return 1.0;
-    }
   };
 
  struct sef_fists_of_fury_t : public sef_melee_attack_t
@@ -1318,12 +1326,19 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
   // Storm, Earth, and Fire abilities end ===================================
 
+
   std::vector<sef_melee_attack_t*> attacks;
   std::vector<sef_spell_t*> spells;
 
 private:
   target_specific_t<sef_td_t> target_data;
 public:
+  // SEF applies the Cyclone Strike debuff as well
+  struct buffs_t
+  {
+    debuff_t* cyclone_strikes;
+    debuff_t* dizzing_kicks;
+  } debuffs;
 
   storm_earth_and_fire_pet_t( const std::string& name, sim_t* sim, monk_t* owner, bool dual_wield ):
     pet_t( sim, owner, name, true ),
@@ -2177,40 +2192,24 @@ struct tiger_palm_t: public monk_melee_attack_t
       default: break;
     }
   }
+
+  virtual void impact(action_state_t* s) override
+  {
+    monk_melee_attack_t::impact( s );
+
+    // Apply Mortal Wonds
+    if ( p() -> specialization() == MONK_WINDWALKER && result_is_hit( s -> result ) )
+      td( s -> target ) ->debuff.cyclone_strikes -> trigger();  
+  }
 };
 
 // ==========================================================================
 // Rising Sun Kick
 // ==========================================================================
 
-// Dummy Mortal Wounds Application
-struct mortal_wounds_t : public monk_melee_attack_t
-{
-  mortal_wounds_t( monk_t* p ) :
-    monk_melee_attack_t( "mortal_wounds", p, p -> debuffs.mortal_wounds-> s_data )
-  {
-    cooldown -> duration = timespan_t::zero();
-    background = dual = true;
-    trigger_gcd = timespan_t::zero();
-    aoe = -1;
-    quiet = true;
-    range = p -> spec.rising_sun_kick -> max_range();
-    base_dd_min = base_dd_max = 0;
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    monk_melee_attack_t::impact( s );
-
-    s -> target -> debuffs.mortal_wounds -> trigger();
-  }
-};
-
 // Rising Sun Kick T18 Windwalker Trinket Proc ==============================
 struct rising_sun_kick_proc_t : public monk_melee_attack_t
 {
-  mortal_wounds_t* mortal_wounds;
-
   rising_sun_kick_proc_t( monk_t* p ) :
     monk_melee_attack_t( "rising_sun_kick_trinket", p, p -> passives.rising_sun_kick_trinket )
   {
@@ -2221,8 +2220,6 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     trigger_gcd = timespan_t::zero();
-
-    mortal_wounds = new mortal_wounds_t(p);
   }
 
   bool init_finished()
@@ -2256,15 +2253,17 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
     return am;
   }
 
+  virtual double cost() const override
+  {
+    return 0;
+  }
+
   virtual void execute() override
   {
     monk_melee_attack_t::execute();
 
     if ( result_is_miss( execute_state -> result ) )
       return;
-
-    // Apply Mortal Wonds
-    mortal_wounds -> execute();
 
     // Activate A'Buraq's Trait
     if ( p() -> artifact.transfer_the_power.rank() )
@@ -2274,16 +2273,22 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
       p() -> buff.masterful_strikes -> trigger( p() -> sets.set( MONK_WINDWALKER,T18, B2 ) -> effect_count() );
   }
 
-  virtual double cost() const override
+  virtual void impact(action_state_t* s) override
   {
-    return 0;
+    monk_melee_attack_t::impact( s );
+
+    // Apply Mortal Wonds
+    if ( result_is_hit( s -> result ) )
+    {
+      s -> target -> debuffs.mortal_wounds -> trigger();  
+      td( s -> target) -> debuff.cyclone_strikes -> trigger();
+    }
   }
 };
 
 // Rising Sun Kick Tornado Kick Windwalker Artifact Trait ==================
 struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
 {
-  mortal_wounds_t* mortal_wounds;
 
   rising_sun_kick_tornado_kick_t( monk_t* p ) :
     monk_melee_attack_t( "rising_sun_kick_torndo_kick", p, p -> spec.rising_sun_kick -> effectN( 1 ).trigger() )
@@ -2295,8 +2300,6 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
     cooldown -> duration = timespan_t::zero();
     background = dual = true;
     trigger_gcd = timespan_t::zero();
-
-    mortal_wounds = new mortal_wounds_t( p );
   }
 
   // Force 250 milliseconds for the animation, but not delay the overall GCD
@@ -2326,9 +2329,18 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
 
     if ( result_is_miss( execute_state -> result ) )
       return;
+  }
+
+  virtual void impact(action_state_t* s) override
+  {
+    monk_melee_attack_t::impact( s );
 
     // Apply Mortal Wonds
-    mortal_wounds -> execute();
+    if ( result_is_hit( s -> result ) )
+    {
+      s -> target -> debuffs.mortal_wounds -> trigger();  
+      td( s -> target) -> debuff.cyclone_strikes -> trigger();
+    }
   }
 };
 
@@ -2337,13 +2349,11 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 {
   rising_sun_kick_proc_t* rsk_proc;
   rising_sun_kick_tornado_kick_t* rsk_tornado_kick;
-  mortal_wounds_t* mortal_wounds;
 
   rising_sun_kick_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( "rising_sun_kick", p, p -> spec.rising_sun_kick ),
     rsk_proc( new rising_sun_kick_proc_t( p ) ),
-    rsk_tornado_kick( new rising_sun_kick_tornado_kick_t( p ) ),
-    mortal_wounds( new mortal_wounds_t( p ) )
+    rsk_tornado_kick( new rising_sun_kick_tornado_kick_t( p ) )
   {
     parse_options( options_str );
 
@@ -2362,8 +2372,6 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     oh = &( player -> off_hand_weapon );
     attack_power_mod.direct = p -> passives.rising_sun_kick_trinket -> effectN( 1 ).ap_coeff();
     spell_power_mod.direct = 0.0;
-
-    add_child( mortal_wounds );
 
     if ( p -> artifact.tornado_kicks.rank() )
       add_child( rsk_tornado_kick );
@@ -2384,9 +2392,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
       am *= 1 + p() -> passives.aura_mistweaver_monk->effectN( 9 ).percent();
 
       if ( p() -> buff.teachings_of_the_monastery -> up() )
-      {
         am *= 1 + p() -> buff.teachings_of_the_monastery -> value();
-      }
     }
 
     return am;
@@ -2428,7 +2434,6 @@ struct rising_sun_kick_t: public monk_melee_attack_t
       }
       case MONK_WINDWALKER:
       {
-        mortal_wounds -> execute();
 
         // Activate A'Buraq's Trait
         if ( p() -> artifact.transfer_the_power.rank() )
@@ -2442,26 +2447,33 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     }
   }
 
-  virtual void impact( action_state_t* s ) override
+  virtual void impact(action_state_t* s) override
   {
-    monk_melee_attack_t::impact( s );
+    monk_melee_attack_t::impact(s);
 
-    if ( p() -> buff.teachings_of_the_monastery -> up() )
+    if ( result_is_hit( s -> result ) )
     {
-      p() -> buff.teachings_of_the_monastery -> expire();
-      // Spirit of the Crane does not have a buff associated with it. Since
-      // this is tied somewhat with Teachings of the Monastery, tacking
-      // this onto the removal of that buff.
-      if ( p() -> talent.spirit_of_the_crane -> ok() )
-        p() -> resource_gain( RESOURCE_MANA, ( p() -> resources.max[RESOURCE_MANA] * p() -> passives.spirit_of_the_crane -> effectN( 1 ).percent() ), p() -> gain.spirit_of_the_crane );
-    }
+      if ( p() -> buff.teachings_of_the_monastery -> up() )
+      {
+        p() -> buff.teachings_of_the_monastery -> expire();
+        // Spirit of the Crane does not have a buff associated with it. Since
+        // this is tied somewhat with Teachings of the Monastery, tacking
+        // this onto the removal of that buff.
+        if ( p() -> talent.spirit_of_the_crane -> ok() )
+          p() -> resource_gain( RESOURCE_MANA, ( p() -> resources.max[RESOURCE_MANA] * p() -> passives.spirit_of_the_crane -> effectN( 1 ).percent() ), p() -> gain.spirit_of_the_crane );
+      }
 
-    if ( p() -> artifact.tornado_kicks.rank() && result_is_hit( s -> result ) )
-    {
-      rsk_tornado_kick -> target = s -> target;
-      rsk_tornado_kick -> base_dd_max = s -> result_raw;
-      rsk_tornado_kick -> base_dd_min = s -> result_raw;
-      rsk_tornado_kick -> execute();
+      // Apply Mortal Wonds
+      if ( p() -> specialization() == MONK_WINDWALKER )
+        s -> target -> debuffs.mortal_wounds -> trigger();
+
+      if ( p() -> artifact.tornado_kicks.rank() )
+      {
+        rsk_tornado_kick -> target = s -> target;
+        rsk_tornado_kick -> base_dd_max = s -> result_raw;
+        rsk_tornado_kick -> base_dd_min = s -> result_raw;
+        rsk_tornado_kick -> execute();
+      }
     }
   }
 };
@@ -2587,18 +2599,24 @@ struct blackout_kick_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    // Apply Dizzing Kick debuff onto the target if talented
-    if ( p() -> talent.dizzying_kicks -> ok() )
-      td( s -> target ) -> debuff.dizzing_kicks -> trigger();
-
-    if ( p() -> buff.teachings_of_the_monastery -> up() )
+    if ( result_is_hit( s -> result ) )
     {
-      p() -> buff.teachings_of_the_monastery -> expire();
-      // Spirit of the Crane does not have a buff associated with it. Since
-      // this is tied somewhat with Teachings of the Monastery, tacking
-      // this onto the removal of that buff.
-      if ( p() -> talent.spirit_of_the_crane -> ok() )
-        p() -> resource_gain( RESOURCE_MANA, ( p() -> resources.max[RESOURCE_MANA] * p() -> passives.spirit_of_the_crane -> effectN( 1 ).percent() ), p() -> gain.spirit_of_the_crane );
+      // Apply Dizzing Kick debuff onto the target if talented
+      if ( p() -> talent.dizzying_kicks -> ok() )
+        td( s -> target ) -> debuff.dizzing_kicks -> trigger();
+
+      if ( p() -> specialization() == MONK_WINDWALKER )
+        td( s -> target ) -> debuff.cyclone_strikes -> trigger();
+
+      if ( p() -> buff.teachings_of_the_monastery -> up() )
+      {
+        p() -> buff.teachings_of_the_monastery -> expire();
+        // Spirit of the Crane does not have a buff associated with it. Since
+        // this is tied somewhat with Teachings of the Monastery, tacking
+        // this onto the removal of that buff.
+        if ( p() -> talent.spirit_of_the_crane -> ok() )
+          p() -> resource_gain( RESOURCE_MANA, ( p() -> resources.max[RESOURCE_MANA] * p() -> passives.spirit_of_the_crane -> effectN( 1 ).percent() ), p() -> gain.spirit_of_the_crane );
+      }
     }
   }
 };
@@ -2824,16 +2842,6 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
     base_costs[ RESOURCE_CHI ] = 0;
     dot_duration = timespan_t::zero();
     trigger_gcd = timespan_t::zero();
-  }
-
-  double composite_aoe_multiplier( const action_state_t* state ) const override
-  {
-    if ( state -> target != target )
-    {
-      return 1.0 / state -> n_targets;
-    }
-
-    return 1.0;
   }
 };
 
@@ -5661,6 +5669,15 @@ dots( dots_t() ),
 debuff( buffs_t() ),
 monk( *p )
 {
+  if ( p -> specialization() == MONK_WINDWALKER )
+  {
+    debuff.cyclone_strikes = buff_creator_t( *this, "cyclone_strikes" )
+      .spell( p -> spec.cyclone_strikes )
+      .duration( timespan_t::from_seconds( p -> spec.spinning_crane_kick -> effectN( 3 ).base_value() ) )
+      .default_value( p -> spec.spinning_crane_kick -> effectN( 2 ).percent() )
+      .quiet( true );
+  }
+
   debuff.dizzing_kicks = buff_creator_t( *this, "dizzying_kicks" )
     .spell( p -> passives.dizzying_kicks )
     .default_value( p-> passives.dizzying_kicks -> effectN( 1 ).percent() );
@@ -5974,6 +5991,7 @@ void monk_t::init_spells()
   spec.afterlife                     = find_specialization_spell( "Afterlife" );
   spec.combat_conditioning           = find_specialization_spell( "Combat Conditioning" );
   spec.combo_breaker                 = find_specialization_spell( "Combo Breaker" );
+  spec.cyclone_strikes               = find_specialization_spell( "Cyclone Strikes" );
   spec.disable                       = find_specialization_spell( "Disable" );
   spec.fists_of_fury                 = find_specialization_spell( "Fists of Fury" );
   spec.flying_serpent_kick           = find_specialization_spell( "Flying Serpent Kick" );
