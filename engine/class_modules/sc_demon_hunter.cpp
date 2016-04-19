@@ -439,8 +439,10 @@ public:
                          const spell_data_t* s = spell_data_t::nil() )
     : ab( n, p, s ),
       action_gain( p->get_gain( n ) ),
-      metamorphosis_gcd(
-          Base::data().affected_by( p->spec.metamorphosis_buff->effectN( 7 ) ) )
+      metamorphosis_gcd( Base::data().affected_by(
+          p->spec.metamorphosis_buff->effectN( 7 ) ) ),
+      hasted_gcd( false ),
+      hasted_cd( false )
   {
     ab::may_crit      = true;
     ab::tick_may_crit = true;
@@ -484,7 +486,7 @@ public:
     if ( g == timespan_t::zero() )
       return g;
 
-    if ( metamorphosis_gcd && p()->buff.metamorphosis->up() )
+    if ( metamorphosis_gcd && p()->buff.metamorphosis->check() )
     {
       g += p()->spec.metamorphosis_buff->effectN( 7 ).time_value();
     }
@@ -635,11 +637,11 @@ struct nemesis_t : public demon_hunter_spell_t
         false;
   }
 
-  void execute() override
+  void impact( action_state_t* s ) override
   {
-    demon_hunter_spell_t::execute();
+    demon_hunter_spell_t::impact( s );
 
-    td( target )->debuffs.nemesis->trigger();
+    td( s->target )->debuffs.nemesis->trigger();
   }
 };
 
@@ -684,7 +686,7 @@ struct demon_hunter_attack_t : public demon_hunter_action_t<melee_attack_t>
   {
     double tm = base_t::composite_target_multiplier( t );
 
-    tm *= 1.0 + p()->get_target_data( t )->debuffs.nemesis->value();
+    tm *= 1.0 + p()->get_target_data( t )->debuffs.nemesis->current_value;
 
     return tm;
   }
@@ -702,6 +704,9 @@ struct demon_hunter_attack_t : public demon_hunter_action_t<melee_attack_t>
   virtual void impact( action_state_t* s ) override
   {
     base_t::impact( s );
+
+    p()->get_target_data( s->target )
+        ->debuffs.nemesis->stack();  // benefit tracking
 
     if ( result_is_hit( s->result ) )
     {
@@ -993,6 +998,10 @@ struct blade_dance_event_t : public event_t
       dh->blade_dance_driver =
           new ( sim() ) blade_dance_event_t( dh, current, in_metamorphosis );
     }
+    else
+    {
+      dh->blade_dance_driver = nullptr;
+    }
   }
 };
 
@@ -1003,25 +1012,30 @@ struct blade_dance_base_t : public demon_hunter_attack_t
 
   blade_dance_base_t( const std::string& n, demon_hunter_t* p,
                       const spell_data_t* s )
-    : demon_hunter_attack_t( n, p, s )
+    : demon_hunter_attack_t( n, p, s ), dodge_buff( nullptr )
   {
     aoe      = -1;
     cooldown = p->get_cooldown( "blade_dance" );  // shared cooldown
     base_costs[ RESOURCE_FURY ] +=
         p->talent.first_blood->effectN( 2 ).resource( RESOURCE_FURY );
 
-    for ( size_t i = 0; i < attacks.size(); i++ )
-    {
-      add_child( attacks[ i ] );
-    }
   }
 
   virtual bool init_finished() override
   {
     bool f = demon_hunter_attack_t::init_finished();
 
+
+    // TODO: check if this should be re-enabled or replace the stat-overwriting. Had no effect in constructor.
+//    for ( size_t i = 0; i < attacks.size(); i++ )
+//    {
+//      add_child( attacks[ i ] );
+//    }
+
     for ( size_t i = 0; i < attacks.size(); i++ )
+    {
       attacks[ i ]->stats = stats;
+    }
 
     return f;
   }
@@ -1054,8 +1068,11 @@ struct blade_dance_base_t : public demon_hunter_attack_t
 
     demon_hunter_attack_t::execute();
 
+    assert( !p()->blade_dance_driver );
     p()->blade_dance_driver = new ( *sim )
         blade_dance_event_t( p(), 0, p()->buff.metamorphosis->up() );
+
+    assert( dodge_buff );
     dodge_buff->trigger();
   }
 };
@@ -1143,9 +1160,11 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       may_miss = may_parry = may_dodge = false;
 
       if ( p->talent.chaos_cleave->ok() )
+      {
         aoe = 1 +
               p->talent.chaos_cleave->effectN( 1 )
                   .base_value();  // Bugged as of build 21287
+      }
 
       base_multiplier *= 1.0 + p->artifact.warglaives_of_chaos.percent();
       crit_bonus_multiplier *=
@@ -1201,10 +1220,13 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
 
   chaos_strike_base_t( const std::string& n, demon_hunter_t* p,
                        const spell_data_t* s )
-    : demon_hunter_attack_t( n, p, s )
+    : demon_hunter_attack_t( n, p, s ),
+      off_hand( new chaos_strike_oh_t( p, data().effectN( 3 ).trigger(), this ) ),
+      is_critical( false ),
+      delay( timespan_t::from_millis( data().effectN( 3 ).misc_value1() ) )
   {
-    delay = timespan_t::from_millis( data().effectN( 3 ).misc_value1() );
-    off_hand = new chaos_strike_oh_t( p, data().effectN( 3 ).trigger(), this );
+
+
     add_child( off_hand );
 
     if ( p->artifact.inner_demons.rank() )
@@ -1262,6 +1284,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       if ( p()->artifact.inner_demons.rank() &&
            p()->rppm.inner_demons.trigger() )
       {
+        assert( inner_demons );
         inner_demons->target = target;
         inner_demons->schedule_execute();
       }
@@ -1455,13 +1478,14 @@ struct eye_beam_t : public demon_hunter_attack_t
   eye_beam_tick_t* beam;
 
   eye_beam_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_attack_t( "eye_beam", p, p->find_class_spell( "Eye Beam" ) )
+    : demon_hunter_attack_t( "eye_beam", p, p->find_class_spell( "Eye Beam" ) ),
+      beam( new eye_beam_tick_t( p ) )
   {
     parse_options( options_str );
 
     may_miss = may_crit = may_parry = may_block = may_dodge = false;
     channeled   = true;
-    beam        = new eye_beam_tick_t( p );
+
     beam->stats = stats;
 
     dot_duration *= 1.0 + p->talent.blind_fury->effectN( 1 ).percent();
@@ -1514,11 +1538,11 @@ struct felblade_t : public demon_hunter_attack_t
   double amount;
 
   felblade_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_attack_t( "felblade", p, p->talent.felblade )
+    : demon_hunter_attack_t( "felblade", p, p->talent.felblade ),
+      damage_spell( p->find_spell( 213243 ) )
   {
     parse_options( options_str );
 
-    damage_spell           = p->find_spell( 213243 );
     school                 = damage_spell->get_school_type();
     normalize_weapon_speed = true;
     weapon_multiplier      = damage_spell->effectN( 2 ).percent();
@@ -1710,7 +1734,10 @@ struct fury_of_the_illidari_t : public demon_hunter_attack_t
 
   fury_of_the_illidari_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_attack_t( "fury_of_the_illidari", p,
-                             p->artifact.fury_of_the_illidari )
+                             p->artifact.fury_of_the_illidari ),
+                             mh( new fury_of_the_illidari_tick_t( p, p->find_spell( 201628 ) ) ),
+                             oh( new fury_of_the_illidari_tick_t( p, p->find_spell( 201789 ) ) ),
+                             rage( nullptr )
   {
     parse_options( options_str );
 
@@ -1718,8 +1745,7 @@ struct fury_of_the_illidari_t : public demon_hunter_attack_t
     dot_duration   = data().duration();
     base_tick_time = timespan_t::from_millis( 500 );
 
-    mh = new fury_of_the_illidari_tick_t( p, p->find_spell( 201628 ) );
-    oh = new fury_of_the_illidari_tick_t( p, p->find_spell( 201789 ) );
+
     oh->weapon  = &( p->off_hand_weapon );
     tick_action = mh;
 
@@ -1863,7 +1889,8 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
   throw_glaive_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_attack_t( "throw_glaive", p,
-                             p->find_class_spell( "Throw Glaive" ) )
+                             p->find_class_spell( "Throw Glaive" ) ),
+                             bloodlet( nullptr )
   {
     parse_options( options_str );
 
@@ -1905,7 +1932,8 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
 
   vengeful_retreat_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_attack_t( "vengeful_retreat", p,
-                             p->find_class_spell( "Vengeful Retreat" ) )
+                             p->find_class_spell( "Vengeful Retreat" ) ),
+                             jump_cancel( false )
   {
     add_option( opt_bool( "jump_cancel", jump_cancel ) );
     parse_options( options_str );
