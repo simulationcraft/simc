@@ -2148,20 +2148,6 @@ struct chaos_bolt_t: public warlock_spell_t
     return 1.0;
   }
 
-  // Record non-crit suppressed target-based crit% to state object
-  double composite_target_crit( player_t* target ) const override
-  {
-    double c = warlock_spell_t::composite_target_crit( target );
-
-    int level_delta = player -> level() - target -> level();
-    if ( level_delta < 0 )
-    {
-      c += abs( level_delta ) / 100.0;
-    }
-
-    return c;
-  }
-
   double calculate_direct_amount( action_state_t* state ) const override
   {
     warlock_spell_t::calculate_direct_amount( state );

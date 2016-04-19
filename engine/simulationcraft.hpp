@@ -5404,7 +5404,8 @@ public:
   virtual double composite_spell_power() const
   { return player -> cache.spell_power( get_school() ); }
 
-  virtual double composite_target_crit( player_t* /* target */ ) const;
+  virtual double composite_target_crit( player_t* /* target */ ) const
+  { return 0.0; }
 
   virtual double composite_target_multiplier( player_t* target ) const
   {

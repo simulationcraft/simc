@@ -3539,9 +3539,6 @@ struct inferno_blast_t : public fire_mage_spell_t
   // Inferno Blast always crits
   virtual double composite_crit() const override
   { return 1.0; }
-
-  virtual double composite_target_crit( player_t* ) const override
-  { return 0.0; }
 };
 
 

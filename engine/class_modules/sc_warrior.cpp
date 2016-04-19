@@ -1512,8 +1512,6 @@ struct dragon_roar_t: public warrior_attack_t
   double target_armor( player_t* ) const override { return 0; }
 
   double composite_crit() const override { return 1.0; }
-
-  double composite_target_crit( player_t* ) const override { return 0.0; }
 };
 
 // Execute ==================================================================

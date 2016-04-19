@@ -2945,11 +2945,6 @@ timespan_t action_t::composite_dot_duration( const action_state_t* s ) const
   return dot_duration;
 }
 
-double action_t::composite_target_crit( player_t* target ) const
-{
-  return std::min( player -> level() - target -> level(), 0 ) / 100.0;
-}
-
 event_t* action_t::start_action_execute_event( timespan_t t, action_state_t* execute_event )
 {
   return new ( *sim ) action_execute_event_t( this, t, execute_event );
