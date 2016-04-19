@@ -1722,11 +1722,12 @@ int util::class_id( player_e type )
     case MONK:         return 10;
     case DRUID:        return 11;
     case DEMON_HUNTER: return 12;
-    case PLAYER_SPECIAL_SCALE: return 12;
-    case PLAYER_SPECIAL_SCALE2: return 13;
-    case PLAYER_SPECIAL_SCALE3: return 14;
-    case PLAYER_SPECIAL_SCALE4: return 15;
-    case PLAYER_SPECIAL_SCALE5: return 16;
+    case PLAYER_SPECIAL_SCALE: return 13;
+    case PLAYER_SPECIAL_SCALE2: return 14;
+    case PLAYER_SPECIAL_SCALE3: return 15;
+    case PLAYER_SPECIAL_SCALE4: return 16;
+    case PLAYER_SPECIAL_SCALE5: return 17;
+    case PLAYER_SPECIAL_SCALE6: return 18;
     default:           return 0;
   }
 }
