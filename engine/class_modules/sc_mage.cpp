@@ -226,6 +226,7 @@ public:
           * hot_streak,
           * molten_armor,
           * pyromaniac,            // T17 4pc Fire
+          * scorched_earth,
           * icarus_uprising;       // T18 4pc Fire
 
     // Frost
@@ -1480,7 +1481,17 @@ struct fire_mage_spell_t : public mage_spell_t
   {
     base_multiplier *= 1.0 + p -> artifact.burning_gaze.percent();
   }
+  
+  virtual void execute() override
+  {
+    mage_t* p = this -> p();
 
+    if ( data().id() != 2948 && background == false )
+    {
+      p -> buffs.scorched_earth -> expire();
+    }
+    mage_spell_t::execute();
+  }
   virtual void impact( action_state_t* s ) override
   {
     mage_spell_t::impact( s );
@@ -4181,6 +4192,25 @@ struct scorch_t : public fire_mage_spell_t
     return m;
   }
 
+  virtual void execute() override
+  {
+    fire_mage_spell_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) &&
+         p() -> artifact.scorched_earth.rank() )
+    {
+     if ( p() -> buffs.scorched_earth -> stack() == 3 )
+     {
+       p() -> buffs.scorched_earth -> expire();
+       p() -> buffs.hot_streak -> trigger();
+     }
+     else
+     {
+       p() -> buffs.scorched_earth -> trigger();
+     }
+    }
+  }
+
   virtual bool usable_moving() const override
   { return true; }
 };
@@ -5327,6 +5357,8 @@ void mage_t::create_buffs()
                                   .add_invalidate( CACHE_SPELL_HASTE );
   buffs.pyromaniac            = buff_creator_t( this, "pyromaniac", find_spell( 166868 ) )
                                   .chance( sets.has_set_bonus( MAGE_FIRE, T17, B4 ) );
+  buffs.scorched_earth        = buff_creator_t( this, "scorched_earth").duration( timespan_t::from_seconds( 5 ) )
+                                                                       .max_stack( 4.0 );
 
   // Frost
   buffs.bone_chilling         = buff_creator_t( this, "bone_chilling", find_spell( 205766 ) );
