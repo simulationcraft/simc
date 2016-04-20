@@ -259,6 +259,7 @@ public:
               * frozen_orb,
               * icy_veins,
               * inferno_blast,
+              * phoenixs_flames,
               * presence_of_mind,
               * ray_of_frost;
   } cooldowns;
@@ -413,20 +414,21 @@ public:
                      everburning_consumption,
                      blue_flame_special,
                      molten_skin, //NYI
-                     phoenix_reborn, //NYI
+                     phoenix_reborn,
                      great_balls_of_fire,
                      cauterizing_blink, //NYI
                      fire_at_will,
                      pyroclasmic_paranoia,
                      reignition_overdrive, //NYI
                      pyretic_incantation, //NYI
+                     phoenix_flames, // NYI
                      burning_gaze,
                      big_mouth, //NYI
                      blast_furnace; //NYI
 
     // Frost
     artifact_power_t ebonbolt,
-                     jouster, // NYI
+                     jouster, // NYI 
                      let_it_go,
                      frozen_veins,
                      the_storm_rages,
@@ -436,9 +438,10 @@ public:
                      ice_nine,
                      chain_reaction, //NYI
                      clarity_of_thought,
-                     flash_freeze, //NYI
+                     its_cold_outside, //NYI
                      shattering_bolts,
                      orbital_strike,
+                     icy_hand,
                      ice_age, //NYI
                      chilled_to_the_core; //NYI
   } artifact;
@@ -477,6 +480,7 @@ public:
     cooldowns.frozen_orb       = get_cooldown( "frozen_orb"       );
     cooldowns.icy_veins        = get_cooldown( "icy_veins"        );
     cooldowns.inferno_blast    = get_cooldown( "inferno_blast"    );
+    cooldowns.phoenixs_flames  = get_cooldown( "phoenixs_flames"  );
     cooldowns.presence_of_mind = get_cooldown( "presence_of_mind" );
     cooldowns.ray_of_frost     = get_cooldown( "ray_of_frost"     );
 
@@ -1805,7 +1809,7 @@ struct conflagration_t : public fire_mage_spell_t
   conflagration_t( mage_t* p ) :
     fire_mage_spell_t( "conflagration", p, p -> talents.conflagration )
   {
-    parse_effect_data( p -> find_spell( 205345) -> effectN(1) );
+    parse_effect_data( p -> find_spell( 205345 ) -> effectN( 1 ) );
     callbacks = false;
     background = true;
     aoe = -1;
@@ -1816,13 +1820,36 @@ struct conflagration_t : public fire_mage_spell_t
 
 // Ignite Spell ===================================================================
 
+//Phoenix Reborn Spell
+struct phoenix_reborn_t : public fire_mage_spell_t
+{
+  phoenix_reborn_t( mage_t* p ) :
+    fire_mage_spell_t( "phoenix_reborn", p, p -> artifact.phoenix_reborn )
+  {
+    base_dd_min = base_dd_max = p -> find_spell( 215775 ) -> effectN( 1 ).base_value();
+    trigger_gcd =  timespan_t::zero();
+    base_costs[ RESOURCE_MANA ] = 0;
+    callbacks = false;
+    background = true;
+  }
+
+  virtual void execute() override
+  {
+    fire_mage_spell_t::execute();
+    p() -> cooldowns.phoenixs_flames -> adjust( -1000 * p() -> artifact.phoenix_reborn.data()
+                                                 .effectN( 1 ).time_value() );
+  }
+
+};
+
 struct ignite_t : public residual_action_t
 {
   conflagration_t* conflagration;
+  phoenix_reborn_t* phoenix_reborn;
 
   ignite_t( mage_t* player ) :
     residual_action_t( "ignite", player, player -> find_spell( 12846 ) ),
-    conflagration( nullptr )
+    conflagration( nullptr ),phoenix_reborn( nullptr )
   {
     dot_duration = dbc::find_spell( player, 12654 ) -> duration();
     base_tick_time = dbc::find_spell( player, 12654 ) -> effectN( 1 ).period();
@@ -1831,6 +1858,11 @@ struct ignite_t : public residual_action_t
     if ( player -> talents.conflagration -> ok() )
     {
       conflagration = new conflagration_t( player );
+    }
+
+    if ( player -> artifact.phoenix_reborn.rank() )
+    {
+      phoenix_reborn = new phoenix_reborn_t( player );
     }
   }
 
@@ -1843,6 +1875,13 @@ struct ignite_t : public residual_action_t
     {
       conflagration -> target = dot -> target;
       conflagration -> execute();
+    }
+
+    if ( p() -> artifact.phoenix_reborn.rank() && 
+         rng().roll( p() -> artifact.phoenix_reborn.data().proc_chance() ) )
+    {
+      phoenix_reborn -> target = dot -> target;
+      phoenix_reborn -> execute();
     }
   }
 };
@@ -3876,21 +3915,6 @@ struct nether_tempest_t : public arcane_mage_spell_t
     return m;
   }
 };
-
-// Phoenix Reborn Spell =======================================================
-
-// TODO: Ignite specific execute.
-struct phoenix_reborn_t : public fire_mage_spell_t
-{
-  phoenix_reborn_t( mage_t* p, const std::string& options_str ) :
-    fire_mage_spell_t( "phoenix_reborn", p, p -> artifact.phoenix_reborn )
-  {
-    parse_options( options_str );
-    base_dd_min = base_dd_max = p -> find_spell( 205409 ) -> effectN( 1 ).base_value();
-  }
-};
-
-
 // Phoenixs Flames Spell =============================================================
 
 struct phoenixs_flames_t : public fire_mage_spell_t
@@ -4922,7 +4946,7 @@ action_t* mage_t::create_action( const std::string& name,
 
   // Artifact Specific Spells
   // Fire
-  if ( name == "phoenix_reborn"    ) return new           phoenix_reborn_t( this, options_str );
+  if ( name == "phoenix_reborn"    ) return new           phoenix_reborn_t( this );
   if ( name == "phoenixs_flames"   ) return new          phoenixs_flames_t( this, options_str );
 
   // Frost
@@ -5099,16 +5123,18 @@ void mage_t::init_spells()
   artifact.blast_furnace           = find_artifact_spell( "Blast Furnace"          );
   //Frost
   artifact.ebonbolt                = find_artifact_spell( "Ebonbolt"               );
+  artifact.jouster                 = find_artifact_spell( "Jouster"                );
   artifact.let_it_go               = find_artifact_spell( "Let It Go"              );
   artifact.frozen_veins            = find_artifact_spell( "Frozen Veins"           );
   artifact.the_storm_rages         = find_artifact_spell( "The Storm Rages"        );
   artifact.black_ice               = find_artifact_spell( "Black Ice"              );
   artifact.shield_of_alodi         = find_artifact_spell( "Shield of Alodi"        );
   artifact.clarity_of_thought      = find_artifact_spell( "Clarity of Thought"     );
-  artifact.flash_freeze            = find_artifact_spell( "Flash Freeze"           );
   artifact.icy_caress              = find_artifact_spell( "Icy Caress"             );
   artifact.chain_reaction          = find_artifact_spell( "Chain Reaction"         );
   artifact.orbital_strike          = find_artifact_spell( "Orbital Strike"         );
+  artifact.its_cold_outside        = find_artifact_spell( "It's Cold Outside"      );
+  artifact.icy_hand                = find_artifact_spell( "Icy Hand"               );
   artifact.ice_age                 = find_artifact_spell( "Ice Age"                );
   artifact.chilled_to_the_core     = find_artifact_spell( "Chilled To The Core"    );
   artifact.shattering_bolts        = find_artifact_spell( "Shattering Bolts"       );
