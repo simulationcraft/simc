@@ -411,7 +411,7 @@ public:
 
     // Fire
     artifact_power_t aftershocks,
-                     scorched_earth, //NYI
+                     scorched_earth,
                      everburning_consumption,
                      blue_flame_special,
                      molten_skin, //NYI
@@ -3515,6 +3515,7 @@ struct inferno_blast_t : public fire_mage_spell_t
   {
     parse_options( options_str );
 
+    base_multiplier *= 1.0 + p -> artifact.reignition_overdrive.percent();
     trigger_gcd = timespan_t::zero();
     cooldown -> charges = data().charges();
     // TODO: Recharge time is reduced by haste
