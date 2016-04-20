@@ -13,7 +13,7 @@ parser.add_argument("-t", "--type", dest = "type",
                               'item_ench', 'weapon_damage', 'item', 'item_armor', 'gem_properties',
                               'random_suffix_groups', 'spec_enum', 'spec_list', 'item_upgrade',
                               'rppm_coeff', 'set_list2', 'item_bonus', 'item_scaling',
-                              'item_name_desc', 'artifact' ]), 
+                              'item_name_desc', 'artifact', 'bench' ]), 
 parser.add_argument("-o",            dest = "output")
 parser.add_argument("-a",            dest = "append")
 parser.add_argument("--raw",         dest = "raw",          default = False, action = "store_true")
@@ -312,6 +312,17 @@ elif options.type == 'view':
     else:
         record = dbc_file.find(id)
         print(record)
+elif options.type == 'bench':
+    path = os.path.abspath(os.path.join(options.path, options.args[0]))
+    dbc_file = dbc.parser.get_parser(options, path)
+    if not dbc_file.open_dbc():
+        sys.exit(1)
+
+    x = {}
+    record = dbc_file.next_record()
+    while record != None:
+        x[record.id] = record
+        record = dbc_file.next_record()
 elif options.type == 'csv':
     path = os.path.abspath(os.path.join(options.path, args[0]))
     id = None

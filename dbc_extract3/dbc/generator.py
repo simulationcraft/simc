@@ -159,8 +159,7 @@ class DataGenerator(object):
     _pet_masks   = [ None, 0x1,        0x2,        None, 0x4       ]
 
     def debug(self, msg):
-        if self._options.debug == True:
-            sys.stderr.write("%s: %s\n" % ( self.__class__.__name__, msg ))
+        logging.debug('%s: %s', self.__class__.__name__, msg)
 
     def dbc_version(self, wow, build):
         if self._options.wowversion == 0:

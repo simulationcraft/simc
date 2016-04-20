@@ -119,8 +119,8 @@ class DBCFile:
                 return parsed_data
 
         # Output data based on data parser + class, we are sure we have those things at this point
-        parsed_data = self.data_parser.unpack_from(b''.join(data[1]))
-        return self.data_class(self.parser, data[0], parsed_data)
+        #parsed_data = self.data_parser.unpack_from(b''.join(data[1]))
+        return self.data_class(self.parser, *data)
 
     def find(self, id_):
         record_data = self.parser.find(id_)

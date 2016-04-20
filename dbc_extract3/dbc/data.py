@@ -4,10 +4,6 @@ import dbc.fmt
 
 _FORMATDB = None
 
-def link_init_prototype(self):
-    for attr_name, v in self.__l.items():
-        setattr(self, '__%s' % attr_name, [])
-
 def link_prototype(cls, attr_name, attr_default):
     if attr_name in cls.__l:
         return
@@ -15,6 +11,9 @@ def link_prototype(cls, attr_name, attr_default):
     cls.__l[attr_name] = attr_default
 
 def add_link_prototype(self, name, value):
+    if not hasattr(self, '__%s' % name):
+        setattr(self, '__%s' % name, [])
+
     if name in self.__l:
         v = getattr(self, '__%s' % name)
         v.append(value)
@@ -30,6 +29,9 @@ def get_link_prototype(self, name, index = 0):
     if name not in self.__l:
         raise AttributeError
 
+    if not hasattr(self, '__%s' % name):
+        return self.__l[name].default()
+
     v = getattr(self, '__%s' % name)
     if index >= len(v):
         return self.__l[name].default()
@@ -39,6 +41,9 @@ def get_link_prototype(self, name, index = 0):
 def get_links_prototype(self, name):
     if name not in self.__l:
         raise AttributeError
+
+    if not hasattr(self, '__%s' % name):
+        return []
 
     return getattr(self, '__%s' % name)
 
@@ -81,7 +86,7 @@ class RawDBCRecord:
         self._dbcp = parser
         if dbc_id > 0:
             self._dbc_id = dbc_id
-            self._d = (dbc_id,) + data
+            self._d = (dbc_id,) + tuple(data)
         else:
             self._d = data
 
@@ -99,14 +104,6 @@ class RawDBCRecord:
         return ', '.join(s)
 
 class DBCRecord(RawDBCRecord):
-    def __init__(self, parser, dbc_id, data):
-        RawDBCRecord.__init__(self, parser, dbc_id, data)
-
-        self.link_init()
-
-    def link_init(self):
-        pass
-
     def has_value(self, field, value):
         try:
             idx = self._cd[field]
@@ -134,7 +131,6 @@ class DBCRecord(RawDBCRecord):
         try:
             field_idx = self._cd[name]
         except:
-            print(self)
             raise AttributeError
 
         if self._fo[field_idx] == 'S' and self._d[field_idx] > 0:
@@ -189,15 +185,6 @@ class DBCRecord(RawDBCRecord):
                 s += '%s=%d ' % (field, self._d[i])
             else:
                 s += '%s=%u ' % (field, self._d[i])
-
-        if self._dbcp and self._dbcp.options.debug == True:
-            s += 'bytes=['
-            for b in range(0, len(self._record)):
-                s += '%.02x' % self._record[b]
-                if (b + 1) % 4 == 0 and b < len(self._record) - 1:
-                    s += ' '
-
-            s += ']'
         return s
 
     def csv(self, delim = ',', header = False):
@@ -311,7 +298,6 @@ def initialize_data_model(options, obj):
         # Setup the class some with linked methods
         setattr(cls, '__l', {})
         setattr(cls, 'link', classmethod(link_prototype))
-        setattr(cls, 'link_init', link_init_prototype)
         setattr(cls, 'add_link', add_link_prototype)
         setattr(cls, 'get_link', get_link_prototype)
         setattr(cls, 'get_links', get_links_prototype)

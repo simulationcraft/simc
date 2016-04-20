@@ -4,7 +4,7 @@ import argparse, sys, os, glob, re, datetime, signal, logging
 import dbc.generator, dbc.db, dbc.parser, dbc.file, dbc.config
 
 
-logging.basicConfig(level = logging.DEBUG,
+logging.basicConfig(level = logging.INFO,
         datefmt = '%H:%M:%S',
         format = '[%(asctime)s] %(levelname)s: %(message)s')
 
@@ -67,6 +67,9 @@ if options.type == 'header' and len(options.args) == 0:
 
 if options.cache_dir and not os.path.isdir(options.cache_dir):
     parser.error('Invalid cache directory %s' % options.cache_dir)
+
+if options.debug:
+    logging.getLogger().setLevel(logging.DEBUG)
 
 # Initialize the base model for dbc.data, creating the relevant classes for all patch levels
 # up to options.build
@@ -322,8 +325,15 @@ elif options.type == 'view':
         for record in dbc_file:
             sys.stdout.write('%s\n' % str(record))
     else:
-        record = dbc_file.find(id)
-        print(record)
+        if options.raw and not dbc_file.searchable():
+            logging.error('DBC file %s is not searchable in raw mode', path)
+            sys.exit(1)
+        else:
+            record = dbc_file.find(id)
+            if record:
+                print(record)
+            else:
+                print('No record for DBC ID %d found', id)
 elif options.type == 'csv':
     path = os.path.abspath(os.path.join(options.path, args[0]))
     id = None

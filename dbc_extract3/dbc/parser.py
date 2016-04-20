@@ -59,17 +59,62 @@ class DBCParserBase:
     # 3-byte ints have to be expanded to 4 bytes to parse them properly (with
     # struct module)
     def build_parser(self):
-        unpacker = []
+        unpackers = []
+        format_str = '<'
 
+        data_fmt = field_names = None
+        if not self.options.raw:
+            data_fmt = self.fmt.types(self.class_name())
+            field_names = self.fmt.fields(self.class_name())
+        field_idx = 0
         for field_data_idx in range(0, len(self.field_data)):
             field_data = self.field_data[field_data_idx]
-            for n in range(0, field_data[2]):
-                # Get 3 byte ints to 4 bytes by appending
-                unpacker.append(lambda ro, fo = field_data[0] + n * field_data[1], fs = field_data[1]: \
-                    self.data[ro + fo:ro + fo + fs] + (fs == 3 and b'\x00' or b'')
-                )
+            type_idx = min(field_idx, data_fmt and len(data_fmt) - 1 or field_idx)
+            field_size = field_data[1]
+            for sub_idx in range(0, field_data[2]):
+                if field_size == 1:
+                    format_str += data_fmt and data_fmt[type_idx] or 'b'
+                elif field_size == 2:
+                    format_str += data_fmt and data_fmt[type_idx] or 'h'
+                elif field_size >= 3:
+                    format_str += data_fmt and data_fmt[type_idx].replace('S', 'I') or 'i'
+                field_idx += 1
 
-        self.record_parser = lambda ro, rs: [ field(ro) for field in unpacker ]
+                if field_size == 3:
+                    if not self.options.raw:
+                        logging.debug('Unpacker has a 3-byte field (name=%s pos=%d): terminating (%s) and beginning a new unpacker',
+                            field_names[type_idx], field_idx, format_str)
+                    else:
+                        logging.debug('Unpacker has a 3-byte field (pos=%d): terminating (%s) and beginning a new unpacker',
+                            field_idx, format_str)
+                    unpackers.append((True, struct.Struct(format_str)))
+                    format_str = '<'
+
+        if len(format_str) > 1:
+            unpackers.append((self.field_data[-1][1] == 3, struct.Struct(format_str)))
+
+        logging.debug('Unpacking plan: %s', ', '.join(['%s (len=%d)' % (unpacker.format.decode('utf-8'), unpacker.size) for _, unpacker in unpackers]))
+        self.unpackers = unpackers
+
+        self.record_parser = self.__do_parse
+
+    def __do_parse(self, record_offset, record_size):
+        if len(self.unpackers) == 1:
+            return self.unpackers[0][1].unpack_from(self.data, record_offset)
+        else:
+            size_left = record_size
+            unpacker_offset = 0
+            full_data = []
+            for unpacker_idx in range(0, len(self.unpackers)):
+                int24, unpacker = self.unpackers[unpacker_idx]
+                full_data += unpacker.unpack_from(self.data, record_offset + unpacker_offset)
+                if int24:
+                    full_data[-1] &= 0xFFFFFF
+                    size_left += 1
+
+                size_left -= unpacker.size
+                unpacker_offset = record_size - size_left
+            return full_data
 
     def n_expanded_fields(self):
         n = 0
@@ -184,7 +229,9 @@ class DBCParserBase:
             return True
 
         f = io.open(self.file_name, mode = 'rb')
-        self.data = mmap.mmap(f.fileno(), 0, access = mmap.ACCESS_READ)
+        #self.data = mmap.mmap(f.fileno(), 0, access = mmap.ACCESS_READ)
+        self.data = f.read()
+        f.close()
 
         if not self.parse_header():
             return False
@@ -256,13 +303,13 @@ class DBCParserBase:
 
 class InlineStringRecordParser:
     # Yank string out of datastream
-    def __getstring(self, record, offset):
-        start = offset
-        end = offset
+    def __getstring(self, data, begin_offset, end_offset):
+        start = begin_offset
+        end = begin_offset
 
         # Skip zeros
         while True:
-            b = record[start]
+            b = data[start]
             if b == 0:
                 start += 1
                 end += 1
@@ -270,8 +317,8 @@ class InlineStringRecordParser:
                 break
 
         # Forwards until \x00 found
-        while True:
-            b = record[end]
+        while end < end_offset:
+            b = data[end]
             if b == 0:
                 break
             end += 1
@@ -281,40 +328,96 @@ class InlineStringRecordParser:
     # Presume that string fields are always bunched up togeher
     def __init__(self, parser):
         self.parser = parser
+        self.unpackers = []
+        self.string_field_offset = 0
+        self.n_string_fields = 0
         try:
             self.types = self.parser.fmt.types(self.parser.class_name())
-            self.string_fields = self.types.count('S')
+            self.n_string_fields = sum([field == 'S' for field in self.types])
         except:
             logging.error('Inline-string based file %s requires formatting information', self.parser.class_name())
             sys.exit(1)
 
-    def __call__(self, offset, size):
-        fields = []
-        field_offset = format_idx = n_string_fields = 0
+        data_fmt = field_names = None
+        if not self.parser.options.raw:
+            data_fmt = self.parser.fmt.types(self.parser.class_name())
+            field_names = self.parser.fmt.fields(self.parser.class_name())
+        # Need to build a two-split custom parser here
+        format_str = '<'
+        format_idx = 0
         for field_idx in range(0, len(self.parser.field_data)):
             field_data = self.parser.field_data[field_idx]
-            if format_idx >= len(self.types) or self.types[format_idx] != 'S':
-                for i in range(0, field_data[2]):
-                    fields.append(self.parser.data[offset + field_offset:offset + field_offset + field_data[1]])
-                    field_offset += field_data[1]
+            type_idx = min(format_idx, data_fmt and len(data_fmt) - 1 or format_idx)
+            field_size = field_data[1]
+            for sub_idx in range(0, field_data[2]):
+                if data_fmt[type_idx] == 'S':
+                    logging.debug('Unpacker has a inlined string field (name=%s pos=%d): terminating (%s), skipping all consecutive strings, and beginning a new unpacker',
+                        field_names[type_idx], field_idx, format_str)
+                    self.unpackers.append((False, struct.Struct(format_str)))
+                    self.string_field_offset = self.unpackers[-1][1].size
+                    format_str = '<'
                     format_idx += 1
-            # Inline string, read it
-            else:
-                if self.parser.data[offset + field_offset] == 0:
-                    fields.append(int.to_bytes(0, 4, byteorder = 'little'))
-                    field_offset += 1
-                else:
-                    n_string_fields += 1
-                    start, end = self.__getstring(self.parser.data[offset:offset + size], field_offset)
-                    fields.append(int.to_bytes(offset + start, 4, byteorder = 'little'))
-                    field_offset = end
-                    if n_string_fields < self.string_fields:
-                        field_offset += 4
-                    else:
-                        field_offset += 1
+
+                    while data_fmt[type_idx + 1] == 'S':
+                        format_idx += 1
+                        type_idx += 1
+                        field_idx += 1
+                    continue
+
+                if field_size == 1:
+                    format_str += data_fmt and data_fmt[type_idx] or 'b'
+                elif field_size == 2:
+                    format_str += data_fmt and data_fmt[type_idx] or 'h'
+                elif field_size >= 3:
+                    format_str += data_fmt and data_fmt[type_idx].replace('S', 'I') or 'i'
                 format_idx += 1
 
-        return fields
+                if field_size == 3:
+                    if not self.options.raw:
+                        logging.debug('Unpacker has a 3-byte field (name=%s pos=%d): terminating (%s) and beginning a new unpacker',
+                            field_names[type_idx], field_idx, format_str)
+                    else:
+                        logging.debug('Unpacker has a 3-byte field (pos=%d): terminating (%s) and beginning a new unpacker',
+                            field_idx, format_str)
+                    unpackers.append((True, struct.Struct(format_str)))
+                    format_str = '<'
+
+        if len(format_str) > 1:
+            self.unpackers.append((self.parser.field_data[-1][1] == 3, struct.Struct(format_str)))
+
+        logging.debug('Unpacking plan: %s', ', '.join(['%s (len=%d)' % (unpacker.format.decode('utf-8'), unpacker.size) for _, unpacker in self.unpackers]))
+
+    def __call__(self, offset, size):
+        full_data = []
+        field_offset = 0
+        parsed_string_fields = 0
+        for int24, unpacker in self.unpackers:
+            full_data += unpacker.unpack_from(self.parser.data, offset + field_offset)
+            field_offset += unpacker.size
+
+            # String fields begin
+            if field_offset == self.string_field_offset:
+                while self.parser.data[offset + field_offset] != 0 and parsed_string_fields < self.n_string_fields:
+                    start, end = self.__getstring(self.parser.data, offset + field_offset, offset + size)
+                    full_data.append(start)
+                    if parsed_string_fields < self.n_string_fields - 1:
+                        field_offset = end - offset + 4
+                    else:
+                        field_offset = end - offset + 1
+                    parsed_string_fields += 1
+
+                # If some of the consecutive string fields are empty, append
+                # empty fields so we have enough fields in total
+                # (n_string_fields)
+                full_data += [0] * (self.n_string_fields - parsed_string_fields)
+                if parsed_string_fields < self.n_string_fields:
+                    field_offset += 1
+
+            if int24:
+                full_data[-1] &= 0xFFFFFF
+                size_left += 1
+
+        return full_data
 
 class LegionWDBParser(DBCParserBase):
     def __init__(self, options, fname):
@@ -333,7 +436,7 @@ class LegionWDBParser(DBCParserBase):
         return self.n_records() - self.record_id
 
     def n_records(self):
-        if self.id_table:
+        if self.id_block_offset:
             return len(self.id_table)
         else:
             return self.records
@@ -370,9 +473,9 @@ class LegionWDBParser(DBCParserBase):
         indexdict = {}
 
         # Process ID block
-        for record_id in range(0, self.records):
-            record_offset = self.id_block_offset + record_id * _ID.size
-            dbc_id = _ID.unpack_from(self.data, record_offset)[0]
+        unpacker = struct.Struct('%dI' % self.records)
+        record_id = 0
+        for dbc_id in unpacker.unpack_from(self.data, self.id_block_offset):
             data_offset = 0
             size = self.record_size
 
@@ -389,6 +492,7 @@ class LegionWDBParser(DBCParserBase):
 
             idtable.append((dbc_id, data_offset, size))
             indexdict[dbc_id] = (data_offset, size)
+            record_id += 1
 
         # Process clones
         for clone_id in range(0, self.n_cloned_records()):
