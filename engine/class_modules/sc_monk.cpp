@@ -700,6 +700,7 @@ public:
 //  combo_strikes_e convert_expression_action_to_enum( action_t* a );
   void trigger_celestial_fortune( action_state_t* );
   void trigger_cyclone_strikes( action_state_t* );
+  player_t* next_cyclone_strikes_target( action_state_t* );
   double weapon_power_mod;
   double clear_stagger();
   double partial_clear_stagger( double );
@@ -752,14 +753,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
     sef_td_t( player_t* target, storm_earth_and_fire_pet_t* source ) :
       actor_target_data_t( target, source )
-    {
-/*      debuffs.cyclone_strikes = buff_creator_t( this, "cyclone_strikes" )
-        .spell( o() -> spec.cyclone_strikes )
-        .duration( timespan_t::from_seconds( o() -> spec.spinning_crane_kick -> effectN( 3 ).base_value() ) )
-        .default_value( o() -> spec.spinning_crane_kick -> effectN( 2 ).percent() )
-        .quiet( true );
-*/
-    }
+    { }
   };
 
   // Storm, Earth, and Fire abilities begin =================================
@@ -5817,6 +5811,56 @@ void monk_t::trigger_celestial_fortune( action_state_t* s )
 void monk_t::trigger_cyclone_strikes( action_state_t* s )
 {
   get_target_data( s -> target ) -> debuff.cyclone_strikes -> trigger();
+}
+
+player_t* monk_t::next_cyclone_strikes_target( action_state_t* state )
+{
+  std::vector<player_t*> targets = state -> action -> target_list();
+  if ( targets.size() > 1 )
+  {
+    // Have the SEF converge onto the the cleave target if there are only 2 targets
+    if (targets.size() == 2)
+      return targets[1];
+    // Don't move the SEF if there is only 3 targets
+    if (targets.size() == 3)
+      return state -> target;
+    
+    // First of all find targets that do not have the cyclone strike debuff applied and send the SEF to those targets
+    for ( int i = 0; i < targets.size(); i++ )
+    {
+      if (  !get_target_data( targets[i] ) -> debuff.cyclone_strikes -> up() &&
+        !get_target_data( targets[i] ) -> debuff.storm_earth_and_fire -> up() )
+      {
+        // remove the current target as having an SEF on it
+        get_target_data( state -> target ) -> debuff.storm_earth_and_fire -> expire();
+        // make the new target show that a SEF is on the target
+        get_target_data( targets[i] ) -> debuff.storm_earth_and_fire -> trigger();
+        return targets[i];
+      }
+    }
+
+    // If all targets have the debuff, find the lowest duration of cyclone strike debuff as well as not have a SEF
+    // debuff (indicating that an SEF is not already on the target and send the SEF to that new target.
+    player_t* lowest_duration = targets[0];
+
+    // They should never attack the player target
+    for ( int i = 1; i < targets.size(); i++ )
+    {
+      if ( !get_target_data( targets[i] ) -> debuff.storm_earth_and_fire -> up() )
+      {
+        if ( get_target_data( targets[i] ) -> debuff.cyclone_strikes -> remains() < 
+          get_target_data( lowest_duration ) -> debuff.cyclone_strikes -> remains() )
+          lowest_duration = targets[i];
+      }
+    }
+    // remove the current target as having an SEF on it
+    get_target_data( state -> target ) -> debuff.storm_earth_and_fire -> expire();
+    // make the new target show that a SEF is on the target
+    get_target_data( lowest_duration ) -> debuff.storm_earth_and_fire -> trigger();
+    return lowest_duration;
+  }
+  // otherwise, target the same as the player
+  return targets[0];
 }
 
 // monk_t::create_pet =======================================================
