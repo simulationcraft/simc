@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21491)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21531)
 
 Name             : Purge (id=370) [Spell Family (11)] 
 Class            : Shaman
@@ -68,7 +68,7 @@ Spell Level      : 26
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Healing Trance (60515), Mastery: Deep Healing (77226), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Temporal Maelstrom (105869), Lucidity (137326), High Tide (157154), Harmony of the Elements (167703), Unbreakable Chains (207348), Jonat's Focus (210607)
+Affecting spells : Healing Trance (60515), Unleash Life (73685), Mastery: Deep Healing (77226), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Temporal Maelstrom (105869), Lucidity (137326), High Tide (157154), Harmony of the Elements (167703), Floodwaters (207348), Jonat's Focus (210607)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -178,7 +178,7 @@ Spell Level      : 13
 GCD              : 1 seconds
 Duration         : 15 seconds
 Charges          : 1 (30 seconds cooldown)
-Affecting spells : Lucidity (137326), Wavecrash (207206)
+Affecting spells : Lucidity (137326)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
@@ -202,7 +202,7 @@ Duration         : 15 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. .....x.. ........ 
                  : AOE Heal, Heal, Trap Triggered
-Affecting spells : Mastery: Deep Healing (77226), Rushing Streams (147074)
+Affecting spells : Mastery: Deep Healing (77226), Rushing Streams (147074), Wavecrash (207206)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
@@ -266,7 +266,7 @@ Spell Level      : 7
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Elemental Focus (16246), Shaman Healing Surge Crit Chance (38501), Tidal Waves (53390), Healing Trance (60515), Mastery: Deep Healing (77226), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Temporal Maelstrom (105869), Elemental Shaman (137040), Lucidity (137326), Maelstrom Power Increase (190900), Protection of the Elements (191569), Spiritual Healing (198296), Lord of Storms (207092), Pull of the Sea (207118), PH - Chain Heal Reduces Mana Cost Of Next Healing Surge (208764), Pull of the Sea (210029), Pull of the Sea (210030), Pull of the Sea (210031), Pull of the Sea (210032), Pull of the Sea (210033)
+Affecting spells : Elemental Focus (16246), Shaman Healing Surge Crit Chance (38501), Tidal Waves (53390), Healing Trance (60515), Unleash Life (73685), Mastery: Deep Healing (77226), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Temporal Maelstrom (105869), Elemental Shaman (137040), Lucidity (137326), Maelstrom Power Increase (190900), Protection of the Elements (191569), Spiritual Healing (198296), Buffeting Waves (207092), PH - Chain Heal Reduces Mana Cost Of Next Healing Surge (208764)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -350,7 +350,7 @@ Attributes       : ........ ........ ..x..... ........   ...x...x ........ .....
 Effects          :
 #1 (id=4391)     : School Damage: fire (2)
                    Base Value: 1 | Scaled Value: 1
-Description      : $@spelldesc10400
+Description      : $@spelldesc193796
 
 Name             : Herb Gathering (id=11993) 
 Class            : Paladin, Priest, Death Knight, Shaman, Mage, Warlock, Druid, Demon Hunter
@@ -405,7 +405,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=7980)     : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100
-Description      : Your direct heal criticals refund a percentage of your maximum mana: ${$m1/100}.2% from Healing Wave, ${$m1/100*0.6}.2% from Healing Surge or Riptide, and ${$m1/100*0.25}.2% from Chain Heal.
+Description      : Your direct heal criticals refund a percentage of your maximum mana: ${$m1/100}.2% from Healing Wave, ${$m1/100*0.6}.2% from Healing Surge$?s73685[, Unleash Life,][] or Riptide, and ${$m1/100*0.25}.2% from Chain Heal.
 
 Name             : Elemental Focus (id=16246) [Spell Family (11)] 
 Class            : Shaman
@@ -462,6 +462,7 @@ Class            : Shaman
 School           : Nature
 Spell Level      : 32
 Cooldown         : 1800 seconds
+Affecting spells : Servant of the Queen (207357), 
 Attributes       : ......x. ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -471,14 +472,16 @@ Attributes       : ......x. ........ .......x ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=11607)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
-Description      : Allows you to resurrect yourself upon death with $21169s1% health and mana. This effect can occur only once every 30 minutes.
+                   Base Value: 0 | Scaled Value: 0
+#2 (id=332743)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 30 | Scaled Value: 30
+Description      : Allows you to resurrect yourself upon death with $21169s1% health and mana. This effect can occur only once every $s2  minutes.
 
 Name             : Windfury Attack (id=25504) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
 Range            : 100 yards
-Affecting spells : Furious Winds (184920), Doom Winds (204945)
+Affecting spells : Furious Winds (184920), Wind Surge (198247), Doom Winds (204945)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -601,7 +604,7 @@ Name             : Windfury Attack (id=33750) [Spell Family (11)]
 Class            : Shaman
 School           : Physical
 Range            : 100 yards
-Affecting spells : Furious Winds (184920), Doom Winds (204945)
+Affecting spells : Furious Winds (184920), Wind Surge (198247), Doom Winds (204945)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ x.....x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -874,7 +877,7 @@ Class            : Shaman
 School           : Nature
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Mastery: Deep Healing (77226), Rushing Streams (147074)
+Affecting spells : Mastery: Deep Healing (77226), Rushing Streams (147074), Wavecrash (207206)
 Triggered by     : Healing Stream (5672)
 Attributes       : ........ ........ ........ ...x....   ........ ..x..... ...x.... ........ 
                  : ..x..... ........ ........ ....x...   ........ ........ ........ .x....x. 
@@ -1102,7 +1105,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 18 seconds
 Charges          : 1 (6 seconds cooldown)
-Affecting spells : Healing Trance (60515), Mastery: Deep Healing (77226), Spiritual Stimulus (105763), Lucidity (137326), Item - Shaman T18 Restoration 2P Bonus (185873), Torrent (200072), Pull of the Sea (207118), Pull of the Sea (210029), Pull of the Sea (210030), Pull of the Sea (210031), Pull of the Sea (210032), Pull of the Sea (210033), 
+Affecting spells : Healing Trance (60515), Unleash Life (73685), Mastery: Deep Healing (77226), Spiritual Stimulus (105763), Lucidity (137326), Item - Shaman T18 Restoration 2P Bonus (185873), Torrent (200072), Pull of the Sea (207118), Pull of the Sea (210029), Pull of the Sea (210030), Pull of the Sea (210031), Pull of the Sea (210032), Pull of the Sea (210033), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -1127,7 +1130,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Proc Chance      : 100%
 Affecting spells : Elemental Fury (60188), Spiritwalker's Grace (79206), Lucidity (137326), The Ground Trembles (191499), PH - Earth Shock Can Reset CD of Earthquake Totem and Clearcast (208723), 
-Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ........ 
+Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ....x... 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
@@ -1182,6 +1185,39 @@ Effects          :
 #2 (id=192584)   : Apply Aura (6) | Unknown effect sub type (229)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 127
 Description      : Reduces the damage your pet takes from creature area of effect attacks by an additional $s1%.
+
+Name             : Unleash Life (id=73685) [Spell Family (11)] 
+Class            : Shaman
+School           : Nature
+Resource         : 5% Base Mana (11000 @Level 110)
+Spell Level      : 81
+Range            : 40 yards
+GCD              : 1.5 seconds
+Duration         : 10 seconds
+Charges          : 1 (15 seconds cooldown)
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 101%
+Proc Flags       : ........ ......x. ........ ........ 
+                 : Heal
+Affecting spells : Mastery: Deep Healing (77226), Temporal Maelstrom (105869), Ascendance (114051), Shaman (137038), Gathering of the Maelstrom (198349), Weapons of the Elements (215381)
+Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ......x.   ........ .x...... ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Not a proc (105)
+Effects          :
+#1 (id=66866)    : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000
+#2 (id=66867)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 30 | Scaled Value: 30
+                   Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Wave (77472), Healing Surge (188070)
+#3 (id=90747)    : Apply Aura (6) | Dummy (4)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 22
+                   Affected Spells: Riptide (61295)
+Description      : Unleashes elemental forces of Life, healing a friendly target for $s1 and increasing the effect of the Shaman's next direct heal by $s2%.
+Tooltip          : Your next direct heal will be $w2% more effective.
 
 Name             : Healing Rain (id=73920) [Spell Family (11)] 
 Class            : Restoration Shaman
@@ -1305,7 +1341,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68079)    : Apply Aura (6) | Unknown effect sub type (354)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000 | Misc Value: 2
-                   Affected Spells: Chain Heal (1064), Healing Stream (5672), Healing Surge (8004), Healing Stream Totem (52042), Gift of the Naaru (59547), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Healing Surge (188070), Rockbiter (193786), Wellspring (197995), Wellspring (197997)
+                   Affected Spells: Chain Heal (1064), Healing Stream (5672), Healing Surge (8004), Healing Stream Totem (52042), Gift of the Naaru (59547), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Healing Surge (188070), Rockbiter (193786), Wellspring (197995), Wellspring (197997)
 #2 (id=92128)    : Apply Aura (6) | Dummy (4)
                    Base Value: 300 | Scaled Value: 300
 Description      : Increases healing from your spells by up to $77226s1%, based on the current health of your target. Lower health targets are healed for more.
@@ -1339,7 +1375,7 @@ Spell Level      : 56
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Tidal Waves (53390), Healing Trance (60515), Mastery: Deep Healing (77226), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Temporal Maelstrom (105869), Item - Shaman T14 Restoration 2P Bonus (123134), Lucidity (137326), Lord of Storms (207092), Pull of the Sea (207118), Pull of the Sea (210029), Pull of the Sea (210030), Pull of the Sea (210031), Pull of the Sea (210032), Pull of the Sea (210033)
+Affecting spells : Tidal Waves (53390), Healing Trance (60515), Unleash Life (73685), Mastery: Deep Healing (77226), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Temporal Maelstrom (105869), Item - Shaman T14 Restoration 2P Bonus (123134), Lucidity (137326), Buffeting Waves (207092), Pull of the Sea (210029)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1727,7 +1763,7 @@ Effects          :
                    Affected Spells: Stormstrike (17364)
 #4 (id=305266)   : Apply Aura (6) | Periodic Energize Power: every 1 seconds (24)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 11
-                   Affected Spells: Rockbiter (193786), Flametongue (193796)
+                   Affected Spells: Unleash Life (73685), Rockbiter (193786), Flametongue (193796)
 Description      : Transform into an Air Ascendant for $114051d, generating $s4 Maelstrom per second, and transforming your auto attack and Stormstrike into Wind attacks, which bypass armor and have a $s1 yd range.
 Tooltip          : Transformed into a powerful Air ascendant. Auto attacks have a $114089r yard range. Stormstrike is empowered and has a $114089r yard range.
 
@@ -2259,7 +2295,7 @@ Effects          :
                    Affected Spells: Lightning Bolt (403), Stormstrike (17364), Windstrike (115356), Lightning Bolt (187837), Crash Lightning (187874), Lightning Bolt (188196), Flametongue (193796), Lightning Bolt (214815)
 #3 (id=190241)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 11
-                   Affected Spells: Ghost Wolf (2645), Stormstrike (17364), Feral Spirit (51533), Lava Lash (60103), Windstrike (115356), Crash Lightning (187874), Rockbiter (193786), Flametongue (193796)
+                   Affected Spells: Ghost Wolf (2645), Stormstrike (17364), Feral Spirit (51533), Lava Lash (60103), Unleash Life (73685), Windstrike (115356), Crash Lightning (187874), Rockbiter (193786), Flametongue (193796)
 #4 (id=191050)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1634
 #5 (id=191051)   : Apply Aura (6) | Dummy (4)
@@ -3140,7 +3176,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=270195)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10
-Description      : Every $m1 Lightning Bolt or Chain Lightning casts, your total total spell haste is increased by $189063m1% for $189063d. Every $189063t2 sec the effect diminishes.
+Description      : Every $m1 Lightning Bolt or Chain Lightning casts, your total spell haste is increased by $189063m1% for $189063d. Every $189063t2 sec the effect diminishes.
 
 Name             : Silkweave Epaulets (id=185936) 
 Class            : Shaman, Monk, Druid
@@ -3731,7 +3767,7 @@ Spell Level      : 7
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Affecting spells : Elemental Focus (16246), Shaman Healing Surge Crit Chance (38501), Tidal Waves (53390), Healing Trance (60515), Mastery: Deep Healing (77226), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Temporal Maelstrom (105869), Elemental Shaman (137040), Lucidity (137326), Maelstrom Power Increase (190900), Protection of the Elements (191569), Spiritual Healing (198296), Lord of Storms (207092), Pull of the Sea (207118), PH - Chain Heal Reduces Mana Cost Of Next Healing Surge (208764), Pull of the Sea (210029), Pull of the Sea (210030), Pull of the Sea (210031), Pull of the Sea (210032), Pull of the Sea (210033)
+Affecting spells : Elemental Focus (16246), Shaman Healing Surge Crit Chance (38501), Tidal Waves (53390), Healing Trance (60515), Unleash Life (73685), Mastery: Deep Healing (77226), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Temporal Maelstrom (105869), Elemental Shaman (137040), Lucidity (137326), Maelstrom Power Increase (190900), Protection of the Elements (191569), Spiritual Healing (198296), Buffeting Waves (207092), PH - Chain Heal Reduces Mana Cost Of Next Healing Surge (208764)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4035,10 +4071,6 @@ Effects          :
 Name             : Static Overload (id=191602) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
-Proc Chance      : 101%
-Real PPM         : 2.5 (Haste multiplier)
-Proc Flags       : ........ ........ x....... ........ 
-                 : Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4047,9 +4079,9 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=281069)   : Apply Aura (6) | Proc Trigger Spell: Static Overload (42)
-                   Base Value: 3 | Scaled Value: 3 | Trigger Spell: 191635
-Description      : Chain Lightning has a chance to cause Elemental Overload to trigger on every target of your next Chain Lightning.
+#1 (id=281069)   : Apply Aura (6) | Proc Trigger Spell (42)
+                   Base Value: 10 | Scaled Value: 10
+Description      : Chain Lightning has a $s1% chance to cause Elemental Overload to trigger on every target.
 
 Name             : Static Overload (id=191634) [Spell Family (11)] 
 Class            : Shaman
@@ -4067,23 +4099,6 @@ Effects          :
 #1 (id=281103)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3
 Description      : $@spelldesc191602
-
-Name             : Static Overload (id=191635) [Spell Family (11)] 
-Class            : Shaman
-School           : Physical
-Duration         : 15 seconds
-Triggered by     : Static Overload (191602)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=281104)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3
-Description      : $@spelldesc191602
-Tooltip          : Your next Chain Lightning will cause an elemental overload to all targets hit.
 
 Name             : Lightning Surge Totem (id=192058) [Spell Family (11)] 
 Class            : Shaman
@@ -4704,7 +4719,7 @@ School           : Nature
 Spell Level      : 10
 Range            : 10 yards
 GCD              : 1.5 seconds
-Affecting spells : Mastery: Deep Healing (77226), Temporal Maelstrom (105869), Ascendance (114051), Shaman (137038), Surge of the Elements (198247), Gathering of the Maelstrom (198349), Weapons of the Elements (215381)
+Affecting spells : Mastery: Deep Healing (77226), Temporal Maelstrom (105869), Ascendance (114051), Shaman (137038), Gathering of the Maelstrom (198349), Weapons of the Elements (215381)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4727,7 +4742,7 @@ Spell Level      : 16
 Range            : 10 yards
 GCD              : 1.5 seconds
 Cooldown         : 12 seconds
-Affecting spells : Ascendance (114051), Shaman (137038), Elemental Discharge (144999), Surge of the Elements (198247), Weapons of the Elements (215381)
+Affecting spells : Ascendance (114051), Shaman (137038), Elemental Discharge (144999), Weapons of the Elements (215381)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5592,7 +5607,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 13
 Description      : Greatly reduces the materials required to craft a Righteous Dawnlight Medallion.
 
-Name             : Bloodthirsty Furystone Gorget (id=195942) 
+Name             : Raging Furystone Gorget (id=195942) 
 Class            : Warrior, Priest, Shaman, Warlock, Druid, Demon Hunter
 School           : Physical
 Cast Time        : 1.5 seconds
@@ -5605,7 +5620,7 @@ Attributes       : .....x.. ........ x....... ........   ........ ..x..... .....
 Effects          :
 #1 (id=287594)   : Create Item (24)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 13
-Description      : Greatly reduces the materials required to craft a Bloodthirsty Furystone Gorget.
+Description      : Greatly reduces the materials required to craft a Raging Furystone Gorget.
 
 Name             : Grim Furystone Gorget (id=195943) 
 Class            : Paladin, Priest, Shaman, Warlock, Druid, Demon Hunter
@@ -5633,7 +5648,7 @@ Duration         : 15 seconds
 Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
-Affecting spells : Elemental Fury (60188), Surge of the Elements (198247), Weapons of the Elements (215381)
+Affecting spells : Elemental Fury (60188), Weapons of the Elements (215381)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5671,6 +5686,7 @@ Effects          :
 #3 (id=313061)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 Description      : Chills the target with frost, causing $s1 Frost damage and reducing the target's movement speed by $s2% for $d. Maelstrom increases damage and duration up to $s3%.
+Tooltip          : Movement speed reduced by $s2%.
 
 Name             : Feral Lunge (id=196881) [Spell Family (11)] 
 Class            : Shaman
@@ -5731,7 +5747,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 3 yards
 #2 (id=289159)   : Summon (28)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 100099 | Misc Value 2: 0xe8a
-Description      : Summons a totem at the target destination for $d. The totem Hexes all enemies within $196942a1 yds into frogs, incapacitated and unable to attack or cast spells. Damage or leaving the area will interrupt the effect.
+Description      : Summons a totem at the target destination for $d. The totem Hexes all enemies within $196942a1 yds into frogs which are incapacitated and unable to attack or cast spells. Damage or leaving the area will interrupt the effect.
 
 Name             : Hex (id=196942) [Spell Family (11)] 
 Class            : Shaman
@@ -5866,16 +5882,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=290105)   : Apply Aura (6) | Add Flat Modifier (107)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 31
+#1 (id=290105)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
+                   Base Value: -15 | Scaled Value: -15 | Misc Value: 3
                    Affected Spells: Tidal Waves (53390)
-#2 (id=290106)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 3
+#2 (id=290106)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 12
                    Affected Spells: Tidal Waves (53390)
-#3 (id=290107)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 12
-                   Affected Spells: Tidal Waves (53390)
-Description      : Tidal Waves generates $s1 additional charge when triggered, increases the critical effect chance of Healing Surge by an additional $s3%, and reduces the cast time of Healing Wave by an additional $s2%.
+Description      : Tidal Waves increases the critical effect chance of Healing Surge by an additional $s3%, and reduces the cast time of Healing Wave by an additional $s2%.
 
 Name             : Bottomless Depths (id=197467) [Spell Family (11), Passive] 
 Class            : Shaman
@@ -6792,7 +6805,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
                    Affected Spells: Stormstrike (32175), Stormstrike Off-Hand (32176), Windstrike (115357), Windstrike Off-Hand (115360)
 Description      : $@spelldesc201845
-Tooltip          : Stormstrike has no cooldown and cost is reduced by $s2%.
+Tooltip          : Stormstrike has no cooldown and its cost is reduced by $s3%.
 
 Name             : Boulderfist (id=201897) [Spell Family (11)] 
 Class            : Shaman
@@ -6980,6 +6993,58 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 11 | Radius: 100 yards
 Description      : $@spelldesc202188
 Tooltip          : Generates $s1 Maelstrom every $t1 sec.
+
+Name             : Doom Winds (id=204945) [Spell Family (11)] 
+Class            : Shaman
+School           : Physical
+Range            : 100 yards
+Duration         : 6 seconds
+Cooldown         : 45 seconds
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ......x. ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=302536)   : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 18
+                   Affected Spells: Windfury (33757)
+#2 (id=302537)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 400 | Scaled Value: 400
+                   Affected Spells: Windfury Attack (25504), Windfury Attack (33750)
+#3 (id=316924)   : Apply Aura (6) | Add Percent Modifier (108)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 38
+                   Affected Spells: Windfury (33757)
+Description      : Unleashes the inner power of the |cFFFFCC99Doomhammer|r, causing all auto attacks to trigger Windfury, and increasing damage dealt by Windfury by $s2% for $d.
+Tooltip          : Chance to proc Windfury weapon on auto attacks increased by 100%.
+Windfury damage increased by $s2%.
+
+Name             : Stormkeeper (id=205495) [Spell Family (11)] 
+Class            : Shaman
+School           : Nature
+Cast Time        : 1.5 seconds
+GCD              : 1.5 seconds
+Duration         : 15 seconds
+Cooldown         : 45 seconds
+Stacks           : 3 initial, 3 maximum
+Proc Chance      : 100%
+Proc Flags       : ........ ........ x....... ........ 
+                 : Hostile Spell
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=303466)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 200 | Scaled Value: 200
+                   Affected Spells: Lightning Bolt (403), Chain Lightning (421), Lightning Bolt (187837), Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815)
+#2 (id=303467)   : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1
+Description      : Raises |cFFFFCC99The Fist of Ra-den|r to the sky and absorbs all nearby electric energy, causing your next $n casts of Lightning Bolt or Chain Lightning to deal $s1% increased damage.
+Tooltip          : Your next $s2 Lightning Bolt or Chain Lightning spells will deal 200% additional damage.
 
 Name             : Ancestral Protection Totem (id=207399) [Spell Family (11)] 
 Class            : Shaman

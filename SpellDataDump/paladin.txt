@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21491)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21531)
 
 Name             : Divine Protection (id=498) [Spell Family (10)] 
 Class            : Holy Protection Paladin
@@ -234,7 +234,7 @@ Effects          :
 #4 (id=266439)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 127
 Description      : Places a Blessing on a party or raid member, transferring $s1% of damage taken to you for $d, or until transferred damage would cause you to fall below 20% health.
-Tooltip          : $?$w1>0[$s1% of damage taken is transferred to the Paladin.][Damage taken reduced by $w3%.]
+Tooltip          : $?$w1>0[$s1% of damage taken is transferred to the Paladin.][Taking $s3% of damage taken by target ally.]
 
 Name             : Fishing (id=7732) [Hidden] 
 Class            : Warrior, Paladin, Priest, Death Knight, Monk, Druid, Demon Hunter
@@ -610,7 +610,7 @@ GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Duration         : 3 seconds
 Cooldown         : 15 seconds
-Affecting spells : Grand Crusader (85416), Paladin (137026), First Avenger (203776), PH - Avenger's Shield Additional Bounces and Damage with Each Bounce (207614), Heart of the Avenger (209216)
+Affecting spells : Grand Crusader (85416), Paladin (137026), First Avenger (203776), Ferren Marcus's Strength (207614), Heart of the Avenger (209216)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -981,7 +981,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50
                    Affected Spells: Flash of Light (19750)
 Description      : $@spelldesc53576
-Tooltip          : Reduces the cast time of your next Holy Light by ${$54149m1/-1000}.1 sec or increase the healing of your next Flash of Light by $54149s2%.
+Tooltip          : Reduces the cast time of your next Holy Light by ${$54149m1/-1000}.1 sec or increases the healing of your next Flash of Light by $54149s2%.
 
 Name             : Hand of Reckoning (id=62124) [Spell Family (10)] 
 Class            : Paladin
@@ -2432,6 +2432,7 @@ Effects          :
 
 Name             : Ashes to Ashes (id=179546) [Spell Family (10), Passive] 
 Class            : Paladin
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 School           : Physical
 Range            : 100 yards
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -2901,25 +2902,6 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25
 Description      : Calls down the Light to heal you for $s2% of your missing health.
 
-Name             : Blade of Light (id=184123) [Spell Family (10)] 
-Class            : Paladin
-School           : Holy
-Resource         : 5% Base Mana (11000 @Level 110)
-Spell Level      : 20
-Range            : 8 yards
-GCD              : 1.5 seconds
-Cooldown         : 9 seconds
-Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=266786)   : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.50000
-Description      : Calls down a pillar of light from the heavens, dealing $s1 Holy damage to the target.  Shares cooldown with Consecration.
-
 Name             : Divine Intervention (id=184132) [Spell Family (10), Passive] 
 Class            : Holy Paladin
 School           : Physical
@@ -2933,7 +2915,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=266799)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 99999999 | Scaled Value: 1e+08 - 1.9e+08 | Value Range: 90000001 | Misc Value: 127
+                   Base Value: 99999999 | Scaled Value: 1e+008 - 1.9e+008 | Value Range: 90000001 | Misc Value: 127
 #2 (id=266806)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20
 #3 (id=317856)   : Apply Aura (6) | Unknown effect sub type (133)
@@ -3399,7 +3381,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 61516 | Misc Value 2: 0xd
 Description      : No longer requires the Dalaran Alchemy Station.
 
-Name             : Silverscale Elixir (id=188311) 
+Name             : Sylvan Elixir (id=188311) 
 Class            : Paladin, Hunter, Priest, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Cast Time        : 2 seconds
@@ -3414,7 +3396,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 61518 | Misc Value 2: 0xd
 Description      : No longer requires the Dalaran Alchemy Station.
 
-Name             : Silverscale Elixir (id=188312) 
+Name             : Sylvan Elixir (id=188312) 
 Class            : Warrior, Paladin, Hunter, Priest, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Cast Time        : 2 seconds
@@ -3429,7 +3411,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 13
 Description      : Chance to create multiple potions.
 
-Name             : Drogbar Elixir (id=188315) 
+Name             : Avalanche Elixir (id=188315) 
 Class            : Paladin, Rogue, Priest, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Cast Time        : 2 seconds
@@ -3648,7 +3630,6 @@ Class            : Protection Paladin
 School           : Holy
 Spell Level      : 87
 GCD              : 1.5 seconds
-Duration         : 3 seconds
 Cooldown         : 45 seconds
 Mechanic         : Unknown(180)
 Affecting spells : Knight Templar (204139), 
@@ -3659,16 +3640,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .x...
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
 Effects          :
-#1 (id=279734)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f
-#2 (id=279748)   : Apply Aura (6) | Unknown effect sub type (172)
-                   Base Value: 0 | Scaled Value: 0
-#3 (id=279735)   : Apply Aura (6) | Unknown effect sub type (78)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6
-#4 (id=284768)   : Server Side Script (77)
+#1 (id=279734)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
-Description      : Summons your Holy Charger to ride for $d, increasing movement speed by $s4%. Usable while indoors or in combat.
-Tooltip          : Increases ground speed by $s4%$?$w1<0[, and reduces damage taken by $w1%][].
+Description      : Summons your Holy mount to ride for $221883d, increasing movement speed by $221883s4%. Usable while indoors or in combat.
 
 Name             : Word of Critical Strike (id=190992) [Scaling Spell (-1)] 
 Class            : Paladin, Priest, Mage, Warlock, Demon Hunter
@@ -5038,7 +5012,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 13
 Description      : Reduces the materials required to craft a Righteous Dawnlight Medallion.
 
-Name             : Bloodthirsty Furystone Gorget (id=195921) 
+Name             : Raging Furystone Gorget (id=195921) 
 Class            : Warrior, Paladin, Death Knight, Warlock, Druid, Demon Hunter
 School           : Physical
 Cast Time        : 1.5 seconds
@@ -5051,7 +5025,7 @@ Attributes       : .....x.. ........ x....... ........   ........ ..x..... .....
 Effects          :
 #1 (id=287573)   : Create Item (24)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 13
-Description      : Reduces the materials required to craft a Bloodthirsty Furystone Gorget.
+Description      : Reduces the materials required to craft a Raging Furystone Gorget.
 
 Name             : Deep Amber Loop (id=195923) 
 Class            : Paladin, Hunter, Rogue, Priest, Death Knight, Warlock, Druid, Demon Hunter
@@ -5740,6 +5714,109 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000
 Description      : $@spelldesc200025
 
+Name             : Power of the Silver Hand (id=200474) [Spell Family (10), Passive] 
+Class            : Paladin
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+School           : Physical
+Range            : 100 yards
+Proc Chance      : 101%
+Real PPM         : 1
+Proc Flags       : ........ ..x.x.x. x....... ........ 
+                 : AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
+Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=295146)   : Apply Aura (6) | Proc Trigger Spell: Power of the Silver Hand (42)
+                   Base Value: 3 | Scaled Value: 3 | Trigger Spell: 200656
+#2 (id=295147)   : Dummy (3)
+                   Base Value: 15 | Scaled Value: 15
+Description      : Holy Light and Flash of Light have a chance to unlock the power of |cFFFFCC99The Silver Hand|r, increasing your next Holy Shock by $200656s2% of all damage and healing you do within the next $200656d. 
+
+Name             : Tyr's Deliverance (id=200652) [Spell Family (10)] 
+Class            : Paladin
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+School           : Holy
+Range            : 100 yards
+Cast Time        : 2 seconds
+GCD              : 1.5 seconds
+Duration         : 10 seconds
+Cooldown         : 90 seconds
+Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ .....x.. ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... .x...... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=295441)   : Apply Aura (6) | Periodic Trigger Spell: Tyr's Deliverance every 1 seconds (23)
+                   Base Value: 20 | Scaled Value: 20 | Trigger Spell: 200653
+Description      : Releases the Light within |cFFFFCC99The Silver Hand|r for $d, healing an injured ally within $200653A1 yds for $200654s1 every $t sec.
+Tooltip          : Healing an injured ally for $200654s1 every $t sec.
+
+Name             : Tyr's Deliverance (id=200653) [Spell Family (10), Hidden] 
+Class            : Paladin
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+School           : Physical
+Range            : 100 yards
+Triggered by     : Tyr's Deliverance (200652)
+Attributes       : .......x ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7)
+Effects          :
+#1 (id=295443)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | Radius: 0 - 40 yards
+Description      : $@spelldesc200474
+
+Name             : Tyr's Deliverance (id=200654) [Spell Family (10)] 
+Class            : Paladin
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+School           : Holy
+Range            : 100 yards
+Stacks           : 20 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=295444)   : Direct Heal (10)
+                   Base Value: 3 | Scaled Value: 3 | SP Coefficient: 1.50000
+Description      : $@spelldesc200652
+Tooltip          : Damage and healing increased by $s1%.
+
+Name             : Power of the Silver Hand (id=200656) [Spell Family (10), Hidden] 
+Class            : Paladin
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+School           : Physical
+Range            : 100 yards
+Duration         : 10 seconds
+Proc Chance      : 101%
+Proc Flags       : ....x... x.x.x.x. x....... ........ 
+                 : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
+Triggered by     : Power of the Silver Hand (200474)
+Attributes       : .......x ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7)
+Effects          :
+#1 (id=295448)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 15 | Scaled Value: 15
+Description      : $@spelldesc200474 
+
 Name             : Faronaar Fizz (id=201527) 
 Class            : Paladin, Rogue, Priest, Warlock, Monk
 School           : Physical
@@ -6092,7 +6169,6 @@ School           : Physical
 Resource         : 1 - 5 Holy Power
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Exorcism (138162), The Fires of Justice (209785), 
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6127,7 +6203,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 209785
 #2 (id=323063)   : Apply Aura (6) | Unknown effect sub type (453)
                    Base Value: -1000 | Scaled Value: -1000 | Misc Value: 1627
-Description      : Reduces the cooldown of Crusader Strike by ${$m2/-1000} sec and gives it a $h% chance to reduce the cost of your next Holy Power ability by $209785s1.
+Description      : Reduces the cooldown of Crusader Strike by ${$m2/-1000} sec and gives it a $h% chance to reduce the cost of your next damaging or healing Holy Power ability by $209785s1.
 
 Name             : Greater Blessing of Might (id=203528) [Spell Family (10)] 
 Class            : Retribution Paladin
@@ -6302,7 +6378,7 @@ School           : Holy
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
-Affecting spells : Lucidity (137323), Ferren Marcus's Swiftness (210632), Invoke the Light (216122)
+Affecting spells : Lucidity (137323), Muze's Unwavering Will (210632), Invoke the Light (216122)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ .x...... ......x. 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
@@ -6332,7 +6408,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=301049)   : Apply Aura (6) | Unknown effect sub type (103)
-                   Base Value: -70000000 | Scaled Value: -7e+07 | Misc Value: 127
+                   Base Value: -70000000 | Scaled Value: -7e+007 | Misc Value: 127
 Description      : Places a blessing on a party or raid member, temporarily removing all threat from the target and causing all additional threat generated to be transferred to you. Lasts $d.
 Tooltip          : All threat temporarily removed and additional threat transferred to the casting Paladin.
 
@@ -6586,7 +6662,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .x...
 Effects          :
 #1 (id=302924)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
-#2 (id=316391)   : Apply Aura (6) | Damage Taken (14)
+#2 (id=316391)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -35 | Scaled Value: -35 | Misc Value: 0x1
 Description      : Reduces Physical damage you take by $s2%, and instantly counterattacks any enemy that strikes you in melee combat for $205202sw1 Physical damage.  Lasts $d.
 Tooltip          : Counterattacking all melee attacks.
@@ -6652,6 +6728,7 @@ Description      : Increases the healing from Light of the Protector by $s1%.
 
 Name             : Wake of Ashes (id=205273) [Spell Family (10)] 
 Class            : Paladin
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 School           : Holyfire
 GCD              : 1.5 seconds
 Duration         : 6 seconds
@@ -6660,7 +6737,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=303075)   : School Damage: holyfire (2)
@@ -6679,6 +6756,7 @@ $?$w3!=0[Suffering $s3 Radiant damage every $t3 sec][]
 
 Name             : Wake of Ashes (id=205290) [Spell Family (10)] 
 Class            : Paladin
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 School           : Holy
 Range            : 100 yards
 Duration         : 6 seconds
@@ -6700,7 +6778,6 @@ Class            : Paladin
 School           : Holy
 Spell Level      : 1
 GCD              : 1.5 seconds
-Duration         : 3 seconds
 Cooldown         : 45 seconds
 Mechanic         : Unknown(180)
 Affecting spells : Knight Templar (204139), 
@@ -6711,16 +6788,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .x...
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
 Effects          :
-#1 (id=303876)   : Apply Aura (6) | Unknown effect sub type (172)
-                   Base Value: 0 | Scaled Value: 0
-#2 (id=303877)   : Apply Aura (6) | Unknown effect sub type (78)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6
-#3 (id=303878)   : Server Side Script (77)
+#1 (id=303876)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
-#4 (id=303879)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f
-Description      : Summons your Holy Charger to ride for $d, increasing movement speed by $s3%. Usable while indoors or in combat.
-Tooltip          : Increases ground speed by $s3%.
+Description      : $@spelldesc190784
 
 Name             : Silkweave Gloves (id=208350) 
 Class            : Warrior, Paladin, Priest, Shaman, Monk, Druid
@@ -6751,6 +6821,28 @@ Effects          :
 #1 (id=308269)   : Create Item (24)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 13
 Description      : Greatly reduces the materials required to craft a Silkweave Hood.
+
+Name             : Eye of Tyr (id=209202) [Spell Family (10)] 
+Class            : Paladin
+School           : Physical
+GCD              : 1.5 seconds
+Duration         : 9 seconds
+Cooldown         : 60 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=309632)   : Apply Aura (6) | Unknown effect sub type (269)
+                   Base Value: -25 | Scaled Value: -25 | Misc Value: 127 | Radius: 0 - 8 yards
+#2 (id=309633)   : School Damage: physical (2)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.00000 | Radius: 0 - 8 yards
+#3 (id=321125)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 25 yards
+Description      : Releases a blinding flash from |cFFFFCC99Truthguard|r, causing $s2 Holy damage to all nearby enemies and reducing all damage they deal to you by $s1% for $d.
+Tooltip          : Dealing $s1% less damage to the Paladin.
 
 Name             : Queen's Opal Loop (id=209606) 
 Class            : Warrior, Paladin, Shaman, Mage, Monk
@@ -6803,8 +6895,8 @@ School           : Holy
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Proc Flags       : ....x... x...x... x....... ........ 
-                 : Yellow Melee, Yellow Ranged, AOE Hostile Spell, Hostile Spell
+Proc Flags       : ....x... x.x.x.x. x....... ........ 
+                 : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
 Triggered by     : The Fires of Justice (203316)
 Attributes       : ........ ........ ..x..... .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -6815,12 +6907,12 @@ Attributes       : ........ ........ ..x..... .....x..   ........ ........ .....
 Effects          :
 #1 (id=310496)   : Apply Aura (6) | Add Flat Modifier: Spell Resource Cost (107)
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 14
-                   Affected Spells: Divine Storm (53385), Templar's Verdict (85256), Templar's Verdict (186805), Divine Storm (186876), Seal of Light (202273), Execution Sentence (213757), Holy Wrath (215646)
+                   Affected Spells: Divine Storm (53385), Templar's Verdict (85256), Templar's Verdict (186805), Divine Storm (186876), Execution Sentence (213757)
 #2 (id=314994)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 14
-                   Affected Spells: Divine Storm (53385), Templar's Verdict (85256), Templar's Verdict (186805), Divine Storm (186876), Seal of Light (202273), Holy Wrath (215646)
-Description      : $@spelldesc185817
-Tooltip          : Your next Holy Power spender costs $s2 less Holy Power.
+                   Affected Spells: Divine Storm (53385), Templar's Verdict (85256), Templar's Verdict (186805), Divine Storm (186876)
+Description      : $@spelldesc203316
+Tooltip          : Your next damaging or healing Holy Power spender costs $s2 less Holy Power.
 
 Name             : Word of Glory (id=210191) [Spell Family (10)] 
 Class            : Paladin
@@ -6838,7 +6930,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ ...x.
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=311218)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 7.00000 | Radius: 0 - 15 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 10.00000 | Radius: 0 - 15 yards
 #2 (id=315457)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Radius: 0 - 12 yards
 #3 (id=319269)   : Dummy (3)
@@ -6850,7 +6942,7 @@ Class            : Paladin
 School           : Holy
 Spell Level      : 10
 GCD              : 1.5 seconds
-Cooldown         : 300 seconds
+Cooldown         : 180 seconds
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6921,7 +7013,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=316419)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 99999999 | Scaled Value: 1e+08 - 1.9e+08 | Value Range: 90000001 | Misc Value: 127
+                   Base Value: 99999999 | Scaled Value: 1e+008 - 1.9e+008 | Value Range: 90000001 | Misc Value: 127
 #2 (id=316420)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20
 #3 (id=316427)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
@@ -6993,6 +7085,7 @@ Effects          :
 #1 (id=317188)   : Apply Aura (6) | Periodic Damage: holy every 8 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 12.00000
 Description      : A hammer slowly falls from the sky, dealing $s2 Holy damage after $d.
+Tooltip          : Taking $s2 Holy damage when this expires.
 
 Name             : Rule of Law (id=214202) [Spell Family (10)] 
 Class            : Paladin
@@ -7085,7 +7178,6 @@ School           : Holy
 Spell Level      : 1
 Range            : 100 yards
 Velocity         : 30 yards/sec
-Affecting spells : Exorcism (138162), The Fires of Justice (209785), 
 Triggered by     : Holy Wrath (215647)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7095,7 +7187,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=320646)   : School Damage: holy (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.10000
 Description      : $@spelldesc203545
 
 Name             : Holy Wrath (id=215647) [Spell Family (10)] 
@@ -7105,7 +7197,7 @@ Spell Level      : 1
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 2.5 seconds
-Cooldown         : 120 seconds
+Cooldown         : 60 seconds
 Attributes       : ........ ........ x....... ........   ..x..... .x....x. ........ ..x.x... 
                  : ........ ...x.... .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -7118,7 +7210,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50
 #2 (id=320649)   : Apply Aura (6) | Periodic Trigger Spell: Holy Wrath every 0.5 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 215646
-Description      : Fires holy bolts at the target, causing ${10*$215646m1} Holy damage and generating 5 Holy Power over $d.
+Description      : Fires holy bolts at the target over $d, causing ${10*$215646m1} Holy damage and generating 5 Holy Power.
 
 Name             : Justicar's Vengeance (id=215661) [Spell Family (10)] 
 Class            : Paladin
@@ -7181,6 +7273,7 @@ Tooltip          : Chains to an additonal nearby target per stack.
 
 Name             : Wake of Ashes (id=218001) [Spell Family (10)] 
 Class            : Paladin
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 School           : Holy
 Range            : 100 yards
 Mechanic         : Unknown(95)

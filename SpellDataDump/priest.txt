@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21491)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21531)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -102,7 +102,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Lucidity (137323), Ferren Marcus's Swiftness (210632), Invoke the Light (216122)
+Affecting spells : Lucidity (137323), Muze's Unwavering Will (210632), Invoke the Light (216122)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -132,7 +132,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=237)      : Apply Aura (6) | Unknown effect sub type (103)
-                   Base Value: -90000000 | Scaled Value: -9e+07
+                   Base Value: -90000000 | Scaled Value: -9e+007
 Description      : Fade out, removing all your threat for $d.
 Tooltip          : Reduced threat level.
 
@@ -174,7 +174,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Rapid Healing (24546), Healing Trance (37706), Temporal Boon (105826), Lucidity (137323), Holy Guidance (196434), Guardians of the Light (196437), Power of the Naaru (196490), Light of T'uure (208065), Ferren Marcus's Swiftness (210632)
+Affecting spells : Rapid Healing (24546), Healing Trance (37706), Temporal Boon (105826), Lucidity (137323), Holy Guidance (196434), Guardians of the Light (196437), Power of the Naaru (196490), Light of T'uure (208065), Muze's Unwavering Will (210632)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -213,7 +213,7 @@ Attributes       : ........ ........ x.x.x... ........   x.x..... .....x.. .x...
 Effects          :
 #2 (id=248)      : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0
-Description      : Controls a mind up to level $s1 for $d. Does not work versus Mechanical beings. Shares diminishing returns with other disorienting effects.
+Description      : Controls a mind up to 1 level above yours for $d. Does not work versus Mechanical beings. Shares diminishing returns with other disorienting effects.
 Tooltip          : Under the command of the Priest.
 
 Name             : Levitate (id=1706) [Spell Family (6)] 
@@ -268,7 +268,7 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Rapid Healing (24546), Healing Trance (37706), Temporal Boon (105826), Lucidity (137323), Reverence (196418), Light of T'uure (208065), Ferren Marcus's Swiftness (210632)
+Affecting spells : Rapid Healing (24546), Healing Trance (37706), Temporal Boon (105826), Lucidity (137323), Reverence (196418), Light of T'uure (208065), Muze's Unwavering Will (210632)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -501,13 +501,13 @@ Class            : Holy Priest
 School           : Holy
 Resource         : 1% Base Mana (11000 @Level 110)
 Spell Level      : 12
-Range            : 30 yards
+Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 7 seconds
 Cooldown         : 10 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
-Affecting spells : Lucidity (137323)
+Affecting spells : Lucidity (137323), The Edge of Dark and Light (197715), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -613,22 +613,28 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Equip a fishing pole and find a body of water to fish.  Right-Click on the bob in the water when it splashes to catch your fish.  Higher skill increases your chance of fishing successfully in higher level areas.
 
-Name             : Desperate Prayer (id=19236) [Scaling Spell (8), Spell Family (6)] 
+Name             : Desperate Prayer (id=19236) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
 Spell Level      : 1
-Cooldown         : 120 seconds
+Duration         : 10 seconds
+Cooldown         : 90 seconds
 Stance Mask      : 0x08000000
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... .....x..   ........ ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=10552)    : Direct Heal% (136)
-                   Base Value: 22 | Scaled Value: 22
-Description      : Heals the caster for ${$m1*$MHP/100}.
+#1 (id=10552)    : Apply Aura (6) | Unknown effect sub type (133)
+                   Base Value: 20 | Scaled Value: 20
+#2 (id=332013)   : Direct Heal% (136)
+                   Base Value: 20 | Scaled Value: 20
+#3 (id=332014)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
+                   Base Value: 2 | Scaled Value: 2
+Description      : Heals you for $s2% of your maximum health, and increases your maximum health by $s1%, decreasing by $s3% every second.
+Tooltip          : Maximum health increased by $w1%.
 
 Name             : Spirit of Redemption (id=20711) [Spell Family (6), Passive] 
 Class            : Holy Priest
@@ -644,7 +650,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=11689)    : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 145000000 | Scaled Value: 1.45e+08 | SP Coefficient: 1.00000 | Misc Value: 127
+                   Base Value: 145000000 | Scaled Value: 1.45e+008 | SP Coefficient: 1.00000 | Misc Value: 127
 Description      : Upon death, you become the Spirit of Redemption for $27827d. You cannot move, attack, be attacked, or be targeted by any spells or effects, and your healing spells cost no mana. When the effect ends, you die.
 
 Name             : Spirit of Redemption (id=27827) [Spell Family (6)] 
@@ -737,7 +743,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20
 Description      : A word of dark binding that inflicts $s1 Shadow damage to the target. Only usable on enemies that have less than $s2% health.
 
-|cFFFFFFFFGenerates $/100;190714s3 Insanity if the target dies.|r
+|cFFFFFFFFGenerates $/100;190714s3 Insanity$?s199853[][ if the target dies].|r
 
 Name             : Binding Heal (id=32546) [Spell Family (6)] 
 Class            : Priest
@@ -1072,7 +1078,7 @@ Attributes       : ........ x....... x....... .....x..   ..x....x ..x...x. .....
 Effects          :
 #1 (id=39751)    : Dummy (3)
                    Base Value: 120 | Scaled Value: 120
-Description      : Launches a volley of holy light at the target, causing ${$47666m1*3} Holy damage$?a200347[ to an enemy or ${$47750m1*3} healing to an ally][] over $47758d. Castable while moving.
+Description      : Launches a volley of holy light at the target, causing $?s193134[${$47666m1*4}][${$47666m1*3}] Holy damage$?a200347[ to an enemy or ${$47750m1*3} healing to an ally][] over $47758d. Castable while moving.
 
 Name             : Dispersion (id=47585) [Spell Family (6)] 
 Class            : Shadow Priest
@@ -1534,7 +1540,7 @@ Effects          :
                    Base Value: 500 | Scaled Value: 500 | Misc Value: insanity
 Description      : Assail the target with shadowy spikes, dealing $73510s1 Shadowfrost damage and leaving a spike embedded in their mind. Up to $u spikes may be embedded this way.
 
-Mind Blast will detonate these spikes, each dealing an additional $s2% of their original damage.
+Mind Blast will detonate these spikes, each dealing $s2% of their original damage.
 
 |cFFFFFFFFGenerates ${$m3/100} Insanity.|r
 
@@ -2226,7 +2232,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 0.5 yards/sec
 Cooldown         : 12 seconds
-Affecting spells : Priest (137030), Lucidity (137323)
+Affecting spells : Priest (137030), Lucidity (137323), The Edge of Dark and Light (197715), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2424,7 +2430,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179717)   : Apply Aura (6) | Unknown effect sub type (178)
+#1 (id=179717)   : Apply Aura (6) | Unknown effect sub type (419)
                    Base Value: -80 | Scaled Value: -80
 #2 (id=191068)   : Apply Aura (6) | Unknown effect sub type (232)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 26
@@ -3299,7 +3305,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 13
 Description      : Chance to create multiple potions.
 
-Name             : Silverscale Elixir (id=188311) 
+Name             : Sylvan Elixir (id=188311) 
 Class            : Paladin, Hunter, Priest, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Cast Time        : 2 seconds
@@ -3314,7 +3320,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 61518 | Misc Value 2: 0xd
 Description      : No longer requires the Dalaran Alchemy Station.
 
-Name             : Silverscale Elixir (id=188312) 
+Name             : Sylvan Elixir (id=188312) 
 Class            : Warrior, Paladin, Hunter, Priest, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Cast Time        : 2 seconds
@@ -3329,7 +3335,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 13
 Description      : Chance to create multiple potions.
 
-Name             : Drogbar Elixir (id=188314) 
+Name             : Avalanche Elixir (id=188314) 
 Class            : Warrior, Rogue, Priest, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Cast Time        : 2 seconds
@@ -3344,7 +3350,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 61520 | Misc Value 2: 0xd
 Description      : No longer requires the Dalaran Alchemy Station.
 
-Name             : Drogbar Elixir (id=188315) 
+Name             : Avalanche Elixir (id=188315) 
 Class            : Paladin, Rogue, Priest, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Cast Time        : 2 seconds
@@ -4394,8 +4400,8 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=283236)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Trigger Spell: 193065
-Description      : When you cast Shadow Mend on yourself, it deals no damage.
+                   Base Value: 10 | Scaled Value: 10
+Description      : When you cast Shadow Mend on yourself, its damage over time effect heals you instead.
 
 Name             : Castigation (id=193134) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
@@ -5560,7 +5566,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 13
 Description      : Greatly reduces the materials required to craft a Righteous Dawnlight Medallion.
 
-Name             : Bloodthirsty Furystone Gorget (id=195942) 
+Name             : Raging Furystone Gorget (id=195942) 
 Class            : Warrior, Priest, Shaman, Warlock, Druid, Demon Hunter
 School           : Physical
 Cast Time        : 1.5 seconds
@@ -5573,7 +5579,7 @@ Attributes       : .....x.. ........ x....... ........   ........ ..x..... .....
 Effects          :
 #1 (id=287594)   : Create Item (24)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 13
-Description      : Greatly reduces the materials required to craft a Bloodthirsty Furystone Gorget.
+Description      : Greatly reduces the materials required to craft a Raging Furystone Gorget.
 
 Name             : Grim Furystone Gorget (id=195943) 
 Class            : Paladin, Priest, Shaman, Warlock, Druid, Demon Hunter
@@ -5590,6 +5596,45 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 13
 Description      : Greatly reduces the materials required to craft a Grim Furystone Gorget.
 
+Name             : Invoke the Naaru (id=196684) [Spell Family (6), Passive] 
+Class            : Priest
+School           : Physical
+Range            : 100 yards
+Internal Cooldown: 15 seconds
+Proc Chance      : 15%
+Proc Flags       : ........ ..x.x.x. x....x.. ........ 
+                 : AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Trap Triggered
+Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=288759)   : Apply Aura (6) | Proc Trigger Spell: Invoke the Naaru (42)
+                   Base Value: 20 | Scaled Value: 20 | Trigger Spell: 196685
+Description      : When you use a Holy Word spell, you have a chance to summon an image of T'uure at your side.  For $196685d, whenever you cast a spell, T'uure will cast a similar spell.
+
+Name             : Invoke the Naaru (id=196685) [Spell Family (6)] 
+Class            : Priest
+School           : Physical
+Range            : 100 yards
+Duration         : 15 seconds
+Triggered by     : Invoke the Naaru (196684), Light of T'uure (208065)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=288760)   : Summon (28)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 99904 | Misc Value 2: 0xe67 | Radius: 3 yards
+#2 (id=289218)   : Trigger Spell: Invoke the Naaru (64)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 196705
+Description      : $@spelldesc196684
+
 Name             : Psychic Voice (id=196704) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
 School           : Physical
@@ -5605,6 +5650,27 @@ Effects          :
                    Base Value: -30000 | Scaled Value: -30000 | SP Coefficient: 1.00000 | Misc Value: 11
                    Affected Spells: Psychic Scream (8122)
 Description      : Reduces the cooldown of Psychic Scream by ${$m1/-1000} sec.
+
+Name             : Invoke the Naaru (id=196705) [Spell Family (6), Hidden] 
+Class            : Priest
+School           : Physical
+Range            : 100 yards
+Duration         : 15 seconds
+Proc Chance      : 101%
+Proc Flags       : ........ ..x.x.x. x....x.. ........ 
+                 : AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Trap Triggered
+Triggered by     : Invoke the Naaru (196685)
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7)
+Effects          :
+#1 (id=288791)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1
+Description      : $@spelldesc196684
 
 Name             : Afterlife (id=196707) [Spell Family (6), Passive] 
 Class            : Priest
@@ -6747,7 +6813,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 10 seconds
 Proc Chance      : 101%
-Affecting spells : Lucidity (137323)
+Affecting spells : Lucidity (137323), The Edge of Dark and Light (197715), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6768,7 +6834,7 @@ Spell Level      : 1
 Range            : 40 yards
 Duration         : 20 seconds
 Proc Chance      : 101%
-Affecting spells : Lucidity (137323)
+Affecting spells : Lucidity (137323), The Edge of Dark and Light (197715), 
 Triggered by     : Purge the Wicked (204197)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6827,6 +6893,30 @@ Effects          :
 #2 (id=302437)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Heals up to $s2 injured allies within $A1 yards of the target for $s1.
+
+Name             : Void Torrent (id=205065) [Spell Family (6)] 
+Class            : Priest
+School           : Shadow
+Range            : 40 yards
+GCD              : 1.5 seconds
+Duration         : 4 seconds
+Cooldown         : 60 seconds
+Attributes       : ........ ........ ........ ..x.....   ..x..... ......x. ........ .....x.. 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Channeled (34)
+Effects          :
+#1 (id=302733)   : Apply Aura (6) | Periodic Damage: shadow every 1 seconds (3)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.50000
+#2 (id=302734)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2
+Description      : Raise your dagger into the sky, channeling a torrent of void energy into the target for $o Shadow damage over $d. Insanity does not drain during this channel.
+
+Requires Voidform. 
+
 
 Name             : Shadow Word: Void (id=205351) [Spell Family (6)] 
 Class            : Priest
@@ -7052,6 +7142,44 @@ Effects          :
 #1 (id=307618)   : School Damage: holyfire (2)
                    Base Value: 5 | Scaled Value: 5 | SP Coefficient: 2.00000
 Description      : Draws upon the power of |cFFFFCC99Light's Wrath|r, dealing $s1 Radiant damage to the target per ally affected by your Atonement, up to a maximum of 5 allies.
+
+Name             : Light's Wrath (id=207948) [Spell Family (6)] 
+Class            : Priest
+School           : Holyfire
+Range            : 100 yards
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=307620)   : School Damage: holyfire (2)
+                   Base Value: 3 | Scaled Value: 3 | SP Coefficient: 2.00000
+Description      : $@spelldesc207946
+
+Name             : Light of T'uure (id=208065) [Spell Family (6)] 
+Class            : Priest
+School           : Holy
+Range            : 40 yards
+GCD              : 1.5 seconds
+Duration         : 10 seconds
+Cooldown         : 1 seconds
+Charges          : 2 (45 seconds cooldown)
+Attributes       : ........ ........ ..x..... .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=307809)   : Apply Aura (6) | Unknown effect sub type (283)
+                   Base Value: 25 | Scaled Value: 25 | Trigger Spell: 196685
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Binding Heal (32546), Prayer of Mending (33110), Divine Hymn (64844), Divine Star (110744), Divine Star (110745), Halo (120517), Halo (120692), Halo (120696), Divine Star (122128)
+#2 (id=308008)   : Direct Heal (10)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.00000
+Description      : Applies Light of the Naaru to the target, healing for $s2 and increasing all healing you do to that target by $208065s1% for $d. Maximum 2 charges.
+Tooltip          : Healing taken increased by $s1%.
 
 Name             : Mind Sear (id=208232) [Spell Family (6)] 
 Class            : Priest
