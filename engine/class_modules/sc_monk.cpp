@@ -1112,7 +1112,10 @@ struct storm_earth_and_fire_pet_t : public pet_t
       sef_melee_attack_t::impact( state );
 
       if ( result_is_hit( state -> result ) )
+      {
         o() -> trigger_cyclone_strikes( state );
+        state -> target = o() -> next_cyclone_strikes_target( state );
+      }
     }
   };
 
@@ -1128,7 +1131,10 @@ struct storm_earth_and_fire_pet_t : public pet_t
       sef_melee_attack_t::impact( state );
 
       if ( result_is_hit( state -> result ) )
+      {
         o() -> trigger_cyclone_strikes( state );
+        state -> target = o() -> next_cyclone_strikes_target( state );
+      }
     }
    };
 
@@ -1147,6 +1153,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
       {
         state -> target -> debuffs.mortal_wounds -> trigger();
         o() -> trigger_cyclone_strikes( state );
+        state -> target = o() -> next_cyclone_strikes_target( state );
       }
     }
   };
@@ -1165,7 +1172,11 @@ struct storm_earth_and_fire_pet_t : public pet_t
       sef_melee_attack_t::impact( state );
 
       if ( result_is_hit( state -> result ) )
+      {
+        state -> target -> debuffs.mortal_wounds -> trigger();
         o() -> trigger_cyclone_strikes( state );
+        state -> target = o() -> next_cyclone_strikes_target( state );
+      }
     }
   };
 
@@ -1183,7 +1194,11 @@ struct storm_earth_and_fire_pet_t : public pet_t
       sef_melee_attack_t::impact( state );
 
       if ( result_is_hit( state -> result ) )
+      {
+        state -> target -> debuffs.mortal_wounds -> trigger();
         o() -> trigger_cyclone_strikes( state );
+        state -> target = o() -> next_cyclone_strikes_target( state );
+      }
     }
   };
 
