@@ -225,6 +225,7 @@ public:
           * heating_up,
           * hot_streak,
           * molten_armor,
+          * pyretic_incantation,
           * pyromaniac,            // T17 4pc Fire
           * scorched_earth,
           * icarus_uprising;       // T18 4pc Fire
@@ -420,12 +421,12 @@ public:
                      cauterizing_blink, //NYI
                      fire_at_will,
                      pyroclasmic_paranoia,
-                     reignition_overdrive, //NYI
-                     pyretic_incantation, //NYI
-                     phoenix_flames, // NYI
+                     reignition_overdrive,
+                     pyretic_incantation,
+                     phoenix_flames,
                      burning_gaze,
                      big_mouth, //NYI
-                     blast_furnace; //NYI
+                     blast_furnace;
 
     // Frost
     artifact_power_t ebonbolt,
@@ -1505,6 +1506,17 @@ struct fire_mage_spell_t : public mage_spell_t
     {
       handle_hot_streak( s );
     }
+
+    if ( result_is_hit( s -> result ) && s -> result == RESULT_CRIT 
+                      && p() -> artifact.pyretic_incantation.rank() )
+    {
+      p() -> buffs.pyretic_incantation -> trigger();
+    }
+    else if ( result_is_hit( s -> result ) && s -> result != RESULT_CRIT 
+                      && p() -> artifact.pyretic_incantation.rank() )
+    {
+      p() -> buffs.pyretic_incantation -> expire();
+    }
   }
 
   void handle_hot_streak( action_state_t* s )
@@ -1580,6 +1592,22 @@ struct fire_mage_spell_t : public mage_spell_t
     }
   }
 
+  double total_crit_bonus() const override
+  {
+    // TODO: Only apply bonus to hardcast spells?
+    double bonus = mage_spell_t::total_crit_bonus();
+    if ( background == true )
+    {
+      return bonus;
+    }
+
+    if ( p() -> buffs.pyretic_incantation -> stack() > 0 )
+    {
+      bonus *= 1.0 + ( p() -> artifact.pyretic_incantation.percent() *
+                       p() -> buffs.pyretic_incantation -> stack() );
+    }
+    return bonus;
+  }
   void trigger_ignite( action_state_t* s )
   {
     mage_t* p = this -> p();
@@ -2369,7 +2397,20 @@ struct arcane_power_t : public arcane_mage_spell_t
   }
 };
 
-
+// Blast Furance Spell =======================================================
+// TODO: Assume this will be fixed and be pandmic extended like normal. If not,
+//       fix to be the old DoT style
+struct blast_furance_t : public fire_mage_spell_t
+{
+  blast_furance_t( mage_t* p, const std::string& options_str ) :
+    fire_mage_spell_t( "blast_furance", p, p -> find_spell( 194522 ) )
+  {
+    parse_options( options_str );
+    background = true;
+    callbacks = false;
+    hasted_ticks = false;
+  }
+};
 // Blast Wave Spell ==========================================================
 
 struct blast_wave_t : public fire_mage_spell_t
@@ -3507,11 +3548,13 @@ struct inferno_blast_t : public fire_mage_spell_t
   double pyrosurge_chance;
   flamestrike_t* pyrosurge_flamestrike;
   cooldown_t* icd;
+  blast_furance_t* blast_furnace;
 
   inferno_blast_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "inferno_blast", p,
                        p -> find_class_spell( "Inferno Blast" ) ),
-    pyrosurge_chance( 0.0 )
+    pyrosurge_chance( 0.0 ),
+    blast_furnace( nullptr )
   {
     parse_options( options_str );
 
@@ -3522,6 +3565,7 @@ struct inferno_blast_t : public fire_mage_spell_t
     cooldown -> duration = data().charge_cooldown();
     cooldown -> duration += p -> sets.set( MAGE_FIRE, T17, B2 ) -> effectN( 1 ).time_value();
 
+    //TODO: What is this..?
     icd = p -> get_cooldown( "inferno_blast_icd" );
 
     triggers_hot_streak = true;
@@ -3541,6 +3585,11 @@ struct inferno_blast_t : public fire_mage_spell_t
       pyrosurge_flamestrike = new flamestrike_t( p, options_str );
       pyrosurge_flamestrike -> background = true;
       pyrosurge_flamestrike -> callbacks = false;
+    }
+
+    if ( p -> artifact.blast_furnace.rank() )
+    {
+      blast_furnace = new blast_furance_t( p, options_str );
     }
   }
 
@@ -3583,6 +3632,12 @@ struct inferno_blast_t : public fire_mage_spell_t
         p() -> cooldowns.combustion
             -> adjust( -1000 * p() -> talents.kindling
                                    -> effectN( 1 ).time_value() );
+      }
+
+      if ( p() -> artifact.blast_furnace.rank() )
+      {
+        blast_furnace -> target = s -> target;
+        blast_furnace -> execute();
       }
     }
   }
@@ -5356,6 +5411,7 @@ void mage_t::create_buffs()
   buffs.icarus_uprising       = buff_creator_t( this, "icarus_uprising", find_spell( 186170 ) )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                   .add_invalidate( CACHE_SPELL_HASTE );
+  buffs.pyretic_incantation   = buff_creator_t( this, "pyretic_incantation", find_spell( 194329 ) );
   buffs.pyromaniac            = buff_creator_t( this, "pyromaniac", find_spell( 166868 ) )
                                   .chance( sets.has_set_bonus( MAGE_FIRE, T17, B4 ) );
   buffs.scorched_earth        = buff_creator_t( this, "scorched_earth").duration( timespan_t::from_seconds( 5 ) )
