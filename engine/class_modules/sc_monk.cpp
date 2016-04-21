@@ -17,6 +17,7 @@ WINDWALKER:
 - Serenity - Double check if Strength of Xuen Artifact trait works with Serenity
 - Check if SEF uses Strike of the Windlord
 - Update Crosswinds targeting system.
+- Add Cyclone Strike Counter as an expression
 
 MISTWEAVER: 
 - Gusts of Mists - Check calculations
@@ -559,9 +560,6 @@ public:
   struct options_t
   {
     int initial_chi;
-    double goto_throttle;
-    double ppm_below_35_percent_dm;
-    double ppm_below_50_percent_dm;
   } user_options;
 
 private:
@@ -616,9 +614,6 @@ public:
     internal_id = 0;
     tier19_4pc_melee_counter = 0;
     user_options.initial_chi = 0;
-    user_options.goto_throttle = 0;
-    user_options.ppm_below_35_percent_dm = 0;
-    user_options.ppm_below_50_percent_dm = 0;
   }
 
   // player_t overrides
@@ -2798,10 +2793,8 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     tick_action = new tick_action_t( "spinning_crane_kick_tick", p, p -> spec.spinning_crane_kick -> effectN( 1 ).trigger() );
   }
 
-  virtual double action_multiplier() const override
+  int cyclone_strike_counter() const
   {
-    double am = monk_melee_attack_t::action_multiplier();
-
     std::vector<player_t*> targets = target_list();
     int cyclone_strike_counter = 0;
 
@@ -2810,7 +2803,14 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
       if ( td( targets[i] ) -> debuff.cyclone_strikes -> up() )
         cyclone_strike_counter++;
     }
-    am *= 1 + cyclone_strike_counter * p() -> spec.spinning_crane_kick -> effectN( 2 ).percent();
+    return cyclone_strike_counter;
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    am *= 1 + cyclone_strike_counter() * p() -> spec.spinning_crane_kick -> effectN( 2 ).percent();
 
     if ( p() -> artifact.power_of_a_thousand_cranes.rank() )
       am *= 1 + p() -> artifact.power_of_a_thousand_cranes.percent();
@@ -6881,9 +6881,6 @@ void monk_t::create_options()
   base_t::create_options();
 
   add_option( opt_int( "initial_chi", user_options.initial_chi ) );
-  add_option( opt_float( "goto_throttle", user_options.goto_throttle ) );
-  add_option( opt_float ( "ppm_below_35_percent_dm", user_options.ppm_below_35_percent_dm ) );
-  add_option( opt_float ( "ppm_below_50_percent_dm", user_options.ppm_below_50_percent_dm ) );
 }
 
 // monk_t::copy_from =========================================================
