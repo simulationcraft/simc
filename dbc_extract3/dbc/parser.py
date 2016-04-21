@@ -1,5 +1,6 @@
-import os, io, struct, stat, sys, mmap, math, logging
-import dbc.data
+import os, io, struct, sys, logging, math
+
+import dbc.fmt
 
 _BASE_HEADER = struct.Struct('IIII')
 _DB_HEADER_1 = struct.Struct('III')
@@ -42,7 +43,9 @@ class DBCParserBase:
         self.id_data = None
 
         # Parsing
-        self.parser = None
+        self.unpackers = []
+
+        self.id_format_str = None
 
         # See that file exists already
         normalized_path = os.path.abspath(fname)
@@ -55,11 +58,21 @@ class DBCParserBase:
             logging.error('No WDB file found based on "%s"', fname)
             sys.exit(1)
 
+    def id_format(self):
+        if self.id_format_str:
+            return self.id_format_str
+
+        # Adjust the size of the id formatter so we get consistent length
+        # id field where we use it, and don't have to guess on the length
+        # in the format file.
+        n_digits = int(math.log10(self.last_id) + 1)
+        self.id_format_str = '%%%uu' % n_digits
+        return self.id_format_str
+
     # Sanitize data, blizzard started using dynamic width ints in WDB5, so
     # 3-byte ints have to be expanded to 4 bytes to parse them properly (with
     # struct module)
     def build_parser(self):
-        unpackers = []
         format_str = '<'
 
         data_fmt = field_names = None
@@ -67,6 +80,7 @@ class DBCParserBase:
             data_fmt = self.fmt.types(self.class_name())
             field_names = self.fmt.fields(self.class_name())
         field_idx = 0
+
         for field_data_idx in range(0, len(self.field_data)):
             field_data = self.field_data[field_data_idx]
             type_idx = min(field_idx, data_fmt and len(data_fmt) - 1 or field_idx)
@@ -87,15 +101,13 @@ class DBCParserBase:
                     else:
                         logging.debug('Unpacker has a 3-byte field (pos=%d): terminating (%s) and beginning a new unpacker',
                             field_idx, format_str)
-                    unpackers.append((True, struct.Struct(format_str)))
+                    self.unpackers.append((True, struct.Struct(format_str)))
                     format_str = '<'
 
         if len(format_str) > 1:
-            unpackers.append((self.field_data[-1][1] == 3, struct.Struct(format_str)))
+            self.unpackers.append((self.field_data[-1][1] == 3, struct.Struct(format_str)))
 
-        logging.debug('Unpacking plan: %s', ', '.join(['%s (len=%d)' % (unpacker.format.decode('utf-8'), unpacker.size) for _, unpacker in unpackers]))
-        self.unpackers = unpackers
-
+        logging.debug('Unpacking plan: %s', ', '.join(['%s (len=%d)' % (u.format.decode('utf-8'), u.size) for _, u in self.unpackers]))
         self.record_parser = self.__do_parse
 
     def __do_parse(self, record_offset, record_size):
@@ -105,8 +117,7 @@ class DBCParserBase:
             size_left = record_size
             unpacker_offset = 0
             full_data = []
-            for unpacker_idx in range(0, len(self.unpackers)):
-                int24, unpacker = self.unpackers[unpacker_idx]
+            for int24, unpacker in self.unpackers:
                 full_data += unpacker.unpack_from(self.data, record_offset + unpacker_offset)
                 if int24:
                     full_data[-1] &= 0xFFFFFF
@@ -117,11 +128,7 @@ class DBCParserBase:
             return full_data
 
     def n_expanded_fields(self):
-        n = 0
-        for field_data in self.field_data:
-            n += field_data[2]
-
-        return n
+        return sum([ fd[2] for fd in self.field_data ])
 
     # Can we search for data? This is only true, if we know where the ID in the data resides
     def searchable(self):
@@ -229,7 +236,6 @@ class DBCParserBase:
             return True
 
         f = io.open(self.file_name, mode = 'rb')
-        #self.data = mmap.mmap(f.fileno(), 0, access = mmap.ACCESS_READ)
         self.data = f.read()
         f.close()
 
@@ -270,36 +276,29 @@ class DBCParserBase:
                 dbc_id &= 0x00FFFFFF
 
             if dbc_id == id_:
-                return (0, self.data_offset + self.record_size * record_id, self.record_size)
+                return -1, self.data_offset + self.record_size * record_id, self.record_size
 
-        return (0, 0, 0)
+        return -1, 0, 0
 
     # Returns dbc_id (always 0 for base), record offset into file
     def get_next_record_info(self):
-        return (0, self.data_offset + self.record_id * self.record_size, self.record_size)
-
-    # Iterate to the next data object in the data
-    def get_next_data(self):
-        record_info = self.get_next_record_info()
-        data = self.record_parser(record_info[1], record_info[2])
-
-        self.record_id += 1
-
-        return (record_info[0], data)
+        return -1, self.data_offset + self.record_id * self.record_size, self.record_size
 
     def next_record(self):
         if not self.n_records_left():
             return None
 
-        return self.get_next_data()
+        dbc_id, record_offset, record_size = self.get_next_record_info()
+        self.record_id += 1
+        return dbc_id, self.record_parser(record_offset, record_size)
 
     def find(self, id_):
-        record_info = self.find_record_offset(id_)
+        dbc_id, record_offset, record_size = self.find_record_offset(id_)
 
-        if record_info[1] > 0:
-            return (record_info[0], self.record_parser(record_info[1], record_info[2]))
+        if record_offset > 0:
+            return dbc_id, self.record_parser(record_offset, record_size)
         else:
-            return (0, [])
+            return 0, tuple()
 
 class InlineStringRecordParser:
     # Yank string out of datastream
@@ -350,7 +349,7 @@ class InlineStringRecordParser:
             type_idx = min(format_idx, data_fmt and len(data_fmt) - 1 or format_idx)
             field_size = field_data[1]
             for sub_idx in range(0, field_data[2]):
-                if data_fmt[type_idx] == 'S':
+                if data_fmt and data_fmt[type_idx] == 'S':
                     logging.debug('Unpacker has a inlined string field (name=%s pos=%d): terminating (%s), skipping all consecutive strings, and beginning a new unpacker',
                         field_names[type_idx], field_idx, format_str)
                     self.unpackers.append((False, struct.Struct(format_str)))
@@ -385,7 +384,7 @@ class InlineStringRecordParser:
         if len(format_str) > 1:
             self.unpackers.append((self.parser.field_data[-1][1] == 3, struct.Struct(format_str)))
 
-        logging.debug('Unpacking plan: %s', ', '.join(['%s (len=%d)' % (unpacker.format.decode('utf-8'), unpacker.size) for _, unpacker in self.unpackers]))
+        logging.debug('Unpacking plan: %s', ', '.join(['%s (len=%d)' % (u.format.decode('utf-8'), u.size) for _, u in self.unpackers]))
 
     def __call__(self, offset, size):
         full_data = []
@@ -398,8 +397,9 @@ class InlineStringRecordParser:
             # String fields begin
             if field_offset == self.string_field_offset:
                 while self.parser.data[offset + field_offset] != 0 and parsed_string_fields < self.n_string_fields:
-                    start, end = self.__getstring(self.parser.data, offset + field_offset, offset + size)
-                    full_data.append(start)
+                    #start, end = self.__getstring(self.parser.data, offset + field_offset, offset + size)
+                    end = self.parser.data.find(b'\x00', offset + field_offset, offset + size)
+                    full_data.append(offset + field_offset)
                     if parsed_string_fields < self.n_string_fields - 1:
                         field_offset = end - offset + 4
                     else:
@@ -461,7 +461,7 @@ class LegionWDBParser(DBCParserBase):
             for record_id in range(0, self.records):
                 if self.id_table[record_id][0] == id_:
                     return self.id_table[record_id]
-            return (0, 0, 0)
+            return -1, 0, 0
         else:
             return super().find_record_offset(id_)
 
@@ -576,12 +576,9 @@ class WDB5Parser(LegionWDBParser):
     # or whether the last field is an array.
     def build_field_data(self):
         prev_field = None
-        max_size = 0
         for field_idx in range(0, self.fields):
             raw_size, record_offset = _FIELD_DATA.unpack_from(self.data, self.parse_offset)
             type_size = (32 - raw_size) // 8
-            if type_size > max_size:
-                max_size = type_size
 
             self.parse_offset += _FIELD_DATA.size
             distance = 0

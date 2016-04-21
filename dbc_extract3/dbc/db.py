@@ -1,3 +1,5 @@
+import collections
+
 class DBCDB(dict):
     def __init__(self, obj = None):
         dict.__init__(self)
@@ -8,4 +10,3 @@ class DBCDB(dict):
             return self.__obj.default()
         else:
             raise KeyError
-

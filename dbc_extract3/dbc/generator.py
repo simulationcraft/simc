@@ -237,7 +237,7 @@ class DataGenerator(object):
                     try:
                         dbase[record.id] = record
                     except:
-                        print(record, dbcf)
+                        print('breakage', record, dbcf)
                         print(dbcf, record, type(record), record._fi)
                         sys.exit(1)
 
@@ -863,12 +863,6 @@ class ItemDataGenerator(DataGenerator):
             if not item.id and id > 0:
                 sys.stderr.write('Item id %d not found\n' % id)
                 continue
-
-            # Aand, hack classs 12 (quest item) to be 0, 6
-            # so we get item enchants clumped in the same category, sigh ..
-            if item2.classs == 12:
-                item2.classs = 0
-                item2.subclass = 6
 
             if(index % 20 == 0):
                 self._out.write('//{    Id, Name                                                   ,     Flags1,     Flags2, Type,Level,ReqL,ReqSk, RSkL,Qua,Inv,Cla,SCl,Bnd, Delay, DmgRange, Modifier,  ClassMask,   RaceMask, { ST1, ST2, ST3, ST4, ST5, ST6, ST7, ST8, ST9, ST10}, {  SV1,  SV2,  SV3,  SV4,  SV5,  SV6,  SV7,  SV8,  SV9, SV10 }, {  SId1,  SId2,  SId3,  SId4,  SId5 }, {Soc1,Soc2,Soc3 }, GemP,IdSBon,IdSet,IdSuf },\n')

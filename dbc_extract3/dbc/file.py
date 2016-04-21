@@ -1,4 +1,4 @@
-import os, logging, sys, math
+import os, logging, sys
 
 import dbc
 
@@ -17,9 +17,6 @@ class DBCFileIterator:
         return self
 
     def __next__(self):
-        if not self.file.parser:
-            raise StopIteration
-
         next_item = self.file.parser.next_record()
         if not next_item:
             raise StopIteration
@@ -73,30 +70,20 @@ class DBCFile:
         return self.data_class
 
     def searchable(self):
-        parser_searchable = self.parser.searchable()
-        if parser_searchable:
-            return True
-
-        return False
+        return self.parser.searchable()
 
     def open(self):
         if not self.parser.open():
             return False
 
         try:
-            self.data_parser = self.fmt.parser(self.class_name())
-            self.data_class = getattr(dbc.data, self.class_name().replace('-', '_'))
+            if not self.options.raw:
+                self.data_parser = self.fmt.parser(self.class_name())
+                self.data_class = getattr(dbc.data, self.class_name().replace('-', '_'))
 
-            # Adjust the size of the id formatter so we get consistent length
-            # id field where we use it, and don't have to guess on the length
-            # in the format file.
-            n_digits = int(math.log10(self.parser.last_id) + 1)
-            for idx in range(0, len(self.data_class._fi)):
-                if self.data_class._fi[idx] == 'id':
-                    new_ff = list(self.data_class._ff)
-                    new_ff[idx] = '%%%uu' % n_digits
-                    self.data_class._ff = tuple(new_ff)
-                    break
+            else:
+                if self.wdb5():
+                    self.data_class = dbc.data.RawDBCRecord
         except KeyError:
             # WDB5 we can always display something
             if self.wdb5():
@@ -110,16 +97,7 @@ class DBCFile:
         return True
 
     def decorate(self, data):
-        # Raw data outputs tuples
-        if self.options.raw:
-            parsed_data = self.data_parser.unpack_from(b''.join(data[1]))
-            if data[0] > 0:
-                return (data[0], ) + parsed_data
-            else:
-                return parsed_data
-
         # Output data based on data parser + class, we are sure we have those things at this point
-        #parsed_data = self.data_parser.unpack_from(b''.join(data[1]))
         return self.data_class(self.parser, *data)
 
     def find(self, id_):
