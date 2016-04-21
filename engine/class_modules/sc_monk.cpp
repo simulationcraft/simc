@@ -2802,6 +2802,16 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
+    std::vector<player_t*> targets = target_list();
+    int cyclone_strike_counter = 0;
+
+    for ( int i = 0; i < targets.size(); i++ )
+    {
+      if ( td( targets[i] ) -> debuff.cyclone_strikes -> up() )
+        cyclone_strike_counter++;
+    }
+    am *= 1 + cyclone_strike_counter * p() -> spec.spinning_crane_kick -> effectN( 2 ).percent();
+
     if ( p() -> artifact.power_of_a_thousand_cranes.rank() )
       am *= 1 + p() -> artifact.power_of_a_thousand_cranes.percent();
 
@@ -5717,7 +5727,6 @@ monk( *p )
     debuff.cyclone_strikes = buff_creator_t( *this, "cyclone_strikes" )
       .spell( p -> spec.cyclone_strikes )
       .duration( timespan_t::from_seconds( p -> spec.spinning_crane_kick -> effectN( 3 ).base_value() ) )
-      .default_value( p -> spec.spinning_crane_kick -> effectN( 2 ).percent() )
       .quiet( true );
   }
 
