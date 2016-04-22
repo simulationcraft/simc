@@ -1185,13 +1185,34 @@ void enemy_t::init_defense()
     double& a = initial.stats.armor;
 
     // a wild equation appears. It's super effective.
-    if ( level() < 100 )
-      a = std::floor( 0.006464588162215 * std::exp( 0.123782410252464 * level() ) + 0.5 );
-    else if ( level() < 110 )
-      a = 134 * level() - 11864;
-    else
-      a = 110 * level() - 8956;
-
+    switch ( level() )
+    {
+      case 90: a = 445; break;
+      case 91: a = 504; break;
+      case 92: a = 571; break;
+      case 93: a = 646; break;
+      case 94: a = 731; break;
+      case 95: a = 827; break;
+      case 96: a = 936; break;
+      case 97: a = 1059; break;
+      case 98: a = 1199; break;
+      case 99: a = 1357; break;
+      case 100: a = 1536; break;
+      case 101: a = 2313; break;
+      case 102: a = 2388; break;
+      case 103: a = 2467; break;
+      case 104: a = 2550; break;
+      case 105: a = 2638; break;
+      case 106: a = 2729; break;
+      case 107: a = 2826; break;
+      case 108: a = 2927; break;
+      case 109: a = 3035; break;
+      case 110: a = 3144; break;
+      case 111: a = 3254; break;
+      case 112: a = 3364; break;
+      case 113: a = 3474; break;
+      default: a = std::floor(0.006464588162215 * std::exp(0.123782410252464 * level()) + 0.5); break;
+    }
   }
 
   // for future reference, the equations above fit the given values
@@ -1207,20 +1228,20 @@ void enemy_t::init_defense()
   //   97    1059    959
   //   98    1199   1086
   //   99    1357   1129
-  //  100    1229   1536
-  //  101    1850   2313
-  //  102    1911   2388
-  //  103    1974   2467
-  //  104    2041   2550
-  //  105    2110   2638
-  //  106    2184   2729
-  //  107    2261   2826
-  //  108    2342   2927
-  //  109    2428   3035
-  //  110    2516   3144
-  //  111    2604   3254
-  //  112    2692   3364
-  //  113    2779   3474
+  //  100    1536   1229    
+  //  101    2313   1850
+  //  102    2388   1911
+  //  103    2467   1974
+  //  104    2550   2041
+  //  105    2638   2110
+  //  106    2729   2184
+  //  107    2826   2261
+  //  108    2927   2342
+  //  109    3035   2428
+  //  110    3144   2516
+  //  111    3254   2604
+  //  112    3364   2692
+  //  113    3474   2779
 }
 
 // enemy_t::init_buffs ======================================================
