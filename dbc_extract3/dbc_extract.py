@@ -27,7 +27,7 @@ parser.add_argument("-f",            dest = "format",
                     help = "DBC Format file")
 parser.add_argument("--delim",       dest = "delim",        default = ',',
                     help = "Delimiter for -t csv")
-parser.add_argument("-l", "--level", dest = "level",        default = 115, type = int,
+parser.add_argument("-l", "--level", dest = "level",        default = 110, type = int,
                     help = "Scaling values up to level [115]")
 parser.add_argument("-b", "--build", dest = "build",        default = 0, type = int,
                     help = "World of Warcraft build number")
@@ -307,8 +307,10 @@ elif options.type == 'bench':
     if not dbc_file.open():
         sys.exit(1)
 
+    x = {}
     logging.debug(dbc_file)
     for record in dbc_file:
+        #x[record.id] = record
         pass
 elif options.type == 'view':
     path = os.path.abspath(os.path.join(options.path, options.args[0]))

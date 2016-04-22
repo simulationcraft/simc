@@ -19,6 +19,12 @@ class RawDBCRecord:
         if not self._d:
             self._d = (0,) * len(self._fi)
 
+    def __getattr__(self, name):
+        if name == 'id' and self._id > -1:
+            return self._id
+        else:
+            raise AttributeError
+
     def __str__(self):
         s = []
         if self._id > -1:
@@ -32,11 +38,7 @@ class RawDBCRecord:
 class DBCRecord(RawDBCRecord):
     __l = None
     __d = None
-    __slots__ = ('_l',)
-
-    def __init__(self, parser, dbc_id, data):
-        RawDBCRecord.__init__(self, parser, dbc_id, data)
-        self._l = {}
+    __slots__ = ('_l',) # Lazy initialized in add_link
 
     # Default value if database is accessed with a missing key (id)
     @classmethod
@@ -61,6 +63,9 @@ class DBCRecord(RawDBCRecord):
         cls.__l[attr_name] = attr_default
 
     def add_link(self, name, value):
+        if not hasattr(self, '_l'):
+            self._l = {}
+
         if name not in self._l:
             self._l[name] = []
 
@@ -78,6 +83,9 @@ class DBCRecord(RawDBCRecord):
         if name not in self.__l:
             raise AttributeError
 
+        if not hasattr(self, '_l'):
+            return self.__l[name].default()
+
         if name not in self._l:
             return self.__l[name].default()
 
@@ -90,6 +98,9 @@ class DBCRecord(RawDBCRecord):
     def get_links(self, name):
         if name not in self.__l:
             raise AttributeError
+
+        if not hasattr(self, '_l'):
+            return []
 
         return self._l.get(name, [])
 
@@ -118,11 +129,12 @@ class DBCRecord(RawDBCRecord):
     # format of the field is 'S', the value is an offset to the stringblock giving the string
     def __getattr__(self, name):
         try:
-            if name == 'id' and self._id > -1:
-                return self._id
             field_idx = self._cd[name]
         except:
-            return RawDBCRecord.__getattr__(self, name)
+            #if name == 'id':
+            #    return self._id
+            #raise AttributeError
+            return super().__getattr__(name)
 
         if self._fo[field_idx] == 'S' and self._d[field_idx] > 0:
             return self._dbcp.get_string(self._d[field_idx])

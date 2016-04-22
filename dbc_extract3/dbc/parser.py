@@ -108,24 +108,24 @@ class DBCParserBase:
             self.unpackers.append((self.field_data[-1][1] == 3, struct.Struct(format_str)))
 
         logging.debug('Unpacking plan: %s', ', '.join(['%s (len=%d)' % (u.format.decode('utf-8'), u.size) for _, u in self.unpackers]))
-        self.record_parser = self.__do_parse
+        if len(self.unpackers) == 1:
+            self.record_parser = lambda ro, rs: self.unpackers[0][1].unpack_from(self.data, ro)
+        else:
+            self.record_parser = self.__do_parse
 
     def __do_parse(self, record_offset, record_size):
-        if len(self.unpackers) == 1:
-            return self.unpackers[0][1].unpack_from(self.data, record_offset)
-        else:
-            size_left = record_size
-            unpacker_offset = 0
-            full_data = []
-            for int24, unpacker in self.unpackers:
-                full_data += unpacker.unpack_from(self.data, record_offset + unpacker_offset)
-                if int24:
-                    full_data[-1] &= 0xFFFFFF
-                    size_left += 1
+        size_left = record_size
+        unpacker_offset = 0
+        full_data = []
+        for int24, unpacker in self.unpackers:
+            full_data += unpacker.unpack_from(self.data, record_offset + unpacker_offset)
+            if int24:
+                full_data[-1] &= 0xFFFFFF
+                size_left += 1
 
-                size_left -= unpacker.size
-                unpacker_offset = record_size - size_left
-            return full_data
+            size_left -= unpacker.size
+            unpacker_offset = record_size - size_left
+        return full_data
 
     def n_expanded_fields(self):
         return sum([ fd[2] for fd in self.field_data ])
@@ -301,29 +301,6 @@ class DBCParserBase:
             return 0, tuple()
 
 class InlineStringRecordParser:
-    # Yank string out of datastream
-    def __getstring(self, data, begin_offset, end_offset):
-        start = begin_offset
-        end = begin_offset
-
-        # Skip zeros
-        while True:
-            b = data[start]
-            if b == 0:
-                start += 1
-                end += 1
-            else:
-                break
-
-        # Forwards until \x00 found
-        while end < end_offset:
-            b = data[end]
-            if b == 0:
-                break
-            end += 1
-
-        return (start, end)
-
     # Presume that string fields are always bunched up togeher
     def __init__(self, parser):
         self.parser = parser
@@ -660,6 +637,12 @@ class WDB5Parser(LegionWDBParser):
     # This is the padded record size, meaning 3 byte fields are padded to 4 bytes
     def parsed_record_size(self):
         return sum([(fd[1] == 3 and 4 or fd[1]) * fd[2] for fd in self.field_data])
+
+    def validate_data_model(self):
+        if not super().validate_data_model():
+            return False
+
+        return True
 
     def __str__(self):
         s = '%s::%s(byte_size=%u, build=%u, locale=%#.8x, records=%u+%u, fields=%u, record_size=%u, string_block_size=%u, clone_segment_size=%u, first_id=%u, last_id=%u, data_offset=%u, sblock_offset=%u, id_offset=%u, clone_offset=%u, unk=%u, hash=%#.8x)' % (
