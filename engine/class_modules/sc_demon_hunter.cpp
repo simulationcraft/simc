@@ -34,7 +34,6 @@ namespace
    Soul Fragment duration
    Check Fel Eruption
    Fel Barrage
-   Rework Felblade, Fel Rush, Metamorphosis, and Vengeful Retreat
 
    Vengeance ----------------------------------------------------------------
    Hmm, let me think... well there's... oh yeah, everything.
@@ -514,6 +513,17 @@ public:
   demon_hunter_td_t* td( player_t* t ) const
   {
     return p() -> get_target_data( t );
+  }
+
+  void init() override
+  {
+    ab::init();
+
+    if ( ab::data().charges() > 0 )
+    {
+      ab::cooldown -> duration = ab::data().charge_cooldown();
+      ab::cooldown -> charges = ab::data().charges();
+    }
   }
 
   timespan_t gcd() const override
@@ -1177,18 +1187,6 @@ struct chaos_nova_t : public demon_hunter_attack_t
 
     aoe = -1;
   }
-
-  void execute() override
-  {
-    demon_hunter_attack_t::execute();
-
-    if ( p() -> talent.demonic -> ok() )
-    {
-      p() -> buff.metamorphosis -> trigger(
-        1, p() -> buff.metamorphosis -> default_value, -1.0,
-        timespan_t::from_seconds( 5.0 ) + gcd() );
-    }
-  }
 };
 
 // Chaos Strike =============================================================
@@ -1580,42 +1578,49 @@ struct eye_beam_t : public demon_hunter_attack_t
 
 struct felblade_t : public demon_hunter_attack_t
 {
-  const spell_data_t* damage_spell;
-  resource_e resource;
-  double amount;
+  struct felblade_damage_t : public demon_hunter_attack_t
+  {
+    resource_e resource;
+    double amount;
 
-  felblade_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_attack_t( "felblade", p, p -> talent.felblade ),
-      damage_spell( p -> find_spell( 213243 ) )
+    felblade_damage_t( demon_hunter_t* p ) :
+      demon_hunter_attack_t( "felblade_dmg", p, p -> find_spell( 213243 ) )
+    {
+      dual = background = true;
+      may_miss = may_dodge = may_parry = false;
+
+      const spelleffect_data_t effect = data().effectN(
+        p -> specialization() == DEMON_HUNTER_HAVOC ? 4 : 3 );
+      resource = effect.resource_gain_type();
+      amount   = effect.resource( resource );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      demon_hunter_attack_t::impact( s );
+
+      if ( result_is_hit( s -> result ) )
+      {
+        p() -> resource_gain( resource, amount, action_gain );
+      }
+    }
+  };
+
+  felblade_t( demon_hunter_t* p, const std::string& options_str ) :
+    demon_hunter_attack_t( "felblade", p, p -> talent.felblade )
   {
     parse_options( options_str );
 
-    school                 = damage_spell -> get_school_type();
-    normalize_weapon_speed = true;
-    weapon_multiplier      = damage_spell -> effectN( 2 ).percent();
-    weapon                 = &( p -> main_hand_weapon );
-
-    // Special handling for Chaos Blades damage modifier.
-    chaos_blades =
-      damage_spell -> affected_by( p -> talent.chaos_blades -> effectN( 2 ) );
-
-    const spelleffect_data_t effect = damage_spell -> effectN(
-      p -> specialization() == DEMON_HUNTER_HAVOC ? 4 : 3 );
-    resource = effect.resource_gain_type();
-    amount   = effect.resource( resource );
+    may_crit = may_block = false;
+    impact_action = new felblade_damage_t( p );
+    impact_action -> stats = stats;
 
     movement_directionality = MOVEMENT_TOWARDS;
   }
 
-  void execute() override
-  {
-    demon_hunter_attack_t::execute();
-
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      p() -> resource_gain( resource, amount, action_gain );
-    }
-  }
+  /* Don't record data for this action, since we don't want that 0
+     damage hit incorporated into statistics. */
+  void record_data( action_state_t* ) override {}
 };
 
 // Fel Eruption =============================================================
@@ -1638,29 +1643,36 @@ struct fel_eruption_t : public demon_hunter_attack_t
 
 struct fel_rush_t : public demon_hunter_attack_t
 {
-  fel_rush_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_attack_t( "fel_rush", p, p -> find_class_spell( "Fel Rush" ) )
+  struct fel_rush_damage_t : public demon_hunter_attack_t
+  {
+    fel_rush_damage_t( demon_hunter_t* p ) :
+      demon_hunter_attack_t( "fel_rush_dmg", p, p -> find_spell( 192611 ) )
+    {
+      aoe = -1;
+      dual = background = true;
+      may_miss = may_dodge = may_block = false;
+    }
+  };
+
+  fel_rush_t( demon_hunter_t* p, const std::string& options_str ) :
+    demon_hunter_attack_t( "fel_rush", p, p -> find_class_spell( "Fel Rush" ) )
   {
     parse_options( options_str );
 
-    cooldown -> charges  = data().charges();
-    cooldown -> duration = data().charge_cooldown();
-
-    const spell_data_t* damage_spell = p -> find_spell( 192611 );
-    school                           = damage_spell -> get_school_type();
-    attack_power_mod.direct          = damage_spell -> effectN( 1 ).ap_coeff();
-    aoe                              = -1;
-
-    // Special handling for Chaos Blades damage modifier.
-    chaos_blades =
-      damage_spell -> affected_by( p -> talent.chaos_blades -> effectN( 2 ) );
-
-    base_teleport_distance  = damage_spell -> effectN( 1 ).radius();
+    may_block = may_crit = false;
+    base_teleport_distance  = p -> find_spell( 192611 ) -> effectN( 1 ).radius();
     movement_directionality = MOVEMENT_OMNI;
     ignore_false_positive   = true;
 
+    impact_action = new fel_rush_damage_t( p );
+    impact_action -> stats = stats;
+
     base_crit += p -> talent.fel_mastery -> effectN( 2 ).percent();
   }
+
+  /* Don't record data for this action, since we don't want that 0
+     damage hit incorporated into statistics. */
+  virtual void record_data( action_state_t* ) override {}
 
   // Fel Rush's loss of control causes a GCD lag after the loss ends.
   timespan_t gcd() const override
@@ -1851,24 +1863,26 @@ struct inner_demons_t : public demon_hunter_attack_t
 
 struct metamorphosis_t : public demon_hunter_attack_t
 {
-  metamorphosis_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_attack_t( "metamorphosis", p,
+  struct metamorphosis_impact_t : public demon_hunter_attack_t
+  {
+    metamorphosis_impact_t( demon_hunter_t* p ) :
+      demon_hunter_attack_t( "metamorphosis_impact", p, p -> find_spell( 200166 ) )
+    {
+      background = true;
+      aoe = -1;
+    }
+  };
+
+  metamorphosis_t( demon_hunter_t* p, const std::string& options_str ) :
+    demon_hunter_attack_t( "metamorphosis", p,
                              p -> find_class_spell( "Metamorphosis" ) )
   {
     parse_options( options_str );
 
-    const spell_data_t* damage_spell = p -> find_spell( 200166 );
-    school                           = damage_spell -> get_school_type();
-    attack_power_mod.direct          = damage_spell -> effectN( 2 ).ap_coeff();
-    radius                           = damage_spell -> effectN( 2 ).radius();
-    aoe                              = -1;
-
-    // Special handling for Chaos Blades damage modifier.
-    chaos_blades =
-      damage_spell -> affected_by( p -> talent.chaos_blades -> effectN( 2 ) );
-
+    may_miss = may_dodge = may_parry = may_crit = may_block = false;
     base_teleport_distance  = data().max_range();
     movement_directionality = MOVEMENT_OMNI;
+    impact_action = new metamorphosis_impact_t( p );
 
     cooldown -> duration += p -> artifact.unleashed_demons.time_value();
   }
@@ -1941,10 +1955,8 @@ struct throw_glaive_t : public demon_hunter_attack_t
   {
     parse_options( options_str );
 
-    cooldown -> charges =
-      data().charges() +
+    cooldown -> charges +=
       p -> talent.master_of_the_glaive -> effectN( 2 ).base_value();
-    cooldown -> duration = data().charge_cooldown();
     aoe                = 3;     // Ricochets to 2 additional enemies
     radius             = 10.0;  // with 10 yards.
 
@@ -1975,6 +1987,16 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
 struct vengeful_retreat_t : public demon_hunter_attack_t
 {
+  struct vengeful_retreat_damage_t : public demon_hunter_attack_t
+  {
+    vengeful_retreat_damage_t( demon_hunter_t* p ) :
+      demon_hunter_attack_t( "vengeful_retreat_dmg", p, p -> find_spell( 198813 ) )
+    {
+      background = dual = true;
+      aoe = -1;
+    }
+  };
+
   bool jump_cancel;
 
   vengeful_retreat_t( demon_hunter_t* p, const std::string& options_str )
@@ -1985,19 +2007,10 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
     add_option( opt_bool( "jump_cancel", jump_cancel ) );
     parse_options( options_str );
 
-    const spell_data_t* damage_spell = p -> find_spell( 198813 );
-    school                           = damage_spell -> get_school_type();
-    normalize_weapon_speed           = true;
-    weapon                           = &( p -> main_hand_weapon );
-    weapon_multiplier                = damage_spell -> effectN( 3 ).percent();
-    radius                           = damage_spell -> effectN( 3 ).radius();
-    aoe                              = -1;
-
-    // Special handling for Chaos Blades damage modifier.
-    chaos_blades =
-      damage_spell -> affected_by( p -> talent.chaos_blades -> effectN( 2 ) );
-
-    if ( !jump_cancel )
+    may_miss = may_dodge = may_parry = may_crit = may_block = false;
+    impact_action = new vengeful_retreat_damage_t( p );
+    impact_action -> stats = stats;
+    if ( ! jump_cancel )
     {
       base_teleport_distance  = 20.0;
       movement_directionality = MOVEMENT_OMNI;
@@ -2007,6 +2020,10 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
 
     cooldown -> duration += p -> talent.prepared -> effectN( 2 ).time_value();
   }
+
+  /* Don't record data for this action, since we don't want that 0
+     damage hit incorporated into statistics. */
+  virtual void record_data( action_state_t* ) override {}
 
   void execute() override
   {
