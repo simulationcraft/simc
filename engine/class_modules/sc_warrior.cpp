@@ -2160,13 +2160,13 @@ struct raging_blow_t: public warrior_attack_t
   raging_blow_attack_t* oh_attack;
   double rage_gain;
   raging_blow_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "raging_blow", p, p -> spec.raging_blow ),
+    warrior_attack_t( "raging_blow", p, p -> spec.raging_blow -> effectN( 3 ).trigger() ),
     oh_attack( nullptr ),
-    rage_gain( data().effectN( 2 ).resource( RESOURCE_RAGE ) )
+    rage_gain( p -> spec.raging_blow -> effectN( 2 ).resource(RESOURCE_RAGE ) )
   {
     parse_options( options_str );
 
-    oh_attack = new raging_blow_attack_t( p, "raging_blow_offhand", data().effectN( 1 ).trigger() );
+    oh_attack = new raging_blow_attack_t( p, "raging_blow_offhand", p -> spec.raging_blow -> effectN( 4 ).trigger() );
     oh_attack -> weapon = &( p -> off_hand_weapon );
     add_child( oh_attack );
     cooldown -> duration += p -> talents.inner_rage -> effectN( 1 ).time_value();
