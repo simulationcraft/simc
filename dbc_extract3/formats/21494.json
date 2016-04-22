@@ -421,8 +421,8 @@
   "SkillLineAbility": [
     { "data_type": "I", "field": "id_spell" },
     { "data_type": "I", "field": "mask_race" },
-    { "data_type": "I", "field": "mask_class" },
     { "data_type": "I", "field": "id_replace" },
+    { "data_type": "i", "field": "unk_3" },
     { "data_type": "H", "field": "id_skill" },
     { "data_type": "H", "field": "req_skill_level" },
     { "data_type": "H", "field": "max_learn_skill" },
@@ -430,7 +430,8 @@
     { "data_type": "H", "field": "index" },
     { "data_type": "H", "field": "id_filter" },
     { "data_type": "b", "field": "unk_2" },
-    { "data_type": "b", "field": "reward_skill_points" }
+    { "data_type": "b", "field": "reward_skill_points" },
+    { "data_type": "H", "field": "mask_class" }
   ],
   "SpecializationSpells": [
     { "data_type": "I", "field": "spell_id" },

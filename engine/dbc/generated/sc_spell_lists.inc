@@ -910,13 +910,14 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Druid
   {
-    // General tree, 21 abilities
+    // General tree, 22 abilities
     {
       210722, // Ashamane's Frenzy
         5487, // Bear Form (Shapeshift)
          768, // Cat Form (Shapeshift)
       127757, // Charm Woodland Creature
         1850, // Dash
+      193753, // Dreamwalk
          339, // Entangling Roots
       208253, // Essence of G'Hanir
       164862, // Flap
@@ -2338,7 +2339,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
     },
   },
 };
-#define RACE_ABILITY_SIZE (10)
+#define RACE_ABILITY_SIZE (4)
 
 #ifndef MAX_RACE
 #define MAX_RACE (28)
@@ -2386,25 +2387,77 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     // Generic racial abilities
     {
-      33697, // Blood Fury
-      33702, // Blood Fury
-      20572, // Blood Fury
-      21563, // Command
       20573, // Hardiness
           0,
     },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
+    // Racial abilities for Warrior class
+    {
+      20572, // Blood Fury
+      21563, // Command
+          0,
+    },
+    // Racial abilities for Paladin class
+    {
+      21563, // Command
+          0,
+    },
+    // Racial abilities for Hunter class
+    {
+      20572, // Blood Fury
+      21563, // Command
+          0,
+    },
+    // Racial abilities for Rogue class
+    {
+      20572, // Blood Fury
+      21563, // Command
+          0,
+    },
+    // Racial abilities for Priest class
+    {
+      21563, // Command
+          0,
+    },
+    // Racial abilities for Death Knight class
+    {
+      20572, // Blood Fury
+      21563, // Command
+          0,
+    },
+    // Racial abilities for Shaman class
+    {
+      33697, // Blood Fury
+      21563, // Command
+          0,
+    },
+    // Racial abilities for Mage class
+    {
+      33702, // Blood Fury
+      21563, // Command
+          0,
+    },
+    // Racial abilities for Warlock class
+    {
+      33702, // Blood Fury
+      21563, // Command
+          0,
+    },
+    // Racial abilities for Monk class
+    {
+      33697, // Blood Fury
+      21563, // Command
+          0,
+    },
+    // Racial abilities for Druid class
+    {
+      21563, // Command
+          0,
+    },
+    // Racial abilities for Demon Hunter class
+    {
+      21563, // Command
+          0,
+    },
   },
   // Racial abilities for Dwarf
   {
@@ -2414,7 +2467,6 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
       20596, // Frost Resistance
       59224, // Might of the Mountain
       20594, // Stoneform
-          0,
     },
     {     0, },
     {     0, },
@@ -2433,11 +2485,17 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     // Generic racial abilities
     {
-      21009, // Elusiveness
       20583, // Nature Resistance
       20582, // Quickness
       58984, // Shadowmeld
       154748, // Touch of Elune
+    },
+    {     0, },
+    {     0, },
+    {     0, },
+    // Racial abilities for Rogue class
+    {
+      21009, // Elusiveness
           0,
     },
     {     0, },
@@ -2446,11 +2504,11 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
     {     0, },
     {     0, },
     {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
+    // Racial abilities for Druid class
+    {
+      21009, // Elusiveness
+          0,
+    },
     {     0, },
   },
   // Racial abilities for Undead
@@ -2461,7 +2519,6 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
       20579, // Shadow Resistance
        5227, // Touch of the Grave
        7744, // Will of the Forsaken
-          0,
     },
     {     0, },
     {     0, },
@@ -2484,7 +2541,6 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
       20550, // Endurance
       20551, // Nature Resistance
       20549, // War Stomp
-          0,
     },
     {     0, },
     {     0, },
@@ -2505,23 +2561,56 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
     {
       20592, // Arcane Resistance
       20589, // Escape Artist
-      20591, // Expansive Mind
-      154744, // Expansive Mind
-      154746, // Expansive Mind
-      154747, // Expansive Mind
       92680, // Nimble Fingers
           0,
     },
+    // Racial abilities for Warrior class
+    {
+      154746, // Expansive Mind
+          0,
+    },
+    // Racial abilities for Paladin class
+    {
+      20591, // Expansive Mind
+          0,
+    },
     {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
+    // Racial abilities for Rogue class
+    {
+      154744, // Expansive Mind
+          0,
+    },
+    // Racial abilities for Priest class
+    {
+      20591, // Expansive Mind
+          0,
+    },
+    // Racial abilities for Death Knight class
+    {
+      154747, // Expansive Mind
+          0,
+    },
+    // Racial abilities for Shaman class
+    {
+      20591, // Expansive Mind
+          0,
+    },
+    // Racial abilities for Mage class
+    {
+      20591, // Expansive Mind
+          0,
+    },
+    // Racial abilities for Warlock class
+    {
+      20591, // Expansive Mind
+          0,
+    },
+    // Racial abilities for Monk class
+    {
+      20591, // Expansive Mind
+      154744, // Expansive Mind
+          0,
+    },
     {     0, },
     {     0, },
   },
@@ -2533,7 +2622,6 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
       26297, // Berserking
       58943, // Da Voodoo Shuffle
       20555, // Regeneration
-          0,
     },
     {     0, },
     {     0, },
@@ -2576,53 +2664,111 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
     {
       154742, // Arcane Acuity
         822, // Arcane Resistance
-      155145, // Arcane Torrent
-      50613, // Arcane Torrent
-      28730, // Arcane Torrent
+          0,
+    },
+    // Racial abilities for Warrior class
+    {
       69179, // Arcane Torrent
+          0,
+    },
+    // Racial abilities for Paladin class
+    {
+      155145, // Arcane Torrent
+          0,
+    },
+    // Racial abilities for Hunter class
+    {
       80483, // Arcane Torrent
+          0,
+    },
+    // Racial abilities for Rogue class
+    {
       25046, // Arcane Torrent
-      202719, // Arcane Torrent
-      129597, // Arcane Torrent
+          0,
+    },
+    // Racial abilities for Priest class
+    {
+      28730, // Arcane Torrent
+          0,
+    },
+    // Racial abilities for Death Knight class
+    {
+      50613, // Arcane Torrent
+          0,
     },
     {     0, },
+    // Racial abilities for Mage class
+    {
+      28730, // Arcane Torrent
+          0,
+    },
+    // Racial abilities for Warlock class
+    {
+      28730, // Arcane Torrent
+          0,
+    },
+    // Racial abilities for Monk class
+    {
+      129597, // Arcane Torrent
+          0,
+    },
     {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
+    // Racial abilities for Demon Hunter class
+    {
+      202719, // Arcane Torrent
+          0,
+    },
   },
   // Racial abilities for Draenei
   {
     // Generic racial abilities
     {
-      121093, // Gift of the Naaru
-      59542, // Gift of the Naaru
-      59543, // Gift of the Naaru
-      59544, // Gift of the Naaru
-      59545, // Gift of the Naaru
-      59547, // Gift of the Naaru
-      59548, // Gift of the Naaru
-      28880, // Gift of the Naaru
        6562, // Heroic Presence
       59221, // Shadow Resistance
+          0,
+    },
+    // Racial abilities for Warrior class
+    {
+      28880, // Gift of the Naaru
+          0,
+    },
+    // Racial abilities for Paladin class
+    {
+      59542, // Gift of the Naaru
+          0,
+    },
+    // Racial abilities for Hunter class
+    {
+      59543, // Gift of the Naaru
+          0,
     },
     {     0, },
+    // Racial abilities for Priest class
+    {
+      59544, // Gift of the Naaru
+          0,
+    },
+    // Racial abilities for Death Knight class
+    {
+      59545, // Gift of the Naaru
+          0,
+    },
+    // Racial abilities for Shaman class
+    {
+      59547, // Gift of the Naaru
+          0,
+    },
+    // Racial abilities for Mage class
+    {
+      59548, // Gift of the Naaru
+          0,
+    },
     {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
+    // Racial abilities for Monk class
+    {
+      121093, // Gift of the Naaru
+          0,
+    },
     {     0, },
     {     0, },
   },
@@ -2778,25 +2924,78 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   },
   // Racial abilities for Worgen
   {
-    // Generic racial abilities
+    {     0, },
+    // Racial abilities for Warrior class
     {
       68976, // Aberration
       94293, // Altered Form
       68992, // Darkflight
       68975, // Viciousness
-          0,
+    },
+    // Racial abilities for Paladin class
+    {
+      68976, // Aberration
+      94293, // Altered Form
+      68992, // Darkflight
+      68975, // Viciousness
+    },
+    // Racial abilities for Hunter class
+    {
+      68976, // Aberration
+      94293, // Altered Form
+      68992, // Darkflight
+      68975, // Viciousness
+    },
+    // Racial abilities for Rogue class
+    {
+      68976, // Aberration
+      94293, // Altered Form
+      68992, // Darkflight
+      68975, // Viciousness
+    },
+    // Racial abilities for Priest class
+    {
+      68976, // Aberration
+      94293, // Altered Form
+      68992, // Darkflight
+      68975, // Viciousness
+    },
+    // Racial abilities for Death Knight class
+    {
+      68976, // Aberration
+      94293, // Altered Form
+      68992, // Darkflight
+      68975, // Viciousness
+    },
+    // Racial abilities for Shaman class
+    {
+      68976, // Aberration
+      94293, // Altered Form
+      68992, // Darkflight
+      68975, // Viciousness
+    },
+    // Racial abilities for Mage class
+    {
+      68976, // Aberration
+      94293, // Altered Form
+      68992, // Darkflight
+      68975, // Viciousness
+    },
+    // Racial abilities for Warlock class
+    {
+      68976, // Aberration
+      94293, // Altered Form
+      68992, // Darkflight
+      68975, // Viciousness
     },
     {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
-    {     0, },
+    // Racial abilities for Druid class
+    {
+      68976, // Aberration
+      94293, // Altered Form
+      68992, // Darkflight
+      68975, // Viciousness
+    },
     {     0, },
   },
   {
