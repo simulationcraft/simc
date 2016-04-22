@@ -11,17 +11,25 @@ _PARSERS = {
 
 class DBCFileIterator:
     def __init__(self, f):
-        self.file = f
+        self._file = f
+        self._parser = f.parser
+        self._decorator = f.record_class()
+
+        self._record = 0
+        self._n_records = self._parser.n_records()
 
     def __iter__(self):
         return self
 
     def __next__(self):
-        next_item = self.file.parser.next_record()
-        if not next_item:
+        if self._record == self._n_records:
             raise StopIteration
 
-        return self.file.decorate(next_item)
+        dbc_id, offset, size = self._parser.get_record_info(self._record)
+        data = self._parser.get_record(offset, size)
+        self._record += 1
+
+        return self._decorator(self._parser, dbc_id, data)
 
 class DBCFile:
     def __init__(self, options, filename):

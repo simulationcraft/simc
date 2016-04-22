@@ -36,9 +36,6 @@ class DBCParserBase:
         self.field_data = []
         self.record_parser = None
 
-        # Iteration
-        self.record_id = 0
-
         # Searching
         self.id_data = None
 
@@ -81,6 +78,7 @@ class DBCParserBase:
             field_names = self.fmt.fields(self.class_name())
         field_idx = 0
 
+        field_offset = 0
         for field_data_idx in range(0, len(self.field_data)):
             field_data = self.field_data[field_data_idx]
             type_idx = min(field_idx, data_fmt and len(data_fmt) - 1 or field_idx)
@@ -101,30 +99,26 @@ class DBCParserBase:
                     else:
                         logging.debug('Unpacker has a 3-byte field (pos=%d): terminating (%s) and beginning a new unpacker',
                             field_idx, format_str)
-                    self.unpackers.append((True, struct.Struct(format_str)))
+                    unpacker = struct.Struct(format_str)
+                    self.unpackers.append((0xFFFFFF, unpacker, field_offset))
+                    field_offset += unpacker.size - 1
                     format_str = '<'
 
         if len(format_str) > 1:
-            self.unpackers.append((self.field_data[-1][1] == 3, struct.Struct(format_str)))
+            self.unpackers.append((self.field_data[-1][1] == 3 and 0xFFFFFF or 0xFFFFFFFF, struct.Struct(format_str), field_offset))
 
-        logging.debug('Unpacking plan: %s', ', '.join(['%s (len=%d)' % (u.format.decode('utf-8'), u.size) for _, u in self.unpackers]))
+        logging.debug('Unpacking plan: %s', ', '.join(['%s (len=%d, offset=%d)' % (u.format.decode('utf-8'), u.size, o) for _, u, o in self.unpackers]))
         if len(self.unpackers) == 1:
             self.record_parser = lambda ro, rs: self.unpackers[0][1].unpack_from(self.data, ro)
         else:
             self.record_parser = self.__do_parse
 
     def __do_parse(self, record_offset, record_size):
-        size_left = record_size
-        unpacker_offset = 0
         full_data = []
-        for int24, unpacker in self.unpackers:
-            full_data += unpacker.unpack_from(self.data, record_offset + unpacker_offset)
-            if int24:
-                full_data[-1] &= 0xFFFFFF
-                size_left += 1
-
-            size_left -= unpacker.size
-            unpacker_offset = record_size - size_left
+        for mask, unpacker, offset in self.unpackers:
+            full_data += unpacker.unpack_from(self.data, record_offset + offset)
+            # TODO: Unsigned vs Signed
+            full_data[-1] &= mask
         return full_data
 
     def n_expanded_fields(self):
@@ -281,16 +275,11 @@ class DBCParserBase:
         return -1, 0, 0
 
     # Returns dbc_id (always 0 for base), record offset into file
-    def get_next_record_info(self):
-        return -1, self.data_offset + self.record_id * self.record_size, self.record_size
+    def get_record_info(self, record_id):
+        return -1, self.data_offset + record_id * self.record_size, self.record_size
 
-    def next_record(self):
-        if not self.n_records_left():
-            return None
-
-        dbc_id, record_offset, record_size = self.get_next_record_info()
-        self.record_id += 1
-        return dbc_id, self.record_parser(record_offset, record_size)
+    def get_record(self, offset, size):
+        return self.record_parser(offset, size)
 
     def find(self, id_):
         dbc_id, record_offset, record_size = self.find_record_offset(id_)
@@ -409,9 +398,6 @@ class LegionWDBParser(DBCParserBase):
     def n_cloned_records(self):
         return self.clone_segment_size // _CLONE.size
 
-    def n_records_left(self):
-        return self.n_records() - self.record_id
-
     def n_records(self):
         if self.id_block_offset:
             return len(self.id_table)
@@ -481,6 +467,8 @@ class LegionWDBParser(DBCParserBase):
             idtable.append((target_id, indexdict[source_id][0], indexdict[source_id][1]))
 
         self.id_table = idtable
+        # If we have an idtable, just index directly to it
+        self.get_record_info = lambda record_id: self.id_table[record_id]
 
     def open(self):
         if not super().open():
@@ -490,12 +478,6 @@ class LegionWDBParser(DBCParserBase):
 
         logging.debug('Opened %s' % self.file_name)
         return True
-
-    def get_next_record_info(self):
-        if self.id_block_offset > 0:
-            return self.id_table[self.record_id]
-        else:
-            return super().get_next_record_info()
 
 class WDB4Parser(LegionWDBParser):
     def is_magic(self): return self.magic == b'WDB4'
