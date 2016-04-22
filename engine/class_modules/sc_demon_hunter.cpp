@@ -34,7 +34,6 @@ namespace
    Soul Fragments from Shattered Souls
    Soul Fragment duration
    Chaos Strike rework
-   Blade Dance / Death Sweep rework
    Check Fury of the Illidari
    Check Fel Eruption
    Fel Barrage
@@ -1519,6 +1518,10 @@ struct eye_beam_t : public demon_hunter_attack_t
       add_child( p -> find_action( "anguish" ) );
     }
   }
+
+  /* Don't record data for this action, since we don't want that 0
+     damage hit incorporated into statistics. */
+  virtual void record_data( action_state_t* ) override {}
 
   // Channel is not hasted.
   timespan_t tick_time( double ) const override
