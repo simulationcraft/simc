@@ -27,13 +27,18 @@ namespace
    Nemesis buffs for each race?
    Defensive talent tier
    Second look at Momentum skills' timings
-   Fel Barrage
    Fury of the Illidari distance targeting support
    Soul Fragment artifact traits
    Defensive artifact traits
    Chaos Strike rolled per target
    Soul Fragments from Shattered Souls
    Soul Fragment duration
+   Chaos Strike rework
+   Blade Dance / Death Sweep rework
+   Check Fury of the Illidari
+   Check Fel Eruption
+   Fel Barrage
+   Rework Felblade, Fel Rush, Metamorphosis, and Vengeful Retreat
 
    Vengeance ----------------------------------------------------------------
    Hmm, let me think... well there's... oh yeah, everything.
@@ -989,9 +994,17 @@ struct blade_dance_event_t : public event_t
 
   timespan_t next_execute() const
   {
-    return timespan_t::from_millis(
-      timing_passive -> effectN( current + 5 ).misc_value1() -
-      ( current > 0 ? timing_passive -> effectN( current + 4 ).misc_value1() : 0 ) );
+    if ( current == 0 )
+    {
+      return timespan_t::zero();
+    }
+    else
+    {
+      return timespan_t::from_millis(
+        timing_passive -> effectN( current + 4 ).misc_value1()
+        - timing_passive -> effectN( current + 3 ).misc_value1()
+      );
+    }
   }
 
   void execute() override
@@ -1020,23 +1033,16 @@ struct blade_dance_base_t : public demon_hunter_attack_t
                       const spell_data_t* s )
     : demon_hunter_attack_t( n, p, s ), dodge_buff( nullptr )
   {
-    aoe      = -1;
+    may_miss = may_crit = may_parry = may_block = may_dodge = false;
     cooldown = p -> get_cooldown( "blade_dance" );  // shared cooldown
+
     base_costs[ RESOURCE_FURY ] +=
       p -> talent.first_blood -> effectN( 2 ).resource( RESOURCE_FURY );
-
   }
 
   virtual bool init_finished() override
   {
     bool f = demon_hunter_attack_t::init_finished();
-
-
-    // TODO: check if this should be re-enabled or replace the stat-overwriting. Had no effect in constructor.
-//    for ( size_t i = 0; i < attacks.size(); i++ )
-//    {
-//      add_child( attacks[ i ] );
-//    }
 
     for ( size_t i = 0; i < attacks.size(); i++ )
     {
@@ -1045,6 +1051,10 @@ struct blade_dance_base_t : public demon_hunter_attack_t
 
     return f;
   }
+
+  /* Don't record data for this action, since we don't want that 0
+     damage hit incorporated into statistics. */
+  virtual void record_data( action_state_t* ) override {}
 
   virtual double action_multiplier() const override
   {
@@ -1055,8 +1065,7 @@ struct blade_dance_base_t : public demon_hunter_attack_t
     return am;
   }
 
-  virtual double composite_da_multiplier(
-    const action_state_t* s ) const override
+  virtual double composite_da_multiplier( const action_state_t* s ) const override
   {
     double dm = demon_hunter_attack_t::composite_da_multiplier( s );
 
@@ -2624,6 +2633,8 @@ void demon_hunter_t::init_spells()
   if ( spec.blade_dance -> ok() )
   {
     blade_dance_attacks.push_back( new blade_dance_attack_t(
+      this, spec.blade_dance -> effectN( 4 ).trigger(), "blade_dance1" ) );
+    blade_dance_attacks.push_back( new blade_dance_attack_t(
       this, spec.blade_dance -> effectN( 5 ).trigger(), "blade_dance2" ) );
     blade_dance_attacks.push_back( new blade_dance_attack_t(
       this, spec.blade_dance -> effectN( 6 ).trigger(), "blade_dance3" ) );
@@ -2633,6 +2644,8 @@ void demon_hunter_t::init_spells()
 
   if ( spec.death_sweep -> ok() )
   {
+    death_sweep_attacks.push_back( new blade_dance_attack_t(
+      this, spec.death_sweep -> effectN( 4 ).trigger(), "death_sweep1" ) );
     death_sweep_attacks.push_back( new blade_dance_attack_t(
       this, spec.death_sweep -> effectN( 5 ).trigger(), "death_sweep2" ) );
     death_sweep_attacks.push_back( new blade_dance_attack_t(
@@ -2681,7 +2694,7 @@ void demon_hunter_t::create_buffs()
 
   buff.blade_dance =
     buff_creator_t( this, "blade_dance", spec.blade_dance )
-      .default_value( spec.blade_dance -> effectN( 3 ).percent() )
+      .default_value( spec.blade_dance -> effectN( 2 ).percent() )
       .add_invalidate( CACHE_DODGE );
 
   buff.blur =
@@ -2694,7 +2707,7 @@ void demon_hunter_t::create_buffs()
 
   buff.death_sweep =
     buff_creator_t( this, "death_sweep", spec.death_sweep )
-      .default_value( spec.death_sweep -> effectN( 3 ).percent() )
+      .default_value( spec.death_sweep -> effectN( 2 ).percent() )
       .add_invalidate( CACHE_DODGE );
 
   buff.metamorphosis =
