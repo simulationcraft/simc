@@ -1790,13 +1790,15 @@ struct priest_spell_t : public priest_action_t<spell_t>
   atonement_heal_t* atonement;
   bool can_trigger_atonement;
   bool is_mind_spell;
+  bool is_sphere_of_insanity_spell;
 
   priest_spell_t( const std::string& n, priest_t& player,
                   const spell_data_t* s = spell_data_t::nil() )
     : base_t( n, player, s ),
       atonement( nullptr ),
       can_trigger_atonement( false ),
-      is_mind_spell( false )
+      is_mind_spell( false ),
+      is_sphere_of_insanity_spell( false )
   {
     weapon_multiplier = 0.0;
   }
@@ -1936,8 +1938,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
         priest.buffs.twist_of_fate->trigger();
       }
 
-      if ( priest.buffs.sphere_of_insanity->up() && s->result_amount > 0 &&
-           s->action->name_str != "sphere_of_insanity" )
+      if ( is_sphere_of_insanity_spell && priest.buffs.sphere_of_insanity->up() && s->result_amount > 0 )
       {
         priest.buffs.sphere_of_insanity->current_value += s->result_amount;
       }
@@ -2679,6 +2680,7 @@ public:
   {
     parse_options( options_str );
     is_mind_spell = true;
+    is_sphere_of_insanity_spell = true;
 
     insanity_gain = data().effectN( 2 ).resource( RESOURCE_INSANITY );
     insanity_gain *=
@@ -2790,6 +2792,7 @@ struct mind_spike_t final : public priest_spell_t
   {
     parse_options( options_str );
     is_mind_spell = true;
+    is_sphere_of_insanity_spell = true;
 
     if ( p.artifact.void_siphon.rank() )
     {
@@ -3059,6 +3062,7 @@ struct mind_flay_t final : public priest_spell_t
     hasted_ticks  = false;
     use_off_gcd   = true;
     is_mind_spell = true;
+    is_sphere_of_insanity_spell = true;
 
     if ( p.artifact.void_siphon.rank() )
     {
@@ -3500,6 +3504,7 @@ struct void_bolt_t final : public priest_spell_t
   {
     parse_options( options_str );
     use_off_gcd = true;
+    is_sphere_of_insanity_spell = true;
 
     if ( player.artifact.sinister_thoughts.rank() )
     {
@@ -5308,7 +5313,7 @@ struct voidform_t final : public priest_buff_t<buff_t>
       : player_event_t( *s->player ), vf( s )
     {
       add_event( timespan_t::from_seconds(
-          0.2 ) );  // FIXME Is there spelldata for tick intervall ?
+          0.05 ) ); // See note below.
     }
 
     virtual const char* name() const override
@@ -5318,20 +5323,26 @@ struct voidform_t final : public priest_buff_t<buff_t>
 
     virtual void execute() override
     {
-      // http://howtopriest.com/viewtopic.php?f=95&t=8069&start=20#p69794
-      // ----
-      // Updated 2016-04-03 by Twintop:
+      // Updated 2016-04-21 by Twintop:
+      // ---
+      // http://us.battle.net/wow/en/forum/topic/20743504316?page=2#31
+      // http://us.battle.net/wow/en/forum/topic/20743504316?page=4#71
+      // ---
       // Drain starts at 8 over 1 second and increases by 1 over 2 seconds per
-      // stack of Voidform.
-      // Ticks happen every 0.2 sec.
+      // stack of Voidform. I.E.: 8 over t=0->1, 8.5 over t=1->2, etc.
+      // Drain happens continuously, like energy in reverse.
+      // We make ticks happen every 0.05sec to get as close to contiunuous as
+      // possible without killing simulation lengths.
       // CHECK ME: Triggering Voidform in-game and not using any abilities
-      // results in 11 stacks. The implementation below results in 11 stacks as
-      // well by subtracting 1 from the current stackcount.
+      // results in 11 stacks. This appears to be due to latency. SimC only gets
+      // 10 stacks presently.
       // TODO: Use Spelldata
       auto priest = debug_cast<priest_t*>( player() );
 
-      double insanity_loss =
-          ( 8 * 0.2 ) + ( ( priest->buffs.voidform->check() ) / 2 ) * 0.2;
+      // LOGIC/SANITY CHECK:
+      // Stack 1 = 8 insanity = 8 + ( (1 - 1) / 2 ) = 8 + (0 / 2) = 8
+      // Stack 2 = 8.5 insanity = 8 + ( (2 - 1) / 2 ) = 8 + (1/2) = 8.5
+      double insanity_loss = ( 8 + ( ( priest->buffs.voidform->check() - 1 ) / 2 ) ) * 0.05;
 
       if (insanity_loss > priest->resources.current[RESOURCE_INSANITY])
       {
