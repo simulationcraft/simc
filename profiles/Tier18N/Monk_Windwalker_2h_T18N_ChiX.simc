@@ -31,10 +31,6 @@ actions+=/potion,name=draenic_agility,if=buff.serenity.up|(!talent.serenity.enab
 actions+=/blood_fury,if=buff.tigereye_brew.up|target.time_to_die<18
 actions+=/berserking,if=buff.tigereye_brew.up|target.time_to_die<18
 actions+=/arcane_torrent,if=chi.max-chi>=1&(buff.tigereye_brew_use.up|target.time_to_die<18)
-actions+=/tigereye_brew,if=buff.tigereye_brew.down
-actions+=/tigereye_brew,if=buff.tigereye_brew.down&buff.serenity.up
-actions+=/tigereye_brew,if=buff.tigereye_brew.down&cooldown.fists_of_fury.up&chi>=3
-actions+=/tigereye_brew,if=buff.tigereye_brew.down&chi>=2&target.time_to_die<40
 actions+=/touch_of_death
 actions+=/serenity,if=chi>=2
 actions+=/fists_of_fury,if=energy.time_to_max>cast_time&!buff.serenity.up
@@ -42,8 +38,7 @@ actions+=/call_action_list,name=st,if=active_enemies<3&(level<100
 actions+=/call_action_list,name=aoe_norjw,if=active_enemies>=3&!talent.rushing_jade_wind.enabled
 actions+=/call_action_list,name=aoe_rjw,if=active_enemies>=3&talent.rushing_jade_wind.enabled
 
-actions.opener=tigereye_brew,if=buff.tigereye_brew.down
-actions.opener+=/blood_fury,if=buff.tigereye_brew.up
+actions.opener=blood_fury,if=buff.tigereye_brew.up
 actions.opener+=/berserking,if=buff.tigereye_brew.up
 actions.opener+=/arcane_torrent,if=buff.tigereye_brew.up&chi.max-chi>=1
 actions.opener+=/fists_of_fury,if=buff.serenity.up&buff.serenity.remains<1.5
@@ -94,7 +89,7 @@ main_hand=xutenash_glaive_of_ruin,id=124378,enchant=mark_of_warsong
 # gear_agility=3383
 # gear_stamina=4668
 # gear_crit_rating=1623
-# gear_haste_rating=1605
+# gear_haste_rating=1880
 # gear_mastery_rating=784
 # gear_versatility_rating=128
 # gear_armor=1156

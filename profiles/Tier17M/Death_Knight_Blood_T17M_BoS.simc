@@ -44,7 +44,11 @@ actions+=/death_and_decay,if=buff.crimson_scourge.react
 actions+=/blood_boil,if=buff.crimson_scourge.react
 
 actions.bt=death_strike,if=unholy=2|frost=2
+actions.bt+=/blood_tap,if=buff.blood_charge.stack>=5&!blood
 actions.bt+=/death_strike,if=buff.blood_charge.stack>=10&unholy&frost
+actions.bt+=/blood_tap,if=buff.blood_charge.stack>=10&!unholy&!frost
+actions.bt+=/blood_tap,if=buff.blood_charge.stack>=5&(!unholy|!frost)
+actions.bt+=/blood_tap,if=buff.blood_charge.stack>=5&blood.death&!unholy&!frost
 actions.bt+=/blood_boil,if=blood=2|(blood&!blood.death)
 
 actions.re=death_strike,if=unholy&frost

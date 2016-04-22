@@ -57,9 +57,9 @@ main_hand=steelforged_greataxe,id=116453,bonus_id=76/525,enchant_id=5330
 
 # Gear Summary
 # gear_ilvl=628.53
-# gear_strength=1835
+# gear_strength=1836
 # gear_stamina=2439
-# gear_crit_rating=1063
-# gear_haste_rating=175
-# gear_mastery_rating=1023
+# gear_crit_rating=1203
+# gear_haste_rating=250
+# gear_mastery_rating=1123
 # gear_armor=1843
