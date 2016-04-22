@@ -3748,7 +3748,8 @@ struct storm_earth_and_fire_t: public monk_spell_t
       // Already full clones, despawn both
       if ( p() -> buff.storm_earth_and_fire -> check() == 2 )
       {
-        for ( size_t i = 0; i < sizeof_array( p() -> pet.sef ); i++ )
+        // cannot dismiss clones any longer
+/*        for ( size_t i = 0; i < sizeof_array( p() -> pet.sef ); i++ )
         {
           if ( p() -> pet.sef[ i ] -> is_sleeping() )
           {
@@ -3757,7 +3758,7 @@ struct storm_earth_and_fire_t: public monk_spell_t
 
           p() -> pet.sef[ i ] -> dismiss();
         }
-
+*/
         assert( p() -> buff.storm_earth_and_fire -> check() == 0 );
       }
       // Can fit a clone on the target, randomize which clone is spawned
@@ -3784,7 +3785,8 @@ struct storm_earth_and_fire_t: public monk_spell_t
       }
     }
     // Clone on target, despawn that specific clone
-    else
+    // Cannot Despawn
+    /*else
     {
       for ( size_t i = 0; i < sizeof_array( p() -> pet.sef ); i++ )
       {
@@ -3801,7 +3803,9 @@ struct storm_earth_and_fire_t: public monk_spell_t
         p() -> pet.sef[ i ] -> dismiss();
       }
     }
+    */
   }
+
 };
 
 sef_despawn_cb_t::sef_despawn_cb_t( storm_earth_and_fire_t* a ) : action( a )
@@ -5916,7 +5920,8 @@ void monk_t::create_pets()
   if ( specialization() == MONK_WINDWALKER && find_action( "storm_earth_and_fire" ) )
   {
     pet.sef[ SEF_FIRE ] = new pets::storm_earth_and_fire_pet_t( "fire_spirit", sim, this, true );
-    pet.sef[ SEF_STORM ] = new pets::storm_earth_and_fire_pet_t( "storm_spirit", sim, this, true );
+    // The player BECOMES the Storm Spirit
+//    pet.sef[ SEF_STORM ] = new pets::storm_earth_and_fire_pet_t( "storm_spirit", sim, this, true );
     pet.sef[ SEF_EARTH ] = new pets::storm_earth_and_fire_pet_t( "earth_spirit", sim, this, false );
   }
 }
