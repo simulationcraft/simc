@@ -30,11 +30,8 @@ namespace
    Fury of the Illidari distance targeting support
    Soul Fragment artifact traits
    Defensive artifact traits
-   Chaos Strike rolled per target
    Soul Fragments from Shattered Souls
    Soul Fragment duration
-   Chaos Strike rework
-   Check Fury of the Illidari
    Check Fel Eruption
    Fel Barrage
    Rework Felblade, Fel Rush, Metamorphosis, and Vengeful Retreat
@@ -1793,7 +1790,8 @@ struct fury_of_the_illidari_t : public demon_hunter_attack_t
 
     may_miss = may_crit = may_parry = may_block = may_dodge = false;
     dot_duration   = data().duration();
-    base_tick_time = timespan_t::from_millis( 500 );
+    base_tick_time = timespan_t::from_millis( 250 );
+    tick_zero = true;
 
     // Set MH to tick action. OH is executed in tick().
     tick_action = mh;
