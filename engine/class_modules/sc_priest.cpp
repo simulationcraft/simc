@@ -2627,6 +2627,7 @@ struct mind_spike_detonation_t final : public priest_spell_t
     proc        = false;
     callbacks   = true;
     may_miss    = false;
+    is_sphere_of_insanity_spell = true;
     range       = 0.0;
     trigger_gcd = timespan_t::zero();
     school      = SCHOOL_SHADOWFROST;
