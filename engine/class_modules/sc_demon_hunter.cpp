@@ -81,6 +81,8 @@ public:
     buff_t* nemesis;
   } debuffs;
 
+  bool chaos_strike_crit;
+
   demon_hunter_td_t( player_t* target, demon_hunter_t& p );
 };
 
@@ -429,6 +431,33 @@ namespace actions
 
 }  // END pets NAMESPACE
 
+struct delayed_execute_event_t : public event_t
+{
+  action_t* action;
+  player_t* target;
+
+  delayed_execute_event_t( demon_hunter_t* p, action_t* a, player_t* t,
+                        timespan_t delay )
+    : event_t( *p -> sim ), action( a ), target( t )
+  {
+    add_event( delay );
+  }
+
+  const char* name() const override
+  {
+    return "Delayed Execute";
+  }
+
+  void execute() override
+  {
+    if ( ! target -> is_sleeping() )
+    {
+      action -> target = target;
+      action -> schedule_execute();
+    }
+  }
+};
+
 namespace actions
 {
 /* This is a template for common code for all Demon Hunter actions.
@@ -674,6 +703,16 @@ struct demon_hunter_attack_t : public demon_hunter_action_t<melee_attack_t>
       chaos_blades( data().affected_by( p -> talent.chaos_blades -> effectN( 2 ) ) )
   {
     special = true;
+
+    parse_special_effect_data( data() );
+  }
+
+  void parse_special_effect_data( const spell_data_t& spell )
+  {
+    if ( spell.flags( SPELL_ATTR_EX3_REQ_OFFHAND ) )
+    {
+      weapon = &( p() -> off_hand_weapon );
+    }
   }
 
   double action_multiplier() const override
@@ -1117,13 +1156,11 @@ struct blade_dance_t : public blade_dance_base_t
 
 struct chaos_blade_t : public demon_hunter_attack_t
 {
-  chaos_blade_t( const std::string& n, demon_hunter_t* p, const spell_data_t* s,
-                 weapon_t* w )
+  chaos_blade_t( const std::string& n, demon_hunter_t* p, const spell_data_t* s )
     : demon_hunter_attack_t( n, p, s )
   {
-    weapon            = w;
-    base_execute_time = w -> swing_time;
-    special           = /* may_glance =*/false;  // Apr 12 2016: Cannot glance.
+    base_execute_time = weapon -> swing_time;
+    special           = false;  // Apr 12 2016: Cannot glance.
     repeating = background = true;
   }
 };
@@ -1161,85 +1198,46 @@ struct chaos_nova_t : public demon_hunter_attack_t
 
 struct chaos_strike_base_t : public demon_hunter_attack_t
 {
-  struct chaos_strike_oh_t : public demon_hunter_attack_t
+  struct chaos_strike_damage_t : public demon_hunter_attack_t
   {
-    chaos_strike_base_t* parent;
-
-    chaos_strike_oh_t( demon_hunter_t* p, const spell_data_t* s,
-                       chaos_strike_base_t* mh )
-      : demon_hunter_attack_t( mh -> name_str + "_oh", p, s ), parent( mh )
+    chaos_strike_damage_t( demon_hunter_t* p, const spell_data_t* s )
+      : demon_hunter_attack_t( "chaos_strike_dmg", p, s )
     {
-      weapon = &( p -> off_hand_weapon );
       dual = background = true;
       may_miss = may_parry = may_dodge = false;
-
-      if ( p -> talent.chaos_cleave -> ok() )
-      {
-        // Bugged as of build 21287
-        aoe = 1 +
-          p -> talent.chaos_cleave -> effectN( 1 ).base_value();
-      }
 
       base_multiplier *= 1.0 + p -> artifact.warglaives_of_chaos.percent();
       crit_bonus_multiplier *=
         1.0 + p -> artifact.critical_chaos.percent();  // TOCHECK
     }
 
-    // Use crit roll of the primary hit.
     double composite_crit() const override
-    {
-      return parent -> is_critical;
-    }
+    { return 0.0; }
 
-    void execute() override
-    {
-      if ( parent -> is_critical )
-      {
-        p() -> resource_gain( RESOURCE_FURY, parent -> base_costs[ RESOURCE_FURY ],
-                            parent -> action_gain );
-      }
-
-      demon_hunter_attack_t::execute();
-    }
+    double composite_target_crit( player_t* t ) const override
+    { return td( t ) -> chaos_strike_crit; }
   };
 
-  struct chaos_strike_event_t : public event_t
-  {
-    chaos_strike_oh_t* off_hand;
-    player_t* target;
-
-    chaos_strike_event_t( demon_hunter_t* p, chaos_strike_oh_t* oh, player_t* t,
-                          timespan_t delay )
-      : event_t( *p -> sim ), off_hand( oh ), target( t )
-    {
-      add_event( delay );
-    }
-
-    const char* name() const override
-    {
-      return "Chaos Strike";
-    }
-
-    void execute() override
-    {
-      off_hand -> target = target;
-      off_hand -> schedule_execute();
-    }
-  };
-
-  chaos_strike_oh_t* off_hand;
-  bool is_critical;
-  timespan_t delay;
+  bool refund;
+  std::vector<chaos_strike_damage_t*> attacks;
+  std::vector<timespan_t> delays;
   action_t* inner_demons;
 
   chaos_strike_base_t( const std::string& n, demon_hunter_t* p,
                        const spell_data_t* s )
-    : demon_hunter_attack_t( n, p, s ),
-      off_hand( new chaos_strike_oh_t( p, data().effectN( 3 ).trigger(), this ) ),
-      is_critical( false ),
-      delay( timespan_t::from_millis( data().effectN( 3 ).misc_value1() ) )
+    : demon_hunter_attack_t( n, p, s )
   {
-    add_child( off_hand );
+    aoe = s -> effectN( 1 ).chain_target()
+      + p -> talent.chaos_cleave -> effectN( 1 ).base_value();
+
+    for ( size_t i = 1; i <= s -> effect_count(); i++ ) {
+      const spelleffect_data_t effect = s -> effectN( i );
+
+      if ( effect.type() == E_TRIGGER_SPELL ) {
+        attacks.push_back( new chaos_strike_damage_t( p, s -> effectN( i ).trigger() ) );
+        delays.push_back( timespan_t::from_millis( s -> effectN( i ).misc_value1() ) );
+      }
+    }
 
     if ( p -> artifact.inner_demons.rank() )
     {
@@ -1255,38 +1253,62 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
   {
     bool f = demon_hunter_attack_t::init_finished();
 
-    // Use 1 stats object for both actions.
-    off_hand -> stats = stats;
+    // Use one stats object for all parts of the attack.
+    for ( size_t i = 0; i < attacks.size(); i++ )
+    {
+      attacks[ i ] -> stats = stats;
+    }
 
     return f;
+  }
+
+  virtual void record_data( action_state_t* s ) override
+  {
+    // Only record data if this action actually deals damage.
+    if ( weapon && weapon_multiplier > 0 )
+    {
+      demon_hunter_attack_t::record_data( s );
+    }
   }
 
   virtual void impact( action_state_t* s ) override
   {
     demon_hunter_attack_t::impact( s );
 
-    if ( s -> result == RESULT_CRIT )
+    if ( result_is_hit( s -> result ) )
     {
-      is_critical = true;
+      td( s -> target ) -> chaos_strike_crit = s -> result == RESULT_CRIT;
+
+      if ( s -> result == RESULT_CRIT )
+      {
+        refund = true;
+      }
+
+      for ( size_t i = 0; i < attacks.size(); i++ ) {
+        new ( *sim ) delayed_execute_event_t( p(), attacks[ i ], 
+          s -> target, delays[ i ] );
+      }
     }
   }
 
   virtual void execute() override
   {
-    is_critical = false;
+    refund = false;
 
     demon_hunter_attack_t::execute();
+
+    if ( refund )
+    {
+      p() -> resource_gain( resource_current, base_costs[ resource_current ], action_gain );
+    }
 
     p() -> buff.metamorphosis -> up();
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      new ( *sim )
-        chaos_strike_event_t( p(), off_hand, execute_state -> target, delay );
-
       // TODO: Travel time
       if ( p() -> talent.demonic_appetite -> ok() &&
-           !p() -> cooldown.demonic_appetite -> down() &&
+           ! p() -> cooldown.demonic_appetite -> down() &&
            p() -> rng().roll( p() -> talent.demonic_appetite -> proc_chance() ) )
       {
         p() -> cooldown.demonic_appetite -> start();
@@ -1773,8 +1795,7 @@ struct fury_of_the_illidari_t : public demon_hunter_attack_t
     dot_duration   = data().duration();
     base_tick_time = timespan_t::from_millis( 500 );
 
-
-    oh -> weapon  = &( p -> off_hand_weapon );
+    // Set MH to tick action. OH is executed in tick().
     tick_action = mh;
 
     // Silly reporting things
@@ -2661,12 +2682,10 @@ void demon_hunter_t::init_spells()
   {
     chaos_blade_main_hand = new chaos_blade_t(
       "chaos_blade_mh", this,
-      find_spell( talent.chaos_blades -> effectN( 1 ).misc_value1() ),
-      &( main_hand_weapon ) );
+      find_spell( talent.chaos_blades -> effectN( 1 ).misc_value1() ) );
 
     chaos_blade_off_hand = new chaos_blade_t(
-      "chaos_blade_oh", this, talent.chaos_blades -> effectN( 1 ).trigger(),
-      &( off_hand_weapon ) );
+      "chaos_blade_oh", this, talent.chaos_blades -> effectN( 1 ).trigger() );
   }
 
   if ( talent.demon_blades -> ok() )
