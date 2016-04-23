@@ -282,6 +282,8 @@ public:
   {
   } glyphs;
 
+  unsigned soul_fragments; // TODO: Do these expire?
+
   demon_hunter_t( sim_t* sim, const std::string& name, race_e r );
 
   // player_t overrides
@@ -321,7 +323,6 @@ public:
   demon_hunter_td_t* get_target_data( player_t* target ) const override;
   bool has_t18_class_trinket() const override;
 
-  unsigned soul_fragments; // TODO: Do these expire?
   void spawn_soul_fragment();
   bool consume_soul_fragment( bool free ); 
 
@@ -2347,7 +2348,6 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r )
     melee_off_hand( nullptr ),
     chaos_blade_main_hand( nullptr ),
     chaos_blade_off_hand( nullptr ),
-    soul_fragments( 0 ),
     buff(),
     talent(),
     spec(),
@@ -2359,7 +2359,8 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r )
     active_spells(),
     pets(),
     options(),
-    glyphs()
+    glyphs(),
+    soul_fragments( 0 )
 {
   base.distance = 5.0;
 

@@ -54,7 +54,7 @@ js::sc_js_t to_json( const ::extended_sample_data_t& sd )
   node.set( "mean_std_dev", sd.mean_std_dev );
   node.set( "min", sd.min() );
   node.set( "max", sd.max() );
-  node.set( "data", sd.data() );
+  // node.set( "data", sd.data() );
   // node.set( "distribution", sd.distribution );
   return node;
 }

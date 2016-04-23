@@ -462,10 +462,11 @@ public:
     wild_arcanist( nullptr ),
     pyrosurge( nullptr ),
     shatterlance( nullptr ),
+    cinder_count( 6.0 ),
     distance_from_rune( 0.0 ),
+    incanters_flow_stack_mult( find_spell( 116267 ) -> effectN( 1 ).percent() ),
     iv_haste( 1.0 ),
     pet_multiplier( 1.0 ),
-    cinder_count( 6.0 ),
     benefits( benefits_t() ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
@@ -485,9 +486,6 @@ public:
     cooldowns.phoenixs_flames  = get_cooldown( "phoenixs_flames"  );
     cooldowns.presence_of_mind = get_cooldown( "presence_of_mind" );
     cooldowns.ray_of_frost     = get_cooldown( "ray_of_frost"     );
-
-    // Miscellaneous
-    incanters_flow_stack_mult = find_spell( 116267 ) -> effectN( 1 ).percent();
 
     // Options
     base.distance = 40;

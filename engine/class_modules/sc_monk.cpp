@@ -2798,10 +2798,12 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     std::vector<player_t*> targets = target_list();
     int cyclone_strike_counter = 0;
 
-    for ( int i = 0; i < targets.size(); i++ )
+    for ( player_t* target : targets )
     {
-      if ( td( targets[i] ) -> debuff.cyclone_strikes -> up() )
+      if ( td( target ) -> debuff.cyclone_strikes -> up() )
+      {
         cyclone_strike_counter++;
+      }
     }
     return cyclone_strike_counter;
   }
@@ -5854,16 +5856,16 @@ player_t* monk_t::next_cyclone_strikes_target( action_state_t* state )
       return state -> target;
     
     // First of all find targets that do not have the cyclone strike debuff applied and send the SEF to those targets
-    for ( int i = 0; i < targets.size(); i++ )
+    for ( player_t* target : targets )
     {
-      if (  !get_target_data( targets[i] ) -> debuff.cyclone_strikes -> up() &&
-        !get_target_data( targets[i] ) -> debuff.storm_earth_and_fire -> up() )
+      if (  !get_target_data( target ) -> debuff.cyclone_strikes -> up() &&
+        !get_target_data( target ) -> debuff.storm_earth_and_fire -> up() )
       {
         // remove the current target as having an SEF on it
         get_target_data( state -> target ) -> debuff.storm_earth_and_fire -> expire();
         // make the new target show that a SEF is on the target
-        get_target_data( targets[i] ) -> debuff.storm_earth_and_fire -> trigger();
-        return targets[i];
+        get_target_data( target ) -> debuff.storm_earth_and_fire -> trigger();
+        return target;
       }
     }
 
@@ -5872,13 +5874,13 @@ player_t* monk_t::next_cyclone_strikes_target( action_state_t* state )
     player_t* lowest_duration = targets[0];
 
     // They should never attack the player target
-    for ( int i = 1; i < targets.size(); i++ )
+    for ( player_t* target : targets )
     {
-      if ( !get_target_data( targets[i] ) -> debuff.storm_earth_and_fire -> up() )
+      if ( !get_target_data( target ) -> debuff.storm_earth_and_fire -> up() )
       {
-        if ( get_target_data( targets[i] ) -> debuff.cyclone_strikes -> remains() < 
+        if ( get_target_data( target ) -> debuff.cyclone_strikes -> remains() <
           get_target_data( lowest_duration ) -> debuff.cyclone_strikes -> remains() )
-          lowest_duration = targets[i];
+          lowest_duration = target;
       }
     }
     // remove the current target as having an SEF on it

@@ -2040,16 +2040,16 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
 namespace spells
 {
-int cancel_dot( dot_t& dot )
-{
-  if ( dot.is_ticking() )
-  {
-    int lostTicks = dot.ticks_left();
-    dot.cancel();
-    return lostTicks;
-  }
-  return 0;
-}
+//int cancel_dot( dot_t& dot )
+//{
+//  if ( dot.is_ticking() )
+//  {
+//    int lostTicks = dot.ticks_left();
+//    dot.cancel();
+//    return lostTicks;
+//  }
+//  return 0;
+//}
 
 // ==========================================================================
 // Priest Abilities

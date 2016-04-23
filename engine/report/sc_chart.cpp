@@ -14,8 +14,6 @@ using namespace js;
 namespace
 {  // anonymous namespace ==========================================
 
-const std::string amp = "&amp;";
-
 struct compare_downtime
 {
   bool operator()( const player_t* l, const player_t* r ) const
