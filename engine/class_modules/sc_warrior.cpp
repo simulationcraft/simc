@@ -2157,34 +2157,24 @@ struct raging_blow_attack_t: public warrior_attack_t
 
 struct raging_blow_t: public warrior_attack_t
 {
+  raging_blow_attack_t* mh_attack;
   raging_blow_attack_t* oh_attack;
   double rage_gain;
   raging_blow_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "raging_blow", p, p -> spec.raging_blow -> effectN( 3 ).trigger() ),
+    warrior_attack_t( "raging_blow", p, p -> spec.raging_blow ),
+    mh_attack( nullptr ),
     oh_attack( nullptr ),
-    rage_gain( p -> spec.raging_blow -> effectN( 2 ).resource(RESOURCE_RAGE ) )
+    rage_gain( p -> spec.raging_blow -> effectN( 2 ).resource( RESOURCE_RAGE ) )
   {
     parse_options( options_str );
 
-    oh_attack = new raging_blow_attack_t( p, "raging_blow_offhand", p -> spec.raging_blow -> effectN( 4 ).trigger() );
+    oh_attack = new raging_blow_attack_t( p, "raging_blow_oh", p -> spec.raging_blow -> effectN( 4 ).trigger() );
     oh_attack -> weapon = &( p -> off_hand_weapon );
     add_child( oh_attack );
+    mh_attack = new raging_blow_attack_t( p, "raging_blow_mh", p -> spec.raging_blow -> effectN( 3 ).trigger() );
+    mh_attack -> weapon = &( p -> main_hand_weapon );
+    add_child( mh_attack );
     cooldown -> duration += p -> talents.inner_rage -> effectN( 1 ).time_value();
-    weapon_multiplier *= 1.0 + p -> talents.inner_rage -> effectN( 3 ).percent();
-    weapon_multiplier *= 1.0 + p -> artifact.wrath_and_fury.percent();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    warrior_attack_t::impact( s );
-    if ( s -> result == RESULT_CRIT )
-    { // Can proc off MH/OH individually from each meat cleaver hit.
-      if ( rng().roll( p() -> sets.set( WARRIOR_FURY, T17, B2 ) -> proc_chance() ) )
-      {
-        enrage();
-        p() -> proc.t17_2pc_fury -> occur();
-      }
-    }
   }
 
   void execute() override
@@ -2193,6 +2183,7 @@ struct raging_blow_t: public warrior_attack_t
     warrior_attack_t::execute();
     if ( result_is_hit( execute_state -> result ) )
     {
+      mh_attack -> execute();
       oh_attack -> execute();
       rage_resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.raging_blow );
     }
@@ -2200,7 +2191,7 @@ struct raging_blow_t: public warrior_attack_t
 
   bool ready() override
   {
-        // Needs weapons in both hands
+    // Needs weapons in both hands
     if ( p() -> main_hand_weapon.type == WEAPON_NONE ||
          p() -> off_hand_weapon.type == WEAPON_NONE )
     {
