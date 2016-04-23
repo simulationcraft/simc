@@ -1099,6 +1099,19 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
     channeled     = true;
     hasted_ticks  = false;
     tick_may_crit = true;
+
+    dot_duration = timespan_t::from_seconds(10.0);
+
+  }
+
+  timespan_t composite_dot_duration(const action_state_t*) const override
+  {
+    return timespan_t::from_seconds(10.0);
+  }
+
+  timespan_t tick_time( double h ) const
+  {
+    return timespan_t::from_seconds(1.0);
   }
 
   void_tendril_pet_t& p()
@@ -1108,20 +1121,6 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
   const void_tendril_pet_t& p() const
   {
     return static_cast<void_tendril_pet_t&>( *player );
-  }
-
-  double action_multiplier() const override
-  {
-    double am = priest_pet_spell_t::action_multiplier();
-
-    if ( p().o().talents.void_ray->ok() && p().o().buffs.void_ray->check() )
-    {
-      am *= 1.0 +
-            p().o().buffs.void_ray->check() *
-                p().o().buffs.void_ray->data().effectN( 1 ).percent();
-    }
-
-    return am;
   }
 };
 
@@ -2622,7 +2621,6 @@ struct mind_spike_detonation_t final : public priest_spell_t
     : priest_spell_t( "mind_spike_detonation", p,
                       p.find_spell( 217676 ) )  //.talents.mind_spike)
   {
-    may_crit    = false;
     background  = true;
     proc        = false;
     callbacks   = true;
@@ -5564,10 +5562,7 @@ namespace rppm
 struct call_to_the_void_t final : public real_ppm_t
 {
   call_to_the_void_t( priest_t& p )
-    : real_ppm_t(
-          p, p.artifact.call_to_the_void.data().real_ppm(),
-          // p.artifacts.xalatath_blade_of_the_black_empire->driver()->real_ppm(),
-          1.0, RPPM_HASTE )
+    : real_ppm_t( p, p.artifact.call_to_the_void.data().real_ppm(), 1.0, RPPM_HASTE )
   {
   }
 };
