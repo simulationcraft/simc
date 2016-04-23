@@ -1525,6 +1525,7 @@ class SpellDataGenerator(DataGenerator):
 		  ( 217070, 1 ), # Rage of the Illidari explosion
 		  ( 217060, 1 ), # Rage of the Illidari buff
 		  ( 202446, 1 ), # Anguish damage spell
+		  ( 222703, 1 ), # Fel Barrage proc rate
 		),
     ]
 
