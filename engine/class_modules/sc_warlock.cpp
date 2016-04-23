@@ -10,6 +10,9 @@
 // TODO:
 // Check all false-positive flags
 // Check resource generation execute/impact and hit requirement
+// 
+// Soul Conduit implementation
+// Delete supremacy, rename servitude to supremacy
 //
 // Affliction -
 // Haunt reset
@@ -18,8 +21,8 @@
 // Destruction - 
 // Roaring Blaze
 // Use spelldata for wreak havoc
+// Use spelldata for conflagrate
 // Channel Doomfire
-// Mastery
 // Talents
 //
 // Demo - Everything
@@ -167,7 +170,7 @@ public:
   {
     const spell_data_t* potent_afflictions;
     const spell_data_t* master_demonologist;
-    const spell_data_t* emberstorm;
+    const spell_data_t* chaotic_energies;
   } mastery_spells;
 
   //Procs and RNG
@@ -210,7 +213,6 @@ public:
   {
     buff_t* backdraft;
     buff_t* demonic_synergy;
-    buff_t* fire_and_brimstone;
     buff_t* demonic_power;
     buff_t* havoc;
     buff_t* mana_tap;
@@ -239,7 +241,6 @@ public:
   struct procs_t
   {
     proc_t* wild_imp;
-    proc_t* havoc_waste;
     proc_t* fragment_wild_imp;
     proc_t* t18_4pc_destruction;
     proc_t* t18_illidari_satyr;
@@ -573,6 +574,23 @@ struct firebolt_t: public warlock_pet_spell_t
   {
     if ( p -> owner -> bugs )
       min_gcd = timespan_t::from_seconds( 1.5 );
+  }
+
+  virtual double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = warlock_pet_spell_t::composite_target_multiplier( target );
+
+    warlock_td_t* td = this -> td( target );
+
+    double immolate = 0;
+    double multiplier = data().effectN( 2 ).percent();
+
+    if( td -> dots_immolate -> is_ticking() )
+      immolate += multiplier;
+
+    m *= 1.0 + immolate;
+
+    return m;
   }
 };
 
@@ -1289,7 +1307,6 @@ private:
     weapon_multiplier = 0.0;
     gain = player -> get_gain( name_str );
     cost_event = nullptr;
-    havoc_consume = 0;
 
     havoc_proc = nullptr;
 
@@ -1311,8 +1328,6 @@ private:
 public:
   gain_t* gain;
   mutable std::vector< player_t* > havoc_targets;
-
-  int havoc_consume;
 
   proc_t* havoc_proc;
 
@@ -1369,10 +1384,7 @@ public:
 
   bool use_havoc() const
   {
-    if ( ! p() -> havoc_target || target == p() -> havoc_target || ! havoc_consume )
-      return false;
-
-    if ( p() -> buffs.havoc -> check() < havoc_consume )
+    if ( ! p() -> havoc_target || target == p() -> havoc_target )
       return false;
 
     return true;
@@ -1381,11 +1393,6 @@ public:
   virtual void init() override
   {
     spell_t::init();
-
-    if ( havoc_consume > 0 )
-    {
-      havoc_proc = player -> get_proc( "Havoc: " + ( data().id() ? std::string( data().name_cstr() ) : name_str ) );
-    }
   }
 
   virtual void reset() override
@@ -1472,7 +1479,6 @@ public:
     {
       havoc_proc -> occur();
 
-      p() -> buffs.havoc -> decrement( havoc_consume );
       if ( p() -> buffs.havoc -> check() == 0 )
         p() -> havoc_target = nullptr;
     }
@@ -1522,6 +1528,12 @@ public:
   virtual double action_multiplier() const override
   {
     double pm = spell_t::action_multiplier();
+
+    if( p() -> mastery_spells.chaotic_energies -> ok() )
+    {
+      double chaotic_energies_rng = rng().range( 0, p() -> cache.mastery_value() );
+      pm *= 1.0 + chaotic_energies_rng;
+    }
 
     return pm;
   }
@@ -1947,12 +1959,9 @@ struct shadow_bolt_t: public warlock_spell_t
 
 struct immolate_t: public warlock_spell_t
 {
-  immolate_t* fnb;
-
   immolate_t( warlock_t* p ):
     warlock_spell_t( p, "Immolate" )
   {
-    havoc_consume = 1;
     base_tick_time = p -> find_spell( 157736 ) -> effectN( 1 ).period();
     dot_duration = p -> find_spell( 157736 ) -> duration();
     spell_power_mod.tick = p -> spec.immolate -> effectN( 1 ).sp_coeff();
@@ -1971,19 +1980,19 @@ struct immolate_t: public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-      if ( d -> state -> result == RESULT_CRIT )
+      if ( d -> state -> result == RESULT_CRIT && rng().roll( 0.3 ) )
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.immolate );
+      else if ( d -> state -> result == RESULT_HIT && rng().roll( 0.15 ) )
         p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.immolate );
   }
 };
 
 struct conflagrate_t: public warlock_spell_t
 {
-  conflagrate_t* fnb;
 
   conflagrate_t( warlock_t* p ):
     warlock_spell_t( p, "Conflagrate" )
   {
-    havoc_consume = 1;
   }
 
   void init() override
@@ -2021,38 +2030,11 @@ struct conflagrate_t: public warlock_spell_t
 
 struct incinerate_t: public warlock_spell_t
 {
-  incinerate_t* fnb;
-  // Normal incinerate
   incinerate_t( warlock_t* p ):
-    warlock_spell_t( p, "Incinerate" ),
-    fnb( new incinerate_t( "incinerate", p, p -> find_spell( 114654 ) ) )
+    warlock_spell_t( p, "Incinerate" )
   {
-    havoc_consume = 1;
-  }
-
-  // Fire and Brimstone incinerate
-  incinerate_t( const std::string& n, warlock_t* p, const spell_data_t* spell ):
-    warlock_spell_t( n, p, spell ),
-    fnb( nullptr )
-  {
-    aoe = -1;
-    stats = p -> get_stats( "incinerate_fnb", this );
-    gain = p -> get_gain( "incinerate_fnb" );
-  }
-
-  void init() override
-  {
-    warlock_spell_t::init();
-
-    base_multiplier *= 1.0 + p() -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 2 ).percent();
-  }
-
-  void schedule_execute( action_state_t* state ) override
-  {
-    if ( fnb && p() -> buffs.fire_and_brimstone -> up() )
-      fnb -> schedule_execute( state );
-    else
-      warlock_spell_t::schedule_execute( state );
+    if ( p -> talents.fire_and_brimstone -> ok() )
+      aoe = -1;
   }
 
   virtual timespan_t execute_time() const override
@@ -2081,13 +2063,6 @@ struct incinerate_t: public warlock_spell_t
       td( s -> target ) -> debuffs_flamelicked -> trigger( 1 );
     }
   }
-
-  virtual bool ready() override
-  {
-    if ( fnb && p() -> buffs.fire_and_brimstone -> check() )
-      return fnb -> ready();
-    return warlock_spell_t::ready();
-  }
 };
 
 struct chaos_bolt_t: public warlock_spell_t
@@ -2096,12 +2071,21 @@ struct chaos_bolt_t: public warlock_spell_t
   chaos_bolt_t( warlock_t* p ):
     warlock_spell_t( p, "Chaos Bolt" )
   {
-    havoc_consume = 3;
 
     base_multiplier *= 1.0 + ( p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 2 ).percent() );
     base_execute_time += p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 1 ).time_value();
+    if ( p -> talents.reverse_entropy -> ok() )
+      base_execute_time += p -> talents.reverse_entropy -> effectN( 2 ).time_value();
     
     refund = p -> resources.max[RESOURCE_MANA] * data().effectN( 1 ).percent();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    if ( result_is_hit( s -> result ) )
+      td( s -> target ) -> debuffs_eradication -> trigger();
+      
+    warlock_spell_t::impact( s );
   }
 
   virtual timespan_t execute_time() const override
@@ -2302,17 +2286,6 @@ struct rain_of_fire_t: public warlock_spell_t
   { return tick_time( state -> haste ) * ( data().duration() / base_tick_time ); }
 
   // TODO: Bring Back dot duration haste scaling ?
-
-  virtual double composite_target_ta_multiplier( player_t* t ) const override
-  {
-    double m = warlock_spell_t::composite_target_ta_multiplier( t );
-
-    if ( td( t ) -> dots_immolate -> is_ticking() )
-      m *= 1.0 + data().effectN( 1 ).percent();
-
-    return m;
-
-  }
 };
 
 struct hellfire_tick_t: public warlock_spell_t
@@ -2672,15 +2645,6 @@ struct cataclysm_t : public warlock_spell_t
   }
 };
 
-struct fire_and_brimstone_t: public warlock_spell_t
-{
-  fire_and_brimstone_t( warlock_t* p ):
-    warlock_spell_t( "fire_and_brimstone", p, p -> talents.fire_and_brimstone )
-  {
-    harmful = false;
-  }
-};
-
 struct shadowburn_t: public warlock_spell_t
 {
   struct resource_event_t: public player_event_t
@@ -2700,7 +2664,7 @@ struct shadowburn_t: public warlock_spell_t
     {
       if ( target -> is_sleeping() )
       {
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, 2, shard_gain ); //TODO look up ember amount in shadowburn spell
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 2, shard_gain );
       }
     }
   };
@@ -2711,7 +2675,6 @@ struct shadowburn_t: public warlock_spell_t
     warlock_spell_t( "shadowburn", p, p -> talents.shadowburn ), resource_event( nullptr )
   {
     min_gcd = timespan_t::from_millis( 500 );
-    havoc_consume = 1;
     delay = data().effectN( 1 ).trigger() -> duration();
   }
 
@@ -2720,16 +2683,6 @@ struct shadowburn_t: public warlock_spell_t
     warlock_spell_t::impact( s );
 
     resource_event = new ( *sim ) resource_event_t( p(), this, s -> target );
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double m = warlock_spell_t::action_multiplier();
-
-    if ( p() -> mastery_spells.emberstorm -> ok() )
-      m *= 1.0 + p() -> cache.mastery_value();
-
-    return m;
   }
 
   virtual bool ready() override
@@ -2922,7 +2875,6 @@ struct mortal_coil_t: public warlock_spell_t
   mortal_coil_t( warlock_t* p ):
     warlock_spell_t( "mortal_coil", p, p -> talents.mortal_coil ), heal( nullptr )
   {
-    havoc_consume = 1;
     base_dd_min = base_dd_max = 0;
     heal = new mortal_coil_heal_t( p, data() );
   }
@@ -3024,7 +2976,6 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
   regen_caches[CACHE_HASTE] = true;
   regen_caches[CACHE_SPELL_HASTE] = true;
 }
-
 
 double warlock_t::composite_player_multiplier( school_e school ) const
 {
@@ -3163,7 +3114,6 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "cataclysm"             ) a = new             cataclysm_t( this );
   else if ( action_name == "rain_of_fire"          ) a = new          rain_of_fire_t( this );
   else if ( action_name == "hellfire"              ) a = new              hellfire_t( this );
-  else if ( action_name == "fire_and_brimstone"    ) a = new    fire_and_brimstone_t( this );
   else if ( action_name == "summon_infernal"       ) a = new       summon_infernal_t( this );
   else if ( action_name == "summon_doomguard"      ) a = new      summon_doomguard_t( this );
   else if ( action_name == "call_dreadstalkers"    ) a = new    call_dreadstalkers_t( this );
@@ -3272,7 +3222,7 @@ void warlock_t::init_spells()
   spec.doom                   = find_spell( 603 );
 
   // Mastery
-  mastery_spells.emberstorm          = find_mastery_spell( WARLOCK_DESTRUCTION );
+  mastery_spells.chaotic_energies    = find_mastery_spell( WARLOCK_DESTRUCTION );
   mastery_spells.potent_afflictions  = find_mastery_spell( WARLOCK_AFFLICTION );
   mastery_spells.master_demonologist = find_mastery_spell( WARLOCK_DEMONOLOGY );
 
@@ -3372,16 +3322,6 @@ struct havoc_buff_t : public buff_t
       buff_duration = timespan_t::from_seconds( 20 );
     }
   }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-
-    if ( remaining_duration == timespan_t::zero() )
-    {
-      debug_cast<warlock_t*>( player ) -> procs.havoc_waste -> occur();
-    }
-  }
 };
 
 void warlock_t::create_buffs()
@@ -3435,7 +3375,6 @@ void warlock_t::init_procs()
   player_t::init_procs();
 
   procs.wild_imp = get_proc( "wild_imp" );
-  procs.havoc_waste = get_proc( "Havoc: Buff expiration" );
   procs.fragment_wild_imp = get_proc( "fragment_wild_imp" );
   procs.t18_4pc_destruction = get_proc( "t18_4pc_destruction" );
   procs.t18_prince_malchezaar = get_proc( "t18_prince_malchezaar" );
