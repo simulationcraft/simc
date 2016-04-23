@@ -17,7 +17,6 @@ namespace
 
    General ------------------------------------------------------------------
    Sort out Havoc vs. Vengeance mechanics in various places.
-   Leather Specialization (178976)
 
    Havoc --------------------------------------------------------------------
    Demonic Appetite travel time
@@ -158,6 +157,7 @@ public:
   {
     const spell_data_t* demon_hunter;
     const spell_data_t* critical_strikes;
+    const spell_data_t* leather_specialization;
     const spell_data_t* metamorphosis_buff;
 
     const spell_data_t* havoc;
@@ -2458,14 +2458,11 @@ stat_e demon_hunter_t::convert_hybrid_stat( stat_e s ) const
 
 double demon_hunter_t::matching_gear_multiplier( attribute_e attr ) const
 {
-  // TODO: Find in spell data... somewhere.
-  if ( stat_from_attr( attr ) == STAT_AGILITY &&
-       specialization() == DEMON_HUNTER_HAVOC )
-    return 0.05;
-
-  if ( stat_from_attr( attr ) == STAT_STAMINA &&
-       specialization() == DEMON_HUNTER_VENGEANCE )  // TOCHECK
-    return 0.05;
+  if ( spec.leather_specialization -> ok()
+    && stat_from_attr( attr ) == STAT_AGILITY )
+  {
+    return spec.leather_specialization -> effectN( 1 ).percent();
+  }
 
   return 0.0;
 }
@@ -2696,8 +2693,10 @@ void demon_hunter_t::init_spells()
 
   // General ================================================================
 
-  spec.demon_hunter     = find_class_spell( "Demon Hunter" );
-  spec.critical_strikes = find_spell( 221351 );  // not a class spell
+  spec.demon_hunter           = find_class_spell( "Demon Hunter" );
+  spec.critical_strikes       = find_spell( 221351 );  // not a class spell
+  spec.leather_specialization = find_spell( 178976 );
+  spec.metamorphosis_buff     = find_spell( 162264 );
 
   spec.annihilation       = find_spell( 201427 );
   spec.blade_dance        = find_class_spell( "Blade Dance" );
@@ -2707,7 +2706,6 @@ void demon_hunter_t::init_spells()
   spec.consume_magic      = find_class_spell( "Consume Magic" );
   spec.death_sweep        = find_spell( 210152 );
   spec.havoc              = find_specialization_spell( "Havoc Demon Hunter" );
-  spec.metamorphosis_buff = find_spell( 162264 );
 
   spec.vengeance = find_specialization_spell( "Vengeance Demon Hunter" );
 
