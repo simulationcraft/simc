@@ -482,9 +482,9 @@ public:
         p -> spec.metamorphosis_buff -> effectN( 7 ) ) ),
       hasted_gcd( false ),
       hasted_cd( false ),
-      demonic_presence( data().affected_by(
+      demonic_presence( this -> data().affected_by(
         p -> mastery_spell.demonic_presence -> effectN( 1 ) ) ),
-      chaos_blades( data().affected_by( p -> talent.chaos_blades -> effectN( 2 ) ) )
+      chaos_blades( this -> data().affected_by( p -> talent.chaos_blades -> effectN( 2 ) ) )
   {
     ab::may_crit      = true;
     ab::tick_may_crit = true;
@@ -585,7 +585,7 @@ public:
   {
     ab::impact( s );
 
-    if ( result_is_hit( s -> result ) )
+    if ( this -> result_is_hit( s -> result ) )
     {
       // benefit tracking
       p() -> get_target_data( s -> target ) -> debuffs.nemesis -> up();
@@ -596,7 +596,7 @@ public:
   {
     ab::execute();
 
-    if ( ! result_is_hit( ab::execute_state -> result ) && ab::resource_consumed > 0 )
+    if ( ! this -> result_is_hit( ab::execute_state -> result ) && ab::resource_consumed > 0 )
     {
       trigger_refund();
     }
