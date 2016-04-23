@@ -2621,6 +2621,7 @@ struct mind_spike_detonation_t final : public priest_spell_t
     : priest_spell_t( "mind_spike_detonation", p,
                       p.find_spell( 217676 ) )  //.talents.mind_spike)
   {
+    may_crit    = false;
     background  = true;
     proc        = false;
     callbacks   = true;
