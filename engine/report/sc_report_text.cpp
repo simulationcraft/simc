@@ -929,13 +929,6 @@ void print_text_scale_factors( FILE* file, player_t* p,
 
   util::fprintf( file, "\n" );
 
-  if ( gear_weights::LOOTRANK_ENABLED )
-  {
-    std::array<std::string, SCALE_METRIC_MAX> lootrank =
-        ri.gear_weights_lootrank_link;
-    simplify_html( lootrank[ sm ] );
-  }
-
   std::array<std::string, SCALE_METRIC_MAX> wowhead_std =
       ri.gear_weights_wowhead_std_link;
   simplify_html( wowhead_std[ sm ] );

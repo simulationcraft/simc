@@ -1020,7 +1020,6 @@ void report::generate_player_charts( player_t& p,
   if ( !( ( p.sim->scaling->num_scaling_stats <= 0 ) || p.quiet || p.is_pet() ||
           p.is_enemy() || p.is_add() || p.type == HEALING_ENEMY ) )
   {
-    ri.gear_weights_lootrank_link    = gear_weights::lootrank( p );
     ri.gear_weights_wowhead_std_link = gear_weights::wowhead( p );
     ri.gear_weights_pawn_string      = gear_weights::pawn( p );
     ri.gear_weights_askmrrobot_link  = gear_weights::askmrrobot( p );

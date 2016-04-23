@@ -1519,39 +1519,6 @@ const char* util::stat_type_gem( stat_e stat )
   }
 }
 
-// stat_type_askmrrobot =====================================================
-
-const char* util::stat_type_askmrrobot( stat_e stat )
-{
-  switch ( stat )
-  {
-    case STAT_STRENGTH: return "Strength";
-    case STAT_AGILITY: return "Agility";
-    case STAT_STAMINA: return "Stamina";
-    case STAT_INTELLECT: return "Intellect";
-    case STAT_SPIRIT:   return "Spirit";
-
-    case STAT_ATTACK_POWER: return "AttackPower";
-    case STAT_SPELL_POWER: return "SpellPower";
-    case STAT_CRIT_RATING: return "CriticalStrike";
-    case STAT_HASTE_RATING: return "Haste";
-    case STAT_ARMOR: return "Armor";
-    case STAT_RESILIENCE_RATING: return "PvpResilience";
-    case STAT_MASTERY_RATING: return "Mastery";
-    case STAT_VERSATILITY_RATING: return "Versatility";
-    case STAT_BONUS_ARMOR: return "BonusArmor";
-    case STAT_PVP_POWER: return "PvpPower";
-    case STAT_WEAPON_DPS: return "MainHandDps";
-    case STAT_WEAPON_OFFHAND_DPS: return "OffHandDps";
-    case STAT_AVOIDANCE_RATING: return "Avoidance";
-    case STAT_LEECH_RATING: return "Leech";
-    case STAT_SPEED_RATING: return "MovementSpeed";
-      
-    default: return "unknown";
-
-  }
-}
-
 // parse_stat_type ==========================================================
 
 stat_e util::parse_stat_type( const std::string& name )

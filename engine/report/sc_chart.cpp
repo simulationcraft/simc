@@ -376,7 +376,9 @@ double get_data_value( const player_collected_data_t& container,
       {
         return 60 * foreground_actions / fight_length;
       }
+      return 0;
     }
+    break;
     case METRIC_VARIANCE:
     {
       if ( val != VALUE_MEAN )

@@ -64,7 +64,6 @@ const char* stat_type_string          ( stat_e type );
 const char* stat_type_abbrev          ( stat_e type );
 const char* stat_type_wowhead         ( stat_e type );
 const char* stat_type_gem             ( stat_e type );
-const char* stat_type_askmrrobot      ( stat_e type );
 const char* weapon_type_string        ( weapon_e type );
 const char* weapon_class_string       ( int class_ );
 const char* weapon_subclass_string    ( int subclass );

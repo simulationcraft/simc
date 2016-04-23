@@ -3039,7 +3039,7 @@ struct player_processed_report_information_t
 {
   bool generated = false;
   bool buff_lists_generated = false;
-  std::array<std::string, SCALE_METRIC_MAX> gear_weights_lootrank_link, gear_weights_wowhead_std_link, gear_weights_pawn_string, gear_weights_askmrrobot_link;
+  std::array<std::string, SCALE_METRIC_MAX> gear_weights_wowhead_std_link, gear_weights_pawn_string, gear_weights_askmrrobot_link;
   std::string save_str;
   std::string save_gear_str;
   std::string save_talents_str;

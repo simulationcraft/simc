@@ -829,12 +829,6 @@ void print_html_scale_factors( report::sc_html_stream& os, const sim_t& sim )
     os.format(
         "<td class=\"small\"><a href=\"%s\" class=\"ext\"> wowhead </a></td>\n",
         p->report_information.gear_weights_wowhead_std_link[ sm ].c_str() );
-    if ( gear_weights::LOOTRANK_ENABLED )
-    {
-      os.format(
-          "<td class=\"small\"><a href=\"%s\"> lootrank</a></td>\n",
-          p->report_information.gear_weights_lootrank_link[ sm ].c_str() );
-    }
     os.format( "</tr>\n" );
   }
   os << "</table>\n";

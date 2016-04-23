@@ -1608,12 +1608,6 @@ void print_html_player_scale_factor_table(
   if ( !ri.gear_weights_wowhead_std_link[ sm ].empty() )
     os.format( "<li><a href=\"%s\" class=\"ext\">wowhead</a></li>\n",
                ri.gear_weights_wowhead_std_link[ sm ].c_str() );
-  if ( gear_weights::LOOTRANK_ENABLED )
-  {
-    if ( !ri.gear_weights_lootrank_link[ sm ].empty() )
-      os.format( "<li><a href=\"%s\" class=\"ext\">lootrank</a></li>\n",
-                 ri.gear_weights_lootrank_link[ sm ].c_str() );
-  }
   os << "</ul>\n";
   os << "</td>\n";
   os << "</tr>\n";

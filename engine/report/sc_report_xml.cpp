@@ -934,16 +934,6 @@ void print_xml_player_scale_factor( xml_writer_t& writer, sim_t*, player_t* p,
     writer.end_tag( "link" );
   }
 
-  if ( !ri.gear_weights_lootrank_link[ sm ].empty() )
-  {
-    writer.begin_tag( "link" );
-    writer.print_attribute( "name", "lootrank" );
-    writer.print_attribute( "type", "ranking" );
-    writer.print_attribute( "href",
-                            ri.gear_weights_lootrank_link[ sm ].c_str() );
-    writer.end_tag( "link" );
-  }
-
   if ( !ri.gear_weights_askmrrobot_link[ sm ].empty() )
   {
     writer.begin_tag( "link" );
