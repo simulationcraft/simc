@@ -6864,7 +6864,7 @@ void monk_t::apl_combat_windwalker()
   aoe_rjw -> add_action( this, "Blackout Kick", "if=buff.combo_breaker_bok.react|buff.serenity.up" );
   aoe_rjw -> add_action( this, "Tiger Palm", "if=buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2" );
   aoe_rjw -> add_action( this, "Blackout Kick", "if=chi.max-chi<2&cooldown.fists_of_fury.remains>3" );
-  aoe_rjw -> add_talent( this, "Chi Torpedo", "if=buff.tigereye_brew_use.up|buff.spirit_eruption.up" );
+  aoe_rjw -> add_talent( this, "Chi Torpedo", "if=buff.tigereye_brew_use.up" );
   aoe_rjw -> add_talent( this, "Chi Torpedo", "if=energy.time_to_max>2&(((charges=2|(charges=1&recharge_time<=4))&!talent.celerity.enabled)|((charges=3|(charges=2&recharge_time<=4))&talent.celerity.enabled))" );
   aoe_rjw -> add_action( this, "Expel Harm", "if=chi.max-chi>=2&health.percent<95" );
   aoe_rjw -> add_action( this, "Jab", "if=chi.max-chi>=2" );
