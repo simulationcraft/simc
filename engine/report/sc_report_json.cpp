@@ -10,16 +10,21 @@
 
 namespace
 {
-js::sc_js_t to_json( const timespan_t& t )
+double to_json( const timespan_t& t )
 {
-  js::sc_js_t node;
-  node.set( "seconds", t.total_seconds() );
-  std::string formatted_time;
-  str::format( formatted_time, "%d:%02d.%03d</td>\n", (int)t.total_minutes(),
-               (int)t.total_seconds() % 60, (int)t.total_millis() % 1000 );
-  node.set( "formatted", formatted_time );
-  return node;
+  return t.total_seconds();
 }
+
+// js::sc_js_t to_json( const timespan_t& t )
+//{
+//  js::sc_js_t node;
+//  node.set( "seconds", t.total_seconds() );
+//  std::string formatted_time;
+//  str::format( formatted_time, "%d:%02d.%03d</td>\n", (int)t.total_minutes(),
+//               (int)t.total_seconds() % 60, (int)t.total_millis() % 1000 );
+//  node.set( "formatted", formatted_time );
+//  return node;
+//}
 
 js::sc_js_t to_json( const simple_sample_data_t& sd )
 {
@@ -48,12 +53,15 @@ js::sc_js_t to_json( const ::extended_sample_data_t& sd )
   node.set( "sum", sd.sum() );
   node.set( "count", sd.count() );
   node.set( "mean", sd.mean() );
-  node.set( "variance", sd.variance );
-  node.set( "std_dev", sd.std_dev );
-  node.set( "mean_variance", sd.mean_variance );
-  node.set( "mean_std_dev", sd.mean_std_dev );
   node.set( "min", sd.min() );
   node.set( "max", sd.max() );
+  if ( !sd.simple )
+  {
+    node.set( "variance", sd.variance );
+    node.set( "std_dev", sd.std_dev );
+    node.set( "mean_variance", sd.mean_variance );
+    node.set( "mean_std_dev", sd.mean_std_dev );
+  }
   // node.set( "data", sd.data() );
   // node.set( "distribution", sd.distribution );
   return node;
@@ -74,15 +82,19 @@ js::sc_js_t to_json( const gain_t& g )
 {
   js::sc_js_t node;
   node.set( "name", g.name() );
+  js::sc_js_t data;
   for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
   {
-    js::sc_js_t node2;
-    node2.set( "resource", util::resource_type_string( r ) );
-    node2.set( "actual", g.actual[ r ] );
-    node2.set( "overflow", g.overflow[ r ] );
-    node2.set( "count", g.count[ r ] );
-    node.add( "data", node2 );
+    if ( g.count[ r ] > 0 )
+    {
+      js::sc_js_t node2;
+      node2.set( "actual", g.actual[ r ] );
+      node2.set( "overflow", g.overflow[ r ] );
+      node2.set( "count", g.count[ r ] );
+      data.set( util::resource_type_string( r ), node2 );
+    }
   }
+  node.set( "data", data );
   return node;
 }
 
@@ -183,7 +195,7 @@ js::sc_js_t to_json( const buff_t& b )
   node.set( "overridden", b.overridden );
   node.set( "can_cancel", b.can_cancel );
   node.set( "default_chance", b.default_chance );
-  node.set( "name", b.name() );
+  // TODO
   return node;
 }
 
@@ -289,17 +301,23 @@ js::sc_js_t to_json( const player_collected_data_t::buffed_stats_t& bs )
   js::sc_js_t node;
   for ( attribute_e a = ATTRIBUTE_NONE; a < ATTRIBUTE_MAX; ++a )
   {
-    js::sc_js_t anode;
-    anode.set( "attribute", util::attribute_type_string( a ) );
-    anode.set( "value", bs.attribute[ a ] );
-    node.add( "attributes", anode );
+    if ( bs.attribute[ a ] > 0.0 )
+    {
+      js::sc_js_t anode;
+      anode.set( "attribute", util::attribute_type_string( a ) );
+      anode.set( "value", bs.attribute[ a ] );
+      node.add( "attributes", anode );
+    }
   }
   for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
   {
-    js::sc_js_t rnode;
-    rnode.set( "resource", util::resource_type_string( r ) );
-    rnode.set( "value", bs.resource[ r ] );
-    node.add( "resource_gained", rnode );
+    if ( bs.resource[ r ] > 0.0 )
+    {
+      js::sc_js_t rnode;
+      rnode.set( "resource", util::resource_type_string( r ) );
+      rnode.set( "value", bs.resource[ r ] );
+      node.add( "resource_gained", rnode );
+    }
   }
   node.add( "spell_power", bs.spell_power );
   node.add( "spell_hit", bs.spell_hit );
@@ -352,20 +370,28 @@ js::sc_js_t to_json(
     bnode.set( "stacks", buff.second );
     node.add( "buffs", bnode );
   }
+
+  js::sc_js_t resource_snapshot;
   for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
   {
-    js::sc_js_t rnode;
-    rnode.set( "resource", util::resource_type_string( r ) );
-    rnode.set( "value", asd.resource_snapshot[ r ] );
-    node.add( "resource_snapshot", rnode );
+    if ( asd.resource_snapshot[ r ] >= 0.0 )
+    {
+      resource_snapshot.set( util::resource_type_string( r ),
+                             asd.resource_snapshot[ r ] );
+    }
   }
+  node.set( "resource_snapshot", resource_snapshot );
+
+  js::sc_js_t resource_max_snapshot;
   for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
   {
-    js::sc_js_t rnode;
-    rnode.set( "resource", util::resource_type_string( r ) );
-    rnode.set( "value", asd.resource_max_snapshot[ r ] );
-    node.add( "resource_max_snapshot", rnode );
+    if ( asd.resource_max_snapshot[ r ] >= 0.0 )
+    {
+      resource_max_snapshot.set( util::resource_type_string( r ),
+                                 asd.resource_max_snapshot[ r ] );
+    }
   }
+  node.set( "resource_max_snapshot", resource_max_snapshot );
 
   return node;
 }
@@ -408,21 +434,23 @@ js::sc_js_t to_json( const player_collected_data_t& cd )
   node.set( "max_spike_amount", to_json( cd.max_spike_amount ) );
 
   node.set( "target_metric", to_json( cd.target_metric ) );
+
+  js::sc_js_t resource_lost;
   for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
   {
-    js::sc_js_t rnode;
-    rnode.set( "resource", util::resource_type_string( r ) );
-    rnode.set( "data", to_json( cd.resource_lost[ r ] ) );
-    node.add( "resource_lost", rnode );
+    resource_lost.set( util::resource_type_string( r ),
+                       to_json( cd.resource_lost[ r ] ) );
   }
+  node.set( "resource_lost", resource_lost );
+
+  js::sc_js_t combat_end_resource;
   for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
   {
-    js::sc_js_t rnode;
-    rnode.set( "resource", util::resource_type_string( r ) );
-    rnode.set( "data", to_json( cd.resource_gained[ r ] ) );
-    node.add( "resource_gained", rnode );
-    node.add( "combat_end_resource", to_json( cd.combat_end_resource[ r ] ) );
+    combat_end_resource.set( util::resource_type_string( r ),
+                             to_json( cd.combat_end_resource[ r ] ) );
   }
+  node.set( "combat_end_resource", combat_end_resource );
+
   for ( const auto& rtl : cd.resource_timelines )
   {
     node.add( "resource_timelines", to_json( rtl ) );
@@ -471,7 +499,7 @@ js::sc_js_t to_json( const pet_t& p )
   node.set( "stamina_per_owner", p.stamina_per_owner );
   node.set( "stamina_per_owner", p.stamina_per_owner );
   node.set( "owner_coefficients", to_json( p.owner_coeff ) );
-  node.set( "player_t", to_json( static_cast<const player_t&>( p ) ) );
+  node.add( "", to_json( static_cast<const player_t&>( p ) ) );
   return node;
 }
 
@@ -568,12 +596,12 @@ js::sc_js_t to_json( const player_t& p )
   }
   for ( auto i = PROFESSION_NONE; i < PROFESSION_MAX; ++i )
   {
-    js::sc_js_t pnode;
     if ( p.profession[ i ] > 0 )
     {
+      js::sc_js_t pnode;
       pnode.set( util::profession_type_string( i ), p.profession[ i ] );
+      node.add( "professions", pnode );
     }
-    node.add( "professions", pnode );
   }
   node.set( "base_stats", to_json( p.base ) );
   node.set( "initial_stats", to_json( p.initial ) );

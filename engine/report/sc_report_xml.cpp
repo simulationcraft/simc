@@ -1567,6 +1567,7 @@ void print_xml( sim_t* sim )
     return;
   }
 
+  Timer t( "XML report" );
   writer.init_document( sim->xml_stylesheet_file_str );
   writer.begin_tag( "simulationcraft" );
 
