@@ -679,7 +679,7 @@ public:
     p() -> buff.enrage -> trigger();
     if ( p() -> ceannar_girdle )
     {
-      rage_resource_gain( RESOURCE_RAGE, p() -> ceannar_girdle -> driver() -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.ceannar_rage );
+      rage_resource_gain( RESOURCE_RAGE, p() -> ceannar_girdle -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(), p() -> gain.ceannar_rage );
     }
   }
 
