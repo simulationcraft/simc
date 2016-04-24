@@ -384,10 +384,24 @@ public:
     warrior_fixed_time = true;
     base.distance = 5.0;
 
-    fury_trinket = arms_trinket = prot_trinket = nullptr;
-    archavons_heavy_hand = groms_wartorn_pauldrons = bindings_of_kakushan = kargaths_sacrificed_hands = thundergods_vigor = 
-    ceannar_girdle = kazzalax_fujiedas_fury = the_walls_fell = destiny_driver = prydaz_xavarics_magnum_opus = verjas_protectors_of_the_berserker_king = 
-    najentuss_vertebrae = ayalas_stone_heart = aggramars_stride = manacles_of_mannoroth_the_flayer = nullptr;
+    fury_trinket = nullptr;
+    arms_trinket = nullptr;
+    prot_trinket = nullptr;
+    archavons_heavy_hand = nullptr;
+    groms_wartorn_pauldrons = nullptr;
+    bindings_of_kakushan = nullptr;
+    kargaths_sacrificed_hands = nullptr;
+    thundergods_vigor = nullptr;
+    ceannar_girdle = nullptr;
+    kazzalax_fujiedas_fury = nullptr;
+    the_walls_fell = nullptr;
+    destiny_driver = nullptr;
+    prydaz_xavarics_magnum_opus = nullptr;
+    verjas_protectors_of_the_berserker_king = nullptr;
+    najentuss_vertebrae = nullptr;
+    ayalas_stone_heart = nullptr;
+    aggramars_stride = nullptr;
+    manacles_of_mannoroth_the_flayer = nullptr;
     regen_type = REGEN_DISABLED;
   }
 
@@ -2073,8 +2087,11 @@ struct mortal_strike_t: public warrior_attack_t
     base_costs[RESOURCE_RAGE] += p -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
     cooldown -> charges += p -> talents.mortal_combo -> effectN( 1 ).base_value();
     base_multiplier *= 1.0 + p -> artifact.thoradins_might.percent();
-    base_costs[RESOURCE_RAGE] *= 1.0 + p -> manacles_of_mannoroth_the_flayer -> driver() -> effectN( 1 ).percent();
-    rage_gain += p -> manacles_of_mannoroth_the_flayer -> driver() -> effectN( 2 ).resource( RESOURCE_RAGE );
+    if ( p -> manacles_of_mannoroth_the_flayer )
+    {
+      base_costs[RESOURCE_RAGE] *= 1.0 + p -> manacles_of_mannoroth_the_flayer -> driver() -> effectN( 1 ).percent();
+      rage_gain += p -> manacles_of_mannoroth_the_flayer -> driver() -> effectN( 2 ).resource( RESOURCE_RAGE );
+    }
   }
 
   double composite_crit() const override
