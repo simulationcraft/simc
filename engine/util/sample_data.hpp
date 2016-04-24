@@ -273,7 +273,7 @@ private:
 protected:
   bool _found  = false;
   value_t _min = std::numeric_limits<value_t>::max();
-  value_t _max = std::numeric_limits<value_t>::min();
+  value_t _max = std::numeric_limits<value_t>::lowest();
   void set_min( double x )
   {
     _min   = x;
