@@ -5511,8 +5511,8 @@ void rogue_t::init_action_list()
                              "Proxy Honor Among Thieves action. Generates Combo Points at a mean rate of 2.2 seconds. Comment out to disable (and use the real Honor Among Thieves)." );
 
     if ( find_item( "maalus_the_blood_drinker") && find_item( "soul_capacitor" ) )
-      def -> add_action( "cancel_buff,name=spirit_shift,if=buff.maalus.remains<1&buff.maalus.up&buff.spirit_shift.remains-buff.maalus.remains<3", "Explode Spirit Shift at the end of Maalus if it has significant damage stored up." );
-    def -> add_talent( this, "Shadow Reflection", "if=buff.shadow_dance.up|(set_bonus.tier18_4pc=1&time<2)" );
+      def -> add_action( "cancel_buff,name=spirit_shift,if=buff.maalus.up&buff.maalus.remains<1&buff.spirit_shift.remains-buff.maalus.remains<3", "Explode Spirit Shift at the end of Maalus if it has significant damage stored up." );
+    def -> add_talent( this, "Shadow Reflection", "if=buff.shadow_dance.up|(time<2&set_bonus.tier18_2pc=1)" );
 
     for ( size_t i = 0; i < item_actions.size(); i++ )
       def -> add_action( item_actions[i] + ",if=buff.shadow_dance.up" );
@@ -5520,27 +5520,26 @@ void rogue_t::init_action_list()
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
       if ( racial_actions[i] == "arcane_torrent" )
-        def -> add_action( racial_actions[i] + ",if=energy<80&buff.shadow_dance.up" );
+        def -> add_action( racial_actions[i] + ",if=buff.shadow_dance.up&energy<80" );
       else
         def -> add_action( racial_actions[i] + ",if=buff.shadow_dance.up" );
     }
 
     def -> add_action( this, "Premeditation", "if=combo_points<4" );
     // First action in the Opener
-    def -> add_action( this, "Vanish","if=set_bonus.tier18_4pc=1&time<1" );
-    def -> add_action( this, "Hemorrhage","if=set_bonus.tier18_4pc=0&glyph.hemorrhaging_veins.enabled&time<1&!ticking&!dot.rupture.ticking&!dot.crimson_tempest.ticking&!dot.garrote.ticking" );
-    def -> add_action( this, "Garrote","if=set_bonus.tier18_4pc=0&time<1&!ticking&!dot.rupture.ticking&!dot.crimson_tempest.ticking&!dot.hemorrhage.ticking" );
+    def -> add_action( this, "Vanish","if=time<1&set_bonus.tier18_2pc=1" );
+    def -> add_action( this, "Hemorrhage","if=time<1&set_bonus.tier18_2pc=0&glyph.hemorrhaging_veins.enabled&!ticking&!dot.rupture.ticking&!dot.crimson_tempest.ticking&!dot.garrote.ticking" );
+    def -> add_action( this, "Garrote","if=time<1&set_bonus.tier18_2pc=0&!ticking&!dot.rupture.ticking&!dot.crimson_tempest.ticking&!dot.hemorrhage.ticking" );
 
     // Shadow Dancing and Vanishing and Marking for the Deathing
     def -> add_action( "wait,sec=buff.subterfuge.remains-0.1,if=buff.subterfuge.remains>0.5&buff.subterfuge.remains<1.6&time>6" );
 
-    def -> add_action( this, find_class_spell( "Shadow Dance" ), "pool_resource", "if=energy<energy.max-10&cooldown.shadow_dance.remains<3.5" );
-    def -> add_action( this, find_class_spell( "Shadow Dance" ), "pool_resource", "for_next=1,extra_amount=energy.max-10" );
+    def -> add_action( this, find_class_spell( "Shadow Dance" ), "pool_resource", "if=energy<energy.max-10&(energy.time_to_max+0.5>cooldown.shadow_dance.remains|cooldown.shadow_dance.up)" );
 
     if ( find_item( "maalus_the_blood_drinker" ) )
-      def -> add_action( this, "Shadow Dance", "if=energy>=energy.max-10&buff.stealth.down|((buff.bloodlust.up|buff.deathly_shadows.up)&(dot.hemorrhage.ticking|dot.garrote.ticking|dot.rupture.ticking))" );
+      def -> add_action( this, "Shadow Dance", "if=(energy>=energy.max-10&buff.stealth.down)|((buff.bloodlust.up|buff.deathly_shadows.up)&(dot.hemorrhage.ticking|dot.garrote.ticking|dot.rupture.ticking))" );
     else
-      def -> add_action( this, "Shadow Dance", "if=energy>=energy.max-10&buff.stealth.down&buff.vanish.down&debuff.find_weakness.down|(buff.bloodlust.up&(dot.hemorrhage.ticking|dot.garrote.ticking|dot.rupture.ticking))" );
+      def -> add_action( this, "Shadow Dance", "if=(energy>=energy.max-10&buff.stealth.down&buff.vanish.down&debuff.find_weakness.down)|(buff.bloodlust.up&(dot.hemorrhage.ticking|dot.garrote.ticking|dot.rupture.ticking))" );
 
     def -> add_action( this, find_class_spell( "Vanish" ), "pool_resource", "for_next=1,extra_amount=50" );
     def -> add_action( "shadowmeld,if=talent.shadow_focus.enabled&energy>=45&energy<=75&combo_points<4-talent.anticipation.enabled&buff.stealth.down&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down" );
@@ -5552,9 +5551,9 @@ void rogue_t::init_action_list()
     def -> add_action( "shadowmeld,if=talent.subterfuge.enabled&energy>=energy.max-5&combo_points<4-talent.anticipation.enabled&buff.stealth.down&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down" );
 
     if ( find_item( "maalus_the_blood_drinker" ) )
-      def -> add_action( this, "Vanish", "if=set_bonus.tier18_4pc=1&buff.shadow_reflection.up&combo_points<3");
+      def -> add_action( this, "Vanish", "if=set_bonus.tier18_2pc=1&buff.shadow_reflection.up&combo_points<3");
     def -> add_action( this, find_class_spell( "Vanish" ), "pool_resource", "for_next=1,extra_amount=energy.max-5" );
-    def -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&energy>=energy.max-5&combo_points<4-talent.anticipation.enabled&buff.shadow_dance.down&(!cooldown.shadow_dance.up|set_bonus.tier18_4pc=1)" );
+    def -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&energy>=energy.max-5&combo_points<4-talent.anticipation.enabled&buff.shadow_dance.down&(cooldown.shadow_dance.remains>2|(set_bonus.tier18_2pc=1&target.time_to_die<=23))" );
 
     def -> add_talent( this, "Marked for Death", "if=combo_points=0" );
 
@@ -5579,8 +5578,8 @@ void rogue_t::init_action_list()
     gen -> add_action( this, "Backstab", "if=debuff.find_weakness.up|buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up" );
     gen -> add_talent( this, "Shuriken Toss", "if=energy<65&energy.regen<16" );
     gen -> add_action( this, "Hemorrhage", "if=glyph.hemorrhaging_veins.enabled&((talent.anticipation.enabled&combo_points+anticipation_charges<=2)|combo_points<=2|target.time_to_die<=6)&!ticking&!dot.rupture.ticking&!dot.crimson_tempest.ticking&!dot.garrote.ticking" );
-    gen -> add_action( this, "Backstab", "if=energy.time_to_max<=gcd*2.5" );
-    gen -> add_action( this, "Hemorrhage", "if=energy.time_to_max<=gcd*2&position_front" );
+    gen -> add_action( this, "Backstab", "if=energy.time_to_max<=gcd*2.5&cooldown.shadow_dance.remains>1.5" );
+    gen -> add_action( this, "Hemorrhage", "if=energy.time_to_max<=gcd*2&position_front&cooldown.shadow_dance.remains>1.5" );
     gen -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool" );
 
     // Combo point finishers
@@ -5595,7 +5594,7 @@ void rogue_t::init_action_list()
 
     // Resource pooling
     action_priority_list_t* pool = get_action_priority_list( "pool", "Resource pooling" );
-    pool -> add_action( this, "Preparation", "if=!buff.vanish.up&!buff.shadow_dance.up&cooldown.vanish.remains>45" );
+    pool -> add_action( this, "Preparation", "if=!buff.vanish.up&!buff.shadow_dance.up&(time<20|cooldown.vanish.remains>45)" );
   }
 
   use_default_action_list = true;
