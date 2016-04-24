@@ -12,7 +12,6 @@
 // Check resource generation execute/impact and hit requirement
 // 
 // Soul Conduit implementation
-// Delete supremacy, rename servitude to supremacy
 //
 // Affliction -
 // Haunt reset
@@ -22,8 +21,9 @@
 // Roaring Blaze
 // Use spelldata for wreak havoc
 // Use spelldata for conflagrate
+// Make conflagrate scale with haste
 // Channel Doomfire
-// Talents
+// Rain of Fire
 //
 // Demo - Everything
 // 
@@ -154,10 +154,10 @@ public:
     const spell_data_t* wreak_havoc;
     const spell_data_t* channel_doomfire;
 
-    const spell_data_t* demonic_servitude;
-
     const spell_data_t* demonbolt; // Demonology only
     const spell_data_t* shadowfury;
+
+    const spell_data_t* soul_conduit;
   } talents;
 
   // Glyphs
@@ -235,6 +235,8 @@ public:
     gain_t* mana_tap;
 	  gain_t* power_trip;
     gain_t* shadow_bolt;
+    gain_t* soul_conduit;
+    gain_t* reverse_entropy;
   } gains;
 
   // Procs
@@ -378,7 +380,6 @@ namespace pets {
     action_t* special_action_two;
     melee_attack_t* melee_attack;
     stats_t* summon_stats;
-    const spell_data_t* supremacy;
     const spell_data_t* command;
 
     warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian = false );
@@ -830,7 +831,6 @@ pet_t( sim, owner, pet_name, pt, guardian ), special_action( nullptr ), special_
 {
   owner_coeff.ap_from_sp = 1.0;
   owner_coeff.sp_from_sp = 1.0;
-  supremacy = find_spell( 115578 );
   command = find_spell( 21563 );
 }
 
@@ -910,9 +910,6 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + command -> effectN( 1 ).percent();
 
   m *= 1.0 + o() -> buffs.tier18_2pc_demonology -> stack_value();
-
-  if ( o() -> talents.grimoire_of_supremacy -> ok() && pet_type != PET_WILD_IMP )
-    m *= 1.0 + supremacy -> effectN( 1 ).percent(); // The relevant effect is not attatched to the talent spell, weirdly enough
 
   if ( buffs.demonic_synergy -> up() )
     m *= 1.0 + buffs.demonic_synergy -> data().effectN( 1 ).percent();
@@ -1164,7 +1161,7 @@ struct infernal_pet_t: public warlock_pet_t
   {
     warlock_pet_t::init_base_stats();
     action_list_str = "immolation,if=!ticking";
-    if ( o() -> talents.demonic_servitude -> ok() )
+    if ( o() -> talents.grimoire_of_supremacy -> ok() )
       action_list_str += "/meteor_strike";
     resources.base[RESOURCE_ENERGY] = 100;
     melee_attack = new actions::warlock_pet_melee_t( this );
@@ -1441,6 +1438,13 @@ public:
   {
     spell_t::execute();
 
+    double soul_conduit_rng = p() -> talents.soul_conduit -> effectN( 1 ).percent();
+
+    if ( rng().roll( soul_conduit_rng ) && resource_current == RESOURCE_SOUL_SHARD )
+    {
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, resource_consumed, p() -> gains.soul_conduit );
+    }
+
     if ( result_is_hit( execute_state -> result ) && p() -> talents.grimoire_of_synergy -> ok() )
     {
       pets::warlock_pet_t* my_pet = static_cast<pets::warlock_pet_t*>( p() -> pets.active ); //get active pet
@@ -1456,7 +1460,7 @@ public:
       if ( procced )
       {
          p() -> active.demonic_power_proc -> target = execute_state -> target;
-         p()->active.demonic_power_proc -> execute();
+         p() -> active.demonic_power_proc -> execute();
       }
     }
 
@@ -1520,7 +1524,7 @@ public:
       m *= 1.0 + p() -> talents.contagion -> effectN( 1 ).percent();
 
     if ( p() -> talents.eradication -> ok() && td -> debuffs_eradication -> check() )
-      m *= 1.0 + p() -> talents.eradication -> effectN( 1 ).percent();
+      m *= 1.0 + p() -> find_spell( 196414 ) -> effectN( 1 ).percent();
 
     return spell_t::composite_target_multiplier( t ) * m;
   }
@@ -1621,23 +1625,23 @@ struct agony_t: public warlock_spell_t
 
   virtual void tick( dot_t* d ) override
   {
-    if( p() -> talents.writhe_in_agony -> ok() && td( d -> state -> target ) -> agony_stack < ( 20 ) )
+    if ( p() -> talents.writhe_in_agony -> ok() && td( d -> state -> target ) -> agony_stack < ( 20 ) )
       td( d -> state -> target ) -> agony_stack++;
-    else if( td( d -> state -> target ) -> agony_stack < ( 10 ) )
+    else if ( td( d -> state -> target ) -> agony_stack < ( 10 ) )
       td( d -> state -> target ) -> agony_stack++;
 
     td( d -> target ) -> debuffs_agony -> trigger();
 
     double nightfall_chance = 0.025 * ( 1 + p() -> agony_ticks_since_last_proc );
 
-    if( rng().roll( nightfall_chance ) ) // Change to nightfall_chance once data exists
+    if ( rng().roll( nightfall_chance ) ) // Change to nightfall_chance once data exists
     {
       p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
       p() -> agony_ticks_since_last_proc = 0;
 
       // If going from 0 to 1 shard was a surprise, the player would have to react to it
-      if( p()->resources.current[RESOURCE_SOUL_SHARD] == 1 )
-        p()->shard_react = p() -> sim -> current_time() + p() -> total_reaction_time();
+      if( p() -> resources.current[RESOURCE_SOUL_SHARD] == 1 )
+        p() -> shard_react = p() -> sim -> current_time() + p() -> total_reaction_time();
       else if( p() -> resources.current[RESOURCE_SOUL_SHARD] >= 1 )
         p() -> shard_react = p() -> sim -> current_time();
       else
@@ -2013,7 +2017,7 @@ struct conflagrate_t: public warlock_spell_t
   {
     warlock_spell_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) && p() -> talents.backdraft -> ok() )
+    if ( p() -> talents.backdraft -> ok() )
       p() -> buffs.backdraft -> trigger();
   }
 
@@ -2071,13 +2075,8 @@ struct chaos_bolt_t: public warlock_spell_t
   chaos_bolt_t( warlock_t* p ):
     warlock_spell_t( p, "Chaos Bolt" )
   {
-
-    base_multiplier *= 1.0 + ( p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 2 ).percent() );
-    base_execute_time += p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 1 ).time_value();
     if ( p -> talents.reverse_entropy -> ok() )
       base_execute_time += p -> talents.reverse_entropy -> effectN( 2 ).time_value();
-    
-    refund = p -> resources.max[RESOURCE_MANA] * data().effectN( 1 ).percent();
   }
 
   void impact( action_state_t* s ) override
@@ -2100,29 +2099,12 @@ struct chaos_bolt_t: public warlock_spell_t
 
   void execute() override
   {
-    if ( result_is_hit( execute_state -> result ) && p() -> talents.reverse_entropy -> ok() )
+    warlock_spell_t::execute();
+
+    if ( p() -> talents.reverse_entropy -> ok() )
     {
-      p() -> resource_gain( RESOURCE_MANA, refund, p() -> gains.immolate );
-    }
-  }
-
-  void consume_resource() override
-  {
-    bool t18_procced = rng().roll( p() -> sets.set( WARLOCK_DESTRUCTION, T18, B4 ) -> effectN( 1 ).percent() );
-    double base_cost = 0;
-
-    if ( t18_procced )
-    {
-      base_cost = base_costs[ RESOURCE_SOUL_SHARD ];
-      base_costs[ RESOURCE_SOUL_SHARD ] = 0;
-      p() -> procs.t18_4pc_destruction -> occur();
-    }
-
-    warlock_spell_t::consume_resource();
-
-    if ( t18_procced )
-    {
-      base_costs[ RESOURCE_SOUL_SHARD ] = base_cost;
+      refund = p() -> resources.max[RESOURCE_MANA] * p() -> talents.reverse_entropy -> effectN( 1 ).percent();
+      p() -> resource_gain( RESOURCE_MANA, refund, p() -> gains.reverse_entropy );
     }
   }
 
@@ -2418,7 +2400,7 @@ struct summon_main_pet_t: public summon_pet_t
     if ( p() -> pets.active == pet )
       return false;
 
-    if ( p() -> talents.demonic_servitude -> ok() ) //if we have the uberpets, we can't summon our standard pets
+    if ( p() -> talents.grimoire_of_supremacy -> ok() ) //if we have the uberpets, we can't summon our standard pets
       return false;
     return summon_pet_t::ready();
   }
@@ -2459,7 +2441,7 @@ struct summon_infernal_t: public summon_pet_t
     cooldown = p -> cooldowns.infernal;
     cooldown -> duration = data().cooldown();
 
-    if ( p -> talents.demonic_servitude -> ok() )
+    if ( p -> talents.grimoire_of_supremacy -> ok() )
       summoning_duration = timespan_t::from_seconds( -1 );
     else
     {
@@ -2488,7 +2470,7 @@ struct summon_doomguard2_t: public summon_pet_t
     background = true;
     dual = true;
     callbacks = false;
-    if ( p -> talents.demonic_servitude -> ok() ){
+    if ( p -> talents.grimoire_of_supremacy -> ok() ){
       summoning_duration = timespan_t::from_seconds( -1 );
     }
     else 
@@ -2621,7 +2603,7 @@ struct cataclysm_t : public warlock_spell_t
   immolate_t* immolate;
 
   cataclysm_t( warlock_t* p ) :
-    warlock_spell_t( "cataclysm", p, p -> find_spell( 152108 ) ),
+    warlock_spell_t( "cataclysm", p, p -> talents.cataclysm ),
     immolate( new immolate_t( p ) )
   {
     aoe = -1;
@@ -2912,7 +2894,7 @@ warlock( p )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   debuffs_agony = buff_creator_t( *this, "agony", source -> find_spell( 980 ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
-  debuffs_eradication = buff_creator_t( *this, "eradication", source -> find_talent_spell( "Eradication" ) )
+  debuffs_eradication = buff_creator_t( *this, "eradication", source -> find_spell( 196414 ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   if ( warlock.destruction_trinket )
   {
@@ -3130,7 +3112,7 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "service_voidwalker"    ) a = new grimoire_of_service_t( this, "voidwalker" );
   else if ( action_name == "service_infernal"      ) a = new grimoire_of_service_t( this, "infernal" );
   else if ( action_name == "service_doomguard"     ) a = new grimoire_of_service_t( this, "doomguard" );
-  else if ( action_name == "service_pet"           ) a = new grimoire_of_service_t( this,  talents.demonic_servitude -> ok() ? "doomguard" : default_pet );
+  else if ( action_name == "service_pet"           ) a = new grimoire_of_service_t( this,  talents.grimoire_of_supremacy -> ok() ? "doomguard" : default_pet );
   else return player_t::create_action( action_name, options_str );
 
   a -> parse_options( options_str );
@@ -3273,10 +3255,10 @@ void warlock_t::init_spells()
   talents.wreak_havoc           = find_talent_spell( "Wreak Havoc" );
   talents.channel_doomfire      = find_talent_spell( "Channel Doomfire" );
 
-  talents.demonic_servitude     = find_talent_spell( "Demonic Servitude" );
-
   talents.demonbolt             = find_talent_spell( "Demonbolt" );
   talents.shadowfury            = find_talent_spell( "Shadowfury" );
+
+  talents.soul_conduit          = find_talent_spell( "Soul Conduit" );
   
   // Glyphs
 
@@ -3328,7 +3310,7 @@ void warlock_t::create_buffs()
 {
   player_t::create_buffs();
 
-  buffs.backdraft = buff_creator_t( this, "backdraft", talents.backdraft -> effectN( 1 ).trigger() );
+  buffs.backdraft = buff_creator_t( this, "backdraft", find_spell( 117828 ) );
   buffs.demonic_power = buff_creator_t( this, "demonic_power", talents.grimoire_of_sacrifice -> effectN( 2 ).trigger() );
   buffs.demonic_synergy = buff_creator_t( this, "demonic_synergy", find_spell( 171982 ) )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
@@ -3366,6 +3348,8 @@ void warlock_t::init_gains()
   gains.soul_harvest        = get_gain( "soul_harvest" );
   gains.mana_tap            = get_gain( "mana_tap" );
   gains.shadow_bolt         = get_gain( "shadow_bolt" );
+  gains.soul_harvest        = get_gain( "soul_conduit" );
+  gains.reverse_entropy     = get_gain( "reverse_entropy" );
 }
 
 // warlock_t::init_procs ===============================================
