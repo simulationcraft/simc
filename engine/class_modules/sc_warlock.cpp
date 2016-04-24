@@ -3348,7 +3348,7 @@ void warlock_t::init_gains()
   gains.soul_harvest        = get_gain( "soul_harvest" );
   gains.mana_tap            = get_gain( "mana_tap" );
   gains.shadow_bolt         = get_gain( "shadow_bolt" );
-  gains.soul_harvest        = get_gain( "soul_conduit" );
+  gains.soul_conduit        = get_gain( "soul_conduit" );
   gains.reverse_entropy     = get_gain( "reverse_entropy" );
 }
 
