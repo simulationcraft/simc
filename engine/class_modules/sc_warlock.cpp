@@ -11,7 +11,7 @@
 // Check all false-positive flags
 // Check resource generation execute/impact and hit requirement
 // 
-// Soul Conduit implementation
+// Report which spells triggered soul conduit
 //
 // Affliction -
 // Haunt reset
@@ -20,9 +20,7 @@
 // Destruction - 
 // Roaring Blaze
 // Use spelldata for wreak havoc
-// Use spelldata for conflagrate
-// Make conflagrate scale with haste
-// Channel Doomfire
+// Channel Demonfire
 // Rain of Fire
 //
 // Demo - Everything
@@ -1996,15 +1994,16 @@ struct conflagrate_t: public warlock_spell_t
 
   conflagrate_t( warlock_t* p ):
     warlock_spell_t( p, "Conflagrate" )
-  {
+  {  
   }
 
   void init() override
   {
     warlock_spell_t::init();
 
-    cooldown -> duration = timespan_t::from_seconds( 12.0 );
-    cooldown -> charges = 2;
+    cooldown -> duration = data().charge_cooldown();
+    cooldown -> charges = data().charges();
+    cooldown -> hasted = true;
   }
 
   void schedule_travel( action_state_t* s ) override
