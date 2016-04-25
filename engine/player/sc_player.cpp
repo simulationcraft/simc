@@ -4164,7 +4164,9 @@ void player_t::demise()
   // sim -> cancel_events( this );
 
   for ( size_t i = 0; i < pet_list.size(); ++i )
-    pet_list[ i ] -> demise();
+  {
+    pet_list[i] -> demise();
+  }
 
   for ( size_t i = 0; i < callbacks_on_demise.size(); ++i )
   {

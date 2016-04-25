@@ -1407,6 +1407,7 @@ void action_t::last_tick( dot_t* d )
   if ( channeled && player -> channeling == this )
   {
     player -> channeling = 0;
+    player -> readying = 0;
   }
 }
 
