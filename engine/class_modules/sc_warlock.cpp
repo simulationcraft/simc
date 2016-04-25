@@ -2963,11 +2963,11 @@ struct channel_demonfire_tick_t : public warlock_spell_t
   }
 };
 
-struct channel_demonfire_t : public warlock_spell_t
+struct channel_demonfire_t: public warlock_spell_t
 {
   channel_demonfire_tick_t* channel_demonfire;
 
-  channel_demonfire_t( warlock_t* p ) :
+  channel_demonfire_t( warlock_t* p ):
     warlock_spell_t( "channel_demonfire", p, p -> talents.channel_demonfire )
   {
     channeled = true;
@@ -2978,10 +2978,30 @@ struct channel_demonfire_t : public warlock_spell_t
     add_child( channel_demonfire );
   }
 
+  std::vector< player_t* >& target_list() const override
+  {
+    target_cache.list = warlock_spell_t::target_list();
+
+    size_t i = target_cache.list.size();
+    while ( i > 0 )
+    {
+      i--;
+      player_t* target_ = target_cache.list[i];
+      if ( !td( target_ ) -> dots_immolate -> is_ticking() )
+        target_cache.list.erase( target_cache.list.begin() + i );
+    }
+    return target_cache.list;
+  }
+
   void tick( dot_t* d ) override
   {
-    if ( td( d -> target ) -> dots_immolate -> is_ticking() )
+    std::vector<player_t*> targets = target_list();
+
+    if ( targets.size() > 0 )
+    {
+      channel_demonfire -> target = targets[ rng().range( 0, targets.size() - 1 ) ];
       channel_demonfire -> execute();
+    }
 
     warlock_spell_t::tick( d );
   }
