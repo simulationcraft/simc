@@ -21,7 +21,9 @@
 // Rain of Fire
 // Demo - Everything
 // Artifacts -
-// Flames of the Pit
+// Switch chaotic infusion to crit damage
+// Dimensional Rift/Dimension Ripper
+// Fire from the sky
 // 
 // ==========================================================================
 namespace { // unnamed namespace
@@ -639,6 +641,8 @@ struct firebolt_t: public warlock_pet_spell_t
   {
     if ( p -> owner -> bugs )
       min_gcd = timespan_t::from_seconds( 1.5 );
+
+    base_multiplier *= 1.0 + p -> o() -> artifact.impish_incineration.percent();
   }
 
   virtual double composite_target_multiplier( player_t* target ) const override
@@ -2104,6 +2108,8 @@ struct incinerate_t: public warlock_spell_t
   {
     if ( p -> talents.fire_and_brimstone -> ok() )
       aoe = -1;
+
+    base_execute_time *= 1.0 + p -> artifact.fire_and_the_flames.percent();
   }
 
   virtual timespan_t execute_time() const override
@@ -2142,6 +2148,8 @@ struct chaos_bolt_t: public warlock_spell_t
   {
     if ( p -> talents.reverse_entropy -> ok() )
       base_execute_time += p -> talents.reverse_entropy -> effectN( 2 ).time_value();
+
+    base_multiplier *= 1.0 + p -> artifact.chaotic_instability.percent();
   }
 
   void impact( action_state_t* s ) override
@@ -2172,7 +2180,7 @@ struct chaos_bolt_t: public warlock_spell_t
       p() -> resource_gain( RESOURCE_MANA, refund, p() -> gains.reverse_entropy );
     }
 
-    if ( rng().roll( p() -> artifact.flames_of_the_pit.percent() ) )
+    if ( rng().roll( p() -> artifact.soulsnatcher.percent() ) )
       p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.soulsnatcher );
   }
 
