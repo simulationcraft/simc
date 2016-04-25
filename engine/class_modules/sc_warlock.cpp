@@ -22,8 +22,7 @@
 // Demo - Everything
 // Artifacts -
 // Switch chaotic infusion to crit damage
-// Dimensional Rift/Dimension Ripper
-// Fire from the sky
+// Destruction Golden Traits
 // 
 // ==========================================================================
 namespace { // unnamed namespace
@@ -44,16 +43,17 @@ namespace pets {
 
 struct warlock_td_t: public actor_target_data_t
 {
-  dot_t*  dots_agony;
-  dot_t*  dots_corruption;
-  dot_t*  dots_doom;
-  dot_t*  dots_drain_soul;
-  dot_t*  dots_immolate;
-  dot_t*  dots_seed_of_corruption;
-  dot_t*  dots_shadowflame;
-  dot_t*  dots_unstable_affliction;
-  dot_t*  dots_siphon_life;
-  dot_t*  dots_phantom_singularity;
+  dot_t* dots_agony;
+  dot_t* dots_corruption;
+  dot_t* dots_doom;
+  dot_t* dots_drain_soul;
+  dot_t* dots_immolate;
+  dot_t* dots_seed_of_corruption;
+  dot_t* dots_shadowflame;
+  dot_t* dots_unstable_affliction;
+  dot_t* dots_siphon_life;
+  dot_t* dots_phantom_singularity;
+  dot_t* dots_channel_demonfire;
 
   buff_t* debuffs_haunt;
   buff_t* debuffs_shadowflame;
@@ -150,7 +150,7 @@ public:
     const spell_data_t* phantom_singularity;
 
     const spell_data_t* wreak_havoc;
-    const spell_data_t* channel_doomfire;
+    const spell_data_t* channel_demonfire;
 
     const spell_data_t* demonbolt; // Demonology only
     const spell_data_t* shadowfury;
@@ -1275,7 +1275,6 @@ struct wild_imp_pet_t: public warlock_pet_t
   wild_imp_pet_t( sim_t* sim, warlock_t* owner ):
     warlock_pet_t( sim, owner, "wild_imp", PET_WILD_IMP, true ), firebolt_stats( nullptr )
   {
-    owner_coeff.sp_from_sp = 0.75;
   }
 
   virtual void init_base_stats() override
@@ -2039,11 +2038,15 @@ struct immolate_t: public warlock_spell_t
     spell_power_mod.tick = p -> spec.immolate -> effectN( 1 ).sp_coeff();
     hasted_ticks = true;
     tick_may_crit = true;
+
+    base_multiplier *= 1.0 + p -> artifact.residual_flames.percent();
   }
 
   virtual double composite_crit() const override
   {
     double cc = warlock_spell_t::composite_crit();
+
+    cc += p() -> artifact.burning_hunger.percent();
 
     return cc;
   }
@@ -2110,6 +2113,7 @@ struct incinerate_t: public warlock_spell_t
       aoe = -1;
 
     base_execute_time *= 1.0 + p -> artifact.fire_and_the_flames.percent();
+    base_multiplier *= 1.0 + p -> artifact.master_of_distaster.percent();
   }
 
   virtual timespan_t execute_time() const override
@@ -2149,7 +2153,7 @@ struct chaos_bolt_t: public warlock_spell_t
     if ( p -> talents.reverse_entropy -> ok() )
       base_execute_time += p -> talents.reverse_entropy -> effectN( 2 ).time_value();
 
-    base_multiplier *= 1.0 + p -> artifact.chaotic_instability.percent();
+    crit_multiplier *= 1.0 + p -> artifact.chaotic_instability.percent();
   }
 
   void impact( action_state_t* s ) override
@@ -2329,6 +2333,8 @@ struct rain_of_fire_t: public warlock_spell_t
     may_miss = false;
     may_crit = false;
     ignore_false_positive = true;
+
+    base_multiplier *= 1.0 + p -> artifact.fire_from_the_sky.percent();
 
     tick_action = new rain_of_fire_tick_t( p, data() );
   }
@@ -2946,6 +2952,41 @@ struct mortal_coil_t: public warlock_spell_t
   }
 };
 
+struct channel_demonfire_tick_t : public warlock_spell_t
+{
+  channel_demonfire_tick_t( warlock_t* p ) :
+    warlock_spell_t( "channel_demonfire_tick", p, p -> find_spell( 196448 ) )
+  {
+    background = true;
+    may_miss = false;
+    dual = true;
+  }
+};
+
+struct channel_demonfire_t : public warlock_spell_t
+{
+  channel_demonfire_tick_t* channel_demonfire;
+
+  channel_demonfire_t( warlock_t* p ) :
+    warlock_spell_t( "channel_demonfire", p, p -> talents.channel_demonfire )
+  {
+    channeled = true;
+    hasted_ticks = false;
+    may_crit = false;
+
+    channel_demonfire = new channel_demonfire_tick_t( p );
+    add_child( channel_demonfire );
+  }
+
+  void tick( dot_t* d ) override
+  {
+    if ( td( d -> target ) -> dots_immolate -> is_ticking() )
+      channel_demonfire -> execute();
+
+    warlock_spell_t::tick( d );
+  }
+};
+
 } // end actions namespace
 
 warlock_td_t::warlock_td_t( player_t* target, warlock_t& p ):
@@ -2963,7 +3004,8 @@ warlock( p )
   dots_shadowflame = target -> get_dot( "shadowflame", &p );
   dots_seed_of_corruption = target -> get_dot( "seed_of_corruption", &p );
   dots_phantom_singularity = target -> get_dot( "phantom_singularity", &p );
-  
+  dots_channel_demonfire = target -> get_dot( "channel_demonfire", &p );
+
   debuffs_haunt = buff_creator_t( *this, "haunt", source -> find_class_spell( "Haunt" ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   debuffs_shadowflame = buff_creator_t( *this, "shadowflame", source -> find_spell( 47960 ) )
@@ -3161,6 +3203,7 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "grimoire_of_sacrifice" ) a = new grimoire_of_sacrifice_t( this );
   else if ( action_name == "haunt"                 ) a = new                 haunt_t( this );
   else if ( action_name == "phantom_singularity"   ) a = new   phantom_singularity_t( this );
+  else if ( action_name == "channel_demonfire"     ) a = new     channel_demonfire_t( this );
   else if ( action_name == "soul_harvest"          ) a = new          soul_harvest_t( this );
   else if ( action_name == "siphon_life"           ) a = new           siphon_life_t( this );
   else if ( action_name == "immolate"              ) a = new              immolate_t( this );
@@ -3334,7 +3377,7 @@ void warlock_t::init_spells()
   talents.phantom_singularity   = find_talent_spell( "Phantom Singularity" );
 
   talents.wreak_havoc           = find_talent_spell( "Wreak Havoc" );
-  talents.channel_doomfire      = find_talent_spell( "Channel Doomfire" );
+  talents.channel_demonfire      = find_talent_spell( "Channel Demonfire" );
 
   talents.demonbolt             = find_talent_spell( "Demonbolt" );
   talents.shadowfury            = find_talent_spell( "Shadowfury" );
