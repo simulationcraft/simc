@@ -10,20 +10,18 @@
 // TODO:
 // Check all false-positive flags
 // Check resource generation execute/impact and hit requirement
-// 
 // Report which spells triggered soul conduit
-//
 // Affliction -
 // Haunt reset
 // Soul Effigy
-//
 // Destruction - 
 // Roaring Blaze
 // Use spelldata for wreak havoc
 // Channel Demonfire
 // Rain of Fire
-//
 // Demo - Everything
+// Artifacts -
+// Flames of the Pit
 // 
 // ==========================================================================
 namespace { // unnamed namespace
@@ -158,6 +156,70 @@ public:
     const spell_data_t* soul_conduit;
   } talents;
 
+  struct artifact_spell_data_t
+  {
+    // Affliction
+    artifact_power_t reap_souls;
+    artifact_power_t crystaline_shadows;
+    artifact_power_t seeds_of_doom;
+    artifact_power_t fatal_echoes;
+    artifact_power_t shadows_of_the_flesh;
+    artifact_power_t harvester_of_souls;
+    artifact_power_t inimitable_agony;
+    artifact_power_t drained_to_a_husk;
+    artifact_power_t inherently_unstable;
+    artifact_power_t sweet_souls;
+    artifact_power_t perdition;
+    artifact_power_t wrath_of_consumption;
+    artifact_power_t hideous_corruption;
+    artifact_power_t shadowy_incantations;
+    artifact_power_t soul_flames;
+    artifact_power_t long_dark_night_of_the_soul;
+    artifact_power_t compound_interest;
+    artifact_power_t soulharvester;
+
+    // Demonology
+    artifact_power_t thalkiels_consumption;
+    artifact_power_t breath_of_thalkiel;
+    artifact_power_t the_doom_of_azeroth;
+    artifact_power_t sharpened_dreadfangs;
+    artifact_power_t fel_skin;
+    artifact_power_t firm_resolve;
+    artifact_power_t thalkiels_discord;
+    artifact_power_t legionwrath;
+    artifact_power_t dirty_hands;
+    artifact_power_t doom_doubled;
+    artifact_power_t infernal_furnace;
+    artifact_power_t the_expendables;
+    artifact_power_t maw_of_shadows;
+    artifact_power_t open_link;
+    artifact_power_t stolen_power;
+    artifact_power_t imperator;
+    artifact_power_t summoners_prowess;
+    artifact_power_t thalkiels_lingering_power;
+
+    // Destruction
+    artifact_power_t dimensional_rift;
+    artifact_power_t flames_of_the_pit;
+    artifact_power_t soulsnatcher;
+    artifact_power_t fire_and_the_flames;
+    artifact_power_t fire_from_the_sky;
+    artifact_power_t impish_incineration;
+    artifact_power_t lord_of_flames;
+    artifact_power_t eternal_struggle;
+    artifact_power_t demonic_durability;
+    artifact_power_t chaotic_instability;
+    artifact_power_t dimension_ripper;
+    artifact_power_t master_of_distaster;
+    artifact_power_t burning_hunger;
+    artifact_power_t residual_flames;
+    artifact_power_t devourer_of_life;
+    artifact_power_t planeswalker;
+    artifact_power_t conflagration_of_chaos;
+    artifact_power_t stolen_power_destruction;
+
+  } artifact;
+
   // Glyphs
   struct glyphs_t
   {
@@ -235,6 +297,7 @@ public:
     gain_t* shadow_bolt;
     gain_t* soul_conduit;
     gain_t* reverse_entropy;
+    gain_t* soulsnatcher;
   } gains;
 
   // Procs
@@ -264,6 +327,9 @@ public:
   const special_effect_t* affliction_trinket;
   const special_effect_t* demonology_trinket;
   const special_effect_t* destruction_trinket;
+
+  // Artifacts
+  const special_effect_t* ulthalesh_the_dreadwind_harvester, *skull_of_the_manari, *scepter_of_sargeras;
 
   warlock_t( sim_t* sim, const std::string& name, race_e r = RACE_UNDEAD );
 
@@ -2105,6 +2171,9 @@ struct chaos_bolt_t: public warlock_spell_t
       refund = p() -> resources.max[RESOURCE_MANA] * p() -> talents.reverse_entropy -> effectN( 1 ).percent();
       p() -> resource_gain( RESOURCE_MANA, refund, p() -> gains.reverse_entropy );
     }
+
+    if ( rng().roll( p() -> artifact.flames_of_the_pit.percent() ) )
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.soulsnatcher );
   }
 
   // Force spell to always crit
@@ -2968,6 +3037,11 @@ double warlock_t::composite_player_multiplier( school_e school ) const
   if ( buffs.mana_tap -> check() )
     m *= 1.0 + talents.mana_tap -> effectN( 1 ).percent();
 
+  if ( specialization() == WARLOCK_DESTRUCTION && ( dbc::is_school( SCHOOL_FIRE, school ) ) )
+  {
+    m *= 1.0 + artifact.flames_of_the_pit.percent();
+  }
+
   return m;
 }
 
@@ -3258,6 +3332,64 @@ void warlock_t::init_spells()
   talents.shadowfury            = find_talent_spell( "Shadowfury" );
 
   talents.soul_conduit          = find_talent_spell( "Soul Conduit" );
+
+  // Artifacts
+  artifact.reap_souls = find_artifact_spell( "Reap Souls" );
+  artifact.crystaline_shadows = find_artifact_spell( "Crystaline Shadows" );
+  artifact.seeds_of_doom = find_artifact_spell( "Seeds of Doom" );
+  artifact.fatal_echoes = find_artifact_spell( "Fatal Echoes" );
+  artifact.shadows_of_the_flesh = find_artifact_spell( "Shadows of the Flesh" );
+  artifact.harvester_of_souls = find_artifact_spell( "Harvester of Souls" );
+  artifact.inimitable_agony = find_artifact_spell( "Inimitable Agony" );
+  artifact.drained_to_a_husk = find_artifact_spell( "Drained to the Husk" );
+  artifact.inherently_unstable = find_artifact_spell( "Inherently Unstable" );
+  artifact.sweet_souls = find_artifact_spell( "Sweet Souls" );
+  artifact.perdition = find_artifact_spell( "Perdition" );
+  artifact.wrath_of_consumption = find_artifact_spell( "Wrath of Consumption" );
+  artifact.hideous_corruption = find_artifact_spell( "Hideous Corruption" );
+  artifact.shadowy_incantations = find_artifact_spell( "Shadowy Incantations" );
+  artifact.soul_flames = find_artifact_spell( "Soul Flames" );
+  artifact.long_dark_night_of_the_soul = find_artifact_spell( "Long Dark Night of the Soul" );
+  artifact.compound_interest = find_artifact_spell( "Compound Interest" );
+  artifact.soulharvester = find_artifact_spell( "Soulharvester" );
+
+  artifact.thalkiels_consumption = find_artifact_spell( "Thal'kiel's Consumption" );
+  artifact.breath_of_thalkiel = find_artifact_spell( "Breath of Thal'kiel" );
+  artifact.the_doom_of_azeroth = find_artifact_spell( "The Doom of Azeroth" );
+  artifact.sharpened_dreadfangs = find_artifact_spell( "Sharpened Dreadfangs" );
+  artifact.fel_skin = find_artifact_spell( "Fel Skin" );
+  artifact.firm_resolve = find_artifact_spell( "Firm Resolve" );
+  artifact.thalkiels_discord = find_artifact_spell( "Thal'kiel's Discord" );
+  artifact.legionwrath = find_artifact_spell( "Legionwrath" );
+  artifact.dirty_hands = find_artifact_spell( "Dirty Hands" );
+  artifact.doom_doubled = find_artifact_spell( "Doom Doubled" );
+  artifact.infernal_furnace = find_artifact_spell( "Infernal Furnace" );
+  artifact.the_expendables = find_artifact_spell( "The Expendables" );
+  artifact.maw_of_shadows = find_artifact_spell( "Maw of Shadows" );
+  artifact.open_link = find_artifact_spell( "Open Link" );
+  //artifact.stolen_power = find_artifact_spell( "" );
+  artifact.imperator = find_artifact_spell( "Imp-erator" );
+  artifact.summoners_prowess = find_artifact_spell( "Summoner's Prowess" );
+  artifact.thalkiels_lingering_power = find_artifact_spell( "Thal'kiel's Lingering Power" );
+
+  artifact.dimensional_rift = find_artifact_spell( "Dimensional Rift" );
+  artifact.flames_of_the_pit = find_artifact_spell( "Flames of the Pit" );
+  artifact.soulsnatcher = find_artifact_spell( "Soulsnatcher" );
+  artifact.fire_and_the_flames = find_artifact_spell( "Fire and the Flames" );
+  artifact.fire_from_the_sky = find_artifact_spell( "Fire from the Sky" );
+  artifact.impish_incineration = find_artifact_spell( "Impish Incineration" );
+  artifact.lord_of_flames = find_artifact_spell( "Lord of Flames" );
+  artifact.eternal_struggle = find_artifact_spell( "Eternal Struggle" );
+  artifact.demonic_durability = find_artifact_spell( "Demonic Durability" );
+  artifact.chaotic_instability = find_artifact_spell( "Chaotic Instability" );
+  artifact.dimension_ripper = find_artifact_spell( "Dimension Ripper" );
+  artifact.master_of_distaster = find_artifact_spell( "Master of Disaster" );
+  artifact.burning_hunger = find_artifact_spell( "Burning Hunger" );
+  artifact.residual_flames = find_artifact_spell( "Residual Flames" );
+  artifact.devourer_of_life = find_artifact_spell( "Devourer of Life" );
+  artifact.planeswalker = find_artifact_spell( "Planeswalker" );
+  artifact.conflagration_of_chaos = find_artifact_spell( "Conflagration of Chaos" );
+  //artifact.stolen_power_destruction = find_artifact_spell( "" );
   
   // Glyphs
 
@@ -3349,6 +3481,7 @@ void warlock_t::init_gains()
   gains.shadow_bolt         = get_gain( "shadow_bolt" );
   gains.soul_conduit        = get_gain( "soul_conduit" );
   gains.reverse_entropy     = get_gain( "reverse_entropy" );
+  gains.soulsnatcher        = get_gain( "soulsnatcher" );
 }
 
 // warlock_t::init_procs ===============================================
