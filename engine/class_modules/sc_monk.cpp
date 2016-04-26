@@ -1689,35 +1689,28 @@ public:
     {
       case MONK_BREWMASTER:
       {
+        // Reduce GCD from 1.5 sec to 1 sec
         if ( ab::data().affected_by( player -> spec.stagger -> effectN( 11 ) ) )
           ab::trigger_gcd += player -> spec.stagger -> effectN( 11 ).time_value(); // Saved as -500 milliseconds
+        // Brewmasters no longer use Chi so need to zero out chi cost
         if ( ab::data().affected_by( player -> spec.stagger -> effectN( 15 ) ) )
           ab::base_costs[RESOURCE_CHI] *= 1 + player -> spec.stagger -> effectN( 15 ).percent(); // -100% for Brewmasters
-        break;
-      }
-      case MONK_WINDWALKER:
-      {
-        if ( ab::data().affected_by( player -> spec.stance_of_the_fierce_tiger -> effectN( 6 ) ) )
-          ab::trigger_gcd += player -> spec.stance_of_the_fierce_tiger -> effectN( 6 ).time_value(); // Saved as -500 milliseconds
-        break;
-      }
-      default: break;
-    }
-
-    switch ( p() -> specialization() )
-    {
-      case MONK_BREWMASTER:
-      {
+        // Hasted Cooldown
         ab::cooldown -> hasted = ab::data().affected_by( p() -> passives.aura_brewmaster_monk -> effectN( 2 ) );
         break;
       }
       case MONK_MISTWEAVER:
       {
+        // Hasted Cooldown
         ab::cooldown -> hasted = ab::data().affected_by( p() -> passives.aura_mistweaver_monk -> effectN( 5 ) );
         break;
       }
       case MONK_WINDWALKER:
       {
+        // Reduce GCD from 1.5 sec to 1 sec
+        if ( ab::data().affected_by( player -> spec.stance_of_the_fierce_tiger -> effectN( 6 ) ) )
+          ab::trigger_gcd += player -> spec.stance_of_the_fierce_tiger -> effectN( 6 ).time_value(); // Saved as -500 milliseconds
+        // Hasted Cooldown
         ab::cooldown -> hasted = ab::data().affected_by( p() -> passives.aura_monk -> effectN( 1 ) );
         break;
       }
