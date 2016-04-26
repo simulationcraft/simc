@@ -2981,8 +2981,6 @@ struct shadow_dance_t : public rogue_attack_t
     icd( p -> get_cooldown( "shadow_dance_icd" ) )
   {
     harmful = may_miss = may_crit = false;
-    cooldown -> charges = data().charges();
-    cooldown -> duration = data().charge_cooldown();
     icd -> duration = data().cooldown();
   }
 

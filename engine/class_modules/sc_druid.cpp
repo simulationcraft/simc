@@ -396,7 +396,6 @@ public:
   {
     cooldown_t* berserk;
     cooldown_t* celestial_alignment;
-    cooldown_t* frenzied_regen_use;
     cooldown_t* growl;
     cooldown_t* incarnation;
     cooldown_t* mangle;
@@ -723,7 +722,6 @@ public:
 
     cooldown.berserk             = get_cooldown( "berserk"             );
     cooldown.celestial_alignment = get_cooldown( "celestial_alignment" );
-    cooldown.frenzied_regen_use  = get_cooldown( "frenzied_regen_use"  );
     cooldown.growl               = get_cooldown( "growl"               );
     cooldown.incarnation         = get_cooldown( "incarnation"         );
     cooldown.mangle              = get_cooldown( "mangle"              );
@@ -2610,8 +2608,6 @@ struct brutal_slash_t : public cat_attack_t
     parse_options( options_str );
 
     aoe = -1;
-    cooldown -> charges = data().charges();
-    cooldown -> duration = data().charge_cooldown();
     combo_point_gain = 1; // not in spell data
 
     base_multiplier *= 1.0 + p -> artifact.sharpened_claws.percent();
@@ -3791,10 +3787,6 @@ struct frenzied_regeneration_t : public druid_heal_t
     min_pct = data().effectN( 4 ).percent();
     ignite = new frenzied_regeneration_ignite_t( p, &data() );
     dot_duration = timespan_t::zero();
-
-    p -> cooldown.frenzied_regen_use -> duration = cooldown -> duration;
-    cooldown -> charges = 2;
-    cooldown -> duration = timespan_t::from_seconds( 20.0 );
   }
 
   void init() override
@@ -3807,8 +3799,6 @@ struct frenzied_regeneration_t : public druid_heal_t
   void execute() override
   {
     druid_heal_t::execute();
-    
-    p() -> cooldown.frenzied_regen_use -> start();
 
     if ( p() -> buff.guardian_of_elune -> up() )
       p() -> buff.guardian_of_elune -> expire();
@@ -3833,14 +3823,6 @@ struct frenzied_regeneration_t : public druid_heal_t
 
   void impact( action_state_t* s ) override
   { residual_action::trigger( ignite, s -> target, s -> result_amount ); }
-
-  bool ready() override
-  {
-    if ( p() -> cooldown.frenzied_regen_use -> down() )
-      return false;
-
-    return druid_heal_t::ready();
-  }
 };
 
 // Healing Touch ============================================================
@@ -5005,12 +4987,12 @@ struct mark_of_ursol_t : public druid_spell_t
 struct new_moon_t : public druid_spell_t
 {
   new_moon_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "new_moon", player, player -> artifact.new_moon.spell_ )
+    druid_spell_t( "new_moon", player, player -> artifact.new_moon )
   {
     parse_options( options_str );
 
     ap_per_cast = data().effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
-    
+
     cooldown = player -> cooldown.moon_cd;
     cooldown -> duration = data().charge_cooldown();
     cooldown -> charges  = data().charges();
@@ -5576,7 +5558,6 @@ struct survival_instincts_t : public druid_spell_t
     cooldown -> duration += player -> spec.feral_overrides2 -> effectN( 6 ).time_value();
     cooldown -> duration += player -> spec.guardian_overrides -> effectN( 5 ).time_value();
 
-    cooldown -> charges = 2;
     cooldown -> duration *= 1.0 + player -> talent.survival_of_the_fittest -> effectN( 1 ).percent();
   }
 

@@ -2390,8 +2390,6 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 
     attack_power_mod.direct = p -> spec.rising_sun_kick -> effectN( 1 ).trigger() -> effectN( 1 ).ap_coeff();
 
-    cooldown -> duration = data().charge_cooldown();
-    cooldown -> charges = data().charges();
     if ( p -> specialization() == MONK_MISTWEAVER )
       cooldown -> duration += p -> passives.aura_mistweaver_monk -> effectN( 8 ).time_value();
     if ( p -> sets.has_set_bonus( MONK_WINDWALKER, T19, B2) )
@@ -3512,8 +3510,6 @@ struct tigereye_brew_t: public monk_spell_t
     parse_options( options_str );
     harmful = false;
     trigger_gcd = timespan_t::zero();
-    cooldown -> charges = data().charges();
-    cooldown -> duration = data().charge_cooldown();
   }
 
   virtual bool ready() override
@@ -3608,9 +3604,6 @@ struct chi_torpedo_t: public monk_spell_t
     monk_spell_t( "chi_torpedo", player, player -> talent.chi_torpedo )
   {
     parse_options( options_str );
-
-    cooldown -> duration = p() -> talent.chi_torpedo -> charge_cooldown();
-    cooldown -> charges = p() -> talent.chi_torpedo -> charges();
   }
 };
 
@@ -4139,8 +4132,8 @@ struct ironskin_brew_t : public monk_spell_t
     trigger_gcd = timespan_t::zero();
 
     cooldown             = p.cooldown.brewmaster_active_mitigation;
-    cooldown -> duration = p.find_spell( id ) -> charge_cooldown() + p.talent.light_brewing -> effectN( 1 ).time_value(); // Saved as -3000
-    cooldown -> charges  = p.find_spell( id ) -> charges() + p.talent.light_brewing -> effectN( 2 ).base_value();
+    cooldown -> duration += p.talent.light_brewing -> effectN( 1 ).time_value(); // Saved as -3000
+    cooldown -> charges  += p.talent.light_brewing -> effectN( 2 ).base_value();
     cooldown -> hasted   = true;
 
     if ( p.talent.special_delivery -> ok() )
@@ -4190,8 +4183,8 @@ struct purifying_brew_t: public monk_spell_t
     trigger_gcd = timespan_t::zero();
 
     cooldown             = p.cooldown.brewmaster_active_mitigation;
-    cooldown -> duration = p.find_spell( id ) -> charge_cooldown() + p.talent.light_brewing -> effectN( 1 ).time_value(); // Saved as -3000
-    cooldown -> charges  = p.find_spell( id ) -> charges() + p.talent.light_brewing -> effectN( 2 ).base_value();
+    cooldown -> duration += p.talent.light_brewing -> effectN( 1 ).time_value(); // Saved as -3000
+    cooldown -> charges  += p.talent.light_brewing -> effectN( 2 ).base_value();
     cooldown -> hasted   = true;
 
     if ( p.talent.special_delivery -> ok() )

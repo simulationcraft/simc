@@ -3271,8 +3271,6 @@ struct shield_block_t: public warrior_spell_t
     warrior_spell_t( "shield_block", p, p -> find_class_spell( "Shield Block" ) )
   {
     parse_options( options_str );
-    cooldown -> duration = data().charge_cooldown();
-    cooldown -> charges = data().charges();
     use_off_gcd = true;
   }
 

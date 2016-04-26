@@ -281,7 +281,6 @@ public:
   // Cooldowns
   struct
   {
-    cooldown_t* angelic_feather;
     cooldown_t* chakra;
     cooldown_t* mindbender;
     cooldown_t* penance;
@@ -2686,9 +2685,6 @@ public:
     insanity_gain *=
         ( 1.0 + priest.talents.fortress_of_the_mind->effectN( 2 ).percent() );
 
-    cooldown->charges  = data().charges();
-    cooldown->duration = data().charge_cooldown();
-
     spell_power_mod.direct *=
         1.0 + player.talents.fortress_of_the_mind->effectN( 4 ).percent();
 
@@ -3339,9 +3335,6 @@ struct shadow_word_void_t final : public priest_spell_t
       insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
-
-    cooldown->charges  = data().charges();
-    cooldown->duration = data().charge_cooldown();
   }
 
   void impact( action_state_t* s ) override
@@ -5677,7 +5670,6 @@ priest_t::priest_t( sim_t* sim, const std::string& name, race_e r )
  */
 void priest_t::create_cooldowns()
 {
-  cooldowns.angelic_feather   = get_cooldown( "angelic_feather" );
   cooldowns.chakra            = get_cooldown( "chakra" );
   cooldowns.mindbender        = get_cooldown( "mindbender" );
   cooldowns.penance           = get_cooldown( "penance" );
@@ -5687,9 +5679,6 @@ void priest_t::create_cooldowns()
   cooldowns.mind_blast        = get_cooldown( "mind_blast" );
   cooldowns.shadow_word_death = get_cooldown( "shadow_word_death" );
   cooldowns.shadow_word_void  = get_cooldown( "shadow_word_void" );
-
-  cooldowns.angelic_feather->charges  = 3;
-  cooldowns.angelic_feather->duration = timespan_t::from_seconds( 10.0 );
 
   if ( specialization() == PRIEST_DISCIPLINE )
   {

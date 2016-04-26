@@ -3343,8 +3343,6 @@ struct glacial_spike_t : public frost_mage_spell_t
 
 struct ice_floes_t : public mage_spell_t
 {
-  cooldown_t* icd;
-
   ice_floes_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "ice_floes", p, p -> talents.ice_floes )
   {
@@ -3352,27 +3350,12 @@ struct ice_floes_t : public mage_spell_t
     may_miss = may_crit = harmful = false;
     trigger_gcd = timespan_t::zero();
 
-    cooldown -> charges = data().charges();
-    cooldown -> duration = data().charge_cooldown();
-
-    icd = p -> get_cooldown( "ice_floes_icd" );
-  }
-
-  virtual bool ready() override
-  {
-    if ( icd -> down() )
-    {
-      return false;
-    }
-
-    return mage_spell_t::ready();
+    internal_cooldown -> duration = data().internal_cooldown();
   }
 
   virtual void execute() override
   {
     mage_spell_t::execute();
-
-    icd -> start( data().internal_cooldown() );
 
     p() -> buffs.ice_floes -> trigger( 1 );
   }

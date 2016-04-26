@@ -5125,7 +5125,7 @@ public:
    * cooldown -> charges = 3; // Ability has 3 charges.
    * @endcode
    */
-  cooldown_t* cooldown;
+  cooldown_t* cooldown, *internal_cooldown;
 
   /// action statistics, merged by action-name
   stats_t* stats;

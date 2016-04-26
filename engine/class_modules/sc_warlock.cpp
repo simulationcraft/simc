@@ -2074,8 +2074,6 @@ struct conflagrate_t: public warlock_spell_t
   {
     warlock_spell_t::init();
 
-    cooldown -> duration = data().charge_cooldown();
-    cooldown -> charges = data().charges();
     cooldown -> hasted = true;
   }
 

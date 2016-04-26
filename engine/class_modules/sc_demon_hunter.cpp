@@ -521,17 +521,6 @@ public:
     return p() -> get_target_data( t );
   }
 
-  void init() override
-  {
-    ab::init();
-
-    if ( ab::data().charges() > 0 )
-    {
-      ab::cooldown -> duration = ab::data().charge_cooldown();
-      ab::cooldown -> charges = ab::data().charges();
-    }
-  }
-
   timespan_t gcd() const override
   {
     timespan_t g = ab::gcd();

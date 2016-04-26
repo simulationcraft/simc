@@ -1948,10 +1948,8 @@ struct crusader_strike_t : public holy_power_generator_t
     base_multiplier *= 1.0 + p -> artifact.blade_of_light.percent();
     base_crit += p -> artifact.sharpened_edge.percent();
 
-    cooldown -> duration = data().charge_cooldown();
     if ( p -> talents.fires_of_justice -> ok() )
       cooldown -> duration += timespan_t::from_millis( p -> talents.fires_of_justice -> effectN( 2 ).base_value() );
-    cooldown -> charges = data().charges();
 
     background = ( p -> talents.zeal -> ok() );
   }
@@ -1992,9 +1990,6 @@ struct zeal_t : public holy_power_generator_t
       sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
   {
     parse_options( options_str );
-
-    cooldown -> duration = data().charge_cooldown();
-    cooldown -> charges = data().charges();
 
     base_multiplier *= 1.0 + p -> artifact.blade_of_light.percent();
     base_crit += p -> artifact.sharpened_edge.percent();

@@ -422,6 +422,7 @@ action_t::action_t( action_e       ty,
   player -> action_list.push_back( this );
 
   cooldown = player -> get_cooldown( name_str );
+  internal_cooldown = player -> get_cooldown( name_str + "_internal" );
 
   stats = player -> get_stats( name_str, this );
 
@@ -504,11 +505,24 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
 
   id                   = spell_data.id();
   base_execute_time    = spell_data.cast_time( player -> level() );
-  cooldown -> duration = spell_data.cooldown();
   range                = spell_data.max_range();
   travel_speed         = spell_data.missile_speed();
   trigger_gcd          = spell_data.gcd();
   school               = spell_data.get_school_type();
+
+  if ( spell_data.charges() > 0 && spell_data.charge_cooldown() > timespan_t::zero() )
+  {
+    cooldown -> duration = spell_data.charge_cooldown();
+    cooldown -> charges = spell_data.charges();
+    if ( spell_data.cooldown() > timespan_t::zero() )
+    {
+      internal_cooldown -> duration = spell_data.cooldown();
+    }
+  }
+  else if ( spell_data.cooldown() > timespan_t::zero() )
+  {
+    cooldown -> duration = spell_data.cooldown();
+  }
 
   if (spell_data._power)
   {
@@ -1714,6 +1728,16 @@ void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
 
     if ( sim -> debug )
       sim -> out_debug.printf( "%s starts cooldown for %s (%s, %d/%d). Will be ready at %.4f", player -> name(), name(), cooldown -> name(), cooldown -> current_charge, cooldown -> charges, cooldown -> ready.total_seconds() );
+
+    if ( internal_cooldown -> duration > timespan_t::zero() )
+    {
+      internal_cooldown -> start( this );
+      if ( sim -> debug )
+      {
+        sim -> out_debug.printf( "%s starts internal_cooldown for %s (%s). Will be ready at %.3f",
+            player -> name(), name(), internal_cooldown -> name(), internal_cooldown -> ready.total_seconds() );
+      }
+    }
   }
 }
 
@@ -1742,6 +1766,9 @@ bool action_t::ready()
 {
   // Check conditions that do NOT pertain to the target before cycle_targets
   if ( cooldown -> down() )
+    return false;
+
+  if ( internal_cooldown -> down() )
     return false;
 
   if ( rng().roll( false_negative_pct() ) )
@@ -2077,6 +2104,7 @@ void action_t::reset()
     action_state_t::release( pre_execute_state );
   }
   cooldown -> reset_init();
+  internal_cooldown -> reset_init();
   line_cooldown.reset_init();
   execute_event = 0;
   travel_events.clear();
@@ -2151,7 +2179,16 @@ void action_t::interrupt_action()
     if ( sim -> debug )
       sim -> out_debug.printf( "%s starts cooldown for %s (%s)", player -> name(), name(), cooldown -> name() );
 
-    cooldown -> start();
+    cooldown -> start( this );
+  }
+
+  if ( internal_cooldown -> duration > timespan_t::zero() && ! dual )
+  {
+    if ( sim -> debug )
+      sim -> out_debug.printf( "%s starts internal_cooldown for %s (%s)",
+          player -> name(), name(), internal_cooldown -> name() );
+
+    internal_cooldown -> start( this );
   }
 
   if ( player -> executing  == this ) player -> executing  = 0;

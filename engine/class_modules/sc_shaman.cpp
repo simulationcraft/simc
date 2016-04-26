@@ -943,12 +943,6 @@ public:
       cd_wasted_iter = p() -> template get_data_entry<simple_sample_data_t, simple_data_t>( ab::name_str, p() -> cd_waste_iter );
     }
 
-    if ( ab::data().charges() > 0 )
-    {
-      ab::cooldown -> duration = ab::data().charge_cooldown();
-      ab::cooldown -> charges = ab::data().charges();
-    }
-
     ab::cooldown -> hasted = hasted_cd;
   }
 
