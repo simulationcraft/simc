@@ -7827,48 +7827,6 @@ artifact_power_t player_t::find_artifact_spell( const std::string& name, bool to
                            ranks[ rank_index ] );
 }
 
-// player_t::find_perk_spell ======================================
-
-const spell_data_t* player_t::find_perk_spell( const std::string& name, specialization_e s ) const
-{
-  if ( true_level < 91 ) // No perks for level 90 characterss
-    return spell_data_t::not_found();
-
-  if ( s == SPEC_NONE || s == _spec )
-  {
-    if ( unsigned spell_id = dbc.perk_ability_id( _spec, name.c_str() ) )
-    {
-      const spell_data_t* spell = dbc.spell( spell_id );
-      if ( ( ( int )spell -> level() <= true_level ) )
-      {
-        return dbc::find_spell( this, spell );
-      }
-    }
-  }
-
-  return spell_data_t::not_found();
-}
-
-const spell_data_t* player_t::find_perk_spell( size_t idx, specialization_e s ) const
-{
-  if ( true_level < 91 ) // No perks for level 90 characterss
-    return spell_data_t::not_found();
-
-  if ( s == SPEC_NONE || s == _spec )
-  {
-    if ( unsigned spell_id = dbc.perk_ability_id( _spec, idx ) )
-    {
-      const spell_data_t* spell = dbc.spell( spell_id );
-      if ( ( ( int )spell -> level() <= true_level ) )
-      {
-        return dbc::find_spell( this, spell );
-      }
-    }
-  }
-
-  return spell_data_t::not_found();
-}
-
 // player_t::find_mastery_spell =============================================
 
 const spell_data_t* player_t::find_mastery_spell( specialization_e s, const std::string& token, uint32_t idx ) const

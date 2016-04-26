@@ -48,10 +48,7 @@ fi
 ./dbc_extract.py -p $DBCINPUT -b $BUILD $PTR --cache "${CACHE}" -t spec_spell_list        -a $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
 ./dbc_extract.py -p $DBCINPUT -b $BUILD $PTR --cache "${CACHE}" -t mastery_list           -a $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
 ./dbc_extract.py -p $DBCINPUT -b $BUILD $PTR --cache "${CACHE}" -t racial_list            -a $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
-#./dbc_extract.py -p $DBCINPUT -b $BUILD $PTR --cache "${CACHE}" -t glyph_list             -a $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
 ./dbc_extract.py -p $DBCINPUT -b $BUILD $PTR --cache "${CACHE}" -t set_list2              -a $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
-./dbc_extract.py -p $DBCINPUT -b $BUILD $PTR --cache "${CACHE}" -t perk_list              -a $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
-#./dbc_extract.py -p $DBCINPUT -b $BUILD $PTR --cache "${CACHE}" -t glyph_property_list    -a $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
 ./dbc_extract.py -p $DBCINPUT -b $BUILD $PTR --cache "${CACHE}" -t rppm_coeff             -a $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
 ./dbc_extract.py -p $DBCINPUT -b $BUILD $PTR --cache "${CACHE}" -t artifact               -a $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
 

@@ -6438,20 +6438,20 @@ void death_knight_t::init_spells()
   // Perks
 
   // Blood
-  perk.enhanced_bone_shield            = find_perk_spell( "Enhanced Bone Shield" );
-  perk.enhanced_death_coil             = find_perk_spell( "Enhanced Death Coil" );
-  perk.enhanced_rune_tap               = find_perk_spell( "Enhanced Rune Tap" );
+  perk.enhanced_bone_shield            = spell_data_t::not_found();
+  perk.enhanced_death_coil             = spell_data_t::not_found();
+  perk.enhanced_rune_tap               = spell_data_t::not_found();
 
   // Frost
-  perk.empowered_pillar_of_frost       = find_perk_spell( "Empowered Pillar of Frost" );
-  perk.empowered_obliterate            = find_perk_spell( "Empowered Obliterate" );
-  perk.improved_runeforges             = find_perk_spell( "Improved Runeforges" );
+  perk.empowered_pillar_of_frost       = spell_data_t::not_found();
+  perk.empowered_obliterate            = spell_data_t::not_found();
+  perk.improved_runeforges             = spell_data_t::not_found();
 
   // Unholy
-  perk.empowered_gargoyle             = find_perk_spell( "Empowered Gargoyle" );
-  perk.enhanced_dark_transformation   = find_perk_spell( "Enhanced Dark Transformation" );
-  perk.enhanced_fallen_crusader       = find_perk_spell( "Enhanced Fallen Crusader" );
-  perk.improved_soul_reaper            = find_perk_spell( "Improved Soul Reaper" );
+  perk.empowered_gargoyle             = spell_data_t::not_found();
+  perk.enhanced_dark_transformation   = spell_data_t::not_found();
+  perk.enhanced_fallen_crusader       = spell_data_t::not_found();
+  perk.improved_soul_reaper           = spell_data_t::not_found();
 
   // Active Spells
   if ( talent.breath_of_sindragosa -> ok() )

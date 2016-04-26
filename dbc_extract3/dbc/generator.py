@@ -1,4 +1,4 @@
-import sys, os, re, types, html.parser, urllib, datetime, signal, json, pdb, pathlib, csv, logging
+import sys, os, re, types, html.parser, urllib, datetime, signal, json, pdb, pathlib, csv, logging, io
 
 import dbc.db, dbc.data, dbc.constants, dbc.parser, dbc.file
 
@@ -158,18 +158,10 @@ class DataGenerator(object):
     _pet_names   = [ None, 'Ferocity', 'Tenacity', None, 'Cunning' ]
     _pet_masks   = [ None, 0x1,        0x2,        None, 0x4       ]
 
-    def debug(self, msg):
-        logging.debug('%s: %s', self.__class__.__name__, msg)
-
-    def dbc_version(self, wow, build):
-        if self._options.wowversion == 0:
-            return self._options.build >= build
-        else:
-            return self._options.wowversion >= wow and self._options.build >= build
-
     def __init__(self, options, data_store = None):
         self._options = options
         self._data_store = data_store
+        self._out = None
 
         self._class_map = { }
         # Build some maps to help us output things
@@ -190,20 +182,6 @@ class DataGenerator(object):
             self._race_map[1 << (i - 1)] = i
 
         #print self._class_map, self._race_map
-
-    def format_str(self, string):
-        return '%s%s%s' % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            string,
-            self._options.suffix and ('_%s' % self._options.suffix) or '' )
-
-    def file_path(self, basename):
-        return os.path.abspath(os.path.join(self._options.path, basename))
-
-    def attrib_name(self, basename):
-        return basename.lower().replace('-', '_')
-
-    def initialize(self):
         if self._options.output:
             self._out = pathlib.Path(self._options.output).open('w')
             if not self._out.writable():
@@ -217,10 +195,44 @@ class DataGenerator(object):
         else:
             self._out = sys.stdout
 
+
+    def format_str(self, string):
+        return '%s%s%s' % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            string,
+            self._options.suffix and ('_%s' % self._options.suffix) or '' )
+
+    def file_path(self, basename):
+        return os.path.abspath(os.path.join(self._options.path, basename))
+
+    def attrib_name(self, basename):
+        return basename.lower().replace('-', '_')
+
+    def set_output(self, obj, append = False):
+        if self._out and self._out != sys.stdout:
+            self._out.close()
+
+        if isinstance(obj, io.IOBase):
+            self._out = obj
+        elif isinstance(obj, str):
+            self._out = pathlib.Path(obj).open(append and 'a' or 'w')
+            if not self._out.writable():
+                logging.error('Output file %s is not writable', obj)
+                return False
+        elif obj == None:
+            self._out = sys.stdout
+
+        return True
+
+    def close(self):
+        if self._out and self._out != sys.stdout:
+            self._out.close()
+
+    def initialize(self):
         for i in self._dbc:
             dbcf = None
             if self._data_store:
-                dbase = self._data_store.get(self.file_path(i))
+                dbase = self._data_store.get(i)
                 if '_%s_db' % self.attrib_name(i) not in dir(self):
                     setattr(self, '_%s_db' % self.attrib_name(i), dbase)
             else:
@@ -277,9 +289,9 @@ class DataGenerator(object):
                 while record != None:
                     if record.id not in data['ids']:
                         if dbase.get(record.id):
-                            self.debug('Overwrote id %d using cache %s' % (record.id, cache_parser._fname))
+                            logging.debug('Overwrote id %d using cache %s', record.id, cache_parser._fname)
                         else:
-                            self.debug('Added id %d using cache %s' % (record.id, cache_parser._fname))
+                            logging.debug('Added id %d using cache %s', record.id, cache_parser._fname)
                         dbase[record.id] = record
                         data['ids'].append(record.id)
                     record = cache_parser.next_record()
@@ -294,7 +306,7 @@ class DataGenerator(object):
 
 class RealPPMModifierGenerator(DataGenerator):
     def __init__(self, options, data_store = None):
-        DataGenerator.__init__(self, options, data_store)
+        super().__init__(options, data_store)
 
         self._dbc = [ 'ChrSpecialization', 'SpellProcsPerMinute', 'SpellProcsPerMinuteMod', 'SpellAuraOptions' ]
         self._specmap = { 0: 'SPEC_NONE' }
@@ -349,8 +361,7 @@ class SpecializationEnumGenerator(DataGenerator):
     def __init__(self, options, data_store = None):
         self._dbc = [ 'ChrSpecialization' ]
 
-        DataGenerator.__init__(self, options, data_store)
-
+        super().__init__(options, data_store)
 
     def generate(self, ids = None):
         enum_ids = [
@@ -457,7 +468,7 @@ class SpecializationListGenerator(DataGenerator):
     def __init__(self, options, data_store = None):
         self._dbc = [ 'ChrSpecialization' ]
 
-        DataGenerator.__init__(self, options, data_store)
+        super().__init__(options, data_store)
 
     def generate(self, ids = None):
         enum_ids = [
@@ -539,7 +550,7 @@ class SpecializationListGenerator(DataGenerator):
 
 class TalentDataGenerator(DataGenerator):
     def __init__(self, options, data_store = None):
-        DataGenerator.__init__(self, options, data_store)
+        super().__init__(options, data_store)
 
         self._dbc = [ 'Spell', 'Talent', 'ChrSpecialization' ]
 
@@ -606,7 +617,7 @@ class RulesetItemUpgradeGenerator(DataGenerator):
     def __init__(self, options, data_store = None):
         self._dbc = [ 'RulesetItemUpgrade' ]
 
-        DataGenerator.__init__(self, options, data_store)
+        super().__init__(options, data_store)
 
     def filter(self):
         return sorted(self._rulesetitemupgrade_db.keys()) + [0]
@@ -629,7 +640,7 @@ class ItemUpgradeDataGenerator(DataGenerator):
     def __init__(self, options, data_store = None):
         self._dbc = [ 'ItemUpgrade' ]
 
-        DataGenerator.__init__(self, options, data_store)
+        super().__init__(options, data_store)
 
     def generate(self, ids = None):
         self._out.write('// Upgrade rule data, wow build level %d\n' % self._options.build)
@@ -690,7 +701,7 @@ class ItemDataGenerator(DataGenerator):
     def __init__(self, options, data_store = None):
         self._dbc = [ 'Item-sparse', 'Item', 'ItemEffect', 'SpellEffect', 'Spell', 'JournalEncounterItem', 'ItemNameDescription' ]
 
-        DataGenerator.__init__(self, options, data_store)
+        super().__init__(options, data_store)
 
     def initialize(self):
         if not DataGenerator.initialize(self):
@@ -1029,209 +1040,6 @@ class ItemDataGenerator(DataGenerator):
         s = json.dumps(s2)
 
         return s
-
-class RandomPropertyHTMLParser(html.parser.HTMLParser):
-    def __init__(self, suffix_map):
-        #self.__indent = 0
-        self.__getSuffix = False
-        self.__suffixName = None
-        self.__suffix_map = suffix_map
-        HTMLParser.HTMLParser.__init__(self)
-
-    # Really stupid way to parse things, but it should work
-    def handle_starttag(self, tag, attrs):
-        #print '%s%s: %s' % ( ' ' * self.__indent, tag, attrs )
-        #self.__indent += 2
-        if tag == 'td' and not self.__suffixName:
-            for attr in attrs:
-                if attr[0] == 'class' and 'color-q' in attr[1]:
-                    self.__getSuffix = True
-                    break
-
-
-    def handle_data(self, data):
-        if self.__getSuffix:
-            self.__suffixName = data.translate(None, '.')
-            self.__suffix_map[self.__suffixName] = None
-        elif self.__suffixName:
-            self.__suffix_map[self.__suffixName] = data.translate(None, '\r\n\t')
-
-    def handle_endtag(self, tag):
-        #self.__indent -= 2
-        #print '%s%s' % ( ' ' * self.__indent, tag )
-        if tag == 'td' and self.__getSuffix:
-            self.__getSuffix = False
-        elif tag == 'td' and self.__suffixName:
-            self.__suffixName = None
-
-class RandomSuffixGroupGenerator(ItemDataGenerator):
-    _stat_map = {
-        'agility'           : 3,
-        'strength'          : 4,
-        'intellect'         : 5,
-        'spirit'            : 6,
-        'stamina'           : 7,
-        'dodge rating'      : 13,
-        'parry rating'      : 14,
-        'hit rating'        : 31,
-        'crit rating'       : 32,
-        'haste rating'      : 36,
-        'expertise rating'  : 37,
-        'holy resistance'   : 53,
-        'mastery rating'    : 49,
-        'frost resistance'  : 52,
-        'shadow resistance' : 54,
-        'nature resistance' : 55,
-        'arcane resistance' : 56,
-    }
-
-    _quality_str = [ '', '', 'uncm', 'rare', 'epic' ]
-
-    def random_suffix_type(self, id):
-        item = self._item_sparse_db[id]
-        item2 = self._item_db[id]
-
-        f = -1
-
-        if item2.classs == 2:
-            if item2.subclass == 1 or item2.subclass == 5  or item2.subclass == 6 or item2.subclass == 8 or item2.subclass == 10:
-                f = 0
-            elif item2.subclass == 2  or item2.subclass == 3  or item2.subclass == 18 or item2.subclass == 16 or item2.subclass == 19:
-                f = 4
-            else:
-                f = 3
-        else:
-            if item.inv_type == 1 or item.inv_type == 5 or item.inv_type == 7:
-                f = 0
-            elif item.inv_type == 3 or item.inv_type == 6 or item.inv_type == 8 or item.inv_type == 10 or item.inv_type == 12:
-                f = 1
-            elif item.inv_type == 2 or item.inv_type == 9 or item.inv_type == 11 or item.inv_type == 14 or item.inv_type == 23 or item.inv_type == 16:
-                f = 2
-
-        return f
-
-    def __init__(self, options):
-        ItemDataGenerator.__init__(self, options)
-
-    def initialize(self):
-        self._dbc += [ 'SpellItemEnchantment', 'ItemRandomSuffix', 'RandPropPoints' ]
-
-        return ItemDataGenerator.initialize(self)
-
-    def filter(self):
-        item_ids = ItemDataGenerator.filter(self)
-
-        ids = []
-        # Generate an ID list of random suffix ids, to which we need to figure
-        # out the random suffix grouping, based on web crawling of battle.net
-        for id in item_ids:
-            if self._item_sparse_db[id].rand_suffix > 0:
-                ids.append(id)
-
-        return ids
-
-    def generate(self, ids = None):
-        rsuffix_groups = { }
-        parsed_rsuffix_groups = { }
-        for id in ids:
-            item = self._item_sparse_db[id]
-            if item.rand_suffix not in rsuffix_groups.keys():
-                rsuffix_groups[item.rand_suffix] = [ ]
-
-            rsuffix_groups[item.rand_suffix].append(id)
-
-        for rsuffix_group, rsuffix_items in rsuffix_groups.items():
-            # Take first item of the group, we could revert to more items here
-            # if the url returns 404 or such
-            item = self._item_sparse_db[rsuffix_items[0]]
-            smap = { }
-            sys.stderr.write('.. Fetching group %d with item id %d (%s)\n' % (rsuffix_group, item.id, item.name))
-            try:
-                url = urllib2.urlopen(r'http://us.battle.net/wow/en/item/%d/randomProperties' % item.id)
-            except urllib2.HTTPError as err:
-                sys.stderr.write('.. HTTP Error %d: %s\n' % (err.code, err.msg))
-                continue
-
-            html = RandomPropertyHTMLParser(smap)
-            html.feed(url.read())
-            html.close()
-
-            for suffix, stats in smap.items():
-                html_stats = [ ]
-                splits = stats.split(',')
-                # Parse html stats
-                for stat_str in splits:
-                    stat_re = re.match(r'^[\+\-]([0-9]+) ([a-z ]+)', stat_str.lower().strip())
-                    if not stat_re:
-                        continue
-
-                    stat_val = int(stat_re.group(1))
-                    stat_id = self._stat_map.get(stat_re.group(2))
-
-                    if stat_id == None:
-                        #sys.stderr.write('Unknown stat %s\n' % stat_str.lower().strip())
-                        continue
-
-                    html_stats.append((stat_id, stat_val))
-
-                for suffix_id, suffix_data in self._itemrandomsuffix_db.items():
-                    if suffix_data.name != suffix:
-                        continue
-
-                    # Name matches, we need to check the stats
-                    rsuffix_stats = [ ]
-
-                    # Then, scan through the suffix properties,
-                    for sp_id in range(1, 6):
-                        item_ench_id = getattr(suffix_data, 'id_property_%d' % sp_id)
-                        item_ench_alloc = getattr(suffix_data, 'property_pct_%d' % sp_id)
-                        if item_ench_id == 0:
-                            continue
-
-                        rprop = self._randproppoints_db[item.ilevel]
-                        f = self.random_suffix_type(item.id)
-
-                        points = getattr(rprop, '%s_points_%d' % (self._quality_str[item.quality], f + 1))
-                        amount = points * item_ench_alloc / 10000.0
-
-                        item_ench = self._spellitemenchantment_db[item_ench_id]
-                        for ie_id in range(1, 4):
-                            ie_stat_type = getattr(item_ench, 'type_%d' % ie_id)
-                            ie_stat_prop = getattr(item_ench, 'id_property_%d' % ie_id)
-                            if ie_stat_type != 5:
-                                continue
-
-                            rsuffix_stats.append((ie_stat_prop, int(amount)))
-
-                    # Compare lists, need at least as many matches as html stats
-                    match = 0
-                    for i in range(0, len(html_stats)):
-                        if html_stats[i] in rsuffix_stats:
-                            match += 1
-
-                    if match == len(html_stats):
-                        if not rsuffix_group in parsed_rsuffix_groups.keys():
-                            parsed_rsuffix_groups[rsuffix_group] = [ ]
-
-                        parsed_rsuffix_groups[rsuffix_group].append(suffix_data.id)
-                        break
-
-        s = '#define %sRAND_SUFFIX_GROUP%s_SIZE (%d)\n\n' % (
-            (self._options.prefix and ('%s_' % self._options.prefix) or '').upper(),
-            (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
-            len(parsed_rsuffix_groups.keys())
-        )
-        s += '// Random suffix groups\n';
-        s += 'static struct random_suffix_group_t __%srand_suffix_group%s_data[] = {\n' % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or '' )
-
-        for group_id in sorted(parsed_rsuffix_groups.keys()):
-            data = parsed_rsuffix_groups[group_id]
-            s += '  { %4u, { %s, 0 } },\n' % (group_id, ', '.join(['%3u' % d for d in sorted(data)]))
-
-        s += '  {    0, {   0 } }\n'
-        s += '};\n\n'
 
 class SpellDataGenerator(DataGenerator):
     _spell_ref_rx = r'(?:\??\(?[Saps]|@spell(?:name|desc|icon|tooltip)|\$|&)([0-9]{2,})(?:\[|(?<=[0-9a-zA-Z])|\&|\))'
@@ -1744,7 +1552,7 @@ class SpellDataGenerator(DataGenerator):
     }
 
     def __init__(self, options, data_store = None):
-        DataGenerator.__init__(self, options, data_store)
+        super().__init__(options, data_store)
 
         self._dbc = [ 'Spell', 'SpellEffect', 'SpellScaling', 'SpellCooldowns', 'SpellRange',
                 'SpellClassOptions', 'SpellDuration', 'SpellPower', 'SpellLevels',
@@ -1756,41 +1564,25 @@ class SpellDataGenerator(DataGenerator):
                 'ItemEffect', 'MinorTalent', 'ArtifactPowerRank', 'SpellShapeshift', 'SpellMechanic' ]
 
     def initialize(self):
-        _start = datetime.datetime.now()
-        DataGenerator.initialize(self)
+        super().initialize()
 
         if self._data_store:
-            self._data_store.link(self.file_path('SpellEffect'), 'id_spell',
-                                  self.file_path('Spell'), 'add_effect')
-            self._data_store.link(self.file_path('SpellPower'), 'id_spell',
-                                  self.file_path('Spell'), 'add_power')
-            self._data_store.link(self.file_path('SpellCategories'), 'id_spell',
-                                  self.file_path('Spell'), '_categories')
-            self._data_store.link(self.file_path('SpellScaling'), 'id_spell',
-                                  self.file_path('Spell'), '_scaling')
-            self._data_store.link(self.file_path('SpellLevels'), 'id_spell',
-                                  self.file_path('Spell'), '_levels')
-            self._data_store.lnk(self.file_path('SpellCooldowns'), 'id_spell',
-                                 self.file_path('Spell'), '_cooldowns')
-            self._data_store.link(self.file_path('SpellAuraOptions'), 'id_spell',
-                                  self.file_path('Spell'), '_auraoptions')
-            self._data_store.link(self.file_path('SpellEquippedItems'), 'id_spell',
-                                  self.file_path('Spell'), '_equippeditems')
-            self._data_store.link(self.file_path('SpellClassOptions'), 'id_spell',
-                                  self.file_path('Spell'), '_classopts')
-            self._data_store.link(self.file_path('SpellShapeshift'), 'id_spell',
-                                  self.file_path('Spell'), '_shapeshift')
+            self._data_store.link('SpellEffect',        'id_spell', 'Spell', 'add_effect'   )
+            self._data_store.link('SpellPower',         'id_spell', 'Spell', 'power'        )
+            self._data_store.link('SpellCategories',    'id_spell', 'Spell', 'category'     )
+            self._data_store.link('SpellScaling',       'id_spell', 'Spell', 'scaling'      )
+            self._data_store.link('SpellLevels',        'id_spell', 'Spell', 'level'        )
+            self._data_store.link('SpellCooldowns',     'id_spell', 'Spell', 'cooldown'     )
+            self._data_store.link('SpellAuraOptions',   'id_spell', 'Spell', 'aura_option'  )
+            self._data_store.link('SpellEquippedItems', 'id_spell', 'Spell', 'equipped_item')
+            self._data_store.link('SpellClassOptions',  'id_spell', 'Spell', 'class_option' )
+            self._data_store.link('SpellShapeshift',    'id_spell', 'Spell', 'shapeshift'   )
 
-            self._data_store.link(self.file_path('SpellEffectScaling'), 'id_effect',
-                                  self.file_path('SpellEffect'), 'scaling')
+            self._data_store.link('SpellEffectScaling', 'id_effect', 'SpellEffect', 'scaling')
 
-            self._data_store.link(self.file_path('ItemSetSpell'), 'id_item_set',
-                                  self.file_path('ItemSet'), 'bonus')
+            self._data_store.link('ItemSetSpell', 'id_item_set', 'ItemSet', 'bonus')
 
-            self._data_store.link(self.file_path('ItemEffect'), 'id_item',
-                                  self.file_path('Item-sparse'), 'spells')
-
-            sys.exit(1)
+            self._data_store.link('ItemEffect', 'id_item', 'Item-sparse', 'spells')
         else:
             # Reverse map various things to Spell records so we can easily generate output
             link(self._spelleffect_db, 'id_spell', self._spell_db, 'add_effect')
@@ -1861,20 +1653,20 @@ class SpellDataGenerator(DataGenerator):
             pdb.set_trace()
         # Check for blacklisted spells
         if spell.id in SpellDataGenerator._spell_blacklist:
-            self.debug("Spell id %u (%s) is blacklisted" % ( spell.id, spell.name ) )
+            logging.debug("Spell id %u (%s) is blacklisted", spell.id, spell.name)
             return False
 
         # Check for spell name blacklist
         if spell_name:
             for p in SpellDataGenerator._spell_name_blacklist:
                 if re.search(p, spell_name):
-                    self.debug("Spell id %u (%s) matches name blacklist pattern %s" % ( spell.id, spell.name, p ) )
+                    logging.debug("Spell id %u (%s) matches name blacklist pattern %s", spell.id, spell.name, p)
                     return False
 
         # Check for blacklisted spell category mechanism
         for c in spell.get_links('category'):
             if c.mechanic in SpellDataGenerator._mechanic_blacklist:
-                self.debug("Spell id %u (%s) matches mechanic blacklist %u" % ( spell.id, spell_name, c.mechanic ))
+                logging.debug("Spell id %u (%s) matches mechanic blacklist %u", spell.id, spell_name, c.mechanic)
                 return False
 
         # Make sure we can filter based on effects even if there's no map of relevant effects
@@ -1902,7 +1694,7 @@ class SpellDataGenerator(DataGenerator):
         # If we do not find a true value in enabled effects, this spell is completely
         # blacklisted, as it has no effects enabled that interest us
         if len(spell._effects) > 0 and True not in enabled_effects:
-            self.debug("Spell id %u (%s) has no enabled effects (n_effects=%u)" % ( spell.id, spell_name, len(spell._effects) ) )
+            logging.debug("Spell id %u (%s) has no enabled effects (n_effects=%u)", spell.id, spell_name, len(spell._effects))
             return False
 
         return True
@@ -2264,15 +2056,15 @@ class SpellDataGenerator(DataGenerator):
         # generic spells from SpellDataGenerator._spell_id_list[0]
         for generic_spell_id in SpellDataGenerator._spell_id_list[0]:
             if generic_spell_id in ids.keys():
-                sys.stderr.write('Whitelisted spell id %u (%s) already in the list of spells to be extracted.\n' % (
-                    generic_spell_id, self._spell_db[generic_spell_id].name) )
+                logging.debug('Whitelisted spell id %u (%s) already in the list of spells to be extracted',
+                    generic_spell_id, self._spell_db[generic_spell_id].name)
             self.process_spell(generic_spell_id, ids, 0, 0)
 
         for cls in range(1, len(SpellDataGenerator._spell_id_list)):
             for spell_tuple in SpellDataGenerator._spell_id_list[cls]:
                 if len(spell_tuple) == 2 and spell_tuple[0] in ids.keys():
-                    sys.stderr.write('Whitelisted spell id %u (%s) already in the list of spells to be extracted.\n' % (
-                        spell_tuple[0], self._spell_db[spell_tuple[0]].name) )
+                    logging.debug('Whitelisted spell id %u (%s) already in the list of spells to be extracted',
+                        spell_tuple[0], self._spell_db[spell_tuple[0]].name)
                 self.process_spell(spell_tuple[0], ids, self._class_masks[cls], 0)
 
         for spell_id, spell_data in self._spell_db.items():
@@ -2548,7 +2340,7 @@ class SpellDataGenerator(DataGenerator):
 
 class MasteryAbilityGenerator(DataGenerator):
     def __init__(self, options, data_store = None):
-        DataGenerator.__init__(self, options, data_store)
+        super().__init__(options, data_store)
 
         self._dbc = [ 'Spell', 'ChrSpecialization', 'SpellMisc' ]
 
@@ -2629,7 +2421,7 @@ class MasteryAbilityGenerator(DataGenerator):
 
 class RacialSpellGenerator(SpellDataGenerator):
     def __init__(self, options, data_store = None):
-        SpellDataGenerator.__init__(self, options, data_store)
+        super().__init__(options, data_store)
 
         SpellDataGenerator._class_categories = []
 
@@ -2751,7 +2543,7 @@ class SpecializationSpellGenerator(DataGenerator):
     def __init__(self, options, data_store = None):
         self._dbc = [ 'Spell', 'SpecializationSpells', 'ChrSpecialization' ]
 
-        DataGenerator.__init__(self, options, data_store)
+        super().__init__(options, data_store)
 
     def generate(self, ids = None):
         max_ids = 0
@@ -2819,85 +2611,7 @@ class SpecializationSpellGenerator(DataGenerator):
             self._out.write('  },\n')
         self._out.write('};\n')
 
-class PerkSpellGenerator(DataGenerator):
-    def __init__(self, options, data_store = None):
-        self._dbc = [ 'ChrSpecialization', 'MinorTalent', 'Spell' ]
-
-        DataGenerator.__init__(self, options, data_store)
-
-    def generate(self, ids = None):
-        max_ids = 0
-        keys = [
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ]
-        ]
-
-        spec_map = { }
-
-        for ssid, data in self._chrspecialization_db.items():
-            spec_map[ssid] = (data.class_id, data.index, data.name)
-
-        for mtid, data in self._minortalent_db.items():
-            spec = data.id_spec
-
-            pos_data = spec_map[spec]
-            spell = self._spell_db[data.id_spell]
-            if spell.id == 0:
-                continue
-
-            keys[pos_data[0]][pos_data[1]].append((data.index, data.id_spell, pos_data[2], spell.name))
-
-        # Figure out tree with most abilities
-        for cls in range(0, len(keys)):
-            for tree in range(0, len(keys[cls])):
-                if len(keys[cls][tree]) > max_ids:
-                    max_ids = len(keys[cls][tree])
-
-        data_str = "%sperk%s" % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or '',
-        )
-
-        self._out.write('#define %s_SIZE (%d)\n\n' % (data_str.upper(), max_ids))
-
-        self._out.write('// Perk specialization abilities, wow build %d\n' % self._options.build)
-        self._out.write('static unsigned __%s_data[][MAX_SPECS_PER_CLASS][%s_SIZE] = {\n' % (
-            data_str,
-            data_str.upper(),
-        ))
-
-        for cls in range(0, len(keys)):
-            self._out.write('  {\n')
-
-            for tree in range(0, len(keys[cls])):
-                if len(keys[cls][tree]) > 0:
-                    self._out.write('    // %s\n' % keys[cls][tree][0][2])
-                self._out.write('    {\n')
-                for ability in sorted(keys[cls][tree], key = lambda i: i[0]):
-                    self._out.write('      %6u, // %d: %s\n' % ( ability[1], ability[0], ability[3] ))
-
-                if len(keys[cls][tree]) < max_ids:
-                    self._out.write('      %6u,\n' % 0)
-
-                self._out.write('    },\n')
-            self._out.write('  },\n')
-        self._out.write('};\n')
-
 class SpellListGenerator(SpellDataGenerator):
-    def __init__(self, options, data_store = None):
-        SpellDataGenerator.__init__(self, options, data_store)
-
     def spell_state(self, spell, enabled_effects = None):
         if not SpellDataGenerator.spell_state(self, spell, None):
             return False
@@ -2905,16 +2619,16 @@ class SpellListGenerator(SpellDataGenerator):
         misc = self._spellmisc_db[spell.id_misc]
         # Skip passive spells
         if misc.flags_1 & 0x40:
-            self.debug( "Spell id %u (%s) marked as passive" % ( spell.id, spell.name ) )
+            logging.debug("Spell id %u (%s) marked as passive", spell.id, spell.name)
             return False
 
         if misc.flags_1 & 0x80:
-            self.debug( "Spell id %u (%s) marked as hidden" % ( spell.id, spell.name ) )
+            logging.debug("Spell id %u (%s) marked as hidden", spell.id, spell.name)
             return False
 
         # Skip by possible indicator for spellbook visibility
         if misc.flags_5 & 0x8000:
-            self.debug( "Spell id %u (%s) marked as hidden in spellbook" % ( spell.id, spell.name ) )
+            logging.debug("Spell id %u (%s) marked as hidden in spellbook", spell.id, spell.name)
             return False
 
         # Skip spells without any resource cost and category
@@ -2932,18 +2646,18 @@ class SpellListGenerator(SpellDataGenerator):
         # some silly left over? things, or things not shown to player anyhow, so should be all good.
         if type(spell.rank) == str:
             if 'Rank ' in spell.rank:
-                self.debug( "Spell id %u (%s) has a rank defined" % ( spell.id, spell.name ) )
+                logging.debug("Spell id %u (%s) has a rank defined", spell.id, spell.name)
                 return False
 
             if 'Passive' in spell.rank:
-                self.debug( "Spell id %u (%s) labeled passive" % ( spell.id, spell.name ) )
+                logging.debug("Spell id %u (%s) labeled passive", spell.id, spell.name)
                 return False
 
         # Let's not accept spells that have over 100y range, as they cannot really be base abilities then
         if misc.id_range > 0:
             range_ = self._spellrange_db[misc.id_range]
             if range_.max_range > 100.0 or range_.max_range_2 > 100.0:
-                self.debug( "Spell id %u (%s) has a high range (%f, %f)" % ( spell.id, spell.name, range_.max_range, range_.max_range_2 ) )
+                logging.debug("Spell id %u (%s) has a high range (%f, %f)", spell.id, spell.name, range_.max_range, range_.max_range_2)
                 return False
 
         # And finally, spells that are forcibly activated/disabled in whitelisting for
@@ -3062,7 +2776,7 @@ class SpellListGenerator(SpellDataGenerator):
         final_list = {}
         for id, data in ids.items():
             if id in triggered_spell_ids:
-                self.debug("Spell id %u (%s) is a triggered spell" % (id, self._spell_db[id].name))
+                logging.debug("Spell id %u (%s) is a triggered spell", id, self._spell_db[id].name)
             else:
                 final_list[id] = data
 
@@ -3195,7 +2909,7 @@ class ClassFlagGenerator(SpellDataGenerator):
             ids[id] = { }
         return ids
 
-    def generate(self, ids):
+    def generate(self, ids = None):
         spell_data = []
         effect_data = { }
         for i in range(0, 128):
@@ -3286,40 +3000,6 @@ class ClassFlagGenerator(SpellDataGenerator):
                     self._out.write('\n')
                 self._out.write('\n')
             self._out.write('\n')
-
-class GlyphPropertyGenerator(DataGenerator):
-    def __init__(self, options, data_store = None):
-        self._dbc = [ 'GlyphProperties', 'Spell' ]
-
-        DataGenerator.__init__(self, options, data_store)
-
-    def filter(self):
-        return None
-
-    def generate(self, ids = None):
-        data_str = "%sglyph_property_data%s" % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or '',
-        )
-
-        content_str = ''
-        properties = 0
-        for id, data in self._glyphproperties_db.items():
-            if data.id_spell == 0:
-                continue
-
-            if self._spell_db[data.id_spell].id == 0:
-                continue
-
-            content_str += '  { %5u, %6u },\n' % (data.id, data.id_spell)
-            properties += 1
-
-
-        self._out.write('// Glyph properties, wow build %d\n' % self._options.build)
-        self._out.write('static glyph_property_data_t __%s[%d] = {\n' % (data_str, properties + 1))
-        self._out.write(content_str)
-        self._out.write('  { %5u, %6u }\n' % (0, 0))
-        self._out.write('};\n')
 
 class SetBonusListGenerator(DataGenerator):
     # These set bonuses map directly to set bonuses in ItemSet/ItemSetSpell
@@ -3439,7 +3119,7 @@ class SetBonusListGenerator(DataGenerator):
             }
         }
 
-        DataGenerator.__init__(self, options, data_store)
+        super().__init__(options, data_store)
 
     @staticmethod
     def is_extract_set_bonus(bonus):
@@ -3598,7 +3278,7 @@ class SetBonusListGenerator(DataGenerator):
 
         return data
 
-    def generate(self, ids):
+    def generate(self, ids = None):
         ids.sort(key = lambda v: (v['index'], v['class'], v['role'], v['bonus'], v['set_bonus_id']))
 
         data_str = "%sset_bonus_data%s" % (
@@ -3663,7 +3343,7 @@ class RandomSuffixGenerator(DataGenerator):
     def __init__(self, options, data_store = None):
         self._dbc = [ 'ItemRandomSuffix', 'SpellItemEnchantment' ]
 
-        DataGenerator.__init__(self, options, data_store)
+        super().__init__(options, data_store)
 
     def filter(self):
         ids = set()
@@ -3680,7 +3360,7 @@ class RandomSuffixGenerator(DataGenerator):
             for i in range(1,5):
                 item_ench = self._spellitemenchantment_db.get( getattr(data, 'id_property_%d' % i) )
                 if not item_ench:
-                    self.debug( "No item enchantment found for %s (%s)" % (data.name, data.name_int) )
+                    logging.debug("No item enchantment found for %s (%s)", data.name, data.name_int)
                     continue
 
                 if item_ench.type_1 not in [4, 5]:
@@ -3791,7 +3471,7 @@ class RandomPropertyPointsGenerator(DataGenerator):
     def __init__(self, options, data_store = None):
         self._dbc = [ 'RandPropPoints' ]
 
-        DataGenerator.__init__(self, options, data_store)
+        super().__init__(options, data_store)
 
     def filter(self):
         ids = [ ]
@@ -3833,7 +3513,7 @@ class WeaponDamageDataGenerator(DataGenerator):
         self._dbc = [ 'ItemDamageOneHand', 'ItemDamageOneHandCaster',
                       'ItemDamageTwoHand', 'ItemDamageTwoHandCaster',  ]
 
-        DataGenerator.__init__(self, options, data_store)
+        super().__init__(options, data_store)
 
     def filter(self):
 
@@ -3865,7 +3545,7 @@ class WeaponDamageDataGenerator(DataGenerator):
 class ArmorValueDataGenerator(DataGenerator):
     def __init__(self, options, data_store = None):
         self._dbc = [ 'ItemArmorQuality', 'ItemArmorShield', 'ItemArmorTotal' ]
-        DataGenerator.__init__(self, options, data_store)
+        super().__init__(options, data_store)
 
     def filter(self):
 
@@ -3904,7 +3584,7 @@ class ArmorValueDataGenerator(DataGenerator):
 class ArmorSlotDataGenerator(DataGenerator):
     def __init__(self, options, data_store = None):
         self._dbc = [ 'ArmorLocation' ]
-        DataGenerator.__init__(self, options, data_store)
+        super().__init__(options, data_store)
 
     def filter(self):
         return None
@@ -3928,7 +3608,7 @@ class ArmorSlotDataGenerator(DataGenerator):
 class GemPropertyDataGenerator(DataGenerator):
     def __init__(self, options, data_store = None):
         self._dbc = [ 'GemProperties' ]
-        DataGenerator.__init__(self, options, data_store)
+        super().__init__(options, data_store)
 
     def filter(self):
         ids = []
@@ -3960,7 +3640,7 @@ class GemPropertyDataGenerator(DataGenerator):
 class ItemBonusDataGenerator(DataGenerator):
     def __init__(self, options, data_store = None):
         self._dbc = [ 'ItemBonus', 'ItemBonusTreeNode', 'ItemXBonusTree' ]
-        DataGenerator.__init__(self, options, data_store)
+        super().__init__(options, data_store)
 
     def generate(self, ids):
         # Bonus trees
@@ -4038,9 +3718,9 @@ def curve_point_sort(a, b):
 class ScalingStatDataGenerator(DataGenerator):
     def __init__(self, options, data_store = None):
         self._dbc = [ 'ScalingStatDistribution', 'CurvePoint' ]
-        DataGenerator.__init__(self, options, data_store)
+        super().__init__(options, data_store)
 
-    def generate(self, ids):
+    def generate(self, ids = None):
         # Bonus trees
 
         data_str = "%sscaling_stat_distribution%s" % (
@@ -4085,9 +3765,9 @@ class ScalingStatDataGenerator(DataGenerator):
 class ItemNameDescriptionDataGenerator(DataGenerator):
     def __init__(self, options, data_store = None):
         self._dbc = [ 'ItemNameDescription' ]
-        DataGenerator.__init__(self, options, data_store)
+        super().__init__(options, data_store)
 
-    def generate(self, ids):
+    def generate(self, ids = None):
         data_str = "%sitem_name_description%s" % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or '',
@@ -4111,7 +3791,7 @@ class ArtifactDataGenerator(DataGenerator):
     def __init__(self, options, data_store = None):
         self._dbc = [ 'Artifact', 'ArtifactPower', 'ArtifactPowerRank', 'Spell' ]
 
-        DataGenerator.__init__(self, options, data_store)
+        super().__init__(options, data_store)
 
     def filter(self):
         ids = {}
@@ -4143,7 +3823,7 @@ class ArtifactDataGenerator(DataGenerator):
 
         return ids
 
-    def generate(self, ids):
+    def generate(self, ids = None):
         data_str = "%sartifact%s" % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or '',

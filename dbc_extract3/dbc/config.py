@@ -1,99 +1,82 @@
-import configparser, sys, importlib, logging, types
+import configparser, sys, importlib, logging, types, os
 
-import dbc
-
-def UniqueValidator(source_db, source_data, target_db, target_data, target_attr):
-    if isinstance(target_attr, list) and len(target_attr) > 1:
-        return False
-    elif isinstance(target_attr, dbc.data.RawDBCRecord):
-        return target_attr.id == 0
-    else:
-        return target_attr == None or target_attr == 0
-
-class DataStore:
-    def __init__(self, options):
-        self.options = options
-        self.databases = {}
-        self.initializers = {}
-
-    def get(self, fn):
-        if fn in self.databases:
-            return self.databases[fn]
-
-        dbcf = dbc.file.DBCFile(self.options, fn)
-        if not dbcf.open():
-            logging.error("Failed to open %s, exiting", fn)
-            sys.exit(1)
-
-        dbase = dbc.db.DBCDB(dbcf.record_class())
-
-        for record in dbcf:
-            dbase[record.id] = record
-
-        self.databases[fn] = dbase
-        return dbase
-
-    def link(self, source, source_key, target, target_attr, validator = None):
-        initializer_key = '|'.join([source, source_key, target, target_attr])
-        if initializer_key in self.initializers:
-            return
-
-        source_db = self.get(source)
-        target_db = self.get(target)
-
-        for id_, data in source_db.items():
-            v = getattr(data, source_key, 0)
-            if v == 0:
-                continue
-
-            target = target_db[v]
-            if target.id != v:
-                continue
-
-            attr = getattr(target, target_attr, None)
-            if validator and not validator(source_db, data, target_db, target, attr):
-                logging.warning("Data %s fails uniqueness check for %s (field already has %s)",
-                    target, data, attr)
-                continue
-
-            if isinstance(attr, types.FunctionType) or \
-               isinstance(attr, types.LambdaType) or \
-               isinstance(attr, types.MethodType):
-                attr(data)
-            elif isinstance(attr, list):
-                attr.append(data)
-            else:
-                setattr(target, target_attr, data)
-
-        self.initializers[initializer_key] = True
+import dbc.db
 
 class Config:
     def __init__(self, options):
         self.options = options
-        self.config = configparser.ConfigParser()
-        self.data_store = DataStore(self.options)
+        self.data_store = dbc.db.DataStore(self.options)
 
-        self.generators = {}
-        self.generator_objects = {}
+        self.config = {}
+        self.base_module_path = None
+        self.base_module = None
+        self.base_output_path = None
+
+    def output_file(self, file_name):
+        return os.path.join(self.base_output_path, file_name)
 
     def open(self):
         if len(self.options.args) < 1:
             return False
 
-        self.config.read(self.options.args[0])
+        config = configparser.ConfigParser()
+        config.read(self.options.args[0])
 
-        default_module_path = self.config.get('general', 'module_base')
-        for section in self.config.sections():
+        for section in config.sections():
             if section == 'general':
-                continue
+                self.base_module_path = config.get('general', 'module_base')
+                self.base_output_path = config.get('general', 'output_base')
+            else:
+                if section not in self.config:
+                    self.config[section] = { 'generators': [], 'objects': [] }
 
-            for i in self.config.get(section, 'generators').split():
-                self.generators[i] = getattr(importlib.import_module(default_module_path), i)
+                for i in config.get(section, 'generators').split():
+                    self.config[section]['generators'].append(i)
 
-        for generator, obj in self.generators.items():
-            self.generator_objects[generator] = obj(self.options, self.data_store)
+        if not self.base_module_path:
+            logging.error('No "module_base" defined in general section')
+            return False
 
-        for generator, obj in self.generator_objects.items():
-            obj.initialize()
+        if not self.base_output_path:
+            logging.error('No "output_base" defined in general section')
+            return False
 
+        try:
+            self.base_module = importlib.import_module(self.base_module_path)
+        except:
+            logging.error('Unable to import %s', self.base_module_path)
+            return False
+
+        return True
+
+    def generate(self):
+        for section, config in self.config.items():
+            for generator in config['generators']:
+                try:
+                    obj = getattr(self.base_module, generator)
+                except AttributeError:
+                    logging.error('Unable to instantiate generator %s', generator)
+                    return False
+
+                config['objects'].append(obj(self.options, self.data_store))
+
+        for section, config in self.config.items():
+            for generator in config['objects']:
+                logging.info('Initializing %s ...', generator.__class__.__name__)
+                if not generator.initialize():
+                    logging.error('Unable to initialize %s, exiting ...', generator.__class__.__name__)
+                    return False
+
+        for section, config in self.config.items():
+            output_file = self.output_file(section)
+
+            for generator in config['objects']:
+                if not generator.set_output(output_file, generator != config['objects'][0]):
+                    return False
+
+                ids = generator.filter()
+
+                logging.info('Outputting %s to %s ...', generator.__class__.__name__, output_file)
+                generator.generate(ids)
+                generator.close()
 

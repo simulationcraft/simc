@@ -13,8 +13,8 @@ parser.add_argument("-t", "--type", dest = "type",
                   help    = "Processing type [spell]", metavar = "TYPE", 
                   default = "spell", action = "store",
                   choices = [ 'batchoutput', 'spell', 'class_list', 'talent', 'scale', 'view', 'csv',
-                              'header', 'spec_spell_list', 'mastery_list', 'racial_list', 'perk_list',
-                              'glyph_list', 'glyph_property_list', 'class_flags', 'set_list', 'random_property_points', 'random_suffix',
+                              'header', 'spec_spell_list', 'mastery_list', 'racial_list',
+                              'class_flags', 'random_property_points', 'random_suffix',
                               'item_ench', 'weapon_damage', 'item', 'item_armor', 'gem_properties',
                               'random_suffix_groups', 'spec_enum', 'spec_list', 'item_upgrade',
                               'rppm_coeff', 'set_list2', 'item_bonus', 'item_scaling',
@@ -77,8 +77,10 @@ dbc.data.initialize_data_model(options, dbc.data)
 
 if options.type == 'batchoutput':
     config = dbc.config.Config(options)
-    config.open()
-    sys.exit(1)
+    if not config.open():
+        sys.exit(1)
+
+    config.generate()
 
 if options.type == 'spell':
     _start = datetime.datetime.now()
@@ -246,13 +248,6 @@ elif options.type == 'set_list2':
         sys.exit(1)
     ids = g.filter()
     
-    g.generate(ids)
-elif options.type == 'perk_list':
-    g = dbc.generator.PerkSpellGenerator(options)
-    if not g.initialize():
-        sys.exit(1)
-    ids = g.filter()
-
     g.generate(ids)
 elif options.type == 'item_bonus':
     g = dbc.generator.ItemBonusDataGenerator(options)

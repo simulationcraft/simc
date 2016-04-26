@@ -1285,9 +1285,6 @@ public:
   unsigned specialization_max_class() const;
   bool     ability_specialization( uint32_t spell_id, std::vector<specialization_e>& spec_list ) const;
 
-  unsigned perk_ability_size() const;
-  unsigned perk_ability( unsigned class_id, unsigned tree_id, unsigned n ) const;
-
   unsigned mastery_ability( unsigned class_id, unsigned tree_id, unsigned n ) const;
   unsigned mastery_ability_size() const;
   int      mastery_ability_tree( player_e c, uint32_t spell_id ) const;
@@ -1319,8 +1316,6 @@ public:
   unsigned pet_ability_id( player_e c, const char* spell_name ) const;
   unsigned race_ability_id( player_e c, race_e r, const char* spell_name ) const;
   unsigned specialization_ability_id( specialization_e spec_id, const char* spell_name ) const;
-  unsigned perk_ability_id( specialization_e spec_id, const char* spell_name ) const;
-  unsigned perk_ability_id( specialization_e spec_id, size_t perk_index ) const;
   unsigned mastery_ability_id( specialization_e spec, const char* spell_name ) const;
   unsigned mastery_ability_id( specialization_e spec, uint32_t idx ) const;
   specialization_e mastery_specialization( const player_e c, uint32_t spell_id ) const;

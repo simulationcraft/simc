@@ -1191,20 +1191,6 @@ unsigned dbc_t::specialization_ability( unsigned class_id, unsigned tree_id, uns
 #endif
 }
 
-unsigned dbc_t::perk_ability( unsigned class_id, unsigned tree_id, unsigned n ) const
-{
-  assert( class_id < dbc_t::class_max_size() );
-  assert( tree_id < specialization_max_per_class() );
-  assert( n < perk_ability_size() );
-
-#if SC_USE_PTR
-  return ptr ? __ptr_perk_data[ class_id ][ tree_id ][ n ]
-             : __perk_data[ class_id ][ tree_id ][ n ];
-#else
-  return __perk_data[ class_id ][ tree_id ][ n ];
-#endif
-}
-
 unsigned dbc_t::mastery_ability( unsigned class_id, unsigned specialization, unsigned n ) const
 {
   assert( class_id < dbc_t::class_max_size() );
@@ -1294,15 +1280,6 @@ unsigned dbc_t::specialization_ability_size() const
   return ptr ? PTR_TREE_SPECIALIZATION_SIZE : TREE_SPECIALIZATION_SIZE;
 #else
   return TREE_SPECIALIZATION_SIZE;
-#endif
-}
-
-unsigned dbc_t::perk_ability_size() const
-{
-#if SC_USE_PTR
-  return ptr ? PTR_PERK_SIZE : PERK_SIZE;
-#else
-  return PERK_SIZE;
 #endif
 }
 
@@ -2277,62 +2254,6 @@ bool dbc_t::ability_specialization( uint32_t spell_id, std::vector<specializatio
   }
 
   return ! spec_list.empty();
-}
-
-unsigned dbc_t::perk_ability_id( specialization_e spec_id, size_t perk_idx ) const
-{
-  unsigned class_idx = -1;
-  unsigned spec_index = -1;
-
-  if ( perk_idx >= perk_ability_size() )
-    return 0;
-
-  if ( ! spec_idx( spec_id, class_idx, spec_index ) )
-    return 0;
-
-  assert( ( int )class_idx >= 0 && class_idx < specialization_max_class() &&
-          ( int )spec_index >= 0 && spec_index < specialization_max_per_class() );
-
-  return perk_ability( class_idx, spec_index, static_cast<unsigned int>(perk_idx) );
-}
-
-unsigned dbc_t::perk_ability_id( specialization_e spec_id, const char* spell_name ) const
-{
-  unsigned class_idx = -1;
-  unsigned spec_index = -1;
-
-  assert( spell_name && spell_name[ 0 ] );
-
-  if ( ! spec_idx( spec_id, class_idx, spec_index ) )
-    return 0;
-
-  assert( ( int )class_idx >= 0 && class_idx < specialization_max_class() &&
-          ( int )spec_index >= 0 && spec_index < specialization_max_per_class() );
-
-  for ( unsigned n = 0; n < perk_ability_size(); n++ )
-  {
-    unsigned spell_id;
-    if ( ! ( spell_id = perk_ability( class_idx, spec_index, n ) ) )
-      break;
-
-    if ( ! spell( spell_id ) -> id() )
-      continue;
-
-    if ( util::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) )
-    {
-      // Spell has been replaced by another, so don't return id
-      if ( ! replaced_id( spell_id ) )
-      {
-        return spell_id;
-      }
-      else
-      {
-        return 0;
-      }
-    }
-  }
-
-  return 0;
 }
 
 unsigned dbc_t::glyph_spell_id( unsigned /* property_id */ ) const

@@ -50,10 +50,10 @@ DBFilesClient\BattlePetSpeciesXAbility.db2
 DBFilesClient\BattlePetState.db2
 DBFilesClient\BattlePetVisual.db2
 DBFilesClient\BattlemasterList.db2
+DBFilesClient\BoneWindModifiers.db2
 DBFilesClient\Bounty.db2
 DBFilesClient\BountySet.db2
 DBFilesClient\BroadcastText.db2
-DBFilesClient\BroadcastText_internal.db2
 DBFilesClient\CameraEffect.db2
 DBFilesClient\CameraEffectEntry.db2
 DBFilesClient\CameraMode.db2
@@ -158,7 +158,6 @@ DBFilesClient\GameObjectDiffAnimMap.db2
 DBFilesClient\GameObjectDisplayInfo.db2
 DBFilesClient\GameObjectDisplayInfoXSoundKit.db2
 DBFilesClient\GameObjects.db2
-DBFilesClient\GameObjects_internal.db2
 DBFilesClient\GameTips.db2
 DBFilesClient\GarrAbility.db2
 DBFilesClient\GarrAbilityCategory.db2
@@ -178,6 +177,7 @@ DBFilesClient\GarrFollowerLevelXP.db2
 DBFilesClient\GarrFollowerQuality.db2
 DBFilesClient\GarrFollowerSetXFollower.db2
 DBFilesClient\GarrFollowerType.db2
+DBFilesClient\GarrFollowerUICreature.db2
 DBFilesClient\GarrFollowerXAbility.db2
 DBFilesClient\GarrMechanic.db2
 DBFilesClient\GarrMechanicSetXMechanic.db2
@@ -196,6 +196,7 @@ DBFilesClient\GarrPlotUICategory.db2
 DBFilesClient\GarrSiteLevel.db2
 DBFilesClient\GarrSiteLevelPlotInst.db2
 DBFilesClient\GarrSpecialization.db2
+DBFilesClient\GarrString.db2
 DBFilesClient\GarrTalent.db2
 DBFilesClient\GarrTalentTree.db2
 DBFilesClient\GarrType.db2
@@ -204,12 +205,10 @@ DBFilesClient\GarrUiAnimRaceInfo.db2
 DBFilesClient\GemProperties.db2
 DBFilesClient\GemProperties_internal.db2
 DBFilesClient\GlobalStrings.db2
-DBFilesClient\GlueScreenEmote.db2
 DBFilesClient\GlyphBindableSpell.db2
 DBFilesClient\GlyphExclusiveCategory.db2
 DBFilesClient\GlyphProperties.db2
 DBFilesClient\GlyphRequiredSpec.db2
-DBFilesClient\GlyphSlot.db2
 DBFilesClient\GroundEffectDoodad.db2
 DBFilesClient\GroundEffectTexture.db2
 DBFilesClient\GroupFinderActivity.db2
@@ -333,13 +332,10 @@ DBFilesClient\MarketingPromotionsXLocale.db2
 DBFilesClient\Material.db2
 DBFilesClient\MinorTalent.db2
 DBFilesClient\ModelFileData.db2
-DBFilesClient\ModelManifest.db2
-DBFilesClient\ModelNameToManifest.db2
 DBFilesClient\ModelRibbonQuality.db2
 DBFilesClient\ModifierTree.db2
 DBFilesClient\Mount.db2
 DBFilesClient\MountCapability.db2
-DBFilesClient\MountType.db2
 DBFilesClient\MountTypeXCapability.db2
 DBFilesClient\Movie.db2
 DBFilesClient\MovieFileData.db2
@@ -367,7 +363,6 @@ DBFilesClient\PathProperty.db2
 DBFilesClient\Phase.db2
 DBFilesClient\PhaseShiftZoneSounds.db2
 DBFilesClient\PhaseXPhaseGroup.db2
-DBFilesClient\Phase_internal.db2
 DBFilesClient\PlayerCondition.db2
 DBFilesClient\Positioner.db2
 DBFilesClient\PositionerState.db2
@@ -395,7 +390,6 @@ DBFilesClient\QuestPackageItem.db2
 DBFilesClient\QuestSort.db2
 DBFilesClient\QuestV2.db2
 DBFilesClient\QuestV2CliTask.db2
-DBFilesClient\QuestV2_internal.db2
 DBFilesClient\QuestXP.db2
 DBFilesClient\RacialMounts.db2
 DBFilesClient\RandPropPoints.db2
@@ -418,9 +412,7 @@ DBFilesClient\Scenario_internal.db2
 DBFilesClient\SceneScript.db2
 DBFilesClient\SceneScriptPackage.db2
 DBFilesClient\SceneScriptPackageMember.db2
-DBFilesClient\SceneScriptPackage_internal.db2
 DBFilesClient\ScheduledInterval.db2
-DBFilesClient\ScheduledUniqueCategory.db2
 DBFilesClient\ScheduledWorldState.db2
 DBFilesClient\ScheduledWorldStateGroup.db2
 DBFilesClient\ScheduledWorldStateXUniqCat.db2
@@ -445,7 +437,6 @@ DBFilesClient\SoundKitAdvanced.db2
 DBFilesClient\SoundKitChild.db2
 DBFilesClient\SoundKitEntry.db2
 DBFilesClient\SoundKitFallback.db2
-DBFilesClient\SoundKit_internal.db2
 DBFilesClient\SoundOverride.db2
 DBFilesClient\SoundProviderPreferences.db2
 DBFilesClient\SourceInfo.db2

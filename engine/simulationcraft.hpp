@@ -1260,7 +1260,6 @@ enum expr_data_e
   DATA_MASTERY_SPELL,
   DATA_SPECIALIZATION_SPELL,
   DATA_GLYPH_SPELL,
-  DATA_PERK_SPELL,
 };
 
 struct spell_data_expr_t
@@ -4100,8 +4099,6 @@ struct player_t : public actor_t
   const spell_data_t* find_talent_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE, bool name_tokenized = false, bool check_validity = true ) const;
   const spell_data_t* find_glyph_spell( const std::string& name, const std::string& token = std::string() ) const;
   const spell_data_t* find_specialization_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE ) const;
-  const spell_data_t* find_perk_spell( const std::string& name, specialization_e s = SPEC_NONE ) const;
-  const spell_data_t* find_perk_spell( size_t idx, specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_mastery_spell( specialization_e s, const std::string& token = std::string(), uint32_t idx = 0 ) const;
   const spell_data_t* find_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_spell( const unsigned int id, const std::string& token = std::string() ) const;

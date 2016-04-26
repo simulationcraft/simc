@@ -35,11 +35,7 @@ py -3  %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t class_list              > %OUT
 py -3  %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t spec_spell_list        >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
 py -3  %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t mastery_list           >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
 py -3  %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t racial_list            >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
-rem py -3  %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t glyph_list             >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
-py -3  %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t set_list               >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
 py -3  %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t set_list2              >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
-py -3  %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t perk_list              >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
-rem py -3  %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t glyph_property_list    >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
 py -3  %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t rppm_coeff             >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
 py -3  %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t artifact               >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
 py -3  %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t item                    > %OUTPATH%/sc_item_data%PTREXT%.inc
