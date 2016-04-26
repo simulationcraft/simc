@@ -45,6 +45,7 @@ struct warrior_t: public player_t
 public:
   event_t* heroic_charge, *rampage_driver;
   std::vector<attack_t*> rampage_attacks;
+  std::vector<cooldown_t*> odyns_champion_cds;
   int initial_rage;
   bool non_dps_mechanics, warrior_fixed_time;
 
@@ -741,7 +742,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     {
       p() -> buff.wrecking_ball -> trigger();
     }
-    if ( special && p() -> buff.odyns_champion -> up() )
+    if ( special && p() -> buff.odyns_champion -> up() ) // Check if MH/OH both count towards reduction. 
     {
       odyns_champion( timespan_t::from_seconds( -1.0 * p() -> artifact.odyns_champion.data().effectN( 1 ).base_value() ) );
     }
@@ -749,19 +750,10 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
 
   void odyns_champion( timespan_t reduction )
   {
-    p() -> cooldown.avatar -> adjust( reduction );
-    p() -> cooldown.battle_cry -> adjust( reduction );
-    p() -> cooldown.berserker_rage -> adjust( reduction );
-    p() -> cooldown.bladestorm -> adjust( reduction );
-    p() -> cooldown.bloodthirst -> adjust( reduction );
-    p() -> cooldown.charge -> adjust( reduction );
-    p() -> cooldown.dragon_roar -> adjust( reduction );
-    p() -> cooldown.heroic_leap -> adjust( reduction );
-    p() -> cooldown.odyns_fury -> adjust( reduction );
-    p() -> cooldown.raging_blow -> adjust( reduction );
-    p() -> cooldown.shockwave -> adjust( reduction );
-    p() -> cooldown.storm_bolt -> adjust( reduction );
-    p() -> cooldown.enraged_regeneration -> adjust( reduction );
+    for ( size_t i = 0; i < p() -> odyns_champion_cds.size(); i++ )
+    {
+      p() -> odyns_champion_cds[i] -> adjust( reduction );
+    }
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3643,6 +3635,41 @@ void warrior_t::init_spells()
   cooldown.shield_wall              = get_cooldown( "shield_wall" );
   cooldown.shockwave                = get_cooldown( "shockwave" );
   cooldown.storm_bolt               = get_cooldown( "storm_bolt" );
+
+  if ( artifact.odyns_champion.rank() )
+  {
+    if ( talents.avatar -> ok() )
+    {
+      this -> odyns_champion_cds.push_back( cooldown.avatar );
+    }
+    this -> odyns_champion_cds.push_back( cooldown.battle_cry );
+    this -> odyns_champion_cds.push_back( cooldown.berserker_rage );
+    if ( talents.bladestorm -> ok() )
+    {
+      this -> odyns_champion_cds.push_back( cooldown.bladestorm );
+    }
+    this -> odyns_champion_cds.push_back( cooldown.bloodthirst );
+    this -> odyns_champion_cds.push_back( cooldown.charge );
+    if ( talents.dragon_roar -> ok() )
+    {
+      this -> odyns_champion_cds.push_back( cooldown.dragon_roar );
+    }
+    this -> odyns_champion_cds.push_back( cooldown.heroic_leap );
+    this -> odyns_champion_cds.push_back( cooldown.odyns_fury );
+    if ( talents.inner_rage -> ok() )
+    {
+      this -> odyns_champion_cds.push_back( cooldown.raging_blow );
+    }
+    if ( talents.shockwave -> ok() )
+    {
+      this -> odyns_champion_cds.push_back( cooldown.shockwave );
+    }
+    else if ( talents.storm_bolt -> ok() )
+    {
+      this -> odyns_champion_cds.push_back( cooldown.storm_bolt );
+    }
+    this -> odyns_champion_cds.push_back( cooldown.enraged_regeneration );
+  }
 }
 
 // warrior_t::init_base =====================================================

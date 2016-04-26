@@ -97,14 +97,14 @@
         player -> name(),
         signature_str.c_str(),
         name() );
-      for ( size_t i = 0; i < tl.size(); i++ )
+      for ( size_t j = 0; j < tl.size(); j++ )
       {
         sim -> out_debug.printf( "[%u, %s (id=%u) x= %.3f y= %.3f ]",
-          static_cast<unsigned>( i ),
-          tl[i] -> name(),
-          tl[i] -> actor_index,
-          tl[i] -> x_position,
-          tl[i] -> y_position );
+          static_cast<unsigned>( j ),
+          tl[j] -> name(),
+          tl[j] -> actor_index,
+          tl[j] -> x_position,
+          tl[j] -> y_position );
       }
     }
     return tl;
