@@ -248,7 +248,7 @@ public:
 
     // Artifact
     // Frost
-    buff_t* empowered_ice_lance;
+    buff_t* chain_reaction;
 
   } buffs;
 
@@ -3133,6 +3133,11 @@ struct frostbolt_t : public frost_mage_spell_t
         p() -> cooldowns.icy_veins -> adjust( -1000 *
                                              p() -> artifact.frozen_veins.time_value() );
       }
+
+      if ( s -> result == RESULT_CRIT && p() -> artifact.chain_reaction.rank() )
+      {
+        p() -> buffs.chain_reaction -> trigger();
+      }
     }
   }
 
@@ -3479,6 +3484,10 @@ struct ice_lance_t : public frost_mage_spell_t
       am *= 1.0 + shatterlance_effect;
     }
 
+    if ( p() -> buffs.chain_reaction -> up() )
+    {
+      am *= 1.0 + p() -> buffs.chain_reaction -> data().effectN( 1 ).percent();
+    }
     return am;
   }
 };
@@ -5437,7 +5446,7 @@ void mage_t::create_buffs()
 
   // Artifact
   // Frost
-  buffs.empowered_ice_lance   = buff_creator_t( this, "empowered_ice_lance", find_spell( 195418 ) );
+  buffs.chain_reaction   = buff_creator_t( this, "chain_reaction", find_spell( 195418 ) );
 }
 
 // mage_t::create_options ===================================================
