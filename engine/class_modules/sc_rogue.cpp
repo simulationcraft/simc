@@ -246,7 +246,6 @@ struct rogue_t : public player_t
     gain_t* ruthlessness;
     gain_t* shadow_techniques;
     gain_t* shadow_blades;
-    gain_t* withering_bite;
     gain_t* enveloping_shadows;
   } gains;
 
@@ -5252,7 +5251,6 @@ void rogue_t::init_gains()
   gains.shadow_techniques = get_gain( "Shadow Techniques" );
   gains.master_of_shadows = get_gain( "Master of Shadows" );
   gains.shadow_blades = get_gain( "Shadow Blades" );
-  gains.withering_bite = get_gain( "Withering Bite" );
   gains.energetic_stabbing = get_gain( "Energetic Stabbing" );
   gains.enveloping_shadows = get_gain( "Enveloping Shadows" );
 }
@@ -6026,51 +6024,6 @@ static void from_the_shadows( special_effect_t& effect )
   do_trinket_init( rogue, ROGUE_SUBTLETY, rogue -> from_the_shadows, effect );
 }
 
-static void withering_bite( special_effect_t& effect )
-{
-  struct withering_bite_t : public melee_attack_t
-  {
-    double st_proc_chance;
-    bool procced;
-
-    withering_bite_t( player_t* p, const special_effect_t& effect ) :
-      melee_attack_t( "withering_bite", p, effect.trigger() ),
-      st_proc_chance( effect.driver() -> effectN( 1 ).ap_coeff() ),
-      procced( false )
-    {
-      background = may_crit = special = true;
-      callbacks = false;
-    }
-
-    double action_multiplier() const override
-    { return 1.0 + 3.0 * procced; }
-
-    void execute() override
-    {
-      procced = rng().roll( st_proc_chance );
-
-      melee_attack_t::execute();
-
-      if ( procced )
-      {
-        rogue_t* r = debug_cast<rogue_t*>( player );
-        r -> resource_gain( RESOURCE_COMBO_POINT, 1, r -> gains.withering_bite, this );
-      }
-
-      procced = false;
-    }
-  };
-
-
-  // TODO: Client data claims a whole host of other things
-  effect.proc_flags_ = PF_MELEE;
-  effect.proc_flags2_ = PF2_ALL_HIT;
-  effect.proc_chance_ = 1.0;
-  effect.execute_action = new withering_bite_t( effect.player, effect );
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
 struct rogue_module_t : public module_t
 {
   rogue_module_t() : module_t( ROGUE ) {}
@@ -6090,7 +6043,6 @@ struct rogue_module_t : public module_t
     unique_gear::register_special_effect( 184916, toxic_mutilator    );
     unique_gear::register_special_effect( 184917, eviscerating_blade );
     unique_gear::register_special_effect( 184918, from_the_shadows   );
-    unique_gear::register_special_effect( 197525, withering_bite     );
   }
 
   virtual void register_hotfixes() const override
