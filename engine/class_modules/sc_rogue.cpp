@@ -1936,7 +1936,7 @@ struct enveloping_shadows_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    timespan_t duration = cast_state( execute_state ) -> cp * timespan_t::from_seconds( data().effectN( 1 ).misc_value1() );
+    timespan_t duration = cast_state( execute_state ) -> cp * data().effectN( 1 ).period() * 2;
 
     p() -> buffs.enveloping_shadows -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
   }
