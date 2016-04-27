@@ -5,8 +5,6 @@
 
 #include <cerrno>
 
-#include "util/basen.hpp"
-
 #include "simulationcraft.hpp"
 
 namespace {
