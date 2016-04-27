@@ -167,10 +167,6 @@ public:
   action_t* unstable_magic_explosion;
   player_t* last_bomb_target;
 
-  // RPPM objects
-  real_ppm_t rppm_pyromaniac;         // T17 Fire 4pc
-  real_ppm_t rppm_arcane_instability; // T17 Arcane 4pc
-
   // Tier 18 (WoD 6.2) trinket effects
   const special_effect_t* wild_arcanist; // Arcane
   const special_effect_t* pyrosurge;     // Fire
@@ -458,8 +454,6 @@ public:
     ignite( nullptr ),
     unstable_magic_explosion( nullptr ),
     last_bomb_target( nullptr ),
-    rppm_pyromaniac( *this ),
-    rppm_arcane_instability( *this ),
     wild_arcanist( nullptr ),
     pyrosurge( nullptr ),
     shatterlance( nullptr ),
@@ -1593,12 +1587,7 @@ struct fire_mage_spell_t : public mage_spell_t
 
           p -> buffs.heating_up -> expire();
           p -> buffs.hot_streak -> trigger();
-
-          if ( p -> sets.has_set_bonus( MAGE_FIRE, T17, B4 ) &&
-               p -> rppm_pyromaniac.trigger() )
-          {
-            p -> buffs.pyromaniac -> trigger();
-          }
+          p -> buffs.pyromaniac -> trigger();
         }
         // Crit without HU => generate HU
         else
@@ -2065,11 +2054,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
     {
       p() -> buffs.arcane_charge -> trigger();
 
-      if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) &&
-           p() -> rppm_arcane_instability.trigger() )
-      {
-        p() -> buffs.arcane_instability -> trigger();
-      }
+      p() -> buffs.arcane_instability -> trigger();
     }
 
     if ( p() -> buffs.presence_of_mind -> up() )
@@ -2180,11 +2165,7 @@ struct arcane_explosion_t : public arcane_mage_spell_t
     {
       p() -> buffs.arcane_charge -> trigger();
 
-      if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) &&
-           p() -> rppm_arcane_instability.trigger() )
-      {
-        p() -> buffs.arcane_instability -> trigger();
-      }
+      p() -> buffs.arcane_instability -> trigger();
     }
     if ( p() -> talents.quickening -> ok() )
     {
@@ -2331,11 +2312,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
     p() -> buffs.arcane_charge -> trigger();
 
-    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) &&
-         p() -> rppm_arcane_instability.trigger() )
-    {
-      p() -> buffs.arcane_instability -> trigger();
-    }
+    p() -> buffs.arcane_instability -> trigger();
   }
 
   virtual bool ready() override
@@ -2370,11 +2347,7 @@ struct arcane_orb_bolt_t : public arcane_mage_spell_t
       p() -> buffs.arcane_charge -> trigger();
       p() -> buffs.arcane_missiles -> trigger();
 
-      if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) &&
-           p() -> rppm_arcane_instability.trigger() )
-      {
-        p() -> buffs.arcane_instability -> trigger();
-      }
+      p() -> buffs.arcane_instability -> trigger();
     }
   }
 };
@@ -2400,11 +2373,7 @@ struct arcane_orb_t : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
     p() -> buffs.arcane_charge -> trigger();
 
-    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) &&
-         p() -> rppm_arcane_instability.trigger() )
-    {
-      p() -> buffs.arcane_instability -> trigger();
-    }
+    p() -> buffs.arcane_instability -> trigger();
   }
 
 
@@ -5293,10 +5262,6 @@ void mage_t::init_spells()
     icicle = new actions::icicle_t( this );
   if ( talents.unstable_magic )
     unstable_magic_explosion = new actions::unstable_magic_explosion_t( this );
-
-  // RPPM
-  rppm_pyromaniac.set_frequency( find_spell( 165459 ) -> real_ppm() );
-  rppm_arcane_instability.set_frequency( find_spell( 165476 ) -> real_ppm() );
 }
 
 // mage_t::init_base ========================================================
@@ -5418,10 +5383,10 @@ void mage_t::create_buffs()
 
   // Arcane
   buffs.arcane_affinity       = buff_creator_t( this, "arcane_affinity", find_spell( 166871 ) )
-                                  .chance( sets.has_set_bonus( MAGE_ARCANE, T17, B2 ) );
+                                  .trigger_spell( sets.set( MAGE_ARCANE, T17, B2 ) );
   buffs.arcane_charge         = buff_creator_t( this, "arcane_charge", spec.arcane_charge );
   buffs.arcane_instability    = buff_creator_t( this, "arcane_instability", find_spell( 166872 ) )
-                                  .chance( sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) );
+                                  .trigger_spell( sets.set( MAGE_ARCANE, T17, B4 ) );
   buffs.arcane_missiles       = new arcane_missiles_buff_t( this );
   buffs.arcane_power          = buff_creator_t( this, "arcane_power", find_spell( 12042 ) )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -5452,8 +5417,8 @@ void mage_t::create_buffs()
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                   .add_invalidate( CACHE_SPELL_HASTE );
   buffs.pyretic_incantation   = buff_creator_t( this, "pyretic_incantation", find_spell( 194329 ) );
-  buffs.pyromaniac            = buff_creator_t( this, "pyromaniac", find_spell( 166868 ) )
-                                  .chance( sets.has_set_bonus( MAGE_FIRE, T17, B4 ) );
+  buffs.pyromaniac            = buff_creator_t( this, "pyromaniac", sets.set( MAGE_FIRE, T17, B4 ) -> effectN( 1 ).trigger() )
+                                  .trigger_spell( sets.set( MAGE_FIRE, T17, B4 ) );
   buffs.scorched_earth        = buff_creator_t( this, "scorched_earth").duration( timespan_t::from_seconds( 5 ) )
                                                                        .max_stack( 4.0 );
 
@@ -6488,9 +6453,6 @@ void mage_t::reset()
 
   last_bomb_target = nullptr;
   burn_phase.reset();
-
-  rppm_pyromaniac.reset();
-  rppm_arcane_instability.reset();
 
   if ( sets.has_set_bonus( MAGE_ARCANE, T18, B2 ) )
   {

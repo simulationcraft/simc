@@ -236,9 +236,9 @@ public:
   } mastery_spells;
 
   //Procs and RNG
-  real_ppm_t demonic_power_rppm; // grimoire of sacrifice
-  real_ppm_t grimoire_of_synergy; //caster ppm, i.e., if it procs, the wl will create a buff for the pet.
-  real_ppm_t grimoire_of_synergy_pet; //pet ppm, i.e., if it procs, the pet will create a buff for the wl.
+  real_ppm_t* demonic_power_rppm; // grimoire of sacrifice
+  real_ppm_t* grimoire_of_synergy; //caster ppm, i.e., if it procs, the wl will create a buff for the pet.
+  real_ppm_t* grimoire_of_synergy_pet; //pet ppm, i.e., if it procs, the pet will create a buff for the wl.
 
   // Cooldowns
   struct cooldowns_t
@@ -530,7 +530,7 @@ public:
 
     if ( ab::result_is_hit( ab::execute_state -> result ) && p() -> o() -> talents.grimoire_of_synergy -> ok() )
     {
-      bool procced = p() -> o() -> grimoire_of_synergy_pet.trigger(); //check for RPPM
+      bool procced = p() -> o() -> grimoire_of_synergy_pet -> trigger(); //check for RPPM
       if ( procced ) p() -> o() -> buffs.demonic_synergy -> trigger(); //trigger the buff
     }
   }
@@ -1517,13 +1517,13 @@ public:
       pets::warlock_pet_t* my_pet = static_cast<pets::warlock_pet_t*>( p() -> pets.active ); //get active pet
       if ( my_pet != nullptr )
       {
-        bool procced = p() -> grimoire_of_synergy.trigger();
+        bool procced = p() -> grimoire_of_synergy -> trigger();
         if ( procced ) my_pet -> buffs.demonic_synergy -> trigger();
       }
     }
     if ( result_is_hit( execute_state -> result ) && p() -> talents.grimoire_of_sacrifice -> ok() && p() -> buffs.demonic_power -> up() )
     {
-      bool procced = p() -> demonic_power_rppm.trigger();
+      bool procced = p() -> demonic_power_rppm -> trigger();
       if ( procced )
       {
          p() -> active.demonic_power_proc -> target = execute_state -> target;
@@ -3068,9 +3068,6 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     talents( talents_t() ),
     glyphs( glyphs_t() ),
     mastery_spells( mastery_spells_t() ),
-    demonic_power_rppm( *this ),
-    grimoire_of_synergy( *this ),
-    grimoire_of_synergy_pet( *this ),
     cooldowns( cooldowns_t() ),
     spec( specs_t() ),
     buffs( buffs_t() ),
@@ -3528,9 +3525,10 @@ void warlock_t::create_buffs()
 void warlock_t::init_rng()
 {
   player_t::init_rng();
-  demonic_power_rppm.set_frequency( find_spell( 196099 ) -> real_ppm() );
-  grimoire_of_synergy.set_frequency( find_spell( 171975 ) -> real_ppm() );
-  grimoire_of_synergy_pet.set_frequency( find_spell( 171975 ) -> real_ppm() );
+
+  demonic_power_rppm = get_rppm( "demonic_power", find_spell( 196099 ) );
+  grimoire_of_synergy = get_rppm( "grimoire_of_synergy", talents.grimoire_of_synergy );
+  grimoire_of_synergy_pet = get_rppm( "grimoire_of_synergy_pet", talents.grimoire_of_synergy );
 }
 
 void warlock_t::init_gains()
@@ -3704,10 +3702,6 @@ void warlock_t::reset()
   havoc_target = nullptr;
   double_nightfall = 0;
   agony_ticks_since_last_proc = 0;
-
-  demonic_power_rppm.reset();
-  grimoire_of_synergy.reset();
-  grimoire_of_synergy_pet.reset();
 }
 
 void warlock_t::create_options()

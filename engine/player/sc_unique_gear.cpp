@@ -907,9 +907,9 @@ void gem::capacitive_primal( special_effect_t& effect )
       if ( listener -> main_hand_weapon.group() != WEAPON_2H )
       {
         if ( listener -> specialization() == WARRIOR_FURY )
-          rppm.set_modifier( 1.152 );
+          rppm -> set_modifier( 1.152 );
         else if ( listener -> specialization() == DEATH_KNIGHT_FROST )
-          rppm.set_modifier( 1.134 );
+          rppm -> set_modifier( 1.134 );
       }
     }
 
@@ -1559,7 +1559,7 @@ void item::unerring_vision_of_leishen( special_effect_t& effect )
 
       // Warlocks have a (hidden?) 0.6 modifier, not showing in DBCs.
       if ( listener -> type == WARLOCK )
-        rppm.set_modifier( 0.6 );
+        rppm -> set_modifier( rppm -> get_modifier() * 0.6 );
     }
   };
 

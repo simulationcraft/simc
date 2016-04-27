@@ -461,7 +461,7 @@ public:
     proc_t* km_natural_expiration;
   } procs;
 
-  real_ppm_t t15_2pc_melee;
+  real_ppm_t* t15_2pc_melee;
 
   // Runes
   runes_t _runes;
@@ -492,7 +492,7 @@ public:
     perk( perks_t() ),
     pets( pets_t() ),
     procs( procs_t() ),
-    t15_2pc_melee( *this ),
+    t15_2pc_melee( nullptr ),
     _runes( this )
   {
     range::fill( pets.army_ghoul, nullptr );
@@ -2509,7 +2509,7 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
     if ( ! p -> sets.has_set_bonus( SET_MELEE, T15, B2 ) )
       return;
 
-    if ( ( p -> t15_2pc_melee.trigger() ) )
+    if ( ( p -> t15_2pc_melee -> trigger() ) )
     {
       p -> procs.t15_2pc_melee -> occur();
       size_t i;
@@ -6316,8 +6316,7 @@ void death_knight_t::init_rng()
 {
   player_t::init_rng();
 
-  const spell_data_t* spell = find_spell( 138343 );
-  t15_2pc_melee.set_frequency( spell -> real_ppm() );
+  t15_2pc_melee = get_rppm( "t15_2pc_melee", sets.set( SET_MELEE, T15, B2 ) );
 }
 
 // death_knight_t::init_base ================================================
@@ -7381,8 +7380,6 @@ void death_knight_t::reset()
   blood_charge_counter = 0;
   shadow_infusion_counter = 0;
   antimagic_shell_absorbed = 0.0;
-
-  t15_2pc_melee.reset();
 
   _runes.reset();
 }

@@ -1177,11 +1177,11 @@ void dbc_proc_callback_t::initialize()
   if ( listener -> sim -> debug )
     listener -> sim -> out_debug.printf( "Initializing proc %s: %s",
         effect.name().c_str(), effect.to_string().c_str() );
-  
+
   // Initialize proc chance triggers. Note that this code only chooses one, and
   // prioritizes RPPM > PPM > proc chance.
   if ( effect.rppm() > 0 )
-    rppm = real_ppm_t( *listener, effect.rppm(), effect.rppm_modifier(), effect.rppm_scale() );
+    rppm = listener -> get_rppm( effect.name(), effect.rppm(), effect.rppm_modifier(), effect.rppm_scale() );
   else if ( effect.ppm() > 0 )
     ppm = effect.ppm();
   else if ( effect.proc_chance() != 0 )

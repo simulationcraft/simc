@@ -209,11 +209,6 @@ public:
     proc_t* t17_2pc_fury;
   } proc;
 
-  struct realppm_t
-  {
-    std::unique_ptr<real_ppm_t> odyns_champion, overpower, rage_of_the_valarjar, wrecking_ball;
-  } rppm;
-
   // Spec Passives
   struct spec_t
   {
@@ -376,7 +371,6 @@ public:
     spell( spells_t() ),
     mastery( mastery_t() ),
     proc( procs_t() ),
-    rppm( realppm_t() ),
     spec( spec_t() ),
     talents( talents_t() )
   {
@@ -429,7 +423,6 @@ public:
   virtual void      interrupt() override;
   virtual void      reset() override;
   virtual void      moving() override;
-  virtual void      init_rng() override;
   virtual void      create_options() override;
   virtual action_t* create_proc_action( const std::string& name, const special_effect_t& ) override;
   virtual std::string      create_profile( save_e type ) override;
@@ -738,10 +731,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
   {
     base_t::execute();
 
-    if ( p() -> talents.wrecking_ball -> ok() && p() -> rppm.wrecking_ball -> trigger() )
-    {
-      p() -> buff.wrecking_ball -> trigger();
-    }
+    p() -> buff.wrecking_ball -> trigger();
     if ( special && p() -> buff.odyns_champion -> up() ) // Check if MH/OH both count towards reduction. 
     {
       odyns_champion( timespan_t::from_seconds( -1.0 * p() -> artifact.odyns_champion.data().effectN( 1 ).base_value() ) );
@@ -762,7 +752,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
 
     if ( result_is_hit( s -> result ) && p() -> specialization() == WARRIOR_ARMS )
     {
-      if ( procs_overpower && p() -> rppm.overpower -> trigger() )
+      if ( procs_overpower )
       {
         p() -> buff.overpower -> trigger();
       }
@@ -1669,10 +1659,7 @@ struct execute_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    if ( p() -> rppm.rage_of_the_valarjar && p() -> rppm.rage_of_the_valarjar -> trigger() )
-    {
-      p() -> buff.berserking_driver -> trigger();
-    }
+    p() -> buff.berserking_driver -> trigger();
 
     p() -> buff.sense_death -> expire();
     p() -> buff.sense_death -> trigger();
@@ -2465,14 +2452,8 @@ struct rampage_parent_t: public warrior_attack_t
     warrior_attack_t::execute();
 
     p() -> buff.massacre -> expire();
-    if ( p() -> rppm.rage_of_the_valarjar && p() -> rppm.rage_of_the_valarjar -> trigger() )
-    {
-      p() -> buff.berserking_driver -> trigger();
-    }
-    if ( p() -> rppm.odyns_champion && p() -> rppm.odyns_champion -> trigger() )
-    {
-      p() -> buff.odyns_champion -> trigger();
-    }
+    p() -> buff.berserking_driver -> trigger();
+    p() -> buff.odyns_champion -> trigger();
 
     p() -> rampage_driver = new ( *sim ) rampage_event_t( p(), 0 );
   }
@@ -4093,52 +4074,6 @@ void warrior_t::apl_default()
   default_list -> add_action( this, "Heroic Throw" );
 }
 
-namespace rppm
-{
-
-template <typename Base>
-struct warrior_real_ppm_t: public Base
-{
-public:
-  typedef warrior_real_ppm_t base_t;
-
-  warrior_real_ppm_t( warrior_t& p, const real_ppm_t& params ):
-    Base( params ), warrior( p )
-  {}
-
-protected:
-  warrior_t& warrior;
-};
-
-struct overpower_t: public warrior_real_ppm_t < real_ppm_t >
-{
-  overpower_t( warrior_t& p ):
-    base_t( p, real_ppm_t( p, p.spell.overpower_driver -> real_ppm(), 1.0, RPPM_HASTE ) )
-  {}
-};
-
-struct rage_of_the_valarjar_t: public warrior_real_ppm_t < real_ppm_t >
-{
-  rage_of_the_valarjar_t( warrior_t& p ):
-    base_t( p, real_ppm_t( p, p.warswords_of_the_valarjar -> driver() -> real_ppm(), 1.0, RPPM_NONE ) )
-  {}
-};
-
-struct wrecking_ball_t : public warrior_real_ppm_t < real_ppm_t >
-{
-  wrecking_ball_t( warrior_t& p ):
-    base_t( p, real_ppm_t( p, p.talents.wrecking_ball -> real_ppm(), 1.0, RPPM_HASTE ) )
-  {}
-};
-
-struct odyns_champion_t : public warrior_real_ppm_t < real_ppm_t >
-{
-  odyns_champion_t( warrior_t& p ):
-    base_t( p, real_ppm_t( p, p.artifact.odyns_champion.data().real_ppm(), 1.0, RPPM_NONE ) )
-  {}
-};
-};
-
 // ==========================================================================
 // Warrior Buffs
 // ==========================================================================
@@ -4355,9 +4290,11 @@ void warrior_t::create_buffs()
 
   buff.commanding_shout = new buffs::commanding_shout_t( *this, "commanding_shout", find_spell( 97463 ) );
 
-  buff.overpower = buff_creator_t( this, "overpower", spell.overpower_driver -> effectN( 1 ).trigger() );
+  buff.overpower = buff_creator_t( this, "overpower", spell.overpower_driver -> effectN( 1 ).trigger() )
+    .trigger_spell( spell.overpower_driver );
 
-  buff.wrecking_ball = buff_creator_t( this, "wrecking_ball", talents.wrecking_ball -> effectN( 1 ).trigger() );
+  buff.wrecking_ball = buff_creator_t( this, "wrecking_ball", talents.wrecking_ball -> effectN( 1 ).trigger() )
+    .trigger_spell( talents.wrecking_ball );
 
   buff.precise_strikes = buff_creator_t( this, "precise_strikes", artifact.precise_strikes.data().effectN( 1 ).trigger() )
     .default_value( artifact.precise_strikes.percent() )
@@ -4374,7 +4311,8 @@ void warrior_t::create_buffs()
   buff.juggernaut = buff_creator_t( this, "juggernaut", artifact.juggernaut.data().effectN( 1 ).trigger() )
     .default_value( artifact.juggernaut.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
-  buff.odyns_champion = buff_creator_t( this, "odyns_champion", artifact.odyns_champion.data().effectN( 1 ).trigger() );
+  buff.odyns_champion = buff_creator_t( this, "odyns_champion", artifact.odyns_champion.data().effectN( 1 ).trigger() )
+    .trigger_spell( artifact.odyns_champion );
 
   buff.battle_cry = buff_creator_t( this, "battle_cry", spec.battle_cry )
     .add_invalidate( CACHE_CRIT )
@@ -4510,30 +4448,6 @@ void warrior_t::init_procs()
   proc.tactician    = get_proc( "tactician"    );
 }
 
-// warrior_t::init_rng ========================================================
-
-void warrior_t::init_rng()
-{
-  player_t::init_rng();
-
-  if ( talents.overpower )
-  {
-    rppm.overpower = std::unique_ptr<rppm::overpower_t>( new rppm::overpower_t( *this ) );
-  }
-  if ( warswords_of_the_valarjar )
-  {
-    rppm.rage_of_the_valarjar = std::unique_ptr<rppm::rage_of_the_valarjar_t>( new rppm::rage_of_the_valarjar_t( *this ) );
-  }
-  if ( talents.wrecking_ball )
-  {
-    rppm.wrecking_ball = std::unique_ptr<rppm::wrecking_ball_t>( new rppm::wrecking_ball_t( *this ) );
-  }
-  if ( artifact.odyns_champion.rank() )
-  {
-    rppm.odyns_champion = std::unique_ptr<rppm::odyns_champion_t>( new rppm::odyns_champion_t( *this ) );
-  }
-}
-
 // warrior_t::init_resources ================================================
 
 void warrior_t::init_resources( bool force )
@@ -4653,25 +4567,6 @@ void warrior_t::reset()
 
   heroic_charge = nullptr;
   rampage_driver = nullptr;
-  if ( rppm.overpower )
-  {
-    rppm.overpower -> reset();
-  }
-
-  if ( rppm.rage_of_the_valarjar )
-  {
-    rppm.rage_of_the_valarjar -> reset();
-  }
-
-  if ( rppm.wrecking_ball )
-  {
-    rppm.wrecking_ball -> reset();
-  }
-
-  if ( rppm.odyns_champion )
-  {
-    rppm.odyns_champion -> reset();
-  }
 }
 
 // Movement related overrides. =============================================
@@ -5316,6 +5211,7 @@ static void warswords_of_the_valarjar( special_effect_t& effect )
   if ( s -> warswords_of_the_valarjar )
   {
     s -> buff.berserking_driver = buff_creator_t( s, "berserking_driver", s -> warswords_of_the_valarjar -> driver() -> effectN( 1 ).trigger() )
+      .trigger_spell( s -> warswords_of_the_valarjar -> driver() )
       .tick_callback( [s]( buff_t*, int, const timespan_t& ) { s -> buff.berserking -> trigger( 1 ); } );
     s -> buff.berserking = buff_creator_t( s, "berserking", s -> warswords_of_the_valarjar -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
       .default_value( s -> warswords_of_the_valarjar -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )

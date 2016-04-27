@@ -258,8 +258,8 @@ public:
   struct rppms_t
   {
     // Havoc
-    real_ppm_t felblade;
-    real_ppm_t inner_demons;
+    real_ppm_t* felblade;
+    real_ppm_t* inner_demons;
   } rppm;
 
   // Special
@@ -1682,8 +1682,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
         p() -> consume_soul_fragment( true );
       }
 
-      if ( p() -> artifact.inner_demons.rank() &&
-           p() -> rppm.inner_demons.trigger() )
+      if ( p() -> rppm.inner_demons -> trigger() )
       {
         assert( inner_demons );
         inner_demons -> target = target;
@@ -1800,7 +1799,7 @@ struct demons_bite_t : public demon_hunter_attack_t
                           action_gain );
     }
 
-    if ( p() -> talent.felblade -> ok() && p() -> rppm.felblade.trigger() )
+    if ( p() -> talent.felblade -> ok() && p() -> rppm.felblade -> trigger() )
     {
       p() -> proc.felblade_reset -> occur();
       p() -> cooldown.felblade -> reset( true );
@@ -1847,7 +1846,7 @@ struct demon_blade_t : public demon_hunter_attack_t
                           action_gain );
     }
 
-    if ( p() -> talent.felblade -> ok() && p() -> rppm.felblade.trigger() )
+    if ( p() -> talent.felblade -> ok() && p() -> rppm.felblade -> trigger() )
     {
       p() -> proc.felblade_reset -> occur();
       p() -> cooldown.felblade -> reset( true );
@@ -2639,10 +2638,8 @@ void demon_hunter_t::init_resources( bool force )
 void demon_hunter_t::init_rng()
 {
   // RPPM objects
-  rppm.felblade =
-    real_ppm_t( *this, find_spell( 203557 ) -> real_ppm(), 1.0, RPPM_HASTE );
-  rppm.inner_demons =
-    real_ppm_t( *this, artifact.inner_demons.data().real_ppm(), 1.0, RPPM_HASTE );
+  rppm.felblade = get_rppm( "felblade", find_spell( 203557 ) );
+  rppm.inner_demons = get_rppm( "inner_demons", artifact.inner_demons );
 
   player_t::init_rng();
 }
@@ -3054,8 +3051,6 @@ void demon_hunter_t::reset()
   base_t::reset();
 
   blade_dance_driver = nullptr;
-  rppm.felblade.reset();
-  rppm.inner_demons.reset();
   soul_fragments = 0;
 }
 

@@ -403,13 +403,8 @@ public:
 
   struct
   {
-    real_ppm_t unleash_doom;
-    real_ppm_t volcanic_inferno;
-    real_ppm_t power_of_the_maelstrom;
-    real_ppm_t static_overload;
-    real_ppm_t stormlash;
-    real_ppm_t hot_hand;
-    real_ppm_t doom_vortex;
+    real_ppm_t* stormlash;
+    real_ppm_t* doom_vortex;
   } real_ppm;
 
   // Class Specializations
@@ -2650,10 +2645,7 @@ struct stormstrike_base_t : public shaman_attack_t
         oh -> execute();
       }
 
-      if ( p() -> artifact.unleash_doom.rank() == 1 && p() -> real_ppm.unleash_doom.trigger() )
-      {
-        p() -> buff.unleash_doom -> trigger();
-      }
+      p() -> buff.unleash_doom -> trigger();
 
       if ( p() -> sets.has_set_bonus( SHAMAN_ENHANCEMENT, T17, B2 ) )
       {
@@ -2803,10 +2795,7 @@ struct flametongue_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p() -> buff.flametongue -> trigger();
-    if ( p() ->  talent.hot_hand -> ok() && p() -> real_ppm.hot_hand.trigger() )
-    {
-      p() -> buff.hot_hand -> trigger();
-    }
+    p() -> buff.hot_hand -> trigger();
   }
 };
 
@@ -3116,11 +3105,7 @@ struct chain_lightning_t: public shaman_spell_t
 
     p() -> buff.stormkeeper -> decrement();
     p() -> buff.static_overload -> decrement();
-
-    if ( p() -> artifact.static_overload.rank() && p() -> real_ppm.static_overload.trigger() )
-    {
-      p() -> buff.static_overload -> trigger();
-    }
+    p() -> buff.static_overload -> trigger();
   }
 
   void impact( action_state_t* state ) override
@@ -3342,10 +3327,7 @@ struct lava_burst_t : public shaman_spell_t
     p() -> lava_surge_during_lvb = false;
     p() -> cooldown.fire_elemental -> adjust( -timespan_t::from_seconds( p() -> artifact.elementalist.value() ) );
 
-    if ( p() -> artifact.power_of_the_maelstrom.rank() && p() -> real_ppm.power_of_the_maelstrom.trigger() )
-    {
-      p() -> buff.power_of_the_maelstrom -> trigger( p() -> buff.power_of_the_maelstrom -> max_stack() );
-    }
+    p() -> buff.power_of_the_maelstrom -> trigger( p() -> buff.power_of_the_maelstrom -> max_stack() );
   }
 
   timespan_t execute_time() const override
@@ -3374,8 +3356,7 @@ struct lava_burst_t : public shaman_spell_t
       }
       */
 
-      if ( p() -> artifact.volcanic_inferno.rank() &&
-           p() -> real_ppm.volcanic_inferno.trigger() )
+      if ( rng().roll( p() -> artifact.volcanic_inferno.data().proc_chance() ) )
       {
         p() -> volcanic_inferno -> target = state -> target;
         p() -> volcanic_inferno -> schedule_execute();
@@ -5190,7 +5171,7 @@ void shaman_t::trigger_stormlash( const action_state_t* )
     return;
   }
 
-  if ( ! real_ppm.stormlash.trigger() )
+  if ( ! real_ppm.stormlash -> trigger() )
   {
     return;
   }
@@ -5206,12 +5187,7 @@ void shaman_t::trigger_stormlash( const action_state_t* )
 
 void shaman_t::trigger_doom_vortex( const action_state_t* state )
 {
-  if ( artifact.doom_vortex.rank() == 0 )
-  {
-    return;
-  }
-
-  if ( ! real_ppm.doom_vortex.trigger() )
+  if ( ! real_ppm.doom_vortex -> trigger() )
   {
     return;
   }
@@ -5539,7 +5515,8 @@ void shaman_t::create_buffs()
                    .default_value( find_spell( 202004 ) -> effectN( 1 ).percent() );
   buff.doom_winds = buff_creator_t( this, "doom_winds", &( artifact.doom_winds.data() ) )
                     .cd( timespan_t::zero() ); // handled by the action
-  buff.unleash_doom = buff_creator_t( this, "unleash_doom", artifact.unleash_doom.data().effectN( 1 ).trigger() );
+  buff.unleash_doom = buff_creator_t( this, "unleash_doom", artifact.unleash_doom.data().effectN( 1 ).trigger() )
+                      .trigger_spell( artifact.unleash_doom );
   buff.wind_strikes = haste_buff_creator_t( this, "wind_strikes", find_spell( 198293 ) )
                       .chance( artifact.wind_strikes.rank() > 0 )
                       .default_value( 1.0 / ( 1.0 + artifact.wind_strikes.percent() ) );
@@ -5562,8 +5539,9 @@ void shaman_t::create_buffs()
   buff.stormkeeper = buff_creator_t( this, "stormkeeper", &( artifact.stormkeeper.data() ) )
     .cd( timespan_t::zero() ); // Handled by the action
   buff.static_overload = buff_creator_t( this, "static_overload", find_spell( 191634 ) )
-    .chance( artifact.static_overload.rank() > 0 );
-  buff.power_of_the_maelstrom = buff_creator_t( this, "power_of_the_maelstrom", find_spell( 191861 ) -> effectN( 1 ).trigger() );
+    .chance( artifact.static_overload.data().effectN( 1 ).percent() );
+  buff.power_of_the_maelstrom = buff_creator_t( this, "power_of_the_maelstrom", artifact.power_of_the_maelstrom.data().effectN( 1 ).trigger() )
+    .trigger_spell( artifact.power_of_the_maelstrom );
 
   buff.resonance_totem = buff_creator_t( this, "resonance_totem", find_spell( 202192 ) )
                          .duration( talent.totem_mastery -> effectN( 1 ).trigger() -> duration() )
@@ -5588,7 +5566,8 @@ void shaman_t::create_buffs()
 
   buff.stormlash = new stormlash_buff_t( this );
 
-  buff.hot_hand = buff_creator_t( this, "hot_hand", talent.hot_hand -> effectN( 1 ).trigger() );
+  buff.hot_hand = buff_creator_t( this, "hot_hand", talent.hot_hand -> effectN( 1 ).trigger() )
+                  .trigger_spell( talent.hot_hand );
 }
 
 // shaman_t::init_gains =====================================================
@@ -5629,16 +5608,8 @@ void shaman_t::init_rng()
 {
   player_t::init_rng();
 
-  real_ppm.unleash_doom = real_ppm_t( *this, artifact.unleash_doom.data().real_ppm() );
-  real_ppm.volcanic_inferno = real_ppm_t( *this, artifact.volcanic_inferno.data().real_ppm() );
-  real_ppm.power_of_the_maelstrom = real_ppm_t( *this, find_spell( 191861 ) -> real_ppm() );
-  real_ppm.static_overload = real_ppm_t( *this, find_spell( 191602 ) -> real_ppm() );
-  real_ppm.stormlash = real_ppm_t( *this, find_spell( 195255 ) -> real_ppm(),
-      dbc.real_ppm_modifier( 195255, this ), dbc.real_ppm_scale( 195255 ) );
-  real_ppm.hot_hand = real_ppm_t( *this, find_spell( 201900 ) -> real_ppm(),
-      dbc.real_ppm_modifier( 201900, this ), dbc.real_ppm_scale( 201900 ) );
-  real_ppm.doom_vortex = real_ppm_t( *this, find_spell( 199107 ) -> real_ppm(),
-      dbc.real_ppm_modifier( 199107, this ), dbc.real_ppm_scale( 199107 ) );
+  real_ppm.stormlash   = get_rppm( "stormlash", spec.stormlash );
+  real_ppm.doom_vortex = get_rppm( "doom_vortex", artifact.doom_vortex );
 }
 
 // shaman_t::init_special_effects ===========================================
@@ -6234,13 +6205,6 @@ void shaman_t::reset()
   lava_surge_during_lvb = false;
   for (auto & elem : counters)
     elem -> reset();
-  real_ppm.unleash_doom.reset();
-  real_ppm.volcanic_inferno.reset();
-  real_ppm.power_of_the_maelstrom.reset();
-  real_ppm.static_overload.reset();
-  real_ppm.stormlash.reset();
-  real_ppm.hot_hand.reset();
-  real_ppm.doom_vortex.reset();
 }
 
 // shaman_t::merge ==========================================================

@@ -272,11 +272,11 @@ public:
   struct rppms_t
   {
     // Feral
-    real_ppm_t predator; // Optional RPPM approximation
-    real_ppm_t shadow_thrash;
+    real_ppm_t* predator; // Optional RPPM approximation
+    real_ppm_t* shadow_thrash;
 
     // Balance
-    real_ppm_t balance_tier18_2pc;
+    real_ppm_t* balance_tier18_2pc;
   } rppm;
 
   // Options
@@ -1849,7 +1849,7 @@ public:
 
   virtual void trigger_balance_tier18_2pc()
   {
-    if ( ! p() -> rppm.balance_tier18_2pc.trigger() )
+    if ( ! p() -> rppm.balance_tier18_2pc -> trigger() )
       return;
 
     for ( pet_t* pet : p() -> pet_fey_moonwing )
@@ -2428,7 +2428,7 @@ public:
 
   void trigger_predator()
   {
-    if ( ! p() -> rppm.predator.trigger() )
+    if ( ! p() -> rppm.predator -> trigger() )
       return;
 
     if ( ! p() -> cooldown.tigers_fury -> down() )
@@ -3288,7 +3288,7 @@ struct thrash_cat_t : public cat_attack_t
 
     p() -> buff.scent_of_blood -> trigger( 1, targets_hit * p() -> buff.scent_of_blood -> default_value );
 
-    if ( shadow_thrash && targets_hit >= 2 && p() -> rppm.shadow_thrash.trigger() )
+    if ( shadow_thrash && targets_hit >= 2 && p() -> rppm.shadow_thrash -> trigger() )
       shadow_thrash -> execute();
   }
 };
@@ -6901,9 +6901,9 @@ void druid_t::init_resources( bool force )
 void druid_t::init_rng()
 {
   // RPPM objects
-  rppm.balance_tier18_2pc = real_ppm_t( *this, sets.set( DRUID_BALANCE, T18, B2 ) -> real_ppm() );
-  rppm.predator           = real_ppm_t( *this, predator_rppm_rate ); // Predator: optional RPPM approximation.
-  rppm.shadow_thrash      = real_ppm_t( *this, artifact.shadow_thrash.data().real_ppm(), 1.0, RPPM_HASTE );
+  rppm.balance_tier18_2pc = get_rppm( "balance_tier18_2pc", sets.set( DRUID_BALANCE, T18, B2 ) );
+  rppm.predator           = get_rppm( "predator", predator_rppm_rate ); // Predator: optional RPPM approximation.
+  rppm.shadow_thrash      = get_rppm( "shadow_thrash", artifact.shadow_thrash );
 
   player_t::init_rng();
 }
@@ -6986,10 +6986,6 @@ void druid_t::reset()
 
   if ( mastery.natures_guardian -> ok() )
     recalculate_resource_max( RESOURCE_HEALTH );
-  
-  rppm.predator.reset();
-  rppm.shadow_thrash.reset();
-  rppm.balance_tier18_2pc.reset();
 }
 
 // druid_t::merge ===========================================================

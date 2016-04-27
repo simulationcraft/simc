@@ -99,6 +99,7 @@ struct travel_event_t;
 struct xml_node_t;
 struct action_cost_tick_event_t;
 class xml_writer_t;
+struct real_ppm_t;
 namespace highchart {
   struct chart_t;
 }
@@ -594,6 +595,9 @@ protected:
   buff_stack_behavior_e _stack_behavior;
   buff_tick_callback_t _tick_callback;
   buff_refresh_duration_callback_t _refresh_duration_callback;
+  double _rppm_freq, _rppm_mod;
+  rppm_scale_e _rppm_scale;
+  const spell_data_t* _trigger_data;
   std::vector<cache_e> _invalidate_list;
   friend struct ::buff_t;
   friend struct ::debuff_t;
@@ -669,6 +673,14 @@ public:
   { _refresh_behavior = BUFF_REFRESH_CUSTOM; _refresh_duration_callback = cb; return *( static_cast<bufftype*>( this ) ); }
   bufftype& stack_behavior( buff_stack_behavior_e b )
   { _stack_behavior = b; return *( static_cast<bufftype*>( this ) ); }
+  bufftype& rppm_freq( double f )
+  { _rppm_freq = f; return *( static_cast<bufftype*>( this ) ); }
+  bufftype& rppm_mod( double m )
+  { _rppm_mod = m; return *( static_cast<bufftype*>( this ) ); }
+  bufftype& rppm_scale( rppm_scale_e s )
+  { _rppm_scale = s; return *( static_cast<bufftype*>( this ) ); }
+  bufftype& trigger_spell( const spell_data_t* s )
+  { _trigger_data = s; return *( static_cast<bufftype*>( this ) ); }
 };
 
 struct buff_creator_t : public buff_creator_helper_t<buff_creator_t>
@@ -809,6 +821,7 @@ public:
   event_t* expiration_delay;
   cooldown_t* cooldown;
   sc_timeline_t uptime_array;
+  real_ppm_t* rppm;
 
   // static values
 private: // private because changing max_stacks requires resizing some stack-dependant vectors
@@ -2829,6 +2842,88 @@ struct set_bonus_t
   { return role_set_bonus( static_cast<set_bonus_type_e>( set_bonus ) ); }
 };
 
+// "Real" 'Procs per Minute' helper class =====================================
+
+struct real_ppm_t
+{
+private:
+  player_t*    player;
+  std::string  name_str;
+  double       freq;
+  double       modifier;
+  double       rppm;
+  timespan_t   last_trigger_attempt;
+  timespan_t   last_successful_trigger;
+  timespan_t   initial_precombat_time;
+  rppm_scale_e scales_with;
+
+  real_ppm_t()
+  { }
+
+  static double max_interval() { return 10.0; }
+  static double max_bad_luck_prot() { return 1000.0; }
+public:
+  static double proc_chance( player_t*         player,
+                             double            PPM,
+                             const timespan_t& last_trigger,
+                             const timespan_t& last_successful_proc,
+                             rppm_scale_e      scales_with );
+
+  real_ppm_t( const std::string& name, player_t* p, double frequency = 0, double mod = 1.0, rppm_scale_e s = RPPM_NONE ) :
+    player( p ),
+    name_str( name ),
+    freq( frequency ),
+    modifier( mod ),
+    rppm( freq * mod ),
+    last_trigger_attempt( timespan_t::zero() ),
+    last_successful_trigger( timespan_t::zero() ),
+    initial_precombat_time( timespan_t::zero() ),
+    scales_with( s )
+  { }
+
+  real_ppm_t( const std::string& name, player_t* p, const spell_data_t* data = spell_data_t::nil(), const item_t* item = nullptr );
+
+  void set_scaling( rppm_scale_e s )
+  { scales_with = s; }
+
+  void set_modifier( double mod )
+  { modifier = mod; rppm = freq * modifier; }
+
+  const std::string& name() const
+  { return name_str; }
+
+  void set_frequency( double frequency )
+  { freq = frequency; rppm = freq * modifier; }
+
+  void set_initial_precombat_time( timespan_t precombat )
+  {
+    initial_precombat_time = precombat;
+  }
+
+  double get_frequency() const
+  { return freq; }
+
+  double get_modifier() const
+  { return modifier; }
+
+  double get_rppm() const
+  { return rppm; }
+
+  void set_last_trigger_attempt( const timespan_t& ts )
+  { last_trigger_attempt = ts; }
+
+  void set_last_trigger_success( const timespan_t& ts )
+  { last_successful_trigger = ts; }
+
+  void reset()
+  {
+    last_trigger_attempt = timespan_t::from_seconds( -max_interval() );
+    last_successful_trigger = initial_precombat_time;
+  }
+
+  bool trigger();
+};
+
 // Cooldown =================================================================
 
 struct cooldown_t
@@ -3624,6 +3719,7 @@ struct player_t : public actor_t
   auto_dispose< std::vector<benefit_t*> > benefit_list;
   auto_dispose< std::vector<uptime_t*> > uptime_list;
   auto_dispose< std::vector<cooldown_t*> > cooldown_list;
+  auto_dispose< std::vector<real_ppm_t*> > rppm_list;
   std::vector<cooldown_t*> dynamic_cooldown_list;
   std::array< std::vector<plot_data_t>, STAT_MAX > dps_plot_data;
   std::vector<std::vector<plot_data_t> > reforge_plot_data;
@@ -4180,6 +4276,8 @@ struct player_t : public actor_t
   luxurious_sample_data_t* find_sample_data( const std::string& name ) const;
 
   cooldown_t* get_cooldown( const std::string& name );
+  real_ppm_t* get_rppm    ( const std::string& name, const spell_data_t* data = spell_data_t::nil(), const item_t* item = nullptr );
+  real_ppm_t* get_rppm    ( const std::string& name, double freq, double mod = 1.0, rppm_scale_e s = RPPM_NONE );
   dot_t*      get_dot     ( const std::string& name, player_t* source );
   gain_t*     get_gain    ( const std::string& name );
   proc_t*     get_proc    ( const std::string& name );
@@ -6239,124 +6337,6 @@ inline void dot_end_event_t::execute()
   dot -> last_tick();
 }
 
-// "Real" 'Procs per Minute' helper class =====================================
-
-struct real_ppm_t
-{
-private:
-  player_t*    player;
-  double       freq;
-  double       modifier;
-  double       rppm;
-  timespan_t   last_trigger_attempt;
-  timespan_t   last_successful_trigger;
-  timespan_t   initial_precombat_time;
-  rppm_scale_e scales_with;
-
-  static double max_interval() { return 10.0; }
-  static double max_bad_luck_prot() { return 1000.0; }
-public:
-  static double proc_chance( player_t*         player,
-                             double            PPM,
-                             const timespan_t& last_trigger,
-                             const timespan_t& last_successful_proc,
-                             rppm_scale_e      scales_with )
-  {
-    double coeff = 1.0;
-    double seconds = std::min( ( player -> sim -> current_time() - last_trigger ).total_seconds(), max_interval() );
-
-    if ( scales_with == RPPM_HASTE )
-      coeff *= 1.0 / std::min( player -> cache.spell_haste(), player -> cache.attack_haste() );
-    // This might technically be two separate crit values, but this should be sufficient for our
-    // cases. In any case, the client data does not offer information which crit it is (attack or
-    // spell).
-    else if ( scales_with == RPPM_CRIT )
-      coeff *= 1.0 + std::max( player -> cache.attack_crit(), player -> cache.spell_crit() );
-
-    double real_ppm = PPM * coeff;
-    double old_rppm_chance = real_ppm * ( seconds / 60.0 );
-
-    // RPPM Extension added on 12. March 2013: http://us.battle.net/wow/en/blog/8953693?page=44
-    // Formula see http://us.battle.net/wow/en/forum/topic/8197741003#1
-    double last_success = std::min( ( player -> sim -> current_time() - last_successful_proc ).total_seconds(), max_bad_luck_prot() );
-    double expected_average_proc_interval = 60.0 / real_ppm;
-
-    double rppm_chance = std::max( 1.0, 1 + ( ( last_success / expected_average_proc_interval - 1.5 ) * 3.0 ) )  * old_rppm_chance;
-    if ( player -> sim -> debug )
-      player -> sim -> out_debug.printf( "base=%.3f coeff=%.3f last_trig=%.3f last_proc=%.3f scales=%d chance=%.5f%%",
-          PPM, coeff, last_trigger.total_seconds(), last_successful_proc.total_seconds(), scales_with,
-          rppm_chance * 100.0 );
-    return rppm_chance;
-  }
-
-  real_ppm_t() :
-    player( nullptr ), freq( 0 ), modifier( 0 ), rppm( 0 ),
-    last_trigger_attempt( timespan_t::zero() ),
-    last_successful_trigger( timespan_t::zero() ),
-    initial_precombat_time( timespan_t::zero() ),
-    scales_with( RPPM_NONE )
-  { }
-
-  real_ppm_t( player_t& p, double frequency = 0, double mod = 1.0, rppm_scale_e s = RPPM_NONE ) :
-    player( &p ),
-    freq( frequency ),
-    modifier( mod ),
-    rppm( freq * mod ),
-    last_trigger_attempt( timespan_t::zero() ),
-    last_successful_trigger( timespan_t::zero() ),
-    initial_precombat_time( timespan_t::zero() ),
-    scales_with( s )
-  { }
-
-  void set_frequency( double frequency )
-  { freq = frequency; rppm = freq * modifier; }
-
-  void set_initial_precombat_time( timespan_t precombat )
-  {
-    initial_precombat_time = precombat;
-  }
-
-  double get_frequency() const
-  { return freq; }
-
-  void set_modifier( double mod )
-  { modifier = mod; rppm = freq * modifier; }
-
-  double get_modifier() const
-  { return modifier; }
-
-  double get_rppm() const
-  { return rppm; }
-
-  void set_last_trigger_attempt( const timespan_t& ts )
-  { last_trigger_attempt = ts; }
-
-  void set_last_trigger_success( const timespan_t& ts )
-  { last_successful_trigger = ts; }
-
-  void reset()
-  {
-    last_trigger_attempt = timespan_t::from_seconds( -10.0 );
-    last_successful_trigger = initial_precombat_time;
-  }
-
-  bool trigger()
-  {
-    assert( freq != 0 && "Real PPM Frequency not set!" );
-
-    if ( last_trigger_attempt == player -> sim -> current_time() )
-      return false;
-
-    bool success = player -> rng().roll( proc_chance( player, rppm, last_trigger_attempt, last_successful_trigger, scales_with ) );
-
-    last_trigger_attempt = player -> sim -> current_time();
-
-    if ( success )
-      last_successful_trigger = player -> sim -> current_time();
-    return success;
-  }
-};
-
 // Action Callback ==========================================================
 
 struct action_callback_t : private noncopyable
@@ -6433,7 +6413,7 @@ struct dbc_proc_callback_t : public action_callback_t
 
   // Proc trigger types, cached/initialized here from special_effect_t to avoid
   // needless spell data lookups in vast majority of cases
-  real_ppm_t  rppm;
+  real_ppm_t* rppm;
   double      proc_chance;
   double      ppm;
 
@@ -6443,30 +6423,23 @@ struct dbc_proc_callback_t : public action_callback_t
 
   dbc_proc_callback_t( const item_t& i, const special_effect_t& e ) :
     action_callback_t( i.player ), item( i ), effect( e ), cooldown( nullptr ),
-    proc_chance( 0 ), ppm( 0 ),
+    rppm( nullptr ), proc_chance( 0 ), ppm( 0 ),
     proc_buff( nullptr ), proc_action( nullptr ), weapon( nullptr )
   { }
 
   dbc_proc_callback_t( const item_t* i, const special_effect_t& e ) :
     action_callback_t( i -> player ), item( *i ), effect( e ), cooldown( nullptr ),
-    proc_chance( 0 ), ppm( 0 ),
+    rppm( nullptr ), proc_chance( 0 ), ppm( 0 ),
     proc_buff( nullptr ), proc_action( nullptr ), weapon( nullptr )
   { }
 
   dbc_proc_callback_t( player_t* p, const special_effect_t& e ) :
     action_callback_t( p ), item( default_item_ ), effect( e ), cooldown( nullptr ),
-    proc_chance( 0 ), ppm( 0 ),
+    rppm( nullptr ), proc_chance( 0 ), ppm( 0 ),
     proc_buff( nullptr ), proc_action( nullptr ), weapon( nullptr )
   { }
 
   virtual void initialize() override;
-
-  void reset() override
-  {
-    action_callback_t::reset();
-    if ( rppm.get_frequency() > 0 )
-      rppm.reset();
-  }
 
   void trigger( action_t* a, void* call_data ) override
   {
@@ -6499,8 +6472,8 @@ private:
 
   bool roll( action_t* action )
   {
-    if ( rppm.get_frequency() > 0 )
-      return rppm.trigger();
+    if ( rppm )
+      return rppm -> trigger();
     else if ( ppm > 0 )
       return rng().roll( action -> ppm_proc_chance( ppm ) );
     else if ( proc_chance > 0 )
@@ -7085,6 +7058,72 @@ inline actor_target_data_t::actor_target_data_t( player_t* target, player_t* sou
   {
     elem( this );
   }
+}
+
+// Real PPM inlines
+
+inline real_ppm_t::real_ppm_t( const std::string& name, player_t* p, const spell_data_t* data, const item_t* item ) :
+  player( p ),
+  name_str( name ),
+  freq( data -> real_ppm() ),
+  modifier( p -> dbc.real_ppm_modifier( data -> id(), player, item ? item -> item_level() : 0 ) ),
+  rppm( freq * modifier ),
+  last_trigger_attempt( timespan_t::zero() ),
+  last_successful_trigger( timespan_t::zero() ),
+  initial_precombat_time( timespan_t::zero() ),
+  scales_with( p -> dbc.real_ppm_scale( data -> id() ) )
+{ }
+
+inline double real_ppm_t::proc_chance( player_t*         player,
+                                       double            PPM,
+                                       const timespan_t& last_trigger,
+                                       const timespan_t& last_successful_proc,
+                                       rppm_scale_e      scales_with )
+{
+  double coeff = 1.0;
+  double seconds = std::min( ( player -> sim -> current_time() - last_trigger ).total_seconds(), max_interval() );
+
+  if ( scales_with == RPPM_HASTE )
+    coeff *= 1.0 / std::min( player -> cache.spell_haste(), player -> cache.attack_haste() );
+  // This might technically be two separate crit values, but this should be sufficient for our
+  // cases. In any case, the client data does not offer information which crit it is (attack or
+  // spell).
+  else if ( scales_with == RPPM_CRIT )
+    coeff *= 1.0 + std::max( player -> cache.attack_crit(), player -> cache.spell_crit() );
+
+  double real_ppm = PPM * coeff;
+  double old_rppm_chance = real_ppm * ( seconds / 60.0 );
+
+  // RPPM Extension added on 12. March 2013: http://us.battle.net/wow/en/blog/8953693?page=44
+  // Formula see http://us.battle.net/wow/en/forum/topic/8197741003#1
+  double last_success = std::min( ( player -> sim -> current_time() - last_successful_proc ).total_seconds(), max_bad_luck_prot() );
+  double expected_average_proc_interval = 60.0 / real_ppm;
+
+  double rppm_chance = std::max( 1.0, 1 + ( ( last_success / expected_average_proc_interval - 1.5 ) * 3.0 ) )  * old_rppm_chance;
+  if ( player -> sim -> debug )
+    player -> sim -> out_debug.printf( "base=%.3f coeff=%.3f last_trig=%.3f last_proc=%.3f scales=%d chance=%.5f%%",
+        PPM, coeff, last_trigger.total_seconds(), last_successful_proc.total_seconds(), scales_with,
+        rppm_chance * 100.0 );
+  return rppm_chance;
+}
+
+inline bool real_ppm_t::trigger()
+{
+  if ( freq <= 0 )
+  {
+    return false;
+  }
+
+  if ( last_trigger_attempt == player -> sim -> current_time() )
+    return false;
+
+  bool success = player -> rng().roll( proc_chance( player, rppm, last_trigger_attempt, last_successful_trigger, scales_with ) );
+
+  last_trigger_attempt = player -> sim -> current_time();
+
+  if ( success )
+    last_successful_trigger = player -> sim -> current_time();
+  return success;
 }
 
 // Instant absorbs

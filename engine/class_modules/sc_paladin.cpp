@@ -157,8 +157,6 @@ public:
     proc_t* defender_of_the_light;
   } procs;
 
-  real_ppm_t rppm_defender_of_the_light;
-
   // Spells
   struct spells_t
   {
@@ -276,7 +274,6 @@ public:
     cooldowns( cooldowns_t() ),
     passives( passives_t() ),
     procs( procs_t() ),
-    rppm_defender_of_the_light( *this, 0, RPPM_HASTE ),
     spells( spells_t() ),
     talents( talents_t() ),
     beacon_target( nullptr ),
@@ -2897,7 +2894,6 @@ void paladin_t::reset()
 
   last_retribution_trinket_target = nullptr;
   last_extra_regen = timespan_t::zero();
-  rppm_defender_of_the_light.reset();
 }
 
 // paladin_t::init_gains ====================================================
@@ -2994,6 +2990,7 @@ void paladin_t::create_buffs()
                                  .default_value( sets.set( PALADIN_PROTECTION, T17, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
                                  .add_invalidate( CACHE_BLOCK );
   buffs.defender_of_the_light  = buff_creator_t( this, "defender_of_the_light", sets.set( PALADIN_PROTECTION, T17, B4 ) -> effectN( 1 ).trigger() )
+                                 .trigger_spell( sets.set( PALADIN_PROTECTION, T17, B4 ) )
                                  .default_value( sets.set( PALADIN_PROTECTION, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
   buffs.vindicators_fury       = buff_creator_t( this, "vindicators_fury", find_spell( 165903 ) )
                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
@@ -3581,8 +3578,6 @@ void paladin_t::init_spells()
 
   if ( talents.holy_shield -> ok() )
     active_holy_shield_proc = new holy_shield_proc_t( this );
-
-  rppm_defender_of_the_light.set_frequency( sets.set( PALADIN_PROTECTION, T17, B4 ) -> real_ppm() );
 }
 
 // paladin_t::primary_role ==================================================
@@ -4137,8 +4132,7 @@ void paladin_t::assess_damage( school_e school,
   {
     trigger_holy_shield( s );
 
-    if ( sets.set( PALADIN_PROTECTION, T17, B4 ) -> ok() && rppm_defender_of_the_light.trigger() )
-      buffs.defender_of_the_light -> trigger();
+    buffs.defender_of_the_light -> trigger();
   }
 
   // Also trigger Grand Crusader on an avoidance event (TODO: test if it triggers on misses)

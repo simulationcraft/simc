@@ -353,7 +353,7 @@ public:
 
   struct realppm_t
   {
-    real_ppm_t call_to_the_void;
+    real_ppm_t* call_to_the_void;
   } rppm;
 
   // Special
@@ -1206,8 +1206,7 @@ public:
 
   void trigger_void_tendril()
   {
-    if ( priest.artifact.call_to_the_void.rank() &&
-         priest.rppm.call_to_the_void.trigger() )
+    if ( priest.rppm.call_to_the_void -> trigger() )
     {
       for ( size_t i = 0; i < priest.pets.void_tendril.size(); i++ )
       {
@@ -5551,17 +5550,6 @@ void init()
 
 }  // items
 
-namespace rppm
-{
-struct call_to_the_void_t final : public real_ppm_t
-{
-  call_to_the_void_t( priest_t& p )
-    : real_ppm_t( p, p.artifact.call_to_the_void.data().real_ppm(), 1.0, RPPM_HASTE )
-  {
-  }
-};
-};
-
 // ==========================================================================
 // Priest Targetdata Definitions
 // ==========================================================================
@@ -6701,7 +6689,7 @@ void priest_t::create_buffs()
 
 void priest_t::init_rng()
 {
-  rppm.call_to_the_void = rppm::call_to_the_void_t( *this );
+  rppm.call_to_the_void = get_rppm( "call_to_the_void", artifact.call_to_the_void );
 
   player_t::init_rng();
 }
@@ -7202,8 +7190,6 @@ void priest_t::reset()
       td->reset();
     }
   }
-
-  rppm.call_to_the_void.reset();
 }
 
 /* Copy stats from the trigger spell to the atonement spell

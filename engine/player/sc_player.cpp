@@ -3901,6 +3901,8 @@ void player_t::reset()
   for ( size_t i = 0; i < proc_list.size(); ++i )
     proc_list[ i ] -> reset();
 
+  range::for_each( rppm_list, []( real_ppm_t* rppm ) { rppm -> reset(); } );
+
   potion_used = 0;
 
   item_cooldown.reset( false );
@@ -5574,6 +5576,42 @@ cooldown_t* player_t::get_cooldown( const std::string& name )
   }
 
   return c;
+}
+
+// player_t::get_rppm =======================================================
+
+real_ppm_t* player_t::get_rppm( const std::string& name, const spell_data_t* data, const item_t* item )
+{
+  auto it = range::find_if( rppm_list, [ &name ]( const real_ppm_t* rppm ) {
+    return util::str_compare_ci( rppm -> name(), name );
+  } );
+
+  if ( it != rppm_list.end() )
+  {
+    return *it;
+  }
+
+  real_ppm_t* new_rppm = new real_ppm_t( name, this, data, item );
+  rppm_list.push_back( new_rppm );
+
+  return new_rppm;
+}
+
+real_ppm_t* player_t::get_rppm( const std::string& name, double freq, double mod, rppm_scale_e s )
+{
+  auto it = range::find_if( rppm_list, [ &name ]( const real_ppm_t* rppm ) {
+    return util::str_compare_ci( rppm -> name(), name );
+  } );
+
+  if ( it != rppm_list.end() )
+  {
+    return *it;
+  }
+
+  real_ppm_t* new_rppm = new real_ppm_t( name, this, freq, mod, s );
+  rppm_list.push_back( new_rppm );
+
+  return new_rppm;
 }
 
 // player_t::get_dot ========================================================

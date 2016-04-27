@@ -158,6 +158,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   delay(),
   expiration_delay(),
   cooldown(),
+  rppm( nullptr ),
   _max_stack( 1 ),
   default_value( DEFAULT_VALUE() ),
   activated( true ),
@@ -256,21 +257,65 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   else
     _max_stack = params._max_stack;
 
-  // Set Proc Chance
-  if ( params._chance == -1.0 )
+  // If the params specifies a trigger spell (even if it's not found), use it instead of the actual
+  // spell data of the buff.
+  const spell_data_t* trigger_data = s_data;
+  if ( params._trigger_data != spell_data_t::nil() )
   {
-    if ( data().ok() )
+    trigger_data = params._trigger_data;
+  }
+
+  // If there's no overridden proc chance (%), setup any potential custom RPPM-affecting attribute
+  if ( params._chance == -1 )
+  {
+    if ( params._rppm_freq > -1 )
     {
-      if ( data().proc_chance() != 0 )
-        default_chance = data().proc_chance();
+      rppm = player -> get_rppm( "buff_" + name_str + "_rppm", trigger_data, item );
+      rppm -> set_frequency( params._rppm_freq );
     }
-    else if ( ! data().found() )
+
+    if ( params._rppm_mod > -1 )
+    {
+      rppm = player -> get_rppm( "buff_" + name_str + "_rppm", trigger_data, item );
+      rppm -> set_modifier( params._rppm_mod );
+    }
+
+    if ( params._rppm_scale != RPPM_NONE )
+    {
+      rppm = player -> get_rppm( "buff_" + name_str + "_rppm", trigger_data, item );
+      rppm -> set_scaling( params._rppm_scale );
+    }
+  }
+  // Overridden proc chance, use it
+  else if ( params._chance > -1 )
+  {
+    default_chance = params._chance;
+  }
+
+  // No override of proc chance or RPPM-related attributes, setup the buff object's proc chance. The
+  // spell used for the attributes is either the buff spell (by default), or the given trigger_spell
+  // in buff_creator_t.
+  if ( params._chance == -1 && ! rppm )
+  {
+    if ( trigger_data -> ok() )
+    {
+      if ( trigger_data -> real_ppm() > 0 )
+      {
+        rppm = player -> get_rppm( "buff_" + name_str + "_rppm", trigger_data, item );
+      }
+      else if ( trigger_data -> proc_chance() != 0 )
+      {
+        default_chance = trigger_data -> proc_chance();
+      }
+    }
+    // Note, if the spell is "not found", then the buff is disabled.  This allows the system to
+    // easily enable/disable spells based on conditional things (such as talents, artifacts,
+    // specialization, etc.).
+    else if ( ! trigger_data -> found() )
     {
       default_chance = 0.0;
     }
   }
-  else
-    default_chance = params._chance;
 
   default_value = params._default_value;
 
@@ -635,10 +680,34 @@ bool buff_t::trigger( int        stacks,
 
   trigger_attempts++;
 
-  if ( chance < 0 ) chance = default_chance;
+  if ( rppm )
+  {
+    double c = chance;
+    if ( chance > 0 )
+    {
+      c = rppm -> get_frequency();
+      rppm -> set_frequency( chance );
+    }
 
-  if ( ! rng().roll( chance ) )
-    return false;
+    bool triggered = rppm -> trigger();
+
+    if ( chance > 0 )
+    {
+      rppm -> set_frequency( c );
+    }
+
+    if ( ! triggered )
+    {
+      return false;
+    }
+  }
+  else
+  {
+    if ( chance < 0 ) chance = default_chance;
+
+    if ( ! rng().roll( chance ) )
+      return false;
+  }
 
   if ( value == DEFAULT_VALUE() && default_value != DEFAULT_VALUE() )
     value = default_value;
@@ -2004,6 +2073,10 @@ void buff_creator_basics_t::init()
   _default_value = buff_t::DEFAULT_VALUE();
   _affects_regen = -1;
   _initial_tick = false;
+  _rppm_freq = -1;
+  _rppm_mod = -1;
+  _rppm_scale = RPPM_NONE;
+  _trigger_data = spell_data_t::nil();
 }
 
 buff_creator_basics_t::buff_creator_basics_t( actor_pair_t p, const std::string& n, const spell_data_t* sp, const item_t* item ) :

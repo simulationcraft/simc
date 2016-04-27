@@ -98,7 +98,6 @@ struct rogue_td_t : public actor_target_data_t
     buff_t* agonizing_poison;
     buffs::marked_for_death_debuff_t* marked_for_death;
     buff_t* ghostly_strike;
-    buff_t* dreadblades_fate;
     buff_t* garrote; // Hidden proxy buff for garrote to get Thuggee working easily(ish)
   } debuffs;
 
@@ -150,9 +149,6 @@ struct rogue_t : public player_t
   const special_effect_t* toxic_mutilator;
   const special_effect_t* eviscerating_blade;
   const special_effect_t* from_the_shadows;
-
-  // Artifact special effects (that are not handled by generic system)
-  const special_effect_t* dreadblades_fate;
 
   // Buffs
   struct buffs_t
@@ -409,11 +405,6 @@ struct rogue_t : public player_t
     proc_t* roll_the_bones_5;
   } procs;
 
-  struct rng_t
-  {
-    real_ppm_t dreadblades_fate;
-  } prng;
-
   player_t* tot_target;
   action_callback_t* virtual_hat_callback;
 
@@ -436,7 +427,6 @@ struct rogue_t : public player_t
     toxic_mutilator( nullptr ),
     eviscerating_blade( nullptr ),
     from_the_shadows( nullptr ),
-    dreadblades_fate( nullptr ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
@@ -523,7 +513,6 @@ struct rogue_t : public player_t
   void trigger_weaponmaster( const action_state_t* );
   void trigger_energetic_stabbing( const action_state_t* );
   void trigger_akaaris_soul( const action_state_t* );
-  void trigger_dreadblades_fate( const action_state_t* );
 
   double consume_cp_max() const
   { return 5.0 + as<double>( talent.deeper_strategem -> effectN( 1 ).base_value() ); }
@@ -1446,7 +1435,6 @@ void rogue_attack_t::impact( action_state_t* state )
   p() -> trigger_blade_flurry( state );
   p() -> trigger_shadow_techniques( state );
   p() -> trigger_weaponmaster( state );
-  p() -> trigger_dreadblades_fate( state );
 
   if ( result_is_hit( state -> result ) )
   {
@@ -2445,17 +2433,6 @@ struct pistol_shot_t : public rogue_attack_t
     return m;
   }
 
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = rogue_attack_t::composite_target_multiplier( target );
-
-    const rogue_td_t* tdata = td( target );
-
-    m *= 1.0 + tdata -> debuffs.dreadblades_fate -> stack() * tdata -> debuffs.dreadblades_fate -> data().effectN( 1 ).percent();
-
-    return m;
-  }
-
   double generate_cp() const override
   {
     double g = rogue_attack_t::generate_cp();
@@ -2885,17 +2862,6 @@ struct saber_slash_t : public rogue_attack_t
     saberslash_proc_event( nullptr ), delay( data().duration() )
   {
     weapon = &( player -> main_hand_weapon );
-  }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = rogue_attack_t::composite_target_multiplier( target );
-
-    const rogue_td_t* tdata = td( target );
-
-    m *= 1.0 + tdata -> debuffs.dreadblades_fate -> stack() * tdata -> debuffs.dreadblades_fate -> data().effectN( 1 ).percent();
-
-    return m;
   }
 
   void reset() override
@@ -3604,10 +3570,10 @@ void weapon_info_t::callback_state( current_weapon_e weapon, bool state )
     if ( state )
     {
       cb_data[ weapon ][ i ] -> activate();
-      if ( cb_data[ weapon ][ i ] -> effect.rppm() > 0 )
+      if ( cb_data[ weapon ][ i ] -> rppm )
       {
-        cb_data[ weapon ][ i ] -> rppm.set_last_trigger_success( sim -> current_time() );
-        cb_data[ weapon ][ i ] -> rppm.set_last_trigger_attempt( sim -> current_time() );
+        cb_data[ weapon ][ i ] -> rppm -> set_last_trigger_success( sim -> current_time() );
+        cb_data[ weapon ][ i ] -> rppm -> set_last_trigger_attempt( sim -> current_time() );
       }
 
       if ( sim -> debug )
@@ -4065,27 +4031,6 @@ void rogue_t::trigger_akaaris_soul( const action_state_t* s )
   }
 
   new ( *sim ) akaaris_soul_event_t( attack -> get_state( s ) );
-}
-
-// TODO: Offensive only?
-void rogue_t::trigger_dreadblades_fate( const action_state_t* s )
-{
-  if ( ! dreadblades_fate )
-  {
-    return;
-  }
-
-  if ( actions::rogue_attack_t::cast_state( s ) -> cp == 0 || s -> action -> background )
-  {
-    return;
-  }
-
-  if ( ! prng.dreadblades_fate.trigger() )
-  {
-    return;
-  }
-
-  cast_attack( s -> action ) -> td( s -> target ) -> debuffs.dreadblades_fate -> trigger();
 }
 
 void rogue_t::trigger_elaborate_planning( const action_state_t* s )
@@ -4591,8 +4536,6 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
                        .default_value( 1.0 + source -> talent.hemorrhage -> effectN( 4 ).percent() );
   debuffs.ghostly_strike = buff_creator_t( *this, "ghostly_strike", source -> talent.ghostly_strike )
     .default_value( source -> talent.ghostly_strike -> effectN( 5 ).percent() );
-  debuffs.dreadblades_fate = buff_creator_t( *this, "dreadblades_fate", source -> find_spell( 202710 ) )
-                             .chance( source -> dreadblades_fate != nullptr );
   debuffs.garrote = new buffs::proxy_garrote_t( *this );
 }
 
@@ -5771,8 +5714,6 @@ void rogue_t::init_special_effects()
 void rogue_t::init_rng()
 {
   player_t::init_rng();
-
-  prng.dreadblades_fate = real_ppm_t( *this, find_spell( 202732 ) -> real_ppm() );
 }
 
 // rogue_t::init_finished ===================================================
@@ -6150,8 +6091,6 @@ struct rogue_module_t : public module_t
     unique_gear::register_special_effect( 184917, eviscerating_blade );
     unique_gear::register_special_effect( 184918, from_the_shadows   );
     unique_gear::register_special_effect( 197525, withering_bite     );
-    unique_gear::register_special_effect( 202732,
-        []( special_effect_t& e ) { debug_cast<rogue_t*>( e.player ) -> dreadblades_fate = &e; } );
   }
 
   virtual void register_hotfixes() const override

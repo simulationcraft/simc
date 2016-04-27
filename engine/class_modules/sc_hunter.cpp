@@ -228,9 +228,9 @@ public:
     proc_t* tier18_2pc_mm_wasted_overwrite;
   } procs;
 
-  real_ppm_t ppm_tier15_2pc_melee;
-  real_ppm_t ppm_tier15_4pc_melee;
-  real_ppm_t ppm_hunters_mark;
+  real_ppm_t* ppm_tier15_2pc_melee;
+  real_ppm_t* ppm_tier15_4pc_melee;
+  real_ppm_t* ppm_hunters_mark;
 
   // Talents
   struct talents_t
@@ -437,9 +437,9 @@ public:
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
     procs( procs_t() ),
-    ppm_tier15_2pc_melee( *this, std::numeric_limits<double>::min(), 1.0, RPPM_HASTE ),
-    ppm_tier15_4pc_melee( *this, std::numeric_limits<double>::min(), 1.0, RPPM_HASTE ),
-    ppm_hunters_mark( *this, std::numeric_limits<double>::min(), 1.0, RPPM_HASTE),
+    ppm_tier15_2pc_melee( nullptr ),
+    ppm_tier15_4pc_melee( nullptr ),
+    ppm_hunters_mark( nullptr ),
     talents( talents_t() ),
     specs( specs_t() ),
     glyphs( glyphs_t() ),
@@ -2000,7 +2000,7 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
     if ( !p() -> sets.has_set_bonus( SET_MELEE, T15, B2 ) )
       return;
 
-    if ( ( p() -> ppm_tier15_2pc_melee.trigger() ) )
+    if ( ( p() -> ppm_tier15_2pc_melee -> trigger() ) )
     {
       p() -> procs.tier15_2pc_melee -> occur();
       size_t i;
@@ -2307,7 +2307,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
       if ( p() -> specialization() == HUNTER_MARKSMANSHIP )
       {
         p() -> resource_gain( RESOURCE_FOCUS, focus_gain * execute_state -> n_targets, p() -> gains.multi_shot);
-        if ( p() -> buffs.trueshot -> up() || p() -> ppm_hunters_mark.trigger() )
+        if ( p() -> buffs.trueshot -> up() || p() -> ppm_hunters_mark -> trigger() )
         {
           std::vector<player_t*> multi_shot_targets = execute_state -> action -> target_list();
           for ( size_t i = 0; i < multi_shot_targets.size(); i++ )
@@ -2426,7 +2426,7 @@ void hunter_ranged_attack_t::trigger_tier15_4pc_melee( proc_t* proc, attack_t* a
   if ( !p() -> sets.has_set_bonus( SET_MELEE, T15, B4 ) )
     return;
 
-  if ( p() -> ppm_tier15_4pc_melee.trigger() )
+  if ( p() -> ppm_tier15_4pc_melee -> trigger() )
   {
     proc -> occur();
     attack -> execute();
@@ -2809,7 +2809,7 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     {
       trigger_tier15_2pc_melee();
 
-      if ( p() -> buffs.trueshot -> up() || p() -> ppm_hunters_mark.trigger() )
+      if ( p() -> buffs.trueshot -> up() || p() -> ppm_hunters_mark -> trigger() )
       {
         td( execute_state -> target ) -> debuffs.hunters_mark -> trigger();
         p() -> procs.hunters_mark -> occur();
@@ -4137,9 +4137,15 @@ void hunter_t::init_rng()
   else // HUNTER_SURVIVAL
     tier15_2pc_melee_rppm = 1.2;
 
-  ppm_tier15_2pc_melee.set_frequency( tier15_2pc_melee_rppm );
-  ppm_tier15_4pc_melee.set_frequency( 3.0 );
-  ppm_hunters_mark.set_frequency( 6.0 );
+  ppm_tier15_2pc_melee = get_rppm( "tier15_2pc_melee", sets.set( SET_MELEE, T15, B2 ) );
+  if ( sets.has_set_bonus( SET_MELEE, T15, B2 ) )
+  {
+    ppm_tier15_2pc_melee -> set_frequency( tier15_2pc_melee_rppm );
+  }
+
+  ppm_tier15_4pc_melee = get_rppm( "tier15_4pc_melee", sets.set( SET_MELEE, T15, B4 ) );
+
+  ppm_hunters_mark = get_rppm( "hunters_mark", find_specialization_spell( "Hunter's Mark" ) );
 
   player_t::init_rng();
 }
@@ -4427,9 +4433,6 @@ void hunter_t::reset()
   // Active
   active.pet            = nullptr;
   active.ammo           = NO_AMMO;
-
-  ppm_tier15_4pc_melee.reset();
-  ppm_tier15_2pc_melee.reset();
 }
 
 // hunter_t::arise ==========================================================
