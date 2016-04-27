@@ -7,6 +7,9 @@
 // Subtlety
 // - Shuriken Storm
 // - Second Shuriken [artifact power]
+//
+// Assassination
+// - Balanced Blades [artifact power] spell data claims it's not flat modifier?
 
 #include "simulationcraft.hpp"
 
@@ -104,6 +107,7 @@ struct rogue_td_t : public actor_target_data_t
     buffs::marked_for_death_debuff_t* marked_for_death;
     buff_t* ghostly_strike;
     buff_t* garrote; // Hidden proxy buff for garrote to get Thuggee working easily(ish)
+    buff_t* surge_of_toxins;
   } debuffs;
 
   rogue_td_t( player_t* target, rogue_t* source );
@@ -240,6 +244,7 @@ struct rogue_t : public player_t
     gain_t* venomous_wounds;
     gain_t* vitality;
     gain_t* energetic_stabbing;
+    gain_t* urge_to_kill;
 
     // CP Gains
     gain_t* empowered_fan_of_knives;
@@ -390,6 +395,24 @@ struct rogue_t : public player_t
     artifact_power_t akaaris_soul;
     artifact_power_t shadow_nova;
     artifact_power_t finality;
+
+    // Assassination
+    artifact_power_t kingsbane;
+    artifact_power_t assassins_blades;
+    artifact_power_t toxic_blades;
+    artifact_power_t urge_to_kill;
+    artifact_power_t shadow_walker;
+    artifact_power_t bag_of_tricks;
+    artifact_power_t master_alchemist;
+    artifact_power_t master_assassin;
+    artifact_power_t gushing_wound;
+    artifact_power_t blood_of_the_assassinated;
+    artifact_power_t balanced_blades;
+    artifact_power_t poison_knives;
+    artifact_power_t surge_of_toxins;
+    artifact_power_t serrated_edge;
+    artifact_power_t from_the_shadows;
+    artifact_power_t slayers_precision;
   } artifact;
 
   // Procs
@@ -515,6 +538,7 @@ struct rogue_t : public player_t
   void trigger_weaponmaster( const action_state_t* );
   void trigger_energetic_stabbing( const action_state_t* );
   void trigger_akaaris_soul( const action_state_t* );
+  void trigger_surge_of_toxins( const action_state_t* );
 
   double consume_cp_max() const
   { return 5.0 + as<double>( talent.deeper_strategem -> effectN( 1 ).base_value() ); }
@@ -1050,22 +1074,38 @@ struct rogue_poison_t : public rogue_attack_t
     execute();
   }
 
-  virtual double action_da_multiplier() const override
+  double action_da_multiplier() const override
   {
     double m = rogue_attack_t::action_da_multiplier();
 
     if ( p() -> mastery.potent_poisons -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
 
+    m *= 1.0 + p() -> artifact.master_alchemist.percent();
+
     return m;
   }
 
-  virtual double action_ta_multiplier() const override
+  double action_ta_multiplier() const override
   {
     double m = rogue_attack_t::action_ta_multiplier();
 
     if ( p() -> mastery.potent_poisons -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
+
+    m *= 1.0 + p() -> artifact.master_alchemist.percent();
+
+    return m;
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = rogue_attack_t::composite_target_multiplier( target );
+
+    if ( td( target ) -> debuffs.surge_of_toxins -> up() )
+    {
+      m *= 1.0 + p() -> artifact.surge_of_toxins.percent();
+    }
 
     return m;
   }
@@ -1437,6 +1477,7 @@ void rogue_attack_t::impact( action_state_t* state )
   p() -> trigger_blade_flurry( state );
   p() -> trigger_shadow_techniques( state );
   p() -> trigger_weaponmaster( state );
+  p() -> trigger_surge_of_toxins( state );
 
   if ( result_is_hit( state -> result ) )
   {
@@ -1956,7 +1997,7 @@ struct envenom_t : public rogue_attack_t
     attack_power_mod.direct = 0.417;
     dot_duration = timespan_t::zero();
     weapon_multiplier = weapon_power_mod = 0.0;
-    base_multiplier *= 1.05; // Hard-coded tooltip.
+    base_multiplier *= 1.0 + p -> artifact.toxic_blades.percent();
     base_dd_min = base_dd_max = 0;
   }
 
@@ -2574,6 +2615,8 @@ struct mutilate_t : public rogue_attack_t
     may_crit = false;
     snapshot_flags |= STATE_MUL_DA;
 
+    base_multiplier *= 1.0 + p -> artifact.assassins_blades.percent();
+
     // Tier 18 (WoD 6.2) trinket effect for Assassination
     if ( p -> toxic_mutilator )
     {
@@ -2618,6 +2661,8 @@ struct mutilate_t : public rogue_attack_t
     {
       c += toxic_mutilator_crit_chance;
     }
+
+    c += p() -> artifact.balanced_blades.percent();
 
     return c;
   }
@@ -2795,7 +2840,9 @@ struct rupture_t : public rogue_attack_t
   rupture_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "rupture", p, p -> find_specialization_spell( "Rupture" ), options_str )
   {
-    may_crit              = false;
+    may_crit = false;
+    base_multiplier *= 1.0 + p -> artifact.gushing_wound.percent();
+    base_crit += p -> artifact.serrated_edge.percent();
   }
 
   void execute() override
@@ -3102,6 +3149,8 @@ struct sprint_t: public rogue_attack_t
     harmful = callbacks = false;
     cooldown = p -> cooldowns.sprint;
     ignore_false_positive = true;
+
+    cooldown -> duration += p -> artifact.shadow_walker.time_value();
   }
 
   void execute() override
@@ -3187,6 +3236,7 @@ struct vendetta_t : public rogue_attack_t
     rogue_attack_t( "vendetta", p, p -> find_specialization_spell( "Vendetta" ), options_str )
   {
     harmful = may_miss = may_crit = false;
+    cooldown -> duration += p -> artifact.master_assassin.time_value();
   }
 
   void execute() override
@@ -3196,6 +3246,12 @@ struct vendetta_t : public rogue_attack_t
     rogue_td_t* td = this -> td( execute_state -> target );
 
     td -> debuffs.vendetta -> trigger();
+
+    if ( p() -> artifact.urge_to_kill.rank() )
+    {
+      p() -> resource_gain( RESOURCE_ENERGY, p() -> resources.max[ RESOURCE_ENERGY ],
+          p() -> gains.urge_to_kill, this );
+    }
   }
 };
 
@@ -4034,6 +4090,16 @@ void rogue_t::trigger_akaaris_soul( const action_state_t* s )
   new ( *sim ) akaaris_soul_event_t( attack -> get_state( s ) );
 }
 
+void rogue_t::trigger_surge_of_toxins( const action_state_t* s )
+{
+  if ( ! artifact.surge_of_toxins.rank() )
+  {
+    return;
+  }
+
+  get_target_data( s -> target ) -> debuffs.surge_of_toxins -> trigger();
+}
+
 void rogue_t::trigger_elaborate_planning( const action_state_t* s )
 {
   if ( ! talent.elaborate_planning -> ok() )
@@ -4539,6 +4605,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.ghostly_strike = buff_creator_t( *this, "ghostly_strike", source -> talent.ghostly_strike )
     .default_value( source -> talent.ghostly_strike -> effectN( 5 ).percent() );
   debuffs.garrote = new buffs::proxy_garrote_t( *this );
+  debuffs.surge_of_toxins = buff_creator_t( *this, "surge_of_toxins", source -> artifact.surge_of_toxins );
 }
 
 // ==========================================================================
@@ -4655,6 +4722,8 @@ double rogue_t::composite_player_multiplier( school_e school ) const
   {
     m *= 1.0 + artifact.shadow_fangs.data().effectN( 1 ).percent();
   }
+
+  m *= 1.0 + artifact.slayers_precision.percent();
 
   if ( buffs.master_of_subtlety -> check() || buffs.master_of_subtlety_passive -> check() )
   {
@@ -5212,6 +5281,23 @@ void rogue_t::init_spells()
   artifact.shadow_nova      = find_artifact_spell( "Shadow Nova" );
   artifact.finality         = find_artifact_spell( "Finality" );
 
+  artifact.kingsbane        = find_artifact_spell( "Kingsbane" );
+  artifact.assassins_blades = find_artifact_spell( "Assassin's Blades" );
+  artifact.toxic_blades     = find_artifact_spell( "Toxin Blades" );
+  artifact.urge_to_kill     = find_artifact_spell( "Urge to Kill" );
+  artifact.shadow_walker    = find_artifact_spell( "Shadow Walker" );
+  artifact.bag_of_tricks    = find_artifact_spell( "Bag of Tricks" );
+  artifact.master_alchemist = find_artifact_spell( "Master Alchemist" );
+  artifact.master_assassin  = find_artifact_spell( "Master Assassin" );
+  artifact.gushing_wound    = find_artifact_spell( "Gushing Wound" );
+  artifact.blood_of_the_assassinated = find_artifact_spell( "Blood of the Assassinated" );
+  artifact.balanced_blades  = find_artifact_spell( "Balanced Blades" );
+  artifact.poison_knives    = find_artifact_spell( "Poison Knives" );
+  artifact.surge_of_toxins  = find_artifact_spell( "Surge of Toxins" );
+  artifact.serrated_edge    = find_artifact_spell( "Serrated Edge" );
+  artifact.from_the_shadows = find_artifact_spell( "From the Shadows" );
+  artifact.slayers_precision= find_artifact_spell( "Slayer's Precision" );
+
   auto_attack = new actions::auto_melee_attack_t( this, "" );
 
   if ( mastery.main_gauche -> ok() )
@@ -5261,6 +5347,7 @@ void rogue_t::init_gains()
   gains.shadow_blades = get_gain( "Shadow Blades" );
   gains.energetic_stabbing = get_gain( "Energetic Stabbing" );
   gains.enveloping_shadows = get_gain( "Enveloping Shadows" );
+  gains.urge_to_kill = get_gain( "Urge to Kill" );
 }
 
 // rogue_t::init_procs ======================================================
