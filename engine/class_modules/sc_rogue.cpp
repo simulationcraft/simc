@@ -3,6 +3,11 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+// TODO
+// Subtlety
+// - Shuriken Storm
+// - Second Shuriken [artifact power]
+
 #include "simulationcraft.hpp"
 
 namespace { // UNNAMED NAMESPACE
@@ -372,6 +377,7 @@ struct rogue_t : public player_t
   {
     // Subtlety
     artifact_power_t goremaws_bite;
+    artifact_power_t shadow_fangs;
     artifact_power_t the_quiet_knife;
     artifact_power_t demons_kiss;
     artifact_power_t gutripper;
@@ -1529,8 +1535,6 @@ void rogue_attack_t::execute()
 
   p() -> trigger_ruthlessness_cp( execute_state );
 
-  p() -> trigger_energetic_stabbing( execute_state );
-
   if ( adds_combo_points > 0 && p() -> buffs.shadow_blades -> up() )
   {
     p() -> trigger_combo_point_gain( execute_state, 1, p() -> gains.shadow_blades );
@@ -1571,7 +1575,6 @@ void rogue_attack_t::execute()
   }
 
   p() -> trigger_deepening_shadows( execute_state );
-  p() -> trigger_akaaris_soul( execute_state );
 }
 
 // rogue_attack_t::ready() ==================================================
@@ -3005,6 +3008,14 @@ struct shadowstrike_t : public rogue_attack_t
     base_multiplier *= 1.0 + p -> artifact.precision_strike.percent();
   }
 
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    p() -> trigger_energetic_stabbing( execute_state );
+    p() -> trigger_akaaris_soul( execute_state );
+  }
+
   // TODO: Distance movement support, should teleport up to 30 yards, with distance targeting, next
   // to the target
   double composite_teleport_distance( const action_state_t* ) const override
@@ -3981,13 +3992,7 @@ void rogue_t::trigger_energetic_stabbing( const action_state_t* s )
     return;
   }
 
-  if ( ! s -> action -> harmful || ! s -> action -> result_is_hit( s -> result ) )
-  {
-    return;
-  }
-
-  actions::rogue_attack_t* attack = debug_cast<actions::rogue_attack_t*>( s -> action );
-  if ( ! attack -> requires_stealth )
+  if ( ! s -> action -> result_is_hit( s -> result ) )
   {
     return;
   }
@@ -4644,6 +4649,13 @@ double rogue_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
+  if ( artifact.shadow_fangs.rank() &&
+       ( dbc::is_school( school, SCHOOL_PHYSICAL ) ||
+         dbc::is_school( school, SCHOOL_SHADOW) ) )
+  {
+    m *= 1.0 + artifact.shadow_fangs.data().effectN( 1 ).percent();
+  }
+
   if ( buffs.master_of_subtlety -> check() || buffs.master_of_subtlety_passive -> check() )
   {
     m *= 1.0 + talent.master_of_subtlety -> effectN( 1 ).percent();
@@ -5186,6 +5198,7 @@ void rogue_t::init_spells()
   talent.master_of_shadows  = find_talent_spell( "Master of Shadows" );
 
   artifact.goremaws_bite    = find_artifact_spell( "Goremaw's Bite" );
+  artifact.shadow_fangs     = find_artifact_spell( "Shadow Fangs" );
   artifact.the_quiet_knife  = find_artifact_spell( "The Quiet Knife" );
   artifact.demons_kiss      = find_artifact_spell( "Demon's Kiss" );
   artifact.gutripper        = find_artifact_spell( "Gutripper" );
