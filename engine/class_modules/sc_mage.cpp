@@ -438,7 +438,7 @@ public:
                      shield_of_alodi, //NYI
                      icy_caress,
                      ice_nine,
-                     chain_reaction, //NYI
+                     chain_reaction,
                      clarity_of_thought,
                      its_cold_outside, //NYI
                      shattering_bolts,
@@ -738,7 +738,44 @@ struct water_elemental_pet_t : public pet_t
     }
 
   };
+  struct jagged_shard_t : public mage_pet_spell_t
+  {
+    jagged_shard_t( water_elemental_pet_t* p, const std::string& options_str ) :
+      mage_pet_spell_t( "jagged_shard", p, p -> find_spell( 214777 ) )
+    {
+      trigger_gcd = timespan_t::zero();
+      parse_options( options_str );
+      may_crit = true;
+    }
 
+    const water_elemental_pet_t* p() const
+    { return static_cast<water_elemental_pet_t*>( player ); }
+    //TODO: Test this. Currently assuming based on waterbolt properties
+    virtual double action_multiplier() const override
+    {
+      double am = mage_pet_spell_t::action_multiplier();
+
+      if ( p() -> o() -> spec.icicles -> ok() )
+      {
+        am *= 1.0 + p() -> o() -> cache.mastery_value();
+      }
+
+      return am;
+    }
+
+    virtual void impact( action_state_t* s ) override
+    {
+      water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
+      double shard_fof_chance = p -> o() -> artifact.its_cold_outside.percent();
+      spell_t::impact( s );
+
+      if ( result_is_hit( s -> result ) )
+      {
+        p -> o() -> buffs.fingers_of_frost -> trigger( 1.0, shard_fof_chance );
+        p -> o() -> benefits.fingers_of_frost -> update( "Jagged Shard", 1.0 );
+      }
+    }
+  };
   struct waterbolt_t: public mage_pet_spell_t
   {
     waterbolt_t( water_elemental_pet_t* p, const std::string& options_str ):
@@ -770,7 +807,15 @@ struct water_elemental_pet_t : public pet_t
   {
     owner_coeff.sp_from_sp = 0.75;
 
-    action_list_str  = "waterbolt";
+    if ( owner -> artifact.its_cold_outside.rank() )
+    {
+      action_list_str = "jagged_shard";
+    }
+    else
+    {
+      action_list_str  = "waterbolt";
+    }
+
   }
 
   mage_t* o()
@@ -781,8 +826,9 @@ struct water_elemental_pet_t : public pet_t
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str ) override
   {
-    if ( name == "freeze"     ) return new     freeze_t( this, options_str );
-    if ( name == "waterbolt"  ) return new  waterbolt_t( this, options_str );
+    if ( name == "freeze"     ) return new              freeze_t( this, options_str );
+    if ( name == "jagged_shard" ) return new      jagged_shard_t( this, options_str );
+    if ( name == "waterbolt"  ) return new           waterbolt_t( this, options_str );
 
     return pet_t::create_action( name, options_str );
   }
@@ -2747,7 +2793,6 @@ struct ebonbolt_t : public frost_mage_spell_t
   virtual void execute() override
   {
     frost_mage_spell_t::execute();
-    trigger_fof( "Ebonbolt", 1.0, 2 );
   }
 };
 // Evocation Spell ==========================================================
