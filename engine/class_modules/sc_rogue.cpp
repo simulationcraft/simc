@@ -226,7 +226,7 @@ struct rogue_t : public player_t
     gain_t* energy_refund;
     gain_t* murderous_intent;
     gain_t* overkill;
-    gain_t* relentless_strikes;
+    gain_t* master_of_shadows;
     gain_t* shadow_strikes;
     gain_t* t17_2pc_assassination;
     gain_t* t17_4pc_assassination;
@@ -234,7 +234,6 @@ struct rogue_t : public player_t
     gain_t* t17_4pc_subtlety;
     gain_t* venomous_wounds;
     gain_t* vitality;
-    gain_t* master_of_shadows;
     gain_t* energetic_stabbing;
 
     // CP Gains
@@ -272,7 +271,6 @@ struct rogue_t : public player_t
     // Subtlety
     const spell_data_t* deepening_shadows;
     const spell_data_t* energetic_recovery; // TODO: Not used?
-    const spell_data_t* master_of_shadows;
     const spell_data_t* shadow_blades;
     const spell_data_t* shadow_dance;
     const spell_data_t* shadow_techniques;
@@ -287,7 +285,6 @@ struct rogue_t : public player_t
     const spell_data_t* fan_of_knives;
     const spell_data_t* fleet_footed;
     const spell_data_t* sprint;
-    const spell_data_t* relentless_strikes;
     const spell_data_t* ruthlessness_cp_driver;
     const spell_data_t* ruthlessness_driver;
     const spell_data_t* ruthlessness_cp;
@@ -359,7 +356,7 @@ struct rogue_t : public player_t
     const spell_data_t* enveloping_shadows;
 
     // Subtlety - Level 100
-    const spell_data_t* relentless_strikes;
+    const spell_data_t* master_of_shadows;
   } talent;
 
   // Masteries
@@ -4135,48 +4132,6 @@ struct proxy_garrote_t : public buff_t
   }
 };
 
-struct shadow_dance_t : public buff_t
-{
-  shadow_dance_t( rogue_t* p ) :
-    buff_t( buff_creator_t( p, "shadow_dance", p -> spec.shadow_dance )
-            .cd( timespan_t::zero() )
-            .duration( p -> find_specialization_spell( "Shadow Dance" ) -> duration() +
-                       p -> sets.set( SET_MELEE, T13, B4 ) -> effectN( 1 ).time_value() ) )
-  { }
-
-  void execute( int stacks, double value, timespan_t duration ) override
-  {
-    buff_t::execute( stacks, value, duration );
-
-    rogue_t* rogue = debug_cast<rogue_t*>( player );
-    rogue -> buffs.master_of_subtlety -> expire();
-    rogue -> buffs.master_of_subtlety_passive -> trigger();
-    if ( rogue -> in_combat && rogue -> spec.master_of_shadows -> ok() )
-    {
-      rogue -> resource_gain( RESOURCE_ENERGY, rogue -> spec.master_of_shadows -> effectN( 1 ).base_value(),
-          rogue -> gains.master_of_shadows );
-    }
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-
-    if ( remaining_duration == timespan_t::zero() )
-    {
-      rogue_t* rogue = debug_cast<rogue_t*>( player );
-      rogue -> buffs.shadow_strikes -> trigger();
-      rogue -> buffs.master_of_subtlety_passive -> expire();
-      rogue -> buffs.master_of_subtlety -> trigger();
-
-      if ( rogue -> artifact.shadow_nova.rank() )
-      {
-        rogue -> shadow_nova -> schedule_execute();
-      }
-    }
-  }
-};
-
 struct fof_fod_t : public buff_t
 {
   fof_fod_t( rogue_t* p ) :
@@ -4217,42 +4172,21 @@ struct subterfuge_t : public buff_t
   }
 };
 
-struct vanish_t : public buff_t
+struct stealth_like_buff_t : public buff_t
 {
   rogue_t* rogue;
 
-  vanish_t( rogue_t* r ) :
-    buff_t( buff_creator_t( r, "vanish", r -> find_spell( 11327 ) ) ),
-    rogue( r )
+  stealth_like_buff_t( rogue_t* r, const std::string& name, const spell_data_t* spell ) :
+    buff_t( buff_creator_t( r, name, spell ) ), rogue( r )
   { }
 
   void execute( int stacks, double value, timespan_t duration ) override
   {
     buff_t::execute( stacks, value, duration );
 
-    rogue -> buffs.stealth -> trigger();
-  }
-};
-
-// Note, stealth buff is set a max time of half the nominal fight duration, so it can be forced to
-// show in sample sequence tables.
-struct stealth_t : public buff_t
-{
-  rogue_t* rogue;
-
-  stealth_t( rogue_t* r ) :
-    buff_t( buff_creator_t( r, "stealth", r -> find_spell( 1784 ) )
-        .duration( r -> sim -> max_time / 2 ) ),
-    rogue( r )
-  { }
-
-  void execute( int stacks, double value, timespan_t duration ) override
-  {
-    buff_t::execute( stacks, value, duration );
-
-    if ( rogue -> in_combat && rogue -> spec.master_of_shadows -> ok() )
+    if ( rogue -> in_combat && rogue -> talent.master_of_shadows -> ok() )
     {
-      rogue -> resource_gain( RESOURCE_ENERGY, rogue -> spec.master_of_shadows -> effectN( 1 ).base_value(),
+      rogue -> resource_gain( RESOURCE_ENERGY, rogue -> talent.master_of_shadows -> effectN( 1 ).base_value(),
           rogue -> gains.master_of_shadows );
     }
 
@@ -4270,6 +4204,70 @@ struct stealth_t : public buff_t
     if ( rogue -> artifact.shadow_nova.rank() )
     {
       rogue -> shadow_nova -> schedule_execute();
+    }
+  }
+};
+
+// Vanish does not give "stealth like abilities", except for some reason it does give Master of
+// Subtlety buff.
+struct vanish_t : public buff_t
+{
+  rogue_t* rogue;
+
+  vanish_t( rogue_t* r ) :
+    buff_t( buff_creator_t( r, "vanish", r -> find_spell( 11327 ) ) ),
+    rogue( r )
+  { }
+
+  void execute( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::execute( stacks, value, duration );
+
+    rogue -> buffs.master_of_subtlety -> expire();
+    rogue -> buffs.master_of_subtlety_passive -> trigger();
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    rogue -> buffs.master_of_subtlety_passive -> expire();
+    rogue -> buffs.master_of_subtlety -> trigger();
+
+    if ( remaining_duration == timespan_t::zero() )
+    {
+      rogue -> buffs.stealth -> trigger();
+    }
+  }
+};
+
+// Note, stealth buff is set a max time of half the nominal fight duration, so it can be forced to
+// show in sample sequence tables.
+struct stealth_t : public stealth_like_buff_t
+{
+  stealth_t( rogue_t* r ) :
+    stealth_like_buff_t( r, "stealth", r -> find_spell( 1784 ) )
+  {
+    buff_duration = sim -> max_time / 2;
+  }
+};
+
+struct shadow_dance_t : public stealth_like_buff_t
+{
+  shadow_dance_t( rogue_t* p ) :
+    stealth_like_buff_t( p, "shadow_dance", p -> spec.shadow_dance )
+  {
+    buff_duration = rogue -> spec.shadow_dance -> duration() +
+      rogue -> sets.set( SET_MELEE, T13, B4 ) -> effectN( 1 ).time_value();
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    stealth_like_buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    if ( remaining_duration == timespan_t::zero() )
+    {
+      rogue -> buffs.shadow_strikes -> trigger();
     }
   }
 };
@@ -5119,7 +5117,6 @@ void rogue_t::init_spells()
   // Subtlety
   spec.deepening_shadows    = find_specialization_spell( "Deepening Shadows" );
   spec.energetic_recovery   = find_specialization_spell( "Energetic Recovery" );
-  spec.master_of_shadows    = find_specialization_spell( "Master of Shadows" );
   spec.shadow_dance         = find_specialization_spell( "Shadow Dance" );
   spec.shadow_techniques    = find_specialization_spell( "Shadow Techniques" );
   spec.symbols_of_death     = find_specialization_spell( "Symbols of Death" );
@@ -5135,7 +5132,6 @@ void rogue_t::init_spells()
   spell.fan_of_knives       = find_class_spell( "Fan of Knives" );
   spell.fleet_footed        = find_class_spell( "Fleet Footed" );
   spell.sprint              = find_class_spell( "Sprint" );
-  spell.relentless_strikes  = find_spell( 58423 );
   spell.ruthlessness_driver = find_spell( 14161 );
   spell.ruthlessness_cp     = spec.ruthlessness -> effectN( 1 ).trigger();
   spell.shadow_focus        = find_spell( 112942 );
@@ -5187,7 +5183,7 @@ void rogue_t::init_spells()
   talent.premeditation      = find_talent_spell( "Premeditation" );
   talent.enveloping_shadows = find_talent_spell( "Enveloping Shadows" );
 
-  talent.relentless_strikes = find_talent_spell( "Relentless Strikes" );
+  talent.master_of_shadows  = find_talent_spell( "Master of Shadows" );
 
   artifact.goremaws_bite    = find_artifact_spell( "Goremaw's Bite" );
   artifact.the_quiet_knife  = find_artifact_spell( "The Quiet Knife" );
@@ -5237,7 +5233,6 @@ void rogue_t::init_gains()
   gains.legendary_daggers       = get_gain( "legendary_daggers" );
   gains.murderous_intent        = get_gain( "murderous_intent"   );
   gains.overkill                = get_gain( "overkill"           );
-  gains.relentless_strikes      = get_gain( "relentless_strikes" );
   gains.seal_fate               = get_gain( "seal_fate" );
   gains.shadow_strikes          = get_gain( "shadow_strikes" );
   gains.t17_2pc_assassination   = get_gain( "t17_2pc_assassination" );
