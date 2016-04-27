@@ -248,7 +248,8 @@ public:
 
     // Artifact
     // Frost
-    buff_t* chain_reaction;
+    buff_t* chain_reaction,
+          * chilled_to_the_core;
 
   } buffs;
 
@@ -3572,6 +3573,10 @@ struct icy_veins_t : public frost_mage_spell_t
     frost_mage_spell_t::execute();
 
     p() -> buffs.icy_veins -> trigger();
+    if ( p() -> artifact.chilled_to_the_core.rank() )
+    {
+    p() -> buffs.chilled_to_the_core -> trigger();
+    }
   }
 };
 
@@ -5493,6 +5498,8 @@ void mage_t::create_buffs()
   // Artifact
   // Frost
   buffs.chain_reaction   = buff_creator_t( this, "chain_reaction", find_spell( 195418 ) );
+  buffs.chilled_to_the_core = buff_creator_t( this, "chilled_to_the_core", find_spell( 195446 ) )
+                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 }
 
 // mage_t::create_options ===================================================
@@ -6372,6 +6379,11 @@ double mage_t::composite_player_multiplier( school_e school ) const
   {
     m *= std::pow( 1.0 + buffs.temporal_power -> data().effectN( 1 ).percent(),
                    buffs.temporal_power -> check() );
+  }
+
+  if ( buffs.chilled_to_the_core -> check() )
+  {
+    m *= 1.0 + buffs.chilled_to_the_core -> data().effectN( 1 ).percent();
   }
 
   return m;
