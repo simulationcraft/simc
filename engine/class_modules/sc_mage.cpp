@@ -440,7 +440,7 @@ public:
                      ice_nine,
                      chain_reaction,
                      clarity_of_thought,
-                     its_cold_outside, //NYI
+                     its_cold_outside,
                      shattering_bolts,
                      orbital_strike,
                      icy_hand,
@@ -5456,7 +5456,8 @@ void mage_t::create_buffs()
   buffs.bone_chilling         = buff_creator_t( this, "bone_chilling", find_spell( 205766 ) );
   buffs.fingers_of_frost      = buff_creator_t( this, "fingers_of_frost", find_spell( 44544 ) )
                                   .max_stack( find_spell( 44544 ) -> max_stacks() +
-                                              sets.set( MAGE_FROST, T18, B4 ) -> effectN( 2 ).base_value() );
+                                              sets.set( MAGE_FROST, T18, B4 ) -> effectN( 2 ).base_value() +
+                                              artifact.icy_hand.rank() );
   buffs.frost_armor           = buff_creator_t( this, "frost_armor", find_spell( 7302 ) )
                                   .add_invalidate( CACHE_SPELL_HASTE );
   buffs.icy_veins             = buff_creator_t( this, "icy_veins", find_spell( 12472 ) )
