@@ -373,7 +373,7 @@ bool parse_artifact( sim_t* sim, const std::string&, const std::string& value )
   {
     ret = sim -> active_player -> parse_artifact_wowdb( value );
   }
-  else if ( util::str_in_str_ci( value, ".wowhead.com/artifact-calc" ) )
+  else if ( util::str_in_str_ci( value, ":" ) )
   {
     ret = sim -> active_player -> parse_artifact_wowhead( value );
   }
@@ -7479,99 +7479,28 @@ bool player_t::parse_artifact_wowdb( const std::string& artifact_string )
 
 bool player_t::parse_artifact_wowhead( const std::string& artifact_string )
 {
-  auto data_offset = artifact_string.find( '#' );
-  if ( data_offset == std::string::npos )
+  auto splits = util::string_split( artifact_string, ":" );
+  if ( splits.size() < 5 )
   {
     return false;
   }
 
-  std::string artifact_data;
-  // Full url
-  if ( data_offset != std::string::npos )
-  {
-    artifact_data = artifact_string.substr( data_offset + 1 );
-  }
-  else
-  {
-    return false;
-  }
-
-  std::vector<uint8_t> data;
-  // Base64url, convert prohibidado characters to correct ones before decoding
-  std::replace( artifact_data.begin(), artifact_data.end(), '_', '/' );
-  std::replace( artifact_data.begin(), artifact_data.end(), '-', '+' );
-
-  bn::decode_b64( artifact_data.begin(), artifact_data.end(), std::back_inserter( data ) );
-
-  //uint8_t message_length = data[ 0 ];
-  //uint8_t version = ( data[ 3 ] & 0xF0 ) >> 4;
-  uint8_t artifact_id = ( data[ 3 ] & 0xF ) << 4 | ( data[ 4 ] & 0xF0 ) >> 4;
-
-  // Relic insertion indicators, 4 bits (only first two bits used?)
-  uint8_t relics = data[ 4 ] & 0xF;
-
-  std::vector<unsigned> relic_item_ids;
-  size_t offset = 5;
-  while ( relics )
-  {
-    assert( relics & 0x1 );
-
-    unsigned relic_item_id = 0;
-    // Relic is a 20-bit item identifier of the gem. Little endian.
-    if ( relic_item_ids.size() % 2 == 0 )
-    {
-      relic_item_id = data[offset] << 12 | (data[offset + 1] << 4) | ((data[offset + 2] & 0xF0) >> 4);
-      offset += 2;
-    }
-    else
-    {
-      relic_item_id = ((data[offset] & 0xF) << 16) | (data[offset + 1] << 8) | data[offset + 2];
-      offset += 3;
-    }
-
-    if ( relic_item_id > 0 )
-    {
-      relic_item_ids.push_back( relic_item_id );
-    }
-
-    relics >>= 1;
-  }
-
-  // Rest of the data is artifact powers
-  std::vector<std::pair<unsigned, unsigned>> powers;
-  while ( offset < data.size() )
-  {
-    unsigned power_id = 0;
-    unsigned rank_id = 0;
-    // Power is 12 bits of power id / 4 bits of rank number. Little endian.
-    if ( relic_item_ids.size() % 2 == 0 )
-    {
-      power_id = (data[offset] << 4) | ((data[offset + 1] & 0xF0) >> 4);
-      rank_id = data[offset + 1] & 0xF;
-    }
-    else
-    {
-      power_id = ((data[offset] & 0xF) << 8) | data[offset + 1];
-      rank_id = (data[offset + 2] & 0xF0) >> 4;
-    }
-    if ( power_id > 0 && rank_id > 0 )
-    {
-      powers.push_back( std::make_pair( power_id, rank_id ) );
-    }
-    offset += 2;
-  }
+  unsigned artifact_id = util::to_unsigned( splits[ 0 ] );
 
   std::vector<const artifact_power_data_t*> artifact_powers = sim -> active_player -> dbc.artifact_powers( artifact_id );
-  for ( const auto& v : powers )
+  for ( size_t i = 5; i < splits.size(); i += 2 )
   {
+    unsigned power_id = util::to_unsigned( splits[ i ] );
+    unsigned rank = util::to_unsigned( splits[ i + 1 ] );
+
     auto pos = range::find_if( artifact_powers,
-                               [ &v ]( const artifact_power_data_t* power_data ) {
-                                 return power_data->id == v.first;
+                               [ &power_id ]( const artifact_power_data_t* power_data ) {
+                                 return power_data -> id == power_id;
                                } );
 
     if ( pos != artifact_powers.end() )
     {
-      sim -> active_player -> artifact_points[ pos - artifact_powers.begin() ] = v.second;
+      sim -> active_player -> artifact_points[ pos - artifact_powers.begin() ] = rank;
     }
   }
 
