@@ -1285,7 +1285,7 @@ public:
     return false;
   }
 
-  bool trigger_iridis()
+  void trigger_iridis()
   {
     int stack = priest.buffs.iridis_empowerment->check();
     priest.buffs.iridis_empowerment->trigger();
