@@ -442,7 +442,7 @@ public:
                      shattering_bolts,
                      orbital_strike,
                      icy_hand,
-                     ice_age, //NYI
+                     ice_age, 
                      chilled_to_the_core;
   } artifact;
 
@@ -2080,6 +2080,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
 
     base_aoe_multiplier *= data().effectN( 2 ).percent();
     base_multiplier *= 1.0 + p -> artifact.torrential_barrage.percent();
+    cooldown -> hasted = true;
   }
 
   virtual void execute() override
@@ -2638,6 +2639,7 @@ struct blizzard_t : public frost_mage_spell_t
     hasted_ticks = true;
     may_miss     = false;
     ignore_false_positive = true;
+    cooldown -> hasted = true;
 
     add_child( shard );
   }
@@ -2711,6 +2713,7 @@ struct cinderstorm_t : public fire_mage_spell_t
   {
     parse_options( options_str );
     triggers_ignite = false;
+    cooldown -> hasted = true;
   }
   virtual void impact( action_state_t* s ) override
   {
@@ -3803,6 +3806,7 @@ struct living_bomb_t : public fire_mage_spell_t
     explosion( new living_bomb_explosion_t( p ) )
   {
     parse_options( options_str );
+    cooldown -> hasted = true;
   }
 
   void impact( action_state_t* s ) override
@@ -4113,7 +4117,9 @@ struct nether_tempest_t : public arcane_mage_spell_t
   }
 };
 // Phoenixs Flames Spell =============================================================
-
+// TODO: Add an actual spell for the AoE damage, since the AoE impacts both primary and secondary targets.
+//       Test if individual impacts to surrounding mobs can each proc HS/HU, or if only the initial impact
+//       and a single AoE impact can.
 struct phoenixs_flames_t : public fire_mage_spell_t
 {
   phoenixs_flames_t( mage_t* p, const std::string& options_str ) :
@@ -4125,8 +4131,9 @@ struct phoenixs_flames_t : public fire_mage_spell_t
                           data().effectN( 1 ).sp_coeff();
 
     cooldown -> charges = data().charges();
-    // TODO: Recharge time is reduced by haste?
     cooldown -> duration = data().charge_cooldown();
+    cooldown -> hasted = true;
+    triggers_hot_streak = true;
   }
 
 };
