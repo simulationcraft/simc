@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 21531
+// Class based active abilities, wow build 21570
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -28,14 +28,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Warrior
   {
-    // General tree, 12 abilities
+    // General tree, 11 abilities
     {
       117313, // Bloodthirst Heal
          100, // Charge
       163558, // Execute Off-Hand
         6544, // Heroic Leap
        57755, // Heroic Throw
-      118340, // Impending Victory (Talent)
       203524, // Neltharion's Fury
       205545, // Odyn's Fury
         6552, // Pummel
@@ -301,7 +300,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Rogue
   {
-    // General tree, 14 abilities
+    // General tree, 15 abilities
     {
        22482, // Blade Flurry
        31224, // Cloak of Shadows
@@ -310,6 +309,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         2818, // Deadly Poison
        56814, // Detection
         1966, // Feint
+      209782, // Goremaw's Bite
         1766, // Kick
       192759, // Kingsbane
       112974, // Leeching Poison (Talent)
@@ -561,7 +561,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Shaman
   {
-    // General tree, 13 abilities
+    // General tree, 15 abilities
     {
       114911, // Ancestral Guidance
         2008, // Ancestral Spirit
@@ -570,6 +570,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       216965, // Disabling Totem
       204945, // Doom Winds
         2645, // Ghost Wolf
+      207366, // Gift of the Queen
+      207778, // Gift of the Queen
        32182, // Heroism
        51514, // Hex
       210873, // Hex
@@ -1096,7 +1098,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 };
 #define TREE_SPECIALIZATION_SIZE (29)
 
-// Talent tree specialization abilities, wow build 21531
+// Talent tree specialization abilities, wow build 21570
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -2106,7 +2108,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 21531
+// Class mastery abilities, wow build 21570
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2345,7 +2347,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 21531
+// Racial abilities, wow build 21570
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3079,7 +3081,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 };
 #define SET_BONUS_DATA_SIZE (518)
 
-// Set bonus data, wow build 21531
+// Set bonus data, wow build 21570
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,              {   0 },    0,   73, 165641, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -3621,9 +3623,9 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   2,  11,              {   0 },    3,  102, 187133, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
   { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   4,  11,              {   0 },    3,  102, 187435, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
 };
-#define RPPMMOD_SIZE (175)
+#define RPPMMOD_SIZE (181)
 
-// 175 RPPM Modifiers, wow build level 21531
+// 181 RPPM Modifiers, wow build level 21570
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  49530,    4,  1,  1.0000 },
   {  51128,    4,  1,  1.0000 },
@@ -3768,12 +3770,15 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 201471,    4,  1,  1.0000 },
   { 201900,    4,  1,  1.0000 },
   { 202387,    4,  1,  1.0000 },
+  { 202762,    4,  1,  1.0000 },
+  { 202840,    4,  1,  1.0000 },
   { 203557,    4,  1,  1.0000 },
   { 203576,    4,  1,  1.0000 },
   { 207320,    4,  1,  1.0000 },
   { 208213,    4,  1,  1.0000 },
   { 209579,    4,  1,  1.0000 },
   { 210676,    4,  1,  1.0000 },
+  { 210725,    3,  1,  1.0000 },
   { 211984,    4,  1,  1.0000 },
   { 213782,    4,  1,  1.0000 },
   { 213782,  256,  4,  0.2500 },
@@ -3800,11 +3805,14 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 222167,    4,  1,  1.0000 },
   { 222187,    4,  1,  1.0000 },
   { 222207,    0,  1,  1.0000 },
+  { 224059,    4,  1,  1.0000 },
+  { 224073,    4,  1,  1.0000 },
+  { 224076,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
 };
 #define ARTIFACT_SIZE (41)
 
-// Artifact base data, wow build 21531
+// Artifact base data, wow build 21570
 static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
   {  2,  70 },
   {  3, 577 },
@@ -3850,7 +3858,7 @@ static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
 };
 #define ARTIFACT_POWER_SIZE (711)
 
-// Artifact power data, wow build 21531
+// Artifact power data, wow build 21570
 static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] = {
   {   40,   2,  0,   0, "Wake of Ashes"                      }, // Wake of Ashes (id=205273, n_ranks=1)
   {   41,   2,  4,   3, "Highlord's Judgment"                }, // Highlord's Judgment (id=186941, n_ranks=6)
@@ -3921,7 +3929,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  100,  11,  8,   3, "Dragon Skin"                        }, // Dragon Skin (id=203225, n_ranks=6)
   {  101,  11,  9,   3, "Intolerance"                        }, // Intolerance (id=203227, n_ranks=6)
   {  102,  11, 10,   3, "Shatter the Bones"                  }, // Shatter the Bones (id=188639, n_ranks=6)
-  {  103,  11,  0,   1, "Wall of Steel (NYI)"                }, // Wall of Steel (NYI) (id=203261, n_ranks=1)
+  {  103,  11,  0,   1, "Wall of Steel"                      }, // Wall of Steel (id=203261, n_ranks=1)
   {  104,  11,  0,   1, "Reflective Plating"                 }, // Reflective Plating (id=188672, n_ranks=1)
   {  105,  11, 11,   3, "Toughness"                          }, // Toughness (id=188632, n_ranks=6)
   {  106,  11, 12,   3, "Thunder Crash"                      }, // Thunder Crash (id=188644, n_ranks=6)
@@ -4115,7 +4123,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  815,  38,  0,   1, "Impish Incineration"                }, // Impish Incineration (id=215273, n_ranks=1)
   {  816,  38,  1,   1, "Dimension Ripper"                   }, // Dimension Ripper (id=219415, n_ranks=1)
   {  817,  38,  2,   1, "Conflagration of Chaos"             }, // Conflagration of Chaos (id=219195, n_ranks=1)
-  {  818,  38,  3,   1, "Lord of Flames"                     }, // Lord of Flames (id=196710, n_ranks=1)
+  {  818,  38,  3,   1, "Lord of Flames"                     }, // Lord of Flames (id=224103, n_ranks=1)
   { 1219,  38,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1355,  38,  0,   1, "Flames of the Pit"                  }, // Flames of the Pit (id=215183, n_ranks=1)
   { 1392,  38,  0,  20, "Stolen Power"                       }, // Stolen Power (id=214936, n_ranks=20)
@@ -4432,7 +4440,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  308,  55,  0,   1, "Mark of the Windrunner"             }, // Mark of the Windrunner (id=204219, n_ranks=1)
   {  309,  55,  0,   1, "Critical Focus"                     }, // Critical Focus (id=191328, n_ranks=1)
   {  310,  55,  0,   1, "Rapid Killing"                      }, // Rapid Killing (id=191339, n_ranks=1)
-  {  311,  55,  1,   1, "Call of the Hunter (NYI)"           }, // Call of the Hunter (NYI) (id=191048, n_ranks=1)
+  {  311,  55,  1,   1, "Call of the Hunter"                 }, // Call of the Hunter (id=191048, n_ranks=1)
   {  312,  55,  4,   3, "Deadly Aim"                         }, // Deadly Aim (id=190449, n_ranks=6)
   {  313,  55,  5,   3, "Windrunner's Guidance"              }, // Windrunner's Guidance (id=190457, n_ranks=6)
   {  314,  55,  6,   3, "Quick Shot"                         }, // Quick Shot (id=190462, n_ranks=6)
@@ -4566,7 +4574,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
 };
 #define ARTIFACT_POWER_RANK_SIZE (3053)
 
-// Artifact power rank data, wow build 21531
+// Artifact power rank data, wow build 21570
 static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RANK_SIZE] = {
   { 2316,    40,  0, 205273,      0.000 },
   { 2317,    41,  0, 186941,      0.000 },
@@ -5415,7 +5423,7 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 6446,   815,  0, 215273,      0.000 },
   { 3961,   816,  0, 219415,      0.000 },
   { 3964,   817,  0, 219195,      0.000 },
-  { 3965,   818,  0, 196710,      0.000 },
+  { 3965,   818,  0, 224103,      0.000 },
   { 3858,   820,  0, 195263,      0.000 },
   { 3859,   820,  1, 195263,      6.000 },
   { 3860,   820,  2, 195263,     10.000 },

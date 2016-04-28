@@ -1,6 +1,6 @@
-#define TALENT_SIZE (606)
+#define TALENT_SIZE (607)
 
-// 606 talents, wow build 21531
+// 607 talents, wow build 21570
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   0,   3,   29838,       0,  0 },
@@ -9,7 +9,7 @@ static struct talent_data_t __talent_data[] = {
   { "Warbringer"                        , 15774, 0x00, 0x0001,  73,   2,   0,  103828,       0,  0 },
   { "Cold Snap"                         , 16025, 0x00, 0x0080,   0,   2,   1,   11958,       0,  0 },
   { "Dragon Roar"                       , 16037, 0x00, 0x0001,  72,   2,   6,  118000,       0,  0 },
-  { "Holy Bolt"                         , 17565, 0x00, 0x0002,  65,   0,   0,  199965,       0,  0 },
+  { "Bestow Faith"                      , 17565, 0x00, 0x0002,  65,   0,   0,  223306,       0,  0 },
   { "Light's Hammer"                    , 17567, 0x00, 0x0002,  65,   1,   0,  114158,       0,  0 },
   { "Crusader's Might"                  , 17569, 0x00, 0x0002,  65,   2,   0,  196926,       0,  0 },
   { "Unbreakable Spirit"                , 17575, 0x00, 0x0002,  65,   1,   1,  114154,       0,  0 },
@@ -17,7 +17,7 @@ static struct talent_data_t __talent_data[] = {
   { "Aura of Sacrifice"                 , 17591, 0x00, 0x0002,  65,   1,   3,  183416,       0,  0 },
   { "Aura of Mercy"                     , 17593, 0x00, 0x0002,  65,   2,   3,  183415,       0,  0 },
   { "Divine Purpose"                    , 17597, 0x00, 0x0002,  65,   0,   4,  197646,       0,  0 },
-  { "Sanctified Wrath"                  , 17599, 0x00, 0x0002,  65,   1,   4,   53376,       0,  0 },
+  { "Holy Avenger"                      , 17599, 0x00, 0x0002,  65,   1,   4,  105809,       0,  0 },
   { "Blessed Hammer"                    , 17601, 0x00, 0x0002,  66,   2,   4,  204019,   53595,  0 },
   { "Consecrated Ground"                , 17609, 0x00, 0x0002,  66,   2,   5,  204054,       0,  0 },
   { "Prosperity"                        , 18569, 0x00, 0x0400, 105,   0,   0,  200383,       0,  0 },
@@ -53,7 +53,7 @@ static struct talent_data_t __talent_data[] = {
   { "Grappling Hook"                    , 19236, 0x00, 0x0008, 260,   0,   1,  195457,       0,  0 },
   { "Acrobatic Strikes"                 , 19237, 0x00, 0x0008, 260,   1,   1,  196924,       0,  0 },
   { "Hit and Run"                       , 19238, 0x00, 0x0008, 260,   2,   1,  196922,       0,  0 },
-  { "Deeper Strategem"                  , 19239, 0x00, 0x0008,   0,   0,   2,  193531,       0,  0 },
+  { "Deeper Stratagem"                  , 19239, 0x00, 0x0008,   0,   0,   2,  193531,       0,  0 },
   { "Anticipation"                      , 19240, 0x00, 0x0008,   0,   1,   2,  114015,       0,  0 },
   { "Vigor"                             , 19241, 0x00, 0x0008,   0,   2,   2,   14983,       0,  0 },
   { "Parley"                            , 19245, 0x00, 0x0008, 260,   0,   4,  199743,    2094,  0 },
@@ -94,7 +94,7 @@ static struct talent_data_t __talent_data[] = {
   { "Farstrider"                        , 19348, 0x00, 0x0004,   0,   1,   2,  199523,       0,  0 },
   { "A Murder of Crows"                 , 19357, 0x00, 0x0004,   0,   0,   5,  131894,       0,  0 },
   { "Dragonsfire Grenade"               , 19361, 0x00, 0x0004, 255,   1,   3,  194855,       0,  0 },
-  { "Second Wind"                       , 19676, 0x00, 0x0001,  73,   0,   1,   29838,       0,  0 },
+  { "Impending Victory"                 , 19676, 0x00, 0x0001,  73,   0,   1,  202168,   34428,  0 },
   { "Trail of Light"                    , 19752, 0x00, 0x0010, 257,   0,   0,  200128,       0,  0 },
   { "Castigation"                       , 19753, 0x00, 0x0010,   0,   1,   0,  193134,       0,  0 },
   { "Enlightenment"                     , 19754, 0x00, 0x0010, 257,   2,   0,  193155,       0,  0 },
@@ -345,8 +345,8 @@ static struct talent_data_t __talent_data[] = {
   { "Divine Hammer"                     , 22183, 0x00, 0x0002,  70,   2,   3,  198034,  184575,  0 },
   { "Eye for an Eye"                    , 22185, 0x00, 0x0002,  70,   1,   4,  205191,       0,  0 },
   { "Word of Glory"                     , 22186, 0x00, 0x0002,  70,   2,   4,  210191,       0,  0 },
-  { "Stoicism"                          , 22189, 0x00, 0x0002,  65,   0,   5,  196923,       0,  0 },
-  { "Daybreak"                          , 22190, 0x00, 0x0002,  65,   1,   5,  196903,       0,  0 },
+  { "Fervent Martyr"                    , 22189, 0x00, 0x0002,  65,   0,   5,  196923,       0,  0 },
+  { "Sanctified Wrath"                  , 22190, 0x00, 0x0002,  65,   1,   5,   53376,       0,  0 },
   { "Mistwalk"                          , 22213, 0x00, 0x0200, 270,   2,   0,  197945,  101643,  0 },
   { "Summon Jade Serpent Statue"        , 22214, 0x00, 0x0200, 270,   2,   5,  115313,       0,  0 },
   { "Holy Wrath"                        , 22215, 0x00, 0x0002,  70,   1,   6,  215647,       0,  0 },
@@ -610,7 +610,7 @@ static struct talent_data_t __talent_data[] = {
   { "Afterlife"                         , 22562, 0x00, 0x0010, 257,   2,   2,  196707,       0,  0 },
   { "Aegis of Light"                    , 22564, 0x00, 0x0002,  66,   0,   5,  204150,       0,  0 },
   { "Final Verdict"                     , 22590, 0x00, 0x0002,  70,   0,   0,  198038,       0,  0 },
-  { "Blessings of Justice"              , 22591, 0x00, 0x0002,  70,   0,   6,  214228,       0,  0 },
+  { "Divine Purpose"                    , 22591, 0x00, 0x0002,  70,   0,   6,  223817,       0,  0 },
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Zeal"                              , 22592, 0x00, 0x0002,  70,   1,   1,  217020,   35395,  0 },
   { "Greater Judgment"                  , 22593, 0x00, 0x0002,  70,   2,   1,  218178,       0,  0 },
@@ -623,7 +623,7 @@ static struct talent_data_t __talent_data[] = {
   { "Bounding Stride"                   , 22627, 0x00, 0x0001,   0,   1,   3,  202163,       0,  0 },
   { "Die by the Sword"                  , 22628, 0x00, 0x0001,  71,   2,   3,  118038,  197690,  0 },
   { "Inspiring Presence"                , 22629, 0x00, 0x0001,  73,   1,   1,  205484,       0,  0 },
-  { "Vigilance"                         , 22630, 0x00, 0x0001,  73,   0,   3,  114030,       0,  0 },
+  { "Warlord's Challenge"               , 22630, 0x00, 0x0001,  73,   0,   3,  223662,       0,  0 },
   { "Never Surrender"                   , 22631, 0x00, 0x0001,  73,   1,   4,  202561,       0,  0 },
   { "War Machine"                       , 22632, 0x00, 0x0001,  72,   0,   0,  215556,       0,  0 },
   { "Endless Rage"                      , 22633, 0x00, 0x0001,  72,   1,   0,  202296,       0,  0 },
@@ -639,5 +639,6 @@ static struct talent_data_t __talent_data[] = {
   { "Razor Spikes"                      , 22768, 0x00, 0x0800, 581,   2,   5,  209400,       0,  0 },
   { "Dire Frenzy"                       , 22769, 0x00, 0x0004, 253,   1,   1,  217200,  120679,  0 },
   { "Soul Rending"                      , 22770, 0x00, 0x0800, 581,   2,   3,  217996,       0,  0 },
+  { "Safeguard"                         , 22789, 0x00, 0x0001,  73,   2,   1,  223657,       0,  0 },
   { 0                                   ,     0, 0x00, 0x0000,   0,   0,   0,       0,       0,  0 },
 };
