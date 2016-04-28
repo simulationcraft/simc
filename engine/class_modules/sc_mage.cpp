@@ -2873,6 +2873,7 @@ struct ebonbolt_t : public frost_mage_spell_t
   virtual void execute() override
   {
     frost_mage_spell_t::execute();
+    trigger_fof( "Ebonbolt", 1.0, 2 );
   }
 };
 // Evocation Spell ==========================================================
