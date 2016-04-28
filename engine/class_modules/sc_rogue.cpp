@@ -1102,10 +1102,7 @@ struct rogue_poison_t : public rogue_attack_t
   {
     double m = rogue_attack_t::composite_target_multiplier( target );
 
-    if ( td( target ) -> debuffs.surge_of_toxins -> up() )
-    {
-      m *= 1.0 + p() -> artifact.surge_of_toxins.percent();
-    }
+    m *= 1.0 + td( target ) -> debuffs.surge_of_toxins -> stack_value();
 
     return m;
   }
@@ -4097,6 +4094,11 @@ void rogue_t::trigger_surge_of_toxins( const action_state_t* s )
     return;
   }
 
+  if ( s -> action -> base_costs[ RESOURCE_COMBO_POINT ] == 0 )
+  {
+    return;
+  }
+
   get_target_data( s -> target ) -> debuffs.surge_of_toxins -> trigger();
 }
 
@@ -4605,7 +4607,9 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.ghostly_strike = buff_creator_t( *this, "ghostly_strike", source -> talent.ghostly_strike )
     .default_value( source -> talent.ghostly_strike -> effectN( 5 ).percent() );
   debuffs.garrote = new buffs::proxy_garrote_t( *this );
-  debuffs.surge_of_toxins = buff_creator_t( *this, "surge_of_toxins", source -> artifact.surge_of_toxins );
+  debuffs.surge_of_toxins = buff_creator_t( *this, "surge_of_toxins", source -> find_spell( 192425 ) )
+    .default_value( source -> find_spell( 192425 ) -> effectN( 1 ).percent() )
+    .trigger_spell( source -> artifact.surge_of_toxins );
 }
 
 // ==========================================================================
