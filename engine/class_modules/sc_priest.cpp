@@ -3607,7 +3607,7 @@ struct void_bolt_t final : public priest_spell_t
     if ( priest.mastery_spells.madness->ok() )
       m *= 1.0 + priest.cache.mastery_value();
 
-    if (priest.buffs.iridis_empowerment->up())
+    if (priest.buffs.iridis_empowerment->check())
     {
       m *= 1.0 + (priest.buffs.iridis_empowerment->data().effectN(1).percent() * priest.buffs.iridis_empowerment->stack());
       priest.buffs.iridis_empowerment->expire();
