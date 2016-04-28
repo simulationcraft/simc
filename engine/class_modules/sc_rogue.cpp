@@ -10,6 +10,7 @@
 //
 // Assassination
 // - Balanced Blades [artifact power] spell data claims it's not flat modifier?
+// - Poisoned Knives [artifact power] does the damage doubledip in any way?
 
 #include "simulationcraft.hpp"
 
@@ -140,6 +141,7 @@ struct rogue_t : public player_t
   action_t* active_main_gauche;
   action_t* weaponmaster_dot_strike;
   action_t* shadow_nova;
+  action_t* poison_knives;
 
   // Autoattacks
   action_t* auto_attack;
@@ -446,6 +448,9 @@ struct rogue_t : public player_t
     active_lethal_poison( nullptr ),
     active_nonlethal_poison( nullptr ),
     active_main_gauche( nullptr ),
+    weaponmaster_dot_strike( nullptr ),
+    shadow_nova( nullptr ),
+    poison_knives( nullptr ),
     auto_attack( nullptr ), melee_main_hand( nullptr ), melee_off_hand( nullptr ),
     shadow_blade_main_hand( nullptr ), shadow_blade_off_hand( nullptr ),
     dfa_mh( nullptr ), dfa_oh( nullptr ),
@@ -539,6 +544,7 @@ struct rogue_t : public player_t
   void trigger_energetic_stabbing( const action_state_t* );
   void trigger_akaaris_soul( const action_state_t* );
   void trigger_surge_of_toxins( const action_state_t* );
+  void trigger_poison_knives( const action_state_t* );
 
   double consume_cp_max() const
   { return 5.0 + as<double>( talent.deeper_stratagem -> effectN( 1 ).base_value() ); }
@@ -1008,6 +1014,23 @@ struct shadow_nova_t : public rogue_attack_t
   {
     background = true;
     aoe = -1;
+  }
+};
+
+struct poison_knives_t : public rogue_attack_t
+{
+  poison_knives_t( rogue_t* p ) :
+    rogue_attack_t( "poison_knives", p, p -> find_spell( 192380 ) )
+  {
+    background = true;
+    may_crit = callbacks = false;
+  }
+
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    snapshot_flags = update_flags = 0;
   }
 };
 
@@ -2186,6 +2209,13 @@ struct fan_of_knives_t: public rogue_attack_t
     weapon_multiplier = 0;
     aoe = -1;
     adds_combo_points = data().effectN( 2 ).base_value();
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+
+    p() -> trigger_poison_knives( state );
   }
 };
 
@@ -4102,6 +4132,40 @@ void rogue_t::trigger_surge_of_toxins( const action_state_t* s )
   get_target_data( s -> target ) -> debuffs.surge_of_toxins -> trigger();
 }
 
+void rogue_t::trigger_poison_knives( const action_state_t* state )
+{
+  if ( ! artifact.poison_knives.rank() )
+  {
+    return;
+  }
+
+  rogue_td_t* td = get_target_data( state -> target );
+  if ( ! td -> dots.deadly_poison -> is_ticking() )
+  {
+    return;
+  }
+
+  unsigned ticks_left = td -> dots.deadly_poison -> ticks_left();
+  timespan_t tick_time = td -> dots.deadly_poison -> current_action -> tick_time( 1.0 );
+  timespan_t remaining_time = td -> dots.deadly_poison -> remains() - ticks_left * tick_time;
+  double partial_tick = 0;
+  if ( remaining_time > timespan_t::zero() )
+  {
+    partial_tick = remaining_time / tick_time;
+  }
+
+  // Recompute tick damage with current stats
+  td -> dots.deadly_poison -> current_action -> calculate_tick_amount( td -> dots.deadly_poison -> state,
+      td -> dots.deadly_poison -> current_stack() );
+
+  double tick_base_damage = td -> dots.deadly_poison -> state -> result_raw;
+  double total_damage = ( partial_tick + ticks_left ) * tick_base_damage * artifact.poison_knives.percent();
+
+  poison_knives -> base_dd_min = poison_knives -> base_dd_max = total_damage;
+  poison_knives -> target = state -> target;
+  poison_knives -> execute();
+}
+
 void rogue_t::trigger_elaborate_planning( const action_state_t* s )
 {
   if ( ! talent.elaborate_planning -> ok() )
@@ -5318,6 +5382,11 @@ void rogue_t::init_spells()
   if ( artifact.shadow_nova.rank() )
   {
     shadow_nova = new actions::shadow_nova_t( this );
+  }
+
+  if ( artifact.poison_knives.rank() )
+  {
+    poison_knives = new actions::poison_knives_t( this );
   }
 }
 
