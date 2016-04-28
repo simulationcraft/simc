@@ -3100,7 +3100,7 @@ Spell Level      : 1
 Duration         : 4 seconds
 Mechanic         : Unknown(262)
 Affecting spells : Warpaint (208154)
-Triggered by     : Enrage (184361)
+Triggered by     : Enrage (184361), Trial by Combat (218826)
 Attributes       : ........ ........ ........ x......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ...x.... ........   ...x.... ........ ........ ........ 
@@ -4933,6 +4933,130 @@ Effects          :
 #2 (id=325561)   : Weapon Damage% (31)
                    Base Value: 60 | Scaled Value: 0.6 | Chain Targets: 1
 Description      : $@spelldesc184367
+
+Name             : Gaze of the Val'kyr (id=218822) [Spell Family (4), Hidden] 
+Class            : Warrior
+School           : Physical
+Range            : 100 yards
+Duration         : 900 seconds
+Attributes       : .......x ........ ........ ..x....x   ........ ........ ........ ........ 
+                 : x....... ........ ........ ........   ........ ........ ....x... ......x. 
+                 : ..x....x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7)
+Effects          :
+#1 (id=325879)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 3 | Scaled Value: 3
+Tooltip          : Unable to be affected by Gaze of the Val'kyr again.
+
+Name             : Trial by Combat (id=218826) [Spell Family (4)] 
+Class            : Warrior
+School           : Physical
+Range            : 100 yards
+Duration         : 8 seconds
+Proc Chance      : 101%
+Proc Flags       : .x...... ........ ........ ........ 
+                 : Killing Blow
+Attributes       : ........ ........ .......x .....x.x   ........ ........ ........ ........ 
+                 : x....... ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=325884)   : Apply Aura (6) | Periodic Energize Power: every 2 seconds (24)
+                   Base Value: 1000 | Scaled Value: 1000 | Misc Value: 1
+#2 (id=325885)   : Trigger Spell: Enrage (64)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 184362
+#3 (id=325886)   : Trigger Spell: Enrage (64)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3800 | Trigger Spell: 184362
+Description      : Odyn has granted you a second chance to defeat that which has bested you in combat.  Do this within $d and Odyn will grant you your life and restore $218835s1% of your health.
+Tooltip          : Odyn has granted you a second chance to defeat your enemy!
+
+Failure results in death.
+
+Name             : Gaze of the Val'kyr (id=218834) [Spell Family (4)] 
+Class            : Warrior
+School           : Physical
+Range            : 100 yards
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=325895)   : Instant Kill (1)
+                   Base Value: 0 | Scaled Value: 0
+Description      : $@spelldesc218826
+
+Name             : Gaze of the Val'kyr (id=218835) [Spell Family (4)] 
+Class            : Warrior
+School           : Physical
+Range            : 100 yards
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ...x....   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=325896)   : Direct Heal% (136)
+                   Base Value: 50 | Scaled Value: 50
+Description      : $@spelldesc218826
+
+Name             : Gaze of the Val'kyr (id=218836) [Spell Family (4), Hidden] 
+Class            : Warrior
+School           : Physical
+Range            : 100 yards
+Duration         : 8 seconds
+Attributes       : .......x ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7)
+Effects          :
+#1 (id=325897)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50
+Description      : $@spelldesc218826
+
+Name             : Gaze of the Val'kyr (id=218850) [Spell Family (4), Hidden] 
+Class            : Warrior
+School           : Physical
+Range            : 100 yards
+Duration         : 15 seconds
+Attributes       : .......x ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7)
+Effects          :
+#1 (id=325916)   : Unknown effect type (179)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 7790 | Radius: 6 yards
+Description      : $@spelldesc218826
+
+Name             : Gaze of the Val'kyr (id=218877) [Spell Family (4), Hidden] 
+Class            : Warrior
+School           : Physical
+Range            : 100 yards
+Duration         : 8 seconds
+Attributes       : .......x ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7)
+Effects          :
+#1 (id=325970)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50
+Description      : $@spelldesc218826
 
 Name             : Inspiring Presence (id=222944) [Spell Family (4)] 
 Class            : Warrior

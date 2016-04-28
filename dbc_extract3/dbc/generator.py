@@ -1109,7 +1109,13 @@ class SpellDataGenerator(DataGenerator):
             ( 118779, 0, False ),   # Victory Rush heal is not directly activatable
             ( 144442, 0 ),          # T16 Melee 4 pc buff
             ( 119938, 0 ),          # Overpower
-            ( 209700, 0 )           # Void Cleave (arms artifact gold medal)
+            ( 209700, 0 ),           # Void Cleave (arms artifact gold medal)
+			( 218877, 0 ),
+			( 218850, 0 ),
+			( 218836, 0 ),
+			( 218835, 0 ),
+			( 218834, 0 ),
+			( 218822, 0 )
         ),
 
         # Paladin:
