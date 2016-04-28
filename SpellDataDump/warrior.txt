@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21531)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21570)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -78,7 +78,7 @@ Range            : 30 yards
 Duration         : 3 seconds
 Cooldown         : 8 seconds
 Proc Chance      : 101%
-Affecting spells : Bladestorm (46924), Vigilance (114030), Neltharion's Fury (203524), Bladestorm (222634)
+Affecting spells : Berserker Rage (18499), Bladestorm (46924), Neltharion's Fury (203524), Bladestorm (222634)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ x.x..... ........ 
                  : ........ ...x.... .......x ........   ........ ........ ........ ........ 
@@ -91,6 +91,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 #2 (id=148)      : Apply Aura (6) | Taunt (11)
                    Base Value: 200 | Scaled Value: 200
+#3 (id=334400)   : Apply Aura (6) | Increase Speed% (31)
+                   Base Value: 0 | Scaled Value: 0
 Description      : Taunts the target to attack you, and increases threat that you generate against the target for $d.
 Tooltip          : Taunted.
 
@@ -340,7 +342,7 @@ School           : Physical
 Spell Level      : 72
 Range            : 100 yards
 Cooldown         : 30 seconds
-Affecting spells : Wall of Steel (NYI) (203261)
+Affecting spells : Wall of Steel (203261), 
 Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -520,8 +522,8 @@ GCD              : 1.5 seconds
 Cooldown         : 9 seconds
 Affecting spells : Demoralizing Shout (1160), Warrior (137047), Might of the Vrykul (188783), Bindings of Kakushan (207844), Rage of the Fallen (216272)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
-                 : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ....x... ........ ........ 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -719,7 +721,7 @@ School           : Physical
 Spell Level      : 50
 Duration         : 6 seconds
 Cooldown         : 60 seconds
-Affecting spells : Warpaint (208154)
+Affecting spells : Warpaint (208154), Warlord's Challenge (223662), 
 Attributes       : ....x... ........ x.x..... ........   ........ ..x....x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -727,16 +729,20 @@ Attributes       : ....x... ........ x.x..... ........   ........ ..x....x .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=10031)    : Apply Aura (6) | Mechanic Immunity (77)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 5
-#2 (id=10032)    : Apply Aura (6) | Mechanic Immunity (77)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14
-#3 (id=10033)    : Apply Aura (6) | Mechanic Immunity (77)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 30
-#4 (id=200921)   : Apply Aura (6) | Mechanic Immunity (77)
+#1 (id=10031)    : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 11
+                   Affected Spells: Taunt (355)
+#2 (id=10032)    : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 23
-#5 (id=256727)   : Apply Aura (6) | Increase Speed% (31)
-                   Base Value: 0 | Scaled Value: 0
+                   Affected Spells: Taunt (355)
+#3 (id=10033)    : Apply Aura (6) | Mechanic Immunity (77)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 5
+#4 (id=200921)   : Apply Aura (6) | Mechanic Immunity (77)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14
+#5 (id=256727)   : Apply Aura (6) | Mechanic Immunity (77)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 30
+#6 (id=334406)   : Apply Aura (6) | Mechanic Immunity (77)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 23
 Description      : Go berserk, removing and granting immunity to Fear, Sap, and Incapacitate effects for $d.$?(a206320&s184361)[
 
 Also Enrages you for $184362d.][]
@@ -990,6 +996,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=21959)    : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14
+                   Affected Spells: Impending Victory (202168)
 Description      : Victory Rush enabled.
 Tooltip          : Victory Rush enabled.
 
@@ -1698,7 +1705,10 @@ Effects          :
 #1 (id=87073)    : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 17
                    Affected Spells: Bloodthirst (23881)
-Description      : $@spelldesc190411
+#2 (id=333347)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 3 | Scaled Value: 3 | Misc Value: 17
+                   Affected Spells: Bloodthirst (23881)
+Description      : Causes your next Bloodthirst to strike up to $85739s1 additional targets, and generate $85739s2 Rage for each extra target hit.
 Tooltip          : Increases the number of targets hit by Bloodthirst by $w1.
 
 Name             : Plate Specialization (id=86101) [Passive, Hidden] 
@@ -1914,24 +1924,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1
 Description      : $?s198304[Intercept][Charge] now deals $7922s1 damage to all enemies within $7922A1 yds of the target, and stuns them for $7922d.
 
-Name             : Impending Victory (id=103840) [Spell Family (4), Passive] 
-Class            : Warrior
-School           : Physical
-Proc Chance      : 40%
-Proc Flags       : ....x... ........ ........ ........ 
-                 : Yellow Melee
-Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=113026)   : Apply Aura (6) | Proc Trigger Spell: Impending Victory (42)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 118340
-Description      : Your Slam has a $h% chance to restore $118340s1% of your health.
-
 Name             : Charge (id=105771) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
@@ -2043,27 +2035,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 0 (avg=0.094) | Mechanic: Bleed
 Description      : $@spelldesc12292
 Tooltip          : Bleeding for $w1 every $t1 sec.
-
-Name             : Vigilance (id=114030) [Spell Family (4)] 
-Class            : Warrior
-School           : Physical
-Range            : 40 yards
-Duration         : 12 seconds
-Cooldown         : 120 seconds
-Attributes       : ....x... ........ ........ ........   ........ ........ .x.x.... ........ 
-                 : ........ x....... ........ ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ...x.... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=127127)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7f
-#2 (id=128463)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 11
-                   Affected Spells: Taunt (355)
-Description      : Protect an ally for $d, reducing damage they take by $s1% and allowing you to use Taunt with no cooldown.
-Tooltip          : Reduces damage taken by $s1%.
 
 Name             : Deep Wounds (id=115767) [Spell Family (4)] 
 Class            : Warrior
@@ -2270,21 +2241,6 @@ Effects          :
 Description      : Increases your parry chance by $s1% and reduces all damage you take by $s2% for $d.
 Tooltip          : Parry chance increased by $s1%.
 Damage taken reduced by $w2%.
-
-Name             : Impending Victory (Talent) (id=118340) [Spell Family (4)] 
-Class            : Warrior
-School           : Physical
-Triggered by     : Impending Victory (103840)
-Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...xx... 
-                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ...x....   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=134737)   : Direct Heal% (136)
-                   Base Value: 10 | Scaled Value: 10
-Description      : $@spelldesc103840
 
 Name             : Victory Rush (id=118779) [Spell Family (4)] 
 Class            : Warrior
@@ -2588,7 +2544,7 @@ Effects          :
                    Affected Spells: Cleave (845), Thunder Clap (6343), Revenge (6572), Overpower (7384), Bloodthirst (23881), Shield Slam (23922), Raging Blow (85288), Raging Blow (85384), Raging Blow (96103), Furious Slash (100130), Focused Rage (204488), Focused Rage (207982)
 #2 (id=188987)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11
-                   Affected Spells: Defensive Stance (71), Charge (100), Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Intimidating Shout (5246), Execute (5308), Thunder Clap (6343), Pummel (6552), Revenge (6572), Overpower (7384), Mortal Strike (12294), Piercing Howl (12323), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Improved Hamstring (24428), Victory Rush (34428), Whirlwind Off-Hand (44949), Bladestorm (46924), Bladestorm (50622), Heroic Throw (57755), Raging Blow (85288), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Colossus Smash (108126), Deep Wounds (115767), Dragon Roar (118000), Storm Bolt (132169), Ravager (152277), Ravager (156287), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Bladestorm (168969), Rampage (184367), Rampage (184707), Rampage (184709), Cleave (188923), Whirlwind (190411), Charge (198337), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Focused Rage (204488), Focused Rage (207982), Colossus Smash (208086), Warbreaker (209577), Rampage (218617), Bladestorm (222634)
+                   Affected Spells: Defensive Stance (71), Charge (100), Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Intimidating Shout (5246), Execute (5308), Thunder Clap (6343), Pummel (6552), Revenge (6572), Overpower (7384), Mortal Strike (12294), Piercing Howl (12323), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Improved Hamstring (24428), Victory Rush (34428), Whirlwind Off-Hand (44949), Bladestorm (46924), Bladestorm (50622), Heroic Throw (57755), Raging Blow (85288), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Colossus Smash (108126), Deep Wounds (115767), Dragon Roar (118000), Storm Bolt (132169), Ravager (152277), Ravager (156287), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Bladestorm (168969), Rampage (184367), Rampage (184707), Rampage (184709), Cleave (188923), Whirlwind (190411), Charge (198337), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Focused Rage (204488), Focused Rage (207982), Colossus Smash (208086), Warbreaker (209577), Rampage (218617), Bladestorm (222634)
 #3 (id=191020)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1385
 #4 (id=191021)   : Apply Aura (6) | Unknown effect sub type (457)
@@ -2854,7 +2810,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...... ........ ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken
-Affecting spells : Wall of Steel (NYI) (203261)
+Affecting spells : Wall of Steel (203261), 
 Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ...x.... ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ...x.... ........ ........ 
@@ -3326,7 +3282,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 400 | Trigger Spell: 44949
 Description      : Unleashes a whirlwind of steel, striking all enemies within $199658A1 yards for ${3*($199667sw2+$44949sw2)} Physical damage.
 
-Causes your next Bloodthirst to strike up to $85739s1 additional targets, and generate 3 Rage for each extra target hit.
+Causes your next Bloodthirst to strike up to $85739s1 additional targets, and generate $85739s2 Rage for each extra target hit.
 
 Name             : Ignore Pain (Active Mitigation) (id=190456) [Spell Family (4)] 
 Class            : Protection Warrior
@@ -3348,7 +3304,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | AP Coefficient: 15.00000 | Misc Value: 127
 #2 (id=299580)   : Dummy (3)
                    Base Value: 90 | Scaled Value: 90
-Description      : Fight through the pain, ignoring $s2% of the next ${$m1*$AP*$pctH} damage you take from any sources.
+Description      : Fight through the pain, ignoring $s2% of the next ${$m1*$AP} damage you take from any sources.
 Tooltip          : Ignoring $s2% of the next ${$w1*10/9} total damage that you take, from any sources.
 
 Name             : Defensive Stance (id=197690) [Spell Family (4)] 
@@ -3385,7 +3341,7 @@ Spell Level      : 72
 Range            : 8 - 25 yards
 Cooldown         : 1.5 seconds
 Charges          : 1 (20 seconds cooldown)
-Affecting spells : Wall of Steel (NYI) (203261)
+Affecting spells : Wall of Steel (203261), 
 Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3726,6 +3682,43 @@ Effects          :
                    Base Value: 70 | Scaled Value: 70
 Description      : $@spelldesc202163
 Tooltip          : Movement speed increased by $s1%.
+
+Name             : Impending Victory (id=202166) [Spell Family (4)] 
+Class            : Warrior
+School           : Physical
+Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...xx... 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ...x....   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=297953)   : Direct Heal% (136)
+                   Base Value: 15 | Scaled Value: 15
+Description      : $@spelldesc202168
+
+Name             : Impending Victory (id=202168) [Spell Family (4)] 
+Class            : Warrior
+School           : Physical
+Resource         : 10 Rage
+Range            : 5 yards
+GCD              : 1.5 seconds
+Cooldown         : 30 seconds
+Affecting spells : Victorious (32216), Warrior (137047)
+Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=297955)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0
+#2 (id=297956)   : School Damage: physical (2)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.00000
+Description      : Instantly attack the target, causing $s2 damage and healing you for $202166s1% of your maximum health.
+
+Killing an enemy that yields experience or honor resets the cooldown of Impending Victory.
 
 Name             : Furious Charge (id=202224) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
@@ -4145,9 +4138,10 @@ Description      : Shield Slam extends the duration of Shield Block by ${$m1/100
 Name             : Opportunity Strikes (id=203178) 
 Class            : Warrior
 School           : Physical
+Range            : 100 yards
 Triggered by     : Opportunity Strikes (203179)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4173,7 +4167,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=299594)   : Apply Aura (6) | Proc Trigger Spell: Opportunity Strikes (42)
+#1 (id=299594)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 203178
 Description      : Your melee abilities have up to a $h% chance, based on the target's missing health, to trigger an extra attack that deals $203178sw1 Physical damage.
 
@@ -4954,5 +4948,56 @@ Effects          :
 #1 (id=332954)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 60 yards
 Description      : $@spelldesc205484
+
+Name             : Safeguard (id=223657) [Spell Family (4), Passive, Hidden] 
+Class            : Warrior
+School           : Physical
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=334375)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+Description      : Intercepting a friendly target now also causes $223658s1% of their damage taken to transfer to you for $223658d.
+
+Name             : Safeguard (id=223658) [Spell Family (4)] 
+Class            : Warrior
+School           : Physical
+Range            : 40 yards
+Duration         : 6 seconds
+Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ......x. 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=334376)   : Apply Aura (6) | Unknown effect sub type (81)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 127
+Description      : $@spelldesc223657
+Tooltip          : $s1% of damage taken is transferred to the Warrior.
+
+Name             : Warlord's Challenge (id=223662) [Spell Family (4), Passive, Hidden] 
+Class            : Warrior
+School           : Physical
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=334394)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 3
+                   Affected Spells: Berserker Rage (18499)
+#2 (id=334404)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 12
+                   Affected Spells: Berserker Rage (18499)
+Description      : While Berserker Rage is active, you may use Taunt with no cooldown and Taunted enemies move $s2% faster towards you.
 
 

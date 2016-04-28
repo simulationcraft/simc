@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21531)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21570)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -147,7 +147,7 @@ Spell Level      : 16
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Proc Chance      : 101%
-Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Lucidity (137247)
+Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Lucidity (137247), Sunblossom Pollen (223722)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... x....... ........ 
                  : ....x... x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -672,7 +672,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.14812
 #2 (id=3729)     : Apply Aura (6) | Periodic Heal: every 2 seconds (8)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.09104
-Description      : Heals a friendly target for $s1$?s116218[][ and another ${$o2*$<mult>} over $d]. Regrowth has a $?s116218[100][60]% increased chance for a critical effect.$?s33891[
+Description      : Heals a friendly target for $s1$?s116218[][ and another ${$o2*$<mult>} over $d]. Regrowth's initial heal has a $?s116218[100][60]% increased chance for a critical effect.$?s33891[
 
 |C0033AA11Tree of Life: Instant cast.|R][]
 Tooltip          : Heals $w2 every $t2 seconds.
@@ -703,7 +703,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=8554)     : Apply Aura (6) | Proc Trigger Spell: Clearcasting (42)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Trigger Spell: 135700
-Description      : Your auto attacks have a chance to reduce the Energy cost of your next Cat Form ability by $16870s1%.
+Description      : Your auto attacks have a chance to cause a Clearcasting state, making your next Cat Form ability cost no Energy.
 
 Name             : Clearcasting (id=16870) [Spell Family (7)] 
 Class            : Druid
@@ -1060,7 +1060,7 @@ Class            : Guardian Druid
 School           : Physical
 Resource         : 10 Rage
 Spell Level      : 50
-Duration         : 6 seconds
+Duration         : 3 seconds
 Cooldown         : 1 seconds
 Charges          : 2 (24 seconds cooldown)
 Stance Mask      : 0x00000010
@@ -1072,7 +1072,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=13048)    : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
+#1 (id=13048)    : Apply Aura (6) | Periodic Heal: every 0.5 seconds (8)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=124626)   : Dummy (3)
                    Base Value: 40 | Scaled Value: 40
@@ -1081,6 +1081,7 @@ Effects          :
 #4 (id=287358)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Heals you for $s2% of all damage taken in the last $s3 sec over $d, minimum $s4% of maximum health.
+Tooltip          : Healing every $t1 sec.
 
 Name             : Moonkin Form (id=24858) [Spell Family (7)] 
 Class            : Balance Druid
@@ -1111,19 +1112,17 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150
 #6 (id=232246)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
-#7 (id=281598)   : Apply Aura (6) | Proc Trigger Spell: (157228) (42)
-                   Base Value: 100 | Scaled Value: 100 | Trigger Spell: 157228
-#8 (id=290490)   : Apply Aura (6) | Unknown effect sub type (332)
+#7 (id=281598)   : Apply Aura (6) | Unknown effect sub type (332)
                    Base Value: 102383 | Scaled Value: 102383 | Misc Value 2: 0x8
                    Affected Spells: Wild Charge (102401)
-#9 (id=290491)   : Apply Aura (6) | Modify Damage Done% (79)
+#8 (id=290490)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x48
-Description      : Shapeshift into $?s114301[Astral Form][Moonkin Form], increasing your Arcane and Nature damage by $s9% and your armor by $m3%, and granting protection from Polymorph effects.
+Description      : Shapeshift into $?s114301[Astral Form][Moonkin Form], increasing your Arcane and Nature damage by $s8% and your armor by $m3%, and granting protection from Polymorph effects.
 
 While in this form, single-target attacks against you have a $h% chance make your next damaging spell instant.
 
 The act of shapeshifting frees you from movement impairing effects.
-Tooltip          : Arcane and Nature damage done increased by $s9%.
+Tooltip          : Arcane and Nature damage done increased by $s8%.
 Immune to Polymorph effects.$?$w3>0[
 Armor increased by $w3%.][]
 
@@ -1159,7 +1158,7 @@ Duration         : 15 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Stance Mask      : 0x00000002
-Affecting spells : Incarnation: Tree of Life (5420), Blessing of Lower City (37878), Incarnation: Tree of Life (81098), Ironbark (102342), Tricks of Time (105864), Lucidity (137247), Item - Druid T18 Restoration 4P Bonus (185397), Blooms of G'Hanir (186393), Astral Influence (197524), The Dark Titan's Advice (207271), Essence of G'Hanir (208253), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Incarnation: Tree of Life (5420), Blessing of Lower City (37878), Incarnation: Tree of Life (81098), Ironbark (102342), Tricks of Time (105864), Lucidity (137247), Item - Druid WoD PvP Restoration 4P Bonus (165707), Item - Druid T18 Restoration 4P Bonus (185397), Blooms of G'Hanir (186393), Astral Influence (197524), The Dark Titan's Advice (207271), Essence of G'Hanir (208253), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   .....x.. .....x.. ........ ........ 
@@ -1497,7 +1496,7 @@ Name             : Survival Instincts (id=50322) [Spell Family (7), Hidden]
 Class            : Druid
 School           : Physical
 Duration         : 6 seconds
-Affecting spells : Sharpened Instincts (200415), Honed Instincts (210557)
+Affecting spells : Sharpened Instincts (200415), Dual Determination (208228), Honed Instincts (210557)
 Attributes       : .......x ........ ........ ........   ........ ..x....x ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ...x.... ........ .x...... ........ 
@@ -1648,7 +1647,7 @@ Spell Level      : 40
 Duration         : 6 seconds
 Cooldown         : 6 seconds
 Charges          : 2 (180 seconds cooldown)
-Affecting spells : Sharpened Instincts (200415), Honed Instincts (210557)
+Affecting spells : Sharpened Instincts (200415), Dual Determination (208228), Honed Instincts (210557)
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1658,7 +1657,9 @@ Attributes       : ....x... ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=55176)    : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 14
-Description      : Reduces all damage you take by $50322s1% for $50322d.  Max 2 charges.
+#2 (id=334306)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 14
+Description      : Reduces all damage you take by $50322s1% for $50322d.  Max $s2 charges.
 Tooltip          : Damage taken reduced by $50322s1%.
 
 Name             : Typhoon (id=61391) [Spell Family (7)] 
@@ -1776,7 +1777,7 @@ Name             : Predatory Swiftness (id=69369) [Spell Family (7)]
 Class            : Druid
 School           : Physical
 Duration         : 12 seconds
-Affecting spells : Item - Druid WoD PvP Restoration 4P Bonus (165707), 
+Affecting spells : Item - Druid WoD PvP Restoration 4P Bonus (165707)
 Triggered by     : Predatory Swiftness (16974), Feral Instinct (16949)
 Attributes       : ........ ........ ..x..... .x......   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
@@ -2008,7 +2009,7 @@ Effects          :
 Name             : Efflorescence (id=81262) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
-Spell Level      : 88
+Spell Level      : 1
 Range            : 100 yards
 Duration         : 30 seconds
 Attributes       : ........ ........ ........ x..x.x..   .....x.. ..x..... ........ ........ 
@@ -2021,12 +2022,12 @@ Effects          :
 #1 (id=68689)    : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc81269
-Tooltip          : Restores $81269s1 health to three injured allies within $81269A1 yards every $81262t1 sec for $81262d.
+Tooltip          : Restores health to three injured allies within $81269A1 yards every $81262t1 sec for $81262d.
 
 Name             : Efflorescence (id=81269) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
-Spell Level      : 88
+Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Incarnation: Tree of Life (5420), Ironbark (102342), Essence of Nordrassil (189760)
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
@@ -2485,7 +2486,7 @@ Class            : Druid
 School           : Physical
 Spell Level      : 1
 GCD              : 1.5 seconds
-Duration         : 15 seconds
+Duration         : 30 seconds
 Cooldown         : 180 seconds
 Proc Chance      : 101%
 Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Incarnation (117679), Druid (137009), Lucidity (137247)
@@ -4224,7 +4225,7 @@ Spell Level      : 58
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Proc Chance      : 101%
-Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Lucidity (137247)
+Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Lucidity (137247), Sunblossom Pollen (223722)
 Attributes       : ....x... .......x ..x..... ....x...   ........ ..x..... x....... ........ 
                  : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -4439,7 +4440,7 @@ Effects          :
                    Base Value: 90 | Scaled Value: 90 | Misc Value: 127
 #3 (id=268109)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127
-Description      : All damage received is reduced by ${$AP*$m1/100} (increased by Attack Power). This effect cannot absorb more than $s2% of an attack.
+Description      : All damage received is reduced by ${$AP*$m1/100} (increased by Attack Power). All damage prevented this way is dealt back to the attacker as Nature damage. This effect cannot absorb more than $s2% of an attack.
 
 Name             : Stalwart Guardian (id=185321) 
 Class            : Druid
@@ -4631,6 +4632,8 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=281772)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7e
+#2 (id=334968)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
+                   Base Value: 0 | Scaled Value: 0
 Description      : Reduces magical damage taken by $s1% for $d.
 Tooltip          : Magical damage taken reduced by $s1%.
 
@@ -4644,7 +4647,7 @@ Stacks           : 3 maximum
 Proc Chance      : 101%
 Affecting spells : Incarnation: Guardian of Ursoc (102558), Druid (137009), Bloodtalons (145152), Astral Influence (197524), Jagged Claws (200409), Rend and Tear (204053), PH - More Thrash Stacks (208342), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ....x... ........ .....x.. ........   ........ .x...... ........ ........ 
-                 : ........ ........ ........ ........   .......x ........ ..x..... ........ 
+                 : ........ ........ ........ ........   .......x ........ ..x..... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
@@ -4658,7 +4661,7 @@ Effects          :
 #3 (id=301093)   : Apply Aura (6) | Unknown effect sub type (343)
                    Base Value: 0 | Scaled Value: 0
                    Affected Spells: Rip (1079), Rake (1822), Solar Wrath (5176), Shred (5221), Maul (6807), Moonfire (8921), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Sunfire (93402), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Swipe (213771), Bloody Paws (214995)
-Description      : $@spelldesc33745
+Description      : $@spelldesc77758
 Tooltip          : Suffering $w1 damage every $t1 sec.
 
 Name             : Dreamwalk (id=193753) [Spell Family (7)] 
@@ -5203,8 +5206,8 @@ Effects          :
                    Base Value: 33 | Scaled Value: 33 | Misc Value: 0x7f
 #5 (id=297123)   : Apply Aura (6) | Unknown effect sub type (443)
                    Base Value: 33 | Scaled Value: 33
-Description      : Unleashes the rage of Ursoc for $d, preventing $s2% of all damage you take, and reflecting it back at your attackers.
-Tooltip          : Prevents $s2% of all damage you take and reflects it back at your attackers.
+Description      : Unleashes the rage of Ursoc for $d, preventing $s4% of all damage you take and reflecting $219432s1 Nature damage back at your attackers.
+Tooltip          : Prevents $s4% of all damage you take and reflects $219432s1 Nature damage back at your attackers.
 
 Name             : Predator (id=202021) [Spell Family (7), Passive] 
 Class            : Druid
@@ -5437,11 +5440,11 @@ Effects          :
 #1 (id=298295)   : School Damage: spellstorm (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.00000
 #2 (id=298296)   : Apply Aura (6) | Periodic Damage: spellstorm every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.60000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.80000
 Description      : Burns the target for $s1 Astral  damage, and then an additional $o2 damage over $d.
 
 Stellar Flare benefits from Starfall's Stellar Empowerment.
-Tooltip          : Suffering $w2 Spellstorm damage every $t seconds.
+Tooltip          : Suffering $w2 Astral damage every $t sec.
 
 Name             : Stellar Drift (id=202354) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -5536,7 +5539,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3
 #2 (id=298423)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2
-Description      : Aligns the power of the Moon and Stars, causing Lunar Strike to extend the duration of your Moonfire by ${$164812t2*$s1}.2 sec, and Solar Wrath to extend the duration of your Sunfire by ${$164815t2*$s2}.2 sec.
+Description      : Aligns the power of the Moon and Stars, causing Lunar Strike to extend the duration of your Moonfire by ${$164812t2*$s1}.1 sec, and Solar Wrath to extend the duration of your Sunfire by ${$164815t2*$s2}.1 sec.
 
 Name             : Shooting Stars (id=202497) [Scaling Spell (3), Spell Family (7)] 
 Class            : Druid
@@ -5899,11 +5902,14 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=301047)   : Apply Aura (6) | Add Percent Modifier: Spell Radius (108)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: 6
-                   Affected Spells: Incapacitating Roar (99), Stampeding Roar (106898)
-#2 (id=301048)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
+                   Affected Spells: Stampeding Roar (106898)
+#2 (id=301048)   : Apply Aura (6) | Add Percent Modifier: Spell Radius (108)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 6
+                   Affected Spells: Incapacitating Roar (99)
+#3 (id=334111)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 11
                    Affected Spells: Stampeding Roar (106898)
-Description      : Increases the radius of Stampeding Roar and Incapacitating Roar by $s1%, and reduces the cooldown of Stampeding Roar by $s2%.
+Description      : Increases the radius of Stampeding Roar by $s1%, the radius of Incapacitating Roar by $s2%, and reduces the cooldown of Stampeding Roar by $s3%.
 
 Name             : Rend and Tear (id=204053) [Spell Family (7), Passive] 
 Class            : Druid
@@ -6085,7 +6091,7 @@ School           : Physical
 Spell Level      : 40
 Duration         : Aura (infinite)
 Proc Chance      : 101%
-Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Lucidity (137247)
+Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Lucidity (137247), Sunblossom Pollen (223722)
 Attributes       : ....x... .......x x.x..... ........   ........ ..x..... x....... ....x... 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -6564,13 +6570,13 @@ Range            : 100 yards
 Attributes       : ........ ........ ..x..... x..x....   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ .x...... ........ 
                  : .......x .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Disable target procs (113)
 Effects          :
 #1 (id=326922)   : School Damage: nature (2)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.50000
 Description      : Deals $s1 Nature damage.
 
 

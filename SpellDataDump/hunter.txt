@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21531)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21570)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -275,7 +275,7 @@ Velocity         : 40 yards/sec
 Duration         : 6 seconds
 Cooldown         : 5 seconds
 Mechanic         : Unknown(88)
-Affecting spells : Freezing Trap (3355), Mortal Shots (36413), Hunter (137014), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
+Affecting spells : Freezing Trap (3355), Mortal Shots (36413), Hunter (137014), Item - Hunter WoD PvP 2P Bonus (166005), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -412,7 +412,7 @@ School           : Fire
 Spell Level      : 38
 Range            : 100 yards
 Duration         : 10 seconds
-Affecting spells : Freezing Trap (3355), Black Fire (171103), Expert Trapper (199543)
+Affecting spells : Freezing Trap (3355), Expert Trapper (199543)
 Attributes       : ........ ........ .....x.. x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ......xx .x...... ..x..... ........ 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -2702,7 +2702,7 @@ Effects          :
                    Affected Spells: Kill Command (34026), Chimaera Shot (53209), Kill Command (83381), Dire Beast (120679), Chimaera Shot (171454), Chimaera Shot (171457), Throwing Axes (200163), Flanking Strike (202800), Chimaera Shot (204304), Butchery (212436), Dire Longevity (215911), Dire Frenzy (217200)
 #3 (id=191143)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Mend Pet (136), Disengage (781), Call Pet 1 (883), Revive Pet (982), Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Feign Death (5384), Ice Trap (13809), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Kill Command (34026), Misdirection (34477), Chimaera Shot (53209), Gift of the Naaru (59543), Kill Command (83381), Binding Shot (109248), Exhilaration (109304), Serpent Sting (118253), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Counter Shot (147362), Iron Horde Trip Mine (155918), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Lacerate (185855), Marked Shot (185901), Aspect of the Cheetah (186257), Aspect of the Cheetah (186258), Aspect of the Turtle (186265), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Tar Trap (187698), Muzzle (187707), Carve (187708), Harpoon (190925), Mongoose Bite (190928), Aimed Shot (191043), Explosive Trap (191433), Cobra Shot (193455), Aspect of the Wild (193530), Exhilaration (194291), Volley (194386), Volley (194392), Black Arrow (194599), Head Shot (198670), Camouflage (198783), Camouflage (199483), Throwing Axes (200163), Flanking Strike (202800), Fury of the Eagle (203415), Windburst (204147), Chimaera Shot (204304), A Murder of Crows (206505), Play Dead (209997), Wake Up (210000), Explosive Shot (212431), Butchery (212436), Head Shot (213678), Sidewinders (214579), Sidewinders (214581), Dire Longevity (215911)
+                   Affected Spells: Mend Pet (136), Disengage (781), Call Pet 1 (883), Revive Pet (982), Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Feign Death (5384), Ice Trap (13809), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Kill Command (34026), Misdirection (34477), Chimaera Shot (53209), Gift of the Naaru (59543), Kill Command (83381), Binding Shot (109248), Exhilaration (109304), Serpent Sting (118253), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Counter Shot (147362), Iron Horde Trip Mine (155918), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Lacerate (185855), Marked Shot (185901), Aspect of the Cheetah (186257), Aspect of the Cheetah (186258), Aspect of the Turtle (186265), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Tar Trap (187698), Muzzle (187707), Carve (187708), Harpoon (190925), Mongoose Bite (190928), Aimed Shot (191043), Explosive Trap (191433), Cobra Shot (193455), Aspect of the Wild (193530), Exhilaration (194291), Volley (194386), Volley (194392), Black Arrow (194599), Wing Clip (195645), Head Shot (198670), Camouflage (198783), Camouflage (199483), Throwing Axes (200163), Flanking Strike (202800), Fury of the Eagle (203415), Windburst (204147), Chimaera Shot (204304), A Murder of Crows (206505), Play Dead (209997), Wake Up (210000), Explosive Shot (212431), Butchery (212436), Head Shot (213678), Sidewinders (214579), Sidewinders (214581), Dire Longevity (215911)
 #4 (id=191144)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1628
 #5 (id=191145)   : Apply Aura (6) | Unknown effect sub type (457)
@@ -3646,8 +3646,8 @@ School           : Physical
 Spell Level      : 18
 Proc Chance      : 100%
 Real PPM         : 8 (Haste multiplier)
-Proc Flags       : ........ x....... ........ ........ 
-                 : Yellow Ranged
+Proc Flags       : ......x. ........ ........ ........ 
+                 : White Ranged
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3656,15 +3656,15 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=270331)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50
-Description      : Your Arcane Shot and Multi-Shot have a chance to apply Hunter's Mark, activating Marked Shot.
+#1 (id=270331)   : Apply Aura (6) | Proc Trigger Spell: Marking Targets (42)
+                   Base Value: 50 | Scaled Value: 50 | Trigger Spell: 223138
+Description      : Your auto shots have a chance to cause your next Arcane Shot or Multi-Shot to apply Hunter's Mark. Hunter's Mark activates Marked Shot.
 
 Name             : Black Arrow (id=186070) [Spell Family (9)] 
 Class            : Hunter
 School           : Shadow
 Spell Level      : 1
-Range            : 40 yards
+Range            : 100 yards
 Duration         : 8 seconds
 Triggered by     : Black Arrow (194599)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3838,7 +3838,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
-Affecting spells : Freezing Trap (3355), Hunter (137014), Gust of Wind (190567), Mastery: Sniper Training (193468)
+Affecting spells : Freezing Trap (3355), Hunter (137014), Gust of Wind (190567), Mastery: Sniper Training (193468), 
 Attributes       : .x..x... ........ x...x... ........   ........ ........ ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ...x.... ........ ........   ........ ..x..... ........ ........ 
@@ -4172,7 +4172,7 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 10
 Range            : 100 yards
-Velocity         : 100 yards/sec
+Velocity         : 20 yards/sec
 Affecting spells : Freezing Trap (3355), Refocus (24531), Mortal Shots (36413), Shot Power (37508), Item - Hunter T14 4P Bonus (123091), Hunter (137014), Item - Hunter T16 2P Bonus (144637), Item - Hunter T16 4P Bonus (144641), Guide: Sharpshooting (178549), Item - Hunter T18 Marksmanship 4P Bonus (188191), Deadly Aim (190449), Marked for Death (190533), Mastery: Sniper Training (193468), Lock and Load (194594), True Aim (199803), Sentinel's Sight (208913), Deadeye (213424), Wind Arrows (214826)
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
@@ -4206,6 +4206,7 @@ Effects          :
 #1 (id=280479)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 Description      : Hurls a concussive grenade at your target which sticks to them and explodes after $d, knocking back all nearby enemies.
+Tooltip          : About to explode and knock back the Hunter's enemies.
 
 Name             : Mastery: Hunting Companion (id=191334) [Spell Family (9), Passive] 
 Class            : Survival Hunter
@@ -4378,7 +4379,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=283823)   : Apply Aura (6) | Add Percent Modifier: Spell Range (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.62500 | Misc Value: 5
-                   Affected Spells: Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Wyvern Sting (19386), Aimed Shot (19434), Chimaera Shot (53209), Bullheaded (63896), Binding Shot (109248), Barrage (120360), Barrage (120361), Dire Beast (120679), Glaive Toss (120761), Glaive Toss (121414), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Counter Shot (147362), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Marked Shot (185901), Mongoose Bite (190928), Aimed Shot (191043), Volley (194386), Volley (194392), Black Arrow (194599), Head Shot (198670), Fury of the Eagle (203415), Chimaera Shot (204304), A Murder of Crows (206505), Explosive Shot (212431), Head Shot (213678), Sidewinders (214579), Sidewinders (214581), Dire Longevity (215911)
+                   Affected Spells: Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Wyvern Sting (19386), Aimed Shot (19434), Chimaera Shot (53209), Bullheaded (63896), Binding Shot (109248), Barrage (120360), Barrage (120361), Dire Beast (120679), Glaive Toss (120761), Glaive Toss (121414), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Counter Shot (147362), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Marked Shot (185901), Bursting Shot (186387), Mongoose Bite (190928), Aimed Shot (191043), Volley (194386), Volley (194392), Black Arrow (194599), Head Shot (198670), Fury of the Eagle (203415), Windburst (204147), Chimaera Shot (204304), A Murder of Crows (206505), Explosive Shot (212431), Head Shot (213678), Sidewinders (214579), Sidewinders (214581), Dire Longevity (215911)
 #2 (id=283906)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000
                    Affected Spells: Aimed Shot (19434), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Bursting Shot (186387), Aimed Shot (191043), Volley (194386), Volley (194392), Black Arrow (194599), Head Shot (198670), A Murder of Crows (206505), Marked Shot (212621), Head Shot (213678)
@@ -4669,7 +4670,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 104493 | Misc Value 2: 0xec6 | Radius: 0 - 3 yards
 #2 (id=305712)   : Apply Aura (6) | Periodic Energize Power: every 1 seconds (24)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 2
-Description      : Summons a Spitting Cobra that attacks your target for $206685s1 Poison damage every 2 sec. While the Cobra is active you gain an extra $s2 Focus every $t2 sec.  Lasts $d.
+Description      : Summons a Spitting Cobra for $d that attacks your target for $206685s1 Nature damage every 2 sec. While the Cobra is active you gain an extra $s2 Focus every $t2 sec.
 Tooltip          : Generating $s2 additional Focus each second.
 
 Name             : Lock and Load (id=194594) [Spell Family (9)] 
@@ -4819,6 +4820,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
+Affecting spells : Hunter (137014), Item - Hunter WoD PvP 2P Bonus (166005)
 Attributes       : ........ ........ x.x..... ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4831,7 +4833,7 @@ Effects          :
 Description      : Maims the target, reducing movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
-Name             : Head Shot (id=198670) [Scaling Spell (4), Spell Family (9)] 
+Name             : Head Shot (id=198670) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Resource         : 20 - 100 Focus
@@ -5303,7 +5305,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=296091)   : Apply Aura (6) | Proc Trigger Spell: Mok'Nathal Tactics (42)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 201081
-Description      : Raptor Strike also grants you Mok'Nathal Tactics, increasing your attack power by $201081s1% for $201081d. Stacks up to $201081u times.
+Description      : Raptor Strike also grants you Mok'Nathal Tactics, increasing your attack power by $201081s1% for $201081d, stacking up to $201081u times.
 
 Name             : Mortal Wounds (id=201091) 
 Class            : Hunter
@@ -5503,7 +5505,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1 seconds
 Velocity         : 50 yards/sec
 Cooldown         : 20 seconds
-Affecting spells : Hunter (137014)
+Affecting spells : Hunter (137014), Mastery: Sniper Training (193468)
 Attributes       : .x..x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -5628,8 +5630,8 @@ Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=301586)   : Apply Aura (6) | Unknown effect sub type (318)
                    Base Value: 10 | Scaled Value: 10
-Description      : Increases Mastery by $s1.
-Tooltip          : Mastery increased by $s1.
+Description      : Increases Mastery by $s1%.
+Tooltip          : Mastery increased by $s1%.
 
 Name             : Windburst (id=204475) [Spell Family (9)] 
 Class            : Hunter
@@ -5877,7 +5879,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 30 seconds
-Affecting spells : Freezing Trap (3355), Item - Hunter T14 2P Bonus (123090), Hunter (137014), Survival Hunter (137017), Black Fire (171103), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), Lock and Load (194594)
+Affecting spells : Freezing Trap (3355), Item - Hunter T14 2P Bonus (123090), Hunter (137014), Survival Hunter (137017), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), Lock and Load (194594)
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ........ ........ ........ 
@@ -6070,7 +6072,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Fires a Black Arrow at the target, dealing $3674o1 Shadow damage over $3674d and summoning a skeletal minion to taunt it for the duration.
 
-Black Arrow’s cooldown is reset when you kill an enemy.
+Black Arrowâ€™s cooldown is reset when you kill an enemy.
 Tooltip          : Taking $w1 Shadow damage every $t1 seconds.
 
 Name             : Sidewinders (id=214579) [Spell Family (9)] 
@@ -6097,7 +6099,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 60 yards
 Description      : Launches Sidewinders that travel toward the target, weaving back and forth and dealing $214581s1 Nature damage to each target they hit. Cannot hit the same target twice.
 
-|cFFFFFFFFGenerates $s1 Focus.|r
+|cFFFFFFFFGenerates $s1 Focus.|r$?s214579[][
+
+|cFFFFD200Also replaces Multi-Shot.|r]
 
 Name             : Sidewinders (id=214581) [Spell Family (9)] 
 Class            : Hunter
@@ -6161,5 +6165,27 @@ Effects          :
 #1 (id=325589)   : School Damage: nature (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.00000
 Description      : $@spelldesc207068
+
+Name             : Marking Targets (id=223138) [Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Spell Level      : 1
+Duration         : 15 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : ........ x....... ........ ........ 
+                 : Yellow Ranged
+Triggered by     : Hunter's Mark (185987)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=333377)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50
+Description      : Your next Arcane Shot or Multi-Shot will apply Hunter's Mark. Hunter's Mark activates Marked Shot.
+Tooltip          : Next Arcane Shot or Multi-Shot will apply Hunter's Mark.
 
 

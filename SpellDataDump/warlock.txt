@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21531)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21570)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -3924,7 +3924,7 @@ Effects          :
 #1 (id=287836)   : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 37
 #2 (id=322166)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 40 | Scaled Value: 40 | Misc Value: 22
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 22
                    Affected Spells: Corruption (172), Corruption (146739)
 Description      : Corruption is now permanent and deals $s2% increased damage. Duration reduced to $s1 sec against players.
 
@@ -4428,8 +4428,8 @@ Effects          :
 #1 (id=302906)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=303022)   : Summon (28)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 103679 | Misc Value 2: 0xeb8 | Radius: 2.5 yards
-Description      : Creates a Soul Effigy bound to the target, which is attackable only by you. $s2% of all damage taken by the Effigy is duplicated on the original target. Limit 1. Lasts $d.
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 103679 | Misc Value 2: 0xeb8 | Radius: 2.5 yards
+Description      : Creates a Soul Effigy bound to the target, which is attackable only by you. $205247s1% of all damage taken by the Effigy is duplicated on the original target. Limit 1. Lasts $d.
 Tooltip          : Damage taken by the Soul Effigy is replicated on this target.
 
 Name             : Phantom Singularity (id=205179) [Spell Family (5)] 
@@ -4562,6 +4562,21 @@ Effects          :
 #2 (id=303063)   : Health Leech (9)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.72000 | Radius: 0 - 25 yards
 Description      : $@spelldesc205179
+
+Name             : Soul Effigy (id=205247) [Spell Family (5), Passive] 
+Class            : Warlock
+School           : Shadow
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=303016)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
+                   Base Value: 25 | Scaled Value: 25
+Description      : $@spelldesc205178
 
 Name             : Roaring Blaze (id=205690) [Spell Family (5), Hidden] 
 Class            : Warlock

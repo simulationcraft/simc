@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21531)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21570)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -116,7 +116,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #5 (id=296790)   : Apply Aura (6) | Unknown effect sub type (332)
                    Base Value: 201427 | Scaled Value: 201427
-                   Affected Spells: Chaos Strike (162794)
+                   Affected Spells: Chaos Strike (162794), Chaos Strike (222031)
 #6 (id=296792)   : Apply Aura (6) | Unknown effect sub type (332)
                    Base Value: 210152 | Scaled Value: 210152
                    Affected Spells: Blade Dance (188499), Blade Dance (199552), Blade Dance (200685)
@@ -765,7 +765,7 @@ Effects          :
 
 Name             : Eye Beam (id=198013) [Spell Family (107)] 
 Class            : Demon Hunter
-School           : Fire
+School           : Chaos
 Resource         : 50 Fury
 Range            : 20 yards
 GCD              : 1.5 seconds
@@ -786,6 +786,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #3 (id=291387)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -200 | Scaled Value: -200
+#4 (id=293952)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
 Description      : Blasts all enemies directly in front of you for $<dmg> Chaos damage.
 Variables        : $dmg=$?a203550[${$198030m1*14}][${$198030m1*9}]
 
@@ -1569,7 +1571,6 @@ Class            : Demon Hunter
 School           : Physical
 Spell Level      : 100
 Duration         : 6 seconds
-Affecting spells : Razor Spikes (209400)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1581,8 +1582,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20
 #2 (id=300915)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -10 | Scaled Value: -10 | SP Coefficient: -1.00000 | Misc Value: 0x1
-#3 (id=310885)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x1
 Description      : $@spelldesc203720
 Tooltip          : Parry chance increased by $w1%.
 
@@ -2451,10 +2450,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=309919)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
+#1 (id=309919)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 23
-                   Affected Spells: Demon Spikes (203819)
-Description      : While Demon Spikes is active, your Physical damage dealt is increased by $s1% and your melee attacks snare targets by $210003s1% for $210003d.
+Description      : While Demon Spikes is active, your melee attacks snare targets by $210003s1% for $210003d.
 
 Name             : Darkness (id=209426) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -2823,7 +2821,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #3 (id=314395)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -200 | Scaled Value: -200
-#4 (id=314649)   : Apply Aura (6) | Unknown effect sub type (105)
+#4 (id=314649)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 Description      : Unleash the fel within you, damaging enemies directly in front of you for ${$212105m1*10} Fire damage over $d. Causing damage also heals you for up to ${$212106m1*10} health.
 
@@ -3242,7 +3240,7 @@ Class            : Demon Hunter
 School           : Fire
 Range            : 30 yards
 Duration         : 60 seconds
-Cooldown         : 120 seconds
+Cooldown         : 60 seconds
 Affecting spells : Brand of the Hunt (218641)
 Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3251,12 +3249,12 @@ Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=325597)   : Apply Aura (6) | Unknown effect sub type (270)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 127
+#1 (id=325597)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127
 #2 (id=325598)   : Trigger Spell: Brand of the Hunt (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 218641
-Description      : Brand an enemy with a demonic symbol, increasing the damage you deal to them by $s1%. At any time, you can reactivate Brand of the Hunt to immediately teleport to the target. Lasts $d.
-Tooltip          : Taking $s1% increased damage from the branding Demon Hunter.
+Description      : Brand an enemy with a demonic symbol. You can reactivate Brand of the Hunt to immediately teleport to the target. If the target dies, Brand of the Hunt's cooldown is reset. Lasts $d.
+Tooltip          : Being hunted by the branding Demon Hunter.
 
 Name             : Brand of the Hunt (id=218641) [Spell Family (107), Hidden] 
 Class            : Demon Hunter
@@ -3368,7 +3366,7 @@ Name             : Chaos Strike (id=222031) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Chaos
 Range            : 15 yards
-Affecting spells : Mastery: Demonic Presence (185164), Critical Chaos (201455), Chaos Cleave (206475), Chaos Blades (211048), Warglaives of Chaos (214795)
+Affecting spells : Metamorphosis (162264), Mastery: Demonic Presence (185164), Critical Chaos (201455), Chaos Cleave (206475), Chaos Blades (211048), Warglaives of Chaos (214795)
 Triggered by     : Chaos Strike (162794)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ......x. 

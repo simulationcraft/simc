@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21531)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21570)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Fire Frost Mage
@@ -1179,7 +1179,7 @@ Range            : 100 yards
 Duration         : 15 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
-Affecting spells : Item - Mage T18 Frost 4P Bonus (185971), Icy Hand (220817)
+Affecting spells : Item - Mage T18 Frost 4P Bonus (185971), Icy Hand (220817), 
 Triggered by     : Lady Vashj's Grasp (208147)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -2891,7 +2891,7 @@ Range            : 100 yards
 Velocity         : 1 yards/sec
 Affecting spells : Shatter (12982)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ .xx..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 

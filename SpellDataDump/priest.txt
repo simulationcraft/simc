@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21531)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21570)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -247,7 +247,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Serenity Now (196416), Words of Healing (196430), Light of T'uure (208065)
+Affecting spells : Serenity Now (196416), Words of Healing (196430), Apotheosis (200183), Light of T'uure (208065)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -695,7 +695,7 @@ Tooltip          : Healing $/5;s2% every $t1 seconds.
 
 Name             : Mass Dispel (id=32375) [Spell Family (6)] 
 Class            : Priest
-School           : Arcane
+School           : Holy
 Resource         : 8% Base Mana (88000 @Level 110)
 Spell Level      : 72
 Range            : 30 yards
@@ -910,7 +910,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Healing Trance (37706), Temporal Boon (105826), Item - Priest T14 Healer 4P Bonus (123113), Lucidity (137323), Hallowed Ground (196429), Words of Healing (196430)
+Affecting spells : Healing Trance (37706), Temporal Boon (105826), Item - Priest T14 Healer 4P Bonus (123113), Lucidity (137323), Hallowed Ground (196429), Words of Healing (196430), Apotheosis (200183)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ......x. ........ 
@@ -1886,7 +1886,7 @@ Spell Level      : 24
 Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
-Affecting spells : Item - Priest T13 Healer 4P Bonus (Holy Word and Power Word: Shield) (105832), Lucidity (137323), Absolution (145336)
+Affecting spells : Item - Priest T13 Healer 4P Bonus (Holy Word and Power Word: Shield) (105832), Lucidity (137323), Absolution (145336), Apotheosis (200183)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3154,7 +3154,7 @@ Range            : 100 yards
 Duration         : 15 seconds
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
+                 : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : .....x.. ........ .....x.x ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3164,7 +3164,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000
 #2 (id=283829)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88)
-Description      : $@spelldesc15407
+Description      : Assaults the target's mind with Shadow energy, causing $o1 Shadow damage over $d and slowing their movement speed by $s2%.
 Tooltip          : $?$w2=0[Taking][Movement speed slowed and taking] Shadow damage every $t1 sec.
 
 Name             : Voidform (id=194249) [Spell Family (6)] 
@@ -3628,7 +3628,10 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=294682)   : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: 126 | Misc Value 2: 0x1
-Description      : Enter a pure Holy form for $d, increasing the effects of Serendipity by $s1%.
+#2 (id=334777)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 14
+                   Affected Spells: Holy Word: Serenity (2050), Holy Word: Sanctify (34861), Holy Word: Chastise (88625), Holy Word: Chastise (200196), Holy Word: Chastise (200200)
+Description      : Enter a pure Holy form for $d, increasing the effects of Serendipity by $s1% and reducing the cost of your Holy Words by $s2%.
 Tooltip          : Effects of Serendipity increased by $s1%.
 
 Name             : Holy Word: Chastise (id=200196) [Spell Family (6)] 
@@ -3640,7 +3643,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 60 seconds
-Affecting spells : Lucidity (137323), Absolution (145336)
+Affecting spells : Lucidity (137323), Absolution (145336), Apotheosis (200183)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3678,7 +3681,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 60 seconds
-Affecting spells : Lucidity (137323), Absolution (145336)
+Affecting spells : Lucidity (137323), Absolution (145336), Apotheosis (200183)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 

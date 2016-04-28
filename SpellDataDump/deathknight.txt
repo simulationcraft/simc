@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21531)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21570)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -438,7 +438,7 @@ Description      : Smash the target's mind with cold, interrupting spellcasting 
 Name             : Death Coil (id=47541) [Scaling Spell (1), Spell Family (15)] 
 Class            : Unholy Death Knight
 School           : Shadow
-Resource         : 30 Runic Power
+Resource         : 35 Runic Power
 Spell Level      : 55
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -499,7 +499,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=39872)    : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.80000
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.93000
 Description      : Fire a blast of unholy energy, causing Shadow damage to an enemy target or healing a friendly Undead target.
 
 Name             : Veteran of the Third War (id=48263) [Spell Family (15), Passive] 
@@ -704,7 +704,7 @@ Effects          :
                    Base Value: 80 | Scaled Value: 80
 #2 (id=41296)    : School Damage: frost (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.38520 | Radius: 0 - 10 yards
-Description      : Blast the target with a frigid wind, dealing $?s207060[${2*$s2}][$s2] $?s204088[Frost damage and applying Frost Fever to the target.][Frost damage to that foe, and ${($m1/100)*$m2} Frost damage to all other enemies within 10 yards, infecting all targets with Frost Fever.]
+Description      : Blast the target with a frigid wind, dealing $s2 $?s204088[Frost damage and applying Frost Fever to the target.][Frost damage to that foe, and ${($m1/100)*$m2} Frost damage to all other enemies within 10 yards, infecting all targets with Frost Fever.]
 
 |Tinterface\icons\spell_deathknight_frostfever.blp:24|t |cFFFFFFFFFrost Fever|r
 $@spelldesc55095
@@ -738,8 +738,8 @@ Name             : Sudden Doom (id=49530) [Spell Family (15), Passive]
 Class            : Unholy Death Knight
 School           : Physical
 Spell Level      : 64
-Proc Chance      : 101%
-Real PPM         : 3 (Haste multiplier)
+Proc Chance      : 100%
+Real PPM         : 3.45 (Haste multiplier)
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
 Affecting spells : Double Doom (191741)
@@ -1987,7 +1987,9 @@ Effects          :
                    Base Value: 1 | Scaled Value: 0 (avg=0.433)
 #2 (id=87375)    : Weapon Damage% (31)
                    Base Value: 400 | Scaled Value: 4
-Description      : Deals $sw2 Physical damage and infects the target with 2 to 4 Festering Wounds.
+#3 (id=333923)   : Dummy (3)
+                   Base Value: 1 | Scaled Value: 2 - 4 | Value Range: 3
+Description      : Deals $sw2 Physical damage and infects the target with $m3 to $M3 Festering Wounds.
 
 |Tinterface\icons\spell_yorsahj_bloodboil_purpleoil.blp:24|t |cFFFFFFFFFestering Wound|r
 $@spelldesc194310
@@ -4257,7 +4259,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=303977)   : Apply Aura (6) | Increase Max Health (Stacking) (250)
@@ -4265,7 +4267,7 @@ Effects          :
 #2 (id=303978)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25
 Description      : Increase maximum health by $s2%.
-Tooltip          : Maximum health increased by $s1%.
+Tooltip          : Maximum health increased by $w1.
 
 Name             : Anti-Magic Barrier (id=205727) [Spell Family (15), Passive] 
 Class            : Death Knight
@@ -4329,7 +4331,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : ........ ........ .......x ........   ........ ........ ........ .....x.. 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : Channeled (34)
 Effects          :
@@ -4338,7 +4340,7 @@ Effects          :
 Description      : Drains $o1 health from the target over $d.
 
 You can move, parry, and dodge while channeling this ability.
-Tooltip          : Draining $w1 health from the target every $t1 sec.
+Tooltip          : Draining $s1 health from the target every $t1 sec.
 
 Name             : Mark of Blood (id=206940) [Spell Family (15)] 
 Class            : Death Knight
@@ -4435,10 +4437,9 @@ Effects          :
 #1 (id=306091)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(42)
 
-Name             : Will of the Necropolis (Passive Talent) (id=206967) [Spell Family (8), Passive] 
+Name             : Will of the Necropolis (Passive Talent) (id=206967) [Passive] 
 Class            : Death Knight
 School           : Physical
-Affecting spells : PH - Distract Applies Damage Debuff (208347)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4453,7 +4454,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20
 #3 (id=306102)   : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35
-Description      : Reduce all damage taken by $s2% while your health is below $s3% or from any attack which would reduce you below $s3%.
+Description      : Damage taken below $s3% Health is reduced by $s2%.
 
 Name             : Tightening Grasp (id=206970) [Spell Family (15), Passive] 
 Class            : Death Knight
@@ -4808,7 +4809,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=306445)   : Apply Aura (6) | Proc Trigger Spell (42)
+#1 (id=306445)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30
 Description      : When you deal damage with auto attacks, gain an absorb shield equal to $s1% of the damage dealt.
 
@@ -4820,7 +4821,7 @@ Resource         : -10 Runic Power
 Spell Level      : 1
 Range            : 8 yards
 GCD              : 1.5 seconds
-Affecting spells : Killing Machine (51124), Death Knight (137005), 
+Affecting spells : Killing Machine (51124), Death Knight (137005), Blast Radius (189086)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4926,7 +4927,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=306547)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 19
+                   Base Value: 35 | Scaled Value: 35 | Misc Value: 19
 Description      : Your Ghoul's Claw attack has a $s1% chance to cause a Festering Wound on the target.
 
 Name             : Unholy Frenzy (id=207289) [Spell Family (15), Passive] 
@@ -5293,6 +5294,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 212654
 #5 (id=315371)   : Apply Aura (6) | Unknown effect sub type (106)
                    Base Value: 0 | Scaled Value: 0
+#6 (id=334744)   : Apply Aura (6) | Unknown effect sub type (91)
+                   Base Value: -5 | Scaled Value: -5
 Description      : Sidestep into the Shadowlands, breaking Root effects and increasing your movement speed by $s1% for $d. During this time all movement-impairing effects are suppressed but attacking will cancel the effect.
 Tooltip          : Movement speed increased by $w1%. Cannot be slowed below $s2% of normal run speed. Cannot attack.
 
@@ -5580,6 +5583,7 @@ Tooltip          : Absorbing $w1 damage.
 Name             : Apocalypse (id=220143) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
+Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 90 seconds
 Internal Cooldown: 1 seconds
@@ -5593,9 +5597,11 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=328255)   : Dummy (3)
-                   Base Value: 15 | Scaled Value: 15
-Description      : Bursts all Festering Wounds on the target, summoning a member of your Army of the Dead for each burst Festering Wound.
+#1 (id=328255)   : Normalized Weapon Damage (121)
+                   Base Value: 1 | Scaled Value: 1
+#2 (id=335374)   : Weapon Damage% (31)
+                   Base Value: 150 | Scaled Value: 1.5
+Description      : Strikes the enemy, dealing $sw1 Physical damage and bursting all Festering Wounds on the target, summoning a member of your Army of the Dead for each burst Festering Wound.
 
 Name             : Runic Attenuation (id=221322) [Spell Family (15)] 
 Class            : Death Knight
