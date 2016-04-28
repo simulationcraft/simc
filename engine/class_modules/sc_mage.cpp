@@ -4131,7 +4131,6 @@ struct phoenixs_flames_t : public fire_mage_spell_t
 
     cooldown -> charges = data().charges();
     cooldown -> duration = data().charge_cooldown();
-    cooldown -> hasted = true;
     triggers_hot_streak = true;
   }
 
