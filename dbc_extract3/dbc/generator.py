@@ -29,7 +29,7 @@ class CSVDataGenerator(object):
         else:
             for v in csvs:
                 self._csv_options[v['file']] = v
-            self._dbc = self._csv_options.keys()
+            self._dbc = sorted(self._csv_options.keys())
 
     def struct_name(self, dbc = None):
         d = (dbc and dbc or self._dbc[0]).split('.')[0]
