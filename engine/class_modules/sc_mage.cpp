@@ -473,7 +473,6 @@ public:
     talents( talents_list_t() )
   {
     // Cooldowns
-    //TODO: Flag which cooldowns have their cooldowns reduced by haste.
     cooldowns.combustion       = get_cooldown( "combustion"       );
     cooldowns.cone_of_cold     = get_cooldown( "cone_of_cold"     );
     cooldowns.dragons_breath   = get_cooldown( "dragons_breath"   );
