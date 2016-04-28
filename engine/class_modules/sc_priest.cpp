@@ -133,6 +133,11 @@ public:
     buff_t* reperation;         // T18 Disc 2p
     buff_t* premonition;        // T18 Shadow 4pc
     buff_t* shadow_t19_4p;      // T19 Shadow 4pc
+
+    // Legion Legendaries
+    // Shadow
+    buff_t* iridis_empowerment;       // Zenk'aram, Iridi's Anadem stack counter
+    buff_t* the_twins_painful_touch;  // To track first casting
   } buffs;
 
   // Talents
@@ -331,6 +336,9 @@ public:
   {
     proc_t* divine_insight;
     proc_t* divine_insight_overflow;
+    proc_t* legendary_anunds_last_breath;
+    proc_t* legendary_zenkaram_iridis_anadem;
+    proc_t* legendary_zenkaram_iridis_anadem_overflow;
     proc_t* shadowy_insight;
     proc_t* shadowy_insight_overflow;
     proc_t* serendipity;
@@ -367,9 +375,18 @@ public:
 
   struct
   {
+    // Archimonde Trinkets
     const special_effect_t* naarus_discipline;
     const special_effect_t* complete_healing;
     const special_effect_t* mental_fatigue;
+
+    // Legion Legendaries
+    // Shadow
+    const special_effect_t* anunds_seared_shackles;
+    const special_effect_t* mother_shahrazs_secudtion;
+    const special_effect_t* mangazas_madness;
+    const special_effect_t* zenkaram_iridis_anadem;
+    const special_effect_t* the_twins_painful_touch;
   } active_items;
 
   // Pets
@@ -1266,6 +1283,21 @@ public:
       return true;
     }
     return false;
+  }
+
+  bool trigger_iridis()
+  {
+    int stack = priest.buffs.iridis_empowerment->check();
+    priest.buffs.iridis_empowerment->trigger();
+
+    if (priest.buffs.iridis_empowerment->check() == stack)
+    {
+      priest.procs.legendary_zenkaram_iridis_anadem_overflow->occur();
+    }
+    else
+    {
+      priest.procs.legendary_zenkaram_iridis_anadem->occur();
+    }
   }
 
   double cost() const override
@@ -2701,6 +2733,11 @@ public:
     }
 
     cooldown -> hasted = true;
+
+    if (priest.active_items.mangazas_madness)
+    {
+      priest.cooldowns.mind_blast->charges += priest.active_items.mangazas_madness->driver()->effectN(1).base_value();
+    }
   }
 
   void execute() override
@@ -2713,16 +2750,23 @@ public:
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
-    generate_insanity( insanity_gain, priest.gains.insanity_mind_blast );
+    generate_insanity(insanity_gain, priest.gains.insanity_mind_blast);
+    
+    priest_td_t& td = get_td(s->target);
 
     if ( priest.active_spells.mind_spike_detonation )
     {
-      priest_td_t& td = get_td( s->target );
 
       if ( td.buffs.mind_spike->up() )
       {
         priest.active_spells.mind_spike_detonation->trigger();
       }
+    }
+    
+    if (priest.active_items.anunds_seared_shackles && td.dots.shadow_word_pain->is_ticking())
+    {
+      td.dots.shadow_word_pain->refresh_duration();
+      priest.procs.legendary_anunds_last_breath->occur();
     }
   }
 
@@ -3290,7 +3334,12 @@ struct shadow_word_pain_t final : public priest_spell_t
           priest.gains.insanity_shadow_word_pain_ondamage );
     }
     // generate_insanity(1, priest.gains.insanity_shadow_word_pain_ondamage);
-    // //For testing until set bonuses are available in SimC
+    // For testing until set bonuses are available in SimC
+    
+    if (priest.active_items.zenkaram_iridis_anadem)
+    {
+      trigger_iridis();
+    }
   }
 
   double cost() const override
@@ -3461,7 +3510,12 @@ struct vampiric_touch_t final : public priest_spell_t
           priest.gains.insanity_vampiric_touch_ondamage );
     }
     // generate_insanity(1, priest.gains.insanity_vampiric_touch_ondamage);
-    // //For testing until set bonuses are available in SimC
+    // For testing until set bonuses are available in SimC
+
+    if (priest.active_items.zenkaram_iridis_anadem)
+    {
+      trigger_iridis();
+    }
   }
 
   virtual double action_multiplier() const override
@@ -3553,6 +3607,11 @@ struct void_bolt_t final : public priest_spell_t
     if ( priest.mastery_spells.madness->ok() )
       m *= 1.0 + priest.cache.mastery_value();
 
+    if (priest.buffs.iridis_empowerment->up())
+    {
+      m *= 1.0 + (priest.buffs.iridis_empowerment->data().effectN(1).percent() * priest.buffs.iridis_empowerment->stack());
+      priest.buffs.iridis_empowerment->expire();
+    }
     return m;
   }
 };
@@ -5522,6 +5581,8 @@ void do_trinket_init( priest_t* player, specialization_e spec,
   ptr = &( effect );
 }
 
+// Archimonde Trinkets
+
 void discipline_trinket( special_effect_t& effect )
 {
   priest_t* s = debug_cast<priest_t*>( effect.player );
@@ -5541,11 +5602,52 @@ void shadow_trinket( special_effect_t& effect )
   do_trinket_init( s, PRIEST_SHADOW, s->active_items.mental_fatigue, effect );
 }
 
+// Legion Legendaries
+
+// Shadow
+void anunds_seared_shackles(special_effect_t& effect)
+{
+  priest_t* s = debug_cast<priest_t*>(effect.player);
+  do_trinket_init(s, PRIEST_SHADOW, s->active_items.anunds_seared_shackles, effect);
+}
+
+void mangazas_madness(special_effect_t& effect)
+{
+  priest_t* s = debug_cast<priest_t*>(effect.player);
+  do_trinket_init(s, PRIEST_SHADOW, s->active_items.mangazas_madness, effect);
+}
+
+void mother_shahrazs_seduction(special_effect_t& effect)
+{
+  priest_t* s = debug_cast<priest_t*>(effect.player);
+  do_trinket_init(s, PRIEST_SHADOW, s->active_items.mother_shahrazs_secudtion, effect);
+}
+
+void the_twins_painful_touch(special_effect_t& effect)
+{
+  priest_t* s = debug_cast<priest_t*>(effect.player);
+  do_trinket_init(s, PRIEST_SHADOW, s->active_items.the_twins_painful_touch, effect);
+}
+
+void zenkaram_iridis_anadem(special_effect_t& effect)
+{
+  priest_t* s = debug_cast<priest_t*>(effect.player);
+  do_trinket_init(s, PRIEST_SHADOW, s->active_items.zenkaram_iridis_anadem, effect);
+}
+
 void init()
 {
+  // Archimonde Trinkets
   unique_gear::register_special_effect( 184912, discipline_trinket );
   unique_gear::register_special_effect( 184914, holy_trinket );
   unique_gear::register_special_effect( 184915, shadow_trinket );
+
+  // Legion Legendaries
+  unique_gear::register_special_effect(207664, anunds_seared_shackles);
+  unique_gear::register_special_effect(207701, mangazas_madness);
+  unique_gear::register_special_effect(215250, mother_shahrazs_seduction);
+  unique_gear::register_special_effect(207721, the_twins_painful_touch);
+  unique_gear::register_special_effect(215209, zenkaram_iridis_anadem);
 }
 
 }  // items
@@ -5752,6 +5854,10 @@ void priest_t::create_procs()
   procs.t17_4pc_holy_overflow =
       get_proc( "Tier17 4pc Serendipity lost to overflow" );
   procs.void_tendril = get_proc( "Void Tendril spawned from Call to the Void" );
+
+  procs.legendary_anunds_last_breath = get_proc("Legendary - Anund's Seared Shackles - Shadow Word: Pain refreshed by Mind Blast casts");
+  procs.legendary_zenkaram_iridis_anadem = get_proc("Legendary - Zen'karam, Iridi's Anadem - Void Bolt damage increases (2% per)");
+  procs.legendary_zenkaram_iridis_anadem_overflow = get_proc("Legendary - Zen'karam, Iridi's Anadem - Void Bolt damage increases (2% per) lost to overflow");
 }
 
 /* Construct priest benefits
@@ -6683,6 +6789,19 @@ void priest_t::create_buffs()
           .chance( 1.0 )
           .duration( timespan_t::from_seconds(
               6.0 ) );  // TODO Update with spelldata once available
+
+  buffs.iridis_empowerment =
+    buff_creator_t(this, "iridis_empowerment")
+    .spell(find_spell(215210));
+      //.chance( 1.0 )
+      //.duration(timespan_t::from_seconds(60.0)) // Probably 1 minute like the rest of our temp buffs.
+      //.max_stack(100); // Data isn't pulling this in.
+
+  buffs.the_twins_painful_touch =
+    buff_creator_t(this, "the_twins_painful_touch")
+    .spell(find_spell(207721));
+    //.chance(1.0)
+    //.duration(timespan_t::from_seconds(10.0));            
 }
 
 // priest_t::init_rng ==================================================
