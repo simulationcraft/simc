@@ -310,7 +310,7 @@ struct rogue_t : public player_t
   struct talents_t
   {
     // Shared - Level 45
-    const spell_data_t* deeper_strategem;
+    const spell_data_t* deeper_stratagem;
     const spell_data_t* anticipation;
     const spell_data_t* vigor;
 
@@ -541,7 +541,7 @@ struct rogue_t : public player_t
   void trigger_surge_of_toxins( const action_state_t* );
 
   double consume_cp_max() const
-  { return 5.0 + as<double>( talent.deeper_strategem -> effectN( 1 ).base_value() ); }
+  { return 5.0 + as<double>( talent.deeper_stratagem -> effectN( 1 ).base_value() ); }
 
   target_specific_t<rogue_td_t> target_data;
 
@@ -867,7 +867,7 @@ struct rogue_attack_t : public melee_attack_t
     if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 && harmful &&
          ( weapon_multiplier > 0 || attack_power_mod.direct > 0 || attack_power_mod.tick > 0 ) )
     {
-      m *= 1.0 + p() -> talent.deeper_strategem -> effectN( 4 ).percent();
+      m *= 1.0 + p() -> talent.deeper_stratagem -> effectN( 4 ).percent();
     }
 
     return m;
@@ -5155,7 +5155,7 @@ void rogue_t::init_base_stats()
   base.attack_power_per_agility  = 1.0;
 
   resources.base[ RESOURCE_COMBO_POINT ] = 5;
-  resources.base[ RESOURCE_COMBO_POINT ] += talent.deeper_strategem -> effectN( 1 ).base_value() ;
+  resources.base[ RESOURCE_COMBO_POINT ] += talent.deeper_stratagem -> effectN( 1 ).base_value() ;
   resources.base[ RESOURCE_COMBO_POINT ] += talent.anticipation -> effectN( 1 ).base_value();
 
   resources.base[ RESOURCE_ENERGY ] = 100;
@@ -5223,7 +5223,7 @@ void rogue_t::init_spells()
   spell.venom_rush          = find_spell( 156719 );
 
   // Talents
-  talent.deeper_strategem   = find_talent_spell( "Deeper Strategem" );
+  talent.deeper_stratagem   = find_talent_spell( "Deeper Stratagem" );
   talent.anticipation       = find_talent_spell( "Anticipation" );
   talent.vigor              = find_talent_spell( "Vigor" );
 
