@@ -1,5 +1,5 @@
 @echo off
-
+chcp 65001
 setlocal
 
 set OUTPATH=%~dp0..\engine\dbc\generated
