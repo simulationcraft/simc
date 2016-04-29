@@ -7,14 +7,11 @@
     - everything, pretty much :(
 
   TODO (ret):
-    - Justicar's (correctly) & Eye for an Eye
-    - Provide a way to make equality actually do damage (that is, a way for the ret paladin to take damage)
+    - Eye for an Eye
+    - verify Divine Purpose interactions with The Fires of Justice and Seal of Light
     - bugfixes & cleanup
-    - A few Artifact Powers
-    - Verify speculative implementations of some artifact powers + BoM
     - BoK/BoW
     - Check mana/mana regen for ret, sword of light has been significantly changed to no longer have the mana regen stuff, or the bonus to healing, reduction in mana costs, etc.
-    - In fact, just check everything about sword of light.
   TODO (prot):
     - everything, pretty much :(
 */
@@ -94,6 +91,7 @@ public:
     buff_t* seal_of_light;
     buff_t* blessing_of_might;
     buff_t* the_fires_of_justice;
+    buff_t* divine_purpose;
 
     // Set Bonuses
     buff_t* faith_barricade;      // t17_2pc_tank
@@ -155,6 +153,9 @@ public:
     proc_t* eternal_glory;
     proc_t* focus_of_vengeance_reset;
     proc_t* defender_of_the_light;
+
+    proc_t* divine_purpose;
+    proc_t* the_fires_of_justice;
   } procs;
 
   // Spells
@@ -162,6 +163,7 @@ public:
   {
     const spell_data_t* holy_light;
     const spell_data_t* sanctified_wrath; // needed to pull out spec-specific effects
+    const spell_data_t* divine_purpose_ret;
   } spells;
 
   // Talents
@@ -180,7 +182,6 @@ public:
     const spell_data_t* devotion_aura;
     const spell_data_t* aura_of_light;
     const spell_data_t* aura_of_mercy;
-    const spell_data_t* divine_purpose;
     const spell_data_t* sanctified_wrath;
     const spell_data_t* holy_prism;
     const spell_data_t* stoicism;
@@ -230,7 +231,7 @@ public:
     const spell_data_t* divine_intervention;
     const spell_data_t* divine_steed;
     const spell_data_t* seal_of_light;
-    const spell_data_t* blessings_of_justice;
+    const spell_data_t* divine_purpose;
     const spell_data_t* holy_wrath;
     const spell_data_t* equality;
   } talents;
@@ -538,6 +539,9 @@ public:
   {
     if ( ab::current_resource() == RESOURCE_HOLY_POWER )
     {
+      if ( p() -> buffs.divine_purpose -> check() )
+        return 0.0;
+
       return ab::base_costs[ RESOURCE_HOLY_POWER ];
     }
 
@@ -571,10 +575,6 @@ public:
     if ( p() -> buffs.blessing_of_might -> up() )
     {
       double chance = p() -> buffs.blessing_of_might -> data().effectN( 1 ).percent();
-      if ( p() -> talents.blessings_of_justice -> ok() )
-      {
-        chance *= ( 1 + p() -> talents.blessings_of_justice -> effectN( 1 ).percent() );
-      }
       if ( p() -> rng().roll( chance ) )
       {
         double amount = s -> result_amount;
@@ -1065,7 +1065,7 @@ struct execution_sentence_t : public paladin_spell_t
   virtual double cost() const override
   {
     double base_cost = paladin_spell_t::cost();
-    if ( p() -> buffs.the_fires_of_justice -> up() )
+    if ( p() -> buffs.the_fires_of_justice -> up() && base_cost > 0 )
       return base_cost - 1;
     return base_cost;
   }
@@ -1859,6 +1859,28 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
 
     return m;
   }
+
+  virtual void execute() override
+  {
+    double c = cost();
+    paladin_melee_attack_t::execute();
+    if ( c == 0.0 )
+    {
+      if ( p() -> buffs.divine_purpose -> check() )
+      {
+        p() -> buffs.divine_purpose -> expire();
+      }
+    }
+
+    if ( p() -> talents.divine_purpose -> ok() )
+    {
+      bool success = p() -> buffs.divine_purpose -> trigger( 1,
+        p() -> buffs.divine_purpose -> default_value,
+        p() -> spells.divine_purpose_ret -> proc_chance() );
+      if ( success )
+        p() -> procs.divine_purpose -> occur();
+    }
+  }
 };
 
 // Melee Attack =============================================================
@@ -1969,9 +1991,13 @@ struct crusader_strike_t : public holy_power_generator_t
       p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_crusader_strike ); // apply gain, record as due to CS
 
       // fires of justice
-      if ( p() -> talents.fires_of_justice -> ok() && rng().roll( p() -> talents.fires_of_justice -> proc_chance() ) )
+      if ( p() -> talents.fires_of_justice -> ok() )
       {
-        p() -> buffs.the_fires_of_justice -> trigger();
+        bool success = p() -> buffs.the_fires_of_justice -> trigger( 1,
+          p() -> buffs.the_fires_of_justice -> default_value,
+          p() -> talents.fires_of_justice -> proc_chance() );
+        if ( success )
+          p() -> procs.the_fires_of_justice -> occur();
       }
     }
   }
@@ -2199,7 +2225,7 @@ struct divine_storm_t: public holy_power_consumer_t
   virtual double cost() const override
   {
     double base_cost = holy_power_consumer_t::cost();
-    if ( p() -> buffs.the_fires_of_justice -> up() )
+    if ( p() -> buffs.the_fires_of_justice -> up() && base_cost > 0 )
       return base_cost - 1;
     return base_cost;
   }
@@ -2360,7 +2386,7 @@ struct judgment_t : public paladin_melee_attack_t
 
     if ( p -> talents.greater_judgment -> ok() )
     {
-      base_multiplier *= 1.0 + p -> talents.greater_judgment -> effectN( 3 ).percent();
+      cooldown -> duration += timespan_t::from_millis( p -> talents.greater_judgment -> effectN( 1 ).base_value() );
       aoe = 1 + p -> talents.greater_judgment -> effectN( 2 ).base_value();
       base_add_multiplier = data().effectN( 1 ).chain_multiplier();
     }
@@ -2514,7 +2540,7 @@ struct templars_verdict_t : public holy_power_consumer_t
   virtual double cost() const override
   {
     double base_cost = holy_power_consumer_t::cost();
-    if ( p() -> buffs.the_fires_of_justice -> up() )
+    if ( p() -> buffs.the_fires_of_justice -> up() && base_cost > 0 )
       return base_cost - 1;
     return base_cost;
   }
@@ -2556,7 +2582,7 @@ struct justicars_vengeance_t : public holy_power_consumer_t
   virtual double cost() const override
   {
     double base_cost = holy_power_consumer_t::cost();
-    if ( p() -> buffs.the_fires_of_justice -> up() )
+    if ( p() -> buffs.the_fires_of_justice -> up() && base_cost > 0 )
       return base_cost - 1;
     return base_cost;
   }
@@ -2595,7 +2621,7 @@ struct seal_of_light_t : public paladin_spell_t
   virtual double cost() const override
   {
     double base_cost = std::max( base_costs[ RESOURCE_HOLY_POWER ], p() -> resources.current[ RESOURCE_HOLY_POWER ] );
-    if ( p() -> buffs.the_fires_of_justice -> up() )
+    if ( p() -> buffs.the_fires_of_justice -> up() && base_cost > 0 )
       return base_cost - 1;
     return base_cost;
   }
@@ -2767,11 +2793,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   actor_target_data_t( target, paladin )
 {
   dots.execution_sentence = target -> get_dot( "execution_sentence", paladin );
-  float judgment_duration_multiplier = 1.0;
-  if ( paladin -> talents.greater_judgment -> ok() )
-    judgment_duration_multiplier += paladin -> talents.greater_judgment -> effectN( 1 ).percent();
-  buffs.debuffs_judgment = buff_creator_t( *this, "judgment", paladin -> find_spell( 197277 ))
-    .duration( judgment_duration_multiplier * paladin -> find_spell( 197277 ) -> duration() );
+  buffs.debuffs_judgment = buff_creator_t( *this, "judgment", paladin -> find_spell( 197277 ));
 }
 
 // paladin_t::create_action =================================================
@@ -2931,6 +2953,8 @@ void paladin_t::init_procs()
 
   procs.eternal_glory             = get_proc( "eternal_glory"                  );
   procs.focus_of_vengeance_reset  = get_proc( "focus_of_vengeance_reset"       );
+  procs.divine_purpose            = get_proc( "divine_purpose"                 );
+  procs.the_fires_of_justice      = get_proc( "the_fires_of_justice"           );
 }
 
 // paladin_t::init_scaling ==================================================
@@ -2983,6 +3007,7 @@ void paladin_t::create_buffs()
   buffs.seal_of_light                  = buff_creator_t( this, "seal_of_light" ).spell( find_spell( 202273 ) );
   buffs.the_fires_of_justice           = buff_creator_t( this, "the_fires_of_justice" ).spell( find_spell( 209785 ) );
   buffs.blessing_of_might              = buff_creator_t( this, "blessing_of_might" ).spell( find_spell( 203528 ) );
+  buffs.divine_purpose                 = buff_creator_t( this, "divine_purpose" ).spell( find_spell( 223819 ) );
 
   // Tier Bonuses
   // T17
@@ -3471,7 +3496,6 @@ void paladin_t::init_spells()
   talents.devotion_aura              = find_talent_spell( "Devotion Aura" );
   talents.aura_of_light              = find_talent_spell( "Aura of Light" );
   talents.aura_of_mercy              = find_talent_spell( "Aura of Mercy" );
-  talents.divine_purpose             = find_talent_spell( "Divine Purpose" );
   talents.sanctified_wrath           = find_talent_spell( "Sanctified Wrath" );
   talents.holy_prism                 = find_talent_spell( "Holy Prism" );
   talents.stoicism                   = find_talent_spell( "Stoicism" );
@@ -3517,7 +3541,7 @@ void paladin_t::init_spells()
   talents.divine_intervention        = find_talent_spell( "Divine Intervention" );
   talents.divine_steed               = find_talent_spell( "Divine Steed" );
   talents.seal_of_light              = find_talent_spell( "Seal of Light" );
-  talents.blessings_of_justice       = find_talent_spell( "Blessings of Justice" );
+  talents.divine_purpose             = find_talent_spell( "Divine Purpose" ); // TODO: fix this
   talents.holy_wrath                 = find_talent_spell( "Holy Wrath" );
   talents.equality                   = find_talent_spell( "Equality" );
 
@@ -3539,6 +3563,7 @@ void paladin_t::init_spells()
   // Spells
   spells.holy_light                    = find_specialization_spell( "Holy Light" );
   spells.sanctified_wrath              = find_spell( 114232 );  // spec-specific effects for Ret/Holy Sanctified Wrath
+  spells.divine_purpose_ret            = find_spell( 223817 );
 
   // Masteries
   passives.divine_bulwark         = find_mastery_spell( PALADIN_PROTECTION );
