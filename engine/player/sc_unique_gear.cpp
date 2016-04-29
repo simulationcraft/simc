@@ -4319,9 +4319,6 @@ void unique_gear::register_special_effects()
   register_special_effect( 177171, item::spellbound_runic_band          );
   register_special_effect( 177163, item::spellbound_solium_band         );
 
-  // PVP trinekt spell data is broken
-  register_special_effect( 190028, "182068Trigger"                      );
-
   /* Mists of Pandaria: 5.4 */
   register_special_effect( 146195, item::flurry_of_xuen                 );
   register_special_effect( 146197, item::essence_of_yulon               );
