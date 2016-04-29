@@ -3296,7 +3296,6 @@ struct frostbolt_t : public frost_mage_spell_t
   {
     double c = frost_mage_spell_t::composite_crit();
 
-    //TODO: Mult or Add?
     if ( p() -> artifact.shattering_bolts.rank() )
     {
       c+= p() -> artifact.shattering_bolts.percent();
@@ -3677,7 +3676,6 @@ struct icy_veins_t : public frost_mage_spell_t
 
 struct inferno_blast_t : public fire_mage_spell_t
 {
-  int max_spread_targets;
   double pyrosurge_chance;
   flamestrike_t* pyrosurge_flamestrike;
   cooldown_t* icd;
@@ -3694,7 +3692,6 @@ struct inferno_blast_t : public fire_mage_spell_t
     base_multiplier *= 1.0 + p -> artifact.reignition_overdrive.percent();
     trigger_gcd = timespan_t::zero();
     cooldown -> charges = data().charges();
-    // TODO: Recharge time is reduced by haste
     cooldown -> duration = data().charge_cooldown();
     cooldown -> duration += p -> sets.set( MAGE_FIRE, T17, B2 ) -> effectN( 1 ).time_value();
 
@@ -3704,8 +3701,6 @@ struct inferno_blast_t : public fire_mage_spell_t
     triggers_hot_streak = true;
     triggers_ignite = true;
 
-    // TODO: How many targets can IB spread LB to?
-    max_spread_targets = 3;
     // TODO: Is the spread range still 10 yards?
     radius = 10;
 
@@ -3749,11 +3744,6 @@ struct inferno_blast_t : public fire_mage_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      // mage_td_t* this_td = td( s -> target );
-
-      // TODO: Implement LB spreading
-      // dot_t* living_bomb_dot = this_td -> dots.living_bomb;
-
       if ( p() -> pyrosurge && p() -> rng().roll( pyrosurge_chance ) )
       {
         pyrosurge_flamestrike -> target = s -> target;
