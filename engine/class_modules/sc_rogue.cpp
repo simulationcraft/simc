@@ -11,6 +11,8 @@
 // Assassination
 // - Balanced Blades [artifact power] spell data claims it's not flat modifier?
 // - Poisoned Knives [artifact power] does the damage doubledip in any way?
+// - Does Kingsbane debuff get procced 2x on Mutilate? (If both hands apply lethal poison).
+// - Agonizing poison does not proc kingsbane stacks in game?
 
 #include "simulationcraft.hpp"
 
@@ -93,6 +95,7 @@ struct rogue_td_t : public actor_target_data_t
     dot_t* garrote;
     dot_t* hemorrhage;
     dot_t* killing_spree; // Strictly speaking, this should probably be on player
+    dot_t* kingsbane;
     dot_t* nightblade;
     dot_t* rupture;
   } dots;
@@ -109,6 +112,7 @@ struct rogue_td_t : public actor_target_data_t
     buff_t* ghostly_strike;
     buff_t* garrote; // Hidden proxy buff for garrote to get Thuggee working easily(ish)
     buff_t* surge_of_toxins;
+    buff_t* kingsbane;
   } debuffs;
 
   rogue_td_t( player_t* target, rogue_t* source );
@@ -1040,6 +1044,7 @@ struct poison_knives_t : public rogue_attack_t
 
 struct rogue_poison_t : public rogue_attack_t
 {
+  bool lethal_;
   double proc_chance_;
 
   rogue_poison_t( const std::string& token, rogue_t* p,
@@ -1129,6 +1134,7 @@ struct rogue_poison_t : public rogue_attack_t
 
     return m;
   }
+
 };
 
 // Deadly Poison ============================================================
@@ -1225,6 +1231,11 @@ struct deadly_poison_t : public rogue_poison_t
         proc_instant -> target = state -> target;
         proc_instant -> execute();
       }
+
+      if ( td( state -> target ) -> dots.kingsbane -> is_ticking() )
+      {
+        td( state -> target ) -> debuffs.kingsbane -> trigger();
+      }
     }
   }
 };
@@ -1260,6 +1271,11 @@ struct wound_poison_t : public rogue_poison_t
 
         if ( ! sim -> overrides.mortal_wounds )
           state -> target -> debuffs.mortal_wounds -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
+
+        if ( td( state -> target ) -> dots.kingsbane -> is_ticking() )
+        {
+          td( state -> target ) -> debuffs.kingsbane -> trigger();
+        }
       }
     }
   };
@@ -2467,6 +2483,51 @@ struct killing_spree_t : public rogue_attack_t
       attack_oh -> pre_execute_state = attack_oh -> get_state( d -> state );
       attack_oh -> execute();
     }
+  }
+};
+
+// Kingsbane ===========================================================
+
+struct kingsbane_strike_t : public rogue_attack_t
+{
+  kingsbane_strike_t( rogue_t* p, const std::string& name, const spell_data_t* spell, weapon_t* w ) :
+    rogue_attack_t( name, p, spell )
+  {
+    background = true;
+    weapon = w;
+  }
+};
+
+struct kingsbane_t : public rogue_attack_t
+{
+  kingsbane_strike_t* mh, *oh;
+
+  kingsbane_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "kingsbane", p, p -> artifact.kingsbane, options_str ),
+    mh( new kingsbane_strike_t( p, "kingsbane_mh", p -> artifact.kingsbane.data().effectN( 2 ).trigger(), &( p -> main_hand_weapon ) ) ),
+    oh( new kingsbane_strike_t( p, "kingsbane_oh", p -> artifact.kingsbane.data().effectN( 3 ).trigger(), &( p -> off_hand_weapon ) ) )
+  {
+    add_child( mh );
+    add_child( oh );
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = rogue_attack_t::composite_target_multiplier( target );
+
+    m *= 1.0 + td( target ) -> debuffs.kingsbane -> stack_value();
+
+    return m;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+
+    mh -> target = state -> target;
+    mh -> execute();
+    oh -> target = state -> target;
+    oh -> execute();
   }
 };
 
@@ -4651,6 +4712,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   dots.garrote          = target -> get_dot( "garrote", source );
   dots.rupture          = target -> get_dot( "rupture", source );
   dots.hemorrhage       = target -> get_dot( "hemorrhage", source );
+  dots.kingsbane        = target -> get_dot( "kingsbane", source );
   dots.nightblade       = target -> get_dot( "nightblade", source );
   dots.killing_spree    = target -> get_dot( "killing_spree", source );
 
@@ -4674,6 +4736,9 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.surge_of_toxins = buff_creator_t( *this, "surge_of_toxins", source -> find_spell( 192425 ) )
     .default_value( source -> find_spell( 192425 ) -> effectN( 1 ).percent() )
     .trigger_spell( source -> artifact.surge_of_toxins );
+  debuffs.kingsbane = buff_creator_t( *this, "kingsbane", source -> artifact.kingsbane.data().effectN( 5 ).trigger() )
+    .default_value( source -> artifact.kingsbane.data().effectN( 5 ).trigger() -> effectN( 1 ).percent() )
+    .refresh_behavior( BUFF_REFRESH_DISABLED );
 }
 
 // ==========================================================================
@@ -5163,6 +5228,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "kick"                ) return new kick_t               ( this, options_str );
   if ( name == "kidney_shot"         ) return new kidney_shot_t        ( this, options_str );
   if ( name == "killing_spree"       ) return new killing_spree_t      ( this, options_str );
+  if ( name == "kingsbane"           ) return new kingsbane_t          ( this, options_str );
   if ( name == "marked_for_death"    ) return new marked_for_death_t   ( this, options_str );
   if ( name == "mutilate"            ) return new mutilate_t           ( this, options_str );
   if ( name == "nightblade"          ) return new nightblade_t         ( this, options_str );
