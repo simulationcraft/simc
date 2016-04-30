@@ -147,6 +147,7 @@ struct rogue_t : public player_t
   action_t* weaponmaster_dot_strike;
   action_t* shadow_nova;
   action_t* poison_knives;
+  action_t* from_the_shadows_;
 
   // Autoattacks
   action_t* auto_attack;
@@ -456,6 +457,7 @@ struct rogue_t : public player_t
     weaponmaster_dot_strike( nullptr ),
     shadow_nova( nullptr ),
     poison_knives( nullptr ),
+    from_the_shadows_( nullptr ),
     auto_attack( nullptr ), melee_main_hand( nullptr ), melee_off_hand( nullptr ),
     shadow_blade_main_hand( nullptr ), shadow_blade_off_hand( nullptr ),
     dfa_mh( nullptr ), dfa_oh( nullptr ),
@@ -1036,6 +1038,27 @@ struct poison_knives_t : public rogue_attack_t
     rogue_attack_t::init();
 
     snapshot_flags = update_flags = 0;
+  }
+};
+
+struct from_the_shadows_damage_t : public rogue_attack_t
+{
+  from_the_shadows_damage_t( rogue_t* p ) :
+    rogue_attack_t( "from_the_shadows_damage", p, p -> find_spell( 192434 ) )
+  {
+    background = true;
+    callbacks = false;
+  }
+};
+
+struct from_the_shadows_t : public rogue_attack_t
+{
+  from_the_shadows_t( rogue_t* p ) :
+    rogue_attack_t( "from_the_shadows", p, p -> find_spell( 192432 ) )
+  {
+    background = true;
+
+    tick_action = new from_the_shadows_damage_t( p );
   }
 };
 
@@ -3351,6 +3374,12 @@ struct vendetta_t : public rogue_attack_t
       p() -> resource_gain( RESOURCE_ENERGY, p() -> resources.max[ RESOURCE_ENERGY ],
           p() -> gains.urge_to_kill, this );
     }
+
+    if ( p() -> from_the_shadows_ )
+    {
+      p() -> from_the_shadows_ -> target = execute_state -> target;
+      p() -> from_the_shadows_ -> schedule_execute();
+    }
   }
 };
 
@@ -5469,6 +5498,11 @@ void rogue_t::init_spells()
   if ( artifact.poison_knives.rank() )
   {
     poison_knives = new actions::poison_knives_t( this );
+  }
+
+  if ( artifact.from_the_shadows.rank() )
+  {
+    from_the_shadows_ = new actions::from_the_shadows_t( this );
   }
 }
 
