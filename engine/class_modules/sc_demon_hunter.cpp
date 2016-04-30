@@ -101,6 +101,7 @@ public:
   actions::attacks::chaos_blade_t* chaos_blade_off_hand;
 
   unsigned shear_counter; // # of failed Shears since last proc
+  double metamorphosis_health; // Vengeance temp health from meta;
 
   // TODO: Do these expire?
   unsigned soul_fragments;
@@ -310,8 +311,11 @@ public:
 
     // Havoc
     gain_t* demonic_appetite;
-    gain_t* immolation_aura;
     gain_t* prepared;
+
+    // Vengeance
+    gain_t* immolation_aura;
+    gain_t* metamorphosis;
   } gain;
 
   // Benefits
@@ -415,6 +419,7 @@ public:
   role_e primary_role() const override;
   stat_e convert_hybrid_stat( stat_e s ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
+  void recalculate_resource_max( resource_e ) override;
   double composite_dodge() const override;
   double composite_melee_crit() const override;
   double composite_parry() const override;
@@ -585,13 +590,13 @@ public:
                          const spell_data_t* s = spell_data_t::nil() )
     : ab( n, p, s ),
       action_gain( p -> get_gain( n ) ),
-      metamorphosis_gcd( Base::data().affected_by(
-        p -> spec.metamorphosis_buff -> effectN( 7 ) ) ),
+      metamorphosis_gcd( p -> specialization() == DEMON_HUNTER_HAVOC &&
+        ab::data().affected_by( p -> spec.metamorphosis_buff -> effectN( 7 ) ) ),
       hasted_gcd( false ),
       hasted_cd( false ),
-      demonic_presence( this -> data().affected_by(
+      demonic_presence( ab::data().affected_by(
         p -> mastery_spell.demonic_presence -> effectN( 1 ) ) ),
-      chaos_blades( this -> data().affected_by( p -> talent.chaos_blades -> effectN( 2 ) ) )
+      chaos_blades( ab::data().affected_by( p -> talent.chaos_blades -> effectN( 2 ) ) )
   {
     ab::may_crit      = true;
     ab::tick_may_crit = true;
@@ -653,7 +658,8 @@ public:
       }
     }
 
-    if ( ab::trigger_gcd > timespan_t::zero() && ! metamorphosis_gcd )
+    if ( p() -> specialization() == DEMON_HUNTER_HAVOC &&
+      ab::trigger_gcd > timespan_t::zero() && ! metamorphosis_gcd )
     {
       if ( p() -> bugs )
         ab::sim -> errorf( "%s (%u) does not benefit from metamorphosis!",
@@ -1348,6 +1354,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
     {
       background = true;
       aoe = -1;
+      dot_duration = timespan_t::zero();
     }
   };
 
@@ -1358,6 +1365,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
     parse_options( options_str );
 
     may_miss = may_dodge = may_parry = may_crit = may_block = false;
+    dot_duration = timespan_t::zero();
     base_teleport_distance  = data().max_range();
     movement_directionality = MOVEMENT_OMNI;
     impact_action = new metamorphosis_impact_t( p );
@@ -2749,6 +2757,36 @@ struct nemesis_debuff_t : public demon_hunter_buff_t<buff_t>
   }
 };
 
+// Metamorphosis Buff =======================================================
+
+struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
+{
+  metamorphosis_buff_t( demon_hunter_t* p ) : 
+    demon_hunter_buff_t<buff_t>( *p,
+      buff_creator_t( p, "metamorphosis", p -> spec.metamorphosis_buff )
+        .cd( timespan_t::zero() )
+        .default_value( p -> spec.metamorphosis_buff -> effectN( 2 ).percent() ) )
+  {}
+
+  void start( int stacks, double value, timespan_t duration ) override
+  {
+    demon_hunter_buff_t<buff_t>::start( stacks, value, duration );
+
+    p().metamorphosis_health = p().resources.max[ RESOURCE_HEALTH ] * value;
+    p().stat_gain( STAT_MAX_HEALTH, p().metamorphosis_health,
+      (gain_t*) nullptr, (action_t*) nullptr, true );
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    demon_hunter_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
+    
+    p().stat_loss( STAT_MAX_HEALTH, p().metamorphosis_health,
+      (gain_t*) nullptr, (action_t*) nullptr, true );
+    p().metamorphosis_health = 0;
+  }
+};
+
 }  // end namespace buffs
 
 // ==========================================================================
@@ -2839,6 +2877,7 @@ void demon_hunter_t::create_gains()
   
   // Vengeance
   gain.immolation_aura  = get_gain( "immolation_aura" );
+  gain.metamorphosis    = get_gain( "metamorphosis" );
 }
 
 /* Construct benefits
@@ -2901,6 +2940,45 @@ double demon_hunter_t::matching_gear_multiplier( attribute_e attr ) const
   }
 
   return 0.0;
+}
+
+// demon_hunter_t::recalculate_resource_max ========================================
+
+void demon_hunter_t::recalculate_resource_max( resource_e r )
+{
+  player_t::recalculate_resource_max( r );
+  
+  // Update Metamorphosis' value for the new health amount.
+  if ( r == RESOURCE_HEALTH && buff.metamorphosis -> check() )
+  {
+    assert( metamorphosis_health > 0 );
+
+    double base_health = resources.max[ RESOURCE_HEALTH ] - metamorphosis_health;
+    double new_health = base_health * buff.metamorphosis -> check_value();
+    double diff = new_health - metamorphosis_health;
+
+    if ( diff != 0.0 )
+    {
+      if ( sim -> debug )
+      {
+        sim -> out_debug.printf( "%s adjusts %s temporary health. old=%.0f new=%.0f diff=%.0f",
+          name(), buff.metamorphosis -> name(), metamorphosis_health, new_health, diff );
+      }
+    
+      resources.max[ RESOURCE_HEALTH ] += diff;
+      resources.temporary[ RESOURCE_HEALTH ] += diff;
+      if ( diff > 0 )
+      {
+        resource_gain( RESOURCE_HEALTH, diff );
+      }
+      else if ( diff < 0 )
+      {
+        resource_loss( RESOURCE_HEALTH, -diff );
+      }
+
+      metamorphosis_health += diff;
+    }
+  }
 }
 
 // demon_hunter_t::composite_dodge ==========================================
@@ -3192,7 +3270,8 @@ void demon_hunter_t::init_spells()
   spec.consume_soul_lesser    = find_spell( 203794 );
   spec.critical_strikes       = find_spell( 221351 );  // not a class spell
   spec.leather_specialization = find_spell( 178976 );
-  spec.metamorphosis_buff     = find_spell( 162264 );
+  spec.metamorphosis_buff     = specialization() == DEMON_HUNTER_HAVOC ?
+    find_spell( 162264 ) : find_spell( 187827 );
 
   // Havoc
   spec.havoc              = find_specialization_spell( "Havoc Demon Hunter" );
@@ -3406,10 +3485,17 @@ void demon_hunter_t::create_buffs()
   using namespace buffs;
 
   // General
-  buff.metamorphosis =
-    buff_creator_t( this, "metamorphosis", spec.metamorphosis_buff )
-      .cd( timespan_t::zero() );
-
+  if ( specialization() == DEMON_HUNTER_HAVOC )
+  {
+    buff.metamorphosis =
+      buff_creator_t( this, "metamorphosis", spec.metamorphosis_buff )
+        .cd( timespan_t::zero() );
+  }
+  else
+  {
+    buff.metamorphosis = new metamorphosis_buff_t( this );
+  }
+  
   // Havoc
 
   buff.blade_dance =
@@ -3642,6 +3728,7 @@ void demon_hunter_t::reset()
   soul_fragments = 0;
   lesser_soul_fragments = 0;
   shear_counter = 0;
+  metamorphosis_health = 0;
 }
 
 void demon_hunter_t::interrupt()
