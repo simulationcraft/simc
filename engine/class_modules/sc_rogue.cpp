@@ -148,6 +148,7 @@ struct rogue_t : public player_t
   action_t* shadow_nova;
   action_t* poison_knives;
   action_t* from_the_shadows_;
+  action_t* poison_bomb;
 
   // Autoattacks
   action_t* auto_attack;
@@ -298,6 +299,7 @@ struct rogue_t : public player_t
   // Spell Data
   struct spells_t
   {
+    const spell_data_t* bag_of_tricks_driver;
     const spell_data_t* critical_strikes;
     const spell_data_t* death_from_above;
     const spell_data_t* fan_of_knives;
@@ -437,6 +439,11 @@ struct rogue_t : public player_t
     proc_t* roll_the_bones_3;
     proc_t* roll_the_bones_5;
   } procs;
+
+  struct prng_t
+  {
+    real_ppm_t* bag_of_tricks;
+  } prng;
 
   player_t* tot_target;
   action_callback_t* virtual_hat_callback;
@@ -1062,6 +1069,15 @@ struct from_the_shadows_t : public rogue_attack_t
   }
 };
 
+struct poison_bomb_t : public rogue_attack_t
+{
+  poison_bomb_t( rogue_t* p ) :
+    rogue_attack_t( "poison_bomb", p, p -> find_spell( 192660 ) )
+  {
+    background = true;
+  }
+};
+
 // ==========================================================================
 // Poisons
 // ==========================================================================
@@ -1170,7 +1186,7 @@ struct deadly_poison_t : public rogue_poison_t
     deadly_poison_dd_t( rogue_t* p ) :
       rogue_poison_t( "deadly_poison_instant", p, p -> find_spell( 113780 ) )
     {
-      harmful          = true;
+      harmful = true;
     }
 
     double action_multiplier() const override
@@ -2110,6 +2126,17 @@ struct envenom_t : public rogue_attack_t
     {
       timespan_t extend_increase = p() -> buffs.envenom -> remains() * p() -> buffs.death_from_above -> data().effectN( 4 ).percent();
       p() -> buffs.envenom -> extend_duration( player, extend_increase );
+    }
+
+    if ( p() -> prng.bag_of_tricks -> trigger() )
+    {
+      new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+          .target( execute_state -> target )
+          .x( player -> x_position )
+          .y( player -> y_position )
+          .duration( p() -> spell.bag_of_tricks_driver -> duration() )
+          .start_time( sim -> current_time() )
+          .action( p() -> poison_bomb ), true );
     }
   }
 
@@ -5387,6 +5414,7 @@ void rogue_t::init_spells()
   mastery.executioner       = find_mastery_spell( ROGUE_SUBTLETY );
 
   // Misc spells
+  spell.bag_of_tricks_driver= find_spell( 192661 );
   spell.critical_strikes    = find_spell( 157442 );
   spell.death_from_above    = find_spell( 163786 );
   spell.fan_of_knives       = find_class_spell( "Fan of Knives" );
@@ -5503,6 +5531,11 @@ void rogue_t::init_spells()
   if ( artifact.from_the_shadows.rank() )
   {
     from_the_shadows_ = new actions::from_the_shadows_t( this );
+  }
+
+  if ( artifact.bag_of_tricks.rank() )
+  {
+    poison_bomb = new actions::poison_bomb_t( this );
   }
 }
 
@@ -5996,6 +6029,8 @@ void rogue_t::init_special_effects()
 void rogue_t::init_rng()
 {
   player_t::init_rng();
+
+  prng.bag_of_tricks = new real_ppm_t( "bag_of_tricks", this, artifact.bag_of_tricks );
 }
 
 // rogue_t::init_finished ===================================================
