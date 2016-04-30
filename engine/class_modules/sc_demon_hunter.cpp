@@ -538,6 +538,8 @@ struct delayed_execute_event_t : public event_t
     : event_t( *p -> sim ), action( a ), target( t )
   {
     add_event( delay );
+
+    assert( action -> background );
   }
 
   const char* name() const override
@@ -1343,8 +1345,8 @@ struct metamorphosis_t : public demon_hunter_spell_t
 
 struct nemesis_t : public demon_hunter_spell_t
 {
-  nemesis_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_spell_t( "nemesis", p, p -> talent.nemesis )
+  nemesis_t( demon_hunter_t* p, const std::string& options_str ) : 
+    demon_hunter_spell_t( "nemesis", p, p -> talent.nemesis )
   {
     parse_options( options_str );
 
@@ -1356,6 +1358,48 @@ struct nemesis_t : public demon_hunter_spell_t
     demon_hunter_spell_t::impact( s );
 
     td( s -> target ) -> debuffs.nemesis -> trigger();
+  }
+};
+
+// Sigil of Flame ===========================================================
+
+struct sigil_of_flame_t : public demon_hunter_spell_t
+{
+  struct sigil_of_flame_damage_t : public demon_hunter_spell_t
+  {
+    sigil_of_flame_damage_t( demon_hunter_t* p ) :
+      demon_hunter_spell_t( "sigil_of_flame_dmg", p, p -> find_spell( 204598 ) )
+    {
+      aoe = -1;
+      background = dual = true;
+      hasted_ticks = false;
+    }
+  };
+
+  sigil_of_flame_damage_t* damage;
+  timespan_t delay;
+
+  sigil_of_flame_t( demon_hunter_t* p, const std::string& options_str ) :
+    demon_hunter_spell_t( "sigil_of_flame", p,
+      p -> find_specialization_spell( "Sigil of Flame" ) )
+  {
+    parse_options( options_str );
+
+    may_miss = may_crit = false;
+    delay = data().duration();
+    damage = new sigil_of_flame_damage_t( p );
+    damage -> stats = stats;
+  }
+
+  /* Don't record data for this action, since we don't want that 0
+     damage hit incorporated into statistics. */
+  virtual void record_data( action_state_t* ) override {}
+
+  void execute() override
+  {
+    demon_hunter_spell_t::execute();
+
+    new ( *sim ) delayed_execute_event_t( p(), damage, target, delay );
   }
 };
 
@@ -2873,6 +2917,8 @@ action_t* demon_hunter_t::create_action( const std::string& name,
     return new immolation_aura_t( this, options_str );
   if ( name == "nemesis" )
     return new nemesis_t( this, options_str );
+  if ( name == "sigil_of_flame" )
+    return new sigil_of_flame_t( this, options_str );
 
   using namespace actions::attacks;
 
