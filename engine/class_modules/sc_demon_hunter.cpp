@@ -521,6 +521,41 @@ public:
     return p() -> get_target_data( t );
   }
 
+  void init() override
+  {
+    ab::init();
+
+    if ( ( ab::weapon && ab::weapon_multiplier ) || ab::attack_power_mod.direct || ab::attack_power_mod.tick )
+    {
+      if ( dbc::is_school( ab::school, SCHOOL_CHAOS ) + demonic_presence == 1 )
+      {
+        if ( p() -> bugs )
+          ab::sim -> errorf( "%s (%u) school and %s benefit do not match!",
+            ab::name_str.c_str(), ab::data().id(), p() -> mastery_spell.demonic_presence -> name_cstr() );
+        else
+          demonic_presence = ! demonic_presence;
+      }
+
+      if ( p() -> talent.chaos_blades -> ok() && ab::special && ! chaos_blades )
+      {
+        if ( p() -> bugs )
+          ab::sim -> errorf( "%s (%u) does not benefit from %s!",
+            ab::name_str.c_str(), ab::data().id(), p() -> talent.chaos_blades -> name_cstr() );
+        else
+          chaos_blades = true;
+      }
+    }
+
+    if ( ab::trigger_gcd > timespan_t::zero() && ! metamorphosis_gcd )
+    {
+      if ( p() -> bugs )
+        ab::sim -> errorf( "%s (%u) does not benefit from metamorphosis!",
+          ab::name_str.c_str(), ab::data().id() );
+      else
+        metamorphosis_gcd = true;
+    }
+  }
+
   timespan_t gcd() const override
   {
     timespan_t g = ab::gcd();
