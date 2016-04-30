@@ -123,6 +123,7 @@ public:
     buff_t* vengeful_retreat_jump_cancel;
 
     // Vengeance
+    buff_t* immolation_aura;
   } buff;
 
   // Talents
@@ -214,6 +215,7 @@ public:
 
     // Vengeance
     const spell_data_t* vengeance;
+    const spell_data_t* immolation_aura;
     const spell_data_t* soul_cleave;
   } spec;
 
@@ -304,6 +306,7 @@ public:
 
     // Havoc
     gain_t* demonic_appetite;
+    gain_t* immolation_aura;
     gain_t* prepared;
   } gain;
 
@@ -353,6 +356,7 @@ public:
     spell_t*  inner_demons;
 
     // Vengeance
+    spell_t*  immolation_aura;
   } active;
 
   // Pets
@@ -1201,6 +1205,52 @@ struct fel_eruption_t : public demon_hunter_spell_t
     resource_current = RESOURCE_FURY;
     // Assume the target is stun immune.
     base_multiplier *= 1.0 + data().effectN( 3 ).percent();
+  }
+};
+
+// Immolation Aura ==========================================================
+
+struct immolation_aura_damage_t : public demon_hunter_spell_t
+{
+  // TOCHECK: Direct, over time, or both?
+  immolation_aura_damage_t( demon_hunter_t* p, spell_data_t* s ) : 
+    demon_hunter_spell_t( "immolation_aura_dmg", p, s )
+  {
+    aoe = -1;
+    background = dual = true;
+  }
+};
+
+struct immolation_aura_t : public demon_hunter_spell_t
+{
+  immolation_aura_damage_t* direct;
+
+  immolation_aura_t( demon_hunter_t* p, const std::string& options_str ) : 
+    demon_hunter_spell_t( "immolation_aura", p, p -> spec.immolation_aura )
+  {
+    parse_options( options_str );
+    may_miss = may_crit = false;
+    dot_duration = timespan_t::zero(); // damage is dealt by ticking buff
+
+    direct = new immolation_aura_damage_t( p, data().effectN( 2 ).trigger() );
+    direct -> stats = stats;
+  }
+
+  /* Don't record data for this action, since we don't want that 0
+     damage hit incorporated into statistics. */
+  virtual void record_data( action_state_t* ) override {}
+
+  void execute() override
+  {
+    p() -> buff.immolation_aura -> trigger();
+
+    demon_hunter_spell_t::execute();
+
+    p() -> resource_gain( RESOURCE_PAIN,
+      data().effectN( 3 ).resource( RESOURCE_PAIN ),
+      p() -> gain.immolation_aura );
+
+    direct -> execute();
   }
 };
 
@@ -2280,6 +2330,8 @@ struct soul_cleave_t : public demon_hunter_attack_t
     demon_hunter_attack_t( "soul_cleave", p, p -> spec.soul_cleave ),
     heal( new heals::soul_cleave_heal_t( p ) )
   {
+    parse_options( options_str );
+
     may_miss = may_dodge = may_parry = may_block = may_crit = false;
     attack_power_mod.direct = 0; // This parent action deals no damage;
 
@@ -2668,9 +2720,15 @@ void demon_hunter_t::create_cooldowns()
  */
 void demon_hunter_t::create_gains()
 {
-  gain.demonic_appetite = get_gain( "demonic_appetite" );
+  // General
   gain.miss_refund      = get_gain( "miss_refund" );
+
+  // Havoc
+  gain.demonic_appetite = get_gain( "demonic_appetite" );
   gain.prepared         = get_gain( "prepared" );
+  
+  // Vengeance
+  gain.immolation_aura  = get_gain( "immolation_aura" );
 }
 
 /* Construct benefits
@@ -2811,6 +2869,8 @@ action_t* demon_hunter_t::create_action( const std::string& name,
     return new chaos_blades_t( this, options_str );
   if ( name == "consume_magic" )
     return new consume_magic_t( this, options_str );
+  if ( name == "immolation_aura" )
+    return new immolation_aura_t( this, options_str );
   if ( name == "nemesis" )
     return new nemesis_t( this, options_str );
 
@@ -3003,8 +3063,9 @@ void demon_hunter_t::init_spells()
   spec.death_sweep        = find_spell( 210152 );
 
   // Vengeance
-  spec.vengeance   = find_specialization_spell( "Vengeance Demon Hunter" );
-  spec.soul_cleave = find_specialization_spell( "Soul Cleave" );
+  spec.vengeance          = find_specialization_spell( "Vengeance Demon Hunter" );
+  spec.immolation_aura    = find_specialization_spell( "Immolation Aura" );
+  spec.soul_cleave        = find_specialization_spell( "Soul Cleave" );
 
   // Masteries ==============================================================
 
@@ -3185,6 +3246,13 @@ void demon_hunter_t::init_spells()
   {
     active.anguish = new anguish_t( this );
   }
+
+  if ( spec.immolation_aura -> ok() )
+  {
+    active.immolation_aura = new immolation_aura_damage_t( this,
+      spec.immolation_aura -> effectN( 1 ).trigger() );
+    active.immolation_aura -> stats = get_stats( "immolation_aura" );
+  }
 }
 
 // demon_hunter_t::create_buffs =============================================
@@ -3196,6 +3264,11 @@ void demon_hunter_t::create_buffs()
   using namespace buffs;
 
   // General
+  buff.metamorphosis =
+    buff_creator_t( this, "metamorphosis", spec.metamorphosis_buff )
+      .cd( timespan_t::zero() );
+
+  // Havoc
 
   buff.blade_dance =
     buff_creator_t( this, "blade_dance", spec.blade_dance )
@@ -3214,10 +3287,6 @@ void demon_hunter_t::create_buffs()
     buff_creator_t( this, "death_sweep", spec.death_sweep )
       .default_value( spec.death_sweep -> effectN( 2 ).percent() )
       .add_invalidate( CACHE_DODGE );
-
-  buff.metamorphosis =
-    buff_creator_t( this, "metamorphosis", spec.metamorphosis_buff )
-      .cd( timespan_t::zero() );
 
   buff.momentum =
     buff_creator_t( this, "momentum", find_spell( 208628 ) )
@@ -3248,9 +3317,15 @@ void demon_hunter_t::create_buffs()
       .chance( 1.0 )
       .duration( timespan_t::from_seconds( 1.25 ) );
 
-  // Havoc
-
   // Vengeance
+  buff.immolation_aura =
+    buff_creator_t( this, "immolation_aura", spec.immolation_aura )
+      .tick_callback( [this]( buff_t*, int, const timespan_t& ) {
+        active.immolation_aura -> schedule_execute();
+        resource_gain( RESOURCE_PAIN, active.immolation_aura ->
+          data().effectN( 2 ).resource( RESOURCE_PAIN ),
+          gain.immolation_aura );
+      } );
 }
 
 bool demon_hunter_t::has_t18_class_trinket() const
