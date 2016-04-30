@@ -71,6 +71,7 @@ public:
   struct debuffs_t
   {
     buff_t* anguish;
+    buff_t* fiery_brand;
     buff_t* nemesis;
   } debuffs;
 
@@ -1250,6 +1251,26 @@ struct fel_eruption_t : public demon_hunter_spell_t
     resource_current = RESOURCE_FURY;
     // Assume the target is stun immune.
     base_multiplier *= 1.0 + data().effectN( 3 ).percent();
+  }
+};
+
+// Fiery Brand ==============================================================
+
+struct fiery_brand_t : public demon_hunter_spell_t
+{
+  fiery_brand_t( demon_hunter_t* p, const std::string& options_str ) :
+    demon_hunter_spell_t( "fiery_brand", p,
+      p -> find_specialization_spell( "Fiery Brand" ) )
+  {}
+
+  void impact( action_state_t* s ) override
+  {
+    demon_hunter_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      td( s -> target ) -> debuffs.fiery_brand -> trigger();
+    }
   }
 };
 
@@ -2737,8 +2758,10 @@ struct nemesis_debuff_t : public demon_hunter_buff_t<buff_t>
 demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   : actor_target_data_t( target, &p ), dots( dots_t() ), debuffs( debuffs_t() )
 {
-  debuffs.anguish = new buffs::anguish_debuff_t( &p, target );
-  debuffs.nemesis = new buffs::nemesis_debuff_t( &p, target );
+  debuffs.anguish     = new buffs::anguish_debuff_t( &p, target );
+  debuffs.fiery_brand = buff_creator_t( target, "fiery_brand", p.find_spell( 207744 ) )
+                          .default_value( p.find_spell( 209245 ) -> effectN( 2 ).percent() );
+  debuffs.nemesis     = new buffs::nemesis_debuff_t( &p, target );
 }
 
 // ==========================================================================
@@ -2983,6 +3006,8 @@ action_t* demon_hunter_t::create_action( const std::string& name,
     return new demon_spikes_t( this, options_str );
   if ( name == "empower_wards" )
     return new empower_wards_t( this, options_str );
+  if ( name == "fiery_brand" )
+    return new fiery_brand_t( this, options_str );
   if ( name == "immolation_aura" )
     return new immolation_aura_t( this, options_str );
   if ( name == "nemesis" )
@@ -3645,6 +3670,8 @@ void demon_hunter_t::target_mitigation( school_e school, dmg_e dt,
   {
     s -> result_amount *= 1.0 + buff.empower_wards -> value();
   }
+
+  s -> result_amount *= 1.0 + get_target_data( s -> action -> player ) -> debuffs.fiery_brand -> value();
 }
 
 // demon_hunter_t::invalidate_cache =========================================
