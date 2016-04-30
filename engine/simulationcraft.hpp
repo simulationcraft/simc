@@ -7177,4 +7177,162 @@ sim_ostream_t& sim_ostream_t::operator<< (T const& rhs)
   return *this;
 }
 
+struct ground_aoe_params_t
+{
+  enum hasted_with
+  {
+    NOTHING = 0,
+    SPELL_HASTE,
+    SPELL_SPEED,
+    ATTACK_HASTE,
+    ATTACK_SPEED
+  };
+
+  player_t* target_;
+  double x_, y_;
+  hasted_with hasted_;
+  action_t* action_;
+  timespan_t pulse_time_, start_time_, duration_;
+
+  ground_aoe_params_t() :
+    target_( nullptr ), x_( 0 ), y_( 0 ), hasted_( NOTHING ), action_( nullptr ),
+    pulse_time_( timespan_t::from_seconds( 1.0 ) ), start_time_( timespan_t::min() ),
+    duration_( timespan_t::zero() )
+  { }
+
+  player_t* target() const { return target_; }
+  double x() const { return x_; }
+  double y() const { return y_; }
+  hasted_with hasted() const { return hasted_; }
+  action_t* action() const { return action_; }
+  const timespan_t& pulse_time() const { return pulse_time_; }
+  const timespan_t& start_time() const { return start_time_; }
+  const timespan_t& duration() const { return duration_; }
+
+  ground_aoe_params_t& target( player_t* p )
+  { target_ = p; return *this; }
+
+  ground_aoe_params_t& x( double x )
+  { x_ = x; return *this; }
+
+  ground_aoe_params_t& y( double y )
+  { y_ = y; return *this; }
+
+  ground_aoe_params_t& hasted( hasted_with state )
+  { hasted_ = state; return *this; }
+
+  ground_aoe_params_t& action( action_t* a )
+  { action_ = a; return *this; }
+
+  ground_aoe_params_t& pulse_time( const timespan_t& t )
+  { pulse_time_ = t; return *this; }
+
+  ground_aoe_params_t& start_time( const timespan_t& t )
+  { start_time_ = t; return *this; }
+
+  ground_aoe_params_t& duration( const timespan_t& t )
+  { duration_ = t; return *this; }
+};
+
+// Fake "ground aoe object" for things. Pulses until duration runs out, does not perform partial
+// ticks (fits as many ticks as possible into the duration). Intended to be able to spawn multiple
+// ground aoe objects, each will have separate state. Currently does not snapshot stats upon object
+// creation. Parametrization through object above (ground_aoe_params_t).
+struct ground_aoe_event_t : public player_event_t
+{
+  // Pointer needed here, as simc event system cannot fit all params into event_t
+  const ground_aoe_params_t* params;
+
+  // Make a copy of the parameters, and use that object until this event expires
+  ground_aoe_event_t( player_t* p, const ground_aoe_params_t& param, bool first_tick = false ) :
+    ground_aoe_event_t( p, new ground_aoe_params_t( param ), first_tick )
+  { }
+
+  ground_aoe_event_t( player_t* p, const ground_aoe_params_t* param, bool first_tick = false ) :
+    player_event_t( *p ), params( param )
+  {
+    // Ensure we have enough information to start pulsing.
+    assert( params -> target() != nullptr );
+    assert( params -> action() != nullptr );
+    assert( params -> pulse_time() > timespan_t::zero() );
+    assert( params -> start_time() >= timespan_t::zero() );
+    assert( params -> duration() > timespan_t::zero() );
+
+    add_event( first_tick ? timespan_t::zero() : pulse_time() );
+  }
+
+  // Cleans up memory for any on-going ground aoe events when the iteration ends, or when the ground
+  // aoe finishes during iteration.
+  ~ground_aoe_event_t()
+  {
+    delete params;
+  }
+
+  timespan_t pulse_time() const
+  {
+    timespan_t tick = params -> pulse_time();
+    switch ( params -> hasted() )
+    {
+      case ground_aoe_params_t::SPELL_SPEED:
+        tick *= _player -> cache.spell_speed();
+        break;
+      case ground_aoe_params_t::SPELL_HASTE:
+        tick *= _player -> cache.spell_haste();
+        break;
+      case ground_aoe_params_t::ATTACK_SPEED:
+        tick *= _player -> cache.attack_speed();
+        break;
+      case ground_aoe_params_t::ATTACK_HASTE:
+        tick *= _player -> cache.attack_haste();
+        break;
+      default:
+        break;
+    }
+
+    return tick;
+  }
+
+  bool may_pulse() const
+  {
+    return params -> duration() - ( sim().current_time() - params -> start_time() ) >= pulse_time();
+  }
+
+  const char* name() const override
+  { return "ground_aoe_event"; }
+
+  void execute() override
+  {
+    action_t* spell_ = params -> action();
+
+    if ( sim().debug )
+    {
+      sim().out_debug.printf( "%s %s pulse start_time=%.3f remaining_time=%.3f tick_time=%.3f",
+          player() -> name(), spell_ -> name(), params -> start_time().total_seconds(),
+          ( params -> duration() - ( sim().current_time() - params -> start_time() ) ).total_seconds(),
+          pulse_time().total_seconds() );
+    }
+
+    // Manually snapshot the state so we can adjust the x and y coordinates of the snapshotted
+    // object. This is relevant if sim -> distance_targeting_enabled is set, since then we need to
+    // use the ground object's x, y coordinates, instead of the source actor's.
+    action_state_t* state = spell_ -> get_state();
+
+    spell_ -> snapshot_state( state, spell_ -> amount_type( state ) );
+    state -> target = params -> target();
+    state -> original_x = params -> x();
+    state -> original_y = params -> y();
+
+    spell_ -> schedule_execute( state );
+
+    // Schedule next tick, if it can fit into the duration
+    if ( may_pulse() )
+    {
+      new ( sim() ) ground_aoe_event_t( _player, params );
+      // Ugly hack-ish, but we want to re-use the parmas object while this ground aoe is pulsing, so
+      // nullptr the params from this (soon to be recycled) event.
+      params = nullptr;
+    }
+  }
+};
+
 #endif // SIMULATIONCRAFT_H
