@@ -712,6 +712,7 @@ const char* util::resource_type_string( resource_e resource_type )
     case RESOURCE_COMBO_POINT:   return "combo_points";
     case RESOURCE_MAELSTROM:     return "maelstrom";
     case RESOURCE_FURY:          return "fury";
+    case RESOURCE_PAIN:          return "pain";
     case RESOURCE_INSANITY:      return "insanity";
     default:                     return "unknown";
   }
@@ -801,6 +802,7 @@ resource_e util::translate_power_type( power_e pt )
     case POWER_INSANITY:      return RESOURCE_INSANITY;
     case POWER_MAELSTROM:     return RESOURCE_MAELSTROM;
     case POWER_FURY:          return RESOURCE_FURY;
+    case POWER_PAIN:          return RESOURCE_PAIN;
     default:                  return RESOURCE_NONE;
   }
 }

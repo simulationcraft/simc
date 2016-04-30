@@ -347,6 +347,7 @@ enum resource_e
   RESOURCE_CHI,
   RESOURCE_INSANITY,
   RESOURCE_FURY,
+  RESOURCE_PAIN,
   /* Dummy resources for reporting */
   RESOURCE_RUNE,
   RESOURCE_RUNE_BLOOD,
@@ -1173,11 +1174,12 @@ enum power_e
   // Not yet used
   POWER_MAELSTROM     = 11,
   POWER_CHI           = 12,
-  POWER_INSANITY    = 13,
+  POWER_INSANITY      = 13,
   POWER_BURNING_EMBER = 14,
   POWER_DEMONIC_FURY  = 15,
   // Not yet used?
   POWER_FURY          = 17,
+  POWER_PAIN          = 18,
   // Helpers
   POWER_MAX,
   POWER_NONE   = 0xFFFFFFFF,  // None.
