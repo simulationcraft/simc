@@ -113,6 +113,7 @@ struct rogue_td_t : public actor_target_data_t
     buff_t* garrote; // Hidden proxy buff for garrote to get Thuggee working easily(ish)
     buff_t* surge_of_toxins;
     buff_t* kingsbane;
+    buff_t* blood_of_the_assassinated;
   } debuffs;
 
   rogue_td_t( player_t* target, rogue_t* source );
@@ -2945,6 +2946,15 @@ struct rupture_t : public rogue_attack_t
     }
   }
 
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = rogue_attack_t::composite_target_multiplier( target );
+
+    m *= 1.0 + td( target ) -> debuffs.blood_of_the_assassinated -> stack_value();
+
+    return m;
+  }
+
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     timespan_t duration = data().duration() * ( 1 + cast_state( s ) -> cp );
@@ -2959,6 +2969,7 @@ struct rupture_t : public rogue_attack_t
     rogue_attack_t::tick( d );
 
     p() -> trigger_venomous_wounds( d -> state );
+    td( d -> target ) -> debuffs.blood_of_the_assassinated -> trigger();
   }
 };
 
@@ -4739,6 +4750,11 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.kingsbane = buff_creator_t( *this, "kingsbane", source -> artifact.kingsbane.data().effectN( 5 ).trigger() )
     .default_value( source -> artifact.kingsbane.data().effectN( 5 ).trigger() -> effectN( 1 ).percent() )
     .refresh_behavior( BUFF_REFRESH_DISABLED );
+
+  debuffs.blood_of_the_assassinated = buff_creator_t( *this, "blood_of_the_assassinated" )
+    .spell( source -> artifact.blood_of_the_assassinated.data().effectN( 1 ).trigger() )
+    .trigger_spell( source -> artifact.blood_of_the_assassinated )
+    .default_value( source -> artifact.blood_of_the_assassinated.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 }
 
 // ==========================================================================
