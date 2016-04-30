@@ -105,21 +105,31 @@ public:
   // Buffs
   struct
   {
+    // General
+    buff_t* metamorphosis;
+
+    // Havoc
     buff_t* blade_dance;
     buff_t* blur;
     buff_t* chaos_blades;
     buff_t* death_sweep;
-    buff_t* metamorphosis;
     buff_t* momentum;
     buff_t* nemesis;
     buff_t* prepared;
     buff_t* rage_of_the_illidari;
     buff_t* vengeful_retreat_jump_cancel;
+
+    // Vengeance
   } buff;
 
   // Talents
   struct
   {
+    // General
+    const spell_data_t* fel_eruption;
+
+    const spell_data_t* felblade;
+    
     // Havoc
     const spell_data_t* fel_mastery;
     const spell_data_t* demonic_appetite;
@@ -127,9 +137,7 @@ public:
 
     const spell_data_t* prepared;
     const spell_data_t* demon_blades;
-    const spell_data_t* fel_eruption;
 
-    const spell_data_t* felblade;
     const spell_data_t* first_blood;
     const spell_data_t* demon_reborn;
 
@@ -142,6 +150,7 @@ public:
     const spell_data_t* chaos_cleave;
 
     const spell_data_t* chaos_blades;
+    const spell_data_t* fel_barrage;
     const spell_data_t* demonic;
 
     // NYI
@@ -149,35 +158,64 @@ public:
     const spell_data_t* desperate_instincts;
     const spell_data_t* soul_rending;
 
-    const spell_data_t* fel_barrage;
+    // Vengeance
+
+    // NYI
+    const spell_data_t* abyssal_strike;
+    const spell_data_t* blade_turning;
+    const spell_data_t* fracture;
+    
+    const spell_data_t* agonizing_flames;
+    const spell_data_t* quickened_sigils;
+
+    const spell_data_t* soul_barrier;
+    const spell_data_t* last_resort;
+
+    const spell_data_t* spirit_bomb;
+    const spell_data_t* etched_in_blood;
+    
+    const spell_data_t* burning_alive;
+    const spell_data_t* concentrated_sigils;
+    const spell_data_t* feast_of_souls;
+
+    const spell_data_t* brand_of_the_hunt;
+    const spell_data_t* sigil_of_misery;
+    const spell_data_t* razor_spikes;
+
+    const spell_data_t* fel_devastation;
+    const spell_data_t* nether_bond;
+    const spell_data_t* feed_the_demon;
   } talent;
 
   // Specialization Spells
   struct
   {
+    // General
     const spell_data_t* demon_hunter;
     const spell_data_t* critical_strikes;
     const spell_data_t* leather_specialization;
     const spell_data_t* metamorphosis_buff;
+    const spell_data_t* consume_magic;
 
+    // Havoc
     const spell_data_t* havoc;
     const spell_data_t* annihilation;
     const spell_data_t* blade_dance;
     const spell_data_t* blur;
     const spell_data_t* chaos_nova;
     const spell_data_t* chaos_strike;
-    const spell_data_t* consume_magic;
     const spell_data_t* death_sweep;
     const spell_data_t* fel_barrage_proc;
 
+    // Vengeance
     const spell_data_t* vengeance;
   } spec;
 
   // Mastery Spells
   struct
   {
-    const spell_data_t* demonic_presence;
-    const spell_data_t* fel_blood;
+    const spell_data_t* demonic_presence; // Havoc
+    const spell_data_t* fel_blood; // Vengeance
   } mastery_spell;
 
   // Artifacts
@@ -205,34 +243,57 @@ public:
     artifact_power_t overwhelming_power;
 
     // Vengeance -- The Aldrachi Warblades (NYI)
+    artifact_power_t aldrachi_design;
+    artifact_power_t aura_of_pain;
+    artifact_power_t charred_warblades;
+    artifact_power_t defensive_spikes;
+    artifact_power_t demonic_flames;
+    artifact_power_t devour_souls;
+    artifact_power_t embrace_the_pain;
+    artifact_power_t fiery_demise;
+    artifact_power_t fueled_by_pain;
+    artifact_power_t honed_warblades;
+    artifact_power_t infernal_force;
+    artifact_power_t painbringer;
+    artifact_power_t shatter_the_souls;
+    artifact_power_t siphon_power;
+    artifact_power_t soul_carver;
+    artifact_power_t tormented_souls;
+    artifact_power_t will_of_the_illidari;
   } artifact;
 
   // Cooldowns
   struct
   {
+    // General
+    cooldown_t* consume_magic;
+    cooldown_t* felblade;
+    cooldown_t* fel_eruption;
+    cooldown_t* throw_glaive;
+
+    // Havoc
     cooldown_t* blade_dance;
     cooldown_t* blur;
     cooldown_t* death_sweep;
     cooldown_t* chaos_nova;
     cooldown_t* chaos_blades;
-    cooldown_t* consume_magic;
     cooldown_t* demonic_appetite;
     cooldown_t* eye_beam;
-    cooldown_t* felblade;
     cooldown_t* fel_barrage;
     cooldown_t* fel_barrage_proc;
-    cooldown_t* fel_eruption;
     cooldown_t* fel_rush;
     cooldown_t* fury_of_the_illidari;
     cooldown_t* nemesis;
     cooldown_t* netherwalk;
-    cooldown_t* throw_glaive;
     cooldown_t* vengeful_retreat;
+
+    // Vengeance
   } cooldown;
 
   // Gains
   struct
   {
+    // Havoc
     gain_t* fury_refund;
     gain_t* demonic_appetite;
     gain_t* prepared;
@@ -246,20 +307,29 @@ public:
   // Procs
   struct
   {
+    // General
     proc_t* delayed_aa_range;
     proc_t* delayed_aa_channel;
+    
+    // Havoc
     proc_t* demonic_appetite;
     proc_t* demons_bite_in_meta;
     proc_t* felblade_reset;
     proc_t* fel_barrage;
+
+    // Vengeance
   } proc;
 
   // RPPM objects
   struct rppms_t
   {
-    // Havoc
+    // General
     real_ppm_t* felblade;
+
+    // Havoc
     real_ppm_t* inner_demons;
+
+    // Vengeance
   } rppm;
 
   // Special
@@ -2560,6 +2630,7 @@ action_t* demon_hunter_t::create_action( const std::string& name,
   const std::string& options_str )
 {
   using namespace actions::spells;
+
   if ( name == "blur" )
     return new blur_t( this, options_str );
   if ( name == "chaos_blades" )
@@ -2568,7 +2639,9 @@ action_t* demon_hunter_t::create_action( const std::string& name,
     return new consume_magic_t( this, options_str );
   if ( name == "nemesis" )
     return new nemesis_t( this, options_str );
+
   using namespace actions::attacks;
+
   if ( name == "auto_attack" )
     return new auto_attack_t( this, options_str );
   if ( name == "annihilation" )
@@ -2673,7 +2746,11 @@ void demon_hunter_t::init_resources( bool force )
 void demon_hunter_t::init_rng()
 {
   // RPPM objects
-  rppm.felblade = get_rppm( "felblade", find_spell( 203557 ) );
+
+  // General
+  rppm.felblade     = get_rppm( "felblade", find_spell( 203557 ) );
+
+  // Havoc
   rppm.inner_demons = get_rppm( "inner_demons", artifact.inner_demons );
 
   player_t::init_rng();
@@ -2685,8 +2762,11 @@ void demon_hunter_t::init_procs()
 {
   base_t::init_procs();
 
+  // General
   proc.delayed_aa_range    = get_proc( "delayed_swing__out_of_range" );
   proc.delayed_aa_channel  = get_proc( "delayed_swing__channeling" );
+
+  // Havoc
   proc.demonic_appetite    = get_proc( "demonic_appetite" );
   proc.demons_bite_in_meta = get_proc( "demons_bite_in_meta" );
   proc.felblade_reset      = get_proc( "felblade_reset" );
@@ -2713,22 +2793,25 @@ void demon_hunter_t::init_spells()
 {
   base_t::init_spells();
 
-  // General ================================================================
+  // Specialization =========================================================
 
+  // General
   spec.demon_hunter           = find_class_spell( "Demon Hunter" );
+  spec.consume_magic          = find_class_spell( "Consume Magic" );
   spec.critical_strikes       = find_spell( 221351 );  // not a class spell
   spec.leather_specialization = find_spell( 178976 );
   spec.metamorphosis_buff     = find_spell( 162264 );
 
+  // Havoc
   spec.annihilation       = find_spell( 201427 );
   spec.blade_dance        = find_class_spell( "Blade Dance" );
   spec.blur               = find_class_spell( "Blur" );
   spec.chaos_nova         = find_class_spell( "Chaos Nova" );
   spec.chaos_strike       = find_class_spell( "Chaos Strike" );
-  spec.consume_magic      = find_class_spell( "Consume Magic" );
   spec.death_sweep        = find_spell( 210152 );
   spec.havoc              = find_specialization_spell( "Havoc Demon Hunter" );
 
+  // Vengeance
   spec.vengeance = find_specialization_spell( "Vengeance Demon Hunter" );
 
   // Masteries ==============================================================
@@ -2738,33 +2821,64 @@ void demon_hunter_t::init_spells()
 
   // Talents ================================================================
 
-  talent.fel_mastery      = find_talent_spell( "Fel Mastery" );
-  talent.demonic_appetite = find_talent_spell( "Demonic Appetite" );
-  talent.blind_fury       = find_talent_spell( "Blind Fury" );
+  // General
+  talent.fel_eruption         = find_talent_spell( "Fel Eruption" );
 
-  talent.prepared     = find_talent_spell( "Prepared" );
-  talent.chaos_cleave = find_talent_spell( "Chaos Cleave" );
-  talent.fel_eruption = find_talent_spell( "Fel Eruption" );
+  talent.felblade             = find_talent_spell( "Felblade" );
 
-  talent.felblade    = find_talent_spell( "Felblade" );
-  talent.first_blood = find_talent_spell( "First Blood" );
-  talent.bloodlet    = find_talent_spell( "Bloodlet" );
+  talent.soul_rending         = find_talent_spell( "Soul Rending" );
 
-  talent.netherwalk          = find_talent_spell( "Netherwalk" );
-  talent.desperate_instincts = find_talent_spell( "Desperate Instincts" );
-  talent.soul_rending        = find_talent_spell( "Soul Rending" );
+  // Havoc
+  talent.fel_mastery          = find_talent_spell( "Fel Mastery" );
+  talent.demonic_appetite     = find_talent_spell( "Demonic Appetite" );
+  talent.blind_fury           = find_talent_spell( "Blind Fury" );
 
-  talent.momentum = find_talent_spell( "Momentum" );
-  talent.demonic  = find_talent_spell( "Demonic" );
-  talent.nemesis  = find_talent_spell( "Nemesis" );
+  talent.prepared             = find_talent_spell( "Prepared" );
+  talent.chaos_cleave         = find_talent_spell( "Chaos Cleave" );
+
+  talent.first_blood          = find_talent_spell( "First Blood" );
+  talent.bloodlet             = find_talent_spell( "Bloodlet" );
+
+  talent.netherwalk           = find_talent_spell( "Netherwalk" );
+  talent.desperate_instincts  = find_talent_spell( "Desperate Instincts" );
+
+  talent.momentum             = find_talent_spell( "Momentum" );
+  talent.demonic              = find_talent_spell( "Demonic" );
+  talent.nemesis              = find_talent_spell( "Nemesis" );
 
   talent.master_of_the_glaive = find_talent_spell( "Master of the Glaive" );
   talent.unleashed_power      = find_talent_spell( "Unleashed Power" );
   talent.demon_blades         = find_talent_spell( "Demon Blades" );
 
-  talent.chaos_blades = find_talent_spell( "Chaos Blades" );
-  talent.fel_barrage  = find_talent_spell( "Fel Barrage" );
-  talent.demon_reborn = find_talent_spell( "Demon Reborn" );
+  talent.chaos_blades         = find_talent_spell( "Chaos Blades" );
+  talent.fel_barrage          = find_talent_spell( "Fel Barrage" );
+  talent.demon_reborn         = find_talent_spell( "Demon Reborn" );
+
+  // Vengeance
+  talent.abyssal_strike       = find_talent_spell( "Abyssal Strike" );
+  talent.blade_turning        = find_talent_spell( "Blade Turning" );
+  talent.fracture             = find_talent_spell( "Fracture" );
+    
+  talent.agonizing_flames     = find_talent_spell( "Agonizing Flames" );
+  talent.quickened_sigils     = find_talent_spell( "Quickened Sigil" );
+
+  talent.soul_barrier         = find_talent_spell( "Soul Barrier" );
+  talent.last_resort          = find_talent_spell( "Last Resort" );
+
+  talent.spirit_bomb          = find_talent_spell( "Spirit Bomb" );
+  talent.etched_in_blood      = find_talent_spell( "Etched in Blood" );
+    
+  talent.burning_alive        = find_talent_spell( "Burning Alive" );
+  talent.concentrated_sigils  = find_talent_spell( "Concentrated Sigils" );
+  talent.feast_of_souls       = find_talent_spell( "Feast of Souls" );
+
+  talent.brand_of_the_hunt    = find_talent_spell( "Brand of the Hunt" );
+  talent.sigil_of_misery      = find_talent_spell( "Sigil of Misery" );
+  talent.razor_spikes         = find_talent_spell( "Razor Spikes" );
+
+  talent.fel_devastation      = find_talent_spell( "Fel Devastation" );
+  talent.nether_bond          = find_talent_spell( "Nether Bond" );
+  talent.feed_the_demon       = find_talent_spell( "Feed the Demon" );
 
   // Artifacts ==============================================================
 
@@ -2788,6 +2902,23 @@ void demon_hunter_t::init_spells()
   artifact.warglaives_of_chaos     = find_artifact_spell( "Warglaives of Chaos" );
 
   // Vengeance -- The Aldrachi Warblades
+  artifact.aldrachi_design         = find_artifact_spell( "Aldrachi Design" );
+  artifact.aura_of_pain            = find_artifact_spell( "Aura of Pain" );
+  artifact.charred_warblades       = find_artifact_spell( "Charred Warblades" );
+  artifact.defensive_spikes        = find_artifact_spell( "Defensive Spikes" );
+  artifact.demonic_flames          = find_artifact_spell( "Demonic Flames" );
+  artifact.devour_souls            = find_artifact_spell( "Devour Souls" );
+  artifact.embrace_the_pain        = find_artifact_spell( "Embrace the Pain" );
+  artifact.fiery_demise            = find_artifact_spell( "Fiery Demise" );
+  artifact.fueled_by_pain          = find_artifact_spell( "Fueled by Pain" );
+  artifact.honed_warblades         = find_artifact_spell( "Honed Warblades" );
+  artifact.infernal_force          = find_artifact_spell( "Infernal Force" );
+  artifact.painbringer             = find_artifact_spell( "Painbringer" );
+  artifact.shatter_the_souls       = find_artifact_spell( "Shatter the Souls" );
+  artifact.siphon_power            = find_artifact_spell( "Siphon Power" );
+  artifact.soul_carver             = find_artifact_spell( "Soul Carver" );
+  artifact.tormented_souls         = find_artifact_spell( "Tormented Souls" );
+  artifact.will_of_the_illidari    = find_artifact_spell( "Will of the Illidari" );
 
   // Spell Initialization ===================================================
 
