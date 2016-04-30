@@ -212,6 +212,7 @@ struct rogue_t : public player_t
     buff_t* symbols_of_death;
     buff_t* shadow_blades;
     buff_t* enveloping_shadows;
+    buff_t* goremaws_bite;
 
     // Roll the bones
     buff_t* roll_the_bones;
@@ -254,6 +255,7 @@ struct rogue_t : public player_t
     gain_t* vitality;
     gain_t* energetic_stabbing;
     gain_t* urge_to_kill;
+    gain_t* goremaws_bite;
 
     // CP Gains
     gain_t* empowered_fan_of_knives;
@@ -2377,6 +2379,8 @@ struct goremaws_bite_t:  public rogue_attack_t
   {
     add_child( mh );
     add_child( oh );
+
+    adds_combo_points = data().effectN( 4 ).trigger() -> effectN( 1 ).resource( RESOURCE_COMBO_POINT );
   }
 
   void execute() override
@@ -2388,6 +2392,8 @@ struct goremaws_bite_t:  public rogue_attack_t
 
     oh -> target = target;
     oh -> schedule_execute();
+
+    p() -> buffs.goremaws_bite -> trigger();
   }
 };
 
@@ -5545,6 +5551,7 @@ void rogue_t::init_gains()
   gains.energetic_stabbing = get_gain( "Energetic Stabbing" );
   gains.enveloping_shadows = get_gain( "Enveloping Shadows" );
   gains.urge_to_kill = get_gain( "Urge to Kill" );
+  gains.goremaws_bite = get_gain( "Goremaw's Bite" );
 }
 
 // rogue_t::init_procs ======================================================
@@ -5800,6 +5807,11 @@ void rogue_t::create_buffs()
             .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
                resource_gain( RESOURCE_COMBO_POINT, 1, gains.enveloping_shadows );
             } );
+
+  buffs.goremaws_bite = buff_creator_t( this, "goremaws_bite", artifact.goremaws_bite.data().effectN( 4 ).trigger() )
+      .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
+        resource_gain( RESOURCE_ENERGY, b -> data().effectN( 2 ).resource( RESOURCE_ENERGY ), gains.goremaws_bite );
+      } );
 }
 
 void rogue_t::register_callbacks()
