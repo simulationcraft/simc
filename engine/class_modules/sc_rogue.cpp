@@ -313,7 +313,6 @@ struct rogue_t : public player_t
     const spell_data_t* tier13_4pc;
     const spell_data_t* tier15_4pc;
     const spell_data_t* tier18_2pc_combat_ar;
-    const spell_data_t* venom_rush;
   } spell;
 
   // Talents
@@ -1187,15 +1186,7 @@ struct deadly_poison_t : public rogue_poison_t
       rogue_poison_t( "deadly_poison_instant", p, p -> find_spell( 113780 ) )
     {
       harmful = true;
-    }
-
-    double action_multiplier() const override
-    {
-      double m = rogue_poison_t::action_multiplier();
-
-      m *= 1.0 + p() -> talent.master_poisoner -> effectN( 1 ).percent();
-
-      return m;
+      base_multiplier *= 1.0 + p -> talent.master_poisoner -> effectN( 1 ).percent();
     }
   };
 
@@ -1206,15 +1197,7 @@ struct deadly_poison_t : public rogue_poison_t
     {
       may_crit       = false;
       harmful        = true;
-    }
-
-    double action_multiplier() const override
-    {
-      double m = rogue_poison_t::action_multiplier();
-
-      m *= 1.0 + p() -> talent.master_poisoner -> effectN( 1 ).percent();
-
-      return m;
+      base_multiplier *= 1.0 + p -> talent.master_poisoner -> effectN( 1 ).percent();
     }
 
     void impact( action_state_t* state ) override
@@ -1290,15 +1273,7 @@ struct wound_poison_t : public rogue_poison_t
       rogue_poison_t( "wound_poison", p, p -> find_specialization_spell( "Wound Poison" ) -> effectN( 1 ).trigger() )
     {
       harmful          = true;
-    }
-
-    double action_multiplier() const override
-    {
-      double m = rogue_poison_t::action_multiplier();
-
-      m *= 1.0 + p() -> talent.master_poisoner -> effectN( 1 ).percent();
-
-      return m;
+      base_multiplier *= 1.0 + p -> talent.master_poisoner -> effectN( 1 ).percent();
     }
 
     void impact( action_state_t* state ) override
@@ -4034,7 +4009,8 @@ void rogue_t::trigger_venomous_wounds( const action_state_t* state )
     return;
 
   resource_gain( RESOURCE_ENERGY,
-                 spec.venomous_wounds -> effectN( 2 ).base_value(),
+                 spec.venomous_wounds -> effectN( 2 ).base_value() +
+                 talent.venom_rush -> effectN( 1 ).base_value(),
                  gains.venomous_wounds );
 }
 
@@ -5427,7 +5403,6 @@ void rogue_t::init_spells()
   spell.tier13_4pc          = find_spell( 105865 );
   spell.tier15_4pc          = find_spell( 138151 );
   spell.tier18_2pc_combat_ar= find_spell( 186286 );
-  spell.venom_rush          = find_spell( 156719 );
 
   // Talents
   talent.deeper_stratagem   = find_talent_spell( "Deeper Stratagem" );
@@ -6138,14 +6113,6 @@ double rogue_t::energy_regen_per_second() const
 
   if ( buffs.blade_flurry -> check() )
     r *= 1.0 + spec.blade_flurry -> effectN( 1 ).percent();
-
-  // TODO: Actual buff
-  if ( talent.venom_rush -> ok() )
-  {
-    assert( poisoned_enemies <= sim -> target_non_sleeping_list.size() );
-    unsigned n_poisoned_enemies = std::min( poisoned_enemies, 3U );
-    r *= 1.0 + n_poisoned_enemies * spell.venom_rush -> effectN( 1 ).percent();
-  }
 
   if ( buffs.buried_treasure -> up() )
   {
