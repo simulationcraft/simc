@@ -398,7 +398,7 @@ struct rogue_t : public player_t
     artifact_power_t demons_kiss;
     artifact_power_t gutripper;
     artifact_power_t precision_strike;
-    artifact_power_t fortunes_bite; // TODO: NYI, will change in the future
+    artifact_power_t fortunes_bite;
     artifact_power_t soul_shadows;
     artifact_power_t energetic_stabbing;
     artifact_power_t catwalk;
@@ -406,6 +406,7 @@ struct rogue_t : public player_t
     artifact_power_t akaaris_soul;
     artifact_power_t shadow_nova;
     artifact_power_t finality;
+    artifact_power_t legionblade;
 
     // Assassination
     artifact_power_t kingsbane;
@@ -2377,6 +2378,8 @@ struct goremaws_bite_t:  public rogue_attack_t
     mh( new goremaws_bite_strike_t( p, "goremaws_bite_mh", p -> artifact.goremaws_bite.data().effectN( 1 ).trigger(), &( p -> main_hand_weapon ) ) ),
     oh( new goremaws_bite_strike_t( p, "goremaws_bite_oh", p -> artifact.goremaws_bite.data().effectN( 2 ).trigger(), &( p -> off_hand_weapon ) ) )
   {
+    school = SCHOOL_SHADOW;
+
     add_child( mh );
     add_child( oh );
 
@@ -4143,7 +4146,13 @@ void rogue_t::trigger_shadow_techniques( const action_state_t* state )
 
   if ( --shadow_techniques == 0 )
   {
-    trigger_combo_point_gain( state, 1, gains.shadow_techniques );
+    double cp = 1;
+    if ( rng().roll( artifact.fortunes_bite.percent() ) )
+    {
+      cp++;
+    }
+
+    trigger_combo_point_gain( state, cp, gains.shadow_techniques );
     shadow_techniques = rng().range( 3, 5 );
   }
 }
@@ -4911,6 +4920,7 @@ double rogue_t::composite_player_multiplier( school_e school ) const
   }
 
   m *= 1.0 + artifact.slayers_precision.percent();
+  m *= 1.0 + artifact.legionblade.percent();
 
   if ( buffs.master_of_subtlety -> check() || buffs.master_of_subtlety_passive -> check() )
   {
@@ -5460,7 +5470,7 @@ void rogue_t::init_spells()
   artifact.demons_kiss      = find_artifact_spell( "Demon's Kiss" );
   artifact.gutripper        = find_artifact_spell( "Gutripper" );
   artifact.precision_strike = find_artifact_spell( "Precision Strike" );
-  artifact.fortunes_bite    = find_artifact_spell( "Fortune's Bite" ); // TODO: NYI, will change in the future
+  artifact.fortunes_bite    = find_artifact_spell( "Fortune's Bite" );
   artifact.soul_shadows     = find_artifact_spell( "Soul Shadows" );
   artifact.energetic_stabbing = find_artifact_spell( "Energetic Stabbing" );
   artifact.catwalk          = find_artifact_spell( "Catwalk" );
@@ -5468,6 +5478,7 @@ void rogue_t::init_spells()
   artifact.akaaris_soul     = find_artifact_spell( "Akaari's Soul" );
   artifact.shadow_nova      = find_artifact_spell( "Shadow Nova" );
   artifact.finality         = find_artifact_spell( "Finality" );
+  artifact.legionblade      = find_artifact_spell( "Legionblade" );
 
   artifact.kingsbane        = find_artifact_spell( "Kingsbane" );
   artifact.assassins_blades = find_artifact_spell( "Assassin's Blades" );
