@@ -123,6 +123,8 @@ public:
     buff_t* vengeful_retreat_jump_cancel;
 
     // Vengeance
+    buff_t* demon_spikes;
+    buff_t* empower_wards;
     buff_t* immolation_aura;
   } buff;
 
@@ -413,6 +415,7 @@ public:
   double matching_gear_multiplier( attribute_e attr ) const override;
   double composite_dodge() const override;
   double composite_melee_crit() const override;
+  double composite_parry() const override;
   double composite_player_multiplier( school_e ) const override;
   double composite_spell_crit() const override;
   double passive_movement_modifier() const override;
@@ -959,6 +962,44 @@ struct consume_magic_t : public demon_hunter_spell_t
       return false;
 
     return demon_hunter_spell_t::ready();
+  }
+};
+
+// Demon Spikes =============================================================
+
+struct demon_spikes_t : public demon_hunter_spell_t
+{
+  demon_spikes_t( demon_hunter_t* p, const std::string& options_str ) :
+    demon_hunter_spell_t( "demon_spikes", p,
+      p -> find_specialization_spell( "Demon Spikes" ) )
+  {
+    parse_options( options_str );
+  }
+
+  void execute() override
+  {
+    demon_hunter_spell_t::execute();
+
+    p() -> buff.demon_spikes -> trigger();
+  }
+};
+
+// Empower Wards ===========================================================
+
+struct empower_wards_t : public demon_hunter_spell_t
+{
+  empower_wards_t( demon_hunter_t* p, const std::string& options_str ) : 
+    demon_hunter_spell_t( "empower_wards", p,
+      p -> find_specialization_spell( "Empower Wards" ) )
+  {
+    parse_options( options_str );
+  }
+
+  void execute() override
+  {
+    demon_hunter_spell_t::execute();
+
+    p() -> buff.empower_wards -> trigger();
   }
 };
 
@@ -2862,6 +2903,17 @@ double demon_hunter_t::composite_melee_crit() const
   return mc;
 }
 
+// demon_hunter_t::composite_parry ==========================================
+
+double demon_hunter_t::composite_parry() const
+{
+  double cp = player_t::composite_parry();
+
+  cp += buff.demon_spikes -> value();
+
+  return cp;
+}
+
 // demon_hunter_t::composite_player_multiplier ==============================
 
 double demon_hunter_t::composite_player_multiplier( school_e school ) const
@@ -2913,6 +2965,10 @@ action_t* demon_hunter_t::create_action( const std::string& name,
     return new chaos_blades_t( this, options_str );
   if ( name == "consume_magic" )
     return new consume_magic_t( this, options_str );
+  if ( name == "demon_spikes" )
+    return new demon_spikes_t( this, options_str );
+  if ( name == "empower_wards" )
+    return new empower_wards_t( this, options_str );
   if ( name == "immolation_aura" )
     return new immolation_aura_t( this, options_str );
   if ( name == "nemesis" )
@@ -3364,6 +3420,16 @@ void demon_hunter_t::create_buffs()
       .duration( timespan_t::from_seconds( 1.25 ) );
 
   // Vengeance
+  buff.demon_spikes =
+    buff_creator_t( this, "demon_spikes", find_spell( 203819 ) )
+      .default_value( find_spell( 203819 ) -> effectN( 1 ).percent() )
+      .refresh_behavior( BUFF_REFRESH_EXTEND )
+      .add_invalidate( CACHE_PARRY );
+
+  buff.empower_wards =
+    buff_creator_t( this, "empower_wards", find_specialization_spell( "Empower Wards" ) )
+      .default_value( find_specialization_spell( "Empower Wards" ) -> effectN( 1 ).percent() );
+
   buff.immolation_aura =
     buff_creator_t( this, "immolation_aura", spec.immolation_aura )
       .tick_callback( [this]( buff_t*, int, const timespan_t& ) {
@@ -3554,6 +3620,16 @@ void demon_hunter_t::target_mitigation( school_e school, dmg_e dt,
   base_t::target_mitigation( school, dt, s );
 
   s -> result_amount *= 1.0 + buff.blur -> value();
+
+  if ( dbc::is_school( school, SCHOOL_PHYSICAL ) && buff.demon_spikes -> up() )
+  {
+    s -> result_amount *= 1.0 + buff.demon_spikes -> data().effectN( 2 ).percent() - cache.mastery_value();
+  }
+
+  if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
+  {
+    s -> result_amount *= 1.0 + buff.empower_wards -> value();
+  }
 }
 
 // demon_hunter_t::invalidate_cache =========================================
