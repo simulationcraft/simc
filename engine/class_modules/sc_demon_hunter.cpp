@@ -219,6 +219,7 @@ public:
     const spell_data_t* vengeance;
     const spell_data_t* immolation_aura;
     const spell_data_t* soul_cleave;
+    const spell_data_t* riposte;
   } spec;
 
   // Mastery Spells
@@ -416,6 +417,7 @@ public:
   double composite_dodge() const override;
   double composite_melee_crit() const override;
   double composite_parry() const override;
+  double composite_parry_rating() const override;
   double composite_player_multiplier( school_e ) const override;
   double composite_spell_crit() const override;
   double passive_movement_modifier() const override;
@@ -2914,6 +2916,18 @@ double demon_hunter_t::composite_parry() const
   return cp;
 }
 
+// demon_hunter_t::composite_parry_rating() =================================
+
+double demon_hunter_t::composite_parry_rating() const
+{
+  double pr = player_t::composite_parry_rating();
+
+  if ( spec.riposte -> ok() )
+    pr += composite_melee_crit_rating();
+
+  return pr;
+}
+
 // demon_hunter_t::composite_player_multiplier ==============================
 
 double demon_hunter_t::composite_player_multiplier( school_e school ) const
@@ -3167,6 +3181,7 @@ void demon_hunter_t::init_spells()
   // Vengeance
   spec.vengeance          = find_specialization_spell( "Vengeance Demon Hunter" );
   spec.immolation_aura    = find_specialization_spell( "Immolation Aura" );
+  spec.riposte            = find_specialization_spell( "Riposte" );
   spec.soul_cleave        = find_specialization_spell( "Soul Cleave" );
 
   // Masteries ==============================================================
@@ -3643,9 +3658,14 @@ void demon_hunter_t::invalidate_cache( cache_e c )
     case CACHE_MASTERY:
       if ( mastery_spell.demonic_presence -> ok() )
       {
-        player_t::invalidate_cache( CACHE_RUN_SPEED );
+        invalidate_cache( CACHE_RUN_SPEED );
       }
       break;
+    case CACHE_CRIT:
+      if ( spec.riposte -> ok() )
+      {
+        invalidate_cache( CACHE_PARRY );
+      }
     default:
       break;
   }

@@ -892,7 +892,8 @@ void player_t::init_base_stats()
   // only certain classes get Agi->Dodge conversions, dodge_per_agility defaults to 0.00
   // Racial agility modifiers and Heroic Presence do affect base dodge, but are affected
   // by diminishing returns, and handled in composite_dodge()  (tested 7/24/2014)
-  if ( type == MONK || type == DRUID || type == ROGUE || type == HUNTER || type == SHAMAN )
+  if ( type == MONK || type == DRUID || type == ROGUE || type == HUNTER ||
+       type == SHAMAN || type == DEMON_HUNTER )
     base.dodge_per_agility     = dbc.avoid_per_str_agi_by_level( level() ) / 100.0; // exact values given by Blizzard, only have L90-L100 data
 
   // only certain classes get Str->Parry conversions, dodge_per_agility defaults to 0.00
@@ -916,7 +917,8 @@ void player_t::init_base_stats()
   // racial strength mod and "phantom" strength bonus added here,
   // see http://www.sacredduty.net/2014/08/06/tc401-avoidance-diminishing-returns-in-wod/
   if ( type == WARRIOR || type == PALADIN || type == ROGUE || type == DEATH_KNIGHT ||
-       type == MONK || specialization() == SHAMAN_ENHANCEMENT || type == ENEMY || type == TMI_BOSS || type == TANK_DUMMY )
+       type == MONK || type == DEMON_HUNTER || specialization() == SHAMAN_ENHANCEMENT ||
+       type == ENEMY || type == TMI_BOSS || type == TANK_DUMMY )
     base.parry = 0.03 + ( dbc.race_base( race ).strength + 0.0739 ) * base.parry_per_strength;
 
   // Extract avoidance DR values from table in sc_extra_data.inc
