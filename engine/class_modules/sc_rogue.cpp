@@ -149,6 +149,7 @@ struct rogue_t : public player_t
   action_t* poison_knives;
   action_t* from_the_shadows_;
   action_t* poison_bomb;
+  action_t* greed;
 
   // Autoattacks
   action_t* auto_attack;
@@ -491,6 +492,8 @@ struct rogue_t : public player_t
     shadow_nova( nullptr ),
     poison_knives( nullptr ),
     from_the_shadows_( nullptr ),
+    poison_bomb( nullptr ),
+    greed( nullptr ),
     auto_attack( nullptr ), melee_main_hand( nullptr ), melee_off_hand( nullptr ),
     shadow_blade_main_hand( nullptr ), shadow_blade_off_hand( nullptr ),
     dfa_mh( nullptr ), dfa_oh( nullptr ),
@@ -1125,6 +1128,41 @@ struct poison_bomb_t : public rogue_attack_t
     rogue_attack_t( "poison_bomb", p, p -> find_spell( 192660 ) )
   {
     background = true;
+  }
+};
+
+struct greed_t : public rogue_attack_t
+{
+  greed_t* oh;
+
+  greed_t( rogue_t* p ) :
+    rogue_attack_t( "greed", p, p -> find_spell( 202822 ) ),
+    oh( new greed_t( p, "greed_oh", data().effectN( 3 ).trigger() ) )
+  {
+    aoe = -1;
+    background = true;
+    weapon = &( p -> main_hand_weapon );
+    add_child( oh );
+  }
+
+  greed_t( rogue_t* p, const std::string& name, const spell_data_t* spell ) :
+    rogue_attack_t( name, p, spell ),
+    oh( nullptr )
+  {
+    aoe = -1;
+    background = true;
+    weapon = &( p -> off_hand_weapon );
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    if ( oh )
+    {
+      oh -> target = execute_state -> target;
+      oh -> schedule_execute();
+    }
   }
 };
 
@@ -2761,6 +2799,17 @@ struct run_through_t: public rogue_attack_t
     if ( ! secondary_trigger )
     {
       p() -> buffs.deceit -> expire();
+    }
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    if ( rng().roll( p() -> artifact.greed.data().proc_chance() ) )
+    {
+      p() -> greed -> target = execute_state -> target;
+      p() -> greed -> schedule_execute();
     }
   }
 };
@@ -5671,6 +5720,11 @@ void rogue_t::init_spells()
   if ( artifact.bag_of_tricks.rank() )
   {
     poison_bomb = new actions::poison_bomb_t( this );
+  }
+
+  if ( artifact.greed.rank() )
+  {
+    greed = new actions::greed_t( this );
   }
 }
 
