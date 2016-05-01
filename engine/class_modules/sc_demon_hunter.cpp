@@ -132,6 +132,7 @@ public:
     buff_t* demon_spikes;
     buff_t* empower_wards;
     buff_t* immolation_aura;
+    absorb_buff_t* soul_barrier;
   } buff;
 
   // Talents
@@ -171,16 +172,17 @@ public:
     const spell_data_t* soul_rending;
 
     // Vengeance
+    const spell_data_t* blade_turning;
+    const spell_data_t* fracture;
+
+    const spell_data_t* agonizing_flames;
+    const spell_data_t* quickened_sigils;
+    
+    const spell_data_t* soul_barrier;
 
     // NYI
     const spell_data_t* abyssal_strike;
-    const spell_data_t* blade_turning;
-    const spell_data_t* fracture;
-    
-    const spell_data_t* agonizing_flames;
-    const spell_data_t* quickened_sigils;
 
-    const spell_data_t* soul_barrier;
     const spell_data_t* last_resort;
 
     const spell_data_t* spirit_bomb;
@@ -370,6 +372,7 @@ public:
 
     // Vengeance
     spell_t*  immolation_aura;
+    absorb_t* soul_barrier;
   } active;
 
   // Pets
@@ -398,6 +401,7 @@ public:
   void init_spells() override;
   void create_buffs() override;
   void init_scaling() override;
+  void init_absorb_priority() override;
   void invalidate_cache( cache_e ) override;
   void reset() override;
   void interrupt() override;
@@ -800,6 +804,28 @@ namespace heals
 
 struct consume_soul_t : public demon_hunter_heal_t
 {
+  struct soul_barrier_t : public demon_hunter_action_t<absorb_t>
+  {
+    double maximum_absorb;
+
+    soul_barrier_t( demon_hunter_t* p ) :
+      demon_hunter_action_t<absorb_t>( "soul_barrier", p, p -> find_spell( 211512 ) )
+    {
+      background = true;
+      may_crit = false;
+      maximum_absorb = attack_power_mod.direct * 10; // May 1 2016
+    }
+
+    void assess_damage( dmg_e type, action_state_t* s ) override
+    {
+      // Stacking absorb logic.
+      s -> result_amount += p() -> buff.soul_barrier -> check_value();
+      s -> result_amount = std::min( s -> result_amount, maximum_absorb * s -> attack_power );
+      
+      demon_hunter_action_t<absorb_t>::assess_damage( type, s );
+    }
+  };
+
   unsigned* soul_counter;
 
   consume_soul_t( demon_hunter_t* p, const std::string& n,
@@ -807,15 +833,23 @@ struct consume_soul_t : public demon_hunter_heal_t
     demon_hunter_heal_t( n, p, s ), soul_counter( souls )
   {
     background = true;
+
+    if ( p -> talent.soul_barrier -> ok() && ! p -> active.soul_barrier )
+    {
+      p -> active.soul_barrier = new soul_barrier_t( p );
+    }
   }
 
   void execute() override
   {
-    assert( soul_counter > 0 );
+    assert( *soul_counter > 0 );
+
+    bool trigger_soul_barrier =
+      p() -> talent.soul_barrier -> ok() && p() -> health_percentage() == 100;
 
     demon_hunter_heal_t::execute();
 
-    soul_counter--;
+    ( *soul_counter )--;
 
     if ( p() -> talent.demonic_appetite -> ok() )
     {
@@ -829,11 +863,16 @@ struct consume_soul_t : public demon_hunter_heal_t
       p() -> cooldown.eye_beam -> adjust( t );
       p() -> cooldown.chaos_nova -> adjust( t );
     }
+
+    if ( trigger_soul_barrier )
+    {
+      p() -> active.soul_barrier -> schedule_execute();
+    }
   }
 
   bool ready() override
   {
-    if ( soul_counter == 0 )
+    if ( *soul_counter == 0 )
     {
       return false;
     }
@@ -841,7 +880,6 @@ struct consume_soul_t : public demon_hunter_heal_t
     return demon_hunter_heal_t::ready();
   }
 };
-
 
 // Soul Cleave ==============================================================
 
@@ -2875,7 +2913,8 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r )
     pets(),
     options(),
     glyphs(),
-    soul_fragments( 0 )
+    soul_fragments( 0 ),
+    lesser_soul_fragments( 0 )
 {
   base.distance = 5.0;
 
@@ -3291,7 +3330,7 @@ void demon_hunter_t::init_rng()
   // RPPM objects
 
   // General
-  rppm.felblade     = get_rppm( "felblade", find_spell( 203557 ) );
+  rppm.felblade = get_rppm( "felblade", find_spell( 203557 ) );
 
   // Havoc
   rppm.inner_demons = get_rppm( "inner_demons", artifact.inner_demons );
@@ -3328,6 +3367,15 @@ void demon_hunter_t::init_scaling()
     scales_with[ STAT_BONUS_ARMOR ] = true;
 
   scales_with[ STAT_STRENGTH ] = false;
+}
+
+// demon_hunter_t::init_absorb_priority =====================================
+
+void demon_hunter_t::init_absorb_priority()
+{
+  player_t::init_absorb_priority();
+
+  absorb_priority.push_back( 211512 ); // Soul Barrier
 }
 
 // demon_hunter_t::init_spells ==============================================
@@ -3641,6 +3689,12 @@ void demon_hunter_t::create_buffs()
       } )
       .default_value( talent.agonizing_flames -> effectN( 2 ).percent() )
       .add_invalidate( CACHE_RUN_SPEED );
+
+  buff.soul_barrier =
+    absorb_buff_creator_t( this, "soul_barrier", find_spell( 211512 ) )
+      .source( get_stats( "soul_barrier" ) )
+      .gain( get_gain( "soul_barrier" ) )
+      .high_priority( true ); // TOCHECK
 }
 
 bool demon_hunter_t::has_t18_class_trinket() const
@@ -3733,11 +3787,21 @@ bool demon_hunter_t::consume_soul_fragments()
     return false;
   }
 
+  if ( sim -> debug && soul_fragments > 0 )
+  {
+    sim -> out_debug.printf( "%s consumes %u soul fragments.", name(), soul_fragments );
+  }
+
   for ( unsigned i = 0; i < soul_fragments; i++ )
   {
     active.consume_soul -> schedule_execute();
   }
-  
+
+  if ( sim -> debug && lesser_soul_fragments > 0 )
+  {
+    sim -> out_debug.printf( "%s consumes %u lesser soul fragments.", name(), lesser_soul_fragments );
+  }
+
   for ( unsigned i = 0; i < lesser_soul_fragments; i++ )
   {
     active.consume_soul_lesser -> schedule_execute();
