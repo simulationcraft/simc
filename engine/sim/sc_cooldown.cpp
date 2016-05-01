@@ -315,10 +315,11 @@ void cooldown_t::start( action_t* a, timespan_t _override, timespan_t delay )
 
   reset_react = timespan_t::zero();
 
+  action = a;
+
   if ( hasted && a )
   {
-    action = a;
-    recharge_multiplier = action -> recharge_multiplier();
+    recharge_multiplier = a -> recharge_multiplier();
   }
 
   timespan_t event_duration = cooldown_duration( this, _override );
