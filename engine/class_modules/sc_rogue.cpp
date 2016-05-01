@@ -214,6 +214,7 @@ struct rogue_t : public player_t
     buff_t* enveloping_shadows;
     buff_t* goremaws_bite;
     buff_t* hidden_blade;
+    buff_t* curse_of_the_dreadblades;
 
     // Roll the bones
     buff_t* roll_the_bones;
@@ -257,6 +258,7 @@ struct rogue_t : public player_t
     gain_t* energetic_stabbing;
     gain_t* urge_to_kill;
     gain_t* goremaws_bite;
+    gain_t* curse_of_the_dreadblades;
 
     // CP Gains
     gain_t* empowered_fan_of_knives;
@@ -2049,6 +2051,22 @@ struct cannonball_barrage_t : public rogue_attack_t
   }
 };
 
+// Curse of the Dreadblades =================================================
+
+struct curse_of_the_dreadblades_t : public rogue_attack_t
+{
+  curse_of_the_dreadblades_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "curse_of_the_dreadblades", p, p -> artifact.curse_of_the_dreadblades, options_str )
+  { }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    p() -> buffs.curse_of_the_dreadblades -> trigger();
+  }
+};
+
 // Enveloping Shadows =======================================================
 
 struct enveloping_shadows_t : public rogue_attack_t
@@ -3102,6 +3120,15 @@ struct saber_slash_t : public rogue_attack_t
       }
 
       p() -> buffs.hidden_blade -> decrement();
+
+      if ( p() -> buffs.curse_of_the_dreadblades -> up() )
+      {
+        double n_cp = p() -> resources.max[ RESOURCE_COMBO_POINT ] - p() -> resources.current[ RESOURCE_COMBO_POINT ];
+        if ( n_cp > 0 )
+        {
+          p() -> resource_gain( RESOURCE_COMBO_POINT, n_cp, p() -> gains.curse_of_the_dreadblades, this );
+        }
+      }
     }
   }
 };
@@ -5317,6 +5344,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "between_the_eyes"    ) return new between_the_eyes_t   ( this, options_str );
   if ( name == "blade_flurry"        ) return new blade_flurry_t       ( this, options_str );
   if ( name == "cannonball_barrage"  ) return new cannonball_barrage_t ( this, options_str );
+  if ( name == "curse_of_the_dreadblades" ) return new curse_of_the_dreadblades_t( this, options_str );
   if ( name == "death_from_above"    ) return new death_from_above_t   ( this, options_str );
   if ( name == "enveloping_shadows"  ) return new enveloping_shadows_t ( this, options_str );
   if ( name == "envenom"             ) return new envenom_t            ( this, options_str );
@@ -5618,6 +5646,7 @@ void rogue_t::init_gains()
   gains.enveloping_shadows = get_gain( "Enveloping Shadows" );
   gains.urge_to_kill = get_gain( "Urge to Kill" );
   gains.goremaws_bite = get_gain( "Goremaw's Bite" );
+  gains.curse_of_the_dreadblades = get_gain( "Curse of the Dreadblades" );
 }
 
 // rogue_t::init_procs ======================================================
@@ -5881,6 +5910,7 @@ void rogue_t::create_buffs()
 
   buffs.hidden_blade = buff_creator_t( this, "hidden_blade", artifact.hidden_blade.data().effectN( 1 ).trigger() )
     .trigger_spell( artifact.hidden_blade );
+  buffs.curse_of_the_dreadblades = buff_creator_t( this, "curse_of_the_dreadblades", artifact.curse_of_the_dreadblades );
 }
 
 void rogue_t::register_callbacks()
