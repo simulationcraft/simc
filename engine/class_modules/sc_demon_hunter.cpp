@@ -174,7 +174,6 @@ public:
     // NYI
     const spell_data_t* netherwalk;
     const spell_data_t* desperate_instincts;
-    const spell_data_t* soul_rending;
 
     // Vengeance
     const spell_data_t* blade_turning;
@@ -185,17 +184,18 @@ public:
     
     const spell_data_t* soul_barrier;
 
+    const spell_data_t* spirit_bomb;
+    const spell_data_t* etched_in_blood;
+    const spell_data_t* soul_rending;
+
+    const spell_data_t* burning_alive;
+    const spell_data_t* concentrated_sigils;
+    const spell_data_t* feast_of_souls;
+
     // NYI
     const spell_data_t* abyssal_strike;
 
     const spell_data_t* last_resort;
-
-    const spell_data_t* spirit_bomb;
-    const spell_data_t* etched_in_blood;
-    
-    const spell_data_t* burning_alive;
-    const spell_data_t* concentrated_sigils;
-    const spell_data_t* feast_of_souls;
 
     const spell_data_t* brand_of_the_hunt;
     const spell_data_t* sigil_of_misery;
@@ -911,6 +911,14 @@ struct soul_cleave_heal_t : public demon_hunter_heal_t
   {
     background = true;
     base_costs.fill( 0 ); // This action is free; the parent pays the cost.
+
+    if ( p -> talent.feast_of_souls -> ok() )
+    {
+      const spell_data_t* s = p -> find_spell( 207693 );
+      dot_duration = s -> duration();
+      base_tick_time = s -> effectN( 1 ).period();
+      attack_power_mod.tick = 1.30; // Not in spell data.
+    }
   }
 };
 
@@ -1379,13 +1387,17 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
       if ( p -> talent.burning_alive -> ok() )
       {
-        attack_power_mod.tick = 1.0; // not in spell data
+        // Not in spell data.
+        attack_power_mod.tick = 1.0;
+        // Spread radius used for Burning Alive.
         radius = p -> find_spell( 207760 ) -> effectN( 1 ).radius();
       }
       else
       {
+        /* If Burning alive isn't talented this isn't really a DoT, so let's
+        turn off DoT callbacks and minimize the number of events generated.*/
         base_tick_time = dot_duration;
-        callbacks = false;
+        tick_may_crit = callbacks = false;
       }
     }
 
@@ -1395,7 +1407,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
     virtual void record_data( action_state_t* s ) override
     {
       // Don't record data direct hits for this action.
-      if ( s -> result_type == DMG_OVER_TIME )
+      if ( s -> result_type != DMG_DIRECT )
       {
         demon_hunter_spell_t::record_data( s );
       }
@@ -1647,6 +1659,12 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
       aoe = -1;
       background = dual = true;
       hasted_ticks = false;
+
+      if ( p -> talent.concentrated_sigils -> ok() )
+      {
+        range = 0; // Targeted at player's location.
+        dot_duration += p -> talent.concentrated_sigils -> effectN( 5 ).time_value();
+      }
     }
   };
 
@@ -3085,11 +3103,21 @@ struct nemesis_debuff_t : public demon_hunter_buff_t<buff_t>
 
 struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
 {
+  static void callback( buff_t* b, int, const timespan_t& )
+  {
+    demon_hunter_t* p = debug_cast<demon_hunter_t*>( b -> player );
+    p -> resource_gain( RESOURCE_PAIN,
+      p -> spec.metamorphosis_buff -> effectN( 4 ).resource( RESOURCE_PAIN ),
+      p -> gain.metamorphosis );
+  }
+
   metamorphosis_buff_t( demon_hunter_t* p ) : 
     demon_hunter_buff_t<buff_t>( *p,
       buff_creator_t( p, "metamorphosis", p -> spec.metamorphosis_buff )
         .cd( timespan_t::zero() )
         .default_value( p -> spec.metamorphosis_buff -> effectN( 2 ).percent() )
+        .period( p -> spec.metamorphosis_buff -> effectN( 4 ).period() )
+        .tick_callback( &callback )
         .add_invalidate( CACHE_LEECH ) )
   {}
 
