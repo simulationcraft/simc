@@ -163,6 +163,9 @@ struct rogue_t : public player_t
   // Experimental weapon swapping
   weapon_info_t weapon_data[ 2 ];
 
+  // Blurred time cooldown shenanigans
+  std::vector<cooldown_t*> blurred_time_cooldowns;
+
   // Tier 18 (WoD 6.2) trinket effects
   const special_effect_t* toxic_mutilator;
   const special_effect_t* eviscerating_blade;
@@ -215,6 +218,7 @@ struct rogue_t : public player_t
     buff_t* goremaws_bite;
     buff_t* hidden_blade;
     buff_t* curse_of_the_dreadblades;
+    buff_t* blurred_time;
 
     // Roll the bones
     buff_t* roll_the_bones;
@@ -670,13 +674,17 @@ struct rogue_attack_t : public melee_attack_t
   // damage. Swapped into the action when Akaari's Soul secondary trigger event executes.
   stats_t* akaari;
 
+  // Not all abilities are affected by Blurred Time because BlizzardVision(tm), so flag things
+  bool affected_by_blurred_time;
+
   rogue_attack_t( const std::string& token, rogue_t* p,
                   const spell_data_t* s = spell_data_t::nil(),
                   const std::string& options = std::string() ) :
     melee_attack_t( token, p, s ),
     requires_stealth( false ), requires_position( POSITION_NONE ),
     adds_combo_points( 0 ), requires_weapon( WEAPON_NONE ),
-    secondary_trigger( false ), akaari( nullptr )
+    secondary_trigger( false ), akaari( nullptr ),
+    affected_by_blurred_time( true )
   {
     parse_options( options );
 
@@ -727,6 +735,13 @@ struct rogue_attack_t : public melee_attack_t
       akaari = player -> get_stats( name_str + "_akaari", this );
       akaari -> school = school;
       stats -> add_child( akaari );
+    }
+
+    if ( affected_by_blurred_time &&
+         cooldown -> duration > timespan_t::zero() &&
+         p() -> artifact.blurred_time.rank() && ! background )
+    {
+      p() -> blurred_time_cooldowns.push_back( cooldown );
     }
   }
 
@@ -910,6 +925,17 @@ struct rogue_attack_t : public melee_attack_t
          ( weapon_multiplier > 0 || attack_power_mod.direct > 0 || attack_power_mod.tick > 0 ) )
     {
       m *= 1.0 + p() -> talent.deeper_stratagem -> effectN( 4 ).percent();
+    }
+
+    return m;
+  }
+
+  double recharge_multiplier() const override
+  {
+    double m = melee_attack_t::recharge_multiplier();
+    if ( p() -> buffs.blurred_time -> up() )
+    {
+      m *= 1.0 - p() -> buffs.blurred_time -> data().effectN( 1 ).percent();
     }
 
     return m;
@@ -1867,6 +1893,7 @@ struct adrenaline_rush_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     p() -> buffs.adrenaline_rush -> trigger();
+    p() -> buffs.blurred_time -> trigger();
   }
 };
 
@@ -2000,6 +2027,7 @@ struct between_the_eyes_t : public rogue_attack_t
     rogue_attack_t( "between_the_eyes", p, p -> find_specialization_spell( "Between the Eyes" ),
         options_str )
   {
+    affected_by_blurred_time = false;
     crit_bonus_multiplier = 3;
     base_multiplier *= 1.0 + p -> artifact.black_powder.percent();
   }
@@ -2057,7 +2085,9 @@ struct curse_of_the_dreadblades_t : public rogue_attack_t
 {
   curse_of_the_dreadblades_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "curse_of_the_dreadblades", p, p -> artifact.curse_of_the_dreadblades, options_str )
-  { }
+  {
+    affected_by_blurred_time = false;
+  }
 
   void execute() override
   {
@@ -4453,6 +4483,36 @@ struct proxy_garrote_t : public buff_t
   }
 };
 
+struct blurred_time_t : public buff_t
+{
+  rogue_t* r;
+
+  blurred_time_t( rogue_t* p ) :
+    buff_t( buff_creator_t( p, "blurred_time", p -> artifact.blurred_time.data().effectN( 1 ).trigger() )
+        .trigger_spell( p -> artifact.blurred_time ) ),
+    r( p )
+  { }
+
+  void execute( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::execute( stacks, value, duration );
+
+    range::for_each( r -> blurred_time_cooldowns, []( cooldown_t* cd ) { cd -> adjust_recharge_multiplier(); } );
+  }
+
+  void expire( timespan_t delay ) override
+  {
+    bool expired = check() != 0;
+
+    buff_t::expire( delay );
+
+    if ( expired )
+    {
+      range::for_each( r -> blurred_time_cooldowns, []( cooldown_t* cd ) { cd -> adjust_recharge_multiplier(); } );
+    }
+  }
+};
+
 struct fof_fod_t : public buff_t
 {
   fof_fod_t( rogue_t* p ) :
@@ -5911,6 +5971,7 @@ void rogue_t::create_buffs()
   buffs.hidden_blade = buff_creator_t( this, "hidden_blade", artifact.hidden_blade.data().effectN( 1 ).trigger() )
     .trigger_spell( artifact.hidden_blade );
   buffs.curse_of_the_dreadblades = buff_creator_t( this, "curse_of_the_dreadblades", artifact.curse_of_the_dreadblades );
+  buffs.blurred_time = new buffs::blurred_time_t( this );
 }
 
 void rogue_t::register_callbacks()
