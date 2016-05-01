@@ -26,6 +26,7 @@ namespace buffs {
                   struct avenging_wrath_buff_t;
                   struct ardent_defender_buff_t;
                   struct wings_of_liberty_driver_t;
+                  struct liadrins_fury_unleashed_t;
                 }
 
 // ==========================================================================
@@ -63,8 +64,10 @@ public:
   heal_t*   active_protector_of_the_innocent;
 
   const special_effect_t* retribution_trinket;
-  const special_effect_t* ashbringer;
   player_t* last_retribution_trinket_target;
+  const special_effect_t* whisper_of_the_nathrezim;
+  const special_effect_t* liadrins_fury_unleashed;
+  const special_effect_t* justice_gaze;
 
   struct active_actions_t
   {
@@ -92,6 +95,8 @@ public:
     buff_t* blessing_of_might;
     buff_t* the_fires_of_justice;
     buff_t* divine_purpose;
+    buff_t* whisper_of_the_nathrezim;
+    buffs::liadrins_fury_unleashed_t* liadrins_fury_unleashed;
 
     // Set Bonuses
     buff_t* faith_barricade;      // t17_2pc_tank
@@ -118,6 +123,7 @@ public:
     gain_t* hp_wake_of_ashes;
     gain_t* hp_templars_verdict_refund;
     gain_t* hp_holy_wrath;
+    gain_t* hp_liadrins_fury_unleashed;
   } gains;
 
   // Cooldowns
@@ -164,6 +170,8 @@ public:
     const spell_data_t* holy_light;
     const spell_data_t* sanctified_wrath; // needed to pull out spec-specific effects
     const spell_data_t* divine_purpose_ret;
+    const spell_data_t* liadrins_fury_unleashed;
+    const spell_data_t* justice_gaze;
   } spells;
 
   // Talents
@@ -404,6 +412,17 @@ namespace buffs {
     }
   };
 
+  struct liadrins_fury_unleashed_t : public buff_t
+  {
+    liadrins_fury_unleashed_t( player_t* p ):
+      buff_t( buff_creator_t( p, "liadrins_fury_unleashed", p -> find_spell( 208410 ) )
+      .tick_callback( [ p ]( buff_t*, int, const timespan_t& ) {
+        paladin_t* paladin = debug_cast<paladin_t*>( p );
+        paladin -> resource_gain( RESOURCE_HOLY_POWER, paladin -> spells.liadrins_fury_unleashed -> effectN( 1 ).base_value(), paladin -> gains.hp_liadrins_fury_unleashed );
+      } ) )
+    { }
+  };
+
   struct ardent_defender_buff_t: public buff_t
   {
     bool oneup_triggered;
@@ -466,6 +485,14 @@ namespace buffs {
       // invalidate Damage and Healing for both specs
       add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
       add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
+    }
+
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+    {
+      buff_t::expire_override( expiration_stacks, remaining_duration );
+
+      paladin_t* p = static_cast<paladin_t*>( player );
+      p -> buffs.liadrins_fury_unleashed -> expire(); // Force Liadrin's Fury to fade
     }
 
     double get_damage_mod() const
@@ -834,6 +861,11 @@ struct avenging_wrath_t : public paladin_heal_t
     {
       p() -> buffs.wings_of_liberty -> trigger( 1 ); // We have to trigger a stack here.
       p() -> buffs.wings_of_liberty_driver -> trigger();
+    }
+
+    if ( p() -> liadrins_fury_unleashed )
+    {
+      p() -> buffs.liadrins_fury_unleashed -> trigger();
     }
   }
 
@@ -2230,6 +2262,14 @@ struct divine_storm_t: public holy_power_consumer_t
     return base_cost;
   }
 
+  virtual double action_multiplier() const override
+  {
+    double am = holy_power_consumer_t::action_multiplier();
+    if ( p() -> buffs.whisper_of_the_nathrezim -> check() )
+      am *= 1.0 + p() -> buffs.whisper_of_the_nathrezim -> data().effectN( 1 ).percent();
+    return am;
+  }
+
   virtual void execute() override
   {
     holy_power_consumer_t::execute();
@@ -2240,6 +2280,14 @@ struct divine_storm_t: public holy_power_consumer_t
     if ( p() -> artifact.echo_of_the_highlord.rank() )
     {
       echoed_spell -> schedule_execute();
+    }
+
+    if ( p() -> whisper_of_the_nathrezim )
+    {
+      if ( p() -> buffs.whisper_of_the_nathrezim -> up() )
+        p() -> buffs.whisper_of_the_nathrezim -> expire();
+
+      p() -> buffs.whisper_of_the_nathrezim -> trigger();
     }
   }
 };
@@ -2253,6 +2301,32 @@ struct hammer_of_justice_t : public paladin_melee_attack_t
   {
     parse_options( options_str );
     ignore_false_positive = true;
+
+    if ( p -> justice_gaze )
+      attack_power_mod.direct = 3.5;
+
+    // TODO: this is a hack; figure out what's really going on here.
+    if ( ( p -> specialization() == PALADIN_RETRIBUTION ) )
+      base_costs[ RESOURCE_MANA ] = 0;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    // TODO this is a hack; figure out a better way to do this
+    if ( t -> health_percentage() < p() -> spells.justice_gaze -> effectN( 1 ).base_value() )
+      return 0;
+    return paladin_melee_attack_t::composite_target_multiplier( t );
+  }
+
+  virtual void execute() override
+  {
+    paladin_melee_attack_t::execute();
+
+    if ( p() -> justice_gaze )
+    {
+      if ( target -> health_percentage() > p() -> spells.justice_gaze -> effectN( 1 ).base_value() )
+        cooldown -> adjust( -(cooldown -> duration * p() -> spells.justice_gaze -> effectN( 2 ).percent()) );
+    }
   }
 };
 
@@ -2545,6 +2619,14 @@ struct templars_verdict_t : public holy_power_consumer_t
     return base_cost;
   }
 
+  virtual double action_multiplier() const override
+  {
+    double am = holy_power_consumer_t::action_multiplier();
+    if ( p() -> buffs.whisper_of_the_nathrezim -> check() )
+      am *= 1.0 + p() -> buffs.whisper_of_the_nathrezim -> data().effectN( 1 ).percent();
+    return am;
+  }
+
   virtual void execute() override
   {
     // store cost for potential refunding (see below)
@@ -2566,6 +2648,13 @@ struct templars_verdict_t : public holy_power_consumer_t
     if ( p() -> artifact.echo_of_the_highlord.rank() )
     {
       echoed_spell -> schedule_execute();
+    }
+
+    if ( p() -> whisper_of_the_nathrezim )
+    {
+      if ( p() -> buffs.whisper_of_the_nathrezim -> up() )
+        p() -> buffs.whisper_of_the_nathrezim -> expire();
+      p() -> buffs.whisper_of_the_nathrezim -> trigger();
     }
   }
 };
@@ -2937,6 +3026,7 @@ void paladin_t::init_gains()
   gains.hp_wake_of_ashes            = get_gain( "wake_of_ashes" );
   gains.hp_holy_wrath               = get_gain( "holy_wrath" );
   gains.hp_templars_verdict_refund  = get_gain( "templars_verdict_refund" );
+  gains.hp_liadrins_fury_unleashed  = get_gain( "liadrins_fury_unleashed" );
 
   if ( ! retribution_trinket )
   {
@@ -3008,6 +3098,8 @@ void paladin_t::create_buffs()
   buffs.the_fires_of_justice           = buff_creator_t( this, "the_fires_of_justice" ).spell( find_spell( 209785 ) );
   buffs.blessing_of_might              = buff_creator_t( this, "blessing_of_might" ).spell( find_spell( 203528 ) );
   buffs.divine_purpose                 = buff_creator_t( this, "divine_purpose" ).spell( find_spell( 223819 ) );
+  buffs.whisper_of_the_nathrezim       = buff_creator_t( this, "whisper_of_the_nathrezim" ).spell( find_spell( 207635 ) );
+  buffs.liadrins_fury_unleashed        = new buffs::liadrins_fury_unleashed_t( this );
 
   // Tier Bonuses
   // T17
@@ -3564,6 +3656,8 @@ void paladin_t::init_spells()
   spells.holy_light                    = find_specialization_spell( "Holy Light" );
   spells.sanctified_wrath              = find_spell( 114232 );  // spec-specific effects for Ret/Holy Sanctified Wrath
   spells.divine_purpose_ret            = find_spell( 223817 );
+  spells.liadrins_fury_unleashed       = find_spell( 208408 );
+  spells.justice_gaze                  = find_spell( 211557 );
 
   // Masteries
   passives.divine_bulwark         = find_mastery_spell( PALADIN_PROTECTION );
@@ -4370,11 +4464,23 @@ static void retribution_trinket( special_effect_t& effect )
   }
 }
 
-// Ashbringer!
-static void ashbringer( special_effect_t& effect )
+// Legiondaries
+static void whisper_of_the_nathrezim( special_effect_t& effect )
 {
   paladin_t* s = debug_cast<paladin_t*>( effect.player );
-  do_trinket_init( s, PALADIN_RETRIBUTION, s -> ashbringer, effect );
+  do_trinket_init( s, PALADIN_RETRIBUTION, s -> whisper_of_the_nathrezim, effect );
+}
+
+static void liadrins_fury_unleashed( special_effect_t& effect )
+{
+  paladin_t* s = debug_cast<paladin_t*>( effect.player );
+  do_trinket_init( s, PALADIN_RETRIBUTION, s -> liadrins_fury_unleashed, effect );
+}
+
+static void justice_gaze( special_effect_t& effect )
+{
+  paladin_t* s = debug_cast<paladin_t*>( effect.player );
+  do_trinket_init( s, PALADIN_RETRIBUTION, s -> justice_gaze, effect );
 }
 
 // PALADIN MODULE INTERFACE =================================================
@@ -4395,7 +4501,9 @@ struct paladin_module_t : public module_t
   virtual void static_init() const override
   {
     unique_gear::register_special_effect( 184911, retribution_trinket );
-    unique_gear::register_special_effect( 179546, ashbringer );
+    unique_gear::register_special_effect( 207633, whisper_of_the_nathrezim );
+    unique_gear::register_special_effect( 208408, liadrins_fury_unleashed );
+    unique_gear::register_special_effect( 211557, justice_gaze );
   }
 
   virtual void init( player_t* p ) const override
