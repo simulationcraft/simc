@@ -70,13 +70,18 @@ class demon_hunter_td_t : public actor_target_data_t
 public:
   struct dots_t
   {
+    // Vengeance
+    dot_t* fiery_brand;
   } dots;
 
   struct debuffs_t
   {
+    // Havoc
     buff_t* anguish;
-    buff_t* fiery_brand;
     buff_t* nemesis;
+
+    // Vengeance
+    buff_t* frail;
   } debuffs;
 
   bool chaos_strike_crit;
@@ -225,6 +230,7 @@ public:
 
     // Vengeance
     const spell_data_t* vengeance;
+    const spell_data_t* fiery_brand_dr;
     const spell_data_t* immolation_aura;
     const spell_data_t* soul_cleave;
     const spell_data_t* riposte;
@@ -288,7 +294,6 @@ public:
     cooldown_t* consume_magic;
     cooldown_t* felblade;
     cooldown_t* fel_eruption;
-    cooldown_t* throw_glaive;
 
     // Havoc
     cooldown_t* blade_dance;
@@ -304,9 +309,11 @@ public:
     cooldown_t* fury_of_the_illidari;
     cooldown_t* nemesis;
     cooldown_t* netherwalk;
+    cooldown_t* throw_glaive;
     cooldown_t* vengeful_retreat;
 
     // Vengeance
+    cooldown_t* sigil_of_flame;
   } cooldown;
 
   // Gains
@@ -431,6 +438,7 @@ public:
   void recalculate_resource_max( resource_e ) override;
   double composite_attack_power_multiplier() const override;
   double composite_dodge() const override;
+  double composite_leech() const override;
   double composite_melee_crit() const override;
   double composite_parry() const override;
   double composite_parry_rating() const override;
@@ -732,11 +740,24 @@ public:
     return tm;
   }
 
+  virtual void consume_resource() override
+  {
+    ab::consume_resource();
+
+    if ( p() -> talent.etched_in_blood -> ok() && ab::resource_current == RESOURCE_PAIN && ab::resource_consumed > 0 )
+    {
+      // No spell data values... like at all.
+      timespan_t reduction = ( ab::resource_consumed / 20.0 ) * timespan_t::from_seconds( -1.0 );
+
+      p() -> cooldown.sigil_of_flame -> adjust( reduction );
+    }
+  }
+
   virtual void impact( action_state_t* s ) override
   {
     ab::impact( s );
 
-    if ( this -> result_is_hit( s -> result ) )
+    if ( ab::result_is_hit( s -> result ) )
     {
       // benefit tracking
       p() -> get_target_data( s -> target ) -> debuffs.nemesis -> up();
@@ -1314,19 +1335,148 @@ struct fel_eruption_t : public demon_hunter_spell_t
 
 struct fiery_brand_t : public demon_hunter_spell_t
 {
+  struct fiery_brand_state_t : public action_state_t
+  {
+    bool primary;
+
+    fiery_brand_state_t( action_t* a, player_t* target ) :
+      action_state_t( a, target )
+    {}
+
+    void initialize() override
+    {
+      action_state_t::initialize();
+
+      primary = false;
+    }
+
+    void copy_state( const action_state_t* s ) override
+    {
+      action_state_t::copy_state( s );
+
+      primary = debug_cast<const fiery_brand_state_t*>( s ) -> primary;
+    }
+
+    std::ostringstream& debug_str( std::ostringstream& s ) override
+    {
+      action_state_t::debug_str( s );
+
+      s << " primary=" << primary;
+
+      return s;
+    }
+  };
+
+  struct fiery_brand_dot_t : public demon_hunter_spell_t
+  {
+    fiery_brand_dot_t( demon_hunter_t* p ) :
+      demon_hunter_spell_t( "fiery_brand_dot", p, p -> find_spell( 204022 ) )
+    {
+      background = dual = true;
+      hasted_ticks = may_crit = false;
+      school = p -> find_specialization_spell( "Fiery Brand" ) -> get_school_type();
+      base_dd_min = base_dd_max = 0;
+
+      if ( p -> talent.burning_alive -> ok() )
+      {
+        attack_power_mod.tick = 1.0; // not in spell data
+        radius = p -> find_spell( 207760 ) -> effectN( 1 ).radius();
+      }
+      else
+      {
+        base_tick_time = dot_duration;
+        callbacks = false;
+      }
+    }
+
+    action_state_t* new_state() override
+    { return new fiery_brand_state_t( this, target ); }
+
+    virtual void record_data( action_state_t* s ) override
+    {
+      // Don't record data direct hits for this action.
+      if ( s -> result_type == DMG_OVER_TIME )
+      {
+        demon_hunter_spell_t::record_data( s );
+      }
+    }
+
+    void tick( dot_t* d ) override
+    {
+      demon_hunter_spell_t::tick( d );
+
+      trigger_burning_alive( d );
+    }
+
+    void trigger_burning_alive( dot_t* d )
+    {
+      if ( ! p() -> talent.burning_alive -> ok() )
+      {
+        return;
+      }
+
+      if ( ! debug_cast<fiery_brand_state_t*>( d -> state ) -> primary )
+      {
+        return;
+      }
+
+      // Retrieve target list, checking for distance if necessary.
+      std::vector<player_t*> targets = target_list();
+      if ( sim -> distance_targeting_enabled )
+      {
+        targets = check_distance_targeting( targets );
+      }
+
+      if ( targets.size() == 1 )
+      {
+        return;
+      }
+
+      // Filter target list down to targets that are not already branded.
+      std::vector<player_t*> candidates;
+
+      for ( size_t i = 0; i < targets.size(); i++ )
+      {
+        if ( ! td( targets[ i ] ) -> dots.fiery_brand -> is_ticking() )
+        {
+          candidates.push_back( targets[ i ] );
+        }
+      }
+
+      if ( candidates.size() == 0 )
+      {
+        return;
+      }
+
+      // Pick a random target.
+      player_t* target =
+        candidates[ ( int ) p() -> rng().range( 0, candidates.size() ) ];
+
+      // Execute a dot on that target.
+      this -> target = target;
+      schedule_execute();
+    }
+  };
+
   fiery_brand_t( demon_hunter_t* p, const std::string& options_str ) :
     demon_hunter_spell_t( "fiery_brand", p,
       p -> find_specialization_spell( "Fiery Brand" ) )
-  {}
-
-  void impact( action_state_t* s ) override
   {
-    demon_hunter_spell_t::impact( s );
+    impact_action = new fiery_brand_dot_t( p );
+    impact_action -> stats = stats;
+  }
 
-    if ( result_is_hit( s -> result ) )
-    {
-      td( s -> target ) -> debuffs.fiery_brand -> trigger();
-    }
+  action_state_t* new_state() override
+  { return new fiery_brand_state_t( this, target ); }
+
+  void snapshot_state( action_state_t* s, dmg_e rt ) override
+  {
+    demon_hunter_spell_t::snapshot_state( s, rt );
+
+    /* Set this DoT as the primary DoT, enabling its ticks to spread the DoT
+       to nearby targets when Burning Alive is talented. impact_action will
+       automatically copy this state to the dot state. */
+    debug_cast<fiery_brand_state_t*>( s ) -> primary = true;
   }
 };
 
@@ -1524,6 +1674,93 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
     demon_hunter_spell_t::execute();
 
     new ( *sim ) delayed_execute_event_t( p(), damage, target, delay );
+  }
+};
+
+// Spirit Bomb ==============================================================
+
+struct spirit_bomb_t : public demon_hunter_spell_t
+{
+  struct frail_t : public demon_hunter_spell_t
+  {
+    frail_t( demon_hunter_t* p ) :
+      demon_hunter_spell_t( "frail", p, p -> find_spell( 218677 ) )
+    {
+      aoe = -1;
+      background = dual = true;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      demon_hunter_spell_t::impact( s );
+
+      if ( result_is_hit( s -> result ) )
+      {
+        td( s -> target ) -> debuffs.frail -> trigger();
+      }
+    }
+  };
+
+  frail_t* frail;
+
+  spirit_bomb_t( demon_hunter_t* p, const std::string& options_str ) :
+    demon_hunter_spell_t( "spirit_bomb", p, p -> talent.spirit_bomb )
+  {
+    parse_options( options_str );
+
+    may_miss = may_crit = false;
+    frail = new frail_t( p );
+    frail -> stats = stats;
+  }
+
+  /* Don't record data for this action, since we don't want that 0
+     damage hit incorporated into statistics. */
+  virtual void record_data( action_state_t* ) override {}
+
+  void consume_resource() override
+  {
+    demon_hunter_spell_t::consume_resource();
+
+    if ( p() -> lesser_soul_fragments > 0 )
+    {
+      p() -> lesser_soul_fragments--;
+
+      if ( sim -> debug )
+      {
+        sim -> out_debug.printf(
+          "%s consumes 1 lesser soul fragment for %s. count=%u",
+          p() -> name(), name(), p() -> lesser_soul_fragments );
+      }
+    }
+    else
+    {
+      p() -> soul_fragments--;
+
+      if ( sim -> debug )
+      {
+        sim -> out_debug.printf(
+          "%s consumes 1 soul fragment for %s. count=%u",
+          p() -> name(), name(), p() -> soul_fragments );
+      }
+    }
+  }
+
+  void execute() override
+  {
+    demon_hunter_spell_t::execute();
+
+    frail -> target = target;
+    frail -> schedule_execute();
+  }
+
+  bool ready() override
+  {
+    if ( p() -> lesser_soul_fragments + p() -> soul_fragments == 0 )
+    {
+      return false;
+    }
+
+    return demon_hunter_spell_t::ready();
   }
 };
 
@@ -2467,11 +2704,12 @@ struct shear_t : public demon_hunter_attack_t
     shatter_chance = { 0.04, 0.12, 0.25, 0.40, 0.60, 0.80, 0.90, 1.00 };
   }
 
-  void shatter()
+  void shatter( action_state_t* s )
   {
     assert( p() -> shear_counter < 8 );
 
-    double chance = shatter_chance[ p() -> shear_counter ];
+    double chance = shatter_chance[ p() -> shear_counter ]
+      + td( s -> target ) -> debuffs.frail -> value();
 
     if ( p() -> rng().roll( chance ) )
     {
@@ -2506,7 +2744,7 @@ struct shear_t : public demon_hunter_attack_t
     {
       p() -> resource_gain( RESOURCE_PAIN, data().effectN( 3 ).resource( RESOURCE_PAIN ), action_gain );
 
-      shatter();
+      shatter( execute_state );
     }
   }
 };
@@ -2851,7 +3089,8 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     demon_hunter_buff_t<buff_t>( *p,
       buff_creator_t( p, "metamorphosis", p -> spec.metamorphosis_buff )
         .cd( timespan_t::zero() )
-        .default_value( p -> spec.metamorphosis_buff -> effectN( 2 ).percent() ) )
+        .default_value( p -> spec.metamorphosis_buff -> effectN( 2 ).percent() )
+        .add_invalidate( CACHE_LEECH ) )
   {}
 
   void start( int stacks, double value, timespan_t duration ) override
@@ -2882,10 +3121,14 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
 demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   : actor_target_data_t( target, &p ), dots( dots_t() ), debuffs( debuffs_t() )
 {
+  // Havoc
   debuffs.anguish     = new buffs::anguish_debuff_t( &p, target );
-  debuffs.fiery_brand = buff_creator_t( target, "fiery_brand", p.find_spell( 207744 ) )
-                          .default_value( p.find_spell( 209245 ) -> effectN( 2 ).percent() );
   debuffs.nemesis     = new buffs::nemesis_debuff_t( &p, target );
+
+  // Vengeance
+  dots.fiery_brand    = target -> get_dot( "fiery_brand_dot", &p );
+  debuffs.frail       = buff_creator_t( target, "frail", p.find_spell( 218677 ) )
+                          .default_value( 0.10 ); // 10% via http://us.battle.net/wow/en/forum/topic/20743504316?page=4#75
 }
 
 // ==========================================================================
@@ -2930,24 +3173,30 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r )
  */
 void demon_hunter_t::create_cooldowns()
 {
+  // General
+  cooldown.consume_magic        = get_cooldown( "consume_magic" );
+  cooldown.felblade             = get_cooldown( "felblade" );
+  cooldown.fel_eruption         = get_cooldown( "fel_eruption" );
+  
+  // Havoc
   cooldown.blade_dance          = get_cooldown( "blade_dance" );
   cooldown.blur                 = get_cooldown( "blur" );
   cooldown.chaos_blades         = get_cooldown( "chaos_blades" );
   cooldown.chaos_nova           = get_cooldown( "chaos_nova" );
-  cooldown.consume_magic        = get_cooldown( "consume_magic" );
   cooldown.death_sweep          = get_cooldown( "death_sweep" );
   cooldown.demonic_appetite     = get_cooldown( "demonic_appetite" );
   cooldown.eye_beam             = get_cooldown( "eye_beam" );
   cooldown.fel_barrage          = get_cooldown( "fel_barrage" );
   cooldown.fel_barrage_proc     = get_cooldown( "fel_barrage_proc" );
-  cooldown.felblade             = get_cooldown( "felblade" );
-  cooldown.fel_eruption         = get_cooldown( "fel_eruption" );
   cooldown.fel_rush             = get_cooldown( "fel_rush" );
   cooldown.fury_of_the_illidari = get_cooldown( "fury_of_the_illidari" );
   cooldown.nemesis              = get_cooldown( "nemesis" );
   cooldown.netherwalk           = get_cooldown( "netherwalk" );
   cooldown.throw_glaive         = get_cooldown( "throw_glaive" );
   cooldown.vengeful_retreat     = get_cooldown( "vengeful_retreat" );
+
+  // Vengeance
+  cooldown.sigil_of_flame       = get_cooldown( "sigil_of_flame" );
 }
 
 /* Construct gains
@@ -3094,6 +3343,20 @@ double demon_hunter_t::composite_dodge() const
   return d;
 }
 
+// demon_hunter_t::composite_leech ==========================================
+
+double demon_hunter_t::composite_leech() const
+{
+  double l = player_t::composite_leech();
+
+  if ( talent.soul_rending -> ok() && buff.metamorphosis -> check() )
+  {
+    l += talent.soul_rending -> effectN( 1 ).percent();
+  }
+
+  return l;
+}
+
 // demon_hunter_t::composite_melee_crit =====================================
 
 double demon_hunter_t::composite_melee_crit() const
@@ -3204,6 +3467,8 @@ action_t* demon_hunter_t::create_action( const std::string& name,
     return new nemesis_t( this, options_str );
   if ( name == "sigil_of_flame" )
     return new sigil_of_flame_t( this, options_str );
+  if ( name == "spirit_bomb" )
+    return new spirit_bomb_t( this, options_str );
 
   using namespace actions::attacks;
 
@@ -3407,6 +3672,7 @@ void demon_hunter_t::init_spells()
 
   // Vengeance
   spec.vengeance          = find_specialization_spell( "Vengeance Demon Hunter" );
+  spec.fiery_brand_dr     = find_spell( 209245 );
   spec.immolation_aura    = find_specialization_spell( "Immolation Aura" );
   spec.riposte            = find_specialization_spell( "Riposte" );
   spec.soul_cleave        = find_specialization_spell( "Soul Cleave" );
@@ -3612,7 +3878,8 @@ void demon_hunter_t::create_buffs()
   {
     buff.metamorphosis =
       buff_creator_t( this, "metamorphosis", spec.metamorphosis_buff )
-        .cd( timespan_t::zero() );
+        .cd( timespan_t::zero() )
+        .add_invalidate( CACHE_LEECH );
   }
   else
   {
@@ -3926,7 +4193,10 @@ void demon_hunter_t::target_mitigation( school_e school, dmg_e dt,
     s -> result_amount *= 1.0 + buff.empower_wards -> value();
   }
 
-  s -> result_amount *= 1.0 + get_target_data( s -> action -> player ) -> debuffs.fiery_brand -> value();
+  if ( get_target_data( s -> action -> player ) -> dots.fiery_brand -> is_ticking() )
+  {
+    s -> result_amount *= 1.0 + spec.fiery_brand_dr -> effectN( 2 ).percent();
+  }
 }
 
 // demon_hunter_t::invalidate_cache =========================================
