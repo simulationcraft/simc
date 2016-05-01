@@ -213,6 +213,7 @@ struct rogue_t : public player_t
     buff_t* shadow_blades;
     buff_t* enveloping_shadows;
     buff_t* goremaws_bite;
+    buff_t* hidden_blade;
 
     // Roll the bones
     buff_t* roll_the_bones;
@@ -425,6 +426,23 @@ struct rogue_t : public player_t
     artifact_power_t serrated_edge;
     artifact_power_t from_the_shadows;
     artifact_power_t slayers_precision;
+
+    // Swashbuckler
+    artifact_power_t curse_of_the_dreadblades;
+    artifact_power_t cursed_edges;
+    artifact_power_t black_powder;
+    artifact_power_t fortune_strikes;
+    artifact_power_t gunslinger;
+    artifact_power_t blunderbuss;
+    artifact_power_t fatebringer;
+    artifact_power_t blade_dancer;
+    artifact_power_t blurred_time;
+    artifact_power_t greed;
+    artifact_power_t hidden_blade;
+    artifact_power_t fortunes_boon;
+    artifact_power_t fates_thirst;
+    artifact_power_t fortunes_strike;
+    artifact_power_t cursed_steel;
   } artifact;
 
   // Procs
@@ -950,6 +968,8 @@ struct main_gauche_t : public rogue_attack_t
     background      = true;
     may_crit        = true;
     proc = true; // it's proc; therefore it cannot trigger main_gauche for chain-procs
+
+    base_multiplier *= 1.0 + p -> artifact.fortunes_strike.percent();
   }
 
   bool procs_poison() const override
@@ -1590,6 +1610,11 @@ double rogue_attack_t::cost() const
   if ( p() -> sets.has_set_bonus( SET_MELEE, T15, B2 ) && p() -> buffs.tier13_2pc -> check() )
     c *= 1.0 + p() -> spell.tier13_2pc -> effectN( 1 ).percent();
 
+  if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 )
+  {
+    c -= p() -> artifact.fatebringer.value();
+  }
+
   if ( c <= 0 )
     c = 0;
 
@@ -1831,6 +1856,8 @@ struct adrenaline_rush_t : public rogue_attack_t
     rogue_attack_t( "adrenaline_rush", p, p -> find_specialization_spell( "Adrenaline Rush" ), options_str )
   {
     harmful = may_miss = may_crit = false;
+
+    cooldown -> duration += p -> artifact.fortunes_boon.time_value();
   }
 
   void execute() override
@@ -1886,6 +1913,7 @@ struct ambush_t : public rogue_attack_t
 
     p() -> buffs.t16_2pc_melee -> expire();
     p() -> buffs.sleight_of_hand -> expire();
+    p() -> buffs.hidden_blade -> trigger();
   }
 
   bool ready() override
@@ -1971,6 +1999,7 @@ struct between_the_eyes_t : public rogue_attack_t
         options_str )
   {
     crit_bonus_multiplier = 3;
+    base_multiplier *= 1.0 + p -> artifact.black_powder.percent();
   }
 };
 
@@ -2114,6 +2143,7 @@ struct envenom_t : public rogue_attack_t
           .y( player -> y_position )
           .duration( p() -> spell.bag_of_tricks_driver -> duration() )
           .start_time( sim -> current_time() )
+          .hasted( ground_aoe_params_t::ATTACK_HASTE ) // TODO: Doubledip? Check later
           .action( p() -> poison_bomb ), true );
     }
   }
@@ -2572,7 +2602,9 @@ struct pistol_shot_t : public rogue_attack_t
 {
   pistol_shot_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "pistol_shot", p, p -> find_specialization_spell( "Pistol Shot" ), options_str )
-  { }
+  {
+    base_crit += p -> artifact.gunslinger.percent();
+  }
 
   double cost() const override
   {
@@ -2634,6 +2666,8 @@ struct run_through_t: public rogue_attack_t
   run_through_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "run_through", p, p -> find_specialization_spell( "Run Through" ), options_str )
   {
+    base_multiplier *= 1.0 + p -> artifact.fates_thirst.percent();
+
     // Tier 18 (WoD 6.2) Combat trinket effect
     // TODO: Eviscerate actually changes spells to 185187
     // TODO: Legion
@@ -3041,6 +3075,7 @@ struct saber_slash_t : public rogue_attack_t
     saberslash_proc_event( nullptr ), delay( data().duration() )
   {
     weapon = &( player -> main_hand_weapon );
+    base_multiplier *= 1.0 + p -> artifact.cursed_edges.percent();
   }
 
   void reset() override
@@ -3061,10 +3096,12 @@ struct saber_slash_t : public rogue_attack_t
             p() -> gains.broadsides );
       }
 
-      if ( p() -> buffs.opportunity -> trigger() )
+      if ( p() -> buffs.opportunity -> trigger() || p() -> buffs.hidden_blade -> up() )
       {
         saberslash_proc_event = new ( *sim ) saberslash_proc_event_t( p(), this, state -> target );
       }
+
+      p() -> buffs.hidden_blade -> decrement();
     }
   }
 };
@@ -3989,9 +4026,10 @@ void rogue_t::trigger_combat_potency( const action_state_t* state )
     return;
 
   // energy gain value is in the proc trigger spell
-  resource_gain( RESOURCE_ENERGY,
-                 spec.combat_potency -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_ENERGY ),
-                 gains.combat_potency );
+  double gain = spec.combat_potency -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_ENERGY ) +
+                artifact.fortune_strikes.value();
+
+  resource_gain( RESOURCE_ENERGY, gain, gains.combat_potency, state -> action );
 }
 
 void rogue_t::trigger_energy_refund( const action_state_t* state )
@@ -4921,6 +4959,7 @@ double rogue_t::composite_player_multiplier( school_e school ) const
 
   m *= 1.0 + artifact.slayers_precision.percent();
   m *= 1.0 + artifact.legionblade.percent();
+  m *= 1.0 + artifact.cursed_steel.percent();
 
   if ( buffs.master_of_subtlety -> check() || buffs.master_of_subtlety_passive -> check() )
   {
@@ -5497,6 +5536,22 @@ void rogue_t::init_spells()
   artifact.from_the_shadows = find_artifact_spell( "From the Shadows" );
   artifact.slayers_precision= find_artifact_spell( "Slayer's Precision" );
 
+  artifact.curse_of_the_dreadblades = find_artifact_spell( "Curse of the Dreadblades" );
+  artifact.cursed_edges     = find_artifact_spell( "Cursed Edges" );
+  artifact.black_powder     = find_artifact_spell( "Black Powder" );
+  artifact.fortune_strikes  = find_artifact_spell( "Fortune Strikes" );
+  artifact.gunslinger       = find_artifact_spell( "Gunslinger" );
+  artifact.blunderbuss      = find_artifact_spell( "Blunderbuss" );
+  artifact.fatebringer      = find_artifact_spell( "Fatebringer" );
+  artifact.blade_dancer     = find_artifact_spell( "Blade Dancer" );
+  artifact.blurred_time     = find_artifact_spell( "Blurred Time" );
+  artifact.greed            = find_artifact_spell( "Greed" );
+  artifact.hidden_blade     = find_artifact_spell( "Hidden Blade" );
+  artifact.fortunes_boon    = find_artifact_spell( "Fortune's Boon");
+  artifact.fates_thirst     = find_artifact_spell( "Fate's Thirst" );
+  artifact.fortunes_strike  = find_artifact_spell( "Fortune's Strike" );
+  artifact.cursed_steel     = find_artifact_spell( "Cursed Steel" );
+
   auto_attack = new actions::auto_melee_attack_t( this, "" );
 
   if ( mastery.main_gauche -> ok() )
@@ -5823,6 +5878,9 @@ void rogue_t::create_buffs()
       .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
         resource_gain( RESOURCE_ENERGY, b -> data().effectN( 2 ).resource( RESOURCE_ENERGY ), gains.goremaws_bite );
       } );
+
+  buffs.hidden_blade = buff_creator_t( this, "hidden_blade", artifact.hidden_blade.data().effectN( 1 ).trigger() )
+    .trigger_spell( artifact.hidden_blade );
 }
 
 void rogue_t::register_callbacks()
@@ -6135,7 +6193,11 @@ double rogue_t::energy_regen_per_second() const
   double r = player_t::energy_regen_per_second();
 
   if ( buffs.blade_flurry -> check() )
+  {
+    double penalty = spec.blade_flurry -> effectN( 1 ).percent();
+    penalty += artifact.blade_dancer.percent();
     r *= 1.0 + spec.blade_flurry -> effectN( 1 ).percent();
+  }
 
   if ( buffs.buried_treasure -> up() )
   {
