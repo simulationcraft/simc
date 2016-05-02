@@ -127,6 +127,8 @@ public:
   pet_t* guardian_earth_elemental;
   pet_t* guardian_lightning_elemental;
 
+  pet_t* guardian_greater_lightning_elemental;
+
   // Tier 18 (WoD 6.2) class specific trinket effects
   const special_effect_t* elemental_bellows;
   const special_effect_t* furious_winds;
@@ -361,6 +363,7 @@ public:
     artifact_power_t elementalist;
     artifact_power_t firestorm;
     artifact_power_t power_of_the_maelstrom;
+    artifact_power_t fury_of_the_storms;
 
     // Enhancement
     artifact_power_t doom_winds;
@@ -381,9 +384,9 @@ public:
   struct
   {
     const spell_data_t* resurgence;
-    const spell_data_t* echo_of_the_elements;
     const spell_data_t* eruption;
     const spell_data_t* maelstrom_melee_gain;
+    const spell_data_t* fury_of_the_storms_driver;
   } spell;
 
   // Cached pointer for ascendance / normal white melee
@@ -1785,6 +1788,48 @@ struct lightning_elemental_t : public pet_t
   resource_e primary_resource() const override
   { return specialization() == SHAMAN_RESTORATION ? RESOURCE_MANA : RESOURCE_MAELSTROM; }
 };
+
+struct greater_lightning_elemental_t : public pet_t
+{
+  struct lightning_blast_t : public spell_t
+  {
+    lightning_blast_t( greater_lightning_elemental_t* p ) :
+      spell_t( "lightning_blast", p, p -> find_spell( 191726 ) )
+    {
+      base_costs[ RESOURCE_MANA ] = 0;
+      may_crit = true;
+      ability_lag = timespan_t::from_millis( 300 );
+      ability_lag_stddev =  timespan_t::from_millis( 25 );
+    }
+  };
+
+  greater_lightning_elemental_t( shaman_t* owner ) :
+    pet_t( owner -> sim, owner, "greater_lightning_elemental", true, true )
+  {
+    stamina_per_owner = 1.0;
+    regen_type = REGEN_DISABLED;
+  }
+
+  void init_base_stats() override
+  {
+    pet_t::init_base_stats();
+
+    owner_coeff.sp_from_sp = 1.0;
+  }
+
+  action_t* create_action( const std::string& name, const std::string& options_str ) override
+  {
+    if ( name == "lightning_blast" ) return new lightning_blast_t( this );
+    return pet_t::create_action( name, options_str );
+  }
+
+  void init_action_list() override
+  {
+    action_list_str = "lightning_blast";
+
+    pet_t::init_action_list();
+  }
+};
 } // Namespace pet ends
 
 // ==========================================================================
@@ -2048,25 +2093,17 @@ struct unleash_doom_spell_t : public shaman_spell_t
 
 struct elemental_overload_spell_t : public shaman_spell_t
 {
-  double fulmination_gain;
-
-  elemental_overload_spell_t( shaman_t* p, const std::string& name, const spell_data_t* s, double fg = 0 ) :
-    shaman_spell_t( name, p, s ), fulmination_gain( fg )
+  elemental_overload_spell_t( shaman_t* p, const std::string& name, const spell_data_t* s, double mg = 0 ) :
+    shaman_spell_t( name, p, s )
   {
     base_execute_time = timespan_t::zero();
     background = true;
     callbacks = false;
 
     base_multiplier *= 1.0 + p -> artifact.master_of_the_elements.percent();
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    shaman_spell_t::impact( state );
-
-    if ( fulmination_gain && result_is_hit( state -> result ) && p() -> spec.fulmination -> ok() )
+    if ( mg > 0 )
     {
-      player -> resource_gain( RESOURCE_MAELSTROM, fulmination_gain, p() -> gain.fulmination, this );
+      maelstrom_gain = mg;
     }
   }
 };
@@ -2092,26 +2129,25 @@ struct earthen_might_t : public shaman_spell_t
   }
 };
 
-struct volcanic_inferno_damage_t : public shaman_spell_t
+// Ground AOE pulse
+struct ground_aoe_spell_t : public spell_t
 {
-  volcanic_inferno_damage_t( shaman_t* p ) :
-    shaman_spell_t( "volcanic_inferno_damage", p, p -> find_spell( 205533 ) )
+  ground_aoe_spell_t( shaman_t* p, const std::string& name, const spell_data_t* spell ) :
+    spell_t( name, p, spell )
   {
-    background = true;
     aoe = -1;
+    callbacks = false;
+    ground_aoe = background = may_crit = true;
   }
 };
 
-struct volcanic_inferno_driver_t : public shaman_spell_t
+struct volcanic_inferno_t : public ground_aoe_spell_t
 {
-  volcanic_inferno_driver_t( shaman_t* p ) :
-    shaman_spell_t( "volcanic_inferno", p, p -> find_spell( 205532 ) )
+  volcanic_inferno_t( shaman_t* p ) :
+    ground_aoe_spell_t( p, "volcanic_inferno", p -> find_spell( 205533 ) )
   {
     background = true;
-    may_crit = may_miss = callbacks = hasted_ticks = false; // TODO: Hasted ticks?
-    tick_action = new volcanic_inferno_damage_t( p );
-    base_tick_time = timespan_t::from_seconds( 1 ); // TODO: DBCify
-    dot_duration = data().duration();
+    aoe = -1;
   }
 };
 
@@ -2166,18 +2202,6 @@ struct earthen_rage_driver_t : public spell_t
   // Maximum duration is extended by max of 6 seconds
   timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t ) const override
   { return data().duration(); }
-};
-
-// Ground AOE pulse
-struct ground_aoe_spell_t : public spell_t
-{
-  ground_aoe_spell_t( shaman_t* p, const std::string& name, const spell_data_t* spell ) :
-    spell_t( name, p, spell )
-  {
-    aoe = -1;
-    callbacks = false;
-    ground_aoe = background = may_crit = true;
-  }
 };
 
 // shaman_heal_t::impact ====================================================
@@ -2685,10 +2709,10 @@ struct crash_lightning_t : public shaman_attack_t
           .target( execute_state -> target )
           .x( player -> x_position )
           .y( player -> y_position )
-          .duration( p() -> find_spell( 210797 ) -> duration() )
+          .duration( p() -> find_spell( 205532 ) -> duration() )
           .start_time( sim -> current_time() )
-          .action( p() -> crashing_storm )
-          .hasted( ground_aoe_params_t::ATTACK_HASTE ), true );
+          .action( p() -> volcanic_inferno )
+          .hasted( ground_aoe_params_t::SPELL_HASTE ), true );
     }
 
     if ( result_is_hit( execute_state -> result ) )
@@ -2908,9 +2932,13 @@ struct chain_lightning_t: public shaman_spell_t
     base_add_multiplier = data().effectN( 1 ).chain_multiplier();
     radius = 10.0;
 
+    maelstrom_gain = data().effectN( 2 ).base_value();
+
     if ( player -> mastery.elemental_overload -> ok() )
     {
-      overload = new elemental_overload_spell_t( player, "chain_lightning_overload", player -> find_spell( 45297 ) );
+      overload = new elemental_overload_spell_t( player, "chain_lightning_overload",
+          player -> find_spell( 45297 ),
+          player -> find_spell( 218558 ) -> effectN( 1 ).resource( RESOURCE_MAELSTROM ) );
       add_child( overload );
     }
   }
@@ -3073,9 +3101,13 @@ struct lava_beam_t : public shaman_spell_t
     // TODO: Currently not affected in spell data.
     base_multiplier *= 1.0 + player -> artifact.electric_discharge.percent();
 
+    maelstrom_gain = data().effectN( 3 ).base_value();
+
     if ( player -> mastery.elemental_overload -> ok() )
     {
-      overload = new elemental_overload_spell_t( player, "lava_beam_overload", player -> find_spell( 114738 ) );
+      overload = new elemental_overload_spell_t( player, "lava_beam_overload",
+          player -> find_spell( 114738 ),
+          player -> find_spell( 218559 ) -> effectN( 1 ).resource( RESOURCE_MAELSTROM ) );
       add_child( overload );
     }
   }
@@ -3108,6 +3140,9 @@ struct lava_burst_t : public shaman_spell_t
     base_multiplier *= 1.0 + player -> talent.path_of_flame -> effectN( 1 ).percent();
     // TODO: Additive with Elemental Fury? Spell data claims same effect property, so probably ..
     crit_bonus_multiplier += player -> artifact.molten_blast.percent();
+
+    // Manacost is only for resto
+    base_costs[ RESOURCE_MANA ] = 0;
 
     if ( player -> mastery.elemental_overload -> ok() )
     {
@@ -3188,20 +3223,16 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( result_is_hit( state -> result ) )
     {
-      /*
-      if ( p() -> spec.fulmination -> ok() )
-      {
-        player -> resource_gain( RESOURCE_MAELSTROM,
-                                 p() -> spec.fulmination -> effectN( 1 ).resource( RESOURCE_MAELSTROM ),
-                                 p() -> gain.fulmination,
-                                 this );
-      }
-      */
-
       if ( rng().roll( p() -> artifact.volcanic_inferno.data().proc_chance() ) )
       {
-        p() -> volcanic_inferno -> target = state -> target;
-        p() -> volcanic_inferno -> schedule_execute();
+        new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+            .target( state -> target )
+            // Spawn vortices at target instead of player (like with crashing storm)
+            .x( state -> target -> x_position )
+            .y( state -> target -> y_position )
+            .duration( p() -> find_spell( 199121 ) -> duration() )
+            .start_time( sim -> current_time() )
+            .action( p() -> volcanic_inferno ) );
       }
     }
   }
@@ -3219,6 +3250,8 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     base_multiplier *= 1.0 + player -> artifact.surge_of_power.percent();
 
+    maelstrom_gain = player -> find_spell( 214815 ) -> effectN( 1 ).resource( RESOURCE_MAELSTROM );
+
     if ( player -> talent.overcharge -> ok() )
     {
       cooldown -> duration += player -> talent.overcharge -> effectN( 3 ).time_value();
@@ -3235,7 +3268,9 @@ struct lightning_bolt_t : public shaman_spell_t
 
     if ( player -> mastery.elemental_overload -> ok() )
     {
-      overload = new elemental_overload_spell_t( player, "lightning_bolt_overload", player -> find_spell( 45284 ) );
+      overload = new elemental_overload_spell_t( player, "lightning_bolt_overload",
+          player -> find_spell( 45284 ),
+          player -> find_spell( 214816 ) -> effectN( 1 ).resource( RESOURCE_MAELSTROM ) );
       add_child( overload );
     }
   }
@@ -3259,7 +3294,7 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     if ( p() -> buff.power_of_the_maelstrom -> up() )
     {
-      return 3;
+      return 2;
     }
 
     return shaman_spell_t::n_overloads( s );
@@ -3348,7 +3383,8 @@ struct elemental_blast_t : public shaman_spell_t
   {
     if ( player -> mastery.elemental_overload -> ok() )
     {
-      overload = new elemental_overload_spell_t( player, "elemental_blast_overload", player -> find_spell( 120588 ) );
+      overload = new elemental_overload_spell_t( player, "elemental_blast_overload",
+          player -> find_spell( 120588 ) );
       add_child( overload );
     }
   }
@@ -3661,7 +3697,6 @@ struct earth_shock_t : public shaman_spell_t
     base_coefficient( data().effectN( 1 ).sp_coeff() / base_cost() )
   {
     base_multiplier *= 1.0 + player -> artifact.earthen_attunement.percent();
-    cooldown -> duration += player -> spec.spiritual_insight -> effectN( 3 ).time_value();
   }
 
   double spell_direct_power_coefficient( const action_state_t* ) const override
@@ -3715,7 +3750,6 @@ struct flame_shock_t : public shaman_spell_t
   {
     tick_may_crit         = true;
     track_cd_waste        = false;
-    cooldown -> duration += player -> spec.spiritual_insight -> effectN( 3 ).time_value();
     base_multiplier *= 1.0 + player -> artifact.firestorm.percent();
 
     // Elemental Tier 18 (WoD 6.2) trinket effect is in use, adjust Flame Shock based on spell data
@@ -3890,7 +3924,11 @@ struct stormkeeper_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    p() -> buff.stormkeeper -> trigger( p() -> buff.stormkeeper -> data().max_stacks() );
+    p() -> buff.stormkeeper -> trigger( p() -> buff.stormkeeper -> data().initial_stacks() );
+    if ( p() -> artifact.fury_of_the_storms.rank() )
+    {
+      p() -> guardian_greater_lightning_elemental -> summon( p() -> spell.fury_of_the_storms_driver -> duration() );
+    }
   }
 };
 
@@ -4634,6 +4672,11 @@ void shaman_t::create_pets()
     guardian_lightning_elemental = new pet::lightning_elemental_t( this );
   }
 
+  if ( artifact.fury_of_the_storms.rank() && find_action( "stormkeeper" ) )
+  {
+    guardian_greater_lightning_elemental = new pet::greater_lightning_elemental_t( this );
+  }
+
   if ( specialization() == SHAMAN_ENHANCEMENT )
   {
     const spell_data_t* fs_data = find_specialization_spell( "Feral Spirit" );
@@ -4780,6 +4823,7 @@ void shaman_t::init_spells()
   artifact.elementalist              = find_artifact_spell( "Elementalist"       );
   artifact.firestorm                 = find_artifact_spell( "Firestorm"          );
   artifact.power_of_the_maelstrom    = find_artifact_spell( "Power of the Maelstrom" );
+  artifact.fury_of_the_storms        = find_artifact_spell( "Fury of the Storms" );
 
   // Enhancement
   artifact.doom_winds                = find_artifact_spell( "Doom Winds"         );
@@ -4799,22 +4843,7 @@ void shaman_t::init_spells()
   spell.resurgence                   = find_spell( 101033 );
   spell.eruption                     = find_spell( 168556 );
   spell.maelstrom_melee_gain         = find_spell( 187890 );
-  if ( specialization() == SHAMAN_ELEMENTAL )
-  {
-    spell.echo_of_the_elements       = find_spell( 159101 );
-  }
-  else if ( specialization() == SHAMAN_ENHANCEMENT )
-  {
-    spell.echo_of_the_elements       = find_spell( 159103 );
-  }
-  else if ( specialization() == SHAMAN_RESTORATION )
-  {
-    spell.echo_of_the_elements       = find_spell( 159105 );
-  }
-  else
-  {
-    spell.echo_of_the_elements       = spell_data_t::not_found();
-  }
+  spell.fury_of_the_storms_driver    = find_spell( 191716 );
 
   if ( talent.lightning_shield -> ok() )
   {
@@ -4844,7 +4873,7 @@ void shaman_t::init_spells()
 
   if ( artifact.volcanic_inferno.rank() )
   {
-    volcanic_inferno = new volcanic_inferno_driver_t( this );
+    volcanic_inferno = new volcanic_inferno_t( this );
   }
 
   // Constants
@@ -5378,7 +5407,7 @@ void shaman_t::create_buffs()
   buff.lightning_surge = buff_creator_t( this, "lightning_surge", find_spell( 189796 ) )
     // TODO: 1 - 0.5 or 1 / 1.5 ?
     .default_value( 1.0 + find_spell( 189796 ) -> effectN( 1 ).percent() );
-  buff.stormkeeper = buff_creator_t( this, "stormkeeper", &( artifact.stormkeeper.data() ) )
+  buff.stormkeeper = buff_creator_t( this, "stormkeeper", artifact.stormkeeper )
     .cd( timespan_t::zero() ); // Handled by the action
   buff.static_overload = buff_creator_t( this, "static_overload", find_spell( 191634 ) )
     .chance( artifact.static_overload.data().effectN( 1 ).percent() );
