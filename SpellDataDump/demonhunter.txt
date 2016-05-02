@@ -187,7 +187,7 @@ Effects          :
 #2 (id=301145)   : Trigger Spell: Immolation Aura (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 187727
 #3 (id=310313)   : Energize Power (30)
-                   Base Value: 80 | Scaled Value: 80 | Misc Value: none
+                   Base Value: 80 | Scaled Value: 80 | Misc Value: pain
 #4 (id=313444)   : Apply Aura (6) | Unknown effect sub type (129)
                    Base Value: 0 | Scaled Value: 0
 Description      : Engulf yourself in flames, instantly causing $187727s1 Fire damage to enemies within $187727A1 yards and radiating $178741s1 Fire damage every sec.  Lasts $d.
@@ -212,7 +212,7 @@ Effects          :
 #1 (id=256715)   : School Damage: fire (2)
                    Base Value: 0 | Scaled Value: 0 (avg=1, dl=0.15) | AP Coefficient: 0.50000 | Radius: 0 - 8 yards
 #2 (id=310312)   : Energize Power (30)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: none
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: pain
 Description      : Deals Fire damage to all nearby enemies.
 
 Name             : Shattered Souls (id=178940) [Spell Family (107), Passive] 
@@ -1212,7 +1212,7 @@ Effects          :
 #2 (id=298887)   : Energize Power (30)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: fury
 #3 (id=326731)   : Energize Power (30)
-                   Base Value: 150 | Scaled Value: 150 | Misc Value: none
+                   Base Value: 150 | Scaled Value: 150 | Misc Value: pain
 Description      : Silence all enemies within $A1 yards for $d and generate $?s203513[${$m3/10} Pain][$m2 Fury].  Non-player victim spellcasting is also interrupted for $32747d.
 Tooltip          : Silenced.
 
@@ -1364,7 +1364,7 @@ Name             : Demon Spikes (Active Mitigation) (id=203720) [Spell Family (1
 Replaces         : Eye Beam (id=198013)
 Class            : Vengeance Demon Hunter
 School           : Physical
-Resource         : 100 Unknown (18)
+Resource         : 10 Unknown (18)
 Spell Level      : 1
 Cooldown         : 1.5 seconds
 Charges          : 2 (15 seconds cooldown)
@@ -1454,7 +1454,7 @@ Effects          :
 #2 (id=300626)   : Weapon Damage% (31)
                    Base Value: 250 | Scaled Value: 2.5
 #3 (id=310130)   : Energize Power (30)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: none
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: pain
 Description      : Shears an enemy for $sw2 Physical damage, and has a small chance to shatter a Lesser Soul Fragment from your target that heals you for $203794s1 health when consumed.
 
 |cFFFFFFFFGenerates ${$m3/10} Pain.|r
@@ -1542,7 +1542,7 @@ Name             : Soul Cleave (id=203798) [Spell Family (107)]
 Replaces         : Chaos Strike (id=162794)
 Class            : Vengeance Demon Hunter
 School           : Physical
-Resource         : 400 Unknown (18)
+Resource         : 40 Unknown (18)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -2205,7 +2205,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=307263)   : Energize Power (30)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: none
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: pain
 Description      : $@spelldesc203753
 
 Name             : Burning Alive (id=207739) [Spell Family (107), Passive] 
@@ -2381,6 +2381,46 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : When Sigil of Flame activates, you are teleported to its location and force all affected enemies to attack you for 6 sec.
 
+Name             : Fiery Brand (id=209245) 
+Class            : Demon Hunter
+School           : Fire
+Range            : 30 yards
+GCD              : 1.5 seconds
+Duration         : 12 seconds
+Cooldown         : 60 seconds
+Attributes       : ........ ........ x.xx.... ..x.....   ........ .x.x.... ........ ........ 
+                 : ........ ........ ........ ........   ........ x....... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=309699)   : School Damage: fire (2)
+                   Base Value: 94 | Scaled Value: 95 - 105 | Value Range: 11
+#2 (id=309700)   : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: -40 | Scaled Value: -40 | Misc Value: 0x7f
+#3 (id=309701)   : Trigger Spell: Fiery Brand (64)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 209247
+Description      : Brands a target with a burning demonic symbol, instantly dealing $s1 Fire damage and reducing the damage they do by $s2% for $d.
+Tooltip          : Damage done reduced by $s2%.
+
+Name             : Fiery Brand (id=209247) [Hidden] 
+Class            : Demon Hunter
+School           : Physical
+Range            : 40 yards
+Duration         : 30 seconds
+Triggered by     : Fiery Brand (209245)
+Attributes       : .......x x....... ..x..x.. x..x.x..   ...x.x.x ..x..... ........ ........ 
+                 : ..x..... ......x. ...x..x. ....x...   ........ x....... xxx..... ........ 
+                 : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... ........ ........   ......x. ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=309703)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+
 Name             : Last Resort (id=209258) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
@@ -2479,7 +2519,7 @@ Tooltip          : Melee attacks and spells have a $s1% chance to miss you.
 Name             : Fracture (id=209795) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
-Resource         : 400 Unknown (18)
+Resource         : 40 Unknown (18)
 Range            : 5 yards
 GCD              : 1.5 seconds
 Affecting spells : Metamorphosis (162264), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613)
@@ -2776,7 +2816,7 @@ Name             : Fel Eruption (id=211881) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Physical
 Resource         : 20 Fury w/ Havoc Demon Hunter (id=212612)
-Resource         : 200 Unknown (18) w/ Vengeance Demon Hunter (id=212613)
+Resource         : 20 Unknown (18) w/ Vengeance Demon Hunter (id=212613)
 Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
@@ -2801,7 +2841,7 @@ Tooltip          : Stunned.
 Name             : Fel Devastation (id=212084) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
-Resource         : 300 Unknown (18)
+Resource         : 30 Unknown (18)
 Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
@@ -3011,6 +3051,20 @@ Description      : $@spelldesc198589
 Tooltip          : Dodge increased by $s2%.
 All damage reduced by $s3%.
 
+Name             : Charred Warblades (id=213011) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Fire
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ...x....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=315976)   : Direct Heal (10)
+                   Base Value: 1 | Scaled Value: 1
+Description      : You heal for $s1% of all Fire damage dealt.
+
 Name             : Felblade (id=213241) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
@@ -3054,7 +3108,7 @@ Effects          :
 #2 (id=316325)   : Weapon Damage% (31)
                    Base Value: 560 | Scaled Value: 5.6
 #3 (id=316326)   : Energize Power (30)
-                   Base Value: 200 | Scaled Value: 200 | Misc Value: none
+                   Base Value: 200 | Scaled Value: 200 | Misc Value: pain
 #4 (id=316327)   : Energize Power (30)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: fury
 Description      : $@spelldesc213241
@@ -3324,7 +3378,7 @@ Effects          :
 #1 (id=326008)   : Energize Power (30)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: fury
 #2 (id=326009)   : Energize Power (30)
-                   Base Value: 500 | Scaled Value: 500 | Misc Value: none
+                   Base Value: 500 | Scaled Value: 500 | Misc Value: pain
 Description      : $@spelldesc183752
 
 Name             : Critical Strikes (Passive) (id=221351) [Passive] 
