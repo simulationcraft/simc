@@ -11,6 +11,93 @@
 
 namespace { // UNNAMED NAMESPACE
 
+/**
+  Check_distance_targeting is only called when distance_targeting_enabled is true. Otherwise,
+  available_targets is called.  The following code is intended to generate a target list that
+  properly accounts for range from each target during chain lightning.  On a very basic level, it
+  starts at the original target, and then finds a path that will hit 4 more, if possible.  The
+  code below randomly cycles through targets until it finds said path, or hits the maximum amount
+  of attempts, in which it gives up and just returns the current best path.  I wouldn't be
+  terribly surprised if Blizz did something like this in game.
+**/
+static std::vector<player_t*> check_distance_targeting( const action_t* action, std::vector< player_t* >& tl )
+{
+  sim_t* sim = action -> sim;
+  player_t* target = action -> target;
+  player_t* player = action -> player;
+  double radius = action -> radius;
+  int aoe = action -> aoe;
+
+  player_t* last_chain; // We have to track the last target that it hit.
+  last_chain = target;
+  std::vector< player_t* > best_so_far; // Keeps track of the best chain path found so far, so we can use it if we give up.
+  std::vector< player_t* > current_attempt;
+  best_so_far.push_back( last_chain );
+  current_attempt.push_back( last_chain );
+
+  size_t num_targets = sim -> target_non_sleeping_list.size();
+  size_t max_attempts = static_cast<size_t>( std::min( ( num_targets - 1.0 ) * 2.0 , 30.0 ) ); // With a lot of targets this can get pretty high. Cap it at 30.
+  size_t local_attempts = 0, attempts = 0, chain_number = 1;
+  std::vector<player_t*> targets_left_to_try( sim -> target_non_sleeping_list.data() ); // This list contains members of a vector that haven't been tried yet.
+  auto position = std::find( targets_left_to_try.begin(), targets_left_to_try.end(), target );
+  if ( position != targets_left_to_try.end() )
+    targets_left_to_try.erase( position );
+
+  std::vector<player_t*> original_targets( targets_left_to_try ); // This is just so we don't have to constantly remove the original target.
+
+  bool stop_trying = false; // It's not you, it's me.
+
+  while ( !stop_trying )
+  {
+    local_attempts = 0;
+    attempts++;
+    if ( attempts >= max_attempts )
+      stop_trying = true;
+    while ( targets_left_to_try.size() > 0 && local_attempts < num_targets * 2 )
+    {
+      player_t* possibletarget;
+      size_t rng_target = static_cast<size_t>( sim -> rng().range( 0.0, ( static_cast<double>( targets_left_to_try.size() ) - 0.000001 ) ) );
+      possibletarget = targets_left_to_try[rng_target];
+
+      double distance_from_last_chain = last_chain -> get_player_distance( *possibletarget );
+      if ( distance_from_last_chain <= radius )
+      {
+        last_chain = possibletarget;
+        current_attempt.push_back( last_chain );
+        targets_left_to_try.erase( targets_left_to_try.begin() + rng_target );
+        chain_number++;
+      }
+      else
+      {
+        // If there is no hope of this target being chained to, there's no need to test it again
+        // for other possibilities.
+        if ( distance_from_last_chain > ( radius * ( aoe - chain_number ) ) )
+          targets_left_to_try.erase( targets_left_to_try.begin() + rng_target );
+        local_attempts++; // Only count failures towards the limit-cap.
+      }
+      // If we run out of targets to hit, or have hit 5 already. Break.
+      if ( static_cast<int>( current_attempt.size() ) == aoe || current_attempt.size() == num_targets ) 
+      {
+        stop_trying = true;
+        break;
+      }
+    }
+    if ( current_attempt.size() > best_so_far.size() )
+      best_so_far = current_attempt;
+
+    current_attempt.clear();
+    current_attempt.push_back( target );
+    last_chain = target;
+    targets_left_to_try = original_targets;
+    chain_number = 1;
+  }
+
+  if ( sim -> log )
+    sim -> out_debug.printf( "%s Total attempts at finding path: %.3f - %.3f targets found - %s target is first chain", 
+      player -> name(), static_cast<double>(attempts), static_cast<double>( best_so_far.size() ), target -> name() );
+  tl.swap( best_so_far );
+  return tl;
+}
 typedef std::pair<std::string, simple_sample_data_with_min_max_t> data_t;
 typedef std::pair<std::string, simple_sample_data_t> simple_data_t;
 
@@ -1085,11 +1172,16 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     p() -> trigger_earthen_rage( execute_state );
   }
 
+  void schedule_travel( action_state_t* s ) override
+  {
+    trigger_elemental_overload( s );
+
+    base_t::schedule_travel( s );
+  }
+
   void impact( action_state_t* state ) override
   {
     base_t::impact( state );
-
-    trigger_elemental_overload( state );
 
     if ( ! result_is_hit( state -> result ) )
     {
@@ -1149,11 +1241,31 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   virtual double overload_chance( const action_state_t* ) const
   { return p() -> cache.mastery_value(); }
 
+  // Additional guaranteed overloads
   virtual size_t n_overloads( const action_state_t* ) const
-  { return 1; }
+  { return 0; }
 
   void trigger_elemental_overload( const action_state_t* source_state ) const
   {
+    struct elemental_overload_event_t : public event_t
+    {
+      action_state_t* state;
+
+      elemental_overload_event_t( action_state_t* s ) :
+        event_t( *s -> action -> player ), state( s )
+      {
+        add_event( timespan_t::from_millis( 400 ) );
+      }
+
+      const char* name() const override
+      { return "elemental_overload_event_t"; }
+
+      void execute() override
+      {
+        state -> action -> schedule_execute( state );
+      };
+    };
+
     if ( ! p() -> mastery.elemental_overload -> ok() )
     {
       return;
@@ -1164,16 +1276,15 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       return;
     }
 
-    if ( ! rng().roll( overload_chance( source_state ) ) )
-    {
-      return;
-    }
+    unsigned overloads = rng().roll( overload_chance( source_state ) ) + n_overloads( source_state );
 
-    for ( size_t i = 0, end = n_overloads( source_state ); i < end; ++i )
+    for ( size_t i = 0, end = overloads; i < end; ++i )
     {
-      action_state_t* overload_state = overload -> get_state( source_state );
+      action_state_t* s = overload -> get_state();
+      overload -> snapshot_state( s, DMG_DIRECT );
+      s -> target = source_state -> target;
 
-      overload -> schedule_execute( overload_state );
+      new ( *sim ) elemental_overload_event_t( s );
     }
   }
 };
@@ -2091,23 +2202,6 @@ struct unleash_doom_spell_t : public shaman_spell_t
   }
 };
 
-struct elemental_overload_spell_t : public shaman_spell_t
-{
-  elemental_overload_spell_t( shaman_t* p, const std::string& name, const spell_data_t* s, double mg = 0 ) :
-    shaman_spell_t( name, p, s )
-  {
-    base_execute_time = timespan_t::zero();
-    background = true;
-    callbacks = false;
-
-    base_multiplier *= 1.0 + p -> artifact.master_of_the_elements.percent();
-    if ( mg > 0 )
-    {
-      maelstrom_gain = mg;
-    }
-  }
-};
-
 struct earthen_might_damage_t : public shaman_spell_t
 {
   earthen_might_damage_t( shaman_t* p ) :
@@ -2202,6 +2296,22 @@ struct earthen_rage_driver_t : public spell_t
   // Maximum duration is extended by max of 6 seconds
   timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t ) const override
   { return data().duration(); }
+};
+
+// Elemental overloads
+
+struct elemental_overload_spell_t : public shaman_spell_t
+{
+  elemental_overload_spell_t( shaman_t* p, const std::string& name, const spell_data_t* s ) :
+    shaman_spell_t( name, p, s )
+  {
+    base_execute_time = timespan_t::zero();
+    background = true;
+    callbacks = false;
+
+    base_multiplier *= 1.0 + p -> artifact.master_of_the_elements.percent();
+    base_multiplier *= p -> mastery.elemental_overload -> effectN( 2 ).percent();
+  }
 };
 
 // shaman_heal_t::impact ====================================================
@@ -2923,6 +3033,39 @@ struct bloodlust_t : public shaman_spell_t
 
 // Chain Lightning Spell ====================================================
 
+struct chain_lightning_overload_t: public elemental_overload_spell_t
+{
+  chain_lightning_overload_t( shaman_t* p ) :
+    elemental_overload_spell_t( p, "chain_lightning_overload", p -> find_spell( 45297 ) )
+  {
+    base_multiplier *= 1.0 + p -> artifact.electric_discharge.percent();
+    base_add_multiplier = data().effectN( 1 ).chain_multiplier();
+    maelstrom_gain = p -> find_spell( 218558 ) -> effectN( 1 ).resource( RESOURCE_MAELSTROM );
+    radius = 10.0;
+  }
+
+  // Make Chain Lightning a single target spell for procs
+  proc_types proc_type() const override
+  { return PROC1_SPELL; }
+
+  double action_multiplier() const override
+  {
+    double m = elemental_overload_spell_t::action_multiplier();
+
+    if ( p() -> buff.stormkeeper -> up() )
+    {
+      m *= 1.0 + p() -> buff.stormkeeper -> data().effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
+  std::vector<player_t*> check_distance_targeting( std::vector< player_t* >& tl ) const override
+  {
+    return ::check_distance_targeting( this, tl );
+  }
+};
+
 struct chain_lightning_t: public shaman_spell_t
 {
   chain_lightning_t( shaman_t* player, const std::string& options_str ):
@@ -2936,9 +3079,7 @@ struct chain_lightning_t: public shaman_spell_t
 
     if ( player -> mastery.elemental_overload -> ok() )
     {
-      overload = new elemental_overload_spell_t( player, "chain_lightning_overload",
-          player -> find_spell( 45297 ),
-          player -> find_spell( 218558 ) -> effectN( 1 ).resource( RESOURCE_MAELSTROM ) );
+      overload = new chain_lightning_overload_t( player );
       add_child( overload );
     }
   }
@@ -2982,19 +3123,6 @@ struct chain_lightning_t: public shaman_spell_t
   {
     shaman_spell_t::impact( state );
 
-    /*
-    if ( result_is_hit( state -> result ) )
-    {
-      if ( p() -> spec.fulmination -> ok() )
-      {
-        player -> resource_gain( RESOURCE_MAELSTROM,
-                                 p() -> spec.fulmination -> effectN( 2 ).resource( RESOURCE_MAELSTROM ),
-                                 p() -> gain.fulmination,
-                                 this );
-      }
-    }
-    */
-
     p() -> trigger_tier15_2pc_caster( state );
     p() -> trigger_tier16_4pc_caster( state );
   }
@@ -3007,107 +3135,59 @@ struct chain_lightning_t: public shaman_spell_t
     return shaman_spell_t::ready();
   }
 
-  /**
-    Check_distance_targeting is only called when distance_targeting_enabled is true. Otherwise,
-    available_targets is called.  The following code is intended to generate a target list that
-    properly accounts for range from each target during chain lightning.  On a very basic level, it
-    starts at the original target, and then finds a path that will hit 4 more, if possible.  The
-    code below randomly cycles through targets until it finds said path, or hits the maximum amount
-    of attempts, in which it gives up and just returns the current best path.  I wouldn't be
-    terribly surprised if Blizz did something like this in game.
-  **/
   std::vector<player_t*> check_distance_targeting( std::vector< player_t* >& tl ) const override
   {
-    player_t* last_chain; // We have to track the last target that it hit.
-    last_chain = target;
-    std::vector< player_t* > best_so_far; // Keeps track of the best chain path found so far, so we can use it if we give up.
-    std::vector< player_t* > current_attempt;
-    best_so_far.push_back( last_chain );
-    current_attempt.push_back( last_chain );
-
-    size_t num_targets = sim -> target_non_sleeping_list.size();
-    size_t max_attempts = static_cast<size_t>( std::min( ( num_targets - 1.0 ) * 2.0 , 30.0 ) ); // With a lot of targets this can get pretty high. Cap it at 30.
-    size_t local_attempts = 0, attempts = 0, chain_number = 1;
-    std::vector<player_t*> targets_left_to_try( sim -> target_non_sleeping_list.data() ); // This list contains members of a vector that haven't been tried yet.
-    auto position = std::find( targets_left_to_try.begin(), targets_left_to_try.end(), target );
-    if ( position != targets_left_to_try.end() )
-      targets_left_to_try.erase( position );
-
-    std::vector<player_t*> original_targets( targets_left_to_try ); // This is just so we don't have to constantly remove the original target.
-
-    bool stop_trying = false; // It's not you, it's me.
-
-    while ( !stop_trying )
-    {
-      local_attempts = 0;
-      attempts++;
-      if ( attempts >= max_attempts )
-        stop_trying = true;
-      while ( targets_left_to_try.size() > 0 && local_attempts < num_targets * 2 )
-      {
-        player_t* possibletarget;
-        size_t rng_target = static_cast<size_t>( rng().range( 0.0, ( static_cast<double>( targets_left_to_try.size() ) - 0.000001 ) ) );
-        possibletarget = targets_left_to_try[rng_target];
-
-        double distance_from_last_chain = last_chain -> get_player_distance( *possibletarget );
-        if ( distance_from_last_chain <= radius )
-        {
-          last_chain = possibletarget;
-          current_attempt.push_back( last_chain );
-          targets_left_to_try.erase( targets_left_to_try.begin() + rng_target );
-          chain_number++;
-        }
-        else
-        {
-          // If there is no hope of this target being chained to, there's no need to test it again
-          // for other possibilities.
-          if ( distance_from_last_chain > ( radius * ( aoe - chain_number ) ) )
-            targets_left_to_try.erase( targets_left_to_try.begin() + rng_target );
-          local_attempts++; // Only count failures towards the limit-cap.
-        }
-        // If we run out of targets to hit, or have hit 5 already. Break.
-        if ( static_cast<int>( current_attempt.size() ) == aoe || current_attempt.size() == num_targets ) 
-        {
-          stop_trying = true;
-          break;
-        }
-      }
-      if ( current_attempt.size() > best_so_far.size() )
-        best_so_far = current_attempt;
-
-      current_attempt.clear();
-      current_attempt.push_back( target );
-      last_chain = target;
-      targets_left_to_try = original_targets;
-      chain_number = 1;
-    }
-
-    if ( sim -> log )
-      sim -> out_debug.printf( "%s Total attempts at finding path: %.3f - %.3f targets found - %s target is first chain", 
-        player -> name(), static_cast<double>(attempts), static_cast<double>( best_so_far.size() ), target -> name() );
-    tl.swap( best_so_far );
-    return tl;
+    return ::check_distance_targeting( this, tl );
   }
 };
 
 // Lava Beam Spell ==========================================================
+
+struct lava_beam_overload_t: public elemental_overload_spell_t
+{
+  lava_beam_overload_t( shaman_t* p ) :
+    elemental_overload_spell_t( p, "lava_beam_overload", p -> find_spell( 114738 ) )
+  {
+    base_multiplier *= 1.0 + p -> artifact.electric_discharge.percent();
+    base_add_multiplier = data().effectN( 1 ).chain_multiplier();
+    maelstrom_gain = p -> find_spell( 218559 ) -> effectN( 1 ).resource( RESOURCE_MAELSTROM );
+    radius = 10.0;
+  }
+
+  // Make Chain Lightning a single target spell for procs
+  proc_types proc_type() const override
+  { return PROC1_SPELL; }
+
+  double action_multiplier() const override
+  {
+    double m = elemental_overload_spell_t::action_multiplier();
+
+    if ( p() -> buff.stormkeeper -> up() )
+    {
+      m *= 1.0 + p() -> buff.stormkeeper -> data().effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
+  std::vector<player_t*> check_distance_targeting( std::vector< player_t* >& tl ) const override
+  {
+    return ::check_distance_targeting( this, tl );
+  }
+};
 
 struct lava_beam_t : public shaman_spell_t
 {
   lava_beam_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "lava_beam", player, player -> find_spell( 114074 ), options_str )
   {
-    base_add_multiplier   = data().effectN( 1 ).chain_multiplier();
-    // TODO: Currently not affected in spell data.
-    base_multiplier *= 1.0 + player -> artifact.electric_discharge.percent();
-
+    base_add_multiplier = data().effectN( 1 ).chain_multiplier();
     maelstrom_gain = data().effectN( 3 ).base_value();
+    radius = 10.0;
 
     if ( player -> mastery.elemental_overload -> ok() )
     {
-      overload = new elemental_overload_spell_t( player, "lava_beam_overload",
-          player -> find_spell( 114738 ),
-          player -> find_spell( 218559 ) -> effectN( 1 ).resource( RESOURCE_MAELSTROM ) );
+      overload = new lava_beam_overload_t( player );
       add_child( overload );
     }
   }
@@ -3126,9 +3206,38 @@ struct lava_beam_t : public shaman_spell_t
 
     return shaman_spell_t::ready();
   }
+
+  std::vector<player_t*> check_distance_targeting( std::vector< player_t* >& tl ) const override
+  {
+    return ::check_distance_targeting( this, tl );
+  }
 };
 
 // Lava Burst Spell =========================================================
+
+struct lava_burst_overload_t : public elemental_overload_spell_t
+{
+  lava_burst_overload_t( shaman_t* p ) :
+    elemental_overload_spell_t( p, "lava_burst_overload", p -> find_spell( 77451 ) )
+  {
+    base_multiplier *= 1.0 + p -> artifact.lava_imbued.percent();
+    base_multiplier *= 1.0 + p -> talent.path_of_flame -> effectN( 1 ).percent();
+    // TODO: Additive with Elemental Fury? Spell data claims same effect property, so probably ..
+    crit_bonus_multiplier += p -> artifact.molten_blast.percent();
+  }
+
+  double composite_target_crit( player_t* t ) const override
+  {
+    double m = shaman_spell_t::composite_target_crit ( t );
+
+    if ( td( target ) -> dot.flame_shock -> is_ticking() )
+    {
+      m = 1.0;
+    }
+
+    return m;
+  }
+};
 
 // TODO: Add Path of Flame Flame Shock spreading mechanism
 struct lava_burst_t : public shaman_spell_t
@@ -3146,9 +3255,7 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( player -> mastery.elemental_overload -> ok() )
     {
-      overload = new elemental_overload_spell_t( player, "lava_burst_overload", player -> find_spell( 77451 ) );
-      // State snapshot does not include crit damage bonuses, so need to set it here
-      overload -> crit_bonus_multiplier += player -> artifact.molten_blast.percent();
+      overload = new lava_burst_overload_t( player );
       add_child( overload );
     }
   }
@@ -3240,6 +3347,28 @@ struct lava_burst_t : public shaman_spell_t
 
 // Lightning Bolt Spell =====================================================
 
+struct lightning_bolt_overload_t : public elemental_overload_spell_t
+{
+  lightning_bolt_overload_t( shaman_t* p ) :
+    elemental_overload_spell_t( p, "lightning_bolt_overload", p -> find_spell( 45284 ) )
+  {
+    base_multiplier *= 1.0 + p -> artifact.surge_of_power.percent();
+    maelstrom_gain = player -> find_spell( 214816 ) -> effectN( 1 ).resource( RESOURCE_MAELSTROM );
+  }
+
+  double action_multiplier() const override
+  {
+    double m = elemental_overload_spell_t::action_multiplier();
+
+    if ( p() -> buff.stormkeeper -> up() )
+    {
+      m *= 1.0 + p() -> buff.stormkeeper -> data().effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+};
+
 struct lightning_bolt_t : public shaman_spell_t
 {
   double m_overcharge;
@@ -3268,9 +3397,7 @@ struct lightning_bolt_t : public shaman_spell_t
 
     if ( player -> mastery.elemental_overload -> ok() )
     {
-      overload = new elemental_overload_spell_t( player, "lightning_bolt_overload",
-          player -> find_spell( 45284 ),
-          player -> find_spell( 214816 ) -> effectN( 1 ).resource( RESOURCE_MAELSTROM ) );
+      overload = new lightning_bolt_overload_t( player );
       add_child( overload );
     }
   }
@@ -3279,25 +3406,15 @@ struct lightning_bolt_t : public shaman_spell_t
   // though.
   double overload_chance( const action_state_t* s ) const override
   {
-    if ( p() -> buff.power_of_the_maelstrom -> check() )
-    {
-      return 1.0;
-    }
-
     double chance = shaman_spell_t::overload_chance( s );
     chance += p() -> buff.storm_totem -> value();
 
     return chance;
   }
 
-  size_t n_overloads( const action_state_t* s ) const override
+  size_t n_overloads( const action_state_t* ) const override
   {
-    if ( p() -> buff.power_of_the_maelstrom -> up() )
-    {
-      return 2;
-    }
-
-    return shaman_spell_t::n_overloads( s );
+    return p() -> buff.power_of_the_maelstrom -> up();
   }
 
   double spell_direct_power_coefficient( const action_state_t* /* state */ ) const override
@@ -3356,25 +3473,19 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     shaman_spell_t::impact( state );
 
-    /*
-    if ( result_is_hit( state -> result ) )
-    {
-      if ( p() -> spec.fulmination -> ok() )
-      {
-        player -> resource_gain( RESOURCE_MAELSTROM,
-                                 p() -> spec.fulmination -> effectN( 1 ).resource( RESOURCE_MAELSTROM ),
-                                 p() -> gain.fulmination,
-                                 this );
-      }
-    }
-    */
-
     p() -> trigger_tier15_2pc_caster( state );
     p() -> trigger_tier16_4pc_caster( state );
   }
 };
 
 // Elemental Blast Spell ====================================================
+
+struct elemental_blast_overload_t : public elemental_overload_spell_t
+{
+  elemental_blast_overload_t( shaman_t* p ) :
+    elemental_overload_spell_t( p, "elemental_blast_overload", p -> find_spell( 120588 ) )
+  { }
+};
 
 struct elemental_blast_t : public shaman_spell_t
 {
@@ -3383,8 +3494,7 @@ struct elemental_blast_t : public shaman_spell_t
   {
     if ( player -> mastery.elemental_overload -> ok() )
     {
-      overload = new elemental_overload_spell_t( player, "elemental_blast_overload",
-          player -> find_spell( 120588 ) );
+      overload = new elemental_blast_overload_t( player );
       add_child( overload );
     }
   }
