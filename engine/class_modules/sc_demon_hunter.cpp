@@ -192,6 +192,9 @@ public:
     const spell_data_t* concentrated_sigils;
     const spell_data_t* feast_of_souls;
 
+    const spell_data_t* fel_devastation;
+    const spell_data_t* feed_the_demon;
+
     // NYI
     const spell_data_t* abyssal_strike;
 
@@ -201,9 +204,7 @@ public:
     const spell_data_t* sigil_of_misery;
     const spell_data_t* razor_spikes;
 
-    const spell_data_t* fel_devastation;
     const spell_data_t* nether_bond;
-    const spell_data_t* feed_the_demon;
   } talent;
 
   // Specialization Spells
@@ -314,6 +315,7 @@ public:
     cooldown_t* vengeful_retreat;
 
     // Vengeance
+    cooldown_t* demon_spikes;
     cooldown_t* sigil_of_flame;
   } cooldown;
 
@@ -401,7 +403,6 @@ public:
   demon_hunter_t( sim_t* sim, const std::string& name, race_e r );
 
   // player_t overrides
-  void init() override;
   void init_base_stats() override;
   void init_procs() override;
   void init_resources( bool force ) override;
@@ -894,6 +895,12 @@ struct consume_soul_t : public demon_hunter_heal_t
     {
       p() -> active.soul_barrier -> schedule_execute();
     }
+
+    if ( p() -> talent.feed_the_demon -> ok() )
+    {
+      // Not in spell data.
+      p() -> cooldown.demon_spikes -> adjust( timespan_t::from_seconds( -1.0 ) );
+    }
   }
 
   bool ready() override
@@ -904,6 +911,18 @@ struct consume_soul_t : public demon_hunter_heal_t
     }
 
     return demon_hunter_heal_t::ready();
+  }
+};
+
+// Fel Devastation ==========================================================
+
+struct fel_devastation_heal_t : public demon_hunter_heal_t
+{
+  fel_devastation_heal_t( demon_hunter_t* p ) :
+    demon_hunter_heal_t( "fel_devastation_heal", p, p -> find_spell( 212106 ) )
+  {
+    background = true;
+    may_crit = false;
   }
 };
 
@@ -1030,9 +1049,9 @@ struct consume_magic_t : public demon_hunter_spell_t
     : demon_hunter_spell_t( "consume_magic", p, p -> spec.consume_magic )
   {
     parse_options( options_str );
-
+    
+    use_off_gcd = ignore_false_positive = true;
     may_miss = may_block = may_dodge = may_parry = may_crit = false;
-    ignore_false_positive = true;
 
     const spelleffect_data_t effect = p -> find_spell( 218903 ) -> effectN(
       p -> specialization() == DEMON_HUNTER_HAVOC ? 1 : 2 );
@@ -1065,6 +1084,8 @@ struct demon_spikes_t : public demon_hunter_spell_t
       p -> find_specialization_spell( "Demon Spikes" ) )
   {
     parse_options( options_str );
+
+    use_off_gcd = true;
   }
 
   void execute() override
@@ -1085,6 +1106,7 @@ struct empower_wards_t : public demon_hunter_spell_t
   {
     parse_options( options_str );
 
+    use_off_gcd = true;
     base_dd_min = base_dd_max = 0;
   }
 
@@ -1112,9 +1134,7 @@ struct eye_beam_t : public demon_hunter_spell_t
     }
 
     dmg_e amount_type( const action_state_t*, bool ) const override
-    {
-      return DMG_OVER_TIME;
-    }  // TOCHECK
+    { return DMG_OVER_TIME; }  // TOCHECK
 
     void impact( action_state_t* s ) override
     {
@@ -1136,9 +1156,9 @@ struct eye_beam_t : public demon_hunter_spell_t
   {
     parse_options( options_str );
 
-    may_miss = may_crit = may_parry = may_block = may_dodge = false;
-    channeled   = true;
-
+    may_miss = may_crit = false;
+    harmful = false; // Disables bleeding on the target.
+    channeled = true;
     beam -> stats = stats;
 
     dot_duration *= 1.0 + p -> talent.blind_fury -> effectN( 1 ).percent();
@@ -1155,9 +1175,7 @@ struct eye_beam_t : public demon_hunter_spell_t
 
   // Channel is not hasted.
   timespan_t tick_time( double ) const override
-  {
-    return base_tick_time;
-  }
+  { return base_tick_time; }
 
   void tick( dot_t* d ) override
   {
@@ -1167,7 +1185,6 @@ struct eye_beam_t : public demon_hunter_spell_t
     // deal damage.
     if ( d -> current_tick >= 2 )
     {
-      beam -> target = target;
       beam -> schedule_execute();
     }
   }
@@ -1248,6 +1265,56 @@ struct fel_barrage_t : public demon_hunter_spell_t
 
   bool usable_moving() const override
   { return true; }
+};
+
+// Fel Devastation ==========================================================
+
+struct fel_devastation_t : public demon_hunter_spell_t
+{
+  struct fel_devastation_tick_t : public demon_hunter_spell_t
+  {
+    fel_devastation_tick_t( demon_hunter_t* p ) :
+      demon_hunter_spell_t( "fel_devastation_tick", p, p -> find_spell( 212105 ) )
+    {
+      aoe = -1;
+      background = dual = true;
+    }
+
+    dmg_e amount_type( const action_state_t*, bool ) const override
+    { return DMG_OVER_TIME; }  // TOCHECK
+  };
+
+  heals::fel_devastation_heal_t* heal;
+  fel_devastation_tick_t* damage;
+
+  fel_devastation_t( demon_hunter_t* p, const std::string& options_str ) :
+    demon_hunter_spell_t( "fel_devastation", p, p -> talent.fel_devastation )
+  {
+    parse_options( options_str );
+
+    channeled = true;
+    may_miss = may_crit = false;
+    harmful = false; // Disables bleeding on the target.
+    heal = new heals::fel_devastation_heal_t( p );
+    damage = new fel_devastation_tick_t( p );
+    damage -> stats = stats;
+  }
+
+  // Don't record data for this action.
+  void record_data( action_state_t* ) override {}
+
+  // Channel is not hasted.
+  timespan_t tick_time( double ) const override
+  { return base_tick_time; }
+
+  void tick( dot_t* d ) override
+  {
+    demon_hunter_spell_t::tick( d );
+
+    // Heal happens first.
+    heal -> schedule_execute();
+    damage -> schedule_execute();
+  }
 };
 
 // Fel Rush =================================================================
@@ -1479,6 +1546,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
     demon_hunter_spell_t( "fiery_brand", p,
       p -> find_specialization_spell( "Fiery Brand" ) )
   {
+    use_off_gcd = true;
     impact_action = new fiery_brand_dot_t( p );
     impact_action -> stats = stats;
   }
@@ -3229,6 +3297,7 @@ void demon_hunter_t::create_cooldowns()
   cooldown.vengeful_retreat     = get_cooldown( "vengeful_retreat" );
 
   // Vengeance
+  cooldown.demon_spikes         = get_cooldown( "demon_spikes" );
   cooldown.sigil_of_flame       = get_cooldown( "sigil_of_flame" );
 }
 
@@ -3458,7 +3527,7 @@ double demon_hunter_t::composite_parry() const
 {
   double cp = player_t::composite_parry();
 
-  cp += buff.demon_spikes -> value();
+  cp += buff.demon_spikes -> check();
 
   return cp;
 }
@@ -3537,16 +3606,30 @@ action_t* demon_hunter_t::create_action( const std::string& name,
     return new blur_t( this, options_str );
   if ( name == "chaos_blades" )
     return new chaos_blades_t( this, options_str );
+  if ( name == "chaos_nova" )
+    return new chaos_nova_t( this, options_str );
   if ( name == "consume_magic" )
     return new consume_magic_t( this, options_str );
   if ( name == "demon_spikes" )
     return new demon_spikes_t( this, options_str );
+  if ( name == "eye_beam" )
+    return new eye_beam_t( this, options_str );
   if ( name == "empower_wards" )
     return new empower_wards_t( this, options_str );
+  if ( name == "fel_barrage" )
+    return new fel_barrage_t( this, options_str );
+  if ( name == "fel_eruption" )
+    return new fel_eruption_t( this, options_str );
+  if ( name == "fel_devastation" )
+    return new fel_devastation_t( this, options_str );
+  if ( name == "fel_rush" )
+    return new fel_rush_t( this, options_str );
   if ( name == "fiery_brand" )
     return new fiery_brand_t( this, options_str );
   if ( name == "immolation_aura" )
     return new immolation_aura_t( this, options_str );
+  if ( name == "metamorphosis" || name == "meta" )
+    return new metamorphosis_t( this, options_str );
   if ( name == "nemesis" )
     return new nemesis_t( this, options_str );
   if ( name == "sigil_of_flame" )
@@ -3562,30 +3645,18 @@ action_t* demon_hunter_t::create_action( const std::string& name,
     return new annihilation_t( this, options_str );
   if ( name == "blade_dance" )
     return new blade_dance_t( this, options_str );
-  if ( name == "chaos_nova" )
-    return new chaos_nova_t( this, options_str );
   if ( name == "chaos_strike" )
     return new chaos_strike_t( this, options_str );
   if ( name == "death_sweep" )
     return new death_sweep_t( this, options_str );
   if ( name == "demons_bite" )
     return new demons_bite_t( this, options_str );
-  if ( name == "eye_beam" )
-    return new eye_beam_t( this, options_str );
   if ( name == "felblade" )
     return new felblade_t( this, options_str );
-  if ( name == "fel_barrage" )
-    return new fel_barrage_t( this, options_str );
-  if ( name == "fel_eruption" )
-    return new fel_eruption_t( this, options_str );
-  if ( name == "fel_rush" )
-    return new fel_rush_t( this, options_str );
   if ( name == "fracture" )
     return new fracture_t( this, options_str );
   if ( name == "fury_of_the_illidari" )
     return new fury_of_the_illidari_t( this, options_str );
-  if ( name == "metamorphosis" || name == "meta" )
-    return new metamorphosis_t( this, options_str );
   if ( name == "shear" )
     return new shear_t( this, options_str );
   if ( name == "soul_cleave" )
@@ -3619,18 +3690,6 @@ pet_t* demon_hunter_t::create_pet( const std::string& pet_name,
 void demon_hunter_t::create_pets()
 {
   base_t::create_pets();
-}
-
-// demon_hunter_t::init =====================================================
-
-void demon_hunter_t::init()
-{
-  player_t::init();
-
-  if ( specialization() == DEMON_HUNTER_VENGEANCE )
-  {
-    sim -> errorf( "%s is using an unsupported spec.", name() );
-  }
 }
 
 // demon_hunter_t::init_base_stats ==========================================
@@ -4257,6 +4316,14 @@ void demon_hunter_t::assess_damage( school_e school, dmg_e dt,
       effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_PAIN ),
       gain.blade_turning );
   }
+
+  // Benefit tracking
+
+  if ( s -> action -> may_parry )
+  {
+    buff.demon_spikes -> up();
+  }
+
 }
 
 // demon_hunter_t::target_mitigation ========================================
@@ -4265,6 +4332,11 @@ void demon_hunter_t::target_mitigation( school_e school, dmg_e dt,
                                         action_state_t* s )
 {
   base_t::target_mitigation( school, dt, s );
+
+  if ( s -> result_amount <= 0 )
+  {
+    return;
+  }
 
   s -> result_amount *= 1.0 + buff.blur -> value();
 
