@@ -4539,7 +4539,7 @@ void player_t::recalculate_resource_max( resource_e resource_type )
   }
   resources.max[ resource_type ] += resources.temporary[ resource_type ];
   // Sanity check on current values
-  resources.current[ resource_type ] = std::min( resources.current[ resource_type ], resources.max[ resource_type] );
+  resources.current[ resource_type ] = std::min( resources.current[ resource_type ], resources.max[ resource_type ] );
 }
 
 // player_t::primary_role ===================================================

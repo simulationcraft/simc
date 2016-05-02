@@ -135,6 +135,7 @@ public:
     buff_t* vengeful_retreat_jump_cancel;
 
     // Vengeance
+    buff_t* defensive_spikes;
     buff_t* demon_spikes;
     buff_t* empower_wards;
     buff_t* immolation_aura;
@@ -271,7 +272,7 @@ public:
     artifact_power_t illidari_knowledge;
     artifact_power_t overwhelming_power;
 
-    // Vengeance -- The Aldrachi Warblades (NYI)
+    // Vengeance -- The Aldrachi Warblades
     artifact_power_t aldrachi_design;
     artifact_power_t aura_of_pain;
     artifact_power_t charred_warblades;
@@ -282,13 +283,15 @@ public:
     artifact_power_t fiery_demise;
     artifact_power_t fueled_by_pain;
     artifact_power_t honed_warblades;
-    artifact_power_t infernal_force;
     artifact_power_t painbringer;
     artifact_power_t shatter_the_souls;
-    artifact_power_t siphon_power;
     artifact_power_t soul_carver;
     artifact_power_t tormented_souls;
     artifact_power_t will_of_the_illidari;
+
+    // NYI
+    artifact_power_t infernal_force;
+    artifact_power_t siphon_power;
   } artifact;
 
   // Cooldowns
@@ -748,7 +751,12 @@ public:
   {
     double tm = ab::composite_target_multiplier( t );
 
-    tm *= 1.0 + p() -> get_target_data( t ) -> debuffs.nemesis -> current_value;
+    tm *= 1.0 + td( t ) -> debuffs.nemesis -> current_value;
+
+    if ( dbc::is_school( ab::school, SCHOOL_FIRE ) )
+    {
+      tm *= 1.0 + td( t ) -> dots.fiery_brand -> is_ticking() * p() -> artifact.fiery_demise.percent();
+    }
 
     return tm;
   }
@@ -1002,8 +1010,11 @@ struct fel_devastation_heal_t : public demon_hunter_heal_t
 
 struct soul_cleave_heal_t : public demon_hunter_heal_t
 {
+  double pct_heal;
+
   soul_cleave_heal_t( demon_hunter_t* p ) :
-    demon_hunter_heal_t( "soul_cleave_heal", p, p -> spec.soul_cleave )
+    demon_hunter_heal_t( "soul_cleave_heal", p, p -> spec.soul_cleave ),
+    pct_heal( 0.0 )
   {
     background = true;
     base_costs.fill( 0 ); // This action is free; the parent pays the cost.
@@ -1014,7 +1025,17 @@ struct soul_cleave_heal_t : public demon_hunter_heal_t
       dot_duration = s -> duration();
       base_tick_time = s -> effectN( 1 ).period();
       attack_power_mod.tick = 1.30; // Not in spell data.
+      hasted_ticks = false;
     }
+
+    pct_heal = p -> artifact.devour_souls.percent();
+  }
+
+  void execute() override
+  {
+    base_dd_min = base_dd_max = p() -> max_health() * pct_heal;
+
+    demon_hunter_heal_t::execute();
   }
 };
 
@@ -1165,6 +1186,7 @@ struct demon_spikes_t : public demon_hunter_spell_t
     demon_hunter_spell_t::execute();
 
     p() -> buff.demon_spikes -> trigger();
+    p() -> buff.defensive_spikes -> trigger();
   }
 };
 
@@ -1529,6 +1551,8 @@ struct fiery_brand_t : public demon_hunter_spell_t
       school = p -> find_specialization_spell( "Fiery Brand" ) -> get_school_type();
       base_dd_min = base_dd_max = 0;
 
+      dot_duration += p -> artifact.demonic_flames.time_value();
+
       if ( p -> talent.burning_alive -> ok() )
       {
         // Not in spell data.
@@ -1648,7 +1672,8 @@ struct immolation_aura_damage_t : public demon_hunter_spell_t
     aoe = -1;
     background = dual = true;
 
-    base_multiplier *= 1.0 + p -> talent.agonizing_flames -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> talent.agonizing_flames -> effectN( 1 ).percent();\
+    base_multiplier *= 1.0 + p -> artifact.aura_of_pain.percent();
   }
 };
 
@@ -2864,6 +2889,8 @@ struct shear_t : public demon_hunter_attack_t
     /* Proc chance increases on each consecutive failed attempt, rates
        from http://us.battle.net/wow/en/forum/topic/20743504316?page=4#75 */
     shatter_chance = { 0.04, 0.12, 0.25, 0.40, 0.60, 0.80, 0.90, 1.00 };
+
+    base_multiplier *= 1.0 + p -> artifact.honed_warblades.percent();
   }
 
   void shatter( action_state_t* s )
@@ -2872,6 +2899,11 @@ struct shear_t : public demon_hunter_attack_t
 
     double chance = shatter_chance[ p() -> shear_counter ]
       + td( s -> target ) -> debuffs.frail -> value();
+
+    if ( p() -> health_percentage() < 50.0 )
+    {
+      chance += p() -> artifact.shatter_the_souls.percent();
+    }
 
     if ( p() -> rng().roll( chance ) )
     {
@@ -2966,6 +2998,8 @@ struct soul_cleave_t : public demon_hunter_attack_t
     {
       aoe = 1;
       background = dual = true;
+
+      base_multiplier *= 1.0 + p -> artifact.tormented_souls.percent();
     }
   };
 
@@ -3303,7 +3337,8 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     demon_hunter_buff_t<buff_t>( *p,
       buff_creator_t( p, "metamorphosis", p -> spec.metamorphosis_buff )
         .cd( timespan_t::zero() )
-        .default_value( p -> spec.metamorphosis_buff -> effectN( 2 ).percent() )
+        .default_value( p -> spec.metamorphosis_buff -> effectN( 2 ).percent()
+          + p -> artifact.embrace_the_pain.percent() )
         .period( p -> spec.metamorphosis_buff -> effectN( 4 ).period() )
         .tick_callback( &callback )
         .add_invalidate( CACHE_LEECH ) )
@@ -3313,7 +3348,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
   {
     demon_hunter_buff_t<buff_t>::start( stacks, value, duration );
 
-    p().metamorphosis_health = p().resources.max[ RESOURCE_HEALTH ] * value;
+    p().metamorphosis_health = p().max_health() * value;
     p().stat_gain( STAT_MAX_HEALTH, p().metamorphosis_health,
       (gain_t*) nullptr, (action_t*) nullptr, true );
   }
@@ -3502,35 +3537,40 @@ void demon_hunter_t::recalculate_resource_max( resource_e r )
 {
   player_t::recalculate_resource_max( r );
   
-  // Update Metamorphosis' value for the new health amount.
-  if ( r == RESOURCE_HEALTH && buff.metamorphosis -> check() )
+  if ( r == RESOURCE_HEALTH )
   {
-    assert( metamorphosis_health > 0 );
+    resources.max[ r ] *= 1.0 + artifact.will_of_the_illidari.percent();
 
-    double base_health = resources.max[ RESOURCE_HEALTH ] - metamorphosis_health;
-    double new_health = base_health * buff.metamorphosis -> check_value();
-    double diff = new_health - metamorphosis_health;
-
-    if ( diff != 0.0 )
+    // Update Metamorphosis' value for the new health amount.
+    if ( buff.metamorphosis -> check() )
     {
-      if ( sim -> debug )
-      {
-        sim -> out_debug.printf( "%s adjusts %s temporary health. old=%.0f new=%.0f diff=%.0f",
-          name(), buff.metamorphosis -> name(), metamorphosis_health, new_health, diff );
-      }
-    
-      resources.max[ RESOURCE_HEALTH ] += diff;
-      resources.temporary[ RESOURCE_HEALTH ] += diff;
-      if ( diff > 0 )
-      {
-        resource_gain( RESOURCE_HEALTH, diff );
-      }
-      else if ( diff < 0 )
-      {
-        resource_loss( RESOURCE_HEALTH, -diff );
-      }
+      assert( metamorphosis_health > 0 );
 
-      metamorphosis_health += diff;
+      double base_health = max_health() - metamorphosis_health;
+      double new_health = base_health * buff.metamorphosis -> check_value();
+      double diff = new_health - metamorphosis_health;
+
+      if ( diff != 0.0 )
+      {
+        if ( sim -> debug )
+        {
+          sim -> out_debug.printf( "%s adjusts %s temporary health. old=%.0f new=%.0f diff=%.0f",
+            name(), buff.metamorphosis -> name(), metamorphosis_health, new_health, diff );
+        }
+    
+        resources.max[ RESOURCE_HEALTH ] += diff;
+        resources.temporary[ RESOURCE_HEALTH ] += diff;
+        if ( diff > 0 )
+        {
+          resource_gain( RESOURCE_HEALTH, diff );
+        }
+        else if ( diff < 0 )
+        {
+          resource_loss( RESOURCE_HEALTH, -diff );
+        }
+
+        metamorphosis_health += diff;
+      }
     }
   }
 }
@@ -3642,7 +3682,11 @@ double demon_hunter_t::composite_parry() const
 {
   double cp = player_t::composite_parry();
 
-  cp += buff.demon_spikes -> check();
+  cp += buff.demon_spikes -> check_value();
+
+  cp += artifact.aldrachi_design.percent();
+
+  cp += buff.defensive_spikes -> check_value();
 
   return cp;
 }
@@ -3843,6 +3887,11 @@ void demon_hunter_t::init_base_stats()
 void demon_hunter_t::init_resources( bool force )
 {
   base_t::init_resources( force );
+
+  if ( artifact.will_of_the_illidari.rank() )
+  {
+    recalculate_resource_max( RESOURCE_HEALTH );
+  }
 
   resources.current[ RESOURCE_FURY ] = 0;
   resources.current[ RESOURCE_PAIN ] = 0;
@@ -4210,6 +4259,14 @@ void demon_hunter_t::create_buffs()
       .duration( timespan_t::from_seconds( 1.25 ) );
 
   // Vengeance
+  buff.defensive_spikes = 
+    buff_creator_t( this, "defensive_spikes",
+      artifact.defensive_spikes.data().effectN( 1 ).trigger() )
+      .chance( artifact.defensive_spikes.rank() > 0 )
+      .default_value( artifact.defensive_spikes.data().effectN( 1 ).trigger()
+        -> effectN( 1 ).percent() )
+      .add_invalidate( CACHE_PARRY );
+
   buff.demon_spikes =
     buff_creator_t( this, "demon_spikes", find_spell( 203819 ) )
       .default_value( find_spell( 203819 ) -> effectN( 1 ).percent() )
@@ -4464,12 +4521,11 @@ void demon_hunter_t::assess_damage( school_e school, dmg_e dt,
   }
 
   // Benefit tracking
-
   if ( s -> action -> may_parry )
   {
     buff.demon_spikes -> up();
+    buff.defensive_spikes -> up();
   }
-
 }
 
 // demon_hunter_t::target_mitigation ========================================
