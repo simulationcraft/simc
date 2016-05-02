@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-// TODO
+// TODO + BlizzardFeatures + Bugs
 // Subtlety
 // - Shuriken Storm
 // - Second Shuriken [artifact power]
@@ -13,6 +13,14 @@
 // - Poisoned Knives [artifact power] does the damage doubledip in any way?
 // - Does Kingsbane debuff get procced 2x on Mutilate? (If both hands apply lethal poison).
 // - Agonizing poison does not proc kingsbane stacks in game?
+// - Bag of Tricks double dips in haste (RPPM is hasted, tick-time is hasted), intended?
+//
+// Outlaw:
+// - Blunderbuss [artifact power]
+// - Blurred Time is kind of confusing, it is not as tooltip advertises. In reality, it seems to be
+//   using the trigger spell's value in a "non standard" way (compared to how haste works in general
+//   with cooldown recharge).
+// - For some reason, Between the Eyes is not affected by Blurred Time
 
 #include "simulationcraft.hpp"
 

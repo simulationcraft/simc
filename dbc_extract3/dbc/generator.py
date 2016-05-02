@@ -1175,6 +1175,7 @@ class SpellDataGenerator(DataGenerator):
             ( 193536, 0 ),          # Weaponmaster damage spell for ticks
             ( 197393, 0 ), ( 197395, 0 ), # Finality spells
             ( 192380, 0 ),          # Poisoned Knives damage component
+            ( 202848, 0 ),          # Blunderbuss driver
         ),
 
         # Priest:
