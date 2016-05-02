@@ -230,6 +230,7 @@ public:
 
     // Vengeance
     const spell_data_t* vengeance;
+    const spell_data_t* demonic_wards;
     const spell_data_t* fiery_brand_dr;
     const spell_data_t* immolation_aura;
     const spell_data_t* soul_cleave;
@@ -435,35 +436,39 @@ public:
   role_e primary_role() const override;
   stat_e convert_hybrid_stat( stat_e s ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
-  void recalculate_resource_max( resource_e ) override;
+  void   recalculate_resource_max( resource_e ) override;
+  double composite_armor_multiplier() const override;
   double composite_attack_power_multiplier() const override;
+  double composite_attribute_multiplier( attribute_e attr ) const override;
+  double composite_crit_avoidance() const override;
   double composite_dodge() const override;
   double composite_leech() const override;
   double composite_melee_crit() const override;
+  double composite_melee_expertise( const weapon_t* ) const override;
   double composite_parry() const override;
   double composite_parry_rating() const override;
   double composite_player_multiplier( school_e ) const override;
   double composite_spell_crit() const override;
   double passive_movement_modifier() const override;
   double temporary_movement_modifier() const override;
-  void assess_damage( school_e, dmg_e, action_state_t* s ) override;
-  void target_mitigation( school_e, dmg_e, action_state_t* ) override;
-  void init_action_list() override;
+  void   assess_damage( school_e, dmg_e, action_state_t* s ) override;
+  void   target_mitigation( school_e, dmg_e, action_state_t* ) override;
+  void   init_action_list() override;
   demon_hunter_td_t* get_target_data( player_t* target ) const override;
-  bool has_t18_class_trinket() const override;
+  bool   has_t18_class_trinket() const override;
 
-  void spawn_soul_fragment();
-  void spawn_soul_fragment_lesser();
-  bool consume_soul_fragments(); 
+  void   spawn_soul_fragment();
+  void   spawn_soul_fragment_lesser();
+  bool   consume_soul_fragments(); 
 
 private:
-  void create_cooldowns();
-  void create_gains();
-  void create_benefits();
-  void apl_precombat();
-  void apl_default();
-  void apl_havoc();
-  void apl_vengeance();
+  void   create_cooldowns();
+  void   create_gains();
+  void   create_benefits();
+  void   apl_precombat();
+  void   apl_default();
+  void   apl_havoc();
+  void   apl_vengeance();
   demon_hunter_td_t* find_target_data( player_t* target ) const;
 
   target_specific_t<demon_hunter_td_t> _target_data;
@@ -3346,7 +3351,18 @@ void demon_hunter_t::recalculate_resource_max( resource_e r )
   }
 }
 
-// demon_hunter_t::composite_attack_power_multiplier ===============================
+// demon_hunter_t::composite_armor_multiplier ===============================
+
+double demon_hunter_t::composite_armor_multiplier() const
+{
+  double am = player_t::composite_armor_multiplier();
+
+  am *= 1.0 + spec.demonic_wards -> effectN( 5 ).percent();
+
+  return am;
+}
+
+// demon_hunter_t::composite_attack_power_multiplier ========================
 
 double demon_hunter_t::composite_attack_power_multiplier() const
 {
@@ -3355,6 +3371,35 @@ double demon_hunter_t::composite_attack_power_multiplier() const
   ap *= 1.0 + cache.mastery() * mastery_spell.fel_blood -> effectN( 2 ).mastery_value();
 
   return ap;
+}
+
+// demon_hunter_t::composite_attribute_multiplier ===========================
+
+double demon_hunter_t::composite_attribute_multiplier( attribute_e a ) const
+{
+  double am = player_t::composite_attribute_multiplier( a );
+
+  switch( a )
+  {
+    case ATTR_STAMINA:
+      am *= 1.0 + spec.demonic_wards -> effectN( 4 ).percent();
+      break;
+    default:
+      break;
+  }
+
+  return am;
+}
+
+// demon_hunter_t::composite_crit_avoidance =================================
+
+double demon_hunter_t::composite_crit_avoidance() const
+{
+  double ca = player_t::composite_crit_avoidance();
+
+  ca += spec.demonic_wards -> effectN( 2 ).percent();
+
+  return ca;
 }
 
 // demon_hunter_t::composite_dodge ==========================================
@@ -3394,6 +3439,17 @@ double demon_hunter_t::composite_melee_crit() const
   mc += spec.critical_strikes -> effectN( 1 ).percent();
 
   return mc;
+}
+
+// demon_hunter_t::composite_melee_expertise ================================
+
+double demon_hunter_t::composite_melee_expertise( const weapon_t* w ) const
+{
+  double me = player_t::composite_melee_expertise( w );
+
+  me += spec.demonic_wards -> effectN( 3 ).base_value();
+
+  return me;
 }
 
 // demon_hunter_t::composite_parry ==========================================
@@ -3700,6 +3756,7 @@ void demon_hunter_t::init_spells()
 
   // Vengeance
   spec.vengeance          = find_specialization_spell( "Vengeance Demon Hunter" );
+  spec.demonic_wards      = find_specialization_spell( "Demonic Wards" );
   spec.fiery_brand_dr     = find_spell( 209245 );
   spec.immolation_aura    = find_specialization_spell( "Immolation Aura" );
   spec.riposte            = find_specialization_spell( "Riposte" );
@@ -4210,6 +4267,9 @@ void demon_hunter_t::target_mitigation( school_e school, dmg_e dt,
   base_t::target_mitigation( school, dt, s );
 
   s -> result_amount *= 1.0 + buff.blur -> value();
+
+  // TOCHECK: Tooltip says magical damage but spell data says all damage.
+  s -> result_amount *= 1.0 + spec.demonic_wards -> effectN( 1 ).percent();
 
   if ( dbc::is_school( school, SCHOOL_PHYSICAL ) && buff.demon_spikes -> up() )
   {
