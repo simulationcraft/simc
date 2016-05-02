@@ -645,10 +645,12 @@ public:
   virtual void      init_gains() override;
   virtual void      init_procs() override;
   virtual void      init_rng() override;
+  virtual void      init_resources( bool ) override;
   virtual void      regen( timespan_t periodicity ) override;
   virtual void      reset() override;
   virtual void      interrupt() override;
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
+  virtual void      recalculate_resource_max( resource_e ) override;
   virtual void      create_options() override;
   virtual void      copy_from( player_t* ) override;
   virtual resource_e primary_resource() const override;
@@ -6206,9 +6208,6 @@ void monk_t::init_base_stats()
       resources.base[RESOURCE_MANA] = 0;
       resources.base[RESOURCE_CHI] = 0;
       base_energy_regen_per_second = 10.0;
-
-      if ( artifact.healthy_appetite.rank() )
-        resources.base[RESOURCE_HEALTH] *= 1 + artifact.healthy_appetite.percent();
       break;
     }
     case MONK_MISTWEAVER:
@@ -6516,6 +6515,20 @@ void monk_t::init_rng()
 */
 }
 
+// monk_t::init_resources ===================================================
+
+void monk_t::init_resources( bool force )
+{
+  player_t::init_resources( force );
+
+  if ( artifact.healthy_appetite.rank() )
+  {
+    recalculate_resource_max( RESOURCE_HEALTH );
+    resources.initial[ RESOURCE_HEALTH ] = resources.current[ RESOURCE_HEALTH ]
+      = resources.max[ RESOURCE_HEALTH ];
+  }
+}
+
 // druid_t::has_t18_class_trinket ===========================================
 
 bool monk_t::has_t18_class_trinket() const
@@ -6578,7 +6591,19 @@ double monk_t::matching_gear_multiplier( attribute_e attr ) const
   return 0.0;
 }
 
-// monk_t::has_stagger ====================================================
+// monk_t::recalculate_resource_max =========================================
+
+void monk_t::recalculate_resource_max( resource_e r )
+{
+  player_t::recalculate_resource_max( r );
+
+  if ( r == RESOURCE_HEALTH )
+  {
+    resources.max[ RESOURCE_HEALTH ] *= 1.0 + artifact.healthy_appetite.percent();
+  }
+}
+
+// monk_t::has_stagger ======================================================
 
 bool monk_t::has_stagger()
 {

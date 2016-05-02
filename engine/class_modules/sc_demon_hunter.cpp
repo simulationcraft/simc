@@ -3891,6 +3891,8 @@ void demon_hunter_t::init_resources( bool force )
   if ( artifact.will_of_the_illidari.rank() )
   {
     recalculate_resource_max( RESOURCE_HEALTH );
+    resources.initial[ RESOURCE_HEALTH ] = resources.current[ RESOURCE_HEALTH ]
+      = resources.max[ RESOURCE_HEALTH ];
   }
 
   resources.current[ RESOURCE_FURY ] = 0;
