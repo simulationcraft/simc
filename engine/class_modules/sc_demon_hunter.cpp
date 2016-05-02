@@ -36,8 +36,9 @@ namespace
    Vengeance ----------------------------------------------------------------
    Infernal Strike
    Torment
-   Talents
-   Artifact Traits
+   Abyssal Strike, Last Resort, Nether Bond talents
+   Minor artifact traits
+   soul_fragments expr
 
    Needs Documenting --------------------------------------------------------
    Vengeful Retreat "jump_cancel" option
@@ -137,6 +138,7 @@ public:
     buff_t* demon_spikes;
     buff_t* empower_wards;
     buff_t* immolation_aura;
+    buff_t* painbringer;
     absorb_buff_t* soul_barrier;
   } buff;
 
@@ -346,6 +348,8 @@ public:
     // General
     proc_t* delayed_aa_range;
     proc_t* delayed_aa_channel;
+    proc_t* soul_fragment;
+    proc_t* soul_fragment_lesser;
     
     // Havoc
     proc_t* demonic_appetite;
@@ -354,6 +358,7 @@ public:
     proc_t* fel_barrage;
 
     // Vengeance
+    proc_t* fueled_by_pain;
   } proc;
 
   // RPPM objects
@@ -366,6 +371,7 @@ public:
     real_ppm_t* inner_demons;
 
     // Vengeance
+    real_ppm_t* fueled_by_pain;
   } rppm;
 
   // Special
@@ -381,6 +387,7 @@ public:
     spell_t*  inner_demons;
 
     // Vengeance
+    heal_t*   charred_warblades;
     spell_t*  immolation_aura;
     absorb_t* soul_barrier;
   } active;
@@ -458,8 +465,8 @@ public:
   demon_hunter_td_t* get_target_data( player_t* target ) const override;
   bool   has_t18_class_trinket() const override;
 
-  void   spawn_soul_fragment();
-  void   spawn_soul_fragment_lesser();
+  void   spawn_soul_fragment( unsigned = 1 );
+  void   spawn_soul_fragment_lesser( unsigned = 1 );
   bool   consume_soul_fragments(); 
 
 private:
@@ -759,13 +766,22 @@ public:
     }
   }
 
+  virtual void tick( dot_t* d ) override
+  {
+    ab::tick( d );
+
+    trigger_charred_warblades( d -> state );
+  }
+
   virtual void impact( action_state_t* s ) override
   {
     ab::impact( s );
 
     if ( ab::result_is_hit( s -> result ) )
     {
-      // benefit tracking
+      trigger_charred_warblades( s );
+
+      // Benefit tracking
       p() -> get_target_data( s -> target ) -> debuffs.nemesis -> up();
     }
   }
@@ -801,6 +817,28 @@ public:
     }
   }
 
+  void trigger_charred_warblades( action_state_t* s )
+  {
+    if ( ! p() -> artifact.charred_warblades.rank() )
+    {
+      return;
+    }
+
+    if ( ! dbc::is_school( ab::school, SCHOOL_FIRE ) )
+    {
+      return;
+    }
+
+    if ( ! ( ab::harmful && s -> result_amount > 0 ) )
+    {
+      return;
+    }
+
+    heal_t* action = p() -> active.charred_warblades;
+    action -> base_dd_min = action -> base_dd_max = s -> result_amount;
+    action -> schedule_execute();
+  }
+
 protected:
   /// typedef for demon_hunter_action_t<action_base_t>
   typedef demon_hunter_action_t base_t;
@@ -820,6 +858,7 @@ struct demon_hunter_heal_t : public demon_hunter_action_t<heal_t>
                        const spell_data_t* s = spell_data_t::nil() )
     : base_t( n, p, s )
   {
+    harmful = false;
     target = p;
   }
 };
@@ -901,6 +940,19 @@ struct consume_soul_t : public demon_hunter_heal_t
       // Not in spell data.
       p() -> cooldown.demon_spikes -> adjust( timespan_t::from_seconds( -1.0 ) );
     }
+
+    if ( p() -> artifact.fueled_by_pain.rank() && p() -> rppm.fueled_by_pain -> trigger() )
+    {
+      p() -> proc.fueled_by_pain -> occur();
+
+      timespan_t duration = timespan_t::from_seconds(
+        p() -> artifact.fueled_by_pain.data().effectN( 1 ).base_value() );
+
+      p() -> buff.metamorphosis -> trigger(
+        1, p() -> buff.metamorphosis -> default_value, -1.0, duration );
+    }
+
+    p() -> buff.painbringer -> trigger();
   }
 
   bool ready() override
@@ -911,6 +963,26 @@ struct consume_soul_t : public demon_hunter_heal_t
     }
 
     return demon_hunter_heal_t::ready();
+  }
+};
+
+// Charred Warblades ========================================================
+
+struct charred_warblades_t : public demon_hunter_heal_t
+{
+  charred_warblades_t( demon_hunter_t* p ) :
+    demon_hunter_heal_t( "charred_warblades", p, p -> find_spell( 213011 ) )
+  {
+    background = true;
+    may_crit = false;
+    base_multiplier *= p -> artifact.charred_warblades.data().effectN( 1 ).percent();
+  }
+
+  void init() override
+  {
+    demon_hunter_heal_t::init();
+
+    snapshot_flags &= ~STATE_VERSATILITY; // Not affected by Versatility.
   }
 };
 
@@ -2651,8 +2723,7 @@ struct fracture_t : public demon_hunter_attack_t
   {
     demon_hunter_attack_t::execute();
 
-    p() -> spawn_soul_fragment_lesser();
-    p() -> spawn_soul_fragment_lesser();
+    p() -> spawn_soul_fragment_lesser( 2 );
   }
 };
 
@@ -2837,6 +2908,50 @@ struct shear_t : public demon_hunter_attack_t
 
       shatter( execute_state );
     }
+  }
+};
+
+// Soul Carver ==============================================================
+
+struct soul_carver_t : public demon_hunter_attack_t
+{
+  struct soul_carver_oh_t : public demon_hunter_attack_t
+  {
+    soul_carver_oh_t( demon_hunter_t* p ) :
+      demon_hunter_attack_t( "soul_carver_oh", p,
+        p -> artifact.soul_carver.data().effectN( 4 ).trigger() )
+    {
+      background = dual = true;
+      may_miss = may_parry = may_dodge = false; // TOCHECK
+    }
+  };
+
+  soul_carver_oh_t* oh;
+
+  soul_carver_t( demon_hunter_t* p, const std::string& options_str ) :
+    demon_hunter_attack_t( "soul_carver", p, p -> artifact.soul_carver )
+  {
+    parse_options( options_str );
+
+    impact_action = new soul_carver_oh_t( p );
+    impact_action -> stats = stats;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    demon_hunter_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      p() -> spawn_soul_fragment_lesser( 2 );
+    }
+  }
+
+  void tick( dot_t* d ) override
+  {
+    demon_hunter_attack_t::tick( d );
+
+    p() -> spawn_soul_fragment_lesser();
   }
 };
 
@@ -3659,6 +3774,8 @@ action_t* demon_hunter_t::create_action( const std::string& name,
     return new fury_of_the_illidari_t( this, options_str );
   if ( name == "shear" )
     return new shear_t( this, options_str );
+  if ( name == "soul_carver" )
+    return new soul_carver_t( this, options_str );
   if ( name == "soul_cleave" )
     return new soul_cleave_t( this, options_str );
   if ( name == "throw_glaive" )
@@ -3743,6 +3860,9 @@ void demon_hunter_t::init_rng()
   // Havoc
   rppm.inner_demons = get_rppm( "inner_demons", artifact.inner_demons );
 
+  // Vengeance
+  rppm.fueled_by_pain = get_rppm( "fueled_by_pain", artifact.fueled_by_pain );
+
   player_t::init_rng();
 }
 
@@ -3753,14 +3873,19 @@ void demon_hunter_t::init_procs()
   base_t::init_procs();
 
   // General
-  proc.delayed_aa_range    = get_proc( "delayed_swing__out_of_range" );
-  proc.delayed_aa_channel  = get_proc( "delayed_swing__channeling" );
+  proc.delayed_aa_range     = get_proc( "delayed_swing__out_of_range" );
+  proc.delayed_aa_channel   = get_proc( "delayed_swing__channeling" );
+  proc.soul_fragment        = get_proc( "soul_fragment" );
+  proc.soul_fragment_lesser = get_proc( "soul_fragment_lesser" );
 
   // Havoc
-  proc.demonic_appetite    = get_proc( "demonic_appetite" );
-  proc.demons_bite_in_meta = get_proc( "demons_bite_in_meta" );
-  proc.felblade_reset      = get_proc( "felblade_reset" );
-  proc.fel_barrage         = get_proc( "fel_barrage" );
+  proc.demonic_appetite     = get_proc( "demonic_appetite" );
+  proc.demons_bite_in_meta  = get_proc( "demons_bite_in_meta" );
+  proc.felblade_reset       = get_proc( "felblade_reset" );
+  proc.fel_barrage          = get_proc( "fel_barrage" );
+
+  // Vengeance
+  proc.fueled_by_pain       = get_proc( "fueled_by_pain" );
 }
 
 // demon_hunter_t::init_scaling =============================================
@@ -4007,6 +4132,11 @@ void demon_hunter_t::init_spells()
       spec.immolation_aura -> effectN( 1 ).trigger() );
     active.immolation_aura -> stats = get_stats( "immolation_aura" );
   }
+
+  if ( artifact.charred_warblades.rank() )
+  {
+    active.charred_warblades = new charred_warblades_t( this );
+  }
 }
 
 // demon_hunter_t::create_buffs =============================================
@@ -4101,6 +4231,12 @@ void demon_hunter_t::create_buffs()
       .default_value( talent.agonizing_flames -> effectN( 2 ).percent() )
       .add_invalidate( CACHE_RUN_SPEED );
 
+  buff.painbringer = 
+    buff_creator_t( this, "painbringer", find_spell( 212988 ) )
+      .chance( artifact.painbringer.rank() > 0 )
+      .default_value( find_spell( 212988 ) -> effectN( 1 ).percent() )
+      .stack_behavior( BUFF_STACK_ASYNCHRONOUS );
+
   buff.soul_barrier =
     absorb_buff_creator_t( this, "soul_barrier", find_spell( 211512 ) )
       .source( get_stats( "soul_barrier" ) )
@@ -4171,23 +4307,33 @@ void demon_hunter_t::apl_vengeance()
   // action_priority_list_t* def = get_action_priority_list( "default" );
 }
 
-void demon_hunter_t::spawn_soul_fragment()
+void demon_hunter_t::spawn_soul_fragment( unsigned n )
 {
-  soul_fragments++;
+  soul_fragments += n;
+
+  for ( unsigned i = 0; i < n; i++ )
+  {
+    proc.soul_fragment -> occur();
+  }
 
   if ( sim -> debug )
   {
-    sim -> out_debug.printf( "%s spawns a soul fragment. count=%u", name(), soul_fragments );
+    sim -> out_debug.printf( "%s spawns %u soul fragments. count=%u", name(), n, soul_fragments );
   }
 }
 
-void demon_hunter_t::spawn_soul_fragment_lesser()
+void demon_hunter_t::spawn_soul_fragment_lesser( unsigned n )
 {
-  lesser_soul_fragments++;
+  lesser_soul_fragments += n;
+
+  for ( unsigned i = 0; i < n; i++ )
+  {
+    proc.soul_fragment_lesser -> occur();
+  }
 
   if ( sim -> debug )
   {
-    sim -> out_debug.printf( "%s spawns a lesser soul fragment. count=%u", name(), lesser_soul_fragments );
+    sim -> out_debug.printf( "%s spawns %u lesser soul fragments. count=%u", name(), n, lesser_soul_fragments );
   }
 }
 
@@ -4342,6 +4488,8 @@ void demon_hunter_t::target_mitigation( school_e school, dmg_e dt,
 
   // TOCHECK: Tooltip says magical damage but spell data says all damage.
   s -> result_amount *= 1.0 + spec.demonic_wards -> effectN( 1 ).percent();
+
+  s -> result_amount *= 1.0 + buff.painbringer -> stack_value();
 
   if ( dbc::is_school( school, SCHOOL_PHYSICAL ) && buff.demon_spikes -> up() )
   {

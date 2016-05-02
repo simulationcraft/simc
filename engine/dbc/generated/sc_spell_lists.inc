@@ -1068,8 +1068,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       217070, // Rage of the Illidari
            0,
     },
-    // Vengeance tree, 14 abilities
+    // Vengeance tree, 15 abilities
     {
+      213011, // Charred Warblades
       203720, // Demon Spikes (Active Mitigation)
       218256, // Empower Wards
       204021, // Fiery Brand

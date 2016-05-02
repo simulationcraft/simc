@@ -1344,6 +1344,7 @@ class SpellDataGenerator(DataGenerator):
 		  
 		  # Vengeance
 		  ( 209245, 2 ), # Fiery Brand damage reduction
+		  ( 213011, 2 ), # Charred Warblades heal
 		),
     ]
 
