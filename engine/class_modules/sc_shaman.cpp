@@ -210,6 +210,7 @@ public:
   spell_t*  earthen_rage;
   spell_t* crashing_storm;
   spell_t* doom_vortex;
+  action_t* magnitude;
 
   // Pets
   std::vector<pet_t*> pet_feral_spirit;
@@ -2293,6 +2294,16 @@ struct earthen_rage_driver_t : public spell_t
   { return data().duration(); }
 };
 
+struct magnitude_t : public shaman_spell_t
+{
+  magnitude_t( shaman_t* p ) :
+    shaman_spell_t( "magnitude", p, p -> find_spell( 197576 ) )
+  {
+    background = true;
+    callbacks = false;
+  }
+};
+
 // Elemental overloads
 
 struct elemental_overload_spell_t : public shaman_spell_t
@@ -4349,8 +4360,11 @@ struct totem_pulse_action_t : public spell_t
     crit_bonus_multiplier *= 1.0 + totem -> o() -> spec.elemental_fury -> effectN( 1 ).percent();
   }
 
-  shaman_t* o()
+  shaman_t* o() const
   { return debug_cast< shaman_t* >( player -> cast_pet() -> owner ); }
+
+  shaman_td_t* td( player_t* target ) const
+  { return o() -> get_target_data( target ); }
 
   double action_multiplier() const override
   {
@@ -4446,6 +4460,17 @@ struct earthquake_totem_pulse_t : public totem_pulse_action_t
     spell_power_mod.direct = 0.11; // Hardcoded into tooltip because it's cool
     hasted_pulse = true;
     base_multiplier *= 1.0 + o() -> artifact.the_ground_trembles.percent();
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    totem_pulse_action_t::impact( state );
+
+    if ( td( state -> target ) -> dot.flame_shock -> is_ticking() && o() -> talent.magnitude -> ok() )
+    {
+      o() -> magnitude -> target = state -> target;
+      o() -> magnitude -> schedule_execute();
+    }
   }
 
   double target_armor( player_t* ) const override
@@ -4984,6 +5009,11 @@ void shaman_t::init_spells()
   if ( talent.earthen_rage -> ok() )
   {
     earthen_rage = new earthen_rage_driver_t( this );
+  }
+
+  if ( talent.magnitude -> ok() )
+  {
+    magnitude = new magnitude_t( this );
   }
 
   if ( artifact.unleash_doom.rank() )
