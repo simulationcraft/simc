@@ -9,6 +9,13 @@
 // Shaman
 // ==========================================================================
 
+// Legion TODO
+// Elemental
+// - Verification
+// - Magnitude
+// - Fury of the Storms Lightning Elemental Chain Lightning
+// - Path of Flame spread mechanism (would be good to generalize this "nearby" spreading)
+
 namespace { // UNNAMED NAMESPACE
 
 /**
@@ -20,7 +27,7 @@ namespace { // UNNAMED NAMESPACE
   of attempts, in which it gives up and just returns the current best path.  I wouldn't be
   terribly surprised if Blizz did something like this in game.
 **/
-static std::vector<player_t*> check_distance_targeting( const action_t* action, std::vector< player_t* >& tl )
+static std::vector<player_t*> __check_distance_targeting( const action_t* action, std::vector< player_t* >& tl )
 {
   sim_t* sim = action -> sim;
   player_t* target = action -> target;
@@ -268,7 +275,6 @@ public:
     buff_t* ghost_wolf;
     buff_t* elemental_focus;
     buff_t* earth_surge;
-    buff_t* lightning_surge;
     buff_t* icefury;
     buff_t* hot_hand;
 
@@ -3049,7 +3055,7 @@ struct chain_lightning_overload_t: public elemental_overload_spell_t
 
   std::vector<player_t*> check_distance_targeting( std::vector< player_t* >& tl ) const override
   {
-    return ::check_distance_targeting( this, tl );
+    return __check_distance_targeting( this, tl );
   }
 };
 
@@ -3124,7 +3130,7 @@ struct chain_lightning_t: public shaman_spell_t
 
   std::vector<player_t*> check_distance_targeting( std::vector< player_t* >& tl ) const override
   {
-    return ::check_distance_targeting( this, tl );
+    return __check_distance_targeting( this, tl );
   }
 };
 
@@ -3159,7 +3165,7 @@ struct lava_beam_overload_t: public elemental_overload_spell_t
 
   std::vector<player_t*> check_distance_targeting( std::vector< player_t* >& tl ) const override
   {
-    return ::check_distance_targeting( this, tl );
+    return __check_distance_targeting( this, tl );
   }
 };
 
@@ -3196,7 +3202,7 @@ struct lava_beam_t : public shaman_spell_t
 
   std::vector<player_t*> check_distance_targeting( std::vector< player_t* >& tl ) const override
   {
-    return ::check_distance_targeting( this, tl );
+    return __check_distance_targeting( this, tl );
   }
 };
 
@@ -3452,18 +3458,6 @@ struct lightning_bolt_t : public shaman_spell_t
     m *= 1.0 + p() -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 1 ).percent();
 
     return m;
-  }
-
-  timespan_t execute_time() const override
-  {
-    timespan_t t = shaman_spell_t::execute_time();
-
-    if ( p() -> buff.lightning_surge -> up() )
-    {
-      t *= p() -> buff.lightning_surge -> check_value();
-    }
-
-    return t;
   }
 
   void execute() override
@@ -5534,9 +5528,6 @@ void shaman_t::create_buffs()
     .activated( false );
   buff.earth_surge = buff_creator_t( this, "earth_surge", find_spell( 189797 ) )
     .default_value( 1.0 + find_spell( 189797 ) -> effectN( 1 ).percent() );
-  buff.lightning_surge = buff_creator_t( this, "lightning_surge", find_spell( 189796 ) )
-    // TODO: 1 - 0.5 or 1 / 1.5 ?
-    .default_value( 1.0 + find_spell( 189796 ) -> effectN( 1 ).percent() );
   buff.stormkeeper = buff_creator_t( this, "stormkeeper", artifact.stormkeeper )
     .cd( timespan_t::zero() ); // Handled by the action
   buff.static_overload = buff_creator_t( this, "static_overload", find_spell( 191634 ) )
