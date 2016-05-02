@@ -41,6 +41,7 @@ actions.prot+=/shield_slam
 actions.prot+=/revenge
 actions.prot+=/ravager
 actions.prot+=/storm_bolt
+actions.prot+=/impending_victory,if=talent.impending_victory.enabled&cooldown.shield_slam.remains<=execute_time
 actions.prot+=/victory_rush,if=!talent.impending_victory.enabled&cooldown.shield_slam.remains<=execute_time
 actions.prot+=/devastate
 
