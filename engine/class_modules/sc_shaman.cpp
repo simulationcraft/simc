@@ -3309,7 +3309,7 @@ struct lava_burst_t : public shaman_spell_t
       p() -> buff.lava_surge -> expire();
 
     p() -> lava_surge_during_lvb = false;
-    p() -> cooldown.fire_elemental -> adjust( -timespan_t::from_seconds( p() -> artifact.elementalist.value() ) );
+    p() -> cooldown.fire_elemental -> adjust( p() -> artifact.elementalist.time_value() );
 
     p() -> buff.power_of_the_maelstrom -> trigger( p() -> buff.power_of_the_maelstrom -> max_stack() );
   }
