@@ -265,8 +265,6 @@ public:
     buff_t* unleash_doom;
     haste_buff_t* wind_strikes;
     buff_t* gathering_storms;
-    buff_t* fire_empowered;
-    buff_t* storm_empowered;
     buff_t* ghost_wolf;
     buff_t* elemental_focus;
     buff_t* earth_surge;
@@ -451,6 +449,7 @@ public:
     artifact_power_t firestorm;
     artifact_power_t power_of_the_maelstrom;
     artifact_power_t fury_of_the_storms;
+    artifact_power_t stormkeepers_power;
 
     // Enhancement
     artifact_power_t doom_winds;
@@ -884,16 +883,6 @@ public:
   virtual double composite_maelstrom_gain_coefficient( const action_state_t* ) const
   {
     double m = maelstrom_gain_coefficient;
-
-    if ( p() -> buff.fire_empowered -> up() )
-    {
-      m *= 1.0 + p() -> buff.fire_empowered -> data().effectN( 1 ).percent();
-    }
-
-    if ( p() -> buff.storm_empowered -> up() )
-    {
-      m *= 1.0 + p() -> buff.storm_empowered -> data().effectN( 1 ).percent();
-    }
 
     return m;
   }
@@ -2864,8 +2853,6 @@ struct fire_elemental_t : public shaman_spell_t
     {
       p() -> guardian_fire_elemental -> summon( base_spell -> duration() );
     }
-
-    p() -> buff.fire_empowered -> trigger();
   }
 
   bool ready() override
@@ -3226,6 +3213,18 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
     crit_bonus_multiplier += p -> artifact.molten_blast.percent();
   }
 
+  double action_multiplier() const override
+  {
+    double m = shaman_spell_t::action_multiplier();
+
+    if ( p() -> buff.ascendance -> up() )
+    {
+      m *= 1.0 + p() -> cache.spell_crit();
+    }
+
+    return m;
+  }
+
   double composite_target_crit( player_t* t ) const override
   {
     double m = shaman_spell_t::composite_target_crit ( t );
@@ -3268,6 +3267,18 @@ struct lava_burst_t : public shaman_spell_t
     {
       cooldown -> charges += p() -> talent.echo_of_the_elements -> effectN( 2 ).base_value();
     }
+  }
+
+  double action_multiplier() const override
+  {
+    double m = shaman_spell_t::action_multiplier();
+
+    if ( p() -> buff.ascendance -> up() )
+    {
+      m *= 1.0 + p() -> cache.spell_crit();
+    }
+
+    return m;
   }
 
   double composite_target_crit( player_t* t ) const override
@@ -3547,11 +3558,23 @@ struct elemental_blast_t : public shaman_spell_t
 
 // Icefury Spell ====================================================
 
+struct icefury_overload_t : public elemental_overload_spell_t
+{
+  icefury_overload_t( shaman_t* p ) :
+    elemental_overload_spell_t( p, "icefury_overload", p -> find_spell( 219271 ) )
+  { }
+};
+
 struct icefury_t : public shaman_spell_t
 {
   icefury_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "icefury", player, player -> talent.icefury, options_str )
   {
+    if ( player -> mastery.elemental_overload -> ok() )
+    {
+      overload = new icefury_overload_t( player );
+      add_child( overload );
+    }
   }
 
   void execute() override
@@ -3787,8 +3810,6 @@ struct storm_elemental_t : public shaman_spell_t
     {
       p() -> guardian_storm_elemental -> summon( data().duration() );
     }
-
-    p() -> buff.storm_empowered -> trigger();
   }
 };
 
@@ -3999,7 +4020,7 @@ struct wind_shear_t : public shaman_spell_t
 
 struct ascendance_t : public shaman_spell_t
 {
-  cooldown_t* strike_cd;
+  cooldown_t *strike_cd;
 
   ascendance_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "ascendance", player, player -> talent.ascendance, options_str )
@@ -4934,6 +4955,7 @@ void shaman_t::init_spells()
   artifact.firestorm                 = find_artifact_spell( "Firestorm"          );
   artifact.power_of_the_maelstrom    = find_artifact_spell( "Power of the Maelstrom" );
   artifact.fury_of_the_storms        = find_artifact_spell( "Fury of the Storms" );
+  artifact.stormkeepers_power        = find_artifact_spell( "Stormkeeper's Power" );
 
   // Enhancement
   artifact.doom_winds                = find_artifact_spell( "Doom Winds"         );
@@ -5502,8 +5524,6 @@ void shaman_t::create_buffs()
                       .chance( artifact.wind_strikes.rank() > 0 )
                       .default_value( 1.0 / ( 1.0 + artifact.wind_strikes.percent() ) );
   buff.gathering_storms = buff_creator_t( this, "gathering_storms", find_spell( 198300 ) );
-  buff.fire_empowered = buff_creator_t( this, "fire_empowered", find_spell( 193774 ) );
-  buff.storm_empowered = buff_creator_t( this, "storm_empowered", find_spell( 212747 ) );
   buff.ghost_wolf = buff_creator_t( this, "ghost_wolf", find_class_spell( "Ghost Wolf" ) )
                     .period( artifact.spirit_of_the_maelstrom.rank() ? find_spell( 198240 ) -> effectN( 1 ).period() : timespan_t::min() )
                     .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
@@ -6116,6 +6136,8 @@ double shaman_t::composite_attack_power_multiplier() const
 double shaman_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
+
+  m *= 1.0 + artifact.stormkeepers_power.percent();
 
   if ( mastery.enhanced_elements -> ok() &&
        ( dbc::is_school( school, SCHOOL_FIRE   ) ||
