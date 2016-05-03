@@ -304,6 +304,7 @@ public:
     cooldown_t* lava_burst;
     cooldown_t* lava_lash;
     cooldown_t* lightning_shield;
+    cooldown_t* storm_elemental;
     cooldown_t* strike;
     cooldown_t* t16_2pc_melee;
     cooldown_t* t16_4pc_caster;
@@ -520,6 +521,7 @@ public:
     cooldown.ascendance           = get_cooldown( "ascendance"            );
     cooldown.elemental_focus      = get_cooldown( "elemental_focus"       );
     cooldown.fire_elemental       = get_cooldown( "fire_elemental"        );
+    cooldown.storm_elemental      = get_cooldown( "storm_elemental"       );
     cooldown.feral_spirits        = get_cooldown( "feral_spirit"          );
     cooldown.lava_burst           = get_cooldown( "lava_burst"            );
     cooldown.lava_lash            = get_cooldown( "lava_lash"             );
@@ -3338,6 +3340,7 @@ struct lava_burst_t : public shaman_spell_t
 
     p() -> lava_surge_during_lvb = false;
     p() -> cooldown.fire_elemental -> adjust( p() -> artifact.elementalist.time_value() );
+    p() -> cooldown.storm_elemental -> adjust( p() -> artifact.elementalist.time_value() );
 
     p() -> buff.power_of_the_maelstrom -> trigger( p() -> buff.power_of_the_maelstrom -> max_stack() );
   }
@@ -3797,8 +3800,11 @@ struct lightning_rod_t : public shaman_spell_t
 
 struct storm_elemental_t : public shaman_spell_t
 {
+  const spell_data_t* summon_spell;
+
   storm_elemental_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "storm_elemental", player, player -> talent.storm_elemental, options_str )
+    shaman_spell_t( "storm_elemental", player, player -> talent.storm_elemental, options_str ),
+    summon_spell( player -> find_spell( 157299 ) )
   {
     harmful = may_crit = false;
   }
@@ -3809,11 +3815,11 @@ struct storm_elemental_t : public shaman_spell_t
 
     if ( p() -> talent.primal_elementalist -> ok() )
     {
-      p() -> pet_storm_elemental -> summon( data().duration() );
+      p() -> pet_storm_elemental -> summon( summon_spell -> duration() );
     }
     else
     {
-      p() -> guardian_storm_elemental -> summon( data().duration() );
+      p() -> guardian_storm_elemental -> summon( summon_spell -> duration() );
     }
   }
 };
@@ -4457,7 +4463,7 @@ struct earthquake_totem_pulse_t : public totem_pulse_action_t
     aoe = -1;
     ground_aoe = true;
     school = SCHOOL_PHYSICAL;
-    spell_power_mod.direct = 0.11; // Hardcoded into tooltip because it's cool
+    spell_power_mod.direct = 0.3; // Hardcoded into tooltip because it's cool
     hasted_pulse = true;
     base_multiplier *= 1.0 + o() -> artifact.the_ground_trembles.percent();
   }
@@ -4511,7 +4517,7 @@ struct liquid_magma_totem_pulse_t : public totem_pulse_action_t
   liquid_magma_globule_t* globule;
 
   liquid_magma_totem_pulse_t( shaman_totem_pet_t* totem ) :
-    totem_pulse_action_t( "liquid_magma_driver", totem, totem -> find_spell( 192222 ) ),
+    totem_pulse_action_t( "liquid_magma_driver", totem, totem -> find_spell( 192226 ) ),
     globule( new liquid_magma_globule_t( totem ) )
   {
     // TODO: "Random enemies" implicates number of targets
@@ -4534,7 +4540,7 @@ struct liquid_magma_totem_t : public shaman_totem_pet_t
   liquid_magma_totem_t( shaman_t* owner ):
     shaman_totem_pet_t( owner, "liquid_magma_totem" )
   {
-    pulse_amplitude = owner -> find_spell( 192222 ) -> effectN( 2 ).period();
+    pulse_amplitude = owner -> find_spell( 192226 ) -> effectN( 1 ).period();
   }
 
   void init_spells() override
