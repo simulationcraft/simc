@@ -15,6 +15,7 @@
 // - Magnitude
 // - Fury of the Storms Lightning Elemental Chain Lightning
 // - Path of Flame spread mechanism (would be good to generalize this "nearby" spreading)
+// - At what point does Greater Lighting Elemental start aoeing?
 
 namespace { // UNNAMED NAMESPACE
 
@@ -288,7 +289,7 @@ public:
     buff_t* resonance_totem;
     buff_t* storm_totem;
     buff_t* ember_totem;
-    buff_t* tailwind_totem;
+    haste_buff_t* tailwind_totem;
 
     // Stormlaash
     stormlash_buff_t* stormlash;
@@ -659,8 +660,8 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
   debuff.earthen_spike  = buff_creator_t( *this, "earthen_spike", p -> talent.earthen_spike )
                           // -10% resistance in spell data, treat it as a multiplier instead
                           .default_value( 1.0 + p -> talent.earthen_spike -> effectN( 2 ).percent() );
-  debuff.lightning_rod = buff_creator_t( *this, "lightning_rod", p -> talent.lightning_rod )
-                         .default_value( 1.0 + p -> talent.lightning_rod -> effectN( 1 ).percent() )
+  debuff.lightning_rod = buff_creator_t( *this, "lightning_rod", p -> talent.lightning_rod -> effectN( 1 ).trigger() )
+                         .default_value( 1.0 + p -> talent.lightning_rod -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
                          .cd( timespan_t::zero() ); // Cooldown handled by action
 }
 
@@ -1226,9 +1227,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       m *= td( target ) -> debuff.earthen_spike -> check_value();
     }
 
-    // TODO: Spell specific affected-by, this will work for now. Note that tooltip claims "nature
-    // spells", but the spell data affects fire spells too.
-    if ( td( target ) -> debuff.lightning_rod -> up() )
+    if ( dbc::is_school( school, SCHOOL_NATURE ) && td( target ) -> debuff.lightning_rod -> up() )
     {
       m *= td( target ) -> debuff.lightning_rod -> check_value();
     }
@@ -1912,6 +1911,19 @@ struct greater_lightning_elemental_t : public pet_t
     }
   };
 
+  struct chain_lightning_t : public spell_t
+  {
+    chain_lightning_t( greater_lightning_elemental_t* p ) :
+      spell_t( "chain_lightning", p, p -> find_spell( 191732 ) )
+    {
+      base_costs[ RESOURCE_MANA ] = 0;
+      base_add_multiplier = data().effectN( 1 ).chain_multiplier();
+      may_crit = true;
+      ability_lag = timespan_t::from_millis( 300 );
+      ability_lag_stddev =  timespan_t::from_millis( 25 );
+    }
+  };
+
   greater_lightning_elemental_t( shaman_t* owner ) :
     pet_t( owner -> sim, owner, "greater_lightning_elemental", true, true )
   {
@@ -1929,12 +1941,13 @@ struct greater_lightning_elemental_t : public pet_t
   action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "lightning_blast" ) return new lightning_blast_t( this );
+    if ( name == "chain_lightning" ) return new chain_lightning_t( this );
     return pet_t::create_action( name, options_str );
   }
 
   void init_action_list() override
   {
-    action_list_str = "lightning_blast";
+    action_list_str = "lightning_blast/chain_lightning,if=active_enemies>1";
 
     pet_t::init_action_list();
   }
@@ -3433,8 +3446,6 @@ struct lightning_bolt_t : public shaman_spell_t
     }
   }
 
-  // TODO: Unclear if Power of the Maelstrom also grants guaranteed overloads, would make sense
-  // though.
   double overload_chance( const action_state_t* s ) const override
   {
     double chance = shaman_spell_t::overload_chance( s );
@@ -5584,10 +5595,10 @@ void shaman_t::create_buffs()
   buff.ember_totem = buff_creator_t( this, "ember_totem", find_spell( 210658 ) )
                      .duration( talent.totem_mastery -> effectN( 3 ).trigger() -> duration() )
                      .default_value( 1.0 + find_spell( 210658 ) -> effectN( 1 ).percent() );
-  buff.tailwind_totem = buff_creator_t( this, "tailwind_totem", find_spell( 210659 ) )
+  buff.tailwind_totem = haste_buff_creator_t( this, "tailwind_totem", find_spell( 210659 ) )
                         .add_invalidate( CACHE_HASTE )
                         .duration( talent.totem_mastery -> effectN( 4 ).trigger() -> duration() )
-                        .default_value( 1.0 / ( 1.0 + find_spell( 210659 ) -> effectN( 1 ).percent() ) );
+                        .default_value( 1.0 / ( 1.0 + find_spell( 210660 ) -> effectN( 2 ).percent() ) );
   buff.icefury = buff_creator_t( this, "icefury", talent.icefury )
     .cd( timespan_t::zero() ) // Handled by the action
     .default_value( talent.icefury -> effectN( 3 ).percent() );

@@ -1238,7 +1238,7 @@ class SpellDataGenerator(DataGenerator):
           ( 207835, 0 ), ( 213307, 0 ),                 # Stormlash auxilary spell(s)
           # Various feral spirit variation special attacks
           ( 198455, 0 ), ( 198483, 0 ), ( 198485, 0 ), ( 198480, 0 ),
-          ( 191726, 0 ), ( 191731, 0 ),                 # Greater Lightning Elemental spells
+          ( 191726, 0 ), ( 191732, 0 ),                 # Greater Lightning Elemental spells
           ( 214816, 0 ), ( 218559, 0 ), ( 218558, 0 ),  # Overload energize spells
           ( 219271, 0 ),                                # Icefury overload
         ),
