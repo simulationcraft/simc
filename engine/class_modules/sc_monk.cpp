@@ -7145,7 +7145,7 @@ void monk_t::target_mitigation( school_e school,
     default: break;
   }
 
-  double health_before_hit = fmax( resources.current[RESOURCE_HEALTH], 0 );
+  double health_before_hit = resources.current[RESOURCE_HEALTH];
 
   player_t::target_mitigation( school, dt, s );
 
@@ -7186,7 +7186,7 @@ void monk_t::target_mitigation( school_e school,
 
     if ( talent.secret_ingredients -> ok() )
       // Due to the fact that SimC can cause HP values to go into negative, force the cap to be 2 since the original formula can go above 2 with negative HP
-      goto_proc_chance *= fmin( 2 - ( ( health_before_hit - s -> result_amount ) / max_health() ), 2 );
+      goto_proc_chance *= 2 - fmax( ( health_before_hit - s -> result_amount ) / max_health(), 0 );
 
     gift_of_the_ox_proc_chance += goto_proc_chance;
 
