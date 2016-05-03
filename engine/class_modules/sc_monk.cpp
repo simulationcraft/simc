@@ -166,6 +166,7 @@ public:
   combo_strikes_e previous_combo_strike;
 
   double gale_burst_touch_of_death_bonus;
+  double gift_of_the_ox_proc_chance;
   unsigned int internal_id;
   // Counter for when to start the trigger for the 19 4-piece Windwalker Combo Master buff
   double tier19_4pc_melee_counter;
@@ -611,6 +612,7 @@ public:
     }
     previous_combo_strike = CS_NONE;
     gale_burst_touch_of_death_bonus = 0;
+    gift_of_the_ox_proc_chance = 0;
     internal_id = 0;
     tier19_4pc_melee_counter = 0;
     user_options.initial_chi = 0;
@@ -7143,6 +7145,8 @@ void monk_t::target_mitigation( school_e school,
     default: break;
   }
 
+  double health_before_hit = fmax( resources.current[RESOURCE_HEALTH], 0 );
+
   player_t::target_mitigation( school, dt, s );
 
   // cap HP% at 0 HP since SimC can fall below 0 HP
@@ -7154,7 +7158,6 @@ void monk_t::target_mitigation( school_e school,
     if ( resources.pct(RESOURCE_HEALTH) > 0.35 && health_percent_after_the_hit <= 0.35 && cooldown.healing_elixirs -> up() )
       active_actions.healing_elixir -> execute();
   }
-
 
   // Gift of the Ox Trigger Calculations ===========================================================
 
@@ -7176,10 +7179,18 @@ void monk_t::target_mitigation( school_e school,
         buff.gift_of_the_ox -> trigger();
     }
 
-    double percent_of_health_lost_to_the_hit = s -> result_amount / max_health();
-    // (0.75 * PercentOfHealthLostToTheHit) * (3 - 2*HealthPercentAfterTheHit)
-    // Cap at 100% proc rate, since formula can go above 100%
-    if ( rng().roll( fmin( ( 0.75 * percent_of_health_lost_to_the_hit ) * ( 3 - 2 * health_percent_after_the_hit ), 1 ) ) )
+    // Gift of the Ox is no longer a random chance, under the hood. When you are hit, it increments a counter by (DamageTakenBeforeAbsorbsOrStagger / MaxHealth).
+    // It now drops an orb whenever that reaches 1.0, and decrements it by 1.0. The tooltip still says ‘chance’, to keep it understandable.
+    // Gift of the Mists multiplies that counter increment by (2 - (HealthBeforeDamage - DamageTakenBeforeAbsorbsOrStagger) / MaxHealth);
+    double goto_proc_chance = s -> result_amount / max_health();
+
+    if ( talent.secret_ingredients -> ok() )
+      // Due to the fact that SimC can cause HP values to go into negative, force the cap to be 2 since the original formula can go above 2 with negative HP
+      goto_proc_chance *= fmin( 2 - ( ( health_before_hit - s -> result_amount ) / max_health() ), 2 );
+
+    gift_of_the_ox_proc_chance += goto_proc_chance;
+
+    if ( gift_of_the_ox_proc_chance > 1.0 )
     {
       if ( artifact.overflow.rank() )
       { 
@@ -7190,6 +7201,8 @@ void monk_t::target_mitigation( school_e school,
       }
       else
         buff.gift_of_the_ox -> trigger();
+
+      gift_of_the_ox_proc_chance -= 1.0;
     }
   }
 }
