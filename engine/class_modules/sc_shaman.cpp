@@ -212,6 +212,7 @@ public:
   spell_t* crashing_storm;
   spell_t* doom_vortex;
   action_t* magnitude;
+  action_t* lightning_rod;
 
   // Pets
   std::vector<pet_t*> pet_feral_spirit;
@@ -569,6 +570,7 @@ public:
   void trigger_earthen_rage( const action_state_t* state );
   void trigger_stormlash( const action_state_t* state );
   void trigger_doom_vortex( const action_state_t* state );
+  void trigger_lightning_rod_damage( const action_state_t* state );
 
   // Character Definition
   void      init_spells() override;
@@ -661,7 +663,8 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
                           // -10% resistance in spell data, treat it as a multiplier instead
                           .default_value( 1.0 + p -> talent.earthen_spike -> effectN( 2 ).percent() );
   debuff.lightning_rod = buff_creator_t( *this, "lightning_rod", p -> talent.lightning_rod -> effectN( 1 ).trigger() )
-                         .default_value( 1.0 + p -> talent.lightning_rod -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+                         .trigger_spell( p -> talent.lightning_rod )
+                         .default_value( p -> talent.lightning_rod -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
                          .cd( timespan_t::zero() ); // Cooldown handled by action
 }
 
@@ -1169,6 +1172,11 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     base_t::execute();
 
     p() -> trigger_earthen_rage( execute_state );
+
+    if ( ! background )
+    {
+      td( execute_state -> target ) -> debuff.lightning_rod -> trigger();
+    }
   }
 
   void schedule_travel( action_state_t* s ) override
@@ -1188,6 +1196,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     }
 
     p() -> trigger_unleash_doom( state );
+    p() -> trigger_lightning_rod_damage( state );
   }
 
   virtual bool usable_moving() const override
@@ -2316,6 +2325,24 @@ struct magnitude_t : public shaman_spell_t
   {
     background = true;
     callbacks = false;
+  }
+};
+
+struct lightning_rod_t : public spell_t
+{
+  lightning_rod_t( shaman_t* p ) :
+    spell_t( "lightning_rod", p, p -> find_spell( 197568 ) )
+  {
+    aoe = -1;
+    background = true;
+    callbacks = may_crit = false;
+  }
+
+  void init() override
+  {
+    spell_t::init();
+
+    snapshot_flags = update_flags = 0;
   }
 };
 
@@ -3792,23 +3819,6 @@ struct feral_lunge_t : public shaman_spell_t
   }
 };
 
-// TODO: AoE to shaman_spell_t::impact when sensible values arrive
-struct lightning_rod_t : public shaman_spell_t
-{
-  lightning_rod_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "lightning_rod", player, player -> talent.lightning_rod, options_str )
-  {
-    may_crit = false;
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    shaman_spell_t::impact( state );
-
-    td( state -> target ) -> debuff.lightning_rod -> trigger();
-  }
-};
-
 struct storm_elemental_t : public shaman_spell_t
 {
   const spell_data_t* summon_spell;
@@ -4719,7 +4729,6 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "lava_burst"              ) return new               lava_burst_t( this, options_str );
   if ( name == "lava_lash"               ) return new                lava_lash_t( this, options_str );
   if ( name == "lightning_bolt"          ) return new           lightning_bolt_t( this, options_str );
-  if ( name == "lightning_rod"           ) return new            lightning_rod_t( this, options_str );
   if ( name == "lightning_shield"        ) return new         lightning_shield_t( this, options_str );
   if ( name == "shamanistic_rage"        ) return new         shamanistic_rage_t( this, options_str );
   if ( name == "windstrike"              ) return new               windstrike_t( this, options_str );
@@ -5033,6 +5042,11 @@ void shaman_t::init_spells()
     magnitude = new magnitude_t( this );
   }
 
+  if ( talent.lightning_rod -> ok() )
+  {
+    lightning_rod = new lightning_rod_t( this );
+  }
+
   if ( artifact.unleash_doom.rank() )
   {
     unleash_doom[ 0 ] = new unleash_doom_spell_t( "unleash_lava", this, find_spell( 199053 ) );
@@ -5244,6 +5258,42 @@ void shaman_t::trigger_doom_vortex( const action_state_t* state )
       .duration( find_spell( 199121 ) -> duration() )
       .start_time( sim -> current_time() )
       .action( doom_vortex ) );
+}
+
+void shaman_t::trigger_lightning_rod_damage( const action_state_t* state )
+{
+  if ( ! talent.lightning_rod -> ok() )
+  {
+    return;
+  }
+
+  if ( state -> action -> result_is_miss( state -> result ) )
+  {
+    return;
+  }
+
+  if ( state -> action == lightning_rod )
+  {
+    return;
+  }
+
+  if ( ! dbc::is_school( state -> action -> get_school(), SCHOOL_NATURE ) )
+  {
+    return;
+  }
+
+  shaman_td_t* td = get_target_data( state -> target );
+
+  if ( ! td -> debuff.lightning_rod -> up() )
+  {
+    return;
+  }
+
+  double amount = state -> result_amount * td -> debuff.lightning_rod -> check_value();
+
+  lightning_rod -> base_dd_min = lightning_rod -> base_dd_max = amount;
+  lightning_rod -> target = state -> target;
+  lightning_rod -> schedule_execute();
 }
 
 void shaman_t::trigger_unleash_doom( const action_state_t* state )
