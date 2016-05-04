@@ -1236,11 +1236,6 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       m *= td( target ) -> debuff.earthen_spike -> check_value();
     }
 
-    if ( dbc::is_school( school, SCHOOL_NATURE ) && td( target ) -> debuff.lightning_rod -> up() )
-    {
-      m *= td( target ) -> debuff.lightning_rod -> check_value();
-    }
-
     return m;
   }
 
