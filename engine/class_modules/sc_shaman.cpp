@@ -1172,11 +1172,6 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     base_t::execute();
 
     p() -> trigger_earthen_rage( execute_state );
-
-    if ( ! background )
-    {
-      td( execute_state -> target ) -> debuff.lightning_rod -> trigger();
-    }
   }
 
   void schedule_travel( action_state_t* s ) override
@@ -1197,6 +1192,11 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 
     p() -> trigger_unleash_doom( state );
     p() -> trigger_lightning_rod_damage( state );
+
+    if ( ! background )
+    {
+      td( state -> target ) -> debuff.lightning_rod -> trigger();
+    }
   }
 
   virtual bool usable_moving() const override
@@ -5272,7 +5272,7 @@ void shaman_t::trigger_lightning_rod_damage( const action_state_t* state )
     return;
   }
 
-  if ( ! dbc::is_school( state -> action -> get_school(), SCHOOL_NATURE ) )
+  if ( state -> action -> get_school() != SCHOOL_NATURE )
   {
     return;
   }
