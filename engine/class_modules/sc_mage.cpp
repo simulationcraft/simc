@@ -421,7 +421,7 @@ public:
                      pyroclasmic_paranoia,
                      reignition_overdrive,
                      pyretic_incantation,
-                     phoenix_flames,
+                     phoenixs_flames,
                      burning_gaze,
                      big_mouth, //NYI
                      blast_furnace;
@@ -3694,7 +3694,7 @@ struct inferno_blast_t : public fire_mage_spell_t
     cooldown -> charges = data().charges();
     cooldown -> duration = data().charge_cooldown();
     cooldown -> duration += p -> sets.set( MAGE_FIRE, T17, B2 ) -> effectN( 1 ).time_value();
-
+    cooldown -> hasted = true;
     //TODO: What is this..?
     icd = p -> get_cooldown( "inferno_blast_icd" );
 
@@ -4107,24 +4107,43 @@ struct nether_tempest_t : public arcane_mage_spell_t
   }
 };
 // Phoenixs Flames Spell =============================================================
-// TODO: Add an actual spell for the AoE damage, since the AoE impacts both primary and secondary targets.
-//       Test if individual impacts to surrounding mobs can each proc HS/HU, or if only the initial impact
-//       and a single AoE impact can.
+struct phoenixs_flames_splash_t : public fire_mage_spell_t
+{
+  phoenixs_flames_splash_t( mage_t* p ) :
+    fire_mage_spell_t( "phoenixs_flames_splash", p )
+  {
+    aoe = -1;
+    spell_power_mod.direct =   p ->find_spell( 194466 ) -> effectN( 2 ).sp_coeff() /
+                               p -> find_spell( 194466 ) -> effectN( 1 ).sp_coeff() ;
+    background = true;
+    triggers_ignite = true;
+  }
+};
 struct phoenixs_flames_t : public fire_mage_spell_t
 {
+  phoenixs_flames_splash_t* phoenixs_flames_splash;
+
   phoenixs_flames_t( mage_t* p, const std::string& options_str ) :
-    fire_mage_spell_t( "phoenixs_flames", p, p -> find_spell( 194466 ) )
+    fire_mage_spell_t( "phoenixs_flames", p, p -> artifact.phoenixs_flames ),
+    phoenixs_flames_splash( new phoenixs_flames_splash_t( p ) )
   {
     parse_options( options_str );
-    aoe = -1;
-    base_aoe_multiplier = data().effectN( 2 ).sp_coeff() /
-                          data().effectN( 1 ).sp_coeff();
-
+    triggers_ignite = true;
     cooldown -> charges = data().charges();
     cooldown -> duration = data().charge_cooldown();
     triggers_hot_streak = true;
   }
 
+  virtual void impact( action_state_t* s ) override
+  {
+    fire_mage_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      phoenixs_flames_splash -> target = s -> target;
+      phoenixs_flames_splash -> execute();
+    }
+  }
 };
 
 
@@ -5376,19 +5395,19 @@ void mage_t::init_spells()
 
   //Artifact Spells
   //Arcane
-  artifact.aegwynns_ascendance     = find_artifact_spell( "Aegwynn's Ascendance"  );
-  artifact.aegwynns_fury           = find_artifact_spell( "Aegwynn's Fury"        );
-  artifact.aegwynns_imperative     = find_artifact_spell( "Aegwynn's Imperative"  );
-  artifact.aegwynns_wrath          = find_artifact_spell( "Aegwynn's Wrath"       );
-  artifact.arcane_purification     = find_artifact_spell( "Arcane Purification"   );
-  artifact.arcane_rebound          = find_artifact_spell( "Arcane Rebound"        );
-  artifact.blasting_rod            = find_artifact_spell( "Blasting Rod"          );
-  artifact.crackling_energy        = find_artifact_spell( "Crackling Energy"      );
-  artifact.mark_of_aluneth         = find_artifact_spell( "Mark of Aluneth"       );
-  artifact.rule_of_threes          = find_artifact_spell( "Rule of Threes"        );
-  artifact.torrential_barrage      = find_artifact_spell( "Torrential Barrage"    );
-  artifact.everywhere_at_once      = find_artifact_spell( "Everywhere At Once"    );
-  artifact.ethereal_sensitivity    = find_artifact_spell( "Ethereal Sensitivity"  );
+  artifact.aegwynns_ascendance     = find_artifact_spell( "Aegwynn's Ascendance"   );
+  artifact.aegwynns_fury           = find_artifact_spell( "Aegwynn's Fury"         );
+  artifact.aegwynns_imperative     = find_artifact_spell( "Aegwynn's Imperative"   );
+  artifact.aegwynns_wrath          = find_artifact_spell( "Aegwynn's Wrath"        );
+  artifact.arcane_purification     = find_artifact_spell( "Arcane Purification"    );
+  artifact.arcane_rebound          = find_artifact_spell( "Arcane Rebound"         );
+  artifact.blasting_rod            = find_artifact_spell( "Blasting Rod"           );
+  artifact.crackling_energy        = find_artifact_spell( "Crackling Energy"       );
+  artifact.mark_of_aluneth         = find_artifact_spell( "Mark of Aluneth"        );
+  artifact.rule_of_threes          = find_artifact_spell( "Rule of Threes"         );
+  artifact.torrential_barrage      = find_artifact_spell( "Torrential Barrage"     );
+  artifact.everywhere_at_once      = find_artifact_spell( "Everywhere At Once"     );
+  artifact.ethereal_sensitivity    = find_artifact_spell( "Ethereal Sensitivity"   );
   //Fire
   artifact.aftershocks             = find_artifact_spell( "Aftershocks"            );
   artifact.scorched_earth          = find_artifact_spell( "Scorched Earth"         );
@@ -5397,6 +5416,7 @@ void mage_t::init_spells()
   artifact.everburning_consumption = find_artifact_spell( "Everburning Consumption");
   artifact.molten_skin             = find_artifact_spell( "Molten Skin"            );
   artifact.phoenix_reborn          = find_artifact_spell( "Phoenix Reborn"         );
+  artifact.phoenixs_flames         = find_artifact_spell( "Phoenix's Flames"       );
   artifact.great_balls_of_fire     = find_artifact_spell( "Great Balls of Fire"    );
   artifact.cauterizing_blink       = find_artifact_spell( "Cauterizing Blink"      );
   artifact.fire_at_will            = find_artifact_spell( "Fire At Will"           );
