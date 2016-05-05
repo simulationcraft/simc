@@ -562,6 +562,7 @@ DBFilesClient\UiCamFbackTransmogChrRace.db2
 DBFilesClient\UiCamFbackTransmogWeapon.db2
 DBFilesClient\UiCamera.db2
 DBFilesClient\UiCameraType.db2
+DBFilesClient\UiMapPOI.db2
 DBFilesClient\UiTextureAtlas.db2
 DBFilesClient\UiTextureAtlasMember.db2
 DBFilesClient\UiTextureKit.db2
