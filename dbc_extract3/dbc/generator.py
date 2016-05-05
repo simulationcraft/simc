@@ -1584,7 +1584,7 @@ class SpellDataGenerator(DataGenerator):
         if self._data_store:
             self._data_store.link('SpellEffect',        'id_spell', 'Spell', 'add_effect'   )
             self._data_store.link('SpellPower',         'id_spell', 'Spell', 'power'        )
-            self._data_store.link('SpellCategories',    'id_spell', 'Spell', 'category'     )
+            self._data_store.link('SpellCategories',    'id_spell', 'Spell', 'categories'   )
             self._data_store.link('SpellScaling',       'id_spell', 'Spell', 'scaling'      )
             self._data_store.link('SpellLevels',        'id_spell', 'Spell', 'level'        )
             self._data_store.link('SpellCooldowns',     'id_spell', 'Spell', 'cooldown'     )
@@ -1602,7 +1602,7 @@ class SpellDataGenerator(DataGenerator):
             # Reverse map various things to Spell records so we can easily generate output
             link(self._spelleffect_db, 'id_spell', self._spell_db, 'add_effect')
             link(self._spellpower_db, 'id_spell', self._spell_db, 'power')
-            link(self._spellcategories_db, 'id_spell', self._spell_db, 'category')
+            link(self._spellcategories_db, 'id_spell', self._spell_db, 'categories')
             link(self._spellscaling_db, 'id_spell', self._spell_db, 'scaling')
             link(self._spelllevels_db, 'id_spell', self._spell_db, 'level')
             link(self._spellcooldowns_db, 'id_spell', self._spell_db, 'cooldown')
@@ -1679,7 +1679,7 @@ class SpellDataGenerator(DataGenerator):
                     return False
 
         # Check for blacklisted spell category mechanism
-        for c in spell.get_links('category'):
+        for c in spell.get_links('categories'):
             if c.mechanic in SpellDataGenerator._mechanic_blacklist:
                 logging.debug("Spell id %u (%s) matches mechanic blacklist %u", spell.id, spell_name, c.mechanic)
                 return False
@@ -2184,11 +2184,15 @@ class SpellDataGenerator(DataGenerator):
             # 14, 15
             fields += spell.get_link('cooldown').field('cooldown_duration', 'gcd_cooldown')
             assert len(fields) == 15
-            category_data = self._spellcategory_db[spell.get_link('category').id_category]
             # 16, 17
+            category = spell.get_link('categories')
+            category_data = self._spellcategory_db[category.charge_category]
             fields += category_data.field('charges', 'charge_cooldown')
             # 18
-            fields += spell.get_link('category').field('category')
+            if category.charge_category > 0: # Note, some spells have both cooldown and charge categories
+                fields += category.field('charge_category')
+            else:
+                fields += category.field('cooldown_category')
             assert len(fields) == 18
 
             # 19
@@ -2234,7 +2238,7 @@ class SpellDataGenerator(DataGenerator):
             # 38
             fields += spell.get_link('shapeshift').field('flags')
             # 39
-            fields += self._spellmechanic_db[spell.get_link('category').mechanic].field('mechanic')
+            fields += self._spellmechanic_db[spell.get_link('categories').mechanic].field('mechanic')
             # 40, 41
             fields += spell.field('desc', 'tt')
             # 42

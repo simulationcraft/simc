@@ -776,6 +776,9 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     s << std::endl;
   }
 
+  if ( spell -> category() > 0 )
+    s << "Category         : " << spell -> category() << std::endl;
+
   if ( spell -> internal_cooldown() > timespan_t::zero() )
     s << "Internal Cooldown: " << spell -> internal_cooldown().total_seconds() << " seconds" << std::endl;
 

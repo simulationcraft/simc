@@ -467,9 +467,9 @@
   ],
   "SpellCategories": [
     { "data_type": "I", "field": "id_spell" },
-    { "data_type": "H", "field": "category" },
+    { "data_type": "H", "field": "cooldown_category", "formats": { "cpp": "%4u" } },
     { "data_type": "H", "field": "start_recovery_category" },
-    { "data_type": "H", "field": "id_category" },
+    { "data_type": "H", "field": "charge_category", "formats": { "cpp": "%4u" } },
     { "data_type": "b", "field": "unk_1" },
     { "data_type": "b", "field": "dmg_class" },
     { "data_type": "b", "field": "dispel" },

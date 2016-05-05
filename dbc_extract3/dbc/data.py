@@ -335,7 +335,7 @@ def initialize_data_model(options, obj):
     if 'Spell' in dir(obj):
         dbc.data.Spell.link('level', dbc.data.SpellLevels)
         dbc.data.Spell.link('power', dbc.data.SpellPower)
-        dbc.data.Spell.link('category', dbc.data.SpellCategories)
+        dbc.data.Spell.link('categories', dbc.data.SpellCategories)
         dbc.data.Spell.link('cooldown', dbc.data.SpellCooldowns)
         dbc.data.Spell.link('aura_option', dbc.data.SpellAuraOptions)
         dbc.data.Spell.link('equipped_item', dbc.data.SpellEquippedItems)
