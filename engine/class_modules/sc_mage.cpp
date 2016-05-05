@@ -428,7 +428,7 @@ public:
 
     // Frost
     artifact_power_t ebonbolt,
-                     jouster, // NYI 
+                     jouster, // NYI
                      let_it_go,
                      frozen_veins,
                      the_storm_rages,
@@ -442,7 +442,7 @@ public:
                      shattering_bolts,
                      orbital_strike,
                      icy_hand,
-                     ice_age, 
+                     ice_age,
                      chilled_to_the_core;
   } artifact;
 
@@ -697,7 +697,6 @@ struct mage_pet_melee_attack_t : public melee_attack_t
     melee_attack_t::schedule_execute( execute_state );
   }
 };
-
 
 // ==========================================================================
 // Pet Water Elemental
@@ -1388,6 +1387,48 @@ temporal_hero_t::hero_e temporal_hero_t::last_summoned;
 
 } // pets
 
+// Custom Arcane Missiles Buff ====================================================
+struct arcane_missiles_buff_t : public buff_t
+{
+  arcane_missiles_buff_t( mage_t* p ) :
+    buff_t( buff_creator_t( p, "arcane_missiles", p -> find_spell( 79683 ) ) )
+  {
+    default_chance = p -> find_spell( 79684 ) -> effectN( 1 ).percent();
+  }
+
+  double proc_chance() const
+  {
+    double am_proc_chance = default_chance;
+
+    mage_t* p = static_cast<mage_t*>( player );
+
+    if ( p -> talents.words_of_power -> ok() )
+    {
+      double mult = p -> resources.pct( RESOURCE_MANA ) /
+                    p -> talents.words_of_power -> effectN( 2 ).percent();
+      am_proc_chance += mult * p -> talents.words_of_power -> effectN( 1 ).percent();
+    }
+
+    if ( p -> artifact.ethereal_sensitivity.rank() )
+    {
+      am_proc_chance += p -> artifact.ethereal_sensitivity.percent();
+    }
+
+    return am_proc_chance;
+  }
+
+  bool trigger( int stacks, double value,
+                double chance, timespan_t duration ) override
+  {
+    mage_t* p = static_cast<mage_t*>( player );
+
+    if ( chance < 0 )
+    {
+      chance = proc_chance();
+    }
+    return buff_t::trigger( stacks, value, chance, duration );
+  }
+};
 
 namespace actions {
 // ==========================================================================
@@ -1628,7 +1669,7 @@ struct fire_mage_spell_t : public mage_spell_t
   {
     base_multiplier *= 1.0 + p -> artifact.burning_gaze.percent();
   }
-  
+
   virtual void execute() override
   {
     mage_t* p = this -> p();
@@ -1653,12 +1694,12 @@ struct fire_mage_spell_t : public mage_spell_t
       handle_hot_streak( s );
     }
 
-    if ( result_is_hit( s -> result ) && s -> result == RESULT_CRIT 
+    if ( result_is_hit( s -> result ) && s -> result == RESULT_CRIT
                       && p() -> artifact.pyretic_incantation.rank() )
     {
       p() -> buffs.pyretic_incantation -> trigger();
     }
-    else if ( result_is_hit( s -> result ) && s -> result != RESULT_CRIT 
+    else if ( result_is_hit( s -> result ) && s -> result != RESULT_CRIT
                       && p() -> artifact.pyretic_incantation.rank() )
     {
       p() -> buffs.pyretic_incantation -> expire();
@@ -1850,7 +1891,6 @@ struct frost_mage_spell_t : public mage_spell_t
 
 };
 
-
 // Icicles ==================================================================
 
 struct icicle_state_t : public action_state_t
@@ -1948,7 +1988,6 @@ struct icicle_t : public frost_mage_spell_t
     return am;
   }
 };
-
 
 // Presence of Mind Spell ===================================================
 
@@ -2057,7 +2096,7 @@ struct ignite_t : public residual_action_t
       conflagration -> execute();
     }
 
-    if ( p() -> artifact.phoenix_reborn.rank() && 
+    if ( p() -> artifact.phoenix_reborn.rank() &&
          rng().roll( p() -> artifact.phoenix_reborn.data().proc_chance() ) )
     {
       phoenix_reborn -> target = dot -> target;
@@ -2123,7 +2162,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
     wild_arcanist_effect( 0.0 )
   {
     parse_options( options_str );
-
+    may_proc_missiles = false; // Disable default AM proc logic.
     base_multiplier *= 1.0 + p -> artifact.blasting_rod.percent();
 
     if ( p -> wild_arcanist )
@@ -2153,6 +2192,10 @@ struct arcane_blast_t : public arcane_mage_spell_t
   {
     p() -> benefits.arcane_charge.arcane_blast -> update();
 
+    arcane_missiles_buff_t* am_buff = debug_cast<arcane_missiles_buff_t*>( p() -> buffs.arcane_missiles );
+
+    double am_proc_rate = ( am_buff -> proc_chance() ) * 2.0;
+
     arcane_mage_spell_t::execute();
 
     p() -> buffs.arcane_charge -> up();
@@ -2161,7 +2204,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
     if ( result_is_hit( execute_state -> result ) )
     {
       p() -> buffs.arcane_charge -> trigger();
-
+      p() -> buffs.arcane_missiles -> trigger( 1, 1.0, am_proc_rate );
       p() -> buffs.arcane_instability -> trigger();
     }
 
@@ -2373,7 +2416,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     }
 
     //TODO: Fix this when spelldata is being parsed correctly...? effectN(1) returns 0.
-    if ( p() -> artifact.rule_of_threes.rank() &&  
+    if ( p() -> artifact.rule_of_threes.rank() &&
          rng().roll( p() -> artifact.rule_of_threes
          .data().effectN( 1 ).percent() ) )
     {
@@ -3849,7 +3892,7 @@ struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
   }
 };
-struct mark_of_aluneth_t : public arcane_mage_spell_t 
+struct mark_of_aluneth_t : public arcane_mage_spell_t
 {
   mark_of_aluneth_explosion_t* mark_explosion;
 
@@ -5166,7 +5209,6 @@ struct ignite_spread_event_t : public event_t
     mage -> ignite_spread_event -> add_event( timespan_t::from_seconds( 2.0 ) );
   }
 };
-
 } // namespace events
 
 // ==========================================================================
@@ -5517,40 +5559,6 @@ struct incanters_flow_t : public buff_t
       buff_t::decrement( stacks, value );
     else
       reverse = false;
-  }
-};
-
-struct arcane_missiles_buff_t : public buff_t
-{
-  arcane_missiles_buff_t( mage_t* p ) :
-    buff_t( buff_creator_t( p, "arcane_missiles", p -> find_spell( 79683 ) ) )
-  {
-    default_chance = p -> find_spell( 79684 ) -> effectN( 1 ).percent();
-  }
-
-  bool trigger( int stacks, double value,
-                double chance, timespan_t duration ) override
-  {
-    mage_t* p = static_cast<mage_t*>( player );
-
-    if ( chance < 0 )
-    {
-      chance = default_chance;
-    }
-
-    if ( p -> talents.words_of_power -> ok() )
-    {
-      double mult = p -> resources.pct( RESOURCE_MANA ) /
-                    p -> talents.words_of_power -> effectN( 2 ).percent();
-      chance += mult * p -> talents.words_of_power -> effectN( 1 ).percent();
-    }
-
-    if ( p -> artifact.ethereal_sensitivity.rank() )
-    {
-      chance += p -> artifact.ethereal_sensitivity.percent();
-    }
-
-    return buff_t::trigger( stacks, value, chance, duration );
   }
 };
 
