@@ -206,6 +206,7 @@ public:
   {
     // Arcane
     buff_t* arcane_charge,
+          * arcane_familiar, // Helper buff to track arcane familiar mana buff
           * arcane_missiles,
           * arcane_power,
           * presence_of_mind,
@@ -274,10 +275,14 @@ public:
   struct pets_t
   {
     pets::water_elemental_pet_t* water_elemental;
+
     pet_t** mirror_images;
 
     int temporal_hero_count = 10;
     pet_t** temporal_heroes;
+
+    pet_t* arcane_familiar;
+
   } pets;
 
   // Procs
@@ -330,7 +335,7 @@ public:
   struct talents_list_t
   {
     // Tier 15
-    const spell_data_t* arcane_familiar, // NYI
+    const spell_data_t* arcane_familiar,
                       * presence_of_mind,
                       * torrent,
                       * pyromaniac,
@@ -701,7 +706,41 @@ struct mage_pet_melee_attack_t : public melee_attack_t
 // ==========================================================================
 // Pet Water Elemental
 // ==========================================================================
+//TODO: Test attack specifics in game and bring into module
+struct arcane_familiar_pet_t : public pet_t
+{
+  struct arcane_familiar_spell_t : public mage_pet_spell_t
+  {
+    arcane_familiar_spell_t( arcane_familiar_pet_t* p, const std::string& options_str ) :
+      mage_pet_spell_t( "arcane_familiar_spell", p, p -> find_spell( 210126 ) )
+    {
+      may_crit = true;
+    }
+  };
 
+  arcane_familiar_pet_t( sim_t* sim, mage_t* owner ) :
+    pet_t( sim, owner, "mirror_image", true )
+  {
+    owner_coeff.sp_from_sp = 1.00;
+  }
+
+  virtual action_t* create_action( const std::string& name,
+                                   const std::string& options_str ) override
+  {
+    if ( name == "arcane_familiar_spell" ) return new arcane_familiar_spell_t( this, options_str );
+    return pet_t::create_action( name, options_str );
+  }
+
+  mage_t* o() const
+  { return static_cast<mage_t*>( owner ); }
+
+  virtual void init_action_list() override
+  {
+    action_list_str = "arcane_familiar_spell";
+
+    pet_t::init_action_list();
+  }
+};
 struct water_elemental_pet_t;
 
 struct water_elemental_pet_td_t: public actor_target_data_t
@@ -736,8 +775,8 @@ struct water_elemental_pet_t : public pet_t
         p -> o() -> benefits.fingers_of_frost -> update( "Water Jet" );
       }
     }
-
   };
+
   struct jagged_shard_t : public mage_pet_spell_t
   {
     jagged_shard_t( water_elemental_pet_t* p, const std::string& options_str ) :
@@ -5671,6 +5710,7 @@ void mage_t::create_buffs()
                                   .chance( 1.0 );
 
   // Talents
+  buffs.arcane_familiar       = buff_creator_t( this, "arcane_familiar_buff" );
   buffs.ice_floes             = buff_creator_t( this, "ice_floes", talents.ice_floes );
   buffs.incanters_flow        = new incanters_flow_t( this );
   buffs.rune_of_power         = buff_creator_t( this, "rune_of_power", find_spell( 116014 ) )
