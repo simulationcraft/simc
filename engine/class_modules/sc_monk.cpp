@@ -185,7 +185,7 @@ public:
     buff_t* dragonfire_brew;
     buff_t* elusive_brawler;
     buff_t* elusive_dance;
-    buff_t* flaming_keg;
+    buff_t* exploding_keg;
     buff_t* fortification;
     buff_t* fortifying_brew;
     buff_t* gift_of_the_ox;
@@ -288,7 +288,7 @@ public:
     // Brewmaster
     const spell_data_t* light_brewing;
     const spell_data_t* black_ox_brew;
-    const spell_data_t* secret_ingredients;
+    const spell_data_t* gift_of_the_mists;
     // Windwalker
     const spell_data_t* energizing_elixir;
     const spell_data_t* ascension;
@@ -359,6 +359,7 @@ public:
     const spell_data_t* bladed_armor;
     const spell_data_t* breath_of_fire;
     const spell_data_t* celestial_fortune;
+    const spell_data_t* expel_harm;
     const spell_data_t* fortifying_brew;
     const spell_data_t* gift_of_the_ox;
     const spell_data_t* ironskin_brew;
@@ -409,11 +410,11 @@ public:
     artifact_power_t dark_side_of_the_moon;
     artifact_power_t dragonfire_brew;
     artifact_power_t face_palm;
-    artifact_power_t flaming_keg;
+    artifact_power_t exploding_keg;
     artifact_power_t fortification;
     artifact_power_t gifted_student;
     artifact_power_t healthy_appetite;
-    artifact_power_t kegerator;
+    artifact_power_t full_keg;
     artifact_power_t obsidian_fists;
     artifact_power_t obstinate_determination;
     artifact_power_t overflow;
@@ -2220,7 +2221,7 @@ struct tiger_palm_t: public monk_melee_attack_t
         }
 
         // Tiger Palm has a 30% chance to reset the cooldown of Keg Smash.
-        if ( p() -> talent.secret_ingredients -> ok() )
+        if ( p() -> talent.gift_of_the_mists -> ok() )
           p() -> buff.keg_smash_talent -> trigger();
         break;
       }
@@ -3317,8 +3318,8 @@ struct keg_smash_t: public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
-    if ( p() -> artifact.kegerator.rank() )
-      am *= 1 + p() -> artifact.kegerator.percent();
+    if ( p() -> artifact.full_keg.rank() )
+      am *= 1 + p() -> artifact.full_keg.percent();
 
     return am;
   }
@@ -3352,11 +3353,11 @@ struct keg_smash_t: public monk_melee_attack_t
 // Flaming Keg
 // ==========================================================================
 
-struct flaming_keg_t: public monk_melee_attack_t
+struct exploding_keg_t: public monk_melee_attack_t
 {
 
-  flaming_keg_t( monk_t& p, const std::string& options_str ):
-    monk_melee_attack_t( "flaming_keg", &p, p.artifact.flaming_keg )
+  exploding_keg_t( monk_t& p, const std::string& options_str ):
+    monk_melee_attack_t( "exploding_keg", &p, p.artifact.exploding_keg )
   {
     parse_options( options_str );
 
@@ -3370,7 +3371,7 @@ struct flaming_keg_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    p() -> buff.flaming_keg -> trigger();
+    p() -> buff.exploding_keg -> trigger();
   }
 };
 
@@ -4316,7 +4317,7 @@ struct celestial_breath_heal_t : public monk_heal_t
   {
     background = dual = true;
     may_miss = false;
-    aoe = -1;
+    aoe = p.artifact.celestial_breath.data().effectN( 1 ).base_value();
   }
 };
 
@@ -5763,7 +5764,7 @@ action_t* monk_t::create_action( const std::string& name,
   // Brewmaster
   if ( name == "blackout_strike" ) return new           blackout_strike_t( this, options_str );
   if ( name == "breath_of_fire" ) return new            breath_of_fire_t( *this, options_str );
-  if ( name == "flaming_keg" ) return new               flaming_keg_t( *this, options_str );
+  if ( name == "exploding_keg" ) return new               exploding_keg_t( *this, options_str );
   if ( name == "fortifying_brew" ) return new           fortifying_brew_t( *this, options_str );
   if ( name == "gift_of_the_ox" ) return new            gift_of_the_ox_t( *this, options_str );
   if ( name == "greater_gift_of_the_ox" ) return new    greater_gift_of_the_ox_t( *this, options_str );
@@ -5941,7 +5942,7 @@ void monk_t::init_spells()
   // Brewmaster
   talent.light_brewing               = find_talent_spell( "Light Brewing" );
   talent.black_ox_brew               = find_talent_spell( "Black Ox Brew" );
-  talent.secret_ingredients          = find_talent_spell( "Secret Ingredients" );
+  talent.gift_of_the_mists           = find_talent_spell( "Gift of the Mists" );
   // Windwalker
   talent.energizing_elixir           = find_talent_spell( "Energizing Elixir" );
   talent.ascension                   = find_talent_spell( "Ascension" );
@@ -5970,7 +5971,7 @@ void monk_t::init_spells()
   talent.special_delivery            = find_talent_spell( "Special Delivery" );
   // Windwalker
   talent.invoke_xuen                 = find_talent_spell( "Invoke Xuen, the White Tiger", "invoke_xuen" );
-  talent.hit_combo                   = find_talent_spell("Hit Combo");
+  talent.hit_combo                   = find_talent_spell( "Hit Combo" );
   // Mistweaver
   talent.refreshing_jade_wind        = find_talent_spell( "Refreshing Jade Wind" );
   talent.invoke_chi_ji               = find_talent_spell( "Invoke Chi-Ji, the Red Crane", "invoke_chi_ji" );
@@ -5997,11 +5998,11 @@ void monk_t::init_spells()
   artifact.dark_side_of_the_moon      = find_artifact_spell( "Dark Side of the Moon" );
   artifact.dragonfire_brew            = find_artifact_spell( "Dragonfire Brew" );
   artifact.face_palm                  = find_artifact_spell( "Face Palm" );
-  artifact.flaming_keg                = find_artifact_spell( "Flaming Keg" );
+  artifact.exploding_keg              = find_artifact_spell( "Exploding Keg" );
   artifact.fortification              = find_artifact_spell( "Fortification" );
+  artifact.full_keg                   = find_artifact_spell( "Full Keg" );
   artifact.gifted_student             = find_artifact_spell( "Gifted Student" );
   artifact.healthy_appetite           = find_artifact_spell( "Healthy Appetite" );
-  artifact.kegerator                  = find_artifact_spell( "Kegerator" );
   artifact.obsidian_fists             = find_artifact_spell( "Obsidian Fists" );
   artifact.obstinate_determination    = find_artifact_spell( "Obstinate Determination" );
   artifact.overflow                   = find_artifact_spell( "Overflow" );
@@ -6067,6 +6068,7 @@ void monk_t::init_spells()
   spec.bladed_armor                  = find_specialization_spell( "Bladed Armor" );
   spec.breath_of_fire                = find_specialization_spell( "Breath of Fire" );
   spec.celestial_fortune             = find_specialization_spell( "Celestial Fortune" );
+  spec.expel_harm                    = find_specialization_spell( "Expel Harm" );
   spec.fortifying_brew               = find_specialization_spell( "Fortifying Brew" );
   spec.gift_of_the_ox                = find_specialization_spell( "Gift of the Ox" );
   spec.keg_smash                     = find_specialization_spell( "Keg Smash" );
@@ -6320,8 +6322,8 @@ void monk_t::create_buffs()
     .max_stack( 3 ) // Cap of 15%
     .add_invalidate( CACHE_DODGE );
 
-  buff.flaming_keg = buff_creator_t( this, "flaming_keg", artifact.flaming_keg )
-    .default_value( artifact.flaming_keg.data().effectN( 2 ).percent() );
+  buff.exploding_keg = buff_creator_t( this, "exploding_keg", artifact.exploding_keg )
+    .default_value( artifact.exploding_keg.data().effectN( 2 ).percent() );
 
   buff.fortification = buff_creator_t( this, "fortification", artifact.fortification.data().effectN( 1 ).trigger() )
     .default_value( artifact.fortification.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() )
@@ -6333,8 +6335,8 @@ void monk_t::create_buffs()
     .duration( spec.ironskin_brew -> duration() + ( artifact.potent_kick.rank() ? timespan_t::from_seconds( artifact.potent_kick.value() ) : timespan_t::zero() ) )
     .refresh_behavior( BUFF_REFRESH_EXTEND );
 
-  buff.keg_smash_talent = buff_creator_t( this, "keg_smash", talent.secret_ingredients -> effectN( 1 ).trigger() )
-    .chance( talent.secret_ingredients -> proc_chance() ); 
+  buff.keg_smash_talent = buff_creator_t( this, "keg_smash", talent.gift_of_the_mists -> effectN( 1 ).trigger() )
+    .chance( talent.gift_of_the_mists -> proc_chance() ); 
 
   buff.gift_of_the_ox = buff_creator_t( this, "gift_of_the_ox" , passives.gift_of_the_ox_summon )
     .duration( passives.gift_of_the_ox_summon -> duration() )
@@ -6399,7 +6401,8 @@ void monk_t::create_buffs()
     .max_stack( 4 );
 
   buff.bok_proc = buff_creator_t( this, "bok_proc", passives.bok_proc )
-    .chance( spec.combo_breaker -> effectN( 1 ).percent() );
+    .chance( spec.combo_breaker -> effectN( 1 ).percent() + 
+      ( artifact.strength_of_xuen.rank() ? artifact.strength_of_xuen.percent() : 0 ) );
 
   buff.combo_master = buff_creator_t( this, "combo_master", passives.tier19_4pc_melee )
     .default_value( passives.tier19_4pc_melee -> effectN( 1 ).base_value() )
@@ -6440,13 +6443,14 @@ void monk_t::create_buffs()
 //  buff.swift_as_the_wind = buff_creator_t( this, "swift_as_the_wind", passives.swift_as_the_wind -> effectN( 1 ).trigger() )
 //      .default_value( passives.swift_as_the_wind -> effectN( 1 ).trigger() -> effectN( 2 ).percent() );
 
-  buff.tigereye_brew = buff_creator_t( this, "tigereye_brew", spec.tigereye_brew )
+/*  buff.tigereye_brew = buff_creator_t( this, "tigereye_brew", spec.tigereye_brew )
     .period( timespan_t::zero() ) // Tigereye Brew does not tick, despite what the spelldata implies.
     .duration( spec.tigereye_brew -> duration() + 
       ( artifact.strength_of_xuen.rank() ? artifact.strength_of_xuen.time_value() : timespan_t::zero() ) )
     .default_value( spec.tigereye_brew -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
+*/
 
   buff.transfer_the_power = buff_creator_t( this, "transfer_the_power", artifact.transfer_the_power.data().effectN( 1 ).trigger() )
     .duration( timespan_t::from_minutes( 10 ) ) // Buff lasts longer than 10 minutes. Sticking it to 10 minutes
@@ -7124,8 +7128,8 @@ void monk_t::target_mitigation( school_e school,
   {
     case MONK_BREWMASTER:
     {
-      if ( buff.flaming_keg -> up() ) 
-        s -> result_amount *= 1.0 + buff.flaming_keg -> value();
+      if ( buff.exploding_keg -> up() ) 
+        s -> result_amount *= 1.0 + buff.exploding_keg -> value();
 
       if ( buff.dragonfire_brew -> up() )
         s -> result_amount *= 1.0 + buff.dragonfire_brew -> stack_value();
@@ -7184,7 +7188,7 @@ void monk_t::target_mitigation( school_e school,
     // Gift of the Mists multiplies that counter increment by (2 - (HealthBeforeDamage - DamageTakenBeforeAbsorbsOrStagger) / MaxHealth);
     double goto_proc_chance = s -> result_amount / max_health();
 
-    if ( talent.secret_ingredients -> ok() )
+    if ( talent.gift_of_the_mists -> ok() )
       // Due to the fact that SimC can cause HP values to go into negative, force the cap to be 2 since the original formula can go above 2 with negative HP
       goto_proc_chance *= 2 - fmax( ( health_before_hit - s -> result_amount ) / max_health(), 0 );
 
