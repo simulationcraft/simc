@@ -3487,7 +3487,7 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r )
     chaos_blade_main_hand( nullptr ),
     chaos_blade_off_hand( nullptr ),
     soul_fragments( 0 ),
-    lesser_soul_fragments( 0 )
+    lesser_soul_fragments( 0 ),
     sigil_cooldowns( 0 ),
     buff(),
     talent(),
@@ -3501,7 +3501,7 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r )
     pets(),
     options(),
     glyphs(),
-    legendary(),
+    legendary()
 {
   base.distance = 5.0;
 
