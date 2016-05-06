@@ -1900,14 +1900,14 @@ Description      : Strikes all nearby enemies, dealing $s1 Bleed damage and an a
 
 Name             : Starsurge (id=78674) [Spell Family (7)] 
 Class            : Balance Druid
-School           : Spellstorm
+School           : Astral
 Resource         : 40 Eclipse
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Mastery: Starlight (77492), Item - Druid T13 Balance 4P Bonus (Starsurge) (105717), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Lucidity (137247), Item - Druid T15 Balance 2P Bonus (138348), Item - Druid T16 Balance 2P Bonus (144767), Thrash (192090), Astral Influence (197524), Scythe of the Stars (202433), Ekowraith, Creator of Worlds (210667), The Emerald Dreamcatcher (224706)
+Affecting spells : Mastery: Starlight (77492), Item - Druid T13 Balance 4P Bonus (Starsurge) (105717), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Lucidity (137247), Item - Druid T15 Balance 2P Bonus (138348), Item - Druid T16 Balance 2P Bonus (144767), Thrash (192090), Astral Influence (197524), Scythe of the Stars (202433), Oneth's Intuition (209406), Ekowraith, Creator of Worlds (210667), The Emerald Dreamcatcher (224706)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1915,7 +1915,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=68268)    : School Damage: spellstorm (2)
+#1 (id=68268)    : School Damage: astral (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 5.00000
 #2 (id=289864)   : Trigger Spell: Lunar Empowerment (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 164547
@@ -4509,7 +4509,7 @@ Description      : Your Moonfire and Sunfire have a chance to summon a Faerie Dr
 
 Name             : Fey Missile (id=188046) 
 Class            : Druid
-School           : Spellstorm
+School           : Astral
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -4522,7 +4522,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=274309)   : School Damage: spellstorm (2)
+#1 (id=274309)   : School Damage: astral (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.60315
 Description      : $@spelldesc187875
 
@@ -4571,7 +4571,7 @@ Description      : Hurl a ball of solar energy at the target, dealing $s1 Nature
 
 Name             : Starfall (id=191034) [Spell Family (7)] 
 Class            : Balance Druid
-School           : Spellstorm
+School           : Astral
 Resource         : 60 Eclipse
 Spell Level      : 40
 Range            : 40 yards
@@ -4599,7 +4599,7 @@ Tooltip          : Calling down falling stars at the targeted area.
 
 Name             : Starfall (id=191037) [Scaling Spell (3), Spell Family (7)] 
 Class            : Druid
-School           : Spellstorm
+School           : Astral
 Spell Level      : 76
 Range            : 50000 yards
 Velocity         : 0.8 yards/sec
@@ -4612,7 +4612,7 @@ Attributes       : ........ ........ ........ ........   .......x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Not a proc (105)
 Effects          :
-#1 (id=280158)   : School Damage: spellstorm (2)
+#1 (id=280158)   : School Damage: astral (2)
                    Base Value: 1 | Scaled Value: 0 (avg=0.58, dl=0.15) | SP Coefficient: 0.25200
 #2 (id=330893)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 8 yards
@@ -4746,7 +4746,7 @@ Description      : Call down a strike of lunar energy, causing $s1 Arcane damage
 
 Name             : Celestial Alignment (id=194223) [Spell Family (7)] 
 Class            : Balance Druid
-School           : Spellstorm
+School           : Astral
 Spell Level      : 64
 Duration         : 15 seconds
 Cooldown         : 180 seconds
@@ -4919,7 +4919,7 @@ $@spellicon18562 $@spellname18562
 
 Name             : Astral Influence (id=197524) [Spell Family (7), Passive] 
 Class            : Balance Druid
-School           : Spellstorm
+School           : Astral
 Spell Level      : 10
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4977,7 +4977,7 @@ Armor increased by $w3%.][]
 
 Name             : Starsurge (id=197626) [Spell Family (7)] 
 Class            : Druid
-School           : Spellstorm
+School           : Astral
 Resource         : 3% Base Mana (6600 @Level 110)
 Spell Level      : 1
 Range            : 40 yards
@@ -4985,7 +4985,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
 Cooldown         : 8 seconds
-Affecting spells : Mastery: Starlight (77492), Item - Druid T13 Balance 4P Bonus (Starsurge) (105717), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Lucidity (137247), Item - Druid T15 Balance 2P Bonus (138348), Item - Druid T16 Balance 2P Bonus (144767), Thrash (192090), Astral Influence (197524), Scythe of the Stars (202433), Ekowraith, Creator of Worlds (210667), The Emerald Dreamcatcher (224706)
+Affecting spells : Mastery: Starlight (77492), Item - Druid T13 Balance 4P Bonus (Starsurge) (105717), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Lucidity (137247), Item - Druid T15 Balance 2P Bonus (138348), Item - Druid T16 Balance 2P Bonus (144767), Thrash (192090), Astral Influence (197524), Scythe of the Stars (202433), Oneth's Intuition (209406), Ekowraith, Creator of Worlds (210667), The Emerald Dreamcatcher (224706)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4993,7 +4993,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=290376)   : School Damage: spellstorm (2)
+#1 (id=290376)   : School Damage: astral (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 5.00000
 #2 (id=290377)   : Trigger Spell: Lunar Empowerment (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 164547
@@ -5091,7 +5091,7 @@ $@spellicon197628 $@spellname197628
 
 Name             : Stellar Empowerment (id=197637) [Spell Family (7)] 
 Class            : Druid
-School           : Spellstorm
+School           : Astral
 Spell Level      : 76
 Range            : 50000 yards
 Duration         : 8 seconds
@@ -5456,7 +5456,7 @@ Description      : Lunar and Solar Empowerments also reduce the cast time of the
 
 Name             : Stellar Flare (id=202347) [Spell Family (7)] 
 Class            : Druid
-School           : Spellstorm
+School           : Astral
 Resource         : 15 Eclipse
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -5470,9 +5470,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=298295)   : School Damage: spellstorm (2)
+#1 (id=298295)   : School Damage: astral (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.00000
-#2 (id=298296)   : Apply Aura (6) | Periodic Damage: spellstorm every 2 seconds (3)
+#2 (id=298296)   : Apply Aura (6) | Periodic Damage: astral every 2 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.65000
 Description      : Burns the target for $s1 Astral  damage, and then an additional $o2 damage over $d.
 
@@ -5500,7 +5500,7 @@ Description      : Increases Starfall's radius by $s1%, Starfall damage by $s2%,
 
 Name             : Astral Communion (id=202359) [Spell Family (7)] 
 Class            : Druid
-School           : Spellstorm
+School           : Astral
 Spell Level      : 1
 Cooldown         : 80 seconds
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -5516,7 +5516,7 @@ Description      : Generates ${$m1/10} Astral Power.
 
 Name             : Blessing of the Ancients (id=202360) [Spell Family (7)] 
 Class            : Druid
-School           : Spellstorm
+School           : Astral
 GCD              : 1.5 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ .......x 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5576,7 +5576,7 @@ Description      : Aligns the power of the Moon and Stars, causing Lunar Strike 
 
 Name             : Shooting Stars (id=202497) [Scaling Spell (3), Spell Family (7)] 
 Class            : Druid
-School           : Spellstorm
+School           : Astral
 Spell Level      : 1
 Range            : 50000 yards
 Velocity         : 0.8 yards/sec
@@ -5588,7 +5588,7 @@ Attributes       : ........ ........ ........ ........   .......x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Not a proc (105)
 Effects          :
-#1 (id=298525)   : School Damage: spellstorm (2)
+#1 (id=298525)   : School Damage: astral (2)
                    Base Value: 1 | Scaled Value: 0 (avg=0.58, dl=0.15) | SP Coefficient: 0.42000
 #2 (id=298537)   : Energize Power (30)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: astral_power
@@ -5629,7 +5629,7 @@ Tooltip          : Grants $s1 Astral Power every $t1 sec.
 
 Name             : New Moon (Artifact) (id=202767) [Spell Family (7)] 
 Class            : Druid
-School           : Spellstorm
+School           : Astral
 Range            : 40 yards
 Cast Time        : 1 seconds
 GCD              : 1.5 seconds
@@ -5644,7 +5644,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=298964)   : School Damage: spellstorm (2)
+#1 (id=298964)   : School Damage: astral (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.00000
 #2 (id=299003)   : Trigger Spell: New Moon Override (64)
                    Base Value: 202787 | Scaled Value: 202787 | Trigger Spell: 202787
@@ -5656,7 +5656,7 @@ Description      : Deals $m1 Astral damage to the target and empowers New Moon t
 
 Name             : Half Moon (Artifact) (id=202768) [Spell Family (7)] 
 Class            : Druid
-School           : Spellstorm
+School           : Astral
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
@@ -5671,7 +5671,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=298965)   : School Damage: spellstorm (2)
+#1 (id=298965)   : School Damage: astral (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 6.00000
 #2 (id=299004)   : Trigger Spell: Half Moon Override (64)
                    Base Value: 202788 | Scaled Value: 202788 | Trigger Spell: 202788
@@ -5683,7 +5683,7 @@ Description      : Deals $m1 Astral damage to the target and empowers Half Moon 
 
 Name             : Fury of Elune (id=202770) [Spell Family (7)] 
 Class            : Druid
-School           : Spellstorm
+School           : Astral
 Resource         : 6 Eclipse and 12 Eclipse per second or tick
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -5712,7 +5712,7 @@ Tooltip          : Directing the Fury of Elune.
 
 Name             : Full Moon (Artifact) (id=202771) [Spell Family (7)] 
 Class            : Druid
-School           : Spellstorm
+School           : Astral
 Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
@@ -5726,7 +5726,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=298969)   : School Damage: spellstorm (2)
+#1 (id=298969)   : School Damage: astral (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 12.00000 | Radius: 0 - 8 yards
 #2 (id=298970)   : Energize Power (30)
                    Base Value: 400 | Scaled Value: 400 | Misc Value: astral_power
@@ -6124,6 +6124,45 @@ Effects          :
 Description      : Release the natural power within G'Hanir to increase the frequency that all of your heal over time effects heal allies by ${100*(1/(1+($m1/100))-1)}% for $d.
 Tooltip          : Heal over time spells are healing ${100*(1/(1+($m1/100))-1)}% faster.
 
+Name             : Oneth's Intuition (id=209405) [Spell Family (7), Passive] 
+Class            : Druid
+School           : Nature
+Proc Chance      : 20%
+Proc Flags       : ........ ........ ........ .....x.. 
+                 
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=309930)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20
+Description      : Starsurge and Starfall each have a $s1% chance to make the other free.
+
+Name             : Oneth's Intuition (id=209406) [Spell Family (7)] 
+Class            : Druid
+School           : Arcane
+Spell Level      : 5
+Duration         : Aura (infinite)
+Proc Chance      : 100%
+Proc Flags       : ........ ........ ........ .....x.. 
+                 
+Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=309931)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
+                   Base Value: -1000 | Scaled Value: -1000 | Misc Value: 14
+                   Affected Spells: Starsurge (78674), Starsurge (197626)
+Description      : $@spelldesc209405
+Tooltip          : Your next Starsurge costs no Astral Power.
+
 Name             : Stag Form (Shapeshift) (id=210053) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
@@ -6369,7 +6408,7 @@ Description      : Shred and Swipe deal $s1% more damage per your Bleed effect o
 
 Name             : Fury of Elune (id=211545) [Spell Family (7)] 
 Class            : Druid
-School           : Spellstorm
+School           : Astral
 Range            : 100 yards
 Attributes       : ........ ........ x....... x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ........ 
@@ -6378,13 +6417,13 @@ Attributes       : ........ ........ x....... x..x....   .....x.. ........ .....
                  : .....x.. ........ ........ ........   ........ ...x.... ........ ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
 Effects          :
-#1 (id=313366)   : School Damage: spellstorm (2)
+#1 (id=313366)   : School Damage: astral (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Radius: 0 - 3 yards
 Description      : $@spelldesc202770
 
 Name             : Fury of Elune (id=211547) [Spell Family (7)] 
 Class            : Druid
-School           : Spellstorm
+School           : Astral
 Range            : 40 yards
 Cooldown         : 0.5 seconds
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 

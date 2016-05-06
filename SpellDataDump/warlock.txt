@@ -3640,6 +3640,21 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | Misc Value: 15
 Description      : When your Wild Imps cast Felfire Bolt, you have a $m1% chance to summon a Demon from the void to assist you in battle.
 
+Name             : Chaos Barrage (id=187385) [Spell Family (107)] 
+Class            : Warlock
+School           : Physical
+Duration         : 5.5 seconds
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .....x.. ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=273201)   : Apply Aura (6) | Periodic Dummy: every 0.25 seconds (226)
+                   Base Value: 1 | Scaled Value: 1
+Description      : $@spelldesc187365
+
 Name             : Chaos Barrage (id=187394) [Spell Family (107)] 
 Class            : Warlock
 School           : Chaos
@@ -4316,6 +4331,25 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 3
 Description      : Demonic Empowerment has a $s1% chance to generate 1 Soul Shard when used in combat.
 
+Name             : Shadowy Tear (id=196639) [Spell Family (5)] 
+Class            : Warlock
+School           : Physical
+Range            : 60 yards
+Duration         : 16 seconds
+Proc Chance      : 25%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=288695)   : Summon (28)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 99887 | Misc Value 2: 0xe47 | Radius: 10 yards
+Description      : $@spelldesc187365
+
 Name             : Shadow Bolt (id=196657) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -4323,6 +4357,7 @@ Spell Level      : 1
 Range            : 40 yards
 Velocity         : 20 yards/sec
 Affecting spells : Item - Warlock T13 4P Bonus (Soulburn) (105787), Item - Warlock T14 2P Bonus (123136), Item - Warlock T15 DPS 4P Bonus (138134), Maw of Shadows (211099), Stolen Power (211583)
+Triggered by     : Shadow Barrage (196659)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4333,6 +4368,21 @@ Effects          :
 #1 (id=288719)   : School Damage: shadow (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.50000
 Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage.
+
+Name             : Shadow Barrage (id=196659) [Spell Family (107)] 
+Class            : Warlock
+School           : Physical
+Duration         : 14 seconds
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .....x.. ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=288722)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
+                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 196657
+Description      : $@spelldesc187365
 
 Name             : Drain Soul (id=198590) [Spell Family (5)] 
 Class            : Warlock
@@ -4681,6 +4731,25 @@ Effects          :
 #1 (id=313708)   : Unknown effect type (165)
                    Base Value: 10 | Scaled Value: 10
 
+Name             : Chaos Tear (id=215276) [Spell Family (107)] 
+Class            : Warlock
+School           : Physical
+Range            : 60 yards
+Duration         : 5 seconds
+Proc Chance      : 25%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=319898)   : Summon (28)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 108493 | Misc Value 2: 0xe47 | Radius: 10 yards
+Description      : $@spelldesc187365
+
 Name             : Chaos Bolt (id=215279) [Spell Family (5)] 
 Class            : Warlock
 School           : Chromatic
@@ -4697,6 +4766,21 @@ Effects          :
 #1 (id=319901)   : School Damage: chromatic (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 5.00000
 Description      : Unleashes a devastating blast of chaos, causing $s1 Chaos damage. Chaos Bolt always critically strikes and your critical strike chance increases its damage.
+
+Name             : Chaos Bolt (id=215409) [Spell Family (107)] 
+Class            : Warlock
+School           : Physical
+Duration         : 6 seconds
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=320131)   : Apply Aura (6) | Periodic Dummy: every 6 seconds (226)
+                   Base Value: 1 | Scaled Value: 1
+Description      : $@spelldesc187365
 
 Name             : Soul Conduit (id=215941) [Spell Family (5), Passive] 
 Class            : Warlock
