@@ -225,7 +225,7 @@ public:
     buff_t* serenity;
 //    buff_t* swift_as_the_wind;
     buff_t* transfer_the_power;
-    buff_t* tigereye_brew;
+//    buff_t* tigereye_brew;
   } buff;
 
 public:
@@ -2219,10 +2219,6 @@ struct tiger_palm_t: public monk_melee_attack_t
           if ( p() -> talent.fortified_mind -> ok() )
             p() -> cooldown.fortifying_brew -> adjust( timespan_t::from_seconds( time_reduction ) );
         }
-
-        // Tiger Palm has a 30% chance to reset the cooldown of Keg Smash.
-        if ( p() -> talent.gift_of_the_mists -> ok() )
-          p() -> buff.keg_smash_talent -> trigger();
         break;
       }
       default: break;
@@ -3350,7 +3346,7 @@ struct keg_smash_t: public monk_melee_attack_t
 };
 
 // ==========================================================================
-// Flaming Keg
+// Exploding Keg
 // ==========================================================================
 
 struct exploding_keg_t: public monk_melee_attack_t
@@ -3506,7 +3502,7 @@ namespace spells {
 // ==========================================================================
 // Tigereye Brew
 // ==========================================================================
-
+/*
 struct tigereye_brew_t: public monk_spell_t
 {
   tigereye_brew_t( monk_t* player, const std::string& options_str ):
@@ -3546,7 +3542,7 @@ struct tigereye_brew_t: public monk_spell_t
       p() -> buff.forceful_winds -> trigger();
   }
 };
-
+*/
 // ==========================================================================
 // Energizing Elixir
 // ==========================================================================
@@ -5764,7 +5760,7 @@ action_t* monk_t::create_action( const std::string& name,
   // Brewmaster
   if ( name == "blackout_strike" ) return new           blackout_strike_t( this, options_str );
   if ( name == "breath_of_fire" ) return new            breath_of_fire_t( *this, options_str );
-  if ( name == "exploding_keg" ) return new               exploding_keg_t( *this, options_str );
+  if ( name == "exploding_keg" ) return new             exploding_keg_t( *this, options_str );
   if ( name == "fortifying_brew" ) return new           fortifying_brew_t( *this, options_str );
   if ( name == "gift_of_the_ox" ) return new            gift_of_the_ox_t( *this, options_str );
   if ( name == "greater_gift_of_the_ox" ) return new    greater_gift_of_the_ox_t( *this, options_str );
@@ -5783,7 +5779,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "thunder_focus_tea" ) return new         thunder_focus_tea_t( *this, options_str );
   // Windwalker
   if ( name == "fists_of_fury" ) return new             fists_of_fury_t( this, options_str );
-  if ( name == "tigereye_brew" ) return new             tigereye_brew_t( this, options_str );
+//  if ( name == "tigereye_brew" ) return new             tigereye_brew_t( this, options_str );
   if ( name == "touch_of_karma" ) return new            touch_of_karma_t( this, options_str );
   if ( name == "touch_of_death" ) return new            touch_of_death_t( this, options_str );
   if ( name == "storm_earth_and_fire" ) return new      storm_earth_and_fire_t( this, options_str );
@@ -6695,8 +6691,8 @@ double monk_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buff.hit_combo -> stack_value();
   }
 
-  if ( buff.tigereye_brew -> up() )
-    m *= 1.0 + buff.tigereye_brew -> value();
+//  if ( buff.tigereye_brew -> up() )
+//    m *= 1.0 + buff.tigereye_brew -> value();
 
   if ( buff.serenity -> up() )
     m *= 1.0 + buff.serenity -> value();
@@ -6736,8 +6732,8 @@ double monk_t::composite_player_heal_multiplier( const action_state_t* s ) const
 {
   double m = base_t::composite_player_heal_multiplier( s );
 
-  if ( buff.tigereye_brew -> up() )
-    m *= 1.0 + spec.tigereye_brew -> effectN( 2 ).percent();
+//  if ( buff.tigereye_brew -> up() )
+//    m *= 1.0 + spec.tigereye_brew -> effectN( 2 ).percent();
 
   if ( buff.serenity -> up() )
     m *= 1.0 + talent.serenity -> effectN( 3 ).percent();
