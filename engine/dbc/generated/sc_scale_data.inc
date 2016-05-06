@@ -1,4 +1,4 @@
-// Hit points per stamina for level 1 - 110, wow build 21570
+// Hit points per stamina for level 1 - 110, wow build 21655
 static double __hp_per_sta[110] = {
     14,	14,	15,	16,	17,	//    5
     18,	18,	18,	18,	18,	//   10
@@ -24,7 +24,7 @@ static double __hp_per_sta[110] = {
     60,	60,	60,	60,	60,	//  110
 };
 
-// Spell scaling multipliers for levels 1 - 110, wow build 21570
+// Spell scaling multipliers for levels 1 - 110, wow build 21655
 static double __spell_scaling[][110] = {
   {
     0,	0,	0,	0,	0,	//    5
@@ -371,7 +371,7 @@ static double __spell_scaling[][110] = {
     54,	56,	57,	57,	58,	//   85
     60,	63,	65,	66,	67,	//   90
     101,	118,	139,	162,	190,	//   95
-    225,	234,	242,	252,	555,	//  100
+    225,	234,	242,	252,	261,	//  100
     639,	735,	845,	971,	1066,	//  105
     1170,	1285,	1410,	1562,	1699,	//  110
   },
@@ -502,7 +502,7 @@ static double __spell_scaling[][110] = {
   },
 };
 
-// Base mana points for levels 1 - 110, wow build 21570
+// Base mana points for levels 1 - 110, wow build 21655
 static double __base_mp[][110] = {
   {
     0,	0,	0,	0,	0,	//    5
@@ -830,7 +830,7 @@ static double __base_mp[][110] = {
   },
 };
 
-// Combat rating values for level 1 - 110, wow build 21570
+// Combat rating values for level 1 - 110, wow build 21655
 static double __combat_ratings[][110] = {
   // Dodge
   {
@@ -1384,7 +1384,7 @@ static double __combat_ratings[][110] = {
   },
 };
 
-// Combat rating multipliers for item level 1 - 940, wow build 21570
+// Combat rating multipliers for item level 1 - 940, wow build 21655
 static double __combat_ratings_mult_by_ilvl[940] = {
     1,	1,	1,	1,	1,	//    5
     1,	1,	1,	1,	1,	//   10
@@ -1576,7 +1576,7 @@ static double __combat_ratings_mult_by_ilvl[940] = {
     0.468187104,	0.46558187,	0.462991133,	0.460414813,	0.457852828,	//  940
 };
 
-// Item socket costs for item levels 1 - 940, wow build 21570
+// Item socket costs for item levels 1 - 940, wow build 21655
 static double __item_socket_cost_per_level[940] = {
     0,	0,	0,	0,	0,	//    5
     0,	0,	0,	0,	0,	//   10
@@ -1768,7 +1768,7 @@ static double __item_socket_cost_per_level[940] = {
     8,	8,	8,	8,	8,	//  940
 };
 
-// Enemy armor mitigation constants (K-value) for level 1 - 113, wow build 21570
+// Enemy armor mitigation constants (K-value) for level 1 - 113, wow build 21655
 static double __armor_mitigation_by_lvl[113] = {
     157,	167,	177,	187,	197,	//    5
     207,	217,	227,	237,	247,	//   10

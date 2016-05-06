@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 21570
+// Class based active abilities, wow build 21655
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -114,7 +114,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       121183, // Contemplation
        35395, // Crusader Strike
          642, // Divine Shield
-      209202, // Eye of Tyr
+      209202, // Eye of Tyr (Artifact, Active Mitigation)
        62124, // Hand of Reckoning
       162056, // Jailer's Judgment
        20271, // Judgment
@@ -189,7 +189,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Hunter
   {
-    // General tree, 23 abilities
+    // General tree, 24 abilities
     {
        61648, // Aspect of the Chameleon
       186257, // Aspect of the Cheetah
@@ -205,15 +205,16 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       125050, // Fetch
       127933, // Fireworks
         1543, // Flare
-      203415, // Fury of the Eagle
+      203415, // Fury of the Eagle (Artifact)
+      212621, // Marked Shot
          136, // Mend Pet
          982, // Revive Pet
       175686, // Stopping Power
         1515, // Tame Beast
       207097, // Titan's Thunder
-      207068, // Titan's Thunder
+      207068, // Titan's Thunder (Artifact)
       210000, // Wake Up
-      204147, // Windburst
+      204147, // Windburst (Artifact)
            0,
     },
     // Beast Mastery tree, 10 abilities
@@ -309,7 +310,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         2818, // Deadly Poison
        56814, // Detection
         1966, // Feint
-      209782, // Goremaw's Bite
+      209782, // Goremaw's Bite (Artifact)
         1766, // Kick
       192759, // Kingsbane
       112974, // Leeching Poison (Talent)
@@ -485,8 +486,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     // General tree, 16 abilities
     {
        48707, // Anti-Magic Shell
-      220143, // Apocalypse
-      205223, // Consumption (Active Mitigation)
+      220143, // Apocalypse (Artifact)
+      205223, // Consumption (Artifact, Active Mitigation)
       111673, // Control Undead
       127344, // Corpse Explosion
        56222, // Dark Command
@@ -499,7 +500,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        47528, // Mind Freeze
         3714, // Path of Frost
        61999, // Raise Ally
-      190778, // Sindragosa's Fury
+      190778, // Sindragosa's Fury (Artifact)
            0,
     },
     // Blood tree, 10 abilities
@@ -561,7 +562,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Shaman
   {
-    // General tree, 15 abilities
+    // General tree, 14 abilities
     {
       114911, // Ancestral Guidance
         2008, // Ancestral Spirit
@@ -570,8 +571,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       216965, // Disabling Totem
       204945, // Doom Winds
         2645, // Ghost Wolf
-      207366, // Gift of the Queen
-      207778, // Gift of the Queen
+      207778, // Gift of the Queen (Artifact)
        32182, // Heroism
        51514, // Hex
       210873, // Hex
@@ -659,14 +659,14 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         1953, // Blink
       190336, // Conjure Refreshment
         2139, // Counterspell
-      195245, // Ebonbolt
+      214634, // Ebonbolt (Artifact)
          122, // Frost Nova
        11426, // Ice Barrier
        45438, // Ice Block
       131784, // Illusion
       211076, // Mark of Aluneth
       211088, // Mark of Aluneth
-      210726, // Mark of Aluneth
+      210726, // Mark of Aluneth (Artifact)
          118, // Polymorph (Sheep)
        61721, // Polymorph (Rabbit)
        61780, // Polymorph (Turkey)
@@ -744,7 +744,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       119898, // Command Demon
         6201, // Create Healthstone
       111771, // Demonic Gateway
-      196586, // Dimensional Rift
+      196586, // Dimensional Rift (Artifact)
          689, // Drain Life
         1098, // Enslave Demon
         5782, // Fear
@@ -754,7 +754,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       111895, // Grimoire: Voidwalker (Summon)
          755, // Health Funnel
       108396, // Mortal Coil (Talent)
-      216698, // Reap Souls
+      216698, // Reap Souls (Artifact)
       196657, // Shadow Bolt
        63106, // Siphon Life
        20707, // Soulstone
@@ -764,7 +764,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         1122, // Summon Infernal (Guardian)
          712, // Summon Succubus (Summon)
          697, // Summon Voidwalker (Summon)
-      211714, // Thal'kiel's Consumption
+      211714, // Thal'kiel's Consumption (Artifact)
       211715, // Thal'kiel's Consumption
       104773, // Unending Resolve
     },
@@ -842,13 +842,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       100784, // Blackout Kick
       117952, // Crackling Jade Lightning
       175697, // Disabling Technique
-      214326, // Flaming Keg
+      214326, // Exploding Keg (Artifact)
       122281, // Healing Elixir
       115078, // Paralysis
       115546, // Provoke
       109132, // Roll
-      205406, // Sheilun's Gift
-      205320, // Strike of the Windlord
+      205406, // Sheilun's Gift (Artifact)
+      205320, // Strike of the Windlord (Artifact)
       100780, // Tiger Palm
       101643, // Transcendence
       119996, // Transcendence: Transfer
@@ -856,13 +856,14 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       126892, // Zen Pilgrimage
            0,
     },
-    // Brewmaster tree, 11 abilities
+    // Brewmaster tree, 12 abilities
     {
       205523, // Blackout Strike
       115181, // Breath of Fire
       218164, // Detox
       116694, // Effuse
       195630, // Elusive Brawler
+      115072, // Expel Harm
       115203, // Fortifying Brew
       115308, // Ironskin Brew (Active Mitigation)
       121253, // Keg Smash
@@ -914,24 +915,24 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   {
     // General tree, 22 abilities
     {
-      210722, // Ashamane's Frenzy
+      210722, // Ashamane's Frenzy (Artifact)
         5487, // Bear Form (Shapeshift)
          768, // Cat Form (Shapeshift)
       127757, // Charm Woodland Creature
         1850, // Dash
       193753, // Dreamwalk
          339, // Entangling Roots
-      208253, // Essence of G'Hanir
+      208253, // Essence of G'Hanir (Artifact)
       164862, // Flap
       165962, // Flight Form (Shapeshift)
-      202771, // Full Moon
+      202771, // Full Moon (Artifact)
         6795, // Growl
-      202768, // Half Moon
+      202768, // Half Moon (Artifact)
         8921, // Moonfire (Lunar)
       164812, // Moonfire (Lunar)
       175682, // Nature's Control
-      202767, // New Moon
-      200851, // Rage of the Sleeper
+      202767, // New Moon (Artifact)
+      200851, // Rage of the Sleeper (Artifact, Active Mitigation)
        20484, // Rebirth
       210053, // Stag Form (Shapeshift)
       164815, // Sunfire (Solar)
@@ -943,10 +944,10 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        22812, // Barkskin (Active Mitigation)
       194223, // Celestial Alignment
       122114, // Chosen of Elune
-      202771, // Full Moon
+      202771, // Full Moon (Artifact)
       211547, // Fury of Elune
       203001, // Goldrinn's Fang
-      202768, // Half Moon
+      202768, // Half Moon (Artifact)
         5185, // Healing Touch
        29166, // Innervate
       194153, // Lunar Strike (Lunar)
@@ -1048,23 +1049,22 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       198013, // Eye Beam
       195072, // Fel Rush
       201789, // Fury of the Illidari
-      201467, // Fury of the Illidari
+      201467, // Fury of the Illidari (Artifact)
       201628, // Fury of the Illidari
       131347, // Glide
       217832, // Imprison
       191427, // Metamorphosis
-      207407, // Soul Carver
+      207407, // Soul Carver (Artifact)
       188501, // Spectral Sight
       185123, // Throw Glaive
       198793, // Vengeful Retreat
            0,
     },
-    // Havoc tree, 5 abilities
+    // Havoc tree, 4 abilities
     {
       202446, // Anguish
-      203796, // Demon Blade
+      203796, // Demon Blades
       208605, // Nemesis
-      217060, // Rage of the Illidari
       217070, // Rage of the Illidari
            0,
     },
@@ -1100,7 +1100,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 };
 #define TREE_SPECIALIZATION_SIZE (29)
 
-// Talent tree specialization abilities, wow build 21570
+// Talent tree specialization abilities, wow build 21655
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1232,6 +1232,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       131086, // Protection
       137048, // Protection Warrior
         6572, // Revenge
+        5301, // Revenge Trigger
       161798, // Riposte
         2565, // Shield Block
        23922, // Shield Slam
@@ -1303,12 +1304,12 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        86102, // Plate Specialization
       137028, // Protection Paladin
        96231, // Rebuke
-      190774, // Redoubt
        25780, // Righteous Fury
       161800, // Riposte
       105805, // Sanctuary
        53600, // Shield of the Righteous
       162702, // Stat Negation Aura - Strength Tank
+           0,
     },
     // Specialization abilities for Retribution
     {
@@ -1367,7 +1368,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     {
        19434, // Aimed Shot
       185358, // Arcane Shot
-      214351, // Black Arrow
        35110, // Bombardment
       186387, // Bursting Shot
         5116, // Concussive Shot
@@ -1881,6 +1881,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       157445, // Critical Strikes
       218164, // Detox
       116694, // Effuse
+      115072, // Expel Harm
       115203, // Fortifying Brew
       124502, // Gift of the Ox
       115308, // Ironskin Brew
@@ -2110,7 +2111,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 21570
+// Class mastery abilities, wow build 21655
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2349,7 +2350,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 21570
+// Racial abilities, wow build 21655
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3083,7 +3084,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 };
 #define SET_BONUS_DATA_SIZE (518)
 
-// Set bonus data, wow build 21570
+// Set bonus data, wow build 21655
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,              {   0 },    0,   73, 165641, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -3625,9 +3626,9 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   2,  11,              {   0 },    3,  102, 187133, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
   { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   4,  11,              {   0 },    3,  102, 187435, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
 };
-#define RPPMMOD_SIZE (181)
+#define RPPMMOD_SIZE (182)
 
-// 181 RPPM Modifiers, wow build level 21570
+// 182 RPPM Modifiers, wow build level 21655
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  49530,    4,  1,  1.0000 },
   {  51128,    4,  1,  1.0000 },
@@ -3749,7 +3750,6 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 187435,    4,  1,  1.0000 },
   { 188534,    4,  1,  1.0000 },
   { 188783,    4,  1,  1.0000 },
-  { 189849,    4,  1,  1.0000 },
   { 191048,    4,  1,  1.0000 },
   { 191760,    4,  1,  1.0000 },
   { 192623,    4,  1,  1.0000 },
@@ -3791,6 +3791,7 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 214571,    4,  1,  1.0000 },
   { 214962,    4,  1,  1.0000 },
   { 215089,    4,  1,  1.0000 },
+  { 215120,    4,  1,  1.0000 },
   { 215247,    4,  1,  1.0000 },
   { 215264,    4,  1,  1.0000 },
   { 215293,    4,  1,  1.0000 },
@@ -3801,7 +3802,7 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 215745,    4,  1,  1.0000 },
   { 216085,    4,  1,  1.0000 },
   { 221811,    4,  1,  1.0000 },
-  { 221845,    4,  1,  1.0000 },
+  { 221845,    3,  1,  1.0000 },
   { 221873,    4,  1,  1.0000 },
   { 222015,    4,  1,  1.0000 },
   { 222167,    4,  1,  1.0000 },
@@ -3810,58 +3811,74 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 224059,    4,  1,  1.0000 },
   { 224073,    4,  1,  1.0000 },
   { 224076,    4,  1,  1.0000 },
+  { 224158,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
 };
-#define ARTIFACT_SIZE (41)
+#define ARTIFACT_SIZE (43)
 
-// Artifact base data, wow build 21570
+// Artifact base data, wow build 21655
 static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
-  {  2,  70 },
-  {  3, 577 },
-  {  4,  62 },
-  { 11,  73 },
-  { 12, 251 },
-  { 13, 105 },
-  { 15, 250 },
-  { 16, 252 },
-  { 17, 261 },
-  { 34, 255 },
-  { 35,  72 },
-  { 36,  71 },
-  { 37, 266 },
-  { 38, 267 },
-  { 39, 265 },
-  { 40, 262 },
-  { 41, 263 },
-  { 42, 264 },
-  { 43, 259 },
-  { 44, 260 },
-  { 45, 257 },
-  { 46, 256 },
-  { 47, 258 },
-  { 48,  65 },
-  { 49,  66 },
-  { 50, 269 },
-  { 51, 270 },
-  { 52, 268 },
-  { 53,  64 },
-  { 54,  63 },
-  { 55, 254 },
-  { 56, 253 },
-  { 57, 104 },
-  { 58, 103 },
-  { 59, 102 },
-  { 60, 581 },
-  { 74,  70 },
-  { 80,  70 },
-  { 81,  65 },
-  { 82,  66 },
+  {  1, 207 },
+  {  2, 207 },
+  {  3, 206 },
+  {  4, 208 },
+  { 11, 215 },
+  { 12, 214 },
+  { 13, 217 },
+  { 15, 214 },
+  { 16, 214 },
+  { 17, 216 },
+  { 34, 226 },
+  { 35, 215 },
+  { 36, 215 },
+  { 37, 208 },
+  { 38, 229 },
+  { 39, 229 },
+  { 40, 225 },
+  { 41, 225 },
+  { 42, 225 },
+  { 43, 216 },
+  { 44, 216 },
+  { 45, 227 },
+  { 46, 227 },
+  { 47, 241 },
+  { 48, 207 },
+  { 49, 207 },
+  { 50, 228 },
+  { 51, 228 },
+  { 52, 228 },
+  { 53, 208 },
+  { 54, 208 },
+  { 55, 226 },
+  { 56, 226 },
+  { 57, 217 },
+  { 58, 217 },
+  { 59, 217 },
+  { 60, 206 },
+  { 73, 227 },
+  { 74, 207 },
+  { 80, 207 },
+  { 81, 207 },
+  { 82, 207 },
   {  0,   0 },
 };
-#define ARTIFACT_POWER_SIZE (711)
+#define ARTIFACT_POWER_SIZE (737)
 
-// Artifact power data, wow build 21570
+// Artifact power data, wow build 21655
 static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] = {
+  {    1,   1,  0,   0, 0                                    }, // 0 (id=179497, n_ranks=1)
+  {    2,   1,  0,   1, 0                                    }, // 0 (id=166305, n_ranks=1)
+  {    3,   1,  0,   1, 0                                    }, // 0 (id=179498, n_ranks=1)
+  {    4,   1,  0,   1, 0                                    }, // 0 (id=166732, n_ranks=1)
+  {    5,   1,  0,   1, 0                                    }, // 0 (id=166733, n_ranks=3)
+  {    6,   1,  0,   1, 0                                    }, // 0 (id=179499, n_ranks=1)
+  {    7,   1,  0,  50, 0                                    }, // 0 (id=199420, n_ranks=1)
+  {    8,   1,  0,   1, 0                                    }, // 0 (id=166737, n_ranks=1)
+  {    9,   1,  0,   3, 0                                    }, // 0 (id=178162, n_ranks=3)
+  {   10,   1,  0,   1, 0                                    }, // 0 (id=166734, n_ranks=1)
+  {   11,   1,  0,   1, 0                                    }, // 0 (id=166738, n_ranks=1)
+  {  997,   1,  0,   1, "Rain of Frogs"                      }, // Rain of Frogs (id=147709, n_ranks=1)
+  { 1152,   1,  0,   0, 0                                    }, // 0 (id=210125, n_ranks=1)
   {   40,   2,  0,   0, "Wake of Ashes"                      }, // Wake of Ashes (id=205273, n_ranks=1)
   {   41,   2,  4,   3, "Highlord's Judgment"                }, // Highlord's Judgment (id=186941, n_ranks=6)
   {   42,   2,  5,   3, "Sharpened Edge"                     }, // Sharpened Edge (id=184759, n_ranks=6)
@@ -3914,7 +3931,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {   84,   4, 12,   3, "Mana Shield"                        }, // Mana Shield (id=210716, n_ranks=6)
   {   86,   4,  2,   1, "Touch of the Magi"                  }, // Touch of the Magi (id=210725, n_ranks=1)
   {   87,   4,  0,   1, "Aegwynn's Ascendance"               }, // Aegwynn's Ascendance (id=187680, n_ranks=1)
-  {  290,   4,  0,   0, "Mark of Aluneth"                    }, // Mark of Aluneth (id=210726, n_ranks=1)
+  {  290,   4,  0,   0, "Mark of Aluneth"                    }, // Mark of Aluneth (id=224968, n_ranks=1)
   { 1169,   4,  0,   1, "Sloooow Down"                       }, // Sloooow Down (id=210730, n_ranks=1)
   { 1199,   4,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1339,   4,  0,   1, "Might of the Guardians"             }, // Might of the Guardians (id=187318, n_ranks=1)
@@ -4007,7 +4024,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  158,  16,  6,   3, "Plaguebearer"                       }, // Plaguebearer (id=191485, n_ranks=6)
   {  262,  16, 11,   3, "Deadly Durability"                  }, // Deadly Durability (id=191565, n_ranks=6)
   {  263,  16,  0,   1, "Gravitational Pull"                 }, // Gravitational Pull (id=191721, n_ranks=1)
-  {  264,  16,  7,   3, "Runic Tattoos"                      }, // Runic Tattoos (id=191592, n_ranks=3)
+  {  264,  16,  7,   3, "Runic Tattoos"                      }, // Runic Tattoos (id=191592, n_ranks=6)
   {  265,  16,  8,   3, "Scourge the Unbeliever"             }, // Scourge the Unbeliever (id=191494, n_ranks=6)
   {  266,  16,  9,   3, "The Darkest Crusade"                }, // The Darkest Crusade (id=191488, n_ranks=6)
   {  267,  16, 12,   3, "Unholy Endurance"                   }, // Unholy Endurance (id=191584, n_ranks=6)
@@ -4042,9 +4059,9 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1074,  34,  8,   3, "Fluffy, Go"                         }, // Fluffy, Go (id=203669, n_ranks=6)
   { 1075,  34,  9,   3, "Strength of the Mountain"           }, // Strength of the Mountain (id=203670, n_ranks=6)
   { 1076,  34, 10,   3, "Hellcarver"                         }, // Hellcarver (id=203673, n_ranks=6)
-  { 1077,  34, 11,   3, "Clipped Wings"                      }, // Clipped Wings (id=203748, n_ranks=6)
+  { 1077,  34, 11,   3, "Bird of Prey"                       }, // Bird of Prey (id=224764, n_ranks=6)
   { 1078,  34, 12,   3, "Hunter's Bounty"                    }, // Hunter's Bounty (id=203749, n_ranks=6)
-  { 1079,  34,  0,   1, "Superior Trapper"                   }, // Superior Trapper (id=203751, n_ranks=1)
+  { 1079,  34,  0,   1, "Embrace of the Aspects"             }, // Embrace of the Aspects (id=225092, n_ranks=1)
   { 1080,  34,  0,   1, "Hunter's Guile"                     }, // Hunter's Guile (id=203752, n_ranks=1)
   { 1081,  34,  0,   1, "Terms of Engagement"                }, // Terms of Engagement (id=203754, n_ranks=1)
   { 1082,  34,  1,   1, "Aspect of the Skylord"              }, // Aspect of the Skylord (id=203755, n_ranks=1)
@@ -4061,7 +4078,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  986,  35,  0,   1, "Helya's Wrath"                      }, // Helya's Wrath (id=200870, n_ranks=1)
   {  987,  35,  0,   1, "Sense Death"                        }, // Sense Death (id=200863, n_ranks=1)
   {  988,  35,  4,   3, "Deathdealer"                        }, // Deathdealer (id=200846, n_ranks=6)
-  {  989,  35,  5,   3, "Thirst for Battle"                  }, // Thirst for Battle (id=200847, n_ranks=6)
+  {  989,  35,  5,   3, "Wild Slashes"                       }, // Wild Slashes (id=216273, n_ranks=6)
   {  990,  35,  6,   3, "Wrath and Fury"                     }, // Wrath and Fury (id=200849, n_ranks=6)
   {  991,  35,  7,   3, "Unstoppable"                        }, // Unstoppable (id=200853, n_ranks=6)
   {  992,  35,  8,   3, "Uncontrolled Rage"                  }, // Uncontrolled Rage (id=200856, n_ranks=6)
@@ -4200,11 +4217,11 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1113,  42,  0,   1, "Refreshing Currents"                }, // Refreshing Currents (id=207356, n_ranks=1)
   { 1114,  42,  0,   1, "Servant of the Queen"               }, // Servant of the Queen (id=207357, n_ranks=1)
   { 1115,  42,  1,   1, "Tidal Pools"                        }, // Tidal Pools (id=207358, n_ranks=1)
-  { 1116,  42,  2,   1, "Decree of the Queen"                }, // Decree of the Queen (id=207360, n_ranks=1)
+  { 1116,  42,  2,   1, "Queen's Decree"                     }, // Queen's Decree (id=207360, n_ranks=1)
   { 1117,  42,  3,   1, "Cumulative Upkeep"                  }, // Cumulative Upkeep (id=207362, n_ranks=1)
   { 1216,  42,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1258,  42,  0,   0, "Artificial Damage"                  }, // Artificial Damage (id=213428, n_ranks=1)
-  { 1352,  42,  0,   1, "Ancient Power"                      }, // Ancient Power (id=214809, n_ranks=1)
+  { 1352,  42,  0,   1, "Grace of the Sea"                   }, // Grace of the Sea (id=224841, n_ranks=1)
   { 1389,  42,  0,  20, "Flow of the Tides"                  }, // Flow of the Tides (id=214933, n_ranks=20)
   {  323,  43,  4,   3, "Toxic Blades"                       }, // Toxic Blades (id=192310, n_ranks=6)
   {  324,  43,  5,   3, "Serrated Edge"                      }, // Serrated Edge (id=192315, n_ranks=6)
@@ -4296,7 +4313,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  773,  47,  6,   3, "To the Pain"                        }, // To the Pain (id=193644, n_ranks=6)
   {  774,  47,  7,   3, "Death's Embrace"                    }, // Death's Embrace (id=193645, n_ranks=6)
   {  775,  47, 12,   3, "Thoughts of Insanity"               }, // Thoughts of Insanity (id=193647, n_ranks=6)
-  {  776,  47, 10,   3, "Tremble in Fear"                    }, // Tremble in Fear (id=194002, n_ranks=6)
+  {  776,  47, 10,   3, "Creeping Shadows"                   }, // Creeping Shadows (id=194002, n_ranks=6)
   {  777,  47,  8,   3, "Touch of Darkness"                  }, // Touch of Darkness (id=194007, n_ranks=6)
   {  778,  47,  9,   3, "Void Corruption"                    }, // Void Corruption (id=194016, n_ranks=6)
   {  779,  47,  0,   1, "Mental Fortitude"                   }, // Mental Fortitude (id=194018, n_ranks=1)
@@ -4382,7 +4399,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1295,  51,  0,   1, "Mists of Wisdom"                    }, // Mists of Wisdom (id=214516, n_ranks=1)
   { 1375,  51,  0,  20, "Mistweaving"                        }, // Mistweaving (id=214921, n_ranks=20)
   { 1202,  52,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
-  { 1277,  52,  0,   0, "Flaming Keg"                        }, // Flaming Keg (id=214326, n_ranks=1)
+  { 1277,  52,  0,   0, "Exploding Keg"                      }, // Exploding Keg (id=214326, n_ranks=1)
   { 1278,  52,  4,   3, "Obsidian Fists"                     }, // Obsidian Fists (id=213051, n_ranks=6)
   { 1279,  52,  5,   3, "Adjunct Advantage"                  }, // Adjunct Advantage (id=213049, n_ranks=6)
   { 1280,  52,  6,   3, "Overflow"                           }, // Overflow (id=213180, n_ranks=6)
@@ -4398,7 +4415,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1290,  52,  1,   1, "Dragonfire Brew"                    }, // Dragonfire Brew (id=213183, n_ranks=1)
   { 1291,  52,  2,   1, "Brew-Stache"                        }, // Brew-Stache (id=214372, n_ranks=1)
   { 1292,  52,  3,   1, "Fortification"                      }, // Fortification (id=213340, n_ranks=1)
-  { 1293,  52,  0,   1, "Kegerator"                          }, // Kegerator (id=214428, n_ranks=1)
+  { 1293,  52,  0,   1, "Full Keg"                           }, // Full Keg (id=214428, n_ranks=1)
   { 1374,  52,  0,  20, "Wanderer's Hardiness"               }, // Wanderer's Hardiness (id=214920, n_ranks=20)
   {  783,  53,  0,   0, "Ebonbolt"                           }, // Ebonbolt (id=214634, n_ranks=1)
   {  784,  53,  4,   3, "Icy Caress"                         }, // Icy Caress (id=195315, n_ranks=6)
@@ -4509,7 +4526,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1164,  58,  7,   3, "Ashamane's Energy"                  }, // Ashamane's Energy (id=210579, n_ranks=6)
   { 1165,  58, 12,   3, "Attuned to Nature"                  }, // Attuned to Nature (id=210590, n_ranks=6)
   { 1166,  58,  8,   3, "Tear the Flesh"                     }, // Tear the Flesh (id=210593, n_ranks=6)
-  { 1167,  58,  9,   3, "Feral Instinct"                     }, // Feral Instinct (id=210631, n_ranks=6)
+  { 1167,  58, 10,   3, "Feral Instinct"                     }, // Feral Instinct (id=210631, n_ranks=6)
   { 1168,  58,  9,   3, "Sharpened Claws"                    }, // Sharpened Claws (id=210637, n_ranks=6)
   { 1193,  58,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1327,  58,  0,   1, "Shredder Fangs"                     }, // Shredder Fangs (id=214736, n_ranks=1)
@@ -4552,6 +4569,19 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1328,  60,  0,   1, "Tormented Souls"                    }, // Tormented Souls (id=214744, n_ranks=1)
   { 1363,  60,  0,  20, "Soulgorger"                         }, // Soulgorger (id=214909, n_ranks=20)
   { 1434,  60,  0,   1, "Siphon Power"                       }, // Siphon Power (id=218910, n_ranks=1)
+  { 1021,  73,  0,   1, 0                                    }, // 0 (id=201891, n_ranks=1)
+  { 1022,  73,  0,   3, 0                                    }, // 0 (id=201880, n_ranks=3)
+  { 1023,  73,  0,   3, 0                                    }, // 0 (id=201881, n_ranks=3)
+  { 1024,  73,  0,   3, 0                                    }, // 0 (id=201882, n_ranks=3)
+  { 1025,  73,  0,   3, 0                                    }, // 0 (id=201883, n_ranks=3)
+  { 1026,  73,  0,   3, 0                                    }, // 0 (id=201884, n_ranks=3)
+  { 1027,  73,  0,   3, 0                                    }, // 0 (id=201887, n_ranks=3)
+  { 1028,  73,  0,   1, 0                                    }, // 0 (id=201943, n_ranks=1)
+  { 1029,  73,  0,   1, 0                                    }, // 0 (id=201944, n_ranks=1)
+  { 1030,  73,  0,   1, 0                                    }, // 0 (id=201945, n_ranks=1)
+  { 1031,  73,  0,   1, 0                                    }, // 0 (id=201946, n_ranks=1)
+  { 1032,  73,  0,   1, 0                                    }, // 0 (id=201948, n_ranks=1)
+  { 1033,  73,  0,   1, 0                                    }, // 0 (id=201952, n_ranks=1)
   { 1087,  74,  0,   0, 0                                    },
   { 1088,  74,  0,   0, 0                                    },
   { 1089,  74,  0,   0, 0                                    },
@@ -4574,10 +4604,25 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1253,  80,  0,   1, "Ashes to Ashes"                     }, // Ashes to Ashes (id=179546, n_ranks=1)
   {    0,   0,  0,   0, 0                                    },
 };
-#define ARTIFACT_POWER_RANK_SIZE (3053)
+#define ARTIFACT_POWER_RANK_SIZE (3098)
 
-// Artifact power rank data, wow build 21570
+// Artifact power rank data, wow build 21655
 static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RANK_SIZE] = {
+  { 2301,     1,  0, 179497,      0.000 },
+  { 2302,     2,  0, 166305,      0.000 },
+  { 2303,     3,  0, 179498,      0.000 },
+  { 2304,     4,  0, 166732,      0.000 },
+  { 2305,     5,  0, 166733,      0.000 },
+  { 2725,     5,  1, 166734,      0.000 },
+  { 2726,     5,  2, 166735,      0.000 },
+  { 2306,     6,  0, 179499,      0.000 },
+  { 2307,     7,  0, 199420,      0.000 },
+  { 2308,     8,  0, 166737,      0.000 },
+  { 2309,     9,  0, 178162,      0.000 },
+  { 2310,     9,  1, 179226,      0.000 },
+  { 2311,     9,  2, 179227,      0.000 },
+  { 2312,    10,  0, 166734,      0.000 },
+  { 2313,    11,  0, 166738,      0.000 },
   { 2316,    40,  0, 205273,      0.000 },
   { 2317,    41,  0, 186941,      0.000 },
   { 3199,    41,  1, 186941,     30.000 },
@@ -4819,7 +4864,7 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 3426,   130,  3, 189772,      8.000 },
   { 3427,   130,  4, 189772,     10.000 },
   { 3428,   130,  5, 189772,     12.000 },
-  { 2504,   131,  0, 189768,      0.000 },
+  { 2504,   131,  0, 189768,     10.000 },
   { 3429,   131,  1, 189768,     20.000 },
   { 3430,   131,  2, 189768,     30.000 },
   { 3431,   131,  3, 189768,     40.000 },
@@ -4843,12 +4888,12 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 3446,   134,  3, 189754,     -8.000 },
   { 3447,   134,  4, 189754,    -10.000 },
   { 3448,   134,  5, 189754,    -12.000 },
-  { 2516,   135,  0, 189749,      0.000 },
-  { 3449,   135,  1, 189749,     10.000 },
-  { 3450,   135,  2, 189749,     15.000 },
-  { 3451,   135,  3, 189749,     20.000 },
-  { 3452,   135,  4, 189749,     25.000 },
-  { 3453,   135,  5, 189749,     30.000 },
+  { 2516,   135,  0, 189749,     10.000 },
+  { 3449,   135,  1, 189749,     20.000 },
+  { 3450,   135,  2, 189749,     30.000 },
+  { 3451,   135,  3, 189749,     40.000 },
+  { 3452,   135,  4, 189749,     50.000 },
+  { 3453,   135,  5, 189749,     60.000 },
   { 2519,   136,  0, 189744,      0.000 },
   { 3454,   136,  1, 189744,      6.000 },
   { 3455,   136,  2, 189744,     10.000 },
@@ -4903,6 +4948,9 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 2549,   264,  0, 191592,      0.000 },
   { 2550,   264,  1, 191593,      0.000 },
   { 2551,   264,  2, 191594,      0.000 },
+  { 6505,   264,  3, 224466,      0.000 },
+  { 6506,   264,  4, 224467,      0.000 },
+  { 6507,   264,  5, 224468,      0.000 },
   { 2552,   265,  0, 191494,      3.000 },
   { 3665,   265,  1, 191494,      6.000 },
   { 3666,   265,  2, 191494,     10.000 },
@@ -4982,7 +5030,7 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 2592,   285,  0, 192567,      0.000 },
   { 2593,   286,  0, 193213,      0.000 },
   { 4029,   289,  0, 205223,      0.000 },
-  { 2594,   290,  0, 210726,      0.000 },
+  { 2594,   290,  0, 224968,      0.000 },
   { 2595,   291,  0, 205495,      0.000 },
   { 2596,   292,  0, 191602,      0.000 },
   { 2597,   293,  0, 191647,      0.000 },
@@ -5213,12 +5261,12 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 3752,   755,  3, 194314,     13.000 },
   { 3753,   755,  4, 194314,     16.000 },
   { 3754,   755,  5, 194314,     20.000 },
-  { 3167,   756,  0, 194318,      0.500 },
-  { 3760,   756,  1, 194318,      1.000 },
-  { 3761,   756,  2, 194318,      1.500 },
-  { 3762,   756,  3, 194318,      2.000 },
-  { 3763,   756,  4, 194318,      2.500 },
-  { 3764,   756,  5, 194318,      3.000 },
+  { 3167,   756,  0, 194318,      3.000 },
+  { 3760,   756,  1, 194318,      6.000 },
+  { 3761,   756,  2, 194318,      9.000 },
+  { 3762,   756,  3, 194318,     12.000 },
+  { 3763,   756,  4, 194318,     15.000 },
+  { 3764,   756,  5, 194318,     18.000 },
   { 3168,   757,  0, 194315,      0.000 },
   { 3755,   757,  1, 194315,     -6.000 },
   { 3756,   757,  2, 194315,    -10.000 },
@@ -5229,7 +5277,7 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 3169,   759,  0, 215796,      0.000 },
   { 3170,   760,  0, 194324,      0.000 },
   { 3171,   761,  0, 194487,      0.000 },
-  { 5134,   762,  0, 215773,      2.000 },
+  { 5134,   762,  0, 215773,      0.000 },
   { 3172,   763,  0, 194331,      0.000 },
   { 3173,   764,  0, 205065,      0.000 },
   { 3174,   765,  0, 194024,      0.000 },
@@ -5305,18 +5353,18 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 3791,   785,  3, 195317,     40.000 },
   { 3792,   785,  4, 195317,     50.000 },
   { 3793,   785,  5, 195317,     60.000 },
-  { 3794,   786,  0, 195322,      5.000 },
-  { 3795,   786,  1, 195322,     10.000 },
-  { 3796,   786,  2, 195322,     15.000 },
-  { 3797,   786,  3, 195322,     20.000 },
-  { 3798,   786,  4, 195322,     25.000 },
-  { 3799,   786,  5, 195322,     30.000 },
-  { 3800,   787,  0, 195323,     15.000 },
-  { 3801,   787,  1, 195323,     30.000 },
-  { 3802,   787,  2, 195323,     45.000 },
-  { 3803,   787,  3, 195323,     60.000 },
-  { 3804,   787,  4, 195323,     75.000 },
-  { 3805,   787,  5, 195323,     90.000 },
+  { 3794,   786,  0, 195322,     10.000 },
+  { 3795,   786,  1, 195322,     20.000 },
+  { 3796,   786,  2, 195322,     30.000 },
+  { 3797,   786,  3, 195322,     40.000 },
+  { 3798,   786,  4, 195322,     50.000 },
+  { 3799,   786,  5, 195322,     60.000 },
+  { 3800,   787,  0, 195323,     30.000 },
+  { 3801,   787,  1, 195323,     60.000 },
+  { 3802,   787,  2, 195323,     90.000 },
+  { 3803,   787,  3, 195323,    120.000 },
+  { 3804,   787,  4, 195323,    150.000 },
+  { 3805,   787,  5, 195323,    180.000 },
   { 3806,   788,  0, 195345,   -500.000 },
   { 3807,   788,  1, 195345,  -1000.000 },
   { 3808,   788,  2, 195345,  -1500.000 },
@@ -5498,19 +5546,19 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 3989,   843,  3, 196416,     20.000 },
   { 3990,   843,  4, 196416,     25.000 },
   { 3991,   843,  5, 196416,     30.000 },
-  { 3992,   844,  0, 196418,      0.000 },
-  { 3993,   844,  1, 196418,      6.000 },
-  { 3994,   844,  2, 196418,     10.000 },
-  { 3995,   844,  3, 196418,     13.000 },
-  { 3996,   844,  4, 196418,     16.000 },
-  { 3997,   844,  5, 196418,     20.000 },
+  { 3992,   844,  0, 196418,      5.000 },
+  { 3993,   844,  1, 196418,     10.000 },
+  { 3994,   844,  2, 196418,     15.000 },
+  { 3995,   844,  3, 196418,     20.000 },
+  { 3996,   844,  4, 196418,     25.000 },
+  { 3997,   844,  5, 196418,     30.000 },
   { 3998,   845,  0, 196419,      0.000 },
-  { 4004,   846,  0, 196422,      0.000 },
-  { 4005,   846,  1, 196422,      6.000 },
-  { 4006,   846,  2, 196422,     10.000 },
-  { 4007,   846,  3, 196422,     13.000 },
-  { 4008,   846,  4, 196422,     16.000 },
-  { 4009,   846,  5, 196422,     20.000 },
+  { 4004,   846,  0, 196422,      5.000 },
+  { 4005,   846,  1, 196422,     10.000 },
+  { 4006,   846,  2, 196422,     15.000 },
+  { 4007,   846,  3, 196422,     20.000 },
+  { 4008,   846,  4, 196422,     25.000 },
+  { 4009,   846,  5, 196422,     30.000 },
   { 4010,   847,  0, 196429,      0.000 },
   { 4011,   847,  1, 196429,  -6000.000 },
   { 4012,   847,  2, 196429, -10000.000 },
@@ -5523,12 +5571,12 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 4019,   848,  3, 196430,     13.000 },
   { 4020,   848,  4, 196430,     16.000 },
   { 4021,   848,  5, 196430,     20.000 },
-  { 4022,   849,  0, 196434,      0.000 },
-  { 4023,   849,  1, 196434,      6.000 },
-  { 4024,   849,  2, 196434,     10.000 },
-  { 4025,   849,  3, 196434,     13.000 },
-  { 4026,   849,  4, 196434,     16.000 },
-  { 4027,   849,  5, 196434,     20.000 },
+  { 4022,   849,  0, 196434,      5.000 },
+  { 4023,   849,  1, 196434,     10.000 },
+  { 4024,   849,  2, 196434,     15.000 },
+  { 4025,   849,  3, 196434,     20.000 },
+  { 4026,   849,  4, 196434,     25.000 },
+  { 4027,   849,  5, 196434,     30.000 },
   { 4030,   851,  0, 209782,      0.000 },
   { 4031,   852,  0, 197231,      0.000 },
   { 4046,   852,  1, 197231,      6.000 },
@@ -5554,12 +5602,12 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 4063,   855,  3, 197235,     40.000 },
   { 4064,   855,  4, 197235,     50.000 },
   { 4065,   855,  5, 197235,     60.000 },
-  { 4035,   856,  0, 197369,     10.000 },
-  { 4142,   856,  1, 197369,     20.000 },
-  { 4143,   856,  2, 197369,     30.000 },
-  { 4144,   856,  3, 197369,     40.000 },
-  { 4145,   856,  4, 197369,     50.000 },
-  { 4146,   856,  5, 197369,     60.000 },
+  { 4035,   856,  0, 197369,      5.000 },
+  { 4142,   856,  1, 197369,     10.000 },
+  { 4143,   856,  2, 197369,     15.000 },
+  { 4144,   856,  3, 197369,     20.000 },
+  { 4145,   856,  4, 197369,     25.000 },
+  { 4146,   856,  5, 197369,     30.000 },
   { 4036,   857,  0, 197386,   3000.000 },
   { 4147,   857,  1, 197386,   6000.000 },
   { 4148,   857,  2, 197386,  10000.000 },
@@ -5650,12 +5698,12 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 4154,   885,  0, 197781,      0.000 },
   { 4155,   886,  0, 197815,      0.000 },
   { 4156,   887,  0, 198074,      0.000 },
-  { 4157,   888,  0, 197708,      0.000 },
-  { 4158,   888,  1, 197708,      6.000 },
-  { 4159,   888,  2, 197708,     10.000 },
-  { 4160,   888,  3, 197708,     13.000 },
-  { 4161,   888,  4, 197708,     16.000 },
-  { 4162,   888,  5, 197708,     20.000 },
+  { 4157,   888,  0, 197708,      2.000 },
+  { 4158,   888,  1, 197708,      4.000 },
+  { 4159,   888,  2, 197708,      6.000 },
+  { 4160,   888,  3, 197708,      8.000 },
+  { 4161,   888,  4, 197708,     10.000 },
+  { 4162,   888,  5, 197708,     12.000 },
   { 4163,   889,  0, 197711,      0.000 },
   { 4164,   889,  1, 197711,     -6.000 },
   { 4165,   889,  2, 197711,    -10.000 },
@@ -5668,30 +5716,30 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 4172,   890,  3, 197713, -40000.000 },
   { 4173,   890,  4, 197713, -50000.000 },
   { 4174,   890,  5, 197713, -60000.000 },
-  { 4175,   891,  0, 197715,      0.000 },
-  { 4176,   891,  1, 197715,      6.000 },
-  { 4177,   891,  2, 197715,     10.000 },
-  { 4178,   891,  3, 197715,     13.000 },
-  { 4179,   891,  4, 197715,     16.000 },
-  { 4180,   891,  5, 197715,     20.000 },
-  { 4181,   892,  0, 197716,      0.000 },
-  { 4182,   892,  1, 197716,      6.000 },
-  { 4183,   892,  2, 197716,     10.000 },
-  { 4184,   892,  3, 197716,     13.000 },
-  { 4185,   892,  4, 197716,     16.000 },
-  { 4186,   892,  5, 197716,     20.000 },
+  { 4175,   891,  0, 197715,      5.000 },
+  { 4176,   891,  1, 197715,     10.000 },
+  { 4177,   891,  2, 197715,     15.000 },
+  { 4178,   891,  3, 197715,     20.000 },
+  { 4179,   891,  4, 197715,     25.000 },
+  { 4180,   891,  5, 197715,     30.000 },
+  { 4181,   892,  0, 197716,      5.000 },
+  { 4182,   892,  1, 197716,     10.000 },
+  { 4183,   892,  2, 197716,     15.000 },
+  { 4184,   892,  3, 197716,     20.000 },
+  { 4185,   892,  4, 197716,     25.000 },
+  { 4186,   892,  5, 197716,     30.000 },
   { 4187,   893,  0, 197727,      0.000 },
   { 4188,   893,  1, 197727,   2000.000 },
   { 4189,   893,  2, 197727,   3000.000 },
   { 4190,   893,  3, 197727,   4000.000 },
   { 4191,   893,  4, 197727,   5000.000 },
   { 4192,   893,  5, 197727,   6000.000 },
-  { 4193,   894,  0, 197729,      0.000 },
-  { 4194,   894,  1, 197729,      6.000 },
-  { 4195,   894,  2, 197729,     10.000 },
-  { 4196,   894,  3, 197729,     13.000 },
-  { 4197,   894,  4, 197729,     16.000 },
-  { 4198,   894,  5, 197729,     20.000 },
+  { 4193,   894,  0, 197729,      5.000 },
+  { 4194,   894,  1, 197729,     10.000 },
+  { 4195,   894,  2, 197729,     15.000 },
+  { 4196,   894,  3, 197729,     20.000 },
+  { 4197,   894,  4, 197729,     25.000 },
+  { 4198,   894,  5, 197729,     30.000 },
   { 4199,   895,  0, 197762,      0.000 },
   { 4200,   895,  1, 197762,    -10.000 },
   { 4201,   895,  2, 197762,    -15.000 },
@@ -5796,12 +5844,12 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 4301,   919,  3, 199153,     20.000 },
   { 4302,   919,  4, 199153,     25.000 },
   { 4303,   919,  5, 199153,     30.000 },
-  { 4304,   920,  0, 199158,      3.000 },
-  { 4305,   920,  1, 199158,      6.000 },
-  { 4306,   920,  2, 199158,     10.000 },
-  { 4307,   920,  3, 199158,     13.000 },
-  { 4308,   920,  4, 199158,     16.000 },
-  { 4309,   920,  5, 199158,     20.000 },
+  { 4304,   920,  0, 199158,      6.000 },
+  { 4305,   920,  1, 199158,     12.000 },
+  { 4306,   920,  2, 199158,     20.000 },
+  { 4307,   920,  3, 199158,     26.000 },
+  { 4308,   920,  4, 199158,     32.000 },
+  { 4309,   920,  5, 199158,     40.000 },
   { 4310,   921,  0, 199163,      1.000 },
   { 4311,   921,  1, 199163,      2.000 },
   { 4312,   921,  2, 199163,      3.000 },
@@ -5858,36 +5906,36 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 4363,   941,  3, 199367,     20.000 },
   { 4364,   941,  4, 199367,     25.000 },
   { 4365,   941,  5, 199367,     30.000 },
-  { 4366,   942,  0, 199372,      0.000 },
-  { 4367,   942,  1, 199372,   4000.000 },
-  { 4368,   942,  2, 199372,   6000.000 },
-  { 4369,   942,  3, 199372,   8000.000 },
-  { 4370,   942,  4, 199372,  10000.000 },
-  { 4371,   942,  5, 199372,  12000.000 },
+  { 4366,   942,  0, 199372,   1000.000 },
+  { 4367,   942,  1, 199372,   2000.000 },
+  { 4368,   942,  2, 199372,   3000.000 },
+  { 4369,   942,  3, 199372,   4000.000 },
+  { 4370,   942,  4, 199372,   5000.000 },
+  { 4371,   942,  5, 199372,   6000.000 },
   { 4372,   943,  0, 199377,      0.000 },
   { 4373,   943,  1, 199377,      6.000 },
   { 4374,   943,  2, 199377,     10.000 },
   { 4375,   943,  3, 199377,     13.000 },
   { 4376,   943,  4, 199377,     16.000 },
   { 4377,   943,  5, 199377,     20.000 },
-  { 4378,   944,  0, 199380,      0.000 },
-  { 4379,   944,  1, 199380,      6.000 },
-  { 4380,   944,  2, 199380,     10.000 },
-  { 4381,   944,  3, 199380,     13.000 },
-  { 4382,   944,  4, 199380,     16.000 },
-  { 4383,   944,  5, 199380,     20.000 },
+  { 4378,   944,  0, 199380,      5.000 },
+  { 4379,   944,  1, 199380,     10.000 },
+  { 4380,   944,  2, 199380,     15.000 },
+  { 4381,   944,  3, 199380,     20.000 },
+  { 4382,   944,  4, 199380,     25.000 },
+  { 4383,   944,  5, 199380,     30.000 },
   { 4384,   945,  0, 199384,      0.000 },
   { 4385,   945,  1, 199384,     30.000 },
   { 4386,   945,  2, 199384,     40.000 },
   { 4387,   945,  3, 199384,     50.000 },
   { 4388,   945,  4, 199384,     60.000 },
   { 4389,   945,  5, 199384,     70.000 },
-  { 4390,   946,  0, 199485,      0.000 },
-  { 5573,   946,  1, 199485,      6.000 },
-  { 5574,   946,  2, 199485,     10.000 },
-  { 5575,   946,  3, 199485,     13.000 },
-  { 5576,   946,  4, 199485,     16.000 },
-  { 5577,   946,  5, 199485,     20.000 },
+  { 4390,   946,  0, 199485,      5.000 },
+  { 5573,   946,  1, 199485,     10.000 },
+  { 5574,   946,  2, 199485,     15.000 },
+  { 5575,   946,  3, 199485,     20.000 },
+  { 5576,   946,  4, 199485,     25.000 },
+  { 5577,   946,  5, 199485,     30.000 },
   { 4396,   948,  0, 200395,      0.000 },
   { 4397,   948,  1, 200395,     10.000 },
   { 4398,   948,  2, 200395,     15.000 },
@@ -5966,18 +6014,18 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 4460,   970,  3, 200326,    -40.000 },
   { 4461,   970,  4, 200326,    -50.000 },
   { 4462,   970,  5, 200326,    -60.000 },
-  { 4463,   971,  0, 200316,      0.000 },
-  { 4464,   971,  1, 200316,      6.000 },
-  { 4465,   971,  2, 200316,     10.000 },
-  { 4466,   971,  3, 200316,     13.000 },
-  { 4467,   971,  4, 200316,     16.000 },
-  { 4468,   971,  5, 200316,     20.000 },
-  { 4469,   972,  0, 200315,      0.000 },
-  { 4470,   972,  1, 200315,     10.000 },
-  { 4471,   972,  2, 200315,     15.000 },
-  { 4472,   972,  3, 200315,     20.000 },
-  { 4473,   972,  4, 200315,     25.000 },
-  { 4474,   972,  5, 200315,     30.000 },
+  { 4463,   971,  0, 200316,      5.000 },
+  { 4464,   971,  1, 200316,     10.000 },
+  { 4465,   971,  2, 200316,     15.000 },
+  { 4466,   971,  3, 200316,     20.000 },
+  { 4467,   971,  4, 200316,     25.000 },
+  { 4468,   971,  5, 200316,     30.000 },
+  { 4469,   972,  0, 200315,      8.000 },
+  { 4470,   972,  1, 200315,     16.000 },
+  { 4471,   972,  2, 200315,     24.000 },
+  { 4472,   972,  3, 200315,     32.000 },
+  { 4473,   972,  4, 200315,     40.000 },
+  { 4474,   972,  5, 200315,     48.000 },
   { 4475,   973,  0, 200311,      0.000 },
   { 4481,   974,  0, 200302,      0.000 },
   { 4482,   974,  1, 200302,     -6.000 },
@@ -6017,12 +6065,12 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 4524,   988,  3, 200846,     13.000 },
   { 4525,   988,  4, 200846,     16.000 },
   { 4526,   988,  5, 200846,     20.000 },
-  { 4527,   989,  0, 200847,      0.000 },
-  { 4528,   989,  1, 200847,      6.000 },
-  { 4529,   989,  2, 200847,     10.000 },
-  { 4530,   989,  3, 200847,     13.000 },
-  { 4531,   989,  4, 200847,     16.000 },
-  { 4532,   989,  5, 200847,     20.000 },
+  { 4527,   989,  0, 216273,      0.000 },
+  { 6508,   989,  1, 216273,      6.000 },
+  { 6509,   989,  2, 216273,     10.000 },
+  { 6510,   989,  3, 216273,     13.000 },
+  { 6511,   989,  4, 216273,     16.000 },
+  { 6512,   989,  5, 216273,     20.000 },
   { 4533,   990,  0, 200849,      0.000 },
   { 4534,   990,  1, 200849,      6.000 },
   { 4535,   990,  2, 200849,     10.000 },
@@ -6065,6 +6113,7 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 4572,   996,  3, 200861,     13.000 },
   { 4573,   996,  4, 200861,     16.000 },
   { 4574,   996,  5, 200861,     20.000 },
+  { 4577,   997,  0, 147709,      0.000 },
   { 4640,   999,  0, 216698,      0.000 },
   { 4578,  1000,  0, 201454,      0.000 },
   { 4579,  1000,  1, 201454,     20.000 },
@@ -6127,6 +6176,31 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 4637,  1014,  0, 201471,      0.000 },
   { 4638,  1015,  0, 201472,      0.000 },
   { 4639,  1016,  0, 201473,      0.000 },
+  { 4646,  1021,  0, 201891,      0.000 },
+  { 4647,  1022,  0, 201880,      0.000 },
+  { 4653,  1022,  1, 201921,      0.000 },
+  { 4654,  1022,  2, 201927,      0.000 },
+  { 4648,  1023,  0, 201881,      0.000 },
+  { 4655,  1023,  1, 201922,      0.000 },
+  { 4656,  1023,  2, 201928,      0.000 },
+  { 4649,  1024,  0, 201882,      0.000 },
+  { 4657,  1024,  1, 201923,      0.000 },
+  { 4658,  1024,  2, 201929,      0.000 },
+  { 4650,  1025,  0, 201883,      0.000 },
+  { 4659,  1025,  1, 201924,      0.000 },
+  { 4660,  1025,  2, 201930,      0.000 },
+  { 4651,  1026,  0, 201884,      0.000 },
+  { 4661,  1026,  1, 201925,      0.000 },
+  { 4662,  1026,  2, 201931,      0.000 },
+  { 4652,  1027,  0, 201887,      0.000 },
+  { 4663,  1027,  1, 201926,      0.000 },
+  { 4664,  1027,  2, 201932,      0.000 },
+  { 4665,  1028,  0, 201943,      0.000 },
+  { 4666,  1029,  0, 201944,      0.000 },
+  { 4667,  1030,  0, 201945,      0.000 },
+  { 4668,  1031,  0, 201946,      0.000 },
+  { 4669,  1032,  0, 201948,      0.000 },
+  { 4670,  1033,  0, 201952,      0.000 },
   { 4671,  1034,  0, 202302,     25.000 },
   { 4672,  1034,  1, 202302,     50.000 },
   { 4673,  1034,  2, 202302,     75.000 },
@@ -6292,19 +6366,19 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 4865,  1076,  3, 203673,     13.000 },
   { 4866,  1076,  4, 203673,     16.000 },
   { 4867,  1076,  5, 203673,     20.000 },
-  { 4814,  1077,  0, 203748,     -3.000 },
-  { 4868,  1077,  1, 203748,     -6.000 },
-  { 4869,  1077,  2, 203748,    -10.000 },
-  { 4870,  1077,  3, 203748,    -13.000 },
-  { 4871,  1077,  4, 203748,    -16.000 },
-  { 4872,  1077,  5, 203748,    -20.000 },
+  { 4814,  1077,  0, 224764,      3.000 },
+  { 4868,  1077,  1, 224764,      6.000 },
+  { 4869,  1077,  2, 224764,     10.000 },
+  { 4870,  1077,  3, 224764,     13.000 },
+  { 4871,  1077,  4, 224764,     16.000 },
+  { 4872,  1077,  5, 224764,     20.000 },
   { 4815,  1078,  0, 203749,      5.000 },
   { 4873,  1078,  1, 203749,     10.000 },
   { 4874,  1078,  2, 203749,     15.000 },
   { 4875,  1078,  3, 203749,     20.000 },
   { 4876,  1078,  4, 203749,     25.000 },
   { 4877,  1078,  5, 203749,     30.000 },
-  { 4816,  1079,  0, 203751,      0.000 },
+  { 4816,  1079,  0, 225092,      0.000 },
   { 4817,  1080,  0, 203752,      0.000 },
   { 4818,  1081,  0, 203754,      0.000 },
   { 4819,  1082,  0, 203755,      0.000 },
@@ -6319,11 +6393,11 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 4830,  1091,  0, 205209,      0.000 },
   { 4829,  1092,  0, 189184,      0.000 },
   { 4832,  1094,  0, 195267,      0.000 },
-  { 4833,  1094,  1, 195267,   2000.000 },
-  { 4834,  1094,  2, 195267,   3000.000 },
-  { 4835,  1094,  3, 195267,   4000.000 },
-  { 4836,  1094,  4, 195267,   5000.000 },
-  { 4837,  1094,  5, 195267,   6000.000 },
+  { 4833,  1094,  1, 195267,      4.000 },
+  { 4834,  1094,  2, 195267,      6.000 },
+  { 4835,  1094,  3, 195267,      8.000 },
+  { 4836,  1094,  4, 195267,     10.000 },
+  { 4837,  1094,  5, 195267,     12.000 },
   { 4882,  1095,  0, 206910,      0.000 },
   { 4883,  1095,  1, 206910,      4.000 },
   { 4884,  1095,  2, 206910,      6.000 },
@@ -6358,30 +6432,30 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 5104,  1103,  3, 207088,     40.000 },
   { 5105,  1103,  4, 207088,     50.000 },
   { 5106,  1103,  5, 207088,     60.000 },
-  { 4911,  1104,  0, 207092,      3.000 },
-  { 4927,  1104,  1, 207092,      6.000 },
-  { 4928,  1104,  2, 207092,     10.000 },
-  { 5107,  1104,  3, 207092,     13.000 },
-  { 5108,  1104,  4, 207092,     16.000 },
-  { 5109,  1104,  5, 207092,     20.000 },
-  { 4912,  1105,  0, 207118,      0.000 },
-  { 5110,  1105,  1, 210029,      0.000 },
-  { 5111,  1105,  2, 210030,      0.000 },
-  { 5112,  1105,  3, 210031,      0.000 },
-  { 5113,  1105,  4, 210032,      0.000 },
-  { 5114,  1105,  5, 210033,      0.000 },
+  { 4911,  1104,  0, 207092,      5.000 },
+  { 4927,  1104,  1, 207092,     10.000 },
+  { 4928,  1104,  2, 207092,     15.000 },
+  { 5107,  1104,  3, 207092,     20.000 },
+  { 5108,  1104,  4, 207092,     25.000 },
+  { 5109,  1104,  5, 207092,     30.000 },
+  { 4912,  1105,  0, 207118,      5.000 },
+  { 5110,  1105,  1, 210029,     10.000 },
+  { 5111,  1105,  2, 210030,     15.000 },
+  { 5112,  1105,  3, 210031,     20.000 },
+  { 5113,  1105,  4, 210032,     25.000 },
+  { 5114,  1105,  5, 210033,     30.000 },
   { 4913,  1106,  0, 207206,     -9.090 },
   { 4931,  1106,  1, 207206,    -16.667 },
   { 4932,  1106,  2, 207206,    -23.070 },
   { 5115,  1106,  3, 207206,    -28.571 },
   { 5116,  1106,  4, 207206,    -33.333 },
   { 5117,  1106,  5, 207206,    -37.500 },
-  { 4914,  1107,  0, 207255,      3.000 },
-  { 4933,  1107,  1, 207255,      6.000 },
-  { 4934,  1107,  2, 207255,     10.000 },
-  { 5118,  1107,  3, 207255,     13.000 },
-  { 5119,  1107,  4, 207255,     16.000 },
-  { 5120,  1107,  5, 207255,     20.000 },
+  { 4914,  1107,  0, 207255,      2.000 },
+  { 4933,  1107,  1, 207255,      4.000 },
+  { 4934,  1107,  2, 207255,      6.000 },
+  { 5118,  1107,  3, 207255,      8.000 },
+  { 5119,  1107,  4, 207255,     10.000 },
+  { 5120,  1107,  5, 207255,     12.000 },
   { 4915,  1108,  0, 207285,     -5.000 },
   { 4935,  1108,  1, 207285,    -10.000 },
   { 4936,  1108,  2, 207285,    -15.000 },
@@ -6560,6 +6634,7 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 5101,  1151,  3, 209541,     12.000 },
   { 5102,  1151,  4, 209541,     15.000 },
   { 5103,  1151,  5, 209541,     18.000 },
+  { 5133,  1152,  0, 210125,      7.500 },
   { 5141,  1153,  0, 210722,      0.000 },
   { 5147,  1154,  0, 210702,      0.000 },
   { 5148,  1155,  0, 210676,      0.000 },
@@ -6921,7 +6996,7 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 5637,  1349,  0, 221856,      0.000 },
   { 5638,  1350,  0, 215414,      0.000 },
   { 5639,  1351,  0, 198228,      0.000 },
-  { 5640,  1352,  0, 214809,      0.000 },
+  { 5640,  1352,  0, 224841,      0.000 },
   { 5641,  1353,  0, 221862,      0.000 },
   { 5642,  1354,  0, 221882,      0.000 },
   { 5643,  1355,  0, 215183,      0.000 },

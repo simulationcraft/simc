@@ -7,7 +7,7 @@ Resource         : 35 Energy
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Vendetta (79140), Shadow Blades (121471), Item - Rogue T14 2P Bonus (123116), Silent Blades (145193), Sleight of Hand (145211), The Quiet Knife (197231), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Vendetta (79140), Shadow Blades (121471), Item - Rogue T14 2P Bonus (123116), Silent Blades (145193), Sleight of Hand (145211), The Quiet Knife (197231)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -18,7 +18,7 @@ Effects          :
 #1 (id=30)       : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000
 #2 (id=31)       : Weapon Damage% (31)
-                   Base Value: 240 | Scaled Value: 2.4 | SP Coefficient: 1.00000
+                   Base Value: 370 | Scaled Value: 3.7 | SP Coefficient: 1.00000
 #3 (id=32)       : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points
 #4 (id=297239)   : Dummy (3)
@@ -37,9 +37,10 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 1 seconds
 Cooldown         : 20 seconds
+Category         : 270
 Proc Chance      : 101%
 Mechanic         : Unknown(95)
-Affecting spells : Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Vendetta (79140), Prey on the Weak (131511), Deepening Shadows (185314), Deeper Stratagem (193531), Alacrity (193539), Acrobatic Strikes (196924), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Vendetta (79140), Prey on the Weak (131511), Deepening Shadows (185314), Deeper Stratagem (193531), Alacrity (193539), Acrobatic Strikes (196924), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ...x.... ........ ........   ........ ........ ........ ........ 
@@ -86,7 +87,7 @@ GCD              : 1 seconds
 Duration         : 18 seconds
 Cooldown         : 15 seconds
 Mechanic         : Bleed
-Affecting spells : Stealth (1784), Hemorrhage (16511), Vendetta (79140), Shadow Blades (121471), Silent Blades (145193), From the Shadows (184918), Agonizing Poison (200803), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Stealth (1784), Hemorrhage (16511), Vendetta (79140), Shadow Blades (121471), Silent Blades (145193), From the Shadows (184918), Agonizing Poison (200803)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -95,7 +96,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=280)      : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.75000 | Mechanic: Bleed
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.82500 | Mechanic: Bleed
 #2 (id=281)      : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 #3 (id=282)      : Energize Power (30)
@@ -112,7 +113,7 @@ Spell Level      : 16
 Range            : 5 yards
 Cooldown         : 0.5 seconds
 Stance Mask      : 0x20000000
-Affecting spells : Pickpocketer's Handbook (168798), Shadow Dance (185313), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Pickpocketer's Handbook (168798), Shadow Dance (185313)
 Attributes       : ....x... ........ x....... ........   .....x.. ....x... .x...x.. ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -132,7 +133,7 @@ Resource         : 55 Energy
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Glyph of Disguise (63268), Shadow Blades (121471), Silent Blades (145193), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Glyph of Disguise (63268), Shadow Blades (121471), Silent Blades (145193)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ..x..... x....... x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -160,7 +161,6 @@ Spell Level      : 60
 Range            : 50000 yards
 Duration         : 3 seconds
 Mechanic         : Unknown(72)
-Affecting spells : PH - Distract Applies Damage Debuff (208347)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -181,8 +181,8 @@ Spell Level      : 28
 Range            : 30 yards
 GCD              : 1 seconds
 Cooldown         : 30 seconds
+Category         : 22
 Mechanic         : Unknown(31)
-Affecting spells : PH - Distract Applies Damage Debuff (208347)
 Attributes       : ....x... ........ ..x..... ......x.   .....x.. x.x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -202,7 +202,7 @@ Spell Level      : 18
 Range            : 5 yards
 Duration         : 5 seconds
 Cooldown         : 15 seconds
-Affecting spells : Improved Kick (24434), Vendetta (79140), Item - Rogue T13 2P Bonus (Tricks of the Trade) (105849), Item - Shaman T13 Enhancement 2P Bonus (Maelstrom Weapon) (105866), Acrobatic Strikes (196924), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Improved Kick (24434), Vendetta (79140), Item - Rogue T13 2P Bonus (Tricks of the Trade) (105849), Item - Shaman T13 Enhancement 2P Bonus (Maelstrom Weapon) (105866), Acrobatic Strikes (196924), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -223,12 +223,13 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 4 seconds
 Cooldown         : 10 seconds
+Category         : 33
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Mechanic         : Unknown(110)
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
-Affecting spells : Vendetta (79140), Dirty Tricks (108216), Prey on the Weak (131511), Broadsides (193356), Acrobatic Strikes (196924), Ghostly Strike (196937), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Vendetta (79140), Dirty Tricks (108216), Prey on the Weak (131511), Broadsides (193356), Acrobatic Strikes (196924), Ghostly Strike (196937), 
 Attributes       : ....x... ...x.... x.x.x... ........   ........ ........ ..x..... ..xx.... 
                  : ........ ........ ........ ........   .x.x.... ..x..... ........ ..x..... 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -259,7 +260,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Nightstalker (14062), Vendetta (79140), Subterfuge (108208), Hit and Run (196922), Acrobatic Strikes (196924), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Nightstalker (14062), Vendetta (79140), Subterfuge (108208), Hit and Run (196922), Acrobatic Strikes (196924)
 Triggered by     : Subterfuge (108208)
 Attributes       : ....x... ........ x.x.x... .x.xx...   ....x... ..x..... ........ ........ 
                  : ....x... ........ .....x.. ........   ........ ........ ........ ..x..... 
@@ -290,7 +291,6 @@ School           : Physical
 Spell Level      : 24
 Range            : 5 yards
 Cast Time        : 1.5 seconds
-Affecting spells : PH - Distract Applies Damage Debuff (208347)
 Attributes       : ....x... ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -313,7 +313,7 @@ Duration         : 4 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x20000000
 Mechanic         : Unknown(95)
-Affecting spells : Vendetta (79140), Dirty Tricks (108216), Shadow Blades (121471), Prey on the Weak (131511), Silent Blades (145193), Shadow Dance (185313), Premeditation (196979), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Vendetta (79140), Dirty Tricks (108216), Shadow Blades (121471), Prey on the Weak (131511), Silent Blades (145193), Shadow Dance (185313), Broadsides (193356), Premeditation (196979)
 Attributes       : ....x... ........ x.x..x.. ........   ........ ........ ..x..... ..xx.... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -338,7 +338,8 @@ Class            : Assassination Combat Subtlety Rogue
 School           : Physical
 Spell Level      : 32
 Cooldown         : 120 seconds
-Affecting spells : Item - Rogue T18 Subtlety 2P Bonus (186278), PH - Distract Applies Damage Debuff (208347)
+Category         : 39
+Affecting spells : Item - Rogue T18 Subtlety 2P Bonus (186278)
 Attributes       : ....x... ........ x.x.x... ...x.x..   .....x.. ..x..... ........ ........ 
                  : .xx..... ........ ........ ........   ........ ........ xxx..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -360,7 +361,6 @@ Name             : Safe Fall (Passive) (id=1860) [Spell Family (8), Passive, Hid
 Class            : Rogue
 School           : Physical
 Spell Level      : 62
-Affecting spells : PH - Distract Applies Damage Debuff (208347)
 Attributes       : ....x.xx ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -383,7 +383,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 4 seconds
 Mechanic         : Bleed
-Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Hemorrhage (16511), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Mastery: Executioner (76808), Vendetta (79140), Deepening Shadows (185314), Adrenaline Rush (186286), Serrated Edge (192315), Gushing Wound (192329), Blood of the Assassinated (192925), Deeper Stratagem (193531), Alacrity (193539), Agonizing Poison (200803), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Hemorrhage (16511), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Mastery: Executioner (76808), Vendetta (79140), Deepening Shadows (185314), Adrenaline Rush (186286), Serrated Edge (192315), Gushing Wound (192329), Blood of the Assassinated (192925), Deeper Stratagem (193531), Alacrity (193539), Agonizing Poison (200803)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ........ ....x... ........   ........ ........ ........ ........ 
@@ -392,7 +392,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=586)      : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.25000 | Mechanic: Bleed
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.27500 | Mechanic: Bleed
 #2 (id=239409)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 1 | Scaled Value: 1 | Mechanic: Bleed
 #3 (id=293833)   : Trigger Spell: Rupture (64)
@@ -403,12 +403,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 500 | Trigger Spell: 199672
 Description      : Finishing move that tears open the target, dealing Bleed damage over time. Lasts longer per combo point.
 
-   1 point  : ${4+$<bonus>*1*0.25*$AP*8/2} over 8 sec
-   2 points: ${12+$<bonus>*2*0.25*$AP*12/2} over 12 sec
-   3 points: ${24+$<bonus>*3*0.25*$AP*16/2} over 16 sec
-   4 points: ${40+$<bonus>*4*0.25*$AP*20/2} over 20 sec
-   5 points: ${60+$<bonus>*5*0.25*$AP*24/2} over 24 sec$?s193531[
-   6 points: ${84+$<bonus>*6*0.25*$AP*28/2} over 28 sec][]
+   1 point  : ${4+$<bonus>*1*0.275*$AP*8/2} over 8 sec
+   2 points: ${12+$<bonus>*2*0.275*$AP*12/2} over 12 sec
+   3 points: ${24+$<bonus>*3*0.275*$AP*16/2} over 16 sec
+   4 points: ${40+$<bonus>*4*0.275*$AP*20/2} over 20 sec
+   5 points: ${60+$<bonus>*5*0.275*$AP*24/2} over 24 sec$?s193531[
+   6 points: ${84+$<bonus>*6*0.275*$AP*28/2} over 28 sec][]
 Tooltip          : Suffering $w1 damage every $t1 sec.
 Variables        : $resolve=$?s84601[${1.17}][${1}]
 $deeper=$?s193531[${1.2}][${1}]
@@ -421,7 +421,7 @@ Resource         : 20 Energy
 Spell Level      : 44
 GCD              : 1 seconds
 Duration         : 5 seconds
-Affecting spells : Elusiveness (79008), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Elusiveness (79008)
 Attributes       : ....x... ........ x.x..... ........   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -451,7 +451,7 @@ Proc Chance      : 100%
 Mechanic         : Unknown(10)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Dirty Tricks (108216), Prey on the Weak (131511), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Dirty Tricks (108216), Prey on the Weak (131511)
 Attributes       : ....x... ........ x...x... ......x.   .....x.. ..x..... ........ .x...... 
                  : ........ ........ ........ ........   x....... ........ x....... ..x..... 
                  : ........ ........ ........ ........   .....x.. ........ ........ ........ 
@@ -475,7 +475,7 @@ Resource         : 1 - 5 Combo Points
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Death from Above (163786), Deceit (166878), Eviscerating Blade (184917), Deeper Stratagem (193531), Alacrity (193539), Ghostly Strike (196937), Fate's Thirst (202514), Fatebringer (202524), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Death from Above (163786), Deceit (166878), Eviscerating Blade (184917), Deeper Stratagem (193531), Alacrity (193539), Acrobatic Strikes (196924), Ghostly Strike (196937), Fate's Thirst (202514), Fatebringer (202524)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -501,7 +501,7 @@ School           : Nature
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 12 seconds
-Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Mastery: Potent Poisons (76803), Vendetta (79140), Master Alchemist (192318), Surge of Toxins (192425), Master Poisoner (196864), Agonizing Poison (200803), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Mastery: Potent Poisons (76803), Vendetta (79140), Master Alchemist (192318), Surge of Toxins (192425), Master Poisoner (196864), Agonizing Poison (200803)
 Triggered by     : Deadly Poison (2823)
 Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...... ........ 
                  : ..x..... ........ ........ x.......   .......x ........ ........ ......x. 
@@ -511,7 +511,7 @@ Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=853)      : Apply Aura (6) | Periodic Damage: nature every 3 seconds (3)
-                   Base Value: 6 | Scaled Value: 0 (avg=0.6) | AP Coefficient: 0.25014
+                   Base Value: 6 | Scaled Value: 0 (avg=0.6) | AP Coefficient: 0.27500
 Description      : $@spelldesc2823
 Tooltip          : Suffering $w1 Nature damage every $t1 seconds.
 
@@ -524,7 +524,7 @@ Duration         : 3600 seconds
 Proc Chance      : 30%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
-Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Envenom (32645), Mastery: Potent Poisons (76803), Vendetta (79140), Master Alchemist (192318), Surge of Toxins (192425), Master Poisoner (196864), Agonizing Poison (200803), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Envenom (32645), Mastery: Potent Poisons (76803), Vendetta (79140), Master Alchemist (192318), Surge of Toxins (192425), Master Poisoner (196864), Agonizing Poison (200803)
 Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ...xx... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -561,7 +561,8 @@ School           : Physical
 Spell Level      : 26
 Duration         : 8 seconds
 Cooldown         : 60 seconds
-Affecting spells : Vendetta (79140), Shadow Walker (192345), PH - Distract Applies Damage Debuff (208347)
+Category         : 44
+Affecting spells : Vendetta (79140), Shadow Walker (192345)
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -585,7 +586,7 @@ Duration         : 3600 seconds
 Proc Chance      : 50%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
-Affecting spells : Blade Flurry (13877), Envenom (32645), Mastery: Potent Poisons (76803), Vendetta (79140), Master Poisoner (196864), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Blade Flurry (13877), Envenom (32645), Mastery: Potent Poisons (76803), Vendetta (79140), Master Poisoner (196864)
 Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ...xx... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -608,7 +609,7 @@ Proc Chance      : 100%
 Mechanic         : Unknown(88)
 Proc Flags       : ........ .......x ........ ........ 
                  : Heal Taken
-Affecting spells : Blade Flurry (13877), Mastery: Potent Poisons (76803), Vendetta (79140), Master Poisoner (196864), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Blade Flurry (13877), Mastery: Potent Poisons (76803), Vendetta (79140), Master Poisoner (196864)
 Triggered by     : Crippling Poison (3408)
 Attributes       : ........ ........ ........ ........   ...x...x ........ .x...... ........ 
                  : ..x..... ........ ........ x.......   ........ ........ ........ ......x. 
@@ -627,11 +628,12 @@ Name             : Slice and Dice (id=5171) [Spell Family (8)]
 Class            : Rogue
 School           : Physical
 Resource         : 25 Energy
+Resource         : 1 - 5 Combo Points
 Spell Level      : 14
 Range            : 100 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
-Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Vendetta (79140), Energetic Recovery (79152), Adrenaline Rush (186286), Deeper Stratagem (193531), Alacrity (193539), Fatebringer (202524), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Vendetta (79140), Energetic Recovery (79152), Adrenaline Rush (186286), Deeper Stratagem (193531), Alacrity (193539), Fatebringer (202524)
 Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -682,7 +684,8 @@ School           : Physical
 Spell Level      : 8
 Duration         : 10 seconds
 Cooldown         : 120 seconds
-Affecting spells : Vendetta (79140), PH - Distract Applies Damage Debuff (208347)
+Category         : 66
+Affecting spells : Vendetta (79140)
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -700,7 +703,7 @@ Class            : Rogue
 School           : Physical
 Spell Level      : 1 (max 80)
 Range            : 5 yards
-Affecting spells : Envenom (32645), Vendetta (79140), Cold Blood (170882), Balanced Blades (192326), Agonizing Poison (200803), PH - Distract Applies Damage Debuff (208347), Assassin's Blades (214368)
+Affecting spells : Envenom (32645), Vendetta (79140), Cold Blood (170882), Balanced Blades (192326), Agonizing Poison (200803), Assassin's Blades (214368)
 Triggered by     : Mutilate (1329)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
@@ -713,7 +716,7 @@ Effects          :
 #1 (id=1920)     : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=99543)    : Weapon Damage% (31)
-                   Base Value: 273 | Scaled Value: 2.73
+                   Base Value: 330 | Scaled Value: 3.3
 Description      : Instantly attacks for $5374sw2 Physical damage.  Awards 2 combo points.
 
 Name             : Sap (id=6770) [Spell Family (8)] 
@@ -727,7 +730,7 @@ Duration         : 60 seconds
 Proc Chance      : 100%
 Stance Mask      : 0x20000000
 Mechanic         : Unknown(255)
-Affecting spells : Vendetta (79140), Dirty Tricks (108216), Prey on the Weak (131511), Shadow Dance (185313), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Vendetta (79140), Dirty Tricks (108216), Prey on the Weak (131511), Shadow Dance (185313)
 Attributes       : ....x... ........ x.x.xx.. ........   .....x.. x.x..... ..x..... .x.x.... 
                  : ........ ........ ........ ........   x....... ........ xx...... ........ 
                  : ........ ........ .......x ........   .....x.. ........ ........ ........ 
@@ -752,7 +755,7 @@ Spell Level      : 14
 Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x20000000
-Affecting spells : Stealth (1784), Vendetta (79140), Shadow Blades (121471), Silent Blades (145193), Sleight of Hand (145211), Cold Blood (182304), From the Shadows (184918), Broadsides (193356), Ghostly Strike (196937), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Stealth (1784), Vendetta (79140), Shadow Blades (121471), Silent Blades (145193), Sleight of Hand (145211), Cold Blood (182304), From the Shadows (184918), Broadsides (193356), Acrobatic Strikes (196924), Ghostly Strike (196937)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -779,7 +782,7 @@ Duration         : 3600 seconds
 Proc Chance      : 30%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
-Affecting spells : Improved Poisons (14117), Envenom (32645), Mastery: Potent Poisons (76803), Vendetta (79140), Master Alchemist (192318), Surge of Toxins (192425), Master Poisoner (196864), Agonizing Poison (200803), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Improved Poisons (14117), Envenom (32645), Mastery: Potent Poisons (76803), Vendetta (79140), Master Alchemist (192318), Surge of Toxins (192425), Master Poisoner (196864), Agonizing Poison (200803)
 Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ...xx... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -798,7 +801,7 @@ School           : Nature
 Spell Level      : 25
 Range            : 100 yards
 Duration         : 12 seconds
-Affecting spells : Venomous Totem (23726), Mastery: Potent Poisons (76803), Vendetta (79140), Surge of Toxins (192425), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Mastery: Potent Poisons (76803), Vendetta (79140), Master Alchemist (192318), Surge of Toxins (192425), Master Poisoner (196864), Agonizing Poison (200803)
 Triggered by     : Wound Poison (8679)
 Attributes       : ........ ........ .....x.. ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -821,7 +824,7 @@ School           : Physical
 Spell Level      : 24
 Duration         : 3 seconds
 Stance Mask      : 0x20000000
-Affecting spells : Nightstalker (14062), Item - Rogue T18 Subtlety 2P Bonus (186278), Hit and Run (196922), Acrobatic Strikes (196924), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Nightstalker (14062), Item - Rogue T18 Subtlety 2P Bonus (186278), Hit and Run (196922), Acrobatic Strikes (196924)
 Attributes       : ....x... x....... x.x.x... .x.x....   .....x.. ..x..... ........ ........ 
                  : .x...... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -847,7 +850,7 @@ School           : Physical
 Spell Level      : 72
 Duration         : 15 seconds
 Cooldown         : 180 seconds
-Affecting spells : Item - Rogue T13 4P Bonus (Shadow Dance, Adrenaline Rush, and Vendetta) (105865), Item - Rogue T18 Combat 4P Bonus (186288), Fortune's Boon (202907), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Item - Rogue T13 4P Bonus (Shadow Dance, Adrenaline Rush, and Vendetta) (105865), Item - Rogue T18 Combat 4P Bonus (186288), Fortune's Boon (202907)
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -872,10 +875,11 @@ School           : Physical
 Spell Level      : 48
 Duration         : Aura (infinite)
 Cooldown         : 10 seconds
+Category         : 1287
 Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
-Affecting spells : Blade Dancer (202507), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Blade Dancer (202507)
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -895,7 +899,7 @@ Effects          :
 #5 (id=221864)   : Apply Aura (6) | Dummy (4)
                    Base Value: 158571 | Scaled Value: 158571
                    Affected Spells: Killing Spree (51690)
-Description      : While active, your attacks also strike all nearby opponents for $s3% of normal damage$?s56818[ and the application chance of Non-Lethal poisons is increased by $s2%][], but your Energy regeneration is reduced by $s1%. Lasts until cancelled.
+Description      : While active, your melee attacks also strike all nearby opponents for $s3% of normal damage$?s56818[ and the application chance of Non-Lethal poisons is increased by $s2%][], but your Energy regeneration is reduced by $s1%. Lasts until cancelled.
 Tooltip          : Attacking additional opponents.
 Energy regeneration reduced by $w1%.$?$w2!=0[
 Non-Lethal poison application chance increased by $w2%.][]
@@ -903,7 +907,7 @@ Non-Lethal poison application chance increased by $w2%.][]
 Name             : Nightstalker (Passive Talent) (id=14062) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
-Affecting spells : Subtlety Rogue (137035), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Subtlety Rogue (137035)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -934,7 +938,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=6402)     : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 18
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Agonizing Poison (200803)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Agonizing Poison (200803)
 Description      : Increases the application chance of Deadly Poison and Wound Poison by $s1%.
 
 Name             : Ruthlessness (id=14161) [Spell Family (8), Passive] 
@@ -961,7 +965,6 @@ School           : Physical
 Range            : 50000 yards
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : PH - Distract Applies Damage Debuff (208347)
 Triggered by     : Seal Fate (14190)
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
                  : x.x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -996,7 +999,6 @@ Description      : When you critically strike with a melee attack that generates
 Name             : Vigor (id=14983) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
 School           : Physical
-Affecting spells : PH - Distract Applies Damage Debuff (208347)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1020,7 +1022,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 20 seconds
 Proc Chance      : 101%
-Affecting spells : Vendetta (79140), Shadow Blades (121471), Silent Blades (145193), Agonizing Poison (200803), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Vendetta (79140), Shadow Blades (121471), Silent Blades (145193), Agonizing Poison (200803)
 Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   .x...... ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1031,7 +1033,7 @@ Effects          :
 #1 (id=8231)     : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 #2 (id=8232)     : Weapon Damage% (31)
-                   Base Value: 91 | Scaled Value: 0.91
+                   Base Value: 100 | Scaled Value: 1
 #3 (id=8233)     : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points
 #4 (id=134070)   : Apply Aura (6) | Unknown effect sub type (271)
@@ -1103,7 +1105,7 @@ Class            : Rogue
 School           : Physical
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Acrobatic Strikes (196924), 
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : x......x ....x... ......x. .....x..   ........ .x...... ........ ......x. 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -1142,7 +1144,7 @@ Class            : Rogue
 School           : Physical
 Spell Level      : 1 (max 80)
 Range            : 5 yards
-Affecting spells : Envenom (32645), Vendetta (79140), Cold Blood (170882), Balanced Blades (192326), Agonizing Poison (200803), PH - Distract Applies Damage Debuff (208347), Assassin's Blades (214368)
+Affecting spells : Envenom (32645), Vendetta (79140), Cold Blood (170882), Balanced Blades (192326), Agonizing Poison (200803), Assassin's Blades (214368)
 Triggered by     : Mutilate (1329)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ x....... 
@@ -1155,14 +1157,13 @@ Effects          :
 #1 (id=17065)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 0 (avg=0.25)
 #2 (id=99544)    : Weapon Damage% (31)
-                   Base Value: 273 | Scaled Value: 2.73
+                   Base Value: 330 | Scaled Value: 3.3
 Description      : Instantly attacks for $5374sw2 Physical damage.  Awards 2 combo points.
 
 Name             : Fleet Footed (Passive) (id=31209) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
 Spell Level      : 62
-Affecting spells : PH - Distract Applies Damage Debuff (208347)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1197,7 +1198,7 @@ School           : Physical
 Spell Level      : 58
 Duration         : 5 seconds
 Cooldown         : 90 seconds
-Affecting spells : Fade into Shadows (192323), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Fade into Shadows (192323)
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1218,7 +1219,6 @@ Physical damage taken reduced by $w3%.][]
 Name             : Cheat Death (Passive Talent) (id=31230) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
-Affecting spells : PH - Distract Applies Damage Debuff (208347)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ...x.... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1256,7 +1256,7 @@ Spell Level      : 4
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 1 seconds
-Affecting spells : Rogue Tier 6 Trinket (40460), Mastery: Potent Poisons (76803), Mastery: Executioner (76808), Vendetta (79140), Item - Rogue T15 4P Bonus (138150), Death from Above (163786), Cold Blood (170882), Toxic Mutilator (184916), Toxic Blades (192310), Surge of Toxins (192425), Deeper Stratagem (193531), Alacrity (193539), Agonizing Poison (200803), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Rogue Tier 6 Trinket (40460), Mastery: Potent Poisons (76803), Mastery: Executioner (76808), Vendetta (79140), Item - Rogue T15 4P Bonus (138150), Death from Above (163786), Cold Blood (170882), Toxic Mutilator (184916), Toxic Blades (192310), Surge of Toxins (192425), Deeper Stratagem (193531), Agonizing Poison (200803)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : x..x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -1266,7 +1266,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=22420)    : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.45000
 #2 (id=22421)    : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 18
                    Affected Spells: Deadly Poison (2823), Crippling Poison (3408), Wound Poison (8679), Leeching Poison (108211), Agonizing Poison (200802)
@@ -1281,12 +1281,12 @@ Effects          :
                    Affected Spells: Mutilate (5374), Mutilate Off-Hand (27576)
 Description      : Finishing move that drives your poisoned blades in deep, dealing instant Nature damage and increasing your poison application chance by $s2%. Damage and duration increased per combo point.
 
-   1 point  : ${$<mult>*$AP*0.417+$m1} damage, 2 sec
-   2 points: ${$<mult>*$AP*0.417*2+$m1} damage, 3 sec
-   3 points: ${$<mult>*$AP*0.417*3+$m1} damage, 4 sec
-   4 points: ${$<mult>*$AP*0.417*4+$m1} damage, 5 sec
-   5 points: ${$<mult>*$AP*0.417*5+$m1} damage, 6 sec$?s193531[
-   6 points: ${$<mult>*$AP*0.417*6+$m1} damage, 7 sec][]
+   1 point  : ${$m1*1} damage, 2 sec
+   2 points: ${$m1*2} damage, 3 sec
+   3 points: ${$m1*3} damage, 4 sec
+   4 points: ${$m1*4} damage, 5 sec
+   5 points: ${$m1*5} damage, 6 sec$?s193531[
+   6 points: ${$m1*6} damage, 7 sec][]
 Tooltip          : Poison application chance increased by $s2%.
 Variables        : $mult2=$?s84601[${1.17*(1+$@versadmg)}][${1.00*(1+$@versadmg)}]
 $mult=?s76803[${($76803m1/100+1)*$<mult2>}][${$<mult2>}]
@@ -1315,7 +1315,7 @@ Name             : Combat Potency (id=35546) [Spell Family (8)]
 Class            : Rogue
 School           : Physical
 Mechanic         : Unknown(88)
-Affecting spells : Fortune Strikes (202530), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Fortune Strikes (202530)
 Triggered by     : Combat Potency (35551)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1355,7 +1355,7 @@ Range            : 25 yards
 Duration         : 2 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (30 seconds cooldown)
-Affecting spells : PH - Distract Applies Damage Debuff (208347)
+Category         : 1206
 Attributes       : ....x... ........ ........ .....x..   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1460,7 +1460,7 @@ Range            : 10 yards
 GCD              : 1 seconds
 Duration         : 3 seconds
 Cooldown         : 120 seconds
-Affecting spells : Blade Flurry (13877), Ghostly Strike (196937), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Blade Flurry (13877), Ghostly Strike (196937), 
 Attributes       : ....x... ........ x....... .....x..   ........ ..x..... ........ ..x..... 
                  : ........ ........ ........ ....x...   x....... ..x..... xx...... ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -1490,7 +1490,7 @@ Resource         : 35 Energy
 Spell Level      : 66
 GCD              : 1 seconds
 Velocity         : 18 yards/sec
-Affecting spells : Vendetta (79140), Shadow Blades (121471), Silent Blades (145193), Agonizing Poison (200803), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Vendetta (79140), Shadow Blades (121471), Silent Blades (145193), Agonizing Poison (200803)
 Attributes       : ....x... ........ x....... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
@@ -1542,7 +1542,7 @@ Class            : Rogue
 School           : Physical
 Spell Level      : 1
 Range            : 5 yards
-Affecting spells : Ghostly Strike (196937), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Ghostly Strike (196937), 
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ......x.   x....... .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1564,7 +1564,7 @@ Class            : Rogue
 School           : Physical
 Spell Level      : 1
 Range            : 5 yards
-Affecting spells : Ghostly Strike (196937), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Ghostly Strike (196937), 
 Triggered by     : Killing Spree (57841)
 Attributes       : ....x... ........ x.x..x.. ........   ....x... ........ ........ ........ 
                  : ........ ........ ........ ......x.   x....... .x...... ........ x....... 
@@ -1590,7 +1590,6 @@ Cooldown         : 30 seconds
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x....... ........ ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged
-Affecting spells : PH - Distract Applies Damage Debuff (208347)
 Attributes       : ....x... ........ x.x..... .x......   .....x.. ..x..... ...x.... ..x..... 
                  : ...x.... ........ ........ ........   ........ x....... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1629,7 +1628,6 @@ Class            : Rogue
 School           : Physical
 Spell Level      : 75
 Duration         : 6 seconds
-Affecting spells : PH - Distract Applies Damage Debuff (208347)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ..xx.... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1641,8 +1639,8 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 127
 #2 (id=330680)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f
-Description      : The current party or raid member becomes the target of your Tricks of the Trade.  The threat caused by your next attack and all actions taken for $57933d afterwards will be transferred to the target.
-Tooltip          : All threat transferred from the Rogue to the target. $w2
+Description      : The current party or raid member becomes the target of your Tricks of the Trade. The threat caused by your next attack and all actions taken for $57933d afterwards will be transferred to the target.
+Tooltip          : All threat transferred from the Rogue to the target.
 
 Name             : Vitality (id=61329) [Passive, Hidden] 
 Class            : Combat Rogue
@@ -1680,7 +1678,6 @@ Name             : Killing Spree (id=61851) [Spell Family (8), Hidden]
 Class            : Rogue
 School           : Physical
 Duration         : 3 seconds
-Affecting spells : PH - Distract Applies Damage Debuff (208347)
 Attributes       : ....x..x x....... x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   x....... ........ xx...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1870,7 +1867,6 @@ Spell Level      : 22
 Proc Chance      : 100%
 Proc Flags       : ........ ........ ..x..x.. ........ 
                  : Periodic, Trap Triggered
-Affecting spells : PH - Distract Applies Damage Debuff (208347)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -1893,7 +1889,7 @@ Range            : 30 yards
 GCD              : 1 seconds
 Duration         : 20 seconds
 Cooldown         : 120 seconds
-Affecting spells : Item - Rogue T13 4P Bonus (Shadow Dance, Adrenaline Rush, and Vendetta) (105865), Master Assassin (192349), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Item - Rogue T13 4P Bonus (Shadow Dance, Adrenaline Rush, and Vendetta) (105865), Master Assassin (192349)
 Attributes       : ........ ........ ........ ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1963,7 +1959,6 @@ Name             : Assassin's Resolve (id=84601) [Spell Family (8), Passive]
 Class            : Assassination Rogue
 School           : Physical
 Spell Level      : 10
-Affecting spells : PH - Distract Applies Damage Debuff (208347)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ x....... ........ 
@@ -1999,7 +1994,7 @@ Class            : Rogue
 School           : Physical
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Ghostly Strike (196937), Fortune's Strike (202521), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Ghostly Strike (196937), Fortune's Strike (202521)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   .....x.. .x...... ........ x.....x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2060,7 +2055,7 @@ Effects          :
                    Base Value: 115191 | Scaled Value: 115191 | Misc Value: 1784 | Trigger Spell: 1784
                    Affected Spells: Stealth (1784)
 #2 (id=322830)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
-                   Base Value: 1000 | Scaled Value: 1000 | Misc Value: 1
+                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1
 Description      : Your abilities requiring Stealth can still be used for $115192d after Stealth breaks.$?c3[
 
 Also increases the duration of Shadow Dance by ${$m2/1000} sec.][]
@@ -2078,14 +2073,14 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=119249)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14
-Description      : Abilities cost $112942s1% less Energy while Stealth$?c3[ or Shadow Dance are][ is] active.
+Description      : $?c3[Abilities cost ${$112942m1/-2}% less Energy while Stealth or Shadow Dance are active.][Abilities cost $112942s1% less Energy while Stealth is active.]
 
 Name             : Leeching Poison (id=108211) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
 Cast Time        : 3 seconds
 Duration         : 3600 seconds
-Affecting spells : Blade Flurry (13877), Envenom (32645), Master Poisoner (196864), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Blade Flurry (13877), Envenom (32645), Master Poisoner (196864)
 Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ...xx... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -2118,19 +2113,19 @@ Name             : Shadow Focus (id=112942) [Spell Family (8), Hidden]
 Class            : Rogue
 School           : Physical
 Duration         : Aura (infinite)
-Affecting spells : Subtlety Rogue (137035), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Subtlety Rogue (137035)
 Attributes       : .......x ........ ........ ...x...x   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Hidden (7)
 Effects          :
 #1 (id=125596)   : Apply Aura (6) | Modify Power Cost% (72)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 127 | Misc Value 2: 0x8
-Description      : Abilities cost $s1% less Energy while you are stealthed.
-Tooltip          : Energy cost of abilities reduced by $s1%.
+Description      : $@spelldesc108209
+Tooltip          : Energy cost of abilities reduced by $w1%.
 
 Name             : Leeching Poison (Talent) (id=112961) [Spell Family (8)] 
 Class            : Rogue
@@ -2139,7 +2134,7 @@ Duration         : 12 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
-Affecting spells : Blade Flurry (13877), Master Poisoner (196864), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Blade Flurry (13877), Master Poisoner (196864)
 Attributes       : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2171,7 +2166,7 @@ Class            : Rogue
 School           : Nature
 Spell Level      : 10
 Range            : 100 yards
-Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Mastery: Potent Poisons (76803), Vendetta (79140), Master Alchemist (192318), Surge of Toxins (192425), Master Poisoner (196864), Agonizing Poison (200803), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Mastery: Potent Poisons (76803), Vendetta (79140), Master Alchemist (192318), Surge of Toxins (192425), Master Poisoner (196864), Agonizing Poison (200803)
 Attributes       : ........ ........ .....x.. ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2180,7 +2175,7 @@ Attributes       : ........ ........ .....x.. ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=126788)   : School Damage: nature (2)
-                   Base Value: -1 | Scaled Value: 0 | Value Range: 1 | AP Coefficient: 0.12870
+                   Base Value: -1 | Scaled Value: 0 | Value Range: 1 | AP Coefficient: 0.14200
 Description      : Poisoned weapons have a chance to deal $s1 Nature damage to a target already affected by Deadly Poison.
 
 Name             : Shuriken Toss (id=114014) [Scaling Spell (9), Spell Family (8)] 
@@ -2191,7 +2186,7 @@ Spell Level      : 11
 Range            : 30 yards
 GCD              : 1 seconds
 Velocity         : 35 yards/sec
-Affecting spells : Vendetta (79140), Shadow Blades (121471), Silent Blades (145193), Agonizing Poison (200803), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Vendetta (79140), Shadow Blades (121471), Silent Blades (145193), Agonizing Poison (200803)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2265,13 +2260,13 @@ School           : Physical
 Spell Level      : 72
 Duration         : 15 seconds
 Cooldown         : 180 seconds
-Affecting spells : Soul Shadows (197386), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Soul Shadows (197386)
 Attributes       : ........ ........ ..x..... ........   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=150585)   : Apply Aura (6) | Unknown effect sub type (361)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 121474 | Trigger Spell: 121473
@@ -2292,7 +2287,7 @@ Name             : Shadow Blade (id=121473) [Spell Family (8)]
 Class            : Rogue
 School           : Shadow
 Range            : 30 yards
-Affecting spells : Mastery: Potent Poisons (76803), Vendetta (79140), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Mastery: Potent Poisons (76803), Vendetta (79140)
 Triggered by     : Shadow Blades (121471)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .xx..... ........ ......x. 
@@ -2310,7 +2305,7 @@ Name             : Shadow Blade Off-hand (id=121474) [Spell Family (8)]
 Class            : Rogue
 School           : Shadow
 Range            : 30 yards
-Affecting spells : Mastery: Potent Poisons (76803), Vendetta (79140), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Mastery: Potent Poisons (76803), Vendetta (79140)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ x.....x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2535,7 +2530,6 @@ Spell Level      : 1
 Range            : 30 yards
 Duration         : 60 seconds
 Cooldown         : 60 seconds
-Affecting spells : PH - Distract Applies Damage Debuff (208347)
 Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... ........ ..x..... 
                  : ........ ........ ........ ....x...   ........ ........ x...x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
@@ -2667,7 +2661,7 @@ Range            : 15 yards
 GCD              : 2 seconds
 Duration         : 1 seconds
 Cooldown         : 20 seconds
-Affecting spells : Mastery: Executioner (76808), Deeper Stratagem (193531), Acrobatic Strikes (196924), Fatebringer (202524), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Mastery: Executioner (76808), Deeper Stratagem (193531), Acrobatic Strikes (196924), Fatebringer (202524)
 Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -2678,16 +2672,14 @@ Effects          :
 #1 (id=210639)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=217580)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.66600 | Radius: 0 - 8 yards
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.83300 | Radius: 0 - 8 yards
 #3 (id=217591)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #4 (id=217594)   : Apply Aura (6) | Unknown effect sub type (288)
                    Base Value: 0 | Scaled Value: 0
 #5 (id=217868)   : Apply Aura (6) | Unknown effect sub type (263)
                    Base Value: 0 | Scaled Value: 0
-#6 (id=217869)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 156327
-#7 (id=254016)   : Trigger Spell: (184963) (64)
+#6 (id=217869)   : Trigger Spell: (184963) (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 184963
 Description      : Finishing move that empowers your weapons with shadow energy and performs a devastating two-part attack. 
 
@@ -2746,7 +2738,7 @@ Spell Level      : 1
 Range            : 100 yards
 Duration         : 12 seconds
 Mechanic         : Bleed
-Affecting spells : Hemorrhage (16511), Vendetta (79140), Deeper Stratagem (193531), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Hemorrhage (16511), Vendetta (79140), Deeper Stratagem (193531)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ...x.... ........ ....x... ........   ........ ........ ........ ........ 
@@ -2758,42 +2750,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20700 | Mechanic: Bleed
 Description      : $@spelldesc154904
 Tooltip          : Suffering $w1 damage every $t1 sec.
-
-Name             : Death from Above (id=156327) 
-Class            : Rogue
-School           : Physical
-Range            : 100 yards
-Triggered by     : Death from Above (152150)
-Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
-                 : x....... ........ ........ ........   ........ ........ ..x..... ........ 
-                 : ...x.... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ...x....   ........ ....x... ........ ........ 
-                 : ........ .x...... ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=217581)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0
-#2 (id=217884)   : Unknown effect type (41)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 156527
-Description      : $@spelldesc152150
-
-Name             : Death from Above (id=156527) [Hidden] 
-Class            : Rogue
-School           : Physical
-Range            : 100 yards
-Velocity         : 60 yards/sec
-Triggered by     : Death from Above (156327)
-Attributes       : ....x..x ........ x.x..... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ x....... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Hidden (7)
-Effects          :
-#1 (id=217888)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0
-Description      : $@spelldesc152150
 
 Name             : Critical Strikes (Passive) (id=157442) [Passive] 
 Class            : Rogue
@@ -2811,24 +2767,24 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10
 Description      : Increases your chance to critically strike by $s1%.
 
-Name             : Stealth (id=158188) [Spell Family (8), Hidden] 
+Name             : Stealth (id=158188) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
 Spell Level      : 1
 Duration         : Aura (infinite)
-Affecting spells : Soothing Darkness (200759), PH - Distract Applies Damage Debuff (208347)
-Attributes       : .......x x....... ..x..... ...x....   ....x... ..x..... ........ ........ 
+Affecting spells : Soothing Darkness (200759), 
+Attributes       : ........ ........ ..x..... ...x....   ....x... ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Hidden (7)
+                 : ...x.... ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=220706)   : Apply Aura (6) | Shapeshift (36)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 30 | Misc Value 2: 0x2
 #2 (id=295619)   : Apply Aura (6) | Periodic Heal%: every 1 seconds (20)
                    Base Value: 0 | Scaled Value: 0
+Description      : $@spelldesc1784
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
 Class            : Beast Mastery Marksmanship Survival Assassination Combat Subtlety Enhancement Windwalker Feral Hunter, Rogue, Shaman, Monk, Druid
@@ -2881,7 +2837,7 @@ Resource         : 35 Energy
 Spell Level      : 40
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Vendetta (79140), Shadow Blades (121471), Item - Rogue T14 2P Bonus (123116), Silent Blades (145193), Sleight of Hand (145211), The Quiet Knife (197231), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Vendetta (79140), Shadow Blades (121471), Item - Rogue T14 2P Bonus (123116), Silent Blades (145193), Sleight of Hand (145211), The Quiet Knife (197231)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2892,7 +2848,7 @@ Effects          :
 #1 (id=246973)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000
 #2 (id=246974)   : Weapon Damage% (31)
-                   Base Value: 210 | Scaled Value: 2.1 | SP Coefficient: 1.00000
+                   Base Value: 370 | Scaled Value: 3.7 | SP Coefficient: 1.00000
 #3 (id=246975)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points
 Description      : Stab the target, causing $sw2 Physical damage. Awards $s3 combo $lpoint:points;.
@@ -2904,7 +2860,7 @@ Resource         : 30 Energy
 Spell Level      : 14
 Duration         : 6 seconds
 Cooldown         : 30 seconds
-Affecting spells : Iron Stomach (193546), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Iron Stomach (193546)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....xx..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2914,7 +2870,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=269014)   : Apply Aura (6) | Periodic Heal%: every 1 seconds (20)
                    Base Value: 5 | Scaled Value: 5
-Description      : Drink an alchemical concoction that heals you for $o1% of maximum health over $d.
+Description      : Drink an alchemical concoction that heals you for $o1% of your maximum health over $d.
 Tooltip          : Healing for $m1% of maximum health every $t1 sec.
 
 Name             : Shadow Dance (id=185313) [Spell Family (8)] 
@@ -2924,7 +2880,8 @@ Spell Level      : 36
 Duration         : 3 seconds
 Cooldown         : 1 seconds
 Charges          : 3 (60 seconds cooldown)
-Affecting spells : Soothing Darkness (200759), PH - Distract Applies Damage Debuff (208347)
+Category         : 1615
+Affecting spells : Soothing Darkness (200759)
 Attributes       : ........ ........ ..x..... ...x...x   ....x... ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2969,7 +2926,7 @@ Spell Level      : 22
 Range            : 25 yards
 GCD              : 1 seconds
 Stance Mask      : 0x20000000
-Affecting spells : Shadow Blades (121471), Shadow Dance (185313), Premeditation (196979), Precision Strike (197235), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Shadow Blades (121471), Shadow Dance (185313), Premeditation (196979), Precision Strike (197235)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2980,7 +2937,7 @@ Effects          :
 #1 (id=269259)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 #2 (id=269260)   : Weapon Damage% (31)
-                   Base Value: 550 | Scaled Value: 5.5 | SP Coefficient: 1.00000
+                   Base Value: 850 | Scaled Value: 8.5 | SP Coefficient: 1.00000
 #3 (id=269261)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points
 Description      : Strike through the shadows, appearing behind your target and dealing $sw2 Physical damage.
@@ -2995,7 +2952,7 @@ Spell Level      : 10
 Range            : 30 yards
 GCD              : 1 seconds
 Velocity         : 40 yards/sec
-Affecting spells : Vendetta (79140), Shadow Blades (121471), Silent Blades (145193), Agonizing Poison (200803), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Vendetta (79140), Shadow Blades (121471), Silent Blades (145193), Agonizing Poison (200803)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ..xxx... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3020,7 +2977,7 @@ Range            : 20 yards
 GCD              : 1 seconds
 Velocity         : 40 yards/sec
 Duration         : 6 seconds
-Affecting spells : Adrenaline Rush (13750), Broadsides (193356), Opportunity (195627), Ghostly Strike (196937), Gunslinger (202522), PH - Distract Applies Damage Debuff (208347), PH - Between the Eyes Increase Damage of Pistol Shot (209423)
+Affecting spells : Adrenaline Rush (13750), Broadsides (193356), Opportunity (195627), Ghostly Strike (196937), Gunslinger (202522), Blunderbuss (202848), Greenskin's Waterlogged Wristcuffs (209423)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
@@ -3049,7 +3006,7 @@ Range            : 35 yards
 GCD              : 1 seconds
 Duration         : 1.8 seconds
 Cooldown         : 60 seconds
-Affecting spells : Ghostly Strike (196937), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Ghostly Strike (196937)
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ....x... 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3176,7 +3133,7 @@ Cooldown         : 45 seconds
 Proc Chance      : 101%
 Proc Flags       : ........ ....x... x.x..... ........ 
                  : AOE Hostile Spell, Hostile Spell, Periodic
-Affecting spells : Kingsbane (192853), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Kingsbane (192853)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
@@ -3203,7 +3160,7 @@ Name             : Kingsbane (id=192760) [Spell Family (8)]
 Class            : Rogue
 School           : Nature
 Range            : 100 yards
-Affecting spells : Kingsbane (192853), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Kingsbane (192853)
 Triggered by     : Kingsbane (192759)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
@@ -3248,7 +3205,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 0.5 seconds
-Affecting spells : Adrenaline Rush (13750), Broadsides (193356), Acrobatic Strikes (196924), Ghostly Strike (196937), Swordmaster (200733), Cursed Edges (202463), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Adrenaline Rush (13750), Broadsides (193356), Acrobatic Strikes (196924), Ghostly Strike (196937), Swordmaster (200733), Cursed Edges (202463)
 Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
@@ -3268,11 +3225,11 @@ Effects          :
                    Affected Spells: Saber Slash (193315)
 #5 (id=289161)   : Dummy (3)
                    Base Value: 35 | Scaled Value: 35
-Description      : Viciously slash an enemy, causing $sw2 Physical damage.
+Description      : Viciously slash an enemy, causing $sw1 Physical damage.
 
 Saber Slash has a $s5% chance to strike an additional time, making your next Pistol Shot free.
 
-|cFFFFFFFFAwards $s1 combo $lpoint:points; each time it strikes.|r
+|cFFFFFFFFAwards $s2 combo $lpoint:points; each time it strikes.|r
 
 Name             : Roll the Bones (id=193316) [Spell Family (8)] 
 Class            : Combat Rogue
@@ -3283,12 +3240,12 @@ Spell Level      : 36
 Range            : 100 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
-Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Deeper Stratagem (193531), Fatebringer (202524), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Deeper Stratagem (193531), Alacrity (193539), Fatebringer (202524)
 Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... ......x. ....x... 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ .......x ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=283623)   : Apply Aura (6) | Dummy (4)
@@ -3324,7 +3281,7 @@ Effects          :
                    Affected Spells: Ghostly Strike (196937)
 #3 (id=318640)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12
-                   Affected Spells: Pistol Shot (185763), Saber Slash (193315), Blunderbuss (202895)
+                   Affected Spells: Cheap Shot (1833), Pistol Shot (185763), Saber Slash (193315), Blunderbuss (202895)
 Description      : Your combo-generating abilities  generate $s1 additional combo point for the duration of Roll the Bones.
 Tooltip          : Your attacks generate $s1 additional combo point.
 
@@ -3413,7 +3370,7 @@ Class            : Rogue
 School           : Shadow
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Relentless Strikes (58423), Mastery: Executioner (76808), Deepening Shadows (185314), Deeper Stratagem (193531), Alacrity (193539), Demon's Kiss (197233), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Relentless Strikes (58423), Mastery: Executioner (76808), Deepening Shadows (185314), Deeper Stratagem (193531), Alacrity (193539), Demon's Kiss (197233)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ x.x..... .....xx. 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -3478,7 +3435,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=283935)   : Apply Aura (6) | Unknown effect sub type (109)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Points Per Combo Point: 20 | Trigger Spell: 193538
-                   Affected Spells: Kidney Shot (408), Rupture (1943), Run Through (2098), Slice and Dice (5171), Envenom (32645), Weaponmaster (193536), Nightblade (195452), Eviscerate (196819), Finality: Eviscerate (197393), Finality: Nightblade (197395), Between the Eyes (199804), Enveloping Shadows (206237)
+                   Affected Spells: Kidney Shot (408), Rupture (1943), Run Through (2098), Slice and Dice (5171), Roll the Bones (193316), Weaponmaster (193536), Nightblade (195452), Eviscerate (196819), Finality: Eviscerate (197393), Finality: Nightblade (197395), Between the Eyes (199804), Enveloping Shadows (206237)
 #2 (id=283936)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20
 Description      : Your finishing moves have a $s2% chance per combo point to grant $193538s1% Haste for $193538d, stacking up to $193538u times.
@@ -3551,7 +3508,7 @@ Duration         : 6 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Hostile Spell Taken
-Affecting spells : Relentless Strikes (58423), Mastery: Executioner (76808), Deepening Shadows (185314), Deeper Stratagem (193531), Alacrity (193539), Demon's Kiss (197233), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Relentless Strikes (58423), Mastery: Executioner (76808), Deepening Shadows (185314), Deeper Stratagem (193531), Alacrity (193539), Demon's Kiss (197233)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ........ ....x... ........   ........ ........ ........ ........ 
@@ -3560,7 +3517,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=286896)   : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.87500
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.20000
 #2 (id=286897)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 1 | Scaled Value: 1 | Mechanic: Bleed
 #3 (id=331338)   : Trigger Spell: Nightblade (64)
@@ -3584,7 +3541,6 @@ School           : Physical
 Spell Level      : 12
 Range            : 40 yards
 Cooldown         : 30 seconds
-Affecting spells : PH - Distract Applies Damage Debuff (208347)
 Attributes       : ....x... ........ ........ .....x..   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3606,7 +3562,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... x....... ........ ........ 
                  : Yellow Melee, Yellow Ranged
-Affecting spells : Quick Draw (196938), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Quick Draw (196938), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .xx..... ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3635,7 +3591,7 @@ Resource         : 1 - 5 Combo Points
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Mastery: Executioner (76808), Vendetta (79140), Item - Rogue T15 4P Bonus (138150), Death from Above (163786), Cold Blood (182304), Eviscerating Blade (184917), Deepening Shadows (185314), Adrenaline Rush (186286), Deeper Stratagem (193531), Alacrity (193539), Acrobatic Strikes (196924), Ghostly Strike (196937), Gutripper (197234), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Mastery: Executioner (76808), Vendetta (79140), Item - Rogue T15 4P Bonus (138150), Death from Above (163786), Cold Blood (182304), Eviscerating Blade (184917), Deepening Shadows (185314), Adrenaline Rush (186286), Deeper Stratagem (193531), Alacrity (193539), Acrobatic Strikes (196924), Ghostly Strike (196937), Gutripper (197234)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -3645,7 +3601,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=288959)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.82500
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.28000
 Description      : Finishing move that disembowels the target, causing damage per combo point.
    1 point  : ${$m1*1} damage
    2 points: ${$m1*2} damage
@@ -3682,7 +3638,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=289047)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 10 | Scaled Value: 10
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Agonizing Poison (200803)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Agonizing Poison (200803)
 #2 (id=289048)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22
                    Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Agonizing Poison (200803)
@@ -3691,7 +3647,7 @@ Effects          :
                    Affected Spells: Crippling Poison (3408), Crippling Poison (3409), Leeching Poison (108211), Leeching Poison (112961)
 #4 (id=289050)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 2 (108)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 12
-                   Affected Spells: Wound Poison (8679)
+                   Affected Spells: Wound Poison (8679), Wound Poison (8680)
 Description      : Increases the damage done by your poisons by $s1% and their non-damaging effects by $s3%.
 
 Name             : Shadow Techniques (id=196912) [Spell Family (8), Passive] 
@@ -3701,7 +3657,6 @@ Spell Level      : 27
 Proc Chance      : 100%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
-Affecting spells : PH - Distract Applies Damage Debuff (208347)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3745,7 +3700,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=289148)   : Apply Aura (6) | Add Flat Modifier: Spell Range (107)
                    Base Value: 3 | Scaled Value: 3 | SP Coefficient: 1.00000 | Misc Value: 5
-                   Affected Spells: Kidney Shot (408), Kick (1766), Gouge (1776), Saber Slash (193315), Eviscerate (196819), Finality: Eviscerate (197393)
+                   Affected Spells: Kidney Shot (408), Kick (1766), Gouge (1776), Run Through (2098), Ambush (8676), Blade Flurry (22482), Saber Slash (193315), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393)
 #2 (id=289149)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Misc Value: 32
                    Affected Spells: Stealth (1784), Vanish (11327)
@@ -3755,6 +3710,9 @@ Effects          :
 #4 (id=325547)   : Apply Aura (6) | Add Flat Modifier: Spell Radius (107)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 6
                    Affected Spells: Death from Above (152150), Greed (202822), Greed (202823)
+#5 (id=335443)   : Apply Aura (6) | Add Flat Modifier (107)
+                   Base Value: 3 | Scaled Value: 3 | Misc Value: 35
+                   Affected Spells: Blade Flurry (22482)
 Description      : Increases the range on all your melee attacks by $s1 yards.
 
 Name             : Ghostly Strike (id=196937) [Spell Family (8)] 
@@ -3765,7 +3723,7 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 15 seconds
-Affecting spells : Adrenaline Rush (13750), Broadsides (193356), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Adrenaline Rush (13750), Broadsides (193356), Acrobatic Strikes (196924)
 Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
@@ -3848,7 +3806,7 @@ Tooltip          : Stunned.
 Name             : Master of Shadows (Passive) (id=196976) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
-Spell Level      : 54
+Spell Level      : 1
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3858,8 +3816,8 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=289229)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 60 | Scaled Value: 60 | SP Coefficient: 1.00000
-Description      : You immediately gain $s1 Energy when you enter Stealth or activate Shadow Dance.
+                   Base Value: 0 | Scaled Value: 0
+Description      : You immediately gain $196980s1 Energy when you enter Stealth or activate Shadow Dance.
 
 Name             : Premeditation (Passive) (id=196979) [Spell Family (8), Passive] 
 Class            : Rogue
@@ -3881,6 +3839,20 @@ Effects          :
                    Affected Spells: Shadowstrike (185438)
 Description      : Cheap Shot and Shadowstrike generate $s1 additional combo point.
 
+Name             : Master of Shadows (id=196980) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Attributes       : ........ ........ ........ ........   .....x.. ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=289234)   : Energize Power (30)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: energy
+Description      : $@spelldesc196976
+
 Name             : Finality: Eviscerate (id=197393) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
@@ -3889,7 +3861,7 @@ Resource         : 1 - 5 Combo Points
 Spell Level      : 3
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Mastery: Executioner (76808), Vendetta (79140), Item - Rogue T15 4P Bonus (138150), Death from Above (163786), Cold Blood (182304), Eviscerating Blade (184917), Deepening Shadows (185314), Adrenaline Rush (186286), Deeper Stratagem (193531), Alacrity (193539), Acrobatic Strikes (196924), Ghostly Strike (196937), Gutripper (197234), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Mastery: Executioner (76808), Vendetta (79140), Item - Rogue T15 4P Bonus (138150), Death from Above (163786), Cold Blood (182304), Eviscerating Blade (184917), Deepening Shadows (185314), Adrenaline Rush (186286), Deeper Stratagem (193531), Alacrity (193539), Acrobatic Strikes (196924), Ghostly Strike (196937), Gutripper (197234)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -3899,7 +3871,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=289987)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.50000
 Description      : Finishing move that disembowels the target, causing damage per combo point.
    1 point  : ${$<mult>*$m1*1} damage
    2 points: ${$<mult>*$m1*2} damage
@@ -3921,7 +3893,7 @@ Duration         : 6 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Hostile Spell Taken
-Affecting spells : Relentless Strikes (58423), Mastery: Executioner (76808), Deepening Shadows (185314), Deeper Stratagem (193531), Alacrity (193539), Demon's Kiss (197233), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Relentless Strikes (58423), Mastery: Executioner (76808), Deepening Shadows (185314), Deeper Stratagem (193531), Alacrity (193539), Demon's Kiss (197233)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ........ ....x... ........   ........ ........ ........ ........ 
@@ -3930,7 +3902,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=289989)   : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.00000
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.40000
 #2 (id=289990)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 1 | Scaled Value: 1 | Mechanic: Bleed
 Description      : Finishing move that infects the target with shadowy energy, dealing Shadow damage over time and causing attacks against the target to reduce movement speed by $206760s1% for $206760d. Lasts longer per combo point.
@@ -3952,7 +3924,7 @@ Resource         : 35 Energy
 Spell Level      : 66
 GCD              : 1 seconds
 Velocity         : 18 yards/sec
-Affecting spells : Vendetta (79140), Shadow Blades (121471), Silent Blades (145193), Agonizing Poison (200803), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Vendetta (79140), Shadow Blades (121471), Silent Blades (145193), Agonizing Poison (200803)
 Attributes       : ....x... ........ x....... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
@@ -4024,6 +3996,7 @@ School           : Physical
 Spell Level      : 1
 Duration         : Aura (infinite)
 Cooldown         : 1.5 seconds
+Category         : 1238
 Attributes       : ....x... ........ ..x..... x..x.x..   .....x.. ........ .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4046,13 +4019,12 @@ Duration         : 300 seconds
 Cooldown         : 1800 seconds
 Proc Chance      : 101%
 Mechanic         : Unknown(2)
-Affecting spells : PH - Distract Applies Damage Debuff (208347)
 Attributes       : ........ ........ x....... ......x.   x....... ........ .x...... ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ...x.... ........ .....x..   .......x x....... ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=293940)   : Apply Aura (6) | Charm (6)
                    Base Value: 55 | Scaled Value: 111 | Points Per Level: 1
@@ -4096,14 +4068,15 @@ School           : Physical
 Spell Level      : 42
 Range            : 50000 yards
 GCD              : 1 seconds
-Affecting spells : Ghostly Strike (196937), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Ghostly Strike (196937)
 Triggered by     : Riposte (199754)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
-                 : ........ ........ ........ ........   ........ ..x..... ........ ......x. 
+                 : ........ ........ ........ ........   ........ .xx..... ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Not a proc (105)
 Effects          :
 #1 (id=293970)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
@@ -4117,11 +4090,12 @@ School           : Physical
 Spell Level      : 10
 Duration         : 10 seconds
 Cooldown         : 120 seconds
+Category         : 66
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
-Affecting spells : Vendetta (79140), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Vendetta (79140)
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4146,7 +4120,7 @@ Range            : 20 yards
 GCD              : 1 seconds
 Duration         : 5 seconds
 Cooldown         : 20 seconds
-Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Outlaw Rogue (137036), Deeper Stratagem (193531), Alacrity (193539), Ghostly Strike (196937), Fatebringer (202524), PH - Distract Applies Damage Debuff (208347), Black Powder (216230)
+Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Outlaw Rogue (137036), Deeper Stratagem (193531), Alacrity (193539), Ghostly Strike (196937), Fatebringer (202524), Black Powder (216230)
 Attributes       : ....x... ........ x.....x. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
@@ -4209,7 +4183,7 @@ Resource         : 35 Energy
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Shadow Blades (121471), The Quiet Knife (197231), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Shadow Blades (121471), The Quiet Knife (197231)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4220,7 +4194,7 @@ Effects          :
 #1 (id=295616)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=295617)   : Weapon Damage% (31)
-                   Base Value: 260 | Scaled Value: 2.6
+                   Base Value: 405 | Scaled Value: 4.05
 #3 (id=295618)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points
 Description      : Punctures your target with your shadow-infused blade for $sw2 Shadow damage.
@@ -4230,7 +4204,6 @@ Description      : Punctures your target with your shadow-infused blade for $sw2
 Name             : Soothing Darkness (id=200759) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
 School           : Physical
-Affecting spells : PH - Distract Applies Damage Debuff (208347)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4272,7 +4245,7 @@ Duration         : 3600 seconds
 Proc Chance      : 20%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
-Affecting spells : Envenom (32645), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Envenom (32645), 
 Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ...xx... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -4295,7 +4268,7 @@ Range            : 100 yards
 Duration         : 12 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Mastery: Potent Poisons (76803), Vendetta (79140), Master Alchemist (192318), Surge of Toxins (192425), Master Poisoner (196864), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Mastery: Potent Poisons (76803), Vendetta (79140), Master Alchemist (192318), Surge of Toxins (192425), Master Poisoner (196864), 
 Triggered by     : Agonizing Poison (200802)
 Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...... ........ 
                  : ..x..... ........ ........ x.......   .......x ........ ........ ......x. 
@@ -4306,7 +4279,7 @@ Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...
 Effects          :
 #1 (id=295687)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 5 | Scaled Value: 5
-                   Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Mutilate (5374), Wound Poison (8679), Venomhide Poison (14795), Hemorrhage (16511), Mutilate Off-Hand (27576), Spore Cloud (32643), Envenom (32645), Fan of Knives (51723), Deadly Poison (113780), Shuriken Toss (114014), Poisoned Knife (185565), Shuriken Storm (197835), Agonizing Poison (200803)
+                   Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Mutilate (5374), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Mutilate Off-Hand (27576), Spore Cloud (32643), Envenom (32645), Fan of Knives (51723), Deadly Poison (113780), Shuriken Toss (114014), Poisoned Knife (185565), Shuriken Storm (197835), Agonizing Poison (200803)
 Description      : $@spelldesc200802
 Tooltip          : Taking $s1% increased damage from the poisoning Rogue's abilities.
 
@@ -4332,7 +4305,7 @@ Name             : Curse of the Dreadblades (id=202665) [Spell Family (8)]
 Class            : Rogue
 School           : Shadow
 Duration         : 12 seconds
-Cooldown         : 120 seconds
+Cooldown         : 90 seconds
 Proc Chance      : 101%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -4376,15 +4349,91 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 Description      : $@spelldesc202665
 
-Name             : Enveloping Shadows (id=206237) [Spell Family (8)] 
+Name             : Blunderbuss (id=202848) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Duration         : 10 seconds
+Proc Chance      : 100%
+Proc Flags       : ....x... ....x... ........ ........ 
+                 : Yellow Melee, AOE Hostile Spell
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ......x. ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=299119)   : Apply Aura (6) | Unknown effect sub type (332)
+                   Base Value: 202895 | Scaled Value: 202895
+                   Affected Spells: Pistol Shot (185763), Blunderbuss (202895)
+Description      : $@spelldesc202897
+
+Name             : Blunderbuss (id=202895) [Scaling Spell (9), Spell Family (8)] 
 Class            : Rogue
 School           : Physical
 Resource         : 40 Energy
+Spell Level      : 11
+Range            : 20 yards
+GCD              : 1 seconds
+Velocity         : 40 yards/sec
+Duration         : 6 seconds
+Affecting spells : Adrenaline Rush (13750), Broadsides (193356), Opportunity (195627), Ghostly Strike (196937), Gunslinger (202522), Blunderbuss (202848), Greenskin's Waterlogged Wristcuffs (209423)
+Attributes       : ........ ........ ........ ........   ........ .x...... ........ ..xxx... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ x....... 
+                 : x....... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=299182)   : School Damage: physical (2)
+                   Base Value: 0 | Scaled Value: 0 (avg=2) | AP Coefficient: 0.30000
+#2 (id=299183)   : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.20000 | Misc Value: combo_points
+#3 (id=299184)   : Apply Aura (6) | Decrease Movement Speed% (33)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88)
+#4 (id=299185)   : School Damage: physical (2)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30000
+#5 (id=299186)   : School Damage: physical (2)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30000
+#6 (id=299187)   : School Damage: physical (2)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30000
+#7 (id=299188)   : School Damage: physical (2)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30000
+#8 (id=299189)   : School Damage: physical (2)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30000
+#9 (id=299190)   : School Damage: physical (2)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30000
+Description      : Draws a concealed blunderbuss and fires a quick shot at the target, dealing ${$m1*7} damage and reducing movement speed by $s3% for $d.
+
+|cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
+
+Name             : Blunderbuss (id=202897) [Spell Family (8), Passive] 
+Class            : Rogue
+School           : Physical
+Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=299195)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 202895 | Scaled Value: 202895
+Description      : When Saber Slash strikes an additional time, your next Pistol Shot may be replaced with Blunderbuss.
+
+|Tinterface\icons\inv_weapon_rifle_07.blp:24|t |cFFFFFFFFBlunderbuss|r
+$@spelldesc202895
+
+Name             : Enveloping Shadows (id=206237) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Resource         : 25 Energy
 Resource         : 1 - 5 Combo Points
 Spell Level      : 1
 Range            : 100 yards
 GCD              : 1 seconds
-Affecting spells : Relentless Strikes (58423), Deepening Shadows (185314), Deeper Stratagem (193531), Alacrity (193539), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Relentless Strikes (58423), Deepening Shadows (185314), Deeper Stratagem (193531), Alacrity (193539)
 Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -4413,7 +4462,7 @@ Range            : 5 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Tangled Shadow (200778), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Tangled Shadow (200778)
 Attributes       : ........ ........ ........ ........   ...x...x ........ .x...... ........ 
                  : ........ ........ ........ x.......   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4427,7 +4476,7 @@ Effects          :
 Description      : $@spelldesc195452
 Tooltip          : Movement speed slowed by $s1%.
 
-Name             : Goremaw's Bite (id=209782) [Spell Family (8)] 
+Name             : Goremaw's Bite (Artifact) (id=209782) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
 Range            : 8 yards
@@ -4548,8 +4597,9 @@ School           : Physical
 Resource         : 35 Energy
 Spell Level      : 34
 Duration         : 35 seconds
+Cooldown         : 1 seconds
 Stance Mask      : 0x20000000
-Affecting spells : Shadow Dance (185313), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Shadow Dance (185313)
 Attributes       : ....x... ........ x.x..... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4603,7 +4653,7 @@ Name             : Kingsbane (id=222062) [Spell Family (8)]
 Class            : Rogue
 School           : Nature
 Range            : 100 yards
-Affecting spells : Kingsbane (192853), PH - Distract Applies Damage Debuff (208347)
+Affecting spells : Kingsbane (192853)
 Triggered by     : Kingsbane (192759)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 

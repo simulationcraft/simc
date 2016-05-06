@@ -1,6 +1,6 @@
 #define TALENT_SIZE (607)
 
-// 607 talents, wow build 21570
+// 607 talents, wow build 21655
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   0,   3,   29838,       0,  0 },
@@ -140,7 +140,7 @@ static struct talent_data_t __talent_data[] = {
   { "Ascendance"                        , 21198, 0x00, 0x0040, 262,   0,   6,  114050,       0,  0 },
   { "Icefury"                           , 21199, 0x00, 0x0040, 262,   1,   6,  210714,       0,  0 },
   { "Righteous Protector"               , 21201, 0x00, 0x0002,  66,   0,   6,  204074,       0,  0 },
-  { "Knight Templar"                    , 21202, 0x00, 0x0002,  66,   1,   6,  204139,       0,  0 },
+  { "Seraphim"                          , 21202, 0x00, 0x0002,  66,   1,   6,  152262,       0,  0 },
   { "Beacon of the Savior"              , 21203, 0x00, 0x0002,  65,   2,   6,  200025,       0,  0 },
   { "Anger Management"                  , 21204, 0x00, 0x0001,   0,   0,   6,  152278,       0,  0 },
   { "Bonestorm"                         , 21207, 0x00, 0x0020, 250,   0,   6,  194844,       0,  0 },
@@ -269,7 +269,7 @@ static struct talent_data_t __talent_data[] = {
   { "Refreshing Jade Wind"              , 22093, 0x00, 0x0200, 270,   0,   5,  196725,       0,  0 },
   { "Psychic Voice"                     , 22094, 0x00, 0x0010,   0,   1,   2,  196704,       0,  0 },
   { "Censure"                           , 22095, 0x00, 0x0010, 257,   1,   2,  200199,       0,  0 },
-  { "Secret Ingredients"                , 22096, 0x00, 0x0200, 268,   2,   2,  196719,       0,  0 },
+  { "Gift of the Mists"                 , 22096, 0x00, 0x0200, 268,   2,   2,  196719,       0,  0 },
   { "Black Ox Brew"                     , 22097, 0x00, 0x0200, 268,   1,   2,  115399,       0,  0 },
   { "Light Brewing"                     , 22098, 0x00, 0x0200, 268,   0,   2,  196721,       0,  0 },
   { "Energizing Elixir"                 , 22099, 0x00, 0x0200, 269,   0,   2,  115288,       0,  0 },
@@ -349,7 +349,7 @@ static struct talent_data_t __talent_data[] = {
   { "Sanctified Wrath"                  , 22190, 0x00, 0x0002,  65,   1,   5,   53376,       0,  0 },
   { "Mistwalk"                          , 22213, 0x00, 0x0200, 270,   2,   0,  197945,  101643,  0 },
   { "Summon Jade Serpent Statue"        , 22214, 0x00, 0x0200, 270,   2,   5,  115313,       0,  0 },
-  { "Holy Wrath"                        , 22215, 0x00, 0x0002,  70,   1,   6,  215647,       0,  0 },
+  { "Sanctified Wrath"                  , 22215, 0x00, 0x0002,  70,   1,   6,  224668,   31884,  0 },
   { "Invoke Chi-Ji, the Red Crane"      , 22217, 0x00, 0x0200, 270,   1,   5,  198664,       0,  0 },
   { "Mana Tea"                          , 22218, 0x00, 0x0200, 270,   0,   6,  197908,       0,  0 },
   { "Song of Chi-Ji"                    , 22219, 0x00, 0x0200, 270,   1,   3,  198898,  175697,  0 },
@@ -616,7 +616,7 @@ static struct talent_data_t __talent_data[] = {
   { "Greater Judgment"                  , 22593, 0x00, 0x0002,  70,   2,   1,  218178,       0,  0 },
   { "Last Defender"                     , 22594, 0x00, 0x0002,  66,   2,   1,  203791,       0,  0 },
   { "Justicar's Vengeance"              , 22595, 0x00, 0x0002,  70,   0,   4,  215661,       0,  0 },
-  { "Guardian's Light"                  , 22604, 0x00, 0x0002,  66,   1,   1,  205242,       0,  0 },
+  { "Knight Templar"                    , 22604, 0x00, 0x0002,  66,   1,   1,  204139,       0,  0 },
   { "Dauntless"                         , 22624, 0x00, 0x0001,  71,   0,   0,  202297,       0,  0 },
   { "Storm Bolt"                        , 22625, 0x00, 0x0001,  71,   1,   1,  107570,       0,  0 },
   { "Rend"                              , 22626, 0x00, 0x0001,  71,   1,   2,     772,       0,  0 },

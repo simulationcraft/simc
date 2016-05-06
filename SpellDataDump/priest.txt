@@ -9,10 +9,11 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 7.5 seconds
+Category         : 56
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
 Mechanic         : Unknown(162)
-Affecting spells : Improved Power Word: Shield (24191), Rapture (47536), Priest (137030), Shadow Priest (137033), Lucidity (137323), Clear Thoughts (167695), Voidform (194249)
+Affecting spells : Improved Power Word: Shield (24191), Rapture (47536), Priest (137030), Shadow Priest (137033), Lucidity (137323), Clear Thoughts (167695), Voidform (194249), Lingering Insanity (197937)
 Attributes       : ........ ...x.... x.x..... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -59,6 +60,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 8 seconds
 Charges          : 1 (8 seconds cooldown)
+Category         : 1509
 Stance Mask      : 0x80000000
 Affecting spells : Lucidity (137323)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -111,7 +113,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=236)      : School Damage: holy (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000
 #2 (id=314092)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 Description      : Smites an enemy for $s1 Holy damage$?s137032[ and absorbs the next $<shield> damage dealt by the enemy]?s14914[ and has a $s2% chance to reset the cooldown of Holy Fire][].
@@ -146,7 +148,7 @@ GCD              : 1.5 seconds
 Duration         : 14 seconds
 Proc Chance      : 100%
 Stance Mask      : 0x08000000
-Affecting spells : Mastery: Madness (77486), Item - Priest T13 Shadow 4P Bonus (Shadow Word: Pain) (105844), Item - Priest T14 Shadow 2P Bonus (123114), Item - Priest T14 Shadow 4P Bonus (123115), Discipline Priest (137032), Lucidity (137323), To the Pain (193644), Voidform (194249), The Edge of Dark and Light (197715), 
+Affecting spells : Mastery: Madness (77486), Item - Priest T13 Shadow 4P Bonus (Shadow Word: Pain) (105844), Item - Priest T14 Shadow 2P Bonus (123114), Item - Priest T14 Shadow 4P Bonus (123115), Discipline Priest (137032), Lucidity (137323), To the Pain (193644), Voidform (194249), The Edge of Dark and Light (197715), Lingering Insanity (197937)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -155,9 +157,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=242)      : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.40000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.35000
 #2 (id=254257)   : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.40000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.35000
 #3 (id=323674)   : Energize Power (30)
                    Base Value: 300 | Scaled Value: 300 | Misc Value: insanity
 Description      : A word of darkness that causes $s1 Shadow damage instantly, and an additional $o2 Shadow damage over $d.$?s137033[
@@ -358,6 +360,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 1 (9 seconds cooldown)
+Category         : 1602
 Affecting spells : Shadowy Insight (124430), Priest (137030), Lucidity (137323), Item - Priest T16 Shadow 2P Bonus (145174), Empowered Shadows (145180), Mental Fatigue (185104), Fortress of the Mind (193195), Mind Shattering (193643), Voidform (194249), Lingering Insanity (197937)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -367,9 +370,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=3283)     : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.40000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.25000
 #2 (id=139174)   : Energize Power (30)
-                   Base Value: 1500 | Scaled Value: 1500 | Misc Value: insanity
+                   Base Value: 1200 | Scaled Value: 1200 | Misc Value: insanity
 Description      : Blasts the target's mind for $s1 Shadow damage.
 
 |cFFFFFFFFGenerates $/100;s2 Insanity.|r
@@ -387,7 +390,7 @@ Stance Mask      : 0x08000000
 Mechanic         : Unknown(42)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Psychic Scream Duration Increase (23044), Improved Psychic Scream (44297), Lucidity (137323), Voidform (194249), Psychic Voice (196704)
+Affecting spells : Psychic Scream Duration Increase (23044), Improved Psychic Scream (44297), Lucidity (137323), Voidform (194249), Psychic Voice (196704), Lingering Insanity (197937)
 Attributes       : ........ ........ x.x..... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -473,7 +476,7 @@ Effects          :
 #1 (id=6990)     : School Damage: holy (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000
 #2 (id=6991)     : Apply Aura (6) | Periodic Damage: holy every 1 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.37000
 Description      : Consumes the enemy in Holy flames that cause $s1 Holy damage and an additional $o2 Holy damage over $d. Stacks up to $u times.
 Tooltip          : $w2 Holy damage every $t2 seconds.
 
@@ -557,6 +560,7 @@ School           : Holy
 Spell Level      : 1
 Duration         : 10 seconds
 Cooldown         : 90 seconds
+Category         : 671
 Stance Mask      : 0x08000000
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... .....x..   ........ ........ ........ .....x.. 
@@ -702,7 +706,7 @@ Range            : 30 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 15 seconds
-Affecting spells : Lucidity (137323), Voidform (194249)
+Affecting spells : Lucidity (137323), Voidform (194249), Lingering Insanity (197937)
 Attributes       : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -727,6 +731,7 @@ Spell Level      : 46
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 12 seconds
+Category         : 1169
 Affecting spells : Item - Priest T13 Shadow 2P Bonus (Shadow Word: Death) (105843), Priest (137030), Lucidity (137323), Empowered Shadows (145180), Death's Embrace (193645)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -778,7 +783,7 @@ School           : Holy
 Spell Level      : 70
 Range            : 30 yards
 Stance Mask      : 0x08000000
-Affecting spells : Lucidity (137323), Voidform (194249)
+Affecting spells : Lucidity (137323), Voidform (194249), Lingering Insanity (197937)
 Triggered by     : Mass Dispel (32375)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ......x.   ........ ........ ........ ........ 
@@ -820,6 +825,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 12 seconds
+Category         : 1181
 Stance Mask      : 0x80000000
 Affecting spells : Healing Trance (37706), Temporal Boon (105826), Priest (137030), Lucidity (137323)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -884,8 +890,9 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 180 seconds
+Category         : 1417
 Stance Mask      : 0x08000000
-Affecting spells : Glyph of the Sha (147776), Item - Priest T18 Shadow 2P Bonus (186980), Voidform (194249)
+Affecting spells : Glyph of the Sha (147776), Item - Priest T18 Shadow 2P Bonus (186980), Voidform (194249), Lingering Insanity (197937)
 Attributes       : ........ ........ x.x..... ........   x....... ........ ........ ....x... 
                  : ........ ........ ...x.... ......x.   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -933,7 +940,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 18 seconds
 Proc Chance      : 101%
-Affecting spells : Mastery: Madness (77486), Item - Priest T14 Shadow 4P Bonus (123115), Lucidity (137323), Touch of Darkness (194007), Voidform (194249), San'layn (199855)
+Affecting spells : Mastery: Madness (77486), Item - Priest T14 Shadow 4P Bonus (123115), Lucidity (137323), Touch of Darkness (194007), Voidform (194249), Lingering Insanity (197937), San'layn (199855)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -944,7 +951,7 @@ Effects          :
 #1 (id=25009)    : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2
 #2 (id=25010)    : Apply Aura (6) | Periodic Health Leech (53)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.77700
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.60000
 #3 (id=323673)   : Energize Power (30)
                    Base Value: 400 | Scaled Value: 400 | Misc Value: insanity
 Description      : A touch of darkness that causes $34914o2 Shadow damage over $34914d, and heals the Priest for ${$e2*100}% of damage dealt.
@@ -1104,6 +1111,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 9 seconds
+Category         : 1230
 Affecting spells : Temporal Boon (105826), Item - Priest T14 Healer 4P Bonus (123113), Lucidity (137323)
 Attributes       : ........ x....... x....... .....x..   ..x....x ..x...x. ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1276,7 +1284,7 @@ Spell Level      : 28
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
-Affecting spells : Mental Fatigue (185104), Void Corruption (194016), Voidform (194249)
+Affecting spells : Mental Fatigue (185104), Void Corruption (194016), Voidform (194249), Lingering Insanity (197937)
 Attributes       : ........ ........ x.....x. ........   ..x....x ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1297,7 +1305,7 @@ Class            : Priest
 School           : Shadow
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Mental Fatigue (185104), Void Corruption (194016), Voidform (194249)
+Affecting spells : Mental Fatigue (185104), Void Corruption (194016), Voidform (194249), Lingering Insanity (197937)
 Triggered by     : Mind Sear (48045)
 Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ......x.   x....... .x...... ........ .x...... 
@@ -1405,8 +1413,9 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 180 seconds
+Category         : 1243
 Proc Chance      : 101%
-Affecting spells : Lucidity (137323), Promises of N'ero (212486)
+Affecting spells : Lucidity (137323)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1682,7 +1691,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
-Affecting spells : Lucidity (137323), Empowered Shadows (145180), Mental Fatigue (185104), Fortress of the Mind (193195), Voidform (194249), Void Siphon (215322)
+Affecting spells : Lucidity (137323), Empowered Shadows (145180), Mental Fatigue (185104), Fortress of the Mind (193195), Voidform (194249), Lingering Insanity (197937), Void Siphon (215322)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1787,7 +1796,7 @@ Proc Flags       : ........ ........ ..x..... ........
                  : Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1841,7 +1850,7 @@ School           : Holy
 Spell Level      : 5
 Range            : 50000 yards
 Duration         : 12 seconds
-Affecting spells : Lucidity (137323), Promises of N'ero (212486)
+Affecting spells : Lucidity (137323)
 Attributes       : ........ ........ ........ x..x.x.x   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ...x.x.. ........   ........ .x...... ........ ......x. 
                  : x......x .....x.x ........ ........   ...x.... ..x..... .xx..... ........ 
@@ -2060,6 +2069,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 15 seconds
+Category         : 1380
 Stance Mask      : 0x80000000
 Affecting spells : Lucidity (137323), Atonement (194384), Light of T'uure (208065)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
@@ -2184,6 +2194,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 3.2 seconds
 Cooldown         : 40 seconds
+Category         : 1366
 Stance Mask      : 0x80000000
 Affecting spells : Lucidity (137323), Atonement (194384), Light of T'uure (208065)
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
@@ -2253,6 +2264,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 3 (20 seconds cooldown)
+Category         : 1373
 Proc Chance      : 101%
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2307,8 +2319,9 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 60 seconds
+Category         : 1417
 Stance Mask      : 0x08000000
-Affecting spells : Item - Priest T18 Shadow 2P Bonus (186980), Voidform (194249)
+Affecting spells : Item - Priest T18 Shadow 2P Bonus (186980), Voidform (194249), Lingering Insanity (197937)
 Attributes       : ........ ........ x.x..... ........   x....... ........ ........ ....x... 
                  : ........ ........ ...x.... ......x.   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2752,7 +2765,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.x ........ .....
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ...x.... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
 Effects          :
 #1 (id=203471)   : School Damage: shadow (2)
                    Base Value: 1 | Scaled Value: 0 (avg=0.375) | SP Coefficient: 0.30000
@@ -2910,7 +2923,7 @@ GCD              : 1.5 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Shadow Priest (137033), Lucidity (137323), Thoughts of Insanity (193647), Voidform (194249), Atonement (194384), Thoughts of Insanity (195080), Thoughts of Insanity (195081), Thoughts of Insanity (195082), Thoughts of Insanity (195083), Thoughts of Insanity (195084), Darkest Shadows (216212)
+Affecting spells : Shadow Priest (137033), Lucidity (137323), Thoughts of Insanity (193647), Voidform (194249), Atonement (194384), Thoughts of Insanity (195080), Thoughts of Insanity (195081), Thoughts of Insanity (195082), Thoughts of Insanity (195083), Thoughts of Insanity (195084), Lingering Insanity (197937), Darkest Shadows (216212)
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2951,7 +2964,7 @@ Duration         : 10 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Shadow Priest (137033), Lucidity (137323), Thoughts of Insanity (193647), Voidform (194249), Atonement (194384), Thoughts of Insanity (195080), Thoughts of Insanity (195081), Thoughts of Insanity (195082), Thoughts of Insanity (195083), Thoughts of Insanity (195084), Darkest Shadows (216212)
+Affecting spells : Shadow Priest (137033), Lucidity (137323), Thoughts of Insanity (193647), Voidform (194249), Atonement (194384), Thoughts of Insanity (195080), Thoughts of Insanity (195081), Thoughts of Insanity (195082), Thoughts of Insanity (195083), Thoughts of Insanity (195084), Lingering Insanity (197937), Darkest Shadows (216212)
 Attributes       : ........ ........ x....... ..x....x   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3111,7 +3124,7 @@ Attributes       : ........ ........ ........ .....x.x   ........ ........ .....
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x.....x ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=283478)   : Apply Aura (6) | Unknown effect sub type (329)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: 13
@@ -3498,8 +3511,8 @@ Effects          :
 #1 (id=290888)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=290890)   : Apply Aura (6) | Add Percent Modifier: Spell Global Cooldown (108)
-                   Base Value: -33 | Scaled Value: -33 | Misc Value: 21
-                   Affected Spells: Mind Blast (8092), Mind Flay (15407)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 21
+                   Affected Spells: Power Word: Shield (17), Shadow Word: Pain (589), Mind Blast (8092), Psychic Scream (8122), Mind Flay (15407), Mass Dispel (32375), Mass Dispel (32592), Shadowfiend (34433), Vampiric Touch (34914), Mind Sear (48045), Mind Sear (49821), Mind Spike (73510), Mindbender (123040), Shadow Mend (186263), Shadow Mend (187464), Mindbender (200174), Shadow Word: Void (205351), Shadow Crash (205385), Void Bolt (205448)
 Description      : $@spelldesc194249
 Tooltip          : Haste increased by $w1%.
 
@@ -3594,8 +3607,9 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 60 seconds
+Category         : 1417
 Stance Mask      : 0x08000000
-Affecting spells : Item - Priest T18 Shadow 2P Bonus (186980), Voidform (194249)
+Affecting spells : Item - Priest T18 Shadow 2P Bonus (186980), Voidform (194249), Lingering Insanity (197937)
 Attributes       : ........ ........ x.x..... ........   x....... ........ ........ ....x... 
                  : ........ ........ ...x.... ......x.   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -3624,7 +3638,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=294682)   : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: 126 | Misc Value 2: 0x1
@@ -3794,10 +3808,10 @@ School           : Shadow
 Resource         : 5% Base Mana (55000 @Level 110)
 Spell Level      : 1
 Range            : 40 yards
-Cast Time        : 2.5 seconds
+Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Lucidity (137323)
+Affecting spells : Lucidity (137323), Burst of Light (197716)
 Attributes       : ........ ........ x....... ..x....x   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3933,7 +3947,8 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 3 (30 seconds cooldown)
-Affecting spells : Voidform (194249)
+Category         : 1590
+Affecting spells : Voidform (194249), Lingering Insanity (197937)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3942,9 +3957,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=303208)   : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.20000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.80000
 #2 (id=303209)   : Energize Power (30)
-                   Base Value: 3000 | Scaled Value: 3000 | Misc Value: insanity
+                   Base Value: 2500 | Scaled Value: 2500 | Misc Value: insanity
 Description      : Blasts the target's mind for $s1 Shadow damage.
 
 |cFFFFFFFFGenerates $/100;s2 Insanity.|r
@@ -4056,7 +4071,7 @@ School           : Physical
 Range            : 40 yards
 Velocity         : 2.5 yards/sec
 Cooldown         : 30 seconds
-Affecting spells : Voidform (194249)
+Affecting spells : Voidform (194249), Lingering Insanity (197937)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4098,7 +4113,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Cooldown         : 4.5 seconds
-Affecting spells : Mastery: Madness (77486), Priest (137030), Sinister Thoughts (194026), Voidform (194249), Iridi's Empowerment (215210)
+Affecting spells : Mastery: Madness (77486), Priest (137030), Sinister Thoughts (194026), Voidform (194249), Lingering Insanity (197937), Anund's Last Breath (215210)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4107,7 +4122,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=303382)   : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.33300
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.40000
 #2 (id=303383)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
 #3 (id=308158)   : Energize Power (30)
@@ -4147,8 +4162,10 @@ Attributes       : ........ ........ ..x..... .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=307618)   : School Damage: holyfire (2)
-                   Base Value: 5 | Scaled Value: 5 | SP Coefficient: 2.00000
-Description      : Draws upon the power of |cFFFFCC99Light's Wrath|r, dealing $s1 Radiant damage to the target per ally affected by your Atonement, up to a maximum of 5 allies.
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 8.00000
+#2 (id=336362)   : Dummy (3)
+                   Base Value: 10 | Scaled Value: 10
+Description      : Draws upon the power of |cFFFFCC99Light's Wrath|r, dealing $s1 Radiant damage to the target, increased by $s2% per ally affected by your Atonement.
 
 Name             : Light's Wrath (id=207948) [Spell Family (6)] 
 Class            : Priest
@@ -4171,8 +4188,8 @@ School           : Holy
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
-Cooldown         : 1 seconds
 Charges          : 2 (45 seconds cooldown)
+Category         : 1604
 Attributes       : ........ ........ ..x..... .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4184,9 +4201,9 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Trigger Spell: 196685
                    Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Binding Heal (32546), Prayer of Mending (33110), Divine Hymn (64844), Divine Star (110744), Divine Star (110745), Halo (120517), Halo (120692), Halo (120696), Divine Star (122128)
 #2 (id=308008)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.00000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.00000
 Description      : Applies Light of the Naaru to the target, healing for $s2 and increasing all healing you do to that target by $208065s1% for $d. Maximum 2 charges.
-Tooltip          : Healing taken increased by $s1%.
+Tooltip          : Healing taken from the Priest increased by $s1%.
 
 Name             : Mind Sear (id=208232) [Spell Family (6)] 
 Class            : Priest
@@ -4271,6 +4288,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 8 seconds
 Charges          : 1 (8 seconds cooldown)
+Category         : 1509
 Stance Mask      : 0x80000000
 Affecting spells : Lucidity (137323)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
