@@ -703,21 +703,35 @@ struct mage_pet_melee_attack_t : public melee_attack_t
   }
 };
 
-// ==========================================================================
-// Pet Water Elemental
-// ==========================================================================
-//TODO: Test attack specifics in game and bring into module
+//================================================================================
+// Pet Arcane Familiar 
+//================================================================================
 struct arcane_familiar_pet_t : public pet_t
 {
-  struct arcane_familiar_spell_t : public mage_pet_spell_t
+  struct arcane_assault_t : public mage_pet_spell_t
   {
-    arcane_familiar_spell_t( arcane_familiar_pet_t* p, const std::string& options_str ) :
-      mage_pet_spell_t( "arcane_familiar_spell", p, p -> find_spell( 210126 ) )
+    arcane_assault_t( arcane_familiar_pet_t* p, const std::string& options_str ) :
+      mage_pet_spell_t( "arcane_assault", p, p -> find_spell( 225119 ) )
     {
-      may_crit = true;
+      parse_options( options_str );
     }
   };
+  void arise() override
+  {
+    mage_t* m = debug_cast<mage_t*>( owner );
+    pet_t::arise();
 
+    m -> buffs.arcane_familiar -> trigger();
+  }
+
+  void demise() override
+  {
+    mage_t* m = debug_cast<mage_t*>( owner );
+
+    pet_t::demise();
+    m -> buffs.arcane_familiar -> expire();
+
+  }
   arcane_familiar_pet_t( sim_t* sim, mage_t* owner ) :
     pet_t( sim, owner, "mirror_image", true )
   {
@@ -727,7 +741,7 @@ struct arcane_familiar_pet_t : public pet_t
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str ) override
   {
-    if ( name == "arcane_familiar_spell" ) return new arcane_familiar_spell_t( this, options_str );
+    if ( name == "arcane_assault" ) return new arcane_assault_t( this, options_str );
     return pet_t::create_action( name, options_str );
   }
 
@@ -736,11 +750,15 @@ struct arcane_familiar_pet_t : public pet_t
 
   virtual void init_action_list() override
   {
-    action_list_str = "arcane_familiar_spell";
+    action_list_str = "arcane_assault";
 
     pet_t::init_action_list();
   }
 };
+
+// ==========================================================================
+// Pet Water Elemental
+// ==========================================================================
 struct water_elemental_pet_t;
 
 struct water_elemental_pet_td_t: public actor_target_data_t
@@ -4191,14 +4209,12 @@ struct nether_tempest_t : public arcane_mage_spell_t
 // Phoenixs Flames Spell =============================================================
 struct phoenixs_flames_splash_t : public fire_mage_spell_t
 {
-  phoenixs_flames_splash_t( mage_t* p ) :
-    fire_mage_spell_t( "phoenixs_flames_splash", p )
+  phoenixs_flames_splash_t( mage_t* p, const std::string& options_str ) :
+    fire_mage_spell_t( "phoenixs_flames_splash", p, p -> find_spell( 224637 ) )
   {
+    parse_options( options_str );
     aoe = -1;
-    spell_power_mod.direct =   p ->find_spell( 194466 ) -> effectN( 2 ).sp_coeff() /
-                               p -> find_spell( 194466 ) -> effectN( 1 ).sp_coeff() ;
     background = true;
-    triggers_ignite = true;
   }
 };
 struct phoenixs_flames_t : public fire_mage_spell_t
@@ -4207,10 +4223,9 @@ struct phoenixs_flames_t : public fire_mage_spell_t
 
   phoenixs_flames_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "phoenixs_flames", p, p -> artifact.phoenixs_flames ),
-    phoenixs_flames_splash( new phoenixs_flames_splash_t( p ) )
+    phoenixs_flames_splash( new phoenixs_flames_splash_t( p, options_str ) )
   {
     parse_options( options_str );
-    triggers_ignite = true;
     cooldown -> charges = data().charges();
     cooldown -> duration = data().charge_cooldown();
     triggers_hot_streak = true;
@@ -4551,9 +4566,72 @@ struct supernova_t : public arcane_mage_spell_t
   }
 };
 
+// Summon Water Elemental Spell ====================================================
 
+struct summon_water_elemental_t : public frost_mage_spell_t
+{
+  summon_water_elemental_t( mage_t* p, const std::string& options_str ) :
+    frost_mage_spell_t( "water_elemental", p, p -> find_class_spell( "Summon Water Elemental" ) )
+  {
+    parse_options( options_str );
+    harmful = false;
+    ignore_false_positive = true;
+    // TODO: Why is this not on GCD?
+    trigger_gcd = timespan_t::zero();
+  }
 
-// Time Warp Spell ==========================================================
+  virtual void execute() override
+  {
+    frost_mage_spell_t::execute();
+
+    p() -> pets.water_elemental -> summon();
+  }
+
+  virtual bool ready() override
+  {
+    if ( !frost_mage_spell_t::ready() || p() -> talents.lonely_winter -> ok() )
+      return false;
+
+    // TODO: Check this
+    return !p() -> pets.water_elemental ||
+           p() -> pets.water_elemental -> is_sleeping();
+  }
+};
+
+// Summon Arcane Familiar Spell ===================================================
+
+struct summon_arcane_familiar_t : public arcane_mage_spell_t
+{
+  summon_arcane_familiar_t( mage_t* p, const std::string& options_str ) :
+    arcane_mage_spell_t( "arcane_familiar", p, p -> talents.arcane_familiar )
+  {
+    parse_options( options_str );
+    harmful = false;
+    ignore_false_positive = true;
+    trigger_gcd = timespan_t::zero();
+  }
+
+  virtual void execute() override
+  {
+    arcane_mage_spell_t::execute();
+
+    p() -> pets.arcane_familiar -> summon();
+
+  }
+
+  virtual bool ready() override
+  {
+    if ( !arcane_mage_spell_t::ready() || !p() -> talents.arcane_familiar -> ok() )
+    {
+      return false;
+    }
+
+    return !p() -> pets.arcane_familiar ||
+             p() -> pets.arcane_familiar -> is_sleeping();
+  }
+};
+
+// Time Warp Spell ================================================================
 
 struct time_warp_t : public mage_spell_t
 {
@@ -4591,37 +4669,6 @@ struct time_warp_t : public mage_spell_t
   }
 };
 
-// Water Elemental Spell ====================================================
-
-struct summon_water_elemental_t : public frost_mage_spell_t
-{
-  summon_water_elemental_t( mage_t* p, const std::string& options_str ) :
-    frost_mage_spell_t( "water_elemental", p, p -> find_class_spell( "Summon Water Elemental" ) )
-  {
-    parse_options( options_str );
-    harmful = false;
-    ignore_false_positive = true;
-    // TODO: Why is this not on GCD?
-    trigger_gcd = timespan_t::zero();
-  }
-
-  virtual void execute() override
-  {
-    frost_mage_spell_t::execute();
-
-    p() -> pets.water_elemental -> summon();
-  }
-
-  virtual bool ready() override
-  {
-    if ( !frost_mage_spell_t::ready() || p() -> talents.lonely_winter -> ok() )
-      return false;
-
-    // TODO: Check this
-    return !p() -> pets.water_elemental ||
-           p() -> pets.water_elemental -> is_sleeping();
-  }
-};
 
 
 // ============================================================================
@@ -5710,7 +5757,7 @@ void mage_t::create_buffs()
                                   .chance( 1.0 );
 
   // Talents
-  buffs.arcane_familiar       = buff_creator_t( this, "arcane_familiar_buff" );
+  buffs.arcane_familiar       = buff_creator_t( this, "arcane_familiar_buff", find_spell( 205022 ) );
   buffs.ice_floes             = buff_creator_t( this, "ice_floes", talents.ice_floes );
   buffs.incanters_flow        = new incanters_flow_t( this );
   buffs.rune_of_power         = buff_creator_t( this, "rune_of_power", find_spell( 116014 ) )
@@ -6543,7 +6590,7 @@ void mage_t::recalculate_resource_max( resource_e rt )
 
   player_t::recalculate_resource_max( rt );
 
-  if (savant_adjust_mana)
+  if ( savant_adjust_mana )
   {
     resources.max[ rt ] *= 1.0 + cache.mastery_value() * spec.savant -> effectN( 1 ).percent();
     resources.current[ rt ] = resources.max[ rt ] * mana_percent;
@@ -6555,6 +6602,11 @@ void mage_t::recalculate_resource_max( resource_e rt )
         name(), current_mana, current_mana_max,
         resources.current[ rt ], resources.max[ rt ]);
     }
+  }
+
+  if ( talents.arcane_familiar && buffs.arcane_familiar -> check() )
+  {
+    resources.max[ rt ] *= 1.0 + buffs.arcane_familiar -> data().effectN( 1 ).percent();
   }
 }
 
