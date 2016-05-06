@@ -211,8 +211,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          982, // Revive Pet
       175686, // Stopping Power
         1515, // Tame Beast
-      207097, // Titan's Thunder
       207068, // Titan's Thunder (Artifact)
+      207097, // Titan's Thunder
       210000, // Wake Up
       204147, // Windburst (Artifact)
            0,
@@ -401,8 +401,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        77489, // Echo of Light
          586, // Fade
       208065, // Light of T'uure
-      207948, // Light's Wrath
       207946, // Light's Wrath
+      207948, // Light's Wrath
        32375, // Mass Dispel
          605, // Mind Control
         9484, // Shackle Undead
@@ -670,13 +670,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          118, // Polymorph (Sheep)
        61721, // Polymorph (Rabbit)
        61780, // Polymorph (Turkey)
+      161355, // Polymorph (Penguin)
       161353, // Polymorph (Polar Bear Cub)
+      161354, // Polymorph (Monkey)
       161372, // Polymorph (Turtle)
        61025, // Polymorph (Serpent)
-       28272, // Polymorph (Pig)
-      161354, // Polymorph (Monkey)
        28271, // Polymorph (Turtle)
-      161355, // Polymorph (Penguin)
+       28272, // Polymorph (Pig)
       126819, // Polymorph (Pig)
        61305, // Polymorph (Black Cat)
        80353, // Time Warp
@@ -790,15 +790,20 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        30146, // Summon Felguard (Summon)
            0,
     },
-    // Destruction tree, 7 abilities
+    // Destruction tree, 12 abilities
     {
+      187385, // Chaos Barrage
       116858, // Chaos Bolt
+      215409, // Chaos Bolt
+      215276, // Chaos Tear
        17962, // Conflagrate
        80240, // Havoc
          348, // Immolate
        29722, // Incinerate
         1454, // Life Tap
         5740, // Rain of Fire
+      196659, // Shadow Barrage
+      196639, // Shadowy Tear
            0,
     },
     {
@@ -828,8 +833,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        89808, // Singe Magic (Special Ability)
        19647, // Spell Lock (Special Ability)
        17735, // Suffering (Special Ability)
-      112042, // Threatening Presence (Special Ability)
       134477, // Threatening Presence (Special Ability)
+      112042, // Threatening Presence (Special Ability)
       171021, // Torch Magic (Special Ability)
         6360, // Whiplash (Special Ability)
            0,
@@ -1073,8 +1078,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       213011, // Charred Warblades
       203720, // Demon Spikes (Active Mitigation)
       218256, // Empower Wards
-      204021, // Fiery Brand
       209245, // Fiery Brand
+      204021, // Fiery Brand
       178740, // Immolation Aura
       189110, // Infernal Strike
       187827, // Metamorphosis

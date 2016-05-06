@@ -37,7 +37,7 @@ namespace
    Infernal Strike
    Torment
    Abyssal Strike, Last Resort, Nether Bond talents
-   Minor artifact traits
+   Infernal Force and Siphon Power artifact traits
    soul_fragments expr
 
    Needs Documenting --------------------------------------------------------
