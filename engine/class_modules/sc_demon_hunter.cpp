@@ -117,6 +117,8 @@ public:
   unsigned soul_fragments;
   unsigned lesser_soul_fragments;
 
+  std::vector<cooldown_t*> sigil_cooldowns; // For Defiler's Lost Vambraces legendary
+
   // Buffs
   struct
   {
@@ -239,6 +241,7 @@ public:
     const spell_data_t* immolation_aura;
     const spell_data_t* soul_cleave;
     const spell_data_t* riposte;
+    const spell_data_t* fragment_of_the_betrayers_prison;
   } spec;
 
   // Mastery Spells
@@ -321,7 +324,11 @@ public:
 
     // Vengeance
     cooldown_t* demon_spikes;
+    cooldown_t* fiery_brand;
+    cooldown_t* sigil_of_chains;
     cooldown_t* sigil_of_flame;
+    cooldown_t* sigil_of_misery;
+    cooldown_t* sigil_of_silence;
   } cooldown;
 
   // Gains
@@ -409,6 +416,26 @@ public:
   struct
   {
   } glyphs;
+
+  // Legion Legendaries
+  struct
+  {
+    // General
+    const special_effect_t* ph_throw_glaive_increased_damage_per_bounce;
+
+    // Havoc
+    const special_effect_t* anger_of_the_half_giants;
+    const special_effect_t* eternal_hunger;
+    const special_effect_t* loramus_thalipedes_sacrifice;
+    const special_effect_t* raddons_cascading_eyes;
+
+    // Vengeance
+    const special_effect_t* cloak_of_fel_flames;
+    const special_effect_t* fragment_of_the_betrayers_prison;
+    const special_effect_t* ph_immolation_aura_damage_lowers_cd_of_fiery_brand;
+    const special_effect_t* runemasters_pauldrons;
+    const special_effect_t* the_defilers_lost_vambraces;
+  } legendary;
 
   demon_hunter_t( sim_t* sim, const std::string& name, race_e r );
 
@@ -1234,10 +1261,16 @@ struct eye_beam_t : public demon_hunter_spell_t
     {
       demon_hunter_spell_t::impact( s );
 
-      if ( result_is_hit( s -> result ) &&
-           p() -> artifact.anguish_of_the_deceiver.rank() )
+      if ( result_is_hit( s -> result ) && p() -> artifact.anguish_of_the_deceiver.rank() )
       {
         td( s -> target ) -> debuffs.anguish -> trigger();
+      }
+
+      if ( p() -> legendary.raddons_cascading_eyes && s -> result == RESULT_CRIT )
+      {
+        timespan_t t = timespan_t::from_millis( p() -> legendary.raddons_cascading_eyes
+          -> driver() -> effectN( 1 ).base_value() );
+        p() -> cooldown.eye_beam -> adjust( -t );
       }
     }
   };
@@ -1440,6 +1473,12 @@ struct fel_rush_t : public demon_hunter_spell_t
     impact_action -> stats = stats;
 
     base_crit += p -> talent.fel_mastery -> effectN( 2 ).percent();
+
+    if ( p -> legendary.loramus_thalipedes_sacrifice )
+    {
+      base_add_multiplier *= 1.0 + p -> legendary.loramus_thalipedes_sacrifice
+        -> driver() -> effectN( 1 ).percent();
+    }
   }
 
   /* Don't record data for this action, since we don't want that 0
@@ -1675,6 +1714,29 @@ struct immolation_aura_damage_t : public demon_hunter_spell_t
     base_multiplier *= 1.0 + p -> talent.agonizing_flames -> effectN( 1 ).percent();\
     base_multiplier *= 1.0 + p -> artifact.aura_of_pain.percent();
   }
+
+  void impact( action_state_t* s ) override
+  {
+    demon_hunter_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      if ( p() -> legendary.ph_immolation_aura_damage_lowers_cd_of_fiery_brand ) 
+      {
+        assert( p() -> legendary.ph_immolation_aura_damage_lowers_cd_of_fiery_brand
+          -> driver() -> proc_chance() == 1.0 );
+
+        if ( p() -> rng().roll( p() -> legendary.ph_immolation_aura_damage_lowers_cd_of_fiery_brand
+          -> driver() -> effectN( 2 ).base_value() ) )
+        {
+          timespan_t t = timespan_t::from_seconds(
+            p() -> legendary.ph_immolation_aura_damage_lowers_cd_of_fiery_brand
+              -> driver() -> effectN( 1 ).base_value() );
+          p() -> cooldown.fiery_brand -> adjust( -t );
+        }
+      }
+    }
+  }
 };
 
 struct immolation_aura_t : public demon_hunter_spell_t
@@ -1793,6 +1855,14 @@ struct metamorphosis_t : public demon_hunter_spell_t
         p() -> cooldown.throw_glaive -> reset( false );
       }
       p() -> cooldown.vengeful_retreat -> reset( false );
+    }
+
+    if ( p() -> legendary.runemasters_pauldrons )
+    {
+      p() -> cooldown.sigil_of_chains -> reset( false );
+      p() -> cooldown.sigil_of_flame -> reset( false );
+      p() -> cooldown.sigil_of_misery -> reset( false );
+      p() -> cooldown.sigil_of_silence -> reset( false );
     }
   }
 };
@@ -2606,6 +2676,13 @@ struct demons_bite_t : public demon_hunter_attack_t
     fury.range = data().effectN( 3 ).die_sides() - 1.0;
 
     base_multiplier *= 1.0 + p -> artifact.demon_rage.percent();
+
+    if ( p -> legendary.anger_of_the_half_giants )
+    {
+      // Adds 1-20 fury
+      fury.base  += 1.0;
+      fury.range += p -> legendary.anger_of_the_half_giants -> driver() -> effectN( 1 ).resource( RESOURCE_FURY ) - 1.0;
+    }
   }
 
   void execute() override
@@ -3035,6 +3112,14 @@ struct soul_cleave_t : public demon_hunter_attack_t
     mh -> schedule_execute();
     oh -> schedule_execute();
     p() -> consume_soul_fragments();
+
+    if ( p() -> legendary.the_defilers_lost_vambraces )
+    {
+      unsigned roll = ( unsigned ) p() -> rng().range( 0, p() -> sigil_cooldowns.size() );
+      timespan_t t = timespan_t::from_seconds(
+        p() -> legendary.the_defilers_lost_vambraces -> driver() -> effectN( 1 ).base_value() );
+      p() -> sigil_cooldowns[ roll ] -> adjust( -t );
+    }
   }
 };
 
@@ -3075,6 +3160,12 @@ struct throw_glaive_t : public demon_hunter_attack_t
     }
 
     base_multiplier *= 1.0 + p -> artifact.sharpened_glaives.percent();
+
+    if ( p -> legendary.ph_throw_glaive_increased_damage_per_bounce )
+    {
+      base_add_multiplier *= 1.0 + p -> legendary.ph_throw_glaive_increased_damage_per_bounce
+        -> driver() -> effectN( 1 ).percent();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -3395,6 +3486,9 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r )
     melee_off_hand( nullptr ),
     chaos_blade_main_hand( nullptr ),
     chaos_blade_off_hand( nullptr ),
+    soul_fragments( 0 ),
+    lesser_soul_fragments( 0 )
+    sigil_cooldowns( 0 ),
     buff(),
     talent(),
     spec(),
@@ -3407,8 +3501,7 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r )
     pets(),
     options(),
     glyphs(),
-    soul_fragments( 0 ),
-    lesser_soul_fragments( 0 )
+    legendary(),
 {
   base.distance = 5.0;
 
@@ -3448,7 +3541,23 @@ void demon_hunter_t::create_cooldowns()
 
   // Vengeance
   cooldown.demon_spikes         = get_cooldown( "demon_spikes" );
+  cooldown.fiery_brand          = get_cooldown( "fiery_brand" );
+  cooldown.sigil_of_chains      = get_cooldown( "sigil_of_chains" );
   cooldown.sigil_of_flame       = get_cooldown( "sigil_of_flame" );
+  cooldown.sigil_of_misery      = get_cooldown( "sigil_of_misery" );
+  cooldown.sigil_of_silence     = get_cooldown( "sigil_of_silence" );
+
+  
+  if ( legendary.the_defilers_lost_vambraces )
+  {
+    sigil_cooldowns.push_back( cooldown.sigil_of_chains );
+    sigil_cooldowns.push_back( cooldown.sigil_of_flame );
+    sigil_cooldowns.push_back( cooldown.sigil_of_silence );
+    if ( talent.sigil_of_misery -> ok() )
+    {
+      sigil_cooldowns.push_back( cooldown.sigil_of_misery );
+    }
+  }
 }
 
 /* Construct gains
@@ -3649,6 +3758,16 @@ double demon_hunter_t::composite_leech() const
   if ( talent.soul_rending -> ok() && buff.metamorphosis -> check() )
   {
     l += talent.soul_rending -> effectN( 1 ).percent();
+  }
+
+  if ( legendary.eternal_hunger && buff.blur -> check() )
+  {
+    l += legendary.eternal_hunger -> driver() -> effectN( 1 ).percent();
+  }
+
+  if ( buff.demon_spikes -> check() ) // legendary effect
+  {
+    l += spec.fragment_of_the_betrayers_prison -> effectN( 1 ).percent();
   }
 
   return l;
@@ -4188,6 +4307,11 @@ void demon_hunter_t::init_spells()
   {
     active.charred_warblades = new charred_warblades_t( this );
   }
+
+  if ( legendary.fragment_of_the_betrayers_prison )
+  {
+    spec.fragment_of_the_betrayers_prison = find_spell( 217500 );
+  }
 }
 
 // demon_hunter_t::create_buffs =============================================
@@ -4222,7 +4346,8 @@ void demon_hunter_t::create_buffs()
     buff_creator_t( this, "blur", spec.blur -> effectN( 1 ).trigger() )
       .default_value(
         spec.blur -> effectN( 1 ).trigger() -> effectN( 3 ).percent() )
-      .cd( timespan_t::zero() );
+      .cd( timespan_t::zero() )
+      .add_invalidate( CACHE_LEECH );
 
   buff.chaos_blades = new chaos_blades_t( this );
 
@@ -4273,7 +4398,8 @@ void demon_hunter_t::create_buffs()
     buff_creator_t( this, "demon_spikes", find_spell( 203819 ) )
       .default_value( find_spell( 203819 ) -> effectN( 1 ).percent() )
       .refresh_behavior( BUFF_REFRESH_EXTEND )
-      .add_invalidate( CACHE_PARRY );
+      .add_invalidate( CACHE_PARRY )
+      .add_invalidate( CACHE_LEECH );
 
   buff.empower_wards =
     buff_creator_t( this, "empower_wards", find_specialization_spell( "Empower Wards" ) )
@@ -4544,8 +4670,6 @@ void demon_hunter_t::target_mitigation( school_e school, dmg_e dt,
 
   s -> result_amount *= 1.0 + buff.blur -> value();
 
-  // TOCHECK: Tooltip says magical damage but spell data says all damage.
-  s -> result_amount *= 1.0 + spec.demonic_wards -> effectN( 1 ).percent();
 
   s -> result_amount *= 1.0 + buff.painbringer -> stack_value();
 
@@ -4556,7 +4680,15 @@ void demon_hunter_t::target_mitigation( school_e school, dmg_e dt,
 
   if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
   {
+    // TOCHECK: Tooltip says magical damage but spell data says all damage.
+    s -> result_amount *= 1.0 + spec.demonic_wards -> effectN( 1 ).percent();
+
     s -> result_amount *= 1.0 + buff.empower_wards -> value();
+
+    if ( legendary.cloak_of_fel_flames && buff.immolation_aura -> check() )
+    {
+      s -> result_amount *= 1.0 - legendary.cloak_of_fel_flames -> driver() -> effectN( 1 ).percent();
+    }
   }
 
   if ( get_target_data( s -> action -> player ) -> dots.fiery_brand -> is_ticking() )
@@ -4639,14 +4771,91 @@ private:
   demon_hunter_t& p;
 };
 
+static void init_special_effect( demon_hunter_t*          player,
+                             specialization_e         spec,
+                             const special_effect_t*& ptr,
+                             const special_effect_t&  effect )
+{
+  // Ensure we have the spell data. This will prevent the trinket effect from working on live
+  // Simulationcraft. Also ensure correct specialization.
+  if ( ! player -> find_spell( effect.spell_id ) -> ok() ||
+       ( player -> specialization() != spec && spec != SPEC_NONE ) )
+  {
+    return;
+  }
+  // Set pointer, module considers non-null pointer to mean the effect is "enabled"
+  ptr = &( effect );
+}
+
+static void anger_of_the_half_giants( special_effect_t& effect )
+{
+  demon_hunter_t* s = debug_cast<demon_hunter_t*>( effect.player );
+  init_special_effect( s, DEMON_HUNTER_HAVOC, s -> legendary.anger_of_the_half_giants, effect );
+}
+
+static void cloak_of_fel_flames( special_effect_t& effect )
+{
+  demon_hunter_t* s = debug_cast<demon_hunter_t*>( effect.player );
+  init_special_effect( s, DEMON_HUNTER_VENGEANCE, s -> legendary.cloak_of_fel_flames, effect );
+}
+
+static void eternal_hunger( special_effect_t& effect )
+{
+  demon_hunter_t* s = debug_cast<demon_hunter_t*>( effect.player );
+  init_special_effect( s, DEMON_HUNTER_HAVOC, s -> legendary.eternal_hunger, effect );
+}
+
+static void fragment_of_the_betrayers_prison( special_effect_t& effect )
+{
+  demon_hunter_t* s = debug_cast<demon_hunter_t*>( effect.player );
+  init_special_effect( s, DEMON_HUNTER_VENGEANCE, s -> legendary.fragment_of_the_betrayers_prison, effect );
+}
+
+static void loramus_thalipedes_sacrifice( special_effect_t& effect )
+{
+  demon_hunter_t* s = debug_cast<demon_hunter_t*>( effect.player );
+  init_special_effect( s, DEMON_HUNTER_HAVOC, s -> legendary.loramus_thalipedes_sacrifice, effect );
+}
+
+static void ph_immolation_aura_damage_lowers_cd_of_fiery_brand( special_effect_t& effect )
+{
+  demon_hunter_t* s = debug_cast<demon_hunter_t*>( effect.player );
+  init_special_effect( s, DEMON_HUNTER_VENGEANCE,
+    s -> legendary.ph_immolation_aura_damage_lowers_cd_of_fiery_brand, effect );
+}
+
+static void ph_throw_glaive_increased_damage_per_bounce( special_effect_t& effect )
+{
+  demon_hunter_t* s = debug_cast<demon_hunter_t*>( effect.player );
+  init_special_effect( s, SPEC_NONE,
+    s -> legendary.ph_throw_glaive_increased_damage_per_bounce, effect );
+}
+
+static void raddons_cascading_eyes( special_effect_t& effect )
+{
+  demon_hunter_t* s = debug_cast<demon_hunter_t*>( effect.player );
+  init_special_effect( s, DEMON_HUNTER_HAVOC, s -> legendary.raddons_cascading_eyes, effect );
+}
+
+static void runemasters_pauldrons( special_effect_t& effect )
+{
+  demon_hunter_t* s = debug_cast<demon_hunter_t*>( effect.player );
+  init_special_effect( s, DEMON_HUNTER_VENGEANCE, s -> legendary.runemasters_pauldrons, effect );
+}
+
+static void the_defilers_lost_vambraces( special_effect_t& effect )
+{
+  demon_hunter_t* s = debug_cast<demon_hunter_t*>( effect.player );
+  init_special_effect( s, DEMON_HUNTER_VENGEANCE, s -> legendary.the_defilers_lost_vambraces, effect );
+}
+
 // MODULE INTERFACE ==================================================
 
 class demon_hunter_module_t : public module_t
 {
 public:
   demon_hunter_module_t() : module_t( DEMON_HUNTER )
-  {
-  }
+  {}
 
   player_t* create_player( sim_t* sim, const std::string& name,
                            race_e r = RACE_NONE ) const override
@@ -4657,29 +4866,29 @@ public:
     return p;
   }
 
-  bool valid() const override
-  {
-    return true;
-  }
+  bool valid() const override { return true; }
 
-  void init( player_t* ) const override
-  {
-  }
+  void init( player_t* ) const override {}
+
   void static_init() const override
   {
+    unique_gear::register_special_effect( 208827, anger_of_the_half_giants );
+    unique_gear::register_special_effect( 217735, cloak_of_fel_flames );
+    unique_gear::register_special_effect( 208985, eternal_hunger );
+    unique_gear::register_special_effect( 217496, fragment_of_the_betrayers_prison );
+    unique_gear::register_special_effect( 209002, loramus_thalipedes_sacrifice );
+    unique_gear::register_special_effect( 210970, ph_immolation_aura_damage_lowers_cd_of_fiery_brand );
+    unique_gear::register_special_effect( 208826, ph_throw_glaive_increased_damage_per_bounce );
+    unique_gear::register_special_effect( 215149, raddons_cascading_eyes );
+    unique_gear::register_special_effect( 210867, runemasters_pauldrons );
+    unique_gear::register_special_effect( 210840, the_defilers_lost_vambraces );
   }
 
-  void register_hotfixes() const override
-  {
-  }
+  void register_hotfixes() const override {}
 
-  void combat_begin( sim_t* ) const override
-  {
-  }
+  void combat_begin( sim_t* ) const override {}
 
-  void combat_end( sim_t* ) const override
-  {
-  }
+  void combat_end( sim_t* ) const override {}
 };
 
 }  // UNNAMED NAMESPACE
