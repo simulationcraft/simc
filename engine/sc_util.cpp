@@ -739,6 +739,7 @@ const char* util::school_type_string( school_e school )
 {
   switch ( school )
   {
+    case SCHOOL_ASTRAL:           return "astral";
     case SCHOOL_ARCANE:           return "arcane";
     case SCHOOL_CHAOS:            return "chaos";
     case SCHOOL_FIRE:             return "fire";
@@ -765,7 +766,6 @@ const char* util::school_type_string( school_e school )
     case SCHOOL_SPELLSTRIKE:      return "spellstrike";
     case SCHOOL_DIVINE:           return "divine";
     case SCHOOL_SPELLFIRE:        return "spellfire";
-    case SCHOOL_SPELLSTORM:       return "spellstorm";
     case SCHOOL_SPELLFROST:       return "spellfrost";
     case SCHOOL_SPELLSHADOW:      return "spellshadow";
     case SCHOOL_ELEMENTAL:        return "elemental";

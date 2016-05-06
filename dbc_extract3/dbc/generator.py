@@ -1338,6 +1338,7 @@ class SpellDataGenerator(DataGenerator):
 		  ( 213557, 2 ),       # Protection of Ashamane ICD (Fangs of Ashamane artifact trait) 
 		  ( 211547, 1 ),       # Fury of Elune move spell
 		  ( 213771, 3 ),       # Swipe (Bear)
+		  ( 209406, 1 ),       # Oneth's Intuition buff
         ),
 		
 		# Demon Hunter:

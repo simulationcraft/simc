@@ -356,7 +356,7 @@ rgb school_color( school_e type )
       return school_color( SCHOOL_SHADOW ) + school_color( SCHOOL_FROST );
     case SCHOOL_HOLYFROST:
       return school_color( SCHOOL_HOLY ) + school_color( SCHOOL_FROST );
-    case SCHOOL_SPELLSTORM:
+    case SCHOOL_ASTRAL:
       return school_color( SCHOOL_ARCANE ) + school_color( SCHOOL_NATURE );
     case SCHOOL_SPELLSHADOW:
       return school_color( SCHOOL_ARCANE ) + school_color( SCHOOL_SHADOW );

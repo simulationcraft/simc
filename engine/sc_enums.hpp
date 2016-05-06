@@ -507,7 +507,7 @@ enum school_e
   SCHOOL_SPELLSTRIKE,
   SCHOOL_DIVINE,
   SCHOOL_SPELLFIRE,
-  SCHOOL_SPELLSTORM,
+  SCHOOL_ASTRAL,
   SCHOOL_SPELLFROST,
   SCHOOL_SPELLSHADOW,
   SCHOOL_ELEMENTAL,
@@ -559,7 +559,7 @@ const int64_t SCHOOL_SPELL_MASK(
     ( int64_t( 1 ) << SCHOOL_SHADOWFROST ) |
     ( int64_t( 1 ) << SCHOOL_SPELLSTRIKE ) | ( int64_t( 1 ) << SCHOOL_DIVINE ) |
     ( int64_t( 1 ) << SCHOOL_SPELLFIRE ) |
-    ( int64_t( 1 ) << SCHOOL_SPELLSTORM ) |
+    ( int64_t( 1 ) << SCHOOL_ASTRAL ) |
     ( int64_t( 1 ) << SCHOOL_SPELLFROST ) |
     ( int64_t( 1 ) << SCHOOL_SPELLSHADOW ) |
     ( int64_t( 1 ) << SCHOOL_ELEMENTAL ) |

@@ -743,7 +743,7 @@ uint32_t dbc::get_school_mask( school_e s )
     case SCHOOL_SPELLSTRIKE   : return 0x41;
     case SCHOOL_DIVINE        : return 0x42;
     case SCHOOL_SPELLFIRE     : return 0x44;
-    case SCHOOL_SPELLSTORM    : return 0x48;
+    case SCHOOL_ASTRAL        : return 0x48;
     case SCHOOL_SPELLFROST    : return 0x50;
     case SCHOOL_SPELLSHADOW   : return 0x60;
     case SCHOOL_ELEMENTAL     : return 0x1c;
@@ -783,7 +783,7 @@ school_e dbc::get_school_type( uint32_t school_mask )
     case 0x41: return SCHOOL_SPELLSTRIKE;
     case 0x42: return SCHOOL_DIVINE;
     case 0x44: return SCHOOL_SPELLFIRE;
-    case 0x48: return SCHOOL_SPELLSTORM;
+    case 0x48: return SCHOOL_ASTRAL;
     case 0x50: return SCHOOL_SPELLFROST;
     case 0x60: return SCHOOL_SPELLSHADOW;
     case 0x1c: return SCHOOL_ELEMENTAL;
