@@ -1456,6 +1456,12 @@ struct fel_rush_t : public demon_hunter_spell_t
       aoe = -1;
       dual = background = true;
       may_miss = may_dodge = may_block = false;
+
+      if ( p -> legendary.loramus_thalipedes_sacrifice )
+      {
+        base_add_multiplier *= 1.0 + p -> legendary.loramus_thalipedes_sacrifice
+          -> driver() -> effectN( 1 ).percent();
+      }
     }
   };
 
@@ -1473,12 +1479,6 @@ struct fel_rush_t : public demon_hunter_spell_t
     impact_action -> stats = stats;
 
     base_crit += p -> talent.fel_mastery -> effectN( 2 ).percent();
-
-    if ( p -> legendary.loramus_thalipedes_sacrifice )
-    {
-      base_add_multiplier *= 1.0 + p -> legendary.loramus_thalipedes_sacrifice
-        -> driver() -> effectN( 1 ).percent();
-    }
   }
 
   /* Don't record data for this action, since we don't want that 0
