@@ -21,6 +21,7 @@ namespace { // UNNAMED NAMESPACE
   Predator vs. adds
   Artifact utility traits
   Brutal Slash hasted recharge
+  Check Luffa-Wrapped Grips (what procs it)
 
   Balance ===================================================================
   Stellar Drift cast while moving
@@ -358,6 +359,7 @@ public:
     buff_t* elunes_guidance;
     buff_t* feral_instinct;
     buff_t* incarnation_cat;
+    buff_t* ph_tigers_fury_restores_energy; // Legion Legendary
     buff_t* predatory_swiftness;
     buff_t* protection_of_ashamane;
     buff_t* savage_roar;
@@ -434,6 +436,7 @@ public:
     gain_t* energy_refund;
     gain_t* elunes_guidance;
     gain_t* moonfire;
+    gain_t* ph_tigers_fury_restores_energy; // Legion Legendary
     gain_t* rake;
     gain_t* shred;
     gain_t* swipe_cat;
@@ -478,6 +481,7 @@ public:
 
     // Feral
     proc_t* ashamanes_bite;
+    proc_t* luffawrapped_grips;
     proc_t* predator;
     proc_t* predator_wasted;
     proc_t* primal_fury;
@@ -706,14 +710,14 @@ public:
     const special_effect_t* impeccable_fel_essence;
 
     // Feral
-    const special_effect_t* ph_bite_refreshes_bleeds; // NYI
-    const special_effect_t* luffawrapped_grips; // NYI
-    const special_effect_t* ph_increase_max_energy; // NYI
-    const special_effect_t* ph_tigers_fury_restores_energy; // NYI
+    const special_effect_t* ph_bite_refreshes_bleeds;
+    const special_effect_t* luffawrapped_grips;
+    const special_effect_t* ph_increase_max_energy;
+    const special_effect_t* ph_tigers_fury_restores_energy;
 
     // Guardian
     const special_effect_t* elizes_everlasting_encasement;
-    const special_effect_t* skysecs_hold; // NYI
+    const special_effect_t* skysecs_hold;
 
     // Resto (NYI)
     const special_effect_t* tearstone_of_elune;
@@ -1461,7 +1465,7 @@ public:
       trigger_gushing_wound( d -> target, d -> state -> result_amount );
   }
 
-  virtual void schedule_execute( action_state_t* s ) override
+  virtual void schedule_execute( action_state_t* s = nullptr ) override
   {
     if ( ! check_form_restriction() )
     {
@@ -2180,6 +2184,7 @@ public:
   gain_t* action_gain;
   bool    consumes_clearcasting;
   bool    trigger_tier17_2pc;
+  bool    trigger_luffawrapped_grips;
   struct {
     bool direct, tick;
   } razor_claws;
@@ -2207,6 +2212,9 @@ public:
 
     razor_claws.direct = data().affected_by( p -> mastery.razor_claws -> effectN( 1 ) );
     razor_claws.tick = data().affected_by( p -> mastery.razor_claws -> effectN( 2 ) );
+
+    trigger_luffawrapped_grips = p -> legendary.luffawrapped_grips != nullptr &&
+      dbc::is_school( school, SCHOOL_PHYSICAL );
   }
 
   void parse_special_effect_data()
@@ -2234,22 +2242,6 @@ public:
     }
   }
 
-  virtual double cost() const override
-  {
-    double c = base_t::cost();
-
-    if ( c == 0 )
-      return 0;
-
-    if ( consumes_clearcasting && current_resource() == RESOURCE_ENERGY && p() -> buff.clearcasting -> check() )
-      return 0;
-
-    c *= 1.0 + p() -> buff.berserk -> check_value();
-    c *= 1.0 + p() -> buff.incarnation_cat -> check_value();
-
-    return c;
-  }
-
   // For effects that specifically trigger only when "prowling."
   virtual bool prowling() const
   {
@@ -2269,65 +2261,20 @@ public:
     return prowl || shadowmeld;
   }
 
-  virtual void execute() override
+  virtual double cost() const override
   {
-    attack_critical = false;
+    double c = base_t::cost();
 
-    base_t::execute();
+    if ( c == 0 )
+      return 0;
 
-    if ( consumes_combo_points )
-    {
-      if ( player -> sets.has_set_bonus( SET_MELEE, T15, B2 ) &&
-           rng().roll( cost() * 0.15 ) )
-      {
-        p() -> proc.tier15_2pc_melee -> occur();
-        p() -> resource_gain( RESOURCE_COMBO_POINT, 1, p() -> gain.feral_tier15_2pc );
-      }
+    if ( consumes_clearcasting && current_resource() == RESOURCE_ENERGY && p() -> buff.clearcasting -> check() )
+      return 0;
 
-      if ( p() -> buff.feral_tier16_4pc -> up() )
-      {
-        p() -> resource_gain( RESOURCE_COMBO_POINT, p() -> buff.feral_tier16_4pc -> check_value(), p() -> gain.feral_tier16_4pc );
-        p() -> buff.feral_tier16_4pc -> expire();
-      }
-    }
+    c *= 1.0 + p() -> buff.berserk -> check_value();
+    c *= 1.0 + p() -> buff.incarnation_cat -> check_value();
 
-    if ( combo_point_gain && targets_hit > 0 )
-    {
-      p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, action_gain );
-
-      if ( p() -> spec.primal_fury -> ok() && attack_critical )
-        trigger_primal_fury();
-    }
-
-    if ( ! result_is_hit( execute_state -> result ) )
-      trigger_energy_refund();
-
-    if ( harmful )
-    {
-      p() -> buff.prowl -> expire();
-      p() -> buffs.shadowmeld -> expire();
-
-      // Track benefit of damage buffs
-      p() -> buff.tigers_fury -> up();
-      p() -> buff.savage_roar -> up();
-      p() -> buff.feral_instinct -> up();
-      if ( special && base_costs[ RESOURCE_ENERGY ] > 0 )
-        p() -> buff.berserk -> up();
-    }
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    base_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      if ( s -> result == RESULT_CRIT )
-        attack_critical = true;
-
-      if ( consumes_combo_points && p() -> spec.predatory_swiftness -> ok() )
-        p() -> buff.predatory_swiftness -> trigger( 1, 1, p() -> resources.current[ RESOURCE_COMBO_POINT ] * 0.20 );
-    }
+    return c;
   }
 
   virtual void consume_resource() override
@@ -2372,20 +2319,6 @@ public:
                               consumed * p() -> talent.soul_of_the_forest -> effectN( 1 ).resource( RESOURCE_ENERGY ),
                               p() -> gain.soul_of_the_forest );
     }
-  }
-
-  virtual bool ready() override
-  {
-    if ( ! base_t::ready() )
-      return false;
-
-    if ( requires_stealth && ! stealthed() )
-      return false;
-
-    if ( consumes_combo_points && p() -> resources.current[ RESOURCE_COMBO_POINT ] < 1 )
-      return false;
-
-    return true;
   }
 
   virtual double composite_target_crit( player_t* t ) const override
@@ -2447,11 +2380,18 @@ public:
     return tm;
   }
 
-  void trigger_energy_refund()
+  virtual void impact( action_state_t* s ) override
   {
-    double energy_restored = resource_consumed * 0.80;
+    base_t::impact( s );
 
-    player -> resource_gain( RESOURCE_ENERGY, energy_restored, p() -> gain.energy_refund );
+    if ( result_is_hit( s -> result ) )
+    {
+      if ( s -> result == RESULT_CRIT )
+        attack_critical = true;
+
+      if ( consumes_combo_points && p() -> spec.predatory_swiftness -> ok() )
+        p() -> buff.predatory_swiftness -> trigger( 1, 1, p() -> resources.current[ RESOURCE_COMBO_POINT ] * 0.20 );
+    }
   }
 
   void tick( dot_t* d ) override
@@ -2465,6 +2405,82 @@ public:
 
     if ( p() -> predator_rppm_rate && p() -> talent.predator -> ok() )
       trigger_predator();
+
+    if ( trigger_luffawrapped_grips && d -> state -> result == RESULT_CRIT &&
+        d -> state -> result_amount > 0 &&
+        p() -> rng().roll( p() -> legendary.luffawrapped_grips -> driver() -> proc_chance() ) )
+    {
+      p() -> proc.luffawrapped_grips -> occur();
+      trigger_primal_fury();
+    }
+  }
+
+  virtual void execute() override
+  {
+    attack_critical = false;
+
+    base_t::execute();
+
+    if ( consumes_combo_points )
+    {
+      if ( player -> sets.has_set_bonus( SET_MELEE, T15, B2 ) &&
+           rng().roll( cost() * 0.15 ) )
+      {
+        p() -> proc.tier15_2pc_melee -> occur();
+        p() -> resource_gain( RESOURCE_COMBO_POINT, 1, p() -> gain.feral_tier15_2pc );
+      }
+
+      if ( p() -> buff.feral_tier16_4pc -> up() )
+      {
+        p() -> resource_gain( RESOURCE_COMBO_POINT, p() -> buff.feral_tier16_4pc -> check_value(), p() -> gain.feral_tier16_4pc );
+        p() -> buff.feral_tier16_4pc -> expire();
+      }
+    }
+
+    if ( combo_point_gain && targets_hit > 0 )
+    {
+      p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, action_gain );
+
+      if ( p() -> spec.primal_fury -> ok() && attack_critical )
+        trigger_primal_fury();
+    }
+
+    if ( ! result_is_hit( execute_state -> result ) )
+      trigger_energy_refund();
+
+    if ( harmful )
+    {
+      p() -> buff.prowl -> expire();
+      p() -> buffs.shadowmeld -> expire();
+
+      // Track benefit of damage buffs
+      p() -> buff.tigers_fury -> up();
+      p() -> buff.savage_roar -> up();
+      p() -> buff.feral_instinct -> up();
+      if ( special && base_costs[ RESOURCE_ENERGY ] > 0 )
+        p() -> buff.berserk -> up();
+    }
+  }
+
+  virtual bool ready() override
+  {
+    if ( ! base_t::ready() )
+      return false;
+
+    if ( requires_stealth && ! stealthed() )
+      return false;
+
+    if ( consumes_combo_points && p() -> resources.current[ RESOURCE_COMBO_POINT ] < 1 )
+      return false;
+
+    return true;
+  }
+
+  void trigger_energy_refund()
+  {
+    double energy_restored = resource_consumed * 0.80;
+
+    player -> resource_gain( RESOURCE_ENERGY, energy_restored, p() -> gain.energy_refund );
   }
 
   void trigger_primal_fury()
@@ -2790,28 +2806,32 @@ struct ferocious_bite_t : public cat_attack_t
     max_excess_energy = -1 * data().effectN( 2 ).base_value();
   }
 
-  void impact( action_state_t* state ) override
+  void impact( action_state_t* s ) override
   {
-    cat_attack_t::impact( state );
+    cat_attack_t::impact( s );
 
-    if ( result_is_hit( state -> result ) )
+    if ( result_is_hit( s -> result ) )
     {
-      druid_td_t* target_td = td( state -> target );
+      double blood_in_the_water = p() -> sets.has_set_bonus( SET_MELEE, T13, B2 ) ?
+        p() -> sets.set( SET_MELEE, T13, B2 ) -> effectN( 2 ).base_value() : 25.0;
 
-      if ( target_td -> dots.rip -> is_ticking() )
+      if ( s -> target -> health_percentage() <= blood_in_the_water )
       {
-        double blood_in_the_water = p() -> sets.has_set_bonus( SET_MELEE, T13, B2 ) ? p() -> sets.set( SET_MELEE, T13,
-                                    B2 ) -> effectN( 2 ).base_value() : 25.0;
+        td( s -> target ) -> dots.rip -> refresh_duration( 0 );
 
-        if ( state -> target -> health_percentage() <= blood_in_the_water )
-          target_td -> dots.rip -> refresh_duration( 0 );
-
-        if ( sabertooth_total > timespan_t::zero() )
-          target_td -> dots.rip -> extend_duration( sabertooth_total, p() -> spec.rip -> duration() * 1.3 ); // TOCHECK: Sabertooth before or after BitW?
+        if ( p() -> legendary.ph_bite_refreshes_bleeds )
+        {
+          // TOCHECK
+          td( s -> target ) -> dots.rake -> refresh_duration( 0 );
+          td( s -> target ) -> dots.thrash_cat -> refresh_duration( 0 );
+        }
       }
 
+      if ( sabertooth_total > timespan_t::zero() )
+        td( s -> target ) -> dots.rip -> extend_duration( sabertooth_total, p() -> spec.rip -> duration() * 1.3 ); // TOCHECK: Sabertooth before or after BitW?
+
       // Ashamane's Bite procs after Sabertooth.
-      trigger_ashamanes_bite( state );
+      trigger_ashamanes_bite( s );
     }
   }
 
@@ -3278,6 +3298,9 @@ struct tigers_fury_t : public cat_attack_t
       p() -> buff.feral_tier16_4pc -> trigger();
 
     p() -> buff.ashamanes_energy -> trigger();
+    
+    if ( p() -> legendary.ph_tigers_fury_restores_energy )
+      p() -> buff.ph_tigers_fury_restores_energy -> trigger();
   }
 };
 
@@ -3823,9 +3846,30 @@ struct frenzied_regeneration_t : public druid_heal_t
     }
   };
 
+  struct skysecs_hold_t : public druid_heal_t
+  {
+    skysecs_hold_t( druid_t* p ) :
+      druid_heal_t( "skysecs_hold", p,
+        p -> legendary.skysecs_hold -> driver() -> effectN( 1 ).trigger() )
+    {
+      background = true;
+      hasted_ticks = may_crit = tick_may_crit = false;
+      target = p;
+      tick_pct_heal = data().effectN( 1 ).percent();
+    }
+
+    void init() override
+    {
+      druid_heal_t::init();
+
+      snapshot_flags = update_flags = 0;
+    }
+  };
+
   double heal_pct, min_pct;
   timespan_t time_window;
   frenzied_regeneration_ignite_t* ignite;
+  skysecs_hold_t* skysecs_hold;
 
   frenzied_regeneration_t( druid_t* p, const std::string& options_str ) :
     druid_heal_t( "frenzied_regeneration_driver", p, p -> find_specialization_spell( "Frenzied Regeneration" ), options_str )
@@ -3839,6 +3883,9 @@ struct frenzied_regeneration_t : public druid_heal_t
     min_pct = data().effectN( 4 ).percent();
     ignite = new frenzied_regeneration_ignite_t( p, &data() );
     dot_duration = timespan_t::zero();
+
+    if ( p -> legendary.skysecs_hold )
+      skysecs_hold = new skysecs_hold_t( p );
   }
 
   void init() override
@@ -3851,6 +3898,9 @@ struct frenzied_regeneration_t : public druid_heal_t
   void execute() override
   {
     druid_heal_t::execute();
+
+    if ( p() -> legendary.skysecs_hold )
+      skysecs_hold -> schedule_execute();
 
     if ( p() -> buff.guardian_of_elune -> up() )
       p() -> buff.guardian_of_elune -> expire();
@@ -6246,7 +6296,9 @@ void druid_t::init_base_stats()
   resources.base[ RESOURCE_ASTRAL_POWER ] = 100;
   resources.base[ RESOURCE_ENERGY       ] = 100
       + sets.set( DRUID_FERAL, T18, B2 ) -> effectN( 2 ).resource( RESOURCE_ENERGY )
-      + talent.moment_of_clarity -> effectN( 3 ).percent();
+      + talent.moment_of_clarity -> effectN( 3 ).percent()
+      + ( legendary.ph_increase_max_energy ? legendary.ph_increase_max_energy
+          -> driver() -> effectN( 1 ).resource( RESOURCE_ENERGY ) : 0.0 );
 
   resources.active_resource[ RESOURCE_ASTRAL_POWER ] = specialization() == DRUID_BALANCE;
   resources.active_resource[ RESOURCE_HEALTH       ] = primary_role() == ROLE_TANK || talent.guardian_affinity -> ok();
@@ -6953,6 +7005,7 @@ void druid_t::init_gains()
   gain.elunes_guidance       = get_gain( "elunes_guidance"       );
   gain.moonfire              = get_gain( "moonfire"              );
   gain.clearcasting          = get_gain( "clearcasting"          );
+  gain.ph_tigers_fury_restores_energy = get_gain( "ph_tigers_fury_restores_energy" );
   gain.primal_fury           = get_gain( "primal_fury"           );
   gain.rake                  = get_gain( "rake"                  );
   gain.shred                 = get_gain( "shred"                 );
@@ -6989,6 +7042,7 @@ void druid_t::init_procs()
   proc.clearcasting             = get_proc( "clearcasting"           );
   proc.clearcasting_wasted      = get_proc( "clearcasting_wasted"    );
   proc.gore                     = get_proc( "gore"                   );
+  proc.luffawrapped_grips       = get_proc( "luffawrapped_grips"     );
   proc.predator                 = get_proc( "predator"               );
   proc.predator_wasted          = get_proc( "predator_wasted"        );
   proc.primal_fury              = get_proc( "primal_fury"            );
@@ -8109,6 +8163,13 @@ static void ph_tigers_fury_restores_energy( special_effect_t& effect )
 {
   druid_t* s = debug_cast<druid_t*>( effect.player );
   init_special_effect( s, DRUID_FERAL, s -> legendary.ph_tigers_fury_restores_energy, effect );
+
+  s -> buff.ph_tigers_fury_restores_energy =
+    buff_creator_t( s, "ph_tigers_fury_restores_energy_over_time", effect.driver() -> effectN( 1 ).trigger() )
+    .tick_callback( [ s ]( buff_t* b, int, const timespan_t& ) {
+      b -> player -> resource_gain( RESOURCE_ENERGY, b -> data().effectN( 1 ).resource( RESOURCE_ENERGY ),
+        debug_cast<druid_t*>( b -> player ) -> gain.ph_tigers_fury_restores_energy );
+    } );
 }
 
 static void promise_of_elune_the_moon_goddess( special_effect_t& effect )
