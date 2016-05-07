@@ -1784,6 +1784,7 @@ struct wake_of_ashes_t : public paladin_spell_t
     may_crit = true;
     aoe = -1;
     hasted_ticks = false;
+    tick_may_crit = true;
 
     if ( p -> artifact.ashes_to_ashes.rank() == 0 )
     {
