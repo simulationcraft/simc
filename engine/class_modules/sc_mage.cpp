@@ -711,9 +711,10 @@ struct arcane_familiar_pet_t : public pet_t
   struct arcane_assault_t : public mage_pet_spell_t
   {
     arcane_assault_t( arcane_familiar_pet_t* p, const std::string& options_str ) :
-      mage_pet_spell_t( "arcane_assault", p, p -> find_spell( 225119 ) )
+      mage_pet_spell_t( "arcane_assault", p, p -> find_spell( 205235 ) )
     {
       parse_options( options_str );
+      spell_power_mod.direct = p -> find_spell( 225119 ) -> effectN( 1 ).sp_coeff();
     }
   };
   void arise() override
@@ -733,7 +734,7 @@ struct arcane_familiar_pet_t : public pet_t
 
   }
   arcane_familiar_pet_t( sim_t* sim, mage_t* owner ) :
-    pet_t( sim, owner, "mirror_image", true )
+    pet_t( sim, owner, "arcane_familiar", true )
   {
     owner_coeff.sp_from_sp = 1.00;
   }
@@ -4599,7 +4600,7 @@ struct summon_water_elemental_t : public frost_mage_spell_t
 struct summon_arcane_familiar_t : public arcane_mage_spell_t
 {
   summon_arcane_familiar_t( mage_t* p, const std::string& options_str ) :
-    arcane_mage_spell_t( "arcane_familiar", p, p -> talents.arcane_familiar )
+    arcane_mage_spell_t( "summon_arcane_familiar", p, p -> talents.arcane_familiar )
   {
     parse_options( options_str );
     harmful = false;
@@ -5326,22 +5327,23 @@ action_t* mage_t::create_action( const std::string& name,
   using namespace actions;
 
   // Arcane
-  if ( name == "arcane_barrage"    ) return new          arcane_barrage_t( this, options_str );
-  if ( name == "arcane_blast"      ) return new            arcane_blast_t( this, options_str );
-  if ( name == "arcane_explosion"  ) return new        arcane_explosion_t( this, options_str );
-  if ( name == "arcane_missiles"   ) return new         arcane_missiles_t( this, options_str );
-  if ( name == "arcane_orb"        ) return new              arcane_orb_t( this, options_str );
-  if ( name == "arcane_power"      ) return new            arcane_power_t( this, options_str );
-  if ( name == "charged_up"        ) return new             charged_up_t( this, options_str  );
-  if ( name == "evocation"         ) return new               evocation_t( this, options_str );
-  if ( name == "mark_of_aluneth"   ) return new         mark_of_aluneth_t( this, options_str );
-  if ( name == "nether_tempest"    ) return new          nether_tempest_t( this, options_str );
-  if ( name == "presence_of_mind"  ) return new        presence_of_mind_t( this, options_str );
-  if ( name == "slow"              ) return new                    slow_t( this, options_str );
-  if ( name == "supernova"         ) return new               supernova_t( this, options_str );
+  if ( name == "arcane_barrage"    ) return new             arcane_barrage_t( this, options_str );
+  if ( name == "arcane_blast"      ) return new               arcane_blast_t( this, options_str );
+  if ( name == "arcane_explosion"  ) return new           arcane_explosion_t( this, options_str );
+  if ( name == "arcane_missiles"   ) return new            arcane_missiles_t( this, options_str );
+  if ( name == "arcane_orb"        ) return new                 arcane_orb_t( this, options_str );
+  if ( name == "arcane_power"      ) return new               arcane_power_t( this, options_str );
+  if ( name == "charged_up"        ) return new                charged_up_t( this, options_str  );
+  if ( name == "evocation"         ) return new                  evocation_t( this, options_str );
+  if ( name == "mark_of_aluneth"   ) return new            mark_of_aluneth_t( this, options_str );
+  if ( name == "nether_tempest"    ) return new             nether_tempest_t( this, options_str );
+  if ( name == "presence_of_mind"  ) return new           presence_of_mind_t( this, options_str );
+  if ( name == "slow"              ) return new                       slow_t( this, options_str );
+  if ( name == "summon_arcane_familiar") return new summon_arcane_familiar_t( this, options_str );
+  if ( name == "supernova"         ) return new                  supernova_t( this, options_str );
 
-  if ( name == "start_burn_phase"  ) return new        start_burn_phase_t( this, options_str );
-  if ( name == "stop_burn_phase"   ) return new         stop_burn_phase_t( this, options_str );
+  if ( name == "start_burn_phase"  ) return new           start_burn_phase_t( this, options_str );
+  if ( name == "stop_burn_phase"   ) return new            stop_burn_phase_t( this, options_str );
 
   // Fire
   if ( name == "blast_wave"        ) return new              blast_wave_t( this, options_str );
@@ -5456,6 +5458,13 @@ void mage_t::create_pets()
       pets.temporal_heroes[ i ] = new pets::temporal_hero_t( sim, this );
       pets::temporal_hero_t::randomize_last_summoned( this );
     }
+  }
+
+  if ( specialization() == MAGE_ARCANE && talents.arcane_familiar -> ok()
+                        && find_action( "summon_arcane_familiar" ) )
+  {
+    pets.arcane_familiar = new pets::arcane_familiar_pet_t( sim, this );
+
   }
 }
 
