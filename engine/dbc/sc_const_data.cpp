@@ -585,7 +585,7 @@ std::string dbc::specialization_string( specialization_e spec )
     case HUNTER_MARKSMANSHIP: return "marksmanship";
     case HUNTER_SURVIVAL: return "survival";
     case ROGUE_ASSASSINATION: return "assassination";
-    case ROGUE_OUTLAW: return "combat";
+    case ROGUE_OUTLAW: return "outlaw";
     case ROGUE_SUBTLETY: return "subtlety";
     case PRIEST_DISCIPLINE: return "discipline";
     case PRIEST_HOLY: return "holy";

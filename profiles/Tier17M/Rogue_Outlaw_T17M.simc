@@ -5,7 +5,7 @@ timeofday=night
 role=attack
 position=back
 talents=3000031
-spec=combat
+spec=outlaw
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
