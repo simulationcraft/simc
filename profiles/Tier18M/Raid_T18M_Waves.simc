@@ -4,11 +4,11 @@ enemy=fluffy_pillow
 # Raid Tier18M
 
 # Death Knight
-Death_Knight_Frost_1h_T18M.simc
-Death_Knight_Frost_2h_T18M.simc
+#Death_Knight_Frost_1h_T18M.simc
+#Death_Knight_Frost_2h_T18M.simc
 talents=3001001
 trinket1=discordant_chorus,id=124237,bonus_id=567
-Death_Knight_Unholy_T18M.simc
+#Death_Knight_Unholy_T18M.simc
 trinket1=reapers_harvest,id=124513,bonus_id=567
 
 # Druid

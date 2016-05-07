@@ -12,10 +12,10 @@ optimal_raid=1
 tmi_boss=TMI_Standard_Boss_T17H
 # Raid Tier17N
 
-Death_Knight_Frost_1h_T17H.simc
-Death_Knight_Frost_2h_T17H.simc
-Death_Knight_Unholy_T17H.simc
-Death_Knight_Blood_T17H.simc
+#Death_Knight_Frost_1h_T17H.simc
+#Death_Knight_Frost_2h_T17H.simc
+#Death_Knight_Unholy_T17H.simc
+#Death_Knight_Blood_T17H.simc
 
 Druid_Feral_T17H.simc
 Druid_Balance_T17H.simc
