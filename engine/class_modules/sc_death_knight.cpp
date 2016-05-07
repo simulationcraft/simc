@@ -6604,17 +6604,17 @@ void death_knight_t::default_apl_blood()
     for ( size_t i = 0; i < get_racial_actions().size(); i++ )
     {
       if ( get_racial_actions()[i] == "blood_fury" )
-        def -> add_action( get_racial_actions()[i] + ",if=target.time_to_die>120|buff.draenic_armor_potion.remains<=buff.blood_fury.duration" );
+        def -> add_action( get_racial_actions()[i] + ",if=target.time_to_die>120|buff.draenic_strength_potion.remains<=buff.blood_fury.duration" );
       else if ( get_racial_actions()[i] == "berserking" )
         def -> add_action( get_racial_actions()[i] + ",if=buff.dancing_rune_weapon.up" );
     }
-    def -> add_action( this, "Dancing Rune Weapon", "if=target.time_to_die>90|buff.draenic_armor_potion.remains<=buff.dancing_rune_weapon.duration" );
+    def -> add_action( this, "Dancing Rune Weapon", "if=target.time_to_die>90|buff.draenic_strength_potion.remains<=buff.dancing_rune_weapon.duration" );
     if ( sim -> allow_potions && true_level >= 80 )
-      def -> add_action( potion_str + ",if=target.time_to_die<(buff.draenic_armor_potion.duration+13)" );
+      def -> add_action( potion_str + ",if=target.time_to_die<(buff.draenic_strength_potion.duration+13)" );
     for ( size_t i = 0; i < num_items; i++ )
     {
       if ( items[i].name_str == "tablet_of_turnbuckle_teamwork" || items[i].name_str == "vial_of_convulsive_shadows" )
-        def -> add_action( "use_item,name=" + items[i].name_str + ",if=target.time_to_die>120|buff.draenic_armor_potion.remains<21" );
+        def -> add_action( "use_item,name=" + items[i].name_str + ",if=target.time_to_die>120|buff.draenic_strength_potion.remains<21" );
       else if ( items[i].name_str == "blast_furnace_door" )
       {
         def -> add_action( "blood_fury,if=buff.blast_furnace.up" );

@@ -7300,9 +7300,7 @@ void monk_t::apl_pre_brewmaster()
 
   if ( sim -> allow_potions && true_level >= 80 )
   {
-    if ( true_level >= 90 )
-      pre -> add_action( "potion,name=draenic_armor" );
-    else if ( true_level >= 85 )
+    if ( true_level >= 85 )
       pre -> add_action( "potion,name=virmens_bite" );
     else
       pre -> add_action( "potion,name=tolvir" );
@@ -7444,9 +7442,7 @@ void monk_t::apl_combat_brewmaster()
   
   if ( sim -> allow_potions )
   {
-    if ( true_level >= 90 )
-      def -> add_action( "potion,name=draenic_armor,if=(buff.fortifying_brew.down&(buff.dampen_harm.down|buff.diffuse_magic.down))" );
-    else if ( true_level >= 85 )
+    if ( true_level >= 85 )
       def -> add_action( "potion,name=virmens_bite,if=(buff.fortifying_brew.down&(buff.dampen_harm.down|buff.diffuse_magic.down))" );
   }
 
@@ -7508,31 +7504,23 @@ void monk_t::apl_combat_windwalker()
   for ( int i = 0; i < num_items; i++ )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-      def -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.tigereye_brew.up|target.time_to_die<18" );
+      def -> add_action( "use_item,name=" + items[i].name_str );
   }
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
     if ( racial_actions[i] == "arcane_torrent" )
-      def -> add_action( racial_actions[i] + ",if=chi.max-chi>=1&(buff.tigereye_brew_use.up|target.time_to_die<18)" );
+      def -> add_action( racial_actions[i] + ",if=chi.max-chi>=1" );
     else
-      def -> add_action( racial_actions[i] + ",if=buff.tigereye_brew.up|target.time_to_die<18" );
+      def -> add_action( racial_actions[i]  );
   }
 
-  def -> add_talent( this, "Chi Brew", "if=chi.max-chi>=2&((charges=1&recharge_time<=10)|charges=2|target.time_to_die<charges*10)&buff.tigereye_brew.stack<=16" );
-  def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew.down" );
-  def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew.down&buff.serenity.up" );
-//  def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew.down&buff.spirit_shift.up" );
-//  def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew.down&trinket.proc.agility.react" );
-//  def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew.down&trinket.proc.versatility.react" );
-//  def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew.down&trinket.proc.crit.react" );
-  def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew.down&cooldown.fists_of_fury.up&chi>=3" );
-  def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew.down&chi>=2&target.time_to_die<40" );
+  def -> add_talent( this, "Chi Brew", "if=chi.max-chi>=2&((charges=1&recharge_time<=10)|charges=2|target.time_to_die<charges*10)" );
   def -> add_action( this, "Touch of Death" );
   def -> add_talent( this, "Serenity", "if=chi>=2" );
   def -> add_action( this, "Fists of Fury", "if=energy.time_to_max>cast_time&!buff.serenity.up" );
   def -> add_talent( this, "Spinning Dragon Strike", "if=energy.time_to_max>cast_time" );
   
-  def -> add_action( "call_action_list,name=st,if=active_enemies<3&(level<100" );
+  def -> add_action( "call_action_list,name=st,if=active_enemies<3&level<100" );
   def -> add_action( "call_action_list,name=aoe_norjw,if=active_enemies>=3&!talent.rushing_jade_wind.enabled" );
   def -> add_action( "call_action_list,name=aoe_rjw,if=active_enemies>=3&talent.rushing_jade_wind.enabled" );
 
@@ -7561,13 +7549,12 @@ void monk_t::apl_combat_windwalker()
   aoe_rjw -> add_action( this, "Tiger Palm", "if=chi.max-chi>=2" );
 
   // Chi Brew & Serenity Opener
-  opener -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew.down" );
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
     if ( racial_actions[i] == "arcane_torrent" )
-      opener -> add_action( racial_actions[i] + ",if=buff.tigereye_brew.up&chi.max-chi>=1" );
+      opener -> add_action( racial_actions[i] + ",if=chi.max-chi>=1" );
     else
-      opener -> add_action( racial_actions[i] + ",if=buff.tigereye_brew.up" );
+      opener -> add_action( racial_actions[i] );
   }
   opener -> add_action( this, "Fists of Fury", "if=buff.serenity.up&buff.serenity.remains<1.5" );
   for (int i = 0; i < num_items; i++)

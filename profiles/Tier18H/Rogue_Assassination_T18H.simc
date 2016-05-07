@@ -30,14 +30,14 @@ actions+=/kick
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent,if=energy<60
-actions+=/vanish,if=time>10&energy>13&!buff.stealth.up&buff.blindside.down&energy.time_to_max>gcd*2&((combo_points+anticipation_charges<8)|(!talent.anticipation.enabled&combo_points<=1))
+actions+=/vanish,if=time>10&energy>13&!buff.stealth.up&energy.time_to_max>gcd*2&(combo_points<8|(!talent.anticipation.enabled&combo_points<=1))
 actions+=/mutilate,if=buff.stealth.up|buff.vanish.up
 actions+=/rupture,if=((combo_points>=4&!talent.anticipation.enabled)|combo_points=5)&ticks_remain<3
 actions+=/rupture,cycle_targets=1,if=spell_targets.fan_of_knives>1&!ticking&combo_points=5
 actions+=/marked_for_death,if=combo_points=0
-actions+=/vendetta,if=buff.shadow_reflection.up|!talent.shadow_reflection.enabled|target.time_to_die<=20|(target.time_to_die<=30&glyph.vendetta.enabled)
+actions+=/vendetta,if=target.time_to_die<=20|(target.time_to_die<=30&glyph.vendetta.enabled)
 actions+=/rupture,cycle_targets=1,if=combo_points=5&remains<=duration*0.3&spell_targets.fan_of_knives>1
-actions+=/call_action_list,name=finishers,if=combo_points=5&((!cooldown.death_from_above.remains&talent.death_from_above.enabled)|buff.envenom.down|!talent.anticipation.enabled|anticipation_charges+combo_points>=6)
+actions+=/call_action_list,name=finishers,if=combo_points=5&((!cooldown.death_from_above.remains&talent.death_from_above.enabled)|buff.envenom.down|!talent.anticipation.enabled|combo_points>=6)
 actions+=/call_action_list,name=finishers,if=dot.rupture.remains<2
 actions+=/call_action_list,name=generators
 
@@ -48,9 +48,6 @@ actions.finishers+=/envenom,cycle_targets=1,if=dot.deadly_poison_dot.remains<4&t
 actions.finishers+=/envenom,cycle_targets=1,if=dot.deadly_poison_dot.remains<4&target.health.pct>35&(energy+energy.regen*cooldown.vendetta.remains>=105&(buff.envenom.remains<=1.8|energy>55))|buff.bloodlust.up|debuff.vendetta.up
 actions.finishers+=/envenom,if=target.health.pct<=35&(energy+energy.regen*cooldown.vendetta.remains>=105&(buff.envenom.remains<=1.8|energy>45))|buff.bloodlust.up|debuff.vendetta.up
 actions.finishers+=/envenom,if=target.health.pct>35&(energy+energy.regen*cooldown.vendetta.remains>=105&(buff.envenom.remains<=1.8|energy>55))|buff.bloodlust.up|debuff.vendetta.up
-
-actions.generators=mutilate,cycle_targets=1,if=dot.deadly_poison_dot.remains<4&target.health.pct>35&(combo_points<5|(talent.anticipation.enabled&anticipation_charges<3))
-actions.generators+=/mutilate,if=target.health.pct>35&(combo_points<5|(talent.anticipation.enabled&anticipation_charges<3))
 
 head=felblade_hood,id=124263,bonus_id=566
 neck=choker_of_the_great_betrayer,id=124210,bonus_id=566,enchant_id=5319

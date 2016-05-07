@@ -20,7 +20,7 @@ actions.precombat+=/food,type=whiptail_fillet
 actions.precombat+=/food,type=pickled_eel,if=role.attack|using_apl.max_dps
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=draenic_armor
+actions.precombat+=/potion,name=draenic_strength
 
 # Executed every time the actor is available.
 

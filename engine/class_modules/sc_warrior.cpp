@@ -3793,7 +3793,7 @@ void warrior_t::apl_precombat()
       }
       else
       {
-        precombat -> add_action( "potion,name=draenic_armor" );
+        precombat -> add_action( "potion,name=draenic_strength" );
       }
     }
     else if ( true_level >= 80 )
@@ -4027,7 +4027,7 @@ void warrior_t::apl_prot()
   {
     if ( true_level > 90 )
     {
-      prot -> add_action( "potion,name=draenic_armor,if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.shield_block.up|buff.potion.up)|target.time_to_die<=25" );
+      prot -> add_action( "potion,name=draenic_strength,if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.shield_block.up|buff.potion.up)|target.time_to_die<=25" );
     }
     else if ( true_level >= 80 )
     {

@@ -3185,7 +3185,7 @@ void paladin_t::generate_action_prio_list_prot()
     // no need for off/def pot options - Draenic Armor gives more AP than Draenic STR,
     // and Mountains potion is pathetic at L90
     if ( true_level > 90 )
-      potion_type = "draenic_armor";
+      potion_type = "draenic_strength";
     else if ( true_level >= 80 )
       potion_type = "mogu_power";
 

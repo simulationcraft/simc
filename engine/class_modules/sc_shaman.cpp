@@ -5887,7 +5887,6 @@ void shaman_t::init_action_list()
     def -> add_talent( this, "Elemental Mastery" );
     def -> add_action( this, "Feral Spirit" );
     def -> add_talent( this, "Liquid Magma", "if=pet.searing_totem.remains>10|pet.magma_totem.remains>10|pet.fire_elemental_totem.remains>10" );
-    def -> add_talent( this, "Ancestral Swiftness" );
     def -> add_action( this, "Ascendance" );
 
     def -> add_action( "call_action_list,name=aoe,if=spell_targets.chain_lightning>1", "On multiple enemies, the priority follows the 'aoe' action list." );
@@ -5927,7 +5926,6 @@ void shaman_t::init_action_list()
     // the GCD cap.
     def -> add_talent( this, "Elemental Mastery", "if=action.lava_burst.cast_time>=1.2" );
 
-    def -> add_talent( this, "Ancestral Swiftness", "if=!buff.ascendance.up" );
     def -> add_talent( this, "Storm Elemental Totem" );
 
     // Use Ascendance preferably with a haste CD up, but dont overdo the
@@ -5980,7 +5978,6 @@ void shaman_t::init_action_list()
     def -> add_action( this, "Spiritwalker's Grace", "moving=1" );
     def -> add_talent( this, "Elemental Mastery" );
     def -> add_talent( this, "Elemental Blast" );
-    def -> add_talent( this, "Ancestral Swiftness" );
     def -> add_action( this, "Flame Shock", "if=!ticking|ticks_remain<2|((buff.bloodlust.react)&ticks_remain<3)" );
     def -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time" );
     def -> add_action( this, "Chain Lightning", "if=target.adds>2&mana.pct>25" );
@@ -5991,7 +5988,6 @@ void shaman_t::init_action_list()
     def -> add_action( this, "Spiritwalker's Grace", "moving=1" );
     def -> add_talent( this, "Elemental Mastery" );
     def -> add_talent( this, "Elemental Blast" );
-    def -> add_talent( this, "Ancestral Swiftness" );
     def -> add_talent( this, "Primal Strike" );
     def -> add_action( this, "Flame Shock", "if=!ticking|ticks_remain<2|((buff.bloodlust.react)&ticks_remain<3)" );
     def -> add_action( this, "Earth Shock" );
