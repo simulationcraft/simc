@@ -85,8 +85,6 @@ public:
     buff_t* frail;
   } debuffs;
 
-  bool chaos_strike_crit;
-
   demon_hunter_td_t( player_t* target, demon_hunter_t& p );
 };
 
@@ -723,7 +721,7 @@ public:
         }
       }
 
-      if ( ab::trigger_gcd > timespan_t::zero() && ! metamorphosis_gcd )
+      if ( ab::trigger_gcd >= timespan_t::from_seconds( 1.0 ) && ! metamorphosis_gcd )
       {
         if ( p() -> bugs )
           ab::sim -> errorf( "%s (%u) does not benefit from metamorphosis!",
@@ -1342,12 +1340,7 @@ struct fel_barrage_t : public demon_hunter_spell_t
       background = dual = true;
       aoe = -1;
     }
-
-    void snapshot_state( action_state_t* s, dmg_e rt ) override
-    {
-      demon_hunter_spell_t::snapshot_state( s, rt );
-    }
-};
+  };
 
   fel_barrage_t( demon_hunter_t* p, const std::string& options_str ) :
     demon_hunter_spell_t( "fel_barrage", p, p -> talent.fel_barrage )
@@ -1457,6 +1450,8 @@ struct fel_rush_t : public demon_hunter_spell_t
       dual = background = true;
       may_miss = may_dodge = may_block = false;
 
+      base_crit += p -> talent.fel_mastery -> effectN( 2 ).percent();
+
       if ( p -> legendary.loramus_thalipedes_sacrifice )
       {
         base_add_multiplier *= 1.0 + p -> legendary.loramus_thalipedes_sacrifice
@@ -1478,7 +1473,7 @@ struct fel_rush_t : public demon_hunter_spell_t
     impact_action = new fel_rush_damage_t( p );
     impact_action -> stats = stats;
 
-    base_crit += p -> talent.fel_mastery -> effectN( 2 ).percent();
+    // Add damage modifiers in fel_rush_damage_t, not here.
   }
 
   /* Don't record data for this action, since we don't want that 0
@@ -1489,6 +1484,17 @@ struct fel_rush_t : public demon_hunter_spell_t
   timespan_t gcd() const override
   {
     return data().gcd() + rng().gauss( sim -> gcd_lag, sim -> gcd_lag_stddev );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    demon_hunter_spell_t::impact( s ); 
+
+    if ( p() -> talent.fel_mastery -> ok() && result_is_hit( s -> result ) )
+    {
+      p() -> resource_gain( RESOURCE_FURY, p() -> talent.fel_mastery -> effectN( 1 )
+        .resource( RESOURCE_FURY ), action_gain );
+    }
   }
 
   void execute() override
@@ -1509,13 +1515,6 @@ struct fel_rush_t : public demon_hunter_spell_t
     if ( p() -> current.distance > 5.0 )
     {
       p() -> trigger_movement( p() -> current.distance - 5.0, MOVEMENT_TOWARDS );
-    }
-
-    if ( p() -> talent.fel_mastery -> ok() &&
-         result_is_hit( execute_state -> result ) )
-    {
-      p() -> resource_gain( RESOURCE_FURY, p() -> talent.fel_mastery -> effectN( 1 )
-        .resource( RESOURCE_FURY ), action_gain );
     }
   }
 
@@ -1752,6 +1751,8 @@ struct immolation_aura_t : public demon_hunter_spell_t
 
     direct = new immolation_aura_damage_t( p, data().effectN( 2 ).trigger() );
     direct -> stats = stats;
+
+    // Add damage modifiers in immolation_aura_damage_t, not here.
   }
 
   /* Don't record data for this action, since we don't want that 0
@@ -1921,6 +1922,8 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
     delay = data().duration() + p -> talent.quickened_sigils -> effectN( 1 ).time_value();
     damage = new sigil_of_flame_damage_t( p );
     damage -> stats = stats;
+
+    // Add damage modifiers in sigil_of_flame_damage_t, not here.
   }
 
   /* Don't record data for this action, since we don't want that 0
@@ -2465,29 +2468,114 @@ struct chaos_blade_t : public demon_hunter_attack_t
 
 // Chaos Strike =============================================================
 
+struct chaos_strike_state_t : public action_state_t
+{
+  bool is_critical;
+  player_t* dh;
+
+  chaos_strike_state_t( action_t* a, player_t* target ) :
+    action_state_t( a, target ), dh( a -> player )
+  {}
+
+  void copy_state( const action_state_t* s ) override
+  {
+    action_state_t::copy_state( s );
+
+    is_critical = debug_cast<const chaos_strike_state_t*>( s ) -> is_critical;
+  }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    action_state_t::debug_str( s );
+
+    s << " is_critical=" << is_critical;
+
+    return s;
+  }
+};
+
+struct chaos_strike_event_t : public event_t
+{
+  action_t* action;
+  player_t* target;
+  chaos_strike_state_t* state;
+
+  chaos_strike_event_t( demon_hunter_t* p, action_t* a, player_t* t,
+                        timespan_t delay, chaos_strike_state_t* s )
+    : event_t( *p -> sim ), action( a ), target( t ), state( s )
+  {
+    add_event( delay );
+
+    assert( action -> background );
+  }
+
+  const char* name() const override
+  { return "chaos_strike_event"; }
+
+  void execute() override
+  {
+    if ( ! target -> is_sleeping() )
+    {
+      chaos_strike_state_t* s = debug_cast<chaos_strike_state_t*>( action -> get_state() );
+      s -> target = target;
+      action -> snapshot_state( s, DMG_DIRECT );
+      s -> is_critical = state -> is_critical;
+      action -> schedule_execute( s );
+    }
+  }
+};
+
 struct chaos_strike_base_t : public demon_hunter_attack_t
 {
   struct chaos_strike_damage_t : public demon_hunter_attack_t
   {
-    chaos_strike_damage_t( demon_hunter_t* p, const spell_data_t* s )
-      : demon_hunter_attack_t( "chaos_strike_dmg", p, s )
+    chaos_strike_base_t* parent;
+    bool may_refund;
+
+    chaos_strike_damage_t( demon_hunter_t* p, const spell_data_t* s,
+        chaos_strike_base_t* a ) :
+      demon_hunter_attack_t( "chaos_strike_dmg", p, s ), parent( a )
     {
       dual = background = true;
-      may_miss = may_parry = may_dodge = false;
+      aoe = s -> effectN( 1 ).chain_target()
+        + p -> talent.chaos_cleave -> effectN( 1 ).base_value();
+      may_refund = weapon == &( p -> off_hand_weapon );
 
       base_multiplier *= 1.0 + p -> artifact.warglaives_of_chaos.percent();
-      crit_bonus_multiplier *=
-        1.0 + p -> artifact.critical_chaos.percent();  // TOCHECK
+      crit_bonus_multiplier *=  1.0 + p -> artifact.critical_chaos.percent();
     }
 
-    double composite_crit() const override
-    { return 0.0; }
+    action_state_t* new_state() override
+    { return new chaos_strike_state_t( this, target ); }
 
-    double composite_target_crit( player_t* t ) const override
-    { return td( t ) -> chaos_strike_crit; }
+    result_e calculate_result( action_state_t* s ) const override
+    {
+      result_e r = demon_hunter_attack_t::calculate_result( s );
+
+      if ( result_is_miss( r ) )
+      {
+        return r;
+      }
+      
+      /* Use the crit roll from our custom state instead of the roll done in
+         attack_t::calculate_result. */
+      return debug_cast<chaos_strike_state_t*>( s ) -> is_critical ?
+        RESULT_CRIT : RESULT_HIT;
+    }
+
+    void schedule_execute( action_state_t* s = nullptr ) override
+    {
+      demon_hunter_attack_t::schedule_execute( s );
+
+      /* Refund occurs prior to the offhand hit, and since we need to check the execute state
+         we'll replicate that by doing it here instead of in execute(). */
+      if ( may_refund && debug_cast<chaos_strike_state_t*>( s ) -> is_critical )
+      {
+        p() -> resource_gain( RESOURCE_FURY, parent -> cost(), parent -> action_gain );
+      }
+    }
   };
 
-  bool refund;
   std::vector<chaos_strike_damage_t*> attacks;
   std::vector<timespan_t> delays;
 
@@ -2498,18 +2586,18 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     aoe = s -> effectN( 1 ).chain_target()
       + p -> talent.chaos_cleave -> effectN( 1 ).base_value();
 
+    // Create a child action for each "Triggers Spell" effect with the designated delay.
     for ( size_t i = 1; i <= s -> effect_count(); i++ ) {
       const spelleffect_data_t effect = s -> effectN( i );
 
       if ( effect.type() == E_TRIGGER_SPELL ) {
-        attacks.push_back( new chaos_strike_damage_t( p, s -> effectN( i ).trigger() ) );
+        attacks.push_back( new chaos_strike_damage_t( p, s -> effectN( i ).trigger(), this ) );
         delays.push_back( timespan_t::from_millis( s -> effectN( i ).misc_value1() ) );
       }
     }
 
     base_multiplier *= 1.0 + p -> artifact.warglaives_of_chaos.percent();
-    crit_bonus_multiplier *=
-      1.0 + p -> artifact.critical_chaos.percent();  // TOCHECK
+    crit_bonus_multiplier *= 1.0 + p -> artifact.critical_chaos.percent();
   }
 
   virtual bool init_finished() override
@@ -2534,37 +2622,56 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     }
   }
 
-  virtual void impact( action_state_t* s ) override
+  action_state_t* new_state() override
+  { return new chaos_strike_state_t( this, target ); }
+
+  void snapshot_state( action_state_t* s, dmg_e rt ) override
   {
-    demon_hunter_attack_t::impact( s );
+    demon_hunter_attack_t::snapshot_state( s, rt );
 
-    if ( result_is_hit( s -> result ) )
+    chaos_strike_state_t* cs = debug_cast<chaos_strike_state_t*>( s );
+
+    /* If this is the primary target then roll for crit, otherwise copy the
+       result from the previous chain_target's state. */
+    if ( cs -> chain_target == 0 )
     {
-      td( s -> target ) -> chaos_strike_crit = s -> result == RESULT_CRIT;
-
-      if ( s -> result == RESULT_CRIT )
-      {
-        refund = true;
-      }
-
-      for ( size_t i = 0; i < attacks.size(); i++ ) {
-        new ( *sim ) delayed_execute_event_t( p(), attacks[ i ], 
-          s -> target, delays[ i ] );
-      }
+      cs -> is_critical = p() -> rng().roll( cs -> composite_crit() );
     }
+    else
+    {
+      assert( execute_state );
+      cs -> is_critical = debug_cast<chaos_strike_state_t*>( execute_state ) -> is_critical;
+    }
+  }
+
+  result_e calculate_result( action_state_t* s ) const override
+  {
+    result_e r = demon_hunter_attack_t::calculate_result( s );
+
+    if ( result_is_miss( r ) )
+    {
+      return r;
+    }
+
+    /* Use the crit roll from our custom state instead of the roll done in
+       attack_t::calculate_result. */
+    return debug_cast<chaos_strike_state_t*>( s ) -> is_critical ?
+      RESULT_CRIT : RESULT_HIT;
   }
 
   virtual void execute() override
   {
-    refund = false;
-
     demon_hunter_attack_t::execute();
-
-    if ( refund )
+    
+    /* Trigger child actions. For Annihilation this is the MH and OH damage,
+    and for Chaos Strike it's just the OH (this action is the MH action). */
+    for ( size_t i = 0; i < attacks.size(); i++ )
     {
-      p() -> resource_gain( resource_current, base_costs[ resource_current ], action_gain );
+      new ( *sim ) chaos_strike_event_t( p(), attacks[ i ], target, delays[ i ],
+        debug_cast<chaos_strike_state_t*>( execute_state ) );
     }
 
+    // Metamorphosis benefit
     p() -> buff.metamorphosis -> up();
 
     if ( result_is_hit( execute_state -> result ) )
@@ -2581,6 +2688,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
         p() -> consume_soul_fragments();
       }
 
+      // Inner Demons procs on cast
       if ( p() -> rppm.inner_demons -> trigger() )
       {
         assert( p() -> active.inner_demons );
@@ -2804,6 +2912,8 @@ struct felblade_t : public demon_hunter_attack_t
     impact_action -> stats = stats;
 
     movement_directionality = MOVEMENT_TOWARDS;
+
+    // Add damage modifiers in felblade_damage_t, not here.
   }
 
   /* Don't record data for this action, since we don't want that 0
@@ -3097,6 +3207,8 @@ struct soul_cleave_t : public demon_hunter_attack_t
 
     mh -> stats = stats;
     oh -> stats = stats;
+
+    // Add damage modifiers in soul_cleave_damage_t, not here.
   }
 
   /* Don't record data for this action, since we don't want that 0
@@ -3218,6 +3330,8 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
     use_off_gcd           = true;
 
     cooldown -> duration += p -> talent.prepared -> effectN( 2 ).time_value();
+    
+    // Add damage modifiers in vengeful_retreat_damage_t, not here.
   }
 
   /* Don't record data for this action, since we don't want that 0
@@ -4328,7 +4442,8 @@ void demon_hunter_t::create_buffs()
     buff.metamorphosis =
       buff_creator_t( this, "metamorphosis", spec.metamorphosis_buff )
         .cd( timespan_t::zero() )
-        .add_invalidate( CACHE_LEECH );
+        .add_invalidate( CACHE_LEECH )
+        .tick_behavior( BUFF_TICK_NONE );
   }
   else
   {

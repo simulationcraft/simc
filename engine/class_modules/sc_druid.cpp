@@ -16,6 +16,7 @@ namespace { // UNNAMED NAMESPACE
   Astral Influence
   Affinity active components
   Artifact 20 rank traits?
+  Ekowraith, Creator of Worlds legendary
 
   Feral =====================================================================
   Predator vs. adds
@@ -29,6 +30,7 @@ namespace { // UNNAMED NAMESPACE
   Shooting Stars AsP react
   Check Echoing Stars
   Check Fury of Elune
+  Promise of Elune legendary
 
   Touch of the Moon
   Light of the Sun
