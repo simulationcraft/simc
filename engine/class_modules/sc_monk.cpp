@@ -83,7 +83,7 @@ enum combo_strikes_e {
   CS_MAX,
 };
 
-enum sef_pet_e { SEF_FIRE = 0, SEF_STORM, SEF_EARTH, SEF_PET_MAX };
+enum sef_pet_e { SEF_FIRE = 0, SEF_EARTH, SEF_PET_MAX }; //Player becomes storm spirit.
 enum sef_ability_e {
   SEF_NONE = -1,
   // Attacks begin here
