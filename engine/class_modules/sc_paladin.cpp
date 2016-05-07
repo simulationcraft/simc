@@ -122,7 +122,6 @@ public:
     gain_t* hp_blade_of_justice;
     gain_t* hp_wake_of_ashes;
     gain_t* hp_templars_verdict_refund;
-    gain_t* hp_holy_wrath;
     gain_t* hp_liadrins_fury_unleashed;
   } gains;
 
@@ -190,7 +189,6 @@ public:
     const spell_data_t* devotion_aura;
     const spell_data_t* aura_of_light;
     const spell_data_t* aura_of_mercy;
-    const spell_data_t* sanctified_wrath;
     const spell_data_t* holy_prism;
     const spell_data_t* stoicism;
     const spell_data_t* daybreak;
@@ -240,7 +238,7 @@ public:
     const spell_data_t* divine_steed;
     const spell_data_t* seal_of_light;
     const spell_data_t* divine_purpose;
-    const spell_data_t* holy_wrath;
+    const spell_data_t* sanctified_wrath;
     const spell_data_t* equality;
   } talents;
 
@@ -2777,44 +2775,6 @@ struct seal_of_light_t : public paladin_spell_t
   }
 };
 
-// Holy Wrath ========================================================================
-
-struct holy_wrath_tick_t : public paladin_spell_t
-{
-  holy_wrath_tick_t( paladin_t* p ) :
-    paladin_spell_t( "holy_wrath_tick", p, p -> find_talent_spell( "Holy Wrath" ) -> effectN( 2 ).trigger() )
-  {
-    background  = true;
-    may_crit = true;
-    dot_duration = timespan_t::zero();
-  }
-};
-
-
-struct holy_wrath_t : public paladin_spell_t
-{
-  holy_wrath_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "holy_wrath", p, p -> find_talent_spell( "Holy Wrath" ) )
-  {
-    parse_options( options_str );
-    channeled = true;
-    tick_zero = false;
-    direct_tick = true;
-    dynamic_tick_action = true;
-    tick_action = new holy_wrath_tick_t( p );
-  }
-
-  void tick( dot_t* d ) override
-  {
-    paladin_spell_t::tick( d );
-
-    // TODO: find where this spelldata went
-    int g = 1.0; // default is a gain of 1 Holy Power
-    // apply gain, record as due to Holy Wrath
-    p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_holy_wrath );
-  }
-};
-
 // ==========================================================================
 // End Attacks
 // ==========================================================================
@@ -2965,7 +2925,6 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "reckoning"                 ) return new reckoning_t                ( this, options_str );
   if ( name == "shield_of_the_righteous"   ) return new shield_of_the_righteous_t  ( this, options_str );
   if ( name == "templars_verdict"          ) return new templars_verdict_t         ( this, options_str );
-  if ( name == "holy_wrath"                ) return new holy_wrath_t               ( this, options_str );
   if ( name == "equality"                  ) return new equality_t                 ( this, options_str );
   if ( name == "holy_prism"                ) return new holy_prism_t               ( this, options_str );
   if ( name == "wake_of_ashes"             ) return new wake_of_ashes_t            ( this, options_str );
@@ -3070,7 +3029,6 @@ void paladin_t::init_gains()
   gains.hp_crusader_strike          = get_gain( "crusader_strike" );
   gains.hp_blade_of_justice         = get_gain( "blade_of_justice" );
   gains.hp_wake_of_ashes            = get_gain( "wake_of_ashes" );
-  gains.hp_holy_wrath               = get_gain( "holy_wrath" );
   gains.hp_templars_verdict_refund  = get_gain( "templars_verdict_refund" );
   gains.hp_liadrins_fury_unleashed  = get_gain( "liadrins_fury_unleashed" );
 
@@ -3680,7 +3638,6 @@ void paladin_t::init_spells()
   talents.divine_steed               = find_talent_spell( "Divine Steed" );
   talents.seal_of_light              = find_talent_spell( "Seal of Light" );
   talents.divine_purpose             = find_talent_spell( "Divine Purpose" ); // TODO: fix this
-  talents.holy_wrath                 = find_talent_spell( "Holy Wrath" );
   talents.equality                   = find_talent_spell( "Equality" );
 
   artifact.wake_of_ashes           = find_artifact_spell( "Wake of Ashes" );
