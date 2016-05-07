@@ -3430,7 +3430,7 @@ void warrior_t::init_spells()
   spec.deep_wounds              = find_specialization_spell( "Deep Wounds" );
   spec.demoralizing_shout       = find_specialization_spell( "Demoralizing Shout" );
   spec.devastate                = find_specialization_spell( "Devastate" );
-  spec.die_by_the_sword         = find_specialization_spell( "Die By the Sword" );
+  spec.die_by_the_sword         = find_specialization_spell( "Die By the Sword" );//
   spec.enrage                   = find_specialization_spell( "Enrage" );
   spec.enraged_regeneration     = find_specialization_spell( "Enraged Regeneration" );
   spec.execute                  = find_specialization_spell( "Execute" );

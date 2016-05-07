@@ -25,7 +25,7 @@ main_hand=fang_of_the_pit,id=124367,bonus_id=566,enchant_id=5384
 off_hand=fang_of_the_pit,id=124367,bonus_id=566,enchant_id=5384
 save=Rogue_Assassination_T18H.simc
 
-rogue="Rogue_Combat_T18H"
+rogue="Rogue_Outlaw_T18H"
 level=100
 race=night_elf
 timeofday=night
@@ -51,7 +51,7 @@ trinket1=soul_capacitor,id=124225,bonus_id=566
 trinket2=bleeding_hollow_toxin_vessel,id=124520,bonus_id=566
 main_hand=demonblade_eviscerator,id=124368,bonus_id=566,enchant_id=5337
 off_hand=demonblade_eviscerator,id=124368,bonus_id=566,enchant_id=5337
-save=Rogue_Combat_T18H.simc
+save=Rogue_Outlaw_T18H.simc
 
 rogue="Rogue_Subtlety_T18H"
 level=100

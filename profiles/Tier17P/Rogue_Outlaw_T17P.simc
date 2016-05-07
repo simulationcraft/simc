@@ -1,10 +1,10 @@
-rogue="Rogue_Combat_T17N"
+rogue="Rogue_Outlaw_T17P"
 level=100
 race=night_elf
 timeofday=night
 role=attack
 position=back
-talents=3000031
+talents=3000021
 spec=combat
 
 # This default action priority list is automatically created based on your character.
@@ -57,31 +57,29 @@ actions.finisher=death_from_above
 
 actions.generator=saber_slash
 
-head=sorkas_nightshade_cowl,id=113978
-neck=engineers_grounded_gorget,id=113892,enchant=gift_of_haste
-shoulders=poisoners_spaulders,id=115574
-back=cloak_of_delving_secrets,id=113929,enchant=gift_of_haste
-chest=poisoners_tunic,id=115570
-wrists=squires_electroplated_bracers,id=113962
-hands=poisoners_gloves,id=115571
-waist=girdle_of_unconquered_glory,id=113907
-legs=poisoners_legguards,id=115573
-feet=ironflecked_sandals,id=119340
-finger1=timeless_solium_band_of_the_assassin,id=118297,enchant=gift_of_haste
-finger2=unexploded_explosive_shard,id=113877,enchant=gift_of_haste
-trinket1=meaty_dragonspine_trophy,id=118114
-trinket2=beating_heart_of_the_mountain,id=113931
-main_hand=hansgars_forgehammer,id=113897,enchant=mark_of_warsong
-off_hand=hansgars_forgehammer,id=113897,enchant=mark_of_warsong
+head=crystalbinder_helm,id=109977,bonus_id=524
+neck=windseal_necklace,id=109953,bonus_id=524,enchant=gift_of_haste
+shoulders=crystalbinder_shoulderpads,id=109936,bonus_id=524
+back=cloak_of_cascading_blades,id=109904,bonus_id=524,enchant=gift_of_haste
+chest=leafmender_robes,id=109897,bonus_id=524
+wrists=bloodfeather_bracers,id=109869,bonus_id=524
+hands=leafmender_grips,id=109851,bonus_id=524
+waist=belt_of_burning_focus,id=109829,bonus_id=524
+legs=bloodfeather_leggings,id=109810,bonus_id=524
+feet=bloodfeather_treads,id=109788,bonus_id=524
+finger1=ceds_chiming_circle,id=109760,bonus_id=524,enchant=gift_of_haste
+finger2=signet_of_radiant_leaves,id=109762,bonus_id=524,enchant=gift_of_haste
+trinket1=witherbarks_branch,id=109999,bonus_id=524
+trinket2=kihras_adrenaline_injector,id=109997,bonus_id=524
+main_hand=gugrokks_smasher,id=110042,bonus_id=524,enchant=mark_of_warsong
+off_hand=gugrokks_smasher,id=110042,bonus_id=524,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_ilvl=670.63
-# gear_agility=2801
-# gear_stamina=3537
-# gear_crit_rating=731
-# gear_haste_rating=1608
-# gear_mastery_rating=939
-# gear_versatility_rating=93
-# gear_armor=1002
-# set_bonus=tier17_2pc=1
-# set_bonus=tier17_4pc=1
+# gear_ilvl=630.00
+# gear_agility=1813
+# gear_stamina=2428
+# gear_crit_rating=572
+# gear_haste_rating=1368
+# gear_mastery_rating=90
+# gear_versatility_rating=369
+# gear_armor=814

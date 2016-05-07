@@ -38,7 +38,7 @@ off_hand=oregorgers_acidetched_gutripper,id=113874,enchant_id=5384
 save=Rogue_Assassination_T17N.simc
 
 # Combat
-rogue="Rogue_Combat_T17N"
+rogue="Rogue_Outlaw_T17N"
 level=100
 race=night_elf
 timeofday=night
@@ -63,7 +63,7 @@ trinket1=meaty_dragonspine_trophy,id=118114
 trinket2=beating_heart_of_the_mountain,id=113931
 main_hand=hansgars_forgehammer,id=113897,enchant=mark_of_warsong
 off_hand=hansgars_forgehammer,id=113897,enchant=mark_of_warsong
-save=Rogue_Combat_T17N.simc
+save=Rogue_Outlaw_T17N.simc
 
 # Subtlety
 rogue="Rogue_Subtlety_T17N"

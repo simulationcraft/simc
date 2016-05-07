@@ -37,7 +37,7 @@ off_hand=oregorgers_acidetched_gutripper,id=113874,bonus_id=566,enchant=mark_of_
 save=Rogue_Assassination_T17B.simc
 
 # Combat
-rogue="Rogue_Combat_T17B"
+rogue="Rogue_Outlaw_T17B"
 level=100
 race=night_elf
 timeofday=night
@@ -62,7 +62,7 @@ trinket1=meaty_dragonspine_trophy,id=118114,bonus_id=566
 trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=566
 main_hand=molten_edge_eviscerator,id=113918,bonus_id=566,enchant=mark_of_warsong
 off_hand=sorkas_chainfist,id=113965,bonus_id=566,enchant=mark_of_warsong
-save=Rogue_Combat_T17B.simc
+save=Rogue_Outlaw_T17B.simc
 
 # Subtlety
 rogue="Rogue_Subtlety_T17B"
