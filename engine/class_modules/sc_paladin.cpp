@@ -1826,7 +1826,7 @@ struct equality_t : public paladin_spell_t
   {
     parse_options( options_str );
 
-    aoe = 3;
+    aoe = data().effectN( 2 ).base_value();
 
     if ( ! ( p -> talents.equality -> ok() ) )
       background = true;
@@ -1834,10 +1834,12 @@ struct equality_t : public paladin_spell_t
 
   virtual void impact( action_state_t* s ) override
   {
+    double base_amount = 0;
     if ( p() -> fixed_equality_health_pct > 0 )
-      s -> result_amount = p() -> max_health() * ( 100 - p() -> fixed_equality_health_pct ) / 100.0;
+      base_amount = p() -> max_health() * ( 100 - p() -> fixed_equality_health_pct ) / 100.0;
     else
-      s -> result_amount = p() -> max_health() - p() -> current_health();
+      base_amount = p() -> max_health() - p() -> current_health();
+    s -> result_amount = base_amount * data().effectN( 3 ).percent();
     paladin_spell_t::impact( s );
   }
 
