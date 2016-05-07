@@ -795,44 +795,6 @@ struct water_elemental_pet_t : public pet_t
     }
   };
 
-  struct jagged_shard_t : public mage_pet_spell_t
-  {
-    jagged_shard_t( water_elemental_pet_t* p, const std::string& options_str ) :
-      mage_pet_spell_t( "jagged_shard", p, p -> find_spell( 214777 ) )
-    {
-      trigger_gcd = timespan_t::zero();
-      parse_options( options_str );
-      may_crit = true;
-    }
-
-    const water_elemental_pet_t* p() const
-    { return static_cast<water_elemental_pet_t*>( player ); }
-    //TODO: Test this. Currently assuming based on waterbolt properties
-    virtual double action_multiplier() const override
-    {
-      double am = mage_pet_spell_t::action_multiplier();
-
-      if ( p() -> o() -> spec.icicles -> ok() )
-      {
-        am *= 1.0 + p() -> o() -> cache.mastery_value();
-      }
-
-      return am;
-    }
-
-    virtual void impact( action_state_t* s ) override
-    {
-      water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
-      double shard_fof_chance = p -> o() -> artifact.its_cold_outside.percent();
-      spell_t::impact( s );
-
-      if ( result_is_hit( s -> result ) )
-      {
-        p -> o() -> buffs.fingers_of_frost -> trigger( 1.0, shard_fof_chance );
-        p -> o() -> benefits.fingers_of_frost -> update( "Jagged Shard", 1.0 );
-      }
-    }
-  };
  struct water_jet_t : public mage_pet_spell_t
    {
      // queued water jet spell, auto cast water jet spell
@@ -954,22 +916,26 @@ struct water_elemental_pet_t : public pet_t
 
       return am;
     }
+
+    virtual void impact( action_state_t* s ) override
+    {
+      water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
+      double fof_chance = p -> o() -> artifact.its_cold_outside.percent();
+      spell_t::impact( s );
+
+      if ( result_is_hit( s -> result ) )
+      {
+        p -> o() -> buffs.fingers_of_frost -> trigger( 1.0, fof_chance );
+        p -> o() -> benefits.fingers_of_frost -> update( "Waterbolt Proc", 1.0 );
+      }
+    }
   };
 
   water_elemental_pet_t( sim_t* sim, mage_t* owner ) :
     pet_t( sim, owner, "water_elemental" )
   {
     owner_coeff.sp_from_sp = 0.75;
-
-    if ( owner -> artifact.its_cold_outside.rank() )
-    {
-      action_list_str = "water_jet/jagged_shard";
-    }
-    else
-    {
-      action_list_str  = "water_jet/waterbolt";
-    }
-
+    action_list_str  = "water_jet/waterbolt";
   }
 
   mage_t* o()
@@ -981,7 +947,6 @@ struct water_elemental_pet_t : public pet_t
                                    const std::string& options_str ) override
   {
     if ( name == "freeze"       ) return new              freeze_t( this, options_str );
-    if ( name == "jagged_shard" ) return new        jagged_shard_t( this, options_str );
     if ( name == "waterbolt"    ) return new           waterbolt_t( this, options_str );
     if ( name == "water_jet"    ) return new           water_jet_t( this, options_str );
     return pet_t::create_action( name, options_str );
@@ -2164,12 +2129,33 @@ struct ignite_t : public residual_action_t
 
 
 // Arcane Barrage Spell =====================================================
+// Arcane Rebound Spell 
+//TODO: Improve timing of impact of this vs Arcane Barrage if alpha timings go live
+struct arcane_rebound_t : public arcane_mage_spell_t
+{
+  arcane_rebound_t( mage_t* p, const std::string& options_str ) :
+    arcane_mage_spell_t( "arcane_rebound", p, p -> find_spell( 210817 ) )
+  {
+    parse_options( options_str );
+    background = true;
+    callbacks = false; // TODO: Is this true?
+    aoe = -1;
+  }
 
+  virtual timespan_t travel_time() const override
+  {
+    // Hardcode no travel time to avoid parsed travel time in spelldata
+    return timespan_t::from_seconds( 0.0 );
+  }
+
+};
 struct arcane_barrage_t : public arcane_mage_spell_t
 {
+  arcane_rebound_t* arcane_rebound;
+
   arcane_barrage_t( mage_t* p, const std::string& options_str ) :
-    arcane_mage_spell_t( "arcane_barrage", p,
-                         p -> find_class_spell( "Arcane Barrage" ) )
+    arcane_mage_spell_t( "arcane_barrage", p, p -> find_class_spell( "Arcane Barrage" ) ),
+    arcane_rebound( new arcane_rebound_t( p, options_str ) )
   {
     parse_options( options_str );
 
@@ -2188,6 +2174,17 @@ struct arcane_barrage_t : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     p() -> buffs.arcane_charge -> expire();
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    arcane_mage_spell_t::impact( s );
+
+    if ( p() -> artifact.arcane_rebound && ( s -> n_targets > 2 ) && ( s -> chain_target == 0 ) )
+    {
+      arcane_rebound -> target = s -> target;
+      arcane_rebound -> execute();
+    }
   }
 
   virtual double action_multiplier() const override
@@ -2598,7 +2595,6 @@ struct arcane_orb_t : public arcane_mage_spell_t
     orb_bolt -> execute();
   }
 };
-
 
 // Arcane Power Spell =======================================================
 
