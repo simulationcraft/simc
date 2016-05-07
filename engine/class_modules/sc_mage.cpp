@@ -396,7 +396,7 @@ public:
   struct artifact_spell_data_t
   {
     // Arcane
-    artifact_power_t arcane_rebound, //NYI
+    artifact_power_t arcane_rebound,
                      everywhere_at_once, //NYI
                      arcane_purification,
                      aegwynns_imperative,
@@ -408,7 +408,7 @@ public:
                      aegwynns_fury,
                      mana_shield, // NYI
                      mark_of_aluneth,
-                     rule_of_threes, // NYI
+                     rule_of_threes,
                      slooow_down, // NYI
                      torrential_barrage,
                      touch_of_the_magi; // NYI
@@ -2473,9 +2473,13 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     //TODO: Fix this when spelldata is being parsed correctly...? effectN(1) returns 0.
     if ( p() -> artifact.rule_of_threes.rank() &&
          rng().roll( p() -> artifact.rule_of_threes
-         .data().effectN( 1 ).percent() ) )
+         .data().effectN( 1 ).percent() * 10 ) )
     {
-      base_tick_time *= 1.0 + p() -> artifact.rule_of_threes.data().effectN( 1 ).percent();
+
+      base_tick_time *=  1.0 - ( p() -> artifact.rule_of_threes.data().effectN( 1 ).percent() / 10 ) ;
+
+      sim -> out_debug.printf("%f RoT, %f tick time" ,p() -> artifact.rule_of_threes
+         .data().effectN( 1 ).percent() , base_tick_time );
     }
     arcane_mage_spell_t::execute();
 
