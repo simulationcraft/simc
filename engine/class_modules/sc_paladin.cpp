@@ -2214,9 +2214,8 @@ struct echoed_divine_storm_t: public paladin_melee_attack_t
 
     weapon = &( p -> main_hand_weapon );
 
-    // TODO: what in the world does this come from
-    weapon_multiplier = 0;
-    attack_power_mod.direct = 0.7715;
+  weapon_multiplier = p -> find_spell( 224239 ) -> effectN( 1 ).percent() *
+                      p -> artifact.echo_of_the_highlord.percent();
 
     base_multiplier *= 1.0 + p -> artifact.righteous_blade.percent();
     base_multiplier *= 1.0 + p -> artifact.divine_tempest.percent( 2 );
@@ -2236,6 +2235,17 @@ struct echoed_divine_storm_t: public paladin_melee_attack_t
 struct divine_storm_t: public holy_power_consumer_t
 {
   echoed_divine_storm_t* echoed_spell;
+
+  struct divine_storm_damage_t : public paladin_melee_attack_t
+  {
+    divine_storm_damage_t( paladin_t* p )
+      : paladin_melee_attack_t( "divine_storm_dmg", p, p -> find_spell( 224239 ) )
+    {
+      dual = background = true;
+      may_miss = may_dodge = may_parry = false;
+    }
+  };
+
   divine_storm_t( paladin_t* p, const std::string& options_str )
     : holy_power_consumer_t( "divine_storm", p, p -> find_class_spell( "Divine Storm" ) ),
       echoed_spell( new echoed_divine_storm_t( p, options_str ) )
@@ -2243,6 +2253,10 @@ struct divine_storm_t: public holy_power_consumer_t
     parse_options( options_str );
 
     hasted_gcd = true;
+
+    may_crit = may_block = false;
+    impact_action = new divine_storm_damage_t( p );
+    impact_action -> stats = stats;
 
     weapon = &( p -> main_hand_weapon );
 
@@ -2290,6 +2304,8 @@ struct divine_storm_t: public holy_power_consumer_t
       p() -> buffs.whisper_of_the_nathrezim -> trigger();
     }
   }
+
+  void record_data( action_state_t* ) override {}
 };
 
 // Hammer of Justice, Fist of Justice =======================================
@@ -2578,14 +2594,28 @@ struct echoed_templars_verdict_t : public paladin_melee_attack_t
   {
     parse_options( options_str );
 
-    // TODO: what in the world does this come from
-    attack_power_mod.direct = 0.8572;
-    weapon_multiplier = 0;
+    weapon_multiplier = p -> find_spell( 224266 ) -> effectN( 1 ).percent() *
+                        p -> artifact.echo_of_the_highlord.percent();
 
     background = true;
     base_multiplier *= 1.0 + p -> artifact.might_of_the_templar.percent();
     if ( p -> talents.final_verdict -> ok() )
       base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 1 ).percent();
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = paladin_melee_attack_t::composite_target_multiplier( t );
+
+    paladin_td_t* td = this -> td( t );
+
+    if ( td -> buffs.debuffs_judgment -> up() )
+    {
+      double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
+      m *= judgment_multiplier;
+    }
+
+    return m;
   }
 
   virtual double cost() const override
@@ -2598,18 +2628,34 @@ struct templars_verdict_t : public holy_power_consumer_t
 {
   echoed_templars_verdict_t* echoed_spell;
 
+  struct templars_verdict_damage_t : public paladin_melee_attack_t
+  {
+    templars_verdict_damage_t( paladin_t *p )
+      : paladin_melee_attack_t( "templars_verdict_dmg", p, p -> find_spell( 224266 ) )
+    {
+      dual = background = true;
+      may_miss = may_dodge = may_parry = false;
+    }
+  };
+
   templars_verdict_t( paladin_t* p, const std::string& options_str )
-    : holy_power_consumer_t( "templars_verdict", p, p -> find_class_spell( "Templar's Verdict" ), true ),
+    : holy_power_consumer_t( "templars_verdict", p, p -> find_specialization_spell( "Templar's Verdict" ), true ),
       echoed_spell( new echoed_templars_verdict_t( p, options_str ) )
   {
     parse_options( options_str );
 
     hasted_gcd = true;
 
+    may_crit = may_block = false;
+    impact_action = new templars_verdict_damage_t( p );
+    impact_action -> stats = stats;
+
     base_multiplier *= 1.0 + p -> artifact.might_of_the_templar.percent();
     if ( p -> talents.final_verdict -> ok() )
       base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 1 ).percent();
   }
+
+  void record_data( action_state_t* ) override {}
 
   virtual double cost() const override
   {
