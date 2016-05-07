@@ -722,8 +722,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 7 abilities
+    // Pet tree, 8 abilities
     {
+      205235, // Arcane Assault
        88084, // Arcane Blast
        88082, // Fireball
        33395, // Freeze
