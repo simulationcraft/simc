@@ -526,7 +526,7 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
 
   if (spell_data._power)
   {
-    if (spell_data._power->size() == 1)
+    if (spell_data._power->size() == 1 && spell_data._power -> at( 0 ) -> aura_id() == 0 )
     {
       resource_current = spell_data._power->at(0)->resource();
     }
