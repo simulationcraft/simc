@@ -24,6 +24,7 @@ struct paladin_t;
 struct hand_of_sacrifice_redirect_t;
 namespace buffs {
                   struct avenging_wrath_buff_t;
+                  struct sanctified_wrath_buff_t;
                   struct ardent_defender_buff_t;
                   struct wings_of_liberty_driver_t;
                   struct liadrins_fury_unleashed_t;
@@ -80,6 +81,7 @@ public:
     // core
     buffs::ardent_defender_buff_t* ardent_defender;
     buffs::avenging_wrath_buff_t* avenging_wrath;
+    buffs::sanctified_wrath_buff_t* sanctified_wrath;
     buff_t* divine_protection;
     buff_t* divine_shield;
     buff_t* guardian_of_ancient_kings;
@@ -167,7 +169,8 @@ public:
   struct spells_t
   {
     const spell_data_t* holy_light;
-    const spell_data_t* sanctified_wrath; // needed to pull out spec-specific effects
+    const spell_data_t* sanctified_wrath; // needed to pull out cooldown reductions
+    const spell_data_t* sanctified_wrath_ret; // needed to pull out spec-specific effects
     const spell_data_t* divine_purpose_ret;
     const spell_data_t* liadrins_fury_unleashed;
     const spell_data_t* justice_gaze;
@@ -518,6 +521,54 @@ namespace buffs {
     double crit_bonus;
     double haste_bonus;
   };
+
+  struct sanctified_wrath_buff_t : public buff_t
+  {
+    sanctified_wrath_buff_t( player_t* p ):
+      buff_t( buff_creator_t( p, "sanctified_wrath", p -> find_spell( 224668 ) )
+        .refresh_behavior( BUFF_REFRESH_DISABLED ) ),
+      damage_modifier( 0.0 ),
+      haste_bonus( 0.0 )
+    {
+      damage_modifier = data().effectN( 1 ).percent();
+      haste_bonus = data().effectN( 2 ).percent();
+
+      paladin_t* paladin = static_cast<paladin_t*>( player );
+      if ( paladin -> artifact.wrath_of_the_ashbringer.rank() )
+      {
+        buff_duration += timespan_t::from_millis(paladin -> artifact.wrath_of_the_ashbringer.value());
+      }
+
+      // let the ability handle the cooldown
+      cooldown -> duration = timespan_t::zero();
+
+      // invalidate Damage and Healing for both specs
+      add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+      add_invalidate( CACHE_HASTE );
+    }
+
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+    {
+      buff_t::expire_override( expiration_stacks, remaining_duration );
+
+      paladin_t* p = static_cast<paladin_t*>( player );
+      p -> buffs.liadrins_fury_unleashed -> expire(); // Force Liadrin's Fury to fade
+    }
+
+    double get_damage_mod()
+    {
+      return damage_modifier * ( this -> stack() );
+    }
+
+    double get_haste_bonus()
+    {
+      return haste_bonus * ( this -> stack() );
+    }
+    private:
+    double damage_modifier;
+    double haste_bonus;
+  };
+
 } // end namespace buffs
 // ==========================================================================
 // End Paladin Buffs, Part One
@@ -813,6 +864,55 @@ struct blessing_of_might_t : public paladin_heal_t
   }
 };
 
+// Sanctified Wrath (ret)
+struct sanctified_wrath_t : public paladin_heal_t
+{
+  sanctified_wrath_t( paladin_t* p, const std::string& options_str )
+    : paladin_heal_t( "sanctified_wrath", p, p -> spells.sanctified_wrath_ret )
+  {
+    parse_options( options_str );
+
+    if ( ! ( p -> talents.sanctified_wrath -> ok() ) )
+      background = true;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    // override for this just in case Avenging Wrath were to get canceled or removed
+    // early, or if there's a duration mismatch (unlikely, but...)
+    if ( p() -> buffs.sanctified_wrath -> check() )
+    {
+      // call tick()
+      heal_t::tick( d );
+    }
+  }
+
+  void execute() override
+  {
+    paladin_heal_t::execute();
+
+    p() -> buffs.sanctified_wrath -> trigger();
+    if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T18, B4 ) )
+    {
+      p() -> buffs.wings_of_liberty -> trigger( 1 ); // We have to trigger a stack here.
+      p() -> buffs.wings_of_liberty_driver -> trigger();
+    }
+
+    if ( p() -> liadrins_fury_unleashed )
+    {
+      p() -> buffs.liadrins_fury_unleashed -> trigger();
+    }
+  }
+
+  bool ready() override
+  {
+    if ( p() -> buffs.sanctified_wrath -> check() )
+      return false;
+    else
+      return paladin_heal_t::ready();
+  }
+};
+
 // Avenging Wrath ===========================================================
 // AW is two spells now (31884 for Ret, 31842 for Holy) and the effects are all jumbled.
 // Thus, we need to use some ugly hacks to get it to work seamlessly for both specs within the same spell.
@@ -829,6 +929,8 @@ struct avenging_wrath_t : public paladin_heal_t
       background = true;
     else if ( p -> specialization() == PALADIN_RETRIBUTION )
     {
+      if ( p -> talents.sanctified_wrath -> ok() )
+        background = true;
       // TODO: hackfix to make it work with T18
       cooldown -> duration = data().cooldown();
       cooldown -> charges = 1;//data().charges();
@@ -1910,6 +2012,12 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
       if ( success )
         p() -> procs.divine_purpose -> occur();
     }
+
+    if ( p() -> buffs.sanctified_wrath -> check() )
+    {
+      int num_stacks = (int)c;
+      p() -> buffs.sanctified_wrath -> trigger( num_stacks );
+    }
   }
 };
 
@@ -2899,6 +3007,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "ardent_defender"           ) return new ardent_defender_t          ( this, options_str );
   if ( name == "avengers_shield"           ) return new avengers_shield_t          ( this, options_str );
   if ( name == "avenging_wrath"            ) return new avenging_wrath_t           ( this, options_str );
+  if ( name == "sanctified_wrath"          ) return new sanctified_wrath_t         ( this, options_str );
   if ( name == "blessing_of_might"         ) return new blessing_of_might_t        ( this, options_str );
   if ( name == "blinding_light"            ) return new blinding_light_t           ( this, options_str );
   if ( name == "beacon_of_light"           ) return new beacon_of_light_t          ( this, options_str );
@@ -3081,6 +3190,7 @@ void paladin_t::create_buffs()
 
   // General
   buffs.avenging_wrath         = new buffs::avenging_wrath_buff_t( this );
+  buffs.sanctified_wrath       = new buffs::sanctified_wrath_buff_t( this );
   buffs.divine_protection      = new buffs::divine_protection_t( this );
   buffs.divine_shield          = buff_creator_t( this, "divine_shield", find_class_spell( "Divine Shield" ) )
                                  .cd( timespan_t::zero() ) // Let the ability handle the CD
@@ -3657,7 +3767,8 @@ void paladin_t::init_spells()
 
   // Spells
   spells.holy_light                    = find_specialization_spell( "Holy Light" );
-  spells.sanctified_wrath              = find_spell( 114232 );  // spec-specific effects for Ret/Holy Sanctified Wrath
+  spells.sanctified_wrath              = find_spell( 114232 );  // cooldown reduction effects
+  spells.sanctified_wrath_ret          = find_spell( 224668 );  // spec-specific effects for Ret Sanctified Wrath
   spells.divine_purpose_ret            = find_spell( 223817 );
   spells.liadrins_fury_unleashed       = find_spell( 208408 );
   spells.justice_gaze                  = find_spell( 211557 );
@@ -3846,6 +3957,9 @@ double paladin_t::composite_melee_haste() const
   if ( buffs.avenging_wrath -> check() )
     h /= 1.0 + buffs.avenging_wrath -> get_haste_bonus();
 
+  if ( buffs.sanctified_wrath -> check() )
+    h /= 1.0 + buffs.sanctified_wrath -> get_haste_bonus();
+
   // Infusion of Light (Holy) adds 10% haste
   h /= 1.0 + passives.infusion_of_light -> effectN( 2 ).percent();
 
@@ -3881,6 +3995,9 @@ double paladin_t::composite_spell_haste() const
   // This should only give a nonzero boost for Holy
   if ( buffs.avenging_wrath -> check() )
     h /= 1.0 + buffs.avenging_wrath -> get_haste_bonus();
+
+  if ( buffs.sanctified_wrath -> check() )
+    h /= 1.0 + buffs.sanctified_wrath -> get_haste_bonus();
 
   // Infusion of Light (Holy) adds 10% haste
   h /= 1.0 + passives.infusion_of_light -> effectN( 2 ).percent();
@@ -3921,6 +4038,9 @@ double paladin_t::composite_player_multiplier( school_e school ) const
   // Avenging Wrath buffs everything
   if ( buffs.avenging_wrath -> check() )
     m *= 1.0 + buffs.avenging_wrath -> get_damage_mod();
+
+  if ( buffs.sanctified_wrath -> check() )
+    m *= 1.0 + buffs.sanctified_wrath -> get_damage_mod();
 
   m *= 1.0 + buffs.wings_of_liberty -> current_stack * buffs.wings_of_liberty -> current_value;
 
