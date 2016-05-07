@@ -1213,6 +1213,18 @@ struct execution_sentence_t : public paladin_spell_t
     if ( ! ( p() -> bugs ) )
       if ( p() -> buffs.the_fires_of_justice -> up() )
         p() -> buffs.the_fires_of_justice -> expire();
+
+    if ( p() -> buffs.sanctified_wrath -> check() )
+    {
+      int num_stacks = (int)base_cost();
+      p() -> buffs.sanctified_wrath -> trigger( num_stacks );
+    }
+
+    if ( p() -> talents.fist_of_justice -> ok() )
+    {
+      double reduction = p() -> talents.fist_of_justice -> effectN( 2 ).base_value();
+      p() -> cooldowns.hammer_of_justice -> ready -= timespan_t::from_seconds( reduction );
+    }
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -2022,7 +2034,7 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
 
     if ( p() -> buffs.sanctified_wrath -> check() )
     {
-      int num_stacks = (int)c;
+      int num_stacks = (int)base_cost();
       p() -> buffs.sanctified_wrath -> trigger( num_stacks );
     }
 
