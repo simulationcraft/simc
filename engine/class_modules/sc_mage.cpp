@@ -2470,16 +2470,13 @@ struct arcane_missiles_t : public arcane_mage_spell_t
       p() -> buffs.arcane_instability -> expire();
     }
 
-    //TODO: Fix this when spelldata is being parsed correctly...? effectN(1) returns 0.
+
     if ( p() -> artifact.rule_of_threes.rank() &&
          rng().roll( p() -> artifact.rule_of_threes
          .data().effectN( 1 ).percent() * 10 ) )
     {
 
       base_tick_time *=  1.0 - ( p() -> artifact.rule_of_threes.data().effectN( 1 ).percent() / 10 ) ;
-
-      sim -> out_debug.printf("%f RoT, %f tick time" ,p() -> artifact.rule_of_threes
-         .data().effectN( 1 ).percent() , base_tick_time );
     }
     arcane_mage_spell_t::execute();
 
