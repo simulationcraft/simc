@@ -4215,6 +4215,15 @@ struct phoenixs_flames_splash_t : public fire_mage_spell_t
     aoe = -1;
     background = true;
   }
+
+  virtual double composite_crit_multiplier() const override
+  {
+    double m = fire_mage_spell_t::composite_crit_multiplier();
+
+    m *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
+
+    return m;
+  }
 };
 struct phoenixs_flames_t : public fire_mage_spell_t
 {
@@ -4239,6 +4248,14 @@ struct phoenixs_flames_t : public fire_mage_spell_t
       phoenixs_flames_splash -> target = s -> target;
       phoenixs_flames_splash -> execute();
     }
+  }
+  virtual double composite_crit_multiplier() const override
+  {
+    double m = fire_mage_spell_t::composite_crit_multiplier();
+
+    m *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
+
+    return m;
   }
 };
 
