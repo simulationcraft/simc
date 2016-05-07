@@ -6040,22 +6040,17 @@ void mage_t::apl_arcane()
   default_list -> add_action( this, "Counterspell",
                               "if=target.debuff.casting.react" );
   default_list -> add_action( "stop_burn_phase,if=prev_gcd.evocation&burn_phase_duration>gcd.max" );
-  default_list -> add_talent( this, "Cold Snap",
-                              "if=health.pct<30" );
   default_list -> add_action( this, "Time Warp",
                               "if=target.health.pct<25|time>5" );
-  default_list -> add_action( "call_action_list,name=movement,if=raid_event.movement.exists" );
   default_list -> add_talent( this, "Rune of Power",
                               "if=buff.rune_of_power.remains<2*spell_haste" );
   default_list -> add_talent( this, "Mirror Image" );
-  default_list -> add_talent( this, "Cold Snap",
-                              "if=buff.presence_of_mind.down&cooldown.presence_of_mind.remains>75" );
+  /*
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=5" );
   default_list -> add_action( "call_action_list,name=init_burn,if=!burn_phase" );
   default_list -> add_action( "call_action_list,name=burn,if=burn_phase" );
   default_list -> add_action( "call_action_list,name=conserve" );
 
-  /*
   movement -> add_action( this, "Blink",
                           "if=movement.distance>10" );
   movement -> add_talent( this, "Blazing Speed",
@@ -6220,14 +6215,13 @@ void mage_t::apl_fire()
   action_priority_list_t* single_target       = get_action_priority_list( "single_target"     );
 
   */
-  default_list -> add_action( "stop_pyro_chain,if=prev_off_gcd.combustion" );
   default_list -> add_action( this, "Counterspell",
                               "if=target.debuff.casting.react" );
   default_list -> add_action( this, "Time Warp",
                               "if=target.health.pct<25|time>5" );
-  default_list -> add_action( "call_action_list,name=movement,if=raid_event.movement.exists" );
   default_list -> add_talent( this, "Rune of Power",
                               "if=buff.rune_of_power.remains<cast_time" );
+  /*
   default_list -> add_action( "call_action_list,name=combust_sequence,if=pyro_chain" );
   default_list -> add_action( "call_action_list,name=crystal_sequence,if=talent.prismatic_crystal.enabled&pet.prismatic_crystal.active" );
   default_list -> add_action( "call_action_list,name=init_combust,if=!pyro_chain" );
@@ -6239,7 +6233,6 @@ void mage_t::apl_fire()
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>10" );
   default_list -> add_action( "call_action_list,name=single_target");
 
-  /*
   movement -> add_action( this, "Blink",
                           "if=movement.distance>10" );
   movement -> add_talent( this, "Blazing Speed",
@@ -6384,12 +6377,12 @@ void mage_t::apl_frost()
                               "if=target.debuff.casting.react" );
   default_list -> add_action( this, "Time Warp",
                               "if=target.health.pct<25|time>5" );
-  default_list -> add_action( "call_action_list,name=movement,if=raid_event.movement.exists" );
   default_list -> add_talent( this, "Mirror Image" );
   default_list -> add_talent( this, "Rune of Power",
                               "if=buff.rune_of_power.remains<cast_time" );
   default_list -> add_talent( this, "Rune of Power",
                               "if=(cooldown.icy_veins.remains<gcd.max&buff.rune_of_power.remains<20)|(cooldown.prismatic_crystal.remains<gcd.max&buff.rune_of_power.remains<10)" );
+  /*
   default_list -> add_action( "call_action_list,name=cooldowns,if=target.time_to_die<24" );
   default_list -> add_action( "call_action_list,name=crystal_sequence,if=talent.prismatic_crystal.enabled&(cooldown.prismatic_crystal.remains<=gcd.max|pet.prismatic_crystal.active)" );
   default_list -> add_action( "call_action_list,name=water_jet,if=prev_off_gcd.water_jet|debuff.water_jet.remains>0" );
@@ -6398,7 +6391,7 @@ void mage_t::apl_frost()
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
   default_list -> add_action( "call_action_list,name=single_target" );
 
-  /*
+
   movement -> add_action( this, "Blink",
                           "if=movement.distance>10" );
   movement -> add_talent( this, "Blazing Speed",

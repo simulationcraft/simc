@@ -26,26 +26,7 @@ actions.precombat+=/pyroblast
 
 actions=counterspell,if=target.debuff.casting.react
 actions+=/time_warp,if=target.health.pct<25|time>5
-actions+=/call_action_list,name=movement,if=raid_event.movement.exists
 actions+=/rune_of_power,if=buff.rune_of_power.remains<cast_time
-actions+=/call_action_list,name=combust_sequence,if=pyro_chain
-actions+=/call_action_list,name=crystal_sequence,if=talent.prismatic_crystal.enabled&pet.prismatic_crystal.active
-actions+=/call_action_list,name=init_combust,if=!pyro_chain
-# Utilize level 90 active talents while avoiding pyro munching
-actions+=/rune_of_power,if=buff.rune_of_power.remains<action.fireball.execute_time+gcd.max&!(buff.heating_up.up&action.fireball.in_flight)
-actions+=/mirror_image,if=!(buff.heating_up.up&action.fireball.in_flight)
-actions+=/call_action_list,name=aoe,if=active_enemies>10
-actions+=/call_action_list,name=single_target
-
-actions.movement=blink,if=movement.distance>10
-actions.movement+=/ice_floes,if=buff.ice_floes.down&(raid_event.movement.distance>0|raid_event.movement.in<action.fireball.cast_time)
-
-# Action list while Prismatic Crystal is up
-actions.crystal_sequence=choose_target,name=prismatic_crystal
-# Spread Combustion from PC
-actions.crystal_sequence+=/inferno_blast,if=dot.combustion.ticking&active_dot.combustion<active_enemies+1
-# Spread Combustion on multitarget fights
-actions.crystal_sequence+=/inferno_blast,cycle_targets=1,if=dot.combustion.ticking&active_dot.combustion<active_enemies
 
 head=frosttouched_hood,id=109971,bonus_id=524
 neck=magisters_chain,id=109954,bonus_id=524,enchant=gift_of_critical_strike
