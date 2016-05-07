@@ -51,7 +51,7 @@ trinket2=prophecy_of_fear,id=124230,bonus_id=566
 
 # Rogue
 Rogue_Assassination_T18H.simc
-Rogue_Combat_T18H.simc
+Rogue_outlaw_T18H.simc
 default_actions=1
 wrists=bloodcult_bracers,id=124279,bonus_id=566
 trinket1=mirror_of_the_blademaster,id=124224,bonus_id=566

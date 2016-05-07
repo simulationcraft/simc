@@ -3,7 +3,7 @@ enemy=TMI_Standard_Boss_T17N
 boss_type=tmi_standard_boss
 tmi_boss=T17N
 max_time=300
-vary_combat_length=0.2
+vary_outlaw_length=0.2
 raid_events+=/adds,first=30,count=1,duration=35,cooldown=50
 disable_set_bonuses=1
 # Raid Tier17N
@@ -41,7 +41,7 @@ talents=2000323
 Priest_Shadow_T17N.simc
 
 Rogue_Assassination_T17N.simc
-Rogue_Combat_T17N.simc
+Rogue_outlaw_T17N.simc
 Rogue_Subtlety_T17N.simc
 
 Shaman_Elemental_T17N.simc
