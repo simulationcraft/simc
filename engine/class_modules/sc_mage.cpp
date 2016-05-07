@@ -6026,7 +6026,7 @@ void mage_t::apl_arcane()
   std::vector<std::string> racial_actions     = get_racial_actions();
 
   action_priority_list_t* default_list        = get_action_priority_list( "default"          );
-
+  /*
   action_priority_list_t* movement            = get_action_priority_list( "movement"         );
   action_priority_list_t* init_burn           = get_action_priority_list( "init_burn"        );
   action_priority_list_t* init_crystal        = get_action_priority_list( "init_crystal"     );
@@ -6035,7 +6035,7 @@ void mage_t::apl_arcane()
   action_priority_list_t* aoe                 = get_action_priority_list( "aoe"              );
   action_priority_list_t* burn                = get_action_priority_list( "burn"             );
   action_priority_list_t* conserve            = get_action_priority_list( "conserve"         );
-
+  */
 
   default_list -> add_action( this, "Counterspell",
                               "if=target.debuff.casting.react" );
@@ -6055,7 +6055,7 @@ void mage_t::apl_arcane()
   default_list -> add_action( "call_action_list,name=burn,if=burn_phase" );
   default_list -> add_action( "call_action_list,name=conserve" );
 
-
+  /*
   movement -> add_action( this, "Blink",
                           "if=movement.distance>10" );
   movement -> add_talent( this, "Blazing Speed",
@@ -6198,6 +6198,7 @@ void mage_t::apl_arcane()
                           "if=buff.arcane_charge.stack<2&mana.pct>93" );
   conserve -> add_action( this, "Arcane Blast" );
   conserve -> add_action( this, "Arcane Barrage" );
+  */
 }
 
 // Fire Mage Action List ===================================================================================================
@@ -6208,7 +6209,7 @@ void mage_t::apl_fire()
   std::vector<std::string> racial_actions     = get_racial_actions();
 
   action_priority_list_t* default_list        = get_action_priority_list( "default"           );
-
+  /*
   action_priority_list_t* movement            = get_action_priority_list( "movement"         );
   action_priority_list_t* crystal_sequence    = get_action_priority_list( "crystal_sequence"  );
   action_priority_list_t* init_combust        = get_action_priority_list( "init_combust"      );
@@ -6218,7 +6219,7 @@ void mage_t::apl_fire()
   action_priority_list_t* aoe                 = get_action_priority_list( "aoe"               );
   action_priority_list_t* single_target       = get_action_priority_list( "single_target"     );
 
-
+  */
   default_list -> add_action( "stop_pyro_chain,if=prev_off_gcd.combustion" );
   default_list -> add_action( this, "Counterspell",
                               "if=target.debuff.casting.react" );
@@ -6238,7 +6239,7 @@ void mage_t::apl_fire()
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>10" );
   default_list -> add_action( "call_action_list,name=single_target");
 
-
+  /*
   movement -> add_action( this, "Blink",
                           "if=movement.distance>10" );
   movement -> add_talent( this, "Blazing Speed",
@@ -6357,6 +6358,7 @@ void mage_t::apl_fire()
                                "Adding Heating Up to Pyroblast" );
   single_target -> add_action( this, "Fireball" );
   single_target -> add_action( this, "Scorch", "moving=1" );
+  */
 }
 
 // Frost Mage Action List ==============================================================================================================
@@ -6367,6 +6369,7 @@ void mage_t::apl_frost()
   std::vector<std::string> racial_actions = get_racial_actions();
 
   action_priority_list_t* default_list      = get_action_priority_list( "default"          );
+  /*
 
   action_priority_list_t* movement          = get_action_priority_list( "movement"         );
   action_priority_list_t* crystal_sequence  = get_action_priority_list( "crystal_sequence" );
@@ -6375,7 +6378,7 @@ void mage_t::apl_frost()
   action_priority_list_t* water_jet         = get_action_priority_list( "water_jet"        );
   action_priority_list_t* aoe               = get_action_priority_list( "aoe"              );
   action_priority_list_t* single_target     = get_action_priority_list( "single_target"    );
-
+  */
 
   default_list -> add_action( this, "Counterspell",
                               "if=target.debuff.casting.react" );
@@ -6395,7 +6398,7 @@ void mage_t::apl_frost()
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
   default_list -> add_action( "call_action_list,name=single_target" );
 
-
+  /*
   movement -> add_action( this, "Blink",
                           "if=movement.distance>10" );
   movement -> add_talent( this, "Blazing Speed",
@@ -6521,6 +6524,7 @@ void mage_t::apl_frost()
                                "if=!talent.frost_bomb.enabled&buff.fingers_of_frost.react&(!talent.thermal_void.enabled|cooldown.icy_veins.remains>8)" );
   single_target -> add_action( this, "Frostbolt" );
   single_target -> add_action( this, "Ice Lance", "moving=1" );
+  */
 
 }
 
