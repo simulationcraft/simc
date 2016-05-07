@@ -132,6 +132,9 @@ public:
   {
     // this seems to be required to get Grand Crusader procs working
     cooldown_t* avengers_shield;
+
+    // whoo fist of justice
+    cooldown_t* hammer_of_justice;
   } cooldowns;
 
   // Passives
@@ -301,6 +304,7 @@ public:
     active_protector_of_the_innocent   = nullptr;
 
     cooldowns.avengers_shield = get_cooldown( "avengers_shield" );
+    cooldowns.hammer_of_justice = get_cooldown( "hammer_of_justice" );
 
     beacon_target = nullptr;
 
@@ -2018,6 +2022,12 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
       int num_stacks = (int)c;
       p() -> buffs.sanctified_wrath -> trigger( num_stacks );
     }
+
+    if ( p() -> talents.fist_of_justice -> ok() )
+    {
+      double reduction = p() -> talents.fist_of_justice -> effectN( 2 ).base_value();
+      p() -> cooldowns.hammer_of_justice -> ready -= timespan_t::from_seconds( reduction );
+    }
   }
 };
 
@@ -2447,7 +2457,7 @@ struct hammer_of_justice_t : public paladin_melee_attack_t
     if ( p() -> justice_gaze )
     {
       if ( target -> health_percentage() > p() -> spells.justice_gaze -> effectN( 1 ).base_value() )
-        cooldown -> adjust( -(cooldown -> duration * p() -> spells.justice_gaze -> effectN( 2 ).percent()) );
+        p() -> cooldowns.hammer_of_justice -> ready -= ( p() -> cooldowns.hammer_of_justice -> duration * p() -> spells.justice_gaze -> effectN( 2 ).percent() );
     }
   }
 };
