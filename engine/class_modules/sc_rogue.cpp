@@ -5253,7 +5253,6 @@ void rogue_t::init_action_list()
     }
 
     action_priority_list_t* finishers = get_action_priority_list( "finishers" );
-    action_priority_list_t* generators = get_action_priority_list( "generators" );
 
     def -> add_action( this, "Vanish", "if=time>10&energy>13&!buff.stealth.up&energy.time_to_max>gcd*2&(combo_points<8|(!talent.anticipation.enabled&combo_points<=1))" );
     def -> add_action( this, "Mutilate", "if=buff.stealth.up|buff.vanish.up" );
@@ -5265,7 +5264,6 @@ void rogue_t::init_action_list()
     def -> add_action( this, "Rupture", "cycle_targets=1,if=combo_points=5&remains<=duration*0.3&spell_targets.fan_of_knives>1" );
     def -> add_action( "call_action_list,name=finishers,if=combo_points=5&((!cooldown.death_from_above.remains&talent.death_from_above.enabled)|buff.envenom.down|!talent.anticipation.enabled|combo_points>=6)" );
     def -> add_action( "call_action_list,name=finishers,if=dot.rupture.remains<2" );
-    def -> add_action( "call_action_list,name=generators" );
 
     finishers -> add_action( this, "Rupture", "cycle_targets=1,if=(remains<2|(combo_points=5&remains<=(duration*0.3)))" );
     finishers -> add_action( "pool_resource,for_next=1" );
@@ -5274,11 +5272,6 @@ void rogue_t::init_action_list()
     finishers -> add_action( this, "Envenom", "cycle_targets=1,if=dot.deadly_poison_dot.remains<4&target.health.pct>35&(energy+energy.regen*cooldown.vendetta.remains>=105&(buff.envenom.remains<=1.8|energy>55))|buff.bloodlust.up|debuff.vendetta.up" );
     finishers -> add_action( this, "Envenom", "if=target.health.pct<=35&(energy+energy.regen*cooldown.vendetta.remains>=105&(buff.envenom.remains<=1.8|energy>45))|buff.bloodlust.up|debuff.vendetta.up" );
     finishers -> add_action( this, "Envenom", "if=target.health.pct>35&(energy+energy.regen*cooldown.vendetta.remains>=105&(buff.envenom.remains<=1.8|energy>55))|buff.bloodlust.up|debuff.vendetta.up" );
-
-    generators -> add_action( this, "Dispatch", "cycle_targets=1,if=dot.deadly_poison_dot.remains<4&!talent.anticipation.enabled&combo_points<5&set_bonus.tier18_4pc=0" );
-    generators -> add_action( this, "Dispatch", "cycle_targets=1,if=dot.deadly_poison_dot.remains<4&!talent.anticipation.enabled&set_bonus.tier18_4pc=1&(combo_points<2|target.health.pct<35)" );
-    generators -> add_action( this, "Dispatch", "if=!talent.anticipation.enabled&combo_points<5&set_bonus.tier18_4pc=0" );
-    generators -> add_action( this, "Dispatch", "if=!talent.anticipation.enabled&set_bonus.tier18_4pc=1&(combo_points<2|target.health.pct<35)" );
   }
 
   else if ( specialization() == ROGUE_OUTLAW )
