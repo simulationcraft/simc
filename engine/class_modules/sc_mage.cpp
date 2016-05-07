@@ -458,6 +458,7 @@ public:
     icicle( nullptr ),
     icicle_event( nullptr ),
     ignite( nullptr ),
+    ignite_spread_event( nullptr ),
     unstable_magic_explosion( nullptr ),
     last_bomb_target( nullptr ),
     wild_arcanist( nullptr ),
