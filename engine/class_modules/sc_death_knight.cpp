@@ -414,26 +414,6 @@ public:
     const spell_data_t* vampiric_blood;
   } glyph;
 
-  // Perks
-  struct perks_t
-  {
-    // Blood
-    const spell_data_t* enhanced_bone_shield;
-    const spell_data_t* enhanced_death_coil;
-    const spell_data_t* enhanced_rune_tap;
-
-    // Frost
-    const spell_data_t* empowered_pillar_of_frost;
-    const spell_data_t* empowered_obliterate;
-    const spell_data_t* improved_runeforges;
-
-    // Unholy
-    const spell_data_t* empowered_gargoyle;
-    const spell_data_t* enhanced_dark_transformation;
-    const spell_data_t* enhanced_fallen_crusader;
-    const spell_data_t* improved_soul_reaper;
-  } perk;
-
   // Pets and Guardians
   struct pets_t
   {
@@ -489,7 +469,6 @@ public:
     talent( talents_t() ),
     spell( spells_t() ),
     glyph( glyphs_t() ),
-    perk( perks_t() ),
     pets( pets_t() ),
     procs( procs_t() ),
     t15_2pc_melee( nullptr ),
@@ -1554,8 +1533,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
     void tick( dot_t* dot ) override
     {
       int pct = 35;
-      if ( o() -> perk.improved_soul_reaper -> ok() )
-        pct = o() -> perk.improved_soul_reaper -> effectN( 1 ).base_value();
 
       if ( o() -> sets.has_set_bonus( SET_MELEE, T15, B4 ) )
         pct = o() -> sets.set( SET_MELEE, T15, B4 ) -> effectN( 1 ).base_value();
@@ -2233,66 +2210,6 @@ struct fallen_zandalari_t : public death_knight_pet_t
 } // namespace pets
 
 namespace { // UNNAMED NAMESPACE
-
-struct shadow_of_death_t : public buff_t
-{
-  double current_health_gain;
-
-  shadow_of_death_t( death_knight_t* p ) :
-    buff_t( buff_creator_t( p, "shadow_of_death", p -> find_spell( 164047 ) )
-            .chance( p -> perk.enhanced_death_coil -> ok() ) ),
-    current_health_gain( 0 )
-  { }
-
-  void execute( int stacks, double value, timespan_t duration ) override
-  {
-    double new_multiplier = data().effectN( 1 ).percent();
-
-    // Refresh, new value is x% + remaining portion of the ongoing buff.
-    // Current value of the buff is the current +max_health% of the buff.
-    if ( ! expiration.empty() )
-      new_multiplier += current_value * expiration.back() -> remains() / data().duration();
-
-    // Base Health
-    double max_health_base = player -> resources.max[ RESOURCE_HEALTH ] - player -> resources.temporary[ RESOURCE_HEALTH ];
-    // Health from the new buff
-    double new_added_health = max_health_base * new_multiplier;
-    // Delta (can be negative)
-    double delta = new_added_health - current_health_gain;
-
-    if ( sim -> debug )
-      sim -> out_debug.printf( "%s %s health_base=%.0f current_multiplier=%.3f new_multiplier=%.3f new_added_health=%.0f delta=%.0f",
-          player -> name(), name(), max_health_base, current_value, new_multiplier, new_added_health, delta );
-
-    // Adjust health
-    if ( delta > 0 )
-      player -> stat_gain( STAT_MAX_HEALTH, delta, nullptr, nullptr, true );
-    else if ( delta < 0 )
-      player -> stat_loss( STAT_MAX_HEALTH, std::fabs( delta ), nullptr, nullptr, true );
-
-    // Execute buff, refreshing it to full duration
-    buff_t::execute( stacks, value, duration );
-
-    // Record current values
-    current_health_gain = new_added_health;
-    current_value = new_multiplier;
-  }
-
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-
-    player -> stat_loss( STAT_MAX_HEALTH, current_health_gain, nullptr, nullptr, true );
-    current_health_gain = 0;
-  }
-
-  void reset() override
-  {
-    buff_t::reset();
-
-    current_health_gain = 0;
-  }
-};
 
 // Template for common death knight action code. See priest_action_t.
 template <class Base>
@@ -3242,8 +3159,6 @@ struct soul_reaper_t : public death_knight_melee_attack_t
   void tick( dot_t* dot ) override
   {
     int pct = p() -> sets.has_set_bonus( SET_MELEE, T15, B4 ) ? p() -> sets.set( SET_MELEE, T15, B4 ) -> effectN( 1 ).base_value() : 35;
-    if ( p() -> perk.improved_soul_reaper -> ok() )
-      pct = p() -> perk.improved_soul_reaper -> effectN( 1 ).base_value();
 
     if ( dot -> state -> target -> health_percentage() <= pct )
       death_knight_melee_attack_t::tick( dot );
@@ -3548,12 +3463,6 @@ struct dark_transformation_t : public death_knight_spell_t
     parse_options( options_str );
 
     harmful = false;
-
-    if ( p -> perk.enhanced_dark_transformation -> ok() )
-    {
-      cost_blood = cost_unholy = cost_frost = cost_death = 0;
-      rp_gain = 0;
-    }
   }
 
   virtual void execute() override
@@ -4223,7 +4132,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
 struct howling_blast_t : public death_knight_spell_t
 {
   howling_blast_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "howling_blast", p, p -> find_class_spell( "Howling Blast" ) )
+    death_knight_spell_t( "howling_blast", p, p -> find_specialization_spell( "Howling Blast" ) )
   {
     parse_options( options_str );
 
@@ -4231,16 +4140,6 @@ struct howling_blast_t : public death_knight_spell_t
     base_aoe_multiplier = data().effectN( 1 ).percent();
 
     assert( p -> active_spells.frost_fever );
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double m = death_knight_spell_t::action_multiplier();
-
-    if ( p() -> buffs.rime -> check() && p() -> perk.empowered_obliterate -> ok() )
-      m += p() -> perk.empowered_obliterate -> effectN( 1 ).percent();
-
-    return m;
   }
 
   virtual void consume_resource() override
@@ -4358,16 +4257,6 @@ struct icy_touch_t : public death_knight_spell_t
 
     if ( p -> spec.reaping -> ok() )
       convert_runes = 1.0;
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double m = death_knight_spell_t::action_multiplier();
-
-    if ( p() -> buffs.rime -> check() && p() -> perk.empowered_obliterate -> ok() )
-      m += p() -> perk.empowered_obliterate -> effectN( 1 ).percent();
-
-    return m;
   }
 
   virtual void consume_resource() override
@@ -4877,12 +4766,6 @@ struct pillar_of_frost_t : public death_knight_spell_t
     parse_options( options_str );
 
     harmful = false;
-
-    if ( p -> perk.empowered_pillar_of_frost -> ok() )
-    {
-      cost_blood = cost_frost = cost_unholy = cost_death = 0;
-      rp_gain = 0;
-    }
   }
 
   void execute() override
@@ -5203,7 +5086,6 @@ struct summon_gargoyle_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     timespan_t duration = data().effectN( 3 ).trigger() -> duration();
-    duration += p() -> perk.empowered_gargoyle -> effectN( 1 ).time_value();
 
     p() -> pets.gargoyle -> summon( duration );
   }
@@ -5590,7 +5472,6 @@ struct rune_tap_t : public death_knight_spell_t
     parse_options( options_str );
     cooldown -> charges = data().charges();
     cooldown -> duration = data().charge_cooldown();
-    cooldown -> duration += p -> perk.enhanced_rune_tap -> effectN( 1 ).time_value();
     ability_cooldown = p -> get_cooldown( "Rune Tap Ability Cooldown" );
     ability_cooldown -> duration = data().cooldown(); // Can only use it once per second.
     use_off_gcd = true;
@@ -5866,7 +5747,6 @@ void runeforge::razorice_attack( special_effect_t& effect )
       may_miss    = callbacks = false;
       background  = proc = true;
 
-      weapon_multiplier += player -> perk.improved_runeforges -> effectN( 1 ).percent();
       weapon = &( player -> main_hand_weapon );
       /*
       if ( item.slot == SLOT_OFF_HAND )
@@ -5889,7 +5769,7 @@ void runeforge::razorice_attack( special_effect_t& effect )
   };
 
   effect.execute_action = new razorice_attack_t( debug_cast<death_knight_t*>( effect.item -> player ), effect.name() );
-
+  effect.proc_chance_ = 1.0;
   new dbc_proc_callback_t( effect.item, effect );
 }
 
@@ -5899,7 +5779,8 @@ void runeforge::razorice_debuff( special_effect_t& effect )
   {
     razorice_callback_t( const special_effect_t& effect ) :
      dbc_proc_callback_t( effect.item, effect )
-    { }
+    { 
+    }
 
     void execute( action_t* a, action_state_t* state ) override
     {
@@ -5931,7 +5812,6 @@ void runeforge::fallen_crusader( special_effect_t& effect )
         target = player;
         callbacks = may_crit = false;
         base_pct_heal = data -> effectN( 2 ).percent();
-        base_pct_heal += dk -> perk.enhanced_fallen_crusader -> effectN( 1 ).percent();
       }
 
       // Procs by default target the target of the action that procced them.
@@ -6434,24 +6314,6 @@ void death_knight_t::init_spells()
   spell.blood_rites               = find_spell( 163948 );
   spell.necrotic_plague_energize  = find_spell( 155165 );
 
-  // Perks
-
-  // Blood
-  perk.enhanced_bone_shield            = spell_data_t::not_found();
-  perk.enhanced_death_coil             = spell_data_t::not_found();
-  perk.enhanced_rune_tap               = spell_data_t::not_found();
-
-  // Frost
-  perk.empowered_pillar_of_frost       = spell_data_t::not_found();
-  perk.empowered_obliterate            = spell_data_t::not_found();
-  perk.improved_runeforges             = spell_data_t::not_found();
-
-  // Unholy
-  perk.empowered_gargoyle             = spell_data_t::not_found();
-  perk.enhanced_dark_transformation   = spell_data_t::not_found();
-  perk.enhanced_fallen_crusader       = spell_data_t::not_found();
-  perk.improved_soul_reaper           = spell_data_t::not_found();
-
   // Active Spells
   if ( talent.breath_of_sindragosa -> ok() )
   {
@@ -6481,7 +6343,6 @@ void death_knight_t::init_spells()
     active_spells.frozen_runeblade = new frozen_runeblade_driver_t( this );
 
   fallen_crusader += find_spell( 53365 ) -> effectN( 1 ).percent();
-  fallen_crusader += perk.improved_runeforges -> effectN( 2 ).percent();
 }
 
 // death_knight_t::default_apl_blood ========================================
@@ -7187,8 +7048,7 @@ void death_knight_t::create_buffs()
                               .add_invalidate( CACHE_STAMINA );
   buffs.bone_shield         = buff_creator_t( this, "bone_shield", find_specialization_spell( "Bone Shield" ) )
                               .cd( timespan_t::zero() )
-                              .max_stack( specialization() == DEATH_KNIGHT_BLOOD ? ( find_specialization_spell( "Bone Shield" ) -> initial_stacks() +
-                                          find_spell( 144948 ) -> max_stacks() + perk.enhanced_bone_shield -> effectN( 1 ).base_value() ) : -1 );
+                              .max_stack( find_specialization_spell( "Bone Shield" ) -> initial_stacks() + find_spell( 144948 ) -> max_stacks() );
   buffs.bone_wall           = buff_creator_t( this, "bone_wall", find_spell( 144948 ) )
                               .chance( sets.has_set_bonus( SET_TANK, T16, B2 ) );
   buffs.crimson_scourge     = buff_creator_t( this, "crimson_scourge" ).spell( find_spell( 81141 ) )
@@ -7217,8 +7077,7 @@ void death_knight_t::create_buffs()
   buffs.pillar_of_frost     = buff_creator_t( this, "pillar_of_frost", find_class_spell( "Pillar of Frost" ) )
                               .cd( timespan_t::zero() )
                               .default_value( find_class_spell( "Pillar of Frost" ) -> effectN( 1 ).percent() +
-                                              sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).percent() +
-                                              perk.empowered_pillar_of_frost -> effectN( 1 ).percent() )
+                                              sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).percent() )
                               .add_invalidate( CACHE_STRENGTH );
   buffs.rime                = buff_creator_t( this, "rime", find_spell( 59052 ) )
                               .max_stack( ( sets.has_set_bonus( SET_MELEE, T13, B2 ) ) ? 2 : 1 )
@@ -7235,8 +7094,7 @@ void death_knight_t::create_buffs()
                               .max_stack( find_spell( 50421 ) -> max_stacks() +
                                           sets.set( DEATH_KNIGHT_BLOOD, T18, B2 ) -> effectN( 1 ).base_value() )
                               .chance( spec.scent_of_blood -> ok() );
-  // Trick simulator into recalculating health when this buff goes up/down.
-  buffs.shadow_of_death     = new shadow_of_death_t( this );
+
   buffs.sudden_doom         = buff_creator_t( this, "sudden_doom", find_spell( 81340 ) )
                               .max_stack( ( sets.has_set_bonus( SET_MELEE, T13, B2 ) ) ? 2 : 1 )
                               .cd( timespan_t::zero() )
