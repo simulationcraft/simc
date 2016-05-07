@@ -40,7 +40,6 @@ actions+=/vendetta,if=target.time_to_die<=20|(target.time_to_die<=30&glyph.vende
 actions+=/rupture,cycle_targets=1,if=combo_points=5&remains<=duration*0.3&spell_targets.fan_of_knives>1
 actions+=/call_action_list,name=finishers,if=combo_points=5&((!cooldown.death_from_above.remains&talent.death_from_above.enabled)|buff.envenom.down|!talent.anticipation.enabled|combo_points>=6)
 actions+=/call_action_list,name=finishers,if=dot.rupture.remains<2
-actions+=/call_action_list,name=generators
 
 actions.finishers=rupture,cycle_targets=1,if=(remains<2|(combo_points=5&remains<=(duration*0.3)))
 actions.finishers+=/pool_resource,for_next=1
