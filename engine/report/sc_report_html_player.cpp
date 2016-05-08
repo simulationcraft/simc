@@ -1069,7 +1069,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
           util::inverse_tokenize( util::attribute_type_string( i ) ).c_str(),
           util::floor( buffed_stats.attribute[ i ] ),
           util::floor( p.get_attribute( i ) ),
-          util::floor( p.initial.stats.attribute[ i ] ) );
+          util::floor( p.gear.attribute[ i ] ) );
       // append hybrid attributes as a parenthetical if appropriate
       if ( hybrid_attributes[ i ] > 0 )
         os.format( " (%.0f)", hybrid_attributes[ i ] );
