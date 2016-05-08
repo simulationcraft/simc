@@ -534,6 +534,7 @@ public:
   virtual void      init_benefits() override;
   virtual void      init_stats() override;
   virtual void      invalidate_cache( cache_e c ) override;
+  void init_resources( bool force ) override;
   virtual void      recalculate_resource_max( resource_e rt ) override;
   virtual void      reset() override;
   virtual expr_t*   create_expression( action_t*, const std::string& name ) override;
@@ -1636,8 +1637,8 @@ struct arcane_mage_spell_t : public mage_spell_t
   double arcane_charge_damage_bonus() const
   {
     double per_ac_bonus = p() -> spec.arcane_charge -> effectN( 1 ).percent() *
-                          (1.0 + p() -> cache.mastery_value() *
-                           p() -> spec.savant -> effectN( 2 ).percent() );
+                          ( 1.0 + p() -> cache.mastery_value() *
+                           p() -> spec.savant -> effectN( 2 ).sp_coeff() );
     return 1.0 + p() -> buffs.arcane_charge -> check() * per_ac_bonus;
   }
 
@@ -5849,6 +5850,20 @@ void mage_t::init_procs()
   }
 }
 
+// mage_t::init_resources =====================================================
+void mage_t::init_resources( bool force )
+{
+  player_t::init_resources( force );
+
+  // This is the call needed to set max mana at the beginning of the sim.
+  // If this is called without recalculating max mana afterwards, it will
+  // overwrite the recalculating done earlier in reset() and cache_invalidate()
+  // back to default max mana.
+  if ( spec.savant -> ok() )
+  {
+    recalculate_resource_max( RESOURCE_MANA );
+  }
+}
 // mage_t::init_uptimes =====================================================
 
 void mage_t::init_benefits()
@@ -6565,11 +6580,12 @@ void mage_t::apl_default()
 
 double mage_t::mana_regen_per_second() const
 {
+
   double mps = player_t::mana_regen_per_second();
 
   if ( spec.savant -> ok() )
   {
-    mps *= 1.0 + cache.mastery_value() * spec.savant -> effectN( 1 ).percent();
+    mps *= 1.0 + cache.mastery_value() * spec.savant -> effectN( 1 ).sp_coeff();
   }
 
   return mps;
@@ -6587,6 +6603,7 @@ void mage_t::invalidate_cache( cache_e c )
       if ( spec.savant -> ok() )
       {
         recalculate_resource_max( RESOURCE_MANA );
+
       }
       else if ( spec.icicles -> ok() )
       {
@@ -6609,15 +6626,15 @@ void mage_t::recalculate_resource_max( resource_e rt )
     current_mana = resources.current[ rt ];
     current_mana_max = resources.max[ rt ];
     mana_percent = current_mana / current_mana_max;
+
   }
 
   player_t::recalculate_resource_max( rt );
 
   if ( savant_adjust_mana )
   {
-    resources.max[ rt ] *= 1.0 + cache.mastery_value() * spec.savant -> effectN( 1 ).percent();
+    resources.max[ rt ] *= 1.0 + cache.mastery_value();
     resources.current[ rt ] = resources.max[ rt ] * mana_percent;
-
     if ( sim -> debug )
     {
       sim -> out_debug.printf(
@@ -6697,7 +6714,6 @@ double mage_t::composite_mastery_rating() const
   {
     m += mage_t::composite_spell_crit_rating();
   }
-
   return m;
 }
 
