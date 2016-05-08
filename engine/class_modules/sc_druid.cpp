@@ -23,6 +23,8 @@ namespace { // UNNAMED NAMESPACE
   Artifact utility traits
   Brutal Slash hasted recharge
   Check Luffa-Wrapped Grips (what procs it)
+  Ashamane's Rip tweak
+    http://us.battle.net/wow/en/forum/topic/20743504316?page=14#274
 
   Balance ===================================================================
   Stellar Drift cast while moving

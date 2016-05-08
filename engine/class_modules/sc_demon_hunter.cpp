@@ -18,6 +18,7 @@ namespace
    General ------------------------------------------------------------------
    Soul Fragments from Shattered Souls
    Soul Fragment duration, travel time, positioning
+     http://us.battle.net/wow/en/forum/topic/20743504316?page=14#280
    Demon Soul buff
    Fel Blade movement mechanics
    Darkness
@@ -37,17 +38,13 @@ namespace
    Infernal Strike
    Torment
    Abyssal Strike, Last Resort, Nether Bond talents
-   Infernal Force and Siphon Power artifact traits
+   Infernal Force artifact trait
+   Siphon Power artifact trait
+     http://us.battle.net/wow/en/forum/topic/20743504316?page=15#282
    soul_fragments expr
 
    Needs Documenting --------------------------------------------------------
    Vengeful Retreat "jump_cancel" option
-
-   Things to Watch on Alpha -------------------------------------------------
-   Demon Blade mechanics
-   Chaos Cleave mechanics
-   Chaos Blades double dip
-   Rage of the Illidari school/armor pen
 */
 
 /* Forward declarations
@@ -376,6 +373,7 @@ public:
     real_ppm_t* felblade;
 
     // Havoc
+    real_ppm_t* demon_blades;
     real_ppm_t* inner_demons;
 
     // Vengeance
@@ -391,7 +389,7 @@ public:
 
     // Havoc
     spell_t*  anguish;
-    attack_t* demon_blade;
+    attack_t* demon_blades;
     spell_t*  inner_demons;
 
     // Vengeance
@@ -2058,31 +2056,8 @@ struct demon_hunter_attack_t : public demon_hunter_action_t<melee_attack_t>
 
     if ( result_is_hit( s -> result ) )
     {
-      trigger_demon_blades( s );
       trigger_fel_barrage( s );
     }
-  }
-
-  void trigger_demon_blades( action_state_t* s )
-  {
-    if ( ! p() -> talent.demon_blades -> ok() )
-      return;
-
-    if ( p() -> active.demon_blade -> cooldown -> down() )
-      return;
-
-    if ( s -> result_amount <= 0 )
-      return;
-
-    // Asserts to notify me if/when they change this mechanic.
-    assert( p() -> talent.demon_blades -> proc_chance() == 1.0 );
-    assert( p() -> talent.demon_blades -> real_ppm() == 0.0 );
-
-    if ( ! p() -> rng().roll( p() -> talent.demon_blades -> proc_chance() ) )
-      return;
-
-    p() -> active.demon_blade -> target = s -> target;
-    p() -> active.demon_blade -> schedule_execute();
   }
 
   void trigger_fel_barrage( action_state_t* s )
@@ -2170,6 +2145,16 @@ struct melee_t : public demon_hunter_attack_t
     }
   }
 
+  void impact( action_state_t* s ) override
+  {
+    demon_hunter_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      trigger_demon_blades( s );
+    }
+  }
+
   void schedule_execute( action_state_t* s ) override
   {
     demon_hunter_attack_t::schedule_execute( s );
@@ -2215,6 +2200,24 @@ struct melee_t : public demon_hunter_attack_t
     }
 
     demon_hunter_attack_t::execute();
+  }
+
+  void trigger_demon_blades( action_state_t* s )
+  {
+    if ( ! p() -> talent.demon_blades -> ok() )
+      return;
+
+    if ( p() -> in_gcd() )
+      return;
+
+    if ( p() -> active.demon_blades -> cooldown -> down() )
+      return;
+
+    if ( ! p() -> rppm.demon_blades -> trigger() )
+      return;
+
+    p() -> active.demon_blades -> target = s -> target;
+    p() -> active.demon_blades -> schedule_execute();
   }
 };
 
@@ -2771,7 +2774,7 @@ struct demons_bite_t : public demon_hunter_attack_t
 {
   struct
   {
-    double base, range;
+    int base, die_sides;
   } fury;
 
   demons_bite_t( demon_hunter_t* p, const std::string& options_str )
@@ -2780,16 +2783,14 @@ struct demons_bite_t : public demon_hunter_attack_t
   {
     parse_options( options_str );
 
-    fury.base  = data().effectN( 3 ).resource( RESOURCE_FURY ) + 1.0;
-    fury.range = data().effectN( 3 ).die_sides() - 1.0;
+    fury.base      = data().effectN( 3 ).resource( RESOURCE_FURY );
+    fury.die_sides = data().effectN( 3 ).die_sides();
 
     base_multiplier *= 1.0 + p -> artifact.demon_rage.percent();
 
     if ( p -> legendary.anger_of_the_half_giants )
     {
-      // Adds 1-20 fury
-      fury.base  += 1.0;
-      fury.range += p -> legendary.anger_of_the_half_giants -> driver() -> effectN( 1 ).resource( RESOURCE_FURY ) - 1.0;
+      fury.die_sides += p -> legendary.anger_of_the_half_giants -> driver() -> effectN( 1 ).resource( RESOURCE_FURY );
     }
   }
 
@@ -2809,8 +2810,7 @@ struct demons_bite_t : public demon_hunter_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      p() -> resource_gain( RESOURCE_FURY, fury.base + rng().real() * fury.range,
-                          action_gain );
+      trigger_fury_gain();
       
       if ( p() -> talent.felblade -> ok() && p() -> rppm.felblade -> trigger() )
       {
@@ -2830,25 +2830,37 @@ struct demons_bite_t : public demon_hunter_attack_t
 
     return demon_hunter_attack_t::ready();
   }
+
+  void trigger_fury_gain()
+  {
+    double f = fury.base + rng().range( 1, 1 + fury.die_sides );
+    // Generates an integer amount of fury.
+    p() -> resource_gain( RESOURCE_FURY, ( int ) f, action_gain );
+  }
 };
 
 // Demon Blade ==============================================================
 
-struct demon_blade_t : public demon_hunter_attack_t
+struct demon_blades_t : public demon_hunter_attack_t
 {
   struct
   {
-    double base, range;
+    double base, die_sides;
   } fury;
 
-  demon_blade_t( demon_hunter_t* p )
-    : demon_hunter_attack_t( "demon_blade", p, p -> find_spell( 203796 ) )
+  demon_blades_t( demon_hunter_t* p )
+    : demon_hunter_attack_t( "demon_blades", p, p -> find_spell( 203796 ) )
   {
     background           = true;
     may_proc_fel_barrage = false; // Apr 22 2016
     cooldown -> duration = p -> talent.demon_blades -> internal_cooldown();
-    fury.base            = data().effectN( 3 ).resource( RESOURCE_FURY ) + 1.0;
-    fury.range           = data().effectN( 3 ).die_sides() - 1.0;
+    fury.base            = data().effectN( 3 ).resource( RESOURCE_FURY );
+    fury.die_sides       = data().effectN( 3 ).die_sides();
+
+    if ( p -> legendary.anger_of_the_half_giants )
+    {
+      fury.die_sides += p -> legendary.anger_of_the_half_giants -> driver() -> effectN( 1 ).resource( RESOURCE_FURY );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -2857,8 +2869,7 @@ struct demon_blade_t : public demon_hunter_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      p() -> resource_gain( RESOURCE_FURY, fury.base + rng().real() * fury.range,
-                          action_gain );
+      trigger_fury_gain();
     }
 
     if ( p() -> talent.felblade -> ok() && p() -> rppm.felblade -> trigger() )
@@ -2866,6 +2877,13 @@ struct demon_blade_t : public demon_hunter_attack_t
       p() -> proc.felblade_reset -> occur();
       p() -> cooldown.felblade -> reset( true );
     }
+  }
+
+  void trigger_fury_gain()
+  {
+    double f = fury.base + rng().range( 1, 1 + fury.die_sides );
+    // Generates an integer amount of fury.
+    p() -> resource_gain( RESOURCE_FURY, ( int ) f, action_gain );
   }
 };
 
@@ -2960,11 +2978,7 @@ struct fury_of_the_illidari_t : public demon_hunter_attack_t
     {
       demon_hunter_attack_t::init();
 
-      // Assert to remind me to remove snapshot flag.
-      assert( school == SCHOOL_PHYSICAL );
-
-      snapshot_flags = STATE_TGT_ARMOR;
-      update_flags   = 0;
+      snapshot_flags = update_flags = 0;
     }
 
     void execute() override
@@ -4142,6 +4156,7 @@ void demon_hunter_t::init_rng()
   rppm.felblade = get_rppm( "felblade", find_spell( 203557 ) );
 
   // Havoc
+  rppm.demon_blades = get_rppm( "demon_blades", talent.demon_blades );
   rppm.inner_demons = get_rppm( "inner_demons", artifact.inner_demons );
 
   // Vengeance
@@ -4397,7 +4412,7 @@ void demon_hunter_t::init_spells()
 
   if ( talent.demon_blades -> ok() )
   {
-    active.demon_blade = new demon_blade_t( this );
+    active.demon_blades = new demon_blades_t( this );
   }
 
   if ( artifact.inner_demons.rank() )
