@@ -405,6 +405,8 @@ public:
   int              _die_sides;       // Effect damage range
   unsigned         _mechanic;        // Effect Mechanic
   unsigned         _chain_target;    // Number of targets (for chained spells)
+  unsigned         _targeting_1;     // Targeting related field 1
+  unsigned         _targeting_2;     // 2
 
   // Pointers for runtime linking
   spell_data_t* _spell;
@@ -514,6 +516,12 @@ public:
 
   unsigned chain_target() const
   { return _chain_target; }
+
+  unsigned target_1() const
+  { return _targeting_1; }
+
+  unsigned target_2() const
+  { return _targeting_2; }
 
   bool class_flag( unsigned flag ) const
   {

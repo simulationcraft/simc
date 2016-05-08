@@ -12,6 +12,38 @@ struct proc_map_t
   const char* proc;
 };
 
+static const std::map<unsigned, const std::string> _targeting_map = {
+  {  1,  "Self"                },
+  {  5,  "Active Pet"          },
+  {  6,  "Enemy"               },
+  {  7,  "AOE enemy (instant)" },
+  {  8,  "AOE Custom"          },
+  { 15,  "AOE enemy"           },
+  { 18,  "Custom"              },
+  { 16,  "AOE enemy (instant)" },
+  { 21,  "Friend"              },
+  { 22,  "At Caster"           },
+  { 28,  "AOE enemy"           },
+  { 30,  "AOE friendly"        },
+  { 31,  "AOE friendly"        },
+  { 42,  "Water Totem"         },
+  { 45,  "Chain Friendly"      },
+  { 104, "Cone Front"          },
+  { 53,  "At Enemy"            },
+  { 56,  "Raid Members"        },
+};
+
+std::string targeting_str( unsigned v )
+{
+  auto i = _targeting_map.find( v );
+  if ( i != _targeting_map.end() )
+  {
+    return i -> second + "(" + util::to_string( v ) + ")";
+  }
+
+  return "Unknown(" + util::to_string( v ) + ")";
+}
+
 const struct proc_map_t _proc_flag_map[] =
 {
   { PF_KILLED,               "Killed"                  },
@@ -546,6 +578,23 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
   if ( e -> chain_target() > 0 )
   {
     s << " | Chain Targets: " << e -> chain_target();
+  }
+
+  if ( e -> target_1() != 0 || e -> target_2() != 0 )
+  {
+    s << " | Target: ";
+    if ( e -> target_1() && ! e -> target_2() )
+    {
+      s << targeting_str( e -> target_1() );
+    }
+    else if ( ! e -> target_1() && e -> target_2() )
+    {
+      s << "[" << targeting_str( e -> target_2() ) << "]";
+    }
+    else
+    {
+      s << targeting_str( e -> target_1() ) << " -> " << targeting_str( e -> target_2() );
+    }
   }
 
   s << std::endl;
