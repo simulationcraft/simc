@@ -44,7 +44,7 @@ namespace
    soul_fragments expr
 
    Needs Documenting --------------------------------------------------------
-   Vengeful Retreat "jump_cancel" option
+   Vengeful Retreat / Fel Rush "jump_cancel" option
 */
 
 /* Forward declarations
@@ -953,7 +953,8 @@ struct consume_soul_t : public demon_hunter_heal_t
       p() -> resource_gain( RESOURCE_FURY, 30, p() -> gain.demonic_appetite ); // FIXME
     }
 
-    if ( p() -> artifact.feast_on_the_souls.rank() )
+    // Feast on the Souls only procs from major soul fragments.
+    if ( p() -> artifact.feast_on_the_souls.rank() && soul_counter == &( p() -> soul_fragments ) )
     {
       timespan_t t = -p() -> artifact.feast_on_the_souls.time_value();
 
@@ -1469,15 +1470,23 @@ struct fel_rush_t : public demon_hunter_spell_t
     }
   };
 
+  bool jump_cancel;
+
   fel_rush_t( demon_hunter_t* p, const std::string& options_str ) :
-    demon_hunter_spell_t( "fel_rush", p, p -> find_class_spell( "Fel Rush" ) )
+    demon_hunter_spell_t( "fel_rush", p, p -> find_class_spell( "Fel Rush" ) ),
+    jump_cancel( false )
   {
+    add_option( opt_bool( "jump_cancel", jump_cancel ) );
     parse_options( options_str );
 
     may_block = may_crit = false;
-    base_teleport_distance  = p -> find_spell( 192611 ) -> effectN( 1 ).radius();
-    movement_directionality = MOVEMENT_OMNI;
-    ignore_false_positive   = true;
+    min_gcd = trigger_gcd;
+    if ( ! jump_cancel )
+    {
+      base_teleport_distance  = p -> find_spell( 192611 ) -> effectN( 1 ).radius();
+      movement_directionality = MOVEMENT_OMNI;
+      ignore_false_positive   = true;
+    }
 
     impact_action = new fel_rush_damage_t( p );
     impact_action -> stats = stats;
@@ -1489,10 +1498,14 @@ struct fel_rush_t : public demon_hunter_spell_t
      damage hit incorporated into statistics. */
   virtual void record_data( action_state_t* ) override {}
 
-  // Fel Rush's loss of control causes a GCD lag after the loss ends.
   timespan_t gcd() const override
   {
-    return data().gcd() + rng().gauss( sim -> gcd_lag, sim -> gcd_lag_stddev );
+    timespan_t g = demon_hunter_spell_t::gcd();
+    
+    // Fel Rush's loss of control causes a GCD lag after the loss ends.
+    g += rng().gauss( sim -> gcd_lag, sim -> gcd_lag_stddev );
+
+    return g;
   }
 
   void impact( action_state_t* s ) override
@@ -1510,20 +1523,23 @@ struct fel_rush_t : public demon_hunter_spell_t
   {
     demon_hunter_spell_t::execute();
 
-    // Buff to track the rush's movement. This lets us delay autoattacks.
-    p() -> buffs.self_movement -> trigger( 1, 0, -1.0, data().gcd() );
-
     p() -> buff.momentum -> trigger();
 
-    // Adjust new distance from target.
-    p() -> current.distance = std::abs(
-      p() -> current.distance - composite_teleport_distance( execute_state ) );
-
-    // If new distance after rushing is too far away to melee from, then trigger
-    // movement back into melee range.
-    if ( p() -> current.distance > 5.0 )
+    if ( ! jump_cancel )
     {
-      p() -> trigger_movement( p() -> current.distance - 5.0, MOVEMENT_TOWARDS );
+      // Buff to track the rush's movement. This lets us delay autoattacks.
+      p() -> buffs.self_movement -> trigger( 1, 0, -1.0, data().gcd() );
+
+      // Adjust new distance from target.
+      p() -> current.distance = std::abs(
+        p() -> current.distance - composite_teleport_distance( execute_state ) );
+
+      // If new distance after rushing is too far away to melee from, then trigger
+      // movement back into melee range.
+      if ( p() -> current.distance > 5.0 )
+      {
+        p() -> trigger_movement( p() -> current.distance - 5.0, MOVEMENT_TOWARDS );
+      }
     }
   }
 
@@ -2702,7 +2718,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
         p() -> cooldown.demonic_appetite -> start();
         p() -> proc.demonic_appetite -> occur();
 
-        p() -> spawn_soul_fragment();
+        p() -> spawn_soul_fragment_lesser();
         p() -> consume_soul_fragments();
       }
 
@@ -3021,11 +3037,9 @@ struct fury_of_the_illidari_t : public demon_hunter_attack_t
     {
       demon_hunter_attack_t::impact( s );
 
-      if ( result_is_hit( s -> result ) &&
-           p() -> artifact.rage_of_the_illidari.rank() )
+      if ( result_is_hit( s -> result ) && p() -> artifact.rage_of_the_illidari.rank() )
       {
-        p() -> buff.rage_of_the_illidari -> trigger(
-          1,
+        p() -> buff.rage_of_the_illidari -> trigger( 1,
           p() -> buff.rage_of_the_illidari -> current_value + s -> result_amount );
       }
     }
@@ -3051,7 +3065,7 @@ struct fury_of_the_illidari_t : public demon_hunter_attack_t
 
     may_miss = may_crit = may_parry = may_block = may_dodge = false;
     dot_duration   = data().duration();
-    base_tick_time = timespan_t::from_millis( 250 );
+    base_tick_time = timespan_t::from_millis( 500 );
     tick_zero = true;
 
     // Set MH to tick action. OH is executed in tick().
