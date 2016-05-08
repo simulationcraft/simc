@@ -582,6 +582,11 @@ player_t::player_t( sim_t*             s,
   actor_index = sim -> actor_list.size();
   sim -> actor_list.push_back( this );
 
+  // Set the gear object to a special default value, so we can support gear_x=0 properly.
+  // player_t::init_items will replace the defaulted gear_stats_t object with a computed one once
+  // the item stats have been computed.
+  gear.initialize( std::numeric_limits<double>::lowest() );
+
   base.skill = sim -> default_skill;
   base.mastery = 8.0;
   base.movement_direction = MOVEMENT_NONE;
@@ -1055,15 +1060,15 @@ bool player_t::init_items()
     item_stats += item.stats;
   }
 
-    matching_gear = true;
-    for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
+  matching_gear = true;
+  for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
+  {
+    if ( !slots[i] )
     {
-      if ( !slots[i] )
-      {
-        matching_gear = false;
-        break;
-      }
+      matching_gear = false;
+      break;
     }
+  }
 
   init_meta_gem( item_stats );
 
@@ -1078,22 +1083,29 @@ bool player_t::init_items()
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
     temp_item_stats.add_stat( convert_hybrid_stat( i ), item_stats.get_stat( i ) );
 
-  // Then merge that into gear, provided it hasn't already been overridden by command line option
+  // Then merge item-based stats and user given options (in player_t::gear, with gear_x= options)
+  // into a computed object
+  gear_stats_t computed;
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    if ( gear.get_stat( i ) == 0 )
-        gear.add_stat( i, temp_item_stats.get_stat( i ) );
+    if ( gear.get_stat( i ) == std::numeric_limits<double>::lowest() )
+      computed.add_stat( i, temp_item_stats.get_stat( i ) );
+    else
+      computed.add_stat( i, gear.get_stat( i ) );
   }
 
   // Sanity check - there should be no more hybrid STR/INT, AGI/STR, or AGI/INT stats leftover here!
-  assert( gear.get_stat( STAT_AGI_INT ) == 0 );
-  assert( gear.get_stat( STAT_STR_AGI ) == 0 );
-  assert( gear.get_stat( STAT_STR_INT ) == 0 );
+  assert( computed.get_stat( STAT_AGI_INT ) == 0 );
+  assert( computed.get_stat( STAT_STR_AGI ) == 0 );
+  assert( computed.get_stat( STAT_STR_INT ) == 0 );
 
   if ( sim -> debug )
   {
-    sim -> out_debug.printf( "%s gear: %s", name(), gear.to_string().c_str() );
+    sim -> out_debug.printf( "%s gear: %s", name(), computed.to_string().c_str() );
   }
+
+  // And finally, replace the player_t::gear object with the computed stats
+  gear = computed;
 
   // Needs to be initialized after old set bonus system
   sets.initialize();

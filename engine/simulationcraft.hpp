@@ -434,6 +434,37 @@ struct gear_stats_t
     avoidance_rating( 0.0 )
   { }
 
+  void initialize( double initializer )
+  {
+    range::fill( attribute, initializer );
+    range::fill( resource, initializer );
+
+    spell_power = initializer;
+    attack_power = initializer;
+    expertise_rating = initializer;
+    expertise_rating2 = initializer;
+    hit_rating = initializer;
+    hit_rating2 = initializer;
+    crit_rating = initializer;
+    haste_rating = initializer;
+    weapon_dps = initializer;
+    weapon_speed = initializer;
+    weapon_offhand_dps = initializer;
+    weapon_offhand_speed = initializer;
+    armor = initializer;
+    bonus_armor = initializer;
+    dodge_rating = initializer;
+    parry_rating = initializer;
+    block_rating = initializer;
+    mastery_rating = initializer;
+    resilience_rating = initializer;
+    pvp_power = initializer;
+    versatility_rating = initializer;
+    leech_rating = initializer;
+    speed_rating = initializer;
+    avoidance_rating = initializer;
+  }
+
   friend gear_stats_t operator+( const gear_stats_t& left, const gear_stats_t& right )
   {
     gear_stats_t a = gear_stats_t( left );
