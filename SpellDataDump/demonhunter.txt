@@ -12,7 +12,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=263)      : Dual Wield (40)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Allows one-hand and off-hand weapons to be equipped in the off-hand.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
@@ -28,7 +28,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=12247)    : Apply Aura (6) | Unknown effect sub type (429)
-                   Base Value: 1 | Scaled Value: 1
+                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 Description      : Damage dealt by pets increased by $s1%.
 
 Name             : Interrupt (id=32747) 
@@ -47,7 +47,7 @@ Attributes       : ........ ........ .......x ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=22529)    : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Interrupts casting for $d.
 Tooltip          : Interrupted.
 
@@ -65,7 +65,7 @@ Attributes       : ........ ........ ........ x.......   ........ ..x..... .....
                  : Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #2 (id=288193)   : Apply Aura (6) | Unknown effect sub type (409)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Reduces your falling speed.
 
 You can activate this ability with the jump key while falling.
@@ -85,11 +85,11 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=227730)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=227731)   : Weapon Damage% (31)
-                   Base Value: 350 | Scaled Value: 3.5
+                   Base Value: 350 | Scaled Value: 3.5 | Target: Enemy(6)
 #3 (id=287985)   : Energize Power (30)
-                   Base Value: 19 | Scaled Value: 20 - 30 | Value Range: 11 | Misc Value: fury
+                   Base Value: 19 | Scaled Value: 20 - 30 | Value Range: 11 | Misc Value: fury | Target: Self(1)
 Description      : Quickly attack for $sw2 Physical damage.
 
 |cFFFFFFFFGenerates $m3 to $M3 Fury.|r
@@ -109,19 +109,19 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #2 (id=227769)   : Apply Aura (6) | Increase Speed% (31)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=270147)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self(1)
 #4 (id=271791)   : Apply Aura (6) | Unknown effect sub type (443)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #5 (id=296790)   : Apply Aura (6) | Unknown effect sub type (332)
-                   Base Value: 201427 | Scaled Value: 201427
+                   Base Value: 201427 | Scaled Value: 201427 | Target: Self(1)
                    Affected Spells: Chaos Strike (162794), Chaos Strike (222031)
 #6 (id=296792)   : Apply Aura (6) | Unknown effect sub type (332)
-                   Base Value: 210152 | Scaled Value: 210152
+                   Base Value: 210152 | Scaled Value: 210152 | Target: Self(1)
                    Affected Spells: Blade Dance (188499), Blade Dance (199552), Blade Dance (200685)
 #7 (id=297855)   : Apply Aura (6) | Add Flat Modifier: Spell Global Cooldown (107)
-                   Base Value: -500 | Scaled Value: -500 | Misc Value: 21
+                   Base Value: -500 | Scaled Value: -500 | Misc Value: 21 | Target: Self(1)
                    Affected Spells: Demon's Bite (162243), Chaos Strike (162794), Immolation Aura (178740), Chaos Nova (179057), Throw Glaive (185123), Blade Dance (188499), Metamorphosis (191427), Eye Beam (198013), Annihilation (201427), Sigil of Silence (202137), Sigil of Chains (202138), Shear (203782), Demon Blades (203796), Soul Cleave (203798), Throw Glaive (204157), Sigil of Flame (204596), Soul Carver (207407), Sigil of Misery (207684), Fracture (209795), Death Sweep (210152), Fel Barrage (211053), Fel Eruption (211881), Fel Devastation (212084), Felblade (213241), Soul Carver (214743), Imprison (217832), Spirit Bomb (218679)
 #8 (id=329388)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 0 | Scaled Value: 0
@@ -143,11 +143,11 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=228690)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1
+                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=230219)   : Trigger Spell: Chaos Strike (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 222031
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 222031 | Target: Enemy(6)
 #3 (id=293650)   : Trigger Spell: Chaos Strike (64)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 300 | Trigger Spell: 199547
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 300 | Trigger Spell: 199547 | Target: Enemy(6)
 Description      : Slice your target for ${$222031sw1+$199547sw1} Chaos damage.  Critical strikes do not consume Fury.
 
 Name             : Demon Soul (id=163073) [Spell Family (107)] 
@@ -163,7 +163,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=229227)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self(1)
 Description      : $@spelldesc163063
 Tooltip          : Dealing $s1% increased damage.
 
@@ -183,13 +183,13 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=256714)   : Apply Aura (6) | Periodic Trigger Spell: Immolation Aura every 1 seconds (23)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 178741
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 178741 | Target: Self(1)
 #2 (id=301145)   : Trigger Spell: Immolation Aura (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 187727
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 187727 | Target: Self(1)
 #3 (id=310313)   : Energize Power (30)
-                   Base Value: 80 | Scaled Value: 80 | Misc Value: pain
+                   Base Value: 80 | Scaled Value: 80 | Misc Value: pain | Target: Self(1)
 #4 (id=313444)   : Apply Aura (6) | Unknown effect sub type (129)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Engulf yourself in flames, instantly causing $187727s1 Fire damage to enemies within $187727A1 yards and radiating $178741s1 Fire damage every sec.  Lasts $d.
 
 |cFFFFFFFFGenerates ${$s3/10+$178741s2/10*$d} Pain over $d.|r
@@ -210,9 +210,9 @@ Attributes       : ....x... ........ ..x..... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=256715)   : School Damage: fire (2)
-                   Base Value: 0 | Scaled Value: 0 (avg=1, dl=0.15) | AP Coefficient: 0.75000 | Radius: 0 - 8 yards
+                   Base Value: 0 | Scaled Value: 0 (avg=1, dl=0.15) | AP Coefficient: 0.75000 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=310312)   : Energize Power (30)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: pain
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: pain | Target: Self(1)
 Description      : Deals Fire damage to all nearby enemies.
 
 Name             : Shattered Souls (id=178940) [Spell Family (107), Passive] 
@@ -231,7 +231,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=257107)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15
+                   Base Value: 15 | Scaled Value: 15 | Target: Self(1)
 Description      : Killing an enemy sometimes creates a Soul Fragment that is consumed when you approach it, healing you for $178963s1% of maximum health$?a206478[ and generating $210041s1 Fury][].
 
 If the Soul Fragment came from a Demon, you will deal $163073s1% increased damage for $163073d.
@@ -249,9 +249,9 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
 Effects          :
 #1 (id=257146)   : Direct Heal% (136)
-                   Base Value: 25 | Scaled Value: 25
+                   Base Value: 25 | Scaled Value: 25 | Target: Self(1)
 #2 (id=310971)   : Trigger Spell: Demonic Appetite (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 210041
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 210041 | Target: Self(1)
 Description      : $@spelldesc178940
 
 Name             : Leather Specialization (Passive) (id=178976) [Passive, Hidden] 
@@ -266,7 +266,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=257173)   : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 5 | Scaled Value: 5 | SP Coefficient: 1.00000 | Misc Value 2: 0x2
+                   Base Value: 5 | Scaled Value: 5 | SP Coefficient: 1.00000 | Misc Value 2: 0x2 | Target: Self(1)
 Description      : Increases your Agility by $s1% while wearing only leather armor.
 
 Name             : Chaos Nova (id=179057) [Spell Family (107)] 
@@ -286,9 +286,9 @@ Attributes       : ....x... ........ ........ ........   ...x...x .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=257307)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Mechanic: Unknown(95)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Mechanic: Unknown(95) | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=267052)   : School Damage: chromatic (2)
-                   Base Value: 0 | Scaled Value: 0 (avg=0, dl=0.15) | AP Coefficient: 2.67000 | Radius: 0 - 10 yards
+                   Base Value: 0 | Scaled Value: 0 (avg=0, dl=0.15) | AP Coefficient: 2.67000 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
 Description      : Unleash an eruption of fel energy, stunning all nearby enemies for $d and dealing $s2 Chaos damage.
 Tooltip          : Stunned.
 
@@ -308,7 +308,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=266200)   : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(227)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(227) | Target: Enemy(6)
 Description      : Interrupts the enemy's spellcasting and locks them from that school of magic for $d.|cFFFFFFFF$?s178940[
 
 Generates $218903s1 Fury on a successful interrupt.][
@@ -330,7 +330,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=266245)   : Apply Aura (6) | Proc Trigger Spell: Consume Magic (42)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 218903
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 218903 | Target: Self(1)
 
 Name             : Throw Glaive (id=185123) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -349,9 +349,9 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=268504)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 3
+                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 3 | Target: Enemy(6)
 #2 (id=309171)   : Weapon Damage% (31)
-                   Base Value: 490 | Scaled Value: 4.9 | Chain Targets: 3
+                   Base Value: 490 | Scaled Value: 4.9 | Chain Targets: 3 | Target: Enemy(6)
 Description      : Throw a demonic glaive at the target, dealing $sw1 Physical damage. The glaive can ricochet to ${$x1-1} additional enemies within 10 yards.
 
 Name             : Mastery: Demonic Presence (id=185164) [Spell Family (107), Passive] 
@@ -366,10 +366,10 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=268563)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self(1)
                    Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Annihilation (201427), Annihilation (201428), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Chaos Strike (222031)
 #2 (id=294810)   : Apply Aura (6) | Unknown effect sub type (171)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self(1)
 Description      : Increases your Chaos damage by $s1% and your movement speed by $s2%.
 
 Name             : Pain (id=185244) [Spell Family (107), Passive, Hidden] 
@@ -384,7 +384,7 @@ Attributes       : ......xx ........ ........ ........   ........ ..x..... .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=268787)   : Apply Aura (6) | Unknown effect sub type (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 18
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 18 | Target: Self(1)
 
 Name             : Torment (id=185245) [Spell Family (107)] 
 Replaces         : Blur (id=198589)
@@ -405,9 +405,9 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : Disable player procs (112), Disable weapon procs (151)
 Effects          :
 #1 (id=268789)   : Unknown effect type (114)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Enemy(6)
 #2 (id=268790)   : Apply Aura (6) | Taunt (11)
-                   Base Value: 200 | Scaled Value: 200
+                   Base Value: 200 | Scaled Value: 200 | Target: Enemy(6)
 Description      : Taunts the target to attack you, and increases threat that you generate against the target for $d.
 Tooltip          : Taunted.
 
@@ -423,7 +423,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=271491)   : Apply Aura (6) | Mod Power Regen (110)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 17
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 17 | Target: Self(1)
 
 Name             : Immolation Aura (id=187727) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -439,7 +439,7 @@ Attributes       : ........ ........ ..x..... x..x....   ...x.x.x .xx..... .....
                  : Not a proc (105), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=273797)   : School Damage: fire (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.30000 | Radius: 0 - 8 yards
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.30000 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 Description      : Burns nearby enemies for $s1 Fire damage.
 
 Name             : Metamorphosis (id=187827) [Spell Family (107)] 
@@ -459,15 +459,15 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=273949)   : Apply Aura (6) | Unknown effect sub type (56)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 104712 | Misc Value 2: 0x7
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 104712 | Misc Value 2: 0x7 | Target: Self(1)
 #2 (id=273950)   : Apply Aura (6) | Unknown effect sub type (133)
-                   Base Value: 30 | Scaled Value: 30
+                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
 #3 (id=283617)   : Apply Aura (6) | Unknown effect sub type (443)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #4 (id=307168)   : Apply Aura (6) | Periodic Energize Power: every 1 seconds (24)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 18
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 18 | Target: Self(1)
 #5 (id=314452)   : Apply Aura (6) | Unknown effect sub type (312)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 536
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 536 | Target: Self(1)
 #6 (id=329389)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 Description      : Transform to demon form for $d, increasing current and maximum health by $s2%.
@@ -494,19 +494,19 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=275300)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=275301)   : Apply Aura (6) | Modify Dodge% (49)
-                   Base Value: 100 | Scaled Value: 100
+                   Base Value: 100 | Scaled Value: 100 | Target: Self(1)
 #3 (id=283866)   : Apply Aura (6) | Unknown effect sub type (288)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #4 (id=293658)   : Trigger Spell: Blade Dance (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 199552
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 199552 | Target: Self(1)
 #5 (id=293659)   : Trigger Spell: Blade Dance (64)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 150 | Trigger Spell: 199552
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 150 | Trigger Spell: 199552 | Target: Self(1)
 #6 (id=293660)   : Trigger Spell: Blade Dance (64)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 450 | Trigger Spell: 199552
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 450 | Trigger Spell: 199552 | Target: Self(1)
 #7 (id=331831)   : Trigger Spell: Blade Dance (64)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 950 | Trigger Spell: 200685
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 950 | Trigger Spell: 200685 | Target: Self(1)
 Description      : Strike all nearby enemies for ${$sw2+2*$199552sw2+$200685sw2} Physical damage, and increase your chance to dodge by $s2% for $d.
 Tooltip          : Dodge chance increased by $s3%.
 
@@ -524,17 +524,17 @@ Attributes       : ........ ........ ........ .x......   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=275305)   : Trigger Spell: Spectral Sight (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 202688
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 202688 | Target: Self(1)
 #2 (id=275306)   : Trigger Spell: Spectral Sight (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 215725
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 215725 | Target: Self(1)
 #3 (id=293251)   : Apply Aura (6) | Unknown effect sub type (260)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1173
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1173 | Target: Self(1)
 #4 (id=298879)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -30 | Scaled Value: -30
+                   Base Value: -30 | Scaled Value: -30 | Target: Self(1)
 #5 (id=305109)   : Apply Aura (6) | Unknown effect sub type (312)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 499
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 499 | Target: Self(1)
 #6 (id=320783)   : Unknown effect type (167)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Allows you to see enemies and treasures through physical barriers, as well as enemies that are stealthed and invisible.  Lasts $d.
 
 Attacking or taking damage disrupts the sight.
@@ -558,7 +558,7 @@ Attributes       : ....x... x....... ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=276571)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 3 - 4 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 3 - 4 yards | Target: Unknown(87)
 Description      : Leap through the air toward a targeted location, dealing $189112s1 Fire damage to all enemies within $189112a1 yards.
 
 Name             : Infernal Strike (id=189112) [Spell Family (107)] 
@@ -575,7 +575,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=276573)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.70000 | Radius: 6 yards
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.70000 | Radius: 6 yards | Target: AOE enemy (instant)(16)
 Description      : $@spelldesc189110
 
 Name             : Increased Threat (id=189926) [Spell Family (107), Passive, Hidden] 
@@ -590,7 +590,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=278012)   : Apply Aura (6) | Threat (10)
-                   Base Value: 900 | Scaled Value: 900 | Misc Value: 127
+                   Base Value: 900 | Scaled Value: 900 | Misc Value: 127 | Target: Self(1)
 
 Name             : Metamorphosis (id=191427) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -608,7 +608,7 @@ Attributes       : ....x... x....... ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=280801)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 5 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 5 yards | Target: Unknown(87)
 Description      : Leap into the air and land with explosive force, dealing $200166s2 Chaos damage to enemies within 8 yds, and stunning them for $200166d.
 
 Upon landing, you are transformed into a hellish demon for $162264d, greatly empowering your Chaos Strike and Blade Dance abilities.
@@ -625,7 +625,7 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=282602)   : School Damage: chaos (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.94000 | Radius: 21 yards
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.94000 | Radius: 21 yards | Target: Unknown(129)
 Description      : $@spelldesc195072
 
 Name             : Fel Mastery (id=192939) [Spell Family (107), Passive] 
@@ -644,9 +644,9 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=283035)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25
+                   Base Value: 25 | Scaled Value: 25 | Target: Self(1)
 #2 (id=297759)   : Apply Aura (6) | Add Flat Modifier: Spell Critical Chance (107)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 7
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 7 | Target: Self(1)
                    Affected Spells: Fel Rush (192611)
 Description      : Increases the critical strike chance of Fel Rush by $s2%, and grants $s1 Fury when Fel Rush damages at least one target.
 
@@ -662,7 +662,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=284560)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : All your cooldowns are reset when you invoke Metamorphosis.
 
 Name             : Fel Rush (id=195072) [Spell Family (107)] 
@@ -680,7 +680,7 @@ Attributes       : ....x... x....... x......x ........   ........ .xx..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=286340)   : Dummy (3)
-                   Base Value: 25 | Scaled Value: 25
+                   Base Value: 25 | Scaled Value: 25 | Target: Self(1)
 Description      : Rush forward, incinerating anything in your path for $192611s1 Chaos damage.$?a192939[
 
 |cFFFFFFFFGenerates $192939s1 Fury if you damage an enemy.|r][]
@@ -697,7 +697,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=287766)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : You are able to jump again while near the apex of your first jump.
 
 Name             : Netherwalk (id=196555) [Spell Family (107)] 
@@ -713,11 +713,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=288519)   : Apply Aura (6) | Unknown effect sub type (40)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self(1)
 #2 (id=303654)   : Apply Aura (6) | Pacify (25)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=303655)   : Apply Aura (6) | Unknown effect sub type (171)
-                   Base Value: 100 | Scaled Value: 100
+                   Base Value: 100 | Scaled Value: 100 | Target: Self(1)
 Description      : Slip into the nether, increasing movement speed by $s3% and becoming immune to damage, but unable to attack. Lasts $d.
 Tooltip          : Immune to damage and unable to attack.
 Movement speed increased by $s3%.
@@ -735,7 +735,7 @@ Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .....
                  : ........ .....x.. ........ ...x....   ........ ........ ........ ........ 
 Effects          :
 #1 (id=288808)   : Unknown effect type (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6615
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6615 | Target: Unknown(125)
 Description      : Summons darkness around you in an 8 yd radius, cloaking friendly targets and reducing the chance they are hit by spells and melee attacks by $209426s1%.  Lasts $d.
 
 Name             : Chaos Strike (Passive) (id=197125) [Spell Family (107), Passive, Hidden] 
@@ -754,7 +754,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=289481)   : Apply Aura (6) | Proc Trigger Spell (42)
-                   Base Value: 40 | Scaled Value: 40
+                   Base Value: 40 | Scaled Value: 40 | Target: Self(1)
 Description      : $@spelldesc162794
 
 Name             : Glide (id=197130) [Spell Family (107), Passive, Hidden] 
@@ -769,7 +769,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=289487)   : Apply Aura (6) | Unknown effect sub type (406)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 34
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 34 | Target: Self(1)
 
 Name             : Eye Beam (id=198013) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -790,11 +790,11 @@ Attributes       : ........ ........ ........ ........   ..x...x. .x...... .....
                  : Channeled (34), Channeled (38)
 Effects          :
 #1 (id=291023)   : Apply Aura (6) | Periodic Trigger Spell (23)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #2 (id=291024)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -200 | Scaled Value: -200
+                   Base Value: -200 | Scaled Value: -200 | Target: Self(1)
 #3 (id=291387)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Blasts all enemies directly in front of you for $<dmg> Chaos damage.
 Variables        : $dmg=$?a203550[${$198030m1*14}][${$198030m1*9}]
 
@@ -811,7 +811,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=291051)   : School Damage: chromatic (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.70000 | Radius: 20 yards
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.70000 | Radius: 20 yards | Target: Unknown(129)
 Description      : $@spelldesc198013
 
 Name             : Blur (id=198589) [Spell Family (107)] 
@@ -827,7 +827,7 @@ Attributes       : ....x... x....... ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=291907)   : Trigger Spell: Blur (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 212800
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 212800 | Target: Self(1)
 Description      : Increases your chance to dodge by $212800s2% and reduces all damage taken by $212800s3% for $212800d.
 
 Name             : Vengeful Retreat (id=198793) [Spell Family (107)] 
@@ -844,11 +844,11 @@ Attributes       : ....x... ........ ........ .......x   ........ .xx..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=292234)   : Trigger Spell: Vengeful Retreat (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 198813
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 198813 | Target: Self(1)
 #2 (id=295099)   : Unknown effect type (144)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 200
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 200 | Target: Self(1) -> Unknown(47)
 #3 (id=326695)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Viciously assault nearby enemies and vault away.  Assaulted enemies take $198813sw2 Physical damage and have their movement speed reduced by $198813s1% for $198813d.$?a203551[
 
 |cFFFFFFFFGenerates ${$203650m1*12+3} Fury over $203650d if you damage an enemy.|r][]
@@ -867,11 +867,11 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=292270)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -70 | Scaled Value: -70 | Radius: 0 - 5 yards | Mechanic: Unknown(88)
+                   Base Value: -70 | Scaled Value: -70 | Radius: 0 - 5 yards | Mechanic: Unknown(88) | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=292271)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Target: At Caster(22) -> AOE enemy(15)
 #3 (id=292272)   : Weapon Damage% (31)
-                   Base Value: 100 | Scaled Value: 1 | Radius: 0 - 5 yards
+                   Base Value: 100 | Scaled Value: 1 | Radius: 0 - 5 yards | Target: At Caster(22) -> AOE enemy(15)
 Description      : Deals $sw2 Physical damage and reduces the movement speed of all nearby enemies by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
@@ -890,9 +890,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=293648)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1
+                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=293649)   : Weapon Damage% (31)
-                   Base Value: 560 | Scaled Value: 5.6 | Chain Targets: 1
+                   Base Value: 560 | Scaled Value: 5.6 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc162794
 
 Name             : Blade Dance (id=199552) [Spell Family (107)] 
@@ -908,9 +908,9 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=293656)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=293657)   : Weapon Damage% (31)
-                   Base Value: 105 | Scaled Value: 1.05 | Radius: 0 - 8 yards
+                   Base Value: 105 | Scaled Value: 1.05 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 Description      : $@spelldesc188499
 
 Name             : Metamorphosis (id=200166) [Spell Family (107)] 
@@ -925,9 +925,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=294655)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Mechanic: Unknown(95)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Mechanic: Unknown(95) | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=294659)   : School Damage: chromatic (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.00000 | Radius: 0 - 8 yards
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.00000 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 Description      : $@spelldesc191427
 Tooltip          : Stunned.
 
@@ -944,9 +944,9 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=295486)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=295487)   : Weapon Damage% (31)
-                   Base Value: 315 | Scaled Value: 3.15 | Radius: 0 - 8 yards
+                   Base Value: 315 | Scaled Value: 3.15 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 Description      : $@spelldesc188499
 
 Name             : Activating Specialization (id=200749) [Hidden] 
@@ -964,7 +964,7 @@ Attributes       : .......x ........ ........ ....x...   ..xxx..x ........ .x...
                  : Hidden (7), Channeled (34)
 Effects          :
 #1 (id=295605)   : Unknown effect type (162)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Switch to your Primary Talent Specialization.
 Tooltip          : Switch to your Primary Talent Specialization.
 
@@ -983,11 +983,11 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=296756)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1
+                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=296757)   : Weapon Damage% (31)
-                   Base Value: 840 | Scaled Value: 8.4 | Chain Targets: 1
+                   Base Value: 840 | Scaled Value: 8.4 | Chain Targets: 1 | Target: Enemy(6)
 #3 (id=296758)   : Trigger Spell: Annihilation (64)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 300 | Trigger Spell: 201428
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 300 | Trigger Spell: 201428 | Target: Self(1)
 Description      : Slice your target for ${$sw1+$201428sw1} Chaos damage.  Critical strikes do not consume Fury.
 
 Name             : Annihilation (id=201428) [Spell Family (107)] 
@@ -1005,9 +1005,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=296759)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1
+                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=296760)   : Weapon Damage% (31)
-                   Base Value: 840 | Scaled Value: 8.4 | Chain Targets: 1
+                   Base Value: 840 | Scaled Value: 8.4 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc201427
 
 Name             : Fury of the Illidari (Artifact) (id=201467) [Spell Family (107)] 
@@ -1027,7 +1027,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=296820)   : Unknown effect type (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 5758
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 5758 | Target: Custom(18)
 Description      : Throws the |cFFFFCC99Twinblades of the Deceiver|r in a whirlwind of energy, causing ${7*($201628sw1+$201789sw1)} Chaos damage over $d to all nearby enemies.
 
 Name             : Rage of the Illidari (id=201472) [Spell Family (107), Passive] 
@@ -1045,7 +1045,7 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=296825)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 126
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 126 | Target: Self(1)
 Description      : When Fury of the Illidari ends, $s1% of the damage it dealt erupts in an explosion of fel energy, dividing that Chaos damage among all neaby enemies.
 
 Name             : Anguish of the Deceiver (id=201473) [Spell Family (107), Passive] 
@@ -1063,7 +1063,7 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=296826)   : Apply Aura (6) | Proc Trigger Spell: Anguish (42)
-                   Base Value: 10 | Scaled Value: 10 | Trigger Spell: 202443
+                   Base Value: 10 | Scaled Value: 10 | Trigger Spell: 202443 | Target: Self(1)
 Description      : Each time Eye Beam deals damage to a target, it also applies Anguish. When Anguish expires, it deals $202446s1 Chaos damage to the victim per application.
 
 Name             : Fury of the Illidari (id=201628) [Spell Family (107)] 
@@ -1078,9 +1078,9 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=297082)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 #2 (id=297083)   : Weapon Damage% (31)
-                   Base Value: 100 | Scaled Value: 1 | Radius: 0 - 6 yards
+                   Base Value: 100 | Scaled Value: 1 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 Description      : $@spelldesc201467
 
 Name             : Fury of the Illidari (id=201789) [Spell Family (107)] 
@@ -1095,9 +1095,9 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=297377)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 #2 (id=297378)   : Weapon Damage% (31)
-                   Base Value: 100 | Scaled Value: 1 | Radius: 0 - 6 yards
+                   Base Value: 100 | Scaled Value: 1 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 Description      : $@spelldesc201467
 
 Name             : Sigil of Silence (id=202137) [Spell Family (107)] 
@@ -1118,9 +1118,9 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=297902)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Unknown(87)
 #2 (id=301812)   : Unknown effect type (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6027
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6027 | Target: Unknown(87)
 Description      : Place a Sigil of Silence at the target location that activates after $d.
 
 Silences all enemies affected by the sigil for $204490d.
@@ -1143,9 +1143,9 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=297903)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Unknown(87)
 #2 (id=301844)   : Unknown effect type (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6031
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6031 | Target: Unknown(87)
 Description      : Place a Sigil of Chains at the target location that activates after $d.
 
 All enemies affected by the sigil are pulled to its center and are snared, reducing movement speed by $204843s1% for $204843d.
@@ -1166,7 +1166,7 @@ Attributes       : ........ ........ ........ ..x....x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=298447)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10
+                   Base Value: 10 | Scaled Value: 10 | Target: Enemy(6)
 Description      : $@spelldesc201473
 Tooltip          : Suffering from Anguish of the Deceiver.
 
@@ -1184,7 +1184,7 @@ Attributes       : ........ ........ ........ ..x....x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=298452)   : School Damage: chaos (2)
-                   Base Value: 10 | Scaled Value: 10 | AP Coefficient: 0.50000
+                   Base Value: 10 | Scaled Value: 10 | AP Coefficient: 0.50000 | Target: Enemy(6)
 Description      : $@spelldesc201473
 
 Name             : Spectral Sight (id=202688) [Spell Family (107)] 
@@ -1200,9 +1200,9 @@ Attributes       : ........ x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=298834)   : Apply Aura (6) | Invisibility Detection (19)
-                   Base Value: 1000 | Scaled Value: 1000
+                   Base Value: 1000 | Scaled Value: 1000 | Target: Self(1)
 #3 (id=298836)   : Apply Aura (6) | Unknown effect sub type (228)
-                   Base Value: 1000 | Scaled Value: 1000
+                   Base Value: 1000 | Scaled Value: 1000 | Target: Self(1)
 
 Name             : Arcane Torrent (Racial) (id=202719) 
 Class            : Demon Hunter
@@ -1219,11 +1219,11 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=298886)   : Apply Aura (6) | Silence (27)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Radius: 0 - 8 yards
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=298887)   : Energize Power (30)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: fury
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: fury | Target: Self(1)
 #3 (id=326731)   : Energize Power (30)
-                   Base Value: 150 | Scaled Value: 150 | Misc Value: pain
+                   Base Value: 150 | Scaled Value: 150 | Misc Value: pain | Target: Self(1)
 Description      : Silence all enemies within $A1 yards for $d and generate $?s203513[${$m3/10} Pain][$m2 Fury].  Non-player victim spellcasting is also interrupted for $32747d.
 Tooltip          : Silenced.
 
@@ -1244,17 +1244,17 @@ Attributes       : ....x.x. ........ ..x..... x..x.x.x   ........ ..x..... .x...
                  : Passive (6)
 Effects          :
 #1 (id=300162)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 0x7e
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 0x7e | Target: Self(1)
 #2 (id=300191)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
-                   Base Value: -6 | Scaled Value: -6
+                   Base Value: -6 | Scaled Value: -6 | Target: Self(1)
 #3 (id=300192)   : Apply Aura (6) | Modify Expertise% (240)
-                   Base Value: 3 | Scaled Value: 3
+                   Base Value: 3 | Scaled Value: 3 | Target: Self(1)
 #4 (id=306421)   : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value 2: 0x4
+                   Base Value: 20 | Scaled Value: 20 | Misc Value 2: 0x4 | Target: Self(1)
 #5 (id=306893)   : Apply Aura (6) | Modify Base Resistance (142)
-                   Base Value: 200 | Scaled Value: 200 | Misc Value: 1
+                   Base Value: 200 | Scaled Value: 200 | Misc Value: 1 | Target: Self(1)
 #6 (id=306895)   : Apply Aura (6) | Unknown effect sub type (457)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1586
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1586 | Target: Self(1)
 Description      : Your tattoos reduce magical damage taken by $s1%, and increase your Stamina by $s4% and your Armor by $s5%.
 
 Name             : Blind Fury (id=203550) [Spell Family (107), Passive] 
@@ -1269,10 +1269,10 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=300253)   : Apply Aura (6) | Add Percent Modifier: Spell Duration (108)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 1
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 1 | Target: Self(1)
                    Affected Spells: Eye Beam (198013), Eye Beam (198030)
 #2 (id=300254)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Eye Beam (198013), Eye Beam (198030)
 Description      : Increases the duration of Eye Beam by $s1%.
 
@@ -1291,9 +1291,9 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=300255)   : Apply Aura (6) | Proc Trigger Spell: Prepared (42)
-                   Base Value: 150 | Scaled Value: 150 | Trigger Spell: 203650
+                   Base Value: 150 | Scaled Value: 150 | Trigger Spell: 203650 | Target: Self(1)
 #2 (id=308561)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
-                   Base Value: -10000 | Scaled Value: -10000 | Misc Value: 11
+                   Base Value: -10000 | Scaled Value: -10000 | Misc Value: 11 | Target: Self(1)
                    Affected Spells: Vengeful Retreat (198793), Vengeful Retreat (198813)
 Description      : Reduces the cooldown of Vengeful Retreat by 10 sec, and generates ${$203650m1*12+3} Fury over $203650d if you damage at least one enemy with Vengeful Retreat.
 
@@ -1313,7 +1313,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=300260)   : Apply Aura (6) | Proc Trigger Spell (42)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Your auto attack has a chance to deal additional Shadow damage and generate Fury.
 
 Name             : Master of the Glaive (id=203556) [Spell Family (107), Passive] 
@@ -1331,9 +1331,9 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=300262)   : Apply Aura (6) | Proc Trigger Spell: Master of the Glaive (42)
-                   Base Value: 100 | Scaled Value: 100 | Trigger Spell: 213405
+                   Base Value: 100 | Scaled Value: 100 | Trigger Spell: 213405 | Target: Self(1)
 #2 (id=314363)   : Apply Aura (6) | Modify Cooldown Charge (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1612
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1612 | Target: Self(1)
 Description      : Throw Glaive now has ${$m2+1} charges, and snares all enemies hit by $213405s1% for $213405d.
 
 Name             : Felblade (id=203557) [Spell Family (107), Passive, Hidden] 
@@ -1352,7 +1352,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=300264)   : Apply Aura (6) | Proc Trigger Spell: Felblade (42)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 204497
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 204497 | Target: Self(1)
 
 Name             : Prepared (id=203650) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -1367,7 +1367,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=300413)   : Apply Aura (6) | Periodic Energize Power: every 0.5 seconds (24)
-                   Base Value: 6 | Scaled Value: 6 | Misc Value: 17
+                   Base Value: 6 | Scaled Value: 6 | Misc Value: 17 | Target: Self(1)
 Description      : $@spelldesc203551
 Tooltip          : Generating ${$m1*2} Fury every sec.
 
@@ -1388,7 +1388,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=300525)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Surge with fel power, increasing your Parry chance by $203819s1% and reducing Physical damage taken by $203819s2% for $203819d.
 
 Name             : Parry (id=203724) [Passive] 
@@ -1420,9 +1420,9 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=300566)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self(1)
 #2 (id=300914)   : Apply Aura (6) | Modify Attack Power (99)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self(1)
 Description      : Demon Spikes reduces Physical damage taken by an additional ${$S1}.2%.
 
 Also increases your attack power by $s2%.
@@ -1443,7 +1443,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=300573)   : Apply Aura (6) | Proc Trigger Spell: Blade Turning (42)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 207709
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 207709 | Target: Self(1)
 Description      : Parrying an attack generates ${$207709s1/10} Pain.
 
 Name             : Shear (id=203782) [Spell Family (107)] 
@@ -1462,11 +1462,11 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=300625)   : Normalized Weapon Damage (121)
-                   Base Value: 1 | Scaled Value: 1
+                   Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #2 (id=300626)   : Weapon Damage% (31)
-                   Base Value: 375 | Scaled Value: 3.75
+                   Base Value: 375 | Scaled Value: 3.75 | Target: Enemy(6)
 #3 (id=310130)   : Energize Power (30)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: pain
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: pain | Target: Self(1)
 Description      : Shears an enemy for $sw2 Physical damage, and has a small chance to shatter a Lesser Soul Fragment from your target that heals you for $203794s1 health when consumed.
 
 |cFFFFFFFFGenerates ${$m3/10} Pain.|r
@@ -1487,7 +1487,7 @@ Attributes       : ....x.xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=300628)   : Apply Aura (6) | Proc Trigger Spell (42)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Shear has a small chance to shatter the target's soul, leaving a Lesser Soul Fragment behind for $204255d.
 
 The Lesser Soul Fragment will be consumed when you approach it or cast Soul Cleave, healing you for $203794s1% of maximum health.
@@ -1507,7 +1507,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
 Effects          :
 #1 (id=300649)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 4.25000
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 4.25000 | Target: Self(1)
 Description      : Consume a Lesser Soul Fragment, healing you for $s1 health.
 
 Name             : Soul Fragment (id=203795) [Spell Family (107)] 
@@ -1523,9 +1523,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=300650)   : Unknown effect type (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6710
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6710 | Target: Unknown(87)
 #2 (id=301006)   : Trigger Spell: Soul Fragments (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 210788
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 210788 | Target: Self(1)
 Description      : $@spelldesc210042
 Tooltip          : Consume to heal for $210042s1% of your maximum health.
 
@@ -1543,11 +1543,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=300651)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=300652)   : Weapon Damage% (31)
-                   Base Value: 350 | Scaled Value: 3.5
+                   Base Value: 350 | Scaled Value: 3.5 | Target: Enemy(6)
 #3 (id=300653)   : Energize Power (30)
-                   Base Value: 19 | Scaled Value: 20 - 30 | Value Range: 11 | Misc Value: fury
+                   Base Value: 19 | Scaled Value: 20 - 30 | Value Range: 11 | Misc Value: fury | Target: Self(1)
 Description      : Inflicts $sw1 Shadow damage and generates $m3 to $M3 Fury.
 
 Name             : Soul Cleave (id=203798) [Spell Family (107)] 
@@ -1567,13 +1567,13 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=300656)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=300657)   : Trigger Spell: Soul Cleave (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 222030
 #3 (id=307744)   : Trigger Spell: Soul Cleave (64)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 300 | Trigger Spell: 208038
 #4 (id=307774)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 8.50000
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 8.50000 | Target: Self(1)
 Description      : Viciously strike all enemies in front of you for ${$222030sw1+$208038sw1} Physical damage, and heal yourself for $s4.
 
 Consumes all Soul Fragments within 20 yds.
@@ -1591,9 +1591,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=300687)   : Apply Aura (6) | Modify Parry% (47)
-                   Base Value: 20 | Scaled Value: 20
+                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
 #2 (id=300915)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -10 | Scaled Value: -10 | SP Coefficient: -1.00000 | Misc Value: 0x1
+                   Base Value: -10 | Scaled Value: -10 | SP Coefficient: -1.00000 | Misc Value: 0x1 | Target: Self(1)
 Description      : $@spelldesc203720
 Tooltip          : Parry chance increased by $w1%.
 
@@ -1616,9 +1616,9 @@ Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=301059)   : Trigger Spell: Fiery Brand (64)
-                   Base Value: 40 | Scaled Value: 40 | Trigger Spell: 204022
+                   Base Value: 40 | Scaled Value: 40 | Trigger Spell: 204022 | Target: Self(1)
 #2 (id=301062)   : School Damage: fire (2)
-                   Base Value: 0 | Scaled Value: 0 (avg=1, dl=0.1) | AP Coefficient: 6.00000
+                   Base Value: 0 | Scaled Value: 0 (avg=1, dl=0.1) | AP Coefficient: 6.00000 | Target: Enemy(6)
 Description      : Brand an enemy with a demonic symbol, instantly dealing $sw2 Fire damage and reducing the damage they do to you by $s1% for $207744d.
 Tooltip          : Dealing $s1% less damage to the branding Demon Hunter.
 
@@ -1637,9 +1637,9 @@ Attributes       : .......x x....... ........ ........   ........ ........ .....
                  : Hidden (7)
 Effects          :
 #1 (id=301060)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 127
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 127 | Target: Self(1)
 #2 (id=307359)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Tooltip          : Branded enemies deal $204021s2% less damage to you.
 
 Name             : Throw Glaive (id=204157) [Spell Family (107)] 
@@ -1659,9 +1659,9 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=301300)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 3
+                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 3 | Target: Enemy(6)
 #2 (id=301301)   : Weapon Damage% (31)
-                   Base Value: 50 | Scaled Value: 0.5 | Chain Targets: 3
+                   Base Value: 50 | Scaled Value: 0.5 | Chain Targets: 3 | Target: Enemy(6)
 Description      : Throw a demonic glaive at the target, dealing $sw2 Physical damage. The glaive can ricochet to ${$x1-1} additional enemies within 10 yards. Generates high threat.
 
 Name             : Shattered Souls (id=204254) [Spell Family (107), Passive] 
@@ -1680,7 +1680,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=301462)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15
+                   Base Value: 15 | Scaled Value: 15 | Target: Self(1)
 Description      : Killing a target will sometimes shatter their soul, leaving a Soul Fragment behind for $203795d.
 
 The Soul Fragment will be consumed when you approach it, healing you for $210042s1 health.
@@ -1700,9 +1700,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=301463)   : Unknown effect type (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 5977
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 5977 | Target: Unknown(87)
 #2 (id=301484)   : Trigger Spell: Soul Fragments (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 210788
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 210788 | Target: Self(1)
 Description      : $@spelldesc203794
 Tooltip          : Consume to heal for $203794s2% of your maximum health.
 
@@ -1720,7 +1720,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=301807)   : Apply Aura (6) | Silence (27)
-                   Base Value: 1 | Scaled Value: 1 | Radius: 8 yards | Mechanic: Unknown(72)
+                   Base Value: 1 | Scaled Value: 1 | Radius: 8 yards | Mechanic: Unknown(72) | Target: AOE enemy (instant)(16)
 Description      : Silence affected enemies for $d.
 Tooltip          : Silenced.
 
@@ -1741,7 +1741,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : Hidden (7)
 Effects          :
 #1 (id=301821)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Target: Self(1)
 Description      : $@spelldesc203557
 
 Name             : Sigil of Flame (id=204596) [Spell Family (107)] 
@@ -1764,11 +1764,11 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=301965)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Unknown(87)
 #2 (id=301966)   : Unknown effect type (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6039
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6039 | Target: Unknown(87)
 #3 (id=309526)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Place a Sigil of Flame at the target location that activates after $d.
 
 Deals $204598s1 Fire damage, and an additional $204598o2 Fire damage over $204598d, to all enemies affected by the sigil.
@@ -1789,9 +1789,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=301971)   : School Damage: fire (2)
-                   Base Value: 0 | Scaled Value: 0 (avg=1, dl=0.1) | AP Coefficient: 4.12500 | Radius: 8 yards
+                   Base Value: 0 | Scaled Value: 0 (avg=1, dl=0.1) | AP Coefficient: 4.12500 | Radius: 8 yards | Target: AOE enemy (instant)(16)
 #2 (id=301972)   : Apply Aura (6) | Periodic Damage: fire every 2 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 (avg=1, dl=0.1) | AP Coefficient: 1.50000 | Radius: 8 yards
+                   Base Value: 0 | Scaled Value: 0 (avg=1, dl=0.1) | AP Coefficient: 1.50000 | Radius: 8 yards | Target: AOE enemy (instant)(16)
 Description      : $@spelldesc204596
 Tooltip          : Suffering $s2 Fire damage every $t2 sec.
 
@@ -1809,7 +1809,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=302367)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -70 | Scaled Value: -70
+                   Base Value: -70 | Scaled Value: -70 | Target: Enemy(6)
 Description      : Slows enemies by $s1% for $d.
 Tooltip          : Movement slowed by $s1%.
 
@@ -1825,7 +1825,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=302487)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100
+                   Base Value: 100 | Scaled Value: 100 | Target: Self(1)
 Description      : Gain $s1% Leech while Metamorphosis is active.
 
 Name             : Desperate Instincts (id=205411) [Spell Family (107), Passive] 
@@ -1840,9 +1840,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=303317)   : Apply Aura (6) | Unknown effect sub type (468)
-                   Base Value: 35 | Scaled Value: 35 | Misc Value: 1 | Trigger Spell: 205478
+                   Base Value: 35 | Scaled Value: 35 | Misc Value: 1 | Trigger Spell: 205478 | Target: Self(1)
 #2 (id=303640)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25
+                   Base Value: 25 | Scaled Value: 25 | Target: Self(1)
 Description      : You automatically trigger Blur when you fall below $s1% health.  This effect can occur every 30 sec.
 
 Name             : Desperate Instincts (id=205478) [Spell Family (107), Hidden] 
@@ -1859,7 +1859,7 @@ Attributes       : .......x x....... ........ ........   ........ ........ .....
                  : Hidden (7)
 Effects          :
 #1 (id=303440)   : Apply Aura (6) | Periodic Trigger Spell (23)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : First Blood (id=206416) [Spell Family (107), Passive] 
 Class            : Demon Hunter
@@ -1873,9 +1873,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=305259)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 14
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 14 | Target: Self(1)
 #2 (id=323061)   : Apply Aura (6) | Add Flat Modifier: Spell Resource Cost (107)
-                   Base Value: -20 | Scaled Value: -20 | Misc Value: 14
+                   Base Value: -20 | Scaled Value: -20 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Blade Dance (188499), Blade Dance (199552), Blade Dance (200685), Death Sweep (210152), Death Sweep (210153), Death Sweep (210155)
 Description      : Reduces the Fury cost of Blade Dance by $s2 and increases its damage to ${($188499sw2+2*$199552sw2+$200685sw2)*(100+$m1)/100} against the first target struck.
 Variables        : $dmg=${($m1*$188499m1+$m1*$199552m2*2+$m1*$200685m2)/100}
@@ -1895,7 +1895,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=305358)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 190 | Scaled Value: 190
+                   Base Value: 190 | Scaled Value: 190 | Target: Self(1)
 Description      : Throw Glaive causes targets to bleed for $s1% of the damage inflicted over $207690d. If this effect is reapplied, any remaining damage will be added to the new Bloodlet.
 
 Name             : Chaos Cleave (id=206475) [Spell Family (107), Passive] 
@@ -1910,7 +1910,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=305360)   : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 17
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 17 | Target: Self(1)
                    Affected Spells: Chaos Strike (162794), Chaos Strike (199547), Annihilation (201427), Annihilation (201428), Chaos Strike (222031)
 Description      : Chaos Strike hits an additional target.
 
@@ -1929,7 +1929,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=305361)   : Apply Aura (6) | Proc Trigger Spell (42)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Fel Rush and Vengeful Retreat increase your damage done by $208628s1% for $208628d.
 
 Name             : Unleashed Power (id=206477) [Spell Family (107), Passive] 
@@ -1944,10 +1944,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=305362)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
-                   Base Value: -20000 | Scaled Value: -20000 | Misc Value: 11
+                   Base Value: -20000 | Scaled Value: -20000 | Misc Value: 11 | Target: Self(1)
                    Affected Spells: Chaos Nova (179057)
 #2 (id=314009)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 14
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Chaos Nova (179057)
 Description      : Removes the Fury cost of Chaos Nova and reduces its cooldown by ${-$m1/600}%.
 
@@ -1967,7 +1967,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=305363)   : Apply Aura (6) | Proc Trigger Spell (42)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Chaos Strike has a chance to spawn a Lesser Soul Fragment, and consuming any Soul Fragment grants $210041s1 Fury.
 
 Name             : Nemesis (id=206491) [Spell Family (107)] 
@@ -1988,7 +1988,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=305378)   : Apply Aura (6) | Unknown effect sub type (270)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 127
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 127 | Target: Enemy(6)
 Description      : Increases damage you inflict against the target by $s1% for $d. 
 
 When the target is slain, you will inflict $s1% additional damage against all creature types matching the original target (Humanoid, Dragonkin, etc.) for the remaining duration.
@@ -2007,7 +2007,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=306442)   : Apply Aura (6) | Unknown effect sub type (463)
-                   Base Value: 100 | Scaled Value: 100
+                   Base Value: 100 | Scaled Value: 100 | Target: Self(1)
 Description      : You gain Parry equal to $s1% of your Critical Strike from gear.
 
 Name             : Soul Carver (Artifact) (id=207407) [Spell Family (107)] 
@@ -2026,11 +2026,11 @@ Attributes       : ........ ........ ..x..... .......x   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=306731)   : Apply Aura (6) | Periodic Damage: fire every 1 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.50000
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.50000 | Target: Enemy(6)
 #2 (id=318965)   : Weapon Damage% (31)
-                   Base Value: 350 | Scaled Value: 3.5
+                   Base Value: 350 | Scaled Value: 3.5 | Target: Enemy(6)
 #3 (id=318966)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #4 (id=318969)   : Trigger Spell: Soul Carver (64)
                    Base Value: 2 | Scaled Value: 2 | Trigger Spell: 214743
 Description      : Carve into the soul of your target, dealing ${$sw2+$214743sw1} Fire damage and an additional ${3*$s1} Fire damage over $d.  Immediately shatters $s4 Lesser Soul Fragments from the target and 1 additional Lesser Soul Fragment every $t sec.
@@ -2052,10 +2052,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=306951)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 100 | Scaled Value: 100
+                   Base Value: 100 | Scaled Value: 100 | Target: Self(1)
                    Affected Spells: Immolation Aura (178740), Immolation Aura (178741), Immolation Aura (187727)
 #2 (id=306962)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 32
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 32 | Target: Self(1)
                    Affected Spells: Immolation Aura (178740), Immolation Aura (178741), Immolation Aura (187727)
 Description      : Immolation Aura increases your movement speed by $s2%, and deals $s1% increased damage.
 
@@ -2078,7 +2078,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 5
                    Affected Spells: Infernal Strike (189110), Infernal Strike (189112)
 #2 (id=306994)   : Apply Aura (6) | Unknown effect sub type (453)
-                   Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1553
+                   Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1553 | Target: Self(1)
                    Affected Spells: Infernal Strike (189110), Infernal Strike (189112)
 Description      : Infernal Strike's range is increased by $s1 yards, and its cooldown is reduced by ${$s2/-1000} sec.
 
@@ -2094,15 +2094,15 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=307123)   : Apply Aura (6) | Unknown effect sub type (332)
-                   Base Value: 207665 | Scaled Value: 207665 | Misc Value: 202138
+                   Base Value: 207665 | Scaled Value: 207665 | Misc Value: 202138 | Target: Self(1)
 #2 (id=307155)   : Apply Aura (6) | Unknown effect sub type (332)
-                   Base Value: 207682 | Scaled Value: 207682 | Misc Value: 202137
+                   Base Value: 207682 | Scaled Value: 207682 | Misc Value: 202137 | Target: Self(1)
 #3 (id=307157)   : Apply Aura (6) | Unknown effect sub type (332)
-                   Base Value: 204513 | Scaled Value: 204513 | Misc Value: 204596
+                   Base Value: 204513 | Scaled Value: 204513 | Misc Value: 204596 | Target: Self(1)
 #4 (id=307163)   : Apply Aura (6) | Unknown effect sub type (332)
-                   Base Value: 202140 | Scaled Value: 202140 | Misc Value: 207684
+                   Base Value: 202140 | Scaled Value: 202140 | Misc Value: 207684 | Target: Self(1)
 #5 (id=309811)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
-                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1
+                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1 | Target: Self(1)
                    Affected Spells: Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685)
 Description      : All Sigils are now targeted at your location, and the duration of their effects is increased by ${$s5/1000} sec. 
 
@@ -2124,9 +2124,9 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=307158)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Unknown(87)
 #2 (id=307159)   : Unknown effect type (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6351
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6351 | Target: Unknown(87)
 Description      : Place a Sigil of Misery at the target location that activates after $d.
 
 Causes all enemies affected by the sigil to cower in fear, disorienting them for $207685d.
@@ -2149,9 +2149,9 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=307160)   : Apply Aura (6) | Unknown effect sub type (407)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Mechanic: Unknown(42)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Mechanic: Unknown(42) | Target: AOE enemy (instant)(16)
 #2 (id=307162)   : Apply Aura (6) | Root (26)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: AOE enemy (instant)(16)
 Description      : Disorient affected enemies for $d.
 Tooltip          : Disoriented.
 
@@ -2170,7 +2170,7 @@ Attributes       : ........ ........ .......x ........   ...x...x ........ .....
                  : x....... ......x. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=307170)   : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : $@spelldesc206473
 Tooltip          : Inflicts $w1 damage every $t1 sec.
 
@@ -2187,7 +2187,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=307173)   : Apply Aura (6) | Periodic Heal: every 2 seconds (8)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : $@spelldesc207697
 Tooltip          : Healing $w1 health every $t sec.
 
@@ -2203,7 +2203,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=307246)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Soul Cleave heals you for an additional ${$AP*$pctH*1.3*3} over $207693d.
 
 Name             : Blade Turning (id=207709) [Spell Family (107)] 
@@ -2218,7 +2218,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=307263)   : Energize Power (30)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: pain
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: pain | Target: Self(1)
 Description      : $@spelldesc203753
 
 Name             : Burning Alive (id=207739) [Spell Family (107), Passive] 
@@ -2233,7 +2233,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=307315)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 33
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 33 | Target: Self(1)
 Description      : Every $207771t1 sec, your Fiery Brand deals $207771s1 Fire damage and spreads from the primary target to a nearby enemy.
 
 Name             : Fiery Brand (id=207744) [Spell Family (107)] 
@@ -2250,7 +2250,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=307322)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : $@spelldesc204021
 Tooltip          : Branded, dealing $204021s1% less damage to the branding Demon Hunter.
 
@@ -2268,7 +2268,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=307364)   : Apply Aura (6) | Periodic Damage: fire every 2 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 (avg=1, dl=0.1) | AP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 0 (avg=1, dl=0.1) | AP Coefficient: 1.00000 | Target: Enemy(6)
 Description      : $@spelldesc204021
 Tooltip          : Branded, taking $w1 Fire damage every $t1 sec, and dealing $204021s1% less damage to the branding Demon Hunter.
 
@@ -2287,7 +2287,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .x.x.
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=307412)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Unknown(57)
 Description      : Bind yourself to a friendly player for $d. Every $207811t1 sec, the health of you and your target is redistributed such that you are at the same percentage of maximum health.
 Tooltip          : Your health is tied to the casting Demon Hunter's health.
 
@@ -2307,7 +2307,7 @@ Attributes       : ........ x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=307413)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : $@spelldesc207810
 Tooltip          : Your health is tied to another player's health.
 
@@ -2326,9 +2326,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=307772)   : Normalized Weapon Damage (121)
-                   Base Value: 1 | Scaled Value: 1 | Radius: 8 yards
+                   Base Value: 1 | Scaled Value: 1 | Radius: 8 yards | Target: Cone Front(104)
 #2 (id=307773)   : Weapon Damage% (31)
-                   Base Value: 415 | Scaled Value: 4.15 | Radius: 8 yards
+                   Base Value: 415 | Scaled Value: 4.15 | Radius: 8 yards | Target: Cone Front(104)
 Description      : $@spelldesc203798
 
 Name             : Demon Soul (id=208195) [Spell Family (107)] 
@@ -2344,7 +2344,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=308030)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self(1)
 Description      : Consuming a Soul Fragment that came from a Demon causes you to deal $s1% increased damage for $d.
 Tooltip          : Dealing $s1% increased damage.
 
@@ -2360,7 +2360,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=308699)   : Apply Aura (6) | Unknown effect sub type (168)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 64
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 64 | Target: Self(1)
 Description      : Increases damage against Humanoids by $s1%.
 Tooltip          : Damage against Humanoids increased by $s1%.
 
@@ -2376,7 +2376,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=308737)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self(1)
 Description      : Increases all damage done by $s1%.
 Tooltip          : Damage done increased by $s1%.
 
@@ -2395,11 +2395,11 @@ Attributes       : ........ ........ x.xx.... ..x.....   ........ .x.x.... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=309699)   : School Damage: fire (2)
-                   Base Value: 94 | Scaled Value: 95 - 105 | Value Range: 11
+                   Base Value: 94 | Scaled Value: 95 - 105 | Value Range: 11 | Target: Enemy(6)
 #2 (id=309700)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: -40 | Scaled Value: -40 | Misc Value: 0x7f
+                   Base Value: -40 | Scaled Value: -40 | Misc Value: 0x7f | Target: Enemy(6)
 #3 (id=309701)   : Trigger Spell: Fiery Brand (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 209247
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 209247 | Target: Enemy(6)
 Description      : Brands a target with a burning demonic symbol, instantly dealing $s1 Fire damage and reducing the damage they do by $s2% for $d.
 Tooltip          : Damage done reduced by $s2%.
 
@@ -2418,7 +2418,7 @@ Attributes       : .......x x....... ..x..x.. x..x.x..   ...x.x.x ..x..... .....
                  : Hidden (7), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=309703)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 
 Name             : Last Resort (id=209258) [Spell Family (107), Passive] 
 Class            : Demon Hunter
@@ -2432,9 +2432,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=309716)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 100000000 | Scaled Value: 1e+08 | Misc Value: 127
+                   Base Value: 100000000 | Scaled Value: 1e+008 | Misc Value: 127 | Target: Self(1)
 #2 (id=309745)   : Dummy (3)
-                   Base Value: 30 | Scaled Value: 30
+                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
 Description      : Sustaining fatal damage instead transforms you to Metamorphosis form, and returns you to $s2% health.
 
 This effect may only occur every $209261d.
@@ -2452,7 +2452,7 @@ Attributes       : ........ ........ ........ ..xx.x..   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=309719)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : You cannot benefit from Last Resort again for $d.
 Tooltip          : You have recently benefited from Last Resort and cannot benefit from it again.
 
@@ -2468,10 +2468,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=309744)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
-                   Base Value: -1000 | Scaled Value: -1000 | Misc Value: 1
+                   Base Value: -1000 | Scaled Value: -1000 | Misc Value: 1 | Target: Self(1)
                    Affected Spells: Sigil of Silence (202137), Sigil of Chains (202138), Sigil of Flame (204596), Sigil of Misery (207684)
 #2 (id=309815)   : Apply Aura (6) | Add Flat Modifier: Spell Range (107)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 5
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 5 | Target: Self(1)
                    Affected Spells: Sigil of Silence (202137), Sigil of Chains (202138), Sigil of Flame (204596), Sigil of Misery (207684)
 Description      : All Sigils activate ${$s1/-1000} second faster, and their range is increased by $s2 yards.
 
@@ -2490,7 +2490,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=309919)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 23
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 23 | Target: Self(1)
 Description      : While Demon Spikes is active, your melee attacks snare targets by $210003s1% for $210003d.
 
 Name             : Darkness (id=209426) [Spell Family (107)] 
@@ -2507,11 +2507,11 @@ Attributes       : ........ x....... ........ .......x   .....x.. ..x..... .....
                  : Disable player procs (112), Disable target procs (113)
 Effects          :
 #1 (id=309959)   : Apply Aura (6) | Unknown effect sub type (184)
-                   Base Value: -30 | Scaled Value: -30
+                   Base Value: -30 | Scaled Value: -30 | Target: Unknown(25)
 #2 (id=324230)   : Apply Aura (6) | Unknown effect sub type (185)
-                   Base Value: -30 | Scaled Value: -30
+                   Base Value: -30 | Scaled Value: -30 | Target: Unknown(25)
 #3 (id=324231)   : Apply Aura (6) | Unknown effect sub type (186)
-                   Base Value: -30 | Scaled Value: -30 | Misc Value: 127
+                   Base Value: -30 | Scaled Value: -30 | Misc Value: 127 | Target: Unknown(25)
 Description      : $@spelldesc196718
 Tooltip          : Melee attacks and spells have a $s1% chance to miss you.
 
@@ -2530,7 +2530,7 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=310522)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 7.50000
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 7.50000 | Target: Enemy(6)
 Description      : Brutally slam your target for $s1 Physical damage, and shatter two Lesser Soul Fragments from them.
 
 Name             : Razor Spikes (id=210003) [Spell Family (107)] 
@@ -2546,7 +2546,7 @@ Attributes       : ........ ........ x.x..... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=310890)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
 Description      : $@spelldesc209400
 Tooltip          : Movement slowed by $s1%.
 
@@ -2562,7 +2562,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=310970)   : Energize Power (30)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: fury
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: fury | Target: Self(1)
 Description      : Increases your Fury by $s1.
 
 Name             : Consume Soul (id=210042) [Spell Family (107)] 
@@ -2578,7 +2578,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
 Effects          :
 #1 (id=310973)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 21.25000
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 21.25000 | Target: Self(1)
 Description      : Consume a Soul Fragment, healing you for $s1 health.
 
 Name             : Death Sweep (id=210152) [Spell Family (107)] 
@@ -2598,19 +2598,19 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=311149)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=311150)   : Apply Aura (6) | Modify Dodge% (49)
-                   Base Value: 100 | Scaled Value: 100
+                   Base Value: 100 | Scaled Value: 100 | Target: Self(1)
 #3 (id=311151)   : Apply Aura (6) | Unknown effect sub type (288)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #4 (id=311152)   : Trigger Spell: Death Sweep (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 210153
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 210153 | Target: Self(1)
 #5 (id=311153)   : Trigger Spell: Death Sweep (64)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 150 | Trigger Spell: 210153
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 150 | Trigger Spell: 210153 | Target: Self(1)
 #6 (id=311154)   : Trigger Spell: Death Sweep (64)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 450 | Trigger Spell: 210153
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 450 | Trigger Spell: 210153 | Target: Self(1)
 #7 (id=331836)   : Trigger Spell: Death Sweep (64)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 950 | Trigger Spell: 210155
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 950 | Trigger Spell: 210155 | Target: Self(1)
 Description      : Strike all nearby enemies for ${3*$210153sw2+$210155sw2} Physical damage, and increase your Dodge chance by $s2% for $d.
 Tooltip          : Dodge chance increased by $s3%.
 
@@ -2627,9 +2627,9 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=311156)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=311157)   : Weapon Damage% (31)
-                   Base Value: 210 | Scaled Value: 2.1 | Radius: 0 - 8 yards
+                   Base Value: 210 | Scaled Value: 2.1 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 Description      : $@spelldesc210152
 
 Name             : Death Sweep (id=210155) [Spell Family (107)] 
@@ -2645,9 +2645,9 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=311159)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=311160)   : Weapon Damage% (31)
-                   Base Value: 630 | Scaled Value: 6.3 | Radius: 0 - 8 yards
+                   Base Value: 630 | Scaled Value: 6.3 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 Description      : $@spelldesc210152
 
 Name             : Soul Fragments (id=210788) [Spell Family (107), Hidden] 
@@ -2664,7 +2664,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : Hidden (7)
 Effects          :
 #1 (id=312238)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Chaos Blades (id=211048) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -2679,9 +2679,9 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=312610)   : Apply Aura (6) | Unknown effect sub type (361)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 211796 | Trigger Spell: 211797
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 211796 | Trigger Spell: 211797 | Target: Self(1)
 #2 (id=313822)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self(1)
                    Affected Spells: Demon's Bite (162243), Chaos Strike (162794), Chaos Nova (179057), Throw Glaive (185123), Blade Dance (188499), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Blade Dance (200685), Annihilation (201427), Annihilation (201428), Demon Blades (203796), Bloodlet (207690), Death Sweep (210152), Death Sweep (210153), Death Sweep (210155), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Felblade (213243), Chaos Strike (222031)
 Description      : Increases the damage of your auto attack by $211796s1% and grants your Mastery damage bonus to all attacks for $d.
 Tooltip          : Auto attack damage increased by $211796s1%.
@@ -2701,7 +2701,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=312614)   : School Damage: chaos (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 4.00000 | Radius: 4 - 8 yards
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 4.00000 | Radius: 4 - 8 yards | Target: Unknown(74) -> AOE enemy (instant)(16)
 
 Name             : Fel Barrage (id=211053) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -2721,9 +2721,9 @@ Attributes       : ........ ........ ........ ........   ..x..... ........ .....
                  : Channeled (34)
 Effects          :
 #1 (id=312615)   : Apply Aura (6) | Periodic Trigger Spell: Fel Barrage every 0.25 seconds (23)
-                   Base Value: 345914 | Scaled Value: 345914 | Trigger Spell: 211052
+                   Base Value: 345914 | Scaled Value: 345914 | Trigger Spell: 211052 | Target: Enemy(6)
 #2 (id=332627)   : Apply Aura (6) | Unknown effect sub type (106)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : At your command, unleash Fel, inflicting ${$211052s1} Chaos damage to your target and nearby enemies for each charge.  Max 5 charges.
 
 Your damaging attacks have a chance to generate a charge.
@@ -2741,7 +2741,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=313318)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Consuming a Soul Fragment while you are at full health grants a shield that absorbs ${$211512m1/100*$AP*$pctH} damage. Lasts $211512d.
 
 Name             : Soul Barrier (id=211512) [Spell Family (107)] 
@@ -2756,7 +2756,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=313319)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 425 | Scaled Value: 425 | AP Coefficient: 4.25000 | Misc Value: 127
+                   Base Value: 425 | Scaled Value: 425 | AP Coefficient: 4.25000 | Misc Value: 127 | Target: Self(1)
 Description      : $@spelldesc211511
 Tooltip          : Absorbs $w1 damage.
 
@@ -2775,7 +2775,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=313580)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Every 20 Pain that you spend reduces the remaining cooldown of your Sigils by 1 sec.
 
 Name             : Chaos Blades (id=211796) [Spell Family (107)] 
@@ -2792,7 +2792,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=313818)   : Weapon Damage% (31)
-                   Base Value: 300 | Scaled Value: 3
+                   Base Value: 300 | Scaled Value: 3 | Target: Enemy(6)
 Description      : Attack with pure Fel power, dealing Chaos damage equal to $s1% weapon damage.
 
 Name             : Chaos Blades (id=211797) [Spell Family (107)] 
@@ -2810,7 +2810,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=313820)   : Weapon Damage% (31)
-                   Base Value: 300 | Scaled Value: 3
+                   Base Value: 300 | Scaled Value: 3 | Target: Enemy(6)
 Description      : Attack with pure Fel power, dealing Chaos damage equal to $s1% off-hand weapon damage.
 
 Name             : Fel Eruption (id=211881) [Spell Family (107)] 
@@ -2831,7 +2831,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=313950)   : Apply Aura (6) | Stun (12)
-                   Base Value: 100 | Scaled Value: 100 | Mechanic: Unknown(95)
+                   Base Value: 100 | Scaled Value: 100 | Mechanic: Unknown(95) | Target: Enemy(6)
 Description      : Impales the target for $s1 Chaos damage and stuns them for $d.  Inflicts an additional $s3% damage against targets permanently immune to stuns.
 Tooltip          : Stunned.
 
@@ -2853,13 +2853,13 @@ Attributes       : ........ ........ ........ ........   ..x...x. .x...... .....
                  : Channeled (34), Channeled (38)
 Effects          :
 #1 (id=314393)   : Apply Aura (6) | Periodic Trigger Spell (23)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #2 (id=314394)   : Apply Aura (6) | Unknown effect sub type (241)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=314395)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -200 | Scaled Value: -200
+                   Base Value: -200 | Scaled Value: -200 | Target: Self(1)
 #4 (id=314649)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Unleash the fel within you, damaging enemies directly in front of you for ${$212105m1*10} Fire damage over $d. Causing damage also heals you for up to ${$212106m1*10} health.
 
 Name             : Fel Devastation (id=212105) [Spell Family (107)] 
@@ -2874,7 +2874,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=314431)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.65000 | Radius: 20 yards
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.65000 | Radius: 20 yards | Target: Unknown(129)
 Description      : $@spelldesc212084
 
 Name             : Fel Devastation (id=212106) [Spell Family (107)] 
@@ -2888,7 +2888,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=314433)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 4.20000
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 4.20000 | Target: Self(1)
 Description      : $@spelldesc212084
 
 Name             : Demon Hunter (id=212611) [Spell Family (107), Passive, Hidden] 
@@ -2903,35 +2903,35 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=315220)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #2 (id=315221)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=315222)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #4 (id=315223)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #5 (id=315224)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=315225)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #7 (id=315226)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #8 (id=315227)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #9 (id=315228)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #10 (id=315229)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #11 (id=315230)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #12 (id=315231)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #13 (id=315232)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #14 (id=315233)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #15 (id=315234)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Havoc Demon Hunter (id=212612) [Spell Family (107), Passive, Hidden] 
 Class            : Havoc Demon Hunter
@@ -2945,39 +2945,39 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=315235)   : Apply Aura (6) | Unknown effect sub type (417)
-                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000
+                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Target: Self(1)
                    Affected Spells: Demon's Bite (162243), Chaos Strike (162794), Immolation Aura (178740), Chaos Nova (179057), Throw Glaive (185123), Blade Dance (188499), Metamorphosis (191427), Eye Beam (198013), Annihilation (201427), Sigil of Silence (202137), Sigil of Chains (202138), Shear (203782), Demon Blades (203796), Soul Cleave (203798), Throw Glaive (204157), Sigil of Flame (204596), Soul Carver (207407), Sigil of Misery (207684), Fracture (209795), Death Sweep (210152), Fel Barrage (211053), Fel Eruption (211881), Fel Devastation (212084), Felblade (213241), Soul Carver (214743), Imprison (217832), Spirit Bomb (218679)
 #2 (id=315236)   : Apply Aura (6) | Unknown effect sub type (416)
-                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000
+                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Target: Self(1)
                    Affected Spells: Immolation Aura (178740), Throw Glaive (185123), Blade Dance (188499), Shear (203782), Death Sweep (210152), Felblade (213241)
 #3 (id=315237)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #4 (id=315238)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #5 (id=315239)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=315240)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #7 (id=315241)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #8 (id=315242)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #9 (id=315243)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #10 (id=315244)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #11 (id=315245)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #12 (id=315246)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #13 (id=315247)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #14 (id=315248)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #15 (id=315249)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #16 (id=327139)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Vengeance Demon Hunter (id=212613) [Spell Family (107), Passive, Hidden] 
 Class            : Vengeance Demon Hunter
@@ -2991,39 +2991,39 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=315250)   : Apply Aura (6) | Unknown effect sub type (417)
-                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000
+                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Target: Self(1)
                    Affected Spells: Demon's Bite (162243), Chaos Strike (162794), Immolation Aura (178740), Chaos Nova (179057), Throw Glaive (185123), Blade Dance (188499), Metamorphosis (191427), Eye Beam (198013), Annihilation (201427), Sigil of Silence (202137), Sigil of Chains (202138), Shear (203782), Demon Blades (203796), Soul Cleave (203798), Throw Glaive (204157), Sigil of Flame (204596), Soul Carver (207407), Sigil of Misery (207684), Fracture (209795), Death Sweep (210152), Fel Barrage (211053), Fel Eruption (211881), Fel Devastation (212084), Felblade (213241), Soul Carver (214743), Imprison (217832), Spirit Bomb (218679)
 #2 (id=315251)   : Apply Aura (6) | Unknown effect sub type (416)
-                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000
+                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Target: Self(1)
                    Affected Spells: Immolation Aura (178740), Throw Glaive (185123), Blade Dance (188499), Shear (203782), Death Sweep (210152), Felblade (213241)
 #3 (id=315252)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #4 (id=315253)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #5 (id=315254)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=315255)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #7 (id=315256)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #8 (id=315257)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #9 (id=315258)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #10 (id=315259)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #11 (id=315260)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #12 (id=315261)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #13 (id=315262)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #14 (id=315263)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #15 (id=315264)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #16 (id=327140)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Blur (id=212800) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -3040,11 +3040,11 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=315634)   : Apply Aura (6) | Unknown effect sub type (288)
-                   Base Value: 100 | Scaled Value: 100
+                   Base Value: 100 | Scaled Value: 100 | Target: Self(1)
 #2 (id=315635)   : Apply Aura (6) | Modify Dodge% (49)
-                   Base Value: 50 | Scaled Value: 50
+                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
 #3 (id=315636)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -35 | Scaled Value: -35 | Misc Value: 0x7f
+                   Base Value: -35 | Scaled Value: -35 | Misc Value: 0x7f | Target: Self(1)
 Description      : $@spelldesc198589
 Tooltip          : Dodge increased by $s2%.
 All damage reduced by $s3%.
@@ -3060,7 +3060,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=315976)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1
+                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 Description      : You heal for $s1% of all Fire damage dealt.
 
 Name             : Felblade (id=213241) [Spell Family (107)] 
@@ -3078,7 +3078,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=316321)   : Charge (96)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 0xdc21 | Trigger Spell: 213243
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 0xdc21 | Trigger Spell: 213243 | Target: Enemy(6)
 Description      : Charge to your target and deal $213243sw2 Fire damage.
 
 $?s203513[Shear has a chance to reset the cooldown of Felblade.
@@ -3102,13 +3102,13 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=316324)   : Normalized Weapon Damage (121)
-                   Base Value: 1 | Scaled Value: 1
+                   Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #2 (id=316325)   : Weapon Damage% (31)
-                   Base Value: 560 | Scaled Value: 5.6
+                   Base Value: 560 | Scaled Value: 5.6 | Target: Enemy(6)
 #3 (id=316326)   : Energize Power (30)
-                   Base Value: 200 | Scaled Value: 200 | Misc Value: pain
+                   Base Value: 200 | Scaled Value: 200 | Misc Value: pain | Target: Self(1)
 #4 (id=316327)   : Energize Power (30)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: fury
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: fury | Target: Self(1)
 Description      : $@spelldesc213241
 
 Name             : Master of the Glaive (id=213405) [Spell Family (107)] 
@@ -3126,7 +3126,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=316551)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50
+                   Base Value: -50 | Scaled Value: -50 | Target: Enemy(6)
 Description      : $@spelldesc203556
 Tooltip          : Movement speed reduced by $s1%.
 
@@ -3142,7 +3142,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=316557)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Eye Beam causes you to enter demon form for 5 sec.
 
 Name             : Soul Carver (id=214743) [Spell Family (107)] 
@@ -3161,9 +3161,9 @@ Attributes       : ........ ........ ..x..... .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=318967)   : Weapon Damage% (31)
-                   Base Value: 350 | Scaled Value: 3.5
+                   Base Value: 350 | Scaled Value: 3.5 | Target: Enemy(6)
 #2 (id=318968)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : $@spelldesc207407
 
 Name             : Spectral Sight (id=215725) [Spell Family (107)] 
@@ -3179,7 +3179,7 @@ Attributes       : ........ x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=320782)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1000 | Scaled Value: 1000
+                   Base Value: 1000 | Scaled Value: 1000 | Target: Self(1)
 
 Name             : Rage of the Illidari (id=217060) [Spell Family (107), Hidden] 
 Class            : Demon Hunter
@@ -3194,7 +3194,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : Hidden (7)
 Effects          :
 #1 (id=322990)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 126
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 126 | Target: Self(1)
 Description      : $@spelldesc201472
 
 Name             : Rage of the Illidari (id=217070) [Spell Family (107)] 
@@ -3208,7 +3208,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=323006)   : School Damage: chaos (2)
-                   Base Value: 10 | Scaled Value: 10 | Radius: 0 - 8 yards
+                   Base Value: 10 | Scaled Value: 10 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 Description      : $@spelldesc201472
 
 Name             : Imprison (id=217832) [Spell Family (107)] 
@@ -3234,7 +3234,7 @@ Attributes       : ....x... ........ ....xx.. ........   ...x...x ..x..... ..x..
                  : Disable player procs (112), Disable weapon procs (151)
 Effects          :
 #1 (id=324244)   : Apply Aura (6) | Stun (12)
-                   Base Value: 1 | Scaled Value: 1
+                   Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 Description      : Imprisons a demon for $d. Damage will cancel the effect. Limit 1.
 Tooltip          : Incapacitated.
 
@@ -3250,7 +3250,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=324562)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50
+                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
 Description      : Gain $s1% Leech while Metamorphosis is active.
 
 Name             : Empower Wards (id=218256) [Spell Family (107)] 
@@ -3268,9 +3268,9 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=324947)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7e
+                   Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7e | Target: Self(1)
 #2 (id=325444)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 126
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 126 | Target: Self(1)
 Description      : Reduces magical damage taken by $s1% for $d.
 Tooltip          : Magical damage taken reduced by $s1%.
 
@@ -3286,7 +3286,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=325550)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Consuming a Soul Fragment reduces the remaining cooldown of Demon Spikes by 1 sec.
 
 Name             : Brand of the Hunt (id=218640) [Spell Family (107)] 
@@ -3305,9 +3305,9 @@ Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=325597)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Enemy(6)
 #2 (id=325598)   : Trigger Spell: Brand of the Hunt (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 218641
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 218641 | Target: Self(1)
 Description      : Brand an enemy with a demonic symbol. You can reactivate Brand of the Hunt to immediately teleport to the target. If the target dies, Brand of the Hunt's cooldown is reset. Lasts $d.
 Tooltip          : Being hunted by the branding Demon Hunter.
 
@@ -3325,7 +3325,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : Hidden (7), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=325599)   : Apply Aura (6) | Unknown effect sub type (332)
-                   Base Value: 218649 | Scaled Value: 218649
+                   Base Value: 218649 | Scaled Value: 218649 | Target: Self(1)
                    Affected Spells: Brand of the Hunt (218640)
 Description      : $@spelldesc218640
 
@@ -3341,7 +3341,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=325652)   : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.75000 | Radius: 6 yards
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.75000 | Radius: 6 yards | Target: AOE enemy (instant)(16)
 Description      : $@spelldesc218679
 Tooltip          : The casting Demon Hunter has an increased chance to shatter Lesser Soul Fragments from you with Shear.
 
@@ -3359,7 +3359,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=325656)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Launch a nearby Soul Fragment at your target, exploding for $218677s1 Shadow damage in a $218677a1 yd radius. Damaged enemies become Frail for $224509d, increasing your chance to shatter Lesser Soul Fragments from them with Shear.
 
 Name             : Consume Magic (id=218903) [Spell Family (107)] 
@@ -3374,9 +3374,9 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=326008)   : Energize Power (30)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: fury
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: fury | Target: Self(1)
 #2 (id=326009)   : Energize Power (30)
-                   Base Value: 500 | Scaled Value: 500 | Misc Value: pain
+                   Base Value: 500 | Scaled Value: 500 | Misc Value: pain | Target: Self(1)
 Description      : $@spelldesc183752
 
 Name             : Critical Strikes (Passive) (id=221351) [Passive] 
@@ -3392,7 +3392,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=330248)   : Apply Aura (6) | Modify Critical Strike% (290)
-                   Base Value: 10 | Scaled Value: 10
+                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
 Description      : Increases your chance to critically strike by $s1%.
 
 Name             : Soul Cleave (id=222030) [Spell Family (107)] 
@@ -3410,9 +3410,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=331357)   : Normalized Weapon Damage (121)
-                   Base Value: 1 | Scaled Value: 1 | Radius: 8 yards
+                   Base Value: 1 | Scaled Value: 1 | Radius: 8 yards | Target: Cone Front(104)
 #2 (id=331358)   : Weapon Damage% (31)
-                   Base Value: 415 | Scaled Value: 4.15 | Radius: 8 yards
+                   Base Value: 415 | Scaled Value: 4.15 | Radius: 8 yards | Target: Cone Front(104)
 Description      : $@spelldesc203798
 
 Name             : Chaos Strike (id=222031) [Spell Family (107)] 
@@ -3430,9 +3430,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=331359)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1
+                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=331360)   : Weapon Damage% (31)
-                   Base Value: 350 | Scaled Value: 3.5 | Chain Targets: 1
+                   Base Value: 350 | Scaled Value: 3.5 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc162794
 
 Name             : Fel Barrage (Passive) (id=222703) [Spell Family (107), Passive, Hidden] 
@@ -3451,7 +3451,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=332566)   : Apply Aura (6) | Proc Trigger Spell (42)
-                   Base Value: 40 | Scaled Value: 40
+                   Base Value: 40 | Scaled Value: 40 | Target: Self(1)
 Description      : You shouldn't see this.
 
 Name             : Frail (id=224509) [Spell Family (107)] 
@@ -3467,7 +3467,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=336041)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 6 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 6 yards | Target: AOE enemy (instant)(16)
 Description      : $@spelldesc218679
 Tooltip          : The casting Demon Hunter has an increased chance to shatter Lesser Soul Fragments from you with Shear.
 

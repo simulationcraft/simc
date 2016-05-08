@@ -18,7 +18,7 @@ Attributes       : ........ ........ x...x... ........   ........ ..x..... .x...
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #2 (id=39)       : Apply Aura (6) | Periodic Trigger Spell: (35009) (23)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 35009
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 35009 | Target: Self(1)
 #3 (id=40)       : None (0)
                    Base Value: 100 | Scaled Value: 100
 Description      : Turns you invisible over $66d, reducing threat each second. While invisible, you are untargetable by enemies. Lasts $32612d. Taking any action cancels the effect.
@@ -42,9 +42,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=75)       : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.78700
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.78700 | Target: Enemy(6)
 #2 (id=76)       : Server Side Script (77)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Launches a bolt of frost at the enemy, causing $s1 Frost damage and slowing movement speed by $205708s1% for $205708d.
 Tooltip          : $?$w1=0[][Movement slowed by $205708w1%.]
 
@@ -70,7 +70,7 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #3 (id=327281)   : Apply Aura (6) | Scale% (61)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Transforms the enemy into a sheep, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
 
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
@@ -93,7 +93,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : ........ x....... ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=80)       : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.381) | SP Coefficient: 0.28620 | Radius: 12 yards
+                   Base Value: 1 | Scaled Value: 0 (avg=0.381) | SP Coefficient: 0.28620 | Radius: 12 yards | Target: Cone Front(104)
 Description      : Targets in a cone in front of you take $s1 Frost damage and have movement slowed by $212792m1% for $212792d.
 Tooltip          : Movement slowed by $s1%.
 Variables        : $arctic1=$?s31674[${1.01}][${1}]
@@ -127,9 +127,9 @@ Attributes       : ........ ........ x....... ......x.   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=83)       : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.17910 | Radius: 0 - 12 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.17910 | Radius: 0 - 12 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=84)       : Apply Aura (6) | Root (26)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 12 yards | Mechanic: Unknown(58)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 12 yards | Mechanic: Unknown(58) | Target: At Caster(22) -> AOE enemy(15)
 Description      : Blasts enemies within $A1 yds of you for $122s1 Frost damage and freezes them in place for $122d. Damage may interrupt the freeze effect.
 Tooltip          : Frozen in place.
 Variables        : $arctic1=$?s31674[${1.01}][${1}]
@@ -161,7 +161,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=91)       : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.60000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.60000 | Target: Enemy(6)
 Description      : Throws a fiery ball that causes $s1 Fire damage.
 
 Name             : Arcane Explosion (id=1449) [Spell Family (3)] 
@@ -179,9 +179,9 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=457)      : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.75000 | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.75000 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=281175)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: none
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: none | Target: Self(1)
 Description      : Causes an explosion of magic around the caster, dealing $s1 Arcane damage to all enemies within $A1 yards.
 
 Damage increased by $36032s1% per Arcane Charge.
@@ -203,7 +203,7 @@ Attributes       : ......x. ........ x....... ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=461)      : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Magical energy flows through you while in combat, building up to ${$116267m1*5}% increased damage and then diminishing down to $116267s1% increased damage, cycling every 10 sec.
 
 Name             : Blink (id=1953) [Spell Family (3)] 
@@ -225,11 +225,11 @@ Attributes       : ........ ........ x....... ........   ........ ..x....x .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=592)      : Leap (29)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 20 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 20 yards | Target: Self(1) -> Unknown(55)
 #2 (id=593)      : Apply Aura (6) | Mechanic Immunity (77)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 12
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 12 | Target: Self(1)
 #3 (id=594)      : Apply Aura (6) | Mechanic Immunity (77)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 7
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 7 | Target: Self(1)
 Description      : Teleports you forward $A1 yds or until reaching an obstacle, and frees you from all stuns and bonds.
 Tooltip          : Blinking.
 
@@ -251,9 +251,9 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
 Effects          :
 #1 (id=126904)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.20000 | Radius: 8 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.20000 | Radius: 8 yards | Target: AOE enemy (instant)(16)
 #2 (id=630)      : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Radius: 8 yards | Mechanic: Unknown(88)
+                   Base Value: -50 | Scaled Value: -50 | Radius: 8 yards | Mechanic: Unknown(88) | Target: AOE enemy (instant)(16)
 Description      : Calls down a pillar of fire, burning all enemies within the area for $s1 Fire damage and reducing their movement speed by $s2% for $d.
 Tooltip          : Movement speed slowed by $s2%.
 
@@ -276,7 +276,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=636)      : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Counters the enemy's spellcast, preventing any spell from that school of magic from being cast for $d$?s12598[ and silencing the target for $55021d][].
 
 Name             : Scorch (id=2948) [Spell Family (3)] 
@@ -296,7 +296,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=882)      : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.50000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.50000 | Target: Enemy(6)
 Description      : Scorches an enemy for $s1 Fire damage. Castable while moving.
 
 Name             : Shoot (id=5019) 
@@ -316,7 +316,7 @@ Attributes       : .x..x... ........ ........ ........   ........ ........ .....
                  : Ranged ability (1), Disable player procs (112)
 Effects          :
 #1 (id=1776)     : Weapon Damage (17)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Attack with an equipped wand.
 
 Name             : Arcane Missiles (id=5143) [Spell Family (3)] 
@@ -337,11 +337,11 @@ Attributes       : ........ x....... x....... .....x..   ..x....x ..x...x. .....
                  : Channeled (34)
 Effects          :
 #1 (id=1818)     : Apply Aura (6) | Periodic Dummy: every 0.4 seconds (226)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=1819)     : Apply Aura (6) | Periodic Trigger Spell: Arcane Missiles every 0.4 seconds (23)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 7268
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 7268 | Target: Self(1)
 #3 (id=88858)    : Apply Aura (6) | Add Percent Modifier: Spell Pushback (108)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 9
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 9 | Target: Self(1)
                    Affected Spells: Arcane Missiles (5143), Arcane Missiles! (79683)
 Description      : Launches five waves of Arcane Missiles at the enemy over $5143d, causing a total of ${5*$7268s1} Arcane damage.
 
@@ -365,9 +365,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=2097)     : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 5 | Scaled Value: 1249.927 (avg=0.735684) | Misc Value: 33554432
+                   Base Value: 5 | Scaled Value: 1249.927 (avg=0.735684) | Misc Value: 33554432 | Target: Self(1)
 #2 (id=132601)   : Apply Aura (6) | Unknown effect sub type (245)
-                   Base Value: -25 | Scaled Value: -25 | Misc Value: 1
+                   Base Value: -25 | Scaled Value: -25 | Misc Value: 1 | Target: Self(1)
 Description      : Increases your Mastery by $6117s1. 
 
 The duration of all harmful Magic effects used against you is reduced by $s2%.
@@ -392,7 +392,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ........ .....
                  : Channeled (34), Not a proc (105)
 Effects          :
 #1 (id=2716)     : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.42000 | Chain Targets: 1
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.42000 | Chain Targets: 1 | Target: Unknown(77)
 Description      : $@spelldesc5143
 
 Name             : Frost Armor (id=7302) [Spell Family (3), Passive] 
@@ -412,7 +412,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=2740)     : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 8 | Scaled Value: 8
+                   Base Value: 8 | Scaled Value: 8 | Target: Self(1)
 Description      : Increases Haste by $s1% and causes enemies who strike you to have movement speed slowed by $205708s2% for $205708d.
 Tooltip          : Haste increased by $7302w1%.
 Movement speed of attackers is slowed.
@@ -436,7 +436,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=4785)     : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.30000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.30000 | Target: Enemy(6)
 Description      : Hurls an immense fiery boulder that causes $s1 Fire damage.
 
 Name             : Ice Barrier (id=11426) [Scaling Spell (5), Spell Family (3)] 
@@ -457,7 +457,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=4830)     : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 10 | Scaled Value: 0 (avg=4.401) | Misc Value: 127
+                   Base Value: 10 | Scaled Value: 0 (avg=4.401) | Misc Value: 127 | Target: Self(1)
 Description      : Shields you for $d, absorbing ${$m1+$SPFR*10} damage. While the shield holds, spellcasting will not be interrupted by damage.
 Tooltip          : Absorbs $w1 damage.
 
@@ -474,9 +474,9 @@ Attributes       : ......x. ........ x....... ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=5072)     : Apply Aura (6) | Modify Cooldown Charge (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1560
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1560 | Target: Self(1)
 #2 (id=181335)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
-                   Base Value: 3 | Scaled Value: 3 | Misc Value: 32
+                   Base Value: 3 | Scaled Value: 3 | Misc Value: 32 | Target: Self(1)
                    Affected Spells: Ice Block (45438)
 Description      : Ice Block now has ${1+$m1} charges and also heals you for $s2% of your maximum health every $45438t4 sec.
 
@@ -495,17 +495,17 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=5130)     : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7e
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7e | Target: Self(1)
 #2 (id=5131)     : Apply Aura (6) | Modify Power Cost% (72)
-                   Base Value: -30 | Scaled Value: -30 | Misc Value: 127 | Misc Value 2: 0x1
+                   Base Value: -30 | Scaled Value: -30 | Misc Value: 127 | Misc Value 2: 0x1 | Target: Self(1)
 #3 (id=5132)     : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self(1)
                    Affected Spells: Arcane Blast (30451)
 #4 (id=268280)   : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Target: Self(1)
                    Affected Spells: Arcane Blast (30451)
 #5 (id=269262)   : Apply Aura (6) | Add Percent Modifier: Spell Global Cooldown (108)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 21
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 21 | Target: Self(1)
                    Affected Spells: Arcane Blast (30451)
 Description      : For $d, you deal $s1% more spell damage and your spells cost $s2% less mana.
 Tooltip          : Spell damage increased by $w1%.
@@ -528,7 +528,7 @@ Attributes       : ........ ........ x....... ........   ......x. ..x..... .....
                  : Channeled (38), Disable player procs (112)
 Effects          :
 #1 (id=5141)     : Apply Aura (6) | Unknown effect sub type (21)
-                   Base Value: 25 | Scaled Value: 25
+                   Base Value: 25 | Scaled Value: 25 | Target: Self(1)
 Description      : Returns ${4*$m1}% of your total mana over $d.
 Tooltip          : Gain $w1% of total mana every $t1 sec.
 
@@ -547,9 +547,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=5358)     : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 30 | Scaled Value: 30
+                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
 #2 (id=5359)     : Apply Aura (6) | Add Percent Modifier: Spell Pushback (108)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 9
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 9 | Target: Self(1)
                    Affected Spells: Frostbolt (116), Polymorph (118), Fireball (133), Flamestrike (2120), Scorch (2948), Arcane Missiles (5143), Pyroblast (11366), Arcane Power (12042), Evocation (12051), Polymorph (28271), Polymorph (28272), Arcane Blast (30451), Polymorph (61025), Polymorph (61305), Polymorph (61721), Polymorph (61780), Arcane Missiles! (79683), Conjure Familiar (126578), Polymorph (126819), Polymorph (161353), Polymorph (161354), Polymorph (161355), Polymorph (161372), Cannonball Barrage (185779), Conjure Refreshment (190336), Blizzard (190356), Blizzard (190357), Displacement (195676), Displacement Beacon (212799)
 Description      : Accelerates your spellcasting for $d, granting $m1% haste and preventing damage from delaying your spellcasts.
 Tooltip          : Haste increased by $w1% and immune to pushback.
@@ -569,11 +569,11 @@ Attributes       : ........ ........ .......x ........   ...x...x ........ .....
                  : x....... ......x. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=5511)     : Apply Aura (6) | Periodic Damage: fire every 1 seconds (3)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=5512)     : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #3 (id=260628)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : $@spelldesc12846
 Tooltip          : Deals $w1 Fire damage every $t1 sec.$?$w3>0[
 Movement speed reduced by $w3%.][]
@@ -594,11 +594,11 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=5692)     : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75000 | Target: Self(1)
 #2 (id=127998)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 75 | Scaled Value: 75
+                   Base Value: 75 | Scaled Value: 75 | Target: Self(1)
 #3 (id=290011)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Your target burns for an additional $m1% over $12654d of the total direct damage caused by your Fireball, Inferno Blast, Scorch, Pyroblast$?s153561[, Meteor][]$?s198929[, Cinderstorm][], and Flamestrike. If this effect is reapplied, any remaining damage will be added to the new Ignite.
 
 Every $t3 sec, your Ignites may spread to another nearby enemy.
@@ -616,10 +616,10 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=5792)     : Apply Aura (6) | Unknown effect sub type (112)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 911
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 911 | Target: Self(1)
                    Affected Spells: Frostbolt (116), Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Frost Armor (7302), Pyroblast (11366), Arcane Blast (30451), Ice Lance (30455), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44457), Living Bomb (44461), Frozen Orb (84721), Frost Bomb (113092), Nether Tempest (114923), Nether Tempest (114954), Comet Storm (153595), Comet Storm (153596), Ice Nova (157997), Cannonball Barrage (185779), Combustion (190319), Blizzard (190356), Blizzard (190357), Ray of Frost (205021), Ebonbolt (214634), Living Bomb (217694)
 #2 (id=99824)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50
+                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
 Description      : Multiplies the critical strike chance of your spells against frozen targets by 1.5, and adds an additional $s2% critical strike chance.
 
 Name             : Expansive Mind (Racial Passive) (id=20591) [Passive] 
@@ -635,7 +635,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=11588)    : Apply Aura (6) | Unknown effect sub type (132)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value 2: 0x8
+                   Base Value: 5 | Scaled Value: 5 | Misc Value 2: 0x8 | Target: Self(1)
 Description      : Maximum mana increased by $s1%.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
@@ -651,7 +651,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=12247)    : Apply Aura (6) | Unknown effect sub type (429)
-                   Base Value: 1 | Scaled Value: 1
+                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 Description      : Damage dealt by pets increased by $s1%.
 
 Name             : Polymorph (Turtle) (id=28271) [Spell Family (3)] 
@@ -676,7 +676,7 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #3 (id=327294)   : Apply Aura (6) | Scale% (61)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Transforms the enemy into a turtle, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
 
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
@@ -704,7 +704,7 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #3 (id=327289)   : Apply Aura (6) | Scale% (61)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Transforms the enemy into a pig, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
 
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
@@ -725,9 +725,9 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=18193)    : Apply Aura (6) | Silence (27)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Radius: 0 - 8 yards
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=18194)    : Energize Power% (137)
-                   Base Value: 3 | Scaled Value: 3
+                   Base Value: 3 | Scaled Value: 3 | Target: Self(1)
 Description      : Silence all enemies within $A1 yards for $d and restore $s2% of your Mana.  Non-player victim spellcasting is also interrupted for $32747d.
 Tooltip          : Silenced.
 
@@ -748,7 +748,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=18390)    : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
-                   Base Value: 4 | Scaled Value: 4
+                   Base Value: 4 | Scaled Value: 4 | Target: Friend(21)
 #2 (id=106031)   : None (0)
                    Base Value: 20 | Scaled Value: 20
 Description      : Heals the target for $s2% of the caster's total health over $d.
@@ -771,9 +771,9 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=20028)    : School Damage: arcane (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.65000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.65000 | Target: Enemy(6)
 #2 (id=20029)    : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: none
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: none | Target: Self(1)
 Description      : Blasts the target with energy, dealing $30451s1 Arcane damage.
 
 Damage increased by $36032s1% per Arcane Charge.
@@ -800,11 +800,11 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=20036)    : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.335, dl=0.25) | SP Coefficient: 0.50000 | Chain Multiplier: 0.75 | Chain Targets: 1
+                   Base Value: 1 | Scaled Value: 0 (avg=0.335, dl=0.25) | SP Coefficient: 0.50000 | Chain Multiplier: 0.75 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=85836)    : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 #3 (id=257156)   : Server Side Script (77)
-                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0.75 | Chain Targets: 1
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0.75 | Chain Targets: 1 | Target: Enemy(6)
 Description      : Quickly fling a shard of ice at the target, dealing $?a44544[${$m1*$<fingersMult>} to ${$M1*$<fingersMult>}][$s1] Frost damage$?s56377&!a44544[, and ${$m1*$56377m2/100} to ${$M1*$56377m2/100} Frost damage to a second nearby target][]$?s56377&a44544[, and ${$m1*$<fingersMult>*$56377m2/100} to ${$M1*$<fingersMult>*$56377m2/100} Frost damage to a second nearby target][].
 
 Ice Lance damage is doubled against frozen targets.
@@ -829,9 +829,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=20069)    : Apply Aura (6) | Modify Spell Crit% (57)
-                   Base Value: 15 | Scaled Value: 15
+                   Base Value: 15 | Scaled Value: 15 | Target: Self(1)
 #2 (id=132597)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -6 | Scaled Value: -6 | Misc Value: 0x1
+                   Base Value: -6 | Scaled Value: -6 | Misc Value: 0x1 | Target: Self(1)
 Description      : Increases your spell critical strike chance by $s1% and reduces all Physical damage you take by $s2%.
 Tooltip          : Spell critical strike chance increased by $w1%.
 
@@ -854,7 +854,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=21198)    : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
 Description      : Reduces the target's movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $w1%.
 
@@ -880,9 +880,9 @@ Attributes       : ........ ........ x...x... ........   ...x...x ........ .....
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=21276)    : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.967, dl=0.15) | SP Coefficient: 1.03200 | Radius: 12 yards
+                   Base Value: 1 | Scaled Value: 0 (avg=1.967, dl=0.15) | SP Coefficient: 1.03200 | Radius: 12 yards | Target: Cone Front(104)
 #2 (id=21277)    : Apply Aura (6) | Confuse (5)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 12 yards | Mechanic: Unknown(10)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 12 yards | Mechanic: Unknown(10) | Target: Cone Front(104)
 Description      : Enemies in a cone in front of you take $s1 Fire damage and are disoriented for $d. Damage will cancel the effect.
 Tooltip          : Disoriented.
 
@@ -904,7 +904,7 @@ Attributes       : ........ ........ x....... ........   x....... ..x..... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=21314)    : Summon Pet (56)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 78116 | Radius: 2 yards
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 78116 | Radius: 2 yards | Target: Unknown(50)
 Description      : Summons a Water Elemental to follow and fight for you.
 
 Name             : Waterbolt (id=31707) [Scaling Spell (5), Spell Family (3)] 
@@ -924,7 +924,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=21340)    : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.5, dl=0.25) | SP Coefficient: 0.60600
+                   Base Value: 1 | Scaled Value: 0 (avg=0.5, dl=0.25) | SP Coefficient: 0.60600 | Target: Enemy(6)
 Description      : Deals ${$s1*0.75} Frost damage to the target.
 
 Name             : Invisibility (id=32612) [Spell Family (3)] 
@@ -942,11 +942,11 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=22383)    : Unknown effect type (176)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #2 (id=22384)    : Apply Aura (6) | Invisibility (18)
-                   Base Value: 340 | Scaled Value: 610 | Points Per Level: 5
+                   Base Value: 340 | Scaled Value: 610 | Points Per Level: 5 | Target: Self(1)
 #3 (id=22385)    : Apply Aura (6) | Unknown effect sub type (335)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : $@spelldesc66
 Tooltip          : Invisible$?$w3=0[][ and moving $87833s1% faster].
 
@@ -966,7 +966,7 @@ Attributes       : ........ ........ .......x ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=22529)    : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Interrupts casting for $d.
 Tooltip          : Interrupted.
 
@@ -991,7 +991,7 @@ Attributes       : ........ ........ x....... ......x.   ...x...x ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=23237)    : Apply Aura (6) | Root (26)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Mechanic: Unknown(58)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Mechanic: Unknown(58) | Target: AOE enemy (instant)(16)
 Description      : Blasts enemies in a $a1 yard radius with frost, freezing them in place for up to $d. Damage caused may interrupt the effect. $?s112965[
 
 Grants the Mage a charge of Fingers of Frost for each target successfully hit by Freeze.][]
@@ -1012,9 +1012,9 @@ Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=118955)   : Apply Aura (6) | Modify Healing Power (135)
-                   Base Value: 5 | Scaled Value: 2242.68 (avg=1.32)
+                   Base Value: 5 | Scaled Value: 2242.68 (avg=1.32) | Target: Self(1)
 #2 (id=23584)    : Apply Aura (6) | Damage Done (13)
-                   Base Value: 5 | Scaled Value: 2242.68 (avg=1.32) | Points Per Level: 2 | Misc Value: 0x7e
+                   Base Value: 5 | Scaled Value: 2242.68 (avg=1.32) | Points Per Level: 2 | Misc Value: 0x7e | Target: Self(1)
 Description      : Increases your spell power by $s2.  Lasts $d.
 Tooltip          : Spell power increased by $s2.
 
@@ -1038,19 +1038,19 @@ Attributes       : ........ x....... ..x..... ..x..x..   ........ ..x..... .....
                  : Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=26313)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 60 | Scaled Value: 60
+                   Base Value: 60 | Scaled Value: 60 | Target: Self(1)
                    Affected Spells: Arcane Explosion (1449), Arcane Missiles (7268), Arcane Blast (30451), Arcane Barrage (44425)
 #2 (id=26314)    : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 14
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Arcane Explosion (1449), Arcane Blast (30451)
 #3 (id=127870)   : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 17
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 17 | Target: Self(1)
                    Affected Spells: Arcane Barrage (44425)
 #4 (id=186532)   : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Target: Self(1)
                    Affected Spells: Arcane Blast (30451)
 #5 (id=219758)   : Apply Aura (6) | Add Percent Modifier: Spell Global Cooldown (108)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 21
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 21 | Target: Self(1)
                    Affected Spells: Arcane Blast (30451)
 Description      : $@spelldesc114664
 Tooltip          : Increases the damage of Arcane Blast, Arcane Missiles, Arcane Explosion, and Arcane Barrage by $36032w1%.
@@ -1071,7 +1071,7 @@ Attributes       : .....x.. x....... x....... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=32745)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
+                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 
 Name             : Hypothermia (id=41425) [Spell Family (3)] 
 Class            : Mage
@@ -1086,7 +1086,7 @@ Attributes       : ........ ........ ........ ..x..x..   ...x...x ..x..... xx...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=32866)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : As a side-effect of exposure to intense cold, the caster cannot Ice Block again for $d.
 Tooltip          : Cannot be made invulnerable by Ice Block.
 
@@ -1109,7 +1109,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=36330)    : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.50000 | Chain Targets: 1
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.50000 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=157070)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 #3 (id=331544)   : Dummy (3)
@@ -1137,7 +1137,7 @@ Attributes       : ....x.xx x....... ..x..... ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=36360)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100
+                   Base Value: 100 | Scaled Value: 100 | Target: Self(1)
 
 Name             : Living Bomb (id=44457) [Spell Family (3)] 
 Class            : Mage
@@ -1156,7 +1156,7 @@ Attributes       : ........ ........ x....... ..x.....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=36371)    : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : The target becomes a Living Bomb, taking $217694o1 Fire damage over $217694d, and then exploding to deal an additional $44461s2 Fire damage to the target and all other enemies within $44461A2 yards.
 
 Other enemies hit by this explosion also become a Living Bomb, but this effect cannot spread further.
@@ -1176,9 +1176,9 @@ Attributes       : ........ ........ x.x..... x..x....   ........ ........ .....
                  : ........ ........ x....... ........   ........ ........ .....x.. ........ 
 Effects          :
 #1 (id=36375)    : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=324006)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.80000 | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.80000 | Radius: 0 - 10 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : $@spelldesc44457
 
 Name             : Fingers of Frost (id=44544) [Spell Family (3)] 
@@ -1198,13 +1198,13 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=36475)    : Apply Aura (6) | Unknown effect sub type (262)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 126
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 126 | Target: Self(1)
 #2 (id=154771)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 140 | Scaled Value: 140
+                   Base Value: 140 | Scaled Value: 140 | Target: Self(1)
 #3 (id=164986)   : Apply Aura (6) | Unknown effect sub type (408)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 30455
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 30455 | Target: Self(1)
 #4 (id=196961)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : $@spelldesc112965
 Tooltip          : Your next Ice Lance deals $44544s2% increased damage, and deals damage as if the target were frozen, for a total increase of ${($44544m2/100+1)*200-100}%.
 
@@ -1227,13 +1227,13 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x....x .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=37396)    : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #2 (id=37397)    : Apply Aura (6) | School Immunity (39)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self(1)
 #3 (id=37398)    : Apply Aura (6) | School Immunity (39)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 126
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 126 | Target: Self(1)
 #4 (id=223391)   : Apply Aura (6) | Periodic Heal%: every 1 seconds (20)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Encases you in a block of ice, protecting you from all attacks and damage for $d, but during that time you cannot attack, move, or cast spells.  
 
 Causes Hypothermia, preventing you from recasting Ice Block for $41425d.
@@ -1251,7 +1251,7 @@ Attributes       : .....x.. x....... x....... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=38204)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
+                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 
 Name             : Heating Up (id=48107) 
 Class            : Mage
@@ -1268,7 +1268,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=40278)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Scored a spell critical. A second spell critical in a row will make your next Pyroblast or Flamestrike spell instant cast, and cause double the normal Ignite damage.
 Tooltip          : Scored a spell critical. A second spell critical in a row will make your next Pyroblast or Flamestrike spell instant cast, and cause double the normal Ignite damage.
 
@@ -1287,7 +1287,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=40279)    : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 10
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self(1)
                    Affected Spells: Flamestrike (2120), Pyroblast (11366)
 Description      : $@spelldesc195283
 Tooltip          : Your next Pyroblast or Flamestrike spell is instant cast, and causes double the normal Ignite damage.
@@ -1308,9 +1308,9 @@ Attributes       : ........ ........ x....... .......x   ........ ..x..... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=48273)    : Apply Aura (6) | Unknown effect sub type (103)
-                   Base Value: -90000000 | Scaled Value: -9e+07
+                   Base Value: -90000000 | Scaled Value: -9e+007 | Target: Self(1)
 #2 (id=48274)    : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3
+                   Base Value: 3 | Scaled Value: 3 | Target: Self(1)
 Description      : Creates $s2 copies of you nearby, which cast spells and attack your enemies. Lasts $55342d.
 
 Name             : Splitting Ice (id=56377) [Spell Family (3), Passive] 
@@ -1325,7 +1325,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=49437)    : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 17
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 17 | Target: Self(1)
                    Affected Spells: Ice Lance (30455), Icicle (148022), Glacial Spike (199786)
 #2 (id=136440)   : Dummy (3)
                    Base Value: 75 | Scaled Value: 75
@@ -1343,7 +1343,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=49443)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 23
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 23 | Target: Self(1)
 Description      : When cast on critters, your Polymorph spells now last 1 day and can be cast on multiple targets.
 
 Name             : Mechanized Snow Goggles (id=56465) 
@@ -1358,7 +1358,7 @@ Attributes       : .....x.. ........ x....... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=49547)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
+                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 
 Name             : Visage Liquification Goggles (id=56484) 
 Class            : Priest, Mage, Warlock
@@ -1372,7 +1372,7 @@ Attributes       : .....x.. ........ x....... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=49565)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
+                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 
 Name             : Crittermorph (id=56599) 
 Class            : Mage
@@ -1403,7 +1403,7 @@ Attributes       : ........ ........ ........ ..x..x..   ...x.x.x ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=51005)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Unknown(25)
 Description      : Cannot benefit from Bloodlust or other similar effects.
 Tooltip          : Cannot benefit from Bloodlust or other similar effects.
 
@@ -1424,7 +1424,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=53097)    : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
-                   Base Value: 4 | Scaled Value: 4
+                   Base Value: 4 | Scaled Value: 4 | Target: Friend(21)
 #2 (id=106026)   : None (0)
                    Base Value: 20 | Scaled Value: 20
 Description      : $@spelldesc28880
@@ -1447,9 +1447,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=53215)    : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.65, dl=0.1) | SP Coefficient: 0.72000
+                   Base Value: 1 | Scaled Value: 0 (avg=1.65, dl=0.1) | SP Coefficient: 0.72000 | Target: Enemy(6)
 #2 (id=53216)    : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
 Description      : Inflicts Frost damage to an enemy and reduces its movement speed for $d.
 Tooltip          : Reduced movement speed.
 
@@ -1475,7 +1475,7 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #3 (id=327296)   : Apply Aura (6) | Scale% (61)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Transforms the enemy into a harmless serpent, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
 
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
@@ -1503,7 +1503,7 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #3 (id=327291)   : Apply Aura (6) | Scale% (61)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Transforms the enemy into a harmless black cat, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
 
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
@@ -1531,7 +1531,7 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #3 (id=327297)   : Apply Aura (6) | Scale% (61)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Transforms the enemy into a harmless rabbit, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
 
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
@@ -1559,7 +1559,7 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #3 (id=327295)   : Apply Aura (6) | Scale% (61)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Transforms the enemy into a turkey, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
 
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
@@ -1578,9 +1578,9 @@ Attributes       : ....x.x. ........ x.x..... ...x....   .....x.. ........ .x...
                  : Passive (6)
 Effects          :
 #1 (id=59543)    : Apply Aura (6) | Unknown effect sub type (310)
-                   Base Value: -90 | Scaled Value: -90 | Misc Value: 127
+                   Base Value: -90 | Scaled Value: -90 | Misc Value: 127 | Target: Self(1)
 #2 (id=192584)   : Apply Aura (6) | Unknown effect sub type (229)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 127
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 127 | Target: Self(1)
 Description      : Reduces the damage your pet takes from creature area of effect attacks by an additional $s1%.
 
 Name             : Viciousness (Racial Passive) (id=68975) [Passive] 
@@ -1596,7 +1596,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=71771)    : Apply Aura (6) | Modify Critical Strike% (290)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 127
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 127 | Target: Self(1)
 Description      : Increases critical strike chance by $s1%.
 Tooltip          : Critical strike chance increased by $s1%.
 
@@ -1614,7 +1614,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=71772)    : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -1 | Scaled Value: -1 | Misc Value: 0x28
+                   Base Value: -1 | Scaled Value: -1 | Misc Value: 0x28 | Target: Self(1)
 Description      : Reduces Shadow and Nature damage taken by $s1%.
 Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
@@ -1632,9 +1632,9 @@ Attributes       : ........ ........ ........ ........   .....x.. ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=71777)    : Apply Aura (6) | Increase Speed% (31)
-                   Base Value: 40 | Scaled Value: 40
+                   Base Value: 40 | Scaled Value: 40 | Target: Self(1)
 #2 (id=104308)   : Apply Aura (6) | Unknown effect sub type (358)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Activates your true form, increasing current movement speed by an additional $s1% for $d.
 Tooltip          : True form activated, movement speed increased by an additional $s1%.
 
@@ -1654,14 +1654,14 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=67980)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | Misc Value: 911
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | Misc Value: 911 | Target: Self(1)
 #2 (id=90741)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 911
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 911 | Target: Self(1)
 #3 (id=202642)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | Target: Self(1)
                    Affected Spells: Waterbolt (31707), Lonely Winter (205024)
 #4 (id=279323)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | Misc Value: 22
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Water Jet (135029)
 Description      : When you damage enemies with Frostbolt, ${$m1}.1% of the damage done is stored as an Icicle for $148012d. Also increases the damage done by your Water Elemental by ${$m3}.1%.
 
@@ -1686,9 +1686,9 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=68491)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3
+                   Base Value: 3 | Scaled Value: 3 | Target: Self(1)
 #2 (id=164985)   : Apply Aura (6) | Unknown effect sub type (408)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 5143
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 5143 | Target: Self(1)
 Description      : Your offensive spells have a chance to activate Arcane Missiles. This effect can accumulate up to $79683s1 charges and lasts $79683d.
 Tooltip          : Arcane Missiles activated.
 
@@ -1709,7 +1709,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=68492)    : Apply Aura (6) | Proc Trigger Spell: Arcane Missiles! (42)
-                   Base Value: 15 | Scaled Value: 15 | Trigger Spell: 79683
+                   Base Value: 15 | Scaled Value: 15 | Trigger Spell: 79683 | Target: Self(1)
 
 Name             : Time Warp (id=80353) [Spell Family (3)] 
 Class            : Mage
@@ -1726,9 +1726,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .x...
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=68537)    : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 30 | Scaled Value: 30 | SP Coefficient: 1.00000 | Radius: 50000 yards
+                   Base Value: 30 | Scaled Value: 30 | SP Coefficient: 1.00000 | Radius: 50000 yards | Target: Raid Members(56)
 #2 (id=88464)    : Apply Aura (6) | Scale% (61)
-                   Base Value: 30 | Scaled Value: 30 | Radius: 50000 yards
+                   Base Value: 30 | Scaled Value: 30 | Radius: 50000 yards | Target: Raid Members(56)
 Description      : Warp the flow of time, increasing haste by $s1% for all party and raid members within $a1 yards. Lasts $d.
 
 Allies will be unable to benefit from Bloodlust, Heroism, or Time Warp again for $57724d.
@@ -1747,7 +1747,7 @@ Attributes       : ........ ........ ........ ..x..x..   ...x.x.x ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=68540)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Unknown(25)
 Description      : Cannot benefit from Time Warp or other similar effects.
 Tooltip          : Cannot benefit from Time Warp or other similar effects.
 
@@ -1764,7 +1764,7 @@ Attributes       : .....x.. ........ x....... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=81210)    : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
+                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 
 Name             : Ring of Frost (id=82691) [Spell Family (3)] 
 Class            : Mage
@@ -1784,7 +1784,7 @@ Attributes       : ........ ........ x....... x..xx...   .....x.. ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=82979)    : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 20 yards | Mechanic: Unknown(103)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 20 yards | Mechanic: Unknown(103) | Target: Unknown(87) -> AOE enemy (instant)(16)
 Description      : $@spelldesc113724
 Tooltip          : Incapacitated.
 
@@ -1807,7 +1807,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=85616)    : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 45322 | Misc Value 2: 0xc7b
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 45322 | Misc Value 2: 0xc7b | Target: Unknown(47)
 Description      : Launches forward an orb of swirling ice which deals ${10*$84721s2} Frost damage over $d to all nearby enemy targets. Grants 1 charge of Fingers of Frost when it first damages a target.
 
 Targets damaged by the Frost Orb are slowed by $205708s1% for $205708d.
@@ -1828,7 +1828,7 @@ Attributes       : ........ ........ x......x x..x....   .....x.x ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=85629)    : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.47900 | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.47900 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 Description      : $@spelldesc84714
 Tooltip          : Movement slowed by $s1%.
 
@@ -1844,11 +1844,11 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=88723)    : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 100000000 | Scaled Value: 1e+08 | Misc Value: 127
+                   Base Value: 100000000 | Scaled Value: 1e+008 | Misc Value: 127 | Target: Self(1)
 #2 (id=88811)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 35 | Scaled Value: 35
+                   Base Value: 35 | Scaled Value: 35 | Target: Self(1)
 #3 (id=302842)   : Trigger Spell: Blazing Speed (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 108843
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 108843 | Target: Self(1)
 Description      : Fatal damage instead brings you to $86949s2% health and then burns you for $87023o1% of your maximum health over $87023d. While burning, movement slowing effects are suppressed and your movement speed is increased by $108843s1%. This effect cannot occur more than once every $87024d.
 
 Name             : Cauterize (id=87023) 
@@ -1865,11 +1865,11 @@ Attributes       : ........ ........ ........ ..x.....   ........ ..x..... .....
                  : Disable player procs (112), Disable weapon procs (151)
 Effects          :
 #1 (id=88812)    : Apply Aura (6) | Unknown effect sub type (89)
-                   Base Value: 7 | Scaled Value: 7
+                   Base Value: 7 | Scaled Value: 7 | Target: Self(1)
 #2 (id=88814)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=157298)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : $@spelldesc86949
 Tooltip          : Burning away $s1% of maximum health every $t1 sec.
 
@@ -1886,7 +1886,7 @@ Attributes       : ........ ........ ........ ..xx.x..   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=88815)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : $@spelldesc86949
 Tooltip          : You have recently benefited from Cauterize and cannot benefit from it again.
 
@@ -1903,7 +1903,7 @@ Attributes       : .......x x....... ..x..... ........   ........ ..x..... .....
                  : Hidden (7), Not a proc (105)
 Effects          :
 #1 (id=89935)    : Apply Aura (6) | Increase Speed% (31)
-                   Base Value: 40 | Scaled Value: 40
+                   Base Value: 40 | Scaled Value: 40 | Target: Self(1)
 
 Name             : Fireball (id=88082) [Scaling Spell (5)] 
 Class            : Mage
@@ -1923,7 +1923,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=90295)    : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.8, dl=0.2) | SP Coefficient: 0.90000
+                   Base Value: 1 | Scaled Value: 0 (avg=1.8, dl=0.2) | SP Coefficient: 0.90000 | Target: Enemy(6)
 Description      : Hurls a fiery ball that causes $s1 Fire damage.
 
 Name             : Arcane Blast (id=88084) [Scaling Spell (5), Spell Family (3)] 
@@ -1942,9 +1942,9 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=90297)    : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.9, dl=0.15) | SP Coefficient: 0.45000
+                   Base Value: 1 | Scaled Value: 0 (avg=0.9, dl=0.15) | SP Coefficient: 0.45000 | Target: Enemy(6)
 #2 (id=90298)    : Trigger Spell: Arcane Charge (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 36032
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 36032 | Target: Self(1)
 Description      : Blasts the target with energy, dealing $30451s1 Arcane damage. Generates an Arcane Charge.
 
 Arcane Blast's damage is increased by $36032s1% per Arcane Charge, and its mana cost is increased by $36032s2% per Arcane Charge.
@@ -1961,7 +1961,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=92639)    : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 5 | Scaled Value: 5 | SP Coefficient: 1.00000 | Misc Value 2: 0x8
+                   Base Value: 5 | Scaled Value: 5 | SP Coefficient: 1.00000 | Misc Value 2: 0x8 | Target: Self(1)
 Description      : Increases your Intellect by $s1%.
 
 Name             : Altered Form (Racial Passive) (id=94293) [Passive, Hidden] 
@@ -1977,7 +1977,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=99112)    : Apply Aura (6) | Unknown effect sub type (352)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Enables Worgens to switch between human and Worgan forms
 
 Name             : Ice Floes (id=108839) [Spell Family (3)] 
@@ -2000,7 +2000,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=120042)   : Apply Aura (6) | Unknown effect sub type (330)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
                    Affected Spells: Frostbolt (116), Polymorph (118), Fireball (133), Flamestrike (2120), Arcane Missiles (5143), Mage Armor (6117), Frost Armor (7302), Pyroblast (11366), Evocation (12051), Polymorph (28271), Polymorph (28272), Arcane Blast (30451), Molten Armor (30482), Summon Water Elemental (31687), Polymorph (61025), Polymorph (61305), Polymorph (61721), Polymorph (61780), Arcane Missiles! (79683), Frost Bomb (112948), Ring of Frost (113724), Rune of Power (116011), Ancient Teleport: Dalaran (120145), Conjure Familiar (126578), Polymorph (126819), Polymorph (161353), Polymorph (161354), Polymorph (161355), Polymorph (161372), Cannonball Barrage (185779), Conjure Refreshment (190336), Blizzard (190356), Blizzard (190357), Glacial Spike (199786), Ebonbolt (214634)
 Description      : Makes your next Mage spell castable while moving. Unaffected by the global cooldown and castable while casting. Max 3 charges.
 Tooltip          : Able to move while casting spells.
@@ -2020,9 +2020,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=120046)   : Apply Aura (6) | Increase Speed% (31)
-                   Base Value: 150 | Scaled Value: 150
+                   Base Value: 150 | Scaled Value: 150 | Target: Self(1)
 #2 (id=120048)   : Apply Aura (6) | Unknown effect sub type (305)
-                   Base Value: 250 | Scaled Value: 250
+                   Base Value: 250 | Scaled Value: 250 | Target: Self(1)
 Description      : Suppresses movement slowing effects and increases your movement speed by $s1% for $d.  Castable while another spell is in progress and unaffected by global cooldown.
 Tooltip          : $s1% increased movement speed and unaffected by movement speed slowing effects.
 
@@ -2043,7 +2043,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=120062)   : School Damage: fire (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | Target: Enemy(6)
 Description      : Blasts the enemy for $s1 Fire damage. This damage is always a critical strike. Unaffected by the global cooldown and castable while casting.
 
 Name             : Greater Invisibility (id=110959) [Spell Family (3)] 
@@ -2062,7 +2062,7 @@ Attributes       : ........ ........ x...x... ........   ........ ..x..... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=123208)   : Trigger Spell: Greater Invisibility (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 110960
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 110960 | Target: Self(1)
 Description      : Makes you invisible and untargetable for $110960d, removing all threat. Any action taken cancels this effect. You take $113862s1% reduced damage while invisible and for 3 sec after reappearing.
 
 Name             : Greater Invisibility (id=110960) [Spell Family (3)] 
@@ -2081,11 +2081,11 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=123204)   : Unknown effect type (176)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #2 (id=123205)   : Apply Aura (6) | Invisibility (18)
-                   Base Value: 340 | Scaled Value: 610 | Points Per Level: 5
+                   Base Value: 340 | Scaled Value: 610 | Points Per Level: 5 | Target: Self(1)
 #3 (id=123206)   : Apply Aura (6) | Unknown effect sub type (335)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : $@spelldesc110959
 Tooltip          : Invisible$?$w3=0[][ and moving $87833s1% faster].
 
@@ -2107,7 +2107,7 @@ Attributes       : ........ ........ x....... ..x.....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=125604)   : Apply Aura (6) | Periodic Dummy: every 6 seconds (226)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Places a Frost Bomb on the target for $d. Limit 1 target. Your Ice Lances that benefit from Shatter will trigger the release of a wave of freezing ice, dealing $113092s1 Frost damage to the target and $113092s2 Frost damage to all other enemies within $113092A2 yards.
 Tooltip          : The Mage's Ice Lances that hit the target while frozen will cause the Frost Bomb to release a wave of freezing ice that deals $113092s1 Frost damage to the target, $113092s2 Frost damage to all other enemies within $113092A2 yards.
 
@@ -2124,7 +2124,7 @@ Attributes       : ....x.x. ........ ..x..... ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=125628)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15
+                   Base Value: 15 | Scaled Value: 15 | Target: Self(1)
 #2 (id=129889)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5
 #3 (id=133111)   : Dummy (3)
@@ -2151,9 +2151,9 @@ Attributes       : ........ ........ x.x....x x..x....   ........ ........ .....
                  : ........ ........ x....... ........   .x...... ........ .....x.. ........ 
 Effects          :
 #1 (id=125807)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=4.4198) | SP Coefficient: 1.50000
+                   Base Value: 1 | Scaled Value: 0 (avg=4.4198) | SP Coefficient: 1.50000 | Target: Enemy(6)
 #2 (id=125808)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.2106) | SP Coefficient: 0.93750 | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 0 (avg=2.2106) | SP Coefficient: 0.93750 | Radius: 0 - 10 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : $@spelldesc112948
 Tooltip          : Slowed by $113092s3%.
 
@@ -2177,11 +2177,11 @@ Attributes       : ........ ........ x....... ........   ...x...x ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=126711)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 44199 | Misc Value 2: 0xbca
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 44199 | Misc Value 2: 0xbca | Target: Unknown(87)
 #2 (id=126712)   : Trigger Spell: Ring of Frost (64)
-                   Base Value: 10 | Scaled Value: 10 | Trigger Spell: 136511
+                   Base Value: 10 | Scaled Value: 10 | Trigger Spell: 136511 | Target: Self(1)
 #3 (id=131422)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 6.5 - 8 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 6.5 - 8 yards | Target: Unknown(87)
 Description      : Summons a Ring of Frost for $d at the target location. Enemies entering the ring are incapacitated for $82691d. Limit 10 targets.
 
 Name             : Greater Invisibility (id=113862) [Spell Family (3)] 
@@ -2197,7 +2197,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=126901)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -60 | Scaled Value: -60 | Misc Value: 0x7f
+                   Base Value: -60 | Scaled Value: -60 | Misc Value: 0x7f | Target: Self(1)
 Description      : $@spelldesc110959
 Tooltip          : Damage taken is reduced by $s1%.
 
@@ -2218,9 +2218,9 @@ Attributes       : ........ ........ x....... ..x.....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=128479)   : Apply Aura (6) | Periodic Damage: arcane every 1 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.06000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.06000 | Target: Enemy(6)
 #2 (id=220453)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10
+                   Base Value: 10 | Scaled Value: 10 | Target: Enemy(6)
 Description      : Places a Nether Tempest on the target which deals $114923o1 Arcane damage over $114923d to the target and ${$114954m1*12/$t1} to all enemies within 10 yards. Limit 1 target.
 
 Damage increased by $36032s1% per Arcane Charge.
@@ -2241,7 +2241,7 @@ Attributes       : ........ ........ x.x....x x..x....   ........ ........ .....
                  : ........ ........ x....... ........   ........ ........ .....x.. ........ 
 Effects          :
 #1 (id=128532)   : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.06000 | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.06000 | Radius: 0 - 10 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : $@spelldesc114923
 
 Name             : Player Damage Reduction (id=115043) [Passive, Hidden] 
@@ -2257,7 +2257,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=128666)   : Apply Aura (6) | Unknown effect sub type (309)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Target: Self(1)
 Description      : Reduces all damage taken from players or their pets by ${$m1/-100}%.
 
 Name             : Rune of Power (id=116011) [Spell Family (3)] 
@@ -2280,11 +2280,11 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
 Effects          :
 #1 (id=131312)   : Unknown effect type (179)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 304
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 304 | Target: Custom(18)
 #2 (id=170598)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Custom(18)
 #3 (id=177659)   : Summon (28)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 60199 | Misc Value 2: 0xc89
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 60199 | Misc Value 2: 0xc89 | Target: Custom(18)
 Description      : Places a Rune of Power on the ground for $116011d which increases your spell damage by $116014s1% while you stand within 8 yds.
 
 Name             : Rune of Power (id=116014) [Spell Family (3)] 
@@ -2300,11 +2300,11 @@ Attributes       : ........ ........ ........ x..x...x   .....x.. ..x..... .....
                  : Disable player procs (112)
 Effects          :
 #1 (id=130584)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 0x7e
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 0x7e | Target: Self(1)
 #2 (id=150697)   : Apply Aura (6) | Periodic Heal%: every 1.5 seconds (20)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=150698)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 50 | Scaled Value: 50
+                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
                    Affected Spells: Waterbolt (31707), Freeze (33395), Lonely Winter (205024)
 Description      : $@spelldesc116011
 Tooltip          : Spell damage increased by $w1%.$?$w2=0[][
@@ -2325,9 +2325,9 @@ Attributes       : ........ x....... ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=131165)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 4 | Scaled Value: 4 | Misc Value: 0x7e
+                   Base Value: 4 | Scaled Value: 4 | Misc Value: 0x7e | Target: Self(1)
 #2 (id=168860)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 5 | Scaled Value: 5
+                   Base Value: 5 | Scaled Value: 5 | Target: Self(1)
                    Affected Spells: Waterbolt (31707), Freeze (33395), Lonely Winter (205024)
 Description      : $@spelldesc1463
 Tooltip          : Increases spell damage by $w1%.
@@ -2345,10 +2345,10 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=132772)   : Apply Aura (6) | Add Percent Modifier: Spell Critical Chance (108)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 7
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 7 | Target: Self(1)
                    Affected Spells: Fireball (133), Scorch (2948), Pyroblast (11366), Phoenix's Flames (194466), Phoenix's Flames (224637)
 #2 (id=132773)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20
+                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
 Description      : Multiplies the critical strike chance of your Fireball, Pyroblast, and Scorch by ${1+$m1/100}.1.
 
 Name             : Ancient Teleport: Dalaran (id=120145) [Spell Family (3)] 
@@ -2367,7 +2367,7 @@ Attributes       : ........ ........ x....... ....x...   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #2 (id=139484)   : Server Side Script (77)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self(1)
 Description      : Teleports you to Dalaran.
 
 Name             : Mana Attunement (Passive) (id=121039) [Spell Family (3), Passive, Hidden] 
@@ -2383,7 +2383,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=141251)   : Apply Aura (6) | Mod Power Regen (110)
-                   Base Value: 50 | Scaled Value: 50
+                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
 Description      : Your mana regeneration is increased by $s1%.
 Tooltip          : Increases your mana regeneration by $s1%.
 
@@ -2409,7 +2409,7 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #3 (id=327292)   : Apply Aura (6) | Scale% (61)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Transforms the enemy into a porcupine, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
 
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
@@ -2428,7 +2428,7 @@ Attributes       : .....x.. ........ x....... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=161557)   : Create Item (24)
-                   Base Value: 1 | Scaled Value: 1
+                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 
 Name             : Illusion (id=131784) 
 Class            : Mage
@@ -2442,7 +2442,7 @@ Attributes       : ........ ........ ........ .....x..   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=170110)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Transforms the Mage to look like another player for $94632d.
 
 Name             : Water Jet (id=135029) [Scaling Spell (5), Spell Family (3)] 
@@ -2464,9 +2464,9 @@ Attributes       : ........ ........ x....... ........   ..x..... ........ .....
                  : Channeled (34)
 Effects          :
 #1 (id=176124)   : Apply Aura (6) | Periodic Damage: frost every 1 seconds (3)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.32, dl=0.25) | SP Coefficient: 0.35300
+                   Base Value: 1 | Scaled Value: 0 (avg=0.32, dl=0.25) | SP Coefficient: 0.35300 | Target: Enemy(6)
 #2 (id=291212)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(88)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(88) | Target: Enemy(6)
 Description      : Channels a jet of icy water at the target,  $?s198146[slowing the target by $m2% and][] dealing $o1 Frost damage to the target over $d.
 
 The Mage's Frostbolts that hit the target while it is being blasted with icy water will grant a charge of Fingers of Frost.
@@ -2488,7 +2488,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=178674)   : Apply Aura (6) | Periodic Trigger Spell (23)
-                   Base Value: 10 | Scaled Value: 10
+                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
 Description      : Summons a Ring of Frost at the target location. Enemies entering the ring will become frozen for $82691d. Lasts $d. $s2 yd radius. Limit 10 targets.
 
 Name             : Mage (id=137018) [Spell Family (3), Passive, Hidden] 
@@ -2503,41 +2503,41 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179701)   : Apply Aura (6) | Unknown effect sub type (416)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
                    Affected Spells: Arcane Barrage (44425), Blizzard (190356)
 #2 (id=172453)   : Apply Aura (6) | Unknown effect sub type (457)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1500
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1500 | Target: Self(1)
                    Affected Spells: Fireball (133), Scorch (2948), Pyroblast (11366)
 #3 (id=188984)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #4 (id=188985)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #5 (id=191129)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=257393)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #7 (id=260648)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #8 (id=260649)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #9 (id=260650)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #10 (id=260651)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #11 (id=260652)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #12 (id=260653)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #13 (id=260654)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #14 (id=260655)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #15 (id=260656)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #16 (id=320019)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #17 (id=320055)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Fire Mage (id=137019) [Spell Family (3), Passive, Hidden] 
 Class            : Fire Mage
@@ -2551,39 +2551,39 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179702)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 50 | Scaled Value: 50
+                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
                    Affected Spells: Flamestrike (2120)
 #2 (id=191125)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 22
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Flamestrike (2120)
 #3 (id=191126)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 150 | Scaled Value: 150
+                   Base Value: 150 | Scaled Value: 150 | Target: Self(1)
                    Affected Spells: Dragon's Breath (31661)
 #4 (id=191127)   : Apply Aura (6) | Unknown effect sub type (416)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
                    Affected Spells: Living Bomb (44457), Cinderstorm (198928), Cinderstorm (198929), Living Bomb (217694)
 #5 (id=191128)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=260857)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #7 (id=260858)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #8 (id=260859)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #9 (id=260860)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #10 (id=260861)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #11 (id=260862)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #12 (id=260863)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #13 (id=260864)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #14 (id=260865)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #15 (id=260866)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Frost Mage (id=137020) [Spell Family (3), Passive, Hidden] 
 Class            : Frost Mage
@@ -2597,35 +2597,35 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179703)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #2 (id=191121)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=191122)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #4 (id=191123)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #5 (id=191124)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=260847)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #7 (id=260848)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #8 (id=260849)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #9 (id=260850)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #10 (id=260851)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #11 (id=260852)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #12 (id=260853)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #13 (id=260854)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #14 (id=260855)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #15 (id=260856)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Arcane Mage (id=137021) [Spell Family (3), Passive, Hidden] 
 Class            : Arcane Mage
@@ -2639,33 +2639,33 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179704)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #2 (id=191116)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=191117)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #4 (id=191118)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #5 (id=191119)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=260867)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #7 (id=260868)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #8 (id=260869)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #9 (id=260870)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #10 (id=260871)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #11 (id=260872)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #12 (id=260873)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #13 (id=260874)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #14 (id=260875)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Player Damage Reduction Level 90 (id=142689) [Passive, Hidden] 
 Class            : Death Knight, Shaman, Mage, Warlock, Monk
@@ -2680,7 +2680,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=190659)   : Apply Aura (6) | Unknown effect sub type (309)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Target: Self(1)
 Description      : Reduces all damage taken from players or their pets by ${$m1/-100}%.
 
 Name             : Item - Mage T16 4P Bonus (id=145257) [Spell Family (3), Passive] 
@@ -2698,7 +2698,7 @@ Attributes       : ......x. ........ ..x..... x..x....   .....x.. ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=195550)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 15
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 15 | Target: Self(1)
 #2 (id=195551)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 #3 (id=195552)   : Dummy (3)
@@ -2719,7 +2719,7 @@ Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ .....
                  : ........ ........ ........ ........   ........ ........ x....... ..x..... 
 Effects          :
 #1 (id=195563)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.5, dl=0.15) | SP Coefficient: 1.50000
+                   Base Value: 1 | Scaled Value: 0 (avg=1.5, dl=0.15) | SP Coefficient: 1.50000 | Target: Enemy(6)
 Description      : Consuming Brain Freeze has a $145257s2% chance to drop an icy boulder on your target.
 
 Name             : Glyph of Evaporation (Frost) (id=146662) [Spell Family (3), Passive, Hidden] 
@@ -2734,7 +2734,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ ...x.
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=198243)   : Unknown effect type (174) | Scale% (61)
-                   Base Value: -15 | Scaled Value: -15 | Misc Value: 11 | Radius: 100 yards
+                   Base Value: -15 | Scaled Value: -15 | Misc Value: 11 | Radius: 100 yards | Target: Self(1)
 Description      : Reduces the size of your Water Elemental by $s1%.
 
 Name             : Glyph of the Unbound Elemental (Frost) (id=146976) [Spell Family (3), Passive, Hidden] 
@@ -2749,7 +2749,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=198924)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 11
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self(1)
 Description      : Your Water Elemental is replaced by an Unbound Water Elemental.
 
 Name             : Unbound Elemental (id=147970) 
@@ -2797,9 +2797,9 @@ Attributes       : .......x x....... ........ ........   ........ ........ .....
                  : Hidden (7)
 Effects          :
 #1 (id=201117)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 911
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 911 | Target: Self(1)
 #2 (id=317940)   : Trigger Spell: Icicle (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 214130
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 214130 | Target: Self(1)
 Description      : $@spelldesc148011
 Tooltip          : Icicle storing $w1 damage.
 
@@ -2819,7 +2819,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=201127)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | Chain Multiplier: 0.75 | Chain Targets: 1
+                   Base Value: 1 | Scaled Value: 1 | Chain Multiplier: 0.75 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc76613
 
 Name             : Prismatic Crystal (id=152087) 
@@ -2837,11 +2837,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=210558)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Unknown(87)
 #2 (id=215516)   : Summon (28)
-                   Base Value: 90 | Scaled Value: 90 | Misc Value: 76933 | Misc Value 2: 0xd96
+                   Base Value: 90 | Scaled Value: 90 | Misc Value: 76933 | Misc Value 2: 0xd96 | Target: Unknown(87)
 #3 (id=256214)   : Dummy (3)
-                   Base Value: 10 | Scaled Value: 10
+                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
 Description      : Conjures a prismatic crystal at the target location, which is attackable by only the Mage, and takes $?s84714[$s3][$155153s1]% additional damage. 
 
 When the crystal takes damage, it instantly releases a burst of energy dealing that damage, split evenly between all enemies within 8 yards.
@@ -2861,7 +2861,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=212821)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 Description      : Calls down a meteor which lands at the target location after $177345d, dealing $153564s1 Fire damage, split evenly between all targets within 8 yards, and burns the ground, dealing ${8*$155158s1} Fire damage over $175396d to all enemies in the area. 
 
 Name             : Meteor (id=153564) [Spell Family (3)] 
@@ -2877,9 +2877,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=212829)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 5.62500 | Radius: 0 - 8 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 5.62500 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 #2 (id=215527)   : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 175396
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 175396 | Target: Unknown(87)
 Description      : $@spelldesc153561
 
 Name             : Comet Storm (id=153595) [Spell Family (3)] 
@@ -2898,7 +2898,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=212871)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: At Enemy(53)
 Description      : Calls down a series of 7 icy comets on and around the target, each of which deals $153596s1 Frost damage to all enemies within 4 yards of its impact.
 
 Name             : Comet Storm (id=153596) [Spell Family (3)] 
@@ -2915,7 +2915,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=212872)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | Radius: 0 - 4 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | Radius: 0 - 4 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 Description      : $@spelldesc153595
 
 Name             : Arcane Orb (id=153626) 
@@ -2934,9 +2934,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=212907)   : Unknown effect type (179)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1612
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1612 | Target: Custom(18) -> AOE enemy (instant)(16)
 #2 (id=293313)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: none
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: none | Target: Self(1)
 Description      : Launches an Arcane Orb forward from your position, traveling up to 40 yards, dealing $153640s1 Arcane damage to enemies it passes through.
 
 |cFFFFFFFFGrants 1 Arcane Charge when cast and every time it deals damage.|r
@@ -2955,9 +2955,9 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=212926)   : School Damage: arcane (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.74300
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.74300 | Target: Enemy(6)
 #2 (id=212927)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: none
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: none | Target: Self(1)
 Description      : $@spelldesc153626
 
 Name             : Overpowered (id=155147) [Passive] 
@@ -2972,7 +2972,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=215508)   : Dummy (3)
-                   Base Value: 2 | Scaled Value: 2
+                   Base Value: 2 | Scaled Value: 2 | Target: Self(1)
 Description      : Casting Arcane Missiles extends Arcane Power by $s1 sec.
 
 Name             : Kindling (id=155148) [Spell Family (3), Passive] 
@@ -2990,7 +2990,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=215509)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1
+                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 Description      : Your Fireball, Pyroblast, and Inferno Blast critical strikes reduce the remaining cooldown on Combustion by $s1 sec.
 
 Name             : Thermal Void (id=155149) [Passive] 
@@ -3005,7 +3005,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=215510)   : Dummy (3)
-                   Base Value: 2 | Scaled Value: 2
+                   Base Value: 2 | Scaled Value: 2 | Target: Self(1)
 Description      : Casting Ice Lance extends your Icy Veins by $s1 sec.
 
 Name             : Prismatic Crystal (id=155152) 
@@ -3021,9 +3021,9 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=215513)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=220615)   : School Damage: arcane (2)
-                   Base Value: 90 | Scaled Value: 90 | Radius: 0 - 8 yards
+                   Base Value: 90 | Scaled Value: 90 | Radius: 0 - 8 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
 Description      : $@spelldesc152087
 
 Name             : Prismatic Crystal (id=155153) [Spell Family (3), Passive] 
@@ -3042,13 +3042,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=215514)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7f
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7f | Target: Self(1)
 #2 (id=256210)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
-                   Base Value: -200 | Scaled Value: -200
+                   Base Value: -200 | Scaled Value: -200 | Target: Self(1)
 #3 (id=256211)   : Apply Aura (6) | Unknown effect sub type (402)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161 | Target: Self(1)
 #4 (id=256217)   : Apply Aura (6) | Mod Power Regen (110)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 3
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 3 | Target: Self(1)
 Description      : $@spelldesc152087
 
 Name             : Meteor Burn (id=155158) 
@@ -3064,7 +3064,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
                  : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
 Effects          :
 #1 (id=215526)   : Apply Aura (6) | Periodic Damage: fire every 1 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.18750
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.18750 | Target: Enemy(6)
 Description      : $@spelldesc153561
 Tooltip          : Burning for $w1 Fire damage every $t1 sec.
 
@@ -3084,7 +3084,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=219817)   : Apply Aura (6) | Proc Trigger Spell: Enhanced Pyrotechnics (42)
-                   Base Value: 5 | Scaled Value: 5 | Trigger Spell: 157644
+                   Base Value: 5 | Scaled Value: 5 | Trigger Spell: 157644 | Target: Self(1)
 Description      : Each time your Fireball fails to critically strike a target, it gains a stacking $157644s1% increased critical strike chance. Effect ends when Fireball critically strikes.
 
 Name             : Enhanced Pyrotechnics (id=157644) [Spell Family (3)] 
@@ -3102,7 +3102,7 @@ Attributes       : ........ ........ ........ x..x....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
 Effects          :
 #1 (id=219819)   : Apply Aura (6) | Add Flat Modifier: Spell Critical Chance (107)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 7
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 7 | Target: Self(1)
                    Affected Spells: Fireball (133)
 Description      : $@spelldesc157642
 Tooltip          : Increases critical strike chance of Fireball by $s1%.
@@ -3120,13 +3120,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=220352)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15
+                   Base Value: 15 | Scaled Value: 15 | Target: Self(1)
 #2 (id=220424)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20
+                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
 #3 (id=226055)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30
+                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
 #4 (id=226056)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50
+                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
 Description      : $?s137021[Arcane Blast]?s137019[Fireball][Frostbolt] has a $?s137020[$s2%]?s137021[$s1%][$s3%] chance to explode on impact, dealing $s4% additional damage to the target and all other enemies within $157977A1 yds.
 
 Name             : Unstable Magic (id=157977) [Spell Family (3)] 
@@ -3142,7 +3142,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=220354)   : School Damage: fire (2)
-                   Base Value: 50 | Scaled Value: 50 | Radius: 0 - 8 yards
+                   Base Value: 50 | Scaled Value: 50 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : $@spelldesc157976
 
 Name             : Unstable Magic (id=157978) [Spell Family (3)] 
@@ -3158,7 +3158,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=220355)   : School Damage: frost (2)
-                   Base Value: 20 | Scaled Value: 20 | Radius: 0 - 8 yards
+                   Base Value: 20 | Scaled Value: 20 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : $@spelldesc157976
 
 Name             : Unstable Magic (id=157979) [Spell Family (3)] 
@@ -3174,7 +3174,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=220356)   : School Damage: arcane (2)
-                   Base Value: 50 | Scaled Value: 50 | Radius: 0 - 8 yards
+                   Base Value: 50 | Scaled Value: 50 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : $@spelldesc157976
 
 Name             : Supernova (id=157980) [Spell Family (3)] 
@@ -3192,11 +3192,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=220357)   : Dummy (3)
-                   Base Value: 100 | Scaled Value: 100
+                   Base Value: 100 | Scaled Value: 100 | Target: Unknown(25)
 #2 (id=220358)   : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.90000 | Radius: 0 - 8 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.90000 | Radius: 0 - 8 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
 #3 (id=220359)   : Unknown effect type (144)
-                   Base Value: 100 | Scaled Value: 100 | Radius: 0 - 8 yards
+                   Base Value: 100 | Scaled Value: 100 | Radius: 0 - 8 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
 Description      : Pulses arcane energy around the target enemy or ally, dealing $s2 Arcane damage to all enemies within $A2 yards, and knocking them upward. A primary enemy target will take $s1% increased damage.
 
 Name             : Blast Wave (id=157981) [Spell Family (3)] 
@@ -3215,11 +3215,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=220362)   : Dummy (3)
-                   Base Value: 100 | Scaled Value: 100
+                   Base Value: 100 | Scaled Value: 100 | Target: Unknown(25)
 #2 (id=220363)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.00000 | Radius: 0 - 8 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.00000 | Radius: 0 - 8 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
 #3 (id=220364)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -70 | Scaled Value: -70 | Radius: 0 - 8 yards | Mechanic: Unknown(88)
+                   Base Value: -70 | Scaled Value: -70 | Radius: 0 - 8 yards | Mechanic: Unknown(88) | Target: Unknown(63) -> AOE enemy (instant)(16)
 Description      : Causes an explosion around the target enemy or ally, dealing $s2 Fire damage to all enemies within $A2 yards, and reducing movement speed by $s3% for $d. A primary enemy target will take $s1% increased damage.
 Tooltip          : Movement speed reduced by $s3%.
 
@@ -3243,11 +3243,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=220383)   : Dummy (3)
-                   Base Value: 100 | Scaled Value: 100
+                   Base Value: 100 | Scaled Value: 100 | Target: Unknown(25)
 #2 (id=220384)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.50000 | Radius: 0 - 8 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.50000 | Radius: 0 - 8 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
 #3 (id=220385)   : Apply Aura (6) | Root (26)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Mechanic: Unknown(58)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Mechanic: Unknown(58) | Target: Unknown(63) -> AOE enemy (instant)(16)
 Description      : Causes a whirl of icy wind around the target enemy or ally, dealing $s2 Frost damage to all enemies within $A2 yards, and freezing them in place for $d. A primary enemy target will take $s1% increased damage.
 Tooltip          : Frozen.
 
@@ -3273,7 +3273,7 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #3 (id=327288)   : Apply Aura (6) | Scale% (61)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Transforms the enemy into a polar bear cub, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
 
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
@@ -3301,7 +3301,7 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #3 (id=327287)   : Apply Aura (6) | Scale% (61)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Transforms the enemy into a monkey, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
 
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
@@ -3329,7 +3329,7 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #3 (id=327293)   : Apply Aura (6) | Scale% (61)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Transforms the enemy into a penguin, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
 
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
@@ -3357,7 +3357,7 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #3 (id=327290)   : Apply Aura (6) | Scale% (61)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Transforms the enemy into a peacock, wandering around incapacitated for $d. While affected, the victim cannot take actions but will regenerate health very quickly. Damage will cancel the effect. Limit 1.
 
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
@@ -3375,11 +3375,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=228487)   : Apply Aura (6) | Unknown effect sub type (467)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 1
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 1 | Target: Self(1)
 #2 (id=228488)   : Apply Aura (6) | Unknown effect sub type (467)
-                   Base Value: -100 | Scaled Value: -100
+                   Base Value: -100 | Scaled Value: -100 | Target: Self(1)
 #3 (id=228489)   : Apply Aura (6) | Unknown effect sub type (466)
-                   Base Value: -100 | Scaled Value: -100
+                   Base Value: -100 | Scaled Value: -100 | Target: Self(1)
 
 Name             : Meteor Burn (id=175396) [Hidden] 
 Class            : Mage
@@ -3396,7 +3396,7 @@ Attributes       : .......x ........ .......x x..x....   .....x.. ........ .....
                  : Hidden (7)
 Effects          :
 #1 (id=250555)   : Unknown effect type (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1712
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1712 | Target: Unknown(87)
 Description      : $@spelldesc153561
 Tooltip          : Burning for $w1 Fire damage every $t1 sec.
 
@@ -3414,7 +3414,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : Hidden (7)
 Effects          :
 #1 (id=253822)   : Unknown effect type (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3467
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3467 | Target: Unknown(87)
 
 Name             : Player Damage Reduction Level 95 (id=178839) [Passive, Hidden] 
 Class            : Death Knight, Shaman, Mage, Warlock, Monk
@@ -3429,7 +3429,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=256906)   : Apply Aura (6) | Unknown effect sub type (309)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Target: Self(1)
 Description      : Reduces all damage taken from players or their pets by ${$m1/-100}%.
 
 Name             : Player Damage Reduction Level 100 (id=178840) [Passive, Hidden] 
@@ -3445,7 +3445,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=256907)   : Apply Aura (6) | Unknown effect sub type (309)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Target: Self(1)
 Description      : Reduces all damage taken from players or their pets by ${$m1/-100}%.
 
 Name             : Combustion (id=190319) [Spell Family (3)] 
@@ -3464,11 +3464,11 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=278782)   : Apply Aura (6) | Modify Critical Strike% (290)
-                   Base Value: 100 | Scaled Value: 100
+                   Base Value: 100 | Scaled Value: 100 | Target: Self(1)
 #2 (id=290008)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 33554432
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 33554432 | Target: Self(1)
 #3 (id=290009)   : Apply Aura (6) | Periodic Dummy: every 0.5 seconds (226)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Engulfs you in flames for $d, increasing your critical strike chance by $s1% and granting you Mastery equal to your Critical Strike stat. Unaffected by the global cooldown and castable while casting.
 Tooltip          : Critical Strike chance increased by $w1%.
 Mastery increased by $w2.
@@ -3489,7 +3489,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=278813)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Conjures mana food for you and your allies. Conjured items disappear if logged out for more than 15 minutes.
 
 Name             : Blizzard (id=190356) [Spell Family (3)] 
@@ -3512,9 +3512,9 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=278845)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 #2 (id=278849)   : Unknown effect type (179)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 4658 | Radius: 0 - 8 yards
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 4658 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 Description      : Ice shards pelt the target area, dealing ${$190357m1*8} Frost damage over $10d and reducing movement speed by $205708s1% for $205708d.
 
 Name             : Blizzard (id=190357) [Scaling Spell (5), Spell Family (3)] 
@@ -3532,7 +3532,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=278848)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.323) | SP Coefficient: 0.33030 | Radius: 0 - 8 yards
+                   Base Value: 1 | Scaled Value: 0 (avg=0.323) | SP Coefficient: 0.33030 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 Description      : $@spelldesc190356
 Variables        : $arctic1=$?s31674[${1.01}][${1}]
 $arctic2=$?s31675[${1.02}][${$<arctic1>}]
@@ -3556,15 +3556,15 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=279061)   : Apply Aura (6) | Unknown effect sub type (396)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 16 | Trigger Spell: 36032
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 16 | Trigger Spell: 36032 | Target: Self(1)
 #2 (id=279062)   : Apply Aura (6) | Unknown effect sub type (396)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 16 | Trigger Spell: 36032
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 16 | Trigger Spell: 36032 | Target: Self(1)
 #3 (id=279063)   : Apply Aura (6) | Unknown effect sub type (396)
-                   Base Value: 3 | Scaled Value: 3 | Misc Value: 16 | Trigger Spell: 36032
+                   Base Value: 3 | Scaled Value: 3 | Misc Value: 16 | Trigger Spell: 36032 | Target: Self(1)
 #4 (id=279064)   : Apply Aura (6) | Unknown effect sub type (396)
-                   Base Value: 4 | Scaled Value: 4 | Misc Value: 16 | Trigger Spell: 36032
+                   Base Value: 4 | Scaled Value: 4 | Misc Value: 16 | Trigger Spell: 36032 | Target: Self(1)
 #5 (id=286703)   : Apply Aura (6) | Unknown effect sub type (396)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 16 | Misc Value 2: 0x1 | Trigger Spell: 195302
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 16 | Misc Value 2: 0x1 | Trigger Spell: 195302 | Target: Self(1)
 
 Name             : Brain Freeze (id=190447) [Spell Family (3), Passive] 
 Class            : Frost Mage
@@ -3579,7 +3579,7 @@ Attributes       : ......x. ........ ..x..... ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=279088)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10
+                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
 Description      : Frostbolt has a $m1% chance to reset the remaining cooldown on Frozen Orb.
 
 Name             : Mastery: Savant (id=190740) [Spell Family (3), Passive] 
@@ -3595,12 +3595,12 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=279639)   : Apply Aura (6) | Unknown effect sub type (178)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self(1)
 #2 (id=279640)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Misc Value: 3
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Arcane Charge (36032)
 #3 (id=313335)   : Apply Aura (6) | Mod Power Regen (110)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self(1)
 Description      : Increases your Mana regeneration rate and maximum Mana by ${$m1}.1%.
 
 Arcane Charges increase the damage of affected spells by an additional ${$m2}.2%.
@@ -3622,9 +3622,9 @@ Attributes       : ........ ........ x..x.... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=281310)   : School Damage: frost (2)
-                   Base Value: 39 | Scaled Value: 40 - 49 | Value Range: 10 | SP Coefficient: 0.30000
+                   Base Value: 39 | Scaled Value: 40 - 49 | Value Range: 10 | SP Coefficient: 0.30000 | Target: Enemy(6)
 #2 (id=281311)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
 Description      : Inflicts Frost damage to an enemy and reduces its movement speed for $d.
 Tooltip          : Reduced movement speed.
 
@@ -3643,7 +3643,7 @@ Attributes       : .x..x... ........ ...x..x. ........   ........ ........ .....
                  : Ranged ability (1)
 Effects          :
 #1 (id=281361)   : School Damage: physical (2)
-                   Base Value: 41 | Scaled Value: 42 - 53 | Value Range: 12 | AP Coefficient: 0.15960
+                   Base Value: 41 | Scaled Value: 42 - 53 | Value Range: 12 | AP Coefficient: 0.15960 | Target: Enemy(6)
 Description      : Shoots at an enemy, inflicting Physical damage.
 
 Name             : Phoenix's Flames (Artifact) (id=194466) [Spell Family (3)] 
@@ -3665,9 +3665,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=285474)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.50000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.50000 | Target: Enemy(6)
 #2 (id=303223)   : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 224637
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 224637 | Target: Enemy(6)
 Description      : Hurls a Phoenix that causes $s1 Fire damage to the target and splashes $224637s1 Fire damage to nearby enemies.
 
 Name             : Hot Streak (id=195283) [Spell Family (3), Passive] 
@@ -3685,7 +3685,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=286675)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Getting two direct-damage critical strikes in a row will make your next Pyroblast or Flamestrike spell instant cast, and cause double the normal Ignite damage.
 Tooltip          : Your next Pyroblast or Flamestrike spell is instant cast, and causes double the normal Ignite damage.
 
@@ -3705,7 +3705,7 @@ Attributes       : ........ ........ ..x..... ..x..x..   ........ ..x..... .....
                  : Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=286705)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Tooltip          : Increases the mana cost of Arcane Blast by $36032w2%$?{$w5<0}[, and reduces the cast time of Arcane Blast by $w5%.][.]
 
 Increases the number of targets hit by Arcane Barrage for 50% damage by $36032w3.
@@ -3725,7 +3725,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=287216)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Teleports you back to where you last Blinked from and resets the cooldown on Blink. Only usable within $212799d of Blinking.
 
 Name             : Crushing Jets (id=198146) [Spell Family (3), Passive, Hidden] 
@@ -3740,10 +3740,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=291210)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
-                   Base Value: 8000 | Scaled Value: 8000 | Misc Value: 1
+                   Base Value: 8000 | Scaled Value: 8000 | Misc Value: 1 | Target: Self(1)
                    Affected Spells: Water Jet (135029)
 #2 (id=291211)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
-                   Base Value: 70 | Scaled Value: 70 | Misc Value: 12
+                   Base Value: 70 | Scaled Value: 70 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Water Jet (135029)
 Description      : Water Jet now lasts ${$m1/1000} sec longer, and slows targets by $m2%.
 
@@ -3762,7 +3762,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=292747)   : Apply Aura (6) | Proc Trigger Spell: Quickening (42)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 198924
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 198924 | Target: Self(1)
 Description      : Arcane Blast, Arcane Missiles, and Arcane Explosion also grant $198924s1% Haste for $198924d, stacking up to $198924u times.
 
 This effect is cleared when you cast Arcane Barrage.
@@ -3784,7 +3784,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=292748)   : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 2 | Scaled Value: 2
+                   Base Value: 2 | Scaled Value: 2 | Target: Self(1)
 Description      : $@spelldesc198923
 Tooltip          : Haste increased by $s1%.
 
@@ -3802,7 +3802,7 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=292756)   : School Damage: fire (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Target: Enemy(6)
 Description      : $@spelldesc198929
 
 Name             : Cinderstorm (id=198929) [Spell Family (3)] 
@@ -3823,17 +3823,17 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=292757)   : Unknown effect type (179)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 5487
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 5487 | Target: Custom(18)
 #2 (id=292777)   : Unknown effect type (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 5489
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 5489 | Target: Custom(18)
 #3 (id=292778)   : Unknown effect type (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 5490
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 5490 | Target: Custom(18)
 #4 (id=292779)   : Unknown effect type (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 5491
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 5491 | Target: Custom(18)
 #5 (id=292780)   : Unknown effect type (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 5492
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 5492 | Target: Custom(18)
 #6 (id=292781)   : Unknown effect type (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 5493
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 5493 | Target: Custom(18)
 Description      : Throws a spread of 6 cinders that travel in an arc, each dealing $198928s1 Fire damage to enemies it hits. Damage increased by $s1% if the target is affected by your Ignite.
 
 Name             : Glacial Spike (id=199786) [Spell Family (3)] 
@@ -3854,9 +3854,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=294013)   : School Damage: frost (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 8.00000 | Chain Multiplier: 0.75 | Chain Targets: 1
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 8.00000 | Chain Multiplier: 0.75 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=294014)   : Apply Aura (6) | Root (26)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(58)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(58) | Target: Enemy(6)
 Description      : Conjures a massive spike of ice, and merges your current Icicles into it. It impales your target, dealing $s1 damage plus the damage stored in your Icicles, and freezes the target in place for $d. Damage may interrupt the freeze effect.
 
 Requires 5 Icicles to cast.
@@ -3880,7 +3880,7 @@ Attributes       : .......x ........ ........ ....x...   ..xxx..x ........ .x...
                  : Hidden (7), Channeled (34)
 Effects          :
 #1 (id=295605)   : Unknown effect type (162)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Switch to your Primary Talent Specialization.
 Tooltip          : Switch to your Primary Talent Specialization.
 
@@ -3897,7 +3897,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=302647)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10
+                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
 Description      : Casting Pyroblast while Hot Streak is active has a $s1% chance to instantly reactivate Hot Streak.
 
 Name             : Ray of Frost (id=205021) [Spell Family (3)] 
@@ -3918,9 +3918,9 @@ Attributes       : ........ ........ ........ ........   ..x..... ........ .....
                  : Channeled (34)
 Effects          :
 #1 (id=302648)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
 #2 (id=303101)   : Apply Aura (6) | Periodic Damage: frost every 1 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | Target: Enemy(6)
 Description      : For the next $d, you can channel a beam of icy power at an enemy, slowing movement by $m1% and dealing $s2 Frost damage every $t2 sec. Each time Ray of Frost deals damage, its damage increases by $208141s1%.
 Tooltip          : Movement slowed by $m1% and taking $s2 Frost damage every $t2 sec.
 
@@ -3939,7 +3939,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=302649)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 103636 | Misc Value 2: 0xeb7 | Radius: 5 yards
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 103636 | Misc Value 2: 0xeb7 | Radius: 5 yards | Target: Unknown(50) -> Unknown(50)
 Description      : Summon a Familiar that attacks your enemies and increases your maximum mana by $210126s1%.  Lasts $d. 
 
 Name             : Conflagration (id=205023) [Spell Family (3), Passive] 
@@ -3955,7 +3955,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=302650)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10
+                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
 Description      : Enemies affected by Ignite have a $s1% chance to flare up and deal $205345s1 Fire damage to nearby enemies.
 
 Name             : Lonely Winter (id=205024) [Spell Family (3), Passive] 
@@ -3972,7 +3972,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=302651)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 25 | Scaled Value: 25
+                   Base Value: 25 | Scaled Value: 25 | Target: Self(1)
                    Affected Spells: Frostbolt (116), Ice Lance (30455), Frozen Orb (84714), Frozen Orb (84721), Icicle (148022)
 Description      : You can no longer summon your Water Elemental, but Frost Bolt, Ice Lance, Frozen Orb, and Icicles deal $s1% increased damage. 
 
@@ -3994,7 +3994,7 @@ Attributes       : ........ ........ x.x..... .x......   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=302652)   : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 10
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self(1)
                    Affected Spells: Arcane Blast (30451)
 Description      : Causes your next $n Arcane Blasts to be instant cast.
 Tooltip          : Arcane Blast is instant cast.
@@ -4012,7 +4012,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=302653)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 90 | Scaled Value: 90 | Misc Value: 17
+                   Base Value: 90 | Scaled Value: 90 | Misc Value: 17 | Target: Self(1)
 Description      : Your Fireball spell always deals a critical strike when the target is above $s1% health.
 
 Name             : Bone Chilling (id=205027) [Spell Family (3), Passive] 
@@ -4031,7 +4031,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=302654)   : Apply Aura (6) | Proc Trigger Spell: Bone Chilling (42)
-                   Base Value: 5 | Scaled Value: 5 | Trigger Spell: 205766
+                   Base Value: 5 | Scaled Value: 5 | Trigger Spell: 205766 | Target: Self(1)
 Description      : Whenever you attempt to chill a target, you gain Bone Chilling, increasing all Frost damage you deal by ${$m1/10}.1% for $205766d, stacking up to $205766u times.
 
 Name             : Torrent (id=205028) [Spell Family (3), Passive] 
@@ -4047,7 +4047,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=302655)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25
+                   Base Value: 25 | Scaled Value: 25 | Target: Self(1)
 Description      : Arcane Barrage deals $s1% increased damage per target it hits.
 
 Name             : Flame On (id=205029) [Spell Family (3)] 
@@ -4063,7 +4063,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=302656)   : Dummy (3)
-                   Base Value: 2 | Scaled Value: 2
+                   Base Value: 2 | Scaled Value: 2 | Target: Self(1)
 Description      : Immediately grants $s1 charges of Inferno Blast.
 
 Name             : Frozen Touch (id=205030) [Spell Family (3)] 
@@ -4079,7 +4079,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=302657)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Immediately generates 2 charges of Fingers of Frost.
 
 Name             : Charged Up (id=205032) [Spell Family (3)] 
@@ -4096,9 +4096,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=302659)   : Energize Power (30)
-                   Base Value: 4 | Scaled Value: 4 | Misc Value: none
+                   Base Value: 4 | Scaled Value: 4 | Misc Value: none | Target: Self(1)
 #2 (id=312441)   : Apply Aura (6) | Unknown effect sub type (94)
-                   Base Value: 3 | Scaled Value: 3
+                   Base Value: 3 | Scaled Value: 3 | Target: Self(1)
 Description      : Immediately grants $s1 Arcane Charges.
 
 Name             : Controlled Burn (id=205033) [Spell Family (3), Passive] 
@@ -4114,7 +4114,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=302660)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10
+                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
 Description      : When you gain Heating Up, you have a $s1% chance to instantly activate Hot Streak.
 
 Name             : Words of Power (id=205035) [Spell Family (3), Passive] 
@@ -4130,9 +4130,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=302662)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 12
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self(1)
 #2 (id=315404)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 12
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 12 | Target: Self(1)
 Description      : Grants $s1% increased chance to trigger Arcane Missiles per $s2%  of your mana you have unspent.
 
 Name             : Ice Ward (id=205036) [Spell Family (3), Passive] 
@@ -4148,7 +4148,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=302663)   : Apply Aura (6) | Modify Cooldown Charge (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1588
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1588 | Target: Self(1)
 Description      : Frost Nova now has ${1+$m1} charges.
 
 Name             : Flame Patch (id=205037) [Spell Family (3), Passive] 
@@ -4164,7 +4164,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=302664)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1
+                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 Description      : Flamestrike leaves behind a patch of flames which burns enemies within it for ${8*$205472s1} Fire damage over $205470d. 
 
 Name             : Arctic Gale (id=205038) [Spell Family (3), Passive] 
@@ -4180,10 +4180,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=302665)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 30 | Scaled Value: 30
+                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
                    Affected Spells: Cannonball Barrage (185779), Blizzard (190356), Blizzard (190357)
 #2 (id=304112)   : Apply Aura (6) | Add Percent Modifier: Spell Radius (108)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 6
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 6 | Target: Self(1)
                    Affected Spells: Cannonball Barrage (185779), Blizzard (190356), Blizzard (190357)
 Description      : Increases Blizzard's damage by $s1% and its area of effect by $s2%.
 
@@ -4205,8 +4205,25 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=302666)   : Apply Aura (6) | Proc Trigger Spell: Erosion (42)
-                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 210134
+                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 210134 | Target: Enemy(6)
 Description      : Your attacks erode the target's resistances, increasing all damage the target takes from your spells by $210134s1%, stacking up to $210134u times.  After $210154d of not taking damage from your spells, this effect decreases by $210134s1% every $210154t1 sec.
+
+Name             : Arcane Assault (id=205235) [Spell Family (3)] 
+Class            : Mage
+School           : Arcane
+Range            : 40 yards
+Velocity         : 24 yards/sec
+Cooldown         : 3 seconds
+Attributes       : ........ x....... ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ......x. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=302989)   : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
+Description      : $@spelldesc225119
 
 Name             : Conflagration (id=205345) [Spell Family (3)] 
 Class            : Mage
@@ -4221,7 +4238,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=303195)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.40000 | Radius: 0 - 8 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.40000 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : $@spelldesc205023
 
 Name             : Flame Patch (id=205470) [Spell Family (3)] 
@@ -4238,7 +4255,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
 Effects          :
 #1 (id=303425)   : Unknown effect type (179)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 6122
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 6122 | Target: Unknown(87)
 Description      : Flame patch burning enemies.
 Tooltip          : Burning
 
@@ -4255,7 +4272,7 @@ Attributes       : ........ ........ ........ x..x....   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=303428)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.20000 | Radius: 0 - 8 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.20000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 Description      : Burning enemies for $s1 Fire damage.
 
 Name             : Chilled (id=205708) [Spell Family (3)] 
@@ -4272,7 +4289,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=303945)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: 30 | Scaled Value: 30 | Mechanic: Unknown(88)
+                   Base Value: 30 | Scaled Value: 30 | Mechanic: Unknown(88) | Target: Enemy(6)
 Description      : Chilled, reducing movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
@@ -4292,7 +4309,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=304047)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 0x10
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 0x10 | Target: Self(1)
 Description      : $@spelldesc205027
 Tooltip          : Damage dealt by Frost spells increased by $w1%
 
@@ -4312,7 +4329,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=307923)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Ray of Frost (205021)
 Description      : $@spelldesc205021
 Tooltip          : Ray of Frost damage increased by $s1%.
@@ -4330,7 +4347,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=311038)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : You are able to comprehend your allies' racial languages.
 Tooltip          : You are able to comprehend your allies' racial languages.
 
@@ -4350,7 +4367,7 @@ Attributes       : ......x. ........ x.x..... ........   ........ ..x..... .....
                  : Passive (6)
 Effects          :
 #1 (id=311103)   : Apply Pet Area Aura (119) | Unknown effect sub type (178)
-                   Base Value: 10 | Scaled Value: 10 | Radius: 100 yards
+                   Base Value: 10 | Scaled Value: 10 | Radius: 100 yards | Target: Self(1)
 Description      : $@spelldesc205022
 Tooltip          : Maximum mana increased by $s1%.
 
@@ -4371,7 +4388,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=311119)   : Apply Aura (6) | Unknown effect sub type (271)
-                   Base Value: 1 | Scaled Value: 1
+                   Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
                    Affected Spells: Invisibility (66), Arcane Explosion (1449), Arcane Missiles (7268), Arcane Blast (30451), Slow (31589), Invisibility (32612), Arcane Barrage (44425), Greater Invisibility (110959), Greater Invisibility (110960), Ancient Teleport: Dalaran (120145), Arcane Orb (153640), Sloooow Down (210732)
 Description      : $@spelldesc205039
 Tooltip          : Damage taken from Arcane spells increased by $s1%.
@@ -4391,7 +4408,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : Hidden (7)
 Effects          :
 #1 (id=311158)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 
 Name             : Mark of Aluneth (Artifact) (id=210726) 
 Class            : Mage
@@ -4411,7 +4428,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=312151)   : Unknown effect type (179)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 6845
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 6845 | Target: At Enemy(53) -> Unknown(87)
 Description      : Creates a runic prison at the target's location, slowing enemy movement speed by ${$211056s1/-1}%, inflicting ${$211088s1*6} Arcane damage over $d, and then detonating for Arcane damage equal to $s1% of your maximum mana.
 
 
@@ -4429,7 +4446,7 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=312620)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -70 | Scaled Value: -70
+                   Base Value: -70 | Scaled Value: -70 | Target: Enemy(6)
 Description      : Reduces movement speed by $s1%.
 Tooltip          : Reduces movement speed by $s1%.
 
@@ -4445,7 +4462,7 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=312653)   : School Damage: arcane (2)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 6 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 Description      : Deals $s1 Arcane damage to all targets within $A1 yards.
 Tooltip          : Deals $s1 Arcane damage to all targets within $A1 yards.
 
@@ -4462,7 +4479,7 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=312672)   : School Damage: arcane (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Radius: 0 - 6 yards
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 Description      : Deals $s1 Arcane damage.
 
 Name             : Shimmer (id=212653) [Spell Family (3)] 
@@ -4483,9 +4500,9 @@ Attributes       : ........ ........ x....... ........   ........ ..x....x .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=315357)   : Leap (29)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 20 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 20 yards | Target: Self(1) -> Unknown(55)
 #2 (id=315358)   : Apply Aura (6) | Unknown effect sub type (377)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Teleports you $A1 yards forward, unless something is in the way. Unaffected by the global cooldown and castable while casting.
 Tooltip          : Shimmering.
 
@@ -4503,7 +4520,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=315617)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: 70 | Scaled Value: 70 | Mechanic: Unknown(88)
+                   Base Value: 70 | Scaled Value: 70 | Mechanic: Unknown(88) | Target: Enemy(6)
 Description      : Chilled for $s1% for $d
 Tooltip          : Slowed by $s1% for $d.
 
@@ -4522,9 +4539,9 @@ Attributes       : ........ ........ x.x..... .x......   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=315628)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #2 (id=315652)   : Unknown effect type (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 7044
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 7044 | Target: Custom(18)
 Description      : $@spelldesc195676
 Tooltip          : Able to Displace back to where last Blinked from.
 
@@ -4544,7 +4561,7 @@ Attributes       : .......x x....... ........ ........   ........ ........ .....
                  : Hidden (7)
 Effects          :
 #1 (id=317939)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 911
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 911 | Target: Self(1)
 Description      : $@spelldesc148011
 
 Name             : Ebonbolt (Artifact) (id=214634) [Spell Family (3)] 
@@ -4564,7 +4581,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=318792)   : School Damage: shadowfrost (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 9.00000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 9.00000 | Target: Enemy(6)
 Description      : Deals $s1 Shadowfrost damage and grants two charges of Fingers of Frost.
 
 Name             : Living Bomb (id=217694) [Spell Family (3)] 
@@ -4582,11 +4599,11 @@ Attributes       : ........ ........ x....... ..x.....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=324014)   : Apply Aura (6) | Periodic Damage: fire every 3 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.25000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.25000 | Target: Enemy(6)
 #2 (id=324015)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #3 (id=324016)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1
+                   Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 Description      : $@spelldesc44457
 Tooltip          : Causes $w1 Fire damage every $t1 sec. After $d, the target explodes, causing $w2 Fire damage to the target and all other enemies within $44461A2 yards$?$w3>0[, and spreading Living Bomb][].
 
@@ -4606,7 +4623,23 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=336285)   : School Damage: fire (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Radius: 0 - 8 yards
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : $@spelldesc194466
+
+Name             : Arcane Assault (id=225119) [Spell Family (3)] 
+Class            : Mage
+School           : Arcane
+Range            : 100 yards
+Velocity         : 24 yards/sec
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ......x. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=337222)   : School Damage: arcane (2)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.74700 | Target: Enemy(6)
+Description      : Launches bolts of arcane energy at the enemy target, causing $s1 Arcane damage. 
 
 
