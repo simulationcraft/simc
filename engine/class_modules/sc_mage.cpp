@@ -1444,8 +1444,6 @@ struct arcane_missiles_buff_t : public buff_t
   bool trigger( int stacks, double value,
                 double chance, timespan_t duration ) override
   {
-    mage_t* p = static_cast<mage_t*>( player );
-
     if ( chance < 0 )
     {
       chance = proc_chance();
@@ -5154,7 +5152,11 @@ struct icicle_event_t : public event_t
     new_s -> target = target;
 
     mage -> icicle -> base_dd_min = mage -> icicle -> base_dd_max = state.first;
-    mage -> icicle -> schedule_execute( new_s );
+
+    // Immediately execute icicles so the correct damage is carried into the
+    // travelling icicle object
+    mage -> icicle -> pre_execute_state = new_s;
+    mage -> icicle -> execute();
 
     icicle_data_t new_state = mage -> get_icicle_object();
     if ( new_state.first > 0 )
@@ -7194,6 +7196,14 @@ void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain, pl
       return;
 
     icicle_event = new ( *sim ) events::icicle_event_t( *this, d, icicle_target, true );
+
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf( "%s icicle use on %s%s, damage=%f, total=%u",
+                               name(), icicle_target -> name(),
+                               chain ? " (chained)" : "", d.first,
+                               as<unsigned>( icicles.size() ) );
+    }
   }
   else if ( ! chain )
   {
@@ -7206,14 +7216,20 @@ void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain, pl
     actions::icicle_state_t* new_state = debug_cast<actions::icicle_state_t*>( icicle -> get_state() );
     new_state -> target = icicle_target;
     new_state -> source = d.second;
-    icicle -> schedule_execute( new_state );
-  }
 
-  if ( sim -> debug )
-    sim -> out_debug.printf( "%s icicle use on %s%s, damage=%f, total=%u",
-                           name(), icicle_target -> name(),
-                           chain ? " (chained)" : "", d.first,
-                           as<unsigned>( icicles.size() ) );
+    // Immediately execute icicles so the correct damage is carried into the
+    // travelling icicle object
+    icicle -> pre_execute_state = new_state;
+    icicle -> execute();
+
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf( "%s icicle use on %s%s, damage=%f, total=%u",
+                               name(), icicle_target -> name(),
+                               chain ? " (chained)" : "", d.first,
+                               as<unsigned>( icicles.size() ) );
+    }
+  }
 }
 
 /* Report Extension Class
