@@ -1673,7 +1673,7 @@ void player_t::override_talent( std::string override_str )
     if ( ! row_str.empty() )
     {
       unsigned row = util::to_unsigned( override_str.substr( 11 ) );
-      if ( row == 0 || row >= MAX_TALENT_ROWS )
+      if ( row == 0 || row > MAX_TALENT_ROWS )
       {
         sim -> errorf( "talent_override: Invalid talent row %u for player %s for talent override \"%s\"\n",
           row, name(), override_str.c_str() );
