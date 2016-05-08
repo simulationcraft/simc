@@ -2237,7 +2237,6 @@ struct envenom_t : public rogue_attack_t
           .y( player -> y_position )
           .duration( p() -> spell.bag_of_tricks_driver -> duration() )
           .start_time( sim -> current_time() )
-          .hasted( ground_aoe_params_t::ATTACK_HASTE ) // TODO: Doubledip? Check later
           .action( p() -> poison_bomb ), true );
     }
   }
