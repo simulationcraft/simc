@@ -181,6 +181,8 @@ rgb class_color( player_e type )
       return color::GREY;
     case DEATH_KNIGHT:
       return color::COLOR_DEATH_KNIGHT;
+    case DEMON_HUNTER:
+      return color::COLOR_DEMON_HUNTER;
     case DRUID:
       return color::COLOR_DRUID;
     case HUNTER:

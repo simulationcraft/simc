@@ -420,7 +420,7 @@ public:
     const special_effect_t* ph_throw_glaive_increased_damage_per_bounce;
 
     // Havoc
-    const special_effect_t* anger_of_the_half_giants;
+    const special_effect_t* anger_of_the_halfgiants;
     const special_effect_t* eternal_hunger;
     const special_effect_t* loramus_thalipedes_sacrifice;
     const special_effect_t* raddons_cascading_eyes;
@@ -1145,12 +1145,15 @@ struct chaos_nova_t : public demon_hunter_spell_t
     : demon_hunter_spell_t( "chaos_nova", p, p -> spec.chaos_nova )
   {
     parse_options( options_str );
-
+    
+    aoe = -1;
     cooldown -> duration += p -> talent.unleashed_power -> effectN( 1 ).time_value();
     base_costs[ RESOURCE_FURY ] *=
       1.0 + p -> talent.unleashed_power -> effectN( 2 ).percent();
-
-    aoe = -1;
+    if ( ! p -> bugs )
+    {
+      school = SCHOOL_CHAOS;
+    }
   }
 };
 
@@ -1246,6 +1249,10 @@ struct eye_beam_t : public demon_hunter_spell_t
     {
       aoe  = -1;
       dual = background = true;
+      if ( ! p -> bugs )
+      {
+        school = SCHOOL_CHAOS;
+      }
 
       base_multiplier *= 1.0 + p -> artifact.chaos_vision.percent();
     }
@@ -1283,6 +1290,10 @@ struct eye_beam_t : public demon_hunter_spell_t
     harmful = false; // Disables bleeding on the target.
     channeled = true;
     beam -> stats = stats;
+    if ( ! p -> bugs )
+    {
+      school = SCHOOL_CHAOS;
+    }
 
     dot_duration *= 1.0 + p -> talent.blind_fury -> effectN( 1 ).percent();
 
@@ -1800,6 +1811,10 @@ struct metamorphosis_t : public demon_hunter_spell_t
       background = true;
       aoe = -1;
       dot_duration = timespan_t::zero();
+      if ( ! p -> bugs )
+      {
+        school = SCHOOL_CHAOS;
+      }
     }
   };
 
@@ -2788,9 +2803,9 @@ struct demons_bite_t : public demon_hunter_attack_t
 
     base_multiplier *= 1.0 + p -> artifact.demon_rage.percent();
 
-    if ( p -> legendary.anger_of_the_half_giants )
+    if ( p -> legendary.anger_of_the_halfgiants )
     {
-      fury.die_sides += p -> legendary.anger_of_the_half_giants -> driver() -> effectN( 1 ).resource( RESOURCE_FURY );
+      fury.die_sides += p -> legendary.anger_of_the_halfgiants -> driver() -> effectN( 1 ).resource( RESOURCE_FURY );
     }
   }
 
@@ -2857,9 +2872,9 @@ struct demon_blades_t : public demon_hunter_attack_t
     fury.base            = data().effectN( 3 ).resource( RESOURCE_FURY );
     fury.die_sides       = data().effectN( 3 ).die_sides();
 
-    if ( p -> legendary.anger_of_the_half_giants )
+    if ( p -> legendary.anger_of_the_halfgiants )
     {
-      fury.die_sides += p -> legendary.anger_of_the_half_giants -> driver() -> effectN( 1 ).resource( RESOURCE_FURY );
+      fury.die_sides += p -> legendary.anger_of_the_halfgiants -> driver() -> effectN( 1 ).resource( RESOURCE_FURY );
     }
   }
 
@@ -4917,10 +4932,10 @@ static void init_special_effect( demon_hunter_t*          player,
   ptr = &( effect );
 }
 
-static void anger_of_the_half_giants( special_effect_t& effect )
+static void anger_of_the_halfgiants( special_effect_t& effect )
 {
   demon_hunter_t* s = debug_cast<demon_hunter_t*>( effect.player );
-  init_special_effect( s, DEMON_HUNTER_HAVOC, s -> legendary.anger_of_the_half_giants, effect );
+  init_special_effect( s, DEMON_HUNTER_HAVOC, s -> legendary.anger_of_the_halfgiants, effect );
 }
 
 static void cloak_of_fel_flames( special_effect_t& effect )
@@ -5002,7 +5017,7 @@ public:
 
   void static_init() const override
   {
-    unique_gear::register_special_effect( 208827, anger_of_the_half_giants );
+    unique_gear::register_special_effect( 208827, anger_of_the_halfgiants );
     unique_gear::register_special_effect( 217735, cloak_of_fel_flames );
     unique_gear::register_special_effect( 208985, eternal_hunger );
     unique_gear::register_special_effect( 217496, fragment_of_the_betrayers_prison );

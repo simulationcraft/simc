@@ -99,6 +99,7 @@ rgb school_color( school_e school );
 
 // Class colors
 const rgb COLOR_DEATH_KNIGHT = "C41F3B";
+const rgb COLOR_DEMON_HUNTER = "A330C9";
 const rgb COLOR_DRUID        = "FF7D0A";
 const rgb COLOR_HUNTER       = "ABD473";
 const rgb COLOR_MAGE         = "69CCF0";
