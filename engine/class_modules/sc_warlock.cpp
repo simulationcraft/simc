@@ -38,6 +38,9 @@ namespace pets {
   struct t18_illidari_satyr_t;
   struct t18_prince_malchezaar_t;
   struct t18_vicious_hellhound_t;
+  struct shadowy_tear_t;
+  struct chaos_tear_t;
+  struct chaos_portal_t;
   struct dreadstalker_pet_t;
 }
 
@@ -93,11 +96,17 @@ public:
     static const int WILD_IMP_LIMIT = 25;
     static const int T18_PET_LIMIT = 6 ;
     static const int DREADSTALKER_LIMIT = 2;
+    static const int SHADOWY_TEAR_LIMIT = 5;
+    static const int CHAOS_TEAR_LIMIT = 5;
+    static const int CHAOS_PORTAL_LIMIT = 5;
     std::array<pets::wild_imp_pet_t*, WILD_IMP_LIMIT> wild_imps;
     pet_t* inner_demon;
     std::array<pets::t18_illidari_satyr_t*, T18_PET_LIMIT> t18_illidari_satyr;
     std::array<pets::t18_prince_malchezaar_t*, T18_PET_LIMIT> t18_prince_malchezaar;
     std::array<pets::t18_vicious_hellhound_t*, T18_PET_LIMIT> t18_vicious_hellhound;
+    std::array<pets::shadowy_tear_t*, T18_PET_LIMIT> shadowy_tear;
+    std::array<pets::chaos_tear_t*, T18_PET_LIMIT> chaos_tear;
+    std::array<pets::chaos_portal_t*, T18_PET_LIMIT> chaos_portal;
     std::array<pets::dreadstalker_pet_t*, DREADSTALKER_LIMIT> dreadstalkers;
   } pets;
 
@@ -311,6 +320,9 @@ public:
     proc_t* t18_illidari_satyr;
     proc_t* t18_vicious_hellhound;
     proc_t* t18_prince_malchezaar;
+    proc_t* shadowy_tear;
+    proc_t* chaos_tear;
+    proc_t* chaos_portal;
     proc_t* dreadstalker_debug;
   } procs;
 
@@ -631,6 +643,51 @@ public:
     base_t( token, p, s )
   {
     _init_warlock_pet_spell_t();
+  }
+};
+
+struct rift_shadow_bolt_t: public warlock_pet_spell_t
+{
+  rift_shadow_bolt_t( warlock_pet_t* p ) :
+    warlock_pet_spell_t( "shadow_bolt", p, p -> find_spell( 196657 ) )
+  {
+    base_execute_time = timespan_t::from_millis( 2000 );
+  }
+};
+
+struct rift_chaos_bolt_t : public warlock_pet_spell_t
+{
+  rift_chaos_bolt_t( warlock_pet_t* p ) :
+    warlock_pet_spell_t( "chaos_bolt", p, p -> find_spell( 215279 ) )
+  { 
+    base_execute_time = timespan_t::from_millis( 3000 );
+  }
+
+  // Force spell to always crit
+  double composite_crit() const override
+  {
+    return 1.0;
+  }
+
+  double calculate_direct_amount( action_state_t* state ) const override
+  {
+    warlock_pet_spell_t::calculate_direct_amount( state );
+
+    // Can't use player-based crit chance from the state object as it's hardcoded to 1.0. Use cached
+    // player spell crit instead. The state target crit chance of the state object is correct.
+    // Targeted Crit debuffs function as a separate multiplier.
+    state -> result_total *= 1.0 + player -> cache.spell_crit() + state -> target_crit;
+
+    return state -> result_total;
+  }
+};
+
+struct chaos_barrage_t : public warlock_pet_spell_t
+{
+  chaos_barrage_t( warlock_pet_t* p ) :
+    warlock_pet_spell_t( "chaos_barrage", p, p -> find_spell( 187394 ) )
+  {
+    base_execute_time = timespan_t::from_millis( 250 );
   }
 };
 
@@ -1145,6 +1202,75 @@ struct t18_vicious_hellhound_t: public warlock_pet_t
   }
 };
 
+struct shadowy_tear_t: public warlock_pet_t
+{
+  shadowy_tear_t( sim_t* sim, warlock_t* owner ) :
+    warlock_pet_t( sim, owner, "shadowy_tear", PET_NONE, true )
+  {
+    action_list_str = "shadow_bolt";
+    regen_type = REGEN_DISABLED;
+  }
+
+  void init_base_stats() override
+  {
+    warlock_pet_t::init_base_stats();
+    base_energy_regen_per_second = 0;
+  }
+
+  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
+  {
+    if ( name == "shadow_bolt" ) return new actions::rift_shadow_bolt_t( this );
+
+    return warlock_pet_t::create_action( name, options_str );
+  }
+};
+
+struct chaos_tear_t : public warlock_pet_t
+{
+  chaos_tear_t( sim_t* sim, warlock_t* owner ) :
+    warlock_pet_t( sim, owner, "chaos_tear", PET_NONE, true )
+  {
+    action_list_str = "chaos_bolt";
+    regen_type = REGEN_DISABLED;
+  }
+
+  void init_base_stats() override
+  {
+    warlock_pet_t::init_base_stats();
+    base_energy_regen_per_second = 0;
+  }
+
+  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
+  {
+    if ( name == "chaos_bolt" ) return new actions::rift_chaos_bolt_t( this );
+
+    return warlock_pet_t::create_action( name, options_str );
+  }
+};
+
+struct chaos_portal_t : public warlock_pet_t
+{
+  chaos_portal_t( sim_t* sim, warlock_t* owner ) :
+    warlock_pet_t( sim, owner, "chaos_portal", PET_NONE, true )
+  {
+    action_list_str = "chaos_barrage";
+    regen_type = REGEN_DISABLED;
+  }
+
+  void init_base_stats() override
+  {
+    warlock_pet_t::init_base_stats();
+    base_energy_regen_per_second = 0;
+  }
+
+  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
+  {
+    if ( name == "chaos_barrage" ) return new actions::chaos_barrage_t( this );
+
+    return warlock_pet_t::create_action( name, options_str );
+  }
+};
+
 struct felhunter_pet_t: public warlock_pet_t
 {
   felhunter_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "felhunter" ):
@@ -1322,6 +1448,7 @@ struct dreadstalker_pet_t : public warlock_pet_t
   {
     //action_list_str = "dreadbite";
     action_list_str = "travel";
+    regen_type = REGEN_DISABLED;
   }
 
   void init_base_stats() override
@@ -2202,6 +2329,67 @@ struct chaos_bolt_t: public warlock_spell_t
     state -> result_total *= 1.0 + player -> cache.spell_crit() + state -> target_crit;
 
     return state -> result_total;
+  }
+};
+
+// ARTIFACT SPELLS
+
+struct dimensional_rift_t : public warlock_spell_t
+{
+  timespan_t shadowy_tear_duration;
+  timespan_t chaos_tear_duration;
+  timespan_t chaos_portal_duration;
+
+  dimensional_rift_t( warlock_t* p ):
+    warlock_spell_t( "dimensional_rift", p, p -> artifact.dimensional_rift )
+  {
+    shadowy_tear_duration = timespan_t::from_millis( 14000 );
+    chaos_tear_duration = timespan_t::from_millis( 5000 );
+    chaos_portal_duration = timespan_t::from_millis( 5500 );
+  }
+
+  void execute() override
+  {
+    warlock_spell_t::execute();
+
+    double rift = rng().range( 0.0, 1.0 );
+
+    if ( rift <= ( 1.0 / 3.0 ) )
+    {
+      for ( size_t i = 0; i < p() -> pets.shadowy_tear.size(); i++ )
+      {
+        if ( p() -> pets.shadowy_tear[i] -> is_sleeping() )
+        {
+          p() -> pets.shadowy_tear[i] -> summon( shadowy_tear_duration );
+          p() -> procs.shadowy_tear -> occur();
+          break;
+        }
+      }
+    }
+    else if ( rift >= ( 2.0 / 3.0 ) )
+    {
+      for ( size_t i = 0; i < p() -> pets.chaos_tear.size(); i++ )
+      {
+        if ( p() -> pets.chaos_tear[i] -> is_sleeping() )
+        {
+          p() -> pets.chaos_tear[i] -> summon( chaos_tear_duration );
+          p() -> procs.chaos_tear -> occur();
+          break;
+        }
+      }
+    }
+    else
+    {
+      for ( size_t i = 0; i < p() -> pets.chaos_portal.size(); i++ )
+      {
+        if ( p() -> pets.chaos_portal[i] -> is_sleeping() )
+        {
+          p() -> pets.chaos_portal[i] -> summon( chaos_portal_duration );
+          p() -> procs.chaos_portal -> occur();
+          break;
+        }
+      }
+    }
   }
 };
 
@@ -3207,50 +3395,51 @@ action_t* warlock_t::create_action( const std::string& action_name,
 
   using namespace actions;
 
-  if      ( action_name == "conflagrate"           ) a = new           conflagrate_t( this );
-  else if ( action_name == "corruption"            ) a = new            corruption_t( this );
-  else if ( action_name == "agony"                 ) a = new                 agony_t( this );
-  else if ( action_name == "demonbolt"             ) a = new             demonbolt_t( this );
-  else if ( action_name == "doom"                  ) a = new                  doom_t( this );
-  else if ( action_name == "chaos_bolt"            ) a = new            chaos_bolt_t( this );
-  else if ( action_name == "drain_life"            ) a = new            drain_life_t( this );
-  else if ( action_name == "drain_soul"            ) a = new            drain_soul_t( this );
-  else if ( action_name == "grimoire_of_sacrifice" ) a = new grimoire_of_sacrifice_t( this );
-  else if ( action_name == "haunt"                 ) a = new                 haunt_t( this );
-  else if ( action_name == "phantom_singularity"   ) a = new   phantom_singularity_t( this );
-  else if ( action_name == "channel_demonfire"     ) a = new     channel_demonfire_t( this );
-  else if ( action_name == "soul_harvest"          ) a = new          soul_harvest_t( this );
-  else if ( action_name == "siphon_life"           ) a = new           siphon_life_t( this );
-  else if ( action_name == "immolate"              ) a = new              immolate_t( this );
-  else if ( action_name == "incinerate"            ) a = new            incinerate_t( this );
-  else if ( action_name == "life_tap"              ) a = new              life_tap_t( this );
-  else if ( action_name == "mana_tap"              ) a = new              mana_tap_t( this );
-  else if ( action_name == "mortal_coil"           ) a = new           mortal_coil_t( this );
-  else if ( action_name == "shadow_bolt"           ) a = new           shadow_bolt_t( this );
-  else if ( action_name == "shadowburn"            ) a = new            shadowburn_t( this );
-  else if ( action_name == "unstable_affliction"   ) a = new   unstable_affliction_t( this );
-  else if ( action_name == "hand_of_guldan"        ) a = new        hand_of_guldan_t( this );
-  else if ( action_name == "havoc"                 ) a = new                 havoc_t( this );
-  else if ( action_name == "seed_of_corruption"    ) a = new    seed_of_corruption_t( this );
-  else if ( action_name == "cataclysm"             ) a = new             cataclysm_t( this );
-  else if ( action_name == "rain_of_fire"          ) a = new          rain_of_fire_t( this );
-  else if ( action_name == "hellfire"              ) a = new              hellfire_t( this );
-  else if ( action_name == "summon_infernal"       ) a = new       summon_infernal_t( this );
-  else if ( action_name == "summon_doomguard"      ) a = new      summon_doomguard_t( this );
-  else if ( action_name == "call_dreadstalkers"    ) a = new    call_dreadstalkers_t( this );
-  else if ( action_name == "summon_felhunter"      ) a = new summon_main_pet_t( "felhunter", this );
-  else if ( action_name == "summon_felguard"       ) a = new summon_main_pet_t( "felguard", this );
-  else if ( action_name == "summon_succubus"       ) a = new summon_main_pet_t( "succubus", this );
-  else if ( action_name == "summon_voidwalker"     ) a = new summon_main_pet_t( "voidwalker", this );
-  else if ( action_name == "summon_imp"            ) a = new summon_main_pet_t( "imp", this );
-  else if ( action_name == "summon_pet"            ) a = new summon_main_pet_t( default_pet, this );
-  else if ( action_name == "service_felguard"      ) a = new grimoire_of_service_t( this, "felguard" );
-  else if ( action_name == "service_felhunter"     ) a = new grimoire_of_service_t( this, "felhunter" );
-  else if ( action_name == "service_imp"           ) a = new grimoire_of_service_t( this, "imp" );
-  else if ( action_name == "service_succubus"      ) a = new grimoire_of_service_t( this, "succubus" );
+  if      ( action_name == "conflagrate"           ) a = new                       conflagrate_t( this );
+  else if ( action_name == "corruption"            ) a = new                        corruption_t( this );
+  else if ( action_name == "agony"                 ) a = new                             agony_t( this );
+  else if ( action_name == "demonbolt"             ) a = new                         demonbolt_t( this );
+  else if ( action_name == "doom"                  ) a = new                              doom_t( this );
+  else if ( action_name == "chaos_bolt"            ) a = new                        chaos_bolt_t( this );
+  else if ( action_name == "drain_life"            ) a = new                        drain_life_t( this );
+  else if ( action_name == "drain_soul"            ) a = new                        drain_soul_t( this );
+  else if ( action_name == "grimoire_of_sacrifice" ) a = new             grimoire_of_sacrifice_t( this );
+  else if ( action_name == "haunt"                 ) a = new                             haunt_t( this );
+  else if ( action_name == "phantom_singularity"   ) a = new               phantom_singularity_t( this );
+  else if ( action_name == "channel_demonfire"     ) a = new                 channel_demonfire_t( this );
+  else if ( action_name == "soul_harvest"          ) a = new                      soul_harvest_t( this );
+  else if ( action_name == "siphon_life"           ) a = new                       siphon_life_t( this );
+  else if ( action_name == "immolate"              ) a = new                          immolate_t( this );
+  else if ( action_name == "incinerate"            ) a = new                        incinerate_t( this );
+  else if ( action_name == "life_tap"              ) a = new                          life_tap_t( this );
+  else if ( action_name == "mana_tap"              ) a = new                          mana_tap_t( this );
+  else if ( action_name == "mortal_coil"           ) a = new                       mortal_coil_t( this );
+  else if ( action_name == "shadow_bolt"           ) a = new                       shadow_bolt_t( this );
+  else if ( action_name == "shadowburn"            ) a = new                        shadowburn_t( this );
+  else if ( action_name == "unstable_affliction"   ) a = new               unstable_affliction_t( this );
+  else if ( action_name == "hand_of_guldan"        ) a = new                    hand_of_guldan_t( this );
+  else if ( action_name == "havoc"                 ) a = new                             havoc_t( this );
+  else if ( action_name == "seed_of_corruption"    ) a = new                seed_of_corruption_t( this );
+  else if ( action_name == "cataclysm"             ) a = new                         cataclysm_t( this );
+  else if ( action_name == "rain_of_fire"          ) a = new                      rain_of_fire_t( this );
+  else if ( action_name == "hellfire"              ) a = new                          hellfire_t( this );
+  else if ( action_name == "summon_infernal"       ) a = new                   summon_infernal_t( this );
+  else if ( action_name == "summon_doomguard"      ) a = new                  summon_doomguard_t( this );
+  else if ( action_name == "call_dreadstalkers"    ) a = new                call_dreadstalkers_t( this );
+  else if ( action_name == "dimensional_rift"      ) a = new                  dimensional_rift_t( this );
+  else if ( action_name == "summon_felhunter"      ) a = new      summon_main_pet_t( "felhunter", this );
+  else if ( action_name == "summon_felguard"       ) a = new       summon_main_pet_t( "felguard", this );
+  else if ( action_name == "summon_succubus"       ) a = new       summon_main_pet_t( "succubus", this );
+  else if ( action_name == "summon_voidwalker"     ) a = new     summon_main_pet_t( "voidwalker", this );
+  else if ( action_name == "summon_imp"            ) a = new            summon_main_pet_t( "imp", this );
+  else if ( action_name == "summon_pet"            ) a = new      summon_main_pet_t( default_pet, this );
+  else if ( action_name == "service_felguard"      ) a = new   grimoire_of_service_t( this, "felguard" );
+  else if ( action_name == "service_felhunter"     ) a = new  grimoire_of_service_t( this, "felhunter" );
+  else if ( action_name == "service_imp"           ) a = new        grimoire_of_service_t( this, "imp" );
+  else if ( action_name == "service_succubus"      ) a = new   grimoire_of_service_t( this, "succubus" );
   else if ( action_name == "service_voidwalker"    ) a = new grimoire_of_service_t( this, "voidwalker" );
-  else if ( action_name == "service_infernal"      ) a = new grimoire_of_service_t( this, "infernal" );
-  else if ( action_name == "service_doomguard"     ) a = new grimoire_of_service_t( this, "doomguard" );
+  else if ( action_name == "service_infernal"      ) a = new   grimoire_of_service_t( this, "infernal" );
+  else if ( action_name == "service_doomguard"     ) a = new  grimoire_of_service_t( this, "doomguard" );
   else if ( action_name == "service_pet"           ) a = new grimoire_of_service_t( this,  talents.grimoire_of_supremacy -> ok() ? "doomguard" : default_pet );
   else return player_t::create_action( action_name, options_str );
 
@@ -3292,6 +3481,22 @@ void warlock_t::create_pets()
   for ( size_t i = 0; i < pet_name_list.size(); ++i )
   {
     create_pet( pet_name_list[ i ] );
+  }
+
+  if ( artifact.dimensional_rift )
+  {
+    for ( size_t i = 0; i < pets.shadowy_tear.size(); i++ )
+    {
+      pets.shadowy_tear[i] = new pets::shadowy_tear_t( sim, this );
+    }
+    for ( size_t i = 0; i < pets.chaos_tear.size(); i++ )
+    {
+      pets.chaos_tear[i] = new pets::chaos_tear_t( sim, this );
+    }
+    for ( size_t i = 0; i < pets.chaos_portal.size(); i++ )
+    {
+      pets.chaos_portal[i] = new pets::chaos_portal_t( sim, this );
+    }
   }
 
   if ( specialization() == WARLOCK_DEMONOLOGY )
@@ -3563,6 +3768,9 @@ void warlock_t::init_procs()
   procs.t18_prince_malchezaar = get_proc( "t18_prince_malchezaar" );
   procs.t18_vicious_hellhound = get_proc( "t18_vicious_hellhound" );
   procs.t18_illidari_satyr = get_proc( "t18_illidari_satyr" );
+  procs.shadowy_tear = get_proc( "shadowy_tear" );
+  procs.chaos_tear = get_proc( "chaos_tear" );
+  procs.chaos_portal = get_proc( "chaos_portal" );
   procs.dreadstalker_debug = get_proc( "dreadstalker_debug" );
 }
 
