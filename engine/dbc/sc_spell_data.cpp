@@ -192,6 +192,7 @@ const struct expr_data_map_t
   { "mastery", DATA_MASTERY_SPELL },
   { "spec_spell", DATA_SPECIALIZATION_SPELL },
   { "glyph", DATA_GLYPH_SPELL },
+  { "artifact", DATA_ARTIFACT_SPELL },
 };
 
 expr_data_e parse_data_type( const std::string& name )
@@ -399,6 +400,17 @@ struct spell_list_expr_t : public spell_data_expr_t
 
               result_spell_list.push_back( spell_id );
             }
+          }
+        }
+        break;
+      }
+      case DATA_ARTIFACT_SPELL:
+      {
+        for ( auto rank: sim -> dbc.artifact_power_ranks( 0 ) )
+        {
+          if ( range::find( result_spell_list, rank -> id_spell ) == result_spell_list.end() )
+          {
+            result_spell_list.push_back( rank -> id_spell );
           }
         }
         break;

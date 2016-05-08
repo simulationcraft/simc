@@ -2625,7 +2625,7 @@ std::vector<const artifact_power_data_t*> dbc_t::artifact_powers( unsigned artif
 
   while ( p -> id != 0 )
   {
-    if ( p -> id_artifact == artifact_id )
+    if ( artifact_id == 0 || p -> id_artifact == artifact_id )
     {
       powers.push_back( p );
     }
@@ -2647,7 +2647,7 @@ std::vector<const artifact_power_rank_t*> dbc_t::artifact_power_ranks( unsigned 
 
   while ( p -> id != 0 )
   {
-    if ( p -> id_power == power_id )
+    if ( power_id == 0 || p -> id_power == power_id )
     {
       ranks.push_back( p );
     }
