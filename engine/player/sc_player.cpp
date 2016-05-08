@@ -1665,11 +1665,35 @@ void player_t::override_talent( std::string override_str )
 
   util::tokenize( override_str );
 
+  // Support disable_row:<row> syntax
+  std::string::size_type pos = override_str.find( "disable_row" );
+  if ( pos != std::string::npos )
+  {
+    std::string row_str = override_str.substr( 11 );
+    if ( ! row_str.empty() )
+    {
+      unsigned row = util::to_unsigned( override_str.substr( 11 ) );
+      if ( row == 0 || row >= MAX_TALENT_ROWS )
+      {
+        sim -> errorf( "talent_override: Invalid talent row %u for player %s for talent override \"%s\"\n",
+          row, name(), override_str.c_str() );
+        return;
+      }
+
+      talent_points.clear( row - 1 );
+      if ( sim -> num_players == 1 )
+      {
+        sim -> errorf( "talent_override: Talent row %u for player %s disabled\n", row, name() );
+      }
+      return;
+    }
+  }
+
   unsigned spell_id = dbc.talent_ability_id( type, specialization(), override_str.c_str(), true );
 
   if ( ! spell_id || dbc.spell( spell_id ) ->id() != spell_id )
   {
-    sim -> errorf( "Override talent %s not found for player %s.\n", override_str.c_str(), name() );
+    sim -> errorf( "talent_override: Override talent %s not found for player %s.\n", override_str.c_str(), name() );
     return;
   }
 
@@ -1682,7 +1706,7 @@ void player_t::override_talent( std::string override_str )
       {
         if ( true_level < std::min( ( j + 1 ) * 15, 100 ) )
         {
-          sim -> errorf( "Override talent %s is too high level for player %s.\n", override_str.c_str(), name() );
+          sim -> errorf( "talent_override: Override talent %s is too high level for player %s.\n", override_str.c_str(), name() );
           return;
         }
 
