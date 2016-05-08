@@ -6633,7 +6633,7 @@ void mage_t::recalculate_resource_max( resource_e rt )
 
   if ( savant_adjust_mana )
   {
-    resources.max[ rt ] *= 1.0 + cache.mastery_value();
+    resources.max[ rt ] *= 1.0 + cache.mastery_value() * spec.savant -> effectN( 1 ).sp_coeff();
     resources.current[ rt ] = resources.max[ rt ] * mana_percent;
     if ( sim -> debug )
     {
