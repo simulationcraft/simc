@@ -97,17 +97,15 @@ public:
     static const int WILD_IMP_LIMIT = 25;
     static const int T18_PET_LIMIT = 6 ;
     static const int DREADSTALKER_LIMIT = 2;
-    static const int SHADOWY_TEAR_LIMIT = 5;
-    static const int CHAOS_TEAR_LIMIT = 5;
-    static const int CHAOS_PORTAL_LIMIT = 5;
+    static const int DIMENSIONAL_RIFT_LIMIT = 10;
     std::array<pets::wild_imp_pet_t*, WILD_IMP_LIMIT> wild_imps;
     pet_t* inner_demon;
     std::array<pets::t18_illidari_satyr_t*, T18_PET_LIMIT> t18_illidari_satyr;
     std::array<pets::t18_prince_malchezaar_t*, T18_PET_LIMIT> t18_prince_malchezaar;
     std::array<pets::t18_vicious_hellhound_t*, T18_PET_LIMIT> t18_vicious_hellhound;
-    std::array<pets::shadowy_tear_t*, SHADOWY_TEAR_LIMIT> shadowy_tear;
-    std::array<pets::chaos_tear_t*, CHAOS_TEAR_LIMIT> chaos_tear;
-    std::array<pets::chaos_portal_t*, CHAOS_PORTAL_LIMIT> chaos_portal;
+    std::array<pets::shadowy_tear_t*, DIMENSIONAL_RIFT_LIMIT> shadowy_tear;
+    std::array<pets::chaos_tear_t*, DIMENSIONAL_RIFT_LIMIT> chaos_tear;
+    std::array<pets::chaos_portal_t*, DIMENSIONAL_RIFT_LIMIT> chaos_portal;
     std::array<pets::dreadstalker_pet_t*, DREADSTALKER_LIMIT> dreadstalkers;
   } pets;
 
@@ -662,6 +660,18 @@ struct rift_chaos_bolt_t : public warlock_pet_spell_t
     warlock_pet_spell_t( "chaos_bolt", p, p -> find_spell( 215279 ) )
   { 
     base_execute_time = timespan_t::from_millis( 3000 );
+    base_costs[RESOURCE_ENERGY] = 1.0;
+  }
+
+  virtual void execute() override
+  {
+    warlock_pet_spell_t::execute();
+
+    if ( player -> resources.current[RESOURCE_ENERGY] <= 0 )
+    {
+      p() -> dismiss();
+      return;
+    }
   }
 
   // Force spell to always crit
@@ -1205,8 +1215,11 @@ struct t18_vicious_hellhound_t: public warlock_pet_t
 
 struct shadowy_tear_t: public warlock_pet_t
 {
+  stats_t** shadow_bolt_stats;
+  stats_t* regular_stats;
+
   shadowy_tear_t( sim_t* sim, warlock_t* owner ) :
-    warlock_pet_t( sim, owner, "shadowy_tear", PET_NONE, true )
+    warlock_pet_t( sim, owner, "shadowy_tear", PET_NONE, true ), shadow_bolt_stats( nullptr )
   {
     action_list_str = "shadow_bolt";
     regen_type = REGEN_DISABLED;
@@ -1218,9 +1231,24 @@ struct shadowy_tear_t: public warlock_pet_t
     base_energy_regen_per_second = 0;
   }
 
-  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
+  virtual action_t* create_action( const std::string& name,
+                                   const std::string& options_str ) override
   {
-    if ( name == "shadow_bolt" ) return new actions::rift_shadow_bolt_t( this );
+    if ( name == "shadow_bolt" )
+    {
+      action_t* a = new actions::rift_shadow_bolt_t( this );
+      shadow_bolt_stats = &( a -> stats );
+      if ( this == o() -> pets.shadowy_tear[0] || sim -> report_pets_separately )
+      {
+        regular_stats = a -> stats;
+      }
+      else
+      {
+        regular_stats = o() -> pets.shadowy_tear[0] -> get_stats( "shadow_bolt" );
+        *shadow_bolt_stats = regular_stats;
+      }
+      return a;
+    }
 
     return warlock_pet_t::create_action( name, options_str );
   }
@@ -1228,8 +1256,11 @@ struct shadowy_tear_t: public warlock_pet_t
 
 struct chaos_tear_t : public warlock_pet_t
 {
+  stats_t** chaos_bolt_stats;
+  stats_t* regular_stats;
+
   chaos_tear_t( sim_t* sim, warlock_t* owner ) :
-    warlock_pet_t( sim, owner, "chaos_tear", PET_NONE, true )
+    warlock_pet_t( sim, owner, "chaos_tear", PET_NONE, true ), chaos_bolt_stats( nullptr )
   {
     action_list_str = "chaos_bolt";
     regen_type = REGEN_DISABLED;
@@ -1239,11 +1270,27 @@ struct chaos_tear_t : public warlock_pet_t
   {
     warlock_pet_t::init_base_stats();
     base_energy_regen_per_second = 0;
+    resources.base[RESOURCE_ENERGY] = 1;
   }
 
-  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
+  virtual action_t* create_action( const std::string& name,
+                                   const std::string& options_str ) override
   {
-    if ( name == "chaos_bolt" ) return new actions::rift_chaos_bolt_t( this );
+    if ( name == "chaos_bolt" )
+    {
+      action_t* a = new actions::rift_chaos_bolt_t( this );
+      chaos_bolt_stats = &( a -> stats );
+      if ( this == o() -> pets.chaos_tear[0] || sim -> report_pets_separately )
+      {
+        regular_stats = a -> stats;
+      }
+      else
+      {
+        regular_stats = o() -> pets.chaos_tear[0] -> get_stats( "chaos_bolt" );
+        *chaos_bolt_stats = regular_stats;
+      }
+      return a;
+    }
 
     return warlock_pet_t::create_action( name, options_str );
   }
@@ -1251,8 +1298,11 @@ struct chaos_tear_t : public warlock_pet_t
 
 struct chaos_portal_t : public warlock_pet_t
 {
+  stats_t** chaos_barrage_stats;
+  stats_t* regular_stats;
+
   chaos_portal_t( sim_t* sim, warlock_t* owner ) :
-    warlock_pet_t( sim, owner, "chaos_portal", PET_NONE, true )
+    warlock_pet_t( sim, owner, "chaos_portal", PET_NONE, true ), chaos_barrage_stats( nullptr )
   {
     action_list_str = "chaos_barrage";
     regen_type = REGEN_DISABLED;
@@ -1264,9 +1314,24 @@ struct chaos_portal_t : public warlock_pet_t
     base_energy_regen_per_second = 0;
   }
 
-  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
+  virtual action_t* create_action( const std::string& name,
+                                   const std::string& options_str ) override
   {
-    if ( name == "chaos_barrage" ) return new actions::chaos_barrage_t( this );
+    if ( name == "chaos_barrage" )
+    {
+      action_t* a = new actions::chaos_barrage_t( this );
+      chaos_barrage_stats = &( a -> stats );
+      if ( this == o() -> pets.chaos_portal[0] || sim -> report_pets_separately )
+      {
+        regular_stats = a -> stats;
+      }
+      else
+      {
+        regular_stats = o() -> pets.chaos_portal[0] -> get_stats( "chaos_barrage" );
+        *chaos_barrage_stats = regular_stats;
+      }
+      return a;
+    }
 
     return warlock_pet_t::create_action( name, options_str );
   }
@@ -1779,7 +1844,7 @@ public:
 
   static void trigger_wild_imp( warlock_t* p )
   {
-    for ( size_t i = 0; i < p -> pets.wild_imps.size() ; i++ )
+    for ( size_t i = 0; i < p -> pets.wild_imps.size(); i++ )
     {
       if ( p -> pets.wild_imps[i] -> is_sleeping() )
       {
@@ -2385,7 +2450,7 @@ struct dimensional_rift_t : public warlock_spell_t
       {
         if ( p() -> pets.chaos_portal[i] -> is_sleeping() )
         {
-          p() -> pets.chaos_portal[i] -> summon( chaos_portal_duration );
+          p() -> pets.chaos_portal[i] -> summon( chaos_tear_duration );
           p() -> procs.chaos_portal -> occur();
           break;
         }
