@@ -5545,7 +5545,7 @@ void shaman_t::create_buffs()
   buff.ascendance              = new ascendance_buff_t( this );
   buff.echo_of_the_elements    = buff_creator_t( this, "echo_of_the_elements", talent.echo_of_the_elements )
                                  .chance( talent.echo_of_the_elements -> ok() );
-  buff.lava_surge              = buff_creator_t( this, "lava_surge",        spec.lava_surge )
+  buff.lava_surge              = buff_creator_t( this, "lava_surge", find_spell( 77762 ) )
                                  .activated( false )
                                  .chance( 1.0 ); // Proc chance is handled externally
   buff.lightning_shield        = buff_creator_t( this, "lightning_shield", find_talent_spell( "Lightning Shield" ) )
