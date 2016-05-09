@@ -33,6 +33,9 @@ namespace { // UNNAMED NAMESPACE
   Check Echoing Stars
   Check Fury of Elune
   Promise of Elune legendary
+  Starlord reduces GCD
+    http://us.battle.net/wow/en/forum/topic/20743504316?page=16#308
+  Moonfire and Sunfire mana costs (see action_t::parse_spell_data)
 
   Touch of the Moon
   Light of the Sun
@@ -44,6 +47,9 @@ namespace { // UNNAMED NAMESPACE
   Incarnation CD modifier rework
   Gory Fur
   Remove Blood Claws
+  Check Galactic Guardian proc sources
+  Fix rage generation from AAs
+    http://us.battle.net/wow/en/forum/topic/20743504316?page=13#248
 
   Resto =====================================================================
   All the things
@@ -1981,17 +1987,14 @@ struct moonfire_t : public druid_spell_t
   {
     druid_spell_t::tick( d );
 
-    if ( result_is_hit( d -> state -> result ) )
+    if ( p() -> talent.shooting_stars -> ok() && rng().roll( shooting_stars -> proc_chance ) )
     {
-      if ( p() -> talent.shooting_stars -> ok() && rng().roll( shooting_stars -> proc_chance ) )
-      {
-        shooting_stars -> target = d -> target;
-        shooting_stars -> execute();
-      }
-
-      if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) )
-        trigger_balance_tier18_2pc();
+      shooting_stars -> target = d -> target;
+      shooting_stars -> execute();
     }
+
+    if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) )
+      trigger_balance_tier18_2pc();
   }
 
   void impact( action_state_t* s ) override
