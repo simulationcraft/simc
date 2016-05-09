@@ -20,8 +20,9 @@
 // Channel Demonfire
 // Rain of Fire
 // Demo - Everything
+// check wild imp implementation
+// finish demonic empowerment
 // Artifacts -
-// Switch chaotic infusion to crit damage
 // Destruction Golden Traits
 // 
 // ==========================================================================
@@ -104,9 +105,9 @@ public:
     std::array<pets::t18_illidari_satyr_t*, T18_PET_LIMIT> t18_illidari_satyr;
     std::array<pets::t18_prince_malchezaar_t*, T18_PET_LIMIT> t18_prince_malchezaar;
     std::array<pets::t18_vicious_hellhound_t*, T18_PET_LIMIT> t18_vicious_hellhound;
-    std::array<pets::shadowy_tear_t*, T18_PET_LIMIT> shadowy_tear;
-    std::array<pets::chaos_tear_t*, T18_PET_LIMIT> chaos_tear;
-    std::array<pets::chaos_portal_t*, T18_PET_LIMIT> chaos_portal;
+    std::array<pets::shadowy_tear_t*, SHADOWY_TEAR_LIMIT> shadowy_tear;
+    std::array<pets::chaos_tear_t*, CHAOS_TEAR_LIMIT> chaos_tear;
+    std::array<pets::chaos_portal_t*, CHAOS_PORTAL_LIMIT> chaos_portal;
     std::array<pets::dreadstalker_pet_t*, DREADSTALKER_LIMIT> dreadstalkers;
   } pets;
 
