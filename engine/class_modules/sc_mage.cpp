@@ -3870,55 +3870,97 @@ struct inferno_blast_t : public fire_mage_spell_t
 
 
 // Living Bomb Spell ========================================================
+// TODO: Snapshot duration and fixed tick number
+// TODO: Dynamic CD adjustment
+
+struct living_bomb_explosion_t;
+struct living_bomb_t;
 
 struct living_bomb_explosion_t : public fire_mage_spell_t
 {
-  living_bomb_explosion_t( mage_t* p ) :
-    fire_mage_spell_t( "living_bomb_explosion", p, p -> find_spell( 44461 ) )
-  {
-    aoe = -1;
-    radius = 10;
-    background = true;
-  }
+  living_bomb_t* child_lb;
 
-  virtual resource_e current_resource() const override
-  { return RESOURCE_NONE; }
+  living_bomb_explosion_t( mage_t* p, living_bomb_t* parent_lb );
+  virtual resource_e current_resource() const override;
+  void impact( action_state_t* s ) override;
 };
 
 struct living_bomb_t : public fire_mage_spell_t
 {
+  bool casted;
   living_bomb_explosion_t* explosion;
 
-  living_bomb_t( mage_t* p, const std::string& options_str ) :
-    fire_mage_spell_t( "living_bomb", p, p -> talents.living_bomb ),
-    explosion( new living_bomb_explosion_t( p ) )
-  {
-    parse_options( options_str );
-    cooldown -> hasted = true;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    if ( result_is_hit( s -> result ) )
-    {
-      dot_t* dot = get_dot( s -> target );
-      if ( dot -> is_ticking() && dot -> remains() < dot_duration * 0.3 )
-      {
-        explosion -> target = s -> target;
-        explosion -> execute();
-      }
-    }
-    fire_mage_spell_t::impact( s );
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    fire_mage_spell_t::last_tick( d );
-
-    explosion -> target = d -> target;
-    explosion -> execute();
-  }
+  living_bomb_t( mage_t* p, const std::string& options_str, bool _casted );
+  virtual timespan_t composite_dot_duration( const action_state_t* s )
+    const override;
+  virtual void last_tick( dot_t* d ) override;
 };
+
+living_bomb_explosion_t::
+  living_bomb_explosion_t( mage_t* p, living_bomb_t* parent_lb ) :
+    fire_mage_spell_t( "living_bomb_explosion", p, p -> find_spell( 44461 ) ),
+    child_lb( nullptr )
+{
+  aoe = -1;
+  radius = 10;
+  background = true;
+
+  if ( parent_lb -> casted )
+  {
+    child_lb = new living_bomb_t( p, std::string( "" ), false );
+    child_lb -> casted = false;
+  }
+}
+
+resource_e living_bomb_explosion_t::current_resource() const
+{ return RESOURCE_NONE; }
+
+void living_bomb_explosion_t::impact( action_state_t* s )
+{
+  fire_mage_spell_t::impact( s );
+
+  if ( child_lb && s -> chain_target > 0 )
+  {
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf(
+        "living_bomb_explosion on %s applies living_bomb on %s",
+        s -> action -> target -> name(),
+        s -> target -> name() );
+    }
+
+    child_lb -> target = s -> target;
+    child_lb -> execute();
+  }
+}
+
+living_bomb_t::living_bomb_t( mage_t* p, const std::string& options_str,
+                              bool _casted = true ) :
+  fire_mage_spell_t( "living_bomb", p, p -> find_spell( 217694 ) ),
+  casted( _casted ),
+  explosion( new living_bomb_explosion_t( p, this ) )
+{
+  parse_options( options_str );
+
+  cooldown -> hasted = true;
+  hasted_ticks       = true;
+}
+
+timespan_t living_bomb_t::composite_dot_duration( const action_state_t* s )
+  const
+{
+  timespan_t duration = fire_mage_spell_t::composite_dot_duration( s );
+  return duration * ( tick_time( s -> haste ) / base_tick_time );
+}
+
+void living_bomb_t::last_tick( dot_t* d )
+{
+  fire_mage_spell_t::last_tick( d );
+
+  explosion -> target = d -> target;
+  explosion -> execute();
+}
+
 
 // Mark of Aluneth Spell =============================================================
 // TODO: Tick times are inconsistent in game. Until fixed, remove hasted ticks
