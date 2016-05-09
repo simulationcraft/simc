@@ -252,6 +252,7 @@ std::string tokenized_name( const spell_data_t* data )
 
 static bool player_has_binding( player_t* player, unsigned binding )
 {
+  // TOCHECK: Does this work with enchants specified by name?
   player = player -> get_owner_or_self();
 
   for ( int i = 0; i < player -> items.size(); i++ )
@@ -549,7 +550,8 @@ struct loyal_druid_pet_t : public pet_t
     pet_t( owner -> sim, owner, "loyal_druid", true, true )
   {
     main_hand_weapon.type = WEAPON_BEAST;
-    owner_coeff.ap_from_ap = 1.0;
+    owner_coeff.ap_from_ap = 1.0; // TOCHECK
+    owner_coeff.sp_from_sp = 1.0; // TOCHECK
 
     // Magical constants for base damage
     double damage_range = 0.4;
