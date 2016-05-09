@@ -2764,13 +2764,15 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b,
         "<td class=\"right\">%.1fsec</td>\n"
         "<td class=\"right\">%.2f%%</td>\n"
         "<td class=\"right\">%.2f%%</td>\n"
-        "<td class=\"right\">%.1f(%.1f)</td>\n",
+        "<td class=\"right\">%.1f(%.1f)</td>\n"
+        "<td class=\"right\">%.1f</td>\n",
         b.avg_start.pretty_mean(), b.avg_refresh.pretty_mean(),
         b.start_intervals.pretty_mean(), b.trigger_intervals.pretty_mean(),
         b.uptime_pct.pretty_mean(),
         ( b.benefit_pct.sum() > 0 ? b.benefit_pct.pretty_mean()
                                   : b.uptime_pct.pretty_mean() ),
-        b.avg_overflow_count.mean(), b.avg_overflow_total.mean() );
+        b.avg_overflow_count.mean(), b.avg_overflow_total.mean(),
+        b.avg_expire.pretty_mean() );
 
   os << "</tr>\n";
 
@@ -2916,6 +2918,7 @@ void print_html_player_buffs( report::sc_html_stream& os, const player_t& p,
      << "<th>Up-Time</th>\n"
      << "<th>Benefit</th>\n"
      << "<th>Overflow</th>\n"
+     << "<th>Expiry</th>\n"
      << "</tr>\n";
 
   for ( size_t i = 0; i < ri.dynamic_buffs.size(); i++ )

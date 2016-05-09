@@ -186,6 +186,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   down_count(),
   start_count(),
   refresh_count(),
+  expire_count(),
   overflow_count(),
   overflow_total(),
   trigger_attempts(),
@@ -195,6 +196,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   trigger_pct(),
   avg_start(),
   avg_refresh(),
+  avg_expire(),
   avg_overflow_count(),
   avg_overflow_total(),
   uptime_pct(),
@@ -464,6 +466,7 @@ void buff_t::datacollection_begin()
   trigger_successes = trigger_attempts = 0;
   start_count = 0;
   refresh_count = 0;
+  expire_count = 0;
   overflow_count = 0;
   overflow_total = 0;
 
@@ -491,6 +494,7 @@ void buff_t::datacollection_end()
 
   avg_start.add( start_count );
   avg_refresh.add( refresh_count );
+  avg_expire.add( expire_count );
   avg_overflow_count.add( overflow_count );
   avg_overflow_total.add( overflow_total );
 }
@@ -1246,6 +1250,12 @@ void buff_t::expire( timespan_t delay )
       event_t::cancel( stack_react_ready_triggers[ i ] );
   }
 
+  if ( buff_duration > timespan_t::zero() &&
+       remaining_duration == timespan_t::zero() )
+  {
+    expire_count++;
+  }
+
   expire_override( expiration_stacks, remaining_duration ); // virtual expire call
 
   current_value = 0;
@@ -1326,6 +1336,7 @@ void buff_t::merge( const buff_t& other )
   trigger_pct.merge( other.trigger_pct );
   avg_start.merge( other.avg_start );
   avg_refresh.merge( other.avg_refresh );
+  avg_expire.merge( other.avg_expire );
   avg_overflow_count.merge( other.avg_overflow_count );
   avg_overflow_total.merge( other.avg_overflow_total );
   if ( sim -> buff_uptime_timeline )
