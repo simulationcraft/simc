@@ -1556,16 +1556,39 @@ struct fel_rush_t : public demon_hunter_spell_t
 
 struct fel_eruption_t : public demon_hunter_spell_t
 {
-  fel_eruption_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_spell_t( "fel_eruption", p, p -> talent.fel_eruption )
+  struct fel_eruption_damage_t : public demon_hunter_spell_t
+  {
+    fel_eruption_damage_t( demon_hunter_t* p ) :
+      demon_hunter_spell_t( "fel_eruption_dmg", p, p -> find_spell( 225102 ) )
+    {
+      background = dual = true;
+      may_miss = false;
+      // Assume the target is stun immune.
+      base_multiplier *= 1.0 + p -> talent.fel_eruption -> effectN( 1 ).percent(); 
+      if ( ! p -> bugs )
+      {
+        school = SCHOOL_CHAOS;
+      }
+    }
+  };
+
+  fel_eruption_t( demon_hunter_t* p, const std::string& options_str ) :
+    demon_hunter_spell_t( "fel_eruption", p, p -> talent.fel_eruption )
   {
     parse_options( options_str );
 
+    may_crit = false;
     resource_current = p -> specialization() == DEMON_HUNTER_HAVOC ?
       RESOURCE_FURY : RESOURCE_PAIN;
-    // Assume the target is stun immune.
-    base_multiplier *= 1.0 + data().effectN( 3 ).percent();
+
+    impact_action = new fel_eruption_damage_t( p );
+    impact_action -> stats = stats;
+
+    // Add damage modifiers in fel_eruption_damage_t, not here.
   }
+
+  // Don't record data for this action.
+  void record_data( action_state_t* ) override {}
 };
 
 // Fiery Brand ==============================================================

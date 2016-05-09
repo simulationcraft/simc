@@ -1101,6 +1101,9 @@ class SpellDataGenerator(DataGenerator):
          45431, 45432, 45478,
          45479, 45480,
          184968,                    # Unholy coil heal (Blood dk class trinket)
+         191091, 191118, 191119,    # Mark of the Loyal Druid spells
+         191121, 191112, 191123,
+         191124, 191146     
         ),
 
         # Warrior:
@@ -1344,6 +1347,9 @@ class SpellDataGenerator(DataGenerator):
 		
 		# Demon Hunter:
 		(
+      # General
+      ( 225102, 0 ), # Fel Eruption damage
+    
 		  # Havoc
 		  ( 203557, 1 ), # Felblade proc rate
 		  ( 208605, 1 ), # Nemesis player buff
