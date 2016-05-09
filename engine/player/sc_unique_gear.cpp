@@ -38,6 +38,19 @@ namespace enchants
   void mark_of_warsong( special_effect_t& );
   void megawatt_filament( special_effect_t& );
   void oglethorpes_missile_splitter( special_effect_t& );
+
+  /* Legion */
+  void mark_of_the_loyal_druid( special_effect_t& );
+  void mark_of_the_trickster( special_effect_t& );
+  void mark_of_the_fallen_sentinels( special_effect_t& );
+  
+  unsigned binding_of_crit    = 5427;
+  unsigned binding_of_haste   = 5428;
+  unsigned binding_of_mastery = 5429;
+  unsigned binding_of_vers    = 5430;
+  unsigned binding_of_str     = 5434;
+  unsigned binding_of_agi     = 5435;
+  unsigned binding_of_int     = 5436;
 }
 
 namespace profession
@@ -236,6 +249,416 @@ std::string tokenized_name( const spell_data_t* data )
 }
 
 // Enchants ================================================================
+
+static bool player_has_binding( player_t* player, unsigned binding )
+{
+  player = player -> get_owner_or_self();
+
+  for ( int i = 0; i < player -> items.size(); i++ )
+  {
+    if ( player -> items[ i ].parsed.enchant_id == binding )
+      return true;
+  }
+  return false;
+}
+
+struct loyal_druid_pet_t : public pet_t
+{
+  struct auto_attack_t : public melee_attack_t
+  {
+    struct melee_t: public melee_attack_t
+    {
+      melee_t( pet_t* p ) :
+        melee_attack_t( "melee", p, spell_data_t::nil() )
+      {
+        school = SCHOOL_PHYSICAL;
+        special = false;
+        weapon = &( p -> main_hand_weapon );
+        base_execute_time = weapon -> swing_time;
+        background = repeating = auto_attack = may_glance = true;
+        trigger_gcd = timespan_t::zero();
+      }
+    };
+
+    melee_t* melee;
+
+    auto_attack_t( pet_t* p, const std::string& options_str ) :
+      melee_attack_t( "auto_attack", p, spell_data_t::nil() )
+    {
+      parse_options( options_str );
+
+      ignore_false_positive = true;
+      range                 = 5;
+      trigger_gcd           = timespan_t::zero();
+      melee                 = new melee_t( p );
+    }
+
+    void execute() override
+    { melee -> schedule_execute(); }
+
+    bool ready() override
+    {
+      bool ready = melee_attack_t::ready();
+
+      if ( ready && melee -> execute_event == nullptr )
+        return ready;
+
+      return false;
+    }
+  };
+
+  struct thrash_t : public melee_attack_t
+  {
+    buff_t* cat_form;
+    buff_t* bear_form;
+
+    thrash_t( loyal_druid_pet_t* p, const std::string& option_str ) :
+      melee_attack_t( "thrash", p, p -> find_spell( 191121 ) )
+    {
+      parse_options( option_str );
+
+      cooldown -> duration = timespan_t::from_seconds( 6.0 );
+      cooldown -> hasted = true;
+      cat_form = p -> cat_form;
+      bear_form = p -> bear_form;
+    }
+
+    bool init_finished() override
+    {
+      if ( ! player_has_binding( player, enchants::binding_of_crit ) )
+        background = true;
+
+      return melee_attack_t::init_finished();
+    }
+
+    bool ready() override
+    {
+      if ( ! ( cat_form -> check() || bear_form -> check() ) )
+        return false;
+
+      return melee_attack_t::ready();
+    }
+  };
+
+  struct wrath_t : public spell_t
+  {
+    wrath_t( pet_t* p, const std::string& option_str ) :
+      spell_t( "wrath", p, p -> find_spell( 191146 ) )
+    {
+      parse_options( option_str );
+    }
+  };
+
+  struct rejuvenation_t : public heal_t
+  {
+    rejuvenation_t( pet_t* p, const std::string& option_str ) :
+      heal_t( "rejuvenation", p, p -> find_spell( 191122 ) )
+    {
+      parse_options( option_str );
+      target = p -> owner;
+    }
+
+    bool init_finished() override
+    {
+      if ( ! player_has_binding( player, enchants::binding_of_haste ) )
+        background = true;
+
+      return heal_t::init_finished();
+    }
+  };
+
+  struct entangling_roots_t : public spell_t
+  {
+    entangling_roots_t( pet_t* p, const std::string& option_str ) :
+      spell_t( "entangling_roots", p, p -> find_spell( 191123 ) )
+    {
+      parse_options( option_str );
+    }
+
+    bool init_finished() override
+    {
+      if ( ! player_has_binding( player, enchants::binding_of_mastery ) )
+        background = true;
+
+      return spell_t::init_finished();
+    }
+
+    bool ready() override
+    {
+      bool r = spell_t::ready();
+
+      // Will not cast on immune targets. Let's assume bosses are immune.
+      if ( ! target -> is_add() )
+        return false;
+
+      return r;
+    }
+  };
+
+  struct invigorating_roar_t : public spell_t
+  {
+    invigorating_roar_t( pet_t* p, const std::string& option_str ) :
+      spell_t( "invigorating_roar", p, p -> find_spell( 191124 ) )
+    {
+      parse_options( option_str );
+
+      callbacks = may_crit = may_miss = harmful = false;
+    }
+
+    bool init_finished() override
+    {
+      if ( ! player_has_binding( player, enchants::binding_of_vers ) )
+        background = true;
+
+      return spell_t::init_finished();
+    }
+
+    void execute() override
+    {
+      spell_t::execute();
+
+      player -> buffs.invigorating_roar -> trigger();
+      debug_cast<pet_t*>( player ) -> owner -> buffs.invigorating_roar -> trigger();
+    }
+
+    bool ready() override
+    {
+      if ( player -> buffs.invigorating_roar -> check() )
+        return false;
+
+      return spell_t::ready();
+    }
+  };
+
+  struct cat_form_t : public spell_t
+  {
+    buff_t* buff;
+
+    cat_form_t( loyal_druid_pet_t* p, const std::string& option_str ) :
+      spell_t( "cat_form", p, p -> find_spell( 191118 ) )
+    {
+      parse_options( option_str );
+      
+      callbacks = may_crit = may_miss = harmful = false;
+      buff = p -> cat_form;
+    }
+
+    bool init_finished() override
+    {
+      if ( ! player_has_binding( player, enchants::binding_of_agi ) )
+        background = true;
+
+      return spell_t::init_finished();
+    }
+
+    void execute() override
+    {
+      spell_t::execute();
+
+      buff -> trigger();
+    }
+
+    bool ready() override
+    {
+      if ( buff -> check() )
+        return false;
+
+      return spell_t::ready();
+    }
+  };
+
+  struct moonkin_form_t : public spell_t
+  {
+    buff_t* buff;
+
+    moonkin_form_t( loyal_druid_pet_t* p, const std::string& option_str ) :
+      spell_t( "moonkin_form", p, p -> find_spell( 191119 ) )
+    {
+      parse_options( option_str );
+      
+      callbacks = may_crit = may_miss = harmful = false;
+      buff = p -> moonkin_form;
+    }
+
+    bool init_finished() override
+    {
+      if ( ! player_has_binding( player, enchants::binding_of_int ) )
+        background = true;
+
+      return spell_t::init_finished();
+    }
+
+    void execute() override
+    {
+      spell_t::execute();
+
+      buff -> trigger();
+    }
+
+    bool ready() override
+    {
+      if ( buff -> check() )
+        return false;
+
+      return spell_t::ready();
+    }
+  };
+
+  struct bear_form_t : public spell_t
+  {
+    buff_t* buff;
+
+    bear_form_t( loyal_druid_pet_t* p, const std::string& option_str ) :
+      spell_t( "bear_form", p, p -> find_spell( 191091 ) )
+    {
+      parse_options( option_str );
+      
+      callbacks = may_crit = may_miss = harmful = false;
+      buff = p -> bear_form;
+    }
+
+    bool init_finished() override
+    {
+      if ( ! player_has_binding( player, enchants::binding_of_str ) )
+        background = true;
+
+      return spell_t::init_finished();
+    }
+
+    void execute() override
+    {
+      spell_t::execute();
+
+      buff -> trigger();
+    }
+
+    bool ready() override
+    {
+      if ( buff -> check() )
+        return false;
+
+      return spell_t::ready();
+    }
+  };
+
+  buff_t* cat_form;
+  buff_t* moonkin_form;
+  buff_t* bear_form;
+
+  loyal_druid_pet_t( player_t* owner ) :
+    pet_t( owner -> sim, owner, "loyal_druid", true, true )
+  {
+    main_hand_weapon.type = WEAPON_BEAST;
+    owner_coeff.ap_from_ap = 1.0;
+
+    // Magical constants for base damage
+    double damage_range = 0.4;
+    double base_dps = owner -> dbc.spell_scaling( PLAYER_SPECIAL_SCALE, owner -> level() ) * 4.725;
+    double min_dps = base_dps * ( 1 - damage_range / 2.0 );
+    double max_dps = base_dps * ( 1 + damage_range / 2.0 );
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
+    main_hand_weapon.min_dmg =  min_dps * main_hand_weapon.swing_time.total_seconds();
+    main_hand_weapon.max_dmg =  max_dps * main_hand_weapon.swing_time.total_seconds();
+    // FIXME: Melee damage is definitely wrong.
+
+    cat_form     = buff_creator_t( this, "cat_form", find_spell( 191118 ) );
+    moonkin_form = buff_creator_t( this, "moonkin_form", find_spell( 191119 ) )
+                   .default_value( find_spell( 191119 ) -> effectN( 2 ).percent() )
+                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    bear_form    = buff_creator_t( this, "bear_form", find_spell( 191091 ) );
+  }
+
+  double composite_player_multiplier( school_e s ) const override
+  {
+    double pm = pet_t::composite_player_multiplier( s );
+
+    if ( dbc::is_school( s, SCHOOL_NATURE ) )
+      pm *= 1.0 + moonkin_form -> value();
+
+    return pm;
+  }
+
+  void dismiss( bool expired = false ) override
+  {
+    pet_t::dismiss( expired );
+
+    owner -> buffs.invigorating_roar -> expire();
+  }
+
+  void init_action_list() override
+  {
+    // TOCHECK: Exact priorities.
+    action_list_str = "auto_attack";
+    action_list_str += "/cat_form";
+    action_list_str += "/moonkin_form";
+    action_list_str += "/bear_form";
+    action_list_str += "/invigorating_roar";
+    action_list_str += "/wrath,if=buff.moonkin_form.up";
+    action_list_str += "/rejuvenation";
+    action_list_str += "/entangling_roots";
+    action_list_str += "/thrash";
+
+    pet_t::init_action_list();
+  }
+
+  action_t* create_action( const std::string& name,
+                           const std::string& options_str ) override
+  {
+    if ( name == "auto_attack"       ) return       new auto_attack_t( this, options_str );
+    if ( name == "bear_form"         ) return         new bear_form_t( this, options_str );
+    if ( name == "cat_form"          ) return          new cat_form_t( this, options_str );
+    if ( name == "entangling_roots"  ) return  new entangling_roots_t( this, options_str );
+    if ( name == "invigorating_roar" ) return new invigorating_roar_t( this, options_str );
+    if ( name == "moonkin_form"      ) return      new moonkin_form_t( this, options_str );
+    if ( name == "rejuvenation"      ) return      new rejuvenation_t( this, options_str );
+    if ( name == "thrash"            ) return            new thrash_t( this, options_str );
+    if ( name == "wrath"             ) return             new wrath_t( this, options_str );
+
+    return pet_t::create_action( name, options_str );
+  }
+};
+
+struct summon_loyal_druid_t : public spell_t
+{
+  pet_t* pet;
+  timespan_t duration;
+
+  summon_loyal_druid_t( player_t* p, const spell_data_t* s ) :
+    spell_t( s -> name_cstr(), p, s ), duration( s -> duration() )
+  {
+    background = true;
+    may_miss = may_crit = callbacks = harmful = false;
+    pet = new loyal_druid_pet_t( p );
+  }
+
+  void execute() override
+  {
+    spell_t::execute();
+
+    pet -> summon( duration );
+  }
+};
+
+void enchants::mark_of_the_loyal_druid( special_effect_t& effect )
+{
+  const spell_data_t* summon_spell = effect.driver() -> effectN( 1 ).trigger();
+
+  action_t* action = effect.player -> find_action( summon_spell -> name_cstr() );
+  if ( ! action )
+  {
+    action = effect.player -> create_proc_action( summon_spell -> name_cstr(), effect );
+  }
+
+  if ( ! action )
+  {
+    action = new summon_loyal_druid_t( effect.player, summon_spell );
+  }
+
+  effect.execute_action = action;
+  effect.type = SPECIAL_EFFECT_EQUIP;
+
+  new dbc_proc_callback_t( effect.item, effect );
+}
 
 void enchants::mark_of_bleeding_hollow( special_effect_t& effect )
 {
@@ -4408,6 +4831,9 @@ void unique_gear::register_special_effects()
   register_special_effect( 156052, enchants::oglethorpes_missile_splitter );
   register_special_effect( 173286, enchants::hemets_heartseeker         );
   register_special_effect( 173321, enchants::mark_of_bleeding_hollow    );
+
+  /* Legion */
+  register_special_effect( 190888, enchants::mark_of_the_loyal_druid    );
 
   /* Engineering enchants */
   register_special_effect( 177708, "1PPM_109092Trigger"                 ); /* Mirror Scope */

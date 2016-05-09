@@ -3871,6 +3871,9 @@ struct player_t : public actor_t
 
     haste_buff_t* fel_winds; // T18 LFR Plate Melee Attack Speed buff
     buff_t* demon_damage_buff; // 6.2.3 Heirloom trinket demon damage buff
+
+    // Legion Enchants
+    buff_t* invigorating_roar; // Mark of the Loyal Druid (Versatility)
   } buffs;
 
   struct debuffs_t

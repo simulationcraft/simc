@@ -2483,6 +2483,10 @@ void player_t::create_buffs()
                           .max_stack( 1 )
                           .duration( timespan_t::from_seconds( 6.0 ) );
 
+  buffs.invigorating_roar = buff_creator_t( this, "invigorating_roar", find_spell( 191124 ) )
+                            .default_value( find_spell( 191124 ) -> effectN( 1 ).percent() )
+                            .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
   struct raid_movement_buff_t : public buff_t
   {
     raid_movement_buff_t( player_t* p ) :
@@ -3027,6 +3031,9 @@ double player_t::composite_player_multiplier( school_e /* school */ ) const
 
   if ( buffs.legendary_aoe_ring && buffs.legendary_aoe_ring -> up() )
     m *= 1.0 + buffs.legendary_aoe_ring -> default_value;
+
+  if ( buffs.invigorating_roar )
+    m *= 1.0 + buffs.invigorating_roar -> value();
 
   return m;
 }
