@@ -4636,21 +4636,25 @@ void demon_hunter_t::apl_default()
 
 void demon_hunter_t::apl_havoc()
 {
+  talent_overrides_str += "/blind_fury,if=desired_targets+raid_event.adds.count>=4";
+  talent_overrides_str += "/chaos_cleave,if=desired_targets>1|raid_event.adds.exists";
+
   action_priority_list_t* def = get_action_priority_list( "default" );
 
   def -> add_action( "auto_attack" );
   def -> add_talent( this, "Nemesis", "target_if=min:target.time_to_die,if=active_enemies>desired_targets|raid_event.adds.in>60" );
-  def -> add_talent( this, "Chaos Blades" );
   def -> add_action( this, "Consume Magic" );
   def -> add_action( this, "Vengeful Retreat", "jump_cancel=1,if=gcd.remains&((talent.momentum.enabled&buff.momentum.down)|!talent.momentum.enabled)" );
-  def -> add_action( this, "Fel Rush", "if=talent.momentum.enabled&buff.momentum.down&charges>=2&(!talent.fel_mastery.enabled|fury.deficit>=50)&raid_event.movement.in>20" );
-  def -> add_action( this, artifact.fury_of_the_illidari, "fury_of_the_illidari", "if=buff.metamorphosis.down" );
+  def -> add_action( this, "Fel Rush", "jump_cancel=1,if=talent.momentum.enabled&buff.momentum.down&raid_event.movement.in>charges*10&(charges=2|cooldown.vengeful_retreat.remains>4)" );
   def -> add_action( this, "Eye Beam", "if=talent.demonic.enabled&buff.metamorphosis.down&(!talent.first_blood.enabled|fury>=80|fury.deficit<30)" );
-  def -> add_action( this, "Chaos Nova", "if=talent.demonic.enabled&buff.metamorphosis.down&(!talent.first_blood.enabled|fury>=60-talent.unleashed_power.enabled*30)" );
-  def -> add_action( this, "Metamorphosis", "if=buff.metamorphosis.down&(!talent.demonic.enabled|(!cooldown.eye_beam.ready&!cooldown.chaos_nova.ready))" );
+  def -> add_talent( this, "Chaos Blades", "if=buff.chaos_blades.down&cooldown.metamorphosis.remains>100" );
+  def -> add_talent( this, "Chaos Blades", "sync=metamorphosis" );
+  def -> add_action( this, "Metamorphosis", "if=buff.metamorphosis.down&(!talent.demonic.enabled|!cooldown.eye_beam.ready)&(cooldown.chaos_blades.ready|buff.chaos_blades.up|!talent.demon_reborn.enabled)" );
   def -> add_action( this, spec.death_sweep, "death_sweep", "if=talent.first_blood.enabled|spell_targets>1+talent.chaos_cleave.enabled" );
   def -> add_action( this, "Demon's Bite", "if=buff.metamorphosis.remains>gcd&(talent.first_blood.enabled|spell_targets>1+talent.chaos_cleave.enabled)&cooldown.blade_dance.remains<gcd&fury<70" );
   def -> add_action( this, "Blade Dance", "if=talent.first_blood.enabled|spell_targets>1+talent.chaos_cleave.enabled" );
+  def -> add_talent( this, "Fel Barrage", "if=charges>=5" );
+  def -> add_action( this, artifact.fury_of_the_illidari, "fury_of_the_illidari", "if=buff.metamorphosis.down|spell_targets.fury_of_the_illidari_tick>2+talent.chaos_cleave.enabled" );
   def -> add_action( this, "Throw Glaive", "if=talent.bloodlet.enabled&spell_targets>=2+talent.chaos_cleave.enabled" );
   def -> add_talent( this, "Felblade", "if=fury.deficit>=30+buff.prepared.up*12" );
   def -> add_action( this, spec.annihilation, "annihilation" );
@@ -4658,12 +4662,14 @@ void demon_hunter_t::apl_havoc()
   def -> add_action( this, "Throw Glaive", "if=buff.metamorphosis.down&talent.bloodlet.enabled" );
   def -> add_action( this, "Eye Beam", "if=!talent.demonic.enabled&(spell_targets.eye_beam_tick>desired_targets|raid_event.adds.in>45)" );
   def -> add_action( this, "Demon's Bite", "if=buff.metamorphosis.down&(talent.first_blood.enabled|spell_targets>1+talent.chaos_cleave.enabled)&cooldown.blade_dance.remains<gcd&fury<55" );
-  def -> add_action( this, "Demon's Bite", "if=talent.demonic.enabled&buff.metamorphosis.down&(cooldown.eye_beam.remains<gcd|cooldown.chaos_nova.remains<gcd)&fury.deficit>=30" );
-  def -> add_action( this, "Demon's Bite", "if=talent.demonic.enabled&buff.metamorphosis.down&(cooldown.eye_beam.remains<2*gcd|cooldown.chaos_nova.remains<2*gcd)&fury.deficit>=55" );
+  def -> add_action( this, "Demon's Bite", "if=talent.demonic.enabled&buff.metamorphosis.down&cooldown.eye_beam.remains<gcd&fury.deficit>=30" );
+  def -> add_action( this, "Demon's Bite", "if=talent.demonic.enabled&buff.metamorphosis.down&cooldown.eye_beam.remains<2*gcd&fury.deficit>=55" );
   def -> add_action( this, "Throw Glaive", "if=buff.metamorphosis.down&(talent.bloodlet.enabled|spell_targets>=3)" );
   def -> add_action( this, "Chaos Strike" );
+  def -> add_talent( this, "Fel Barrage", "if=charges=4&buff.metamorphosis.down" );
+  def -> add_action( this, "Fel Rush", "jump_cancel=1,if=!talent.momentum.enabled&raid_event.movement.in>charges*10" );
   def -> add_action( this, "Demon's Bite" );
-  def -> add_action( this, "Fel Rush", "if=movement.distance>=10" );
+  def -> add_action( this, "Fel Rush", "if=movement.distance" );
   def -> add_action( this, "Vengeful Retreat", "if=movement.distance" );
 }
 
