@@ -1718,12 +1718,15 @@ struct fire_mage_spell_t : public mage_spell_t
     }
 
     if ( result_is_hit( s -> result ) && s -> result == RESULT_CRIT
-                      && p() -> artifact.pyretic_incantation.rank() )
+                      && p() -> artifact.pyretic_incantation.rank()
+                      && harmful == true )
     {
+
       p() -> buffs.pyretic_incantation -> trigger();
     }
     else if ( result_is_hit( s -> result ) && s -> result != RESULT_CRIT
-                      && p() -> artifact.pyretic_incantation.rank() )
+                      && p() -> artifact.pyretic_incantation.rank() 
+                      && harmful == true )
     {
       p() -> buffs.pyretic_incantation -> expire();
     }
@@ -2842,7 +2845,11 @@ struct combustion_t : public fire_mage_spell_t
   combustion_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "combustion", p, p -> find_class_spell( "Combustion" ) )
   {
+    //TODO: Re-enable once spelldata parses correctly, and stops building the old DoT.
     parse_options( options_str );
+    //TODO: Should this have callbacks?
+    dot_duration = timespan_t::zero();
+    harmful = false;
   }
 
   virtual void execute() override
