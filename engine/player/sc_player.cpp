@@ -1002,7 +1002,13 @@ void player_t::init_initial_stats()
 
 bool player_t::init_items()
 {
-  if ( is_pet() ) return true;
+  if ( is_pet() )
+  {
+    // Re-initialize "gear" object back to all zeros if this is a pet, since player_t::player_t
+    // initializes it to a very small value to accommodate gear_x= options overriding.
+    gear.initialize( 0 );
+    return true;
+  }
 
   if ( sim -> debug )
     sim -> out_debug.printf( "Initializing items for player (%s)", name() );
