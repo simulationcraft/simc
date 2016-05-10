@@ -725,6 +725,7 @@ struct arcane_familiar_pet_t : public pet_t
     pet_t::arise();
 
     m -> buffs.arcane_familiar -> trigger();
+    m -> recalculate_resource_max( RESOURCE_MANA );
   }
 
   void demise() override
@@ -733,6 +734,7 @@ struct arcane_familiar_pet_t : public pet_t
 
     pet_t::demise();
     m -> buffs.arcane_familiar -> expire();
+    m -> recalculate_resource_max( RESOURCE_MANA );
 
   }
   arcane_familiar_pet_t( sim_t* sim, mage_t* owner ) :
@@ -6706,7 +6708,12 @@ void mage_t::recalculate_resource_max( resource_e rt )
 
   if ( talents.arcane_familiar && buffs.arcane_familiar -> check() )
   {
-    resources.max[ rt ] *= 1.0 + buffs.arcane_familiar -> data().effectN( 1 ).percent();
+    // TODO: Fix this so it is caching the correct 10% value without using a find_spell call, and not needing hardcode.
+    resources.max[ rt ] *= 1.0 + ( buffs.arcane_familiar -> data().effectN( 1 ).percent() * 10 );
+    sim -> out_debug.printf(
+        "%s mana adjusted from %.0f/%.0f to %.0f/%.0f due to Arcane Familiar",
+        name(), current_mana, current_mana_max,
+        resources.current[ rt ], resources.max[ rt ]);
   }
 }
 
