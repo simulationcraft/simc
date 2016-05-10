@@ -289,7 +289,7 @@ public:
   struct procs_t
   {
     proc_t* heating_up_generated, // Crits without HU/HS
-          * heating_up_removed, // Non-crits with HU
+          * heating_up_removed, // Non-crits with HU >200ms after application
           * heating_up_ib_converted, // IBs used on HU
           * hot_streak, // Total HS generated
           * hot_streak_spell, // HU/HS spell impacts
@@ -1785,14 +1785,25 @@ struct fire_mage_spell_t : public mage_spell_t
       // Non-crit with HU => remove HU
       if ( p -> buffs.heating_up -> check() )
       {
-        if ( sim -> log )
+        if ( p -> buffs.heating_up -> elapsed( sim -> current_time() ) >
+             timespan_t::from_millis( 200 ) )
         {
-          sim -> out_log.printf( "Heating up delay by 0.25s" );
-        }
+          p -> procs.heating_up_removed -> occur();
+          p -> buffs.heating_up -> expire();
 
-        p -> procs.heating_up_removed -> occur();
-        // HU removal happens 0.25 seconds after non-crit occurs
-        p -> buffs.heating_up -> expire( timespan_t::from_millis( 250 ) );
+          if ( sim -> debug )
+          {
+            sim -> out_log.printf( "Heating up removed by non-crit" );
+          }
+        }
+        else
+        {
+          if ( sim -> debug )
+          {
+            sim -> out_log.printf(
+              "Heating up removal ignored due to 200 ms protection" );
+          }
+        }
       }
     }
   }
