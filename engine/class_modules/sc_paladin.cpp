@@ -2339,13 +2339,13 @@ struct divine_hammer_t : public paladin_spell_t
 struct echoed_divine_storm_t: public paladin_melee_attack_t
 {
   echoed_divine_storm_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "echoed_divine_storm", p, p -> find_spell( 186876 ), false )
+    : paladin_melee_attack_t( "echoed_divine_storm", p, p -> find_spell( 224239 ), false )
   {
     parse_options( options_str );
 
     weapon = &( p -> main_hand_weapon );
 
-  weapon_multiplier = p -> find_spell( 224239 ) -> effectN( 1 ).percent() *
+  weapon_multiplier = data().effectN( 1 ).percent() *
                       p -> artifact.echo_of_the_highlord.percent();
 
     base_multiplier *= 1.0 + p -> artifact.righteous_blade.percent();
@@ -2721,12 +2721,11 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
 struct echoed_templars_verdict_t : public paladin_melee_attack_t
 {
   echoed_templars_verdict_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "echoed_verdict", p, p -> find_spell( 186805 ) , false )
+    : paladin_melee_attack_t( "echoed_verdict", p, p -> find_spell( 224266 ) , false )
   {
     parse_options( options_str );
 
-    weapon_multiplier = p -> find_spell( 224266 ) -> effectN( 1 ).percent() *
-                        p -> artifact.echo_of_the_highlord.percent();
+    weapon_multiplier = data().effectN( 1 ).percent() * p -> artifact.echo_of_the_highlord.percent();
 
     background = true;
     base_multiplier *= 1.0 + p -> artifact.might_of_the_templar.percent();
