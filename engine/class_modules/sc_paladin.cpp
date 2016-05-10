@@ -935,9 +935,6 @@ struct avenging_wrath_t : public paladin_heal_t
     {
       if ( p -> talents.sanctified_wrath -> ok() )
         background = true;
-      // TODO: hackfix to make it work with T18
-      cooldown -> duration = data().cooldown();
-      cooldown -> charges = 1;//data().charges();
       cooldown -> charges += p -> sets.set( PALADIN_RETRIBUTION, T18, B2 ) -> effectN( 1 ).base_value();
     }
 
