@@ -253,7 +253,7 @@ public:
   {
     cooldown_t* infernal;
     cooldown_t* doomguard;
-    cooldown_t* hand_of_guldan;
+    cooldown_t* dimensional_rift;
     cooldown_t* haunt;
   } cooldowns;
 
@@ -323,6 +323,7 @@ public:
     proc_t* chaos_tear;
     proc_t* chaos_portal;
     proc_t* dreadstalker_debug;
+    proc_t* dimension_ripper;
   } procs;
 
   struct spells_t
@@ -2297,6 +2298,7 @@ struct conflagrate_t: public warlock_spell_t
 
 struct incinerate_t: public warlock_spell_t
 {
+  double dimension_ripper;
   incinerate_t( warlock_t* p ):
     warlock_spell_t( p, "Incinerate" )
   {
@@ -2305,6 +2307,19 @@ struct incinerate_t: public warlock_spell_t
 
     base_execute_time *= 1.0 + p -> artifact.fire_and_the_flames.percent();
     base_multiplier *= 1.0 + p -> artifact.master_of_distaster.percent();
+    
+    dimension_ripper = p -> find_spell( 219415 ) -> proc_chance();
+  }
+  
+  void execute() override
+  {
+    warlock_spell_t::execute();
+    
+    if ( p() -> artifact.dimension_ripper && rng().roll( dimension_ripper ) && p() -> cooldowns.dimensional_rift -> current_charge < p() -> cooldowns.dimensional_rift -> charges )
+    {
+      p() -> cooldowns.dimensional_rift -> adjust( -p() -> cooldowns.dimensional_rift -> duration ); //decrease remaining time by the duration of one charge, i.e., add one charge
+      p() -> procs.dimension_ripper -> occur();
+    }
   }
 
   virtual timespan_t execute_time() const override
@@ -3339,7 +3354,8 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
 
   cooldowns.infernal = get_cooldown( "summon_infernal" );
   cooldowns.doomguard = get_cooldown( "summon_doomguard" );
-  cooldowns.hand_of_guldan = get_cooldown( "hand_of_guldan" );
+  cooldowns.dimensional_rift = get_cooldown( "dimensional_rift" );
+  cooldowns.haunt = get_cooldown( "haunt" );
 
   regen_type = REGEN_DYNAMIC;
   regen_caches[CACHE_HASTE] = true;
@@ -3838,6 +3854,7 @@ void warlock_t::init_procs()
   procs.chaos_tear = get_proc( "chaos_tear" );
   procs.chaos_portal = get_proc( "chaos_portal" );
   procs.dreadstalker_debug = get_proc( "dreadstalker_debug" );
+  procs.dimension_ripper = get_proc( "dimension_ripper" );
 }
 
 void warlock_t::apl_precombat()
