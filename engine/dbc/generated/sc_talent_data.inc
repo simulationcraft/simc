@@ -1,6 +1,6 @@
 #define TALENT_SIZE (607)
 
-// 607 talents, wow build 21655
+// 607 talents, wow build 21691
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   0,   3,   29838,       0,  0 },
@@ -141,7 +141,7 @@ static struct talent_data_t __talent_data[] = {
   { "Icefury"                           , 21199, 0x00, 0x0040, 262,   1,   6,  210714,       0,  0 },
   { "Righteous Protector"               , 21201, 0x00, 0x0002,  66,   0,   6,  204074,       0,  0 },
   { "Seraphim"                          , 21202, 0x00, 0x0002,  66,   1,   6,  152262,       0,  0 },
-  { "Beacon of the Savior"              , 21203, 0x00, 0x0002,  65,   2,   6,  200025,       0,  0 },
+  { "Beacon of Virtue"                  , 21203, 0x00, 0x0002,  65,   2,   6,  200025,   53563,  0 },
   { "Anger Management"                  , 21204, 0x00, 0x0001,   0,   0,   6,  152278,       0,  0 },
   { "Bonestorm"                         , 21207, 0x00, 0x0020, 250,   0,   6,  194844,       0,  0 },
   { "Blood Mirror"                      , 21208, 0x00, 0x0020, 250,   1,   6,  206977,       0,  0 },

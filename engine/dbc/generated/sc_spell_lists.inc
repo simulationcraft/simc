@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 21655
+// Class based active abilities, wow build 21691
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -119,9 +119,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       162056, // Jailer's Judgment
        20271, // Judgment
          633, // Lay on Hands
-      200652, // Tyr's Deliverance
+      200652, // Tyr's Deliverance (Artifact)
       200654, // Tyr's Deliverance
-      205273, // Wake of Ashes
+      205273, // Wake of Ashes (Artifact)
            0,
     },
     // Holy tree, 15 abilities
@@ -306,13 +306,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        22482, // Blade Flurry
        31224, // Cloak of Shadows
       185311, // Crimson Vial
-      202665, // Curse of the Dreadblades
+      202665, // Curse of the Dreadblades (Artifact)
         2818, // Deadly Poison
        56814, // Detection
         1966, // Feint
       209782, // Goremaw's Bite (Artifact)
         1766, // Kick
-      192759, // Kingsbane
+      192759, // Kingsbane (Artifact)
       112974, // Leeching Poison (Talent)
         1804, // Pick Lock
         2983, // Sprint
@@ -400,7 +400,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          528, // Dispel Magic
        77489, // Echo of Light
          586, // Fade
-      208065, // Light of T'uure
+      208065, // Light of T'uure (Artifact)
       207946, // Light's Wrath
       207948, // Light's Wrath
        32375, // Mass Dispel
@@ -1107,7 +1107,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 };
 #define TREE_SPECIALIZATION_SIZE (29)
 
-// Talent tree specialization abilities, wow build 21655
+// Talent tree specialization abilities, wow build 21691
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -2118,7 +2118,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 21655
+// Class mastery abilities, wow build 21691
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2357,7 +2357,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 21655
+// Racial abilities, wow build 21691
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3091,7 +3091,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 };
 #define SET_BONUS_DATA_SIZE (518)
 
-// Set bonus data, wow build 21655
+// Set bonus data, wow build 21691
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,              {   0 },    0,   73, 165641, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -3633,9 +3633,9 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   2,  11,              {   0 },    3,  102, 187133, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
   { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   4,  11,              {   0 },    3,  102, 187435, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
 };
-#define RPPMMOD_SIZE (182)
+#define RPPMMOD_SIZE (187)
 
-// 182 RPPM Modifiers, wow build level 21655
+// 187 RPPM Modifiers, wow build level 21691
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  49530,    4,  1,  1.0000 },
   {  51128,    4,  1,  1.0000 },
@@ -3781,6 +3781,7 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 202387,    4,  1,  1.0000 },
   { 202762,    4,  1,  1.0000 },
   { 202840,    4,  1,  1.0000 },
+  { 203555,    4,  1,  1.0000 },
   { 203557,    4,  1,  1.0000 },
   { 203576,    4,  1,  1.0000 },
   { 207320,    4,  1,  1.0000 },
@@ -3819,11 +3820,15 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 224073,    4,  1,  1.0000 },
   { 224076,    4,  1,  1.0000 },
   { 224158,    4,  1,  1.0000 },
+  { 225134,    4,  1,  1.0000 },
+  { 225138,    4,  1,  1.0000 },
+  { 225601,    4,  1,  1.0000 },
+  { 225606,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
 };
 #define ARTIFACT_SIZE (41)
 
-// Artifact base data, wow build 21655
+// Artifact base data, wow build 21691
 static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
   {  2,  70 },
   {  3, 577 },
@@ -3869,7 +3874,7 @@ static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
 };
 #define ARTIFACT_POWER_SIZE (711)
 
-// Artifact power data, wow build 21655
+// Artifact power data, wow build 21691
 static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] = {
   {   40,   2,  0,   0, "Wake of Ashes"                      }, // Wake of Ashes (id=205273, n_ranks=1)
   {   41,   2,  4,   3, "Highlord's Judgment"                }, // Highlord's Judgment (id=186941, n_ranks=6)
@@ -4327,7 +4332,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  975,  48,  9,   3, "Blessings of the Silver Hand"       }, // Blessings of the Silver Hand (id=200298, n_ranks=6)
   {  976,  48,  7,   3, "Expel the Darkness"                 }, // Expel the Darkness (id=200296, n_ranks=6)
   {  977,  48,  8,   3, "Deliver the Light"                  }, // Deliver the Light (id=200294, n_ranks=6)
-  { 1186,  48,  9,   3, "Second Sunrise"                     }, // Second Sunrise (id=200482, n_ranks=6)
+  { 1186,  48, 10,   3, "Second Sunrise"                     }, // Second Sunrise (id=200482, n_ranks=6)
   { 1205,  48,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1256,  48,  0,   0, "Artificial Damage"                  }, // Artificial Damage (id=213428, n_ranks=1)
   { 1342,  48,  0,   1, "Virtues of the Light"               }, // Virtues of the Light (id=222648, n_ranks=1)
@@ -4585,7 +4590,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
 };
 #define ARTIFACT_POWER_RANK_SIZE (3056)
 
-// Artifact power rank data, wow build 21655
+// Artifact power rank data, wow build 21691
 static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RANK_SIZE] = {
   { 2316,    40,  0, 205273,      0.000 },
   { 2317,    41,  0, 186941,      0.000 },
@@ -4788,12 +4793,12 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 3612,   111,  3, 189097,    130.000 },
   { 3613,   111,  4, 189097,    160.000 },
   { 3614,   111,  5, 189097,    200.000 },
-  { 2472,   113,  0, 189144,      0.000 },
-  { 3620,   113,  1, 189144,     20.000 },
-  { 3621,   113,  2, 189144,     30.000 },
-  { 3622,   113,  3, 189144,     40.000 },
-  { 3623,   113,  4, 189144,     50.000 },
-  { 3624,   113,  5, 189144,     60.000 },
+  { 2472,   113,  0, 189144,     20.000 },
+  { 3620,   113,  1, 189144,     40.000 },
+  { 3621,   113,  2, 189144,     60.000 },
+  { 3622,   113,  3, 189144,     80.000 },
+  { 3623,   113,  4, 189144,    100.000 },
+  { 3624,   113,  5, 189144,    120.000 },
   { 2475,   114,  0, 189147,      0.000 },
   { 3625,   114,  1, 189147,     75.000 },
   { 3626,   114,  2, 189147,    100.000 },
@@ -5280,11 +5285,11 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 3264,   774,  4, 193645,     16.000 },
   { 3265,   774,  5, 193645,     20.000 },
   { 3184,   775,  0, 193647,      0.000 },
-  { 3266,   775,  1, 195080,      0.000 },
-  { 3267,   775,  2, 195081,      0.000 },
-  { 3268,   775,  3, 195082,      0.000 },
-  { 3269,   775,  4, 195083,      0.000 },
-  { 3270,   775,  5, 195084,      0.000 },
+  { 6513,   775,  1, 193647,     20.000 },
+  { 6514,   775,  2, 193647,     30.000 },
+  { 6515,   775,  3, 193647,     40.000 },
+  { 6516,   775,  4, 193647,     50.000 },
+  { 6517,   775,  5, 193647,     60.000 },
   { 3185,   776,  0, 194002,      0.000 },
   { 3271,   776,  1, 194002,      2.000 },
   { 3272,   776,  2, 194002,      3.000 },
@@ -5966,12 +5971,12 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 4448,   966,  0, 200421,      0.000 },
   { 4449,   967,  0, 200407,      0.000 },
   { 4450,   968,  0, 200373,      0.000 },
-  { 4451,   969,  0, 200327,      0.000 },
-  { 4452,   969,  1, 200327,     10.000 },
-  { 4453,   969,  2, 200327,     15.000 },
-  { 4454,   969,  3, 200327,     20.000 },
-  { 4455,   969,  4, 200327,     25.000 },
-  { 4456,   969,  5, 200327,     30.000 },
+  { 4451,   969,  0, 200327,    -10.000 },
+  { 4452,   969,  1, 200327,    -20.000 },
+  { 4453,   969,  2, 200327,    -30.000 },
+  { 4454,   969,  3, 200327,    -40.000 },
+  { 4455,   969,  4, 200327,    -50.000 },
+  { 4456,   969,  5, 200327,    -60.000 },
   { 4457,   970,  0, 200326,      0.000 },
   { 4458,   970,  1, 200326,    -20.000 },
   { 4459,   970,  2, 200326,    -30.000 },
@@ -6228,7 +6233,7 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 4747,  1062,  0, 202521,      0.000 },
   { 4748,  1062,  1, 202521,      4.000 },
   { 4749,  1062,  2, 202521,      6.000 },
-  { 4750,  1062,  3, 202521,      7.000 },
+  { 4750,  1062,  3, 202521,      8.000 },
   { 4751,  1062,  4, 202521,     10.000 },
   { 4752,  1062,  5, 202521,     12.000 },
   { 4753,  1063,  0, 202522,      0.000 },

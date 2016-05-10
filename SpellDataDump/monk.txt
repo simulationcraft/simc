@@ -742,7 +742,7 @@ Cooldown         : 24 seconds
 Affecting spells : Item - Monk T14 Windwalker 2P Bonus (123149), Monk (137022), Serenity (152173), Katsuo's Eclipse (208045)
 Triggered by     : Katsuo's Eclipse (208045)
 Attributes       : ........ ........ ........ ........   ..x...x. .xx..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ..x..... ........ x....... 
                  : ........ ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ .......x ...x.... ........   ........ ........ ........ ........ 
                  : ........ ....x... .x....x. ........   ........ ........ ........ ........ 
@@ -4004,18 +4004,19 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Trigger Spell: 195651 | Target: Self(1)
 Description      : During Fists of Fury, Wind Spirit images of you attack your Fists of Fury targets for a total of ${8*$196061s1} additional Physical damage.
 
-Name             : Crosswinds (id=195651) [Spell Family (53)] 
+Name             : Crosswinds (id=195651) [Spell Family (53), Hidden] 
 Class            : Monk
 School           : Nature
 Range            : 100 yards
 Duration         : 4 seconds
 Triggered by     : Crosswinds (195650)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x....x. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7)
 Effects          :
 #1 (id=287189)   : Apply Aura (6) | Periodic Trigger Spell: Crosswinds every 0.5 seconds (23)
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 195653 | Target: Self(1)
@@ -4025,7 +4026,7 @@ Name             : Crosswinds (id=195653) [Spell Family (53)]
 Class            : Monk
 School           : Nature
 Range            : 100 yards
-Duration         : 0.7 seconds
+Duration         : 3 seconds
 Triggered by     : Crosswinds (195651)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -4035,7 +4036,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=287191)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 99625 | Misc Value 2: 0xe67 | Radius: 11 yards | Target: Unknown(73)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 99625 | Misc Value 2: 0xe67 | Radius: 15 yards | Target: Unknown(73)
 Description      : $@spelldesc195650
 
 Name             : Crosswinds (id=196061) 
@@ -4546,7 +4547,7 @@ Name             : Crane Heal (Talent) (id=198756) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Level      : 1
-Range            : 40 yards
+Range            : 100 yards
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4665,7 +4666,7 @@ Name             : Strike of the Windlord (Artifact) (id=205320) [Spell Family (
 Class            : Monk
 School           : Physical
 Resource         : 2 Chi
-Range            : 5 yards
+Range            : 9 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 40 seconds
@@ -4688,8 +4689,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 222029 | Target: Self(1)
 #4 (id=303697)   : Trigger Spell: Strike of the Windlord (64)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 500 | Trigger Spell: 205414 | Target: Self(1)
-Description      : Strike with both |cFFFFCC99Fists of the Heavens|r at all enemies in front of you, dealing ${$222029sw1+$205414sw1} damage and reducing movement speed by $s4% for $d.
-Tooltip          : Movement speed reduced by $s4%.
+Description      : Strike with both |cFFFFCC99Fists of the Heavens|r at all enemies in front of you, dealing ${$222029sw1+$205414sw1} damage and reducing movement speed by $s2% for $d.
+Tooltip          : Movement speed reduced by $s2%.
 
 Name             : Sheilun's Gift (Artifact) (id=205406) [Spell Family (53)] 
 Class            : Monk
@@ -4712,7 +4713,7 @@ Description      : Draws in all nearby clouds of mist generated by |cFFFFCC99She
 Name             : Strike of the Windlord (id=205414) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Range            : 5 yards
+Range            : 12 yards
 Proc Chance      : 101%
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
@@ -4978,7 +4979,7 @@ Description      : $@spelldesc101546
 Name             : Strike of the Windlord (id=222029) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Range            : 5 yards
+Range            : 12 yards
 Proc Chance      : 101%
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell

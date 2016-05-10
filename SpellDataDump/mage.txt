@@ -550,7 +550,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
 #2 (id=5359)     : Apply Aura (6) | Add Percent Modifier: Spell Pushback (108)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 9 | Target: Self(1)
-                   Affected Spells: Frostbolt (116), Polymorph (118), Fireball (133), Flamestrike (2120), Scorch (2948), Arcane Missiles (5143), Pyroblast (11366), Arcane Power (12042), Evocation (12051), Polymorph (28271), Polymorph (28272), Arcane Blast (30451), Polymorph (61025), Polymorph (61305), Polymorph (61721), Polymorph (61780), Arcane Missiles! (79683), Conjure Familiar (126578), Polymorph (126819), Polymorph (161353), Polymorph (161354), Polymorph (161355), Polymorph (161372), Cannonball Barrage (185779), Conjure Refreshment (190336), Blizzard (190356), Blizzard (190357), Displacement (195676), Displacement Beacon (212799)
+                   Affected Spells: Frostbolt (116), Polymorph (118), Fireball (133), Flamestrike (2120), Scorch (2948), Arcane Missiles (5143), Pyroblast (11366), Arcane Power (12042), Evocation (12051), Polymorph (28271), Polymorph (28272), Arcane Blast (30451), Polymorph (61025), Polymorph (61305), Polymorph (61721), Polymorph (61780), Arcane Missiles! (79683), Conjure Familiar (126578), Polymorph (126819), Polymorph (161353), Polymorph (161354), Polymorph (161355), Polymorph (161372), Conjure Refreshment (190336), Blizzard (190356), Blizzard (190357), Displacement (195676), Displacement Beacon (212799)
 Description      : Accelerates your spellcasting for $d, granting $m1% haste and preventing damage from delaying your spellcasts.
 Tooltip          : Haste increased by $w1% and immune to pushback.
 
@@ -617,7 +617,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=5792)     : Apply Aura (6) | Unknown effect sub type (112)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 911 | Target: Self(1)
-                   Affected Spells: Frostbolt (116), Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Frost Armor (7302), Pyroblast (11366), Arcane Blast (30451), Ice Lance (30455), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44457), Living Bomb (44461), Frozen Orb (84721), Frost Bomb (113092), Nether Tempest (114923), Nether Tempest (114954), Comet Storm (153595), Comet Storm (153596), Ice Nova (157997), Cannonball Barrage (185779), Combustion (190319), Blizzard (190356), Blizzard (190357), Ray of Frost (205021), Ebonbolt (214634), Living Bomb (217694)
+                   Affected Spells: Frostbolt (116), Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Frost Armor (7302), Pyroblast (11366), Arcane Blast (30451), Ice Lance (30455), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44457), Living Bomb (44461), Frozen Orb (84721), Frost Bomb (113092), Nether Tempest (114923), Nether Tempest (114954), Comet Storm (153595), Comet Storm (153596), Ice Nova (157997), Combustion (190319), Blizzard (190356), Blizzard (190357), Ray of Frost (205021), Ebonbolt (214634), Living Bomb (217694)
 #2 (id=99824)    : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self(1)
 Description      : Multiplies the critical strike chance of your spells against frozen targets by 1.5, and adds an additional $s2% critical strike chance.
@@ -1113,7 +1113,7 @@ Effects          :
 #2 (id=157070)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 #3 (id=331544)   : Dummy (3)
-                   Base Value: 15 | Scaled Value: 15
+                   Base Value: 10 | Scaled Value: 10
 Description      : Launches bolts of arcane energy at the enemy target, causing $s1 Arcane damage. 
 
 Damage increased by $36032s1% per Arcane Charge
@@ -1204,9 +1204,9 @@ Effects          :
 #3 (id=164986)   : Apply Aura (6) | Unknown effect sub type (408)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 30455 | Target: Self(1)
 #4 (id=196961)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 Description      : $@spelldesc112965
-Tooltip          : Your next Ice Lance deals $44544s2% increased damage, and deals damage as if the target were frozen, for a total increase of ${($44544m2/100+1)*200-100}%.
+Tooltip          : Your next Ice Lance deals ${$44544m2/$m4}% increased damage, and deals damage as if the target were frozen, for a total increase of ${($44544m2/$m4/100+1)*200-100}%.
 
 Name             : Ice Block (id=45438) [Spell Family (3)] 
 Class            : Mage
@@ -2001,7 +2001,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=120042)   : Apply Aura (6) | Unknown effect sub type (330)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-                   Affected Spells: Frostbolt (116), Polymorph (118), Fireball (133), Flamestrike (2120), Arcane Missiles (5143), Mage Armor (6117), Frost Armor (7302), Pyroblast (11366), Evocation (12051), Polymorph (28271), Polymorph (28272), Arcane Blast (30451), Molten Armor (30482), Summon Water Elemental (31687), Polymorph (61025), Polymorph (61305), Polymorph (61721), Polymorph (61780), Arcane Missiles! (79683), Frost Bomb (112948), Ring of Frost (113724), Rune of Power (116011), Ancient Teleport: Dalaran (120145), Conjure Familiar (126578), Polymorph (126819), Polymorph (161353), Polymorph (161354), Polymorph (161355), Polymorph (161372), Cannonball Barrage (185779), Conjure Refreshment (190336), Blizzard (190356), Blizzard (190357), Glacial Spike (199786), Ebonbolt (214634)
+                   Affected Spells: Frostbolt (116), Polymorph (118), Fireball (133), Flamestrike (2120), Arcane Missiles (5143), Mage Armor (6117), Frost Armor (7302), Pyroblast (11366), Evocation (12051), Polymorph (28271), Polymorph (28272), Arcane Blast (30451), Molten Armor (30482), Summon Water Elemental (31687), Polymorph (61025), Polymorph (61305), Polymorph (61721), Polymorph (61780), Arcane Missiles! (79683), Frost Bomb (112948), Ring of Frost (113724), Rune of Power (116011), Ancient Teleport: Dalaran (120145), Conjure Familiar (126578), Polymorph (126819), Polymorph (161353), Polymorph (161354), Polymorph (161355), Polymorph (161372), Conjure Refreshment (190336), Blizzard (190356), Blizzard (190357), Glacial Spike (199786), Ebonbolt (214634)
 Description      : Makes your next Mage spell castable while moving. Unaffected by the global cooldown and castable while casting. Max 3 charges.
 Tooltip          : Able to move while casting spells.
 
@@ -2035,6 +2035,7 @@ Range            : 40 yards
 Cooldown         : 0.5 seconds
 Charges          : 2 (12 seconds cooldown)
 Category         : 1500
+Affecting spells : Reignition Overdrive (194234)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -2382,7 +2383,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=141251)   : Apply Aura (6) | Mod Power Regen (110)
+#1 (id=141251)   : Apply Aura (6) | Unknown effect sub type (379)
                    Base Value: 50 | Scaled Value: 50 | Target: Self(1)
 Description      : Your mana regeneration is increased by $s1%.
 Tooltip          : Increases your mana regeneration by $s1%.
@@ -3599,7 +3600,7 @@ Effects          :
 #2 (id=279640)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Arcane Charge (36032)
-#3 (id=313335)   : Apply Aura (6) | Mod Power Regen (110)
+#3 (id=313335)   : Apply Aura (6) | Unknown effect sub type (379)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self(1)
 Description      : Increases your Mana regeneration rate and maximum Mana by ${$m1}.1%.
 
@@ -3665,10 +3666,10 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=285474)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.50000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 5.00000 | Target: Enemy(6)
 #2 (id=303223)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 224637 | Target: Enemy(6)
-Description      : Hurls a Phoenix that causes $s1 Fire damage to the target and splashes $224637s1 Fire damage to nearby enemies.
+Description      : Hurls a Phoenix that causes $s1 Fire damage to the target and splashes $224637s2 Fire damage to nearby enemies.
 
 Name             : Hot Streak (id=195283) [Spell Family (3), Passive] 
 Class            : Fire Mage
@@ -4181,10 +4182,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=302665)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
-                   Affected Spells: Cannonball Barrage (185779), Blizzard (190356), Blizzard (190357)
+                   Affected Spells: Blizzard (190356), Blizzard (190357)
 #2 (id=304112)   : Apply Aura (6) | Add Percent Modifier: Spell Radius (108)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 6 | Target: Self(1)
-                   Affected Spells: Cannonball Barrage (185779), Blizzard (190356), Blizzard (190357)
+                   Affected Spells: Blizzard (190356), Blizzard (190357)
 Description      : Increases Blizzard's damage by $s1% and its area of effect by $s2%.
 
 Name             : Erosion (id=205039) [Spell Family (3), Passive] 
@@ -4289,7 +4290,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=303945)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: 30 | Scaled Value: 30 | Mechanic: Unknown(88) | Target: Enemy(6)
+                   Base Value: -30 | Scaled Value: -30 | Mechanic: Unknown(88) | Target: Enemy(6)
 Description      : Chilled, reducing movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
@@ -4520,7 +4521,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=315617)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: 70 | Scaled Value: 70 | Mechanic: Unknown(88) | Target: Enemy(6)
+                   Base Value: -70 | Scaled Value: -70 | Mechanic: Unknown(88) | Target: Enemy(6)
 Description      : Chilled for $s1% for $d
 Tooltip          : Slowed by $s1% for $d.
 
@@ -4573,6 +4574,7 @@ GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Cooldown         : 45 seconds
 Affecting spells : Shatter (12982), Ice Floes (108839)
+Triggered by     : Ebonchill (214775)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4622,7 +4624,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=336285)   : School Damage: fire (2)
+#1 (id=336285)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
+#2 (id=338176)   : School Damage: fire (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : $@spelldesc194466
 

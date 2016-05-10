@@ -2600,7 +2600,9 @@ Effects          :
 #3 (id=191721)   : Apply Aura (6) | Add Flat Modifier: Spell Range (107)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 5 | Target: Self(1)
                    Affected Spells: Claw (16827), Bite (17253), Smack (49966)
-Description      : Your pet's Basic Attack deals $s1% increased damage, can now be used from $s2 yards away, and will instantly teleport your pet behind its target.
+#4 (id=337955)   : Dummy (3)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
+Description      : Your pet's Basic Attack deals $s1% increased damage, can now be used from $s2 yards away, and will instantly teleport your pet behind its target. Your pet can teleport only once per $s4 sec.
 
 Name             : A Murder of Crows (id=131894) [Spell Family (9)] 
 Class            : Hunter
@@ -2621,7 +2623,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
 Effects          :
 #1 (id=170310)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 60 | Scaled Value: 60 | Target: Enemy(6)
-Description      : Summons a flock of crows to attack your target over the next $d. When a target dies while affected by this ability, its cooldown will reset.
+Description      : Summons a flock of crows to attack your target, dealing ${$131900s1*16} Physical damage over $d. When a target dies while affected by this ability, its cooldown will reset.
 Tooltip          : Under attack by a flock of crows.
 
 Name             : A Murder of Crows (id=131900) [Spell Family (9)] 
@@ -3647,7 +3649,7 @@ Attributes       : ........ ........ x....... ........   ........ .xx..... .....
 Effects          :
 #1 (id=270224)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 40 yards | Target: Unknown(132) -> AOE enemy (instant)(16)
-Description      : Rapidly fires shots at all targets with your Hunter's Mark, dealing $212621sw2 Physical damage and $?s213423[marking them with Deadeye for $1213424d.
+Description      : Rapidly fires shots at all targets with your Hunter's Mark, dealing $212621sw2 Physical damage and $?s213423[marking them with Deadeye for $213424d.
 
 |Tinterface\icons\ability_rogue_bloodyeye.blp:24|t |cFFFFFFFFDeadeye|r
 $@spelldesc213424][making them Vulnerable for $187131d.
@@ -3862,7 +3864,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Cone Front(104)
 #3 (id=272309)   : Knock Back (98)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 150 | Radius: 8 yards | Target: Cone Front(104)
-Description      : Fires an explosion of bolts at all enemies in front of you, knocking them back, disorienting them for $d, and dealing $sw1 Physical damage.
+Description      : Fires an explosion of bolts at all enemies in front of you, knocking them back, disorienting them for $224729d, and dealing $sw1 Physical damage.
 Tooltip          : Disoriented.
 
 Name             : Vulnerable (id=187131) [Spell Family (9)] 
@@ -4738,7 +4740,7 @@ Name             : Lock and Load (id=194595) [Spell Family (9), Passive, Hidden]
 Class            : Hunter
 School           : Physical
 Spell Level      : 1
-Proc Chance      : 50%
+Proc Chance      : 10%
 Proc Flags       : ......x. x....... ........ ........ 
                  : White Ranged, Yellow Ranged
 Affecting spells : Item - Hunter T14 4P Bonus (123091)
@@ -5108,17 +5110,18 @@ $@spelldesc201158
 $@spellname162488
 $@spelldesc201199
 
-Name             : Disengage End (id=199558) [Spell Family (9)] 
+Name             : Disengage End (id=199558) [Spell Family (9), Hidden] 
 Class            : Hunter
 School           : Physical
 Range            : 100 yards
 Triggered by     : Disengage (781)
-Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ....x..x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7)
 Effects          :
 #1 (id=293668)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
@@ -6196,7 +6199,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=333377)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self(1)
-Description      : Your next Arcane Shot or Multi-Shot will apply Hunter's Mark. Hunter's Mark activates Marked Shot.
-Tooltip          : Next Arcane Shot or Multi-Shot will apply Hunter's Mark.
+Description      : Your next $?s214579[Sidewinders][Arcane Shot or Multi-Shot] will apply Hunter's Mark. Hunter's Mark activates Marked Shot.
+Tooltip          : Next $?s214579[Sidewinders][Arcane Shot or Multi-Shot] will apply Hunter's Mark.
 
 

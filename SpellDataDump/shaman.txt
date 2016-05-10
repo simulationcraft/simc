@@ -835,7 +835,7 @@ GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Charges          : 1 (8 seconds cooldown)
 Category         : 1536
-Affecting spells : Elemental Focus (16246), Elemental Fury (60188), Spiritwalker's Grace (79206), Ascendance (114050), Restoration Shaman (137039), Lucidity (137326), Elemental Discharge (144999), Lava Imbued (191504), Molten Blast (191572), Path of Flame (201909)
+Affecting spells : Elemental Focus (16246), Elemental Fury (60188), Lava Surge (77762), Spiritwalker's Grace (79206), Ascendance (114050), Restoration Shaman (137039), Lucidity (137326), Elemental Discharge (144999), Lava Imbued (191504), Molten Blast (191572), Path of Flame (201909)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1630,7 +1630,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=68093)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.50000 | Chain Multiplier: 0.2 | Target: Chain Friendly(45)
-Description      : A slow but efficient wave of healing energy that restores $s1 of a friendly targetâ€™s health.
+Description      : A slow but efficient wave of healing energy that restores $s1 of a friendly target’s health.
 
 Name             : Earthquake (id=77478) [Spell Family (11)] 
 Class            : Shaman
@@ -1670,6 +1670,29 @@ Effects          :
 #1 (id=68166)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Your Flame Shock damage over time has a $h% chance to reset the remaining cooldown on Lava Burst and cause your next Lava Burst to be instant.
+
+Name             : Lava Surge (id=77762) [Spell Family (11)] 
+Class            : Shaman
+School           : Fire
+Spell Level      : 40
+Duration         : 10 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : ........ ........ x....... ........ 
+                 : Hostile Spell
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ xx...... ........ 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Disable player procs (112), Disable target procs (113)
+Effects          :
+#1 (id=68171)    : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self(1)
+                   Affected Spells: Lava Burst (51505)
+Description      : The Shaman's next Lava Burst casts instantly.
+Tooltip          : Your next Lava Burst casts instantly.
 
 Name             : Spiritwalker's Grace (id=79206) [Spell Family (11)] 
 Class            : Restoration Shaman
@@ -1893,12 +1916,13 @@ Effects          :
 #1 (id=104845)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 10 yards | Target: Raid Members(56)
 
-Name             : Astral Shift (id=108271) 
+Name             : Astral Shift (id=108271) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
 Spell Level      : 44
 Duration         : 6 seconds
 Cooldown         : 90 seconds
+Affecting spells : Lucidity (137326)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3891,22 +3915,39 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=281765)   : Summon (28)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 97285 | Misc Value 2: 0xe6f | Radius: 10 yards | Target: AOE friendly(31)
-Description      : Summons a totem at the target location for $d, continually granting all allies who pass within $192082A1 yards $192082s% increased movement speed for $192082d.
+Description      : Summons a totem at the target location for $d, continually granting all allies who pass within $192078s1 yards $192082s% increased movement speed for $192082d.
 
-Name             : Wind Rush Totem (id=192082) [Spell Family (11)] 
+Name             : Wind Rush Totem (id=192078) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Nature
 Spell Level      : 1
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=281766)   : Apply Aura (6) | Unknown effect sub type (395)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 8537 | Target: Self(1)
+Description      : $@spelldesc192077
+
+Name             : Wind Rush (id=192082) [Spell Family (11)] 
+Class            : Shaman
+School           : Nature
+Spell Level      : 1
+Range            : 100 yards
 Duration         : 5 seconds
-Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... .x...... ........ 
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
-                 : ........ ...x.... ........ ........   ........ ........ ........ .......x 
-                 : ........ ........ .......x ..x.....   ........ ........ ........ ........ 
-                 : ........ ........ ........ .x......   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=281771)   : Apply Aura (6) | Increase Speed% (31)
-                   Base Value: 60 | Scaled Value: 60 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE friendly(30)
+                   Base Value: 60 | Scaled Value: 60 | Target: Friend(21)
 Description      : $@spelldesc192077
 Tooltip          : Movement speed increased by $s1%.
 
@@ -5460,7 +5501,7 @@ Effects          :
 #1 (id=306879)   : Apply Aura (6) | Unknown effect sub type (133)
                    Base Value: 10 | Scaled Value: 10 | Target: Friend(21)
 #2 (id=322959)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 9000000 | Scaled Value: 9000000 | Misc Value: 127 | Target: Friend(21)
+                   Base Value: 1000000000 | Scaled Value: 1e+009 | Misc Value: 127 | Target: Friend(21)
 Description      : $@spelldesc207399
 Tooltip          : Health increased by $s1%.
 
@@ -6107,7 +6148,7 @@ Effects          :
 #2 (id=325883)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 0x7f | Target: Self(1)
 Description      : $@spelldesc201897
-Tooltip          : Critical strike chance increased by $s2%. Damage dealt increased by $s3%.
+Tooltip          : Critical strike chance increased by $s1%. Damage dealt increased by $s2%.
 
 Name             : Icefury Overload (id=219271) [Spell Family (11)] 
 Class            : Shaman

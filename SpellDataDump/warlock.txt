@@ -143,12 +143,12 @@ Description      : Summons an Imp under your command that casts ranged Firebolts
 Name             : Drain Life (id=689) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 3% Base Mana (33000 @Level 110) and 3% Base Mana (33000 @Level 110) per second or tick
+Resource         : 0% Base Mana and 3% Base Mana (33000 @Level 110) per second or tick
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Unstable Affliction (30108), Item - Warlock T15 DPS 4P Bonus (138134), Flamelicked (185229), Drained to a Husk (199120), Perdition (199158), Devourer of Life (215165), 
+Affecting spells : Unstable Affliction (30108), Item - Warlock T15 DPS 4P Bonus (138134), Flamelicked (185229), Drained to a Husk (199120), Perdition (199158), Long Dark Night of the Soul (199214), Secrets of the Necrolyte (205183), Devourer of Life (215165), 
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ..x..... 
                  : ........ ...x.... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -163,8 +163,8 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Self(1)
 #3 (id=186635)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Enemy(6)
-Description      : Drains life from the target, causing $?s205183[${$o1*2.5}][$o1] Shadow damage, and restoring $o2% of your health over $d.
-Tooltip          : Suffering $w1 Shadow damage every $t1 seconds. Restoring $m2% of maximum health to the caster when Drain Life deals damage.
+Description      : Drains life from the target, causing $o1 Shadow damage, and restoring $o2% of your health over $d.
+Tooltip          : Suffering $s1 Shadow damage every $t1 seconds. Restoring $m2% of maximum health to the caster when Drain Life deals damage.
 
 Name             : Summon Felhunter (Summon) (id=691) [Spell Family (5)] 
 Class            : Warlock
@@ -1368,12 +1368,12 @@ School           : Fire
 Spell Level      : 20
 Range            : 100 yards
 Affecting spells : Flamelicked (185229), Fire From the Sky (196258)
-Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
-                 : ..x..... ........ ........ ......x.   ........ .x...... ........ .x....x. 
-                 : .......x .......x ........ ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ ........ ........ 
+                 : ..x..... ......x. ...x.... ......x.   ........ .x...... ........ .x....x. 
+                 : .......x .......x ........ ........   ...x.... ........ .xx..... ..x..... 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
+                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
                  : Not a proc (105)
 Effects          :
 #1 (id=33883)    : School Damage: fire (2)
@@ -2009,70 +2009,47 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=109954)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1949 | Misc Value 2: 0x1e63c | Target: Self(1)
-#2 (id=157555)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 5857 | Misc Value 2: 0x1e63e | Target: Self(1)
-#3 (id=157556)   : Apply Aura (6) | Unknown effect sub type (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 348 | Misc Value 2: 0x1e636 | Target: Self(1)
-#4 (id=157557)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 108686 | Misc Value 2: 0x1e637 | Target: Self(1)
-#5 (id=157558)   : Apply Aura (6) | Unknown effect sub type (403)
+#2 (id=157555)   : Apply Aura (6) | Unknown effect sub type (403)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 157736 | Misc Value 2: 0x27fe0 | Target: Self(1)
+#3 (id=157556)   : Apply Aura (6) | Unknown effect sub type (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 29722 | Misc Value 2: 0x1e638 | Target: Self(1)
-#6 (id=157559)   : Apply Aura (6) | Unknown effect sub type (403)
+#4 (id=157557)   : Apply Aura (6) | Unknown effect sub type (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 5740 | Misc Value 2: 0x1e639 | Target: Self(1)
-#7 (id=157560)   : Apply Aura (6) | Unknown effect sub type (403)
+#5 (id=157558)   : Apply Aura (6) | Unknown effect sub type (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 42223 | Misc Value 2: 0x1e63a | Target: Self(1)
-#8 (id=157561)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 104232 | Misc Value 2: 0x1e639 | Target: Self(1)
-#9 (id=157562)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 104233 | Misc Value 2: 0x1e63a | Target: Self(1)
-#10 (id=157563)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 140715 | Misc Value 2: 0x1e63d | Target: Self(1)
-#11 (id=157564)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 140716 | Misc Value 2: 0x1e63d | Target: Self(1)
-#12 (id=157565)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 6353 | Misc Value 2: 0x1e63b | Target: Self(1)
-#13 (id=157568)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 114654 | Misc Value 2: 0x1e63f | Target: Self(1)
-#14 (id=157569)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 104027 | Misc Value 2: 0x1e63b | Target: Self(1)
-#15 (id=157570)   : Apply Aura (6) | Unknown effect sub type (403)
+#6 (id=157559)   : Apply Aura (6) | Unknown effect sub type (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 152108 | Misc Value 2: 0x26831 | Target: Self(1)
-#16 (id=157571)   : Apply Aura (6) | Unknown effect sub type (403)
+#7 (id=157560)   : Apply Aura (6) | Unknown effect sub type (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 17962 | Misc Value 2: 0x1e640 | Target: Self(1)
-#17 (id=157572)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 108685 | Misc Value 2: 0x1e641 | Target: Self(1)
-#18 (id=157574)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 116858 | Misc Value 2: 0x1e642 | Target: Self(1)
-#19 (id=157578)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 116854 | Misc Value 2: 0x1e643 | Target: Self(1)
-#20 (id=157579)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 116855 | Misc Value 2: 0x1e644 | Target: Self(1)
-#21 (id=157580)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 116920 | Misc Value 2: 0x1e645 | Target: Self(1)
-#22 (id=179957)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 109784 | Misc Value 2: 0x217e2 | Target: Self(1)
-#23 (id=179958)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 117896 | Misc Value 2: 0x217e4 | Target: Self(1)
-#24 (id=179959)   : Apply Aura (6) | Unknown effect sub type (403)
+#8 (id=157561)   : Apply Aura (6) | Unknown effect sub type (403)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 196406 | Misc Value 2: 0x217e4 | Target: Self(1)
+#9 (id=157562)   : Apply Aura (6) | Unknown effect sub type (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 117828 | Misc Value 2: 0x217e4 | Target: Self(1)
-#25 (id=179960)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 108563 | Misc Value 2: 0x2232c | Target: Self(1)
-#26 (id=186563)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 122351 | Misc Value 2: 0x2232a | Target: Self(1)
-#27 (id=186564)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 122355 | Misc Value 2: 0x2232a | Target: Self(1)
-#28 (id=186565)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 109797 | Misc Value 2: 0x225bd | Target: Self(1)
-#29 (id=186571)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 77220 | Misc Value 2: 0x225d8 | Target: Self(1)
-#30 (id=186573)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 157736 | Misc Value 2: 0x27fe0 | Target: Self(1)
-#31 (id=203685)   : Apply Aura (6) | Unknown effect sub type (332)
+#10 (id=157563)   : Apply Aura (6) | Unknown effect sub type (332)
                    Base Value: 148970 | Scaled Value: 148970 | Misc Value 2: 0x225d9 | Target: Self(1)
-#32 (id=203686)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 157701 | Scaled Value: 157701 | Target: Self(1)
-                   Affected Spells: Chaos Bolt (116858)
+#11 (id=338097)   : Apply Aura (6) | Unknown effect sub type (403)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 111400 | Misc Value 2: 0x217f5 | Target: Self(1)
+#12 (id=338098)   : Apply Aura (6) | Unknown effect sub type (403)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 196408 | Misc Value 2: 0x217f9 | Target: Self(1)
+#13 (id=338099)   : Apply Aura (6) | Unknown effect sub type (403)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 3110 | Misc Value 2: 0x217d9 | Target: Self(1)
+#14 (id=338100)   : Unknown effect type (174) | Unknown effect sub type (403)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 3110 | Misc Value 2: 0x217d9 | Radius: 100 yards | Target: Self(1)
+#15 (id=338101)   : Apply Aura (6) | Unknown effect sub type (403)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 119899 | Misc Value 2: 0x217db | Target: Self(1)
+#16 (id=338102)   : Unknown effect type (174) | Unknown effect sub type (403)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 119899 | Misc Value 2: 0x217db | Radius: 100 yards | Target: Self(1)
+#17 (id=338103)   : Apply Aura (6) | Unknown effect sub type (403)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 119905 | Misc Value 2: 0x217db | Target: Self(1)
+#18 (id=338104)   : Apply Aura (6) | Unknown effect sub type (403)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 89808 | Misc Value 2: 0x217da | Target: Self(1)
+#19 (id=338105)   : Unknown effect type (174) | Unknown effect sub type (403)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 89808 | Misc Value 2: 0x217da | Radius: 100 yards | Target: Self(1)
+#20 (id=338106)   : Apply Aura (6) | Unknown effect sub type (403)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 112921 | Misc Value 2: 0x225db | Target: Self(1)
+#21 (id=338107)   : Apply Aura (6) | Unknown effect sub type (332)
+                   Base Value: 148972 | Scaled Value: 148972 | Misc Value 2: 0x225d9 | Target: Self(1)
 Description      : Corrupts all of your Warlock fire spells, infusing them with fel magic.
 
 Name             : Call Dreadstalkers (id=104316) [Spell Family (5)] 
@@ -2100,7 +2077,7 @@ Name             : Hand of Gul'dan (id=104317) [Spell Family (5)]
 Class            : Warlock
 School           : Shadow
 Range            : 100 yards
-Duration         : 12 seconds
+Duration         : 14 seconds
 Affecting spells : Dark Soul (138483)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2181,7 +2158,7 @@ Attributes       : ........ ........ x....... ........   .......x .x...... .....
 Effects          :
 #1 (id=114885)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Radius: 8 yards | Target: Enemy(6)
-Description      : Calls down a demonic meteor full of Wild Imps which burst forth to attack the target for $104317d.
+Description      : Calls down a demonic meteor full of Wild Imps which burst forth to attack the target for $225481d.
 
 Deals up to ${$m1*$86040m1} Shadowflame damage on impact to all enemies within $86040A1 yds of the target$?s196283[, applies Doom to each target,][] and summons up to ${$m1*$104317m2} Wild Imps, based on Soul Shards consumed.
 
@@ -2219,7 +2196,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=119452)   : Unknown effect type (202) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | Radius: 100 yards | Target: Self(1)
+                   Base Value: 10 | Scaled Value: 10 | Radius: 100 yards | Target: Self(1)
 #2 (id=326363)   : Unknown effect type (202) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Radius: 100 yards | Target: Self(1)
 Description      : All single-target damage done by you and your minions grants you and your pet shadowy shields that absorb $s1% of the damage dealt$?s219272[][ for $108366d], up to $?s219272[$219272s2][$s2]% of maximum health.
@@ -2297,9 +2274,9 @@ Effects          :
 #1 (id=119566)   : Apply Owner Area Aura (143) | Unknown effect sub type (81)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 127 | Radius: 100 yards | Target: Self(1)
 #2 (id=119569)   : Apply Owner Area Aura (143) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 127 | Radius: 100 yards | Target: Self(1)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 127 | Radius: 100 yards | Target: Self(1)
 #3 (id=311358)   : Apply Owner Area Aura (143) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | Misc Value: 127 | Radius: 100 yards | Target: Self(1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 127 | Radius: 100 yards | Target: Self(1)
 Description      : $@spelldesc108415
 Tooltip          : $s1% of all damage taken is split with the Warlock's summoned demon.  
 The Warlock is healed for $s2% and your demon is healed for $s3% of all damage the Warlock deals.
@@ -2805,7 +2782,7 @@ Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Velocity         : 16 yards/sec
-Affecting spells : The Codex of Xerrath (101508), Backdraft (117828), Dark Soul (138483), Item - Warlock T17 Destruction 4P Bonus (165452), Flamelicked (185229), Item - Warlock T18 Destruction 2P Bonus (185965), Chaotic Instability (196217), Reverse Entropy (205148), Odr, Shawl of the Ymirjar (212173)
+Affecting spells : Backdraft (117828), Dark Soul (138483), Item - Warlock T17 Destruction 4P Bonus (165452), Flamelicked (185229), Item - Warlock T18 Destruction 2P Bonus (185965), Chaotic Instability (196217), Reverse Entropy (205148), Odr, Shawl of the Ymirjar (212173)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2862,7 +2839,7 @@ Effects          :
 Description      : $@spelldesc196406
 Tooltip          : Incinerate and Chaos Bolt cast times reduced by $s1%.
 
-Name             : Fear (id=118699) [Spell Family (5)] 
+Name             : Fear Self (id=118699) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
 Spell Level      : 14
@@ -3146,83 +3123,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #12 (id=261063)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-
-Name             : The Codex of Xerrath (id=137206) [Spell Family (5), Passive, Hidden] 
-Class            : Warlock
-School           : Chaos
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ......x. ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=180034)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 111400 | Misc Value 2: 0x217f5 | Target: Self(1)
-#2 (id=180036)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 108647 | Misc Value 2: 0x217f8 | Target: Self(1)
-#3 (id=180037)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 63304 | Misc Value 2: 0x222bf | Target: Self(1)
-#4 (id=180039)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 56235 | Misc Value 2: 0x1e640 | Target: Self(1)
-#5 (id=180041)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 108683 | Misc Value 2: 0x217f9 | Target: Self(1)
-#6 (id=184848)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 120451 | Misc Value 2: 0x222c1 | Target: Self(1)
-#7 (id=184849)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 114635 | Misc Value 2: 0x222bf | Target: Self(1)
-#8 (id=186429)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 122738 | Misc Value 2: 0x2259f | Target: Self(1)
-#9 (id=186430)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 131755 | Misc Value 2: 0x225a0 | Target: Self(1)
-#10 (id=186442)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 103958 | Misc Value 2: 0x225a6 | Target: Self(1)
-#11 (id=186457)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 140718 | Misc Value 2: 0x1e63c | Target: Self(1)
-#12 (id=186458)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 5857 | Misc Value 2: 0x1e63e | Target: Self(1)
-#13 (id=186459)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 104025 | Misc Value 2: 0x225bd | Target: Self(1)
-#14 (id=186460)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 129476 | Misc Value 2: 0x1e63e | Target: Self(1)
-#15 (id=186465)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 140719 | Misc Value 2: 0x225bb | Target: Self(1)
-#16 (id=186491)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 140721 | Misc Value 2: 0x225bb | Target: Self(1)
-#17 (id=186549)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 3110 | Misc Value 2: 0x217d9 | Target: Self(1)
-#18 (id=186550)   : Unknown effect type (174) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 3110 | Misc Value 2: 0x217d9 | Radius: 100 yards | Target: Self(1)
-#19 (id=186551)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 119899 | Misc Value 2: 0x217db | Target: Self(1)
-#20 (id=186552)   : Unknown effect type (174) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 119899 | Misc Value 2: 0x217db | Radius: 100 yards | Target: Self(1)
-#21 (id=186553)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 157736 | Misc Value 2: 0x1e636 | Target: Self(1)
-#22 (id=186554)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 119905 | Misc Value 2: 0x217db | Target: Self(1)
-#23 (id=186555)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 89808 | Misc Value 2: 0x217da | Target: Self(1)
-#24 (id=186556)   : Unknown effect type (174) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 89808 | Misc Value 2: 0x217da | Radius: 100 yards | Target: Self(1)
-#25 (id=186557)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 132411 | Misc Value 2: 0x217da | Target: Self(1)
-#26 (id=186562)   : Unknown effect type (174) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 132411 | Misc Value 2: 0x217da | Radius: 100 yards | Target: Self(1)
-#27 (id=187078)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 115276 | Misc Value 2: 0x22661 | Target: Self(1)
-#28 (id=187079)   : Unknown effect type (174) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 115276 | Misc Value 2: 0x22661 | Radius: 100 yards | Target: Self(1)
-#29 (id=203677)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 114168 | Misc Value 2: 0x245e8 | Target: Self(1)
-#30 (id=203680)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 109151 | Misc Value 2: 0x245e9 | Target: Self(1)
-#31 (id=203682)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 112921 | Misc Value 2: 0x225db | Target: Self(1)
-#32 (id=203690)   : Apply Aura (6) | Unknown effect sub type (332)
-                   Base Value: 148972 | Scaled Value: 148972 | Misc Value 2: 0x225d9 | Target: Self(1)
-Description      : Corrupts all of your Warlock fire spells, infusing them with fel magic.
 
 Name             : Player Damage Reduction Level 90 (id=142689) [Passive, Hidden] 
 Class            : Death Knight, Shaman, Mage, Warlock, Monk
@@ -3865,6 +3765,7 @@ School           : Physical
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x.x..... ........ 
                  : Hostile Spell, Periodic
+Affecting spells : Item - Warlock T17 Destruction 2P Bonus (165455)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3908,7 +3809,7 @@ Proc Flags       : ........ ........ x.x..... ........
                  : Hostile Spell, Periodic
 Triggered by     : Grimoire of Sacrifice (108503)
 Attributes       : ........ ........ ........ .....x..   ........ ..x..... ........ ..x..... 
-                 : ........ ........ ........ ..x..x..   ........ ........ x....... ......x. 
+                 : ........ ........ ........ ..x..x..   ........ ........ x....... ..x...x. 
                  : ........ ...x.... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ...x.... ........ ........ 
                  : ........ ....xx.. ........ .......x   ........ ........ ........ ........ 
@@ -4080,7 +3981,7 @@ GCD              : 1.5 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
@@ -4095,17 +3996,17 @@ Class            : Warlock
 School           : Shadowflame
 Spell Level      : 1
 Range            : 100 yards
-Attributes       : ........ ........ ........ ........   ........ ........ ...x.... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ .......x x..x....   .....x.. ........ ...x.... ........ 
+                 : ........ ......x. ...x.... ........   ........ ........ ........ ......x. 
+                 : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... ........ x.......   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
+                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
 Effects          :
 #1 (id=288084)   : Instant Kill (1)
-                   Base Value: 0 | Scaled Value: 0 | Target: Friend(21)
+                   Base Value: 0 | Scaled Value: 0 | Target: Unknown(25)
 #2 (id=288085)   : School Damage: shadowflame (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.50000 | Radius: 0 - 8 yards | Target: Unknown(132) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.50000 | Radius: 0 - 8 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
 Description      : $@spelldesc196277
 
 Name             : Hand of Doom (id=196283) [Spell Family (5), Passive] 
@@ -4269,11 +4170,12 @@ School           : Fire
 Range            : 40 yards
 Velocity         : 24 yards/sec
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Not a proc (105)
 Effects          :
 #1 (id=288343)   : School Damage: fire (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Target: Enemy(6)
@@ -4304,6 +4206,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 3 (45 seconds cooldown)
 Category         : 1630
+Triggered by     : Scepter of Sargeras (219839)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4387,12 +4290,12 @@ Description      : $@spelldesc187365
 Name             : Drain Soul (id=198590) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 3% Base Mana (33000 @Level 110) and 3% Base Mana (33000 @Level 110) per second or tick
+Resource         : 0% Base Mana and 3% Base Mana (33000 @Level 110) per second or tick
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Unstable Affliction (30108), Item - Warlock T15 DPS 4P Bonus (138134), Flamelicked (185229), Drained to a Husk (199120), Perdition (199158), Devourer of Life (215165), 
+Affecting spells : Unstable Affliction (30108), Item - Warlock T15 DPS 4P Bonus (138134), Flamelicked (185229), Drained to a Husk (199120), Perdition (199158), Long Dark Night of the Soul (199214), Secrets of the Necrolyte (205183), Devourer of Life (215165), 
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ..x..... 
                  : ........ ...x.... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -4508,7 +4411,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=303022)   : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 103679 | Misc Value 2: 0xeb8 | Radius: 2.5 yards | Target: Unknown(49)
-Description      : Creates a Soul Effigy bound to the target, which is attackable only by you. $205247s1% of all damage taken by the Effigy is duplicated on the original target. Damage against the Soul Effigy has $205247s2% of normal chance to trigger additional effects. Limit 1. Lasts $d.
+Description      : Creates a Soul Effigy bound to the target, which is attackable only by you. $205247s1% of all damage taken by the Effigy is duplicated on the original target. Limit 1. Lasts $d.
 Tooltip          : Damage taken by the Soul Effigy is replicated on this target.
 
 Name             : Phantom Singularity (id=205179) [Spell Family (5)] 
@@ -4589,8 +4492,9 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=302913)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 200 | Scaled Value: 200 | Misc Value: 3 | Target: Self(1)
+#1 (id=302913)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 200 | Scaled Value: 200 | Misc Value: 22 | Target: Self(1)
+                   Affected Spells: Drain Life (689), Drain Soul (198590)
 Description      : Your Drain Life is massively empowered, dealing $s1% increased damage.
 
 Name             : Roaring Blaze (id=205184) [Spell Family (5), Passive] 
@@ -4820,6 +4724,7 @@ Name             : Reap Souls (Artifact) (id=216698)
 Class            : Warlock
 School           : Physical
 Velocity         : 20 yards/sec
+Triggered by     : Ulthalesh (204819)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4877,5 +4782,20 @@ Effects          :
                    Base Value: -15001 | Scaled Value: -15001 | Misc Value: 1 | Target: Self(1)
                    Affected Spells: Summon Imp (688), Summon Felhunter (691), Summon Voidwalker (697), Summon Succubus (712), Soul Leech (108366)
 Description      : Your Soul Leech absorption now passively recharges at a rate of $s1% of maximum health every $t1 sec, and may now absorb up to $s2% of maximum health.
+
+Name             : Hand of Gul'dan (id=225481) [Hidden] 
+Class            : Warlock
+School           : Physical
+Duration         : 12 seconds
+Attributes       : .......x ........ .......x x..x.x.x   .....x.. ..x..... ........ ........ 
+                 : x.x..... ......x. ...x.... ....x...   ........ ........ xx..x... ........ 
+                 : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
+                 : ..x..... ....xx.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=338035)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 
