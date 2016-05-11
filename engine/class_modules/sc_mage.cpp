@@ -5798,6 +5798,7 @@ void mage_t::create_buffs()
 
   // Fire
   buffs.combustion            = buff_creator_t( this, "combustion", find_spell( 190319 ) )
+                                  .cd( timespan_t::zero() )
                                   .add_invalidate( CACHE_SPELL_CRIT )
                                   .add_invalidate( CACHE_MASTERY );
   buffs.enhanced_pyrotechnics = buff_creator_t( this, "enhanced_pyrotechnics", find_spell( 157644 ) );
