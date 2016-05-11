@@ -4578,7 +4578,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Stance Mask      : 0x40000000
-Affecting spells : Mastery: Starlight (77492), Soul of the Forest (114107), Item - Druid T14 Balance 2P Bonus (123082), Lucidity (137247), Thrash (192090), Astral Influence (197524), Stellar Drift (202354), Ekowraith, Creator of Worlds (210667), Echoing Stars (214508), 
+Affecting spells : Mastery: Starlight (77492), Soul of the Forest (114107), Item - Druid T14 Balance 2P Bonus (123082), Lucidity (137247), Thrash (192090), Astral Influence (197524), Stellar Drift (202354), Oneth's Overconfidence (209407), Ekowraith, Creator of Worlds (210667), Echoing Stars (214508), 
 Attributes       : ........ ........ x....... .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ......x. ........ ........ ........   ........ .....x.. ........ ........ 
@@ -6165,6 +6165,27 @@ Effects          :
                    Affected Spells: Starsurge (78674), Starsurge (197626)
 Description      : $@spelldesc209405
 Tooltip          : Your next Starsurge costs no Astral Power.
+
+Name             : Oneth's Overconfidence (id=209407) [Spell Family (7)] 
+Class            : Druid
+School           : Arcane
+Spell Level      : 5
+Duration         : Aura (infinite)
+Proc Chance      : 100%
+Proc Flags       : ........ ........ ........ .....x.. 
+                 
+Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=309932)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
+                   Base Value: -1000 | Scaled Value: -1000 | Misc Value: 14 | Target: Self(1)
+                   Affected Spells: Starfall (191034)
+Description      : $@spelldesc209405
+Tooltip          : Your next Starfall costs no Astral Power.
 
 Name             : Stag Form (Shapeshift) (id=210053) [Spell Family (7)] 
 Class            : Druid
