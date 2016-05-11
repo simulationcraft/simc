@@ -945,7 +945,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          783, // Travel Form (Shapeshift)
            0,
     },
-    // Balance tree, 19 abilities
+    // Balance tree, 20 abilities
     {
        22812, // Barkskin (Active Mitigation)
       194223, // Celestial Alignment
@@ -959,6 +959,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       194153, // Lunar Strike (Lunar)
        24858, // Moonkin Form
       209406, // Oneth's Intuition
+      209407, // Oneth's Overconfidence
         5215, // Prowl
         2782, // Remove Corruption
        78675, // Solar Beam
