@@ -1503,6 +1503,7 @@ struct fel_rush_t : public demon_hunter_spell_t
     timespan_t g = demon_hunter_spell_t::gcd();
     
     // Fel Rush's loss of control causes a GCD lag after the loss ends.
+    // TOCHECK: Does this delay happen when jump cancelling?
     g += rng().gauss( sim -> gcd_lag, sim -> gcd_lag_stddev );
 
     return g;
@@ -2518,7 +2519,7 @@ struct chaos_blade_t : public demon_hunter_attack_t
     : demon_hunter_attack_t( n, p, s )
   {
     base_execute_time = weapon -> swing_time;
-    special           = false;  // Apr 12 2016: Cannot glance.
+    special = true; // Apr 12 2016: Cannot miss.
     repeating = background = true;
   }
 };

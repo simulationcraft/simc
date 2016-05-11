@@ -58,7 +58,6 @@ namespace { // UNNAMED NAMESPACE
   predator_rppm option
   initial_astral_power option
   initial_moon_stage option
-  active_starfalls expression
   moon stage expressions
 */
 
@@ -259,8 +258,6 @@ struct druid_t : public player_t
 private:
   form_e form; // Active druid form
 public:
-  unsigned active_starfalls;
-  unsigned starfall_counter; // for assigning each starfall instance an id
   moon_stage_e moon_stage;
   struct {
     double x, y;
@@ -304,6 +301,8 @@ public:
     heals::cenarion_ward_hot_t*     cenarion_ward_hot;
     heals::yseras_tick_t*           yseras_gift;
     spells::moonfire_t*             galactic_guardian;
+    spell_t*                        starfall;
+    spell_t*                        echoing_stars;
     spells::starshards_t*           starshards;
   } active;
 
@@ -353,8 +352,8 @@ public:
     buff_t* lunar_empowerment;
     buff_t* manipulated_fel_energy; // Legion Legendary Impeccable Fel Essence
     buff_t* moonkin_form;
-    buff_t* oneths_intuition_starfall; // Legion Legendary
-    buff_t* oneths_intuition_starsurge; // Legion Legendary
+    buff_t* oneths_intuition; // Legion Legendary
+    buff_t* oneths_overconfidence; // Legion Legendary
     buff_t* owlkin_frenzy;
     buff_t* solar_empowerment;
     buff_t* star_power; // Moon and Stars artifact medal
@@ -740,8 +739,6 @@ public:
   druid_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DRUID, name, r ),
     form( NO_FORM ),
-    active_starfalls( 0 ),
-    starfall_counter( 0 ),
     t16_2pc_starfall_bolt( nullptr ),
     t16_2pc_sun_bolt( nullptr ),
     fangs_of_ashamane(),
@@ -5369,38 +5366,34 @@ struct stampeding_roar_t : public druid_spell_t
 
 struct starfall_t : public druid_spell_t
 {
-  struct starfall_pulse_t : public druid_spell_t
+  struct starfall_tick_t : public druid_spell_t
   {
-    timespan_t travel_time_;
+    bool echoing_stars;
 
-    starfall_pulse_t( druid_t* p ) :
-      druid_spell_t( "starfall_pulse", p, p -> find_spell( 191037 ) )
+    starfall_tick_t( druid_t* p ) :
+      druid_spell_t( "starfall_tick", p, p -> find_spell( 191037 ) ),
+      echoing_stars( false )
     {
+      aoe = -1;
       background = dual = direct_tick = true; // Legion TOCHECK
       callbacks = false;
+      radius  = p -> find_spell( 191034 ) -> effectN( 1 ).radius();
+      radius *= 1.0 + p -> talent.stellar_drift -> effectN( 1 ).percent();
 
       base_multiplier *= 1.0 + p -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 1 ).percent();
       base_multiplier *= 1.0 + p -> talent.stellar_drift -> effectN( 2 ).percent();
-
-      if ( p -> artifact.echoing_stars.rank() )
-      {
-        aoe += p -> artifact.echoing_stars.data().effectN( 1 ).base_value();
-        base_aoe_multiplier *= 1.0 + p -> artifact.echoing_stars.data().effectN( 2 ).percent();
-        radius = p -> artifact.echoing_stars.data().effectN( 3 ).base_value();
-      }
     }
-
-    void execute() override
-    {
-      /* Generate a travel time (800-1800ms) for the whole execute.
-        Travel time needs to be the same for all chain targets. */
-      travel_time_ = rng().real() * timespan_t::from_seconds( 1.0 ) + timespan_t::from_seconds( 0.8 );
-
-      druid_spell_t::execute();
-    }
-
+    
     timespan_t travel_time() const override
-    { return travel_time_; }
+    {
+      // If this is an echo and distance targeting is on, no travel is needed.
+      if ( echoing_stars && sim -> distance_targeting_enabled )
+        return timespan_t::zero();
+
+      /* Generate a travel time, 800 - 1800ms. FIXME: Travel time is a bit messed up with regards
+      to echoes. "Chains" should impact as the same time as their source. */
+      return rng().range( timespan_t::from_millis( 800 ), timespan_t::from_millis( 1800 ) );
+    }
 
     double action_multiplier() const override
     {
@@ -5411,129 +5404,139 @@ struct starfall_t : public druid_spell_t
 
       return am;
     }
-  };
 
-  struct starfall_dot_event_t : public event_t
-  {
-    druid_t* druid;
-    starfall_t* starfall; // parent action
-    timespan_t expiration; // time of expiration
-    unsigned current_tick;
-    unsigned id; // for debug output purposes
-    double x, y; // starfall position
-
-    starfall_dot_event_t( druid_t* p, starfall_t* a ) :
-      event_t( *p ),
-      druid( p ),
-      starfall( a ),
-      expiration( p -> sim -> current_time() + a -> starfall_duration ),
-      current_tick( 1 ),
-      id( p -> starfall_counter ),
-      x( a -> execute_state -> original_x ),
-      y( a -> execute_state -> original_y )
+    void impact( action_state_t* s ) override
     {
-      add_event( tick_time() );
+      druid_spell_t::impact( s );
+
+      // Distance targeting: Execute a proper "chain" off of each target impacted.
+      if ( p() -> artifact.echoing_stars.rank() && ! echoing_stars &&
+        sim -> distance_targeting_enabled )
+      {
+        p() -> active.echoing_stars -> target = select_chain_target( s );
+
+        if ( p() -> active.echoing_stars -> target )
+          p() -> active.echoing_stars -> schedule_execute();
+      }
     }
-
-    starfall_dot_event_t( druid_t* p, unsigned ct, unsigned i, starfall_t* a, timespan_t exp, double prev_x, double prev_y ) :
-      event_t( *p ),
-      druid( p ),
-      starfall( a ),
-      expiration( exp ),
-      current_tick( ct + 1 ),
-      id( i ),
-      x( prev_x ),
-      y( prev_y )
-    {
-      add_event( tick_time() );
-    }
-
-    const char* name() const override
-    { return "Starfall Custom Tick"; }
-
-    timespan_t tick_time()
-    { return starfall -> base_tick_time * starfall -> composite_haste(); }
 
     void execute() override
     {
-      sim_t& s = sim();
+      druid_spell_t::execute();
 
-      if ( s.log )
-        s.out_log.printf( "%s_%u ticks (%d of %d). tt=%.3f",
-          starfall -> name(), id, current_tick,
-          current_tick + ( int ) ( ( expiration - s.current_time() ) / tick_time() ),
-          tick_time().total_seconds() );
-
-      for ( size_t i = 0; i < s.actor_list.size(); i++ )
+      // Non-distance targeting: If we hit more than 1 target, simply trigger the echo as an AoE.
+      if ( p() -> artifact.echoing_stars.rank() && ! echoing_stars &&
+        ! sim -> distance_targeting_enabled && execute_state -> n_targets > 1 )
       {
-        player_t* target = s.actor_list[ i ];
+        assert( ! p() -> active.echoing_stars -> pre_execute_state );
+        // action_state_t* s = p() -> active.echoing_stars -> get_state( execute_state );
+        p() -> active.echoing_stars -> schedule_execute();
+      }
+    }
 
-        if ( target -> is_enemy() && ! target -> is_sleeping() &&
-          ( ! s.distance_targeting_enabled || target -> get_position_distance( x, y ) <= starfall -> radius ) )
-        {
-          starfall -> pulse -> target = target;
-          starfall -> pulse -> execute();
-        }
+    player_t* select_chain_target( action_state_t* s )
+    {
+      // Create target list
+      std::vector<player_t*> targets;
+      for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
+      {
+        player_t* t = sim -> target_non_sleeping_list[ i ];
+
+        if ( t -> is_enemy() && t != s -> target &&
+          t -> get_ground_aoe_distance( *s ) <= p() -> active.echoing_stars -> radius )
+          targets.push_back( t );
+      }
+        
+      if ( targets.size() > 0 )
+      {
+        // Select a random target
+        return targets[ p() -> rng().range( 0, targets.size() ) ];
       }
 
-      // If next tick period falls within the duration, schedule another event. (no partial ticks)
-      if ( sim().current_time() + tick_time() <= expiration )
-        new ( sim() ) starfall_dot_event_t( druid, current_tick, id, starfall, expiration, x, y );
-      else
-        druid -> active_starfalls--;
+      return nullptr;
     }
   };
 
-  starfall_pulse_t* pulse;
-  timespan_t starfall_duration;
-
-  starfall_t( druid_t* player, const std::string& options_str ):
-    druid_spell_t( "starfall", player, player -> find_spell( 191034 ) ),
-    pulse( new starfall_pulse_t( player ) )
+  starfall_t( druid_t* p, const std::string& options_str ):
+    druid_spell_t( "starfall", p, p -> find_spell( 191034 ) )
   {
     parse_options( options_str );
 
-    may_crit = false;
-    starfall_duration = data().duration();
-    base_tick_time = starfall_duration / 9.0; // ticks 9 times (missing from spell data)
+    may_miss = may_crit = false;
+    base_tick_time = data().duration() / 8.0; // ticks 9 times (missing from spell data)
+    // TOCHECK: tick zero?
 
-    radius  = data().effectN( 1 ).radius();
-    radius *= 1.0 + player -> talent.stellar_drift -> effectN( 1 ).percent();
+    if ( ! p -> active.starfall )
+    {
+      p -> active.starfall = new starfall_tick_t( p );
+      p -> active.starfall -> stats = stats;
+    }
 
-    add_child( pulse );
+    if ( p -> artifact.echoing_stars.rank() && ! p -> active.echoing_stars )
+    {
+      assert( p -> artifact.echoing_stars.data().effectN( 1 ).base_value() == 2 );
 
-    base_costs[ RESOURCE_ASTRAL_POWER ] += player -> talent.soul_of_the_forest -> effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
+      /* Create echoing stars action. If distance targeting is off, we'll just cheat a bit and
+      trigger a repeat AoE that hits for less damage. If it's on, then we'll do real chaining
+      from each target impacted. */
+      starfall_tick_t* echo = new starfall_tick_t( p );
+      // set bool so this action knows its the secondary and to not trigger itself
+      echo -> echoing_stars = true;
+      echo -> base_multiplier *= 1.0 + p -> artifact.echoing_stars.data().effectN( 2 ).percent();
+        
+      if ( sim -> distance_targeting_enabled )
+      {
+        echo -> aoe = 0;
+        echo -> radius = p -> artifact.echoing_stars.data().effectN( 3 ).base_value();
+      }
+
+      echo -> stats = stats;
+      p -> active.echoing_stars = echo;
+    }
+
+    base_costs[ RESOURCE_ASTRAL_POWER ] += p -> talent.soul_of_the_forest -> effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
   }
 
   double cost() const override
   {
-    if ( p() -> legendary.oneths_intuition && p() -> buff.oneths_intuition_starfall -> check() )
+    if ( p() -> legendary.oneths_intuition && p() -> buff.oneths_overconfidence -> check() )
       return 0;
 
     return druid_spell_t::cost();
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    druid_spell_t::impact( s );
-
-    td( s -> target ) -> debuff.stellar_empowerment -> trigger();
   }
 
   virtual void execute() override
   {
     druid_spell_t::execute();
 
-    p() -> active_starfalls++;
-    p() -> starfall_counter++;
-    new ( *sim ) starfall_dot_event_t( p(), this );
+    new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+        .target( execute_state -> target )
+        .x( execute_state -> target -> x_position )
+        .y( execute_state -> target -> y_position )
+        .pulse_time( base_tick_time )
+        .duration( data().duration() )
+        .start_time( sim -> current_time() )
+        .action( p() -> active.starfall )
+        .hasted( ground_aoe_params_t::SPELL_HASTE ), true );
+
+    // Trigger starfall debuffs
+    for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
+    {
+      player_t* t = sim -> target_non_sleeping_list[ i ];
+
+      if ( t -> is_enemy() && ( ! sim -> distance_targeting_enabled ||
+        t -> get_player_distance( *execute_state -> target ) <= p() -> active.starfall -> radius ) )
+      {
+        td( t ) -> debuff.stellar_empowerment -> trigger();
+      }
+    }
     
     if ( p() -> legendary.oneths_intuition )
     {
-      if ( p() -> buff.oneths_intuition_starfall -> up() ) // benefit tracking
-        p() -> buff.oneths_intuition_starfall -> decrement();
+      if ( p() -> buff.oneths_overconfidence -> up() ) // benefit tracking
+        p() -> buff.oneths_overconfidence -> decrement();
 
-      p() -> buff.oneths_intuition_starsurge -> trigger();
+      p() -> buff.oneths_intuition -> trigger();
     }
   }
 };
@@ -5598,7 +5601,7 @@ struct starsurge_t : public druid_spell_t
 
   double cost() const override
   {
-    if ( p() -> legendary.oneths_intuition && p() -> buff.oneths_intuition_starsurge -> check() )
+    if ( p() -> legendary.oneths_intuition && p() -> buff.oneths_intuition -> check() )
       return 0;
 
     double c = druid_spell_t::cost();
@@ -5651,10 +5654,10 @@ struct starsurge_t : public druid_spell_t
     
     if ( p() -> legendary.oneths_intuition )
     {
-      if ( p() -> buff.oneths_intuition_starsurge -> up() ) // benefit tracking
-        p() -> buff.oneths_intuition_starsurge -> decrement();
+      if ( p() -> buff.oneths_intuition -> up() ) // benefit tracking
+        p() -> buff.oneths_intuition -> decrement();
 
-      p() -> buff.oneths_intuition_starfall -> trigger();
+      p() -> buff.oneths_overconfidence -> trigger();
     }
   }
 };
@@ -7037,6 +7040,29 @@ void druid_t::init_gains()
   gain.feral_tier19_2pc      = get_gain( "feral_tier19_2pc"      );
   gain.guardian_tier17_2pc   = get_gain( "guardian_tier17_2pc"   );
   gain.guardian_tier18_2pc   = get_gain( "guardian_tier18_2pc"   );
+
+  if ( ! legendary.impeccable_fel_essence )
+  {
+    buff.manipulated_fel_energy = buff_creator_t( this, "manipulated_fel_energy" )
+                                  .chance( 0 );
+  }
+  if ( ! legendary.oneths_intuition )
+  {
+    buff.oneths_intuition       = buff_creator_t( this, "oneths_intuition" )
+                                  .chance( 0 );
+    buff.oneths_overconfidence  = buff_creator_t( this, "oneths_overconfidence" )
+                                  .chance( 0 );
+  }
+  if ( ! legendary.the_emerald_dreamcatcher )
+  {
+    buff.the_emerald_dreamcatcher = buff_creator_t( this, "the_emerald_dreamcatcher" )
+                                    .chance( 0 );
+  }
+  if ( ! legendary.ph_tigers_fury_restores_energy )
+  {
+    buff.ph_tigers_fury_restores_energy = buff_creator_t( this, "ph_tigers_fury_restores_energy_over_time" )
+                                          .chance( 0 );
+  }
 }
 
 // druid_t::init_procs ======================================================
@@ -7145,7 +7171,6 @@ void druid_t::reset()
 
   // Reset druid_t variables to their original state.
   form = NO_FORM;
-  active_starfalls = starfall_counter = 0;
   moon_stage = ( moon_stage_e ) initial_moon_stage;
 
   base_gcd = timespan_t::from_seconds( 1.5 );
@@ -7597,10 +7622,6 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
     };
 
     return new moon_stage_expr_t( *this, name_str );
-  }
-  else if ( util::str_compare_ci( name_str, "active_dot.starfall" ) )
-  {
-    return make_ref_expr( "starfall", active_starfalls );
   }
 
   return player_t::create_expression( a, name_str );
@@ -8145,12 +8166,12 @@ static void oneths_intuition( special_effect_t& effect )
   druid_t* s = debug_cast<druid_t*>( effect.player );
   init_special_effect( s, DRUID_BALANCE, s -> legendary.oneths_intuition, effect );
 
-  s -> buff.oneths_intuition_starfall =
-    buff_creator_t( s, "oneths_intuition_starfall", s -> find_spell( 209406 ) )
+  s -> buff.oneths_intuition =
+    buff_creator_t( s, "oneths_intuition", s -> find_spell( 209406 ) )
     .chance( effect.proc_chance() );
 
-  s -> buff.oneths_intuition_starsurge =
-    buff_creator_t( s, "oneths_intuition_starsurge", s -> find_spell( 209406 ) )
+  s -> buff.oneths_overconfidence =
+    buff_creator_t( s, "oneths_overconfidence", s -> find_spell( 209407 ) )
     .chance( effect.proc_chance() );
 }
 
