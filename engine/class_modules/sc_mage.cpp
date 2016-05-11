@@ -1638,12 +1638,12 @@ struct arcane_mage_spell_t : public mage_spell_t
 
   double arcane_charge_damage_bonus() const
   {
-    double per_ac_bonus = p() -> spec.arcane_charge -> effectN( 1 ).percent() *
-                          ( 1.0 + p() -> cache.mastery_value() *
+    double per_ac_bonus = p() -> spec.arcane_charge -> effectN( 1 ).percent() +
+                          ( p() -> cache.mastery_value() *
                            p() -> spec.savant -> effectN( 2 ).sp_coeff() );
     return 1.0 + p() -> buffs.arcane_charge -> check() * per_ac_bonus;
-  }
 
+  };
 };
 
 
