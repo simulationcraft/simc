@@ -2197,7 +2197,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::impact( s );
 
-    if ( p() -> artifact.arcane_rebound && ( s -> n_targets > 2 ) && ( s -> chain_target == 0 ) )
+    if ( p() -> artifact.arcane_rebound.rank() && ( s -> n_targets > 2 ) && ( s -> chain_target == 0 ) )
     {
       arcane_rebound -> target = s -> target;
       arcane_rebound -> execute();
