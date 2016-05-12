@@ -6713,7 +6713,7 @@ void mage_t::recalculate_resource_max( resource_e rt )
     resources.max[ rt ] *= 1.0 + ( buffs.arcane_familiar -> data().effectN( 1 ).percent() * 10 );
     sim -> out_debug.printf(
         "%s mana adjusted from %.0f/%.0f to %.0f/%.0f due to Arcane Familiar",
-        name(), current_mana, current_mana_max,
+        name(), resources.current[ rt ],  resources.max[ rt ],
         resources.current[ rt ], resources.max[ rt ]);
   }
 }

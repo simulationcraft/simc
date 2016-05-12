@@ -1145,12 +1145,12 @@ void print_html_hotfixes( report::sc_html_stream& os, const sim_t& sim )
   for ( size_t i = 0; i < entries.size(); ++i )
   {
     const hotfix::hotfix_entry_t* entry = entries[ entries.size() - 1 - i ];
-    if ( entry->flags_ & hotfix::HOTFIX_FLAG_QUIET )
+    if ( entry && ( entry->flags_ & hotfix::HOTFIX_FLAG_QUIET ) )
     {
       continue;
     }
 
-    if ( sim.dbc.ptr && !( entry->flags_ & hotfix::HOTFIX_FLAG_PTR ) )
+    if ( sim.dbc.ptr && !( entry && ( entry->flags_ & hotfix::HOTFIX_FLAG_PTR  ) ) )
     {
       continue;
     }

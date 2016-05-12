@@ -46,9 +46,12 @@ void SC_SampleProfilesTab::fillTree( QDir baseDir )
     QTreeWidgetItem* playerItems[PLAYER_MAX];
     range::fill( playerItems, 0 );
     std::array<std::array<QTreeWidgetItem*, TIER_MAX>,PLAYER_MAX> rootItems;
-    for ( size_t i = 0u; i < rootItems.size(); ++i )
+    if ( rootItems.size() )
     {
-      range::fill( rootItems[i], nullptr );
+      for ( size_t i = 0u; i < rootItems.size(); ++i )
+      {
+        range::fill( rootItems[i], nullptr );
+      }
     }
 
 
