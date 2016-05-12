@@ -227,6 +227,7 @@ public:
     const spell_data_t* chaos_nova;
     const spell_data_t* chaos_strike;
     const spell_data_t* death_sweep;
+    const spell_data_t* demonic_appetite_fury;
     const spell_data_t* fel_barrage_proc;
 
     // Vengeance
@@ -417,7 +418,7 @@ public:
   struct
   {
     // General
-    const special_effect_t* ph_throw_glaive_increased_damage_per_bounce;
+    const special_effect_t* moarg_bionic_stabilizers;
 
     // Havoc
     const special_effect_t* anger_of_the_halfgiants;
@@ -643,7 +644,7 @@ public:
   gain_t* action_gain;
   bool metamorphosis_gcd;
   bool hasted_gcd, hasted_cd;
-  bool demonic_presence, chaos_blades;
+  bool demonic_presence;
 
   demon_hunter_action_t( const std::string& n, demon_hunter_t* p,
                          const spell_data_t* s = spell_data_t::nil() )
@@ -654,8 +655,7 @@ public:
       hasted_gcd( false ),
       hasted_cd( false ),
       demonic_presence( ab::data().affected_by(
-        p -> mastery_spell.demonic_presence -> effectN( 1 ) ) ),
-      chaos_blades( ab::data().affected_by( p -> talent.chaos_blades -> effectN( 2 ) ) )
+        p -> mastery_spell.demonic_presence -> effectN( 1 ) ) )
   {
     ab::may_crit      = true;
     ab::tick_may_crit = true;
@@ -708,15 +708,6 @@ public:
           else
             demonic_presence = ! demonic_presence;
         }
-
-        if ( p() -> talent.chaos_blades -> ok() && ab::special && ! chaos_blades )
-        {
-          if ( p() -> bugs )
-            ab::sim -> errorf( "%s (%u) does not benefit from %s!",
-              ab::name_str.c_str(), ab::data().id(), p() -> talent.chaos_blades -> name_cstr() );
-          else
-            chaos_blades = true;
-        }
       }
 
       if ( ab::trigger_gcd >= timespan_t::from_seconds( 1.0 ) && ! metamorphosis_gcd )
@@ -758,11 +749,6 @@ public:
     double am = ab::action_multiplier();
 
     if ( demonic_presence )
-    {
-      am *= 1.0 + p() -> cache.mastery_value();
-    }
-
-    if ( chaos_blades && p() -> buff.chaos_blades -> check() )
     {
       am *= 1.0 + p() -> cache.mastery_value();
     }
@@ -950,7 +936,8 @@ struct consume_soul_t : public demon_hunter_heal_t
 
     if ( p() -> talent.demonic_appetite -> ok() )
     {
-      p() -> resource_gain( RESOURCE_FURY, 30, p() -> gain.demonic_appetite ); // FIXME
+      p() -> resource_gain( RESOURCE_FURY, p() -> spec.demonic_appetite_fury 
+        -> effectN( 1 ).resource( RESOURCE_FURY ), p() -> gain.demonic_appetite );
     }
 
     // Feast on the Souls only procs from major soul fragments.
@@ -3340,9 +3327,9 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
     base_multiplier *= 1.0 + p -> artifact.sharpened_glaives.percent();
 
-    if ( p -> legendary.ph_throw_glaive_increased_damage_per_bounce )
+    if ( p -> legendary.moarg_bionic_stabilizers )
     {
-      base_add_multiplier *= 1.0 + p -> legendary.ph_throw_glaive_increased_damage_per_bounce
+      base_add_multiplier *= 1.0 + p -> legendary.moarg_bionic_stabilizers
         -> driver() -> effectN( 1 ).percent();
     }
   }
@@ -3509,12 +3496,12 @@ struct anguish_debuff_t : public demon_hunter_buff_t<buff_t>
 
 struct chaos_blades_t : public demon_hunter_buff_t<buff_t>
 {
-  chaos_blades_t( demon_hunter_t* p )
-    : demon_hunter_buff_t<buff_t>(
+  chaos_blades_t( demon_hunter_t* p ) :
+    demon_hunter_buff_t<buff_t>(
         *p, buff_creator_t( p, "chaos_blades", p -> talent.chaos_blades )
-        .cd( timespan_t::zero() ) )
-  {
-  }
+        .cd( timespan_t::zero() )
+        .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
+  {}
 
   void change_auto_attack( attack_t*& hand, attack_t* a )
   {
@@ -4014,6 +4001,8 @@ double demon_hunter_t::composite_player_multiplier( school_e school ) const
   // TODO: Figure out how to access target's race.
   m *= 1.0 + buff.nemesis -> check() * buff.nemesis -> data().effectN( 1 ).percent();
 
+  m *= 1.0 + buff.chaos_blades -> check() * cache.mastery_value();
+
   return m;
 }
 
@@ -4408,6 +4397,7 @@ void demon_hunter_t::init_spells()
 
   if ( talent.demonic_appetite -> ok() )
   {
+    spec.demonic_appetite_fury = find_spell( 210041 );
     cooldown.demonic_appetite -> duration =
       talent.demonic_appetite -> internal_cooldown();
   }
@@ -4623,7 +4613,35 @@ void demon_hunter_t::apl_precombat()
 {
   action_priority_list_t* pre = get_action_priority_list( "precombat" );
 
-  pre -> add_action( "snapshot_stats" );
+  // Flask or Elixir
+  if ( sim -> allow_flasks )
+  {
+    /* if ( true_level > 100 )
+      pre -> add_action( "flask,type=flask_of_the_seventh_demon" );
+    else */
+      pre -> add_action( "flask,type=greater_draenic_agility_flask" );
+  }
+
+  // Food
+  if ( sim -> allow_food )
+  {
+    /* if ( true_level > 100 )
+      pre -> add_action( "food,type=leybeque_ribs" );
+    else */
+      pre -> add_action( "food,type=pickled_eel" );
+  }
+
+  // Snapshot Stats
+  pre -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+
+  // Pre-Potion
+  if ( sim -> allow_potions )
+  {
+    /* if ( true_level > 100 )
+      pre -> add_action( "potion,name=potion_of_the_old_war" );
+    else */
+      pre -> add_action( "potion,name=draenic_agility_potion" );
+  }
 }
 
 // NO Spec Combat Action Priority List
@@ -4678,7 +4696,23 @@ void demon_hunter_t::apl_havoc()
 
 void demon_hunter_t::apl_vengeance()
 {
-  // action_priority_list_t* def = get_action_priority_list( "default" );
+  action_priority_list_t* def = get_action_priority_list( "default" );
+
+  def -> add_action( "auto_attack" );
+  def -> add_action( this, "Fiery Brand" );
+  def -> add_action( this, "Demon Spikes" );
+  def -> add_action( this, "Empower Wards", "if=debuff.casting.up" );
+  def -> add_action( this, "Soul Cleave", "if=incoming_damage_3s>health.max*0.25" );
+  def -> add_action( this, "Immolation Aura" );
+  def -> add_talent( this, "Fracture", "if=pain>=80&incoming_damage_6s=0" );
+  def -> add_action( this, "Soul Cleave", "if=pain>=80" );
+  def -> add_talent( this, "Felblade" );
+  def -> add_action( this, "Sigil of Flame" );
+  def -> add_talent( this, "Fel Eruption" );
+  def -> add_talent( this, "Spirit Bomb", "if=debuff.frail.down" );
+  def -> add_talent( this, "Fel Devastation" );
+  def -> add_action( this, artifact.soul_carver, "soul_carver" );
+  def -> add_action( this, "Shear" );
 }
 
 void demon_hunter_t::spawn_soul_fragment( unsigned n )
@@ -5013,11 +5047,11 @@ static void ph_immolation_aura_damage_lowers_cd_of_fiery_brand( special_effect_t
     s -> legendary.ph_immolation_aura_damage_lowers_cd_of_fiery_brand, effect );
 }
 
-static void ph_throw_glaive_increased_damage_per_bounce( special_effect_t& effect )
+static void moarg_bionic_stabilizers( special_effect_t& effect )
 {
   demon_hunter_t* s = debug_cast<demon_hunter_t*>( effect.player );
   init_special_effect( s, SPEC_NONE,
-    s -> legendary.ph_throw_glaive_increased_damage_per_bounce, effect );
+    s -> legendary.moarg_bionic_stabilizers, effect );
 }
 
 static void raddons_cascading_eyes( special_effect_t& effect )
@@ -5067,7 +5101,7 @@ public:
     unique_gear::register_special_effect( 217496, fragment_of_the_betrayers_prison );
     unique_gear::register_special_effect( 209002, loramus_thalipedes_sacrifice );
     unique_gear::register_special_effect( 210970, ph_immolation_aura_damage_lowers_cd_of_fiery_brand );
-    unique_gear::register_special_effect( 208826, ph_throw_glaive_increased_damage_per_bounce );
+    unique_gear::register_special_effect( 208826, moarg_bionic_stabilizers );
     unique_gear::register_special_effect( 215149, raddons_cascading_eyes );
     unique_gear::register_special_effect( 210867, runemasters_pauldrons );
     unique_gear::register_special_effect( 210840, the_defilers_lost_vambraces );
