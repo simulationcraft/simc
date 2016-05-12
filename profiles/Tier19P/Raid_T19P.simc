@@ -1,0 +1,9 @@
+# T19P
+# Tier 19 Pre-Raid
+# * Ilvl Cap: 820
+# * Standard Heroic 5 Man Loot Only.
+
+optimal_raid=1
+# tmi_boss=TMI_Standard_Boss_T17L
+
+Demon_Hunter_T19P.simc

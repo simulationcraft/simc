@@ -1,0 +1,85 @@
+demonhunter="Demon_Hunter_Havoc_T19P"
+level=110
+race=night_elf
+timeofday=night
+role=attack
+position=back
+talents=1110123
+talent_override=blind_fury,if=desired_targets+raid_event.adds.count>=4
+talent_override=chaos_cleave,if=desired_targets>1|raid_event.adds.exists
+artifact=3:0:0:0:0:1000:3:1001:3:1002:3:1003:3:1004:3:1005:3:1006:3:1007:3:1008:3:1010:1:1011:1:1012:1:1013:1:1014:1:1015:1:1016:1:1330:1
+spec=havoc
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_agility_flask
+actions.precombat+=/food,type=pickled_eel
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=draenic_agility_potion
+
+# Executed every time the actor is available.
+
+actions=auto_attack
+actions+=/nemesis,target_if=min:target.time_to_die,if=active_enemies>desired_targets|raid_event.adds.in>60
+actions+=/consume_magic
+actions+=/vengeful_retreat,jump_cancel=1,if=gcd.remains&((talent.momentum.enabled&buff.momentum.down)|!talent.momentum.enabled)
+actions+=/fel_rush,jump_cancel=1,if=talent.momentum.enabled&buff.momentum.down&raid_event.movement.in>charges*10&(charges=2|cooldown.vengeful_retreat.remains>4)
+actions+=/eye_beam,if=talent.demonic.enabled&buff.metamorphosis.down&(!talent.first_blood.enabled|fury>=80|fury.deficit<30)
+actions+=/chaos_blades,if=buff.chaos_blades.down&cooldown.metamorphosis.remains>100
+actions+=/chaos_blades,sync=metamorphosis
+actions+=/metamorphosis,if=buff.metamorphosis.down&(!talent.demonic.enabled|!cooldown.eye_beam.ready)&(cooldown.chaos_blades.ready|buff.chaos_blades.up|!talent.demon_reborn.enabled)
+actions+=/death_sweep,if=talent.first_blood.enabled|spell_targets>1+talent.chaos_cleave.enabled
+actions+=/demons_bite,if=buff.metamorphosis.remains>gcd&(talent.first_blood.enabled|spell_targets>1+talent.chaos_cleave.enabled)&cooldown.blade_dance.remains<gcd&fury<70
+actions+=/blade_dance,if=talent.first_blood.enabled|spell_targets>1+talent.chaos_cleave.enabled
+actions+=/fel_barrage,if=charges>=5
+actions+=/fury_of_the_illidari,if=buff.metamorphosis.down|spell_targets.fury_of_the_illidari_tick>2+talent.chaos_cleave.enabled
+actions+=/throw_glaive,if=talent.bloodlet.enabled&spell_targets>=2+talent.chaos_cleave.enabled
+actions+=/felblade,if=fury.deficit>=30+buff.prepared.up*12
+actions+=/annihilation
+actions+=/fel_eruption
+actions+=/throw_glaive,if=buff.metamorphosis.down&talent.bloodlet.enabled
+actions+=/eye_beam,if=!talent.demonic.enabled&(spell_targets.eye_beam_tick>desired_targets|raid_event.adds.in>45)
+actions+=/demons_bite,if=buff.metamorphosis.down&(talent.first_blood.enabled|spell_targets>1+talent.chaos_cleave.enabled)&cooldown.blade_dance.remains<gcd&fury<55
+actions+=/demons_bite,if=talent.demonic.enabled&buff.metamorphosis.down&cooldown.eye_beam.remains<gcd&fury.deficit>=30
+actions+=/demons_bite,if=talent.demonic.enabled&buff.metamorphosis.down&cooldown.eye_beam.remains<2*gcd&fury.deficit>=55
+actions+=/throw_glaive,if=buff.metamorphosis.down&(talent.bloodlet.enabled|spell_targets>=3)
+actions+=/chaos_strike
+actions+=/fel_barrage,if=charges=4&buff.metamorphosis.down
+actions+=/fel_rush,jump_cancel=1,if=!talent.momentum.enabled&raid_event.movement.in>charges*10
+actions+=/demons_bite
+actions+=/fel_rush,if=movement.distance
+actions+=/vengeful_retreat,if=movement.distance
+
+head=vindictive_combatants_felskin_helm,id=136297,bonus_id=1695
+neck=vindictive_combatants_necklace,id=135907,enchant_id=5437
+shoulders=vindictive_combatants_felskin_spaulders,id=136300,bonus_id=1710
+back=vindictive_combatants_demonthread_cloak,id=136893,bonus_id=1678,enchant_id=5435
+chest=vindictive_combatants_felskin_tunic,id=136299,bonus_id=1679
+wrists=vindictive_combatants_felskin_wristguards,id=136302,bonus_id=1680
+hands=vindictive_combatants_felskin_gloves,id=136296,bonus_id=1681
+waist=vindictive_combatants_felskin_belt,id=136301,bonus_id=1682
+legs=vindictive_combatants_felskin_legguards,id=136298,bonus_id=1704
+feet=vindictive_combatants_felskin_boots,id=136295,bonus_id=1710
+finger1=vindictive_combatants_band,id=135912,enchant_id=5427
+finger2=vindictive_combatants_signet,id=135916,enchant_id=5430
+trinket1=vindictive_combatants_emblem_of_meditation,id=135922
+trinket2=vindictive_combatants_insignia_of_conquest,id=135919
+main_hand=verus,id=127829,bonus_id=719
+off_hand=muramas,id=127830
+
+# Gear Summary
+# gear_ilvl=802.50
+# gear_agility=6946
+# gear_stamina=12466
+# gear_crit_rating=3341
+# gear_haste_rating=2640
+# gear_mastery_rating=916
+# gear_versatility_rating=8317
+# gear_armor=1769

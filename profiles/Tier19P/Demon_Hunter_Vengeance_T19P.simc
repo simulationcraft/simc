@@ -1,0 +1,68 @@
+demonhunter="DH_Vengeance_PvP"
+level=110
+race=night_elf
+timeofday=night
+role=tank
+position=front
+talents=3323301
+artifact=60:0:0:0:0:1096:1:1097:1:1098:1:1099:3:1100:3:1101:3:1228:1:1229:3:1230:3:1231:3:1232:3:1233:3:1234:3:1235:1:1236:1:1328:1:1434:1
+spec=vengeance
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_agility_flask
+actions.precombat+=/food,type=pickled_eel
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=draenic_agility_potion
+
+# Executed every time the actor is available.
+
+actions=auto_attack
+actions+=/fiery_brand
+actions+=/demon_spikes
+actions+=/empower_wards,if=debuff.casting.up
+actions+=/soul_cleave,if=incoming_damage_3s>health.max*0.25
+actions+=/immolation_aura
+actions+=/fracture,if=pain>=80&incoming_damage_6s=0
+actions+=/soul_cleave,if=pain>=80
+actions+=/felblade
+actions+=/sigil_of_flame
+actions+=/fel_eruption
+actions+=/spirit_bomb,if=debuff.frail.down
+actions+=/fel_devastation
+actions+=/soul_carver
+actions+=/shear
+
+head=vindictive_combatants_felskin_helm,id=136297,bonus_id=1695
+neck=vindictive_combatants_necklace,id=135907
+shoulders=vindictive_combatants_felskin_spaulders,id=136300,bonus_id=1710
+back=vindictive_combatants_demonthread_cloak,id=136893,bonus_id=1678
+chest=vindictive_combatants_felskin_tunic,id=136299,bonus_id=1679
+wrists=vindictive_combatants_felskin_wristguards,id=136302,bonus_id=1680
+hands=vindictive_combatants_felskin_gloves,id=136296,bonus_id=1681
+waist=vindictive_combatants_felskin_belt,id=136301,bonus_id=1682
+legs=vindictive_combatants_felskin_legguards,id=136298,bonus_id=1704
+feet=vindictive_combatants_felskin_boots,id=136295,bonus_id=1710
+finger1=vindictive_combatants_band,id=135912
+finger2=vindictive_combatants_signet,id=135916
+trinket1=vindictive_combatants_emblem_of_meditation,id=135922
+trinket2=vindictive_combatants_insignia_of_conquest,id=135919
+main_hand=aldrachi_warblades,id=128832,bonus_id=721
+off_hand=aldrachi_warblades,id=128831
+
+# Gear Summary
+# gear_ilvl=802.50
+# gear_agility=6806
+# gear_stamina=12466
+# gear_crit_rating=3201
+# gear_haste_rating=2640
+# gear_mastery_rating=916
+# gear_versatility_rating=8177
+# gear_armor=1769
