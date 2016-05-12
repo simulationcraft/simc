@@ -1779,8 +1779,6 @@ struct fire_mage_spell_t : public mage_spell_t
             p -> procs.controlled_burn -> occur();
             p -> buffs.heating_up -> expire();
             p -> buffs.hot_streak -> trigger();
-            if ( p -> sim -> debug )
-              p -> sim -> out_debug.printf( "controlled burn proc");
           }
         }
       }
@@ -3928,7 +3926,6 @@ living_bomb_explosion_t::
   if ( parent_lb -> casted )
   {
     child_lb = new living_bomb_t( p, std::string( "" ), false );
-    child_lb -> casted = false;
   }
 }
 
@@ -4268,7 +4265,9 @@ struct nether_tempest_t : public arcane_mage_spell_t
     return m;
   }
 };
-// Phoenixs Flames Spell =============================================================
+
+
+// Phoenixs Flames Spell ======================================================
 struct phoenixs_flames_splash_t : public fire_mage_spell_t
 {
   phoenixs_flames_splash_t( mage_t* p, const std::string& options_str ) :
@@ -4277,6 +4276,8 @@ struct phoenixs_flames_splash_t : public fire_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     background = true;
+
+    triggers_ignite = true;
   }
 
   virtual double composite_crit_multiplier() const override
@@ -4287,7 +4288,19 @@ struct phoenixs_flames_splash_t : public fire_mage_spell_t
 
     return m;
   }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    // PF cleave does not impact main target
+    if ( s -> chain_target == 0 )
+    {
+      return;
+    }
+
+    fire_mage_spell_t::impact( s );
+  }
 };
+
 struct phoenixs_flames_t : public fire_mage_spell_t
 {
   phoenixs_flames_splash_t* phoenixs_flames_splash;
@@ -4297,9 +4310,9 @@ struct phoenixs_flames_t : public fire_mage_spell_t
     phoenixs_flames_splash( new phoenixs_flames_splash_t( p, options_str ) )
   {
     parse_options( options_str );
-    cooldown -> charges = data().charges();
-    cooldown -> duration = data().charge_cooldown();
+
     triggers_hot_streak = true;
+    triggers_ignite = true;
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4312,6 +4325,7 @@ struct phoenixs_flames_t : public fire_mage_spell_t
       phoenixs_flames_splash -> execute();
     }
   }
+
   virtual double composite_crit_multiplier() const override
   {
     double m = fire_mage_spell_t::composite_crit_multiplier();
