@@ -30,7 +30,6 @@ namespace { // UNNAMED NAMESPACE
   Stellar Drift cast while moving
   Force of Nature
   Shooting Stars AsP react
-  Check Echoing Stars
   Check Fury of Elune
   Promise of Elune legendary
   Starlord reduces GCD
@@ -150,16 +149,8 @@ struct druid_td_t : public actor_target_data_t
   {
     return dots.rip -> is_ticking()
            + dots.rake -> is_ticking()
-           + dots.thrash_cat -> is_ticking()
-           + dots.ashamanes_frenzy -> is_ticking()
-           + dots.shadow_rip -> is_ticking()
-           + dots.shadow_rake -> is_ticking()
-           + dots.shadow_thrash -> is_ticking();
+           + dots.thrash_cat -> is_ticking();
   }
-
-  /* Stores rip's "current damage" from when it is applied, since
-     it can't be gotten from the state until the first tick occurs. */
-  double rip_zero;
 };
 
 struct snapshot_counter_t
@@ -368,7 +359,7 @@ public:
     buff_t* elunes_guidance;
     buff_t* feral_instinct;
     buff_t* incarnation_cat;
-    buff_t* ph_tigers_fury_restores_energy; // Legion Legendary
+    buff_t* ailuro_invigorators; // Legion Legendary
     buff_t* predatory_swiftness;
     buff_t* protection_of_ashamane;
     buff_t* savage_roar;
@@ -445,7 +436,7 @@ public:
     gain_t* energy_refund;
     gain_t* elunes_guidance;
     gain_t* moonfire;
-    gain_t* ph_tigers_fury_restores_energy; // Legion Legendary
+    gain_t* ailuro_invigorators; // Legion Legendary
     gain_t* rake;
     gain_t* shred;
     gain_t* swipe_cat;
@@ -490,7 +481,7 @@ public:
 
     // Feral
     proc_t* ashamanes_bite;
-    proc_t* luffawrapped_grips;
+    proc_t* the_wildshapers_clutch;
     proc_t* predator;
     proc_t* predator_wasted;
     proc_t* primal_fury;
@@ -708,7 +699,7 @@ public:
   struct legendary_t
   {
     // General
-    const special_effect_t* the_wildshapers_clutch;
+    const special_effect_t* luffa_wrappings;
     const special_effect_t* ekowraith_creator_of_worlds; // NYI
     const special_effect_t* dual_determination;
 
@@ -720,9 +711,9 @@ public:
 
     // Feral
     const special_effect_t* ph_bite_refreshes_bleeds;
-    const special_effect_t* luffawrapped_grips;
-    const special_effect_t* ph_increase_max_energy;
-    const special_effect_t* ph_tigers_fury_restores_energy;
+    const special_effect_t* the_wildshapers_clutch;
+    const special_effect_t* chatoyant_signet;
+    const special_effect_t* ailuro_invigorators;
 
     // Guardian
     const special_effect_t* elizes_everlasting_encasement;
@@ -2188,7 +2179,7 @@ public:
   gain_t* action_gain;
   bool    consumes_clearcasting;
   bool    trigger_tier17_2pc;
-  bool    trigger_luffawrapped_grips;
+  bool    trigger_the_wildshapers_clutch;
   struct {
     bool direct, tick;
   } razor_claws;
@@ -2217,7 +2208,7 @@ public:
     razor_claws.direct = data().affected_by( p -> mastery.razor_claws -> effectN( 1 ) );
     razor_claws.tick = data().affected_by( p -> mastery.razor_claws -> effectN( 2 ) );
 
-    trigger_luffawrapped_grips = p -> legendary.luffawrapped_grips != nullptr &&
+    trigger_the_wildshapers_clutch = p -> legendary.the_wildshapers_clutch != nullptr &&
       dbc::is_school( school, SCHOOL_PHYSICAL );
   }
 
@@ -2410,11 +2401,11 @@ public:
     if ( p() -> predator_rppm_rate && p() -> talent.predator -> ok() )
       trigger_predator();
 
-    if ( trigger_luffawrapped_grips && d -> state -> result == RESULT_CRIT &&
+    if ( trigger_the_wildshapers_clutch && d -> state -> result == RESULT_CRIT &&
         d -> state -> result_amount > 0 &&
-        p() -> rng().roll( p() -> legendary.luffawrapped_grips -> driver() -> proc_chance() ) )
+        p() -> rng().roll( p() -> legendary.the_wildshapers_clutch -> driver() -> proc_chance() ) )
     {
-      p() -> proc.luffawrapped_grips -> occur();
+      p() -> proc.the_wildshapers_clutch -> occur();
       trigger_primal_fury();
     }
   }
@@ -2698,6 +2689,40 @@ struct brutal_slash_t : public cat_attack_t
 
 struct ferocious_bite_t : public cat_attack_t
 {
+  struct ashamanes_rip_state_t : public action_state_t
+  {
+    double tick;
+    druid_td_t* td;
+
+    ashamanes_rip_state_t( druid_t* p, action_t* a, player_t* t ) :
+      action_state_t( a, target ), td( p -> get_target_data( t ) )
+    {}
+
+    void initialize() override
+    {
+      action_state_t::initialize();
+
+      td -> dots.rip -> current_action -> calculate_tick_amount( td -> dots.rip -> state, 1.0 );
+      tick = td -> dots.rip -> state -> result_raw;
+    }
+
+    void copy_state( const action_state_t* state ) override
+    {
+      action_state_t::copy_state( state );
+
+      tick = debug_cast<const ashamanes_rip_state_t*>( state ) -> tick;
+    }
+
+    std::ostringstream& debug_str( std::ostringstream& s ) override
+    {
+      action_state_t::debug_str( s );
+
+      s << " td=" << tick;
+
+      return s;
+    }
+  };
+
   struct ashamanes_rip_t : public cat_attack_t
   {
     ashamanes_rip_t( druid_t* p ) :
@@ -2717,28 +2742,18 @@ struct ferocious_bite_t : public cat_attack_t
       snapshot_flags = update_flags = STATE_CRIT | STATE_TGT_CRIT | STATE_TGT_MUL_TA;
     }
 
+    action_state_t* new_state() override
+    { return new ashamanes_rip_state_t( p(), this, target ); }
+
+    timespan_t composite_dot_duration( const action_state_t* s ) const override
+    { return td( s -> target ) -> dots.rip -> remains(); }
+
+    double base_ta( const action_state_t* s ) const override
+    { return debug_cast<const ashamanes_rip_state_t*>( s ) -> tick; }
+
     virtual void execute() override
     {
-      dot_t* source = td( target ) -> dots.rip;
-      assert( source -> is_ticking() );
-
-      // Copy remaining Rip duration.
-      dot_duration = source -> remains();
-
-      if ( source -> current_tick == 0 )
-      {
-        // Rip hasn't ticked yet, so we need to get it's tick damage via other means.
-        // rip_t puts its "tick_zero" damage in druid_td_t::rip_zero.
-        base_td = td( target ) -> rip_zero;
-      }
-      else
-      {
-        // Copy tick damage from the most recent tick.
-        base_td = source -> state -> result_raw;
-
-        // This snapshots Open Wounds! If they change the behavior this will need to be reworked somehow.
-        // FIXME: Does this double dip on target vulnerabilities?
-      }
+      assert( td( target ) -> dots.rip -> is_ticking() );
 
       cat_attack_t::execute();
     }
@@ -2893,7 +2908,7 @@ struct ferocious_bite_t : public cat_attack_t
     p() -> proc.ashamanes_bite -> occur();
 
     ashamanes_rip -> target = s -> target;
-    ashamanes_rip -> execute();
+    ashamanes_rip -> schedule_execute();
   }
 };
 
@@ -3045,13 +3060,7 @@ struct rip_t : public cat_attack_t
     cat_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
-    {
-      td( s -> target ) -> debuff.open_wounds -> trigger(); // TOCHECK
-
-      // Store rip's damage value for use with Ashamane's Bite.
-      if ( p() -> artifact.ashamanes_bite.rank() )
-        td( s -> target ) -> rip_zero = calculate_tick_amount( s, 1.0 );
-    }
+      td( s -> target ) -> debuff.open_wounds -> trigger();
   }
 
   void last_tick( dot_t* d ) override
@@ -3303,8 +3312,8 @@ struct tigers_fury_t : public cat_attack_t
 
     p() -> buff.ashamanes_energy -> trigger();
     
-    if ( p() -> legendary.ph_tigers_fury_restores_energy )
-      p() -> buff.ph_tigers_fury_restores_energy -> trigger();
+    if ( p() -> legendary.ailuro_invigorators )
+      p() -> buff.ailuro_invigorators -> trigger();
   }
 };
 
@@ -3355,10 +3364,10 @@ struct thrash_cat_t : public cat_attack_t
       add_child( shadow_thrash );
     }
 
-    if ( p -> legendary.the_wildshapers_clutch )
+    if ( p -> legendary.luffa_wrappings )
     {
-      radius          *= 1.0 + p -> legendary.the_wildshapers_clutch -> driver() -> effectN( 1 ).percent();
-      base_multiplier *= 1.0 + p -> legendary.the_wildshapers_clutch -> driver() -> effectN( 2 ).percent();
+      radius          *= 1.0 + p -> legendary.luffa_wrappings -> driver() -> effectN( 1 ).percent();
+      base_multiplier *= 1.0 + p -> legendary.luffa_wrappings -> driver() -> effectN( 2 ).percent();
     }
   }
 
@@ -3368,7 +3377,7 @@ struct thrash_cat_t : public cat_attack_t
 
     p() -> buff.scent_of_blood -> trigger( 1, targets_hit * p() -> buff.scent_of_blood -> default_value );
 
-    if ( shadow_thrash && targets_hit >= 2 && p() -> rppm.shadow_thrash -> trigger() )
+    if ( shadow_thrash && p() -> rppm.shadow_thrash -> trigger() )
       shadow_thrash -> execute();
   }
 };
@@ -3737,10 +3746,10 @@ struct thrash_bear_t : public bear_attack_t
       dot_max_stack += p -> legendary.elizes_everlasting_encasement
         -> driver() -> effectN( 1 ).base_value();
 
-    if ( p -> legendary.the_wildshapers_clutch )
+    if ( p -> legendary.luffa_wrappings )
     {
-      radius          *= 1.0 + p -> legendary.the_wildshapers_clutch -> driver() -> effectN( 1 ).percent();
-      base_multiplier *= 1.0 + p -> legendary.the_wildshapers_clutch -> driver() -> effectN( 2 ).percent();
+      radius          *= 1.0 + p -> legendary.luffa_wrappings -> driver() -> effectN( 1 ).percent();
+      base_multiplier *= 1.0 + p -> legendary.luffa_wrappings -> driver() -> effectN( 2 ).percent();
     }
   }
 
@@ -6307,7 +6316,7 @@ void druid_t::init_base_stats()
   resources.base[ RESOURCE_ENERGY       ] = 100
       + sets.set( DRUID_FERAL, T18, B2 ) -> effectN( 2 ).resource( RESOURCE_ENERGY )
       + talent.moment_of_clarity -> effectN( 3 ).percent()
-      + ( legendary.ph_increase_max_energy ? legendary.ph_increase_max_energy
+      + ( legendary.chatoyant_signet ? legendary.chatoyant_signet
           -> driver() -> effectN( 1 ).resource( RESOURCE_ENERGY ) : 0.0 );
 
   resources.active_resource[ RESOURCE_ASTRAL_POWER ] = specialization() == DRUID_BALANCE;
@@ -7015,7 +7024,7 @@ void druid_t::init_gains()
   gain.elunes_guidance       = get_gain( "elunes_guidance"       );
   gain.moonfire              = get_gain( "moonfire"              );
   gain.clearcasting          = get_gain( "clearcasting"          );
-  gain.ph_tigers_fury_restores_energy = get_gain( "ph_tigers_fury_restores_energy" );
+  gain.ailuro_invigorators   = get_gain( "ailuro_invigorators"   );
   gain.primal_fury           = get_gain( "primal_fury"           );
   gain.rake                  = get_gain( "rake"                  );
   gain.shred                 = get_gain( "shred"                 );
@@ -7058,10 +7067,10 @@ void druid_t::init_gains()
     buff.the_emerald_dreamcatcher = buff_creator_t( this, "the_emerald_dreamcatcher" )
                                     .chance( 0 );
   }
-  if ( ! legendary.ph_tigers_fury_restores_energy )
+  if ( ! legendary.ailuro_invigorators )
   {
-    buff.ph_tigers_fury_restores_energy = buff_creator_t( this, "ph_tigers_fury_restores_energy_over_time" )
-                                          .chance( 0 );
+    buff.ailuro_invigorators = buff_creator_t( this, "ailuro_invigorators" )
+                               .chance( 0 );
   }
 }
 
@@ -7075,7 +7084,7 @@ void druid_t::init_procs()
   proc.clearcasting             = get_proc( "clearcasting"           );
   proc.clearcasting_wasted      = get_proc( "clearcasting_wasted"    );
   proc.gore                     = get_proc( "gore"                   );
-  proc.luffawrapped_grips       = get_proc( "luffawrapped_grips"     );
+  proc.the_wildshapers_clutch       = get_proc( "the_wildshapers_clutch"     );
   proc.predator                 = get_proc( "predator"               );
   proc.predator_wasted          = get_proc( "predator_wasted"        );
   proc.primal_fury              = get_proc( "primal_fury"            );
@@ -8155,10 +8164,10 @@ static void impeccable_fel_essence( special_effect_t& effect )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 }
 
-static void luffawrapped_grips( special_effect_t& effect )
+static void the_wildshapers_clutch( special_effect_t& effect )
 {
   druid_t* s = debug_cast<druid_t*>( effect.player );
-  init_special_effect( s, DRUID_FERAL, s -> legendary.luffawrapped_grips, effect );
+  init_special_effect( s, DRUID_FERAL, s -> legendary.the_wildshapers_clutch, effect );
 }
 
 static void oneths_intuition( special_effect_t& effect )
@@ -8181,22 +8190,22 @@ static void ph_bite_refreshes_bleeds( special_effect_t& effect )
   init_special_effect( s, SPEC_NONE, s -> legendary.ph_bite_refreshes_bleeds, effect );
 }
 
-static void ph_increase_max_energy( special_effect_t& effect )
+static void chatoyant_signet( special_effect_t& effect )
 {
   druid_t* s = debug_cast<druid_t*>( effect.player );
-  init_special_effect( s, SPEC_NONE, s -> legendary.ph_increase_max_energy, effect );
+  init_special_effect( s, SPEC_NONE, s -> legendary.chatoyant_signet, effect );
 }
 
-static void ph_tigers_fury_restores_energy( special_effect_t& effect )
+static void ailuro_invigorators( special_effect_t& effect )
 {
   druid_t* s = debug_cast<druid_t*>( effect.player );
-  init_special_effect( s, DRUID_FERAL, s -> legendary.ph_tigers_fury_restores_energy, effect );
+  init_special_effect( s, DRUID_FERAL, s -> legendary.ailuro_invigorators, effect );
 
-  s -> buff.ph_tigers_fury_restores_energy =
-    buff_creator_t( s, "ph_tigers_fury_restores_energy_over_time", effect.driver() -> effectN( 1 ).trigger() )
+  s -> buff.ailuro_invigorators =
+    buff_creator_t( s, "ailuro_invigorators", effect.driver() -> effectN( 1 ).trigger() )
     .tick_callback( [ s ]( buff_t* b, int, const timespan_t& ) {
       b -> player -> resource_gain( RESOURCE_ENERGY, b -> data().effectN( 1 ).resource( RESOURCE_ENERGY ),
-        debug_cast<druid_t*>( b -> player ) -> gain.ph_tigers_fury_restores_energy );
+        debug_cast<druid_t*>( b -> player ) -> gain.ailuro_invigorators );
     } );
 }
 
@@ -8235,10 +8244,10 @@ static void the_emerald_dreamcatcher( special_effect_t& effect )
       -> effectN( 1 ).resource( RESOURCE_ASTRAL_POWER ) );
 }
 
-static void the_wildshapers_clutch( special_effect_t& effect )
+static void luffa_wrappings( special_effect_t& effect )
 {
   druid_t* s = debug_cast<druid_t*>( effect.player );
-  init_special_effect( s, SPEC_NONE, s -> legendary.the_wildshapers_clutch, effect );
+  init_special_effect( s, SPEC_NONE, s -> legendary.luffa_wrappings, effect );
 }
 
 // DRUID MODULE INTERFACE ===================================================
@@ -8275,17 +8284,17 @@ struct druid_module_t : public module_t
     unique_gear::register_special_effect( 208342, elizes_everlasting_encasement );
     unique_gear::register_special_effect( 208191, essence_of_infusion );
     unique_gear::register_special_effect( 208199, impeccable_fel_essence );
-    unique_gear::register_special_effect( 208319, luffawrapped_grips );
+    unique_gear::register_special_effect( 208319, the_wildshapers_clutch );
     unique_gear::register_special_effect( 209405, oneths_intuition );
     // unique_gear::register_special_effect( , ph_bite_refreshes_bleeds );
-    unique_gear::register_special_effect( 207523, ph_increase_max_energy );
-    unique_gear::register_special_effect( 208209, ph_tigers_fury_restores_energy );
+    unique_gear::register_special_effect( 207523, chatoyant_signet );
+    unique_gear::register_special_effect( 208209, ailuro_invigorators );
     unique_gear::register_special_effect( 208283, promise_of_elune_the_moon_goddess );
     unique_gear::register_special_effect( 208219, skysecs_hold );
     unique_gear::register_special_effect( 207932, tearstone_of_elune );
     unique_gear::register_special_effect( 207271, the_dark_titans_advice );
     unique_gear::register_special_effect( 208190, the_emerald_dreamcatcher );
-    unique_gear::register_special_effect( 208681, the_wildshapers_clutch );
+    unique_gear::register_special_effect( 208681, luffa_wrappings );
   }
 
   virtual void register_hotfixes() const override {}
