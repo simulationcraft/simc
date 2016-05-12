@@ -4610,18 +4610,18 @@ void demon_hunter_t::apl_precombat()
   // Flask or Elixir
   if ( sim -> allow_flasks )
   {
-    /* if ( true_level > 100 )
+    if ( true_level > 100 )
       pre -> add_action( "flask,type=flask_of_the_seventh_demon" );
-    else */
+    else 
       pre -> add_action( "flask,type=greater_draenic_agility_flask" );
   }
 
   // Food
   if ( sim -> allow_food )
   {
-    /* if ( true_level > 100 )
-      pre -> add_action( "food,type=leybeque_ribs" );
-    else */
+    if ( true_level > 100 )
+      pre -> add_action( "food,type=the_hungry_magister" );
+    else
       pre -> add_action( "food,type=pickled_eel" );
   }
 
