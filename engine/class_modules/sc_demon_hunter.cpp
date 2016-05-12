@@ -3555,7 +3555,7 @@ struct nemesis_debuff_t : public demon_hunter_buff_t<buff_t>
 {
   nemesis_debuff_t( demon_hunter_t* p, player_t* target )
     : demon_hunter_buff_t<buff_t>(
-        *p, buff_creator_t( target, "nemesis", p -> talent.nemesis )
+        *p, buff_creator_t( target, "nemesis_debuff", p -> talent.nemesis )
         .default_value( p -> talent.nemesis -> effectN( 1 ).percent() )
         .cd( timespan_t::zero() ) )
   {

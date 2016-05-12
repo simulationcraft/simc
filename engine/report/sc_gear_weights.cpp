@@ -235,6 +235,8 @@ const char* askmrrobot_player_type_name( player_e type )
   {
     case DEATH_KNIGHT:
       return "DeathKnight";
+    case DEMON_HUNTER:
+      return "DemonHunter";
     case DRUID:
       return "Druid";
     case HUNTER:
@@ -283,6 +285,10 @@ const char* askmrrobot_player_type_spec( const player_t& p )
     }
     case DEATH_KNIGHT_UNHOLY:
       return "Unholy";
+    case DEMON_HUNTER_HAVOC:
+      return "Havoc";
+    case DEMON_HUNTER_VENGEANCE:
+      return "Vengeance";
     case DRUID_BALANCE:
       return "Balance";
     case DRUID_FERAL:
