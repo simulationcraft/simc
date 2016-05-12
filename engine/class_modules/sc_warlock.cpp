@@ -114,6 +114,7 @@ public:
   struct active_t
   {
     action_t* demonic_power_proc;
+    spell_t* rain_of_fire;
   } active;
 
   // Talents
@@ -2574,49 +2575,50 @@ struct seed_of_corruption_t: public warlock_spell_t
   }
 };
 
-struct rain_of_fire_tick_t: public warlock_spell_t
+struct rain_of_fire_t : public warlock_spell_t
 {
-  const spell_data_t& parent_data;
-
-  rain_of_fire_tick_t( warlock_t* p, const spell_data_t& pd ):
-    warlock_spell_t( "rain_of_fire_tick", p, pd.effectN( 2 ).trigger() ), parent_data( pd )
+  struct rain_of_fire_tick_t : public warlock_spell_t
   {
-    aoe = -1;
-    background = true;
+    rain_of_fire_tick_t( warlock_t* p ) :
+      warlock_spell_t( "rain_of_fire_tick", p, p -> find_spell( 42223 ) )
+    {
+      aoe = -1;
+      background = dual = direct_tick = true; // Legion TOCHECK
+      callbacks = false;
+      radius = p -> find_spell( 5740 ) -> effectN( 1 ).radius();
+    }
+  };
+
+  rain_of_fire_t( warlock_t* p, const std::string& options_str ) :
+    warlock_spell_t( "rain_of_fire", p, p -> find_spell( 5740 ) )
+  {
+    parse_options( options_str );
+    dot_duration = timespan_t::zero();
+    may_miss = may_crit = false;
+    base_tick_time = data().duration() / 8.0; // ticks 9 times (missing from spell data)
+                                              // TOCHECK: tick zero?
+
+    if ( !p -> active.rain_of_fire )
+    {
+      p -> active.rain_of_fire = new rain_of_fire_tick_t( p );
+      p -> active.rain_of_fire -> stats = stats;
+    }
   }
 
-  virtual proc_types proc_type() const override
+  virtual void execute() override
   {
-    return PROC1_PERIODIC;
+    warlock_spell_t::execute();
+
+    new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+      .target( execute_state -> target )
+      .x( execute_state -> target-> x_position )
+      .y( execute_state -> target-> y_position )
+      .pulse_time( base_tick_time )
+      .duration( data().duration() * player -> cache.spell_speed() )
+      .start_time( sim -> current_time() )
+      .action( p() -> active.rain_of_fire )
+      .hasted( ground_aoe_params_t::SPELL_HASTE ), true );
   }
-};
-
-struct rain_of_fire_t: public warlock_spell_t
-{
-  rain_of_fire_t( warlock_t* p ):
-    warlock_spell_t( "rain_of_fire", p, ( p -> specialization() == WARLOCK_DESTRUCTION ) ? p -> find_spell( 104232 ) : ( p -> specialization() == WARLOCK_AFFLICTION ) ? p -> find_spell( 5740 ) : spell_data_t::not_found() )
-  {
-    dot_behavior = DOT_CLIP;
-    may_miss = false;
-    may_crit = false;
-    ignore_false_positive = true;
-
-    base_multiplier *= 1.0 + p -> artifact.fire_from_the_sky.percent();
-
-    tick_action = new rain_of_fire_tick_t( p, data() );
-  }
-
-  bool consume_cost_per_tick( const dot_t& dot ) override
-  {
-    if ( channeled )
-      return false;
-    return warlock_spell_t::consume_cost_per_tick( dot );
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* state ) const override
-  { return tick_time( state -> haste ) * ( data().duration() / base_tick_time ); }
-
-  // TODO: Bring Back dot duration haste scaling ?
 };
 
 struct hellfire_tick_t: public warlock_spell_t
@@ -3503,7 +3505,7 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "havoc"                 ) a = new                             havoc_t( this );
   else if ( action_name == "seed_of_corruption"    ) a = new                seed_of_corruption_t( this );
   else if ( action_name == "cataclysm"             ) a = new                         cataclysm_t( this );
-  else if ( action_name == "rain_of_fire"          ) a = new                      rain_of_fire_t( this );
+  else if ( action_name == "rain_of_fire"          ) a = new                      rain_of_fire_t( this, options_str );
   else if ( action_name == "hellfire"              ) a = new                          hellfire_t( this );
   else if ( action_name == "summon_infernal"       ) a = new                   summon_infernal_t( this );
   else if ( action_name == "summon_doomguard"      ) a = new                  summon_doomguard_t( this );
