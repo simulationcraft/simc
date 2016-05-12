@@ -546,9 +546,9 @@ public:
   virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
   virtual double    mana_regen_per_second() const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
-  virtual double    composite_mastery_rating() const override;
   virtual double    composite_spell_crit() const override;
   virtual double    composite_spell_haste() const override;
+  virtual double    composite_mastery_value() const override;
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
   virtual void      update_movement( timespan_t duration ) override;
   virtual void      stun() override;
@@ -706,7 +706,7 @@ struct mage_pet_melee_attack_t : public melee_attack_t
 };
 
 //================================================================================
-// Pet Arcane Familiar 
+// Pet Arcane Familiar
 //================================================================================
 struct arcane_familiar_pet_t : public pet_t
 {
@@ -1727,7 +1727,7 @@ struct fire_mage_spell_t : public mage_spell_t
       p() -> buffs.pyretic_incantation -> trigger();
     }
     else if ( result_is_hit( s -> result ) && s -> result != RESULT_CRIT
-                      && p() -> artifact.pyretic_incantation.rank() 
+                      && p() -> artifact.pyretic_incantation.rank()
                       && harmful == true )
     {
       p() -> buffs.pyretic_incantation -> expire();
@@ -2146,7 +2146,7 @@ struct ignite_t : public residual_action_t
 
 
 // Arcane Barrage Spell =====================================================
-// Arcane Rebound Spell 
+// Arcane Rebound Spell
 //TODO: Improve timing of impact of this vs Arcane Barrage if alpha timings go live
 struct arcane_rebound_t : public arcane_mage_spell_t
 {
@@ -6676,6 +6676,7 @@ void mage_t::invalidate_cache( cache_e c )
     default:
       break;
   }
+
 }
 
 // mage_t::recalculate_resource_max ===========================================
@@ -6770,20 +6771,20 @@ double mage_t::composite_player_multiplier( school_e school ) const
 
   return m;
 }
-
-
-// mage_t::composite_mastery_rating ===========================================
-
-double mage_t::composite_mastery_rating() const
+// mage_t:: composite_mastery_value ============================================
+double mage_t::composite_mastery_value() const
 {
-  double m = player_t::composite_mastery_rating();
+  double m = player_t::composite_mastery_value();
 
   if ( buffs.combustion -> check() )
   {
-    m += mage_t::composite_spell_crit_rating();
+    // We subtract 1 manually to get the pre-combustion modified crit%
+    m += ( mage_t::composite_spell_crit() - 1 );
   }
+
   return m;
 }
+
 
 // mage_t::composite_spell_crit ===============================================
 
