@@ -3989,9 +3989,10 @@ void living_bomb_t::last_tick( dot_t* d )
 struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
 {
   mark_of_aluneth_explosion_t( mage_t* p ) :
-    arcane_mage_spell_t( "mark_of_aluneth_explosion", p )
+    arcane_mage_spell_t( "mark_of_aluneth_explosion", p, p -> find_spell( 224968 ) )
   {
     background = true;
+    school = SCHOOL_ARCANE;
   }
   virtual void init() override
   {
@@ -4003,8 +4004,8 @@ struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
 
   virtual void execute() override
   {
-    base_dd_max = p() -> resources.max[ RESOURCE_MANA ];
-    base_dd_min = p() -> resources.max[ RESOURCE_MANA ];
+    base_dd_max = p() -> resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent();
+    base_dd_min = p() -> resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent();
 
     arcane_mage_spell_t::execute();
   }
@@ -4018,6 +4019,7 @@ struct mark_of_aluneth_t : public arcane_mage_spell_t
     mark_explosion( new mark_of_aluneth_explosion_t( p ) )
   {
     parse_options( options_str );
+    school = SCHOOL_ARCANE;
     may_proc_missiles = false;
     dot_duration = p -> find_spell( 210726 ) -> duration();
     base_tick_time = timespan_t::from_seconds( 1.2 ); // Hardcode until tick times are worked out
