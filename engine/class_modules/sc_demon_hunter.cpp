@@ -3927,7 +3927,7 @@ double demon_hunter_t::composite_leech() const
     l += legendary.eternal_hunger -> driver() -> effectN( 1 ).percent();
   }
 
-  if ( buff.demon_spikes -> check() ) // legendary effect
+  if ( buff.demon_spikes -> check() && legendary.fragment_of_the_betrayers_prison ) // legendary effect
   {
     l += spec.fragment_of_the_betrayers_prison -> effectN( 1 ).percent();
   }
@@ -4474,10 +4474,8 @@ void demon_hunter_t::init_spells()
     active.charred_warblades = new charred_warblades_t( this );
   }
 
-  if ( legendary.fragment_of_the_betrayers_prison )
-  {
-    spec.fragment_of_the_betrayers_prison = find_spell( 217500 );
-  }
+  // Legendary
+  spec.fragment_of_the_betrayers_prison = find_spell( 217500 );
 }
 
 // demon_hunter_t::create_buffs =============================================
