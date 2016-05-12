@@ -2617,7 +2617,7 @@ struct rain_of_fire_t : public warlock_spell_t
       .duration( data().duration() * player -> cache.spell_speed() )
       .start_time( sim -> current_time() )
       .action( p() -> active.rain_of_fire )
-      .hasted( ground_aoe_params_t::SPELL_HASTE ), true );
+      .hasted( ground_aoe_params_t::SPELL_HASTE ), false );
   }
 };
 
