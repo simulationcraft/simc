@@ -203,6 +203,23 @@ const food_data_t food_data[] =
   { FOOD_TALADOR_SURF_AND_TURF,        STAT_STAMINA,            112 },
 
   { FOOD_WHIPTAIL_FILLET,              STAT_STAMINA,            125 },
+
+  // Legion
+  { FOOD_AZSHARI_SALAD,                STAT_HASTE_RATING,       750 },
+
+  { FOOD_BARRACUDDA_MRGLGAGH,          STAT_MASTERY_RATING,     600 },
+
+  { FOOD_KOISCENTED_STORMRAY,          STAT_VERSATILITY_RATING, 600 },
+
+  { FOOD_LEYBEQUE_RIBS,                STAT_CRIT_RATING,        600 },
+
+  { FOOD_NIGHTBORNE_DELICACY_PLATTER,  STAT_MASTERY_RATING,     750 },
+
+  { FOOD_SEEDBATTERED_FISH_PLATE,      STAT_VERSATILITY_RATING, 750 },
+
+  { FOOD_SURAMAR_SURF_AND_TURF,        STAT_HASTE_RATING,       600 },
+
+  { FOOD_THE_HUNGRY_MAGISTER,          STAT_CRIT_RATING,        750 },
 };
 
 struct flask_base_t : public action_t
@@ -551,7 +568,7 @@ struct food_t : public action_t
   }
 
   /**
-   * New WoD feasts
+   * WoD feasts
    */
   stat_e get_wod_feast_stat()
   {
@@ -659,6 +676,18 @@ struct food_t : public action_t
         stats.push_back( stat_buff_t::buff_stat_t( get_wod_feast_stat(), gain_amount ) );
         break;
 
+      // *************************
+      // Legion Feasts
+      // *************************
+      case FOOD_HEARTY_FEAST:
+        if ( gain_amount <= 0.0 ) gain_amount = 450;
+      case FOOD_LAVISH_SURAMAR_FEAST:
+        if ( gain_amount <= 0.0 ) gain_amount = 725;
+
+        gain_amount *= food_stat_multiplier;
+        stats.push_back( stat_buff_t::buff_stat_t( get_highest_secondary(), gain_amount ) );
+        break;
+   
       default:
         // *************************
         // Manual Food Database

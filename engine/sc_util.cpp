@@ -1039,6 +1039,21 @@ const char* util::food_type_string( food_e food )
     case FOOD_WHIPTAIL_CHOWDER:                 return "whiptail_chowder";
     case FOOD_WHIPTAIL_FILLET:                  return "whiptail_fillet";
     case FOOD_FELMOUTH_FRENZY:                  return "felmouth_frenzy";
+    // Legion
+    case FOOD_AZSHARI_SALAD:                    return "azshari_salad";
+    case FOOD_BARRACUDDA_MRGLGAGH:              return "barracudda_mrglgagh";
+    // FOOD_BEAR_TARTARE:                         return "bear_tartare";
+    case FOOD_DROGBARSTYLE_SALMON:              return "drogbarstyle_salmon";
+    // FOOD_FIGHTER_CHOW:                         return "fighter_chow";
+    case FOOD_FISHBRUL_SPECIAL:                 return "fishbrul_special";
+    case FOOD_HEARTY_FEAST:                     return "hearty_feast";
+    case FOOD_KOISCENTED_STORMRAY:              return "koiscented_stormray";
+    case FOOD_LAVISH_SURAMAR_FEAST:             return "lavish_suramar_feast";
+    case FOOD_LEYBEQUE_RIBS:                    return "leybeque_ribs";
+    case FOOD_NIGHTBORNE_DELICACY_PLATTER:      return "nightborne_delicacy_platter";
+    case FOOD_SEEDBATTERED_FISH_PLATE:          return "seedbattered_fish_plate";
+    case FOOD_SURAMAR_SURF_AND_TURF:            return "suramar_surf_and_turf";
+    case FOOD_THE_HUNGRY_MAGISTER:              return "the_hungry_magister";
 
     default:                                    return "unknown";
   }

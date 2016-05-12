@@ -678,19 +678,13 @@ public:
   }
 
   demon_hunter_t* p()
-  {
-    return static_cast<demon_hunter_t*>( ab::player );
-  }
+  { return static_cast<demon_hunter_t*>( ab::player ); }
 
   const demon_hunter_t* p() const
-  {
-    return static_cast<const demon_hunter_t*>( ab::player );
-  }
+  { return static_cast<const demon_hunter_t*>( ab::player ); }
 
   demon_hunter_td_t* td( player_t* t ) const
-  {
-    return p() -> get_target_data( t );
-  }
+  { return p() -> get_target_data( t ); }
 
   void init() override
   {
@@ -698,13 +692,15 @@ public:
 
     if ( p() -> specialization() == DEMON_HUNTER_HAVOC )
     {
-      if ( ( ab::weapon && ab::weapon_multiplier ) || ab::attack_power_mod.direct || ab::attack_power_mod.tick )
+      if ( ( ab::weapon && ab::weapon_multiplier ) || ab::attack_power_mod.direct ||
+        ab::attack_power_mod.tick )
       {
         if ( dbc::is_school( ab::school, SCHOOL_CHAOS ) + demonic_presence == 1 )
         {
           if ( p() -> bugs )
             ab::sim -> errorf( "%s (%u) school and %s benefit do not match!",
-              ab::name_str.c_str(), ab::data().id(), p() -> mastery_spell.demonic_presence -> name_cstr() );
+              ab::name_str.c_str(), ab::data().id(),
+              p() -> mastery_spell.demonic_presence -> name_cstr() );
           else
             demonic_presence = ! demonic_presence;
         }
@@ -764,7 +760,8 @@ public:
 
     if ( dbc::is_school( ab::school, SCHOOL_FIRE ) )
     {
-      tm *= 1.0 + td( t ) -> dots.fiery_brand -> is_ticking() * p() -> artifact.fiery_demise.percent();
+      tm *= 1.0 + td( t ) -> dots.fiery_brand -> is_ticking() *
+        p() -> artifact.fiery_demise.percent();
     }
 
     return tm;
@@ -774,7 +771,8 @@ public:
   {
     ab::consume_resource();
 
-    if ( p() -> talent.etched_in_blood -> ok() && ab::resource_current == RESOURCE_PAIN && ab::resource_consumed > 0 )
+    if ( p() -> talent.etched_in_blood -> ok() && ab::resource_current == RESOURCE_PAIN &&
+      ab::resource_consumed > 0 )
     {
       // No spell data values... like at all.
       timespan_t reduction = ( ab::resource_consumed / 20.0 ) * timespan_t::from_seconds( -1.0 );
@@ -826,11 +824,10 @@ public:
 
   void trigger_refund()
   {
-    if ( ab::resource_current == RESOURCE_FURY
-      || ab::resource_current == RESOURCE_PAIN )
+    if ( ab::resource_current == RESOURCE_FURY || ab::resource_current == RESOURCE_PAIN )
     {
-      p() -> resource_gain( ab::resource_current,
-        ab::resource_consumed * 0.80, p() -> gain.miss_refund );
+      p() -> resource_gain( ab::resource_current, ab::resource_consumed * 0.80,
+        p() -> gain.miss_refund );
     }
   }
 
@@ -1136,8 +1133,7 @@ struct chaos_nova_t : public demon_hunter_spell_t
     
     aoe = -1;
     cooldown -> duration += p -> talent.unleashed_power -> effectN( 1 ).time_value();
-    base_costs[ RESOURCE_FURY ] *=
-      1.0 + p -> talent.unleashed_power -> effectN( 2 ).percent();
+    base_costs[ RESOURCE_FURY ] *= 1.0 + p -> talent.unleashed_power -> effectN( 2 ).percent();
     if ( ! p -> bugs )
     {
       school = SCHOOL_CHAOS;
@@ -1519,8 +1515,8 @@ struct fel_rush_t : public demon_hunter_spell_t
       p() -> buffs.self_movement -> trigger( 1, 0, -1.0, data().gcd() );
 
       // Adjust new distance from target.
-      p() -> current.distance = std::abs(
-        p() -> current.distance - composite_teleport_distance( execute_state ) );
+      p() -> current.distance =
+        std::abs( p() -> current.distance - composite_teleport_distance( execute_state ) );
 
       // If new distance after rushing is too far away to melee from, then trigger
       // movement back into melee range.
@@ -1566,8 +1562,7 @@ struct fel_eruption_t : public demon_hunter_spell_t
     parse_options( options_str );
 
     may_crit = false;
-    resource_current = p -> specialization() == DEMON_HUNTER_HAVOC ?
-      RESOURCE_FURY : RESOURCE_PAIN;
+    resource_current = p -> specialization() == DEMON_HUNTER_HAVOC ? RESOURCE_FURY : RESOURCE_PAIN;
 
     impact_action = new fel_eruption_damage_t( p );
     impact_action -> stats = stats;
@@ -1801,8 +1796,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
 
     demon_hunter_spell_t::execute();
 
-    p() -> resource_gain( RESOURCE_PAIN,
-      data().effectN( 3 ).resource( RESOURCE_PAIN ),
+    p() -> resource_gain( RESOURCE_PAIN, data().effectN( 3 ).resource( RESOURCE_PAIN ),
       p() -> gain.immolation_aura );
 
     direct -> execute();
@@ -3933,7 +3927,7 @@ double demon_hunter_t::composite_leech() const
     l += legendary.eternal_hunger -> driver() -> effectN( 1 ).percent();
   }
 
-  if ( buff.demon_spikes -> check() ) // legendary effect
+  if ( buff.demon_spikes -> check() && legendary.fragment_of_the_betrayers_prison ) // legendary effect
   {
     l += spec.fragment_of_the_betrayers_prison -> effectN( 1 ).percent();
   }
@@ -4480,10 +4474,8 @@ void demon_hunter_t::init_spells()
     active.charred_warblades = new charred_warblades_t( this );
   }
 
-  if ( legendary.fragment_of_the_betrayers_prison )
-  {
-    spec.fragment_of_the_betrayers_prison = find_spell( 217500 );
-  }
+  // Legendary
+  spec.fragment_of_the_betrayers_prison = find_spell( 217500 );
 }
 
 // demon_hunter_t::create_buffs =============================================
@@ -4616,18 +4608,18 @@ void demon_hunter_t::apl_precombat()
   // Flask or Elixir
   if ( sim -> allow_flasks )
   {
-    /* if ( true_level > 100 )
+    if ( true_level > 100 )
       pre -> add_action( "flask,type=flask_of_the_seventh_demon" );
-    else */
+    else 
       pre -> add_action( "flask,type=greater_draenic_agility_flask" );
   }
 
   // Food
   if ( sim -> allow_food )
   {
-    /* if ( true_level > 100 )
-      pre -> add_action( "food,type=leybeque_ribs" );
-    else */
+    if ( true_level > 100 )
+      pre -> add_action( "food,type=the_hungry_magister" );
+    else
       pre -> add_action( "food,type=pickled_eel" );
   }
 
