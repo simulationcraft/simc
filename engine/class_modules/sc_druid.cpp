@@ -23,8 +23,6 @@ namespace { // UNNAMED NAMESPACE
   Artifact utility traits
   Brutal Slash hasted recharge
   Check Luffa-Wrapped Grips (what procs it)
-  Ashamane's Rip tweak
-    http://us.battle.net/wow/en/forum/topic/20743504316?page=14#274
 
   Balance ===================================================================
   Stellar Drift cast while moving
@@ -1677,7 +1675,7 @@ public:
            ab::p() -> buff.clearcasting -> buff_duration ) ) {
       ab::p() -> proc.clearcasting -> occur();
 
-      if ( active )
+      for ( int i = 0; i < active; i++ )
         ab::p() -> proc.clearcasting_wasted -> occur();
 
       if ( ab::p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) )
@@ -2692,18 +2690,23 @@ struct ferocious_bite_t : public cat_attack_t
   struct ashamanes_rip_state_t : public action_state_t
   {
     double tick;
-    druid_td_t* td;
+    druid_t* druid;
 
     ashamanes_rip_state_t( druid_t* p, action_t* a, player_t* t ) :
-      action_state_t( a, target ), td( p -> get_target_data( t ) )
+      action_state_t( a, target ), druid( p )
     {}
+
+    druid_td_t* td()
+    { return druid -> get_target_data( action -> target ); }
 
     void initialize() override
     {
       action_state_t::initialize();
 
-      td -> dots.rip -> current_action -> calculate_tick_amount( td -> dots.rip -> state, 1.0 );
-      tick = td -> dots.rip -> state -> result_raw;
+      assert( td() -> dots.rip -> is_ticking() );
+
+      td() -> dots.rip -> current_action -> calculate_tick_amount( td() -> dots.rip -> state, 1.0 );
+      tick = td() -> dots.rip -> state -> result_raw;
     }
 
     void copy_state( const action_state_t* state ) override
@@ -6476,7 +6479,8 @@ void druid_t::create_buffs()
   buff.savage_roar           = buff_creator_t( this, "savage_roar", talent.savage_roar )
                                .default_value( talent.savage_roar -> effectN( 2 ).percent() )
                                .refresh_behavior( BUFF_REFRESH_DURATION ) // Pandemic refresh is done by the action
-                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                               .tick_behavior( BUFF_TICK_NONE );
 
   buff.scent_of_blood        = buff_creator_t( this, "scent_of_blood", find_spell( 210664 ) )
                                .chance( artifact.scent_of_blood.rank() > 0 )
