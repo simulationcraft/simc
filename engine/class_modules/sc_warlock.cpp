@@ -2388,7 +2388,7 @@ struct incinerate_t: public warlock_spell_t
   {
     warlock_spell_t::execute();
     
-    if ( p() -> artifact.dimension_ripper && rng().roll( dimension_ripper ) && p() -> cooldowns.dimensional_rift -> current_charge < p() -> cooldowns.dimensional_rift -> charges )
+    if ( p() -> artifact.dimension_ripper.rank() && rng().roll( dimension_ripper ) && p() -> cooldowns.dimensional_rift -> current_charge < p() -> cooldowns.dimensional_rift -> charges )
     {
       p() -> cooldowns.dimensional_rift -> adjust( -p() -> cooldowns.dimensional_rift -> duration ); //decrease remaining time by the duration of one charge, i.e., add one charge
       p() -> procs.dimension_ripper -> occur();
@@ -2466,7 +2466,7 @@ struct chaos_bolt_t: public warlock_spell_t
       p() -> resource_gain( RESOURCE_MANA, refund, p() -> gains.reverse_entropy );
     }
 
-    if ( rng().roll( p() -> artifact.soulsnatcher.percent() ) )
+    if ( p() -> artifact.soulsnatcher.rank() && rng().roll( p() -> artifact.soulsnatcher.percent() ) )
       p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.soulsnatcher );
   }
 
