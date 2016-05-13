@@ -125,10 +125,7 @@ public:
     buff_t* voidform;
 
     // Set Bonus
-    buff_t* empowered_shadows;  // t16 4pc caster
     buff_t* mental_instinct;    // t17 4pc caster
-    buff_t* absolution;         // t16 4pc heal holy word
-    buff_t* resolute_spirit;    // t16 4pc heal spirit shell
     buff_t* clear_thoughts;     // t17 4pc disc
     buff_t* reperation;         // T18 Disc 2p
     buff_t* premonition;        // T18 Shadow 4pc
@@ -136,7 +133,7 @@ public:
 
     // Legion Legendaries
     // Shadow
-    buff_t* iridis_empowerment;       // Zenk'aram, Iridi's Anadem stack counter
+    buff_t* anunds_last_breath;       // Anund's Seared Shackles stack counter
     buff_t* the_twins_painful_touch;  // To track first casting
   } buffs;
 
@@ -226,7 +223,8 @@ public:
   struct artifact_spell_data_t
   {
     // Shadow - Xal'atath, Blade of the Black Empire
-    artifact_power_t call_to_the_void;  // NYI
+    artifact_power_t call_to_the_void;
+    artifact_power_t creeping_shadows;
     artifact_power_t darkening_whispers;
     artifact_power_t deaths_embrace;
     artifact_power_t from_the_shadows;
@@ -239,7 +237,6 @@ public:
     artifact_power_t thrive_in_the_shadows;  // NYI
     artifact_power_t to_the_pain;
     artifact_power_t touch_of_darkness;
-    artifact_power_t tremble_in_fear;  // NYI
     artifact_power_t unleash_the_shadows;
     artifact_power_t void_corruption;
     artifact_power_t void_siphon;
@@ -337,6 +334,7 @@ public:
     proc_t* divine_insight;
     proc_t* divine_insight_overflow;
     proc_t* legendary_anunds_last_breath;
+    proc_t* legendary_anunds_last_breath_overflow;
     proc_t* legendary_zenkaram_iridis_anadem;
     proc_t* legendary_zenkaram_iridis_anadem_overflow;
     proc_t* shadowy_insight;
@@ -347,10 +345,6 @@ public:
     proc_t* shadowy_apparition_overflow;
     proc_t* surge_of_light;
     proc_t* surge_of_light_overflow;
-    proc_t* t15_2pc_caster;
-    proc_t* t15_4pc_caster;
-    proc_t* t15_2pc_caster_shadow_word_pain;
-    proc_t* t15_2pc_caster_vampiric_touch;
     proc_t* t17_2pc_caster_mind_blast_reset;
     proc_t* t17_2pc_caster_mind_blast_reset_overflow;
     proc_t* t17_2pc_caster_mind_blast_reset_overflow_seconds;
@@ -383,10 +377,10 @@ public:
     // Legion Legendaries
     // Shadow
     const special_effect_t* anunds_seared_shackles;
-    const special_effect_t* mother_shahrazs_secudtion;
+    const special_effect_t* mother_shahrazs_seduction;
     const special_effect_t* mangazas_madness;
-    const special_effect_t* zenkaram_iridis_anadem;
-    const special_effect_t* the_twins_painful_touch;
+    const special_effect_t* zenkaram_iridis_anadem;     // NYI
+    const special_effect_t* the_twins_painful_touch;    // NYI
   } active_items;
 
   // Pets
@@ -1285,18 +1279,18 @@ public:
     return false;
   }
 
-  void trigger_iridis()
+  void trigger_anunds()
   {
-    int stack = priest.buffs.iridis_empowerment->check();
-    priest.buffs.iridis_empowerment->trigger();
+    int stack = priest.buffs.anunds_last_breath->check();
+    priest.buffs.anunds_last_breath->trigger();
 
-    if (priest.buffs.iridis_empowerment->check() == stack)
+    if (priest.buffs.anunds_last_breath->check() == stack)
     {
-      priest.procs.legendary_zenkaram_iridis_anadem_overflow->occur();
+      priest.procs.legendary_anunds_last_breath_overflow->occur();
     }
     else
     {
-      priest.procs.legendary_zenkaram_iridis_anadem->occur();
+      priest.procs.legendary_anunds_last_breath->occur();
     }
   }
 
@@ -2352,6 +2346,14 @@ struct voidform_t final : public priest_spell_t
       priest.buffs.mass_hysteria->trigger();
     }
 
+    if ( priest.active_items.mother_shahrazs_seduction &&
+         priest.buffs.lingering_insanity->up() )
+    {
+      int mss_vf_stacks = floor(priest.buffs.lingering_insanity->remains().total_seconds() / priest.active_items.mother_shahrazs_seduction->driver()->effectN(1).base_value());
+
+      priest.buffs.voidform->current_stack += mss_vf_stacks;
+    }
+
     if ( priest.talents.void_lord->ok() &&
          priest.buffs.lingering_insanity->up() )
     {
@@ -2547,28 +2549,6 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
       generate_insanity( insanity_gain,
                          priest.gains.insanity_auspicious_spirits );
     }
-
-    if ( rng().roll(
-             priest.sets.set( SET_CASTER, T15, B2 )->effectN( 1 ).percent() ) )
-    {
-      priest_td_t& td = get_td( s->target );
-      priest.procs.t15_2pc_caster->occur();
-
-      timespan_t extend_duration = timespan_t::from_seconds(
-          priest.sets.set( SET_CASTER, T15, B2 )->effectN( 2 ).base_value() );
-
-      if ( td.dots.shadow_word_pain->is_ticking() )
-      {
-        td.dots.shadow_word_pain->extend_duration( extend_duration );
-        priest.procs.t15_2pc_caster_shadow_word_pain->occur();
-      }
-
-      if ( td.dots.vampiric_touch->is_ticking() )
-      {
-        td.dots.vampiric_touch->extend_duration( extend_duration );
-        priest.procs.t15_2pc_caster_vampiric_touch->occur();
-      }
-    }
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -2756,17 +2736,10 @@ public:
 
     if ( priest.active_spells.mind_spike_detonation )
     {
-
       if ( td.buffs.mind_spike->up() )
       {
         priest.active_spells.mind_spike_detonation->trigger();
       }
-    }
-    
-    if (priest.active_items.anunds_seared_shackles && td.dots.shadow_word_pain->is_ticking())
-    {
-      td.dots.shadow_word_pain->refresh_duration();
-      priest.procs.legendary_anunds_last_breath->occur();
     }
   }
 
@@ -2797,23 +2770,6 @@ public:
                   composite_haste();
 
     priest_spell_t::update_ready( cd_duration );
-
-    priest.buffs.empowered_shadows->up();  // benefit tracking
-    priest.buffs.empowered_shadows->expire();
-  }
-
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double d = priest_spell_t::composite_da_multiplier( state );
-
-    if ( priest.buffs.empowered_shadows->check() )
-      d *= 1.0 +
-           priest.buffs.empowered_shadows->current_value *
-               priest.buffs.empowered_shadows->check();
-
-    d *= 1.0 + priest.sets.set( SET_CASTER, T16, B2 )->effectN( 1 ).percent();
-
-    return d;
   }
 };
 
@@ -3015,9 +2971,6 @@ struct shadow_word_death_t final : public priest_spell_t
   {
     parse_options( options_str );
 
-    base_multiplier *=
-        1.0 + p.sets.set( SET_CASTER, T13, B2 )->effectN( 1 ).percent();
-
     if ( p.artifact.deaths_embrace.rank() )
     {
       base_multiplier *= 1.0 + p.artifact.deaths_embrace.percent();
@@ -3025,45 +2978,32 @@ struct shadow_word_death_t final : public priest_spell_t
 
     cooldown -> hasted = true;
   }
-
-  void update_ready( timespan_t cd_duration ) override
+  
+  void impact(action_state_t* s) override
   {
-    priest_spell_t::update_ready( cd_duration );
-
-    priest.buffs.empowered_shadows->up();  // benefit tracking
-    priest.buffs.empowered_shadows->expire();
-  }
-
-  void impact( action_state_t* s ) override
-  {
+    double total_insanity_gain = 0.0;
     double save_health_percentage = s->target->health_percentage();
 
-    priest_spell_t::impact( s );
+    priest_spell_t::impact(s);
 
-    if ( result_is_hit( s->result ) )
+    if (result_is_hit(s->result))
     {
-      if ( priest.talents.reaper_of_souls->ok() ||
-           ( ( save_health_percentage > 0.0 ) &&
-             ( s->target->health_percentage() <= 0.0 ) ) )
+      // http://us.battle.net/wow/en/forum/topic/20743676204#3 - 2016/05/12
+      // SWD always grants at least 10 Insanity.
+      // TODO: Add in a custom buff that checks after 1 second to see if the target SWD was cast on is now dead.
+      // TODO: Check in beta if the target is dead vs. SWD is the killing blow.
+      total_insanity_gain = 10.0;
+
+      if (priest.talents.reaper_of_souls->ok() ||
+        ((save_health_percentage > 0.0) &&
+        (s->target->health_percentage() <= 0.0)))
       {
-        generate_insanity( insanity_gain,
-                           priest.gains.insanity_shadow_word_death );
+        total_insanity_gain = insanity_gain;
       }
+
+      generate_insanity(total_insanity_gain,
+        priest.gains.insanity_shadow_word_death);
     }
-  }
-
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double d = priest_spell_t::composite_da_multiplier( state );
-
-    if ( priest.buffs.empowered_shadows->check() )
-    {
-      d *= 1.0 +
-           priest.buffs.empowered_shadows->current_value *
-               priest.buffs.empowered_shadows->check();
-    }
-
-    return d;
   }
 
   bool ready() override
@@ -3243,26 +3183,17 @@ struct shadow_word_pain_t final : public priest_spell_t
     may_crit  = true;
     tick_zero = false;
 
-    base_multiplier *=
-        1.0 + p.sets.set( SET_CASTER, T13, B4 )->effectN( 1 ).percent();
-
     if ( p.artifact.to_the_pain.rank() )
     {
       base_multiplier *= 1.0 + p.artifact.to_the_pain.percent();
     }
-
-    base_crit += p.sets.set( SET_CASTER, T14, B2 )->effectN( 1 ).percent();
-
-    dot_duration +=
-        p.sets.set( SET_CASTER, T14, B4 )->effectN( 1 ).time_value();
 
     if ( priest.specs.shadowy_apparitions->ok() &&
          !priest.active_spells.shadowy_apparitions )
     {
       priest.active_spells.shadowy_apparitions =
           new shadowy_apparition_spell_t( p );
-      if ( !priest.artifact.unleash_the_shadows.rank() &&
-           !priest.sets.has_set_bonus( SET_CASTER, T15, B4 ) )
+      if ( !priest.artifact.unleash_the_shadows.rank() )
       {
         // If SW:P is the only action having SA, then we can add it as a child
         // stat
@@ -3336,9 +3267,9 @@ struct shadow_word_pain_t final : public priest_spell_t
     // generate_insanity(1, priest.gains.insanity_shadow_word_pain_ondamage);
     // For testing until set bonuses are available in SimC
     
-    if (priest.active_items.zenkaram_iridis_anadem)
+    if (priest.active_items.anunds_seared_shackles)
     {
-      trigger_iridis();
+      trigger_anunds();
     }
   }
 
@@ -3447,9 +3378,6 @@ struct vampiric_touch_t final : public priest_spell_t
     parse_options( options_str );
     may_crit = false;
 
-    dot_duration +=
-        p.sets.set( SET_CASTER, T14, B4 )->effectN( 1 ).time_value();
-
     spell_power_mod.tick *= 1.0 + p.talents.sanlayn->effectN( 1 ).percent();
 
     if ( p.artifact.touch_of_darkness.rank() )
@@ -3459,8 +3387,7 @@ struct vampiric_touch_t final : public priest_spell_t
 
     if ( !priest.active_spells.shadowy_apparitions &&
          priest.specs.shadowy_apparitions->ok() &&
-         ( p.artifact.unleash_the_shadows.rank() ||
-           priest.sets.has_set_bonus( SET_CASTER, T15, B4 ) ) )
+         p.artifact.unleash_the_shadows.rank() )
     {
       priest.active_spells.shadowy_apparitions =
           new shadowy_apparition_spell_t( p );
@@ -3482,8 +3409,7 @@ struct vampiric_touch_t final : public priest_spell_t
     priest.resource_gain( RESOURCE_HEALTH, d->state->result_amount,
                           priest.gains.vampiric_touch_health );
 
-    if ( priest.artifact.unleash_the_shadows.rank() ||
-         priest.sets.has_set_bonus( SET_CASTER, T15, B4 ) )
+    if ( priest.artifact.unleash_the_shadows.rank() )
     {
       if ( priest.active_spells.shadowy_apparitions &&
            ( d->state->result_amount > 0 ) )
@@ -3491,13 +3417,6 @@ struct vampiric_touch_t final : public priest_spell_t
         if ( d->state->result == RESULT_CRIT &&
              rng().roll( priest.artifact.unleash_the_shadows.percent() ) )
         {
-          priest.active_spells.shadowy_apparitions->trigger();
-        }
-        else if ( rng().roll(
-                      priest.sets.set( SET_CASTER, T15, B4 )->proc_chance() ) )
-        {
-          priest.procs.t15_4pc_caster->occur();
-
           priest.active_spells.shadowy_apparitions->trigger();
         }
       }
@@ -3512,9 +3431,9 @@ struct vampiric_touch_t final : public priest_spell_t
     // generate_insanity(1, priest.gains.insanity_vampiric_touch_ondamage);
     // For testing until set bonuses are available in SimC
 
-    if (priest.active_items.zenkaram_iridis_anadem)
+    if (priest.active_items.anunds_seared_shackles)
     {
-      trigger_iridis();
+      trigger_anunds();
     }
   }
 
@@ -3607,10 +3526,10 @@ struct void_bolt_t final : public priest_spell_t
     if ( priest.mastery_spells.madness->ok() )
       m *= 1.0 + priest.cache.mastery_value();
 
-    if (priest.buffs.iridis_empowerment->check())
+    if (priest.buffs.anunds_last_breath->check())
     {
-      m *= 1.0 + (priest.buffs.iridis_empowerment->data().effectN(1).percent() * priest.buffs.iridis_empowerment->stack());
-      priest.buffs.iridis_empowerment->expire();
+      m *= 1.0 + (priest.buffs.anunds_last_breath->data().effectN(1).percent() * priest.buffs.anunds_last_breath->stack());
+      priest.buffs.anunds_last_breath->expire();
     }
     return m;
   }
@@ -3809,10 +3728,6 @@ struct penance_t final : public priest_spell_t
     // does the triggering. We want atonement_penance to be created in
     // priest_heal_t::init() so that it appears in the report.
     can_trigger_atonement = priest.specs.atonement->ok();
-
-    cooldown->duration =
-        data().cooldown() +
-        p.sets.set( SET_HEALER, T14, B4 )->effectN( 1 ).time_value();
 
     dot_duration += priest.sets.set( PRIEST_DISCIPLINE, T17, B2 )
                         ->effectN( 1 )
@@ -4420,8 +4335,6 @@ struct circle_of_healing_t final : public priest_heal_t
   void execute() override
   {
     cooldown->duration = data().cooldown();
-    cooldown->duration +=
-        priest.sets.set( SET_HEALER, T14, B4 )->effectN( 2 ).time_value();
     if ( priest.buffs.chakra_sanctuary->up() )
       cooldown->duration +=
           priest.buffs.chakra_sanctuary->data().effectN( 2 ).time_value();
@@ -4431,7 +4344,6 @@ struct circle_of_healing_t final : public priest_heal_t
 
     priest_heal_t::execute();
 
-    priest.buffs.absolution->trigger();
     trigger_surge_of_light();
   }
 
@@ -4564,8 +4476,6 @@ struct flash_heal_t final : public priest_heal_t
 
     double c = priest_heal_t::cost();
 
-    c *= 1.0 + priest.sets.set( SET_HEALER, T14, B2 )->effectN( 1 ).percent();
-
     return c;
   }
 };
@@ -4626,10 +4536,6 @@ struct _heal_t final : public priest_heal_t
   double action_multiplier() const override
   {
     double am = priest_heal_t::action_multiplier();
-
-    am *= 1.0 +
-          priest.sets.set( SET_HEALER, T16, B2 )->effectN( 1 ).percent() *
-              priest.buffs.serendipity->check();
 
     if ( priest.active_items.complete_healing &&
          priest.buffs.chakra_sanctuary->check() )
@@ -4715,13 +4621,7 @@ struct holy_word_sanctuary_t final : public priest_heal_t
       if ( priest.buffs.chakra_sanctuary->up() )
         am *=
             1.0 + priest.buffs.chakra_sanctuary->data().effectN( 1 ).percent();
-
-      // Spell data from the buff ( 15% ) is correct, not the one in the
-      // triggering spell ( 50% )
-      am *= 1.0 +
-            priest.buffs.absolution->check() *
-                priest.buffs.absolution->data().effectN( 1 ).percent();
-
+      
       return am;
     }
   };
@@ -4737,17 +4637,11 @@ struct holy_word_sanctuary_t final : public priest_heal_t
     dot_duration   = timespan_t::from_seconds( 18.0 );
 
     tick_action = new holy_word_sanctuary_tick_t( p );
-
-    // Needs testing
-    cooldown->duration *=
-        1.0 + p.sets.has_set_bonus( SET_HEALER, T13, B4 ) * -0.2;
   }
 
   void execute() override
   {
     priest_heal_t::execute();
-
-    priest.buffs.absolution->expire();
 
     trigger_surge_of_light();
   }
@@ -4775,30 +4669,6 @@ struct holy_word_chastise_t final : public priest_spell_t
 
     base_costs[ current_resource() ] =
         floor( base_costs[ current_resource() ] );
-
-    // Needs testing
-    cooldown->duration *=
-        1.0 + p.sets.has_set_bonus( SET_HEALER, T13, B4 ) * -0.2;
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    priest.buffs.absolution->expire();
-  }
-
-  double action_multiplier() const override
-  {
-    double am = priest_spell_t::action_multiplier();
-
-    // Spell data from the buff ( 15% ) is correct, not the one in the
-    // triggering spell ( 50% )
-    am *= 1.0 +
-          priest.buffs.absolution->check() *
-              priest.buffs.absolution->data().effectN( 1 ).percent();
-
-    return am;
   }
 
   bool ready() override
@@ -4824,33 +4694,13 @@ struct holy_word_serenity_t final : public priest_heal_t
 
     base_costs[ current_resource() ] =
         floor( base_costs[ current_resource() ] );
-
-    // Needs testing
-    cooldown->duration =
-        data().cooldown() *
-        ( 1.0 + p.sets.has_set_bonus( SET_HEALER, T13, B4 ) * -0.2 );
   }
 
   void execute() override
   {
     priest_heal_t::execute();
 
-    priest.buffs.absolution->expire();
-
     trigger_surge_of_light();
-  }
-
-  double action_multiplier() const override
-  {
-    double am = priest_heal_t::action_multiplier();
-
-    // Spell data from the buff ( 15% ) is correct, not the one in the
-    // triggering spell ( 50% )
-    am *= 1.0 +
-          priest.buffs.absolution->check() *
-              priest.buffs.absolution->data().effectN( 1 ).percent();
-
-    return am;
   }
 
   void impact( action_state_t* s ) override
@@ -5021,9 +4871,6 @@ struct penance_heal_t final : public priest_heal_t
     dynamic_tick_action = true;
 
     cooldown = p.cooldowns.penance;
-    cooldown->duration =
-        data().cooldown() +
-        p.sets.set( SET_HEALER, T14, B4 )->effectN( 1 ).time_value();
 
     tick_action = new penance_heal_tick_t( p );
   }
@@ -5113,10 +4960,6 @@ struct prayer_of_healing_t final : public priest_heal_t
     if ( priest.buffs.chakra_sanctuary->up() )
       am *= 1.0 + priest.buffs.chakra_sanctuary->data().effectN( 1 ).percent();
 
-    am *= 1.0 +
-          priest.sets.set( SET_HEALER, T16, B2 )->effectN( 1 ).percent() *
-              priest.buffs.serendipity->check();
-
     return am;
   }
 
@@ -5184,7 +5027,6 @@ struct prayer_of_mending_t final : public priest_heal_t
   {
     priest_heal_t::execute();
 
-    priest.buffs.absolution->trigger();
     trigger_surge_of_light();
     trigger_serendipity( true );
   }
@@ -5501,11 +5343,6 @@ struct archangel_t final : public priest_buff_t<buff_t>
                      .max_stack( 5 ) )
   {
     default_value = data().effectN( 1 ).percent();
-
-    if ( priest.sets.has_set_bonus( SET_HEALER, T16, B2 ) )
-    {
-      add_invalidate( CACHE_CRIT );
-    }
   }
 
   bool trigger( int stacks, double /* value */, double chance,
@@ -5528,12 +5365,6 @@ struct dispersion_t : public priest_buff_t<buff_t>
                      .spell( p.find_class_spell( "Dispersion" ) ) )
   {
   }
-
-  void expire_override( int expiration_stacks,
-                        timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-  }
 };
 
 struct spirit_shell_t final : public priest_buff_t<buff_t>
@@ -5543,19 +5374,6 @@ struct spirit_shell_t final : public priest_buff_t<buff_t>
                      .spell( p.find_class_spell( "Spirit Shell" ) )
                      .cd( timespan_t::zero() ) )
   {
-  }
-
-  bool trigger( int stacks, double value, double chance,
-                timespan_t duration ) override
-  {
-    bool success = base_t::trigger( stacks, value, chance, duration );
-
-    if ( success )
-    {
-      priest.buffs.resolute_spirit->trigger();
-    }
-
-    return success;
   }
 };
 
@@ -5620,7 +5438,7 @@ void mangazas_madness(special_effect_t& effect)
 void mother_shahrazs_seduction(special_effect_t& effect)
 {
   priest_t* s = debug_cast<priest_t*>(effect.player);
-  do_trinket_init(s, PRIEST_SHADOW, s->active_items.mother_shahrazs_secudtion, effect);
+  do_trinket_init(s, PRIEST_SHADOW, s->active_items.mother_shahrazs_seduction, effect);
 }
 
 void the_twins_painful_touch(special_effect_t& effect)
@@ -5643,11 +5461,11 @@ void init()
   unique_gear::register_special_effect( 184915, shadow_trinket );
 
   // Legion Legendaries
-  unique_gear::register_special_effect(207664, anunds_seared_shackles);
+  unique_gear::register_special_effect(215210, anunds_seared_shackles);
   unique_gear::register_special_effect(207701, mangazas_madness);
   unique_gear::register_special_effect(215250, mother_shahrazs_seduction);
   unique_gear::register_special_effect(207721, the_twins_painful_touch);
-  unique_gear::register_special_effect(215209, zenkaram_iridis_anadem);
+  unique_gear::register_special_effect(224999, zenkaram_iridis_anadem);
 }
 
 }  // items
@@ -5835,12 +5653,6 @@ void priest_t::create_procs()
       get_proc( "Shadowy Insight Mind Blast CD Reset lost to overflow" );
   procs.surge_of_light          = get_proc( "Surge of Light" );
   procs.surge_of_light_overflow = get_proc( "Surge of Light lost to overflow" );
-  procs.t15_2pc_caster          = get_proc( "Tier15 2pc caster" );
-  procs.t15_4pc_caster          = get_proc( "Tier15 4pc caster" );
-  procs.t15_2pc_caster_shadow_word_pain =
-      get_proc( "Tier15 2pc caster Shadow Word: Pain Extra Tick" );
-  procs.t15_2pc_caster_vampiric_touch =
-      get_proc( "Tier15 2pc caster Vampiric Touch Extra Tick" );
   procs.t17_2pc_caster_mind_blast_reset =
       get_proc( "Tier17 2pc Mind Blast CD Reduction occurances" );
   procs.t17_2pc_caster_mind_blast_reset_overflow = get_proc(
@@ -5980,9 +5792,6 @@ double priest_t::composite_spell_haste() const
   if ( buffs.power_infusion->check() )
     h /= 1.0 + buffs.power_infusion->data().effectN( 1 ).percent();
 
-  if ( buffs.resolute_spirit->check() )
-    h /= 1.0 + buffs.resolute_spirit->data().effectN( 1 ).percent();
-
   if ( buffs.mental_instinct->check() )
     h /= 1.0 +
          buffs.mental_instinct->data().effectN( 1 ).percent() *
@@ -6013,9 +5822,6 @@ double priest_t::composite_melee_haste() const
 
   if ( buffs.power_infusion->check() )
     h /= 1.0 + buffs.power_infusion->data().effectN( 1 ).percent();
-
-  if ( buffs.resolute_spirit->check() )
-    h /= 1.0 + buffs.resolute_spirit->data().effectN( 1 ).percent();
 
   if ( buffs.mental_instinct->check() )
     h /= 1.0 +
@@ -6081,24 +5887,14 @@ double priest_t::composite_spell_power_multiplier() const
 
 double priest_t::composite_spell_crit() const
 {
-  double csc = base_t::composite_spell_crit();
-
-  if ( buffs.archangel->check() )
-    csc *= 1.0 + sets.set( SET_HEALER, T16, B2 )->effectN( 2 ).percent();
-
-  return csc;
+  return base_t::composite_spell_crit();
 }
 
 // priest_t::composite_melee_crit ===============================
 
 double priest_t::composite_melee_crit() const
 {
-  double cmc = base_t::composite_melee_crit();
-
-  if ( buffs.archangel->check() )
-    cmc *= 1.0 + sets.set( SET_HEALER, T16, B2 )->effectN( 2 ).percent();
-
-  return cmc;
+  return base_t::composite_melee_crit();
 }
 
 // priest_t::composite_player_multiplier ====================================
@@ -6112,6 +5908,14 @@ double priest_t::composite_player_multiplier( school_e school ) const
          dbc::is_school( SCHOOL_SHADOWFROST, school ) ) )
   {
     m *= 1.0 + buffs.voidform->data().effectN( 1 ).percent();
+  }
+
+  if ( specialization() == PRIEST_SHADOW &&
+       artifact.creeping_shadows.rank() &&
+       ( dbc::is_school(SCHOOL_SHADOW, school ) ||
+         dbc::is_school(SCHOOL_SHADOWFROST, school ) ) )
+  {
+    m *= 1.0 + artifact.creeping_shadows.percent();
   }
 
   if ( specialization() == PRIEST_SHADOW &&
@@ -6543,6 +6347,7 @@ void priest_t::init_spells()
   // Shadow - Xal'atath, Blade of the Black Empire
 
   artifact.call_to_the_void     = find_artifact_spell( "Call to the Void" );
+  artifact.creeping_shadows     = find_artifact_spell( "Creeping Shadows" );
   artifact.darkening_whispers   = find_artifact_spell( "Darkening Whispers" );
   artifact.deaths_embrace       = find_artifact_spell( "Death's Embrace" );
   artifact.from_the_shadows     = find_artifact_spell( "From the Shadows" );
@@ -6556,7 +6361,6 @@ void priest_t::init_spells()
       find_artifact_spell( "Thrive in the Shadows" );
   artifact.to_the_pain         = find_artifact_spell( "To the Pain" );
   artifact.touch_of_darkness   = find_artifact_spell( "Touch of Darkness" );
-  artifact.tremble_in_fear     = find_artifact_spell( "Tremble in Fear" );
   artifact.unleash_the_shadows = find_artifact_spell( "Unleash the Shadows" );
   artifact.void_corruption     = find_artifact_spell( "Void Corruption" );
   artifact.void_siphon         = find_artifact_spell( "Void Siphon" );
@@ -6741,23 +6545,6 @@ void priest_t::create_buffs()
   buffs.dispersion = new buffs::dispersion_t( *this );
 
   // Set Bonuses
-  buffs.empowered_shadows =
-      buff_creator_t( this, "empowered_shadows" )
-          .spell( sets.set( SET_CASTER, T16, B4 )->effectN( 1 ).trigger() )
-          .chance( sets.has_set_bonus( SET_CASTER, T16, B4 ) )
-          .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-
-  buffs.absolution = buff_creator_t( this, "absolution" )
-                         .spell( find_spell( 145336 ) )
-                         .chance( sets.has_set_bonus( SET_HEALER, T16, B4 ) );
-
-  buffs.resolute_spirit =
-      stat_buff_creator_t( this, "resolute_spirit" )
-          .spell( find_spell( 145374 ) )
-          .chance( sets.has_set_bonus( SET_HEALER, T16, B4 ) )
-          .add_invalidate( CACHE_SPELL_HASTE )
-          .add_invalidate( CACHE_HASTE );
-
   buffs.mental_instinct =
       buff_creator_t( this, "mental_instinct" )
           .spell( sets.set( PRIEST_SHADOW, T17, B4 )->effectN( 1 ).trigger() )
@@ -6790,8 +6577,8 @@ void priest_t::create_buffs()
           .duration( timespan_t::from_seconds(
               6.0 ) );  // TODO Update with spelldata once available
 
-  buffs.iridis_empowerment =
-    buff_creator_t(this, "iridis_empowerment")
+  buffs.anunds_last_breath =
+    buff_creator_t(this, "anunds_last_breath")
     .spell(find_spell(215210));
       //.chance( 1.0 )
       //.duration(timespan_t::from_seconds(60.0)) // Probably 1 minute like the rest of our temp buffs.
