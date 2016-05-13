@@ -273,7 +273,6 @@ public:
 
     // Destruction only
     const spell_data_t* immolate;
-
   } spec;
 
   // Buffs
@@ -2247,7 +2246,7 @@ struct immolate_state_t : public action_state_t
   {
     action_state_t::debug_str( s );
 
-    s << " roaring_blaze_stacks=" << roaring_blaze;
+    s << " roaring_blaze_mul=" << roaring_blaze;
 
     return s;
   }
@@ -2277,10 +2276,8 @@ struct immolate_t: public warlock_spell_t
   {
     double m = warlock_spell_t::composite_ta_multiplier( state );
 
-    immolate_state_t* immolate_state = debug_cast<immolate_state_t*>( td( state -> target ) -> dots_immolate -> state );
-
-    if ( immolate_state )
-      m *= immolate_state -> roaring_blaze;
+    if ( td( state -> target ) -> dots_immolate -> is_ticking() )
+      m *= debug_cast<const immolate_state_t*>( state ) -> roaring_blaze;
     
     return m;
   }
@@ -2298,11 +2295,12 @@ struct immolate_t: public warlock_spell_t
 
 struct conflagrate_t: public warlock_spell_t
 {
-  double conflagration_of_chaos;
+  double roaring_blaze_multiplier;
+
   conflagrate_t( warlock_t* p ):
     warlock_spell_t( p, "Conflagrate" )
   {
-    conflagration_of_chaos = p -> find_spell( 219195 ) -> proc_chance();
+    roaring_blaze_multiplier = 1.0 + p -> find_spell( 205690 ) -> effectN( 1 ).percent();
     energize_type = ENERGIZE_PER_HIT;
   }
 
@@ -2344,8 +2342,10 @@ struct conflagrate_t: public warlock_spell_t
     if ( p() -> talents.backdraft -> ok() )
       p() -> buffs.backdraft -> trigger();
 
-    if ( p() -> artifact.conflagration_of_chaos.rank() && rng().roll( conflagration_of_chaos ) )
-      p() -> buffs.conflagration_of_chaos -> trigger();
+    if ( p() -> buffs.conflagration_of_chaos -> up() )
+      p() -> buffs.conflagration_of_chaos -> expire();
+
+    p() -> buffs.conflagration_of_chaos -> trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -2354,15 +2354,11 @@ struct conflagrate_t: public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      immolate_state_t* immolate_state = debug_cast<immolate_state_t*>( td( s -> target ) -> dots_immolate->state );
-
-      if ( p() -> talents.roaring_blaze -> ok() )
+      if ( p() -> talents.roaring_blaze -> ok() && td( s -> target ) -> dots_immolate -> is_ticking() )
       {
-        immolate_state -> roaring_blaze *= 1.5;
+        immolate_state_t* immo_state = debug_cast<immolate_state_t*>( td( s -> target ) -> dots_immolate -> state );
+        immo_state -> roaring_blaze *= roaring_blaze_multiplier;
       }
-
-      if ( p() -> buffs.conflagration_of_chaos -> check() )
-        p() -> buffs.conflagration_of_chaos -> expire();
     }
   }
 };
@@ -3876,7 +3872,8 @@ void warlock_t::create_buffs()
   buffs.tier18_2pc_demonology = buff_creator_t( this, "demon_rush", sets.set( WARLOCK_DEMONOLOGY, T18, B2 ) -> effectN( 1 ).trigger() )
     .default_value( sets.set( WARLOCK_DEMONOLOGY, T18, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
-  buffs.conflagration_of_chaos = buff_creator_t( this, "conflagration_of_chaos", find_spell( 219195 ) -> effectN( 1 ).trigger() );
+  buffs.conflagration_of_chaos = buff_creator_t( this, "conflagration_of_chaos", artifact.conflagration_of_chaos.data().effectN( 1 ).trigger() )
+    .chance( artifact.conflagration_of_chaos.rank() > 0 * artifact.conflagration_of_chaos.data().proc_chance() );
 }
 
 void warlock_t::init_rng()
