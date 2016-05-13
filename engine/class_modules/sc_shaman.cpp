@@ -868,7 +868,7 @@ public:
       }
 
       maelstrom_gain = effect.resource( RESOURCE_MAELSTROM );
-      energize_type = ENERGIZE_NONE; // disable resource generation from spell data.
+      ab::energize_type = ENERGIZE_NONE; // disable resource generation from spell data.
     }
   }
 

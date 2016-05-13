@@ -2313,7 +2313,8 @@ struct death_knight_action_t : public Base
 
   virtual void consume_resource()
   {
-    if ( ! ( energize_type != ENERGIZE_NONE && energize_resource == RESOURCE_RUNIC_POWER ) )
+    if ( ! ( action_base_t::energize_type != ENERGIZE_NONE &&
+          action_base_t::energize_resource == RESOURCE_RUNIC_POWER ) )
       action_base_t::consume_resource();
   }
 
