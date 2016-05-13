@@ -2209,15 +2209,14 @@ struct shadow_bolt_t: public warlock_spell_t
   shadow_bolt_t( warlock_t* p ):
     warlock_spell_t( p, "Shadow Bolt" )
   {
+    if ( p -> specialization() == WARLOCK_DEMONOLOGY )
+    {
+      energize_type = RESOURCE_GAIN_IF_HIT;
+      energize_resource = RESOURCE_SOUL_SHARD;
+      energize_amount = 1;
+    }
+
     base_multiplier *= 1.0 + p -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 3 ).percent();
-  }
-
-  void execute() override
-  {
-    warlock_spell_t::execute();
-
-    if ( result_is_hit( execute_state -> result) )
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.shadow_bolt );
   }
 };
 
@@ -2290,10 +2289,10 @@ struct immolate_t: public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-      if ( d -> state -> result == RESULT_CRIT && rng().roll( 0.3 ) )
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.immolate );
-      else if ( d -> state -> result == RESULT_HIT && rng().roll( 0.15 ) )
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.immolate );
+    if ( d -> state -> result == RESULT_CRIT && rng().roll( 0.3 ) )
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.immolate );
+    else if ( d -> state -> result == RESULT_HIT && rng().roll( 0.15 ) )
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.immolate );
   }
 };
 
@@ -2304,6 +2303,7 @@ struct conflagrate_t: public warlock_spell_t
     warlock_spell_t( p, "Conflagrate" )
   {
     conflagration_of_chaos = p -> find_spell( 219195 ) -> proc_chance();
+    energize_type = RESOURCE_GAIN_PER_HIT;
   }
 
   void init() override
@@ -2354,8 +2354,6 @@ struct conflagrate_t: public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.conflagrate );
-
       immolate_state_t* immolate_state = debug_cast<immolate_state_t*>( td( s -> target ) -> dots_immolate->state );
 
       if ( p() -> talents.roaring_blaze -> ok() )
@@ -3187,15 +3185,8 @@ struct soul_harvest_t : public warlock_spell_t
   soul_harvest_t( warlock_t* p ) :
     warlock_spell_t( "soul_harvest", p, p -> talents.soul_harvest )
   {
-    harmful = false;
-    may_crit = false;
-  }
-
-  virtual void execute() override
-  {
-    warlock_spell_t::execute();
-
-    p() -> resource_gain( RESOURCE_SOUL_SHARD, 5, p() -> gains.soul_harvest );
+    harmful = may_crit = may_miss = false;
+    energize_type = RESOURCE_GAIN_ON_CAST;
   }
 };
 

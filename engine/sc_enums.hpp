@@ -1254,3 +1254,11 @@ enum rppm_scale_e
   RPPM_CRIT,
 };
 
+enum action_energize_e
+{
+  RESOURCE_GAIN_NONE = 0,
+  RESOURCE_GAIN_ON_CAST,
+  RESOURCE_GAIN_IF_HIT,
+  RESOURCE_GAIN_PER_HIT,
+  RESOURCE_GAIN_PER_TICK
+};

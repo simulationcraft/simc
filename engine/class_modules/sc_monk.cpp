@@ -1893,7 +1893,7 @@ public:
     }
 
     // Energy refund, estimated at 80%
-    if ( current_resource() == RESOURCE_ENERGY && ab::resource_consumed > 0 && ab::result_is_miss( ab::execute_state -> result ) )
+    if ( current_resource() == RESOURCE_ENERGY && ab::resource_consumed > 0 && ! ab::hit_any_target )
     {
       double energy_restored = ab::resource_consumed * 0.8;
 
@@ -2122,6 +2122,11 @@ struct tiger_palm_t: public monk_melee_attack_t
     if ( p -> specialization() == MONK_BREWMASTER )
       base_costs[RESOURCE_ENERGY] *= 1 + p -> spec.stagger -> effectN( 16 ).percent(); // -50% for Brewmasters
 
+    if ( p -> specialization() == MONK_WINDWALKER )
+      gain_amount += p -> spec.stance_of_the_fierce_tiger -> effectN( 4 ).base_value();
+    else
+      gain_type = RESOURCE_GAIN_NONE;
+
     spell_power_mod.direct = 0.0;
   }
 
@@ -2172,27 +2177,21 @@ struct tiger_palm_t: public monk_melee_attack_t
         }
 */
 
-        // Calculate how much Chi is generated
-        double chi_gain = data().effectN( 2 ).base_value();
-        chi_gain += p() -> spec.stance_of_the_fierce_tiger -> effectN( 4 ).base_value();
-
         // Power Strike activation
         // Legion change = The buff will no longer summon a chi sphere at max chi. It will hold the buff until you can actually use the power strike
         // TODO: Currently there appears to be a bug with Power Strikes and overflow
-        if ( p() -> buff.power_strikes -> up() && ( p() -> resources.current[RESOURCE_CHI] + chi_gain <= p() -> resources.max[RESOURCE_CHI] ) )
+        if ( p() -> buff.power_strikes -> up() && ( p() -> resources.current[RESOURCE_CHI] < p() -> resources.max[RESOURCE_CHI] ) )
         {
           player -> resource_gain( RESOURCE_CHI, p() -> buff.power_strikes -> value(), p() -> gain.power_strikes, this );
           p() -> buff.power_strikes -> expire();
         }
-
-        player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.tiger_palm, this );
 
         // Combo Breaker calculation
         if ( p() -> buff.bok_proc -> trigger() )
           p() -> proc.bok_proc -> occur();
 
         //  Your Chi generating abilities have a 15% chance to generate an Energy Sphere, which will grant you 10 Energy when you walk through it.
-        if ( rng().roll( p() -> sets.set( SET_MELEE, T15, B2) -> proc_chance() ) )
+        if ( rng().roll( p() -> sets.set( SET_MELEE, T15, B2 ) -> proc_chance() ) )
         {
           p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc_melee -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc_melee );
           p() -> proc.tier15_2pc_melee -> occur();
@@ -3554,9 +3553,9 @@ struct energizing_elixir_t: public monk_spell_t
   {
     parse_options( options_str );
 
-    trigger_gcd = timespan_t::zero();
-    harmful = false;
-    dot_duration = trigger_gcd;
+    dot_duration = trigger_gcd = timespan_t::zero();
+    may_miss = may_crit = harmful = false;
+    gain_type = RESOURCE_GAIN_NONE; // disable resource gain from spell data
   }
 
   virtual void execute() override
@@ -3582,15 +3581,14 @@ struct black_ox_brew_t: public monk_spell_t
     harmful = false;
     cooldown -> duration = data().charge_cooldown();
     trigger_gcd = timespan_t::zero();
+    gain_type = RESOURCE_GAIN_ON_CAST;
   }
 
   virtual void execute() override
   {
     monk_spell_t::execute();
 
-    // Chug some Black Ox Brew, which instantly refills your Energy, and your Ironskin Brew and Purifying Brew charges.
-    p() -> resource_gain( RESOURCE_ENERGY, p() -> talent.black_ox_brew -> effectN( 1 ).base_value(), p() -> gain.energy_refund );
-
+    // Refill Ironskin Brew and Purifying Brew charges.
     p() -> cooldown.brewmaster_active_mitigation -> reset( true );
   }
 };

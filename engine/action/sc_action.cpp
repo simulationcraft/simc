@@ -379,6 +379,7 @@ action_t::action_t( action_e       ty,
   dynamic_tick_action            = true; // WoD updates everything on tick by default. If you need snapshotted values for a periodic effect, use persistent multipliers.
   starved_proc                   = NULL;
   action_skill                   = player -> base.skill;
+  energize_type                  = RESOURCE_GAIN_NONE;
 
   // New Stuff
   snapshot_flags = 0;
@@ -425,6 +426,7 @@ action_t::action_t( action_e       ty,
   internal_cooldown = player -> get_cooldown( name_str + "_internal" );
 
   stats = player -> get_stats( name_str, this );
+  gain  = player -> get_gain( name_str );
 
   if ( data().ok() )
   {
@@ -663,6 +665,14 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
           }
           break;
         default: break;
+      }
+      break;
+    case E_ENERGIZE:
+      if ( energize_type == RESOURCE_GAIN_NONE )
+      {
+        energize_type     = RESOURCE_GAIN_IF_HIT;
+        energize_resource = spelleffect_data.resource_gain_type();
+        energize_amount   = spelleffect_data.resource( energize_resource );
       }
       break;
     default: break;
@@ -1250,6 +1260,9 @@ void action_t::execute()
                    player -> resources.current[ player -> primary_resource() ] );
   }
 
+  hit_any_target = false;
+  num_targets_hit = 0;
+
   if ( harmful )
   {
     if ( player -> in_combat == false && sim -> debug )
@@ -1361,6 +1374,16 @@ void action_t::execute()
     target = default_target;
   }
 
+  if ( energize_type == RESOURCE_GAIN_ON_CAST || ( energize_type == RESOURCE_GAIN_IF_HIT && hit_any_target ) )
+  {
+    player -> resource_gain( energize_resource, energize_amount, gain, this );
+  }
+  else if ( energize_type == RESOURCE_GAIN_PER_HIT )
+  {
+    for ( int i = 0; i < num_targets_hit; i++ )
+      player -> resource_gain( energize_resource, energize_amount, gain, this );
+  }
+
   if ( repeating && ! proc ) schedule_execute();
 }
 
@@ -1395,11 +1418,16 @@ void action_t::tick( dot_t* d )
       d -> state -> result = RESULT_CRIT;
 
     d -> state -> result_amount = calculate_tick_amount( d -> state, d -> get_last_tick_factor() * d -> current_stack() );
-
+    
     assess_damage( amount_type( d -> state, true ), d -> state );
 
     if ( sim -> debug )
       d -> state -> debug();
+  }
+
+  if ( energize_type == RESOURCE_GAIN_PER_TICK )
+  {
+    player -> resource_gain( energize_resource, energize_amount, gain, this );
   }
 
   stats -> add_tick( d -> time_to_tick, d -> state -> target );
@@ -3015,6 +3043,12 @@ void action_t::schedule_travel( action_state_t* s )
     time_to_travel = travel_time();
 
   do_schedule_travel( s, time_to_travel );
+
+  if ( result_is_hit( s -> result ) )
+  {
+    hit_any_target = true;
+    num_targets_hit++;
+  }
 }
 
 void action_t::impact( action_state_t* s )

@@ -868,6 +868,7 @@ public:
       }
 
       maelstrom_gain = effect.resource( RESOURCE_MAELSTROM );
+      gain_type = RESOURCE_GAIN_NONE; // disable resource generation from spell data.
     }
   }
 
@@ -3117,6 +3118,7 @@ struct chain_lightning_t: public shaman_spell_t
     radius = 10.0;
 
     maelstrom_gain = data().effectN( 2 ).base_value();
+    gain_type = RESOURCE_GAIN_NONE; // disable resource generation from spell data.
 
     if ( player -> mastery.elemental_overload -> ok() )
     {
@@ -3224,6 +3226,7 @@ struct lava_beam_t : public shaman_spell_t
   {
     base_add_multiplier = data().effectN( 1 ).chain_multiplier();
     maelstrom_gain = data().effectN( 3 ).base_value();
+    gain_type = RESOURCE_GAIN_NONE; // disable resource generation from spell data.
     radius = 10.0;
 
     if ( player -> mastery.elemental_overload -> ok() )

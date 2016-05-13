@@ -2715,6 +2715,7 @@ public:
     insanity_gain = data().effectN( 2 ).resource( RESOURCE_INSANITY );
     insanity_gain *=
         ( 1.0 + priest.talents.fortress_of_the_mind->effectN( 2 ).percent() );
+    gain_type = RESOURCE_GAIN_NONE; // disable resource generation from spell data
 
     spell_power_mod.direct *=
         1.0 + player.talents.fortress_of_the_mind->effectN( 4 ).percent();
@@ -2832,6 +2833,7 @@ struct mind_spike_t final : public priest_spell_t
     parse_options( options_str );
     is_mind_spell = true;
     is_sphere_of_insanity_spell = true;
+    gain_type = RESOURCE_GAIN_NONE; // disable resource generation from spell data
 
     if ( p.artifact.void_siphon.rank() )
     {
@@ -2939,6 +2941,7 @@ struct mind_sear_tick_t final : public priest_spell_t
     callbacks   = false;
     direct_tick = true;
     use_off_gcd = true;
+    gain_type   = RESOURCE_GAIN_NONE; // disable resource generation from spell data
   }
 
   void impact( action_state_t* ) override
@@ -3102,6 +3105,7 @@ struct mind_flay_t final : public priest_spell_t
     use_off_gcd   = true;
     is_mind_spell = true;
     is_sphere_of_insanity_spell = true;
+    gain_type     = RESOURCE_GAIN_NONE; // disable resource generation from spell data
 
     if ( p.artifact.void_siphon.rank() )
     {
@@ -3217,6 +3221,7 @@ struct shadow_crash_t final : public priest_spell_t
     parse_options( options_str );
 
     aoe = -1;
+    gain_type = RESOURCE_GAIN_NONE; // disable resource generation from spell data
   }
 
   void execute() override
@@ -3242,6 +3247,7 @@ struct shadow_word_pain_t final : public priest_spell_t
 
     may_crit  = true;
     tick_zero = false;
+    gain_type = RESOURCE_GAIN_NONE; // disable resource generation from spell data
 
     base_multiplier *=
         1.0 + p.sets.set( SET_CASTER, T13, B4 )->effectN( 1 ).percent();
@@ -3383,6 +3389,8 @@ struct shadow_word_void_t final : public priest_spell_t
       insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
+
+    gain_type = RESOURCE_GAIN_NONE; // disable resource generation from spell data
   }
 
   void impact( action_state_t* s ) override
@@ -3446,6 +3454,7 @@ struct vampiric_touch_t final : public priest_spell_t
   {
     parse_options( options_str );
     may_crit = false;
+    gain_type = RESOURCE_GAIN_NONE; // disable resource generation from spell data
 
     dot_duration +=
         p.sets.set( SET_CASTER, T14, B4 )->effectN( 1 ).time_value();
@@ -3551,6 +3560,7 @@ struct void_bolt_t final : public priest_spell_t
     parse_options( options_str );
     use_off_gcd = true;
     is_sphere_of_insanity_spell = true;
+    gain_type = RESOURCE_GAIN_NONE; // disable resource generation from spell data.
 
     if ( player.artifact.sinister_thoughts.rank() )
     {
