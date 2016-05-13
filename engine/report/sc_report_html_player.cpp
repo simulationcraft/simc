@@ -2799,7 +2799,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b,
         "<li><span class=\"label\">default_chance:</span>%.2f%%</li>\n"
         "<li><span class=\"label\">default_value:</span>%.2f</li>\n"
         "</ul>\n",
-        b.constant ? 1 : 8,
+        b.constant ? 1 : 9,
         b.source ? util::encode_html( b.source->name() ).c_str() : "",
         b.cooldown->name_str.c_str(), b.max_stack(),
         b.buff_duration.total_seconds(), b.cooldown->duration.total_seconds(),
