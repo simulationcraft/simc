@@ -16,14 +16,11 @@
 // Soul Effigy
 // Destruction - 
 // Roaring Blaze
-// Use spelldata for wreak havoc
-// Channel Demonfire
-// Rain of Fire
 // Demo - Everything
 // check wild imp implementation
 // finish demonic empowerment
 // Artifacts -
-// Destruction Golden Traits
+// Affliction/Demonology
 // 
 // ==========================================================================
 namespace { // unnamed namespace
@@ -2223,6 +2220,39 @@ struct shadow_bolt_t: public warlock_spell_t
   }
 };
 
+struct immolate_state_t : public action_state_t
+{
+  int roaring_blaze;
+  warlock_t* warlock;
+
+  immolate_state_t( warlock_t* p, action_t* a, player_t* target ) :
+    action_state_t( a, target ), roaring_blaze( 0 ), warlock( p )
+  { }
+
+  void initialize() override
+  {
+    action_state_t::initialize();
+
+    roaring_blaze = 0;
+  }
+
+  void copy_state( const action_state_t* state ) override
+  {
+    action_state_t::copy_state( state );
+    const immolate_state_t* immolate_state = debug_cast<const immolate_state_t*>( state );
+    roaring_blaze = immolate_state -> roaring_blaze;
+  }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    action_state_t::debug_str( s );
+
+    s << " roaring_blaze_stacks=" << roaring_blaze;
+
+    return s;
+  }
+};
+
 struct immolate_t: public warlock_spell_t
 {
   immolate_t( warlock_t* p ):
@@ -2234,16 +2264,25 @@ struct immolate_t: public warlock_spell_t
     hasted_ticks = true;
     tick_may_crit = true;
 
+    base_crit += p -> artifact.burning_hunger.percent();
     base_multiplier *= 1.0 + p -> artifact.residual_flames.percent();
   }
 
-  virtual double composite_crit() const override
+  action_state_t* new_state() override
   {
-    double cc = warlock_spell_t::composite_crit();
+    return new immolate_state_t( p(), this, target );
+  }
 
-    cc += p() -> artifact.burning_hunger.percent();
+  virtual double composite_ta_multiplier( const action_state_t* state ) const override
+  {
+    double m = warlock_spell_t::composite_ta_multiplier( state );
 
-    return cc;
+    immolate_state_t* immolate_state = debug_cast<immolate_state_t*>( td( state -> target ) -> dots_immolate -> state );
+
+    if ( immolate_state )
+      m *= 1.0 + immolate_state -> roaring_blaze;
+    
+    return m;
   }
 
   virtual void tick( dot_t* d ) override
@@ -2293,6 +2332,13 @@ struct conflagrate_t: public warlock_spell_t
     if ( result_is_hit( s -> result ) )
     {
       p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.conflagrate );
+
+      immolate_state_t* immolate_state = debug_cast<immolate_state_t*>( td( s -> target ) -> dots_immolate->state );
+
+      if ( p() -> talents.roaring_blaze -> ok() )
+      {
+        immolate_state -> roaring_blaze += 0.5;
+      }
     }
   }
 };
@@ -2344,9 +2390,12 @@ struct incinerate_t: public warlock_spell_t
   {
     warlock_spell_t::impact( s );
 
-    if ( p() -> destruction_trinket )
-    {
-      td( s -> target ) -> debuffs_flamelicked -> trigger( 1 );
+    if ( result_is_hit( s -> result ) )
+    { 
+      if ( p() -> destruction_trinket )
+      {
+        td( s -> target ) -> debuffs_flamelicked -> trigger( 1 );
+      }
     }
   }
 };
