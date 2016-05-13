@@ -4334,6 +4334,12 @@ struct phoenixs_flames_t : public fire_mage_spell_t
 
     return m;
   }
+
+  virtual timespan_t travel_time() const override
+  {
+    timespan_t t = fire_mage_spell_t::travel_time();
+    return std::min( t, timespan_t::from_seconds( 0.75 ) );
+  }
 };
 
 
