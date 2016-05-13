@@ -1214,7 +1214,7 @@ struct charge_t: public warrior_attack_t
     parse_options( options_str );
     ignore_false_positive = true;
     movement_directionality = MOVEMENT_OMNI;
-    energize_type = RESOURCE_GAIN_ON_CAST;
+    energize_type = ENERGIZE_ON_CAST;
     energize_amount += p -> artifact.uncontrolled_rage.value();
     cooldown -> duration = data().cooldown();
     if ( p -> talents.warbringer -> ok() )
@@ -1298,7 +1298,7 @@ struct cleave_t: public warrior_attack_t
 
     if ( p -> talents.fervor_of_battle -> ok() )
     {
-      energize_type = RESOURCE_GAIN_PER_HIT;
+      energize_type = ENERGIZE_PER_HIT;
       energize_resource = RESOURCE_RAGE;
       energize_amount = p -> spell.fervor_of_battle -> effectN( 1 ).resource( RESOURCE_RAGE );
       gain = p -> gain.fervor_of_battle;
@@ -2519,7 +2519,7 @@ struct revenge_t: public warrior_attack_t
   {
     parse_options( options_str );
     aoe = -1;
-    energize_type = RESOURCE_GAIN_NONE; // disable resource generation from spell data.
+    energize_type = ENERGIZE_NONE; // disable resource generation from spell data.
 
     impact_action = p -> active.deep_wounds;
   }
@@ -2648,7 +2648,7 @@ struct shield_slam_t: public warrior_attack_t
     shield_block_2pc( new shield_block_2pc_t( p ) )
   {
     parse_options( options_str );
-    energize_type = RESOURCE_GAIN_NONE;
+    energize_type = ENERGIZE_NONE;
 
     attack_power_mod.direct = 0.561; // Low level value for shield slam.
     if ( p -> level() >= 80 )
@@ -2893,7 +2893,7 @@ struct whirlwind_mh_t: public warrior_attack_t
     if ( p -> talents.fervor_of_battle -> ok() )
     {
       parse_effect_data( p -> spell.fervor_of_battle -> effectN( 1 ) );
-      energize_type = RESOURCE_GAIN_PER_HIT;
+      energize_type = ENERGIZE_PER_HIT;
       gain = p -> gain.fervor_of_battle;
     }
   }
@@ -3218,7 +3218,7 @@ struct battle_cry_t: public warrior_spell_t
     if ( p -> talents.reckless_abandon -> ok() )
     {
       parse_effect_data( p -> talents.reckless_abandon -> effectN( 2 ) );
-      energize_type = RESOURCE_GAIN_ON_CAST;
+      energize_type = ENERGIZE_ON_CAST;
       gain = p -> gain.battle_cry;
     }
   }

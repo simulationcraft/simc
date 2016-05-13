@@ -1894,7 +1894,7 @@ struct moonfire_t : public druid_spell_t
       energize_amount  += player -> spec.balance -> effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
     }
     else
-      energize_type = RESOURCE_GAIN_NONE;
+      energize_type = ENERGIZE_NONE;
 
     if ( player -> talent.shooting_stars -> ok() )
       shooting_stars = new shooting_stars_t( player );
@@ -2602,7 +2602,7 @@ struct brutal_slash_t : public cat_attack_t
     aoe = -1;
     energize_amount = data().effectN( 1 ).percent();
     energize_resource = RESOURCE_COMBO_POINT;
-    energize_type = RESOURCE_GAIN_IF_HIT;
+    energize_type = ENERGIZE_ON_HIT;
 
     base_multiplier *= 1.0 + p -> artifact.sharpened_claws.percent();
   }
@@ -2716,7 +2716,7 @@ struct ferocious_bite_t : public cat_attack_t
 
     max_excess_energy  = -1 * data().effectN( 2 ).base_value();
     special            = true;
-    energize_type          = RESOURCE_GAIN_NONE; // disable negative energy gain in spell data
+    energize_type          = ENERGIZE_NONE; // disable negative energy gain in spell data
 
     crit_bonus_multiplier *= 1.0 + p -> artifact.powerful_bite.percent(); // TOCHECK
 
@@ -3147,7 +3147,7 @@ public:
     aoe = -1;
     energize_amount = data().effectN( 1 ).percent();
     energize_resource = RESOURCE_COMBO_POINT;
-    energize_type = RESOURCE_GAIN_IF_HIT;
+    energize_type = ENERGIZE_ON_HIT;
 
     base_multiplier *= 1.0 + player -> artifact.sharpened_claws.percent();
   }
@@ -3228,7 +3228,7 @@ struct tigers_fury_t : public cat_attack_t
   {
     harmful = consumes_clearcasting = may_miss = may_parry = may_dodge = may_crit = false;
     autoshift = form_mask = CAT_FORM;
-    energize_type = RESOURCE_GAIN_ON_CAST;
+    energize_type = ENERGIZE_ON_CAST;
 
     /* If Druid Tier 18 (WoD 6.2) trinket effect is in use, adjust Tiger's Fury duration
        based on spell data of the special effect. */
@@ -3297,7 +3297,7 @@ struct thrash_cat_t : public cat_attack_t
     {
       energize_amount = 1;
       energize_resource = RESOURCE_COMBO_POINT;
-      energize_type = RESOURCE_GAIN_IF_HIT;
+      energize_type = ENERGIZE_ON_HIT;
     }
 
     if ( p -> artifact.shadow_thrash.rank() )
@@ -3419,7 +3419,7 @@ struct bear_melee_t : public bear_attack_t
     trigger_gcd = timespan_t::zero();
     special     = false;
 
-    energize_type     = RESOURCE_GAIN_IF_HIT;
+    energize_type     = ENERGIZE_ON_HIT;
     energize_resource = RESOURCE_RAGE;
     energize_amount   = 70.0 / 9.0; // Legion TOCHECK: Estimate Jan 27 2016, need more accurate number.
   }
@@ -4288,7 +4288,7 @@ struct astral_communion_t : public druid_spell_t
     druid_spell_t( "astral_communion", player, player -> talent.astral_communion, options_str )
   {
     may_miss = may_crit = callbacks = harmful = false;
-    energize_type = RESOURCE_GAIN_ON_CAST;
+    energize_type = ENERGIZE_ON_CAST;
   }
 };
 
@@ -4670,7 +4670,7 @@ struct elunes_guidance_t : public druid_spell_t
   {
     parse_options( options_str );
 
-    energize_type = RESOURCE_GAIN_ON_CAST;
+    energize_type = ENERGIZE_ON_CAST;
     dot_duration = timespan_t::zero();
   }
 

@@ -707,9 +707,9 @@ struct rogue_attack_t : public melee_attack_t
       switch ( effect.type() )
       {
         case E_ADD_COMBO_POINTS:
-          if ( energize_type != RESOURCE_GAIN_NONE )
+          if ( energize_type != ENERGIZE_NONE )
           {
-            energize_type = RESOURCE_GAIN_IF_HIT;
+            energize_type = ENERGIZE_ON_HIT;
             energize_amount = effect.base_value();
             energize_resource = RESOURCE_COMBO_POINT;
           }
@@ -778,7 +778,7 @@ struct rogue_attack_t : public melee_attack_t
   {
     double cp = 0;
 
-    if ( energize_type != RESOURCE_GAIN_NONE && energize_resource == RESOURCE_COMBO_POINT )
+    if ( energize_type != ENERGIZE_NONE && energize_resource == RESOURCE_COMBO_POINT )
     {
       cp += energize_amount;
     }
@@ -1620,7 +1620,7 @@ void rogue_attack_t::impact( action_state_t* state )
 {
   melee_attack_t::impact( state );
 
-  if ( energize_type != RESOURCE_GAIN_NONE && energize_resource == RESOURCE_COMBO_POINT )
+  if ( energize_type != ENERGIZE_NONE && energize_resource == RESOURCE_COMBO_POINT )
     p() -> trigger_seal_fate( state );
 
   p() -> trigger_main_gauche( state );
@@ -1730,7 +1730,7 @@ void rogue_attack_t::execute()
 
   p() -> trigger_ruthlessness_cp( execute_state );
 
-  if ( energize_type == RESOURCE_GAIN_IF_HIT && energize_resource == RESOURCE_COMBO_POINT &&
+  if ( energize_type == ENERGIZE_ON_HIT && energize_resource == RESOURCE_COMBO_POINT &&
     p() -> buffs.shadow_blades -> up() )
   {
     p() -> trigger_combo_point_gain( 1, p() -> gains.shadow_blades, this );
@@ -2378,7 +2378,7 @@ struct fan_of_knives_t: public rogue_attack_t
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
     aoe = -1;
-    energize_type     = RESOURCE_GAIN_IF_HIT;
+    energize_type     = ENERGIZE_ON_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
     energize_amount   = data().effectN( 2 ).base_value();
   }
@@ -2510,7 +2510,7 @@ struct goremaws_bite_t:  public rogue_attack_t
     add_child( mh );
     add_child( oh );
 
-    energize_type     = RESOURCE_GAIN_IF_HIT;
+    energize_type     = ENERGIZE_ON_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
     energize_amount   = data().effectN( 4 ).trigger() -> effectN( 1 ).resource( RESOURCE_COMBO_POINT );
   }
@@ -2834,7 +2834,7 @@ struct marked_for_death_t : public rogue_attack_t
     rogue_attack_t( "marked_for_death", p, p -> find_talent_spell( "Marked for Death" ), options_str )
   {
     may_miss = may_crit = harmful = callbacks = false;
-    energize_type = RESOURCE_GAIN_ON_CAST;
+    energize_type = ENERGIZE_ON_CAST;
   }
 
   // Defined after marked_for_death_debuff_t. Sigh.
@@ -3372,7 +3372,7 @@ struct shuriken_storm_t: public rogue_attack_t
     rogue_attack_t( "shuriken_storm", p, p -> find_specialization_spell( "Shuriken Storm" ), options_str )
   {
     aoe = -1;
-    energize_type = RESOURCE_GAIN_PER_HIT;
+    energize_type = ENERGIZE_PER_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
     energize_amount = 1;
   }

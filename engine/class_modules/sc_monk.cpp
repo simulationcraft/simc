@@ -2123,9 +2123,9 @@ struct tiger_palm_t: public monk_melee_attack_t
       base_costs[RESOURCE_ENERGY] *= 1 + p -> spec.stagger -> effectN( 16 ).percent(); // -50% for Brewmasters
 
     if ( p -> specialization() == MONK_WINDWALKER )
-      gain_amount += p -> spec.stance_of_the_fierce_tiger -> effectN( 4 ).base_value();
+      energize_amount += p -> spec.stance_of_the_fierce_tiger -> effectN( 4 ).base_value();
     else
-      gain_type = RESOURCE_GAIN_NONE;
+      energize_type = ENERGIZE_NONE;
 
     spell_power_mod.direct = 0.0;
   }
@@ -3555,7 +3555,7 @@ struct energizing_elixir_t: public monk_spell_t
 
     dot_duration = trigger_gcd = timespan_t::zero();
     may_miss = may_crit = harmful = false;
-    gain_type = RESOURCE_GAIN_NONE; // disable resource gain from spell data
+    energize_type = ENERGIZE_NONE; // disable resource gain from spell data
   }
 
   virtual void execute() override
@@ -3581,7 +3581,7 @@ struct black_ox_brew_t: public monk_spell_t
     harmful = false;
     cooldown -> duration = data().charge_cooldown();
     trigger_gcd = timespan_t::zero();
-    gain_type = RESOURCE_GAIN_ON_CAST;
+    energize_type = ENERGIZE_ON_CAST;
   }
 
   virtual void execute() override

@@ -2313,7 +2313,7 @@ struct death_knight_action_t : public Base
 
   virtual void consume_resource()
   {
-    if ( ! ( energize_type != RESOURCE_GAIN_NONE && energize_resource == RESOURCE_RUNIC_POWER ) )
+    if ( ! ( energize_type != ENERGIZE_NONE && energize_resource == RESOURCE_RUNIC_POWER ) )
       action_base_t::consume_resource();
   }
 
@@ -4206,7 +4206,7 @@ struct chains_of_ice_t : public death_knight_spell_t
     {
       if ( p -> items[ SLOT_HANDS ].parsed.data.id_spell[ i ] == static_cast<int>( pvp_bonus -> id() ) )
       {
-        energize_type     = RESOURCE_GAIN_IF_HIT;
+        energize_type     = ENERGIZE_ON_HIT;
         energize_resource = RESOURCE_RUNIC_POWER;
         energize_amount   = pvp_bonus -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
         break;
@@ -4754,7 +4754,7 @@ struct pillar_of_frost_t : public death_knight_spell_t
 
     if ( p -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T17, B2 ) )
     {
-      energize_type = RESOURCE_GAIN_ON_CAST;
+      energize_type = ENERGIZE_ON_CAST;
       energize_amount = p -> sets.set( DEATH_KNIGHT_FROST, T17, B2 ) -> effectN( 1 ).trigger() -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
       energize_resource = RESOURCE_RUNIC_POWER;
       gain = p -> gains.t17_2pc_frost;

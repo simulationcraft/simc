@@ -1774,7 +1774,7 @@ struct dire_critter_t: public hunter_pet_t
       may_glance = true;
       may_crit = true;
       special = false;
-      energize_type = RESOURCE_GAIN_IF_HIT;
+      energize_type = ENERGIZE_ON_HIT;
       energize_resource = RESOURCE_FOCUS;
       energize_amount = player -> find_spell( 120694 ) -> effectN( 1 ).base_value();
       if ( o() -> talents.dire_stable -> ok() )
@@ -2262,7 +2262,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
 
     if ( p -> specialization() == HUNTER_MARKSMANSHIP )
     {
-      energize_type = RESOURCE_GAIN_PER_HIT;
+      energize_type = ENERGIZE_PER_HIT;
       energize_resource = RESOURCE_FOCUS;
       energize_amount = p -> find_spell( 213363 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
     }
@@ -2444,7 +2444,7 @@ struct chimaera_shot_impact_t: public hunter_ranged_attack_t
     aoe = 2;
     radius = 5.0;
 
-    energize_type = RESOURCE_GAIN_PER_HIT;
+    energize_type = ENERGIZE_PER_HIT;
     energize_resource = RESOURCE_FOCUS;
     energize_amount = p -> find_spell( 204304 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
   }
@@ -3075,7 +3075,7 @@ struct freezing_trap_t: public hunter_ranged_attack_t
 
     if ( player -> sets.has_set_bonus( p() -> specialization(), PVP, B2 ) )
     {
-      energize_type = RESOURCE_GAIN_IF_HIT;
+      energize_type = ENERGIZE_ON_HIT;
       energize_resource = RESOURCE_FOCUS;
       energize_amount = player -> sets.set( player -> specialization(), PVP, B2 ) ->
         effectN( 1 ).trigger() -> effectN( 1 ).base_value();

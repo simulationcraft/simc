@@ -1795,7 +1795,7 @@ struct wake_of_ashes_t : public paladin_spell_t
 
     if ( p -> artifact.ashes_to_ashes.rank() )
     {
-      energize_type     = RESOURCE_GAIN_IF_HIT;
+      energize_type     = ENERGIZE_ON_HIT;
       energize_resource = RESOURCE_HOLY_POWER;
       energize_amount   = p -> find_spell( 218001 ) -> effectN( 1 ).resource( RESOURCE_HOLY_POWER );
       gain              = p -> gains.hp_wake_of_ashes;
@@ -2272,7 +2272,7 @@ struct divine_hammer_t : public paladin_spell_t
     may_miss       = false;
     tick_zero      = true;
     gain           = p -> gains.hp_blade_of_justice;
-    energize_type      = RESOURCE_GAIN_ON_CAST;
+    energize_type      = ENERGIZE_ON_CAST;
 
     tick_action = new divine_hammer_tick_t( p );
   }

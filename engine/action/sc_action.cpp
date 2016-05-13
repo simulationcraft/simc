@@ -379,7 +379,7 @@ action_t::action_t( action_e       ty,
   dynamic_tick_action            = true; // WoD updates everything on tick by default. If you need snapshotted values for a periodic effect, use persistent multipliers.
   starved_proc                   = NULL;
   action_skill                   = player -> base.skill;
-  energize_type                  = RESOURCE_GAIN_NONE;
+  energize_type                  = ENERGIZE_NONE;
 
   // New Stuff
   snapshot_flags = 0;
@@ -668,9 +668,9 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
       }
       break;
     case E_ENERGIZE:
-      if ( energize_type == RESOURCE_GAIN_NONE )
+      if ( energize_type == ENERGIZE_NONE )
       {
-        energize_type     = RESOURCE_GAIN_IF_HIT;
+        energize_type     = ENERGIZE_ON_HIT;
         energize_resource = spelleffect_data.resource_gain_type();
         energize_amount   = spelleffect_data.resource( energize_resource );
       }
@@ -1374,11 +1374,11 @@ void action_t::execute()
     target = default_target;
   }
 
-  if ( energize_type == RESOURCE_GAIN_ON_CAST || ( energize_type == RESOURCE_GAIN_IF_HIT && hit_any_target ) )
+  if ( energize_type == ENERGIZE_ON_CAST || ( energize_type == ENERGIZE_ON_HIT && hit_any_target ) )
   {
     player -> resource_gain( energize_resource, energize_amount, gain, this );
   }
-  else if ( energize_type == RESOURCE_GAIN_PER_HIT )
+  else if ( energize_type == ENERGIZE_PER_HIT )
   {
     for ( int i = 0; i < num_targets_hit; i++ )
       player -> resource_gain( energize_resource, energize_amount, gain, this );
@@ -1425,7 +1425,7 @@ void action_t::tick( dot_t* d )
       d -> state -> debug();
   }
 
-  if ( energize_type == RESOURCE_GAIN_PER_TICK )
+  if ( energize_type == ENERGIZE_PER_TICK )
   {
     player -> resource_gain( energize_resource, energize_amount, gain, this );
   }

@@ -2211,7 +2211,7 @@ struct shadow_bolt_t: public warlock_spell_t
   {
     if ( p -> specialization() == WARLOCK_DEMONOLOGY )
     {
-      energize_type = RESOURCE_GAIN_IF_HIT;
+      energize_type = ENERGIZE_ON_HIT;
       energize_resource = RESOURCE_SOUL_SHARD;
       energize_amount = 1;
     }
@@ -2303,7 +2303,7 @@ struct conflagrate_t: public warlock_spell_t
     warlock_spell_t( p, "Conflagrate" )
   {
     conflagration_of_chaos = p -> find_spell( 219195 ) -> proc_chance();
-    energize_type = RESOURCE_GAIN_PER_HIT;
+    energize_type = ENERGIZE_PER_HIT;
   }
 
   void init() override
@@ -3186,7 +3186,7 @@ struct soul_harvest_t : public warlock_spell_t
     warlock_spell_t( "soul_harvest", p, p -> talents.soul_harvest )
   {
     harmful = may_crit = may_miss = false;
-    energize_type = RESOURCE_GAIN_ON_CAST;
+    energize_type = ENERGIZE_ON_CAST;
   }
 };
 

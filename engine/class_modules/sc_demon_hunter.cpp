@@ -918,7 +918,7 @@ struct consume_soul_t : public demon_hunter_heal_t
 
     if ( p -> talent.demonic_appetite -> ok() ) 
     {
-      energize_type = RESOURCE_GAIN_ON_CAST;
+      energize_type = ENERGIZE_ON_CAST;
       energize_resource = RESOURCE_FURY;
       energize_amount = p -> spec.demonic_appetite_fury -> effectN( 1 ).resource( RESOURCE_FURY );
       gain = p -> gain.demonic_appetite;
@@ -1449,6 +1449,13 @@ struct fel_rush_t : public demon_hunter_spell_t
 
       base_crit += p -> talent.fel_mastery -> effectN( 2 ).percent();
 
+      if ( p -> talent.fel_mastery -> ok() )
+      {
+        energize_type = ENERGIZE_IF_HIT;
+        energize_resource = RESOURCE_FURY;
+        energize_amount = p -> talent.fel_mastery -> effectN( 1 ).resource( RESOURCE_FURY );
+      }
+
       if ( p -> legendary.loramus_thalipedes_sacrifice )
       {
         base_add_multiplier *= 1.0 + p -> legendary.loramus_thalipedes_sacrifice
@@ -1494,17 +1501,6 @@ struct fel_rush_t : public demon_hunter_spell_t
     g += rng().gauss( sim -> gcd_lag, sim -> gcd_lag_stddev );
 
     return g;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    demon_hunter_spell_t::impact( s ); 
-
-    if ( p() -> talent.fel_mastery -> ok() && result_is_hit( s -> result ) )
-    {
-      p() -> resource_gain( RESOURCE_FURY, p() -> talent.fel_mastery -> effectN( 1 )
-        .resource( RESOURCE_FURY ), action_gain );
-    }
   }
 
   void execute() override
