@@ -284,6 +284,7 @@ public:
     buff_t* demonic_power;
     buff_t* havoc;
     buff_t* mana_tap;
+    buff_t* conflagration_of_chaos;
 
     buff_t* tier18_2pc_demonology;
   } buffs;
@@ -2222,7 +2223,7 @@ struct shadow_bolt_t: public warlock_spell_t
 
 struct immolate_state_t : public action_state_t
 {
-  int roaring_blaze;
+  double roaring_blaze;
   warlock_t* warlock;
 
   immolate_state_t( warlock_t* p, action_t* a, player_t* target ) :
@@ -2233,7 +2234,7 @@ struct immolate_state_t : public action_state_t
   {
     action_state_t::initialize();
 
-    roaring_blaze = 0;
+    roaring_blaze = 1;
   }
 
   void copy_state( const action_state_t* state ) override
@@ -2280,7 +2281,7 @@ struct immolate_t: public warlock_spell_t
     immolate_state_t* immolate_state = debug_cast<immolate_state_t*>( td( state -> target ) -> dots_immolate -> state );
 
     if ( immolate_state )
-      m *= 1.0 + immolate_state -> roaring_blaze;
+      m *= immolate_state -> roaring_blaze;
     
     return m;
   }
@@ -2298,10 +2299,11 @@ struct immolate_t: public warlock_spell_t
 
 struct conflagrate_t: public warlock_spell_t
 {
-
+  double conflagration_of_chaos;
   conflagrate_t( warlock_t* p ):
     warlock_spell_t( p, "Conflagrate" )
-  {  
+  {
+    conflagration_of_chaos = p -> find_spell( 219195 ) -> proc_chance();
   }
 
   void init() override
@@ -2311,10 +2313,28 @@ struct conflagrate_t: public warlock_spell_t
     cooldown -> hasted = true;
   }
 
-  void schedule_travel( action_state_t* s ) override
+  // Force spell to always crit
+  double composite_crit() const override
   {
+    double cc = warlock_spell_t::composite_crit();
 
-    warlock_spell_t::schedule_travel( s );
+    if ( p() -> buffs.conflagration_of_chaos -> check() )
+      cc = 1.0;
+
+    return cc;
+  }
+
+  double calculate_direct_amount( action_state_t* state ) const override
+  {
+    warlock_spell_t::calculate_direct_amount( state );
+
+    // Can't use player-based crit chance from the state object as it's hardcoded to 1.0. Use cached
+    // player spell crit instead. The state target crit chance of the state object is correct.
+    // Targeted Crit debuffs function as a separate multiplier.
+    if ( p() -> buffs.conflagration_of_chaos -> check() )
+      state -> result_total *= 1.0 + player -> cache.spell_crit() + state -> target_crit;
+
+    return state -> result_total;
   }
 
   void execute() override
@@ -2323,6 +2343,9 @@ struct conflagrate_t: public warlock_spell_t
 
     if ( p() -> talents.backdraft -> ok() )
       p() -> buffs.backdraft -> trigger();
+
+    if ( p() -> artifact.conflagration_of_chaos.rank() && rng().roll( conflagration_of_chaos ) )
+      p() -> buffs.conflagration_of_chaos -> trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -2337,8 +2360,11 @@ struct conflagrate_t: public warlock_spell_t
 
       if ( p() -> talents.roaring_blaze -> ok() )
       {
-        immolate_state -> roaring_blaze += 0.5;
+        immolate_state -> roaring_blaze *= 1.5;
       }
+
+      if ( p() -> buffs.conflagration_of_chaos -> check() )
+        p() -> buffs.conflagration_of_chaos -> expire();
     }
   }
 };
@@ -3858,6 +3884,8 @@ void warlock_t::create_buffs()
 
   buffs.tier18_2pc_demonology = buff_creator_t( this, "demon_rush", sets.set( WARLOCK_DEMONOLOGY, T18, B2 ) -> effectN( 1 ).trigger() )
     .default_value( sets.set( WARLOCK_DEMONOLOGY, T18, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+
+  buffs.conflagration_of_chaos = buff_creator_t( this, "conflagration_of_chaos", find_spell( 219195 ) -> effectN( 1 ).trigger() );
 }
 
 void warlock_t::init_rng()
