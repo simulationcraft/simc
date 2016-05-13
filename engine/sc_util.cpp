@@ -2493,6 +2493,37 @@ std::string util::google_image_chart_encode( const std::string& str )
   return temp;
 }
 
+// create_wowhead_artifact_url ==============================================
+std::string util::create_wowhead_artifact_url( const player_t& p )
+{
+  std::string base_url = "http://legion.wowhead.com/artifact-calc#";
+
+  unsigned artifact_id = p.dbc.artifact_by_spec( p.specialization() );
+  std::string artifact_str = util::to_string( artifact_id ) + ":";
+  // TODO: Relics
+  artifact_str += "0:0:0:0:";
+
+  std::vector<const artifact_power_data_t*> artifact_powers = p.dbc.artifact_powers( artifact_id );
+  for ( size_t i = 0; i < artifact_powers.size(); ++i )
+  {
+    if ( p.artifact_points[ i ] == 0 )
+    {
+      continue;
+    }
+
+    artifact_str += util::to_string( artifact_powers[ i ] -> id );
+    artifact_str += ":";
+    artifact_str += util::to_string( +p.artifact_points[ i ] );
+
+    if ( i < artifact_powers.size() - 1 )
+    {
+      artifact_str += ":";
+    }
+  }
+
+  return base_url + artifact_str;
+}
+
 // create_blizzard_talent_url ===============================================
 
 std::string util::create_blizzard_talent_url( const player_t& p )

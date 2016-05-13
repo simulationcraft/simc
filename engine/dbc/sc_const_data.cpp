@@ -2662,7 +2662,7 @@ std::vector<const artifact_power_rank_t*> dbc_t::artifact_power_ranks( unsigned 
   return ranks;
 }
 
-unsigned dbc_t::artifact_power_spell_id( specialization_e spec, unsigned power_index, unsigned rank )
+unsigned dbc_t::artifact_power_spell_id( specialization_e spec, unsigned power_index, unsigned rank ) const
 {
   unsigned artifact_id = artifact_by_spec( spec );
   if ( artifact_id == 0 )
@@ -2677,10 +2677,11 @@ unsigned dbc_t::artifact_power_spell_id( specialization_e spec, unsigned power_i
   }
 
   std::vector<const artifact_power_rank_t*> ranks = artifact_power_ranks( powers[ power_index ] -> id );
-  if ( ranks.size() == 0 || rank > ranks.size() - 1 )
+  if ( ranks.size() == 0 || rank - 1 > ranks.size() )
   {
     return 0;
   }
 
-  return ranks[ rank ] -> id_spell;
+  return ranks[ rank - 1 ] -> id_spell;
 }
+

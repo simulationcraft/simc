@@ -1096,7 +1096,8 @@ std::string report::decorated_buff_name( const buff_t* buff )
 }
 
 std::string report::decorated_spell_name( const sim_t& sim,
-                                          const spell_data_t& spell )
+                                          const spell_data_t& spell,
+                                          const std::string& parms_str )
 {
   std::stringstream s;
 
@@ -1107,7 +1108,7 @@ std::string report::decorated_spell_name( const sim_t& sim,
   else
   {
     s << "<a href=\"http://" << decoration_domain( sim ) << ".wowdb.com/spells/"
-      << spell.id() << "\">" << spell.name_cstr() << "</a>";
+      << spell.id() << ( ! parms_str.empty() ? "?" + parms_str : "" ) << "\">" << spell.name_cstr() << "</a>";
   }
 
   return s.str();
