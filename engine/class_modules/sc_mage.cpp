@@ -168,6 +168,9 @@ public:
   action_t* unstable_magic_explosion;
   player_t* last_bomb_target;
 
+  // Artifact effects
+  int scorched_earth_counter;
+
   // Tier 18 (WoD 6.2) trinket effects
   const special_effect_t* wild_arcanist; // Arcane
   const special_effect_t* pyrosurge;     // Fire
@@ -225,7 +228,6 @@ public:
           * molten_armor,
           * pyretic_incantation,
           * pyromaniac,            // T17 4pc Fire
-          * scorched_earth,
           * icarus_uprising;       // T18 4pc Fire
 
     // Frost
@@ -461,6 +463,7 @@ public:
     ignite_spread_event( nullptr ),
     unstable_magic_explosion( nullptr ),
     last_bomb_target( nullptr ),
+    scorched_earth_counter( 0 ),
     wild_arcanist( nullptr ),
     pyrosurge( nullptr ),
     shatterlance( nullptr ),
@@ -1695,16 +1698,6 @@ struct fire_mage_spell_t : public mage_spell_t
     base_multiplier *= 1.0 + p -> artifact.burning_gaze.percent();
   }
 
-  virtual void execute() override
-  {
-    mage_t* p = this -> p();
-
-    if ( data().id() != 2948 && background == false )
-    {
-      p -> buffs.scorched_earth -> expire();
-    }
-    mage_spell_t::execute();
-  }
   virtual void impact( action_state_t* s ) override
   {
     mage_spell_t::impact( s );
@@ -4596,15 +4589,32 @@ struct scorch_t : public fire_mage_spell_t
     if ( result_is_hit( execute_state -> result ) &&
          p() -> artifact.scorched_earth.rank() )
     {
-     if ( p() -> buffs.scorched_earth -> stack() == 3 )
-     {
-       p() -> buffs.scorched_earth -> expire();
-       p() -> buffs.hot_streak -> trigger();
-     }
-     else
-     {
-       p() -> buffs.scorched_earth -> trigger();
-     }
+      // Can't use last_gcd_action because it misses IB/Counterspell/Combustion
+      // XXX: Fix this to allow item actions such as trinkets or potions
+      if ( p() -> last_foreground_action &&
+           p() -> last_foreground_action -> data().id() == data().id() )
+      {
+        p() -> scorched_earth_counter++;
+      }
+      else
+      {
+        p() -> scorched_earth_counter = 1;
+      }
+
+      if ( p() -> scorched_earth_counter ==
+           p() -> artifact.scorched_earth.data().effectN( 1 ).base_value() )
+      {
+        if ( sim -> debug )
+        {
+          sim -> out_debug.printf(
+              "%s generates hot_streak from scorched_earth",
+              player -> name()
+           );
+        }
+
+        p() -> scorched_earth_counter = 0;
+        p() -> buffs.hot_streak -> trigger();
+      }
     }
   }
 
@@ -5834,8 +5844,6 @@ void mage_t::create_buffs()
   buffs.pyretic_incantation   = buff_creator_t( this, "pyretic_incantation", find_spell( 194329 ) );
   buffs.pyromaniac            = buff_creator_t( this, "pyromaniac", sets.set( MAGE_FIRE, T17, B4 ) -> effectN( 1 ).trigger() )
                                   .trigger_spell( sets.set( MAGE_FIRE, T17, B4 ) );
-  buffs.scorched_earth        = buff_creator_t( this, "scorched_earth").duration( timespan_t::from_seconds( 5 ) )
-                                                                       .max_stack( 4.0 );
 
   // Frost
   buffs.bone_chilling         = buff_creator_t( this, "bone_chilling", find_spell( 205766 ) );
@@ -6890,6 +6898,7 @@ void mage_t::reset()
     recalculate_resource_max( RESOURCE_MANA );
   }
 
+  scorched_earth_counter = 0;
   last_bomb_target = nullptr;
   burn_phase.reset();
 
