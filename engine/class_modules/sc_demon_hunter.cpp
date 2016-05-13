@@ -1451,7 +1451,7 @@ struct fel_rush_t : public demon_hunter_spell_t
 
       if ( p -> talent.fel_mastery -> ok() )
       {
-        energize_type = ENERGIZE_IF_HIT;
+        energize_type = ENERGIZE_ON_HIT;
         energize_resource = RESOURCE_FURY;
         energize_amount = p -> talent.fel_mastery -> effectN( 1 ).resource( RESOURCE_FURY );
       }
@@ -2821,6 +2821,7 @@ struct demons_bite_t : public demon_hunter_attack_t
 
     fury.base      = data().effectN( 3 ).resource( RESOURCE_FURY );
     fury.die_sides = data().effectN( 3 ).die_sides();
+    energize_type  = ENERGIZE_NONE; // disable, we need to do it manually for the RNG
 
     base_multiplier *= 1.0 + p -> artifact.demon_rage.percent();
 
@@ -2930,29 +2931,15 @@ struct felblade_t : public demon_hunter_attack_t
 {
   struct felblade_damage_t : public demon_hunter_attack_t
   {
-    resource_e resource;
-    double amount;
-
     felblade_damage_t( demon_hunter_t* p ) :
       demon_hunter_attack_t( "felblade_dmg", p, p -> find_spell( 213243 ) )
     {
       dual = background = true;
       may_miss = may_dodge = may_parry = false;
 
-      const spelleffect_data_t effect = data().effectN(
-        p -> specialization() == DEMON_HUNTER_HAVOC ? 4 : 3 );
-      resource = effect.resource_gain_type();
-      amount   = effect.resource( resource );
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      demon_hunter_attack_t::impact( s );
-
-      if ( result_is_hit( s -> result ) )
-      {
-        p() -> resource_gain( resource, amount, action_gain );
-      }
+      // Clear energize and then manually pick which effect to parse.
+      energize_type = ENERGIZE_NONE;
+      parse_effect_data( data().effectN( p -> specialization() == DEMON_HUNTER_HAVOC ? 4 : 3 ) );
     }
   };
 
