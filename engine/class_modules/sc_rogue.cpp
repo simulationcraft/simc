@@ -584,7 +584,7 @@ struct rogue_t : public player_t
   void trigger_venomous_wounds( const action_state_t* );
   void trigger_blade_flurry( const action_state_t* );
   void trigger_ruthlessness_cp( const action_state_t* );
-  void trigger_combo_point_gain( const action_state_t*, int = -1, gain_t* gain = nullptr );
+  void trigger_combo_point_gain( int, gain_t* gain = nullptr, action_t* action = nullptr );
   void spend_combo_points( const action_state_t* );
   bool trigger_t17_4pc_combat( const action_state_t* );
   void trigger_elaborate_planning( const action_state_t* );
@@ -671,11 +671,7 @@ struct rogue_attack_t : public melee_attack_t
 {
   bool         requires_stealth;
   position_e   requires_position;
-  int          adds_combo_points;
   weapon_e     requires_weapon;
-
-  // Combo point gains
-  gain_t* cp_gain;
 
   // Secondary triggered ability, due to Weaponmaster talent or Death from Above. Secondary
   // triggered abilities cost no resources or incur cooldowns.
@@ -693,9 +689,8 @@ struct rogue_attack_t : public melee_attack_t
                   const std::string& options = std::string() ) :
     melee_attack_t( token, p, s ),
     requires_stealth( false ), requires_position( POSITION_NONE ),
-    adds_combo_points( 0 ), requires_weapon( WEAPON_NONE ),
-    secondary_trigger( false ), akaari( nullptr ),
-    affected_by_blurred_time( true )
+    requires_weapon( WEAPON_NONE ), secondary_trigger( false ),
+    akaari( nullptr ), affected_by_blurred_time( true )
   {
     parse_options( options );
 
@@ -712,12 +707,11 @@ struct rogue_attack_t : public melee_attack_t
       switch ( effect.type() )
       {
         case E_ADD_COMBO_POINTS:
-          adds_combo_points = effect.base_value();
-          break;
-        case E_ENERGIZE:
-          if ( static_cast<power_e>( effect.misc_value1() ) == POWER_COMBO_POINT )
+          if ( energize_type != ENERGIZE_NONE )
           {
-            adds_combo_points = effect.resource( RESOURCE_COMBO_POINT );
+            energize_type = ENERGIZE_ON_HIT;
+            energize_amount = effect.base_value();
+            energize_resource = RESOURCE_COMBO_POINT;
           }
           break;
         default:
@@ -734,11 +728,6 @@ struct rogue_attack_t : public melee_attack_t
   void init() override
   {
     melee_attack_t::init();
-
-    if ( adds_combo_points )
-    {
-      cp_gain = player -> get_gain( name_str );
-    }
 
     if ( p() -> artifact.akaaris_soul.rank() && harmful && requires_stealth && ! background &&
          ( weapon_multiplier > 0 || attack_power_mod.direct > 0 ) )
@@ -787,15 +776,24 @@ struct rogue_attack_t : public melee_attack_t
   // this ability, taking into account any potential buffs.
   virtual double generate_cp() const
   {
-    double cp = adds_combo_points;
-    if ( cp > 0 && p() -> buffs.broadsides -> check() )
+    double cp = 0;
+
+    if ( energize_type != ENERGIZE_NONE && energize_resource == RESOURCE_COMBO_POINT )
     {
-      cp += 1;
+      cp += energize_amount;
     }
 
-    if ( adds_combo_points > 0 && p() -> buffs.shadow_blades -> check() )
+    if ( cp > 0 )
     {
-      cp += 1;
+      if ( p() -> buffs.broadsides -> check() )
+      {
+        cp += 1;
+      }
+
+      if ( p() -> buffs.shadow_blades -> check() )
+      {
+        cp += 1;
+      }
     }
 
     return cp;
@@ -1622,7 +1620,7 @@ void rogue_attack_t::impact( action_state_t* state )
 {
   melee_attack_t::impact( state );
 
-  if ( adds_combo_points )
+  if ( energize_type != ENERGIZE_NONE && energize_resource == RESOURCE_COMBO_POINT )
     p() -> trigger_seal_fate( state );
 
   p() -> trigger_main_gauche( state );
@@ -1660,7 +1658,7 @@ void rogue_attack_t::impact( action_state_t* state )
         if ( rng().roll( 1.0 / ( 51.0 - p() -> buffs.fof_p3 -> check() ) ) )
         {
           p() -> buffs.fof_fod -> trigger();
-          p() -> trigger_combo_point_gain( state, 5, p() -> gains.legendary_daggers );
+          p() -> trigger_combo_point_gain( 5, p() -> gains.legendary_daggers );
         }
       }
     }
@@ -1730,13 +1728,12 @@ void rogue_attack_t::execute()
 
   p() -> trigger_auto_attack( execute_state );
 
-  p() -> trigger_combo_point_gain( execute_state );
-
   p() -> trigger_ruthlessness_cp( execute_state );
 
-  if ( adds_combo_points > 0 && p() -> buffs.shadow_blades -> up() )
+  if ( energize_type == ENERGIZE_ON_HIT && energize_resource == RESOURCE_COMBO_POINT &&
+    p() -> buffs.shadow_blades -> up() )
   {
-    p() -> trigger_combo_point_gain( execute_state, 1, p() -> gains.shadow_blades );
+    p() -> trigger_combo_point_gain( 1, p() -> gains.shadow_blades, this );
   }
 
   // Anticipation only refreshes Combo Points, if the Combat and Subtlety T17
@@ -2190,7 +2187,7 @@ struct envenom_t : public rogue_attack_t
     if ( ! secondary_trigger &&
          p() -> sets.has_set_bonus( ROGUE_ASSASSINATION, T17, B4 ) )
     {
-      p() -> trigger_combo_point_gain( execute_state, 1, p() -> gains.t17_4pc_assassination );
+      p() -> trigger_combo_point_gain( 1, p() -> gains.t17_4pc_assassination, this );
     }
   }
 
@@ -2381,7 +2378,9 @@ struct fan_of_knives_t: public rogue_attack_t
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
     aoe = -1;
-    adds_combo_points = data().effectN( 2 ).base_value();
+    energize_type     = ENERGIZE_ON_HIT;
+    energize_resource = RESOURCE_COMBO_POINT;
+    energize_amount   = data().effectN( 2 ).base_value();
   }
 
   void impact( action_state_t* state ) override
@@ -2455,8 +2454,8 @@ struct ghostly_strike_t : public rogue_attack_t
 
     if ( result_is_hit( execute_state -> result ) && p() -> buffs.broadsides -> up() )
     {
-      p() -> trigger_combo_point_gain( execute_state, p() -> buffs.broadsides -> data().effectN( 2 ).base_value(),
-          p() -> gains.broadsides );
+      p() -> trigger_combo_point_gain( p() -> buffs.broadsides -> data().effectN( 2 ).base_value(),
+          p() -> gains.broadsides, this );
     }
   }
 
@@ -2511,7 +2510,9 @@ struct goremaws_bite_t:  public rogue_attack_t
     add_child( mh );
     add_child( oh );
 
-    adds_combo_points = data().effectN( 4 ).trigger() -> effectN( 1 ).resource( RESOURCE_COMBO_POINT );
+    energize_type     = ENERGIZE_ON_HIT;
+    energize_resource = RESOURCE_COMBO_POINT;
+    energize_amount   = data().effectN( 4 ).trigger() -> effectN( 1 ).resource( RESOURCE_COMBO_POINT );
   }
 
   void execute() override
@@ -2742,15 +2743,14 @@ struct pistol_shot_t : public rogue_attack_t
 
     if ( result_is_hit( execute_state -> result ) && p() -> buffs.broadsides -> up() )
     {
-      p() -> trigger_combo_point_gain( execute_state, p() -> buffs.broadsides -> data().effectN( 3 ).base_value(),
-          p() -> gains.broadsides );
+      p() -> trigger_combo_point_gain( p() -> buffs.broadsides -> data().effectN( 3 ).base_value(),
+          p() -> gains.broadsides, this );
     }
 
     if ( p() -> talent.quick_draw -> ok() && p() -> buffs.opportunity -> check() )
     {
-      p() -> trigger_combo_point_gain( nullptr,
-          static_cast<int>( p() -> talent.quick_draw -> effectN( 2 ).base_value() ),
-          p() -> gains.quick_draw );
+      p() -> trigger_combo_point_gain( static_cast<int>( p() -> talent.quick_draw -> effectN( 2 ).base_value() ),
+          p() -> gains.quick_draw, this );
     }
 
     p() -> buffs.opportunity -> expire();
@@ -2834,7 +2834,7 @@ struct marked_for_death_t : public rogue_attack_t
     rogue_attack_t( "marked_for_death", p, p -> find_talent_spell( "Marked for Death" ), options_str )
   {
     may_miss = may_crit = harmful = callbacks = false;
-    adds_combo_points = data().effectN( 1 ).base_value();
+    energize_type = ENERGIZE_ON_CAST;
   }
 
   // Defined after marked_for_death_debuff_t. Sigh.
@@ -3201,8 +3201,8 @@ struct saber_slash_t : public rogue_attack_t
     {
       if ( p() -> buffs.broadsides -> up() )
       {
-        p() -> trigger_combo_point_gain( state, p() -> buffs.broadsides -> data().effectN( 2 ).base_value(),
-            p() -> gains.broadsides );
+        p() -> trigger_combo_point_gain( p() -> buffs.broadsides -> data().effectN( 2 ).base_value(),
+            p() -> gains.broadsides, this );
       }
 
       if ( p() -> buffs.opportunity -> trigger() || p() -> buffs.hidden_blade -> up() )
@@ -3339,7 +3339,7 @@ struct shadowstrike_t : public rogue_attack_t
   {
     requires_weapon = WEAPON_DAGGER;
     requires_stealth = true;
-    adds_combo_points += p -> talent.premeditation -> effectN( 2 ).base_value();
+    energize_amount += p -> talent.premeditation -> effectN( 2 ).base_value();
     base_multiplier *= 1.0 + p -> artifact.precision_strike.percent();
   }
 
@@ -3372,18 +3372,9 @@ struct shuriken_storm_t: public rogue_attack_t
     rogue_attack_t( "shuriken_storm", p, p -> find_specialization_spell( "Shuriken Storm" ), options_str )
   {
     aoe = -1;
-    adds_combo_points = 1; // Per target
-  }
-
-  // TODO: Generate_cp
-  void impact( action_state_t* state ) override
-  {
-    rogue_attack_t::impact( state );
-    // Don't generate a combo point on the first target hit, since that's
-    // already covered by the action execution logic.
-    if ( state -> chain_target > 0 &&
-         result_is_hit( state -> result ) )
-      p() -> trigger_combo_point_gain( state, 1, cp_gain );
+    energize_type = ENERGIZE_PER_HIT;
+    energize_resource = RESOURCE_COMBO_POINT;
+    energize_amount = 1;
   }
 };
 
@@ -3393,9 +3384,7 @@ struct shuriken_toss_t : public rogue_attack_t
 {
   shuriken_toss_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "shuriken_toss", p, p -> find_talent_spell( "Shuriken Toss" ), options_str )
-  {
-    adds_combo_points = 1; // it has an effect but with no base value :rollseyes:
-  }
+  {}
 
   bool procs_poison() const override
   { return true; }
@@ -3482,16 +3471,6 @@ struct vanish_t : public rogue_attack_t
     ignore_false_positive = true;
   }
 
-  void init() override
-  {
-    rogue_attack_t::init();
-
-    if ( p() -> sets.has_set_bonus( ROGUE_SUBTLETY, T18, B2 ) )
-    {
-      cp_gain = player -> get_gain( name_str );
-    }
-  }
-
   void execute() override
   {
     rogue_attack_t::execute();
@@ -3509,9 +3488,8 @@ struct vanish_t : public rogue_attack_t
 
     if ( p() -> sets.has_set_bonus( ROGUE_SUBTLETY, T18, B2 ) )
     {
-      p() -> trigger_combo_point_gain( execute_state,
-                                       p() -> sets.set( ROGUE_SUBTLETY, T18, B2 ) -> effectN( 1 ).base_value(),
-                                       cp_gain );
+      p() -> trigger_combo_point_gain( p() -> sets.set( ROGUE_SUBTLETY, T18, B2 ) -> effectN( 1 ).base_value(),
+                                       gain, this );
     }
   }
 };
@@ -4091,7 +4069,7 @@ void rogue_t::trigger_seal_fate( const action_state_t* state )
   if ( state -> result != RESULT_CRIT )
     return;
 
-  trigger_combo_point_gain( state, 1, gains.seal_fate );
+  trigger_combo_point_gain( 1, gains.seal_fate, state -> action );
 
   procs.seal_fate -> occur();
 
@@ -4210,32 +4188,11 @@ void rogue_t::trigger_blade_flurry( const action_state_t* state )
   active_blade_flurry -> schedule_execute();
 }
 
-void rogue_t::trigger_combo_point_gain( const action_state_t* state,
-                                        int                   cp_override,
-                                        gain_t*               gain )
+void rogue_t::trigger_combo_point_gain( int     cp,
+                                        gain_t* gain,
+                                        action_t* action )
 {
-  using namespace actions;
-
-  assert( state || cp_override > 0 );
-
-  rogue_attack_t* attack = state ? debug_cast<rogue_attack_t*>( state -> action ) : nullptr;
-  int n_cp = 0;
-  if ( cp_override == -1 )
-  {
-    if ( ! attack -> adds_combo_points )
-      return;
-
-    // Note, this is the "passive number" of generated combo points
-    n_cp = attack -> adds_combo_points;
-  }
-  else
-    n_cp = cp_override;
-
-  gain_t* gain_obj = gain;
-  if ( gain_obj == nullptr && attack && attack -> cp_gain )
-    gain_obj = attack -> cp_gain;
-
-  resource_gain( RESOURCE_COMBO_POINT, n_cp, gain_obj, state ? state -> action : nullptr );
+  resource_gain( RESOURCE_COMBO_POINT, cp, gain, action );
 }
 
 void rogue_t::trigger_ruthlessness_cp( const action_state_t* state )
@@ -4256,7 +4213,7 @@ void rogue_t::trigger_ruthlessness_cp( const action_state_t* state )
 
   double cp_chance = spec.ruthlessness -> effectN( 1 ).pp_combo_points() * s -> cp / 100.0;
   if ( rng().roll( cp_chance ) )
-    trigger_combo_point_gain( state, 1, gains.ruthlessness );
+    trigger_combo_point_gain( 1, gains.ruthlessness, state -> action );
 }
 
 void rogue_t::trigger_deepening_shadows( const action_state_t* state )
@@ -4308,7 +4265,7 @@ void rogue_t::trigger_shadow_techniques( const action_state_t* state )
       cp++;
     }
 
-    trigger_combo_point_gain( state, cp, gains.shadow_techniques );
+    trigger_combo_point_gain( cp, gains.shadow_techniques, state -> action );
     shadow_techniques = rng().range( 3, 5 );
   }
 }
@@ -4512,7 +4469,7 @@ bool rogue_t::trigger_t17_4pc_combat( const action_state_t* state )
   if ( ! rng().roll( sets.set( ROGUE_OUTLAW, T17, B4 ) -> proc_chance() / 5.0 * rs -> cp ) )
     return false;
 
-  trigger_combo_point_gain( state, buffs.deceit -> data().effectN( 2 ).base_value(), gains.deceit );
+  trigger_combo_point_gain( buffs.deceit -> data().effectN( 2 ).base_value(), gains.deceit, state -> action );
   buffs.deceit -> trigger();
   return true;
 }

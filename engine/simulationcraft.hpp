@@ -5168,7 +5168,6 @@ public:
   /// Minimum base direct damage
   double base_dd_min;
 
-
   /// Maximum base direct damage
   double base_dd_max;
 
@@ -5250,6 +5249,18 @@ public:
   /// This action will execute every impact - Useful for AoE debuffs
   action_t* impact_action;
 
+  // Gain object of the same name as the action
+  gain_t* gain;
+
+  // Sets the behavior for when this action's resource energize occur.
+  action_energize_e energize_type;
+
+  // Amount of resource for the energize to grant.
+  double energize_amount;
+
+  // Resource for the energize to grant.
+  resource_e energize_resource;
+
   /**
    * @brief Used to manipulate cooldown duration and charges.
    *
@@ -5267,6 +5278,8 @@ public:
   timespan_t time_to_execute, time_to_travel;
   double resource_consumed;
   timespan_t last_reaction_time;
+  bool hit_any_target;
+  unsigned num_targets_hit;
 
   /// Marker for sample action priority list reporting
   char marker;

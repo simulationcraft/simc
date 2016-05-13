@@ -1774,7 +1774,9 @@ struct dire_critter_t: public hunter_pet_t
       may_glance = true;
       may_crit = true;
       special = false;
-      focus_gain = player -> find_spell( 120694 ) -> effectN( 1 ).base_value();
+      energize_type = ENERGIZE_ON_HIT;
+      energize_resource = RESOURCE_FOCUS;
+      energize_amount = player -> find_spell( 120694 ) -> effectN( 1 ).base_value();
       if ( o() -> talents.dire_stable -> ok() )
         focus_gain += o() -> talents.dire_stable -> effectN( 1 ).base_value();
       base_multiplier *= 1.15; // Hotfix
@@ -1786,14 +1788,6 @@ struct dire_critter_t: public hunter_pet_t
         stats = p() -> o() -> pet_dire_beasts[ 0 ] -> get_stats( "dire_beast_melee" );
 
       return hunter_pet_action_t<dire_critter_t, melee_attack_t>::init_finished();
-    }
-
-    virtual void impact( action_state_t* s ) override
-    {
-      melee_attack_t::impact( s );
-
-      if ( result_is_hit( s -> result ) )
-        p() -> o() -> resource_gain( RESOURCE_FOCUS, focus_gain, p() -> o() -> gains.dire_beast );
     }
   };
 
@@ -2267,7 +2261,11 @@ struct multi_shot_t: public hunter_ranged_attack_t
       base_multiplier *= 1.0 + p -> artifacts.call_the_targets.percent();
 
     if ( p -> specialization() == HUNTER_MARKSMANSHIP )
-      focus_gain = p -> find_spell( 213363 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
+    {
+      energize_type = ENERGIZE_PER_HIT;
+      energize_resource = RESOURCE_FOCUS;
+      energize_amount = p -> find_spell( 213363 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
+    }
   }
   
   virtual void try_steady_focus() override
@@ -2296,7 +2294,6 @@ struct multi_shot_t: public hunter_ranged_attack_t
     if ( pet && p() -> specs.beast_cleave -> ok() )
       pet -> buffs.beast_cleave -> trigger();
     
-    
     if ( result_is_hit( execute_state -> result ) )
     {
       trigger_tier15_4pc_melee( p() -> procs.tier15_4pc_melee_multi_shot, p() -> action_lightning_arrow_multi_shot );
@@ -2306,7 +2303,6 @@ struct multi_shot_t: public hunter_ranged_attack_t
       // Multi-shot also grants 2 focus per target hit on cast.
       if ( p() -> specialization() == HUNTER_MARKSMANSHIP )
       {
-        p() -> resource_gain( RESOURCE_FOCUS, focus_gain * execute_state -> n_targets, p() -> gains.multi_shot);
         if ( p() -> buffs.trueshot -> up() || p() -> ppm_hunters_mark -> trigger() )
         {
           std::vector<player_t*> multi_shot_targets = execute_state -> action -> target_list();
@@ -2447,6 +2443,10 @@ struct chimaera_shot_impact_t: public hunter_ranged_attack_t
     dual = true;
     aoe = 2;
     radius = 5.0;
+
+    energize_type = ENERGIZE_PER_HIT;
+    energize_resource = RESOURCE_FOCUS;
+    energize_amount = p -> find_spell( 204304 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
   }
 
   double action_multiplier() const override
@@ -2455,13 +2455,6 @@ struct chimaera_shot_impact_t: public hunter_ranged_attack_t
     am *= 1.0 + p() -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 2 ).percent();
 
     return am;
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    hunter_ranged_attack_t::impact( s );
-
-    p() -> resource_gain( RESOURCE_FOCUS, p() -> find_spell( 204304 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ), p() -> gains.chimaera_shot );
   }
 };
 
@@ -2819,7 +2812,7 @@ struct arcane_shot_t: public hunter_ranged_attack_t
       double focus_multiplier = 1.0;
       if ( p() -> thasdorah && execute_state -> result == RESULT_CRIT )
         focus_multiplier *= 1.0 + p() -> artifacts.critical_focus.percent();
-      p() -> resource_gain( RESOURCE_FOCUS, focus_multiplier * focus_gain, p() -> gains.arcane_shot );
+      p() -> resource_gain( RESOURCE_FOCUS, focus_multiplier * focus_gain, gain );
     }
   }
 
@@ -3071,26 +3064,21 @@ struct piercing_shots_t: public residual_action_t
 
 struct freezing_trap_t: public hunter_ranged_attack_t
 {
-  gain_t* freezing_trap_gain;
   freezing_trap_t( hunter_t* player, const std::string& options_str ):
     hunter_ranged_attack_t( "freezing_trap", player, player -> find_class_spell( "Freezing Trap" ) )
   {
     parse_options( options_str );
 
     cooldown -> duration = data().cooldown();
-    freezing_trap_gain = player -> get_gain( "freezing_trap" );
-    
     // BUG simulate slow velocity of launch
     travel_speed = 18.0;
-  }
-   
-  virtual void impact( action_state_t* s ) override
-  {
-    hunter_ranged_attack_t::impact( s );
-    if ( p() -> sets.has_set_bonus( p() -> specialization(), PVP, B2 ) && result_is_hit( s -> result ) )
+
+    if ( player -> sets.has_set_bonus( p() -> specialization(), PVP, B2 ) )
     {
-      int focus = p() -> sets.set( p() -> specialization(), PVP, B2 ) ->  effectN( 1 ).trigger() -> effectN( 1 ).base_value();
-      p() -> resource_gain( RESOURCE_FOCUS, focus, freezing_trap_gain );
+      energize_type = ENERGIZE_ON_HIT;
+      energize_resource = RESOURCE_FOCUS;
+      energize_amount = player -> sets.set( player -> specialization(), PVP, B2 ) ->
+        effectN( 1 ).trigger() -> effectN( 1 ).base_value();
     }
   }
 };

@@ -418,6 +418,7 @@ public:
   virtual double    composite_spell_crit() const override;
   virtual double    composite_player_critical_damage_multiplier() const override;
   virtual double    composite_leech() const override;
+  virtual double    resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
   virtual void      teleport( double yards, timespan_t duration ) override;
   virtual void      trigger_movement( double distance, movement_direction_e direction ) override;
   virtual void      interrupt() override;
@@ -644,7 +645,7 @@ public:
 
     if ( ab::result_is_miss( ab::execute_state -> result ) && rage > 0 && !ab::aoe )
     {
-      rage_resource_gain( RESOURCE_RAGE, rage*0.8, p() -> gain.avoided_attacks );
+      p() -> resource_gain( RESOURCE_RAGE, rage*0.8, p() -> gain.avoided_attacks );
     }
   }
 
@@ -673,17 +674,7 @@ public:
     p() -> buff.enrage -> trigger();
     if ( p() -> ceannar_girdle )
     {
-      rage_resource_gain( RESOURCE_RAGE, p() -> ceannar_girdle -> driver() -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.ceannar_rage );
-    }
-  }
-
-  void rage_resource_gain( resource_e resource_type, double amount, gain_t* gain )
-  {
-    p() -> resource_gain( resource_type, amount, gain );
-
-    if ( p() -> talents.frothing_berserker -> ok() && p() -> resources.current[RESOURCE_RAGE] > 99 )
-    {
-       p() -> buff.frothing_berserker -> trigger(); 
+      p() -> resource_gain( RESOURCE_RAGE, p() -> ceannar_girdle -> driver() -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.ceannar_rage );
     }
   }
 };
@@ -951,13 +942,13 @@ struct melee_t: public warrior_attack_t
 
     if ( p() -> specialization() == WARRIOR_ARMS && s -> result == RESULT_CRIT )
     {
-      rage_resource_gain( RESOURCE_RAGE,
+      p() -> resource_gain( RESOURCE_RAGE,
                             rage_gain,
                             p() -> gain.melee_crit );
     }
     else
     {
-      rage_resource_gain( RESOURCE_RAGE,
+      p() -> resource_gain( RESOURCE_RAGE,
                             rage_gain,
                             weapon -> slot == SLOT_OFF_HAND ? p() -> gain.melee_off_hand : p() -> gain.melee_main_hand );
     }
@@ -1187,8 +1178,6 @@ struct bloodthirst_t: public warrior_attack_t
         p() -> buff.taste_for_blood -> expire();
       }
     }
-
-    rage_resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.bloodthirst );
   }
 };
 
@@ -1225,7 +1214,8 @@ struct charge_t: public warrior_attack_t
     parse_options( options_str );
     ignore_false_positive = true;
     movement_directionality = MOVEMENT_OMNI;
-    rage_gain += p -> artifact.uncontrolled_rage.value();
+    energize_type = ENERGIZE_ON_CAST;
+    energize_amount += p -> artifact.uncontrolled_rage.value();
     cooldown -> duration = data().cooldown();
     if ( p -> talents.warbringer -> ok() )
     {
@@ -1254,8 +1244,6 @@ struct charge_t: public warrior_attack_t
     {
       first_charge = !first_charge;
     }
-
-    rage_resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.charge );
   }
 
   void reset() override
@@ -1308,6 +1296,14 @@ struct cleave_t: public warrior_attack_t
     weapon = &( player -> main_hand_weapon );
     aoe = -1;
 
+    if ( p -> talents.fervor_of_battle -> ok() )
+    {
+      energize_type = ENERGIZE_PER_HIT;
+      energize_resource = RESOURCE_RAGE;
+      energize_amount = p -> spell.fervor_of_battle -> effectN( 1 ).resource( RESOURCE_RAGE );
+      gain = p -> gain.fervor_of_battle;
+    }
+
     if ( p -> artifact.void_cleave.rank() )
     {
       void_cleave = new void_cleave_t( p );
@@ -1340,11 +1336,6 @@ struct cleave_t: public warrior_attack_t
     if ( result_is_hit( s -> result ) )
     {
       targets_hit++;
-
-      if ( p() -> talents.fervor_of_battle -> ok() )
-      {
-        rage_resource_gain( RESOURCE_RAGE, p() -> spell.fervor_of_battle -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.fervor_of_battle );
-      }
     }
   }
 };
@@ -2040,10 +2031,8 @@ struct heroic_charge_t: public warrior_attack_t
 
 struct mortal_strike_t: public warrior_attack_t
 {
-  double rage_gain;
   mortal_strike_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "mortal_strike", p, p -> spec.mortal_strike ),
-    rage_gain( 0.0 )
+    warrior_attack_t( "mortal_strike", p, p -> spec.mortal_strike )
   {
     parse_options( options_str );
     cooldown = p -> cooldown.mortal_strike;
@@ -2053,7 +2042,12 @@ struct mortal_strike_t: public warrior_attack_t
     cooldown -> charges += p -> talents.mortal_combo -> effectN( 1 ).base_value();
     base_multiplier *= 1.0 + p -> artifact.thoradins_might.percent();
     base_costs[RESOURCE_RAGE] *= 1.0 + p -> manacles_of_mannoroth_the_flayer -> driver() -> effectN( 1 ).percent();
-    rage_gain += p -> manacles_of_mannoroth_the_flayer -> driver() -> effectN( 2 ).resource( RESOURCE_RAGE );
+    
+    if ( p -> manacles_of_mannoroth_the_flayer )
+    {
+      // Read rage gain from data.
+      parse_effect_data( p -> manacles_of_mannoroth_the_flayer -> driver() -> effectN( 2 ) );
+    }
   }
 
   double composite_crit() const override
@@ -2100,12 +2094,11 @@ struct mortal_strike_t: public warrior_attack_t
 
       if ( p() -> talents.in_for_the_kill -> ok() && execute_state -> target -> health_percentage() <= 20 )
       {
-        rage_resource_gain( RESOURCE_RAGE, p() -> talents.in_for_the_kill -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
+        p() -> resource_gain( RESOURCE_RAGE, p() -> talents.in_for_the_kill -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
                             p() -> gain.in_for_the_kill );
       }
 
       p() -> buff.focused_rage -> expire();
-      rage_resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.manacles_of_mannoroth_the_flayer );
     }
 
     p() -> buff.shattered_defenses -> expire();
@@ -2190,12 +2183,10 @@ struct raging_blow_t: public warrior_attack_t
 {
   raging_blow_attack_t* mh_attack;
   raging_blow_attack_t* oh_attack;
-  double rage_gain;
   raging_blow_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "raging_blow", p, p -> spec.raging_blow ),
     mh_attack( nullptr ),
-    oh_attack( nullptr ),
-    rage_gain( p -> spec.raging_blow -> effectN( 2 ).resource( RESOURCE_RAGE ) )
+    oh_attack( nullptr )
   {
     parse_options( options_str );
 
@@ -2216,7 +2207,6 @@ struct raging_blow_t: public warrior_attack_t
     {
       mh_attack -> execute();
       oh_attack -> execute();
-      rage_resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.raging_blow );
     }
   }
 
@@ -2525,11 +2515,12 @@ struct revenge_t: public warrior_attack_t
   double rage_gain;
   revenge_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "revenge", p, p -> spec.revenge ),
-    absorb_stats( nullptr ), rage_gain( 0 )
+    absorb_stats( nullptr ), rage_gain( data().effectN( 2 ).resource( RESOURCE_RAGE ) )
   {
     parse_options( options_str );
     aoe = -1;
-    rage_gain = data().effectN( 2 ).resource( RESOURCE_RAGE );
+    energize_type = ENERGIZE_NONE; // disable resource generation from spell data.
+
     impact_action = p -> active.deep_wounds;
   }
 
@@ -2558,11 +2549,11 @@ struct revenge_t: public warrior_attack_t
 
     if ( p() -> buff.bindings_of_kakushan -> check() )
     {
-      rage_resource_gain( RESOURCE_RAGE, rage_gain * ( 1.0 + p() -> buff.bindings_of_kakushan -> check_value() ), p() -> gain.revenge );
+      p() -> resource_gain( RESOURCE_RAGE, rage_gain * ( 1.0 + p() -> buff.bindings_of_kakushan -> check_value() ), p() -> gain.revenge );
     }
     else
     {
-      rage_resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.revenge );
+      p() -> resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.revenge );
     }
 
     p() -> buff.bindings_of_kakushan -> expire();
@@ -2653,11 +2644,11 @@ struct shield_slam_t: public warrior_attack_t
   attack_t* shield_block_2pc;
   shield_slam_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "shield_slam", p, p -> spec.shield_slam ),
-    rage_gain( 0.0 ),
+    rage_gain( data().effectN( 3 ).resource( RESOURCE_RAGE ) ),
     shield_block_2pc( new shield_block_2pc_t( p ) )
   {
     parse_options( options_str );
-    rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
+    energize_type = ENERGIZE_NONE;
 
     attack_power_mod.direct = 0.561; // Low level value for shield slam.
     if ( p -> level() >= 80 )
@@ -2700,17 +2691,17 @@ struct shield_slam_t: public warrior_attack_t
 
     if ( p() -> buff.bindings_of_kakushan -> check() )
     {
-      rage_resource_gain( RESOURCE_RAGE, rage_gain * ( 1.0 + p() -> buff.bindings_of_kakushan -> check_value() ), p() -> gain.shield_slam );
+      p() -> resource_gain( RESOURCE_RAGE, rage_gain * ( 1.0 + p() -> buff.bindings_of_kakushan -> check_value() ), p() -> gain.shield_slam );
     }
     else
     {
-      rage_resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.shield_slam );
+      p() -> resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.shield_slam );
     }
 
     if ( p() -> buff.sword_and_board -> up() )
     {
       rage_from_snb = p() -> buff.sword_and_board -> data().effectN( 1 ).resource( RESOURCE_RAGE );
-      rage_resource_gain( RESOURCE_RAGE,
+      p() -> resource_gain( RESOURCE_RAGE,
                           rage_from_snb,
                           p() -> gain.sword_and_board );
     }
@@ -2898,20 +2889,22 @@ struct whirlwind_mh_t: public warrior_attack_t
   {
     aoe = -1;
     weapon_multiplier *= 1.0 + p -> artifact.many_will_fall.percent();
+
+    if ( p -> talents.fervor_of_battle -> ok() )
+    {
+      parse_effect_data( p -> spell.fervor_of_battle -> effectN( 1 ) );
+      energize_type = ENERGIZE_PER_HIT;
+      gain = p -> gain.fervor_of_battle;
+    }
   }
 
   void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
 
-    if ( p() -> talents.fervor_of_battle -> ok() )
-    {
-      rage_resource_gain( RESOURCE_RAGE, p() -> spell.fervor_of_battle -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.fervor_of_battle );
-    }
-
     if ( p() -> artifact.will_of_the_first_king.rank() )
     {
-      rage_resource_gain( RESOURCE_RAGE, p() -> artifact.will_of_the_first_king.data().effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.will_of_the_first_king );
+      p() -> resource_gain( RESOURCE_RAGE, p() -> artifact.will_of_the_first_king.data().effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.will_of_the_first_king );
     }
     else if ( s -> result_amount > 0 )// Only triggers if damage is done.
     {
@@ -3221,6 +3214,13 @@ struct battle_cry_t: public warrior_spell_t
     bonus_crit = data().effectN( 1 ).percent();
     callbacks = false;
     cooldown -> duration += p -> artifact.helyas_wrath.time_value();
+
+    if ( p -> talents.reckless_abandon -> ok() )
+    {
+      parse_effect_data( p -> talents.reckless_abandon -> effectN( 2 ) );
+      energize_type = ENERGIZE_ON_CAST;
+      gain = p -> gain.battle_cry;
+    }
   }
 
   void execute() override
@@ -3231,13 +3231,6 @@ struct battle_cry_t: public warrior_spell_t
     if ( p() -> sets.has_set_bonus( WARRIOR_FURY, T17, B4 ) )
     {
       p() -> buff.tier17_4pc_fury_driver -> trigger();
-    }
-
-    if ( p() -> talents.reckless_abandon -> ok() )
-    {
-      rage_resource_gain( RESOURCE_RAGE,
-                            p() -> talents.reckless_abandon -> effectN( 2 ).resource( RESOURCE_RAGE ),
-                            p() -> gain.battle_cry );
     }
 
     p() -> buff.corrupted_blood_of_zakajz -> trigger();
@@ -4922,6 +4915,20 @@ double warrior_t::composite_spell_crit() const
 double warrior_t::composite_leech() const
 {
   return player_t::composite_leech();
+}
+
+// warrior_t::resource_gain =================================================
+
+double warrior_t::resource_gain( resource_e r, double a, gain_t* gain, action_t* action )
+{
+  double aa = player_t::resource_gain( r, a, gain, action );
+
+  if ( r == RESOURCE_RAGE && talents.frothing_berserker -> ok() && resources.current[ r ] > 99 )
+  {
+    buff.frothing_berserker -> trigger(); 
+  }
+
+  return aa;
 }
 
 // warrior_t::temporary_movement_modifier ==================================

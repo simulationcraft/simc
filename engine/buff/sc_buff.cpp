@@ -713,6 +713,11 @@ bool buff_t::trigger( int        stacks,
       return false;
   }
 
+  if ( name_str == "painbringer" )
+  {
+    assert( stacks == 1 );
+  }
+
   if ( value == DEFAULT_VALUE() && default_value != DEFAULT_VALUE() )
     value = default_value;
 
@@ -1062,10 +1067,14 @@ void buff_t::bump( int stacks, double value )
 
       if ( stack_behavior == BUFF_STACK_ASYNCHRONOUS )
       {
+        // Can't trigger more than max stack at a time
+        overflow -= std::max( 0, stacks - max_stack() );
+
         /* Replace the oldest buff with the new one. We do this by cancelling
         expiration events until their stack count add up to the overflow. */
         while ( overflow > 0 )
         {
+          event_t* e = expiration.front();
           int exp_stacks = debug_cast<expiration_t*>( expiration.front() ) -> stack;
 
           if ( exp_stacks > overflow )

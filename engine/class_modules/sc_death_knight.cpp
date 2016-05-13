@@ -2221,7 +2221,6 @@ struct death_knight_action_t : public Base
   int    cost_death;
   double convert_runes;
   rune_consume_t use;
-  gain_t* rp_gains;
 
   typedef Base action_base_t;
   typedef death_knight_action_t base_t;
@@ -2240,7 +2239,6 @@ struct death_knight_action_t : public Base
     action_base_t::may_crit   = true;
     action_base_t::may_glance = false;
 
-    rp_gains = action_base_t::player -> get_gain( "rp_" + action_base_t::name_str );
     extract_rune_cost( s );
   }
 
@@ -2315,20 +2313,7 @@ struct death_knight_action_t : public Base
 
   virtual void consume_resource()
   {
-    if ( action_base_t::rp_gain > 0 )
-    {
-      if ( action_base_t::result_is_hit( action_base_t::execute_state -> result ) )
-      {
-        if ( p() -> buffs.frost_presence -> check() )
-        {
-          p() -> resource_gain( RESOURCE_RUNIC_POWER,
-                                action_base_t::rp_gain * p() -> buffs.frost_presence -> value(),
-                                p() -> gains.frost_presence );
-        }
-        p() -> resource_gain( RESOURCE_RUNIC_POWER, action_base_t::rp_gain, rp_gains );
-      }
-    }
-    else
+    if ( ! ( energize_type != ENERGIZE_NONE && energize_resource == RESOURCE_RUNIC_POWER ) )
       action_base_t::consume_resource();
   }
 
@@ -4042,8 +4027,6 @@ struct frost_strike_offhand_t : public death_knight_melee_attack_t
     special          = true;
     base_multiplier *= 1.0 + p -> spec.threat_of_thassarian -> effectN( 3 ).percent();
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
-
-    rp_gain = 0; // Incorrectly set to 10 in the DBC
   }
 
   virtual double composite_crit() const override
@@ -4223,7 +4206,9 @@ struct chains_of_ice_t : public death_knight_spell_t
     {
       if ( p -> items[ SLOT_HANDS ].parsed.data.id_spell[ i ] == static_cast<int>( pvp_bonus -> id() ) )
       {
-        rp_gain += pvp_bonus -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
+        energize_type     = ENERGIZE_ON_HIT;
+        energize_resource = RESOURCE_RUNIC_POWER;
+        energize_amount   = pvp_bonus -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
         break;
       }
     }
@@ -4766,6 +4751,14 @@ struct pillar_of_frost_t : public death_knight_spell_t
     parse_options( options_str );
 
     harmful = false;
+
+    if ( p -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T17, B2 ) )
+    {
+      energize_type = ENERGIZE_ON_CAST;
+      energize_amount = p -> sets.set( DEATH_KNIGHT_FROST, T17, B2 ) -> effectN( 1 ).trigger() -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
+      energize_resource = RESOURCE_RUNIC_POWER;
+      gain = p -> gains.t17_2pc_frost;
+    }
   }
 
   void execute() override
@@ -4773,10 +4766,6 @@ struct pillar_of_frost_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> buffs.pillar_of_frost -> trigger();
-
-    if ( p() -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T17, B2 ) )
-      p() -> resource_gain( RESOURCE_RUNIC_POWER, p() -> sets.set( DEATH_KNIGHT_FROST, T17, B2 ) -> effectN( 1 ).trigger() -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER ), p() -> gains.t17_2pc_frost );
-
     p() -> buffs.frozen_runeblade -> trigger();
   }
 
@@ -5075,7 +5064,6 @@ struct summon_gargoyle_t : public death_knight_spell_t
   summon_gargoyle_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "summon_gargoyle", p, p -> find_class_spell( "Summon Gargoyle" ) )
   {
-    rp_gain = 0.0;  // For some reason, the inc file thinks we gain RP for this spell
     parse_options( options_str );
     dot_duration = timespan_t::zero();
     harmful = false;

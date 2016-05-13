@@ -41,10 +41,10 @@ namespace
    Infernal Force artifact trait
    Siphon Power artifact trait
      http://us.battle.net/wow/en/forum/topic/20743504316?page=15#282
-   soul_fragments expr
 
    Needs Documenting --------------------------------------------------------
    Vengeful Retreat / Fel Rush "jump_cancel" option
+   soul_fragments expr
 */
 
 /* Forward declarations
@@ -437,18 +437,20 @@ public:
   demon_hunter_t( sim_t* sim, const std::string& name, race_e r );
 
   // player_t overrides
-  void init_base_stats() override;
-  void init_procs() override;
-  void init_resources( bool force ) override;
-  void init_rng() override;
-  void init_spells() override;
-  void create_buffs() override;
-  void init_scaling() override;
-  void init_absorb_priority() override;
-  void invalidate_cache( cache_e ) override;
-  void reset() override;
-  void interrupt() override;
-  void create_options() override;
+  void    init_base_stats() override;
+  void    init_procs() override;
+  void    init_resources( bool force ) override;
+  void    init_rng() override;
+  void    init_spells() override;
+  void    create_buffs() override;
+  void    init_scaling() override;
+  void    init_absorb_priority() override;
+  void    invalidate_cache( cache_e ) override;
+  void    reset() override;
+  void    interrupt() override;
+  double  get_total_soul_fragments();
+  expr_t* create_expression( action_t*, const std::string& ) override;
+  void    create_options() override;
   std::string create_profile( save_e = SAVE_ALL ) override;
   action_t* create_action( const std::string& name,
                            const std::string& options ) override;
@@ -914,6 +916,14 @@ struct consume_soul_t : public demon_hunter_heal_t
   {
     background = true;
 
+    if ( p -> talent.demonic_appetite -> ok() ) 
+    {
+      energize_type = ENERGIZE_ON_CAST;
+      energize_resource = RESOURCE_FURY;
+      energize_amount = p -> spec.demonic_appetite_fury -> effectN( 1 ).resource( RESOURCE_FURY );
+      gain = p -> gain.demonic_appetite;
+    }
+
     if ( p -> talent.soul_barrier -> ok() && ! p -> active.soul_barrier )
     {
       p -> active.soul_barrier = new soul_barrier_t( p );
@@ -930,12 +940,6 @@ struct consume_soul_t : public demon_hunter_heal_t
     demon_hunter_heal_t::execute();
 
     ( *soul_counter )--;
-
-    if ( p() -> talent.demonic_appetite -> ok() )
-    {
-      p() -> resource_gain( RESOURCE_FURY, p() -> spec.demonic_appetite_fury 
-        -> effectN( 1 ).resource( RESOURCE_FURY ), p() -> gain.demonic_appetite );
-    }
 
     // Feast on the Souls only procs from major soul fragments.
     if ( p() -> artifact.feast_on_the_souls.rank() && soul_counter == &( p() -> soul_fragments ) )
@@ -1445,6 +1449,13 @@ struct fel_rush_t : public demon_hunter_spell_t
 
       base_crit += p -> talent.fel_mastery -> effectN( 2 ).percent();
 
+      if ( p -> talent.fel_mastery -> ok() )
+      {
+        energize_type = ENERGIZE_ON_HIT;
+        energize_resource = RESOURCE_FURY;
+        energize_amount = p -> talent.fel_mastery -> effectN( 1 ).resource( RESOURCE_FURY );
+      }
+
       if ( p -> legendary.loramus_thalipedes_sacrifice )
       {
         base_add_multiplier *= 1.0 + p -> legendary.loramus_thalipedes_sacrifice
@@ -1490,17 +1501,6 @@ struct fel_rush_t : public demon_hunter_spell_t
     g += rng().gauss( sim -> gcd_lag, sim -> gcd_lag_stddev );
 
     return g;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    demon_hunter_spell_t::impact( s ); 
-
-    if ( p() -> talent.fel_mastery -> ok() && result_is_hit( s -> result ) )
-    {
-      p() -> resource_gain( RESOURCE_FURY, p() -> talent.fel_mastery -> effectN( 1 )
-        .resource( RESOURCE_FURY ), action_gain );
-    }
   }
 
   void execute() override
@@ -2821,6 +2821,7 @@ struct demons_bite_t : public demon_hunter_attack_t
 
     fury.base      = data().effectN( 3 ).resource( RESOURCE_FURY );
     fury.die_sides = data().effectN( 3 ).die_sides();
+    energize_type  = ENERGIZE_NONE; // disable, we need to do it manually for the RNG
 
     base_multiplier *= 1.0 + p -> artifact.demon_rage.percent();
 
@@ -2930,29 +2931,15 @@ struct felblade_t : public demon_hunter_attack_t
 {
   struct felblade_damage_t : public demon_hunter_attack_t
   {
-    resource_e resource;
-    double amount;
-
     felblade_damage_t( demon_hunter_t* p ) :
       demon_hunter_attack_t( "felblade_dmg", p, p -> find_spell( 213243 ) )
     {
       dual = background = true;
       may_miss = may_dodge = may_parry = false;
 
-      const spelleffect_data_t effect = data().effectN(
-        p -> specialization() == DEMON_HUNTER_HAVOC ? 4 : 3 );
-      resource = effect.resource_gain_type();
-      amount   = effect.resource( resource );
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      demon_hunter_attack_t::impact( s );
-
-      if ( result_is_hit( s -> result ) )
-      {
-        p() -> resource_gain( resource, amount, action_gain );
-      }
+      // Clear energize and then manually pick which effect to parse.
+      energize_type = ENERGIZE_NONE;
+      parse_effect_data( data().effectN( p -> specialization() == DEMON_HUNTER_HAVOC ? 4 : 3 ) );
     }
   };
 
@@ -3555,7 +3542,7 @@ struct nemesis_debuff_t : public demon_hunter_buff_t<buff_t>
 {
   nemesis_debuff_t( demon_hunter_t* p, player_t* target )
     : demon_hunter_buff_t<buff_t>(
-        *p, buff_creator_t( target, "nemesis_debuff", p -> talent.nemesis )
+        *p, buff_creator_t( target, "nemesis", p -> talent.nemesis )
         .default_value( p -> talent.nemesis -> effectN( 1 ).percent() )
         .cd( timespan_t::zero() ) )
   {
@@ -4536,8 +4523,7 @@ void demon_hunter_t::create_buffs()
                     talent.prepared -> effectN( 1 ).trigger() )
       .chance( talent.prepared -> ok() )
       .tick_callback( [this]( buff_t* b, int, const timespan_t& ) {
-        resource_gain( RESOURCE_FURY,
-          b -> data().effectN( 1 ).resource( RESOURCE_FURY ),
+        resource_gain( RESOURCE_FURY, b -> data().effectN( 1 ).resource( RESOURCE_FURY ),
           gain.prepared );
       } );
 
@@ -4575,8 +4561,7 @@ void demon_hunter_t::create_buffs()
       .tick_callback( [this]( buff_t*, int, const timespan_t& ) {
         active.immolation_aura -> schedule_execute();
         resource_gain( RESOURCE_PAIN, active.immolation_aura ->
-          data().effectN( 2 ).resource( RESOURCE_PAIN ),
-          gain.immolation_aura );
+          data().effectN( 2 ).resource( RESOURCE_PAIN ), gain.immolation_aura );
       } )
       .default_value( talent.agonizing_flames -> effectN( 2 ).percent() )
       .add_invalidate( CACHE_RUN_SPEED );
@@ -4858,9 +4843,8 @@ void demon_hunter_t::assess_damage( school_e school, dmg_e dt,
 
   if ( talent.blade_turning -> ok() && s -> result == RESULT_PARRY )
   {
-    resource_gain( RESOURCE_PAIN, talent.blade_turning ->
-      effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_PAIN ),
-      gain.blade_turning );
+    resource_gain( RESOURCE_PAIN, talent.blade_turning -> effectN( 1 ).trigger() ->
+      effectN( 1 ).resource( RESOURCE_PAIN ), gain.blade_turning );
   }
 
   // Benefit tracking
@@ -4884,7 +4868,6 @@ void demon_hunter_t::target_mitigation( school_e school, dmg_e dt,
   }
 
   s -> result_amount *= 1.0 + buff.blur -> value();
-
 
   s -> result_amount *= 1.0 + buff.painbringer -> stack_value();
 
@@ -4934,6 +4917,23 @@ void demon_hunter_t::invalidate_cache( cache_e c )
     default:
       break;
   }
+}
+
+// demon_hunter_t::get_total_soul_fragments =================================
+
+double demon_hunter_t::get_total_soul_fragments()
+{ return soul_fragments + lesser_soul_fragments; }
+
+// demon_hunter_t::create_expression ========================================
+
+expr_t* demon_hunter_t::create_expression( action_t* a, const std::string& name_str )
+{
+  if ( name_str == "soul_fragments" )
+  {
+    return make_mem_fn_expr( name_str, *this, &demon_hunter_t::get_total_soul_fragments );
+  }
+
+  return player_t::create_expression( a, name_str );
 }
 
 void demon_hunter_t::create_options()

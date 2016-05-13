@@ -1259,9 +1259,8 @@ struct flash_of_light_t : public paladin_heal_t
 
     // Grant Mana if healing the beacon target
     if ( s -> target == p() -> beacon_target ){
-        int g = static_cast<int>( tower_of_radiance -> effectN(1).percent() * cost() );
-        p() -> resource_gain( RESOURCE_MANA, g, p() -> gains.mana_beacon_of_light );
-
+      int g = static_cast<int>( tower_of_radiance -> effectN(1).percent() * cost() );
+      p() -> resource_gain( RESOURCE_MANA, g, p() -> gains.mana_beacon_of_light );
     }
   }
 };
@@ -1374,9 +1373,8 @@ struct holy_light_t : public paladin_heal_t
 
     // Grant Mana if healing the beacon target
     if ( s -> target == p() -> beacon_target ){
-        int g = static_cast<int>( tower_of_radiance -> effectN(1).percent() * cost() );
-        p() -> resource_gain( RESOURCE_MANA, g, p() -> gains.mana_beacon_of_light );
-
+      int g = static_cast<int>( tower_of_radiance -> effectN(1).percent() * cost() );
+      p() -> resource_gain( RESOURCE_MANA, g, p() -> gains.mana_beacon_of_light );
     }
   }
 
@@ -1795,7 +1793,14 @@ struct wake_of_ashes_t : public paladin_spell_t
     hasted_ticks = false;
     tick_may_crit = true;
 
-    if ( p -> artifact.ashes_to_ashes.rank() == 0 )
+    if ( p -> artifact.ashes_to_ashes.rank() )
+    {
+      energize_type     = ENERGIZE_ON_HIT;
+      energize_resource = RESOURCE_HOLY_POWER;
+      energize_amount   = p -> find_spell( 218001 ) -> effectN( 1 ).resource( RESOURCE_HOLY_POWER );
+      gain              = p -> gains.hp_wake_of_ashes;
+    }
+    else
     {
        attack_power_mod.tick = 0;
        dot_duration = timespan_t::zero();
@@ -1815,16 +1820,6 @@ struct wake_of_ashes_t : public paladin_spell_t
     }
 
     return paladin_spell_t::ready();
-  }
-
-  void execute() override
-  {
-    paladin_spell_t::execute();
-    if ( p() -> artifact.ashes_to_ashes.rank() > 0 )
-    {
-      // TODO: find the spell that has this 5 in its data
-      p() -> resource_gain( RESOURCE_HOLY_POWER, 5, p() -> gains.hp_wake_of_ashes );
-    }
   }
 };
 
@@ -2125,7 +2120,8 @@ struct crusader_strike_t : public holy_power_generator_t
     parse_options( options_str );
 
     base_multiplier *= 1.0 + p -> artifact.blade_of_light.percent();
-    base_crit += p -> artifact.sharpened_edge.percent();
+    base_crit       += p -> artifact.sharpened_edge.percent();
+    gain             = p -> gains.hp_crusader_strike;
 
     if ( p -> talents.fires_of_justice -> ok() )
       cooldown -> duration += timespan_t::from_millis( p -> talents.fires_of_justice -> effectN( 2 ).base_value() );
@@ -2146,10 +2142,6 @@ struct crusader_strike_t : public holy_power_generator_t
     // Special things that happen when CS connects
     if ( result_is_hit( s -> result ) )
     {
-      // Holy Power gains, only relevant if CS connects
-      int g = data().effectN( 3 ).base_value(); // default is a gain of 1 Holy Power
-      p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_crusader_strike ); // apply gain, record as due to CS
-
       // fires of justice
       if ( p() -> talents.fires_of_justice -> ok() )
       {
@@ -2177,6 +2169,7 @@ struct zeal_t : public holy_power_generator_t
     base_multiplier *= 1.0 + p -> artifact.blade_of_light.percent();
     base_crit += p -> artifact.sharpened_edge.percent();
     base_add_multiplier = data().effectN( 1 ).chain_multiplier();
+    gain = p -> gains.hp_crusader_strike;
 
     // TODO: remove this once it's back in the spelldata.
     hasted_cd = true;
@@ -2197,10 +2190,6 @@ struct zeal_t : public holy_power_generator_t
     // Special things that happen when Zeal connects
     // Apply Zeal stacks
     p() -> buffs.zeal -> trigger();
-
-    // Holy Power gains, only relevant if Zeal connects
-    int g = data().effectN( 3 ).base_value(); // default is a gain of 1 Holy Power
-    p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_crusader_strike ); // apply gain, record as due to CS
   }
 };
 
@@ -2220,24 +2209,12 @@ struct blade_of_justice_t : public holy_power_generator_t
     base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
 
     base_multiplier *= 1.0 + p -> artifact.deliver_the_justice.percent();
+    gain = p -> gains.hp_blade_of_justice;
 
     background = ( p -> talents.blade_of_wrath -> ok() ) || ( p -> talents.divine_hammer -> ok() );
 
     if ( p -> talents.virtues_blade -> ok() )
       crit_bonus_multiplier += p -> talents.virtues_blade -> effectN( 1 ).percent();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    holy_power_generator_t::impact( s );
-
-    // Special things that happen when BoJ connects
-    if ( result_is_hit( s -> result ) )
-    {
-      // Holy Power gains, only relevant if BoJ connects
-      int g = data().effectN( 3 ).base_value(); // default is a gain of 2 Holy Power
-      p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_blade_of_justice ); // apply gain, record as due to BoJ
-    }
   }
 };
 
@@ -2256,21 +2233,9 @@ struct blade_of_wrath_t : public holy_power_generator_t
     // Guarded by the Light and Sword of Light reduce base mana cost; spec-limited so only one will ever be active
     base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent();
     base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
+    gain = p -> gains.hp_blade_of_justice;
 
     base_multiplier *= 1.0 + p -> artifact.deliver_the_justice.percent();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    holy_power_generator_t::impact( s );
-
-    // Special things that happen when BoW connects
-    if ( result_is_hit( s -> result ) )
-    {
-      // Holy Power gains, only relevant if BoW connects
-      int g = data().effectN( 3 ).base_value(); // default is a gain of 1 Holy Power
-      p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_blade_of_justice ); // apply gain, record as due to BoJ
-    }
   }
 };
 
@@ -2306,6 +2271,8 @@ struct divine_hammer_t : public paladin_spell_t
     hasted_ticks   = true;
     may_miss       = false;
     tick_zero      = true;
+    gain           = p -> gains.hp_blade_of_justice;
+    energize_type      = ENERGIZE_ON_CAST;
 
     tick_action = new divine_hammer_tick_t( p );
   }
@@ -2320,14 +2287,6 @@ struct divine_hammer_t : public paladin_spell_t
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     return dot_duration * ( tick_time( s -> haste ) / base_tick_time );
-  }
-
-  void execute() override
-  {
-    paladin_spell_t::execute();
-    // Holy Power gen
-    int g = data().effectN( 2 ).base_value(); // default is a gain of 1 Holy Power
-    p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_blade_of_justice ); // apply gain, record as due to BoJ
   }
 };
 

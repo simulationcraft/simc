@@ -1254,3 +1254,11 @@ enum rppm_scale_e
   RPPM_CRIT,
 };
 
+enum action_energize_e
+{
+  ENERGIZE_NONE = 0,
+  ENERGIZE_ON_CAST,
+  ENERGIZE_ON_HIT,
+  ENERGIZE_PER_HIT,
+  ENERGIZE_PER_TICK
+};

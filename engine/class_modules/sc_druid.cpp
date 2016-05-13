@@ -828,6 +828,7 @@ public:
   virtual void      assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* ) override;
   virtual void      assess_heal( school_e, dmg_e, action_state_t* ) override;
   virtual void      recalculate_resource_max( resource_e ) override;
+  virtual double    resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
   virtual void      create_options() override;
   virtual std::string      create_profile( save_e type = SAVE_ALL ) override;
 
@@ -1734,7 +1735,6 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
 private:
   bool consumed_owlkin_frenzy;
 public:
-  double ap_per_hit, ap_per_tick, ap_per_cast;
   bool incarnation;
   bool celestial_alignment;
   bool blessing_of_elune;
@@ -1745,9 +1745,6 @@ public:
                  const spell_data_t* s      = spell_data_t::nil(),
                  const std::string& options = std::string() )
     : base_t( token, p, s ),
-      ap_per_hit( 0 ),
-      ap_per_tick( 0 ),
-      ap_per_cast( 0 ),
       incarnation( data().affected_by( p -> talent.incarnation_moonkin -> effectN( 3 ) ) ),
       celestial_alignment( data().affected_by( p -> spec.celestial_alignment -> effectN( 3 ) ) ),
       blessing_of_elune( data().affected_by( p -> spec.blessing_of_elune -> effectN( 1 ) ) ),
@@ -1794,8 +1791,6 @@ public:
     if ( consumed_owlkin_frenzy )
       p() -> buff.owlkin_frenzy -> decrement();
 
-    trigger_astral_power_gain( ap_per_cast );
-
     if ( p() -> artifact.moon_and_stars.rank() && ! background &&
        ( p() -> buff.celestial_alignment -> check() || p() -> buff.incarnation_moonkin -> check() ) )
       p() -> buff.star_power -> trigger();
@@ -1807,8 +1802,6 @@ public:
 
     if ( result_is_hit( s -> result ) )
     {
-      trigger_astral_power_gain( ap_per_hit );
-
       // Benefit tracking
       if ( p() -> legendary.impeccable_fel_essence && dbc::is_school( school, SCHOOL_NATURE ) &&
           s -> result_amount > 0 )
@@ -1819,8 +1812,6 @@ public:
   virtual void tick( dot_t* d ) override
   {
     spell_t::tick( d );
-
-    trigger_astral_power_gain( ap_per_tick );
 
     // Benefit tracking
     if ( d -> state -> result_amount > 0 )
@@ -1839,59 +1830,6 @@ public:
       return timespan_t::zero();
 
     return spell_t::execute_time();
-  }
-
-  virtual void trigger_astral_power_gain( double base_ap )
-  {
-    if ( base_ap <= 0 )
-      return;
-
-    /*
-      Astral power modifiers are multiplicative, so we have to do some shenanigans
-      if we want to have seperate gains to track the effectiveness of these modifiers.
-    */
-
-    // Calculate the final AP total, and the additive percent bonus to the base.
-
-    double ap = base_ap;
-    double bonus_pct = 0;
-
-    if ( celestial_alignment && p() -> buff.celestial_alignment -> check() )
-    {
-      ap *= 1.0 + p() -> spec.celestial_alignment -> effectN( 3 ).percent();
-      bonus_pct += p() -> spec.celestial_alignment -> effectN( 3 ).percent();
-    }
-
-    if ( p() -> buff.incarnation_moonkin -> check() )
-    {
-      ap *= 1.0 + p() -> buff.incarnation_moonkin -> data().effectN( 3 ).percent();
-      bonus_pct += p() -> buff.incarnation_moonkin -> data().effectN( 3 ).percent();
-    }
-
-    if ( blessing_of_elune && p() -> buff.blessing_of_elune -> check() )
-    {
-      ap *= 1.0 + p() -> spec.blessing_of_elune -> effectN( 1 ).percent();
-      bonus_pct += p() -> spec.blessing_of_elune -> effectN( 1 ).percent();
-    }
-
-    // Gain the base AP amount and attribute it to the spell cast.
-    p() -> resource_gain( RESOURCE_ASTRAL_POWER, base_ap, ap_gain );
-
-    // Subtract the base amount from the total AP gain.
-    ap -= base_ap;
-
-    // Divide the remaining AP gain among the buffs based on their modifier / bonus_pct ratio.
-    if ( celestial_alignment && p() -> buff.celestial_alignment -> check() )
-      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * ( p() -> spec.celestial_alignment -> effectN( 3 ).percent() / bonus_pct ),
-                            p() -> gain.celestial_alignment );
-
-    if ( incarnation && p() -> buff.incarnation_moonkin -> check() )
-      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * ( p() -> buff.incarnation_moonkin -> data().effectN( 3 ).percent() / bonus_pct ),
-                            p() -> gain.incarnation );
-
-    if ( blessing_of_elune && p() -> buff.blessing_of_elune -> check() )
-      p() -> resource_gain( RESOURCE_ASTRAL_POWER, ap * ( p() -> spec.blessing_of_elune -> effectN( 1 ).percent() / bonus_pct ),
-                            p() -> gain.blessing_of_elune );
   }
 
   virtual void trigger_balance_tier18_2pc()
@@ -1922,7 +1860,6 @@ struct shooting_stars_t : public druid_spell_t
   {
     background = true;
     proc_chance = player -> talent.shooting_stars -> effectN( 1 ).percent();
-    ap_per_cast = data().effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
   }
 };
 
@@ -1931,12 +1868,11 @@ struct shooting_stars_t : public druid_spell_t
 struct moonfire_t : public druid_spell_t
 {
   shooting_stars_t* shooting_stars;
-  bool galactic_guardian;
   bool gore;
 
   moonfire_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "moonfire", player, player -> find_spell( 8921 ) ),
-    shooting_stars( new shooting_stars_t( player ) ), gore( true )
+    gore( true )
   {
     parse_options( options_str );
 
@@ -1948,14 +1884,22 @@ struct moonfire_t : public druid_spell_t
     base_tick_time         = dmg_spell -> effectN( 2 ).period();
     spell_power_mod.tick   = dmg_spell -> effectN( 2 ).sp_coeff();
     spell_power_mod.direct = dmg_spell -> effectN( 1 ).sp_coeff();
-    ap_per_cast            = data().effectN( 3 ).resource( RESOURCE_ASTRAL_POWER )
-                           + player -> spec.balance -> effectN( 2 ).resource( RESOURCE_ASTRAL_POWER ); // TOCHECK
     base_multiplier       *= 1.0 + player -> spec.guardian -> effectN( 3 ).percent();
     base_dd_multiplier    *= 1.0 + player -> spec.feral_overrides -> effectN( 1 ).percent();
     base_td_multiplier    *= 1.0 + player -> spec.feral_overrides -> effectN( 2 ).percent();
 
+    if ( player -> specialization() == DRUID_BALANCE )
+    {
+      energize_resource = RESOURCE_ASTRAL_POWER;
+      energize_amount  += player -> spec.balance -> effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
+    }
+    else
+      energize_type = ENERGIZE_NONE;
+
+    if ( player -> talent.shooting_stars -> ok() )
+      shooting_stars = new shooting_stars_t( player );
+
     base_multiplier *= 1.0 + player -> artifact.twilight_glow.percent();
-    galactic_guardian = player -> talent.galactic_guardian -> ok();
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -1989,12 +1933,10 @@ struct moonfire_t : public druid_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( gore )
-      {
+      if ( gore && ! background )
         trigger_gore();
-      }
 
-      if ( galactic_guardian && p() -> buff.galactic_guardian -> check() )
+      if ( p() -> talent.galactic_guardian -> ok() && ! background && p() -> buff.galactic_guardian -> check() )
       {
         p() -> resource_gain( RESOURCE_RAGE, p() -> buff.galactic_guardian -> value(), p() -> gain.galactic_guardian );
         p() -> buff.galactic_guardian -> expire();
@@ -2009,7 +1951,7 @@ struct galactic_guardian_t : public moonfire_t
     moonfire_t( p, "" )
   {
     background = proc = true;
-    galactic_guardian = gore = false; // TOCHECK
+    gore = false;
   }
 };
 
@@ -2170,7 +2112,6 @@ protected:
   bool    attack_critical;
 public:
   bool    requires_stealth;
-  int     combo_point_gain;
   bool    consumes_combo_points;
   double  base_dd_bonus;
   double  base_td_bonus;
@@ -2187,7 +2128,6 @@ public:
                 const std::string& options = std::string() ) :
     base_t( token, p, s ),
     requires_stealth( false ),
-    combo_point_gain( 0 ),
     consumes_combo_points( false ),
     base_dd_bonus( 0.0 ),
     base_td_bonus( 0.0 ),
@@ -2220,9 +2160,7 @@ public:
       const spelleffect_data_t& ed = data().effectN( i );
       effect_type_t type = ed.type();
 
-      if ( type == E_ENERGIZE && ed.resource_gain_type() == RESOURCE_COMBO_POINT )
-        combo_point_gain = ed.resource( RESOURCE_COMBO_POINT );
-      else if ( type == E_APPLY_AURA && ed.subtype() == A_PERIODIC_DAMAGE )
+      if ( type == E_APPLY_AURA && ed.subtype() == A_PERIODIC_DAMAGE )
       {
         snapshot_flags |= STATE_AP;
         base_td_bonus = ed.bonus( player );
@@ -2430,15 +2368,13 @@ public:
       }
     }
 
-    if ( combo_point_gain && targets_hit > 0 )
+    if ( energize_resource == RESOURCE_COMBO_POINT && hit_any_target &&
+      p() -> spec.primal_fury -> ok() && attack_critical )
     {
-      p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, action_gain );
-
-      if ( p() -> spec.primal_fury -> ok() && attack_critical )
-        trigger_primal_fury();
+      trigger_primal_fury();
     }
 
-    if ( ! result_is_hit( execute_state -> result ) )
+    if ( ! hit_any_target )
       trigger_energy_refund();
 
     if ( harmful )
@@ -2664,7 +2600,9 @@ struct brutal_slash_t : public cat_attack_t
     parse_options( options_str );
 
     aoe = -1;
-    combo_point_gain = 1; // not in spell data
+    energize_amount = data().effectN( 1 ).percent();
+    energize_resource = RESOURCE_COMBO_POINT;
+    energize_type = ENERGIZE_ON_HIT;
 
     base_multiplier *= 1.0 + p -> artifact.sharpened_claws.percent();
   }
@@ -2776,8 +2714,9 @@ struct ferocious_bite_t : public cat_attack_t
     add_option( opt_bool( "max_energy" , max_energy ) );
     parse_options( options_str );
 
-    max_excess_energy      = -1 * data().effectN( 2 ).base_value();
-    special                = true;
+    max_excess_energy  = -1 * data().effectN( 2 ).base_value();
+    special            = true;
+    energize_type          = ENERGIZE_NONE; // disable negative energy gain in spell data
 
     crit_bonus_multiplier *= 1.0 + p -> artifact.powerful_bite.percent(); // TOCHECK
 
@@ -3206,7 +3145,9 @@ public:
     cat_attack_t( "swipe_cat", player, player -> spec.swipe_cat, options_str )
   {
     aoe = -1;
-    combo_point_gain = data().effectN( 1 ).base_value(); // Effect is not labelled correctly as CP gain
+    energize_amount = data().effectN( 1 ).percent();
+    energize_resource = RESOURCE_COMBO_POINT;
+    energize_type = ENERGIZE_ON_HIT;
 
     base_multiplier *= 1.0 + player -> artifact.sharpened_claws.percent();
   }
@@ -3287,6 +3228,7 @@ struct tigers_fury_t : public cat_attack_t
   {
     harmful = consumes_clearcasting = may_miss = may_parry = may_dodge = may_crit = false;
     autoshift = form_mask = CAT_FORM;
+    energize_type = ENERGIZE_ON_CAST;
 
     /* If Druid Tier 18 (WoD 6.2) trinket effect is in use, adjust Tiger's Fury duration
        based on spell data of the special effect. */
@@ -3300,23 +3242,16 @@ struct tigers_fury_t : public cat_attack_t
 
     p() -> buff.tigers_fury -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
 
-    p() -> resource_gain( RESOURCE_ENERGY,
-                          data().effectN( 2 ).resource( RESOURCE_ENERGY ),
-                          p() -> gain.tigers_fury );
-
     if ( p() -> sets.has_set_bonus( SET_MELEE, T13, B4 ) )
       p() -> buff.clearcasting -> trigger();
 
-    if ( p() -> sets.has_set_bonus( SET_MELEE, T15, B4 ) )
-      p() -> buff.feral_tier15_4pc -> trigger( 3 );
+    p() -> buff.feral_tier15_4pc -> trigger( 3 );
 
-    if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B4 ) )
-      p() -> buff.feral_tier16_4pc -> trigger();
+    p() -> buff.feral_tier16_4pc -> trigger();
 
     p() -> buff.ashamanes_energy -> trigger();
     
-    if ( p() -> legendary.ailuro_invigorators )
-      p() -> buff.ailuro_invigorators -> trigger();
+    p() -> buff.ailuro_invigorators -> trigger();
   }
 };
 
@@ -3359,7 +3294,11 @@ struct thrash_cat_t : public cat_attack_t
 
     // TODO: Get CP value from spell data when its available.
     if ( p -> sets.has_set_bonus( DRUID_FERAL, T19, B2 ) )
-      combo_point_gain = 1; 
+    {
+      energize_amount = 1;
+      energize_resource = RESOURCE_COMBO_POINT;
+      energize_type = ENERGIZE_ON_HIT;
+    }
 
     if ( p -> artifact.shadow_thrash.rank() )
     {
@@ -3395,14 +3334,11 @@ namespace bear_attacks {
 
 struct bear_attack_t : public druid_attack_t<melee_attack_t>
 {
-  double rage_amount, rage_tick_amount;
   bool gore;
 
   bear_attack_t( const std::string& n, druid_t* p,
                  const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, p, s ),
-    rage_amount( 0.0 ),
-    rage_tick_amount( 0.0 ),
     gore( false ),
     rage_gain( p -> get_gain( name() ) )
   {}
@@ -3411,14 +3347,8 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
   {
     base_t::execute();
 
-    if ( targets_hit > 0 )
-    {
-      if ( rage_amount )
-        p() -> resource_gain( RESOURCE_RAGE, rage_amount, rage_gain );
-
-      if ( gore ) // TOCHECK: Does it need to hit?
-        trigger_gore();
-    }
+    if ( hit_any_target && gore )
+      trigger_gore();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3454,11 +3384,6 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
 
     if ( result_is_hit( d -> state -> result ) )
     {
-      if ( rage_tick_amount )
-      {
-        p() -> resource_gain( RESOURCE_RAGE, rage_tick_amount, rage_gain );
-      }
-
       if ( p() -> talent.galactic_guardian -> ok() )
         trigger_galactic_guardian( d -> state );
     }
@@ -3494,7 +3419,9 @@ struct bear_melee_t : public bear_attack_t
     trigger_gcd = timespan_t::zero();
     special     = false;
 
-    rage_amount = 70.0 / 9.0; // Legion TOCHECK: Estimate Jan 27 2016, need more accurate number.
+    energize_type     = ENERGIZE_ON_HIT;
+    energize_resource = RESOURCE_RAGE;
+    energize_amount   = 70.0 / 9.0; // Legion TOCHECK: Estimate Jan 27 2016, need more accurate number.
   }
 
   virtual timespan_t execute_time() const override
@@ -3563,11 +3490,10 @@ struct mangle_t : public bear_attack_t
     parse_options( options_str );
 
     bleeding_multiplier = data().effectN( 3 ).percent();
-    rage_amount = data().effectN( 4 ).resource( RESOURCE_RAGE );
 
     if ( p() -> specialization() == DRUID_GUARDIAN )
     {
-      rage_amount += player -> talent.soul_of_the_forest -> effectN( 1 ).resource( RESOURCE_RAGE );
+      energize_amount += player -> talent.soul_of_the_forest -> effectN( 1 ).resource( RESOURCE_RAGE );
       base_multiplier *= 1.0 + player -> talent.soul_of_the_forest -> effectN( 2 ).percent();
     }
   }
@@ -3734,7 +3660,6 @@ struct thrash_bear_t : public bear_attack_t
     // Apply hidden passive damage multiplier
     base_dd_multiplier *= 1.0 + p -> spec.guardian_overrides -> effectN( 6 ).percent();
     
-    rage_amount = data().effectN( 2 ).resource( RESOURCE_RAGE );
     gore = true;
 
     dot_duration = p -> spec.thrash_bear_dot -> duration();
@@ -3758,9 +3683,10 @@ struct thrash_bear_t : public bear_attack_t
 
   virtual void tick( dot_t* d ) override
   {
-    rage_tick_amount = d -> current_stack() == d -> max_stack ? blood_frenzy_amount : 0;
-
     bear_attack_t::tick( d );
+
+    if ( p() -> talent.blood_frenzy -> ok() && d -> current_stack() == d -> max_stack )
+      p() -> resource_gain( RESOURCE_RAGE, blood_frenzy_amount, gain );
   }
 };
 
@@ -4361,8 +4287,8 @@ struct astral_communion_t : public druid_spell_t
   astral_communion_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "astral_communion", player, player -> talent.astral_communion, options_str )
   {
-    harmful = false;
-    ap_per_cast = data().effectN( 1 ).resource( RESOURCE_ASTRAL_POWER );
+    may_miss = may_crit = callbacks = harmful = false;
+    energize_type = ENERGIZE_ON_CAST;
   }
 };
 
@@ -4744,7 +4670,7 @@ struct elunes_guidance_t : public druid_spell_t
   {
     parse_options( options_str );
 
-    combo_points = data().effectN( 1 ).resource( RESOURCE_COMBO_POINT );
+    energize_type = ENERGIZE_ON_CAST;
     dot_duration = timespan_t::zero();
   }
 
@@ -4752,7 +4678,6 @@ struct elunes_guidance_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    p() -> resource_gain( RESOURCE_COMBO_POINT, combo_points, p() -> gain.elunes_guidance );
     p() -> buff.elunes_guidance -> trigger();
   }
 };
@@ -4769,7 +4694,6 @@ struct full_moon_t : public druid_spell_t
     aoe = -1;
     split_aoe_damage = true; // Apr 16 2016: Splits AoE damage even though tooltip does not say so.
     cooldown = player -> cooldown.moon_cd;
-    ap_per_cast = data().effectN( 2 ).resource( RESOURCE_ASTRAL_POWER ); // TOCHECK
   }
 
   void execute() override
@@ -4802,7 +4726,6 @@ struct half_moon_t : public druid_spell_t
     parse_options( options_str );
 
     cooldown = player -> cooldown.moon_cd;
-    ap_per_cast = data().effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
   }
 
   void execute() override
@@ -5004,7 +4927,6 @@ struct lunar_strike_t : public druid_spell_t
 
     aoe = -1;
     base_aoe_multiplier = data().effectN( 3 ).percent();
-    ap_per_cast = data().effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
     consumes_owlkin_frenzy = true;
 
     natures_balance    = timespan_t::from_seconds( player -> talent.natures_balance -> effectN( 1 ).base_value() );
@@ -5109,8 +5031,6 @@ struct new_moon_t : public druid_spell_t
   {
     parse_options( options_str );
 
-    ap_per_cast = data().effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
-
     cooldown = player -> cooldown.moon_cd;
     cooldown -> duration = data().charge_cooldown();
     cooldown -> charges  = data().charges();
@@ -5157,8 +5077,7 @@ struct sunfire_t : public druid_spell_t
     spell_power_mod.direct = dmg_spell -> effectN( 1 ).sp_coeff();
     spell_power_mod.tick   = dmg_spell -> effectN( 2 ).sp_coeff();
     aoe                    = -1;
-    ap_per_cast            = data().effectN( 3 ).resource( RESOURCE_ASTRAL_POWER )
-                           + player -> spec.balance -> effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
+    energize_amount           += player -> spec.balance -> effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
 
     base_multiplier *= 1.0 + player -> artifact.sunfire_burns.percent();
     radius += player -> artifact.sunblind.value();
@@ -5291,8 +5210,7 @@ struct solar_wrath_t : public druid_spell_t
     druid_spell_t( "solar_wrath", player, player -> find_specialization_spell( "Solar Wrath" ) )
   {
     parse_options( options_str );
-
-    ap_per_cast = data().effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
+    
     consumes_owlkin_frenzy = true;
 
     natures_balance    = timespan_t::from_seconds( player -> talent.natures_balance -> effectN( 2 ).base_value() );
@@ -6569,13 +6487,15 @@ void druid_t::create_buffs()
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.feral_tier15_4pc      = buff_creator_t( this, "feral_tier15_4pc", find_spell( 138358 ) )
-                               .default_value( find_spell( 138358 ) -> effectN( 1 ).percent() );
+                               .default_value( find_spell( 138358 ) -> effectN( 1 ).percent() )
+                               .chance( sets.has_set_bonus( SET_MELEE, T15, B4 ) );
 
   buff.feral_tier16_2pc      = buff_creator_t( this, "feral_tier16_2pc", find_spell( 144865 ) )
                                .default_value( find_spell( 144865 ) -> effectN( 1 ).percent() );
 
   buff.feral_tier16_4pc      = buff_creator_t( this, "feral_tier16_4pc", find_spell( 146874 ) )
-                               .default_value( find_spell( 146874 ) -> effectN( 1 ).base_value() );
+                               .default_value( find_spell( 146874 ) -> effectN( 1 ).base_value() )
+                               .chance( sets.has_set_bonus( SET_MELEE, T16, B4 ) );
 
   buff.feral_tier17_4pc      = buff_creator_t( this, "feral_tier17_4pc", find_spell( 166639 ) )
                                .quiet( true );
@@ -7318,6 +7238,61 @@ void druid_t::recalculate_resource_max( resource_e rt )
       sim -> out_log.printf( "%s recalculates maximum health. old_current=%.0f new_current=%.0f net_health=%.0f",
                              name(), current_health, resources.current[ rt ], resources.current[ rt ] - current_health );
   }
+}
+
+// druid_t::resource_gain ===================================================
+
+double druid_t::resource_gain( resource_e resource, double amount, gain_t* gain, action_t* action )
+{
+  double a = player_t::resource_gain( resource, amount, gain, action );
+
+  if ( resource == RESOURCE_ASTRAL_POWER )
+  {
+    /* Astral power modifiers are multiplicative, so we have to do some
+    shenanigans if we want to have seperate gains to track the effectiveness
+    of these modifiers. */
+    double ap = amount;
+    double bonus_pct = 0;
+
+    bool affected_by_ca  = action -> data().affected_by( spec.celestial_alignment -> effectN( 3 ) );
+    bool affected_by_inc = action -> data().affected_by( talent.incarnation_moonkin -> effectN( 3 ) );
+    bool affected_by_boe = action -> data().affected_by( spec.blessing_of_elune -> effectN( 1 ) );
+
+    if ( affected_by_ca && buff.celestial_alignment -> check() )
+    {
+      ap *= 1.0 + spec.celestial_alignment -> effectN( 3 ).percent();
+      bonus_pct += spec.celestial_alignment -> effectN( 3 ).percent();
+    }
+
+    if ( affected_by_inc && buff.incarnation_moonkin -> check() )
+    {
+      ap *= 1.0 + buff.incarnation_moonkin -> data().effectN( 3 ).percent();
+      bonus_pct += buff.incarnation_moonkin -> data().effectN( 3 ).percent();
+    }
+
+    if ( affected_by_boe && buff.blessing_of_elune -> check() )
+    {
+      ap *= 1.0 + spec.blessing_of_elune -> effectN( 1 ).percent();
+      bonus_pct += spec.blessing_of_elune -> effectN( 1 ).percent();
+    }
+
+    ap -= amount;
+
+    // Divide the remaining AP gain among the buffs based on their modifier / bonus_pct ratio.
+    if ( affected_by_ca && buff.celestial_alignment -> check() )
+      resource_gain( resource, ap * ( spec.celestial_alignment -> effectN( 3 ).percent() / bonus_pct ),
+                     this -> gain.celestial_alignment );
+
+    if ( affected_by_inc && buff.incarnation_moonkin -> check() )
+      resource_gain( resource, ap * ( buff.incarnation_moonkin -> data().effectN( 3 ).percent() / bonus_pct ),
+                     this -> gain.incarnation );
+
+    if ( affected_by_boe && buff.blessing_of_elune -> check() )
+      resource_gain( resource, ap * ( spec.blessing_of_elune -> effectN( 1 ).percent() / bonus_pct ),
+                     this -> gain.blessing_of_elune );
+  }
+
+  return a;
 }
 
 // druid_t::invalidate_cache ================================================

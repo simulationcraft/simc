@@ -18,8 +18,8 @@ spec=havoc
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenic_agility_flask
-actions.precombat+=/food,type=pickled_eel
+actions.precombat=flask,type=flask_of_the_seventh_demon
+actions.precombat+=/food,type=the_hungry_magister
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_agility_potion
