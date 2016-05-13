@@ -61,6 +61,7 @@ struct warlock_td_t: public actor_target_data_t
   buff_t* debuffs_agony;
   buff_t* debuffs_flamelicked;
   buff_t* debuffs_eradication;
+  buff_t* debuffs_roaring_blaze;
 
   int agony_stack;
   int agony_ticks_since_last_proc;
@@ -1575,6 +1576,8 @@ private:
       affected_by_flamelicked = false;
     }
 
+    affected_by_backdraft = data().affected_by( p() -> find_spell( 117828 ) );
+
     affected_by_contagion = data().affected_by( p() -> find_spell( 30108 ) -> effectN( 2 ) );
 
     parse_spell_coefficient( *this );
@@ -1589,6 +1592,7 @@ public:
 
   bool affected_by_flamelicked;
   bool affected_by_contagion;
+  bool affected_by_backdraft;
 
   struct cost_event_t: player_event_t
   {
@@ -1730,6 +1734,9 @@ public:
   virtual timespan_t execute_time() const override
   {
     timespan_t h = spell_t::execute_time();
+
+    if ( affected_by_backdraft && p() -> buffs.backdraft -> up() )
+      h *= 1.0 + p() -> buffs.backdraft -> data().effectN( 1 ).percent();
 
     return h;
   }
@@ -2219,41 +2226,10 @@ struct shadow_bolt_t: public warlock_spell_t
   }
 };
 
-struct immolate_state_t : public action_state_t
-{
-  double roaring_blaze;
-  warlock_t* warlock;
-
-  immolate_state_t( warlock_t* p, action_t* a, player_t* target ) :
-    action_state_t( a, target ), roaring_blaze( 0 ), warlock( p )
-  { }
-
-  void initialize() override
-  {
-    action_state_t::initialize();
-
-    roaring_blaze = 1;
-  }
-
-  void copy_state( const action_state_t* state ) override
-  {
-    action_state_t::copy_state( state );
-    const immolate_state_t* immolate_state = debug_cast<const immolate_state_t*>( state );
-    roaring_blaze = immolate_state -> roaring_blaze;
-  }
-
-  std::ostringstream& debug_str( std::ostringstream& s ) override
-  {
-    action_state_t::debug_str( s );
-
-    s << " roaring_blaze_mul=" << roaring_blaze;
-
-    return s;
-  }
-};
-
 struct immolate_t: public warlock_spell_t
 {
+  double roaring_blaze;
+
   immolate_t( warlock_t* p ):
     warlock_spell_t( p, "Immolate" )
   {
@@ -2265,21 +2241,35 @@ struct immolate_t: public warlock_spell_t
 
     base_crit += p -> artifact.burning_hunger.percent();
     base_multiplier *= 1.0 + p -> artifact.residual_flames.percent();
+
+    roaring_blaze = p -> find_spell( 205690 ) -> effectN( 1 ).percent();
   }
 
-  action_state_t* new_state() override
+  void impact( action_state_t* s ) override
   {
-    return new immolate_state_t( p(), this, target );
+    warlock_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      td( s -> target ) -> debuffs_roaring_blaze -> expire();
+    }
   }
 
   virtual double composite_ta_multiplier( const action_state_t* state ) const override
   {
     double m = warlock_spell_t::composite_ta_multiplier( state );
-
-    if ( td( state -> target ) -> dots_immolate -> is_ticking() )
-      m *= debug_cast<const immolate_state_t*>( state ) -> roaring_blaze;
     
+    if ( td( state -> target ) -> dots_immolate -> is_ticking() && p() -> talents.roaring_blaze -> ok() )
+       m *= 1.0 + td( state -> target ) -> debuffs_roaring_blaze -> current_stack * roaring_blaze;
+
     return m;
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    warlock_spell_t::last_tick( d );
+
+      td( d -> target ) -> debuffs_roaring_blaze -> expire();
   }
 
   virtual void tick( dot_t* d ) override
@@ -2295,12 +2285,9 @@ struct immolate_t: public warlock_spell_t
 
 struct conflagrate_t: public warlock_spell_t
 {
-  double roaring_blaze_multiplier;
-
   conflagrate_t( warlock_t* p ):
     warlock_spell_t( p, "Conflagrate" )
   {
-    roaring_blaze_multiplier = 1.0 + p -> find_spell( 205690 ) -> effectN( 1 ).percent();
     energize_type = ENERGIZE_PER_HIT;
   }
 
@@ -2356,8 +2343,7 @@ struct conflagrate_t: public warlock_spell_t
     {
       if ( p() -> talents.roaring_blaze -> ok() && td( s -> target ) -> dots_immolate -> is_ticking() )
       {
-        immolate_state_t* immo_state = debug_cast<immolate_state_t*>( td( s -> target ) -> dots_immolate -> state );
-        immo_state -> roaring_blaze *= roaring_blaze_multiplier;
+        td( s -> target ) -> debuffs_roaring_blaze -> trigger( 1 );
       }
     }
   }
@@ -2387,16 +2373,6 @@ struct incinerate_t: public warlock_spell_t
       p() -> cooldowns.dimensional_rift -> adjust( -p() -> cooldowns.dimensional_rift -> duration ); //decrease remaining time by the duration of one charge, i.e., add one charge
       p() -> procs.dimension_ripper -> occur();
     }
-  }
-
-  virtual timespan_t execute_time() const override
-  {
-    timespan_t t = warlock_spell_t::execute_time();
-
-    if ( p() -> buffs.backdraft -> up() )
-      t *= 1.0 + p() -> buffs.backdraft -> data().effectN( 1 ).percent();
-
-    return t;
   }
 
   virtual double composite_crit() const override
@@ -2438,16 +2414,6 @@ struct chaos_bolt_t: public warlock_spell_t
       td( s -> target ) -> debuffs_eradication -> trigger();
       
     warlock_spell_t::impact( s );
-  }
-
-  virtual timespan_t execute_time() const override
-  {
-    timespan_t t = warlock_spell_t::execute_time();
-
-    if ( p() -> buffs.backdraft -> up() )
-      t *= 1.0 + p() -> buffs.backdraft -> data().effectN( 1 ).percent();
-
-    return t;
   }
 
   void execute() override
@@ -3365,6 +3331,7 @@ warlock( p )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   debuffs_eradication = buff_creator_t( *this, "eradication", source -> find_spell( 196414 ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
+  debuffs_roaring_blaze = buff_creator_t( *this, "roaring_blaze", source -> find_spell( 205690 ) );
   if ( warlock.destruction_trinket )
   {
     debuffs_flamelicked = buff_creator_t( *this, "flamelicked", warlock.destruction_trinket -> driver() -> effectN( 1 ).trigger() )
