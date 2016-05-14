@@ -272,12 +272,9 @@ public:
     const spell_data_t* runic_strikes;
 
     // Frost
-    const spell_data_t* blood_of_the_north;
-    const spell_data_t* icy_talons;
+    const spell_data_t* runic_empowerment;
     const spell_data_t* killing_machine;
-    const spell_data_t* might_of_the_frozen_wastes;
     const spell_data_t* rime;
-    const spell_data_t* threat_of_thassarian;
 
     // Unholy
     const spell_data_t* ebon_plaguebringer;
@@ -403,7 +400,6 @@ public:
   virtual double    composite_melee_haste() const override;
   virtual double    composite_spell_haste() const override;
   virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
-  virtual double    composite_rating_multiplier( rating_e ) const override;
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
   virtual double    composite_parry_rating() const override;
   virtual double    composite_parry() const override;
@@ -1526,20 +1522,6 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
   virtual void   consume_resource() override;
   virtual void   execute() override;
   virtual void   impact( action_state_t* state ) override;
-
-  virtual double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double m = base_t::composite_da_multiplier( state );
-
-    if ( player -> main_hand_weapon.group() == WEAPON_2H )
-    {
-      // Autoattacks use a separate effect for the +damage%
-      m *= 1.0 + p() -> spec.might_of_the_frozen_wastes -> effectN( special ? 2 : 3 ).percent();
-    }
-
-    return m;
-  }
-
   virtual bool   ready() override;
 };
 
@@ -1623,12 +1605,7 @@ void death_knight_melee_attack_t::impact( action_state_t* state )
 
 bool death_knight_melee_attack_t::ready()
 {
-  if ( ! base_t::ready() )
-    return false;
-
-  // something like return p() -> ready_runes_count( false ) > rune_cost;
-  // TODO: mrdmnd fix this!
-  return true;
+  return base_t::ready();
 }
 
 
@@ -2611,12 +2588,6 @@ struct death_strike_t : public death_knight_melee_attack_t
     always_consume = true; // Death Strike always consumes runes, even if doesn't hit
 
     weapon = &( p -> main_hand_weapon );
-
-    if ( p -> off_hand_weapon.type != WEAPON_NONE )
-    {
-      if ( p -> spec.might_of_the_frozen_wastes -> ok() )
-        oh_attack = new death_strike_offhand_t( p );
-    }
   }
 
   virtual void consume_resource() override
@@ -2732,7 +2703,6 @@ struct frost_strike_offhand_t : public death_knight_melee_attack_t
     background       = true;
     weapon           = &( p -> off_hand_weapon );
     special          = true;
-    base_multiplier *= 1.0 + p -> spec.threat_of_thassarian -> effectN( 3 ).percent();
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
   }
 
@@ -2751,8 +2721,8 @@ struct frost_strike_t : public death_knight_melee_attack_t
   frost_strike_offhand_t* oh_attack;
 
   frost_strike_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_melee_attack_t( "frost_strike", p, p -> find_class_spell( "Frost Strike" ) ),
-    oh_attack( nullptr )
+    death_knight_melee_attack_t( "frost_strike", p, p -> find_specialization_spell( "Frost Strike" ) ),
+    oh_attack( new frost_strike_offhand_t( p ) )
   {
     special = true;
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
@@ -2760,24 +2730,9 @@ struct frost_strike_t : public death_knight_melee_attack_t
     parse_options( options_str );
 
     weapon     = &( p -> main_hand_weapon );
-
-    if ( p -> spec.threat_of_thassarian -> ok() && p -> off_hand_weapon.type != WEAPON_NONE )
-    {
-      base_multiplier *= 1.0 + p -> spec.threat_of_thassarian -> effectN( 3 ).percent();
-
-      if ( p -> spec.might_of_the_frozen_wastes -> ok() )
-        oh_attack = new frost_strike_offhand_t( p );
-    }
   }
 
-  virtual double cost() const override
-  {
-    double c = death_knight_melee_attack_t::cost();
-
-    return c;
-  }
-
-  virtual void execute() override
+  void execute() override
   {
     death_knight_melee_attack_t::execute();
 
@@ -2801,7 +2756,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
     }
   }
 
-  virtual double composite_crit() const override
+  double composite_crit() const override
   {
     double cc = death_knight_melee_attack_t::composite_crit();
 
@@ -2973,24 +2928,13 @@ struct obliterate_t : public death_knight_melee_attack_t
 
   obliterate_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_melee_attack_t( "obliterate", p, p -> find_class_spell( "Obliterate" ) ),
-    oh_attack( nullptr )
+    oh_attack( new obliterate_offhand_t( p ) )
   {
     parse_options( options_str );
     special = true;
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
 
     weapon = &( p -> main_hand_weapon );
-
-    if ( p -> off_hand_weapon.type != WEAPON_NONE )
-    {
-      if ( p -> spec.might_of_the_frozen_wastes -> ok() )
-        oh_attack = new obliterate_offhand_t( p );
-    }
-
-    if ( p -> main_hand_weapon.group() == WEAPON_2H )
-      weapon_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 1 ).percent();
-
-    std::cerr << base_costs[ RESOURCE_RUNE ] << std::endl;
   }
 
   virtual void execute() override
@@ -4023,16 +3967,7 @@ static expr_t* create_rune_expression( death_knight_t* player, const std::string
 expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_str ) {
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
-  // Single word expressions are always rune expressions
-  if ( splits.size() == 1 )
-  {
-    expr_t* e = create_rune_expression( this, splits[ 0 ] );
-    if ( e )
-    {
-      return e;
-    }
-  }
-  else if ( splits.size() == 2 )
+  if ( splits.size() == 2 )
   {
     // For example, obliterate.ready_in
     if ( util::str_compare_ci( splits[ 1 ], "ready_in" ) )
@@ -4120,8 +4055,6 @@ double death_knight_t::composite_melee_haste() const
 
   haste *= 1.0 / ( 1.0 + spec.veteran_of_the_third_war -> effectN( 6 ).percent() );
 
-  haste *= 1.0 / ( 1.0 + spec.icy_talons -> effectN( 2 ).percent() );
-
   //if ( buffs.obliteration -> up() )
   //{
   //  haste *= 1.0 / ( 1.0 + buffs.obliteration -> data().effectN( 1 ).percent() );
@@ -4137,8 +4070,6 @@ double death_knight_t::composite_spell_haste() const
   double haste = player_t::composite_spell_haste();
 
   haste *= 1.0 / ( 1.0 + spec.veteran_of_the_third_war -> effectN( 6 ).percent() );
-
-  haste *= 1.0 / ( 1.0 + spec.icy_talons -> effectN( 2 ).percent() );
 
   /*if ( buffs.obliteration -> up() )
   {
@@ -4200,10 +4131,8 @@ void death_knight_t::init_spells()
   spec.runic_strikes              = find_specialization_spell( "Runic Strikes" );
 
   // Frost
-  spec.blood_of_the_north         = find_specialization_spell( "Blood of the North" );
-  spec.icy_talons                 = find_specialization_spell( "Icy Talons" );
+  spec.runic_empowerment          = find_specialization_spell( "Runic Empowerment" );
   spec.rime                       = find_specialization_spell( "Rime" );
-  spec.might_of_the_frozen_wastes = find_specialization_spell( "Might of the Frozen Wastes" );
   spec.killing_machine            = find_specialization_spell( "Killing Machine" );
 
   // Unholy
@@ -4214,7 +4143,6 @@ void death_knight_t::init_spells()
   spec.shadow_infusion            = find_specialization_spell( "Shadow Infusion" );
   spec.sudden_doom                = find_specialization_spell( "Sudden Doom" );
   spec.ebon_plaguebringer         = find_specialization_spell( "Ebon Plaguebringer" );
-  spec.threat_of_thassarian       = find_specialization_spell( "Threat of Thassarian" );
 
   mastery.blood_shield            = find_mastery_spell( DEATH_KNIGHT_BLOOD );
   mastery.frozen_heart            = find_mastery_spell( DEATH_KNIGHT_FROST );
@@ -4629,23 +4557,6 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
   return m;
 }
 
-double death_knight_t::composite_rating_multiplier( rating_e rating ) const
-{
-  double m = player_t::composite_rating_multiplier( rating );
-
-  switch ( rating )
-  {
-    case RATING_SPELL_HASTE:
-    case RATING_MELEE_HASTE:
-    case RATING_RANGED_HASTE:
-      m *= 1.0 + spec.icy_talons -> effectN( 3 ).percent();
-      break;
-    default:
-      break;
-  }
-  return m;
-}
-
 // death_knight_t::matching_gear_multiplier =================================
 
 double death_knight_t::matching_gear_multiplier( attribute_e attr ) const
@@ -4786,8 +4697,6 @@ double death_knight_t::composite_attack_power_multiplier() const
 double death_knight_t::composite_melee_speed() const
 {
   double haste = player_t::composite_melee_speed();
-
-  haste *= 1.0 / ( 1.0 + spec.icy_talons -> effectN( 1 ).percent() );
 
   return haste;
 }
@@ -4944,37 +4853,40 @@ inline double death_knight_t::runes_per_second() const {
 
 void death_knight_t::trigger_runic_empowerment( double rpcost )
 {
-  if ( ! rng().roll( talent.runic_empowerment -> effectN( 1 ).percent() * rpcost / 100.0 ) )
+  if ( ! rng().roll( spec.runic_empowerment -> effectN( 1 ).percent() * rpcost ) )
     return;
 
-  int depleted_runes[MAX_RUNES];
-  int num_depleted = 0;
-
-  // Find fully depleted runes, i.e., both runes are on CD
-  for ( size_t i = 0; i < MAX_RUNES; ++i )
+  rune_t* regenerated_rune = _runes.first_depleted_rune();
+  if ( regenerated_rune == nullptr )
   {
-    if ( _runes.slot[i].is_depleted() )
-    {
-      depleted_runes[ num_depleted++ ] = i;
-    }
+    regenerated_rune = _runes.first_regenerating_rune();
   }
 
-  if ( num_depleted > 0 )
+  // Wasted Runic Empowerment proc
+  if ( regenerated_rune == nullptr )
   {
-    int rune_to_regen = depleted_runes[ ( int ) ( player_t::rng().real() * num_depleted * 0.9999 ) ];
-    rune_t* regen_rune = &_runes.slot[rune_to_regen];
-    regen_rune -> reset();
-    gains.runic_empowerment -> add ( RESOURCE_RUNE, 1, 0 );
-    if ( sim -> log ) sim -> out_log.printf( "runic empowerment regen'd rune %d", rune_to_regen );
-    procs.runic_empowerment -> occur();
-
-  }
-  else
-  {
-    // If there were no available runes to refresh
     procs.runic_empowerment_wasted -> occur();
     gains.runic_empowerment -> add ( RESOURCE_RUNE, 0, 1 );
   }
+  else
+  {
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf( "%s Runic Empowerment regenerated rune", name() );
+      log_rune_status( this );
+    }
+    regenerated_rune -> fill_rune();
+    gains.runic_empowerment -> add ( RESOURCE_RUNE, 1, 0 );
+
+    if ( sim -> debug )
+    {
+      log_rune_status( this );
+    }
+
+    // Ensure internal state is consistent with the actor and runees
+    assert( _runes.runes_full() == resources.current[ RESOURCE_RUNE ] );
+  }
+
 }
 
 void death_knight_t::trigger_necrosis( const action_state_t* state )
