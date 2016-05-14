@@ -44,7 +44,7 @@ namespace
 
    Needs Documenting --------------------------------------------------------
    Vengeful Retreat / Fel Rush "jump_cancel" option
-   soul_fragments expr
+   soul_fragments expressions
 */
 
 /* Forward declarations
@@ -3887,6 +3887,14 @@ expr_t* demon_hunter_t::create_expression( action_t* a, const std::string& name_
   if ( name_str == "soul_fragments" )
   {
     return make_mem_fn_expr( name_str, *this, &demon_hunter_t::get_soul_fragments );
+  }
+  else if ( name_str == "soul_fragments_major" )
+  {
+    return make_ref_expr( name_str, soul_fragments );
+  }
+  else if ( name_str == "soul_fragments_lesser" )
+  {
+    return make_ref_expr( name_str, lesser_soul_fragments );
   }
 
   return player_t::create_expression( a, name_str );
