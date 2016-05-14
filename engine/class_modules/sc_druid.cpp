@@ -29,9 +29,6 @@ namespace { // UNNAMED NAMESPACE
   Force of Nature
   Shooting Stars AsP react
   Check Fury of Elune
-  Promise of Elune legendary
-  Starlord reduces GCD
-    http://us.battle.net/wow/en/forum/topic/20743504316?page=16#308
   Moonfire and Sunfire mana costs (see action_t::parse_spell_data)
 
   Touch of the Moon
@@ -420,6 +417,7 @@ public:
     gain_t* astral_communion;
     gain_t* blessing_of_anshe;
     gain_t* lunar_strike;
+    gain_t* promise_of_elune; // Legion Legendary
     gain_t* shooting_stars;
     gain_t* solar_wrath;
 
@@ -1604,7 +1602,7 @@ public:
   {
     ab::impact( s );
 
-    if ( ab::result_is_hit( s -> result && ! ab::special )
+    if ( ab::result_is_hit( s -> result ) && ! ab::special )
       trigger_clearcasting();
   }
 
@@ -4795,6 +4793,94 @@ struct incarnation_t : public druid_spell_t
   }
 };
 
+// Innervate ================================================================
+
+struct innervate_t : public druid_spell_t
+{
+  struct virtual_promise_of_elune_event_t : public event_t
+  {
+    druid_t* druid;
+    timespan_t end;
+
+    virtual_promise_of_elune_event_t( druid_t* p, timespan_t e, bool first_cast = false ) :
+      event_t( *p ), druid( p ), end( e )
+    {
+      timespan_t d = interval();
+
+      // If this is the first event, the target's cast can already be in progress.
+      if ( first_cast )
+        d *= druid -> rng().real();
+
+      if ( sim().current_time() + d <= end )
+        add_event( d );
+    }
+
+    double target_haste()
+    {
+      // Take the average of the druid's secondary stats from gear.
+      double avg_secondary =
+        ( druid -> gear.crit_rating +
+          druid -> gear.haste_rating +
+          druid -> gear.mastery_rating +
+          druid -> gear.versatility_rating ) / 4;
+
+      // Calculate haste with that amount of haste rating.
+      double haste = 1.0 / ( 1.0 + avg_secondary / druid -> current_rating().spell_haste );
+
+      // Apply Bloodlust.
+      if ( druid -> buffs.bloodlust -> check() )
+        haste /= 1.0 + druid -> buffs.bloodlust -> data().effectN( 1 ).percent();
+
+      return haste;
+    }
+
+    timespan_t interval()
+    {
+      double roll = druid -> rng().real();
+      timespan_t base_execute_time;
+      
+      // Simulate the target's cast time, picking a base cast time at random.
+      if ( roll <= 0.5 ) // 50% chance
+        base_execute_time = timespan_t::from_seconds( 1.5 );
+      else if ( roll <= 0.75 ) // 25% chance
+        base_execute_time = timespan_t::from_seconds( 2.0 );
+      else // 25% chance
+        base_execute_time = timespan_t::from_seconds( 2.5 );
+
+      return std::max( base_execute_time * target_haste(), timespan_t::from_seconds( 1.0 ) );
+    }
+
+    const char* name() const override
+    { return "virtual_promise_of_elune"; }
+
+    void execute() override
+    {
+      druid -> resource_gain( RESOURCE_ASTRAL_POWER,
+        druid -> legendary.promise_of_elune_the_moon_goddess -> driver() -> effectN( 1 ).base_value(),
+        druid -> gain.promise_of_elune );
+
+      new ( sim() ) virtual_promise_of_elune_event_t( druid, end );
+    }
+  };
+
+  innervate_t( druid_t* p, const std::string& options_str ) :
+    druid_spell_t( "innervate", p, p -> find_specialization_spell( "Innervate" ) )
+  {
+    parse_options( options_str );
+  }
+
+  void execute() override
+  {
+    druid_spell_t::execute();
+
+    if ( p() -> legendary.promise_of_elune_the_moon_goddess )
+    {
+      new ( *sim ) virtual_promise_of_elune_event_t( p(),
+        sim -> current_time() + data().duration(), true );
+    }
+  };
+};
+
 // Ironfur ==================================================================
 
 struct ironfur_t : public druid_spell_t
@@ -4922,6 +5008,16 @@ struct lunar_strike_t : public druid_spell_t
             + ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
 
     return am;
+  }
+
+  timespan_t gcd() const override
+  {
+    timespan_t g = druid_spell_t::gcd();
+
+    if ( p() -> talent.starlord -> ok() && p() -> buff.solar_empowerment -> check() )
+      g *= 1 - p() -> talent.starlord -> effectN( 1 ).percent();
+
+    return g;
   }
 
   timespan_t execute_time() const override
@@ -5205,6 +5301,16 @@ struct solar_wrath_t : public druid_spell_t
             + ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
 
     return am;
+  }
+
+  timespan_t gcd() const override
+  {
+    timespan_t g = druid_spell_t::gcd();
+
+    if ( p() -> talent.starlord -> ok() && p() -> buff.solar_empowerment -> check() )
+      g *= 1 - p() -> talent.starlord -> effectN( 1 ).percent();
+
+    return g;
   }
 
   timespan_t execute_time() const override
@@ -5862,6 +5968,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "growl"                  ) return new                  growl_t( this, options_str );
   if ( name == "half_moon"              ) return new              half_moon_t( this, options_str );
   if ( name == "healing_touch"          ) return new          healing_touch_t( this, options_str );
+  if ( name == "innervate"              ) return new              innervate_t( this, options_str );
   if ( name == "ironfur"                ) return new                ironfur_t( this, options_str );
   if ( name == "lifebloom"              ) return new              lifebloom_t( this, options_str );
   if ( name == "lunar_beam"             ) return new             lunar_beam_t( this, options_str );
@@ -6808,12 +6915,11 @@ void druid_t::apl_balance()
   for ( size_t i = 0; i < item_actions.size(); i++ )
     default_list -> add_action( item_actions[i] );
 
-  default_list -> add_action( "blessing_of_elune,moving=0" );
-  default_list -> add_action( "blessing_of_anshe,moving=1" );
   default_list -> add_action( "warrior_of_elune,if=buff.lunar_empowerment.stack>=2" );
   default_list -> add_action( "stellar_flare,if=remains<2" );
   default_list -> add_action( this, "Moonfire", "if=remains<2" );
   default_list -> add_action( this, "Sunfire", "if=remains<2" );
+  default_list -> add_action( this, "Innervate", "if=(buff.celestial_alignment.up|buff.incarnation.up)&equipped.promise_of_elune_the_moon_goddess" );
   default_list -> add_action( "astral_communion,if=astral_power.deficit>=75" );
   default_list -> add_action( "incarnation,if=astral_power>=40" );
   default_list -> add_action( this, "Celestial Alignment", "if=astral_power>=40" );
@@ -6929,6 +7035,7 @@ void druid_t::init_gains()
   gain.astral_communion      = get_gain( "astral_communion"      );
   gain.blessing_of_anshe     = get_gain( "blessing_of_anshe"     );
   gain.lunar_strike          = get_gain( "lunar_strike"          );
+  gain.promise_of_elune      = get_gain( "promise_of_elune"      );
   gain.shooting_stars        = get_gain( "shooting_stars"        );
   gain.solar_wrath           = get_gain( "solar_wrath"           );
 
