@@ -2242,7 +2242,7 @@ struct immolate_t: public warlock_spell_t
     base_crit += p -> artifact.burning_hunger.percent();
     base_multiplier *= 1.0 + p -> artifact.residual_flames.percent();
 
-    roaring_blaze = p -> find_spell( 205690 ) -> effectN( 1 ).percent();
+    roaring_blaze = 1.0 + p -> find_spell( 205690 ) -> effectN( 1 ).percent();
   }
 
   void impact( action_state_t* s ) override
@@ -2260,7 +2260,7 @@ struct immolate_t: public warlock_spell_t
     double m = warlock_spell_t::composite_ta_multiplier( state );
     
     if ( td( state -> target ) -> dots_immolate -> is_ticking() && p() -> talents.roaring_blaze -> ok() )
-       m *= 1.0 + td( state -> target ) -> debuffs_roaring_blaze -> current_stack * roaring_blaze;
+      m *= std::pow( 1.50, td( state -> target ) -> debuffs_roaring_blaze -> stack() );
 
     return m;
   }
