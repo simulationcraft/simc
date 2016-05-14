@@ -2301,7 +2301,7 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
       p() -> buff.transfer_the_power -> trigger();
 
     if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B2 ) )
-      p() -> buff.masterful_strikes -> trigger( p() -> sets.set( MONK_WINDWALKER,T18, B2 ) -> effect_count() );
+      p() -> buff.masterful_strikes -> trigger( ( int ) p() -> sets.set( MONK_WINDWALKER,T18, B2 ) -> effect_count() );
   }
 
   virtual void impact( action_state_t* s ) override
@@ -2469,7 +2469,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
           p() -> buff.transfer_the_power -> trigger();
 
         if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B2 ) )
-          p() -> buff.masterful_strikes -> trigger( p() -> sets.set( MONK_WINDWALKER,T18, B2 ) -> effect_count() );
+          p() -> buff.masterful_strikes -> trigger( ( int ) p() -> sets.set( MONK_WINDWALKER,T18, B2 ) -> effect_count() );
         break;
       }
       default: break;
@@ -2962,7 +2962,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
     }
 
     if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B4 ) )
-      p() -> buff.masterful_strikes -> trigger( p() -> sets.set( MONK_WINDWALKER,T18, B4 ) -> effect_count() - 1 );
+      p() -> buff.masterful_strikes -> trigger( ( int ) p() -> sets.set( MONK_WINDWALKER,T18, B4 ) -> effect_count() - 1 );
   }
 
   void tick( dot_t* d ) override

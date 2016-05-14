@@ -2262,7 +2262,7 @@ struct eviscerate_base_t : public rogue_attack_t
 
   eviscerate_base_t( rogue_t* p, const std::string& name, const spell_data_t* spell,
                      const std::string& options_str = std::string() ) :
-    rogue_attack_t( name, p, spell, options_str ), affects_finality( p -> artifact.finality.rank() )
+    rogue_attack_t( name, p, spell, options_str ), affects_finality( p -> artifact.finality.rank() > 0 )
   {
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = weapon_power_mod = 0;

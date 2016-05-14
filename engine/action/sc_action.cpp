@@ -1380,7 +1380,7 @@ void action_t::execute()
   }
   else if ( energize_type == ENERGIZE_PER_HIT )
   {
-    for ( int i = 0; i < num_targets_hit; i++ )
+    for ( unsigned i = 0; i < num_targets_hit; i++ )
       player -> resource_gain( energize_resource, energize_amount, gain, this );
   }
 

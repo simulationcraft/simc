@@ -1278,7 +1278,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       return;
     }
 
-    unsigned overloads = rng().roll( overload_chance( source_state ) ) + n_overloads( source_state );
+    unsigned overloads = rng().roll( overload_chance( source_state ) ) + ( unsigned ) n_overloads( source_state );
 
     for ( size_t i = 0, end = overloads; i < end; ++i )
     {
