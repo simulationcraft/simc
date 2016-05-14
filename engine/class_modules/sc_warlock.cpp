@@ -8,6 +8,7 @@
 // ==========================================================================
 //
 // TODO:
+// Add the Doomguard / Infernal as a pet
 // Check all false-positive flags
 // Check resource generation execute/impact and hit requirement
 // Report which spells triggered soul conduit
@@ -485,7 +486,7 @@ namespace pets {
     struct buffs_t
     {
       buff_t* demonic_synergy;
-	    buff_t* demonic_empowerment;
+        buff_t* demonic_empowerment;
     } buffs;
 
     struct travel_t: public action_t
@@ -1087,7 +1088,7 @@ double warlock_pet_t::composite_melee_speed() const
   double cmh =  player_t::composite_melee_speed();
 
   if ( buffs.demonic_empowerment -> up() )
-	  cmh *= 1.0 + buffs.demonic_empowerment -> data().effectN( 1 ).percent();
+      cmh *= 0.50 + buffs.demonic_empowerment -> data().effectN( 1 ).percent();
 
   return cmh;
 }
@@ -1099,7 +1100,7 @@ double warlock_pet_t::composite_spell_speed() const
 
 
   if ( buffs.demonic_empowerment -> up() )
-	  css *= 1.0 + buffs.demonic_empowerment -> data().effectN( 1 ).percent();
+      css *= 0.5 + buffs.demonic_empowerment -> data().effectN( 1 ).percent();
 
   return css;
 }
@@ -2110,6 +2111,7 @@ struct demonic_empowerment_t: public warlock_spell_t
 		warlock_spell_t( "demonic empowerment", p, p -> spec.demonic_empowerment )
 	{
 		may_crit = false;
+        timespan_t test = this->cooldown->duration;
 	}
 
 	void init() override
@@ -2130,10 +2132,11 @@ struct demonic_empowerment_t: public warlock_spell_t
 		{
 			dreadstalker -> buffs.demonic_empowerment -> trigger();
 		}
-		pets::warlock_pet_t* my_pet = static_cast<pets::warlock_pet_t*>( p() -> pets.active ); //get active pet
+        pets::warlock_pet_t* my_pet = static_cast<pets::warlock_pet_t*>( p() -> pets.active ); //get active pet
 		my_pet -> buffs.demonic_empowerment -> trigger();
 
 		//TODO: Need to find the doomguard and the supremacy demon if they are active to buff them as well
+
 		// Do this before powertrip is calculated
 
 
@@ -3514,6 +3517,7 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "demonbolt"             ) a = new                         demonbolt_t( this );
   else if ( action_name == "doom"                  ) a = new                              doom_t( this );
   else if ( action_name == "chaos_bolt"            ) a = new                        chaos_bolt_t( this );
+  else if ( action_name == "demonic_empowerment"   ) a = new               demonic_empowerment_t( this );
   else if ( action_name == "drain_life"            ) a = new                        drain_life_t( this );
   else if ( action_name == "drain_soul"            ) a = new                        drain_soul_t( this );
   else if ( action_name == "grimoire_of_sacrifice" ) a = new             grimoire_of_sacrifice_t( this );
