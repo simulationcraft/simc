@@ -671,7 +671,6 @@ enum set_bonus_type_e
   PVP,
   T17LFR,
   T18LFR,
-  T19CH,
   GLAIVES,
   T13,
   T14,
