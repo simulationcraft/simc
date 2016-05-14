@@ -13,6 +13,7 @@ namespace { // UNNAMED NAMESPACE
 using namespace unique_gear;
 
 struct death_knight_t;
+struct runes_t;
 
 namespace pets {
   struct dancing_rune_weapon_pet_t;
@@ -41,76 +42,67 @@ const double RUNIC_POWER_DIVISOR = 30.0;
 const double RUNE_REGEN_BASE = 10;
 const double RUNE_REGEN_BASE_SEC = ( 1 / RUNE_REGEN_BASE );
 
+const size_t MAX_REGENERATING_RUNES = 3;
 
-struct rune_t {
-  death_knight_t* dk;
-  rune_state state;
-  double     value;   // 0.0 to 1.0, with 1.0 being full
+struct rune_t
+{
+  runes_t*   runes;     // Back reference to runes_t array so we can adjust rune state
+  rune_state state;     // DEPLETED, REGENERATING, FULL
+  double     value;     // 0.0 to 1.0, with 1.0 being full
 
-  // Default constructor
-  rune_t() : dk( nullptr ), state( STATE_FULL ), value( 0.0 ) {}
+  rune_t() : runes( nullptr ), state( STATE_FULL ), value( 0.0 )
+  { }
+
+  rune_t( runes_t* r ) : runes( r ), state( STATE_FULL ), value( 0.0 )
+  { }
 
   bool is_ready()    const     { return state == STATE_FULL    ; }
+  bool is_regenerating() const { return state == STATE_REGENERATING; }
   bool is_depleted() const     { return state == STATE_DEPLETED; }
 
-  // This method includes logic on whether or not 
+  // Regenerate this rune for periodicity seconds
   void regen_rune( timespan_t periodicity, bool rc = false );
 
-  void consume() {
-    state = STATE_DEPLETED;
-    value = 0.0;
-  }
+  // Consume this rune and adjust internal rune state
+  rune_t* consume();
+  // Fill this rune and adjust internal rune state
+  rune_t* fill_rune();
 
-  void reset() {
+  void reset()
+  {
     state = STATE_FULL;
     value = 1.0;
   }
 };
 
-struct runes_t {
+struct runes_t
+{
+  death_knight_t* dk;
   std::array<rune_t, RUNE_SLOT_MAX> slot;
 
-  // Default constructor
-  runes_t( death_knight_t* p ) : slot() {
-    for ( rune_t& rune : slot) {
-      rune.dk = p;
+  runes_t( death_knight_t* p ) : dk( p )
+  {
+    for ( auto& rune: slot )
+    {
+      rune = rune_t( this );
     }
   }
 
-  void reset() {
-    for ( rune_t& rune : slot) {
+  void reset()
+  {
+    for ( auto& rune : slot)
+    {
       rune.reset();
     }
   }
 
-  // Helper methods
-
-  int next_rune_index_to_use() const {
-    for ( size_t i = 0; i < RUNE_SLOT_MAX; ++i) {
-      if ( slot[i].state == STATE_FULL ) {
-        return i;
-      }
-    }
-    return -1; // No runes are ready.
-  }
-
-  std::vector<int> rune_indices( rune_state rs ) const {
-    // Returns a vector of indices corresponding to the runes which are in the given state.
-    std::vector<int> indices;
-    for ( size_t i = 0; i < RUNE_SLOT_MAX; ++i) {
-      if ( slot[i].state == rs ) {
-        indices.push_back(i);
-      }
-    }
-    return indices;
-  }
-
-  std::string string_representation() const {
+  std::string string_representation() const
+  {
     std::string rune_str;
     std::string rune_val_str;
 
-    for ( int j = 0; j < RUNE_SLOT_MAX; ++j ) {
-      rune_t rune = slot[j];
+    for ( const auto& rune: slot )
+    {
       char rune_letter;
       if ( rune.is_ready() ) {
         rune_letter = 'F';
@@ -128,6 +120,44 @@ struct runes_t {
     return rune_str + " " + rune_val_str;
   }
 
+  // Return the number of runes in specific state
+  unsigned runes_in_state( rune_state s ) const
+  {
+    return std::accumulate( slot.begin(), slot.end(), 0,
+        [ s ]( const unsigned& v, const rune_t& r ) { return v + r.state == s; });
+  }
+
+  // Return the first rune in a specific state. If no rune in specific state found, return nullptr.
+  rune_t* first_rune_in_state( rune_state s )
+  {
+    auto it = range::find_if( slot, [ s ]( const rune_t& rune ) { return rune.state == s; } );
+    if ( it != slot.end() )
+    {
+      return &(*it);
+    }
+
+    return nullptr;
+  }
+
+  unsigned runes_regenerating() const
+  { return runes_in_state( STATE_REGENERATING ); }
+
+  unsigned runes_depleted() const
+  { return runes_in_state( STATE_DEPLETED ); }
+
+  unsigned runes_full() const
+  { return runes_in_state( STATE_FULL ); }
+
+  rune_t* first_depleted_rune()
+  { return first_rune_in_state( STATE_DEPLETED ); }
+
+  rune_t* first_regenerating_rune()
+  { return first_rune_in_state( STATE_REGENERATING ); }
+
+  rune_t* first_full_rune()
+  { return first_rune_in_state( STATE_REGENERATING ); }
+
+  void consume( unsigned runes );
 };
 
 // ==========================================================================
@@ -448,7 +478,6 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
                      .period( timespan_t::zero() );
 }
 
-
 // ==========================================================================
 // Local Utility Functions
 // ==========================================================================
@@ -542,102 +571,119 @@ static int random_depleted_rune( death_knight_t* p )
   return -1;
 }
 
-void rune_t::regen_rune( timespan_t periodicity, bool rc )
+inline void runes_t::consume( unsigned runes )
 {
-  // TODO: mrdmnd - this whole thing probably needs to be re-written
-/*
-  // If three other runes are already regening, we don't regen
-  // but if three are full we still continue on to record resource gain overflow
-  // TODO: mrdmnd - rethink this logic!
-  //if ( state == STATE_DEPLETED &&   paired_rune -> state == STATE_REGENERATING ) return;
-  //if ( state == STATE_FULL     && ! ( paired_rune -> state == STATE_FULL )     ) return;
-
-  double regen_amount = periodicity.total_seconds() * p -> runes_per_second();
-
-  // record rune gains and overflow
-  gain_t* gains_rune      = ( rc ) ? p -> gains.rc : p -> gains.rune;
-
-  // Full runes don't regen, however only record the overflow once, instead of two times.
-  // TODO: mrdmnd - rethink this
-  if ( state == STATE_FULL && paired_rune -> state == STATE_FULL )
+// We should never get there, ready checks should catch resource constraints
+#ifndef NDEBUG
+  if ( runes_full() < runes )
   {
-    if ( slot_number % 2 == 0 )
+    assert( 0 );
+  }
+#endif
+  while ( --runes ) first_full_rune() -> consume();
+  if ( dk -> sim -> debug )
+  {
+    log_rune_status( dk );
+  }
+}
+
+inline rune_t* rune_t::consume()
+{
+  state = STATE_DEPLETED;
+  value = 0.0;
+  // Immediately transition rune to the correct state so we can simplify regen_rune
+  if ( runes -> runes_regenerating() < MAX_REGENERATING_RUNES )
+  {
+    rune_t* new_regenerating_rune = runes -> first_depleted_rune();
+    new_regenerating_rune -> state = STATE_REGENERATING;
+    return new_regenerating_rune;
+  }
+
+  return nullptr;
+}
+
+inline rune_t* rune_t::fill_rune()
+{
+  if ( state != STATE_FULL )
+  {
+    runes -> dk -> procs.ready_rune -> occur();
+  }
+  value = 1.0;
+  state = STATE_FULL;
+  if ( runes -> runes_depleted() > 0 && runes -> runes_regenerating() < MAX_REGENERATING_RUNES )
+  {
+    rune_t* new_regenerating_rune = runes -> first_depleted_rune();
+    new_regenerating_rune -> state = STATE_REGENERATING;
+    return new_regenerating_rune;
+  }
+
+  return nullptr;
+}
+
+inline void rune_t::regen_rune( timespan_t periodicity, bool rc )
+{
+  if ( state == STATE_FULL )
+  {
+    // Overflow
+    if ( runes -> runes_regenerating() < MAX_REGENERATING_RUNES )
     {
-      gains_rune_type -> add( RESOURCE_NONE, 0, regen_amount );
-      gains_rune      -> add( RESOURCE_NONE, 0, regen_amount );
+      double regen_amount = periodicity.total_seconds() * runes -> dk -> runes_per_second();
+      gain_t* gain = rc ? runes -> dk -> gains.rc : runes -> dk -> gains.rune;
+      gain -> add( RESOURCE_RUNE, 0, regen_amount );
     }
     return;
   }
+  // Depleted, rune won't be regenerating
+  else if ( state == STATE_DEPLETED )
+  {
+    return;
+  }
 
-  // Chances are, we will overflow by a small amount.  Toss extra
-  // overflow into our paired rune if it is regenerating or depleted.
-  value += regen_amount;
+  // Rune is in regenerating state, regenerate it up
+  double regen_amount = periodicity.total_seconds() * runes -> dk -> runes_per_second();
+  gain_t* gain = rc ? runes -> dk -> gains.rc : runes -> dk -> gains.rune;
+
+  double new_value = value + regen_amount;
   double overflow = 0.0;
-  if ( value > 1.0 )
+  if ( new_value > 1.0 )
   {
-    overflow = value - 1.0;
-    value = 1.0;
+    overflow = new_value - 1.0;
+    new_value = 1.0;
   }
 
-  if ( value >= 1.0 )
+  rune_t* overflow_rune = nullptr;
+  if ( new_value >= 1.0 )
   {
-    if ( state == STATE_REGENERATING )
-    {
-      if ( is_blood() )
-        dk -> procs.ready_blood -> occur();
-      else if ( is_frost() )
-        dk -> procs.ready_frost -> occur();
-      else if ( is_unholy() )
-        dk -> procs.ready_unholy -> occur();
-    }
-    state = STATE_FULL;
+    overflow_rune = fill_rune();
   }
+
+  // If we got an overflow rune (filling up this rune caused a depleted rune to become
+  // regenerating), oveflow into that one
+  if ( overflow_rune )
+  {
+    overflow_rune -> value += overflow;
+    assert( overflow_rune -> value < 1.0 ); // Sanity check, should never happen
+    gain -> add( RESOURCE_RUNE, regen_amount, 0 );
+  }
+  // No depleted runes found, so overflow into the aether
   else
-    state = STATE_REGENERATING;
-
-  if ( overflow > 0.0 && ( paired_rune -> state == STATE_REGENERATING || paired_rune -> state == STATE_DEPLETED ) )
   {
-    // we shouldn't ever overflow the paired rune, but take care just in case
-    paired_rune -> value += overflow;
-    if ( paired_rune -> value > 1.0 )
-    {
-      overflow = paired_rune -> value - 1.0;
-      paired_rune -> value = 1.0;
-    }
-    else
-      overflow = 0;
-    if ( paired_rune -> value >= 1.0 )
-    {
-      if ( paired_rune -> state == STATE_REGENERATING )
-      {
-        if ( paired_rune -> is_blood() )
-          dk -> procs.ready_blood -> occur();
-        else if ( paired_rune -> is_frost() )
-          dk -> procs.ready_frost -> occur();
-        else if ( paired_rune -> is_unholy() )
-          dk -> procs.ready_unholy -> occur();
-      }
-      paired_rune -> state = STATE_FULL;
-    }
-    else
-      paired_rune -> state = STATE_REGENERATING;
+    gain -> add( RESOURCE_RUNE, 0, overflow );
   }
-  gains_rune_type -> add( RESOURCE_NONE, regen_amount - overflow, overflow );
-  gains_rune      -> add( RESOURCE_NONE, regen_amount - overflow, overflow );
 
-  if ( p -> sim -> debug )
-    p -> sim -> out_debug.printf( "rune %d has %.2f regen time (%.3f per second) with %.2f%% haste",
-                        slot_number, 1 / p -> runes_per_second(), p -> runes_per_second(), 100 * ( 1 / p -> cache.attack_haste() - 1 ) );
+  if ( runes -> dk -> sim -> debug )
+    runes -> dk -> sim -> out_debug.printf( "rune has %.2f regen time (%.3f per second) with %.2f%% haste",
+      1 / runes -> dk -> runes_per_second(), runes -> dk -> runes_per_second(),
+      100 * ( 1 / runes -> dk -> cache.attack_haste() - 1 ) );
 
   if ( state == STATE_FULL )
   {
-    if ( p -> sim -> log )
-      log_rune_status( p );
+    if ( runes -> dk -> sim -> log )
+      log_rune_status( runes -> dk );
 
-    if ( p -> sim -> debug )
-      p -> sim -> out_debug.printf( "rune %d regens to full", slot_number );
+    if ( runes -> dk -> sim -> debug )
+      runes -> dk -> sim -> out_debug.printf( "rune regens to full" );
   }
-*/
 }
 
 namespace pets {
