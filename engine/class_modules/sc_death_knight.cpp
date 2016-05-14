@@ -37,7 +37,6 @@ enum disease_type { DISEASE_NONE, DISEASE_BLOOD_PLAGUE, DISEASE_FROST_FEVER, DIS
 enum rune_state { STATE_DEPLETED, STATE_REGENERATING, STATE_FULL };
 
 const double RUNIC_POWER_REFUND = 0.9;
-const double RUNIC_POWER_DIVISOR = 30.0;
 const double RUNE_REGEN_BASE = 10;
 const double RUNE_REGEN_BASE_SEC = ( 1 / RUNE_REGEN_BASE );
 
@@ -502,7 +501,7 @@ static std::pair<int, double> rune_ready_in( const death_knight_t* p )
     rps *= 2.0;
   }
 
-  for (int j = 0; j < MAX_RUNES; ++j) {
+  for ( size_t j = 0; j < MAX_RUNES; ++j ) {
     double ttr = ( 1.0 - (p -> _runes.slot[j]).value ) / rps;
     if (ttr < t) {
       t = ttr;
@@ -526,7 +525,7 @@ static double ready_in( const death_knight_t* p, int n_runes )
   }
 
   std::vector< double > ready_times;
-  for ( int j = 0; j < MAX_RUNES; ++j) {
+  for ( size_t j = 0; j < MAX_RUNES; ++j) {
     ready_times.push_back( (1.0 - (p -> _runes.slot[j]).value) / rps);
   }
   std::sort(ready_times.begin(), ready_times.end());
@@ -1765,10 +1764,7 @@ struct melee_t : public death_knight_melee_attack_t
       // Killing Machine is 6 PPM
       if ( p() -> spec.killing_machine -> ok() )
       {
-        if ( p() -> buffs.killing_machine -> trigger( 1, buff_t::DEFAULT_VALUE(), weapon -> proc_chance_on_swing( 6 ) ) )
-        {
-          timespan_t duration = timespan_t::from_seconds( 4 + ( ( weapon -> group() == WEAPON_2H ) ? 2 : 1 ) * 2 );
-        }
+        p() -> buffs.killing_machine -> trigger( 1, buff_t::DEFAULT_VALUE(), weapon -> proc_chance_on_swing( 6 ) );
       }
     }
   }
@@ -1861,7 +1857,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
       // Simulate rune regen for 5 seconds for the consumed runes. Ugly but works
       // Note that this presumes no other rune-using abilities are used
       // precombat
-      for ( int i = 0; i < MAX_RUNES; ++i )
+      for ( size_t i = 0; i < MAX_RUNES; ++i )
         p() -> _runes.slot[ i ].regen_rune( timespan_t::from_seconds( 5.0 ) );
 
       //simulate RP decay for that 5 seconds
@@ -2691,7 +2687,7 @@ struct empower_rune_weapon_t : public death_knight_spell_t
 
     double erw_gain = 0.0;
     double erw_over = 0.0;
-    for ( int i = 0; i < MAX_RUNES; ++i )
+    for ( size_t i = 0; i < MAX_RUNES; ++i )
     {
       rune_t& r = p() -> _runes.slot[ i ];
       erw_gain += 1 - r.value;
@@ -4529,7 +4525,6 @@ void death_knight_t::assess_damage_imminent( school_e school, dmg_e, action_stat
 
       resource_gain( RESOURCE_RUNIC_POWER, util::round( generated * 100.0 ), gains.antimagic_shell, s -> action );
     }
-    death_knight_td_t* td = get_target_data( s -> action -> player );
   }
 }
 
@@ -4542,7 +4537,6 @@ void death_knight_t::assess_damage( school_e     school,
   double health_pct = health_percentage();
 
   player_t::assess_damage( school, dtype, s );
-  death_knight_td_t* td = get_target_data( s -> action -> player );
   // Bone shield will only decrement, if someone did damage to the dk
   if ( s -> result_amount > 0 )
   {
@@ -4957,7 +4951,7 @@ void death_knight_t::trigger_runic_empowerment( double rpcost )
   int num_depleted = 0;
 
   // Find fully depleted runes, i.e., both runes are on CD
-  for ( int i = 0; i < MAX_RUNES; ++i )
+  for ( size_t i = 0; i < MAX_RUNES; ++i )
   {
     if ( _runes.slot[i].is_depleted() )
     {
