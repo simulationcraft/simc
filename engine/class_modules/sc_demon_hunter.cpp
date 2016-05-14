@@ -799,7 +799,7 @@ public:
   {
     ab::execute();
 
-    if ( ! this -> result_is_hit( ab::execute_state -> result ) && ab::resource_consumed > 0 )
+    if ( ! ab::hit_any_target && ab::resource_consumed > 0 )
     {
       trigger_refund();
     }
@@ -2705,7 +2705,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     // Metamorphosis benefit
     p() -> buff.metamorphosis -> up();
 
-    if ( result_is_hit( execute_state -> result ) )
+    if ( hit_any_target )
     {
       // TODO: Travel time
       if ( p() -> talent.demonic_appetite -> ok() &&
@@ -3148,7 +3148,7 @@ struct shear_t : public demon_hunter_attack_t
   {
     demon_hunter_attack_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) )
+    if ( hit_any_target )
     {
       p() -> resource_gain( RESOURCE_PAIN, data().effectN( 3 ).resource( RESOURCE_PAIN ), action_gain );
 
@@ -3369,7 +3369,7 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
   {
     demon_hunter_attack_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) )
+    if ( hit_any_target )
     {
       p() -> buff.prepared -> trigger();
     }
