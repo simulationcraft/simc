@@ -3031,6 +3031,7 @@ struct glacial_advance_t : public death_knight_spell_t
     death_knight_spell_t( "glacial_advance", player, player -> talent.glacial_advance )
   {
     parse_options( options_str );
+    school = SCHOOL_FROST; // Damage is frost so override this to make reports make more sense
 
     execute_action = new glacial_advance_damage_t( player );
     add_child( execute_action );

@@ -3060,13 +3060,26 @@ class SetBonusListGenerator(DataGenerator):
             'bonuses': [ 1245, 1248, 1246, 1247 ],
             'tier'   : 17,
         },
+        # T18 LFR set bonuses
+        {
+            'name'   : 'tier18lfr',
+            'bonuses': [ 1260, 1261, 1262, 1263 ],
+            'tier'   : 18,
+        },
+        # T19 Class Hall set bonuses
+        # TODO: Simc set bonus system neds changing
+        #{
+        #    'name'   : 'tier19ch',
+        #    'bonuses': [ 1269, 1270, 1271, 1272, 1273, 1274, 1275, 1276, 1277, 1278, 1279, 1280 ],
+        #    'tier'   : 19
+        #},
         # Glaives (test, not yet implemented)
         {
             'name'   : 'glaives',
             'bonuses': [ 699 ],
             'tier'   : 0,
         },
-        # Normal set bonuses, T13 -> T17
+        # Normal set bonuses, T13 -> T19
         {
             'name'   : 'tier13',
             'bonuses': [ 1073, 1074, 1063, 1065, 1064, 1061, 1068, 1066, 1067, 1056, 1057,
@@ -3105,9 +3118,9 @@ class SetBonusListGenerator(DataGenerator):
             'tier'   : 18
         },
         {
-            'name'   : 'tier18lfr',
-            'bonuses': [ 1260, 1261, 1262, 1263 ],
-            'tier'   : 18,
+            'name'   : 'tier19',
+            'bonuses': [ 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291, 1292 ],
+            'tier'   : 19
         },
     ]
 

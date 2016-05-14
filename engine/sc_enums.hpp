@@ -670,6 +670,8 @@ enum set_bonus_type_e
   // Actual tier support in SIMC
   PVP,
   T17LFR,
+  T18LFR,
+  T19CH,
   GLAIVES,
   T13,
   T14,
@@ -677,7 +679,6 @@ enum set_bonus_type_e
   T16,
   T17,
   T18,
-  T18LFR,
   T19,
 
   SET_BONUS_MAX
