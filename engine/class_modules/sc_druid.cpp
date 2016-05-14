@@ -1589,7 +1589,7 @@ public:
   {
     ab::execute();
 
-    if ( consumes_bloodtalons && hit_any_target )
+    if ( consumes_bloodtalons && ab::hit_any_target )
     {
       bt_counter -> count_execute();
       tf_counter -> count_execute();
