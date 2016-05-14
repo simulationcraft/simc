@@ -3022,7 +3022,7 @@ struct blood_boil_t : public death_knight_spell_t
 struct pillar_of_frost_t : public death_knight_spell_t
 {
   pillar_of_frost_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "pillar_of_frost", p, p -> find_class_spell( "Pillar of Frost" ) )
+    death_knight_spell_t( "pillar_of_frost", p, p -> find_specialization_spell( "Pillar of Frost" ) )
   {
     parse_options( options_str );
 
@@ -3041,16 +3041,6 @@ struct pillar_of_frost_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> buffs.pillar_of_frost -> trigger();
-  }
-
-  bool ready() override
-  {
-    if ( ! spell_t::ready() )
-      return false;
-
-    // Always activate runes, even pre-combat.
-    //return group_runes( p(), cost_blood, cost_frost, cost_unholy, cost_death, use );
-    return true;
   }
 };
 
@@ -3079,6 +3069,30 @@ struct raise_dead_t : public death_knight_spell_t
       return false;
 
     return death_knight_spell_t::ready();
+  }
+};
+
+// Remorseless Winter =======================================================
+
+struct remorseless_winter_damage_t : public death_knight_spell_t
+{
+  remorseless_winter_damage_t( death_knight_t* p ) :
+    death_knight_spell_t( "remorseless_winter_damage", p, p -> find_spell( 196771 ) )
+  {
+    background = true;
+    aoe = -1;
+  }
+};
+
+// LEGION-TODO: Proper targeting
+struct remorseless_winter_t : public death_knight_spell_t
+{
+  remorseless_winter_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "remorseless_winter", p, p -> find_specialization_spell( "Remorseless Winter" ) )
+  {
+    parse_options( options_str );
+
+    tick_action = new remorseless_winter_damage_t( p );
   }
 };
 
@@ -3736,6 +3750,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "mind_freeze"              ) return new mind_freeze_t              ( this, options_str );
   if ( name == "obliterate"               ) return new obliterate_t               ( this, options_str );
   if ( name == "pillar_of_frost"          ) return new pillar_of_frost_t          ( this, options_str );
+  if ( name == "remorseless_winter"       ) return new remorseless_winter_t       ( this, options_str );
 
   // Unholy Actions
   if ( name == "army_of_the_dead"         ) return new army_of_the_dead_t         ( this, options_str );
