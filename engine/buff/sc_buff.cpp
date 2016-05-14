@@ -713,11 +713,6 @@ bool buff_t::trigger( int        stacks,
       return false;
   }
 
-  if ( name_str == "painbringer" )
-  {
-    assert( stacks == 1 );
-  }
-
   if ( value == DEFAULT_VALUE() && default_value != DEFAULT_VALUE() )
     value = default_value;
 
