@@ -207,7 +207,6 @@ public:
     buff_t* deaths_advance;
     buff_t* deathbringer;
     buff_t* icebound_fortitude;
-    buff_t* icy_talons;
     buff_t* killing_machine;
     buff_t* pillar_of_frost;
     buff_t* rime;
@@ -222,6 +221,7 @@ public:
     stat_buff_t* riposte;
     buff_t* shadow_of_death;
 
+    haste_buff_t* icy_talons;
   } buffs;
 
   struct runeforge_t {
@@ -249,6 +249,7 @@ public:
     gain_t* blood_rites;
     gain_t* butchery;
     gain_t* chill_of_the_grave;
+    gain_t* horn_of_winter;
     gain_t* murderous_efficiency;
     gain_t* power_refund;
     gain_t* rune;
@@ -1680,6 +1681,22 @@ void death_knight_spell_t::impact( action_state_t* state )
 }
 
 // ==========================================================================
+// Death Knight Secondary Abilities
+// ==========================================================================
+
+// Frozen Pulse =============================================================
+
+struct frozen_pulse_t : public death_knight_spell_t
+{
+  frozen_pulse_t( death_knight_t* player ) :
+    death_knight_spell_t( "frozen_pulse", player, player -> talent.frozen_pulse -> effectN( 1 ).trigger() )
+  {
+    aoe = -1;
+    background = true;
+  }
+};
+
+// ==========================================================================
 // Death Knight Attacks
 // ==========================================================================
 
@@ -1689,9 +1706,11 @@ struct melee_t : public death_knight_melee_attack_t
 {
   int sync_weapons;
   bool first;
+  action_t* frozen_pulse;
 
   melee_t( const char* name, death_knight_t* p, int sw ) :
-    death_knight_melee_attack_t( name, p ), sync_weapons( sw ), first ( true )
+    death_knight_melee_attack_t( name, p ), sync_weapons( sw ), first ( true ),
+    frozen_pulse( p -> talent.frozen_pulse -> ok() ? new frozen_pulse_t( p ) : nullptr )
   {
     auto_attack     = true;
     school          = SCHOOL_PHYSICAL;
@@ -1771,6 +1790,12 @@ struct melee_t : public death_knight_melee_attack_t
       if ( s -> result == RESULT_CRIT )
       {
         p() -> buffs.killing_machine -> trigger();
+      }
+
+      if ( frozen_pulse && p() -> resources.current[ RESOURCE_RUNE ] < 1 )
+      {
+        frozen_pulse -> target = s -> target;
+        frozen_pulse -> schedule_execute();
       }
     }
   }
@@ -1936,7 +1961,9 @@ struct frost_fever_t : public disease_t
 {
   frost_fever_t( death_knight_t* p ) :
     disease_t( p, "frost_fever", 55095 )
-  { }
+  {
+    base_multiplier *= 1.0 + p -> talent.freezing_fog -> effectN( 1 ).percent();
+  }
 };
 
 // Virulent Plague ==========================================================
@@ -2788,12 +2815,50 @@ struct frost_strike_t : public death_knight_melee_attack_t
     }
 
     death_knight_td_t* tdata = td( execute_state -> target );
-    if ( tdata -> debuff.razorice -> stack() == 5 ) // TODO: Hardcoded, sad face
+    if ( p() -> talent.shattering_strikes -> ok() &&
+         tdata -> debuff.razorice -> stack() == 5 ) // TODO: Hardcoded, sad face
     {
       tdata -> debuff.razorice -> expire();
     }
 
     p() -> buffs.icy_talons -> trigger();
+  }
+};
+
+// Horn of Winter ===========================================================
+
+struct horn_of_winter_t : public death_knight_spell_t
+{
+  horn_of_winter_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "horn_of_winter", p, p -> talent.horn_of_winter )
+  {
+    harmful = false;
+
+    // Handle energize ourselves
+    energize_type = ENERGIZE_NONE;
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+
+    p() -> resource_gain( RESOURCE_RUNIC_POWER, data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
+        p() -> gains.horn_of_winter, this );
+
+    rune_t* rune = p() -> _runes.first_depleted_rune();
+    if ( ! rune )
+    {
+      rune = p() -> _runes.first_regenerating_rune();
+    }
+
+    if ( rune )
+    {
+      rune -> fill_rune( p() -> gains.horn_of_winter );
+    }
+    else
+    {
+      p() -> gains.horn_of_winter -> add( RESOURCE_RUNE, 0, 1 );
+    }
   }
 };
 
@@ -2808,6 +2873,7 @@ struct howling_blast_t : public death_knight_spell_t
 
     aoe                 = -1;
     base_aoe_multiplier = data().effectN( 1 ).percent();
+    base_multiplier    *= 1.0 + p -> talent.freezing_fog -> effectN( 1 ).percent();
 
     assert( p -> active_spells.frost_fever );
   }
@@ -3829,6 +3895,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "obliterate"               ) return new obliterate_t               ( this, options_str );
   if ( name == "pillar_of_frost"          ) return new pillar_of_frost_t          ( this, options_str );
   if ( name == "remorseless_winter"       ) return new remorseless_winter_t       ( this, options_str );
+  if ( name == "horn_of_winter"           ) return new horn_of_winter_t           ( this, options_str );
 
   // Unholy Actions
   if ( name == "army_of_the_dead"         ) return new army_of_the_dead_t         ( this, options_str );
@@ -4273,6 +4340,7 @@ void death_knight_t::init_gains()
   gains.blood_rites                      = get_gain( "blood_rites"                );
   gains.butchery                         = get_gain( "butchery"                   );
   gains.chill_of_the_grave               = get_gain( "chill_of_the_grave"         );
+  gains.horn_of_winter                   = get_gain( "Horn of Winter"             );
   gains.murderous_efficiency             = get_gain( "Murderous Efficiency"       );
   gains.power_refund                     = get_gain( "power_refund"               );
   gains.rune                             = get_gain( "Rune Regeneration"          );
