@@ -340,7 +340,6 @@ public:
     proc_t* runic_empowerment_wasted;
     proc_t* oblit_killing_machine;
     proc_t* fs_killing_machine;
-    proc_t* sr_killing_machine;
     proc_t* ready_rune;
     proc_t* km_natural_expiration;
   } procs;
@@ -1722,10 +1721,9 @@ struct melee_t : public death_knight_melee_attack_t
 
       }
 
-      // Killing Machine is 6 PPM
-      if ( p() -> spec.killing_machine -> ok() )
+      if ( s -> result == RESULT_CRIT )
       {
-        p() -> buffs.killing_machine -> trigger( 1, buff_t::DEFAULT_VALUE(), weapon -> proc_chance_on_swing( 6 ) );
+        p() -> buffs.killing_machine -> trigger();
       }
     }
   }
@@ -1982,14 +1980,6 @@ struct soul_reaper_t : public death_knight_melee_attack_t
       return death_knight_melee_attack_t::false_positive_pct();
   }
 
-  virtual double composite_crit() const override
-  {
-    double cc = death_knight_melee_attack_t::composite_crit();
-    if ( player -> sets.has_set_bonus( SET_MELEE, T15, B4 ) && p() -> buffs.killing_machine -> check() )
-      cc += p() -> buffs.killing_machine -> value();
-    return cc;
-  }
-
   void init() override
   {
     death_knight_melee_attack_t::init();
@@ -2007,11 +1997,6 @@ struct soul_reaper_t : public death_knight_melee_attack_t
   virtual void execute() override
   {
     death_knight_melee_attack_t::execute();
-    if ( player -> sets.has_set_bonus( SET_MELEE, T15, B4 ) && p() -> buffs.killing_machine -> check() )
-    {
-      p() -> procs.sr_killing_machine -> occur();
-      p() -> buffs.killing_machine -> expire();
-    }
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
       p() -> pets.dancing_rune_weapon -> drw_soul_reaper -> execute();
@@ -2689,15 +2674,6 @@ struct frost_strike_offhand_t : public death_knight_melee_attack_t
     special          = true;
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
   }
-
-  virtual double composite_crit() const override
-  {
-    double cc = death_knight_melee_attack_t::composite_crit();
-
-    cc += p() -> buffs.killing_machine -> value();
-
-    return cc;
-  }
 };
 
 struct frost_strike_t : public death_knight_melee_attack_t
@@ -2725,28 +2701,9 @@ struct frost_strike_t : public death_knight_melee_attack_t
       if ( oh_attack )
         oh_attack -> execute();
 
-      if ( p() -> buffs.killing_machine -> check() )
-        p() -> procs.fs_killing_machine -> occur();
-
-      if ( ! p() -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T18, B4 ) || 
-           ( p() -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T18, B4 ) &&
-             ! p() -> rng().roll( player -> sets.set( DEATH_KNIGHT_FROST, T18, B4 ) -> effectN( 1 ).percent() ) ) )
-      {
-        p() -> buffs.killing_machine -> expire();
-      }
-
       p() -> trigger_runic_empowerment( resource_consumed );
       p() -> trigger_runic_corruption( resource_consumed );
     }
-  }
-
-  double composite_crit() const override
-  {
-    double cc = death_knight_melee_attack_t::composite_crit();
-
-    cc += p() -> buffs.killing_machine -> value();
-
-    return cc;
   }
 };
 
@@ -2869,7 +2826,7 @@ struct obliterate_offhand_t : public death_knight_melee_attack_t
 
   }
 
-  virtual double composite_crit() const override
+  double composite_crit() const override
   {
     double cc = death_knight_melee_attack_t::composite_crit();
 
@@ -2911,11 +2868,11 @@ struct obliterate_t : public death_knight_melee_attack_t
       if ( p() -> buffs.killing_machine -> check() )
         p() -> procs.oblit_killing_machine -> occur();
 
-      if ( ! p() -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T18, B4 ) || 
+      if ( ! p() -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T18, B4 ) ||
            ( p() -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T18, B4 ) &&
              ! p() -> rng().roll( player -> sets.set( DEATH_KNIGHT_FROST, T18, B4 ) -> effectN( 1 ).percent() ) ) )
       {
-        p() -> buffs.killing_machine -> expire();
+        p() -> buffs.killing_machine -> decrement();
       }
 
       p() -> buffs.rime -> trigger();
@@ -3592,27 +3549,6 @@ struct vampiric_blood_buff_t : public buff_t
     }
   }
 };
-
-struct killing_machine_buff_t : public buff_t
-{
-  killing_machine_buff_t( death_knight_t* p ) :
-    buff_t( buff_creator_t( p, "killing_machine", p -> find_spell( 51124 ) )
-                           .default_value( p -> find_spell( 51124 ) -> effectN( 1 ).percent() )
-                           .chance( p -> find_specialization_spell( "Killing Machine" ) -> proc_chance() ) )
-  { }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    if ( remaining_duration == timespan_t::zero() )
-    {
-      death_knight_t* dk = debug_cast<death_knight_t*>( player );
-      dk -> procs.km_natural_expiration -> occur();
-    }
-
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-  }
-};
-
 } // UNNAMED NAMESPACE
 
 // Runeforges ==============================================================
@@ -4146,9 +4082,9 @@ void death_knight_t::create_buffs()
                               .duration( find_class_spell( "Icebound Fortitude" ) -> duration() *
                                          ( 1.0 + glyph.icebound_fortitude -> effectN( 2 ).percent() ) )
                               .cd( timespan_t::zero() );
-  buffs.killing_machine     = new killing_machine_buff_t( this );/*buff_creator_t( this, "killing_machine", find_spell( 51124 ) )
-                              .default_value( find_spell( 51124 ) -> effectN( 1 ).percent() )
-                              .chance( find_specialization_spell( "Killing Machine" ) -> proc_chance() ); // PPM based! */
+  buffs.killing_machine     = buff_creator_t( this, "killing_machine", spec.killing_machine -> effectN( 1 ).trigger() )
+                              .trigger_spell( spec.killing_machine )
+                              .default_value( find_spell( 51124 ) -> effectN( 1 ).percent() );
   buffs.pillar_of_frost     = buff_creator_t( this, "pillar_of_frost", find_class_spell( "Pillar of Frost" ) )
                               .cd( timespan_t::zero() )
                               .default_value( find_class_spell( "Pillar of Frost" ) -> effectN( 1 ).percent() +
@@ -4210,15 +4146,12 @@ void death_knight_t::init_procs()
 {
   player_t::init_procs();
 
-  procs.runic_empowerment        = get_proc( "runic_empowerment"            );
-  procs.runic_empowerment_wasted = get_proc( "runic_empowerment_wasted"     );
-  procs.oblit_killing_machine    = get_proc( "oblit_killing_machine"        );
-  procs.sr_killing_machine       = get_proc( "sr_killing_machine"           );
-  procs.fs_killing_machine       = get_proc( "frost_strike_killing_machine" );
+  procs.runic_empowerment        = get_proc( "Runic Empowerment"            );
+  procs.runic_empowerment_wasted = get_proc( "Wasted Runic Empowerment"     );
+  procs.oblit_killing_machine    = get_proc( "Killing Machine: Obliterate"  );
+  procs.fs_killing_machine       = get_proc( "Killing Machine: Frostscythe" );
 
   procs.ready_rune              = get_proc( "Rune ready" );
-
-  procs.km_natural_expiration    = get_proc( "Killing Machine expired naturally" );
 }
 
 // death_knight_t::init_resources ===========================================
