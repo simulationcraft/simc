@@ -5015,6 +5015,22 @@ struct unstable_magic_explosion_t : public mage_spell_t
     base_costs[ RESOURCE_MANA ] = 0;
     trigger_gcd = timespan_t::zero();
     background = true;
+
+    switch ( p -> specialization() )
+    {
+      case MAGE_ARCANE:
+        school = SCHOOL_ARCANE;
+        break;
+      case MAGE_FIRE:
+        school = SCHOOL_FIRE;
+        break;
+      case MAGE_FROST:
+        school = SCHOOL_FROST;
+        break;
+      default:
+        // This shouldn't happen
+        break;
+    }
   }
 
   virtual void init() override
