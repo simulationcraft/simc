@@ -20,12 +20,12 @@ actions.precombat+=/food,type=salty_squid_roll
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/exotic_munitions,ammo_type=poisoned,if=spell_targets.multi_shot<3
-actions.precombat+=/exotic_munitions,ammo_type=incendiary,if=spell_targets.multi_shot>=3
+actions.precombat+=/exotic_munitions,ammo_type=incendiary
 actions.precombat+=/potion,name=draenic_agility
 actions.precombat+=/glaive_toss
 actions.precombat+=/explosive_shot
 actions.precombat+=/focusing_shot
+actions.precombat+=/powershot
 
 # Executed every time the actor is available.
 

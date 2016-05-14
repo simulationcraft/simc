@@ -4314,8 +4314,7 @@ void hunter_t::init_action_list()
 
     precombat -> add_action( "summon_pet" );
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-    precombat -> add_action( "exotic_munitions,ammo_type=poisoned,if=spell_targets.multi_shot<3" );
-    precombat -> add_action( "exotic_munitions,ammo_type=incendiary,if=spell_targets.multi_shot>=3" );
+    precombat -> add_action( "exotic_munitions,ammo_type=incendiary" );
 
     //Pre-pot
     add_potion_action( precombat, "draenic_agility", "virmens_bite" );
@@ -4326,6 +4325,7 @@ void hunter_t::init_action_list()
       precombat -> add_action( "explosive_shot" );
     }
     precombat -> add_action( "focusing_shot" );
+    precombat -> add_action( "powershot" );
 
     switch ( specialization() )
     {
@@ -4371,7 +4371,15 @@ void hunter_t::add_item_actions( action_priority_list_t* list )
 
 void hunter_t::add_racial_actions( action_priority_list_t* list )
 {
-    list -> add_action( "arcane_torrent,if=focus.deficit>=30");
+    switch ( specialization() )
+    {
+    case HUNTER_MARKSMANSHIP:
+      list -> add_action( "arcane_torrent,if=focus.deficit>=30&buff.rapid_fire.up");
+      break;
+    default:
+      list -> add_action( "arcane_torrent,if=focus.deficit>=30");
+      break;
+    }
     list -> add_action( "blood_fury" );
     list -> add_action( "berserking" );
 }
@@ -4446,7 +4454,7 @@ void hunter_t::apl_mm()
   add_racial_actions( default_list );
 
   add_potion_action( default_list, "draenic_agility", "virmens_bite",
-    "if=((buff.rapid_fire.up|buff.bloodlust.up)&(cooldown.stampede.remains<1))|target.time_to_die<=25" );
+    "if=((buff.rapid_fire.up|buff.bloodlust.up)&(cooldown.stampede.remains<1))|target.time_to_die<=45" );
 
   default_list -> add_action( this, "Chimaera Shot" );
   // "if=cast_regen+action.aimed_shot.cast_regen<focus.deficit"
@@ -4458,7 +4466,7 @@ void hunter_t::apl_mm()
   {
     careful_aim -> add_talent( this, "Glaive Toss", "if=active_enemies>2" );
     careful_aim -> add_talent( this, "Powershot", "if=spell_targets.powershot>1&cast_regen<focus.deficit" );
-    careful_aim -> add_talent( this, "Barrage", "if=spell_targets.barrage>1" );
+    careful_aim -> add_talent( this, "Barrage", "if=spell_targets.barrage>2" );
     // careful_aim -> add_action( this, "Steady Shot", "if=buff.pre_steady_focus.up&if=buff.pre_steady_focus.up&(14+cast_regen+action.aimed_shot.cast_regen)<=focus.deficit)" );
     careful_aim -> add_action( this, "Aimed Shot" );
     careful_aim -> add_talent( this, "Focusing Shot", "if=50+cast_regen<focus.deficit" );
@@ -4471,13 +4479,15 @@ void hunter_t::apl_mm()
 
   default_list -> add_talent( this, "Glaive Toss" );
   default_list -> add_talent( this, "Powershot", "if=cast_regen<focus.deficit" );
-  default_list -> add_talent( this, "Barrage" );
+  default_list -> add_talent( this, "Barrage", "if=spell_targets.barrage>1" );
+  default_list -> add_action( this, "Steady Shot", "if=focus.deficit*cast_time%(14+cast_regen)>cooldown.rapid_fire.remains", "Pool max focus for rapid fire so we can spam AimedShot with Careful Aim buff" );
   default_list -> add_action( this, "Steady Shot", "if=focus.deficit*cast_time%(14+cast_regen)>cooldown.rapid_fire.remains", "Pool max focus for rapid fire so we can spam AimedShot with Careful Aim buff" );
   default_list -> add_talent( this, "Focusing Shot", "if=focus.deficit*cast_time%(50+cast_regen)>cooldown.rapid_fire.remains&focus<100" );
   default_list -> add_action( this, "Steady Shot", "if=buff.pre_steady_focus.up&(14+cast_regen+action.aimed_shot.cast_regen)<=focus.deficit", "Cast a second shot for steady focus if that won't cap us." );
-  default_list -> add_action( this, "Multi-Shot", "if=spell_targets.multi_shot>6" );
+  default_list -> add_action( this, "Steady Shot", "if=cooldown.chimaera_shot.remains<4&(14+cast_regen+action.aimed_shot.cast_regen)<=focus.deficit" );
+  default_list -> add_action( this, "Multi-Shot", "if=spell_targets.multi_shot>=8" );
   default_list -> add_action( this, "Aimed Shot", "if=talent.focusing_shot.enabled" );
-  default_list -> add_action( this, "Aimed Shot", "if=focus+cast_regen>=85" );
+  default_list -> add_action( this, "Aimed Shot", "if=focus+cast_regen>=90" );
   default_list -> add_action( this, "Aimed Shot", "if=buff.thrill_of_the_hunt.react&focus+cast_regen>=65" );
   default_list -> add_talent( this, "Focusing Shot", "if=50+cast_regen-10<focus.deficit", "Allow FS to over-cap by 10 if we have nothing else to do" );
   default_list -> add_action( this, "Steady Shot" );
