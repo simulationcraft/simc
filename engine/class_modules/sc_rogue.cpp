@@ -1730,7 +1730,7 @@ void rogue_attack_t::execute()
 
   p() -> trigger_ruthlessness_cp( execute_state );
 
-  if ( energize_type == ENERGIZE_ON_HIT && energize_resource == RESOURCE_COMBO_POINT &&
+  if ( energize_type_() == ENERGIZE_ON_HIT && energize_resource == RESOURCE_COMBO_POINT &&
     p() -> buffs.shadow_blades -> up() )
   {
     p() -> trigger_combo_point_gain( 1, p() -> gains.shadow_blades, this );

@@ -5664,8 +5664,11 @@ public:
   virtual double composite_energize_amount( const action_state_t* ) const
   { return energize_amount; }
 
-  virtual resource_e energize_resource_( const action_state_t* ) const
+  virtual resource_e energize_resource_() const
   { return energize_resource; }
+
+  virtual action_energize_e energize_type_() const
+  { return energize_type; }
 
   // ==========================
   // mutating virtual functions

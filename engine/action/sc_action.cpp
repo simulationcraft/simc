@@ -1374,14 +1374,14 @@ void action_t::execute()
     target = default_target;
   }
 
-  if ( energize_type == ENERGIZE_ON_CAST || ( energize_type == ENERGIZE_ON_HIT && hit_any_target ) )
+  if ( energize_type_() == ENERGIZE_ON_CAST || ( energize_type_() == ENERGIZE_ON_HIT && hit_any_target ) )
   {
-    player -> resource_gain( energize_resource_( execute_state ),
+    player -> resource_gain( energize_resource_(),
       composite_energize_amount( execute_state ), gain, this );
   }
-  else if ( energize_type == ENERGIZE_PER_HIT )
+  else if ( energize_type_() == ENERGIZE_PER_HIT )
   {
-    player -> resource_gain( energize_resource_( execute_state ),
+    player -> resource_gain( energize_resource_(),
       composite_energize_amount( execute_state ) * num_targets_hit, gain, this );
   }
 
@@ -1426,9 +1426,9 @@ void action_t::tick( dot_t* d )
       d -> state -> debug();
   }
 
-  if ( energize_type == ENERGIZE_PER_TICK )
+  if ( energize_type_() == ENERGIZE_PER_TICK )
   {
-    player -> resource_gain( energize_resource_( d -> state ),
+    player -> resource_gain( energize_resource_(),
       composite_energize_amount( d -> state ), gain, this );
   }
 
