@@ -18,8 +18,18 @@
 // Destruction - 
 // Roaring Blaze
 // Demo - Everything
-// check wild imp implementation
-// finish demonic empowerment
+// check wild imp implementation: make sure imps are dying when they are supposed to.
+// finish demonic empowerment - needs doomguard / infernal pet implementation only
+// Doom
+// DEMO TALENTS: (all)
+// T1: Shadowy Inspiration, Shadowflame, Demonic Calling
+// T2: Imepdning Doom, Improved Dreadstalkers, Implosion
+// T3: LOOOOOOOL
+// T4: Hand of Doom, Powertrip, Soul harvest
+// T5: LMFAO
+// T6: ??? Think these are done? (except supremacy kinda?)
+// T7: Summon FOTMDemon, Demonbolt, Conduit = done (gahddo pls)
+//
 // Artifacts -
 // Affliction/Demonology
 // 
@@ -128,6 +138,15 @@ public:
     const spell_data_t* fire_and_brimstone;
     const spell_data_t* shadowburn;
 
+    const spell_data_t* shadowy_inspiration;
+    const spell_data_t* shadowflame;
+    const spell_data_t* demonic_calling;
+    const spell_data_t* impending_doom;
+    const spell_data_t* improved_dreadstalkers;
+    const spell_data_t* implosion;
+    const spell_data_t* hand_of_doom;
+    const spell_data_t* power_trip;
+
     const spell_data_t* contagion;
     const spell_data_t* absolute_corruption;
     const spell_data_t* reverse_entropy;
@@ -138,7 +157,7 @@ public:
     const spell_data_t* mortal_coil;
     const spell_data_t* howl_of_terror;
 
-	  const spell_data_t* power_trip;
+
     const spell_data_t* siphon_life;
     const spell_data_t* sow_the_seeds;
     const spell_data_t* eradication;
@@ -305,6 +324,7 @@ public:
     gain_t* mana_tap;
 	  gain_t* power_trip;
     gain_t* shadow_bolt;
+    gain_t* doom;
     gain_t* soul_conduit;
     gain_t* reverse_entropy;
     gain_t* soulsnatcher;
@@ -1860,8 +1880,8 @@ public:
         return;
       }
     }
-    p -> sim -> errorf( "Player %s ran out of wild imps.\n", p -> name() );
-    assert( false ); // Will only get here if there are no available imps
+    //p -> sim -> errorf( "Playerd %s ran out of wild imps.\n", p -> name() );
+    //assert( false ); // Will only get here if there are no available imps
   }
 };
 
@@ -2094,14 +2114,34 @@ struct doom_t: public warlock_spell_t
   doom_t( warlock_t* p ):
     warlock_spell_t( "doom", p, p -> spec.doom )
   {
-    may_crit = false;
+    base_tick_time = p -> find_spell( 603 ) -> effectN( 1 ).period();
+    dot_duration = p -> find_spell( 603 ) -> duration();
+    spell_power_mod.tick = p -> spec.doom -> effectN( 1 ).sp_coeff();
+
+    may_crit = true;
+    hasted_ticks = true;
+
+    energize_type = ENERGIZE_PER_TICK;
+    energize_resource = RESOURCE_SOUL_SHARD;
+    energize_amount = 1;
+
+    //p -> sim ->errorf("Doom finished constructing");
+  }
+
+  timespan_t travel_time() const override
+  {
+    return timespan_t::from_millis( 100 );
   }
 
   virtual void tick( dot_t* d ) override
   {
     warlock_spell_t::tick( d );
+    //p()->sim->errorf("Testing a tick");
 
-    if ( d -> state -> result == RESULT_HIT ) trigger_wild_imp( p() );
+    //if ( d -> state -> result == RESULT_HIT ) trigger_wild_imp( p() );
+    //p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p()->gains.doom);
+    //if(p()->talents.impending_doom->ok())
+        //trigger_wild_imp( p() );
   }
 };
 
@@ -2180,7 +2220,7 @@ struct hand_of_guldan_t: public warlock_spell_t
   {
     aoe = -1;
 
-    cooldown -> duration = timespan_t::from_seconds( 15 );
+    //cooldown -> duration = timespan_t::from_seconds( 15 );
 
     parse_effect_data( p -> find_spell( 86040 ) -> effectN( 1 ) );
 
@@ -2209,6 +2249,11 @@ struct hand_of_guldan_t: public warlock_spell_t
       p() -> procs.fragment_wild_imp -> occur();
       p() -> procs.fragment_wild_imp -> occur();
       p() -> procs.fragment_wild_imp -> occur();
+    }
+    int shards = p()->resources.current[ RESOURCE_SOUL_SHARD ];
+    for(int shard = 0; shard < shards; shard ++)
+    {
+        trigger_wild_imp( p() );
     }
   }
 };
