@@ -74,3 +74,6 @@ SimulationCraft.config
 SimulationCraft.creator
 SimulationCraft.files
 SimulationCraft.includes
+SimulationCraft.app
+.qmake.stash
+qrc_simcqt.cpp
