@@ -3043,6 +3043,18 @@ struct howling_blast_t : public death_knight_spell_t
     assert( p -> active_spells.frost_fever );
   }
 
+  double action_multiplier() const override
+  {
+    double m = death_knight_spell_t::action_multiplier();
+
+    if ( p() -> buffs.rime -> up() )
+    {
+      m *= 1.0 + p() -> buffs.rime -> data().effectN( 2 ).percent();
+    }
+
+    return m;
+  }
+
   double cost() const override
   {
     if ( p() -> buffs.rime -> check() )
