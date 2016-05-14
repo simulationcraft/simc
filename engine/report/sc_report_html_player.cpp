@@ -2418,11 +2418,6 @@ void print_html_player_resources(
   os << "<div class=\"charts charts-left\">\n";
   for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
   {
-    // hack hack. don't display RESOURCE_RUNE_<TYPE> yet. only shown in tabular
-    // data.  WiP
-    if ( r == RESOURCE_RUNE_BLOOD || r == RESOURCE_RUNE_UNHOLY ||
-         r == RESOURCE_RUNE_FROST || r == RESOURCE_NONE )
-      continue;
     double total_gain = 0;
     size_t n_gains    = 0;
     for ( const auto& gain : p.gain_list )

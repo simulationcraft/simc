@@ -549,14 +549,14 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   {
     const spellpower_data_t* pd = ( *spell_data._power )[ i ];
 
-    if ( pd -> _cost > 0 )
+    if ( pd -> _cost != 0 )
       base_costs[ pd -> resource() ] = pd -> cost();
     else
       base_costs[ pd -> resource() ] = floor( pd -> cost() * player -> resources.base[ pd -> resource() ] );
 
     secondary_costs[ pd -> resource() ] = pd -> max_cost();
 
-    if ( pd -> _cost_per_tick > 0 )
+    if ( pd -> _cost_per_tick != 0 )
       base_costs_per_tick[ pd -> resource() ] = pd -> cost_per_tick();
     else
       base_costs_per_tick[ pd -> resource() ] = floor( pd -> cost_per_tick() * player -> resources.base[ pd -> resource() ] );

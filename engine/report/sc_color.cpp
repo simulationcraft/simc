@@ -223,10 +223,8 @@ rgb resource_color( resource_e type )
   switch ( type )
   {
     case RESOURCE_HEALTH:
-    case RESOURCE_RUNE_UNHOLY:
       return class_color( HUNTER );
 
-    case RESOURCE_RUNE_FROST:
     case RESOURCE_MANA:
       return class_color( SHAMAN );
 
@@ -237,8 +235,6 @@ rgb resource_color( resource_e type )
 
     case RESOURCE_RAGE:
     case RESOURCE_RUNIC_POWER:
-    case RESOURCE_RUNE:
-    case RESOURCE_RUNE_BLOOD:
       return class_color( DEATH_KNIGHT );
 
     case RESOURCE_HOLY_POWER:
@@ -255,6 +251,9 @@ rgb resource_color( resource_e type )
 
     case RESOURCE_MAELSTROM:
       return rgb( "FF9900" );
+
+    case RESOURCE_RUNE:
+      return class_color( MAGE );
 
     case RESOURCE_NONE:
     default:

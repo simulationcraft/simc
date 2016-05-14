@@ -36,12 +36,12 @@ namespace runeforge {
 enum disease_type { DISEASE_NONE, DISEASE_BLOOD_PLAGUE, DISEASE_FROST_FEVER, DISEASE_VIRULENT_PLAGUE };
 enum rune_state { STATE_DEPLETED, STATE_REGENERATING, STATE_FULL };
 
-const int RUNE_SLOT_MAX = 6;
 const double RUNIC_POWER_REFUND = 0.9;
 const double RUNIC_POWER_DIVISOR = 30.0;
 const double RUNE_REGEN_BASE = 10;
 const double RUNE_REGEN_BASE_SEC = ( 1 / RUNE_REGEN_BASE );
 
+const size_t MAX_RUNES = 6;
 const size_t MAX_REGENERATING_RUNES = 3;
 
 struct rune_t
@@ -78,7 +78,7 @@ struct rune_t
 struct runes_t
 {
   death_knight_t* dk;
-  std::array<rune_t, RUNE_SLOT_MAX> slot;
+  std::array<rune_t, MAX_RUNES> slot;
 
   runes_t( death_knight_t* p ) : dk( p )
   {
@@ -123,8 +123,8 @@ struct runes_t
   // Return the number of runes in specific state
   unsigned runes_in_state( rune_state s ) const
   {
-    return std::accumulate( slot.begin(), slot.end(), 0,
-        [ s ]( const unsigned& v, const rune_t& r ) { return v + r.state == s; });
+    return std::accumulate( slot.begin(), slot.end(), 0U,
+        [ s ]( const unsigned& v, const rune_t& r ) { return v + ( r.state == s ); });
   }
 
   // Return the first rune in a specific state. If no rune in specific state found, return nullptr.
@@ -155,7 +155,7 @@ struct runes_t
   { return first_rune_in_state( STATE_REGENERATING ); }
 
   rune_t* first_full_rune()
-  { return first_rune_in_state( STATE_REGENERATING ); }
+  { return first_rune_in_state( STATE_FULL ); }
 
   void consume( unsigned runes );
 };
@@ -209,7 +209,6 @@ public:
     buff_t* pillar_of_frost;
     buff_t* rime;
     buff_t* runic_corruption;
-    buff_t* scent_of_blood;
     buff_t* shadow_infusion;
     buff_t* sudden_doom;
     buff_t* vampiric_blood;
@@ -248,7 +247,6 @@ public:
     gain_t* butchery;
     gain_t* chill_of_the_grave;
     gain_t* power_refund;
-    gain_t* scent_of_blood;
     gain_t* rune;
     gain_t* rc;
     gain_t* rune_unknown;
@@ -267,7 +265,6 @@ public:
     const spell_data_t* bladed_armor;
     const spell_data_t* blood_rites;
     const spell_data_t* veteran_of_the_third_war;
-    const spell_data_t* scent_of_blood;
     const spell_data_t* scarlet_fever;
     const spell_data_t* crimson_scourge;
     const spell_data_t* sanguine_fortitude;
@@ -435,6 +432,7 @@ public:
   virtual role_e    primary_role() const override;
   virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
   virtual void      invalidate_cache( cache_e ) override;
+  double resource_loss( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
 
   double    runes_per_second() const;
   void      trigger_runic_empowerment( double rpcost );
@@ -493,19 +491,6 @@ static void log_rune_status( const death_knight_t* p, bool debug = false ) {
     p -> sim -> out_debug.printf( "%s runes: %s", p -> name(), rune_string.c_str() );
 }
 
-static int use_rune( const death_knight_t* p )
-{
-
-  // Suggest using runes from left to right.
-  for ( int j = 0; j < RUNE_SLOT_MAX; ++j) {
-    if (p -> _runes.slot[j].is_ready()) {
-      return j;
-    }
-  }
-  // No rune is ready.
-  return -1;
-}
-
 static std::pair<int, double> rune_ready_in( const death_knight_t* p )
 {
   // Return the (slot, time) for the next rune to come up.
@@ -517,7 +502,7 @@ static std::pair<int, double> rune_ready_in( const death_knight_t* p )
     rps *= 2.0;
   }
 
-  for (int j = 0; j < RUNE_SLOT_MAX; ++j) {
+  for (int j = 0; j < MAX_RUNES; ++j) {
     double ttr = ( 1.0 - (p -> _runes.slot[j]).value ) / rps;
     if (ttr < t) {
       t = ttr;
@@ -541,7 +526,7 @@ static double ready_in( const death_knight_t* p, int n_runes )
   }
 
   std::vector< double > ready_times;
-  for ( int j = 0; j < RUNE_SLOT_MAX; ++j) {
+  for ( int j = 0; j < MAX_RUNES; ++j) {
     ready_times.push_back( (1.0 - (p -> _runes.slot[j]).value) / rps);
   }
   std::sort(ready_times.begin(), ready_times.end());
@@ -555,9 +540,9 @@ static int random_depleted_rune( death_knight_t* p )
 {
   // TODO: mrdmnd - implement
   int num_depleted = 0;
-  int depleted_runes[ RUNE_SLOT_MAX ] = { 0 };
+  int depleted_runes[ MAX_RUNES ] = { 0 };
 
-  for ( size_t j = 0; j < RUNE_SLOT_MAX; ++j ) {
+  for ( size_t j = 0; j < MAX_RUNES; ++j ) {
 
   }
 
@@ -580,7 +565,7 @@ inline void runes_t::consume( unsigned runes )
     assert( 0 );
   }
 #endif
-  while ( --runes ) first_full_rune() -> consume();
+  while ( runes-- ) first_full_rune() -> consume();
   if ( dk -> sim -> debug )
   {
     log_rune_status( dk );
@@ -589,46 +574,68 @@ inline void runes_t::consume( unsigned runes )
 
 inline rune_t* rune_t::consume()
 {
+  rune_t* new_regenerating_rune = nullptr;
+
   state = STATE_DEPLETED;
   value = 0.0;
-  // Immediately transition rune to the correct state so we can simplify regen_rune
+
+  // Immediately update the state of the next regenerating rune, since rune_t::regen_rune presumes
+  // that the internal state of each invidual rune is always consistent with the rune regeneration
+  // rules
   if ( runes -> runes_regenerating() < MAX_REGENERATING_RUNES )
   {
     rune_t* new_regenerating_rune = runes -> first_depleted_rune();
     new_regenerating_rune -> state = STATE_REGENERATING;
-    return new_regenerating_rune;
   }
 
-  return nullptr;
+  // Internal state consistency for current rune regeneration rules
+  assert( runes -> runes_regenerating() <= MAX_REGENERATING_RUNES );
+  assert( runes -> runes_depleted() == MAX_RUNES - runes -> runes_full() - runes -> runes_regenerating() );
+
+  return new_regenerating_rune;
 }
 
 inline rune_t* rune_t::fill_rune()
 {
+  rune_t* new_regenerating_rune = nullptr;
+
   if ( state != STATE_FULL )
   {
     runes -> dk -> procs.ready_rune -> occur();
   }
+
   value = 1.0;
   state = STATE_FULL;
+
+  // Update actor rune resources, so we can re-use a lot of the normal resource mechanisms that the
+  // sim core offers
+  runes -> dk -> resource_gain( RESOURCE_RUNE, 1, runes -> dk -> gains.rune );
+
+  // Immediately update the state of the next regenerating rune, since rune_t::regen_rune presumes
+  // that the internal state of each invidual rune is always consistent with the rune regeneration
+  // rules
   if ( runes -> runes_depleted() > 0 && runes -> runes_regenerating() < MAX_REGENERATING_RUNES )
   {
     rune_t* new_regenerating_rune = runes -> first_depleted_rune();
     new_regenerating_rune -> state = STATE_REGENERATING;
-    return new_regenerating_rune;
   }
 
-  return nullptr;
+  // Internal state consistency for current rune regeneration rules
+  assert( runes -> runes_regenerating() <= MAX_REGENERATING_RUNES );
+  assert( runes -> runes_depleted() == MAX_RUNES - runes -> runes_full() - runes -> runes_regenerating() );
+
+  return new_regenerating_rune;
 }
 
 inline void rune_t::regen_rune( timespan_t periodicity, bool rc )
 {
+  gain_t* gain = rc ? runes -> dk -> gains.rc : runes -> dk -> gains.rune;
+
   if ( state == STATE_FULL )
   {
-    // Overflow
     if ( runes -> runes_regenerating() < MAX_REGENERATING_RUNES )
     {
       double regen_amount = periodicity.total_seconds() * runes -> dk -> runes_per_second();
-      gain_t* gain = rc ? runes -> dk -> gains.rc : runes -> dk -> gains.rune;
       gain -> add( RESOURCE_RUNE, 0, regen_amount );
     }
     return;
@@ -639,22 +646,23 @@ inline void rune_t::regen_rune( timespan_t periodicity, bool rc )
     return;
   }
 
-  // Rune is in regenerating state, regenerate it up
   double regen_amount = periodicity.total_seconds() * runes -> dk -> runes_per_second();
-  gain_t* gain = rc ? runes -> dk -> gains.rc : runes -> dk -> gains.rune;
 
   double new_value = value + regen_amount;
   double overflow = 0.0;
   if ( new_value > 1.0 )
   {
     overflow = new_value - 1.0;
-    new_value = 1.0;
   }
 
   rune_t* overflow_rune = nullptr;
   if ( new_value >= 1.0 )
   {
     overflow_rune = fill_rune();
+  }
+  else
+  {
+    value = new_value;
   }
 
   // If we got an overflow rune (filling up this rune caused a depleted rune to become
@@ -671,19 +679,8 @@ inline void rune_t::regen_rune( timespan_t periodicity, bool rc )
     gain -> add( RESOURCE_RUNE, 0, overflow );
   }
 
-  if ( runes -> dk -> sim -> debug )
-    runes -> dk -> sim -> out_debug.printf( "rune has %.2f regen time (%.3f per second) with %.2f%% haste",
-      1 / runes -> dk -> runes_per_second(), runes -> dk -> runes_per_second(),
-      100 * ( 1 / runes -> dk -> cache.attack_haste() - 1 ) );
-
-  if ( state == STATE_FULL )
-  {
-    if ( runes -> dk -> sim -> log )
-      log_rune_status( runes -> dk );
-
-    if ( runes -> dk -> sim -> debug )
-      runes -> dk -> sim -> out_debug.printf( "rune regens to full" );
-  }
+  if ( state == STATE_FULL && runes -> dk -> sim -> log )
+    log_rune_status( runes -> dk );
 }
 
 namespace pets {
@@ -1463,58 +1460,40 @@ namespace { // UNNAMED NAMESPACE
 template <class Base>
 struct death_knight_action_t : public Base
 {
-
   typedef Base action_base_t;
   typedef death_knight_action_t base_t;
 
-  int cost_runes;
-  proc_t* runes_consumed;
-
   death_knight_action_t( const std::string& n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() ) :
-    action_base_t( n, p, s ), cost_runes( 0 )
+    action_base_t( n, p, s )
   {
-    cost_runes = 0;
-    runes_consumed = nullptr;
-    action_base_t::may_crit   = true;
-    action_base_t::may_glance = false;
-
-    extract_rune_cost( s );
+    this -> may_crit   = true;
+    this -> may_glance = false;
   }
 
-  death_knight_t* p() const { return static_cast< death_knight_t* >( action_base_t::player ); }
+  death_knight_t* p() const
+  { return static_cast< death_knight_t* >( this -> player ); }
 
   death_knight_td_t* td( player_t* t ) const
   { return p() -> get_target_data( t ); }
 
-  void init()
+  void consume_resource() override
   {
-    action_base_t::init();
+    action_base_t::consume_resource();
 
-    if ( cost_runes ) {
-      runes_consumed = this -> player -> get_proc( this -> data().name_cstr() + std::string( ": Runes" ) );
+    // Death Knights have unique snowflake mechanism for RP energize. Base actions indicate the
+    // amount as a negative value resource cost in spell data, so abuse that.
+    if ( this -> base_costs[ RESOURCE_RUNIC_POWER ] < 0 )
+    {
+      this -> player -> resource_gain( RESOURCE_RUNIC_POWER,
+          std::fabs( this -> base_costs[ RESOURCE_RUNIC_POWER ] ), nullptr, this );
     }
-
-  };
-
-// Virtual Overrides
-
-  virtual void reset()
-  {
-    action_base_t::reset();
   }
 
-  virtual void consume_resource()
-  {
-    if ( ! ( action_base_t::energize_type != ENERGIZE_NONE &&
-          action_base_t::energize_resource == RESOURCE_RUNIC_POWER ) )
-      action_base_t::consume_resource();
-  }
-
-  virtual double composite_target_multiplier( player_t* t ) const
+  double composite_target_multiplier( player_t* t ) const override
   {
     double m = action_base_t::composite_target_multiplier( t );
 
-    if ( dbc::is_school( action_base_t::school, SCHOOL_FROST ) )
+    if ( dbc::is_school( this -> school, SCHOOL_FROST ) )
     {
       death_knight_td_t* tdata = td( t );
       double debuff = tdata -> debuffs_razorice -> data().effectN( 1 ).percent();
@@ -1526,58 +1505,7 @@ struct death_knight_action_t : public Base
     return m;
   }
 
-  virtual expr_t* create_expression( const std::string& name_str );
-
-  // Consume Runes ============================================================
-
-  void consume_runes( int n_runes )
-  {
-      // TODO: mrdmnd - this will need to be rethought
-    /*
-    if ( p() -> sim -> log )
-    {
-      log_rune_status( p() );
-    }
-
-    for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
-    {
-      if ( ! use[ i ].first )
-      {
-        continue;
-      }
-
-      const rune_t& rune = p() -> _runes.slot[ i ];
-      if ( rune.is_death() )
-        rune_consumed[ RUNE_TYPE_DEATH - 1 ] -> occur();
-      else if ( rune.is_blood() )
-        rune_consumed[ RUNE_TYPE_BLOOD - 1 ] -> occur();
-      else if ( rune.is_unholy() )
-        rune_consumed[ RUNE_TYPE_UNHOLY - 1 ] -> occur();
-      else if ( rune.is_frost() )
-        rune_consumed[ RUNE_TYPE_FROST - 1 ] -> occur();
-
-      // Show the consumed type of the rune
-      // Not the type it is after consumption
-      int consumed_type = p() -> _runes.slot[ i ].type;
-
-      p() -> _runes.slot[ i ].consume( convert_runes );
-
-      if ( p() -> sim -> log )
-        p() -> sim -> out_log.printf( "%s consumes rune #%d, type %d", p() -> name(), i, consumed_type );
-    }
-
-    if ( p() -> sim -> log )
-    {
-      log_rune_status( p() );
-    }
-    */
-  }
-
-private:
-  void extract_rune_cost( const spell_data_t* spell )
-  {
-    if ( ! spell -> ok() ) return;
-  }
+  expr_t* create_expression( const std::string& name_str ) override;
 };
 
 // ==========================================================================
@@ -1670,12 +1598,6 @@ struct death_knight_heal_t : public death_knight_action_t<heal_t>
 void death_knight_melee_attack_t::consume_resource()
 {
   base_t::consume_resource();
-
-  // TODO: mrdmnd - handle consume_runes now that `use` ( previously a rune_consume_t) doesn't exist
-  /*
-  if ( result_is_hit( execute_state -> result ) || always_consume )
-    consume_runes( use, convert_runes == 0 ? false : rng().roll( convert_runes ) == 1 );
-  */
 }
 
 // death_knight_melee_attack_t::execute() ===================================
@@ -1721,12 +1643,6 @@ bool death_knight_melee_attack_t::ready()
 void death_knight_spell_t::consume_resource()
 {
   base_t::consume_resource();
-
-  if ( result_is_hit( execute_state -> result ) ) {
-    //consume_runes( use, convert_runes == 0 ? false : rng().roll( convert_runes ) == 1 );
-    // consume_runes(n_runes)
-    // TODO: mrdmnd FIX THIS
-  }
 }
 
 // death_knight_spell_t::execute() ==========================================
@@ -1945,7 +1861,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
       // Simulate rune regen for 5 seconds for the consumed runes. Ugly but works
       // Note that this presumes no other rune-using abilities are used
       // precombat
-      for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
+      for ( int i = 0; i < MAX_RUNES; ++i )
         p() -> _runes.slot[ i ].regen_rune( timespan_t::from_seconds( 5.0 ) );
 
       //simulate RP decay for that 5 seconds
@@ -2142,15 +2058,6 @@ struct soul_reaper_t : public death_knight_melee_attack_t
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
       p() -> pets.dancing_rune_weapon -> drw_soul_reaper -> execute();
-
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      p() -> buffs.scent_of_blood -> trigger();
-      if ( player -> sets.has_set_bonus( DEATH_KNIGHT_BLOOD, T18, B2 ) )
-      {
-        p() -> buffs.scent_of_blood -> trigger();
-      }
-    }
   }
 
   void tick( dot_t* dot ) override
@@ -2658,33 +2565,11 @@ struct death_strike_heal_t : public death_knight_heal_t
     target     = p;
   }
 
-  double action_multiplier() const override
-  {
-    double m = death_knight_heal_t::action_multiplier();
-
-    m *= 1.0 + p() -> buffs.scent_of_blood -> check() * p() -> buffs.scent_of_blood -> data().effectN( 1 ).percent();
-
-    return m;
-  }
-
   void impact( action_state_t* state ) override
   {
     death_knight_heal_t::impact( state );
 
     trigger_blood_shield( state );
-  }
-
-  void consume_resource() override
-  {
-    death_knight_heal_t::consume_resource();
-
-    double sob_consume_stacks = static_cast<double>( p() -> buffs.scent_of_blood -> check() );
-    if ( player -> sets.has_set_bonus( DEATH_KNIGHT_BLOOD, T18, B4 ) )
-    {
-      sob_consume_stacks = util::round( sob_consume_stacks * player -> sets.set( DEATH_KNIGHT_BLOOD, T18, B4 ) -> effectN( 1 ).percent(), 0 );
-    }
-
-    p() -> buffs.scent_of_blood -> decrement( static_cast<int>( sob_consume_stacks ) );
   }
 
   void trigger_blood_shield( action_state_t* state )
@@ -2769,12 +2654,6 @@ struct death_strike_t : public death_knight_melee_attack_t
       heal -> schedule_execute();
     }
 
-    if ( p() -> sets.has_set_bonus( DEATH_KNIGHT_BLOOD, T17, B2 ) && p() -> buffs.scent_of_blood -> check() )
-    {
-      timespan_t reduction = p() -> sets.set( DEATH_KNIGHT_BLOOD, T17, B2 ) -> effectN( 1 ).time_value() * p() -> buffs.scent_of_blood -> check();
-      p() -> cooldown.vampiric_blood -> ready -= reduction;
-    }
-
     p() -> buffs.deathbringer -> decrement();
   }
 
@@ -2812,7 +2691,7 @@ struct empower_rune_weapon_t : public death_knight_spell_t
 
     double erw_gain = 0.0;
     double erw_over = 0.0;
-    for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
+    for ( int i = 0; i < MAX_RUNES; ++i )
     {
       rune_t& r = p() -> _runes.slot[ i ];
       erw_gain += 1 - r.value;
@@ -3115,6 +2994,7 @@ struct obliterate_t : public death_knight_melee_attack_t
     if ( p -> main_hand_weapon.group() == WEAPON_2H )
       weapon_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 1 ).percent();
 
+    std::cerr << base_costs[ RESOURCE_RUNE ] << std::endl;
   }
 
   virtual void execute() override
@@ -3253,17 +3133,6 @@ struct blood_boil_t : public death_knight_spell_t
     if ( p() -> buffs.crimson_scourge -> up() )
       p() -> buffs.crimson_scourge -> expire();
 
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      // Just use "main" target for the spread selection, spread logic is fully
-      // implemented in blood_boil_spread_t
-
-      p() -> buffs.scent_of_blood -> trigger();
-      if ( player -> sets.has_set_bonus( DEATH_KNIGHT_BLOOD, T18, B2 ) )
-      {
-        p() -> buffs.scent_of_blood -> trigger();
-      }
-    }
   }
 
   void impact( action_state_t* state ) override
@@ -4007,6 +3876,19 @@ void runeforge::stoneskin_gargoyle( special_effect_t& effect )
   p -> runeforge.rune_of_the_stoneskin_gargoyle -> default_chance = 1.0;
 }
 
+double death_knight_t::resource_loss( resource_e resource_type, double amount, gain_t* g, action_t* a )
+{
+  double actual_amount = player_t::resource_loss( resource_type, amount, g, a );
+  if ( resource_type == RESOURCE_RUNE )
+  {
+    _runes.consume( amount );
+    // Ensure rune state is consistent with the actor resource state for runes
+    assert( _runes.runes_full() == resources.current[ RESOURCE_RUNE ] );
+  }
+
+  return actual_amount;
+}
+
 void death_knight_t::trigger_runic_corruption( double rpcost )
 {
   if ( ! rng().roll( talent.runic_corruption -> effectN( 2 ).percent() * rpcost / 100.0 ) )
@@ -4086,7 +3968,7 @@ static expr_t* create_ready_in_expression( death_knight_t* player, const std::st
 
     double evaluate() override
     {
-      return ready_in( action -> p(), action -> cost_runes);
+      return ready_in( action -> p(), action -> base_costs[ RESOURCE_RUNE ] );
     }
   };
 
@@ -4288,6 +4170,7 @@ void death_knight_t::init_base_stats()
   base.attack_power_per_agility = 0.0;
 
   resources.base[ RESOURCE_RUNIC_POWER ] = 100;
+  resources.base[ RESOURCE_RUNE        ] = MAX_RUNES;
 
   base_gcd = timespan_t::from_seconds( 1.0 );
 
@@ -4314,7 +4197,6 @@ void death_knight_t::init_spells()
   spec.bladed_armor               = find_specialization_spell( "Bladed Armor" );
   spec.blood_rites                = find_specialization_spell( "Blood Rites" );
   spec.veteran_of_the_third_war   = find_specialization_spell( "Veteran of the Third War" );
-  spec.scent_of_blood             = find_specialization_spell( "Scent of Blood" );
   spec.crimson_scourge            = find_specialization_spell( "Crimson Scourge" );
   spec.sanguine_fortitude         = find_specialization_spell( "Sanguine Fortitude" );
   spec.will_of_the_necropolis     = find_specialization_spell( "Will of the Necropolis" );
@@ -4490,11 +4372,6 @@ void death_knight_t::create_buffs()
   //buffs.runic_corruption    = buff_creator_t( this, "runic_corruption", find_spell( 51460 ) )
   //                            .chance( talent.runic_corruption -> proc_chance() );
   buffs.runic_corruption    = new runic_corruption_buff_t( this );
-  buffs.scent_of_blood      = buff_creator_t( this, "scent_of_blood", find_spell( 50421 ) )
-                              .max_stack( find_spell( 50421 ) -> max_stacks() +
-                                          sets.set( DEATH_KNIGHT_BLOOD, T18, B2 ) -> effectN( 1 ).base_value() )
-                              .chance( spec.scent_of_blood -> ok() );
-
   buffs.sudden_doom         = buff_creator_t( this, "sudden_doom", find_spell( 81340 ) )
                               .max_stack( ( sets.has_set_bonus( SET_MELEE, T13, B2 ) ) ? 2 : 1 )
                               .cd( timespan_t::zero() )
@@ -4526,7 +4403,6 @@ void death_knight_t::init_gains()
   gains.butchery                         = get_gain( "butchery"                   );
   gains.chill_of_the_grave               = get_gain( "chill_of_the_grave"         );
   gains.power_refund                     = get_gain( "power_refund"               );
-  gains.scent_of_blood                   = get_gain( "scent_of_blood"             );
   gains.rune                             = get_gain( "rune_regen_all"             );
   gains.runic_empowerment                = get_gain( "runic_empowerment"          );
   gains.empower_rune_weapon              = get_gain( "empower_rune_weapon"        );
@@ -4561,6 +4437,7 @@ void death_knight_t::init_resources( bool force )
   player_t::init_resources( force );
 
   resources.current[ RESOURCE_RUNIC_POWER ] = 0;
+  resources.current[ RESOURCE_RUNE        ] = resources.max[ RESOURCE_RUNE ];
 }
 
 // death_knight_t::reset ====================================================
@@ -5041,9 +4918,16 @@ stat_e death_knight_t::convert_hybrid_stat( stat_e s ) const
 // death_knight_t::regen ====================================================
 void death_knight_t::regen( timespan_t periodicity ) {
   player_t::regen( periodicity );
+
+  if ( sim -> debug )
+    log_rune_status( this );
+
   for ( rune_t& rune : _runes.slot) {
     rune.regen_rune(periodicity);
   }
+
+  if ( sim -> debug )
+    log_rune_status( this );
 }
 
 // death_knight_t::runes_per_second =========================================
@@ -5069,11 +4953,11 @@ void death_knight_t::trigger_runic_empowerment( double rpcost )
   if ( ! rng().roll( talent.runic_empowerment -> effectN( 1 ).percent() * rpcost / 100.0 ) )
     return;
 
-  int depleted_runes[RUNE_SLOT_MAX];
+  int depleted_runes[MAX_RUNES];
   int num_depleted = 0;
 
   // Find fully depleted runes, i.e., both runes are on CD
-  for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
+  for ( int i = 0; i < MAX_RUNES; ++i )
   {
     if ( _runes.slot[i].is_depleted() )
     {
@@ -5137,7 +5021,7 @@ double death_knight_t::ready_runes_count( bool fractional ) const
   // If fractional is false, then calling this method on that rune array would return zero, because
   // there are no runes of value 1.0
   double result = 0;
-  for ( size_t rune_idx = 0; rune_idx < RUNE_SLOT_MAX; ++rune_idx )
+  for ( size_t rune_idx = 0; rune_idx < MAX_RUNES; ++rune_idx )
   {
     const rune_t& r = _runes.slot[ rune_idx ];
     if ( fractional || r.is_ready() )
@@ -5155,7 +5039,7 @@ double death_knight_t::runes_cooldown_min( ) const
 {
   double min_time = std::numeric_limits<double>::max();
 
-  for ( size_t rune_idx = 0; rune_idx < RUNE_SLOT_MAX; ++rune_idx )
+  for ( size_t rune_idx = 0; rune_idx < MAX_RUNES; ++rune_idx )
   {
     const rune_t& r = _runes.slot[ rune_idx ];
 
@@ -5179,7 +5063,7 @@ double death_knight_t::runes_cooldown_max( ) const
 {
   double max_time = 0;
 
-  for ( size_t rune_idx = 0; rune_idx < RUNE_SLOT_MAX; ++rune_idx )
+  for ( size_t rune_idx = 0; rune_idx < MAX_RUNES; ++rune_idx )
   {
     const rune_t& r = _runes.slot[ rune_idx ];
 
