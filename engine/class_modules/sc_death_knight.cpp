@@ -65,7 +65,7 @@ struct rune_t
   // Consume this rune and adjust internal rune state
   rune_t* consume();
   // Fill this rune and adjust internal rune state
-  rune_t* fill_rune();
+  rune_t* fill_rune( gain_t* gain = nullptr );
 
   void reset()
   {
@@ -171,7 +171,10 @@ struct death_knight_td_t : public actor_target_data_t {
   dot_t* dots_soul_reaper;
   dot_t* dots_defile;
 
-  debuff_t* debuffs_razorice;
+  struct
+  {
+    debuff_t* razorice;
+  } debuff;
 
   int diseases() const {
     int disease_count = 0;
@@ -204,6 +207,7 @@ public:
     buff_t* deaths_advance;
     buff_t* deathbringer;
     buff_t* icebound_fortitude;
+    buff_t* icy_talons;
     buff_t* killing_machine;
     buff_t* pillar_of_frost;
     buff_t* rime;
@@ -245,6 +249,7 @@ public:
     gain_t* blood_rites;
     gain_t* butchery;
     gain_t* chill_of_the_grave;
+    gain_t* murderous_efficiency;
     gain_t* power_refund;
     gain_t* rune;
     gain_t* rc;
@@ -299,7 +304,33 @@ public:
     const spell_data_t* runic_empowerment;
     const spell_data_t* runic_corruption;
 
+    // Frost
+
+    // Tier 1
+    const spell_data_t* shattering_strikes;
+    const spell_data_t* icy_talons;
+    const spell_data_t* murderous_efficiency;
+
+    // Tier 2
+    const spell_data_t* freezing_fog;
+    const spell_data_t* frozen_pulse;
+    const spell_data_t* horn_of_winter;
+
+    // Tier 3
+    const spell_data_t* icecap;
+    const spell_data_t* hungering_rune_weapon;
+    const spell_data_t* avalanche;
+
+    // Tier 6
+    const spell_data_t* frostscythe;
+    const spell_data_t* runic_attenuation;
+    const spell_data_t* gathering_storm;
+
+    // Tier 7
+    const spell_data_t* obliteration;
     const spell_data_t* breath_of_sindragosa;
+    const spell_data_t* glacial_advance;
+
     const spell_data_t* defile;
   } talent;
 
@@ -466,7 +497,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
   dots_soul_reaper     = target -> get_dot( "soul_reaper_dot", death_knight );
   dots_defile          = target -> get_dot( "defile",          death_knight );
 
-  debuffs_razorice = buff_creator_t( *this, "razorice", death_knight -> find_spell( 51714 ) )
+  debuff.razorice = buff_creator_t( *this, "razorice", death_knight -> find_spell( 51714 ) )
                      .period( timespan_t::zero() );
 }
 
@@ -589,7 +620,7 @@ inline rune_t* rune_t::consume()
   return new_regenerating_rune;
 }
 
-inline rune_t* rune_t::fill_rune()
+inline rune_t* rune_t::fill_rune( gain_t* gain )
 {
   rune_t* new_regenerating_rune = nullptr;
 
@@ -603,7 +634,7 @@ inline rune_t* rune_t::fill_rune()
 
   // Update actor rune resources, so we can re-use a lot of the normal resource mechanisms that the
   // sim core offers
-  runes -> dk -> resource_gain( RESOURCE_RUNE, 1, runes -> dk -> gains.rune );
+  runes -> dk -> resource_gain( RESOURCE_RUNE, 1, gain ? gain : runes -> dk -> gains.rune );
 
   // Immediately update the state of the next regenerating rune, since rune_t::regen_rune presumes
   // that the internal state of each invidual rune is always consistent with the rune regeneration
@@ -1508,9 +1539,9 @@ struct death_knight_action_t : public Base
     if ( dbc::is_school( this -> school, SCHOOL_FROST ) )
     {
       death_knight_td_t* tdata = td( t );
-      double debuff = tdata -> debuffs_razorice -> data().effectN( 1 ).percent();
+      double debuff = tdata -> debuff.razorice -> data().effectN( 1 ).percent();
 
-      m *= 1.0 + tdata -> debuffs_razorice -> check() * debuff;
+      m *= 1.0 + tdata -> debuff.razorice -> check() * debuff;
 
     }
 
@@ -2660,10 +2691,8 @@ struct empower_rune_weapon_t : public death_knight_spell_t
         continue;
       }
 
-      rune.fill_rune();
+      rune.fill_rune( p() -> gains.empower_rune_weapon );
     }
-
-    p() -> gains.empower_rune_weapon -> add( RESOURCE_RUNE, filled, overflow );
   }
 };
 
@@ -2703,6 +2732,18 @@ struct frost_strike_offhand_t : public death_knight_melee_attack_t
     special          = true;
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
   }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = death_knight_melee_attack_t::composite_target_multiplier( target );
+
+    if ( td( target ) -> debuff.razorice -> stack() == 5 ) // TODO: Hardcoded, sad face
+    {
+      m *= 1.0 + p() -> talent.shattering_strikes -> effectN( 1 ).percent();
+    }
+
+    return m;
+  }
 };
 
 struct frost_strike_t : public death_knight_melee_attack_t
@@ -2721,6 +2762,18 @@ struct frost_strike_t : public death_knight_melee_attack_t
     weapon     = &( p -> main_hand_weapon );
   }
 
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = death_knight_melee_attack_t::composite_target_multiplier( target );
+
+    if ( td( target ) -> debuff.razorice -> stack() == 5 ) // TODO: Hardcoded, sad face
+    {
+      m *= 1.0 + p() -> talent.shattering_strikes -> effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
   void execute() override
   {
     death_knight_melee_attack_t::execute();
@@ -2733,6 +2786,14 @@ struct frost_strike_t : public death_knight_melee_attack_t
       p() -> trigger_runic_empowerment( resource_consumed );
       p() -> trigger_runic_corruption( resource_consumed );
     }
+
+    death_knight_td_t* tdata = td( execute_state -> target );
+    if ( tdata -> debuff.razorice -> stack() == 5 ) // TODO: Hardcoded, sad face
+    {
+      tdata -> debuff.razorice -> expire();
+    }
+
+    p() -> buffs.icy_talons -> trigger();
   }
 };
 
@@ -2894,6 +2955,7 @@ struct obliterate_t : public death_knight_melee_attack_t
       if ( oh_attack )
         oh_attack -> execute();
 
+      bool killing_machine_consumed = false;
       if ( p() -> buffs.killing_machine -> check() )
         p() -> procs.oblit_killing_machine -> occur();
 
@@ -2901,7 +2963,23 @@ struct obliterate_t : public death_knight_melee_attack_t
            ( p() -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T18, B4 ) &&
              ! p() -> rng().roll( player -> sets.set( DEATH_KNIGHT_FROST, T18, B4 ) -> effectN( 1 ).percent() ) ) )
       {
+        killing_machine_consumed = p() -> buffs.killing_machine -> check();
         p() -> buffs.killing_machine -> decrement();
+      }
+
+      if ( killing_machine_consumed &&
+           rng().roll( p() -> talent.murderous_efficiency -> effectN( 1 ).percent() ) )
+      {
+        rune_t* rune = p() -> _runes.first_depleted_rune();
+        if ( ! rune )
+        {
+          rune = p() -> _runes.first_regenerating_rune();
+        }
+
+        if ( rune )
+        {
+          rune -> fill_rune( p() -> gains.murderous_efficiency );
+        }
       }
 
       p() -> buffs.rime -> trigger();
@@ -3615,8 +3693,8 @@ void runeforge::razorice_attack( special_effect_t& effect )
     {
       double m = death_knight_melee_attack_t::composite_target_multiplier( t );
 
-      m /= 1.0 + td( t ) -> debuffs_razorice -> check() *
-            td( t ) -> debuffs_razorice -> data().effectN( 1 ).percent();
+      m /= 1.0 + td( t ) -> debuff.razorice -> check() *
+            td( t ) -> debuff.razorice -> data().effectN( 1 ).percent();
 
       return m;
     }
@@ -3638,9 +3716,9 @@ void runeforge::razorice_debuff( special_effect_t& effect )
 
     void execute( action_t* a, action_state_t* state ) override
     {
-      debug_cast< death_knight_t* >( a -> player ) -> get_target_data( state -> target ) -> debuffs_razorice -> trigger();
+      debug_cast< death_knight_t* >( a -> player ) -> get_target_data( state -> target ) -> debuff.razorice -> trigger();
       if ( a -> sim -> current_time() < timespan_t::from_seconds( 0.01 ) )
-        debug_cast< death_knight_t* >( a -> player ) -> get_target_data( state -> target ) -> debuffs_razorice -> constant = false;
+        debug_cast< death_knight_t* >( a -> player ) -> get_target_data( state -> target ) -> debuff.razorice -> constant = false;
     }
   };
 
@@ -3999,11 +4077,30 @@ void death_knight_t::init_spells()
 
   // Talents
   talent.blood_tap                = find_talent_spell( "Blood Tap" );
-  talent.runic_empowerment        = find_talent_spell( "Runic Empowerment" );
   talent.runic_corruption         = find_talent_spell( "Runic Corruption" );
-
-  talent.breath_of_sindragosa     = find_talent_spell( "Breath of Sindragosa" );
   talent.defile                   = find_talent_spell( "Defile" );
+
+  // Frost Talents
+  // Tier 1
+  talent.shattering_strikes    = find_talent_spell( "Shattering Strikes" );
+  talent.icy_talons            = find_talent_spell( "Icy Talons" );
+  talent.murderous_efficiency  = find_talent_spell( "Murderous Efficiency" );
+  // Tier 2
+  talent.freezing_fog          = find_talent_spell( "Freezing Fog" );
+  talent.frozen_pulse          = find_talent_spell( "Frozen Pulse" );
+  talent.horn_of_winter        = find_talent_spell( "Horn of Winter" );
+  // Tier 3
+  talent.icecap                = find_talent_spell( "Icecap" );
+  talent.hungering_rune_weapon = find_talent_spell( "Hungering Rune Weapon" );
+  talent.avalanche             = find_talent_spell( "Avalanche" );
+  // Tier 6
+  talent.frostscythe           = find_talent_spell( "Frostscythe" );
+  talent.runic_attenuation     = find_talent_spell( "Runic Attenuation" );
+  talent.gathering_storm       = find_talent_spell( "Gathering Storm" );
+  // Tier 7
+  talent.obliteration          = find_talent_spell( "Obliteration" );
+  talent.breath_of_sindragosa  = find_talent_spell( "Breath of Sindragosa" );
+  talent.glacial_advance       = find_talent_spell( "Glacial Advance" );
 
   // Glyphs
   glyph.chains_of_ice             = find_glyph_spell( "Glyph of Chains of Ice" );
@@ -4126,6 +4223,9 @@ void death_knight_t::create_buffs()
                               .duration( find_class_spell( "Icebound Fortitude" ) -> duration() *
                                          ( 1.0 + glyph.icebound_fortitude -> effectN( 2 ).percent() ) )
                               .cd( timespan_t::zero() );
+  buffs.icy_talons          = haste_buff_creator_t( this, "icy_talons", find_spell( 194879 ) )
+                              .default_value( find_spell( 194879 ) -> effectN( 1 ).percent() )
+                              .trigger_spell( talent.icy_talons );
   buffs.killing_machine     = buff_creator_t( this, "killing_machine", spec.killing_machine -> effectN( 1 ).trigger() )
                               .trigger_spell( spec.killing_machine )
                               .default_value( find_spell( 51124 ) -> effectN( 1 ).percent() );
@@ -4173,6 +4273,7 @@ void death_knight_t::init_gains()
   gains.blood_rites                      = get_gain( "blood_rites"                );
   gains.butchery                         = get_gain( "butchery"                   );
   gains.chill_of_the_grave               = get_gain( "chill_of_the_grave"         );
+  gains.murderous_efficiency             = get_gain( "Murderous Efficiency"       );
   gains.power_refund                     = get_gain( "power_refund"               );
   gains.rune                             = get_gain( "Rune Regeneration"          );
   gains.runic_empowerment                = get_gain( "Runic Empowerment"          );
@@ -4542,6 +4643,11 @@ double death_knight_t::composite_melee_speed() const
 {
   double haste = player_t::composite_melee_speed();
 
+  if ( buffs.icy_talons -> up() )
+  {
+    haste *= 1.0 / ( 1.0 + buffs.icy_talons -> check_stack_value() );
+  }
+
   return haste;
 }
 
@@ -4719,8 +4825,7 @@ void death_knight_t::trigger_runic_empowerment( double rpcost )
       sim -> out_debug.printf( "%s Runic Empowerment regenerated rune", name() );
       log_rune_status( this );
     }
-    regenerated_rune -> fill_rune();
-    gains.runic_empowerment -> add ( RESOURCE_RUNE, 1, 0 );
+    regenerated_rune -> fill_rune( gains.runic_empowerment );
 
     if ( sim -> debug )
     {
