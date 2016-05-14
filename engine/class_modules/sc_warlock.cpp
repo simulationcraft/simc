@@ -1601,6 +1601,8 @@ private:
 
     affected_by_contagion = data().affected_by( p() -> find_spell( 30108 ) -> effectN( 2 ) );
 
+    destro_mastery = true;
+
     parse_spell_coefficient( *this );
 
   }
@@ -1611,6 +1613,7 @@ public:
 
   proc_t* havoc_proc;
 
+  bool destro_mastery;
   bool affected_by_flamelicked;
   bool affected_by_contagion;
   bool affected_by_backdraft;
@@ -3237,6 +3240,7 @@ struct demonic_power_damage_t : public warlock_spell_t
   {
     background = true;
     proc = true;
+    destro_mastery = false;
   }
 };
 
