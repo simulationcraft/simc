@@ -239,6 +239,7 @@ public:
   struct cooldowns_t {
     cooldown_t* antimagic_shell;
     cooldown_t* bone_shield_icd;
+    cooldown_t* pillar_of_frost;
     cooldown_t* vampiric_blood;
   } cooldown;
 
@@ -247,6 +248,7 @@ public:
     spell_t* blood_plague;
     spell_t* frost_fever;
     spell_t* necrosis;
+    action_t* avalanche;
   } active_spells;
 
   // Gains
@@ -256,6 +258,7 @@ public:
     gain_t* butchery;
     gain_t* chill_of_the_grave;
     gain_t* horn_of_winter;
+    gain_t* hungering_rune_weapon;
     gain_t* murderous_efficiency;
     gain_t* power_refund;
     gain_t* rune;
@@ -412,7 +415,7 @@ public:
     cooldown.antimagic_shell = get_cooldown( "antimagic_shell" );
     cooldown.bone_shield_icd = get_cooldown( "bone_shield_icd" );
     cooldown.bone_shield_icd -> duration = timespan_t::from_seconds( 1.0 );
-
+    cooldown.pillar_of_frost = get_cooldown( "pillar_of_frost" );
     cooldown.vampiric_blood = get_cooldown( "vampiric_blood" );
 
     regen_type = REGEN_DYNAMIC;
@@ -1596,6 +1599,8 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
   virtual bool   ready() override;
 
   void consume_killing_machine( const action_state_t* state, proc_t* proc ) const;
+  void trigger_icecap( const action_state_t* state ) const;
+  void trigger_avalanche( const action_state_t* state ) const;
 };
 
 // ==========================================================================
@@ -1670,6 +1675,8 @@ void death_knight_melee_attack_t::execute()
 void death_knight_melee_attack_t::impact( action_state_t* state )
 {
   base_t::impact( state );
+
+  trigger_avalanche( state );
 }
 
 // death_knight_melee_attack_t::ready() =====================================
@@ -1678,6 +1685,8 @@ bool death_knight_melee_attack_t::ready()
 {
   return base_t::ready();
 }
+
+// death_knight_melee_attack_t::consume_killing_machine() ===================
 
 void death_knight_melee_attack_t::consume_killing_machine( const action_state_t* state, proc_t* proc ) const
 {
@@ -1706,6 +1715,47 @@ void death_knight_melee_attack_t::consume_killing_machine( const action_state_t*
     // TODO: Spell data the number of runes
     p() -> replenish_rune( 1, p() -> gains.murderous_efficiency );
   }
+}
+
+// death_knight_melee_attack_t::trigger_icecap() ============================
+
+void death_knight_melee_attack_t::trigger_icecap( const action_state_t* state ) const
+{
+  if ( state -> result != RESULT_CRIT )
+  {
+    return;
+  }
+
+  if ( ! p() -> talent.icecap -> ok() )
+  {
+    return;
+  }
+
+  p() -> cooldown.pillar_of_frost -> adjust( timespan_t::from_seconds(
+          -p() -> talent.icecap -> effectN( 1 ).base_value() / 10.0 ) );
+}
+
+// death_knight_melee_attack_t::trigger_avalanche() ========================
+
+void death_knight_melee_attack_t::trigger_avalanche( const action_state_t* state ) const
+{
+  if ( state -> result != RESULT_CRIT )
+  {
+    return;
+  }
+
+  if ( ! p() -> talent.avalanche -> ok() )
+  {
+    return;
+  }
+
+  if ( ! p() -> buffs.pillar_of_frost -> up() )
+  {
+    return;
+  }
+
+  p() -> active_spells.avalanche -> target = state -> target;
+  p() -> active_spells.avalanche -> schedule_execute();
 }
 
 // ==========================================================================
@@ -1744,6 +1794,18 @@ struct frozen_pulse_t : public death_knight_spell_t
 {
   frozen_pulse_t( death_knight_t* player ) :
     death_knight_spell_t( "frozen_pulse", player, player -> talent.frozen_pulse -> effectN( 1 ).trigger() )
+  {
+    aoe = -1;
+    background = true;
+  }
+};
+
+// Avalanche ===============================================================
+
+struct avalanche_t : public death_knight_spell_t
+{
+  avalanche_t( death_knight_t* player ) :
+    death_knight_spell_t( "avalanche", player, player -> talent.avalanche -> effectN( 1 ).trigger() )
   {
     aoe = -1;
     background = true;
@@ -2782,6 +2844,16 @@ struct empower_rune_weapon_t : public death_knight_spell_t
       rune.fill_rune( p() -> gains.empower_rune_weapon );
     }
   }
+
+  bool ready() override
+  {
+    if ( p() -> talent.hungering_rune_weapon -> ok() )
+    {
+      return false;
+    }
+
+    return death_knight_spell_t::ready();
+  }
 };
 
 // Festering Strike =========================================================
@@ -2822,11 +2894,13 @@ struct frostscythe_t : public death_knight_melee_attack_t
 
     crit_bonus_multiplier *= p -> talent.frostscythe -> effectN( 3 ).percent();
   }
+
   void execute() override
   {
     death_knight_melee_attack_t::execute();
 
     consume_killing_machine( execute_state, p() -> procs.fs_killing_machine );
+    trigger_icecap( execute_state );
   }
 
   double composite_crit() const override
@@ -2862,6 +2936,14 @@ struct frost_strike_offhand_t : public death_knight_melee_attack_t
     }
 
     return m;
+  }
+
+  void execute() override
+  {
+    death_knight_melee_attack_t::execute();
+
+    // TODO: Both hands, or just main hand?
+    trigger_icecap( execute_state );
   }
 };
 
@@ -2914,6 +2996,9 @@ struct frost_strike_t : public death_knight_melee_attack_t
     }
 
     p() -> buffs.icy_talons -> trigger();
+
+    // TODO: Both hands, or just main hand?
+    trigger_icecap( execute_state );
   }
 };
 
@@ -2981,6 +3066,34 @@ struct howling_blast_t : public death_knight_spell_t
 
     if ( result_is_hit( s -> result ) )
       p() -> apply_diseases( s, DISEASE_FROST_FEVER );
+  }
+};
+
+// Hungering Rune Weapon ======================================================
+
+struct hungering_rune_weapon_t : public death_knight_spell_t
+{
+  hungering_rune_weapon_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "hungering_rune_weapon", p, p -> talent.hungering_rune_weapon )
+  {
+    parse_options( options_str );
+
+    harmful = hasted_ticks = false;
+    // Handle energize in a custom way
+    energize_type = ENERGIZE_NONE;
+    tick_zero = true;
+    target = player;
+    // Spell has two different periodicities in two effects, weird++. Pick the one that is indicated
+    // by the tooltip.
+    base_tick_time = data().effectN( 1 ).period();
+  }
+
+  void tick( dot_t* d ) override
+  {
+    death_knight_spell_t::tick( d );
+
+    p() -> replenish_rune( data().effectN( 1 ).base_value(), p() -> gains.hungering_rune_weapon );
+    p() -> resource_gain( RESOURCE_RUNIC_POWER, data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ), p() -> gains.hungering_rune_weapon, this );
   }
 };
 
@@ -3071,9 +3184,12 @@ struct obliterate_offhand_t : public death_knight_melee_attack_t
     return cc;
   }
 
-  void impact( action_state_t* s ) override
+  void execute() override
   {
-    death_knight_melee_attack_t::impact( s );
+    death_knight_melee_attack_t::execute();
+
+    // TODO: Both hands, or just main hand?
+    trigger_icecap( execute_state );
   }
 };
 
@@ -3096,8 +3212,6 @@ struct obliterate_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::execute();
 
-    consume_killing_machine( execute_state, p() -> procs.oblit_killing_machine );
-
     if ( result_is_hit( execute_state -> result ) )
     {
       if ( oh_attack )
@@ -3105,6 +3219,11 @@ struct obliterate_t : public death_knight_melee_attack_t
 
       p() -> buffs.rime -> trigger();
     }
+
+    consume_killing_machine( execute_state, p() -> procs.oblit_killing_machine );
+
+    // TODO: Both hands, or just main hand?
+    trigger_icecap( execute_state );
   }
 
   double composite_crit() const override
@@ -3982,6 +4101,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "remorseless_winter"       ) return new remorseless_winter_t       ( this, options_str );
   if ( name == "horn_of_winter"           ) return new horn_of_winter_t           ( this, options_str );
   if ( name == "frostscythe"              ) return new frostscythe_t              ( this, options_str );
+  if ( name == "hungering_rune_weapon"    ) return new hungering_rune_weapon_t    ( this, options_str );
 
   // Unholy Actions
   if ( name == "army_of_the_dead"         ) return new army_of_the_dead_t         ( this, options_str );
@@ -4276,6 +4396,11 @@ void death_knight_t::init_spells()
     active_spells.necrosis = new necrosis_t( this );
 
   fallen_crusader += find_spell( 53365 ) -> effectN( 1 ).percent();
+
+  if ( talent.avalanche -> ok() )
+  {
+    active_spells.avalanche = new avalanche_t( this );
+  }
 }
 
 // death_knight_t::default_apl_blood ========================================
@@ -4430,6 +4555,7 @@ void death_knight_t::init_gains()
   gains.butchery                         = get_gain( "butchery"                   );
   gains.chill_of_the_grave               = get_gain( "chill_of_the_grave"         );
   gains.horn_of_winter                   = get_gain( "Horn of Winter"             );
+  gains.hungering_rune_weapon            = get_gain( "Hungering Rune Weapon"      );
   gains.murderous_efficiency             = get_gain( "Murderous Efficiency"       );
   gains.power_refund                     = get_gain( "power_refund"               );
   gains.rune                             = get_gain( "Rune Regeneration"          );
