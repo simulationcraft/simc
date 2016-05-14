@@ -1521,8 +1521,6 @@ public:
 template <class Base>
 struct druid_attack_t : public druid_action_t< Base >
 {
-protected:
-  unsigned targets_hit;
 private:
   typedef druid_action_t< Base > ab;
 public:
@@ -1591,11 +1589,9 @@ public:
 
   virtual void execute()
   {
-    targets_hit = 0;
-
     ab::execute();
 
-    if ( consumes_bloodtalons && targets_hit > 0 )
+    if ( consumes_bloodtalons && hit_any_target )
     {
       bt_counter -> count_execute();
       tf_counter -> count_execute();
@@ -1608,13 +1604,8 @@ public:
   {
     ab::impact( s );
 
-    if ( ab::result_is_hit( s -> result ) )
-    {
-      targets_hit++;
-
-      if ( ! ab::special )
-        trigger_clearcasting();
-    }
+    if ( ab::result_is_hit( s -> result && ! ab::special )
+      trigger_clearcasting();
   }
 
   virtual void tick( dot_t* d )
@@ -2215,7 +2206,7 @@ public:
     if ( consumes_clearcasting && current_resource() == RESOURCE_ENERGY && base_t::cost() > 0 )
       p() -> buff.clearcasting -> decrement();
 
-    if ( consumes_combo_points && result_is_hit( execute_state -> result ) )
+    if ( consumes_combo_points && hit_any_target )
     {
       int consumed = (int) p() -> resources.current[ RESOURCE_COMBO_POINT ];
 
@@ -2786,7 +2777,7 @@ struct ferocious_bite_t : public cat_attack_t
   {
     // Extra energy consumption happens first.
     // In-game it happens before the skill even casts but let's not do that because its dumb.
-    if ( result_is_hit( execute_state -> result ) )
+    if ( hit_any_target )
     {
       player -> resource_loss( current_resource(), excess_energy );
       stats -> consume_resource( current_resource(), excess_energy );
@@ -3303,7 +3294,8 @@ struct thrash_cat_t : public cat_attack_t
   {
     cat_attack_t::execute();
 
-    p() -> buff.scent_of_blood -> trigger( 1, targets_hit * p() -> buff.scent_of_blood -> default_value );
+    p() -> buff.scent_of_blood -> trigger( 1,
+      num_targets_hit * p() -> buff.scent_of_blood -> default_value );
 
     if ( shadow_thrash && p() -> rppm.shadow_thrash -> trigger() )
       shadow_thrash -> execute();
@@ -4953,7 +4945,7 @@ struct lunar_strike_t : public druid_spell_t
     druid_spell_t::execute();
 
     // Nature's Balance only extends Moonfire on the primary target.
-    if ( natures_balance > timespan_t::zero() && result_is_hit( execute_state -> result ) )
+    if ( natures_balance > timespan_t::zero() && hit_any_target )
       td( execute_state -> target ) -> dots.moonfire -> extend_duration( natures_balance, timespan_t::from_seconds( 20.0 ) );
 
     p() -> buff.lunar_empowerment -> decrement();
@@ -5231,7 +5223,7 @@ struct solar_wrath_t : public druid_spell_t
 
     druid_spell_t::execute();
     
-    if ( natures_balance > timespan_t::zero() && result_is_hit( execute_state -> result ) )
+    if ( natures_balance > timespan_t::zero() && hit_any_target )
       td( execute_state -> target ) -> dots.sunfire -> extend_duration( natures_balance, timespan_t::from_seconds( 20.0 ) );
 
     if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T17, B4 ) )
@@ -5537,7 +5529,7 @@ struct starsurge_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) )
+    if ( hit_any_target )
     {
       // Dec 3 2015: Starsurge must hit to grant empowerments, but grants them on cast not impact.
       p() -> buff.solar_empowerment -> trigger();
