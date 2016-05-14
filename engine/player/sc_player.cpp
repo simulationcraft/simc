@@ -4510,7 +4510,7 @@ double player_t::resource_gain( resource_e resource_type,
                                 gain_t*   source,
                                 action_t* action )
 {
-  if ( current.sleeping )
+  if ( current.sleeping || amount == 0.0 )
     return 0.0;
 
   double actual_amount = std::min( amount, resources.max[ resource_type ] - resources.current[ resource_type ] );
