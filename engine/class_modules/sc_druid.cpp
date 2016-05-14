@@ -343,7 +343,6 @@ public:
     buff_t* moonkin_form;
     buff_t* oneths_intuition; // Legion Legendary
     buff_t* oneths_overconfidence; // Legion Legendary
-    buff_t* owlkin_frenzy;
     buff_t* solar_empowerment;
     buff_t* star_power; // Moon and Stars artifact medal
     buff_t* the_emerald_dreamcatcher; // Legion Legendary
@@ -420,9 +419,6 @@ public:
     // Balance
     gain_t* astral_communion;
     gain_t* blessing_of_anshe;
-    gain_t* blessing_of_elune;
-    gain_t* celestial_alignment;
-    gain_t* incarnation;
     gain_t* lunar_strike;
     gain_t* shooting_stars;
     gain_t* solar_wrath;
@@ -828,7 +824,6 @@ public:
   virtual void      assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* ) override;
   virtual void      assess_heal( school_e, dmg_e, action_state_t* ) override;
   virtual void      recalculate_resource_max( resource_e ) override;
-  virtual double    resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
   virtual void      create_options() override;
   virtual std::string      create_profile( save_e type = SAVE_ALL ) override;
 
@@ -1733,12 +1728,11 @@ namespace spells {
 struct druid_spell_t : public druid_spell_base_t<spell_t>
 {
 private:
-  bool consumed_owlkin_frenzy;
+  typedef druid_spell_base_t<spell_t> ab;
 public:
   bool incarnation;
   bool celestial_alignment;
   bool blessing_of_elune;
-  bool consumes_owlkin_frenzy;
   gain_t* ap_gain;
 
   druid_spell_t( const std::string& token, druid_t* p,
@@ -1748,25 +1742,28 @@ public:
       incarnation( data().affected_by( p -> talent.incarnation_moonkin -> effectN( 3 ) ) ),
       celestial_alignment( data().affected_by( p -> spec.celestial_alignment -> effectN( 3 ) ) ),
       blessing_of_elune( data().affected_by( p -> spec.blessing_of_elune -> effectN( 1 ) ) ),
-      consumes_owlkin_frenzy( false ),
       ap_gain( p->get_gain( name() ) )
   {
     parse_options( options );
   }
 
-  virtual void reset()
+  virtual double composite_energize_amount( const action_state_t* s ) const override
   {
-    spell_t::reset();
+    double e = ab::composite_energize_amount( s );
 
-    // Allows precasted spells, which circumvent schedule_execute(), to consume Owlkin Frenzy.
-    consumed_owlkin_frenzy = consumes_owlkin_frenzy;
-  }
+    if ( energize_resource_() == RESOURCE_ASTRAL_POWER )
+    {
+      if ( blessing_of_elune && p() -> buff.blessing_of_elune -> up() )
+        e *= 1.0 + p() -> spec.blessing_of_elune -> effectN( 1 ).percent();
 
-  virtual void schedule_execute( action_state_t* s ) override
-  {
-    spell_t::schedule_execute( s );
+      if ( celestial_alignment && p() -> buff.celestial_alignment -> check() )
+        e *= 1.0 + p() -> spec.celestial_alignment -> effectN( 3 ).percent();
 
-    consumed_owlkin_frenzy = consumes_owlkin_frenzy && p() -> buff.owlkin_frenzy -> up();
+      if ( incarnation && p() -> buff.incarnation_moonkin -> check() )
+        e *= 1.0 + p() -> talent.incarnation_moonkin -> effectN( 3 ).percent();
+    }
+
+    return e;
   }
 
   virtual void execute() override
@@ -1786,10 +1783,7 @@ public:
     if ( harmful && trigger_gcd > timespan_t::zero() )
       p() -> buff.star_power -> up();
 
-    spell_t::execute();
-
-    if ( consumed_owlkin_frenzy )
-      p() -> buff.owlkin_frenzy -> decrement();
+    ab::execute();
 
     if ( p() -> artifact.moon_and_stars.rank() && ! background &&
        ( p() -> buff.celestial_alignment -> check() || p() -> buff.incarnation_moonkin -> check() ) )
@@ -1798,7 +1792,7 @@ public:
 
   virtual void impact( action_state_t* s ) override
   {
-    spell_t::impact( s );
+    ab::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -1811,7 +1805,7 @@ public:
 
   virtual void tick( dot_t* d ) override
   {
-    spell_t::tick( d );
+    ab::tick( d );
 
     // Benefit tracking
     if ( d -> state -> result_amount > 0 )
@@ -1822,14 +1816,6 @@ public:
       if ( p() -> legendary.impeccable_fel_essence && dbc::is_school( school, SCHOOL_NATURE ) )
         p() -> buff.manipulated_fel_energy -> up();
     }
-  }
-
-  virtual timespan_t execute_time() const
-  {
-    if ( consumes_owlkin_frenzy && p() -> buff.owlkin_frenzy -> check() )
-      return timespan_t::zero();
-
-    return spell_t::execute_time();
   }
 
   virtual void trigger_balance_tier18_2pc()
@@ -4927,7 +4913,6 @@ struct lunar_strike_t : public druid_spell_t
 
     aoe = -1;
     base_aoe_multiplier = data().effectN( 3 ).percent();
-    consumes_owlkin_frenzy = true;
 
     natures_balance    = timespan_t::from_seconds( player -> talent.natures_balance -> effectN( 1 ).base_value() );
     
@@ -5210,8 +5195,6 @@ struct solar_wrath_t : public druid_spell_t
     druid_spell_t( "solar_wrath", player, player -> find_specialization_spell( "Solar Wrath" ) )
   {
     parse_options( options_str );
-    
-    consumes_owlkin_frenzy = true;
 
     natures_balance    = timespan_t::from_seconds( player -> talent.natures_balance -> effectN( 2 ).base_value() );
 
@@ -5512,8 +5495,6 @@ struct starsurge_t : public druid_spell_t
   {
     parse_options( options_str );
 
-    consumes_owlkin_frenzy = true;
-
     base_multiplier       *= 1.0 + player -> sets.set( SET_CASTER, T13, B4 ) -> effectN( 2 ).percent();
     base_multiplier       *= 1.0 + p() -> sets.set( SET_CASTER, T13, B2 ) -> effectN( 1 ).percent();
     base_crit             += p() -> sets.set( SET_CASTER, T15, B2 ) -> effectN( 1 ).percent();
@@ -5600,8 +5581,6 @@ struct stellar_flare_t : public druid_spell_t
     druid_spell_t( "stellar_flare", player, player -> talent.stellar_flare )
   {
     parse_options( options_str );
-
-    consumes_owlkin_frenzy = true;
   }
 
   // Dec 3 2015: Empowerments modifiers are multiplicative AND snapshot mastery.
@@ -6353,9 +6332,6 @@ void druid_t::create_buffs()
   buff.fury_of_elune_up      = buff_creator_t( this, "fury_of_elune_up", spell_data_t::nil() )
                                .max_stack( 10 ); // Tracking buff for APL use
 
-  buff.owlkin_frenzy         = buff_creator_t( this, "owlkin_frenzy", find_spell( 157228 ) )
-                               .chance( spec.moonkin_form -> proc_chance() );
-
   buff.lunar_empowerment     = buff_creator_t( this, "lunar_empowerment", find_spell( 164547 ) )
                                .default_value( find_spell( 164547 ) -> effectN( 1 ).percent()
                                  + talent.soul_of_the_forest -> effectN( 1 ).percent()
@@ -6960,9 +6936,6 @@ void druid_t::init_gains()
   // Balance
   gain.astral_communion      = get_gain( "astral_communion"      );
   gain.blessing_of_anshe     = get_gain( "blessing_of_anshe"     );
-  gain.blessing_of_elune     = get_gain( "blessing_of_elune"     );
-  gain.celestial_alignment   = get_gain( "celestial_alignment"   );
-  gain.incarnation           = get_gain( "incarnation"           );
   gain.lunar_strike          = get_gain( "lunar_strike"          );
   gain.shooting_stars        = get_gain( "shooting_stars"        );
   gain.solar_wrath           = get_gain( "solar_wrath"           );
@@ -7238,61 +7211,6 @@ void druid_t::recalculate_resource_max( resource_e rt )
       sim -> out_log.printf( "%s recalculates maximum health. old_current=%.0f new_current=%.0f net_health=%.0f",
                              name(), current_health, resources.current[ rt ], resources.current[ rt ] - current_health );
   }
-}
-
-// druid_t::resource_gain ===================================================
-
-double druid_t::resource_gain( resource_e resource, double amount, gain_t* gain, action_t* action )
-{
-  double a = player_t::resource_gain( resource, amount, gain, action );
-
-  if ( resource == RESOURCE_ASTRAL_POWER )
-  {
-    /* Astral power modifiers are multiplicative, so we have to do some
-    shenanigans if we want to have seperate gains to track the effectiveness
-    of these modifiers. */
-    double ap = amount;
-    double bonus_pct = 0;
-
-    bool affected_by_ca  = action -> data().affected_by( spec.celestial_alignment -> effectN( 3 ) );
-    bool affected_by_inc = action -> data().affected_by( talent.incarnation_moonkin -> effectN( 3 ) );
-    bool affected_by_boe = action -> data().affected_by( spec.blessing_of_elune -> effectN( 1 ) );
-
-    if ( affected_by_ca && buff.celestial_alignment -> check() )
-    {
-      ap *= 1.0 + spec.celestial_alignment -> effectN( 3 ).percent();
-      bonus_pct += spec.celestial_alignment -> effectN( 3 ).percent();
-    }
-
-    if ( affected_by_inc && buff.incarnation_moonkin -> check() )
-    {
-      ap *= 1.0 + buff.incarnation_moonkin -> data().effectN( 3 ).percent();
-      bonus_pct += buff.incarnation_moonkin -> data().effectN( 3 ).percent();
-    }
-
-    if ( affected_by_boe && buff.blessing_of_elune -> check() )
-    {
-      ap *= 1.0 + spec.blessing_of_elune -> effectN( 1 ).percent();
-      bonus_pct += spec.blessing_of_elune -> effectN( 1 ).percent();
-    }
-
-    ap -= amount;
-
-    // Divide the remaining AP gain among the buffs based on their modifier / bonus_pct ratio.
-    if ( affected_by_ca && buff.celestial_alignment -> check() )
-      resource_gain( resource, ap * ( spec.celestial_alignment -> effectN( 3 ).percent() / bonus_pct ),
-                     this -> gain.celestial_alignment );
-
-    if ( affected_by_inc && buff.incarnation_moonkin -> check() )
-      resource_gain( resource, ap * ( buff.incarnation_moonkin -> data().effectN( 3 ).percent() / bonus_pct ),
-                     this -> gain.incarnation );
-
-    if ( affected_by_boe && buff.blessing_of_elune -> check() )
-      resource_gain( resource, ap * ( spec.blessing_of_elune -> effectN( 1 ).percent() / bonus_pct ),
-                     this -> gain.blessing_of_elune );
-  }
-
-  return a;
 }
 
 // druid_t::invalidate_cache ================================================
@@ -7848,9 +7766,6 @@ void druid_t::assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t
 {
   if ( buff.cenarion_ward -> up() && s -> result_amount > 0 )
     active.cenarion_ward_hot -> execute();
-
-  if ( buff.moonkin_form -> up() && s -> result_amount > 0 && ! s -> action -> aoe )
-    buff.owlkin_frenzy -> trigger();
 
   if ( s -> result_amount > 0 && buff.bristling_fur -> up() )
   {
