@@ -473,6 +473,7 @@ public:
   void      default_apl_frost();
   void      default_apl_unholy();
 
+  unsigned  replenish_rune( unsigned n, gain_t* gain = nullptr );
 
   target_specific_t<death_knight_td_t> target_data;
 
@@ -2832,6 +2833,7 @@ struct horn_of_winter_t : public death_knight_spell_t
   horn_of_winter_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "horn_of_winter", p, p -> talent.horn_of_winter )
   {
+    parse_options( options_str );
     harmful = false;
 
     // Handle energize ourselves
@@ -2845,20 +2847,7 @@ struct horn_of_winter_t : public death_knight_spell_t
     p() -> resource_gain( RESOURCE_RUNIC_POWER, data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
         p() -> gains.horn_of_winter, this );
 
-    rune_t* rune = p() -> _runes.first_depleted_rune();
-    if ( ! rune )
-    {
-      rune = p() -> _runes.first_regenerating_rune();
-    }
-
-    if ( rune )
-    {
-      rune -> fill_rune( p() -> gains.horn_of_winter );
-    }
-    else
-    {
-      p() -> gains.horn_of_winter -> add( RESOURCE_RUNE, 0, 1 );
-    }
+    p() -> replenish_rune( data().effectN( 1 ).base_value(), p() -> gains.horn_of_winter );
   }
 };
 
@@ -3036,16 +3025,8 @@ struct obliterate_t : public death_knight_melee_attack_t
       if ( killing_machine_consumed &&
            rng().roll( p() -> talent.murderous_efficiency -> effectN( 1 ).percent() ) )
       {
-        rune_t* rune = p() -> _runes.first_depleted_rune();
-        if ( ! rune )
-        {
-          rune = p() -> _runes.first_regenerating_rune();
-        }
-
-        if ( rune )
-        {
-          rune -> fill_rune( p() -> gains.murderous_efficiency );
-        }
+        // TODO: Spell data the number of runes
+        p() -> replenish_rune( 1, p() -> gains.murderous_efficiency );
       }
 
       p() -> buffs.rime -> trigger();
@@ -3851,6 +3832,36 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
 
   return actual_amount;
 }
+
+unsigned death_knight_t::replenish_rune( unsigned n, gain_t* gain )
+{
+  unsigned replenished = 0;
+
+  while ( n-- )
+  {
+    rune_t* rune = _runes.first_depleted_rune();
+    if ( ! rune )
+    {
+      rune = _runes.first_regenerating_rune();
+    }
+
+    if ( ! rune && gain )
+    {
+      gain -> add( RESOURCE_RUNE, 0, 1 );
+    }
+    else if ( rune )
+    {
+      rune -> fill_rune( gain );
+      ++replenished;
+    }
+  }
+
+  // Ensure internal state is consistent with the actor and runees
+  assert( _runes.runes_full() == resources.current[ RESOURCE_RUNE ] );
+
+  return replenished;
+}
+
 
 void death_knight_t::trigger_runic_corruption( double rpcost )
 {
@@ -4874,36 +4885,16 @@ void death_knight_t::trigger_runic_empowerment( double rpcost )
   if ( ! rng().roll( spec.runic_empowerment -> effectN( 1 ).percent() * rpcost ) )
     return;
 
-  rune_t* regenerated_rune = _runes.first_depleted_rune();
-  if ( regenerated_rune == nullptr )
+  if ( sim -> debug )
   {
-    regenerated_rune = _runes.first_regenerating_rune();
+    log_rune_status( this );
   }
 
-  // Wasted Runic Empowerment proc
-  if ( regenerated_rune == nullptr )
+  if ( replenish_rune( 1, gains.runic_empowerment ) && sim -> debug )
   {
-    procs.runic_empowerment_wasted -> occur();
-    gains.runic_empowerment -> add ( RESOURCE_RUNE, 0, 1 );
+    sim -> out_debug.printf( "%s Runic Empowerment regenerated rune", name() );
+    log_rune_status( this );
   }
-  else
-  {
-    if ( sim -> debug )
-    {
-      sim -> out_debug.printf( "%s Runic Empowerment regenerated rune", name() );
-      log_rune_status( this );
-    }
-    regenerated_rune -> fill_rune( gains.runic_empowerment );
-
-    if ( sim -> debug )
-    {
-      log_rune_status( this );
-    }
-
-    // Ensure internal state is consistent with the actor and runees
-    assert( _runes.runes_full() == resources.current[ RESOURCE_RUNE ] );
-  }
-
 }
 
 void death_knight_t::trigger_necrosis( const action_state_t* state )
