@@ -1477,7 +1477,9 @@ struct death_knight_action_t : public Base
 
     // Death Knights have unique snowflake mechanism for RP energize. Base actions indicate the
     // amount as a negative value resource cost in spell data, so abuse that.
-    if ( this -> base_costs[ RESOURCE_RUNIC_POWER ] < 0 )
+    //
+    // Note that RP is only generated if the corresponding ability consumed any runes.
+    if ( this -> base_costs[ RESOURCE_RUNIC_POWER ] < 0 && this -> resource_consumed > 0 )
     {
       this -> player -> resource_gain( RESOURCE_RUNIC_POWER,
           std::fabs( this -> base_costs[ RESOURCE_RUNIC_POWER ] ), nullptr, this );
@@ -1499,8 +1501,6 @@ struct death_knight_action_t : public Base
 
     return m;
   }
-
-  expr_t* create_expression( const std::string& name_str ) override;
 };
 
 // ==========================================================================
@@ -1553,8 +1553,6 @@ struct death_knight_spell_t : public death_knight_action_t<spell_t>
 
     return m;
   }
-
-  virtual bool   ready() override;
 };
 
 struct death_knight_heal_t : public death_knight_action_t<heal_t>
@@ -1633,20 +1631,6 @@ void death_knight_spell_t::execute()
 void death_knight_spell_t::impact( action_state_t* state )
 {
   base_t::impact( state );
-}
-
-
-// death_knight_spell_t::ready() ============================================
-
-bool death_knight_spell_t::ready()
-{
-  if ( ! base_t::ready() )
-    return false;
-
-    // TODO: mrdmnd - fix this
-  //return group_runes( p(), cost_blood, cost_frost, cost_unholy, cost_death, use );
-  // really more like runes_ready_count > rune_count
-  return true;
 }
 
 // ==========================================================================
@@ -2781,51 +2765,29 @@ struct howling_blast_t : public death_knight_spell_t
     assert( p -> active_spells.frost_fever );
   }
 
-  virtual void consume_resource() override
+  double cost() const override
   {
     if ( p() -> buffs.rime -> check() )
-      return;
-
-    death_knight_spell_t::consume_resource();
-  }
-
-  virtual double cost() const override
-  {
-    // Rime also prevents getting RP because there are no runes used!
-    if ( p() -> buffs.rime -> check() )
+    {
       return 0;
+    }
+
     return death_knight_spell_t::cost();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     death_knight_spell_t::execute();
 
     p() -> buffs.rime -> decrement();
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     death_knight_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
       p() -> apply_diseases( s, DISEASE_FROST_FEVER );
-
-    // Howling blast has no travel time, so rime is still up at this point, as
-    // impact() will be called in execute().
-  }
-
-  virtual bool ready() override
-  {
-    if ( p() -> buffs.rime -> check() )
-    {
-      // If Rime is up, runes are no restriction.
-      //cost_frost  = 0;
-      bool rime_ready = death_knight_spell_t::ready();
-      //cost_frost  = 1;
-      return rime_ready;
-    }
-    return death_knight_spell_t::ready();
   }
 };
 
@@ -2937,7 +2899,7 @@ struct obliterate_t : public death_knight_melee_attack_t
     weapon = &( p -> main_hand_weapon );
   }
 
-  virtual void execute() override
+  void execute() override
   {
     death_knight_melee_attack_t::execute();
 
@@ -2955,39 +2917,12 @@ struct obliterate_t : public death_knight_melee_attack_t
       {
         p() -> buffs.killing_machine -> expire();
       }
+
+      p() -> buffs.rime -> trigger();
     }
   }
 
-  virtual void impact( action_state_t* s ) override
-  {
-    death_knight_melee_attack_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      if ( rng().roll( p() -> spec.rime -> proc_chance() ) )
-      {
-        // T13 2pc gives 2 stacks of Rime, otherwise we can only ever have one
-        // Ensure that if we have 1 that we only refresh, not add another stack
-        int new_stacks = 1;
-        if ( rng().roll( p() -> sets.set( SET_MELEE, T13, B2 ) -> effectN( 2 ).percent() ) )
-          new_stacks++;
-
-        // If we're proccing 2 or we have 0 stacks, trigger like normal
-        if ( new_stacks == 2 || p() -> buffs.rime -> check() == 0 )
-          p() -> buffs.rime -> trigger( new_stacks );
-        // refresh stacks. However if we have a double stack and only 1 procced, it refreshes to 1 stack
-        else
-        {
-          p() -> buffs.rime -> refresh( 0 );
-          if ( p() -> buffs.rime -> check() == 2 && new_stacks == 1 )
-            p() -> buffs.rime -> decrement( 1 );
-        }
-      }
-    }
-
-  }
-
-  virtual double composite_crit() const override
+  double composite_crit() const override
   {
     double cc = death_knight_melee_attack_t::composite_crit();
 
@@ -3614,41 +3549,6 @@ struct disease_expr_t : public expr_t
   }
 };
 
-template <class Base>
-expr_t* death_knight_action_t<Base>::create_expression( const std::string& name_str )
-{
-  std::vector<std::string> split = util::string_split( name_str, "." );
-  std::string name, expression;
-  disease_expr_t::type_e type = disease_expr_t::TYPE_NONE;
-
-  if ( split.size() == 3 && util::str_compare_ci( split[ 0 ], "dot" ) )
-  {
-    name = split[ 1 ];
-    expression = split[2];
-  }
-  else if ( split.size() == 2 )
-  {
-    name = split[ 0 ];
-    expression = split[ 1 ];
-  }
-
-  if ( util::str_in_str_ci( expression, "min_" ) )
-  {
-    type = disease_expr_t::TYPE_MIN;
-    expression = expression.substr( 4 );
-  }
-  else if ( util::str_in_str_ci( expression, "max_" ) )
-  {
-    type = disease_expr_t::TYPE_MAX;
-    expression = expression.substr( 4 );
-  }
-
-  if ( util::str_compare_ci( name, "disease" ) )
-    return new disease_expr_t( this, expression, type );
-
-  return Base::create_expression( name_str );
-}
-
 // Buffs ====================================================================
 
 struct runic_corruption_buff_t : public buff_t
@@ -3978,37 +3878,6 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
         return e;
       }
     }
-    // Otherwise, presume a rune expression (e.g., blood.death, blood.frac,
-    // ...) Note that the second word is checked if it contains "death", if so,
-    // the second word is presumed to be a specifier. Otherwise, it is presumed
-    // to be an operation (cooldown_min, cooldown_max).
-    else
-    {
-      bool has_specifier = false;
-      if ( util::str_compare_ci( splits[ 1 ], "death" ) )
-      {
-        has_specifier = true;
-      }
-
-      // TODO: MRDMND - string logic here
-      expr_t* e = create_rune_expression( this, std::string() );
-
-      if ( e )
-      {
-        return e;
-      }
-    }
-  }
-  // 3 part expressions are presumed to be in the form
-  // <runetype>.<specifier>.<operation>, e.g., blood.death.cooldown_min
-  else if ( splits.size() == 3 )
-  {
-    // TODO: MRDMND - string logic here
-    expr_t* e = create_rune_expression( this, std::string() );
-    if ( e )
-    {
-      return e;
-    }
   }
 
   return player_t::create_expression( a, name_str );
@@ -4285,10 +4154,8 @@ void death_knight_t::create_buffs()
                               .default_value( find_class_spell( "Pillar of Frost" ) -> effectN( 1 ).percent() +
                                               sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).percent() )
                               .add_invalidate( CACHE_STRENGTH );
-  buffs.rime                = buff_creator_t( this, "rime", find_spell( 59052 ) )
-                              .max_stack( ( sets.has_set_bonus( SET_MELEE, T13, B2 ) ) ? 2 : 1 )
-                              .cd( timespan_t::zero() )
-                              .chance( spec.rime -> ok() );
+  buffs.rime                = buff_creator_t( this, "rime", spec.rime -> effectN( 1 ).trigger() )
+                              .trigger_spell( spec.rime );
   buffs.riposte             = stat_buff_creator_t( this, "riposte", spec.riposte -> effectN( 1 ).trigger() )
                               .cd( spec.riposte -> internal_cooldown() )
                               .chance( spec.riposte -> proc_chance() )
