@@ -173,6 +173,11 @@ struct death_knight_td_t : public actor_target_data_t {
 
   struct
   {
+    dot_t* remorseless_winter;
+  } dot;
+
+  struct
+  {
     debuff_t* razorice;
   } debuff;
 
@@ -206,6 +211,7 @@ public:
     buff_t* dark_transformation;
     buff_t* deaths_advance;
     buff_t* deathbringer;
+    buff_t* gathering_storm;
     buff_t* icebound_fortitude;
     buff_t* killing_machine;
     buff_t* pillar_of_frost;
@@ -253,6 +259,7 @@ public:
     gain_t* murderous_efficiency;
     gain_t* power_refund;
     gain_t* rune;
+    gain_t* runic_attenuation;
     gain_t* rc;
     gain_t* rune_unknown;
     gain_t* runic_empowerment;
@@ -498,6 +505,8 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
   dots_frost_fever     = target -> get_dot( "frost_fever",     death_knight );
   dots_soul_reaper     = target -> get_dot( "soul_reaper_dot", death_knight );
   dots_defile          = target -> get_dot( "defile",          death_knight );
+
+  dot.remorseless_winter = target -> get_dot( "remorseless_winter", death_knight );
 
   debuff.razorice = buff_creator_t( *this, "razorice", death_knight -> find_spell( 51714 ) )
                      .period( timespan_t::zero() );
@@ -1520,6 +1529,20 @@ struct death_knight_action_t : public Base
       this -> player -> resource_gain( RESOURCE_RUNIC_POWER,
           std::fabs( this -> base_costs[ RESOURCE_RUNIC_POWER ] ), gain, this );
     }
+
+    // TODO: Remorseless winter really needs to be targeted to the dk
+    // TODO: How does Remorseless Winter tick with half-tick extensions?
+    if ( this -> base_costs[ RESOURCE_RUNE ] > 0 &&
+         p() -> talent.gathering_storm -> ok() )
+    {
+      unsigned consumed = static_cast<unsigned>( this -> base_costs[ RESOURCE_RUNE ] );
+      if ( td( this -> target ) -> dot.remorseless_winter -> is_ticking() )
+      {
+        p() -> buffs.gathering_storm -> trigger( consumed );
+        timespan_t base_extension = timespan_t::from_seconds( p() -> talent.gathering_storm -> effectN( 1 ).base_value() / 10.0 );
+        td( this -> target ) -> dot.remorseless_winter -> extend_duration( base_extension * consumed );
+      }
+    }
   }
 
   bool init_finished() override
@@ -1571,6 +1594,8 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
   virtual void   execute() override;
   virtual void   impact( action_state_t* state ) override;
   virtual bool   ready() override;
+
+  void consume_killing_machine( const action_state_t* state, proc_t* proc ) const;
 };
 
 // ==========================================================================
@@ -1654,6 +1679,34 @@ bool death_knight_melee_attack_t::ready()
   return base_t::ready();
 }
 
+void death_knight_melee_attack_t::consume_killing_machine( const action_state_t* state, proc_t* proc ) const
+{
+  if ( ! result_is_hit( state -> result ) )
+  {
+    return;
+  }
+
+  bool killing_machine_consumed = false;
+  if ( p() -> buffs.killing_machine -> check() )
+  {
+    proc -> occur();
+  }
+
+  if ( ! p() -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T18, B4 ) ||
+       ( p() -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T18, B4 ) &&
+         ! p() -> rng().roll( player -> sets.set( DEATH_KNIGHT_FROST, T18, B4 ) -> effectN( 1 ).percent() ) ) )
+  {
+    killing_machine_consumed = p() -> buffs.killing_machine -> check();
+    p() -> buffs.killing_machine -> decrement();
+  }
+
+  if ( killing_machine_consumed &&
+       rng().roll( p() -> talent.murderous_efficiency -> effectN( 1 ).percent() ) )
+  {
+    // TODO: Spell data the number of runes
+    p() -> replenish_rune( 1, p() -> gains.murderous_efficiency );
+  }
+}
 
 // ==========================================================================
 // Death Knight Spell Methods
@@ -1760,6 +1813,13 @@ struct melee_t : public death_knight_melee_attack_t
       p() -> resource_gain( RESOURCE_RUNIC_POWER,
                             p() -> spell.blood_rites -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
                             p() -> gains.blood_rites );
+    }
+
+    if ( p() -> talent.runic_attenuation -> ok() )
+    {
+      p() -> resource_gain( RESOURCE_RUNIC_POWER,
+          p() -> talent.runic_attenuation -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
+          p() -> gains.runic_attenuation, this );
     }
 
     if ( result_is_hit( s -> result ) )
@@ -2748,6 +2808,37 @@ struct festering_strike_t : public death_knight_melee_attack_t
   }
 };
 
+
+// Frostscythe ==============================================================
+
+struct frostscythe_t : public death_knight_melee_attack_t
+{
+  frostscythe_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_melee_attack_t( "frostscythe", p, p -> talent.frostscythe )
+  {
+    parse_options( options_str );
+
+    weapon = &( player -> main_hand_weapon );
+
+    crit_bonus_multiplier *= p -> talent.frostscythe -> effectN( 3 ).percent();
+  }
+  void execute() override
+  {
+    death_knight_melee_attack_t::execute();
+
+    consume_killing_machine( execute_state, p() -> procs.fs_killing_machine );
+  }
+
+  double composite_crit() const override
+  {
+    double cc = death_knight_melee_attack_t::composite_crit();
+
+    cc += p() -> buffs.killing_machine -> value();
+
+    return cc;
+  }
+};
+
 // Frost Strike =============================================================
 
 struct frost_strike_offhand_t : public death_knight_melee_attack_t
@@ -3005,29 +3096,12 @@ struct obliterate_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::execute();
 
+    consume_killing_machine( execute_state, p() -> procs.oblit_killing_machine );
+
     if ( result_is_hit( execute_state -> result ) )
     {
       if ( oh_attack )
         oh_attack -> execute();
-
-      bool killing_machine_consumed = false;
-      if ( p() -> buffs.killing_machine -> check() )
-        p() -> procs.oblit_killing_machine -> occur();
-
-      if ( ! p() -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T18, B4 ) ||
-           ( p() -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T18, B4 ) &&
-             ! p() -> rng().roll( player -> sets.set( DEATH_KNIGHT_FROST, T18, B4 ) -> effectN( 1 ).percent() ) ) )
-      {
-        killing_machine_consumed = p() -> buffs.killing_machine -> check();
-        p() -> buffs.killing_machine -> decrement();
-      }
-
-      if ( killing_machine_consumed &&
-           rng().roll( p() -> talent.murderous_efficiency -> effectN( 1 ).percent() ) )
-      {
-        // TODO: Spell data the number of runes
-        p() -> replenish_rune( 1, p() -> gains.murderous_efficiency );
-      }
 
       p() -> buffs.rime -> trigger();
     }
@@ -3907,6 +3981,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "pillar_of_frost"          ) return new pillar_of_frost_t          ( this, options_str );
   if ( name == "remorseless_winter"       ) return new remorseless_winter_t       ( this, options_str );
   if ( name == "horn_of_winter"           ) return new horn_of_winter_t           ( this, options_str );
+  if ( name == "frostscythe"              ) return new frostscythe_t              ( this, options_str );
 
   // Unholy Actions
   if ( name == "army_of_the_dead"         ) return new army_of_the_dead_t         ( this, options_str );
@@ -4297,6 +4372,9 @@ void death_knight_t::create_buffs()
   buffs.dark_transformation = buff_creator_t( this, "dark_transformation", find_class_spell( "Dark Transformation" ) );
   buffs.deathbringer        = buff_creator_t( this, "deathbringer", find_spell( 144953 ) )
                               .chance( sets.has_set_bonus( SET_TANK, T16, B4 ) );
+  buffs.gathering_storm     = buff_creator_t( this, "gathering_storm", find_spell( 211805 ) )
+                              .trigger_spell( talent.gathering_storm )
+                              .default_value( find_spell( 211805 ) -> effectN( 1 ).percent() );
   buffs.icebound_fortitude  = buff_creator_t( this, "icebound_fortitude", find_class_spell( "Icebound Fortitude" ) )
                               .duration( find_class_spell( "Icebound Fortitude" ) -> duration() *
                                          ( 1.0 + glyph.icebound_fortitude -> effectN( 2 ).percent() ) )
@@ -4359,6 +4437,7 @@ void death_knight_t::init_gains()
   gains.empower_rune_weapon              = get_gain( "Empower Rune Weapon"        );
   gains.blood_tap                        = get_gain( "blood_tap"                  );
   gains.rc                               = get_gain( "runic_corruption_all"       );
+  gains.runic_attenuation                = get_gain( "Runic Attenuation"          );
   // gains.blood_tap_blood                  = get_gain( "blood_tap_blood"            );
   //gains.blood_tap_blood          -> type = ( resource_e ) RESOURCE_RUNE_BLOOD   ;
   gains.veteran_of_the_third_war         = get_gain( "Veteran of the Third War" );
