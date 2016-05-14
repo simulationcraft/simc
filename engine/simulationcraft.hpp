@@ -7142,10 +7142,11 @@ inline double real_ppm_t::proc_chance( player_t*         player,
 
   if ( scales_with == RPPM_HASTE )
     coeff *= 1.0 / std::min( player -> cache.spell_haste(), player -> cache.attack_haste() );
+
   // This might technically be two separate crit values, but this should be sufficient for our
   // cases. In any case, the client data does not offer information which crit it is (attack or
   // spell).
-  else if ( scales_with == RPPM_CRIT )
+  if ( scales_with == RPPM_CRIT )
     coeff *= 1.0 + std::max( player -> cache.attack_crit(), player -> cache.spell_crit() );
 
   double real_ppm = PPM * coeff;
