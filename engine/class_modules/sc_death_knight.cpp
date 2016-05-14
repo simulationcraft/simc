@@ -165,7 +165,6 @@ struct runes_t
 
 struct death_knight_td_t : public actor_target_data_t {
   dot_t* dots_blood_plague;
-  dot_t* dots_breath_of_sindragosa;
   dot_t* dots_death_and_decay;
   dot_t* dots_frost_fever;
   dot_t* dots_soul_reaper;
@@ -173,6 +172,7 @@ struct death_knight_td_t : public actor_target_data_t {
 
   struct
   {
+    dot_t* breath_of_sindragosa;
     dot_t* remorseless_winter;
   } dot;
 
@@ -214,6 +214,7 @@ public:
     buff_t* gathering_storm;
     buff_t* icebound_fortitude;
     buff_t* killing_machine;
+    buff_t* obliteration;
     buff_t* pillar_of_frost;
     buff_t* rime;
     buff_t* runic_corruption;
@@ -503,13 +504,13 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
   actor_target_data_t( target, death_knight )
 {
   dots_blood_plague    = target -> get_dot( "blood_plague",    death_knight );
-  dots_breath_of_sindragosa = target -> get_dot( "breath_of_sindragosa", death_knight );
   dots_death_and_decay = target -> get_dot( "death_and_decay", death_knight );
   dots_frost_fever     = target -> get_dot( "frost_fever",     death_knight );
   dots_soul_reaper     = target -> get_dot( "soul_reaper_dot", death_knight );
   dots_defile          = target -> get_dot( "defile",          death_knight );
 
-  dot.remorseless_winter = target -> get_dot( "remorseless_winter", death_knight );
+  dot.breath_of_sindragosa = target -> get_dot( "breath_of_sindragosa", death_knight );
+  dot.remorseless_winter   = target -> get_dot( "remorseless_winter", death_knight );
 
   debuff.razorice = buff_creator_t( *this, "razorice", death_knight -> find_spell( 51714 ) )
                      .period( timespan_t::zero() );
@@ -2997,8 +2998,42 @@ struct frost_strike_t : public death_knight_melee_attack_t
 
     p() -> buffs.icy_talons -> trigger();
 
+    // Note note, killing machine is a RPPM thing, but we need to trigger it unconditionally when
+    // obliterate is up, so just bypas "trigger" and directly execute the buff, while making sure
+    // correct bookkeeping information is kept. Ugly but will work for now.
+    if ( p() -> buffs.obliteration -> up() )
+    {
+      //p() -> buffs.killing_machine -> trigger_attempts++;
+      p() -> buffs.killing_machine -> execute();
+    }
+
     // TODO: Both hands, or just main hand?
     trigger_icecap( execute_state );
+  }
+};
+
+// Glacial Advance =========================================================
+
+// TODO: Fancier targeting .. make it aoe for now
+struct glacial_advance_damage_t : public death_knight_spell_t
+{
+  glacial_advance_damage_t( death_knight_t* player ) :
+    death_knight_spell_t( "glacial_advance_damage", player, player -> find_spell( 195975 ) )
+  {
+    aoe = -1;
+    background = true;
+  }
+};
+
+struct glacial_advance_t : public death_knight_spell_t
+{
+  glacial_advance_t( death_knight_t* player, const std::string& options_str ) :
+    death_knight_spell_t( "glacial_advance", player, player -> talent.glacial_advance )
+  {
+    parse_options( options_str );
+
+    execute_action = new glacial_advance_damage_t( player );
+    add_child( execute_action );
   }
 };
 
@@ -3238,6 +3273,23 @@ struct obliterate_t : public death_knight_melee_attack_t
     trigger_icecap( execute_state );
   }
 
+  double cost() const override
+  {
+    double c = death_knight_melee_attack_t::cost();
+
+    if ( p() -> buffs.obliteration -> check() )
+    {
+      c += p() -> buffs.obliteration -> data().effectN( 1 ).base_value();
+    }
+
+    if ( c < 0 )
+    {
+      c = 0;
+    }
+
+    return c;
+  }
+
   double composite_crit() const override
   {
     double cc = death_knight_melee_attack_t::composite_crit();
@@ -3245,6 +3297,26 @@ struct obliterate_t : public death_knight_melee_attack_t
     cc += p() -> buffs.killing_machine -> value();
 
     return cc;
+  }
+};
+
+// Obliteration =============================================================
+
+struct obliteration_t : public death_knight_spell_t
+{
+  obliteration_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "obliteration", p, p -> talent.obliteration )
+  {
+    parse_options( options_str );
+
+    harmful = false;
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+
+    p() -> buffs.obliteration -> trigger();
   }
 };
 
@@ -3574,7 +3646,6 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
     bool ret = death_knight_spell_t::consume_cost_per_tick( dot );
 
     p() -> trigger_runic_empowerment( resource_consumed );
-    p() -> trigger_runic_corruption( resource_consumed );
 
     return ret;
   }
@@ -4114,6 +4185,8 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "horn_of_winter"           ) return new horn_of_winter_t           ( this, options_str );
   if ( name == "frostscythe"              ) return new frostscythe_t              ( this, options_str );
   if ( name == "hungering_rune_weapon"    ) return new hungering_rune_weapon_t    ( this, options_str );
+  if ( name == "obliteration"             ) return new obliteration_t             ( this, options_str );
+  if ( name == "glacial_advance"          ) return new glacial_advance_t          ( this, options_str );
 
   // Unholy Actions
   if ( name == "army_of_the_dead"         ) return new army_of_the_dead_t         ( this, options_str );
@@ -4522,6 +4595,8 @@ void death_knight_t::create_buffs()
   buffs.killing_machine     = buff_creator_t( this, "killing_machine", spec.killing_machine -> effectN( 1 ).trigger() )
                               .trigger_spell( spec.killing_machine )
                               .default_value( find_spell( 51124 ) -> effectN( 1 ).percent() );
+  buffs.obliteration        = buff_creator_t( this, "obliteration", talent.obliteration )
+                              .cd( timespan_t::zero() ); // Handled by action
   buffs.pillar_of_frost     = buff_creator_t( this, "pillar_of_frost", find_class_spell( "Pillar of Frost" ) )
                               .cd( timespan_t::zero() )
                               .default_value( find_class_spell( "Pillar of Frost" ) -> effectN( 1 ).percent() +
