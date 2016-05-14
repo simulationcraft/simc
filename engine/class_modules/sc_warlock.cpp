@@ -20,7 +20,6 @@
 // Demo - Everything
 // check wild imp implementation: make sure imps are dying when they are supposed to.
 // finish demonic empowerment - needs doomguard / infernal pet implementation only
-// Doom
 // DEMO TALENTS: (all)
 // T1: Shadowy Inspiration, Shadowflame, Demonic Calling
 // T2: Imepdning Doom, Improved Dreadstalkers, Implosion
@@ -289,7 +288,7 @@ public:
 
     // Demonology only
     const spell_data_t* doom;
-	  const spell_data_t* demonic_empowerment;
+    const spell_data_t* demonic_empowerment;
     const spell_data_t* wild_imps;
 
     // Destruction only
@@ -307,6 +306,9 @@ public:
     buff_t* conflagration_of_chaos;
 
     buff_t* tier18_2pc_demonology;
+
+    //demonology buffs
+    buff_t* shadowy_inspiration;
   } buffs;
 
   // Gains
@@ -322,7 +324,7 @@ public:
     gain_t* drain_soul;
     gain_t* soul_harvest;
     gain_t* mana_tap;
-	  gain_t* power_trip;
+    gain_t* power_trip;
     gain_t* shadow_bolt;
     gain_t* doom;
     gain_t* soul_conduit;
@@ -2127,8 +2129,6 @@ struct doom_t: public warlock_spell_t
     energize_type = ENERGIZE_PER_TICK;
     energize_resource = RESOURCE_SOUL_SHARD;
     energize_amount = 1;
-
-    //p -> sim ->errorf("Doom finished constructing");
   }
 
   timespan_t travel_time() const override
@@ -2188,6 +2188,10 @@ struct demonic_empowerment_t: public warlock_spell_t
 			if( rng().roll( power_trip_rng ) )
 				p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.power_trip );
 		}
+        /*if(p() ->talents.shadowy_inspiration->ok())
+        {
+            p()->buffs.shadowy_inspiration->trigger();
+        }*/
 	}
 
 		
@@ -2274,7 +2278,20 @@ struct shadow_bolt_t: public warlock_spell_t
     }
 
     base_multiplier *= 1.0 + p -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 3 ).percent();
+
+
   }
+  /*void execute() override
+  {
+    if(p()->buffs.shadowy_inspiration->up())
+    {
+        timespan_t temp = this->time_to_execute;
+        this->time_to_execute = timespan_t.from_millis(0);
+        p()->buffs.shadowy_inspiration->execute();
+        warlock_spell_t::execute();
+        this->time_to_execute = temp;
+    }
+  }*/
 };
 
 struct immolate_t: public warlock_spell_t
@@ -3874,6 +3891,18 @@ struct havoc_buff_t : public buff_t
   }
 };
 
+/*struct shadowy_inspiration_buff_t : public buff_t
+{
+    shadowy_inspiration_buff_t(warlock_t* p):
+        buff_t(buff_creator_t( p, "shadowy_inspiration", p->find_talent_spell("Shadowy Inspiration")))
+    {
+        if(p->talents.shadowy_inspiration->ok())
+        {
+            buff_duration = timespan_t::from_seconds(15);
+        }
+    }
+};*/
+
 void warlock_t::create_buffs()
 {
   player_t::create_buffs();
@@ -3894,6 +3923,9 @@ void warlock_t::create_buffs()
 
   buffs.conflagration_of_chaos = buff_creator_t( this, "conflagration_of_chaos", artifact.conflagration_of_chaos.data().effectN( 1 ).trigger() )
     .chance( artifact.conflagration_of_chaos.rank() > 0 * artifact.conflagration_of_chaos.data().proc_chance() );
+
+  //demonology buffs
+  //buffs.shadowy_inspiration = buff_creator_t( this, "shadowy_inspiration", talents.shadowy_inspiration );
 }
 
 void warlock_t::init_rng()
