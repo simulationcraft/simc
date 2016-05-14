@@ -1457,8 +1457,10 @@ struct death_knight_action_t : public Base
   typedef Base action_base_t;
   typedef death_knight_action_t base_t;
 
+  gain_t* gain;
+
   death_knight_action_t( const std::string& n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() ) :
-    action_base_t( n, p, s )
+    action_base_t( n, p, s ), gain( nullptr )
   {
     this -> may_crit   = true;
     this -> may_glance = false;
@@ -1477,12 +1479,26 @@ struct death_knight_action_t : public Base
     // Death Knights have unique snowflake mechanism for RP energize. Base actions indicate the
     // amount as a negative value resource cost in spell data, so abuse that.
     //
-    // Note that RP is only generated if the corresponding ability consumed any runes.
-    if ( this -> base_costs[ RESOURCE_RUNIC_POWER ] < 0 && this -> resource_consumed > 0 )
+    // Note that RP is only generated if the corresponding offensive ability consumed any runes, or
+    // unconditionally if the ability is not offensive.
+    if ( this -> base_costs[ RESOURCE_RUNIC_POWER ] < 0 &&
+        ( ! this -> harmful || this -> resource_consumed > 0 ) )
     {
       this -> player -> resource_gain( RESOURCE_RUNIC_POWER,
-          std::fabs( this -> base_costs[ RESOURCE_RUNIC_POWER ] ), nullptr, this );
+          std::fabs( this -> base_costs[ RESOURCE_RUNIC_POWER ] ), gain, this );
     }
+  }
+
+  bool init_finished() override
+  {
+    bool ret = action_base_t::init_finished();
+
+    if ( this -> base_costs[ RESOURCE_RUNE ] || this -> base_costs[ RESOURCE_RUNIC_POWER ] )
+    {
+      gain = this -> player -> get_gain( util::inverse_tokenize( this -> name_str ) );
+    }
+
+    return ret;
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -2614,27 +2630,40 @@ struct death_strike_t : public death_knight_melee_attack_t
 struct empower_rune_weapon_t : public death_knight_spell_t
 {
   empower_rune_weapon_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "empower_rune_weapon", p, p -> find_spell( 47568 ) )
+    death_knight_spell_t( "empower_rune_weapon", p, p -> find_specialization_spell( "Empower Rune Weapon" ) )
   {
     parse_options( options_str );
 
     harmful = false;
+    // Handle energize in a custom way
+    energize_type = ENERGIZE_NONE;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     death_knight_spell_t::execute();
 
-    double erw_gain = 0.0;
-    double erw_over = 0.0;
-    for ( size_t i = 0; i < MAX_RUNES; ++i )
+    double filled = 0, overflow = 0;
+    for ( auto& rune: p() -> _runes.slot )
     {
-      rune_t& r = p() -> _runes.slot[ i ];
-      erw_gain += 1 - r.value;
-      erw_over += r.value;
-      r.reset();
+      if ( rune.is_depleted() )
+      {
+        filled += 1;
+      }
+      else if ( rune.is_regenerating() )
+      {
+        filled += 1.0 - rune.value;
+        overflow += rune.value;
+      }
+      else
+      {
+        continue;
+      }
+
+      rune.fill_rune();
     }
-    p() -> gains.empower_rune_weapon -> add( RESOURCE_RUNE, erw_gain, erw_over );
+
+    p() -> gains.empower_rune_weapon -> add( RESOURCE_RUNE, filled, overflow );
   }
 };
 
@@ -4130,9 +4159,9 @@ void death_knight_t::init_gains()
   gains.butchery                         = get_gain( "butchery"                   );
   gains.chill_of_the_grave               = get_gain( "chill_of_the_grave"         );
   gains.power_refund                     = get_gain( "power_refund"               );
-  gains.rune                             = get_gain( "rune_regen_all"             );
-  gains.runic_empowerment                = get_gain( "runic_empowerment"          );
-  gains.empower_rune_weapon              = get_gain( "empower_rune_weapon"        );
+  gains.rune                             = get_gain( "Rune Regeneration"          );
+  gains.runic_empowerment                = get_gain( "Runic Empowerment"          );
+  gains.empower_rune_weapon              = get_gain( "Empower Rune Weapon"        );
   gains.blood_tap                        = get_gain( "blood_tap"                  );
   gains.rc                               = get_gain( "runic_corruption_all"       );
   // gains.blood_tap_blood                  = get_gain( "blood_tap_blood"            );
