@@ -1376,12 +1376,13 @@ void action_t::execute()
 
   if ( energize_type == ENERGIZE_ON_CAST || ( energize_type == ENERGIZE_ON_HIT && hit_any_target ) )
   {
-    player -> resource_gain( energize_resource, energize_amount, gain, this );
+    player -> resource_gain( energize_resource_( execute_state ),
+      composite_energize_amount( execute_state ), gain, this );
   }
   else if ( energize_type == ENERGIZE_PER_HIT )
   {
-    for ( unsigned i = 0; i < num_targets_hit; i++ )
-      player -> resource_gain( energize_resource, energize_amount, gain, this );
+    player -> resource_gain( energize_resource_( execute_state ),
+      composite_energize_amount( execute_state ) * num_targets_hit, gain, this );
   }
 
   if ( repeating && ! proc ) schedule_execute();
@@ -1427,7 +1428,8 @@ void action_t::tick( dot_t* d )
 
   if ( energize_type == ENERGIZE_PER_TICK )
   {
-    player -> resource_gain( energize_resource, energize_amount, gain, this );
+    player -> resource_gain( energize_resource_( d -> state ),
+      composite_energize_amount( d -> state ), gain, this );
   }
 
   stats -> add_tick( d -> time_to_tick, d -> state -> target );

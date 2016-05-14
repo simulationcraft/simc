@@ -5661,6 +5661,12 @@ public:
   // Helper for dot refresh expression, overridable on action level
   virtual bool dot_refreshable( const dot_t* dot, const timespan_t& triggered_duration ) const;
 
+  virtual double composite_energize_amount( const action_state_t* ) const
+  { return energize_amount; }
+
+  virtual resource_e energize_resource_( const action_state_t* ) const
+  { return energize_resource; }
+
   // ==========================
   // mutating virtual functions
   // ==========================
