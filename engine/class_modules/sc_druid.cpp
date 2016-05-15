@@ -768,15 +768,16 @@ public:
 
   // Character Definition
   virtual void      init() override;
-  virtual void      init_spells() override;
+  virtual void      init_absorb_priority() override;
+  virtual void      init_action_list() override;
   virtual void      init_base_stats() override;
-  virtual void      create_buffs() override;
-  virtual void      init_scaling() override;
   virtual void      init_gains() override;
   virtual void      init_procs() override;
   virtual void      init_resources( bool ) override;
   virtual void      init_rng() override;
-  virtual void      init_absorb_priority() override;
+  virtual void      init_spells() override;
+  virtual void      init_scaling() override;
+  virtual void      create_buffs() override;
   virtual void      invalidate_cache( cache_e ) override;
   virtual void      arise() override;
   virtual void      combat_begin() override;
@@ -817,73 +818,22 @@ public:
   virtual void      recalculate_resource_max( resource_e ) override;
   virtual void      create_options() override;
   virtual std::string      create_profile( save_e type = SAVE_ALL ) override;
+  virtual bool      has_t18_class_trinket() const override;
+  virtual druid_td_t* get_target_data( player_t* target ) const override;
 
+  form_e get_form() const { return form; };
+  void shapeshift( form_e );
+  void init_beast_weapon( weapon_t&, double );
+
+private:
   void              apl_precombat();
   void              apl_default();
   void              apl_feral();
   void              apl_balance();
   void              apl_guardian();
   void              apl_restoration();
-  virtual void      init_action_list() override;
-  virtual bool      has_t18_class_trinket() const override;
-
-  form_e get_form() const
-  {
-    return form;
-  }
-
-  void shapeshift( form_e f )
-  {
-    if ( form == f )
-      return;
-
-    buff.cat_form     -> expire();
-    buff.bear_form    -> expire();
-    buff.moonkin_form -> expire();
-
-    switch ( f )
-    {
-    case CAT_FORM:
-      buff.cat_form -> trigger();
-      break;
-    case BEAR_FORM:
-      buff.bear_form -> trigger();
-      break;
-    case MOONKIN_FORM:
-      buff.moonkin_form -> trigger();
-      break;
-    default:
-      assert( 0 );
-      break;
-    }
-
-    form = f;
-  }
 
   target_specific_t<druid_td_t> target_data;
-
-  virtual druid_td_t* get_target_data( player_t* target ) const override
-  {
-    assert( target );
-    druid_td_t*& td = target_data[ target ];
-    if ( ! td )
-    {
-      td = new druid_td_t( *target, const_cast<druid_t&>( *this ) );
-    }
-    return td;
-  }
-
-  void init_beast_weapon( weapon_t& w, double swing_time )
-  {
-    w = main_hand_weapon;
-    double mod = swing_time /  w.swing_time.total_seconds();
-    w.type = WEAPON_BEAST;
-    w.school = SCHOOL_PHYSICAL;
-    w.min_dmg *= mod;
-    w.max_dmg *= mod;
-    w.damage *= mod;
-    w.swing_time = timespan_t::from_seconds( swing_time );
-  }
 };
 
 druid_t::~druid_t()
@@ -6966,7 +6916,7 @@ void druid_t::init_procs()
   proc.clearcasting             = get_proc( "clearcasting"           );
   proc.clearcasting_wasted      = get_proc( "clearcasting_wasted"    );
   proc.gore                     = get_proc( "gore"                   );
-  proc.the_wildshapers_clutch       = get_proc( "the_wildshapers_clutch"     );
+  proc.the_wildshapers_clutch   = get_proc( "the_wildshapers_clutch" );
   proc.predator                 = get_proc( "predator"               );
   proc.predator_wasted          = get_proc( "predator_wasted"        );
   proc.primal_fury              = get_proc( "primal_fury"            );
@@ -7751,6 +7701,63 @@ void druid_t::assess_heal( school_e school,
     s -> result_total *= 1.0 + cache.mastery_value();
 
   player_t::assess_heal( school, dmg_type, s );
+}
+
+// druid_t::shapeshift ======================================================
+
+void druid_t::shapeshift( form_e f )
+{
+  if ( get_form() == f )
+    return;
+
+  buff.cat_form     -> expire();
+  buff.bear_form    -> expire();
+  buff.moonkin_form -> expire();
+
+  switch ( f )
+  {
+  case CAT_FORM:
+    buff.cat_form -> trigger();
+    break;
+  case BEAR_FORM:
+    buff.bear_form -> trigger();
+    break;
+  case MOONKIN_FORM:
+    buff.moonkin_form -> trigger();
+    break;
+  default:
+    assert( 0 );
+    break;
+  }
+
+  form = f;
+}
+
+// druid_t::get_target_data =================================================
+
+druid_td_t* druid_t::get_target_data( player_t* target ) const
+{
+  assert( target );
+  druid_td_t*& td = target_data[ target ];
+  if ( ! td )
+  {
+    td = new druid_td_t( *target, const_cast<druid_t&>( *this ) );
+  }
+  return td;
+}
+
+// druid_t::init_beast_weapon ===============================================
+
+void druid_t::init_beast_weapon( weapon_t& w, double swing_time )
+{
+  w = main_hand_weapon;
+  double mod = swing_time /  w.swing_time.total_seconds();
+  w.type = WEAPON_BEAST;
+  w.school = SCHOOL_PHYSICAL;
+  w.min_dmg *= mod;
+  w.max_dmg *= mod;
+  w.damage *= mod;
+  w.swing_time = timespan_t::from_seconds( swing_time );
 }
 
 druid_td_t::druid_td_t( player_t& target, druid_t& source )
