@@ -93,7 +93,6 @@ enum sef_ability_e {
   SEF_RISING_SUN_KICK_TRINKET,
   SEF_RISING_SUN_KICK_TORNADO_KICK,
   SEF_FISTS_OF_FURY,
-  SEF_CROSSWINDS,
   SEF_SPINNING_CRANE_KICK,
   SEF_RUSHING_JADE_WIND,
   SEF_WHIRLING_DRAGON_PUNCH,
@@ -178,7 +177,7 @@ public:
     buff_t* dampen_harm;
     buff_t* diffuse_magic;
     buff_t* rushing_jade_wind;
-    buff_t* tier19_oh_8pc; // Tier 19 Order Hall 8-piece
+    stat_buff_t* tier19_oh_8pc; // Tier 19 Order Hall 8-piece
 
     // Brewmaster
     buff_t* bladed_armor;
@@ -1199,30 +1198,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
   };
 
-  struct sef_crosswinds_tick_t: public sef_tick_action_t
-  {
-    sef_crosswinds_tick_t( storm_earth_and_fire_pet_t* p ):
-      sef_tick_action_t( "crosswinds_tick", p, p -> o() -> passives.crosswinds )
-    { 
-      // Reset some variables to ensure proper execution
-      dot_duration = timespan_t::zero();
-      school = SCHOOL_PHYSICAL;
-    }
-  };
-
-  struct sef_crosswinds_t : public sef_melee_attack_t
-  {
-    sef_crosswinds_t( storm_earth_and_fire_pet_t* player ) :
-      sef_melee_attack_t( "crosswinds", player, player -> o() -> artifact.crosswinds.data().effectN( 1 ).trigger() )
-    {
-      may_crit = may_miss = may_block = may_dodge = may_parry = hasted_ticks = tick_zero = channeled = callbacks = false;
-
-      weapon_power_mod = 0;
-
-      tick_action = new sef_crosswinds_tick_t( player );
-    }
-  };
-
   struct sef_fists_of_fury_tick_t: public sef_tick_action_t
   {
     sef_fists_of_fury_tick_t( storm_earth_and_fire_pet_t* p ):
@@ -1422,7 +1397,6 @@ public:
     attacks[ SEF_RISING_SUN_KICK_TRINKET      ] = new sef_rising_sun_kick_trinket_t( this );
     attacks[ SEF_RISING_SUN_KICK_TORNADO_KICK ] = new sef_rising_sun_kick_tornado_kick_t( this );
     attacks[ SEF_FISTS_OF_FURY                ] = new sef_fists_of_fury_t( this );
-    attacks[ SEF_CROSSWINDS                   ] = new sef_crosswinds_t( this );
     attacks[ SEF_SPINNING_CRANE_KICK          ] = new sef_spinning_crane_kick_t( this );
     attacks[ SEF_RUSHING_JADE_WIND            ] = new sef_rushing_jade_wind_t( this );
     attacks[ SEF_WHIRLING_DRAGON_PUNCH        ] = new sef_whirling_dragon_punch_t( this );
@@ -1902,7 +1876,7 @@ public:
       if ( td( s -> target ) -> dots.touch_of_death -> is_ticking() )
       {
         if ( s -> action -> harmful )
-          p() -> gale_burst_touch_of_death_bonus += p() -> artifact.gale_burst.value() * s -> result_amount;
+          p() -> gale_burst_touch_of_death_bonus += ( p() -> artifact.gale_burst.value() * ( p() -> buff.storm_earth_and_fire -> up() ? 3 : 1 ) ) * s -> result_amount;
       }
     }
     ab::impact( s );
@@ -2193,7 +2167,8 @@ struct tiger_palm_t: public monk_melee_attack_t
       default: break;
     }
 
-    p() -> buff.tier19_oh_8pc -> trigger();
+    if ( p() -> sets.has_set_bonus( p() -> specialization(), T19OH, B8 ) )
+      p() -> buff.tier19_oh_8pc -> trigger();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -2795,7 +2770,6 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
 // ==========================================================================
 // Fists of Fury
 // ==========================================================================
-// TODO: Get AP Co-efficient of Crosswinds
 
 // Crosswinds Artifact Trait ===============================================
 /* When you activate FoF, you get a hidden buff on yourself that shoots a wind spirit guy at a random 
@@ -2819,6 +2793,16 @@ struct crosswinds_tick_t : public monk_melee_attack_t
     dot_duration = timespan_t::zero();
     trigger_gcd = timespan_t::zero();
   }
+
+  virtual double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+      am *= 3;
+
+    return am;
+  }
 };
 
 struct crosswinds_t : public monk_melee_attack_t
@@ -2826,8 +2810,6 @@ struct crosswinds_t : public monk_melee_attack_t
   crosswinds_t( monk_t* p ) :
     monk_melee_attack_t( "crosswinds", p, p -> artifact.crosswinds.data().effectN( 1 ).trigger() )
   {
-    sef_ability = SEF_CROSSWINDS;
-
     background = dual = true; 
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = hasted_ticks = tick_zero = false;
     channeled = false;
@@ -3051,7 +3033,6 @@ struct whirling_dragon_punch_t: public monk_melee_attack_t
 // Strike of the Windlord
 // ==========================================================================
 // Off hand hits first followed by main hand
-// TODO: make sure AoE is using the n^2 calculation or straight up AoE
 
 struct strike_of_the_windlord_off_hand_t: public monk_melee_attack_t
 {
@@ -3062,16 +3043,6 @@ struct strike_of_the_windlord_off_hand_t: public monk_melee_attack_t
     dual = true;
     weapon = &( p -> off_hand_weapon );
     aoe = -1;
-  }
-
-  double composite_aoe_multiplier(const action_state_t* state) const override
-  {
-    if (state -> target != target)
-    {
-      return 1.0 / state -> n_targets;
-    }
-
-    return 1.0;
   }
 };
 
@@ -3333,16 +3304,32 @@ struct exploding_keg_t: public monk_melee_attack_t
 // ==========================================================================
 // Touch of Death
 // ==========================================================================
-// TODO: Figure out how Gale Burst is registered in the combat logs.
+// Gale Burst will not show in the combat log. Damage will be added directly to Touch of Death
+// However I am added Gale Burst as a child of Touch of Death for statistics reasons.
+
+struct gale_burst_t: public monk_spell_t
+{
+  gale_burst_t( monk_t* p ) :
+    monk_spell_t( "gale_burst", p, p -> artifact.gale_burst.data().effectN( 1 ).trigger() )
+  {
+    background = true;
+    may_crit = false;
+  }
+};
 
 struct touch_of_death_t: public monk_spell_t
 {
+  gale_burst_t* gale_burst;
   touch_of_death_t( monk_t* p, const std::string& options_str ):
-    monk_spell_t( "touch_of_death", p, p -> spec.touch_of_death )
+    monk_spell_t( "touch_of_death", p, p -> spec.touch_of_death ),
+    gale_burst( new gale_burst_t( p ) )
   {
     may_crit = hasted_ticks = false;
     parse_options( options_str );
     school = SCHOOL_PHYSICAL;
+
+    if ( p -> artifact.gale_burst.rank() )
+      add_child( gale_burst );
   }
 
   virtual double target_armor( player_t* ) const override { return 0; }
@@ -3350,6 +3337,18 @@ struct touch_of_death_t: public monk_spell_t
   virtual double calculate_tick_amount( action_state_t*, double /*dot_multiplier*/ ) const
   {
     return p() -> resources.max[RESOURCE_HEALTH];
+  }
+
+  void last_tick( dot_t* dot ) override
+  {
+    monk_spell_t::last_tick( dot );
+
+    if ( p() -> artifact.gale_burst.rank() )
+    {
+      gale_burst -> base_dd_min = p() -> gale_burst_touch_of_death_bonus;
+      gale_burst -> base_dd_max = p() -> gale_burst_touch_of_death_bonus;
+      gale_burst -> execute();
+    }
   }
 
   virtual void execute() override
@@ -4516,7 +4515,8 @@ struct effuse_t: public monk_heal_t
     if ( p() -> sheilun_staff_of_the_mists )
       artifact -> trigger();
 
-    p() -> buff.tier19_oh_8pc -> trigger();
+    if ( p() -> sets.has_set_bonus( p() -> specialization(), T19OH, B8 ) )
+      p() -> buff.tier19_oh_8pc -> trigger();
     
     mastery -> execute();
   }
@@ -6201,11 +6201,8 @@ void monk_t::create_buffs()
   buff.diffuse_magic = buff_creator_t( this, "diffuse_magic", talent.diffuse_magic )
     .default_value( talent.diffuse_magic -> effectN( 1 ).percent() );
 
-  buff.tier19_oh_8pc = buff_creator_t( this, "grandmasters_wisdom")
-    .spell( sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
-    .default_value( sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() )
-    .add_invalidate( CACHE_CRIT )
-    .add_invalidate( CACHE_SPELL_CRIT );
+  buff.tier19_oh_8pc = stat_buff_creator_t( this, "grandmasters_wisdom" )
+    .spell( sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() );
 
   // Brewmaster
   buff.bladed_armor = buff_creator_t( this, "bladed_armor", spec.bladed_armor )
@@ -6523,9 +6520,6 @@ double monk_t::composite_melee_crit() const
   if ( buff.mistweaving -> check() )
     crit += buff.mistweaving -> stack_value();
 
-  if ( buff.tier19_oh_8pc -> check() )
-    crit += buff.tier19_oh_8pc -> value();
-
   return crit;
 }
 
@@ -6548,9 +6542,6 @@ double monk_t::composite_spell_crit() const
   double crit = player_t::composite_spell_crit();
 
   crit += spec.critical_strikes -> effectN( 1 ).percent();
-
-  if ( buff.tier19_oh_8pc -> check() )
-    crit += buff.tier19_oh_8pc -> value();
 
   return crit;
 }
