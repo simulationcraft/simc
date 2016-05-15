@@ -4907,7 +4907,9 @@ void unique_gear::register_special_effects()
   register_special_effect( 187863, set_bonus::t18_lfr_4pc_leather_melee );
 
   /* T19 Generic Order Hall set bonuses */
+  register_special_effect( 221533, set_bonus::passive_stat_aura     );
   register_special_effect( 221534, set_bonus::passive_stat_aura     );
+  register_special_effect( 221535, set_bonus::passive_stat_aura     );
 }
 
 void unique_gear::register_hotfixes()
