@@ -62,33 +62,25 @@ set_bonus_t::set_bonus_t( player_t* player ) : actor( player )
     // Translate our DBC set bonus into one of our enums
     size_t bonus_type = bonus.bonus / 2 - 1;
 
-    // T16 and less, old world, "role" specific set bonuses.
-    if ( role_set_bonus( bonus.enum_id ) )
-    {
-      assert( bonus.role != -1 );
-      set_bonus_spec_data[ bonus.enum_id ][ bonus.role ][ bonus_type ].bonus = &bonus;
-    }
     // T17 onwards and PVP, new world, spec specific set bonuses. Overrides are
     // going to be provided by the new set_bonus= option, so no need to
     // translate anything from the old set bonus options.
+    //
+    // All specs share the same set bonus
+    if ( bonus.spec == -1 )
+    {
+      for ( size_t spec_idx = 0; spec_idx < set_bonus_spec_data[ bonus.enum_id ].size(); spec_idx++ )
+      {
+        set_bonus_spec_data[ bonus.enum_id ][ spec_idx ][ bonus_type ].bonus = &bonus;
+      }
+    }
     else
     {
-      // All specs share the same set bonus
-      if ( bonus.spec == -1 )
-      {
-        for ( size_t spec_idx = 0; spec_idx < set_bonus_spec_data[ bonus.enum_id ].size(); spec_idx++ )
-        {
-          set_bonus_spec_data[ bonus.enum_id ][ spec_idx ][ bonus_type ].bonus = &bonus;
-        }
-      }
-      else
-      {
-        specialization_e spec = static_cast< specialization_e >( bonus.spec );
-        assert( bonus.spec > 0 );
-        assert( ! set_bonus_spec_data[ bonus.enum_id ][ specdata::spec_idx( spec ) ][ bonus_type ].bonus );
+      specialization_e spec = static_cast< specialization_e >( bonus.spec );
+      assert( bonus.spec > 0 );
+      assert( ! set_bonus_spec_data[ bonus.enum_id ][ specdata::spec_idx( spec ) ][ bonus_type ].bonus );
 
-        set_bonus_spec_data[ bonus.enum_id ][ specdata::spec_idx( spec ) ][ bonus_type ].bonus = &bonus;
-      }
+      set_bonus_spec_data[ bonus.enum_id ][ specdata::spec_idx( spec ) ][ bonus_type ].bonus = &bonus;
     }
   }
 }
@@ -115,10 +107,7 @@ void set_bonus_t::initialize_items()
         continue;
 
       // T17+ and PVP is spec specific, T16 and lower is "role specific"
-      if ( role_set_bonus( bonus.enum_id ) )
-        set_bonus_spec_count[ bonus.enum_id ][ bonus.role ]++;
-      else
-        set_bonus_spec_count[ bonus.enum_id ][ specdata::spec_idx( actor -> _spec ) ]++;
+      set_bonus_spec_count[ bonus.enum_id ][ specdata::spec_idx( actor -> _spec ) ]++;
       break;
     }
   }
@@ -186,10 +175,6 @@ void set_bonus_t::initialize()
           continue;
 
         unsigned spec_role_idx = static_cast<int>( spec_idx );
-        // If we're below the threshold tier, the "spec_idx" is actually a role
-        // index, and our overrides are based on roles
-        if ( role_set_bonus( idx ) )
-          spec_role_idx = data.bonus -> role;
 
         // Set bonus is overridden, or we have sufficient number of items to enable the bonus
         if ( data.overridden >= 1 ||
@@ -252,8 +237,6 @@ std::string set_bonus_t::to_string() const
           continue;
 
         unsigned spec_role_idx = static_cast<int>( spec_idx );
-        if ( role_set_bonus( idx ) )
-          spec_role_idx = data.bonus -> role;
 
         if ( data.overridden >= 1 ||
            ( data.overridden == -1 && set_bonus_spec_count[ idx ][ spec_role_idx ] >= data.bonus -> bonus ) )
@@ -261,11 +244,7 @@ std::string set_bonus_t::to_string() const
           if ( ! s.empty() )
             s += ", ";
 
-          std::string spec_role_str;
-          if ( role_set_bonus( idx ) )
-            spec_role_str = translate_set_bonus_role( static_cast<set_role_e>( data.bonus -> role ) );
-          else
-            spec_role_str = util::specialization_string( actor -> specialization() );
+          std::string spec_role_str = util::specialization_string( actor -> specialization() );
 
           s += "{ ";
           s += data.bonus -> set_name;
@@ -302,21 +281,13 @@ std::string set_bonus_t::to_profile_string( const std::string& newline ) const
           continue;
 
         unsigned spec_role_idx = static_cast<int>( spec_idx );
-        if ( role_set_bonus( idx ) )
-          spec_role_idx = data.bonus -> role;
 
         if ( data.overridden >= 1 ||
            ( data.overridden == -1 && set_bonus_spec_count[ idx ][ spec_role_idx ] >= data.bonus -> bonus ) )
         {
-          std::string spec_role_str;
-          if ( role_set_bonus( idx ) )
-            spec_role_str = translate_set_bonus_role( static_cast<set_role_e>( data.bonus -> role ) );
-
           s += "# set_bonus=";
           s += data.bonus -> set_opt_name;
           s += "_" + util::to_string( data.bonus -> bonus ) + "pc";
-          if ( ! spec_role_str.empty() )
-            s += "_" + spec_role_str;
           s += "=1";
           s += newline;
         }
@@ -338,12 +309,7 @@ expr_t* set_bonus_t::create_expression( const player_t* , const std::string& typ
     return nullptr;
   }
 
-  bool state;
-
-  if ( role_set_bonus( set_bonus ) )
-    state = set_bonus_spec_data[ set_bonus ][ role ][ bonus ].spell -> id() > 0;
-  else
-    state = set_bonus_spec_data[ set_bonus ][ specdata::spec_idx( actor -> specialization() ) ][ bonus ].spell -> id() > 0;
+  bool state = set_bonus_spec_data[ set_bonus ][ specdata::spec_idx( actor -> specialization() ) ][ bonus ].spell -> id() > 0;
 
   return expr_t::create_constant( type, static_cast<double>(state) );
 }
@@ -393,10 +359,7 @@ bool set_bonus_t::parse_set_bonus_option( const std::string& opt_str,
     }
   }
 
-  if ( ! role_set_bonus( set_bonus ) )
-    return set_bonus != SET_BONUS_NONE && bonus != B_NONE;
-  else
-    return set_bonus != SET_BONUS_NONE && role != SET_ROLE_NONE && bonus != B_NONE;
+  return set_bonus != SET_BONUS_NONE && bonus != B_NONE;
 }
 
 std::string set_bonus_t::generate_set_bonus_options() const
@@ -408,11 +371,6 @@ std::string set_bonus_t::generate_set_bonus_options() const
     const item_set_bonus_t& bonus = dbc::set_bonus( SC_USE_PTR )[ bonus_idx ];
     std::string opt = bonus.set_opt_name;
     opt += "_" + util::to_string( bonus.bonus ) + "pc";
-    if ( role_set_bonus( bonus.enum_id ) )
-    {
-      opt += "_";
-      opt += translate_set_bonus_role( static_cast<set_role_e>( bonus.role ) );
-    }
 
     if ( std::find( opts.begin(), opts.end(), opt ) == opts.end() )
     {

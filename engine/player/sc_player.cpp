@@ -350,10 +350,7 @@ bool parse_set_bonus( sim_t* sim, const std::string&, const std::string& value )
     return false;
   }
 
-  if ( set_bonus_t::role_set_bonus( set_bonus ) )
-    p -> sets.set_bonus_spec_data[ set_bonus ][ role ][ bonus ].overridden = opt_val;
-  else
-    p -> sets.set_bonus_spec_data[ set_bonus ][ specdata::spec_idx( p -> specialization() ) ][ bonus ].overridden = opt_val;
+  p -> sets.set_bonus_spec_data[ set_bonus ][ specdata::spec_idx( p -> specialization() ) ][ bonus ].overridden = opt_val;
 
   return true;
 }
@@ -9361,38 +9358,6 @@ void player_t::create_options()
     add_option( opt_string( "tabard",    items[ SLOT_TABARD    ].options_str ) );
 
     // Set Bonus
-    add_option( opt_int( "tier13_2pc_caster", sets.set_bonus_spec_data[ T13 ][ SET_CASTER ][ B2 ].overridden ) );
-    add_option( opt_int( "tier13_4pc_caster", sets.set_bonus_spec_data[ T13 ][ SET_CASTER ][ B4 ].overridden ) );
-    add_option( opt_int( "tier13_2pc_melee",  sets.set_bonus_spec_data[ T13 ][ SET_MELEE ][ B2 ].overridden ) );
-    add_option( opt_int( "tier13_4pc_melee",  sets.set_bonus_spec_data[ T13 ][ SET_MELEE ][ B4 ].overridden ) );
-    add_option( opt_int( "tier13_2pc_tank",   sets.set_bonus_spec_data[ T13 ][ SET_TANK ][ B2 ].overridden ) );
-    add_option( opt_int( "tier13_4pc_tank",   sets.set_bonus_spec_data[ T13 ][ SET_TANK ][ B4 ].overridden ) );
-    add_option( opt_int( "tier13_2pc_heal",   sets.set_bonus_spec_data[ T13 ][ SET_HEALER ][ B2 ].overridden ) );
-    add_option( opt_int( "tier13_4pc_heal",   sets.set_bonus_spec_data[ T13 ][ SET_HEALER ][ B4 ].overridden ) );
-    add_option( opt_int( "tier14_2pc_caster", sets.set_bonus_spec_data[ T14 ][ SET_CASTER ][ B2 ].overridden ) );
-    add_option( opt_int( "tier14_4pc_caster", sets.set_bonus_spec_data[ T14 ][ SET_CASTER ][ B4 ].overridden ) );
-    add_option( opt_int( "tier14_2pc_melee",  sets.set_bonus_spec_data[ T14 ][ SET_MELEE ][ B2 ].overridden ) );
-    add_option( opt_int( "tier14_4pc_melee",  sets.set_bonus_spec_data[ T14 ][ SET_MELEE ][ B4 ].overridden ) );
-    add_option( opt_int( "tier14_2pc_tank",   sets.set_bonus_spec_data[ T14 ][ SET_TANK ][ B2 ].overridden ) );
-    add_option( opt_int( "tier14_4pc_tank",   sets.set_bonus_spec_data[ T14 ][ SET_TANK ][ B4 ].overridden ) );
-    add_option( opt_int( "tier14_2pc_heal",   sets.set_bonus_spec_data[ T14 ][ SET_HEALER ][ B2 ].overridden ) );
-    add_option( opt_int( "tier14_4pc_heal",   sets.set_bonus_spec_data[ T15 ][ SET_HEALER ][ B4 ].overridden ) );
-    add_option( opt_int( "tier15_2pc_caster", sets.set_bonus_spec_data[ T15 ][ SET_CASTER ][ B2 ].overridden ) );
-    add_option( opt_int( "tier15_4pc_caster", sets.set_bonus_spec_data[ T15 ][ SET_CASTER ][ B4 ].overridden ) );
-    add_option( opt_int( "tier15_2pc_melee",  sets.set_bonus_spec_data[ T15 ][ SET_MELEE ][ B2 ].overridden ) );
-    add_option( opt_int( "tier15_4pc_melee",  sets.set_bonus_spec_data[ T15 ][ SET_MELEE ][ B4 ].overridden ) );
-    add_option( opt_int( "tier15_2pc_tank",   sets.set_bonus_spec_data[ T15 ][ SET_TANK ][ B2 ].overridden ) );
-    add_option( opt_int( "tier15_4pc_tank",   sets.set_bonus_spec_data[ T15 ][ SET_TANK ][ B4 ].overridden ) );
-    add_option( opt_int( "tier15_2pc_heal",   sets.set_bonus_spec_data[ T15 ][ SET_HEALER ][ B2 ].overridden ) );
-    add_option( opt_int( "tier15_4pc_heal",   sets.set_bonus_spec_data[ T15 ][ SET_HEALER ][ B4 ].overridden ) );
-    add_option( opt_int( "tier16_2pc_caster", sets.set_bonus_spec_data[ T16 ][ SET_CASTER ][ B2 ].overridden ) );
-    add_option( opt_int( "tier16_4pc_caster", sets.set_bonus_spec_data[ T16 ][ SET_CASTER ][ B4 ].overridden ) );
-    add_option( opt_int( "tier16_2pc_melee",  sets.set_bonus_spec_data[ T16 ][ SET_MELEE ][ B2 ].overridden ) );
-    add_option( opt_int( "tier16_4pc_melee",  sets.set_bonus_spec_data[ T16 ][ SET_MELEE ][ B4 ].overridden ) );
-    add_option( opt_int( "tier16_2pc_tank",   sets.set_bonus_spec_data[ T16 ][ SET_TANK ][ B2 ].overridden ) );
-    add_option( opt_int( "tier16_4pc_tank",   sets.set_bonus_spec_data[ T16 ][ SET_TANK ][ B4 ].overridden ) );
-    add_option( opt_int( "tier16_2pc_heal",   sets.set_bonus_spec_data[ T16 ][ SET_HEALER ][ B2 ].overridden ) );
-    add_option( opt_int( "tier16_4pc_heal",   sets.set_bonus_spec_data[ T16 ][ SET_HEALER ][ B4 ].overridden ) );
     add_option( opt_func( "set_bonus",         parse_set_bonus                ) );
 
     // Gear Stats

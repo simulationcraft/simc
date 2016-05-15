@@ -250,9 +250,6 @@ public:
     gain_t* rushing_jade_wind;
     gain_t* effuse;
     gain_t* spirit_of_the_crane;
-    gain_t* tier15_2pc_melee;
-    gain_t* tier16_4pc_melee;
-    gain_t* tier16_4pc_tank;
     gain_t* tier17_2pc_healer;
     gain_t* tiger_palm;
     gain_t* healing_elixirs;
@@ -264,8 +261,6 @@ public:
     proc_t* bok_proc;
     proc_t* eye_of_the_tiger;
     proc_t* mana_tea;
-    proc_t* tier15_2pc_melee;
-    proc_t* tier15_4pc_melee;
     proc_t* tier17_4pc_heal;
   } proc;
 
@@ -541,7 +536,6 @@ public:
     const spell_data_t* whirling_dragon_punch;
 //    const spell_data_t* swift_as_the_wind;
     const spell_data_t* touch_of_karma_tick;
-    const spell_data_t* tier15_2pc_melee;
     const spell_data_t* tier17_4pc_melee;
     const spell_data_t* tier18_2pc_melee;
     const spell_data_t* tier19_4pc_melee;
@@ -2190,12 +2184,6 @@ struct tiger_palm_t: public monk_melee_attack_t
         if ( p() -> buff.bok_proc -> trigger() )
           p() -> proc.bok_proc -> occur();
 
-        //  Your Chi generating abilities have a 15% chance to generate an Energy Sphere, which will grant you 10 Energy when you walk through it.
-        if ( rng().roll( p() -> sets.set( SET_MELEE, T15, B2 ) -> proc_chance() ) )
-        {
-          p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc_melee -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc_melee );
-          p() -> proc.tier15_2pc_melee -> occur();
-        }
         break;
       }
       case MONK_BREWMASTER:
@@ -2560,10 +2548,6 @@ struct blackout_kick_t: public monk_melee_attack_t
         if ( p() -> artifact.dark_skies.rank() )
           am *= 1 + p() -> artifact.dark_skies.percent();
 
-        // check for T16 melee 2p and CB: BoK, for the 50% dmg bonus
-        if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) && p() -> buff.bok_proc -> up() )
-          // damage increased by 40% for WW 2pc upon CB
-          am *= 1 + ( p() -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent() );
         break;
       }
       default: break;
@@ -2911,10 +2895,6 @@ struct fists_of_fury_t: public monk_melee_attack_t
 
     attack_power_mod.direct = 0.0;
     spell_power_mod.direct = 0.0;
-
-    // T14 WW 2PC
-    cooldown -> duration = data().cooldown();
-    cooldown -> duration += p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).time_value(); // Saved as -5000
 
     tick_action = new fists_of_fury_tick_t( p, "fists_of_fury_tick" );
 
@@ -3988,7 +3968,6 @@ struct fortifying_brew_t: public monk_spell_t
 
     harmful = may_crit = false;
     trigger_gcd = timespan_t::zero();
-    cooldown -> duration += p.sets.set( SET_TANK, T16, B2 ) -> effectN( 1 ).time_value();
   }
 
   virtual void execute() override
@@ -4205,13 +4184,6 @@ struct purifying_brew_t: public monk_spell_t
 
     double stagger_pct = p() -> current_stagger_tick_dmg_percent();
     double stagger_dmg = p() -> partial_clear_stagger( p() -> spec.purifying_brew -> effectN( 1 ).percent() );
-
-    // Tier 16 4 pieces Brewmaster: Purifying Brew also heals you for 15% of the amount of staggered damage cleared.
-    if ( p() -> sets.has_set_bonus( SET_TANK, T16, B4 ) )
-    {
-      double stagger_heal = stagger_dmg * p() -> sets.set( SET_TANK, T16, B4 ) -> effectN( 1 ).percent();
-      player -> resource_gain( RESOURCE_HEALTH, stagger_heal, p() -> gain.tier16_4pc_tank, this );
-    }
 
     // Optional addition: Track and report amount of damage cleared
     if ( stagger_pct > p() -> heavy_stagger_threshold )
@@ -6161,7 +6133,6 @@ void monk_t::init_spells()
   passives.whirling_dragon_punch            = find_spell( 158221 );
 //  passives.swift_as_the_wind                = find_spell( 195599 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
-  passives.tier15_2pc_melee                 = find_spell( 138311 );
   passives.tier17_4pc_melee                 = find_spell( 166603 );
   passives.tier18_2pc_melee                 = find_spell( 216172 );
   passives.tier19_4pc_melee                 = find_spell( 211432 );
@@ -6476,9 +6447,6 @@ void monk_t::init_gains()
   gain.spirit_of_the_crane      = get_gain( "spirit_of_the_crane" );
   gain.rushing_jade_wind        = get_gain( "rushing_jade_wind" );
   gain.effuse                   = get_gain( "effuse" );
-  gain.tier15_2pc_melee         = get_gain( "tier15_2pc_melee" );
-  gain.tier16_4pc_melee         = get_gain( "tier16_4pc_melee" );
-  gain.tier16_4pc_tank          = get_gain( "tier16_4pc_tank" );
   gain.tier17_2pc_healer        = get_gain( "tier17_2pc_healer" );
   gain.tiger_palm               = get_gain( "tiger_palm" );
   gain.gift_of_the_ox           = get_gain( "gift_of_the_ox" );
@@ -6493,8 +6461,6 @@ void monk_t::init_procs()
   proc.bok_proc                   = get_proc( "bok_proc" );
   proc.eye_of_the_tiger           = get_proc( "eye_of_the_tiger" );
   proc.mana_tea                   = get_proc( "mana_tea" );
-  proc.tier15_2pc_melee           = get_proc( "tier15_2pc_melee" );
-  proc.tier15_4pc_melee           = get_proc( "tier15_4pc_melee" );
   proc.tier17_4pc_heal            = get_proc( "tier17_2pc_heal" );
 }
 

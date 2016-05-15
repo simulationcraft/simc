@@ -2328,10 +2328,12 @@ struct voidform_t final : public priest_spell_t
 
     priest.buffs.voidform->trigger();
 
+    /*
     if ( priest.sets.has_set_bonus( SET_CASTER, T19, B4 ) )
     {
       priest.buffs.shadow_t19_4p->trigger();
     }
+    */
     // priest.buffs.shadow_t19_4p->trigger();
     // For testing until set bonuses are available in SimC
 
@@ -3229,12 +3231,14 @@ struct shadow_word_pain_t final : public priest_spell_t
     generate_insanity( insanity_gain,
                        priest.gains.insanity_shadow_word_pain_onhit );
 
+    /*
     if ( priest.sets.has_set_bonus( SET_CASTER, T19, B2 ) )
     {
       generate_insanity(
           priest.sets.set( SET_CASTER, T19, B2 )->effectN( 1 ).base_value(),
           priest.gains.insanity_shadow_word_pain_ondamage );
     }
+    */
     // generate_insanity(1, priest.gains.insanity_shadow_word_pain_ondamage);
     // //For testing until set bonuses are available in SimC
   }
@@ -3264,12 +3268,14 @@ struct shadow_word_pain_t final : public priest_spell_t
       priest.buffs.sphere_of_insanity->current_value = 0;
     }
 
+    /*
     if ( priest.sets.has_set_bonus( SET_CASTER, T19, B2 ) )
     {
       generate_insanity(
           priest.sets.set( SET_CASTER, T19, B2 )->effectN( 1 ).base_value(),
           priest.gains.insanity_shadow_word_pain_ondamage );
     }
+    */
     // generate_insanity(1, priest.gains.insanity_shadow_word_pain_ondamage);
     // For testing until set bonuses are available in SimC
     
@@ -3431,12 +3437,14 @@ struct vampiric_touch_t final : public priest_spell_t
       }
     }
 
+    /*
     if ( priest.sets.has_set_bonus( SET_CASTER, T19, B2 ) )
     {
       generate_insanity(
           priest.sets.set( SET_CASTER, T19, B2 )->effectN( 1 ).base_value(),
           priest.gains.insanity_vampiric_touch_ondamage );
     }
+    */
     // generate_insanity(1, priest.gains.insanity_vampiric_touch_ondamage);
     // For testing until set bonuses are available in SimC
 

@@ -2812,31 +2812,16 @@ struct set_bonus_t
     {
       case PVP:
       case T17LFR:
+      case T18LFR:
       case T17:
       case T18:
+      case T19:
         break;
       default:
         assert( 0 && "Attempt to access role-based set bonus through specialization." );
     }
 #endif
     return set_bonus_spec_data[ set_bonus ][ specdata::spec_idx( spec ) ][ bonus ].spell;
-  }
-
-  const spell_data_t* set( set_role_e role, set_bonus_type_e set_bonus, set_bonus_e bonus ) const
-  {
-#ifndef NDEBUG
-    switch ( set_bonus )
-    {
-      case T13:
-      case T14:
-      case T15:
-      case T16:
-        break;
-      default:
-        assert( 0 && "Attempt to access spec-based set bonus through role." );
-    }
-#endif
-    return set_bonus_spec_data[ set_bonus ][ role ][ bonus ].spell;
   }
 
   // Fast accessor for checking whether a set bonus is enabled
@@ -2855,23 +2840,6 @@ struct set_bonus_t
   static set_role_e translate_set_bonus_role_str( const std::string& name );
   static const char* translate_set_bonus_role( set_role_e );
   static std::string set_bonus_type_str( set_bonus_e );
-
-  static bool role_set_bonus( set_bonus_type_e set_bonus )
-  {
-    switch ( set_bonus )
-    {
-      case T13:
-      case T14:
-      case T15:
-      case T16:
-        return true;
-      default:
-        return false;
-    }
-  }
-
-  static bool role_set_bonus( size_t set_bonus )
-  { return role_set_bonus( static_cast<set_bonus_type_e>( set_bonus ) ); }
 };
 
 // "Real" 'Procs per Minute' helper class =====================================

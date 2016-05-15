@@ -222,7 +222,6 @@ public:
   pet_t* guardian_storm_elemental;
   pet_t* pet_earth_elemental;
   pet_t* guardian_earth_elemental;
-  pet_t* guardian_lightning_elemental;
 
   pet_t* guardian_greater_lightning_elemental;
 
@@ -249,7 +248,6 @@ public:
     buff_t* shamanistic_rage;
     buff_t* spirit_walk;
     buff_t* spiritwalkers_grace;
-    buff_t* tier16_2pc_caster;
     buff_t* tidal_waves;
     buff_t* focus_of_the_elements;
     buff_t* feral_spirit;
@@ -556,10 +554,6 @@ public:
   void trigger_windfury_weapon( const action_state_t* );
   void trigger_flametongue_weapon( const action_state_t* );
   void trigger_hailstorm( const action_state_t* );
-  void trigger_tier15_2pc_caster( const action_state_t* );
-  void trigger_tier16_2pc_melee( const action_state_t* );
-  void trigger_tier16_4pc_melee( const action_state_t* );
-  void trigger_tier16_4pc_caster( const action_state_t* );
   void trigger_tier17_2pc_elemental( int );
   void trigger_tier17_4pc_elemental( int );
   void trigger_tier18_4pc_elemental( int );
@@ -657,8 +651,6 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
 {
   dot.flame_shock       = target -> get_dot( "flame_shock", p );
 
-  debuff.t16_2pc_caster = buff_creator_t( *this, "tier16_2pc_caster", p -> sets.set( SET_CASTER, T16, B2 ) -> effectN( 1 ).trigger() )
-                          .chance( static_cast< double >( p -> sets.has_set_bonus( SET_CASTER, T16, B2 ) ) );
   debuff.earthen_spike  = buff_creator_t( *this, "earthen_spike", p -> talent.earthen_spike )
                           // -10% resistance in spell data, treat it as a multiplier instead
                           .default_value( 1.0 + p -> talent.earthen_spike -> effectN( 2 ).percent() );
@@ -1080,7 +1072,6 @@ public:
     p() -> trigger_unleash_doom( state );
     p() -> trigger_lightning_shield( state );
     p() -> trigger_stormlash( state );
-    //p() -> trigger_tier16_2pc_melee( state ); TODO: Legion will change this
   }
 
   void trigger_maelstrom_weapon( const action_state_t* source_state, double amount = 0 )
@@ -1857,51 +1848,6 @@ struct storm_elemental_t : public primal_elemental_t
   }
 };
 
-struct lightning_elemental_t : public pet_t
-{
-  struct lightning_blast_t : public spell_t
-  {
-    lightning_blast_t( lightning_elemental_t* p ) :
-      spell_t( "lightning_blast", p, p -> find_spell( 145002 ) )
-    {
-      base_costs[ RESOURCE_MANA ] = 0;
-      may_crit = true;
-    }
-
-    double composite_haste() const override
-    { return 1.0; }
-  };
-
-  lightning_elemental_t( shaman_t* owner ) :
-    pet_t( owner -> sim, owner, "lightning_elemental", true, true )
-  {
-    stamina_per_owner = 1.0;
-    regen_type = REGEN_DISABLED;
-  }
-
-  void init_base_stats() override
-  {
-    pet_t::init_base_stats();
-    owner_coeff.sp_from_sp = 0.75;
-  }
-
-  action_t* create_action( const std::string& name, const std::string& options_str ) override
-  {
-    if ( name == "lightning_blast" ) return new lightning_blast_t( this );
-    return pet_t::create_action( name, options_str );
-  }
-
-  void init_action_list() override
-  {
-    action_list_str = "lightning_blast";
-
-    pet_t::init_action_list();
-  }
-
-  resource_e primary_resource() const override
-  { return specialization() == SHAMAN_RESTORATION ? RESOURCE_MANA : RESOURCE_MAELSTROM; }
-};
-
 struct greater_lightning_elemental_t : public pet_t
 {
   struct lightning_blast_t : public spell_t
@@ -1962,18 +1908,6 @@ struct greater_lightning_elemental_t : public pet_t
 // ==========================================================================
 // Shaman Secondary Spells / Attacks
 // ==========================================================================
-
-struct t15_2pc_caster_t : public shaman_spell_t
-{
-  t15_2pc_caster_t( shaman_t* player ) :
-    shaman_spell_t( "t15_lightning_strike", player,
-                    player -> sets.set( SET_CASTER, T15, B2 ) -> effectN( 1 ).trigger() )
-  {
-    proc = background = split_aoe_damage = true;
-    callbacks = false;
-    aoe = -1;
-  }
-};
 
 struct flametongue_weapon_spell_t : public shaman_spell_t
 {
@@ -2542,7 +2476,6 @@ struct lava_lash_t : public shaman_attack_t
     check_spec( SHAMAN_ENHANCEMENT );
     school = SCHOOL_FIRE;
 
-    base_multiplier *= 1.0 + player -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + player -> artifact.forged_in_lava.percent();
 
     parse_options( options_str );
@@ -3162,14 +3095,6 @@ struct chain_lightning_t: public shaman_spell_t
     p() -> buff.static_overload -> trigger();
   }
 
-  void impact( action_state_t* state ) override
-  {
-    shaman_spell_t::impact( state );
-
-    p() -> trigger_tier15_2pc_caster( state );
-    p() -> trigger_tier16_4pc_caster( state );
-  }
-
   bool ready() override
   {
     if ( p() -> specialization() == SHAMAN_ELEMENTAL && p() -> buff.ascendance -> check() )
@@ -3234,13 +3159,6 @@ struct lava_beam_t : public shaman_spell_t
       overload = new lava_beam_overload_t( player );
       add_child( overload );
     }
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    shaman_spell_t::impact( state );
-
-    p() -> trigger_tier15_2pc_caster( state );
   }
 
   bool ready() override
@@ -3368,8 +3286,6 @@ struct lava_burst_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
-
-    p() -> cooldown.ascendance -> ready -= p() -> sets.set( SET_CASTER, T15, B4 ) -> effectN( 1 ).time_value();
 
     // Lava Surge buff does not get eaten, if the Lava Surge proc happened
     // during the Lava Burst cast
@@ -3501,15 +3417,6 @@ struct lightning_bolt_t : public shaman_spell_t
     return m;
   }
 
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double m = shaman_spell_t::composite_da_multiplier( state );
-
-    m *= 1.0 + p() -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 1 ).percent();
-
-    return m;
-  }
-
   void execute() override
   {
     shaman_spell_t::execute();
@@ -3522,14 +3429,6 @@ struct lightning_bolt_t : public shaman_spell_t
     {
       p() -> trigger_doom_vortex( execute_state );
     }
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    shaman_spell_t::impact( state );
-
-    p() -> trigger_tier15_2pc_caster( state );
-    p() -> trigger_tier16_4pc_caster( state );
   }
 };
 
@@ -3699,9 +3598,6 @@ struct spiritwalkers_grace_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p() -> buff.spiritwalkers_grace -> trigger();
-
-    if ( p() -> sets.has_set_bonus( SET_HEALER, T13, B4 ) )
-      p() -> buff.tier13_4pc_healer -> trigger();
   }
 };
 
@@ -3977,8 +3873,6 @@ struct flame_shock_t : public shaman_spell_t
 
       p() -> buff.lava_surge -> trigger();
     }
-
-    p() -> trigger_tier16_4pc_melee( d -> state );
   }
 };
 
@@ -4130,8 +4024,7 @@ struct healing_surge_t : public shaman_heal_t
 
     if ( p() -> buff.tidal_waves -> up() )
     {
-      c += p() -> spec.tidal_waves -> effectN( 1 ).percent() +
-           p() -> sets.set( SET_HEALER, T14, B4 ) -> effectN( 1 ).percent();
+      c += p() -> spec.tidal_waves -> effectN( 1 ).percent();
     }
 
     return c;
@@ -4154,8 +4047,7 @@ struct healing_wave_t : public shaman_heal_t
 
     if ( p() -> buff.tidal_waves -> up() )
     {
-      c *= 1.0 - ( p() -> spec.tidal_waves -> effectN( 1 ).percent() +
-                   p() -> sets.set( SET_HEALER, T14, B4 ) -> effectN( 1 ).percent() );
+      c *= 1.0 - p() -> spec.tidal_waves -> effectN( 1 ).percent();
     }
 
     return c;
@@ -4178,8 +4070,7 @@ struct greater_healing_wave_t : public shaman_heal_t
 
     if ( p() -> buff.tidal_waves -> up() )
     {
-      c *= 1.0 - ( p() -> spec.tidal_waves -> effectN( 1 ).percent() +
-                   p() -> sets.set( SET_HEALER, T14, B4 ) -> effectN( 1 ).percent() );
+      c *= 1.0 - p() -> spec.tidal_waves -> effectN( 1 ).percent();
     }
 
     return c;
@@ -4841,11 +4732,6 @@ void shaman_t::create_pets()
     create_pet( "liquid_magma_totem" );
   }
 
-  if ( sets.has_set_bonus( SET_CASTER, T16, B4 ) )
-  {
-    guardian_lightning_elemental = new pet::lightning_elemental_t( this );
-  }
-
   if ( artifact.fury_of_the_storms.rank() && find_action( "stormkeeper" ) )
   {
     guardian_greater_lightning_elemental = new pet::greater_lightning_elemental_t( this );
@@ -4855,11 +4741,6 @@ void shaman_t::create_pets()
   {
     const spell_data_t* fs_data = find_specialization_spell( "Feral Spirit" );
     size_t n_feral_spirits = static_cast<size_t>( fs_data -> effectN( 1 ).base_value() );
-    // Add two extra potential pets for the T15 4pc set bonus
-    if ( sets.has_set_bonus( SET_MELEE, T15, B4 ) )
-    {
-      n_feral_spirits += 2;
-    }
 
     for ( size_t i = 0; i < n_feral_spirits; i++ )
     {
@@ -5355,8 +5236,6 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
       a = windfury_oh;
     }
 
-    cooldown.feral_spirits -> ready -= timespan_t::from_seconds( sets.set( SET_MELEE, T15, B4 ) -> effectN( 1 ).base_value() );
-
     a -> target = state -> target;
     a -> schedule_execute();
     a -> schedule_execute();
@@ -5367,81 +5246,6 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
       a -> schedule_execute();
     }
   }
-}
-
-void shaman_t::trigger_tier16_2pc_melee( const action_state_t* state )
-{
-  if ( ! state -> action -> callbacks )
-    return;
-
-  if ( cooldown.t16_2pc_melee -> down() )
-    return;
-
-  proc.t16_2pc_melee -> occur();
-
-  switch ( static_cast< int >( rng().range( 0, bugs ? 4 : 2 ) ) )
-  {
-    // Windfury
-    case 0:
-      break;
-    // Flametongue
-    case 1:
-    case 2:
-    case 3:
-      break;
-    default:
-      assert( false );
-      break;
-  }
-}
-
-void shaman_t::trigger_tier15_2pc_caster( const action_state_t* s )
-{
-  if ( ! sets.has_set_bonus( SET_CASTER, T15, B2 ) )
-    return;
-
-  if ( ! s -> action -> result_is_hit( s -> result ) )
-    return;
-
-  if ( rng().roll( sets.set( SET_CASTER, T15, B2 ) -> proc_chance() ) )
-  {
-    lightning_strike -> target = s -> target;
-    lightning_strike -> schedule_execute();
-  }
-}
-
-void shaman_t::trigger_tier16_4pc_melee( const action_state_t* )
-{
-  if ( ! sets.has_set_bonus( SET_MELEE, T16, B4 ) )
-    return;
-
-  if ( cooldown.t16_4pc_melee -> down() )
-    return;
-
-  if ( ! rng().roll( sets.set( SET_MELEE, T16, B4 ) -> proc_chance() ) )
-    return;
-
-  cooldown.t16_4pc_melee -> start( sets.set( SET_MELEE, T16, B4 ) -> internal_cooldown() );
-
-  proc.t16_4pc_melee -> occur();
-  cooldown.lava_lash -> reset( true );
-}
-
-void shaman_t::trigger_tier16_4pc_caster( const action_state_t* )
-{
-  if ( ! sets.has_set_bonus( SET_CASTER, T16, B4 ) )
-    return;
-
-  if ( cooldown.t16_4pc_caster -> down() )
-    return;
-
-  if ( ! rng().roll( sets.set( SET_CASTER, T16, B4 ) -> proc_chance() ) )
-    return;
-
-  cooldown.t16_4pc_caster -> start( sets.set( SET_CASTER, T16, B4 ) -> internal_cooldown() );
-
-  guardian_lightning_elemental -> summon( sets.set( SET_CASTER, T16, B4 ) -> effectN( 1 ).trigger() -> duration() );
-  proc.t16_4pc_caster -> occur();
 }
 
 void shaman_t::trigger_tier17_2pc_elemental( int stacks )
@@ -5555,10 +5359,7 @@ void shaman_t::create_buffs()
                                  .chance( talent.lightning_shield -> ok() );
   buff.shamanistic_rage        = buff_creator_t( this, "shamanistic_rage", find_specialization_spell( "Shamanistic Rage" ) );
   buff.spirit_walk             = buff_creator_t( this, "spirit_walk", find_specialization_spell( "Spirit Walk" ) );
-  buff.spiritwalkers_grace     = buff_creator_t( this, "spiritwalkers_grace", find_specialization_spell( "Spiritwalker's Grace" ) )
-                                 .chance( 1.0 )
-                                 .duration( find_specialization_spell( "Spiritwalker's Grace" ) -> duration() +
-                                            sets.set( SET_HEALER, T13, B4 ) -> effectN( 1 ).time_value() );
+  buff.spiritwalkers_grace     = buff_creator_t( this, "spiritwalkers_grace", find_specialization_spell( "Spiritwalker's Grace" ) );
   buff.tidal_waves             = buff_creator_t( this, "tidal_waves", spec.tidal_waves -> ok() ? find_spell( 53390 ) : spell_data_t::not_found() );
 
   buff.tier13_4pc_healer       = haste_buff_creator_t( this, "tier13_4pc_healer", find_spell( 105877 ) ).add_invalidate( CACHE_HASTE );
@@ -5764,11 +5565,6 @@ void shaman_t::init_action_list()
     hailstorm = new hailstorm_attack_t( "hailstorm", this, &( main_hand_weapon ) );
   }
 
-  if ( sets.has_set_bonus( SET_CASTER, T15, B2 ) )
-  {
-    lightning_strike = new t15_2pc_caster_t( this );
-  }
-
   if ( sets.has_set_bonus( SHAMAN_ENHANCEMENT, T18, B2 ) )
   {
     electrocute = new electrocute_t( this );
@@ -5919,7 +5715,7 @@ void shaman_t::init_action_list()
     }
     // Sync berserking with ascendance as they share a cooldown, but making sure
     // that no two haste cooldowns overlap, within reason
-    def -> add_action( "berserking,if=!buff.bloodlust.up&(set_bonus.tier15_4pc_caster=1|(buff.ascendance.cooldown_remains=0&(dot.flame_shock.remains>buff.ascendance.duration|level<87)))" );
+    def -> add_action( "berserking,if=!buff.bloodlust.up&buff.ascendance.cooldown_remains=0&(dot.flame_shock.remains>buff.ascendance.duration|level<87)" );
     // Sync blood fury with ascendance or fire elemental as long as one is ready
     // soon after blood fury is.
     def -> add_action( "blood_fury,if=buff.bloodlust.up|buff.ascendance.up|((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)" );
@@ -5936,7 +5732,7 @@ void shaman_t::init_action_list()
     // only Lava Bursts need to be cast during it's duration
     std::string ascendance_opts = "if=spell_targets.chain_lightning>1|(dot.flame_shock.remains>buff.ascendance.duration&(target.time_to_die<20|buff.bloodlust.up";
     if ( race == RACE_TROLL )
-      ascendance_opts += "|buff.berserking.up|set_bonus.tier15_4pc_caster=1";
+      ascendance_opts += "|buff.berserking.up";
     else
       ascendance_opts += "|time>=60";
     ascendance_opts += ")&cooldown.lava_burst.remains>0)";

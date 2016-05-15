@@ -204,13 +204,11 @@ public:
   struct buffs_t {
     buff_t* army_of_the_dead;
     buff_t* antimagic_shell;
-    buff_t* bone_wall;
     buff_t* bone_shield;
     buff_t* crimson_scourge;
     buff_t* dancing_rune_weapon;
     buff_t* dark_transformation;
     buff_t* deaths_advance;
-    buff_t* deathbringer;
     buff_t* gathering_storm;
     buff_t* icebound_fortitude;
     buff_t* killing_machine;
@@ -936,9 +934,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
     void tick( dot_t* dot ) override
     {
       int pct = 35;
-
-      if ( o() -> sets.has_set_bonus( SET_MELEE, T15, B4 ) )
-        pct = o() -> sets.set( SET_MELEE, T15, B4 ) -> effectN( 1 ).base_value();
 
       if ( dot -> state -> target -> health_percentage() <= pct )
         drw_melee_attack_t::tick( dot );
@@ -1889,24 +1884,11 @@ struct melee_t : public death_knight_melee_attack_t
     {
       if ( weapon -> slot == SLOT_MAIN_HAND )
       {
-        // T13 2pc gives 2 stacks of SD, otherwise we can only ever have one
-        // Ensure that if we have 1 that we only refresh, not add another stack
-        int new_stacks = ( p() -> rng().roll( p() -> sets.set( SET_MELEE, T13, B2 ) -> effectN( 1 ).percent() ) ) ? 2 : 1;
-
         // Mists of Pandaria Sudden Doom is 3 PPM
         if ( p() -> spec.sudden_doom -> ok() &&
              p() -> rng().roll( weapon -> proc_chance_on_swing( 3 ) ) )
         {
-          // If we're proccing 2 or we have 0 stacks, trigger like normal
-          if ( new_stacks == 2 || p() -> buffs.sudden_doom -> check() == 0 )
-            p() -> buffs.sudden_doom -> trigger( new_stacks );
-          // refresh stacks. However if we have a double stack and only 1 procced, it refreshes to 1 stack
-          else
-          {
-            p() -> buffs.sudden_doom -> refresh( 0 );
-            if ( p() -> buffs.sudden_doom -> check() == 2 && new_stacks == 1 )
-              p() -> buffs.sudden_doom -> decrement( 1 );
-          }
+          p() -> buffs.sudden_doom -> trigger();
         }
 
       }
@@ -2202,9 +2184,7 @@ struct soul_reaper_t : public death_knight_melee_attack_t
 
   void tick( dot_t* dot ) override
   {
-    int pct = p() -> sets.has_set_bonus( SET_MELEE, T15, B4 ) ? p() -> sets.set( SET_MELEE, T15, B4 ) -> effectN( 1 ).base_value() : 35;
-
-    if ( dot -> state -> target -> health_percentage() <= pct )
+    if ( dot -> state -> target -> health_percentage() <= 35 )
       death_knight_melee_attack_t::tick( dot );
   }
 };
@@ -2297,8 +2277,7 @@ struct bone_shield_t : public death_knight_spell_t
 
   virtual void execute() override
   {
-    size_t max_stacks = p() -> buffs.bone_shield -> data().initial_stacks() +
-                        p() -> buffs.bone_wall -> stack();
+    size_t max_stacks = p() -> buffs.bone_shield -> data().initial_stacks();
 
     if ( ! p() -> in_combat )
     {
@@ -2321,7 +2300,6 @@ struct bone_shield_t : public death_knight_spell_t
     else
     {
       p() -> buffs.bone_shield -> trigger( static_cast<int>(max_stacks) ); // FIXME
-      p() -> buffs.bone_wall -> expire();
       death_knight_spell_t::execute();
     }
   }
@@ -2757,22 +2735,6 @@ struct death_strike_t : public death_knight_melee_attack_t
     weapon = &( p -> main_hand_weapon );
   }
 
-  virtual void consume_resource() override
-  {
-    if ( p() -> buffs.deathbringer -> check() )
-      return;
-
-    death_knight_melee_attack_t::consume_resource();
-  }
-
-  virtual double cost() const override
-  {
-    if ( p() -> buffs.deathbringer -> check() )
-      return 0;
-
-    return death_knight_melee_attack_t::cost();
-  }
-
   virtual void execute() override
   {
     death_knight_melee_attack_t::execute();
@@ -2787,8 +2749,6 @@ struct death_strike_t : public death_knight_melee_attack_t
     {
       heal -> schedule_execute();
     }
-
-    p() -> buffs.deathbringer -> decrement();
   }
 
   virtual bool ready() override
@@ -2796,14 +2756,9 @@ struct death_strike_t : public death_knight_melee_attack_t
     if ( ! melee_attack_t::ready() )
       return false;
 
-    if ( p() -> buffs.deathbringer -> check() )
-      //return group_runes( p(), 0, 0, 0, 0, use );
-      //todo: mrdmnd
-      return true;
-    else
-      //return group_runes( p(), cost_blood, cost_frost, cost_unholy, cost_death, use );
-      //TODO:mrdmnd
-      return true;
+    //return group_runes( p(), cost_blood, cost_frost, cost_unholy, cost_death, use );
+    //TODO:mrdmnd
+    return true;
   }
 };
 
@@ -2924,7 +2879,6 @@ struct frost_strike_offhand_t : public death_knight_melee_attack_t
     background       = true;
     weapon           = &( p -> off_hand_weapon );
     special          = true;
-    base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -2957,7 +2911,6 @@ struct frost_strike_t : public death_knight_melee_attack_t
     oh_attack( new frost_strike_offhand_t( p ) )
   {
     special = true;
-    base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
 
     parse_options( options_str );
 
@@ -3219,7 +3172,6 @@ struct obliterate_offhand_t : public death_knight_melee_attack_t
     background       = true;
     weapon           = &( p -> off_hand_weapon );
     special          = true;
-    base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
 
   }
 
@@ -3251,7 +3203,6 @@ struct obliterate_t : public death_knight_melee_attack_t
   {
     parse_options( options_str );
     special = true;
-    base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
 
     weapon = &( p -> main_hand_weapon );
   }
@@ -3532,7 +3483,6 @@ struct scourge_strike_t : public death_knight_melee_attack_t
     parse_options( options_str );
 
     special = true;
-    base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
 
     // TODO-WOD: Do we need to inherit damage or is it a separate roll in WoD?
     add_child( scourge_strike_shadow );
@@ -4573,16 +4523,13 @@ void death_knight_t::create_buffs()
   buffs.bone_shield         = buff_creator_t( this, "bone_shield", find_specialization_spell( "Bone Shield" ) )
                               .cd( timespan_t::zero() )
                               .max_stack( find_specialization_spell( "Bone Shield" ) -> initial_stacks() + find_spell( 144948 ) -> max_stacks() );
-  buffs.bone_wall           = buff_creator_t( this, "bone_wall", find_spell( 144948 ) )
-                              .chance( sets.has_set_bonus( SET_TANK, T16, B2 ) );
   buffs.crimson_scourge     = buff_creator_t( this, "crimson_scourge" ).spell( find_spell( 81141 ) )
                               .chance( spec.crimson_scourge -> proc_chance() );
   buffs.dancing_rune_weapon = buff_creator_t( this, "dancing_rune_weapon", find_spell( 81256 ) )
                               .cd( timespan_t::zero() )
                               .add_invalidate( CACHE_PARRY );
   buffs.dark_transformation = buff_creator_t( this, "dark_transformation", find_class_spell( "Dark Transformation" ) );
-  buffs.deathbringer        = buff_creator_t( this, "deathbringer", find_spell( 144953 ) )
-                              .chance( sets.has_set_bonus( SET_TANK, T16, B4 ) );
+
   buffs.gathering_storm     = buff_creator_t( this, "gathering_storm", find_spell( 211805 ) )
                               .trigger_spell( talent.gathering_storm )
                               .default_value( find_spell( 211805 ) -> effectN( 1 ).percent() );
@@ -4600,8 +4547,7 @@ void death_knight_t::create_buffs()
                               .cd( timespan_t::zero() ); // Handled by action
   buffs.pillar_of_frost     = buff_creator_t( this, "pillar_of_frost", find_class_spell( "Pillar of Frost" ) )
                               .cd( timespan_t::zero() )
-                              .default_value( find_class_spell( "Pillar of Frost" ) -> effectN( 1 ).percent() +
-                                              sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).percent() )
+                              .default_value( find_class_spell( "Pillar of Frost" ) -> effectN( 1 ).percent() )
                               .add_invalidate( CACHE_STRENGTH );
   buffs.rime                = buff_creator_t( this, "rime", spec.rime -> effectN( 1 ).trigger() )
                               .trigger_spell( spec.rime );
@@ -4613,7 +4559,6 @@ void death_knight_t::create_buffs()
   //                            .chance( talent.runic_corruption -> proc_chance() );
   buffs.runic_corruption    = new runic_corruption_buff_t( this );
   buffs.sudden_doom         = buff_creator_t( this, "sudden_doom", find_spell( 81340 ) )
-                              .max_stack( ( sets.has_set_bonus( SET_MELEE, T13, B2 ) ) ? 2 : 1 )
                               .cd( timespan_t::zero() )
                               .chance( spec.sudden_doom -> ok() );
   buffs.shadow_infusion     = buff_creator_t( this, "shadow_infusion", spec.shadow_infusion -> effectN( 1 ).trigger() );

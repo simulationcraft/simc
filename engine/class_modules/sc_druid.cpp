@@ -359,9 +359,6 @@ public:
     buff_t* savage_roar;
     buff_t* scent_of_blood;
     buff_t* tigers_fury;
-    buff_t* feral_tier15_4pc;
-    buff_t* feral_tier16_2pc;
-    buff_t* feral_tier16_4pc;
     buff_t* feral_tier17_4pc;
 
     // Guardian
@@ -378,7 +375,6 @@ public:
     buff_t* pulverize;
     buff_t* rage_of_the_sleeper;
     buff_t* survival_instincts;
-    buff_t* guardian_tier15_2pc;
     buff_t* guardian_tier17_4pc;
     buff_t* ironfur;
 
@@ -433,8 +429,6 @@ public:
     gain_t* shred;
     gain_t* swipe_cat;
     gain_t* tigers_fury;
-    gain_t* feral_tier15_2pc;
-    gain_t* feral_tier16_4pc;
     gain_t* feral_tier17_2pc;
     gain_t* feral_tier18_4pc;
     gain_t* feral_tier19_2pc;
@@ -477,7 +471,6 @@ public:
     proc_t* predator;
     proc_t* predator_wasted;
     proc_t* primal_fury;
-    proc_t* tier15_2pc_melee;
     proc_t* tier17_2pc_melee;
 
     // Balance
@@ -1662,9 +1655,6 @@ public:
 
       for ( int i = 0; i < active; i++ )
         ab::p() -> proc.clearcasting_wasted -> occur();
-
-      if ( ab::p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) )
-        ab::p() -> buff.feral_tier16_2pc -> trigger();
     }
   }
 
@@ -1854,7 +1844,6 @@ struct moonfire_t : public druid_spell_t
     const spell_data_t* dmg_spell = player -> find_spell( 164812 );
     
     dot_duration           = dmg_spell -> duration();
-    dot_duration          += player -> sets.set( SET_CASTER, T14, B4 ) -> effectN( 1 ).time_value();
     dot_duration          += player -> spec.balance_overrides -> effectN( 4 ).time_value();
     base_tick_time         = dmg_spell -> effectN( 2 ).period();
     spell_power_mod.tick   = dmg_spell -> effectN( 2 ).sp_coeff();
@@ -2327,22 +2316,6 @@ public:
 
     base_t::execute();
 
-    if ( consumes_combo_points )
-    {
-      if ( player -> sets.has_set_bonus( SET_MELEE, T15, B2 ) &&
-           rng().roll( cost() * 0.15 ) )
-      {
-        p() -> proc.tier15_2pc_melee -> occur();
-        p() -> resource_gain( RESOURCE_COMBO_POINT, 1, p() -> gain.feral_tier15_2pc );
-      }
-
-      if ( p() -> buff.feral_tier16_4pc -> up() )
-      {
-        p() -> resource_gain( RESOURCE_COMBO_POINT, p() -> buff.feral_tier16_4pc -> check_value(), p() -> gain.feral_tier16_4pc );
-        p() -> buff.feral_tier16_4pc -> expire();
-      }
-    }
-
     if ( energize_resource == RESOURCE_COMBO_POINT && hit_any_target &&
       p() -> spec.primal_fury -> ok() && attack_critical )
     {
@@ -2606,7 +2579,7 @@ struct ferocious_bite_t : public cat_attack_t
     druid_t* druid;
 
     ashamanes_rip_state_t( druid_t* p, action_t* a, player_t* t ) :
-      action_state_t( a, target ), druid( p )
+      action_state_t( a, t ), druid( p )
     {}
 
     druid_td_t* td()
@@ -2736,9 +2709,6 @@ struct ferocious_bite_t : public cat_attack_t
 
     cat_attack_t::execute();
 
-    if ( p() -> buff.feral_tier15_4pc -> up() )
-      p() -> buff.feral_tier15_4pc -> decrement();
-
     max_excess_energy = -1 * data().effectN( 2 ).base_value();
   }
 
@@ -2748,10 +2718,7 @@ struct ferocious_bite_t : public cat_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      double blood_in_the_water = p() -> sets.has_set_bonus( SET_MELEE, T13, B2 ) ?
-        p() -> sets.set( SET_MELEE, T13, B2 ) -> effectN( 2 ).base_value() : 25.0;
-
-      if ( s -> target -> health_percentage() <= blood_in_the_water )
+      if ( s -> target -> health_percentage() <= 25 )
       {
         td( s -> target ) -> dots.rip -> refresh_duration( 0 );
 
@@ -2793,15 +2760,6 @@ struct ferocious_bite_t : public cat_attack_t
     am *= 1.0 + excess_energy / max_excess_energy;
 
     return am;
-  }
-
-  double composite_crit() const override
-  {
-    double c = cat_attack_t::composite_crit();
-
-    c += p() -> buff.feral_tier15_4pc -> check_value();
-
-    return c;
   }
 
   void trigger_ashamanes_bite( action_state_t* s )
@@ -2943,7 +2901,6 @@ struct rip_t : public cat_attack_t
   {
     special      = true;
     may_crit     = false;
-    dot_duration += player -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
 
     trigger_tier17_2pc = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
 
@@ -3043,19 +3000,8 @@ struct shred_t : public cat_attack_t
   shred_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "shred", p, p -> find_specialization_spell( "Shred" ), options_str )
   {
-    base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
     base_crit += p -> artifact.feral_power.percent();
     base_multiplier *= 1.0 + p -> artifact.shredder_fangs.percent();
-  }
-
-  virtual void execute() override
-  {
-    cat_attack_t::execute();
-
-    if ( p() -> buff.feral_tier15_4pc -> up() )
-      p() -> buff.feral_tier15_4pc -> decrement();
-
-    p() -> buff.feral_tier16_4pc -> up();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3079,15 +3025,6 @@ struct shred_t : public cat_attack_t
     return tm;
   }
 
-  double composite_crit() const override
-  {
-    double c = cat_attack_t::composite_crit();
-
-    c += p() -> buff.feral_tier15_4pc -> check_value();
-
-    return c;
-  }
-
   double composite_crit_multiplier() const override
   {
     double cm = cat_attack_t::composite_crit_multiplier();
@@ -3101,8 +3038,6 @@ struct shred_t : public cat_attack_t
   double action_multiplier() const override
   {
     double m = cat_attack_t::action_multiplier();
-
-    m *= 1.0 + p() -> buff.feral_tier16_2pc -> check_value();
 
     if ( stealthed() )
       m *= 1.0 + p() -> buff.prowl -> data().effectN( 4 ).percent();
@@ -3144,20 +3079,7 @@ public:
   {
     cat_attack_t::execute();
 
-    p() -> buff.feral_tier16_2pc -> up();
     p() -> buff.scent_of_blood -> up();
-
-    if ( p() -> buff.feral_tier15_4pc -> up() )
-      p() -> buff.feral_tier15_4pc -> decrement();
-  }
-
-  double action_multiplier() const override
-  {
-    double m = cat_attack_t::action_multiplier();
-
-    m *= 1.0 + p() -> buff.feral_tier16_2pc -> check_value();
-
-    return m;
   }
 
   virtual double composite_target_multiplier( player_t* t ) const override
@@ -3171,15 +3093,6 @@ public:
       tm *= 1.0 + td( t ) -> feral_tier19_4pc_bleeds() * p() -> sets.set( DRUID_FERAL, T19, B4 ) -> effectN( 1 ).percent();
 
     return tm;
-  }
-
-  double composite_crit() const override
-  {
-    double c = cat_attack_t::composite_crit();
-
-    c += p() -> buff.feral_tier15_4pc -> check_value();
-
-    return c;
   }
 
   virtual bool ready() override
@@ -3216,13 +3129,6 @@ struct tigers_fury_t : public cat_attack_t
     cat_attack_t::execute();
 
     p() -> buff.tigers_fury -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
-
-    if ( p() -> sets.has_set_bonus( SET_MELEE, T13, B4 ) )
-      p() -> buff.clearcasting -> trigger();
-
-    p() -> buff.feral_tier15_4pc -> trigger( 3 );
-
-    p() -> buff.feral_tier16_4pc -> trigger();
 
     p() -> buff.ashamanes_energy -> trigger();
     
@@ -5144,7 +5050,6 @@ struct sunfire_t : public druid_spell_t
     const spell_data_t* dmg_spell = player -> find_spell( 164815 );
 
     dot_duration           = dmg_spell -> duration();
-    dot_duration          += player -> sets.set( SET_CASTER, T14, B4 ) -> effectN( 1 ).time_value();
     dot_duration          += player -> spec.balance_overrides -> effectN( 4 ).time_value();
     base_tick_time         = dmg_spell -> effectN( 2 ).period();
     spell_power_mod.direct = dmg_spell -> effectN( 1 ).sp_coeff();
@@ -5287,7 +5192,6 @@ struct solar_wrath_t : public druid_spell_t
     natures_balance    = timespan_t::from_seconds( player -> talent.natures_balance -> effectN( 2 ).base_value() );
 
     base_execute_time *= 1.0 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
-    base_multiplier   *= 1.0 + player -> sets.set( SET_CASTER, T13, B2 ) -> effectN( 1 ).percent();
     base_multiplier   *= 1.0 + player -> artifact.skywrath.percent();
     base_multiplier   *= 1.0 + player -> artifact.solar_stabbing.percent();
   }
@@ -5391,7 +5295,6 @@ struct starfall_t : public druid_spell_t
       radius  = p -> find_spell( 191034 ) -> effectN( 1 ).radius();
       radius *= 1.0 + p -> talent.stellar_drift -> effectN( 1 ).percent();
 
-      base_multiplier *= 1.0 + p -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 1 ).percent();
       base_multiplier *= 1.0 + p -> talent.stellar_drift -> effectN( 2 ).percent();
     }
     
@@ -5593,9 +5496,6 @@ struct starsurge_t : public druid_spell_t
   {
     parse_options( options_str );
 
-    base_multiplier       *= 1.0 + player -> sets.set( SET_CASTER, T13, B4 ) -> effectN( 2 ).percent();
-    base_multiplier       *= 1.0 + p() -> sets.set( SET_CASTER, T13, B2 ) -> effectN( 1 ).percent();
-    base_crit             += p() -> sets.set( SET_CASTER, T15, B2 ) -> effectN( 1 ).percent();
     crit_bonus_multiplier *= 1.0 + player -> artifact.scythe_of_the_stars.percent();
 
     if ( player -> starshards )
@@ -5745,26 +5645,6 @@ struct survival_instincts_t : public druid_spell_t
     druid_spell_t::execute();
 
     p() -> buff.survival_instincts -> trigger();
-  }
-};
-
-// T16 Balance 2P Bonus =====================================================
-
-struct t16_2pc_starfall_bolt_t : public druid_spell_t
-{
-  t16_2pc_starfall_bolt_t( druid_t* player ) :
-    druid_spell_t( "t16_2pc_starfall_bolt", player, player -> find_spell( 144770 ) )
-  {
-    background  = true;
-  }
-};
-
-struct t16_2pc_sun_bolt_t : public druid_spell_t
-{
-  t16_2pc_sun_bolt_t( druid_t* player ) :
-    druid_spell_t( "t16_2pc_sun_bolt", player, player -> find_spell( 144772 ) )
-  {
-    background  = true;
   }
 };
 
@@ -6263,12 +6143,6 @@ void druid_t::init_spells()
 
   // Active Actions =========================================================
 
-  if ( sets.has_set_bonus( SET_CASTER, T16, B2 ) )
-  {
-    t16_2pc_starfall_bolt = new spells::t16_2pc_starfall_bolt_t( this );
-    t16_2pc_sun_bolt = new spells::t16_2pc_sun_bolt_t( this );
-  }
-
   caster_melee_attack = new caster_attacks::druid_melee_t( this );
 
   if ( talent.cenarion_ward -> ok() )
@@ -6561,21 +6435,8 @@ void druid_t::create_buffs()
                                .chance( sets.has_set_bonus( DRUID_BALANCE, T18, B4 ) )
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buff.feral_tier15_4pc      = buff_creator_t( this, "feral_tier15_4pc", find_spell( 138358 ) )
-                               .default_value( find_spell( 138358 ) -> effectN( 1 ).percent() )
-                               .chance( sets.has_set_bonus( SET_MELEE, T15, B4 ) );
-
-  buff.feral_tier16_2pc      = buff_creator_t( this, "feral_tier16_2pc", find_spell( 144865 ) )
-                               .default_value( find_spell( 144865 ) -> effectN( 1 ).percent() );
-
-  buff.feral_tier16_4pc      = buff_creator_t( this, "feral_tier16_4pc", find_spell( 146874 ) )
-                               .default_value( find_spell( 146874 ) -> effectN( 1 ).base_value() )
-                               .chance( sets.has_set_bonus( SET_MELEE, T16, B4 ) );
-
   buff.feral_tier17_4pc      = buff_creator_t( this, "feral_tier17_4pc", find_spell( 166639 ) )
                                .quiet( true );
-
-  buff.guardian_tier15_2pc   = buff_creator_t( this, "guardian_tier15_2pc", find_spell( 138217 ) );
 
   buff.guardian_tier17_4pc   = buff_creator_t( this, "guardian_tier17_4pc", find_spell( 177969 ) )
                                .default_value( find_spell( 177969 ) -> effectN( 1 ).percent() );
@@ -7065,8 +6926,6 @@ void druid_t::init_gains()
   gain.stalwart_guardian     = get_gain( "stalwart_guardian"     );
 
   // Set Bonuses
-  gain.feral_tier15_2pc      = get_gain( "feral_tier15_2pc"      );
-  gain.feral_tier16_4pc      = get_gain( "feral_tier16_4pc"      );
   gain.feral_tier17_2pc      = get_gain( "feral_tier17_2pc"      );
   gain.feral_tier18_4pc      = get_gain( "feral_tier18_4pc"      );
   gain.feral_tier19_2pc      = get_gain( "feral_tier19_2pc"      );
@@ -7112,7 +6971,6 @@ void druid_t::init_procs()
   proc.predator_wasted          = get_proc( "predator_wasted"        );
   proc.primal_fury              = get_proc( "primal_fury"            );
   proc.starshards               = get_proc( "Starshards"             );
-  proc.tier15_2pc_melee         = get_proc( "tier15_2pc_melee"       );
   proc.tier17_2pc_melee         = get_proc( "tier17_2pc_melee"       );
 }
 
@@ -7838,9 +7696,6 @@ void druid_t::assess_damage( school_e school,
                              dmg_e    dtype,
                              action_state_t* s )
 {
-  if ( sets.has_set_bonus( SET_TANK, T15, B2 ) && s -> result == RESULT_DODGE && buff.ironfur -> check() )
-    buff.guardian_tier15_2pc -> trigger();
-
   if ( dbc::is_school( school, SCHOOL_PHYSICAL ) && s -> result == RESULT_HIT )
     buff.ironfur -> up();
 

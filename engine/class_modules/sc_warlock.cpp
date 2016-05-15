@@ -2276,10 +2276,6 @@ struct shadow_bolt_t: public warlock_spell_t
       energize_resource = RESOURCE_SOUL_SHARD;
       energize_amount = 1;
     }
-
-    base_multiplier *= 1.0 + p -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 3 ).percent();
-
-
   }
   /*void execute() override
   {

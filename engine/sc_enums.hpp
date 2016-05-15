@@ -645,7 +645,9 @@ enum set_bonus_e
 {
   B_NONE = -1,
   B2     = 0,
-  B4     = 1
+  B4     = 1,
+  B6     = 2,
+  B8     = 3
 };
 
 enum set_role_e
@@ -671,11 +673,6 @@ enum set_bonus_type_e
   PVP,
   T17LFR,
   T18LFR,
-  GLAIVES,
-  T13,
-  T14,
-  T15,
-  T16,
   T17,
   T18,
   T19,
