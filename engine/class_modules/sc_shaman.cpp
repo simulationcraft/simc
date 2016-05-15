@@ -253,13 +253,11 @@ public:
     buff_t* t18_4pc_elemental;
     buff_t* gathering_vortex;
 
-    haste_buff_t* tier13_4pc_healer;
-
     stat_buff_t* elemental_blast_crit;
     stat_buff_t* elemental_blast_haste;
     stat_buff_t* elemental_blast_mastery;
-    stat_buff_t* tier13_2pc_caster;
-    stat_buff_t* tier13_4pc_caster;
+
+    stat_buff_t* t19_oh_8pc;
 
     buff_t* flametongue;
     buff_t* frostbrand;
@@ -544,9 +542,10 @@ public:
   void trigger_windfury_weapon( const action_state_t* );
   void trigger_flametongue_weapon( const action_state_t* );
   void trigger_hailstorm( const action_state_t* );
-  void trigger_tier17_2pc_elemental( int );
-  void trigger_tier17_4pc_elemental( int );
-  void trigger_tier18_4pc_elemental( int );
+  void trigger_t17_2pc_elemental( int );
+  void trigger_t17_4pc_elemental( int );
+  void trigger_t18_4pc_elemental( int );
+  void trigger_t19_oh_8pc( const action_state_t* );
   void trigger_stormbringer( const action_state_t* state );
   void trigger_unleash_doom( const action_state_t* state );
   void trigger_elemental_focus( const action_state_t* state );
@@ -2591,6 +2590,7 @@ struct stormstrike_base_t : public shaman_attack_t
     }
 
     p() -> buff.stormbringer -> decrement();
+    p() -> trigger_t19_oh_8pc( execute_state );
 
     // Don't try this at home, or anywhere else ..
     if ( p() -> artifact.stormflurry.rank() && rng().roll( p() -> artifact.stormflurry.percent() ) )
@@ -3413,6 +3413,8 @@ struct lightning_bolt_t : public shaman_spell_t
     {
       p() -> trigger_doom_vortex( execute_state );
     }
+
+    p() -> trigger_t19_oh_8pc( execute_state );
   }
 };
 
@@ -5232,7 +5234,7 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
   }
 }
 
-void shaman_t::trigger_tier17_2pc_elemental( int stacks )
+void shaman_t::trigger_t17_2pc_elemental( int stacks )
 {
   if ( ! sets.has_set_bonus( SHAMAN_ELEMENTAL, T17, B2 ) )
     return;
@@ -5240,7 +5242,7 @@ void shaman_t::trigger_tier17_2pc_elemental( int stacks )
   buff.focus_of_the_elements -> trigger( 1, sets.set( SHAMAN_ELEMENTAL, T17, B2 ) -> effectN( 1 ).percent() * stacks );
 }
 
-void shaman_t::trigger_tier17_4pc_elemental( int stacks )
+void shaman_t::trigger_t17_4pc_elemental( int stacks )
 {
   if ( ! sets.has_set_bonus( SHAMAN_ELEMENTAL, T17, B4 ) )
     return;
@@ -5257,7 +5259,7 @@ void shaman_t::trigger_tier17_4pc_elemental( int stacks )
   cooldown.lava_burst -> reset( false );
 }
 
-void shaman_t::trigger_tier18_4pc_elemental( int ls_stack )
+void shaman_t::trigger_t18_4pc_elemental( int ls_stack )
 {
   if ( ! sets.has_set_bonus( SHAMAN_ELEMENTAL, T18, B4 ) )
   {
@@ -5280,6 +5282,16 @@ void shaman_t::trigger_tier18_4pc_elemental( int ls_stack )
     buff.gathering_vortex -> trigger( remainder_stack ? remainder_stack : buff.gathering_vortex -> max_stack() );
     buff.t18_4pc_elemental -> trigger();
   }
+}
+
+void shaman_t::trigger_t19_oh_8pc( const action_state_t* )
+{
+  if ( ! sets.has_set_bonus( SHAMAN_ELEMENTAL, T19OH, B8 ) )
+  {
+    return;
+  }
+
+  buff.t19_oh_8pc -> trigger();
 }
 
 void shaman_t::trigger_flametongue_weapon( const action_state_t* state )
@@ -5346,8 +5358,6 @@ void shaman_t::create_buffs()
   buff.spiritwalkers_grace     = buff_creator_t( this, "spiritwalkers_grace", find_specialization_spell( "Spiritwalker's Grace" ) );
   buff.tidal_waves             = buff_creator_t( this, "tidal_waves", spec.tidal_waves -> ok() ? find_spell( 53390 ) : spell_data_t::not_found() );
 
-  buff.tier13_4pc_healer       = haste_buff_creator_t( this, "tier13_4pc_healer", find_spell( 105877 ) ).add_invalidate( CACHE_HASTE );
-
   // Stat buffs
   buff.elemental_blast_crit    = stat_buff_creator_t( this, "elemental_blast_critical_strike", find_spell( 118522 ) )
                                  .max_stack( 1 );
@@ -5355,9 +5365,6 @@ void shaman_t::create_buffs()
                                  .max_stack( 1 );
   buff.elemental_blast_mastery = stat_buff_creator_t( this, "elemental_blast_mastery", find_spell( 173184 ) )
                                  .max_stack( 1 );
-  buff.tier13_2pc_caster        = stat_buff_creator_t( this, "tier13_2pc_caster", find_spell( 105779 ) );
-  buff.tier13_4pc_caster        = stat_buff_creator_t( this, "tier13_4pc_caster", find_spell( 105821 ) );
-
   buff.t18_4pc_elemental        = buff_creator_t( this, "lightning_vortex", find_spell( 189063 ) )
     .chance( sets.has_set_bonus( SHAMAN_ELEMENTAL, T18, B4 ) )
     .reverse( true )
@@ -5440,6 +5447,10 @@ void shaman_t::create_buffs()
 
   buff.hot_hand = buff_creator_t( this, "hot_hand", talent.hot_hand -> effectN( 1 ).trigger() )
                   .trigger_spell( talent.hot_hand );
+
+  buff.t19_oh_8pc = stat_buff_creator_t( this, "might_of_the_maelstrom" )
+    .spell( sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
+    .trigger_spell( sets.set( specialization(), T19OH, B8 ) );
 }
 
 // shaman_t::init_gains =====================================================
@@ -5845,9 +5856,6 @@ double shaman_t::composite_spell_haste() const
   if ( talent.ancestral_swiftness -> ok() )
     h *= constant.haste_ancestral_swiftness;
 
-  if ( buff.tier13_4pc_healer -> up() )
-    h *= 1.0 / ( 1.0 + buff.tier13_4pc_healer -> data().effectN( 1 ).percent() );
-
   h *= 1.0 / ( 1.0 + buff.t18_4pc_elemental -> stack_value() );
 
   if ( buff.tailwind_totem -> up() )
@@ -5918,9 +5926,6 @@ double shaman_t::composite_melee_haste() const
 
   if ( talent.ancestral_swiftness -> ok() )
     h *= constant.haste_ancestral_swiftness;
-
-  if ( buff.tier13_4pc_healer -> up() )
-    h *= 1.0 / ( 1.0 + buff.tier13_4pc_healer -> data().effectN( 1 ).percent() );
 
   if ( buff.tailwind_totem -> up() )
   {
