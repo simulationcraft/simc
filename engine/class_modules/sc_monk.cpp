@@ -178,6 +178,7 @@ public:
     buff_t* dampen_harm;
     buff_t* diffuse_magic;
     buff_t* rushing_jade_wind;
+    buff_t* tier19_oh_8pc; // Tier 19 Order Hall 8-piece
 
     // Brewmaster
     buff_t* bladed_armor;
@@ -545,6 +546,9 @@ public:
   struct
   {
 //    real_ppm_t swift_as_the_wind;
+
+    // Tier 19 Order Hall 8-piece RPPM
+    real_ppm_t*  tier19_oh_8pc;
   } real_ppm;
 
   struct pets_t
@@ -2210,6 +2214,9 @@ struct tiger_palm_t: public monk_melee_attack_t
       }
       default: break;
     }
+
+    if ( p() -> real_ppm.tier19_oh_8pc -> trigger() )
+      p() -> buff.tier19_oh_8pc -> trigger();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4580,6 +4587,10 @@ struct effuse_t: public monk_heal_t
     if ( p() -> sheilun_staff_of_the_mists )
       artifact -> trigger();
 
+    if ( p() -> real_ppm.tier19_oh_8pc -> trigger() )
+      p() -> buff.tier19_oh_8pc -> trigger();
+
+
     mastery -> execute();
   }
 
@@ -6266,6 +6277,12 @@ void monk_t::create_buffs()
   buff.diffuse_magic = buff_creator_t( this, "diffuse_magic", talent.diffuse_magic )
     .default_value( talent.diffuse_magic -> effectN( 1 ).percent() );
 
+  buff.tier19_oh_8pc = buff_creator_t( this, "grandmasters_wisdom")
+    .spell( sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
+    .default_value( sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() -> effectN(1).base_value() )
+    .add_invalidate( CACHE_CRIT )
+    .add_invalidate( CACHE_SPELL_CRIT );
+
   // Brewmaster
   buff.bladed_armor = buff_creator_t( this, "bladed_armor", spec.bladed_armor )
     .default_value( spec.bladed_armor -> effectN( 1 ).percent() )
@@ -6352,7 +6369,8 @@ void monk_t::create_buffs()
   buff.mistweaving = buff_creator_t(this, "mistweaving", passives.tier17_2pc_heal )
     .default_value( passives.tier17_2pc_heal -> effectN( 1 ).percent() )
     .max_stack( 7 )
-    .add_invalidate( CACHE_CRIT );
+    .add_invalidate( CACHE_CRIT )
+    .add_invalidate( CACHE_SPELL_CRIT );
 
   buff.chi_jis_guidance = buff_creator_t( this, "chi_jis_guidance", passives.tier17_4pc_heal )
     .default_value( passives.tier17_4pc_heal -> effectN( 1 ).percent() );
@@ -6417,9 +6435,10 @@ void monk_t::create_buffs()
     .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 */
 
+  // Transfer the Power does not show up in the buff bar, but due to the fact that it shows up in the combat log,
+  // I am going to show the buff in the HTML report; since someone can set up a weak aura to track the buff.
   buff.transfer_the_power = buff_creator_t( this, "transfer_the_power", artifact.transfer_the_power.data().effectN( 1 ).trigger() )
     .duration( timespan_t::from_minutes( 10 ) ) // Buff lasts longer than 10 minutes. Sticking it to 10 minutes
-    .quiet( true )
     // The proc gives 1%; even though tooltip and datamining say 5% per stack
     .default_value( artifact.transfer_the_power.rank() ?  0.1 /* artifact.transfer_the_power.percent() */ : 0 ); 
 }
@@ -6479,6 +6498,7 @@ void monk_t::init_rng()
     real_ppm.swift_as_the_wind = real_ppm_t( *this, 0 );
   }
 */
+  real_ppm.tier19_oh_8pc = get_rppm( "grandmasters_wisdom", sets.set( specialization(), T19OH, B8 ) );
 }
 
 // monk_t::init_resources ===================================================
@@ -6514,6 +6534,7 @@ void monk_t::reset()
 {
   base_t::reset();
 //  real_ppm.swift_as_the_wind.reset();
+  real_ppm.tier19_oh_8pc -> reset();
 }
 
 // monk_t::regen (brews/teas)================================================
@@ -6603,6 +6624,9 @@ double monk_t::composite_melee_crit() const
   if ( buff.mistweaving -> check() )
     crit += buff.mistweaving -> stack_value();
 
+  if ( buff.tier19_oh_8pc -> check() )
+    crit += buff.tier19_oh_8pc -> value();
+
   return crit;
 }
 
@@ -6625,6 +6649,9 @@ double monk_t::composite_spell_crit() const
   double crit = player_t::composite_spell_crit();
 
   crit += spec.critical_strikes -> effectN( 1 ).percent();
+
+  if ( buff.tier19_oh_8pc -> check() )
+    crit += buff.tier19_oh_8pc -> value();
 
   return crit;
 }
