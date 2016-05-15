@@ -1099,20 +1099,12 @@ std::string spell_info::set_bonus_to_str( const dbc_t&, const item_set_bonus_t* 
 
   s << "Name          : " << set_bonus -> set_name << std::endl;
 
-
-
   player_e player_type = static_cast<player_e>( set_bonus -> class_id);
   s << "Class         : " << util::player_type_string( player_type ) << std::endl;
   s << "Tier          : " << set_bonus -> tier << std::endl;
   s << "Bonus Level   : " << set_bonus -> bonus << std::endl;
-  for( size_t i = 0; i < sizeof_array( set_bonus -> spec_guess ); ++i )
-  {
-    specialization_e spec = static_cast<specialization_e>( set_bonus -> spec_guess[ i ] );
-    if ( spec == SPEC_NONE )
-      continue;
-    s << "Specc Guess " << i << " : " << util::specialization_string( spec ) << std::endl;
-  }
-  s << "Spec          : " << util::specialization_string( static_cast<specialization_e>(set_bonus -> spec ) ) << std::endl;
+  if ( set_bonus -> spec > 0 )
+    s << "Spec          : " << util::specialization_string( static_cast<specialization_e>(set_bonus -> spec ) ) << std::endl;
   s << "Spell ID      : " << set_bonus -> spell_id << std::endl;
 
   s << std::endl;
@@ -1539,14 +1531,10 @@ void spell_info::set_bonus_to_xml( const dbc_t& /* dbc */, const item_set_bonus_
   node -> add_parm( "class", util::player_type_string( player_type ) );
   node -> add_parm( "tier", set_bonus -> tier );
   node -> add_parm( "bonus_level", set_bonus -> bonus );
-  for( size_t i = 0; i < sizeof_array( set_bonus -> spec_guess ); ++i )
+  if ( set_bonus -> spec > 0 )
   {
-    specialization_e spec = static_cast<specialization_e>( set_bonus -> spec_guess[ i ] );
-    if ( spec == SPEC_NONE )
-      continue;
-    node -> add_parm( std::string("spec_guess_") + util::to_string( i ), util::specialization_string( spec ) );
+    node -> add_parm( "spec", util::specialization_string( static_cast<specialization_e>( set_bonus -> spec ) ) );
   }
-  node -> add_parm( "spec", util::specialization_string( static_cast<specialization_e>( set_bonus -> spec ) ) );
   node -> add_parm( "spell_id", set_bonus -> spell_id );
 
 }

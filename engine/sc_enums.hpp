@@ -637,17 +637,19 @@ enum slot_e  // these enum values match armory settings
 const unsigned N_TIER   = 6;
 const unsigned MIN_TIER = 13;
 
-// Caster 2/4, Melee 2/4, Tank 2/4, Heal 2/4
-const unsigned N_TIER_BONUS = 8;
-
-// switch for 2 piece or 4 piece bonus
+// Set bonus .. bonus. They map to a vector internally, so each enum value is just the vector
+// element index.
 enum set_bonus_e
 {
   B_NONE = -1,
   B2     = 1,
+  B3     = 2,
   B4     = 3,
+  B5     = 4,
   B6     = 5,
-  B8     = 7
+  B7     = 6,
+  B8     = 7,
+  B_MAX  = 8
 };
 
 /**
@@ -664,6 +666,7 @@ enum set_bonus_type_e
   PVP,
   T17LFR,
   T18LFR,
+  T19CH,
   T17,
   T18,
   T19,

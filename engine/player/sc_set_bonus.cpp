@@ -33,8 +33,8 @@ set_bonus_t::set_bonus_t( player_t* player ) : actor( player )
     if ( bonus.class_id != -1 && bonus.class_id != util::class_id( actor -> type ) )
       continue;
 
-    // Translate our DBC set bonus into one of our enums
-    size_t bonus_type = bonus.bonus / 2 - 1;
+    // Ensure Blizzard does not go crazy and add set bonuses past 8 item requirement
+    assert( bonus.bonus <= B_MAX );
 
     // T17 onwards and PVP, new world, spec specific set bonuses. Overrides are
     // going to be provided by the new set_bonus= option, so no need to
@@ -45,16 +45,23 @@ set_bonus_t::set_bonus_t( player_t* player ) : actor( player )
     {
       for ( size_t spec_idx = 0; spec_idx < set_bonus_spec_data[ bonus.enum_id ].size(); spec_idx++ )
       {
-        set_bonus_spec_data[ bonus.enum_id ][ spec_idx ][ bonus_type ].bonus = &bonus;
+        // Don't allow generic set bonus to override spec specific one, if it exists. The exporter
+        // should export data so that this will never happen, but be extra careful.
+        if ( set_bonus_spec_data[ bonus.enum_id ][ spec_idx ][ bonus.bonus - 1 ].bonus )
+        {
+          continue;
+        }
+
+        set_bonus_spec_data[ bonus.enum_id ][ spec_idx ][ bonus.bonus - 1 ].bonus = &bonus;
       }
     }
+    // Note, Spec specific set bonuses are allowed to override "generic" bonuses (bonus.spec == -1)
     else
     {
-      specialization_e spec = static_cast< specialization_e >( bonus.spec );
       assert( bonus.spec > 0 );
-      assert( ! set_bonus_spec_data[ bonus.enum_id ][ specdata::spec_idx( spec ) ][ bonus_type ].bonus );
+      specialization_e spec = static_cast< specialization_e >( bonus.spec );
 
-      set_bonus_spec_data[ bonus.enum_id ][ specdata::spec_idx( spec ) ][ bonus_type ].bonus = &bonus;
+      set_bonus_spec_data[ bonus.enum_id ][ specdata::spec_idx( spec ) ][ bonus.bonus - 1 ].bonus = &bonus;
     }
   }
 }
