@@ -131,7 +131,6 @@ struct shaman_td_t : public actor_target_data_t
 
   struct debuffs
   {
-    buff_t* t16_2pc_caster;
     buff_t* earthen_spike;
     buff_t* lightning_rod;
   } debuff;
@@ -306,9 +305,6 @@ public:
     cooldown_t* lightning_shield;
     cooldown_t* storm_elemental;
     cooldown_t* strike;
-    cooldown_t* t16_2pc_melee;
-    cooldown_t* t16_4pc_caster;
-    cooldown_t* t16_4pc_melee;
   } cooldown;
 
   // Gains
@@ -328,9 +324,6 @@ public:
   {
     proc_t* lava_surge;
     proc_t* t15_2pc_melee;
-    proc_t* t16_2pc_melee;
-    proc_t* t16_4pc_caster;
-    proc_t* t16_4pc_melee;
     proc_t* wasted_t15_2pc_melee;
     proc_t* wasted_lava_surge;
     proc_t* windfury;
@@ -527,9 +520,6 @@ public:
     cooldown.lava_lash            = get_cooldown( "lava_lash"             );
     cooldown.lightning_shield     = get_cooldown( "lightning_shield"      );
     cooldown.strike               = get_cooldown( "strike"                );
-    cooldown.t16_2pc_melee        = get_cooldown( "t16_2pc_melee"         );
-    cooldown.t16_4pc_caster       = get_cooldown( "t16_4pc_caster"        );
-    cooldown.t16_4pc_melee        = get_cooldown( "t16_4pc_melee"         );
 
     melee_mh = nullptr;
     melee_oh = nullptr;
@@ -1215,12 +1205,6 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   double composite_target_multiplier( player_t* target ) const override
   {
     double m = base_t::composite_target_multiplier( target );
-
-    if ( td( target ) -> debuff.t16_2pc_caster -> check() &&
-         ( dbc::is_school( school, SCHOOL_FIRE ) || dbc::is_school( school, SCHOOL_NATURE ) ) )
-    {
-      m *= 1.0 + td( target ) -> debuff.t16_2pc_caster -> data().effectN( 1 ).percent();
-    }
 
     if ( td( target ) -> debuff.earthen_spike -> up() &&
          ( dbc::is_school( school, SCHOOL_PHYSICAL ) || dbc::is_school( school, SCHOOL_NATURE ) ) )
@@ -5481,9 +5465,6 @@ void shaman_t::init_procs()
 
   proc.lava_surge         = get_proc( "Lava Surge"              );
   proc.t15_2pc_melee      = get_proc( "t15_2pc_melee"           );
-  proc.t16_2pc_melee      = get_proc( "t16_2pc_melee"           );
-  proc.t16_4pc_caster     = get_proc( "t16_4pc_caster"          );
-  proc.t16_4pc_melee      = get_proc( "t16_4pc_melee"           );
   proc.wasted_t15_2pc_melee = get_proc( "wasted_t15_2pc_melee"  );
   proc.wasted_lava_surge  = get_proc( "Lava Surge: Wasted"      );
   proc.windfury           = get_proc( "Windfury"                );
