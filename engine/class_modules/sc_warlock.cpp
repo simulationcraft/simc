@@ -3127,7 +3127,6 @@ struct shadowburn_t: public warlock_spell_t
   shadowburn_t( warlock_t* p ):
     warlock_spell_t( "shadowburn", p, p -> talents.shadowburn ), resource_event( nullptr )
   {
-    min_gcd = timespan_t::from_millis( 500 );
     delay = data().effectN( 1 ).trigger() -> duration();
   }
 
