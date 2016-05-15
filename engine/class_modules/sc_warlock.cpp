@@ -754,6 +754,18 @@ struct firebolt_t: public warlock_pet_spell_t
   }
 };
 
+struct dreadbite_t : public warlock_pet_melee_attack_t
+{
+  timespan_t dreadstalker_duration;
+  dreadbite_t( warlock_pet_t* p ) :
+    warlock_pet_melee_attack_t( "Dreadbite", p, p -> find_spell( 205196 ) )
+  {
+    weapon = &( p -> main_hand_weapon );
+    dreadstalker_duration = p -> find_spell( 193332 ) -> duration();
+    cooldown -> duration = dreadstalker_duration + timespan_t::from_seconds( 1.0 );
+  }
+};
+
 struct legion_strike_t: public warlock_pet_melee_attack_t
 {
   legion_strike_t( warlock_pet_t* p ):
@@ -938,14 +950,6 @@ struct doom_bolt_t: public warlock_pet_spell_t
       m *= 1.0 + data().effectN( 2 ).percent();
     }
     return m;
-  }
-};
-
-struct dreadbite_t : public warlock_pet_spell_t
-{
-  dreadbite_t( warlock_pet_t* p ):
-    warlock_pet_spell_t( "Dreadbite", p, p -> find_spell( 205196 ) )
-  {
   }
 };
 
@@ -1536,18 +1540,16 @@ struct dreadstalker_pet_t : public warlock_pet_t
     stats_t* regular_stats;
 
   dreadstalker_pet_t( sim_t* sim, warlock_t* owner ) :
-    warlock_pet_t( sim, owner, "dreadstalker", PET_DREADSTALKER, true )
+    warlock_pet_t( sim, owner, "dreadstalker", PET_DREADSTALKER, true ), dreadbite_stats( nullptr )
   {
-    action_list_str = "dreadbite";
-    action_list_str = "/travel";
-    //action_list_str = "travel";
-    //action_list_str += "/dreadbite";
-    resources.base[RESOURCE_ENERGY] = 100;
+    action_list_str = "travel/dreadbite";
+    regen_type = REGEN_DISABLED;
   }
 
   void init_base_stats() override
   {
     warlock_pet_t::init_base_stats();
+    resources.base[RESOURCE_ENERGY] = 0;
     base_energy_regen_per_second = 0;
     melee_attack = new actions::warlock_pet_melee_t( this );
     if ( o() -> pets.dreadstalkers[0] )
@@ -1558,11 +1560,18 @@ struct dreadstalker_pet_t : public warlock_pet_t
   {
     if ( name == "dreadbite" )
     {
-        owner -> sim -> errorf("Dreadbite!");
-        action_t* a = new actions::dreadbite_t( this );
-        dreadbite_stats = &( a -> stats );
-        return a;
-        //return new actions::dreadbite_t( this );
+      action_t* a = new actions::dreadbite_t( this );
+      dreadbite_stats = &( a -> stats );
+      if ( this == o() -> pets.dreadstalkers[0] || sim -> report_pets_separately )
+      {
+        regular_stats = a -> stats;
+      }
+      else
+      {
+        regular_stats = o() -> pets.dreadstalkers[0] -> get_stats( "dreadbite" );
+        *dreadbite_stats = regular_stats;
+      }
+      return a;
     }
 
     return warlock_pet_t::create_action( name, options_str );
@@ -2985,7 +2994,7 @@ struct call_dreadstalkers_t : public warlock_spell_t
       harmful = false;
       ignore_false_positive = true;
       may_crit = false;
-      dreadstalker_duration = timespan_t::from_seconds( 12 );
+      dreadstalker_duration = p -> find_spell( 193332 ) -> duration();
     }
 
   virtual void execute() override
