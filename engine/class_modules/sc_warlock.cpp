@@ -1532,12 +1532,17 @@ struct wild_imp_pet_t: public warlock_pet_t
 
 struct dreadstalker_pet_t : public warlock_pet_t
 {
+    stats_t** dreadbite_stats;
+    stats_t* regular_stats;
+
   dreadstalker_pet_t( sim_t* sim, warlock_t* owner ) :
     warlock_pet_t( sim, owner, "dreadstalker", PET_DREADSTALKER, true )
   {
-    //action_list_str = "dreadbite";
-    action_list_str = "travel";
-    regen_type = REGEN_DISABLED;
+    action_list_str = "dreadbite";
+    action_list_str = "/travel";
+    //action_list_str = "travel";
+    //action_list_str += "/dreadbite";
+    resources.base[RESOURCE_ENERGY] = 100;
   }
 
   void init_base_stats() override
@@ -1549,12 +1554,19 @@ struct dreadstalker_pet_t : public warlock_pet_t
       melee_attack -> stats = o() -> pets.dreadstalkers[0] -> get_stats( "melee" );
   }
 
-  //virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
-  //{
-  //  if ( name == "dreadbite" ) return new actions::dreadbite_t( this );
+  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
+  {
+    if ( name == "dreadbite" )
+    {
+        owner -> sim -> errorf("Dreadbite!");
+        action_t* a = new actions::dreadbite_t( this );
+        dreadbite_stats = &( a -> stats );
+        return a;
+        //return new actions::dreadbite_t( this );
+    }
 
-  //  return warlock_pet_t::create_action( name, options_str );
-  //}
+    return warlock_pet_t::create_action( name, options_str );
+  }
 };
 
 } // end namespace pets
