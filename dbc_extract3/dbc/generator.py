@@ -3066,9 +3066,9 @@ class SetBonusListGenerator(DataGenerator):
             'bonuses': [ 1260, 1261, 1262, 1263 ],
             'tier'   : 18,
         },
-        # T19 Class Hall set bonuses
+        # T19 Order Hall set bonuses
         {
-            'name'   : 'tier19ch',
+            'name'   : 'tier19oh',
             'bonuses': [ 1269, 1270, 1271, 1272, 1273, 1274, 1275, 1276, 1277, 1278, 1279, 1280 ],
             'tier'   : 19
         },

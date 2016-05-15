@@ -666,7 +666,7 @@ enum set_bonus_type_e
   PVP,
   T17LFR,
   T18LFR,
-  T19CH,
+  T19OH,
   T17,
   T18,
   T19,
