@@ -644,19 +644,10 @@ const unsigned N_TIER_BONUS = 8;
 enum set_bonus_e
 {
   B_NONE = -1,
-  B2     = 0,
-  B4     = 1,
-  B6     = 2,
-  B8     = 3
-};
-
-enum set_role_e
-{
-  SET_ROLE_NONE = -1,
-  SET_TANK      = 0,
-  SET_HEALER,
-  SET_MELEE,
-  SET_CASTER
+  B2     = 1,
+  B4     = 3,
+  B6     = 5,
+  B8     = 7
 };
 
 /**

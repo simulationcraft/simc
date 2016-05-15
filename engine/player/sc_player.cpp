@@ -341,10 +341,9 @@ bool parse_set_bonus( sim_t* sim, const std::string&, const std::string& value )
   }
 
   set_bonus_type_e set_bonus = SET_BONUS_NONE;
-  set_role_e role = SET_ROLE_NONE;
   set_bonus_e bonus = B_NONE;
 
-  if ( ! p -> sets.parse_set_bonus_option( set_bonus_split[ 0 ], set_bonus, role, bonus ) )
+  if ( ! p -> sets.parse_set_bonus_option( set_bonus_split[ 0 ], set_bonus, bonus ) )
   {
     sim -> errorf( error_str, p -> name(), value.c_str(), p -> sets.generate_set_bonus_options().c_str() );
     return false;

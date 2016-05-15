@@ -5,32 +5,6 @@
 
 #include "simulationcraft.hpp"
 
-set_role_e set_bonus_t::translate_set_bonus_role_str( const std::string& name )
-{
-  if ( util::str_compare_ci( name, "tank" ) )
-    return SET_TANK;
-  else if ( util::str_compare_ci( name, "healer" ) )
-    return SET_HEALER;
-  else if ( util::str_compare_ci( name, "melee" ) )
-    return SET_MELEE;
-  else if ( util::str_compare_ci( name, "caster" ) )
-    return SET_CASTER;
-
-  return SET_ROLE_NONE;
-}
-
-const char* set_bonus_t::translate_set_bonus_role( set_role_e role )
-{
-  switch ( role )
-  {
-    case SET_TANK: return "tank";
-    case SET_HEALER: return "healer";
-    case SET_MELEE: return "melee";
-    case SET_CASTER: return "caster";
-    default: return "unknown";
-  }
-}
-
 set_bonus_t::set_bonus_t( player_t* player ) : actor( player )
 {
   // First, pre-allocate vectors based on current boundaries of the set bonus data in DBC
@@ -301,10 +275,9 @@ std::string set_bonus_t::to_profile_string( const std::string& newline ) const
 expr_t* set_bonus_t::create_expression( const player_t* , const std::string& type )
 {
   set_bonus_type_e set_bonus = SET_BONUS_NONE;
-  set_role_e role = SET_ROLE_NONE;
   set_bonus_e bonus = B_NONE;
 
-  if ( ! parse_set_bonus_option( type, set_bonus, role, bonus ) )
+  if ( ! parse_set_bonus_option( type, set_bonus, bonus ) )
   {
     return nullptr;
   }
@@ -316,11 +289,9 @@ expr_t* set_bonus_t::create_expression( const player_t* , const std::string& typ
 
 bool set_bonus_t::parse_set_bonus_option( const std::string& opt_str,
                                           set_bonus_type_e& set_bonus,
-                                          set_role_e& role,
                                           set_bonus_e& bonus )
 {
   set_bonus = SET_BONUS_NONE;
-  role = SET_ROLE_NONE;
   bonus = B_NONE;
 
   std::vector<std::string> split = util::string_split( opt_str, "_" );
@@ -330,16 +301,6 @@ bool set_bonus_t::parse_set_bonus_option( const std::string& opt_str,
   }
 
   size_t bonus_offset = 1;
-  int role_offset = -1;
-  if ( split.size() == 3 )
-  {
-    role_offset = 2;
-  }
-
-  if ( role_offset > 0 )
-  {
-    role = translate_set_bonus_role_str( split[ role_offset ] );
-  }
 
   if ( util::str_compare_ci( split[ bonus_offset ], "2pc" ) )
     bonus = B2;
