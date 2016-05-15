@@ -224,9 +224,7 @@ public:
     buff_t* power_strikes;
     buff_t* storm_earth_and_fire;
     buff_t* serenity;
-//    buff_t* swift_as_the_wind;
     buff_t* transfer_the_power;
-//    buff_t* tigereye_brew;
   } buff;
 
 public:
@@ -390,7 +388,6 @@ public:
     const spell_data_t* flying_serpent_kick;
     const spell_data_t* stance_of_the_fierce_tiger;
     const spell_data_t* storm_earth_and_fire;
-    const spell_data_t* tigereye_brew;
     const spell_data_t* touch_of_death;
     const spell_data_t* touch_of_karma;
     const spell_data_t* windwalker_monk;
@@ -476,7 +473,6 @@ public:
     cooldown_t* healing_elixirs;
     cooldown_t* rising_sun_kick;
     cooldown_t* thunder_focus_tea;
-    cooldown_t* tigereye_brew;
     cooldown_t* touch_of_death;
     cooldown_t* serenity;
   } cooldown;
@@ -535,21 +531,12 @@ public:
     const spell_data_t* hit_combo;
     const spell_data_t* rising_sun_kick_trinket;
     const spell_data_t* whirling_dragon_punch;
-//    const spell_data_t* swift_as_the_wind;
     const spell_data_t* touch_of_karma_tick;
     const spell_data_t* tier17_4pc_melee;
     const spell_data_t* tier18_2pc_melee;
     const spell_data_t* tier19_4pc_melee;
 
   } passives;
-
-  struct
-  {
-//    real_ppm_t swift_as_the_wind;
-
-    // Tier 19 Order Hall 8-piece RPPM
-    real_ppm_t*  tier19_oh_8pc;
-  } real_ppm;
 
   struct pets_t
   {
@@ -599,7 +586,6 @@ public:
     cooldown.healing_elixirs              = get_cooldown( "healing_elixirs" );
     cooldown.rising_sun_kick              = get_cooldown( "rising_sun_kick" );
     cooldown.thunder_focus_tea            = get_cooldown( "thunder_focus_tea" );
-    cooldown.tigereye_brew                = get_cooldown( "tigereye_brew" );
     cooldown.touch_of_death               = get_cooldown( "touch_of_death" );
     cooldown.serenity                     = get_cooldown( "serenity" );
 
@@ -2167,14 +2153,6 @@ struct tiger_palm_t: public monk_melee_attack_t
       }
       case MONK_WINDWALKER:
       {
-        // If A'Buraq is equipped, chance to trigger the weapon effect buff
-/*        if ( p() -> aburaq )
-        {
-          if ( p() -> real_ppm.swift_as_the_wind.trigger() )
-            p() -> buff.swift_as_the_wind -> trigger();
-        }
-*/
-
         // Power Strike activation
         // Legion change = The buff will no longer summon a chi sphere at max chi. It will hold the buff until you can actually use the power strike
         // TODO: Currently there appears to be a bug with Power Strikes and overflow
@@ -2215,8 +2193,7 @@ struct tiger_palm_t: public monk_melee_attack_t
       default: break;
     }
 
-    if ( p() -> real_ppm.tier19_oh_8pc -> trigger() )
-      p() -> buff.tier19_oh_8pc -> trigger();
+    p() -> buff.tier19_oh_8pc -> trigger();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -2938,14 +2915,13 @@ struct fists_of_fury_t: public monk_melee_attack_t
 
     crosswinds_trigger = true;
 
-    // Reduces the cooldown of Tigereye Brew by 9 Seconds
     if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T17, B2 ) )
     {
       // Since Serenity replaces Tigereye Brew, adjust Serenity's cooldown first.
       if ( p() -> talent.serenity )
         p() -> cooldown.serenity -> adjust( timespan_t::from_seconds( p() -> sets.set( MONK_WINDWALKER, T17, B2 ) -> effectN( 1 ).base_value() ) );
-      else
-        p() -> cooldown.tigereye_brew -> adjust( timespan_t::from_seconds( p() -> sets.set( MONK_WINDWALKER, T17, B2 ) -> effectN( 1 ).base_value() ) );
+//      else
+//        p() -> cooldown.s -> adjust( timespan_t::from_seconds( p() -> sets.set( MONK_WINDWALKER, T17, B2 ) -> effectN( 1 ).base_value() ) );
     }
 
     if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B4 ) )
@@ -3183,9 +3159,6 @@ struct melee_t: public monk_melee_attack_t
   virtual timespan_t execute_time() const override
   {
     timespan_t t = monk_melee_attack_t::execute_time();
-
-//    if ( p() -> aburaq && p() -> buff.swift_as_the_wind -> up() )
-//      t *= 1.0 / (1.0 + p() -> buff.swift_as_the_wind -> value() );
 
     if ( first )
       return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::zero() ) : t / 2 ) : timespan_t::zero();
@@ -3485,50 +3458,6 @@ struct provoke_t: public monk_melee_attack_t
 
 namespace spells {
 
-// ==========================================================================
-// Tigereye Brew
-// ==========================================================================
-/*
-struct tigereye_brew_t: public monk_spell_t
-{
-  tigereye_brew_t( monk_t* player, const std::string& options_str ):
-    monk_spell_t( "tigereye_brew", player, player -> spec.tigereye_brew )
-  {
-    parse_options( options_str );
-    harmful = false;
-    trigger_gcd = timespan_t::zero();
-  }
-
-  virtual bool ready() override
-  {
-    // Tigereye Brew cannot be activated while the buff is currently up
-    if ( p() -> buff.tigereye_brew -> up() )
-      return false;
-
-    if ( p() -> talent.serenity -> ok() )
-      return false;
-
-    return monk_spell_t::ready();
-  }
-
-  virtual void execute() override
-  {
-    monk_spell_t::execute();
-
-    if ( p() -> talent.healing_elixirs -> ok() )
-    {
-      if ( p() -> cooldown.healing_elixirs -> up() )
-        p() -> active_actions.healing_elixir -> execute();
-    }
-
-    p() -> buff.tigereye_brew -> trigger();
-
-    // Tigereye Brew increases your critical strike damage by 20% for 30 sec.
-    if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T17, B4 ) )
-      p() -> buff.forceful_winds -> trigger();
-  }
-};
-*/
 // ==========================================================================
 // Energizing Elixir
 // ==========================================================================
@@ -4587,10 +4516,8 @@ struct effuse_t: public monk_heal_t
     if ( p() -> sheilun_staff_of_the_mists )
       artifact -> trigger();
 
-    if ( p() -> real_ppm.tier19_oh_8pc -> trigger() )
-      p() -> buff.tier19_oh_8pc -> trigger();
-
-
+    p() -> buff.tier19_oh_8pc -> trigger();
+    
     mastery -> execute();
   }
 
@@ -5760,7 +5687,6 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "thunder_focus_tea" ) return new         thunder_focus_tea_t( *this, options_str );
   // Windwalker
   if ( name == "fists_of_fury" ) return new             fists_of_fury_t( this, options_str );
-//  if ( name == "tigereye_brew" ) return new             tigereye_brew_t( this, options_str );
   if ( name == "touch_of_karma" ) return new            touch_of_karma_t( this, options_str );
   if ( name == "touch_of_death" ) return new            touch_of_death_t( this, options_str );
   if ( name == "storm_earth_and_fire" ) return new      storm_earth_and_fire_t( this, options_str );
@@ -6078,7 +6004,6 @@ void monk_t::init_spells()
   spec.disable                       = find_specialization_spell( "Disable" );
   spec.fists_of_fury                 = find_specialization_spell( "Fists of Fury" );
   spec.flying_serpent_kick           = find_specialization_spell( "Flying Serpent Kick" );
-  spec.tigereye_brew                 = find_specialization_spell( "Tigereye Brew" );
   spec.stance_of_the_fierce_tiger    = find_specialization_spell( "Stance of the Fierce Tiger" );
   spec.storm_earth_and_fire          = find_specialization_spell( "Storm, Earth, and Fire" );
   spec.touch_of_karma                = find_specialization_spell( "Touch of Karma" );
@@ -6142,7 +6067,6 @@ void monk_t::init_spells()
   passives.hit_combo                        = find_spell( 196741 );
   passives.rising_sun_kick_trinket          = find_spell( 185099 );
   passives.whirling_dragon_punch            = find_spell( 158221 );
-//  passives.swift_as_the_wind                = find_spell( 195599 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
   passives.tier17_4pc_melee                 = find_spell( 166603 );
   passives.tier18_2pc_melee                 = find_spell( 216172 );
@@ -6279,7 +6203,7 @@ void monk_t::create_buffs()
 
   buff.tier19_oh_8pc = buff_creator_t( this, "grandmasters_wisdom")
     .spell( sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
-    .default_value( sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() -> effectN(1).base_value() )
+    .default_value( sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() )
     .add_invalidate( CACHE_CRIT )
     .add_invalidate( CACHE_SPELL_CRIT );
 
@@ -6423,18 +6347,6 @@ void monk_t::create_buffs()
                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                               .cd( timespan_t::zero() );
 
-//  buff.swift_as_the_wind = buff_creator_t( this, "swift_as_the_wind", passives.swift_as_the_wind -> effectN( 1 ).trigger() )
-//      .default_value( passives.swift_as_the_wind -> effectN( 1 ).trigger() -> effectN( 2 ).percent() );
-
-/*  buff.tigereye_brew = buff_creator_t( this, "tigereye_brew", spec.tigereye_brew )
-    .period( timespan_t::zero() ) // Tigereye Brew does not tick, despite what the spelldata implies.
-    .duration( spec.tigereye_brew -> duration() + 
-      ( artifact.strength_of_xuen.rank() ? artifact.strength_of_xuen.time_value() : timespan_t::zero() ) )
-    .default_value( spec.tigereye_brew -> effectN( 1 ).percent() )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
-*/
-
   // Transfer the Power does not show up in the buff bar, but due to the fact that it shows up in the combat log,
   // I am going to show the buff in the HTML report; since someone can set up a weak aura to track the buff.
   buff.transfer_the_power = buff_creator_t( this, "transfer_the_power", artifact.transfer_the_power.data().effectN( 1 ).trigger() )
@@ -6488,17 +6400,6 @@ void monk_t::init_procs()
 void monk_t::init_rng()
 {
   player_t::init_rng();
-
-/*  if ( aburaq )
-  {
-    real_ppm.swift_as_the_wind = real_ppm_t( *this, aburaq -> driver() -> real_ppm() );
-  }
-  else
-  {
-    real_ppm.swift_as_the_wind = real_ppm_t( *this, 0 );
-  }
-*/
-  real_ppm.tier19_oh_8pc = get_rppm( "grandmasters_wisdom", sets.set( specialization(), T19OH, B8 ) );
 }
 
 // monk_t::init_resources ===================================================
@@ -6533,8 +6434,6 @@ bool monk_t::has_t18_class_trinket() const
 void monk_t::reset()
 {
   base_t::reset();
-//  real_ppm.swift_as_the_wind.reset();
-  real_ppm.tier19_oh_8pc -> reset();
 }
 
 // monk_t::regen (brews/teas)================================================
@@ -6682,9 +6581,6 @@ double monk_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buff.hit_combo -> stack_value();
   }
 
-//  if ( buff.tigereye_brew -> up() )
-//    m *= 1.0 + buff.tigereye_brew -> value();
-
   if ( buff.serenity -> up() )
     m *= 1.0 + buff.serenity -> value();
 
@@ -6722,9 +6618,6 @@ double monk_t::composite_attribute_multiplier( attribute_e attr ) const
 double monk_t::composite_player_heal_multiplier( const action_state_t* s ) const
 {
   double m = base_t::composite_player_heal_multiplier( s );
-
-//  if ( buff.tigereye_brew -> up() )
-//    m *= 1.0 + spec.tigereye_brew -> effectN( 2 ).percent();
 
   if ( buff.serenity -> up() )
     m *= 1.0 + talent.serenity -> effectN( 3 ).percent();
