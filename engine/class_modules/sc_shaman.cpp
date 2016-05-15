@@ -1028,6 +1028,16 @@ public:
     may_glance = false;
   }
 
+  void init() override
+  {
+    ab::init();
+
+    if ( may_proc_stormbringer )
+    {
+      may_proc_stormbringer = ab::weapon && ab::weapon -> slot == SLOT_MAIN_HAND;
+    }
+  }
+
   timespan_t gcd() const override
   {
     timespan_t g = ab::gcd();
@@ -1087,6 +1097,12 @@ public:
 
     p() -> resource_gain( RESOURCE_MAELSTROM, amount, gain, this );
   }
+
+  virtual double stormbringer_proc_chance() const
+  {
+    return p() -> spec.stormbringer -> proc_chance() +
+           p() -> cache.mastery() * p() -> mastery.enhanced_elements -> effectN( 3 ).mastery_value();
+  }
 };
 
 // ==========================================================================
@@ -1145,6 +1161,11 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     if ( data().affected_by( p -> spec.elemental_fury -> effectN( 1 ) ) )
     {
       crit_bonus_multiplier *= 1.0 + p -> spec.elemental_fury -> effectN( 1 ).percent();
+    }
+
+    if ( data().affected_by( player -> sets.set( SHAMAN_ELEMENTAL, T19, B2 ) ) )
+    {
+      base_crit += player -> sets.set( SHAMAN_ELEMENTAL, T19, B2 ) -> effectN( 1 ).percent();
     }
   }
 
@@ -2032,6 +2053,18 @@ struct stormstrike_attack_t : public shaman_attack_t
     return m;
   }
 
+  double composite_crit() const override
+  {
+    double c = shaman_attack_t::composite_crit();
+
+    if ( p() -> buff.stormbringer -> up() )
+    {
+      c += p() -> sets.set( SHAMAN_ENHANCEMENT, T19, B2 ) -> effectN( 1 ).percent();
+    }
+
+    return c;
+  }
+
   void execute() override
   {
     shaman_attack_t::execute();
@@ -2472,6 +2505,16 @@ struct lava_lash_t : public shaman_attack_t
     {
       add_child( player -> doom_vortex );
     }
+  }
+
+  double stormbringer_proc_chance() const override
+  { return p() -> sets.set( SHAMAN_ENHANCEMENT, T19, B4 ) -> proc_chance(); };
+
+  void init() override
+  {
+    shaman_attack_t::init();
+
+    may_proc_stormbringer = p() -> sets.has_set_bonus( SHAMAN_ENHANCEMENT, T19, B4 );
   }
 
   double cost() const override
@@ -4998,15 +5041,7 @@ void shaman_t::trigger_stormbringer( const action_state_t* state )
     return;
   }
 
-  if ( ! attack -> weapon || attack -> weapon -> slot != SLOT_MAIN_HAND )
-  {
-    return;
-  }
-
-  double proc_chance = spec.stormbringer -> proc_chance();
-  proc_chance += cache.mastery() * mastery.enhanced_elements -> effectN( 3 ).mastery_value();
-
-  if ( rng().roll( proc_chance ) )
+  if ( rng().roll( attack -> stormbringer_proc_chance() ) )
   {
     buff.stormbringer -> trigger( buff.stormbringer -> max_stack() );
     cooldown.strike -> reset( true );
@@ -5411,7 +5446,8 @@ void shaman_t::create_buffs()
                         this -> resource_gain( RESOURCE_MAELSTROM, this -> artifact.spirit_of_the_maelstrom.value(), this -> gain.spirit_of_the_maelstrom, nullptr );
                     });
   buff.elemental_focus = buff_creator_t( this, "elemental_focus", spec.elemental_focus -> effectN( 1 ).trigger() )
-    .default_value( 1.0 + spec.elemental_focus -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+    .default_value( 1.0 + spec.elemental_focus -> effectN( 1 ).trigger() -> effectN( 1 ).percent() +
+                          sets.set( SHAMAN_ELEMENTAL, T19, B4 ) -> effectN( 1 ).percent() )
     .activated( false );
   buff.earth_surge = buff_creator_t( this, "earth_surge", find_spell( 189797 ) )
     .default_value( 1.0 + find_spell( 189797 ) -> effectN( 1 ).percent() );
