@@ -1295,16 +1295,6 @@ public:
     }
   }
 
-  void trigger_power_overwhelming()
-  {
-    if (!priest.sets.has_set_bonus(priest.specialization(), T19OH, B8))
-    {
-      return;
-    }
-    
-    priest.buffs.power_overwhelming->trigger();
-  }
-
   double cost() const override
   {
     double c = ab::cost();
@@ -2736,7 +2726,8 @@ public:
     priest_spell_t::execute();
 
     priest.buffs.shadowy_insight->expire();
-    trigger_power_overwhelming();
+
+    priest.buffs.power_overwhelming->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -3804,7 +3795,8 @@ struct smite_t final : public priest_spell_t
     priest.buffs.surge_of_light->trigger();
 
     trigger_surge_of_light();
-    trigger_power_overwhelming();
+
+    priest.buffs.power_overwhelming->trigger();
   }
 
   void update_ready( timespan_t cd_duration ) override
@@ -4539,7 +4531,8 @@ struct _heal_t final : public priest_heal_t
     consume_serendipity();
     trigger_surge_of_light();
     trigger_divine_insight();
-    trigger_power_overwhelming();
+
+    priest.buffs.power_overwhelming->trigger();
   }
 
   void impact( action_state_t* s ) override
