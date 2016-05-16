@@ -544,7 +544,7 @@ static std::pair<int, double> rune_ready_in( const death_knight_t* p )
     double ttr = ( 1.0 - (p -> _runes.slot[j]).value ) / rps;
     if (ttr < t) {
       t = ttr;
-      fastest_remaining = j;
+      fastest_remaining = ( int ) j;
     }
   }
 
@@ -1701,7 +1701,7 @@ void death_knight_melee_attack_t::consume_killing_machine( const action_state_t*
        ( p() -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T18, B4 ) &&
          ! p() -> rng().roll( player -> sets.set( DEATH_KNIGHT_FROST, T18, B4 ) -> effectN( 1 ).percent() ) ) )
   {
-    killing_machine_consumed = p() -> buffs.killing_machine -> check();
+    killing_machine_consumed = p() -> buffs.killing_machine -> check() > 0;
     p() -> buffs.killing_machine -> decrement();
   }
 
