@@ -257,7 +257,7 @@ static bool player_has_binding( player_t* player, unsigned binding )
   // TOCHECK: Does this work with enchants specified by name?
   player = player -> get_owner_or_self();
 
-  for ( int i = 0; i < player -> items.size(); i++ )
+  for ( size_t i = 0; i < player -> items.size(); i++ )
   {
     if ( player -> items[ i ].parsed.enchant_id == binding )
       return true;
@@ -4079,7 +4079,7 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
     {
       // Custom special effect initialization is deferred, and no parsing from
       // spell data is done automatically.
-      if ( dbitem.custom_cb != 0 )
+      if ( dbitem.custom_cb )
       {
         effect.type = SPECIAL_EFFECT_CUSTOM;
         effect.custom_init = dbitem.custom_cb;
@@ -4604,7 +4604,9 @@ const special_effect_db_item_t& unique_gear::find_special_effect_db_item( unsign
   return __null_db_item;
 }
 
-void unique_gear::register_special_effect( unsigned spell_id, custom_cb_t callback )
+void unique_gear::register_special_effect( unsigned           spell_id,
+                                           const custom_cb_t& init_callback,
+                                           const custom_cb_t& fallback_callback )
 {
   if ( find_special_effect_db_item( spell_id ).spell_id == spell_id )
   {
@@ -4613,7 +4615,8 @@ void unique_gear::register_special_effect( unsigned spell_id, custom_cb_t callba
 
   special_effect_db_item_t dbitem;
   dbitem.spell_id = spell_id;
-  dbitem.custom_cb = callback;
+  dbitem.custom_cb = init_callback;
+  dbitem.fallback_cb = fallback_callback;
 
   __special_effect_db.push_back( dbitem );
 }
@@ -4926,3 +4929,60 @@ void unique_gear::register_target_data_initializers( sim_t* sim )
   sim -> register_target_data_initializer( prophecy_of_fear_constructor_t( 124230, trinkets ) );
 
 }
+
+static const special_effect_t* find_special_effect( player_t* actor, unsigned spell_id )
+{
+  auto it = range::find_if( actor -> special_effects, [ spell_id ]( const special_effect_t* e ) {
+    return e -> driver() -> id() == spell_id;
+  });
+
+  if ( it != actor -> special_effects.end() )
+  {
+    return *it;
+  }
+
+  for ( const auto& item: actor -> items )
+  {
+    auto it = range::find_if( item.parsed.special_effects, [ spell_id ]( const special_effect_t* e ) {
+      return e -> driver() -> id() == spell_id;
+    });
+
+    if ( it != item.parsed.special_effects.end() )
+    {
+      return *it;
+    }
+  }
+
+  return nullptr;
+}
+
+// Some special effects may use fallback initializers, where the fallback initializer is called if
+// the special effect is not found on the actor. Typical cases include anything relating to
+// class-specific special effects, where buffs for example should be unconditionally created for the
+// actor. This method is called after the normal special effect initialization process finishes on
+// the actor.
+void unique_gear::initialize_special_effect_fallbacks( player_t* actor )
+{
+  special_effect_t fallback_effect( actor );
+
+  for ( const auto& elem: __special_effect_db )
+  {
+    if ( ! elem.fallback_cb )
+    {
+      continue;
+    }
+
+    if ( find_special_effect( actor, elem.spell_id ) )
+    {
+      continue;
+    }
+
+    fallback_effect.reset();
+    fallback_effect.spell_id = elem.spell_id;
+    fallback_effect.type = SPECIAL_EFFECT_CUSTOM;
+    fallback_effect.custom_init = elem.fallback_cb;
+
+    actor -> special_effects.push_back( new special_effect_t( fallback_effect ) );
+  }
+}
+

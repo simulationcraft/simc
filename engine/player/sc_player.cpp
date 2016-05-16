@@ -1319,6 +1319,11 @@ void player_t::init_special_effects()
     special_effects.push_back( new special_effect_t( effect ) );
   }
 
+  // Once all special effects are first-phase initialized, do a pass to first-phase initialize any
+  // potential fallback special effects for the actor.
+  unique_gear::initialize_special_effect_fallbacks( this );
+
+  // ..and then move on to second phase initialization of all special effects.
   unique_gear::init( this );
 }
 

@@ -2433,7 +2433,7 @@ struct special_effect_t
   unsigned spell_id, trigger_spell_id;
   action_t* execute_action; // Allows custom action to be executed on use
   buff_t* custom_buff; // Allows custom action
-  void (*custom_init)(special_effect_t& );
+  std::function<void(special_effect_t&)> custom_init;
 
 
   special_effect_t( player_t* p ) :
@@ -6684,23 +6684,176 @@ namespace enchant
 
 namespace unique_gear
 {
-  typedef void (*custom_cb_t)( special_effect_t& );
+  typedef std::function<void(special_effect_t&)> custom_cb_t;
   struct special_effect_db_item_t
   {
     unsigned    spell_id;
     std::string encoded_options;
     //const std::function<void(special_effect_t&, const item_t&, const special_effect_db_item_t&)> custom_cb;
-    custom_cb_t custom_cb;
+    custom_cb_t custom_cb; // Initializer if the spell id is available for the actor
+    custom_cb_t fallback_cb;
 
     special_effect_db_item_t() :
-      spell_id( 0 ), encoded_options(), custom_cb( nullptr )
+      spell_id( 0 ), encoded_options(), custom_cb( custom_cb_t() )
     { }
+  };
+
+  // A special effect callback that will be scoped by the pure virtual valid() method of the class.
+  // If the implemented valid() returns false, the special effect initializer callbacks will not be
+  // invoked.
+  struct scoped_callback_t
+  {
+    scoped_callback_t()
+    { }
+
+    // Validate special effect against conditions. Return value of false indicates that the
+    // initializer should not be invoked.
+    virtual bool valid( const special_effect_t& ) const = 0;
+
+    // Initialize the special effect.
+    virtual void initialize( special_effect_t& ) = 0;
+
+    // Entry point for the callback. Core sim will call this method with the prepared
+    // special_effect_t object.
+    virtual void operator()( special_effect_t& effect )
+    {
+      if ( ! valid( effect ) )
+      {
+        return;
+      }
+
+      initialize( effect );
+    }
+  };
+
+  // A scoped special effect callback that validates against a player class or specialization.
+  struct class_scoped_callback_t : public scoped_callback_t
+  {
+    player_e class_;
+    specialization_e spec_;
+
+    class_scoped_callback_t( player_e c ) : class_( c ), spec_( SPEC_NONE )
+    { }
+
+    class_scoped_callback_t( specialization_e s ) : class_( PLAYER_NONE ), spec_( s )
+    { }
+
+    bool valid( const special_effect_t& effect ) const override
+    {
+      assert( effect.player );
+
+      if ( class_ != PLAYER_NONE && effect.player -> type != class_ )
+      {
+        return false;
+      }
+
+      if ( spec_ != SPEC_NONE && spec_ != effect.player -> specialization() )
+      {
+        return false;
+      }
+
+      return true;
+    }
+  };
+
+  // A templated, class-scoped special effect initializer that automatically generates a single buff
+  // on the actor.
+  //
+  // First template argument is the actor class (e.g., shaman_t), required parameter
+  // Second template argument is the buff type (e.g., buff_t, stat_buff_t, ...)
+  // Third template argument is the creator type (e.g., buff_creator_t, stat_buff_creator_t, ...)
+  template <typename T, typename T_BUFF = buff_t, typename T_CREATOR = buff_creator_t>
+  struct class_buff_cb_t : public class_scoped_callback_t
+  {
+    private:
+    // Dummy buff pointer to put the buff pointer, if buff_ptr is not overridden in the derived
+    // class.
+    T_BUFF* __dummy;
+
+    public:
+    typedef class_buff_cb_t<T, T_BUFF, T_CREATOR> super;
+
+    // A pointer to the special effect's actor. This pointer will be assigned to by
+    // class_buff_cb_t::initialize. If initialize is overridden, the member variable should be
+    // assigned to by the overriding function if other aspects of the class are needed (e.g.,
+    // create_buff, create_fallback, ...)
+    T* actor;
+
+    // The buff name. Optional if create_buff and create_fallback are both overridden. If fallback
+    // behavior is required and the method is not overridden, must be provided.
+    std::string buff_name;
+
+    class_buff_cb_t( specialization_e spec, const std::string& name = std::string() ) :
+      class_scoped_callback_t( spec ), __dummy( nullptr ), actor( nullptr ), buff_name( name )
+    { }
+
+    class_buff_cb_t( player_e class_, const std::string& name = std::string() ) :
+      class_scoped_callback_t( class_ ), __dummy( nullptr ), actor( nullptr ), buff_name( name )
+    { }
+
+    // Generic initializer for the class-scoped special effect buff creator. Override to customize
+    // buff creation if a simple binary fallback yes/no switch is not enough.
+    void initialize( special_effect_t& effect ) override
+    {
+      // Assign actor here, if this method is overridden, we are in a bit of a trouble though ..
+      actor = debug_cast<T*>( effect.player );
+
+      if ( ! is_fallback( effect ) )
+      {
+        create_buff( effect );
+      }
+      else
+      {
+        create_fallback( effect );
+      }
+    }
+
+    // Determine (from the given special_effect_t) whether to create the real buff, or the fallback
+    // buff. Since this class is (currently) used by item-based special effects, defaults to
+    // checking the presence of an item pointer in the special_effect_t object. This pointer will
+    // be automatically setup by the core player item initialization system.
+    virtual bool is_fallback( const special_effect_t& e ) const
+    { return e.item == nullptr; }
+
+    // Create a correct type buff creator. Derived classes can override this method to fully
+    // customize the buff creation.
+    virtual T_CREATOR creator( const special_effect_t& e ) const
+    { return T_CREATOR( e.player, buff_name ); }
+
+    // An accessor method to return the assignment pointer for the buff (in the actor). Primary use
+    // is to automatically assign fallback buffs to correct member variables. If the special effect
+    // requires a fallback buff, and create_fallback is not fully overridden, must be implemented.
+    virtual T_BUFF*& buff_ptr( const special_effect_t& )
+    { return __dummy; }
+
+    // Create the real buff, default implementation calls creator() to create a correct buff
+    // creator, that will then instantiate the buff to the assigned member variable pointer returned
+    // by buff_ptr.
+    virtual void create_buff( const special_effect_t& e )
+    { buff_ptr( e ) = creator( e ); }
+
+    // Create a generic fallback buff. If the special effect requires a fallback buff, the developer
+    // must also provide the following attributes, if the method is not overridden.
+    // 1) A non-empty buff_name in the constructor
+    // 2) Overridden buff_ptr method that returns a reference to a pointer where the buff should be
+    //    assigned to.
+    virtual void create_fallback( const special_effect_t& e )
+    {
+      assert( ! buff_name.empty() );
+      // Assert here, but note that release builds will not crash, rather the buff is assigned
+      // to a dummy pointer inside this initializer object
+      assert( buff_ptr( e ) == __dummy );
+
+      // Proc chance is hardcoded to zero, essentially disabling the buff described by creator()
+      // call.
+      buff_ptr( e ) = creator( e ).chance( 0 );
+    }
   };
 
 void register_hotfixes();
 void register_special_effects();
 void register_special_effect( unsigned spell_id, const std::string& encoded_str );
-void register_special_effect( unsigned spell_id, custom_cb_t callback );
+void register_special_effect( unsigned spell_id, const custom_cb_t& init_cb, const custom_cb_t& fallback_cb = custom_cb_t() );
 void register_target_data_initializers( sim_t* );
 
 void init( player_t* );
@@ -6708,6 +6861,7 @@ void init( player_t* );
 const special_effect_db_item_t& find_special_effect_db_item( unsigned spell_id );
 bool initialize_special_effect( special_effect_t& effect, unsigned spell_id );
 void initialize_special_effect_2( special_effect_t* effect ); // Second phase initialization
+void initialize_special_effect_fallbacks( player_t* actor );
 
 const item_data_t* find_consumable( const dbc_t& dbc, const std::string& name, item_subclass_consumable type );
 const item_data_t* find_item_by_spell( const dbc_t& dbc, unsigned spell_id );

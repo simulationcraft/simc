@@ -50,7 +50,7 @@ public:
   bool non_dps_mechanics, warrior_fixed_time;
 
   // Tier 18 (WoD 6.2) class specific trinket effects
-  const special_effect_t* fury_trinket, *arms_trinket, *prot_trinket;
+  const special_effect_t* arms_trinket, *prot_trinket;
   // Artifacts
   const special_effect_t* stromkar_the_warbreaker, *warswords_of_the_valarjar;
   // Legendary Items
@@ -379,7 +379,7 @@ public:
     warrior_fixed_time = true;
     base.distance = 5.0;
 
-    fury_trinket = arms_trinket = prot_trinket = nullptr;
+    arms_trinket = prot_trinket = nullptr;
     archavons_heavy_hand = groms_wartorn_pauldrons = bindings_of_kakushan = kargaths_sacrificed_hands = thundergods_vigor = 
     ceannar_girdle = kazzalax_fujiedas_fury = the_walls_fell = destiny_driver = prydaz_xavarics_magnum_opus = verjas_protectors_of_the_berserker_king = 
     najentuss_vertebrae = ayalas_stone_heart = aggramars_stride = manacles_of_mannoroth_the_flayer = nullptr;
@@ -897,11 +897,8 @@ struct melee_t: public warrior_attack_t
     else
     {
       warrior_attack_t::execute();
-      if ( p() -> fury_trinket ) // Buff procs from any attack, even if it misses/parries/etc.
-      {
-        p() -> buff.fury_trinket -> trigger( 1 );
-      }
-      else if ( rng().roll( arms_trinket_chance ) ) // Same
+      p() -> buff.fury_trinket -> trigger();
+      if ( rng().roll( arms_trinket_chance ) ) // Same
       {
         p() -> cooldown.colossus_smash -> reset( true );
         p() -> proc.arms_trinket -> occur();
@@ -3676,7 +3673,7 @@ bool warrior_t::has_t18_class_trinket() const
 {
   if ( specialization() == WARRIOR_FURY )
   {
-    return fury_trinket != nullptr;
+    return buff.fury_trinket -> default_chance != 0;
   }
   else if ( specialization() == WARRIOR_ARMS )
   {
@@ -4382,11 +4379,6 @@ void warrior_t::init_gains()
   gain.ceannar_rage = get_gain( "ceannar_rage" );
   gain.manacles_of_mannoroth_the_flayer = get_gain( "manacles_of_mannoroth_the_flayer" );
 
-  if ( !fury_trinket )
-  {
-    buff.fury_trinket = buff_creator_t( this, "berserkers_fury" )
-      .chance( 0 );
-  }
   if ( !warswords_of_the_valarjar )
   {
     buff.berserking = buff_creator_t( this, "berserking" )
@@ -4667,10 +4659,7 @@ double warrior_t::composite_melee_haste() const
 {
   double a = player_t::composite_melee_haste();
 
-  if ( fury_trinket )
-  {
-    a *= 1.0 / ( 1.0 + buff.fury_trinket -> stack_value() );
-  }
+  a *= 1.0 / ( 1.0 + buff.fury_trinket -> stack_value() );
 
   a *= 1.0 / ( 1.0 + buff.frenzy -> stack_value() );
 
@@ -5179,19 +5168,6 @@ static void do_trinket_init( warrior_t*                player,
   ptr = &( effect );
 }
 
-static void fury_trinket( special_effect_t& effect )
-{
-  warrior_t* s = debug_cast<warrior_t*>( effect.player );
-  do_trinket_init( s, WARRIOR_FURY, s -> fury_trinket, effect );
-
-  if ( s -> fury_trinket )
-  {
-    s -> buff.fury_trinket = buff_creator_t( s, "berserkers_fury", s -> fury_trinket -> driver() -> effectN( 1 ).trigger() )
-      .default_value( s -> fury_trinket -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ).average( s -> fury_trinket -> item ) / 100.0 )
-      .add_invalidate( CACHE_HASTE );
-  }
-}
-
 static void arms_trinket( special_effect_t& effect )
 {
   warrior_t* s = debug_cast<warrior_t*>( effect.player );
@@ -5343,6 +5319,26 @@ static void manacles_of_mannoroth_the_flayer( special_effect_t& effect )
 
 // WARRIOR MODULE INTERFACE =================================================
 
+struct fury_trinket_t : public unique_gear::class_buff_cb_t<warrior_t>
+{
+  fury_trinket_t() : super( WARRIOR_FURY, "berserkers_fury" ) { }
+
+  // Assign to warrior_t::buff.fury_trinket
+  buff_t*& buff_ptr( const special_effect_t& ) override
+  { return actor -> buff.fury_trinket; }
+
+  // Customize the buff that is about to be created. Both fallback and real buff will use the same
+  // creator, but the fallback buff creator will additionally assign the proc chance for the buff to
+  // zero, essentially disabling it.
+  buff_creator_t creator( const special_effect_t& e ) const override
+  {
+    return super::creator( e )
+      .spell( e.driver() -> effectN( 1 ).trigger() )
+      .default_value( e.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).average( e.item ) / 100.0 )
+      .add_invalidate( CACHE_HASTE );
+  }
+};
+
 struct warrior_module_t: public module_t
 {
   warrior_module_t(): module_t( WARRIOR ) {}
@@ -5358,7 +5354,7 @@ struct warrior_module_t: public module_t
 
   virtual void static_init() const override
   {
-    unique_gear::register_special_effect( 184926, fury_trinket );
+    unique_gear::register_special_effect( 184926, fury_trinket_t(), fury_trinket_t() );
     unique_gear::register_special_effect( 184925, arms_trinket );
     unique_gear::register_special_effect( 184927, prot_trinket );
     unique_gear::register_special_effect( 209579, stromkar_the_warbreaker );

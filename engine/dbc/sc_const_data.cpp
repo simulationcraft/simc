@@ -1463,6 +1463,9 @@ double spelleffect_data_t::average( const item_t* item ) const
 {
   double m_scale = 0;
 
+  if ( ! item )
+    return 0;
+
   if ( _m_avg != 0 && _spell -> scaling_class() != 0 )
     m_scale = item_database::item_budget( item, _spell -> max_scaling_level() );
 
@@ -1519,6 +1522,9 @@ double spelleffect_data_t::delta( const player_t* p, unsigned level ) const
 double spelleffect_data_t::delta( const item_t* item ) const
 {
   double m_scale = 0;
+
+  if ( ! item )
+    return 0;
 
   if ( _m_delta != 0 && _spell -> scaling_class() != 0 )
     m_scale = item_database::item_budget( item, _spell -> max_scaling_level() );
