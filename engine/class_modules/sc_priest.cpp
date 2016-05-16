@@ -125,11 +125,12 @@ public:
     buff_t* voidform;
 
     // Set Bonus
-    buff_t* mental_instinct;    // t17 4pc caster
-    buff_t* clear_thoughts;     // t17 4pc disc
-    buff_t* reperation;         // T18 Disc 2p
-    buff_t* premonition;        // T18 Shadow 4pc
-    buff_t* shadow_t19_4p;      // T19 Shadow 4pc
+    buff_t* mental_instinct;          // T17 Shadow 4pc
+    buff_t* clear_thoughts;           // T17 Disc 4pc
+    buff_t* reperation;               // T18 Disc 2p
+    buff_t* premonition;              // T18 Shadow 4pc
+    stat_buff_t* power_overwhelming;  // T19OH
+    buff_t* shadow_t19_4p;            // T19 Shadow 4pc
 
     // Legion Legendaries
     // Shadow
@@ -1294,6 +1295,16 @@ public:
     }
   }
 
+  void trigger_power_overwhelming()
+  {
+    if (!priest.sets.has_set_bonus(priest.specialization(), T19OH, B8))
+    {
+      return;
+    }
+    
+    priest.buffs.power_overwhelming->trigger();
+  }
+
   double cost() const override
   {
     double c = ab::cost();
@@ -2328,14 +2339,11 @@ struct voidform_t final : public priest_spell_t
 
     priest.buffs.voidform->trigger();
 
-    /*
-    if ( priest.sets.has_set_bonus( SET_CASTER, T19, B4 ) )
+    
+    if ( priest.sets.has_set_bonus( PRIEST_SHADOW, T19, B4 ) )
     {
       priest.buffs.shadow_t19_4p->trigger();
     }
-    */
-    // priest.buffs.shadow_t19_4p->trigger();
-    // For testing until set bonuses are available in SimC
 
     if ( priest.artifact.sphere_of_insanity.rank() )
     {
@@ -2728,6 +2736,7 @@ public:
     priest_spell_t::execute();
 
     priest.buffs.shadowy_insight->expire();
+    trigger_power_overwhelming();
   }
 
   void impact( action_state_t* s ) override
@@ -3231,16 +3240,12 @@ struct shadow_word_pain_t final : public priest_spell_t
     generate_insanity( insanity_gain,
                        priest.gains.insanity_shadow_word_pain_onhit );
 
-    /*
-    if ( priest.sets.has_set_bonus( SET_CASTER, T19, B2 ) )
+    if ( priest.sets.has_set_bonus( PRIEST_SHADOW, T19, B2 ) )
     {
       generate_insanity(
-          priest.sets.set( SET_CASTER, T19, B2 )->effectN( 1 ).base_value(),
+          priest.sets.set( PRIEST_SHADOW, T19, B2 )->effectN( 1 ).base_value(),
           priest.gains.insanity_shadow_word_pain_ondamage );
     }
-    */
-    // generate_insanity(1, priest.gains.insanity_shadow_word_pain_ondamage);
-    // //For testing until set bonuses are available in SimC
   }
 
   void tick( dot_t* d ) override
@@ -3268,14 +3273,12 @@ struct shadow_word_pain_t final : public priest_spell_t
       priest.buffs.sphere_of_insanity->current_value = 0;
     }
 
-    /*
-    if ( priest.sets.has_set_bonus( SET_CASTER, T19, B2 ) )
+    if ( priest.sets.has_set_bonus( PRIEST_SHADOW, T19, B2 ) )
     {
       generate_insanity(
-          priest.sets.set( SET_CASTER, T19, B2 )->effectN( 1 ).base_value(),
+          priest.sets.set( PRIEST_SHADOW, T19, B2 )->effectN( 1 ).base_value(),
           priest.gains.insanity_shadow_word_pain_ondamage );
     }
-    */
     // generate_insanity(1, priest.gains.insanity_shadow_word_pain_ondamage);
     // For testing until set bonuses are available in SimC
     
@@ -3437,16 +3440,12 @@ struct vampiric_touch_t final : public priest_spell_t
       }
     }
 
-    /*
-    if ( priest.sets.has_set_bonus( SET_CASTER, T19, B2 ) )
+    if ( priest.sets.has_set_bonus( PRIEST_SHADOW, T19, B2 ) )
     {
       generate_insanity(
-          priest.sets.set( SET_CASTER, T19, B2 )->effectN( 1 ).base_value(),
+          priest.sets.set( PRIEST_SHADOW, T19, B2 )->effectN( 1 ).base_value(),
           priest.gains.insanity_vampiric_touch_ondamage );
     }
-    */
-    // generate_insanity(1, priest.gains.insanity_vampiric_touch_ondamage);
-    // For testing until set bonuses are available in SimC
 
     if (priest.active_items.anunds_seared_shackles)
     {
@@ -3805,6 +3804,7 @@ struct smite_t final : public priest_spell_t
     priest.buffs.surge_of_light->trigger();
 
     trigger_surge_of_light();
+    trigger_power_overwhelming();
   }
 
   void update_ready( timespan_t cd_duration ) override
@@ -4539,6 +4539,7 @@ struct _heal_t final : public priest_heal_t
     consume_serendipity();
     trigger_surge_of_light();
     trigger_divine_insight();
+    trigger_power_overwhelming();
   }
 
   void impact( action_state_t* s ) override
@@ -6587,6 +6588,10 @@ void priest_t::create_buffs()
       buff_creator_t( this, "premonition" )
           .spell( find_spell( 188779 ) )
           .chance( sets.has_set_bonus( PRIEST_SHADOW, T18, B4 ) );
+
+  buffs.power_overwhelming = stat_buff_creator_t(this, "power_overwhelming")
+    .spell(sets.set(specialization(), T19OH, B8)->effectN(1).trigger())
+    .trigger_spell(sets.set(specialization(), T19OH, B8));
 
   buffs.shadow_t19_4p =
       buff_creator_t( this, "shadow_t19_4p" )
