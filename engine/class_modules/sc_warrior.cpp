@@ -351,6 +351,7 @@ public:
     artifact_power_t uncontrolled_rage;
     artifact_power_t unrivaled_strength;
     artifact_power_t unstoppable;
+    artifact_power_t wild_slashes;
     artifact_power_t wrath_and_fury;
 
     // NYI
@@ -1187,6 +1188,7 @@ struct furious_slash_t: public warrior_attack_t
   {
     parse_options( options_str );
     weapon = &( p -> off_hand_weapon );
+    weapon_multiplier *= 1.0 + p -> artifact.wild_slashes.percent();
   }
 
   void execute() override
@@ -3536,6 +3538,7 @@ void warrior_t::init_spells()
   artifact.unrivaled_strength        = find_artifact_spell( "Unrivaled Strength" );
   artifact.unstoppable               = find_artifact_spell( "Unstoppable" );
   artifact.will_of_the_first_king    = find_artifact_spell( "Will of the First King" );
+  artifact.wild_slashes              = find_artifact_spell( "Wild Slashes" );
   artifact.wrath_and_fury            = find_artifact_spell( "Wrath and Fury" );
 
   // Generic spells
