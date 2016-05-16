@@ -4371,32 +4371,6 @@ void warrior_t::init_gains()
   gain.tier17_4pc_arms = get_gain( "tier17_4pc_arms" );
   gain.ceannar_rage = get_gain( "ceannar_rage" );
   gain.manacles_of_mannoroth_the_flayer = get_gain( "manacles_of_mannoroth_the_flayer" );
-
-  if ( !bindings_of_kakushan )
-  {
-    buff.bindings_of_kakushan = buff_creator_t( this, "bindings_of_kakushan" )
-      .chance( 0 );
-  }
-  if ( !kargaths_sacrificed_hands )
-  {
-    buff.kargaths_sacrificed_hands = buff_creator_t( this, "kargaths_sacrificed_hands" )
-      .chance( 0 );
-  }
-  if ( !kazzalax_fujiedas_fury )
-  {
-    buff.fujiedas_fury = buff_creator_t( this, "fujiedas_fury" )
-      .chance( 0 );
-  }
-  if ( !destiny_driver )
-  {
-    buff.destiny_driver = buff_creator_t( this, "destiny_driver" )
-      .chance( 0 );
-  }
-  if ( !prydaz_xavarics_magnum_opus )
-  {
-    buff.xavarics_magnum_opus = buff_creator_t( this, "xavarics_magnum_opus" )
-      .chance( 0 );
-  }
 }
 
 // warrior_t::init_position ====================================================
@@ -5185,28 +5159,6 @@ static void groms_wartorn_pauldrons( special_effect_t& effect )
   do_trinket_init( s, SPEC_NONE, s -> groms_wartorn_pauldrons, effect );
 }
 
-static void bindings_of_kakushan( special_effect_t& effect )
-{
-  warrior_t* s = debug_cast<warrior_t*>( effect.player );
-  do_trinket_init( s, SPEC_NONE, s -> bindings_of_kakushan, effect );
-  if ( s -> bindings_of_kakushan )
-  {
-    s -> buff.bindings_of_kakushan = buff_creator_t( s, "bindings_of_kakushan", s -> bindings_of_kakushan -> driver() -> effectN( 1 ).trigger() )
-      .default_value( s -> bindings_of_kakushan -> driver() -> effectN( 1 ).percent() );
-  }
-}
-
-static void kargaths_sacrificed_hands( special_effect_t& effect )
-{
-  warrior_t* s = debug_cast<warrior_t*>( effect.player );
-  do_trinket_init( s, SPEC_NONE, s -> kargaths_sacrificed_hands, effect );
-  if ( s -> kargaths_sacrificed_hands )
-  {
-    s -> buff.kargaths_sacrificed_hands = buff_creator_t( s, "kargaths_sacrificed_hands", s -> kargaths_sacrificed_hands -> driver() -> effectN( 1 ).trigger() )
-      .default_value( s -> kargaths_sacrificed_hands -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
-  }
-}
-
 static void thundergods_vigor( special_effect_t& effect )
 {
   warrior_t* s = debug_cast<warrior_t*>( effect.player );
@@ -5219,42 +5171,10 @@ static void ceannar_girdle( special_effect_t& effect )
   do_trinket_init( s, SPEC_NONE, s -> ceannar_girdle, effect );
 }
 
-static void kazzalax_fujiedas_fury( special_effect_t& effect )
-{
-  warrior_t* s = debug_cast<warrior_t*>( effect.player );
-  do_trinket_init( s, SPEC_NONE, s -> kazzalax_fujiedas_fury, effect );
-  if ( s -> kazzalax_fujiedas_fury )
-  {
-    s -> buff.fujiedas_fury = buff_creator_t( s, "fujiedas_fury", s -> kazzalax_fujiedas_fury -> driver() -> effectN( 1 ).trigger() )
-      .default_value( s -> kazzalax_fujiedas_fury -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
-      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  }
-}
-
 static void the_walls_fell( special_effect_t& effect )
 {
   warrior_t* s = debug_cast<warrior_t*>( effect.player );
   do_trinket_init( s, SPEC_NONE, s -> the_walls_fell, effect );
-}
-
-static void destiny_driver( special_effect_t& effect )
-{
-  warrior_t* s = debug_cast<warrior_t*>( effect.player );
-  do_trinket_init( s, SPEC_NONE, s -> destiny_driver, effect );
-  if ( s -> destiny_driver )
-  {
-    s -> buff.destiny_driver = absorb_buff_creator_t( s, "destiny_driver", s -> find_spell( 215157 ) );
-  }
-}
-
-static void prydaz_xavarics_magnum_opus( special_effect_t& effect )
-{
-  warrior_t* s = debug_cast<warrior_t*>( effect.player );
-  do_trinket_init( s, SPEC_NONE, s -> prydaz_xavarics_magnum_opus, effect );
-  if ( s -> prydaz_xavarics_magnum_opus )
-  {
-    s -> buff.xavarics_magnum_opus = absorb_buff_creator_t( s, "xavarics_magnum_opus", s -> find_spell( 207472 ) );
-  }
 }
 
 static void verjas_protectors_of_the_berserker_king( special_effect_t& effect )
@@ -5307,6 +5227,81 @@ struct fury_trinket_t : public unique_gear::class_buff_cb_t<warrior_t>
       .default_value( e.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).average( e.item ) / 100.0 )
       .add_invalidate( CACHE_HASTE );
   }
+}; 
+
+struct bindings_of_kakushan_t : public unique_gear::class_buff_cb_t<warrior_t>
+{
+  bindings_of_kakushan_t() : super( WARRIOR, "bindings_of_kakushan" ) { }
+
+  // Assign to warrior_t::buff.fury_trinket
+  buff_t*& buff_ptr( const special_effect_t& ) override
+  { return actor -> buff.bindings_of_kakushan; }
+
+  buff_creator_t creator( const special_effect_t& e ) const override
+  {
+    return super::creator( e )
+      .spell( e.driver() -> effectN( 1 ).trigger() )
+      .default_value( e.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+  }
+};
+
+struct kargaths_sacrificed_hands_t : public unique_gear::class_buff_cb_t<warrior_t>
+{
+  kargaths_sacrificed_hands_t() : super( WARRIOR, "kargaths_sacrificed_hands" ) { }
+
+  buff_t*& buff_ptr( const special_effect_t& ) override
+  { return actor -> buff.kargaths_sacrificed_hands; }
+
+  buff_creator_t creator( const special_effect_t& e ) const override
+  {
+    return super::creator( e )
+      .spell( e.driver() -> effectN( 1 ).trigger() )
+      .default_value( e.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+  }
+};
+
+struct kazzalax_fujiedas_fury_t : public unique_gear::class_buff_cb_t<warrior_t>
+{
+  kazzalax_fujiedas_fury_t() : super( WARRIOR, "fujiedas_fury" ) { }
+
+  buff_t*& buff_ptr( const special_effect_t& ) override
+  { return actor -> buff.fujiedas_fury; }
+
+  buff_creator_t creator( const special_effect_t& e ) const override
+  {
+    return super::creator( e )
+      .spell( e.driver() -> effectN( 1 ).trigger() )
+      .default_value( e.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  }
+};
+
+struct destiny_driver_t : public unique_gear::class_buff_cb_t<warrior_t>
+{
+  destiny_driver_t() : super( WARRIOR, "destiny_driver" ) { }
+
+  buff_t*& buff_ptr( const special_effect_t& ) override
+  { return actor -> buff.destiny_driver; }
+
+  buff_creator_t creator( const special_effect_t& e ) const override
+  {
+    return super::creator( e )
+      .spell( e.player -> find_spell( 215157 ) );
+  }
+};
+
+struct prydaz_xavarics_magnum_opus_t : public unique_gear::class_buff_cb_t<warrior_t>
+{
+  prydaz_xavarics_magnum_opus_t() : super( WARRIOR, "xavarics_magnum_opus" ) { }
+
+  buff_t*& buff_ptr( const special_effect_t& ) override
+  { return actor -> buff.xavarics_magnum_opus; }
+
+  buff_creator_t creator( const special_effect_t& e ) const override
+  {
+    return super::creator( e )
+      .spell( e.player -> find_spell( 207472 ) );
+  }
 };
 
 struct warrior_module_t: public module_t
@@ -5330,14 +5325,14 @@ struct warrior_module_t: public module_t
     unique_gear::register_special_effect( 209579, stromkar_the_warbreaker );
     unique_gear::register_special_effect( 207326, archavons_heavy_hand );
     unique_gear::register_special_effect( 205597, groms_wartorn_pauldrons );
-    unique_gear::register_special_effect( 207841, bindings_of_kakushan );
-    unique_gear::register_special_effect( 207845, kargaths_sacrificed_hands );
+    unique_gear::register_special_effect( 207841, bindings_of_kakushan_t(), bindings_of_kakushan_t() );
+    unique_gear::register_special_effect( 207845, kargaths_sacrificed_hands_t(), kargaths_sacrificed_hands_t() );
     unique_gear::register_special_effect( 215176, thundergods_vigor );
     unique_gear::register_special_effect( 207779, ceannar_girdle );
-    unique_gear::register_special_effect( 207775, kazzalax_fujiedas_fury );
+    unique_gear::register_special_effect( 207775, kazzalax_fujiedas_fury_t(), kazzalax_fujiedas_fury_t() );
     unique_gear::register_special_effect( 215057, the_walls_fell );
-    unique_gear::register_special_effect( 215090, destiny_driver );
-    unique_gear::register_special_effect( 207428, prydaz_xavarics_magnum_opus );
+    unique_gear::register_special_effect( 215090, destiny_driver_t(), destiny_driver_t() );
+    unique_gear::register_special_effect( 207428, prydaz_xavarics_magnum_opus_t(), prydaz_xavarics_magnum_opus_t() );
     unique_gear::register_special_effect( 208908, verjas_protectors_of_the_berserker_king );
     unique_gear::register_special_effect( 215096, najentuss_vertebrae );
     unique_gear::register_special_effect( 207767, ayalas_stone_heart );
