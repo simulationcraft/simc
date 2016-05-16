@@ -547,7 +547,12 @@ bool item_database::apply_item_scaling( item_t& item, unsigned scaling_id )
     return true;
   }
 
-  double base_value = std::min( static_cast<double>( item.player -> level() ),
+  // Use drop_level parameter in gear if it's specified, if not, use player level
+  unsigned used_level = item.parsed.drop_level;
+  if ( used_level == 0 )
+    used_level = item.player -> level();
+
+  double base_value = std::min( static_cast<double>( used_level ),
                                 static_cast<double>( data -> max_level ) );
 
   std::pair<const curve_point_t*, const curve_point_t*> curve_data = item.player -> dbc.curve_point( data -> curve_id, base_value );

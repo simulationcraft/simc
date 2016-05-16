@@ -2540,10 +2540,11 @@ struct item_t
     auto_dispose< std::vector<special_effect_t*> > special_effects;
     std::vector<std::string> source_list;
     timespan_t               initial_cd;
+    unsigned                 drop_level;
 
     parsed_input_t() :
       item_level( 0 ), upgrade_level( 0 ), suffix_id( 0 ), enchant_id( 0 ), addon_id( 0 ),
-      armor( 0 ), data(), initial_cd( timespan_t::zero() )
+      armor( 0 ), data(), initial_cd( timespan_t::zero() ), drop_level( 0 )
     {
       range::fill( data.stat_type_e, -1 );
       range::fill( data.stat_val, 0 );
@@ -2583,6 +2584,7 @@ struct item_t
   std::string option_gem_id_str;
   std::string option_bonus_id_str;
   std::string option_initial_cd_str;
+  std::string option_drop_level_str;
   double option_initial_cd;
 
   // Extracted data

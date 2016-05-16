@@ -601,6 +601,7 @@ bool item_t::parse_options()
   options.push_back(opt_string("addon_id", option_addon_id_str));
   options.push_back(opt_string("bonus_id", option_bonus_id_str));
   options.push_back(opt_string("initial_cd", option_initial_cd_str));
+  options.push_back(opt_string("drop_level", option_drop_level_str));
 
   try
   {
@@ -663,6 +664,9 @@ bool item_t::parse_options()
 
   if ( ! option_initial_cd_str.empty() )
     parsed.initial_cd = timespan_t::from_seconds( std::stod( option_initial_cd_str ) );
+
+  if ( ! option_drop_level_str.empty() )
+    parsed.drop_level = util::to_unsigned( option_drop_level_str );
 
   return true;
 }
@@ -809,6 +813,9 @@ std::string item_t::encoded_item() const
 
   if ( ! option_initial_cd_str.empty() )
     s << ",initial_cd=" << option_initial_cd_str;
+
+  if ( ! option_drop_level_str.empty() )
+    s << ",drop_level=" << option_drop_level_str;
 
   return s.str();
 }
