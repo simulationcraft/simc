@@ -265,6 +265,8 @@ std::string item_t::to_string() const
     s << " (" << ( parsed.data.level + item_database::upgrade_ilevel( *this, upgrade_level() ) ) << ")";
   else if ( upgrade_level() > 0 )
     s << " (" << parsed.data.level << ")";
+  if ( parsed.drop_level > 0 )
+    s << " drop_level=" << parsed.drop_level;
   if ( parsed.data.lfr() )
     s << " LFR";
   if ( parsed.data.heroic() )
