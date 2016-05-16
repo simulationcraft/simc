@@ -40,7 +40,6 @@ namespace { // UNNAMED NAMESPACE
   Primal Fury gone or bugged?
   Incarnation CD modifier rework
   Gory Fur
-  Remove Blood Claws
   Check Galactic Guardian proc sources
   Fix rage generation from AAs
     http://us.battle.net/wow/en/forum/topic/20743504316?page=13#248
@@ -98,7 +97,6 @@ struct druid_td_t : public actor_target_data_t
   struct dots_t
   {
     dot_t* ashamanes_frenzy;
-    dot_t* blood_claws;
     dot_t* fury_of_elune;
     dot_t* gushing_wound;
     dot_t* lifebloom;
@@ -278,7 +276,6 @@ public:
 
   struct active_actions_t
   {
-    bear_attacks::bear_attack_t*    blood_claws;
     bear_attacks::bear_attack_t*    rage_of_the_sleeper;
     bear_attacks::brambles_pulse_t* brambles_pulse;
     brambles_t*                     brambles;
@@ -3200,13 +3197,6 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
 
       if ( p() -> talent.galactic_guardian -> ok() )
         trigger_galactic_guardian( s );
-
-      if ( p() -> active.blood_claws && ! background && harmful && s -> result_amount > 0 )
-      {
-        p() -> active.blood_claws -> target = s -> target;
-        p() -> active.blood_claws -> execute();
-      }
-
     }
   }
 
@@ -7767,7 +7757,6 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
     debuff( debuffs_t() )
 {
   dots.ashamanes_frenzy = target.get_dot( "ashamanes_frenzy", &source );
-  dots.blood_claws      = target.get_dot( "blood_claws",      &source );
   dots.fury_of_elune    = target.get_dot( "fury_of_elune",    &source );
   dots.gushing_wound    = target.get_dot( "gushing_wound",    &source );
   dots.lifebloom        = target.get_dot( "lifebloom",        &source );
