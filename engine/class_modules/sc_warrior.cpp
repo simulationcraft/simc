@@ -2273,8 +2273,8 @@ struct overpower_t: public warrior_attack_t
 
 struct odyns_damage_t: public warrior_attack_t
 {
-  odyns_damage_t( warrior_t* p, spell_data_t* spell ):
-    warrior_attack_t( "odyns_fury", p, spell )
+  odyns_damage_t( warrior_t* p, spell_data_t* spell, const std::string& name ):
+    warrior_attack_t( name, p, spell )
   {
     aoe = -1;
     background = dual = true;
@@ -2289,12 +2289,13 @@ struct odyns_fury_t: public warrior_attack_t
     mh( 0 ), oh( 0 )
   {
     parse_options( options_str );
-    mh = new odyns_damage_t( p, p -> artifact.odyns_fury.data().effectN( 1 ).trigger() );
+    mh = new odyns_damage_t( p, p -> artifact.odyns_fury.data().effectN( 1 ).trigger(), "odyns_fury_mh" );
     mh -> weapon = &( p -> main_hand_weapon );
-    oh =  new odyns_damage_t( p, p -> artifact.odyns_fury.data().effectN( 2 ).trigger() );
+    oh =  new odyns_damage_t( p, p -> artifact.odyns_fury.data().effectN( 2 ).trigger(), "odyns_fury_oh" );
     oh -> weapon = &( p -> off_hand_weapon );
     add_child( mh );
     add_child( oh );
+    school = SCHOOL_FIRE; // For reporting purposes.
   }
 
   void execute() override
@@ -4335,6 +4336,14 @@ void warrior_t::create_buffs()
 
   buff.tier17_4pc_fury_driver = buff_creator_t( this, "rampage_driver", sets.set( WARRIOR_FURY, T17, B4 ) -> effectN( 1 ).trigger() )
     .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) { buff.tier17_4pc_fury -> trigger( 1 ); } );
+
+  buff.berserking_driver = buff_creator_t( this, "berserking_driver", artifact.rage_of_the_valarjar.data().effectN( 1 ).trigger() )
+      .trigger_spell(  artifact.rage_of_the_valarjar )
+      .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) { buff.berserking -> trigger( 1 ); } );
+  buff.berserking = buff_creator_t( this, "berserking", artifact.rage_of_the_valarjar.data().effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
+      .default_value( artifact.rage_of_the_valarjar.data().effectN( 1 ).trigger() -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+      .add_invalidate( CACHE_ATTACK_SPEED )
+      .add_invalidate( CACHE_CRIT );
 }
 
 // warrior_t::init_scaling ==================================================
@@ -4382,13 +4391,6 @@ void warrior_t::init_gains()
   gain.ceannar_rage = get_gain( "ceannar_rage" );
   gain.manacles_of_mannoroth_the_flayer = get_gain( "manacles_of_mannoroth_the_flayer" );
 
-  if ( !warswords_of_the_valarjar )
-  {
-    buff.berserking = buff_creator_t( this, "berserking" )
-      .chance( 0 );
-    buff.berserking_driver = buff_creator_t( this, "berserking_driver" )
-      .chance( 0 );
-  }
   if ( !bindings_of_kakushan )
   {
     buff.bindings_of_kakushan = buff_creator_t( this, "bindings_of_kakushan" )
@@ -5190,22 +5192,6 @@ static void stromkar_the_warbreaker( special_effect_t& effect )
   do_trinket_init( s, WARRIOR_ARMS, s -> stromkar_the_warbreaker, effect );
 }
 
-static void warswords_of_the_valarjar( special_effect_t& effect )
-{
-  warrior_t* s = debug_cast<warrior_t*>( effect.player );
-  do_trinket_init( s, WARRIOR_FURY, s -> warswords_of_the_valarjar, effect );
-  if ( s -> warswords_of_the_valarjar )
-  {
-    s -> buff.berserking_driver = buff_creator_t( s, "berserking_driver", s -> warswords_of_the_valarjar -> driver() -> effectN( 1 ).trigger() )
-      .trigger_spell( s -> warswords_of_the_valarjar -> driver() )
-      .tick_callback( [s]( buff_t*, int, const timespan_t& ) { s -> buff.berserking -> trigger( 1 ); } );
-    s -> buff.berserking = buff_creator_t( s, "berserking", s -> warswords_of_the_valarjar -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
-      .default_value( s -> warswords_of_the_valarjar -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
-      .add_invalidate( CACHE_ATTACK_SPEED )
-      .add_invalidate( CACHE_CRIT );
-  }
-}
-
 static void archavons_heavy_hand( special_effect_t& effect )
 {
   warrior_t* s = debug_cast<warrior_t*>( effect.player );
@@ -5361,7 +5347,6 @@ struct warrior_module_t: public module_t
     unique_gear::register_special_effect( 184925, arms_trinket );
     unique_gear::register_special_effect( 184927, prot_trinket );
     unique_gear::register_special_effect( 209579, stromkar_the_warbreaker );
-    unique_gear::register_special_effect( 200845, warswords_of_the_valarjar );
     unique_gear::register_special_effect( 207326, archavons_heavy_hand );
     unique_gear::register_special_effect( 205597, groms_wartorn_pauldrons );
     unique_gear::register_special_effect( 207841, bindings_of_kakushan );
