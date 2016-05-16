@@ -5902,7 +5902,9 @@ void mage_t::create_buffs()
 
   // Artifact
   // Frost
-  buffs.chain_reaction   = buff_creator_t( this, "chain_reaction", find_spell( 195418 ) );
+  //TODO: Remove hardcoded Stack cap once spelldata is fixed.
+  buffs.chain_reaction   = buff_creator_t( this, "chain_reaction", find_spell( 195418 ) )
+                                      .max_stack( 1.0 );
   buffs.chilled_to_the_core = buff_creator_t( this, "chilled_to_the_core", find_spell( 195446 ) )
                                    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 }
