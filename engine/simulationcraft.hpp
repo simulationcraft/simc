@@ -6852,7 +6852,7 @@ namespace unique_gear
 
 void register_hotfixes();
 void register_special_effects();
-void register_special_effect( unsigned spell_id, const std::string& encoded_str );
+void register_special_effect( unsigned spell_id, const char* encoded_str );
 void register_special_effect( unsigned spell_id, const custom_cb_t& init_cb, const custom_cb_t& fallback_cb = custom_cb_t() );
 void register_target_data_initializers( sim_t* );
 

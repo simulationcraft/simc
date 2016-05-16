@@ -4621,7 +4621,7 @@ void unique_gear::register_special_effect( unsigned           spell_id,
   __special_effect_db.push_back( dbitem );
 }
 
-void unique_gear::register_special_effect( unsigned spell_id, const std::string& encoded_str )
+void unique_gear::register_special_effect( unsigned spell_id, const char* encoded_str )
 {
   if ( find_special_effect_db_item( spell_id ).spell_id == spell_id )
   {
