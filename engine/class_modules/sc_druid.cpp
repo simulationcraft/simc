@@ -1782,11 +1782,9 @@ struct moonfire_t : public druid_spell_t
   bool gore;
 
   moonfire_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "moonfire", player, player -> find_spell( 8921 ) ),
+    druid_spell_t( "moonfire", player, player -> find_spell( 8921 ), options_str ),
     gore( true )
   {
-    parse_options( options_str );
-
     const spell_data_t* dmg_spell = player -> find_spell( 164812 );
     
     dot_duration           = dmg_spell -> duration();
@@ -2117,7 +2115,7 @@ public:
     {
       int consumed = ( int ) p() -> resources.current[ RESOURCE_COMBO_POINT ];
 
-      p() -> resource_loss( RESOURCE_COMBO_POINT, consumed, gain, this );
+      p() -> resource_loss( RESOURCE_COMBO_POINT, consumed, nullptr, this );
 
       if ( sim -> log )
       {
@@ -2456,10 +2454,8 @@ struct berserk_t : public cat_attack_t
 struct brutal_slash_t : public cat_attack_t
 {
   brutal_slash_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "brutal_slash", p, p -> talent.brutal_slash )
+    cat_attack_t( "brutal_slash", p, p -> talent.brutal_slash, options_str )
   {
-    parse_options( options_str );
-
     aoe = -1;
     energize_amount = data().effectN( 1 ).base_value();
     energize_resource = RESOURCE_COMBO_POINT;
@@ -2569,7 +2565,7 @@ struct ferocious_bite_t : public cat_attack_t
   ashamanes_rip_t* ashamanes_rip;
 
   ferocious_bite_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "ferocious_bite", p, p -> find_class_spell( "Ferocious Bite" ), "" ),
+    cat_attack_t( "ferocious_bite", p, p -> find_class_spell( "Ferocious Bite" ) ),
     excess_energy( 0 ), max_excess_energy( 0 ), max_energy( false )
   {
     add_option( opt_bool( "max_energy" , max_energy ) );
@@ -2577,7 +2573,7 @@ struct ferocious_bite_t : public cat_attack_t
 
     max_excess_energy  = -1 * data().effectN( 2 ).base_value();
     special            = true;
-    energize_type          = ENERGIZE_NONE; // disable negative energy gain in spell data
+    energize_type      = ENERGIZE_NONE; // disable negative energy gain in spell data
 
     crit_bonus_multiplier *= 1.0 + p -> artifact.powerful_bite.percent(); // TOCHECK
 
@@ -3143,10 +3139,12 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
   bool gore;
 
   bear_attack_t( const std::string& n, druid_t* p,
-                 const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( n, p, s ),
-    gore( false )
-  {}
+                 const spell_data_t* s = spell_data_t::nil(),
+                 const std::string& options_str = std::string() ) :
+    base_t( n, p, s ), gore( false )
+  {
+    parse_options( options_str );
+  }
 
   virtual void execute() override
   {
@@ -3248,10 +3246,8 @@ struct brambles_pulse_t : public bear_attack_t
 struct growl_t: public bear_attack_t
 {
   growl_t( druid_t* player, const std::string& options_str ):
-    bear_attack_t( "growl", player, player -> find_class_spell( "Growl" ) )
+    bear_attack_t( "growl", player, player -> find_class_spell( "Growl" ), options_str )
   {
-    parse_options( options_str );
-
     ignore_false_positive = true;
     may_miss = may_parry = may_dodge = may_block = may_crit = false;
     use_off_gcd = true;
@@ -3283,10 +3279,8 @@ struct mangle_t : public bear_attack_t
   double bleeding_multiplier;
 
   mangle_t( druid_t* player, const std::string& options_str ) :
-    bear_attack_t( "mangle", player, player -> find_class_spell( "Mangle" ) )
+    bear_attack_t( "mangle", player, player -> find_class_spell( "Mangle" ), options_str )
   {
-    parse_options( options_str );
-
     bleeding_multiplier = data().effectN( 3 ).percent();
 
     if ( p() -> specialization() == DRUID_GUARDIAN )
@@ -3338,9 +3332,8 @@ struct mangle_t : public bear_attack_t
 struct maul_t : public bear_attack_t
 {
   maul_t( druid_t* player, const std::string& options_str ) :
-    bear_attack_t( "maul", player, player -> find_specialization_spell( "Maul" ) )
+    bear_attack_t( "maul", player, player -> find_specialization_spell( "Maul" ), options_str )
   {
-    parse_options( options_str );
     weapon = &( player -> main_hand_weapon );
 
     use_off_gcd = true;
@@ -3362,10 +3355,8 @@ struct maul_t : public bear_attack_t
 struct pulverize_t : public bear_attack_t
 {
   pulverize_t( druid_t* player, const std::string& options_str ) :
-    bear_attack_t( "pulverize", player, player -> talent.pulverize )
-  {
-    parse_options( options_str );
-  }
+    bear_attack_t( "pulverize", player, player -> talent.pulverize, options_str )
+  {}
 
   virtual void impact( action_state_t* s ) override
   {
@@ -3395,10 +3386,8 @@ struct pulverize_t : public bear_attack_t
 struct rage_of_the_sleeper_t : public bear_attack_t
 {
   rage_of_the_sleeper_t( druid_t* p, const std::string& options_str ) :
-    bear_attack_t( "rage_of_the_sleeper", p, &p -> artifact.rage_of_the_sleeper.data() )
+    bear_attack_t( "rage_of_the_sleeper", p, &p -> artifact.rage_of_the_sleeper.data(), options_str )
   {
-    parse_options( options_str );
-
     use_off_gcd = true;
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
   }
@@ -3429,9 +3418,8 @@ struct rage_of_the_sleeper_reflect_t : public bear_attack_t
 struct swipe_bear_t : public bear_attack_t
 {
   swipe_bear_t( druid_t* p, const std::string& options_str ) :
-    bear_attack_t( "swipe_bear", p, p -> find_spell( 213771 ) )
+    bear_attack_t( "swipe_bear", p, p -> find_spell( 213771 ), options_str )
   {
-    parse_options( options_str );
     aoe = -1;
     gore = true;
   }
@@ -3444,9 +3432,8 @@ struct thrash_bear_t : public bear_attack_t
   double blood_frenzy_amount;
 
   thrash_bear_t( druid_t* p, const std::string& options_str ) :
-    bear_attack_t( "thrash_bear", p, p -> find_spell( 77758 ) )
+    bear_attack_t( "thrash_bear", p, p -> find_spell( 77758 ), options_str )
   {
-    parse_options( options_str );
     aoe                    = -1;
     spell_power_mod.direct = 0;
 
@@ -4143,10 +4130,8 @@ struct bear_form_t : public druid_spell_t
 struct blessing_of_anshe_t : public druid_spell_t
 {
   blessing_of_anshe_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "blessing_of_anshe", player, player -> spec.blessing_of_anshe )
+    druid_spell_t( "blessing_of_anshe", player, player -> spec.blessing_of_anshe, options_str )
   {
-    parse_options( options_str );
-
     harmful = may_crit = false;
     ignore_false_positive = true;
   }
@@ -4175,10 +4160,8 @@ struct blessing_of_anshe_t : public druid_spell_t
 struct blessing_of_elune_t : public druid_spell_t
 {
   blessing_of_elune_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "blessing_of_elune", player, player -> spec.blessing_of_elune )
+    druid_spell_t( "blessing_of_elune", player, player -> spec.blessing_of_elune, options_str )
   {
-    parse_options( options_str );
-
     harmful = false;
     ignore_false_positive = true;
   }
@@ -4269,8 +4252,6 @@ struct celestial_alignment_t : public druid_spell_t
   celestial_alignment_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "celestial_alignment", player, player -> spec.celestial_alignment , options_str )
   {
-    parse_options( options_str );
-
     harmful = false;
     dot_duration = timespan_t::zero();
   }
@@ -4317,11 +4298,9 @@ struct fury_of_elune_t : public druid_spell_t
   fury_of_elune_tick_t* fury_of_elune;
 
   fury_of_elune_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "fury_of_elune", player, player -> talent.fury_of_elune ),
+    druid_spell_t( "fury_of_elune", player, player -> talent.fury_of_elune, options_str ),
     fury_of_elune( new fury_of_elune_tick_t( player ) )
   {
-    parse_options( options_str );
-
     ground_aoe = true;
     add_child( fury_of_elune );
 
@@ -4373,10 +4352,8 @@ struct fury_of_elune_t : public druid_spell_t
 struct fury_of_elune_move_t : public druid_spell_t
 {
   fury_of_elune_move_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "move_fury_of_elune", player, player -> find_spell( 211547 ) )
-  {
-    parse_options( options_str );
-  }
+    druid_spell_t( "move_fury_of_elune", player, player -> find_spell( 211547 ), options_str )
+  {}
 
   void execute() override
   {
@@ -4411,9 +4388,8 @@ struct fury_of_elune_move_t : public druid_spell_t
 struct dash_t : public druid_spell_t
 {
   dash_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "dash", player, player -> find_class_spell( "Dash" ) )
+    druid_spell_t( "dash", player, player -> find_class_spell( "Dash" ), options_str )
   {
-    parse_options( options_str );
     autoshift = form_mask = CAT_FORM;
 
     harmful = false;
@@ -4433,9 +4409,8 @@ struct dash_t : public druid_spell_t
 struct displacer_beast_t : public druid_spell_t
 {
   displacer_beast_t( druid_t* p, const std::string& options_str ) :
-    druid_spell_t( "displacer_beast", p, p -> talent.displacer_beast )
+    druid_spell_t( "displacer_beast", p, p -> talent.displacer_beast, options_str )
   {
-    parse_options( options_str );
     autoshift = form_mask = CAT_FORM;
 
     harmful = may_crit = may_miss = false;
@@ -4457,10 +4432,8 @@ struct displacer_beast_t : public druid_spell_t
 struct elunes_guidance_t : public druid_spell_t
 {
   elunes_guidance_t( druid_t* p, const std::string& options_str ) :
-    druid_spell_t( "elunes_guidance", p, p -> talent.elunes_guidance )
+    druid_spell_t( "elunes_guidance", p, p -> talent.elunes_guidance, options_str )
   {
-    parse_options( options_str );
-
     energize_type = ENERGIZE_ON_CAST;
     dot_duration = timespan_t::zero();
   }
@@ -4478,10 +4451,8 @@ struct elunes_guidance_t : public druid_spell_t
 struct full_moon_t : public druid_spell_t
 {
   full_moon_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "full_moon", player, player -> find_spell( 202771 ) )
+    druid_spell_t( "full_moon", player, player -> find_spell( 202771 ), options_str )
   {
-    parse_options( options_str );
-
     aoe = -1;
     split_aoe_damage = true; // Apr 16 2016: Splits AoE damage even though tooltip does not say so.
     cooldown = player -> cooldown.moon_cd;
@@ -4512,10 +4483,8 @@ struct full_moon_t : public druid_spell_t
 struct half_moon_t : public druid_spell_t
 {
   half_moon_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "half_moon", player, player -> find_spell( 202768 ) )
+    druid_spell_t( "half_moon", player, player -> find_spell( 202768 ), options_str )
   {
-    parse_options( options_str );
-
     cooldown = player -> cooldown.moon_cd;
   }
 
@@ -4551,11 +4520,8 @@ struct incarnation_t : public druid_spell_t
                    p -> specialization() == DRUID_FERAL       ? p -> talent.incarnation_cat     :
                    p -> specialization() == DRUID_GUARDIAN    ? p -> talent.incarnation_bear    :
                    p -> specialization() == DRUID_RESTORATION ? p -> talent.incarnation_tree    :
-                   spell_data_t::nil()
-                 )
+                   spell_data_t::nil(), options_str )
   {
-    parse_options( options_str );
-
     switch ( p -> specialization() )
     {
     case DRUID_BALANCE:
@@ -4679,10 +4645,8 @@ struct innervate_t : public druid_spell_t
   };
 
   innervate_t( druid_t* p, const std::string& options_str ) :
-    druid_spell_t( "innervate", p, p -> find_specialization_spell( "Innervate" ) )
-  {
-    parse_options( options_str );
-  }
+    druid_spell_t( "innervate", p, p -> find_specialization_spell( "Innervate" ), options_str )
+  {}
 
   void execute() override
   {
@@ -4701,10 +4665,8 @@ struct innervate_t : public druid_spell_t
 struct ironfur_t : public druid_spell_t
 {
   ironfur_t( druid_t* p, const std::string& options_str ) :
-    druid_spell_t( "ironfur", p, p -> spec.ironfur )
+    druid_spell_t( "ironfur", p, p -> spec.ironfur, options_str )
   {
-    parse_options( options_str );
-
     use_off_gcd = true;
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
   }
@@ -4751,11 +4713,9 @@ struct lunar_beam_t : public druid_spell_t
   int last_tick;
 
   lunar_beam_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "lunar_beam", player, player -> talent.lunar_beam ),
+    druid_spell_t( "lunar_beam", player, player -> talent.lunar_beam, options_str ),
     last_tick( 0 )
   {
-    parse_options( options_str );
-
     tick_spell = player -> find_spell( 204069 );
     heal       = new lunar_beam_heal_t( player, tick_spell );
     damage     = new lunar_beam_damage_t( player, tick_spell );
@@ -4800,10 +4760,9 @@ struct lunar_strike_t : public druid_spell_t
   timespan_t natures_balance;
 
   lunar_strike_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "lunar_strike", player, player -> find_specialization_spell( "Lunar Strike" ) )
+    druid_spell_t( "lunar_strike", player,
+      player -> find_specialization_spell( "Lunar Strike" ), options_str )
   {
-    parse_options( options_str );
-
     aoe = -1;
     base_aoe_multiplier = data().effectN( 3 ).percent();
 
@@ -4872,10 +4831,9 @@ struct lunar_strike_t : public druid_spell_t
 struct mark_of_ursol_t : public druid_spell_t
 {
   mark_of_ursol_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "mark_of_ursol", player, player -> find_specialization_spell( "Mark of Ursol" ) )
+    druid_spell_t( "mark_of_ursol", player,
+      player -> find_specialization_spell( "Mark of Ursol" ), options_str )
   {
-    parse_options( options_str );
-
     harmful = false;
     may_crit = may_miss = false;
   }
@@ -4902,10 +4860,8 @@ struct mark_of_ursol_t : public druid_spell_t
 struct new_moon_t : public druid_spell_t
 {
   new_moon_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "new_moon", player, player -> artifact.new_moon )
+    druid_spell_t( "new_moon", player, player -> artifact.new_moon, options_str )
   {
-    parse_options( options_str );
-
     cooldown = player -> cooldown.moon_cd;
     cooldown -> duration = data().charge_cooldown();
     cooldown -> charges  = data().charges();
@@ -4938,11 +4894,9 @@ struct sunfire_t : public druid_spell_t
   shooting_stars_t* shooting_stars;
 
   sunfire_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "sunfire", player, player -> find_specialization_spell( "Sunfire" ) ),
+    druid_spell_t( "sunfire", player, player -> find_specialization_spell( "Sunfire" ), options_str ),
     shooting_stars( new shooting_stars_t( player ) )
   {
-    parse_options( options_str );
-
     const spell_data_t* dmg_spell = player -> find_spell( 164815 );
 
     dot_duration           = dmg_spell -> duration();
@@ -4991,9 +4945,8 @@ struct sunfire_t : public druid_spell_t
 struct moonkin_form_t : public druid_spell_t
 {
   moonkin_form_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "moonkin_form", player, player -> spec.moonkin_form )
+    druid_spell_t( "moonkin_form", player, player -> spec.moonkin_form, options_str )
   {
-    parse_options( options_str );
     form_mask = NO_FORM | CAT_FORM | BEAR_FORM;
     may_autounshift = false;
 
@@ -5014,9 +4967,8 @@ struct moonkin_form_t : public druid_spell_t
 struct prowl_t : public druid_spell_t
 {
   prowl_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "prowl", player, player -> find_class_spell( "Prowl" ) )
+    druid_spell_t( "prowl", player, player -> find_class_spell( "Prowl" ), options_str )
   {
-    parse_options( options_str );
     autoshift = form_mask = CAT_FORM;
 
     trigger_gcd = timespan_t::zero();
@@ -5052,10 +5004,8 @@ struct prowl_t : public druid_spell_t
 struct skull_bash_t : public druid_spell_t
 {
   skull_bash_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "skull_bash", player, player -> find_specialization_spell( "Skull Bash" ) )
+    druid_spell_t( "skull_bash", player, player -> find_specialization_spell( "Skull Bash" ), options_str )
   {
-    parse_options( options_str );
-
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
     ignore_false_positive = true;
   }
@@ -5084,10 +5034,8 @@ struct solar_wrath_t : public druid_spell_t
   timespan_t natures_balance;
 
   solar_wrath_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "solar_wrath", player, player -> find_specialization_spell( "Solar Wrath" ) )
+    druid_spell_t( "solar_wrath", player, player -> find_specialization_spell( "Solar Wrath" ), options_str )
   {
-    parse_options( options_str );
-
     natures_balance    = timespan_t::from_seconds( player -> talent.natures_balance -> effectN( 2 ).base_value() );
 
     base_execute_time *= 1.0 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
@@ -5156,9 +5104,8 @@ struct solar_wrath_t : public druid_spell_t
 struct stampeding_roar_t : public druid_spell_t
 {
   stampeding_roar_t( druid_t* p, const std::string& options_str ) :
-    druid_spell_t( "stampeding_roar", p, p -> find_class_spell( "Stampeding Roar" ) )
+    druid_spell_t( "stampeding_roar", p, p -> find_class_spell( "Stampeding Roar" ), options_str )
   {
-    parse_options( options_str );
     form_mask = BEAR_FORM | CAT_FORM;
     autoshift = BEAR_FORM;
 
@@ -5277,10 +5224,8 @@ struct starfall_t : public druid_spell_t
   };
 
   starfall_t( druid_t* p, const std::string& options_str ):
-    druid_spell_t( "starfall", p, p -> find_spell( 191034 ) )
+    druid_spell_t( "starfall", p, p -> find_spell( 191034 ), options_str )
   {
-    parse_options( options_str );
-
     may_miss = may_crit = false;
     base_tick_time = data().duration() / 8.0; // ticks 9 times (missing from spell data)
     // TOCHECK: tick zero?
@@ -5397,11 +5342,9 @@ struct starsurge_t : public druid_spell_t
   goldrinns_fang_t* goldrinns_fang;
 
   starsurge_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "starsurge", player, player -> find_specialization_spell( "Starsurge" ) ),
+    druid_spell_t( "starsurge", player, player -> find_specialization_spell( "Starsurge" ), options_str ),
     starshards_chance( 0.0 )
   {
-    parse_options( options_str );
-
     crit_bonus_multiplier *= 1.0 + player -> artifact.scythe_of_the_stars.percent();
 
     if ( player -> starshards )
@@ -5482,10 +5425,8 @@ struct starsurge_t : public druid_spell_t
 struct stellar_flare_t : public druid_spell_t
 {
   stellar_flare_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "stellar_flare", player, player -> talent.stellar_flare )
-  {
-    parse_options( options_str );
-  }
+    druid_spell_t( "stellar_flare", player, player -> talent.stellar_flare, options_str )
+  {}
 
   // Dec 3 2015: Empowerments modifiers are multiplicative AND snapshot mastery.
   double composite_persistent_multiplier( const action_state_t* s ) const override
@@ -5559,10 +5500,8 @@ struct survival_instincts_t : public druid_spell_t
 struct typhoon_t : public druid_spell_t
 {
   typhoon_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "typhoon", player, player -> talent.typhoon )
+    druid_spell_t( "typhoon", player, player -> talent.typhoon, options_str )
   {
-    parse_options( options_str );
-
     ignore_false_positive = true;
   }
 };
@@ -5572,10 +5511,8 @@ struct typhoon_t : public druid_spell_t
 struct warrior_of_elune_t : public druid_spell_t
 {
   warrior_of_elune_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "warrior_of_elune", player, player -> talent.warrior_of_elune )
+    druid_spell_t( "warrior_of_elune", player, player -> talent.warrior_of_elune, options_str )
   {
-    parse_options( options_str );
-
     harmful = false;
   }
 
@@ -5602,11 +5539,9 @@ struct wild_charge_t : public druid_spell_t
   double movement_speed_increase;
 
   wild_charge_t( druid_t* p, const std::string& options_str ) :
-    druid_spell_t( "wild_charge", p, p -> talent.wild_charge ),
+    druid_spell_t( "wild_charge", p, p -> talent.wild_charge, options_str ),
     movement_speed_increase( 5.0 )
   {
-    parse_options( options_str );
-
     harmful = may_crit = may_miss = false;
     ignore_false_positive = true;
     range = data().max_range();
