@@ -750,10 +750,9 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
       }
 
       // TOCHECK: Does Sweeping Strikes grant MS/Execute 2 chances to proc Tactician?
-      if ( procs_tactician && rng().roll( p() -> spec.tactician -> effectN( 2 ).percent() ) )
+      if ( procs_tactician )
       {
-        p() -> cooldown.colossus_smash -> reset( true );
-        p() -> proc.tactician -> occur();
+        tactician( p() -> spec.tactician -> effectN( 2 ).percent() );
       }
 
       if ( p() -> buff.corrupted_blood_of_zakajz -> up() )
@@ -802,6 +801,15 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
         dmg *= 1.0 + p() -> spec.singleminded_fury -> effectN( 2 ).percent();
     }
     return dmg;
+  }
+
+  virtual void tactician( double chance )
+  {
+    if ( rng().roll( chance ) )
+    {
+      p() -> cooldown.colossus_smash -> reset( true );
+      p() -> proc.tactician -> occur();
+    }
   }
 };
 
@@ -1286,7 +1294,6 @@ struct cleave_t: public warrior_attack_t
     }
   };
 
-  int targets_hit;
   void_cleave_t* void_cleave;
   cleave_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "cleave", p, p -> spec.cleave )
@@ -1312,29 +1319,17 @@ struct cleave_t: public warrior_attack_t
 
   void execute() override
   {
-    targets_hit = 0;
-
     warrior_attack_t::execute();
 
-    if ( targets_hit )
+    if ( execute_state -> n_targets )
     {
-      p() -> buff.cleave -> trigger( 1, p() -> buff.cleave -> default_value * std::min( p() -> buff.cleave -> max_stack(), targets_hit ) );
+      p() -> buff.cleave -> trigger( 1, p() -> buff.cleave -> default_value * std::min( p() -> buff.cleave -> max_stack(), static_cast<int>( execute_state -> n_targets ) ) );
 
-      if ( targets_hit >= p() -> artifact.void_cleave.data().effectN( 1 ).base_value() )
+      if ( static_cast<int>( execute_state -> n_targets ) > p() -> artifact.void_cleave.data().effectN( 1 ).base_value() )
       {
         void_cleave -> target = target;
         void_cleave -> execute();
       }
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    warrior_attack_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      targets_hit++;
     }
   }
 };
@@ -1538,7 +1533,6 @@ struct execute_off_hand_t: public warrior_attack_t
     {
       weapon_multiplier *= 1.0 + p -> spec.singleminded_fury -> effectN( 3 ).percent();
     }
-    base_crit += p -> artifact.deathblow.percent();
     base_crit += p -> artifact.deathdealer.percent();
   }
 
@@ -1658,11 +1652,8 @@ struct execute_t: public warrior_attack_t
          p() -> off_hand_weapon.type != WEAPON_NONE ) // If MH fails to land, or if there is no OH weapon for Fury, oh attack does not execute.
       oh_attack -> execute();
 
-    if ( p() -> buff.shattered_defenses -> up() )
-      p() -> buff.shattered_defenses -> expire();
-
-    if ( p() -> buff.precise_strikes -> up() )
-      p() -> buff.precise_strikes -> expire();
+    p() -> buff.shattered_defenses -> expire();
+    p() -> buff.precise_strikes -> expire();
 
     p() -> buff.juggernaut -> trigger( 1 );
   }
@@ -1673,15 +1664,7 @@ struct execute_t: public warrior_attack_t
 
     if ( s -> result == RESULT_CRIT )
     {
-      if ( td( s -> target ) -> debuffs_colossus_smash -> check() )
-      {
-        td( s -> target ) -> debuffs_colossus_smash -> extend_duration( p(),
-                                                                        timespan_t::from_seconds( p() -> artifact.exploit_the_weakness.value() ) );
-      }
-      else
-      {
-        p() -> buff.massacre -> trigger();
-      }
+      p() -> buff.massacre -> trigger();
     }
   }
 
@@ -2039,7 +2022,7 @@ struct mortal_strike_t: public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
     base_costs[RESOURCE_RAGE] += p -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
     cooldown -> charges += p -> talents.mortal_combo -> effectN( 1 ).base_value();
-    base_multiplier *= 1.0 + p -> artifact.thoradins_might.percent();
+    weapon_multiplier *= 1.0 + p -> artifact.thoradins_might.percent();
     base_costs[RESOURCE_RAGE] *= 1.0 + p -> manacles_of_mannoroth_the_flayer -> driver() -> effectN( 1 ).percent();
     
     if ( p -> manacles_of_mannoroth_the_flayer )
@@ -2102,17 +2085,6 @@ struct mortal_strike_t: public warrior_attack_t
 
     p() -> buff.shattered_defenses -> expire();
     p() -> buff.precise_strikes -> expire();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    warrior_attack_t::impact( s );
-
-    if ( s -> result == RESULT_CRIT && td( s -> target ) -> debuffs_colossus_smash -> check() )
-    {
-      td( s -> target ) -> debuffs_colossus_smash -> extend_duration( p(),
-        timespan_t::from_seconds( p() -> artifact.exploit_the_weakness.value() ) );
-    }
   }
 
   double recharge_multiplier() const override
@@ -2730,7 +2702,7 @@ struct slam_t: public warrior_attack_t
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
     procs_tactician = true;
-    base_multiplier *= 1.0 + p -> artifact.crushing_blows.percent();
+    weapon_multiplier *= 1.0 + p -> artifact.crushing_blows.percent();
   }
 
   void assess_damage( dmg_e type, action_state_t* s ) override
@@ -2742,6 +2714,15 @@ struct slam_t: public warrior_attack_t
         p() -> active.trauma, // ignite spell
         s -> target, // target
         p() -> talents.trauma -> effectN( 1 ).percent() * s -> result_amount );
+    }
+  }
+
+  void tactician( double chance )
+  {
+    if ( rng().roll( chance + p() -> artifact.exploit_the_weakness.percent() ) )
+    {
+      p() -> cooldown.colossus_smash -> reset( true );
+      p() -> proc.tactician -> occur();
     }
   }
 
