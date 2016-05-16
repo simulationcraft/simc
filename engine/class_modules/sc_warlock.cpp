@@ -9,15 +9,12 @@
 //
 // TODO:
 // Add the Doomguard / Infernal as a pet
-// Check all false-positive flags
 // Check resource generation execute/impact and hit requirement
 // Report which spells triggered soul conduit
 // Affliction -
 // Haunt reset
 // Soul Effigy
 // Destruction - 
-// Roaring Blaze
-// Demo - Everything
 // check wild imp implementation: make sure imps are dying when they are supposed to.
 // finish demonic empowerment - needs doomguard / infernal pet implementation only
 // DEMO TALENTS: (all)
@@ -2992,7 +2989,6 @@ struct call_dreadstalkers_t : public warlock_spell_t
     warlock_spell_t( "Call_Dreadstalkers", p, p -> find_spell( 104316 ) )
     {
       harmful = false;
-      ignore_false_positive = true;
       may_crit = false;
       dreadstalker_duration = p -> find_spell( 193332 ) -> duration();
     }
@@ -3078,8 +3074,6 @@ struct cataclysm_t : public warlock_spell_t
     immolate( new immolate_t( p ) )
   {
     aoe = -1;
-
-    ignore_false_positive = true;
 
     immolate -> background = true;
     immolate -> dual = true;
@@ -3175,7 +3169,6 @@ struct phantom_singularity_t : public warlock_spell_t
   phantom_singularity_t( warlock_t* p ):
     warlock_spell_t( "phantom_singularity", p, p -> talents.phantom_singularity )
   {
-    ignore_false_positive = true;
     hasted_ticks = callbacks = false; // FIXME check for hasted ticks.
 
     phantom_singularity = new phantom_singularity_tick_t( p );
@@ -3195,8 +3188,8 @@ struct mana_tap_t : public warlock_spell_t
   mana_tap_t( warlock_t* p ) :
     warlock_spell_t( "mana_tap", p, p -> talents.mana_tap )
   {
-    harmful = false;
     ignore_false_positive = true;
+    harmful = false;
     may_crit = false;
     dot_duration = timespan_t::zero();
     resource_current = RESOURCE_MANA;
@@ -3997,36 +3990,47 @@ void warlock_t::apl_precombat()
   std::string& precombat_list =
     get_action_priority_list( "precombat" )->action_list_str;
 
-  if ( sim-> allow_flasks )
-  {
-    // Flask
-    if ( true_level == 100 )
-      precombat_list = "flask,type=greater_draenic_intellect_flask";
-    else if ( true_level >= 85 )
-      precombat_list = "flask,type=warm_sun";
-  }
+  //if ( sim -> allow_flasks )
+  //{
+  //  // Flask
+  //  if ( true_level == 110 )
+  //    precombat_list = "flask,type=whispered_pact";
+  //  else if ( true_level >= 100 )
+  //    precombat_list = "flask,type=greater_draenic_intellect_flask";
+  //}
 
-  if ( sim -> allow_food )
-  {
-    // Food
-    if ( level() == 100 && specialization() == WARLOCK_DESTRUCTION )
-      precombat_list += "/food,type=pickled_eel";
-    else if ( level() == 100 && specialization() == WARLOCK_DEMONOLOGY)
-      precombat_list += "/food,type=sleeper_sushi";
-    else if ( level() == 100 && specialization() == WARLOCK_AFFLICTION )
-      precombat_list += "/food,type=felmouth_frenzy";
-    else if ( level() >= 85 )
-      precombat_list += "/food,type=mogu_fish_stew";
-  }
+  //if ( sim -> allow_food )
+  //{
+  //  // Food
+  //  if ( true_level == 110 )
+  //    precombat_list += "/food,type=azshari_salad";
+  //  else if ( true_level >= 100 && specialization() == WARLOCK_DESTRUCTION )
+  //    precombat_list += "/food,type=pickled_eel";
+  //  else if ( true_level >= 100 && specialization() == WARLOCK_DEMONOLOGY)
+  //    precombat_list += "/food,type=sleeper_sushi";
+  //  else if ( true_level >= 100 && specialization() == WARLOCK_AFFLICTION )
+  //    precombat_list += "/food,type=felmouth_frenzy";
+  //}
 
-  if ( sim -> allow_potions )
-  {
-    // Pre-potion
-  if ( true_level == 100 )
-    precombat_list += "/potion,name=draenic_intellect";
-  else if ( true_level >= 85 )
-    precombat_list += "/potion,name=jade_serpent";
-  }
+  precombat_list += "/summon_pet,if=!talent.grimoire_of_supremacy.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.demonic_power.down)";
+  precombat_list += "/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&active_enemies<3";
+  precombat_list += "/summon_infernal,if=talent.grimoire_of_supremacy.enabled&active_enemies>=3";
+  precombat_list += "/snapshot_stats";
+
+  if ( specialization() != WARLOCK_DEMONOLOGY )
+    precombat_list += "/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled";
+
+  //if ( sim -> allow_potions )
+  //{
+  //  // Pre-potion
+  //  if ( true_level == 110 )
+  //    precombat_list += "/potion,name=deadly_grace";
+  //  else if ( true_level >= 100 )
+  //    precombat_list += "/potion,name=draenic_intellect";
+  //}
+
+  if ( specialization() == WARLOCK_DESTRUCTION )
+    precombat_list += "/incinerate";
 
   action_list_str += init_use_profession_actions();
 
@@ -4063,6 +4067,35 @@ void warlock_t::apl_destruction()
 {
   // action_priority_list_t* single_target       = get_action_priority_list( "single_target" );
   // action_priority_list_t* aoe                 = get_action_priority_list( "aoe" );
+
+  action_list_str += "/service_pet,if=active_enemies<3";
+  action_list_str += "/service_voidwalker,if=active_enemies>=3";
+  add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3" );
+  add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
+
+  // artifact check
+  add_action( "Dimensional Rift", "if=charges=3" );
+
+  add_action( "Immolate", "if=remains<=tick_time" );
+  add_action( "Immolate", "if=talent.roaring_blaze.enabled&remains<duration&action.conflagrate.charges>=1&action.conflagrate.recharge_time<cast_time+gcd" );
+  add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&charges=2" );
+  add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&prev_gcd.conflagrate" );
+  add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time" );
+  add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5" );
+  action_list_str += "/channel_demonfire,if=dot.immolate.remains>cast_time";
+  action_list_str += "/soul_harvest,if=talent.soul_conduit.enabled&soul_shard=0";
+  add_action( "Chaos Bolt", "if=soul_shard>3" );
+
+  // artifact check
+  add_action( "Dimensional Rift" );
+
+  action_list_str += "/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&target.time_to_die>buff.mana_tap.duration*0.3";
+  add_action( "Chaos Bolt" );
+  action_list_str += "/soul_harvest,if=soul_shard==0";
+  action_list_str += "/cataclysm";
+  add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled" );
+  add_action( "Immolate", "if=!talent.roaring_blaze.enabled&remains<=duration*0.3" );
+  add_action( "Incinerate" );
 }
 
 void warlock_t::init_action_list()
