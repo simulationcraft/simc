@@ -209,7 +209,6 @@ public:
   {
     // Arcane
     buff_t* arcane_charge,
-          * arcane_familiar, // Helper buff to track arcane familiar mana buff
           * arcane_missiles,
           * arcane_power,
           * presence_of_mind,
@@ -284,7 +283,6 @@ public:
     pet_t** temporal_heroes;
 
     pet_t* arcane_familiar;
-
   } pets;
 
   // Procs
@@ -316,6 +314,7 @@ public:
     //       It contains Spellsteal's mana cost reduction, Evocation's mana
     //       gain reduction, and a deprecated Scorch damage reduction.
                       * arcane_charge_passive,
+                      * arcane_familiar,
                       * mage_armor,
                       * savant;
 
@@ -727,7 +726,6 @@ struct arcane_familiar_pet_t : public pet_t
     mage_t* m = debug_cast<mage_t*>( owner );
     pet_t::arise();
 
-    m -> buffs.arcane_familiar -> trigger();
     m -> recalculate_resource_max( RESOURCE_MANA );
   }
 
@@ -736,7 +734,6 @@ struct arcane_familiar_pet_t : public pet_t
     mage_t* m = debug_cast<mage_t*>( owner );
 
     pet_t::demise();
-    m -> buffs.arcane_familiar -> expire();
     m -> recalculate_resource_max( RESOURCE_MANA );
 
   }
@@ -4707,16 +4704,18 @@ struct summon_water_elemental_t : public frost_mage_spell_t
   }
 };
 
-// Summon Arcane Familiar Spell ===================================================
+// Summon Arcane Familiar Spell ===============================================
 
 struct summon_arcane_familiar_t : public arcane_mage_spell_t
 {
   summon_arcane_familiar_t( mage_t* p, const std::string& options_str ) :
-    arcane_mage_spell_t( "summon_arcane_familiar", p, p -> talents.arcane_familiar )
+    arcane_mage_spell_t( "summon_arcane_familiar", p,
+                         p -> talents.arcane_familiar )
   {
     parse_options( options_str );
     harmful = false;
     ignore_false_positive = true;
+    may_proc_missiles = false;
     trigger_gcd = timespan_t::zero();
   }
 
@@ -4725,22 +4724,22 @@ struct summon_arcane_familiar_t : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     p() -> pets.arcane_familiar -> summon();
-
   }
 
   virtual bool ready() override
   {
-    if ( !arcane_mage_spell_t::ready() || !p() -> talents.arcane_familiar -> ok() )
+    if ( !arcane_mage_spell_t::ready() )
     {
       return false;
     }
 
     return !p() -> pets.arcane_familiar ||
-             p() -> pets.arcane_familiar -> is_sleeping();
+           p() -> pets.arcane_familiar -> is_sleeping();
   }
 };
 
-// Time Warp Spell ================================================================
+
+// Time Warp Spell ============================================================
 
 struct time_warp_t : public mage_spell_t
 {
@@ -5592,8 +5591,8 @@ void mage_t::create_pets()
     }
   }
 
-  if ( specialization() == MAGE_ARCANE && talents.arcane_familiar -> ok()
-                        && find_action( "summon_arcane_familiar" ) )
+  if ( talents.arcane_familiar -> ok() &&
+       find_action( "summon_arcane_familiar" ) )
   {
     pets.arcane_familiar = new pets::arcane_familiar_pet_t( sim, this );
 
@@ -5713,6 +5712,10 @@ void mage_t::init_spells()
   // Spec Spells
   spec.arcane_charge         = find_spell( 36032 );
   spec.arcane_charge_passive = find_spell( 114664 );
+  if ( talents.arcane_familiar -> ok() )
+  {
+    spec.arcane_familiar    = find_spell( 210126 );
+  }
   spec.mage_armor            = find_specialization_spell( "Mage Armor" );
 
   spec.critical_mass         = find_specialization_spell( "Critical Mass"    );
@@ -5893,7 +5896,6 @@ void mage_t::create_buffs()
                                   .chance( 1.0 );
 
   // Talents
-  buffs.arcane_familiar       = buff_creator_t( this, "arcane_familiar_buff", find_spell( 205022 ) );
   buffs.ice_floes             = buff_creator_t( this, "ice_floes", talents.ice_floes );
   buffs.incanters_flow        = new incanters_flow_t( this );
   buffs.rune_of_power         = buff_creator_t( this, "rune_of_power", find_spell( 116014 ) )
@@ -6731,39 +6733,46 @@ void mage_t::invalidate_cache( cache_e c )
 
 void mage_t::recalculate_resource_max( resource_e rt )
 {
-  double current_mana, current_mana_max, mana_percent;
-  bool savant_adjust_mana = rt == RESOURCE_MANA && spec.savant -> ok();
-  if ( savant_adjust_mana )
+  if ( rt != RESOURCE_MANA )
   {
-    current_mana = resources.current[ rt ];
-    current_mana_max = resources.max[ rt ];
-    mana_percent = current_mana / current_mana_max;
-
+    return player_t::recalculate_resource_max( rt );
   }
+
+  double current_mana = resources.current[ rt ],
+         current_mana_max = resources.max[ rt ],
+         mana_percent = current_mana / current_mana_max;
 
   player_t::recalculate_resource_max( rt );
 
-  if ( savant_adjust_mana )
+  if ( spec.savant -> ok() )
   {
-    resources.max[ rt ] *= 1.0 + cache.mastery_value() * spec.savant -> effectN( 1 ).sp_coeff();
+    resources.max[ rt ] *= 1.0 +
+      cache.mastery_value() * spec.savant -> effectN( 1 ).sp_coeff();
     resources.current[ rt ] = resources.max[ rt ] * mana_percent;
     if ( sim -> debug )
     {
       sim -> out_debug.printf(
-        "%s mana adjusted from %.0f/%.0f to %.0f/%.0f due to Savant",
+        "%s Savant adjusts mana from %.0f/%.0f to %.0f/%.0f",
         name(), current_mana, current_mana_max,
         resources.current[ rt ], resources.max[ rt ]);
     }
+
+    current_mana = resources.current[ rt ];
+    current_mana_max = resources.max[ rt ];
   }
 
-  if ( talents.arcane_familiar && buffs.arcane_familiar -> check() )
+  if ( pets.arcane_familiar && !pets.arcane_familiar -> is_sleeping() )
   {
-    // TODO: Fix this so it is caching the correct 10% value without using a find_spell call, and not needing hardcode.
-    resources.max[ rt ] *= 1.0 + ( buffs.arcane_familiar -> data().effectN( 1 ).percent() * 10 );
-    sim -> out_debug.printf(
-        "%s mana adjusted from %.0f/%.0f to %.0f/%.0f due to Arcane Familiar",
-        name(), resources.current[ rt ],  resources.max[ rt ],
-        resources.current[ rt ], resources.max[ rt ]);
+    resources.max[ rt ] *= 1.0 +
+      spec.arcane_familiar -> effectN( 1 ).percent();
+    resources.current[ rt ] = resources.max[ rt ] * mana_percent;
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf(
+          "%s Arcane Familiar adjusts mana from %.0f/%.0f to %.0f/%.0f",
+          name(), current_mana, current_mana_max,
+          resources.current[ rt ], resources.max[ rt ]);
+    }
   }
 }
 
