@@ -3,19 +3,20 @@ level=100
 race=blood_elf
 role=attack
 position=ranged_back
-talents=3010313
-artifact=http://beta.wowdb.com/artifact-calculator#OJJZbbbbJAAAAAAAAAA
+talents=3213321
+artifact=http://beta.wowdb.com/artifact-calculator#OJJZbbbbJIAAAAAAAAAA
 spec=marksmanship
+
+actions.precombat+=/summon_pet
 
 actions=auto_shot
 actions+=/trueshot
-actions+=/marked_shot,if=(talent.patient_sniper.enabled&debuff.deadeye.down)|(!talent.patient_sniper.enabled&(debuff.vulnerable.remains<3|debuff.vulnerable.stack<3|spell_targets.marked_shot>5))
 actions+=/barrage
-actions+=/explosive_shot
-actions+=/a_murder_of_crows
-actions+=/aimed_shot,if=debuff.deadeye.up|focus>80
-actions+=/multi_shot,if=spell_targets.multi_shot>=3
+actions+=/windburst,if=focus>50&!buff.deadeye.up
+actions+=/marked_shot
+actions+=/aimed_shot,if=focus>80
 actions+=/arcane_shot
+actions+=/sidewinders,if=buff.marking_targets.up&!buff.deadeye.up&focus>30
 
 head=hood_of_the_savage_hunt,id=124296,bonus_id=567,upgrade=2
 neck=chain_of_lidless_eyes,id=124209,bonus_id=567,upgrade=2,enchant_id=5319
