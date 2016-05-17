@@ -2728,28 +2728,26 @@ struct blizzard_shard_t : public frost_mage_spell_t
 
 struct blizzard_t : public frost_mage_spell_t
 {
-  blizzard_shard_t* shard;
-
   blizzard_t( mage_t* p, const std::string& options_str ) :
-    frost_mage_spell_t( "blizzard", p, p -> find_spell( 190356 ) ),
-    shard( new blizzard_shard_t( p ) )
+    frost_mage_spell_t( "blizzard", p, p -> find_spell( 190356 ) )
   {
     parse_options( options_str );
-    dot_duration = data().duration();
-    base_tick_time = timespan_t::from_seconds( data().cooldown() / data().duration() );
-    hasted_ticks = true;
     may_miss     = false;
     ignore_false_positive = true;
+
+    snapshot_flags = STATE_HASTE;
+    dot_duration = data().duration();
+    base_tick_time = timespan_t::from_seconds( 1.0 );
+    hasted_ticks = true;
     cooldown -> hasted = true;
 
-    add_child( shard );
+    tick_action = new blizzard_shard_t( p );
   }
 
-  void tick( dot_t* d ) override
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    frost_mage_spell_t::tick( d );
-
-    shard -> execute();
+    timespan_t duration = frost_mage_spell_t::composite_dot_duration( s );
+    return duration * ( tick_time( s -> haste ) / base_tick_time );
   }
 };
 
@@ -3878,8 +3876,6 @@ struct inferno_blast_t : public fire_mage_spell_t
 
 
 // Living Bomb Spell ========================================================
-// TODO: Snapshot duration and fixed tick number
-// TODO: Dynamic CD adjustment
 
 struct living_bomb_explosion_t;
 struct living_bomb_t;
@@ -3949,6 +3945,7 @@ living_bomb_t::living_bomb_t( mage_t* p, const std::string& options_str,
 {
   parse_options( options_str );
 
+  snapshot_flags = STATE_HASTE;
   cooldown -> hasted = true;
   hasted_ticks       = true;
 }
