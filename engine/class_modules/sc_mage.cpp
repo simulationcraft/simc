@@ -5716,14 +5716,11 @@ void mage_t::init_spells()
   {
     spec.arcane_familiar    = find_spell( 210126 );
   }
-  spec.mage_armor            = find_specialization_spell( "Mage Armor" );
 
   spec.critical_mass         = find_specialization_spell( "Critical Mass"    );
-  spec.molten_armor          = find_specialization_spell( "Molten Armor" );
 
   spec.brain_freeze          = find_specialization_spell( "Brain Freeze"     );
   spec.fingers_of_frost      = find_spell( 112965 );
-  spec.frost_armor           = find_specialization_spell( "Frost Armor" );
   spec.shatter               = find_specialization_spell( "Shatter"          );
 
   // Mastery
@@ -6877,11 +6874,10 @@ double mage_t::composite_spell_haste() const
     h *= iv_haste;
   }
 
-  // TODO: Frost Armor
-  // if ( buffs.frost_armor -> check() )
-  // {
-  //   h /= 1.0 + buffs.frost_armor -> data().effectN( 1 ).percent();
-  // }
+  if ( buffs.frost_armor -> check() )
+  {
+    h /= 1.0 + buffs.frost_armor -> data().effectN( 1 ).percent();
+  }
 
   if ( buffs.icarus_uprising -> check() )
   {
@@ -6982,12 +6978,21 @@ void mage_t::arise()
   if ( talents.incanters_flow -> ok() )
     buffs.incanters_flow -> trigger();
 
-  if ( spec.molten_armor -> ok() )
-    buffs.molten_armor -> trigger();
-  else if ( spec.frost_armor -> ok() )
-    buffs.frost_armor -> trigger();
-  else if ( spec.mage_armor -> ok() )
-    buffs.mage_armor -> trigger();
+  switch ( specialization() )
+  {
+    case MAGE_ARCANE:
+      buffs.mage_armor -> trigger();
+      break;
+    case MAGE_FROST:
+      buffs.frost_armor -> trigger();
+      break;
+    case MAGE_FIRE:
+      buffs.molten_armor -> trigger();
+      break;
+    default:
+      apl_default(); // DEFAULT
+      break;
+  }
 
   if ( spec.ignite -> ok()  )
   {
