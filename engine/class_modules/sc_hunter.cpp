@@ -227,7 +227,7 @@ public:
     const spell_data_t* way_of_the_cobra;
     const spell_data_t* dire_stable;
     
-    const spell_data_t* black_arrow;
+    const spell_data_t* lone_wolf;
     const spell_data_t* steady_focus;
     const spell_data_t* true_aim;
 
@@ -236,15 +236,11 @@ public:
     const spell_data_t* way_of_moknathal;
 
     // tier 2
-    const spell_data_t* posthaste;
-    const spell_data_t* farstrider;
-    const spell_data_t* dash;
-
-    // tier 3
     const spell_data_t* stomp;
     const spell_data_t* exotic_munitions;
     const spell_data_t* chimaera_shot;
 
+    const spell_data_t* black_arrow;
     const spell_data_t* explosive_shot;
     const spell_data_t* trick_shot;
 
@@ -252,17 +248,12 @@ public:
     const spell_data_t* steel_trap;
     const spell_data_t* improved_traps;
 
-    // tier 4
-    const spell_data_t* binding_shot;
-    const spell_data_t* wyvern_sting;
-    const spell_data_t* intimidation;
-
-    const spell_data_t* camouflage;
-
-    const spell_data_t* sticky_bomb;
-    const spell_data_t* rangers_net;
+    // tier 3
+    const spell_data_t* posthaste;
+    const spell_data_t* farstrider;
+    const spell_data_t* dash;
     
-    // tier 5
+    // tier 4
     const spell_data_t* big_game_hunter;
     const spell_data_t* bestial_fury;
     const spell_data_t* blink_strikes;
@@ -273,6 +264,16 @@ public:
 
     const spell_data_t* dragonsfire_grenade;
     const spell_data_t* snake_hunter;
+
+    // tier 5
+    const spell_data_t* binding_shot;
+    const spell_data_t* wyvern_sting;
+    const spell_data_t* intimidation;
+
+    const spell_data_t* camouflage;
+
+    const spell_data_t* sticky_bomb;
+    const spell_data_t* rangers_net;
 
     // tier 6
     const spell_data_t* a_murder_of_crows;
@@ -288,7 +289,7 @@ public:
     const spell_data_t* killer_cobra;
     const spell_data_t* aspect_of_the_beast;
 
-    const spell_data_t* dark_ranger;
+    const spell_data_t* sidewinders;
     const spell_data_t* head_shot;
     const spell_data_t* lock_and_load;
 
@@ -2172,7 +2173,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
     
     if ( result_is_hit( execute_state -> result ) )
     {
-      // Hunter's Mark applies on cast to all affected targets or none based on RPPM (6*haste).
+      // Hunter's Mark applies on cast to all affected targets or none based on RPPM (8*haste).
       // This loop goes through the target list for multi-shot and applies the debuffs on proc.
       // Multi-shot also grants 2 focus per target hit on cast.
       if ( p() -> specialization() == HUNTER_MARKSMANSHIP )
@@ -2689,6 +2690,14 @@ struct arcane_shot_t: public hunter_ranged_attack_t
 
     return m;
   }
+
+  virtual bool ready() override
+  {
+    if( p() -> talents.sidewinders->ok() )
+      return false;
+
+    return hunter_ranged_attack_t::ready();
+  }
 };
 
 // Marked Shot Attack =================================================================
@@ -2874,6 +2883,45 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::impact( s );
 
     explosive_activate -> execute();
+  }
+};
+
+// Sidewinders =======================================================================
+
+struct sidewinders_t: hunter_ranged_attack_t
+{
+  sidewinders_t( hunter_t* p, const std::string& options_str ):
+    hunter_ranged_attack_t( "sidewinders", p, p -> find_talent_spell( "Sidewinders" ) )
+  {
+    parse_options( options_str );
+
+    aoe                       = -1;
+    cooldown -> hasted        = true;
+    weapon                    = &p -> main_hand_weapon;
+    attack_power_mod.direct   = p -> find_spell( 214581 ) -> effectN( 1 ).ap_coeff();
+    weapon_multiplier         = 0;
+  }
+
+  virtual void execute() override
+  {
+    hunter_ranged_attack_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      // Hunter's Mark applies on cast to all affected targets or none based on RPPM (8*haste).
+      // This loop goes through the target list for multi-shot and applies the debuffs on proc.
+      if ( p() -> buffs.trueshot -> up() || p() -> ppm_hunters_mark -> trigger() )
+      {
+        std::vector<player_t*> sidewinder_targets = execute_state -> action -> target_list();
+        for ( size_t i = 0; i < sidewinder_targets.size(); i++ )
+          td( sidewinder_targets[i] ) -> debuffs.hunters_mark -> trigger();
+
+        p() -> procs.hunters_mark -> occur();
+        p() -> buffs.hunters_mark_exists -> trigger();
+      }
+
+      trigger_steady_focus( false );
+    }
   }
 };
 
@@ -3550,6 +3598,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "marked_shot"           ) return new            marked_shot_t( this, options_str );
   if ( name == "multishot"             ) return new             multi_shot_t( this, options_str );
   if ( name == "multi_shot"            ) return new             multi_shot_t( this, options_str );
+  if ( name == "sidewinders"           ) return new            sidewinders_t( this, options_str );
   if ( name == "stampede"              ) return new               stampede_t( this, options_str );
   if ( name == "steady_shot"           ) return new          raptor_strike_t( this, options_str );
   if ( name == "summon_pet"            ) return new             summon_pet_t( this, options_str );
@@ -3693,7 +3742,7 @@ void hunter_t::init_spells()
   talents.killer_cobra                      = find_talent_spell( "Killer Cobra" );
   talents.aspect_of_the_beast               = find_talent_spell( "Aspect of the Beast" );
 
-  talents.dark_ranger                       = find_talent_spell( "Dark Ranger" );
+  talents.sidewinders                       = find_talent_spell( "Sidewinders" );
   talents.head_shot                         = find_talent_spell( "Head Shot" );
   talents.lock_and_load                     = find_talent_spell( "Lock and Load" );
 
