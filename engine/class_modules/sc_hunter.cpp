@@ -625,6 +625,19 @@ public:
       p() -> buffs.bullseye -> trigger();
   }
 
+  virtual timespan_t gcd() const override
+  {
+    timespan_t g = action_t::gcd();
+    timespan_t m = action_t::min_gcd;
+
+    if ( g == timespan_t::zero() )
+      return timespan_t::zero();
+
+    g *= p() -> cache.attack_haste();
+
+    return g < m ? m : g;
+  }
+
   virtual double cast_regen() const
   {
     double cast_seconds = ab::execute_time().total_seconds();
@@ -3071,7 +3084,7 @@ public:
       return timespan_t::zero();
 
     // Hunter gcd unaffected by haste
-    return trigger_gcd;
+    return hunter_action_t::gcd();
   }
 
   virtual void execute() override
