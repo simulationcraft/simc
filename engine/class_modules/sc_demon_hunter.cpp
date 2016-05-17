@@ -31,7 +31,6 @@ namespace
    Fury of the Illidari distance targeting support
    Overwhelming Power artifact trait
    Defensive artifact traits
-   Fix Demonic Appetite
 
    Vengeance ----------------------------------------------------------------
    Infernal Strike
@@ -131,6 +130,7 @@ public:
   // Soul Fragments
   unsigned next_fragment_spawn; // determines whether the next fragment spawn on the left or right
   auto_dispose<std::vector<soul_fragment_t*>> soul_fragments;
+  event_t* soul_fragment_pick_up;
 
   std::vector<cooldown_t*> sigil_cooldowns; // For Defiler's Lost Vambraces legendary
 
@@ -145,11 +145,11 @@ public:
     buff_t* blur;
     buff_t* chaos_blades;
     buff_t* death_sweep;
+    buff_t* jump_cancel;
     buff_t* momentum;
     buff_t* nemesis;
     buff_t* prepared;
     buff_t* rage_of_the_illidari;
-    buff_t* vengeful_retreat_jump_cancel;
 
     // Vengeance
     buff_t* defensive_spikes;
@@ -408,7 +408,7 @@ public:
   struct
   {
     // General
-    heal_t*   consume_soul;
+    heal_t*   consume_soul_greater;
     heal_t*   consume_soul_lesser;
 
     // Havoc
@@ -520,7 +520,6 @@ public:
   bool     consume_soul_fragments( soul_fragment_e = SOUL_FRAGMENT_ALL );
   unsigned get_active_soul_fragments( soul_fragment_e = SOUL_FRAGMENT_ALL );
   unsigned get_total_soul_fragments( soul_fragment_e = SOUL_FRAGMENT_ALL );
-  void     remove_soul_fragment( soul_fragment_t* );
   void     spawn_soul_fragment( soul_fragment_e, unsigned = 1 );
 
 private:
@@ -583,7 +582,7 @@ struct soul_fragment_t
           frag -> dh -> get_total_soul_fragments( frag -> type ) );
       }
       
-      frag -> dh -> remove_soul_fragment( frag );
+      frag -> remove();
     }
   };
 
@@ -627,13 +626,11 @@ struct soul_fragment_t
   double x, y;
   event_t* activate;
   event_t* expiration;
-  soul_fragment_e type;
-  bool initialized;
+  const soul_fragment_e type;
 
-  soul_fragment_t( demon_hunter_t* p, soul_fragment_e t )
+  soul_fragment_t( demon_hunter_t* p, soul_fragment_e t ) :
+    dh( p ), type( t )
   {
-    dh = p;
-    type = t;
     activate = expiration = nullptr;
 
     schedule_activate();
@@ -650,6 +647,32 @@ struct soul_fragment_t
 
   bool active() const
   { return expiration != nullptr; }
+
+  void remove() const
+  {
+    std::vector<soul_fragment_t*>::iterator it =
+      std::find( dh -> soul_fragments.begin(), dh -> soul_fragments.end(), this );
+
+    assert( it != dh -> soul_fragments.end() );
+
+    dh -> soul_fragments.erase( it );
+    delete this;
+  }
+
+  timespan_t remains() const
+  {
+    if ( expiration )
+    {
+      return expiration -> remains();
+    }
+    else
+    {
+      return dh -> spec.soul_fragment -> duration();
+    }
+  }
+
+  bool is_type( soul_fragment_e t ) const
+  { return t == SOUL_FRAGMENT_ALL || type == t; }
 
   void set_position()
   {
@@ -680,18 +703,27 @@ struct soul_fragment_t
     activate = new ( *dh -> sim ) fragment_activate_t( this );
   }
   
-  void consume()
+  void consume( bool instant = false )
   {
     assert( active() );
 
-    // FIXME: There's probably a more elegant travel time solution than this.
-    action_t* a = type ==
-      SOUL_FRAGMENT_GREATER ? dh -> active.consume_soul : dh -> active.consume_soul_lesser;
-    timespan_t delay =
-      timespan_t::from_seconds( get_distance( dh ) / dh -> spec.consume_soul -> missile_speed() );
-    new ( *dh -> sim ) delayed_execute_event_t( dh, a, dh, delay );
+    action_t* a = type == SOUL_FRAGMENT_GREATER ?
+      dh -> active.consume_soul_greater : dh -> active.consume_soul_lesser;
 
-    dh -> remove_soul_fragment( this );
+    if ( instant )
+    {
+      a -> schedule_execute();
+    }
+    else
+    {
+      // FIXME: There's probably a more elegant travel time solution than this.
+      double velocity = dh -> spec.consume_soul -> missile_speed();
+      timespan_t delay = timespan_t::from_seconds( get_distance( dh ) / velocity );
+
+      new ( *dh -> sim ) delayed_execute_event_t( dh, a, dh, delay );
+    }
+
+    remove();
   }
 };
 
@@ -972,11 +1004,11 @@ public:
 
   virtual bool usable_moving() const override
   {
-    if ( ab::execute_time() > timespan_t::zero() )
+    if ( ab::execute_time() > timespan_t::zero() &&
+      ( p() -> buff.jump_cancel -> up() || p() -> soul_fragment_pick_up ) )
+    {
       return false;
-
-    if ( p() -> buff.vengeful_retreat_jump_cancel -> check() )
-      return true;
+    }
 
     return ab::usable_moving();
   }
@@ -1636,7 +1668,12 @@ struct fel_rush_t : public demon_hunter_spell_t
 
     p() -> buff.momentum -> trigger();
 
-    if ( ! jump_cancel )
+    if ( jump_cancel )
+    {
+      // Prevents use of casted/channeled actions.
+      p() -> buff.jump_cancel -> trigger();
+    }
+    else
     {
       // Buff to track the rush's movement. This lets us delay autoattacks.
       p() -> buffs.self_movement -> trigger( 1, 0, -1.0, data().gcd() );
@@ -2042,6 +2079,207 @@ struct nemesis_t : public demon_hunter_spell_t
   }
 };
 
+// Pick up Soul Fragment ====================================================
+
+struct pick_up_fragment_t : public demon_hunter_spell_t
+{
+  struct pick_up_event_t : public event_t
+  {
+    demon_hunter_t* dh;
+    soul_fragment_t* frag;
+    expr_t* expr;
+
+    pick_up_event_t( soul_fragment_t* f, timespan_t time, expr_t* e ) :
+      event_t( *f -> dh ), dh( f -> dh ), frag( f ), expr( e )
+    {
+      add_event( time );
+    }
+
+    const char* name() const override
+    { return "Soul Fragment pick up"; }
+
+    void execute() override
+    {
+      // Evaluate if_expr to make sure the actor still wants to consume.
+      if ( frag && expr -> eval() )
+      {
+        frag -> consume( true );
+      }
+
+      dh -> soul_fragment_pick_up = nullptr;
+    }
+  };
+
+  std::vector<soul_fragment_t*>::iterator it;
+  enum soul_fragment_select_e
+  {
+    SOUL_FRAGMENT_SELECT_NEAREST,
+    SOUL_FRAGMENT_SELECT_NEWEST,
+    SOUL_FRAGMENT_SELECT_OLDEST,
+  };
+  soul_fragment_select_e select_mode;
+  soul_fragment_e type;
+
+  pick_up_fragment_t( demon_hunter_t* p, const std::string& options_str ) :
+    demon_hunter_spell_t( "pick_up_fragment", p, spell_data_t::nil() ),
+    type( SOUL_FRAGMENT_ALL ), select_mode( SOUL_FRAGMENT_SELECT_OLDEST )
+  {
+    std::string type_str, mode_str;
+    add_option( opt_string( "type", type_str ) );
+    add_option( opt_string( "mode", mode_str ) );
+    parse_mode( mode_str );
+    parse_type( mode_str );
+    parse_options( options_str );
+
+    trigger_gcd = timespan_t::zero();
+    use_off_gcd = true;
+    may_miss = may_crit = callbacks = harmful = false;
+  }
+
+  void parse_mode( const std::string& value )
+  {
+    if ( value == "close" || value == "near" || value == "closest" || value == "nearest" )
+    {
+      select_mode = SOUL_FRAGMENT_SELECT_NEAREST;
+    }
+    else if ( value == "new" || value == "newest" )
+    {
+      select_mode = SOUL_FRAGMENT_SELECT_NEWEST;
+    }
+    else if ( value == "old" || value == "oldest" )
+    {
+      select_mode = SOUL_FRAGMENT_SELECT_OLDEST;
+    }
+    else if ( value != "" )
+    {
+      sim -> errorf( "%s uses bad parameter for pick_up_soul_fragment option "
+        "\"mode\". Valid options: closest, newest, oldest",
+        sim -> active_player -> name() );
+    }
+  }
+
+  void parse_type( const std::string& value )
+  {
+    if ( value == "greater" )
+    {
+      type = SOUL_FRAGMENT_GREATER;
+    }
+    else if ( value == "lesser" )
+    {
+      type = SOUL_FRAGMENT_LESSER;
+    }
+    else if ( value == "all" || value == "any" )
+    {
+      type = SOUL_FRAGMENT_ALL;
+    }
+    else if ( value != "" )
+    {
+      sim -> errorf( "%s uses bad parameter for pick_up_soul_fragment option "
+        "\"type\". Valid options: greater, lesser, any",
+        sim -> active_player -> name() );
+    }
+  }
+
+  timespan_t calculate_movement_time( soul_fragment_t* frag )
+  {
+    // Fragments have a 6 yard trigger radius
+    double dtm = std::max( 0.0, frag -> get_distance( p() ) - 6.0 );
+
+    return timespan_t::from_seconds( dtm / p() -> cache.run_speed() );
+  }
+
+  soul_fragment_t* select_fragment()
+  {
+    switch ( select_mode )
+    {
+    case SOUL_FRAGMENT_SELECT_NEAREST:
+    {
+      double dist = std::numeric_limits<double>::max();
+      soul_fragment_t* candidate;
+
+      for ( it = p() -> soul_fragments.begin(); it != p() -> soul_fragments.end(); it++ )
+      {
+        soul_fragment_t* frag = *it;
+
+        if ( frag -> is_type( type ) && frag -> active() &&
+          frag -> remains() < calculate_movement_time( frag ) )
+        {
+          double this_distance = frag -> get_distance( p() );
+
+          if ( this_distance < dist )
+          {
+            dist = this_distance;
+            candidate = frag;
+          }
+        }
+      }
+
+      return candidate;
+    }
+    case SOUL_FRAGMENT_SELECT_NEWEST:
+      for ( it = p() -> soul_fragments.end(); it != p() -> soul_fragments.begin(); it-- )
+      {
+        soul_fragment_t* frag = *it;
+
+        if ( frag -> is_type( type ) && frag -> remains() > calculate_movement_time( frag ) )
+        {
+          return frag;
+        }
+      }
+    case SOUL_FRAGMENT_SELECT_OLDEST:
+    default:
+      for ( it = p() -> soul_fragments.begin(); it != p() -> soul_fragments.end(); it++ )
+      {
+        soul_fragment_t* frag = *it;
+
+        if ( frag -> is_type( type ) && frag -> remains() > calculate_movement_time( frag ) )
+        {
+          return frag;
+        }
+      }
+    }
+    
+    return nullptr;
+  }
+
+  void execute() override
+  {
+    demon_hunter_spell_t::execute();
+
+    soul_fragment_t* frag = select_fragment();
+    assert( frag );
+    timespan_t time = calculate_movement_time( frag );
+
+    p() -> soul_fragment_pick_up = new ( *sim ) pick_up_event_t( frag, time, if_expr );
+  }
+
+  bool ready() override
+  {
+    if ( p() -> soul_fragment_pick_up )
+    {
+      return false;
+    }
+
+    if ( ! p() -> get_active_soul_fragments( type ) )
+    {
+      return false;
+    }
+
+    if ( p() -> buff.jump_cancel -> check() )
+    {
+      return false;
+    }
+
+    if ( ! demon_hunter_spell_t::ready() )
+    {
+      return false;
+    }
+
+    // Catch edge case where a fragment exists but we can't pick it up in time.
+    return select_fragment() != nullptr;
+  }
+};
+
 // Sigil of Flame ===========================================================
 
 struct sigil_of_flame_t : public demon_hunter_spell_t
@@ -2135,7 +2373,7 @@ struct spirit_bomb_t : public demon_hunter_spell_t
     assert( p() -> soul_fragments.size() > 0 );
 
     // Spend the oldest soul fragment. TOCHECK: What happens in-game? Lesser vs Major?
-    p() -> remove_soul_fragment( p() -> soul_fragments[ 0 ] );
+    p() -> soul_fragments[ 0 ] -> remove();
   }
 
   void execute() override
@@ -2297,9 +2535,8 @@ struct melee_t : public demon_hunter_attack_t
 
   void execute() override
   {
-    if ( p() -> current.distance_to_move > 5 || p() -> channeling ||
-         ( p() -> buffs.self_movement -> check() &&
-           !p() -> buff.vengeful_retreat_jump_cancel -> check() ) )
+    if ( p() -> current.distance_to_move > 5 || p() -> channeling || 
+      p() -> buffs.self_movement -> check() )
     {
       status_e s;
 
@@ -3452,18 +3689,16 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
 
     p() -> buff.momentum -> trigger();
 
-    // Buff to track the movement. This lets us delay autoattacks and other
-    // things.
     if ( jump_cancel )
     {
-      p() -> buff.vengeful_retreat_jump_cancel -> trigger();
-      p() -> buffs.self_movement -> trigger(
-        1, 0, -1.0, p() -> buff.vengeful_retreat_jump_cancel -> buff_duration );
+      // Prevents use of casted/channeled actions.
+      p() -> buff.jump_cancel -> trigger();
     }
     else
     {
-      p() -> buffs.self_movement -> trigger( 1, 0, -1.0,
-                                         timespan_t::from_seconds( 1.0 ) );
+      // Buff to track the movement. This lets us delay autoattacks and other things.
+      p() -> buffs.self_movement -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0,
+        timespan_t::from_seconds( 1.0 ) );
     }
   }
 
@@ -3804,6 +4039,11 @@ action_t* demon_hunter_t::create_action( const std::string& name,
     return new metamorphosis_t( this, options_str );
   if ( name == "nemesis" )
     return new nemesis_t( this, options_str );
+  if ( name == "pick_up_soul_fragment" || name == "pick_up_fragment" ||
+    name == "pick_up_soul" )
+  {
+    return new pick_up_soul_fragment_t( this, options_str );
+  }
   if ( name == "sigil_of_flame" )
     return new sigil_of_flame_t( this, options_str );
   if ( name == "spirit_bomb" )
@@ -3907,11 +4147,10 @@ void demon_hunter_t::create_buffs()
   buff.rage_of_the_illidari =
     buff_creator_t( this, "rage_of_the_illidari", find_spell( 217060 ) );
 
-  buff.vengeful_retreat_jump_cancel =
-    buff_creator_t( this, "vengeful_retreat_jump_cancel",
-                    spell_data_t::nil() )
+  buff.jump_cancel =
+    buff_creator_t( this, "jump_cancel", spell_data_t::nil() )
       .chance( 1.0 )
-      .duration( timespan_t::from_seconds( 1.25 ) );
+      .duration( timespan_t::from_millis( 750 ) );
 
   // Vengeance
   buff.defensive_spikes = 
@@ -4341,7 +4580,7 @@ void demon_hunter_t::init_spells()
   using namespace actions::spells;
   using namespace actions::heals;
 
-  active.consume_soul =
+  active.consume_soul_greater =
     new consume_soul_t( this, "consume_soul", spec.consume_soul, SOUL_FRAGMENT_GREATER );
   active.consume_soul_lesser =
     new consume_soul_t( this, "consume_soul_lesser", spec.consume_soul_lesser,
@@ -4527,6 +4766,7 @@ void demon_hunter_t::apl_havoc()
   action_priority_list_t* def = get_action_priority_list( "default" );
 
   def -> add_action( "auto_attack" );
+  def -> add_action( "pick_up_fragment,if=talent.demonic_appetite.enabled&fury.deficit>=30" );
   def -> add_talent( this, "Nemesis", "target_if=min:target.time_to_die,if=active_enemies>desired_targets|raid_event.adds.in>60" );
   def -> add_action( this, "Consume Magic" );
   def -> add_action( this, "Vengeful Retreat", "jump_cancel=1,if=gcd.remains&((talent.momentum.enabled&buff.momentum.down)|!talent.momentum.enabled)" );
@@ -4886,10 +5126,8 @@ void demon_hunter_t::assess_damage( school_e school, dmg_e dt,
 
 void demon_hunter_t::interrupt()
 {
-  if ( blade_dance_driver )
-  {
-    event_t::cancel( blade_dance_driver );
-  }
+  event_t::cancel( blade_dance_driver );
+  event_t::cancel( soul_fragment_pick_up );
 
   base_t::interrupt();
 }
@@ -4945,6 +5183,7 @@ void demon_hunter_t::reset()
   base_t::reset();
 
   blade_dance_driver = nullptr;
+  soul_fragment_pick_up = nullptr;
   next_fragment_spawn = 0;
   shear_counter = 0;
   metamorphosis_health = 0;
@@ -5017,8 +5256,7 @@ bool demon_hunter_t::consume_soul_fragments( soul_fragment_e type )
 
   for ( size_t i = 0; i < soul_fragments.size(); i++ )
   {
-    if ( ( type == SOUL_FRAGMENT_ALL || soul_fragments[ i ] -> type == type ) &&
-      soul_fragments[ i ] -> active() )
+    if ( soul_fragments[ i ] -> is_type( type ) && soul_fragments[ i ] -> active() )
     {
       soul_fragments[ i ] -> consume();
     }
@@ -5037,7 +5275,7 @@ unsigned demon_hunter_t::get_active_soul_fragments( soul_fragment_e type )
     case SOUL_FRAGMENT_LESSER:
       return std::accumulate( soul_fragments.begin(), soul_fragments.end(), 0,
         [ &type ]( unsigned acc, soul_fragment_t* frag ) {
-          return acc + ( frag -> type == type && frag -> active() );
+          return acc + ( frag -> is_type( type ) && frag -> active() );
         } );
     case SOUL_FRAGMENT_ALL:
     default:
@@ -5058,25 +5296,12 @@ unsigned demon_hunter_t::get_total_soul_fragments( soul_fragment_e type )
     case SOUL_FRAGMENT_LESSER:
       return std::accumulate( soul_fragments.begin(), soul_fragments.end(), 0,
         [ &type ]( unsigned acc, soul_fragment_t* frag ) {
-          return acc + ( frag -> type == type );
+          return acc + frag -> is_type( type );
         } );
     case SOUL_FRAGMENT_ALL:
     default:
       return ( unsigned ) soul_fragments.size();
   }
-}
-
-// demon_hunter_t::remove_soul_fragment =====================================
-
-void demon_hunter_t::remove_soul_fragment( soul_fragment_t* frag )
-{
-  std::vector<soul_fragment_t*>::iterator it =
-    std::find( soul_fragments.begin(), soul_fragments.end(), frag );
-
-  assert( it != soul_fragments.end() );
-
-  soul_fragments.erase( it );
-  delete frag;
 }
 
 // demon_hunter_t::spawn_soul_fragment ======================================
@@ -5094,15 +5319,17 @@ void demon_hunter_t::spawn_soul_fragment( soul_fragment_e type, unsigned n )
       std::vector<soul_fragment_t*>::iterator it;
       for ( it = soul_fragments.begin(); it != soul_fragments.end(); it++ )
       {
-        if ( ( *it ) -> type == type )
+        soul_fragment_t& frag = **it;
+
+        if ( frag.is_type( type ) )
         {
-          remove_soul_fragment( *it );
+          frag.remove();
           proc.soul_fragment_overflow -> occur();
           break;
         }
-        
-        assert( true );
       }
+
+      assert( get_total_soul_fragments( type ) < MAX_SOUL_FRAGMENTS );
     }
 
     soul_fragments.push_back( new soul_fragment_t( this, type ) );

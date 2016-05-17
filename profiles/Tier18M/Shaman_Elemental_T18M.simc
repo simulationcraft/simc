@@ -29,7 +29,7 @@ actions+=/bloodlust,if=target.health.pct<25|time>0.500
 actions+=/use_item,name=nithramus_the_allseer
 # In-combat potion is preferentially linked to Ascendance, unless combat will end shortly
 actions+=/potion,name=draenic_intellect,if=buff.ascendance.up|target.time_to_die<=30
-actions+=/berserking,if=!buff.bloodlust.up&(set_bonus.tier15_4pc_caster=1|(buff.ascendance.cooldown_remains=0&(dot.flame_shock.remains>buff.ascendance.duration|level<87)))
+actions+=/berserking,if=!buff.bloodlust.up&buff.ascendance.cooldown_remains=0&(dot.flame_shock.remains>buff.ascendance.duration|level<87)
 actions+=/blood_fury,if=buff.bloodlust.up|buff.ascendance.up|((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)
 actions+=/arcane_torrent
 # On multiple enemies, the priority follows the 'aoe' action list.

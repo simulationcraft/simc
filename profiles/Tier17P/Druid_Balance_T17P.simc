@@ -32,12 +32,11 @@ actions+=/berserking,if=buff.celestial_alignment.up
 actions+=/arcane_torrent,if=buff.celestial_alignment.up
 actions+=/use_item,slot=trinket1
 actions+=/use_item,slot=trinket2
-actions+=/blessing_of_elune,moving=0
-actions+=/blessing_of_anshe,moving=1
 actions+=/warrior_of_elune,if=buff.lunar_empowerment.stack>=2
 actions+=/stellar_flare,if=remains<2
 actions+=/moonfire,if=remains<2
 actions+=/sunfire,if=remains<2
+actions+=/innervate,if=(buff.celestial_alignment.up|buff.incarnation.up)&equipped.promise_of_elune_the_moon_goddess
 actions+=/astral_communion,if=astral_power.deficit>=75
 actions+=/incarnation,if=astral_power>=40
 actions+=/celestial_alignment,if=astral_power>=40

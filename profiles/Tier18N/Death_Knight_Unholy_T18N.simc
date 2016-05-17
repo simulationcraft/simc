@@ -4,67 +4,7 @@ race=blood_elf
 role=attack
 position=back
 talents=2001003
-talent_override=unholy_blight,if=raid_event.adds.count>=1|enemies>1
-talent_override=necrotic_plague,if=raid_event.adds.count>=1|enemies>1
 spec=unholy
-
-# This default action priority list is automatically created based on your character.
-# It is a attempt to provide you with a action list that is both simple and practicable,
-# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
-# Feel free to edit, adapt and improve it to your own needs.
-# SimulationCraft is always looking for updates and improvements to the default action lists.
-
-# Executed before combat begins. Accepts non-harmful actions only.
-
-actions.precombat=flask,type=greater_draenic_strength_flask
-actions.precombat+=/food,type=salty_squid_roll
-# Snapshot raid buffed stats before combat begins and pre-potting is done.
-actions.precombat+=/snapshot_stats
-actions.precombat+=/army_of_the_dead
-actions.precombat+=/potion,name=draenic_strength
-actions.precombat+=/raise_dead
-
-# Executed every time the actor is available.
-
-actions=auto_attack
-actions+=/antimagic_shell,damage=100000,if=((dot.breath_of_sindragosa.ticking&runic_power<25)|cooldown.breath_of_sindragosa.remains>40)|!talent.breath_of_sindragosa.enabled
-actions+=/blood_fury,if=!talent.breath_of_sindragosa.enabled
-actions+=/berserking,if=!talent.breath_of_sindragosa.enabled
-actions+=/arcane_torrent,if=!talent.breath_of_sindragosa.enabled
-actions+=/potion,name=draenic_strength,if=(buff.dark_transformation.up&target.time_to_die<=60)&!talent.breath_of_sindragosa.enabled
-actions+=/run_action_list,name=unholy
-
-actions.unholy=summon_gargoyle
-actions.unholy+=/run_action_list,name=bos,if=dot.breath_of_sindragosa.ticking
-actions.unholy+=/outbreak,cycle_targets=1,if=!talent.necrotic_plague.enabled&(!(dot.blood_plague.ticking|dot.frost_fever.ticking))
-actions.unholy+=/death_and_decay,if=spell_targets.death_and_decay>1&unholy>1
-actions.unholy+=/defile,if=unholy=2
-actions.unholy+=/scourge_strike,if=unholy=2
-actions.unholy+=/festering_strike,if=talent.necrotic_plague.enabled&talent.unholy_blight.enabled&dot.necrotic_plague.remains<cooldown.unholy_blight.remains%2
-actions.unholy+=/dark_transformation
-actions.unholy+=/festering_strike,if=blood=2&frost=2&(((Frost-death)>0)|((Blood-death)>0))
-actions.unholy+=/festering_strike,if=(blood=2|frost=2)&(((Frost-death)>0)&((Blood-death)>0))
-actions.unholy+=/defile,if=blood=2|frost=2
-actions.unholy+=/death_and_decay,if=spell_targets.death_and_decay>1
-actions.unholy+=/defile
-actions.unholy+=/outbreak,if=talent.necrotic_plague.enabled&debuff.necrotic_plague.stack<=14
-actions.unholy+=/death_coil,if=(buff.sudden_doom.react|runic_power>80)&(buff.blood_charge.stack<=10)
-actions.unholy+=/scourge_strike,if=(cooldown.breath_of_sindragosa.remains>6|runic_power<75|unholy=2)|!talent.breath_of_sindragosa.enabled
-actions.unholy+=/festering_strike,if=(cooldown.breath_of_sindragosa.remains>6|runic_power<75)|!talent.breath_of_sindragosa.enabled
-actions.unholy+=/death_coil,if=(cooldown.breath_of_sindragosa.remains>20)|!talent.breath_of_sindragosa.enabled
-
-actions.bos=blood_fury,if=dot.breath_of_sindragosa.ticking
-actions.bos+=/berserking,if=dot.breath_of_sindragosa.ticking
-actions.bos+=/potion,name=draenic_strength,if=dot.breath_of_sindragosa.ticking
-actions.bos+=/death_and_decay,if=spell_targets.death_and_decay>=2&(runic_power<88&runic_power>30)
-actions.bos+=/festering_strike,if=(blood=2&frost=2&(((Frost-death)>0)|((Blood-death)>0)))&runic_power<80
-actions.bos+=/festering_strike,if=((blood=2|frost=2)&(((Frost-death)>0)&((Blood-death)>0)))&runic_power<80
-actions.bos+=/arcane_torrent,if=runic_power<70
-actions.bos+=/scourge_strike,if=spell_targets.blood_boil<=3&(runic_power<88&runic_power>30)
-actions.bos+=/festering_strike,if=runic_power<77
-actions.bos+=/scourge_strike,if=(spell_targets.blood_boil>=4&(runic_power<88&runic_power>30))|spell_targets.blood_boil<=3
-actions.bos+=/dark_transformation
-actions.bos+=/death_coil,if=buff.sudden_doom.react
 
 head=demongaze_helm,id=124332
 neck=corrupted_talonguard_pendant,id=124218,enchant=gift_of_multistrike
