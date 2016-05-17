@@ -368,6 +368,7 @@ public:
 
     // Marksmanship
     artifact_power_t windburst;
+    artifact_power_t wind_arrows;
     artifact_power_t legacy_of_the_windrunners;
     artifact_power_t call_of_the_hunter;
     artifact_power_t bullseye;
@@ -2493,9 +2494,17 @@ struct trick_shot_t: public hunter_ranged_attack_t
     weapon_multiplier = p -> find_specialization_spell( "Aimed Shot" ) -> effectN( 2 ).percent();
     base_multiplier   = p -> find_talent_spell( "Trick Shot" ) -> effectN( 1 ).percent();
 
-    if( p -> thasdorah && p -> artifacts.marked_for_death.rank() )
-      crit_bonus = p -> talents.patient_sniper -> ok() ? p -> find_spell( 213424 ) -> effectN( 2 ).percent() 
-                                                       : p -> artifacts.marked_for_death.percent();
+    if( p -> thasdorah )
+    {
+      // Wind Arrows
+      if( p -> artifacts.wind_arrows.rank() )
+        base_multiplier *= 1.0 +  p -> artifacts.wind_arrows.percent();
+
+      // Marked for Death
+      if( p -> artifacts.marked_for_death.rank() )
+        crit_bonus = p -> talents.patient_sniper -> ok() ? p -> find_spell( 213424 ) -> effectN( 2 ).percent() 
+                                                         : p -> artifacts.marked_for_death.percent();
+    }
   }
 
   virtual void impact( action_state_t* s ) override
@@ -2570,13 +2579,17 @@ struct legacy_of_the_windrunners_t: hunter_ranged_attack_t
     proc = true;
 
     //Rather than simulate 6 attacks, just treat it as one attack
-    base_multiplier *= 6;
+    base_multiplier *= 6.0;
+
+    // Wind Arrows
+    if( p -> artifacts.wind_arrows.rank() )
+      base_multiplier *= 1.0 +  p -> artifacts.wind_arrows.percent();
 
     // Deadly Aim
     crit_bonus_multiplier *= 1.0 + p -> artifacts.deadly_aim.percent();
 
     // Marked for Death
-    if( p -> thasdorah && p -> artifacts.marked_for_death.rank() )
+    if( p -> artifacts.marked_for_death.rank() )
       crit_bonus = p -> talents.patient_sniper -> ok() ? p -> find_spell( 213424 ) -> effectN( 2 ).percent() 
                                                        : p -> artifacts.marked_for_death.percent();
   }
@@ -2684,6 +2697,10 @@ struct aimed_shot_t: public hunter_ranged_attack_t
       if( p -> artifacts.marked_for_death.rank() )
         crit_bonus = p -> talents.patient_sniper -> ok() ? p -> find_spell( 213424 ) -> effectN( 2 ).percent() 
                                                          : p -> artifacts.marked_for_death.percent();
+
+      // Wind Arrows
+      if( p -> artifacts.wind_arrows.rank() )
+        base_multiplier *= 1.0 +  p -> artifacts.wind_arrows.percent();
     }
   }
 
@@ -4022,6 +4039,7 @@ void hunter_t::init_spells()
   artifacts.furious_swipes           = find_artifact_spell( "Furious Swipes" );
 
   artifacts.windburst                 = find_artifact_spell( "Windburst" );
+  artifacts.wind_arrows               = find_artifact_spell( "Wind Arrows" );
   artifacts.legacy_of_the_windrunners = find_artifact_spell( "Legacy of the Windrunners" );
   artifacts.call_of_the_hunter        = find_artifact_spell( "Call of the Hunter" );
   artifacts.bullseye                  = find_artifact_spell( "Bullseye" );
