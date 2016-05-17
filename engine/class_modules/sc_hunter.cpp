@@ -30,8 +30,8 @@
 //
 // Marksmanship
 //  Talents
-//   - Heightened Vulnerability
-//   - Volley
+//   - Heightened Vulnerability (Broken)
+//   - Volley (Improve)
 //  Artifacts
 //   - Call of the Hunter (NYI still)
 //
@@ -3082,6 +3082,57 @@ struct sidewinders_t: hunter_ranged_attack_t
   }
 };
 
+// Volley ============================================================================
+
+struct volley_tick_t: hunter_ranged_attack_t
+{
+  volley_tick_t( hunter_t* p ):
+    hunter_ranged_attack_t( "volley_tick", p, p -> find_spell( 194392 ) )
+  {
+    aoe         = -1;
+    background  = true;
+    direct_tick = true;
+    dual        = true;
+  }
+  
+  virtual double action_multiplier() const override
+  {
+    double am = hunter_ranged_attack_t::action_multiplier();
+
+    if ( p() -> mastery.sniper_training -> ok() )
+      am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
+
+    return am;
+  }
+};
+
+struct volley_t: hunter_ranged_attack_t
+{
+  volley_t( hunter_t* p, const std::string& options_str ):
+    hunter_ranged_attack_t( "volley", p, p -> find_talent_spell( "Volley" ) )
+  {
+    parse_options( options_str );
+    
+    base_tick_time = data().duration() / 6.0;
+    cooldown -> hasted        = true;
+    tick_action = new volley_tick_t( p );
+  }  
+  
+  virtual void execute() override
+  {
+    hunter_ranged_attack_t::execute();
+
+    new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+      .target( execute_state -> target )
+      .x( execute_state -> target-> x_position )
+      .y( execute_state -> target-> y_position )
+      .pulse_time( base_tick_time )
+      .duration( data().duration() * player -> cache.attack_haste() )
+      .start_time( sim -> current_time() )
+      .action( tick_action ), false );
+  }
+};
+
 // WindBurst =========================================================================
 
 struct windburst_t: hunter_ranged_attack_t
@@ -3386,6 +3437,9 @@ struct moc_t: public ranged_attack_t
     ranged_attack_t::execute();
   }
 };
+
+
+
 
 // Summon Pet ===============================================================
 
@@ -3757,6 +3811,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "steady_shot"           ) return new          raptor_strike_t( this, options_str );
   if ( name == "summon_pet"            ) return new             summon_pet_t( this, options_str );
   if ( name == "trueshot"              ) return new               trueshot_t( this, options_str );
+  if ( name == "volley"                ) return new                 volley_t( this, options_str );
   if ( name == "windburst"             ) return new              windburst_t( this, options_str );
   return player_t::create_action( name, options_str );
 }
