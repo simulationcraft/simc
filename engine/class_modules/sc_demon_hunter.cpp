@@ -130,7 +130,7 @@ public:
 
   // Soul Fragments
   unsigned next_fragment_spawn; // determines whether the next fragment spawn on the left or right
-  std::vector<soul_fragment_t*> soul_fragments;
+  auto_dispose<std::vector<soul_fragment_t*>> soul_fragments;
 
   std::vector<cooldown_t*> sigil_cooldowns; // For Defiler's Lost Vambraces legendary
 
@@ -3704,7 +3704,7 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r )
     chaos_blade_main_hand( nullptr ),
     chaos_blade_off_hand( nullptr ),
     next_fragment_spawn( 0 ),
-    soul_fragments( 0 ),
+    soul_fragments(),
     sigil_cooldowns( 0 ),
     buff(),
     talent(),
@@ -4373,12 +4373,15 @@ void demon_hunter_t::init_spells()
 
   if ( talent.chaos_blades -> ok() )
   {
-    chaos_blade_main_hand = new chaos_blade_t(
-      "chaos_blade_mh", this,
-      find_spell( talent.chaos_blades -> effectN( 1 ).misc_value1() ) );
+    const spell_data_t* mh_spell = find_spell( talent.chaos_blades -> effectN( 1 ).misc_value1() );
 
-    chaos_blade_off_hand = new chaos_blade_t(
-      "chaos_blade_oh", this, talent.chaos_blades -> effectN( 1 ).trigger() );
+    // Not linked via a trigger, so assert that the spell is there.
+    assert( mh_spell -> ok() );
+
+    chaos_blade_main_hand = new chaos_blade_t( "chaos_blade_mh", this, mh_spell );
+
+    chaos_blade_off_hand = new chaos_blade_t( "chaos_blade_oh", this,
+      talent.chaos_blades -> effectN( 1 ).trigger() );
   }
 
   if ( talent.demon_blades -> ok() )
@@ -5070,7 +5073,7 @@ void demon_hunter_t::remove_soul_fragment( soul_fragment_t* frag )
   std::vector<soul_fragment_t*>::iterator it =
     std::find( soul_fragments.begin(), soul_fragments.end(), frag );
 
-  assert( it != v.end() );
+  assert( it != soul_fragments.end() );
 
   soul_fragments.erase( it );
   delete frag;
