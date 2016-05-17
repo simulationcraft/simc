@@ -3062,6 +3062,9 @@ struct sidewinders_t: hunter_ranged_attack_t
     weapon                    = &p -> main_hand_weapon;
     attack_power_mod.direct   = p -> find_spell( 214581 ) -> effectN( 1 ).ap_coeff();
     weapon_multiplier         = 0;
+
+    if( p -> thasdorah && p -> artifacts.critical_focus.rank() )
+      energize_amount += p -> find_spell( 191328 ) -> effectN( 2 ).base_value();
   }
 
   virtual void execute() override
@@ -3760,9 +3763,9 @@ struct trueshot_t: public hunter_spell_t
   {
     parse_options( options_str );
     value = data().effectN( 1 ).percent();
-
+    
+    // Quick Shot: spell data adds -30 seconds to CD
     if ( p -> thasdorah )
-      // Quick Shot: spell data adds -30 seconds to CD
       cooldown -> duration += p -> artifacts.quick_shot.time_value();
   }
 
@@ -4150,6 +4153,7 @@ void hunter_t::create_buffs()
 
   buffs.bullseye                    = buff_creator_t( this, 204090, "bullseye" )
     .default_value( find_spell( 204090 ) -> effectN( 1 ).percent() )
+    .max_stack( 30 )
     .add_invalidate( CACHE_CRIT ); 
 
   buffs.stampede = buff_creator_t( this, 130201, "stampede" ) // To allow action lists to react to stampede, rather than doing it in a roundabout way.
