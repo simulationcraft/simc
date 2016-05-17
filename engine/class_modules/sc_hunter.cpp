@@ -316,7 +316,6 @@ public:
     const spell_data_t* bombardment;
     const spell_data_t* trueshot;
     const spell_data_t* lock_and_load;
-    const spell_data_t* lone_wolf;
 
     // Survival
     const spell_data_t* flanking_strike;
@@ -588,7 +587,7 @@ public:
   hunter_action_t( const std::string& n, hunter_t* player,
                    const spell_data_t* s = spell_data_t::nil() ):
                    ab( n, player, s ),
-                   lone_wolf( ab::data().affected_by( player -> specs.lone_wolf -> effectN( 1 ) ) )
+                   lone_wolf( player -> talents.lone_wolf -> ok() )
   {
   }
 
@@ -613,7 +612,7 @@ public:
     double am = ab::action_multiplier();
 
     if ( lone_wolf )
-      am *= 1.0 + p() -> specs.lone_wolf -> effectN( 1 ).percent();
+      am *= 1.0 + p() -> talents.lone_wolf -> effectN( 1 ).percent();
 
     return am;
   }
@@ -3276,7 +3275,7 @@ struct summon_pet_t: public hunter_spell_t
 
   virtual bool ready() override
   {
-    if ( p() -> active.pet == pet || p() -> specialization() == HUNTER_MARKSMANSHIP ) 
+    if ( p() -> active.pet == pet || p() -> talents.lone_wolf -> ok() ) 
       return false;
 
     return hunter_spell_t::ready();
@@ -3688,7 +3687,7 @@ void hunter_t::init_spells()
   talents.way_of_the_cobra                  = find_talent_spell( "Way of the Cobra" );
   talents.dire_stable                       = find_talent_spell( "Dire Stable" );
 
-  talents.black_arrow                       = find_talent_spell( "Black Arrow" );
+  talents.lone_wolf                         = find_talent_spell( "Lone Wolf" );
   talents.steady_focus                      = find_talent_spell( "Steady Focus" );
   talents.true_aim                          = find_talent_spell( "True Aim" );
   
@@ -3777,7 +3776,6 @@ void hunter_t::init_spells()
   specs.kill_command         = find_specialization_spell( "Kill Command" );
   specs.trueshot             = find_specialization_spell( "Trueshot" );
   specs.survivalist          = find_specialization_spell( "Survivalist" );
-  specs.lone_wolf            = find_specialization_spell( "Lone Wolf" );
   specs.dire_beast           = find_specialization_spell( "Dire Beast" );
   specs.wild_call            = find_specialization_spell( "Wild Call" );
   specs.aspect_of_the_wild   = find_specialization_spell( "Aspect of the Wild" );
