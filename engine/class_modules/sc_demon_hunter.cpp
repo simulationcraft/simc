@@ -85,7 +85,7 @@ public:
   demon_hunter_td_t( player_t* target, demon_hunter_t& p );
 };
 
-static const int MAX_SOUL_FRAGMENTS = 5;
+static const unsigned MAX_SOUL_FRAGMENTS = 5;
 
 enum soul_fragment_e
 {
@@ -130,7 +130,7 @@ public:
 
   // Soul Fragments
   unsigned next_fragment_spawn; // determines whether the next fragment spawn on the left or right
-  std::vector<soul_fragment_t*> soul_fragments_greater, soul_fragments_lesser;
+  std::vector<soul_fragment_t*> soul_fragments;
 
   std::vector<cooldown_t*> sigil_cooldowns; // For Defiler's Lost Vambraces legendary
 
@@ -517,10 +517,10 @@ public:
   void   target_mitigation( school_e, dmg_e, action_state_t* ) override;
   
   // custom demon_hunter_t functions
-  std::vector<soul_fragment_t*>& get_soul_fragments_vector( soul_fragment_e );
   bool     consume_soul_fragments( soul_fragment_e = SOUL_FRAGMENT_ALL );
   unsigned get_active_soul_fragments( soul_fragment_e = SOUL_FRAGMENT_ALL );
   unsigned get_total_soul_fragments( soul_fragment_e = SOUL_FRAGMENT_ALL );
+  void     remove_soul_fragment( soul_fragment_t* );
   void     spawn_soul_fragment( soul_fragment_e, unsigned = 1 );
 
 private:
@@ -571,25 +571,19 @@ struct soul_fragment_t
     }
 
     const char* name() const override
-    { return "Soul Fragment Expiration"; }
+    { return "Soul Fragment expiration"; }
 
     void execute() override
     {
-      if ( frag -> dh -> sim -> debug )
+      if ( sim().debug )
       {
-        frag -> dh -> sim -> out_debug.printf( "%s %s expires. active=%u total=%u",
+        sim().out_debug.printf( "%s %s expires. active=%u total=%u",
           frag -> dh -> name(), get_soul_fragment_str( frag -> type ),
           frag -> dh -> get_active_soul_fragments( frag -> type ),
           frag -> dh -> get_total_soul_fragments( frag -> type ) );
       }
-
-      std::vector<soul_fragment_t*>& v = frag -> get_vector();
-      std::vector<soul_fragment_t*>::iterator it = std::find( v.begin(), v.end(), frag );
-
-      assert( it != v.end() );
-
-      v.erase( it );
-      delete frag;
+      
+      frag -> dh -> remove_soul_fragment( frag );
     }
   };
 
@@ -617,11 +611,11 @@ struct soul_fragment_t
     {
       frag -> activate = nullptr;
       frag -> expiration =
-        new ( *frag -> dh -> sim ) fragment_expiration_t( frag );
+        new ( sim() ) fragment_expiration_t( frag );
 
-      if ( frag -> dh -> sim -> debug )
+      if ( sim().debug )
       {
-        frag -> dh -> sim -> out_debug.printf( "%s %s becomes active. active=%u total=%u",
+        sim().out_debug.printf( "%s %s becomes active. active=%u total=%u",
           frag -> dh -> name(), get_soul_fragment_str( frag -> type ),
           frag -> dh -> get_active_soul_fragments( frag -> type ),
           frag -> dh -> get_total_soul_fragments( frag -> type ) );
@@ -647,42 +641,8 @@ struct soul_fragment_t
 
   ~soul_fragment_t()
   {
-    if ( activate )
-    {
-      event_t::cancel( activate );
-    }
-    else if ( expiration )
-    {
-      event_t::cancel( expiration );
-    }
-  }
-
-  std::vector<soul_fragment_t*>& get_vector() const
-  {
-    assert( type != SOUL_FRAGMENT_ALL );
-
-    switch ( type )
-    {
-      case SOUL_FRAGMENT_GREATER:
-        return dh -> soul_fragments_greater;
-      case SOUL_FRAGMENT_LESSER:
-      default:
-        return dh -> soul_fragments_lesser;
-    }
-  }
-
-  heal_t* get_action() const
-  {
-    assert( type != SOUL_FRAGMENT_ALL );
-
-    switch ( type )
-    {
-      case SOUL_FRAGMENT_GREATER:
-        return dh -> active.consume_soul;
-      case SOUL_FRAGMENT_LESSER:
-      default:
-        return dh -> active.consume_soul_lesser;
-    }
+    event_t::cancel( activate );
+    event_t::cancel( expiration );
   }
 
   double get_distance( demon_hunter_t* p ) const
@@ -722,17 +682,16 @@ struct soul_fragment_t
   
   void consume()
   {
+    assert( active() );
+
+    // FIXME: There's probably a more elegant travel time solution than this.
+    action_t* a = type ==
+      SOUL_FRAGMENT_GREATER ? dh -> active.consume_soul : dh -> active.consume_soul_lesser;
     timespan_t delay =
       timespan_t::from_seconds( get_distance( dh ) / dh -> spec.consume_soul -> missile_speed() );
-    new ( * dh -> sim ) delayed_execute_event_t( dh, get_action(), dh, delay );
+    new ( *dh -> sim ) delayed_execute_event_t( dh, a, dh, delay );
 
-    std::vector<soul_fragment_t*>::iterator it =
-      std::find( get_vector().begin(), get_vector().end(), this );
-
-    assert( it != get_vector().end() );
-
-    get_vector().erase( it );
-    delete this;
+    dh -> remove_soul_fragment( this );
   }
 };
 
@@ -2173,33 +2132,10 @@ struct spirit_bomb_t : public demon_hunter_spell_t
   {
     demon_hunter_spell_t::consume_resource();
 
-    if ( p() -> get_active_soul_fragments( SOUL_FRAGMENT_LESSER ) )
-    {
-      delete p() -> soul_fragments_lesser[ 0 ];
-      p() -> soul_fragments_lesser.erase( p() -> soul_fragments_lesser.begin() );
+    assert( p() -> soul_fragments.size() > 0 );
 
-      if ( sim -> debug )
-      {
-        sim -> out_debug.printf( "%s consumes 1 %s for %s. active=%u total=%u",
-          p() -> name(), get_soul_fragment_str( SOUL_FRAGMENT_LESSER ),
-          name(), p() -> get_active_soul_fragments( SOUL_FRAGMENT_LESSER ),
-          p() -> get_total_soul_fragments( SOUL_FRAGMENT_LESSER ) );
-      }
-    }
-    else
-    {
-      assert( p() -> soul_fragments_greater.size() > 0 );
-      delete p() -> soul_fragments_greater[ 0 ];
-      p() -> soul_fragments_greater.erase( p() -> soul_fragments_greater.begin() );
-
-      if ( sim -> debug )
-      {
-        sim -> out_debug.printf( "%s consumes 1 %s for %s. active=%u total=%u",
-          p() -> name(), get_soul_fragment_str( SOUL_FRAGMENT_GREATER ),
-          name(), p() -> get_active_soul_fragments( SOUL_FRAGMENT_GREATER ),
-          p() -> get_total_soul_fragments( SOUL_FRAGMENT_GREATER ) );
-      }
-    }
+    // Spend the oldest soul fragment. TOCHECK: What happens in-game? Lesser vs Major?
+    p() -> remove_soul_fragment( p() -> soul_fragments[ 0 ] );
   }
 
   void execute() override
@@ -3768,8 +3704,7 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r )
     chaos_blade_main_hand( nullptr ),
     chaos_blade_off_hand( nullptr ),
     next_fragment_spawn( 0 ),
-    soul_fragments_greater( 0 ),
-    soul_fragments_lesser( 0 ),
+    soul_fragments( 0 ),
     sigil_cooldowns( 0 ),
     buff(),
     talent(),
@@ -5011,17 +4946,12 @@ void demon_hunter_t::reset()
   shear_counter = 0;
   metamorphosis_health = 0;
 
-  for ( size_t i = 0; i < soul_fragments_greater.size(); i++ )
+  for ( size_t i = 0; i < soul_fragments.size(); i++ )
   {
-    delete soul_fragments_greater[ i ];
-  }
-  for ( size_t i = 0; i < soul_fragments_lesser.size(); i++ )
-  {
-    delete soul_fragments_lesser[ i ];
+    delete soul_fragments[ i ];
   }
 
-  soul_fragments_greater.clear();
-  soul_fragments_lesser.clear();
+  soul_fragments.clear();
 }
 
 // demon_hunter_t::target_mitigation ========================================
@@ -5072,94 +5002,46 @@ void demon_hunter_t::target_mitigation( school_e school, dmg_e dt,
 
 bool demon_hunter_t::consume_soul_fragments( soul_fragment_e type )
 {
-  if ( get_active_soul_fragments( type ) == 0 )
+  unsigned a = get_active_soul_fragments( type );
+
+  if ( a == 0 ) return false;
+
+  if ( sim -> debug )
   {
-    return false;
+    sim -> out_debug.printf( "%s consumes %u %ss. active=%u total=%u", name(), a,
+      get_soul_fragment_str( type ), 0, get_total_soul_fragments( type ) - a );
   }
 
-  if ( type == SOUL_FRAGMENT_GREATER || type == SOUL_FRAGMENT_ALL )
+  for ( size_t i = 0; i < soul_fragments.size(); i++ )
   {
-    if ( sim -> debug && soul_fragments_greater.size() > 0 )
+    if ( ( type == SOUL_FRAGMENT_ALL || soul_fragments[ i ] -> type == type ) &&
+      soul_fragments[ i ] -> active() )
     {
-      sim -> out_debug.printf( "%s consumes %u %ss.", name(),
-        get_active_soul_fragments( SOUL_FRAGMENT_GREATER ),
-        get_soul_fragment_str( SOUL_FRAGMENT_GREATER ) );
-    }
-
-    for ( size_t f = 0; f < soul_fragments_greater.size(); f++ )
-    {
-      if ( soul_fragments_greater[ f ] -> active() )
-      {
-        soul_fragments_greater[ f ] -> consume();
-      }
-    }
-  }
-
-  if ( type == SOUL_FRAGMENT_LESSER || type == SOUL_FRAGMENT_ALL )
-  {
-    if ( sim -> debug && soul_fragments_lesser.size() > 0 )
-    {
-      sim -> out_debug.printf( "%s consumes %u %ss.", name(),
-        get_active_soul_fragments( SOUL_FRAGMENT_LESSER ),
-        get_soul_fragment_str( SOUL_FRAGMENT_LESSER ) );
-    }
-
-    for ( size_t f = 0; f < soul_fragments_lesser.size(); f++ )
-    {
-      if ( soul_fragments_lesser[ f ] -> active() )
-      {
-        soul_fragments_lesser[ f ] -> consume();
-      }
+      soul_fragments[ i ] -> consume();
     }
   }
 
   return true;
 }
 
-// demon_hunter_t::get_soul_fragments_vector ================================
-
-std::vector<soul_fragment_t*>& demon_hunter_t::get_soul_fragments_vector( soul_fragment_e type )
-{
-  assert( type != SOUL_FRAGMENT_ALL );
-
-  switch ( type )
-  {
-    case SOUL_FRAGMENT_GREATER:
-      return soul_fragments_greater;
-    case SOUL_FRAGMENT_LESSER:
-    default:
-      return soul_fragments_lesser;
-  }
-}
-
 // demon_hunter_t::get_active_soul_fragments ================================
 
 unsigned demon_hunter_t::get_active_soul_fragments( soul_fragment_e type )
 {
-  unsigned n = 0;
-
   switch ( type )
   {
     case SOUL_FRAGMENT_GREATER:
     case SOUL_FRAGMENT_LESSER:
-      for ( size_t i = 0; i < get_soul_fragments_vector( type ).size(); i++ )
-      {
-        if ( get_soul_fragments_vector( type )[ i ] -> active() ) n++;
-      }
-
-      return n;
+      return std::accumulate( soul_fragments.begin(), soul_fragments.end(), 0,
+        [ &type ]( unsigned acc, soul_fragment_t* frag ) {
+          return acc + ( frag -> type == type && frag -> active() );
+        } );
     case SOUL_FRAGMENT_ALL:
     default:
-      for ( size_t i = 0; i < soul_fragments_greater.size(); i++ )
-      {
-        if ( soul_fragments_greater[ i ] -> active() ) n++;
-      }
-      for ( size_t i = 0; i < soul_fragments_lesser.size(); i++ )
-      {
-        if ( soul_fragments_lesser[ i ] -> active() ) n++;
-      }
-
-      return n;
+      return std::accumulate( soul_fragments.begin(), soul_fragments.end(), 0,
+        []( unsigned acc, soul_fragment_t* frag ) {
+          return acc + frag -> active();
+        } );
   }
 }
 
@@ -5169,40 +5051,66 @@ unsigned demon_hunter_t::get_total_soul_fragments( soul_fragment_e type )
 {
   switch ( type )
   {
-  case SOUL_FRAGMENT_GREATER:
-  case SOUL_FRAGMENT_LESSER:
-    return ( unsigned ) get_soul_fragments_vector( type ).size();
-  case SOUL_FRAGMENT_ALL:
-  default:
-    return ( unsigned ) ( soul_fragments_greater.size() + soul_fragments_lesser.size() );
+    case SOUL_FRAGMENT_GREATER:
+    case SOUL_FRAGMENT_LESSER:
+      return std::accumulate( soul_fragments.begin(), soul_fragments.end(), 0,
+        [ &type ]( unsigned acc, soul_fragment_t* frag ) {
+          return acc + ( frag -> type == type );
+        } );
+    case SOUL_FRAGMENT_ALL:
+    default:
+      return ( unsigned ) soul_fragments.size();
   }
+}
+
+// demon_hunter_t::remove_soul_fragment =====================================
+
+void demon_hunter_t::remove_soul_fragment( soul_fragment_t* frag )
+{
+  std::vector<soul_fragment_t*>::iterator it =
+    std::find( soul_fragments.begin(), soul_fragments.end(), frag );
+
+  assert( it != v.end() );
+
+  soul_fragments.erase( it );
+  delete frag;
 }
 
 // demon_hunter_t::spawn_soul_fragment ======================================
 
 void demon_hunter_t::spawn_soul_fragment( soul_fragment_e type, unsigned n )
 {
-  std::vector<soul_fragment_t*>& fragments = get_soul_fragments_vector( type );
   proc_t* soul_proc =
     type == SOUL_FRAGMENT_GREATER ? proc.soul_fragment : proc.soul_fragment_lesser;
 
   for ( unsigned i = 0; i < n; i++ )
   {
-    if ( fragments.size() == MAX_SOUL_FRAGMENTS )
+    if ( get_total_soul_fragments( type ) == MAX_SOUL_FRAGMENTS )
     {
-      delete fragments[ 0 ];
-      fragments.erase( fragments.begin() );
-      proc.soul_fragment_overflow -> occur();
+      // Find and delete the oldest fragment of this type.
+      std::vector<soul_fragment_t*>::iterator it;
+      for ( it = soul_fragments.begin(); it != soul_fragments.end(); it++ )
+      {
+        if ( ( *it ) -> type == type )
+        {
+          remove_soul_fragment( *it );
+          proc.soul_fragment_overflow -> occur();
+          break;
+        }
+        
+        assert( true );
+      }
     }
 
-    fragments.push_back( new soul_fragment_t( this, type ) );
+    soul_fragments.push_back( new soul_fragment_t( this, type ) );
     soul_proc -> occur();
   }
 
   if ( sim -> debug )
   {
-    sim -> out_debug.printf( "%s creates %u soul fragments. active=%u total=%u", name(), n,
-      get_active_soul_fragments( type ), get_total_soul_fragments( type ) );
+    sim -> out_debug.printf( "%s creates %u %ss. active=%u total=%u", name(), n,
+      get_soul_fragment_str( type ), get_active_soul_fragments( type ),
+      get_total_soul_fragments( type ) );
   }
 }
 
