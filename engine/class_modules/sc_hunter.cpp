@@ -30,14 +30,12 @@
 //
 // Marksmanship
 //  Talents
-//   - Sidewinders
 //   - Black Arrow
 //   - Heightened Vulnerability
 //   - Volley
 //   - Update Trick Shot behavior
 //  Artifacts
-//   - Whispers of the Past
-//   - Call of the Hunter
+//   - Call of the Hunter (NYI still)
 //
 // Survival
 //   - Carve
@@ -447,7 +445,7 @@ public:
 
     summon_pet_str = "";
     base.distance = 40;
-    base_gcd = timespan_t::from_seconds( 1.0 );
+    base_gcd = timespan_t::from_seconds( 1.5 );
 
     regen_type = REGEN_DYNAMIC;
     regen_caches[ CACHE_HASTE ] = true;
@@ -1027,7 +1025,7 @@ public:
     resources.base[RESOURCE_HEALTH] = util::interpolate( level(), 0, 4253, 6373 );
     resources.base[RESOURCE_FOCUS] = 100 + o() -> specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS );
 
-    base_gcd = timespan_t::from_seconds( 1.00 );
+    base_gcd = timespan_t::from_seconds( 1.50 );
 
     resources.infinite_resource[RESOURCE_FOCUS] = o() -> resources.infinite_resource[RESOURCE_FOCUS];
 
@@ -4377,7 +4375,7 @@ double hunter_t::focus_regen_per_second() const
   double regen = player_t::focus_regen_per_second();
 
   if ( buffs.aspect_of_the_wild -> check() )
-    regen += buffs.aspect_of_the_wild -> data().effectN( 3 ).base_value();
+    regen += buffs.aspect_of_the_wild -> data().effectN( 2 ).resource( RESOURCE_FOCUS );
 
   return regen;
 }
