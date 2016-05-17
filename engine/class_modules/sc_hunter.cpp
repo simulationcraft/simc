@@ -1892,7 +1892,7 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
     if ( require_pre )
     {
       p() -> buffs.pre_steady_focus -> trigger( 1 );
-      if ( p() -> buffs.pre_steady_focus -> stack() < 2 )
+      if ( p() -> buffs.pre_steady_focus -> stack() < 3 )
         return;
     }
 
@@ -3897,9 +3897,9 @@ void hunter_t::create_buffs()
   buffs.big_game_hunter             = buff_creator_t( this, "big_game_hunter", talents.big_game_hunter ).activated( true ).default_value( big_game_hunter_crit );
 
   buffs.steady_focus                = buff_creator_t( this, 193534, "steady_focus" ).chance( talents.steady_focus -> ok() );
-  buffs.pre_steady_focus            = buff_creator_t( this, "pre_steady_focus" ).max_stack( 2 ).quiet( true );
+  buffs.pre_steady_focus            = buff_creator_t( this, "pre_steady_focus" ).max_stack( 3 ).quiet( true );
 
-  buffs.hunters_mark_exists         = buff_creator_t( this, 185365, "hunters_mark_exists" );
+  buffs.hunters_mark_exists         = buff_creator_t( this, 185365, "hunters_mark_exists" ).quiet( true );
 
   buffs.lock_and_load               = buff_creator_t( this, 194594, "lock_and_load" ).max_stack( 2 );
 
