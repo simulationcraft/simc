@@ -2420,8 +2420,40 @@ struct trick_shot_t: public hunter_ranged_attack_t
   virtual void impact( action_state_t* s ) override
   {
     // Do not hit current target, and only deal damage to targets with Vulnerable
-    if ( s -> target != p() -> target && td( s -> target ) -> debuffs.vulnerable -> up() )
+    if ( s -> target != p() -> target && ( td( s -> target ) -> debuffs.vulnerable -> up() || td( s -> target ) -> debuffs.deadeye -> up() ) )
+    {
       hunter_ranged_attack_t::impact( s );
+
+      trigger_true_aim( p(), s -> target );
+      if( p() -> buffs.careful_aim -> value() && s -> result == RESULT_CRIT )
+        trigger_piercing_shots( s );
+    }
+  }
+
+  virtual double composite_target_crit( player_t* t ) const override
+  {
+    double cc = hunter_ranged_attack_t::composite_target_crit( t );
+
+    cc += p() -> buffs.careful_aim -> value();
+    cc += td( t ) -> debuffs.marked_for_death -> check_stack_value();
+
+    return cc;
+  }
+
+  virtual double composite_target_da_multiplier( player_t* t ) const override
+  {
+    double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
+
+    hunter_td_t* td = this -> td( t );
+    if ( td -> debuffs.vulnerable -> up() )
+      m *= 1.0 + td -> debuffs.vulnerable -> check_stack_value();
+    else if ( td -> debuffs.deadeye -> up() )
+      m *= 1.0 + td -> debuffs.deadeye -> check_stack_value();
+
+    if ( td -> debuffs.true_aim -> up() )
+      m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
+
+    return m;
   }
 
   // FIXME 21134 - this talent is bugged on alpha (does no damage), so not sure if mastery should affect this or not
