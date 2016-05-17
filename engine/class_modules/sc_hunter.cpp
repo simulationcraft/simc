@@ -3142,6 +3142,20 @@ struct windburst_t: hunter_ranged_attack_t
   {
     parse_options( options_str );
   }
+
+  virtual void execute() override
+  {
+    hunter_ranged_attack_t::execute();
+
+    if( p() -> artifacts.mark_of_the_windrunner.rank() )
+    {
+      hunter_td_t* td = this -> td( execute_state -> target );
+      if( p() -> talents.patient_sniper -> ok() )
+        td -> debuffs.deadeye -> trigger();
+      else
+        td -> debuffs.vulnerable -> trigger();
+    }
+  }
 };
 
 // Piercing Shots ====================================================================
@@ -3759,7 +3773,7 @@ dots( dots_t() )
 
   debuffs.hunters_mark      = buff_creator_t( *this, "hunters_mark" )
                                 .spell( p -> find_spell( 185365 ) );
-  debuffs.vulnerable        = buff_creator_t( *this, "vulnerable" )
+  debuffs.vulnerable        = buff_creator_t( *this, "vulnerability" )
                                 .spell( p -> find_spell( 187131 ) )
                                 .default_value( p -> find_spell( 187131 ) -> effectN( 2 ).percent() );
   debuffs.deadeye           = buff_creator_t( *this, "deadeye" )
@@ -4011,6 +4025,7 @@ void hunter_t::init_spells()
   artifacts.legacy_of_the_windrunners = find_artifact_spell( "Legacy of the Windrunners" );
   artifacts.call_of_the_hunter        = find_artifact_spell( "Call of the Hunter" );
   artifacts.bullseye                  = find_artifact_spell( "Bullseye" );
+  artifacts.mark_of_the_windrunner    = find_artifact_spell( "Mark of the Windrunner" );
   artifacts.deadly_aim                = find_artifact_spell( "Deadly Aim" );
   artifacts.quick_shot                = find_artifact_spell( "Quick Shot" );
   artifacts.critical_focus            = find_artifact_spell( "Critical Focus" );
