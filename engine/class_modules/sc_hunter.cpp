@@ -95,7 +95,6 @@ struct hunter_td_t: public actor_target_data_t
   {
     buff_t* hunters_mark;
     buff_t* vulnerable;
-    buff_t* marked_for_death;
     buff_t* deadeye;
     buff_t* true_aim;
   } debuffs;
@@ -2483,6 +2482,7 @@ struct black_arrow_t: public hunter_ranged_attack_t
 
 struct trick_shot_t: public hunter_ranged_attack_t
 {
+  double crit_bonus = 0;
   trick_shot_t( hunter_t* p ):
     hunter_ranged_attack_t( "trick_shot", p, p -> find_talent_spell( "Trick Shot" ) )
   {
@@ -2492,6 +2492,10 @@ struct trick_shot_t: public hunter_ranged_attack_t
     weapon            = &p -> main_hand_weapon;
     weapon_multiplier = p -> find_specialization_spell( "Aimed Shot" ) -> effectN( 2 ).percent();
     base_multiplier   = p -> find_talent_spell( "Trick Shot" ) -> effectN( 1 ).percent();
+
+    if( p -> thasdorah && p -> artifacts.marked_for_death.rank() )
+      crit_bonus = p -> talents.patient_sniper -> ok() ? p -> find_spell( 213424 ) -> effectN( 2 ).percent() 
+                                                       : p -> artifacts.marked_for_death.percent();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -2512,7 +2516,8 @@ struct trick_shot_t: public hunter_ranged_attack_t
     double cc = hunter_ranged_attack_t::composite_target_crit( t );
 
     cc += p() -> buffs.careful_aim -> value();
-    cc += td( t ) -> debuffs.marked_for_death -> check_stack_value();
+    if( td( t ) -> debuffs.deadeye -> up() || td( t ) -> debuffs.vulnerable -> up() )
+      cc += crit_bonus;
 
     return cc;
   }
@@ -2556,6 +2561,8 @@ struct trick_shot_t: public hunter_ranged_attack_t
 //   Careful Aim
 struct legacy_of_the_windrunners_t: hunter_ranged_attack_t
 {
+  double crit_bonus = 0;
+
   legacy_of_the_windrunners_t( hunter_t* p, const std::string& name ):
     hunter_ranged_attack_t( name, p, p -> find_spell( 191043 ) )
   {
@@ -2567,6 +2574,11 @@ struct legacy_of_the_windrunners_t: hunter_ranged_attack_t
 
     // Deadly Aim
     crit_bonus_multiplier *= 1.0 + p -> artifacts.deadly_aim.percent();
+
+    // Marked for Death
+    if( p -> thasdorah && p -> artifacts.marked_for_death.rank() )
+      crit_bonus = p -> talents.patient_sniper -> ok() ? p -> find_spell( 213424 ) -> effectN( 2 ).percent() 
+                                                       : p -> artifacts.marked_for_death.percent();
   }
 
   virtual void execute()
@@ -2587,7 +2599,8 @@ struct legacy_of_the_windrunners_t: hunter_ranged_attack_t
   {
     double cc = hunter_ranged_attack_t::composite_target_crit( t );
 
-    cc += td( t ) -> debuffs.marked_for_death -> check_stack_value();
+    if( td( t ) -> debuffs.deadeye -> up() || td( t ) -> debuffs.vulnerable -> up() )
+      cc += crit_bonus;
 
     return cc;
   }
@@ -2635,6 +2648,7 @@ struct legacy_of_the_windrunners_t: hunter_ranged_attack_t
 struct aimed_shot_t: public hunter_ranged_attack_t
 {
   benefit_t* aimed_in_ca;
+  double crit_bonus = 0;
 
   legacy_of_the_windrunners_t* legacy_of_the_windrunners;
 
@@ -2665,6 +2679,11 @@ struct aimed_shot_t: public hunter_ranged_attack_t
         legacy_of_the_windrunners = new legacy_of_the_windrunners_t( p, "artifact" );
         add_child( legacy_of_the_windrunners );
       }
+
+      // Marked for Death
+      if( p -> artifacts.marked_for_death.rank() )
+        crit_bonus = p -> talents.patient_sniper -> ok() ? p -> find_spell( 213424 ) -> effectN( 2 ).percent() 
+                                                         : p -> artifacts.marked_for_death.percent();
     }
   }
 
@@ -2673,7 +2692,8 @@ struct aimed_shot_t: public hunter_ranged_attack_t
     double cc = hunter_ranged_attack_t::composite_target_crit( t );
 
     cc += p() -> buffs.careful_aim -> value();
-    cc += td( t ) -> debuffs.marked_for_death -> check_stack_value();
+    if( td( t ) -> debuffs.deadeye -> up() || td( t ) -> debuffs.vulnerable -> up() )
+      cc += crit_bonus;
 
     return cc;
   }
@@ -2866,10 +2886,6 @@ struct marked_shot_t: public hunter_ranged_attack_t
       hunter_ranged_attack_t::impact( s );
 
       td -> debuffs.hunters_mark -> expire();
-
-      // Marked for Death is applied on impact, unlike Vulnerable and Deadeye.
-      if ( p() -> thasdorah && p() -> artifacts.marked_for_death.rank() )
-        td -> debuffs.marked_for_death -> trigger();
 
       trigger_true_aim( p(), s -> target );
     }
@@ -3692,9 +3708,6 @@ dots( dots_t() )
   debuffs.vulnerable        = buff_creator_t( *this, "vulnerable" )
                                 .spell( p -> find_spell( 187131 ) )
                                 .default_value( p -> find_spell( 187131 ) -> effectN( 2 ).percent() );
-  debuffs.marked_for_death  = buff_creator_t( *this, "marked_for_death" )
-                                .spell( p -> find_spell( 190533 ) )
-                                .default_value( p -> find_artifact_spell( "Marked for Death" ).percent() );
   debuffs.deadeye           = buff_creator_t( *this, "deadeye" )
                                 .spell( p -> find_spell( 213424 ) )
                                 .default_value( p -> find_spell( 213424 ) -> effectN( 1 ).percent() );
