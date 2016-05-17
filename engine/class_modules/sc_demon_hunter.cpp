@@ -4042,7 +4042,7 @@ action_t* demon_hunter_t::create_action( const std::string& name,
   if ( name == "pick_up_soul_fragment" || name == "pick_up_fragment" ||
     name == "pick_up_soul" )
   {
-    return new pick_up_soul_fragment_t( this, options_str );
+    return new pick_up_fragment_t( this, options_str );
   }
   if ( name == "sigil_of_flame" )
     return new sigil_of_flame_t( this, options_str );
