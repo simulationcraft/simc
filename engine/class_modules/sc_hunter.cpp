@@ -3073,7 +3073,7 @@ struct sidewinders_t: hunter_ranged_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      bool marking;
+      bool marking = false;
 
       if ( p() -> buffs.trueshot -> up() || p() -> buffs.marking_targets -> up() )
         marking = true;
