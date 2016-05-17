@@ -2473,8 +2473,6 @@ void player_t::create_buffs()
                               .add_invalidate( CACHE_SPIRIT )
                               .chance( 0 );
     }
-    debuffs.dazed = buff_creator_t( this, "dazed", find_spell( 15571 ) );
-
   }
 
   buffs.courageous_primal_diamond_lucidity = buff_creator_t( this, "lucidity" )
@@ -2517,6 +2515,7 @@ void player_t::create_buffs()
   debuffs.invulnerable = buff_creator_t( this, "invulnerable" ).max_stack( 1 );
   debuffs.vulnerable   = buff_creator_t( this, "vulnerable" ).max_stack( 1 );
   debuffs.flying       = buff_creator_t( this, "flying" ).max_stack( 1 );
+  debuffs.dazed        = buff_creator_t( this, "dazed", find_spell( 15571 ) );
   debuffs.damage_taken = buff_creator_t( this, "damage_taken" ).duration( timespan_t::from_seconds( 20.0 ) ).max_stack( 999 );
 
   // stuff moved from old init_debuffs method
@@ -3102,27 +3101,30 @@ double player_t::composite_player_critical_healing_multiplier() const
 double player_t::temporary_movement_modifier() const
 {
   double temporary = 0;
+  
+  if ( ! is_enemy() )
+  {
+    if ( buffs.windwalking_movement_aura -> up() )
+      temporary = std::max( buffs.windwalking_movement_aura -> data().effectN( 1 ).percent(), temporary );
 
-  if ( buffs.windwalking_movement_aura -> up() )
-    temporary = std::max( buffs.windwalking_movement_aura -> data().effectN( 1 ).percent(), temporary );
+    if ( buffs.darkflight -> up() )
+      temporary = std::max( buffs.darkflight -> data().effectN( 1 ).percent(), temporary );
 
-  if ( buffs.darkflight -> up() )
-    temporary = std::max( buffs.darkflight -> data().effectN( 1 ).percent(), temporary );
+    if ( buffs.nitro_boosts -> up() )
+      temporary = std::max( buffs.nitro_boosts -> data().effectN( 1 ).percent(), temporary );
 
-  if ( buffs.nitro_boosts -> up() )
-    temporary = std::max( buffs.nitro_boosts -> data().effectN( 1 ).percent(), temporary );
+    if ( buffs.stampeding_roar -> up() )
+      temporary = std::max( buffs.stampeding_roar -> data().effectN( 1 ).percent(), temporary );
 
-  if ( buffs.stampeding_roar -> up() )
-    temporary = std::max( buffs.stampeding_roar -> data().effectN( 1 ).percent(), temporary );
+    if ( buffs.body_and_soul -> up() )
+      temporary = std::max( buffs.body_and_soul -> data().effectN( 1 ).percent(), temporary );
 
-  if ( buffs.body_and_soul -> up() )
-    temporary = std::max( buffs.body_and_soul -> data().effectN( 1 ).percent(), temporary );
+    if ( buffs.angelic_feather -> up() )
+      temporary = std::max( buffs.angelic_feather -> data().effectN( 1 ).percent(), temporary );
 
-  if ( buffs.angelic_feather -> up() )
-    temporary = std::max( buffs.angelic_feather -> data().effectN( 1 ).percent(), temporary );
-
-  if ( buffs.aspect_of_the_pack -> up() )
-    temporary = std::max( buffs.aspect_of_the_pack -> data().effectN( 1 ).percent(), temporary );
+    if ( buffs.aspect_of_the_pack -> up() )
+      temporary = std::max( buffs.aspect_of_the_pack -> data().effectN( 1 ).percent(), temporary );
+  }
 
   return temporary;
 }
@@ -10251,20 +10253,20 @@ double player_stat_cache_t::leech() const
 
 double player_stat_cache_t::run_speed() const
 {
-  if ( !active || !valid[CACHE_RUN_SPEED] )
+  if ( !active || !valid[ CACHE_RUN_SPEED ] )
   {
-    valid[CACHE_RUN_SPEED] = true;
-    _run_speed = player -> composite_run_speed();
+    valid[ CACHE_RUN_SPEED ] = true;
+    _run_speed = player -> composite_movement_speed();
   }
-  else assert( _leech == player -> composite_run_speed() );
+  else assert( _run_speed == player -> composite_movement_speed() );
   return _run_speed;
 }
 
 double player_stat_cache_t::avoidance() const
 {
-  if ( !active || !valid[CACHE_AVOIDANCE] )
+  if ( !active || !valid[ CACHE_AVOIDANCE ] )
   {
-    valid[CACHE_AVOIDANCE] = true;
+    valid[ CACHE_AVOIDANCE ] = true;
     _avoidance = player -> composite_avoidance();
   }
   else assert( _avoidance == player -> composite_avoidance() );
