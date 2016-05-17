@@ -30,10 +30,8 @@
 //
 // Marksmanship
 //  Talents
-//   - Black Arrow
 //   - Heightened Vulnerability
 //   - Volley
-//   - Update Trick Shot behavior
 //  Artifacts
 //   - Call of the Hunter (NYI still)
 //
@@ -138,6 +136,7 @@ public:
   std::array< pet_t*, 10 > thunderhawk;
 
   pet_t* hati;
+  pet_t* dark_minion;
 
   // Tier 15 4-piece bonus
   attack_t* action_lightning_arrow_aimed_shot;
@@ -370,7 +369,7 @@ public:
 
     // Marksmanship
     artifact_power_t windburst;
-    artifact_power_t whispers_of_the_past;
+    artifact_power_t legacy_of_the_windrunners;
     artifact_power_t call_of_the_hunter;
     artifact_power_t bullseye;
     artifact_power_t deadly_aim;
@@ -381,6 +380,7 @@ public:
     artifact_power_t marked_for_death;
     artifact_power_t precision;
     artifact_power_t rapid_killing;
+    artifact_power_t mark_of_the_windrunner;
 
     // Survival
     artifact_power_t fury_of_the_eagle;
@@ -411,6 +411,7 @@ public:
     pet_dire_beasts(),
     thunderhawk(),
     hati(),
+    dark_minion(),
     action_lightning_arrow_aimed_shot(),
     action_lightning_arrow_arcane_shot(),
     action_lightning_arrow_multi_shot(),
@@ -1702,6 +1703,7 @@ void hunter_main_pet_t::init_spells()
   }
 }
 
+
 // ==========================================================================
 // Dire Critter
 // ==========================================================================
@@ -1776,6 +1778,7 @@ struct dire_critter_t: public hunter_pet_t
   }
 };
 
+
 // ==========================================================================
 // Hati 
 // ==========================================================================
@@ -1805,6 +1808,62 @@ struct hati_t: public hunter_pet_t
 
   hati_t( hunter_t& owner ):
   hunter_pet_t( *owner.sim, owner, std::string( "hati" ), PET_HUNTER, true /*GUARDIAN*/ )
+  {
+    owner_coeff.ap_from_ap = 1.0;
+    regen_type = REGEN_DISABLED;
+  }
+
+  virtual void init_base_stats() override
+  {
+    hunter_pet_t::init_base_stats();
+
+    stamina_per_owner = 0;
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, o() -> level() );
+    main_hand_weapon.max_dmg    = main_hand_weapon.min_dmg;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 2 );
+
+    main_hand_attack = new melee_t( *this );
+  }
+
+  virtual void summon( timespan_t duration = timespan_t::zero() ) override
+  {
+    hunter_pet_t::summon( duration );
+
+    // attack immediately on summons
+    main_hand_attack -> execute();
+  }
+};
+
+// ==========================================================================
+// Dark Minion
+// ==========================================================================
+
+struct dark_minion_t: public hunter_pet_t
+{
+  struct melee_t: public hunter_pet_action_t < dark_minion_t, melee_attack_t >
+  {
+    melee_t( dark_minion_t& p ):
+      base_t( "dark_minion_melee", p )
+    {
+      weapon = &( player -> main_hand_weapon );
+      weapon_multiplier = 0;
+      base_execute_time = weapon -> swing_time;
+      base_dd_min = base_dd_max = player -> dbc.spell_scaling( p.o() -> type, p.o() -> level() );
+      attack_power_mod.direct = 0.5714;
+      school = SCHOOL_PHYSICAL;
+      trigger_gcd = timespan_t::zero();
+      background = true;
+      repeating = true;
+      may_glance = true;
+      may_crit = true;
+      special = false;
+      base_multiplier *= 1.15;
+    }
+  };
+
+  dark_minion_t( hunter_t& owner ):
+  hunter_pet_t( *owner.sim, owner, std::string( "dark_minion" ), PET_HUNTER, true /*GUARDIAN*/ )
   {
     owner_coeff.ap_from_ap = 1.0;
     regen_type = REGEN_DISABLED;
@@ -2401,14 +2460,22 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 
 struct black_arrow_t: public hunter_ranged_attack_t
 {
+  timespan_t duration;
   black_arrow_t( hunter_t* player, const std::string& options_str ):
-    hunter_ranged_attack_t( "black_arrow", player, player -> find_class_spell( "Black Arrow" ) )
+    hunter_ranged_attack_t( "black_arrow", player, player -> find_talent_spell( "Black Arrow" ) )
   {
     parse_options( options_str );
-    proc = true;
+    cooldown -> hasted = true;
     tick_may_crit = true;
     hasted_ticks = false;
-    // TODO not correctly specified
+    duration = this -> dot_duration;
+  }
+
+  virtual void execute() override
+  {
+    hunter_ranged_attack_t::execute();
+
+    p() -> dark_minion -> summon( duration );
   }
 };
 
@@ -2961,14 +3028,25 @@ struct sidewinders_t: hunter_ranged_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      // Hunter's Mark applies on cast to all affected targets or none based on RPPM (8*haste).
-      // This loop goes through the target list for multi-shot and applies the debuffs on proc.
+      bool marking;
+
       if ( p() -> buffs.trueshot -> up() || p() -> buffs.marking_targets -> up() )
+        marking = true;
+
+      std::vector<player_t*> sidewinder_targets = execute_state -> action -> target_list();
+      for ( size_t i = 0; i < sidewinder_targets.size(); i++ )
       {
-        std::vector<player_t*> sidewinder_targets = execute_state -> action -> target_list();
-        for ( size_t i = 0; i < sidewinder_targets.size(); i++ )
+        if(marking)
           td( sidewinder_targets[i] ) -> debuffs.hunters_mark -> trigger();
 
+        if( p() -> talents.patient_sniper -> ok() )
+          td( sidewinder_targets[i] ) -> debuffs.deadeye -> trigger();
+        else
+          td( sidewinder_targets[i] ) -> debuffs.vulnerable -> trigger();
+      }
+
+      if(marking)
+      {
         p() -> procs.hunters_mark -> occur();
         p() -> buffs.hunters_mark_exists -> trigger();
         p() -> buffs.marking_targets -> expire();
@@ -3729,6 +3807,9 @@ void hunter_t::create_pets()
 
   if ( titanstrike )
     hati = new pets::hati_t( *this );
+
+  if ( talents.black_arrow -> ok() )
+    dark_minion = new pets::dark_minion_t( *this );
 }
 
 // hunter_t::init_spells ====================================================
@@ -3751,21 +3832,22 @@ void hunter_t::init_spells()
   talents.throwing_axes                     = find_talent_spell( "Throwing Axes" );
 
   //Tier 2
-  talents.posthaste                         = find_talent_spell( "Posthaste" );
-  talents.farstrider                        = find_talent_spell( "Farstrider" );
-  talents.dash                              = find_talent_spell( "Dash" );
-
-  //Tier 3
   talents.stomp                             = find_talent_spell( "Stomp" );
   talents.exotic_munitions                  = find_talent_spell( "Exotic Munitions" );
   talents.chimaera_shot                     = find_talent_spell( "Chimaera Shot" );
 
+  talents.black_arrow                       = find_talent_spell( "Black Arrow" );
   talents.explosive_shot                    = find_talent_spell( "Explosive Shot" );
   talents.trick_shot                        = find_talent_spell( "Trick Shot" );
 
   talents.caltrops                          = find_talent_spell( "Caltrops" );
   talents.steel_trap                        = find_talent_spell( "Steel Trap" );
   talents.improved_traps                    = find_talent_spell( "Improved Traps" );
+
+  //Tier 3
+  talents.posthaste                         = find_talent_spell( "Posthaste" );
+  talents.farstrider                        = find_talent_spell( "Farstrider" );
+  talents.dash                              = find_talent_spell( "Dash" );
 
   //Tier 4
   talents.intimidation                      = find_talent_spell( "Intimidation" );
