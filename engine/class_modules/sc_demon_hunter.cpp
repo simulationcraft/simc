@@ -529,6 +529,8 @@ struct soul_fragment_t
 
     void execute() override
     {
+      assert( ( * frag -> get_vector() ).size() > 0 );
+
       // Remove this element from the beginning of the fragment vector.
       ( * frag -> get_vector() ).erase( ( * frag -> get_vector() ).begin() );
     }
@@ -576,9 +578,13 @@ struct soul_fragment_t
   ~soul_fragment_t()
   {
     if ( spawn )
+    {
       event_t::cancel( spawn );
+    }
     else if ( expiration )
+    {
       event_t::cancel( expiration );
+    }
   }
 
   std::vector<soul_fragment_t*>* get_vector() const
@@ -1080,8 +1086,6 @@ struct consume_soul_t : public demon_hunter_heal_t
 
   void execute() override
   {
-    assert( *soul_counter > 0 );
-
     bool trigger_soul_barrier =
       p() -> talent.soul_barrier -> ok() && p() -> health_percentage() == 100;
 
@@ -3972,11 +3976,8 @@ void demon_hunter_t::create_buffs()
 
 expr_t* demon_hunter_t::create_expression( action_t* a, const std::string& name_str )
 {
-  if ( name_str == "soul_fragments" )
-  {
-    return make_mem_fn_expr( name_str, *this, &demon_hunter_t::get_soul_fragments );
-  }
-  else if ( name_str == "soul_fragments_greater" || name_str == "soul_fragments_lesser" )
+  if ( name_str == "greater_soul_fragments" ||  name_str == "lesser_soul_fragments" ||
+    name_str == "soul_fragments" )
   {
     struct soul_fragments_expr_t : public expr_t
     {
@@ -3991,8 +3992,12 @@ expr_t* demon_hunter_t::create_expression( action_t* a, const std::string& name_
       { return dh -> get_soul_fragments( type ); }
     };
 
-    return new soul_fragments_expr_t( this, name_str,
-      name_str == "soul_fragments_greater" ? SOUL_FRAGMENT_GREATER : SOUL_FRAGMENT_LESSER );
+    soul_fragment_e type;
+    if      ( name_str == "soul_fragments"         ) { type = SOUL_FRAGMENT_ALL;     }
+    else if ( name_str == "greater_soul_fragments" ) { type = SOUL_FRAGMENT_GREATER; }
+    else if ( name_str == "lesser_soul_fragments"  ) { type = SOUL_FRAGMENT_LESSER;  }
+
+    return new soul_fragments_expr_t( this, name_str, type );
   }
 
   return player_t::create_expression( a, name_str );
