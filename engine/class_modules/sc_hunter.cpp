@@ -2545,26 +2545,26 @@ struct trick_shot_t: public hunter_ranged_attack_t
   }
 };
 
-// Aimed Shot ========================================================================
-
-// (WIP) This is the ability that is proc'd by the MM artifact. 
+// Legacy of the Windrunners ==========================================================
 // Affected by:
 //   Deadeye
-//   True Aim (procs True Aim, as well)
+//   True Aim
 //   Deadly Aim
 //   Mastery
 // Not affected by:
 //   Vulnerable
 //   Careful Aim
-struct aimed_shot_artifact_proc_t: hunter_ranged_attack_t
+struct legacy_of_the_windrunners_t: hunter_ranged_attack_t
 {
-  aimed_shot_artifact_proc_t( hunter_t* p, const std::string& name ):
+  legacy_of_the_windrunners_t( hunter_t* p, const std::string& name ):
     hunter_ranged_attack_t( name, p, p -> find_spell( 191043 ) )
   {
     background = true;
     proc = true;
 
-    // No need to check for Artifact since this only triggers with Artifact equipped
+    //Rather than simulate 6 attacks, just treat it as one attack
+    base_multiplier *= 6;
+
     // Deadly Aim
     crit_bonus_multiplier *= 1.0 + p -> artifacts.deadly_aim.percent();
   }
@@ -2573,9 +2573,7 @@ struct aimed_shot_artifact_proc_t: hunter_ranged_attack_t
   {
     p() -> procs.aimed_shot_artifact -> occur();
 
-    // One proc triggers 6 projectiles
-    for ( int i = 0; i < p() -> thasdorah -> driver() -> effectN( 1 ).base_value(); i++ )
-      hunter_ranged_attack_t::execute();
+    hunter_ranged_attack_t::execute();
   }
 
   virtual void impact( action_state_t* s )
@@ -2628,7 +2626,7 @@ struct aimed_shot_artifact_proc_t: hunter_ranged_attack_t
     double cm = hunter_ranged_attack_t::composite_crit_multiplier();
 
     if ( p() -> thasdorah )
-      cm *= 1.0 + p() -> find_artifact_spell( "Deadly Aim" ).rank() * 0.03;
+      cm *= 1.0 + p() -> find_artifact_spell( "Deadly Aim" ).percent();
 
     return cm;
   }
@@ -2638,12 +2636,12 @@ struct aimed_shot_t: public hunter_ranged_attack_t
 {
   benefit_t* aimed_in_ca;
 
-  aimed_shot_artifact_proc_t* aimed_shot_artifact_proc;
+  legacy_of_the_windrunners_t* legacy_of_the_windrunners;
 
   aimed_shot_t( hunter_t* p, const std::string& options_str ):
     hunter_ranged_attack_t( "aimed_shot", p, p -> find_specialization_spell( "Aimed Shot" ) ),
     aimed_in_ca( p -> get_benefit( "aimed_in_careful_aim" ) ),
-    aimed_shot_artifact_proc( nullptr )
+    legacy_of_the_windrunners( nullptr )
   {
     parse_options( options_str );
 
@@ -2658,14 +2656,15 @@ struct aimed_shot_t: public hunter_ranged_attack_t
     if ( p -> thasdorah )
     {
       // Deadly Aim
-      crit_bonus_multiplier *= 1.0 + p -> artifacts.deadly_aim.percent();
+      if ( p -> artifacts.deadly_aim.rank() )
+        crit_bonus_multiplier *= 1.0 + p -> artifacts.deadly_aim.percent();
 
-      // Precision
-      base_costs[ RESOURCE_FOCUS ] += p -> artifacts.precision.value();
-
-      // Weapon passive
-      aimed_shot_artifact_proc = new aimed_shot_artifact_proc_t( p, "artifact" );
-      add_child( aimed_shot_artifact_proc );
+      // Legacy of the Windrunners
+      if( p -> artifacts.legacy_of_the_windrunners.rank() )
+      {
+        legacy_of_the_windrunners = new legacy_of_the_windrunners_t( p, "artifact" );
+        add_child( legacy_of_the_windrunners );
+      }
     }
   }
 
@@ -2712,8 +2711,8 @@ struct aimed_shot_t: public hunter_ranged_attack_t
 
     // Thas'dorah's proc has a 1/6 chance to fire 6 mini Aimed Shots. 
     // Proc chance missing from spell data.
-    if ( aimed_shot_artifact_proc && rng().roll( 0.167 ) )
-      aimed_shot_artifact_proc -> execute();
+    if ( legacy_of_the_windrunners && rng().roll( 0.167 ) )
+      legacy_of_the_windrunners -> execute();
   }
 
   virtual double composite_target_da_multiplier( player_t* t ) const override
@@ -2890,6 +2889,16 @@ struct marked_shot_t: public hunter_ranged_attack_t
       return hunter_ranged_attack_t::ready();
 
     return false;
+  }
+
+  virtual double composite_crit() const override
+  {
+    double cc = hunter_ranged_attack_t::composite_crit();
+
+    if( p() -> thasdorah )
+      cc += p() -> artifacts.precision.percent();
+
+    return cc;
   }
 
   virtual double composite_target_crit( player_t* t ) const override
@@ -3930,18 +3939,18 @@ void hunter_t::init_spells()
   artifacts.focus_of_the_titans      = find_artifact_spell( "Focus of the Titans" );
   artifacts.furious_swipes           = find_artifact_spell( "Furious Swipes" );
 
-  artifacts.windburst                = find_artifact_spell( "Windburst" );
-  artifacts.whispers_of_the_past     = find_artifact_spell( "Whispers of the Past" );
-  artifacts.call_of_the_hunter       = find_artifact_spell( "Call of the Hunter" );
-  artifacts.bullseye                 = find_artifact_spell( "Bullseye" );
-  artifacts.deadly_aim               = find_artifact_spell( "Deadly Aim" );
-  artifacts.quick_shot               = find_artifact_spell( "Quick Shot" );
-  artifacts.critical_focus           = find_artifact_spell( "Critical Focus" );
-  artifacts.windrunners_guidance     = find_artifact_spell( "Windrunner's Guidance" );
-  artifacts.call_the_targets         = find_artifact_spell( "Call the Targets" );
-  artifacts.marked_for_death         = find_artifact_spell( "Marked for Death" );
-  artifacts.precision                = find_artifact_spell( "Precision" );
-  artifacts.rapid_killing            = find_artifact_spell( "Rapid Killing" );
+  artifacts.windburst                 = find_artifact_spell( "Windburst" );
+  artifacts.legacy_of_the_windrunners = find_artifact_spell( "Legacy of the Windrunners" );
+  artifacts.call_of_the_hunter        = find_artifact_spell( "Call of the Hunter" );
+  artifacts.bullseye                  = find_artifact_spell( "Bullseye" );
+  artifacts.deadly_aim                = find_artifact_spell( "Deadly Aim" );
+  artifacts.quick_shot                = find_artifact_spell( "Quick Shot" );
+  artifacts.critical_focus            = find_artifact_spell( "Critical Focus" );
+  artifacts.windrunners_guidance      = find_artifact_spell( "Windrunner's Guidance" );
+  artifacts.call_the_targets          = find_artifact_spell( "Call the Targets" );
+  artifacts.marked_for_death          = find_artifact_spell( "Marked for Death" );
+  artifacts.precision                 = find_artifact_spell( "Precision" );
+  artifacts.rapid_killing             = find_artifact_spell( "Rapid Killing" );
 
   artifacts.fury_of_the_eagle        = find_artifact_spell( "Fury of the Eagle" );
   artifacts.talon_strike             = find_artifact_spell( "Talon Strike" );
@@ -4862,7 +4871,7 @@ struct hunter_module_t: public module_t
     unique_gear::register_special_effect( 184900, beastlord );
     unique_gear::register_special_effect( 184901, longview );
     unique_gear::register_special_effect( 184902, blackness );
-    unique_gear::register_special_effect( 190852, thasdorah );
+    unique_gear::register_special_effect( 214812, thasdorah );
     unique_gear::register_special_effect( 197344, titanstrike );
   }
 
