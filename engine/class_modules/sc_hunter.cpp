@@ -166,6 +166,7 @@ public:
     buff_t* careful_aim;
     buff_t* steady_focus;
     buff_t* pre_steady_focus;
+    buff_t* marking_targets;
     buff_t* hunters_mark_exists;
     buff_t* lock_and_load;
     buff_t* stampede;
@@ -2043,9 +2044,17 @@ struct auto_shot_t: public ranged_t
     range = 40.0;
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void execute() override
   {
-    hunter_ranged_attack_t::impact( s );
+    ranged_t::execute();
+
+    if ( p() -> specialization() == HUNTER_MARKSMANSHIP && p() -> ppm_hunters_mark -> trigger() )
+      p() -> buffs.marking_targets -> trigger();
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    ranged_t::impact( s );
 
     if ( rng().roll( p() -> talents.lock_and_load -> proc_chance() ) )
     {
@@ -2188,7 +2197,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
       // Multi-shot also grants 2 focus per target hit on cast.
       if ( p() -> specialization() == HUNTER_MARKSMANSHIP )
       {
-        if ( p() -> buffs.trueshot -> up() || p() -> ppm_hunters_mark -> trigger() )
+        if ( p() -> buffs.trueshot -> up() || p() -> buffs.marking_targets -> up() )
         {
           std::vector<player_t*> multi_shot_targets = execute_state -> action -> target_list();
           for ( size_t i = 0; i < multi_shot_targets.size(); i++ )
@@ -2196,6 +2205,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
 
           p() -> procs.hunters_mark -> occur();
           p() -> buffs.hunters_mark_exists -> trigger();
+          p() -> buffs.marking_targets -> expire();
         }
       }
     }
@@ -2690,11 +2700,12 @@ struct arcane_shot_t: public hunter_ranged_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( p() -> buffs.trueshot -> up() || p() -> ppm_hunters_mark -> trigger() )
+      if ( p() -> buffs.trueshot -> up() || p() -> buffs.marking_targets -> up() )
       {
         td( execute_state -> target ) -> debuffs.hunters_mark -> trigger();
         p() -> procs.hunters_mark -> occur();
         p() -> buffs.hunters_mark_exists -> trigger();
+        p() -> buffs.marking_targets -> expire();
       }
       
       double focus_multiplier = 1.0;
@@ -2952,7 +2963,7 @@ struct sidewinders_t: hunter_ranged_attack_t
     {
       // Hunter's Mark applies on cast to all affected targets or none based on RPPM (8*haste).
       // This loop goes through the target list for multi-shot and applies the debuffs on proc.
-      if ( p() -> buffs.trueshot -> up() || p() -> ppm_hunters_mark -> trigger() )
+      if ( p() -> buffs.trueshot -> up() || p() -> buffs.marking_targets -> up() )
       {
         std::vector<player_t*> sidewinder_targets = execute_state -> action -> target_list();
         for ( size_t i = 0; i < sidewinder_targets.size(); i++ )
@@ -2960,6 +2971,7 @@ struct sidewinders_t: hunter_ranged_attack_t
 
         p() -> procs.hunters_mark -> occur();
         p() -> buffs.hunters_mark_exists -> trigger();
+        p() -> buffs.marking_targets -> expire();
       }
 
       trigger_steady_focus( false );
@@ -3932,6 +3944,7 @@ void hunter_t::create_buffs()
   buffs.pre_steady_focus            = buff_creator_t( this, "pre_steady_focus" ).max_stack( 3 ).quiet( true );
 
   buffs.hunters_mark_exists         = buff_creator_t( this, 185365, "hunters_mark_exists" ).quiet( true );
+  buffs.marking_targets             = buff_creator_t( this, 223138, "marking_targets" );
 
   buffs.lock_and_load               = buff_creator_t( this, 194594, "lock_and_load" ).max_stack( 2 );
 
