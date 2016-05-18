@@ -106,9 +106,12 @@ struct mage_td_t : public actor_target_data_t
   struct debuffs_t
   {
     buff_t* slow;
-    buff_t* frost_bomb;
+
     buff_t* firestarter;
-    buff_t* water_jet; // Proxy Water Jet to compensate for expression system
+
+    buff_t* chilled,
+          * frost_bomb,
+          * water_jet; // Proxy Water Jet to compensate for expression system
   } debuffs;
 
   mage_td_t( player_t* target, mage_t* mage );
@@ -1414,7 +1417,7 @@ temporal_hero_t::hero_e temporal_hero_t::last_summoned;
 
 } // pets
 
-// Custom Arcane Missiles Buff ====================================================
+// Arcane Missiles Buff =======================================================
 struct arcane_missiles_buff_t : public buff_t
 {
   arcane_missiles_buff_t( mage_t* p ) :
@@ -1452,6 +1455,31 @@ struct arcane_missiles_buff_t : public buff_t
       chance = proc_chance();
     }
     return buff_t::trigger( stacks, value, chance, duration );
+  }
+};
+
+
+// Chilled debuff =============================================================
+
+struct chilled_t : public buff_t
+{
+  chilled_t( mage_td_t* td ) :
+    buff_t( buff_creator_t( *td, "chilled",
+                            td -> source -> find_spell( 205708 ) ) )
+  {}
+
+  bool trigger( int stacks, double value,
+                double chance, timespan_t duration ) override
+  {
+    sim -> out_debug.printf("SOURCE OF chill IS %s", source -> name() );
+    mage_t* p = debug_cast<mage_t*>( source );
+
+    if ( p -> talents.bone_chilling -> ok() )
+    {
+      p -> buffs.bone_chilling -> trigger();
+    }
+
+    return buff_t::trigger(stacks, value, chance, duration );
   }
 };
 
@@ -1851,9 +1879,11 @@ struct fire_mage_spell_t : public mage_spell_t
 
 struct frost_mage_spell_t : public mage_spell_t
 {
+  bool chills;
+
   frost_mage_spell_t( const std::string& n, mage_t* p,
                       const spell_data_t* s = spell_data_t::nil() ) :
-    mage_spell_t( n, p, s )
+    mage_spell_t( n, p, s ), chills( false )
   {}
 
   void trigger_fof( const std::string& source, double chance, int stacks = 1 )
@@ -1915,7 +1945,15 @@ struct frost_mage_spell_t : public mage_spell_t
     return am;
   }
 
+  virtual void impact( action_state_t* state ) override
+  {
+    mage_spell_t::impact( state );
 
+    if ( result_is_hit( state -> result ) && chills )
+    {
+      td( state -> target ) -> debuffs.chilled -> trigger();
+    }
+  }
 };
 
 // Icicles ==================================================================
@@ -2682,6 +2720,7 @@ struct blizzard_shard_t : public frost_mage_spell_t
     background = true;
     ground_aoe = true;
     base_multiplier *= 1.0 + p -> talents.arctic_gale -> effectN( 1 ).percent();
+    chills = true;
   }
 
   // Override damage type because Blizzard is considered a DOT
@@ -2699,19 +2738,6 @@ struct blizzard_shard_t : public frost_mage_spell_t
       double fof_proc_chance = p() -> spec.fingers_of_frost
                                    -> effectN( 2 ).percent();
       trigger_fof( "Blizzard", fof_proc_chance );
-    }
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    frost_mage_spell_t::impact( s );
-
-    if ( result_is_hit ( s -> result ) )
-    {
-      if ( p() -> talents.bone_chilling -> ok() )
-      {
-        p() -> buffs.bone_chilling -> trigger();
-      }
     }
   }
 
@@ -2905,21 +2931,15 @@ struct comet_storm_t : public frost_mage_spell_t
 
 // Cone of Cold Spell =======================================================
 
-struct cone_of_cold_t : public mage_spell_t
+struct cone_of_cold_t : public frost_mage_spell_t
 {
   cone_of_cold_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "cone_of_cold", p, p -> find_class_spell( "Cone of Cold" ) )
+    frost_mage_spell_t( "cone_of_cold", p,
+                        p -> find_class_spell( "Cone of Cold" ) )
   {
     parse_options( options_str );
     aoe = -1;
-  }
-  virtual void impact( action_state_t* s ) override
-  {
-    mage_spell_t::impact( s );
-    if ( p() -> talents.bone_chilling -> ok() )
-    {
-      p() -> buffs.bone_chilling -> trigger();
-    }
+    chills = true;
   }
 };
 
@@ -2961,7 +2981,6 @@ struct dragons_breath_t : public fire_mage_spell_t
 };
 
 // Ebonbolt Spell ===========================================================
-// TODO: Is ebonbolt buffed by things like bone chilled?
 struct ebonbolt_t : public frost_mage_spell_t
 {
   ebonbolt_t( mage_t* p, const std::string& options_str ) :
@@ -2972,6 +2991,9 @@ struct ebonbolt_t : public frost_mage_spell_t
     {
       background=true;
     }
+
+    // Doesn't apply chill debuff but benefits from Bone Chilling somehow
+    chills = true;
   }
 
   virtual void execute() override
@@ -3287,6 +3309,7 @@ struct frostbolt_t : public frost_mage_spell_t
     icicle -> action_list.push_back( p -> icicle );
     base_multiplier *= 1.0 + p -> talents.lonely_winter -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> artifact.icy_caress.percent();
+    chills = true;
   }
 
   virtual timespan_t execute_time() const override
@@ -3345,11 +3368,6 @@ struct frostbolt_t : public frost_mage_spell_t
       if ( p() -> talents.unstable_magic -> ok() )
       {
         trigger_unstable_magic( s );
-      }
-
-      if ( p() -> talents.bone_chilling -> ok() )
-      {
-        p() -> buffs.bone_chilling -> trigger();
       }
 
       trigger_icicle_gain( s, icicle );
@@ -3428,7 +3446,7 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     base_multiplier *= 1.0 + p -> talents.lonely_winter -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> talents.bitter_cold -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> artifact.orbital_strike.percent();
-
+    chills = true;
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3440,10 +3458,6 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
       double fof_proc_chance = p() -> spec.fingers_of_frost
                                    -> effectN( 2 ).percent();
       trigger_fof( "Frozen Orb Tick", fof_proc_chance );
-      if ( p() -> talents.bone_chilling -> ok() )
-      {
-        p() -> buffs.bone_chilling -> trigger();
-      }
     }
   }
 
@@ -5440,11 +5454,16 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   dots.nether_tempest = target -> get_dot( "nether_tempest", mage );
   dots.frozen_orb     = target -> get_dot( "frozen_orb",     mage );
 
-  debuffs.frost_bomb = buff_creator_t( *this, "frost_bomb" ).spell( mage -> talents.frost_bomb );
-  debuffs.firestarter = buff_creator_t( *this, "firestarter" ).chance( 1.0 ).duration( timespan_t::from_seconds( 10.0 ) );
-  debuffs.water_jet = buff_creator_t( *this, "water_jet", source -> find_spell( 135029 ) )
-                      .quiet( true )
-                      .cd( timespan_t::zero() );
+  debuffs.frost_bomb  = buff_creator_t( *this, "frost_bomb",
+                                        mage -> talents.frost_bomb );
+  debuffs.chilled     = new chilled_t( this );
+  debuffs.firestarter = buff_creator_t( *this, "firestarter" )
+                          .chance( 1.0 )
+                          .duration( timespan_t::from_seconds( 10.0 ) );
+  debuffs.water_jet   = buff_creator_t( *this, "water_jet",
+                                        mage -> find_spell( 135029 ) )
+                          .quiet( true )
+                          .cd( timespan_t::zero() );
 }
 
 // mage_t::create_action ====================================================
