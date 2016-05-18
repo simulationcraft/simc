@@ -186,6 +186,7 @@ void special_effect_t::reset()
   execute_action = nullptr;
   custom_buff = nullptr;
   custom_init = nullptr;
+  custom_init_object = nullptr;
 }
 
 // special_effect_t::driver =================================================
@@ -858,6 +859,12 @@ std::string special_effect_t::name() const
     n = trigger() -> name_cstr();
 
   util::tokenize( n );
+
+  // As a last resort, try to make the special effect name out of spell_id
+  if ( n.empty() && spell_id > 0 )
+  {
+    n = "unknown_special_effect_" + util::to_string( spell_id );
+  }
 
   // Assert on empty names; we do need a reasonable name for the proc.
   assert( ! n.empty() );

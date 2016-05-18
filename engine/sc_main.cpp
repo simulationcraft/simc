@@ -151,6 +151,15 @@ private:
   std::string _file_name;
 };
 
+struct special_effect_initializer_t
+{
+  special_effect_initializer_t()
+  { unique_gear::register_special_effects(); }
+
+  ~special_effect_initializer_t()
+  { unique_gear::unregister_special_effects(); }
+};
+
 } // anonymous namespace ====================================================
 
 // sim_t::main ==============================================================
@@ -163,7 +172,8 @@ int sim_t::main( const std::vector<std::string>& args )
   dbc_initializer_t dbc_init;
   module_t::init();
   unique_gear::register_hotfixes();
-  unique_gear::register_special_effects();
+
+  special_effect_initializer_t special_effect_init;
 
   sim_control_t control;
 

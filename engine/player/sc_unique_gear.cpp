@@ -4079,10 +4079,10 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
     {
       // Custom special effect initialization is deferred, and no parsing from
       // spell data is done automatically.
-      if ( dbitem.custom_cb )
+      if ( dbitem.cb_obj )
       {
         effect.type = SPECIAL_EFFECT_CUSTOM;
-        effect.custom_init = dbitem.custom_cb;
+        effect.custom_init_object = dbitem.cb_obj;
       }
 
       // Parse auxilary effect options before doing spell data based parsing
@@ -4103,6 +4103,16 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
   // first phase options.
   if ( effect.spell_id == 0 )
     effect.spell_id = spell_id;
+
+  if ( effect.custom_init_object && ! effect.custom_init_object -> valid( effect ) )
+  {
+    if ( p -> sim -> debug )
+      p -> sim -> out_debug.printf( "Player %s unable to initialize special effect in item %s, "
+                                    "special effect fails validity check.",
+          p -> name(), effect.item ? effect.item -> name() : "unknown" );
+    effect.type = SPECIAL_EFFECT_NONE;
+    return ret;
+  }
 
   if ( effect.spell_id > 0 && p -> find_spell( effect.spell_id ) -> id() != effect.spell_id )
   {
@@ -4131,8 +4141,15 @@ void unique_gear::initialize_special_effect_2( special_effect_t* effect )
 {
   if ( effect -> type == SPECIAL_EFFECT_CUSTOM )
   {
-    assert( effect -> custom_init );
-    effect -> custom_init( *effect );
+    assert( effect -> custom_init || effect -> custom_init_object );
+    if ( effect -> custom_init )
+    {
+      effect -> custom_init( *effect );
+    }
+    else
+    {
+      effect -> custom_init_object -> initialize( *effect );
+    }
   }
   else if ( effect -> type == SPECIAL_EFFECT_EQUIP )
   {
@@ -4604,9 +4621,19 @@ const special_effect_db_item_t& unique_gear::find_special_effect_db_item( unsign
   return __null_db_item;
 }
 
+void unique_gear::add_effect( const special_effect_db_item_t& dbitem )
+{
+  __special_effect_db.push_back( dbitem );
+}
+
 void unique_gear::register_special_effect( unsigned           spell_id,
-                                           const custom_cb_t& init_callback,
-                                           const custom_cb_t& fallback_callback )
+                                           const custom_fp_t& init_callback )
+{
+  register_special_effect( spell_id, custom_cb_t( init_callback ) );
+}
+
+void unique_gear::register_special_effect( unsigned           spell_id,
+                                           const custom_cb_t& init_callback )
 {
   if ( find_special_effect_db_item( spell_id ).spell_id == spell_id )
   {
@@ -4615,8 +4642,7 @@ void unique_gear::register_special_effect( unsigned           spell_id,
 
   special_effect_db_item_t dbitem;
   dbitem.spell_id = spell_id;
-  dbitem.custom_cb = init_callback;
-  dbitem.fallback_cb = fallback_callback;
+  dbitem.cb_obj = new wrapper_callback_t( init_callback );
 
   __special_effect_db.push_back( dbitem );
 }
@@ -4915,6 +4941,12 @@ void unique_gear::register_special_effects()
   register_special_effect( 221535, set_bonus::passive_stat_aura     );
 }
 
+void unique_gear::unregister_special_effects()
+{
+  for ( auto& dbitem: __special_effect_db )
+    delete dbitem.cb_obj;
+}
+
 void unique_gear::register_hotfixes()
 {
 }
@@ -4967,11 +4999,6 @@ void unique_gear::initialize_special_effect_fallbacks( player_t* actor )
 
   for ( const auto& elem: __special_effect_db )
   {
-    if ( ! elem.fallback_cb )
-    {
-      continue;
-    }
-
     if ( find_special_effect( actor, elem.spell_id ) )
     {
       continue;
@@ -4980,7 +5007,15 @@ void unique_gear::initialize_special_effect_fallbacks( player_t* actor )
     fallback_effect.reset();
     fallback_effect.spell_id = elem.spell_id;
     fallback_effect.type = SPECIAL_EFFECT_CUSTOM;
-    fallback_effect.custom_init = elem.fallback_cb;
+
+    // Fallbacks are only used for the new-style callback objects, old method-style callbacks do not
+    // support them.
+    if ( ! elem.cb_obj || ! elem.fallback || ! elem.cb_obj-> valid( fallback_effect ) )
+    {
+      continue;
+    }
+
+    fallback_effect.custom_init_object = elem.cb_obj;
 
     actor -> special_effects.push_back( new special_effect_t( fallback_effect ) );
   }

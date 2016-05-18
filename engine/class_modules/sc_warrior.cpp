@@ -89,7 +89,7 @@ public:
     buff_t* focused_rage;
     buff_t* frenzy;
     buff_t* frothing_berserker;
-    buff_t* fury_trinket;
+    haste_buff_t* fury_trinket;
     buff_t* heroic_leap_movement;
     buff_t* intervene_movement;
     buff_t* juggernaut;
@@ -5208,23 +5208,22 @@ static void manacles_of_mannoroth_the_flayer( special_effect_t& effect )
 
 // WARRIOR MODULE INTERFACE =================================================
 
-struct fury_trinket_t : public unique_gear::class_buff_cb_t<warrior_t>
+struct fury_trinket_t : public unique_gear::class_buff_cb_t<warrior_t, haste_buff_t, haste_buff_creator_t>
 {
   fury_trinket_t() : super( WARRIOR_FURY, "berserkers_fury" ) { }
 
   // Assign to warrior_t::buff.fury_trinket
-  buff_t*& buff_ptr( const special_effect_t& ) override
+  haste_buff_t*& buff_ptr( const special_effect_t& ) override
   { return actor -> buff.fury_trinket; }
 
   // Customize the buff that is about to be created. Both fallback and real buff will use the same
   // creator, but the fallback buff creator will additionally assign the proc chance for the buff to
   // zero, essentially disabling it.
-  buff_creator_t creator( const special_effect_t& e ) const override
+  haste_buff_creator_t creator( const special_effect_t& e ) const override
   {
     return super::creator( e )
       .spell( e.driver() -> effectN( 1 ).trigger() )
-      .default_value( e.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).average( e.item ) / 100.0 )
-      .add_invalidate( CACHE_HASTE );
+      .default_value( e.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).average( e.item ) / 100.0 );
   }
 }; 
 
@@ -5318,20 +5317,20 @@ struct warrior_module_t: public module_t
 
   virtual void static_init() const override
   {
-    unique_gear::register_special_effect( 184926, fury_trinket_t(), fury_trinket_t() );
+    unique_gear::register_special_effect( 184926, fury_trinket_t(), true );
     unique_gear::register_special_effect( 184925, arms_trinket );
     unique_gear::register_special_effect( 184927, prot_trinket );
     unique_gear::register_special_effect( 209579, stromkar_the_warbreaker );
     unique_gear::register_special_effect( 207326, archavons_heavy_hand );
     unique_gear::register_special_effect( 205597, groms_wartorn_pauldrons );
-    unique_gear::register_special_effect( 207841, bindings_of_kakushan_t(), bindings_of_kakushan_t() );
-    unique_gear::register_special_effect( 207845, kargaths_sacrificed_hands_t(), kargaths_sacrificed_hands_t() );
+    unique_gear::register_special_effect( 207841, bindings_of_kakushan_t(), true );
+    unique_gear::register_special_effect( 207845, kargaths_sacrificed_hands_t(), true );
     unique_gear::register_special_effect( 215176, thundergods_vigor );
     unique_gear::register_special_effect( 207779, ceannar_girdle );
-    unique_gear::register_special_effect( 207775, kazzalax_fujiedas_fury_t(), kazzalax_fujiedas_fury_t() );
+    unique_gear::register_special_effect( 207775, kazzalax_fujiedas_fury_t(), true );
     unique_gear::register_special_effect( 215057, the_walls_fell );
-    unique_gear::register_special_effect( 215090, destiny_driver_t(), destiny_driver_t() );
-    unique_gear::register_special_effect( 207428, prydaz_xavarics_magnum_opus_t(), prydaz_xavarics_magnum_opus_t() );
+    unique_gear::register_special_effect( 215090, destiny_driver_t(), true );
+    unique_gear::register_special_effect( 207428, prydaz_xavarics_magnum_opus_t(), true );
     unique_gear::register_special_effect( 208908, verjas_protectors_of_the_berserker_king );
     unique_gear::register_special_effect( 215096, najentuss_vertebrae );
     unique_gear::register_special_effect( 207767, ayalas_stone_heart );

@@ -88,6 +88,7 @@ struct proc_t;
 struct reforge_plot_t;
 struct scaling_t;
 struct sim_t;
+struct special_effect_t;
 struct spell_data_t;
 struct spell_id_t;
 struct spelleffect_data_t;
@@ -2402,6 +2403,25 @@ struct weapon_t
 
 // Special Effect ===========================================================
 
+// A special effect callback that will be scoped by the pure virtual valid() method of the class.
+// If the implemented valid() returns false, the special effect initializer callbacks will not be
+// invoked.
+struct scoped_callback_t
+{
+  scoped_callback_t()
+  { }
+
+  virtual ~scoped_callback_t()
+  { }
+
+  // Validate special effect against conditions. Return value of false indicates that the
+  // initializer should not be invoked.
+  virtual bool valid( const special_effect_t& ) const = 0;
+
+  // Initialize the special effect.
+  virtual void initialize( special_effect_t& ) = 0;
+};
+
 struct special_effect_t
 {
   const item_t* item;
@@ -2433,8 +2453,10 @@ struct special_effect_t
   unsigned spell_id, trigger_spell_id;
   action_t* execute_action; // Allows custom action to be executed on use
   buff_t* custom_buff; // Allows custom action
+  // Old-style function-based custom second phase initializer (callback)
   std::function<void(special_effect_t&)> custom_init;
-
+  // New-style object-based custom second phase initializer
+  scoped_callback_t* custom_init_object;
 
   special_effect_t( player_t* p ) :
     item( nullptr ), player( p ),
@@ -6687,45 +6709,21 @@ namespace enchant
 namespace unique_gear
 {
   typedef std::function<void(special_effect_t&)> custom_cb_t;
-  struct special_effect_db_item_t
-  {
-    unsigned    spell_id;
-    std::string encoded_options;
-    //const std::function<void(special_effect_t&, const item_t&, const special_effect_db_item_t&)> custom_cb;
-    custom_cb_t custom_cb; // Initializer if the spell id is available for the actor
-    custom_cb_t fallback_cb;
+  typedef void(*custom_fp_t)(special_effect_t&);
 
-    special_effect_db_item_t() :
-      spell_id( 0 ), encoded_options(), custom_cb( custom_cb_t() )
-    { }
-  };
-
-  // A special effect callback that will be scoped by the pure virtual valid() method of the class.
-  // If the implemented valid() returns false, the special effect initializer callbacks will not be
-  // invoked.
-  struct scoped_callback_t
+  struct wrapper_callback_t : public scoped_callback_t
   {
-    scoped_callback_t()
+    custom_cb_t cb;
+
+    wrapper_callback_t( const custom_cb_t& cb_ ) :
+      scoped_callback_t(), cb( cb_ )
     { }
 
-    // Validate special effect against conditions. Return value of false indicates that the
-    // initializer should not be invoked.
-    virtual bool valid( const special_effect_t& ) const = 0;
+    bool valid( const special_effect_t& ) const override
+    { return true; }
 
-    // Initialize the special effect.
-    virtual void initialize( special_effect_t& ) = 0;
-
-    // Entry point for the callback. Core sim will call this method with the prepared
-    // special_effect_t object.
-    virtual void operator()( special_effect_t& effect )
-    {
-      if ( ! valid( effect ) )
-      {
-        return;
-      }
-
-      initialize( effect );
-    }
+    void initialize( special_effect_t& effect ) override
+    { cb( effect ); }
   };
 
   // A scoped special effect callback that validates against a player class or specialization.
@@ -6849,21 +6847,67 @@ namespace unique_gear
       // Proc chance is hardcoded to zero, essentially disabling the buff described by creator()
       // call.
       buff_ptr( e ) = creator( e ).chance( 0 );
+      if ( e.player -> sim -> debug )
+      {
+        e.player -> sim -> out_debug.printf( "Player %s created fallback buff for %s",
+            e.player -> name(), buff_name.c_str() );
+      }
     }
+  };
+
+  struct special_effect_db_item_t
+  {
+    unsigned    spell_id;
+    std::string encoded_options;
+    scoped_callback_t* cb_obj;
+    bool fallback;
+
+    special_effect_db_item_t() :
+      spell_id( 0 ), encoded_options(), cb_obj( nullptr ), fallback( false )
+    { }
   };
 
 void register_hotfixes();
 void register_special_effects();
+void unregister_special_effects();
+
+void add_effect( const special_effect_db_item_t& );
+const special_effect_db_item_t& find_special_effect_db_item( unsigned spell_id );
+
+// Old-style special effect registering functions
 void register_special_effect( unsigned spell_id, const char* encoded_str );
-void register_special_effect( unsigned spell_id, const custom_cb_t& init_cb, const custom_cb_t& fallback_cb = custom_cb_t() );
+void register_special_effect( unsigned spell_id, const custom_cb_t& init_cb );
+void register_special_effect( unsigned spell_id, const custom_fp_t& init_cb );
+
+// New-style special effect registering function
+template <typename T>
+void register_special_effect( unsigned spell_id, const T& cb, bool fallback = false )
+{
+  static_assert( std::is_base_of<scoped_callback_t, T>::value,
+      "register_special_effect callback object must be derived from scoped_callback_t" );
+
+  if ( find_special_effect_db_item( spell_id ).spell_id == spell_id )
+  {
+    return;
+  }
+
+  special_effect_db_item_t dbitem;
+  dbitem.spell_id = spell_id;
+  dbitem.cb_obj = new T( cb );
+  dbitem.fallback = fallback;
+
+  add_effect( dbitem );
+}
+
 void register_target_data_initializers( sim_t* );
 
 void init( player_t* );
 
-const special_effect_db_item_t& find_special_effect_db_item( unsigned spell_id );
+// First-phase special effect initializers
 bool initialize_special_effect( special_effect_t& effect, unsigned spell_id );
-void initialize_special_effect_2( special_effect_t* effect ); // Second phase initialization
 void initialize_special_effect_fallbacks( player_t* actor );
+// Second-phase special effect initializer
+void initialize_special_effect_2( special_effect_t* effect );
 
 const item_data_t* find_consumable( const dbc_t& dbc, const std::string& name, item_subclass_consumable type );
 const item_data_t* find_item_by_spell( const dbc_t& dbc, unsigned spell_id );
