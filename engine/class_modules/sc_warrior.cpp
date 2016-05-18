@@ -137,6 +137,7 @@ public:
     cooldown_t* heroic_leap;
     cooldown_t* last_stand;
     cooldown_t* mortal_strike;
+    cooldown_t* odyns_champion_icd;
     cooldown_t* odyns_fury;
     cooldown_t* rage_from_crit_block;
     cooldown_t* raging_blow;
@@ -724,8 +725,9 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     base_t::execute();
 
     p() -> buff.wrecking_ball -> trigger();
-    if ( special && p() -> buff.odyns_champion -> up() ) // Check if MH/OH both count towards reduction. 
+    if ( special && p() -> buff.odyns_champion -> up() && p() -> cooldown.odyns_champion_icd -> up() )
     {
+      p() -> cooldown.odyns_champion_icd -> start();
       odyns_champion( timespan_t::from_seconds( -1.0 * p() -> artifact.odyns_champion.data().effectN( 1 ).base_value() ) );
     }
   }
@@ -3579,6 +3581,8 @@ void warrior_t::init_spells()
   cooldown.last_stand               = get_cooldown( "last_stand" );
   cooldown.mortal_strike            = get_cooldown( "mortal_strike" );
   cooldown.odyns_fury               = get_cooldown( "odyns_fury" );
+  cooldown.odyns_champion_icd       = get_cooldown( "odyns_champion_icd" );
+  cooldown.odyns_champion_icd -> duration = artifact.odyns_champion.data().effectN( 1 ).trigger() -> internal_cooldown();
   cooldown.rage_from_crit_block     = get_cooldown( "rage_from_crit_block" );
   cooldown.rage_from_crit_block -> duration = timespan_t::from_seconds( 3.0 );
   cooldown.raging_blow              = get_cooldown( "raging_blow" );
@@ -3602,7 +3606,6 @@ void warrior_t::init_spells()
     {
       this -> odyns_champion_cds.push_back( cooldown.bladestorm );
     }
-    this -> odyns_champion_cds.push_back( cooldown.bloodthirst );
     this -> odyns_champion_cds.push_back( cooldown.charge );
     if ( talents.dragon_roar -> ok() )
     {
@@ -3610,10 +3613,6 @@ void warrior_t::init_spells()
     }
     this -> odyns_champion_cds.push_back( cooldown.heroic_leap );
     this -> odyns_champion_cds.push_back( cooldown.odyns_fury );
-    if ( talents.inner_rage -> ok() )
-    {
-      this -> odyns_champion_cds.push_back( cooldown.raging_blow );
-    }
     if ( talents.shockwave -> ok() )
     {
       this -> odyns_champion_cds.push_back( cooldown.shockwave );
