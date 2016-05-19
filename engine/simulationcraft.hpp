@@ -6864,6 +6864,54 @@ namespace unique_gear
     }
   };
 
+  template<typename T_ACTION = action_t>
+  struct scoped_action_callback_t : public scoped_callback_t
+  {
+    typedef scoped_action_callback_t<T_ACTION> super;
+
+    std::vector<std::string> names_;
+    std::vector<unsigned> spell_ids_;
+
+    scoped_action_callback_t( const std::vector<std::string>& n ) :
+      scoped_callback_t(), names_( n )
+    { }
+
+    scoped_action_callback_t( const std::vector<unsigned>& s ) :
+      scoped_callback_t(), spell_ids_( s )
+    { }
+
+    // Match by name list
+    bool name_match( const action_t* a ) const
+    { return range::find( names_, a -> name_str ) != names_.end(); }
+
+    // Match by id list
+    bool id_match( const action_t* a ) const
+    { return range::find( spell_ids_, a -> id ) != spell_ids_.end(); }
+
+    // Valid scoped actions match either list type
+    bool valid( const special_effect_t& e ) const override
+    {
+      return range::find_if( e.player -> action_list,
+        [ this ]( const action_t* a ) {
+          return this -> name_match( a ) || this -> id_match( a );
+        }) != e.player -> action_list.end();
+    }
+
+    // Initialize the callback by manipulating the action(s)
+    void initialize( special_effect_t& e ) override
+    {
+      range::for_each( e.player -> action_list, [ this, e ]( action_t* a ) {
+        if ( this -> name_match( a ) || this -> id_match( a ) )
+        {
+          this -> manipulate( debug_cast<T_ACTION*>( a ), e );
+        }
+      });
+    }
+
+    // Overridable method to manipulate the action. Must be implemented.
+    virtual void manipulate( T_ACTION* action, const special_effect_t& e ) = 0;
+  };
+
   struct special_effect_db_item_t
   {
     unsigned    spell_id;
