@@ -2168,27 +2168,6 @@ struct unleash_doom_spell_t : public shaman_spell_t
   }
 };
 
-struct earthen_might_damage_t : public shaman_spell_t
-{
-  earthen_might_damage_t( shaman_t* p ) :
-    shaman_spell_t( "earthen_might_damage", p, p -> find_spell( 199019 ) -> effectN( 1 ).trigger() )
-  {
-    may_crit = background = true;
-    callbacks = false;
-  }
-};
-
-struct earthen_might_t : public shaman_spell_t
-{
-  earthen_might_t( shaman_t* p ) :
-    shaman_spell_t( "earthen_might", p, p -> find_spell( 199019 ) )
-  {
-    callbacks = may_crit = may_miss = hasted_ticks = false;
-    background = true;
-    tick_action = new earthen_might_damage_t( p );
-  }
-};
-
 // Ground AOE pulse
 struct ground_aoe_spell_t : public spell_t
 {
@@ -6561,46 +6540,6 @@ static void furious_winds( special_effect_t& effect )
   do_trinket_init( s, SHAMAN_ENHANCEMENT, s -> furious_winds, effect );
 }
 
-// Enhancement Doomhammer of Doom of Legion fame!
-static void doomhammer( special_effect_t& effect )
-{
-  struct doomhammer_proc_callback_t : public dbc_proc_callback_t
-  {
-    earthen_might_t* earthen_might;
-
-    doomhammer_proc_callback_t( const item_t* i, const special_effect_t& effect ) :
-      dbc_proc_callback_t( i, effect ),
-      earthen_might( new earthen_might_t( debug_cast<shaman_t*>( i -> player ) ) )
-    { }
-
-    void trigger( action_t* a, void* call_data ) override
-    {
-      // Proc on Rockbiter only
-      if ( a -> id != 193786 )
-      {
-        return;
-      }
-
-      dbc_proc_callback_t::trigger( a, call_data );
-    }
-
-    void execute( action_t* a, action_state_t* state ) override
-    {
-      switch ( a -> id )
-      {
-        case 193786:
-          earthen_might -> target = state -> target;
-          earthen_might -> schedule_execute();
-          break;
-        default:
-          break;
-      }
-    }
-  };
-
-  new doomhammer_proc_callback_t( effect.item, effect );
-}
-
 struct shaman_module_t : public module_t
 {
   shaman_module_t() : module_t( SHAMAN ) {}
@@ -6629,7 +6568,6 @@ struct shaman_module_t : public module_t
   {
     unique_gear::register_special_effect( 184919, elemental_bellows );
     unique_gear::register_special_effect( 184920, furious_winds     );
-    unique_gear::register_special_effect( 198735, doomhammer        );
   }
 
   virtual void register_hotfixes() const override
