@@ -202,6 +202,7 @@ public:
                           * arcane_missiles,
                           * nether_tempest;
     } arcane_charge;
+    buff_source_benefit_t* arcane_missiles;
 
     buff_source_benefit_t* fingers_of_frost;
     buff_stack_benefit_t* ray_of_frost;
@@ -1587,6 +1588,17 @@ public:
     }
   }
 
+  // You can thank Frost Nova for why this isn't in arcane_mage_spell_t instead
+  void trigger_am( const std::string& source, double chance = -1.0,
+                   int stacks = 1 )
+  {
+    if ( p() -> buffs.arcane_missiles
+             -> trigger( stacks, buff_t::DEFAULT_VALUE(), chance ) )
+    {
+      p() -> benefits.arcane_missiles -> update( source, stacks );
+    }
+  }
+
   virtual void execute() override
   {
     player_t* original_target = nullptr;
@@ -1637,7 +1649,7 @@ public:
          result_is_hit( execute_state -> result ) &&
          may_proc_missiles )
     {
-      p() -> buffs.arcane_missiles -> trigger();
+      trigger_am( data().name_cstr() );
     }
 
     if ( harmful && !background && p() -> talents.incanters_flow -> ok() )
@@ -2289,10 +2301,6 @@ struct arcane_blast_t : public arcane_mage_spell_t
   {
     p() -> benefits.arcane_charge.arcane_blast -> update();
 
-    arcane_missiles_buff_t* am_buff = debug_cast<arcane_missiles_buff_t*>( p() -> buffs.arcane_missiles );
-
-    double am_proc_rate = ( am_buff -> proc_chance() ) * 2.0;
-
     arcane_mage_spell_t::execute();
 
     p() -> buffs.arcane_charge -> up();
@@ -2300,8 +2308,11 @@ struct arcane_blast_t : public arcane_mage_spell_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
+      arcane_missiles_buff_t* am_buff =
+        debug_cast<arcane_missiles_buff_t*>( p() -> buffs.arcane_missiles );
+      trigger_am( "Arcane Blast", am_buff -> proc_chance() * 2.0 );
+
       p() -> buffs.arcane_charge -> trigger();
-      p() -> buffs.arcane_missiles -> trigger( 1, 1.0, am_proc_rate );
       p() -> buffs.arcane_instability -> trigger();
     }
 
@@ -2594,7 +2605,7 @@ struct arcane_orb_bolt_t : public arcane_mage_spell_t
     if ( result_is_hit( s -> result ) )
     {
       p() -> buffs.arcane_charge -> trigger();
-      p() -> buffs.arcane_missiles -> trigger();
+      trigger_am( "Arcane Orb Impact" );
 
       p() -> buffs.arcane_instability -> trigger();
     }
@@ -3019,6 +3030,7 @@ struct evocation_t : public arcane_mage_spell_t
     hasted_ticks      = false;
     tick_zero         = true;
     ignore_false_positive = true;
+    may_proc_missiles = false;
   }
 
   virtual void tick( dot_t* d ) override
@@ -4678,7 +4690,7 @@ struct supernova_t : public arcane_mage_spell_t
     {
       // NOTE: Supernova AOE effect causes secondary trigger chance for AM
       // TODO: Verify this is still the case
-      p() -> buffs.arcane_missiles -> trigger();
+      trigger_am( "Supernova AOE" );
     }
   }
 };
@@ -6017,15 +6029,21 @@ void mage_t::init_benefits()
       benefits.arcane_charge.nether_tempest =
         new buff_stack_benefit_t( buffs.arcane_charge, "Nether Tempest" );
     }
+
+    benefits.arcane_missiles =
+      new buff_source_benefit_t( buffs.arcane_missiles );
   }
 
-  benefits.fingers_of_frost =
-    new buff_source_benefit_t( buffs.fingers_of_frost );
-
-  if ( talents.ray_of_frost -> ok() )
+  if ( specialization() == MAGE_FROST )
   {
-    benefits.ray_of_frost =
-      new buff_stack_benefit_t( buffs.ray_of_frost, "Ray of Frost" );
+    benefits.fingers_of_frost =
+      new buff_source_benefit_t( buffs.fingers_of_frost );
+
+    if ( talents.ray_of_frost -> ok() )
+    {
+      benefits.ray_of_frost =
+        new buff_stack_benefit_t( buffs.ray_of_frost, "Ray of Frost" );
+    }
   }
 }
 
