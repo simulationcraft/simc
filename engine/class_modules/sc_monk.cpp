@@ -2816,12 +2816,6 @@ struct crosswinds_t : public monk_melee_attack_t
 
     tick_action = new crosswinds_tick_t( p );
   }
-
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    timespan_t tt = tick_time( s -> haste );
-    return tt * 5; // Hard coding 5 ticks since that is what is being observed.
-  }
 };
 
 struct fists_of_fury_tick_t: public monk_melee_attack_t
@@ -2845,12 +2839,10 @@ struct fists_of_fury_t: public monk_melee_attack_t
 {
   rising_sun_kick_proc_t* rsk_proc;
   crosswinds_t* crosswinds;
-  bool crosswinds_trigger;
 
   fists_of_fury_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( "fists_of_fury", p, p -> spec.fists_of_fury ),
-    crosswinds( new crosswinds_t( p ) ),
-    crosswinds_trigger( true )
+    crosswinds( new crosswinds_t( p ) )
   {
     parse_options( options_str );
 
@@ -2887,6 +2879,15 @@ struct fists_of_fury_t: public monk_melee_attack_t
     return am;
   }
 
+  virtual bool ready() override
+  {
+    // Only usable with 1-handed weapons
+    if ( p() -> main_hand_weapon.type <= WEAPON_1H )
+      return false;
+    
+    return monk_melee_attack_t::ready();
+  }
+
   void execute() override
   {
     // Trigger Combo Strikes
@@ -2895,9 +2896,10 @@ struct fists_of_fury_t: public monk_melee_attack_t
 
     monk_melee_attack_t::execute();
 
-    crosswinds_trigger = true;
+      if ( p() -> artifact.crosswinds.rank() )
+        crosswinds -> execute();
 
-    if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T17, B2 ) )
+      if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T17, B2 ) )
     {
       // Since Serenity replaces Tigereye Brew, adjust Serenity's cooldown first.
       if ( p() -> talent.serenity )
@@ -2910,20 +2912,6 @@ struct fists_of_fury_t: public monk_melee_attack_t
       p() -> buff.masterful_strikes -> trigger( ( int ) p() -> sets.set( MONK_WINDWALKER,T18, B4 ) -> effect_count() - 1 );
   }
 
-  void tick( dot_t* d ) override
-  {
-    monk_melee_attack_t::tick( d );
-
-    // Trigger after the first tick
-    if ( crosswinds_trigger )
-    {
-      if ( p() -> artifact.crosswinds.rank() )
-        crosswinds -> execute();
-    }
-
-    crosswinds_trigger = false;
-  }
-  
   virtual void last_tick( dot_t* dot ) override
   {
     monk_melee_attack_t::last_tick( dot );
