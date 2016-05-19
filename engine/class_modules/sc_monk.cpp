@@ -2882,7 +2882,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
   virtual bool ready() override
   {
     // Only usable with 1-handed weapons
-    if ( p() -> main_hand_weapon.type <= WEAPON_1H )
+    if ( p() -> main_hand_weapon.type > WEAPON_1H )
       return false;
     
     return monk_melee_attack_t::ready();
