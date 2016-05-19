@@ -5208,7 +5208,7 @@ static void manacles_of_mannoroth_the_flayer( special_effect_t& effect )
 
 struct fury_trinket_t : public unique_gear::class_buff_cb_t<warrior_t, haste_buff_t, haste_buff_creator_t>
 {
-  fury_trinket_t() : super( WARRIOR_FURY, "berserkers_fury" ) { }
+  fury_trinket_t() : super( WARRIOR, "berserkers_fury" ) { }
 
   // Assign to warrior_t::buff.fury_trinket
   haste_buff_t*& buff_ptr( const special_effect_t& ) override
@@ -5229,7 +5229,6 @@ struct bindings_of_kakushan_t : public unique_gear::class_buff_cb_t<warrior_t>
 {
   bindings_of_kakushan_t() : super( WARRIOR, "bindings_of_kakushan" ) { }
 
-  // Assign to warrior_t::buff.fury_trinket
   buff_t*& buff_ptr( const special_effect_t& ) override
   { return actor -> buff.bindings_of_kakushan; }
 
