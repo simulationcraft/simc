@@ -1995,13 +1995,20 @@ bool sim_t::init_actor( player_t* p )
   p -> init_base_stats();
   p -> create_buffs();
 
+  // First-phase creation of special effects from various sources. Needed to be able to create
+  // actions (APLs, really) based on the presence of special effects on items.
+  if ( ! p -> create_special_effects() )
+  {
+    ret = false;
+  }
+
   // First, create all the action objects and set up action lists properly
   if ( ! p -> create_actions() )
   {
     ret = false;
   }
 
-  // Next, second-phase initialize all special effects and register them to actors
+  // Second-phase initialize all special effects and register them to actors
   if ( ! p -> init_special_effects() )
   {
     ret = false;

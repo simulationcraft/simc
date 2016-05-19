@@ -3978,6 +3978,7 @@ struct player_t : public actor_t
 
   virtual void init_defense();
   virtual void create_buffs();
+  virtual bool create_special_effects();
   virtual bool init_special_effects();
   virtual void init_scaling();
   virtual void init_action_list() {}

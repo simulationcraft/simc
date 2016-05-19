@@ -1250,8 +1250,7 @@ struct touch_of_the_grave_spell_t : public spell_t
   }
 };
 
-
-bool player_t::init_special_effects()
+bool player_t::create_special_effects()
 {
   if ( is_pet() || is_enemy() )
   {
@@ -1259,7 +1258,7 @@ bool player_t::init_special_effects()
   }
 
   if ( sim -> debug )
-    sim -> out_debug.printf( "Initializing special effects for player (%s)", name() );
+    sim -> out_debug.printf( "Creating special effects for player (%s)", name() );
 
   const spell_data_t* totg = find_racial_spell( "Touch of the Grave" );
   if ( totg -> ok() )
@@ -1306,6 +1305,19 @@ bool player_t::init_special_effects()
   // Once all special effects are first-phase initialized, do a pass to first-phase initialize any
   // potential fallback special effects for the actor.
   unique_gear::initialize_special_effect_fallbacks( this );
+
+  return true;
+}
+
+bool player_t::init_special_effects()
+{
+  if ( is_pet() || is_enemy() )
+  {
+    return true;
+  }
+
+  if ( sim -> debug )
+    sim -> out_debug.printf( "Initializing special effects for player (%s)", name() );
 
   // ..and then move on to second phase initialization of all special effects.
   unique_gear::init( this );
