@@ -1998,10 +1998,17 @@ bool sim_t::init_actor( player_t* p )
   p -> create_buffs();
   p -> init_scaling();
 
-  // Procs must be initialized before actions
+  // First, create all the action objects and set up action lists properly
+  if ( ! p -> create_actions() )
+  {
+    ret = false;
+  }
+
+  // Next, second-phase initialize all special effects and register them to actors
   p -> init_special_effects();
   p -> register_callbacks();
 
+  // Finally, initialize all action objects
   if ( ! p -> init_actions() )
   {
     ret = false;

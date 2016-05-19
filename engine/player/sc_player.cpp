@@ -2081,9 +2081,9 @@ void player_t::init_scaling()
   }
 }
 
-// player_t::init_actions ==================================================
+// player_t::create_actions ================================================
 
-bool player_t::init_actions()
+bool player_t::create_actions()
 {
   if ( action_list_str.empty() )
     no_action_list_provided = true;
@@ -2222,21 +2222,20 @@ bool player_t::init_actions()
   }
 
   bool have_off_gcd_actions = false;
-  for ( size_t i = 0; i < action_list.size(); ++i )
+  for ( auto action: action_list )
   {
-    action_t* action = action_list[ i ];
-    action -> init();
-    if ( action -> trigger_gcd == timespan_t::zero() && ! action -> background && action -> use_off_gcd )
+    if ( action -> trigger_gcd == timespan_t::zero() && ! action -> background &&
+         action -> use_off_gcd )
     {
       action -> action_list -> off_gcd_actions.push_back( action );
-      // Optimization: We don't need to do off gcd stuff when there are no other off gcd actions than these two
+      // Optimization: We don't need to do off gcd stuff when there are no other off gcd actions
+      // than these two
       if ( action -> name_str != "run_action_list" && action -> name_str != "swap_action_list" )
         have_off_gcd_actions = true;
     }
   }
 
-  for ( size_t i = 0; i < action_list.size(); ++i )
-    action_list[ i ] -> consolidate_snapshot_flags();
+  range::for_each( action_list, []( action_t* a ) { a -> consolidate_snapshot_flags(); } );
 
   if ( choose_action_list.empty() ) choose_action_list = "default";
 
@@ -2244,7 +2243,8 @@ bool player_t::init_actions()
 
   if ( ! chosen_action_list && choose_action_list != "default" )
   {
-    sim -> errorf( "Action List %s not found, using default action list.\n", choose_action_list.c_str() );
+    sim -> errorf( "Action List %s not found, using default action list.\n",
+      choose_action_list.c_str() );
     chosen_action_list = find_action_priority_list( "default" );
   }
 
@@ -2262,6 +2262,15 @@ bool player_t::init_actions()
   collected_data.action_sequence.reserve( capacity );
   collected_data.action_sequence.clear();
 
+  return true;
+}
+
+
+// player_t::init_actions ===================================================
+
+bool player_t::init_actions()
+{
+  range::for_each( action_list, []( action_t* action ) { action -> init(); } );
   return true;
 }
 
