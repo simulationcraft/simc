@@ -1245,6 +1245,7 @@ class SpellDataGenerator(DataGenerator):
           ( 214816, 0 ), ( 218559, 0 ), ( 218558, 0 ),  # Overload energize spells
           ( 219271, 0 ),                                # Icefury overload
           ( 77762, 0 ),                                 # Lava Surge cast time modifier
+          ( 214134, 0 ),                                # The Deceiver's Blood Pact energize
         ),
 
         # Mage:

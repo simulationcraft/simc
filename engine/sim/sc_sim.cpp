@@ -1993,10 +1993,7 @@ bool sim_t::init_actor( player_t* p )
 
   p -> init_spells();
   p -> init_base_stats();
-  p -> init_initial_stats();
-  p -> init_defense();
   p -> create_buffs();
-  p -> init_scaling();
 
   // First, create all the action objects and set up action lists properly
   if ( ! p -> create_actions() )
@@ -2005,7 +2002,11 @@ bool sim_t::init_actor( player_t* p )
   }
 
   // Next, second-phase initialize all special effects and register them to actors
-  p -> init_special_effects();
+  if ( ! p -> init_special_effects() )
+  {
+    ret = false;
+  }
+
   p -> register_callbacks();
 
   // Finally, initialize all action objects
@@ -2014,6 +2015,13 @@ bool sim_t::init_actor( player_t* p )
     ret = false;
   }
 
+  // Once all transient properties are initialized (e.g., base stats, spells, special effects,
+  // items), initialize the initial stats of the actor.
+  p -> init_initial_stats();
+  // And once initial stats are initialized, derive the passive defensive properties of the actor.
+  p -> init_defense();
+
+  p -> init_scaling();
   p -> init_gains();
   p -> init_procs();
   p -> init_uptimes();

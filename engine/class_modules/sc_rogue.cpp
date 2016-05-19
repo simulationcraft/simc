@@ -538,7 +538,7 @@ struct rogue_t : public player_t
   void      init_scaling() override;
   void      init_resources( bool force ) override;
   bool      init_items() override;
-  void      init_special_effects() override;
+  bool      init_special_effects() override;
   void      init_rng() override;
   bool      init_finished() override;
   void      create_buffs() override;
@@ -6070,9 +6070,9 @@ bool rogue_t::init_items()
 
 // rogue_t::init_special_effects ============================================
 
-void rogue_t::init_special_effects()
+bool rogue_t::init_special_effects()
 {
-  player_t::init_special_effects();
+  bool ret = player_t::init_special_effects();
 
   if ( weapon_data[ WEAPON_MAIN_HAND ].item_data[ WEAPON_SECONDARY ] )
   {
@@ -6093,6 +6093,8 @@ void rogue_t::init_special_effects()
       unique_gear::initialize_special_effect_2( effect );
     }
   }
+
+  return ret;
 }
 
 // rogue_t::init_rng ========================================================

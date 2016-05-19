@@ -565,7 +565,7 @@ public:
   void      init_procs() override;
   void      init_action_list() override;
   void      init_rng() override;
-  void      init_special_effects() override;
+  bool      init_special_effects() override;
 
   void      moving() override;
   void      invalidate_cache( cache_e c ) override;
@@ -5509,9 +5509,9 @@ void shaman_t::init_rng()
 
 // shaman_t::init_special_effects ===========================================
 
-void shaman_t::init_special_effects()
+bool shaman_t::init_special_effects()
 {
-  player_t::init_special_effects();
+  bool ret = player_t::init_special_effects();
 
   // shaman_t::create_buffs has been called before init_special_effects
   stormlash_buff_t* stormlash_buff = static_cast<stormlash_buff_t*>( buff_t::find( this, "stormlash" ) );
@@ -5522,6 +5522,7 @@ void shaman_t::init_special_effects()
   special_effects.push_back( effect );
 
   stormlash_buff -> callback = new stormlash_callback_t( this, *effect );
+  return ret;
 }
 
 // shaman_t::init_actions ===================================================

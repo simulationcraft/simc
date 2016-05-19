@@ -1078,9 +1078,9 @@ public:
       .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
-  virtual void init_special_effects() override
+  virtual bool init_special_effects() override
   {
-    base_t::init_special_effects();
+    bool ret = base_t::init_special_effects();
     hunter_t* hunter = debug_cast<hunter_t*>( owner );
     const special_effect_t* bl = hunter -> beastlord;
     if ( bl )
@@ -1090,6 +1090,8 @@ public:
       double increase = data -> effectN( 2 ).average( bl -> item ) + data -> effectN( 3 ).average( bl -> item );
       buffs.bestial_wrath -> default_value += increase / 100.0;
     }
+
+    return ret;
   }
 
   virtual void init_gains() override

@@ -113,6 +113,47 @@ const special_effect_t& item_t::special_effect( special_effect_source_e source, 
   return nonevalue;
 }
 
+gear_stats_t item_t::total_stats() const
+{
+  gear_stats_t total_stats;
+
+  for ( stat_e stat = STAT_NONE; stat < STAT_MAX; ++stat )
+  {
+    // Ensure when returning gear stats that they are all converted to correct stat types in case of
+    // hybrid stats. The simulator core will not understand, nor treat hybrid stats in any
+    // meaningful way.
+    stat_e to = player -> convert_hybrid_stat( stat );
+
+    total_stats.add_stat( to, stats.get_stat( stat ) );
+
+    range::for_each( parsed.enchant_stats, [ stat, to, &total_stats ]( const stat_pair_t& s ) {
+      if ( stat == s.stat ) total_stats.add_stat( to, s.value );
+    });
+
+    range::for_each( parsed.gem_stats, [ stat, to, &total_stats ]( const stat_pair_t& s ) {
+      if ( stat == s.stat ) total_stats.add_stat( to, s.value );
+    });
+
+    range::for_each( parsed.meta_gem_stats, [ stat, to, &total_stats ]( const stat_pair_t& s ) {
+      if ( stat == s.stat ) total_stats.add_stat( to, s.value );
+    });
+
+    range::for_each( parsed.socket_bonus_stats, [ stat, to, &total_stats ]( const stat_pair_t& s ) {
+      if ( stat == s.stat ) total_stats.add_stat( to, s.value );
+    });
+
+    range::for_each( parsed.addon_stats, [ stat, to, &total_stats ]( const stat_pair_t& s ) {
+      if ( stat == s.stat ) total_stats.add_stat( to, s.value );
+    });
+
+    range::for_each( parsed.suffix_stats, [ stat, to, &total_stats ]( const stat_pair_t& s ) {
+      if ( stat == s.stat ) total_stats.add_stat( to, s.value );
+    });
+  }
+
+  return total_stats;
+}
+
 // item_t::to_string ========================================================
 
 std::string item_t::item_stats_str() const
@@ -1409,57 +1450,30 @@ bool item_t::decode_gems()
 
   // Parse user given gems= string. Stats are parsed as is, meta gem through
   // DBC data
-  if ( ! option_gems_str.empty() && option_gems_str != "none" )
+  if ( option_gems_str.empty() || option_gems_str == "none" )
   {
-    parsed.gem_stats.clear();
-
-    // Detect meta gem through DBC data, instead of clunky prefix matching
-    const item_enchantment_data_t& meta_gem_enchant = enchant::find_meta_gem( player -> dbc, option_gems_str );
-    meta_gem_e meta_gem = enchant::meta_gem_type( player -> dbc, meta_gem_enchant );
-
-    if ( meta_gem != META_GEM_NONE )
-    {
-      player -> meta_gem = meta_gem;
-      // Init meta gem based on spell data
-      if ( ! enchant::initialize_item_enchant( *this, parsed.meta_gem_stats, SPECIAL_EFFECT_SOURCE_GEM, meta_gem_enchant ) )
-        return false;
-    }
-
-    std::vector<item_database::token_t> tokens;
-    size_t num_tokens = item_database::parse_tokens( tokens, option_gems_str );
-
-    for ( size_t i = 0; i < num_tokens; i++ )
-    {
-      item_database::token_t& t = tokens[ i ];
-      stat_e s;
-
-      if ( ( s = util::parse_stat_type( t.name ) ) != STAT_NONE )
-        parsed.gem_stats.push_back( stat_pair_t( s, static_cast<int>( t.value ) ) );
-    }
-  }
-  // Parse gem_ids through DBC data
-  else
-  {
-    for ( size_t i = 0, end = sizeof_array( parsed.gem_id ); i < end; i++ )
-    {
-      if ( parsed.gem_id[ i ] == 0 )
-        continue;
-
-      parsed.gem_color[ i ] = enchant::initialize_gem( *this, parsed.gem_id[ i ] );
-    }
+    return true;
   }
 
-  for ( size_t i = 0; i < parsed.gem_stats.size(); i++ )
-    stats.add_stat( parsed.gem_stats[ i ].stat, parsed.gem_stats[ i ].value );
+  // Detect meta gem through DBC data, instead of clunky prefix matching
+  const item_enchantment_data_t& meta_gem_enchant = enchant::find_meta_gem( player -> dbc, option_gems_str );
+  meta_gem_e meta_gem = enchant::meta_gem_type( player -> dbc, meta_gem_enchant );
 
-  // Meta gem stats need to be separated to avoid double dipping the static stats portion of the gem.
-  for ( size_t i = 0; i < parsed.meta_gem_stats.size(); i++ )
-    stats.add_stat( parsed.meta_gem_stats[ i ].stat, parsed.meta_gem_stats[ i ].value );
-
-  if ( socket_color_match() )
+  if ( meta_gem != META_GEM_NONE )
   {
-    for ( size_t i = 0; i < parsed.socket_bonus_stats.size(); i++ )
-      stats.add_stat( parsed.socket_bonus_stats[ i ].stat, parsed.socket_bonus_stats[ i ].value );
+    player -> meta_gem = meta_gem;
+  }
+
+  std::vector<item_database::token_t> tokens;
+  size_t num_tokens = item_database::parse_tokens( tokens, option_gems_str );
+
+  for ( size_t i = 0; i < num_tokens; i++ )
+  {
+    item_database::token_t& t = tokens[ i ];
+    stat_e s;
+
+    if ( ( s = util::parse_stat_type( t.name ) ) != STAT_NONE )
+      parsed.gem_stats.push_back( stat_pair_t( s, static_cast<int>( t.value ) ) );
   }
 
   return true;
@@ -1469,162 +1483,101 @@ bool item_t::decode_gems()
 
 bool item_t::decode_equip_effect()
 {
+  if ( option_equip_str.empty() || option_equip_str == "none" )
+  {
+    return true;
+  }
+
   special_effect_t effect( this );
-  bool ret = false;
-  int effects = 0;
 
-  // If the user has defined an equip= string, use it
-  if ( ! option_equip_str.empty() )
+  if ( ! special_effect::parse_special_effect_encoding( effect, option_equip_str ) )
   {
-    if ( ! ( ret = special_effect::parse_special_effect_encoding( effect, option_equip_str ) ) )
-    {
-      sim -> errorf( "%s unable to parse special effect '%s' on item '%s'",
-          player -> name(), option_equip_str.c_str(), name() );
-      return ret;
-    }
-
-    effect.name_str = name_str;
-    effect.type = SPECIAL_EFFECT_EQUIP;
-    effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
-
-    if ( ! special_effect::usable_proc( effect ) )
-    {
-      sim -> errorf( "%s no proc trigger flags found for effect '%s' on item '%s'",
-          player -> name(), option_equip_str.c_str(), name() );
-      return false;
-    }
-
-    if ( effect.buff_type() == SPECIAL_EFFECT_BUFF_NONE &&
-         effect.action_type() == SPECIAL_EFFECT_ACTION_NONE )
-    {
-      sim -> errorf( "%s no buff or action found for effect '%s' on item '%s'",
-          player -> name(), option_equip_str.c_str(), name() );
-      return false;
-    }
-
-    parsed.special_effects.push_back( new special_effect_t( effect ) );
-  }
-  // Otherwise, use fancy schmancy database
-  else
-  {
-    for ( size_t i = 0, end = sizeof_array( parsed.data.id_spell ); i < end; i++ )
-    {
-      if ( parsed.data.trigger_spell[ i ] != ITEM_SPELLTRIGGER_ON_EQUIP )
-        continue;
-
-      if ( parsed.data.id_spell[ i ] == 0 )
-        continue;
-
-      effect.reset();
-      effect.type = SPECIAL_EFFECT_EQUIP;
-      effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
-
-      // First phase initialization of the special effect. Sets up the relevant
-      // fields in special_effect_t to create the proc. In the future, most of 
-      // the manual field setup can also be removed ...
-      if ( ( ret = unique_gear::initialize_special_effect( effect, parsed.data.id_spell[ i ] ) ) &&
-           effect.type != SPECIAL_EFFECT_NONE )
-      {
-        parsed.special_effects.push_back( new special_effect_t( effect ) );
-        effects++;
-      }
-    }
+    sim -> errorf( "%s unable to parse special effect '%s' on item '%s'",
+        player -> name(), option_equip_str.c_str(), name() );
+    return false;
   }
 
-  return ret || effects == 0;
+  effect.name_str = name_str;
+  effect.type = SPECIAL_EFFECT_EQUIP;
+  effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
+
+  if ( ! special_effect::usable_proc( effect ) )
+  {
+    sim -> errorf( "%s no proc trigger flags found for effect '%s' on item '%s'",
+        player -> name(), option_equip_str.c_str(), name() );
+    return false;
+  }
+
+  if ( effect.buff_type() == SPECIAL_EFFECT_BUFF_NONE &&
+       effect.action_type() == SPECIAL_EFFECT_ACTION_NONE )
+  {
+    sim -> errorf( "%s no buff or action found for effect '%s' on item '%s'",
+        player -> name(), option_equip_str.c_str(), name() );
+    return false;
+  }
+
+  parsed.special_effects.push_back( new special_effect_t( effect ) );
+
+  return true;
 }
 
 // item_t::decode_use_effect ================================================
 
 bool item_t::decode_use_effect()
 {
+  if ( option_use_str.empty() || option_use_str == "none" )
+  {
+    return true;
+  }
+
   special_effect_t effect( this );
-  bool ret = false;
-  int effects = 0;
 
-  // If the user has defined an use= string, use it
-  if ( ! option_use_str.empty() )
+  if ( special_effect::parse_special_effect_encoding( effect, option_use_str ) )
   {
-    if ( ( ret = special_effect::parse_special_effect_encoding( effect, option_use_str ) ) )
-    {
-      sim -> errorf( "%s unable to parse special effect '%s' on item '%s'",
-          player -> name(), option_use_str.c_str(), name() );
-      return ret;
-    }
-
-    effect.name_str = name_str;
-    effect.type = SPECIAL_EFFECT_USE;
-    effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
-
-    if ( effect.buff_type() == SPECIAL_EFFECT_BUFF_NONE &&
-         effect.action_type() == SPECIAL_EFFECT_ACTION_NONE )
-    {
-      sim -> errorf( "%s no buff or action found for effect '%s' on item '%s'",
-          player -> name(), option_equip_str.c_str(), name() );
-      return false;
-    }
-
-    parsed.special_effects.push_back( new special_effect_t( effect ) );
-  }
-  // Otherwise, use fancy schmancy database
-  else
-  {
-    for ( size_t i = 0, end = sizeof_array( parsed.data.id_spell ); i < end; i++ )
-    {
-      if ( parsed.data.trigger_spell[ i ] != ITEM_SPELLTRIGGER_ON_USE )
-        continue;
-
-      if ( parsed.data.id_spell[ i ] == 0 )
-        continue;
-
-      effect.reset();
-      effect.type = SPECIAL_EFFECT_USE;
-      effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
-      // First phase initialization of the special effect. Sets up the relevant
-      // fields in special_effect_t to create the use effect. In the future,
-      // most of the manual field setup can also be removed ...
-      if ( ( ret = unique_gear::initialize_special_effect( effect, parsed.data.id_spell[ i ] ) ) &&
-           effect.type != SPECIAL_EFFECT_NONE )
-      {
-        parsed.special_effects.push_back( new special_effect_t( effect ) );
-        effects++;
-      }
-      else
-        break;
-    }
+    sim -> errorf( "%s unable to parse special effect '%s' on item '%s'",
+        player -> name(), option_use_str.c_str(), name() );
+    return false;
   }
 
-  return ret || effects == 0;
+  effect.name_str = name_str;
+  effect.type = SPECIAL_EFFECT_USE;
+  effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
+
+  if ( effect.buff_type() == SPECIAL_EFFECT_BUFF_NONE &&
+       effect.action_type() == SPECIAL_EFFECT_ACTION_NONE )
+  {
+    sim -> errorf( "%s no buff or action found for effect '%s' on item '%s'",
+        player -> name(), option_equip_str.c_str(), name() );
+    return false;
+  }
+
+  parsed.special_effects.push_back( new special_effect_t( effect ) );
+
+  return true;
 }
 
 // item_t::decode_enchant ===================================================
 
 bool item_t::decode_enchant()
 {
-  // If the user gives an enchant, override everything fetched from the
-  // data sources
-  if ( ! option_enchant_str.empty() && option_enchant_str != "none" )
+  if ( option_enchant_str.empty() || option_enchant_str == "none" )
   {
-    parsed.enchant_stats = str_to_stat_pair( option_enchant_str );
-
-    // No stats, this is a special enchant that we need to parse out
-    if ( parsed.enchant_stats.size() == 0 )
-    {
-      const item_enchantment_data_t& enchant_data = enchant::find_item_enchant( *this, option_enchant_str );
-      if ( ! enchant::initialize_item_enchant( *this, parsed.enchant_stats, SPECIAL_EFFECT_SOURCE_ENCHANT, enchant_data ) )
-        return false;
-    }
-  }
-  // .. Otherwise, parse enchant based on DBC information and enchant_id
-  else if ( parsed.enchant_id > 0 )
-  {
-    const item_enchantment_data_t& enchant_data = player -> dbc.item_enchantment( parsed.enchant_id );
-    if ( ! enchant::initialize_item_enchant( *this, parsed.enchant_stats, SPECIAL_EFFECT_SOURCE_ENCHANT, enchant_data ) )
-      return false;
+    return true;
   }
 
-  for ( size_t i = 0; i < parsed.enchant_stats.size(); i++ )
-    stats.add_stat( parsed.enchant_stats[ i ].stat, parsed.enchant_stats[ i ].value );
+  parsed.enchant_stats = str_to_stat_pair( option_enchant_str );
+  if ( parsed.enchant_stats.size() > 0 )
+  {
+    return true;
+  }
+
+  const item_enchantment_data_t& enchant_data = enchant::find_item_enchant( *this,
+    option_enchant_str );
+
+  if ( enchant_data.id > 0 )
+  {
+    parsed.enchant_id = enchant_data.id;
+  }
 
   return true;
 }
@@ -1633,38 +1586,24 @@ bool item_t::decode_enchant()
 
 bool item_t::decode_addon()
 {
-  // If the user gives an addon, override everything fetched from the
-  // data sources
-  if ( ! option_addon_str.empty() )
+  if ( option_addon_str.empty() || option_addon_str == "none" )
   {
-    parsed.addon_stats = str_to_stat_pair( option_addon_str );
-
-    // No stats, this is a special enchant that we need to parse out
-    if ( parsed.addon_stats.size() == 0 )
-    {
-      const item_enchantment_data_t& enchant_data = enchant::find_item_enchant( *this, option_addon_str );
-      if ( ! enchant::initialize_item_enchant( *this, parsed.addon_stats, SPECIAL_EFFECT_SOURCE_ADDON, enchant_data ) )
-        return false;
-    }
-  }
-  // .. Otherwise, parse addon based on DBC information and enchant_id
-  else if ( parsed.addon_id > 0 )
-  {
-    special_effect_t effect( this );
-    if ( ! item_database::parse_item_spell_enchant( *this, parsed.addon_stats, effect, parsed.addon_id ) )
-      sim -> errorf( "Player %s unable to parse addon id %u for item \"%s\" at slot %s.\n",
-          player -> name(), parsed.addon_id, name(), slot_name() );
-
-    if ( parsed.addon_stats.size() == 0 )
-    {
-      const item_enchantment_data_t& enchant_data = player -> dbc.item_enchantment( parsed.addon_id );
-      if ( ! enchant::initialize_item_enchant( *this, parsed.addon_stats, SPECIAL_EFFECT_SOURCE_ADDON, enchant_data ) )
-        return false;
-    }
+    return true;
   }
 
-  for ( size_t i = 0; i < parsed.addon_stats.size(); i++ )
-    stats.add_stat( parsed.addon_stats[ i ].stat, parsed.addon_stats[ i ].value );
+  parsed.addon_stats = str_to_stat_pair( option_addon_str );
+  if ( parsed.addon_stats.size() > 0 )
+  {
+    return true;
+  }
+
+  const item_enchantment_data_t& enchant_data = enchant::find_item_enchant( *this,
+    option_addon_str );
+
+  if ( enchant_data.id > 0 )
+  {
+    parsed.addon_id = enchant_data.id;
+  }
 
   return true;
 }
@@ -1963,3 +1902,88 @@ bool item_t::download_glyph( player_t* player, std::string& glyph_name, const st
   return success;
 }
 
+// item_t::init_special_effects =============================================
+
+bool item_t::init_special_effects()
+{
+  special_effect_t proxy_effect( this );
+
+  // Gems
+  for ( size_t i = 0, end = parsed.gem_id.size(); i < end; i++ )
+    parsed.gem_color[ i ] = enchant::initialize_gem( *this, parsed.gem_id[ i ] );
+
+  // Socket bonus
+  if ( socket_color_match() )
+  {
+    const item_enchantment_data_t& socket_bonus = player -> dbc.item_enchantment( parsed.data.id_socket_bonus );
+    if ( ! enchant::initialize_item_enchant( *this, parsed.socket_bonus_stats, SPECIAL_EFFECT_SOURCE_SOCKET_BONUS, socket_bonus ) )
+    {
+      return false;
+    }
+  }
+
+  // Enchant
+  const item_enchantment_data_t& enchant_data = player -> dbc.item_enchantment( parsed.enchant_id );
+  if ( ! enchant::initialize_item_enchant( *this, parsed.enchant_stats,
+        SPECIAL_EFFECT_SOURCE_ENCHANT, enchant_data ) )
+    return false;
+
+  // Addon (tinker)
+  const item_enchantment_data_t& addon_data = player -> dbc.item_enchantment( parsed.addon_id );
+  if ( ! enchant::initialize_item_enchant( *this, parsed.addon_stats,
+        SPECIAL_EFFECT_SOURCE_ADDON, addon_data ) )
+    return false;
+
+  // On-use effects
+  for ( size_t i = 0, end = sizeof_array( parsed.data.id_spell ); i < end; ++i )
+  {
+    if ( parsed.data.id_spell[ i ] == 0 ||
+         parsed.data.trigger_spell[ i ] != ITEM_SPELLTRIGGER_ON_USE )
+    {
+      continue;
+    }
+
+    // We have something to work with
+    proxy_effect.reset();
+    proxy_effect.type = SPECIAL_EFFECT_USE;
+    proxy_effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
+    if ( ! unique_gear::initialize_special_effect( proxy_effect, parsed.data.id_spell[ i ] ) )
+    {
+      return false;
+    }
+
+    // First-phase special effect initialize decided it's a usable special effect, so add it
+    if ( proxy_effect.type != SPECIAL_EFFECT_NONE )
+    {
+      parsed.special_effects.push_back( new special_effect_t( proxy_effect ) );
+    }
+  }
+
+  // On-equip effects
+  for ( size_t i = 0, end = sizeof_array( parsed.data.id_spell ); i < end; ++i )
+  {
+    if ( parsed.data.id_spell[ i ] == 0 ||
+         parsed.data.trigger_spell[ i ] != ITEM_SPELLTRIGGER_ON_EQUIP )
+    {
+      continue;
+    }
+
+    // We have something to work with
+    proxy_effect.reset();
+    proxy_effect.type = SPECIAL_EFFECT_EQUIP;
+    proxy_effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
+    if ( ! unique_gear::initialize_special_effect( proxy_effect, parsed.data.id_spell[ i ] ) )
+    {
+      return false;
+    }
+
+    // First-phase special effect initialize decided it's a usable special effect, so add it
+    if ( proxy_effect.type != SPECIAL_EFFECT_NONE )
+    {
+      parsed.special_effects.push_back( new special_effect_t( proxy_effect ) );
+    }
+  }
+
+
+  return true;
+}

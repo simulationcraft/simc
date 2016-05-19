@@ -450,7 +450,7 @@ item_socket_color enchant::initialize_gem( item_t& item, unsigned gem_id )
   const item_enchantment_data_t& data = item.player -> dbc.item_enchantment( gem_prop.enchant_id );
 
   if ( ! enchant::initialize_item_enchant( item, 
-                                           gem_prop.color != SOCKET_COLOR_META ? item.parsed.gem_stats : item.parsed.meta_gem_stats, 
+                                           gem_prop.color != SOCKET_COLOR_META ? item.parsed.gem_stats : item.parsed.meta_gem_stats,
                                            SPECIAL_EFFECT_SOURCE_GEM,
                                            data ) )
     return SOCKET_COLOR_NONE;

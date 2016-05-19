@@ -4600,10 +4600,10 @@ struct innervate_t : public druid_spell_t
     {
       // Take the average of the druid's secondary stats from gear.
       double avg_secondary =
-        ( druid -> gear.crit_rating +
-          druid -> gear.haste_rating +
-          druid -> gear.mastery_rating +
-          druid -> gear.versatility_rating ) / 4;
+        ( druid -> total_gear.crit_rating +
+          druid -> total_gear.haste_rating +
+          druid -> total_gear.mastery_rating +
+          druid -> total_gear.versatility_rating ) / 4;
 
       // Calculate haste with that amount of haste rating.
       double haste = 1.0 / ( 1.0 + avg_secondary / druid -> current_rating().spell_haste );

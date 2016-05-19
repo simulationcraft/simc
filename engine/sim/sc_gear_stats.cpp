@@ -163,7 +163,7 @@ double gear_stats_t::get_stat( stat_e stat ) const
 {
   switch ( stat )
   {
-    case STAT_NONE: return 0;
+    case STAT_NONE: return default_value;
 
     case STAT_STRENGTH:  return attribute[ ATTR_STRENGTH  ];
     case STAT_AGILITY:   return attribute[ ATTR_AGILITY   ];
@@ -188,7 +188,7 @@ double gear_stats_t::get_stat( stat_e stat ) const
     case STAT_MAX_RAGE:
     case STAT_MAX_ENERGY:
     case STAT_MAX_FOCUS:
-    case STAT_MAX_RUNIC:  return 0;
+    case STAT_MAX_RUNIC:  return default_value;
 
     case STAT_SPELL_POWER:       return spell_power;
 
@@ -221,11 +221,11 @@ double gear_stats_t::get_stat( stat_e stat ) const
     case STAT_RESILIENCE_RATING: return resilience_rating;
     case STAT_PVP_POWER:         return pvp_power;
 
-    case STAT_ALL: return 0;
+    case STAT_ALL: return default_value;
 
     default: assert( 0 ); break;
   }
-  return 0;
+  return default_value;
 }
 
 std::string gear_stats_t::to_string()

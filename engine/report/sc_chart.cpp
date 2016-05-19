@@ -572,14 +572,16 @@ bool chart::generate_raid_gear( highchart::bar_chart_t& bc, const sim_t& sim )
     data_points[ i ].reserve( sim.players_by_name.size() + 1 );
     for ( const auto& player : sim.players_by_name )
     {
-      if ( player->gear.get_stat( i ) + player->enchant.get_stat( i ) > 0 )
+      double total = player->total_gear.get_stat( i );
+      total += player->enchant.get_stat( i );
+      total += sim.enchant.get_stat( i );
+
+      if ( total > 0 )
       {
         has_stat[ i ] = true;
       }
 
-      data_points[ i ].push_back(
-          ( player->gear.get_stat( i ) + player->enchant.get_stat( i ) ) *
-          gear_stats_t::stat_mod( i ) );
+      data_points[ i ].push_back( total * gear_stats_t::stat_mod( i ) );
       bc.add( "xAxis.categories",
               report::decorate_html_string(
                   player->name_str, color::class_color( player->type ) ) );

@@ -847,14 +847,6 @@ void player_t::init_base_stats()
   if ( sim -> debug )
     sim -> out_debug.printf( "%s: Base Ratings initialized: %s", name(), base.rating.to_string().c_str() );
 
-  if ( ! is_pet() && ! is_enemy() )
-  {
-    total_gear = gear + enchant;
-    total_gear += sim -> enchant;
-  }
-  if ( sim -> debug )
-    sim -> out_debug.printf( "%s: Total Gear Stats: %s", name(), total_gear.to_string().c_str() );
-
   if ( ! is_enemy() )
   {
     base.stats.attribute[ STAT_STRENGTH  ]  = dbc.race_base( race ).strength + dbc.attribute_base( type, level() ).strength;
@@ -990,7 +982,34 @@ void player_t::init_initial_stats()
 #endif
 
   initial = base;
+
+  // Compute current "total from gear" into total gear. Per stat, this is either the amount of stats
+  // the items for the actor gives, or the overridden value (player_t::gear + player_t::enchant +
+  // sim_t::enchant).
+  if ( ! is_pet() && ! is_enemy() )
+  {
+    gear_stats_t item_stats = std::accumulate( items.begin(), items.end(), gear_stats_t(),
+      []( const gear_stats_t& t, const item_t& i ) {
+        return t + i.total_stats();
+    });
+
+    for ( stat_e stat = STAT_NONE; stat < STAT_MAX; ++stat )
+    {
+      if ( gear.get_stat( stat ) < 0 )
+        total_gear.add_stat( stat, item_stats.get_stat( stat ) );
+      else
+        total_gear.add_stat( stat, gear.get_stat( stat ) );
+    }
+
+    if ( sim -> debug )
+      sim -> out_debug.printf( "%s: Total Gear Stats: %s", name(), total_gear.to_string().c_str() );
+
+    initial.stats += enchant;
+    initial.stats += sim -> enchant;
+  }
+
   initial.stats += total_gear;
+
   if ( sim -> debug )
     sim -> out_debug.printf( "%s: Generic Initial Stats: %s", name(), initial.to_string().c_str() );
 }
@@ -998,14 +1017,6 @@ void player_t::init_initial_stats()
 
 bool player_t::init_items()
 {
-  if ( is_pet() )
-  {
-    // Re-initialize "gear" object back to all zeros if this is a pet, since player_t::player_t
-    // initializes it to a very small value to accommodate gear_x= options overriding.
-    gear.initialize( 0 );
-    return true;
-  }
-
   if ( sim -> debug )
     sim -> out_debug.printf( "Initializing items for player (%s)", name() );
 
@@ -1031,7 +1042,6 @@ bool player_t::init_items()
   // After the loop (and the meta-gem initialization), the stats accumulated
   // from items are added into ``gear'', provided that there is no
   // command line option override.
-  gear_stats_t item_stats;
   for ( size_t i = 0; i < items.size(); i++ )
   {
     item_t& item = items[ i ];
@@ -1058,8 +1068,6 @@ bool player_t::init_items()
     }
 
     slots[ item.slot ] = item.is_matching_type();
-
-    item_stats += item.stats;
   }
 
   matching_gear = true;
@@ -1072,42 +1080,7 @@ bool player_t::init_items()
     }
   }
 
-  init_meta_gem( item_stats );
-
-  // Adding stats from items into ``gear''. If for a given stat,
-  // the value in gear is different than 0, it means that this stat
-  // value was overridden by a command line option.
-  // This is also where the conversion of hybrid primary stats into
-  // STR, AGI, or INT happens, via convert_hybrid_stat()
-
-  // First, convert all hybrid primaries to their primary form (STR / AGI / INT)
-  gear_stats_t temp_item_stats;
-  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
-    temp_item_stats.add_stat( convert_hybrid_stat( i ), item_stats.get_stat( i ) );
-
-  // Then merge item-based stats and user given options (in player_t::gear, with gear_x= options)
-  // into a computed object
-  gear_stats_t computed;
-  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
-  {
-    if ( gear.get_stat( i ) == std::numeric_limits<double>::lowest() )
-      computed.add_stat( i, temp_item_stats.get_stat( i ) );
-    else
-      computed.add_stat( i, gear.get_stat( i ) );
-  }
-
-  // Sanity check - there should be no more hybrid STR/INT, AGI/STR, or AGI/INT stats leftover here!
-  assert( computed.get_stat( STAT_AGI_INT ) == 0 );
-  assert( computed.get_stat( STAT_STR_AGI ) == 0 );
-  assert( computed.get_stat( STAT_STR_INT ) == 0 );
-
-  if ( sim -> debug )
-  {
-    sim -> out_debug.printf( "%s gear: %s", name(), computed.to_string().c_str() );
-  }
-
-  // And finally, replace the player_t::gear object with the computed stats
-  gear = computed;
+  init_meta_gem();
 
   // Needs to be initialized after old set bonus system
   sets.initialize();
@@ -1121,7 +1094,7 @@ bool player_t::init_items()
 
 // player_t::init_meta_gem ==================================================
 
-void player_t::init_meta_gem( gear_stats_t& )
+void player_t::init_meta_gem()
 {
   if ( ! meta_gem_str.empty() ) meta_gem = util::parse_meta_gem_type( meta_gem_str );
 
@@ -1278,14 +1251,15 @@ struct touch_of_the_grave_spell_t : public spell_t
 };
 
 
-void player_t::init_special_effects()
+bool player_t::init_special_effects()
 {
   if ( is_pet() || is_enemy() )
   {
-    return;
+    return true;
   }
 
-  if ( sim -> debug ) sim -> out_debug.printf( "Initializing special effects for player (%s)", name() );
+  if ( sim -> debug )
+    sim -> out_debug.printf( "Initializing special effects for player (%s)", name() );
 
   const spell_data_t* totg = find_racial_spell( "Touch of the Grave" );
   if ( totg -> ok() )
@@ -1295,6 +1269,16 @@ void player_t::init_special_effects()
     effect -> spell_id = totg -> id();
     effect -> execute_action = new touch_of_the_grave_spell_t( this, totg -> effectN( 1 ).trigger() );
     special_effects.push_back( effect );
+  }
+
+  // Initialize all item-based special effects. This includes any DBC-backed enchants, gems, as well
+  // as inherent item effects that use a spell
+  for ( auto& item: items )
+  {
+    if ( ! item.init_special_effects() )
+    {
+      return false;
+    }
   }
 
   // Set bonus initialization. Note that we err on the side of caution here and
@@ -1308,7 +1292,7 @@ void player_t::init_special_effects()
     special_effect_t effect( this );
     if ( ! unique_gear::initialize_special_effect( effect, bonuses[ i ] -> spell_id ) )
     {
-      continue;
+      return false;
     }
 
     if ( effect.type != SPECIAL_EFFECT_CUSTOM )
@@ -1325,6 +1309,8 @@ void player_t::init_special_effects()
 
   // ..and then move on to second phase initialization of all special effects.
   unique_gear::init( this );
+
+  return true;
 }
 
 // player_t::init_resources =================================================
@@ -1337,10 +1323,11 @@ void player_t::init_resources( bool force )
   {
     if ( force || resources.initial[ i ] == 0 )
     {
-      resources.initial[ i ] = (   resources.base[ i ] * resources.base_multiplier[ i ]
-                                   + gear.resource[ i ] + enchant.resource[ i ]
-                                   + ( is_pet() ? 0 : sim -> enchant.resource[ i ] )
-                               ) * resources.initial_multiplier[ i ];
+      resources.initial[ i ]  = resources.base[ i ];
+      resources.initial[ i ] *= resources.base_multiplier[ i ];
+      resources.initial[ i ] += total_gear.resource[ i ];
+      resources.initial[ i ] *= resources.initial_multiplier[ i ];
+
       if ( i == RESOURCE_HEALTH )
         resources.initial[ i ] += floor( stamina() ) * current.health_per_stamina;
     }
@@ -4579,11 +4566,11 @@ bool player_t::resource_available( resource_e resource_type,
 
 void player_t::recalculate_resource_max( resource_e resource_type )
 {
-  resources.max[ resource_type ] = resources.base[ resource_type ] * resources.base_multiplier[ resource_type ] +
-                                   gear.resource[ resource_type ] +
-                                   enchant.resource[ resource_type ] +
-                                   ( is_pet() ? 0 : sim -> enchant.resource[ resource_type ] );
+  resources.max[ resource_type ]  = resources.base[ resource_type ];
+  resources.max[ resource_type ] *= resources.base_multiplier[ resource_type ];
+  resources.max[ resource_type ] += total_gear.resource[ resource_type ];
   resources.max[ resource_type ] *= resources.initial_multiplier[ resource_type ];
+
   switch ( resource_type )
   {
     case RESOURCE_HEALTH:
@@ -9175,12 +9162,19 @@ std::string player_t::create_profile( save_e stype )
     profile_str += "# gear_ilvl=" + util::to_string( avg_ilvl, 2 ) + term;
     for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
     {
-      double value = total_gear.get_stat( i );
-      if ( value != 0 )
+      if ( i == STAT_NONE || i == STAT_ALL ) continue;
+
+      if ( gear.get_stat( i ) < 0 && total_gear.get_stat( i ) > 0 )
       {
         profile_str += "# gear_";
         profile_str += util::stat_type_string( i );
-        profile_str += "=" + util::to_string( value, 0 ) + term;
+        profile_str += "=" + util::to_string( total_gear.get_stat( i ), 0 ) + term;
+      }
+      else if ( gear.get_stat( i ) >= 0 )
+      {
+        profile_str += "# gear_";
+        profile_str += util::stat_type_string( i );
+        profile_str += "=" + util::to_string( gear.get_stat( i ), 0 ) + term;
       }
     }
     if ( meta_gem != META_GEM_NONE )

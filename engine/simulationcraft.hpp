@@ -398,6 +398,8 @@ public:
 
 struct gear_stats_t
 {
+  double default_value;
+
   std::array<double, ATTRIBUTE_MAX> attribute;
   std::array<double, RESOURCE_MAX> resource;
   double spell_power;
@@ -426,7 +428,7 @@ struct gear_stats_t
   double avoidance_rating;
 
   gear_stats_t() :
-    attribute(), resource(),
+    default_value( 0.0 ), attribute(), resource(),
     spell_power( 0.0 ), attack_power( 0.0 ), expertise_rating( 0.0 ), expertise_rating2( 0.0 ),
     hit_rating( 0.0 ), hit_rating2( 0.0 ), crit_rating( 0.0 ), haste_rating( 0.0 ), weapon_dps( 0.0 ), weapon_speed( 0.0 ),
     weapon_offhand_dps( 0.0 ), weapon_offhand_speed( 0.0 ), armor( 0.0 ), bonus_armor( 0.0 ), dodge_rating( 0.0 ),
@@ -437,6 +439,8 @@ struct gear_stats_t
 
   void initialize( double initializer )
   {
+    default_value = initializer;
+
     range::fill( attribute, initializer );
     range::fill( resource, initializer );
 
@@ -2639,6 +2643,7 @@ struct item_t
   unsigned base_item_level() const;
   stat_e stat( size_t idx ) const;
   int stat_value( size_t idx ) const;
+  gear_stats_t total_stats() const;
   bool has_item_stat( stat_e stat ) const;
 
   std::string encoded_item() const;
@@ -2672,6 +2677,8 @@ struct item_t
   bool decode_use_effect();
 
   bool decode_proc_spell( special_effect_t& effect );
+
+  bool init_special_effects();
 
   static bool download_slot( item_t& item );
   static bool download_item( item_t& );
@@ -3767,7 +3774,7 @@ struct player_t : public actor_t
   // Gear
   std::string items_str, meta_gem_str;
   std::vector<item_t> items;
-  gear_stats_t gear, enchant;
+  gear_stats_t gear, enchant; // Option based stats
   gear_stats_t total_gear; // composite of gear, enchant and for non-pets sim -> enchant
   set_bonus_t sets;
   meta_gem_e meta_gem;
@@ -3942,7 +3949,7 @@ struct player_t : public actor_t
 
   virtual void init();
   virtual void override_talent( std::string override_str );
-  virtual void init_meta_gem( gear_stats_t& );
+  virtual void init_meta_gem();
   virtual void init_resources( bool force = false );
   virtual std::string init_use_item_actions( const std::string& append = std::string() );
   virtual std::string init_use_profession_actions( const std::string& append = std::string() );
@@ -3971,7 +3978,7 @@ struct player_t : public actor_t
 
   virtual void init_defense();
   virtual void create_buffs();
-  virtual void init_special_effects();
+  virtual bool init_special_effects();
   virtual void init_scaling();
   virtual void init_action_list() {}
   virtual void init_gains();
