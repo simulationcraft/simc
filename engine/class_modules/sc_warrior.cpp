@@ -2025,11 +2025,9 @@ struct mortal_strike_t: public warrior_attack_t
     base_costs[RESOURCE_RAGE] += p -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
     cooldown -> charges += p -> talents.mortal_combo -> effectN( 1 ).base_value();
     weapon_multiplier *= 1.0 + p -> artifact.thoradins_might.percent();
-    base_costs[RESOURCE_RAGE] *= 1.0 + p -> manacles_of_mannoroth_the_flayer -> driver() -> effectN( 1 ).percent();
-    
     if ( p -> manacles_of_mannoroth_the_flayer )
     {
-      // Read rage gain from data.
+      base_costs[RESOURCE_RAGE] *= 1.0 + p -> manacles_of_mannoroth_the_flayer -> driver() -> effectN( 1 ).percent();
       parse_effect_data( p -> manacles_of_mannoroth_the_flayer -> driver() -> effectN( 2 ) );
     }
   }
