@@ -3629,7 +3629,8 @@ void warrior_t::init_base_stats()
 {
   player_t::init_base_stats();
 
-  resources.base[RESOURCE_RAGE] = 100 + artifact.unending_rage.value();
+  resources.base[RESOURCE_RAGE] = 100 + ( artifact.unending_rage.value() / 10 );
+  resources.max[RESOURCE_RAGE] = resources.base[RESOURCE_RAGE];
 
   base.attack_power_per_strength = 1.0;
   base.attack_power_per_agility = 0.0;
