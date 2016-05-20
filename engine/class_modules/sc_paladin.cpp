@@ -3378,7 +3378,6 @@ void paladin_t::generate_action_prio_list_ret()
 
   action_priority_list_t* def = get_action_priority_list( "default" );
   action_priority_list_t* single = get_action_priority_list( "single" );
-  action_priority_list_t* cleave = get_action_priority_list( "cleave" );
 
   def -> add_action( "auto_attack" );
   def -> add_action( this, "Rebuke" );
@@ -3405,75 +3404,32 @@ void paladin_t::generate_action_prio_list_ret()
     }
   }
 
-  def -> add_action( this, "Avenging Wrath", "if=!buff.avenging_wrath.up" );
+  def -> add_talent( this, "Equality" );
+  def -> add_action( this, "Avenging Wrath" );
+  def -> add_talent( this, "Sanctified Wrath", "sync=judgment,if=holy_power>=3" );
 
   std::vector<std::string> racial_actions = get_racial_actions();
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     def -> add_action( racial_actions[ i ] );
 
-  def -> add_action( "call_action_list,name=cleave,if=spell_targets.divine_storm>=3" );
   def -> add_action( "call_action_list,name=single" );
 
-  // J >
+  single -> add_action( "wake_of_ashes", "if=holy_power<2" );
+  single -> add_talent( this, "Execution Sentence", "if=cooldown.judgment.remains<gcd*5&(holy_power>=3|buff.divine_purpose.react|buff.the_fires_of_justice.react)" );
+  single -> add_talent( this, "Consecration", "if=spell_targets.divine_storm>=4" );
   single -> add_action( this, "Judgment" );
-
-  // TV5 > TV4 >
-  single -> add_action( this, "Templar's Verdict", "if=holy_power>=4" );
-  single -> add_action( this, "Templar's Verdict", "if=(holy_power>=2)&(buff.the_fires_of_justice.up)");
-
-  // BoJ/DH >
-  single -> add_talent( this, "Divine Hammer" );
-  single -> add_action( this, "Blade of Justice" );
-
-  // ES >
-  single -> add_talent( this, "Execution Sentence" );
+  single -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&talent.greater_judgment.enabled&(holy_power>=3|buff.divine_purpose.react|buff.the_fires_of_justice.react|debuff.judgment.remains<gcd*2)" );
+  single -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=3&(holy_power>=3|buff.divine_purpose.react|buff.the_fires_of_justice.react|debuff.judgment.remains<gcd*2)" );
+  single -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&(holy_power>=3|buff.divine_purpose.react|buff.the_fires_of_justice.react|debuff.judgment.remains<gcd*2)" );
+  single -> add_action( this, "Blade of Justice", "if=holy_power<=3" );
+  single -> add_talent( this, "Blade of Wrath", "if=holy_power<=3" );
+  single -> add_talent( this, "Zeal", "if=charges=2&holy_power<=4" );
+  single -> add_action( this, "Crusader Strike", "if=charges=2&holy_power<=4" );
+  single -> add_talent( this, "Divine Hammer", "if=holy_power<=4" );
   single -> add_talent( this, "Consecration" );
-  single -> add_talent( this, "Turalyon's Might" );
-
-  // CF3 >
-  single -> add_talent( this, "Crusader Flurry", "if=charges=3" );
-  single -> add_talent( this, "Zeal" );
-  single -> add_action( this, "Crusader Strike" );
-
-  // TV3 >
-  single -> add_action( this, "Templar's Verdict", "if=holy_power>=3" );
-
-  // CF2 > CF1
-  single -> add_talent( this, "Crusader Flurry" );
-
-  // why would you pick this talent
-  single -> add_talent( this, "Blade of Wrath" );
-
-  // TODO: Determine where this goes
-  // TODO: how should this interact with holy power?
-  single -> add_action( "wake_of_ashes" );
-
-  //Executed if three or more targets are present.
-  // TODO: this is a total guess
-  cleave -> add_action( this, "Judgment" );
-  cleave -> add_action( this, "Divine Storm", "if=holy_power>=4" );
-  cleave -> add_action( this, "Divine Storm", "if=(holy_power>=2)&(buff.the_fires_of_justice.up)" );
-
-  cleave -> add_talent( this, "Divine Hammer" );
-  cleave -> add_action( this, "Blade of Justice" );
-
-  cleave -> add_talent( this, "Consecration" );
-  cleave -> add_talent( this, "Turalyon's Might" );
-  cleave -> add_talent( this, "Execution Sentence" );
-
-  cleave -> add_talent( this, "Zeal" );
-  cleave -> add_talent( this, "Crusader Flurry", "if=charges=3" );
-  cleave -> add_action( this, "Crusader Strike" );
-
-  cleave -> add_action( this, "Divine Storm", "if=holy_power>=3" );
-
-  cleave -> add_talent( this, "Crusader Flurry" );
-
-  // TODO: Determine where this goes
-  // TODO: how should this interact with holy power?
-  cleave -> add_action( "wake_of_ashes" );
-
-  cleave -> add_talent( this, "Blade of Wrath" );
+  single -> add_talent( this, "Zeal", "if=holy_power<=4" );
+  single -> add_action( this, "Crusader Strike", "if=holy_power<=4" );
+  single -> add_talent( this, "Blinding Light" );
 }
 
 // ==========================================================================
