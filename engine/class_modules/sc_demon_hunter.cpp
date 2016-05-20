@@ -138,6 +138,7 @@ public:
   struct
   {
     // General
+    buff_t* demon_soul;
     buff_t* metamorphosis;
 
     // Havoc
@@ -977,6 +978,15 @@ public:
     ab::tick( d );
 
     trigger_charred_warblades( d -> state );
+
+    // Benefit tracking
+    if ( d -> state -> result_amount > 0 )
+    {
+      td( d -> state -> target ) -> debuffs.nemesis -> up();
+      p() -> buff.momentum -> up();
+      p() -> buff.demon_soul -> up();
+      p() -> buff.chaos_blades -> up();
+    }
   }
 
   virtual void impact( action_state_t* s ) override
@@ -988,7 +998,13 @@ public:
       trigger_charred_warblades( s );
 
       // Benefit tracking
-      p() -> get_target_data( s -> target ) -> debuffs.nemesis -> up();
+      if ( s -> result_amount > 0 )
+      {
+        td( s -> target ) -> debuffs.nemesis -> up();
+        p() -> buff.momentum -> up();
+        p() -> buff.demon_soul -> up();
+        p() -> buff.chaos_blades -> up();
+      }
     }
   }
 
@@ -1159,6 +1175,11 @@ struct consume_soul_t : public demon_hunter_heal_t
     }
 
     p() -> buff.painbringer -> trigger();
+
+    if ( sim -> target -> race == RACE_DEMON )
+    {
+      p() -> buff.demon_soul -> trigger();
+    }
   }
 };
 
@@ -4092,6 +4113,12 @@ void demon_hunter_t::create_buffs()
   using namespace buffs;
 
   // General
+
+  buff.demon_soul =
+    buff_creator_t( this, "demon_soul", find_spell( 208195 ) )
+      .default_value( find_spell( 208195 ) -> effectN( 1 ).percent() )
+      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
   if ( specialization() == DEMON_HUNTER_HAVOC )
   {
     buff.metamorphosis =
@@ -5036,6 +5063,8 @@ double demon_hunter_t::composite_parry_rating() const
 double demon_hunter_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
+
+  m *= 1.0 + buff.demon_soul -> check_value();
 
   m *= 1.0 + buff.momentum -> check_value();
 
