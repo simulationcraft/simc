@@ -36,7 +36,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Stance Mask      : 0x88000000
-Affecting spells : Rapid Healing (24546), Healing Trance (37706), Temporal Boon (105826), Lucidity (137323), Holy Hands (196422), An'juna's Trance (207555), Light of T'uure (208065)
+Affecting spells : Rapid Healing (24546), Healing Trance (37706), Lucidity (137323), Holy Hands (196422), An'juna's Trance (207555), Light of T'uure (208065)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ...x.... x....... ...x.... ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -134,7 +134,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=237)      : Apply Aura (6) | Unknown effect sub type (103)
-                   Base Value: -90000000 | Scaled Value: -9e+007 | Target: Self(1)
+                   Base Value: -90000000 | Scaled Value: -9e+07 | Target: Self(1)
 Description      : Fade out, removing all your threat for $d.
 Tooltip          : Reduced threat level.
 
@@ -148,7 +148,7 @@ GCD              : 1.5 seconds
 Duration         : 14 seconds
 Proc Chance      : 100%
 Stance Mask      : 0x08000000
-Affecting spells : Mastery: Madness (77486), Item - Priest T13 Shadow 4P Bonus (Shadow Word: Pain) (105844), Item - Priest T14 Shadow 2P Bonus (123114), Item - Priest T14 Shadow 4P Bonus (123115), Discipline Priest (137032), Lucidity (137323), To the Pain (193644), Voidform (194249), The Edge of Dark and Light (197715), Lingering Insanity (197937)
+Affecting spells : Mastery: Madness (77486), Discipline Priest (137032), Lucidity (137323), To the Pain (193644), Voidform (194249), The Edge of Dark and Light (197715), Lingering Insanity (197937)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -176,7 +176,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Rapid Healing (24546), Healing Trance (37706), Temporal Boon (105826), Lucidity (137323), Holy Guidance (196434), Guardians of the Light (196437), Power of the Naaru (196490), Light of T'uure (208065), Muze's Unwavering Will (210632)
+Affecting spells : Rapid Healing (24546), Healing Trance (37706), Lucidity (137323), Holy Guidance (196434), Guardians of the Light (196437), Power of the Naaru (196490), Light of T'uure (208065), Muze's Unwavering Will (210632)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -270,7 +270,7 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Rapid Healing (24546), Healing Trance (37706), Temporal Boon (105826), Lucidity (137323), Reverence (196418), Light of T'uure (208065), Muze's Unwavering Will (210632)
+Affecting spells : Rapid Healing (24546), Healing Trance (37706), Lucidity (137323), Reverence (196418), Light of T'uure (208065), Muze's Unwavering Will (210632)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -291,7 +291,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Rapid Healing (24546), Healing Trance (37706), Temporal Boon (105826), Spirit Shell (109964), Surge of Light (114255), Item - Priest T14 Healer 2P Bonus (123111), Lucidity (137323), Reverence (196418), Light of T'uure (208065)
+Affecting spells : Rapid Healing (24546), Healing Trance (37706), Spirit Shell (109964), Surge of Light (114255), Lucidity (137323), Reverence (196418), Light of T'uure (208065)
 Triggered by     : Surge of Light (114255)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -361,7 +361,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 1 (9 seconds cooldown)
 Category         : 1602
-Affecting spells : Shadowy Insight (124430), Priest (137030), Lucidity (137323), Item - Priest T16 Shadow 2P Bonus (145174), Empowered Shadows (145180), Mental Fatigue (185104), Fortress of the Mind (193195), Mind Shattering (193643), Voidform (194249), Lingering Insanity (197937)
+Affecting spells : Shadowy Insight (124430), Priest (137030), Lucidity (137323), Mental Fatigue (185104), Fortress of the Mind (193195), Mind Shattering (193643), Voidform (194249), Lingering Insanity (197937)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -608,7 +608,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=11689)    : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 1500000000 | Scaled Value: 1.5e+009 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 1500000000 | Scaled Value: 1.5e+09 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
 Description      : Upon death, you become the Spirit of Redemption for $27827d. You cannot move, attack, be attacked, or be targeted by any spells or effects, and your healing spells cost no mana. When the effect ends, you die.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
@@ -732,7 +732,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 12 seconds
 Category         : 1169
-Affecting spells : Item - Priest T13 Shadow 2P Bonus (Shadow Word: Death) (105843), Priest (137030), Lucidity (137323), Empowered Shadows (145180), Death's Embrace (193645)
+Affecting spells : Priest (137030), Lucidity (137323), Death's Embrace (193645)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -744,9 +744,11 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.60000 | Target: Enemy(6)
 #2 (id=165318)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
+#3 (id=340366)   : Dummy (3)
+                   Base Value: 10 | Scaled Value: 10
 Description      : A word of dark binding that inflicts $s1 Shadow damage to the target. Only usable on enemies that have less than $s2% health.
 
-|cFFFFFFFFGenerates $/100;190714s1 Insanity$?s199853[][ if the target dies].|r
+|cFFFFFFFFGenerates $s3 Insanity, or $/100;190714s1 if the target dies.|r
 
 Name             : Binding Heal (id=32546) [Spell Family (6)] 
 Class            : Priest
@@ -757,7 +759,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Healing Trance (37706), Temporal Boon (105826), Lucidity (137323), Light of T'uure (208065)
+Affecting spells : Healing Trance (37706), Lucidity (137323), Light of T'uure (208065)
 Attributes       : ........ ........ x....... ........   ........ ........ ...x.... ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -827,7 +829,7 @@ GCD              : 1.5 seconds
 Cooldown         : 12 seconds
 Category         : 1181
 Stance Mask      : 0x80000000
-Affecting spells : Healing Trance (37706), Temporal Boon (105826), Priest (137030), Lucidity (137323)
+Affecting spells : Healing Trance (37706), Priest (137030), Lucidity (137323)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ..x..... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -917,7 +919,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Healing Trance (37706), Temporal Boon (105826), Item - Priest T14 Healer 4P Bonus (123113), Lucidity (137323), Hallowed Ground (196429), Words of Healing (196430), Apotheosis (200183), Light of T'uure (208065)
+Affecting spells : Healing Trance (37706), Lucidity (137323), Hallowed Ground (196429), Words of Healing (196430), Apotheosis (200183), Light of T'uure (208065)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ......x. ........ 
@@ -940,7 +942,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 18 seconds
 Proc Chance      : 101%
-Affecting spells : Mastery: Madness (77486), Item - Priest T14 Shadow 4P Bonus (123115), Lucidity (137323), Touch of Darkness (194007), Voidform (194249), Lingering Insanity (197937), San'layn (199855)
+Affecting spells : Mastery: Madness (77486), Lucidity (137323), Touch of Darkness (194007), Voidform (194249), Lingering Insanity (197937), San'layn (199855)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1112,7 +1114,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 9 seconds
 Category         : 1230
-Affecting spells : Temporal Boon (105826), Item - Priest T14 Healer 4P Bonus (123113), Lucidity (137323)
+Affecting spells : Lucidity (137323)
 Attributes       : ........ x....... x....... .....x..   ..x....x ..x...x. ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ .x...x.. ........ ........ 
@@ -1159,7 +1161,7 @@ School           : Holy
 Spell Level      : 60
 Range            : 40 yards
 Velocity         : 40 yards/sec
-Affecting spells : Reparation (186478), Confession (197708), Power of the Dark Side (198069)
+Affecting spells : Reparation (186478), Confession (197708)
 Triggered by     : Penance (47758)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ........ 
@@ -1170,7 +1172,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=39897)    : School Damage: holy (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Target: Unknown(77)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.75000 | Target: Unknown(77)
 Description      : $@spelldesc47540
 
 Name             : Penance (id=47750) [Spell Family (6)] 
@@ -1179,7 +1181,7 @@ School           : Holy
 Spell Level      : 60
 Range            : 40 yards
 Velocity         : 40 yards/sec
-Affecting spells : Reparation (186478), Atonement (194384), Confession (197708), Power of the Dark Side (198069)
+Affecting spells : Reparation (186478), Atonement (194384), Confession (197708), Power Word: Shield (211558)
 Triggered by     : Penance (47757)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ......x. ........   ........ .x...... ........ ........ 
@@ -1190,7 +1192,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=39995)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Target: Unknown(77)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | Target: Unknown(77)
 Description      : $@spelldesc47540
 
 Name             : Shield Discipline (id=47755) 
@@ -1215,7 +1217,7 @@ School           : Holy
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 2 seconds
-Affecting spells : Item - Priest T17 Discipline 2P Bonus (165614), Reparation (186478), Castigation (193134), Atonement (194384), Confession (197708), Power of the Dark Side (198069)
+Affecting spells : Item - Priest T17 Discipline 2P Bonus (165614), Reparation (186478), Castigation (193134), Atonement (194384), Confession (197708), Power Word: Shield (211558)
 Attributes       : ........ x....... x....... .....x..   ..x...xx ..x...x. ........ ..x.x... 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ...x....   ........ .x...x.. ........ ........ 
@@ -1271,7 +1273,7 @@ Effects          :
 #2 (id=40043)    : Dummy (3)
                    Base Value: 40 | Scaled Value: 40
 #3 (id=188025)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 100000000 | Scaled Value: 1e+008 | Misc Value: 127 | Target: Friend(21)
+                   Base Value: 100000000 | Scaled Value: 1e+08 | Misc Value: 127 | Target: Friend(21)
 Description      : Calls upon a guardian spirit to watch over the friendly target for $d, increasing healing received by $s1%$?s159599[][ and preventing the target from dying by sacrificing itself.  This sacrifice terminates the effect and heals the target for $s2% of maximum health]. Castable while stunned.
 
 Massive damage amounts will kill the target despite this effect.
@@ -1505,7 +1507,7 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 180 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Temporal Boon (105826), Lucidity (137323)
+Affecting spells : Lucidity (137323)
 Attributes       : ........ ........ x....... ........   ..x...x. ........ ........ ........ 
                  : ..x..... ........ ...x.... ......x.   ........ ........ ........ ......x. 
                  : ......x. ........ ........ ........   ........ .x...x.. ........ ........ 
@@ -1691,7 +1693,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
-Affecting spells : Lucidity (137323), Empowered Shadows (145180), Mental Fatigue (185104), Fortress of the Mind (193195), Voidform (194249), Lingering Insanity (197937), Void Siphon (215322)
+Affecting spells : Lucidity (137323), Mental Fatigue (185104), Fortress of the Mind (193195), Voidform (194249), Lingering Insanity (197937), Void Siphon (215322)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1895,7 +1897,7 @@ Spell Level      : 24
 Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
-Affecting spells : Item - Priest T13 Healer 4P Bonus (Holy Word and Power Word: Shield) (105832), Lucidity (137323), Absolution (145336), Apotheosis (200183)
+Affecting spells : Lucidity (137323), Apotheosis (200183)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2047,7 +2049,7 @@ Spell Level      : 28
 Duration         : 10 seconds
 Cooldown         : 60 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Rapid Healing (24546), Healing Trance (37706), Temporal Boon (105826), Lucidity (137323)
+Affecting spells : Rapid Healing (24546), Healing Trance (37706), Lucidity (137323)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2071,7 +2073,7 @@ Duration         : 15 seconds
 Cooldown         : 15 seconds
 Category         : 1380
 Stance Mask      : 0x80000000
-Affecting spells : Lucidity (137323), Atonement (194384), Light of T'uure (208065)
+Affecting spells : Lucidity (137323), Atonement (194384), Light of T'uure (208065), Power Word: Shield (211558)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -2087,7 +2089,7 @@ Name             : Divine Star (id=110745) [Spell Family (6)]
 Class            : Priest
 School           : Holy
 Range            : 100 yards
-Affecting spells : Atonement (194384), Light of T'uure (208065)
+Affecting spells : Atonement (194384), Light of T'uure (208065), Power Word: Shield (211558)
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ...x.... ........   ........ .x...... ........ ........ 
                  : x......x .......x ........ ........   ...x.... ........ .xx..... ........ 
@@ -2196,7 +2198,7 @@ Duration         : 3.2 seconds
 Cooldown         : 40 seconds
 Category         : 1366
 Stance Mask      : 0x80000000
-Affecting spells : Lucidity (137323), Atonement (194384), Light of T'uure (208065)
+Affecting spells : Lucidity (137323), Atonement (194384), Light of T'uure (208065), Power Word: Shield (211558)
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -2228,7 +2230,7 @@ Name             : Halo (id=120692) [Spell Family (6)]
 Class            : Priest
 School           : Holy
 Range            : 100 yards
-Affecting spells : Atonement (194384), Light of T'uure (208065)
+Affecting spells : Atonement (194384), Light of T'uure (208065), Power Word: Shield (211558)
 Attributes       : ........ ........ .......x x..x....   .....x.x ........ ........ ........ 
                  : .......x ......x. ........ ........   ........ ........ ........ ......xx 
                  : x......x .......x ........ ........   ...x.... .......x .xxx.... ........ 
@@ -2244,7 +2246,7 @@ Name             : Halo (id=120696) [Spell Family (6)]
 Class            : Priest
 School           : Holy
 Range            : 100 yards
-Affecting spells : Atonement (194384), Light of T'uure (208065)
+Affecting spells : Atonement (194384), Light of T'uure (208065), Power Word: Shield (211558)
 Attributes       : ........ ........ .......x x..x....   .....x.x ........ ........ ........ 
                  : .......x ......x. ........ ........   ........ .x...... ........ ......xx 
                  : x......x .......x ........ ........   ...x.... .......x .xx..... ........ 
@@ -2298,7 +2300,7 @@ Name             : Divine Star (id=122128) [Spell Family (6)]
 Class            : Priest
 School           : Holy
 Range            : 100 yards
-Affecting spells : Atonement (194384), Light of T'uure (208065)
+Affecting spells : Atonement (194384), Light of T'uure (208065), Power Word: Shield (211558)
 Attributes       : ........ ........ ........ x..x....   .....x.. .....x.. ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ........ ........ 
                  : x......x .......x ........ ........   ...x.... ........ .xx..... ........ 
@@ -2923,7 +2925,7 @@ GCD              : 1.5 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Shadow Priest (137033), Lucidity (137323), Thoughts of Insanity (193647), Voidform (194249), Atonement (194384), Lingering Insanity (197937), Darkest Shadows (216212)
+Affecting spells : Shadow Priest (137033), Lucidity (137323), Thoughts of Insanity (193647), Voidform (194249), Atonement (194384), Lingering Insanity (197937), Power Word: Shield (211558), Darkest Shadows (216212)
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2964,7 +2966,7 @@ Duration         : 10 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Shadow Priest (137033), Lucidity (137323), Thoughts of Insanity (193647), Voidform (194249), Atonement (194384), Lingering Insanity (197937), Darkest Shadows (216212)
+Affecting spells : Shadow Priest (137033), Lucidity (137323), Thoughts of Insanity (193647), Voidform (194249), Atonement (194384), Lingering Insanity (197937), Power Word: Shield (211558), Darkest Shadows (216212)
 Attributes       : ........ ........ x....... ..x....x   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3056,7 +3058,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=283373)   : Apply Aura (6) | Mod Power Regen (110)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self(1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
 Description      : You regenerate mana $s1% faster.
 
 Name             : Benediction (id=193157) [Spell Family (6), Passive, Hidden] 
@@ -3281,7 +3283,7 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Rapid Healing (24546), Temporal Boon (105826), Lucidity (137323), Atonement (194384), Burst of Light (197716)
+Affecting spells : Rapid Healing (24546), Lucidity (137323), Atonement (194384), Burst of Light (197716), Power Word: Shield (211558)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3546,7 +3548,7 @@ Effects          :
                    Base Value: 199911 | Scaled Value: 199911 | Misc Value: 32379 | Target: Self(1)
 #2 (id=294414)   : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | Misc Value: 32379 | Target: Self(1)
-Description      : Shadow Word: Death is now castable on targets below $s2% health, and always generates Insanity, even if it did not kill the target.
+Description      : Shadow Word: Death is now castable on targets below $s2% health, and always generates Insanity as though it killed the target.
 
 Name             : San'layn (id=199855) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
@@ -3657,7 +3659,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 60 seconds
-Affecting spells : Lucidity (137323), Absolution (145336), Apotheosis (200183)
+Affecting spells : Lucidity (137323), Apotheosis (200183)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3695,7 +3697,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 60 seconds
-Affecting spells : Lucidity (137323), Absolution (145336), Apotheosis (200183)
+Affecting spells : Lucidity (137323), Apotheosis (200183)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3789,7 +3791,7 @@ Spell Level      : 7
 Range            : 40 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Atonement (194384), Plea (212100)
+Affecting spells : Atonement (194384), Power Word: Shield (211558), Plea (212100)
 Triggered by     : Plea (212100)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -3901,7 +3903,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 15 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Temporal Boon (105826), Priest (137030)
+Affecting spells : Priest (137030)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3915,7 +3917,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 Description      : Heals up to $s2 injured allies within $A1 yards of the target for $s1.
 
-Name             : Void Torrent (id=205065) [Spell Family (6)] 
+Name             : Void Torrent (Artifact) (id=205065) [Spell Family (6)] 
 Class            : Priest
 School           : Shadow
 Range            : 40 yards
@@ -4010,11 +4012,9 @@ Class            : Priest
 School           : Shadow
 Spell Level      : 1
 Range            : 30 yards
-Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Duration         : 4 seconds
+Duration         : 2 seconds
 Cooldown         : 30 seconds
-Mechanic         : Unknown(95)
 Attributes       : ........ ........ x....... ........   ...x...x ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4022,10 +4022,12 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .x...
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=303236)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
-Description      : Unleashes a psychic explosion, stunning all enemies within $A1 yds of the target for $d.
-Tooltip          : Stunned.
+#1 (id=303236)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
+Description      : Inflicts the target with a Mind Bomb.
+
+After $d, or if the target dies, it unleashes a psychic explosion, stunning all enemies within $A1 yds of the target for $d.
+Tooltip          : About to unleash a psychic explosion, stunning all nearby enemies.
 
 Name             : Void Ray (id=205371) [Spell Family (6), Passive] 
 Class            : Priest
@@ -4113,7 +4115,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Cooldown         : 4.5 seconds
-Affecting spells : Mastery: Madness (77486), Priest (137030), Sinister Thoughts (194026), Voidform (194249), Lingering Insanity (197937), Anund's Last Breath (215210)
+Affecting spells : Mastery: Madness (77486), Priest (137030), Sinister Thoughts (194026), Voidform (194249), Lingering Insanity (197937), Void (211657), Anund's Last Breath (215210)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4146,7 +4148,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Dominate Mind can now be used on players.
 
-Name             : Light's Wrath (id=207946) [Spell Family (6)] 
+Name             : Light's Wrath (Artifact) (id=207946) [Spell Family (6)] 
 Class            : Priest
 School           : Holyfire
 Range            : 40 yards
@@ -4154,7 +4156,7 @@ Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
 Cooldown         : 90 seconds
-Triggered by     : Light's Wrath (208011)
+Triggered by     : Push Active Ability to Bar (225879)
 Attributes       : ........ ........ ..x..... .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4163,7 +4165,7 @@ Attributes       : ........ ........ ..x..... .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=307618)   : School Damage: holyfire (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 8.00000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.00000 | Target: Enemy(6)
 #2 (id=336362)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Enemy(6)
 Description      : Draws upon the power of |cFFFFCC99Light's Wrath|r, dealing $s1 Radiant damage to the target, increased by $s2% per ally affected by your Atonement.
@@ -4311,7 +4313,7 @@ GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 10 seconds
 Proc Chance      : 101%
-Affecting spells : Temporal Boon (105826), Lucidity (137323), Absolution (145336)
+Affecting spells : Lucidity (137323)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

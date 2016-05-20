@@ -286,7 +286,7 @@ School           : Physical
 Spell Level      : 60
 Duration         : 5 seconds
 Cooldown         : 60 seconds
-Affecting spells : Item - Warrior T13 Arms and Fury 4P Bonus (Colossus Smash) (105907), Item - Warrior T13 Protection 2P Bonus (Revenge) (105908), Item - Warrior T13 Protection 4P Bonus (Shield Wall) (105911), Item - Warrior T14 DPS 4P Bonus (123144), Item - Warrior T15 DPS 4P Bonus (138126), Helya's Wrath (200870), Reckless Abandon (202751), 
+Affecting spells : Helya's Wrath (200870), Reckless Abandon (202751), Item - Warrior T19 Arms 2P Bonus (212149)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -313,7 +313,7 @@ Spell Level      : 18
 Cooldown         : 1 seconds
 Charges          : 2 (15 seconds cooldown)
 Category         : 1385
-Affecting spells : Bladestorm (46924), Item - Warrior T14 Protection 4P Bonus (123147), Neltharion's Fury (203524), Bladestorm (222634)
+Affecting spells : Bladestorm (46924), Neltharion's Fury (203524), Bladestorm (222634)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -441,7 +441,7 @@ Resource         : 25 Rage
 Spell Level      : 8 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Single-Minded Fury (81099), Protection (131086), Warrior (137047), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), 
+Affecting spells : Single-Minded Fury (81099), Protection (131086), Warrior (137047), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), Stone Heart (225947), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ .x...... ........ ........   ........ ....x... ........ ........ 
@@ -623,20 +623,20 @@ GCD              : 1.5 seconds
 Charges          : 1 (6 seconds cooldown)
 Category         : 971
 Proc Chance      : 101%
-Affecting spells : Mortal Strike and Bloodthirst Damage Up (60174), Item - Warrior T13 Arms and Fury 2P Bonus (Inner Rage) (105797), Item - Warrior T14 DPS 2P Bonus (123142), Warrior (137047), Item - Warrior T17 Arms 4P Bonus (165336), Vicious Strike (165638), Sweeping Strikes (202161), Dauntless (202297), Archavon's Heavy Hand (205144), Focused Rage (207982), Thoradin's Might (209480), Precise Strikes (209493), Shattered Defenses (209706), 
+Affecting spells : Warrior (137047), Item - Warrior T17 Arms 4P Bonus (165336), Vicious Strike (165638), Sweeping Strikes (202161), Dauntless (202297), Archavon's Heavy Hand (205144), Focused Rage (207982), Thoradin's Might (209480), Precise Strikes (209493), Shattered Defenses (209706), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ....x... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=5274)     : Trigger Spell: Mortal Wounds (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 115804 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=5275)     : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Targets: 1 | Target: Enemy(6)
 #3 (id=99581)    : Weapon Damage% (31)
-                   Base Value: 280 | Scaled Value: 2.8 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 350 | Scaled Value: 3.5 | Chain Targets: 1 | Target: Enemy(6)
 #4 (id=156241)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: rage | Target: Self(1)
 Description      : A vicious strike that deals $sw3 Physical damage and reduces the effectiveness of healing on the target for $115804d.
@@ -711,7 +711,7 @@ Spell Level      : 36
 Duration         : 15 seconds
 Cooldown         : 180 seconds
 Category         : 1251
-Affecting spells : Bladestorm (46924), Item - Warrior T14 Protection 2P Bonus (123146), Item - Warrior T18 Protection 2P Bonus (185796), Will to Survive (188683), Neltharion's Fury (203524), Bladestorm (222634)
+Affecting spells : Bladestorm (46924), Item - Warrior T18 Protection 2P Bonus (185796), Will to Survive (188683), Neltharion's Fury (203524), Bladestorm (222634)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -730,7 +730,7 @@ School           : Physical
 Spell Level      : 50
 Duration         : 6 seconds
 Cooldown         : 60 seconds
-Affecting spells : Warpaint (208154), Warlord's Challenge (223662), 
+Affecting spells : Warpaint (208154), Item - Warrior T19 Fury 4P Bonus (212158), Warlord's Challenge (223662), 
 Attributes       : ....x... ........ x.x..... ........   ........ ..x....x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -765,7 +765,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160), Item - Warrior T14 DPS 2P Bonus (123142), Warrior (137047), Strength of the Earth Aspect (188647)
+Affecting spells : Demoralizing Shout (1160), Warrior (137047), Strength of the Earth Aspect (188647)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -826,13 +826,13 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 4.5 seconds
 Category         : 971
-Affecting spells : Mortal Strike and Bloodthirst Damage Up (60174), Meat Cleaver (85739), Item - Warrior T13 Arms and Fury 2P Bonus (Inner Rage) (105797), Item - Warrior T14 DPS 2P Bonus (123142), Warrior (137047), Vicious Strike (165640), Thirst for Battle (200847), Taste for Blood (206333), Wild Slashes (216273)
+Affecting spells : Meat Cleaver (85739), Warrior (137047), Vicious Strike (165640), Thirst for Battle (200847), Taste for Blood (206333)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=14120)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
@@ -856,7 +856,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : .....x.x .x...x.. .x...... ........ 
                  : Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
-Affecting spells : Manual of Spell Reflection (168801)
+Affecting spells : Manual of Spell Reflection (168801), Neltharion's Fury (203524)
 Attributes       : ....x... ........ x.x..... ...x....   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ..x..... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -868,8 +868,8 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
 #2 (id=280400)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7e | Target: Self(1)
-Description      : Raise your shield, reflecting spells cast on you and reducing magical damage you take by $s2%. Lasts $d or until a spell is reflected.
-Tooltip          : Reflects a spell cast on you.
+Description      : Raise your shield, reflecting spells cast on you and reducing magical damage you take by $s2%. $?a188672[Lasts $d.][Lasts $d or until a spell is reflected.]
+Tooltip          : $?a188672[Reflecting all spells cast on you.][Reflects a spell cast on you.]
 Magical damage taken reduced by $s2%.
 
 Name             : Shield Slam (id=23922) [Spell Family (4)] 
@@ -1540,13 +1540,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68041)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Target: Self(1)
-                   Affected Spells: Colossus Smash (108126), Colossus Smash (167105), Colossus Smash (208086)
+                   Affected Spells: Colossus Smash (167105), Colossus Smash (208086)
 #2 (id=89760)    : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Misc Value: 23 | Target: Self(1)
-                   Affected Spells: Colossus Smash (108126), Colossus Smash (167105), Colossus Smash (208086)
+                   Affected Spells: Colossus Smash (167105), Colossus Smash (208086)
 #3 (id=291395)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Misc Value: 32 | Target: Self(1)
-                   Affected Spells: Colossus Smash (108126), Colossus Smash (167105), Colossus Smash (208086)
+                   Affected Spells: Colossus Smash (167105), Colossus Smash (208086)
 Description      : Increases the damage of your Colossus Smash by $s1%, and causes it to increase damage you deal to the target by an additional $s2%.
 
 Name             : Mastery: Unshackled Fury (id=76856) [Spell Family (4), Passive] 
@@ -1681,7 +1681,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 39 (max 80)
 Range            : 100 yards
-Affecting spells : Warrior (137047), Wrath and Fury (200849), Warpaint (208154), Inner Rage (215573), 
+Affecting spells : Warrior (137047), Wrath and Fury (200849), Warpaint (208154), Item - Warrior T19 Fury 4P Bonus (212158), Inner Rage (215573), 
 Triggered by     : Raging Blow (85288)
 Attributes       : ....x... ........ x.x..... ........   ....x... ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ .x...... ........ x.....x. 
@@ -1825,7 +1825,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 39 (max 80)
 Range            : 100 yards
-Affecting spells : Warrior (137047), Wrath and Fury (200849), Warpaint (208154), Inner Rage (215573), 
+Affecting spells : Warrior (137047), Wrath and Fury (200849), Warpaint (208154), Item - Warrior T19 Fury 4P Bonus (212158), Inner Rage (215573), 
 Triggered by     : Raging Blow (85288)
 Attributes       : ....x... ........ x.x..... ........   ....x... ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ .xx..... ........ ......x. 
@@ -1884,7 +1884,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Proc Chance      : 101%
-Affecting spells : Warrior (137047), Item - Warrior T18 Fury 2P Bonus (185798), 
+Affecting spells : Warrior (137047), Item - Warrior T18 Fury 2P Bonus (185798), Wild Slashes (216273)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1897,7 +1897,7 @@ Effects          :
 #2 (id=107865)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #3 (id=107866)   : Weapon Damage% (31)
-                   Base Value: 185 | Scaled Value: 1.85 | Target: Enemy(6)
+                   Base Value: 370 | Scaled Value: 3.7 | Target: Enemy(6)
 #4 (id=313843)   : Trigger Spell: Taste for Blood (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 206333 | Target: Self(1)
 Description      : Aggressively strike with your off-hand weapon for $sw3 Physical damage. Increases your Bloodthirst critical strike chance by $206333s1% until it next deals a critical strike, stacking up to $206333u times.
@@ -2556,7 +2556,7 @@ Effects          :
                    Affected Spells: Cleave (845), Thunder Clap (6343), Revenge (6572), Overpower (7384), Bloodthirst (23881), Shield Slam (23922), Raging Blow (85288), Raging Blow (85384), Raging Blow (96103), Furious Slash (100130), Focused Rage (204488), Focused Rage (207982)
 #2 (id=188987)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11 | Target: Self(1)
-                   Affected Spells: Defensive Stance (71), Charge (100), Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Intimidating Shout (5246), Execute (5308), Thunder Clap (6343), Pummel (6552), Revenge (6572), Overpower (7384), Mortal Strike (12294), Piercing Howl (12323), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Improved Hamstring (24428), Victory Rush (34428), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Throw (57755), Raging Blow (85288), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Colossus Smash (108126), Deep Wounds (115767), Dragon Roar (118000), Shockwave (132168), Storm Bolt (132169), Ravager (152277), Ravager (156287), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Bladestorm (168969), Rampage (184367), Rampage (184707), Rampage (184709), Cleave (188923), Whirlwind (190411), Defensive Stance (197690), Charge (198337), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Focused Rage (204488), Focused Rage (207982), Colossus Smash (208086), Warbreaker (209577), Rampage (218617), Bladestorm (222634)
+                   Affected Spells: Defensive Stance (71), Charge (100), Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Intimidating Shout (5246), Execute (5308), Thunder Clap (6343), Pummel (6552), Revenge (6572), Overpower (7384), Mortal Strike (12294), Piercing Howl (12323), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Improved Hamstring (24428), Victory Rush (34428), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Throw (57755), Raging Blow (85288), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Shockwave (132168), Storm Bolt (132169), Ravager (152277), Ravager (156287), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Bladestorm (168969), Rampage (184367), Rampage (184707), Rampage (184709), Cleave (188923), Whirlwind (190411), Defensive Stance (197690), Charge (198337), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Focused Rage (204488), Focused Rage (207982), Colossus Smash (208086), Warbreaker (209577), Rampage (218617), Bladestorm (222634)
 #3 (id=191020)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1385 | Target: Self(1)
 #4 (id=191021)   : Apply Aura (6) | Unknown effect sub type (457)
@@ -2785,11 +2785,15 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=199915)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Unknown(25)
+#2 (id=339569)   : Apply Aura (6) | Unknown effect sub type (199)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#3 (id=339581)   : Apply Aura (6) | Unknown effect sub type (199)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : $@spelldesc146974
 Tooltip          : Different weapon visual equipped from your bag.
 
@@ -2929,22 +2933,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.88800 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 Description      : $@spelldesc152277
 
-Name             : Bladed Armor (id=161608) [Passive] 
-Class            : Protection Protection Brewmaster Guardian Warrior, Paladin, Monk, Druid
-School           : Physical
-Spell Level      : 1
-Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ......x. ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=226766)   : Apply Aura (6) | Unknown effect sub type (464)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self(1)
-Description      : Increases your Attack Power by $s1% of your Bonus Armor.
-
 Name             : Riposte (id=161798) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -3003,7 +2991,7 @@ Resource         : 10 Rage
 Spell Level      : 8 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Single-Minded Fury (81099), Protection (131086), Warrior (137047), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), 
+Affecting spells : Single-Minded Fury (81099), Protection (131086), Warrior (137047), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), Stone Heart (225947), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ .x...... ........ ........   ........ ....x... ........ ........ 
@@ -3014,7 +3002,7 @@ Effects          :
 #1 (id=229520)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=229537)   : Weapon Damage% (31)
-                   Base Value: 120 | Scaled Value: 1.2 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 175 | Scaled Value: 1.75 | Chain Targets: 1 | Target: Enemy(6)
 #3 (id=239183)   : Energize Power (30)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: rage | Target: Self(1)
 Description      : Attempts to finish off a foe, causing $sw2 Physical damage, and consuming up to $m3 additional Rage to deal up to ${$sw2*3} additional damage. Only usable on enemies that have less than 20% health.
@@ -3025,7 +3013,7 @@ School           : Physical
 Spell Level      : 7 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Single-Minded Fury (81099), Protection (131086), Warrior (137047), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), 
+Affecting spells : Single-Minded Fury (81099), Protection (131086), Warrior (137047), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), Stone Heart (225947), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ..x..... x....... 
                  : ........ .x...... ........ ........   ........ ....x... ........ ........ 
@@ -3111,7 +3099,7 @@ School           : Physical
 Spell Level      : 1
 Duration         : 4 seconds
 Mechanic         : Unknown(262)
-Affecting spells : Warpaint (208154)
+Affecting spells : Warpaint (208154), Item - Warrior T19 Fury 4P Bonus (212158)
 Triggered by     : Item - Warrior T17 Fury 2P Bonus (165337), Enrage (184361), Trial by Combat (218826)
 Attributes       : ........ ........ ........ x......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3195,7 +3183,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=267757)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
@@ -3216,7 +3204,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : Not a proc (105)
 Effects          :
 #1 (id=267761)   : Normalized Weapon Damage (121)
@@ -3241,10 +3229,28 @@ Attributes       : ....x.x. ........ ..x..... ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=267878)   : Apply Aura (6) | Unknown effect sub type (213)
-                   Base Value: 240 | Scaled Value: 240 | Target: Self(1)
+                   Base Value: 300 | Scaled Value: 300 | Target: Self(1)
 #2 (id=294133)   : Apply Aura (6) | Proc Trigger Spell: Tactician (42)
-                   Base Value: 15 | Scaled Value: 15 | Trigger Spell: 199854 | Target: Self(1)
-Description      : Slam, Whirlwind, and Execute have a $s2% chance per target hit to reset the remaining cooldown on Colossus Smash and Mortal Strike.
+                   Base Value: 10 | Scaled Value: 10 | Trigger Spell: 199854 | Target: Self(1)
+Description      : Mortal Strike, Slam, Whirlwind, and Execute have a $s2% chance per target hit to reset the remaining cooldown on Colossus Smash and Mortal Strike.
+
+Name             : Reflective Plating (id=188672) [Spell Family (4), Passive] 
+Class            : Warrior
+School           : Physical
+Proc Chance      : 101%
+Proc Flags       : ........ ..x...x. ........ ........ 
+                 : AOE Heal, Heal
+Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=275632)   : Apply Aura (6) | Proc Trigger Spell: Reflect Generates Rage Proc Trigger (42)
+                   Base Value: 5 | Scaled Value: 5 | Trigger Spell: 203231 | Target: Self(1)
+Description      : Spell Reflect now reflects an unlimited number of spells during its duration, and generates ${$203234m1/10} Rage each time it reflects a spell.
 
 Name             : Cleave (id=188923) [Spell Family (4)] 
 Class            : Warrior
@@ -3385,7 +3391,7 @@ Affecting spells : Warrior (137047), Uncontrolled Rage (200856), Raging Fury (22
 Triggered by     : Charge (100)
 Attributes       : ....x... ........ x.x..... .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .x...... 
                  : ........ ........ .......x ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3396,7 +3402,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 126661 | Target: Self(1)
 Description      : $@spelldesc100
 
-Name             : Morale Killer (id=199023) [Spell Family (3), Passive, Hidden] 
+Name             : Morale Killer (Honor Talent) (id=199023) [Spell Family (3), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -3404,14 +3410,14 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=292876)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self(1)
 Description      : Demoralizing Shout now reduces the damage enemies deal to all targets, not just you.
 
-Name             : Thunderstruck (id=199042) [Spell Family (4)] 
+Name             : Thunderstruck (Honor Talent) (id=199042) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
 Spell Level      : 1
@@ -3430,7 +3436,7 @@ Effects          :
 Description      : @spelldesc199045
 Tooltip          : Rooted.
 
-Name             : Thunderstruck (id=199045) [Spell Family (3), Passive, Hidden] 
+Name             : Thunderstruck (Honor Talent) (id=199045) [Spell Family (3), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -3438,7 +3444,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=292907)   : Apply Aura (6) | Dummy (4)
@@ -3529,7 +3535,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
-Triggered by     : Tactician (184783)
+Triggered by     : Tactician (184783), Item - Warrior T19 Arms 4P Bonus (212156)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3573,7 +3579,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : Not a proc (105)
 Effects          :
 #1 (id=296642)   : Normalized Weapon Damage (121)
@@ -3595,7 +3601,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=296644)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
@@ -4055,13 +4061,13 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=298712)   : Apply Aura (6) | Add Percent Modifier: Spell Duration (108)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: 1 | Target: Self(1)
-                   Affected Spells: Colossus Smash (108126), Colossus Smash (167105), Colossus Smash (208086)
+                   Affected Spells: Colossus Smash (167105), Colossus Smash (208086)
 #2 (id=298796)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 3 (108)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 23 | Target: Self(1)
-                   Affected Spells: Colossus Smash (108126), Colossus Smash (167105), Colossus Smash (208086)
+                   Affected Spells: Colossus Smash (167105), Colossus Smash (208086)
 #3 (id=298797)   : Apply Aura (6) | Add Percent Modifier (108)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 33 | Target: Self(1)
-                   Affected Spells: Colossus Smash (108126), Colossus Smash (167105), Colossus Smash (208086)
+                   Affected Spells: Colossus Smash (167105), Colossus Smash (208086)
 Description      : Increases the duration of Colossus Smash by $s1%, but reduces its effectiveness by $s2%.
 
 Name             : Booming Voice (id=202743) [Spell Family (4), Passive, Hidden] 
@@ -4203,7 +4209,41 @@ Effects          :
                    Affected Spells: Thunder Clap (6343)
 Description      : Increases the radius of Thunder Clap by $s1%.
 
-Name             : Neltharion's Fury (id=203524) [Spell Family (4)] 
+Name             : Reflect Generates Rage Proc Trigger (id=203231) [Spell Family (4)] 
+Class            : Warrior
+School           : Physical
+Duration         : 5 seconds
+Proc Chance      : 101%
+Proc Flags       : .....x.. .x...x.. .x.x.... ........ 
+                 : Yellow Melee Taken, Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
+Triggered by     : Reflective Plating (188672)
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=299692)   : Apply Aura (6) | Proc Trigger Spell: Reflective Plating (42)
+                   Base Value: -3000 | Scaled Value: -3000 | Trigger Spell: 203234 | Target: Self(1)
+Description      : $@spelldesc188672
+
+Name             : Reflective Plating (id=203234) [Spell Family (4)] 
+Class            : Warrior
+School           : Physical
+Triggered by     : Reflect Generates Rage Proc Trigger (203231)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=299695)   : Energize Power (30)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: rage | Target: Self(1)
+Description      : $@spelldesc188672
+
+Name             : Neltharion's Fury (Artifact) (id=203524) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
 GCD              : 1.5 seconds
@@ -4225,8 +4265,9 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
 #4 (id=312629)   : Apply Aura (6) | Unknown effect sub type (263)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-                   Affected Spells: Taunt (355), Shield Wall (871), Demoralizing Shout (1160), Shield Block (2565), Last Stand (12975), Demoralizing Shout (125565), Enraged Regeneration (184364), Ignore Pain (190456)
+                   Affected Spells: Taunt (355), Shield Wall (871), Demoralizing Shout (1160), Shield Block (2565), Last Stand (12975), Spell Reflection (23920), Demoralizing Shout (125565), Enraged Regeneration (184364), Ignore Pain (190456)
 Description      : Enter a defensive posture, critically blocking all attacks while a stream of shadowflame erupts from |cFFFFCC99Scale of the Earth-Warder|r, dealing ${6*$203526s1} Shadowflame over $d to all enemies in front of you. You can use defensive abilities while this is active.
+Tooltip          : Critically blocking all incoming attacks, and dealing $203526s1 Shadowflame damage to all enemies in a $203526A1 yard cone every $t2 sec.
 
 Name             : Neltharion's Fury (id=203526) [Spell Family (4)] 
 Class            : Warrior
@@ -4293,7 +4334,7 @@ Effects          :
 Description      : You inspire your allies within $a1 yards, causing them to be healed for $s1% of all damage they deal.
 Tooltip          : Will be healed for $s1% of all damage dealt.
 
-Name             : Odyn's Fury (id=205545) [Spell Family (4)] 
+Name             : Odyn's Fury (Artifact) (id=205545) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
 Spell Level      : 28 (max 80)
@@ -4328,7 +4369,7 @@ Attributes       : ....x... ........ x.x..... ........   ....x... .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=303703)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Radius: 0 - 20 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 20 yards | Target: Custom(18) -> AOE enemy (instant)(16)
 #2 (id=303704)   : Weapon Damage% (31)
                    Base Value: 250 | Scaled Value: 2.5 | Radius: 0 - 20 yards | Target: Custom(18) -> AOE enemy (instant)(16)
 #3 (id=303709)   : Apply Aura (6) | Periodic Damage: fire every 4 seconds (3)
@@ -4342,7 +4383,7 @@ School           : Fire
 Spell Level      : 28 (max 80)
 Triggered by     : Odyn's Fury (205545)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
-                 : ........ ........ ........ ........   ........ .xx..... ........ x....... 
+                 : ........ ........ ........ ........   ........ .x...... ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4350,7 +4391,7 @@ Attributes       : ....x... ........ x.x..... ........   ....x... .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=303705)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Radius: 0 - 20 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 20 yards | Target: Custom(18) -> AOE enemy (instant)(16)
 #2 (id=303706)   : Weapon Damage% (31)
                    Base Value: 250 | Scaled Value: 2.5 | Radius: 0 - 20 yards | Target: Custom(18) -> AOE enemy (instant)(16)
 Description      : $@spelldesc205545
@@ -4395,7 +4436,7 @@ Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4404,7 +4445,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=305084)   : Apply Aura (6) | Proc Trigger Spell: Massacre (42)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 206316 | Target: Self(1)
-Description      : Execute critical strikes cause your next Rampage to cost no Rage.
+Description      : Execute critical strikes reduce the Rage cost of your next Rampage by $206316s1%.
 
 Name             : Massacre (id=206316) [Spell Family (4)] 
 Class            : Warrior
@@ -4450,6 +4491,7 @@ Stacks           : 6 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
+Affecting spells : Item - Warrior T19 Fury 2P Bonus (212157)
 Triggered by     : Furious Slash (100130)
 Attributes       : ........ ........ ........ x..x....   ........ ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
@@ -4552,7 +4594,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Self(1)
 Description      : When Cleave strikes more than $s1 targets, |cFFFFCC99Strom'kar|r releases a burst of void energy, dealing $209700s1 Shadow damage to all nearby enemies.
 
-Name             : Warbreaker (id=209577) [Spell Family (4)] 
+Name             : Warbreaker (Artifact) (id=209577) [Spell Family (4)] 
 Class            : Warrior
 School           : Shadow
 Range            : 100 yards
@@ -4659,7 +4701,7 @@ Effects          :
 Description      : $@spelldesc206312
 Tooltip          : Increases the number of targets hit by Rampage by $w1.
 
-Name             : Thunderstruck (id=213913) [Spell Family (4)] 
+Name             : Thunderstruck (Honor Talent) (id=213913) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
 Spell Level      : 1
@@ -4829,7 +4871,7 @@ Name             : Wrecking Ball (id=215569) [Spell Family (4), Passive, Hidden]
 Class            : Warrior
 School           : Physical
 Proc Chance      : 101%
-Real PPM         : 5 (Haste multiplier)
+Real PPM         : 4 (Haste multiplier)
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -4937,7 +4979,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : Not a proc (105)
 Effects          :
 #1 (id=325560)   : Normalized Weapon Damage (121)

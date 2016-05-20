@@ -23,7 +23,7 @@ Spell Level      : 18
 Cooldown         : 1 seconds
 Charges          : 2 (15 seconds cooldown)
 Category         : 1385
-Affecting spells : Bladestorm (46924), Item - Warrior T14 Protection 4P Bonus (123147), Neltharion's Fury (203524), Bladestorm (222634)
+Affecting spells : Bladestorm (46924), Neltharion's Fury (203524), Bladestorm (222634)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -89,15 +89,15 @@ Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
 Affecting spells : Freezing Trap (3355), Hunter (137014)
-Attributes       : ....x... ...x.... x.x..... ........   ........ ..x..... ........ ........ 
+Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ..x...x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=10785)    : Apply Aura (6) | Proc Trigger Spell: Intimidation (42)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 24394 | Target: Active Pet(5)
+#1 (id=10785)    : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Active Pet(5)
 #2 (id=10786)    : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0 | Target: Active Pet(5)
 Description      : Commands your pet to intimidate the target, stunning it for $24394d.
@@ -153,13 +153,12 @@ Description      : Damage dealt by pets increased by $s1%.
 Name             : Intimidation (id=24394) 
 Class            : Hunter, Monk
 School           : Physical
-Range            : 5 yards
+Range            : 100 yards
 Duration         : 5 seconds
 Proc Chance      : 101%
 Mechanic         : Unknown(95)
-Triggered by     : Intimidation (19577)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -448,7 +447,7 @@ Resource         : 50 Energy w/ Windwalker Monk (id=137025)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Mistweaver Monk (137024), Heightened Senses (165692), Mana Tea (197908), Tiger Claws (218607)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Mistweaver Monk (137024), Heightened Senses (165692), Mana Tea (197908), Item - Monk T19 Brewmaster 4P Bonus (211417), Tiger Claws (218607)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -673,7 +672,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Charges          : 1 (10 seconds cooldown)
 Category         : 1518
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Monk (137022), Mistweaver Monk (137024), Serenity (152173), Rising Winds (195263), Mana Tea (197908), Teachings of the Monastery (202090)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Monk (137022), Mistweaver Monk (137024), Serenity (152173), Rising Winds (195263), Mana Tea (197908), Teachings of the Monastery (202090), Item - Monk T19 Windwalker 2P Bonus (211427)
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -739,7 +738,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 4 seconds
 Cooldown         : 24 seconds
-Affecting spells : Item - Monk T14 Windwalker 2P Bonus (123149), Monk (137022), Serenity (152173), Katsuo's Eclipse (208045)
+Affecting spells : Monk (137022), Serenity (152173), Katsuo's Eclipse (208045)
 Triggered by     : Katsuo's Eclipse (208045)
 Attributes       : ........ ........ ........ ........   ..x...x. .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ x....... 
@@ -975,7 +974,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Cooldown         : 8 seconds
-Affecting spells : Thunder Focus Tea (116680), Enveloping Mist (124682), Lucidity (137331), Chi-ji's Guidance (167717), Extend Life (185158), Mana Tea (197908), Extended Healing (199372), The Mists of Sheilun (199888)
+Affecting spells : Thunder Focus Tea (116680), Enveloping Mist (124682), Lucidity (137331), Chi-ji's Guidance (167717), Extend Life (185158), Mana Tea (197908), Extended Healing (199372), The Mists of Sheilun (199888), Item - Monk T19 Mistweaver 2P Bonus (211418)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ .x...... ........ ..x...x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1086,7 +1085,7 @@ Class            : Brewmaster Monk
 School           : Physical
 Spell Level      : 24
 Cooldown         : 300 seconds
-Affecting spells : Item - Monk T16 Brewmaster 2P Bonus (145049), Staggering Around (213055)
+Affecting spells : Staggering Around (213055)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1107,7 +1106,6 @@ Spell Level      : 1
 Cooldown         : 60 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Item - Monk T14 Windwalker 4P Bonus (123150)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1128,7 +1126,7 @@ Spell Level      : 28
 Cooldown         : 1 seconds
 Charges          : 3 (21 seconds cooldown)
 Category         : 1562
-Affecting spells : Potent Kick (213047)
+Affecting spells : Item - Monk T19 Brewmaster 2P Bonus (211415), Potent Kick (213047)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1454,7 +1452,7 @@ Stacks           : 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ..x..x.. ........ 
                  : AOE Heal, Heal, Periodic, Trap Triggered
-Affecting spells : Item - Monk T15 Mistweaver 4P Bonus (138289), Focused Thunder (197895), 
+Affecting spells : Focused Thunder (197895), 
 Attributes       : ........ ........ ........ .x......   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1477,7 +1475,7 @@ Effects          :
 #5 (id=289636)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Vivify (116670)
-Description      : Receive a jolt of energy, empowering your next $?a197895[two spells][spell] cast:
+Description      : Receive a jolt of energy, empowering your next $?a197895[$u spells][spell] cast:
 
 Renewing Mist: Does not trigger cooldown.
 Effuse: Healing increased by $s2%.
@@ -1502,7 +1500,7 @@ Spell Level      : 8
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Thunder Focus Tea (116680), Item - Monk T14 Mistweaver 2P Bonus (123152), Enveloping Mist (124682), Brewmaster Monk (137023), Windwalker Monk (137025), Lucidity (137331), Extend Life (185158), Mana Tea (197908), Coalescing Mists (199364)
+Affecting spells : Thunder Focus Tea (116680), Enveloping Mist (124682), Brewmaster Monk (137023), Windwalker Monk (137025), Lucidity (137331), Extend Life (185158), Mana Tea (197908), Coalescing Mists (199364)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1883,7 +1881,6 @@ Spell Level      : 54
 Cooldown         : 1 seconds
 Charges          : 3 (21 seconds cooldown)
 Category         : 1562
-Affecting spells : Purifier (138237)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1964,7 +1961,7 @@ Spell Level      : 1
 Range            : 5 yards
 Duration         : 4 seconds
 Mechanic         : Unknown(95)
-Affecting spells : Item - Monk T14 Windwalker 2P Bonus (123149), Monk (137022), Serenity (152173), Katsuo's Eclipse (208045)
+Affecting spells : Monk (137022), Serenity (152173), Katsuo's Eclipse (208045)
 Triggered by     : Fists of Fury (113656)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2560,7 +2557,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=157616)   : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | Misc Value: 15 | Target: Self(1)
-Description      : When you take damage, you have a chance to summon a Healing Sphere visible only to you. Moving through this Healing Sphere heals you for $124507s1. The lower your current health, the greater your chance to summon a healing sphere .
+Description      : When you take damage, you have a chance to summon a Healing Sphere visible only to you. Moving through this Healing Sphere heals you for $124507s1. The lower your current health, the greater your chance to summon a healing sphere.
 
 Name             : Gift of the Ox (id=124503) [Spell Family (53)] 
 Class            : Monk
@@ -2624,7 +2621,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Thunder Focus Tea (116680), Item - Monk T14 Mistweaver 4P Bonus (123153), Extend Life (185158), Mist Wrap (197900), Mana Tea (197908), Way of the Mistweaver (199366), The Mists of Sheilun (199888)
+Affecting spells : Thunder Focus Tea (116680), Extend Life (185158), Mist Wrap (197900), Mana Tea (197908), Way of the Mistweaver (199366), The Mists of Sheilun (199888)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -3602,22 +3599,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.60000 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
 Description      : $@spelldesc152175
 
-Name             : Bladed Armor (id=161608) [Passive] 
-Class            : Protection Protection Brewmaster Guardian Warrior, Paladin, Monk, Druid
-School           : Physical
-Spell Level      : 1
-Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ......x. ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=226766)   : Apply Aura (6) | Unknown effect sub type (464)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self(1)
-Description      : Increases your Attack Power by $s1% of your Bonus Armor.
-
 Name             : Refreshing Jade Wind (id=162530) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
@@ -3753,7 +3734,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=237364)   : Apply Aura (6) | Modify Crit% (52)
+#1 (id=237364)   : Apply Aura (6) | Modify Spell Crit% (57)
                    Base Value: 5 | Scaled Value: 5 | Target: Self(1)
 Description      : $@spelldesc165404
 Tooltip          : Critical strike chance increased by $s1%.
@@ -3827,7 +3808,7 @@ Class            : Monk
 School           : Physical
 Spell Level      : 56
 Range            : 5 yards
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Monk (137022), Mistweaver Monk (137024), Serenity (152173), Rising Winds (195263), Mana Tea (197908), Teachings of the Monastery (202090)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Monk (137022), Mistweaver Monk (137024), Serenity (152173), Rising Winds (195263), Mana Tea (197908), Teachings of the Monastery (202090), Item - Monk T19 Windwalker 2P Bonus (211427)
 Triggered by     : Rising Sun Kick (107428)
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3907,7 +3888,7 @@ Velocity         : 40 yards/sec
 Duration         : 6 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Enveloping Mist (124682), Refreshing Jade Wind (196725), Essence of the Mists (199485), The Mists of Sheilun (199888)
+Affecting spells : Enveloping Mist (124682), Refreshing Jade Wind (196725), Essence of the Mists (199485), The Mists of Sheilun (199888), Item - Monk T19 Mistweaver 4P Bonus (211423)
 Triggered by     : Essence Font (191837)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4082,7 +4063,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=288658)   : Apply Aura (6) | Periodic Heal: every 2 seconds (8)
@@ -4104,7 +4085,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=288809)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self(1)
+                   Base Value: 60 | Scaled Value: 60 | Target: Self(1)
 Description      : Gift of the Ox has an up to $s1% increased chance to trigger, based on your missing health.
 
 Name             : Light Brewing (id=196721) [Spell Family (53), Passive] 
@@ -4408,7 +4389,7 @@ Spell Level      : 66
 Duration         : 30 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Item - Monk T15 Mistweaver 4P Bonus (138289), Focused Thunder (197895), 
+Affecting spells : Focused Thunder (197895), 
 Triggered by     : Thunder Focus Tea (116680)
 Attributes       : .......x ........ ........ .x......   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ..x..... 
@@ -4594,7 +4575,7 @@ Mechanic         : Unknown(10)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ ..x.x... ......x.   ...x...x ........ ..x..... ........ 
-                 : ........ ........ ........ ........   x....... ........ x....... ..x..... 
+                 : ........ ........ ........ ........   x....... ........ x....... ..x...x. 
                  : x....... ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ .......x ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4872,7 +4853,7 @@ Class            : Monk
 School           : Fire
 Range            : 40 yards
 GCD              : 1.5 seconds
-Velocity         : 12 yards/sec
+Velocity         : 15 yards/sec
 Duration         : 6 seconds
 Cooldown         : 75 seconds
 Stacks           : 1 initial, 1 maximum
@@ -4898,7 +4879,7 @@ Class            : Monk
 School           : Physical
 Spell Level      : 28
 Duration         : 6 seconds
-Affecting spells : Potent Kick (213047)
+Affecting spells : Item - Monk T19 Brewmaster 2P Bonus (211415), Potent Kick (213047)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4931,8 +4912,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=322186)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 15 | Target: Self(1)
-Description      : You have a chance equal to your critical strike chance to duplicate all healing that you receive.
+                   Base Value: 65 | Scaled Value: 65 | Misc Value: 15 | Target: Self(1)
+Description      : You have a chance equal to your critical strike chance to be healed for an additional $s1% of the amount healed.
 
 Name             : Detox (id=218164) [Spell Family (53)] 
 Class            : Brewmaster Windwalker Monk

@@ -1,6 +1,6 @@
 #define TALENT_SIZE (607)
 
-// 607 talents, wow build 21691
+// 607 talents, wow build 21737
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   0,   3,   29838,       0,  0 },
@@ -521,7 +521,7 @@ static struct talent_data_t __talent_data[] = {
   { "Conflagration"                     , 22459, 0x00, 0x0080,  63,   1,   0,  205023,       0,  0 },
   { "Lonely Winter"                     , 22460, 0x00, 0x0080,  64,   1,   0,  205024,   31687,  0 },
   { "Presence of Mind"                  , 22461, 0x00, 0x0080,  62,   1,   0,  205025,       0,  0 },
-  { "Fire Starter"                      , 22462, 0x00, 0x0080,  63,   2,   0,  205026,       0,  0 },
+  { "Firestarter"                       , 22462, 0x00, 0x0080,  63,   2,   0,  205026,       0,  0 },
   { "Bone Chilling"                     , 22463, 0x00, 0x0080,  64,   2,   0,  205027,       0,  0 },
   { "Torrent"                           , 22464, 0x00, 0x0080,  62,   2,   0,  205028,       0,  0 },
   { "Flame On"                          , 22465, 0x00, 0x0080,  63,   1,   3,  205029,       0,  0 },
