@@ -1246,7 +1246,8 @@ class SpellDataGenerator(DataGenerator):
           ( 219271, 0 ),                                # Icefury overload
           ( 77762, 0 ),                                 # Lava Surge cast time modifier
           ( 214134, 0 ),                                # The Deceiver's Blood Pact energize
-          ( 224126, 0 ), ( 224125, 0 ), ( 224127, 0 )   # Wolves of Doom Doom Effects, DOOM!
+          ( 224126, 0 ), ( 224125, 0 ), ( 224127, 0 ),  # Wolves of Doom Doom Effects, DOOM!
+          ( 198506, 0 ),                                # Wolves of Doom, summon spell
         ),
 
         # Mage:

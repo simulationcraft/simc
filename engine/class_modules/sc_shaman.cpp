@@ -214,7 +214,6 @@ public:
   action_t* lightning_rod;
 
   // Pets
-  std::vector<pet_t*> pet_feral_spirit;
   pet_t* pet_fire_elemental;
   pet_t* guardian_fire_elemental;
   pet_t* pet_storm_elemental;
@@ -223,6 +222,12 @@ public:
   pet_t* guardian_earth_elemental;
 
   pet_t* guardian_greater_lightning_elemental;
+
+  struct
+  {
+    std::array<pet_t*, 2> spirit_wolves;
+    std::array<pet_t*, 6> doom_wolves;
+  } pet;
 
   // Tier 18 (WoD 6.2) class specific trinket effects
   const special_effect_t* elemental_bellows;
@@ -463,6 +468,7 @@ public:
     artifact_power_t gathering_of_the_maelstrom;
     artifact_power_t doom_vortex;
     artifact_power_t spirit_of_the_maelstrom;
+    artifact_power_t doom_wolves;
   } artifact;
 
   // Misc Spells
@@ -506,7 +512,8 @@ public:
     talent(),
     spell()
   {
-    range::fill( pet_feral_spirit, nullptr );
+    range::fill( pet.spirit_wolves, nullptr );
+    range::fill( pet.doom_wolves, nullptr );
 
     // Cooldowns
     cooldown.ascendance           = get_cooldown( "ascendance"            );
@@ -1374,59 +1381,224 @@ struct shaman_heal_t : public shaman_spell_base_t<heal_t>
   }
 };
 
-// ==========================================================================
-// Pet Spirit Wolf
-// ==========================================================================
 namespace pet
 {
-struct feral_spirit_pet_t : public pet_t
+
+// ==========================================================================
+// Base Shaman Pet
+// ==========================================================================
+
+struct shaman_pet_t : public pet_t
 {
-  struct windfury_t : public melee_attack_t
+  bool use_auto_attack;
+  const spell_data_t* command;
+
+  shaman_pet_t( shaman_t* owner, const std::string& name, bool guardian = true, bool auto_attack = true ) :
+    pet_t( owner -> sim, owner, name, guardian ), use_auto_attack( auto_attack )
+  {
+    regen_type            = REGEN_DISABLED;
+    main_hand_weapon.type = WEAPON_BEAST;
+  }
+
+  shaman_t* o() const
+  { return debug_cast<shaman_t*>( owner ); }
+
+  void init_spells() override
+  {
+    pet_t::init_spells();
+
+    command = owner -> find_racial_spell( "Command" );
+  }
+
+  void init_action_list() override
+  {
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    if ( use_auto_attack )
+    {
+      def -> add_action( "auto_attack" );
+    }
+
+    pet_t::init_action_list();
+  }
+
+  action_t* create_action( const std::string& name, const std::string& options_str ) override;
+
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double m = pet_t::composite_player_multiplier( school );
+
+    m *= 1.0 + command -> effectN( 1 ).percent();
+
+    if ( ( dbc::is_school( school, SCHOOL_FIRE ) ||
+           dbc::is_school( school, SCHOOL_FROST ) ||
+           dbc::is_school( school, SCHOOL_NATURE ) ) &&
+         o() -> mastery.enhanced_elements -> ok() )
+    {
+      m *= 1.0 + o() -> cache.mastery_value();
+    }
+
+    return m;
+  }
+
+  virtual attack_t* create_auto_attack()
+  { return nullptr; }
+};
+
+// ==========================================================================
+// Base Shaman Pet Action
+// ==========================================================================
+
+template <typename T_PET, typename T_ACTION>
+struct pet_action_t : public T_ACTION
+{
+  typedef pet_action_t<T_PET, T_ACTION> super;
+
+  pet_action_t( shaman_pet_t* pet, const std::string& name, const spell_data_t* spell = spell_data_t::nil(), const std::string& options = std::string() ) :
+    T_ACTION( name, pet, spell )
+  {
+    this -> parse_options( options );
+
+    this -> may_crit = true;
+    this -> crit_bonus_multiplier *= 1.0 + p() -> o() -> spec.elemental_fury -> effectN( 1 ).percent();
+  }
+
+  T_PET* p() const
+  { return debug_cast<T_PET*>( this -> player ); }
+
+  void init() override
+  {
+    T_ACTION::init();
+
+    if ( ! this -> player -> sim -> report_pets_separately )
+    {
+      auto it = range::find_if( p() -> o() -> pet_list, [ this ]( pet_t* pet ) {
+        return this -> player -> name_str == pet -> name_str;
+      } );
+
+      if ( it != p() -> o() -> pet_list.end() && this -> player != *it )
+      {
+        this -> stats = ( *it ) -> get_stats( this -> name(), this );
+      }
+    }
+  }
+};
+
+// ==========================================================================
+// Base Shaman Pet Melee Attack
+// ==========================================================================
+
+template <typename T_PET>
+struct pet_melee_attack_t : public pet_action_t<T_PET, melee_attack_t>
+{
+  typedef pet_melee_attack_t<T_PET> super;
+
+  pet_melee_attack_t( shaman_pet_t* pet, const std::string& name, const spell_data_t* spell = spell_data_t::nil(), const std::string& options = std::string() ) :
+    pet_action_t<T_PET, melee_attack_t>( pet, name, spell, options )
+  {
+    this -> special = true;
+
+    if ( this -> school == SCHOOL_NONE )
+      this -> school = SCHOOL_PHYSICAL;
+
+    if ( this -> p() -> owner_coeff.sp_from_sp > 0 || this -> p() -> owner_coeff.sp_from_ap > 0 )
+    {
+      this -> spell_power_mod.direct = 1.0;
+    }
+  }
+
+  void init() override
+  {
+    pet_action_t<T_PET, melee_attack_t>::init();
+
+    if ( ! this -> special )
+    {
+      this -> weapon = &( this -> p() -> main_hand_weapon );
+      this -> base_execute_time = this -> weapon -> swing_time;
+    }
+  }
+
+  void execute() override
+  {
+    // If we're casting, we should clip a swing
+    if ( this -> time_to_execute > timespan_t::zero() && this -> player -> executing )
+      this -> schedule_execute();
+    else
+      pet_action_t<T_PET, melee_attack_t>::execute();
+  }
+};
+
+// ==========================================================================
+// Generalized Auto Attack Action
+// ==========================================================================
+
+struct auto_attack_t : public melee_attack_t
+{
+  auto_attack_t( shaman_pet_t* player ) : melee_attack_t( "auto_attack", player )
+  {
+    assert( player -> main_hand_weapon.type != WEAPON_NONE );
+    player -> main_hand_attack = player -> create_auto_attack();
+  }
+
+  void execute() override
+  { player -> main_hand_attack -> schedule_execute(); }
+
+  bool ready() override
+  {
+    if ( player -> is_moving() ) return false;
+    return ( player -> main_hand_attack -> execute_event == nullptr );
+  }
+};
+
+// ==========================================================================
+// Base Shaman Pet Spell
+// ==========================================================================
+
+template <typename T_PET>
+struct pet_spell_t : public pet_action_t<T_PET, spell_t>
+{
+  typedef pet_spell_t<T_PET> super;
+
+  pet_spell_t( shaman_pet_t* pet, const std::string& name, const spell_data_t* spell = spell_data_t::nil(), const std::string& options = std::string() ) :
+    pet_action_t<T_PET, spell_t>( pet, name, spell, options )
+  { }
+};
+
+// ==========================================================================
+// Base Shaman Pet Method Definitions
+// ==========================================================================
+
+action_t* shaman_pet_t::create_action( const std::string& name,
+                                       const std::string& options_str )
+{
+  if ( name == "auto_attack" ) return new auto_attack_t( this );
+
+  return pet_t::create_action( name, options_str );
+}
+
+// ==========================================================================
+// Feral Spirit
+// ==========================================================================
+
+struct feral_spirit_pet_t : public shaman_pet_t
+{
+  struct windfury_t : public pet_melee_attack_t<feral_spirit_pet_t>
   {
     windfury_t( feral_spirit_pet_t* player ) :
-      melee_attack_t( "windfury_attack", player, player -> find_spell( 170512 ) )
-    {
-      background = true;
-      //weapon = &( player -> main_hand_weapon );
-      may_crit = true;
-    }
-
-    feral_spirit_pet_t* p() { return static_cast<feral_spirit_pet_t*>( player ); }
-
-    void init() override
-    {
-      melee_attack_t::init();
-      if ( ! player -> sim -> report_pets_separately && player != p() -> o() -> pet_feral_spirit[ 0 ] )
-        stats = p() -> o() -> pet_feral_spirit[ 0 ] -> get_stats( name(), this );
-    }
+      super( player, "windfury_attack", player -> find_spell( 170512 ) )
+    { }
   };
 
-  struct melee_t : public melee_attack_t
+  struct fs_melee_t : public pet_melee_attack_t<feral_spirit_pet_t>
   {
     windfury_t* wf;
-    const spell_data_t* maelstrom;
+    const spell_data_t* maelstrom, * wf_driver;
 
-    melee_t( feral_spirit_pet_t* player ) :
-      melee_attack_t( "melee", player, spell_data_t::nil() ),
-      wf( new windfury_t( player ) ),
-      maelstrom( player -> find_spell( 190185 ) )
+    fs_melee_t( feral_spirit_pet_t* player ) : super( player, "melee" ),
+      wf( p() -> owner -> sets.has_set_bonus( SHAMAN_ENHANCEMENT, T17, B4 ) ? new windfury_t( player ) : nullptr ),
+      maelstrom( player -> find_spell( 190185 ) ), wf_driver( player -> find_spell( 170523 ) )
     {
-      auto_attack = true;
-      weapon = &( player -> main_hand_weapon );
-      base_execute_time = weapon -> swing_time;
-      background = true;
-      repeating = true;
-      may_crit = true;
-      school      = SCHOOL_PHYSICAL;
-    }
-
-    feral_spirit_pet_t* p() { return static_cast<feral_spirit_pet_t*>( player ); }
-
-    void init() override
-    {
-      melee_attack_t::init();
-      if ( ! player -> sim -> report_pets_separately && player != p() -> o() -> pet_feral_spirit[ 0 ] )
-        stats = p() -> o() -> pet_feral_spirit[ 0 ] -> get_stats( name(), this );
+      background = auto_attack = repeating = true;
+      special = false;
     }
 
     void impact( action_state_t* state ) override
@@ -1439,79 +1611,191 @@ struct feral_spirit_pet_t : public pet_t
                           o -> gain.feral_spirit,
                           state -> action );
 
-      if ( result_is_hit( state -> result ) )
+      if ( result_is_hit( state -> result ) && o -> buff.feral_spirit -> up() &&
+           rng().roll( wf_driver -> proc_chance() ) )
       {
-
-        if ( o -> buff.feral_spirit -> up() && rng().roll( p() -> wf_driver -> proc_chance() ) )
-        {
-          wf -> target = state -> target;
-          wf -> schedule_execute();
-          wf -> schedule_execute();
-          wf -> schedule_execute();
-        }
+        wf -> target = state -> target;
+        wf -> schedule_execute();
+        wf -> schedule_execute();
+        wf -> schedule_execute();
       }
     }
   };
 
-  melee_t* melee;
-  const spell_data_t* command;
-  const spell_data_t* wf_driver;
-
-  feral_spirit_pet_t( shaman_t* owner ) :
-    pet_t( owner -> sim, owner, "spirit_wolf", true, true ), melee( nullptr )
+  feral_spirit_pet_t( shaman_t* owner ) : shaman_pet_t( owner, "spirit_wolf" )
   {
-    main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level() ) * 0.5;
-    main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level() ) * 0.5;
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
-
-    owner_coeff.ap_from_ap = 1.33;
-
-    command = owner -> find_spell( 65222 );
-    wf_driver = owner -> find_spell( 170523 );
-    regen_type = REGEN_DISABLED;
+    owner_coeff.ap_from_ap      = 1.33;
   }
 
-  shaman_t* o() const { return static_cast<shaman_t*>( owner ); }
+  attack_t* create_auto_attack() override
+  { return new fs_melee_t( this ); }
+};
 
-  void arise() override
+// ==========================================================================
+// DOOM WOLVES OF DOOM
+// ==========================================================================
+
+struct doom_wolf_base_t : public shaman_pet_t
+{
+  struct dw_melee_t : public pet_melee_attack_t<doom_wolf_base_t>
   {
-    pet_t::arise();
-    schedule_ready();
+    const spell_data_t* maelstrom;
+
+    dw_melee_t( doom_wolf_base_t* player ) : super( player, "melee" ),
+      maelstrom( player -> find_spell( 190185 ) )
+    {
+      background = auto_attack = repeating = true;
+      special = false;
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      melee_attack_t::impact( state );
+
+      p() -> o() -> resource_gain( RESOURCE_MAELSTROM,
+          maelstrom -> effectN( 1 ).resource( RESOURCE_MAELSTROM ),
+          p() -> o() -> gain.feral_spirit,
+          state -> action );
+    }
+  };
+
+  doom_wolf_base_t( shaman_t* owner, const std::string& name ) : shaman_pet_t( owner, name )
+  {
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
+    owner_coeff.ap_from_ap      = 1.33;
+  }
+
+  attack_t* create_auto_attack() override
+  { return new dw_melee_t( this ); }
+};
+
+struct frost_wolf_t : public doom_wolf_base_t
+{
+  struct frozen_bite_t : public pet_melee_attack_t<frost_wolf_t>
+  {
+    frozen_bite_t( frost_wolf_t* player, const std::string& options ) :
+      super( player, "frozen_bite", player -> find_spell( 224126 ), options )
+    { }
+  };
+
+  frost_wolf_t( shaman_t* owner ) : doom_wolf_base_t( owner, "frost_wolf" )
+  { }
+
+  action_t* create_action( const std::string& name,
+                           const std::string& options_str ) override
+  {
+    if ( name == "frozen_bite" ) return new frozen_bite_t( this, options_str );
+
+    return shaman_pet_t::create_action( name, options_str );
   }
 
   void init_action_list() override
   {
-    pet_t::init_action_list();
+    shaman_pet_t::init_action_list();
 
-    melee = new melee_t( this );
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    // TODO: Proper delay
+    def -> add_action( "frozen_bite,line_cd=4" );
+  }
+};
+
+struct fire_wolf_t : public doom_wolf_base_t
+{
+  struct fiery_jaws_t : public pet_melee_attack_t<fire_wolf_t>
+  {
+    fiery_jaws_t( fire_wolf_t* player, const std::string& options ) :
+      super( player, "fiery_jaws", player -> find_spell( 224125 ), options )
+    { }
+  };
+
+  fire_wolf_t( shaman_t* owner ) : doom_wolf_base_t( owner, "fiery_wolf" )
+  { }
+
+  action_t* create_action( const std::string& name,
+                           const std::string& options_str ) override
+  {
+    if ( name == "fiery_jaws" ) return new fiery_jaws_t( this, options_str );
+
+    return shaman_pet_t::create_action( name, options_str );
   }
 
-  void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false ) override
+  void init_action_list() override
   {
-    if ( ! melee -> execute_event )
-      melee -> schedule_execute();
+    shaman_pet_t::init_action_list();
 
-    pet_t::schedule_ready( delta_time, waiting );
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    // TODO: Proper delay
+    def -> add_action( "fiery_jaws,if=!ticking" );
+  }
+};
+
+struct lightning_wolf_t : public doom_wolf_base_t
+{
+  struct crackling_surge_t : public pet_melee_attack_t<lightning_wolf_t>
+  {
+    crackling_surge_t( lightning_wolf_t* player, const std::string& options ) :
+      super( player, "crackling_surge", player -> find_spell( 224127 ), options )
+    {
+      harmful = false;
+    }
+
+    void execute() override
+    {
+      super::execute();
+      p() -> crackling_surge -> trigger();
+    }
+  };
+
+  haste_buff_t* crackling_surge;
+
+  lightning_wolf_t( shaman_t* owner ) : doom_wolf_base_t( owner, "lightning_wolf" )
+  { }
+
+  // TODO: This really is haste, but treat it as speed for now
+  double composite_melee_speed() const override
+  {
+    double s = shaman_pet_t::composite_melee_speed();
+
+    if ( crackling_surge -> up() )
+    {
+      s *= crackling_surge -> check_value();
+    }
+
+    return s;
   }
 
-  double composite_player_multiplier( school_e school ) const override
+  void create_buffs() override
   {
-    double m = pet_t::composite_player_multiplier( school );
+    shaman_pet_t::create_buffs();
 
-    if ( owner -> race == RACE_ORC )
-      m *= 1.0 + command -> effectN( 1 ).percent();
+    crackling_surge = haste_buff_creator_t( this, "crackling_surge", find_spell( 224127 ) )
+      .default_value( 1.0 / ( 1.0 + find_spell( 224127 ) -> effectN( 1 ).percent() ) );
+  }
 
-    return m;
+  action_t* create_action( const std::string& name,
+                           const std::string& options_str ) override
+  {
+    if ( name == "crackling_surge" ) return new crackling_surge_t( this, options_str );
+
+    return shaman_pet_t::create_action( name, options_str );
+  }
+
+  void init_action_list() override
+  {
+    shaman_pet_t::init_action_list();
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    // TODO: Proper delay
+    def -> add_action( "crackling_surge,if=buff.crackling_surge.down" );
   }
 };
 
 // ==========================================================================
-// Primal Elementals
+// Primal Elemental Base
 // ==========================================================================
 
-struct primal_elemental_t : public pet_t
+struct primal_elemental_t : public shaman_pet_t
 {
   struct travel_t : public action_t
   {
@@ -1522,97 +1806,20 @@ struct primal_elemental_t : public pet_t
     bool usable_moving() const override { return true; }
   };
 
-  struct melee_t : public melee_attack_t
+  primal_elemental_t( shaman_t* owner, const std::string& name, bool guardian = false, bool auto_attack = true ) :
+    shaman_pet_t( owner, name, guardian, auto_attack )
+  { }
+
+  void init_action_list() override
   {
-    melee_t( primal_elemental_t* player, school_e school_, double multiplier ) :
-      melee_attack_t( "melee", player, spell_data_t::nil() )
+    if ( use_auto_attack )
     {
-      auto_attack = may_crit = background = repeating = true;
-
-      school                 = school_;
-      weapon                 = &( player -> main_hand_weapon );
-      weapon_multiplier      = multiplier;
-      base_execute_time      = weapon -> swing_time;
-      crit_bonus_multiplier *= 1.0 + o() -> spec.elemental_fury -> effectN( 1 ).percent();
-
-      // Non-physical damage melee is spell powered
-      if ( school != SCHOOL_PHYSICAL )
-        spell_power_mod.direct = 1.0;
+      // Travel must come before auto attacks
+      action_priority_list_t* def = get_action_priority_list( "default" );
+      def -> add_action( "travel" );
     }
 
-    shaman_t* o() const
-    { return debug_cast<shaman_t*>( debug_cast< pet_t* > ( player ) -> owner ); }
-
-    void execute() override
-    {
-      // If we're casting, we should clip a swing
-      if ( time_to_execute > timespan_t::zero() && player -> executing )
-        schedule_execute();
-      else
-        melee_attack_t::execute();
-    }
-  };
-
-  struct auto_attack_t : public melee_attack_t
-  {
-    auto_attack_t( primal_elemental_t* player, school_e school, double multiplier = 1.0 ) :
-      melee_attack_t( "auto_attack", player )
-    {
-      assert( player -> main_hand_weapon.type != WEAPON_NONE );
-      player -> main_hand_attack = new melee_t( player, school, multiplier );
-    }
-
-    void execute() override
-    { player -> main_hand_attack -> schedule_execute(); }
-
-    virtual bool ready() override
-    {
-      if ( player -> is_moving() ) return false;
-      return ( player -> main_hand_attack -> execute_event == nullptr );
-    }
-  };
-
-  struct primal_elemental_spell_t : public spell_t
-  {
-    primal_elemental_t* p;
-
-    primal_elemental_spell_t( const std::string& t,
-                              primal_elemental_t* p,
-                              const spell_data_t* s = spell_data_t::nil(),
-                              const std::string& options = std::string() ) :
-      spell_t( t, p, s ), p( p )
-    {
-      parse_options( options );
-
-      may_crit                    = true;
-      base_costs[ RESOURCE_MANA ] = 0;
-      crit_bonus_multiplier *= 1.0 + o() -> spec.elemental_fury -> effectN( 1 ).percent();
-    }
-
-    shaman_t* o() const
-    { return debug_cast<shaman_t*>( debug_cast< pet_t* > ( player ) -> owner ); }
-  };
-
-  const spell_data_t* command;
-
-  primal_elemental_t( shaman_t* owner, const std::string& name, bool guardian = false ) :
-    pet_t( owner -> sim, owner, name, guardian )
-  {
-    stamina_per_owner = 1.0;
-    regen_type = REGEN_DISABLED;
-  }
-
-  shaman_t* o() const
-  { return static_cast< shaman_t* >( owner ); }
-
-  resource_e primary_resource() const override
-  { return RESOURCE_MANA; }
-
-  void init_spells() override
-  {
-    pet_t::init_spells();
-
-    command = find_spell( 21563 );
+    shaman_pet_t::init_action_list();
   }
 
   action_t* create_action( const std::string& name,
@@ -1620,7 +1827,7 @@ struct primal_elemental_t : public pet_t
   {
     if ( name == "travel"      ) return new travel_t( this );
 
-    return pet_t::create_action( name, options_str );
+    return shaman_pet_t::create_action( name, options_str );
   }
 
   double composite_attack_power_multiplier() const override
@@ -1641,20 +1848,15 @@ struct primal_elemental_t : public pet_t
     return m;
   }
 
-  double composite_player_multiplier( school_e school ) const override
+  attack_t* create_auto_attack() override
   {
-    double m = pet_t::composite_player_multiplier( school );
-
-    if ( o() -> race == RACE_ORC )
-      m *= 1.0 + command -> effectN( 1 ).percent();
-
-    if ( ( dbc::is_school( school, SCHOOL_FIRE ) ||
-           dbc::is_school( school, SCHOOL_FROST ) ||
-           dbc::is_school( school, SCHOOL_NATURE ) ) &&
-         o() -> mastery.enhanced_elements -> ok() )
-      m *= 1.0 + o() -> cache.mastery_value();
-
-    return m;
+    auto attack = new pet_melee_attack_t<primal_elemental_t>( this, "melee" );
+    attack -> background = true;
+    attack -> repeating = true;
+    attack -> auto_attack = true;
+    attack -> special = false;
+    attack -> school = SCHOOL_PHYSICAL;
+    return attack;
   }
 };
 
@@ -1666,36 +1868,9 @@ struct earth_elemental_t : public primal_elemental_t
 {
   earth_elemental_t( shaman_t* owner, bool guardian ) :
     primal_elemental_t( owner, ( ! guardian ) ? "primal_earth_elemental" : "greater_earth_elemental", guardian )
-  { }
-
-  virtual void init_base_stats() override
   {
-    primal_elemental_t::init_base_stats();
-
-    main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-
-    resources.base[ RESOURCE_HEALTH ] = 8000; // Approximated from lvl85 earth elemental in game
-    resources.base[ RESOURCE_MANA   ] = 0; //
-
-    owner_coeff.ap_from_sp = 0.05;
-  }
-
-  void init_action_list() override
-  {
-    // Simple as it gets, travel to target, kick off melee
-    action_list_str = "travel/auto_attack,moving=0";
-
-    primal_elemental_t::init_action_list();
-  }
-
-  virtual action_t* create_action( const std::string& name,
-                                   const std::string& options_str ) override
-  {
-    // EE seems to use 130% weapon multiplier on attacks, while inheriting 5% SP as AP
-    if ( name == "auto_attack" ) return new auto_attack_t ( this, SCHOOL_PHYSICAL );
-
-    return primal_elemental_t::create_action( name, options_str );
+    owner_coeff.ap_from_sp      = 0.05;
   }
 };
 
@@ -1705,30 +1880,29 @@ struct earth_elemental_t : public primal_elemental_t
 
 struct fire_elemental_t : public primal_elemental_t
 {
-  struct fire_nova_t  : public primal_elemental_spell_t
+  struct fire_nova_t  : public pet_spell_t<fire_elemental_t>
   {
     fire_nova_t( fire_elemental_t* player, const std::string& options ) :
-      primal_elemental_spell_t( "fire_nova", player, player -> find_spell( 117588 ), options )
+      super( player, "fire_nova", player -> find_spell( 117588 ), options )
     {
       aoe = -1;
     }
   };
 
-  struct fire_blast_t : public primal_elemental_spell_t
+  struct fire_blast_t : public pet_spell_t<fire_elemental_t>
   {
     fire_blast_t( fire_elemental_t* player, const std::string& options ) :
-      primal_elemental_spell_t( "fire_blast", player, player -> find_spell( 57984 ), options )
-    {
-    }
+      super( player, "fire_blast", player -> find_spell( 57984 ), options )
+    { }
 
     bool usable_moving() const override
     { return true; }
   };
 
-  struct immolate_t : public primal_elemental_spell_t
+  struct immolate_t : public pet_spell_t<fire_elemental_t>
   {
     immolate_t( fire_elemental_t* player, const std::string& options ) :
-      primal_elemental_spell_t( "immolate", player, player -> find_spell( 118297 ), options )
+      super( player, "immolate", player -> find_spell( 118297 ), options )
     {
       hasted_ticks = tick_may_crit = true;
     }
@@ -1736,40 +1910,42 @@ struct fire_elemental_t : public primal_elemental_t
 
   fire_elemental_t( shaman_t* owner, bool guardian ) :
     primal_elemental_t( owner, ( ! guardian ) ? "primal_fire_elemental" : "greater_fire_elemental", guardian )
-  { }
-
-  void init_base_stats() override
   {
-    primal_elemental_t::init_base_stats();
-
-    resources.base[ RESOURCE_HEALTH ] = 32268; // Level 85 value
-    resources.base[ RESOURCE_MANA   ] = 8908; // Level 85 value
-
-    // FE Swings with a weapon, however the damage is "magical"
-    main_hand_weapon.type            = WEAPON_BEAST;
-    main_hand_weapon.swing_time      = timespan_t::from_seconds( 1.4 );
-
-    owner_coeff.sp_from_sp = 0.25;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 1.4 );
+    owner_coeff.sp_from_sp      = 0.25;
   }
 
   void init_action_list() override
   {
-    action_list_str = "travel/auto_attack/fire_blast/fire_nova,if=spell_targets.fire_nova>=3";
-    if ( type == PLAYER_PET )
-      action_list_str += "/immolate,if=!ticking";
-
     pet_t::init_action_list();
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+
+    def -> add_action( "fire_blast" );
+    def -> add_action( "fire_nova", "if=spell_targets.fire_nova>=3" );
+    if ( o() -> talent.primal_elementalist -> ok() )
+    {
+      def -> add_action( "immolate", "if=!ticking" );
+    }
   }
 
   action_t* create_action( const std::string& name,
                            const std::string& options_str ) override
   {
-    if ( name == "auto_attack" ) return new auto_attack_t( this, SCHOOL_FIRE );
     if ( name == "fire_blast"  ) return new fire_blast_t( this, options_str );
     if ( name == "fire_nova"   ) return new fire_nova_t( this, options_str );
     if ( name == "immolate"    ) return new immolate_t( this, options_str );
 
     return primal_elemental_t::create_action( name, options_str );
+  }
+
+  attack_t* create_auto_attack() override
+  {
+    auto attack = new pet_melee_attack_t<primal_elemental_t>( this, "melee" );
+    attack -> repeating = true;
+    attack -> auto_attack = true;
+    attack -> school = SCHOOL_FIRE;
+    return attack;
   }
 };
 
@@ -1780,46 +1956,40 @@ struct fire_elemental_t : public primal_elemental_t
 struct storm_elemental_t : public primal_elemental_t
 {
   // TODO: Healing
-  struct wind_gust_t : public primal_elemental_spell_t
+  struct wind_gust_t : public pet_spell_t<storm_elemental_t>
   {
     wind_gust_t( storm_elemental_t* player, const std::string& options ) :
-      primal_elemental_spell_t( "wind_gust", player, player -> find_spell( 157331 ), options )
+      super( player, "wind_gust", player -> find_spell( 157331 ), options )
     { }
   };
 
-  struct call_lightning_t : public primal_elemental_spell_t
+  struct call_lightning_t : public pet_spell_t<storm_elemental_t>
   {
     call_lightning_t( storm_elemental_t* player, const std::string& options ) :
-      primal_elemental_spell_t( "call_lightning", player, player -> find_spell( 157348 ), options )
+      super( player, "call_lightning", player -> find_spell( 157348 ), options )
     { }
 
     void execute() override
     {
-      primal_elemental_spell_t::execute();
+      super::execute();
 
-      static_cast<storm_elemental_t*>( player ) -> call_lightning -> trigger();
+      p() -> call_lightning -> trigger();
     }
   };
 
   buff_t* call_lightning;
 
   storm_elemental_t( shaman_t* owner, bool guardian ) :
-    primal_elemental_t( owner, ( ! guardian ) ? "primal_storm_elemental" : "greater_storm_elemental", guardian )
-  { }
-
-  void init_base_stats() override
+    primal_elemental_t( owner, ( ! guardian ) ? "primal_storm_elemental" : "greater_storm_elemental", guardian, false )
   {
-    primal_elemental_t::init_base_stats();
-
-    resources.base[ RESOURCE_HEALTH ] = 32268; // TODO-WOD: FE values, placeholder
-    resources.base[ RESOURCE_MANA   ] = 8908;
-
     owner_coeff.sp_from_sp = 1.0000;
   }
 
   void init_action_list() override
   {
-    action_list_str = "call_lightning/wind_gust";
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def -> add_action( "call_lightning" );
+    def -> add_action( "wind_gust" );
 
     primal_elemental_t::init_action_list();
   }
@@ -1853,44 +2023,36 @@ struct storm_elemental_t : public primal_elemental_t
   }
 };
 
-struct greater_lightning_elemental_t : public pet_t
+// ==========================================================================
+// Greater Lightning Elemental (Fury of the Storms Artifact Power)
+// ==========================================================================
+
+struct greater_lightning_elemental_t : public shaman_pet_t
 {
-  struct lightning_blast_t : public spell_t
+  struct lightning_blast_t : public pet_spell_t<greater_lightning_elemental_t>
   {
     lightning_blast_t( greater_lightning_elemental_t* p ) :
-      spell_t( "lightning_blast", p, p -> find_spell( 191726 ) )
+      super( p, "lightning_blast", p -> find_spell( 191726 ) )
     {
-      base_costs[ RESOURCE_MANA ] = 0;
-      may_crit = true;
-      ability_lag = timespan_t::from_millis( 300 );
-      ability_lag_stddev =  timespan_t::from_millis( 25 );
+      ability_lag        = timespan_t::from_millis( 300 );
+      ability_lag_stddev = timespan_t::from_millis( 25 );
     }
   };
 
-  struct chain_lightning_t : public spell_t
+  struct chain_lightning_t : public pet_spell_t<greater_lightning_elemental_t>
   {
     chain_lightning_t( greater_lightning_elemental_t* p ) :
-      spell_t( "chain_lightning", p, p -> find_spell( 191732 ) )
+      super( p, "chain_lightning", p -> find_spell( 191732 ) )
     {
-      base_costs[ RESOURCE_MANA ] = 0;
       base_add_multiplier = data().effectN( 1 ).chain_multiplier();
-      may_crit = true;
-      ability_lag = timespan_t::from_millis( 300 );
-      ability_lag_stddev =  timespan_t::from_millis( 25 );
+      ability_lag         = timespan_t::from_millis( 300 );
+      ability_lag_stddev  = timespan_t::from_millis( 25 );
     }
   };
 
   greater_lightning_elemental_t( shaman_t* owner ) :
-    pet_t( owner -> sim, owner, "greater_lightning_elemental", true, true )
+    shaman_pet_t( owner, "greater_lightning_elemental", true, false )
   {
-    stamina_per_owner = 1.0;
-    regen_type = REGEN_DISABLED;
-  }
-
-  void init_base_stats() override
-  {
-    pet_t::init_base_stats();
-
     owner_coeff.sp_from_sp = 1.0;
   }
 
@@ -1898,16 +2060,20 @@ struct greater_lightning_elemental_t : public pet_t
   {
     if ( name == "lightning_blast" ) return new lightning_blast_t( this );
     if ( name == "chain_lightning" ) return new chain_lightning_t( this );
-    return pet_t::create_action( name, options_str );
+
+    return shaman_pet_t::create_action( name, options_str );
   }
 
   void init_action_list() override
   {
-    action_list_str = "lightning_blast/chain_lightning,if=active_enemies>1";
+    shaman_pet_t::init_action_list();
 
-    pet_t::init_action_list();
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def -> add_action( "lightning_blast" );
+    def -> add_action( "chain_lightning", "if=spell_targets.chain_lightning>1" );
   }
 };
+
 } // Namespace pet ends
 
 // ==========================================================================
@@ -2709,6 +2875,20 @@ struct windstrike_t : public stormstrike_base_t
   }
 };
 
+// Sundering Spell =========================================================
+
+struct sundering_t : public shaman_attack_t
+{
+  sundering_t( shaman_t* player, const std::string& options_str ) :
+    shaman_attack_t( "sundering", player, player -> talent.sundering )
+  {
+    parse_options( options_str );
+
+    aoe = -1; // TODO: This is likely not going to affect all enemies but it will do for now
+    may_proc_stormbringer = true;
+  }
+};
+
 // Rockbiter Spell =========================================================
 
 struct rockbiter_t : public shaman_spell_t
@@ -2891,16 +3071,6 @@ struct boulderfist_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p() -> buff.boulderfist -> trigger();
-  }
-};
-
-struct sundering_t : public shaman_spell_t
-{
-  sundering_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "sundering", player, player -> talent.sundering, options_str )
-  {
-    background = true;
-    aoe = -1; // TODO: This is likely not going to affect all enemies but it will do for now
   }
 };
 
@@ -3560,26 +3730,38 @@ struct shamanistic_rage_t : public shaman_spell_t
 struct feral_spirit_spell_t : public shaman_spell_t
 {
   feral_spirit_spell_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "feral_spirit", player, player -> find_specialization_spell( "Feral Spirit" ), options_str )
+    shaman_spell_t( "feral_spirit", player,
+        player -> artifact.doom_wolves.rank()
+        ? player -> find_spell( 198506 )
+        : player -> find_specialization_spell( "Feral Spirit" ), options_str )
   {
-    harmful   = false;
+    harmful = false;
   }
 
   virtual void execute() override
   {
     shaman_spell_t::execute();
 
-    int n = 0;
-    for ( size_t i = 0; i < p() -> pet_feral_spirit.size() && n < data().effectN( 1 ).base_value(); i++ )
+    if ( p() -> artifact.doom_wolves.rank() )
     {
-      if ( ! p() -> pet_feral_spirit[ i ] -> is_sleeping() )
-        continue;
+      size_t n = static_cast<size_t>( data().effectN( 1 ).base_value() );
+      while ( n )
+      {
+        size_t idx = static_cast<size_t>( rng().range( 0, p() -> pet.doom_wolves.size() ) );
+        if ( ! p() -> pet.doom_wolves[ idx ] -> is_sleeping() )
+        {
+          continue;
+        }
 
-      p() -> pet_feral_spirit[ i ] -> summon( data().duration() );
-      n++;
+        p() -> pet.doom_wolves[ idx ] -> summon( data().duration() );
+        n--;
+      }
     }
-
-    p() -> buff.feral_spirit -> trigger();
+    else
+    {
+      range::for_each( p() -> pet.spirit_wolves, [ this ]( pet_t* p ) { p -> summon( this -> data().duration() ); } );
+      p() -> buff.feral_spirit -> trigger();
+    }
   }
 };
 
@@ -4746,15 +4928,26 @@ void shaman_t::create_pets()
     guardian_greater_lightning_elemental = new pet::greater_lightning_elemental_t( this );
   }
 
-  if ( specialization() == SHAMAN_ENHANCEMENT )
+  if ( specialization() == SHAMAN_ENHANCEMENT && find_action( "feral_spirit" ) &&
+       ! artifact.doom_wolves.rank() )
   {
     const spell_data_t* fs_data = find_specialization_spell( "Feral Spirit" );
     size_t n_feral_spirits = static_cast<size_t>( fs_data -> effectN( 1 ).base_value() );
 
     for ( size_t i = 0; i < n_feral_spirits; i++ )
     {
-      pet_feral_spirit.push_back( new pet::feral_spirit_pet_t( this ) );
+      pet.spirit_wolves[ i ] = new pet::feral_spirit_pet_t( this );
     }
+  }
+
+  if ( find_action( "feral_spirit" ) && artifact.doom_wolves.rank() )
+  {
+    pet.doom_wolves[ 0 ] = new pet::frost_wolf_t( this );
+    pet.doom_wolves[ 1 ] = new pet::frost_wolf_t( this );
+    pet.doom_wolves[ 2 ] = new pet::fire_wolf_t( this );
+    pet.doom_wolves[ 3 ] = new pet::fire_wolf_t( this );
+    pet.doom_wolves[ 4 ] = new pet::lightning_wolf_t( this );
+    pet.doom_wolves[ 5 ] = new pet::lightning_wolf_t( this );
   }
 }
 
@@ -4786,8 +4979,6 @@ expr_t* shaman_t::create_expression( action_t* a, const std::string& name )
 
 bool shaman_t::create_actions()
 {
-  auto ret = player_t::create_actions();
-
   if ( talent.lightning_shield -> ok() )
   {
     lightning_shield = new lightning_shield_damage_t( this );
@@ -4829,7 +5020,7 @@ bool shaman_t::create_actions()
     volcanic_inferno = new volcanic_inferno_t( this );
   }
 
-  return ret;
+  return player_t::create_actions();
 }
 
 // shaman_t::init_spells ====================================================
@@ -4953,6 +5144,7 @@ void shaman_t::init_spells()
   artifact.gathering_of_the_maelstrom= find_artifact_spell( "Gathering of the Maelstrom" );
   artifact.doom_vortex               = find_artifact_spell( "Doom Vortex"        );
   artifact.spirit_of_the_maelstrom   = find_artifact_spell( "Spirit of the Maelstrom" );
+  artifact.doom_wolves               = find_artifact_spell( "Doom Wolves"        );
 
   // Misc spells
   spell.resurgence                   = find_spell( 101033 );
