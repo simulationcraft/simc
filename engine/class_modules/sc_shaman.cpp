@@ -469,6 +469,7 @@ public:
     artifact_power_t doom_vortex;
     artifact_power_t spirit_of_the_maelstrom;
     artifact_power_t doom_wolves;
+    artifact_power_t alpha_wolf;
   } artifact;
 
   // Misc Spells
@@ -1458,6 +1459,7 @@ struct pet_action_t : public T_ACTION
   {
     this -> parse_options( options );
 
+    this -> special = true;
     this -> may_crit = true;
     this -> crit_bonus_multiplier *= 1.0 + p() -> o() -> spec.elemental_fury -> effectN( 1 ).percent();
   }
@@ -1495,8 +1497,6 @@ struct pet_melee_attack_t : public pet_action_t<T_PET, melee_attack_t>
   pet_melee_attack_t( shaman_pet_t* pet, const std::string& name, const spell_data_t* spell = spell_data_t::nil(), const std::string& options = std::string() ) :
     pet_action_t<T_PET, melee_attack_t>( pet, name, spell, options )
   {
-    this -> special = true;
-
     if ( this -> school == SCHOOL_NONE )
       this -> school = SCHOOL_PHYSICAL;
 
@@ -1622,12 +1622,44 @@ struct feral_spirit_pet_t : public shaman_pet_t
     }
   };
 
-  feral_spirit_pet_t( shaman_t* owner ) : shaman_pet_t( owner, "spirit_wolf" )
+  struct spirit_bomb_t : public pet_melee_attack_t<feral_spirit_pet_t>
+  {
+    spirit_bomb_t( feral_spirit_pet_t* player ) :
+      super( player, "spirit_bomb", player -> find_spell( 198455 ) )
+    {
+      background = true;
+    }
+  };
+
+  action_t* alpha_wolf;
+
+  feral_spirit_pet_t( shaman_t* owner ) :
+    shaman_pet_t( owner, "spirit_wolf" ), alpha_wolf( nullptr )
   {
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
     owner_coeff.ap_from_ap      = 1.33;
   }
 
+  bool create_actions() override
+  {
+    if ( o() -> artifact.alpha_wolf.rank() )
+    {
+      alpha_wolf = new spirit_bomb_t( this );
+    }
+
+    return shaman_pet_t::create_actions();
+  }
+
+  void trigger_alpha_wolf( const action_state_t* state ) const
+  {
+    if ( ! alpha_wolf )
+    {
+      return;
+    }
+
+    alpha_wolf -> target = state -> target;
+    alpha_wolf -> schedule_execute();
+  }
   attack_t* create_auto_attack() override
   { return new fs_melee_t( this ); }
 };
@@ -1660,7 +1692,10 @@ struct doom_wolf_base_t : public shaman_pet_t
     }
   };
 
-  doom_wolf_base_t( shaman_t* owner, const std::string& name ) : shaman_pet_t( owner, name )
+  action_t* alpha_wolf;
+
+  doom_wolf_base_t( shaman_t* owner, const std::string& name ) :
+    shaman_pet_t( owner, name ), alpha_wolf( nullptr )
   {
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
     owner_coeff.ap_from_ap      = 1.33;
@@ -1668,6 +1703,17 @@ struct doom_wolf_base_t : public shaman_pet_t
 
   attack_t* create_auto_attack() override
   { return new dw_melee_t( this ); }
+
+  void trigger_alpha_wolf( const action_state_t* state ) const
+  {
+    if ( ! alpha_wolf )
+    {
+      return;
+    }
+
+    alpha_wolf -> target = state -> target;
+    alpha_wolf -> schedule_execute();
+  }
 };
 
 struct frost_wolf_t : public doom_wolf_base_t
@@ -1679,8 +1725,28 @@ struct frost_wolf_t : public doom_wolf_base_t
     { }
   };
 
-  frost_wolf_t( shaman_t* owner ) : doom_wolf_base_t( owner, "frost_wolf" )
+  struct snowstorm_t : public pet_melee_attack_t<frost_wolf_t>
+  {
+    snowstorm_t( frost_wolf_t* player ) :
+      super( player, "snowstorm", player -> find_spell( 198483 ) )
+    {
+      background = true;
+    }
+  };
+
+  frost_wolf_t( shaman_t* owner ) :
+    doom_wolf_base_t( owner, "frost_wolf" )
   { }
+
+  bool create_actions() override
+  {
+    if ( o() -> artifact.alpha_wolf.rank() )
+    {
+      alpha_wolf = new snowstorm_t( this );
+    }
+
+    return doom_wolf_base_t::create_actions();
+  }
 
   action_t* create_action( const std::string& name,
                            const std::string& options_str ) override
@@ -1709,8 +1775,27 @@ struct fire_wolf_t : public doom_wolf_base_t
     { }
   };
 
+  struct fire_nova_t : public pet_melee_attack_t<fire_wolf_t>
+  {
+    fire_nova_t( fire_wolf_t* player ) :
+      super( player, "fire_nova", player -> find_spell( 198480 ) )
+    {
+      background = true;
+    }
+  };
+
   fire_wolf_t( shaman_t* owner ) : doom_wolf_base_t( owner, "fiery_wolf" )
   { }
+
+  bool create_actions() override
+  {
+    if ( o() -> artifact.alpha_wolf.rank() )
+    {
+      alpha_wolf = new fire_nova_t( this );
+    }
+
+    return doom_wolf_base_t::create_actions();
+  }
 
   action_t* create_action( const std::string& name,
                            const std::string& options_str ) override
@@ -1747,6 +1832,15 @@ struct lightning_wolf_t : public doom_wolf_base_t
     }
   };
 
+  struct thunder_bite_t : public pet_melee_attack_t<lightning_wolf_t>
+  {
+    thunder_bite_t( lightning_wolf_t* player ) :
+      super( player, "thunder_bite", player -> find_spell( 198485 ) )
+    {
+      background = true;
+    }
+  };
+
   haste_buff_t* crackling_surge;
 
   lightning_wolf_t( shaman_t* owner ) : doom_wolf_base_t( owner, "lightning_wolf" )
@@ -1771,6 +1865,16 @@ struct lightning_wolf_t : public doom_wolf_base_t
 
     crackling_surge = haste_buff_creator_t( this, "crackling_surge", find_spell( 224127 ) )
       .default_value( 1.0 / ( 1.0 + find_spell( 224127 ) -> effectN( 1 ).percent() ) );
+  }
+
+  bool create_actions() override
+  {
+    if ( o() -> artifact.alpha_wolf.rank() )
+    {
+      alpha_wolf = new thunder_bite_t( this );
+    }
+
+    return doom_wolf_base_t::create_actions();
   }
 
   action_t* create_action( const std::string& name,
@@ -3001,6 +3105,27 @@ struct crash_lightning_t : public shaman_attack_t
         double v = 1.0 + p() -> artifact.gathering_storms.percent() * execute_state -> n_targets;
         p() -> buff.gathering_storms -> trigger( 1, v );
       }
+    }
+
+    if ( p() -> artifact.doom_wolves.rank() )
+    {
+      range::for_each( p() -> pet.doom_wolves, [ this ]( pet_t* pet ) {
+        pet::doom_wolf_base_t* wolf = debug_cast<pet::doom_wolf_base_t*>( pet );
+        if ( ! wolf -> is_sleeping() )
+        {
+          wolf -> trigger_alpha_wolf( this -> execute_state );
+        }
+      } );
+    }
+    else
+    {
+      range::for_each( p() -> pet.spirit_wolves, [ this ]( pet_t* pet ) {
+        pet::feral_spirit_pet_t* wolf = debug_cast<pet::feral_spirit_pet_t*>( pet );
+        if ( ! wolf -> is_sleeping() )
+        {
+          wolf -> trigger_alpha_wolf( this -> execute_state );
+        }
+      } );
     }
   }
 };
@@ -5145,6 +5270,7 @@ void shaman_t::init_spells()
   artifact.doom_vortex               = find_artifact_spell( "Doom Vortex"        );
   artifact.spirit_of_the_maelstrom   = find_artifact_spell( "Spirit of the Maelstrom" );
   artifact.doom_wolves               = find_artifact_spell( "Doom Wolves"        );
+  artifact.alpha_wolf                = find_artifact_spell( "Alpha Wolf"         );
 
   // Misc spells
   spell.resurgence                   = find_spell( 101033 );
