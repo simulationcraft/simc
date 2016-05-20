@@ -929,7 +929,7 @@ struct melee_t: public warrior_attack_t
     {
       if ( s -> result == RESULT_CRIT )
       {
-        rage_gain *= rng().range( 7.4375, 7.875 ); // Wild random numbers appear! Accurate as of 2015/02/02
+        rage_gain *= rng().range( 7.4375, 7.875 ); // Wild random numbers appear! Accurate as of 2016/05/01
       }
       else
       {
@@ -1441,6 +1441,7 @@ struct opportunity_strikes_t : public warrior_attack_t
     warrior_attack_t( "opportunity_strikes", p, p -> talents.opportunity_strikes -> effectN( 1 ).trigger() )
   {
     background = true;
+    school = p -> talents.opportunity_strikes -> get_school_type();
   }
 };
 
