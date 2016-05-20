@@ -718,10 +718,7 @@ enum effect_type_t {
     E_188 = 188,
     E_189 = 189,
     E_196 = 196,
-<<<<<<< Updated upstream
     E_197 = 197,
-=======
->>>>>>> Stashed changes
     E_198 = 198,
     E_199 = 199,
     E_202 = 202,
