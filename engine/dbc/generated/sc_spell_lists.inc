@@ -863,10 +863,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       126892, // Zen Pilgrimage
            0,
     },
-    // Brewmaster tree, 12 abilities
+    // Brewmaster tree, 13 abilities
     {
       205523, // Blackout Strike
       115181, // Breath of Fire
+      216521, // Celestial Fortune
       218164, // Detox
       116694, // Effuse
       195630, // Elusive Brawler
@@ -895,9 +896,10 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       116670, // Vivify
            0,
     },
-    // Windwalker tree, 12 abilities
+    // Windwalker tree, 13 abilities
     {
       116768, // Blackout Kick!
+      211432, // Combo Master
       218164, // Detox
       116095, // Disable
       116694, // Effuse
