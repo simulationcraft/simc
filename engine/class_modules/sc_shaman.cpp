@@ -561,6 +561,7 @@ public:
   void      init_base_stats() override;
   void      init_scaling() override;
   void      create_buffs() override;
+  bool      create_actions() override;
   void      init_gains() override;
   void      init_procs() override;
   void      init_action_list() override;
@@ -4781,6 +4782,56 @@ expr_t* shaman_t::create_expression( action_t* a, const std::string& name )
   return player_t::create_expression( a, name );
 }
 
+// shaman_t::create_actions =================================================
+
+bool shaman_t::create_actions()
+{
+  auto ret = player_t::create_actions();
+
+  if ( talent.lightning_shield -> ok() )
+  {
+    lightning_shield = new lightning_shield_damage_t( this );
+  }
+
+  if ( talent.crashing_storm -> ok() )
+  {
+    crashing_storm = new ground_aoe_spell_t( this, "crashing_storm", find_spell( 210801 ) );
+  }
+
+  if ( talent.earthen_rage -> ok() )
+  {
+    earthen_rage = new earthen_rage_driver_t( this );
+  }
+
+  if ( talent.magnitude -> ok() )
+  {
+    magnitude = new magnitude_t( this );
+  }
+
+  if ( talent.lightning_rod -> ok() )
+  {
+    lightning_rod = new lightning_rod_t( this );
+  }
+
+  if ( artifact.unleash_doom.rank() )
+  {
+    unleash_doom[ 0 ] = new unleash_doom_spell_t( "unleash_lava", this, find_spell( 199053 ) );
+    unleash_doom[ 1 ] = new unleash_doom_spell_t( "unleash_lightning", this, find_spell( 199054 ) );
+  }
+
+  if ( artifact.doom_vortex.rank() )
+  {
+    doom_vortex = new ground_aoe_spell_t( this, "doom_vortex", find_spell( 199116 ) );
+  }
+
+  if ( artifact.volcanic_inferno.rank() )
+  {
+    volcanic_inferno = new volcanic_inferno_t( this );
+  }
+
+  return ret;
+}
+
 // shaman_t::init_spells ====================================================
 
 void shaman_t::init_spells()
@@ -4832,7 +4883,7 @@ void shaman_t::init_spells()
 
   // Elemental
   talent.path_of_flame               = find_talent_spell( "Path of Flame"        );
-  talent.earthen_rage                = find_talent_spell( "Molten Earth"         );
+  talent.earthen_rage                = find_talent_spell( "Earthen Rage"         );
   talent.totem_mastery               = find_talent_spell( "Totem Mastery"        );
 
   talent.elemental_blast             = find_talent_spell( "Elemental Blast"      );
@@ -4908,47 +4959,6 @@ void shaman_t::init_spells()
   spell.eruption                     = find_spell( 168556 );
   spell.maelstrom_melee_gain         = find_spell( 187890 );
   spell.fury_of_the_storms_driver    = find_spell( 191716 );
-
-  if ( talent.lightning_shield -> ok() )
-  {
-    lightning_shield = new lightning_shield_damage_t( this );
-  }
-
-  if ( talent.crashing_storm -> ok() )
-  {
-    crashing_storm = new ground_aoe_spell_t( this, "crashing_storm", find_spell( 210801 ) );
-  }
-
-  if ( talent.earthen_rage -> ok() )
-  {
-    earthen_rage = new earthen_rage_driver_t( this );
-  }
-
-  if ( talent.magnitude -> ok() )
-  {
-    magnitude = new magnitude_t( this );
-  }
-
-  if ( talent.lightning_rod -> ok() )
-  {
-    lightning_rod = new lightning_rod_t( this );
-  }
-
-  if ( artifact.unleash_doom.rank() )
-  {
-    unleash_doom[ 0 ] = new unleash_doom_spell_t( "unleash_lava", this, find_spell( 199053 ) );
-    unleash_doom[ 1 ] = new unleash_doom_spell_t( "unleash_lightning", this, find_spell( 199054 ) );
-  }
-
-  if ( artifact.doom_vortex.rank() )
-  {
-    doom_vortex = new ground_aoe_spell_t( this, "doom_vortex", find_spell( 199116 ) );
-  }
-
-  if ( artifact.volcanic_inferno.rank() )
-  {
-    volcanic_inferno = new volcanic_inferno_t( this );
-  }
 
   // Constants
   constant.speed_attack_ancestral_swiftness = 1.0 / ( 1.0 + talent.ancestral_swiftness -> effectN( 2 ).percent() );
