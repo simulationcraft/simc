@@ -861,8 +861,6 @@ void player_t::init_base_stats()
     base.stats.attribute[ STAT_INTELLECT ] += util::floor( racials.heroic_presence -> effectN( 3 ).average( this ) );
     // so is endurance. Can't tell if this is floored, ends in 0.055 @ L100. Assuming based on symmetry w/ heroic pres.
     base.stats.attribute[ STAT_STAMINA   ] += util::floor( racials.endurance -> effectN( 1 ).average( this ) );
-    // Human spirit
-    base.stats.versatility_rating          += util::floor( racials.the_human_spirit -> effectN( 1 ).average( this ) );
 
     base.spell_crit               = dbc.spell_crit_base( type, level() );
     base.attack_crit              = dbc.melee_crit_base( type, level() );
@@ -3232,12 +3230,24 @@ double player_t::composite_rating_multiplier( rating_e rating ) const
         v *= 1.0 + passive_values.amplification_1;
       if ( buffs.amplification_2 )
         v *= 1.0 + passive_values.amplification_2;
+      v *= 1.0 + racials.the_human_spirit -> effectN( 1 ).percent();
       break;
     case RATING_MASTERY:
       if ( buffs.amplification )
         v *= 1.0 + passive_values.amplification_1;
       if ( buffs.amplification_2 )
         v *= 1.0 + passive_values.amplification_2;
+      v *= 1.0 + racials.the_human_spirit -> effectN( 1 ).percent();
+      break;
+    case RATING_SPELL_CRIT:
+    case RATING_MELEE_CRIT:
+    case RATING_RANGED_CRIT:
+      v *= 1.0 + racials.the_human_spirit -> effectN( 1 ).percent();
+      break;
+    case RATING_DAMAGE_VERSATILITY:
+    case RATING_HEAL_VERSATILITY:
+    case RATING_MITIGATION_VERSATILITY:
+      v *= 1.0 + racials.the_human_spirit -> effectN( 1 ).percent();
       break;
     default:
       break;
