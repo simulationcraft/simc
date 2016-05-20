@@ -2081,7 +2081,10 @@ struct tiger_palm_t: public monk_melee_attack_t
       base_costs[RESOURCE_ENERGY] *= 1 + p -> spec.stagger -> effectN( 16 ).percent(); // -50% for Brewmasters
 
     if ( p -> specialization() == MONK_WINDWALKER )
+    {
+      energize_amount = p -> spec.tiger_palm -> effectN( 2 ).base_value();
       energize_amount += p -> spec.stance_of_the_fierce_tiger -> effectN( 4 ).base_value();
+    }
     else
       energize_type = ENERGIZE_NONE;
 
@@ -2129,7 +2132,7 @@ struct tiger_palm_t: public monk_melee_attack_t
       {
         // Power Strike activation
         // Legion change = The buff will no longer summon a chi sphere at max chi. It will hold the buff until you can actually use the power strike
-        // TODO: Currently there appears to be a bug with Power Strikes and overflow
+        // This means it will be used at 0, 1, or 2 chi
         if ( p() -> buff.power_strikes -> up() && ( p() -> resources.current[RESOURCE_CHI] < p() -> resources.max[RESOURCE_CHI] ) )
         {
           player -> resource_gain( RESOURCE_CHI, p() -> buff.power_strikes -> value(), p() -> gain.power_strikes, this );
