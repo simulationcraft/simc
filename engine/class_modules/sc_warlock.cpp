@@ -2342,7 +2342,7 @@ struct immolate_t: public warlock_spell_t
     double m = warlock_spell_t::composite_ta_multiplier( state );
     
     if ( td( state -> target ) -> dots_immolate -> is_ticking() && p() -> talents.roaring_blaze -> ok() )
-      m *= std::pow( 1.50, td( state -> target ) -> debuffs_roaring_blaze -> stack() );
+      m *= std::pow( roaring_blaze, td( state -> target ) -> debuffs_roaring_blaze -> stack() );
 
     return m;
   }
@@ -2487,7 +2487,7 @@ struct chaos_bolt_t: public warlock_spell_t
     if ( p -> talents.reverse_entropy -> ok() )
       base_execute_time += p -> talents.reverse_entropy -> effectN( 2 ).time_value();
 
-    crit_multiplier *= 1.0 + p -> artifact.chaotic_instability.percent();
+    crit_bonus_multiplier *= 1.0 + p -> artifact.chaotic_instability.percent();
   }
 
   void impact( action_state_t* s ) override
