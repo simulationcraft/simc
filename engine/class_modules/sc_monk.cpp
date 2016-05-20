@@ -91,7 +91,7 @@ enum sef_ability_e {
   SEF_BLACKOUT_KICK,
   SEF_RISING_SUN_KICK,
   SEF_RISING_SUN_KICK_TRINKET,
-  SEF_RISING_SUN_KICK_TORNADO_KICK,
+//  SEF_RISING_SUN_KICK_TORNADO_KICK,
   SEF_FISTS_OF_FURY,
   SEF_SPINNING_CRANE_KICK,
   SEF_RUSHING_JADE_WIND,
@@ -1163,7 +1163,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
   };
 
-  struct sef_rising_sun_kick_tornado_kick_t : public sef_melee_attack_t
+/*  struct sef_rising_sun_kick_tornado_kick_t : public sef_melee_attack_t
   {
 
     sef_rising_sun_kick_tornado_kick_t( storm_earth_and_fire_pet_t* player ) :
@@ -1184,7 +1184,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
       }
     }
   };
-
+  */
   struct sef_tick_action_t : public sef_melee_attack_t
   {
     sef_tick_action_t( const std::string& name, storm_earth_and_fire_pet_t* p, const spell_data_t* data ) :
@@ -1395,7 +1395,7 @@ public:
     attacks[ SEF_BLACKOUT_KICK                ] = new sef_blackout_kick_t( this );
     attacks[ SEF_RISING_SUN_KICK              ] = new sef_rising_sun_kick_t( this );
     attacks[ SEF_RISING_SUN_KICK_TRINKET      ] = new sef_rising_sun_kick_trinket_t( this );
-    attacks[ SEF_RISING_SUN_KICK_TORNADO_KICK ] = new sef_rising_sun_kick_tornado_kick_t( this );
+//    attacks[ SEF_RISING_SUN_KICK_TORNADO_KICK ] = new sef_rising_sun_kick_tornado_kick_t( this );
     attacks[ SEF_FISTS_OF_FURY                ] = new sef_fists_of_fury_t( this );
     attacks[ SEF_SPINNING_CRANE_KICK          ] = new sef_spinning_crane_kick_t( this );
     attacks[ SEF_RUSHING_JADE_WIND            ] = new sef_rushing_jade_wind_t( this );
@@ -3763,10 +3763,10 @@ struct crackling_jade_lightning_t: public monk_spell_t
 
 struct chi_orbit_t: public monk_spell_t
 {
-  chi_orbit_t( monk_t* p, const std::string& options_str ):
+  chi_orbit_t( monk_t* p ):
     monk_spell_t( "chi_orbit", p, p -> talent.chi_orbit )
   {
-    parse_options( options_str );
+    background = true;
     ignore_false_positive = true;
     trigger_gcd = timespan_t::zero();
     attack_power_mod.direct = p -> passives.chi_orbit -> effectN( 1 ).ap_coeff();
@@ -5512,12 +5512,35 @@ struct chi_orbit_event_t : public player_event_t
     add_event( tick_time );
   }
   virtual const char* name() const override
-  { return  "chi_orbit"; }
+  { return  "chi_orbit_generate"; }
   virtual void execute() override
   {
     monk_t* p = debug_cast<monk_t*>( player() );
 
     p -> buff.chi_orbit -> trigger();
+
+    new ( sim() ) chi_orbit_event_t( *p, p -> talent.chi_orbit -> effectN( 1 ).period() );
+  }
+};
+
+struct chi_orbit_trigger_event_t : public player_event_t
+{
+  actions::chi_orbit_t* chi_orbit;
+  chi_orbit_trigger_event_t( monk_t& player, timespan_t tick_time ):
+    player_event_t( player ),
+    chi_orbit( new actions::chi_orbit_t( &player ) )
+  {
+    tick_time = clamp( tick_time, timespan_t::zero(), timespan_t::from_seconds( 1 ) );
+    add_event( tick_time );
+  }
+  virtual const char* name() const override
+  { return  "chi_orbit_trigger"; }
+  virtual void execute() override
+  {
+    monk_t* p = debug_cast<monk_t*>( player() );
+
+    if ( p -> buff.chi_orbit -> up() )
+      chi_orbit -> execute();
 
     new ( sim() ) chi_orbit_event_t( *p, p -> talent.chi_orbit -> effectN( 1 ).period() );
   }
@@ -5678,7 +5701,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "storm_earth_and_fire" ) return new      storm_earth_and_fire_t( this, options_str );
   // Talents
   if ( name == "chi_burst" ) return new                 chi_burst_t( this, options_str );
-  if ( name == "chi_orbit" ) return new                 chi_orbit_t( this, options_str );
+//  if ( name == "chi_orbit" ) return new                 chi_orbit_t( this, options_str );
   if ( name == "chi_torpedo" ) return new               chi_torpedo_t( this, options_str );
   if ( name == "chi_wave" ) return new                  chi_wave_t( this, options_str );
   if ( name == "black_ox_brew" ) return new             black_ox_brew_t( this, options_str );
@@ -6894,6 +6917,7 @@ void monk_t::combat_begin()
       // If Chi Orbit, start out with max stacks
       buff.chi_orbit -> trigger( buff.chi_orbit -> max_stack() );
       new ( *sim ) chi_orbit_event_t( *this, timespan_t::zero() );
+      new ( *sim ) chi_orbit_trigger_event_t( *this, timespan_t::zero() );
     }
 
     if ( talent.power_strikes -> ok() )
