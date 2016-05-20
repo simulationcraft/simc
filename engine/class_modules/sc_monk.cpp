@@ -5367,7 +5367,6 @@ struct celestial_fortune_t : public monk_heal_t
     return am;
   }
 
-
   virtual bool ready() override
   {
     return p() -> specialization() == MONK_BREWMASTER;
@@ -6331,10 +6330,7 @@ void monk_t::create_buffs()
                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                               .cd( timespan_t::zero() );
 
-  // Transfer the Power does not show up in the buff bar, but due to the fact that it shows up in the combat log,
-  // I am going to show the buff in the HTML report; since someone can set up a weak aura to track the buff.
-  buff.transfer_the_power = buff_creator_t( this, "transfer_the_power", artifact.transfer_the_power.data().effectN( 1 ).trigger() )
-    .duration( timespan_t::from_minutes( 10 ) ) // Buff lasts longer than 10 minutes. Sticking it to 10 minutes
+    buff.transfer_the_power = buff_creator_t( this, "transfer_the_power", artifact.transfer_the_power.data().effectN( 1 ).trigger() )
     // The proc gives 1%; even though tooltip and datamining say 5% per stack
     .default_value( artifact.transfer_the_power.rank() ?  0.1 /* artifact.transfer_the_power.percent() */ : 0 ); 
 }
@@ -7048,7 +7044,7 @@ void monk_t::target_mitigation( school_e school,
 
     if ( talent.gift_of_the_mists -> ok() )
       // Due to the fact that SimC can cause HP values to go into negative, force the cap to be 2 since the original formula can go above 2 with negative HP
-      goto_proc_chance *= 2 - fmax( ( health_before_hit - s -> result_amount ) / max_health(), 0 );
+      goto_proc_chance *= fmax( ( 1 + talent.gift_of_the_mists -> effectN( 1 ).percent() ) - fmax( ( health_before_hit - s -> result_amount ) / max_health(), 0 ), 1 );
 
     gift_of_the_ox_proc_chance += goto_proc_chance;
 
