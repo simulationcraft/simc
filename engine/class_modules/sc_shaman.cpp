@@ -1694,12 +1694,26 @@ struct doom_wolf_base_t : public shaman_pet_t
   };
 
   action_t* alpha_wolf;
+  cooldown_t* special_ability_cd;
 
   doom_wolf_base_t( shaman_t* owner, const std::string& name ) :
-    shaman_pet_t( owner, name ), alpha_wolf( nullptr )
+    shaman_pet_t( owner, name ), alpha_wolf( nullptr ), special_ability_cd( nullptr )
   {
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
     owner_coeff.ap_from_ap      = 1.33;
+  }
+
+  void arise() override
+  {
+    shaman_pet_t::arise();
+
+    // The pet AI does not allow the special ability to immediately be used, instead the pets seem
+    // to wait roughly 4 seconds before using it. Once the ability is usable, the pets use it
+    // roughly every 5 seconds.
+    if ( special_ability_cd )
+    {
+      special_ability_cd -> start( timespan_t::from_seconds( 4 ) );
+    }
   }
 
   attack_t* create_auto_attack() override
@@ -1723,16 +1737,14 @@ struct frost_wolf_t : public doom_wolf_base_t
   {
     frozen_bite_t( frost_wolf_t* player, const std::string& options ) :
       super( player, "frozen_bite", player -> find_spell( 224126 ), options )
-    { }
+    { p() -> special_ability_cd = cooldown; }
   };
 
   struct snowstorm_t : public pet_melee_attack_t<frost_wolf_t>
   {
     snowstorm_t( frost_wolf_t* player ) :
       super( player, "snowstorm", player -> find_spell( 198483 ) )
-    {
-      background = true;
-    }
+    { background = true; }
   };
 
   frost_wolf_t( shaman_t* owner ) :
@@ -1763,7 +1775,7 @@ struct frost_wolf_t : public doom_wolf_base_t
 
     action_priority_list_t* def = get_action_priority_list( "default" );
     // TODO: Proper delay
-    def -> add_action( "frozen_bite,line_cd=4" );
+    def -> add_action( "frozen_bite,line_cd=5" );
   }
 };
 
@@ -1773,16 +1785,14 @@ struct fire_wolf_t : public doom_wolf_base_t
   {
     fiery_jaws_t( fire_wolf_t* player, const std::string& options ) :
       super( player, "fiery_jaws", player -> find_spell( 224125 ), options )
-    { }
+    { p() -> special_ability_cd = cooldown; }
   };
 
   struct fire_nova_t : public pet_melee_attack_t<fire_wolf_t>
   {
     fire_nova_t( fire_wolf_t* player ) :
       super( player, "fire_nova", player -> find_spell( 198480 ) )
-    {
-      background = true;
-    }
+    { background = true; }
   };
 
   fire_wolf_t( shaman_t* owner ) : doom_wolf_base_t( owner, "fiery_wolf" )
@@ -1812,7 +1822,7 @@ struct fire_wolf_t : public doom_wolf_base_t
 
     action_priority_list_t* def = get_action_priority_list( "default" );
     // TODO: Proper delay
-    def -> add_action( "fiery_jaws,if=!ticking" );
+    def -> add_action( "fiery_jaws,line_cd=5" );
   }
 };
 
@@ -1822,9 +1832,7 @@ struct lightning_wolf_t : public doom_wolf_base_t
   {
     crackling_surge_t( lightning_wolf_t* player, const std::string& options ) :
       super( player, "crackling_surge", player -> find_spell( 224127 ), options )
-    {
-      harmful = false;
-    }
+    { p() -> special_ability_cd = cooldown; }
 
     void execute() override
     {
@@ -1837,9 +1845,7 @@ struct lightning_wolf_t : public doom_wolf_base_t
   {
     thunder_bite_t( lightning_wolf_t* player ) :
       super( player, "thunder_bite", player -> find_spell( 198485 ) )
-    {
-      background = true;
-    }
+    { background = true; }
   };
 
   haste_buff_t* crackling_surge;
@@ -1892,7 +1898,7 @@ struct lightning_wolf_t : public doom_wolf_base_t
 
     action_priority_list_t* def = get_action_priority_list( "default" );
     // TODO: Proper delay
-    def -> add_action( "crackling_surge,if=buff.crackling_surge.down" );
+    def -> add_action( "crackling_surge,line_cd=5" );
   }
 };
 
