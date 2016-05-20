@@ -8,13 +8,15 @@
 // ==========================================================================
 //
 // TODO:
+// Service pets do 2x damage
 // Add the Doomguard / Infernal as a pet
 // Check resource generation execute/impact and hit requirement
 // Report which spells triggered soul conduit
 // Affliction -
 // Haunt reset
 // Soul Effigy
-// Destruction - 
+// Destruction -
+// Lord of Flames
 // check wild imp implementation: make sure imps are dying when they are supposed to.
 // finish demonic empowerment - needs doomguard / infernal pet implementation only
 // DEMO TALENTS: (all)
