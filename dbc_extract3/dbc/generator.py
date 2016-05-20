@@ -1302,13 +1302,14 @@ class SpellDataGenerator(DataGenerator):
           ( 124275, 0 ), # Light Stagger
           ( 124274, 0 ), # Medium Stagger
           ( 124273, 0 ), # Heavy Stagger
+          ( 216521, 1 ), # Celestial Fortune Heal
           # Mistweaver
           ( 167732, 0 ), # Tier 17 2-piece Healer Buff
           # Windwalker
           ( 116768, 3 ), # Combo Breaker: Blackout Kick
           ( 121283, 0 ), # Chi Sphere from Power Strikes
           ( 196061, 0 ), # Crosswinds Artifact trait damage spell
-          ( 211432, 0 ), # Tier 19 4-piece DPS Buff
+          ( 211432, 3 ), # Tier 19 4-piece DPS Buff
         ),
 
         # Druid:
