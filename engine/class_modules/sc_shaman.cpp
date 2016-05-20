@@ -470,6 +470,7 @@ public:
     artifact_power_t spirit_of_the_maelstrom;
     artifact_power_t doom_wolves;
     artifact_power_t alpha_wolf;
+    artifact_power_t earthshattering_blows;
   } artifact;
 
   // Misc Spells
@@ -1579,21 +1580,21 @@ action_t* shaman_pet_t::create_action( const std::string& name,
 // Feral Spirit
 // ==========================================================================
 
-struct feral_spirit_pet_t : public shaman_pet_t
+struct spirit_wolf_t : public shaman_pet_t
 {
-  struct windfury_t : public pet_melee_attack_t<feral_spirit_pet_t>
+  struct windfury_t : public pet_melee_attack_t<spirit_wolf_t>
   {
-    windfury_t( feral_spirit_pet_t* player ) :
+    windfury_t( spirit_wolf_t* player ) :
       super( player, "windfury_attack", player -> find_spell( 170512 ) )
     { }
   };
 
-  struct fs_melee_t : public pet_melee_attack_t<feral_spirit_pet_t>
+  struct fs_melee_t : public pet_melee_attack_t<spirit_wolf_t>
   {
     windfury_t* wf;
     const spell_data_t* maelstrom, * wf_driver;
 
-    fs_melee_t( feral_spirit_pet_t* player ) : super( player, "melee" ),
+    fs_melee_t( spirit_wolf_t* player ) : super( player, "melee" ),
       wf( p() -> owner -> sets.has_set_bonus( SHAMAN_ENHANCEMENT, T17, B4 ) ? new windfury_t( player ) : nullptr ),
       maelstrom( player -> find_spell( 190185 ) ), wf_driver( player -> find_spell( 170523 ) )
     {
@@ -1622,9 +1623,9 @@ struct feral_spirit_pet_t : public shaman_pet_t
     }
   };
 
-  struct spirit_bomb_t : public pet_melee_attack_t<feral_spirit_pet_t>
+  struct spirit_bomb_t : public pet_melee_attack_t<spirit_wolf_t>
   {
-    spirit_bomb_t( feral_spirit_pet_t* player ) :
+    spirit_bomb_t( spirit_wolf_t* player ) :
       super( player, "spirit_bomb", player -> find_spell( 198455 ) )
     {
       background = true;
@@ -1633,7 +1634,7 @@ struct feral_spirit_pet_t : public shaman_pet_t
 
   action_t* alpha_wolf;
 
-  feral_spirit_pet_t( shaman_t* owner ) :
+  spirit_wolf_t( shaman_t* owner ) :
     shaman_pet_t( owner, "spirit_wolf" ), alpha_wolf( nullptr )
   {
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
@@ -3120,7 +3121,7 @@ struct crash_lightning_t : public shaman_attack_t
     else
     {
       range::for_each( p() -> pet.spirit_wolves, [ this ]( pet_t* pet ) {
-        pet::feral_spirit_pet_t* wolf = debug_cast<pet::feral_spirit_pet_t*>( pet );
+        pet::spirit_wolf_t* wolf = debug_cast<pet::spirit_wolf_t*>( pet );
         if ( ! wolf -> is_sleeping() )
         {
           wolf -> trigger_alpha_wolf( this -> execute_state );
@@ -5061,7 +5062,7 @@ void shaman_t::create_pets()
 
     for ( size_t i = 0; i < n_feral_spirits; i++ )
     {
-      pet.spirit_wolves[ i ] = new pet::feral_spirit_pet_t( this );
+      pet.spirit_wolves[ i ] = new pet::spirit_wolf_t( this );
     }
   }
 
@@ -5271,6 +5272,7 @@ void shaman_t::init_spells()
   artifact.spirit_of_the_maelstrom   = find_artifact_spell( "Spirit of the Maelstrom" );
   artifact.doom_wolves               = find_artifact_spell( "Doom Wolves"        );
   artifact.alpha_wolf                = find_artifact_spell( "Alpha Wolf"         );
+  artifact.earthshattering_blows     = find_artifact_spell( "Earthshattering Blows" );
 
   // Misc spells
   spell.resurgence                   = find_spell( 101033 );
@@ -6346,6 +6348,7 @@ double shaman_t::composite_player_multiplier( school_e school ) const
   double m = player_t::composite_player_multiplier( school );
 
   m *= 1.0 + artifact.stormkeepers_power.percent();
+  m *= 1.0 + artifact.earthshattering_blows.percent();
 
   if ( mastery.enhanced_elements -> ok() &&
        ( dbc::is_school( school, SCHOOL_FIRE   ) ||
