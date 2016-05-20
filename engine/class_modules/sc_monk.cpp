@@ -5542,7 +5542,7 @@ struct chi_orbit_trigger_event_t : public player_event_t
     if ( p -> buff.chi_orbit -> up() )
       chi_orbit -> execute();
 
-    new ( sim() ) chi_orbit_event_t( *p, p -> talent.chi_orbit -> effectN( 1 ).period() );
+    new ( sim() ) chi_orbit_event_t( *p, timespan_t::from_seconds( 1 ) );
   }
 };
 
