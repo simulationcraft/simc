@@ -3694,7 +3694,7 @@ struct ice_lance_t : public frost_mage_spell_t
     // Icicles are gone, including new ones that accumulate while they're being
     // fired. If target dies, Icicles stop. If Ice Lance is cast again, the
     // current sequence is interrupted and a new one begins.
-    if ( !p() -> talents.lonely_winter -> ok() )
+    if ( !p() -> talents.glacial_spike -> ok() )
     {
       p() -> trigger_icicle( execute_state, true, target );
     }
