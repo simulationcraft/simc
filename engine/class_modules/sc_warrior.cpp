@@ -2864,9 +2864,9 @@ struct whirlwind_off_hand_t: public warrior_attack_t
   }
 };
 
-struct whirlwind_mh_t: public warrior_attack_t
+struct fury_whirlwind_mh_t: public warrior_attack_t
 {
-  whirlwind_mh_t( warrior_t* p, const spell_data_t* whirlwind ):
+  fury_whirlwind_mh_t( warrior_t* p, const spell_data_t* whirlwind ):
     warrior_attack_t( "whirlwind_mh", p, whirlwind )
   {
     aoe = -1;
@@ -2909,12 +2909,12 @@ struct whirlwind_mh_t: public warrior_attack_t
   }
 };
 
-struct whirlwind_parent_t: public warrior_attack_t
+struct fury_whirlwind_parent_t: public warrior_attack_t
 {
   whirlwind_off_hand_t* oh_attack;
-  whirlwind_mh_t* mh_attack;
+  fury_whirlwind_mh_t* mh_attack;
   timespan_t spin_time;
-  whirlwind_parent_t( warrior_t* p, const std::string& options_str ):
+  fury_whirlwind_parent_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "whirlwind", p, p -> spec.whirlwind ),
     oh_attack( nullptr ), mh_attack( nullptr ),
     spin_time( timespan_t::from_millis( p -> specialization() == WARRIOR_ARMS ? p -> spec.whirlwind -> effectN( 2 ).misc_value1() :
@@ -2927,7 +2927,7 @@ struct whirlwind_parent_t: public warrior_attack_t
     {
       if ( p -> specialization() == WARRIOR_FURY )
       {
-        mh_attack = new whirlwind_mh_t( p, data().effectN( 1 ).trigger() );
+        mh_attack = new fury_whirlwind_mh_t( p, data().effectN( 1 ).trigger() );
         mh_attack -> weapon = &( p -> main_hand_weapon );
         mh_attack -> radius = radius;
         add_child( mh_attack );
@@ -2941,7 +2941,7 @@ struct whirlwind_parent_t: public warrior_attack_t
       }
       else
       {
-        mh_attack = new whirlwind_mh_t( p, data().effectN( 1 ).trigger() );
+        mh_attack = new fury_whirlwind_mh_t( p, data().effectN( 1 ).trigger() );
         mh_attack -> weapon = &( p -> main_hand_weapon );
         mh_attack -> radius = radius;
         add_child( mh_attack );
@@ -3000,6 +3000,132 @@ struct whirlwind_parent_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
     p() -> buff.meat_grinder -> trigger();
+  }
+
+  bool ready() override
+  {
+    if ( p() -> main_hand_weapon.type == WEAPON_NONE )
+    {
+      return false;
+    }
+
+    return warrior_attack_t::ready();
+  }
+};
+
+struct arms_whirlwind_mh_t: public warrior_attack_t
+{
+  arms_whirlwind_mh_t( warrior_t* p, const spell_data_t* whirlwind ):
+    warrior_attack_t( "whirlwind_mh", p, whirlwind )
+  {
+    aoe = -1;
+    weapon_multiplier *= 1.0 + p -> artifact.many_will_fall.percent();
+    procs_tactician = false;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    am *= 1.0 + p() -> buff.cleave -> check_value();
+
+    return am;
+  }
+};
+
+struct first_arms_whirlwind_mh_t: public warrior_attack_t
+{
+  first_arms_whirlwind_mh_t( warrior_t* p, const spell_data_t* whirlwind ):
+    warrior_attack_t( "whirlwind_mh", p, whirlwind )
+  {
+    aoe = -1;
+    weapon_multiplier *= 1.0 + p -> artifact.many_will_fall.percent();
+
+    if ( p -> talents.fervor_of_battle -> ok() )
+    {
+      parse_effect_data( p -> spell.fervor_of_battle -> effectN( 1 ) );
+      energize_type = ENERGIZE_PER_HIT;
+      gain = p -> gain.fervor_of_battle;
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    if ( p() -> artifact.will_of_the_first_king.rank() )
+    {
+      p() -> resource_gain( RESOURCE_RAGE, p() -> artifact.will_of_the_first_king.data().effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.will_of_the_first_king );
+    }
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    am *= 1.0 + p() -> buff.cleave -> check_value();
+
+    return am;
+  }
+};
+
+struct arms_whirlwind_parent_t: public warrior_attack_t
+{
+  first_arms_whirlwind_mh_t* first_mh_attack;
+  arms_whirlwind_mh_t* mh_attack;
+  timespan_t spin_time;
+  arms_whirlwind_parent_t( warrior_t* p, const std::string& options_str ):
+    warrior_attack_t( "whirlwind", p, p -> spec.whirlwind ),
+    first_mh_attack( nullptr), mh_attack( nullptr ), 
+    spin_time( timespan_t::from_millis( p -> spec.whirlwind -> effectN( 2 ).misc_value1() ) )
+  {
+    parse_options( options_str );
+    radius = data().effectN( 1 ).trigger() -> effectN( 1 ).radius_max();
+
+    if ( p -> main_hand_weapon.type != WEAPON_NONE )
+    {
+      mh_attack = new arms_whirlwind_mh_t( p, data().effectN( 2 ).trigger() );
+      mh_attack -> weapon = &( p -> main_hand_weapon );
+      mh_attack -> radius = radius;
+      add_child( mh_attack );
+      first_mh_attack = new first_arms_whirlwind_mh_t( p, data().effectN( 1 ).trigger() );
+      first_mh_attack -> weapon = &( p -> main_hand_weapon );
+      first_mh_attack -> radius = radius;
+      add_child( first_mh_attack );
+    }
+    tick_zero = true;
+    callbacks = hasted_ticks = false;
+    base_tick_time = spin_time;
+    dot_duration = base_tick_time * 2;
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    if ( p() -> najentuss_vertebrae && target_list().size() >= p() -> najentuss_vertebrae -> driver() -> effectN( 1 ).base_value() )
+      return base_tick_time * 4.0;
+
+    return dot_duration;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    warrior_attack_t::tick( d );
+
+    if ( d -> current_tick == 1 )
+    {
+      first_mh_attack -> execute();
+    }
+    else
+    {
+      mh_attack -> execute();
+    }
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    warrior_attack_t::last_tick( d );
+
+    p() -> buff.cleave -> expire();
   }
 
   bool ready() override
@@ -3378,7 +3504,17 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "thunder_clap"         ) return new thunder_clap_t         ( this, options_str );
   if ( name == "victory_rush"         ) return new victory_rush_t         ( this, options_str );
   if ( name == "vigilance"            ) return new vigilance_t            ( this, options_str );
-  if ( name == "whirlwind"            ) return new whirlwind_parent_t     ( this, options_str );
+  if ( name == "whirlwind" )
+  {
+    if ( specialization() == WARRIOR_FURY )
+    {
+      return new fury_whirlwind_parent_t( this, options_str );
+    }
+    else if ( specialization() == WARRIOR_ARMS )
+    {
+      return new arms_whirlwind_parent_t( this, options_str );
+    }
+  }
 
   return player_t::create_action( name, options_str );
 }
