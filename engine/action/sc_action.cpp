@@ -2279,10 +2279,18 @@ expr_t* action_t::create_expression( const std::string& name_str )
     dmg_e           amount_type;
     result_e        result_type;
     action_state_t* state;
+    bool            average_crit;
 
-    amount_expr_t( const std::string& name, dmg_e at, result_e rt, action_t& a ) :
-      action_expr_t( name, a ), amount_type( at ), result_type( rt ), state( a.get_state() )
+    amount_expr_t( const std::string& name, dmg_e at, action_t& a, result_e rt = RESULT_NONE ) :
+      action_expr_t( name, a ), amount_type( at ), result_type( rt ), state( a.get_state() ),
+      average_crit( false )
     {
+      if ( result_type == RESULT_NONE )
+      {
+        result_type = RESULT_HIT;
+        average_crit = true;
+      }
+
       state -> n_targets    = 1;
       state -> chain_target = 0;
       state -> result       = result_type;
@@ -2292,15 +2300,24 @@ expr_t* action_t::create_expression( const std::string& name_str )
     {
       action.snapshot_state( state, amount_type );
       state -> target = action.target;
+      double a;
       if ( amount_type == DMG_OVER_TIME || amount_type == HEAL_OVER_TIME )
-        return action.calculate_tick_amount( state, 1.0 /* Assumes full tick & one stack */ );
+        a = action.calculate_tick_amount( state, 1.0 /* Assumes full tick & one stack */ );
       else
       {
         state -> result_amount = action.calculate_direct_amount( state );
         if ( amount_type == DMG_DIRECT )
           state -> target -> target_mitigation( action.get_school(), amount_type, state );
-        return state -> result_amount;
+        a = state -> result_amount;
       }
+
+      if ( average_crit )
+      {
+        a *= 1.0 + clamp( state -> crit + state -> target_crit, 0.0, 1.0 ) *
+          action.composite_player_critical_multiplier();
+      }
+
+      return a;
     }
 
     virtual ~amount_expr_t()
@@ -2516,22 +2533,26 @@ expr_t* action_t::create_expression( const std::string& name_str )
   {
     return cooldown -> create_expression( this, name_str );
   }
+  else if ( name_str == "damage" )
+    return new amount_expr_t( name_str, DMG_DIRECT, *this );
   else if ( name_str == "hit_damage" )
-    return new amount_expr_t( name_str, DMG_DIRECT, RESULT_HIT, *this );
+    return new amount_expr_t( name_str, DMG_DIRECT, *this, RESULT_HIT );
   else if ( name_str == "crit_damage" )
-    return new amount_expr_t( name_str, DMG_DIRECT, RESULT_CRIT, *this );
+    return new amount_expr_t( name_str, DMG_DIRECT, *this, RESULT_CRIT );
   else if ( name_str == "hit_heal" )
-    return new amount_expr_t( name_str, HEAL_DIRECT, RESULT_HIT, *this );
+    return new amount_expr_t( name_str, HEAL_DIRECT, *this, RESULT_HIT );
   else if ( name_str == "crit_heal" )
-    return new amount_expr_t( name_str, HEAL_DIRECT, RESULT_CRIT, *this );
+    return new amount_expr_t( name_str, HEAL_DIRECT, *this, RESULT_CRIT );
   else if ( name_str == "tick_damage" )
-    return new amount_expr_t( name_str, DMG_OVER_TIME, RESULT_HIT, *this );
+    return new amount_expr_t( name_str, DMG_OVER_TIME, *this );
+  else if ( name_str == "hit_tick_damage" )
+    return new amount_expr_t( name_str, DMG_OVER_TIME, *this, RESULT_HIT );
   else if ( name_str == "crit_tick_damage" )
-    return new amount_expr_t( name_str, DMG_OVER_TIME, RESULT_CRIT, *this );
+    return new amount_expr_t( name_str, DMG_OVER_TIME, *this, RESULT_CRIT );
   else if ( name_str == "tick_heal" )
-    return new amount_expr_t( name_str, HEAL_OVER_TIME, RESULT_HIT, *this );
+    return new amount_expr_t( name_str, HEAL_OVER_TIME, *this, RESULT_HIT );
   else if ( name_str == "crit_tick_heal" )
-    return new amount_expr_t( name_str, HEAL_OVER_TIME, RESULT_CRIT, *this );
+    return new amount_expr_t( name_str, HEAL_OVER_TIME, *this, RESULT_CRIT );
   else if ( name_str == "crit_pct_current" )
   {
     struct crit_pct_current_expr_t : public expr_t

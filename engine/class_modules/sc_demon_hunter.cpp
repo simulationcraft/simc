@@ -138,6 +138,7 @@ public:
   struct
   {
     // General
+    buff_t* demon_soul;
     buff_t* metamorphosis;
 
     // Havoc
@@ -977,6 +978,15 @@ public:
     ab::tick( d );
 
     trigger_charred_warblades( d -> state );
+
+    // Benefit tracking
+    if ( d -> state -> result_amount > 0 )
+    {
+      td( d -> state -> target ) -> debuffs.nemesis -> up();
+      p() -> buff.momentum -> up();
+      p() -> buff.demon_soul -> up();
+      p() -> buff.chaos_blades -> up();
+    }
   }
 
   virtual void impact( action_state_t* s ) override
@@ -988,7 +998,13 @@ public:
       trigger_charred_warblades( s );
 
       // Benefit tracking
-      p() -> get_target_data( s -> target ) -> debuffs.nemesis -> up();
+      if ( s -> result_amount > 0 )
+      {
+        td( s -> target ) -> debuffs.nemesis -> up();
+        p() -> buff.momentum -> up();
+        p() -> buff.demon_soul -> up();
+        p() -> buff.chaos_blades -> up();
+      }
     }
   }
 
@@ -1159,6 +1175,11 @@ struct consume_soul_t : public demon_hunter_heal_t
     }
 
     p() -> buff.painbringer -> trigger();
+
+    if ( sim -> target -> race == RACE_DEMON )
+    {
+      p() -> buff.demon_soul -> trigger();
+    }
   }
 };
 
@@ -3003,9 +3024,8 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     {
       cs -> is_critical = p() -> rng().roll( cs -> composite_crit() );
     }
-    else
+    else if ( execute_state )
     {
-      assert( execute_state );
       cs -> is_critical = debug_cast<chaos_strike_state_t*>( execute_state ) -> is_critical;
     }
   }
@@ -3129,25 +3149,30 @@ struct death_sweep_t : public blade_dance_base_t
 
 struct demons_bite_t : public demon_hunter_attack_t
 {
-  struct
-  {
-    int base, die_sides;
-  } fury;
+  unsigned energize_die_sides;
 
   demons_bite_t( demon_hunter_t* p, const std::string& options_str ) : 
     demon_hunter_attack_t( "demons_bite", p,
       p -> find_class_spell( "Demon's Bite" ), options_str )
   {
-    fury.base      = data().effectN( 3 ).resource( RESOURCE_FURY );
-    fury.die_sides = data().effectN( 3 ).die_sides();
-    energize_type  = ENERGIZE_NONE; // disable, we need to do it manually for the RNG
+    energize_die_sides = data().effectN( 3 ).die_sides();
 
     base_multiplier *= 1.0 + p -> artifact.demon_rage.percent();
 
     if ( p -> legendary.anger_of_the_halfgiants )
     {
-      fury.die_sides += p -> legendary.anger_of_the_halfgiants -> driver() -> effectN( 1 ).resource( RESOURCE_FURY );
+      energize_die_sides += p -> legendary.anger_of_the_halfgiants -> driver()
+        -> effectN( 1 ).resource( RESOURCE_FURY );
     }
+  }
+
+  double composite_energize_amount( const action_state_t* s ) const override
+  {
+    double ea = demon_hunter_attack_t::composite_energize_amount( s );
+
+    ea += ( int ) rng().range( 1, 1 + energize_die_sides );
+
+    return ea;
   }
 
   void execute() override
@@ -3164,17 +3189,12 @@ struct demons_bite_t : public demon_hunter_attack_t
   {
     demon_hunter_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
+    if ( result_is_hit( s -> result ) && p() -> talent.felblade -> ok() &&
+      p() -> rppm.felblade -> trigger() )
     {
-      trigger_fury_gain();
-      
-      if ( p() -> talent.felblade -> ok() && p() -> rppm.felblade -> trigger() )
-      {
-        p() -> proc.felblade_reset -> occur();
-        p() -> cooldown.felblade -> reset( true );
-      }
+      p() -> proc.felblade_reset -> occur();
+      p() -> cooldown.felblade -> reset( true );
     }
-
   }
 
   bool ready() override
@@ -3186,23 +3206,13 @@ struct demons_bite_t : public demon_hunter_attack_t
 
     return demon_hunter_attack_t::ready();
   }
-
-  void trigger_fury_gain()
-  {
-    double f = fury.base + rng().range( 1, 1 + fury.die_sides );
-    // Generates an integer amount of fury.
-    p() -> resource_gain( RESOURCE_FURY, ( int ) f, action_gain );
-  }
 };
 
 // Demon Blade ==============================================================
 
 struct demon_blades_t : public demon_hunter_attack_t
 {
-  struct
-  {
-    double base, die_sides;
-  } fury;
+  unsigned energize_die_sides;
 
   demon_blades_t( demon_hunter_t* p )
     : demon_hunter_attack_t( "demon_blades", p, p -> find_spell( 203796 ) )
@@ -3210,36 +3220,34 @@ struct demon_blades_t : public demon_hunter_attack_t
     background           = true;
     may_proc_fel_barrage = false; // Apr 22 2016
     cooldown -> duration = p -> talent.demon_blades -> internal_cooldown();
-    fury.base            = data().effectN( 3 ).resource( RESOURCE_FURY );
-    fury.die_sides       = data().effectN( 3 ).die_sides();
+    energize_die_sides   = data().effectN( 3 ).die_sides();
 
     if ( p -> legendary.anger_of_the_halfgiants )
     {
-      fury.die_sides += p -> legendary.anger_of_the_halfgiants -> driver() -> effectN( 1 ).resource( RESOURCE_FURY );
+      energize_die_sides += p -> legendary.anger_of_the_halfgiants -> driver()
+        -> effectN( 1 ).resource( RESOURCE_FURY );
     }
+  }
+
+  double composite_energize_amount( const action_state_t* s ) const override
+  {
+    double ea = demon_hunter_attack_t::composite_energize_amount( s );
+
+    ea += ( int ) rng().range( 1, 1 + energize_die_sides );
+
+    return ea;
   }
 
   void impact( action_state_t* s ) override
   {
     demon_hunter_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
-    {
-      trigger_fury_gain();
-    }
-
-    if ( p() -> talent.felblade -> ok() && p() -> rppm.felblade -> trigger() )
+    if ( result_is_hit( s -> result ) && p() -> talent.felblade -> ok() &&
+      p() -> rppm.felblade -> trigger() )
     {
       p() -> proc.felblade_reset -> occur();
       p() -> cooldown.felblade -> reset( true );
     }
-  }
-
-  void trigger_fury_gain()
-  {
-    double f = fury.base + rng().range( 1, 1 + fury.die_sides );
-    // Generates an integer amount of fury.
-    p() -> resource_gain( RESOURCE_FURY, ( int ) f, action_gain );
   }
 };
 
@@ -4092,6 +4100,12 @@ void demon_hunter_t::create_buffs()
   using namespace buffs;
 
   // General
+
+  buff.demon_soul =
+    buff_creator_t( this, "demon_soul", find_spell( 208195 ) )
+      .default_value( find_spell( 208195 ) -> effectN( 1 ).percent() )
+      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
   if ( specialization() == DEMON_HUNTER_HAVOC )
   {
     buff.metamorphosis =
@@ -4197,6 +4211,20 @@ void demon_hunter_t::create_buffs()
 
 // demon_hunter_t::create_expression ========================================
 
+static const std::string parse_abbreviation( const std::string& s )
+{
+  if ( s == "cs" )
+    return "chaos_strike";
+  if ( s == "bd" || s == "dance" )
+    return "blade_dance";
+  if ( s == "sweep" )
+    return "death_sweep";
+  if ( s == "annihilate" )
+    return "annihilation";
+
+  return s;
+}
+
 expr_t* demon_hunter_t::create_expression( action_t* a, const std::string& name_str )
 {
   if ( name_str == "greater_soul_fragments" ||  name_str == "lesser_soul_fragments" ||
@@ -4221,6 +4249,156 @@ expr_t* demon_hunter_t::create_expression( action_t* a, const std::string& name_
     else                                             { type = SOUL_FRAGMENT_LESSER;  }
 
     return new soul_fragments_expr_t( this, name_str, type );
+  }
+  else if ( util::str_prefix_ci( name_str, "db_per_" ) || util::str_prefix_ci( name_str, "demons_bite_per_" ) )
+  {
+    unsigned ofs = util::str_prefix_ci( name_str, "db_per_" ) ? 7 : 16;
+    const std::string& action_str =
+      parse_abbreviation( std::string( name_str.begin() + ofs, name_str.end() ) );
+
+    action_t* action = find_action( action_str );
+
+    if ( action && action -> base_costs[ RESOURCE_FURY ] > 0 )
+    {
+      struct db_ratio_expr_t : public expr_t
+      {
+        action_t* action;
+        actions::attacks::demons_bite_t* db;
+        bool reduced_by_crit;
+
+        db_ratio_expr_t( demon_hunter_t* p, const std::string& n, action_t* a ) :
+          expr_t( n ), action( a )
+        {
+          db = debug_cast<actions::attacks::demons_bite_t*>( p -> find_action( "demons_bite" ) );
+          reduced_by_crit = a -> name_str == "chaos_strike" || a -> name_str == "annihilation";
+        }
+
+        double evaluate() override
+        {
+          double eff_cost = action -> base_costs[ RESOURCE_FURY ];
+          
+          if ( reduced_by_crit )
+          {
+            eff_cost *= 1.0 - action -> composite_crit();
+          }
+
+          double db_gain = db -> energize_amount + ( 1 + db -> energize_die_sides ) / 2.0;
+          return eff_cost / db_gain;
+        }
+      };
+
+      return new db_ratio_expr_t( this, name_str, action );
+    }
+  }
+  else if ( util::str_in_str_ci( name_str, "_dmg" ) || util::str_in_str_ci( name_str, "_damage" ) )
+  {
+    unsigned ofs = util::str_in_str_ci( name_str, "_dmg" ) ? 4 : 7;
+    const std::string& action_str =
+      parse_abbreviation( std::string( name_str.begin(), name_str.end() - ofs ) );
+
+    action_t* action = find_action( action_str );
+  
+    if ( action )
+    {
+      struct multiattack_dmg_expr_t : public expr_t
+      {
+        std::vector<attack_t*> attacks;
+        std::vector<action_state_t*> states;
+
+        multiattack_dmg_expr_t( demon_hunter_t* p, const std::string& n,
+          actions::attacks::blade_dance_base_t* a ) :
+          expr_t( n )
+        {
+          init_attack( a );
+
+          for ( size_t i = 0; i < a -> attacks.size(); i++ )
+          {
+            init_attack( a -> attacks[ i ] );
+          }
+        }
+
+        multiattack_dmg_expr_t( demon_hunter_t* p, const std::string& n,
+          actions::attacks::chaos_strike_base_t* a ) :
+          expr_t( n )
+        {
+          init_attack( a );
+
+          for ( size_t i = 0; i < a -> attacks.size(); i++ )
+          {
+            init_attack( a -> attacks[ i ] );
+          }
+        }
+
+        void init_attack( attack_t* a )
+        {
+          attacks.push_back( a );
+          action_state_t* s = a -> get_state();
+          s -> result = RESULT_HIT;
+          states.push_back( s );
+        }
+
+        double calculate_hit_amount( attack_t& action, action_state_t* state )
+        {
+          action.snapshot_state( state, DMG_DIRECT );
+          state -> result_amount = action.calculate_direct_amount( state );
+          state -> target -> target_mitigation( action.get_school(), DMG_DIRECT, state );
+          
+          double crit_multiplier = 1.0 + clamp( state -> crit + state -> target_crit, 0.0, 1.0 ) *
+            action.composite_player_critical_multiplier();
+
+          return state -> result_amount * crit_multiplier;
+        }
+
+        double calculate_attack_amount( attack_t& action, action_state_t* state )
+        {
+          double amount = 0.0;
+
+          size_t num_targets;
+          std::vector< player_t* >& tl = action.target_list();
+          if ( action.aoe == 0 )
+            num_targets = 1;
+          else
+            num_targets = ( action.n_targets() < 0 ) ? tl.size() : action.n_targets();
+
+          state -> n_targets = std::min( num_targets, tl.size() );
+
+          for ( size_t t = 0, max_targets = tl.size(); t < num_targets && t < max_targets; t++ )
+          {
+            state -> target = tl[ t ];
+            state -> chain_target = as<int>( t );
+
+            amount += calculate_hit_amount( action, state );
+          }
+
+          return amount;
+        }
+
+        double evaluate() override
+        {
+          double amount = 0.0;
+
+          for ( size_t i = 0; i < attacks.size(); i++ )
+          {
+            amount += calculate_attack_amount( *attacks[ i ], states[ i ] );
+          }
+
+          return amount;
+        }
+      };
+
+      if ( action_str == "chaos_strike" || action_str == "annihilation" )
+      {
+        actions::attacks::chaos_strike_base_t* cs =
+          debug_cast<actions::attacks::chaos_strike_base_t*>( action );
+        return new multiattack_dmg_expr_t( this, name_str, cs );
+      }
+      else if ( action_str == "blade_dance" || action_str == "death_sweep" )
+      {
+        actions::attacks::blade_dance_base_t* bd =
+          debug_cast<actions::attacks::blade_dance_base_t*>( action );
+        return new multiattack_dmg_expr_t( this, name_str, bd );
+      }
+    }
   }
 
   return player_t::create_expression( a, name_str );
@@ -4432,7 +4610,8 @@ void demon_hunter_t::init_spells()
   spec.consume_soul           = find_spell( 210042 );
   spec.consume_soul_lesser    = find_spell( 203794 );
   spec.critical_strikes       = find_spell( 221351 );  // not a class spell
-  spec.leather_specialization = find_spell( 178976 );
+  spec.leather_specialization = specialization() == DEMON_HUNTER_HAVOC ? 
+    find_spell( 178976 ) : find_spell( 226359 );
   spec.metamorphosis_buff     = specialization() == DEMON_HUNTER_HAVOC ?
     find_spell( 162264 ) : find_spell( 187827 );
   spec.soul_fragment          = find_spell( 204255 );
@@ -5037,6 +5216,8 @@ double demon_hunter_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
+  m *= 1.0 + buff.demon_soul -> check_value();
+
   m *= 1.0 + buff.momentum -> check_value();
 
   // TODO: Figure out how to access target's race.
@@ -5062,10 +5243,16 @@ double demon_hunter_t::composite_spell_crit() const
 
 double demon_hunter_t::matching_gear_multiplier( attribute_e attr ) const
 {
-  if ( spec.leather_specialization -> ok()
-    && stat_from_attr( attr ) == STAT_AGILITY )
+  switch( stat_from_attr( attr ) )
   {
-    return spec.leather_specialization -> effectN( 1 ).percent();
+  case STAT_AGILITY:
+    if ( spec.leather_specialization -> ok() && specialization() == DEMON_HUNTER_HAVOC )
+      return spec.leather_specialization -> effectN( 1 ).percent();
+    break;
+  case STAT_STAMINA:
+    if ( spec.leather_specialization -> ok() && specialization() == DEMON_HUNTER_VENGEANCE )
+      return spec.leather_specialization -> effectN( 1 ).percent();
+    break;
   }
 
   return 0.0;
