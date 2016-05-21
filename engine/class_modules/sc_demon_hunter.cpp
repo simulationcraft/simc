@@ -5271,16 +5271,10 @@ double demon_hunter_t::composite_spell_crit() const
 
 double demon_hunter_t::matching_gear_multiplier( attribute_e attr ) const
 {
-  switch( stat_from_attr( attr ) )
+  if ( ( specialization() == DEMON_HUNTER_HAVOC && attr == ATTR_AGILITY ) ||
+    ( specialization() == DEMON_HUNTER_VENGEANCE && attr == ATTR_STAMINA ) )
   {
-  case STAT_AGILITY:
-    if ( spec.leather_specialization -> ok() && specialization() == DEMON_HUNTER_HAVOC )
-      return spec.leather_specialization -> effectN( 1 ).percent();
-    break;
-  case STAT_STAMINA:
-    if ( spec.leather_specialization -> ok() && specialization() == DEMON_HUNTER_VENGEANCE )
-      return spec.leather_specialization -> effectN( 1 ).percent();
-    break;
+    return spec.leather_specialization -> effectN( 1 ).percent();
   }
 
   return 0.0;
