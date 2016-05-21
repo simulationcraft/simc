@@ -1082,6 +1082,49 @@ std::string item_t::encoded_weapon() const
   return str;
 }
 
+bool item_t::verify_slot()
+{
+  inventory_type it = static_cast<inventory_type>( parsed.data.inventory_type );
+  if ( it == INVTYPE_NON_EQUIP || slot == SLOT_INVALID )
+  {
+    return true;
+  }
+
+  switch ( slot )
+  {
+    case SLOT_MAIN_HAND:
+    {
+      switch ( it )
+      {
+        case INVTYPE_2HWEAPON:
+        case INVTYPE_WEAPON:
+        case INVTYPE_WEAPONMAINHAND:
+        case INVTYPE_RANGED:
+        case INVTYPE_RANGEDRIGHT:
+          return true;
+        default:
+          return false;
+      }
+    }
+    case SLOT_OFF_HAND:
+    {
+      switch ( it )
+      {
+        case INVTYPE_WEAPONOFFHAND:
+        case INVTYPE_SHIELD:
+        case INVTYPE_HOLDABLE:
+        case INVTYPE_WEAPON:
+          return true;
+        default:
+          return false;
+      }
+    }
+    // Rest of the slots can be checked with translator
+    default:
+      return slot == util::translate_invtype( it );
+  }
+}
+
 // item_t::init =============================================================
 
 bool item_t::init()
@@ -1135,6 +1178,15 @@ bool item_t::init()
                    player -> name(), slot_name(), option_name_str.c_str(), name_str.c_str(), parsed.data.id );
 
     name_str = option_name_str;
+  }
+
+  // Verify that slot makes sense, if given (through DBC data)
+  if ( ! verify_slot() )
+  {
+    sim -> errorf( "Player %s at slot %s has an item '%s' meant for slot %s",
+        player -> name(), slot_name(), name_str.c_str(),
+        util::slot_type_string( util::translate_invtype( static_cast<inventory_type>( parsed.data.inventory_type ) ) ) );
+    return false;
   }
 
   if ( source_str.empty() )

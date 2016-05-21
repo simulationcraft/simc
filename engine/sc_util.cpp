@@ -2075,6 +2075,8 @@ slot_e util::translate_invtype( inventory_type inv_type )
       return SLOT_WAIST;
     case INVTYPE_WRISTS:
       return SLOT_WRISTS;
+    case INVTYPE_BODY:
+      return SLOT_SHIRT;
     default:
       return SLOT_INVALID;
   }

@@ -2678,6 +2678,8 @@ struct item_t
 
   bool decode_proc_spell( special_effect_t& effect );
 
+  bool verify_slot();
+
   bool init_special_effects();
 
   static bool download_slot( item_t& item );
