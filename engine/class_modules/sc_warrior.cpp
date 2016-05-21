@@ -5350,8 +5350,8 @@ struct fury_trinket_t : public unique_gear::class_buff_cb_t<warrior_t, haste_buf
   fury_trinket_t() : super( WARRIOR, "berserkers_fury" ) { }
 
   // Assign to warrior_t::buff.fury_trinket
-  haste_buff_t*& buff_ptr( const special_effect_t& ) override
-  { return actor -> buff.fury_trinket; }
+  haste_buff_t*& buff_ptr( const special_effect_t& e ) override
+  { return actor( e ) -> buff.fury_trinket; }
 
   // Customize the buff that is about to be created. Both fallback and real buff will use the same
   // creator, but the fallback buff creator will additionally assign the proc chance for the buff to
@@ -5368,8 +5368,8 @@ struct bindings_of_kakushan_t : public unique_gear::class_buff_cb_t<warrior_t>
 {
   bindings_of_kakushan_t() : super( WARRIOR, "bindings_of_kakushan" ) { }
 
-  buff_t*& buff_ptr( const special_effect_t& ) override
-  { return actor -> buff.bindings_of_kakushan; }
+  buff_t*& buff_ptr( const special_effect_t& e ) override
+  { return actor( e ) -> buff.bindings_of_kakushan; }
 
   buff_creator_t creator( const special_effect_t& e ) const override
   {
@@ -5383,8 +5383,8 @@ struct kargaths_sacrificed_hands_t : public unique_gear::class_buff_cb_t<warrior
 {
   kargaths_sacrificed_hands_t() : super( WARRIOR, "kargaths_sacrificed_hands" ) { }
 
-  buff_t*& buff_ptr( const special_effect_t& ) override
-  { return actor -> buff.kargaths_sacrificed_hands; }
+  buff_t*& buff_ptr( const special_effect_t& e ) override
+  { return actor( e ) -> buff.kargaths_sacrificed_hands; }
 
   buff_creator_t creator( const special_effect_t& e ) const override
   {
@@ -5398,8 +5398,8 @@ struct kazzalax_fujiedas_fury_t : public unique_gear::class_buff_cb_t<warrior_t>
 {
   kazzalax_fujiedas_fury_t() : super( WARRIOR, "fujiedas_fury" ) { }
 
-  buff_t*& buff_ptr( const special_effect_t& ) override
-  { return actor -> buff.fujiedas_fury; }
+  buff_t*& buff_ptr( const special_effect_t& e ) override
+  { return actor( e ) -> buff.fujiedas_fury; }
 
   buff_creator_t creator( const special_effect_t& e ) const override
   {
@@ -5414,8 +5414,8 @@ struct destiny_driver_t : public unique_gear::class_buff_cb_t<warrior_t>
 {
   destiny_driver_t() : super( WARRIOR, "destiny_driver" ) { }
 
-  buff_t*& buff_ptr( const special_effect_t& ) override
-  { return actor -> buff.destiny_driver; }
+  buff_t*& buff_ptr( const special_effect_t& e ) override
+  { return actor( e ) -> buff.destiny_driver; }
 
   buff_creator_t creator( const special_effect_t& e ) const override
   {
@@ -5428,8 +5428,8 @@ struct prydaz_xavarics_magnum_opus_t : public unique_gear::class_buff_cb_t<warri
 {
   prydaz_xavarics_magnum_opus_t() : super( WARRIOR, "xavarics_magnum_opus" ) { }
 
-  buff_t*& buff_ptr( const special_effect_t& ) override
-  { return actor -> buff.xavarics_magnum_opus; }
+  buff_t*& buff_ptr( const special_effect_t& e ) override
+  { return actor( e ) -> buff.xavarics_magnum_opus; }
 
   buff_creator_t creator( const special_effect_t& e ) const override
   {

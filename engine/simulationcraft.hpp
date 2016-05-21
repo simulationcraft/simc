@@ -6738,8 +6738,8 @@ namespace unique_gear
   // A scoped special effect callback that validates against a player class or specialization.
   struct class_scoped_callback_t : public scoped_callback_t
   {
-    player_e class_;
-    specialization_e spec_;
+    const player_e class_;
+    const specialization_e spec_;
 
     class_scoped_callback_t( player_e c ) : class_( c ), spec_( SPEC_NONE )
     { }
@@ -6775,38 +6775,32 @@ namespace unique_gear
   struct class_buff_cb_t : public class_scoped_callback_t
   {
     private:
-    // Dummy buff pointer to put the buff pointer, if buff_ptr is not overridden in the derived
-    // class.
+    // Note, the dummy buff is assigned to from multiple threads, but since it is not meant to be
+    // accessed, it does not really matter what buff ends up there.
     T_BUFF* __dummy;
 
     public:
     typedef class_buff_cb_t<T, T_BUFF, T_CREATOR> super;
 
-    // A pointer to the special effect's actor. This pointer will be assigned to by
-    // class_buff_cb_t::initialize. If initialize is overridden, the member variable should be
-    // assigned to by the overriding function if other aspects of the class are needed (e.g.,
-    // create_buff, create_fallback, ...)
-    T* actor;
-
     // The buff name. Optional if create_buff and create_fallback are both overridden. If fallback
     // behavior is required and the method is not overridden, must be provided.
-    std::string buff_name;
+    const std::string buff_name;
 
     class_buff_cb_t( specialization_e spec, const std::string& name = std::string() ) :
-      class_scoped_callback_t( spec ), __dummy( nullptr ), actor( nullptr ), buff_name( name )
+      class_scoped_callback_t( spec ), __dummy( nullptr ), buff_name( name )
     { }
 
     class_buff_cb_t( player_e class_, const std::string& name = std::string() ) :
-      class_scoped_callback_t( class_ ), __dummy( nullptr ), actor( nullptr ), buff_name( name )
+      class_scoped_callback_t( class_ ), __dummy( nullptr ), buff_name( name )
     { }
+
+    T* actor( const special_effect_t& e ) const
+    { return debug_cast<T*>( e.player ); }
 
     // Generic initializer for the class-scoped special effect buff creator. Override to customize
     // buff creation if a simple binary fallback yes/no switch is not enough.
     void initialize( special_effect_t& effect ) override
     {
-      // Assign actor here, if this method is overridden, we are in a bit of a trouble though ..
-      actor = debug_cast<T*>( effect.player );
-
       if ( ! is_fallback( effect ) )
       {
         create_buff( effect );
@@ -6869,8 +6863,8 @@ namespace unique_gear
   {
     typedef scoped_action_callback_t<T_ACTION> super;
 
-    std::vector<std::string> names_;
-    std::vector<unsigned> spell_ids_;
+    const std::vector<std::string> names_;
+    const std::vector<unsigned> spell_ids_;
 
     scoped_action_callback_t( const std::vector<std::string>& n ) :
       scoped_callback_t(), names_( n )
