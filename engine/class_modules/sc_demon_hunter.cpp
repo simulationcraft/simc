@@ -1635,14 +1635,19 @@ struct fel_rush_t : public demon_hunter_spell_t
         energize_resource = RESOURCE_FURY;
         energize_amount = p -> talent.fel_mastery -> effectN( 1 ).resource( RESOURCE_FURY );
       }
-
-      if ( p -> legendary.loramus_thalipedes_sacrifice )
-      {
-        base_add_multiplier *= 1.0 + p -> legendary.loramus_thalipedes_sacrifice
-          -> driver() -> effectN( 1 ).percent();
-      }
     }
   };
+
+  void init() override
+  {
+    demon_hunter_spell_t::init();
+
+    if ( p() -> legendary.loramus_thalipedes_sacrifice )
+    {
+      base_add_multiplier *= 1.0 + p() -> legendary.loramus_thalipedes_sacrifice
+        -> driver() -> effectN( 1 ).percent();
+    }
+  }
 
   bool jump_cancel;
 
@@ -3158,11 +3163,16 @@ struct demons_bite_t : public demon_hunter_attack_t
     energize_die_sides = data().effectN( 3 ).die_sides();
 
     base_multiplier *= 1.0 + p -> artifact.demon_rage.percent();
+  }
 
-    if ( p -> legendary.anger_of_the_halfgiants )
+  void init() override
+  {
+    demon_hunter_attack_t::init();
+
+    if ( p() -> legendary.anger_of_the_halfgiants )
     {
-      energize_die_sides += p -> legendary.anger_of_the_halfgiants -> driver()
-        -> effectN( 1 ).resource( RESOURCE_FURY );
+      energize_die_sides += p() -> legendary.anger_of_the_halfgiants -> driver()
+        -> effectN( 1 ).base_value();
     }
   }
 
@@ -3221,11 +3231,16 @@ struct demon_blades_t : public demon_hunter_attack_t
     may_proc_fel_barrage = false; // Apr 22 2016
     cooldown -> duration = p -> talent.demon_blades -> internal_cooldown();
     energize_die_sides   = data().effectN( 3 ).die_sides();
+  }
 
-    if ( p -> legendary.anger_of_the_halfgiants )
+  void init() override
+  {
+    demon_hunter_attack_t::init();
+
+    if ( p() -> legendary.anger_of_the_halfgiants )
     {
-      energize_die_sides += p -> legendary.anger_of_the_halfgiants -> driver()
-        -> effectN( 1 ).resource( RESOURCE_FURY );
+      energize_die_sides += p() -> legendary.anger_of_the_halfgiants -> driver()
+        -> effectN( 1 ).base_value();
     }
   }
 
@@ -3649,10 +3664,15 @@ struct throw_glaive_t : public demon_hunter_attack_t
     }
 
     base_multiplier *= 1.0 + p -> artifact.sharpened_glaives.percent();
+  }
 
-    if ( p -> legendary.moarg_bionic_stabilizers )
+  void init() override
+  {
+    demon_hunter_attack_t::init();
+
+    if ( p() -> legendary.moarg_bionic_stabilizers )
     {
-      base_add_multiplier *= 1.0 + p -> legendary.moarg_bionic_stabilizers
+      base_add_multiplier *= 1.0 + p() -> legendary.moarg_bionic_stabilizers
         -> driver() -> effectN( 1 ).percent();
     }
   }
@@ -4859,6 +4879,11 @@ void demon_hunter_t::init_spells()
 
   // Legendary
   spec.fragment_of_the_betrayers_prison = find_spell( 217500 );
+
+  if ( talent.sigil_of_misery -> ok() )
+  {
+    sigil_cooldowns.push_back( cooldown.sigil_of_misery );
+  }
 }
 
 // demon_hunter_t::invalidate_cache =========================================
@@ -5062,17 +5087,9 @@ void demon_hunter_t::create_cooldowns()
   cooldown.sigil_of_misery      = get_cooldown( "sigil_of_misery" );
   cooldown.sigil_of_silence     = get_cooldown( "sigil_of_silence" );
 
-  
-  if ( legendary.the_defilers_lost_vambraces )
-  {
-    sigil_cooldowns.push_back( cooldown.sigil_of_chains );
-    sigil_cooldowns.push_back( cooldown.sigil_of_flame );
-    sigil_cooldowns.push_back( cooldown.sigil_of_silence );
-    if ( talent.sigil_of_misery -> ok() )
-    {
-      sigil_cooldowns.push_back( cooldown.sigil_of_misery );
-    }
-  }
+  sigil_cooldowns.push_back( cooldown.sigil_of_chains );
+  sigil_cooldowns.push_back( cooldown.sigil_of_flame );
+  sigil_cooldowns.push_back( cooldown.sigil_of_silence );
 }
 
 // demon_hunter_t::create_gains =============================================
