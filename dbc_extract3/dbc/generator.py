@@ -1349,6 +1349,7 @@ class SpellDataGenerator(DataGenerator):
 		  ( 213771, 3 ),       # Swipe (Bear)
 		  ( 209406, 1 ),       # Oneth's Intuition buff
 		  ( 209407, 1 ),       # Oneth's Overconfidence buff
+      ( 213666, 1 ),       # Echoing Stars artifact spell
         ),
 		
 		# Demon Hunter:

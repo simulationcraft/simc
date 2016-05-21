@@ -4598,15 +4598,13 @@ struct innervate_t : public druid_spell_t
 
     double target_haste()
     {
-      // Take the average of the druid's secondary stats from gear.
-      double avg_secondary =
-        ( druid -> total_gear.crit_rating +
-          druid -> total_gear.haste_rating +
-          druid -> total_gear.mastery_rating +
-          druid -> total_gear.versatility_rating ) / 4;
+      double haste_rating = 4192;
 
-      // Calculate haste with that amount of haste rating.
-      double haste = 1.0 / ( 1.0 + avg_secondary / druid -> current_rating().spell_haste );
+      haste_rating *= item_database::approx_scale_coefficient( 810, druid -> avg_item_level() );
+      haste_rating *= druid -> dbc.combat_rating_multiplier( druid -> avg_item_level() ) /
+        druid -> dbc.combat_rating_multiplier( 810 );
+
+      double haste = 1.0 / ( 1.0 + haste_rating / druid -> current_rating().spell_haste );
 
       // Apply Bloodlust.
       if ( druid -> buffs.bloodlust -> check() )
@@ -5238,7 +5236,7 @@ struct starfall_t : public druid_spell_t
 
     if ( p -> artifact.echoing_stars.rank() && ! p -> active.echoing_stars )
     {
-      assert( p -> artifact.echoing_stars.data().effectN( 1 ).base_value() == 2 );
+      assert( p -> find_spell( 213666 ) -> effectN( 1 ).base_value() == 2 );
 
       /* Create echoing stars action. If distance targeting is off, we'll just cheat a bit and
       trigger a repeat AoE that hits for less damage. If it's on, then we'll do real chaining
@@ -5246,12 +5244,12 @@ struct starfall_t : public druid_spell_t
       starfall_tick_t* echo = new starfall_tick_t( p );
       // set bool so this action knows its the secondary and to not trigger itself
       echo -> echoing_stars = true;
-      echo -> base_multiplier *= 1.0 + p -> artifact.echoing_stars.data().effectN( 2 ).percent();
+      echo -> base_multiplier *= 1.0 + p -> find_spell( 213666 ) -> effectN( 2 ).percent();
         
       if ( sim -> distance_targeting_enabled )
       {
         echo -> aoe = 0;
-        echo -> radius = p -> artifact.echoing_stars.data().effectN( 3 ).base_value();
+        echo -> radius = p -> find_spell( 213666 ) -> effectN( 3 ).base_value();
       }
 
       echo -> stats = stats;
@@ -5903,24 +5901,25 @@ void druid_t::init_spells()
 
   // Affinities =============================================================
 
-  if ( specialization() == DRUID_FERAL || talent.feral_affinity -> ok() )
-    spec.feline_swiftness = find_spell( 131768 );
+  spec.feline_swiftness = specialization() == DRUID_FERAL || talent.feral_affinity -> ok() ?
+    find_spell( 131768 ) : spell_data_t::not_found();
 
-  if ( specialization() == DRUID_BALANCE || talent.balance_affinity -> ok() )
-    spec.astral_influence = find_spell( 197524 );
+  spec.astral_influence = specialization() == DRUID_BALANCE || talent.balance_affinity -> ok() ?
+    find_spell( 197524 ) : spell_data_t::not_found();
   
-  if ( specialization() == DRUID_GUARDIAN || talent.guardian_affinity -> ok() )
-    spec.thick_hide       = find_spell( 16931 );
+  spec.thick_hide = specialization() == DRUID_GUARDIAN || talent.guardian_affinity -> ok() ?
+    find_spell( 16931 ) : spell_data_t::not_found();
   
-  if ( specialization() == DRUID_RESTORATION || talent.restoration_affinity -> ok() )
-    spec.yseras_gift      = find_spell( 145108 );
+  spec.yseras_gift = specialization() == DRUID_RESTORATION || talent.restoration_affinity -> ok() ?
+    find_spell( 145108 ) : spell_data_t::not_found();
 
   // Masteries ==============================================================
 
   mastery.razor_claws         = find_mastery_spell( DRUID_FERAL );
   mastery.harmony             = find_mastery_spell( DRUID_RESTORATION );
   mastery.natures_guardian    = find_mastery_spell( DRUID_GUARDIAN );
-  mastery.natures_guardian_AP = find_spell( 159195 );
+  mastery.natures_guardian_AP = mastery.natures_guardian -> ok() ?
+    find_spell( 159195 ) : spell_data_t::not_found();
   mastery.starlight           = find_mastery_spell( DRUID_BALANCE );
 
   // Artifact ===============================================================
