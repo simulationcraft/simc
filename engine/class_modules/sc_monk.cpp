@@ -7374,7 +7374,7 @@ void monk_t::apl_combat_windwalker()
 // TODO: Will activate these lines once Storm, Earth, and Fire is finished; too spammy right now
   def -> add_action( "storm_earth_and_fire,target=2,if=debuff.storm_earth_and_fire_target.down" );
   def -> add_action( "storm_earth_and_fire,target=3,if=debuff.storm_earth_and_fire_target.down" );
-  def -> add_action( "chi_orbit,if=talent.chi_orbit.enabled" );
+ // def -> add_action( "chi_orbit,if=talent.chi_orbit.enabled" );
   def -> add_action( "call_action_list,name=opener,if=talent.serenity.enabled&talent.chi_brew.enabled&cooldown.fists_of_fury.up&time<20" );
 
   if ( sim -> allow_potions )
