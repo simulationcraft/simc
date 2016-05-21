@@ -3291,15 +3291,44 @@ struct felblade_t : public demon_hunter_attack_t
 
 struct fracture_t : public demon_hunter_attack_t
 {
+  struct fracture_damage_t : public demon_hunter_attack_t
+  {
+    fracture_damage_t( const std::string& n, demon_hunter_t* p, const spell_data_t* s ) :
+      demon_hunter_attack_t( n, p, s )
+    {
+      background = dual = true;
+      may_miss = may_dodge = may_parry = false;
+    }
+  };
+
+  fracture_damage_t* mh, *oh;
+
   fracture_t( demon_hunter_t* p, const std::string& options_str ) :
     demon_hunter_attack_t( "fracture", p, p -> talent.fracture, options_str )
-  {}
-
-  void execute() override
   {
-    demon_hunter_attack_t::execute();
+    may_crit = false;
+    weapon_multiplier = 0;
 
-    p() -> spawn_soul_fragment( SOUL_FRAGMENT_LESSER, 2 );
+    mh = new fracture_damage_t( "fracture_mh", p, data().effectN( 2 ).trigger() );
+    oh = new fracture_damage_t( "fracture_oh", p, data().effectN( 3 ).trigger() );
+    mh -> stats = oh -> stats = stats;
+  }
+
+  // Don't record data for this action.
+  void record_data( action_state_t* ) override {}
+
+  void impact( action_state_t* s ) override
+  {
+    demon_hunter_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      mh -> target = oh -> target = s -> target;
+      mh -> schedule_execute();
+      oh -> schedule_execute();
+
+      p() -> spawn_soul_fragment( SOUL_FRAGMENT_LESSER, 2 );
+    }
   }
 };
 
