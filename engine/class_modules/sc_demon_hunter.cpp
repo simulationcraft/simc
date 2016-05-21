@@ -4199,8 +4199,7 @@ void demon_hunter_t::create_buffs()
   buff.painbringer = 
     buff_creator_t( this, "painbringer", find_spell( 212988 ) )
       .trigger_spell( artifact.painbringer )
-      .default_value( find_spell( 212988 ) -> effectN( 1 ).percent() )
-      .stack_behavior( BUFF_STACK_ASYNCHRONOUS );
+      .default_value( find_spell( 212988 ) -> effectN( 1 ).percent() );
 
   buff.soul_barrier =
     absorb_buff_creator_t( this, "soul_barrier", find_spell( 211512 ) )
