@@ -2396,6 +2396,7 @@ struct rampage_parent_t: public warrior_attack_t
     {
       add_child( p -> rampage_attacks[i] );
     }
+    trigger_gcd = timespan_t::from_millis( 1500 ); // Testing as of 5/20/2016
     base_costs[RESOURCE_RAGE] += p -> talents.carnage -> effectN( 1 ).resource(RESOURCE_RAGE);
   }
 
