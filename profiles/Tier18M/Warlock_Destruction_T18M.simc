@@ -27,8 +27,7 @@ actions.precombat+=/incinerate
 
 # Executed every time the actor is available.
 
-actions=use_item,name=nithramus_the_allseer
-actions+=/service_pet,if=active_enemies<3
+actions=service_pet,if=active_enemies<3
 actions+=/service_voidwalker,if=active_enemies>=3
 actions+=/summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3
 actions+=/summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3

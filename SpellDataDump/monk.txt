@@ -4915,6 +4915,20 @@ Effects          :
                    Base Value: 65 | Scaled Value: 65 | Misc Value: 15 | Target: Self(1)
 Description      : You have a chance equal to your critical strike chance to be healed for an additional $s1% of the amount healed.
 
+Name             : Celestial Fortune (id=216521) [Spell Family (53)] 
+Class            : Monk
+School           : Nature
+Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ .....x.. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ...x....   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=322189)   : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+Description      : $@spelldesc216519
+
 Name             : Detox (id=218164) [Spell Family (53)] 
 Class            : Brewmaster Windwalker Monk
 School           : Nature

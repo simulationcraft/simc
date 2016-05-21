@@ -26,8 +26,7 @@ actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enable
 
 # Executed every time the actor is available.
 
-actions=use_item,name=nithramus_the_allseer
-actions+=/life_tap
+actions=life_tap
 
 head=deathrattle_mask,id=124162,bonus_id=567,upgrade=2
 neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,upgrade=2,enchant_id=5318

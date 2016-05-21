@@ -23,8 +23,7 @@ actions.precombat+=/mind_blast
 
 # Executed every time the actor is available.
 
-actions=use_item,slot=finger1
-actions+=/call_action_list,name=main
+actions=call_action_list,name=main
 
 actions.main=voidform
 actions.main+=/surrender_to_madness,if=talent.surrender_to_madness.enabled&buff.voidform.stack<10&time_to_die<100
