@@ -1119,6 +1119,12 @@ bool item_t::verify_slot()
           return false;
       }
     }
+    case SLOT_FINGER_1:
+    case SLOT_FINGER_2:
+      return it == INVTYPE_FINGER;
+    case SLOT_TRINKET_1:
+    case SLOT_TRINKET_2:
+      return it == INVTYPE_TRINKET;
     // Rest of the slots can be checked with translator
     default:
       return slot == util::translate_invtype( it );
