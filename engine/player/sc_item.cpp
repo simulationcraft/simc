@@ -1110,6 +1110,7 @@ bool item_t::verify_slot()
     {
       switch ( it )
       {
+        case INVTYPE_2HWEAPON: // Verify offhand 2handers due to Fury
         case INVTYPE_WEAPONOFFHAND:
         case INVTYPE_SHIELD:
         case INVTYPE_HOLDABLE:
@@ -1192,7 +1193,6 @@ bool item_t::init()
     sim -> errorf( "Player %s at slot %s has an item '%s' meant for slot %s",
         player -> name(), slot_name(), name_str.c_str(),
         util::slot_type_string( util::translate_invtype( static_cast<inventory_type>( parsed.data.inventory_type ) ) ) );
-    return false;
   }
 
   if ( source_str.empty() )
