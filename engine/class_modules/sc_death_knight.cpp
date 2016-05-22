@@ -208,7 +208,6 @@ public:
     buff_t* crimson_scourge;
     buff_t* dancing_rune_weapon;
     buff_t* dark_transformation;
-    buff_t* deaths_advance;
     buff_t* gathering_storm;
     buff_t* icebound_fortitude;
     buff_t* killing_machine;
@@ -294,6 +293,7 @@ public:
     // Unholy
     const spell_data_t* festering_wound;
     const spell_data_t* runic_corruption;
+    const spell_data_t* deaths_advance;
     const spell_data_t* sudden_doom;
   } spec;
 
@@ -344,7 +344,6 @@ public:
   struct spells_t {
     const spell_data_t* antimagic_shell;
     const spell_data_t* blood_rites;
-    const spell_data_t* deaths_advance;
   } spell;
 
   // Pets and Guardians
@@ -431,7 +430,6 @@ public:
   virtual double    composite_player_critical_damage_multiplier() const override;
   virtual double    composite_crit_avoidance() const override;
   virtual double    passive_movement_modifier() const override;
-  virtual double    temporary_movement_modifier() const override;
   virtual void      regen( timespan_t periodicity ) override;
   virtual void      reset() override;
   virtual void      arise() override;
@@ -1546,6 +1544,43 @@ struct death_knight_action_t : public Base
 
     return m;
   }
+
+  virtual void generate_festering_wound( const action_state_t* state, unsigned n = 1 ) const
+  {
+    if ( ! p() -> spec.festering_wound -> ok() )
+    {
+      return;
+    }
+
+    if ( this -> result_is_miss( state -> result ) )
+    {
+      return;
+    }
+
+    td( state -> target ) -> debuff.festering_wound -> trigger( n );
+  }
+
+  virtual void burst_festering_wound( const action_state_t* state, unsigned n = 1 ) const
+  {
+    if ( ! p() -> spec.festering_wound -> ok() )
+    {
+      return;
+    }
+
+    if ( this -> result_is_miss( state -> result ) )
+    {
+      return;
+    }
+
+    death_knight_td_t* tdata = td( state -> target );
+
+    if ( ! tdata -> debuff.festering_wound -> up() )
+    {
+      return;
+    }
+
+    tdata -> debuff.festering_wound -> decrement( n );
+  }
 };
 
 // ==========================================================================
@@ -1857,16 +1892,7 @@ struct melee_t : public death_knight_melee_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( weapon -> slot == SLOT_MAIN_HAND )
-      {
-        // Mists of Pandaria Sudden Doom is 3 PPM
-        if ( p() -> spec.sudden_doom -> ok() &&
-             p() -> rng().roll( weapon -> proc_chance_on_swing( 3 ) ) )
-        {
-          p() -> buffs.sudden_doom -> trigger();
-        }
-
-      }
+      p() -> buffs.sudden_doom -> trigger();
 
       if ( s -> result == RESULT_CRIT )
       {
@@ -3415,7 +3441,6 @@ struct scourge_strike_t : public death_knight_melee_attack_t
 
     special = true;
 
-    // TODO-WOD: Do we need to inherit damage or is it a separate roll in WoD?
     add_child( scourge_strike_shadow );
   }
 
@@ -3427,6 +3452,8 @@ struct scourge_strike_t : public death_knight_melee_attack_t
     {
       scourge_strike_shadow -> target = state -> target;
       scourge_strike_shadow -> schedule_execute();
+
+      burst_festering_wound( state );
     }
   }
 };
@@ -4275,6 +4302,7 @@ void death_knight_t::init_spells()
 
   // Unholy
   spec.festering_wound            = find_specialization_spell( "Festering Wound" );
+  spec.deaths_advance             = find_specialization_spell( "Death's Advance" );
   spec.runic_corruption           = find_specialization_spell( "Runic Corruption" );
   spec.sudden_doom                = find_specialization_spell( "Sudden Doom" );
 
@@ -4440,9 +4468,9 @@ void death_knight_t::create_buffs()
   //buffs.runic_corruption    = buff_creator_t( this, "runic_corruption", find_spell( 51460 ) )
   //                            .chance( talent.runic_corruption -> proc_chance() );
   buffs.runic_corruption    = new runic_corruption_buff_t( this );
-  buffs.sudden_doom         = buff_creator_t( this, "sudden_doom", find_spell( 81340 ) )
-                              .cd( timespan_t::zero() )
-                              .chance( spec.sudden_doom -> ok() );
+  buffs.sudden_doom         = buff_creator_t( this, "sudden_doom" )
+                              .spell( spec.sudden_doom -> effectN( 1 ).trigger() )
+                              .trigger_spell( spec.sudden_doom );
 
   buffs.vampiric_blood      = new vampiric_blood_buff_t( this );
   buffs.will_of_the_necropolis = buff_creator_t( this, "will_of_the_necropolis", find_spell( 157335 ) )
@@ -4859,30 +4887,19 @@ double death_knight_t::composite_crit_avoidance() const
   return c;
 }
 
-// death_knight_t::temporary_movement_modifier ==================================
-
-double death_knight_t::temporary_movement_modifier() const
-{
-  double temporary = player_t::temporary_movement_modifier();
-
-  if ( buffs.deaths_advance -> up() )
-    temporary = std::max( buffs.deaths_advance -> default_value, temporary );
-
-  return temporary;
-}
-
 // death_knight_t::passive_movement_modifier====================================
 
 double death_knight_t::passive_movement_modifier() const
 {
   double ms = player_t::passive_movement_modifier();
 
+  if ( spec.deaths_advance -> ok() )
+    ms += spec.deaths_advance -> effectN( 1 ).percent();
+
   /*
   if ( buffs.unholy_presence -> up() )
     ms += buffs.unholy_presence -> data().effectN( 2 ).percent();
 
-  if ( talent.deaths_advance -> ok() )
-    ms += spell.deaths_advance -> effectN( 2 ).percent();
   */
   return ms;
 }
