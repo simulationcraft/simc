@@ -120,9 +120,6 @@ public:
     gain_t* mana_beacon_of_light;
 
     // Holy Power
-    gain_t* hp_crusader_strike;
-    gain_t* hp_blade_of_justice;
-    gain_t* hp_wake_of_ashes;
     gain_t* hp_templars_verdict_refund;
     gain_t* hp_liadrins_fury_unleashed;
   } gains;
@@ -1798,7 +1795,6 @@ struct wake_of_ashes_t : public paladin_spell_t
       energize_type     = ENERGIZE_ON_HIT;
       energize_resource = RESOURCE_HOLY_POWER;
       energize_amount   = p -> find_spell( 218001 ) -> effectN( 1 ).resource( RESOURCE_HOLY_POWER );
-      gain              = p -> gains.hp_wake_of_ashes;
     }
     else
     {
@@ -2121,7 +2117,6 @@ struct crusader_strike_t : public holy_power_generator_t
 
     base_multiplier *= 1.0 + p -> artifact.blade_of_light.percent();
     base_crit       += p -> artifact.sharpened_edge.percent();
-    gain             = p -> gains.hp_crusader_strike;
 
     if ( p -> talents.fires_of_justice -> ok() )
       cooldown -> duration += timespan_t::from_millis( p -> talents.fires_of_justice -> effectN( 2 ).base_value() );
@@ -2169,7 +2164,6 @@ struct zeal_t : public holy_power_generator_t
     base_multiplier *= 1.0 + p -> artifact.blade_of_light.percent();
     base_crit += p -> artifact.sharpened_edge.percent();
     base_add_multiplier = data().effectN( 1 ).chain_multiplier();
-    gain = p -> gains.hp_crusader_strike;
 
     // TODO: remove this once it's back in the spelldata.
     hasted_cd = true;
@@ -2209,7 +2203,6 @@ struct blade_of_justice_t : public holy_power_generator_t
     base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
 
     base_multiplier *= 1.0 + p -> artifact.deliver_the_justice.percent();
-    gain = p -> gains.hp_blade_of_justice;
 
     background = ( p -> talents.blade_of_wrath -> ok() ) || ( p -> talents.divine_hammer -> ok() );
 
@@ -2233,7 +2226,6 @@ struct blade_of_wrath_t : public holy_power_generator_t
     // Guarded by the Light and Sword of Light reduce base mana cost; spec-limited so only one will ever be active
     base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent();
     base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
-    gain = p -> gains.hp_blade_of_justice;
 
     base_multiplier *= 1.0 + p -> artifact.deliver_the_justice.percent();
   }
@@ -2271,7 +2263,6 @@ struct divine_hammer_t : public paladin_spell_t
     hasted_ticks   = true;
     may_miss       = false;
     tick_zero      = true;
-    gain           = p -> gains.hp_blade_of_justice;
     energize_type      = ENERGIZE_ON_CAST;
 
     tick_action = new divine_hammer_tick_t( p );
@@ -3115,9 +3106,6 @@ void paladin_t::init_gains()
   gains.holy_shield                 = get_gain( "holy_shield_absorb" );
 
   // Holy Power
-  gains.hp_crusader_strike          = get_gain( "crusader_strike" );
-  gains.hp_blade_of_justice         = get_gain( "blade_of_justice" );
-  gains.hp_wake_of_ashes            = get_gain( "wake_of_ashes" );
   gains.hp_templars_verdict_refund  = get_gain( "templars_verdict_refund" );
   gains.hp_liadrins_fury_unleashed  = get_gain( "liadrins_fury_unleashed" );
 
