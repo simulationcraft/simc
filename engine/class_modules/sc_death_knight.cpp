@@ -2399,7 +2399,7 @@ struct dark_transformation_t : public death_knight_spell_t
 struct death_and_decay_t : public death_knight_spell_t
 {
   death_and_decay_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "death_and_decay", p, p -> find_class_spell( "Death and Decay" ) )
+    death_knight_spell_t( "death_and_decay", p, p -> find_specialization_spell( "Death and Decay" ) )
   {
     parse_options( options_str );
 
@@ -2413,30 +2413,7 @@ struct death_and_decay_t : public death_knight_spell_t
     ground_aoe = true;
   }
 
-  virtual void consume_resource() override
-  {
-    if ( p() -> buffs.crimson_scourge -> check() )
-      return;
-
-    death_knight_spell_t::consume_resource();
-  }
-
-  virtual double cost() const override
-  {
-    if ( p() -> buffs.crimson_scourge -> check() )
-      return 0;
-    return death_knight_spell_t::cost();
-  }
-
-  virtual void execute() override
-  {
-    death_knight_spell_t::execute();
-
-    if ( p() -> buffs.crimson_scourge -> up() )
-      p() -> buffs.crimson_scourge -> expire();
-  }
-
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     if ( s -> target -> debuffs.flying -> check() )
     {
@@ -2448,22 +2425,12 @@ struct death_and_decay_t : public death_knight_spell_t
     }
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
-    if ( ! spell_t::ready() )
-      return false;
-
     if ( p() -> talent.defile -> ok() )
       return false;
 
-    if ( p() -> buffs.crimson_scourge -> check() )
-        // TODO: mrdmnd
-      //return group_runes( p(), 0, 0, 0, 0, use );
-      return true;
-    else
-      // TODO: mrdmnd
-      // return group_runes( p(), cost_blood, cost_frost, cost_unholy, cost_death, use );
-      return true;
+    return death_knight_spell_t::ready();
   }
 };
 
@@ -3502,6 +3469,25 @@ struct scourge_strike_t : public death_knight_melee_attack_t
     add_child( scourge_strike_shadow );
   }
 
+  int n_targets() const override
+  {
+    death_knight_td_t* tdata = td( target );
+
+    if ( tdata -> dot.death_and_decay -> is_ticking() )
+    {
+      if ( ! sim -> distance_targeting_enabled )
+      {
+        return -1;
+      }
+      else
+      {
+        return player -> get_ground_aoe_distance( *tdata -> dot.death_and_decay -> state ) <= radius;
+      }
+    }
+
+    return 0;
+  }
+
   void impact( action_state_t* state ) override
   {
     death_knight_melee_attack_t::impact( state );
@@ -3509,7 +3495,7 @@ struct scourge_strike_t : public death_knight_melee_attack_t
     if ( result_is_hit( state -> result ) )
     {
       scourge_strike_shadow -> target = state -> target;
-      scourge_strike_shadow -> schedule_execute();
+      scourge_strike_shadow -> execute();
 
       burst_festering_wound( state );
     }
