@@ -1475,9 +1475,9 @@ struct eye_beam_t : public demon_hunter_spell_t
     }
   }
 
-  /* Don't record data for this action, since we don't want that 0
-     damage hit incorporated into statistics. */
-  virtual void record_data( action_state_t* ) override {}
+  // Don't record data for this action.
+  void record_data( action_state_t* s ) override
+  { assert( s -> result_amount == 0.0 ); }
 
   // Channel is not hasted.
   timespan_t tick_time( double ) const override
@@ -1533,7 +1533,8 @@ struct fel_barrage_t : public demon_hunter_spell_t
   }
 
   // Hide direct results in report.
-  virtual void record_data( action_state_t* ) override {}
+  void record_data( action_state_t* s ) override
+  { assert( s -> result_amount == 0.0 ); }
 
   timespan_t travel_time() const override
   { return timespan_t::zero(); } 
@@ -1598,7 +1599,8 @@ struct fel_devastation_t : public demon_hunter_spell_t
   }
 
   // Don't record data for this action.
-  void record_data( action_state_t* ) override {}
+  void record_data( action_state_t* s ) override
+  { assert( s -> result_amount == 0.0 ); }
 
   // Channel is not hasted.
   timespan_t tick_time( double ) const override
@@ -1673,9 +1675,9 @@ struct fel_rush_t : public demon_hunter_spell_t
     // Add damage modifiers in fel_rush_damage_t, not here.
   }
 
-  /* Don't record data for this action, since we don't want that 0
-     damage hit incorporated into statistics. */
-  virtual void record_data( action_state_t* ) override {}
+  // Don't record data for this action.
+  void record_data( action_state_t* s ) override
+  { assert( s -> result_amount == 0.0 ); }
 
   timespan_t gcd() const override
   {
@@ -1759,7 +1761,8 @@ struct fel_eruption_t : public demon_hunter_spell_t
   }
 
   // Don't record data for this action.
-  void record_data( action_state_t* ) override {}
+  void record_data( action_state_t* s ) override
+  { assert( s -> result_amount == 0.0 ); }
 };
 
 // Fiery Brand ==============================================================
@@ -1829,12 +1832,16 @@ struct fiery_brand_t : public demon_hunter_spell_t
     action_state_t* new_state() override
     { return new fiery_brand_state_t( this, target ); }
 
-    virtual void record_data( action_state_t* s ) override
+    void record_data( action_state_t* s ) override
     {
       // Don't record data direct hits for this action.
       if ( s -> result_type != DMG_DIRECT )
       {
         demon_hunter_spell_t::record_data( s );
+      }
+      else
+      {
+        assert( s -> result_amount == 0.0 );
       }
     }
 
@@ -1973,9 +1980,9 @@ struct immolation_aura_t : public demon_hunter_spell_t
     // Add damage modifiers in immolation_aura_damage_t, not here.
   }
 
-  /* Don't record data for this action, since we don't want that 0
-     damage hit incorporated into statistics. */
-  virtual void record_data( action_state_t* ) override {}
+  // Don't record data for this action.
+  void record_data( action_state_t* s ) override
+  { assert( s -> result_amount == 0.0 ); }
 
   void execute() override
   {
@@ -2342,9 +2349,9 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
     // Add damage modifiers in sigil_of_flame_damage_t, not here.
   }
 
-  /* Don't record data for this action, since we don't want that 0
-     damage hit incorporated into statistics. */
-  virtual void record_data( action_state_t* ) override {}
+  // Don't record data for this action.
+  void record_data( action_state_t* s ) override
+  { assert( s -> result_amount == 0.0 ); }
 
   void execute() override
   {
@@ -2388,9 +2395,9 @@ struct spirit_bomb_t : public demon_hunter_spell_t
     frail -> stats = stats;
   }
 
-  /* Don't record data for this action, since we don't want that 0
-     damage hit incorporated into statistics. */
-  virtual void record_data( action_state_t* ) override {}
+  // Don't record data for this action.
+  void record_data( action_state_t* s ) override
+  { assert( s -> result_amount == 0.0 ); }
 
   void consume_resource() override
   {
@@ -2438,7 +2445,9 @@ struct demon_hunter_attack_t : public demon_hunter_action_t<melee_attack_t>
 
   void parse_special_effect_data( const spell_data_t& spell )
   {
-    if ( spell.flags( SPELL_ATTR_EX3_REQ_OFFHAND ) )
+    /* Only set weapon if the attack deals weapon damage. weapon_multiplier
+    defaults to 1.0 so the way we check that is if weapon is defined. */
+    if ( weapon && spell.flags( SPELL_ATTR_EX3_REQ_OFFHAND ) )
     {
       weapon = &( p() -> off_hand_weapon );
     }
@@ -2785,9 +2794,9 @@ struct blade_dance_base_t : public demon_hunter_attack_t
     return f;
   }
 
-  /* Don't record data for this action, since we don't want that 0
-     damage hit incorporated into statistics. */
-  virtual void record_data( action_state_t* ) override {}
+  // Don't record data for this action.
+  virtual void record_data( action_state_t* s ) override
+  { assert( s -> result_amount == 0.0 ); }
 
   virtual double action_multiplier() const override
   {
@@ -3005,15 +3014,6 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     return f;
   }
 
-  virtual void record_data( action_state_t* s ) override
-  {
-    // Only record data if this action actually deals damage.
-    if ( weapon && weapon_multiplier > 0 )
-    {
-      demon_hunter_attack_t::record_data( s );
-    }
-  }
-
   action_state_t* new_state() override
   { return new chaos_strike_state_t( this, target ); }
 
@@ -3097,6 +3097,10 @@ struct chaos_strike_t : public chaos_strike_base_t
   {
     aoe += p -> talent.chaos_cleave -> effectN( 1 ).base_value();
   }
+
+  // Don't record data for this action.
+  void record_data( action_state_t* s ) override
+  { assert( s -> result_amount == 0.0 ); }
 
   bool ready() override
   {
@@ -3297,9 +3301,9 @@ struct felblade_t : public demon_hunter_attack_t
     // Add damage modifiers in felblade_damage_t, not here.
   }
 
-  /* Don't record data for this action, since we don't want that 0
-     damage hit incorporated into statistics. */
-  void record_data( action_state_t* ) override {}
+  // Don't record data for this action.
+  void record_data( action_state_t* s ) override
+  { assert( s -> result_amount == 0.0 ); }
 };
 
 // Fracture =================================================================
@@ -3330,7 +3334,8 @@ struct fracture_t : public demon_hunter_attack_t
   }
 
   // Don't record data for this action.
-  void record_data( action_state_t* ) override {}
+  void record_data( action_state_t* s ) override
+  { assert( s -> result_amount == 0.0 ); }
 
   void impact( action_state_t* s ) override
   {
@@ -3605,9 +3610,9 @@ struct soul_cleave_t : public demon_hunter_attack_t
     // Add damage modifiers in soul_cleave_damage_t, not here.
   }
 
-  /* Don't record data for this action, since we don't want that 0
-     damage hit incorporated into statistics. */
-  virtual void record_data( action_state_t* ) override {}
+  // Don't record data for this action.
+  void record_data( action_state_t* s ) override
+  { assert( s -> result_amount == 0.0 ); }
 
   void execute() override
   {
@@ -3731,9 +3736,9 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
     // Add damage modifiers in vengeful_retreat_damage_t, not here.
   }
 
-  /* Don't record data for this action, since we don't want that 0
-     damage hit incorporated into statistics. */
-  virtual void record_data( action_state_t* ) override {}
+  // Don't record data for this action.
+  void record_data( action_state_t* s ) override
+  { assert( s -> result_amount == 0.0 ); }
 
   void execute() override
   {
