@@ -618,7 +618,7 @@ public:
   // SpellAuraOptions.dbc
   unsigned    _max_stack;          // 20 Maximum stack size for spell
   unsigned    _proc_chance;        // 21 Spell proc chance in percent
-  unsigned    _proc_charges;       // 22 Per proc charge amount
+  int         _proc_charges;       // 22 Per proc charge amount
   unsigned    _proc_flags;         // 23 Proc flags
   unsigned    _internal_cooldown;  // 24 ICD
   double      _rppm;               // 25 Base real procs per minute
@@ -689,7 +689,7 @@ public:
   unsigned id() const
   { return _id; }
 
-  uint32_t initial_stacks() const
+  int initial_stacks() const
   { return _proc_charges; }
 
   uint32_t race_mask() const

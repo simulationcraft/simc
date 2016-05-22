@@ -253,7 +253,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
       if ( data().max_stacks() != 0 )
         _max_stack = data().max_stacks();
       else if ( data().initial_stacks() != 0 )
-        _max_stack = data().initial_stacks();
+        _max_stack = std::abs( data().initial_stacks() );
     }
   }
   else

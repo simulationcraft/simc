@@ -93,7 +93,7 @@ const sdata_field_t _spell_data_fields[] =
   { SD_TYPE_DOUBLE,   "duration"      },
   { SD_TYPE_UNSIGNED, "max_stack"     },
   { SD_TYPE_UNSIGNED, "proc_chance"   },
-  { SD_TYPE_UNSIGNED, "initial_stack" },
+  { SD_TYPE_INT,      "initial_stack" },
   { SD_TYPE_UNSIGNED, ""              }, // Proc flags, no support for now
   { SD_TYPE_UNSIGNED, "icd"           },
   { SD_TYPE_DOUBLE,   "rppm"          },

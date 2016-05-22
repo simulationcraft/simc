@@ -452,7 +452,7 @@
   ],
   "SpellAuraOptions": [
     { "data_type": "I", "field": "id_spell" },
-    { "data_type": "I", "field": "proc_charges" },
+    { "data_type": "i", "field": "proc_charges" },
     { "data_type": "I", "field": "proc_flags" },
     { "data_type": "I", "field": "internal_cooldown" },
     { "data_type": "h", "field": "stack_amount" },
