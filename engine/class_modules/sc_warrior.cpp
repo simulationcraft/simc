@@ -2031,6 +2031,7 @@ struct mortal_strike_t: public warrior_attack_t
       base_costs[RESOURCE_RAGE] *= 1.0 + p -> manacles_of_mannoroth_the_flayer -> driver() -> effectN( 1 ).percent();
       parse_effect_data( p -> manacles_of_mannoroth_the_flayer -> driver() -> effectN( 2 ) );
     }
+    procs_tactician = true;
   }
 
   double composite_crit() const override
@@ -2974,9 +2975,6 @@ struct fury_whirlwind_parent_t: public warrior_attack_t
 
   void tick( dot_t* d ) override
   {
-    // Only the first whirl procs tactician.
-    mh_attack -> procs_tactician = d -> current_tick == 0;
-
     warrior_attack_t::tick( d );
 
     if ( mh_attack )
