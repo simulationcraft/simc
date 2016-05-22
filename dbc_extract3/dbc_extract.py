@@ -18,7 +18,7 @@ parser.add_argument("-t", "--type", dest = "type",
                               'item_ench', 'weapon_damage', 'item', 'item_armor', 'gem_properties',
                               'random_suffix_groups', 'spec_enum', 'spec_list', 'item_upgrade',
                               'rppm_coeff', 'set_list2', 'item_bonus', 'item_scaling',
-                              'item_name_desc', 'artifact', 'bench' ]), 
+                              'item_name_desc', 'artifact', 'bench', 'item_child' ])
 parser.add_argument("-o",            dest = "output")
 parser.add_argument("-a",            dest = "append")
 parser.add_argument("--raw",         dest = "raw",          default = False, action = "store_true")
@@ -265,6 +265,13 @@ elif options.type == 'item_scaling':
     g.generate(ids)
 elif options.type == 'item_name_desc':
     g = dbc.generator.ItemNameDescriptionDataGenerator(options)
+    if not g.initialize():
+        sys.exit(1)
+    ids = g.filter()
+
+    g.generate(ids)
+elif options.type == 'item_child':
+    g = dbc.generator.ItemChildEquipmentGenerator(options)
     if not g.initialize():
         sys.exit(1)
     ids = g.filter()

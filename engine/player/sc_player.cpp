@@ -1033,13 +1033,6 @@ bool player_t::init_items()
   for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
     slots[ i ] = ! util::is_match_slot( i );
 
-  // Accumulator for the stats given by items. Stats from items cannot directly
-  // be added to ``gear'', as it would cause stat values specified on the
-  // command line (with options such as gear_intellect=x) to be added to the
-  // values given by items (instead of overriding them).
-  // After the loop (and the meta-gem initialization), the stats accumulated
-  // from items are added into ``gear'', provided that there is no
-  // command line option override.
   for ( size_t i = 0; i < items.size(); i++ )
   {
     item_t& item = items[ i ];
@@ -1080,12 +1073,19 @@ bool player_t::init_items()
 
   init_meta_gem();
 
+  // Determine item relationships (parent vs child). Needs to be done after the item init loop,
+  // because we don't perform two-phase init of items.
+  range::for_each( items, [ this ]( item_t& i ) { i.parent_slot = parent_item_slot( i ); } );
+
   // Needs to be initialized after old set bonus system
   sets.initialize();
 
   // these initialize the weapons, but don't have a return value (yet?)
   init_weapon( main_hand_weapon );
   init_weapon( off_hand_weapon );
+
+  if ( sim -> debug )
+    range::for_each( items, [ this ]( const item_t& i ) { sim -> out_debug.printf( "%s", i.to_string().c_str() ); } );
 
   return true;
 }
@@ -11243,4 +11243,44 @@ bool player_t::artifact_enabled() const
 
     return false;
   }
+}
+
+slot_e player_t::parent_item_slot( const item_t& item ) const
+{
+  unsigned parent = dbc.parent_item( item.parsed.data.id );
+  if ( parent == 0 )
+  {
+    return SLOT_INVALID;
+  }
+
+  auto it = range::find_if( items, [ parent ]( const item_t& item ) {
+    return parent == item.parsed.data.id;
+  } );
+
+  if ( it != items.end() )
+  {
+    return (*it).slot;
+  }
+
+  return SLOT_INVALID;
+}
+
+slot_e player_t::child_item_slot( const item_t& item ) const
+{
+  unsigned child = dbc.child_item( item.parsed.data.id );
+  if ( child == 0 )
+  {
+    return SLOT_INVALID;
+  }
+
+  auto it = range::find_if( items, [ child ]( const item_t& item ) {
+    return child == item.parsed.data.id;
+  } );
+
+  if ( it != items.end() )
+  {
+    return (*it).slot;
+  }
+
+  return SLOT_INVALID;
 }

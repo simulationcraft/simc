@@ -49,6 +49,7 @@ py -3  %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t item_upgrade           >> %OUT
 py -3  %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t item_bonus             >> %OUTPATH%/sc_item_data%PTREXT%2.inc
 py -3  %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t item_scaling           >> %OUTPATH%/sc_item_data%PTREXT%2.inc
 py -3  %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t item_name_desc         >> %OUTPATH%/sc_item_data%PTREXT%2.inc
+py -3  %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t item_child             >> %OUTPATH%/sc_item_data%PTREXT%2.inc
 
 py -3  %RUNFILE% -p %INPATH% -b %BUILD% -t spec_enum > %OUTPATH%\sc_specialization_data.inc
 

@@ -64,4 +64,5 @@ fi
 ./dbc_extract.py -p $DBCINPUT -b $BUILD $PTR --cache "${CACHE}" -t item_bonus             -a $OUTPATH/sc_item_data${PTR:+_ptr}2.inc
 ./dbc_extract.py -p $DBCINPUT -b $BUILD $PTR --cache "${CACHE}" -t item_scaling           -a $OUTPATH/sc_item_data${PTR:+_ptr}2.inc
 ./dbc_extract.py -p $DBCINPUT -b $BUILD $PTR --cache "${CACHE}" -t item_name_desc         -a $OUTPATH/sc_item_data${PTR:+_ptr}2.inc
+./dbc_extract.py -p $DBCINPUT -b $BUILD $PTR --cache "${CACHE}" -t item_child             -a $OUTPATH/sc_item_data${PTR:+_ptr}2.inc
 

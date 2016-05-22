@@ -73,6 +73,7 @@ std::size_t        n_items_ptr();
 const item_set_bonus_t* set_bonus( bool ptr );
 std::size_t             n_set_bonus( bool ptr );
 const item_enchantment_data_t* item_enchantments( bool ptr );
+const item_child_equipment_t* child_equipments( bool ptr );
 std::size_t        n_item_enchantments( bool ptr );
 const gem_property_data_t* gem_properties( bool ptr );
 specialization_e translate_spec_str   ( player_e ptype, const std::string& spec_str );
@@ -1363,6 +1364,10 @@ public:
   std::vector<const artifact_power_data_t*> artifact_powers( unsigned artifact_id ) const;
   std::vector<const artifact_power_rank_t*> artifact_power_ranks( unsigned power_id ) const;
   unsigned artifact_power_spell_id( specialization_e spec, unsigned power_index, unsigned rank ) const;
+
+  // Child items
+  unsigned child_item( unsigned ) const;
+  unsigned parent_item( unsigned ) const;
 };
 
 namespace dbc

@@ -23,6 +23,7 @@ item_t::item_t( player_t* p, const std::string& o ) :
   sim( p -> sim ),
   player( p ),
   slot( SLOT_INVALID ),
+  parent_slot( SLOT_INVALID ),
   unique( false ),
   unique_addon( false ),
   is_ptr( p -> dbc.ptr ),
@@ -302,12 +303,19 @@ std::string item_t::to_string() const
   s << " quality=" << util::item_quality_string( parsed.data.quality );
   s << " upgrade_level=" << upgrade_level();
   s << " ilevel=" << item_level();
-  if ( sim -> scale_to_itemlevel > 0 )
-    s << " (" << ( parsed.data.level + item_database::upgrade_ilevel( *this, upgrade_level() ) ) << ")";
-  else if ( upgrade_level() > 0 )
-    s << " (" << parsed.data.level << ")";
-  if ( parsed.drop_level > 0 )
-    s << " drop_level=" << parsed.drop_level;
+  if ( parent_slot == SLOT_INVALID )
+  {
+    if ( sim -> scale_to_itemlevel > 0 )
+      s << " (" << ( parsed.data.level + item_database::upgrade_ilevel( *this, upgrade_level() ) ) << ")";
+    else if ( upgrade_level() > 0 )
+      s << " (" << parsed.data.level << ")";
+    if ( parsed.drop_level > 0 )
+      s << " drop_level=" << parsed.drop_level;
+  }
+  else
+  {
+    s << " (" << player -> items[ parent_slot ].slot_name() << ")";
+  }
   if ( parsed.data.lfr() )
     s << " LFR";
   if ( parsed.data.heroic() )
@@ -472,6 +480,10 @@ unsigned item_t::upgrade_item_level() const
 
 unsigned item_t::item_level() const
 {
+  // If the item is a child, always override with whatever the parent is doing
+  if ( parent_slot != SLOT_INVALID )
+    return player -> items[ parent_slot ].item_level();
+
   if ( sim -> scale_to_itemlevel > 0 && ! sim -> scale_itemlevel_down_only )
     return sim -> scale_to_itemlevel;
 
@@ -1197,9 +1209,6 @@ bool item_t::init()
 
   if ( source_str.empty() )
     source_str = "Manual";
-
-  if ( sim -> debug )
-    sim -> out_debug.printf( "%s", to_string().c_str() );
 
   return true;
 }

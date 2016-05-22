@@ -2540,7 +2540,7 @@ struct item_t
 {
   sim_t* sim;
   player_t* player;
-  slot_e slot;
+  slot_e slot, parent_slot;
   bool unique, unique_addon, is_ptr;
 
   // Structure contains the "parsed form" of this specific item, be the data
@@ -2618,10 +2618,10 @@ struct item_t
 
   mutable int cached_upgrade_item_level;
 
-  item_t() : sim( nullptr ), player( nullptr ), slot( SLOT_INVALID ), unique( false ),
-    unique_addon( false ), is_ptr( false ),
+  item_t() : sim( nullptr ), player( nullptr ), slot( SLOT_INVALID ), parent_slot( SLOT_INVALID ),
+    unique( false ), unique_addon( false ), is_ptr( false ),
     parsed(), xml(),
-    cached_upgrade_item_level( -1 ){ }
+    cached_upgrade_item_level( -1 ) { }
   item_t( player_t*, const std::string& options_str );
 
   bool active() const;
@@ -2635,6 +2635,7 @@ struct item_t
 
   bool is_matching_type() const;
   bool is_valid_type() const;
+  bool is_child() const;
   bool socket_color_match() const;
 
   unsigned item_level() const;
@@ -4537,6 +4538,10 @@ public:
   // Figure out if healing should be recorded
   bool record_healing() const
   { return role == ROLE_TANK || role == ROLE_HEAL || sim -> enable_dps_healing; }
+
+  // Child item functionality
+  slot_e parent_item_slot( const item_t& item ) const;
+  slot_e child_item_slot( const item_t& item ) const;
 };
 
 // Target Specific ==========================================================

@@ -3666,6 +3666,31 @@ class ItemNameDescriptionDataGenerator(DataGenerator):
 
         self._out.write('};\n\n')
 
+class ItemChildEquipmentGenerator(DataGenerator):
+    def __init__(self, options, data_store = None):
+        self._dbc = [ 'ItemChildEquipment' ]
+        super().__init__(options, data_store)
+
+    def generate(self, ids = None):
+        data_str = "%sitem_child_equipment%s" % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.suffix and ('_%s' % self._options.suffix) or '',
+        )
+
+        self._out.write('#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(self._itemchildequipment_db.keys()) + 1))
+
+        self._out.write('// Item child equipment, wow build %d\n' % ( self._options.build ))
+
+        self._out.write('static struct item_child_equipment_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper()))
+
+        for key in sorted(self._itemchildequipment_db.keys()) + [0,]:
+            data = self._itemchildequipment_db[key]
+
+            fields = data.field( 'id', 'id_item', 'id_child' )
+            self._out.write('  { %s },\n' % (', '.join(fields)))
+
+        self._out.write('};\n\n')
+
 class ArtifactDataGenerator(DataGenerator):
     def __init__(self, options, data_store = None):
         self._dbc = [ 'Artifact', 'ArtifactPower', 'ArtifactPowerRank', 'Spell' ]

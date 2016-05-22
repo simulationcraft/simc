@@ -18,6 +18,13 @@ struct spell_data_t;
 struct spelleffect_data_t;
 struct talent_data_t;
 
+struct item_child_equipment_t
+{
+  unsigned id;
+  unsigned id_item;
+  unsigned id_child;
+};
+
 struct artifact_t
 {
   unsigned id;
