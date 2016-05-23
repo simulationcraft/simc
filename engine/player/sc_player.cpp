@@ -2232,8 +2232,6 @@ bool player_t::create_actions()
     }
   }
 
-  range::for_each( action_list, []( action_t* a ) { a -> consolidate_snapshot_flags(); } );
-
   if ( choose_action_list.empty() ) choose_action_list = "default";
 
   action_priority_list_t* chosen_action_list = find_action_priority_list( choose_action_list );
@@ -2267,7 +2265,9 @@ bool player_t::create_actions()
 
 bool player_t::init_actions()
 {
+  range::for_each( action_list, []( action_t* action ) { action -> consolidate_snapshot_flags(); } );
   range::for_each( action_list, []( action_t* action ) { action -> init(); } );
+
   return true;
 }
 
