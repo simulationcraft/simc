@@ -2294,7 +2294,7 @@ struct echoed_divine_storm_t: public paladin_melee_attack_t
 
     weapon = &( p -> main_hand_weapon );
 
-  weapon_multiplier = data().effectN( 1 ).percent() *
+    weapon_multiplier = data().effectN( 1 ).percent() *
                       p -> artifact.echo_of_the_highlord.percent();
 
     base_multiplier *= 1.0 + p -> artifact.righteous_blade.percent();
@@ -2334,7 +2334,7 @@ struct divine_storm_t: public holy_power_consumer_t
 
     hasted_gcd = true;
 
-    may_crit = may_block = false;
+    may_block = false;
     impact_action = new divine_storm_damage_t( p );
     impact_action -> stats = stats;
 
