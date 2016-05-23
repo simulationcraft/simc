@@ -54,8 +54,8 @@ public:
   // Artifacts
   const special_effect_t* stromkar_the_warbreaker, *warswords_of_the_valarjar;
   // Legendary Items
-  const special_effect_t* archavons_heavy_hand, *groms_wartorn_pauldrons, *bindings_of_kakushan, 
-    *kargaths_sacrificed_hands, *thundergods_vigor, *ceannar_girdle, *kazzalax_fujiedas_fury, *the_walls_fell, 
+  const special_effect_t* archavons_heavy_hand, *groms_wartorn_pauldrons, *bindings_of_kakushan,
+    *kargaths_sacrificed_hands, *thundergods_vigor, *ceannar_girdle, *kazzalax_fujiedas_fury, *the_walls_fell,
     *destiny_driver, *prydaz_xavarics_magnum_opus, *verjas_protectors_of_the_berserker_king,
     *najentuss_vertebrae, *ayalas_stone_heart, *aggramars_stride, *manacles_of_mannoroth_the_flayer;
 
@@ -382,9 +382,9 @@ public:
     base.distance = 5.0;
 
     arms_trinket = prot_trinket = nullptr;
-    archavons_heavy_hand = groms_wartorn_pauldrons = bindings_of_kakushan = kargaths_sacrificed_hands = thundergods_vigor = 
-    ceannar_girdle = kazzalax_fujiedas_fury = the_walls_fell = destiny_driver = prydaz_xavarics_magnum_opus = verjas_protectors_of_the_berserker_king = 
-    najentuss_vertebrae = ayalas_stone_heart = aggramars_stride = manacles_of_mannoroth_the_flayer = nullptr;
+    archavons_heavy_hand = groms_wartorn_pauldrons = bindings_of_kakushan = kargaths_sacrificed_hands = thundergods_vigor =
+      ceannar_girdle = kazzalax_fujiedas_fury = the_walls_fell = destiny_driver = prydaz_xavarics_magnum_opus = verjas_protectors_of_the_berserker_king =
+      najentuss_vertebrae = ayalas_stone_heart = aggramars_stride = manacles_of_mannoroth_the_flayer = nullptr;
     regen_type = REGEN_DISABLED;
   }
 
@@ -458,6 +458,15 @@ public:
       td = new warrior_td_t( target, const_cast<warrior_t&>( *this ) );
     }
     return td;
+  }
+
+  void enrage()
+  {
+    buff.enrage -> trigger();
+    if ( ceannar_girdle )
+    {
+      resource_gain( RESOURCE_RAGE, ceannar_girdle -> driver() -> effectN( 1 ).resource( RESOURCE_RAGE ), gain.ceannar_rage );
+    }
   }
 };
 
@@ -668,15 +677,6 @@ public:
         p() -> cooldown.last_stand -> adjust( timespan_t::from_seconds( rage ) );
         p() -> cooldown.shield_wall -> adjust( timespan_t::from_seconds( rage ) );
       }
-    }
-  }
-
-  void enrage()
-  {
-    p() -> buff.enrage -> trigger();
-    if ( p() -> ceannar_girdle )
-    {
-      p() -> resource_gain( RESOURCE_RAGE, p() -> ceannar_girdle -> driver() -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.ceannar_rage );
     }
   }
 };
@@ -1182,7 +1182,7 @@ struct bloodthirst_t: public warrior_attack_t
 
       if ( execute_state -> result == RESULT_CRIT )
       {
-        enrage();
+        p() -> enrage();
         p() -> buff.taste_for_blood -> expire();
       }
     }
@@ -2145,7 +2145,7 @@ struct raging_blow_attack_t: public warrior_attack_t
     { // Can proc off MH/OH individually from each meat cleaver hit.
       if ( rng().roll( p() -> sets.set( WARRIOR_FURY, T17, B2 ) -> proc_chance() ) )
       {
-        enrage();
+        p() -> enrage();
         p() -> proc.t17_2pc_fury -> occur();
       }
     }
@@ -2375,6 +2375,10 @@ struct rampage_event_t: public event_t
   void execute() override
   {
     warrior -> rampage_attacks[attacks] -> execute();
+    if ( attacks == 0 )
+    {
+      warrior -> enrage(); // As of 5/23/2016 the first attack does not get a damage bonus from the enrage that rampage triggers... even though it shows up in the combat log before the attack lands. 
+    }                      // It will get a damage bonus if something else triggered the enrage beforehand, though.
     attacks++;
     if ( attacks < warrior -> rampage_attacks.size() )
     {
@@ -2412,8 +2416,6 @@ struct rampage_parent_t: public warrior_attack_t
 
   void execute() override
   {
-    enrage();
-
     warrior_attack_t::execute();
 
     p() -> buff.massacre -> expire();
@@ -3179,7 +3181,7 @@ struct berserker_rage_t: public warrior_spell_t
     p() -> buff.berserker_rage -> trigger();
     if ( p() -> talents.outburst -> ok() )
     {
-      enrage();
+      p() -> enrage();
     }
   }
 };
