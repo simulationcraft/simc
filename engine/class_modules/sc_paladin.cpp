@@ -2262,6 +2262,7 @@ struct divine_hammer_t : public paladin_spell_t
 
     hasted_ticks   = true;
     may_miss       = false;
+    tick_may_crit  = true;
     tick_zero      = true;
     energize_type      = ENERGIZE_ON_CAST;
     energize_resource  = RESOURCE_HOLY_POWER;
