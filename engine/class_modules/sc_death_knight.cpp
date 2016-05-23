@@ -2786,7 +2786,7 @@ struct festering_strike_t : public death_knight_melee_attack_t
 
   void impact( action_state_t* s ) override
   {
-    static constexpr std::array<unsigned, 4> fw_proc_stacks = { { 2, 3, 3, 4 } };
+    static const std::array<unsigned, 4> fw_proc_stacks = { { 2, 3, 3, 4 } };
 
     death_knight_melee_attack_t::impact( s );
 
