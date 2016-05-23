@@ -1265,6 +1265,7 @@ class SpellDataGenerator(DataGenerator):
           ( 191764, 0 ), ( 191799, 0 ),             # Arcane T18 2P Pet
 		  ( 194466, 0 ),                            # Phoenix's Flames
 		  ( 205235, 5 ),                            # Arcane Familiar attack, Arcane Assault
+		  ( 7268,   0 ),                            # Arcane Missile Tick
         ),
 
         # Warlock:
