@@ -2264,6 +2264,8 @@ struct divine_hammer_t : public paladin_spell_t
     may_miss       = false;
     tick_zero      = true;
     energize_type      = ENERGIZE_ON_CAST;
+    energize_resource  = RESOURCE_HOLY_POWER;
+    energize_amount    = data().effectN( 2 ).base_value();
 
     tick_action = new divine_hammer_tick_t( p );
   }
@@ -2723,7 +2725,7 @@ struct templars_verdict_t : public holy_power_consumer_t
 
     hasted_gcd = true;
 
-    may_crit = may_block = false;
+    may_block = false;
     impact_action = new templars_verdict_damage_t( p );
     impact_action -> stats = stats;
 
