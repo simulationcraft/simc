@@ -80,7 +80,7 @@ struct action_execute_event_t : public player_event_t
     if ( sim().debug )
       sim().out_debug.printf( "New Action Execute Event: %s %s %.1f (target=%s, marker=%c)",
                   p() -> name(), a -> name(), time_to_execute.total_seconds(),
-                  ( state ) ? state -> target -> name() : a -> target -> name(), 
+                  ( state ) ? state -> target -> name() : a -> target -> name(),
                   ( a -> marker ) ? a -> marker : '0' );
 
     add_event( time_to_execute );
@@ -1278,7 +1278,7 @@ void action_t::execute()
     num_targets = ( n_targets() < 0 ) ? tl.size() : n_targets();
     if ( num_targets < 1 )
     {
-      cancel(); // AoE Children who get automatically executed from a parent spell will sometimes run into situations where they do not deal damage to the 
+      cancel(); // AoE Children who get automatically executed from a parent spell will sometimes run into situations where they do not deal damage to the
       return;   // original target, but one nearby, and that one nearby is out range. This will catch it before the sim crashes.
     }
     for ( size_t t = 0, max_targets = tl.size(); t < num_targets && t < max_targets; t++ )
@@ -1419,7 +1419,7 @@ void action_t::tick( dot_t* d )
       d -> state -> result = RESULT_CRIT;
 
     d -> state -> result_amount = calculate_tick_amount( d -> state, d -> get_last_tick_factor() * d -> current_stack() );
-    
+
     assess_damage( amount_type( d -> state, true ), d -> state );
 
     if ( sim -> debug )
@@ -1470,7 +1470,7 @@ void action_t::update_resolve( dmg_e type,
     assert( source -> actor_spawn_index >= 0 && "Trying to register resolve damage event from a unspawned player! Something is seriously broken in player_t::arise/demise." );
 
     // bool for auto attack, to make code easier to read
-    bool is_auto_attack = ( player -> main_hand_attack && s -> action == player -> main_hand_attack ) 
+    bool is_auto_attack = ( player -> main_hand_attack && s -> action == player -> main_hand_attack )
       || ( player -> off_hand_attack && s -> action == player -> off_hand_attack ) ||
       !s -> action -> special;
 
@@ -1481,7 +1481,7 @@ void action_t::update_resolve( dmg_e type,
 
     // Store raw damage of attack result
     double raw_resolve_amount = s -> result_raw;
-    
+
     // If the attack does zero damage, it's irrelevant for the purposes
     // Skip updating the Resolve tables if the damage is zero to limit unnecessary events
     if ( raw_resolve_amount > 0.0 )
@@ -1489,7 +1489,7 @@ void action_t::update_resolve( dmg_e type,
       // modify according to damage type; spell damage and bleeds give 2.5x as much Resolve
       if ( get_school() != SCHOOL_PHYSICAL || type == DMG_OVER_TIME )
         raw_resolve_amount *= 2.5;
-      
+
       // Diminishing Returns hotfixed out 10/2/2014 - will clean up code once we're sure this is a permanent change
       // http://us.battle.net/wow/en/forum/topic/14058407204?page=10#198
       //// update the player's resolve diminishing return list first!
@@ -1501,9 +1501,9 @@ void action_t::update_resolve( dmg_e type,
       //// see http://us.battle.net/wow/en/forum/topic/13087818929?page=6#105
       //int rank = target -> resolve_manager.get_diminsihing_return_rank( source -> actor_spawn_index );
 
-      // update the player's resolve damage table 
+      // update the player's resolve damage table
       target -> resolve_manager.add_damage_event( raw_resolve_amount, sim -> current_time() );
-    
+
       // cycle through the resolve damage table and add the appropriate amount of Resolve from each event
       target -> resolve_manager.update();
     }
@@ -1862,7 +1862,7 @@ bool action_t::ready()
     return false;
   }
 
-  if ( cycle_players ) // Used when healing players in the raid. 
+  if ( cycle_players ) // Used when healing players in the raid.
   {
     player_t* saved_target = target;
     cycle_players = 0;
@@ -1969,7 +1969,7 @@ void action_t::init()
     tick_action -> dual = true;
     tick_action -> stats = stats;
     tick_action -> parent_dot = target -> get_dot( name_str, player );
-    if ( tick_action -> parent_dot && range > 0 && tick_action -> radius > 0 && tick_action -> is_aoe() ) 
+    if ( tick_action -> parent_dot && range > 0 && tick_action -> radius > 0 && tick_action -> is_aoe() )
      // If the parent spell has a range, the tick_action has a radius and is an aoe spell, then the tick action likely also has a range.
      // This will allow distance_target_t to correctly determine spells that radiate from the target, instead of the player.
        tick_action -> range = range;
@@ -2006,7 +2006,8 @@ void action_t::init()
       snapshot_flags |= STATE_RESOLVE;
   }
 
-  if ( ( weapon_power_mod > 0 || attack_power_mod.direct > 0 || attack_power_mod.tick > 0 ) )
+  if ( ( weapon_power_mod > 0 || attack_power_mod.direct > 0 || attack_power_mod.tick > 0 ) ||
+       ( tick_action && ( tick_action -> weapon_power_mod > 0 ) ) )
   {
     snapshot_flags |= STATE_AP;
     if ( player -> resolve_manager.is_init() )
@@ -2616,7 +2617,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
         return new active_enemies_t( this, splits[1] );
       }
       else
-      { // If distance targeting is not enabled, default to active_enemies behavior. 
+      { // If distance targeting is not enabled, default to active_enemies behavior.
         return make_ref_expr( name_str, sim -> active_enemies );
       }
     }
@@ -2754,7 +2755,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       return new spell_targets_t( *this, splits.size() > 1 ? splits[ 1 ] : this -> name_str );
     }
     else
-    { // If distance targeting is not enabled, default to active_enemies behavior. 
+    { // If distance targeting is not enabled, default to active_enemies behavior.
       return make_ref_expr( name_str, sim -> active_enemies );
     }
   }
@@ -3061,7 +3062,7 @@ void action_t::schedule_travel( action_state_t* s )
 
   execute_state -> copy_state( s );
 
-  time_to_travel = distance_targeting_travel_time( s ); // This is used for spells that don't use the typical player ---> main target travel time. 
+  time_to_travel = distance_targeting_travel_time( s ); // This is used for spells that don't use the typical player ---> main target travel time.
   if ( time_to_travel == timespan_t::zero() )
     time_to_travel = travel_time();
 
