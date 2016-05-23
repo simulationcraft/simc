@@ -2265,8 +2265,8 @@ bool player_t::create_actions()
 
 bool player_t::init_actions()
 {
-  range::for_each( action_list, []( action_t* action ) { action -> consolidate_snapshot_flags(); } );
   range::for_each( action_list, []( action_t* action ) { action -> init(); } );
+  range::for_each( action_list, []( action_t* action ) { action -> consolidate_snapshot_flags(); } );
 
   return true;
 }
