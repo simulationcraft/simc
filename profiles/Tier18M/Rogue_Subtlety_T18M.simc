@@ -54,7 +54,7 @@ actions+=/pool_resource,for_next=1,extra_amount=50
 actions+=/vanish,if=talent.shadow_focus.enabled&energy>=45&energy<=75&combo_points<4-talent.anticipation.enabled&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
 actions+=/pool_resource,for_next=1,extra_amount=energy.max-5
 actions+=/shadowmeld,if=talent.subterfuge.enabled&energy>=energy.max-5&combo_points<4-talent.anticipation.enabled&buff.stealth.down&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
-actions+=/vanish,if=set_bonus.tier18_2pc=1&buff.shadow_reflection.up&combo_points<3
+actions+=/vanish,if=set_bonus.tier18_2pc=1&buff.maalus.up&((!talent.anticipation.enabled&combo_points<3)|(talent.anticipation.enabled&combo_points+anticipation_charges<8))
 actions+=/pool_resource,for_next=1,extra_amount=energy.max-5
 actions+=/vanish,if=talent.subterfuge.enabled&energy>=energy.max-5&combo_points<4-talent.anticipation.enabled&buff.shadow_dance.down&(cooldown.shadow_dance.remains>2|(set_bonus.tier18_2pc=1&target.time_to_die<=23))
 actions+=/marked_for_death,if=combo_points=0
@@ -72,7 +72,7 @@ actions.generator+=/pool_resource,for_next=1
 actions.generator+=/ambush
 # If simulating AoE, it is recommended to use Anticipation as the level 90 talent.
 actions.generator+=/fan_of_knives,if=spell_targets.fan_of_knives>2
-actions.generator+=/backstab,if=debuff.find_weakness.up|buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up
+actions.generator+=/backstab,if=time>18&(debuff.find_weakness.up|buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up)
 actions.generator+=/shuriken_toss,if=energy<65&energy.regen<16
 actions.generator+=/hemorrhage,if=glyph.hemorrhaging_veins.enabled&((talent.anticipation.enabled&combo_points+anticipation_charges<=2)|combo_points<=2|target.time_to_die<=6)&!ticking&!dot.rupture.ticking&!dot.crimson_tempest.ticking&!dot.garrote.ticking
 actions.generator+=/backstab,if=energy.time_to_max<=gcd*2.5&cooldown.shadow_dance.remains>1.5

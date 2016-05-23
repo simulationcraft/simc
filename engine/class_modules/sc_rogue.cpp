@@ -5551,7 +5551,7 @@ void rogue_t::init_action_list()
     def -> add_action( "shadowmeld,if=talent.subterfuge.enabled&energy>=energy.max-5&combo_points<4-talent.anticipation.enabled&buff.stealth.down&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down" );
 
     if ( find_item( "maalus_the_blood_drinker" ) )
-      def -> add_action( this, "Vanish", "if=set_bonus.tier18_2pc=1&buff.shadow_reflection.up&combo_points<3");
+      def -> add_action( this, "Vanish", "if=set_bonus.tier18_2pc=1&buff.maalus.up&((!talent.anticipation.enabled&combo_points<3)|(talent.anticipation.enabled&combo_points+anticipation_charges<8))");
     def -> add_action( this, find_class_spell( "Vanish" ), "pool_resource", "for_next=1,extra_amount=energy.max-5" );
     def -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&energy>=energy.max-5&combo_points<4-talent.anticipation.enabled&buff.shadow_dance.down&(cooldown.shadow_dance.remains>2|(set_bonus.tier18_2pc=1&target.time_to_die<=23))" );
 
@@ -5575,7 +5575,7 @@ void rogue_t::init_action_list()
     gen -> add_action( this, find_class_spell( "Ambush" ), "pool_resource", "for_next=1" );
     gen -> add_action( this, "Ambush" );
     gen -> add_action( this, "Fan of Knives", "if=spell_targets.fan_of_knives>2", "If simulating AoE, it is recommended to use Anticipation as the level 90 talent." );
-    gen -> add_action( this, "Backstab", "if=debuff.find_weakness.up|buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up" );
+    gen -> add_action( this, "Backstab", "if=time>18&(debuff.find_weakness.up|buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up)" );
     gen -> add_talent( this, "Shuriken Toss", "if=energy<65&energy.regen<16" );
     gen -> add_action( this, "Hemorrhage", "if=glyph.hemorrhaging_veins.enabled&((talent.anticipation.enabled&combo_points+anticipation_charges<=2)|combo_points<=2|target.time_to_die<=6)&!ticking&!dot.rupture.ticking&!dot.crimson_tempest.ticking&!dot.garrote.ticking" );
     gen -> add_action( this, "Backstab", "if=energy.time_to_max<=gcd*2.5&cooldown.shadow_dance.remains>1.5" );
