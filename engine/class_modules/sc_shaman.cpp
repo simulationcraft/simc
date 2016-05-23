@@ -5789,7 +5789,7 @@ void shaman_t::create_buffs()
   buff.tailwind_totem = haste_buff_creator_t( this, "tailwind_totem", find_spell( 210659 ) )
                         .add_invalidate( CACHE_HASTE )
                         .duration( talent.totem_mastery -> effectN( 4 ).trigger() -> duration() )
-                        .default_value( 1.0 / ( 1.0 + find_spell( 210660 ) -> effectN( 2 ).percent() ) );
+                        .default_value( 1.0 / ( 1.0 + find_spell( 210659 ) -> effectN( 1 ).percent() ) );
   buff.icefury = buff_creator_t( this, "icefury", talent.icefury )
     .cd( timespan_t::zero() ) // Handled by the action
     .default_value( talent.icefury -> effectN( 3 ).percent() );
