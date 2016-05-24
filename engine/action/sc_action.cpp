@@ -2006,8 +2006,7 @@ void action_t::init()
       snapshot_flags |= STATE_RESOLVE;
   }
 
-  if ( ( weapon_power_mod > 0 || attack_power_mod.direct > 0 || attack_power_mod.tick > 0 ) ||
-       ( tick_action && ( tick_action -> weapon_power_mod > 0 || tick_action -> attack_power_mod.direct > 0 ) ) )
+  if ( ( weapon_power_mod > 0 || attack_power_mod.direct > 0 || attack_power_mod.tick > 0 ) )
   {
     snapshot_flags |= STATE_AP;
     if ( player -> resolve_manager.is_init() )
