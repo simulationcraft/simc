@@ -154,7 +154,10 @@ private:
 struct special_effect_initializer_t
 {
   special_effect_initializer_t()
-  { unique_gear::register_special_effects(); }
+  {
+    unique_gear::register_special_effects();
+    unique_gear::sort_special_effects();
+  }
 
   ~special_effect_initializer_t()
   { unique_gear::unregister_special_effects(); }

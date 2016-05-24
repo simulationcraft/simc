@@ -2410,9 +2410,33 @@ struct weapon_t
 // A special effect callback that will be scoped by the pure virtual valid() method of the class.
 // If the implemented valid() returns false, the special effect initializer callbacks will not be
 // invoked.
+//
+// Scoped callbacks are prioritized statically.
+//
+// Special effects will be selected and initialize automatically for the actor from the highest
+// priority class.  Currently PRIORITY_CLASS is used by class-scoped special effects callback
+// objects that use the class scope (i.e., player_e) validator, and PRIORITY_SPEC is used by
+// specialization-scoped special effect callback objects. The separation of the two allows, for
+// example, the creation of a class-scoped special effect, and then an additional
+// specialization-scoped special effect for a single specialization for the class.
+//
+// The PRIORITY_DEFAULT value is used for old-style callbacks (i.e., static functions or
+// string-based initialization defined in sc_unique_gear.cpp).
 struct scoped_callback_t
 {
-  scoped_callback_t()
+  enum priority
+  {
+    PRIORITY_DEFAULT = 0U, // Old-style callbacks, and any kind of "last resort" special effect
+    PRIORITY_CLASS,        // Class-filtered callbacks
+    PRIORITY_SPEC          // Specialization-filtered callbacks
+  };
+
+  priority priority;
+
+  scoped_callback_t() : priority( PRIORITY_DEFAULT )
+  { }
+
+  scoped_callback_t( enum priority p ) : priority( p )
   { }
 
   virtual ~scoped_callback_t()
@@ -2460,7 +2484,7 @@ struct special_effect_t
   // Old-style function-based custom second phase initializer (callback)
   std::function<void(special_effect_t&)> custom_init;
   // New-style object-based custom second phase initializer
-  scoped_callback_t* custom_init_object;
+  std::vector<scoped_callback_t*> custom_init_object;
 
   special_effect_t( player_t* p ) :
     item( nullptr ), player( p ),
@@ -3999,8 +4023,6 @@ struct player_t : public actor_t
   virtual void init_distance_targeting();
   virtual void init_absorb_priority();
   virtual void register_callbacks();
-  // Class specific hook for first-phase initializing special effects. Returns true if the class-specific hook initialized something, false otherwise.
-  virtual bool init_special_effect( special_effect_t& /* effect */, unsigned /* spell_id */ ) { return false; }
 
   virtual bool create_actions();
   virtual bool init_actions();
@@ -6753,10 +6775,12 @@ namespace unique_gear
     const player_e class_;
     const specialization_e spec_;
 
-    class_scoped_callback_t( player_e c ) : class_( c ), spec_( SPEC_NONE )
+    class_scoped_callback_t( player_e c ) :
+      scoped_callback_t( PRIORITY_CLASS ), class_( c ), spec_( SPEC_NONE )
     { }
 
-    class_scoped_callback_t( specialization_e s ) : class_( PLAYER_NONE ), spec_( s )
+    class_scoped_callback_t( specialization_e s ) :
+      scoped_callback_t( PRIORITY_SPEC ), class_( PLAYER_NONE ), spec_( s )
     { }
 
     bool valid( const special_effect_t& effect ) const override
@@ -6824,11 +6848,10 @@ namespace unique_gear
     }
 
     // Determine (from the given special_effect_t) whether to create the real buff, or the fallback
-    // buff. Since this class is (currently) used by item-based special effects, defaults to
-    // checking the presence of an item pointer in the special_effect_t object. This pointer will
-    // be automatically setup by the core player item initialization system.
+    // buff. All fallback special effects will have their source set to
+    // SPECIAL_EFFECT_SOURCE_FALLBACK.
     virtual bool is_fallback( const special_effect_t& e ) const
-    { return e.item == nullptr; }
+    { return e.source == SPECIAL_EFFECT_SOURCE_FALLBACK; }
 
     // Create a correct type buff creator. Derived classes can override this method to fully
     // customize the buff creation.
@@ -6857,7 +6880,7 @@ namespace unique_gear
       assert( ! buff_name.empty() );
       // Assert here, but note that release builds will not crash, rather the buff is assigned
       // to a dummy pointer inside this initializer object
-      assert( buff_ptr( e ) == __dummy );
+      assert( &buff_ptr( e ) != &__dummy );
 
       // Proc chance is hardcoded to zero, essentially disabling the buff described by creator()
       // call.
@@ -6870,46 +6893,62 @@ namespace unique_gear
     }
   };
 
+  // Manipulate actor somehow (using an overridden manipulate method)
+  template<typename T_ACTOR>
+  struct scoped_actor_callback_t : public class_scoped_callback_t
+  {
+    typedef scoped_actor_callback_t<T_ACTOR> super;
+
+    scoped_actor_callback_t( player_e c ) : class_scoped_callback_t( c )
+    { }
+
+    scoped_actor_callback_t( specialization_e s ) : class_scoped_callback_t( s )
+    { }
+
+    void initialize( special_effect_t& e ) override
+    { manipulate( debug_cast<T_ACTOR*>( e.player ), e ); }
+
+    // Overridable method to manipulate the actor. Must be implemented.
+    virtual void manipulate( T_ACTOR* actor, const special_effect_t& e ) = 0;
+  };
+
+  // Manipulate the action somehow (using an overridden manipulate method)
   template<typename T_ACTION = action_t>
-  struct scoped_action_callback_t : public scoped_callback_t
+  struct scoped_action_callback_t : public class_scoped_callback_t
   {
     typedef scoped_action_callback_t<T_ACTION> super;
 
-    const std::vector<std::string> names_;
-    const std::vector<unsigned> spell_ids_;
+    const std::string name;
+    const unsigned spell_id;
 
-    scoped_action_callback_t( const std::vector<std::string>& n ) :
-      scoped_callback_t(), names_( n )
+    scoped_action_callback_t( player_e c, const std::string& n ) :
+      class_scoped_callback_t( c ), name( n ), spell_id( 0 )
     { }
 
-    scoped_action_callback_t( const std::vector<unsigned>& s ) :
-      scoped_callback_t(), spell_ids_( s )
+    scoped_action_callback_t( specialization_e s, const std::string& n ) :
+      class_scoped_callback_t( s ), name( n ), spell_id( 0 )
     { }
 
-    // Match by name list
-    bool name_match( const action_t* a ) const
-    { return range::find( names_, a -> name_str ) != names_.end(); }
+    scoped_action_callback_t( player_e c, unsigned sid ) :
+      class_scoped_callback_t( c ), spell_id( sid )
+    { }
 
-    // Match by id list
-    bool id_match( const action_t* a ) const
-    { return range::find( spell_ids_, a -> id ) != spell_ids_.end(); }
-
-    // Valid scoped actions match either list type
-    bool valid( const special_effect_t& e ) const override
-    {
-      return range::find_if( e.player -> action_list,
-        [ this ]( const action_t* a ) {
-          return this -> name_match( a ) || this -> id_match( a );
-        }) != e.player -> action_list.end();
-    }
+    scoped_action_callback_t( specialization_e s, unsigned sid ) :
+      class_scoped_callback_t( s ), spell_id( sid )
+    { }
 
     // Initialize the callback by manipulating the action(s)
     void initialize( special_effect_t& e ) override
     {
       range::for_each( e.player -> action_list, [ this, e ]( action_t* a ) {
-        if ( this -> name_match( a ) || this -> id_match( a ) )
+        if ( util::str_compare_ci( name, a -> name_str ) || spell_id == a -> id )
         {
-          this -> manipulate( debug_cast<T_ACTION*>( a ), e );
+          if ( a -> sim -> debug )
+          {
+            e.player -> sim -> out_debug.printf( "Player %s manipulating action %s",
+                e.player -> name(), a -> name() );
+          }
+          manipulate( debug_cast<T_ACTION*>( a ), e );
         }
       });
     }
@@ -6930,12 +6969,15 @@ namespace unique_gear
     { }
   };
 
+typedef std::vector<const special_effect_db_item_t*> special_effect_set_t;
+
 void register_hotfixes();
 void register_special_effects();
+void sort_special_effects();
 void unregister_special_effects();
 
 void add_effect( const special_effect_db_item_t& );
-const special_effect_db_item_t& find_special_effect_db_item( unsigned spell_id );
+special_effect_set_t find_special_effect_db_item( unsigned spell_id, const special_effect_t& );
 
 // Old-style special effect registering functions
 void register_special_effect( unsigned spell_id, const char* encoded_str );
@@ -6948,11 +6990,6 @@ void register_special_effect( unsigned spell_id, const T& cb, bool fallback = fa
 {
   static_assert( std::is_base_of<scoped_callback_t, T>::value,
       "register_special_effect callback object must be derived from scoped_callback_t" );
-
-  if ( find_special_effect_db_item( spell_id ).spell_id == spell_id )
-  {
-    return;
-  }
 
   special_effect_db_item_t dbitem;
   dbitem.spell_id = spell_id;

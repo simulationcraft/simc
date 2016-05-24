@@ -1313,6 +1313,8 @@ const char* util::special_effect_source_string( special_effect_source_e type )
     case SPECIAL_EFFECT_SOURCE_ENCHANT: return "enchant";
     case SPECIAL_EFFECT_SOURCE_ADDON:   return "addon";
     case SPECIAL_EFFECT_SOURCE_GEM:     return "gem";
+    case SPECIAL_EFFECT_SOURCE_SOCKET_BONUS: return "socket_bonus";
+    case SPECIAL_EFFECT_SOURCE_FALLBACK: return "fallback";
     default:                            return "unknown";
   }
 }

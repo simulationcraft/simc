@@ -186,7 +186,7 @@ void special_effect_t::reset()
   execute_action = nullptr;
   custom_buff = nullptr;
   custom_init = nullptr;
-  custom_init_object = nullptr;
+  custom_init_object.clear();
 }
 
 // special_effect_t::driver =================================================

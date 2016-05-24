@@ -4068,50 +4068,50 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
   bool ret = true;
   player_t* p = effect.player;
 
-  // Always check class specific (first phase) special effect initialization
-  // first. If that returns false (nothing done), move to generic init
-  if ( ! p -> init_special_effect( effect, spell_id ) )
+  auto dbitems = find_special_effect_db_item( spell_id, effect );
+
+  // Nothing found in our special effect database, jump out early and indicate that no special
+  // effects should be created
+  if ( dbitems.front() -> spell_id == 0 || dbitems.size() == 0 )
   {
-    const special_effect_db_item_t& dbitem = find_special_effect_db_item( spell_id );
-
-    // Figure out first phase options from our special effect database
-    if ( dbitem.spell_id == spell_id )
-    {
-      // Custom special effect initialization is deferred, and no parsing from
-      // spell data is done automatically.
-      if ( dbitem.cb_obj )
-      {
-        effect.type = SPECIAL_EFFECT_CUSTOM;
-        effect.custom_init_object = dbitem.cb_obj;
-      }
-
-      // Parse auxilary effect options before doing spell data based parsing
-      if ( ! dbitem.encoded_options.empty() )
-      {
-        std::string encoded_options = dbitem.encoded_options;
-        for ( size_t i = 0; i < encoded_options.length(); i++ )
-          encoded_options[ i ] = std::tolower( encoded_options[ i ] );
-        // Note, if the encoding parse fails (this should never ever happen),
-        // we don't parse game client data either.
-        if ( ! special_effect::parse_special_effect_encoding( effect, encoded_options ) )
-          return false;
-      }
-    }
-  }
-
-  // Setup the driver always, though honoring any parsing performed in the 
-  // first phase options.
-  if ( effect.spell_id == 0 )
-    effect.spell_id = spell_id;
-
-  if ( effect.custom_init_object && ! effect.custom_init_object -> valid( effect ) )
-  {
-    if ( p -> sim -> debug )
-      p -> sim -> out_debug.printf( "Player %s unable to initialize special effect in item %s, "
-                                    "special effect fails validity check.",
-          p -> name(), effect.item ? effect.item -> name() : "unknown" );
     effect.type = SPECIAL_EFFECT_NONE;
     return ret;
+  }
+
+  for ( const auto dbitem: dbitems )
+  {
+    // Parse auxilary effect options before doing spell data based parsing
+    if ( ! dbitem -> encoded_options.empty() )
+    {
+      std::string encoded_options = dbitem -> encoded_options;
+      for ( size_t i = 0; i < encoded_options.length(); i++ )
+        encoded_options[ i ] = std::tolower( encoded_options[ i ] );
+      // Note, if the encoding parse fails (this should never ever happen),
+      // we don't parse game client data either.
+      if ( ! special_effect::parse_special_effect_encoding( effect, encoded_options ) )
+        return false;
+    }
+
+    // Setup the driver always, though honoring any parsing performed in the 
+    // first phase options.
+    if ( effect.spell_id == 0 )
+      effect.spell_id = spell_id;
+
+    if ( dbitem -> cb_obj )
+    {
+      if ( ! dbitem -> cb_obj -> valid( effect ) )
+      {
+        continue;
+      }
+
+      // Custom special effect initialization is deferred, and no parsing from spell data is done
+      // automatically.
+      if ( dbitem -> cb_obj )
+      {
+        effect.type = SPECIAL_EFFECT_CUSTOM;
+        effect.custom_init_object.push_back( dbitem -> cb_obj );
+      }
+    }
   }
 
   if ( effect.spell_id > 0 && p -> find_spell( effect.spell_id ) -> id() != effect.spell_id )
@@ -4132,6 +4132,16 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
             effect.action_type() == SPECIAL_EFFECT_ACTION_NONE )
     effect.type = SPECIAL_EFFECT_NONE;
 
+  if ( effect.type == SPECIAL_EFFECT_CUSTOM && effect.custom_init_object.size() == 0 )
+  {
+    if ( p -> sim -> debug )
+      p -> sim -> out_debug.printf( "Player %s unable to initialize special effect in item %s, "
+                                    "special effect fails validity check.",
+          p -> name(), effect.item ? effect.item -> name() : "unknown" );
+    effect.type = SPECIAL_EFFECT_NONE;
+    return ret;
+  }
+
   return ret;
 }
 
@@ -4141,14 +4151,16 @@ void unique_gear::initialize_special_effect_2( special_effect_t* effect )
 {
   if ( effect -> type == SPECIAL_EFFECT_CUSTOM )
   {
-    assert( effect -> custom_init || effect -> custom_init_object );
+    assert( effect -> custom_init || effect -> custom_init_object.size() > 0 );
     if ( effect -> custom_init )
     {
       effect -> custom_init( *effect );
     }
     else
     {
-      effect -> custom_init_object -> initialize( *effect );
+      range::for_each( effect -> custom_init_object, [ effect ]( scoped_callback_t* cb ) {
+        cb -> initialize( *effect );
+      } );
     }
   }
   else if ( effect -> type == SPECIAL_EFFECT_EQUIP )
@@ -4604,26 +4616,60 @@ const item_data_t* unique_gear::find_item_by_spell( const dbc_t& dbc, unsigned s
 
 namespace unique_gear
 {
-std::vector<special_effect_db_item_t> __special_effect_db;
+std::vector<special_effect_db_item_t> __special_effect_db, __fallback_effect_db;
 static const special_effect_db_item_t __null_db_item;
 }
 
-const special_effect_db_item_t& unique_gear::find_special_effect_db_item( unsigned spell_id )
+namespace
 {
-  for (auto & elem : __special_effect_db)
+bool cmp_dbitem( const special_effect_db_item_t& elem, unsigned id )
+{ return elem.spell_id < id; }
+}
+
+static unique_gear::special_effect_set_t do_find_special_effect_db_item(
+    const std::vector<special_effect_db_item_t>& db, unsigned spell_id, const special_effect_t& e )
+{
+  special_effect_set_t entries;
+
+  auto it = std::lower_bound( db.begin(), db.end(), spell_id, cmp_dbitem );
+
+  if ( it -> spell_id != spell_id )
   {
-    if ( elem.spell_id == spell_id )
-    {
-      return elem;
-    }
+    return { &__null_db_item };
   }
 
-  return __null_db_item;
+  while ( it != db.end() && it -> spell_id == spell_id )
+  {
+    if ( entries.size() == 0 ||
+         it -> cb_obj -> priority == entries.front() -> cb_obj -> priority )
+    {
+      if ( it -> cb_obj -> valid( e ) )
+      {
+        entries.push_back( &( *it ) );
+      }
+    }
+    else
+    {
+      break;
+    }
+
+    it++;
+  }
+
+  return entries;
 }
+
+static special_effect_set_t find_fallback_effect_db_item( unsigned spell_id, const special_effect_t& e )
+{ return do_find_special_effect_db_item( __fallback_effect_db, spell_id, e ); }
+
+special_effect_set_t unique_gear::find_special_effect_db_item( unsigned spell_id, const special_effect_t& e )
+{ return do_find_special_effect_db_item( __special_effect_db, spell_id, e ); }
 
 void unique_gear::add_effect( const special_effect_db_item_t& dbitem )
 {
   __special_effect_db.push_back( dbitem );
+  if ( dbitem.fallback )
+    __fallback_effect_db.push_back( dbitem );
 }
 
 void unique_gear::register_special_effect( unsigned           spell_id,
@@ -4635,11 +4681,6 @@ void unique_gear::register_special_effect( unsigned           spell_id,
 void unique_gear::register_special_effect( unsigned           spell_id,
                                            const custom_cb_t& init_callback )
 {
-  if ( find_special_effect_db_item( spell_id ).spell_id == spell_id )
-  {
-    return;
-  }
-
   special_effect_db_item_t dbitem;
   dbitem.spell_id = spell_id;
   dbitem.cb_obj = new wrapper_callback_t( init_callback );
@@ -4649,11 +4690,6 @@ void unique_gear::register_special_effect( unsigned           spell_id,
 
 void unique_gear::register_special_effect( unsigned spell_id, const char* encoded_str )
 {
-  if ( find_special_effect_db_item( spell_id ).spell_id == spell_id )
-  {
-    return;
-  }
-
   special_effect_db_item_t dbitem;
   dbitem.spell_id = spell_id;
   dbitem.encoded_options = encoded_str;
@@ -4997,27 +5033,81 @@ void unique_gear::initialize_special_effect_fallbacks( player_t* actor )
 {
   special_effect_t fallback_effect( actor );
 
-  for ( const auto& elem: __special_effect_db )
+  // Generate an unique list of fallback spell ids
+  std::vector<unsigned> fallback_ids;
+  range::for_each( __fallback_effect_db, [ &fallback_ids ]( const special_effect_db_item_t& elem ) {
+    if ( range::find( fallback_ids, elem.spell_id ) == fallback_ids.end() )
+    {
+      fallback_ids.push_back( elem.spell_id );
+    }
+  });
+
+  // Check all fallback ids
+  for ( auto fallback_id: fallback_ids )
   {
-    if ( find_special_effect( actor, elem.spell_id ) )
+    // Actor already has a special effect with the fallback id, so don't do anything
+    if ( find_special_effect( actor, fallback_id ) )
     {
       continue;
     }
 
     fallback_effect.reset();
-    fallback_effect.spell_id = elem.spell_id;
+    fallback_effect.spell_id = fallback_id;
+    fallback_effect.source = SPECIAL_EFFECT_SOURCE_FALLBACK;
     fallback_effect.type = SPECIAL_EFFECT_CUSTOM;
 
-    // Fallbacks are only used for the new-style callback objects, old method-style callbacks do not
-    // support them.
-    if ( ! elem.cb_obj || ! elem.fallback || ! elem.cb_obj-> valid( fallback_effect ) )
+    // Get all registered fallback effects for the spell (fallback) id
+    auto dbitems = find_fallback_effect_db_item( fallback_id, fallback_effect );
+    // .. nothing found, continue
+    if ( dbitems.size() == 0 || dbitems.front() -> spell_id == 0 )
     {
       continue;
     }
 
-    fallback_effect.custom_init_object = elem.cb_obj;
+    // For all registered fallback effects
+    for ( const auto& dbitem: dbitems )
+    {
+      // Ensure that the fallback effect is actually valid for the special effect (actor)
+      if ( ! dbitem -> cb_obj -> valid( fallback_effect ) )
+      {
+        continue;
+      }
 
-    actor -> special_effects.push_back( new special_effect_t( fallback_effect ) );
+      fallback_effect.custom_init_object.push_back( dbitem -> cb_obj );
+    }
+
+    if ( fallback_effect.custom_init_object.size() > 0 )
+    {
+      actor -> special_effects.push_back( new special_effect_t( fallback_effect ) );
+    }
   }
 }
 
+namespace
+{
+bool cmp_special_effect( const special_effect_db_item_t& a, const special_effect_db_item_t& b )
+{
+  if ( &a == &b )
+    return false;
+
+  if ( a.spell_id == b.spell_id )
+  {
+    if ( a.encoded_options.empty() || b.encoded_options.empty() )
+    {
+      return a.encoded_options < b.encoded_options;
+    }
+
+    assert( a.cb_obj && b.cb_obj );
+    // Note, descending priority order
+    return a.cb_obj -> priority > b.cb_obj -> priority;
+  }
+
+  return a.spell_id < b.spell_id;
+}
+}
+
+void unique_gear::sort_special_effects()
+{
+  std::sort( __special_effect_db.begin(), __special_effect_db.end(), cmp_special_effect );
+  std::sort( __fallback_effect_db.begin(), __fallback_effect_db.end(), cmp_special_effect );
+}
