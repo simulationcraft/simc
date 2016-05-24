@@ -294,6 +294,9 @@ public:
   {
     last_retribution_trinket_target = nullptr;
     retribution_trinket = nullptr;
+    whisper_of_the_nathrezim = nullptr;
+    liadrins_fury_unleashed = nullptr;
+    justice_gaze = nullptr;
     active_beacon_of_light             = nullptr;
     active_enlightened_judgments       = nullptr;
     active_blessing_of_might_proc      = nullptr;
