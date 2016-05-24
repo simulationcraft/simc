@@ -4633,7 +4633,7 @@ static unique_gear::special_effect_set_t do_find_special_effect_db_item(
 
   auto it = std::lower_bound( db.begin(), db.end(), spell_id, cmp_dbitem );
 
-  if ( it -> spell_id != spell_id )
+  if ( it == db.end() || it -> spell_id != spell_id )
   {
     return { &__null_db_item };
   }
