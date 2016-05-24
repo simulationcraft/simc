@@ -280,6 +280,7 @@ public:
   struct specialization_t {
     // Generic
     const spell_data_t* plate_specialization;
+    const spell_data_t* death_knight;
 
     // Blood
     const spell_data_t* bladed_armor;
@@ -1481,8 +1482,10 @@ struct death_knight_action_t : public Base
 
   gain_t* gain;
 
+  bool hasted_gcd;
+
   death_knight_action_t( const std::string& n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() ) :
-    action_base_t( n, p, s ), gain( nullptr )
+    action_base_t( n, p, s ), gain( nullptr ), hasted_gcd( false )
   {
     this -> may_crit   = true;
     this -> may_glance = false;
@@ -1534,8 +1537,37 @@ struct death_knight_action_t : public Base
       gain = this -> player -> get_gain( util::inverse_tokenize( this -> name_str ) );
     }
 
+    if ( this -> data().affected_by( p() -> spec.death_knight -> effectN( 1 ) ) )
+    {
+      this -> cooldown -> hasted = true;
+    }
+
+    hasted_gcd = this -> data().affected_by( p() -> spec.death_knight -> effectN( 2 ) );
+
     return ret;
   }
+
+  timespan_t gcd() const override
+  {
+    timespan_t base_gcd = action_base_t::gcd();
+    if ( base_gcd == timespan_t::zero() )
+    {
+      return timespan_t::zero();
+    }
+
+    if ( hasted_gcd )
+    {
+      base_gcd *= this -> composite_haste();
+    }
+
+    if ( base_gcd < this -> min_gcd )
+    {
+      base_gcd = this -> min_gcd;
+    }
+
+    return base_gcd;
+  }
+
 
   double composite_target_multiplier( player_t* t ) const override
   {
@@ -1964,11 +1996,11 @@ struct auto_attack_t : public death_knight_melee_attack_t
 struct army_of_the_dead_t : public death_knight_spell_t
 {
   army_of_the_dead_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "army_of_the_dead", p, p -> find_class_spell( "Army of the Dead" ) )
+    death_knight_spell_t( "army_of_the_dead", p, p -> find_specialization_spell( "Army of the Dead" ) )
   {
     parse_options( options_str );
 
-    harmful     = false;
+    harmful = false;
   }
 
   virtual void schedule_execute( action_state_t* s ) override
@@ -3510,7 +3542,6 @@ struct summon_gargoyle_t : public death_knight_spell_t
     death_knight_spell_t( "summon_gargoyle", p, p -> find_class_spell( "Summon Gargoyle" ) )
   {
     parse_options( options_str );
-    dot_duration = timespan_t::zero();
     harmful = false;
   }
 
@@ -4328,6 +4359,7 @@ void death_knight_t::init_spells()
 
   // Generic
   spec.plate_specialization       = find_specialization_spell( "Plate Specialization" );
+  spec.death_knight               = find_spell( 137005 ); // "Death Knight" passive
 
   // Blood
   spec.bladed_armor               = find_specialization_spell( "Bladed Armor" );
