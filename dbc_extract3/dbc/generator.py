@@ -1263,9 +1263,9 @@ class SpellDataGenerator(DataGenerator):
           ( 155152, 5 ),                            # Prismatic Crystal nuke
           ( 157978, 0 ), ( 157979, 0 ),             # Unstable magic aoe
           ( 191764, 0 ), ( 191799, 0 ),             # Arcane T18 2P Pet
-		  ( 194466, 0 ),                            # Phoenix's Flames
-		  ( 205235, 5 ),                            # Arcane Familiar attack, Arcane Assault
-		  ( 7268,   0 ),                            # Arcane Missile Tick
+          ( 194432, 0 ),                            # Felo'melorn - Aftershocks
+          ( 194466, 0 ),                            # Phoenix's Flames
+          ( 205235, 5 ),                            # Arcane Familiar attack, Arcane Assault
         ),
 
         # Warlock:

@@ -3156,7 +3156,7 @@ struct fireball_t : public fire_mage_spell_t
 
 };
 
-// Flame Patch Spell ========================================================
+// Flame Patch Spell ==========================================================
 
 struct flame_patch_t : public fire_mage_spell_t
 {
@@ -3164,25 +3164,41 @@ struct flame_patch_t : public fire_mage_spell_t
     fire_mage_spell_t( "flame_patch", p, p -> talents.flame_patch )
   {
     parse_options( options_str );
-    aoe=-1;
+    aoe = -1;
   }
 };
-// Flamestrike Spell ========================================================
+// Flamestrike Spell ==========================================================
+
+struct aftershocks_t : public fire_mage_spell_t
+{
+  aftershocks_t( mage_t* p ) :
+    fire_mage_spell_t( "aftershocks", p, p -> find_spell( 194432 ) )
+  {
+    background = true;
+    triggers_ignite = true;
+  }
+};
 
 struct flamestrike_t : public fire_mage_spell_t
 {
+  aftershocks_t* aftershocks;
   flame_patch_t* flame_patch;
+
   flamestrike_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "flamestrike", p,
                        p -> find_specialization_spell( "Flamestrike" ) )
   {
     parse_options( options_str );
 
-    triggers_ignite = true;
-
     base_multiplier *= 1.0 + p -> artifact.blue_flame_special.percent();
-
+    triggers_ignite = true;
     aoe = -1;
+
+    if ( p -> artifact.aftershocks.rank() )
+    {
+      aftershocks = new aftershocks_t( p );
+      add_child( aftershocks );
+    }
   }
 
   virtual action_state_t* new_state() override
@@ -3205,11 +3221,15 @@ struct flamestrike_t : public fire_mage_spell_t
     fire_mage_spell_t::execute();
 
     p() -> buffs.hot_streak -> expire();
+  }
 
-    //TODO: Add delay between intial impact and second impact
+  virtual void impact( action_state_t* state ) override
+  {
+    fire_mage_spell_t::impact( state );
+
     if ( p() -> artifact.aftershocks.rank() )
     {
-      fire_mage_spell_t::execute();
+      aftershocks -> schedule_execute();
     }
   }
 
