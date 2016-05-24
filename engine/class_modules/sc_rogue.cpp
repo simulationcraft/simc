@@ -197,7 +197,6 @@ struct rogue_t : public player_t
     buff_t* sprint;
     buff_t* stealth;
     buff_t* subterfuge;
-    buff_t* t16_2pc_melee;
     buff_t* tot_trigger;
     buff_t* vanish;
     buff_t* wound_poison;
@@ -211,7 +210,6 @@ struct rogue_t : public player_t
     stat_buff_t* fof_p1; // Phase 1
     stat_buff_t* fof_p2;
     stat_buff_t* fof_p3;
-    stat_buff_t* toxicologist;
 
     buff_t* deceit;
     buff_t* shadow_strikes;
@@ -460,7 +458,6 @@ struct rogue_t : public player_t
   {
     proc_t* deepening_shadows;
     proc_t* seal_fate;
-    proc_t* t16_2pc_melee;
     proc_t* t18_2pc_combat;
     proc_t* weaponmaster;
 
@@ -1657,10 +1654,6 @@ void rogue_attack_t::impact( action_state_t* state )
         }
       }
     }
-
-    // Prevent poisons from proccing Toxicologist
-    if ( ! proc && td( state -> target ) -> debuffs.vendetta -> up() )
-      p() -> buffs.toxicologist -> trigger();
   }
 }
 
@@ -1964,23 +1957,10 @@ struct ambush_t : public rogue_attack_t
     return m;
   }
 
-  virtual double cost() const override
-  {
-    double c = rogue_attack_t::cost();
-
-    c -= 2 * p() -> buffs.t16_2pc_melee -> stack();
-
-    if ( c < 0 )
-      return 0;
-
-    return c;
-  }
-
   void execute() override
   {
     rogue_attack_t::execute();
 
-    p() -> buffs.t16_2pc_melee -> expire();
     p() -> buffs.hidden_blade -> trigger();
   }
 };
@@ -1995,22 +1975,6 @@ struct backstab_t : public rogue_attack_t
     requires_weapon   = WEAPON_DAGGER;
 
     base_multiplier *= 1.0 + p -> artifact.the_quiet_knife.percent();
-  }
-
-  virtual double cost() const override
-  {
-    double c = rogue_attack_t::cost();
-    c -= 2 * p() -> buffs.t16_2pc_melee -> stack();
-    if ( c < 0 )
-      c = 0;
-    return c;
-  }
-
-  void execute() override
-  {
-    rogue_attack_t::execute();
-
-    p() -> buffs.t16_2pc_melee -> expire();
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -2861,18 +2825,6 @@ struct mutilate_t : public rogue_attack_t
     add_child( oh_strike );
   }
 
-  double cost() const override
-  {
-    double c = rogue_attack_t::cost();
-    if ( p() -> buffs.t16_2pc_melee -> up() )
-      c -= 6 * p() -> buffs.t16_2pc_melee -> check();
-
-    if ( c < 0 )
-      c = 0;
-
-    return c;
-  }
-
   double composite_crit() const override
   {
     double c = rogue_attack_t::composite_crit();
@@ -2890,8 +2842,6 @@ struct mutilate_t : public rogue_attack_t
   void execute() override
   {
     rogue_attack_t::execute();
-
-    p() -> buffs.t16_2pc_melee -> expire();
 
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -4012,9 +3962,6 @@ void rogue_t::trigger_seal_fate( const action_state_t* state )
   trigger_combo_point_gain( 1, gains.seal_fate, state -> action );
 
   procs.seal_fate -> occur();
-
-  if ( buffs.t16_2pc_melee -> trigger() )
-    procs.t16_2pc_melee -> occur();
 }
 
 void rogue_t::trigger_main_gauche( const action_state_t* state )
