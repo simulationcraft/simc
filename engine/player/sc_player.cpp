@@ -1086,7 +1086,14 @@ bool player_t::init_items()
   init_weapon( off_hand_weapon );
 
   if ( sim -> debug )
-    range::for_each( items, [ this ]( const item_t& i ) { sim -> out_debug.printf( "%s", i.to_string().c_str() ); } );
+  {
+    range::for_each( items, [ this ]( const item_t& i ) {
+      if ( i.active() )
+      {
+        sim -> out_debug.printf( "%s", i.to_string().c_str() );
+      }
+    } );
+  }
 
   return true;
 }
