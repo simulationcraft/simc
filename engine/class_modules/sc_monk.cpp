@@ -2385,10 +2385,13 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     // of the special effect.
     if ( p() -> furious_sun )
     {
-      double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item) / 100.0;
+      double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item ) / 100.0;
 
       if ( rng().roll( proc_chance ) )
-        rsk_proc -> execute();
+      {
+        //rsk_proc -> target = target;
+        //rsk_proc -> execute();
+      }
     }
   }
 
@@ -2533,8 +2536,8 @@ struct blackout_kick_t: public monk_melee_attack_t
     {
       double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item ) / 100.0;
 
-      if ( rng().roll( proc_chance ) )
-        rsk_proc -> execute();
+      //if ( rsk_proc &&  rng().roll( proc_chance ) )
+       // rsk_proc -> execute();
     }
   }
 
@@ -2737,7 +2740,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
 
     for ( player_t* target : targets )
     {
-      if ( td( target ) -> debuff.cyclone_strikes -> up() )
+      if ( td( target ) -> debuff.cyclone_strikes && td( target ) -> debuff.cyclone_strikes -> up() )
       {
         cyclone_strike_counter++;
       }
@@ -2915,18 +2918,21 @@ struct fists_of_fury_t: public monk_melee_attack_t
       p() -> buff.masterful_strikes -> trigger( ( int ) p() -> sets.set( MONK_WINDWALKER,T18, B4 ) -> effect_count() - 1 );
   }
 
-  virtual void last_tick( dot_t* dot ) override
+  void last_tick( dot_t* dot ) override
   {
-    monk_melee_attack_t::last_tick( dot );
     // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
     // of the special effect.
     if ( p() -> furious_sun )
     {
       double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item ) / 100.0;
 
-      if ( rng().roll( proc_chance ) )
-        rsk_proc -> execute();
+      //if ( rng().roll( proc_chance ) )
+     // {
+       // rsk_proc -> target = dot -> target;
+       // rsk_proc -> execute();
+     // }
     }
+    monk_melee_attack_t::last_tick( dot );
   }
 };
 
@@ -5635,13 +5641,10 @@ dots( dots_t() ),
 debuff( buffs_t() ),
 monk( *p )
 {
-  if ( p -> specialization() == MONK_WINDWALKER )
-  {
-    debuff.cyclone_strikes = buff_creator_t( *this, "cyclone_strikes" )
-      .spell( p -> spec.cyclone_strikes )
-      .duration( timespan_t::from_seconds( p -> spec.spinning_crane_kick -> effectN( 3 ).base_value() ) )
-      .quiet( true );
-  }
+  debuff.cyclone_strikes = buff_creator_t( *this, "cyclone_strikes" )
+    .spell( p -> spec.cyclone_strikes )
+    .duration( timespan_t::from_seconds( p -> spec.spinning_crane_kick -> effectN( 3 ).base_value() ) )
+    .quiet( true );
 
   debuff.dizzing_kicks = buff_creator_t( *this, "dizzying_kicks" )
     .spell( p -> passives.dizzying_kicks )
