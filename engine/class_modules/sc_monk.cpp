@@ -159,6 +159,7 @@ public:
   struct active_actions_t
   {
     action_t* healing_elixir;
+    action_t* chi_orbit;
     actions::spells::stagger_self_damage_t* stagger_self_damage;
   } active_actions;
 
@@ -3773,8 +3774,6 @@ struct chi_orbit_t: public monk_spell_t
     monk_spell_t( "chi_orbit", p, p -> talent.chi_orbit )
   {
     background = true;
-    ignore_false_positive = true;
-    trigger_gcd = timespan_t::zero();
     attack_power_mod.direct = p -> passives.chi_orbit -> effectN( 1 ).ap_coeff();
   }
 
@@ -5531,10 +5530,8 @@ struct chi_orbit_event_t : public player_event_t
 
 struct chi_orbit_trigger_event_t : public player_event_t
 {
-  actions::chi_orbit_t* chi_orbit;
   chi_orbit_trigger_event_t( monk_t& player, timespan_t tick_time ):
-    player_event_t( player ),
-    chi_orbit( new actions::chi_orbit_t( &player ) )
+    player_event_t( player )
   {
     tick_time = clamp( tick_time, timespan_t::zero(), timespan_t::from_seconds( 1 ) );
     add_event( tick_time );
@@ -5546,9 +5543,9 @@ struct chi_orbit_trigger_event_t : public player_event_t
     monk_t* p = debug_cast<monk_t*>( player() );
 
     if ( p -> buff.chi_orbit -> up() )
-      chi_orbit -> execute();
+      p -> active_actions.chi_orbit -> execute();
 
-    new ( sim() ) chi_orbit_event_t( *p, timespan_t::from_seconds( 1 ) );
+    new ( sim() ) chi_orbit_trigger_event_t( *p, timespan_t::from_seconds( 1 ) );
   }
 };
 
@@ -6103,6 +6100,9 @@ void monk_t::init_spells()
   //SPELLS
   if ( talent.healing_elixirs -> ok() )
     active_actions.healing_elixir     = new actions::healing_elixirs_t( *this );
+
+  if ( talent.chi_orbit -> ok() )
+    active_actions.chi_orbit = new actions::chi_orbit_t( this );
 
   if (specialization() == MONK_BREWMASTER)
     active_actions.stagger_self_damage = new actions::stagger_self_damage_t( this );
