@@ -1,9 +1,9 @@
-monk="Monk_Windwalker_2h_T17P"
+monk="Monk_Windwalker_T17P"
 level=100
 race=blood_elf
 role=hybrid
 position=back
-talents=0230023
+talents=3030023
 spec=windwalker
 
 # This default action priority list is automatically created based on your character.
@@ -81,13 +81,14 @@ finger1=signet_of_radiant_leaves,id=109762,bonus_id=524,enchant=gift_of_multistr
 finger2=solium_band_of_dexterity,id=118292,enchant=gift_of_multistrike
 trinket1=thundertowers_targeting_reticle,id=109996,bonus_id=524
 trinket2=blood_seal_of_azzakel,id=109995,bonus_id=524
-main_hand=turbulent_polearm,id=115324,bonus_id=489,enchant=mark_of_the_frostwolf
+main_hand=turbulent_warmace,id=115323,bonus_id=489,enchant=mark_of_the_frostwolf
+off_hand=turbulent_warmace,id=115323,bonus_id=489,enchant=mark_of_the_frostwolf
 
 # Gear Summary
-# gear_ilvl=630.67
-# gear_agility=1969
-# gear_stamina=2479
-# gear_crit_rating=1431
+# gear_ilvl=630.63
+# gear_agility=1946
+# gear_stamina=2442
+# gear_crit_rating=1398
 # gear_haste_rating=514
 # gear_mastery_rating=84
 # gear_versatility_rating=475

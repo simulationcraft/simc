@@ -1,9 +1,9 @@
-monk="Monk_Windwalker_2h_T18H_ChiX"
+monk="Monk_Windwalker_T18M"
 level=100
 race=blood_elf
 role=hybrid
 position=back
-talents=0220022
+talents=3020022
 spec=windwalker
 
 # This default action priority list is automatically created based on your character.
@@ -67,30 +67,31 @@ actions.aoe_rjw+=/blackout_kick,if=buff.bok_proc.react|buff.serenity.up
 actions.aoe_rjw+=/blackout_kick,if=chi.max-chi<2&cooldown.fists_of_fury.remains>3
 actions.aoe_rjw+=/tiger_palm,if=chi.max-chi>=2
 
-head=mask_of_the_hurricanes_eye,id=124262,bonus_id=566
-neck=choker_of_the_great_betrayer,id=124210,bonus_id=566,enchant=gift_of_haste
-shoulders=mantle_of_the_hurricanes_eye,id=124273,bonus_id=566
-back=cloak_of_desperate_temerity,id=124134,bonus_id=566,enchant=gift_of_haste
-chest=tunic_of_the_soulbinder,id=124245,bonus_id=566
-wrists=bloodcult_bracers,id=124279,bonus_id=566
-hands=fistwraps_of_the_hurricanes_eye,id=124256,bonus_id=566
-waist=waistwrap_of_banishment,id=124276,bonus_id=566
-legs=legwraps_of_the_hurricanes_eye,id=124268,bonus_id=566
-feet=oppressors_merciless_treads,id=124251,bonus_id=566
-finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_haste
-finger2=portal_key_signet,id=124189,bonus_id=566,enchant=gift_of_haste
-trinket1=sacred_draenic_incense,id=124517,bonus_id=566
-trinket2=soul_capacitor,id=124225,bonus_id=566
-main_hand=xutenash_glaive_of_ruin,id=124378,bonus_id=566,enchant=mark_of_warsong
+head=mask_of_the_hurricanes_eye,id=124262,bonus_id=567,upgrade=2
+neck=choker_of_the_great_betrayer,id=124210,bonus_id=567,upgrade=2,enchant=gift_of_haste
+shoulders=mantle_of_the_hurricanes_eye,id=124273,bonus_id=567,upgrade=2
+back=cloak_of_desperate_temerity,id=124134,bonus_id=567,upgrade=2,enchant=gift_of_haste
+chest=tunic_of_the_soulbinder,id=124245,bonus_id=567,upgrade=2
+wrists=bloodcult_bracers,id=124279,bonus_id=567,upgrade=2
+hands=fistwraps_of_the_hurricanes_eye,id=124256,bonus_id=567,upgrade=2
+waist=waistwrap_of_banishment,id=124276,bonus_id=567,upgrade=2
+legs=legwraps_of_the_hurricanes_eye,id=124268,bonus_id=567,upgrade=2
+feet=oppressors_merciless_treads,id=124251,bonus_id=567,upgrade=2
+finger1=maalus_the_blood_drinker,id=124636,bonus_id=641,enchant=gift_of_haste
+finger2=portal_key_signet,id=124189,bonus_id=567,upgrade=2,enchant=gift_of_haste
+trinket1=sacred_draenic_incense,id=124517,bonus_id=567,upgrade=2
+trinket2=soul_capacitor,id=124225,bonus_id=567,upgrade=2
+main_hand=demonblade_eviscerator,id=124368,bonus_id=567,upgrade=2,enchant=mark_of_warsong
+off_hand=demonblade_eviscerator,id=124368,bonus_id=567,upgrade=2,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_ilvl=713.33
-# gear_agility=3858
-# gear_stamina=5321
-# gear_crit_rating=1844
-# gear_haste_rating=2120
-# gear_mastery_rating=900
-# gear_versatility_rating=128
-# gear_armor=1257
+# gear_ilvl=741.88
+# gear_agility=4977
+# gear_stamina=6881
+# gear_crit_rating=2636
+# gear_haste_rating=2505
+# gear_mastery_rating=960
+# gear_versatility_rating=270
+# gear_armor=1449
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

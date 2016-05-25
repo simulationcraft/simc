@@ -9,13 +9,13 @@
 # * EXCEPTION: 690 Legendary Ring can be used. (accessibility)
 # talent_format=numbers
 
-# Windwalker 1h Serentiy
-monk="Monk_Windwalker_1h_T17H"
+# Windwalker
+monk="Monk_Windwalker_T17H"
 level=100
 race=blood_elf
 role=dps
 position=back
-talents=0230023
+talents=3030023
 spec=windwalker
 #glyphs=touch_of_death,blackout_kick
 
@@ -35,99 +35,16 @@ trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=566
 trinket2=humming_blackiron_trigger,id=113985,bonus_id=566
 main_hand=hansgars_forgehammer,id=113897,bonus_id=566,enchant=mark_of_the_frostwolf
 off_hand=hansgars_forgehammer,id=113897,bonus_id=566,enchant=mark_of_the_thunderlord
-save=Monk_Windwalker_1h_T17H.simc
+save=Monk_Windwalker_T17H.simc
 
-# Windwalker 2h Serenity
-monk="Monk_Windwalker_2h_T17H"
-level=100
-race=blood_elf
-role=dps
-position=back
-talents=0230023
-spec=windwalker
-#glyphs=touch_of_death,blackout_kick
-
-head=helm_of_the_somber_gaze,id=115556,bonus_id=566
-neck=darklight_necklace,id=113865,bonus_id=566,enchant=gift_of_multistrike
-shoulders=mantle_of_the_somber_gaze,id=115559,bonus_id=566
-back=drape_of_the_dark_hunt,id=113971,bonus_id=566,enchant=gift_of_multistrike
-chest=vest_of_the_somber_gaze,id=115558,bonus_id=566
-wrists=bracers_of_shattered_limbs,id=119333,bonus_id=566
-hands=cannonball_loaders_grips,id=113949,bonus_id=566
-waist=conductors_multipocket_girdle,id=113964,bonus_id=566
-legs=legwraps_of_the_somber_gaze,id=115557,bonus_id=566
-feet=furnace_tenders_treads,id=113895,bonus_id=566
-finger1=spellbound_solium_band_of_fatal_strikes,id=118302,enchant=gift_of_multistrike
-finger2=unexploded_explosive_shard,id=113877,bonus_id=566,enchant=gift_of_multistrike
-trinket1=humming_blackiron_trigger,id=113985,bonus_id=566
-trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=566
-main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,bonus_id=566,enchant=mark_of_warsong
-save=Monk_Windwalker_2h_T17H.simc
-
-# Brewmaster 1h Chi Explosion
-monk="Monk_Brewmaster_1h_CE_T17H"
+# Brewmaster
+monk="Monk_Brewmaster_T17H"
 level=100
 race=night_elf
 spec=brewmaster
 role=tank
 position=front
-talents=0130122
-#glyphs=fortifying_brew,expel_harm,fortuitous_spheres
-
-head=sorkas_nightshade_cowl,id=113978,bonus_id=566
-neck=choker_of_bestial_force,id=113952,bonus_id=566,enchant_id=5319
-shoulder=mantle_of_the_somber_gaze,id=115559,bonus_id=566
-chest=vest_of_the_somber_gaze,id=115558,bonus_id=566
-waist=conductors_multipocket_girdle,id=113964,bonus_id=566
-legs=legwraps_of_the_somber_gaze,id=115557,bonus_id=566
-feet=treads_of_the_dark_hunt,id=113974,bonus_id=566
-wrist=bracers_of_shattered_stalactites,id=113935,bonus_id=566
-hands=handwraps_of_the_somber_gaze,id=115555,bonus_id=566
-finger1=razoredge_blade_ring,id=113908,bonus_id=566,enchant_id=5326
-finger2=spellbound_solium_band_of_sorcerous_invincibility,id=118303,enchant_id=5326
-trinket1=tablet_of_turnbuckle_teamwork,id=113905,bonus_id=566
-trinket2=blast_furnace_door,id=113893,bonus_id=566
-back=ravenous_greatcloak,id=113883,bonus_id=566,enchant_id=5312
-main_hand=sorkas_chainfist,id=113965,bonus_id=566,enchant_id=5336
-off_hand=sorkas_chainfist,id=113965,bonus_id=566,enchant_id=5384
-save=Monk_Brewmaster_1h_CE_T17H.simc
-
-# Brewmaster 1h Serenity
-monk="Monk_Brewmaster_1h_Serenity_T17H"
-level=100
-race=night_elf
-spec=brewmaster
-role=tank
-position=front
-talents=0130123
-#glyphs=fortifying_brew,expel_harm,fortuitous_spheres
-
-head=sorkas_nightshade_cowl,id=113978,bonus_id=566
-neck=choker_of_bestial_force,id=113952,bonus_id=566,enchant_id=5319
-shoulder=mantle_of_the_somber_gaze,id=115559,bonus_id=566
-chest=vest_of_the_somber_gaze,id=115558,bonus_id=566
-waist=conductors_multipocket_girdle,id=113964,bonus_id=566
-legs=legwraps_of_the_somber_gaze,id=115557,bonus_id=566
-feet=treads_of_the_dark_hunt,id=113974,bonus_id=566
-wrist=bracers_of_shattered_stalactites,id=113935,bonus_id=566
-hands=handwraps_of_the_somber_gaze,id=115555,bonus_id=566
-finger1=razoredge_blade_ring,id=113908,bonus_id=566,enchant_id=5326
-finger2=spellbound_solium_band_of_sorcerous_invincibility,id=118303,enchant_id=5326
-trinket1=tablet_of_turnbuckle_teamwork,id=113905,bonus_id=566
-trinket2=blast_furnace_door,id=113893,bonus_id=566
-back=ravenous_greatcloak,id=113883,bonus_id=566,enchant_id=5312
-main_hand=sorkas_chainfist,id=113965,bonus_id=566,enchant_id=5336
-off_hand=sorkas_chainfist,id=113965,bonus_id=566,enchant_id=5384
-save=Monk_Brewmaster_1h_Serenity_T17H.simc
-
-# Brewmaster 2h Chi Explosion
-monk="Monk_Brewmaster_2h_CE_T17H"
-level=100
-race=night_elf
-spec=brewmaster
-role=tank
-position=front
-talents=0130122
+talents=2030123
 #glyphs=fortifying_brew,expel_harm,fortuitous_spheres
 
 head=sorkas_nightshade_cowl,id=113978,bonus_id=566
@@ -145,31 +62,4 @@ trinket1=tablet_of_turnbuckle_teamwork,id=113905,bonus_id=566
 trinket2=blast_furnace_door,id=113893,bonus_id=566
 back=ravenous_greatcloak,id=113883,bonus_id=566,enchant_id=5312
 main_hand=headlopper_skullscythe,id=119448,bonus_id=566,enchant_id=5336
-save=Monk_Brewmaster_2h_CE_T17H.simc
-
-# Brewmaster 2h Serenity
-monk="Monk_Brewmaster_2h_Serenity_T17H"
-level=100
-race=night_elf
-spec=brewmaster
-role=tank
-position=front
-talents=0130123
-#glyphs=fortifying_brew,expel_harm,fortuitous_spheres
-
-head=sorkas_nightshade_cowl,id=113978,bonus_id=566
-neck=choker_of_bestial_force,id=113952,bonus_id=566,enchant_id=5319
-shoulder=mantle_of_the_somber_gaze,id=115559,bonus_id=566
-chest=vest_of_the_somber_gaze,id=115558,bonus_id=566
-waist=conductors_multipocket_girdle,id=113964,bonus_id=566
-legs=legwraps_of_the_somber_gaze,id=115557,bonus_id=566
-feet=treads_of_the_dark_hunt,id=113974,bonus_id=566
-wrist=bracers_of_shattered_stalactites,id=113935,bonus_id=566
-hands=handwraps_of_the_somber_gaze,id=115555,bonus_id=566
-finger1=razoredge_blade_ring,id=113908,bonus_id=566,enchant_id=5326
-finger2=spellbound_solium_band_of_sorcerous_invincibility,id=118303,enchant_id=5326
-trinket1=tablet_of_turnbuckle_teamwork,id=113905,bonus_id=566
-trinket2=blast_furnace_door,id=113893,bonus_id=566
-back=ravenous_greatcloak,id=113883,bonus_id=566,enchant_id=5312
-main_hand=headlopper_skullscythe,id=119448,bonus_id=566,enchant_id=5336
-save=Monk_Brewmaster_2h_Serenity_T17H.simc
+save=Monk_Brewmaster_T17H.simc
