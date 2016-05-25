@@ -7429,7 +7429,7 @@ void monk_t::apl_combat_windwalker()
 
   // AoE while SEF is not up
   // TODO: Add tab targeting somehow
-  aoe_nosef -> add_action( this, "Spinning Crane Kick" );
+  aoe_nosef -> add_action( this, "Spinning Crane Kick", "if=!prev_gcd.spinning_crane_kick" );
   aoe_nosef -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2&buff.serenity.down" );
   aoe_nosef -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2&buff.serenity.down" );
   aoe_nosef -> add_talent( this, "Rushing Jade Wind", "if=chi.max-chi<=3&!prev_gcd.rushing_jade_wind" );
