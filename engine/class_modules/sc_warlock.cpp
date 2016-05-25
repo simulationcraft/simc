@@ -1767,6 +1767,19 @@ public:
       if ( p() -> buffs.havoc -> check() == 0 )
         p() -> havoc_target = nullptr;
     }
+
+    if ( resource_current == RESOURCE_SOUL_SHARD && p() -> talents.soul_conduit -> ok() )
+    {
+      double soul_conduit_rng = p() -> talents.soul_conduit -> effectN( 1 ).percent();
+
+      for ( int i = 0; i < resource_consumed; i++ )
+      {
+        if ( rng().roll( soul_conduit_rng ) )
+        {
+          p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.soul_conduit );
+        }
+      }
+    }
   }
 
   virtual void tick( dot_t* d ) override
