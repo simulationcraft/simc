@@ -3,8 +3,8 @@ level=110
 race=orc
 role=spell
 position=back
-talents=2101013
-artifact=http://beta.wowdb.com/artifact-calculator#nBADDbAABIAAAAAAAAAA
+talents=0101023
+artifact=http://beta.wowdb.com/artifact-calculator#nZbbbbJJJIAAAAAAAAAA
 spec=destruction
 
 # This default action priority list is automatically created based on your character.
@@ -30,7 +30,7 @@ actions+=/service_voidwalker,if=active_enemies>=3
 actions+=/summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3
 actions+=/summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3
 actions+=/dimensional_rift,if=charges=3
-actions+=/immolate,cycle_targets=1,if=remains<=tick_time
+actions+=/immolate,if=remains<=tick_time
 actions+=/immolate,if=talent.roaring_blaze.enabled&remains<duration&action.conflagrate.charges>=1&action.conflagrate.recharge_time<cast_time+gcd
 actions+=/conflagrate,if=talent.roaring_blaze.enabled&charges=2
 actions+=/conflagrate,if=talent.roaring_blaze.enabled&prev_gcd.conflagrate
@@ -38,46 +38,41 @@ actions+=/conflagrate,if=!talent.roaring_blaze.enabled&buff.conflagration_of_cha
 actions+=/conflagrate,if=!talent.roaring_blaze.enabled&(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5
 actions+=/channel_demonfire,if=dot.immolate.remains>cast_time
 actions+=/soul_harvest,if=talent.soul_conduit.enabled&soul_shard=0
-
-#actions+=/rain_of_fire,if=soul_shard>3
 actions+=/chaos_bolt,if=soul_shard>3
-
-
 actions+=/dimensional_rift
 actions+=/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&target.time_to_die>buff.mana_tap.duration*0.3
-
-#actions+=/rain_of_fire
 actions+=/chaos_bolt
-
 actions+=/soul_harvest,if=soul_shard==0
 actions+=/cataclysm
 actions+=/conflagrate,if=!talent.roaring_blaze.enabled
-actions+=/immolate,cycle_targets=1,if=!talent.roaring_blaze.enabled&remains<=duration*0.3
+actions+=/immolate,if=!talent.roaring_blaze.enabled&remains<=duration*0.3
 actions+=/incinerate
 actions+=/life_tap
 
-head=cragshapers_fitted_hood,id=137341,ilevel=825
-neck=tightweb_choker,id=134541,ilevel=825
+head=cragshapers_fitted_hood,id=137341,bonus_id=1726
+neck=tightweb_choker,id=134541,bonus_id=1726,enchant=mark_of_the_loyal_druid
+shoulders=amice_of_cruel_laughter,id=137503,bonus_id=1726
+back=goldscar_pelt,id=133639,bonus_id=1726,enchant=140int
+chest=fluxflow_robes,id=134413,bonus_id=1726
+wrists=armbands_of_slaughter,id=134436,bonus_id=1726
+hands=silken_bloodscent_gloves,id=133609,bonus_id=1726
+waist=waistband_of_spiritual_doom,id=137507,bonus_id=1726
+legs=legwraps_of_reverberating_shadows,id=137404,bonus_id=1726
+feet=mistbound_helarjar_footwraps,id=133608,bonus_id=1726
+finger1=band_of_fused_coral,id=134532,bonus_id=1726,enchant=130haste
+finger2=seal_of_malicious_deceit,id=134489,bonus_id=1726,enchant=130vers
+trinket1=obelisk_of_the_void,id=137433,bonus_id=1726
+trinket2=moonlit_prism,id=137541,bonus_id=1726
+main_hand=scepter_of_sargeras,id=128941
 
-#,enchant=mark_of_the_loyal_druid
-
-shoulders=amice_of_cruel_laughter,id=137503,ilevel=825
-back=goldscar_pelt,id=133639,enchant=140int,ilevel=825
-chest=fluxflow_robes,id=134413,ilevel=825
-wrists=armbands_of_slaughter,id=134436,ilevel=825
-hands=silken_bloodscent_gloves,id=133609,ilevel=825
-waist=waistband_of_spiritual_doom,id=137507,ilevel=825
-legs=legwraps_of_reverberating_shadows,id=137404,ilevel=825
-feet=mistbound_helarjar_footwraps,id=133608,ilevel=825
-finger1=band_of_fused_coral,id=134532,enchant=130haste,ilevel=825
-finger2=seal_of_malicious_deceit,id=134489,enchant=130vers,ilevel=825
-main_hand=scepter_of_sargeras,id=128941,ilevel=825
-
-gear_intellect=11494
-gear_spell_power=5313
-gear_crit_rating=4566
-gear_haste_rating=6785
-gear_mastery_rating=3445
-gear_versatility_rating=614
-
-default_pet=imp
+# Gear Summary
+# gear_ilvl=815.33
+# gear_stamina=13731
+# gear_intellect=7642
+# gear_spell_power=2925
+# gear_crit_rating=4668
+# gear_haste_rating=10708
+# gear_mastery_rating=340
+# gear_versatility_rating=130
+# gear_armor=1461
+default_pet=felhunter
