@@ -7433,9 +7433,9 @@ void monk_t::apl_combat_windwalker()
   aoe_nosef -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2&buff.serenity.down" );
   aoe_nosef -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2&buff.serenity.down" );
   aoe_nosef -> add_talent( this, "Rushing Jade Wind", "if=chi.max-chi<=3&!prev_gcd.rushing_jade_wind" );
-  aoe_nosef -> add_action( this, "Blackout Kick", "if=buff.bok_proc.react|buff.serenity.up" );
-  aoe_nosef -> add_action( this, "Blackout Kick", "if=chi.max-chi<2&cooldown.fists_of_fury.remains>3" );
-  aoe_nosef -> add_action( this, "Tiger Palm", "if=chi.max-chi>=2" );
+  aoe_nosef -> add_action( this, "Blackout Kick", "if=chi.max-chi<=3&!prev_gcd.blackout_kick" );
+  aoe_nosef -> add_action( this, "Tiger Palm", "if=buff.power_strikes.up&chi.max-chi>=3&!prev_gcd.tiger_palm" );
+  aoe_nosef -> add_action( this, "Tiger Palm", "if=buff.power_strikes.down&chi.max-chi>=2&!prev_gcd.tiger_palm" );
 
   // Chi Brew & Serenity Opener
   for ( size_t i = 0; i < racial_actions.size(); i++ )
