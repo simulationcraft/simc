@@ -74,7 +74,6 @@ struct warlock_td_t: public actor_target_data_t
   buff_t* debuffs_roaring_blaze;
 
   int agony_stack;
-  int agony_ticks_since_last_proc;
   double soc_threshold;
 
   warlock_t& warlock;
@@ -93,8 +92,7 @@ struct warlock_t: public player_t
 {
 public:
   player_t* havoc_target;
-  int double_nightfall;
-  int agony_ticks_since_last_proc;
+  double shard_accumulator;
 
 
   // Active Pet
@@ -315,7 +313,7 @@ public:
   struct gains_t
   {
     gain_t* life_tap;
-    gain_t* nightfall;
+    gain_t* agony;
     gain_t* conflagrate;
     gain_t* immolate;
     gain_t* shadowburn_shard;
@@ -1895,6 +1893,8 @@ public:
 // Affliction Spells
 struct agony_t: public warlock_spell_t
 {
+  int agony_action_id;
+
   agony_t( warlock_t* p ):
     warlock_spell_t( p, "Agony" )
   {
@@ -1914,6 +1914,11 @@ struct agony_t: public warlock_spell_t
   virtual void last_tick( dot_t* d ) override
   {
     td( d -> state -> target ) -> agony_stack = 1;
+
+    if ( p() -> get_active_dots( internal_id ) == 1 )
+      p() -> shard_accumulator = rng().range( 0.0, 0.99 );
+
+
     warlock_spell_t::last_tick( d );
   }
 
@@ -1926,23 +1931,26 @@ struct agony_t: public warlock_spell_t
 
     td( d -> target ) -> debuffs_agony -> trigger();
 
-    double nightfall_chance = 0.025 * ( 1 + p() -> agony_ticks_since_last_proc );
 
-    if ( rng().roll( nightfall_chance ) ) // Change to nightfall_chance once data exists
+    double active_agonies = p() -> get_active_dots( internal_id );
+    double accumulator_increment = rng().range( 0.0, 0.32 ) / sqrt( active_agonies );
+
+    p() -> shard_accumulator += accumulator_increment;
+
+    if ( p() -> shard_accumulator > 1 )
     {
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
-      p() -> agony_ticks_since_last_proc = 0;
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.agony );
+      p() -> shard_accumulator -= 1.0;
 
       // If going from 0 to 1 shard was a surprise, the player would have to react to it
-      if( p() -> resources.current[RESOURCE_SOUL_SHARD] == 1 )
-        p() -> shard_react = p() -> sim -> current_time() + p() -> total_reaction_time();
-      else if( p() -> resources.current[RESOURCE_SOUL_SHARD] >= 1 )
+      if ( p() -> resources.current[RESOURCE_SOUL_SHARD] == 1 )
+        p() ->  shard_react = p() -> sim -> current_time() + p() -> total_reaction_time();
+      else if ( p() -> resources.current[RESOURCE_SOUL_SHARD] >= 1 )
         p() -> shard_react = p() -> sim -> current_time();
       else
         p() -> shard_react = timespan_t::max();
     }
-    else
-      p() -> agony_ticks_since_last_proc++;
+
     warlock_spell_t::tick( d );
   }
 
@@ -3426,8 +3434,7 @@ void warlock_td_t::target_demise()
 warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
   player_t( sim, WARLOCK, name, r ),
     havoc_target( nullptr ),
-    double_nightfall( 0 ),
-    agony_ticks_since_last_proc( 0 ),
+    shard_accumulator( 0 ),
     pets( pets_t() ),
     active( active_t() ),
     talents( talents_t() ),
@@ -3938,7 +3945,7 @@ void warlock_t::init_gains()
   player_t::init_gains();
 
   gains.life_tap            = get_gain( "life_tap" );
-  gains.nightfall           = get_gain( "nightfall" );
+  gains.agony           = get_gain( "agony" );
   gains.conflagrate         = get_gain( "conflagrate" );
   gains.immolate            = get_gain( "immolate" );
   gains.shadowburn_shard    = get_gain( "shadowburn_shard" );
@@ -4146,8 +4153,7 @@ void warlock_t::reset()
   pets.active = nullptr;
   shard_react = timespan_t::zero();
   havoc_target = nullptr;
-  double_nightfall = 0;
-  agony_ticks_since_last_proc = 0;
+  shard_accumulator = rng().range( 0.0, 0.99 );
 }
 
 void warlock_t::create_options()
