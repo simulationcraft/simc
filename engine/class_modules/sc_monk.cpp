@@ -7367,8 +7367,8 @@ void monk_t::apl_combat_windwalker()
   action_priority_list_t* def = get_action_priority_list( "default" );
   action_priority_list_t* opener = get_action_priority_list("opener");
   action_priority_list_t* st = get_action_priority_list("st");
-  action_priority_list_t* aoe_norjw = get_action_priority_list("aoe_norjw");
-  action_priority_list_t* aoe_rjw = get_action_priority_list("aoe_rjw");
+  action_priority_list_t* aoe_nosef = get_action_priority_list("aoe_nosef");
+  action_priority_list_t* aoe_sef = get_action_priority_list("aoe_sef");
 
   def -> add_action( "auto_attack" );
 
@@ -7402,39 +7402,40 @@ void monk_t::apl_combat_windwalker()
       def -> add_action( racial_actions[i]  );
   }
 
-  def -> add_talent( this, "Chi Brew", "if=chi.max-chi>=2&((charges=1&recharge_time<=10)|charges=2|target.time_to_die<charges*10)" );
   def -> add_action( this, "Touch of Death" );
-  def -> add_talent( this, "Serenity", "if=chi>=2" );
-  def -> add_action( this, "Fists of Fury", "if=energy.time_to_max>cast_time&!buff.serenity.up" );
-  def -> add_talent( this, "Spinning Dragon Strike", "if=energy.time_to_max>cast_time" );
+  def -> add_talent( this, "Serenity", "if=(artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.up)&cooldown.fists_of_fury.remains<=9&cooldown.rising_sun_kick.remains<=5" );
+  def -> add_talent( this, "Serenity", "if=!artifact.strike_of_the_windlord.enabled&cooldown.fists_of_fury.remains<=9&cooldown.rising_sun_kick.remains<=5" );
+  def -> add_talent( this, "Energizing Elixir", "if=energy<30&chi<2" );
+  def -> add_talent( this, "Rising Sun Kick", "if=buff.serenity.up" );
+  def -> add_talent( this, "Rushing Jade Wind", "if=buff.serenity.up&!prev_gcd.rushing_jade_wind" );
+  def -> add_action( this, "Strike of the Windlord", "if=artifact.strike_of_the_windlord.enabled" );
+  def -> add_action( this, "Whirling Dragon Punch" );
+  def -> add_action( this, "Fists of Fury" );
   
-  def -> add_action( "call_action_list,name=st,if=active_enemies<3&level<100" );
-  def -> add_action( "call_action_list,name=aoe_norjw,if=active_enemies>=3&!talent.rushing_jade_wind.enabled" );
-  def -> add_action( "call_action_list,name=aoe_rjw,if=active_enemies>=3&talent.rushing_jade_wind.enabled" );
+  def -> add_action( "call_action_list,name=st,if=active_enemies<3" );
+  def -> add_action( "call_action_list,name=aoe_nosef,if=active_enemies>=3" );
+//  def -> add_action( "call_action_list,name=aoe_sef,if=active_enemies>=3&talent.rushing_jade_wind.enabled" );
 
   // Single Target & Non-Chi Explosion Cleave
-  st -> add_action( this, "Blackout Kick", "if=set_bonus.tier18_2pc=1&buff.bok_proc.react" );
+  st -> add_action( this, "Blackout Kick", "if=(set_bonus.tier18_2pc=1&buff.bok_proc.react)&!prev_gcd.blackout_kick" );
   st -> add_action( this, "Rising Sun Kick" );
-  st -> add_action( this, "Blackout Kick", "if=buff.bok_proc.react|buff.serenity.up" );
+  st -> add_action( this, "Blackout Kick", "if=(buff.bok_proc.react|buff.serenity.up)&!prev_gcd.blackout_kick" );
   st -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2&buff.serenity.down" );
   st -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2&buff.serenity.down" );
-  st -> add_action( this, "Blackout Kick", "if=chi.max-chi<2" );
-  st -> add_action( this, "Tiger Palm", "if=chi.max-chi>=2" );
+  st -> add_talent( this, "Rushing Jade Wind", "if=chi.max-chi<=3&!prev_gcd.rushing_jade_wind" );
+  st -> add_action( this, "Blackout Kick", "if=chi.max-chi<=3&!prev_gcd.blackout_kick" );
+  st -> add_action( this, "Tiger Palm", "if=buff.power_strikes.up&chi.max-chi>=3&!prev_gcd.tiger_palm" );
+  st -> add_action( this, "Tiger Palm", "if=buff.power_strikes.down&chi.max-chi>=2&!prev_gcd.tiger_palm" );
 
-  // AoE Non-Rushing Jade Wind
-  aoe_norjw -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2&buff.serenity.down" );
-  aoe_norjw -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2&buff.serenity.down" );
-  aoe_norjw -> add_action( this, "Spinning Crane Kick", "if=buff.bok_proc.react|buff.serenity.up" );
-  aoe_norjw -> add_action( this, "Spinning Crane Kick", "if=chi.max-chi<2&cooldown.fists_of_fury.remains>3" );
-  aoe_norjw -> add_action( this, "Tiger Palm", "if=chi.max-chi>=2" );
-
-  // AoE Rushing Jade Wind
-  aoe_rjw -> add_talent( this, "Rushing Jade Wind" );
-  aoe_rjw -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2&buff.serenity.down" );
-  aoe_rjw -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2&buff.serenity.down" );
-  aoe_rjw -> add_action( this, "Blackout Kick", "if=buff.bok_proc.react|buff.serenity.up" );
-  aoe_rjw -> add_action( this, "Blackout Kick", "if=chi.max-chi<2&cooldown.fists_of_fury.remains>3" );
-  aoe_rjw -> add_action( this, "Tiger Palm", "if=chi.max-chi>=2" );
+  // AoE while SEF is not up
+  // TODO: Add tab targeting somehow
+  aoe_nosef -> add_action( this, "Spinning Crane Kick" );
+  aoe_nosef -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2&buff.serenity.down" );
+  aoe_nosef -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2&buff.serenity.down" );
+  aoe_nosef -> add_talent( this, "Rushing Jade Wind", "if=chi.max-chi<=3&!prev_gcd.rushing_jade_wind" );
+  aoe_nosef -> add_action( this, "Blackout Kick", "if=buff.bok_proc.react|buff.serenity.up" );
+  aoe_nosef -> add_action( this, "Blackout Kick", "if=chi.max-chi<2&cooldown.fists_of_fury.remains>3" );
+  aoe_nosef -> add_action( this, "Tiger Palm", "if=chi.max-chi>=2" );
 
   // Chi Brew & Serenity Opener
   for ( size_t i = 0; i < racial_actions.size(); i++ )
