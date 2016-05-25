@@ -10,7 +10,7 @@
 
 @echo off
 :: Building with PGO data will add 10-15 minutes to compile.
-::set /p ask=Build with PGO data? Only applies to 64-bit installation. (y/n)
+set /p ask=Build with PGO data? Only applies to 64-bit installation. (y/n)
 @echo on
 
 set simcversion=703-01-BETA
@@ -34,9 +34,8 @@ set install=simc-%simcversion%-win64
 
 for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\14.0" /v MSBuildToolsPath') do SET MSBUILDDIR=%%B
 
-::if %ask%==y "%MSBUILDDIR%msbuild.exe" %simcfiles%\simc_vs2015.sln /p:configuration=WebEngine-PGO /p:platform=x64 /nr:true
-::if %ask%==n "%MSBUILDDIR%msbuild.exe" %simcfiles%\simc_vs2015.sln /p:configuration=WebEngine /p:platform=x64 /nr:true
-"%MSBUILDDIR%msbuild.exe" %simcfiles%\simc_vs2015.sln /p:configuration=WebEngine /p:platform=x64 /nr:true
+if %ask%==y "%MSBUILDDIR%msbuild.exe" %simcfiles%\simc_vs2015.sln /p:configuration=WebEngine-PGO /p:platform=x64 /nr:true
+if %ask%==n "%MSBUILDDIR%msbuild.exe" %simcfiles%\simc_vs2015.sln /p:configuration=WebEngine /p:platform=x64 /nr:true
 
 robocopy "%redist%x64\Microsoft.VC140.CRT" %install%\ msvcp140.dll vccorlib140.dll vcruntime140.dll
 robocopy locale\ %install%\locale sc_de.qm sc_zh.qm sc_it.qm
