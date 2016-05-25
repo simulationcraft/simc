@@ -7409,7 +7409,7 @@ void monk_t::apl_combat_windwalker()
   def -> add_talent( this, "Rising Sun Kick", "if=buff.serenity.up" );
   def -> add_talent( this, "Rushing Jade Wind", "if=buff.serenity.up&!prev_gcd.rushing_jade_wind" );
   def -> add_action( this, "Strike of the Windlord", "if=artifact.strike_of_the_windlord.enabled" );
-  def -> add_action( this, "Whirling Dragon Punch" );
+  def -> add_talent( this, "Whirling Dragon Punch" );
   def -> add_action( this, "Fists of Fury" );
   
   def -> add_action( "call_action_list,name=st,if=active_enemies<3" );
