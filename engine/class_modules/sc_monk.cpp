@@ -2383,13 +2383,14 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 
     // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
     // of the special effect.
-    if ( p() -> furious_sun )
+/*    if ( p() -> furious_sun )
     {
       double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item) / 100.0;
 
       if ( rng().roll( proc_chance ) )
         rsk_proc -> execute();
     }
+    */
   }
 
   virtual void execute() override
@@ -2529,13 +2530,14 @@ struct blackout_kick_t: public monk_melee_attack_t
 
     // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
     // of the special effect.
-    if ( p() -> furious_sun )
+/*    if ( p() -> furious_sun )
     {
       double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item ) / 100.0;
 
       if ( rng().roll( proc_chance ) )
         rsk_proc -> execute();
     }
+    */
   }
 
   void execute() override
@@ -2920,13 +2922,14 @@ struct fists_of_fury_t: public monk_melee_attack_t
     monk_melee_attack_t::last_tick( dot );
     // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
     // of the special effect.
-    if ( p() -> furious_sun )
+/*    if ( p() -> furious_sun )
     {
       double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item ) / 100.0;
 
       if ( rng().roll( proc_chance ) )
         rsk_proc -> execute();
     }
+    */
   }
 };
 
