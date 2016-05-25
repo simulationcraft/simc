@@ -1751,7 +1751,7 @@ public:
 
     if ( rng().roll( soul_conduit_rng ) && resource_current == RESOURCE_SOUL_SHARD )
     {
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, resource_consumed, p() -> gains.soul_conduit );
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.soul_conduit );
     }
 
     if ( result_is_hit( execute_state -> result ) && p() -> talents.grimoire_of_synergy -> ok() )
@@ -2315,11 +2315,14 @@ struct immolate_t: public warlock_spell_t
   double roaring_blaze;
 
   immolate_t( warlock_t* p ):
-    warlock_spell_t( p, "Immolate" )
+    warlock_spell_t( "immolate", p, p -> find_spell( 348 ) )
   {
-    base_tick_time = p -> find_spell( 157736 ) -> effectN( 1 ).period();
-    dot_duration = p -> find_spell( 157736 ) -> duration();
-    spell_power_mod.tick = p -> spec.immolate -> effectN( 1 ).sp_coeff();
+    const spell_data_t* dmg_spell = player -> find_spell( 157736 );
+
+    base_tick_time = dmg_spell -> effectN( 1 ).period();
+    dot_duration = dmg_spell -> duration();
+    spell_power_mod.tick = dmg_spell -> effectN( 1 ).sp_coeff();
+    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
     hasted_ticks = true;
     tick_may_crit = true;
 
