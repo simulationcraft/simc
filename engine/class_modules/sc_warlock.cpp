@@ -8,6 +8,7 @@
 // ==========================================================================
 //
 // TODO:
+// Soul Conduit is per shard not per spell.
 // Service pets do 2x damage
 // Add the Doomguard / Infernal as a pet
 // Check resource generation execute/impact and hit requirement
@@ -1606,7 +1607,6 @@ private:
     tick_may_crit = true;
     weapon_multiplier = 0.0;
     gain = player -> get_gain( name_str );
-    cost_event = nullptr;
 
     havoc_proc = nullptr;
 
@@ -1639,28 +1639,6 @@ public:
   bool affected_by_flamelicked;
   bool affected_by_contagion;
   bool affected_by_backdraft;
-
-  struct cost_event_t: player_event_t
-  {
-    warlock_spell_t* spell;
-    resource_e resource;
-
-    cost_event_t( player_t* p, warlock_spell_t* s, resource_e r = RESOURCE_NONE ):
-      player_event_t( *p ), spell( s ), resource( r )
-    {
-      if ( resource == RESOURCE_NONE ) resource = spell -> current_resource();
-      add_event( timespan_t::from_seconds( 1 ) );
-    }
-    virtual const char* name() const override
-    { return  "cost_event"; }
-    virtual void execute() override
-    {
-      spell -> cost_event = new ( sim() ) cost_event_t( p(), spell, resource );
-      p() -> resource_loss( resource, spell -> base_costs_per_tick[resource], spell -> gain );
-    }
-  };
-
-  event_t* cost_event;
 
   warlock_spell_t( warlock_t* p, const std::string& n ):
     spell_t( n, p, p -> find_class_spell( n ) )
@@ -1704,8 +1682,6 @@ public:
   virtual void reset() override
   {
     spell_t::reset();
-
-    event_t::cancel( cost_event );
   }
 
   virtual int n_targets() const override
@@ -1746,13 +1722,6 @@ public:
   virtual void execute() override
   {
     spell_t::execute();
-
-    double soul_conduit_rng = p() -> talents.soul_conduit -> effectN( 1 ).percent();
-
-    if ( rng().roll( soul_conduit_rng ) && resource_current == RESOURCE_SOUL_SHARD )
-    {
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.soul_conduit );
-    }
 
     if ( result_is_hit( execute_state -> result ) && p() -> talents.grimoire_of_synergy -> ok() )
     {
