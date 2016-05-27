@@ -2124,11 +2124,24 @@ struct presence_of_mind_t : public arcane_mage_spell_t
 };
 
 // Conflagration Spell =====================================================
+struct conflagration_dot_t : public fire_mage_spell_t
+{
+  conflagration_dot_t( mage_t* p, const std::string& options_str ) :
+    fire_mage_spell_t( "conflagration_dot", p, p -> find_spell( 226757 ) )
+  {
+    parse_options( options_str );
+    //TODO: Check callbacks
+    callbacks = false;
+    background = true;
+    base_costs[ RESOURCE_MANA ] = 0;
+    trigger_gcd = timespan_t::zero();
+  }
+};
 
 struct conflagration_t : public fire_mage_spell_t
 {
   conflagration_t( mage_t* p ) :
-    fire_mage_spell_t( "conflagration", p, p -> talents.conflagration )
+    fire_mage_spell_t( "conflagration_explosion", p, p -> talents.conflagration )
   {
     parse_effect_data( p -> find_spell( 205345 ) -> effectN( 1 ) );
     callbacks = false;
@@ -3083,8 +3096,11 @@ struct evocation_t : public arcane_mage_spell_t
 
 struct fireball_t : public fire_mage_spell_t
 {
+  conflagration_dot_t* conflagration_dot;
+
   fireball_t( mage_t* p, const std::string& options_str ) :
-    fire_mage_spell_t( "fireball", p, p -> find_class_spell( "Fireball" ) )
+    fire_mage_spell_t( "fireball", p, p -> find_class_spell( "Fireball" ) ),
+    conflagration_dot( new conflagration_dot_t( p, options_str ) )
   {
     parse_options( options_str );
 
@@ -3131,6 +3147,11 @@ struct fireball_t : public fire_mage_spell_t
         p() -> cooldowns.combustion
             -> adjust( -1000 * p() -> talents.kindling
                                    -> effectN( 1 ).time_value() );
+      }
+      if ( p() -> talents.conflagration -> ok() )
+      {
+        conflagration_dot -> target = s -> target;
+        conflagration_dot -> execute();
       }
     }
 
