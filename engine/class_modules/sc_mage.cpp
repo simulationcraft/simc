@@ -1474,7 +1474,7 @@ struct chilled_t : public buff_t
   bool trigger( int stacks, double value,
                 double chance, timespan_t duration ) override
   {
-    sim -> out_debug.printf("SOURCE OF chill IS %s", source -> name() );
+    //sim -> out_debug.printf("SOURCE OF chill IS %s", source -> name() );
     mage_t* p = debug_cast<mage_t*>( source );
 
     if ( p -> talents.bone_chilling -> ok() )
