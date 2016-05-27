@@ -16,7 +16,6 @@
 //   - Dire Frenzy
 //  Artifacts
 //   - Jaws of Thunder
-//   - Beast Master
 //   - Spitting Cobras
 //   - Wilderness Expert
 //   - Pack Leader
@@ -356,6 +355,7 @@ public:
   struct artifact_spells_t
   {
     // Beast Mastery
+    artifact_power_t beast_master;
     artifact_power_t titans_thunder;
     artifact_power_t master_of_beasts;
     artifact_power_t stormshot;
@@ -1724,7 +1724,7 @@ struct hunter_secondary_pet_action_t: hunter_pet_action_t < hunter_secondary_pet
   }
 };
 
-struct secondary_pet_melee_t: hunter_secondary_pet_action_t
+struct secondary_pet_melee_t: public hunter_secondary_pet_action_t
 {
   secondary_pet_melee_t( const std::string &attack_name, hunter_secondary_pet_t& p, const spell_data_t* s = spell_data_t::nil() );
 };
@@ -1780,7 +1780,7 @@ secondary_pet_melee_t::secondary_pet_melee_t( const std::string &attack_name, hu
       special = false;
 }
 
-struct dire_beast_stomp_t: hunter_secondary_pet_action_t
+struct dire_beast_stomp_t: public hunter_secondary_pet_action_t
 {
   dire_beast_stomp_t( hunter_secondary_pet_t &p ):
     hunter_secondary_pet_action_t( "stomp", p, p.find_spell( 201754 ) )
@@ -1852,6 +1852,16 @@ struct dire_critter_t: public hunter_secondary_pet_t
     
     if( o() -> talents.stomp -> ok() )
       stomp -> execute();
+  }
+
+  virtual double composite_player_multiplier( school_e school ) const override
+  {
+    double cpm = hunter_secondary_pet_t::composite_player_multiplier( school );
+
+    if( o() -> artifacts.beast_master.rank() )
+      cpm *= 1.0 + o() -> artifacts.beast_master.percent();
+    
+    return cpm;
   }
 };
 
@@ -4011,6 +4021,7 @@ void hunter_t::init_spells()
 
   // Artifact spells
   artifacts.titans_thunder           = find_artifact_spell( "Titan's Thunder" );
+  artifacts.beast_master             = find_artifact_spell( "Beast Master" );
   artifacts.master_of_beasts         = find_artifact_spell( "Master of Beasts" );
   artifacts.stormshot                = find_artifact_spell( "Stormshot" );
   artifacts.surge_of_the_stormgod    = find_artifact_spell( "Surge of the Stormgod" );
