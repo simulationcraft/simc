@@ -23,6 +23,7 @@ finger2=seal_of_malicious_deceit,id=134489,enchant=130vers,bonus_id=1726
 trinket1=obelisk_of_the_void,id=137433,bonus_id=1726
 trinket2=moonlit_prism,id=137541,bonus_id=1726
 main_hand=scepter_of_sargeras,id=128941
+default_pet=imp
 
 save=Warlock_Destruction_Legion.simc
 

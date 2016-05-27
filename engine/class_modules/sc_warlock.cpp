@@ -937,6 +937,7 @@ struct doom_bolt_t: public warlock_pet_spell_t
   doom_bolt_t( warlock_pet_t* p ):
     warlock_pet_spell_t( "Doom Bolt", p, p -> find_spell( 85692 ) )
   {
+    base_multiplier *= 1.0 + p -> o() -> artifact.impish_incineration.data().effectN( 2 ).percent();
   }
 
   virtual double composite_target_multiplier( player_t* target ) const override
@@ -1915,7 +1916,7 @@ struct agony_t: public warlock_spell_t
   {
     td( d -> state -> target ) -> agony_stack = 1;
 
-    if ( p() -> get_active_dots( internal_id ) == 1 )
+    if ( p() -> get_active_dots( internal_id ) == 0 )
       p() -> shard_accumulator = rng().range( 0.0, 0.99 );
 
 
@@ -3262,6 +3263,7 @@ struct demonic_power_damage_t : public warlock_spell_t
     background = true;
     proc = true;
     destro_mastery = false;
+    base_multiplier *= 1.0 + p -> artifact.impish_incineration.data().effectN( 3 ).percent();
   }
 };
 

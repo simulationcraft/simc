@@ -24,8 +24,7 @@ actions.precombat+=/incinerate
 
 # Executed every time the actor is available.
 
-actions=use_item,name=moonlit_prism
-actions+=/service_pet,if=active_enemies<3
+actions=service_pet,if=active_enemies<3
 actions+=/service_voidwalker,if=active_enemies>=3
 actions+=/summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3
 actions+=/summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3
@@ -75,4 +74,4 @@ main_hand=scepter_of_sargeras,id=128941
 # gear_mastery_rating=340
 # gear_versatility_rating=130
 # gear_armor=1461
-default_pet=felhunter
+default_pet=imp
