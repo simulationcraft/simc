@@ -1977,7 +1977,8 @@ struct frost_mage_spell_t : public mage_spell_t
   {
     double am = mage_spell_t::action_multiplier();
 
-    am *= 1.0 + ( p() -> buffs.bone_chilling -> current_stack * p() -> talents.bone_chilling -> effectN( 1 ).percent() );
+    // Divide effect percent by 10 to convert 5 into 0.5%, not into 5%.
+    am *= 1.0 + ( p() -> buffs.bone_chilling -> current_stack * p() -> talents.bone_chilling -> effectN( 1 ).percent() / 10 );
 
     return am;
   }
