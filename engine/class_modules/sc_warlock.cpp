@@ -8,7 +8,7 @@
 // ==========================================================================
 //
 // TODO:
-// Soul Conduit is per shard not per spell.
+// Remove manatap/soul harvest pet multiplier bugs when they get fixed.
 // Service pets do 2x damage
 // Add the Doomguard / Infernal as a pet
 // Check resource generation execute/impact and hit requirement
@@ -4123,8 +4123,8 @@ void warlock_t::apl_destruction()
   add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&prev_gcd.conflagrate" );
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time" );
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5" );
+  action_list_str += "/soul_harvest";
   action_list_str += "/channel_demonfire,if=dot.immolate.remains>cast_time";
-  action_list_str += "/soul_harvest,if=talent.soul_conduit.enabled&soul_shard=0";
   add_action( "Chaos Bolt", "if=soul_shard>3" );
 
   // artifact check
@@ -4132,7 +4132,6 @@ void warlock_t::apl_destruction()
 
   action_list_str += "/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&target.time_to_die>buff.mana_tap.duration*0.3";
   add_action( "Chaos Bolt" );
-  action_list_str += "/soul_harvest,if=soul_shard==0";
   action_list_str += "/cataclysm";
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled" );
   add_action( "Immolate", "if=!talent.roaring_blaze.enabled&remains<=duration*0.3" );
