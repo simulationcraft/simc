@@ -12,8 +12,6 @@
 //   - Dire Beast (focus gain is passive now)
 //  Talent
 //   - Stampede (rework)
-//   - Aspect of the Beast
-//   - Dire Frenzy
 //  Artifacts
 //   - Jaws of Thunder
 //   - Spitting Cobras
@@ -1607,7 +1605,7 @@ struct dire_frenzy_t: public hunter_main_pet_attack_t
   {
       background = true;
       weapon = &( player -> main_hand_weapon );
-      weapon_multiplier = 5.0;
+      weapon_multiplier = 5.0;  //FIXME
   }
 
   virtual void execute()
@@ -3637,6 +3635,13 @@ struct dire_beast_t: public hunter_spell_t
     timespan_t duration = base_attacks_per_summon * swing_time;
     assert( beast );
     beast -> summon( duration );
+  }
+
+  virtual bool ready() override
+  {
+    if( p() -> talents.dire_frenzy -> ok() ) return false;
+
+    return hunter_spell_t::ready();
   }
 };
 
