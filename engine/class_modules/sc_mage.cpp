@@ -1701,6 +1701,12 @@ struct arcane_mage_spell_t : public mage_spell_t
 
     return am;
   }
+
+  virtual timespan_t gcd() const override
+  {
+    timespan_t t = mage_spell_t::gcd();
+    return t;
+  }
 };
 
 
@@ -2271,6 +2277,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     p() -> buffs.arcane_charge -> expire();
+    p() -> buffs.quickening -> expire();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3235,7 +3242,8 @@ struct flamestrike_t : public fire_mage_spell_t
 
   flamestrike_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "flamestrike", p,
-                       p -> find_specialization_spell( "Flamestrike" ) )
+                       p -> find_specialization_spell( "Flamestrike" ) ),
+                       flame_patch( new flame_patch_t( p, options_str ) )
   {
     parse_options( options_str );
 
@@ -3279,6 +3287,11 @@ struct flamestrike_t : public fire_mage_spell_t
     if ( p() -> artifact.aftershocks.rank() )
     {
       aftershocks -> schedule_execute();
+    }
+
+    if ( p() -> talents.flame_patch -> ok() )
+    {
+      flame_patch -> execute();
     }
   }
 
