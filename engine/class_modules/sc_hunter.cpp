@@ -16,6 +16,7 @@
 //   - Dire Frenzy
 //  Artifacts
 //   - Jaws of Thunder
+//   - Beast Master
 //   - Spitting Cobras
 //   - Wilderness Expert
 //   - Pack Leader
@@ -2412,6 +2413,22 @@ struct cobra_shot_t: public hunter_ranged_attack_t
     cc += p() -> buffs.big_game_hunter -> value();
 
     return cc;
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = hunter_ranged_attack_t::action_multiplier();
+
+    if( p() -> talents.way_of_the_cobra -> ok() )
+    {
+      int active_pets = 0, i = 0;
+      while( !p() -> pet_dire_beasts[ i++ ] -> is_sleeping() )  active_pets++;
+      if( !p() -> active.pet -> is_sleeping() )                 active_pets++;
+      if( p() -> thasdorah && !p() -> hati -> is_sleeping() )   active_pets++;
+      am *= 1.0 + active_pets * p() -> talents.way_of_the_cobra -> effectN( 1 ).percent();
+    }
+
+    return am;
   }
 };
 
