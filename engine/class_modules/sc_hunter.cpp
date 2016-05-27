@@ -83,6 +83,7 @@ struct hunter_t;
 namespace pets
 {
 struct hunter_main_pet_t;
+struct hunter_secondary_pet_t;
 }
 
 enum aspect_type { ASPECT_NONE = 0, ASPECT_MAX };
@@ -1709,28 +1710,26 @@ void hunter_main_pet_t::init_spells()
 // Secondary pets: Dire Beast, Hati, Black Arrow
 // ==========================================================================
 
+struct hunter_secondary_pet_action_t: hunter_pet_action_t < hunter_secondary_pet_t, melee_attack_t >
+{
+  hunter_secondary_pet_action_t( const std::string &attack_name, hunter_secondary_pet_t& p, const spell_data_t* s = spell_data_t::nil() ):
+    base_t( attack_name, p, s )
+  {
+      weapon = &( player -> main_hand_weapon );
+      weapon_multiplier = 0;
+      school = SCHOOL_PHYSICAL;
+      may_crit = true;
+      base_multiplier *= 1.15;
+  }
+};
+
+struct secondary_pet_melee_t: hunter_secondary_pet_action_t
+{
+  secondary_pet_melee_t( const std::string &attack_name, hunter_secondary_pet_t& p, const spell_data_t* s = spell_data_t::nil() );
+};
+
 struct hunter_secondary_pet_t: public hunter_pet_t
 {
-  struct secondary_pet_melee_t: hunter_pet_action_t < hunter_secondary_pet_t, melee_attack_t >
-  {
-    secondary_pet_melee_t( const std::string &attack_name, hunter_secondary_pet_t& p ):
-      base_t( attack_name, p )
-    {
-        weapon = &( player -> main_hand_weapon );
-        weapon_multiplier = 0;
-        base_execute_time = weapon -> swing_time;
-        base_dd_min = base_dd_max = player -> dbc.spell_scaling( p.o() -> type, p.o() -> level() );
-        attack_power_mod.direct = 0.5714;
-        school = SCHOOL_PHYSICAL;
-        trigger_gcd = timespan_t::zero();
-        background = true;
-        repeating = true;
-        may_glance = true;
-        may_crit = true;
-        special = false;
-        base_multiplier *= 1.15;
-    }
-  };
 
   hunter_secondary_pet_t( hunter_t& owner, std::string &pet_name ):
     hunter_pet_t( *owner.sim, owner, pet_name, PET_HUNTER, true /*GUARDIAN*/ )
@@ -1765,6 +1764,38 @@ struct hunter_secondary_pet_t: public hunter_pet_t
   }
 };
 
+secondary_pet_melee_t::secondary_pet_melee_t( const std::string &attack_name, hunter_secondary_pet_t& p, const spell_data_t* s ):
+    hunter_secondary_pet_action_t( attack_name, p, s )
+{
+      weapon_multiplier = 0;
+      base_execute_time = weapon -> swing_time;
+      base_dd_min = base_dd_max = player -> dbc.spell_scaling( p.o() -> type, p.o() -> level() );
+      attack_power_mod.direct = 0.5714;
+      trigger_gcd = timespan_t::zero();
+      background = true;
+      repeating = true;
+      may_glance = true;
+      may_crit = true;
+      special = false;
+}
+
+struct dire_beast_stomp_t: hunter_secondary_pet_action_t
+{
+  dire_beast_stomp_t( hunter_secondary_pet_t &p ):
+    hunter_secondary_pet_action_t( "stomp", p, p.find_spell( 201754 ) )
+  {
+    aoe = -1;
+  }    
+  
+  bool init_finished() override
+  {
+    if ( p() -> o() -> pet_dire_beasts[ 0 ] )
+      stats = p() -> o() -> pet_dire_beasts[ 0 ] -> get_stats( "stomp" );
+
+    return hunter_secondary_pet_action_t::init_finished();
+  }
+};
+
 // ==========================================================================
 // Dire Critter
 // ==========================================================================
@@ -1792,7 +1823,8 @@ struct dire_critter_t: public hunter_secondary_pet_t
       return secondary_pet_melee_t::init_finished();
     }
   };
-
+  
+  action_t* stomp;
   dire_critter_t( hunter_t& owner, size_t index ):
     hunter_secondary_pet_t( owner, std::string( "dire_beast_" ) + util::to_string( index ) )
   {
@@ -1803,6 +1835,22 @@ struct dire_critter_t: public hunter_secondary_pet_t
     hunter_secondary_pet_t::init_base_stats();
 
     main_hand_attack = new dire_beast_melee_t( *this );
+  }
+
+  virtual void init_spells() override
+  {
+    hunter_secondary_pet_t::init_spells();
+
+    if( o() -> talents.stomp -> ok() )
+      stomp = new dire_beast_stomp_t( *this );
+  }
+
+  virtual void summon( timespan_t duration = timespan_t::zero() ) override
+  {
+    hunter_secondary_pet_t::summon( duration );
+    
+    if( o() -> talents.stomp -> ok() )
+      stomp -> execute();
   }
 };
 
@@ -3467,6 +3515,7 @@ struct dire_beast_t: public hunter_spell_t
     if ( p() -> pet_dire_beasts[ 0 ] )
     {
       stats -> add_child( p() -> pet_dire_beasts[ 0 ] -> get_stats( "dire_beast_melee" ) );
+      stats -> add_child( p() -> pet_dire_beasts[ 0 ] -> get_stats( "stomp" ) );
     }
 
     return hunter_spell_t::init_finished();
