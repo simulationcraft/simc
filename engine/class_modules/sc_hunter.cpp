@@ -184,6 +184,7 @@ public:
     cooldown_t* kill_shot_reset;
     cooldown_t* trueshot;
     cooldown_t* dire_beast;
+    cooldown_t* dire_frenzy;
     cooldown_t* kill_command;
   } cooldowns;
 
@@ -220,6 +221,8 @@ public:
   // Talents
   struct talents_t
   {
+    const spell_data_t* exotic_munitions;
+
     // tier 1
     const spell_data_t* one_with_the_pack;
     const spell_data_t* way_of_the_cobra;
@@ -235,7 +238,7 @@ public:
 
     // tier 2
     const spell_data_t* stomp;
-    const spell_data_t* exotic_munitions;
+    const spell_data_t* dire_frenzy;
     const spell_data_t* chimaera_shot;
 
     const spell_data_t* black_arrow;
@@ -445,6 +448,7 @@ public:
     cooldowns.kill_shot_reset -> duration = find_spell( 90967 ) -> duration();
     cooldowns.trueshot        = get_cooldown( "trueshot" );
     cooldowns.dire_beast      = get_cooldown( "dire_beast" );
+    cooldowns.dire_frenzy     = get_cooldown( "dire_frenzy" );
     cooldowns.kill_command    = get_cooldown( "kill_command" );
 
     summon_pet_str = "";
@@ -907,6 +911,7 @@ public:
 
   struct actives_t
   {
+    action_t* dire_frenzy;
     action_t* kill_command;
     attack_t* beast_cleave;
   } active;
@@ -942,6 +947,7 @@ public:
     buff_t* bestial_wrath;
     buff_t* stampede; 
     buff_t* beast_cleave;
+    buff_t* dire_frenzy;
     buff_t* tier17_4pc_bm;
     buff_t* tier18_4pc_bm;
   } buffs;
@@ -1071,7 +1077,12 @@ public:
 
     double cleave_value     = o() -> find_specialization_spell( "Beast Cleave" ) -> effectN( 1 ).percent();
     buffs.beast_cleave      = buff_creator_t( this, 118455, "beast_cleave" ).activated( true ).default_value( cleave_value );
-
+    double frenzy_value     = o() -> find_talent_spell( "Dire Frenzy" ) -> effectN( 2 ).percent();
+    if( o() -> titanstrike ) frenzy_value += o() -> artifacts.beast_master.data().effectN( 2 ).percent();
+    buffs.dire_frenzy       = buff_creator_t( this, 217200, "dire_frenzy" )
+                                .default_value ( frenzy_value )
+                                .cd( timespan_t::zero() )
+                                .add_invalidate( CACHE_ATTACK_HASTE );
     buffs.tier17_4pc_bm = buff_creator_t( this, 178875, "tier17_4pc_bm" )
       .default_value( owner -> find_spell( 178875 ) -> effectN( 2 ).percent() )
       .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -1162,6 +1173,9 @@ public:
     double ah = base_t::composite_melee_speed();
 
     ah *= 1.0 / ( 1.0 + specs.spiked_collar -> effectN( 2 ).percent() );
+
+    if( o() -> talents.dire_frenzy -> ok() )
+      ah *= 1.0 / ( 1.0 + buffs.dire_frenzy -> check_stack_value() );
 
     return ah;
   }
@@ -1586,6 +1600,24 @@ struct kill_command_t: public hunter_main_pet_attack_t
   }
 };
 
+struct dire_frenzy_t: public hunter_main_pet_attack_t
+{
+  dire_frenzy_t( hunter_main_pet_t* p ):
+    hunter_main_pet_attack_t( "dire_frenzy", p, p -> find_spell( 217200 ) )
+  {
+      background = true;
+      weapon = &( player -> main_hand_weapon );
+      weapon_multiplier = 5.0;
+  }
+
+  virtual void execute()
+  {
+    hunter_main_pet_attack_t::execute();
+    
+    p() -> buffs.dire_frenzy -> trigger();
+  }
+};
+
 // ==========================================================================
 // Hunter Pet Spells
 // ==========================================================================
@@ -1718,6 +1750,9 @@ void hunter_main_pet_t::init_spells()
   {
     active.beast_cleave = new actions::beast_cleave_attack_t( this );
   }
+
+  if( o() -> talents.dire_frenzy -> ok() )
+      active.dire_frenzy = new actions::dire_frenzy_t( this );
 }
 
 // ==========================================================================
@@ -2117,6 +2152,7 @@ struct auto_shot_t: public ranged_t
 
       if ( rng().roll( wild_call_chance ) )
       {
+        p() -> cooldowns.dire_frenzy -> reset( true );
         p() -> cooldowns.dire_beast -> reset( true );
         p() -> procs.wild_call -> occur();
       }
@@ -3084,7 +3120,7 @@ struct sidewinders_t: hunter_ranged_attack_t
       std::vector<player_t*> sidewinder_targets = execute_state -> action -> target_list();
       for ( size_t i = 0; i < sidewinder_targets.size(); i++ )
       {
-        if(marking)
+        if( marking )
           td( sidewinder_targets[i] ) -> debuffs.hunters_mark -> trigger();
 
         if( p() -> talents.patient_sniper -> ok() )
@@ -3093,7 +3129,7 @@ struct sidewinders_t: hunter_ranged_attack_t
           td( sidewinder_targets[i] ) -> debuffs.vulnerable -> trigger();
       }
 
-      if(marking)
+      if( marking )
       {
         p() -> procs.hunters_mark -> occur();
         p() -> buffs.hunters_mark_exists -> trigger();
@@ -3699,6 +3735,34 @@ struct kill_command_t: public hunter_spell_t
   }
 };
 
+struct dire_frenzy_t: public hunter_spell_t
+{
+  dire_frenzy_t( hunter_t* p, const std::string& options_str ):
+    hunter_spell_t( "dire_frenzy", p, p -> find_talent_spell( "Dire Frenzy" ) )
+  {
+    parse_options( options_str );
+    harmful = false;
+  }  
+  
+  bool init_finished() override
+  {
+    for (auto pet : p() -> pet_list)
+      stats -> add_child( pet -> get_stats( "dire_frenzy" ) );
+
+    return hunter_spell_t::init_finished();
+  }
+
+  virtual void execute() override
+  {
+    hunter_spell_t::execute();
+
+    p() -> cooldowns.bestial_wrath -> adjust( -timespan_t::from_seconds( 15 ) ); //Missing from spell data
+
+    if ( p() -> active.pet ) 
+      p() -> active.pet -> active.dire_frenzy -> execute();
+  }
+};
+
 // Aspect of the Wild =======================================================
 
 struct aspect_of_the_wild_t: public hunter_spell_t
@@ -3835,6 +3899,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "chimaera_shot"         ) return new          chimaera_shot_t( this, options_str );
   if ( name == "cobra_shot"            ) return new             cobra_shot_t( this, options_str );
   if ( name == "dire_beast"            ) return new             dire_beast_t( this, options_str );
+  if ( name == "dire_frenzy"           ) return new            dire_frenzy_t( this, options_str );
   if ( name == "exotic_munitions"      ) return new       exotic_munitions_t( this, options_str );
   if ( name == "explosive_shot"        ) return new         explosive_shot_t( this, options_str );
   if ( name == "explosive_trap"        ) return new         explosive_trap_t( this, options_str );
@@ -3949,6 +4014,7 @@ void hunter_t::init_spells()
   //Tier 2
   talents.stomp                             = find_talent_spell( "Stomp" );
   talents.exotic_munitions                  = find_talent_spell( "Exotic Munitions" );
+  talents.dire_frenzy                       = find_talent_spell( "Dire Frenzy" );
   talents.chimaera_shot                     = find_talent_spell( "Chimaera Shot" );
 
   talents.black_arrow                       = find_talent_spell( "Black Arrow" );
