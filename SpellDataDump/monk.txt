@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21570)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21796)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -881,8 +881,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
 Effects          :
 #1 (id=128727)   : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
-Description      : Draw in the positive chi of all Healing Spheres within 30 yards, and expel negative chi, damaging the nearest enemy for $s1% of the amount healed.
+                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
+#2 (id=341043)   : Dummy (3)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
+Description      : Draw in the positive chi of all Healing Spheres within $s1 yards, and expel negative chi, damaging the nearest enemy for $s2% of the amount healed.
 
 Name             : Paralysis (id=115078) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
@@ -2633,7 +2635,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.65000 | Target: Friend(21)
 #2 (id=290817)   : Apply Aura (6) | Unknown effect sub type (283)
                    Base Value: 30 | Scaled Value: 30 | Target: Friend(21)
-                   Affected Spells: Renewing Mist (115151), Soothing Mist (115175), Revival (115310), Vivify (116670), Effuse (116694), Renewing Mist (119611), Chi Burst (130654), Essence Font (191840), Gust of Mists (191894), Sheilun's Gift (205406), Sheilun's Gift (214483)
+                   Affected Spells: Renewing Mist (115151), Soothing Mist (115175), Revival (115310), Vivify (116670), Effuse (116694), Renewing Mist (119611), Chi Burst (130654), Essence Font (191840), Gust of Mists (191894), Sheilun's Gift (205406), Soothing Mist (209525), Sheilun's Gift (214483)
 Description      : Wraps the target in healing mists, healing for $o1 over $d, and increasing healing received from your other spells by $m2%.
 Tooltip          : Heals $w1 every $t1 sec.
 Healing received from the Monk increased by $m2%.
@@ -3138,7 +3140,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .x...
 Effects          :
 #1 (id=171856)   : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 73967 | Misc Value 2: 0xd19 | Target: At Enemy(53)
-Description      : Summons an effigy of Niuzao, the Black Ox for $d. Niuzao attacks your primary target and taunts it.
+Description      : Summons an effigy of Niuzao, the Black Ox for $d. Niuzao attacks your primary target and taunts it. He also frequently Stomps, damaging all nearby enemies.
 
 Name             : Monk (id=137022) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
@@ -4436,9 +4438,9 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=290815)   : Apply Aura (6) | Unknown effect sub type (330)
                    Base Value: 2 | Scaled Value: 2 | Target: Self(1)
-                   Affected Spells: Soothing Mist (115175)
+                   Affected Spells: Soothing Mist (115175), Soothing Mist (209525)
 #2 (id=290816)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 12 | Target: Self(1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Enveloping Mist (124682)
 #3 (id=313834)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
                    Base Value: 1000 | Scaled Value: 1000 | Misc Value: 1 | Target: Self(1)
@@ -4743,6 +4745,31 @@ $low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
 $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 
+Name             : Soothing Mist (Honor Talent) (id=209525) [Spell Family (53)] 
+Class            : Monk
+School           : Nature
+Resource         : 0% Base Mana and 0.7% Base Mana (7699 @Level 110) per second or tick
+Spell Level      : 10
+Range            : 40 yards
+GCD              : 0.5 seconds
+Duration         : 10 seconds
+Cooldown         : 1 seconds
+Affecting spells : Enveloping Mist (124682), Lucidity (137331), Extend Life (185158), Mist Wrap (197900), Soothing Remedies (199377), The Mists of Sheilun (199888)
+Attributes       : ........ ........ x....... ........   ..x...x. ........ ........ ..x..x.. 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ..x..x.. ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..xx.. .x...... x.......   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Channeled (34), Channeled (38)
+Effects          :
+#1 (id=310090)   : Apply Aura (6) | Periodic Heal: every 0.5 seconds (8)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.40000 | Chain Multiplier: 100 | Chain Targets: 1 | Target: Friend(21)
+Description      : Heals the target for $o1 over $d.
+
+While channeling, Effuse and Enveloping Mist are instant cast, and will heal the soothed target without breaking the Soothing Mist channel.
+Tooltip          : Healing for $w1 every $t.
+
 Name             : Spirit of the Crane (id=210802) [Spell Family (53), Passive] 
 Class            : Monk
 School           : Physical
@@ -4775,7 +4802,7 @@ Attributes       : ........ ........ ........ x..x....   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=312261)   : Energize Power% (137)
-                   Base Value: 75 | Scaled Value: 75 | Target: Self(1)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self(1)
 Description      : $@spelldesc210802
 
 Name             : Rising Thunder (id=210804) [Spell Family (53), Passive] 

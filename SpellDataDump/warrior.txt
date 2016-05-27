@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21570)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21796)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -1145,7 +1145,7 @@ Effects          :
 #1 (id=39078)    : Titan Grip (155)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #2 (id=39079)    : Apply Aura (6) | Unknown effect sub type (133)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self(1)
 Description      : Allows you to dual-wield a pair of two-handed weapons, and increases your maximum health by $s2%.
 
 Name             : Bladestorm (id=46924) [Spell Family (4)] 
@@ -1647,7 +1647,7 @@ Effects          :
 #1 (id=85462)    : Apply Aura (6) | Modify Block% (51)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 11 | Target: Self(1)
 #2 (id=85463)    : Apply Aura (6) | Modify Dodge% (49)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 11 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self(1)
 Description      : Increases your block chance by $s1% and your dodge chance by $s2%.
 
 Name             : Raging Blow (id=85288) [Spell Family (4)] 
@@ -2232,11 +2232,12 @@ Description      : Roar explosively, dealing $m1 damage to all enemies within $A
 Tooltip          : Damage done increased by $s2%.
 
 Name             : Die by the Sword (id=118038) [Spell Family (4)] 
-Class            : Fury Warrior
+Class            : Arms Warrior
 School           : Physical
-Spell Level      : 1
+Spell Level      : 40
 Duration         : 8 seconds
-Cooldown         : 120 seconds
+Cooldown         : 180 seconds
+Affecting spells : Defensive Measures (209559)
 Attributes       : ....x... ........ x.x..... ........   ....x... ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3327,15 +3328,14 @@ Description      : Fight through the pain, ignoring $s2% of the next ${$m1*$AP} 
 Tooltip          : Ignoring $s2% of the next ${$w1*10/9} total damage that you take, from any sources.
 
 Name             : Defensive Stance (id=197690) [Spell Family (4)] 
-Class            : Arms Warrior
+Class            : Warrior
 School           : Physical
 Spell Level      : 40
-GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Cooldown         : 6 seconds
+Cooldown         : 10 seconds
 Category         : 1618
 Proc Chance      : 101%
-Affecting spells : Warrior (137047), Defensive Measures (209559)
+Affecting spells : Warrior (137047)
 Attributes       : ....x... ........ ..x..... x..x...x   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3344,14 +3344,14 @@ Attributes       : ....x... ........ ..x..... x..x...x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=290496)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -25 | Scaled Value: -25 | Misc Value: 0x7f | Target: Self(1)
+                   Base Value: -20 | Scaled Value: -20 | Misc Value: 0x7f | Target: Self(1)
 #2 (id=290497)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: -25 | Scaled Value: -25 | Misc Value: 0x7f | Target: Self(1)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 0x7f | Target: Self(1)
 #3 (id=315075)   : Apply Aura (6) | Unknown effect sub type (332)
                    Base Value: 212520 | Scaled Value: 212520 | Misc Value: 127 | Target: Self(1)
                    Affected Spells: Defensive Stance (197690)
-Description      : A defensive combat state that reduces all damage you deal and take by $s1%. Lasts $d.
-Tooltip          : Reduces damage taken and damage done by $s1%.
+Description      : A defensive combat state that reduces all damage you take by $s1%, and all damage you deal by $s2%. Lasts $d.
+Tooltip          : Reduces damage taken by $s1% and damage done by $s2%.
 
 Name             : Intercept (id=198304) [Spell Family (4)] 
 Replaces         : Charge (id=100)
@@ -4068,7 +4068,7 @@ Effects          :
 #3 (id=298797)   : Apply Aura (6) | Add Percent Modifier (108)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 33 | Target: Self(1)
                    Affected Spells: Colossus Smash (167105), Colossus Smash (208086)
-Description      : Increases the duration of Colossus Smash by $s1%, but reduces its effectiveness by $s2%.
+Description      : Increases the duration of Colossus Smash by ${($s1/100)*8} sec, but reduces its effectiveness by $s2%.
 
 Name             : Booming Voice (id=202743) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior

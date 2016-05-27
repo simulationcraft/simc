@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 21737
+// Class based active abilities, wow build 21796
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -52,7 +52,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          845, // Cleave
       167105, // Colossus Smash
        97462, // Commanding Shout
-      197690, // Defensive Stance
+      118038, // Die by the Sword
       163201, // Execute
         1715, // Hamstring
         5246, // Intimidating Shout
@@ -62,13 +62,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         1680, // Whirlwind
            0,
     },
-    // Fury tree, 13 abilities
+    // Fury tree, 12 abilities
     {
         1719, // Battle Cry
        18499, // Berserker Rage
        23881, // Bloodthirst
        97462, // Commanding Shout
-      118038, // Die by the Sword
       184364, // Enraged Regeneration
         5308, // Execute
       100130, // Furious Slash
@@ -397,7 +396,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Priest
   {
-    // General tree, 12 abilities
+    // General tree, 13 abilities
     {
       161862, // Ascension
          528, // Dispel Magic
@@ -410,6 +409,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          605, // Mind Control
         9484, // Shackle Undead
          585, // Smite
+      215769, // Spirit of Redemption (Honor Talent)
       205065, // Void Torrent (Artifact)
            0,
     },
@@ -639,17 +639,15 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 10 abilities
+    // Pet tree, 8 abilities
     {
        36213, // Angered Earth
       157348, // Call Lightning
-      118350, // Empower
        57984, // Fire Blast
       117588, // Fire Nova
       118337, // Harden Skin
       118297, // Immolate
       118345, // Pulverize
-      118347, // Reinforce
       157331, // Wind Gust
            0,
     },
@@ -673,9 +671,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          118, // Polymorph (Sheep)
        61721, // Polymorph (Rabbit)
        61780, // Polymorph (Turkey)
-      161355, // Polymorph (Penguin)
       161353, // Polymorph (Polar Bear Cub)
       161354, // Polymorph (Monkey)
+      161355, // Polymorph (Penguin)
       161372, // Polymorph (Turtle)
        61025, // Polymorph (Serpent)
        28271, // Polymorph (Turtle)
@@ -844,7 +842,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Monk
   {
-    // General tree, 15 abilities
+    // General tree, 16 abilities
     {
       100784, // Blackout Kick
       117952, // Crackling Jade Lightning
@@ -855,6 +853,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       115546, // Provoke
       109132, // Roll
       205406, // Sheilun's Gift (Artifact)
+      209525, // Soothing Mist (Honor Talent)
       205320, // Strike of the Windlord (Artifact)
       100780, // Tiger Palm
       101643, // Transcendence
@@ -1049,7 +1048,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Demon Hunter
   {
-    // General tree, 19 abilities
+    // General tree, 20 abilities
     {
       188499, // Blade Dance
       198589, // Blur
@@ -1060,6 +1059,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       162243, // Demon's Bite
       198013, // Eye Beam
       195072, // Fel Rush
+      204021, // Fiery Brand
       201789, // Fury of the Illidari
       201467, // Fury of the Illidari (Artifact)
       201628, // Fury of the Illidari
@@ -1113,7 +1113,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 };
 #define TREE_SPECIALIZATION_SIZE (29)
 
-// Talent tree specialization abilities, wow build 21737
+// Talent tree specialization abilities, wow build 21796
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1185,7 +1185,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
          845, // Cleave
       167105, // Colossus Smash
        97462, // Commanding Shout
-      197690, // Defensive Stance
+      118038, // Die by the Sword
       163201, // Execute
         1715, // Hamstring
         5246, // Intimidating Shout
@@ -1206,7 +1206,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        18499, // Berserker Rage
        23881, // Bloodthirst
        97462, // Commanding Shout
-      118038, // Die by the Sword
       184361, // Enrage
       184364, // Enraged Regeneration
         5308, // Execute
@@ -1273,7 +1272,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
         6940, // Blessing of Sacrifice
         4987, // Cleanse
        26573, // Consecration
-      184132, // Divine Intervention
          498, // Divine Protection
        19750, // Flash of Light
          853, // Hammer of Justice
@@ -1287,6 +1285,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        53651, // Light's Beacon
       183997, // Mastery: Lightbringer
        86103, // Plate Specialization
+      227068, // Righteousness
       148040, // Sacred Shield Overridde (Holy)
       162701, // Stat Negation Aura - Intellect Healer
            0,
@@ -2122,7 +2121,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 21737
+// Class mastery abilities, wow build 21796
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2361,7 +2360,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 21737
+// Racial abilities, wow build 21796
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2590,7 +2589,11 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
       20591, // Expansive Mind
           0,
     },
-    {     0, },
+    // Racial abilities for Hunter class
+    {
+      227057, // Expansive Mind
+          0,
+    },
     // Racial abilities for Rogue class
     {
       154744, // Expansive Mind
@@ -3095,7 +3098,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 };
 #define SET_BONUS_DATA_SIZE (472)
 
-// Set bonus data, wow build 21737
+// Set bonus data, wow build 21796
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -3591,7 +3594,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
 };
 #define RPPMMOD_SIZE (190)
 
-// 190 RPPM Modifiers, wow build level 21737
+// 190 RPPM Modifiers, wow build level 21796
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  49530,    4,  1,  1.0000 },
   {  51128,    4,  1,  1.0000 },
@@ -3743,7 +3746,6 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 203576,    4,  1,  1.0000 },
   { 207320,    4,  1,  1.0000 },
   { 207767,    4,  1,  1.0000 },
-  { 208213,    4,  1,  1.0000 },
   { 208653,    0,  4,  0.0000 },
   { 209579,    4,  1,  1.0000 },
   { 210676,    4,  1,  1.0000 },
@@ -3783,11 +3785,12 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 225138,    4,  1,  1.0000 },
   { 225601,    4,  1,  1.0000 },
   { 225606,    4,  1,  1.0000 },
+  { 227171,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
 };
 #define ARTIFACT_SIZE (41)
 
-// Artifact base data, wow build 21737
+// Artifact base data, wow build 21796
 static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
   {  2,  70 },
   {  3, 577 },
@@ -3833,7 +3836,7 @@ static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
 };
 #define ARTIFACT_POWER_SIZE (715)
 
-// Artifact power data, wow build 21737
+// Artifact power data, wow build 21796
 static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] = {
   {   40,   2,  0,   0, "Wake of Ashes"                      }, // Wake of Ashes (id=205273, n_ranks=1)
   {   41,   2,  4,   3, "Highlord's Judgment"                }, // Highlord's Judgment (id=186941, n_ranks=6)
@@ -4312,7 +4315,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1131,  49,  0,   1, "Sacrifice of the Just"              }, // Sacrifice of the Just (id=209285, n_ranks=1)
   { 1132,  49,  0,   1, "Forbearant Faithful"                }, // Forbearant Faithful (id=209376, n_ranks=1)
   { 1133,  49,  1,   1, "Bulwark of Order"                   }, // Bulwark of Order (id=209389, n_ranks=1)
-  { 1134,  49,  2,   1, "Light of the Titans"                }, // Light of the Titans (id=209528, n_ranks=1)
+  { 1134,  49,  2,   1, "Light of the Titans"                }, // Light of the Titans (id=209539, n_ranks=1)
   { 1135,  49,  3,   1, "Tyr's Enforcer"                     }, // Tyr's Enforcer (id=209474, n_ranks=1)
   { 1206,  49,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1343,  49,  0,   1, "Truthguard's Light"                 }, // Truthguard's Light (id=221841, n_ranks=1)
@@ -4553,7 +4556,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
 };
 #define ARTIFACT_POWER_RANK_SIZE (3062)
 
-// Artifact power rank data, wow build 21737
+// Artifact power rank data, wow build 21796
 static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RANK_SIZE] = {
   { 2316,    40,  0, 205273,      0.000 },
   { 2317,    41,  0, 186941,      0.000 },
@@ -5452,12 +5455,12 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 3968,   835,  0, 196492,      0.000 },
   { 3969,   836,  0, 208065,      0.000 },
   { 3970,   837,  0, 196578,      0.000 },
-  { 3971,   838,  0, 196489,      0.000 },
-  { 5506,   838,  1, 196489,     10.000 },
-  { 5507,   838,  2, 196489,     15.000 },
-  { 5508,   838,  3, 196489,     20.000 },
-  { 5509,   838,  4, 196489,     25.000 },
-  { 5510,   838,  5, 196489,     30.000 },
+  { 3971,   838,  0, 196489,      6.000 },
+  { 5506,   838,  1, 196489,     12.000 },
+  { 5507,   838,  2, 196489,     18.000 },
+  { 5508,   838,  3, 196489,     24.000 },
+  { 5509,   838,  4, 196489,     30.000 },
+  { 5510,   838,  5, 196489,     36.000 },
   { 3972,   839,  0, 196437,      0.000 },
   { 3973,   840,  0, 196779,      0.000 },
   { 3974,   841,  0, 196355,      0.000 },
@@ -5503,12 +5506,12 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 4019,   848,  3, 196430,     13.000 },
   { 4020,   848,  4, 196430,     16.000 },
   { 4021,   848,  5, 196430,     20.000 },
-  { 4022,   849,  0, 196434,      5.000 },
-  { 4023,   849,  1, 196434,     10.000 },
-  { 4024,   849,  2, 196434,     15.000 },
-  { 4025,   849,  3, 196434,     20.000 },
-  { 4026,   849,  4, 196434,     25.000 },
-  { 4027,   849,  5, 196434,     30.000 },
+  { 4022,   849,  0, 196434,      4.000 },
+  { 4023,   849,  1, 196434,      8.000 },
+  { 4024,   849,  2, 196434,     12.000 },
+  { 4025,   849,  3, 196434,     16.000 },
+  { 4026,   849,  4, 196434,     20.000 },
+  { 4027,   849,  5, 196434,     24.000 },
   { 4030,   851,  0, 209782,      0.000 },
   { 4031,   852,  0, 197231,      0.000 },
   { 4046,   852,  1, 197231,      6.000 },
@@ -6021,12 +6024,12 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 4548,   992,  3, 200856,    200.000 },
   { 4549,   992,  4, 200856,    250.000 },
   { 4550,   992,  5, 200856,    300.000 },
-  { 4551,   993,  0, 200857,      0.000 },
-  { 4552,   993,  1, 200857,     10.000 },
-  { 4553,   993,  2, 200857,     15.000 },
-  { 4554,   993,  3, 200857,     20.000 },
-  { 4555,   993,  4, 200857,     25.000 },
-  { 4556,   993,  5, 200857,     30.000 },
+  { 4551,   993,  0, 200857,      2.000 },
+  { 4552,   993,  1, 200857,      4.000 },
+  { 4553,   993,  2, 200857,      6.000 },
+  { 4554,   993,  3, 200857,      8.000 },
+  { 4555,   993,  4, 200857,     10.000 },
+  { 4556,   993,  5, 200857,     12.000 },
   { 4557,   994,  0, 200859,      0.000 },
   { 4558,   994,  1, 200859,      2.000 },
   { 4559,   994,  2, 200859,      3.000 },
@@ -6477,7 +6480,7 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 5003,  1131,  0, 209285,      0.000 },
   { 5004,  1132,  0, 209376,      0.000 },
   { 5005,  1133,  0, 209389,      0.000 },
-  { 5006,  1134,  0, 209528,      0.000 },
+  { 5006,  1134,  0, 209539,      0.000 },
   { 5007,  1135,  0, 209474,      0.000 },
   { 5043,  1136,  0, 209577,      0.000 },
   { 5044,  1137,  0, 209574,      0.000 },

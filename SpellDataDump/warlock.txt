@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21570)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21796)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -1733,7 +1733,7 @@ Effects          :
 #2 (id=318370)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.66600 | Target: Self(1)
 #3 (id=318371)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 1000000000 | Scaled Value: 1e+09 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 1000000000 | Scaled Value: 1e+009 | Misc Value: 127 | Target: Self(1)
 Description      : Your spells deal a random amount of additional damage, up to $s1%. Damage you take is reduced by a random amount, up to $s2%.
 
 Name             : Havoc (id=80240) [Spell Family (5)] 
@@ -2585,7 +2585,7 @@ Attributes       : ........ ........ .......x x.xx.x..   .....x.. ........ .....
                  : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
 Effects          :
 #1 (id=127009)   : Apply Aura (6) | Dummy (4)
-                   Base Value: -1000000000 | Scaled Value: -1e+09 | Misc Value: 893 | Target: Self(1)
+                   Base Value: -1000000000 | Scaled Value: -1e+009 | Misc Value: 893 | Target: Self(1)
 Description      : Faded into the nether and unable to use another Demonic Gateway.
 Tooltip          : Faded into the nether and unable to use another Demonic Gateway.
 
@@ -2616,8 +2616,8 @@ Cooldown         : 10 seconds
 Internal Cooldown: 1 seconds
 Stacks           : 3 maximum
 Proc Chance      : 100%
-Proc Flags       : ...x.... ........ ........ ........ 
-                 : White Melee Taken
+Proc Flags       : ...x.... .....x.. .x...... ........ 
+                 : White Melee Taken, AOE Hostile Spell Taken, Hostile Spell Taken
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2684,11 +2684,12 @@ Range            : 30 yards
 Duration         : 10 seconds
 Cooldown         : 25 seconds
 Attributes       : ........ ........ ..x..... ........   ........ ........ .x...... ....x... 
-                 : ........ ........ ........ ......x.   ........ ........ ........ ........ 
+                 : ........ ........ ........ ......x.   ........ .x...... ........ ........ 
                  : .....x.. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Not a proc (105)
 Effects          :
 #1 (id=129829)   : School Damage: shadow (2)
                    Base Value: 1 | Scaled Value: 0 (avg=0.46, dl=0.15) | SP Coefficient: 0.46000 | Radius: 0 - 5 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
@@ -2702,24 +2703,20 @@ Name             : Optical Blast (Special Ability) (id=115781) [Scaling Spell (1
 Class            : Warlock
 School           : Shadow
 Resource         : 20 Energy
-Spell Level      : 52
+Spell Level      : 50
 Range            : 40 yards
 Duration         : 6 seconds
 Cooldown         : 24 seconds
 Attributes       : ........ ........ ..x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .x...... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=129866)   : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(227) | Target: Enemy(6)
-#2 (id=129867)   : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 (avg=0.14) | SP Coefficient: 0.14000 | Target: Enemy(6)
-Description      : Blasts the enemy with lasers, dealing $s2 Shadow damage. 
-
-If used on a casting target, it will counter the enemy's spellcast, preventing any spell from that school of magic from being cast for $19647d.
+Description      : Counter the enemy's spellcast, preventing any spell from that school of magic from being cast for $19647d.
 
 Name             : Wrathstorm (Special Ability) (id=115831) [Spell Family (57)] 
 Class            : Warlock
@@ -2763,7 +2760,7 @@ Attributes       : ....x... ........ x.x..... ........   ....x... ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=129943)   : Weapon Damage% (31)
-                   Base Value: 150 | Scaled Value: 1.5 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 100 | Scaled Value: 1 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=129944)   : None (0)
                    Base Value: 100 | Scaled Value: 100
 Description      : $@spelldesc115831
@@ -3050,9 +3047,8 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179728)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 11 | Target: Self(1)
-                   Affected Spells: Soul Harvest (196098)
+#1 (id=179728)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #2 (id=191027)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=191028)   : Apply Aura (6) | Dummy (4)
@@ -3290,7 +3286,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Channeled (34)
 Effects          :
@@ -3778,10 +3774,8 @@ Name             : Soul Harvest (id=196098) [Spell Family (5)]
 Class            : Warlock
 School           : Shadow
 Spell Level      : 1
-Cast Time        : 2 seconds
-GCD              : 1.5 seconds
+Duration         : 10 seconds
 Cooldown         : 120 seconds
-Affecting spells : Demonology Warlock (137044)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3789,9 +3783,14 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=287829)   : Energize Power (30)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: soul_shard | Target: Self(1)
-Description      : Immediately generates $s1 Soul Shards.
+#1 (id=287829)   : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self(1)
+#2 (id=341300)   : Dummy (3)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self(1)
+#3 (id=341301)   : Dummy (3)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
+Description      : Increases your damage by $s1%.  Lasts $d, increased by $s2 sec for each target afflicted by your $?s137043[Agony][]$?s137044[Doom][]$?s137046[Immolate][], up to a maximum of $s3 sec.
+Tooltip          : Damage increased by $s1%.
 
 Name             : Demonic Power (id=196099) [Spell Family (5)] 
 Class            : Warlock
@@ -4198,7 +4197,6 @@ Name             : Dimensional Rift (Artifact) (id=196586)
 Class            : Warlock
 School           : Physical
 Range            : 40 yards
-Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 3 (45 seconds cooldown)
 Category         : 1630
@@ -4604,6 +4602,7 @@ Name             : Thal'kiel's Consumption (id=211715) [Spell Family (5)]
 Class            : Warlock
 School           : Shadow
 Range            : 40 yards
+Velocity         : 25 yards/sec
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4765,7 +4764,7 @@ Proc Chance      : 101%
 Affecting spells : Improved Rain of Fire/Hellfire (24430), Fel Skin (218565)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

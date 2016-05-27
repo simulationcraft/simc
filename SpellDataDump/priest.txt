@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21570)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21796)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -134,7 +134,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=237)      : Apply Aura (6) | Unknown effect sub type (103)
-                   Base Value: -90000000 | Scaled Value: -9e+07 | Target: Self(1)
+                   Base Value: -90000000 | Scaled Value: -9e+007 | Target: Self(1)
 Description      : Fade out, removing all your threat for $d.
 Tooltip          : Reduced threat level.
 
@@ -176,7 +176,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Rapid Healing (24546), Healing Trance (37706), Lucidity (137323), Holy Guidance (196434), Guardians of the Light (196437), Power of the Naaru (196490), Light of T'uure (208065), Muze's Unwavering Will (210632)
+Affecting spells : Rapid Healing (24546), Healing Trance (37706), Lucidity (137323), Holy Guidance (196434), Power of the Naaru (196490), Light of T'uure (208065), Muze's Unwavering Will (210632)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -608,7 +608,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=11689)    : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 1500000000 | Scaled Value: 1.5e+09 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 1500000000 | Scaled Value: 1.5e+009 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
 Description      : Upon death, you become the Spirit of Redemption for $27827d. You cannot move, attack, be attacked, or be targeted by any spells or effects, and your healing spells cost no mana. When the effect ends, you die.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
@@ -770,9 +770,9 @@ Effects          :
 #1 (id=22313)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Friend(21)
 #2 (id=22314)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Radius: 0 - 20 yards | Target: Unknown(132) -> AOE friendly(31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000 | Radius: 0 - 20 yards | Target: Unknown(132) -> AOE friendly(31)
 #3 (id=191249)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000 | Target: Self(1)
 #4 (id=325998)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
 Description      : Heals you, another friendly target, and a third friendly target within 20 yards for $s2.$?s32546[][
@@ -904,10 +904,10 @@ Attributes       : ........ ........ x.x..... ........   x....... ........ .....
 Effects          :
 #1 (id=24424)    : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 19668 | Misc Value 2: 0xcb7 | Target: At Enemy(53)
-#2 (id=24425)    : Trigger Spell: (41967) (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 41967 | Target: Self(1)
-#3 (id=111848)   : Dummy (3)
+#2 (id=24425)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
+#3 (id=111848)   : Trigger Spell: (41967) (64)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 41967 | Target: Self(1)
 Description      : Summons a shadowy fiend to attack the target for $d.
 
 Name             : Holy Word: Sanctify (id=34861) [Spell Family (6)] 
@@ -1273,7 +1273,7 @@ Effects          :
 #2 (id=40043)    : Dummy (3)
                    Base Value: 40 | Scaled Value: 40
 #3 (id=188025)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 100000000 | Scaled Value: 1e+08 | Misc Value: 127 | Target: Friend(21)
+                   Base Value: 100000000 | Scaled Value: 1e+008 | Misc Value: 127 | Target: Friend(21)
 Description      : Calls upon a guardian spirit to watch over the friendly target for $d, increasing healing received by $s1%$?s159599[][ and preventing the target from dying by sacrificing itself.  This sacrifice terminates the effect and heals the target for $s2% of maximum health]. Castable while stunned.
 
 Massive damage amounts will kill the target despite this effect.
@@ -1286,7 +1286,7 @@ Spell Level      : 28
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
-Affecting spells : Mental Fatigue (185104), Void Corruption (194016), Voidform (194249), Lingering Insanity (197937)
+Affecting spells : Mental Fatigue (185104), Void Corruption (194016), Voidform (194249), Lingering Insanity (197937), Void Ray (205372)
 Attributes       : ........ ........ x.....x. ........   ..x....x ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1307,7 +1307,7 @@ Class            : Priest
 School           : Shadow
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Mental Fatigue (185104), Void Corruption (194016), Voidform (194249), Lingering Insanity (197937)
+Affecting spells : Mental Fatigue (185104), Void Corruption (194016), Voidform (194249), Lingering Insanity (197937), Void Ray (205372)
 Triggered by     : Mind Sear (48045)
 Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ......x.   x....... .x...... ........ .x...... 
@@ -1691,9 +1691,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Stacks           : 10 maximum
-Proc Chance      : 101%
-Affecting spells : Lucidity (137323), Mental Fatigue (185104), Fortress of the Mind (193195), Voidform (194249), Lingering Insanity (197937), Void Siphon (215322)
+Affecting spells : Lucidity (137323), Mental Fatigue (185104), Fortress of the Mind (193195), Voidform (194249), Lingering Insanity (197937), Void Ray (205372), Void Siphon (215322)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1702,14 +1700,16 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=66820)    : School Damage: shadowfrost (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.45000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.37000 | Target: Enemy(6)
 #2 (id=66821)    : Dummy (3)
                    Base Value: 200 | Scaled Value: 200 | Target: Enemy(6)
 #3 (id=323988)   : Energize Power (30)
                    Base Value: 500 | Scaled Value: 500 | Misc Value: insanity | Target: Self(1)
-Description      : Assail the target with shadowy spikes, dealing $73510s1 Shadowfrost damage and leaving a spike embedded in their mind. Up to $u spikes may be embedded this way.
+#4 (id=341205)   : Dummy (3)
+                   Base Value: 50 | Scaled Value: 50 | Target: Enemy(6)
+Description      : Assail the target with shadowy spikes, dealing $73510s1 Shadowfrost damage and leaving a spike embedded in their mind. Up to $217673u spikes may be embedded this way.
 
-Mind Blast will detonate these spikes, each dealing $s2% of their original damage.
+Mind Blast will detonate these spikes, each dealing $s2% of their original damage to the main target, and ${$m2*$m4/100}% to all nearby targets.
 
 |cFFFFFFFFGenerates ${$m3/100} Insanity.|r
 
@@ -2256,7 +2256,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.x ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=140527)   : School Damage: holy (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.87400 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.31100 | Target: Enemy(6)
 Description      : $@spelldesc120517
 
 Name             : Angelic Feather (id=121536) [Spell Family (6)] 
@@ -2310,7 +2310,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. .....x.. .....
                  : Not a proc (105)
 Effects          :
 #1 (id=153526)   : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.90000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.45000 | Target: Enemy(6)
 Description      : $@spelldesc110744
 
 Name             : Mindbender (id=123040) [Spell Family (6)] 
@@ -3073,7 +3073,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=283376)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 8 | Target: Self(1)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 8 | Target: Self(1)
 Description      : Your Prayer of Mending has a $s1% chance to leave a Renew on each target it heals.
 
 Name             : Mania (id=193173) [Spell Family (6), Passive, Hidden] 
@@ -3154,10 +3154,10 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=283483)   : Apply Aura (6) | Add Flat Modifier: Spell Resource Cost (107)
-                   Base Value: -4000 | Scaled Value: -4000 | Misc Value: 14 | Target: Self(1)
+                   Base Value: -3000 | Scaled Value: -3000 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Voidform (194249)
 #2 (id=325209)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
-                   Base Value: -40 | Scaled Value: -40 | Misc Value: 32 | Target: Self(1)
+                   Base Value: -30 | Scaled Value: -30 | Misc Value: 32 | Target: Self(1)
                    Affected Spells: Voidform (185916)
 Description      : Voidform may be activated anytime your Insanity level is ${100+$m1/100} or higher.
 
@@ -3390,7 +3390,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=288794)   : Apply Aura (6) | Add Percent Modifier: Spell Duration (108)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Misc Value: 1 | Target: Self(1)
-                   Affected Spells: Spirit of Redemption (20711), Spirit of Redemption (27827)
+                   Affected Spells: Spirit of Redemption (20711), Spirit of Redemption (27827), Spirit of Redemption (215769)
 Description      : Increases the duration of Spirit of Redemption by $s1%.
 
 Name             : Light of the Naaru (id=196985) [Spell Family (6), Passive] 
@@ -3421,7 +3421,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=289317)   : Apply Aura (6) | Modify Healing% Done (136)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 126 | Target: Self(1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 126 | Target: Self(1)
 Description      : $@spelldesc197031
 Tooltip          : Healing increased by $s1%.
 
@@ -3491,9 +3491,9 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=290033)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | SP Coefficient: 1.00000 | Misc Value: 1 | Target: Self(1)
+                   Base Value: 2 | Scaled Value: 2 | SP Coefficient: 1.00000 | Misc Value: 1 | Target: Self(1)
 #2 (id=325535)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
-                   Base Value: 3 | Scaled Value: 3 | SP Coefficient: 1.00000 | Misc Value: 23 | Target: Self(1)
+                   Base Value: 2 | Scaled Value: 2 | SP Coefficient: 1.00000 | Misc Value: 23 | Target: Self(1)
                    Affected Spells: Atonement (194384)
 Description      : Increases Atonement duration by $s1 sec.
 
@@ -3659,6 +3659,10 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 60 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Lucidity (137323), Apotheosis (200183)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3834,7 +3838,6 @@ Resource         : 2% Base Mana (22000 @Level 110)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
-Cooldown         : 10 seconds
 Proc Chance      : 101%
 Affecting spells : Lucidity (137323), The Edge of Dark and Light (197715), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -3867,7 +3870,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=301385)   : Apply Aura (6) | Periodic Damage: fire every 2 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.42000 | Target: Enemy(6)
 Description      : $@spelldesc204197
 Tooltip          : $w1 Fire damage every $t1 seconds.
 
@@ -3912,7 +3915,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=302436)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000 | Radius: 0 - 30 yards | Target: Unknown(63) -> AOE friendly(31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.60000 | Radius: 0 - 30 yards | Target: Unknown(63) -> AOE friendly(31)
 #2 (id=302437)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Heals up to $s2 injured allies within $A1 yards of the target for $s1.
@@ -4026,15 +4029,16 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Inflicts the target with a Mind Bomb.
 
-After $d, or if the target dies, it unleashes a psychic explosion, stunning all enemies within $A1 yds of the target for $d.
+After $d, or if the target dies, it unleashes a psychic explosion, stunning all enemies within $226943A1 yds of the target for $d.
 Tooltip          : About to unleash a psychic explosion, stunning all nearby enemies.
 
 Name             : Void Ray (id=205371) [Spell Family (6), Passive] 
 Class            : Priest
 School           : Physical
+Internal Cooldown: 0.2 seconds
 Proc Chance      : 100%
-Proc Flags       : ........ ........ ..x..... ........ 
-                 : Periodic
+Proc Flags       : ........ ........ x.x..... ........ 
+                 : Hostile Spell, Periodic
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4045,7 +4049,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=303238)   : Apply Aura (6) | Proc Trigger Spell: Void Ray (42)
                    Base Value: 35 | Scaled Value: 35 | Misc Value: 2 | Trigger Spell: 205372 | Target: Self(1)
-Description      : Each time your Mind Flay deals damage, you gain $205372s1% increased Mind Flay damage for $205372d, stacking up to $205372u times.
+Description      : Each time your $?s73510[Mind Spike][Mind Flay] or Mind Sear deals damage, you gain $205372s1% increased $?s73510[Mind Spike][Mind Flay] and Mind Sear damage for $205372d, stacking up to $205372u times.
 
 Name             : Void Ray (id=205372) [Spell Family (6)] 
 Class            : Priest
@@ -4064,8 +4068,11 @@ Effects          :
 #1 (id=303239)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Mind Flay (15407)
+#2 (id=341195)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
+                   Affected Spells: Mind Sear (48045), Mind Sear (49821), Mind Spike (73510)
 Description      : $@spelldesc205371
-Tooltip          : Increases Mind Flay damage by $s1%.
+Tooltip          : Increases $?s73510[Mind Spike][Mind Flay] and Mind Sear damage by $s1%.
 
 Name             : Shadow Crash (id=205385) [Spell Family (6)] 
 Class            : Priest
@@ -4352,6 +4359,69 @@ Effects          :
 Description      : Attack the enemy's soul with a surge of Shadow energy, dealing $s1 Shadow damage and increasing damage that you deal to the target by $s2% for $d.
 Tooltip          : Taking $s2% increased damage from the Priest.
 
+Name             : Spirit of Redemption (Honor Talent) (id=215769) [Spell Family (6)] 
+Class            : Priest
+School           : Holy
+Duration         : 10 seconds
+Cooldown         : 300 seconds
+Proc Chance      : 100%
+Proc Flags       : ........ ..x...x. .....x.. ........ 
+                 : AOE Heal, Heal, Trap Triggered
+Affecting spells : Afterlife (196707)
+Attributes       : ........ ........ x......x ........   ........ ..x..... ........ ........ 
+                 : xx...... ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#2 (id=320862)   : Apply Aura (6) | Unknown effect sub type (379)
+                   Base Value: -100 | Scaled Value: -100 | Target: Self(1)
+#3 (id=320863)   : Apply Aura (6) | Modify Healing% Done (136)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#4 (id=320864)   : Apply Aura (6) | Shapeshift (36)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 32 | Misc Value 2: 0x9 | Target: Self(1)
+#5 (id=320865)   : Apply Aura (6) | Unknown effect sub type (93)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self(1)
+#6 (id=320866)   : Apply Aura (6) | Modify Power Cost% (72)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 2 | Misc Value 2: 0x1 | Target: Self(1)
+#7 (id=320867)   : Apply Aura (6) | Root (26)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self(1)
+#9 (id=320869)   : Apply Aura (6) | Unknown effect sub type (176)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#10 (id=320870)   : Apply Aura (6) | Unknown effect sub type (94)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#11 (id=320871)   : Apply Aura (6) | Unknown effect sub type (40)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
+#12 (id=320872)   : Apply Aura (6) | Absorb Damage (69)
+                   Base Value: 145000000 | Scaled Value: 1.45e+008 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
+Description      : The Priest becomes the Spirit of Redemption for $d. The Spirit of Redemption cannot move, attack, be attacked or targeted by any spells or effects. While in this form the Priest can cast any healing spell free of cost. 
+Tooltip          : You have become more powerful than anyone can possibly imagine.
+
+Name             : Mind Spike (id=217673) [Spell Family (6)] 
+Class            : Priest
+School           : Shadowfrost
+Spell Level      : 1
+Range            : 100 yards
+Duration         : 10 seconds
+Stacks           : 10 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=323985)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
+Description      : $@spelldesc73510
+Tooltip          : Embedded with Mind Spikes.
+
+Mind Blast will detonate them, dealing an additional $w1 Shadowfrost damage to the target, and ${$w1*$73510m4/100} Shadowfrost damage to all nearby targets.
+
+$73510m4
+
 Name             : Mind Spike Detonation (id=217676) [Spell Family (6)] 
 Class            : Priest
 School           : Shadowfrost
@@ -4366,6 +4436,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=323989)   : School Damage: shadowfrost (2)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
+#2 (id=341200)   : School Damage: shadowfrost (2)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : $@spelldesc73510
 
 Name             : Voidform (id=218413) [Spell Family (6), Hidden] 
@@ -4422,5 +4494,24 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Friend(21)
 Description      : $@spelldesc204065
 Tooltip          : Absorbs $w1 healing.
+
+Name             : Mind Bomb (id=226943) [Spell Family (5)] 
+Class            : Priest
+School           : Shadow
+Spell Level      : 1
+Range            : 100 yards
+Duration         : 4 seconds
+Mechanic         : Unknown(95)
+Attributes       : ........ ........ x......x x..x....   ...x.x.x ........ .x...... ........ 
+                 : ........ ......x. ...x.... ........   ........ ........ ........ ........ 
+                 : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : .....x.. .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=340787)   : Apply Aura (6) | Stun (12)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+Description      : Unleashes a psychic explosion, stunning all enemies within $A1 yds of the target for $d.
+Tooltip          : Stunned.
 
 

@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21570)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21796)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -798,7 +798,7 @@ Effects          :
 #2 (id=42114)    : Weapon Damage% (31)
                    Base Value: 225 | Scaled Value: 2.25 | Target: Enemy(6)
 #3 (id=287354)   : Dummy (3)
-                   Base Value: 30 | Scaled Value: 30 | Target: Enemy(6)
+                   Base Value: 20 | Scaled Value: 20 | Target: Enemy(6)
 #4 (id=331353)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Enemy(6)
 #5 (id=331354)   : Dummy (3)
@@ -1790,9 +1790,9 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=68126)    : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Misc Value: 0x10 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Misc Value: 0x10 | Target: Self(1)
 #2 (id=90622)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 200 | Scaled Value: 200 | Target: Self(1)
+                   Base Value: 150 | Scaled Value: 150 | Target: Self(1)
 Description      : Increases all Frost damage done by $s1%.
 
 Name             : Mastery: Dreadblade (id=77515) [Spell Family (15), Passive] 
@@ -2388,7 +2388,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=127901)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 300000000 | Scaled Value: 3e+08 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 300000000 | Scaled Value: 3e+008 | Misc Value: 127 | Target: Self(1)
 Description      : An unholy pact that prevents fatal damage, instead absorbing incoming healing equal to the damage prevented, lasting $116888d.
 
 If any healing absorption remains when this effect expires, you will die. This effect may only occur every $123981d.
@@ -3482,7 +3482,7 @@ Spell Level      : 57
 Range            : 50000 yards
 Duration         : 24 seconds
 Internal Cooldown: 1 seconds
-Stacks           : 4294967295 initial, 8 maximum
+Stacks           : -1 initial, 8 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ...x...x ........ .......x 
                  : AOE Heal Taken, Heal Taken
@@ -3747,7 +3747,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ....x... 
 Effects          :
 #1 (id=286506)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 100000000 | Scaled Value: 1e+08 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 100000000 | Scaled Value: 1e+008 | Misc Value: 127 | Target: Self(1)
 #2 (id=293376)   : Apply Aura (6) | Unknown effect sub type (408)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 195182 | Target: Self(1)
 #3 (id=306110)   : Apply Aura (6) | Unknown effect sub type (133)
@@ -4120,7 +4120,7 @@ Proc Flags       : ........ ........ x....... ........
                  : Hostile Spell
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4452,7 +4452,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=306100)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 145000000 | Scaled Value: 1.45e+08 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 145000000 | Scaled Value: 1.45e+008 | Misc Value: 127 | Target: Self(1)
 #2 (id=306101)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
 #3 (id=306102)   : Apply Aura (6) | Dummy (4)
@@ -4835,7 +4835,7 @@ Effects          :
 #1 (id=306491)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Cone Front(104)
 #2 (id=306492)   : Weapon Damage% (31)
-                   Base Value: 120 | Scaled Value: 1.2 | Radius: 8 yards | Target: Cone Front(104)
+                   Base Value: 90 | Scaled Value: 0.9 | Radius: 8 yards | Target: Cone Front(104)
 #3 (id=330163)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Radius: 8 yards | Target: Cone Front(104)
 Description      : A sweeping attack that strikes all enemies in front of you for $sw1 Frost damage. This attack benefits from Killing Machine. Critical strikes with Frostscythe deal $s3 times normal damage.

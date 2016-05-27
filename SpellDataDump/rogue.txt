@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21570)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21796)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -1230,7 +1230,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=20803)    : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 500000000 | Scaled Value: 5e+08 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 500000000 | Scaled Value: 5e+008 | Misc Value: 127 | Target: Self(1)
 Description      : Fatal attacks instead reduce you to 7% of your maximum health. For $45182d afterward, you take $45182s1% reduced damage. Cannot trigger more often than once per $45181d.
 
 Name             : Master of Subtlety (id=31666) [Spell Family (8), Hidden] 
@@ -1890,7 +1890,6 @@ Class            : Assassination Rogue
 School           : Physical
 Spell Level      : 72
 Range            : 30 yards
-GCD              : 1 seconds
 Duration         : 20 seconds
 Cooldown         : 120 seconds
 Affecting spells : Master Assassin (192349)
@@ -2903,10 +2902,10 @@ Attributes       : ........ ........ ..x..... ...x...x   ....x... ..x..... .....
                  : Disable player procs (112), Disable target procs (113)
 Effects          :
 #1 (id=269037)   : Apply Aura (6) | Unknown effect sub type (103)
-                   Base Value: -10000000 | Scaled Value: -1e+07 | SP Coefficient: 1.00000 | Target: Self(1)
+                   Base Value: -10000000 | Scaled Value: -1e+007 | SP Coefficient: 1.00000 | Target: Self(1)
 #2 (id=317950)   : Apply Aura (6) | Unknown effect sub type (275)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self(1)
-                   Affected Spells: Pick Pocket (921), Cheap Shot (1833), Sap (6770), Shadowstrike (185438), Pick Pocket (192986), Symbols of Death (212283)
+                   Affected Spells: Pick Pocket (921), Cheap Shot (1833), Sap (6770), Shadowstrike (185438), Pick Pocket (192986), Symbols of Death (212283), Death (227151)
 #3 (id=334762)   : Apply Aura (6) | Periodic Heal%: every 1 seconds (20)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Allows use of all Stealth abilities and grants all the combat benefits of Stealth for $d. Effect not broken from taking damage or attacking. $?s14062[Movement speed while active is increased by $1784s3% and damage dealt is increased by $1784s4%. ]?s108209[Abilities cost $112942s1% less while active. ][]$?s31223[Attacks from Shadow Dance and for $31666d after deal $31223s1% more damage.  ][]
@@ -2938,7 +2937,7 @@ Spell Level      : 22
 Range            : 25 yards
 GCD              : 1 seconds
 Stance Mask      : 0x20000000
-Affecting spells : Shadow Blades (121471), Shadow Dance (185313), Premeditation (196979), Precision Strike (197235)
+Affecting spells : Shadow Blades (121471), Shadow Dance (185313), Premeditation (196979), Precision Strike (197235), Death (227151)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3138,6 +3137,7 @@ Description      : $@spelldesc192376
 Name             : Kingsbane (Artifact) (id=192759) [Spell Family (8)] 
 Class            : Rogue
 School           : Nature
+Resource         : 35 Energy
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 14 seconds
@@ -3554,6 +3554,7 @@ Class            : Rogue
 School           : Physical
 Spell Level      : 12
 Range            : 40 yards
+Velocity         : 70 yards/sec
 Cooldown         : 30 seconds
 Attributes       : ....x... ........ ........ .....x..   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx...... ........ 
@@ -3563,8 +3564,8 @@ Attributes       : ....x... ........ ........ .....x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Disable player procs (112), Disable target procs (113)
 Effects          :
-#1 (id=286908)   : Unknown effect type (213)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1) -> Unknown(87)
+#1 (id=286908)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Unknown(87)
 Description      : Launch a grappling hook and pull yourself to the target location.
 
 Name             : Opportunity (id=195627) [Spell Family (8)] 
@@ -3803,10 +3804,11 @@ Name             : Strike from the Shadows (id=196958) [Spell Family (8)]
 Class            : Rogue
 School           : Physical
 Spell Level      : 1
+Range            : 50000 yards
 Duration         : 2 seconds
 Mechanic         : Unknown(95)
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -4333,8 +4335,8 @@ Attributes       : ........ ........ ........ ..x..x..   ........ ........ .....
 Effects          :
 #1 (id=298790)   : Apply Aura (6) | Proc Trigger Spell: Curse of the Dreadblades (42)
                    Base Value: 10 | Scaled Value: 10 | Trigger Spell: 202668 | Target: Self(1)
-Description      : Invoke the Curse of the Dreadblades, causing each Saber Slash to fill your combo points. However, |cFFFFCC99The Dreadblades|r will consume $202669s1% of your current health when you use a finishing move for the next $d.
-Tooltip          : Saber Slash will refill all of your combo points when used.
+Description      : Invoke the Curse of the Dreadblades, causing each Saber Slash or Pistol Shot to fill your combo points. However, |cFFFFCC99The Dreadblades|r will consume $202669s1% of your current health when you use a finishing move for the next $d.
+Tooltip          : Saber Slash and Pistol Shot will refill all of your combo points when used.
 
 Name             : Curse of the Dreadblades (id=202668) [Spell Family (8)] 
 Class            : Rogue
@@ -4614,7 +4616,7 @@ School           : Physical
 Resource         : 35 Energy
 Spell Level      : 34
 Duration         : 35 seconds
-Cooldown         : 1 seconds
+Cooldown         : 10 seconds
 Stance Mask      : 0x20000000
 Affecting spells : Shadow Dance (185313)
 Attributes       : ....x... ........ x.x..... ........   .....x.. ..x..... ........ ........ 
@@ -4628,7 +4630,9 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self(1)
 #2 (id=314703)   : Apply Aura (6) | Periodic Energize Power: every 2 seconds (24)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self(1)
-Description      : Invoke ancient symbols of power, increasing all damage you deal by $s1% for $d. Unaffected by the global cooldown.
+#3 (id=341221)   : Trigger Spell: Death (64)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 227151 | Target: Self(1)
+Description      : Invoke ancient symbols of power, increasing all damage you deal by $s1% for $d, and causing your next Shadowstrike to critically strike. Unaffected by the global cooldown.
 Tooltip          : All damage done increased by $s1%.
 
 Name             : Goremaw's Bite (id=220901) [Spell Family (8)] 
@@ -4704,5 +4708,29 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(239) | Target: Enemy(6)
 Description      : $@spelldesc196951
 Tooltip          : Dazed. Movement speed reduced by $s1.
+
+Name             : Death (id=227151) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Level      : 34
+Duration         : 10 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Affecting spells : Shadow Dance (185313)
+Triggered by     : Symbols of Death (212283)
+Attributes       : ....x... ........ x.x..... ........   .....x.. ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=341220)   : Apply Aura (6) | Add Flat Modifier: Spell Critical Chance (107)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 7 | Target: Self(1)
+                   Affected Spells: Shadowstrike (185438)
+Description      : $@spelldesc212283
+Tooltip          : Your next Shadowstrike will critically strike.
 
 

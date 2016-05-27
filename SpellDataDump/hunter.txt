@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21570)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21796)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -2720,7 +2720,7 @@ Effects          :
                    Affected Spells: Kill Command (34026), Chimaera Shot (53209), Kill Command (83381), Dire Beast (120679), Chimaera Shot (171454), Chimaera Shot (171457), Volley (194386), Volley (194392), Black Arrow (194599), Throwing Axes (200163), Flanking Strike (202800), Chimaera Shot (204304), Butchery (212436), Dire Longevity (215911), Dire Frenzy (217200)
 #3 (id=191143)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-                   Affected Spells: Mend Pet (136), Disengage (781), Call Pet 1 (883), Revive Pet (982), Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Feign Death (5384), Ice Trap (13809), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Kill Command (34026), Misdirection (34477), Chimaera Shot (53209), Gift of the Naaru (59543), Kill Command (83381), Binding Shot (109248), Exhilaration (109304), Serpent Sting (118253), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Counter Shot (147362), Iron Horde Trip Mine (155918), Steel Trap (162488), Steel Trap (162496), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Lacerate (185855), Marked Shot (185901), Aspect of the Cheetah (186257), Aspect of the Cheetah (186258), Aspect of the Turtle (186265), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Freezing Trap (187651), Tar Trap (187698), Tar Trap (187699), Muzzle (187707), Carve (187708), Harpoon (190925), Mongoose Bite (190928), Aimed Shot (191043), Sticky Bomb (191241), Explosive Trap (191433), Hatchet Toss (193265), Cobra Shot (193455), Aspect of the Wild (193530), Caltrops (194277), Exhilaration (194291), Volley (194386), Volley (194392), Spitting Cobra (194407), Black Arrow (194599), Dragonsfire Grenade (194855), Wing Clip (195645), Head Shot (198670), Camouflage (198783), Camouflage (199483), Ranger's Net (200108), Throwing Axes (200163), Flanking Strike (202800), Fury of the Eagle (203415), Windburst (204147), Chimaera Shot (204304), A Murder of Crows (206505), Play Dead (209997), Wake Up (210000), Explosive Shot (212431), Butchery (212436), Head Shot (213678), Sidewinders (214579), Sidewinders (214581), Dire Longevity (215911)
+                   Affected Spells: Mend Pet (136), Disengage (781), Call Pet 1 (883), Revive Pet (982), Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Feign Death (5384), Ice Trap (13809), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Kill Command (34026), Misdirection (34477), Chimaera Shot (53209), Gift of the Naaru (59543), Kill Command (83381), Binding Shot (109248), Exhilaration (109304), Serpent Sting (118253), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Counter Shot (147362), Iron Horde Trip Mine (155918), Steel Trap (162488), Steel Trap (162496), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Lacerate (185855), Marked Shot (185901), Aspect of the Cheetah (186257), Aspect of the Cheetah (186258), Aspect of the Turtle (186265), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Freezing Trap (187651), Tar Trap (187698), Tar Trap (187699), Muzzle (187707), Carve (187708), Harpoon (190925), Mongoose Bite (190928), Aimed Shot (191043), Sticky Bomb (191241), Explosive Trap (191433), Hatchet Toss (193265), Cobra Shot (193455), Aspect of the Wild (193530), Caltrops (194277), Exhilaration (194291), Volley (194386), Volley (194392), Spitting Cobra (194407), Black Arrow (194599), Dragonsfire Grenade (194855), Wing Clip (195645), Head Shot (198670), Camouflage (199483), Ranger's Net (200108), Throwing Axes (200163), Flanking Strike (202800), Fury of the Eagle (203415), Windburst (204147), Chimaera Shot (204304), A Murder of Crows (206505), Sentinel (206817), Play Dead (209997), Wake Up (210000), Explosive Shot (212431), Butchery (212436), Head Shot (213678), Sidewinders (214579), Sidewinders (214581), Dire Longevity (215911)
 #4 (id=191144)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1628 | Target: Self(1)
 #5 (id=191145)   : Apply Aura (6) | Unknown effect sub type (457)
@@ -3777,9 +3777,9 @@ Attributes       : ....x... ........ x.x..... ........   ....x... ..x..... .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=271189)   : Apply Aura (6) | Unknown effect sub type (184)
-                   Base Value: -100 | Scaled Value: -100 | SP Coefficient: 1.00000 | Target: Self(1)
+                   Base Value: -200 | Scaled Value: -200 | SP Coefficient: 1.00000 | Target: Self(1)
 #2 (id=271190)   : Apply Aura (6) | Unknown effect sub type (287)
-                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Target: Self(1)
+                   Base Value: 200 | Scaled Value: 200 | SP Coefficient: 1.00000 | Target: Self(1)
 #3 (id=271191)   : Apply Aura (6) | Spell Reflection (28)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #4 (id=271192)   : Apply Aura (6) | Modify Damage Taken% (87)
@@ -4172,7 +4172,7 @@ Effects          :
 #1 (id=279990)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : $@spelldesc190925
-Tooltip          : Rooted
+Tooltip          : Rooted.
 
 Name             : Mongoose Bite (id=190928) [Spell Family (9)] 
 Class            : Survival Hunter
@@ -4890,37 +4890,6 @@ Effects          :
 #5 (id=292035)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : A powerful shot which deals up to ${2*$213678sw2} Physical damage to the target and up to $213678sw2 Physical damage to all enemies between you and the target.
-
-Name             : Camouflage (id=198783) [Spell Family (9)] 
-Class            : Hunter
-School           : Physical
-Spell Level      : 1
-Duration         : 60 seconds
-Cooldown         : 60 seconds
-Stacks           : 1 initial, 1 maximum
-Proc Chance      : 100%
-Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Hunter (137014)
-Attributes       : ....x... ........ ..x.x... .x.xx...   ....x... ..x..... ........ ........ 
-                 : ........ ........ .....x.. ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=292220)   : Apply Aura (6) | Stealth (16)
-                   Base Value: 30 | Scaled Value: 575 | Points Per Level: 5 | Target: Self(1)
-#2 (id=292221)   : Apply Aura (6) | Dummy (4)
-                   Base Value: -30 | Scaled Value: -30 | Target: Self(1)
-#3 (id=292222)   : Apply Aura (6) | Unknown effect sub type (129)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#4 (id=292224)   : Apply Aura (6) | Periodic Heal%: every 1 seconds (20)
-                   Base Value: 2 | Scaled Value: 2 | Target: Self(1)
-#5 (id=292239)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
-Description      : You blend into the surroundings and gain stealth for $d. While camouflaged, you will heal for $s4% every $T4 secs.
-Tooltip          : Stealthed.
 
 Name             : Camouflage (id=199483) [Spell Family (9)] 
 Class            : Hunter
@@ -5773,11 +5742,14 @@ Effects          :
 Description      : $@spelldesc200108
 Tooltip          : Slowed by $s1%.
 
-Name             : Heightened Vulnerability (id=206817) [Spell Family (9)] 
+Name             : Sentinel (id=206817) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
-Duration         : Aura (infinite)
-Cooldown         : 20 seconds
+Range            : 40 yards
+GCD              : 1.5 seconds
+Charges          : 2 (20 seconds cooldown)
+Category         : 1656
+Affecting spells : Hunter (137014)
 Attributes       : ....x... ........ x.x..... .x......   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5785,10 +5757,9 @@ Attributes       : ....x... ........ x.x..... .x......   ........ ..x..... .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=305849)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | Target: Self(1)
-Description      : Your next Marked Shot applies $s stacks of Vulnerable to all Marked Targets.
-Tooltip          : Your next Marked Shot applies $s stacks of Vulnerable to all Marked Targets.
+#1 (id=305849)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
+Description      : Applies Hunter's Mark to all enemies near the target.
 
 Name             : Titan's Thunder (Artifact) (id=207068) [Spell Family (9)] 
 Class            : Hunter
@@ -6203,5 +6174,21 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Target: Self(1)
 Description      : Your next $?s214579[Sidewinders][Arcane Shot or Multi-Shot] will apply Hunter's Mark. Hunter's Mark activates Marked Shot.
 Tooltip          : Next $?s214579[Sidewinders][Arcane Shot or Multi-Shot] will apply Hunter's Mark.
+
+Name             : Expansive Mind (Racial Passive) (id=227057) [Passive] 
+Class            : Hunter
+Race             : Gnome
+School           : Physical
+Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=341049)   : Apply Aura (6) | Unknown effect sub type (132)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 2 | Misc Value 2: 0x8 | Target: Self(1)
+Description      : Maximum focus increased by $s1%.
 
 
