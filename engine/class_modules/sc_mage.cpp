@@ -3219,8 +3219,10 @@ struct flame_patch_t : public fire_mage_spell_t
   flame_patch_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "flame_patch", p, p -> talents.flame_patch )
   {
-    parse_options( options_str );
-    aoe = -1;
+    dot_duration =  p -> find_spell( 205470 ) -> duration();
+    base_tick_time = timespan_t::from_seconds( 1.0 );//TODO: Hardcode this as it is not in the spell data.
+    hasted_ticks=true;
+    spell_power_mod.tick = p -> find_spell( 205472 ) -> effectN( 1 ).sp_coeff();
   }
 };
 // Flamestrike Spell ==========================================================
@@ -4125,7 +4127,7 @@ struct mark_of_aluneth_t : public arcane_mage_spell_t
     school = SCHOOL_ARCANE;
     may_proc_missiles = false;
     dot_duration = p -> find_spell( 210726 ) -> duration();
-    base_tick_time = timespan_t::from_seconds( 1.2 ); // Hardcode until tick times are worked out
+    base_tick_time = timespan_t::from_seconds( 1.2 ); // TODO: Hardcode until tick times are worked out
     spell_power_mod.tick = p -> find_spell( 211088 ) -> effectN( 1 ).sp_coeff();
     hasted_ticks = false;
   }
