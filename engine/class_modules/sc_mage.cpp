@@ -2568,10 +2568,9 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
     if ( p() -> artifact.rule_of_threes.rank() &&
          rng().roll( p() -> artifact.rule_of_threes
-         .data().effectN( 1 ).percent() * 10 ) )
+         .data().effectN( 1 ).percent() / 10 ) )
     {
-
-      base_tick_time *=  1.0 - ( p() -> artifact.rule_of_threes.data().effectN( 1 ).percent() / 10 ) ;
+      base_tick_time *=  1.0 - ( p() -> artifact.rule_of_threes.data().effectN( 1 ).percent() / 10 );
     }
     arcane_mage_spell_t::execute();
 
