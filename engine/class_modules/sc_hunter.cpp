@@ -11,9 +11,9 @@
 // Beast Mastery
 //   - Dire Beast (focus gain is passive now)
 //  Talent
-//   - Stomp
 //   - Stampede (rework)
 //   - Aspect of the Beast
+//   - Dire Frenzy
 //  Artifacts
 //   - Jaws of Thunder
 //   - Spitting Cobras
@@ -1556,7 +1556,7 @@ struct kill_command_t: public hunter_main_pet_attack_t
 
     // The hardcoded parameter is taken from the $damage value in teh tooltip. e.g., 1.36 below
     // $damage = ${ 1.5*($83381m1 + ($RAP*  1.632   ))*$<bmMastery> }
-    attack_power_mod.direct  = 1.632; // Hard-coded in tooltip.
+    attack_power_mod.direct  = 2.5; // Hard-coded in tooltip.
   }
 
   // Override behavior so that Kill Command uses hunter's attack power rather than the pet's
@@ -1705,52 +1705,37 @@ void hunter_main_pet_t::init_spells()
   }
 }
 
-
 // ==========================================================================
-// Dire Critter
+// Secondary pets: Dire Beast, Hati, Black Arrow
 // ==========================================================================
 
-struct dire_critter_t: public hunter_pet_t
+struct hunter_secondary_pet_t: public hunter_pet_t
 {
-  struct melee_t: public hunter_pet_action_t < dire_critter_t, melee_attack_t >
+  struct secondary_pet_melee_t: hunter_pet_action_t < hunter_secondary_pet_t, melee_attack_t >
   {
-    int focus_gain;
-    melee_t( dire_critter_t& p ):
-      base_t( "dire_beast_melee", p )
+    secondary_pet_melee_t( const std::string &attack_name, hunter_secondary_pet_t& p ):
+      base_t( attack_name, p )
     {
-      weapon = &( player -> main_hand_weapon );
-      weapon_multiplier = 0;
-      base_execute_time = weapon -> swing_time;
-      base_dd_min = base_dd_max = player -> dbc.spell_scaling( p.o() -> type, p.o() -> level() );
-      attack_power_mod.direct = 0.5714;
-      school = SCHOOL_PHYSICAL;
-      trigger_gcd = timespan_t::zero();
-      background = true;
-      repeating = true;
-      may_glance = true;
-      may_crit = true;
-      special = false;
-      energize_type = ENERGIZE_ON_HIT;
-      energize_resource = RESOURCE_FOCUS;
-      energize_amount = player -> find_spell( 120694 ) -> effectN( 1 ).base_value();
-      if ( o() -> talents.dire_stable -> ok() )
-        focus_gain += o() -> talents.dire_stable -> effectN( 1 ).base_value();
-      base_multiplier *= 1.15; // Hotfix
-    }
-
-    bool init_finished() override
-    {
-      if ( p() -> o() -> pet_dire_beasts[ 0 ] )
-        stats = p() -> o() -> pet_dire_beasts[ 0 ] -> get_stats( "dire_beast_melee" );
-
-      return hunter_pet_action_t<dire_critter_t, melee_attack_t>::init_finished();
+        weapon = &( player -> main_hand_weapon );
+        weapon_multiplier = 0;
+        base_execute_time = weapon -> swing_time;
+        base_dd_min = base_dd_max = player -> dbc.spell_scaling( p.o() -> type, p.o() -> level() );
+        attack_power_mod.direct = 0.5714;
+        school = SCHOOL_PHYSICAL;
+        trigger_gcd = timespan_t::zero();
+        background = true;
+        repeating = true;
+        may_glance = true;
+        may_crit = true;
+        special = false;
+        base_multiplier *= 1.15;
     }
   };
 
-  dire_critter_t( hunter_t& owner, size_t index ):
-    hunter_pet_t( *owner.sim, owner, std::string( "dire_beast_" ) + util::to_string( index ), PET_HUNTER, true /*GUARDIAN*/ )
+  hunter_secondary_pet_t( hunter_t& owner, std::string &pet_name ):
+    hunter_pet_t( *owner.sim, owner, pet_name, PET_HUNTER, true /*GUARDIAN*/ )
   {
-    owner_coeff.ap_from_ap = 1.0;
+    owner_coeff.ap_from_ap = 1.15;
     regen_type = REGEN_DISABLED;
   }
 
@@ -1768,64 +1753,7 @@ struct dire_critter_t: public hunter_pet_t
     main_hand_weapon.max_dmg    = main_hand_weapon.min_dmg;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2 );
 
-    main_hand_attack = new melee_t( *this );
-  }
-
-  virtual void summon( timespan_t duration = timespan_t::zero() ) override
-  {
-    hunter_pet_t::summon( duration );
-
-    // attack immediately on summons
-    main_hand_attack -> execute();
-  }
-};
-
-
-// ==========================================================================
-// Hati 
-// ==========================================================================
-
-struct hati_t: public hunter_pet_t
-{
-  struct melee_t: public hunter_pet_action_t < hati_t, melee_attack_t >
-  {
-    melee_t( hati_t& p ):
-      base_t( "hati_melee", p )
-    {
-      weapon = &( player -> main_hand_weapon );
-      weapon_multiplier = 0;
-      base_execute_time = weapon -> swing_time;
-      base_dd_min = base_dd_max = player -> dbc.spell_scaling( p.o() -> type, p.o() -> level() );
-      attack_power_mod.direct = 0.5714;
-      school = SCHOOL_PHYSICAL;
-      trigger_gcd = timespan_t::zero();
-      background = true;
-      repeating = true;
-      may_glance = true;
-      may_crit = true;
-      special = false;
-      base_multiplier *= 1.15;
-    }
-  };
-
-  hati_t( hunter_t& owner ):
-  hunter_pet_t( *owner.sim, owner, std::string( "hati" ), PET_HUNTER, true /*GUARDIAN*/ )
-  {
-    owner_coeff.ap_from_ap = 1.0;
-    regen_type = REGEN_DISABLED;
-  }
-
-  virtual void init_base_stats() override
-  {
-    hunter_pet_t::init_base_stats();
-
-    stamina_per_owner = 0;
-    main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, o() -> level() );
-    main_hand_weapon.max_dmg    = main_hand_weapon.min_dmg;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 2 );
-
-    main_hand_attack = new melee_t( *this );
+    main_hand_attack = new secondary_pet_melee_t( name_str + "_melee", *this );
   }
 
   virtual void summon( timespan_t duration = timespan_t::zero() ) override
@@ -1838,58 +1766,43 @@ struct hati_t: public hunter_pet_t
 };
 
 // ==========================================================================
-// Dark Minion
+// Dire Critter
 // ==========================================================================
 
-struct dark_minion_t: public hunter_pet_t
+struct dire_critter_t: public hunter_secondary_pet_t
 {
-  struct melee_t: public hunter_pet_action_t < dark_minion_t, melee_attack_t >
+  struct dire_beast_melee_t: public secondary_pet_melee_t
   {
-    melee_t( dark_minion_t& p ):
-      base_t( "dark_minion_melee", p )
+    int focus_gain;
+    dire_beast_melee_t( dire_critter_t& p ):
+      secondary_pet_melee_t( "dire_beast_melee", p )
     {
-      weapon = &( player -> main_hand_weapon );
-      weapon_multiplier = 0;
-      base_execute_time = weapon -> swing_time;
-      base_dd_min = base_dd_max = player -> dbc.spell_scaling( p.o() -> type, p.o() -> level() );
-      attack_power_mod.direct = 0.5714;
-      school = SCHOOL_PHYSICAL;
-      trigger_gcd = timespan_t::zero();
-      background = true;
-      repeating = true;
-      may_glance = true;
-      may_crit = true;
-      special = false;
-      base_multiplier *= 1.15;
+      energize_type = ENERGIZE_ON_HIT;
+      energize_resource = RESOURCE_FOCUS;
+      energize_amount = player -> find_spell( 120694 ) -> effectN( 1 ).base_value();
+      if ( o() -> talents.dire_stable -> ok() )
+        focus_gain += o() -> talents.dire_stable -> effectN( 1 ).base_value();
+    }
+
+    bool init_finished() override
+    {
+      if ( p() -> o() -> pet_dire_beasts[ 0 ] )
+        stats = p() -> o() -> pet_dire_beasts[ 0 ] -> get_stats( "dire_beast_melee" );
+
+      return secondary_pet_melee_t::init_finished();
     }
   };
 
-  dark_minion_t( hunter_t& owner ):
-  hunter_pet_t( *owner.sim, owner, std::string( "dark_minion" ), PET_HUNTER, true /*GUARDIAN*/ )
+  dire_critter_t( hunter_t& owner, size_t index ):
+    hunter_secondary_pet_t( owner, std::string( "dire_beast_" ) + util::to_string( index ) )
   {
-    owner_coeff.ap_from_ap = 1.0;
-    regen_type = REGEN_DISABLED;
   }
 
   virtual void init_base_stats() override
   {
-    hunter_pet_t::init_base_stats();
+    hunter_secondary_pet_t::init_base_stats();
 
-    stamina_per_owner = 0;
-    main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, o() -> level() );
-    main_hand_weapon.max_dmg    = main_hand_weapon.min_dmg;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 2 );
-
-    main_hand_attack = new melee_t( *this );
-  }
-
-  virtual void summon( timespan_t duration = timespan_t::zero() ) override
-  {
-    hunter_pet_t::summon( duration );
-
-    // attack immediately on summons
-    main_hand_attack -> execute();
+    main_hand_attack = new dire_beast_melee_t( *this );
   }
 };
 
@@ -3919,10 +3832,10 @@ void hunter_t::create_pets()
   }
 
   if ( titanstrike )
-    hati = new pets::hati_t( *this );
+    hati = new pets::hunter_secondary_pet_t( *this, std::string( "hati" ) );
 
   if ( talents.black_arrow -> ok() )
-    dark_minion = new pets::dark_minion_t( *this );
+    dark_minion = new pets::hunter_secondary_pet_t( *this, std::string( "dark_minion" ) );
 }
 
 // hunter_t::init_spells ====================================================
