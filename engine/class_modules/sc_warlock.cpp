@@ -937,6 +937,7 @@ struct doom_bolt_t: public warlock_pet_spell_t
   doom_bolt_t( warlock_pet_t* p ):
     warlock_pet_spell_t( "Doom Bolt", p, p -> find_spell( 85692 ) )
   {
+    if ( p -> o() -> talents.grimoire_of_supremacy -> ok() )
     base_multiplier *= 1.0 + p -> o() -> artifact.impish_incineration.data().effectN( 2 ).percent();
   }
 
