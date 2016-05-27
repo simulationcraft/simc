@@ -413,6 +413,7 @@ public:
                      aegwynns_fury,
                      mana_shield, // NYI
                      mark_of_aluneth,
+                     might_of_the_guardians,
                      rule_of_threes,
                      slooow_down, // NYI
                      torrential_barrage,
@@ -434,7 +435,8 @@ public:
                      phoenixs_flames,
                      burning_gaze,
                      big_mouth, //NYI
-                     blast_furnace;
+                     blast_furnace,
+                     wings_of_flame;
 
     // Frost
     artifact_power_t ebonbolt,
@@ -1684,6 +1686,18 @@ struct arcane_mage_spell_t : public mage_spell_t
     return 1.0 + p() -> buffs.arcane_charge -> check() * per_ac_bonus;
 
   };
+
+  virtual double action_multiplier() const override
+  {
+    double am = mage_spell_t::action_multiplier();
+
+      if ( p() -> artifact.might_of_the_guardians && school == SCHOOL_ARCANE )
+      {
+         am *= 1.0 + p() -> artifact.might_of_the_guardians.percent();
+      }
+
+    return am;
+  }
 };
 
 
@@ -1880,6 +1894,17 @@ struct fire_mage_spell_t : public mage_spell_t
     {
       p -> procs.ignite_applied -> occur();
     }
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = mage_spell_t::action_multiplier();
+
+      if ( p() -> artifact.wings_of_flame && school == SCHOOL_FIRE )
+      {
+         am *= 1.0 + p() -> artifact.wings_of_flame.percent();
+      }
+    return am;
   }
 };
 
@@ -5716,6 +5741,7 @@ void mage_t::init_spells()
   artifact.blasting_rod            = find_artifact_spell( "Blasting Rod"           );
   artifact.crackling_energy        = find_artifact_spell( "Crackling Energy"       );
   artifact.mark_of_aluneth         = find_artifact_spell( "Mark of Aluneth"        );
+  artifact.might_of_the_guardians  = find_artifact_spell( "Might of the Guardians" );
   artifact.rule_of_threes          = find_artifact_spell( "Rule of Threes"         );
   artifact.torrential_barrage      = find_artifact_spell( "Torrential Barrage"     );
   artifact.everywhere_at_once      = find_artifact_spell( "Everywhere At Once"     );
@@ -5737,6 +5763,7 @@ void mage_t::init_spells()
   artifact.pyretic_incantation     = find_artifact_spell( "Pyretic Incantation"    );
   artifact.burning_gaze            = find_artifact_spell( "Burning Gaze"           );
   artifact.blast_furnace           = find_artifact_spell( "Blast Furnace"          );
+  artifact.wings_of_flame          = find_artifact_spell( "Wings of Flame"         );
   //Frost
   artifact.ebonbolt                = find_artifact_spell( "Ebonbolt"               );
   artifact.jouster                 = find_artifact_spell( "Jouster"                );
