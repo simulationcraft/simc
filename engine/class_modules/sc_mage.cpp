@@ -931,12 +931,15 @@ struct water_elemental_pet_t : public pet_t
     virtual void impact( action_state_t* s ) override
     {
       water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
+
       double fof_chance = p -> o() -> artifact.its_cold_outside.percent();
+
+
       spell_t::impact( s );
 
       if ( result_is_hit( s -> result ) )
       {
-        p -> o() -> buffs.fingers_of_frost -> trigger( 1.0, fof_chance );
+        p -> o() -> buffs.fingers_of_frost -> trigger( 1.0, buff_t::DEFAULT_VALUE(), fof_chance );
         p -> o() -> benefits.fingers_of_frost -> update( "Waterbolt Proc", 1.0 );
       }
     }
@@ -2085,9 +2088,9 @@ struct icicle_t : public frost_mage_spell_t
     //       prevent Glacial Spike from double dipping on lonely winter
     if ( p() -> talents.lonely_winter -> ok() )
     {
-      am *= 1.0 + p() -> talents.lonely_winter -> effectN( 1 ).percent();
+      am *= 1.0 + ( p() -> talents.lonely_winter -> effectN( 1 ).percent()
+        + p() -> artifact.its_cold_outside.data().effectN( 2 ).percent() );
     }
-
     return am;
   }
 };
@@ -3386,7 +3389,11 @@ struct frostbolt_t : public frost_mage_spell_t
     stats -> add_child( icicle );
     icicle -> school = school;
     icicle -> action_list.push_back( p -> icicle );
-    base_multiplier *= 1.0 + p -> talents.lonely_winter -> effectN( 1 ).percent();
+    if ( p -> talents.lonely_winter -> ok() )
+    {
+      base_multiplier *= 1.0 + ( p -> talents.lonely_winter -> effectN( 1 ).percent() + 
+                               p -> artifact.its_cold_outside.data().effectN( 2 ).percent() );
+    }
     base_multiplier *= 1.0 + p -> artifact.icy_caress.percent();
     chills = true;
   }
@@ -3489,7 +3496,6 @@ struct frostbolt_t : public frost_mage_spell_t
     {
       am *= 1.0 + ( p() -> buffs.ice_shard -> stack() * p() -> buffs.ice_shard -> data().effectN( 2 ).percent() );
     }
-
     return am;
   }
 
@@ -3522,7 +3528,11 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     cooldown -> duration = timespan_t::zero(); // dbc has CD of 6 seconds
 
     //TODO: Is this actually how these modifiers work?
-    base_multiplier *= 1.0 + p -> talents.lonely_winter -> effectN( 1 ).percent();
+    if ( p -> talents.lonely_winter -> ok() )
+    {
+      base_multiplier *= 1.0 + ( p -> talents.lonely_winter -> effectN( 1 ).percent() + 
+                               p -> artifact.its_cold_outside.data().effectN( 2 ).percent() );
+    }
     base_multiplier *= 1.0 + p -> talents.bitter_cold -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> artifact.orbital_strike.percent();
     chills = true;
@@ -3554,7 +3564,6 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     {
       s -> result_total *= 1.0 + p() -> artifact.ice_age.percent();
     }
-
     return s -> result_total;
   }
 };
@@ -3729,7 +3738,12 @@ struct ice_lance_t : public frost_mage_spell_t
       frost_bomb_explosion = new frost_bomb_explosion_t( p );
     }
 
-    base_multiplier *= 1.0 + p -> talents.lonely_winter -> effectN( 1 ).percent();
+    if ( p -> talents.lonely_winter -> ok() )
+    {
+      base_multiplier *= 1.0 + ( p -> talents.lonely_winter -> effectN( 1 ).percent() + 
+                               p -> artifact.its_cold_outside.data().effectN( 2 ).percent() );
+    }
+
   }
 
   double calculate_direct_amount( action_state_t* s ) const override
