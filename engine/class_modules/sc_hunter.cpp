@@ -1544,10 +1544,20 @@ struct monstrous_bite_t: public hunter_main_pet_attack_t
   }
 };
 
+
 // Kill Command (pet) =======================================================
 
 struct kill_command_t: public hunter_main_pet_attack_t
 {
+  struct bestial_ferocity_t: public hunter_main_pet_attack_t
+  {
+    bestial_ferocity_t( hunter_main_pet_t* p ):
+      hunter_main_pet_attack_t( "bestial_ferocity", p, p -> find_spell( 191413 ) )
+    {
+      background = true;
+    }
+  };
+
   kill_command_t( hunter_main_pet_t* p ):
     hunter_main_pet_attack_t( "kill_command", p, p -> find_spell( 83381 ) )
   {
@@ -1559,6 +1569,9 @@ struct kill_command_t: public hunter_main_pet_attack_t
     // The hardcoded parameter is taken from the $damage value in teh tooltip. e.g., 1.36 below
     // $damage = ${ 1.5*($83381m1 + ($RAP*  1.632   ))*$<bmMastery> }
     attack_power_mod.direct  = 2.5; // Hard-coded in tooltip.
+
+    if( o() -> talents.aspect_of_the_beast -> ok() )
+      impact_action = new bestial_ferocity_t( p );
   }
 
   // Override behavior so that Kill Command uses hunter's attack power rather than the pet's
@@ -3643,8 +3656,8 @@ struct kill_command_t: public hunter_spell_t
   {
     for (auto pet : p() -> pet_list)
     {
-      
       stats -> add_child( pet -> get_stats( "kill_command" ) );
+      stats -> add_child( pet -> get_stats( "bestial_ferocity" ) );
     }
 
     return hunter_spell_t::init_finished();
