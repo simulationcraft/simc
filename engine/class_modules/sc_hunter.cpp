@@ -940,6 +940,7 @@ public:
     buff_t* stampede; 
     buff_t* beast_cleave;
     buff_t* dire_frenzy;
+    buff_t* titans_thunder_df;
     buff_t* tier17_4pc_bm;
     buff_t* tier18_4pc_bm;
   } buffs;
@@ -1082,6 +1083,8 @@ public:
                                 .default_value ( frenzy_value )
                                 .cd( timespan_t::zero() )
                                 .add_invalidate( CACHE_ATTACK_HASTE );
+    buffs.titans_thunder_df = buff_creator_t( this, "titans_thunder" ).duration( timespan_t::from_seconds( 30.0 ) );
+
     buffs.tier17_4pc_bm = buff_creator_t( this, 178875, "tier17_4pc_bm" )
       .default_value( owner -> find_spell( 178875 ) -> effectN( 2 ).percent() )
       .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -1655,12 +1658,46 @@ struct kill_command_t: public hunter_main_pet_attack_t
 
 struct dire_frenzy_t: public hunter_main_pet_attack_t
 {
+  struct dire_frenzy_titans_thunder_t: public hunter_main_pet_attack_t
+  {
+    dire_frenzy_titans_thunder_t( hunter_main_pet_t* p ):
+      hunter_main_pet_attack_t( "titans_thunder_df", p, p -> find_spell( 207068 ) )
+    {
+      attack_power_mod.direct = 2.0;
+      background = true;
+      school = SCHOOL_NATURE;
+    }
+  };
+
+  struct dire_frenzy_tick_t: public hunter_main_pet_attack_t
+  {
+    dire_frenzy_titans_thunder_t* df_tt_proc;
+    dire_frenzy_tick_t( hunter_main_pet_t* p ):
+      hunter_main_pet_attack_t( "dire_frenzy_tick", p, p -> find_spell( 217200 ) )
+    {
+      background = true;
+      weapon = &p -> main_hand_weapon;
+      weapon_multiplier = 1.0;
+      if( p -> o() -> artifacts.titans_thunder.rank() )
+        df_tt_proc = new dire_frenzy_titans_thunder_t( p );
+    }
+
+    virtual void execute() override
+    {
+      hunter_main_pet_attack_t::execute();
+
+      if( p() -> buffs.titans_thunder_df -> up() )
+        df_tt_proc -> execute();
+    }
+  };
+
   dire_frenzy_t( hunter_main_pet_t* p ):
     hunter_main_pet_attack_t( "dire_frenzy", p, p -> find_spell( 217200 ) )
   {
       background = true;
-      weapon = &( player -> main_hand_weapon );
-      weapon_multiplier = 5.0;  //FIXME
+      base_tick_time = timespan_t::from_seconds( 0.2 );
+      dot_duration = timespan_t::from_seconds( 1.0 );
+      tick_action = new dire_frenzy_tick_t( p );
   }
 
   virtual void execute()
@@ -4066,6 +4103,7 @@ struct titans_thunder_t: public hunter_spell_t
   {
     hunter_spell_t::execute();
 
+    p() -> active.pet -> buffs.titans_thunder_df -> trigger();
     p() -> active.pet -> active.titans_thunder -> execute();
     p() -> hati -> active.titans_thunder -> execute();
     int i = 0;
@@ -4075,7 +4113,10 @@ struct titans_thunder_t: public hunter_spell_t
   bool init_finished() override
   {
     for (auto pet : p() -> pet_list)
+    {
       stats -> add_child( pet -> get_stats( "titans_thunder" ) );
+      stats -> add_child( pet -> get_stats( "titans_thunder_df" ) );
+    }
 
     return hunter_spell_t::init_finished();
   }
