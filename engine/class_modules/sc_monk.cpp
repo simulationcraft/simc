@@ -2694,6 +2694,16 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     return dot_duration * ( tick_time( s -> haste ) / base_tick_time );
   }
 
+  virtual double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    if ( p() -> specialization() == MONK_BREWMASTER )
+      am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent(); 
+
+    return am;
+  }
+
   void execute() override
   {
     // Trigger Combo Strikes
@@ -2738,11 +2748,12 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     std::vector<player_t*> targets = target_list();
     int cyclone_strike_counter = 0;
 
-    for ( player_t* target : targets )
+    if ( p() -> specialization() == MONK_WINDWALKER )
     {
-      if ( td( target ) -> debuff.cyclone_strikes -> up() )
+      for ( player_t* target : targets )
       {
-        cyclone_strike_counter++;
+        if ( td( target ) -> debuff.cyclone_strikes -> up() )
+          cyclone_strike_counter++;
       }
     }
     return cyclone_strike_counter;

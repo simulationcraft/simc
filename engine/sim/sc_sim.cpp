@@ -83,6 +83,23 @@ bool parse_ptr( sim_t*             sim,
   return true;
 }
 
+bool parse_min_gcd( sim_t* sim,
+    const std::string& name,
+    const std::string& value )
+{
+  if ( name != "global_min_gcd" ) return false;
+
+  double v = std::strtod( value.c_str(), nullptr );
+  if ( v <= 0 )
+  {
+    sim -> errorf( "Invalid value '%s' for global minimum cooldown.", value.c_str() );
+    return false;
+  }
+
+  sim -> global_min_gcd = timespan_t::from_seconds( v );
+  return true;
+}
+
 // parse_active =============================================================
 
 bool parse_active( sim_t*             sim,
@@ -1258,7 +1275,10 @@ sim_t::sim_t( sim_t* p, int index ) :
   queue_lag( timespan_t::from_seconds( 0.005 ) ), queue_lag_stddev( timespan_t::zero() ),
   gcd_lag( timespan_t::from_seconds( 0.150 ) ), gcd_lag_stddev( timespan_t::zero() ),
   channel_lag( timespan_t::from_seconds( 0.250 ) ), channel_lag_stddev( timespan_t::zero() ),
-  queue_gcd_reduction( timespan_t::from_seconds( 0.032 ) ), strict_gcd_queue( 0 ),
+  queue_gcd_reduction( timespan_t::from_seconds( 0.032 ) ),
+  // LEGION (7.0): http://us.battle.net/wow/en/forum/topic/20743504316?page=20#388
+  global_min_gcd( timespan_t::from_millis( 750 ) ),
+  strict_gcd_queue( 0 ),
   confidence( 0.95 ), confidence_estimator( 0.0 ),
   world_lag( timespan_t::from_seconds( 0.1 ) ), world_lag_stddev( timespan_t::min() ),
   travel_variance( 0 ), default_skill( 1.0 ), reaction_time( timespan_t::from_seconds( 0.5 ) ),
@@ -2722,6 +2742,7 @@ void sim_t::create_options()
   add_option( opt_timespan( "reaction_time", reaction_time ) );
   add_option( opt_float( "travel_variance", travel_variance ) );
   add_option( opt_timespan( "ignite_sampling_delta", ignite_sampling_delta ) );
+  add_option( opt_func( "global_min_gcd", parse_min_gcd ) );
   // Output
   add_option( opt_bool( "save_profiles", save_profiles ) );
   add_option( opt_bool( "default_actions", default_actions ) );

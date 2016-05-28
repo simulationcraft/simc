@@ -32,7 +32,8 @@ spell_base_t::spell_base_t( action_e at,
   action_t( at, token, p, s ),
   procs_courageous_primal_diamond( true )
 {
-  min_gcd = timespan_t::from_seconds( 1.0 );
+  min_gcd = p -> sim -> global_min_gcd;
+  //min_gcd = timespan_t::from_seconds( 1.0 );
   hasted_ticks = true;
   special = true;
 

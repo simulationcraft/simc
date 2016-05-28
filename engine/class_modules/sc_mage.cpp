@@ -931,12 +931,15 @@ struct water_elemental_pet_t : public pet_t
     virtual void impact( action_state_t* s ) override
     {
       water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
+
       double fof_chance = p -> o() -> artifact.its_cold_outside.percent();
+
+
       spell_t::impact( s );
 
       if ( result_is_hit( s -> result ) )
       {
-        p -> o() -> buffs.fingers_of_frost -> trigger( 1.0, fof_chance );
+        p -> o() -> buffs.fingers_of_frost -> trigger( 1.0, buff_t::DEFAULT_VALUE(), fof_chance );
         p -> o() -> benefits.fingers_of_frost -> update( "Waterbolt Proc", 1.0 );
       }
     }
@@ -1698,6 +1701,12 @@ struct arcane_mage_spell_t : public mage_spell_t
 
     return am;
   }
+
+  virtual timespan_t gcd() const override
+  {
+    timespan_t t = mage_spell_t::gcd();
+    return t;
+  }
 };
 
 
@@ -2085,9 +2094,9 @@ struct icicle_t : public frost_mage_spell_t
     //       prevent Glacial Spike from double dipping on lonely winter
     if ( p() -> talents.lonely_winter -> ok() )
     {
-      am *= 1.0 + p() -> talents.lonely_winter -> effectN( 1 ).percent();
+      am *= 1.0 + ( p() -> talents.lonely_winter -> effectN( 1 ).percent()
+        + p() -> artifact.its_cold_outside.data().effectN( 2 ).percent() );
     }
-
     return am;
   }
 };
@@ -2161,7 +2170,7 @@ struct phoenix_reborn_t : public fire_mage_spell_t
   phoenix_reborn_t( mage_t* p ) :
     fire_mage_spell_t( "phoenix_reborn", p, p -> artifact.phoenix_reborn )
   {
-    base_dd_min = base_dd_max = p -> find_spell( 215775 ) -> effectN( 1 ).base_value();
+    spell_power_mod.direct  = p -> find_spell( 215775 ) -> effectN( 1 ).sp_coeff();
     trigger_gcd =  timespan_t::zero();
     base_costs[ RESOURCE_MANA ] = 0;
     callbacks = false;
@@ -2268,6 +2277,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     p() -> buffs.arcane_charge -> expire();
+    p() -> buffs.quickening -> expire();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -2565,10 +2575,9 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
     if ( p() -> artifact.rule_of_threes.rank() &&
          rng().roll( p() -> artifact.rule_of_threes
-         .data().effectN( 1 ).percent() * 10 ) )
+         .data().effectN( 1 ).percent() / 10 ) )
     {
-
-      base_tick_time *=  1.0 - ( p() -> artifact.rule_of_threes.data().effectN( 1 ).percent() / 10 ) ;
+      base_tick_time *=  1.0 - ( p() -> artifact.rule_of_threes.data().effectN( 1 ).percent() / 10 );
     }
     arcane_mage_spell_t::execute();
 
@@ -2863,6 +2872,7 @@ struct cinders_t : public fire_mage_spell_t
     aoe = -1;
     triggers_ignite = true;
     spell_power_mod.direct = p -> find_spell( 198928 ) -> effectN( 1 ).sp_coeff();
+    school = SCHOOL_FIRE;
   }
   virtual void execute() override
   {
@@ -3210,7 +3220,10 @@ struct flame_patch_t : public fire_mage_spell_t
   flame_patch_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "flame_patch", p, p -> talents.flame_patch )
   {
-    parse_options( options_str );
+    dot_duration =  p -> find_spell( 205470 ) -> duration();
+    base_tick_time = timespan_t::from_seconds( 1.0 );//TODO: Hardcode this as it is not in the spell data.
+    hasted_ticks=true;
+    spell_power_mod.tick = p -> find_spell( 205472 ) -> effectN( 1 ).sp_coeff();
     aoe = -1;
   }
 };
@@ -3233,7 +3246,8 @@ struct flamestrike_t : public fire_mage_spell_t
 
   flamestrike_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "flamestrike", p,
-                       p -> find_specialization_spell( "Flamestrike" ) )
+                       p -> find_specialization_spell( "Flamestrike" ) ),
+                       flame_patch( new flame_patch_t( p, options_str ) )
   {
     parse_options( options_str );
 
@@ -3277,6 +3291,11 @@ struct flamestrike_t : public fire_mage_spell_t
     if ( p() -> artifact.aftershocks.rank() )
     {
       aftershocks -> schedule_execute();
+    }
+
+    if ( p() -> talents.flame_patch -> ok() )
+    {
+      flame_patch -> execute();
     }
   }
 
@@ -3386,7 +3405,11 @@ struct frostbolt_t : public frost_mage_spell_t
     stats -> add_child( icicle );
     icicle -> school = school;
     icicle -> action_list.push_back( p -> icicle );
-    base_multiplier *= 1.0 + p -> talents.lonely_winter -> effectN( 1 ).percent();
+    if ( p -> talents.lonely_winter -> ok() )
+    {
+      base_multiplier *= 1.0 + ( p -> talents.lonely_winter -> effectN( 1 ).percent() + 
+                               p -> artifact.its_cold_outside.data().effectN( 2 ).percent() );
+    }
     base_multiplier *= 1.0 + p -> artifact.icy_caress.percent();
     chills = true;
   }
@@ -3489,7 +3512,6 @@ struct frostbolt_t : public frost_mage_spell_t
     {
       am *= 1.0 + ( p() -> buffs.ice_shard -> stack() * p() -> buffs.ice_shard -> data().effectN( 2 ).percent() );
     }
-
     return am;
   }
 
@@ -3522,7 +3544,11 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     cooldown -> duration = timespan_t::zero(); // dbc has CD of 6 seconds
 
     //TODO: Is this actually how these modifiers work?
-    base_multiplier *= 1.0 + p -> talents.lonely_winter -> effectN( 1 ).percent();
+    if ( p -> talents.lonely_winter -> ok() )
+    {
+      base_multiplier *= 1.0 + ( p -> talents.lonely_winter -> effectN( 1 ).percent() + 
+                               p -> artifact.its_cold_outside.data().effectN( 2 ).percent() );
+    }
     base_multiplier *= 1.0 + p -> talents.bitter_cold -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> artifact.orbital_strike.percent();
     chills = true;
@@ -3554,7 +3580,6 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     {
       s -> result_total *= 1.0 + p() -> artifact.ice_age.percent();
     }
-
     return s -> result_total;
   }
 };
@@ -3729,7 +3754,12 @@ struct ice_lance_t : public frost_mage_spell_t
       frost_bomb_explosion = new frost_bomb_explosion_t( p );
     }
 
-    base_multiplier *= 1.0 + p -> talents.lonely_winter -> effectN( 1 ).percent();
+    if ( p -> talents.lonely_winter -> ok() )
+    {
+      base_multiplier *= 1.0 + ( p -> talents.lonely_winter -> effectN( 1 ).percent() + 
+                               p -> artifact.its_cold_outside.data().effectN( 2 ).percent() );
+    }
+
   }
 
   double calculate_direct_amount( action_state_t* s ) const override
@@ -4099,7 +4129,7 @@ struct mark_of_aluneth_t : public arcane_mage_spell_t
     school = SCHOOL_ARCANE;
     may_proc_missiles = false;
     dot_duration = p -> find_spell( 210726 ) -> duration();
-    base_tick_time = timespan_t::from_seconds( 1.2 ); // Hardcode until tick times are worked out
+    base_tick_time = timespan_t::from_seconds( 1.2 ); // TODO: Hardcode until tick times are worked out
     spell_power_mod.tick = p -> find_spell( 211088 ) -> effectN( 1 ).sp_coeff();
     hasted_ticks = false;
   }
@@ -5707,7 +5737,7 @@ void mage_t::init_spells()
   talents.torrent         = find_talent_spell( "Torrent"         );
   talents.pyromaniac      = find_talent_spell( "Pyromaniac"      );
   talents.conflagration   = find_talent_spell( "Conflagration"   );
-  talents.fire_starter    = find_talent_spell( "Fire Starter"    );
+  talents.fire_starter    = find_talent_spell( "Firestarter"    );
   talents.ray_of_frost    = find_talent_spell( "Ray of Frost"    );
   talents.lonely_winter   = find_talent_spell( "Lonely Winter"   );
   talents.bone_chilling   = find_talent_spell( "Bone Chilling"   );
