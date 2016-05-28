@@ -621,7 +621,7 @@ public:
 
     // Bullseye artifact trait - procs from specials on targets below 20%
     // TODO: Apparently this only procs on a single impact for multi-shot
-    if ( ab::special && p() -> thasdorah && p() -> artifacts.bullseye.rank() &&  s -> target -> health_percentage() < p() -> artifacts.bullseye.value() )
+    if ( p() -> artifacts.bullseye.rank() &&  s -> target -> health_percentage() < p() -> artifacts.bullseye.value() )
       p() -> buffs.bullseye -> trigger();
   }
 
@@ -1673,7 +1673,7 @@ struct dire_frenzy_t: public hunter_main_pet_attack_t
   {
     dire_frenzy_titans_thunder_t* df_tt_proc;
     dire_frenzy_tick_t( hunter_main_pet_t* p ):
-      hunter_main_pet_attack_t( "dire_frenzy_tick", p, p -> find_spell( 217200 ) )
+      hunter_main_pet_attack_t( "dire_frenzy_tick", p, p -> find_spell( 217200 ) ), df_tt_proc( nullptr )
     {
       background = true;
       weapon = &p -> main_hand_weapon;
@@ -1959,6 +1959,7 @@ struct dire_critter_t: public hunter_secondary_pet_t
       return secondary_pet_melee_t::init_finished();
     }
   };
+
   struct actives_t
   {
     action_t* stomp;
@@ -2100,7 +2101,7 @@ struct hati_t: public hunter_secondary_pet_t
 
     jaws_of_thunder_t* jaws_of_thunder;
     hati_kill_command_t( hunter_secondary_pet_t &p ):
-      hunter_secondary_pet_action_t( "kill_command", p, p.find_spell( 83381 ) )
+      hunter_secondary_pet_action_t( "kill_command", p, p.find_spell( 83381 ) ), jaws_of_thunder( nullptr )
     {
       background = true;
       proc = true;
@@ -2520,7 +2521,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
 
     aoe = -1;
 
-    if ( p -> thasdorah )
+    if ( p -> artifacts.call_the_targets.rank() )
       base_multiplier *= 1.0 + p -> artifacts.call_the_targets.percent();
 
     if ( p -> specialization() == HUNTER_MARKSMANSHIP )
@@ -2850,17 +2851,14 @@ struct trick_shot_t: public hunter_ranged_attack_t
     weapon_multiplier = p -> find_specialization_spell( "Aimed Shot" ) -> effectN( 2 ).percent();
     base_multiplier   = p -> find_talent_spell( "Trick Shot" ) -> effectN( 1 ).percent();
 
-    if( p -> thasdorah )
-    {
-      // Wind Arrows
-      if( p -> artifacts.wind_arrows.rank() )
-        base_multiplier *= 1.0 +  p -> artifacts.wind_arrows.percent();
+    // Wind Arrows
+    if( p -> artifacts.wind_arrows.rank() )
+      base_multiplier *= 1.0 +  p -> artifacts.wind_arrows.percent();
 
-      // Marked for Death
-      if( p -> artifacts.marked_for_death.rank() )
-        crit_bonus = p -> talents.patient_sniper -> ok() ? p -> find_spell( 213424 ) -> effectN( 2 ).percent() 
-                                                         : p -> artifacts.marked_for_death.percent();
-    }
+    // Marked for Death
+    if( p -> artifacts.marked_for_death.rank() )
+      crit_bonus = p -> talents.patient_sniper -> ok() ? p -> find_spell( 213424 ) -> effectN( 2 ).percent() 
+                                                        : p -> artifacts.marked_for_death.percent();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3007,8 +3005,8 @@ struct legacy_of_the_windrunners_t: hunter_ranged_attack_t
   {
     double cm = hunter_ranged_attack_t::composite_crit_multiplier();
 
-    if ( p() -> thasdorah )
-      cm *= 1.0 + p() -> find_artifact_spell( "Deadly Aim" ).percent();
+    if ( p() -> artifacts.deadly_aim.rank() )
+      cm *= 1.0 + p() -> artifacts.deadly_aim.percent();
 
     return cm;
   }
@@ -3036,28 +3034,25 @@ struct aimed_shot_t: public hunter_ranged_attack_t
     if ( p -> talents.trick_shot -> ok() )
       impact_action = new trick_shot_t( p );
     
-    if ( p -> thasdorah )
+    // Deadly Aim
+    if ( p -> artifacts.deadly_aim.rank() )
+      crit_bonus_multiplier *= 1.0 + p -> artifacts.deadly_aim.percent();
+
+    // Legacy of the Windrunners
+    if( p -> artifacts.legacy_of_the_windrunners.rank() )
     {
-      // Deadly Aim
-      if ( p -> artifacts.deadly_aim.rank() )
-        crit_bonus_multiplier *= 1.0 + p -> artifacts.deadly_aim.percent();
-
-      // Legacy of the Windrunners
-      if( p -> artifacts.legacy_of_the_windrunners.rank() )
-      {
-        legacy_of_the_windrunners = new legacy_of_the_windrunners_t( p, "artifact" );
-        add_child( legacy_of_the_windrunners );
-      }
-
-      // Marked for Death
-      if( p -> artifacts.marked_for_death.rank() )
-        crit_bonus = p -> talents.patient_sniper -> ok() ? p -> find_spell( 213424 ) -> effectN( 2 ).percent() 
-                                                         : p -> artifacts.marked_for_death.percent();
-
-      // Wind Arrows
-      if( p -> artifacts.wind_arrows.rank() )
-        base_multiplier *= 1.0 +  p -> artifacts.wind_arrows.percent();
+      legacy_of_the_windrunners = new legacy_of_the_windrunners_t( p, "artifact" );
+      add_child( legacy_of_the_windrunners );
     }
+
+    // Marked for Death
+    if( p -> artifacts.marked_for_death.rank() )
+      crit_bonus = p -> talents.patient_sniper -> ok() ? p -> find_spell( 213424 ) -> effectN( 2 ).percent() 
+                                                        : p -> artifacts.marked_for_death.percent();
+
+    // Wind Arrows
+    if( p -> artifacts.wind_arrows.rank() )
+      base_multiplier *= 1.0 +  p -> artifacts.wind_arrows.percent();
   }
 
   virtual double composite_target_crit( player_t* t ) const override
@@ -3168,7 +3163,7 @@ struct arcane_shot_t: public hunter_ranged_attack_t
       }
       
       double focus_multiplier = 1.0;
-      if ( p() -> thasdorah && execute_state -> result == RESULT_CRIT )
+      if ( p() -> artifacts.critical_focus.rank() && execute_state -> result == RESULT_CRIT )
         focus_multiplier *= 1.0 + p() -> artifacts.critical_focus.percent();
       p() -> resource_gain( RESOURCE_FOCUS, focus_multiplier * focus_gain, gain );
     }
@@ -3226,7 +3221,7 @@ struct marked_shot_t: public hunter_ranged_attack_t
     weapon            = &p -> main_hand_weapon;
     weapon_multiplier = p -> find_spell( 212621 ) -> effectN( 2 ).percent();
 
-    if ( p -> thasdorah )
+    if ( p -> artifacts.windrunners_guidance.rank() )
       base_multiplier *= 1.0 + p -> artifacts.windrunners_guidance.percent();
   }
 
@@ -3284,7 +3279,7 @@ struct marked_shot_t: public hunter_ranged_attack_t
   {
     double cc = hunter_ranged_attack_t::composite_crit();
 
-    if( p() -> thasdorah )
+    if( p() -> artifacts.precision.rank() )
       cc += p() -> artifacts.precision.percent();
 
     return cc;
@@ -3419,7 +3414,7 @@ struct sidewinders_t: hunter_ranged_attack_t
     attack_power_mod.direct   = p -> find_spell( 214581 ) -> effectN( 1 ).ap_coeff();
     weapon_multiplier         = 0;
 
-    if( p -> thasdorah && p -> artifacts.critical_focus.rank() )
+    if( p -> artifacts.critical_focus.rank() )
       energize_amount += p -> find_spell( 191328 ) -> effectN( 2 ).base_value();
   }
 
@@ -3897,10 +3892,10 @@ struct dire_beast_t: public hunter_spell_t
 
   bool init_finished() override
   {
-    if ( p() -> pet_dire_beasts[ 0 ] )
+    for (auto pet : p() -> pet_list)
     {
-      stats -> add_child( p() -> pet_dire_beasts[ 0 ] -> get_stats( "dire_beast_melee" ) );
-      stats -> add_child( p() -> pet_dire_beasts[ 0 ] -> get_stats( "stomp" ) );
+      stats -> add_child( pet -> get_stats( "dire_beast_melee" ) );
+      stats -> add_child( pet -> get_stats( "stomp" ) );
     }
 
     return hunter_spell_t::init_finished();
@@ -4196,7 +4191,7 @@ struct trueshot_t: public hunter_spell_t
     value = data().effectN( 1 ).percent();
     
     // Quick Shot: spell data adds -30 seconds to CD
-    if ( p -> thasdorah )
+    if ( p -> artifacts.quick_shot.rank() )
       cooldown -> duration += p -> artifacts.quick_shot.time_value();
   }
 
@@ -4204,7 +4199,7 @@ struct trueshot_t: public hunter_spell_t
   {
     p() -> buffs.trueshot -> trigger( 1, value );
 
-    if ( p() -> thasdorah && p() -> artifacts.rapid_killing.rank() )
+    if ( p() -> artifacts.rapid_killing.rank() )
       p() -> buffs.rapid_killing -> trigger();
 
     hunter_spell_t::execute();
