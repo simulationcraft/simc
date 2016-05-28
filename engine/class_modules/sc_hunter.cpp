@@ -15,7 +15,6 @@
 //   - Make Dire Frenzy tick based
 //  Artifacts
 //   - Jaws of Thunder
-//   - Spitting Cobras
 //   - Wilderness Expert
 //   - Pack Leader
 //   - Unleash the Beast
@@ -2634,11 +2633,14 @@ struct cobra_shot_t: public hunter_ranged_attack_t
     if( p() -> talents.way_of_the_cobra -> ok() )
     {
       int active_pets = 0, i = 0;
-      while( !p() -> pet_dire_beasts[ i++ ] -> is_sleeping() )  active_pets++;
-      if( !p() -> active.pet -> is_sleeping() )                 active_pets++;
+      while( !p() -> pet_dire_beasts[ i++ ] -> is_sleeping() )    active_pets++;
+      if( !p() -> active.pet -> is_sleeping() )                   active_pets++;
       if( p() -> titanstrike && !p() -> hati -> is_sleeping() )   active_pets++;
       am *= 1.0 + active_pets * p() -> talents.way_of_the_cobra -> effectN( 1 ).percent();
     }
+
+    if( p() -> titanstrike && p() -> artifacts.spitting_cobras.rank() )
+      am *= 1.0 + p() -> artifacts.spitting_cobras.percent();
 
     return am;
   }
