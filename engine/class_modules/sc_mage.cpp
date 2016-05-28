@@ -2170,7 +2170,7 @@ struct phoenix_reborn_t : public fire_mage_spell_t
   phoenix_reborn_t( mage_t* p ) :
     fire_mage_spell_t( "phoenix_reborn", p, p -> artifact.phoenix_reborn )
   {
-    base_dd_min = base_dd_max = p -> find_spell( 215775 ) -> effectN( 1 ).base_value();
+    spell_power_mod.direct  = p -> find_spell( 215775 ) -> effectN( 1 ).sp_coeff();
     trigger_gcd =  timespan_t::zero();
     base_costs[ RESOURCE_MANA ] = 0;
     callbacks = false;
@@ -3224,6 +3224,7 @@ struct flame_patch_t : public fire_mage_spell_t
     base_tick_time = timespan_t::from_seconds( 1.0 );//TODO: Hardcode this as it is not in the spell data.
     hasted_ticks=true;
     spell_power_mod.tick = p -> find_spell( 205472 ) -> effectN( 1 ).sp_coeff();
+    aoe = -1;
   }
 };
 // Flamestrike Spell ==========================================================
