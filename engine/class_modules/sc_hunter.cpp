@@ -1703,8 +1703,15 @@ struct dire_frenzy_t: public hunter_main_pet_attack_t
   virtual void execute()
   {
     hunter_main_pet_attack_t::execute();
-    
+
     p() -> buffs.dire_frenzy -> trigger();
+  }  
+  
+  virtual void last_tick( dot_t* d ) override
+  {
+    hunter_main_pet_attack_t::last_tick( d );
+
+    p() -> buffs.titans_thunder_df -> expire();
   }
 };
 
