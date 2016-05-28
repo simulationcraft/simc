@@ -15,8 +15,6 @@
 //   - Make Dire Frenzy tick based
 //  Artifacts
 //   - Jaws of Thunder
-//   - Renewed Vigor
-//   - Furious Swipes
 //   - Titan's Thunder
 //   - Stormshot
 //   - Surge of the Stormgod
@@ -1075,9 +1073,12 @@ public:
       /*.quiet( true )*/;
 
     double cleave_value     = o() -> find_specialization_spell( "Beast Cleave" ) -> effectN( 1 ).percent();
+    if( o() -> titanstrike && o() -> artifacts.furious_swipes.rank() )
+      cleave_value *= 1.0 + o() -> artifacts.furious_swipes.percent();
     buffs.beast_cleave      = buff_creator_t( this, 118455, "beast_cleave" ).activated( true ).default_value( cleave_value );
     double frenzy_value     = o() -> find_talent_spell( "Dire Frenzy" ) -> effectN( 2 ).percent();
-    if( o() -> titanstrike ) frenzy_value += o() -> artifacts.beast_master.data().effectN( 2 ).percent();
+    if( o() -> titanstrike ) 
+      frenzy_value += o() -> artifacts.beast_master.data().effectN( 2 ).percent();
     buffs.dire_frenzy       = buff_creator_t( this, 217200, "dire_frenzy" )
                                 .default_value ( frenzy_value )
                                 .cd( timespan_t::zero() )
@@ -2060,6 +2061,8 @@ struct hati_t: public hunter_secondary_pet_t
       buffs.bestial_wrath -> default_value += o() -> artifacts.unleash_the_beast.percent();
 
     double cleave_value     = o() -> find_specialization_spell( "Beast Cleave" ) -> effectN( 1 ).percent();
+    if( o() -> titanstrike && o() -> artifacts.furious_swipes.rank() )
+      cleave_value *= 1.0 + o() -> artifacts.furious_swipes.percent();
     buffs.beast_cleave      = buff_creator_t( this, 118455, "beast_cleave" ).activated( true ).default_value( cleave_value ).quiet( true );
   }  
   
