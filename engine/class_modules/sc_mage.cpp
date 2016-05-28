@@ -2872,6 +2872,7 @@ struct cinders_t : public fire_mage_spell_t
     aoe = -1;
     triggers_ignite = true;
     spell_power_mod.direct = p -> find_spell( 198928 ) -> effectN( 1 ).sp_coeff();
+    school = SCHOOL_FIRE;
   }
   virtual void execute() override
   {
@@ -5736,7 +5737,7 @@ void mage_t::init_spells()
   talents.torrent         = find_talent_spell( "Torrent"         );
   talents.pyromaniac      = find_talent_spell( "Pyromaniac"      );
   talents.conflagration   = find_talent_spell( "Conflagration"   );
-  talents.fire_starter    = find_talent_spell( "Fire Starter"    );
+  talents.fire_starter    = find_talent_spell( "Firestarter"    );
   talents.ray_of_frost    = find_talent_spell( "Ray of Frost"    );
   talents.lonely_winter   = find_talent_spell( "Lonely Winter"   );
   talents.bone_chilling   = find_talent_spell( "Bone Chilling"   );
