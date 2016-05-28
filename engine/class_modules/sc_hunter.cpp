@@ -3311,6 +3311,10 @@ struct marked_shot_t: public hunter_ranged_attack_t
     double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
 
     hunter_td_t* td = this -> td( t );
+    if ( td -> debuffs.vulnerable -> up() )
+      m *= 1.0 + td -> debuffs.vulnerable -> check_stack_value();
+    else if ( td -> debuffs.deadeye -> up() )
+      m *= 1.0 + td -> debuffs.deadeye -> check_stack_value();
 
     if ( td -> debuffs.true_aim -> up() )
       m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
