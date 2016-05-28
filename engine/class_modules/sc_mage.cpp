@@ -413,6 +413,7 @@ public:
                      aegwynns_fury,
                      mana_shield, // NYI
                      mark_of_aluneth,
+                     might_of_the_guardians,
                      rule_of_threes,
                      slooow_down, // NYI
                      torrential_barrage,
@@ -434,7 +435,8 @@ public:
                      phoenixs_flames,
                      burning_gaze,
                      big_mouth, //NYI
-                     blast_furnace;
+                     blast_furnace,
+                     wings_of_flame;
 
     // Frost
     artifact_power_t ebonbolt,
@@ -929,12 +931,15 @@ struct water_elemental_pet_t : public pet_t
     virtual void impact( action_state_t* s ) override
     {
       water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
+
       double fof_chance = p -> o() -> artifact.its_cold_outside.percent();
+
+
       spell_t::impact( s );
 
       if ( result_is_hit( s -> result ) )
       {
-        p -> o() -> buffs.fingers_of_frost -> trigger( 1.0, fof_chance );
+        p -> o() -> buffs.fingers_of_frost -> trigger( 1.0, buff_t::DEFAULT_VALUE(), fof_chance );
         p -> o() -> benefits.fingers_of_frost -> update( "Waterbolt Proc", 1.0 );
       }
     }
@@ -1472,7 +1477,7 @@ struct chilled_t : public buff_t
   bool trigger( int stacks, double value,
                 double chance, timespan_t duration ) override
   {
-    sim -> out_debug.printf("SOURCE OF chill IS %s", source -> name() );
+    //sim -> out_debug.printf("SOURCE OF chill IS %s", source -> name() );
     mage_t* p = debug_cast<mage_t*>( source );
 
     if ( p -> talents.bone_chilling -> ok() )
@@ -1480,7 +1485,7 @@ struct chilled_t : public buff_t
       p -> buffs.bone_chilling -> trigger();
     }
 
-    return buff_t::trigger(stacks, value, chance, duration );
+    return buff_t::trigger( stacks, value, chance, duration );
   }
 };
 
@@ -1684,6 +1689,24 @@ struct arcane_mage_spell_t : public mage_spell_t
     return 1.0 + p() -> buffs.arcane_charge -> check() * per_ac_bonus;
 
   };
+
+  virtual double action_multiplier() const override
+  {
+    double am = mage_spell_t::action_multiplier();
+
+      if ( p() -> artifact.might_of_the_guardians && school == SCHOOL_ARCANE )
+      {
+         am *= 1.0 + p() -> artifact.might_of_the_guardians.percent();
+      }
+
+    return am;
+  }
+
+  virtual timespan_t gcd() const override
+  {
+    timespan_t t = mage_spell_t::gcd();
+    return t;
+  }
 };
 
 
@@ -1881,6 +1904,17 @@ struct fire_mage_spell_t : public mage_spell_t
       p -> procs.ignite_applied -> occur();
     }
   }
+
+  virtual double action_multiplier() const override
+  {
+    double am = mage_spell_t::action_multiplier();
+
+      if ( p() -> artifact.wings_of_flame && school == SCHOOL_FIRE )
+      {
+         am *= 1.0 + p() -> artifact.wings_of_flame.percent();
+      }
+    return am;
+  }
 };
 
 
@@ -1952,7 +1986,8 @@ struct frost_mage_spell_t : public mage_spell_t
   {
     double am = mage_spell_t::action_multiplier();
 
-    am *= 1.0 + ( p() -> buffs.bone_chilling -> current_stack * p() -> talents.bone_chilling -> effectN( 1 ).percent() );
+    // Divide effect percent by 10 to convert 5 into 0.5%, not into 5%.
+    am *= 1.0 + ( p() -> buffs.bone_chilling -> current_stack * p() -> talents.bone_chilling -> effectN( 1 ).percent() / 10 );
 
     return am;
   }
@@ -2059,9 +2094,9 @@ struct icicle_t : public frost_mage_spell_t
     //       prevent Glacial Spike from double dipping on lonely winter
     if ( p() -> talents.lonely_winter -> ok() )
     {
-      am *= 1.0 + p() -> talents.lonely_winter -> effectN( 1 ).percent();
+      am *= 1.0 + ( p() -> talents.lonely_winter -> effectN( 1 ).percent()
+        + p() -> artifact.its_cold_outside.data().effectN( 2 ).percent() );
     }
-
     return am;
   }
 };
@@ -2099,11 +2134,24 @@ struct presence_of_mind_t : public arcane_mage_spell_t
 };
 
 // Conflagration Spell =====================================================
+struct conflagration_dot_t : public fire_mage_spell_t
+{
+  conflagration_dot_t( mage_t* p, const std::string& options_str ) :
+    fire_mage_spell_t( "conflagration_dot", p, p -> find_spell( 226757 ) )
+  {
+    parse_options( options_str );
+    //TODO: Check callbacks
+    callbacks = false;
+    background = true;
+    base_costs[ RESOURCE_MANA ] = 0;
+    trigger_gcd = timespan_t::zero();
+  }
+};
 
 struct conflagration_t : public fire_mage_spell_t
 {
   conflagration_t( mage_t* p ) :
-    fire_mage_spell_t( "conflagration", p, p -> talents.conflagration )
+    fire_mage_spell_t( "conflagration_explosion", p, p -> talents.conflagration )
   {
     parse_effect_data( p -> find_spell( 205345 ) -> effectN( 1 ) );
     callbacks = false;
@@ -2229,6 +2277,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     p() -> buffs.arcane_charge -> expire();
+    p() -> buffs.quickening -> expire();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -2526,10 +2575,9 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
     if ( p() -> artifact.rule_of_threes.rank() &&
          rng().roll( p() -> artifact.rule_of_threes
-         .data().effectN( 1 ).percent() * 10 ) )
+         .data().effectN( 1 ).percent() / 10 ) )
     {
-
-      base_tick_time *=  1.0 - ( p() -> artifact.rule_of_threes.data().effectN( 1 ).percent() / 10 ) ;
+      base_tick_time *=  1.0 - ( p() -> artifact.rule_of_threes.data().effectN( 1 ).percent() / 10 );
     }
     arcane_mage_spell_t::execute();
 
@@ -3058,8 +3106,11 @@ struct evocation_t : public arcane_mage_spell_t
 
 struct fireball_t : public fire_mage_spell_t
 {
+  conflagration_dot_t* conflagration_dot;
+
   fireball_t( mage_t* p, const std::string& options_str ) :
-    fire_mage_spell_t( "fireball", p, p -> find_class_spell( "Fireball" ) )
+    fire_mage_spell_t( "fireball", p, p -> find_class_spell( "Fireball" ) ),
+    conflagration_dot( new conflagration_dot_t( p, options_str ) )
   {
     parse_options( options_str );
 
@@ -3106,6 +3157,11 @@ struct fireball_t : public fire_mage_spell_t
         p() -> cooldowns.combustion
             -> adjust( -1000 * p() -> talents.kindling
                                    -> effectN( 1 ).time_value() );
+      }
+      if ( p() -> talents.conflagration -> ok() )
+      {
+        conflagration_dot -> target = s -> target;
+        conflagration_dot -> execute();
       }
     }
 
@@ -3163,7 +3219,10 @@ struct flame_patch_t : public fire_mage_spell_t
   flame_patch_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "flame_patch", p, p -> talents.flame_patch )
   {
-    parse_options( options_str );
+    dot_duration =  p -> find_spell( 205470 ) -> duration();
+    base_tick_time = timespan_t::from_seconds( 1.0 );//TODO: Hardcode this as it is not in the spell data.
+    hasted_ticks=true;
+    spell_power_mod.tick = p -> find_spell( 205472 ) -> effectN( 1 ).sp_coeff();
     aoe = -1;
   }
 };
@@ -3186,7 +3245,8 @@ struct flamestrike_t : public fire_mage_spell_t
 
   flamestrike_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "flamestrike", p,
-                       p -> find_specialization_spell( "Flamestrike" ) )
+                       p -> find_specialization_spell( "Flamestrike" ) ),
+                       flame_patch( new flame_patch_t( p, options_str ) )
   {
     parse_options( options_str );
 
@@ -3230,6 +3290,11 @@ struct flamestrike_t : public fire_mage_spell_t
     if ( p() -> artifact.aftershocks.rank() )
     {
       aftershocks -> schedule_execute();
+    }
+
+    if ( p() -> talents.flame_patch -> ok() )
+    {
+      flame_patch -> execute();
     }
   }
 
@@ -3339,7 +3404,11 @@ struct frostbolt_t : public frost_mage_spell_t
     stats -> add_child( icicle );
     icicle -> school = school;
     icicle -> action_list.push_back( p -> icicle );
-    base_multiplier *= 1.0 + p -> talents.lonely_winter -> effectN( 1 ).percent();
+    if ( p -> talents.lonely_winter -> ok() )
+    {
+      base_multiplier *= 1.0 + ( p -> talents.lonely_winter -> effectN( 1 ).percent() + 
+                               p -> artifact.its_cold_outside.data().effectN( 2 ).percent() );
+    }
     base_multiplier *= 1.0 + p -> artifact.icy_caress.percent();
     chills = true;
   }
@@ -3442,7 +3511,6 @@ struct frostbolt_t : public frost_mage_spell_t
     {
       am *= 1.0 + ( p() -> buffs.ice_shard -> stack() * p() -> buffs.ice_shard -> data().effectN( 2 ).percent() );
     }
-
     return am;
   }
 
@@ -3475,7 +3543,11 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     cooldown -> duration = timespan_t::zero(); // dbc has CD of 6 seconds
 
     //TODO: Is this actually how these modifiers work?
-    base_multiplier *= 1.0 + p -> talents.lonely_winter -> effectN( 1 ).percent();
+    if ( p -> talents.lonely_winter -> ok() )
+    {
+      base_multiplier *= 1.0 + ( p -> talents.lonely_winter -> effectN( 1 ).percent() + 
+                               p -> artifact.its_cold_outside.data().effectN( 2 ).percent() );
+    }
     base_multiplier *= 1.0 + p -> talents.bitter_cold -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> artifact.orbital_strike.percent();
     chills = true;
@@ -3507,7 +3579,6 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     {
       s -> result_total *= 1.0 + p() -> artifact.ice_age.percent();
     }
-
     return s -> result_total;
   }
 };
@@ -3682,7 +3753,12 @@ struct ice_lance_t : public frost_mage_spell_t
       frost_bomb_explosion = new frost_bomb_explosion_t( p );
     }
 
-    base_multiplier *= 1.0 + p -> talents.lonely_winter -> effectN( 1 ).percent();
+    if ( p -> talents.lonely_winter -> ok() )
+    {
+      base_multiplier *= 1.0 + ( p -> talents.lonely_winter -> effectN( 1 ).percent() + 
+                               p -> artifact.its_cold_outside.data().effectN( 2 ).percent() );
+    }
+
   }
 
   double calculate_direct_amount( action_state_t* s ) const override
@@ -4052,7 +4128,7 @@ struct mark_of_aluneth_t : public arcane_mage_spell_t
     school = SCHOOL_ARCANE;
     may_proc_missiles = false;
     dot_duration = p -> find_spell( 210726 ) -> duration();
-    base_tick_time = timespan_t::from_seconds( 1.2 ); // Hardcode until tick times are worked out
+    base_tick_time = timespan_t::from_seconds( 1.2 ); // TODO: Hardcode until tick times are worked out
     spell_power_mod.tick = p -> find_spell( 211088 ) -> effectN( 1 ).sp_coeff();
     hasted_ticks = false;
   }
@@ -5716,6 +5792,7 @@ void mage_t::init_spells()
   artifact.blasting_rod            = find_artifact_spell( "Blasting Rod"           );
   artifact.crackling_energy        = find_artifact_spell( "Crackling Energy"       );
   artifact.mark_of_aluneth         = find_artifact_spell( "Mark of Aluneth"        );
+  artifact.might_of_the_guardians  = find_artifact_spell( "Might of the Guardians" );
   artifact.rule_of_threes          = find_artifact_spell( "Rule of Threes"         );
   artifact.torrential_barrage      = find_artifact_spell( "Torrential Barrage"     );
   artifact.everywhere_at_once      = find_artifact_spell( "Everywhere At Once"     );
@@ -5737,6 +5814,7 @@ void mage_t::init_spells()
   artifact.pyretic_incantation     = find_artifact_spell( "Pyretic Incantation"    );
   artifact.burning_gaze            = find_artifact_spell( "Burning Gaze"           );
   artifact.blast_furnace           = find_artifact_spell( "Blast Furnace"          );
+  artifact.wings_of_flame          = find_artifact_spell( "Wings of Flame"         );
   //Frost
   artifact.ebonbolt                = find_artifact_spell( "Ebonbolt"               );
   artifact.jouster                 = find_artifact_spell( "Jouster"                );
@@ -5949,9 +6027,8 @@ void mage_t::create_buffs()
 
   // Artifact
   // Frost
-  //TODO: Remove hardcoded Stack cap once spelldata is fixed.
-  buffs.chain_reaction   = buff_creator_t( this, "chain_reaction", find_spell( 195418 ) )
-                                      .max_stack( 1.0 );
+  buffs.chain_reaction   = buff_creator_t( this, "chain_reaction", find_spell( 195418 ) );
+
   buffs.chilled_to_the_core = buff_creator_t( this, "chilled_to_the_core", find_spell( 195446 ) )
                                    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 }

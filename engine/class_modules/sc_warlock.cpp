@@ -302,6 +302,7 @@ public:
     buff_t* havoc;
     buff_t* mana_tap;
     buff_t* conflagration_of_chaos;
+    buff_t* soul_harvest;
 
     buff_t* tier18_2pc_demonology;
 
@@ -320,7 +321,6 @@ public:
     gain_t* miss_refund;
     gain_t* seed_of_corruption;
     gain_t* drain_soul;
-    gain_t* soul_harvest;
     gain_t* mana_tap;
     gain_t* power_trip;
     gain_t* shadow_bolt;
@@ -728,9 +728,6 @@ struct firebolt_t: public warlock_pet_spell_t
   firebolt_t( warlock_pet_t* p ):
     warlock_pet_spell_t( p, "Firebolt" )
   {
-    if ( p -> owner -> bugs )
-      min_gcd = timespan_t::from_seconds( 1.5 );
-
     base_multiplier *= 1.0 + p -> o() -> artifact.impish_incineration.percent();
   }
 
@@ -866,7 +863,6 @@ struct lash_of_pain_t: public warlock_pet_spell_t
   lash_of_pain_t( warlock_pet_t* p ):
     warlock_pet_spell_t( p, "Lash of Pain" )
   {
-    if ( p -> owner -> bugs ) min_gcd = timespan_t::from_seconds( 1.5 );
   }
 };
 
@@ -937,6 +933,7 @@ struct doom_bolt_t: public warlock_pet_spell_t
   doom_bolt_t( warlock_pet_t* p ):
     warlock_pet_spell_t( "Doom Bolt", p, p -> find_spell( 85692 ) )
   {
+    if ( p -> o() -> talents.grimoire_of_supremacy -> ok() )
     base_multiplier *= 1.0 + p -> o() -> artifact.impish_incineration.data().effectN( 2 ).percent();
   }
 
@@ -1075,6 +1072,15 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.demonic_synergy -> up() )
     m *= 1.0 + buffs.demonic_synergy -> data().effectN( 1 ).percent();
+
+  if ( !o() -> bugs )
+  {
+    if ( o() -> buffs.mana_tap -> check() )
+      m *= 1.0 + o() -> talents.mana_tap -> effectN( 1 ).percent();
+
+    if ( o() -> buffs.soul_harvest -> check() )
+      m *= 1.0 + o() -> talents.soul_harvest -> effectN( 1 ).percent();
+  }
 
   return m;
 }
@@ -2238,8 +2244,6 @@ struct hand_of_guldan_t: public warlock_spell_t
   {
     aoe = -1;
 
-    //cooldown -> duration = timespan_t::from_seconds( 15 );
-
     parse_effect_data( p -> find_spell( 86040 ) -> effectN( 1 ) );
 
     if ( p -> demonology_trinket && p -> specialization() == WARLOCK_DEMONOLOGY )
@@ -3217,14 +3221,51 @@ struct siphon_life_t : public warlock_spell_t
 
 struct soul_harvest_t : public warlock_spell_t
 {
+  int agony_action_id;
+  int doom_action_id;
+  int immolate_action_id;
+  timespan_t base_duration;
+  timespan_t total_duration;
+
   soul_harvest_t( warlock_t* p ) :
     warlock_spell_t( "soul_harvest", p, p -> talents.soul_harvest )
   {
     harmful = may_crit = may_miss = false;
-    energize_type = ENERGIZE_ON_CAST;
+    base_duration = data().duration();
+  }
+
+  virtual void execute() override
+  {
+    warlock_spell_t::execute();
+
+    if ( p() -> specialization() == WARLOCK_AFFLICTION )
+    {
+      total_duration = base_duration + timespan_t::from_seconds( 2.0 ) * p() -> get_active_dots( agony_action_id );
+      p() -> buffs.soul_harvest -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, total_duration );
+    }
+
+    if ( p() -> specialization() == WARLOCK_DEMONOLOGY )
+    {
+      total_duration = base_duration + timespan_t::from_seconds( 2.0 ) * p() -> get_active_dots( doom_action_id );
+      p() -> buffs.soul_harvest -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, total_duration );
+    }
+
+    if ( p() -> specialization() == WARLOCK_DESTRUCTION )
+    {
+      total_duration = base_duration + timespan_t::from_seconds( 2.0 ) * p() -> get_active_dots( immolate_action_id );
+      p() -> buffs.soul_harvest -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, total_duration );
+    }
+  }
+
+  virtual void init() override
+  {
+    warlock_spell_t::init();
+
+    agony_action_id = p() -> find_action_id( "agony" );
+    doom_action_id = p() -> find_action_id( "doom" );
+    immolate_action_id = p() -> find_action_id( "immolate" );
   }
 };
-
 struct grimoire_of_sacrifice_t: public warlock_spell_t
 {
   grimoire_of_sacrifice_t( warlock_t* p ):
@@ -3476,6 +3517,9 @@ double warlock_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.mana_tap -> check() )
     m *= 1.0 + talents.mana_tap -> effectN( 1 ).percent();
+
+  if ( buffs.soul_harvest -> check() )
+    m *= 1.0 + talents.soul_harvest -> effectN( 1 ).percent();
 
   if ( specialization() == WARLOCK_DESTRUCTION && ( dbc::is_school( SCHOOL_FIRE, school ) ) )
   {
@@ -3929,6 +3973,8 @@ void warlock_t::create_buffs()
   buffs.conflagration_of_chaos = buff_creator_t( this, "conflagration_of_chaos", artifact.conflagration_of_chaos.data().effectN( 1 ).trigger() )
     .chance( artifact.conflagration_of_chaos.rank() > 0 * artifact.conflagration_of_chaos.data().proc_chance() );
 
+  buffs.soul_harvest = buff_creator_t( this, "soul_harvest", find_spell( 196098 ) );
+
   //demonology buffs
   //buffs.shadowy_inspiration = buff_creator_t( this, "shadowy_inspiration", talents.shadowy_inspiration );
 }
@@ -3954,7 +4000,6 @@ void warlock_t::init_gains()
   gains.miss_refund         = get_gain( "miss_refund" );
   gains.seed_of_corruption  = get_gain( "seed_of_corruption" );
   gains.drain_soul          = get_gain( "drain_soul" );
-  gains.soul_harvest        = get_gain( "soul_harvest" );
   gains.mana_tap            = get_gain( "mana_tap" );
   gains.shadow_bolt         = get_gain( "shadow_bolt" );
   gains.soul_conduit        = get_gain( "soul_conduit" );

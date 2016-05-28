@@ -1405,7 +1405,7 @@ void action_t::tick( dot_t* d )
 
     action_state_t* state = tick_action -> get_state( d -> state );
     if ( dynamic_tick_action )
-      update_state( state, amount_type( state, true ) );
+      update_state( state, amount_type( state, tick_action -> direct_tick ) );
     state -> da_multiplier = state -> ta_multiplier * d -> get_last_tick_factor();
     state -> target_da_multiplier = state -> target_ta_multiplier;
     tick_action -> target = d -> target;

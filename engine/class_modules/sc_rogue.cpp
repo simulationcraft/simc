@@ -2672,6 +2672,15 @@ struct pistol_shot_t : public rogue_attack_t
     }
 
     p() -> buffs.opportunity -> expire();
+
+    if ( p() -> buffs.curse_of_the_dreadblades -> up() )
+    {
+      double n_cp = p() -> resources.max[ RESOURCE_COMBO_POINT ] - p() -> resources.current[ RESOURCE_COMBO_POINT ];
+      if ( n_cp > 0 )
+      {
+        p() -> resource_gain( RESOURCE_COMBO_POINT, n_cp, p() -> gains.curse_of_the_dreadblades, this );
+      }
+    }
   }
 };
 

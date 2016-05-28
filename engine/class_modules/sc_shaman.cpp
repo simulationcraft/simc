@@ -142,6 +142,9 @@ struct shaman_td_t : public actor_target_data_t
   } heal;
 
   shaman_td_t( player_t* target, shaman_t* p );
+
+  shaman_t* actor() const
+  { return debug_cast<shaman_t*>( source ); }
 };
 
 struct counter_t
@@ -195,6 +198,7 @@ public:
   // Misc
   bool       lava_surge_during_lvb;
   std::vector<counter_t*> counters;
+  std::vector<player_t*> lightning_rods;
 
   // Data collection for cooldown waste
   auto_dispose< std::vector<data_t*> > cd_waste_exec, cd_waste_cumulative;
@@ -645,20 +649,6 @@ counter_t::counter_t( shaman_t* p ) :
   p -> counters.push_back( this );
 }
 
-shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
-  actor_target_data_t( target, p )
-{
-  dot.flame_shock       = target -> get_dot( "flame_shock", p );
-
-  debuff.earthen_spike  = buff_creator_t( *this, "earthen_spike", p -> talent.earthen_spike )
-                          // -10% resistance in spell data, treat it as a multiplier instead
-                          .default_value( 1.0 + p -> talent.earthen_spike -> effectN( 2 ).percent() );
-  debuff.lightning_rod = buff_creator_t( *this, "lightning_rod", p -> talent.lightning_rod -> effectN( 1 ).trigger() )
-                         .trigger_spell( p -> talent.lightning_rod )
-                         .default_value( p -> talent.lightning_rod -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
-                         .cd( timespan_t::zero() ); // Cooldown handled by action
-}
-
 // ==========================================================================
 // Shaman Custom Buff Declaration
 // ==========================================================================
@@ -806,6 +796,50 @@ struct stormlash_buff_t : public buff_t
     callback -> deactivate();
   }
 };
+
+struct lightning_rod_debuff_t : public buff_t
+{
+  shaman_t* p;
+
+  lightning_rod_debuff_t( shaman_td_t& td ) :
+    buff_t( buff_creator_t( td, "lightning_rod", td.actor() -> find_spell( 197209 ) )
+                         .chance( td.actor() -> talent.lightning_rod -> effectN( 1 ).percent() )
+                         .default_value( td.actor() -> talent.lightning_rod -> effectN( 2 ).percent() ) ),
+    p( td.actor() )
+  { }
+
+  void execute( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() ) override
+  {
+    bool was_up = check() != 0;
+
+    buff_t::execute( stacks, value, duration );
+    if ( ! was_up )
+    {
+      p -> lightning_rods.push_back( player );
+    }
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+    auto it = range::find( p -> lightning_rods, player );
+    if ( it != p -> lightning_rods.end() )
+    {
+      p -> lightning_rods.erase( it );
+    }
+  }
+};
+
+shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
+  actor_target_data_t( target, p )
+{
+  dot.flame_shock       = target -> get_dot( "flame_shock", p );
+
+  debuff.earthen_spike  = buff_creator_t( *this, "earthen_spike", p -> talent.earthen_spike )
+                          // -10% resistance in spell data, treat it as a multiplier instead
+                          .default_value( 1.0 + p -> talent.earthen_spike -> effectN( 2 ).percent() );
+  debuff.lightning_rod = new lightning_rod_debuff_t( *this );
+}
 
 // ==========================================================================
 // Shaman Action Base Template
@@ -1142,6 +1176,16 @@ public:
     }
 
     ab::p() -> buff.spiritwalkers_grace -> up();
+
+    if ( ab::p() -> talent.aftershock -> ok() &&
+         ab::current_resource() == RESOURCE_MAELSTROM &&
+         ab::resource_consumed > 0 )
+    {
+      ab::p() -> resource_gain( RESOURCE_MAELSTROM,
+          ab::resource_consumed * ab::p() -> talent.aftershock -> effectN( 1 ).percent(),
+          ab::p() -> gain.aftershock,
+          nullptr );
+    }
   }
 
   void schedule_travel( action_state_t* s ) override
@@ -1203,12 +1247,6 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     }
 
     p() -> trigger_unleash_doom( state );
-    p() -> trigger_lightning_rod_damage( state );
-
-    if ( ! background )
-    {
-      td( state -> target ) -> debuff.lightning_rod -> trigger();
-    }
   }
 
   virtual bool usable_moving() const override
@@ -2536,7 +2574,6 @@ struct lightning_rod_t : public spell_t
   lightning_rod_t( shaman_t* p ) :
     spell_t( "lightning_rod", p, p -> find_spell( 197568 ) )
   {
-    aoe = -1;
     background = true;
     callbacks = may_crit = false;
   }
@@ -3404,6 +3441,14 @@ struct chain_lightning_t: public shaman_spell_t
     p() -> buff.static_overload -> trigger();
   }
 
+  void impact( action_state_t* state ) override
+  {
+    shaman_spell_t::impact( state );
+
+    p() -> trigger_lightning_rod_damage( state );
+    td( state -> target ) -> debuff.lightning_rod -> trigger();
+  }
+
   bool ready() override
   {
     if ( p() -> specialization() == SHAMAN_ELEMENTAL && p() -> buff.ascendance -> check() )
@@ -3468,6 +3513,15 @@ struct lava_beam_t : public shaman_spell_t
       overload = new lava_beam_overload_t( player );
       add_child( overload );
     }
+  }
+
+  // TODO: Does Lava Beam trigger Lightning Rod?
+  void impact( action_state_t* state ) override
+  {
+    shaman_spell_t::impact( state );
+
+    p() -> trigger_lightning_rod_damage( state );
+    td( state -> target ) -> debuff.lightning_rod -> trigger();
   }
 
   bool ready() override
@@ -3740,6 +3794,14 @@ struct lightning_bolt_t : public shaman_spell_t
     }
 
     p() -> trigger_t19_oh_8pc( execute_state );
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    shaman_spell_t::impact( state );
+
+    p() -> trigger_lightning_rod_damage( state );
+    td( state -> target ) -> debuff.lightning_rod -> trigger();
   }
 };
 
@@ -4098,13 +4160,6 @@ struct earth_shock_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    if ( p() -> talent.aftershock -> ok() )
-    {
-      p() -> resource_gain( RESOURCE_MAELSTROM,
-          resource_consumed * p() -> talent.aftershock -> effectN( 1 ).percent(),
-          p() -> gain.aftershock,
-          nullptr );
-    }
   }
 
   bool ready() override
@@ -4158,19 +4213,6 @@ struct flame_shock_t : public shaman_spell_t
     }
 
     return m;
-  }
-
-  void execute() override
-  {
-    shaman_spell_t::execute();
-
-    if ( p() -> talent.aftershock -> ok() )
-    {
-      p() -> resource_gain( RESOURCE_MAELSTROM,
-          resource_consumed * p() -> talent.aftershock -> effectN( 1 ).percent(),
-          p() -> gain.aftershock,
-          nullptr );
-    }
   }
 
   void tick( dot_t* d ) override
@@ -4231,14 +4273,6 @@ struct frost_shock_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
-
-    if ( p() -> talent.aftershock -> ok() )
-    {
-      p() -> resource_gain( RESOURCE_MAELSTROM,
-          resource_consumed * p() -> talent.aftershock -> effectN( 1 ).percent(),
-          p() -> gain.aftershock,
-          nullptr );
-    }
 
     p() -> buff.icefury -> decrement();
   }
@@ -5487,16 +5521,6 @@ void shaman_t::trigger_lightning_rod_damage( const action_state_t* state )
     return;
   }
 
-  if ( state -> action == lightning_rod )
-  {
-    return;
-  }
-
-  if ( state -> action -> get_school() != SCHOOL_NATURE )
-  {
-    return;
-  }
-
   shaman_td_t* td = get_target_data( state -> target );
 
   if ( ! td -> debuff.lightning_rod -> up() )
@@ -5505,10 +5529,15 @@ void shaman_t::trigger_lightning_rod_damage( const action_state_t* state )
   }
 
   double amount = state -> result_amount * td -> debuff.lightning_rod -> check_value();
-
   lightning_rod -> base_dd_min = lightning_rod -> base_dd_max = amount;
-  lightning_rod -> target = state -> target;
-  lightning_rod -> schedule_execute();
+
+  // Can't schedule_execute here, since Chain Lightning may tritter immediately on multiple
+  // Lightning Rod targets, overriding base_dd_min/max with a different value (that would be used
+  // for allt he scheduled damage execute events of Lightning Rod).
+  range::for_each( lightning_rods, [ this, amount ]( player_t* t ) {
+    lightning_rod -> target = t;
+    lightning_rod -> execute();
+  } );
 }
 
 void shaman_t::trigger_unleash_doom( const action_state_t* state )
@@ -6425,6 +6454,8 @@ void shaman_t::reset()
   lava_surge_during_lvb = false;
   for (auto & elem : counters)
     elem -> reset();
+
+  assert( lightning_rods.size() == 0 );
 }
 
 // shaman_t::merge ==========================================================

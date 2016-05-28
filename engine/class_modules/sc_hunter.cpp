@@ -1778,7 +1778,7 @@ struct secondary_pet_melee_t: public hunter_secondary_pet_action_t
 struct hunter_secondary_pet_t: public hunter_pet_t
 {
 
-  hunter_secondary_pet_t( hunter_t& owner, std::string &pet_name ):
+  hunter_secondary_pet_t( hunter_t& owner, const std::string &pet_name ):
     hunter_pet_t( *owner.sim, owner, pet_name, PET_HUNTER, true /*GUARDIAN*/ )
   {
     owner_coeff.ap_from_ap = 1.15;
