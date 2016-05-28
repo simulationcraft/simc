@@ -1379,20 +1379,13 @@ struct titans_thunder_t: public hunter_pet_action_t < hunter_pet_t, spell_t >
   titans_thunder_t( hunter_pet_t* p ):
     hunter_pet_action_t< hunter_pet_t, spell_t >( "titans_thunder", *p, p -> find_spell( 207068 ) )
   {
-    attack_power_mod.direct = 0.0;
-    attack_power_mod.tick = 1.0;
+    attack_power_mod.tick = p -> find_spell( 207097 ) -> effectN( 1 ).ap_coeff();
     base_tick_time = timespan_t::from_seconds( 1.0 );
     dot_duration = data().duration();
     hasted_ticks = false;
     school = SCHOOL_NATURE;
     tick_zero = false;
     tick_action = new titans_thunder_tick_t( p );
-  }
-
-  // Uses hunter's ranged attack power
-  double composite_attack_power() const override
-  {
-    return o() -> cache.attack_power() * o()->composite_attack_power_multiplier();
   }
 };
 
@@ -1814,10 +1807,7 @@ void hunter_main_pet_t::init_spells()
     active.dire_frenzy = new actions::dire_frenzy_t( this );
 
   if( o() -> artifacts.titans_thunder.rank() )
-  {
     active.titans_thunder = new actions::titans_thunder_t( this );
-    active.titans_thunder -> base_multiplier /= 1.0 + specs.combat_experience -> effectN( 2 ).percent(); // in-game bug, combat experience should apply but doesn't
-  }
 }
 
 // ==========================================================================
@@ -1833,6 +1823,7 @@ struct hunter_secondary_pet_action_t: hunter_pet_action_t < hunter_secondary_pet
       weapon_multiplier = 0;
       school = SCHOOL_PHYSICAL;
       may_crit = true;
+      base_multiplier = 1.15;
   }
 };
 
@@ -1866,12 +1857,6 @@ struct hunter_secondary_pet_t: public hunter_pet_t
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2 );
 
     main_hand_attack = new secondary_pet_melee_t( name_str + "_melee", *this );
-  }
-
-  virtual double composite_player_multiplier( school_e school ) const override
-  {
-    // Secondary pets have a hidden 15% damage buff
-    return 1.15 * hunter_pet_t::composite_player_multiplier( school );
   }
 
   virtual void summon( timespan_t duration = timespan_t::zero() ) override
