@@ -14,9 +14,7 @@
 //   - Stampede (rework)
 //   - Make Dire Frenzy tick based
 //  Artifacts
-//   - Jaws of Thunder
 //   - Titan's Thunder
-//   - Stormshot
 //   - Surge of the Stormgod
 //   - Cleanup duplicate code for Beast Cleave
 //
@@ -354,7 +352,6 @@ public:
     artifact_power_t beast_master;
     artifact_power_t titans_thunder;
     artifact_power_t master_of_beasts;
-    artifact_power_t stormshot;
     artifact_power_t surge_of_the_stormgod;
     artifact_power_t spitting_cobras;
     artifact_power_t jaws_of_thunder;
@@ -1562,6 +1559,20 @@ struct kill_command_t: public hunter_main_pet_attack_t
     }
   };
 
+  struct jaws_of_thunder_t: public hunter_main_pet_attack_t
+  {
+    jaws_of_thunder_t( hunter_main_pet_t* p ):
+      hunter_main_pet_attack_t( "jaws_of_thunder", p, p -> find_spell( 197162 ) )
+    {
+      background = true;
+      proc = true;
+      school = SCHOOL_NATURE;
+      attack_power_mod.direct = 2.5;
+      base_multiplier = p -> o() -> artifacts.jaws_of_thunder.data().effectN( 2 ).percent();
+    }
+  };
+
+  jaws_of_thunder_t* jaws_of_thunder;
   kill_command_t( hunter_main_pet_t* p ):
     hunter_main_pet_attack_t( "kill_command", p, p -> find_spell( 83381 ) )
   {
@@ -1576,6 +1587,17 @@ struct kill_command_t: public hunter_main_pet_attack_t
 
     if( o() -> talents.aspect_of_the_beast -> ok() )
       impact_action = new bestial_ferocity_t( p );
+
+    if( o() -> artifacts.jaws_of_thunder.rank() )
+      jaws_of_thunder = new jaws_of_thunder_t( p );
+  }
+
+  virtual void execute() override
+  {
+    hunter_main_pet_attack_t::execute();
+
+    if( o() -> titanstrike && rng().roll( o() -> artifacts.jaws_of_thunder.percent() ) )
+      jaws_of_thunder -> execute();
   }
 
   // Override behavior so that Kill Command uses hunter's attack power rather than the pet's
@@ -1992,6 +2014,20 @@ struct hati_t: public hunter_secondary_pet_t
 
   struct hati_kill_command_t: public hunter_secondary_pet_action_t
   {
+    struct jaws_of_thunder_t: public hunter_secondary_pet_action_t
+    {
+      jaws_of_thunder_t( hunter_secondary_pet_t& p ):
+        hunter_secondary_pet_action_t( "jaws_of_thunder", p, p.find_spell( 197162 ) )
+      {
+        background = true;
+        proc = true;
+        school = SCHOOL_NATURE;
+        attack_power_mod.direct = 2.5;
+        base_multiplier = p.o() -> artifacts.jaws_of_thunder.data().effectN( 2 ).percent();
+      }
+    };
+
+    jaws_of_thunder_t* jaws_of_thunder;
     hati_kill_command_t( hunter_secondary_pet_t &p ):
       hunter_secondary_pet_action_t( "kill_command", p, p.find_spell( 83381 ) )
     {
@@ -1999,9 +2035,19 @@ struct hati_t: public hunter_secondary_pet_t
       proc = true;
       school = SCHOOL_PHYSICAL;
       range = 25;
-      attack_power_mod.direct  = 2.5; 
+      attack_power_mod.direct  = 2.5;
+      if( o() -> titanstrike && o() -> artifacts.jaws_of_thunder.rank() )
+        jaws_of_thunder = new jaws_of_thunder_t( p );
     }  
     
+    virtual void execute() override
+    {
+      hunter_secondary_pet_action_t::execute();
+
+      if( o() -> titanstrike && rng().roll( o() -> artifacts.jaws_of_thunder.percent() ) )
+        jaws_of_thunder -> execute();
+    }
+
     virtual double composite_attack_power() const override
     {
       return o() -> cache.attack_power() * o()->composite_attack_power_multiplier();
@@ -3867,6 +3913,7 @@ struct kill_command_t: public hunter_spell_t
     {
       stats -> add_child( pet -> get_stats( "kill_command" ) );
       stats -> add_child( pet -> get_stats( "bestial_ferocity" ) );
+      stats -> add_child( pet -> get_stats( "jaws_of_thunder" ) );
     }
 
     return hunter_spell_t::init_finished();
@@ -4277,7 +4324,6 @@ void hunter_t::init_spells()
   artifacts.titans_thunder           = find_artifact_spell( "Titan's Thunder" );
   artifacts.beast_master             = find_artifact_spell( "Beast Master" );
   artifacts.master_of_beasts         = find_artifact_spell( "Master of Beasts" );
-  artifacts.stormshot                = find_artifact_spell( "Stormshot" );
   artifacts.surge_of_the_stormgod    = find_artifact_spell( "Surge of the Stormgod" );
   artifacts.spitting_cobras          = find_artifact_spell( "Spitting Cobras" );
   artifacts.jaws_of_thunder          = find_artifact_spell( "Jaws of Thunder" );
