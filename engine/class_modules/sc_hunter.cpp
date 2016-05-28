@@ -15,7 +15,6 @@
 //   - Make Dire Frenzy tick based
 //  Artifacts
 //   - Jaws of Thunder
-//   - Wilderness Expert
 //   - Renewed Vigor
 //   - Furious Swipes
 //   - Titan's Thunder
@@ -1057,6 +1056,8 @@ public:
     base_t::create_buffs();
 
     buffs.aspect_of_the_wild = buff_creator_t( this, 193530, "aspect_of_the_wild" );
+    if( o() -> titanstrike && o() -> artifacts.wilderness_expert.rank() )
+      buffs.aspect_of_the_wild -> buff_duration += o() -> artifacts.wilderness_expert.time_value();
 
     buffs.bestial_wrath = buff_creator_t( this, 19574, "bestial_wrath" ).activated( true );
     buffs.bestial_wrath -> cooldown -> duration = timespan_t::zero();
@@ -2050,7 +2051,7 @@ struct hati_t: public hunter_secondary_pet_t
   {
     hunter_secondary_pet_t::create_buffs();
 
-    buffs.bestial_wrath = buff_creator_t( this, 19574, "bestial_wrath" ).activated( true );
+    buffs.bestial_wrath = buff_creator_t( this, 19574, "bestial_wrath" ).activated( true ).quiet( true );
     buffs.bestial_wrath -> cooldown -> duration = timespan_t::zero();
     buffs.bestial_wrath -> default_value = buffs.bestial_wrath -> data().effectN( 1 ).percent();
     if( o() -> talents.bestial_fury -> ok() )
@@ -2059,7 +2060,7 @@ struct hati_t: public hunter_secondary_pet_t
       buffs.bestial_wrath -> default_value += o() -> artifacts.unleash_the_beast.percent();
 
     double cleave_value     = o() -> find_specialization_spell( "Beast Cleave" ) -> effectN( 1 ).percent();
-    buffs.beast_cleave      = buff_creator_t( this, 118455, "beast_cleave" ).activated( true ).default_value( cleave_value );
+    buffs.beast_cleave      = buff_creator_t( this, 118455, "beast_cleave" ).activated( true ).default_value( cleave_value ).quiet( true );
   }  
   
   virtual double composite_player_multiplier( school_e school ) const override
@@ -4360,15 +4361,18 @@ void hunter_t::create_buffs()
   buffs.aspect_of_the_wild           = buff_creator_t( this, 193530, "aspect_of_the_wild" )
     .affects_regen( true )
     .add_invalidate( CACHE_CRIT );
+  
+  if( artifacts.wilderness_expert.rank() )
+    buffs.aspect_of_the_wild -> buff_duration += artifacts.wilderness_expert.time_value();
 
   buffs.bestial_wrath                = buff_creator_t( this, "bestial_wrath", specs.bestial_wrath )
     .cd( timespan_t::zero() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     buffs.bestial_wrath -> default_value = buffs.bestial_wrath -> data().effectN( 1 ).percent();
 
-  if ( talents.bestial_fury -> ok() )
+  if( talents.bestial_fury -> ok() )
     buffs.bestial_wrath -> default_value += talents.bestial_fury -> effectN( 1 ).percent();
-  if( titanstrike && artifacts.unleash_the_beast.rank() )
+  if( artifacts.unleash_the_beast.rank() )
     buffs.bestial_wrath -> default_value += artifacts.unleash_the_beast.percent();
 
   buffs.bombardment                 = buff_creator_t( this, "bombardment", specs.bombardment -> effectN( 1 ).trigger() );
