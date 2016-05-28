@@ -12,6 +12,7 @@
 //   - Dire Beast (focus gain is passive now)
 //  Talent
 //   - Stampede (rework)
+//   - Make Dire Frenzy tick based
 //  Artifacts
 //   - Jaws of Thunder
 //   - Spitting Cobras
@@ -21,9 +22,9 @@
 //   - Renewed Vigor
 //   - Furious Swipes
 //   - Titan's Thunder
-//   - Master of Beasts
 //   - Stormshot
 //   - Surge of the Stormgod
+//   - Cleanup duplicate code for Beast Cleave
 //
 // Marksmanship
 //  Talents
@@ -81,6 +82,7 @@ namespace pets
 {
 struct hunter_main_pet_t;
 struct hunter_secondary_pet_t;
+struct hati_t;
 }
 
 enum aspect_type { ASPECT_NONE = 0, ASPECT_MAX };
@@ -132,8 +134,8 @@ public:
   // for 10 seconds.
   std::array< pet_t*, 10 > thunderhawk;
 
-  pet_t* hati;
-  pet_t* dark_minion;
+  pets::hati_t* hati;
+  pets::hunter_secondary_pet_t* dark_minion;
 
   // Tier 15 4-piece bonus
   attack_t* action_lightning_arrow_aimed_shot;
@@ -1061,7 +1063,7 @@ public:
 
     buffs.bestial_wrath = buff_creator_t( this, 19574, "bestial_wrath" ).activated( true );
     buffs.bestial_wrath -> cooldown -> duration = timespan_t::zero();
-    buffs.bestial_wrath -> default_value = buffs.bestial_wrath -> data().effectN( 2 ).percent();
+    buffs.bestial_wrath -> default_value = buffs.bestial_wrath -> data().effectN( 1 ).percent();
     if ( o() -> talents.bestial_fury -> ok() )
       buffs.bestial_wrath -> default_value += o() -> talents.bestial_fury -> effectN( 1 ).percent();
 
@@ -1365,7 +1367,7 @@ struct hunter_main_pet_attack_t: public hunter_main_pet_action_t < melee_attack_
 struct beast_cleave_attack_t: public hunter_main_pet_attack_t
 {
   beast_cleave_attack_t( hunter_main_pet_t* p ):
-    hunter_main_pet_attack_t( "beast_cleave_attack", p, p -> find_spell( 22482 ) )
+    hunter_main_pet_attack_t( "beast_cleave", p, p -> find_spell( 118455 ) )
   {
     may_miss = false;
     may_crit = false;
@@ -1494,16 +1496,6 @@ struct basic_attack_t: public hunter_main_pet_attack_t
   double composite_attack_power() const override
   {
     return o() -> cache.attack_power() * o()->composite_attack_power_multiplier();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    hunter_main_pet_attack_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      trigger_beast_cleave( s );
-    }
   }
 
   bool use_wild_hunt() const
@@ -1825,29 +1817,29 @@ secondary_pet_melee_t::secondary_pet_melee_t( const std::string &attack_name, hu
       special = false;
 }
 
-struct dire_beast_stomp_t: public hunter_secondary_pet_action_t
-{
-  dire_beast_stomp_t( hunter_secondary_pet_t &p ):
-    hunter_secondary_pet_action_t( "stomp", p, p.find_spell( 201754 ) )
-  {
-    aoe = -1;
-  }    
-  
-  bool init_finished() override
-  {
-    if ( p() -> o() -> pet_dire_beasts[ 0 ] )
-      stats = p() -> o() -> pet_dire_beasts[ 0 ] -> get_stats( "stomp" );
-
-    return hunter_secondary_pet_action_t::init_finished();
-  }
-};
-
 // ==========================================================================
 // Dire Critter
 // ==========================================================================
 
 struct dire_critter_t: public hunter_secondary_pet_t
 {
+  struct dire_beast_stomp_t: public hunter_secondary_pet_action_t
+  {
+    dire_beast_stomp_t( hunter_secondary_pet_t &p ):
+      hunter_secondary_pet_action_t( "stomp", p, p.find_spell( 201754 ) )
+    {
+      aoe = -1;
+    }    
+  
+    bool init_finished() override
+    {
+      if ( p() -> o() -> pet_dire_beasts[ 0 ] )
+        stats = p() -> o() -> pet_dire_beasts[ 0 ] -> get_stats( "stomp" );
+
+      return hunter_secondary_pet_action_t::init_finished();
+    }
+  };
+
   struct dire_beast_melee_t: public secondary_pet_melee_t
   {
     int focus_gain;
@@ -1907,6 +1899,165 @@ struct dire_critter_t: public hunter_secondary_pet_t
       cpm *= 1.0 + o() -> artifacts.beast_master.percent();
     
     return cpm;
+  }
+};
+
+struct hati_t: public hunter_secondary_pet_t
+{
+  struct hati_beast_cleave_attack_t: public hunter_secondary_pet_action_t
+  {
+    hati_beast_cleave_attack_t( hati_t& p ):
+      hunter_secondary_pet_action_t( "beast_cleave", p, p.find_spell( 118455 ) )
+    {
+      may_miss = false;
+      may_crit = false;
+      proc = false;
+      callbacks = false;
+      background = true;
+      school = SCHOOL_PHYSICAL;
+      aoe = -1;
+      range = -1.0;
+      radius = 10.0;
+      // The starting damage includes all the buffs
+      weapon_multiplier = 0;
+    }
+
+    size_t available_targets( std::vector< player_t* >& tl ) const override
+    {
+      hunter_secondary_pet_action_t::available_targets( tl );
+
+      for ( size_t i = 0; i < tl.size(); i++ )
+      {
+        if ( tl[i] == target ) // Cannot hit the original target.
+        {
+          tl.erase( tl.begin() + i );
+          break;
+        }
+      }
+
+      return tl.size();
+    }
+  };
+
+  static void trigger_beast_cleave( action_state_t* s )
+  {
+    if ( !s -> action -> result_is_hit( s -> result ) )
+      return;
+
+    if ( s -> action -> sim -> active_enemies == 1 )
+      return;
+
+    hati_t* p = debug_cast<hati_t*>( s -> action -> player );
+
+    if ( !p -> buffs.beast_cleave -> check() )
+      return;
+
+    if ( p -> active.beast_cleave -> target != s -> target )
+      p -> active.beast_cleave -> target_cache.is_valid = false;
+
+    p -> active.beast_cleave -> target = s -> target;
+    double cleave = s -> result_total * p -> buffs.beast_cleave -> current_value;
+
+    p -> active.beast_cleave -> base_dd_min = cleave;
+    p -> active.beast_cleave -> base_dd_max = cleave;
+    p -> active.beast_cleave -> execute();
+  }
+
+  struct hati_melee_t: public secondary_pet_melee_t
+  {
+    hati_melee_t( hati_t& p ):
+      secondary_pet_melee_t( "melee", p )
+    {
+    }
+
+    virtual void impact( action_state_t* s ) override
+    {
+      secondary_pet_melee_t::impact( s );
+
+      trigger_beast_cleave( s );
+    }
+  };
+
+  struct hati_kill_command_t: public hunter_secondary_pet_action_t
+  {
+    hati_kill_command_t( hunter_secondary_pet_t &p ):
+      hunter_secondary_pet_action_t( "kill_command", p, p.find_spell( 83381 ) )
+    {
+      background = true;
+      proc = true;
+      school = SCHOOL_PHYSICAL;
+      range = 25;
+      attack_power_mod.direct  = 2.5; 
+    }  
+    
+    virtual double composite_attack_power() const override
+    {
+      return o() -> cache.attack_power() * o()->composite_attack_power_multiplier();
+    }
+
+    virtual bool usable_moving() const override
+    {
+      return true;
+    }
+  };
+
+  struct actives_t
+  {
+    action_t* kill_command;
+    action_t* beast_cleave;
+  } active;
+
+  struct buffs_t
+  {
+    buff_t* beast_cleave;
+    buff_t* bestial_wrath;
+  } buffs;
+
+  hati_t( hunter_t& owner ):
+    hunter_secondary_pet_t( owner, std::string( "hati" ) )
+  {
+  }
+
+  virtual void init_base_stats() override
+  {
+    hunter_secondary_pet_t::init_base_stats();
+
+    main_hand_attack = new hati_melee_t( *this );
+  }
+
+  virtual void init_spells() override
+  {
+    hunter_secondary_pet_t::init_spells();
+
+    if( o() -> titanstrike && o() -> artifacts.master_of_beasts.rank() )
+    {
+      active.kill_command = new hati_kill_command_t( *this );
+      active.beast_cleave = new hati_beast_cleave_attack_t( *this );
+    }
+  }
+
+  virtual void create_buffs() override
+  {
+    hunter_secondary_pet_t::create_buffs();
+
+    buffs.bestial_wrath = buff_creator_t( this, 19574, "bestial_wrath" ).activated( true );
+    buffs.bestial_wrath -> cooldown -> duration = timespan_t::zero();
+    buffs.bestial_wrath -> default_value = buffs.bestial_wrath -> data().effectN( 1 ).percent();
+    if ( o() -> talents.bestial_fury -> ok() )
+      buffs.bestial_wrath -> default_value += o() -> talents.bestial_fury -> effectN( 1 ).percent();
+
+    double cleave_value     = o() -> find_specialization_spell( "Beast Cleave" ) -> effectN( 1 ).percent();
+    buffs.beast_cleave      = buff_creator_t( this, 118455, "beast_cleave" ).activated( true ).default_value( cleave_value );
+  }  
+  
+  virtual double composite_player_multiplier( school_e school ) const override
+  {
+    double m = hunter_secondary_pet_t::composite_player_multiplier( school );
+
+    if ( buffs.bestial_wrath -> up() )
+      m *= 1.0 + buffs.bestial_wrath -> current_value;
+
+    return m;
   }
 };
 
@@ -2269,8 +2420,11 @@ struct multi_shot_t: public hunter_ranged_attack_t
 
     pets::hunter_main_pet_t* pet = p() -> active.pet;
     if ( pet && p() -> specs.beast_cleave -> ok() )
+    {
       pet -> buffs.beast_cleave -> trigger();
-    
+      if( p() -> titanstrike && p() -> artifacts.master_of_beasts.rank() )
+        p() -> hati -> buffs.beast_cleave -> trigger();
+    }
     if ( result_is_hit( execute_state -> result ) )
     {
       // Hunter's Mark applies on cast to all affected targets or none based on RPPM (8*haste).
@@ -2482,7 +2636,7 @@ struct cobra_shot_t: public hunter_ranged_attack_t
       int active_pets = 0, i = 0;
       while( !p() -> pet_dire_beasts[ i++ ] -> is_sleeping() )  active_pets++;
       if( !p() -> active.pet -> is_sleeping() )                 active_pets++;
-      if( p() -> thasdorah && !p() -> hati -> is_sleeping() )   active_pets++;
+      if( p() -> titanstrike && !p() -> hati -> is_sleeping() )   active_pets++;
       am *= 1.0 + active_pets * p() -> talents.way_of_the_cobra -> effectN( 1 ).percent();
     }
 
@@ -3495,14 +3649,6 @@ struct moc_t: public ranged_attack_t
     peck -> execute();
   }
 
-  virtual double cost() const override
-  {
-    double c = ranged_attack_t::cost();
-    if ( p() -> buffs.bestial_wrath -> check() )
-      c *= 1.0 + p() -> buffs.bestial_wrath -> data().effectN( 6 ).percent();
-    return c;
-  }
-
   virtual void execute() override
   {
     p() -> no_steady_focus();
@@ -3661,6 +3807,8 @@ struct bestial_wrath_t: public hunter_spell_t
   {
     p() -> buffs.bestial_wrath  -> trigger();
     p() -> active.pet -> buffs.bestial_wrath -> trigger();
+    if( p() -> titanstrike && p() -> artifacts.master_of_beasts.rank() )
+      p() -> hati -> buffs.bestial_wrath -> trigger();
     if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T17, B4 ) )
     {
       const timespan_t duration = p() -> buffs.bestial_wrath -> buff_duration;
@@ -3714,6 +3862,8 @@ struct kill_command_t: public hunter_spell_t
       p() -> active.pet -> active.kill_command -> execute();
       trigger_tier17_2pc_bm();
     }
+    if( p() -> titanstrike && p() -> artifacts.master_of_beasts.rank() )
+      p() -> hati -> active.kill_command -> execute();
     p() -> no_steady_focus();
   }
 
@@ -3992,7 +4142,7 @@ void hunter_t::create_pets()
   }
 
   if ( titanstrike )
-    hati = new pets::hunter_secondary_pet_t( *this, std::string( "hati" ) );
+    hati = new pets::hati_t( *this );
 
   if ( talents.black_arrow -> ok() )
     dark_minion = new pets::hunter_secondary_pet_t( *this, std::string( "dark_minion" ) );
