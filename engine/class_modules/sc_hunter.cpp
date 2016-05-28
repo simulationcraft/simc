@@ -19,7 +19,6 @@
 //   - Pack Leader
 //   - Unleash the Beast
 //   - Renewed Vigor
-//   - Focus of the Titans
 //   - Furious Swipes
 //   - Titan's Thunder
 //   - Master of Beasts
@@ -2257,8 +2256,10 @@ struct multi_shot_t: public hunter_ranged_attack_t
   virtual double action_multiplier() const override
   {
     double am = hunter_ranged_attack_t::action_multiplier();
-    if ( p() -> buffs.bombardment -> up() )
-      am *= 1 + p() -> buffs.bombardment -> data().effectN( 2 ).percent();
+    if( p() -> buffs.bombardment -> up() )
+      am *= 1.0 + p() -> buffs.bombardment -> data().effectN( 2 ).percent();
+    if( p() -> titanstrike && p() -> artifacts.focus_of_the_titans.rank() )
+      am *= 1.0 + p() -> artifacts.focus_of_the_titans.percent();
     return am;
   }
 
