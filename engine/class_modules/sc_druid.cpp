@@ -2383,27 +2383,24 @@ struct rip_state_t : public action_state_t
 
 struct ashamanes_frenzy_t : public cat_attack_t
 {
-  struct ashamanes_frenzy_hit_t : public cat_attack_t
+  struct ashamanes_frenzy_damage_t : public cat_attack_t
   {
-    ashamanes_frenzy_hit_t( druid_t* player, const spell_data_t* s ) :
-      cat_attack_t( "ashamanes_frenzy_hit", player, s -> effectN( 1 ).trigger() )
+    ashamanes_frenzy_damage_t( druid_t* p ) :
+      cat_attack_t( "ashamanes_frenzy_dmg", p, p -> find_spell( 210723 ) )
     {
-      background = dual = true;
-      dot_max_stack = s -> duration() / s -> effectN( 1 ).period();
-      direct_bleed = true;
+      background = dual = direct_bleed = true;
+      dot_max_stack = p -> artifact.ashamanes_frenzy.data().effectN( 2 ).base_value();
     }
     
     // Emulate old DoT refresh behavior.
-    virtual timespan_t calculate_dot_refresh_duration( const dot_t* dot,
-      timespan_t triggered_duration ) const override
-    { return dot -> time_to_next_tick() + triggered_duration; }
+    timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t dur ) const override
+    { return d -> time_to_next_tick() + dur; }
   };
 
-  ashamanes_frenzy_t( druid_t* player, const std::string& options_str ) :
-    cat_attack_t( "ashamanes_frenzy", player, &player -> artifact.ashamanes_frenzy.data(), options_str )
+  ashamanes_frenzy_t( druid_t* p, const std::string& options_str ) :
+    cat_attack_t( "ashamanes_frenzy", p, &p -> artifact.ashamanes_frenzy.data(), options_str )
   {
-    tick_action = new ashamanes_frenzy_hit_t( player, &data() );
-    add_child( tick_action );
+    tick_action = new ashamanes_frenzy_damage_t( p );
 
     may_miss = may_parry = may_dodge = may_crit = false;
   }
@@ -2411,12 +2408,17 @@ struct ashamanes_frenzy_t : public cat_attack_t
   void init() override
   {
     cat_attack_t::init();
-
-    consumes_bloodtalons = false;
+    
+    tick_action -> direct_tick = false;
+    // consumes_bloodtalons = false;
   }
 
   // Does not trigger primal fury.
   void trigger_primal_fury() override {}
+
+  // Don't record data for this action.
+  void record_data( action_state_t* s ) override
+  { assert( s -> result_amount == 0.0 ); }
 };
 
 // Berserk ==================================================================
@@ -5664,7 +5666,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "ashamanes_frenzy" ||
        name == "frenzy"                 ) return new       ashamanes_frenzy_t( this, options_str );
   if ( name == "astral_communion" ||
-       name == "ac" )                      return new       astral_communion_t( this, options_str );
+       name == "ac" )                     return new       astral_communion_t( this, options_str );
   if ( name == "auto_attack"            ) return new            auto_attack_t( this, options_str );
   if ( name == "barkskin"               ) return new               barkskin_t( this, options_str );
   if ( name == "berserk"                ) return new                berserk_t( this, options_str );
