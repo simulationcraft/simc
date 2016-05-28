@@ -1648,6 +1648,7 @@ struct sim_t : private sc_thread_t
   timespan_t  gcd_lag, gcd_lag_stddev;
   timespan_t  channel_lag, channel_lag_stddev;
   timespan_t  queue_gcd_reduction;
+  timespan_t  global_min_gcd; // Global minimum GCD for all actors
   int         strict_gcd_queue;
   double      confidence, confidence_estimator;
   // Latency
