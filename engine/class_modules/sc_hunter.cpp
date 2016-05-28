@@ -16,7 +16,6 @@
 //  Artifacts
 //   - Jaws of Thunder
 //   - Wilderness Expert
-//   - Unleash the Beast
 //   - Renewed Vigor
 //   - Furious Swipes
 //   - Titan's Thunder
@@ -1064,6 +1063,8 @@ public:
     buffs.bestial_wrath -> default_value = buffs.bestial_wrath -> data().effectN( 1 ).percent();
     if ( o() -> talents.bestial_fury -> ok() )
       buffs.bestial_wrath -> default_value += o() -> talents.bestial_fury -> effectN( 1 ).percent();
+    if( o() -> titanstrike && o() -> artifacts.unleash_the_beast.rank() )
+      buffs.bestial_wrath -> default_value += o() -> artifacts.unleash_the_beast.percent();
 
     // Use buff to indicate whether the pet is a stampede summon
     buffs.stampede          = buff_creator_t( this, 130201, "stampede" )
@@ -2052,8 +2053,10 @@ struct hati_t: public hunter_secondary_pet_t
     buffs.bestial_wrath = buff_creator_t( this, 19574, "bestial_wrath" ).activated( true );
     buffs.bestial_wrath -> cooldown -> duration = timespan_t::zero();
     buffs.bestial_wrath -> default_value = buffs.bestial_wrath -> data().effectN( 1 ).percent();
-    if ( o() -> talents.bestial_fury -> ok() )
+    if( o() -> talents.bestial_fury -> ok() )
       buffs.bestial_wrath -> default_value += o() -> talents.bestial_fury -> effectN( 1 ).percent();
+    if( o() -> titanstrike && o() -> artifacts.unleash_the_beast.rank() )
+      buffs.bestial_wrath -> default_value += o() -> artifacts.unleash_the_beast.percent();
 
     double cleave_value     = o() -> find_specialization_spell( "Beast Cleave" ) -> effectN( 1 ).percent();
     buffs.beast_cleave      = buff_creator_t( this, 118455, "beast_cleave" ).activated( true ).default_value( cleave_value );
@@ -4365,6 +4368,8 @@ void hunter_t::create_buffs()
 
   if ( talents.bestial_fury -> ok() )
     buffs.bestial_wrath -> default_value += talents.bestial_fury -> effectN( 1 ).percent();
+  if( titanstrike && artifacts.unleash_the_beast.rank() )
+    buffs.bestial_wrath -> default_value += artifacts.unleash_the_beast.percent();
 
   buffs.bombardment                 = buff_creator_t( this, "bombardment", specs.bombardment -> effectN( 1 ).trigger() );
 
