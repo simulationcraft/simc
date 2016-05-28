@@ -15,7 +15,7 @@
 //   - Stampede (rework)
 //   - Make Dire Frenzy tick based
 //  Artifacts
-//   - Surge of the Stormgod
+//   - Surge of the Stormgod: proc at pet location, figure out why damage is not reflecting beta testing
 //   - Cleanup duplicate code for Beast Cleave
 //
 // Marksmanship
@@ -118,6 +118,7 @@ public:
     action_t*           frozen_ammo;
     action_t*           incendiary_ammo;
     action_t*           poisoned_ammo;
+    action_t*           surge_of_the_stormgod;
   } active;
 
   // Dire beasts last 8 seconds, so you'll have at max 8
@@ -2549,6 +2550,16 @@ struct multi_shot_t: public hunter_ranged_attack_t
         }
       }
     }
+    if( p() -> artifacts.surge_of_the_stormgod.rank() && rng().roll( p() -> artifacts.surge_of_the_stormgod.data().proc_chance() ) )
+    {
+      if( p() -> active.pet ) 
+        p() -> active.surge_of_the_stormgod -> execute();
+      if( p() -> hati )
+        p() -> active.surge_of_the_stormgod -> execute();
+      int i = 0;
+      while( !p() -> pet_dire_beasts[ i++ ] -> is_sleeping() )
+        p() -> active.surge_of_the_stormgod -> execute();
+    }
   }
 
   virtual void impact( action_state_t* s ) override
@@ -2749,6 +2760,20 @@ struct cobra_shot_t: public hunter_ranged_attack_t
       am *= 1.0 + p() -> artifacts.spitting_cobras.percent();
 
     return am;
+  }
+};
+
+// Surge of the Stormgod =====================================================
+
+struct surge_of_the_stormgod_t: public hunter_ranged_attack_t
+{
+  surge_of_the_stormgod_t( hunter_t* p ):
+    hunter_ranged_attack_t( "surge_of_the_stormgod", p, p -> artifacts.surge_of_the_stormgod )
+  {
+    aoe = -1;
+    attack_power_mod.direct = 2.0;
+    may_crit = true;
+    school = SCHOOL_NATURE;
   }
 };
 
@@ -4064,8 +4089,6 @@ struct titans_thunder_t: public hunter_spell_t
   }
 };
 
-
-
 // Aspect of the Wild =======================================================
 
 struct aspect_of_the_wild_t: public hunter_spell_t
@@ -4455,6 +4478,9 @@ void hunter_t::init_spells()
     active.frozen_ammo = new attacks::exotic_munitions_frozen_ammo_t( this, "frozen_ammo", find_spell( 162546 ) );
     active.poisoned_ammo = new attacks::exotic_munitions_poisoned_ammo_t( this, "poisoned_ammo", find_spell( 170661 ) );
   }
+
+  if ( artifacts.surge_of_the_stormgod.rank() )
+    active.surge_of_the_stormgod = new attacks::surge_of_the_stormgod_t( this );
 
   action_lightning_arrow_aimed_shot = new attacks::lightning_arrow_t( this, "_aimed_shot" );
   action_lightning_arrow_arcane_shot = new attacks::lightning_arrow_t( this, "_arcane_shot" );
