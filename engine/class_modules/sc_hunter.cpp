@@ -10,10 +10,9 @@
 // General: Cleanup class hierachy for pets
 //
 // Beast Mastery
-//   - Dire Beast (focus gain is passive now)
+//   - Dire Beast (can have multiple buffs)
 //  Talent
 //   - Stampede (rework)
-//   - Make Dire Frenzy tick based
 //  Artifacts
 //   - Surge of the Stormgod: proc at pet location, figure out why damage is not reflecting beta testing
 //   - Cleanup duplicate code for Beast Cleave
@@ -156,6 +155,7 @@ public:
     buff_t* big_game_hunter;
     buff_t* bombardment;
     buff_t* careful_aim;
+    buff_t* dire_beast;
     buff_t* steady_focus;
     buff_t* pre_steady_focus;
     buff_t* marking_targets;
@@ -1083,7 +1083,7 @@ public:
                                 .default_value ( frenzy_value )
                                 .cd( timespan_t::zero() )
                                 .add_invalidate( CACHE_ATTACK_HASTE );
-    buffs.titans_thunder_df = buff_creator_t( this, "titans_thunder" ).duration( timespan_t::from_seconds( 30.0 ) );
+    buffs.titans_thunder_df = buff_creator_t( this, "titans_thunder" ).duration( timespan_t::from_seconds( 30.0 ) ).quiet( true );
 
     buffs.tier17_4pc_bm = buff_creator_t( this, 178875, "tier17_4pc_bm" )
       .default_value( owner -> find_spell( 178875 ) -> effectN( 2 ).percent() )
@@ -1946,15 +1946,9 @@ struct dire_critter_t: public hunter_secondary_pet_t
 
   struct dire_beast_melee_t: public secondary_pet_melee_t
   {
-    int focus_gain;
     dire_beast_melee_t( dire_critter_t& p ):
       secondary_pet_melee_t( "dire_beast_melee", p )
     {
-      energize_type = ENERGIZE_ON_HIT;
-      energize_resource = RESOURCE_FOCUS;
-      energize_amount = player -> find_spell( 120694 ) -> effectN( 1 ).base_value();
-      if ( o() -> talents.dire_stable -> ok() )
-        focus_gain += o() -> talents.dire_stable -> effectN( 1 ).base_value();
     }
 
     bool init_finished() override
@@ -3917,6 +3911,7 @@ struct dire_beast_t: public hunter_spell_t
     hunter_spell_t::execute();
     p() -> no_steady_focus();
 
+    p() -> buffs.dire_beast -> trigger();
     timespan_t t = timespan_t::from_seconds( p() -> specs.dire_beast -> effectN( 1 ).base_value() );
     p() -> cooldowns.bestial_wrath -> adjust( -t );
 
@@ -4103,7 +4098,8 @@ struct titans_thunder_t: public hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    p() -> active.pet -> buffs.titans_thunder_df -> trigger();
+    if( p() -> talents.dire_frenzy -> ok() )
+      p() -> active.pet -> buffs.titans_thunder_df -> trigger();
     p() -> active.pet -> active.titans_thunder -> execute();
     p() -> hati -> active.titans_thunder -> execute();
     int i = 0;
@@ -4562,6 +4558,14 @@ void hunter_t::create_buffs()
   
   if( artifacts.wilderness_expert.rank() )
     buffs.aspect_of_the_wild -> buff_duration += artifacts.wilderness_expert.time_value();
+  
+  buffs.dire_beast = buff_creator_t( this, 120694, "dire_beast" )
+    .affects_regen(true)
+    .default_value( find_spell( 120694 ) -> effectN( 1 )
+    .resource( RESOURCE_FOCUS ) );
+
+  if( talents.dire_stable -> ok() )
+    buffs.dire_beast -> default_value += talents.dire_stable -> effectN( 1 ).base_value();
 
   buffs.bestial_wrath                = buff_creator_t( this, "bestial_wrath", specs.bestial_wrath )
     .cd( timespan_t::zero() )
@@ -5076,6 +5080,8 @@ double hunter_t::focus_regen_per_second() const
 
   if ( buffs.aspect_of_the_wild -> check() )
     regen += buffs.aspect_of_the_wild -> data().effectN( 2 ).resource( RESOURCE_FOCUS );
+  if ( buffs.dire_beast -> check() )
+    regen += buffs.dire_beast -> default_value / 2;
 
   return regen;
 }
