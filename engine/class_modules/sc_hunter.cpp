@@ -16,7 +16,6 @@
 //  Artifacts
 //   - Jaws of Thunder
 //   - Wilderness Expert
-//   - Pack Leader
 //   - Unleash the Beast
 //   - Renewed Vigor
 //   - Furious Swipes
@@ -1585,6 +1584,17 @@ struct kill_command_t: public hunter_main_pet_attack_t
   bool usable_moving() const override
   {
     return true;
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = hunter_main_pet_attack_t::action_multiplier();
+
+    // Not a bug -- Pack Leader only affects primary pet's kill command
+    if( p() -> o() -> titanstrike && p() -> o() -> artifacts.pack_leader.rank() )
+      am *= 1.0 + p() -> o() -> artifacts.pack_leader.percent();
+
+    return am;
   }
 };
 
