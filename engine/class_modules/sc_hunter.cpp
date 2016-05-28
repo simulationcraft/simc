@@ -7,6 +7,7 @@
 
 // ==========================================================================
 // TODO
+// General: Cleanup class hierachy for pets
 //
 // Beast Mastery
 //   - Dire Beast (focus gain is passive now)
@@ -14,7 +15,6 @@
 //   - Stampede (rework)
 //   - Make Dire Frenzy tick based
 //  Artifacts
-//   - Titan's Thunder
 //   - Surge of the Stormgod
 //   - Cleanup duplicate code for Beast Cleave
 //
@@ -28,7 +28,7 @@
 // Survival
 //   - Carve
 //   - Flanking Strike
-//   - Hatchet Toss (really?)
+//   - Hatchet Toss
 //   - Lacerate
 //   - Mongoose Bite
 //   - Raptor Strike
@@ -75,6 +75,7 @@ namespace pets
 struct hunter_main_pet_t;
 struct hunter_secondary_pet_t;
 struct hati_t;
+struct dire_critter_t;
 }
 
 enum aspect_type { ASPECT_NONE = 0, ASPECT_MAX };
@@ -120,7 +121,7 @@ public:
   } active;
 
   // Dire beasts last 8 seconds, so you'll have at max 8
-  std::array< pet_t*, 8 >  pet_dire_beasts;
+  std::array< pets::dire_critter_t*, 8 >  pet_dire_beasts;
   // Tier 15 2-piece bonus: need 10 slots (just to be safe) because each
   // Steady Shot or Cobra Shot can trigger a Thunderhawk, which stays
   // for 10 seconds.
@@ -704,7 +705,6 @@ void trigger_true_aim( hunter_t* p, player_t* t )
 
 namespace pets
 {
-
 // ==========================================================================
 // Hunter Pet
 // ==========================================================================
@@ -713,7 +713,7 @@ struct hunter_pet_t: public pet_t
 {
 public:
   typedef pet_t base_t;
-
+  
   hunter_pet_t( sim_t& sim, hunter_t& owner, const std::string& pet_name, pet_e pt = PET_HUNTER, bool guardian = false, bool dynamic = false ) :
     base_t( &sim, &owner, pet_name, pt, guardian, dynamic )
   {
@@ -904,6 +904,7 @@ public:
     action_t* dire_frenzy;
     action_t* kill_command;
     attack_t* beast_cleave;
+    action_t* titans_thunder;
   } active;
 
   struct specs_t
@@ -1360,6 +1361,41 @@ struct hunter_main_pet_attack_t: public hunter_main_pet_action_t < melee_attack_
   }
 };
 
+// Titan's Thunder ==============================================================
+
+struct titans_thunder_t: public hunter_pet_action_t < hunter_pet_t, spell_t >
+{
+  struct titans_thunder_tick_t: public hunter_pet_action_t < hunter_pet_t, spell_t >
+  {
+    titans_thunder_tick_t( hunter_pet_t* p ):
+      hunter_pet_action_t< hunter_pet_t, spell_t>( "titans_thunder_tick", *p, p -> find_spell( 207097 ) )
+    {
+      aoe = -1;
+      background = true;
+      may_crit = true;
+    }
+  };
+
+  titans_thunder_t( hunter_pet_t* p ):
+    hunter_pet_action_t< hunter_pet_t, spell_t >( "titans_thunder", *p, p -> find_spell( 207068 ) )
+  {
+    attack_power_mod.direct = 0.0;
+    attack_power_mod.tick = 1.0;
+    base_tick_time = timespan_t::from_seconds( 1.0 );
+    dot_duration = data().duration();
+    hasted_ticks = false;
+    school = SCHOOL_NATURE;
+    tick_zero = false;
+    tick_action = new titans_thunder_tick_t( p );
+  }
+
+  // Uses hunter's ranged attack power
+  double composite_attack_power() const override
+  {
+    return o() -> cache.attack_power() * o()->composite_attack_power_multiplier();
+  }
+};
+
 // Beast Cleave ==============================================================
 
 struct beast_cleave_attack_t: public hunter_main_pet_attack_t
@@ -1775,7 +1811,13 @@ void hunter_main_pet_t::init_spells()
   }
 
   if( o() -> talents.dire_frenzy -> ok() )
-      active.dire_frenzy = new actions::dire_frenzy_t( this );
+    active.dire_frenzy = new actions::dire_frenzy_t( this );
+
+  if( o() -> artifacts.titans_thunder.rank() )
+  {
+    active.titans_thunder = new actions::titans_thunder_t( this );
+    active.titans_thunder -> base_multiplier /= 1.0 + specs.combat_experience -> effectN( 2 ).percent(); // in-game bug, combat experience should apply but doesn't
+  }
 }
 
 // ==========================================================================
@@ -1791,7 +1833,6 @@ struct hunter_secondary_pet_action_t: hunter_pet_action_t < hunter_secondary_pet
       weapon_multiplier = 0;
       school = SCHOOL_PHYSICAL;
       may_crit = true;
-      base_multiplier *= 1.15;
   }
 };
 
@@ -1825,6 +1866,12 @@ struct hunter_secondary_pet_t: public hunter_pet_t
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2 );
 
     main_hand_attack = new secondary_pet_melee_t( name_str + "_melee", *this );
+  }
+
+  virtual double composite_player_multiplier( school_e school ) const override
+  {
+    // Secondary pets have a hidden 15% damage buff
+    return 1.15 * hunter_pet_t::composite_player_multiplier( school );
   }
 
   virtual void summon( timespan_t duration = timespan_t::zero() ) override
@@ -1895,8 +1942,12 @@ struct dire_critter_t: public hunter_secondary_pet_t
       return secondary_pet_melee_t::init_finished();
     }
   };
-  
-  action_t* stomp;
+  struct actives_t
+  {
+    action_t* stomp;
+    action_t* titans_thunder;
+  } active;
+
   dire_critter_t( hunter_t& owner, size_t index ):
     hunter_secondary_pet_t( owner, std::string( "dire_beast_" ) + util::to_string( index ) )
   {
@@ -1914,7 +1965,10 @@ struct dire_critter_t: public hunter_secondary_pet_t
     hunter_secondary_pet_t::init_spells();
 
     if( o() -> talents.stomp -> ok() )
-      stomp = new dire_beast_stomp_t( *this );
+      active.stomp = new dire_beast_stomp_t( *this );
+
+    if( o() -> titanstrike && o() -> artifacts.titans_thunder.rank() )
+      active.titans_thunder = new actions::titans_thunder_t( this );
   }
 
   virtual void summon( timespan_t duration = timespan_t::zero() ) override
@@ -1922,7 +1976,7 @@ struct dire_critter_t: public hunter_secondary_pet_t
     hunter_secondary_pet_t::summon( duration );
     
     if( o() -> talents.stomp -> ok() )
-      stomp -> execute();
+      active.stomp -> execute();
   }
 
   virtual double composite_player_multiplier( school_e school ) const override
@@ -2063,6 +2117,7 @@ struct hati_t: public hunter_secondary_pet_t
   {
     action_t* kill_command;
     action_t* beast_cleave;
+    action_t* titans_thunder;
   } active;
 
   struct buffs_t
@@ -2092,6 +2147,9 @@ struct hati_t: public hunter_secondary_pet_t
       active.kill_command = new hati_kill_command_t( *this );
       active.beast_cleave = new hati_beast_cleave_attack_t( *this );
     }
+
+    if( o() -> titanstrike && o() -> artifacts.titans_thunder.rank() )
+      active.titans_thunder = new actions::titans_thunder_t( this );
   }
 
   virtual void create_buffs() override
@@ -3985,6 +4043,44 @@ struct dire_frenzy_t: public hunter_spell_t
   }
 };
 
+struct titans_thunder_t: public hunter_spell_t
+{
+  titans_thunder_t( hunter_t* p, const std::string& options_str ):
+    hunter_spell_t( "titans_thunder", p, p -> artifacts.titans_thunder )
+  {
+    parse_options( options_str );
+    harmful = false;
+  }
+
+  virtual void execute() override
+  {
+    hunter_spell_t::execute();
+
+    p() -> active.pet -> active.titans_thunder -> execute();
+    p() -> hati -> active.titans_thunder -> execute();
+    int i = 0;
+    while( !p() -> pet_dire_beasts[ i ] -> is_sleeping() ) p() -> pet_dire_beasts[ i++ ] -> active.titans_thunder -> execute();
+  }  
+
+  bool init_finished() override
+  {
+    for (auto pet : p() -> pet_list)
+      stats -> add_child( pet -> get_stats( "titans_thunder" ) );
+
+    return hunter_spell_t::init_finished();
+  }
+
+  virtual bool ready() override
+  {
+    if ( !p() -> active.pet )
+      return false;
+
+    return hunter_spell_t::ready();
+  }
+};
+
+
+
 // Aspect of the Wild =======================================================
 
 struct aspect_of_the_wild_t: public hunter_spell_t
@@ -4135,6 +4231,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "stampede"              ) return new               stampede_t( this, options_str );
   if ( name == "steady_shot"           ) return new          raptor_strike_t( this, options_str );
   if ( name == "summon_pet"            ) return new             summon_pet_t( this, options_str );
+  if ( name == "titans_thunder"        ) return new         titans_thunder_t( this, options_str );
   if ( name == "trueshot"              ) return new               trueshot_t( this, options_str );
   if ( name == "volley"                ) return new                 volley_t( this, options_str );
   if ( name == "windburst"             ) return new              windburst_t( this, options_str );
