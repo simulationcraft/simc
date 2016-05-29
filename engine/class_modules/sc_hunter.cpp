@@ -128,7 +128,7 @@ public:
   std::array< pet_t*, 10 > thunderhawk;
 
   pets::hati_t* hati;
-  pets::hunter_secondary_pet_t* dark_minion;
+  std::array< pets::hunter_secondary_pet_t*, 2 > dark_minion;
 
   // Tier 15 4-piece bonus
   attack_t* action_lightning_arrow_aimed_shot;
@@ -1656,6 +1656,8 @@ struct kill_command_t: public hunter_main_pet_attack_t
   }
 };
 
+// Dire Frenzy (pet) =======================================================
+
 struct dire_frenzy_t: public hunter_main_pet_attack_t
 {
   struct dire_frenzy_titans_thunder_t: public hunter_main_pet_attack_t
@@ -1663,7 +1665,7 @@ struct dire_frenzy_t: public hunter_main_pet_attack_t
     dire_frenzy_titans_thunder_t( hunter_main_pet_t* p ):
       hunter_main_pet_attack_t( "titans_thunder_df", p, p -> find_spell( 207068 ) )
     {
-      attack_power_mod.direct = 2.0;
+      attack_power_mod.direct = 2.0; //FIXME
       background = true;
       school = SCHOOL_NATURE;
     }
@@ -2839,7 +2841,10 @@ struct black_arrow_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    p() -> dark_minion -> summon( duration );
+    if( p() -> dark_minion[ 0 ] -> is_sleeping() )
+      p() -> dark_minion[ 0 ] -> summon( duration );
+    else
+      p() -> dark_minion[ 1 ] -> summon( duration );
   }
 };
 
@@ -3306,6 +3311,10 @@ struct marked_shot_t: public hunter_ranged_attack_t
     double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
 
     hunter_td_t* td = this -> td( t );
+    if ( td -> debuffs.vulnerable -> up() )
+      m *= 1.0 + td -> debuffs.vulnerable -> check_stack_value();
+    else if ( td -> debuffs.deadeye -> up() )
+      m *= 1.0 + td -> debuffs.deadeye -> check_stack_value();
 
     if ( td -> debuffs.true_aim -> up() )
       m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
@@ -4355,7 +4364,10 @@ void hunter_t::create_pets()
     hati = new pets::hati_t( *this );
 
   if ( talents.black_arrow -> ok() )
-    dark_minion = new pets::hunter_secondary_pet_t( *this, std::string( "dark_minion" ) );
+  {
+    dark_minion[0] = new pets::hunter_secondary_pet_t( *this, std::string( "dark_minion" ) );
+    dark_minion[1] = new pets::hunter_secondary_pet_t( *this, std::string( "dark_minion_2" ) );
+  }
 }
 
 // hunter_t::init_spells ====================================================
