@@ -2818,7 +2818,6 @@ struct mind_sear_tick_t final : public priest_spell_t
     : priest_spell_t( "mind_sear_tick", p, mind_sear->effectN( 1 ).trigger() ),
       insanity_gain( 1 )  // TODO: Missing from spell data
   {
-    radius      = data().effectN( 1 ).radius();
     background  = true;
     dual        = true;
     aoe         = -1;
@@ -2828,10 +2827,12 @@ struct mind_sear_tick_t final : public priest_spell_t
     energize_type   = ENERGIZE_NONE; // disable resource generation from spell data
   }
 
-  void impact( action_state_t* ) override
+  void impact( action_state_t* state ) override
   {
-    // TODO: does this really not need a is_hit check?
-    generate_insanity( insanity_gain, priest.gains.insanity_mind_sear );
+    if ( result_is_hit( state -> result ) )
+    {
+      generate_insanity(insanity_gain, priest.gains.insanity_mind_sear);
+    }
   }
 };
 
