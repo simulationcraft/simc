@@ -26,7 +26,6 @@ actions.precombat+=/potion,name=draenic_agility
 # Executed every time the actor is available.
 
 actions=auto_shot
-actions+=/use_item,name=gorashans_lodestone_spike
 actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury
 actions+=/berserking

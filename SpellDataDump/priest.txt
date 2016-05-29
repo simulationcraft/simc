@@ -134,7 +134,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=237)      : Apply Aura (6) | Unknown effect sub type (103)
-                   Base Value: -90000000 | Scaled Value: -9e+007 | Target: Self(1)
+                   Base Value: -90000000 | Scaled Value: -9e+07 | Target: Self(1)
 Description      : Fade out, removing all your threat for $d.
 Tooltip          : Reduced threat level.
 
@@ -608,7 +608,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=11689)    : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 1500000000 | Scaled Value: 1.5e+009 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 1500000000 | Scaled Value: 1.5e+09 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
 Description      : Upon death, you become the Spirit of Redemption for $27827d. You cannot move, attack, be attacked, or be targeted by any spells or effects, and your healing spells cost no mana. When the effect ends, you die.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
@@ -1273,7 +1273,7 @@ Effects          :
 #2 (id=40043)    : Dummy (3)
                    Base Value: 40 | Scaled Value: 40
 #3 (id=188025)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 100000000 | Scaled Value: 1e+008 | Misc Value: 127 | Target: Friend(21)
+                   Base Value: 100000000 | Scaled Value: 1e+08 | Misc Value: 127 | Target: Friend(21)
 Description      : Calls upon a guardian spirit to watch over the friendly target for $d, increasing healing received by $s1%$?s159599[][ and preventing the target from dying by sacrificing itself.  This sacrifice terminates the effect and heals the target for $s2% of maximum health]. Castable while stunned.
 
 Massive damage amounts will kill the target despite this effect.
@@ -4394,7 +4394,7 @@ Effects          :
 #11 (id=320871)   : Apply Aura (6) | Unknown effect sub type (40)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
 #12 (id=320872)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 145000000 | Scaled Value: 1.45e+008 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 145000000 | Scaled Value: 1.45e+08 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
 Description      : The Priest becomes the Spirit of Redemption for $d. The Spirit of Redemption cannot move, attack, be attacked or targeted by any spells or effects. While in this form the Priest can cast any healing spell free of cost. 
 Tooltip          : You have become more powerful than anyone can possibly imagine.
 

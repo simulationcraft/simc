@@ -31,11 +31,15 @@ actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent,if=chi.max-chi>=1
 actions+=/touch_of_death
-actions+=/serenity,if=chi>=2
-actions+=/fists_of_fury,if=energy.time_to_max>cast_time&!buff.serenity.up
-actions+=/call_action_list,name=st,if=active_enemies<3&level<100
-actions+=/call_action_list,name=aoe_norjw,if=active_enemies>=3&!talent.rushing_jade_wind.enabled
-actions+=/call_action_list,name=aoe_rjw,if=active_enemies>=3&talent.rushing_jade_wind.enabled
+actions+=/serenity,if=(artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.up)&cooldown.fists_of_fury.remains<=9&cooldown.rising_sun_kick.remains<=5
+actions+=/serenity,if=!artifact.strike_of_the_windlord.enabled&cooldown.fists_of_fury.remains<=9&cooldown.rising_sun_kick.remains<=5
+actions+=/energizing_elixir,if=energy<30&chi<2
+actions+=/rushing_jade_wind,if=buff.serenity.up&!prev_gcd.rushing_jade_wind
+actions+=/strike_of_the_windlord,if=artifact.strike_of_the_windlord.enabled
+actions+=/whirling_dragon_punch
+actions+=/fists_of_fury
+actions+=/call_action_list,name=st,if=active_enemies<3
+actions+=/call_action_list,name=aoe_nosef,if=active_enemies>=3
 
 actions.opener=blood_fury
 actions.opener+=/berserking
@@ -46,26 +50,23 @@ actions.opener+=/blackout_kick,if=chi.max-chi<=1&cooldown.chi_brew.up|buff.seren
 actions.opener+=/serenity,if=chi.max-chi<=2
 actions.opener+=/tiger_palm,if=chi.max-chi>=2&!buff.serenity.up
 
-actions.st=blackout_kick,if=set_bonus.tier18_2pc=1&buff.bok_proc.react
+actions.st=blackout_kick,if=(set_bonus.tier18_2pc=1&buff.bok_proc.react)&!prev_gcd.blackout_kick
 actions.st+=/rising_sun_kick
-actions.st+=/blackout_kick,if=buff.bok_proc.react|buff.serenity.up
+actions.st+=/blackout_kick,if=(buff.bok_proc.react|buff.serenity.up)&!prev_gcd.blackout_kick
 actions.st+=/chi_wave,if=energy.time_to_max>2&buff.serenity.down
 actions.st+=/chi_burst,if=energy.time_to_max>2&buff.serenity.down
-actions.st+=/blackout_kick,if=chi.max-chi<2
-actions.st+=/tiger_palm,if=chi.max-chi>=2
+actions.st+=/rushing_jade_wind,if=chi.max-chi<=3&!prev_gcd.rushing_jade_wind
+actions.st+=/blackout_kick,if=chi.max-chi<=3&!prev_gcd.blackout_kick
+actions.st+=/tiger_palm,if=buff.power_strikes.up&chi.max-chi>=3&!prev_gcd.tiger_palm
+actions.st+=/tiger_palm,if=buff.power_strikes.down&chi.max-chi>=2&!prev_gcd.tiger_palm
 
-actions.aoe_norjw=chi_wave,if=energy.time_to_max>2&buff.serenity.down
-actions.aoe_norjw+=/chi_burst,if=energy.time_to_max>2&buff.serenity.down
-actions.aoe_norjw+=/spinning_crane_kick,if=buff.bok_proc.react|buff.serenity.up
-actions.aoe_norjw+=/spinning_crane_kick,if=chi.max-chi<2&cooldown.fists_of_fury.remains>3
-actions.aoe_norjw+=/tiger_palm,if=chi.max-chi>=2
-
-actions.aoe_rjw=rushing_jade_wind
-actions.aoe_rjw+=/chi_wave,if=energy.time_to_max>2&buff.serenity.down
-actions.aoe_rjw+=/chi_burst,if=energy.time_to_max>2&buff.serenity.down
-actions.aoe_rjw+=/blackout_kick,if=buff.bok_proc.react|buff.serenity.up
-actions.aoe_rjw+=/blackout_kick,if=chi.max-chi<2&cooldown.fists_of_fury.remains>3
-actions.aoe_rjw+=/tiger_palm,if=chi.max-chi>=2
+actions.aoe_nosef=spinning_crane_kick,if=!prev_gcd.spinning_crane_kick
+actions.aoe_nosef+=/chi_wave,if=energy.time_to_max>2&buff.serenity.down
+actions.aoe_nosef+=/chi_burst,if=energy.time_to_max>2&buff.serenity.down
+actions.aoe_nosef+=/rushing_jade_wind,if=chi.max-chi<=3&!prev_gcd.rushing_jade_wind
+actions.aoe_nosef+=/blackout_kick,if=chi.max-chi<=3&!prev_gcd.blackout_kick
+actions.aoe_nosef+=/tiger_palm,if=buff.power_strikes.up&chi.max-chi>=3&!prev_gcd.tiger_palm
+actions.aoe_nosef+=/tiger_palm,if=buff.power_strikes.down&chi.max-chi>=2&!prev_gcd.tiger_palm
 
 head=mask_of_the_hurricanes_eye,id=124262,bonus_id=567,upgrade=2
 neck=choker_of_the_great_betrayer,id=124210,bonus_id=567,upgrade=2,enchant=gift_of_haste

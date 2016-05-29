@@ -27,7 +27,7 @@ actions+=/rebuke
 actions+=/potion,name=draenic_strength,if=(buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40)
 actions+=/equality
 actions+=/avenging_wrath
-actions+=/sanctified_wrath,sync=judgment,if=holy_power>=3
+actions+=/crusade,sync=judgment,if=holy_power>=3
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent

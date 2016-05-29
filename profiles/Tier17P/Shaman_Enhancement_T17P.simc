@@ -26,7 +26,6 @@ actions=wind_shear
 # Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
 actions+=/bloodlust,if=target.health.pct<25|time>0.500
 actions+=/auto_attack
-actions+=/use_item,name=kihras_adrenaline_injector
 # In-combat potion is preferentially linked to the Fire or Storm Elemental, depending on talents, unless combat will end shortly
 actions+=/potion,name=draenic_agility,if=(talent.storm_elemental_totem.enabled&(pet.storm_elemental_totem.remains>=25|(cooldown.storm_elemental_totem.remains>target.time_to_die&pet.fire_elemental_totem.remains>=25)))|(!talent.storm_elemental_totem.enabled&pet.fire_elemental_totem.remains>=25)|target.time_to_die<=30
 actions+=/blood_fury

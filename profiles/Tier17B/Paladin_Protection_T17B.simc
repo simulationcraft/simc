@@ -25,7 +25,6 @@ actions.precombat+=/potion,name=draenic_strength
 # Executed every time the actor is available.
 
 actions=auto_attack
-actions+=/use_item,name=pols_blinded_eye
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
@@ -34,7 +33,6 @@ actions+=/arcane_torrent
 # Invoke by adding "actions+=/run_action_list,name=max_dps" to the beginning of the default APL.
 
 actions.max_dps=auto_attack
-actions.max_dps+=/use_item,name=pols_blinded_eye
 actions.max_dps+=/blood_fury
 actions.max_dps+=/berserking
 actions.max_dps+=/arcane_torrent
@@ -43,7 +41,6 @@ actions.max_dps+=/arcane_torrent
 # Invoke by adding "actions+=/run_action_list,name=max_survival" to the beginning of the default APL.
 
 actions.max_survival=auto_attack
-actions.max_survival+=/use_item,name=pols_blinded_eye
 actions.max_survival+=/blood_fury
 actions.max_survival+=/berserking
 actions.max_survival+=/arcane_torrent

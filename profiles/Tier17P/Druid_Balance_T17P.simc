@@ -30,8 +30,6 @@ actions=potion,name=draenic_intellect,if=buff.celestial_alignment.up
 actions+=/blood_fury,if=buff.celestial_alignment.up
 actions+=/berserking,if=buff.celestial_alignment.up
 actions+=/arcane_torrent,if=buff.celestial_alignment.up
-actions+=/use_item,slot=trinket1
-actions+=/use_item,slot=trinket2
 actions+=/warrior_of_elune,if=buff.lunar_empowerment.stack>=2
 actions+=/stellar_flare,if=remains<2
 actions+=/moonfire,if=remains<2

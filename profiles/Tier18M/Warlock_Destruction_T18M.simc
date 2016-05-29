@@ -38,13 +38,12 @@ actions+=/conflagrate,if=talent.roaring_blaze.enabled&charges=2
 actions+=/conflagrate,if=talent.roaring_blaze.enabled&prev_gcd.conflagrate
 actions+=/conflagrate,if=!talent.roaring_blaze.enabled&buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time
 actions+=/conflagrate,if=!talent.roaring_blaze.enabled&(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5
+actions+=/soul_harvest
 actions+=/channel_demonfire,if=dot.immolate.remains>cast_time
-actions+=/soul_harvest,if=talent.soul_conduit.enabled&soul_shard=0
 actions+=/chaos_bolt,if=soul_shard>3
 actions+=/dimensional_rift
 actions+=/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&target.time_to_die>buff.mana_tap.duration*0.3
 actions+=/chaos_bolt
-actions+=/soul_harvest,if=soul_shard==0
 actions+=/cataclysm
 actions+=/conflagrate,if=!talent.roaring_blaze.enabled
 actions+=/immolate,if=!talent.roaring_blaze.enabled&remains<=duration*0.3

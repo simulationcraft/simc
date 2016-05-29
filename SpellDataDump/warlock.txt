@@ -1733,7 +1733,7 @@ Effects          :
 #2 (id=318370)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.66600 | Target: Self(1)
 #3 (id=318371)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 1000000000 | Scaled Value: 1e+009 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 1000000000 | Scaled Value: 1e+09 | Misc Value: 127 | Target: Self(1)
 Description      : Your spells deal a random amount of additional damage, up to $s1%. Damage you take is reduced by a random amount, up to $s2%.
 
 Name             : Havoc (id=80240) [Spell Family (5)] 
@@ -2585,7 +2585,7 @@ Attributes       : ........ ........ .......x x.xx.x..   .....x.. ........ .....
                  : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
 Effects          :
 #1 (id=127009)   : Apply Aura (6) | Dummy (4)
-                   Base Value: -1000000000 | Scaled Value: -1e+009 | Misc Value: 893 | Target: Self(1)
+                   Base Value: -1000000000 | Scaled Value: -1e+09 | Misc Value: 893 | Target: Self(1)
 Description      : Faded into the nether and unable to use another Demonic Gateway.
 Tooltip          : Faded into the nether and unable to use another Demonic Gateway.
 
