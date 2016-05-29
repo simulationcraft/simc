@@ -19,44 +19,17 @@
 //
 // Marksmanship
 //  Talents
-//   - Heightened Vulnerability (Broken)
+//   - Sentinel (Broken in game)
 //   - Volley (Improve)
 //  Artifacts
 //   - Call of the Hunter (NYI still)
 //
 // Survival
-//   - Carve
-//   - Flanking Strike
-//   - Hatchet Toss
-//   - Lacerate
-//   - Mongoose Bite
-//   - Raptor Strike
-//   - Mastery: Hunting Companion
+//   - Everything
 //  Talents
-//   - Animal Instincts
-//   - Throwing Axes
-//   - Way of the Mok'Nathal
-//   - Improved Traps
-//   - Steel Trap
-//   - Dragonsfire Grenade
-//   - Snake Hunter
-//   - Butchery
-//   - Mortal Wounds
-//   - Serpent Sting
-//   - Spitting Cobra
-//   - Expert Trapper
+//   - Everything
 //  Artifacts
-//   - Sharpened Beak
-//   - Raptor's Cry
-//   - Hellcarver
-//   - My Beloved Monster
-//   - Strength of the Mountain
-//   - Fluffy, Go
-//   - Jagged Claws
-//   - Hunter's Guile
-//   - Eagle's Bite
-//   - Aspect of the Skylord
-//   - Talon Strike
+//   - Everything
 //
 // ==========================================================================
 
@@ -166,6 +139,7 @@ public:
     buff_t* rapid_killing;
     buff_t* bullseye;
     buff_t* heavy_shot; // t17 SV 4pc
+    buff_t* mongoose_fury;
   } buffs;
 
   // Cooldowns
@@ -179,6 +153,7 @@ public:
     cooldown_t* dire_beast;
     cooldown_t* dire_frenzy;
     cooldown_t* kill_command;
+    cooldown_t* mongoose_bite;
   } cooldowns;
 
   // Custom Parameters
@@ -442,6 +417,7 @@ public:
     cooldowns.dire_beast      = get_cooldown( "dire_beast" );
     cooldowns.dire_frenzy     = get_cooldown( "dire_frenzy" );
     cooldowns.kill_command    = get_cooldown( "kill_command" );
+    cooldowns.mongoose_bite   = get_cooldown( "mongoose_bite" );
 
     summon_pet_str = "";
     base.distance = 40;
@@ -2375,40 +2351,6 @@ struct ranged_t: public hunter_ranged_attack_t
   }
 };
 
-// Melee attack ==============================================================
-
-struct melee_t: public hunter_melee_attack_t
-{
-  bool first;
-  melee_t( hunter_t* player, const char* name = "auto_attack", const spell_data_t* s = spell_data_t::nil() ):
-    hunter_melee_attack_t( name, player, s ), first( true )
-  {
-    school             = SCHOOL_PHYSICAL;
-    weapon             = &( player -> main_hand_weapon );
-    base_execute_time  = player -> main_hand_weapon.swing_time;
-    background         = true;
-    repeating          = true;
-    special            = false;
-    trigger_gcd        = timespan_t::zero();
-  }
-
-  virtual timespan_t execute_time() const override
-  {
-  if ( ! player -> in_combat ) 
-    return timespan_t::from_seconds( 0.01 );
-    if ( first )
-      return timespan_t::zero();
-    else
-      return hunter_melee_attack_t::execute_time();;
-  }
-
-  virtual void execute() override
-  {
-    if ( first )
-      first = false;
-    hunter_melee_attack_t::execute();
-  }
-};
 
 // Auto Shot ================================================================
 
@@ -2489,30 +2431,6 @@ struct start_attack_t: public hunter_ranged_attack_t
   }
 };
 
-// Auto attack =======================================================================
-
-struct auto_attack_t: public hunter_melee_attack_t
-{
-  auto_attack_t( hunter_t* player, const std::string& options_str ) :
-    hunter_melee_attack_t( "auto_attack", player, spell_data_t::nil() )
-  {
-    parse_options( options_str );
-    player -> main_hand_attack = new melee_t( player );
-  }
-
-  virtual void execute() override
-  {
-    player -> main_hand_attack -> schedule_execute();
-  }
-
-  virtual bool ready() override
-  {
-    if ( player -> is_moving() )
-      return false;
-
-    return ( player -> main_hand_attack -> execute_event == nullptr ); // not swinging
-  }
-};
 
 //==============================
 // Shared attacks
@@ -3561,6 +3479,94 @@ struct piercing_shots_t: public residual_action_t
 // Survival attacks 
 //==============================
 
+// Melee attack ==============================================================
+
+struct melee_t: public hunter_melee_attack_t
+{
+  bool first;
+  melee_t( hunter_t* player, const std::string &name = "auto_attack", const spell_data_t* s = spell_data_t::nil() ):
+    hunter_melee_attack_t( name, player, s ), first( true )
+  {
+    school             = SCHOOL_PHYSICAL;
+    base_execute_time  = player -> main_hand_weapon.swing_time;
+    background         = true;
+    repeating          = true;
+    special            = false;
+    trigger_gcd        = timespan_t::zero();
+  }
+
+  virtual timespan_t execute_time() const override
+  {
+  if ( ! player -> in_combat ) 
+    return timespan_t::from_seconds( 0.01 );
+    if ( first )
+      return timespan_t::zero();
+    else
+      return hunter_melee_attack_t::execute_time();;
+  }
+
+  virtual void execute() override
+  {
+    if ( first )
+      first = false;
+    hunter_melee_attack_t::execute();
+  }
+};
+
+// Auto attack =======================================================================
+
+struct auto_attack_t: public hunter_melee_attack_t
+{
+  auto_attack_t( hunter_t* player, const std::string& options_str ) :
+    hunter_melee_attack_t( "auto_attack", player, spell_data_t::nil() )
+  {
+    parse_options( options_str );
+    player -> main_hand_attack = new melee_t( player );
+  }
+
+  virtual void execute() override
+  {
+    player -> main_hand_attack -> schedule_execute();
+  }
+
+  virtual bool ready() override
+  {
+    if ( player -> is_moving() )
+      return false;
+
+    return ( player -> main_hand_attack -> execute_event == nullptr ); // not swinging
+  }
+};
+
+// Mongoose Bite =======================================================================
+
+struct mongoose_bite_t: hunter_melee_attack_t
+{
+  mongoose_bite_t( hunter_t* p, const std::string& options_str ):
+    hunter_melee_attack_t( "mongoose_bite", p, p -> specs.mongoose_bite )
+  {
+    parse_options( options_str );
+    cooldown -> hasted = true;
+  }
+
+  virtual void execute() override 
+  {
+    hunter_melee_attack_t::execute();
+
+    p() -> buffs.mongoose_fury -> trigger();
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = hunter_melee_attack_t::action_multiplier();
+
+    if( p() -> buffs.mongoose_fury -> up() )
+      am *= 1.0 + p() -> buffs.mongoose_fury -> check_stack_value();
+
+    return am;
+  }
+};
+
 // Freezing Trap =====================================================================
 // Implemented here because often there are buffs associated with it
 
@@ -3640,7 +3646,7 @@ struct serpent_sting_t: public hunter_ranged_attack_t
 struct raptor_strike_t: public hunter_melee_attack_t
 {
   raptor_strike_t( hunter_t* player, const std::string& options_str ):
-    hunter_melee_attack_t( "raptor_strike", player, player -> find_spell( "Raptor Strike" ) )
+    hunter_melee_attack_t( "raptor_strike", player, player -> specs.raptor_strike )
   {
     parse_options( options_str );
   }
@@ -4281,11 +4287,12 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "head_shot"             ) return new              head_shot_t( this, options_str );
   if ( name == "kill_command"          ) return new           kill_command_t( this, options_str );
   if ( name == "marked_shot"           ) return new            marked_shot_t( this, options_str );
+  if ( name == "mongoose_bite"         ) return new          mongoose_bite_t( this, options_str );
   if ( name == "multishot"             ) return new             multi_shot_t( this, options_str );
   if ( name == "multi_shot"            ) return new             multi_shot_t( this, options_str );
+  if ( name == "raptor_strike"         ) return new          raptor_strike_t( this, options_str );
   if ( name == "sidewinders"           ) return new            sidewinders_t( this, options_str );
   if ( name == "stampede"              ) return new               stampede_t( this, options_str );
-  if ( name == "steady_shot"           ) return new          raptor_strike_t( this, options_str );
   if ( name == "summon_pet"            ) return new             summon_pet_t( this, options_str );
   if ( name == "titans_thunder"        ) return new         titans_thunder_t( this, options_str );
   if ( name == "trueshot"              ) return new               trueshot_t( this, options_str );
@@ -4474,7 +4481,16 @@ void hunter_t::init_spells()
   specs.survivalist          = find_specialization_spell( "Survivalist" );
   specs.dire_beast           = find_specialization_spell( "Dire Beast" );
   specs.wild_call            = find_specialization_spell( "Wild Call" );
-  specs.aspect_of_the_wild   = find_specialization_spell( "Aspect of the Wild" );
+  specs.aspect_of_the_wild   = find_specialization_spell( "Aspect of the Wild" );    
+  specs.flanking_strike      = find_specialization_spell( "Flanking Strike" );
+  specs.raptor_strike        = find_specialization_spell( "Raptor Strike" );
+  specs.mongoose_bite        = find_specialization_spell( "Mongoose Bite" );
+  specs.harpoon              = find_specialization_spell( "Harpoon" );
+  specs.laceration           = find_specialization_spell( "Laceration" );
+  specs.aspect_of_the_eagle  = find_specialization_spell( "Aspect of the Eagle" );
+  specs.carve                = find_specialization_spell( "Carve" );
+  specs.tar_trap             = find_specialization_spell( "Tar Trap" );
+  
 
   // Artifact spells
   artifacts.titans_thunder           = find_artifact_spell( "Titan's Thunder" );
@@ -4629,6 +4645,11 @@ void hunter_t::create_buffs()
   buffs.heavy_shot   = buff_creator_t( this, 167165, "heavy_shot" )
     .default_value( find_spell( 167165 ) -> effectN( 1 ).percent() )
     .refresh_behavior( BUFF_REFRESH_EXTEND );
+
+  buffs.mongoose_fury = buff_creator_t( this, 190931, "mongoose_fury" )
+    .default_value( find_spell( 190931 ) -> effectN( 1 ).percent() )
+    .refresh_behavior( BUFF_REFRESH_DISABLED )
+    .max_stack( 6 );
 }
 
 // hunter_t::init_gains =====================================================
