@@ -1922,7 +1922,7 @@ struct agony_t: public warlock_spell_t
   {
     td( d -> state -> target ) -> agony_stack = 1;
 
-    if ( p() -> get_active_dots( internal_id ) == 0 )
+    if ( p() -> get_active_dots( internal_id ) == 1 )
       p() -> shard_accumulator = rng().range( 0.0, 0.99 );
 
 
