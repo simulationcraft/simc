@@ -556,7 +556,7 @@ public:
   virtual double    composite_player_multiplier( school_e school ) const override;
   virtual double    composite_spell_crit() const override;
   virtual double    composite_spell_haste() const override;
-  virtual double    composite_mastery_value() const override;
+  virtual double    composite_mastery_rating() const override;
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
   virtual void      update_movement( timespan_t duration ) override;
   virtual void      stun() override;
@@ -2931,6 +2931,7 @@ struct combustion_t : public fire_mage_spell_t
     fire_mage_spell_t::execute();
 
     p() -> buffs.combustion -> trigger();
+    
   }
 };
 
@@ -6957,20 +6958,19 @@ double mage_t::composite_player_multiplier( school_e school ) const
 
   return m;
 }
-// mage_t:: composite_mastery_value ============================================
-double mage_t::composite_mastery_value() const
+
+// mage_t::composite_mastery_rating =============================================
+
+double mage_t::composite_mastery_rating() const
 {
-  double m = player_t::composite_mastery_value();
+  double m = player_t::composite_mastery_rating();
 
-  if ( buffs.combustion -> check() )
+  if ( buffs.combustion -> up() )
   {
-    // We subtract 1 manually to get the pre-combustion modified crit%
-    m += ( mage_t::composite_spell_crit() - 1 );
+    m += mage_t::composite_spell_crit_rating();
   }
-
-  return m;
+ return m;
 }
-
 
 // mage_t::composite_spell_crit ===============================================
 
