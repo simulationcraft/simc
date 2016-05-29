@@ -49,7 +49,9 @@ namespace pets {
   struct shadowy_tear_t;
   struct chaos_tear_t;
   struct chaos_portal_t;
-  struct dreadstalker_pet_t;
+  struct dreadstalker_t;
+  struct infernal_t;
+  struct doomguard_t;
 }
 
 struct warlock_td_t: public actor_target_data_t
@@ -102,17 +104,21 @@ public:
     pet_t* last;
     static const int WILD_IMP_LIMIT = 25;
     static const int T18_PET_LIMIT = 6 ;
-    static const int DREADSTALKER_LIMIT = 2;
+    static const int DREADSTALKER_LIMIT = 4;
     static const int DIMENSIONAL_RIFT_LIMIT = 10;
+    static const int INFERNAL_LIMIT = 1;
+    static const int DOOMGUARD_LIMIT = 1;
     std::array<pets::wild_imp_pet_t*, WILD_IMP_LIMIT> wild_imps;
-    pet_t* inner_demon;
     std::array<pets::t18_illidari_satyr_t*, T18_PET_LIMIT> t18_illidari_satyr;
     std::array<pets::t18_prince_malchezaar_t*, T18_PET_LIMIT> t18_prince_malchezaar;
     std::array<pets::t18_vicious_hellhound_t*, T18_PET_LIMIT> t18_vicious_hellhound;
     std::array<pets::shadowy_tear_t*, DIMENSIONAL_RIFT_LIMIT> shadowy_tear;
     std::array<pets::chaos_tear_t*, DIMENSIONAL_RIFT_LIMIT> chaos_tear;
     std::array<pets::chaos_portal_t*, DIMENSIONAL_RIFT_LIMIT> chaos_portal;
-    std::array<pets::dreadstalker_pet_t*, DREADSTALKER_LIMIT> dreadstalkers;
+    std::array<pets::dreadstalker_t*, DREADSTALKER_LIMIT> dreadstalkers;
+    std::array<pets::infernal_t*, INFERNAL_LIMIT> infernal;
+    std::array<pets::doomguard_t*, DOOMGUARD_LIMIT> doomguard;
+
   } pets;
 
   std::vector<std::string> pet_name_list;
@@ -303,6 +309,7 @@ public:
     buff_t* mana_tap;
     buff_t* conflagration_of_chaos;
     buff_t* soul_harvest;
+    buff_t* lord_of_flames;
 
     buff_t* tier18_2pc_demonology;
 
@@ -1442,10 +1449,10 @@ struct voidwalker_pet_t: public warlock_pet_t
   }
 };
 
-struct infernal_pet_t: public warlock_pet_t
+struct infernal_t: public warlock_pet_t
 {
-  infernal_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "infernal"   ):
-    warlock_pet_t( sim, owner, name, PET_INFERNAL, name != "infernal" )
+  infernal_t( sim_t* sim, warlock_t* owner ):
+    warlock_pet_t( sim, owner, "infernal", PET_INFERNAL )
   {
   }
 
@@ -1468,10 +1475,10 @@ struct infernal_pet_t: public warlock_pet_t
   }
 };
 
-struct doomguard_pet_t: public warlock_pet_t
+struct doomguard_t: public warlock_pet_t
 {
-    doomguard_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "doomguard"  ):
-    warlock_pet_t( sim, owner, name, PET_DOOMGUARD, name != "doomguard" )
+    doomguard_t( sim_t* sim, warlock_t* owner ):
+    warlock_pet_t( sim, owner, "doomguard", PET_DOOMGUARD )
   {
     action_list_str = "doom_bolt";
   }
@@ -1497,7 +1504,7 @@ struct wild_imp_pet_t: public warlock_pet_t
   stats_t* regular_stats;
 
   wild_imp_pet_t( sim_t* sim, warlock_t* owner ):
-    warlock_pet_t( sim, owner, "wild_imp", PET_WILD_IMP, true ), firebolt_stats( nullptr )
+    warlock_pet_t( sim, owner, "wild_imp", PET_WILD_IMP ), firebolt_stats( nullptr )
   {
   }
 
@@ -1539,13 +1546,13 @@ struct wild_imp_pet_t: public warlock_pet_t
   }
 };
 
-struct dreadstalker_pet_t : public warlock_pet_t
+struct dreadstalker_t : public warlock_pet_t
 {
     stats_t** dreadbite_stats;
     stats_t* regular_stats;
 
-  dreadstalker_pet_t( sim_t* sim, warlock_t* owner ) :
-    warlock_pet_t( sim, owner, "dreadstalker", PET_DREADSTALKER, true ), dreadbite_stats( nullptr )
+  dreadstalker_t( sim_t* sim, warlock_t* owner ) :
+    warlock_pet_t( sim, owner, "dreadstalker", PET_DREADSTALKER ), dreadbite_stats( nullptr )
   {
     action_list_str = "travel/dreadbite";
     regen_type = REGEN_DISABLED;
@@ -2171,7 +2178,7 @@ struct demonic_empowerment_t: public warlock_spell_t
 		warlock_spell_t( "demonic empowerment", p, p -> spec.demonic_empowerment )
 	{
 		may_crit = false;
-        timespan_t test = this->cooldown->duration;
+        timespan_t test = this -> cooldown -> duration;
 	}
 
 	void init() override
@@ -2884,9 +2891,43 @@ struct summon_main_pet_t: public summon_pet_t
   }
 };
 
-struct infernal_awakening_t: public warlock_spell_t
+struct summon_doomguard_t: public warlock_spell_t
 {
-  infernal_awakening_t( warlock_t* p, spell_data_t* spell ):
+  timespan_t doomguard_duration;
+
+  summon_doomguard_t( warlock_t* p ):
+    warlock_spell_t( "summon_doomguard", p, p -> find_spell( 18540 ) )
+  {
+    harmful = may_crit = false;
+
+    cooldown = p -> cooldowns.doomguard;
+    cooldown -> duration = data().cooldown();
+
+    if ( p -> talents.grimoire_of_supremacy -> ok() )
+      doomguard_duration = timespan_t::from_seconds( -1 );
+    else
+      doomguard_duration = p -> find_spell( 111685 ) -> duration();
+  }
+
+  virtual void execute() override
+  {
+    warlock_spell_t::execute();
+
+    p() -> cooldowns.infernal -> start();
+
+    for ( size_t i = 0; i < p() -> pets.doomguard.size(); i++ )
+    {
+      if ( p() -> pets.doomguard[i] -> is_sleeping() )
+      {
+        p() -> pets.doomguard[i] -> summon( doomguard_duration );
+      }
+    }
+  }
+};
+
+struct infernal_awakening_t : public warlock_spell_t
+{
+  infernal_awakening_t( warlock_t* p, spell_data_t* spell ) :
     warlock_spell_t( "infernal_awakening", p, spell )
   {
     aoe = -1;
@@ -2896,24 +2937,25 @@ struct infernal_awakening_t: public warlock_spell_t
   }
 };
 
-struct summon_infernal_t: public summon_pet_t
+struct summon_infernal_t : public warlock_spell_t
 {
   infernal_awakening_t* infernal_awakening;
+  timespan_t infernal_duration;
 
-  summon_infernal_t( warlock_t* p ):
-    summon_pet_t( "infernal", p ),
+  summon_infernal_t( warlock_t* p ) :
+    warlock_spell_t( "Summon_Infernal", p, p -> find_spell( 1122 ) ),
     infernal_awakening( nullptr )
   {
-    harmful = false;
+    harmful = may_crit = false;
 
     cooldown = p -> cooldowns.infernal;
     cooldown -> duration = data().cooldown();
 
     if ( p -> talents.grimoire_of_supremacy -> ok() )
-      summoning_duration = timespan_t::from_seconds( -1 );
+      infernal_duration = timespan_t::from_seconds( -1 );
     else
     {
-      summoning_duration = p -> find_spell( 111685 ) -> duration();
+      infernal_duration = p -> find_spell( 111685 ) -> duration();
       infernal_awakening = new infernal_awakening_t( p, data().effectN( 1 ).trigger() );
       infernal_awakening -> stats = stats;
     }
@@ -2921,63 +2963,20 @@ struct summon_infernal_t: public summon_pet_t
 
   virtual void execute() override
   {
-    summon_pet_t::execute();
-
-    p() -> cooldowns.doomguard -> start();
-    if ( infernal_awakening )
-      infernal_awakening -> execute();
-  }
-};
-
-struct summon_doomguard2_t: public summon_pet_t
-{
-  summon_doomguard2_t( warlock_t* p, spell_data_t* spell ):
-    summon_pet_t( "doomguard", p, spell )
-  {
-    harmful = false;
-    background = true;
-    dual = true;
-    callbacks = false;
-    if ( p -> talents.grimoire_of_supremacy -> ok() ){
-      summoning_duration = timespan_t::from_seconds( -1 );
-    }
-    else 
-      summoning_duration = p -> find_spell( 60478 ) -> duration();
-  }
-};
-
-struct summon_doomguard_t: public warlock_spell_t
-{
-  summon_doomguard2_t* summon_doomguard2;
-
-  summon_doomguard_t( warlock_t* p ):
-    warlock_spell_t( p, "Summon Doomguard" ),
-    summon_doomguard2( nullptr )
-  {
-    cooldown = p -> cooldowns.doomguard;
-    cooldown -> duration = data().cooldown();
-
-    harmful = false;
-    summon_doomguard2 = new summon_doomguard2_t( p, data().effectN( 2 ).trigger() );
-    summon_doomguard2 -> stats = stats;
-  }
-
-  bool init_finished() override
-  {
-    if ( summon_doomguard2 -> pet )
-    {
-      summon_doomguard2 -> pet -> summon_stats = stats;
-    }
-
-    return warlock_spell_t::init_finished();
-  }
-
-  virtual void execute() override
-  {
     warlock_spell_t::execute();
 
-    p() -> cooldowns.infernal -> start();
-    summon_doomguard2 -> execute();
+    p() -> cooldowns.doomguard -> start();
+
+    if ( infernal_awakening )
+      infernal_awakening -> execute();
+
+    for ( size_t i = 0; i < p() -> pets.infernal.size(); i++ )
+    {
+      if ( p() -> pets.infernal[i] -> is_sleeping() )
+      {
+        p() -> pets.infernal[i] -> summon( infernal_duration );
+      }
+    }
   }
 };
 
@@ -2988,8 +2987,7 @@ struct call_dreadstalkers_t : public warlock_spell_t
   call_dreadstalkers_t( warlock_t* p ) :
     warlock_spell_t( "Call_Dreadstalkers", p, p -> find_spell( 104316 ) )
     {
-      harmful = false;
-      may_crit = false;
+      harmful = may_crit = false;
       dreadstalker_duration = p -> find_spell( 193332 ) -> duration();
     }
 
@@ -3670,8 +3668,6 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "service_imp"           ) a = new        grimoire_of_service_t( this, "imp" );
   else if ( action_name == "service_succubus"      ) a = new   grimoire_of_service_t( this, "succubus" );
   else if ( action_name == "service_voidwalker"    ) a = new grimoire_of_service_t( this, "voidwalker" );
-  else if ( action_name == "service_infernal"      ) a = new   grimoire_of_service_t( this, "infernal" );
-  else if ( action_name == "service_doomguard"     ) a = new  grimoire_of_service_t( this, "doomguard" );
   else if ( action_name == "service_pet"           ) a = new grimoire_of_service_t( this,  talents.grimoire_of_supremacy -> ok() ? "doomguard" : default_pet );
   else return player_t::create_action( action_name, options_str );
 
@@ -3694,16 +3690,12 @@ pet_t* warlock_t::create_pet( const std::string& pet_name,
   if ( pet_name == "imp"          ) return new         imp_pet_t( sim, this );
   if ( pet_name == "succubus"     ) return new    succubus_pet_t( sim, this );
   if ( pet_name == "voidwalker"   ) return new  voidwalker_pet_t( sim, this );
-  if ( pet_name == "infernal"     ) return new    infernal_pet_t( sim, this );
-  if ( pet_name == "doomguard"    ) return new   doomguard_pet_t( sim, this );
 
   if ( pet_name == "service_felguard"     ) return new    felguard_pet_t( sim, this, pet_name );
   if ( pet_name == "service_felhunter"    ) return new   felhunter_pet_t( sim, this, pet_name );
   if ( pet_name == "service_imp"          ) return new         imp_pet_t( sim, this, pet_name );
   if ( pet_name == "service_succubus"     ) return new    succubus_pet_t( sim, this, pet_name );
   if ( pet_name == "service_voidwalker"   ) return new  voidwalker_pet_t( sim, this, pet_name );
-  if ( pet_name == "service_doomguard"    ) return new   doomguard_pet_t( sim, this, pet_name );
-  if ( pet_name == "service_infernal"     ) return new    infernal_pet_t( sim, this, pet_name );
 
   return nullptr;
 }
@@ -3713,6 +3705,15 @@ void warlock_t::create_pets()
   for ( size_t i = 0; i < pet_name_list.size(); ++i )
   {
     create_pet( pet_name_list[ i ] );
+  }
+
+  for ( size_t i = 0; i < pets.infernal.size(); i++ )
+  {
+    pets.infernal[i] = new pets::infernal_t( sim, this );
+  }
+  for ( size_t i = 0; i < pets.doomguard.size(); i++ )
+  {
+    pets.doomguard[i] = new pets::doomguard_t( sim, this );
   }
 
   if ( artifact.dimensional_rift )
@@ -3741,7 +3742,7 @@ void warlock_t::create_pets()
     }
     for ( size_t i = 0; i < pets.dreadstalkers.size(); i++ )
     {
-      pets.dreadstalkers[ i ] = new pets::dreadstalker_pet_t( sim, this );
+      pets.dreadstalkers[ i ] = new pets::dreadstalker_t( sim, this );
     }
     if ( sets.has_set_bonus( WARLOCK_DEMONOLOGY, T18, B4 ) )
     {
@@ -3974,6 +3975,7 @@ void warlock_t::create_buffs()
     .chance( artifact.conflagration_of_chaos.rank() > 0 * artifact.conflagration_of_chaos.data().proc_chance() );
 
   buffs.soul_harvest = buff_creator_t( this, "soul_harvest", find_spell( 196098 ) );
+  buffs.lord_of_flames = buff_creator_t( this, "lord_of_flames", find_spell( 226802 ) );
 
   //demonology buffs
   //buffs.shadowy_inspiration = buff_creator_t( this, "shadowy_inspiration", talents.shadowy_inspiration );
