@@ -182,6 +182,7 @@ public:
     proc_t* black_arrow_trinket_reset;
     proc_t* tier18_2pc_mm_wasted_proc;
     proc_t* tier18_2pc_mm_wasted_overwrite;
+    proc_t* hunting_companion;
   } procs;
 
   real_ppm_t* ppm_hunters_mark;
@@ -880,6 +881,7 @@ public:
   {
     action_t* dire_frenzy;
     action_t* kill_command;
+    action_t* flanking_strike;
     attack_t* beast_cleave;
     action_t* titans_thunder;
   } active;
@@ -1339,6 +1341,17 @@ struct hunter_main_pet_attack_t: public hunter_main_pet_action_t < melee_attack_
 
     return base_t::ready();
   }
+
+  virtual void execute() override
+  {
+    base_t::execute();
+
+    if( p() -> o() -> specialization() == HUNTER_SURVIVAL && rng().roll( p() -> o() -> cache.mastery_value() * 0.25 ) )
+    {
+      p() -> o() -> cooldowns.mongoose_bite -> reset( true );
+      p() -> o() -> procs.hunting_companion -> occur();
+    }
+  }
 };
 
 // Titan's Thunder ==============================================================
@@ -1632,6 +1645,19 @@ struct kill_command_t: public hunter_main_pet_attack_t
   }
 };
 
+// Flanking Strike (pet) ===================================================
+
+struct flanking_strike_t: public hunter_main_pet_attack_t
+{
+  flanking_strike_t( hunter_main_pet_t* p ):
+    hunter_main_pet_attack_t( "flanking_strike", p, p -> o() -> find_spell ( 202800 ) )
+  {
+    attack_power_mod.direct = 2.5; //data is in the tooltip
+    background = true;
+  }
+};
+
+
 // Dire Frenzy (pet) =======================================================
 
 struct dire_frenzy_t: public hunter_main_pet_attack_t
@@ -1831,6 +1857,9 @@ void hunter_main_pet_t::init_spells()
 
   if( o() -> artifacts.titans_thunder.rank() )
     active.titans_thunder = new actions::titans_thunder_t( this );
+
+  if( o() -> specialization() == HUNTER_SURVIVAL )
+    active.flanking_strike = new actions::flanking_strike_t( this );
 }
 
 // ==========================================================================
@@ -3567,6 +3596,40 @@ struct mongoose_bite_t: hunter_melee_attack_t
   }
 };
 
+struct flanking_strike_t: hunter_melee_attack_t
+{
+  flanking_strike_t( hunter_t* p, const std::string& options_str ):
+    hunter_melee_attack_t( "flanking_strike", p, p -> specs.flanking_strike )
+  {
+    parse_options( options_str );
+    cooldown -> hasted = true;
+  }
+
+  virtual void execute() override
+  {
+    hunter_melee_attack_t::execute();
+
+    if( p() -> active.pet )
+      p() -> active.pet -> active.flanking_strike -> execute();
+
+    if( rng().roll( p() -> cache.mastery_value() * 0.50 ) ) //no spell data for conversion to proc chance
+    {
+      p() -> cooldowns.mongoose_bite -> reset( true );
+      p() -> procs.hunting_companion -> occur();
+    }
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = hunter_melee_attack_t::action_multiplier();
+
+    if( p() -> target -> target != p() )
+      am *= 1.0 + p() -> specs.flanking_strike -> effectN( 3 ).percent();
+
+    return am;
+  }
+};
+
 // Freezing Trap =====================================================================
 // Implemented here because often there are buffs associated with it
 
@@ -4284,6 +4347,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "explosive_shot"        ) return new         explosive_shot_t( this, options_str );
   if ( name == "explosive_trap"        ) return new         explosive_trap_t( this, options_str );
   if ( name == "freezing_trap"         ) return new          freezing_trap_t( this, options_str );
+  if ( name == "flanking_strike"       ) return new        flanking_strike_t( this, options_str );
   if ( name == "head_shot"             ) return new              head_shot_t( this, options_str );
   if ( name == "kill_command"          ) return new           kill_command_t( this, options_str );
   if ( name == "marked_shot"           ) return new            marked_shot_t( this, options_str );
@@ -4702,6 +4766,7 @@ void hunter_t::init_procs()
   procs.black_arrow_trinket_reset    = get_proc( "black_arrow_trinket_reset" );
   procs.tier18_2pc_mm_wasted_proc    = get_proc( "tier18_2pc_mm_wasted_proc" );
   procs.tier18_2pc_mm_wasted_overwrite     = get_proc ("tier18_2pc_mm_wasted_overwrite");
+  procs.hunting_companion            = get_proc( "hunting_companion" );
 }
 
 // hunter_t::init_rng =======================================================
