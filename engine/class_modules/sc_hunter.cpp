@@ -62,6 +62,7 @@ struct hunter_td_t: public actor_target_data_t
     buff_t* vulnerable;
     buff_t* deadeye;
     buff_t* true_aim;
+    buff_t* lacerate;
   } debuffs;
 
   struct dots_t
@@ -69,6 +70,7 @@ struct hunter_td_t: public actor_target_data_t
     dot_t* serpent_sting;
     dot_t* poisoned_ammo;
     dot_t* piercing_shots;
+    dot_t* lacerate;
   } dots;
 
   hunter_td_t( player_t* target, hunter_t* p );
@@ -3728,6 +3730,8 @@ struct lacerate_t: public hunter_melee_attack_t
   lacerate_t( hunter_t* p, const std::string& options_str ):
     hunter_melee_attack_t( "lacerate", p, p -> specs.lacerate )
   {
+    parse_options( options_str );
+
     base_tick_time = data().effectN( 1 ).period();
     cooldown -> duration = data().cooldown();
     cooldown -> hasted = false;
@@ -3747,6 +3751,13 @@ struct lacerate_t: public hunter_melee_attack_t
       p() -> cooldowns.mongoose_bite -> reset( true );
       p() -> procs.hunting_companion -> occur();
     }
+  }
+
+  virtual void impact( action_state_t *s ) override
+  {
+    hunter_melee_attack_t::impact( s );
+
+    td( s -> target ) -> debuffs.lacerate -> trigger();
   }
 };
 
@@ -3878,6 +3889,16 @@ struct raptor_strike_t: public hunter_melee_attack_t
 
     if ( p() -> talents.way_of_the_moknathal -> ok() )
       p() -> buffs.moknathal_tactics -> trigger();
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = hunter_melee_attack_t::action_multiplier();
+
+    if ( p() -> artifacts.raptors_cry.rank() )
+      am *= 1.0 + p() -> artifacts.raptors_cry.percent();
+
+    return am;
   }
 };
 
@@ -4550,6 +4571,9 @@ struct explosive_trap_t: public hunter_spell_t
 
       if ( p -> talents.expert_trapper -> ok() )
         base_multiplier *= 1.0 + p -> talents.expert_trapper -> effectN( 1 ).percent();
+
+      if ( p -> artifacts.hunters_guile.rank() )
+        cooldown -> duration *= 1.0 + p -> artifacts.hunters_guile.percent();
     }
 };
 
@@ -4608,6 +4632,7 @@ dots( dots_t() )
   dots.serpent_sting = target -> get_dot( "serpent_sting", p );
   dots.poisoned_ammo = target -> get_dot( "poisoned_ammo", p );
   dots.piercing_shots = target -> get_dot( "piercing_shots", p );
+  dots.lacerate = target -> get_dot( "lacerate", p );
 
   debuffs.hunters_mark      = buff_creator_t( *this, "hunters_mark" )
                                 .spell( p -> find_spell( 185365 ) );
@@ -4620,6 +4645,9 @@ dots( dots_t() )
   debuffs.true_aim          = buff_creator_t( *this, "true_aim" )
                                 .spell( p -> find_spell( 199803 ) )
                                 .default_value( p -> find_spell( 199803 ) -> effectN( 1 ).percent() );
+
+  debuffs.lacerate          = buff_creator_t( *this, "lacerate" )
+                                .spell( p -> find_specialization_spell( "Lacerate" ) );
 }
  
 
