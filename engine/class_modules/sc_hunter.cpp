@@ -20,7 +20,6 @@
 // Marksmanship
 //  Talents
 //   - Sentinel (Broken in game)
-//   - Volley (Improve)
 //  Artifacts
 //   - Call of the Hunter (NYI still)
 //
@@ -3484,16 +3483,31 @@ struct sidewinders_t: hunter_ranged_attack_t
 
 // Volley ============================================================================
 
-struct volley_tick_t: hunter_ranged_attack_t
+
+struct volley_t: hunter_ranged_attack_t
 {
-  volley_tick_t( hunter_t* p ):
-    hunter_ranged_attack_t( "volley_tick", p, p -> find_spell( 194392 ) )
+  struct volley_tick_t: hunter_ranged_attack_t
   {
-    aoe         = -1;
-    background  = true;
-    direct_tick = true;
-    dual        = true;
-  }
+    volley_tick_t( hunter_t* p ):
+      hunter_ranged_attack_t( "volley_tick", p, p -> find_spell( 194392 ) )
+    {
+      aoe         = -1;
+      background  = true;
+      hasted_ticks = false;
+    }
+  };
+
+  volley_t( hunter_t* p, const std::string& options_str ):
+    hunter_ranged_attack_t( "volley", p, p -> find_talent_spell( "Volley" ) )
+  {
+    parse_options( options_str );
+    
+    base_tick_time = timespan_t::from_seconds( 1.0 );
+    cooldown -> duration = data().duration();
+    cooldown -> hasted = true;
+    dot_duration = data().duration();
+    tick_action = new volley_tick_t( p );
+  }  
   
   virtual double action_multiplier() const override
   {
@@ -3503,33 +3517,6 @@ struct volley_tick_t: hunter_ranged_attack_t
       am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
 
     return am;
-  }
-};
-
-struct volley_t: hunter_ranged_attack_t
-{
-  volley_t( hunter_t* p, const std::string& options_str ):
-    hunter_ranged_attack_t( "volley", p, p -> find_talent_spell( "Volley" ) )
-  {
-    parse_options( options_str );
-    
-    base_tick_time = data().duration() / 6.0;
-    cooldown -> hasted        = true;
-    tick_action = new volley_tick_t( p );
-  }  
-  
-  virtual void execute() override
-  {
-    hunter_ranged_attack_t::execute();
-
-    new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
-      .target( execute_state -> target )
-      .x( execute_state -> target-> x_position )
-      .y( execute_state -> target-> y_position )
-      .pulse_time( base_tick_time )
-      .duration( data().duration() * player -> cache.attack_haste() )
-      .start_time( sim -> current_time() )
-      .action( tick_action ), false );
   }
 };
 
