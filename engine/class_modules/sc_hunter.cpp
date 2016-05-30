@@ -140,6 +140,7 @@ public:
     buff_t* bullseye;
     buff_t* heavy_shot; // t17 SV 4pc
     buff_t* mongoose_fury;
+    buff_t* aspect_of_the_eagle;
   } buffs;
 
   // Cooldowns
@@ -1346,11 +1347,29 @@ struct hunter_main_pet_attack_t: public hunter_main_pet_action_t < melee_attack_
   {
     base_t::execute();
 
-    if( p() -> o() -> specialization() == HUNTER_SURVIVAL && rng().roll( p() -> o() -> cache.mastery_value() * 0.25 ) )
+    if( p() -> o() -> specialization() == HUNTER_SURVIVAL )
     {
-      p() -> o() -> cooldowns.mongoose_bite -> reset( true );
-      p() -> o() -> procs.hunting_companion -> occur();
+      double proc_chance = p() -> o() -> cache.mastery_value() * 0.25;
+
+      if( p() -> o() -> buffs.aspect_of_the_eagle -> up() )
+        proc_chance *= 1.0 + p() -> o() -> specs.aspect_of_the_eagle -> effectN( 2 ).percent();
+      
+      if( rng().roll( proc_chance ) ) 
+      {
+        p() -> o() -> cooldowns.mongoose_bite -> reset( true );
+        p() -> o() -> procs.hunting_companion -> occur();
+      }
     }
+  }
+
+  virtual double composite_crit() const override
+  {
+    double cc = base_t::composite_crit();
+
+    if( p() -> o() -> buffs.aspect_of_the_eagle -> up() )
+      cc += p() -> o() -> specs.aspect_of_the_eagle -> effectN( 1 ).percent();
+
+    return cc;
   }
 };
 
@@ -2307,6 +2326,16 @@ struct hunter_melee_attack_t: public hunter_action_t < melee_attack_t >
     tick_may_crit = true;
     may_parry = false;
     may_block = false;
+  }
+
+  virtual double composite_crit() const override
+  {
+    double cc = base_t::composite_crit();
+
+    if( p() -> buffs.aspect_of_the_eagle -> up() )
+      cc += p() -> specs.aspect_of_the_eagle -> effectN( 1 ).percent();
+
+    return cc;
   }
 };
 
@@ -3614,7 +3643,12 @@ struct flanking_strike_t: hunter_melee_attack_t
     if( p() -> active.pet )
       p() -> active.pet -> active.flanking_strike -> execute();
 
-    if( rng().roll( p() -> cache.mastery_value() * 0.50 ) ) //no spell data for conversion to proc chance
+    double proc_chance = p() -> cache.mastery_value() * 0.25;
+
+    if( p() -> buffs.aspect_of_the_eagle -> up() )
+      proc_chance *= 1.0 + p() -> specs.aspect_of_the_eagle -> effectN( 2 ).percent();
+      
+    if( rng().roll( proc_chance ) ) 
     {
       p() -> cooldowns.mongoose_bite -> reset( true );
       p() -> procs.hunting_companion -> occur();
@@ -4323,6 +4357,28 @@ struct trueshot_t: public hunter_spell_t
   }
 };
 
+//==============================
+// Survival spells
+//==============================
+
+// Aspect of the Eagle ===============================================================
+
+struct aspect_of_the_eagle_t: public hunter_spell_t
+{
+  aspect_of_the_eagle_t( hunter_t* p, const std::string& options_str ):
+    hunter_spell_t( "aspect_of_the_eagle", p, p -> specs.aspect_of_the_eagle )
+  {
+    harmful = false;
+  }
+  
+  virtual void execute() override
+  {
+    hunter_spell_t::execute();
+
+    p() -> buffs.aspect_of_the_eagle -> trigger();
+  }
+};
+
 //end spells
 }
 
@@ -4365,6 +4421,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "a_murder_of_crows"     ) return new                    moc_t( this, options_str );
   if ( name == "aimed_shot"            ) return new             aimed_shot_t( this, options_str );
   if ( name == "arcane_shot"           ) return new            arcane_shot_t( this, options_str );
+  if ( name == "aspect_of_the_eagle"   ) return new    aspect_of_the_eagle_t( this, options_str );
   if ( name == "aspect_of_the_wild"    ) return new     aspect_of_the_wild_t( this, options_str );
   if ( name == "auto_attack"           ) return new            auto_attack_t( this, options_str );
   if ( name == "auto_shot"             ) return new           start_attack_t( this, options_str );
@@ -4748,6 +4805,9 @@ void hunter_t::create_buffs()
     .default_value( find_spell( 190931 ) -> effectN( 1 ).percent() )
     .refresh_behavior( BUFF_REFRESH_DISABLED )
     .max_stack( 6 );
+
+  buffs.aspect_of_the_eagle = buff_creator_t( this, 186289, "aspect_of_the_eagle" )
+    .default_value( find_spell( 186289 ) -> effectN( 1 ).percent() );
 }
 
 // hunter_t::init_gains =====================================================
