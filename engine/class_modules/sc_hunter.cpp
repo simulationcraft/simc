@@ -5070,6 +5070,9 @@ void hunter_t::create_buffs()
   buffs.aspect_of_the_eagle = buff_creator_t( this, 186289, "aspect_of_the_eagle" )
     .default_value( find_spell( 186289 ) -> effectN( 1 ).percent() );
 
+  if ( artifacts.aspect_of_the_skylord.rank() )
+    buffs.aspect_of_the_eagle -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
   buffs.instincts_of_the_raptor = buff_creator_t( this, 204321, "instincts_of_the_raptor" )
     .default_value( find_spell( 204331 ) -> effectN( 1 ).percent() );
 
@@ -5569,6 +5572,9 @@ double hunter_t::composite_player_multiplier( school_e school ) const
     if ( artifacts.strength_of_the_mountain.rank() )
       m *= 1.0 + artifacts.strength_of_the_mountain.percent();
   }
+
+  if ( artifacts.aspect_of_the_skylord.rank() && buffs.aspect_of_the_eagle -> check() )
+    m *= 1.0 + find_spell( 203927 ) -> effectN( 1 ).percent();
 
   return m;
 }
