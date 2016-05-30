@@ -1827,80 +1827,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
     weapon_multiplier = 0.0;
   }
 
-  timespan_t gcd() const override
-  {
-    timespan_t g = action_t::gcd();
-    timespan_t m = action_t::min_gcd;
-
-    if ( g == timespan_t::zero() )
-    {
-      return timespan_t::zero();
-    }
-
-    double usable_haste = priest.cache.spell_haste();
-
-    // For Shadow, GCD reduction can only scale below 1.0sec if they are in
-    // Voidform or have the Lingering Insanity buff up.
-    // When either of these are up, the floor is decreased by 0.33sec to
-    // 0.67sec.
-    // For calculating the new GCD, you can only get up to a 50% haste (base GCD
-    // floor) from non-Voidform or Lingering Insanity sources.
-    // If the value of haste without VF or LI is abvoe 50%, set it to 50% then
-    // factor in VF and LI stacks.
-    if ( priest.specialization() == PRIEST_SHADOW &&
-         ( priest.buffs.voidform->up() ||
-           priest.buffs.lingering_insanity->up() ) )
-    {
-      double haste_without_vf_li =
-          priest.cache.spell_haste();  // Need to calculate Haste without
-                                       // Voidform or Lingering Insanity
-                                       // included
-      double vf_li_modifier = 1.0;
-
-      if ( priest.buffs.voidform->check() )
-      {
-        haste_without_vf_li *=
-            1.0 +
-            priest.buffs.voidform->check() *
-                priest.buffs.voidform->data().effectN( 3 ).percent();
-        vf_li_modifier /=
-            1.0 +
-            priest.buffs.voidform->check() *
-                priest.buffs.voidform->data().effectN( 3 ).percent();
-      }
-
-      if ( priest.buffs.lingering_insanity->check() )
-      {
-        haste_without_vf_li *=
-            1.0 +
-            priest.buffs.lingering_insanity->check() *
-                priest.buffs.lingering_insanity->data().effectN( 1 ).percent();
-        vf_li_modifier /=
-            1.0 +
-            priest.buffs.lingering_insanity->check() *
-                priest.buffs.lingering_insanity->data().effectN( 1 ).percent();
-      }
-
-      if ( haste_without_vf_li <
-           ( 1.0 / 1.5 ) )  // over 50%, cap it at 50% for GCD purposes.
-      {
-        usable_haste = ( 1.0 / 1.5 ) * vf_li_modifier;
-      }
-
-      m = m - ( m * 0.33 );  // TODO: Fix when spelldata is playing nice (1.0 +
-                             // priest.specs.voidform->effectN(4).percent());
-    }
-
-    g *= usable_haste;
-
-    if ( g < m )
-    {
-      g = m;
-    }
-
-    return g;
-  }
-
   bool usable_moving() const override
   {
     if ( priest.buffs.surrender_to_madness->check() )
@@ -2627,15 +2553,21 @@ struct sphere_of_insanity_spell_t final : public priest_spell_t
 
 struct mind_spike_detonation_t final : public priest_spell_t
 {
+  double detonation_amount;
+  player_t* detonation_target;
+
   mind_spike_detonation_t( priest_t& p )
     : priest_spell_t( "mind_spike_detonation", p,
-                      p.find_spell( 217676 ) )  //.talents.mind_spike)
+                      p.find_spell( 217676 ) ),  //.talents.mind_spike)
+                      detonation_amount( 0.0 ),
+                      detonation_target( nullptr )
   {
     may_crit    = false;
     background  = true;
     proc        = false;
     callbacks   = true;
     may_miss    = false;
+    aoe         = -1; 
     is_sphere_of_insanity_spell = true;
     range       = 0.0;
     trigger_gcd = timespan_t::zero();
@@ -2644,31 +2576,36 @@ struct mind_spike_detonation_t final : public priest_spell_t
 
   double calculate_direct_amount( action_state_t* state ) const override
   {
+    if ( state->target == detonation_target )  // This is the target we detonated against. Do full damage
+    {
+      return detonation_amount;
+    }
+    else // Other targets, do half damage.
+    {
+      return detonation_amount / 2.0;
+    }
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    priest_spell_t::impact( state );
+
     priest_td_t& td = get_td( state->target );
 
-    if ( td.buffs.mind_spike
-             ->check() )  // Mind Spike debuff actuall exists; detonate.
+    if (state->target == detonation_target) // This is the target we detonated against. Remove debuff
     {
-      return td.buffs.mind_spike->value();
-    }
-    else
-    {
-      return 0.0;
+      td.buffs.mind_spike->expire();
     }
   }
 
-  void impact( action_state_t* s ) override
+  // Trigger mind spike explosion
+  void trigger( player_t* target )
   {
-    priest_spell_t::impact( s );
+    priest_td_t& td = get_td(target);
 
-    priest_td_t& td = get_td( s->target );
+    detonation_amount = td.buffs.mind_spike->value();
+    detonation_target = target;
 
-    td.buffs.mind_spike->expire();
-  }
-
-  /// Trigger mind spike explosion
-  void trigger()
-  {
     if ( priest.sim->debug )
       priest.sim->out_debug << priest.name()
                             << " triggered Mind Spike Detonation.";
@@ -2741,7 +2678,7 @@ public:
     {
       if ( td.buffs.mind_spike->up() )
       {
-        priest.active_spells.mind_spike_detonation->trigger();
+        priest.active_spells.mind_spike_detonation->trigger( s->target );
       }
     }
   }
@@ -2892,7 +2829,6 @@ struct mind_sear_tick_t final : public priest_spell_t
     : priest_spell_t( "mind_sear_tick", p, mind_sear->effectN( 1 ).trigger() ),
       insanity_gain( 1 )  // TODO: Missing from spell data
   {
-    radius      = data().effectN( 1 ).radius();
     background  = true;
     dual        = true;
     aoe         = -1;
@@ -2902,10 +2838,14 @@ struct mind_sear_tick_t final : public priest_spell_t
     energize_type   = ENERGIZE_NONE; // disable resource generation from spell data
   }
 
-  void impact( action_state_t* ) override
+  void impact( action_state_t* state ) override
   {
-    // TODO: does this really not need a is_hit check?
-    generate_insanity( insanity_gain, priest.gains.insanity_mind_sear );
+    priest_spell_t::impact( state );
+
+    if ( result_is_hit( state -> result ) )
+    {
+      generate_insanity(insanity_gain, priest.gains.insanity_mind_sear);
+    }
   }
 };
 
@@ -2929,6 +2869,28 @@ struct mind_sear_t final : public priest_spell_t
     }
 
     tick_action = new mind_sear_tick_t( p, p.find_class_spell( "Mind Sear" ) );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = priest_spell_t::action_multiplier();
+
+    if (priest.talents.void_ray->ok() && priest.buffs.void_ray->check())
+      am *= 1.0 +
+      priest.buffs.void_ray->check() *
+      priest.buffs.void_ray->data().effectN(1).percent();
+
+    return am;
+  }
+
+  void tick(dot_t* d) override
+  {
+    priest_spell_t::tick(d);
+
+    if (priest.talents.void_ray->ok())
+    {
+      priest.buffs.void_ray->trigger();
+    }
   }
 
   void last_tick( dot_t* d ) override
