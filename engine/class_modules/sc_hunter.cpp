@@ -3636,7 +3636,6 @@ struct flanking_strike_t: hunter_melee_attack_t
 
 struct lacerate_t: public hunter_melee_attack_t
 {
-
   lacerate_t( hunter_t* p, const std::string& options_str ):
     hunter_melee_attack_t( "lacerate", p, p -> specs.lacerate )
   {
@@ -3647,6 +3646,19 @@ struct lacerate_t: public hunter_melee_attack_t
     dot_duration = data().duration();
     tick_zero = false;
     weapon_multiplier = 0.0;
+  }
+};
+
+// Carve =============================================================================
+
+struct carve_t: public hunter_melee_attack_t
+{
+  carve_t( hunter_t* p, const std::string& options_str ):
+    hunter_melee_attack_t( "carve", p, p -> specs.carve )
+  {
+    aoe = -1;
+    radius = data().effectN( 1 ).radius();
+    range = data().max_range();
   }
 };
 
@@ -4359,6 +4371,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "barrage"               ) return new                barrage_t( this, options_str );
   if ( name == "bestial_wrath"         ) return new          bestial_wrath_t( this, options_str ); 
   if ( name == "black_arrow"           ) return new            black_arrow_t( this, options_str );
+  if ( name == "carve"                 ) return new                  carve_t( this, options_str );
   if ( name == "chimaera_shot"         ) return new          chimaera_shot_t( this, options_str );
   if ( name == "cobra_shot"            ) return new             cobra_shot_t( this, options_str );
   if ( name == "dire_beast"            ) return new             dire_beast_t( this, options_str );
