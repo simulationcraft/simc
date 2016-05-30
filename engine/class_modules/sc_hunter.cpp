@@ -1171,6 +1171,9 @@ public:
     if ( o() -> talents.dire_frenzy -> ok() )
       ah *= 1.0 / ( 1.0 + buffs.dire_frenzy -> check_stack_value() );
 
+    if ( o() -> artifacts.fluffy_go.rank() )
+      ah *= 1.0  / ( 1.0 + o() -> artifacts.fluffy_go.percent() );
+
     return ah;
   }
 
