@@ -4537,6 +4537,51 @@ struct explosive_trap_t: public hunter_spell_t
     }
 };
 
+// Fury of the Eagle ================================================================
+
+struct fury_of_the_eagle_t: public hunter_spell_t
+{
+  struct fury_of_the_eagle_tick_t: public hunter_spell_t
+  {
+    fury_of_the_eagle_tick_t( hunter_t* p ):
+      hunter_spell_t( "fury_of_the_eagle_tick", p, p -> find_spell( 203413 ) )
+    {
+      aoe = -1;
+      background = true;
+      may_crit = true;
+      radius = data().max_range();
+    }
+  };
+
+  fury_of_the_eagle_t( hunter_t* p, const std::string& options_str ):
+    hunter_spell_t( "fury_of_the_eagle", p, p -> artifacts.fury_of_the_eagle )
+  {
+    parse_options( options_str );
+
+    channeled = true;
+    tick_zero = true;
+    tick_action = new fury_of_the_eagle_tick_t( p );
+  }
+
+  virtual void execute() override
+  {
+    hunter_spell_t::execute();
+
+    if( p() -> buffs.mongoose_fury -> up() )
+      p() -> buffs.mongoose_fury -> extend_duration( p(), timespan_t::from_seconds( 5.0 ) );
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = hunter_spell_t::action_multiplier();
+
+    if ( p() -> buffs.mongoose_fury -> up() )
+      am *= 1.0 + p() -> buffs.mongoose_fury -> check_stack_value();
+
+    return am;
+  }
+};
+
 //end spells
 }
 
@@ -4597,6 +4642,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "explosive_trap"        ) return new         explosive_trap_t( this, options_str );
   if ( name == "freezing_trap"         ) return new          freezing_trap_t( this, options_str );
   if ( name == "flanking_strike"       ) return new        flanking_strike_t( this, options_str );
+  if ( name == "fury_of_the_eagle"     ) return new      fury_of_the_eagle_t( this, options_str );
   if ( name == "head_shot"             ) return new              head_shot_t( this, options_str );
   if ( name == "kill_command"          ) return new           kill_command_t( this, options_str );
   if ( name == "lacerate"              ) return new               lacerate_t( this, options_str );
