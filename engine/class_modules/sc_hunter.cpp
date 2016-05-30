@@ -3697,6 +3697,7 @@ struct lacerate_t: public hunter_melee_attack_t
     dot_duration = data().duration();
     tick_zero = false;
     weapon_multiplier = 0.0;
+    weapon_power_mod = 0.0;
   }
 };
 
@@ -3710,6 +3711,33 @@ struct carve_t: public hunter_melee_attack_t
     aoe = -1;
     radius = data().effectN( 1 ).radius();
     range = data().max_range();
+  }
+};
+
+// Throwing Axes =====================================================================
+
+struct throwing_axes_t: public hunter_melee_attack_t
+{
+  struct throwing_axes_tick_t: public hunter_melee_attack_t
+  {
+    throwing_axes_tick_t( hunter_t* p ):
+      hunter_melee_attack_t( "throwing_axes_tick", p, p -> find_spell( 200167 ) )
+    {
+      background = true;
+      weapon_multiplier = 0.0;
+    }
+  };
+
+  throwing_axes_t( hunter_t* p, const std::string& options_str ):
+    hunter_melee_attack_t( "throwing_axes", p, p -> talents.throwing_axes )
+  {
+    attack_power_mod.tick = p -> find_spell( 200167 ) -> effectN( 1 ).ap_coeff();
+    base_tick_time = timespan_t::from_seconds( 0.2 );
+    dot_duration = timespan_t::from_seconds( 0.6 );
+    range = data().max_range();
+    tick_action = new throwing_axes_tick_t( p );
+    weapon_multiplier = 0.0;
+    weapon_power_mod = 0.0;
   }
 };
 
@@ -4466,6 +4494,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "sidewinders"           ) return new            sidewinders_t( this, options_str );
   if ( name == "stampede"              ) return new               stampede_t( this, options_str );
   if ( name == "summon_pet"            ) return new             summon_pet_t( this, options_str );
+  if ( name == "throwing_axes"         ) return new          throwing_axes_t( this, options_str );
   if ( name == "titans_thunder"        ) return new         titans_thunder_t( this, options_str );
   if ( name == "trueshot"              ) return new               trueshot_t( this, options_str );
   if ( name == "volley"                ) return new                 volley_t( this, options_str );
