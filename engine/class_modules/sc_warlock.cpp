@@ -360,6 +360,7 @@ public:
   {
     spell_t* melee;
     spell_t* seed_of_corruption_aoe;
+    spell_t* implosion_aoe;
   } spells;
 
   int initial_soul_shards;
@@ -2169,8 +2170,7 @@ struct demonic_empowerment_t: public warlock_spell_t
 	demonic_empowerment_t (warlock_t* p) :
 		warlock_spell_t( "demonic empowerment", p, p -> spec.demonic_empowerment )
 	{
-		may_crit = false;
-        //timespan_t test = this -> cooldown -> duration;
+        may_crit = false;
 	}
 
 	void init() override
@@ -2990,6 +2990,75 @@ struct call_dreadstalkers_t : public warlock_spell_t
 
 // TALENT SPELLS
 
+// DEMONOLOGY
+struct demonbolt_t: public warlock_spell_t
+{
+  demonbolt_t( warlock_t* p ):
+    warlock_spell_t( "demonbolt", p, p -> talents.demonbolt )
+  {
+  }
+};
+
+struct implosion_t : public warlock_spell_t
+{
+    struct implosion_aoe_t: public warlock_spell_t
+    {
+        double threshold_mod;
+
+      implosion_aoe_t( warlock_t* p ):
+        warlock_spell_t( "implosion_aoe", p, p -> find_spell( 196277 ) )
+      {
+        aoe = -1;
+        dual = true;
+        background = true;
+        callbacks = false;
+
+
+        threshold_mod = 3.0;
+
+        p -> spells.implosion_aoe = this;
+      }
+
+      void impact( action_state_t* s ) override
+      {
+        if ( result_is_hit( s -> result ) )
+        {
+          td( s -> target ) -> soc_threshold = s -> composite_spell_power() * threshold_mod;
+        }
+
+        warlock_spell_t::impact( s );
+      }
+
+    };
+
+    implosion_aoe_t* explosion;
+
+    implosion_t(warlock_t* p) :
+        warlock_spell_t( "implosion", p, p->talents.implosion),
+        explosion( new implosion_aoe_t( p ) )
+    {
+        aoe = -1;
+
+
+        add_child( explosion );
+    }
+
+
+    virtual void execute() override
+    {
+        warlock_spell_t::execute();
+        for(auto imp : p()->warlock_pet_list.wild_imps)
+        {
+            if(!imp->is_sleeping())
+            {
+                explosion->execute();
+                imp->dismiss();
+            }
+        }
+    }
+};
+
+
 struct shadowflame_t: public warlock_spell_t
 {
   shadowflame_t( warlock_t* p ):
@@ -3030,14 +3099,6 @@ struct drain_soul_t: public warlock_spell_t
     channeled = true;
     hasted_ticks = false;
     may_crit = false;
-  }
-};
-
-struct demonbolt_t: public warlock_spell_t
-{
-  demonbolt_t( warlock_t* p ):
-    warlock_spell_t( "demonbolt", p, p -> talents.demonbolt )
-  {
   }
 };
 
@@ -3242,6 +3303,7 @@ struct soul_harvest_t : public warlock_spell_t
     immolate_action_id = p() -> find_action_id( "immolate" );
   }
 };
+
 struct grimoire_of_sacrifice_t: public warlock_spell_t
 {
   grimoire_of_sacrifice_t( warlock_t* p ):
@@ -3626,6 +3688,7 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "shadowburn"            ) a = new                        shadowburn_t( this );
   else if ( action_name == "unstable_affliction"   ) a = new               unstable_affliction_t( this );
   else if ( action_name == "hand_of_guldan"        ) a = new                    hand_of_guldan_t( this );
+  else if ( action_name == "implosion"             ) a = new                         implosion_t( this );
   else if ( action_name == "havoc"                 ) a = new                             havoc_t( this );
   else if ( action_name == "seed_of_corruption"    ) a = new                seed_of_corruption_t( this );
   else if ( action_name == "cataclysm"             ) a = new                         cataclysm_t( this );
