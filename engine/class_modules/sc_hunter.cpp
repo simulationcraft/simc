@@ -279,6 +279,8 @@ public:
   // Specialization Spells
   struct specs_t
   {
+    const spell_data_t* critical_strikes;
+
     // Beast Mastery
     const spell_data_t* cobra_shot;
     const spell_data_t* kill_command;
@@ -4886,6 +4888,8 @@ void hunter_t::init_spells()
   glyphs.trident             = find_glyph_spell( "Glyph of the Trident" );
 
   // Spec spells
+  specs.critical_strikes     = find_spell( 157443 );
+
   specs.beast_cleave         = find_specialization_spell( "Beast Cleave" );
   specs.exotic_beasts        = find_specialization_spell( "Exotic Beasts" );
   specs.kindred_spirits      = find_specialization_spell( "Kindred Spirits" );
@@ -5486,6 +5490,8 @@ double hunter_t::composite_melee_crit() const
 
   if ( buffs.aspect_of_the_wild -> check() )
     crit += buffs.aspect_of_the_wild -> check_value();
+  
+  crit +=  specs.critical_strikes -> effectN( 1 ).percent();
 
   return crit;
 }
@@ -5501,6 +5507,8 @@ double hunter_t::composite_spell_crit() const
 
   if ( buffs.aspect_of_the_wild -> check() )
     crit += buffs.aspect_of_the_wild -> check_value();
+
+  crit +=  specs.critical_strikes -> effectN( 1 ).percent();
 
   return crit;
 }
