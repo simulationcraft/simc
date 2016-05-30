@@ -490,7 +490,8 @@ player_t::player_t( sim_t*             s,
 
   region_str( s -> default_region_str ), server_str( s -> default_server_str ), origin_str(),
   timeofday( NIGHT_TIME ), //Set to Night by Default, user can override.
-  gcd_ready( timespan_t::zero() ), base_gcd( timespan_t::from_seconds( 1.5 ) ), started_waiting( timespan_t::min() ),
+  gcd_ready( timespan_t::zero() ), base_gcd( timespan_t::from_seconds( 1.5 ) ), min_gcd( timespan_t::from_millis( 750 ) ),
+  started_waiting( timespan_t::min() ),
   pet_list(), active_pets(),
   resolve_manager( *this ),
   invert_scaling( 0 ),
@@ -7585,6 +7586,24 @@ bool player_t::parse_artifact_wowhead( const std::string& artifact_string )
   return true;
 }
 
+bool parse_min_gcd( sim_t* sim,
+    const std::string& name,
+    const std::string& value )
+{
+  if ( name != "min_gcd" ) return false;
+
+  double v = std::strtod( value.c_str(), nullptr );
+  if ( v <= 0 )
+  {
+    sim -> errorf( " %s: Invalid value '%s' for global minimum cooldown.",
+        sim -> active_player -> name(), value.c_str() );
+    return false;
+  }
+
+  sim -> active_player -> min_gcd = timespan_t::from_seconds( v );
+  return true;
+}
+
 // player_t::replace_spells =================================================
 
 // TODO: HOTFIX handling
@@ -9365,6 +9384,7 @@ void player_t::create_options()
     add_option( opt_func( "specialization", parse_specialization ) );
     add_option( opt_func( "stat_timelines", parse_stat_timelines ) );
     add_option( opt_bool( "disable_hotfixes", disable_hotfixes ) );
+    add_option( opt_func( "min_gcd", parse_min_gcd ) );
 
     // Items
     add_option( opt_string( "meta_gem",  meta_gem_str ) );
