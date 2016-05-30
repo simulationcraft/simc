@@ -1595,18 +1595,21 @@ struct monstrous_bite_t: public hunter_main_pet_attack_t
 };
 
 
+// Bestial Ferocity (Aspect of the Beast) ===================================
+
+struct bestial_ferocity_t: public hunter_main_pet_attack_t
+{
+  bestial_ferocity_t( hunter_main_pet_t* p ):
+    hunter_main_pet_attack_t( "bestial_ferocity", p, p -> find_spell( 191413 ) )
+  {
+    background = true;
+  }
+};
+
 // Kill Command (pet) =======================================================
 
 struct kill_command_t: public hunter_main_pet_attack_t
 {
-  struct bestial_ferocity_t: public hunter_main_pet_attack_t
-  {
-    bestial_ferocity_t( hunter_main_pet_t* p ):
-      hunter_main_pet_attack_t( "bestial_ferocity", p, p -> find_spell( 191413 ) )
-    {
-      background = true;
-    }
-  };
 
   struct jaws_of_thunder_t: public hunter_main_pet_attack_t
   {
@@ -1681,6 +1684,12 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
   {
     attack_power_mod.direct = 2.5; //data is in the tooltip
     background = true;
+
+    if ( p -> o() -> talents.aspect_of_the_beast -> ok() )
+    {
+      impact_action = new bestial_ferocity_t( p );
+      add_child( impact_action );
+    }
   }
 };
 
@@ -3807,29 +3816,7 @@ struct freezing_trap_t: public hunter_melee_attack_t
   }
 };
 
-// Explosive Trap ====================================================================
 
-struct explosive_trap_t: public hunter_melee_attack_t
-{
-  explosive_trap_t( hunter_t* p, const std::string& options_str ):
-      hunter_melee_attack_t( "explosive_trap", p, p -> find_spell( 13812 ) )
-    {
-      parse_options( options_str );
-
-      aoe = -1;
-      attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
-      attack_power_mod.tick = data().effectN( 2 ).ap_coeff();
-      base_tick_time = data().effectN( 2 ).period();
-      cooldown -> duration = p -> specs.explosive_trap -> cooldown();
-      dot_duration = data().duration();
-      ground_aoe = true;
-      hasted_ticks = false;
-      trigger_gcd = p -> specs.explosive_trap -> gcd();
-
-      if ( p -> talents.improved_traps -> ok() )
-        cooldown -> duration *= 1.0 + p -> talents.improved_traps -> effectN( 2 ).percent();
-    }
-};
 
 // Serpent Sting Attack =====================================================
 
@@ -4519,6 +4506,35 @@ struct spitting_cobra_t: public hunter_spell_t
 
     p() -> buffs.spitting_cobra -> trigger();
   }
+};
+
+// Explosive Trap ====================================================================
+
+struct explosive_trap_t: public hunter_spell_t
+{
+  explosive_trap_t( hunter_t* p, const std::string& options_str ):
+      hunter_spell_t( "explosive_trap", p, p -> find_spell( 13812 ) )
+    {
+      parse_options( options_str );
+
+      aoe = -1;
+      attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
+      attack_power_mod.tick = data().effectN( 2 ).ap_coeff();
+      base_tick_time = data().effectN( 2 ).period();
+      cooldown -> duration = p -> specs.explosive_trap -> cooldown();
+      dot_duration = data().duration();
+      ground_aoe = true;
+      hasted_ticks = false;
+      may_crit = true;
+      tick_may_crit = true;
+      trigger_gcd = p -> specs.explosive_trap -> gcd();
+
+      if ( p -> talents.improved_traps -> ok() )
+        cooldown -> duration *= 1.0 + p -> talents.improved_traps -> effectN( 2 ).percent();
+
+      if ( p -> talents.expert_trapper -> ok() )
+        base_multiplier *= 1.0 + p -> talents.expert_trapper -> effectN( 1 ).percent();
+    }
 };
 
 //end spells
