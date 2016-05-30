@@ -25,11 +25,13 @@
 //   - Call of the Hunter (NYI still)
 //
 // Survival
+//   - Harpoon
 //  Talents
 //   - Steel Trap
 //   - Dragonsfire Grenade
 //  Artifacts
-//   - Everything
+//   - Eagle's Claw
+//   - Talon Strike
 //
 // ==========================================================================
 
@@ -3804,7 +3806,17 @@ struct carve_t: public hunter_melee_attack_t
       return false;
 
     return hunter_melee_attack_t::ready();
-  }  
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = hunter_melee_attack_t::action_multiplier();
+
+    if ( p() -> artifacts.hellcarver.rank() )
+      am *= 1.0 + num_targets() * p() -> artifacts.hellcarver.percent();
+
+    return am;
+  }
 };
 
 // Butchery ==========================================================================
