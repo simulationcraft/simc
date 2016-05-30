@@ -305,6 +305,7 @@ public:
     const spell_data_t* carve;
     const spell_data_t* tar_trap;
     const spell_data_t* survivalist;
+    const spell_data_t* explosive_trap;
   } specs;
 
   // Glyphs
@@ -3742,19 +3743,18 @@ struct throwing_axes_t: public hunter_melee_attack_t
   }
 };
 
+
 // Freezing Trap =====================================================================
 // Implemented here because often there are buffs associated with it
 
-struct freezing_trap_t: public hunter_ranged_attack_t
+struct freezing_trap_t: public hunter_melee_attack_t
 {
   freezing_trap_t( hunter_t* player, const std::string& options_str ):
-    hunter_ranged_attack_t( "freezing_trap", player, player -> find_class_spell( "Freezing Trap" ) )
+    hunter_melee_attack_t( "freezing_trap", player, player -> find_class_spell( "Freezing Trap" ) )
   {
     parse_options( options_str );
 
     cooldown -> duration = data().cooldown();
-    // BUG simulate slow velocity of launch
-    travel_speed = 18.0;
 
     if ( player -> sets.has_set_bonus( p() -> specialization(), PVP, B2 ) )
     {
@@ -3768,38 +3768,21 @@ struct freezing_trap_t: public hunter_ranged_attack_t
 
 // Explosive Trap ====================================================================
 
-struct explosive_trap_tick_t: public hunter_ranged_attack_t
-{
-  explosive_trap_tick_t( hunter_t* player ):
-    hunter_ranged_attack_t( "explosive_trap_tick", player, player -> find_spell( 13812 ) )
-  {
-    aoe = -1;
-    hasted_ticks = false;
-    dot_duration = data().duration();
-    base_tick_time = data().effectN( 2 ).period();
-    attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
-    // BUG in game it uses the direct damage AP mltiplier for ticks as well.
-    attack_power_mod.tick = attack_power_mod.direct;
-    ignore_false_positive = ground_aoe = background = true;
-  }
-};
 
-struct explosive_trap_t: public hunter_ranged_attack_t
+struct explosive_trap_t: public hunter_melee_attack_t
 {
-  explosive_trap_tick_t* tick;
-  explosive_trap_t( hunter_t* player, const std::string& options_str ):
-    hunter_ranged_attack_t( "explosive_trap", player, player -> find_class_spell( "Explosive Trap" ) ),
-    tick( new explosive_trap_tick_t( player ) )
-  {
-    parse_options( options_str );
-
-    cooldown -> duration = data().cooldown();
-    range = 40.0;
-    // BUG simulate slow velocity of launch
-    travel_speed = 18.0;
-    add_child( tick );
-    impact_action = tick;
- }
+  explosive_trap_t( hunter_t* p, const std::string& options_str ):
+      hunter_melee_attack_t( "explosive_trap", p, p -> find_spell( 13812 ) )
+    {
+      aoe = -1;
+      attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
+      attack_power_mod.tick = data().effectN( 2 ).ap_coeff();
+      base_tick_time = data().effectN( 2 ).period();
+      cooldown -> duration = p -> specs.explosive_trap -> cooldown();
+      dot_duration = data().duration();
+      hasted_ticks = false;
+      ground_aoe = true;
+    }
 };
 
 // Serpent Sting Attack =====================================================
@@ -4700,6 +4683,7 @@ void hunter_t::init_spells()
   specs.aspect_of_the_eagle  = find_specialization_spell( "Aspect of the Eagle" );
   specs.carve                = find_specialization_spell( "Carve" );
   specs.tar_trap             = find_specialization_spell( "Tar Trap" );
+  specs.explosive_trap       = find_specialization_spell( "Explosive Trap" );
   
 
   // Artifact spells
