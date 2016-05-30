@@ -364,16 +364,19 @@ public:
 
     // Survival
     artifact_power_t fury_of_the_eagle;
+    artifact_power_t iron_talons;
     artifact_power_t talon_strike;
     artifact_power_t eagles_bite;
     artifact_power_t aspect_of_the_skylord;
-    artifact_power_t sharpened_beak;
+    artifact_power_t sharpened_fang;
     artifact_power_t raptors_cry;
     artifact_power_t hellcarver;
     artifact_power_t my_beloved_monster;
     artifact_power_t strength_of_the_mountain;
     artifact_power_t fluffy_go;
     artifact_power_t jagged_claws;
+    artifact_power_t lacerating_talons;
+    artifact_power_t embrace_of_the_aspects;
     artifact_power_t hunters_guile;
   } artifacts;
 
@@ -4880,13 +4883,15 @@ void hunter_t::init_spells()
   artifacts.talon_strike             = find_artifact_spell( "Talon Strike" );
   artifacts.eagles_bite              = find_artifact_spell( "Eagle's Bite" );
   artifacts.aspect_of_the_skylord    = find_artifact_spell( "Aspect of the Skylord" );
-  artifacts.sharpened_beak           = find_artifact_spell( "Sharpened Beak" );
+  artifacts.iron_talons              = find_artifact_spell( "Iron Talons" );
+  artifacts.sharpened_fang           = find_artifact_spell( "Sharpened Fang" );
   artifacts.raptors_cry              = find_artifact_spell( "Raptor's Cry" );
   artifacts.hellcarver               = find_artifact_spell( "Hellcarver" );
   artifacts.my_beloved_monster       = find_artifact_spell( "My Beloved Monster" );
   artifacts.strength_of_the_mountain = find_artifact_spell( "Strength of the Mountain" );
   artifacts.fluffy_go                = find_artifact_spell( "Fluffy, Go" );
   artifacts.jagged_claws             = find_artifact_spell( "Jagged Claws" );
+  artifacts.embrace_of_the_aspects   = find_artifact_spell( "Embrace of the Aspects" );
   artifacts.hunters_guile            = find_artifact_spell( "Hunter's Guile" );
   
   if ( talents.serpent_sting -> ok() )
@@ -5500,6 +5505,14 @@ double hunter_t::composite_player_multiplier( school_e school ) const
       m*= 1.0 + target -> get_position_distance( x_position, y_position ) * factor;
     else
       m *= 1.0 + base.distance * factor;
+  }
+
+  if( school == SCHOOL_PHYSICAL )
+  {
+    if ( artifacts.iron_talons.rank() )
+      m *= 1.0 + artifacts.iron_talons.data().effectN( 1 ).percent();
+    if ( artifacts.strength_of_the_mountain.rank() )
+      m *= 1.0 + artifacts.strength_of_the_mountain.percent();
   }
 
   return m;
