@@ -5383,6 +5383,7 @@ void rogue_t::init_base_stats()
   base_energy_regen_per_second *= 1.0 + talent.vigor -> effectN( 2 ).percent();
 
   base_gcd = timespan_t::from_seconds( 1.0 );
+  min_gcd  = timespan_t::from_seconds( 1.0 );
 }
 
 // rogue_t::init_spells =====================================================

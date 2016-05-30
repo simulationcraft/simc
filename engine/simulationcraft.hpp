@@ -1648,7 +1648,6 @@ struct sim_t : private sc_thread_t
   timespan_t  gcd_lag, gcd_lag_stddev;
   timespan_t  channel_lag, channel_lag_stddev;
   timespan_t  queue_gcd_reduction;
-  timespan_t  global_min_gcd; // Global minimum GCD for all actors
   int         strict_gcd_queue;
   double      confidence, confidence_estimator;
   // Latency
@@ -3564,7 +3563,7 @@ struct player_t : public actor_t
   std::string region_str, server_str, origin_str;
   std::string race_str, professions_str, position_str;
   enum timeofday_e { NIGHT_TIME, DAY_TIME, } timeofday; // Specify InGame time of day to determine Night Elf racial
-  timespan_t  gcd_ready, base_gcd, started_waiting;
+  timespan_t  gcd_ready, base_gcd, min_gcd, started_waiting;
   std::vector<pet_t*> pet_list;
   std::vector<pet_t*> active_pets;
   std::vector<absorb_buff_t*> absorb_buff_list;
