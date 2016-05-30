@@ -4484,6 +4484,9 @@ struct aspect_of_the_eagle_t: public hunter_spell_t
     parse_options( options_str );
 
     harmful = false;
+    
+    if ( p -> artifacts.embrace_of_the_aspects.rank() )
+      cooldown -> duration *= 1.0 + p -> artifacts.embrace_of_the_aspects.percent();
   }
   
   virtual void execute() override
