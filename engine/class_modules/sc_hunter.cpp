@@ -11,8 +11,6 @@
 //
 // Beast Mastery
 //   - Dire Beast (can have multiple buffs)
-//  Talent
-//   - Stampede (rework)
 //  Artifacts
 //   - Surge of the Stormgod: proc at pet location, figure out why damage is not reflecting beta testing
 //   - Cleanup duplicate code for Beast Cleave
@@ -132,6 +130,7 @@ public:
     buff_t* bombardment;
     buff_t* careful_aim;
     buff_t* dire_beast;
+    buff_t* dire_beast_2;
     buff_t* steady_focus;
     buff_t* pre_steady_focus;
     buff_t* marking_targets;
@@ -4171,7 +4170,11 @@ struct dire_beast_t: public hunter_spell_t
     hunter_spell_t::execute();
     p() -> no_steady_focus();
 
-    p() -> buffs.dire_beast -> trigger();
+    if ( !p() -> buffs.dire_beast ->check() )
+      p() -> buffs.dire_beast -> trigger();
+    else
+      p() -> buffs.dire_beast_2 -> trigger();
+
     timespan_t t = timespan_t::from_seconds( p() -> specs.dire_beast -> effectN( 1 ).base_value() );
     p() -> cooldowns.bestial_wrath -> adjust( -t );
 
@@ -4421,22 +4424,15 @@ struct stampede_t: public hunter_spell_t
     hunter_spell_t( "stampede", p, p -> talents.stampede )
   {
     parse_options( options_str );
-    harmful = false;
-    callbacks = false;
+
+    aoe = -1;
+    attack_power_mod.tick = 1.5;
+    base_tick_time = timespan_t::from_millis( 667 );
+    dot_duration = data().duration();
+    hasted_ticks = false;
+    radius = 8;
     school = SCHOOL_PHYSICAL;
-  }
-
-  virtual void execute() override
-  {
-    hunter_spell_t::execute();
-    p() -> buffs.stampede -> trigger();
-
-    for ( unsigned int i = 0; i < p() -> hunter_main_pets.size() && i < 5; ++i )
-    {
-      p() -> hunter_main_pets[i] -> stampede_summon( p() -> buffs.stampede -> buff_duration + timespan_t::from_millis( 27 ) );
-      // Added 0.027 seconds to properly reflect haste threshholds seen in game.
-    }
-    p() -> no_steady_focus();
+    tick_may_crit = true;
   }
 };
 
@@ -5019,8 +5015,16 @@ void hunter_t::create_buffs()
     .default_value( find_spell( 120694 ) -> effectN( 1 )
     .resource( RESOURCE_FOCUS ) );
 
+  buffs.dire_beast_2 = buff_creator_t( this, 120694, "dire_beast_2" )
+    .affects_regen(true)
+    .default_value( find_spell( 120694 ) -> effectN( 1 )
+    .resource( RESOURCE_FOCUS ) );
+
   if ( talents.dire_stable -> ok() )
+  {
     buffs.dire_beast -> default_value += talents.dire_stable -> effectN( 1 ).base_value();
+    buffs.dire_beast_2 -> default_value += talents.dire_stable -> effectN( 1 ).base_value();
+  }
 
   buffs.bestial_wrath                = buff_creator_t( this, "bestial_wrath", specs.bestial_wrath )
     .cd( timespan_t::zero() )
@@ -5602,6 +5606,8 @@ double hunter_t::focus_regen_per_second() const
     regen += buffs.aspect_of_the_wild -> data().effectN( 2 ).resource( RESOURCE_FOCUS );
   if ( buffs.dire_beast -> check() )
     regen += buffs.dire_beast -> default_value / 2;
+  if ( buffs.dire_beast_2 -> check() )
+    regen += buffs.dire_beast_2 -> default_value / 2;
   if ( buffs.spitting_cobra -> check() )
     regen += buffs.spitting_cobra -> data().effectN( 2 ).resource( RESOURCE_FOCUS );
 
