@@ -3740,6 +3740,9 @@ struct lacerate_t: public hunter_melee_attack_t
     tick_zero = false;
     weapon_multiplier = 0.0;
     weapon_power_mod = 0.0;
+
+    if ( p -> artifacts.lacerating_talons.rank() )
+      base_multiplier *= 1.0 + p -> artifacts.lacerating_talons.percent();
   }
 
   virtual void tick( dot_t* d ) override
@@ -4944,6 +4947,7 @@ void hunter_t::init_spells()
   artifacts.jagged_claws             = find_artifact_spell( "Jagged Claws" );
   artifacts.embrace_of_the_aspects   = find_artifact_spell( "Embrace of the Aspects" );
   artifacts.hunters_guile            = find_artifact_spell( "Hunter's Guile" );
+  artifacts.lacerating_talons        = find_artifact_spell( "Lacerating Talons" );
   
   if ( talents.serpent_sting -> ok() )
     active.serpent_sting = new attacks::serpent_sting_t( this );
