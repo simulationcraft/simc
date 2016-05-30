@@ -369,7 +369,7 @@ public:
                       * controlled_burn,
                       * ice_nova,
                       * frozen_touch,
-                      * bitter_cold;
+                      * splitting_ice;
 
     // Tier 75
     const spell_data_t* ice_floes,
@@ -2034,6 +2034,15 @@ struct icicle_t : public frost_mage_spell_t
   {
     may_crit = false;
     proc = background = true;
+
+    if ( p -> talents.splitting_ice -> ok() )
+    {
+      base_multiplier *= 1.0 + p -> talents.splitting_ice
+                                 -> effectN( 3 ).percent();
+      aoe = 1 + p -> talents.splitting_ice -> effectN( 1 ).base_value();
+      base_aoe_multiplier *= p -> talents.splitting_ice
+                               -> effectN( 2 ).percent();
+    }
   }
 
   // To correctly record damage and execute information to the correct source
@@ -3221,6 +3230,8 @@ struct flame_patch_t : public fire_mage_spell_t
   flame_patch_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "flame_patch", p, p -> talents.flame_patch )
   {
+    parse_options( options_str );
+
     dot_duration =  p -> find_spell( 205470 ) -> duration();
     base_tick_time = timespan_t::from_seconds( 1.0 );//TODO: Hardcode this as it is not in the spell data.
     hasted_ticks=true;
@@ -3550,7 +3561,6 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
       base_multiplier *= 1.0 + ( p -> talents.lonely_winter -> effectN( 1 ).percent() + 
                                p -> artifact.its_cold_outside.data().effectN( 2 ).percent() );
     }
-    base_multiplier *= 1.0 + p -> talents.bitter_cold -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> artifact.orbital_strike.percent();
     chills = true;
   }
@@ -3631,10 +3641,6 @@ struct frozen_orb_t : public frost_mage_spell_t
     if ( result_is_hit( s -> result ) )
     {
       trigger_fof( "Frozen Orb Initial Impact", 1.0 );
-      if ( p() -> talents.bitter_cold -> ok() )
-      {
-        trigger_fof( "Bitter Cold", 1.0 );
-      }
     }
   }
 };
@@ -3757,10 +3763,18 @@ struct ice_lance_t : public frost_mage_spell_t
 
     if ( p -> talents.lonely_winter -> ok() )
     {
-      base_multiplier *= 1.0 + ( p -> talents.lonely_winter -> effectN( 1 ).percent() + 
+      base_multiplier *= 1.0 + ( p -> talents.lonely_winter -> effectN( 1 ).percent() +
                                p -> artifact.its_cold_outside.data().effectN( 2 ).percent() );
     }
 
+    if ( p -> talents.splitting_ice -> ok() )
+    {
+      base_multiplier *= 1.0 + p -> talents.splitting_ice
+                                 -> effectN( 3 ).percent();
+      aoe = 1 + p -> talents.splitting_ice -> effectN( 1 ).base_value();
+      base_aoe_multiplier *= p -> talents.splitting_ice
+                               -> effectN( 2 ).percent();
+    }
   }
 
   double calculate_direct_amount( action_state_t* s ) const override
@@ -5759,7 +5773,7 @@ void mage_t::init_spells()
   talents.controlled_burn = find_talent_spell( "Controlled Burn" );
   talents.ice_nova        = find_talent_spell( "Ice Nova"        );
   talents.frozen_touch    = find_talent_spell( "Frozen Touch"    );
-  talents.bitter_cold     = find_talent_spell( "Bitter Cold"     );
+  talents.splitting_ice   = find_talent_spell( "Splitting Ice"   );
   // Tier 75
   talents.ice_floes       = find_talent_spell( "Ice Floes"       );
   talents.ring_of_frost   = find_talent_spell( "Ring of Frost"   );
