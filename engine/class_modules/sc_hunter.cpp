@@ -3641,6 +3641,9 @@ struct mongoose_bite_t: hunter_melee_attack_t
     if ( p() -> buffs.mongoose_fury -> up() )
       am *= 1.0 + p() -> buffs.mongoose_fury -> check_stack_value();
 
+    if ( p() -> artifacts.sharpened_fang.rank() )
+      am *= 1.0 + p() -> artifacts.sharpened_fang.percent();
+
     return am;
   }
 };
