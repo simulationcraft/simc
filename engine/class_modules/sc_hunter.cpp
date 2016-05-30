@@ -1694,6 +1694,16 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
       add_child( impact_action );
     }
   }
+
+  virtual double composite_crit() const override
+  {
+    double cc = hunter_main_pet_attack_t::composite_crit();
+
+    if ( p() -> o() -> artifacts.my_beloved_monster.rank() )
+      cc += p() -> o() -> artifacts.my_beloved_monster.percent();
+
+    return cc;
+  }
 };
 
 
@@ -3688,6 +3698,16 @@ struct flanking_strike_t: hunter_melee_attack_t
       else
         p() -> buffs.instincts_of_the_raptor -> trigger();
     }
+  }
+
+  virtual double composite_crit() const override
+  {
+    double cc = hunter_melee_attack_t::composite_crit();
+
+    if ( p() -> artifacts.my_beloved_monster.rank() )
+      cc += p() -> artifacts.my_beloved_monster.percent();
+
+    return cc;
   }
 
   virtual double action_multiplier() const override
