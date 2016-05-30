@@ -3701,6 +3701,17 @@ struct lacerate_t: public hunter_melee_attack_t
     weapon_multiplier = 0.0;
     weapon_power_mod = 0.0;
   }
+
+  virtual void tick( dot_t* d ) override
+  {
+    hunter_melee_attack_t::tick( d );
+
+    if( p() -> talents.mortal_wounds -> ok() && rng().roll( p() -> talents.mortal_wounds -> proc_chance() ) )
+    {
+      p() -> cooldowns.mongoose_bite -> reset( true );
+      p() -> procs.hunting_companion -> occur();
+    }
+  }
 };
 
 // Carve =============================================================================
