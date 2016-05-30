@@ -3716,6 +3716,28 @@ struct carve_t: public hunter_melee_attack_t
     radius = data().effectN( 1 ).radius();
     range = data().max_range();
   }
+
+  virtual bool ready() override
+  {
+    if ( p() -> talents.butchery -> ok() )
+      return false;
+
+    return hunter_melee_attack_t::ready();
+  }
+};
+
+// Butchery ==========================================================================
+
+struct butchery_t: public hunter_melee_attack_t
+{
+  butchery_t( hunter_t* p, const std::string& options_str ):
+    hunter_melee_attack_t( "butchery", p, p -> talents.butchery )
+  {
+    parse_options( options_str );
+
+    aoe = -1;
+    cooldown -> hasted = true;
+  }
 };
 
 // Throwing Axes =====================================================================
@@ -4501,6 +4523,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "barrage"               ) return new                barrage_t( this, options_str );
   if ( name == "bestial_wrath"         ) return new          bestial_wrath_t( this, options_str ); 
   if ( name == "black_arrow"           ) return new            black_arrow_t( this, options_str );
+  if ( name == "butchery"              ) return new               butchery_t( this, options_str );
   if ( name == "carve"                 ) return new                  carve_t( this, options_str );
   if ( name == "chimaera_shot"         ) return new          chimaera_shot_t( this, options_str );
   if ( name == "cobra_shot"            ) return new             cobra_shot_t( this, options_str );
@@ -4666,6 +4689,8 @@ void hunter_t::init_spells()
   talents.a_murder_of_crows                 = find_talent_spell( "A Murder of Crows" );
   talents.barrage                           = find_talent_spell( "Barrage" );
   talents.volley                            = find_talent_spell( "Volley" );
+
+  talents.butchery                          = find_talent_spell( "Butchery" );
   talents.mortal_wounds                     = find_talent_spell( "Mortal Wounds" );
   talents.serpent_sting                     = find_talent_spell( "Serpent Sting" );
 
