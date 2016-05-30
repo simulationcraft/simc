@@ -141,6 +141,9 @@ public:
     buff_t* heavy_shot; // t17 SV 4pc
     buff_t* mongoose_fury;
     buff_t* aspect_of_the_eagle;
+    buff_t* instincts_of_the_raptor;
+    buff_t* instincts_of_the_mongoose;
+    buff_t* instincts_of_the_cheetah;
   } buffs;
 
   // Cooldowns
@@ -448,6 +451,8 @@ public:
   virtual double    composite_melee_crit() const override;
   virtual double    composite_spell_crit() const override;
   virtual double    composite_melee_haste() const override;
+  virtual double    composite_spell_haste() const override;
+  virtual double    composite_mastery_value() const override;
   virtual double    composite_player_critical_damage_multiplier() const override;
   virtual double    composite_rating_multiplier( rating_e rating ) const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
@@ -3653,6 +3658,18 @@ struct flanking_strike_t: hunter_melee_attack_t
       p() -> cooldowns.mongoose_bite -> reset( true );
       p() -> procs.hunting_companion -> occur();
     }
+
+    if( p() -> talents.animal_instincts -> ok() )
+    {
+      double result = rng().range(0.0, 3.0);
+
+      if( result < 1.0 )
+        p() -> buffs.instincts_of_the_cheetah -> trigger();
+      else if( result < 2.0 )
+        p() -> buffs.instincts_of_the_mongoose -> trigger();
+      else
+        p() -> buffs.instincts_of_the_raptor -> trigger();
+    }
   }
 
   virtual double action_multiplier() const override
@@ -4808,6 +4825,16 @@ void hunter_t::create_buffs()
 
   buffs.aspect_of_the_eagle = buff_creator_t( this, 186289, "aspect_of_the_eagle" )
     .default_value( find_spell( 186289 ) -> effectN( 1 ).percent() );
+
+  buffs.instincts_of_the_raptor = buff_creator_t( this, 204321, "instincts_of_the_raptor" )
+    .default_value( find_spell( 204331 ) -> effectN( 1 ).percent() );
+
+  buffs.instincts_of_the_cheetah = buff_creator_t( this, 204324, "instincts_of_the_cheetah" )
+    .default_value( find_spell( 204334 ) -> effectN( 1 ).percent() );
+
+  buffs.instincts_of_the_mongoose = buff_creator_t( this, 204333, "instincts_of_the_mongoose" )
+    .add_invalidate( CACHE_MASTERY )
+    .default_value( find_spell( 204333 ) -> effectN( 1 ).percent() );
 }
 
 // hunter_t::init_gains =====================================================
@@ -5216,11 +5243,27 @@ double hunter_t::composite_spell_crit() const
   return crit;
 }
 
-// Haste and speed buff computations ========================================
+// hunter_t::composite_melee_haste ===========================================
 
 double hunter_t::composite_melee_haste() const
 {
   double h = player_t::composite_melee_haste();
+
+  if( buffs.instincts_of_the_raptor -> check() )
+    h *= 1.0 + buffs.instincts_of_the_raptor -> default_value;
+
+  return h;
+}
+
+// hunter_t::composite_spell_haste ===========================================
+
+double hunter_t::composite_spell_haste() const
+{
+  double h = player_t::composite_spell_haste();
+
+  if( buffs.instincts_of_the_raptor -> check() )
+    h *= 1.0 + buffs.instincts_of_the_raptor -> default_value;
+
   return h;
 }
 
@@ -5268,6 +5311,8 @@ double hunter_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
+// hunter_t::focus_regen_per_second  ====================================
+
 double hunter_t::focus_regen_per_second() const
 {
   double regen = player_t::focus_regen_per_second();
@@ -5278,6 +5323,19 @@ double hunter_t::focus_regen_per_second() const
     regen += buffs.dire_beast -> default_value / 2;
 
   return regen;
+}
+
+
+// hunter_t::composite_mastery_value  ====================================
+
+double hunter_t::composite_mastery_value() const
+{
+  double m = player_t::composite_mastery_value();
+
+  if( buffs.instincts_of_the_mongoose -> check() )
+    m += buffs.instincts_of_the_mongoose -> default_value;
+
+  return m;
 }
 
 // hunter_t::invalidate_cache ==============================================
