@@ -145,6 +145,7 @@ public:
     buff_t* instincts_of_the_mongoose;
     buff_t* instincts_of_the_cheetah;
     buff_t* moknathal_tactics;
+    buff_t* spitting_cobra;
   } buffs;
 
   // Cooldowns
@@ -3808,7 +3809,6 @@ struct freezing_trap_t: public hunter_melee_attack_t
 
 // Explosive Trap ====================================================================
 
-
 struct explosive_trap_t: public hunter_melee_attack_t
 {
   explosive_trap_t( hunter_t* p, const std::string& options_str ):
@@ -3833,15 +3833,15 @@ struct explosive_trap_t: public hunter_melee_attack_t
 
 // Serpent Sting Attack =====================================================
 
-struct serpent_sting_t: public hunter_ranged_attack_t
+struct serpent_sting_t: public hunter_melee_attack_t
 {
   serpent_sting_t( hunter_t* player ):
-    hunter_ranged_attack_t( "serpent_sting", player, player -> find_spell( 118253 ) )
+    hunter_melee_attack_t( "serpent_sting", player, player -> find_spell( 118253 ) )
   {
     background = true;
-    proc = true;
     tick_may_crit = true;
     hasted_ticks = false;
+    weapon_multiplier = 0;
   }
 };
 
@@ -4485,6 +4485,42 @@ struct snake_hunter_t: public hunter_spell_t
   }
 };
 
+// Spitting Cobra ====================================================================
+
+struct spitting_cobra_t: public hunter_spell_t
+{
+  struct spitting_cobra_tick_t: public hunter_spell_t
+  {
+    spitting_cobra_tick_t( hunter_t* p ):
+      hunter_spell_t( "spitting_cobra_tick", p, p -> find_spell( 206685 ) )
+    {
+      background = true;
+      may_crit = true;
+    }
+  };
+
+  spitting_cobra_t( hunter_t* p, const std::string& options_str ):
+    hunter_spell_t( "spitting_cobra", p, p -> talents.spitting_cobra )
+  {
+    parse_options( options_str );
+
+    attack_power_mod.tick = p -> find_spell( 206685 ) -> effectN( 1 ).ap_coeff();
+    base_tick_time = timespan_t::from_seconds( 2.0 );
+    hasted_ticks = false;
+    may_crit = true;
+    weapon_multiplier = 0;
+
+    tick_action = new spitting_cobra_tick_t( p );
+  }
+
+  virtual void execute() override
+  { 
+    hunter_spell_t::execute();
+
+    p() -> buffs.spitting_cobra -> trigger();
+  }
+};
+
 //end spells
 }
 
@@ -4555,6 +4591,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "raptor_strike"         ) return new          raptor_strike_t( this, options_str );
   if ( name == "sidewinders"           ) return new            sidewinders_t( this, options_str );
   if ( name == "snake_hunter"          ) return new           snake_hunter_t( this, options_str );
+  if ( name == "spitting_cobra"        ) return new         spitting_cobra_t( this, options_str );
   if ( name == "stampede"              ) return new               stampede_t( this, options_str );
   if ( name == "summon_pet"            ) return new             summon_pet_t( this, options_str );
   if ( name == "throwing_axes"         ) return new          throwing_axes_t( this, options_str );
@@ -4934,6 +4971,9 @@ void hunter_t::create_buffs()
   buffs.moknathal_tactics = buff_creator_t( this, 201081, "moknathal_tactics")
     .max_stack( 5 )
     .default_value( find_spell( 201081 ) -> effectN( 1 ).percent() );
+
+  buffs.spitting_cobra = buff_creator_t( this, 194407, "spitting_cobra" )
+    .default_value( find_spell( 194407 ) -> effectN( 2 ).base_value() );
 }
 
 // hunter_t::init_gains =====================================================
@@ -5423,6 +5463,8 @@ double hunter_t::focus_regen_per_second() const
     regen += buffs.aspect_of_the_wild -> data().effectN( 2 ).resource( RESOURCE_FOCUS );
   if ( buffs.dire_beast -> check() )
     regen += buffs.dire_beast -> default_value / 2;
+  if ( buffs.spitting_cobra -> check() )
+    regen += buffs.spitting_cobra -> data().effectN( 2 ).resource( RESOURCE_FOCUS );
 
   return regen;
 }
