@@ -108,9 +108,6 @@ public:
     static const int DIMENSIONAL_RIFT_LIMIT = 10;
     static const int INFERNAL_LIMIT = 1;
     static const int DOOMGUARD_LIMIT = 1;
-    //static const int SERVICE_LIMIT = 1;
-    //uncommenting this line breaks literally everything?? dont know why??
-    //pets::service_pet_t* service_pet;
     std::array<pets::wild_imp_pet_t*, WILD_IMP_LIMIT> wild_imps;
     std::array<pets::t18_illidari_satyr_t*, T18_PET_LIMIT> t18_illidari_satyr;
     std::array<pets::t18_prince_malchezaar_t*, T18_PET_LIMIT> t18_prince_malchezaar;
@@ -1583,81 +1580,6 @@ struct dreadstalker_t : public warlock_pet_t
 
     return warlock_pet_t::create_action( name, options_str );
   }
-};
-
-// this is used to hold the service pet, all service pets inherit from this.
-// shouldn't need more than this???  maybe??
-struct service_pet_t : public warlock_pet_t
-{
-    service_pet_t(sim_t* sim, warlock_t* owner, std::string name, pet_e pt)
-        : warlock_pet_t(sim, owner, name, pt, false)
-    {
-
-    }
-};
-
-struct imp_service_pet_t : public service_pet_t
-{
-    imp_service_pet_t(sim_t* sim, warlock_t* owner) :
-        service_pet_t(sim, owner, "service imp", PET_SERVICE_IMP)
-    {
-        action_list_str = "firebolt";
-    }
-
-    virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
-    {
-      if ( name == "firebolt" ) return new actions::firebolt_t( this );
-
-      return warlock_pet_t::create_action( name, options_str );
-    }
-};
-
-struct felhunter_service_pet_t : public service_pet_t
-{
-    felhunter_service_pet_t(sim_t* sim, warlock_t* owner) :
-        service_pet_t(sim, owner, "service felhunter", PET_SERVICE_FELHUNTER)
-    {
-        action_list_str = "shadow_bite";
-    }
-
-    virtual void init_base_stats() override
-    {
-      warlock_pet_t::init_base_stats();
-
-      melee_attack = new actions::warlock_pet_melee_t( this );
-    }
-
-    virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
-    {
-      if ( name == "shadow_bite" ) return new actions::shadow_bite_t( this );
-
-      return warlock_pet_t::create_action( name, options_str );
-    }
-};
-
-struct felguard_service_pet_t : public service_pet_t
-{
-    felguard_service_pet_t(sim_t* sim, warlock_t* owner) :
-        service_pet_t(sim, owner, "service felguard", PET_SERVICE_FELGUARD)
-    {
-        action_list_str = "legion_strike";
-    }
-
-
-    virtual void init_base_stats() override
-    {
-      warlock_pet_t::init_base_stats();
-
-      melee_attack = new actions::warlock_pet_melee_t( this );
-      special_action = new actions::felstorm_t( this );
-    }
-
-    virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
-    {
-      if ( name == "legion_strike" ) return new actions::legion_strike_t( this );
-
-      return warlock_pet_t::create_action( name, options_str );
-    }
 };
 
 } // end namespace pets
