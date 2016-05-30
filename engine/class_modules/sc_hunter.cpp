@@ -3710,6 +3710,8 @@ struct carve_t: public hunter_melee_attack_t
   carve_t( hunter_t* p, const std::string& options_str ):
     hunter_melee_attack_t( "carve", p, p -> specs.carve )
   {
+    parse_options( options_str );
+
     aoe = -1;
     radius = data().effectN( 1 ).radius();
     range = data().max_range();
@@ -3733,6 +3735,8 @@ struct throwing_axes_t: public hunter_melee_attack_t
   throwing_axes_t( hunter_t* p, const std::string& options_str ):
     hunter_melee_attack_t( "throwing_axes", p, p -> talents.throwing_axes )
   {
+    parse_options( options_str );
+
     attack_power_mod.tick = p -> find_spell( 200167 ) -> effectN( 1 ).ap_coeff();
     base_tick_time = timespan_t::from_seconds( 0.2 );
     dot_duration = timespan_t::from_seconds( 0.6 );
@@ -3777,6 +3781,8 @@ struct explosive_trap_t: public hunter_melee_attack_t
   explosive_trap_t( hunter_t* p, const std::string& options_str ):
       hunter_melee_attack_t( "explosive_trap", p, p -> find_spell( 13812 ) )
     {
+      parse_options( options_str );
+
       aoe = -1;
       attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
       attack_power_mod.tick = data().effectN( 2 ).ap_coeff();
@@ -3785,6 +3791,7 @@ struct explosive_trap_t: public hunter_melee_attack_t
       dot_duration = data().duration();
       ground_aoe = true;
       hasted_ticks = false;
+      trigger_gcd = p -> specs.explosive_trap -> gcd();
 
       if ( p -> talents.improved_traps -> ok() )
         cooldown -> duration *= 1.0 + p -> talents.improved_traps -> effectN( 2 ).percent();
@@ -4411,6 +4418,8 @@ struct aspect_of_the_eagle_t: public hunter_spell_t
   aspect_of_the_eagle_t( hunter_t* p, const std::string& options_str ):
     hunter_spell_t( "aspect_of_the_eagle", p, p -> specs.aspect_of_the_eagle )
   {
+    parse_options( options_str );
+
     harmful = false;
   }
   
@@ -4419,6 +4428,27 @@ struct aspect_of_the_eagle_t: public hunter_spell_t
     hunter_spell_t::execute();
 
     p() -> buffs.aspect_of_the_eagle -> trigger();
+  }
+};
+
+// Snake Hunter ======================================================================
+
+struct snake_hunter_t: public hunter_spell_t
+{
+  snake_hunter_t( hunter_t* p, const std::string& options_str ):
+    hunter_spell_t( "snake_hunter", p, p -> talents.snake_hunter )
+  {
+    parse_options( options_str );
+
+    harmful = false;
+  }
+
+  virtual void execute() override
+  {
+    hunter_spell_t::execute();
+
+    while( p() -> cooldowns.mongoose_bite -> current_charge != 3 )
+      p() -> cooldowns.mongoose_bite -> reset( true );
   }
 };
 
@@ -4490,6 +4520,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "multi_shot"            ) return new             multi_shot_t( this, options_str );
   if ( name == "raptor_strike"         ) return new          raptor_strike_t( this, options_str );
   if ( name == "sidewinders"           ) return new            sidewinders_t( this, options_str );
+  if ( name == "snake_hunter"          ) return new           snake_hunter_t( this, options_str );
   if ( name == "stampede"              ) return new               stampede_t( this, options_str );
   if ( name == "summon_pet"            ) return new             summon_pet_t( this, options_str );
   if ( name == "throwing_axes"         ) return new          throwing_axes_t( this, options_str );
