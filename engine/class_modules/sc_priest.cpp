@@ -2553,15 +2553,21 @@ struct sphere_of_insanity_spell_t final : public priest_spell_t
 
 struct mind_spike_detonation_t final : public priest_spell_t
 {
+  double detonation_amount;
+  player_t* detonation_target;
+
   mind_spike_detonation_t( priest_t& p )
     : priest_spell_t( "mind_spike_detonation", p,
-                      p.find_spell( 217676 ) )  //.talents.mind_spike)
+                      p.find_spell( 217676 ) ),  //.talents.mind_spike)
+                      detonation_amount( 0.0 ),
+                      detonation_target( nullptr )
   {
     may_crit    = false;
     background  = true;
     proc        = false;
     callbacks   = true;
     may_miss    = false;
+    aoe         = -1; 
     is_sphere_of_insanity_spell = true;
     range       = 0.0;
     trigger_gcd = timespan_t::zero();
@@ -2570,31 +2576,36 @@ struct mind_spike_detonation_t final : public priest_spell_t
 
   double calculate_direct_amount( action_state_t* state ) const override
   {
+    if ( state->target == detonation_target )  // This is the target we detonated against. Do full damage
+    {
+      return detonation_amount;
+    }
+    else // Other targets, do half damage.
+    {
+      return detonation_amount / 2.0;
+    }
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    priest_spell_t::impact( state );
+
     priest_td_t& td = get_td( state->target );
 
-    if ( td.buffs.mind_spike
-             ->check() )  // Mind Spike debuff actuall exists; detonate.
+    if (state->target == detonation_target) // This is the target we detonated against. Remove debuff
     {
-      return td.buffs.mind_spike->value();
-    }
-    else
-    {
-      return 0.0;
+      td.buffs.mind_spike->expire();
     }
   }
 
-  void impact( action_state_t* s ) override
+  // Trigger mind spike explosion
+  void trigger( player_t* target )
   {
-    priest_spell_t::impact( s );
+    priest_td_t& td = get_td(target);
 
-    priest_td_t& td = get_td( s->target );
+    detonation_amount = td.buffs.mind_spike->value();
+    detonation_target = target;
 
-    td.buffs.mind_spike->expire();
-  }
-
-  /// Trigger mind spike explosion
-  void trigger()
-  {
     if ( priest.sim->debug )
       priest.sim->out_debug << priest.name()
                             << " triggered Mind Spike Detonation.";
@@ -2667,7 +2678,7 @@ public:
     {
       if ( td.buffs.mind_spike->up() )
       {
-        priest.active_spells.mind_spike_detonation->trigger();
+        priest.active_spells.mind_spike_detonation->trigger( s->target );
       }
     }
   }
@@ -2829,6 +2840,8 @@ struct mind_sear_tick_t final : public priest_spell_t
 
   void impact( action_state_t* state ) override
   {
+    priest_spell_t::impact( state );
+
     if ( result_is_hit( state -> result ) )
     {
       generate_insanity(insanity_gain, priest.gains.insanity_mind_sear);
