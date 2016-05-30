@@ -144,6 +144,7 @@ public:
     buff_t* instincts_of_the_raptor;
     buff_t* instincts_of_the_mongoose;
     buff_t* instincts_of_the_cheetah;
+    buff_t* moknathal_tactics;
   } buffs;
 
   // Cooldowns
@@ -207,7 +208,7 @@ public:
 
     const spell_data_t* animal_instincts;
     const spell_data_t* throwing_axes;
-    const spell_data_t* way_of_moknathal;
+    const spell_data_t* way_of_the_moknathal;
 
     // tier 2
     const spell_data_t* stomp;
@@ -3825,6 +3826,14 @@ struct raptor_strike_t: public hunter_melee_attack_t
     parse_options( options_str );
   }
 
+  virtual void execute() override
+  {
+    hunter_melee_attack_t::execute();
+
+    if( p() -> talents.way_of_the_moknathal -> ok() )
+      p() -> buffs.moknathal_tactics -> trigger();
+  }
+
   virtual void impact( action_state_t* s ) override
   {
     hunter_melee_attack_t::impact( s );
@@ -4594,7 +4603,7 @@ void hunter_t::init_spells()
   talents.true_aim                          = find_talent_spell( "True Aim" );
   
   talents.animal_instincts                  = find_talent_spell( "Animal Instincts" );
-  talents.way_of_moknathal                  = find_talent_spell( "Way of the Mok'Nathal" );
+  talents.way_of_the_moknathal                  = find_talent_spell( "Way of the Mok'Nathal" );
   talents.throwing_axes                     = find_talent_spell( "Throwing Axes" );
 
   //Tier 2
@@ -4864,6 +4873,10 @@ void hunter_t::create_buffs()
   buffs.instincts_of_the_mongoose = buff_creator_t( this, 204333, "instincts_of_the_mongoose" )
     .add_invalidate( CACHE_MASTERY )
     .default_value( find_spell( 204333 ) -> effectN( 1 ).percent() );
+
+  buffs.moknathal_tactics = buff_creator_t( this, 201081, "moknathal_tactics")
+    .max_stack( 5 )
+    .default_value( find_spell( 201081 ) -> effectN( 1 ).percent() );
 }
 
 // hunter_t::init_gains =====================================================
@@ -5238,6 +5251,9 @@ void hunter_t::regen( timespan_t periodicity )
 double hunter_t::composite_attack_power_multiplier() const
 {
   double mult = player_t::composite_attack_power_multiplier();
+
+  if( buffs.moknathal_tactics -> check() )
+    mult *= 1.0 + buffs.moknathal_tactics -> check_stack_value();
 
   return mult;
 }
