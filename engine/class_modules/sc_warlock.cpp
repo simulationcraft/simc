@@ -353,6 +353,10 @@ public:
     proc_t* chaos_portal;
     proc_t* dreadstalker_debug;
     proc_t* dimension_ripper;
+    proc_t* one_shard_hog;
+    proc_t* two_shard_hog;
+    proc_t* three_shard_hog;
+    proc_t* four_shard_hog;
   } procs;
 
   struct spells_t
@@ -2318,13 +2322,6 @@ struct hand_of_guldan_t: public warlock_spell_t
     aoe = -1;
 
     parse_effect_data( p -> find_spell( 86040 ) -> effectN( 1 ) );
-
-    if ( p -> demonology_trinket && p -> specialization() == WARLOCK_DEMONOLOGY )
-    {
-      const spell_data_t* data = p -> find_spell( p -> demonology_trinket -> spell_id );
-      demonology_trinket_chance = data -> effectN( 1 ).average( p -> demonology_trinket -> item );
-      demonology_trinket_chance /= 100.0;
-    }
   }
 
   virtual timespan_t travel_time() const override
@@ -2332,24 +2329,33 @@ struct hand_of_guldan_t: public warlock_spell_t
     return timespan_t::from_seconds( 1.5 );
   }
 
-  virtual void execute() override
+  virtual bool ready() override
   {
-    warlock_spell_t::execute();
+    bool r = warlock_spell_t::ready();
 
-    if ( p() -> demonology_trinket && p() -> rng().roll( demonology_trinket_chance ) )
+    if ( p() -> resources.current[RESOURCE_SOUL_SHARD] == 0.0 )
+      r = false;
+
+    return r;
+  }
+
+  void consume_resource() override
+  {
+    spell_t::consume_resource();
+
+    for ( int i = 0; i < resource_consumed; i++ )
     {
       trigger_wild_imp( p() );
-      trigger_wild_imp( p() );
-      trigger_wild_imp( p() );
-      p() -> procs.fragment_wild_imp -> occur();
-      p() -> procs.fragment_wild_imp -> occur();
-      p() -> procs.fragment_wild_imp -> occur();
     }
-    int shards = p()->resources.current[ RESOURCE_SOUL_SHARD ];
-    for(int shard = 0; shard < shards; shard ++)
-    {
-        trigger_wild_imp( p() );
-    }
+
+    if ( resource_consumed == 1.0 )
+      p() -> procs.one_shard_hog -> occur();
+    if ( resource_consumed == 2.0 )
+      p() -> procs.two_shard_hog -> occur();
+    if ( resource_consumed == 3.0 )
+      p() -> procs.three_shard_hog -> occur();
+    if ( resource_consumed == 4.0 )
+      p() -> procs.four_shard_hog -> occur();
   }
 };
 
@@ -4092,6 +4098,10 @@ void warlock_t::init_procs()
   procs.chaos_portal = get_proc( "chaos_portal" );
   procs.dreadstalker_debug = get_proc( "dreadstalker_debug" );
   procs.dimension_ripper = get_proc( "dimension_ripper" );
+  procs.one_shard_hog = get_proc( "one_shard_hog" );
+  procs.two_shard_hog = get_proc( "two_shard_hog" );
+  procs.three_shard_hog = get_proc( "three_shard_hog" );
+  procs.four_shard_hog = get_proc( "four_shard_hog" );
 }
 
 void warlock_t::apl_precombat()
