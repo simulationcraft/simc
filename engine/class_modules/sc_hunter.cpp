@@ -25,9 +25,9 @@
 //   - Call of the Hunter (NYI still)
 //
 // Survival
-//   - Everything
 //  Talents
-//   - Everything
+//   - Steel Trap
+//   - Dragonsfire Grenade
 //  Artifacts
 //   - Everything
 //
@@ -3724,6 +3724,20 @@ struct lacerate_t: public hunter_melee_attack_t
   }
 };
 
+// Serpent Sting =====================================================================
+
+struct serpent_sting_t: public hunter_melee_attack_t
+{
+  serpent_sting_t( hunter_t* player ):
+    hunter_melee_attack_t( "serpent_sting", player, player -> find_spell( 118253 ) )
+  {
+    background = true;
+    tick_may_crit = true;
+    hasted_ticks = false;
+    weapon_multiplier = 0;
+  }
+};
+
 // Carve =============================================================================
 
 struct carve_t: public hunter_melee_attack_t
@@ -3736,6 +3750,9 @@ struct carve_t: public hunter_melee_attack_t
     aoe = -1;
     radius = data().effectN( 1 ).radius();
     range = data().max_range();
+
+    if ( p -> talents.serpent_sting -> ok() )
+      impact_action = new serpent_sting_t( p );
   }
 
   virtual bool ready() override
@@ -3744,7 +3761,7 @@ struct carve_t: public hunter_melee_attack_t
       return false;
 
     return hunter_melee_attack_t::ready();
-  }
+  }  
 };
 
 // Butchery ==========================================================================
@@ -3814,32 +3831,19 @@ struct freezing_trap_t: public hunter_melee_attack_t
         effectN( 1 ).trigger() -> effectN( 1 ).base_value();
     }
   }
-};
-
-
-
-// Serpent Sting Attack =====================================================
-
-struct serpent_sting_t: public hunter_melee_attack_t
-{
-  serpent_sting_t( hunter_t* player ):
-    hunter_melee_attack_t( "serpent_sting", player, player -> find_spell( 118253 ) )
-  {
-    background = true;
-    tick_may_crit = true;
-    hasted_ticks = false;
-    weapon_multiplier = 0;
-  }
-};
+}; 
 
 // Raptor Strike Attack ==============================================================
 
 struct raptor_strike_t: public hunter_melee_attack_t
 {
-  raptor_strike_t( hunter_t* player, const std::string& options_str ):
-    hunter_melee_attack_t( "raptor_strike", player, player -> specs.raptor_strike )
+  raptor_strike_t( hunter_t* p, const std::string& options_str ):
+    hunter_melee_attack_t( "raptor_strike", p, p -> specs.raptor_strike )
   {
     parse_options( options_str );
+
+    if ( p -> talents.serpent_sting -> ok() )
+      impact_action = new serpent_sting_t( p );
   }
 
   virtual void execute() override
@@ -3848,20 +3852,6 @@ struct raptor_strike_t: public hunter_melee_attack_t
 
     if ( p() -> talents.way_of_the_moknathal -> ok() )
       p() -> buffs.moknathal_tactics -> trigger();
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    hunter_melee_attack_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      if ( p() -> talents.serpent_sting -> ok() )
-      {
-        p() -> active.serpent_sting -> target = s -> target;
-        p() -> active.serpent_sting -> execute();
-      }
-    }
   }
 };
 
