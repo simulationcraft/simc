@@ -1154,6 +1154,7 @@ class SpellDataGenerator(DataGenerator):
           ( 188402, 0 ), # SV T18 4P
           ( 185365, 0 ), # Hunter's Mark debuff
           ( 191043, 0 ), # MM Artifact proc
+		  ( 204740, 0 ), # Flanking Strike
         ),
 
         # Rogue:

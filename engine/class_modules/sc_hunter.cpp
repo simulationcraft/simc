@@ -295,7 +295,7 @@ public:
     const spell_data_t* hatchet_toss;
     const spell_data_t* harpoon;
     const spell_data_t* muzzle;
-    const spell_data_t* laceration;
+    const spell_data_t* lacerate;
     const spell_data_t* aspect_of_the_eagle;
     const spell_data_t* carve;
     const spell_data_t* tar_trap;
@@ -1650,7 +1650,7 @@ struct kill_command_t: public hunter_main_pet_attack_t
 struct flanking_strike_t: public hunter_main_pet_attack_t
 {
   flanking_strike_t( hunter_main_pet_t* p ):
-    hunter_main_pet_attack_t( "flanking_strike", p, p -> o() -> find_spell ( 202800 ) )
+    hunter_main_pet_attack_t( "flanking_strike", p, p -> o() -> find_spell ( 202800 ) ) //FIXME: 
   {
     attack_power_mod.direct = 2.5; //data is in the tooltip
     background = true;
@@ -3596,6 +3596,8 @@ struct mongoose_bite_t: hunter_melee_attack_t
   }
 };
 
+// Flanking Strike =====================================================================
+
 struct flanking_strike_t: hunter_melee_attack_t
 {
   flanking_strike_t( hunter_t* p, const std::string& options_str ):
@@ -3627,6 +3629,24 @@ struct flanking_strike_t: hunter_melee_attack_t
       am *= 1.0 + p() -> specs.flanking_strike -> effectN( 3 ).percent();
 
     return am;
+  }
+};
+
+// Lacerate ==========================================================================
+
+struct lacerate_t: public hunter_melee_attack_t
+{
+
+  lacerate_t( hunter_t* p, const std::string& options_str ):
+    hunter_melee_attack_t( "lacerate", p, p -> specs.lacerate )
+  {
+    base_tick_time = data().effectN( 1 ).period();
+    cooldown -> duration = data().cooldown();
+    cooldown -> hasted = false;
+    direct_tick = false;
+    dot_duration = data().duration();
+    tick_zero = false;
+    weapon_multiplier = 0.0;
   }
 };
 
@@ -4350,6 +4370,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "flanking_strike"       ) return new        flanking_strike_t( this, options_str );
   if ( name == "head_shot"             ) return new              head_shot_t( this, options_str );
   if ( name == "kill_command"          ) return new           kill_command_t( this, options_str );
+  if ( name == "lacerate"              ) return new               lacerate_t( this, options_str );
   if ( name == "marked_shot"           ) return new            marked_shot_t( this, options_str );
   if ( name == "mongoose_bite"         ) return new          mongoose_bite_t( this, options_str );
   if ( name == "multishot"             ) return new             multi_shot_t( this, options_str );
@@ -4550,7 +4571,7 @@ void hunter_t::init_spells()
   specs.raptor_strike        = find_specialization_spell( "Raptor Strike" );
   specs.mongoose_bite        = find_specialization_spell( "Mongoose Bite" );
   specs.harpoon              = find_specialization_spell( "Harpoon" );
-  specs.laceration           = find_specialization_spell( "Laceration" );
+  specs.lacerate             = find_specialization_spell( "Lacerate" );
   specs.aspect_of_the_eagle  = find_specialization_spell( "Aspect of the Eagle" );
   specs.carve                = find_specialization_spell( "Carve" );
   specs.tar_trap             = find_specialization_spell( "Tar Trap" );
