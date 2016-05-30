@@ -121,7 +121,7 @@ public:
     std::array<pets::dreadstalker_t*, DREADSTALKER_LIMIT> dreadstalkers;
     std::array<pets::infernal_t*, INFERNAL_LIMIT> infernal;
     std::array<pets::doomguard_t*, DOOMGUARD_LIMIT> doomguard;
-  } pet_list;
+  } warlock_pet_list;
 
   std::vector<std::string> pet_name_list;
 
@@ -519,7 +519,7 @@ namespace pets {
     struct buffs_t
     {
       buff_t* demonic_synergy;
-        buff_t* demonic_empowerment;
+      buff_t* demonic_empowerment;
     } buffs;
 
     struct travel_t: public action_t
@@ -1105,12 +1105,18 @@ double warlock_pet_t::composite_melee_haste() const
 {
   double mh = pet_t::composite_melee_haste();
 
+  if ( buffs.demonic_empowerment -> up() )
+      mh *= 0.5 + buffs.demonic_empowerment -> data().effectN( 1 ).percent();
+
   return mh;
 }
 
 double warlock_pet_t::composite_spell_haste() const
 {
   double sh = pet_t::composite_spell_haste();
+
+  if ( buffs.demonic_empowerment -> up() )
+      sh *= 0.5 + buffs.demonic_empowerment -> data().effectN( 1 ).percent();
 
   return sh;
 }
@@ -1120,9 +1126,6 @@ double warlock_pet_t::composite_melee_speed() const
   // Make sure we get our overridden haste values applied to melee_speed
   double cmh =  player_t::composite_melee_speed();
 
-  if ( buffs.demonic_empowerment -> up() )
-      cmh *= 0.50 + buffs.demonic_empowerment -> data().effectN( 1 ).percent();
-
   return cmh;
 }
 
@@ -1131,9 +1134,6 @@ double warlock_pet_t::composite_spell_speed() const
   // Make sure we get our overridden haste values applied to spell_speed
   double css = player_t::composite_spell_speed();
 
-
-  if ( buffs.demonic_empowerment -> up() )
-      css *= 0.5 + buffs.demonic_empowerment -> data().effectN( 1 ).percent();
 
   return css;
 }
@@ -1193,8 +1193,8 @@ struct t18_illidari_satyr_t: public warlock_pet_t
     warlock_pet_t::init_base_stats();
     base_energy_regen_per_second = 0;
     melee_attack = new actions::warlock_pet_melee_t( this );
-    if ( o() -> pet_list.t18_illidari_satyr[0] )
-      melee_attack -> stats = o() -> pet_list.t18_illidari_satyr[0] -> get_stats( "melee" );
+    if ( o() -> warlock_pet_list.t18_illidari_satyr[0] )
+      melee_attack -> stats = o() -> warlock_pet_list.t18_illidari_satyr[0] -> get_stats( "melee" );
   }
 };
 
@@ -1213,8 +1213,8 @@ struct t18_prince_malchezaar_t: public warlock_pet_t
     warlock_pet_t::init_base_stats();
     base_energy_regen_per_second = 0;
     melee_attack = new actions::warlock_pet_melee_t( this );
-    if ( o() -> pet_list.t18_prince_malchezaar[0] )
-      melee_attack -> stats = o() -> pet_list.t18_prince_malchezaar[0] -> get_stats( "melee" );
+    if ( o() -> warlock_pet_list.t18_prince_malchezaar[0] )
+      melee_attack -> stats = o() -> warlock_pet_list.t18_prince_malchezaar[0] -> get_stats( "melee" );
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -1242,8 +1242,8 @@ struct t18_vicious_hellhound_t: public warlock_pet_t
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
     melee_attack = new actions::warlock_pet_melee_t( this );
     melee_attack -> base_execute_time = timespan_t::from_seconds( 1.0 );
-    if ( o() -> pet_list.t18_vicious_hellhound[0] )
-      melee_attack -> stats = o() -> pet_list.t18_vicious_hellhound[0] -> get_stats( "melee" );
+    if ( o() -> warlock_pet_list.t18_vicious_hellhound[0] )
+      melee_attack -> stats = o() -> warlock_pet_list.t18_vicious_hellhound[0] -> get_stats( "melee" );
   }
 };
 
@@ -1272,13 +1272,13 @@ struct shadowy_tear_t: public warlock_pet_t
     {
       action_t* a = new actions::rift_shadow_bolt_t( this );
       shadow_bolt_stats = &( a -> stats );
-      if ( this == o() -> pet_list.shadowy_tear[0] || sim -> report_pets_separately )
+      if ( this == o() -> warlock_pet_list.shadowy_tear[0] || sim -> report_pets_separately )
       {
         regular_stats = a -> stats;
       }
       else
       {
-        regular_stats = o() -> pet_list.shadowy_tear[0] -> get_stats( "shadow_bolt" );
+        regular_stats = o() -> warlock_pet_list.shadowy_tear[0] -> get_stats( "shadow_bolt" );
         *shadow_bolt_stats = regular_stats;
       }
       return a;
@@ -1314,13 +1314,13 @@ struct chaos_tear_t : public warlock_pet_t
     {
       action_t* a = new actions::rift_chaos_bolt_t( this );
       chaos_bolt_stats = &( a -> stats );
-      if ( this == o() -> pet_list.chaos_tear[0] || sim -> report_pets_separately )
+      if ( this == o() -> warlock_pet_list.chaos_tear[0] || sim -> report_pets_separately )
       {
         regular_stats = a -> stats;
       }
       else
       {
-        regular_stats = o() -> pet_list.chaos_tear[0] -> get_stats( "chaos_bolt" );
+        regular_stats = o() -> warlock_pet_list.chaos_tear[0] -> get_stats( "chaos_bolt" );
         *chaos_bolt_stats = regular_stats;
       }
       return a;
@@ -1355,13 +1355,13 @@ struct chaos_portal_t : public warlock_pet_t
     {
       action_t* a = new actions::chaos_barrage_t( this );
       chaos_barrage_stats = &( a -> stats );
-      if ( this == o() -> pet_list.chaos_portal[0] || sim -> report_pets_separately )
+      if ( this == o() -> warlock_pet_list.chaos_portal[0] || sim -> report_pets_separately )
       {
         regular_stats = a -> stats;
       }
       else
       {
-        regular_stats = o() -> pet_list.chaos_portal[0] -> get_stats( "chaos_barrage" );
+        regular_stats = o() -> warlock_pet_list.chaos_portal[0] -> get_stats( "chaos_barrage" );
         *chaos_barrage_stats = regular_stats;
       }
       return a;
@@ -1520,13 +1520,13 @@ struct wild_imp_pet_t: public warlock_pet_t
     {
       action_t* a = new actions::wild_firebolt_t( this );
       firebolt_stats = &( a -> stats );
-      if ( this == o() -> pet_list.wild_imps[ 0 ] || sim -> report_pets_separately )
+      if ( this == o() -> warlock_pet_list.wild_imps[ 0 ] || sim -> report_pets_separately )
       {
         regular_stats = a -> stats;
       }
       else
       {
-        regular_stats = o() -> pet_list.wild_imps[ 0 ] -> get_stats( "fel_firebolt" );
+        regular_stats = o() -> warlock_pet_list.wild_imps[ 0 ] -> get_stats( "fel_firebolt" );
       }
       return a;
     }
@@ -1559,8 +1559,8 @@ struct dreadstalker_t : public warlock_pet_t
     resources.base[RESOURCE_ENERGY] = 0;
     base_energy_regen_per_second = 0;
     melee_attack = new actions::warlock_pet_melee_t( this );
-    if ( o() ->pet_list.dreadstalkers[0] )
-      melee_attack -> stats = o() ->pet_list.dreadstalkers[0] -> get_stats( "melee" );
+    if ( o() ->warlock_pet_list.dreadstalkers[0] )
+      melee_attack -> stats = o() ->warlock_pet_list.dreadstalkers[0] -> get_stats( "melee" );
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
@@ -1569,13 +1569,13 @@ struct dreadstalker_t : public warlock_pet_t
     {
       action_t* a = new actions::dreadbite_t( this );
       dreadbite_stats = &( a -> stats );
-      if ( this == o() ->pet_list.dreadstalkers[0] || sim -> report_pets_separately )
+      if ( this == o() ->warlock_pet_list.dreadstalkers[0] || sim -> report_pets_separately )
       {
         regular_stats = a -> stats;
       }
       else
       {
-        regular_stats = o() ->pet_list.dreadstalkers[0] -> get_stats( "dreadbite" );
+        regular_stats = o() ->warlock_pet_list.dreadstalkers[0] -> get_stats( "dreadbite" );
         *dreadbite_stats = regular_stats;
       }
       return a;
@@ -1807,7 +1807,7 @@ public:
 
     if ( result_is_hit( execute_state -> result ) && p() -> talents.grimoire_of_synergy -> ok() )
     {
-      pets::warlock_pet_t* my_pet = static_cast<pets::warlock_pet_t*>( p() ->pet_list.active ); //get active pet
+      pets::warlock_pet_t* my_pet = static_cast<pets::warlock_pet_t*>( p() ->warlock_pet_list.active ); //get active pet
       if ( my_pet != nullptr )
       {
         bool procced = p() -> grimoire_of_synergy -> trigger();
@@ -1960,11 +1960,11 @@ public:
 
   static void trigger_wild_imp( warlock_t* p )
   {
-    for ( size_t i = 0; i < p ->pet_list.wild_imps.size(); i++ )
+    for ( size_t i = 0; i < p ->warlock_pet_list.wild_imps.size(); i++ )
     {
-      if ( p ->pet_list.wild_imps[i] -> is_sleeping() )
+      if ( p ->warlock_pet_list.wild_imps[i] -> is_sleeping() )
       {
-        p ->pet_list.wild_imps[i] -> trigger();
+        p ->warlock_pet_list.wild_imps[i] -> trigger();
         p -> procs.wild_imp -> occur();
         return;
       }
@@ -2258,34 +2258,18 @@ struct demonic_empowerment_t: public warlock_spell_t
 
 	void execute() override
 	{
-		warlock_spell_t::execute();
-
-		//cycle through all pets and trigger the demonic_empowerment buff
-        for ( auto& imp: p() ->pet_list.wild_imps )
-		{
-			imp -> buffs.demonic_empowerment -> trigger();
-		}
-        for ( auto& dreadstalker : p() ->pet_list.dreadstalkers )
-		{
-			dreadstalker -> buffs.demonic_empowerment -> trigger();
-		}
-        pets::warlock_pet_t* my_pet = static_cast<pets::warlock_pet_t*>( p() ->pet_list.active ); //get active pet
-		my_pet -> buffs.demonic_empowerment -> trigger();
-
-		//TODO: Need to find the doomguard and the supremacy demon if they are active to buff them as well
-
-		// Do this before powertrip is calculated
-
-
-		double power_trip_rng = 0.5;
-		if ( p() -> talents.power_trip -> ok() ) {
-			if( rng().roll( power_trip_rng ) )
-				p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.power_trip );
-		}
-        /*if(p() ->talents.shadowy_inspiration->ok())
+        warlock_spell_t::execute();
+        for(auto& pet : p()->pet_list)
         {
-            p()->buffs.shadowy_inspiration->trigger();
-        }*/
+            pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> (pet);
+            if(lock_pet != NULL)
+            {
+                if(!lock_pet->is_sleeping())
+                {
+                    lock_pet->buffs.demonic_empowerment->trigger();
+                }
+            }
+        }
 	}
 
 		
@@ -2634,11 +2618,11 @@ struct dimensional_rift_t : public warlock_spell_t
 
     if ( rift <= ( 1.0 / 3.0 ) )
     {
-      for ( size_t i = 0; i < p() ->pet_list.shadowy_tear.size(); i++ )
+      for ( size_t i = 0; i < p() ->warlock_pet_list.shadowy_tear.size(); i++ )
       {
-        if ( p() -> pet_list.shadowy_tear[i] -> is_sleeping() )
+        if ( p() -> warlock_pet_list.shadowy_tear[i] -> is_sleeping() )
         {
-          p() -> pet_list.shadowy_tear[i] -> summon( shadowy_tear_duration );
+          p() -> warlock_pet_list.shadowy_tear[i] -> summon( shadowy_tear_duration );
           p() -> procs.shadowy_tear -> occur();
           break;
         }
@@ -2646,11 +2630,11 @@ struct dimensional_rift_t : public warlock_spell_t
     }
     else if ( rift >= ( 2.0 / 3.0 ) )
     {
-      for ( size_t i = 0; i < p() -> pet_list.chaos_tear.size(); i++ )
+      for ( size_t i = 0; i < p() -> warlock_pet_list.chaos_tear.size(); i++ )
       {
-        if ( p() -> pet_list.chaos_tear[i] -> is_sleeping() )
+        if ( p() -> warlock_pet_list.chaos_tear[i] -> is_sleeping() )
         {
-          p() -> pet_list.chaos_tear[i] -> summon( chaos_tear_duration );
+          p() -> warlock_pet_list.chaos_tear[i] -> summon( chaos_tear_duration );
           p() -> procs.chaos_tear -> occur();
           break;
         }
@@ -2658,11 +2642,11 @@ struct dimensional_rift_t : public warlock_spell_t
     }
     else
     {
-      for ( size_t i = 0; i < p() -> pet_list.chaos_portal.size(); i++ )
+      for ( size_t i = 0; i < p() -> warlock_pet_list.chaos_portal.size(); i++ )
       {
-        if ( p() -> pet_list.chaos_portal[i] -> is_sleeping() )
+        if ( p() -> warlock_pet_list.chaos_portal[i] -> is_sleeping() )
         {
-          p() -> pet_list.chaos_portal[i] -> summon( chaos_tear_duration );
+          p() -> warlock_pet_list.chaos_portal[i] -> summon( chaos_tear_duration );
           p() -> procs.chaos_portal -> occur();
           break;
         }
@@ -2935,16 +2919,16 @@ struct summon_main_pet_t: public summon_pet_t
   {
     warlock_spell_t::schedule_execute( state );
 
-    if ( p() -> pet_list.active )
+    if ( p() -> warlock_pet_list.active )
     {
-      p() -> pet_list.active -> dismiss();
-      p() -> pet_list.active = nullptr;
+      p() -> warlock_pet_list.active -> dismiss();
+      p() -> warlock_pet_list.active = nullptr;
     }
   }
 
   virtual bool ready() override
   {
-    if ( p() -> pet_list.active == pet )
+    if ( p() -> warlock_pet_list.active == pet )
       return false;
 
     if ( p() -> talents.grimoire_of_supremacy -> ok() ) //if we have the uberpets, we can't summon our standard pets
@@ -2956,7 +2940,7 @@ struct summon_main_pet_t: public summon_pet_t
   {
     summon_pet_t::execute();
 
-    p() -> pet_list.active = p() -> pet_list.last = pet;
+    p() -> warlock_pet_list.active = p() -> warlock_pet_list.last = pet;
 
     if ( p() -> buffs.demonic_power -> check() )
       p() -> buffs.demonic_power -> expire();
@@ -2987,11 +2971,11 @@ struct summon_doomguard_t: public warlock_spell_t
 
     p() -> cooldowns.infernal -> start();
 
-    for ( size_t i = 0; i < p() -> pet_list.doomguard.size(); i++ )
+    for ( size_t i = 0; i < p() -> warlock_pet_list.doomguard.size(); i++ )
     {
-      if ( p() -> pet_list.doomguard[i] -> is_sleeping() )
+      if ( p() -> warlock_pet_list.doomguard[i] -> is_sleeping() )
       {
-        p() -> pet_list.doomguard[i] -> summon( doomguard_duration );
+        p() -> warlock_pet_list.doomguard[i] -> summon( doomguard_duration );
       }
     }
   }
@@ -3042,11 +3026,11 @@ struct summon_infernal_t : public warlock_spell_t
     if ( infernal_awakening )
       infernal_awakening -> execute();
 
-    for ( size_t i = 0; i < p() -> pet_list.infernal.size(); i++ )
+    for ( size_t i = 0; i < p() -> warlock_pet_list.infernal.size(); i++ )
     {
-      if ( p() -> pet_list.infernal[i] -> is_sleeping() )
+      if ( p() -> warlock_pet_list.infernal[i] -> is_sleeping() )
       {
-        p() -> pet_list.infernal[i] -> summon( infernal_duration );
+        p() -> warlock_pet_list.infernal[i] -> summon( infernal_duration );
       }
     }
   }
@@ -3070,11 +3054,11 @@ struct call_dreadstalkers_t : public warlock_spell_t
     int dreadstalker_count = data().effectN( 1 ).base_value();
     int j = 0;
 
-    for ( size_t i = 0; i < p() -> pet_list.dreadstalkers.size(); i++ )
+    for ( size_t i = 0; i < p() -> warlock_pet_list.dreadstalkers.size(); i++ )
     {
-      if ( p() -> pet_list.dreadstalkers[i] -> is_sleeping() )
+      if ( p() -> warlock_pet_list.dreadstalkers[i] -> is_sleeping() )
       {
-        p() -> pet_list.dreadstalkers[i] -> summon( dreadstalker_duration );
+        p() -> warlock_pet_list.dreadstalkers[i] -> summon( dreadstalker_duration );
         p() -> procs.dreadstalker_debug -> occur();
         if ( ++j == dreadstalker_count ) break;
       }
@@ -3347,19 +3331,19 @@ struct grimoire_of_sacrifice_t: public warlock_spell_t
 
   virtual bool ready() override
   {
-    if ( ! p() -> pet_list.active ) return false;
+    if ( ! p() -> warlock_pet_list.active ) return false;
 
     return warlock_spell_t::ready();
   }
 
   virtual void execute() override
   {
-    if ( p() -> pet_list.active )
+    if ( p() -> warlock_pet_list.active )
     {
       warlock_spell_t::execute();
 
-      p() -> pet_list.active -> dismiss();
-      p() -> pet_list.active = nullptr;
+      p() -> warlock_pet_list.active -> dismiss();
+      p() -> warlock_pet_list.active = nullptr;
       p() -> buffs.demonic_power -> trigger();
 
     }
@@ -3548,7 +3532,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
   player_t( sim, WARLOCK, name, r ),
     havoc_target( nullptr ),
     shard_accumulator( 0 ),
-    pet_list( pets_t() ),
+    warlock_pet_list( pets_t() ),
     active( active_t() ),
     talents( talents_t() ),
     glyphs( glyphs_t() ),
@@ -3779,56 +3763,56 @@ void warlock_t::create_pets()
     create_pet( pet_name_list[ i ] );
   }
 
-  for ( size_t i = 0; i < pet_list.infernal.size(); i++ )
+  for ( size_t i = 0; i < warlock_pet_list.infernal.size(); i++ )
   {
-    pet_list.infernal[i] = new pets::infernal_t( sim, this );
+    warlock_pet_list.infernal[i] = new pets::infernal_t( sim, this );
   }
-  for ( size_t i = 0; i < pet_list.doomguard.size(); i++ )
+  for ( size_t i = 0; i < warlock_pet_list.doomguard.size(); i++ )
   {
-    pet_list.doomguard[i] = new pets::doomguard_t( sim, this );
+    warlock_pet_list.doomguard[i] = new pets::doomguard_t( sim, this );
   }
 
   if ( artifact.dimensional_rift )
   {
-    for ( size_t i = 0; i < pet_list.shadowy_tear.size(); i++ )
+    for ( size_t i = 0; i < warlock_pet_list.shadowy_tear.size(); i++ )
     {
-      pet_list.shadowy_tear[i] = new pets::shadowy_tear_t( sim, this );
+      warlock_pet_list.shadowy_tear[i] = new pets::shadowy_tear_t( sim, this );
     }
-    for ( size_t i = 0; i < pet_list.chaos_tear.size(); i++ )
+    for ( size_t i = 0; i < warlock_pet_list.chaos_tear.size(); i++ )
     {
-      pet_list.chaos_tear[i] = new pets::chaos_tear_t( sim, this );
+      warlock_pet_list.chaos_tear[i] = new pets::chaos_tear_t( sim, this );
     }
-    for ( size_t i = 0; i < pet_list.chaos_portal.size(); i++ )
+    for ( size_t i = 0; i < warlock_pet_list.chaos_portal.size(); i++ )
     {
-      pet_list.chaos_portal[i] = new pets::chaos_portal_t( sim, this );
+      warlock_pet_list.chaos_portal[i] = new pets::chaos_portal_t( sim, this );
     }
   }
 
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
-    for ( size_t i = 0; i < pet_list.wild_imps.size(); i++ )
+    for ( size_t i = 0; i < warlock_pet_list.wild_imps.size(); i++ )
     {
-      pet_list.wild_imps[ i ] = new pets::wild_imp_pet_t( sim, this );
+      warlock_pet_list.wild_imps[ i ] = new pets::wild_imp_pet_t( sim, this );
       if ( i > 0 )
-        pet_list.wild_imps[ i ] -> quiet = 1;
+        warlock_pet_list.wild_imps[ i ] -> quiet = 1;
     }
-    for ( size_t i = 0; i < pet_list.dreadstalkers.size(); i++ )
+    for ( size_t i = 0; i < warlock_pet_list.dreadstalkers.size(); i++ )
     {
-      pet_list.dreadstalkers[ i ] = new pets::dreadstalker_t( sim, this );
+      warlock_pet_list.dreadstalkers[ i ] = new pets::dreadstalker_t( sim, this );
     }
     if ( sets.has_set_bonus( WARLOCK_DEMONOLOGY, T18, B4 ) )
     {
-      for ( size_t i = 0; i < pet_list.t18_illidari_satyr.size(); i++ )
+      for ( size_t i = 0; i < warlock_pet_list.t18_illidari_satyr.size(); i++ )
       {
-        pet_list.t18_illidari_satyr[i] = new pets::t18_illidari_satyr_t( sim, this );
+        warlock_pet_list.t18_illidari_satyr[i] = new pets::t18_illidari_satyr_t( sim, this );
       }
-      for ( size_t i = 0; i < pet_list.t18_prince_malchezaar.size(); i++ )
+      for ( size_t i = 0; i < warlock_pet_list.t18_prince_malchezaar.size(); i++ )
       {
-        pet_list.t18_prince_malchezaar[i] = new pets::t18_prince_malchezaar_t( sim, this );
+        warlock_pet_list.t18_prince_malchezaar[i] = new pets::t18_prince_malchezaar_t( sim, this );
       }
-      for ( size_t i = 0; i < pet_list.t18_vicious_hellhound.size(); i++ )
+      for ( size_t i = 0; i < warlock_pet_list.t18_vicious_hellhound.size(); i++ )
       {
-        pet_list.t18_vicious_hellhound[i] = new pets::t18_vicious_hellhound_t( sim, this );
+        warlock_pet_list.t18_vicious_hellhound[i] = new pets::t18_vicious_hellhound_t( sim, this );
       }
     }
   }
@@ -4254,8 +4238,8 @@ void warlock_t::init_resources( bool force )
 
   resources.current[RESOURCE_SOUL_SHARD] = initial_soul_shards;
 
-  if ( pet_list.active )
-    pet_list.active -> init_resources( force );
+  if ( warlock_pet_list.active )
+    warlock_pet_list.active -> init_resources( force );
 }
 
 void warlock_t::combat_begin()
@@ -4274,7 +4258,7 @@ void warlock_t::reset()
     if ( td ) td -> reset();
   }
 
-  pet_list.active = nullptr;
+  warlock_pet_list.active = nullptr;
   shard_react = timespan_t::zero();
   havoc_target = nullptr;
   shard_accumulator = rng().range( 0.0, 0.99 );
