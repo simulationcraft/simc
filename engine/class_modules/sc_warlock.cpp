@@ -518,7 +518,10 @@ namespace pets {
     {
       buff_t* demonic_synergy;
       buff_t* demonic_empowerment;
+      //buff_t* grimoire_of_service;
     } buffs;
+
+    bool is_grimoire_of_service = false;
 
     struct travel_t: public action_t
     {
@@ -1045,7 +1048,7 @@ void warlock_pet_t::create_buffs()
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .chance( 1 );
 
-  buffs.demonic_empowerment = buff_creator_t( this, "demonic_empoewrment", find_spell(193396))
+  buffs.demonic_empowerment = buff_creator_t( this, "demonic_empowerment", find_spell(193396))
 	  .add_invalidate( CACHE_HASTE )
 	  .chance(1);
 }
@@ -1082,6 +1085,10 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
       m *= 1.0 + o() -> talents.soul_harvest -> effectN( 1 ).percent();
   }
 
+  if(this->is_grimoire_of_service)
+  {
+      m *= 2.0;
+  }
   return m;
 }
 
@@ -3023,6 +3030,7 @@ struct implosion_t : public warlock_spell_t
         explosion( new implosion_aoe_t( p ) )
     {
         aoe = -1;
+        add_child( explosion );
     }
     virtual void execute() override
     {
@@ -3334,12 +3342,16 @@ struct grimoire_of_service_t: public summon_pet_t
     cooldown = p -> get_cooldown( "grimoire_of_service" );
     cooldown -> duration = data().cooldown();
     summoning_duration = data().duration();
+
   }
 
   bool init_finished() override
   {
     if ( pet )
+    {
       pet -> summon_stats = stats;
+      pet->is_grimoire_of_service = true;
+    }
 
     return summon_pet_t::init_finished();
   }
