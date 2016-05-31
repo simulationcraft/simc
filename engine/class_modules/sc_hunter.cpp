@@ -194,6 +194,7 @@ public:
   } procs;
 
   real_ppm_t* ppm_hunters_mark;
+  real_ppm_t* ppm_call_of_the_hunter;
 
   // Talents
   struct talents_t
@@ -412,6 +413,7 @@ public:
     gains( gains_t() ),
     procs( procs_t() ),
     ppm_hunters_mark( nullptr ),
+    ppm_call_of_the_hunter( nullptr ),
     talents( talents_t() ),
     specs( specs_t() ),
     glyphs( glyphs_t() ),
@@ -3236,8 +3238,21 @@ struct arcane_shot_t: public hunter_ranged_attack_t
 
 struct marked_shot_t: public hunter_ranged_attack_t
 {
+  struct call_of_the_hunter_t: public hunter_ranged_attack_t
+  {
+    call_of_the_hunter_t( hunter_t* p ):
+      hunter_ranged_attack_t( "call_of_the_hunter", p, p -> artifacts.call_of_the_hunter )
+    {
+      aoe = -1;
+      attack_power_mod.direct = 2.0;
+      weapon = &p -> main_hand_weapon;
+      weapon_multiplier = 0.0;
+    }
+  };
+
+  call_of_the_hunter_t* call_of_the_hunter;
   marked_shot_t( hunter_t* p, const std::string& options_str ):
-    hunter_ranged_attack_t( "marked_shot", p, p -> find_specialization_spell( "Marked Shot" ) )
+    hunter_ranged_attack_t( "marked_shot", p, p -> find_specialization_spell( "Marked Shot" ) ), call_of_the_hunter( nullptr )
   {
     parse_options( options_str );
 
@@ -3248,6 +3263,12 @@ struct marked_shot_t: public hunter_ranged_attack_t
 
     if ( p -> artifacts.windrunners_guidance.rank() )
       base_multiplier *= 1.0 + p -> artifacts.windrunners_guidance.percent();
+
+    if ( p -> artifacts.call_of_the_hunter.rank() )
+    {
+      call_of_the_hunter = new call_of_the_hunter_t( p );
+      add_child( call_of_the_hunter );
+    }
   }
 
   virtual void execute() override
@@ -3267,6 +3288,9 @@ struct marked_shot_t: public hunter_ranged_attack_t
       }
     }
     p() -> buffs.hunters_mark_exists -> expire();
+
+    if ( p() -> artifacts.call_of_the_hunter.rank() && p() -> ppm_call_of_the_hunter -> trigger() )
+      call_of_the_hunter -> execute();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -5169,6 +5193,7 @@ void hunter_t::init_rng()
 {
   // RPPMS
   ppm_hunters_mark = get_rppm( "hunters_mark", find_specialization_spell( "Hunter's Mark" ) );
+  ppm_call_of_the_hunter = get_rppm( "call_of_the_hunter", find_artifact_spell( "Call of the Hunter" ) );
 
   player_t::init_rng();
 }
