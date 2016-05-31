@@ -244,6 +244,14 @@ struct rogue_t : public player_t
     cooldown_t* shadow_dance;
     cooldown_t* sprint;
     cooldown_t* vanish;
+    cooldown_t* between_the_eyes;
+    cooldown_t* blind;
+    cooldown_t* cloak_of_shadows;
+    cooldown_t* riposte;
+    cooldown_t* grappling_hook;
+    cooldown_t* cannonball_barrage;
+    cooldown_t* marked_for_death;
+    cooldown_t* death_from_above;
   } cooldowns;
 
   // Gains
@@ -520,6 +528,14 @@ struct rogue_t : public player_t
     cooldowns.shadow_dance        = get_cooldown( "shadow_dance"        );
     cooldowns.sprint              = get_cooldown( "sprint"              );
     cooldowns.vanish              = get_cooldown( "vanish"              );
+    cooldowns.between_the_eyes    = get_cooldown( "between_the_eyes"    );
+    cooldowns.blind               = get_cooldown( "blind"               );
+    cooldowns.cannonball_barrage  = get_cooldown( "cannon_ball_barrage" );
+    cooldowns.cloak_of_shadows    = get_cooldown( "cloak_of_shadows"    );
+    cooldowns.death_from_above    = get_cooldown( "death_from_above"    );
+    cooldowns.grappling_hook      = get_cooldown( "grappling_hook"      );
+    cooldowns.marked_for_death    = get_cooldown( "marked_for_death"    );
+    cooldowns.riposte             = get_cooldown( "riposte"             );
 
     base.distance = 3;
     regen_type = REGEN_DYNAMIC;
@@ -588,6 +604,7 @@ struct rogue_t : public player_t
   void trigger_akaaris_soul( const action_state_t* );
   void trigger_surge_of_toxins( const action_state_t* );
   void trigger_poison_knives( const action_state_t* );
+  void trigger_true_bearing( int );
 
   double consume_cp_max() const
   { return 5.0 + as<double>( talent.deeper_stratagem -> effectN( 1 ).base_value() ); }
@@ -2012,6 +2029,16 @@ struct between_the_eyes_t : public rogue_attack_t
     crit_bonus_multiplier = 3;
     base_multiplier *= 1.0 + p -> artifact.black_powder.percent();
   }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    if ( p() -> buffs.true_bearing -> up() )
+    {
+      p() -> trigger_true_bearing( cast_state( execute_state ) -> cp );
+    }
+  }
 };
 
 // Blade Flurry =============================================================
@@ -2750,6 +2777,11 @@ struct run_through_t: public rogue_attack_t
       p() -> greed -> target = execute_state -> target;
       p() -> greed -> schedule_execute();
     }
+
+    if (p() -> buffs.true_bearing -> up())
+    {
+      p() -> trigger_true_bearing( cast_state( execute_state ) -> cp );
+    }
   }
 };
 
@@ -2990,6 +3022,11 @@ struct roll_the_bones_t : public rogue_attack_t
     timespan_t d = ( cast_state( execute_state ) -> cp + 1 ) * p() -> buffs.roll_the_bones -> data().duration();
 
     p() -> buffs.roll_the_bones -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, d );
+
+    if ( p() -> buffs.true_bearing -> up() )
+    {
+      p() -> trigger_true_bearing( cast_state( execute_state ) -> cp );
+    }
   }
 
   bool ready() override
@@ -3560,6 +3597,11 @@ struct death_from_above_t : public rogue_attack_t
     action_state_t* driver_state = driver -> get_state( execute_state );
     driver_state -> target = target;
     driver -> schedule_execute( driver_state );
+
+    if ( p() -> buffs.true_bearing -> up() )
+    {
+      p() -> trigger_true_bearing( cast_state( execute_state ) -> cp );
+    }
   }
 };
 
@@ -4326,6 +4368,24 @@ void rogue_t::trigger_alacrity( const action_state_t* s )
   const rogue_attack_state_t* rs = debug_cast<const rogue_attack_state_t*>( s );
   double chance = talent.alacrity -> effectN( 2 ).percent() * rs -> cp;
   buffs.alacrity -> trigger( 1, buff_t::DEFAULT_VALUE(), chance );
+}
+
+void rogue_t::trigger_true_bearing( int cp )
+{
+  timespan_t v = timespan_t::from_seconds( buffs.true_bearing -> default_value );
+  v *= -cp;
+  cooldowns.adrenaline_rush -> adjust( v, false );
+  cooldowns.sprint -> adjust( v, false );
+  cooldowns.between_the_eyes -> adjust( v, false );
+  cooldowns.vanish -> adjust( v, false );
+  cooldowns.blind -> adjust( v, false );
+  cooldowns.cloak_of_shadows -> adjust( v, false );
+  cooldowns.riposte -> adjust( v, false );
+  cooldowns.grappling_hook -> adjust( v, false );
+  cooldowns.cannonball_barrage -> adjust( v, false );
+  cooldowns.killing_spree -> adjust( v, false );
+  cooldowns.marked_for_death -> adjust( v, false );
+  cooldowns.death_from_above -> adjust( v, false );
 }
 
 void rogue_t::spend_combo_points( const action_state_t* state )
