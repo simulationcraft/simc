@@ -10,7 +10,6 @@
 // General: Cleanup class hierachy for pets
 //
 // Beast Mastery
-//   - Dire Beast (can have multiple buffs)
 //  Artifacts
 //   - Surge of the Stormgod: proc at pet location, figure out why damage is not reflecting beta testing
 //   - Cleanup duplicate code for Beast Cleave
@@ -19,7 +18,6 @@
 //  Talents
 //   - Sentinel (Broken in game)
 //  Artifacts
-//   - Call of the Hunter (NYI still)
 //
 // Survival
 //   - Harpoon
@@ -3401,15 +3399,21 @@ struct head_shot_t: public hunter_ranged_attack_t
 
 // Explosive Shot  ====================================================================
 
-struct explosive_shot_activate_t: public hunter_ranged_attack_t
+struct explosive_shot_t: public hunter_ranged_attack_t
 {
   player_t* initial_target;
-  explosive_shot_activate_t( hunter_t* p, const std::string& name ):
-    hunter_ranged_attack_t( name, p, p -> find_spell( 212680 ) )
+  explosive_shot_t( hunter_t* p, const std::string& options_str ):
+    hunter_ranged_attack_t( "explosive_shot", p, p -> find_talent_spell( "Explosive Shot" ) ), initial_target( nullptr )
   {
+    parse_options( options_str );
+    
     aoe = -1;
-    dual = true;
-  }
+    attack_power_mod.direct = p -> find_spell( 212680 ) -> effectN( 1 ).ap_coeff();
+    weapon = &p -> main_hand_weapon;
+    weapon_multiplier = 0.0;
+
+    travel_speed = 20.0;
+  }    
 
   virtual void execute() override
   {
@@ -3426,29 +3430,6 @@ struct explosive_shot_activate_t: public hunter_ranged_attack_t
       m /= 1 + ( initial_target -> get_position_distance( t -> x_position, t -> y_position ) ) / radius;
 
     return m;
-  }
-};
-
-struct explosive_shot_t: public hunter_ranged_attack_t
-{
-  explosive_shot_activate_t* explosive_activate;
-  explosive_shot_t( hunter_t* p, const std::string& options_str ):
-    hunter_ranged_attack_t( "explosive_shot", p, p -> find_talent_spell( "Explosive Shot" ) )
-  {
-    parse_options( options_str );
-    explosive_activate = new explosive_shot_activate_t( p, "explosion" );
-    add_child( explosive_activate );
-    cooldown -> duration = p -> find_talent_spell( "Explosive Shot" ) -> cooldown();
-
-    // FIXME - get a more accurate number
-    travel_speed = 8.0;
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    hunter_ranged_attack_t::impact( s );
-
-    explosive_activate -> execute();
   }
 };
 
