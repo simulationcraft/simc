@@ -3003,56 +3003,36 @@ struct implosion_t : public warlock_spell_t
 {
     struct implosion_aoe_t: public warlock_spell_t
     {
-        double threshold_mod;
 
       implosion_aoe_t( warlock_t* p ):
-        warlock_spell_t( "implosion_aoe", p, p -> find_spell( 196277 ) )
+        warlock_spell_t( "implosion_aoe", p, p -> find_spell( 196278 ) )
       {
         aoe = -1;
         dual = true;
         background = true;
         callbacks = false;
 
-
-        threshold_mod = 3.0;
-
         p -> spells.implosion_aoe = this;
       }
-
-      void impact( action_state_t* s ) override
-      {
-        if ( result_is_hit( s -> result ) )
-        {
-          td( s -> target ) -> soc_threshold = s -> composite_spell_power() * threshold_mod;
-        }
-
-        warlock_spell_t::impact( s );
-      }
-
     };
 
     implosion_aoe_t* explosion;
 
     implosion_t(warlock_t* p) :
-        warlock_spell_t( "implosion", p, p->talents.implosion),
+        warlock_spell_t( "implosion", p, p -> talents.implosion),
         explosion( new implosion_aoe_t( p ) )
     {
         aoe = -1;
-
-
-        add_child( explosion );
     }
-
-
     virtual void execute() override
     {
         warlock_spell_t::execute();
-        for(auto imp : p()->warlock_pet_list.wild_imps)
+        for( auto imp : p() -> warlock_pet_list.wild_imps )
         {
-            if(!imp->is_sleeping())
+            if( !imp -> is_sleeping() )
             {
-                explosion->execute();
-                imp->dismiss();
+                explosion -> execute();
+                imp -> dismiss();
             }
         }
     }
