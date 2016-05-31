@@ -1931,7 +1931,6 @@ struct hunter_secondary_pet_action_t: hunter_pet_action_t < hunter_secondary_pet
       weapon_multiplier = 0;
       school = SCHOOL_PHYSICAL;
       may_crit = true;
-      base_multiplier = 1.15;
   }
 };
 
@@ -2749,6 +2748,7 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
   {
     parse_options( options_str );
     callbacks = false;
+    cooldown -> hasted = true;
     frost = new chimaera_shot_impact_t( player, "chimaera_shot_frost", player -> find_spell( 171454 ) );
     add_child( frost );
     nature = new chimaera_shot_impact_t( player, "chimaera_shot_nature", player -> find_spell( 171457 ) );
@@ -4147,6 +4147,8 @@ struct dire_beast_t: public hunter_spell_t
     hunter_spell_t( "dire_beast", player, player -> specs.dire_beast )
   {
     parse_options( options_str );
+
+    cooldown -> hasted = true;
     harmful = false;
     hasted_ticks = false;
     may_crit = false;
@@ -4267,6 +4269,8 @@ struct kill_command_t: public hunter_spell_t
     hunter_spell_t( "kill_command", player, player -> specs.kill_command )
   {
     parse_options( options_str );
+
+    cooldown -> hasted = true;
     harmful = false;
   }
 
@@ -4326,6 +4330,8 @@ struct dire_frenzy_t: public hunter_spell_t
     hunter_spell_t( "dire_frenzy", p, p -> find_talent_spell( "Dire Frenzy" ) )
   {
     parse_options( options_str );
+
+    cooldown -> hasted = true;
     harmful = false;
   }  
   
