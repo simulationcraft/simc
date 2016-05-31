@@ -10,7 +10,6 @@
 // TODO:
 // Remove manatap/soul harvest pet multiplier bugs when they get fixed.
 // Service pets do 2x damage
-// Add the Doomguard / Infernal as a pet
 // Check resource generation execute/impact and hit requirement
 // Report which spells triggered soul conduit
 // Affliction -
@@ -18,7 +17,6 @@
 // Soul Effigy
 // Destruction -
 // Lord of Flames
-// check wild imp implementation: make sure imps are dying when they are supposed to.
 // finish demonic empowerment - needs doomguard / infernal pet implementation only
 // DEMO TALENTS: (all)
 // T1: Shadowy Inspiration, Shadowflame, Demonic Calling
@@ -518,7 +516,6 @@ namespace pets {
     {
       buff_t* demonic_synergy;
       buff_t* demonic_empowerment;
-      //buff_t* grimoire_of_service;
     } buffs;
 
     bool is_grimoire_of_service = false;
@@ -1085,9 +1082,9 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
       m *= 1.0 + o() -> talents.soul_harvest -> effectN( 1 ).percent();
   }
 
-  if(this->is_grimoire_of_service)
+  if ( is_grimoire_of_service )
   {
-      m *= 2.0;
+      m *= 1.0 + o() -> find_spell( 216187 ) -> effectN( 1 ).percent();
   }
   return m;
 }
@@ -3345,14 +3342,19 @@ struct grimoire_of_service_t: public summon_pet_t
 
   }
 
+  virtual void execute() override
+  {
+    pet -> is_grimoire_of_service = true;
+
+    summon_pet_t::execute();
+  }
+
   bool init_finished() override
   {
     if ( pet )
     {
       pet -> summon_stats = stats;
-      pet->is_grimoire_of_service = true;
     }
-
     return summon_pet_t::init_finished();
   }
 };
