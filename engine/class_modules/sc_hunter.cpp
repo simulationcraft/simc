@@ -4580,7 +4580,7 @@ struct explosive_trap_t: public hunter_spell_t
       ground_aoe = true;
       hasted_ticks = false;
       may_crit = true;
-      tick_may_crit = true;
+      tick_may_crit = false;
       trigger_gcd = p -> specs.explosive_trap -> gcd();
 
       if ( p -> talents.improved_traps -> ok() )
@@ -4592,6 +4592,17 @@ struct explosive_trap_t: public hunter_spell_t
       if ( p -> artifacts.hunters_guile.rank() )
         cooldown -> duration *= 1.0 + p -> artifacts.hunters_guile.percent();
     }
+
+  virtual double composite_attack_power() const override
+  {
+    double ap = hunter_spell_t::composite_attack_power();
+
+    // BUG - unaffected by AP granted by moknathal tactics
+    if ( p() -> buffs.moknathal_tactics -> check() )
+      ap /= 1.0 + p() -> buffs.moknathal_tactics -> check_stack_value();
+
+    return ap;
+  }
 };
 
 // Fury of the Eagle ================================================================
