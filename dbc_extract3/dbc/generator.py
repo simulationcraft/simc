@@ -1287,6 +1287,7 @@ class SpellDataGenerator(DataGenerator):
             ( 17941, 0 ),         # Agony energize
             ( 104318, 5 ),        # Wild Imp Firebolt
             ( 205196, 5 ),        # Dreadstalker Dreadbite
+            ( 226802, 3 ),        # Lord of Flames buff
 			( 196659, 3 ),        # Dimensional rift spells
 			( 196639, 3 ),
 			( 215409, 3 ),
