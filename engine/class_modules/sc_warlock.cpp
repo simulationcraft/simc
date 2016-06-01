@@ -4082,7 +4082,7 @@ void warlock_t::create_buffs()
     .default_value( sets.set( WARLOCK_DEMONOLOGY, T18, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
   buffs.conflagration_of_chaos = buff_creator_t( this, "conflagration_of_chaos", artifact.conflagration_of_chaos.data().effectN( 1 ).trigger() )
-    .chance( artifact.conflagration_of_chaos.rank() > 0 * artifact.conflagration_of_chaos.data().proc_chance() );
+    .chance( artifact.conflagration_of_chaos.rank() ? artifact.conflagration_of_chaos.data().proc_chance() : 0.0 );
 
   buffs.soul_harvest = buff_creator_t( this, "soul_harvest", find_spell( 196098 ) );
   buffs.lord_of_flames = buff_creator_t( this, "lord_of_flames", find_spell( 226802 ) )
