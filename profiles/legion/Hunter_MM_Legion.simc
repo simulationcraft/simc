@@ -14,7 +14,7 @@ actions+=/trueshot
 actions+=/barrage
 actions+=/explosive_shot
 actions+=/black_arrow
-actions+=/windburst,if=focus>50&!buff.deadeye.up
+actions+=/windburst,if=focus>50
 actions+=/marked_shot
 actions+=/aimed_shot,if=focus>80
 actions+=/arcane_shot

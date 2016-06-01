@@ -112,9 +112,24 @@ public:
   const special_effect_t* longview;
   const special_effect_t* blackness;
 
-  // Artifact abilities
-  const special_effect_t* thasdorah;
-  const special_effect_t* titanstrike;
+  struct legendary_t
+  {
+    // Survival
+    const special_effect_t* sv_feet;
+    const special_effect_t* sv_ring;
+    const special_effect_t* sv_waist;
+    const special_effect_t* wrist;
+
+    // Beast Mastery
+    const special_effect_t* bm_feet;
+    const special_effect_t* bm_ring;
+    const special_effect_t* bm_waist;
+
+    // Marksmanship
+    const special_effect_t* mm_feet;
+    const special_effect_t* mm_ring;
+    const special_effect_t* mm_waist;
+  } legendary;
 
   // Buffs
   struct buffs_t
@@ -404,8 +419,7 @@ public:
     beastlord( nullptr ),
     longview( nullptr ),
     blackness( nullptr ),
-    thasdorah( nullptr ),
-    titanstrike( nullptr ),
+    legendary( legendary_t() ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
@@ -521,7 +535,7 @@ public:
   }
 };
 
-static void do_trinket_init( hunter_t*                 r,
+static void init_special_effect( hunter_t*                 r,
                              specialization_e          spec,
                              const special_effect_t*&  ptr,
                              const special_effect_t&   effect )
@@ -537,31 +551,79 @@ static void do_trinket_init( hunter_t*                 r,
 static void beastlord( special_effect_t& effect )
 {
   hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
-  do_trinket_init( hunter, HUNTER_BEAST_MASTERY, hunter -> beastlord, effect );
+  init_special_effect( hunter, HUNTER_BEAST_MASTERY, hunter -> beastlord, effect );
 }
 
 static void longview( special_effect_t& effect )
 {
   hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
-  do_trinket_init( hunter, HUNTER_MARKSMANSHIP, hunter -> longview, effect );
+  init_special_effect( hunter, HUNTER_MARKSMANSHIP, hunter -> longview, effect );
 }
 
 static void blackness( special_effect_t& effect )
 {
   hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
-  do_trinket_init( hunter, HUNTER_SURVIVAL, hunter -> blackness, effect );
+  init_special_effect( hunter, HUNTER_SURVIVAL, hunter -> blackness, effect );
 }
 
-static void thasdorah( special_effect_t& effect )
+static void sv_feet( special_effect_t& effect )
 {
   hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
-  do_trinket_init( hunter, HUNTER_MARKSMANSHIP, hunter -> thasdorah, effect );
+  init_special_effect( hunter, HUNTER_SURVIVAL, hunter -> legendary.sv_feet, effect );
 }
 
-static void titanstrike( special_effect_t& effect )
+static void sv_ring( special_effect_t& effect )
 {
   hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
-  do_trinket_init( hunter, HUNTER_BEAST_MASTERY, hunter -> titanstrike, effect );
+  init_special_effect( hunter, HUNTER_SURVIVAL, hunter -> legendary.sv_ring, effect );
+}
+
+static void sv_waist( special_effect_t& effect )
+{
+  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
+  init_special_effect( hunter, HUNTER_SURVIVAL, hunter -> legendary.sv_waist, effect );
+}
+
+static void wrist( special_effect_t& effect )
+{
+  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
+  init_special_effect( hunter, HUNTER_SURVIVAL, hunter -> legendary.wrist, effect );
+}
+
+static void bm_feet( special_effect_t& effect )
+{
+  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
+  init_special_effect( hunter, HUNTER_BEAST_MASTERY, hunter -> legendary.bm_feet, effect );
+}
+
+static void bm_ring( special_effect_t& effect )
+{
+  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
+  init_special_effect( hunter, HUNTER_BEAST_MASTERY, hunter -> legendary.bm_ring, effect );
+}
+
+static void bm_waist( special_effect_t& effect )
+{
+  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
+  init_special_effect( hunter, HUNTER_BEAST_MASTERY, hunter -> legendary.bm_waist, effect );
+}
+
+static void mm_feet( special_effect_t& effect )
+{
+  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
+  init_special_effect( hunter, HUNTER_MARKSMANSHIP, hunter -> legendary.mm_feet, effect );
+}
+
+static void mm_ring( special_effect_t& effect )
+{
+  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
+  init_special_effect( hunter, HUNTER_MARKSMANSHIP, hunter -> legendary.mm_ring, effect );
+}
+
+static void mm_waist( special_effect_t& effect )
+{
+  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
+  init_special_effect( hunter, HUNTER_MARKSMANSHIP, hunter -> legendary.mm_waist, effect );
 }
 
 // Template for common hunter action code. See priest_action_t.
@@ -1048,15 +1110,15 @@ public:
     base_t::create_buffs();
 
     buffs.aspect_of_the_wild = buff_creator_t( this, 193530, "aspect_of_the_wild" );
-    if ( o() -> titanstrike && o() -> artifacts.wilderness_expert.rank() )
+    if ( o() -> artifacts.wilderness_expert.rank() )
       buffs.aspect_of_the_wild -> buff_duration += o() -> artifacts.wilderness_expert.time_value();
 
-    buffs.bestial_wrath = buff_creator_t( this, 19574, "bestial_wrath" ).activated( true );
+    buffs.bestial_wrath = buff_creator_t( this, 19574, "bestial_wrath" ).activated( true ).duration( timespan_t::from_seconds( 15.0 ) );
     buffs.bestial_wrath -> cooldown -> duration = timespan_t::zero();
     buffs.bestial_wrath -> default_value = buffs.bestial_wrath -> data().effectN( 1 ).percent();
     if ( o() -> talents.bestial_fury -> ok() )
       buffs.bestial_wrath -> default_value += o() -> talents.bestial_fury -> effectN( 1 ).percent();
-    if ( o() -> titanstrike && o() -> artifacts.unleash_the_beast.rank() )
+    if ( o() -> artifacts.unleash_the_beast.rank() )
       buffs.bestial_wrath -> default_value += o() -> artifacts.unleash_the_beast.percent();
 
     // Use buff to indicate whether the pet is a stampede summon
@@ -1067,11 +1129,11 @@ public:
       /*.quiet( true )*/;
 
     double cleave_value     = o() -> find_specialization_spell( "Beast Cleave" ) -> effectN( 1 ).percent();
-    if ( o() -> titanstrike && o() -> artifacts.furious_swipes.rank() )
+    if ( o() -> artifacts.furious_swipes.rank() )
       cleave_value *= 1.0 + o() -> artifacts.furious_swipes.percent();
     buffs.beast_cleave      = buff_creator_t( this, 118455, "beast_cleave" ).activated( true ).default_value( cleave_value );
     double frenzy_value     = o() -> find_talent_spell( "Dire Frenzy" ) -> effectN( 2 ).percent();
-    if ( o() -> titanstrike ) 
+    if ( o() -> artifacts.beast_master.rank() ) 
       frenzy_value += o() -> artifacts.beast_master.data().effectN( 2 ).percent();
     buffs.dire_frenzy       = buff_creator_t( this, 217200, "dire_frenzy" )
                                 .default_value ( frenzy_value )
@@ -1658,7 +1720,7 @@ struct kill_command_t: public hunter_main_pet_attack_t
   {
     hunter_main_pet_attack_t::execute();
 
-    if ( o() -> titanstrike && rng().roll( o() -> artifacts.jaws_of_thunder.percent() ) )
+    if ( rng().roll( o() -> artifacts.jaws_of_thunder.percent() ) )
       jaws_of_thunder -> execute();
   }
 
@@ -1677,8 +1739,7 @@ struct kill_command_t: public hunter_main_pet_attack_t
   {
     double am = hunter_main_pet_attack_t::action_multiplier();
 
-    // Not a bug -- Pack Leader only affects primary pet's kill command
-    if ( p() -> o() -> titanstrike && p() -> o() -> artifacts.pack_leader.rank() )
+    if ( p() -> o() -> artifacts.pack_leader.rank() )
       am *= 1.0 + p() -> o() -> artifacts.pack_leader.percent();
 
     return am;
@@ -2054,7 +2115,7 @@ struct dire_critter_t: public hunter_secondary_pet_t
     if ( o() -> talents.stomp -> ok() )
       active.stomp = new dire_beast_stomp_t( *this );
 
-    if ( o() -> titanstrike && o() -> artifacts.titans_thunder.rank() )
+    if ( o() -> artifacts.titans_thunder.rank() )
       active.titans_thunder = new actions::titans_thunder_t( this );
   }
 
@@ -2177,7 +2238,7 @@ struct hati_t: public hunter_secondary_pet_t
       school = SCHOOL_PHYSICAL;
       range = 25;
       attack_power_mod.direct  = 2.5;
-      if ( o() -> titanstrike && o() -> artifacts.jaws_of_thunder.rank() )
+      if ( o() -> artifacts.jaws_of_thunder.rank() )
         jaws_of_thunder = new jaws_of_thunder_t( p );
     }  
     
@@ -2185,7 +2246,7 @@ struct hati_t: public hunter_secondary_pet_t
     {
       hunter_secondary_pet_action_t::execute();
 
-      if ( o() -> titanstrike && rng().roll( o() -> artifacts.jaws_of_thunder.percent() ) )
+      if ( rng().roll( o() -> artifacts.jaws_of_thunder.percent() ) )
         jaws_of_thunder -> execute();
     }
 
@@ -2197,6 +2258,16 @@ struct hati_t: public hunter_secondary_pet_t
     virtual bool usable_moving() const override
     {
       return true;
+    }
+
+    virtual double action_multiplier() const override
+    {
+      double am = hunter_secondary_pet_action_t::action_multiplier();
+
+      if ( p() -> o() -> artifacts.pack_leader.rank() )
+        am *= 1.0 + p() -> o() -> artifacts.pack_leader.percent();
+
+      return am;
     }
   };
 
@@ -2229,13 +2300,13 @@ struct hati_t: public hunter_secondary_pet_t
   {
     hunter_secondary_pet_t::init_spells();
 
-    if ( o() -> titanstrike && o() -> artifacts.master_of_beasts.rank() )
+    if ( o() -> artifacts.master_of_beasts.rank() )
     {
       active.kill_command = new hati_kill_command_t( *this );
       active.beast_cleave = new hati_beast_cleave_attack_t( *this );
     }
 
-    if ( o() -> titanstrike && o() -> artifacts.titans_thunder.rank() )
+    if ( o() -> artifacts.titans_thunder.rank() )
       active.titans_thunder = new actions::titans_thunder_t( this );
   }
 
@@ -2243,16 +2314,16 @@ struct hati_t: public hunter_secondary_pet_t
   {
     hunter_secondary_pet_t::create_buffs();
 
-    buffs.bestial_wrath = buff_creator_t( this, 19574, "bestial_wrath" ).activated( true ).quiet( true );
+    buffs.bestial_wrath = buff_creator_t( this, 19574, "bestial_wrath" ).activated( true ).duration( timespan_t::from_seconds( 15.0 ) );;
     buffs.bestial_wrath -> cooldown -> duration = timespan_t::zero();
     buffs.bestial_wrath -> default_value = buffs.bestial_wrath -> data().effectN( 1 ).percent();
     if ( o() -> talents.bestial_fury -> ok() )
       buffs.bestial_wrath -> default_value += o() -> talents.bestial_fury -> effectN( 1 ).percent();
-    if ( o() -> titanstrike && o() -> artifacts.unleash_the_beast.rank() )
+    if ( o() -> artifacts.unleash_the_beast.rank() )
       buffs.bestial_wrath -> default_value += o() -> artifacts.unleash_the_beast.percent();
 
     double cleave_value     = o() -> find_specialization_spell( "Beast Cleave" ) -> effectN( 1 ).percent();
-    if ( o() -> titanstrike && o() -> artifacts.furious_swipes.rank() )
+    if ( o() -> artifacts.furious_swipes.rank() )
       cleave_value *= 1.0 + o() -> artifacts.furious_swipes.percent();
     buffs.beast_cleave      = buff_creator_t( this, 118455, "beast_cleave" ).activated( true ).default_value( cleave_value ).quiet( true );
   }  
@@ -2568,7 +2639,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
     double am = hunter_ranged_attack_t::action_multiplier();
     if ( p() -> buffs.bombardment -> up() )
       am *= 1.0 + p() -> buffs.bombardment -> data().effectN( 2 ).percent();
-    if ( p() -> titanstrike && p() -> artifacts.focus_of_the_titans.rank() )
+    if ( p() -> artifacts.focus_of_the_titans.rank() )
       am *= 1.0 + p() -> artifacts.focus_of_the_titans.percent();
     return am;
   }
@@ -2581,7 +2652,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
     if ( pet && p() -> specs.beast_cleave -> ok() )
     {
       pet -> buffs.beast_cleave -> trigger();
-      if ( p() -> titanstrike && p() -> artifacts.master_of_beasts.rank() )
+      if ( p() -> artifacts.master_of_beasts.rank() )
         p() -> hati -> buffs.beast_cleave -> trigger();
     }
     if ( result_is_hit( execute_state -> result ) )
@@ -2613,6 +2684,9 @@ struct multi_shot_t: public hunter_ranged_attack_t
       while( !p() -> pet_dire_beasts[ i++ ] -> is_sleeping() )
         p() -> active.surge_of_the_stormgod -> execute();
     }
+
+    if ( p() -> legendary.mm_feet )
+      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
   }
 
   virtual void impact( action_state_t* s ) override
@@ -2806,11 +2880,11 @@ struct cobra_shot_t: public hunter_ranged_attack_t
       int active_pets = 0, i = 0;
       while( !p() -> pet_dire_beasts[ i++ ] -> is_sleeping() )    active_pets++;
       if ( !p() -> active.pet -> is_sleeping() )                   active_pets++;
-      if ( p() -> titanstrike && !p() -> hati -> is_sleeping() )   active_pets++;
+      if ( p() -> hati && !p() -> hati -> is_sleeping() )   active_pets++;
       am *= 1.0 + active_pets * p() -> talents.way_of_the_cobra -> effectN( 1 ).percent();
     }
 
-    if ( p() -> titanstrike && p() -> artifacts.spitting_cobras.rank() )
+    if ( p() -> artifacts.spitting_cobras.rank() )
       am *= 1.0 + p() -> artifacts.spitting_cobras.percent();
 
     return am;
@@ -2858,6 +2932,9 @@ struct black_arrow_t: public hunter_ranged_attack_t
       p() -> dark_minion[ 0 ] -> summon( duration );
     else
       p() -> dark_minion[ 1 ] -> summon( duration );
+
+    if ( p() -> legendary.mm_feet )
+      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
   }
 };
 
@@ -3126,6 +3203,9 @@ struct aimed_shot_t: public hunter_ranged_attack_t
     // Proc chance missing from spell data.
     if ( legacy_of_the_windrunners && rng().roll( 0.167 ) )
       legacy_of_the_windrunners -> execute();
+
+    if ( p() -> legendary.mm_feet )
+      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
   }
 
   virtual double composite_target_da_multiplier( player_t* t ) const override
@@ -3192,6 +3272,9 @@ struct arcane_shot_t: public hunter_ranged_attack_t
         focus_multiplier *= 1.0 + p() -> artifacts.critical_focus.percent();
       p() -> resource_gain( RESOURCE_FOCUS, focus_multiplier * focus_gain, gain );
     }
+
+    if ( p() -> legendary.mm_feet )
+      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
   }
 
 
@@ -3289,6 +3372,9 @@ struct marked_shot_t: public hunter_ranged_attack_t
 
     if ( p() -> artifacts.call_of_the_hunter.rank() && p() -> ppm_call_of_the_hunter -> trigger() )
       call_of_the_hunter -> execute();
+
+    if ( p() -> legendary.mm_feet && special )
+      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3384,6 +3470,14 @@ struct head_shot_t: public hunter_ranged_attack_t
     base_aoe_multiplier = 0.5;
   }
   
+  virtual void execute() override
+  {
+    hunter_ranged_attack_t::execute();
+
+    if ( p() -> legendary.mm_feet )
+      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
+  }
+
   virtual double action_multiplier() const override
   {
     double am = hunter_ranged_attack_t::action_multiplier();
@@ -3420,6 +3514,9 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     initial_target = p() -> target;
 
     hunter_ranged_attack_t::execute();
+
+    if ( p() -> legendary.mm_feet )
+      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
   }
 
   virtual double composite_target_da_multiplier( player_t* t ) const override
@@ -3484,6 +3581,9 @@ struct sidewinders_t: hunter_ranged_attack_t
 
       trigger_steady_focus( false );
     }
+
+    if ( p() -> legendary.mm_feet )
+      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
   }
 };
 
@@ -3548,6 +3648,9 @@ struct windburst_t: hunter_ranged_attack_t
       else
         td -> debuffs.vulnerable -> trigger();
     }
+
+    if ( p() -> legendary.mm_feet )
+      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
   }
 };
 
@@ -3747,7 +3850,7 @@ struct lacerate_t: public hunter_melee_attack_t
   {
     hunter_melee_attack_t::tick( d );
 
-    if( p() -> talents.mortal_wounds -> ok() && rng().roll( p() -> talents.mortal_wounds -> proc_chance() ) )
+    if ( p() -> talents.mortal_wounds -> ok() && rng().roll( p() -> talents.mortal_wounds -> proc_chance() ) )
     {
       p() -> cooldowns.mongoose_bite -> reset( true );
       p() -> procs.hunting_companion -> occur();
@@ -4003,6 +4106,14 @@ struct barrage_t: public hunter_spell_t
     p() -> no_steady_focus();
   }
 
+ virtual void execute() override
+ {
+   hunter_spell_t::execute();
+
+    if ( p() -> legendary.mm_feet )
+      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
+ }
+
  bool usable_moving() const override
   {
     return true;
@@ -4081,6 +4192,9 @@ struct moc_t: public ranged_attack_t
   {
     p() -> no_steady_focus();
     ranged_attack_t::execute();
+
+    if ( p() -> legendary.mm_feet )
+      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
   }
 };
 
@@ -4125,7 +4239,7 @@ struct summon_pet_t: public hunter_spell_t
     pet -> type = PLAYER_PET;
     pet -> summon();
 
-    if ( p() -> titanstrike && p() -> hati )
+    if ( p() -> hati )
       p() -> hati -> summon();
 
     if ( p() -> main_hand_attack ) p() -> main_hand_attack -> cancel();
@@ -4242,7 +4356,7 @@ struct bestial_wrath_t: public hunter_spell_t
   {
     p() -> buffs.bestial_wrath  -> trigger();
     p() -> active.pet -> buffs.bestial_wrath -> trigger();
-    if ( p() -> titanstrike && p() -> artifacts.master_of_beasts.rank() )
+    if ( p() -> artifacts.master_of_beasts.rank() )
       p() -> hati -> buffs.bestial_wrath -> trigger();
     if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T17, B4 ) )
     {
@@ -4300,7 +4414,7 @@ struct kill_command_t: public hunter_spell_t
       p() -> active.pet -> active.kill_command -> execute();
       trigger_tier17_2pc_bm();
     }
-    if ( p() -> titanstrike && p() -> artifacts.master_of_beasts.rank() )
+    if ( p() -> artifacts.master_of_beasts.rank() )
       p() -> hati -> active.kill_command -> execute();
     p() -> no_steady_focus();
   }
@@ -4635,7 +4749,7 @@ struct fury_of_the_eagle_t: public hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    if( p() -> buffs.mongoose_fury -> up() )
+    if ( p() -> buffs.mongoose_fury -> up() )
       p() -> buffs.mongoose_fury -> extend_duration( p(), timespan_t::from_seconds( 5.0 ) );
   }
 
@@ -4802,7 +4916,7 @@ void hunter_t::create_pets()
     }
   }
 
-  if ( titanstrike )
+  if ( artifact_enabled() && specialization() == HUNTER_BEAST_MASTERY )
     hati = new pets::hati_t( *this );
 
   if ( talents.black_arrow -> ok() )
@@ -4828,7 +4942,7 @@ void hunter_t::init_spells()
   talents.true_aim                          = find_talent_spell( "True Aim" );
   
   talents.animal_instincts                  = find_talent_spell( "Animal Instincts" );
-  talents.way_of_the_moknathal                  = find_talent_spell( "Way of the Mok'Nathal" );
+  talents.way_of_the_moknathal              = find_talent_spell( "Way of the Mok'Nathal" );
   talents.throwing_axes                     = find_talent_spell( "Throwing Axes" );
 
   //Tier 2
@@ -5049,6 +5163,7 @@ void hunter_t::create_buffs()
   }
 
   buffs.bestial_wrath                = buff_creator_t( this, "bestial_wrath", specs.bestial_wrath )
+    .duration( timespan_t::from_seconds( 15.0 ) )
     .cd( timespan_t::zero() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     buffs.bestial_wrath -> default_value = buffs.bestial_wrath -> data().effectN( 1 ).percent();
@@ -5605,7 +5720,7 @@ double hunter_t::composite_player_multiplier( school_e school ) const
       m *= 1.0 + base.distance * factor;
   }
 
-  if( school == SCHOOL_PHYSICAL )
+  if ( school == SCHOOL_PHYSICAL )
   {
     if ( artifacts.iron_talons.rank() )
       m *= 1.0 + artifacts.iron_talons.data().effectN( 1 ).percent();
@@ -5992,8 +6107,16 @@ struct hunter_module_t: public module_t
     unique_gear::register_special_effect( 184900, beastlord );
     unique_gear::register_special_effect( 184901, longview );
     unique_gear::register_special_effect( 184902, blackness );
-    unique_gear::register_special_effect( 214812, thasdorah );
-    unique_gear::register_special_effect( 197344, titanstrike );
+    unique_gear::register_special_effect( 212574, sv_feet );
+    unique_gear::register_special_effect( 225155, sv_ring );
+    unique_gear::register_special_effect( 213154, sv_waist );
+    unique_gear::register_special_effect( 212278, bm_feet );
+    unique_gear::register_special_effect( 212329, bm_ring );
+    unique_gear::register_special_effect( 207280, bm_waist );
+    unique_gear::register_special_effect( 206889, mm_feet );
+    unique_gear::register_special_effect( 224550, mm_ring );
+    unique_gear::register_special_effect( 208912, mm_waist );
+    unique_gear::register_special_effect( 206332, wrist );
   }
 
   virtual void init( player_t* p ) const override
