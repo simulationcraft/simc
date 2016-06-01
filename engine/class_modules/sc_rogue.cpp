@@ -1691,7 +1691,7 @@ double rogue_attack_t::cost() const
 
   if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 )
   {
-    c -= p() -> artifact.fatebringer.value();
+    c += p() -> artifact.fatebringer.value();
   }
 
   if ( c <= 0 )
