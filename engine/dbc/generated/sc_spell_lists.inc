@@ -793,7 +793,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        30146, // Summon Felguard (Summon)
            0,
     },
-    // Destruction tree, 9 abilities
+    // Destruction tree, 10 abilities
     {
       116858, // Chaos Bolt
       215276, // Chaos Tear
@@ -802,6 +802,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          348, // Immolate
        29722, // Incinerate
         1454, // Life Tap
+      226802, // Lord of Flames
         5740, // Rain of Fire
       196639, // Shadowy Tear
            0,

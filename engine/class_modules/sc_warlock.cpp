@@ -8,8 +8,8 @@
 // ==========================================================================
 //
 // TODO:
+// Double check all up()/check() usage.
 // Remove manatap/soul harvest pet multiplier bugs when they get fixed.
-// Service pets do 2x damage
 // Check resource generation execute/impact and hit requirement
 // Report which spells triggered soul conduit
 // Affliction -
@@ -17,7 +17,6 @@
 // Soul Effigy
 // Destruction -
 // Lord of Flames
-// finish demonic empowerment - needs doomguard / infernal pet implementation only
 // DEMO TALENTS: (all)
 // T1: Shadowy Inspiration, Shadowflame, Demonic Calling
 // T2: Imepdning Doom, Improved Dreadstalkers, Implosion
@@ -50,6 +49,7 @@ namespace pets {
   struct dreadstalker_t;
   struct infernal_t;
   struct doomguard_t;
+  struct lord_of_flames_infernal_t;
 }
 
 struct warlock_td_t: public actor_target_data_t
@@ -106,6 +106,7 @@ public:
     static const int DIMENSIONAL_RIFT_LIMIT = 10;
     static const int INFERNAL_LIMIT = 1;
     static const int DOOMGUARD_LIMIT = 1;
+    static const int LORD_OF_FLAMES_INFERNAL_LIMIT = 3;
     std::array<pets::wild_imp_pet_t*, WILD_IMP_LIMIT> wild_imps;
     std::array<pets::t18_illidari_satyr_t*, T18_PET_LIMIT> t18_illidari_satyr;
     std::array<pets::t18_prince_malchezaar_t*, T18_PET_LIMIT> t18_prince_malchezaar;
@@ -116,6 +117,7 @@ public:
     std::array<pets::dreadstalker_t*, DREADSTALKER_LIMIT> dreadstalkers;
     std::array<pets::infernal_t*, INFERNAL_LIMIT> infernal;
     std::array<pets::doomguard_t*, DOOMGUARD_LIMIT> doomguard;
+    std::array<pets::lord_of_flames_infernal_t*, LORD_OF_FLAMES_INFERNAL_LIMIT> lord_of_flames_infernal;
   } warlock_pet_list;
 
   std::vector<std::string> pet_name_list;
@@ -519,6 +521,7 @@ namespace pets {
     } buffs;
 
     bool is_grimoire_of_service = false;
+    bool is_lord_of_flames = false;
 
     struct travel_t: public action_t
     {
@@ -967,6 +970,17 @@ struct meteor_strike_t: public warlock_pet_spell_t
   {
     parse_options( options_str );
     aoe = -1;
+  }
+
+  virtual void execute() override
+  {
+    warlock_pet_spell_t::execute();
+
+    //if ( p() -> o() -> artifact.lord_of_flames.rank() && p() -> o() -> talents.grimoire_of_supremacy -> ok() && !p() -> buffs.lord_of_flames -> up() )
+    //{ 
+    //  p() -> o() -> trigger_lof_infernal();
+    //  p() -> o() -> buffs.lord_of_flames -> trigger();
+    //}
   }
 };
 
@@ -1472,6 +1486,38 @@ struct infernal_t: public warlock_pet_t
   }
 };
 
+struct lord_of_flames_infernal_t : public warlock_pet_t
+{
+  timespan_t duration;
+
+  lord_of_flames_infernal_t( sim_t* sim, warlock_t* owner ) :
+    warlock_pet_t( sim, owner, "lord_of_flames_infernal", PET_INFERNAL )
+  {
+    duration = o() -> find_spell( 226804 ) -> duration();
+  }
+
+  virtual void init_base_stats() override
+  {
+    warlock_pet_t::init_base_stats();
+    action_list_str = "immolation,if=!ticking";
+    resources.base[RESOURCE_ENERGY] = 100;
+    melee_attack = new actions::warlock_pet_melee_t( this );
+  }
+
+  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
+  {
+    if ( name == "immolation" ) return new actions::immolation_t( this, options_str );
+
+    return warlock_pet_t::create_action( name, options_str );
+  }
+
+  void trigger()
+  {
+    if ( !o() -> buffs.lord_of_flames -> up() )
+      summon( duration );
+  }
+};
+
 struct doomguard_t: public warlock_pet_t
 {
     doomguard_t( sim_t* sim, warlock_t* owner ):
@@ -1887,17 +1933,32 @@ public:
 
   static void trigger_wild_imp( warlock_t* p )
   {
-    for ( size_t i = 0; i < p ->warlock_pet_list.wild_imps.size(); i++ )
+    for ( size_t i = 0; i < p -> warlock_pet_list.wild_imps.size(); i++ )
     {
-      if ( p ->warlock_pet_list.wild_imps[i] -> is_sleeping() )
+      if ( p -> warlock_pet_list.wild_imps[i] -> is_sleeping() )
       {
-        p ->warlock_pet_list.wild_imps[i] -> trigger();
+        p -> warlock_pet_list.wild_imps[i] -> trigger();
         p -> procs.wild_imp -> occur();
         return;
       }
     }
     //p -> sim -> errorf( "Playerd %s ran out of wild imps.\n", p -> name() );
     //assert( false ); // Will only get here if there are no available imps
+  }
+
+  static void trigger_lof_infernal( warlock_t* p )
+  {
+    int infernal_count = p -> artifact.lord_of_flames.data().effectN( 1 ).base_value();
+    int j = 0;
+
+    for ( size_t i = 0; i < p -> warlock_pet_list.lord_of_flames_infernal.size(); i++ )
+    {
+      if ( p -> warlock_pet_list.lord_of_flames_infernal[i] -> is_sleeping() )
+      {
+        p -> warlock_pet_list.lord_of_flames_infernal[i] -> trigger();
+        if ( ++j == infernal_count ) break;
+      }
+    }
   }
 };
 
@@ -2959,6 +3020,12 @@ struct summon_infernal_t : public warlock_spell_t
         p() -> warlock_pet_list.infernal[i] -> summon( infernal_duration );
       }
     }
+
+    if ( p() -> artifact.lord_of_flames.rank() && !p() -> talents.grimoire_of_supremacy -> ok() && !p() -> buffs.lord_of_flames -> up() )
+    {
+      trigger_lof_infernal( p() );
+      p() -> buffs.lord_of_flames -> trigger();
+    }
   }
 };
 
@@ -3751,7 +3818,15 @@ void warlock_t::create_pets()
     warlock_pet_list.doomguard[i] = new pets::doomguard_t( sim, this );
   }
 
-  if ( artifact.dimensional_rift )
+  if ( artifact.lord_of_flames.rank() )
+  {
+    for ( size_t i = 0; i < warlock_pet_list.lord_of_flames_infernal.size(); i++ )
+    {
+      warlock_pet_list.lord_of_flames_infernal[i] = new pets::lord_of_flames_infernal_t( sim, this );
+    }
+  }
+
+  if ( artifact.dimensional_rift.rank() )
   {
     for ( size_t i = 0; i < warlock_pet_list.shadowy_tear.size(); i++ )
     {
@@ -4010,7 +4085,8 @@ void warlock_t::create_buffs()
     .chance( artifact.conflagration_of_chaos.rank() > 0 * artifact.conflagration_of_chaos.data().proc_chance() );
 
   buffs.soul_harvest = buff_creator_t( this, "soul_harvest", find_spell( 196098 ) );
-  buffs.lord_of_flames = buff_creator_t( this, "lord_of_flames", find_spell( 226802 ) );
+  buffs.lord_of_flames = buff_creator_t( this, "lord_of_flames", find_spell( 226802 ) )
+    .tick_behavior( BUFF_TICK_NONE );
 
   //demonology buffs
   //buffs.shadowy_inspiration = buff_creator_t( this, "shadowy_inspiration", talents.shadowy_inspiration );
