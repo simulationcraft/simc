@@ -1751,7 +1751,7 @@ struct kill_command_t: public hunter_main_pet_attack_t
 struct flanking_strike_t: public hunter_main_pet_attack_t
 {
   flanking_strike_t( hunter_main_pet_t* p ):
-    hunter_main_pet_attack_t( "flanking_strike", p, p -> o() -> find_spell ( 202800 ) ) //FIXME: 
+    hunter_main_pet_attack_t( "flanking_strike", p, p -> find_spell( 204740 ) )
   {
     attack_power_mod.direct = 2.5; //data is in the tooltip
     background = true;
