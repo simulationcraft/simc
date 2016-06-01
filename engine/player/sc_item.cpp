@@ -1599,7 +1599,7 @@ bool item_t::decode_use_effect()
 
   special_effect_t effect( this );
 
-  if ( special_effect::parse_special_effect_encoding( effect, option_use_str ) )
+  if ( ! special_effect::parse_special_effect_encoding( effect, option_use_str ) )
   {
     sim -> errorf( "%s unable to parse special effect '%s' on item '%s'",
         player -> name(), option_use_str.c_str(), name() );
