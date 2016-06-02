@@ -3469,28 +3469,15 @@ struct death_from_above_driver_t : public rogue_attack_t
 {
   action_t* ability;
 
-  death_from_above_driver_t( rogue_t* p ) :
-    rogue_attack_t( "death_from_above_driver", p, p -> talent.death_from_above )
+  death_from_above_driver_t( rogue_t* p , action_t* finisher) :
+    rogue_attack_t( "death_from_above_driver", p, p -> talent.death_from_above ),
+    ability( finisher )
   {
     callbacks = tick_may_crit = false;
     quiet = dual = background = harmful = true;
     attack_power_mod.direct = 0;
     base_dd_min = base_dd_max = 0;
     base_costs[ RESOURCE_ENERGY ] = 0;
-    switch ( p -> specialization() )
-    {
-      case ROGUE_ASSASSINATION:
-        ability = new envenom_t( p, "" );
-        break;
-      case ROGUE_SUBTLETY:
-        ability = new eviscerate_t( p, "" );
-        break;
-      case ROGUE_OUTLAW:
-        ability = new run_through_t( p, "" );
-        break;
-      default:
-        assert( 0 );
-    }
   }
 
   void tick( dot_t* d ) override
@@ -3503,6 +3490,10 @@ struct death_from_above_driver_t : public rogue_attack_t
     cast_state( ability_state ) -> cp = cast_state( d -> state ) -> cp;
     new ( *sim ) secondary_ability_trigger_t( ability_state );
 
+    // In game, the Ruthlessness proc that is awarded on the initial DfA is
+    // lost as the subsequent finisher is performed -- mimicking that here.
+    p()->resource_loss(RESOURCE_COMBO_POINT, 1);
+
     p() -> buffs.death_from_above -> expire();
   }
 };
@@ -3512,8 +3503,7 @@ struct death_from_above_t : public rogue_attack_t
   death_from_above_driver_t* driver;
 
   death_from_above_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "death_from_above", p, p -> talent.death_from_above, options_str ),
-    driver( new death_from_above_driver_t( p ) )
+    rogue_attack_t( "death_from_above", p, p -> talent.death_from_above, options_str )
   {
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
@@ -3523,6 +3513,29 @@ struct death_from_above_t : public rogue_attack_t
     dot_duration = timespan_t::zero();
 
     aoe = -1;
+
+    // Create appropriate finisher for the players spec. Associate its stats
+    // with the DfA's stats.
+    action_t* finisher;
+    switch (p->specialization())
+    {
+    case ROGUE_ASSASSINATION:
+      finisher = new envenom_t( p, "" );
+      finisher -> stats = player -> get_stats( "envenom_dfa", finisher );
+      break;
+    case ROGUE_SUBTLETY:
+      finisher = new eviscerate_t( p, "" );
+      finisher -> stats = player -> get_stats( "eviscerate_dfa", finisher );
+      break;
+    case ROGUE_OUTLAW:
+      finisher = new run_through_t( p, "" );
+      finisher -> stats = player -> get_stats( "run_through_dfa", finisher );
+      break;
+    default:
+      assert(0);
+    }
+    stats -> add_child( finisher->stats );
+    driver = new death_from_above_driver_t( p, finisher );
   }
 
   bool procs_ruthlessness() const override
@@ -3578,6 +3591,14 @@ struct death_from_above_t : public rogue_attack_t
 
     adjust_attack( player -> main_hand_attack, oor_delay );
     adjust_attack( player -> off_hand_attack, oor_delay );
+
+    // DfA spell used to be implemented as a DoT where the finisher would
+    // trigger on the first tick. This is no longer the case, but as a bandaid fix,
+    // we're going to continue to model it as one, so force the DfA driver to
+    // behave like a DoT.
+    driver->base_tick_time = oor_delay;
+    driver->dot_duration = oor_delay;
+
 /*
     // Apparently DfA is out of range for ~0.8 seconds during the "attack", so
     // ensure that we have a swing timer of at least 800ms on both hands. Note
