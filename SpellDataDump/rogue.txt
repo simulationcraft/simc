@@ -940,7 +940,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=6402)     : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 18 | Target: Self(1)
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Agonizing Poison (200803)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Poison Knives (192380), Agonizing Poison (200803)
 Description      : Increases the application chance of Deadly Poison and Wound Poison by $s1%.
 
 Name             : Ruthlessness (id=14161) [Spell Family (8), Passive] 
@@ -1230,7 +1230,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=20803)    : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 500000000 | Scaled Value: 5e+08 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 500000000 | Scaled Value: 5e+008 | Misc Value: 127 | Target: Self(1)
 Description      : Fatal attacks instead reduce you to 7% of your maximum health. For $45182d afterward, you take $45182s1% reduced damage. Cannot trigger more often than once per $45181d.
 
 Name             : Master of Subtlety (id=31666) [Spell Family (8), Hidden] 
@@ -1796,10 +1796,10 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68022)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.50000 | Target: Self(1)
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Envenom (32645), Deadly Poison (113780), Shadow Blade (121473), Shadow Blade Off-hand (121474), Agonizing Poison (200803)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Envenom (32645), Deadly Poison (113780), Shadow Blade (121473), Shadow Blade Off-hand (121474), Poison Knives (192380), Agonizing Poison (200803)
 #2 (id=68023)    : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.50000 | Misc Value: 22 | Target: Self(1)
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Shadow Blade (121473), Shadow Blade Off-hand (121474), Agonizing Poison (200803)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Shadow Blade (121473), Shadow Blade Off-hand (121474), Poison Knives (192380), Agonizing Poison (200803)
 #3 (id=92122)    : Apply Aura (6) | Dummy (4)
                    Base Value: 350 | Scaled Value: 350 | Target: Self(1)
 #4 (id=322527)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 1 (108)
@@ -1902,7 +1902,7 @@ Attributes       : ........ ........ ........ ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=68390)    : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy(6)
-                   Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Mutilate Off-Hand (27576), Spore Cloud (32643), Envenom (32645), Fan of Knives (51723), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade (121473), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Poisoned Knife (185565), Eviscerate (196819), Finality: Eviscerate (197393), Shuriken Storm (197835), Agonizing Poison (200803)
+                   Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Mutilate Off-Hand (27576), Spore Cloud (32643), Envenom (32645), Fan of Knives (51723), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade (121473), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Poisoned Knife (185565), Poison Knives (192380), Eviscerate (196819), Finality: Eviscerate (197393), Shuriken Storm (197835), Agonizing Poison (200803)
 #2 (id=68391)    : Apply Aura (6) | Unknown effect sub type (343)
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy(6)
 #3 (id=87043)    : Apply Aura (6) | Stalked (68)
@@ -2079,7 +2079,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=119249)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Target: Self(1)
-Description      : $?c3[Abilities cost ${$112942m1/-2}% less Energy while Stealth or Shadow Dance are active.][Abilities cost $112942s1% less Energy while Stealth is active.]
+Description      : $?c3[Abilities cost $112942m1% less Energy while Stealth or Shadow Dance are active.][Abilities cost $112942s1% less Energy while Stealth is active.]
 
 Name             : Leeching Poison (id=108211) [Spell Family (8)] 
 Class            : Rogue
@@ -2902,7 +2902,7 @@ Attributes       : ........ ........ ..x..... ...x...x   ....x... ..x..... .....
                  : Disable player procs (112), Disable target procs (113)
 Effects          :
 #1 (id=269037)   : Apply Aura (6) | Unknown effect sub type (103)
-                   Base Value: -10000000 | Scaled Value: -1e+07 | SP Coefficient: 1.00000 | Target: Self(1)
+                   Base Value: -10000000 | Scaled Value: -1e+007 | SP Coefficient: 1.00000 | Target: Self(1)
 #2 (id=317950)   : Apply Aura (6) | Unknown effect sub type (275)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self(1)
                    Affected Spells: Pick Pocket (921), Cheap Shot (1833), Sap (6770), Shadowstrike (185438), Pick Pocket (192986), Symbols of Death (212283), Death (227151)
@@ -3069,7 +3069,7 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=270001)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 (avg=0, dl=0.4) | AP Coefficient: 0.55500 | Radius: 3 - 9 yards | Target: Unknown(91) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 (avg=0, dl=0.4) | AP Coefficient: 1.00000 | Radius: 3 - 9 yards | Target: Unknown(91) -> AOE enemy (instant)(16)
 Description      : $@spelldesc185767
 Tooltip          : $@spellaura185767
 
@@ -3123,6 +3123,7 @@ Name             : Poison Knives (id=192380) [Spell Family (8)]
 Class            : Rogue
 School           : Nature
 Range            : 100 yards
+Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Mastery: Potent Poisons (76803), Vendetta (79140), Master Alchemist (192318), Surge of Toxins (192425), Master Poisoner (196864), Agonizing Poison (200803)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3653,10 +3654,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=289047)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 10 | Scaled Value: 10 | Target: Self(1)
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Kingsbane (222062)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Poison Knives (192380), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Kingsbane (222062)
 #2 (id=289048)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self(1)
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Kingsbane (222062)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Poison Knives (192380), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Kingsbane (222062)
 #3 (id=289049)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 1 (108)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Crippling Poison (3408), Crippling Poison (3409), Leeching Poison (108211), Leeching Poison (112961)
@@ -3670,8 +3671,8 @@ Class            : Subtlety Rogue
 School           : Physical
 Spell Level      : 27
 Proc Chance      : 100%
-Proc Flags       : ..x..... ........ ........ ........ 
-                 : White Melee
+Proc Flags       : ..x.x... ........ ........ ........ 
+                 : White Melee, Yellow Melee
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4295,27 +4296,26 @@ Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...
 Effects          :
 #1 (id=295687)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 5 | Scaled Value: 5 | Target: Enemy(6)
-                   Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Mutilate (5374), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Mutilate Off-Hand (27576), Spore Cloud (32643), Envenom (32645), Fan of Knives (51723), Deadly Poison (113780), Shuriken Toss (114014), Poisoned Knife (185565), Kingsbane (192759), Kingsbane (192760), Shuriken Storm (197835), Agonizing Poison (200803), Kingsbane (222062)
+                   Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Mutilate (5374), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Mutilate Off-Hand (27576), Spore Cloud (32643), Envenom (32645), Fan of Knives (51723), Deadly Poison (113780), Shuriken Toss (114014), Poisoned Knife (185565), Poison Knives (192380), Kingsbane (192759), Kingsbane (192760), Shuriken Storm (197835), Agonizing Poison (200803), Kingsbane (222062)
 Description      : $@spelldesc200802
 Tooltip          : Taking $w1% increased damage from the poisoning Rogue's abilities.
 
-Name             : Blood Sweat (id=200806) [Spell Family (8), Passive] 
+Name             : Exsanguinate (id=200806) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
-Proc Chance      : 20%
-Proc Flags       : ........ ........ ..x..... ........ 
-                 : Periodic
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+Range            : 5 yards
+GCD              : 1 seconds
+Cooldown         : 45 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=295690)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
-Description      : Each time your Rupture or Garrote deals damage, the effect has a $s1% chance to spread to an additional nearby target.
+#1 (id=295690)   : Dummy (3)
+                   Base Value: 400 | Scaled Value: 400 | Target: Enemy(6)
+Description      : Twist your blades into the target's wounds, causing your Bleed effects on them to bleed out $s1% faster.
 
 Name             : Curse of the Dreadblades (Artifact) (id=202665) [Spell Family (8)] 
 Class            : Rogue
@@ -4438,7 +4438,9 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=299195)   : Apply Aura (6) | Dummy (4)
                    Base Value: 202895 | Scaled Value: 202895 | Target: Self(1)
-Description      : When Saber Slash strikes an additional time, your next Pistol Shot may be replaced with Blunderbuss.
+#2 (id=341775)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 33 | Scaled Value: 33 | Target: Self(1)
+Description      : When Saber Slash strikes an additional time, there is a $s2% chance that your next Pistol Shot will be replaced with Blunderbuss.
 
 |Tinterface\icons\inv_weapon_rifle_07.blp:24|t |cFFFFFFFFBlunderbuss|r
 $@spelldesc202895

@@ -134,7 +134,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=237)      : Apply Aura (6) | Unknown effect sub type (103)
-                   Base Value: -90000000 | Scaled Value: -9e+07 | Target: Self(1)
+                   Base Value: -90000000 | Scaled Value: -9e+007 | Target: Self(1)
 Description      : Fade out, removing all your threat for $d.
 Tooltip          : Reduced threat level.
 
@@ -608,7 +608,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=11689)    : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 1500000000 | Scaled Value: 1.5e+09 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 1500000000 | Scaled Value: 1.5e+009 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
 Description      : Upon death, you become the Spirit of Redemption for $27827d. You cannot move, attack, be attacked, or be targeted by any spells or effects, and your healing spells cost no mana. When the effect ends, you die.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
@@ -706,7 +706,7 @@ Range            : 30 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 15 seconds
-Affecting spells : Lucidity (137323), Voidform (194249), Lingering Insanity (197937)
+Affecting spells : Shadow Priest (137033), Lucidity (137323), Voidform (194249), Lingering Insanity (197937)
 Attributes       : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -720,9 +720,9 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 32592 | Radius: 10 yards | Target: AOE enemy (instant)(16)
 #3 (id=22167)    : Trigger Spell: Mass Dispel (64)
                    Base Value: 72734 | Scaled Value: 72734 | Trigger Spell: 72734 | Target: Self(1)
-Description      : Dispels magic in a $32375a1 yard radius, removing all harmful Magic from 10 friendly targets and $32592m1 beneficial Magic $leffect:effects; from 10 enemy targets. Potent enough to remove Magic that is normally undispellable.$?s185905[
-
-|cFFFFFFFFGenerates $s4 Insanity.|r][]
+#4 (id=341753)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self(1)
+Description      : Dispels magic in a $32375a1 yard radius, removing all harmful Magic from $s4 friendly targets and $32592m1 beneficial Magic $leffect:effects; from $s4 enemy targets. Potent enough to remove Magic that is normally undispellable.
 
 Name             : Shadow Word: Death (id=32379) [Spell Family (6)] 
 Class            : Shadow Priest
@@ -785,7 +785,7 @@ School           : Holy
 Spell Level      : 70
 Range            : 30 yards
 Stance Mask      : 0x08000000
-Affecting spells : Lucidity (137323), Voidform (194249), Lingering Insanity (197937)
+Affecting spells : Shadow Priest (137033), Lucidity (137323), Voidform (194249), Lingering Insanity (197937)
 Triggered by     : Mass Dispel (32375)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ......x.   ........ ........ ........ ........ 
@@ -895,7 +895,7 @@ Cooldown         : 180 seconds
 Category         : 1417
 Stance Mask      : 0x08000000
 Affecting spells : Glyph of the Sha (147776), Item - Priest T18 Shadow 2P Bonus (186980), Voidform (194249), Lingering Insanity (197937)
-Attributes       : ........ ........ x.x..... ........   x....... ........ ........ ....x... 
+Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ....x... 
                  : ........ ........ ...x.... ......x.   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -1266,14 +1266,14 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ......x. ..x.....   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ....x...   ........ ........ ........ ....x... 
+                 : ........ .....x.. ........ ....x...   ........ ........ ..xx.... ....x... 
 Effects          :
 #1 (id=40042)    : Apply Aura (6) | Unknown effect sub type (118)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 127 | Target: Friend(21)
 #2 (id=40043)    : Dummy (3)
                    Base Value: 40 | Scaled Value: 40
 #3 (id=188025)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 100000000 | Scaled Value: 1e+08 | Misc Value: 127 | Target: Friend(21)
+                   Base Value: 100000000 | Scaled Value: 1e+008 | Misc Value: 127 | Target: Friend(21)
 Description      : Calls upon a guardian spirit to watch over the friendly target for $d, increasing healing received by $s1%$?s159599[][ and preventing the target from dying by sacrificing itself.  This sacrifice terminates the effect and heals the target for $s2% of maximum health]. Castable while stunned.
 
 Massive damage amounts will kill the target despite this effect.
@@ -1725,11 +1725,10 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=68099)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | Misc Value: 2 | Target: Self(1)
-#2 (id=90768)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 120 | Scaled Value: 120 | Target: Self(1)
-Description      : Increases the healing transferred through Atonement by $77484s1%.
+#1 (id=68099)    : Apply Aura (6) | Add Percent Modifier: Spell Effect 1 (108)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | Misc Value: 3 | Target: Self(1)
+                   Affected Spells: Atonement (81749)
+Description      : Increases the healing transferred through Atonement by $77484s1.1%.
 
 Name             : Mastery: Echo of Light (id=77485) [Spell Family (6), Passive] 
 Class            : Holy Priest
@@ -1830,6 +1829,7 @@ Spell Level      : 24
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x.x..... ........ 
                  : Hostile Spell, Periodic
+Affecting spells : Mastery: Absolution (77484)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1844,7 +1844,7 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60
 Description      : Plea, Power Word: Shield, Shadow Mend, and Power Word: Radiance also apply Atonement to your target for $194384s3 sec.
 
-When you deal spell damage, you instantly heal all targets affected by Atonement for $s1% of the damage done.
+When you deal spell damage, you instantly heal all targets affected by Atonement for $s1.1% of the damage done.
 
 Name             : Power Word: Barrier (id=81782) [Spell Family (6)] 
 Class            : Priest
@@ -2324,7 +2324,7 @@ Cooldown         : 60 seconds
 Category         : 1417
 Stance Mask      : 0x08000000
 Affecting spells : Item - Priest T18 Shadow 2P Bonus (186980), Voidform (194249), Lingering Insanity (197937)
-Attributes       : ........ ........ x.x..... ........   x....... ........ ........ ....x... 
+Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ....x... 
                  : ........ ........ ...x.... ......x.   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -2524,7 +2524,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1602 | Target: Self(1)
                    Affected Spells: Mind Blast (8092), Void Bolt (205448)
 #3 (id=191081)   : Apply Aura (6) | Unknown effect sub type (379)
-                   Base Value: -20 | Scaled Value: -20 | Target: Self(1)
+                   Base Value: -36 | Scaled Value: -36 | Target: Self(1)
 #4 (id=191082)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #5 (id=191083)   : Apply Aura (6) | Dummy (4)
@@ -2567,8 +2567,8 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179715)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#1 (id=179715)   : Apply Aura (6) | Unknown effect sub type (379)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self(1)
 #2 (id=191076)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=191077)   : Apply Aura (6) | Dummy (4)
@@ -2595,6 +2595,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #14 (id=260955)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#15 (id=341749)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Holy Priest core passive
 
 Name             : Discipline Priest (id=137032) [Spell Family (6), Passive, Hidden] 
@@ -2608,17 +2610,17 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179716)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+#1 (id=179716)   : Apply Aura (6) | Unknown effect sub type (379)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self(1)
+#2 (id=191072)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
                    Affected Spells: Shadow Word: Pain (589)
-#2 (id=191072)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+#3 (id=191073)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Shadow Word: Pain (589)
-#3 (id=191073)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
+#4 (id=191074)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
                    Base Value: 4000 | Scaled Value: 4000 | Misc Value: 1 | Target: Self(1)
                    Affected Spells: Shadow Word: Pain (589)
-#4 (id=191074)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #5 (id=191075)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=260957)   : Apply Aura (6) | Dummy (4)
@@ -2645,6 +2647,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #17 (id=291037)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#18 (id=341750)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Discipline Priest core passive
 
 Name             : Shadow Priest (id=137033) [Spell Family (6), Passive, Hidden] 
@@ -2664,7 +2668,7 @@ Effects          :
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 26 | Target: Self(1)
 #3 (id=191069)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: 75 | Scaled Value: 75 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Power Word: Shield (17), Shadow Mend (186263), Shadow Mend (187464)
+                   Affected Spells: Power Word: Shield (17), Mass Dispel (32375), Mass Dispel (32592), Shadow Mend (186263), Shadow Mend (187464)
 #4 (id=191070)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: -25 | Scaled Value: -25 | Target: Self(1)
                    Affected Spells: Shadow Mend (186263), Shadow Mend (187464)
@@ -3612,7 +3616,7 @@ Cooldown         : 60 seconds
 Category         : 1417
 Stance Mask      : 0x08000000
 Affecting spells : Item - Priest T18 Shadow 2P Bonus (186980), Voidform (194249), Lingering Insanity (197937)
-Attributes       : ........ ........ x.x..... ........   x....... ........ ........ ....x... 
+Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ....x... 
                  : ........ ........ ...x.... ......x.   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -4373,7 +4377,7 @@ Attributes       : ........ ........ x......x ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ ........ ........ 
 Effects          :
 #2 (id=320862)   : Apply Aura (6) | Unknown effect sub type (379)
                    Base Value: -100 | Scaled Value: -100 | Target: Self(1)
@@ -4394,7 +4398,7 @@ Effects          :
 #11 (id=320871)   : Apply Aura (6) | Unknown effect sub type (40)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
 #12 (id=320872)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 145000000 | Scaled Value: 1.45e+08 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 145000000 | Scaled Value: 1.45e+008 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
 Description      : The Priest becomes the Spirit of Redemption for $d. The Spirit of Redemption cannot move, attack, be attacked or targeted by any spells or effects. While in this form the Priest can cast any healing spell free of cost. 
 Tooltip          : You have become more powerful than anyone can possibly imagine.
 

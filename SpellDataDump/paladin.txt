@@ -163,7 +163,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Friend(21)
 #2 (id=384)      : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Friend(21)
-#3 (id=293300)   : Apply Aura (6) | Unknown effect sub type (171)
+#3 (id=293300)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 0 | Scaled Value: 0 | Target: Friend(21)
 Description      : Places a blessing on a party or raid member, granting immunity to movement impairing effects $?s199325[and increasing movement speed by $199325m1% ][]for $d.
 Tooltip          : Immune to movement impairing effects. $?s199325[Movement speed increased by $199325m1%][]
@@ -514,13 +514,16 @@ Effects          :
                    Affected Spells: Aura of Mercy (183415), Aura of Sacrifice (183416), Devotion Aura (183425), Vindicator (200373), Retribution Aura (203797), Aura of Mercy (210291)
 #2 (id=311516)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#3 (id=341678)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Target: Self(1) -> Self(1)
+                   Affected Spells: Aura of Mercy (210291)
 Description      : Empowers your chosen aura and increases its radius to ${$183425m2*(1+$m1/100)} yards for $d.$?s183425[
 
 Devotion Aura: no longer split over the number of allies in the aura.][]$?s183416[
 
 Aura of Sacrifice: causes $183416s4% of all effective healing you deal to be replicated on all allies in the aura.][]$?s183415[
 
-Aura of Mercy: has no target limit.][]
+Aura of Mercy: has no target limit and healing increased by $s3%.][]
 Tooltip          : Aura effectiveness and radius increased.
 
 Name             : Avenging Wrath (id=31842) [Spell Family (10)] 
@@ -1323,12 +1326,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=68009)    : Apply Aura (6) | Add Flat Modifier: Spell Tick Time (107)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.75000 | Misc Value: 8 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Misc Value: 8 | Target: Self(1)
                    Affected Spells: Judgment (197277)
 #2 (id=92088)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 175 | Scaled Value: 175 | Target: Self(1)
+                   Base Value: 150 | Scaled Value: 150 | Target: Self(1)
 #3 (id=318075)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.50000 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000 | Target: Self(1)
                    Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222)
 Description      : Increases Judgment damage by $s3%, and causes Judgment to increase damage taken from your Holy Power spenders by $s1%.
 
@@ -2152,7 +2155,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179710)   : Apply Aura (6) | Unknown effect sub type (379)
-                   Base Value: 300 | Scaled Value: 300 | Target: Self(1)
+                   Base Value: 220 | Scaled Value: 220 | Target: Self(1)
 #2 (id=191096)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11 | Target: Self(1)
                    Affected Spells: Judgment (20271), Holy Shock (20473), Holy Shock (25912), Consecration (26573), Avenger's Shield (31935), Crusader Strike (35395), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Light of the Protector (184092), Blade of Justice (184575), Judgment (197277), Divine Hammer (198034), Divine Hammer (198137), Blade of Wrath (202270), Consecration (205228), Hand of the Protector (213652), Execution Sentence (213757), Judgment (214222)
@@ -2304,18 +2307,18 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179713)   : Apply Aura (6) | Unknown effect sub type (178)
                    Base Value: 400 | Scaled Value: 400 | Target: Self(1)
-#2 (id=191084)   : Apply Aura (6) | Unknown effect sub type (149)
+#2 (id=191084)   : Apply Aura (6) | Unknown effect sub type (379)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self(1)
+#3 (id=191085)   : Apply Aura (6) | Unknown effect sub type (149)
                    Base Value: 70 | Scaled Value: 70 | Misc Value: 10 | Misc Value 2: 0x4 | Target: Self(1)
-#3 (id=191085)   : Apply Aura (6) | Unknown effect sub type (404)
+#4 (id=191086)   : Apply Aura (6) | Unknown effect sub type (404)
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
-#4 (id=191086)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 70 | Scaled Value: 70
-                   Affected Spells: Crusader Strike (35395)
 #5 (id=191087)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 70 | Scaled Value: 70
+                   Affected Spells: Crusader Strike (35395)
+#6 (id=260927)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 70 | Scaled Value: 70
                    Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222)
-#6 (id=260927)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #7 (id=260928)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #8 (id=260929)   : Apply Aura (6) | Dummy (4)
@@ -2343,6 +2346,8 @@ Effects          :
 #19 (id=296748)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #20 (id=296788)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#21 (id=341751)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Holy Paladin core passive
 
@@ -2789,7 +2794,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Radius: 10 yards | Target: Self(1) -> Self(1)
 Description      : Restores $210291s1 health to $210291s2 injured allies within $210291A1 yds every $t1 sec.
 
-While Aura Mastery is active, heals all allies in the aura instead of $210291s2.
+While Aura Mastery is active, heals all allies in the aura instead of $210291s2 and healing is increased by $31821s3%.
 Tooltip          : Restores health to $210291s2 injured allies within $210291A1 yards every $t1 sec.
 
 Name             : Aura of Sacrifice (id=183416) [Spell Family (10), Passive] 
@@ -2810,7 +2815,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=265639)   : Apply Aura (6) | Unknown effect sub type (395)
                    Base Value: 10 | Scaled Value: 10 | SP Coefficient: 1.00000 | Misc Value: 6777 | Target: Self(1) -> Self(1)
-#2 (id=311460)   : Apply Aura (6) | Dummy (4)
+#2 (id=311460)   : Apply Party Aura (35) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1) -> Self(1)
 #3 (id=311461)   : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75
@@ -2959,7 +2964,7 @@ Class            : Protection Paladin
 School           : Holy
 Spell Level      : 12
 Cooldown         : 15 seconds
-Affecting spells : Paladin (137026), Consecration (188370), Scatter the Shadows (209223)
+Affecting spells : Paladin (137026), Consecration (188370)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3258,8 +3263,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=291061)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
-                   Affected Spells: Divine Storm (224239), Templar's Verdict (224266)
-Description      : Increases the damage done by Templar's Verdict and Divine Storm by $s1%.
+                   Affected Spells: Templar's Verdict (224266)
+#2 (id=341690)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
+                   Affected Spells: Divine Storm (224239)
+Description      : Increases the damage done by Templar's Verdict by $s1%, and the damage done by Divine Storm by $s2%.
 
 Name             : Fist of Justice (id=198054) [Spell Family (10), Passive] 
 Class            : Paladin
@@ -3478,7 +3486,8 @@ School           : Holy
 Spell Level      : 1
 Range            : 12 yards
 GCD              : 1.5 seconds
-Cooldown         : 8 seconds
+Duration         : 8 seconds
+Cooldown         : 12 seconds
 Affecting spells : Paladin (137026), Deliver the Justice (186927)
 Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3490,10 +3499,12 @@ Effects          :
 #1 (id=298131)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=298132)   : Weapon Damage% (31)
-                   Base Value: 120 | Scaled Value: 1.2 | Target: Enemy(6)
+                   Base Value: 240 | Scaled Value: 2.4 | Target: Enemy(6)
 #3 (id=298133)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: holy_power | Target: Self(1)
-Description      : Strikes an enemy with the Blade of Wrath, dealing $sw2 Holy damage.
+#4 (id=341688)   : Apply Aura (6) | Periodic Damage: holy every 2 seconds (3)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.50000 | Target: Enemy(6)
+Description      : Strikes an enemy with the Blade of Wrath, dealing $sw2 Holy damage, and an additional $o4 Holy damage over $d.
 
 |cFFFFFFFFGenerates $s3 Holy Power.
 
@@ -3543,7 +3554,7 @@ Class            : Paladin
 School           : Holy
 Spell Level      : 1
 GCD              : 1.5 seconds
-Proc Chance      : 25%
+Proc Chance      : 20%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -3556,9 +3567,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=299834)   : Apply Aura (6) | Proc Trigger Spell: The Fires of Justice (42)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 209785 | Target: Self(1)
-#2 (id=323063)   : Apply Aura (6) | Unknown effect sub type (453)
-                   Base Value: -1000 | Scaled Value: -1000 | Misc Value: 1627 | Target: Self(1)
-Description      : Reduces the cooldown of Crusader Strike by ${$m2/-1000} sec and gives it a $h% chance to reduce the cost of your next damaging or healing Holy Power ability by $209785s1.
+#2 (id=323063)   : Apply Aura (6) | Dummy (4)
+                   Base Value: -1500 | Scaled Value: -1500 | Misc Value: 1627 | Target: Self(1)
+#3 (id=341689)   : Apply Aura (6) | Unknown effect sub type (454)
+                   Base Value: -33 | Scaled Value: -33 | Misc Value: 1627 | Target: Self(1)
+Description      : Reduces the cooldown of Crusader Strike by ${$m2/-1000}.1 sec and gives it a $h% chance to reduce the cost of your next damaging or healing Holy Power ability by $209785s1.
 
 Name             : Greater Blessing of Might (id=203528) [Spell Family (10)] 
 Class            : Retribution Paladin
@@ -3706,7 +3719,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5975 | Target: Self(1)
 #4 (id=300645)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 6015 | Target: Self(1)
-Description      : Each enemy within $s1 yards reduces the damage that you take by $s2%. This effect has diminishing returns.
+#5 (id=341679)   : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self(1)
+Description      : Each enemy within $s1 yards reduces the damage that you take and increases the damage that you deal by $s2%. This effect has diminishing returns.
 
 Name             : Retribution Aura (id=203797) [Spell Family (10), Passive] 
 Class            : Paladin
@@ -3765,7 +3780,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=301049)   : Apply Aura (6) | Unknown effect sub type (103)
-                   Base Value: -70000000 | Scaled Value: -7e+07 | Misc Value: 127 | Target: Unknown(57)
+                   Base Value: -70000000 | Scaled Value: -7e+007 | Misc Value: 127 | Target: Unknown(57)
 Description      : Places a blessing on a party or raid member, temporarily removing all threat from the target and causing all additional threat generated to be transferred to you. Lasts $d.
 Tooltip          : All threat temporarily removed and additional threat transferred to the casting Paladin.
 
@@ -3882,7 +3897,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=301163)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 11 | Target: Self(1)
-Description      : Shield of the Righteous reduces the remaining cooldown on Light of the Protector by $s1 sec.
+Description      : Shield of the Righteous reduces the remaining cooldown on Light of the Protector and Avenging Wrath by $s1 sec.
 
 Name             : Final Stand (id=204077) [Spell Family (10), Passive] 
 Class            : Paladin
@@ -4025,7 +4040,7 @@ Effects          :
 Description      : Reduces Physical damage you take by $s2%, and instantly counterattacks any enemy that strikes you in melee combat for $205202sw1 Physical damage.  Lasts $d.
 Tooltip          : Counterattacking all melee attacks.
 
-Name             : Eye For An Eye (id=205202) [Spell Family (4)] 
+Name             : Eye for an Eye (id=205202) [Spell Family (4)] 
 Class            : Paladin
 School           : Physical
 Spell Level      : 1
@@ -4206,7 +4221,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2
 Description      : Heal yourself and up to $s2 friendly targets within $A1 yards for $s1. Maximum $s3 charges.
 
-Name             : Equality (id=210220) [Spell Family (10)] 
+Name             : Holy Wrath (id=210220) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
 Spell Level      : 10
@@ -4236,7 +4251,7 @@ Class            : Paladin
 School           : Holy
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Aura Mastery (31821)
+Affecting spells : Aura Mastery (31821), 
 Triggered by     : Aura of Mercy (183415)
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4246,7 +4261,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=311373)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.20000 | Radius: 0 - 10 yards | Target: Custom(18) -> AOE friendly(31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.15000 | Radius: 0 - 10 yards | Target: Custom(18) -> AOE friendly(31)
 #2 (id=311377)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
 Description      : $@spelldesc183415
@@ -4284,7 +4299,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=316419)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 99999999 | Scaled Value: 1e+08 - 1.9e+08 | Value Range: 90000001 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 99999999 | Scaled Value: 1e+008 - 1.9e+008 | Value Range: 90000001 | Misc Value: 127 | Target: Self(1)
 #2 (id=316420)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
 #3 (id=316427)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
@@ -4324,7 +4339,7 @@ School           : Holy
 Spell Level      : 1
 Range            : 40 yards
 Cooldown         : 10 seconds
-Affecting spells : Paladin (137026), Consecration (188370), Scatter the Shadows (209223)
+Affecting spells : Paladin (137026), Consecration (188370)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4571,7 +4586,7 @@ Class            : Paladin
 School           : Physical
 Spell Level      : 1
 Internal Cooldown: 0.1 seconds
-Proc Chance      : 20%
+Proc Chance      : 15%
 Proc Flags       : ....x... ..x.x.x. x.x..... ........ 
                  : Yellow Melee, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -4623,7 +4638,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=335563)   : Weapon Damage% (31)
-                   Base Value: 225 | Scaled Value: 2.25 | Target: Enemy(6)
+                   Base Value: 180 | Scaled Value: 1.8 | Target: Enemy(6)
 #2 (id=335564)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : $@spelldesc53385
@@ -4642,7 +4657,7 @@ Attributes       : ........ ........ x.x..... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=335615)   : Weapon Damage% (31)
-                   Base Value: 485 | Scaled Value: 4.85 | Target: Enemy(6)
+                   Base Value: 390 | Scaled Value: 3.9 | Target: Enemy(6)
 #2 (id=335616)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #3 (id=335617)   : Dummy (3)
@@ -4675,7 +4690,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Target: Self(1)
 Description      : Increases your damage and haste by $s1% for $d.
 
-Each Holy Power spent during Sanctified Wrath increases damage and haste by an additional $s1%.
+Each Holy Power spent during Crusade increases damage and haste by an additional $s1%.
 
 Maximum $u stacks.
 Tooltip          : Damage and haste increased by $s1%.

@@ -184,7 +184,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=390)      : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.14000 | Mechanic: Bleed | Target: Enemy(6)
-#2 (id=117625)   : Dummy (3)
+#2 (id=117625)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy(6)
 #3 (id=117626)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | Target: Enemy(6)
@@ -195,7 +195,7 @@ Description      : Finishing move that causes Bleed damage over $d.  Damage incr
    3 points: ${$floor(3*$<rip>*12)} damage
    4 points: ${$floor(4*$<rip>*12)} damage
    5 points: ${$floor(5*$<rip>*12)} damage
-Tooltip          : Bleeding for $w1 damage every $t1 seconds.
+Tooltip          : Bleeding for $w1 damage every $t1 sec.
 Variables        : $mastery=$?s77493[${((100+$77493m1)/100)}][${1.00}]
 $rip=${0.14*$AP*$<mastery>*(1+$@versadmg)}
 
@@ -429,11 +429,11 @@ Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1854)     : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 0x1 | Target: Self(1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 0x7f | Target: Self(1)
 #2 (id=117350)   : Energize Power (30)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: energy | Target: Self(1)
-Description      : Instantly restores $s2 Energy, and increases the Physical damage of all your attacks by $s1% for their full duration. Lasts $d.
-Tooltip          : Physical abilities deal $s1% additional damage for their full duration.
+Description      : Instantly restores $s2 Energy, and increases the damage of all your attacks by $s1% for their full duration. Lasts $d.
+Tooltip          : Attacks deal $s1% additional damage for their full duration.
 
 Name             : Shred (id=5221) [Scaling Spell (3), Spell Family (7)] 
 Class            : Feral Druid
@@ -517,7 +517,6 @@ Class            : Druid
 School           : Nature
 Spell Level      : 1
 Stance Mask      : 0x00000008
-Affecting spells : Glyph of the Orca (114333)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -990,11 +989,11 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 5.30000 | Chain Multiplier: 0.7 | Target: Enemy(6)
 #2 (id=12791)    : Energize Power (30)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: energy | Target: Self(1)
-Description      : Finishing move that causes Physical damage per combo point and consumes up to 25 additional Energy to increase damage by up to 100%.$?s1079[
+Description      : Finishing move that causes Physical damage per combo point and consumes up to 25 additional Energy to increase damage by up to 100%.
 
-When used on targets below 25% health, Ferocious Bite will also refresh the duration of your Rip on your target.][]
+$?s202031[]?s1079[When used on targets below 25% health, ][]$?s1079[Ferocious Bite will also refresh the duration of your Rip on your target.
 
-   1 point  : ${$m1*1/5} damage
+][]   1 point  : ${$m1*1/5} damage
    2 points: ${$m1*2/5} damage
    3 points: ${$m1*3/5} damage
    4 points: ${$m1*4/5} damage
@@ -1178,7 +1177,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=23639)    : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.25000 | Target: Friend(21)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.20000 | Target: Friend(21)
 Description      : Heals the target for $o1 over $d. When Lifebloom expires or is dispelled, the target is instantly healed for $33778s1. Limit 1.
 Tooltip          : Healing $w1 every second.
 Blooms for additional healing when effect expires or is dispelled.
@@ -1850,10 +1849,10 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68113)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Target: Self(1)
-                   Affected Spells: Rip (1079), Rake (1822), Thrash (106830), Rake (155722), Shadow Thrash (210687), Ashamane's Frenzy (210723)
+                   Affected Spells: Rip (1079), Rake (1822), Thrash (106830), Rake (155722), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210723)
 #2 (id=90630)    : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Misc Value: 22 | Target: Self(1)
-                   Affected Spells: Rip (1079), Rake (1822), Thrash (106830), Rake (155722), Shadow Thrash (210687), Ashamane's Frenzy (210723)
+                   Affected Spells: Rip (1079), Rake (1822), Thrash (106830), Rake (155722), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210723)
 #3 (id=133796)   : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | Target: Self(1)
 Description      : Increases the damage done by your Cat Form bleed abilities by $s1%.
@@ -1871,7 +1870,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=68119)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75000 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | Target: Self(1)
 #2 (id=339232)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self(1)
 #3 (id=339244)   : Apply Aura (6) | Dummy (4)
@@ -1889,7 +1888,7 @@ GCD              : 1.5 seconds
 Cooldown         : 6 seconds
 Stance Mask      : 0x00000010
 Mechanic         : Bleed
-Affecting spells : Bear Form (5487), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Guardian Overrides Passive (106734), Berserk (106951), Clearcasting (135700), Druid (137009), Bloodletting (165699), Thrash (192090), Astral Influence (197524), Jagged Claws (200409), Sharpened Claws (202110), Luffa Wrappings (208681), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Bear Form (5487), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Guardian Overrides Passive (106734), Berserk (106951), Druid (137009), Bloodletting (165699), Thrash (192090), Astral Influence (197524), Jagged Claws (200409), Sharpened Claws (202110), Luffa Wrappings (208681), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ .......x ........ ........ 
@@ -2465,7 +2464,7 @@ Effects          :
                    Affected Spells: Prowl (5215), Prowl (102547)
 #2 (id=310506)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -50 | Scaled Value: -50 | SP Coefficient: 1.00000 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Moonfire (155625), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028)
+                   Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Moonfire (155625), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028), Ashamane's Rip (210705)
 #3 (id=310507)   : Apply Aura (6) | Unknown effect sub type (418)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Rake (1822), Shred (5221), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Fury of Elune (202770)
@@ -2816,7 +2815,7 @@ Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .x...
 Effects          :
 #1 (id=117476)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -50 | Scaled Value: -50 | SP Coefficient: 1.00000 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Moonfire (155625), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881)
+                   Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Moonfire (155625), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Ashamane's Rip (210705)
 #2 (id=219222)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Rake (1822), Shred (5221), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Fury of Elune (202770)
@@ -2982,7 +2981,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=127571)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self(1)
-                   Affected Spells: Aquatic Form Passive (5421)
 Description      : Your Aquatic Form now appears as an Orca.
 
 Name             : Incarnation (Passive) (id=117679) [Spell Family (7)] 
@@ -3248,7 +3246,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=177253)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Savage Roar (52610), Thrash (77758), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028)
+                   Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Savage Roar (52610), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028), Shadow Thrash (210687), Ashamane's Rip (210705)
 Description      : $@spelldesc16864
 Tooltip          : Cat Form abilities have $s1% reduced Energy cost.
 
@@ -3274,7 +3272,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11 | Target: Self(1)
                    Affected Spells: Mighty Bash (5211), Maul (6807), Incarnation: Tree of Life (33891), Mangle (33917), Thrash (77758), Pulverize (80313), Skull Bash (93985), Cenarion Ward (102351), Cenarion Ward (102352), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Skull Bash (106839), Pulverize (158792), Thrash (192090), Swipe (213771)
 #5 (id=191165)   : Apply Aura (6) | Unknown effect sub type (379)
-                   Base Value: 300 | Scaled Value: 300 | Target: Self(1)
+                   Base Value: 220 | Scaled Value: 220 | Target: Self(1)
 #6 (id=320062)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #7 (id=320063)   : Apply Aura (6) | Dummy (4)
@@ -3382,26 +3380,26 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179695)   : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self(1)
-#2 (id=191150)   : Apply Aura (6) | Unknown effect sub type (178)
+#2 (id=191150)   : Apply Aura (6) | Unknown effect sub type (379)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self(1)
+#3 (id=191151)   : Apply Aura (6) | Unknown effect sub type (178)
                    Base Value: 400 | Scaled Value: 400 | Target: Self(1)
-#3 (id=191151)   : Apply Aura (6) | Unknown effect sub type (332)
-                   Base Value: 102693 | Scaled Value: 102693 | Target: Self(1)
 #4 (id=191152)   : Apply Aura (6) | Unknown effect sub type (332)
+                   Base Value: 102693 | Scaled Value: 102693 | Target: Self(1)
+#5 (id=191153)   : Apply Aura (6) | Unknown effect sub type (332)
                    Base Value: 33891 | Scaled Value: 33891 | Target: Self(1)
-#5 (id=191153)   : Apply Aura (6) | Dummy (4)
+#6 (id=260747)   : Apply Aura (6) | Dummy (4)
                    Base Value: 108294 | Scaled Value: 108294 | Target: Self(1)
                    Affected Spells: Incapacitating Roar (99)
-#6 (id=260747)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+#7 (id=260748)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
                    Affected Spells: Moonfire (8921), Sunfire (93402), Moonfire (164812), Sunfire (164815), Sunfire (197630)
-#7 (id=260748)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+#8 (id=260749)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Moonfire (8921), Sunfire (93402), Moonfire (164812), Sunfire (164815), Sunfire (197630)
-#8 (id=260749)   : Apply Aura (6) | Unknown effect sub type (416)
+#9 (id=260750)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
                    Affected Spells: Hurricane (16914), Hurricane (42231)
-#9 (id=260750)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #10 (id=260751)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #11 (id=260752)   : Apply Aura (6) | Dummy (4)
@@ -3427,6 +3425,8 @@ Effects          :
 #21 (id=290669)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #22 (id=290670)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#23 (id=341748)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Restoration Druid core passive
 
@@ -3872,7 +3872,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=216593)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self(1)
-Description      : Bristle your fur, causing all attacks against you to generate Rage for $d.
+Description      : Bristle your fur, causing you to generate Rage based on damage taken for $d.
 Tooltip          : Generating Rage from taking damage.
 
 Name             : Critical Strikes (Passive) (id=157447) [Passive] 
@@ -4516,7 +4516,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=274309)   : School Damage: astral (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.60315 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.60316 | Target: Enemy(6)
 Description      : $@spelldesc187875
 
 Name             : Fey Moonwing (id=188083) 
@@ -4681,10 +4681,10 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.15000 | Mechanic: Bleed | Target: Enemy(6)
 #2 (id=301092)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
-                   Affected Spells: Rip (1079), Rake (1822), Solar Wrath (5176), Shred (5221), Maul (6807), Moonfire (8921), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Sunfire (93402), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Swipe (213771), Bloody Paws (214995)
+                   Affected Spells: Rip (1079), Rake (1822), Solar Wrath (5176), Shred (5221), Maul (6807), Moonfire (8921), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Sunfire (93402), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Ashamane's Rip (210705), Swipe (213771), Bloody Paws (214995)
 #3 (id=301093)   : Apply Aura (6) | Unknown effect sub type (343)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
-                   Affected Spells: Rip (1079), Rake (1822), Solar Wrath (5176), Shred (5221), Maul (6807), Moonfire (8921), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Sunfire (93402), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Swipe (213771), Bloody Paws (214995)
+                   Affected Spells: Rip (1079), Rake (1822), Solar Wrath (5176), Shred (5221), Maul (6807), Moonfire (8921), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Sunfire (93402), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Ashamane's Rip (210705), Swipe (213771), Bloody Paws (214995)
 Description      : $@spelldesc77758
 Tooltip          : Suffering $w1 damage every $t1 sec.
 
@@ -4932,10 +4932,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=290202)   : Apply Aura (6) | Add Flat Modifier: Spell Range (107)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 5 | Target: Self(1)
-                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Hurricane (16914), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Hurricane (42231), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Lunar Beam (204069), Force of Nature (205636), Shadow Thrash (210687), Ashamane's Frenzy (210723), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771)
+                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Hurricane (16914), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Hurricane (42231), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Lunar Beam (204069), Force of Nature (205636), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210723), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771)
 #2 (id=314659)   : Apply Aura (6) | Unknown effect sub type (153)
                    Base Value: 5 | Scaled Value: 5 | Target: Self(1)
-                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Stellar Flare (202347), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Lunar Beam (204069), Force of Nature (205636), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771)
+                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Stellar Flare (202347), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Lunar Beam (204069), Force of Nature (205636), Ashamane's Rip (210705), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771)
 #3 (id=317501)   : Apply Aura (6) | Add Flat Modifier: Spell Radius (107)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 6 | Target: Self(1)
                    Affected Spells: Incapacitating Roar (99), Tranquility (740), Typhoon (61391), Thrash (77758), Displacer Beast (102280), Swipe (106785), Thrash (106830), Typhoon (132469), Tranquility (157982), Brutal Slash (202028), Lunar Beam (204069), Shadow Thrash (210687), Brambles (213709), Swipe (213771)
@@ -5161,10 +5161,10 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=294998)   : Apply Aura (6) | Unknown effect sub type (453)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1576 | Target: Self(1)
+                   Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1576 | Target: Self(1)
 #2 (id=294999)   : Apply Aura (6) | Modify Cooldown Charge (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1576 | Target: Self(1)
-Description      : Swiftmend now has ${$m2+1} charges.
+Description      : Swiftmend now has ${$m2+1} charges, and its cooldown is reduced by ${$m1/-1000} sec.
 
 Name             : Cultivation (id=200389) [Spell Family (7)] 
 Class            : Druid
@@ -5236,7 +5236,7 @@ Effects          :
 #1 (id=295761)   : Apply Aura (6) | Scale% (61)
                    Base Value: 25 | Scaled Value: 25 | Target: Self(1)
 #2 (id=297120)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 100000000 | Scaled Value: 1e+08 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 100000000 | Scaled Value: 1e+008 | Misc Value: 127 | Target: Self(1)
 #3 (id=297121)   : Apply Aura (6) | Unknown effect sub type (147)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2071
 #4 (id=297122)   : Apply Aura (6) | Unknown effect sub type (443)
@@ -5279,7 +5279,7 @@ Description      : Your melee abilities in Cat Form have a $s1% increased critic
 Name             : Brutal Slash (id=202028) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
-Resource         : 45 Energy
+Resource         : 20 Energy
 Spell Level      : 1
 Range            : 8 yards
 GCD              : 1 seconds
@@ -5314,8 +5314,8 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=297731)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | SP Coefficient: 1.00000 | Misc Value: 5 | Target: Self(1)
-Description      : Ferocious Bite extends the duration of your Rip by $s1 seconds per combo point spent.
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Target: Self(1)
+Description      : Ferocious Bite always refreshes the duration of Rip.
 
 Name             : Jagged Wounds (id=202032) [Spell Family (7), Passive] 
 Class            : Druid
@@ -5330,10 +5330,10 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=297732)   : Apply Aura (6) | Add Percent Modifier: Unknown 2 (108)
                    Base Value: -33 | Scaled Value: -33 | SP Coefficient: 1.00000 | Misc Value: 19 | Target: Self(1)
-                   Affected Spells: Rip (1079), Rake (1822), Thrash (106830), Rake (155722), Shadow Thrash (210687)
+                   Affected Spells: Rip (1079), Rake (1822), Thrash (106830), Rake (155722), Shadow Thrash (210687), Ashamane's Rip (210705)
 #2 (id=297777)   : Apply Aura (6) | Add Percent Modifier: Spell Duration (108)
                    Base Value: -33 | Scaled Value: -33 | SP Coefficient: 1.00000 | Misc Value: 1 | Target: Self(1)
-                   Affected Spells: Rip (1079), Rake (1822), Thrash (106830), Rake (155722), Shadow Thrash (210687)
+                   Affected Spells: Rip (1079), Rake (1822), Thrash (106830), Rake (155722), Shadow Thrash (210687), Ashamane's Rip (210705)
 Description      : Your Rip, Rake, and Thrash abilities deal the same damage as normal, but in $s1% less time.
 
 Name             : Elune's Guidance (id=202060) [Spell Family (8)] 
@@ -5642,7 +5642,7 @@ Effects          :
 #1 (id=298913)   : Apply Aura (6) | Periodic Energize Power: every 2.5 seconds (24)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 8 | Target: Self(1)
 Description      : Grants ${$m1/10} Astral Power every $t1 sec.
-Tooltip          : Grants $s1 Astral Power every $t1 sec.
+Tooltip          : Grants ${$m1/10} Astral Power every $t1 sec.
 
 Name             : New Moon (Artifact) (id=202767) [Spell Family (7)] 
 Class            : Druid
@@ -5871,7 +5871,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=300974)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : Thrash also generates ${$203961s1/10} Rage each time it deals damage over time while at 3 stacks.
+Description      : Thrash also generates ${$203961s1/10} Rage each time it deals damage.
 
 Name             : Galactic Guardian (id=203964) [Spell Family (7), Passive] 
 Class            : Druid
@@ -6309,7 +6309,7 @@ Name             : Ashamane's Bite (id=210702) [Spell Family (7), Passive]
 Class            : Druid
 School           : Physical
 Range            : 100 yards
-Proc Chance      : 101%
+Proc Chance      : 3%
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -6322,32 +6322,30 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=312115)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
-Description      : Ferocious Bite has a chance to awaken the Spirit of Ashamane, which inflicts a Shadow duplicate of your Rip on your target.
+Description      : Your combo point generators against targets bleeding from your Rip have a $h% chance to awaken the Spirit of Ashamane, which inflicts a Shadowy duplicate of that Rip on the target.
 
 Name             : Ashamane's Rip (id=210705) [Spell Family (7)] 
 Class            : Druid
 School           : Shadow
 Spell Level      : 22
 Range            : 100 yards
-GCD              : 1 seconds
 Duration         : 24 seconds
-Stance Mask      : 0x00000001
-Mechanic         : Bleed
+Affecting spells : Mastery: Razor Claws (77493), Incarnation: King of the Jungle (102543), Berserk (106951), Clearcasting (135700), Bloodletting (165699), Thrash (192090), Astral Influence (197524), Jagged Wounds (202032), Razor Fangs (210570), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
-                 : ........ ........ .......x .....x..   ........ ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=312119)   : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | Mechanic: Bleed | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.14000 | Target: Enemy(6)
 #2 (id=312120)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy(6)
 #3 (id=312121)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | Target: Enemy(6)
 Description      : $@spelldesc210702
-Tooltip          : Bleeding for $w1 damage every $t1 seconds.
+Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 Variables        : $mastery=$?s77493[${((100+$77493m1)/100)}][${1.00}]
 $rip=${0.14*$AP*$<mastery>*(1+$@versadmg)}
 
@@ -6453,7 +6451,7 @@ Class            : Druid
 School           : Astral
 Range            : 100 yards
 Attributes       : ........ ........ x....... x..x....   .....x.. ........ ........ ........ 
-                 : ........ ......x. ...x.... ........   ........ ........ ........ ........ 
+                 : ........ ......x. ...x.... ......x.   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ...x.... ........ ........ 

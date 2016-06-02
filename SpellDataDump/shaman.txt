@@ -717,7 +717,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=37246)    : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.65000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.50000 | Target: Enemy(6)
 Description      : Casts a bolt of lightning at the target for $s1 Nature damage.
 
 Name             : Chain Lightning Overload (id=45297) [Spell Family (11)] 
@@ -1251,7 +1251,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=53887)    : Apply Aura (6) | Add Percent Modifier: Spell Critical Damage (108)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Misc Value: 15 | Target: Self(1)
-                   Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Fire Nova (8349), Flametongue Attack (10444), Spore Cloud (32642), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Frozen Rune Weapon 2 (51385), Frozen Rune Weapon 3 (51386), Frozen Rune Weapon 4 (51387), Frozen Rune Weapon 5 (51388), Thunderstorm (51490), Lava Burst (51505), Earthquake Totem (61882), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Item - Shaman T18 Enhancement 4P Bonus (185872), Lightning Bolt (187837), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Shield (192106), Lightning Shield (192109), Liquid Magma (192231), Flametongue (194084), Frostbrand (196834), Frost Shock (196840), Lightning Rod (197568), Volcanic Inferno (205533), Icefury (210714), Lightning Bolt (214815), Lightning Bolt Overload (214816), Icefury Overload (219271)
+                   Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Fire Nova (8349), Flametongue Attack (10444), Spore Cloud (32642), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Frozen Rune Weapon 2 (51385), Frozen Rune Weapon 3 (51386), Frozen Rune Weapon 4 (51387), Frozen Rune Weapon 5 (51388), Thunderstorm (51490), Lava Burst (51505), Earthquake Totem (61882), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Item - Shaman T18 Enhancement 4P Bonus (185872), Lightning Bolt (187837), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Shield (192106), Lightning Shield (192109), Liquid Magma (192231), Flametongue (194084), Frostbrand (196834), Frost Shock (196840), Volcanic Inferno (205533), Icefury (210714), Lightning Bolt (214815), Lightning Bolt Overload (214816), Icefury Overload (219271)
 Description      : Your damaging critical strikes deal ${$m1+200}% damage instead of the usual 200%.
 
 Name             : Riptide (id=61295) [Spell Family (11)] 
@@ -1611,7 +1611,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=68090)    : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.60000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.40000 | Target: Enemy(6)
 #2 (id=287602)   : Energize Power (30)
                    Base Value: 9 | Scaled Value: 9 | Misc Value: maelstrom | Target: Self(1)
 Description      : You hurl molten lava at the target, dealing $s1 Fire damage. If your Flame Shock is on the target, Lava Burst will deal a critical strike.
@@ -2508,7 +2508,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=140233)   : School Damage: elemental (2)
-                   Base Value: 0 | Scaled Value: 0 (avg=3.18, dl=0.15) | SP Coefficient: 4.50000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 (avg=3.18, dl=0.15) | SP Coefficient: 6.00000 | Target: Enemy(6)
 Description      : $@spelldesc117014
 
 Name             : Spiritual Insight (id=123099) [Spell Family (11), Passive] 
@@ -2589,7 +2589,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179722)   : Apply Aura (6) | Unknown effect sub type (379)
-                   Base Value: 300 | Scaled Value: 300 | Target: Self(1)
+                   Base Value: 220 | Scaled Value: 220 | Target: Self(1)
 #2 (id=190240)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
                    Affected Spells: Lightning Bolt (403), Stormstrike (17364), Windstrike (115356), Lightning Bolt (187837), Crash Lightning (187874), Lightning Bolt (188196), Flametongue (193796), Lightning Bolt (214815), Lightning Bolt Overload (214816)
@@ -2638,16 +2638,16 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179723)   : Apply Aura (6) | Unknown effect sub type (178)
                    Base Value: 400 | Scaled Value: 400 | Target: Self(1)
-#2 (id=191046)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+#2 (id=191046)   : Apply Aura (6) | Unknown effect sub type (379)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self(1)
+#3 (id=191047)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
                    Affected Spells: Lava Burst (51505)
-#3 (id=191047)   : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
+#4 (id=191048)   : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 18 | Target: Self(1)
                    Affected Spells: Lava Surge (77756)
-#4 (id=191048)   : Apply Aura (6) | Unknown effect sub type (232)
+#5 (id=191049)   : Apply Aura (6) | Unknown effect sub type (232)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 26 | Target: Self(1)
-#5 (id=191049)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=260997)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #7 (id=260998)   : Apply Aura (6) | Dummy (4)
@@ -2675,6 +2675,8 @@ Effects          :
 #18 (id=314051)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #19 (id=314058)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#20 (id=341752)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Restoration Shaman core passive
 
@@ -4532,22 +4534,7 @@ Effects          :
 #1 (id=289624)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Enemy(6)
 Description      : $@spelldesc210689
-Tooltip          : Casting Shaman's attacks deal $s1% additional damage to enemies within $197568A1 yds.
-
-Name             : Magnitude (id=197210) [Spell Family (11), Passive, Hidden] 
-Class            : Shaman
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=289625)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : When an enemy with your Flame Shock takes damage from Earthquake, gouts of Magma will erupt at their feet, dealing additional damage.
+Tooltip          : Casting Shaman's Lightning Bolt and Chain Lightning also deal $210689s2% of their damage to the Lightning Rod.
 
 Name             : Fury of Air (id=197211) [Spell Family (11)] 
 Class            : Shaman
@@ -4597,7 +4584,7 @@ School           : Nature
 Duration         : 3 seconds
 Triggered by     : Fury of Air (197211)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ......x.   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4643,40 +4630,6 @@ Effects          :
 #1 (id=290118)   : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 4 | Target: Self(1)
 Description      : Resurgence always triggers when you heal a target below $s1% health.
-
-Name             : Lightning Rod (id=197568) [Spell Family (11)] 
-Class            : Shaman
-School           : Nature
-Range            : 100 yards
-Proc Chance      : 100%
-Proc Flags       : ........ .....x.. .x.x.... ........ 
-                 : AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Elemental Fury (60188)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ .....x..   ........ ........ ........ .....xx. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=290283)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
-Description      : $@spelldesc210689
-
-Name             : Magnitude (id=197576) [Spell Family (11)] 
-Class            : Shaman
-School           : Fire
-Range            : 100 yards
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=290298)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.07500 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
-Description      : Deal damage if flame shocked
 
 Name             : Landslide (id=197992) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
@@ -5404,7 +5357,6 @@ Windfury damage increased by $s2%.
 Name             : Stormkeeper (Artifact) (id=205495) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
-Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 60 seconds
@@ -5516,12 +5468,12 @@ Attributes       : ........ x....... ........ .......x   ........ ........ ...x.
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ....x...   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ....x...   ........ ........ ..xx.... ....x... 
 Effects          :
 #1 (id=306879)   : Apply Aura (6) | Unknown effect sub type (133)
                    Base Value: 10 | Scaled Value: 10 | Target: Friend(21)
 #2 (id=322959)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 1000000000 | Scaled Value: 1e+09 | Misc Value: 127 | Target: Friend(21)
+                   Base Value: 1000000000 | Scaled Value: 1e+009 | Misc Value: 127 | Target: Friend(21)
 Description      : $@spelldesc207399
 Tooltip          : Health increased by $s1%.
 
@@ -5723,7 +5675,7 @@ Description      : Summons a Tailwind Totem near the caster for $d that increase
 
 Name             : Lightning Rod (id=210689) [Spell Family (11), Passive] 
 Class            : Shaman
-School           : Physical
+School           : Nature
 GCD              : 1.5 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
@@ -5737,10 +5689,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=312100)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
 #2 (id=341410)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
-Description      : Your Lightning Bolt and Chain Lightning have a $s1% chance to make your target a Lightning Rod for $197209d. When you deal damage with Lightning Bolt or Chain Lightning, they additionally deal $s2% of their damage to all Lightning Rods.
+Description      : Your Lightning Bolt and Chain Lightning have a $s1% chance to make the primary target a Lightning Rod for $197209d. When you deal damage with Lightning Bolt or Chain Lightning, they deal an additional $s2% of their damage to all Lightning Rods.
 
 Name             : Aftershock (id=210707) [Spell Family (11), Passive] 
 Class            : Shaman
@@ -5927,6 +5879,93 @@ Effects          :
 #3 (id=312355)   : Apply Aura (6) | Unknown effect sub type (260)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 754 | Target: Enemy(6)
 Description      : Transforms the enemy into a compy for $d. While hexed, the victim is incapacitated, and cannot attack or cast spells. Damage will cancel the effect. Limit 1. Only works on Humanoids and Beasts.
+Tooltip          : Incapacitated.
+
+Name             : Hex (id=211004) [Spell Family (11)] 
+Class            : Shaman
+School           : Nature
+Spell Level      : 42
+Range            : 30 yards
+Cast Time        : 1.7 seconds
+GCD              : 1.5 seconds
+Duration         : 60 seconds
+Cooldown         : 30 seconds
+Category         : 1655
+Proc Chance      : 100%
+Mechanic         : Unknown(141)
+Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
+Affecting spells : Spiritwalker's Grace (79206), Lucidity (137326), Item - Shaman WoD PvP Elemental 2P Bonus (171109)
+Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
+                 : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
+                 : ........ ........ ........ .....x..   .....x.. ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#2 (id=312546)   : Apply Aura (6) | Pacify Silence (60)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
+#3 (id=312547)   : Apply Aura (6) | Unknown effect sub type (260)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 754 | Target: Enemy(6)
+Description      : Transforms the enemy into a spider for $d. While hexed, the victim is incapacitated, and cannot attack or cast spells. Damage will cancel the effect. Limit 1. Only works on Humanoids and Beasts.
+Tooltip          : Incapacitated.
+
+Name             : Hex (id=211010) [Spell Family (11)] 
+Class            : Shaman
+School           : Nature
+Spell Level      : 42
+Range            : 30 yards
+Cast Time        : 1.7 seconds
+GCD              : 1.5 seconds
+Duration         : 60 seconds
+Cooldown         : 30 seconds
+Category         : 1655
+Proc Chance      : 100%
+Mechanic         : Unknown(141)
+Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
+Affecting spells : Spiritwalker's Grace (79206), Lucidity (137326), Item - Shaman WoD PvP Elemental 2P Bonus (171109)
+Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
+                 : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
+                 : ........ ........ ........ .....x..   .....x.. ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#2 (id=312554)   : Apply Aura (6) | Pacify Silence (60)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
+#3 (id=312555)   : Apply Aura (6) | Unknown effect sub type (260)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 754 | Target: Enemy(6)
+Description      : Transforms the enemy into a snake for $d. While hexed, the victim is incapacitated, and cannot attack or cast spells. Damage will cancel the effect. Limit 1. Only works on Humanoids and Beasts.
+Tooltip          : Incapacitated.
+
+Name             : Hex (id=211015) [Spell Family (11)] 
+Class            : Shaman
+School           : Nature
+Spell Level      : 42
+Range            : 30 yards
+Cast Time        : 1.7 seconds
+GCD              : 1.5 seconds
+Duration         : 60 seconds
+Cooldown         : 30 seconds
+Category         : 1655
+Proc Chance      : 100%
+Mechanic         : Unknown(141)
+Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
+Affecting spells : Spiritwalker's Grace (79206), Lucidity (137326), Item - Shaman WoD PvP Elemental 2P Bonus (171109)
+Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
+                 : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
+                 : ........ ........ ........ .....x..   .....x.. ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#2 (id=312564)   : Apply Aura (6) | Pacify Silence (60)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
+#3 (id=312565)   : Apply Aura (6) | Unknown effect sub type (260)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 754 | Target: Enemy(6)
+Description      : Transforms the enemy into a cockroach for $d. While hexed, the victim is incapacitated, and cannot attack or cast spells. Damage will cancel the effect. Limit 1. Only works on Humanoids and Beasts.
 Tooltip          : Incapacitated.
 
 Name             : Ancestral Vision (id=212048) [Spell Family (11)] 
