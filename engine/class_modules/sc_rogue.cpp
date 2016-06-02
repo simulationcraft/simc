@@ -3597,11 +3597,6 @@ struct death_from_above_t : public rogue_attack_t
     action_state_t* driver_state = driver -> get_state( execute_state );
     driver_state -> target = target;
     driver -> schedule_execute( driver_state );
-
-    if ( p() -> buffs.true_bearing -> up() )
-    {
-      p() -> trigger_true_bearing( cast_state( execute_state ) -> cp );
-    }
   }
 };
 
