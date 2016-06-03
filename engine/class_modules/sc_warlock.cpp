@@ -363,6 +363,7 @@ public:
     proc_t* three_shard_hog;
     proc_t* four_shard_hog;
     proc_t* impending_doom;
+    proc_t* improved_dreadstalkers;
   } procs;
 
   struct spells_t
@@ -3043,12 +3044,16 @@ struct summon_infernal_t : public warlock_spell_t
 struct call_dreadstalkers_t : public warlock_spell_t
 {
   timespan_t dreadstalker_duration;
+  int dreadstalker_count;
+  int improved_dreadstalkers;
 
   call_dreadstalkers_t( warlock_t* p ) :
     warlock_spell_t( "Call_Dreadstalkers", p, p -> find_spell( 104316 ) )
   {
     harmful = may_crit = false;
     dreadstalker_duration = p -> find_spell( 193332 ) -> duration();
+    dreadstalker_count = data().effectN( 1 ).base_value();
+    improved_dreadstalkers = p -> talents.improved_dreadstalkers -> effectN( 1 ).base_value();
   }
 
   double cost() const override
@@ -3067,7 +3072,6 @@ struct call_dreadstalkers_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
 
-    int dreadstalker_count = data().effectN( 1 ).base_value();
     int j = 0;
 
     for ( size_t i = 0; i < p() -> warlock_pet_list.dreadstalkers.size(); i++ )
@@ -3077,6 +3081,15 @@ struct call_dreadstalkers_t : public warlock_spell_t
         p() -> warlock_pet_list.dreadstalkers[i] -> summon( dreadstalker_duration );
         p() -> procs.dreadstalker_debug -> occur();
         if ( ++j == dreadstalker_count ) break;
+      }
+    }
+
+    if ( p() -> talents.improved_dreadstalkers -> ok() )
+    {
+      for ( size_t i = 0; i < improved_dreadstalkers; i++ )
+      {
+        trigger_wild_imp( p() );
+        p() -> procs.improved_dreadstalkers -> occur();
       }
     }
 
@@ -4172,6 +4185,7 @@ void warlock_t::init_procs()
   procs.three_shard_hog = get_proc( "three_shard_hog" );
   procs.four_shard_hog = get_proc( "four_shard_hog" );
   procs.impending_doom = get_proc( "impending_doom" );
+  procs.improved_dreadstalkers = get_proc( "improved_dreadstalkers" );
 }
 
 void warlock_t::apl_precombat()
