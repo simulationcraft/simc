@@ -13,19 +13,15 @@
 // Remove manatap/soul harvest pet multiplier bugs when they get fixed.
 // Check resource generation execute/impact and hit requirement
 // Report which spells triggered soul conduit
+//
 // Affliction -
 // Haunt reset
 // Soul Effigy
 // Destruction -
-// Lord of Flames
 // DEMO TALENTS: (all)
 // T1: Shadowy Inspiration
-// T2: Imepdning Doom, Improved Dreadstalkers
-// T3: LOOOOOOOL
-// T4: Hand of Doom, Powertrip, Soul harvest
-// T5: LMFAO
-// T6: ??? Think these are done? (except supremacy kinda?)
-// T7: Summon FOTMDemon, Demonbolt, Conduit = done (gahddo pls)
+// T4: Powertrip
+// T7: Summon FOTMDemon, Demonbolt
 //
 // Artifacts -
 // Affliction/Demonology
