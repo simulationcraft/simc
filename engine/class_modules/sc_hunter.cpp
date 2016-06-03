@@ -3435,8 +3435,6 @@ struct marked_shot_t: public hunter_ranged_attack_t
       hunter_ranged_attack_t::impact( s );
 
       td -> debuffs.hunters_mark -> expire();
-
-      trigger_true_aim( p(), s -> target );
     }
   }
 
@@ -3481,10 +3479,7 @@ struct marked_shot_t: public hunter_ranged_attack_t
 
     hunter_td_t* td = this -> td( t );
     if ( td -> debuffs.vulnerable -> up() )
-      m *= 1.0 + td -> debuffs.vulnerable -> check_stack_value();
-
-    if ( td -> debuffs.true_aim -> up() )
-      m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
+      m *= 1.0 + td -> debuffs.vulnerable -> check_stack_value(); 
 
     return m;
   }
