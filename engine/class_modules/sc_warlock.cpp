@@ -8,6 +8,7 @@
 // ==========================================================================
 //
 // TODO:
+// Wild imps have a 14 sec duration on 104317, expire after 12 UNLESS implosion.
 // Affliction is very...very broken. I think it's related to service.
 // Double check all up()/check() usage.
 // Remove manatap/soul harvest pet multiplier bugs when they get fixed.
@@ -47,6 +48,7 @@ namespace pets {
   struct infernal_t;
   struct doomguard_t;
   struct lord_of_flames_infernal_t;
+  struct darkglare_t;
 }
 
 struct warlock_td_t: public actor_target_data_t
@@ -104,6 +106,7 @@ public:
     static const int INFERNAL_LIMIT = 1;
     static const int DOOMGUARD_LIMIT = 1;
     static const int LORD_OF_FLAMES_INFERNAL_LIMIT = 3;
+    static const int DARKGLARE_LIMIT = 1;
     std::array<pets::wild_imp_pet_t*, WILD_IMP_LIMIT> wild_imps;
     std::array<pets::t18_illidari_satyr_t*, T18_PET_LIMIT> t18_illidari_satyr;
     std::array<pets::t18_prince_malchezaar_t*, T18_PET_LIMIT> t18_prince_malchezaar;
@@ -115,6 +118,7 @@ public:
     std::array<pets::infernal_t*, INFERNAL_LIMIT> infernal;
     std::array<pets::doomguard_t*, DOOMGUARD_LIMIT> doomguard;
     std::array<pets::lord_of_flames_infernal_t*, LORD_OF_FLAMES_INFERNAL_LIMIT> lord_of_flames_infernal;
+    std::array<pets::darkglare_t*, DARKGLARE_LIMIT> darkglare;
   } warlock_pet_list;
 
   std::vector<std::string> pet_name_list;
@@ -184,7 +188,7 @@ public:
     const spell_data_t* wreak_havoc;
     const spell_data_t* channel_demonfire;
 
-    const spell_data_t* darkglare;
+    const spell_data_t* summon_darkglare;
     const spell_data_t* demonbolt;
 
     const spell_data_t* soul_conduit;
@@ -1591,7 +1595,7 @@ struct wild_imp_pet_t: public warlock_pet_t
   void trigger()
   {
     *firebolt_stats = regular_stats;
-      summon(timespan_t::from_millis( 12000 ));
+      summon( timespan_t::from_millis( 12000 ) );
   }
 };
 
@@ -1613,7 +1617,7 @@ struct dreadstalker_t : public warlock_pet_t
     resources.base[RESOURCE_ENERGY] = 0;
     base_energy_regen_per_second = 0;
     melee_attack = new actions::warlock_pet_melee_t( this );
-    if ( o() ->warlock_pet_list.dreadstalkers[0] )
+    if ( o() -> warlock_pet_list.dreadstalkers[0] )
       melee_attack -> stats = o() ->warlock_pet_list.dreadstalkers[0] -> get_stats( "melee" );
   }
 
@@ -1634,6 +1638,30 @@ struct dreadstalker_t : public warlock_pet_t
       }
       return a;
     }
+
+    return warlock_pet_t::create_action( name, options_str );
+  }
+};
+
+struct darkglare_t : public warlock_pet_t
+{
+  darkglare_t( sim_t* sim, warlock_t* owner ) :
+    warlock_pet_t( sim, owner, "darkglare", PET_OBSERVER )
+  {
+    //action_list_str = "eye_laser";
+    regen_type = REGEN_DISABLED;
+  }
+
+  void init_base_stats() override
+  {
+    warlock_pet_t::init_base_stats();
+    resources.base[RESOURCE_ENERGY] = 0;
+    base_energy_regen_per_second = 0;
+  }
+
+  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
+  {
+    if ( name == "eye_laser" ) return new actions::doom_bolt_t( this );
 
     return warlock_pet_t::create_action( name, options_str );
   }
@@ -3061,6 +3089,32 @@ struct summon_infernal_t : public warlock_spell_t
   }
 };
 
+struct summon_darkglare_t : public warlock_spell_t
+{
+  timespan_t darkglare_duration;
+
+  summon_darkglare_t( warlock_t* p ) :
+    warlock_spell_t( "summon_darkglare", p, p -> talents.summon_darkglare )
+  {
+    harmful = may_crit = false;
+    darkglare_duration = data().duration();
+  }
+
+  virtual void execute() override
+  {
+    warlock_spell_t::execute();
+
+    for ( size_t i = 0; i < p() -> warlock_pet_list.darkglare.size(); i++ )
+    {
+      if ( p() -> warlock_pet_list.darkglare[i] -> is_sleeping() )
+      {
+        p() -> warlock_pet_list.darkglare[i] -> summon( darkglare_duration );
+      }
+    }
+  }
+};
+
+
 struct call_dreadstalkers_t : public warlock_spell_t
 {
   timespan_t dreadstalker_duration;
@@ -4050,7 +4104,7 @@ void warlock_t::init_spells()
   talents.wreak_havoc            = find_talent_spell( "Wreak Havoc" );
   talents.channel_demonfire      = find_talent_spell( "Channel Demonfire" );
 
-  talents.darkglare              = find_talent_spell( "Darkglare" );
+  talents.summon_darkglare       = find_talent_spell( "Summon Darkglare" );
   talents.demonbolt              = find_talent_spell( "Demonbolt" );
 
   talents.soul_conduit           = find_talent_spell( "Soul Conduit" );
