@@ -2291,16 +2291,21 @@ struct havoc_t: public warlock_spell_t
 
 struct hand_of_guldan_t: public warlock_spell_t
 {
-
   double demonology_trinket_chance;
+  doom_t* doom;
 
   hand_of_guldan_t( warlock_t* p ):
     warlock_spell_t( p, "Hand of Gul'dan" ),
-    demonology_trinket_chance( 0.0 )
+    demonology_trinket_chance( 0.0 ),
+    doom( new doom_t( p ) )
   {
     aoe = -1;
 
     parse_effect_data( p -> find_spell( 86040 ) -> effectN( 1 ) );
+
+    doom -> background = true;
+    doom -> dual = true;
+    doom -> base_costs[RESOURCE_MANA] = 0;
   }
 
   virtual timespan_t travel_time() const override
@@ -2336,6 +2341,17 @@ struct hand_of_guldan_t: public warlock_spell_t
     if ( resource_consumed == 4.0 )
       p() -> procs.four_shard_hog -> occur();
   }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    warlock_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) && p() -> talents.hand_of_doom -> ok() )
+    {
+      doom -> target = s -> target;
+      doom -> execute();
+    }
+  }
 };
 
 struct shadow_bolt_t: public warlock_spell_t
@@ -2343,6 +2359,9 @@ struct shadow_bolt_t: public warlock_spell_t
   shadow_bolt_t( warlock_t* p ):
     warlock_spell_t( p, "Shadow Bolt" )
   {
+    energize_type = ENERGIZE_ON_CAST;
+    energize_resource = RESOURCE_SOUL_SHARD;
+    energize_amount = 1;
   }
 
 //  virtual timespan_t execute_time() const override
