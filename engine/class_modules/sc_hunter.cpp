@@ -57,7 +57,6 @@ struct hunter_td_t: public actor_target_data_t
   {
     buff_t* hunters_mark;
     buff_t* vulnerable;
-    buff_t* deadeye;
     buff_t* true_aim;
     buff_t* lacerate;
   } debuffs;
@@ -3009,17 +3008,12 @@ struct trick_shot_t: public hunter_ranged_attack_t
     // Wind Arrows
     if ( p -> artifacts.wind_arrows.rank() )
       base_multiplier *= 1.0 +  p -> artifacts.wind_arrows.percent();
-
-    // Marked for Death
-    if ( p -> artifacts.marked_for_death.rank() )
-      crit_bonus = p -> talents.patient_sniper -> ok() ? p -> find_spell( 213424 ) -> effectN( 2 ).percent() 
-                                                        : p -> artifacts.marked_for_death.percent();
   }
 
   virtual void impact( action_state_t* s ) override
   {
     // Do not hit current target, and only deal damage to targets with Vulnerable
-    if ( s -> target != p() -> target && ( td( s -> target ) -> debuffs.vulnerable -> up() || td( s -> target ) -> debuffs.deadeye -> up() ) )
+    if ( s -> target != p() -> target && ( td( s -> target ) -> debuffs.vulnerable -> up() ) )
     {
       hunter_ranged_attack_t::impact( s );
 
@@ -3034,8 +3028,8 @@ struct trick_shot_t: public hunter_ranged_attack_t
     double cc = hunter_ranged_attack_t::composite_target_crit( t );
 
     cc += p() -> buffs.careful_aim -> value();
-    if ( td( t ) -> debuffs.deadeye -> up() || td( t ) -> debuffs.vulnerable -> up() )
-      cc += crit_bonus;
+    if ( td( t ) -> debuffs.vulnerable -> up() )
+      cc += td( t ) -> debuffs.vulnerable -> stack() * p() -> artifacts.marked_for_death.percent();
 
     return cc;
   }
@@ -3047,8 +3041,6 @@ struct trick_shot_t: public hunter_ranged_attack_t
     hunter_td_t* td = this -> td( t );
     if ( td -> debuffs.vulnerable -> up() )
       m *= 1.0 + td -> debuffs.vulnerable -> check_stack_value();
-    else if ( td -> debuffs.deadeye -> up() )
-      m *= 1.0 + td -> debuffs.deadeye -> check_stack_value();
 
     if ( td -> debuffs.true_aim -> up() )
       m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
@@ -3070,12 +3062,11 @@ struct trick_shot_t: public hunter_ranged_attack_t
 
 // Legacy of the Windrunners ==========================================================
 // Affected by:
-//   Deadeye
+//   Vulnerable
 //   True Aim
 //   Deadly Aim
 //   Mastery
 // Not affected by:
-//   Vulnerable
 //   Careful Aim
 struct legacy_of_the_windrunners_t: hunter_ranged_attack_t
 {
@@ -3096,11 +3087,6 @@ struct legacy_of_the_windrunners_t: hunter_ranged_attack_t
 
     // Deadly Aim
     crit_bonus_multiplier *= 1.0 + p -> artifacts.deadly_aim.percent();
-
-    // Marked for Death
-    if ( p -> artifacts.marked_for_death.rank() )
-      crit_bonus = p -> talents.patient_sniper -> ok() ? p -> find_spell( 213424 ) -> effectN( 2 ).percent() 
-                                                       : p -> artifacts.marked_for_death.percent();
   }
 
   virtual void execute()
@@ -3117,12 +3103,14 @@ struct legacy_of_the_windrunners_t: hunter_ranged_attack_t
     trigger_true_aim( p(), s -> target );
   }
 
+
   virtual double composite_target_crit( player_t* t ) const override
   {
     double cc = hunter_ranged_attack_t::composite_target_crit( t );
 
-    if ( td( t ) -> debuffs.deadeye -> up() || td( t ) -> debuffs.vulnerable -> up() )
-      cc += crit_bonus;
+    cc += p() -> buffs.careful_aim -> value();
+    if ( td( t ) -> debuffs.vulnerable -> up() )
+      cc += td( t ) -> debuffs.vulnerable -> stack() * p() -> artifacts.marked_for_death.percent();
 
     return cc;
   }
@@ -3133,12 +3121,8 @@ struct legacy_of_the_windrunners_t: hunter_ranged_attack_t
 
     hunter_td_t* td = this -> td( t );
 
-    /* Bug? Does not benefit from Vulnerable on Alpha, but benefits from Deadeye
     if ( td -> debuffs.vulnerable -> up() )
-      m *= 1.0 + td -> debuffs.vulnerable -> check_stack_value(); */
-
-    if ( td -> debuffs.deadeye -> up() )
-      m *= 1.0 + td -> debuffs.deadeye -> check_stack_value();
+      m *= 1.0 + td -> debuffs.vulnerable -> check_stack_value();
 
     if ( td -> debuffs.true_aim -> up() )
       m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
@@ -3200,11 +3184,6 @@ struct aimed_shot_t: public hunter_ranged_attack_t
       add_child( legacy_of_the_windrunners );
     }
 
-    // Marked for Death
-    if ( p -> artifacts.marked_for_death.rank() )
-      crit_bonus = p -> talents.patient_sniper -> ok() ? p -> find_spell( 213424 ) -> effectN( 2 ).percent() 
-                                                        : p -> artifacts.marked_for_death.percent();
-
     // Wind Arrows
     if ( p -> artifacts.wind_arrows.rank() )
       base_multiplier *= 1.0 +  p -> artifacts.wind_arrows.percent();
@@ -3215,8 +3194,8 @@ struct aimed_shot_t: public hunter_ranged_attack_t
     double cc = hunter_ranged_attack_t::composite_target_crit( t );
 
     cc += p() -> buffs.careful_aim -> value();
-    if ( td( t ) -> debuffs.deadeye -> up() || td( t ) -> debuffs.vulnerable -> up() )
-      cc += crit_bonus;
+    if ( td( t ) -> debuffs.vulnerable -> up() )
+      cc += td( t ) -> debuffs.vulnerable -> stack() * p() -> artifacts.marked_for_death.percent();
 
     return cc;
   }
@@ -3268,8 +3247,6 @@ struct aimed_shot_t: public hunter_ranged_attack_t
     hunter_td_t* td = this -> td( t );
     if ( td -> debuffs.vulnerable -> up() )
       m *= 1.0 + td -> debuffs.vulnerable -> check_stack_value();
-    else if ( td -> debuffs.deadeye -> up() )
-      m *= 1.0 + td -> debuffs.deadeye -> check_stack_value();
 
     if ( td -> debuffs.true_aim -> up() )
       m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
@@ -3414,12 +3391,7 @@ struct marked_shot_t: public hunter_ranged_attack_t
     for ( size_t i = 0; i < marked_shot_targets.size(); i++ )
     {
       if ( td( marked_shot_targets[i] ) -> debuffs.hunters_mark -> up() )
-      {
-        if ( p() -> talents.patient_sniper -> ok() )
-          td( marked_shot_targets[i] ) -> debuffs.deadeye -> trigger();
-        else
           td( marked_shot_targets[i] ) -> debuffs.vulnerable -> trigger();
-      }
     }
     p() -> buffs.hunters_mark_exists -> expire();
 
@@ -3487,8 +3459,6 @@ struct marked_shot_t: public hunter_ranged_attack_t
     hunter_td_t* td = this -> td( t );
     if ( td -> debuffs.vulnerable -> up() )
       m *= 1.0 + td -> debuffs.vulnerable -> check_stack_value();
-    else if ( td -> debuffs.deadeye -> up() )
-      m *= 1.0 + td -> debuffs.deadeye -> check_stack_value();
 
     if ( td -> debuffs.true_aim -> up() )
       m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
@@ -3619,10 +3589,7 @@ struct sidewinders_t: hunter_ranged_attack_t
         if ( marking )
           td( sidewinder_targets[i] ) -> debuffs.hunters_mark -> trigger();
 
-        if ( p() -> talents.patient_sniper -> ok() )
-          td( sidewinder_targets[i] ) -> debuffs.deadeye -> trigger();
-        else
-          td( sidewinder_targets[i] ) -> debuffs.vulnerable -> trigger();
+        td( sidewinder_targets[i] ) -> debuffs.vulnerable -> trigger();
       }
 
       if ( marking )
@@ -3657,10 +3624,7 @@ struct windburst_t: hunter_ranged_attack_t
     if ( p() -> artifacts.mark_of_the_windrunner.rank() )
     {
       hunter_td_t* td = this -> td( execute_state -> target );
-      if ( p() -> talents.patient_sniper -> ok() )
-        td -> debuffs.deadeye -> trigger();
-      else
-        td -> debuffs.vulnerable -> trigger();
+      td -> debuffs.vulnerable -> trigger();
     }
 
     if ( p() -> legendary.mm_feet )
@@ -4792,12 +4756,20 @@ dots( dots_t() )
 
   debuffs.hunters_mark      = buff_creator_t( *this, "hunters_mark" )
                                 .spell( p -> find_spell( 185365 ) );
-  debuffs.vulnerable        = buff_creator_t( *this, "vulnerability" )
-                                .spell( p -> find_spell( 187131 ) )
-                                .default_value( p -> find_spell( 187131 ) -> effectN( 2 ).percent() );
-  debuffs.deadeye           = buff_creator_t( *this, "deadeye" )
-                                .spell( p -> find_spell( 213424 ) )
-                                .default_value( p -> find_spell( 213424 ) -> effectN( 1 ).percent() );
+  if ( p -> talents.patient_sniper -> ok() )
+  {
+    debuffs.vulnerable      = buff_creator_t( *this, "vulnerability" )
+                                  .spell( p -> find_spell( 187131 ) )
+                                  .default_value( p -> find_spell( 187131 ) -> effectN( 2 ).percent() + p -> talents.patient_sniper -> effectN( 2 ).percent() )
+                                  .max_stack( 1 );
+  }
+  else
+  {
+    debuffs.vulnerable      = buff_creator_t( *this, "vulnerability" )
+                                  .spell( p -> find_spell( 187131 ) )
+                                  .default_value( p -> find_spell( 187131 ) -> effectN( 2 ).percent() )
+                                  .max_stack( 3 );
+  }
   debuffs.true_aim          = buff_creator_t( *this, "true_aim" )
                                 .spell( p -> find_spell( 199803 ) )
                                 .default_value( p -> find_spell( 199803 ) -> effectN( 1 ).percent() );
