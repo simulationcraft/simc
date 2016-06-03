@@ -2979,6 +2979,7 @@ struct black_arrow_t: public hunter_ranged_attack_t
 
   virtual void execute() override
   {
+    p() -> no_steady_focus();
     hunter_ranged_attack_t::execute();
 
     if ( p() -> dark_minion[ 0 ] -> is_sleeping() )
@@ -3238,6 +3239,7 @@ struct aimed_shot_t: public hunter_ranged_attack_t
 
   virtual void execute() override
   {
+    p() -> no_steady_focus();
     hunter_ranged_attack_t::execute();
     aimed_in_ca -> update( p() -> buffs.careful_aim -> check() != 0 );
     if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, PVP, B4 ) )
@@ -3407,6 +3409,7 @@ struct marked_shot_t: public hunter_ranged_attack_t
 
   virtual void execute() override
   {
+    p() -> no_steady_focus();
     hunter_ranged_attack_t::execute();
 
     // Consume Hunter's Mark and apply appropriate debuffs. Vulnerable and Deadeye apply on cast.
@@ -3513,6 +3516,7 @@ struct piercing_shot_t: public hunter_ranged_attack_t
   
   virtual void execute() override
   {
+    p() -> no_steady_focus();
     hunter_ranged_attack_t::execute();
 
     if ( p() -> legendary.mm_feet )
@@ -3552,6 +3556,7 @@ struct explosive_shot_t: public hunter_ranged_attack_t
 
   virtual void execute() override
   {
+    p() -> no_steady_focus();
     initial_target = p() -> target;
 
     hunter_ranged_attack_t::execute();
@@ -3637,6 +3642,7 @@ struct windburst_t: hunter_ranged_attack_t
 
   virtual void execute() override
   {
+    p() -> no_steady_focus();
     hunter_ranged_attack_t::execute();
 
     if ( p() -> artifacts.mark_of_the_windrunner.rank() )
