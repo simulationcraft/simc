@@ -2202,6 +2202,36 @@ struct life_tap_t: public warlock_spell_t
   }
 };
 
+struct shadow_bolt_t: public warlock_spell_t
+{
+  shadow_bolt_t( warlock_t* p ):
+    warlock_spell_t( p, "Shadow Bolt" )
+  {
+    energize_type = ENERGIZE_ON_CAST;
+    energize_resource = RESOURCE_SOUL_SHARD;
+    energize_amount = 1;
+  }
+
+//  virtual timespan_t execute_time() const override
+//  {
+//    if ( p() -> buffs.shadowy_inspiration-> check() )
+//    {
+//      return timespan_t::zero();
+//    }
+//
+//    return warlock_spell_t::execute_time();
+//  }
+
+  void execute() override
+  {
+    warlock_spell_t::execute();
+
+    if ( p() -> talents.demonic_calling -> ok() )
+      p() -> buffs.demonic_calling -> trigger();
+  }
+};
+
+
 struct doom_t: public warlock_spell_t
 {
   doom_t( warlock_t* p ):
@@ -2347,38 +2377,6 @@ struct hand_of_guldan_t: public warlock_spell_t
       doom -> target = s -> target;
       doom -> execute();
     }
-  }
-};
-
-struct shadow_bolt_t: public warlock_spell_t
-{
-  shadow_bolt_t( warlock_t* p ):
-    warlock_spell_t( p, "Shadow Bolt" )
-  {
-    energize_type = ENERGIZE_ON_CAST;
-    energize_resource = RESOURCE_SOUL_SHARD;
-    energize_amount = 1;
-  }
-
-//  virtual timespan_t execute_time() const override
-//  {
-//    if ( p() -> buffs.shadowy_inspiration-> check() )
-//    {
-//      return timespan_t::zero();
-//    }
-//
-//    return warlock_spell_t::execute_time();
-//  }
-
-  void execute() override
-  {
-    warlock_spell_t::execute();
-
-    if ( p() -> talents.demonic_calling -> ok() )
-      p() -> buffs.demonic_calling -> trigger();
-
-    //if ( p() -> buffs.shadowy_inspiration -> up() )
-    //  p() -> buffs.shadowy_inspiration -> expire();
   }
 };
 
@@ -3119,8 +3117,41 @@ struct demonbolt_t: public warlock_spell_t
 {
   demonbolt_t( warlock_t* p ):
     warlock_spell_t( "demonbolt", p, p -> talents.demonbolt )
+    {
+
+        energize_type = ENERGIZE_ON_CAST;
+        energize_resource = RESOURCE_SOUL_SHARD;
+        energize_amount = 1;
+    }
+
+  virtual double action_multiplier() const override
   {
+    double pm = spell_t::action_multiplier();
+
+    for( auto& pet : p() -> pet_list )
+    {
+      pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
+
+      if( lock_pet != NULL )
+      {
+        if( !lock_pet -> is_sleeping() )
+        {
+            pm *= (1.0 + data().effectN(3).percent());
+            //pm *= 1.2;
+        }
+      }
+    }
+    return pm;
   }
+
+    void execute() override
+    {
+        warlock_spell_t::execute();
+
+        if ( p() -> talents.demonic_calling -> ok() )
+          p() -> buffs.demonic_calling -> trigger();
+
+      }
 };
 
 struct implosion_t : public warlock_spell_t
