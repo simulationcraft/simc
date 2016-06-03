@@ -8,6 +8,7 @@
 // ==========================================================================
 //
 // TODO:
+// Affliction is very...very broken. I think it's related to service.
 // Double check all up()/check() usage.
 // Remove manatap/soul harvest pet multiplier bugs when they get fixed.
 // Check resource generation execute/impact and hit requirement
@@ -2245,21 +2246,23 @@ struct demonic_empowerment_t: public warlock_spell_t
 
 	void execute() override
 	{
-        warlock_spell_t::execute();
-        for(auto& pet : p()->pet_list)
-        {
-            pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> (pet);
-            if(lock_pet != NULL)
-            {
-                if(!lock_pet->is_sleeping())
-                {
-                    lock_pet->buffs.demonic_empowerment->trigger();
-                }
-            }
-        }
-	}
+    warlock_spell_t::execute();
+    for( auto& pet : p() -> pet_list )
+    {
+      pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
 
-		
+      if( lock_pet != NULL )
+      {
+        if( !lock_pet -> is_sleeping() )
+        {
+          lock_pet -> buffs.demonic_empowerment -> trigger();
+        }
+      }
+    }
+
+    //if ( p() -> talents.shadowy_inspiration -> ok() )
+    //  p() -> buffs.shadowy_inspiration -> trigger();
+	}
 };
 
 struct havoc_t: public warlock_spell_t
@@ -2342,17 +2345,25 @@ struct shadow_bolt_t: public warlock_spell_t
       energize_amount = 1;
     }
   }
-  /*void execute() override
-  {
-    if(p()->buffs.shadowy_inspiration->up())
-    {
-        timespan_t temp = this->time_to_execute;
-        this->time_to_execute = timespan_t.from_millis(0);
-        p()->buffs.shadowy_inspiration->execute();
-        warlock_spell_t::execute();
-        this->time_to_execute = temp;
-    }
-  }*/
+
+//  virtual timespan_t execute_time() const override
+//  {
+//    if ( p() -> buffs.shadowy_inspiration-> check() )
+//    {
+//      return timespan_t::zero();
+//    }
+//
+//    return warlock_spell_t::execute_time();
+//  }
+//
+//  void execute() override
+//  {
+//    warlock_spell_t::execute();
+//
+//
+//    if ( p() -> buffs.shadowy_inspiration -> up() )
+//      p() -> buffs.shadowy_inspiration -> expire();
+//  }
 };
 
 struct immolate_t: public warlock_spell_t
@@ -3111,26 +3122,24 @@ struct implosion_t : public warlock_spell_t
 };
 
 
-struct shadowflame_t: public warlock_spell_t
+struct shadowflame_t : public warlock_spell_t
 {
-  shadowflame_t( warlock_t* p ):
-    warlock_spell_t( "shadowflame", p, p -> find_spell( 47960 ) )
+  shadowflame_t( warlock_t* p ) :
+    warlock_spell_t( "shadowflame", p, p -> find_spell( 205181 ) )
   {
-    background = true;
-    may_miss = false;
-    spell_power_mod.tick *= 0.8; // Check
+    hasted_ticks = tick_may_crit = true;
+
+    dot_duration = timespan_t::from_seconds( 8.0 );
+    spell_power_mod.tick = data().effectN( 2 ).sp_coeff();
+    base_tick_time = data().effectN( 2 ).period();
   }
 
-  virtual timespan_t travel_time() const override
+  virtual double composite_ta_multiplier( const action_state_t* state ) const override
   {
-    return timespan_t::from_seconds( 1.5 );
-  }
+    double m = warlock_spell_t::composite_ta_multiplier( state );
 
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = warlock_spell_t::composite_target_multiplier( target );
-
-    m *= td( target ) -> debuffs_shadowflame -> stack();
+    if ( td( state -> target ) -> dots_shadowflame -> is_ticking() )
+      m *= 1.0 + td( target ) -> debuffs_shadowflame -> stack();
 
     return m;
   }
@@ -3139,7 +3148,17 @@ struct shadowflame_t: public warlock_spell_t
   {
     warlock_spell_t::last_tick( d );
 
-    td ( d -> state -> target ) -> debuffs_shadowflame -> expire();
+    td( d -> state -> target ) -> debuffs_shadowflame -> expire();
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    warlock_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      td( s -> target  ) -> debuffs_shadowflame -> trigger();
+    }
   }
 };
 
@@ -3540,7 +3559,7 @@ warlock( p )
 
   debuffs_haunt = buff_creator_t( *this, "haunt", source -> find_class_spell( "Haunt" ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
-  debuffs_shadowflame = buff_creator_t( *this, "shadowflame", source -> find_spell( 47960 ) )
+  debuffs_shadowflame = buff_creator_t( *this, "shadowflame", source -> find_spell( 205181 ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   debuffs_agony = buff_creator_t( *this, "agony", source -> find_spell( 980 ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
@@ -3759,6 +3778,7 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "summon_doomguard"      ) a = new                  summon_doomguard_t( this );
   else if ( action_name == "call_dreadstalkers"    ) a = new                call_dreadstalkers_t( this );
   else if ( action_name == "dimensional_rift"      ) a = new                  dimensional_rift_t( this );
+  else if ( action_name == "shadowflame"           ) a = new                       shadowflame_t( this );
   else if ( action_name == "summon_felhunter"      ) a = new      summon_main_pet_t( "felhunter", this );
   else if ( action_name == "summon_felguard"       ) a = new       summon_main_pet_t( "felguard", this );
   else if ( action_name == "summon_succubus"       ) a = new       summon_main_pet_t( "succubus", this );
@@ -4051,18 +4071,6 @@ struct havoc_buff_t : public buff_t
   }
 };
 
-/*struct shadowy_inspiration_buff_t : public buff_t
-{
-    shadowy_inspiration_buff_t(warlock_t* p):
-        buff_t(buff_creator_t( p, "shadowy_inspiration", p->find_talent_spell("Shadowy Inspiration")))
-    {
-        if(p->talents.shadowy_inspiration->ok())
-        {
-            buff_duration = timespan_t::from_seconds(15);
-        }
-    }
-};*/
-
 void warlock_t::create_buffs()
 {
   player_t::create_buffs();
@@ -4089,7 +4097,7 @@ void warlock_t::create_buffs()
     .tick_behavior( BUFF_TICK_NONE );
 
   //demonology buffs
-  //buffs.shadowy_inspiration = buff_creator_t( this, "shadowy_inspiration", talents.shadowy_inspiration );
+  //buffs.shadowy_inspiration = buff_creator_t( this, "shadowy_inspiration", find_spell( 196606 ) );
 }
 
 void warlock_t::init_rng()
