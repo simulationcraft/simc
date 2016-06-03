@@ -151,6 +151,7 @@ public:
     buff_t* lock_and_load;
     buff_t* stampede;
     buff_t* trueshot;
+    buff_t* volley;
     buff_t* rapid_killing;
     buff_t* bullseye;
     buff_t* heavy_shot; // t17 SV 4pc
@@ -2516,18 +2517,64 @@ struct ranged_t: public hunter_ranged_attack_t
   }
 };
 
+// Volley ============================================================================
+
+struct volley_tick_t: hunter_ranged_attack_t
+{
+  volley_tick_t( hunter_t* p ):
+    hunter_ranged_attack_t( "volley", p, p -> find_spell( 194392 ) )
+  {
+    aoe = -1;
+    attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
+    cooldown -> duration = timespan_t::zero();
+    travel_speed = 0.0;
+  }    
+  
+  virtual double action_multiplier() const override
+  {
+    double am = hunter_ranged_attack_t::action_multiplier();
+
+    if ( p() -> mastery.sniper_training -> ok() )
+      am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
+
+    return am;
+  }
+};
+
+struct volley_t: hunter_ranged_attack_t
+{
+  volley_t( hunter_t* p, const std::string& options_str ):
+    hunter_ranged_attack_t( "volley", p, p -> talents.volley )
+  {
+    harmful = false;
+  }
+
+  virtual void execute() override
+  {
+    hunter_ranged_attack_t::execute();
+
+    if ( ! p() -> buffs.volley -> check() )
+      p() -> buffs.volley -> trigger();
+    else
+      p() -> buffs.volley -> expire();
+  }
+};
 
 // Auto Shot ================================================================
 
 struct auto_shot_t: public ranged_t
 {
-  auto_shot_t( hunter_t* p ): ranged_t( p, "auto_shot", spell_data_t::nil() )
+  volley_tick_t* volley_tick;
+  auto_shot_t( hunter_t* p ): ranged_t( p, "auto_shot", spell_data_t::nil() ), volley_tick( nullptr )
   {
     school = SCHOOL_PHYSICAL;
     range = 40.0;
 
     if ( p -> talents.volley -> ok() )
-      impact_action = new volley_t( p );
+    {
+      volley_tick = new volley_tick_t( p );
+      add_child( volley_tick );
+    }
   }
 
   virtual void execute() override
@@ -2536,6 +2583,9 @@ struct auto_shot_t: public ranged_t
 
     if ( p() -> specialization() == HUNTER_MARKSMANSHIP && p() -> ppm_hunters_mark -> trigger() )
       p() -> buffs.marking_targets -> trigger();
+
+    if ( p() -> buffs.volley -> up() )
+      volley_tick -> execute();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3588,17 +3638,6 @@ struct sidewinders_t: hunter_ranged_attack_t
     if ( p() -> legendary.mm_feet )
       p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
   }
-};
-
-// Volley ============================================================================
-
-
-struct volley_t: hunter_ranged_attack_t
-{
-  volley_t( hunter_t* p ):
-    hunter_ranged_attack_t( "volley", p, p -> find_spell( 194392 ) )
-  {
-  }  
 };
 
 // WindBurst =========================================================================
@@ -4735,8 +4774,6 @@ struct fury_of_the_eagle_t: public hunter_spell_t
     if ( p() -> buffs.mongoose_fury -> up() )
       am *= 1.0 + p() -> buffs.mongoose_fury -> check_stack_value();
 
-    p() -> debuffs.vulnerable
-
     return am;
   }
 };
@@ -4822,6 +4859,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "throwing_axes"         ) return new          throwing_axes_t( this, options_str );
   if ( name == "titans_thunder"        ) return new         titans_thunder_t( this, options_str );
   if ( name == "trueshot"              ) return new               trueshot_t( this, options_str );
+  if ( name == "volley"                ) return new                 volley_t( this, options_str );
   if ( name == "windburst"             ) return new              windburst_t( this, options_str );
   return player_t::create_action( name, options_str );
 }
@@ -5169,6 +5207,8 @@ void hunter_t::create_buffs()
     .add_invalidate( CACHE_ATTACK_HASTE );
 
   buffs.trueshot -> cooldown -> duration = timespan_t::zero();
+
+  buffs.volley                      = buff_creator_t( this, "volley", talents.volley );
 
   buffs.rapid_killing               = buff_creator_t( this, 191342, "rapid_killing" )
     .default_value( find_spell( 191342 ) -> effectN( 1 ).percent() );
