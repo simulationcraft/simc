@@ -2525,6 +2525,9 @@ struct auto_shot_t: public ranged_t
   {
     school = SCHOOL_PHYSICAL;
     range = 40.0;
+
+    if ( p -> talents.volley -> ok() )
+      impact_action = new volley_t( p );
   }
 
   virtual void execute() override
@@ -3592,38 +3595,10 @@ struct sidewinders_t: hunter_ranged_attack_t
 
 struct volley_t: hunter_ranged_attack_t
 {
-  struct volley_tick_t: hunter_ranged_attack_t
+  volley_t( hunter_t* p ):
+    hunter_ranged_attack_t( "volley", p, p -> find_spell( 194392 ) )
   {
-    volley_tick_t( hunter_t* p ):
-      hunter_ranged_attack_t( "volley_tick", p, p -> find_spell( 194392 ) )
-    {
-      aoe         = -1;
-      background  = true;
-      hasted_ticks = false;
-    }
-  };
-
-  volley_t( hunter_t* p, const std::string& options_str ):
-    hunter_ranged_attack_t( "volley", p, p -> find_talent_spell( "Volley" ) )
-  {
-    parse_options( options_str );
-    
-    base_tick_time = timespan_t::from_seconds( 1.0 );
-    cooldown -> duration = data().duration();
-    cooldown -> hasted = true;
-    dot_duration = data().duration();
-    tick_action = new volley_tick_t( p );
   }  
-  
-  virtual double action_multiplier() const override
-  {
-    double am = hunter_ranged_attack_t::action_multiplier();
-
-    if ( p() -> mastery.sniper_training -> ok() )
-      am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
-
-    return am;
-  }
 };
 
 // WindBurst =========================================================================
@@ -4760,6 +4735,8 @@ struct fury_of_the_eagle_t: public hunter_spell_t
     if ( p() -> buffs.mongoose_fury -> up() )
       am *= 1.0 + p() -> buffs.mongoose_fury -> check_stack_value();
 
+    p() -> debuffs.vulnerable
+
     return am;
   }
 };
@@ -4845,7 +4822,6 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "throwing_axes"         ) return new          throwing_axes_t( this, options_str );
   if ( name == "titans_thunder"        ) return new         titans_thunder_t( this, options_str );
   if ( name == "trueshot"              ) return new               trueshot_t( this, options_str );
-  if ( name == "volley"                ) return new                 volley_t( this, options_str );
   if ( name == "windburst"             ) return new              windburst_t( this, options_str );
   return player_t::create_action( name, options_str );
 }
