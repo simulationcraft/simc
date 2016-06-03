@@ -149,6 +149,7 @@ public:
     buff_t* hunters_mark_exists;
     buff_t* lock_and_load;
     buff_t* stampede;
+    buff_t* trick_shot;
     buff_t* trueshot;
     buff_t* volley;
     buff_t* rapid_killing;
@@ -2994,13 +2995,13 @@ struct black_arrow_t: public hunter_ranged_attack_t
 
 struct trick_shot_t: public hunter_ranged_attack_t
 {
-  double crit_bonus = 0;
   trick_shot_t( hunter_t* p ):
     hunter_ranged_attack_t( "trick_shot", p, p -> find_talent_spell( "Trick Shot" ) )
   {
     // Simulated as aoe for simplicity
     aoe               = -1;
     background        = true;
+    dual              = true;
     weapon            = &p -> main_hand_weapon;
     weapon_multiplier = p -> find_specialization_spell( "Aimed Shot" ) -> effectN( 2 ).percent();
     base_multiplier   = p -> find_talent_spell( "Trick Shot" ) -> effectN( 1 ).percent();
@@ -3008,6 +3009,21 @@ struct trick_shot_t: public hunter_ranged_attack_t
     // Wind Arrows
     if ( p -> artifacts.wind_arrows.rank() )
       base_multiplier *= 1.0 +  p -> artifacts.wind_arrows.percent();
+  }
+
+  virtual void execute() override
+  {
+    hunter_ranged_attack_t::execute();
+    
+    int count = 0;
+    std::vector<player_t*> trick_shot_targets = execute_state -> action -> target_list();
+    for( int i = 0; i < trick_shot_targets.size(); i++ )
+    {
+      if ( trick_shot_targets[i] != p() -> target && td( trick_shot_targets[i] ) -> debuffs.vulnerable -> up() )
+        count++;
+    }
+    if ( count == 0 )
+      p() -> buffs.trick_shot -> trigger();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3070,8 +3086,6 @@ struct trick_shot_t: public hunter_ranged_attack_t
 //   Careful Aim
 struct legacy_of_the_windrunners_t: hunter_ranged_attack_t
 {
-  double crit_bonus = 0;
-
   legacy_of_the_windrunners_t( hunter_t* p, const std::string& name ):
     hunter_ranged_attack_t( name, p, p -> find_spell( 191043 ) )
   {
@@ -3154,14 +3168,14 @@ struct legacy_of_the_windrunners_t: hunter_ranged_attack_t
 struct aimed_shot_t: public hunter_ranged_attack_t
 {
   benefit_t* aimed_in_ca;
-  double crit_bonus = 0;
 
+  trick_shot_t* trick_shot;
   legacy_of_the_windrunners_t* legacy_of_the_windrunners;
 
   aimed_shot_t( hunter_t* p, const std::string& options_str ):
     hunter_ranged_attack_t( "aimed_shot", p, p -> find_specialization_spell( "Aimed Shot" ) ),
     aimed_in_ca( p -> get_benefit( "aimed_in_careful_aim" ) ),
-    legacy_of_the_windrunners( nullptr )
+    legacy_of_the_windrunners( nullptr ), trick_shot( nullptr )
   {
     parse_options( options_str );
 
@@ -3171,7 +3185,10 @@ struct aimed_shot_t: public hunter_ranged_attack_t
       base_execute_time *= 1.0 - ( p -> sets.set( HUNTER_MARKSMANSHIP, T18, B4 ) -> effectN( 2 ).percent() );
 
     if ( p -> talents.trick_shot -> ok() )
-      impact_action = new trick_shot_t( p );
+    {
+      trick_shot = new trick_shot_t( p );
+      add_child( trick_shot );
+    }
     
     // Deadly Aim
     if ( p -> artifacts.deadly_aim.rank() )
@@ -3231,6 +3248,9 @@ struct aimed_shot_t: public hunter_ranged_attack_t
     if ( p() -> buffs.lock_and_load -> up() )
       p() -> buffs.lock_and_load -> decrement();
 
+    if ( trick_shot )
+      trick_shot -> execute();
+
     // Thas'dorah's proc has a 1/6 chance to fire 6 mini Aimed Shots. 
     // Proc chance missing from spell data.
     if ( legacy_of_the_windrunners && rng().roll( 0.167 ) )
@@ -3260,6 +3280,9 @@ struct aimed_shot_t: public hunter_ranged_attack_t
 
     if ( p() -> mastery.sniper_training -> ok() )
       am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
+
+    if ( p() -> buffs.trick_shot -> up() )
+      am *= 1.0 + p() -> buffs.trick_shot -> default_value;
 
     return am;
   }
@@ -5174,6 +5197,8 @@ void hunter_t::create_buffs()
   buffs.marking_targets             = buff_creator_t( this, 223138, "marking_targets" );
 
   buffs.lock_and_load               = buff_creator_t( this, 194594, "lock_and_load" ).max_stack( 2 );
+
+  buffs.trick_shot                  = buff_creator_t( this, 227272, "trick_shot" ).default_value( find_spell( 227272 ) -> effectN( 1 ).percent() );
 
   buffs.trueshot                    = buff_creator_t( this, "trueshot", specs.trueshot )
     .add_invalidate( CACHE_ATTACK_HASTE );
