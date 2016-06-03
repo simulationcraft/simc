@@ -3077,7 +3077,7 @@ struct void_torrent_t final : public priest_spell_t
     channeled     = true;
     use_off_gcd   = true;
     is_mind_spell = false;
-    tick_zero     = false;
+    tick_zero     = true;
 
     dot_duration = timespan_t::from_seconds( 4.0 );
   }
@@ -3085,6 +3085,17 @@ struct void_torrent_t final : public priest_spell_t
   timespan_t composite_dot_duration( const action_state_t* ) const override
   {
     return timespan_t::from_seconds( 4.0 );
+  }
+
+  timespan_t tick_time( double haste ) const
+  {
+    timespan_t t = base_tick_time;
+    
+    double h = priest.composite_spell_haste();
+
+    t *= h;
+
+    return t;
   }
 
   void last_tick( dot_t* d ) override
@@ -3127,7 +3138,6 @@ struct shadow_crash_t final : public priest_spell_t
     const spell_data_t* missile = priest.find_spell(205386);
     school = missile->get_school_type();
     spell_power_mod.direct = missile->effectN(1).sp_coeff();
-
     aoe = -1;
     radius = data().effectN(1).radius();
 
