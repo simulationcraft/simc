@@ -283,7 +283,7 @@ public:
     const spell_data_t* aspect_of_the_beast;
 
     const spell_data_t* sidewinders;
-    const spell_data_t* head_shot;
+    const spell_data_t* piercing_shot;
     const spell_data_t* lock_and_load;
 
     const spell_data_t* spitting_cobra;
@@ -3500,12 +3500,12 @@ struct marked_shot_t: public hunter_ranged_attack_t
   }
 };
 
-// Head Shot  =========================================================================
+// Piercing Shot  =========================================================================
 
-struct head_shot_t: public hunter_ranged_attack_t
+struct piercing_shot_t: public hunter_ranged_attack_t
 {
-  head_shot_t( hunter_t* p, const std::string& options_str ):
-    hunter_ranged_attack_t( "head_shot", p, p -> find_talent_spell( "Head Shot" ) )
+  piercing_shot_t( hunter_t* p, const std::string& options_str ):
+    hunter_ranged_attack_t( "piercing_shot", p, p -> talents.piercing_shot )
   {
     parse_options( options_str );
 
@@ -4838,7 +4838,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "freezing_trap"         ) return new          freezing_trap_t( this, options_str );
   if ( name == "flanking_strike"       ) return new        flanking_strike_t( this, options_str );
   if ( name == "fury_of_the_eagle"     ) return new      fury_of_the_eagle_t( this, options_str );
-  if ( name == "head_shot"             ) return new              head_shot_t( this, options_str );
+  if ( name == "piercing_shot"         ) return new          piercing_shot_t( this, options_str );
   if ( name == "kill_command"          ) return new           kill_command_t( this, options_str );
   if ( name == "lacerate"              ) return new               lacerate_t( this, options_str );
   if ( name == "marked_shot"           ) return new            marked_shot_t( this, options_str );
@@ -5005,7 +5005,7 @@ void hunter_t::init_spells()
   talents.aspect_of_the_beast               = find_talent_spell( "Aspect of the Beast" );
 
   talents.sidewinders                       = find_talent_spell( "Sidewinders" );
-  talents.head_shot                         = find_talent_spell( "Head Shot" );
+  talents.piercing_shot                     = find_talent_spell( "Piercing Shot" );
   talents.lock_and_load                     = find_talent_spell( "Lock and Load" );
 
   talents.spitting_cobra                    = find_talent_spell( "Spitting Cobra" );
