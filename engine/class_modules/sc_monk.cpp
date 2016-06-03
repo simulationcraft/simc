@@ -3691,7 +3691,7 @@ struct storm_earth_and_fire_t: public monk_spell_t
         assert( rng_idx < sef_idx.size() );
         size_t idx = sef_idx[ rng_idx ];
 
-        p() -> pet.sef[ idx ] -> target = execute_state -> target;
+        p() -> pet.sef[ idx ] -> target = p() -> next_cyclone_strikes_target( execute_state );
         p() -> pet.sef[ idx ] -> summon();
       }
     }
@@ -3789,6 +3789,7 @@ struct chi_orbit_t: public monk_spell_t
   {
     background = true;
     attack_power_mod.direct = p -> passives.chi_orbit -> effectN( 1 ).ap_coeff();
+    aoe = -1;
   }
 
   bool ready() override
@@ -6687,7 +6688,6 @@ double monk_t::composite_attack_power_multiplier() const
   return ap;
 }
 
-
 // monk_t::composite_parry ==============================================
 
 double monk_t::composite_parry() const
@@ -6732,7 +6732,7 @@ double monk_t::composite_crit_avoidance() const
   return c;
 }
 
-// monk_t::composite_mastery_rating ===========================================
+// monk_t::composite_mastery ===========================================
 
 double monk_t::composite_mastery() const
 {
@@ -6743,6 +6743,8 @@ double monk_t::composite_mastery() const
 
   return m;
 }
+
+// monk_t::composite_mastery_rating ====================================
 
 double monk_t::composite_mastery_rating() const
 {

@@ -1271,28 +1271,29 @@ class SpellDataGenerator(DataGenerator):
 
         # Warlock:
         (
-            ( 157900, 0, True ), # grimoire: doomguard
-            ( 157901, 0, True ), # grimoire: infernal
-            ( 104025, 2, True ), # immolation aura
-            ( 104232, 3, True ), # destruction rain of fire
-            ( 111859, 0, True ), ( 111895, 0, True ), ( 111897, 0, True ), ( 111896, 0, True ), ( 111898, 2, True ), # Grimoire of Service summons
-            ( 114654, 0 ),        # Fire and Brimstone nukes
-            ( 108686, 0 ),
-            ( 109468, 0 ),
-            ( 104225, 0 ),
-            ( 129476, 0 ),        # Immolation Aura
-            ( 189297, 0 ),        # Demonology Warlock T18 4P Pet
-            ( 189298, 0 ),        # Demonology Warlock T18 4P Pet
-            ( 189296, 0 ),        # Demonology Warlock T18 4P Pet
-            ( 17941, 0 ),         # Agony energize
-            ( 104318, 5 ),        # Wild Imp Firebolt
-            ( 205196, 5 ),        # Dreadstalker Dreadbite
-            ( 226802, 3 ),        # Lord of Flames buff
-			( 196659, 3 ),        # Dimensional rift spells
-			( 196639, 3 ),
-			( 215409, 3 ),
-			( 215276, 3 ),
-			( 187385, 3 ),
+          ( 157900, 0, True ), # grimoire: doomguard
+          ( 157901, 0, True ), # grimoire: infernal
+          ( 104025, 2, True ), # immolation aura
+          ( 104232, 3, True ), # destruction rain of fire
+          ( 111859, 0, True ), ( 111895, 0, True ), ( 111897, 0, True ), ( 111896, 0, True ), ( 111898, 2, True ), # Grimoire of Service summons
+          ( 114654, 0 ),        # Fire and Brimstone nukes
+          ( 108686, 0 ),
+          ( 109468, 0 ),
+          ( 104225, 0 ),
+          ( 129476, 0 ),        # Immolation Aura
+          ( 189297, 0 ),        # Demonology Warlock T18 4P Pet
+          ( 189298, 0 ),        # Demonology Warlock T18 4P Pet
+          ( 189296, 0 ),        # Demonology Warlock T18 4P Pet
+          ( 17941, 0 ),         # Agony energize
+          ( 104318, 5 ),        # Wild Imp Firebolt
+          ( 205196, 5 ),        # Dreadstalker Dreadbite
+          ( 226802, 3 ),        # Lord of Flames buff
+          ( 196659, 3 ),        # Dimensional rift spells
+          ( 196606, 2 ),        # Shadowy Inspiration buff
+          ( 196639, 3 ),
+          ( 215409, 3 ),
+          ( 215276, 3 ),
+          ( 187385, 3 ),
         ),
 
         # Monk:

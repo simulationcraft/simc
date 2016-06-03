@@ -637,7 +637,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Radius: 10 yards | Target: Self(1)
 #6 (id=214834)   : Apply Aura (6) | Add Flat Modifier: Spell Global Cooldown (107)
                    Base Value: -500 | Scaled Value: -500 | Misc Value: 21 | Target: Self(1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Transcendence: Transfer (119996), Chi Burst (123986), Zen Pulse (124081), Chi Burst (130654), Chi Burst (148135), Rushing Jade Wind (148187), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Song of Chi-Ji (198898), Blackout Strike (205523), Detox (218164)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Transcendence: Transfer (119996), Chi Burst (123986), Zen Pulse (124081), Chi Burst (130654), Chi Burst (148135), Rushing Jade Wind (148187), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Zen Pulse (198487), Song of Chi-Ji (198898), Blackout Strike (205523), Detox (218164)
 #7 (id=257979)   : Apply Aura (6) | Increase Energy (35)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self(1)
 Description      : Increases all damage dealt by $s3%.
@@ -851,7 +851,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self(1)
 #11 (id=218370)   : Apply Aura (6) | Add Flat Modifier: Spell Global Cooldown (107)
                    Base Value: -500 | Scaled Value: -500 | Misc Value: 21 | Target: Self(1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Transcendence: Transfer (119996), Chi Burst (123986), Zen Pulse (124081), Chi Burst (130654), Chi Burst (148135), Rushing Jade Wind (148187), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Song of Chi-Ji (198898), Blackout Strike (205523), Detox (218164)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Transcendence: Transfer (119996), Chi Burst (123986), Zen Pulse (124081), Chi Burst (130654), Chi Burst (148135), Rushing Jade Wind (148187), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Zen Pulse (198487), Song of Chi-Ji (198898), Blackout Strike (205523), Detox (218164)
 #12 (id=235531)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 3 | Scaled Value: 3 | Target: Self(1)
 #13 (id=255479)   : Dummy (3)
@@ -1029,7 +1029,7 @@ Attributes       : ........ ........ x....... ........   ..x...x. ........ .....
                  : Channeled (34), Channeled (38)
 Effects          :
 #1 (id=128871)   : Apply Aura (6) | Periodic Heal: every 0.5 seconds (8)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.50000 | Chain Multiplier: 100 | Chain Targets: 1 | Target: Friend(21)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.55000 | Chain Multiplier: 100 | Chain Targets: 1 | Target: Friend(21)
 Description      : $@spelldesc193884
 Tooltip          : Healing for $w1 every $t.
 
@@ -1507,7 +1507,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .x......   ........ ........ ........ ........ 
-                 : ........ ........ ........ x.......   ........ ........ ....x... ........ 
+                 : ........ ........ ........ x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=131823)   : Direct Heal (10)
@@ -1914,7 +1914,7 @@ Attributes       : ........ ........ ..x..... x..x....   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=138091)   : Apply Aura (6) | Periodic Heal: every 2 seconds (8)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.069999) | SP Coefficient: 0.65000 | Target: Friend(21)
+                   Base Value: 1 | Scaled Value: 0 (avg=2.069999) | SP Coefficient: 0.75000 | Target: Friend(21)
 Description      : $@spelldesc115151
 Tooltip          : Restores $w1 health every $t1 sec.
 
@@ -2425,7 +2425,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Friend(21)
 #2 (id=181288)   : School Damage: nature (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Radius: 0 - 8 yards | Target: Unknown(132) -> AOE enemy (instant)(16)
-Description      : Trigger a Zen Pulse around an ally.  Deals $s2 damage to all enemies within $A2 yds of them. The ally is healed for the amount of damage done.
+Description      : Trigger a Zen Pulse around an ally.  Deals $s2 damage to all enemies within $A2 yds of the target. The ally is healed for $198487s1 per enemy damaged.
 
 Name             : Dual Wield (id=124146) [Passive] 
 Class            : Windwalker Monk
@@ -2479,7 +2479,7 @@ Effects          :
 #2 (id=179268)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : $@spelldesc124255
-Tooltip          : $w1 damage is being staggered every 1 sec.
+Tooltip          : $w1 damage is being staggered every $124255t1 sec.
 
 Stagger Remaining: $w2
 
@@ -2500,7 +2500,7 @@ Effects          :
 #2 (id=179270)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : $@spelldesc124255
-Tooltip          : $w1 damage is being staggered every 1 sec.
+Tooltip          : $w1 damage is being staggered every $124255t1 sec.
 
 Stagger Remaining: $w2
 
@@ -2521,7 +2521,7 @@ Effects          :
 #2 (id=179269)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : $@spelldesc124255
-Tooltip          : $w1 damage is being staggered every 1 sec.
+Tooltip          : $w1 damage is being staggered every $124255t1 sec.
 
 Stagger Remaining: $w2
 
@@ -2628,7 +2628,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .x..x... ........ x.......   ........ ........ ....x... ........ 
+                 : ........ .x..x... ........ x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=157840)   : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
@@ -4216,7 +4216,7 @@ Effects          :
 #2 (id=288837)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Radius: 0 - 8 yards | Mechanic: Unknown(88) | Target: Unknown(87) -> AOE enemy (instant)(16)
 #3 (id=335941)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 Description      : $@spelldesc196730
 Tooltip          : $?$w2!=0[Movement speed reduced by $w2%.
 ][]Drenched in brew, vulnerable to Breath of Fire.
@@ -4345,7 +4345,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=288848)   : Apply Aura (6) | Periodic Dummy: every 5 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : Every $t1 sec, an orb of energy forms, and rotates around you until it impacts an enemy, dealing $196748s1 damage. Maximum 4 orbs.
+Description      : Every $t1 sec, an orb of energy forms, and rotates around you until it impacts an enemy, dealing $196748s1 damage to all nearby enemies. Maximum 4 orbs.
 
 Name             : Chi Orbit (id=196748) [Spell Family (53)] 
 Class            : Monk
@@ -4359,7 +4359,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=288854)   : School Damage: nature (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.00000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 Description      : $@spelldesc196743
 
 Name             : Uplifting Trance (id=197206) [Spell Family (53)] 
@@ -4495,7 +4495,7 @@ GCD              : 1.5 seconds
 Charges          : 2 (20 seconds cooldown)
 Category         : 1571
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ...x.... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ x....... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ......x. ........ 
@@ -4505,7 +4505,26 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 6 | Target: Unknown(132)
 #2 (id=290904)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.50000 | Target: Friend(21)
-Description      : Instantly dash to an ally and heal them for $s2.
+Description      : Instantly dash to a friendly player and heal them for $s2.
+
+Name             : Zen Pulse (id=198487) [Spell Family (53)] 
+Class            : Monk
+School           : Nature
+Spell Level      : 1
+Range            : 40 yards
+GCD              : 1.5 seconds
+Cooldown         : 15 seconds
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Extend Life (185158)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .x...... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ....x... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=291733)   : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Target: Friend(21)
+Description      : $@spelldesc124081
 
 Name             : Invoke Chi-Ji, the Red Crane (id=198664) [Spell Family (53)] 
 Class            : Monk
@@ -4528,7 +4547,7 @@ Description      : Summons an effigy of Chi-Ji, the Red Crane for $d. Chi-Ji hea
 
 Name             : Crane Heal (Talent) (id=198756) [Spell Family (53)] 
 Class            : Monk
-School           : Physical
+School           : Nature
 Spell Level      : 1
 Range            : 100 yards
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 

@@ -4124,6 +4124,62 @@ struct storm_elemental_t : public shaman_spell_t
   }
 };
 
+// Earthquake totem =========================================================
+
+struct earthquake_totem_damage_t : public shaman_spell_t
+{
+  earthquake_totem_damage_t( shaman_t* player ) :
+    shaman_spell_t( "earthquake", player, player -> find_spell( 77478 ) )
+  {
+    aoe = -1;
+    ground_aoe = background = true;
+    school = SCHOOL_PHYSICAL;
+    spell_power_mod.direct = 0.3; // Hardcoded into tooltip because it's cool
+    base_multiplier *= 1.0 + p() -> artifact.the_ground_trembles.percent();
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    shaman_spell_t::impact( state );
+
+    if ( td( state -> target ) -> dot.flame_shock -> is_ticking() && p() -> talent.magnitude -> ok() )
+    {
+      p() -> magnitude -> target = state -> target;
+      p() -> magnitude -> schedule_execute();
+    }
+  }
+
+  double target_armor( player_t* ) const override
+  { return 0; }
+};
+
+struct earthquake_totem_t : public shaman_spell_t
+{
+  earthquake_totem_damage_t* rumble;
+
+  earthquake_totem_t( shaman_t* player, const std::string& options_str ):
+    shaman_spell_t( "earthquake_totem", player, player -> find_specialization_spell( "Earthquake Totem" ), options_str ),
+    rumble( new earthquake_totem_damage_t( player ) )
+  {
+    dot_duration = timespan_t::zero(); // The periodic effect is handled by ground_aoe_event_t
+    add_child( rumble );
+  }
+
+  void execute() override
+  {
+    shaman_spell_t::execute();
+
+    new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+        .target( execute_state -> target )
+        .x( execute_state -> target -> x_position )
+        .y( execute_state -> target -> y_position )
+        .duration( data().duration() )
+        .start_time( sim -> current_time() )
+        .action( rumble )
+        .hasted( ground_aoe_params_t::SPELL_HASTE ), true );
+  }
+};
+
 // ==========================================================================
 // Shaman Shock Spells
 // ==========================================================================
@@ -4329,7 +4385,7 @@ struct stormkeeper_t : public shaman_spell_t
   stormkeeper_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "stormkeeper", player, player -> artifact.stormkeeper, options_str )
   {
-    may_crit = false;
+    may_crit = harmful = false;
   }
 
   void execute() override
@@ -4720,52 +4776,6 @@ void shaman_totem_pet_t::dismiss( bool expired )
   pet_t::dismiss( expired );
 }
 
-// Earthquake totem =========================================================
-
-struct earthquake_totem_pulse_t : public totem_pulse_action_t
-{
-  earthquake_totem_pulse_t( shaman_totem_pet_t* totem ) :
-    totem_pulse_action_t( "earthquake", totem, totem -> find_spell( 77478 ) )
-  {
-    aoe = -1;
-    ground_aoe = true;
-    school = SCHOOL_PHYSICAL;
-    spell_power_mod.direct = 0.3; // Hardcoded into tooltip because it's cool
-    hasted_pulse = true;
-    base_multiplier *= 1.0 + o() -> artifact.the_ground_trembles.percent();
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    totem_pulse_action_t::impact( state );
-
-    if ( td( state -> target ) -> dot.flame_shock -> is_ticking() && o() -> talent.magnitude -> ok() )
-    {
-      o() -> magnitude -> target = state -> target;
-      o() -> magnitude -> schedule_execute();
-    }
-  }
-
-  double target_armor( player_t* ) const override
-  { return 0; }
-};
-
-struct earthquake_totem_t : public shaman_totem_pet_t
-{
-  earthquake_totem_t( shaman_t* owner ):
-    shaman_totem_pet_t( owner, "earthquake_totem" )
-  {
-    pulse_amplitude = owner -> find_spell( 61882 ) -> effectN( 2 ).period();
-  }
-
-  void init_spells() override
-  {
-    shaman_totem_pet_t::init_spells();
-
-    pulse_action = new earthquake_totem_pulse_t( this );
-  }
-};
-
 // Liquid Magma totem =======================================================
 
 struct liquid_magma_globule_t : public spell_t
@@ -4961,6 +4971,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "doom_winds"              ) return new               doom_winds_t( this, options_str );
   if ( name == "earthen_spike"           ) return new            earthen_spike_t( this, options_str );
   if ( name == "earth_shock"             ) return new              earth_shock_t( this, options_str );
+  if ( name == "earthquake_totem"        ) return new         earthquake_totem_t( this, options_str );
   if ( name == "elemental_blast"         ) return new          elemental_blast_t( this, options_str );
   if ( name == "ghost_wolf"              ) return new               ghost_wolf_t( this, options_str );
   if ( name == "feral_lunge"             ) return new              feral_lunge_t( this, options_str );
@@ -4999,11 +5010,6 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "healing_wave"            ) return new             healing_wave_t( this, options_str );
   if ( name == "riptide"                 ) return new                  riptide_t( this, options_str );
 
-  if ( name == "earthquake_totem" )
-  {
-    return new  shaman_totem_t( "earthquake_totem", this, options_str, find_specialization_spell( "Earthquake Totem" ) );
-  }
-
   if ( name == "liquid_magma_totem" )
   {
     return new shaman_totem_t( "liquid_magma_totem", this, options_str, talent.liquid_magma_totem );
@@ -5034,7 +5040,6 @@ pet_t* shaman_t::create_pet( const std::string& pet_name,
   if ( pet_name == "storm_elemental_guardian" ) return new pet::storm_elemental_t( this, true );
   if ( pet_name == "earth_elemental_pet"      ) return new pet::earth_elemental_t( this, false );
   if ( pet_name == "earth_elemental_guardian" ) return new pet::earth_elemental_t( this, true );
-  if ( pet_name == "earthquake_totem"         ) return new earthquake_totem_t( this );
   if ( pet_name == "liquid_magma_totem"       ) return new liquid_magma_totem_t( this );
 
   return nullptr;
@@ -5077,11 +5082,6 @@ void shaman_t::create_pets()
     {
       guardian_storm_elemental = create_pet( "storm_elemental_guardian" );
     }
-  }
-
-  if ( find_action( "earthquake_totem" ) )
-  {
-    create_pet( "earthquake_totem" );
   }
 
   if ( talent.liquid_magma_totem -> ok() && find_action( "liquid_magma_totem" ) )

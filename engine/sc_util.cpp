@@ -465,13 +465,17 @@ const char* util::pet_type_string( pet_e type )
     case PET_SPOREBAT:            return "sporebat";
     case PET_WIND_SERPENT:        return "wind_serpent";
     case PET_FELGUARD:            return "felguard";
-    case PET_WRATHGUARD:          return "wrathguard";
     case PET_FELHUNTER:           return "felhunter";
     case PET_IMP:                 return "imp";
     case PET_VOIDWALKER:          return "voidwalker";
     case PET_SUCCUBUS:            return "succubus";
     case PET_INFERNAL:            return "infernal";
     case PET_DOOMGUARD:           return "doomguard";
+    case PET_WILD_IMP:            return "wild_imp";
+    case PET_DREADSTALKER:        return "dreadstalker";
+    case PET_SERVICE_IMP:         return "service_imp";
+    case PET_SERVICE_FELHUNTER:   return "service_felhunter";
+    case PET_OBSERVER:            return "observer";
     case PET_GHOUL:               return "ghoul";
     case PET_BLOODWORMS:          return "bloodworms";
     case PET_DANCING_RUNE_WEAPON: return "dancing_rune_weapon";

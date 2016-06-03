@@ -8,23 +8,21 @@
 // ==========================================================================
 //
 // TODO:
+// Wild imps have a 14 sec duration on 104317, expire after 12 UNLESS implosion.
+// Affliction is very...very broken. I think it's related to service.
 // Double check all up()/check() usage.
 // Remove manatap/soul harvest pet multiplier bugs when they get fixed.
 // Check resource generation execute/impact and hit requirement
 // Report which spells triggered soul conduit
+//
 // Affliction -
 // Haunt reset
 // Soul Effigy
 // Destruction -
-// Lord of Flames
 // DEMO TALENTS: (all)
-// T1: Shadowy Inspiration, Shadowflame, Demonic Calling
-// T2: Imepdning Doom, Improved Dreadstalkers, Implosion
-// T3: LOOOOOOOL
-// T4: Hand of Doom, Powertrip, Soul harvest
-// T5: LMFAO
-// T6: ??? Think these are done? (except supremacy kinda?)
-// T7: Summon FOTMDemon, Demonbolt, Conduit = done (gahddo pls)
+// T1: Shadowy Inspiration
+// T4: Powertrip
+// T7: Summon FOTMDemon, Demonbolt
 //
 // Artifacts -
 // Affliction/Demonology
@@ -50,6 +48,7 @@ namespace pets {
   struct infernal_t;
   struct doomguard_t;
   struct lord_of_flames_infernal_t;
+  struct darkglare_t;
 }
 
 struct warlock_td_t: public actor_target_data_t
@@ -107,6 +106,7 @@ public:
     static const int INFERNAL_LIMIT = 1;
     static const int DOOMGUARD_LIMIT = 1;
     static const int LORD_OF_FLAMES_INFERNAL_LIMIT = 3;
+    static const int DARKGLARE_LIMIT = 1;
     std::array<pets::wild_imp_pet_t*, WILD_IMP_LIMIT> wild_imps;
     std::array<pets::t18_illidari_satyr_t*, T18_PET_LIMIT> t18_illidari_satyr;
     std::array<pets::t18_prince_malchezaar_t*, T18_PET_LIMIT> t18_prince_malchezaar;
@@ -118,6 +118,7 @@ public:
     std::array<pets::infernal_t*, INFERNAL_LIMIT> infernal;
     std::array<pets::doomguard_t*, DOOMGUARD_LIMIT> doomguard;
     std::array<pets::lord_of_flames_infernal_t*, LORD_OF_FLAMES_INFERNAL_LIMIT> lord_of_flames_infernal;
+    std::array<pets::darkglare_t*, DARKGLARE_LIMIT> darkglare;
   } warlock_pet_list;
 
   std::vector<std::string> pet_name_list;
@@ -143,27 +144,33 @@ public:
     const spell_data_t* shadowy_inspiration;
     const spell_data_t* shadowflame;
     const spell_data_t* demonic_calling;
-    const spell_data_t* impending_doom;
-    const spell_data_t* improved_dreadstalkers;
-    const spell_data_t* implosion;
-    const spell_data_t* hand_of_doom;
-    const spell_data_t* power_trip;
 
     const spell_data_t* contagion;
     const spell_data_t* absolute_corruption;
+
     const spell_data_t* reverse_entropy;
     const spell_data_t* roaring_blaze;
+
     const spell_data_t* mana_tap;
 
-    const spell_data_t* soul_leech;
+    const spell_data_t* impending_doom;
+    const spell_data_t* improved_dreadstalkers;
+    const spell_data_t* implosion;
+
+    const spell_data_t* demon_skin;
     const spell_data_t* mortal_coil;
     const spell_data_t* howl_of_terror;
+    const spell_data_t* shadowfury;
 
+    const spell_data_t* hand_of_doom;
+    const spell_data_t* power_trip;
 
     const spell_data_t* siphon_life;
     const spell_data_t* sow_the_seeds;
+
     const spell_data_t* eradication;
     const spell_data_t* cataclysm;
+
     const spell_data_t* soul_harvest;
 
     const spell_data_t* demonic_circle;
@@ -181,8 +188,8 @@ public:
     const spell_data_t* wreak_havoc;
     const spell_data_t* channel_demonfire;
 
-    const spell_data_t* demonbolt; // Demonology only
-    const spell_data_t* shadowfury;
+    const spell_data_t* summon_darkglare;
+    const spell_data_t* demonbolt;
 
     const spell_data_t* soul_conduit;
   } talents;
@@ -309,6 +316,7 @@ public:
     buff_t* conflagration_of_chaos;
     buff_t* soul_harvest;
     buff_t* lord_of_flames;
+    buff_t* demonic_calling;
 
     buff_t* tier18_2pc_demonology;
 
@@ -354,6 +362,8 @@ public:
     proc_t* two_shard_hog;
     proc_t* three_shard_hog;
     proc_t* four_shard_hog;
+    proc_t* impending_doom;
+    proc_t* improved_dreadstalkers;
   } procs;
 
   struct spells_t
@@ -1585,7 +1595,7 @@ struct wild_imp_pet_t: public warlock_pet_t
   void trigger()
   {
     *firebolt_stats = regular_stats;
-      summon(timespan_t::from_millis( 12000 ));
+      summon( timespan_t::from_millis( 12000 ) );
   }
 };
 
@@ -1607,7 +1617,7 @@ struct dreadstalker_t : public warlock_pet_t
     resources.base[RESOURCE_ENERGY] = 0;
     base_energy_regen_per_second = 0;
     melee_attack = new actions::warlock_pet_melee_t( this );
-    if ( o() ->warlock_pet_list.dreadstalkers[0] )
+    if ( o() -> warlock_pet_list.dreadstalkers[0] )
       melee_attack -> stats = o() ->warlock_pet_list.dreadstalkers[0] -> get_stats( "melee" );
   }
 
@@ -1628,6 +1638,30 @@ struct dreadstalker_t : public warlock_pet_t
       }
       return a;
     }
+
+    return warlock_pet_t::create_action( name, options_str );
+  }
+};
+
+struct darkglare_t : public warlock_pet_t
+{
+  darkglare_t( sim_t* sim, warlock_t* owner ) :
+    warlock_pet_t( sim, owner, "darkglare", PET_OBSERVER )
+  {
+    //action_list_str = "eye_laser";
+    regen_type = REGEN_DISABLED;
+  }
+
+  void init_base_stats() override
+  {
+    warlock_pet_t::init_base_stats();
+    resources.base[RESOURCE_ENERGY] = 0;
+    base_energy_regen_per_second = 0;
+  }
+
+  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
+  {
+    if ( name == "eye_laser" ) return new actions::doom_bolt_t( this );
 
     return warlock_pet_t::create_action( name, options_str );
   }
@@ -2196,6 +2230,36 @@ struct life_tap_t: public warlock_spell_t
   }
 };
 
+struct shadow_bolt_t: public warlock_spell_t
+{
+  shadow_bolt_t( warlock_t* p ):
+    warlock_spell_t( p, "Shadow Bolt" )
+  {
+    energize_type = ENERGIZE_ON_CAST;
+    energize_resource = RESOURCE_SOUL_SHARD;
+    energize_amount = 1;
+  }
+
+//  virtual timespan_t execute_time() const override
+//  {
+//    if ( p() -> buffs.shadowy_inspiration-> check() )
+//    {
+//      return timespan_t::zero();
+//    }
+//
+//    return warlock_spell_t::execute_time();
+//  }
+
+  void execute() override
+  {
+    warlock_spell_t::execute();
+
+    if ( p() -> talents.demonic_calling -> ok() )
+      p() -> buffs.demonic_calling -> trigger();
+  }
+};
+
+
 struct doom_t: public warlock_spell_t
 {
   doom_t( warlock_t* p ):
@@ -2223,43 +2287,48 @@ struct doom_t: public warlock_spell_t
     warlock_spell_t::tick( d );
     //p()->sim->errorf("Testing a tick");
 
-    //if ( d -> state -> result == RESULT_HIT ) trigger_wild_imp( p() );
-    //p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p()->gains.doom);
-    //if(p()->talents.impending_doom->ok())
-        //trigger_wild_imp( p() );
+    if( ( d -> state -> result == RESULT_HIT ) && p() -> talents.impending_doom -> ok() )
+    { 
+      trigger_wild_imp( p() );
+      p() -> procs.impending_doom -> occur();
+    }
   }
 };
 
 struct demonic_empowerment_t: public warlock_spell_t
 {
+  double power_trip_rng;
+
 	demonic_empowerment_t (warlock_t* p) :
 		warlock_spell_t( "demonic empowerment", p, p -> spec.demonic_empowerment )
 	{
-        may_crit = false;
-	}
+    may_crit = false;
 
-	void init() override
-	{
-		warlock_spell_t::init();
+    power_trip_rng = p -> talents.power_trip -> effectN( 1 ).percent();
 	}
 
 	void execute() override
 	{
-        warlock_spell_t::execute();
-        for(auto& pet : p()->pet_list)
-        {
-            pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> (pet);
-            if(lock_pet != NULL)
-            {
-                if(!lock_pet->is_sleeping())
-                {
-                    lock_pet->buffs.demonic_empowerment->trigger();
-                }
-            }
-        }
-	}
+    warlock_spell_t::execute();
+    for( auto& pet : p() -> pet_list )
+    {
+      pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
 
-		
+      if( lock_pet != NULL )
+      {
+        if( !lock_pet -> is_sleeping() )
+        {
+          lock_pet -> buffs.demonic_empowerment -> trigger();
+        }
+      }
+    }
+
+    if ( p() -> talents.power_trip -> ok() && rng().roll( power_trip_rng ) )
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.power_trip );
+
+    //if ( p() -> talents.shadowy_inspiration -> ok() )
+    //  p() -> buffs.shadowy_inspiration -> trigger();
+	}
 };
 
 struct havoc_t: public warlock_spell_t
@@ -2283,16 +2352,21 @@ struct havoc_t: public warlock_spell_t
 
 struct hand_of_guldan_t: public warlock_spell_t
 {
-
   double demonology_trinket_chance;
+  doom_t* doom;
 
   hand_of_guldan_t( warlock_t* p ):
     warlock_spell_t( p, "Hand of Gul'dan" ),
-    demonology_trinket_chance( 0.0 )
+    demonology_trinket_chance( 0.0 ),
+    doom( new doom_t( p ) )
   {
     aoe = -1;
 
     parse_effect_data( p -> find_spell( 86040 ) -> effectN( 1 ) );
+
+    doom -> background = true;
+    doom -> dual = true;
+    doom -> base_costs[RESOURCE_MANA] = 0;
   }
 
   virtual timespan_t travel_time() const override
@@ -2328,31 +2402,17 @@ struct hand_of_guldan_t: public warlock_spell_t
     if ( resource_consumed == 4.0 )
       p() -> procs.four_shard_hog -> occur();
   }
-};
 
-struct shadow_bolt_t: public warlock_spell_t
-{
-  shadow_bolt_t( warlock_t* p ):
-    warlock_spell_t( p, "Shadow Bolt" )
+  virtual void impact( action_state_t* s ) override
   {
-    if ( p -> specialization() == WARLOCK_DEMONOLOGY )
+    warlock_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) && p() -> talents.hand_of_doom -> ok() )
     {
-      energize_type = ENERGIZE_ON_HIT;
-      energize_resource = RESOURCE_SOUL_SHARD;
-      energize_amount = 1;
+      doom -> target = s -> target;
+      doom -> execute();
     }
   }
-  /*void execute() override
-  {
-    if(p()->buffs.shadowy_inspiration->up())
-    {
-        timespan_t temp = this->time_to_execute;
-        this->time_to_execute = timespan_t.from_millis(0);
-        p()->buffs.shadowy_inspiration->execute();
-        warlock_spell_t::execute();
-        this->time_to_execute = temp;
-    }
-  }*/
 };
 
 struct immolate_t: public warlock_spell_t
@@ -3029,22 +3089,63 @@ struct summon_infernal_t : public warlock_spell_t
   }
 };
 
-struct call_dreadstalkers_t : public warlock_spell_t
+struct summon_darkglare_t : public warlock_spell_t
 {
-  timespan_t dreadstalker_duration;
+  timespan_t darkglare_duration;
 
-  call_dreadstalkers_t( warlock_t* p ) :
-    warlock_spell_t( "Call_Dreadstalkers", p, p -> find_spell( 104316 ) )
-    {
-      harmful = may_crit = false;
-      dreadstalker_duration = p -> find_spell( 193332 ) -> duration();
-    }
+  summon_darkglare_t( warlock_t* p ) :
+    warlock_spell_t( "summon_darkglare", p, p -> talents.summon_darkglare )
+  {
+    harmful = may_crit = false;
+    darkglare_duration = data().duration();
+  }
 
   virtual void execute() override
   {
     warlock_spell_t::execute();
 
-    int dreadstalker_count = data().effectN( 1 ).base_value();
+    for ( size_t i = 0; i < p() -> warlock_pet_list.darkglare.size(); i++ )
+    {
+      if ( p() -> warlock_pet_list.darkglare[i] -> is_sleeping() )
+      {
+        p() -> warlock_pet_list.darkglare[i] -> summon( darkglare_duration );
+      }
+    }
+  }
+};
+
+
+struct call_dreadstalkers_t : public warlock_spell_t
+{
+  timespan_t dreadstalker_duration;
+  int dreadstalker_count;
+  int improved_dreadstalkers;
+
+  call_dreadstalkers_t( warlock_t* p ) :
+    warlock_spell_t( "Call_Dreadstalkers", p, p -> find_spell( 104316 ) )
+  {
+    harmful = may_crit = false;
+    dreadstalker_duration = p -> find_spell( 193332 ) -> duration();
+    dreadstalker_count = data().effectN( 1 ).base_value();
+    improved_dreadstalkers = p -> talents.improved_dreadstalkers -> effectN( 1 ).base_value();
+  }
+
+  double cost() const override
+  {
+    double c = warlock_spell_t::cost();
+
+    if ( p() -> buffs.demonic_calling -> check() )
+    {
+      return 0;
+    }
+
+    return c;
+  }
+
+  virtual void execute() override
+  {
+    warlock_spell_t::execute();
+
     int j = 0;
 
     for ( size_t i = 0; i < p() -> warlock_pet_list.dreadstalkers.size(); i++ )
@@ -3056,6 +3157,17 @@ struct call_dreadstalkers_t : public warlock_spell_t
         if ( ++j == dreadstalker_count ) break;
       }
     }
+
+    if ( p() -> talents.improved_dreadstalkers -> ok() )
+    {
+      for ( size_t i = 0; i < improved_dreadstalkers; i++ )
+      {
+        trigger_wild_imp( p() );
+        p() -> procs.improved_dreadstalkers -> occur();
+      }
+    }
+
+    p() -> buffs.demonic_calling -> expire();
   }
 };
 
@@ -3066,8 +3178,40 @@ struct demonbolt_t: public warlock_spell_t
 {
   demonbolt_t( warlock_t* p ):
     warlock_spell_t( "demonbolt", p, p -> talents.demonbolt )
+    {
+
+        energize_type = ENERGIZE_ON_CAST;
+        energize_resource = RESOURCE_SOUL_SHARD;
+        energize_amount = 1;
+    }
+
+  virtual double action_multiplier() const override
   {
+    double pm = spell_t::action_multiplier();
+
+    for( auto& pet : p() -> pet_list )
+    {
+      pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
+
+      if( lock_pet != NULL )
+      {
+        if( !lock_pet -> is_sleeping() )
+        {
+            pm *= ( 1.0 + data().effectN( 3 ).percent() );
+        }
+      }
+    }
+    return pm;
   }
+
+    void execute() override
+    {
+        warlock_spell_t::execute();
+
+        if ( p() -> talents.demonic_calling -> ok() )
+          p() -> buffs.demonic_calling -> trigger();
+
+      }
 };
 
 struct implosion_t : public warlock_spell_t
@@ -3090,47 +3234,44 @@ struct implosion_t : public warlock_spell_t
     implosion_aoe_t* explosion;
 
     implosion_t(warlock_t* p) :
-        warlock_spell_t( "implosion", p, p -> talents.implosion),
-        explosion( new implosion_aoe_t( p ) )
+      warlock_spell_t( "implosion", p, p -> talents.implosion ),
+      explosion( new implosion_aoe_t( p ) )
     {
-        aoe = -1;
-        add_child( explosion );
+      aoe = -1;
+      add_child( explosion );
     }
     virtual void execute() override
     {
-        warlock_spell_t::execute();
-        for( auto imp : p() -> warlock_pet_list.wild_imps )
+      warlock_spell_t::execute();
+      for( auto imp : p() -> warlock_pet_list.wild_imps )
+      {
+        if( !imp -> is_sleeping() )
         {
-            if( !imp -> is_sleeping() )
-            {
-                explosion -> execute();
-                imp -> dismiss();
-            }
+          explosion -> execute();
+          imp -> dismiss();
         }
+      }
     }
 };
 
-
-struct shadowflame_t: public warlock_spell_t
+struct shadowflame_t : public warlock_spell_t
 {
-  shadowflame_t( warlock_t* p ):
-    warlock_spell_t( "shadowflame", p, p -> find_spell( 47960 ) )
+  shadowflame_t( warlock_t* p ) :
+    warlock_spell_t( "shadowflame", p, p -> talents.shadowflame )
   {
-    background = true;
-    may_miss = false;
-    spell_power_mod.tick *= 0.8; // Check
+    hasted_ticks = tick_may_crit = true;
+
+    dot_duration = timespan_t::from_seconds( 8.0 );
+    spell_power_mod.tick = data().effectN( 2 ).sp_coeff();
+    base_tick_time = data().effectN( 2 ).period();
   }
 
-  virtual timespan_t travel_time() const override
+  virtual double composite_ta_multiplier( const action_state_t* state ) const override
   {
-    return timespan_t::from_seconds( 1.5 );
-  }
+    double m = warlock_spell_t::composite_ta_multiplier( state );
 
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = warlock_spell_t::composite_target_multiplier( target );
-
-    m *= td( target ) -> debuffs_shadowflame -> stack();
+    if ( td( state -> target ) -> dots_shadowflame -> is_ticking() )
+      m *= 1.0 + td( target ) -> debuffs_shadowflame -> stack();
 
     return m;
   }
@@ -3139,7 +3280,17 @@ struct shadowflame_t: public warlock_spell_t
   {
     warlock_spell_t::last_tick( d );
 
-    td ( d -> state -> target ) -> debuffs_shadowflame -> expire();
+    td( d -> state -> target ) -> debuffs_shadowflame -> expire();
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    warlock_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      td( s -> target  ) -> debuffs_shadowflame -> trigger();
+    }
   }
 };
 
@@ -3540,7 +3691,7 @@ warlock( p )
 
   debuffs_haunt = buff_creator_t( *this, "haunt", source -> find_class_spell( "Haunt" ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
-  debuffs_shadowflame = buff_creator_t( *this, "shadowflame", source -> find_spell( 47960 ) )
+  debuffs_shadowflame = buff_creator_t( *this, "shadowflame", source -> find_spell( 205181 ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   debuffs_agony = buff_creator_t( *this, "agony", source -> find_spell( 980 ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
@@ -3759,6 +3910,7 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "summon_doomguard"      ) a = new                  summon_doomguard_t( this );
   else if ( action_name == "call_dreadstalkers"    ) a = new                call_dreadstalkers_t( this );
   else if ( action_name == "dimensional_rift"      ) a = new                  dimensional_rift_t( this );
+  else if ( action_name == "shadowflame"           ) a = new                       shadowflame_t( this );
   else if ( action_name == "summon_felhunter"      ) a = new      summon_main_pet_t( "felhunter", this );
   else if ( action_name == "summon_felguard"       ) a = new       summon_main_pet_t( "felguard", this );
   else if ( action_name == "summon_succubus"       ) a = new       summon_main_pet_t( "succubus", this );
@@ -3897,55 +4049,65 @@ void warlock_t::init_spells()
 
   // Talents
 
-  talents.haunt                 = find_talent_spell( "Haunt" );
-  talents.writhe_in_agony       = find_talent_spell( "Writhe in Agony" );
-  talents.drain_soul            = find_talent_spell( "Drain Soul" );
+  talents.haunt                  = find_talent_spell( "Haunt" );
+  talents.writhe_in_agony        = find_talent_spell( "Writhe in Agony" );
+  talents.drain_soul             = find_talent_spell( "Drain Soul" );
 
-  talents.backdraft             = find_talent_spell( "Backdraft" );
-  talents.fire_and_brimstone    = find_talent_spell( "Fire and Brimstone" );
-  talents.shadowburn            = find_talent_spell( "Shadowburn" );
+  talents.backdraft              = find_talent_spell( "Backdraft" );
+  talents.fire_and_brimstone     = find_talent_spell( "Fire and Brimstone" );
+  talents.shadowburn             = find_talent_spell( "Shadowburn" );
 
-  talents.contagion             = find_talent_spell( "Contagion" );
-  talents.absolute_corruption   = find_talent_spell( "Absolute Corruption" );
+  talents.shadowy_inspiration    = find_talent_spell( "Shadowy Inspiration" );
+  talents.shadowflame            = find_talent_spell( "Shadowflame" );
+  talents.demonic_calling        = find_talent_spell( "Demonic Calling" );
 
-  talents.reverse_entropy       = find_talent_spell( "Reverse Entropy" );
-  talents.roaring_blaze         = find_talent_spell( "Roaring Blaze" );
+  talents.contagion              = find_talent_spell( "Contagion" );
+  talents.absolute_corruption    = find_talent_spell( "Absolute Corruption" );
 
-  talents.mana_tap              = find_talent_spell( "Mana Tap" );
+  talents.reverse_entropy        = find_talent_spell( "Reverse Entropy" );
+  talents.roaring_blaze          = find_talent_spell( "Roaring Blaze" );
 
-  talents.soul_leech            = find_talent_spell( "Soul Leech" );
-  talents.mortal_coil           = find_talent_spell( "Mortal Coil" );
-  talents.howl_of_terror        = find_talent_spell( "Howl of Terror" );
+  talents.mana_tap               = find_talent_spell( "Mana Tap" );
 
-  talents.siphon_life           = find_talent_spell( "Siphon Life" );
-  talents.sow_the_seeds         = find_talent_spell( "Sow the Seeds" );
+  talents.impending_doom         = find_talent_spell( "Impending Doom" );
+  talents.improved_dreadstalkers = find_talent_spell( "Improved Dreadstalkers" );
+  talents.implosion              = find_talent_spell( "Implosion" );
 
-  talents.eradication           = find_talent_spell( "Eradication" );
-  talents.cataclysm             = find_talent_spell( "Cataclysm" );
+  talents.demon_skin             = find_talent_spell( "Soul Leech" );
+  talents.mortal_coil            = find_talent_spell( "Mortal Coil" );
+  talents.howl_of_terror         = find_talent_spell( "Howl of Terror" );
+  talents.shadowfury             = find_talent_spell( "Shadowfury" );
 
-  talents.power_trip			      = find_talent_spell( "Power Trip" );
+  talents.siphon_life            = find_talent_spell( "Siphon Life" );
+  talents.sow_the_seeds          = find_talent_spell( "Sow the Seeds" );
 
-  talents.soul_harvest          = find_talent_spell( "Soul Harvest" );
+  talents.eradication            = find_talent_spell( "Eradication" );
+  talents.cataclysm              = find_talent_spell( "Cataclysm" );
 
-  talents.demonic_circle        = find_talent_spell( "Demonic Circle" );
-  talents.burning_rush          = find_talent_spell( "Burning Rush" );
-  talents.dark_pact             = find_talent_spell( "Dark Pact" );
+  talents.hand_of_doom           = find_talent_spell( "Hand of Doom" );
+  talents.power_trip			       = find_talent_spell( "Power Trip" );
 
-  talents.grimoire_of_supremacy = find_talent_spell( "Grimoire of Supremacy" );
-  talents.grimoire_of_service   = find_talent_spell( "Grimoire of Service" );
-  talents.grimoire_of_sacrifice = find_talent_spell( "Grimoire of Sacrifice" );
-  talents.grimoire_of_synergy   = find_talent_spell( "Grimoire of Synergy" );
+  talents.soul_harvest           = find_talent_spell( "Soul Harvest" );
 
-  talents.soul_effigy           = find_talent_spell( "Soul Effigy" );
-  talents.phantom_singularity   = find_talent_spell( "Phantom Singularity" );
+  talents.demonic_circle         = find_talent_spell( "Demonic Circle" );
+  talents.burning_rush           = find_talent_spell( "Burning Rush" );
+  talents.dark_pact              = find_talent_spell( "Dark Pact" );
 
-  talents.wreak_havoc           = find_talent_spell( "Wreak Havoc" );
+  talents.grimoire_of_supremacy  = find_talent_spell( "Grimoire of Supremacy" );
+  talents.grimoire_of_service    = find_talent_spell( "Grimoire of Service" );
+  talents.grimoire_of_sacrifice  = find_talent_spell( "Grimoire of Sacrifice" );
+  talents.grimoire_of_synergy    = find_talent_spell( "Grimoire of Synergy" );
+
+  talents.soul_effigy            = find_talent_spell( "Soul Effigy" );
+  talents.phantom_singularity    = find_talent_spell( "Phantom Singularity" );
+
+  talents.wreak_havoc            = find_talent_spell( "Wreak Havoc" );
   talents.channel_demonfire      = find_talent_spell( "Channel Demonfire" );
 
-  talents.demonbolt             = find_talent_spell( "Demonbolt" );
-  talents.shadowfury            = find_talent_spell( "Shadowfury" );
+  talents.summon_darkglare       = find_talent_spell( "Summon Darkglare" );
+  talents.demonbolt              = find_talent_spell( "Demonbolt" );
 
-  talents.soul_conduit          = find_talent_spell( "Soul Conduit" );
+  talents.soul_conduit           = find_talent_spell( "Soul Conduit" );
 
   // Artifacts
   artifact.reap_souls = find_artifact_spell( "Reap Souls" );
@@ -4051,18 +4213,6 @@ struct havoc_buff_t : public buff_t
   }
 };
 
-/*struct shadowy_inspiration_buff_t : public buff_t
-{
-    shadowy_inspiration_buff_t(warlock_t* p):
-        buff_t(buff_creator_t( p, "shadowy_inspiration", p->find_talent_spell("Shadowy Inspiration")))
-    {
-        if(p->talents.shadowy_inspiration->ok())
-        {
-            buff_duration = timespan_t::from_seconds(15);
-        }
-    }
-};*/
-
 void warlock_t::create_buffs()
 {
   player_t::create_buffs();
@@ -4077,19 +4227,18 @@ void warlock_t::create_buffs()
     .refresh_behavior( BUFF_REFRESH_PANDEMIC )
     .tick_behavior( BUFF_TICK_NONE );
   buffs.havoc = new havoc_buff_t( this );
-
   buffs.tier18_2pc_demonology = buff_creator_t( this, "demon_rush", sets.set( WARLOCK_DEMONOLOGY, T18, B2 ) -> effectN( 1 ).trigger() )
     .default_value( sets.set( WARLOCK_DEMONOLOGY, T18, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
-
   buffs.conflagration_of_chaos = buff_creator_t( this, "conflagration_of_chaos", artifact.conflagration_of_chaos.data().effectN( 1 ).trigger() )
     .chance( artifact.conflagration_of_chaos.rank() ? artifact.conflagration_of_chaos.data().proc_chance() : 0.0 );
-
   buffs.soul_harvest = buff_creator_t( this, "soul_harvest", find_spell( 196098 ) );
   buffs.lord_of_flames = buff_creator_t( this, "lord_of_flames", find_spell( 226802 ) )
     .tick_behavior( BUFF_TICK_NONE );
+  buffs.demonic_calling = buff_creator_t( this, "demonic_calling", talents.demonic_calling -> effectN( 1 ).trigger() )
+    .chance( find_spell( 205145 ) -> proc_chance() );
 
   //demonology buffs
-  //buffs.shadowy_inspiration = buff_creator_t( this, "shadowy_inspiration", talents.shadowy_inspiration );
+  //buffs.shadowy_inspiration = buff_creator_t( this, "shadowy_inspiration", find_spell( 196606 ) );
 }
 
 void warlock_t::init_rng()
@@ -4118,6 +4267,7 @@ void warlock_t::init_gains()
   gains.soul_conduit        = get_gain( "soul_conduit" );
   gains.reverse_entropy     = get_gain( "reverse_entropy" );
   gains.soulsnatcher        = get_gain( "soulsnatcher" );
+  gains.power_trip          = get_gain( "power_trip" );
 }
 
 // warlock_t::init_procs ===============================================
@@ -4141,6 +4291,8 @@ void warlock_t::init_procs()
   procs.two_shard_hog = get_proc( "two_shard_hog" );
   procs.three_shard_hog = get_proc( "three_shard_hog" );
   procs.four_shard_hog = get_proc( "four_shard_hog" );
+  procs.impending_doom = get_proc( "impending_doom" );
+  procs.improved_dreadstalkers = get_proc( "improved_dreadstalkers" );
 }
 
 void warlock_t::apl_precombat()

@@ -774,7 +774,7 @@ struct shadowfiend_pet_t final : public base_fiend_pet_t
                      const std::string& name = "shadowfiend" )
     : base_fiend_pet_t( sim, owner, PET_SHADOWFIEND, name )
   {
-    direct_power_mod = 0.75;
+    direct_power_mod = 1.875; // Verified 2016/06/02 -- Twintop
 
     main_hand_weapon.min_dmg =
         owner.dbc.spell_scaling( owner.type, owner.level() ) * 2;
@@ -804,7 +804,7 @@ struct mindbender_pet_t final : public base_fiend_pet_t
     : base_fiend_pet_t( sim, owner, PET_MINDBENDER, name ),
       mindbender_spell( owner.find_talent_spell( "Mindbender" ) )
   {
-    direct_power_mod = 0.75;
+    direct_power_mod = 1.5; // Verified 2016/06/02 -- Twintop
 
     main_hand_weapon.min_dmg =
         owner.dbc.spell_scaling( owner.type, owner.level() ) * 2;
@@ -3077,7 +3077,7 @@ struct void_torrent_t final : public priest_spell_t
     channeled     = true;
     use_off_gcd   = true;
     is_mind_spell = false;
-    tick_zero     = false;
+    tick_zero     = true;
 
     dot_duration = timespan_t::from_seconds( 4.0 );
   }
@@ -3085,6 +3085,17 @@ struct void_torrent_t final : public priest_spell_t
   timespan_t composite_dot_duration( const action_state_t* ) const override
   {
     return timespan_t::from_seconds( 4.0 );
+  }
+
+  timespan_t tick_time( double haste ) const
+  {
+    timespan_t t = base_tick_time;
+    
+    double h = priest.composite_spell_haste();
+
+    t *= h;
+
+    return t;
   }
 
   void last_tick( dot_t* d ) override
@@ -3124,7 +3135,12 @@ struct shadow_crash_t final : public priest_spell_t
   {
     parse_options( options_str );
 
+    const spell_data_t* missile = priest.find_spell(205386);
+    school = missile->get_school_type();
+    spell_power_mod.direct = missile->effectN(1).sp_coeff();
     aoe = -1;
+    radius = data().effectN(1).radius();
+
     energize_type = ENERGIZE_NONE; // disable resource generation from spell data
   }
 
