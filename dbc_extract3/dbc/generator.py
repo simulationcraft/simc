@@ -1290,6 +1290,7 @@ class SpellDataGenerator(DataGenerator):
           ( 226802, 3 ),        # Lord of Flames buff
           ( 196659, 3 ),        # Dimensional rift spells
           ( 196606, 2 ),        # Shadowy Inspiration buff
+          ( 205231, 5 ),        # Darkglare spell
           ( 196639, 3 ),
           ( 215409, 3 ),
           ( 215276, 3 ),

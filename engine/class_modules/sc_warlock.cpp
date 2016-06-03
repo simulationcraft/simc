@@ -1007,6 +1007,59 @@ struct wild_firebolt_t: public warlock_pet_spell_t
   }
 };
 
+struct eye_laser_t : public warlock_pet_spell_t
+{
+  struct eye_laser_damage_t : public warlock_pet_spell_t
+  {
+    eye_laser_damage_t( warlock_pet_t* p ) :
+      warlock_pet_spell_t( "eye_laser_damage", p, p -> find_spell( 196100 ) )
+    { 
+      background = dual = true;
+      //base_execute_time = timespan_t::zero();
+    }
+  };
+
+  eye_laser_damage_t* eye_laser;
+
+  eye_laser_t( warlock_pet_t* p ) :
+    warlock_pet_spell_t( "eye_laser", p, p -> find_spell( 205231 ) )
+  { 
+    may_crit = harmful = false;
+    base_multiplier *= 0;
+
+    eye_laser = new eye_laser_damage_t( p );
+    add_child( eye_laser );
+  }
+
+  std::vector< player_t* >& target_list() const override
+  {
+    target_cache.list = warlock_pet_spell_t::target_list();
+
+    size_t i = target_cache.list.size();
+    while ( i > 0 )
+    {
+      i--;
+      player_t* target_ = target_cache.list[i];
+      if ( !td( target_ ) -> dots_doom -> is_ticking() )
+        target_cache.list.erase( target_cache.list.begin() + i );
+    }
+    return target_cache.list;
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    spell_t::impact( s );
+
+    std::vector<player_t*> targets = target_list();
+
+    if ( targets.size() > 0 )
+    {
+      eye_laser -> target = targets[rng().range( 0, targets.size() - 1 )];
+      eye_laser -> execute();
+    }
+  }
+};
+
 } // pets::actions
 
 warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian ):
@@ -1648,7 +1701,7 @@ struct darkglare_t : public warlock_pet_t
   darkglare_t( sim_t* sim, warlock_t* owner ) :
     warlock_pet_t( sim, owner, "darkglare", PET_OBSERVER )
   {
-    //action_list_str = "eye_laser";
+    action_list_str = "eye_laser";
     regen_type = REGEN_DISABLED;
   }
 
@@ -1661,7 +1714,7 @@ struct darkglare_t : public warlock_pet_t
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
-    if ( name == "eye_laser" ) return new actions::doom_bolt_t( this );
+    if ( name == "eye_laser" ) return new actions::eye_laser_t( this );
 
     return warlock_pet_t::create_action( name, options_str );
   }
@@ -3096,7 +3149,10 @@ struct summon_darkglare_t : public warlock_spell_t
   summon_darkglare_t( warlock_t* p ) :
     warlock_spell_t( "summon_darkglare", p, p -> talents.summon_darkglare )
   {
-    harmful = may_crit = false;
+    harmful = may_crit = may_miss = false;
+
+    //cooldown = p -> cooldowns.doomguard;
+    //cooldown->duration = data().cooldown();
     darkglare_duration = data().duration();
   }
 
@@ -3113,7 +3169,6 @@ struct summon_darkglare_t : public warlock_spell_t
     }
   }
 };
-
 
 struct call_dreadstalkers_t : public warlock_spell_t
 {
@@ -3911,6 +3966,7 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "call_dreadstalkers"    ) a = new                call_dreadstalkers_t( this );
   else if ( action_name == "dimensional_rift"      ) a = new                  dimensional_rift_t( this );
   else if ( action_name == "shadowflame"           ) a = new                       shadowflame_t( this );
+  else if ( action_name == "summon_darkglare"      ) a = new                  summon_darkglare_t( this );
   else if ( action_name == "summon_felhunter"      ) a = new      summon_main_pet_t( "felhunter", this );
   else if ( action_name == "summon_felguard"       ) a = new       summon_main_pet_t( "felguard", this );
   else if ( action_name == "summon_succubus"       ) a = new       summon_main_pet_t( "succubus", this );
@@ -4005,6 +4061,10 @@ void warlock_t::create_pets()
     for ( size_t i = 0; i < warlock_pet_list.dreadstalkers.size(); i++ )
     {
       warlock_pet_list.dreadstalkers[ i ] = new pets::dreadstalker_t( sim, this );
+    }
+    for ( size_t i = 0; i < warlock_pet_list.darkglare.size(); i++ )
+    {
+      warlock_pet_list.darkglare[i] = new pets::darkglare_t( sim, this );
     }
     if ( sets.has_set_bonus( WARLOCK_DEMONOLOGY, T18, B4 ) )
     {

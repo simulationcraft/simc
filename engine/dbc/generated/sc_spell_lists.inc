@@ -784,7 +784,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        30108, // Unstable Affliction
            0,
     },
-    // Demonology tree, 9 abilities
+    // Demonology tree, 10 abilities
     {
       104316, // Call Dreadstalkers
       193396, // Demonic Empowerment
@@ -794,6 +794,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       105174, // Hand of Gul'dan
         1454, // Life Tap
          686, // Shadow Bolt
+      196606, // Shadowy Inspiration
        30146, // Summon Felguard (Summon)
            0,
     },
@@ -814,7 +815,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 26 abilities
+    // Pet tree, 27 abilities
     {
        89766, // Axe Toss (Special Ability)
       171011, // Burning Presence (Special Ability)
@@ -822,6 +823,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         3716, // Consuming Shadows (Basic Attack)
       170995, // Cripple
        85692, // Doom Bolt
+      205231, // Eye Laser
       104318, // Fel Firebolt (Basic Attack)
        89751, // Felstorm (Special Ability)
         3110, // Firebolt (Basic Attack)
