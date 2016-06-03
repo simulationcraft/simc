@@ -2269,10 +2269,14 @@ struct doom_t: public warlock_spell_t
 
 struct demonic_empowerment_t: public warlock_spell_t
 {
+  double power_trip_rng;
+
 	demonic_empowerment_t (warlock_t* p) :
 		warlock_spell_t( "demonic empowerment", p, p -> spec.demonic_empowerment )
 	{
     may_crit = false;
+
+    power_trip_rng = p -> talents.power_trip -> effectN( 1 ).percent();
 	}
 
 	void execute() override
@@ -2290,6 +2294,9 @@ struct demonic_empowerment_t: public warlock_spell_t
         }
       }
     }
+
+    if ( p() -> talents.power_trip -> ok() && rng().roll( power_trip_rng ) )
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.power_trip );
 
     //if ( p() -> talents.shadowy_inspiration -> ok() )
     //  p() -> buffs.shadowy_inspiration -> trigger();
@@ -3136,8 +3143,7 @@ struct demonbolt_t: public warlock_spell_t
       {
         if( !lock_pet -> is_sleeping() )
         {
-            pm *= (1.0 + data().effectN(3).percent());
-            //pm *= 1.2;
+            pm *= ( 1.0 + data().effectN( 3 ).percent() );
         }
       }
     }
@@ -4207,6 +4213,7 @@ void warlock_t::init_gains()
   gains.soul_conduit        = get_gain( "soul_conduit" );
   gains.reverse_entropy     = get_gain( "reverse_entropy" );
   gains.soulsnatcher        = get_gain( "soulsnatcher" );
+  gains.power_trip          = get_gain( "power_trip" );
 }
 
 // warlock_t::init_procs ===============================================
