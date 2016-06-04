@@ -119,6 +119,7 @@ public:
     buff_t* shadowy_insight;
     buff_t* sphere_of_insanity;
     buff_t* surrender_to_madness;
+    buff_t* surrender_to_madness_death;
     buff_t* vampiric_embrace;
     buff_t* void_ray;
     buff_t* void_torrent;
@@ -1837,6 +1838,17 @@ struct priest_spell_t : public priest_action_t<spell_t>
     return spell_t::usable_moving();
   }
 
+
+  bool ready() override
+  {
+    if (priest.specialization() == PRIEST_SHADOW && priest.buffs.surrender_to_madness_death->up())
+    {
+      return false;
+    }
+
+    return action_t::ready();
+  }
+
   void init() override
   {
     base_t::init();
@@ -2278,6 +2290,7 @@ struct voidform_t final : public priest_spell_t
       int mss_vf_stacks = floor(priest.buffs.lingering_insanity->remains().total_seconds() / priest.active_items.mother_shahrazs_seduction->driver()->effectN(1).base_value());
 
       priest.buffs.voidform->current_stack += mss_vf_stacks;
+      priest.buffs.mass_hysteria->current_stack += mss_vf_stacks;
     }
 
     if ( priest.talents.void_lord->ok() &&
@@ -5301,12 +5314,13 @@ struct voidform_t final : public priest_buff_t<buff_t>
       priest.buffs.lingering_insanity->expire();
 
     priest.buffs.lingering_insanity->trigger( expiration_stacks );
-
+    
     if ( priest.buffs.surrender_to_madness->check() )
     {
+      //You die. Horribly.
       priest.demise();
-      // FIXME Add some waiting time here
-      // priest.arise();
+      priest.arise();
+      priest.buffs.surrender_to_madness_death->trigger();
     }
 
     event_t::cancel( insanity_loss );
@@ -5319,6 +5333,26 @@ struct voidform_t final : public priest_buff_t<buff_t>
     base_t::reset();
 
     event_t::cancel( insanity_loss );
+  }
+};
+
+
+
+/* Custom surrender_to_madness buff
+*/
+struct surrender_to_madness_t final : public priest_buff_t<buff_t>
+{
+  surrender_to_madness_t(priest_t& p)
+    : base_t(p, buff_creator_t(&p, "surrender_to_madness")
+    .spell(p.talents.surrender_to_madness))
+  {
+  }
+
+  void expire_override(int expiration_stacks, timespan_t remaining_duration) override
+  {
+    base_t::expire_override(expiration_stacks, remaining_duration);
+
+    priest.buffs.voidform->expire();
   }
 };
 
@@ -6449,8 +6483,17 @@ void priest_t::create_buffs()
   buffs.void_torrent =
       buff_creator_t( this, "void_torrent" ).spell( artifact.void_torrent );
 
-  buffs.surrender_to_madness = buff_creator_t( this, "surrender_to_madness" )
-                                   .spell( talents.surrender_to_madness );
+
+  buffs.surrender_to_madness = new buffs::surrender_to_madness_t(*this);
+
+  //buffs.surrender_to_madness = buff_creator_t( this, "surrender_to_madness" )
+  //                                 .spell( talents.surrender_to_madness );
+
+  buffs.surrender_to_madness_death = buff_creator_t(this, "surrender_to_madness_death")
+    .spell(talents.surrender_to_madness)
+    .chance(1.0)
+    .duration(timespan_t::zero())
+    .default_value(0.0);                                    
 
   buffs.sphere_of_insanity = buff_creator_t( this, "sphere_of_insanity" )
                                  .spell( find_spell( 194182 ) )
@@ -6516,7 +6559,7 @@ void priest_t::create_buffs()
   buffs.mass_hysteria = buff_creator_t( this, "mass_hysteria" )
                             .spell( find_spell( 194378 ) )
                             .chance( 1.0 )
-                            .max_stack( 999 )
+                            .max_stack( 100 )
                             .duration( timespan_t::zero() );
 
   buffs.mass_hysteria->buff_period   = timespan_t::from_seconds( 1.0 );
