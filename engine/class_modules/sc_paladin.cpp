@@ -242,7 +242,7 @@ public:
     const spell_data_t* seal_of_light;
     const spell_data_t* divine_purpose;
     const spell_data_t* crusade;
-    const spell_data_t* equality;
+    const spell_data_t* holy_wrath;
   } talents;
 
   struct artifact_spell_data_t
@@ -274,7 +274,7 @@ public:
   timespan_t extra_regen_period;
   double extra_regen_percent;
 
-  double fixed_equality_health_pct;
+  double fixed_holy_wrath_health_pct;
 
   paladin_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN ) :
     player_t( sim, PALADIN, name, r ),
@@ -290,7 +290,7 @@ public:
     last_extra_regen( timespan_t::from_seconds( 0.0 ) ),
     extra_regen_period( timespan_t::from_seconds( 0.0 ) ),
     extra_regen_percent( 0.0 ),
-    fixed_equality_health_pct( -1.0 )
+    fixed_holy_wrath_health_pct( -1.0 )
   {
     last_retribution_trinket_target = nullptr;
     retribution_trinket = nullptr;
@@ -1822,24 +1822,24 @@ struct wake_of_ashes_t : public paladin_spell_t
   }
 };
 
-struct equality_t : public paladin_spell_t
+struct holy_wrath_t : public paladin_spell_t
 {
-  equality_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "equality", p, p -> find_talent_spell( "Equality" ) )
+  holy_wrath_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "holy_wrath", p, p -> find_talent_spell( "Holy Wrath" ) )
   {
     parse_options( options_str );
 
     aoe = data().effectN( 2 ).base_value();
 
-    if ( ! ( p -> talents.equality -> ok() ) )
+    if ( ! ( p -> talents.holy_wrath -> ok() ) )
       background = true;
   }
 
   virtual void impact( action_state_t* s ) override
   {
     double base_amount = 0;
-    if ( p() -> fixed_equality_health_pct > 0 )
-      base_amount = p() -> max_health() * ( 100 - p() -> fixed_equality_health_pct ) / 100.0;
+    if ( p() -> fixed_holy_wrath_health_pct > 0 )
+      base_amount = p() -> max_health() * ( 100 - p() -> fixed_holy_wrath_health_pct ) / 100.0;
     else
       base_amount = p() -> max_health() - p() -> current_health();
     s -> result_amount = base_amount * data().effectN( 3 ).percent();
@@ -1848,7 +1848,7 @@ struct equality_t : public paladin_spell_t
 
   bool ready()
   {
-    if ( p() -> fixed_equality_health_pct > 0 && p() -> fixed_equality_health_pct < 100 )
+    if ( p() -> fixed_holy_wrath_health_pct > 0 && p() -> fixed_holy_wrath_health_pct < 100 )
       return paladin_spell_t::ready();
 
     if ( player -> current_health() >= player -> max_health() )
@@ -3011,7 +3011,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "reckoning"                 ) return new reckoning_t                ( this, options_str );
   if ( name == "shield_of_the_righteous"   ) return new shield_of_the_righteous_t  ( this, options_str );
   if ( name == "templars_verdict"          ) return new templars_verdict_t         ( this, options_str );
-  if ( name == "equality"                  ) return new equality_t                 ( this, options_str );
+  if ( name == "holy_wrath"                ) return new holy_wrath_t               ( this, options_str );
   if ( name == "holy_prism"                ) return new holy_prism_t               ( this, options_str );
   if ( name == "wake_of_ashes"             ) return new wake_of_ashes_t            ( this, options_str );
   if ( name == "seal_of_light"             ) return new seal_of_light_t            ( this, options_str );
@@ -3679,7 +3679,7 @@ void paladin_t::init_spells()
   talents.seal_of_light              = find_talent_spell( "Seal of Light" );
   talents.divine_purpose             = find_talent_spell( "Divine Purpose" ); // TODO: fix this
   talents.crusade                    = find_talent_spell( "Crusade" );
-  talents.equality                   = find_talent_spell( "Equality" );
+  talents.holy_wrath                 = find_talent_spell( "Holy Wrath" );
 
   artifact.wake_of_ashes           = find_artifact_spell( "Wake of Ashes" );
   artifact.deliver_the_justice     = find_artifact_spell( "Deliver the Justice" );
@@ -4377,7 +4377,7 @@ void paladin_t::assess_heal( school_e school, dmg_e dmg_type, action_state_t* s 
 void paladin_t::create_options()
 {
   // TODO: figure out a better solution for this.
-  add_option( opt_float( "paladin_fixed_equality_health_pct", fixed_equality_health_pct ) );
+  add_option( opt_float( "paladin_fixed_holy_wrath_health_pct", fixed_holy_wrath_health_pct ) );
   player_t::create_options();
 }
 
