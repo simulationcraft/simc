@@ -102,7 +102,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Maw of Shadows (211099), Stolen Power (211583)
+Affecting spells : Shadowy Inspiration (196606), Maw of Shadows (211099), Stolen Power (211583)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1755,7 +1755,7 @@ Effects          :
 #2 (id=318370)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.66600 | Target: Self(1)
 #3 (id=318371)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 1000000000 | Scaled Value: 1e+009 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 1000000000 | Scaled Value: 1e+09 | Misc Value: 127 | Target: Self(1)
 Description      : Your spells deal a random amount of additional damage, up to $s1%. Damage you take is reduced by a random amount, up to $s2%.
 
 Name             : Havoc (id=80240) [Spell Family (5)] 
@@ -2607,7 +2607,7 @@ Attributes       : ........ ........ .......x x.xx.x..   .....x.. ........ .....
                  : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
 Effects          :
 #1 (id=127009)   : Apply Aura (6) | Dummy (4)
-                   Base Value: -1000000000 | Scaled Value: -1e+009 | Misc Value: 893 | Target: Self(1)
+                   Base Value: -1000000000 | Scaled Value: -1e+09 | Misc Value: 893 | Target: Self(1)
 Description      : Faded into the nether and unable to use another Demonic Gateway.
 Tooltip          : Faded into the nether and unable to use another Demonic Gateway.
 
@@ -3225,7 +3225,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 16 yards/sec
-Affecting spells : Maw of Shadows (211099), Stolen Power (211583)
+Affecting spells : Shadowy Inspiration (196606), Maw of Shadows (211099), Stolen Power (211583)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4252,6 +4252,27 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 3 | Target: Self(1)
 Description      : Demonic Empowerment has a $s1% chance to generate 1 Soul Shard when used in combat.
 
+Name             : Shadowy Inspiration (id=196606) [Spell Family (5)] 
+Class            : Warlock
+School           : Shadow
+Duration         : 15 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : ........ ........ x....... ........ 
+                 : Hostile Spell
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=288656)   : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self(1)
+                   Affected Spells: Shadow Bolt (686), Demonbolt (157695), Shadow Bolt (196657)
+Description      : $@spelldesc196269
+Tooltip          : Your next Shadow Bolt is Instant.
+
 Name             : Shadowy Tear (id=196639) [Spell Family (5)] 
 Class            : Warlock
 School           : Physical
@@ -4277,7 +4298,7 @@ School           : Shadow
 Spell Level      : 1
 Range            : 40 yards
 Velocity         : 20 yards/sec
-Affecting spells : Maw of Shadows (211099), Stolen Power (211583)
+Affecting spells : Shadowy Inspiration (196606), Maw of Shadows (211099), Stolen Power (211583)
 Triggered by     : Shadow Barrage (196659)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4547,6 +4568,23 @@ Effects          :
 #1 (id=302930)   : Weapon Damage% (31)
                    Base Value: 300 | Scaled Value: 3 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
 Description      : Bite the target, dealing Shadow damage.
+
+Name             : Eye Laser (id=205231) [Spell Family (5)] 
+Class            : Warlock
+School           : Shadow
+Range            : 40 yards
+Cast Time        : 2 seconds
+Velocity         : 60 yards/sec
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ..x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=302984)   : School Damage: shadow (2)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Targets: 20 | Target: Enemy(6)
+Description      : Fires an Eye Laser that hits all Doomed targets.
 
 Name             : Phantom Singularity (id=205246) [Spell Family (5)] 
 Class            : Warlock
