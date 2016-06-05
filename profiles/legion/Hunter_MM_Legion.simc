@@ -3,14 +3,16 @@ level=110
 race=gnome
 role=attack
 position=ranged_back
-talents=1113321
+talents=1113331
 artifact=http://beta.wowdb.com/artifact-calculator#OJJZbbbbJIAAAAAAAAAA
 spec=marksmanship
 
 actions.precombat+=/summon_pet
+actions.precombat+=/volley
 
 actions=auto_shot
 actions+=/trueshot
+actions+=/a_murder_of_crows
 actions+=/barrage
 actions+=/explosive_shot
 actions+=/black_arrow
@@ -18,7 +20,7 @@ actions+=/windburst,if=focus>50
 actions+=/marked_shot
 actions+=/aimed_shot
 actions+=/arcane_shot
-actions+=/sidewinders,if=buff.marking_targets.up&!buff.deadeye.up&focus>30
+actions+=/sidewinders,if=buff.marking_targets.up&focus>30
 
 head=Head,stats=297armor_1340sta
 neck=Neck,stats=754sta
@@ -51,4 +53,3 @@ main_hand=thasdorah_legacy_of_the_windrunners,id=128826
 summon_pet=cat
 
 enemy=enemy1
-enemy_fixed_health_percentage=19
