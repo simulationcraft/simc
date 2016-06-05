@@ -2314,7 +2314,7 @@ struct echoed_divine_storm_t: public paladin_melee_attack_t
     base_multiplier *= 1.0 + p -> artifact.righteous_blade.percent();
     base_multiplier *= 1.0 + p -> artifact.divine_tempest.percent( 2 );
     if ( p -> talents.final_verdict -> ok() )
-      base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 1 ).percent();
+      base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 2 ).percent();
 
     aoe = -1;
     background = true;
@@ -2357,7 +2357,7 @@ struct divine_storm_t: public holy_power_consumer_t
     base_multiplier *= 1.0 + p -> artifact.righteous_blade.percent();
     base_multiplier *= 1.0 + p -> artifact.divine_tempest.percent( 2 );
     if ( p -> talents.final_verdict -> ok() )
-      base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 1 ).percent();
+      base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 2 ).percent();
 
     aoe = -1;
   }
