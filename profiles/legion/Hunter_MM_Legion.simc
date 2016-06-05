@@ -3,7 +3,7 @@ level=110
 race=gnome
 role=attack
 position=ranged_back
-talents=1113331
+talents=1113311
 artifact=http://beta.wowdb.com/artifact-calculator#OJJZbbbbJIAAAAAAAAAA
 spec=marksmanship
 
@@ -25,7 +25,7 @@ actions+=/sidewinders,if=buff.marking_targets.up&focus>30
 head=Head,stats=297armor_1340sta
 neck=Neck,stats=754sta
 shoulders=Shoulders,stats=274armor_1005sta
-back=Cloak,id=134402,ilevel=840
+back=Cloak,stats=113armor_754sta
 chest=Chest,stats=365armor_1340sta
 wrists=Bracers,stats=160armor_754sta
 hands=Hands,stats=228armor_1005sta
