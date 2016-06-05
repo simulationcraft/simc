@@ -1012,10 +1012,10 @@ struct eye_laser_t : public warlock_pet_spell_t
   struct eye_laser_damage_t : public warlock_pet_spell_t
   {
     eye_laser_damage_t( warlock_pet_t* p ) :
-      warlock_pet_spell_t( "eye_laser_damage", p, p -> find_spell( 196100 ) )
+      warlock_pet_spell_t( "eye_laser_damage", p, p -> find_spell( 205231 ) )
     { 
       background = dual = true;
-      //base_execute_time = timespan_t::zero();
+      base_execute_time = timespan_t::zero();
     }
   };
 
@@ -1024,39 +1024,39 @@ struct eye_laser_t : public warlock_pet_spell_t
   eye_laser_t( warlock_pet_t* p ) :
     warlock_pet_spell_t( "eye_laser", p, p -> find_spell( 205231 ) )
   { 
-    may_crit = harmful = false;
+    may_crit = false;
     base_multiplier *= 0;
 
     eye_laser = new eye_laser_damage_t( p );
     add_child( eye_laser );
   }
 
-  std::vector< player_t* >& target_list() const override
-  {
-    target_cache.list = warlock_pet_spell_t::target_list();
+  //std::vector< player_t* >& target_list() const override
+  //{
+  //  target_cache.list = warlock_pet_spell_t::target_list();
 
-    size_t i = target_cache.list.size();
-    while ( i > 0 )
-    {
-      i--;
-      player_t* target_ = target_cache.list[i];
-      if ( !td( target_ ) -> dots_doom -> is_ticking() )
-        target_cache.list.erase( target_cache.list.begin() + i );
-    }
-    return target_cache.list;
-  }
+  //  size_t i = target_cache.list.size();
+  //  while ( i > 0 )
+  //  {
+  //    i--;
+  //    player_t* target_ = target_cache.list[i];
+  //    if ( !td( target_ ) -> dots_doom -> is_ticking() )
+  //      target_cache.list.erase( target_cache.list.begin() + i );
+  //  }
+  //  return target_cache.list;
+  //}
 
   virtual void impact( action_state_t* s ) override
   {
-    spell_t::impact( s );
+    warlock_pet_spell_t::impact( s );
 
-    std::vector<player_t*> targets = target_list();
+    //std::vector<player_t*> targets = target_list();
 
-    if ( targets.size() > 0 )
-    {
-      eye_laser -> target = targets[rng().range( 0, targets.size() - 1 )];
+    //if ( targets.size() > 0 )
+    //{
+    //  eye_laser -> target = targets[static_cast<size_t>( rng().range( 0, targets.size() ) )];
       eye_laser -> execute();
-    }
+    //}
   }
 };
 
