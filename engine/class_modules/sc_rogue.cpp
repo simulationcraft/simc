@@ -967,6 +967,18 @@ struct rogue_attack_t : public melee_attack_t
     return m;
   }
 
+  timespan_t tick_time( const action_state_t* state ) const override
+  {
+    timespan_t tt = melee_attack_t::tick_time( state );
+
+    if ( cast_state( state ) -> exsanguinated )
+    {
+      tt *= 1.0 / ( 1.0 + p() -> talent.exsanguinate -> effectN( 1 ).percent() );
+    }
+
+    return tt;
+  }
+
   virtual double composite_poison_flat_modifier( const action_state_t* ) const
   { return 0.0; }
 
@@ -2399,6 +2411,18 @@ struct garrote_t : public rogue_attack_t
     }
   }
 
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    timespan_t duration = rogue_attack_t::composite_dot_duration( s );
+
+    if ( cast_state( s ) -> exsanguinated )
+    {
+      duration *= 1.0 / ( 1.0 + p() -> talent.exsanguinate -> effectN( 1 ).percent() );
+    }
+
+    return duration;
+  }
+
   void execute() override
   {
     rogue_attack_t::execute();
@@ -2513,6 +2537,17 @@ struct hemorrhage_t : public rogue_attack_t
     rogue_attack_t( "hemorrhage", p, p -> talent.hemorrhage, options_str )
   {
     weapon = &( p -> main_hand_weapon );
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    timespan_t duration = rogue_attack_t::composite_dot_duration( s );
+    if ( cast_state( s ) -> exsanguinated )
+    {
+      duration *= 1.0 / ( 1.0 + p() -> talent.exsanguinate -> effectN( 1 ).percent() );
+    }
+
+    return duration;
   }
 
   void impact( action_state_t* s ) override
@@ -3090,18 +3125,6 @@ struct rupture_t : public rogue_attack_t
     m *= 1.0 + td( target ) -> debuffs.blood_of_the_assassinated -> stack_value();
 
     return m;
-  }
-
-  timespan_t tick_time( const action_state_t* state ) const override
-  {
-    timespan_t tt = rogue_attack_t::tick_time( state );
-
-    if ( cast_state( state ) -> exsanguinated )
-    {
-      tt *= 1.0 / ( 1.0 + p() -> talent.exsanguinate -> effectN( 1 ).percent() );
-    }
-
-    return tt;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
