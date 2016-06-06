@@ -65,9 +65,9 @@ timespan_t spell_base_t::execute_time() const
   return t;
 }
 
-timespan_t spell_base_t::tick_time( double haste ) const
+timespan_t spell_base_t::tick_time( const action_state_t* state ) const
 {
-  return action_t::tick_time( haste );
+  return action_t::tick_time( state );
 }
 
 result_e spell_base_t::calculate_result( action_state_t* s ) const

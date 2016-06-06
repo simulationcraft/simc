@@ -843,9 +843,9 @@ struct storm_earth_and_fire_pet_t : public pet_t
       return source_action -> composite_dot_duration( s );
     }
 
-    timespan_t tick_time( double haste ) const
+    timespan_t tick_time( const action_state_t* s ) const
     {
-      return source_action -> tick_time( haste );
+      return source_action -> tick_time( s );
     }
 
     double composite_da_multiplier( const action_state_t* s ) const
@@ -2694,7 +2694,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
   // N full ticks, but never additional ones.
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    return dot_duration * ( tick_time( s -> haste ) / base_tick_time );
+    return dot_duration * ( tick_time( s ) / base_tick_time );
   }
 
   virtual double action_multiplier() const override
@@ -3005,7 +3005,7 @@ struct whirling_dragon_punch_t: public monk_melee_attack_t
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    timespan_t tt = tick_time( s -> haste );
+    timespan_t tt = tick_time( s );
     return tt * 3;
   }
 

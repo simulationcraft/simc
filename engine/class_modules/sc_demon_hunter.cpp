@@ -1475,7 +1475,7 @@ struct eye_beam_t : public demon_hunter_spell_t
   { assert( s -> result_amount == 0.0 ); }
 
   // Channel is not hasted.
-  timespan_t tick_time( double ) const override
+  timespan_t tick_time( const action_state_t* ) const override
   { return base_tick_time; }
 
   void tick( dot_t* d ) override
@@ -1535,7 +1535,7 @@ struct fel_barrage_t : public demon_hunter_spell_t
   { return timespan_t::zero(); } 
   
   // Channel is not hasted. TOCHECK
-  timespan_t tick_time( double ) const override
+  timespan_t tick_time( const action_state_t* ) const override
   { return base_tick_time; }
   
   double composite_persistent_multiplier( const action_state_t* s ) const override
@@ -1598,7 +1598,7 @@ struct fel_devastation_t : public demon_hunter_spell_t
   { assert( s -> result_amount == 0.0 ); }
 
   // Channel is not hasted.
-  timespan_t tick_time( double ) const override
+  timespan_t tick_time( const action_state_t* ) const override
   { return base_tick_time; }
 
   void tick( dot_t* d ) override

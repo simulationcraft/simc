@@ -11170,3 +11170,11 @@ slot_e player_t::child_item_slot( const item_t& item ) const
 
   return SLOT_INVALID;
 }
+
+void player_t::adjust_global_cooldown()
+{
+  if ( ! readying )
+  {
+    return;
+  }
+}

@@ -2380,7 +2380,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       {
         dot_t* dot = action.get_dot();
         if ( dot -> is_ticking() )
-          return action.tick_time( action.composite_haste() ).total_seconds();
+          return action.tick_time( dot -> state ).total_seconds();
         else
           return 0;
       }
@@ -2391,11 +2391,17 @@ expr_t* action_t::create_expression( const std::string& name_str )
   {
     struct new_tick_time_expr_t : public action_expr_t
     {
-      new_tick_time_expr_t( action_t& a ) : action_expr_t( "new_tick_time", a ) {}
+      action_state_t* state;
+
+      new_tick_time_expr_t( action_t& a ) : action_expr_t( "new_tick_time", a ), state( a.get_state() ) {}
       virtual double evaluate() override
       {
-        return action.tick_time( action.player -> cache.spell_speed() ).total_seconds();
+        action.snapshot_state( state, DMG_OVER_TIME );
+        return action.tick_time( state ).total_seconds();
       }
+
+      ~new_tick_time_expr_t()
+      { action_state_t::release( state ); }
     };
     return new new_tick_time_expr_t( *this );
   }
@@ -2948,12 +2954,12 @@ double action_t::ppm_proc_chance( double PPM ) const
 
 // action_t::tick_time ======================================================
 
-timespan_t action_t::tick_time( double haste ) const
+timespan_t action_t::tick_time( const action_state_t* state ) const
 {
   timespan_t t = base_tick_time;
   if ( channeled || hasted_ticks )
   {
-    t *= haste;
+    t *= state -> haste;
   }
   return t;
 }
@@ -3026,7 +3032,7 @@ timespan_t action_t::composite_dot_duration( const action_state_t* s ) const
 {
   if ( channeled )
   {
-    return dot_duration * ( tick_time( s -> haste ) / base_tick_time );
+    return dot_duration * ( tick_time( s ) / base_tick_time );
   }
 
   return dot_duration;
@@ -3117,7 +3123,7 @@ void action_t::trigger_dot( action_state_t* s )
   // To simulate precasting HoTs, remove one tick worth of duration if precombat.
   // We also add a fake zero_tick in dot_t::check_tick_zero().
   if ( ! harmful && ! player -> in_combat && ! tick_zero )
-    duration -= tick_time( s -> haste );
+    duration -= tick_time( s );
 
   dot_t* dot = get_dot( s -> target );
 

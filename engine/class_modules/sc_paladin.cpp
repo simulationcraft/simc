@@ -1192,7 +1192,7 @@ struct execution_sentence_t : public paladin_spell_t
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    return dot_duration * ( tick_time( s -> haste ) / base_tick_time );
+    return dot_duration * ( tick_time( s ) / base_tick_time );
   }
 
   virtual double cost() const override
@@ -2293,7 +2293,7 @@ struct divine_hammer_t : public paladin_spell_t
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    return dot_duration * ( tick_time( s -> haste ) / base_tick_time );
+    return dot_duration * ( tick_time( s ) / base_tick_time );
   }
 };
 

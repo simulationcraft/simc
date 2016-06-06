@@ -2841,7 +2841,7 @@ struct blizzard_t : public frost_mage_spell_t
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     timespan_t duration = frost_mage_spell_t::composite_dot_duration( s );
-    return duration * ( tick_time( s -> haste ) / base_tick_time );
+    return duration * ( tick_time( s ) / base_tick_time );
   }
 };
 
@@ -4092,7 +4092,7 @@ timespan_t living_bomb_t::composite_dot_duration( const action_state_t* s )
   const
 {
   timespan_t duration = fire_mage_spell_t::composite_dot_duration( s );
-  return duration * ( tick_time( s -> haste ) / base_tick_time );
+  return duration * ( tick_time( s ) / base_tick_time );
 }
 
 void living_bomb_t::last_tick( dot_t* d )

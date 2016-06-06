@@ -2539,8 +2539,8 @@ struct earthen_rage_driver_t : public spell_t
     nuke = new earthen_rage_spell_t( p );
   }
 
-  timespan_t tick_time( double haste ) const override
-  { return timespan_t::from_seconds( rng().range( 0.001, 2 * base_tick_time.total_seconds() * haste ) ); }
+  timespan_t tick_time( const action_state_t* state ) const override
+  { return timespan_t::from_seconds( rng().range( 0.001, 2 * base_tick_time.total_seconds() * state -> haste ) ); }
 
   void tick( dot_t* d ) override
   {

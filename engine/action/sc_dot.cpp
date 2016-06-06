@@ -316,7 +316,7 @@ void dot_t::copy( player_t* other_target, dot_copy_e copy_type )
     if ( tick_event )
       tick_time = tick_event -> remains();
     else
-      tick_time = other_dot -> current_action -> tick_time( other_dot -> state -> haste );
+      tick_time = other_dot -> current_action -> tick_time( other_dot -> state );
 
     other_dot -> tick_event = new ( sim ) dot_tick_event_t( other_dot, tick_time );
   }
@@ -412,7 +412,7 @@ void dot_t::copy( dot_t* other_dot )
   if ( tick_event )
     tick_time = tick_event -> remains();
   else
-    tick_time = other_dot -> current_action -> tick_time( other_dot -> state -> haste );
+    tick_time = other_dot -> current_action -> tick_time( other_dot -> state );
 
   other_dot -> tick_event = new ( sim ) dot_tick_event_t( other_dot, tick_time );
 }
@@ -738,7 +738,7 @@ int dot_t::ticks_left() const
 {
   if ( ! current_action ) return 0;
   if ( ! ticking ) return 0;
-  return static_cast<int>( std::ceil( remains() / current_action -> tick_time( state -> haste ) ) );
+  return static_cast<int>( std::ceil( remains() / current_action -> tick_time( state ) ) );
 }
 
 /* Called on Dot start if dot action has tick_zero = true set.
@@ -844,7 +844,7 @@ void dot_t::schedule_tick()
   if ( sim.debug )
     sim.out_debug.printf( "%s schedules tick for %s on %s", source -> name(), name(), target -> name() );
 
-  timespan_t base_tick_time = current_action -> tick_time( state -> haste );
+  timespan_t base_tick_time = current_action -> tick_time( state );
   time_to_tick = std::min( base_tick_time, remains() );
   assert( time_to_tick > timespan_t::zero() && "A Dot needs a positive tick time!" );
 
@@ -944,7 +944,7 @@ void dot_t::refresh( timespan_t duration )
   check_tick_zero();
 
   // Recalculate num_ticks:
-  num_ticks = current_tick + as<int>(std::ceil(remains() / current_action->tick_time(state->haste) ) );
+  num_ticks = current_tick + as<int>(std::ceil(remains() / current_action->tick_time(state) ) );
 
   if ( sim.debug )
     sim.out_debug.printf( "%s refreshes dot %s (%d) on %s. duration=%.3f",
@@ -973,7 +973,7 @@ void dot_t::check_tick_zero()
     timespan_t previous_ttt = time_to_tick;
     time_to_tick = timespan_t::zero();
     // Recalculate num_ticks:
-    timespan_t tick_time = current_action->tick_time(state->haste);
+    timespan_t tick_time = current_action->tick_time(state);
     assert( tick_time > timespan_t::zero() && "A Dot needs a positive tick time!" );
     num_ticks = current_tick + as<int>(std::ceil(remains() / tick_time ) );
     tick_zero();

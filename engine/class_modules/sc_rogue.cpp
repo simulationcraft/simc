@@ -365,7 +365,7 @@ struct rogue_t : public player_t
 
     // Assassination - Level 90
     const spell_data_t* agonizing_poison;
-    const spell_data_t* blood_sweat;
+    const spell_data_t* exsanguinate;
 
     // Assassination - Level 100
     const spell_data_t* venom_rush;
@@ -654,17 +654,18 @@ static void break_stealth( rogue_t* p )
 struct rogue_attack_state_t : public action_state_t
 {
   int cp;
+  bool exsanguinated;
 
   rogue_attack_state_t( action_t* action, player_t* target ) :
-    action_state_t( action, target ), cp( 0 )
+    action_state_t( action, target ), cp( 0 ), exsanguinated( false )
   { }
 
   void initialize() override
-  { action_state_t::initialize(); cp = 0; }
+  { action_state_t::initialize(); cp = 0; exsanguinated = false; }
 
   std::ostringstream& debug_str( std::ostringstream& s ) override
   {
-    action_state_t::debug_str( s ) << " cp=" << cp;
+    action_state_t::debug_str( s ) << " cp=" << cp << " exsanguinated=" << exsanguinated;
     return s;
   }
 
@@ -673,6 +674,7 @@ struct rogue_attack_state_t : public action_state_t
     action_state_t::copy_state( o );
     const rogue_attack_state_t* st = debug_cast<const rogue_attack_state_t*>( o );
     cp = st -> cp;
+    exsanguinated = st -> exsanguinated;
   }
 };
 
@@ -2570,7 +2572,7 @@ struct killing_spree_t : public rogue_attack_t
     }
   }
 
-  timespan_t tick_time( double ) const override
+  timespan_t tick_time( const action_state_t* ) const override
   { return base_tick_time; }
 
   virtual void execute() override
@@ -3075,7 +3077,13 @@ struct rupture_t : public rogue_attack_t
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    timespan_t duration = data().duration() * ( 1 + cast_state( s ) -> cp );
+    const rogue_attack_state_t* state = cast_state( s );
+
+    timespan_t duration = data().duration() * ( 1 + state -> cp );
+    if ( state -> exsanguinated )
+    {
+      duration *= 1.0 / ( 1.0 + p() -> talent.exsanguinate -> effectN( 1 ).percent() );
+    }
 
     return duration;
   }
@@ -4332,7 +4340,7 @@ void rogue_t::trigger_poison_knives( const action_state_t* state )
   }
 
   unsigned ticks_left = td -> dots.deadly_poison -> ticks_left();
-  timespan_t tick_time = td -> dots.deadly_poison -> current_action -> tick_time( 1.0 );
+  timespan_t tick_time = td -> dots.deadly_poison -> current_action -> tick_time( td -> dots.deadly_poison -> state );
   timespan_t remaining_time = td -> dots.deadly_poison -> remains() - ticks_left * tick_time;
   double partial_tick = 0;
   if ( remaining_time > timespan_t::zero() )
@@ -5531,7 +5539,7 @@ void rogue_t::init_spells()
   talent.internal_bleeding  = find_talent_spell( "Internal Bleeding" );
 
   talent.agonizing_poison   = find_talent_spell( "Agonizing Poison" );
-  talent.blood_sweat        = find_talent_spell( "Blood Sweat" );
+  talent.exsanguinate       = find_talent_spell( "Exsanguinate" );
 
   talent.venom_rush         = find_talent_spell( "Venom Rush" );
 

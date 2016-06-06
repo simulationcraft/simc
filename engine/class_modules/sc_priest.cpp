@@ -1121,7 +1121,7 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
     return timespan_t::from_seconds(10.0);
   }
 
-  timespan_t tick_time( double h ) const
+  timespan_t tick_time( const action_state_t* ) const
   {
     return timespan_t::from_seconds(1.0);
   }
@@ -2918,7 +2918,7 @@ struct mind_sear_t final : public priest_spell_t
     if ( priest.buffs.mind_sear_on_hit_reset->check() == 0 )
     {
       priest.buffs.mind_sear_on_hit_reset->trigger( 2, 1, 1,
-                                                    tick_time( s->haste ) * 6 );
+                                                    tick_time( s ) * 6 );
       tick_zero = true;
     }
     else
@@ -3094,7 +3094,7 @@ struct void_torrent_t final : public priest_spell_t
     return timespan_t::from_seconds( 4.0 );
   }
 
-  timespan_t tick_time( double haste ) const
+  timespan_t tick_time( const action_state_t* ) const
   {
     timespan_t t = base_tick_time;
     

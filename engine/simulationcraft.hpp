@@ -4498,6 +4498,7 @@ public:
 
   virtual void adjust_dynamic_cooldowns()
   { range::for_each( dynamic_cooldown_list, []( cooldown_t* cd ) { cd -> adjust_recharge_multiplier(); } ); }
+  virtual void adjust_global_cooldown();
 
 private:
   // Update movement data, and also control the buff
@@ -5422,7 +5423,7 @@ public:
   virtual timespan_t execute_time() const
   { return base_execute_time; }
 
-  virtual timespan_t tick_time( double haste ) const;
+  virtual timespan_t tick_time( const action_state_t* state ) const;
 
   virtual timespan_t travel_time() const;
 
@@ -5932,7 +5933,7 @@ struct spell_base_t : public action_t
   // Spell Base Overrides
   virtual timespan_t gcd() const override;
   virtual timespan_t execute_time() const override;
-  virtual timespan_t tick_time( double haste ) const override;
+  virtual timespan_t tick_time( const action_state_t* state ) const override;
   virtual result_e   calculate_result( action_state_t* ) const override;
   virtual void   execute() override;
   virtual void   schedule_execute( action_state_t* execute_state = nullptr ) override;
@@ -6362,7 +6363,7 @@ inline void dot_tick_event_t::execute()
 
   if ( dot -> current_action -> channeled &&
        dot -> current_action -> action_skill < 1.0 &&
-       dot -> remains() >= dot -> current_action -> tick_time( dot -> state -> haste ) )
+       dot -> remains() >= dot -> current_action -> tick_time( dot -> state ) )
   {
     if ( rng().roll( std::max( 0.0, dot -> current_action -> action_skill - dot -> current_action -> player -> current.skill_debuff ) ) )
     {
