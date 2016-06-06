@@ -113,8 +113,8 @@ public:
 
     // Shadow
     buff_t* dispersion;
+    buff_t* insanity_drain_stacks;
     buff_t* lingering_insanity;
-    buff_t* mass_hysteria;
     buff_t* mind_sear_on_hit_reset;
     buff_t* shadowy_insight;
     buff_t* sphere_of_insanity;
@@ -2279,18 +2279,12 @@ struct voidform_t final : public priest_spell_t
       priest.buffs.sphere_of_insanity->current_value = 0.0;
     }
 
-    if ( priest.artifact.mass_hysteria.rank() )
-    {
-      priest.buffs.mass_hysteria->trigger();
-    }
-
     if ( priest.active_items.mother_shahrazs_seduction &&
          priest.buffs.lingering_insanity->up() )
     {
       int mss_vf_stacks = floor(priest.buffs.lingering_insanity->remains().total_seconds() / priest.active_items.mother_shahrazs_seduction->driver()->effectN(1).base_value());
 
       priest.buffs.voidform->current_stack += mss_vf_stacks;
-      priest.buffs.mass_hysteria->current_stack += mss_vf_stacks;
     }
 
     if ( priest.talents.void_lord->ok() &&
@@ -3292,7 +3286,7 @@ struct shadow_word_pain_t final : public priest_spell_t
     if ( priest.artifact.mass_hysteria.rank() )
     {
       m *= 1.0 + ( priest.artifact.mass_hysteria.percent() *
-                   priest.buffs.mass_hysteria->stack() );
+                   priest.buffs.voidform->stack() );
     }
 
     return m;
@@ -3447,7 +3441,7 @@ struct vampiric_touch_t final : public priest_spell_t
     if ( priest.artifact.mass_hysteria.rank() )
     {
       m *= 1.0 + ( priest.artifact.mass_hysteria.percent() *
-                   priest.buffs.mass_hysteria->stack() );
+                   priest.buffs.voidform->stack() );
     }
 
     return m;
@@ -5197,6 +5191,78 @@ protected:
   priest_t& priest;
 };
 
+
+/* Custom insanity_drain_stacks buff
+*/
+struct insanity_drain_stacks_t final : public priest_buff_t<buff_t>
+{
+  // There is probably a better way to accomplish this. Overriding tick in buff_t maybe? - Twintop 2016/06/05
+  struct stack_increase_event_t final : public player_event_t
+  {
+    insanity_drain_stacks_t* ids;
+
+    stack_increase_event_t( insanity_drain_stacks_t* s )
+      : player_event_t(*s->player), ids( s )
+    {
+      add_event(timespan_t::from_seconds(1.0));
+    }
+
+    virtual const char* name() const override
+    {
+      return "insanity_drain_stack_increase";
+    }
+
+    virtual void execute() override
+    {
+      auto priest = debug_cast<priest_t*>(player());
+
+      //If we are currently channeling Void Torrent or Dispersion, we don't gain stacks.
+      if (!(priest->buffs.void_torrent->check() || priest->buffs.dispersion->check()))
+      {
+        priest->buffs.insanity_drain_stacks->increment();
+      }
+      ids->stack_increase = new (sim()) stack_increase_event_t(ids);
+    }
+  };
+
+  stack_increase_event_t* stack_increase;
+
+  insanity_drain_stacks_t(priest_t& p)
+    : base_t(p, buff_creator_t(&p, "insanity_drain_stacks")
+                                .max_stack(999)
+                                .chance(1.0)
+                                .duration(timespan_t::zero())),
+                                stack_increase( nullptr )
+  {
+  }
+
+  bool trigger(int stacks, double value, double chance,
+    timespan_t duration) override
+  {
+    bool r = base_t::trigger(stacks, value, chance, duration);
+
+    assert(stack_increase == nullptr);
+    stack_increase = new (*sim) stack_increase_event_t(this);
+
+    return r;
+  }
+
+  void expire_override(int expiration_stacks,
+    timespan_t remaining_duration) override
+  {
+    event_t::cancel(stack_increase);
+
+    base_t::expire_override(expiration_stacks, remaining_duration);
+  }
+
+  void reset() override
+  {
+    base_t::reset();
+
+    event_t::cancel(stack_increase);
+  }
+};
+
 /* Custom voidform buff
  */
 struct voidform_t final : public priest_buff_t<buff_t>
@@ -5219,7 +5285,7 @@ struct voidform_t final : public priest_buff_t<buff_t>
 
     virtual void execute() override
     {
-      // Updated 2016-04-21 by Twintop:
+      // Updated 2016-06-05 by Twintop:
       // ---
       // http://us.battle.net/wow/en/forum/topic/20743504316?page=2#31
       // http://us.battle.net/wow/en/forum/topic/20743504316?page=4#71
@@ -5232,13 +5298,19 @@ struct voidform_t final : public priest_buff_t<buff_t>
       // CHECK ME: Triggering Voidform in-game and not using any abilities
       // results in 11 stacks. This appears to be due to latency. SimC only gets
       // 10 stacks presently.
-      // TODO: Use Spelldata
+      // ---
+      // 2016/06/05 update by Twintop:
+      // The drain amount for Insanity is tracked separately from the Voidform
+      // stacks. "Insanity Drain Stacks" always begins at 1 (Legendary Shoulders
+      // can let you start with more stacks of Voidform). Using Dispersion or
+      // Void Torrent cause these "Insanity Drain Stacks" to pause while being
+      // channeled.
       auto priest = debug_cast<priest_t*>( player() );
 
       // LOGIC/SANITY CHECK:
       // Stack 1 = 8 insanity = 8 + ( (1 - 1) / 2 ) = 8 + (0 / 2) = 8
       // Stack 2 = 8.5 insanity = 8 + ( (2 - 1) / 2 ) = 8 + (1/2) = 8.5
-      double insanity_loss = ( 8 + ( ( priest->buffs.voidform->check() - 1 ) / 2 ) ) * 0.05;
+      double insanity_loss = ( 8 + ( ( priest->buffs.insanity_drain_stacks->check() - 1 ) / 2 ) ) * 0.05;
 
       if (insanity_loss > priest->resources.current[RESOURCE_INSANITY])
       {
@@ -5276,7 +5348,6 @@ struct voidform_t final : public priest_buff_t<buff_t>
         vf->insanity_loss = nullptr;  // avoid double-canceling
         priest->buffs.voidform->expire();
         priest->buffs.sphere_of_insanity->expire();
-        priest->buffs.mass_hysteria->expire();
         return;
       }
 
@@ -5304,6 +5375,8 @@ struct voidform_t final : public priest_buff_t<buff_t>
     assert( insanity_loss == nullptr );
     insanity_loss = new ( *sim ) insanity_loss_event_t( this );
 
+    priest.buffs.insanity_drain_stacks->trigger();
+
     return r;
   }
 
@@ -5312,6 +5385,8 @@ struct voidform_t final : public priest_buff_t<buff_t>
   {
     if ( priest.buffs.lingering_insanity->check() )
       priest.buffs.lingering_insanity->expire();
+
+    priest.buffs.insanity_drain_stacks->expire();
 
     priest.buffs.lingering_insanity->trigger( expiration_stacks );
     
@@ -5335,8 +5410,6 @@ struct voidform_t final : public priest_buff_t<buff_t>
     event_t::cancel( insanity_loss );
   }
 };
-
-
 
 /* Custom surrender_to_madness buff
 */
@@ -6556,14 +6629,7 @@ void priest_t::create_buffs()
                                  .spell( find_spell( 197937 ) )
                                  .add_invalidate( CACHE_HASTE );
 
-  buffs.mass_hysteria = buff_creator_t( this, "mass_hysteria" )
-                            .spell( find_spell( 194378 ) )
-                            .chance( 1.0 )
-                            .max_stack( 100 )
-                            .duration( timespan_t::zero() );
-
-  buffs.mass_hysteria->buff_period   = timespan_t::from_seconds( 1.0 );
-  buffs.mass_hysteria->tick_behavior = BUFF_TICK_REFRESH;
+  buffs.insanity_drain_stacks = new buffs::insanity_drain_stacks_t(*this);
 
   buffs.vampiric_embrace =
       buff_creator_t( this, "vampiric_embrace",
