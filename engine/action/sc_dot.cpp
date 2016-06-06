@@ -1027,7 +1027,7 @@ void dot_t::adjust( double coefficient )
         new_duration.total_seconds(),
         tick_event -> occurs().total_seconds(),
         ( sim -> current_time() + new_tick_remains ).total_seconds(),
-        end_event -> remains().total_seconds(),
+        end_event -> occurs().total_seconds(),
         ( sim -> current_time() + new_dot_remains ).total_seconds() );
   }
 
