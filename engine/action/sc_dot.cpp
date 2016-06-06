@@ -1004,3 +1004,38 @@ bool dot_t::is_higher_priority_action_available() const
   return false;
 }
 
+void dot_t::adjust( double coefficient )
+{
+  if ( ! is_ticking() )
+  {
+    return;
+  }
+
+  sim_t* sim = current_action -> sim;
+
+  timespan_t new_tick_remains = tick_event -> remains() * coefficient;
+  timespan_t new_dot_remains = end_event -> remains() * coefficient;
+  timespan_t new_duration = current_duration * coefficient;
+
+  if ( sim -> debug )
+  {
+    sim -> out_debug.printf( "%s adjusts dot %s (on %s): duration=%.3f -> %.3f, next_tick=%.3f -> %.3f, ends=%.3f -> %.3f",
+        current_action -> player -> name(),
+        current_action -> name(),
+        target -> name(),
+        current_duration.total_seconds(),
+        new_duration.total_seconds(),
+        tick_event -> occurs().total_seconds(),
+        ( sim -> current_time() + new_tick_remains ).total_seconds(),
+        end_event -> remains().total_seconds(),
+        ( sim -> current_time() + new_dot_remains ).total_seconds() );
+  }
+
+  event_t::cancel( tick_event );
+  event_t::cancel( end_event );
+
+  current_duration = new_duration;
+  time_to_tick = time_to_tick * coefficient;
+  tick_event = new ( *sim ) dot_tick_event_t( this, new_tick_remains );
+  end_event = new ( *sim ) dot_end_event_t( this, new_dot_remains );
+}

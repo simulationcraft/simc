@@ -6309,6 +6309,11 @@ public:
   void   decrement( int stacks );
   void   copy( player_t* destination, dot_copy_e = DOT_COPY_START );
   void   copy( dot_t* dest_dot );
+  // Scale on-going dot remaining time by a coefficient during a tick. Note that this should be
+  // accompanied with the correct (time related) scaling information in the action's supporting
+  // methods (action_t::tick_time, action_t::composite_dot_ruration), otherwise bad things will
+  // happen.
+  void   adjust( double coefficient );
   expr_t* create_expression( action_t* action, const std::string& name_str, bool dynamic );
 
   timespan_t remains() const;
