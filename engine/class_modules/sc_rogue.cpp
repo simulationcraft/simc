@@ -605,6 +605,7 @@ struct rogue_t : public player_t
   void trigger_surge_of_toxins( const action_state_t* );
   void trigger_poison_knives( const action_state_t* );
   void trigger_true_bearing( int );
+  void trigger_exsanguinate( const action_state_t* );
 
   double consume_cp_max() const
   { return 5.0 + as<double>( talent.deeper_stratagem -> effectN( 1 ).base_value() ); }
@@ -2327,6 +2328,22 @@ struct eviscerate_t : public eviscerate_base_t
   }
 };
 
+// Exsanguinate =============================================================
+
+struct exsanguinate_t : public rogue_attack_t
+{
+  exsanguinate_t( rogue_t* p, const std::string& options_str ):
+    rogue_attack_t( "exsanguinate", p, p -> talent.exsanguinate, options_str )
+  { }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+
+    p() -> trigger_exsanguinate( state );
+  }
+};
+
 // Fan of Knives ============================================================
 
 struct fan_of_knives_t: public rogue_attack_t
@@ -3073,6 +3090,18 @@ struct rupture_t : public rogue_attack_t
     m *= 1.0 + td( target ) -> debuffs.blood_of_the_assassinated -> stack_value();
 
     return m;
+  }
+
+  timespan_t tick_time( const action_state_t* state ) const override
+  {
+    timespan_t tt = rogue_attack_t::tick_time( state );
+
+    if ( cast_state( state ) -> exsanguinated )
+    {
+      tt *= 1.0 / ( 1.0 + p() -> talent.exsanguinate -> effectN( 1 ).percent() );
+    }
+
+    return tt;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -4412,6 +4441,27 @@ void rogue_t::trigger_true_bearing( int cp )
   cooldowns.death_from_above -> adjust( v, false );
 }
 
+void do_exsanguinate( dot_t* dot, double coeff )
+{
+  if ( ! dot -> is_ticking() )
+  {
+    return;
+  }
+
+  dot -> adjust( coeff );
+  actions::rogue_attack_t::cast_state( dot -> state ) -> exsanguinated = true;
+}
+
+void rogue_t::trigger_exsanguinate( const action_state_t* state )
+{
+  rogue_td_t* td = get_target_data( state -> target );
+
+  double coeff = 1.0 / ( 1.0 + talent.exsanguinate -> effectN( 1 ).percent() );
+  do_exsanguinate( td -> dots.rupture, coeff );
+  do_exsanguinate( td -> dots.garrote, coeff );
+  do_exsanguinate( td -> dots.hemorrhage, coeff );
+}
+
 void rogue_t::spend_combo_points( const action_state_t* state )
 {
   if ( state -> action -> base_costs[ RESOURCE_COMBO_POINT ] == 0 )
@@ -5381,6 +5431,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "enveloping_shadows"  ) return new enveloping_shadows_t ( this, options_str );
   if ( name == "envenom"             ) return new envenom_t            ( this, options_str );
   if ( name == "eviscerate"          ) return new eviscerate_t         ( this, options_str );
+  if ( name == "exsanguinate"        ) return new exsanguinate_t       ( this, options_str );
   if ( name == "fan_of_knives"       ) return new fan_of_knives_t      ( this, options_str );
   if ( name == "feint"               ) return new feint_t              ( this, options_str );
   if ( name == "garrote"             ) return new garrote_t            ( this, options_str );
