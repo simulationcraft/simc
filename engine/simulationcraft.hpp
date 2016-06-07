@@ -1117,9 +1117,6 @@ public:
   void increment( int stacks = 1, double value = -1.0, timespan_t duration = timespan_t::min() ) override;
   void decrement( int stacks = 1, double value = -1.0 ) override;
   void expire( timespan_t delay = timespan_t::zero() ) override;
-
-  bool affects_auto_attack() const
-  { return haste_type == HASTE_ANY || haste_type == HASTE_ATTACK || haste_type == SPEED_ANY || haste_type == SPEED_ATTACK; }
 };
 
 struct debuff_t : public buff_t
