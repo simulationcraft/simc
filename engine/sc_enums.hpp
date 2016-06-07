@@ -1260,5 +1260,8 @@ enum haste_type_e
   HASTE_NONE = 0U,
   HASTE_SPELL,
   HASTE_ATTACK, // TODO: This should probably be Range/Melee
+  SPEED_SPELL,
+  SPEED_ATTACK,
   HASTE_ANY, // Special value to indicate any (all) haste types
+  SPEED_ANY,
 };

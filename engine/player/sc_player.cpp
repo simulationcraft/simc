@@ -518,7 +518,8 @@ player_t::player_t( sim_t*             s,
   // Defense Mechanics
   def_dr( diminishing_returns_constants_t() ),
   // Attacks
-  main_hand_attack( 0 ), off_hand_attack( 0 ),
+  main_hand_attack( nullptr ), off_hand_attack( nullptr ),
+  current_attack_speed( 1.0 ),
   // Resources
   resources( resources_t() ),
   // Consumables
@@ -4761,11 +4762,9 @@ void player_t::stat_gain( stat_e    stat,
       current.stats.add_stat( stat, amount );
       invalidate_cache( cache_type );
 
-      if ( main_hand_attack )
-        main_hand_attack -> reschedule_auto_attack( old_attack_speed );
-      if ( off_hand_attack )
-        off_hand_attack -> reschedule_auto_attack( old_attack_speed );
       adjust_dynamic_cooldowns();
+      adjust_global_cooldown( HASTE_ANY );
+      adjust_auto_attack( HASTE_ANY );
       break;
     }
 
@@ -4934,11 +4933,9 @@ void player_t::stat_loss( stat_e    stat,
       current.stats.haste_rating   -= amount;
       invalidate_cache( cache_type );
 
-      if ( main_hand_attack )
-        main_hand_attack -> reschedule_auto_attack( old_attack_speed );
-      if ( off_hand_attack )
-        off_hand_attack -> reschedule_auto_attack( old_attack_speed );
       adjust_dynamic_cooldowns();
+      adjust_global_cooldown( HASTE_ANY );
+      adjust_auto_attack( HASTE_ANY );
       break;
     }
 
@@ -11172,6 +11169,7 @@ slot_e player_t::child_item_slot( const item_t& item ) const
   return SLOT_INVALID;
 }
 
+// TODO: This currently does not take minimum GCD into account, should it?
 void player_t::adjust_global_cooldown( haste_type_e haste_type )
 {
   // Don't adjust if the current gcd isnt hasted
@@ -11186,23 +11184,94 @@ void player_t::adjust_global_cooldown( haste_type_e haste_type )
     return;
   }
 
-  // We need to adjust the event
+  // Don't adjust elapsed GCDs
+  if ( ( readying && readying -> occurs() <= sim -> current_time() ) ||
+       ( gcd_ready <= sim -> current_time() ) )
+  {
+    return;
+  }
+
+  double new_haste = 0;
+  switch ( gcd_haste_type )
+  {
+    case HASTE_SPELL:
+      new_haste = cache.spell_haste();
+      break;
+    case HASTE_ATTACK:
+      new_haste = cache.attack_haste();
+      break;
+    case SPEED_SPELL:
+      new_haste = cache.spell_speed();
+      break;
+    case SPEED_ATTACK:
+      new_haste = cache.attack_speed();
+      break;
+    // SPEED_ANY and HASTE_ANY are nonsensical, actions have to have a correct GCD haste type so
+    // they can be adjusted on state changes.
+    default:
+      assert( 0 && "player_t::adjust_global_cooldown called without proper haste type" );
+      break;
+  }
+
+  // Haste did not change, don't do anything
+  if ( new_haste == gcd_current_haste_value )
+  {
+    return;
+  }
+
+  double delta = new_haste / gcd_current_haste_value;
+  timespan_t remains = readying ? readying -> remains() : ( gcd_ready - sim -> current_time() ),
+             new_remains = remains * delta;
+
+  assert( remains > timespan_t::zero() && new_remains > timespan_t::zero() );
+
+  // Don't bother processing too small (less than a millisecond) granularity changes
+  if ( remains == new_remains )
+  {
+    return;
+  }
+
+  if ( sim -> debug )
+  {
+    sim -> out_debug.printf( "%s adjusting GCD due to haste change: old_ready=%.3f new_ready=%.3f old_haste=%f new_haste=%f delta=%f",
+      name(),
+      ( sim -> current_time() + remains ).total_seconds(),
+      ( sim -> current_time() + new_remains ).total_seconds(),
+      gcd_current_haste_value, new_haste, delta );
+  }
+
+  // We need to adjust the event (GCD is already elapsing)
   if ( readying )
   {
-    // Don't adjust elapsed GCDs
-    if ( readying -> occurs() <= sim -> current_time() )
+    // GCD speeding up, recreate the event
+    if ( delta < 1 )
     {
-      return;
+      event_t::cancel( readying );
+      readying = new ( *sim ) player_ready_event_t( *this, new_remains );
     }
-
+    // GCD slowing down, just reschedule into future
+    else
+    {
+      readying -> reschedule( new_remains );
+    }
   }
-  // We need to adjust gcd_ready
+  // We need to adjust gcd_ready (the actor is probably casting something)
   else
   {
-    // Don't adjust elapsed GCDs
-    if ( gcd_ready <= sim -> current_time() )
-    {
-      return;
-    }
+    gcd_ready = sim -> current_time() + new_remains;
   }
+}
+
+void player_t::adjust_auto_attack( haste_type_e haste_type )
+{
+  // Don't adjust autoattacks on spell-derived haste
+  if ( haste_type == SPEED_SPELL || haste_type == HASTE_SPELL )
+  {
+    return;
+  }
+
+  if ( main_hand_attack ) main_hand_attack -> reschedule_auto_attack( current_attack_speed );
+  if ( off_hand_attack ) off_hand_attack -> reschedule_auto_attack( current_attack_speed );
+
+  current_attack_speed = cache.attack_speed();
 }

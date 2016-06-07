@@ -862,7 +862,6 @@ public:
   // static values
 private: // private because changing max_stacks requires resizing some stack-dependant vectors
   int _max_stack;
-  std::vector<cache_e> invalidate_list;
 public:
   double default_value;
   bool activated, reactable;
@@ -901,6 +900,7 @@ protected:
   unsigned int overflow_count, overflow_total;
   int trigger_attempts, trigger_successes;
   int simulation_max_stack;
+  std::vector<cache_e> invalidate_list;
 
   // report data
 public:
@@ -1108,6 +1108,8 @@ public:
 
 struct haste_buff_t : public buff_t
 {
+  haste_type_e haste_type;
+
 protected:
   haste_buff_t( const haste_buff_creator_t& params );
   friend struct buff_creation::haste_buff_creator_t;
@@ -1115,6 +1117,9 @@ public:
   void increment( int stacks = 1, double value = -1.0, timespan_t duration = timespan_t::min() ) override;
   void decrement( int stacks = 1, double value = -1.0 ) override;
   void expire( timespan_t delay = timespan_t::zero() ) override;
+
+  bool affects_auto_attack() const
+  { return haste_type == HASTE_ANY || haste_type == HASTE_ATTACK || haste_type == SPEED_ANY || haste_type == SPEED_ATTACK; }
 };
 
 struct debuff_t : public buff_t
@@ -3684,6 +3689,9 @@ struct player_t : public actor_t
   attack_t* main_hand_attack;
   attack_t*  off_hand_attack;
 
+  // Current attack speed (needed for dynamic attack speed adjustments)
+  double current_attack_speed;
+
   // Resources
   struct resources_t
   {
@@ -4505,6 +4513,7 @@ public:
   virtual void adjust_dynamic_cooldowns()
   { range::for_each( dynamic_cooldown_list, []( cooldown_t* cd ) { cd -> adjust_recharge_multiplier(); } ); }
   virtual void adjust_global_cooldown( haste_type_e haste_type );
+  virtual void adjust_auto_attack( haste_type_e haste_type );
 
 private:
   // Update movement data, and also control the buff
@@ -5153,7 +5162,7 @@ public:
   /// The minimum gcd triggered no matter the haste.
   timespan_t min_gcd;
 
-  /// Hasted GCD stat type
+  /// Hasted GCD stat type. One of HASTE_NONE, HASTE_ATTACK, HASTE_SPELL, SPEED_ATTACK, SPEED_SPELL
   haste_type_e gcd_haste;
 
   /// Length of unhasted gcd triggered when used.

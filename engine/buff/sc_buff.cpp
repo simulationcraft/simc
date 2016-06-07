@@ -1881,32 +1881,61 @@ void cost_reduction_buff_t::expire_override( int expiration_stacks, timespan_t r
 // ==========================================================================
 
 haste_buff_t::haste_buff_t( const haste_buff_creator_t& params ) :
-  buff_t( params )
+  buff_t( params ), haste_type( HASTE_NONE )
 {
-  add_invalidate( CACHE_HASTE );
-  requires_invalidation = true;
+  // All haste > everything
+  if ( range::find( invalidate_list, CACHE_HASTE ) != invalidate_list.end() )
+  {
+    haste_type = HASTE_ANY;
+  }
+
+  // Select one of the specific types
+  if ( haste_type == HASTE_NONE )
+  {
+    if ( range::find( invalidate_list, CACHE_SPELL_HASTE ) != invalidate_list.end() )
+    {
+      haste_type = HASTE_SPELL;
+    }
+    else if ( range::find( invalidate_list, CACHE_ATTACK_HASTE ) != invalidate_list.end() )
+    {
+      haste_type = HASTE_ATTACK;
+    }
+    else if ( range::find( invalidate_list, CACHE_SPEED ) != invalidate_list.end() )
+    {
+      haste_type = SPEED_ANY;
+    }
+    else if ( range::find( invalidate_list, CACHE_SPELL_SPEED ) != invalidate_list.end() )
+    {
+      haste_type = SPEED_SPELL;
+    }
+    else if ( range::find( invalidate_list, CACHE_ATTACK_SPEED ) != invalidate_list.end() )
+    {
+      haste_type = SPEED_ATTACK;
+    }
+    // If no specific haste is given, invalidate all. In other cases, the buff_t constructor will
+    // handle invalidations and requires invalidation setting.
+    else
+    {
+      haste_type = HASTE_ANY;
+      add_invalidate( CACHE_HASTE );
+      requires_invalidation = true;
+    }
+  }
 }
 
 // haste_buff_t::execute ====================================================
 
 void haste_buff_t::increment( int stacks, double value, timespan_t duration )
 {
-  int is_changed = check() < max_stack() || value != current_value;
-  double old_attack_speed = 0;
-
-  if ( is_changed && ( player -> main_hand_attack || player -> off_hand_attack ) )
-    old_attack_speed = player -> cache.attack_speed();
+  bool is_changed = check() < max_stack() || value != current_value;
 
   buff_t::increment( stacks, value, duration );
 
   if ( is_changed )
   {
-    if ( player -> main_hand_attack )
-      player -> main_hand_attack -> reschedule_auto_attack( old_attack_speed );
-    if ( player -> off_hand_attack )
-      player -> off_hand_attack -> reschedule_auto_attack( old_attack_speed );
-
     player -> adjust_dynamic_cooldowns();
+    player -> adjust_global_cooldown( haste_type );
+    player -> adjust_auto_attack( haste_type );
   }
 }
 
@@ -1914,22 +1943,15 @@ void haste_buff_t::increment( int stacks, double value, timespan_t duration )
 
 void haste_buff_t::decrement( int stacks, double value )
 {
-  double old_attack_speed = 0;
   bool is_changed = check() > 1; // Only do dynamic stuff if decrement is called on >1 stacks.
-
-  if ( is_changed && ( player -> main_hand_attack || player -> off_hand_attack ) )
-    old_attack_speed = player -> cache.attack_speed();
 
   buff_t::decrement( stacks, value );
 
   if ( is_changed )
   {
-    if ( player -> main_hand_attack )
-      player -> main_hand_attack -> reschedule_auto_attack( old_attack_speed );
-    if ( player -> off_hand_attack )
-      player -> off_hand_attack -> reschedule_auto_attack( old_attack_speed );
-
     player -> adjust_dynamic_cooldowns();
+    player -> adjust_global_cooldown( haste_type );
+    player -> adjust_auto_attack( haste_type );
   }
 }
 
@@ -1937,22 +1959,15 @@ void haste_buff_t::decrement( int stacks, double value )
 
 void haste_buff_t::expire( timespan_t delay )
 {
-  double old_attack_speed = 0;
   bool is_changed = check() != 0;
-
-  if ( is_changed && ( player -> main_hand_attack || player -> off_hand_attack ) )
-    old_attack_speed = player -> cache.attack_speed();
 
   buff_t::expire( delay );
 
   if ( is_changed )
   {
-    if ( player -> main_hand_attack )
-      player -> main_hand_attack -> reschedule_auto_attack( old_attack_speed );
-    if ( player -> off_hand_attack )
-      player -> off_hand_attack -> reschedule_auto_attack( old_attack_speed );
-
     player -> adjust_dynamic_cooldowns();
+    player -> adjust_global_cooldown( haste_type );
+    player -> adjust_auto_attack( haste_type );
   }
 }
 

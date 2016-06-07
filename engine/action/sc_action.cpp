@@ -807,9 +807,26 @@ timespan_t action_t::gcd() const
     return timespan_t::zero();
 
   timespan_t gcd_ = trigger_gcd;
-  if ( gcd_haste != HASTE_NONE )
+  switch ( gcd_haste )
   {
-    gcd_ *= composite_haste();
+    // Note, HASTE_ANY should never be used for actions. It does work as a crutch though, since
+    // action_t::composite_haste will return the correct haste value.
+    case HASTE_ANY:
+    case HASTE_SPELL:
+    case HASTE_ATTACK:
+      gcd_ *= composite_haste();
+      break;
+    case SPEED_SPELL:
+      gcd_ *= player -> cache.spell_speed();
+      break;
+    case SPEED_ATTACK:
+      gcd_ *= player -> cache.attack_speed();
+      break;
+    // SPEED_ANY is nonsensical for GCD reduction, since we don't have action_t::composite_speed()
+    // to give the correct speed value.
+    case SPEED_ANY:
+    default:
+      break;
   }
 
   if ( gcd_ < min_gcd )
@@ -1689,6 +1706,12 @@ void action_t::schedule_execute( action_state_t* execute_state )
         break;
       case HASTE_ATTACK:
         player -> gcd_current_haste_value = player -> cache.attack_haste();
+        break;
+      case SPEED_SPELL:
+        player -> gcd_current_haste_value = player -> cache.spell_speed();
+        break;
+      case SPEED_ATTACK:
+        player -> gcd_current_haste_value = player -> cache.attack_speed();
         break;
       default:
         break;
