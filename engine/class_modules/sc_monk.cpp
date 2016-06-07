@@ -5,6 +5,7 @@
 /*
 NOTES:
 - to evaluate Combo Strikes in the APL, use "!prev_gcd.[ability]"
+- To show CJL can be interupted in the APL, use "&!prev_gcd.crackling_jade_lightning,interrupt=1"
 
 TODO:
 
@@ -75,6 +76,8 @@ enum combo_strikes_e {
   // Spells begin here
   CS_CHI_BURST,
   CS_CHI_WAVE,
+  CS_CRACKLING_JADE_LIGHTNING,
+  CS_FLYING_SERPENT_KICK,
   CS_SPELL_MAX,
 
   // Misc
@@ -3757,6 +3760,13 @@ struct crackling_jade_lightning_t: public monk_spell_t
     channeled = tick_may_crit = true;
     hasted_ticks = false; // Channeled spells always have hasted ticks. Use hasted_ticks = false to disable the increase in the number of ticks.
     interrupt_auto_attack = true;
+  }
+
+  virtual void execute() override
+  {
+    combo_strikes_trigger( CS_CRACKLING_JADE_LIGHTNING );
+
+    monk_spell_t::execute();
   }
 
   void last_tick( dot_t* dot ) override
