@@ -853,10 +853,6 @@ private:
 public:
   typedef shaman_action_t base_t;
 
-  // Flurry
-  bool        hasted_cd;
-  bool        hasted_gcd;
-
   // Cooldown tracking
   bool        track_cd_waste;
   simple_sample_data_with_min_max_t* cd_wasted_exec, *cd_wasted_cumulative;
@@ -873,8 +869,6 @@ public:
   shaman_action_t( const std::string& n, shaman_t* player,
                    const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
-    hasted_cd( ab::data().affected_by( player -> spec.shaman -> effectN( 2 ) ) ),
-    hasted_gcd( ab::data().affected_by( player -> spec.shaman -> effectN( 3 ) ) ),
     track_cd_waste( s -> cooldown() > timespan_t::zero() || s -> charge_cooldown() > timespan_t::zero() ),
     cd_wasted_exec( nullptr ), cd_wasted_cumulative( nullptr ), cd_wasted_iter( nullptr ),
     unshift_ghost_wolf( true ),
@@ -895,6 +889,7 @@ public:
       maelstrom_gain = effect.resource( RESOURCE_MAELSTROM );
       ab::energize_type = ENERGIZE_NONE; // disable resource generation from spell data.
     }
+
   }
 
   void init()
@@ -908,7 +903,14 @@ public:
       cd_wasted_iter = p() -> template get_data_entry<simple_sample_data_t, simple_data_t>( ab::name_str, p() -> cd_waste_iter );
     }
 
-    ab::cooldown -> hasted = hasted_cd;
+    // Setup Hasted CD for Enhancement
+    ab::cooldown -> hasted = ab::data().affected_by( p() -> spec.shaman -> effectN( 2 ) );
+
+    // Setup Hasted GCD for Enhancement
+    if ( ab::data().affected_by( p() -> spec.shaman -> effectN( 3 ) ) )
+    {
+      ab::gcd_haste = HASTE_ATTACK;
+    }
   }
 
   shaman_t* p()
@@ -1080,23 +1082,6 @@ public:
     {
       may_proc_stormbringer = ab::weapon && ab::weapon -> slot == SLOT_MAIN_HAND;
     }
-  }
-
-  timespan_t gcd() const override
-  {
-    timespan_t g = ab::gcd();
-
-    if ( g == timespan_t::zero() )
-      return timespan_t::zero();
-
-    if ( hasted_gcd )
-    {
-      g *= player -> cache.attack_haste();
-      if ( g < min_gcd )
-        g = min_gcd;
-    }
-
-    return g;
   }
 
   void impact( action_state_t* state ) override
@@ -3230,7 +3215,7 @@ struct boulderfist_t : public shaman_spell_t
     shaman_spell_t( "boulderfist", player, player -> talent.boulderfist, options_str )
   {
     // TODO: SpellCategory + SpellEffect based detection
-    hasted_cd = true;
+    cooldown -> hasted = true;
   }
 
   void execute() override
@@ -5768,6 +5753,7 @@ void shaman_t::create_buffs()
                    .max_stack( find_spell( 201846 ) -> initial_stacks() + talent.tempest -> effectN( 1 ).base_value() );
   buff.crash_lightning = buff_creator_t( this, "crash_lightning", find_spell( 187878 ) );
   buff.windsong = haste_buff_creator_t( this, "windsong", talent.windsong )
+                  .add_invalidate( CACHE_ATTACK_SPEED )
                   .default_value( 1.0 / ( 1.0 + talent.windsong -> effectN( 2 ).percent() ) );
   buff.boulderfist = buff_creator_t( this, "boulderfist", talent.boulderfist -> effectN( 3 ).trigger() )
                         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
@@ -5781,6 +5767,7 @@ void shaman_t::create_buffs()
   buff.unleash_doom = buff_creator_t( this, "unleash_doom", artifact.unleash_doom.data().effectN( 1 ).trigger() )
                       .trigger_spell( artifact.unleash_doom );
   buff.wind_strikes = haste_buff_creator_t( this, "wind_strikes", find_spell( 198293 ) )
+                      .add_invalidate( CACHE_ATTACK_SPEED )
                       .chance( artifact.wind_strikes.rank() > 0 )
                       .default_value( 1.0 / ( 1.0 + artifact.wind_strikes.percent() ) );
   buff.gathering_storms = buff_creator_t( this, "gathering_storms", find_spell( 198300 ) );
