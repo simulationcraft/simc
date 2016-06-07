@@ -302,6 +302,7 @@ action_t::action_t( action_e       ty,
   ability_lag_stddev( timespan_t::zero() ),
   rp_gain(),
   min_gcd( timespan_t() ),
+  gcd_haste( HASTE_NONE ),
   trigger_gcd( player -> base_gcd ),
   range(),
   radius(),
@@ -802,10 +803,21 @@ double action_t::cost_per_tick( resource_e r ) const
 
 timespan_t action_t::gcd() const
 {
-  if ( ! harmful && ! player -> in_combat )
+  if ( ( ! harmful && ! player -> in_combat ) || trigger_gcd == timespan_t::zero() )
     return timespan_t::zero();
 
-  return trigger_gcd;
+  timespan_t gcd_ = trigger_gcd;
+  if ( gcd_haste != HASTE_NONE )
+  {
+    gcd_ *= composite_haste();
+  }
+
+  if ( gcd_ < min_gcd )
+  {
+    gcd_ = min_gcd;
+  }
+
+  return gcd_;
 }
 
 // False Positive skill chance, executes command regardless of expression.
@@ -1667,7 +1679,21 @@ void action_t::schedule_execute( action_state_t* execute_state )
   if ( ! background )
   {
     player -> executing = this;
+    // Setup the GCD ready time, and associated haste-related values
     player -> gcd_ready = sim -> current_time() + gcd();
+    player -> gcd_haste_type = gcd_haste;
+    switch ( gcd_haste )
+    {
+      case HASTE_SPELL:
+        player -> gcd_current_haste_value = player -> cache.spell_haste();
+        break;
+      case HASTE_ATTACK:
+        player -> gcd_current_haste_value = player -> cache.attack_haste();
+        break;
+      default:
+        break;
+    }
+
     if ( player -> action_queued && sim -> strict_gcd_queue )
     {
       player -> gcd_ready -= sim -> queue_gcd_reduction;

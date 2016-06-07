@@ -33,23 +33,13 @@ spell_base_t::spell_base_t( action_e at,
   procs_courageous_primal_diamond( true )
 {
   min_gcd = p -> min_gcd;
+  gcd_haste = HASTE_SPELL; // Hasten spell GCDs by default
   //min_gcd = timespan_t::from_seconds( 1.0 );
   hasted_ticks = true;
   special = true;
 
   crit_bonus = 1.0;
   crit_multiplier *= util::crit_multiplier( player -> meta_gem );
-}
-
-timespan_t spell_base_t::gcd() const
-{
-  timespan_t t = action_t::gcd();
-  if ( t == timespan_t::zero() ) return timespan_t::zero();
-
-  t *= composite_haste();
-  if ( t < min_gcd ) t = min_gcd;
-
-  return t;
 }
 
 timespan_t spell_base_t::execute_time() const

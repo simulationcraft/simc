@@ -1253,3 +1253,12 @@ enum action_energize_e
   ENERGIZE_PER_HIT,
   ENERGIZE_PER_TICK
 };
+
+// A simple enumeration to indicate a broad haste stat type for various things in the simulator
+enum haste_type_e
+{
+  HASTE_NONE = 0U,
+  HASTE_SPELL,
+  HASTE_ATTACK, // TODO: This should probably be Range/Melee
+  HASTE_ANY, // Special value to indicate any (all) haste types
+};

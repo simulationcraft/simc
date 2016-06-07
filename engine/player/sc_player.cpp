@@ -493,6 +493,7 @@ player_t::player_t( sim_t*             s,
   region_str( s -> default_region_str ), server_str( s -> default_server_str ), origin_str(),
   timeofday( NIGHT_TIME ), //Set to Night by Default, user can override.
   gcd_ready( timespan_t::zero() ), base_gcd( timespan_t::from_seconds( 1.5 ) ), min_gcd( timespan_t::from_millis( 750 ) ),
+  gcd_haste_type( HASTE_NONE ), gcd_current_haste_value( 1.0 ),
   started_waiting( timespan_t::min() ),
   pet_list(), active_pets(),
   resolve_manager( *this ),
@@ -11171,10 +11172,37 @@ slot_e player_t::child_item_slot( const item_t& item ) const
   return SLOT_INVALID;
 }
 
-void player_t::adjust_global_cooldown()
+void player_t::adjust_global_cooldown( haste_type_e haste_type )
 {
-  if ( ! readying )
+  // Don't adjust if the current gcd isnt hasted
+  if ( gcd_haste_type == HASTE_NONE )
   {
     return;
+  }
+
+  // Don't adjust if the changed haste type isnt current GCD haste scaling type
+  if ( haste_type != HASTE_ANY && gcd_haste_type != haste_type )
+  {
+    return;
+  }
+
+  // We need to adjust the event
+  if ( readying )
+  {
+    // Don't adjust elapsed GCDs
+    if ( readying -> occurs() <= sim -> current_time() )
+    {
+      return;
+    }
+
+  }
+  // We need to adjust gcd_ready
+  else
+  {
+    // Don't adjust elapsed GCDs
+    if ( gcd_ready <= sim -> current_time() )
+    {
+      return;
+    }
   }
 }

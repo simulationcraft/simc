@@ -3563,7 +3563,13 @@ struct player_t : public actor_t
   std::string region_str, server_str, origin_str;
   std::string race_str, professions_str, position_str;
   enum timeofday_e { NIGHT_TIME, DAY_TIME, } timeofday; // Specify InGame time of day to determine Night Elf racial
-  timespan_t  gcd_ready, base_gcd, min_gcd, started_waiting;
+
+  // GCD Related attributes
+  timespan_t  gcd_ready, base_gcd, min_gcd; // When is GCD ready, default base and minimum GCD times.
+  haste_type_e gcd_haste_type; // If the current GCD is hasted, what haste type is used
+  double gcd_current_haste_value; // The currently used haste value for GCD speedup
+
+  timespan_t started_waiting;
   std::vector<pet_t*> pet_list;
   std::vector<pet_t*> active_pets;
   std::vector<absorb_buff_t*> absorb_buff_list;
@@ -4498,7 +4504,7 @@ public:
 
   virtual void adjust_dynamic_cooldowns()
   { range::for_each( dynamic_cooldown_list, []( cooldown_t* cd ) { cd -> adjust_recharge_multiplier(); } ); }
-  virtual void adjust_global_cooldown();
+  virtual void adjust_global_cooldown( haste_type_e haste_type );
 
 private:
   // Update movement data, and also control the buff
@@ -5146,6 +5152,9 @@ public:
 
   /// The minimum gcd triggered no matter the haste.
   timespan_t min_gcd;
+
+  /// Hasted GCD stat type
+  haste_type_e gcd_haste;
 
   /// Length of unhasted gcd triggered when used.
   timespan_t trigger_gcd;
@@ -5931,7 +5940,6 @@ struct spell_base_t : public action_t
   spell_base_t( action_e at, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Spell Base Overrides
-  virtual timespan_t gcd() const override;
   virtual timespan_t execute_time() const override;
   virtual timespan_t tick_time( const action_state_t* state ) const override;
   virtual result_e   calculate_result( action_state_t* ) const override;
