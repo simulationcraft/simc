@@ -925,6 +925,10 @@ struct water_elemental_pet_t : public pet_t
         am *= 1.0 + p() -> o() -> cache.mastery_value();
       }
 
+      if ( p() -> o() -> artifact.its_cold_outside.rank() )
+      {
+        am *= 1.0 + p() -> o() -> artifact.its_cold_outside.data().effectN( 3 ).percent();
+      }
       return am;
     }
 
@@ -2098,14 +2102,6 @@ struct icicle_t : public frost_mage_spell_t
   {
     // Ignores all regular multipliers
     double am = 1.0;
-
-    // NOTE: We use action_multiplier instead of modifying icicle size to
-    //       prevent Glacial Spike from double dipping on lonely winter
-    if ( p() -> talents.lonely_winter -> ok() )
-    {
-      am *= 1.0 + ( p() -> talents.lonely_winter -> effectN( 1 ).percent()
-        + p() -> artifact.its_cold_outside.data().effectN( 2 ).percent() );
-    }
     return am;
   }
 };
@@ -2940,7 +2936,7 @@ struct combustion_t : public fire_mage_spell_t
     fire_mage_spell_t::execute();
 
     p() -> buffs.combustion -> trigger();
-    
+
   }
 };
 
@@ -3206,7 +3202,8 @@ struct fireball_t : public fire_mage_spell_t
       c += p() -> buffs.enhanced_pyrotechnics -> stack() *
            p() -> buffs.enhanced_pyrotechnics -> data().effectN( 1 ).percent();
 
-      if( p() -> talents.fire_starter -> ok() && target -> health_percentage() > 90 )
+      if( p() -> talents.fire_starter -> ok() && ( target -> health_percentage() >
+          p() -> talents.fire_starter -> effectN( 1 ).base_value() ) )
         c = 1.0;
     return c;
   }
@@ -3419,7 +3416,7 @@ struct frostbolt_t : public frost_mage_spell_t
     icicle -> action_list.push_back( p -> icicle );
     if ( p -> talents.lonely_winter -> ok() )
     {
-      base_multiplier *= 1.0 + ( p -> talents.lonely_winter -> effectN( 1 ).percent() + 
+      base_multiplier *= 1.0 + ( p -> talents.lonely_winter -> effectN( 1 ).percent() +
                                p -> artifact.its_cold_outside.data().effectN( 2 ).percent() );
     }
     base_multiplier *= 1.0 + p -> artifact.icy_caress.percent();
@@ -3558,7 +3555,7 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     //TODO: Is this actually how these modifiers work?
     if ( p -> talents.lonely_winter -> ok() )
     {
-      base_multiplier *= 1.0 + ( p -> talents.lonely_winter -> effectN( 1 ).percent() + 
+      base_multiplier *= 1.0 + ( p -> talents.lonely_winter -> effectN( 1 ).percent() +
                                p -> artifact.its_cold_outside.data().effectN( 2 ).percent() );
     }
     base_multiplier *= 1.0 + p -> artifact.orbital_strike.percent();
