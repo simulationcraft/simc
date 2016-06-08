@@ -4132,11 +4132,12 @@ void rogue_t::trigger_combat_potency( const action_state_t* state )
   if ( state -> action -> weapon -> slot != SLOT_OFF_HAND )
     return;
 
-  double chance = spec.combat_potency -> effectN( 1 ).percent();
-  /*
+  //double chance = spec.combat_potency -> effectN( 1 ).percent();
+  // http://us.battle.net/wow/en/forum/topic/20743504316?page=21#416
+  double chance = 0.3;
   if ( state -> action != active_main_gauche )
     chance *= state -> action -> weapon -> swing_time.total_seconds() / 1.4;
-  */
+
   if ( ! rng().roll( chance ) )
     return;
 
