@@ -1534,7 +1534,7 @@ struct agonizing_poison_t : public rogue_poison_t
   agonizing_poison_proc_t* proc;
 
   agonizing_poison_t( rogue_t* player ) :
-    rogue_poison_t( "agonizing_poison_driver", player, player -> find_talent_spell( "Numbing Poison" ) ),
+    rogue_poison_t( "agonizing_poison_driver", player, player -> find_talent_spell( "Agonizing Poison" ) ),
     proc( new agonizing_poison_proc_t( player ) )
   {
     dual = true;
