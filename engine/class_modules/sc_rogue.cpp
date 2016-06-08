@@ -331,6 +331,7 @@ struct rogue_t : public player_t
     const spell_data_t* ruthlessness_driver;
     const spell_data_t* ruthlessness_cp;
     const spell_data_t* shadow_focus;
+    const spell_data_t* subterfuge;
     const spell_data_t* tier18_2pc_combat_ar;
   } spell;
 
@@ -940,12 +941,21 @@ struct rogue_attack_t : public melee_attack_t
     return m;
   }
 
+  double composite_persistent_multiplier( const action_state_t* state ) const override
+  {
+    double m = melee_attack_t::composite_persistent_multiplier( state );
+
+    // TODO: Vanish?
+    if ( p() -> talent.nightstalker -> ok() &&
+         ( p() -> buffs.stealth -> check() || p() -> buffs.shadow_dance -> check() ) )
+      m *= 1.0 + p() -> talent.nightstalker -> effectN( 2 ).percent();
+
+    return m;
+  }
+
   double action_multiplier() const override
   {
     double m = melee_attack_t::action_multiplier();
-
-    if ( p() -> talent.nightstalker -> ok() && p() -> buffs.stealth -> check() )
-      m *= 1.0 + p() -> talent.nightstalker -> effectN( 2 ).percent();
 
     if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 && harmful &&
          ( weapon_multiplier > 0 || attack_power_mod.direct > 0 || attack_power_mod.tick > 0 ) )
@@ -2416,6 +2426,18 @@ struct garrote_t : public rogue_attack_t
     }
   }
 
+  double composite_persistent_multiplier( const action_state_t* state ) const override
+  {
+    double m = rogue_attack_t::composite_persistent_multiplier( state );
+
+    if ( p() -> buffs.subterfuge -> up() )
+    {
+      m *= 1.0 + p() -> spell.subterfuge -> effectN( 2 ).percent();
+    }
+
+    return m;
+  }
+
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     timespan_t duration = rogue_attack_t::composite_dot_duration( s );
@@ -2426,6 +2448,16 @@ struct garrote_t : public rogue_attack_t
     }
 
     return duration;
+  }
+
+  void update_ready( timespan_t cd_duration = timespan_t::min() ) override
+  {
+    if ( p() -> buffs.subterfuge -> check() )
+    {
+      cd_duration = timespan_t::zero();
+    }
+
+    rogue_attack_t::update_ready( cd_duration );
   }
 
   void execute() override
@@ -5595,6 +5627,7 @@ void rogue_t::init_spells()
   spell.ruthlessness_driver = find_spell( 14161 );
   spell.ruthlessness_cp     = spec.ruthlessness -> effectN( 1 ).trigger();
   spell.shadow_focus        = find_spell( 112942 );
+  spell.subterfuge          = find_spell( 115192 );
   spell.tier18_2pc_combat_ar= find_spell( 186286 );
 
   // Talents
