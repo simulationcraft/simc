@@ -101,7 +101,6 @@ struct rogue_td_t : public actor_target_data_t
   {
     dot_t* deadly_poison;
     dot_t* garrote;
-    dot_t* hemorrhage;
     dot_t* killing_spree; // Strictly speaking, this should probably be on player
     dot_t* kingsbane;
     dot_t* nightblade;
@@ -4523,7 +4522,6 @@ void rogue_t::trigger_exsanguinate( const action_state_t* state )
   double coeff = 1.0 / ( 1.0 + talent.exsanguinate -> effectN( 1 ).percent() );
   do_exsanguinate( td -> dots.rupture, coeff );
   do_exsanguinate( td -> dots.garrote, coeff );
-  do_exsanguinate( td -> dots.hemorrhage, coeff );
 }
 
 void rogue_t::spend_combo_points( const action_state_t* state )
@@ -5003,7 +5001,6 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   dots.deadly_poison    = target -> get_dot( "deadly_poison_dot", source );
   dots.garrote          = target -> get_dot( "garrote", source );
   dots.rupture          = target -> get_dot( "rupture", source );
-  dots.hemorrhage       = target -> get_dot( "hemorrhage", source );
   dots.kingsbane        = target -> get_dot( "kingsbane", source );
   dots.nightblade       = target -> get_dot( "nightblade", source );
   dots.killing_spree    = target -> get_dot( "killing_spree", source );
