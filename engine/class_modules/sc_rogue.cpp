@@ -3064,7 +3064,10 @@ struct nightblade_t : public nightblade_base_t
     nightblade_base_t( p, "nightblade", p -> find_specialization_spell( "Nightblade" ), options_str ),
     finality( p -> artifact.finality.rank() ? new finality_nightblade_t( p ) : nullptr )
     {
-      add_child( finality );
+      if ( finality )
+      {
+        add_child( finality );
+      }
     }
 
   void schedule_execute( action_state_t* state = nullptr ) override
