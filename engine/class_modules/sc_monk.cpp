@@ -2106,7 +2106,7 @@ struct tiger_palm_t: public monk_melee_attack_t
       am *= 1 + p() -> artifact.tiger_claws.percent();
 
     if ( p() -> specialization() == MONK_MISTWEAVER )
-      am *= 1 + p() -> passives.aura_mistweaver_monk -> effectN( 10 ).percent();
+      am *= 1 + p() -> passives.aura_mistweaver_monk -> effectN( 11 ).percent();
 
     return am;
   }
@@ -2509,6 +2509,7 @@ struct blackout_kick_t: public monk_melee_attack_t
     {
       case MONK_MISTWEAVER:
       {
+        am *= 1 + p() -> passives.aura_mistweaver_monk -> effectN( 10 ).percent();
         if ( p() -> buff.teachings_of_the_monastery -> up() )
           am *= 1 + p() -> buff.teachings_of_the_monastery -> value();
         break;
@@ -2639,6 +2640,19 @@ struct blackout_strike_t: public monk_melee_attack_t
       }
       default: break;
     }
+  }
+
+    virtual double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    // Mistweavers cannot learn this spell. However the effect to adjust this spell is in the database.
+    // Just being a completionist about this.
+    if ( p() -> specialization() == MONK_MISTWEAVER )
+    {
+      am *= 1 + p() -> passives.aura_mistweaver_monk -> effectN( 10 ).percent();
+    }
+    return am;
   }
 };
 
@@ -2775,7 +2789,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
       am *= 1 + p() -> artifact.power_of_a_thousand_cranes.percent();
 
     if ( p() -> specialization() == MONK_MISTWEAVER )
-      am *= 1 + p() -> passives.aura_mistweaver_monk -> effectN( 10 ).percent();
+      am *= 1 + p() -> passives.aura_mistweaver_monk -> effectN( 12 ).percent();
 
     return am;
   }
@@ -3762,6 +3776,15 @@ struct crackling_jade_lightning_t: public monk_spell_t
     interrupt_auto_attack = true;
   }
 
+  virtual double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    if ( p() ->specialization() == MONK_MISTWEAVER )
+      am *= 1 + p() -> passives.aura_mistweaver_monk -> effectN( 13 ).percent();
+
+    return am;
+  }
   virtual void execute() override
   {
     combo_strikes_trigger( CS_CRACKLING_JADE_LIGHTNING );
