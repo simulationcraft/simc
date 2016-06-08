@@ -889,10 +889,22 @@ struct fiend_melee_t : public priest_pet_melee_t
     {
       if ( p().o().specialization() == PRIEST_SHADOW )
       {
+        double amount = p().o().talents.mindbender->effectN(3).base_value();
         p().o().resource_gain(
+          RESOURCE_INSANITY,
+          amount,
+          p().gains.fiend);
+        
+        if (p().o().buffs.surrender_to_madness->up())
+        {
+          p().o().resource_gain(
             RESOURCE_INSANITY,
-            p().o().talents.mindbender->effectN( 3 ).base_value(),
-            p().gains.fiend );
+            (amount * (1.0 + p().o().talents.surrender_to_madness->effectN(1).percent())) - amount,
+            p().o().gains.insanity_surrender_to_madness);
+        }
+        else
+        {
+        }
       }
       else
       {
