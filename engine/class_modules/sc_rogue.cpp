@@ -1528,6 +1528,11 @@ struct agonizing_poison_t : public rogue_poison_t
       rogue_poison_t::impact( state );
 
       td( state -> target ) -> debuffs.agonizing_poison -> trigger();
+      if ( result_is_hit( state -> result ) &&
+           td( state -> target ) -> dots.kingsbane -> is_ticking() )
+      {
+        td( state -> target ) -> debuffs.kingsbane -> trigger();
+      }
     }
   };
 
