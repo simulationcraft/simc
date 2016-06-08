@@ -5297,19 +5297,19 @@ struct voidform_t final : public priest_buff_t<buff_t>
 
     virtual void execute() override
     {
-      // Updated 2016-06-05 by Twintop:
+      // Updated 2016-06-08 by Twintop:
       // ---
       // http://us.battle.net/wow/en/forum/topic/20743504316?page=2#31
       // http://us.battle.net/wow/en/forum/topic/20743504316?page=4#71
       // ---
-      // Drain starts at 8 over 1 second and increases by 1 over 2 seconds per
-      // stack of Voidform. I.E.: 8 over t=0->1, 8.5 over t=1->2, etc.
+      // Drain starts at 9 over 1 second and increases by 1 over 2 seconds per
+      // stack of Voidform. I.E.: 9 over t=0->1, 9.5 over t=1->2, etc.
       // Drain happens continuously, like energy in reverse.
       // We make ticks happen every 0.05sec to get as close to contiunuous as
       // possible without killing simulation lengths.
       // CHECK ME: Triggering Voidform in-game and not using any abilities
-      // results in 11 stacks. This appears to be due to latency. SimC only gets
-      // 10 stacks presently.
+      // results in 10 stacks, rarely 11 stacks if you have high latency.
+      // Sim seems to mostly get 9 stacks, rarely 10 stacks.
       // ---
       // 2016/06/05 update by Twintop:
       // The drain amount for Insanity is tracked separately from the Voidform
@@ -5320,9 +5320,9 @@ struct voidform_t final : public priest_buff_t<buff_t>
       auto priest = debug_cast<priest_t*>( player() );
 
       // LOGIC/SANITY CHECK:
-      // Stack 1 = 8 insanity = 8 + ( (1 - 1) / 2 ) = 8 + (0 / 2) = 8
-      // Stack 2 = 8.5 insanity = 8 + ( (2 - 1) / 2 ) = 8 + (1/2) = 8.5
-      double insanity_loss = ( 8 + ( ( priest->buffs.insanity_drain_stacks->check() - 1 ) / 2 ) ) * 0.05;
+      // Stack 1 = 9 insanity = ( -4500 / -500 )  + ( (1 - 1) / 2 ) = 9 + (0 / 2) = 9
+      // Stack 2 = 9.5 insanity = ( -4500) / -500 ) + ( (2 - 1) / 2 ) = 9 + (1/2) = 9.5
+      double insanity_loss = ( ( priest->buffs.voidform->data().effectN(2).base_value() / -500) + ( ( priest->buffs.insanity_drain_stacks->check() - 1 ) / 2 ) ) * 0.05;
 
       if (insanity_loss > priest->resources.current[RESOURCE_INSANITY])
       {
