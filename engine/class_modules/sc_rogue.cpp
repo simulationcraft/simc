@@ -699,13 +699,16 @@ struct rogue_attack_t : public melee_attack_t
   // Not all abilities are affected by Blurred Time because BlizzardVision(tm), so flag things
   bool affected_by_blurred_time;
 
+  // Not all abilities are affected by Shadow Blades combo point increase, so flag things
+  bool affected_by_shadow_blades;
+
   rogue_attack_t( const std::string& token, rogue_t* p,
                   const spell_data_t* s = spell_data_t::nil(),
                   const std::string& options = std::string() ) :
     melee_attack_t( token, p, s ),
     requires_stealth( false ), requires_position( POSITION_NONE ),
     requires_weapon( WEAPON_NONE ), secondary_trigger( false ),
-    akaari( nullptr ), affected_by_blurred_time( true )
+    akaari( nullptr ), affected_by_blurred_time( true ), affected_by_shadow_blades( false )
   {
     parse_options( options );
 
@@ -738,6 +741,10 @@ struct rogue_attack_t : public melee_attack_t
       else if ( effect.type() == E_SCHOOL_DAMAGE )
         base_dd_adder = effect.bonus( player );
     }
+
+    affected_by_shadow_blades = data().affected_by( p -> spec.shadow_blades -> effectN( 2 ) ) ||
+                                data().affected_by( p -> spec.shadow_blades -> effectN( 3 ) ) ||
+                                data().affected_by( p -> spec.shadow_blades -> effectN( 4 ) );
   }
 
   void init() override
@@ -805,7 +812,7 @@ struct rogue_attack_t : public melee_attack_t
         cp += 1;
       }
 
-      if ( p() -> buffs.shadow_blades -> check() )
+      if ( affected_by_shadow_blades && p() -> buffs.shadow_blades -> check() )
       {
         cp += 1;
       }
@@ -1766,7 +1773,7 @@ void rogue_attack_t::execute()
   p() -> trigger_ruthlessness_cp( execute_state );
 
   if ( energize_type_() == ENERGIZE_ON_HIT && energize_resource == RESOURCE_COMBO_POINT &&
-    p() -> buffs.shadow_blades -> up() )
+    affected_by_shadow_blades && p() -> buffs.shadow_blades -> up() )
   {
     p() -> trigger_combo_point_gain( 1, p() -> gains.shadow_blades, this );
   }
@@ -5646,6 +5653,7 @@ void rogue_t::init_spells()
   spec.deepening_shadows    = find_specialization_spell( "Deepening Shadows" );
   spec.energetic_recovery   = find_specialization_spell( "Energetic Recovery" );
   spec.relentless_strikes   = find_specialization_spell( "Relentless Strikes" );
+  spec.shadow_blades        = find_specialization_spell( "Shadow Blades" );
   spec.shadow_dance         = find_specialization_spell( "Shadow Dance" );
   spec.shadow_techniques    = find_specialization_spell( "Shadow Techniques" );
   spec.symbols_of_death     = find_specialization_spell( "Symbols of Death" );
