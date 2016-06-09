@@ -15,7 +15,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Allows one-hand and off-hand weapons to be equipped in the off-hand.
 
-Name             : Shield Block (Active Mitigation) (id=2565) [Spell Family (4)] 
+Name             : Shield Block (id=2565) [Spell Family (4)] 
 Class            : Protection Warrior, Monk
 School           : Physical
 Resource         : 10 Rage
@@ -35,7 +35,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
 Description      : Raise your shield, blocking every melee attack against you for $132404d. These blocks can be critical blocks. Increases Shield Slam damage by $132404s2% while active.
 
-Name             : Growl (Basic Ability) (id=2649) [Scaling Spell (4), Spell Family (9)] 
+Name             : Growl (Basic Ability) (id=2649) [Spell Family (9)] 
 Class            : Monk
 School           : Physical
 Spell Level      : 1
@@ -52,7 +52,7 @@ Attributes       : ........ ........ x....... ........   ...x...x .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=806)      : Threat (63)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.221) | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 (avg=1.221) | Target: Enemy(6)
 #2 (id=140019)   : Unknown effect type (114)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Mechanic: Unknown(133) | Target: Enemy(6)
 #3 (id=140020)   : Apply Aura (6) | Taunt (11)
@@ -212,7 +212,7 @@ Effects          :
 Description      : Interrupts casting for $d.
 Tooltip          : Interrupted.
 
-Name             : Blood Fury (Racial) (id=33697) [Scaling Spell (-1)] 
+Name             : Blood Fury (Racial) (id=33697) 
 Class            : Shaman, Monk
 Race             : Orc
 School           : Physical
@@ -227,11 +227,11 @@ Attributes       : ....x... ........ x....... ........   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=23581)    : Apply Aura (6) | Modify Attack Power (99)
-                   Base Value: 3 | Scaled Value: 2242.68 (avg=1.32) | Points Per Level: 4 | Target: Self(1)
+                   Base Value: 3 | Scaled Value: 439 (avg=1.32) | Points Per Level: 4 | Target: Self(1)
 #2 (id=23582)    : Apply Aura (6) | Damage Done (13)
-                   Base Value: 5 | Scaled Value: 2242.68 (avg=1.32) | Misc Value: 0x7e | Target: Self(1)
+                   Base Value: 5 | Scaled Value: 5 (avg=1.32) | Misc Value: 0x7e | Target: Self(1)
 #3 (id=116811)   : Apply Aura (6) | Modify Healing Power (135)
-                   Base Value: 5 | Scaled Value: 2242.68 (avg=1.32) | Misc Value: 126 | Target: Self(1)
+                   Base Value: 5 | Scaled Value: 5 (avg=1.32) | Misc Value: 126 | Target: Self(1)
 Description      : Increases your melee attack power by $s1 and your spell power by $s2. Lasts $d.
 Tooltip          : Melee attack power increased by $s1.
 Spell power increased by $s2.
@@ -721,7 +721,7 @@ Category         : 1365
 Attributes       : ....x... ........ x......x ........   .....x.. ..x..... .x...... ....x... 
                  : ........ ........ ........ ........   ..x..... .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : x....... ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ......xx ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
@@ -781,7 +781,7 @@ Category         : 1365
 Attributes       : ....x... ........ x......x ........   .....x.. ..x..... .x...... ....x... 
                  : ........ ........ ........ ........   ..x..... .....x.. ........ ........ 
                  : ........ ........ .....x.. ........   ........ .x...... ........ ........ 
-                 : x....... ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ......xx ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
@@ -860,11 +860,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self(1)
 #15 (id=281298)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Blackout Kick (100784), Breath of Fire (115181), Rushing Jade Wind (116847), Breath of Fire (123725), Rushing Jade Wind (148187), Refreshing Jade Wind (196725), Blackout Strike (205523)
+                   Affected Spells: Blackout Kick (100784), Breath of Fire (115181), Rushing Jade Wind (116847), Rushing Jade Wind (148187), Refreshing Jade Wind (196725), Blackout Strike (205523), Dragonfire Brew (227681)
 #16 (id=287166)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Tiger Palm (100780)
-Description      : You shrug off attacks, delaying $115069s9% of Physical damage, instead taking it over $124273d. Affects magical attacks at half effectiveness.
+Description      : You shrug off attacks, delaying $?s196737[${$115069m9+$196737m1}][$115069s9]% of Physical damage, instead taking it over $124273d. Affects magical attacks at half effectiveness.
 
 Name             : Expel Harm (id=115072) [Spell Family (53)] 
 Class            : Brewmaster Monk
@@ -886,7 +886,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self(1)
 Description      : Draw in the positive chi of all Healing Spheres within $s1 yards, and expel negative chi, damaging the nearest enemy for $s2% of the amount healed.
 
-Name             : Paralysis (id=115078) [Scaling Spell (6), Spell Family (53)] 
+Name             : Paralysis (id=115078) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
 Resource         : 3% Base Mana (33000 @Level 110)
@@ -901,7 +901,7 @@ Cooldown         : 15 seconds
 Category         : 33
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Mechanic         : Unknown(255)
+Mechanic         : Unknown(110)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Mistweaver Monk (137024), Lucidity (137331)
@@ -943,7 +943,7 @@ Effects          :
 Description      : Use ancient Pandaren knowledge of anatomy to inflict mortal damage on an enemy. After $d, the target will take damage equal to your maximum health, reduced against players.
 Tooltip          : Taking $w1 damage when this effect expires.
 
-Name             : Chi Wave (id=115098) [Scaling Spell (6), Spell Family (53)] 
+Name             : Chi Wave (id=115098) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
 Spell Level      : 1
@@ -967,7 +967,7 @@ $healMult=$?a115070[${1.2}][${1.0}]
 $damage=${$<dmgMult>*$AP*0.500*(1+$@versadmg)}
 $healing=${$<healMult>*$AP*0.500*(1+$@versadmg)}
 
-Name             : Renewing Mist (id=115151) [Scaling Spell (6), Spell Family (53)] 
+Name             : Renewing Mist (id=115151) [Spell Family (53)] 
 Class            : Mistweaver Monk
 School           : Nature
 Resource         : 2.5% Base Mana (27500 @Level 110)
@@ -1063,17 +1063,15 @@ Tooltip          : Damage dealt to the Monk reduced by $s2%.
 Name             : Breath of Fire (id=115181) [Spell Family (53)] 
 Class            : Brewmaster Monk
 School           : Fire
-Resource         : 2 Chi
 Spell Level      : 18
 GCD              : 1 seconds
-Velocity         : 30 yards/sec
 Cooldown         : 15 seconds
 Proc Chance      : 101%
-Affecting spells : Stagger (115069), Item - Monk WoD PvP Brewmaster 4P Bonus (171445), Adjunct Advantage (213049), 
+Affecting spells : Stagger (115069), Item - Monk WoD PvP Brewmaster 4P Bonus (171445), 
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
 Effects          :
@@ -1082,7 +1080,7 @@ Effects          :
 Description      : Breathe fire on targets in front of you, causing $s1 Fire damage. Targets affected by Keg Smash will also burn for $123725o1 Fire damage over $123725d$?s123394[ and become Incapacitated for $123393d][].
 Tooltip          : If Dizzying Haze is on the target, they will burn for an additional $123725o1 damage over $123725d$?s123394[ and become Disoriented for $123393d.][.]
 
-Name             : Fortifying Brew (id=115203) [Scaling Spell (6), Spell Family (53)] 
+Name             : Fortifying Brew (id=115203) [Spell Family (53)] 
 Class            : Brewmaster Monk
 School           : Physical
 Spell Level      : 24
@@ -1121,14 +1119,14 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: chi | Target: Self(1)
 Description      : Chug an Energizing Elixir, refilling all your Energy and Chi.
 
-Name             : Ironskin Brew (Active Mitigation) (id=115308) [Spell Family (53)] 
+Name             : Ironskin Brew (id=115308) [Spell Family (53)] 
 Class            : Brewmaster Monk
 School           : Physical
 Spell Level      : 28
 Cooldown         : 1 seconds
 Charges          : 3 (21 seconds cooldown)
 Category         : 1562
-Affecting spells : Item - Monk T19 Brewmaster 2P Bonus (211415), Potent Kick (213047)
+Affecting spells : Eluding Movements (184906), Item - Monk T19 Brewmaster 2P Bonus (211415), Potent Kick (213047)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1142,7 +1140,7 @@ Description      : Increases the damage you delay with Stagger by an additional 
 
 Shares charges with Purifying Brew.
 
-Name             : Revival (id=115310) [Scaling Spell (6), Spell Family (53)] 
+Name             : Revival (id=115310) [Spell Family (53)] 
 Class            : Mistweaver Monk
 School           : Nature
 Resource         : 4.374% Base Mana (48113 @Level 110)
@@ -1158,7 +1156,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x....x .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=129071)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=8.75) | SP Coefficient: 6.00000 | Radius: 0 - 40 yards | Target: At Caster(22) -> Raid Members(56)
+                   Base Value: 1 | Scaled Value: 1 (avg=8.75) | SP Coefficient: 6.00000 | Radius: 0 - 40 yards | Target: At Caster(22) -> Raid Members(56)
 #2 (id=140011)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Radius: 0 - 40 yards | Target: At Caster(22) -> Raid Members(56)
 #3 (id=155430)   : Dispel (38)
@@ -1175,17 +1173,17 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 900 seconds
 Cooldown         : 10 seconds
-Attributes       : ........ ........ ........ ........   ........ ........ .x...... ........ 
+Attributes       : ........ ........ ........ .......x   ........ ........ .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=129077)   : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 60849 | Misc Value 2: 0xc90 | Target: Unknown(87)
-#2 (id=129078)   : Dummy (3)
-                   Base Value: 50 | Scaled Value: 50
+#2 (id=129078)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
 Description      : Summons a Jade Serpent Statue at the target location. When you channel Soothing Mist, the statue will also channel Soothing Mist on your target, healing for $s2% as much.
 
 Name             : Summon Black Ox Statue (id=115315) [Spell Family (53)] 
@@ -1269,7 +1267,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1 | Target: Friend(21)
 Description      : Removes all Magic, Poison, and Disease effects from the target.
 
-Name             : Provoke (id=115546) [Scaling Spell (6), Spell Family (53)] 
+Name             : Provoke (id=115546) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
 Spell Level      : 13
@@ -1324,7 +1322,7 @@ Effects          :
 Description      : Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 Tooltip          : Healing effects received reduced by $w1%.
 
-Name             : Afterlife (id=116092) [Scaling Spell (6), Spell Family (53), Passive] 
+Name             : Afterlife (id=116092) [Spell Family (53), Passive] 
 Class            : Windwalker Monk
 School           : Physical
 Spell Level      : 26
@@ -1444,7 +1442,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Radius: 0 - 40 yards | Target: Unknown(132) -> AOE friendly(31)
 Description      : Causes a surge of invigorating mists around the target, healing them and their $s1 nearest injured allies for $s2.
 
-Name             : Thunder Focus Tea (id=116680) [Scaling Spell (6), Spell Family (53)] 
+Name             : Thunder Focus Tea (id=116680) [Spell Family (53)] 
 Class            : Mistweaver Monk
 School           : Nature
 Spell Level      : 54
@@ -1598,7 +1596,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 1 - 6 | Value Range: 6 | SP Coefficient: 1.00000 | Misc Value: 90
 Description      : Gives a chance to parry enemy melee attacks.
 
-Name             : Tiger's Lust (id=116841) [Scaling Spell (6), Spell Family (53)] 
+Name             : Tiger's Lust (id=116841) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
 Spell Level      : 1
@@ -1671,7 +1669,7 @@ $low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
 $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 
-Name             : Life Cocoon (id=116849) [Scaling Spell (6), Spell Family (53)] 
+Name             : Life Cocoon (id=116849) [Spell Family (53)] 
 Class            : Mistweaver Monk
 School           : Nature
 Resource         : 2.4% Base Mana (26400 @Level 110)
@@ -1685,10 +1683,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ........ ..x..... 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=132060)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 1 | Scaled Value: 0 (avg=73) | Misc Value: 127 | Target: Friend(21)
+                   Base Value: 1 | Scaled Value: 1 (avg=73) | Misc Value: 127 | Target: Friend(21)
 #2 (id=139560)   : Apply Aura (6) | Unknown effect sub type (259)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 127 | Target: Friend(21)
 Description      : Encases the target in a cocoon of Chi energy for $d, absorbing $<shield> damage and increasing all healing over time received by $m2%.
@@ -1774,7 +1772,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Proc Chance      : 100%
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Lucidity (137331), Mana Tea (197908)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Mistweaver Monk (137024), Lucidity (137331), Mana Tea (197908)
 Attributes       : ........ ........ ........ ........   ..x..... ......x. ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -1784,7 +1782,7 @@ Attributes       : ........ ........ ........ ........   ..x..... ......x. .....
                  : Channeled (34)
 Effects          :
 #1 (id=134063)   : Apply Aura (6) | Periodic Damage: nature every 1 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.75000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.17500 | Target: Enemy(6)
 #2 (id=225417)   : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | Target: Enemy(6)
 Description      : Channel Jade lightning, causing $o1 Nature damage over $117952d to the target$?a154436[, generating 1 Chi each time it deals damage,][] and sometimes knocking back melee attackers.
@@ -1793,7 +1791,7 @@ Variables        : $dmgMult=$?s113656[${12}][${1.0}]
 $healMult=$?s115070[${1.2}][${1.0}]
 $damage=${4*($m1*$<dmgMult>)}
 
-Name             : Crackling Jade Lightning (id=117959) [Scaling Spell (6), Spell Family (53), Passive, Hidden] 
+Name             : Crackling Jade Lightning (id=117959) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
 School           : Physical
 Spell Level      : 40
@@ -1876,7 +1874,7 @@ Effects          :
 Description      : Knocks down all enemies within $A1 yards, stunning them for $d.
 Tooltip          : Stunned.
 
-Name             : Purifying Brew (Active Mitigation) (id=119582) [Spell Family (53)] 
+Name             : Purifying Brew (id=119582) [Spell Family (53)] 
 Class            : Brewmaster Monk
 School           : Physical
 Spell Level      : 54
@@ -1896,7 +1894,7 @@ Description      : Clears $s1% of your damage delayed with Stagger.
 
 Shares charges with Ironskin Brew.
 
-Name             : Renewing Mist (id=119611) [Scaling Spell (6), Spell Family (53)] 
+Name             : Renewing Mist (id=119611) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
 Range            : 50000 yards
@@ -1914,7 +1912,7 @@ Attributes       : ........ ........ ..x..... x..x....   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=138091)   : Apply Aura (6) | Periodic Heal: every 2 seconds (8)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.069999) | SP Coefficient: 0.75000 | Target: Friend(21)
+                   Base Value: 1 | Scaled Value: 1 (avg=2.069999) | SP Coefficient: 0.75000 | Target: Friend(21)
 Description      : $@spelldesc115151
 Tooltip          : Restores $w1 health every $t1 sec.
 
@@ -1956,7 +1954,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Your body and spirit swap locations.
 
-Name             : Fists of Fury (id=120086) [Scaling Spell (6), Spell Family (53)] 
+Name             : Fists of Fury (id=120086) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
 Spell Level      : 1
@@ -1973,7 +1971,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=139326)   : Apply Aura (6) | Stun (12)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.533) | Radius: 0 - 5 yards | Target: At Caster(22) -> Unknown(24)
+                   Base Value: 1 | Scaled Value: 1 (avg=0.533) | Radius: 0 - 5 yards | Target: At Caster(22) -> Unknown(24)
 Description      : $@spelldesc113656
 Tooltip          : Stunned.
 
@@ -2151,7 +2149,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Trigger Spell: 129914 | Target: Self(1)
 Description      : Every $t1 sec, your next Tiger Palm generates $s1 additional Chi.
 
-Name             : Dampen Harm (id=122278) [Scaling Spell (10), Spell Family (53)] 
+Name             : Dampen Harm (id=122278) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
 Spell Level      : 1
@@ -2234,7 +2232,7 @@ Effects          :
 Description      : All damage you take is redirected to the enemy target as Nature damage over $124280d. Damage cannot exceed $s3% of your maximum health. Lasts $d.
 Tooltip          : All damage dealt to the Monk is redirected to you as Nature damage over $124280d.
 
-Name             : Diffuse Magic (id=122783) [Scaling Spell (10), Spell Family (53)] 
+Name             : Diffuse Magic (id=122783) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
 Spell Level      : 1
@@ -2252,7 +2250,7 @@ Effects          :
 Description      : Reduces magic damage you take by $m1% for $d, and transfers all currently active harmful magical effects on you back to their original caster if possible.
 Tooltip          : Spell damage taken reduced by $m1%.
 
-Name             : Fists of Fury Visual Target (id=123154) [Scaling Spell (6), Spell Family (53), Hidden] 
+Name             : Fists of Fury Visual Target (id=123154) [Spell Family (53), Hidden] 
 Class            : Monk
 School           : Physical
 Spell Level      : 1
@@ -2307,7 +2305,7 @@ Range            : 50000 yards
 GCD              : 1 seconds
 Duration         : 8 seconds
 Proc Chance      : 101%
-Affecting spells : Stagger (115069), Item - Monk WoD PvP Brewmaster 4P Bonus (171445), Adjunct Advantage (213049), 
+Affecting spells : Item - Monk WoD PvP Brewmaster 4P Bonus (171445), Adjunct Advantage (213049), Adjunct Advantage (227683), Adjunct Advantage (227684), Adjunct Advantage (227685), Adjunct Advantage (227686), Adjunct Advantage (227687), 
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2316,7 +2314,9 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=156180)   : Apply Aura (6) | Periodic Damage: fire every 2 seconds (3)
-                   Base Value: 0 | Scaled Value: 1 - 3 | Value Range: 3 | AP Coefficient: 0.30000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30000 | Target: Enemy(6)
+#2 (id=342380)   : Apply Aura (6) | Unknown effect sub type (270)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : $@spelldesc115181
 Tooltip          : Burning for $123725o1 Fire damage.
 
@@ -2339,7 +2339,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 63508 | Misc Value 2: 0xcbe | Target: At Enemy(53)
 Description      : Summons an effigy of Xuen, the White Tiger for $d. Xuen attacks your primary target, and strikes 3 enemies within $123996A1 yards every $123999t1 sec with Tiger Lightning for $123996s1 Nature damage.
 
-Name             : Chi Burst (id=123986) [Scaling Spell (6), Spell Family (53)] 
+Name             : Chi Burst (id=123986) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
 Spell Level      : 1
@@ -2388,7 +2388,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.66600 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
 Description      : $@spelldesc123904
 
-Name             : Crackling Tiger Lightning Driver (id=123999) [Scaling Spell (6), Spell Family (53), Hidden] 
+Name             : Crackling Tiger Lightning Driver (id=123999) [Spell Family (53), Hidden] 
 Class            : Monk
 School           : Nature
 Duration         : Aura (infinite)
@@ -2525,7 +2525,7 @@ Tooltip          : $w1 damage is being staggered every $124255t1 sec.
 
 Stagger Remaining: $w2
 
-Name             : Touch of Karma (id=124280) [Scaling Spell (6), Spell Family (53)] 
+Name             : Touch of Karma (id=124280) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
 Spell Level      : 1
@@ -2602,7 +2602,7 @@ Name             : Gift of the Ox (id=124507) [Spell Family (53)]
 Class            : Monk
 School           : Nature
 Range            : 50000 yards
-Affecting spells : Extend Life (185158), Gifted Student (213136)
+Affecting spells : Extend Life (185158)
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ ........ ........ 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
@@ -2614,7 +2614,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 7.50000 | Target: Friend(21)
 Description      : $@spelldesc124502
 
-Name             : Enveloping Mist (id=124682) [Scaling Spell (6), Spell Family (53)] 
+Name             : Enveloping Mist (id=124682) [Spell Family (53)] 
 Class            : Mistweaver Monk
 School           : Nature
 Resource         : 6% Base Mana (66000 @Level 110)
@@ -2705,7 +2705,7 @@ Effects          :
                    Affected Spells: Flying Serpent Kick (101545)
 Description      : You honorably bow after each successful Touch of Death.
 
-Name             : Honorable Bow (id=125735) [Scaling Spell (6), Spell Family (53)] 
+Name             : Honorable Bow (id=125735) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
 Spell Level      : 1
@@ -2767,7 +2767,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1041
 Description      : $@spelldesc125872
 
-Name             : Zen Flight (id=125883) [Scaling Spell (6), Spell Family (53)] 
+Name             : Zen Flight (id=125883) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
 Spell Level      : 1
@@ -2817,7 +2817,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1045
 Description      : $@spelldesc125931
 
-Name             : Zen Pilgrimage (id=126892) [Scaling Spell (6), Spell Family (53)] 
+Name             : Zen Pilgrimage (id=126892) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
 Spell Level      : 20
@@ -2842,7 +2842,7 @@ Use Zen Pilgrimage again to return back to near your departure point.]
 
 Use Zen Pilgrimage again to return back to near your departure point.]
 
-Name             : Zen Pilgrimage/Death Gate/Moonglade Storage Aura I (id=126893) [Scaling Spell (6), Spell Family (53), Hidden] 
+Name             : Zen Pilgrimage/Death Gate/Moonglade Storage Aura I (id=126893) [Spell Family (53), Hidden] 
 Class            : Monk
 School           : Physical
 Spell Level      : 1
@@ -2863,7 +2863,7 @@ Effects          :
 #3 (id=161278)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
-Name             : Zen Pilgrimage: Return (id=126895) [Scaling Spell (6), Spell Family (53)] 
+Name             : Zen Pilgrimage: Return (id=126895) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
 Spell Level      : 30
@@ -2885,7 +2885,7 @@ Leaving the Wandering Isle will cancel Zen Pilgrimage: Return.]
 
 Leaving Peak of Serenity will cancel Zen Pilgrimage: Return.]
 
-Name             : Zen Pilgrimage: Return (id=126896) [Scaling Spell (6), Spell Family (53)] 
+Name             : Zen Pilgrimage: Return (id=126896) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
 Spell Level      : 1
@@ -2938,7 +2938,7 @@ Effects          :
 #1 (id=161559)   : Create Item (24)
                    Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 
-Name             : Combat Conditioning (id=128595) [Scaling Spell (6), Spell Family (53), Passive, Hidden] 
+Name             : Combat Conditioning (id=128595) [Spell Family (53), Passive, Hidden] 
 Class            : Windwalker Monk
 School           : Physical
 Spell Level      : 20
@@ -3021,7 +3021,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : You're a Level 90 Monk.  Grats!
 
-Name             : Chi Burst (id=130654) [Scaling Spell (6), Spell Family (53)] 
+Name             : Chi Burst (id=130654) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
 Spell Level      : 1
@@ -3036,7 +3036,7 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=168072)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=1) | Target: Unknown(25)
+                   Base Value: 1 | Scaled Value: 1 (avg=1) | Target: Unknown(25)
 Description      : $@spelldesc123986
 
 Name             : Shield Block (id=132404) [Spell Family (4)] 
@@ -3272,16 +3272,17 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
 #10 (id=260831)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 25 | Scaled Value: 25
+                   Base Value: 35 | Scaled Value: 35
                    Affected Spells: Blackout Kick (100784), Blackout Strike (205523)
 #11 (id=260832)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 50 | Scaled Value: 50
                    Affected Spells: Tiger Palm (100780)
 #12 (id=260833)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: -40 | Scaled Value: -40
+                   Base Value: -20 | Scaled Value: -20
                    Affected Spells: Spinning Crane Kick (107270)
-#13 (id=260834)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#13 (id=260834)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 900 | Scaled Value: 900 | Misc Value: 22 | Target: Self(1)
+                   Affected Spells: Crackling Jade Lightning (117952)
 #14 (id=260835)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #15 (id=260836)   : Apply Aura (6) | Dummy (4)
@@ -3352,7 +3353,7 @@ Effects          :
 #13 (id=260824)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
-Name             : Combo Breaker (id=137384) [Scaling Spell (6), Spell Family (53), Passive, Hidden] 
+Name             : Combo Breaker (id=137384) [Spell Family (53), Passive, Hidden] 
 Class            : Windwalker Monk
 School           : Physical
 Spell Level      : 3
@@ -4900,12 +4901,8 @@ School           : Fire
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 15 yards/sec
-Duration         : 6 seconds
+Duration         : 3 seconds
 Cooldown         : 75 seconds
-Stacks           : 1 initial, 1 maximum
-Proc Chance      : 100%
-Proc Flags       : ..x..... ........ ........ ........ 
-                 : White Melee
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4914,18 +4911,18 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=318258)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.50000 | Radius: 8 yards | Target: AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 10.00000 | Radius: 8 yards | Target: AOE enemy (instant)(16)
 #2 (id=318334)   : Apply Aura (6) | Modify Hit% (54)
                    Base Value: -100 | Scaled Value: -100 | Radius: 8 yards | Target: AOE enemy (instant)(16)
-Description      : Hurls a flaming keg at the target's location, dealing $s1 Fire damage to the target and nearby enemies and causing them to miss their next attack.
-Tooltip          : Misses the next attack.
+Description      : Hurls a flaming keg at the target location, dealing $s1 Fire damage to nearby enemies and causing them to miss their melee attacks for the next $d.
+Tooltip          : Misses melee attacks.
 
-Name             : Ironskin Brew (0) (id=215479) [Spell Family (53)] 
+Name             : Ironskin Brew (id=215479) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
 Spell Level      : 28
 Duration         : 6 seconds
-Affecting spells : Item - Monk T19 Brewmaster 2P Bonus (211415), Potent Kick (213047)
+Affecting spells : Eluding Movements (184906), Item - Monk T19 Brewmaster 2P Bonus (211415), Potent Kick (213047)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

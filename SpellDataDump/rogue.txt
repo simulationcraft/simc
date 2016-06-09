@@ -87,7 +87,7 @@ GCD              : 1 seconds
 Duration         : 18 seconds
 Cooldown         : 15 seconds
 Mechanic         : Bleed
-Affecting spells : Stealth (1784), Hemorrhage (16511), Vendetta (79140), Subterfuge (115192), Shadow Blades (121471), From the Shadows (184918), Agonizing Poison (200803)
+Affecting spells : Stealth (1784), Hemorrhage (16511), Vendetta (79140), Subterfuge (115192), Shadow Blades (121471), Agonizing Poison (200803)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -495,7 +495,7 @@ Description      : Lunging finishing move that causes damage per combo point and
    6 points: ${$m1*6} damage][]
 Tooltip          : Rooted.
 
-Name             : Deadly Poison (id=2818) [Scaling Spell (9), Spell Family (8)] 
+Name             : Deadly Poison (id=2818) [Spell Family (8)] 
 Class            : Rogue
 School           : Nature
 Spell Level      : 10
@@ -511,7 +511,7 @@ Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=853)      : Apply Aura (6) | Periodic Damage: nature every 3 seconds (3)
-                   Base Value: 6 | Scaled Value: 0 (avg=0.6) | AP Coefficient: 0.27500 | Target: Enemy(6)
+                   Base Value: 6 | Scaled Value: 6 (avg=0.6) | AP Coefficient: 0.27500 | Target: Enemy(6)
 Description      : $@spelldesc2823
 Tooltip          : Suffering $w1 Nature damage every $t1 seconds.
 
@@ -655,7 +655,7 @@ Description      : Finishing move that consumes combo points to increase attack 
 Tooltip          : Attack speed increased by $w1%.$?$w2!=0[
 Regaining $w2 Energy every $t2 sec.][]
 
-Name             : Solar Wrath (Solar) (id=5176) [Scaling Spell (3), Spell Family (7)] 
+Name             : Solar Wrath (Solar) (id=5176) [Spell Family (7)] 
 Class            : Restoration Rogue, Druid
 Race             : Night Elf
 School           : Nature
@@ -675,7 +675,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 2.20000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 (avg=2.676, dl=0.25) | SP Coefficient: 2.20000 | Target: Enemy(6)
 Description      : Causes $s1 Nature damage to the target.
 
 Name             : Evasion (id=5277) [Spell Family (8)] 
@@ -755,7 +755,7 @@ Spell Level      : 14
 Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x20000000
-Affecting spells : Stealth (1784), Vendetta (79140), Shadow Blades (121471), Sleight of Hand (145211), Cold Blood (182304), From the Shadows (184918), Broadsides (193356), Acrobatic Strikes (196924), Ghostly Strike (196937)
+Affecting spells : Stealth (1784), Vendetta (79140), Shadow Blades (121471), Sleight of Hand (145211), Cold Blood (182304), Broadsides (193356), Acrobatic Strikes (196924), Ghostly Strike (196937)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -795,7 +795,7 @@ Effects          :
 Description      : Coats your weapons with a Lethal Poison that lasts for $d. Each strike has a $h% chance to poison the enemy, which instantly inflicts $8680s1 Nature damage and reduces all healing received for $8680d.
 Tooltip          : Each weapon strike has a chance of inflicting additional Nature damage to the victim and reducing all healing received for $8680d.
 
-Name             : Wound Poison (id=8680) [Scaling Spell (9), Spell Family (8)] 
+Name             : Wound Poison (id=8680) [Spell Family (8)] 
 Class            : Rogue
 School           : Nature
 Spell Level      : 25
@@ -811,7 +811,7 @@ Attributes       : ........ ........ .....x.. ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=3617)     : School Damage: nature (2)
-                   Base Value: 12 | Scaled Value: 0 (avg=0.417, dl=0.28) | Value Range: 5 | AP Coefficient: 0.13000 | Target: Enemy(6)
+                   Base Value: 12 | Scaled Value: 13 - 17 (avg=0.417, dl=0.28) | Value Range: 5 | AP Coefficient: 0.13000 | Target: Enemy(6)
 #2 (id=133966)   : Apply Aura (6) | Unknown effect sub type (118)
                    Base Value: -25 | Scaled Value: -25 | AP Coefficient: 0.24000 | Misc Value: 127 | Target: Enemy(6)
 Description      : Coats a weapon with poison that lasts for 1 hour.
@@ -1049,7 +1049,7 @@ Description      : Rips a gushing wound in the target, dealing $sw2 Physical dam
 |cFFFFFFFFAwards $s3 combo $lpoint:points;.|r
 Tooltip          : Bleed damage taken from the Rogue increased by $s4%.
 
-Name             : Blood Fury (Racial) (id=20572) [Scaling Spell (-1)] 
+Name             : Blood Fury (Racial) (id=20572) 
 Class            : Warrior, Hunter, Rogue, Death Knight
 Race             : Orc
 School           : Physical
@@ -1064,9 +1064,9 @@ Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=11564)    : Apply Aura (6) | Modify Attack Power (99)
-                   Base Value: 3 | Scaled Value: 2242.68 (avg=1.32) | Points Per Level: 4 | Target: Self(1)
+                   Base Value: 3 | Scaled Value: 439 (avg=1.32) | Points Per Level: 4 | Target: Self(1)
 #2 (id=11565)    : Apply Aura (6) | Modify Ranged Attack Power (124)
-                   Base Value: 3 | Scaled Value: 2242.68 (avg=1.32) | Points Per Level: 4 | Target: Self(1)
+                   Base Value: 3 | Scaled Value: 439 (avg=1.32) | Points Per Level: 4 | Target: Self(1)
 Description      : Increases attack power by $s1. Lasts $d.
 Tooltip          : Attack power increased by $s1.
 
@@ -1141,7 +1141,7 @@ Effects          :
 Description      : Silence all enemies within $A1 yards for $d and restore $m2 Energy.  Non-player victim spellcasting is also interrupted for $32747d.
 Tooltip          : Silenced.
 
-Name             : Mutilate Off-Hand (id=27576) [Scaling Spell (9), Spell Family (8)] 
+Name             : Mutilate Off-Hand (id=27576) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
 Spell Level      : 1 (max 80)
@@ -1157,7 +1157,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=17065)    : Normalized Weapon Damage (121)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.25) | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 (avg=0.25) | Target: Enemy(6)
 #2 (id=99544)    : Weapon Damage% (31)
                    Base Value: 330 | Scaled Value: 3.3 | Target: Enemy(6)
 Description      : Instantly attacks for $5374sw2 Physical damage.  Awards 2 combo points.
@@ -2184,7 +2184,7 @@ Effects          :
                    Base Value: -1 | Scaled Value: 0 | Value Range: 1 | AP Coefficient: 0.14200 | Target: Enemy(6)
 Description      : Poisoned weapons have a chance to deal $s1 Nature damage to a target already affected by Deadly Poison.
 
-Name             : Shuriken Toss (id=114014) [Scaling Spell (9), Spell Family (8)] 
+Name             : Shuriken Toss (id=114014) [Spell Family (8)] 
 Class            : Subtlety Rogue
 School           : Physical
 Resource         : 40 Energy
@@ -2643,7 +2643,7 @@ Effects          :
 Description      : $@spelldesc145210
 Tooltip          : You have found a weakness in the target and your Backstab has been replaced with Ambush.
 
-Name             : Toxicologist (id=145249) [Scaling Spell (-1)] 
+Name             : Toxicologist (id=145249) 
 Class            : Rogue
 School           : Physical
 Spell Level      : 80
@@ -2659,7 +2659,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Disable player procs (112), Disable target procs (113)
 Effects          :
 #1 (id=195536)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 5 | Scaled Value: 248.054 (avg=0.146) | Misc Value: 33554432 | Target: Self(1)
+                   Base Value: 5 | Scaled Value: 5 (avg=0.146) | Misc Value: 33554432 | Target: Self(1)
 Description      : $@spelldesc145210
 Tooltip          : Mastery increased by $s1.
 
@@ -2864,7 +2864,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self(1)
 Description      : Stab the target, causing $sw2 Physical damage. Awards $s3 combo $lpoint:points;.
 
-Name             : Crimson Vial (id=185311) [Scaling Spell (8), Spell Family (8)] 
+Name             : Crimson Vial (id=185311) [Spell Family (8)] 
 Class            : Rogue
 School           : Nature
 Resource         : 30 Energy
@@ -2937,7 +2937,7 @@ Spell Level      : 22
 Range            : 25 yards
 GCD              : 1 seconds
 Stance Mask      : 0x20000000
-Affecting spells : Shadow Blades (121471), Shadow Dance (185313), Premeditation (196979), Precision Strike (197235), Death (227151)
+Affecting spells : Shadow Blades (121471), From the Shadows (184918), Shadow Dance (185313), Premeditation (196979), Precision Strike (197235), Death (227151)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2955,7 +2955,7 @@ Description      : Strike through the shadows, appearing behind your target and 
 
 |cFFFFFFFFAwards $s3 combo $lpoint:points;.|r
 
-Name             : Poisoned Knife (id=185565) [Scaling Spell (9), Spell Family (8)] 
+Name             : Poisoned Knife (id=185565) [Spell Family (8)] 
 Class            : Assassination Rogue
 School           : Physical
 Resource         : 40 Energy
@@ -2975,11 +2975,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (avg=2) | AP Coefficient: 0.60000 | Target: Enemy(6)
 #2 (id=269457)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.20000 | Misc Value: combo_points | Target: Self(1)
-Description      : Throws a poison-coated knife, dealing $s2 damage and applying your active Lethal and Non-Lethal Poisons.
+Description      : Throws a poison-coated knife, dealing $s1 damage and applying your active Lethal and Non-Lethal Poisons.
 
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
 
-Name             : Pistol Shot (id=185763) [Scaling Spell (9), Spell Family (8)] 
+Name             : Pistol Shot (id=185763) [Spell Family (8)] 
 Class            : Outlaw Rogue
 School           : Physical
 Resource         : 40 Energy
@@ -3053,7 +3053,7 @@ Effects          :
 Description      : Reduces the target's movement speed for $d.
 Tooltip          : Movement speed reduced by $w1%.
 
-Name             : Cannonball Barrage (id=185779) [Scaling Spell (9), Spell Family (8)] 
+Name             : Cannonball Barrage (id=185779) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
 Spell Level      : 20
@@ -3974,7 +3974,7 @@ Effects          :
 Description      : Your base Energy regeneration is increased by $s1% for the duration of Roll the Bones.
 Tooltip          : Increases Energy regeneration by $s1%.
 
-Name             : Jolly Roger (id=199603) [Scaling Spell (9), Spell Family (8)] 
+Name             : Jolly Roger (id=199603) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
 Spell Level      : 1
@@ -4172,7 +4172,7 @@ Effects          :
 #1 (id=295581)   : Apply Aura (6) | Add Flat Modifier (107)
                    Base Value: 15 | Scaled Value: 15 | SP Coefficient: 1.00000 | Misc Value: 33 | Target: Self(1)
                    Affected Spells: Saber Slash (193315)
-Description      : Sabre Slash has a $s1% increased chance to strike an additional time.
+Description      : Saber Slash has a $s1% increased chance to strike an additional time.
 
 Name             : Activating Specialization (id=200749) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -4386,7 +4386,7 @@ Effects          :
                    Affected Spells: Pistol Shot (185763), Blunderbuss (202895)
 Description      : $@spelldesc202897
 
-Name             : Blunderbuss (id=202895) [Scaling Spell (9), Spell Family (8)] 
+Name             : Blunderbuss (id=202895) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
 Resource         : 40 Energy
@@ -4691,7 +4691,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : $@spelldesc192759
 
-Name             : Strike from the Shadows (id=222775) [Scaling Spell (3), Spell Family (15)] 
+Name             : Strike from the Shadows (id=222775) [Spell Family (15)] 
 Class            : Rogue
 School           : Physical
 Spell Level      : 1

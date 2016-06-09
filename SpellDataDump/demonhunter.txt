@@ -368,7 +368,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=268563)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self(1)
-                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Annihilation (201427), Annihilation (201428), Inner Demons (202388), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Chaos Strike (222031), Fel Eruption (225102)
+                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Annihilation (201427), Annihilation (201428), Inner Demons (202388), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Chaos Strike (222031), Fel Eruption (225102), Annihilation (227518)
 #2 (id=294810)   : Apply Aura (6) | Unknown effect sub type (171)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self(1)
 Description      : Increases your Chaos damage by $s1% and your movement speed by $s2%.
@@ -649,10 +649,10 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=283035)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self(1)
-#2 (id=297759)   : Apply Aura (6) | Add Flat Modifier: Spell Critical Chance (107)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 7 | Target: Self(1)
+#2 (id=297759)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
                    Affected Spells: Fel Rush (192611)
-Description      : Increases the critical strike chance of Fel Rush by $s2%, and grants $s1 Fury when Fel Rush damages at least one target.
+Description      : Increases Fel Rush damage by $s2%, and grants $s1 Fury when Fel Rush damages at least one target.
 
 Name             : Demon Reborn (id=193897) [Spell Family (107), Passive] 
 Class            : Demon Hunter
@@ -742,7 +742,7 @@ Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=288808)   : Unknown effect type (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 6615 | Target: Unknown(125)
-Description      : Summons darkness around you in an 8 yd radius, cloaking friendly targets and reducing the chance they are hit by spells and melee attacks by $209426s1%.  Lasts $d.
+Description      : Summons darkness around you in an 8 yd radius, cloaking friendly targets and granting a $209426s1% chance to avoid all damage from an attack.  Lasts $d.
 
 Name             : Chaos Strike (Passive) (id=197125) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
@@ -801,14 +801,14 @@ Effects          :
                    Base Value: -200 | Scaled Value: -200 | Target: Self(1)
 #3 (id=291387)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : Blasts all enemies directly in front of you for $<dmg> Chaos damage.
+Description      : Blasts all enemies directly in front of you for $<dmg> Chaos damage.  This ability always crits.
 Variables        : $dmg=$?a203550[${$198030m1*14}][${$198030m1*9}]
 
 Name             : Eye Beam (id=198030) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chromatic
 Range            : 50000 yards
-Affecting spells : Mastery: Demonic Presence (185164), Chaos Vision (201456), Blind Fury (203550), 
+Affecting spells : Mastery: Demonic Presence (185164), Chaos Vision (201456), Blind Fury (203550), Havoc Demon Hunter (212612)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -817,7 +817,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=291051)   : School Damage: chromatic (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.85000 | Radius: 20 yards | Target: Unknown(129)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.60700 | Radius: 20 yards | Target: Unknown(129)
 Description      : $@spelldesc198013
 
 Name             : Blur (id=198589) [Spell Family (107)] 
@@ -982,25 +982,25 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Affecting spells : Metamorphosis (162264), Mastery: Demonic Presence (185164), Chaos Cleave (206475), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
-                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ..x..... ........ x....... 
+                 : ........ ........ ........ ........   ........ ....x... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=296756)   : Normalized Weapon Damage (121)
+#1 (id=296756)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
-#2 (id=296757)   : Weapon Damage% (31)
-                   Base Value: 840 | Scaled Value: 8.4 | Chain Targets: 1 | Target: Enemy(6)
+#2 (id=296757)   : Trigger Spell: Annihilation (64)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 227518 | Target: Self(1)
 #3 (id=296758)   : Trigger Spell: Annihilation (64)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 300 | Trigger Spell: 201428 | Target: Self(1)
-Description      : Slice your target for ${$sw1+$201428sw1} Chaos damage.  Critical strikes do not consume Fury.
+Description      : Slice your target for ${$227518sw1+$201428sw1} Chaos damage. Critical strikes do not consume Fury.
 
 Name             : Annihilation (id=201428) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chaos
-Range            : 5 yards
-Affecting spells : Mastery: Demonic Presence (185164), Chaos Cleave (206475)
+Range            : 15 yards
+Affecting spells : Mastery: Demonic Presence (185164)
 Triggered by     : Annihilation (201427)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .x...... ........ x....... 
@@ -1285,9 +1285,6 @@ Description      : Increases the duration of Eye Beam by $s1%.
 Name             : Prepared (id=203551) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
-Proc Chance      : 100%
-Proc Flags       : ....x... ........ ........ ........ 
-                 : Yellow Melee
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1296,18 +1293,17 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=300255)   : Apply Aura (6) | Proc Trigger Spell: Prepared (42)
+#1 (id=300255)   : Apply Aura (6) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | Trigger Spell: 203650 | Target: Self(1)
 #2 (id=308561)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
                    Base Value: -10000 | Scaled Value: -10000 | Misc Value: 11 | Target: Self(1)
                    Affected Spells: Vengeful Retreat (198793), Vengeful Retreat (198813)
-Description      : Reduces the cooldown of Vengeful Retreat by 10 sec, and generates ${$203650m1*12+3} Fury over $203650d if you damage at least one enemy with Vengeful Retreat.
+Description      : Reduces the cooldown of Vengeful Retreat by 10 sec, and generates ${$203650o1} Fury over $203650d if you damage at least one enemy with Vengeful Retreat.
 
 Name             : Demon Blades (id=203555) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
 Proc Chance      : 100%
-Real PPM         : 20 (Haste multiplier)
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
@@ -1318,9 +1314,9 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=300260)   : Apply Aura (6) | Proc Trigger Spell (42)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : Your auto attack has a chance to deal additional Shadow damage and generate Fury.
+#1 (id=300260)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
+Description      : Your auto attacks have a $s1% chance to deal additional Shadow damage and generate Fury.
 
 Name             : Master of the Glaive (id=203556) [Spell Family (107), Passive] 
 Class            : Demon Hunter
@@ -1363,7 +1359,7 @@ Effects          :
 Name             : Prepared (id=203650) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
-Duration         : 6 seconds
+Duration         : 5 seconds
 Affecting spells : Item - Demon Hunter T19 Havoc 2P Bonus (211054)
 Triggered by     : Prepared (203551)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1374,11 +1370,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=300413)   : Apply Aura (6) | Periodic Energize Power: every 0.5 seconds (24)
-                   Base Value: 6 | Scaled Value: 6 | Misc Value: 17 | Target: Self(1)
+                   Base Value: 4 | Scaled Value: 4 | Misc Value: 17 | Target: Self(1)
 Description      : $@spelldesc203551
 Tooltip          : Generating ${$m1*2} Fury every sec.
 
-Name             : Demon Spikes (Active Mitigation) (id=203720) [Spell Family (107)] 
+Name             : Demon Spikes (id=203720) [Spell Family (107)] 
 Replaces         : Vengeful Retreat (id=198793)
 Class            : Vengeance Demon Hunter
 School           : Physical
@@ -1515,8 +1511,6 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=300649)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 4.25000 | Target: Self(1)
-#2 (id=338505)   : Trigger Spell: Demonic Appetite (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 210041 | Target: Self(1)
 Description      : Consume a Lesser Soul Fragment, healing you for $s1 health.
 
 Name             : Soul Fragment (id=203795) [Spell Family (107)] 
@@ -1578,7 +1572,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=300656)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
+                   Base Value: 20 | Scaled Value: 20 | Target: Enemy(6)
 #2 (id=300657)   : Trigger Spell: Soul Cleave (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 222030
 #3 (id=307744)   : Trigger Spell: Soul Cleave (64)
@@ -1587,7 +1581,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 8.50000 | Target: Self(1)
 Description      : Viciously strike all enemies in front of you for ${$222030sw1+$208038sw1} Physical damage, and heal yourself for $s4.
 
-Consumes all Soul Fragments within 20 yds.
+Consumes all Soul Fragments within $s1 yds.
 
 Name             : Demon Spikes (id=203819) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -1925,7 +1919,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=305360)   : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 17 | Target: Self(1)
-                   Affected Spells: Chaos Strike (162794), Chaos Strike (199547), Annihilation (201427), Annihilation (201428), Chaos Strike (222031)
+                   Affected Spells: Chaos Strike (162794), Chaos Strike (199547), Annihilation (201427), Chaos Strike (222031), Annihilation (227518)
 Description      : Chaos Strike hits an additional target.
 
 Name             : Momentum (id=206476) [Spell Family (107), Passive] 
@@ -2528,14 +2522,10 @@ Attributes       : ........ x....... ........ .......x   .....x.. ..x..... .....
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : Disable player procs (112), Disable target procs (113)
 Effects          :
-#1 (id=309959)   : Apply Aura (6) | Unknown effect sub type (184)
-                   Base Value: -20 | Scaled Value: -20 | Target: Unknown(25)
-#2 (id=324230)   : Apply Aura (6) | Unknown effect sub type (185)
-                   Base Value: -20 | Scaled Value: -20 | Target: Unknown(25)
-#3 (id=324231)   : Apply Aura (6) | Unknown effect sub type (186)
-                   Base Value: -20 | Scaled Value: -20 | Misc Value: 127 | Target: Unknown(25)
+#1 (id=309959)   : Apply Aura (6) | Absorb Damage (69)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 127 | Target: Unknown(25)
 Description      : $@spelldesc196718
-Tooltip          : Melee attacks and spells have a $s1% chance to miss you.
+Tooltip          : Attacks against you have a $s1% chance to inflict no damage.
 
 Name             : Fracture (id=209795) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -2580,9 +2570,9 @@ Name             : Demonic Appetite (id=210041) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Physical
 Affecting spells : Item - Demon Hunter T19 Havoc 2P Bonus (211054)
-Triggered by     : Consume Soul (178963), Consume Soul (203794)
+Triggered by     : Consume Soul (178963)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2611,7 +2601,7 @@ Description      : Consume a Soul Fragment, healing you for $s1 health.
 Name             : Death Sweep (id=210152) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
-Resource         : 50 Fury
+Resource         : 35 Fury
 GCD              : 1.5 seconds
 Duration         : 1 seconds
 Cooldown         : 8 seconds
@@ -2930,8 +2920,9 @@ Effects          :
 #2 (id=315236)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Target: Self(1)
                    Affected Spells: Immolation Aura (178740), Throw Glaive (185123), Blade Dance (188499), Shear (203782), Throw Glaive (204157), Death Sweep (210152), Felblade (213241)
-#3 (id=315237)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#3 (id=315237)   : Apply Aura (6) | Add Percent Modifier: Spell Critical Chance (108)
+                   Base Value: 200 | Scaled Value: 200 | Misc Value: 7 | Target: Self(1)
+                   Affected Spells: Eye Beam (198030)
 #4 (id=315238)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #5 (id=315239)   : Apply Aura (6) | Dummy (4)
@@ -3614,5 +3605,25 @@ Effects          :
                    Affected Spells: Soul Cleave (208038), Soul Cleave (222030)
 Description      : $@spelldesc227327
 Tooltip          : Your next Soul Cleave deals $s1% increased damage.
+
+Name             : Annihilation (id=227518) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Chaos
+Range            : 15 yards
+Affecting spells : Mastery: Demonic Presence (185164), Chaos Cleave (206475)
+Triggered by     : Annihilation (201427)
+Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ .xx..... ........ ......x. 
+                 : x....... ........ ........ ........   ........ ....x... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .x...... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Not a proc (105)
+Effects          :
+#1 (id=342015)   : Normalized Weapon Damage (121)
+                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
+#2 (id=342016)   : Weapon Damage% (31)
+                   Base Value: 525 | Scaled Value: 5.25 | Chain Targets: 1 | Target: Enemy(6)
+Description      : Slice your target for ${$sw1+$201428sw1} Chaos damage.  Critical strikes do not consume Fury.
 
 

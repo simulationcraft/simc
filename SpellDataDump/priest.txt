@@ -270,7 +270,7 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Rapid Healing (24546), Healing Trance (37706), Lucidity (137323), Reverence (196418), Light of T'uure (208065), Muze's Unwavering Will (210632)
+Affecting spells : Rapid Healing (24546), Healing Trance (37706), Lucidity (137323), Complete Healing (184914), Reverence (196418), Light of T'uure (208065), Muze's Unwavering Will (210632)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -291,7 +291,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Rapid Healing (24546), Healing Trance (37706), Spirit Shell (109964), Surge of Light (114255), Lucidity (137323), Reverence (196418), Light of T'uure (208065)
+Affecting spells : Rapid Healing (24546), Healing Trance (37706), Spirit Shell (109964), Surge of Light (114255), Lucidity (137323), Complete Healing (184914), Reverence (196418), Light of T'uure (208065)
 Triggered by     : Surge of Light (114255)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -1152,8 +1152,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #5 (id=223574)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : Disperse into pure Shadow energy for $d, reducing all damage you take by $47585s1%, but you are unable to attack or cast spells. Castable while stunned, feared, or silenced. Voidform does not drain Insanity while dispersed.
-Tooltip          : Reduces all damage taken by $s1%.  Cannot attack or cast spells.
+#6 (id=342504)   : Apply Aura (6) | Mechanic Immunity (77)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Self(1)
+#7 (id=342505)   : Apply Aura (6) | Mechanic Immunity (77)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self(1)
+Description      : Disperse into pure Shadow energy for $d, reducing all damage you take by $47585s1%, but you are unable to attack or cast spells. Castable while stunned, feared, or silenced. Clears all snare and movement impairing effects when cast, and makes you immune to them while dispersed. Voidform does not drain Insanity while dispersed.
+Tooltip          : Reduces all damage taken by $s1%.  Cannot attack or cast spells. Immune to snare and movement impairing effects.
 
 Name             : Penance (id=47666) [Spell Family (6)] 
 Class            : Priest
@@ -1406,7 +1410,7 @@ Effects          :
 Description      : $@spelldesc28880
 Tooltip          : Healing $/5;s2% every $t1 seconds.
 
-Name             : Power Word: Barrier (id=62618) [Scaling Spell (8), Spell Family (6)] 
+Name             : Power Word: Barrier (id=62618) [Spell Family (6)] 
 Class            : Discipline Priest
 School           : Holy
 Resource         : 6.3% Base Mana (69300 @Level 110)
@@ -1728,7 +1732,7 @@ Effects          :
 #1 (id=68099)    : Apply Aura (6) | Add Percent Modifier: Spell Effect 1 (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Atonement (81749)
-Description      : Increases the healing transferred through Atonement by $77484s1.1%.
+Description      : Increases the healing transferred through Atonement by $s1.1%.
 
 Name             : Mastery: Echo of Light (id=77485) [Spell Family (6), Passive] 
 Class            : Holy Priest
@@ -2503,8 +2507,10 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=170810)   : School Damage: holy (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.44000 | Radius: 0 - 12 yards | Target: At Caster(22) -> AOE enemy(15)
-Description      : Causes an explosion of holy light around you, dealing $s1 Holy damage to all enemies within $A1 yds.
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.80000 | Radius: 0 - 12 yards | Target: At Caster(22) -> AOE enemy(15)
+#2 (id=342531)   : Dummy (3)
+                   Base Value: 20 | Scaled Value: 20 | Radius: 0 - 12 yards | Target: At Caster(22) -> AOE enemy(15)
+Description      : Causes an explosion of holy light around you, dealing $s1 Holy damage to all enemies within $A1 yds. Has a $s2% chance to reset the cooldown of Holy Fire if any targets are hit.
 
 Name             : Priest (id=137030) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
@@ -2760,7 +2766,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1087
 Description      : $@spelldesc147072
 
-Name             : Shadowy Apparition (id=148859) [Scaling Spell (8), Spell Family (6)] 
+Name             : Shadowy Apparition (id=148859) [Spell Family (6)] 
 Class            : Priest
 School           : Shadow
 Spell Level      : 1
@@ -2774,7 +2780,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.x ........ .....
                  : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
 Effects          :
 #1 (id=203471)   : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.375) | SP Coefficient: 0.30000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 (avg=0.375) | SP Coefficient: 0.30000 | Target: Enemy(6)
 #2 (id=315217)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: insanity | Target: Self(1)
 Description      : $@spelldesc78203
@@ -2900,7 +2906,7 @@ Name             : Voidform (id=185916) [Spell Family (6), Passive, Hidden]
 Class            : Shadow Priest
 School           : Physical
 Spell Level      : 10
-Affecting spells : Complete Healing (184914), Legacy of the Void (193225)
+Affecting spells : Legacy of the Void (193225)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3204,9 +3210,9 @@ Attributes       : ........ ........ ..x..... x..x.x.x   .....x.. ..x..... .....
                  : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
 Effects          :
 #1 (id=285130)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 0x20 | Target: Self(1)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 0x20 | Target: Self(1)
 #2 (id=285131)   : Apply Aura (6) | Modify Power Regeneration (85)
-                   Base Value: -4000 | Scaled Value: -4000 | Misc Value: 13 | Target: Self(1)
+                   Base Value: -4500 | Scaled Value: -4500 | Misc Value: 13 | Target: Self(1)
 #3 (id=285132)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 #4 (id=285141)   : Apply Aura (6) | Add Percent Modifier: Spell Global Cooldown (108)
@@ -4100,7 +4106,7 @@ Description      : Hurl a bolt of slow-moving Shadow energy at the destination, 
 
 |cFFFFFFFFGenerates $/100;s2 Insanity.|r
 
-Name             : Shadow Crash (id=205386) [Scaling Spell (8)] 
+Name             : Shadow Crash (id=205386) 
 Class            : Priest
 School           : Shadow
 Spell Level      : 1
@@ -4420,11 +4426,7 @@ Effects          :
 #1 (id=323985)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : $@spelldesc73510
-Tooltip          : Embedded with Mind Spikes.
-
-Mind Blast will detonate them, dealing an additional $w1 Shadowfrost damage to the target, and ${$w1*$73510m4/100} Shadowfrost damage to all nearby targets.
-
-$73510m4
+Tooltip          : Embedded with Mind Spikes which Mind Blast will detonate, dealing an additional $w1 Shadowfrost damage to the target, and ${$w1*$73510m~4/100} Shadowfrost damage to all nearby targets.
 
 Name             : Mind Spike Detonation (id=217676) [Spell Family (6)] 
 Class            : Priest

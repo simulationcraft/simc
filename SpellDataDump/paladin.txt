@@ -36,7 +36,7 @@ Effects          :
 Description      : Reduces all damage you take by $s1% for $d.
 Tooltip          : Damage taken reduced by $w1%.
 
-Name             : Lay on Hands (id=633) [Scaling Spell (7), Spell Family (10)] 
+Name             : Lay on Hands (id=633) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
 Spell Level      : 22
@@ -253,7 +253,7 @@ GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 15 seconds
 Stacks           : 1 initial, 1 maximum
-Proc Chance      : 101%
+Proc Chance      : 100%
 Mechanic         : Unknown(255)
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
@@ -406,7 +406,7 @@ Effects          :
 Description      : Increases your threat generation while active, making you a more effective tank.
 Tooltip          : Increases your threat generation while active.
 
-Name             : Holy Shock (id=25912) [Scaling Spell (7), Spell Family (10)] 
+Name             : Holy Shock (id=25912) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
 Spell Level      : 40
@@ -421,10 +421,10 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=15851)    : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.25, dl=0.08) | SP Coefficient: 3.50000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 (avg=1.25, dl=0.08) | SP Coefficient: 3.50000 | Target: Enemy(6)
 Description      : Blasts the target with Holy energy, causing $25912s1 Holy damage to an enemy, or $25914s1 healing to an ally.
 
-Name             : Holy Shock (id=25914) [Scaling Spell (7), Spell Family (10)] 
+Name             : Holy Shock (id=25914) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
 Spell Level      : 40
@@ -439,7 +439,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=15852)    : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=8.222, dl=0.08) | SP Coefficient: 4.00000 | Target: Friend(21)
+                   Base Value: 1 | Scaled Value: 1 (avg=8.222, dl=0.08) | SP Coefficient: 4.00000 | Target: Friend(21)
 Description      : Blasts the target with Holy energy, causing $25912s1 Holy damage to an enemy, or $25914s1 healing to an ally.
 
 Name             : Consecration (id=26573) [Spell Family (10)] 
@@ -612,7 +612,7 @@ GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Duration         : 3 seconds
 Cooldown         : 15 seconds
-Affecting spells : Grand Crusader (85416), Paladin (137026), First Avenger (203776), Ferren Marcus's Strength (207614), Heart of the Avenger (209216)
+Affecting spells : Grand Crusader (85416), Paladin (137026), First Avenger (203776), Ferren Marcus's Strength (207614)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -940,7 +940,7 @@ Description      : Hammers the current target for $53595sw1 Physical damage.$?s2
 
 While you are standing in your Consecration, Hammer of the Righteous also causes a wave of light that hits all other targets within $88263A1 yds for $88263sw1 Holy damage.][]
 
-Name             : Shield of the Righteous (Active Mitigation) (id=53600) [Spell Family (10)] 
+Name             : Shield of the Righteous (id=53600) [Spell Family (10)] 
 Class            : Protection Paladin
 School           : Holy
 Spell Level      : 38
@@ -948,7 +948,7 @@ Range            : 5 yards
 Cooldown         : 1 seconds
 Charges          : 3 (16 seconds cooldown)
 Category         : 1543
-Affecting spells : Paladin (137026), Consecration (188370), Righteous Crusader (209226)
+Affecting spells : Paladin (137026), Consecration (188370), Righteous Crusader (209226), Righteous Crusader (213570), Righteous Crusader (213571), Righteous Crusader (213572), Righteous Crusader (213573), Righteous Crusader (213574)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1590,7 +1590,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Friend(21)
 Description      : Heals the target of your heals for 30% of the amount healed.
 
-Name             : Ancient Fury (id=86704) [Scaling Spell (7), Spell Family (10)] 
+Name             : Ancient Fury (id=86704) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1601,10 +1601,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=88405)    : School Damage: holy (2)
-                   Base Value: 100 | Scaled Value: 0 (avg=0.2366, dl=0.3) | SP Coefficient: 0.10700 | Radius: 10 yards | Target: AOE enemy(15)
+                   Base Value: 100 | Scaled Value: 100 (avg=0.2366, dl=0.3) | SP Coefficient: 0.10700 | Radius: 10 yards | Target: AOE enemy(15)
 Description      : Unleash the fury of ancient kings, causing $s1 Holy damage per application of Ancient Power, divided evenly among all targets within $a1 yards.
 
-Name             : Hammer of the Righteous (id=88263) [Scaling Spell (7), Spell Family (10)] 
+Name             : Hammer of the Righteous (id=88263) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
 Spell Level      : 1
@@ -1653,7 +1653,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Target: Self(1)
 Description      : Your Paladin class mounts glow with holy light.
 
-Name             : Protector of the Innocent (id=94289) [Scaling Spell (7), Spell Family (10)] 
+Name             : Protector of the Innocent (id=94289) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
 Range            : 100 yards
@@ -1907,7 +1907,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 15 yards | Target: At Enemy(53) -> AOE Custom(8)
 Description      : $@spelldesc114165
 
-Name             : Holy Prism (id=114871) [Scaling Spell (7), Spell Family (10)] 
+Name             : Holy Prism (id=114871) [Spell Family (10)] 
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 School           : Holy
@@ -1926,9 +1926,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=128396)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=14.131, dl=0.2) | SP Coefficient: 4.00000 | Target: Friend(21)
+                   Base Value: 1 | Scaled Value: 1 (avg=14.131, dl=0.2) | SP Coefficient: 4.00000 | Target: Friend(21)
 #2 (id=128397)   : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=9.529, dl=0.2) | SP Coefficient: 2.25000 | Radius: 0 - 15 yards | Target: Unknown(132) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 (avg=9.529, dl=0.2) | SP Coefficient: 2.25000 | Radius: 0 - 15 yards | Target: Unknown(132) -> AOE enemy (instant)(16)
 #3 (id=128398)   : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 15 yards | Target: Unknown(132) -> AOE Custom(8)
 Description      : $@spelldesc114165
@@ -2023,7 +2023,7 @@ Effects          :
 #1 (id=130554)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 
-Name             : Arcing Light (id=119952) [Scaling Spell (7), Spell Family (10)] 
+Name             : Arcing Light (id=119952) [Spell Family (10)] 
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 School           : Holy
@@ -2039,7 +2039,7 @@ Attributes       : ........ ........ ........ ...x....   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=139112)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=3.179, dl=0.2) | SP Coefficient: 0.50000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE friendly(31)
+                   Base Value: 1 | Scaled Value: 1 (avg=3.179, dl=0.2) | SP Coefficient: 0.50000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE friendly(31)
 Description      : $@spelldesc114158
 
 Name             : Contemplation (id=121183) [Spell Family (10)] 
@@ -2130,7 +2130,7 @@ School           : Holy
 Spell Level      : 40
 Range            : 5 yards
 Duration         : 4.5 seconds
-Affecting spells : Mastery: Divine Bulwark (76671), Consecration (188370), Righteous Crusader (226939)
+Affecting spells : Mastery: Divine Bulwark (76671), Consecration (188370), Righteous Crusader (209226), Righteous Crusader (213570), Righteous Crusader (213571), Righteous Crusader (213572), Righteous Crusader (213573), Righteous Crusader (213574)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2172,8 +2172,8 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 1583 | Target: Self(1)
 #8 (id=260672)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 1627 | Target: Self(1)
-#9 (id=260673)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#9 (id=260673)   : Apply Aura (6) | Unknown effect sub type (457)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1659 | Target: Self(1)
 #10 (id=260674)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #11 (id=260675)   : Apply Aura (6) | Dummy (4)
@@ -2492,7 +2492,7 @@ Effects          :
                    Base Value: 1000000 | Scaled Value: 1000000 | Misc Value: 126 | Target: Self(1)
 Description      : Increases your block chance by $s1%, allows you to block spells, and your successful blocks deal $157122s1 Holy damage to your attacker.
 
-Name             : Seraphim (id=152262) [Scaling Spell (-1), Spell Family (10)] 
+Name             : Seraphim (id=152262) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
 Duration         : 8 seconds
@@ -2506,7 +2506,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=210813)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 1000 | Scaled Value: 4881.219 (avg=2.872995) | Misc Value: 1913521920 | Target: Self(1)
+                   Base Value: 1000 | Scaled Value: 1000 (avg=2.872995) | Misc Value: 1913521920 | Target: Self(1)
 #2 (id=218844)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self(1)
 Description      : The Light temporarily magnifies your power, increasing your Haste, Critical Strike, Mastery, and Versatility by $s1.
@@ -3047,7 +3047,7 @@ Description      : $@spelldesc184662
 
 Name             : Consecration (id=188370) [Spell Family (10)] 
 Class            : Paladin
-School           : Shadow
+School           : Holy
 Range            : 50000 yards
 Duration         : 10 seconds
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
@@ -3290,7 +3290,7 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | Target: Self(1)
 Description      : $?c3[Your damage dealing abilities that spend Holy Power reduce the remaining cooldown on Hammer of Justice by $s2 sec.][Judgment reduces the remaining cooldown on Hammer of Justice by $s1 sec.]
 
-Name             : Divine Hammer (id=198137) [Scaling Spell (7), Spell Family (10)] 
+Name             : Divine Hammer (id=198137) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
 Spell Level      : 1
@@ -3450,7 +3450,7 @@ Proc Flags       : ..x.x... x.x.x.x. x.x..x.. ........
                  : White Melee, Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic, Trap Triggered
 Triggered by     : Power of the Silver Hand (200474)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x...x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -3628,7 +3628,7 @@ You may only have 3 Greater Blessings active at one time.
 Tooltip          : $?$w2>1[Absorbs the next ${$w2-1} damage.][]
 Refreshed to $w1 absorption every $t1 sec.
 
-Name             : Greater Blessing of Wisdom (id=203539) [Scaling Spell (-1), Spell Family (10)] 
+Name             : Greater Blessing of Wisdom (id=203539) [Spell Family (10)] 
 Class            : Retribution Paladin
 School           : Holy
 Spell Level      : 46
@@ -3695,6 +3695,8 @@ Effects          :
                    Base Value: -67 | Scaled Value: -67 | Misc Value: 1570 | Target: Self(1)
 #2 (id=316627)   : Apply Aura (6) | Modify Cooldown Charge (411)
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 1570 | Target: Self(1)
+#3 (id=342341)   : Apply Aura (6) | Modify Cooldown Charge (411)
+                   Base Value: -2 | Scaled Value: -2 | Misc Value: 1659 | Target: Self(1)
 Description      : Hammer of the Righteous has no cooldown$?s26573[, and always gains the damage bonus of Consecration][].
 
 Name             : Last Defender (id=203791) [Spell Family (10), Passive] 
@@ -3812,8 +3814,8 @@ Class            : Paladin
 School           : Holy
 GCD              : 1.5 seconds
 Duration         : 5 seconds
-Charges          : 2 (4.5 seconds cooldown)
-Category         : 1570
+Charges          : 3 (4.5 seconds cooldown)
+Category         : 1659
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4001,6 +4003,7 @@ Class            : Paladin
 School           : Holy
 Range            : 100 yards
 Duration         : 10 seconds
+Affecting spells : Hammer Time (209229)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 

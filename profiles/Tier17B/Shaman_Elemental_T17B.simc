@@ -31,29 +31,6 @@ actions+=/potion,name=draenic_intellect,if=buff.ascendance.up|target.time_to_die
 actions+=/berserking,if=!buff.bloodlust.up&buff.ascendance.cooldown_remains=0&(dot.flame_shock.remains>buff.ascendance.duration|level<87)
 actions+=/blood_fury,if=buff.bloodlust.up|buff.ascendance.up|((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)
 actions+=/arcane_torrent
-# On multiple enemies, the priority follows the 'aoe' action list.
-actions+=/call_action_list,name=aoe,if=spell_targets.chain_lightning>(2+t18_class_trinket)
-# If one or two enemies, priority follows the 'single' action list.
-actions+=/call_action_list,name=single
-
-# Single target action priority list
-
-actions.single=earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack
-actions.single+=/lava_burst,if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)
-actions.single+=/earth_shock,if=(set_bonus.tier17_4pc&buff.lightning_shield.react>=12&!buff.lava_surge.up)|(!set_bonus.tier17_4pc&buff.lightning_shield.react>15)
-actions.single+=/flame_shock,cycle_targets=1,if=dot.flame_shock.remains<=(dot.flame_shock.duration*0.3)
-actions.single+=/elemental_blast
-# After the initial Ascendance, use Flame Shock pre-emptively just before Ascendance to guarantee Flame Shock staying up for the full duration of the Ascendance buff
-actions.single+=/flame_shock,if=time>60&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<duration
-actions.single+=/chain_lightning,if=spell_targets.chain_lightning>=2
-actions.single+=/lightning_bolt
-actions.single+=/earth_shock,moving=1
-
-# Multi target action priority list
-
-actions.aoe=earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack
-actions.aoe+=/chain_lightning,if=spell_targets.chain_lightning>=2
-actions.aoe+=/lightning_bolt
 
 head=windspeakers_faceguard,id=115579,bonus_id=567/523/448,gem_id=115813
 neck=choker_of_bloody_flame,id=120077,bonus_id=567/523/448,gem_id=115813,enchant=gift_of_multistrike
@@ -75,8 +52,7 @@ off_hand=enginestokers_lantern,id=113960,bonus_id=567/523/448,gem_id=115813
 # Gear Summary
 # gear_ilvl=706.56
 # gear_stamina=5014
-# gear_intellect=4009
-# gear_spell_power=1940
+# gear_intellect=5856
 # gear_crit_rating=1233
 # gear_haste_rating=3982
 # gear_mastery_rating=1218
