@@ -4277,8 +4277,22 @@ void rogue_t::trigger_ruthlessness_cp( const action_state_t* state )
     return;
 
   double cp_chance = spec.ruthlessness -> effectN( 1 ).pp_combo_points() * s -> cp / 100.0;
+  double cp_gain = 0;
+  if ( cp_chance > 1 )
+  {
+    cp_gain += 1;
+    cp_chance -= 1;
+  }
+
   if ( rng().roll( cp_chance ) )
-    trigger_combo_point_gain( 1, gains.ruthlessness, state -> action );
+  {
+    cp_gain += 1;
+  }
+
+  if ( cp_gain > 0 )
+  {
+    trigger_combo_point_gain( cp_gain, gains.ruthlessness, state -> action );
+  }
 }
 
 void rogue_t::trigger_deepening_shadows( const action_state_t* state )
@@ -4494,7 +4508,22 @@ void rogue_t::trigger_alacrity( const action_state_t* s )
 
   const rogue_attack_state_t* rs = debug_cast<const rogue_attack_state_t*>( s );
   double chance = talent.alacrity -> effectN( 2 ).percent() * rs -> cp;
-  buffs.alacrity -> trigger( 1, buff_t::DEFAULT_VALUE(), chance );
+  int stacks = 0;
+  if ( chance > 1 )
+  {
+    stacks += 1;
+    chance -= 1;
+  }
+
+  if ( rng().roll( chance ) )
+  {
+    stacks += 1;
+  }
+
+  if ( stacks > 0 )
+  {
+    buffs.alacrity -> trigger( stacks );
+  }
 }
 
 void rogue_t::trigger_true_bearing( int cp )
