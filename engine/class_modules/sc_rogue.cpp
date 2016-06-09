@@ -4820,7 +4820,9 @@ struct shadow_dance_t : public stealth_like_buff_t
 {
   shadow_dance_t( rogue_t* p ) :
     stealth_like_buff_t( p, "shadow_dance", p -> spec.shadow_dance )
-  { }
+  {
+    buff_duration += p -> talent.subterfuge -> effectN( 2 ).time_value();
+  }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
