@@ -295,6 +295,9 @@ struct rogue_t : public player_t
     // Shared
     const spell_data_t* shadowstep;
 
+    // Generic
+    const spell_data_t* subtlety_rogue;
+
     // Assassination
     const spell_data_t* assassins_resolve;
     const spell_data_t* improved_poisons;
@@ -957,7 +960,10 @@ struct rogue_attack_t : public melee_attack_t
     // TODO: Vanish?
     if ( p() -> talent.nightstalker -> ok() &&
          ( p() -> buffs.stealth -> check() || p() -> buffs.shadow_dance -> check() ) )
-      m *= 1.0 + p() -> talent.nightstalker -> effectN( 2 ).percent();
+    {
+      m *= 1.0 + ( p() -> talent.nightstalker -> effectN( 2 ).percent() +
+                   p() -> spec.subtlety_rogue -> effectN( 1 ).percent() );
+    }
 
     return m;
   }
@@ -5665,6 +5671,9 @@ void rogue_t::init_spells()
 
   // Shared
   spec.shadowstep           = find_specialization_spell( "Shadowstep" );
+
+  // Generic
+  spec.subtlety_rogue       = find_spell( 137035 );
 
   // Assassination
   spec.assassins_resolve    = find_specialization_spell( "Assassin's Resolve" );
