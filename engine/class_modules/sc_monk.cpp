@@ -1,4 +1,4 @@
-// ==========================================================================
+ï»¿// ==========================================================================
 // Dedmonwakeen's DPS-DPM Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
@@ -3780,11 +3780,12 @@ struct crackling_jade_lightning_t: public monk_spell_t
   {
     double am = monk_spell_t::action_multiplier();
 
-    if ( p() ->specialization() == MONK_MISTWEAVER )
+    if ( p() -> specialization() == MONK_MISTWEAVER )
       am *= 1 + p() -> passives.aura_mistweaver_monk -> effectN( 13 ).percent();
 
     return am;
   }
+
   virtual void execute() override
   {
     combo_strikes_trigger( CS_CRACKLING_JADE_LIGHTNING );
@@ -7117,7 +7118,7 @@ void monk_t::target_mitigation( school_e school,
     }
 
     // Gift of the Ox is no longer a random chance, under the hood. When you are hit, it increments a counter by (DamageTakenBeforeAbsorbsOrStagger / MaxHealth).
-    // It now drops an orb whenever that reaches 1.0, and decrements it by 1.0. The tooltip still says ‘chance’, to keep it understandable.
+    // It now drops an orb whenever that reaches 1.0, and decrements it by 1.0. The tooltip still says â€˜chanceâ€™, to keep it understandable.
     // Gift of the Mists multiplies that counter increment by (2 - (HealthBeforeDamage - DamageTakenBeforeAbsorbsOrStagger) / MaxHealth);
     double goto_proc_chance = s -> result_amount / max_health();
 
