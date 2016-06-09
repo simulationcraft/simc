@@ -275,6 +275,7 @@ struct rogue_t : public player_t
     gain_t* urge_to_kill;
     gain_t* goremaws_bite;
     gain_t* curse_of_the_dreadblades;
+    gain_t* relentless_strikes;
 
     // CP Gains
     gain_t* empowered_fan_of_knives;
@@ -311,6 +312,7 @@ struct rogue_t : public player_t
     // Subtlety
     const spell_data_t* deepening_shadows;
     const spell_data_t* energetic_recovery; // TODO: Not used?
+    const spell_data_t* relentless_strikes;
     const spell_data_t* shadow_blades;
     const spell_data_t* shadow_dance;
     const spell_data_t* shadow_techniques;
@@ -606,6 +608,7 @@ struct rogue_t : public player_t
   void trigger_poison_knives( const action_state_t* );
   void trigger_true_bearing( int );
   void trigger_exsanguinate( const action_state_t* );
+  void trigger_relentless_strikes( const action_state_t* );
 
   double consume_cp_max() const
   { return 5.0 + as<double>( talent.deeper_stratagem -> effectN( 1 ).base_value() ); }
@@ -1667,6 +1670,7 @@ void rogue_attack_t::impact( action_state_t* state )
   p() -> trigger_shadow_techniques( state );
   p() -> trigger_weaponmaster( state );
   p() -> trigger_surge_of_toxins( state );
+  p() -> trigger_relentless_strikes( state );
 
   if ( result_is_hit( state -> result ) )
   {
@@ -4524,6 +4528,39 @@ void rogue_t::trigger_exsanguinate( const action_state_t* state )
   do_exsanguinate( td -> dots.garrote, coeff );
 }
 
+void rogue_t::trigger_relentless_strikes( const action_state_t* state )
+{
+  using namespace actions;
+
+  if ( ! spec.relentless_strikes -> ok() )
+  {
+    return;
+  }
+
+  if ( rogue_attack_t::cast_state( state ) -> cp == 0 )
+  {
+    return;
+  }
+
+  double proc_chance = rogue_attack_t::cast_state( state ) -> cp * spec.relentless_strikes -> effectN( 2 ).percent();
+  double grant_energy = 0;
+  if ( proc_chance > 1 )
+  {
+    grant_energy += spec.relentless_strikes -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_ENERGY );
+    proc_chance -= 1;
+  }
+
+  if ( rng().roll( proc_chance ) )
+  {
+    grant_energy += spec.relentless_strikes -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_ENERGY );
+  }
+
+  if ( grant_energy > 0 )
+  {
+    resource_gain( RESOURCE_ENERGY, grant_energy, gains.relentless_strikes, state -> action );
+  }
+}
+
 void rogue_t::spend_combo_points( const action_state_t* state )
 {
   if ( state -> action -> base_costs[ RESOURCE_COMBO_POINT ] == 0 )
@@ -5608,6 +5645,7 @@ void rogue_t::init_spells()
   // Subtlety
   spec.deepening_shadows    = find_specialization_spell( "Deepening Shadows" );
   spec.energetic_recovery   = find_specialization_spell( "Energetic Recovery" );
+  spec.relentless_strikes   = find_specialization_spell( "Relentless Strikes" );
   spec.shadow_dance         = find_specialization_spell( "Shadow Dance" );
   spec.shadow_techniques    = find_specialization_spell( "Shadow Techniques" );
   spec.symbols_of_death     = find_specialization_spell( "Symbols of Death" );
@@ -5795,6 +5833,7 @@ void rogue_t::init_gains()
   gains.urge_to_kill = get_gain( "Urge to Kill" );
   gains.goremaws_bite = get_gain( "Goremaw's Bite" );
   gains.curse_of_the_dreadblades = get_gain( "Curse of the Dreadblades" );
+  gains.relentless_strikes = get_gain( "Relentless Strikes" );
 }
 
 // rogue_t::init_procs ======================================================
