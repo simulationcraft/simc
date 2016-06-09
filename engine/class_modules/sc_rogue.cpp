@@ -223,6 +223,7 @@ struct rogue_t : public player_t
     buff_t* hidden_blade;
     buff_t* curse_of_the_dreadblades;
     buff_t* blurred_time;
+    buff_t* death;
 
     // Roll the bones
     buff_t* roll_the_bones;
@@ -3404,6 +3405,18 @@ struct shadowstrike_t : public rogue_attack_t
 
     p() -> trigger_energetic_stabbing( execute_state );
     p() -> trigger_akaaris_soul( execute_state );
+
+    p() -> buffs.death -> decrement();
+  }
+
+  double composite_crit() const override
+  {
+    if ( p() -> buffs.death -> up() )
+    {
+      return 1.0;
+    }
+
+    return rogue_attack_t::composite_crit();
   }
 
   // TODO: Distance movement support, should teleport up to 30 yards, with distance targeting, next
@@ -3508,6 +3521,7 @@ struct symbols_of_death_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     p() -> buffs.symbols_of_death -> trigger();
+    p() -> buffs.death -> trigger();
   }
 };
 
@@ -6118,6 +6132,7 @@ void rogue_t::create_buffs()
   buffs.roll_the_bones = new buffs::roll_the_bones_t( this, rtb_creator );
 
   buffs.symbols_of_death = buff_creator_t( this, "symbols_of_death", spec.symbols_of_death )
+                           .refresh_behavior( BUFF_REFRESH_PANDEMIC )
                            .period( timespan_t::zero() )
                            .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                            .default_value( 1.0 + spec.symbols_of_death -> effectN( 1 ).percent() );
@@ -6137,6 +6152,7 @@ void rogue_t::create_buffs()
     .trigger_spell( artifact.hidden_blade );
   buffs.curse_of_the_dreadblades = buff_creator_t( this, "curse_of_the_dreadblades", artifact.curse_of_the_dreadblades );
   buffs.blurred_time = new buffs::blurred_time_t( this );
+  buffs.death = buff_creator_t( this, "death", spec.symbols_of_death -> effectN( 3 ).trigger() );
 }
 
 void rogue_t::register_callbacks()
