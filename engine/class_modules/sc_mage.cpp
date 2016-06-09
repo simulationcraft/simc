@@ -941,9 +941,9 @@ struct water_elemental_pet_t : public pet_t
 
       spell_t::impact( s );
 
-      if ( result_is_hit( s -> result ) )
+      if ( result_is_hit( s -> result ) && rng().roll( fof_chance ) )
       {
-        p -> o() -> buffs.fingers_of_frost -> trigger( 1.0, buff_t::DEFAULT_VALUE(), fof_chance );
+        p -> o() -> buffs.fingers_of_frost -> trigger();
         p -> o() -> benefits.fingers_of_frost -> update( "Waterbolt Proc", 1.0 );
       }
     }
@@ -1778,14 +1778,16 @@ struct fire_mage_spell_t : public mage_spell_t
 
     if ( result_is_hit( s -> result ) && s -> result == RESULT_CRIT
                       && p() -> artifact.pyretic_incantation.rank()
-                      && harmful == true )
+                      && harmful == true
+                      && background == false )
     {
 
       p() -> buffs.pyretic_incantation -> trigger();
     }
     else if ( result_is_hit( s -> result ) && s -> result != RESULT_CRIT
                       && p() -> artifact.pyretic_incantation.rank()
-                      && harmful == true )
+                      && harmful == true
+                      && background == false )
     {
       p() -> buffs.pyretic_incantation -> expire();
     }
