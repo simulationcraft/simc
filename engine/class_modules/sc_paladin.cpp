@@ -2123,15 +2123,7 @@ struct crusader_strike_t : public holy_power_generator_t
 
     if ( p -> talents.fires_of_justice -> ok() )
     {
-      if ( p -> bugs )
-      {
-        // why /100? who knows
-        cooldown -> duration += timespan_t::from_millis( p -> talents.fires_of_justice -> effectN( 2 ).base_value() / 100 );
-      }
-      else
-      {
-        cooldown -> duration += timespan_t::from_millis( p -> talents.fires_of_justice -> effectN( 2 ).base_value() );
-      }
+      cooldown -> duration += timespan_t::from_millis( p -> talents.fires_of_justice -> effectN( 2 ).base_value() );
     }
 
     background = ( p -> talents.zeal -> ok() );
