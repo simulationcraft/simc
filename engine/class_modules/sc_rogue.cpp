@@ -706,13 +706,17 @@ struct rogue_attack_t : public melee_attack_t
   // Not all abilities are affected by Shadow Blades combo point increase, so flag things
   bool affected_by_shadow_blades;
 
+  // Ruthlessness, Relentless Strikes
+  bool affected_by_ruthlessness, affected_by_relentless_strikes;
+
   rogue_attack_t( const std::string& token, rogue_t* p,
                   const spell_data_t* s = spell_data_t::nil(),
                   const std::string& options = std::string() ) :
     melee_attack_t( token, p, s ),
     requires_stealth( false ), requires_position( POSITION_NONE ),
     requires_weapon( WEAPON_NONE ), secondary_trigger( false ),
-    akaari( nullptr ), affected_by_blurred_time( true ), affected_by_shadow_blades( false )
+    akaari( nullptr ), affected_by_blurred_time( true ), affected_by_shadow_blades( false ),
+    affected_by_ruthlessness( false ), affected_by_relentless_strikes( false )
   {
     parse_options( options );
 
@@ -749,6 +753,8 @@ struct rogue_attack_t : public melee_attack_t
     affected_by_shadow_blades = data().affected_by( p -> spec.shadow_blades -> effectN( 2 ) ) ||
                                 data().affected_by( p -> spec.shadow_blades -> effectN( 3 ) ) ||
                                 data().affected_by( p -> spec.shadow_blades -> effectN( 4 ) );
+    affected_by_ruthlessness = data().affected_by( p -> spec.ruthlessness -> effectN( 1 ) );
+    affected_by_relentless_strikes = data().affected_by( p -> spec.relentless_strikes -> effectN( 1 ) );
   }
 
   void init() override
@@ -831,9 +837,6 @@ struct rogue_attack_t : public melee_attack_t
   // Generic rules for proccing Main Gauche, used by rogue_t::trigger_main_gauche()
   virtual bool procs_main_gauche() const
   { return callbacks && ! proc && weapon != nullptr && weapon -> slot == SLOT_MAIN_HAND; }
-
-  virtual bool procs_ruthlessness() const
-  { return base_costs[ RESOURCE_COMBO_POINT ] > 0; }
 
   action_state_t* new_state() override
   { return new rogue_attack_state_t( this, target ); }
@@ -1676,16 +1679,12 @@ void rogue_attack_t::impact( action_state_t* state )
 {
   melee_attack_t::impact( state );
 
-  if ( energize_type != ENERGIZE_NONE && energize_resource == RESOURCE_COMBO_POINT )
-    p() -> trigger_seal_fate( state );
-
   p() -> trigger_main_gauche( state );
   p() -> trigger_combat_potency( state );
   p() -> trigger_blade_flurry( state );
   p() -> trigger_shadow_techniques( state );
   p() -> trigger_weaponmaster( state );
   p() -> trigger_surge_of_toxins( state );
-  p() -> trigger_relentless_strikes( state );
 
   if ( result_is_hit( state -> result ) )
   {
@@ -1804,6 +1803,10 @@ void rogue_attack_t::execute()
     if ( cp > 0 )
       player -> resource_gain( RESOURCE_COMBO_POINT, cp, p() -> gains.t17_4pc_subtlety );
   }
+
+  if ( energize_type != ENERGIZE_NONE && energize_resource == RESOURCE_COMBO_POINT )
+    p() -> trigger_seal_fate( execute_state );
+  p() -> trigger_relentless_strikes( execute_state );
 
   p() -> trigger_elaborate_planning( execute_state );
   p() -> trigger_alacrity( execute_state );
@@ -3669,9 +3672,6 @@ struct death_from_above_t : public rogue_attack_t
     driver = new death_from_above_driver_t( p, finisher );
   }
 
-  bool procs_ruthlessness() const override
-  { return false; }
-
   void adjust_attack( attack_t* attack, const timespan_t& oor_delay )
   {
     if ( ! attack || ! attack -> execute_event )
@@ -4290,7 +4290,7 @@ void rogue_t::trigger_ruthlessness_cp( const action_state_t* state )
     return;
 
   actions::rogue_attack_t* attack = debug_cast<actions::rogue_attack_t*>( state -> action );
-  if ( ! attack -> procs_ruthlessness() )
+  if ( ! attack -> affected_by_ruthlessness )
     return;
 
   const actions::rogue_attack_state_t* s = attack -> cast_state( state );
@@ -4594,7 +4594,8 @@ void rogue_t::trigger_relentless_strikes( const action_state_t* state )
     return;
   }
 
-  if ( rogue_attack_t::cast_state( state ) -> cp == 0 )
+  const rogue_attack_t* attack = debug_cast<const rogue_attack_t*>( state -> action );
+  if ( ! attack -> affected_by_relentless_strikes )
   {
     return;
   }
