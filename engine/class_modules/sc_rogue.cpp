@@ -3712,12 +3712,12 @@ struct death_from_above_t : public rogue_attack_t
         eviscerate_t* f = new eviscerate_t( p, "" );
         f -> stats = player -> get_stats( "eviscerate_dfa", f );
         f -> eviscerate -> stats = f -> stats;
+        stats -> add_child( f -> eviscerate -> stats );
         if ( f -> finality )
         {
           f -> finality -> stats = player -> get_stats( "finality_eviscerate_dfa", f -> finality );
+          stats -> add_child( f -> finality -> stats );
         }
-        stats -> add_child( f -> eviscerate -> stats );
-        stats -> add_child( f -> finality -> stats );
         finisher = f;
         break;
       }
