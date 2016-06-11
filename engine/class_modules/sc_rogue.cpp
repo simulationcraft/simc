@@ -716,6 +716,7 @@ struct rogue_attack_t : public melee_attack_t
     bool ghostly_strike;
     bool vendetta;
     bool agonizing_poison;
+    bool alacrity;
   } affected_by;
 
   rogue_attack_t( const std::string& token, rogue_t* p,
@@ -787,6 +788,7 @@ struct rogue_attack_t : public melee_attack_t
                                ( weapon_multiplier > 0 || attack_power_mod.direct > 0 );
     affected_by.agonizing_poison = p() -> talent.agonizing_poison -> ok() &&
                                    data().affected_by( p() -> find_spell( 200803 ) -> effectN( 1 ) );
+    affected_by.alacrity = data().affected_by( p() -> talent.alacrity -> effectN( 1 ) );
   }
 
   bool init_finished() override
@@ -4600,7 +4602,8 @@ void rogue_t::trigger_alacrity( const action_state_t* s )
     return;
   }
 
-  if ( s -> action -> base_costs[ RESOURCE_COMBO_POINT ] == 0 || s -> action -> background )
+  rogue_attack_t* attack = cast_attack( s -> action );
+  if ( ! attack -> affected_by.alacrity )
   {
     return;
   }
