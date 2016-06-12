@@ -3781,7 +3781,13 @@ struct flanking_strike_t: hunter_melee_attack_t
     if ( p() -> active.pet )
       p() -> active.pet -> active.flanking_strike -> execute();
 
+    // TODO: Move this to Pet Flanking Strike. Fix hardcoding.
     double proc_chance = p() -> cache.mastery_value() * 0.25;
+    // Double proc rate for Survival Hunters. Fix hardcoding.
+    if ( p() -> specialization == HUNTER_SURVIVAL )
+    {
+      proc_chance *= 2.0;
+    }
 
     if ( p() -> buffs.aspect_of_the_eagle -> up() )
       proc_chance *= 1.0 + p() -> specs.aspect_of_the_eagle -> effectN( 2 ).percent();
@@ -3878,6 +3884,16 @@ struct serpent_sting_t: public hunter_melee_attack_t
     tick_may_crit = true;
     hasted_ticks = false;
     weapon_multiplier = 0;
+  }
+  virtual double composite_attack_power() const override
+  {
+    double ap = hunter_melee_attack_t::composite_attack_power();
+
+    //TODO: Verify numbers, consider moving to hunter_melee_attack_t
+    if ( p() -> buffs.moknathal_tactics -> check() )
+      ap /= 1.0 + p() -> buffs.moknathal_tactics -> check_stack_value();
+
+    return ap;
   }
 };
 
