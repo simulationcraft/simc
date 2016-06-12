@@ -2785,7 +2785,7 @@ struct blizzard_shard_t : public frost_mage_spell_t
     aoe = -1;
     background = true;
     ground_aoe = true;
-    base_multiplier *= 1.0 + p -> talents.arctic_gale -> effectN( 1 ).percent();
+    spell_power_mod.direct *= 1.0 + p -> talents.arctic_gale -> effectN( 1 ).percent();
     chills = true;
   }
 
@@ -5363,6 +5363,14 @@ struct nithramus_t : public mage_spell_t
 
 namespace events {
 
+struct erosion_event_t : public event_t
+{
+  mage_t* mage;
+  player_t* target;
+  erosion_event_t( mage_t& m, player_t* t ) :
+    event_t( m ), mage( &m ), target( t )
+  {}
+};
 struct icicle_event_t : public event_t
 {
   mage_t* mage;
