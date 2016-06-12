@@ -223,6 +223,7 @@ public:
     const spell_data_t* lone_wolf;
     const spell_data_t* steady_focus;
     const spell_data_t* true_aim;
+    const spell_data_t* sentinel;
 
     const spell_data_t* animal_instincts;
     const spell_data_t* throwing_axes;
@@ -4068,6 +4069,28 @@ public:
   }
 };
 
+// Sentinel ==========================================================================
+
+struct sentinel_t : public hunter_spell_t
+{
+  sentinel_t( hunter_t* p, const std::string& options_str ) :
+    hunter_spell_t( "sentinel", p, p -> talents.sentinel )
+  {
+    harmful = false;
+    parse_options( options_str );
+    aoe = -1;
+    //TODO: Callbacks flase?
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    hunter_spell_t::impact( s );
+    td( execute_state -> target ) -> debuffs.hunters_mark -> trigger();
+  }
+};
+
+
+
 //==============================
 // Shared spells
 //==============================
@@ -4863,6 +4886,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "multishot"             ) return new             multi_shot_t( this, options_str );
   if ( name == "multi_shot"            ) return new             multi_shot_t( this, options_str );
   if ( name == "raptor_strike"         ) return new          raptor_strike_t( this, options_str );
+  if ( name == "sentinel"              ) return new               sentinel_t( this, options_str );
   if ( name == "sidewinders"           ) return new            sidewinders_t( this, options_str );
   if ( name == "snake_hunter"          ) return new           snake_hunter_t( this, options_str );
   if ( name == "spitting_cobra"        ) return new         spitting_cobra_t( this, options_str );
@@ -4966,6 +4990,7 @@ void hunter_t::init_spells()
   talents.lone_wolf                         = find_talent_spell( "Lone Wolf" );
   talents.steady_focus                      = find_talent_spell( "Steady Focus" );
   talents.true_aim                          = find_talent_spell( "True Aim" );
+  talents.sentinel                          = find_talent_spell( "Sentinel" );
   
   talents.animal_instincts                  = find_talent_spell( "Animal Instincts" );
   talents.way_of_the_moknathal              = find_talent_spell( "Way of the Mok'Nathal" );
