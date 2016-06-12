@@ -5790,6 +5790,7 @@ void shaman_t::create_buffs()
     .trigger_spell( artifact.power_of_the_maelstrom );
 
   buff.resonance_totem = buff_creator_t( this, "resonance_totem", find_spell( 202192 ) )
+                         .refresh_behavior( BUFF_REFRESH_DURATION )
                          .duration( talent.totem_mastery -> effectN( 1 ).trigger() -> duration() )
                          .period( find_spell( 202192 ) -> effectN( 1 ).period() )
                          .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
