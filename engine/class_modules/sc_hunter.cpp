@@ -3784,7 +3784,7 @@ struct flanking_strike_t: hunter_melee_attack_t
     // TODO: Move this to Pet Flanking Strike. Fix hardcoding.
     double proc_chance = p() -> cache.mastery_value() * 0.25;
     // Double proc rate for Survival Hunters. Fix hardcoding.
-    if ( p() -> specialization == HUNTER_SURVIVAL )
+    if ( p() -> specialization() == HUNTER_SURVIVAL )
     {
       proc_chance *= 2.0;
     }
@@ -3889,7 +3889,7 @@ struct serpent_sting_t: public hunter_melee_attack_t
   {
     double ap = hunter_melee_attack_t::composite_attack_power();
 
-    //TODO: Verify numbers, consider moving to hunter_melee_attack_t
+    //TODO: Verify numbers, consider moving to hunter_melee_attack_tf
     if ( p() -> buffs.moknathal_tactics -> check() )
       ap /= 1.0 + p() -> buffs.moknathal_tactics -> check_stack_value();
 
