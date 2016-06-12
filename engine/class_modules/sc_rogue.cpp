@@ -1052,9 +1052,43 @@ struct rogue_attack_t : public melee_attack_t
 
   expr_t* create_expression( const std::string& name_str )
   {
+    struct exsanguinated_expr_t : public expr_t
+    {
+      action_t* action;
+
+      exsanguinated_expr_t( action_t* a ) :
+        expr_t( "exsanguinated_expr" ), action( a )
+      { }
+
+      double evaluate() override
+      {
+        dot_t* d = action -> get_dot( action -> target );
+        return d -> is_ticking() && cast_state( d -> state ) -> exsanguinated;
+      }
+    };
+
+    std::vector<std::string> split = util::string_split( name_str, "." );
     if ( util::str_compare_ci( name_str, "cp_gain" ) )
     {
       return make_mem_fn_expr( "cp_gain", *this, &rogue_attack_t::generate_cp );
+    }
+    // Rupture and Garrote APL lines using "exsanguinated"
+    else if ( util::str_compare_ci( name_str, "exsanguinated" ) &&
+              ( data().id() == 1943 || data().id() == 703 ) )
+    {
+      return new exsanguinated_expr_t( this );
+    }
+    // dot.(rupture|garrote).exsanguinated
+    else if ( split.size() == 3 && util::str_compare_ci( split[ 2 ], "exsanguinated" ) &&
+              ( util::str_compare_ci( split[ 1 ], "rupture" ) || util::str_compare_ci( split[ 1 ], "garrote" ) ) )
+    {
+      action_t* action = player -> find_action( split[ 1 ] );
+      if ( ! action )
+      {
+        return expr_t::create_constant( "exsanguinated_expr", 0 );
+      }
+
+      return new exsanguinated_expr_t( action );
     }
 
     return melee_attack_t::create_expression( name_str );
