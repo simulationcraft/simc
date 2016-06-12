@@ -3118,7 +3118,7 @@ struct crash_lightning_t : public shaman_attack_t
           .y( player -> y_position )
           .duration( p() -> find_spell( 205532 ) -> duration() )
           .start_time( sim -> current_time() )
-          .action( p() -> volcanic_inferno )
+          .action( p() -> crashing_storm )
           .hasted( ground_aoe_params_t::SPELL_HASTE ), true );
     }
 
