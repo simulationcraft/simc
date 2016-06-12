@@ -3149,7 +3149,7 @@ struct fireball_t : public fire_mage_spell_t
   virtual void impact( action_state_t* s ) override
   {
     fire_mage_spell_t::impact( s );
-
+    sim ->out_debug.printf("%f",p() -> cache.mastery_value());
     if ( result_is_hit( s -> result ) )
     {
       if ( s -> result == RESULT_CRIT )
@@ -5635,6 +5635,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "frost_bomb"        ) return new              frost_bomb_t( this, options_str );
   if ( name == "frostbolt"         ) return new               frostbolt_t( this, options_str );
   if ( name == "frozen_orb"        ) return new              frozen_orb_t( this, options_str );
+  if ( name == "frozen_touch"      ) return new            frozen_touch_t( this, options_str );
   if ( name == "glacial_spike"     ) return new           glacial_spike_t( this, options_str );
   if ( name == "ice_lance"         ) return new               ice_lance_t( this, options_str );
   if ( name == "ice_nova"          ) return new                ice_nova_t( this, options_str );
