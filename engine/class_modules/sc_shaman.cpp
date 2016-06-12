@@ -5792,7 +5792,6 @@ void shaman_t::create_buffs()
   buff.resonance_totem = buff_creator_t( this, "resonance_totem", find_spell( 202192 ) )
                          .duration( talent.totem_mastery -> effectN( 1 ).trigger() -> duration() )
                          .period( find_spell( 202192 ) -> effectN( 1 ).period() )
-                         .refresh_behavior( BUFF_REFRESH_DISABLED ) // Don't allow the ticks to refresh the buff
                          .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
                           this -> resource_gain( RESOURCE_MAELSTROM, b -> data().effectN( 1 ).resource( RESOURCE_MAELSTROM ),
                               this -> gain.resonance_totem, nullptr ); } );
