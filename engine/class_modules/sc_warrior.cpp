@@ -58,7 +58,7 @@ public:
   const special_effect_t* archavons_heavy_hand, *groms_wartorn_pauldrons, *bindings_of_kakushan,
     *kargaths_sacrificed_hands, *thundergods_vigor, *ceannar_girdle, *kazzalax_fujiedas_fury, *the_walls_fell,
     *destiny_driver, *prydaz_xavarics_magnum_opus, *verjas_protectors_of_the_berserker_king,
-    *najentuss_vertebrae, *ayalas_stone_heart, *aggramars_stride, *manacles_of_mannoroth_the_flayer;
+    *najentuss_vertebrae, *ayalas_stone_heart, *aggramars_stride, *manacles_of_mannoroth_the_flayer, *weight_of_the_earth;
 
   // Active
   struct active_t
@@ -74,6 +74,7 @@ public:
   struct buffs_t
   {
     buff_t* avatar;
+    buff_t* ayalas_stone_heart;
     buff_t* battle_cry;
     buff_t* berserker_rage;
     buff_t* berserking;
@@ -154,6 +155,7 @@ public:
   // Gains
   struct gains_t
   {
+    gain_t* archavons_heavy_hand;
     gain_t* avoided_attacks;
     gain_t* battle_cry;
     gain_t* bloodthirst;
@@ -384,7 +386,7 @@ public:
     arms_trinket = prot_trinket = nullptr;
     archavons_heavy_hand = groms_wartorn_pauldrons = bindings_of_kakushan = kargaths_sacrificed_hands = thundergods_vigor =
       ceannar_girdle = kazzalax_fujiedas_fury = the_walls_fell = destiny_driver = prydaz_xavarics_magnum_opus = verjas_protectors_of_the_berserker_king =
-      najentuss_vertebrae = ayalas_stone_heart = aggramars_stride = manacles_of_mannoroth_the_flayer = nullptr;
+      najentuss_vertebrae = ayalas_stone_heart = aggramars_stride = manacles_of_mannoroth_the_flayer = weight_of_the_earth = nullptr;
     regen_type = REGEN_DISABLED;
   }
 
@@ -739,6 +741,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     base_t::execute();
 
     p() -> buff.wrecking_ball -> trigger();
+    p() -> buff.ayalas_stone_heart -> trigger();
     if ( special && p() -> buff.odyns_champion -> up() && p() -> cooldown.odyns_champion_icd -> up() )
     {
       p() -> cooldown.odyns_champion_icd -> start();
@@ -1578,10 +1581,8 @@ struct execute_off_hand_t: public warrior_attack_t
 struct execute_t: public warrior_attack_t
 {
   execute_off_hand_t* oh_attack;
-  double execute_threshold;
   execute_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "execute", p, p -> spec.execute ),
-    execute_threshold( 0.0 )
+    warrior_attack_t( "execute", p, p -> spec.execute )
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
@@ -1599,24 +1600,15 @@ struct execute_t: public warrior_attack_t
 
     base_crit += p -> artifact.deathblow.percent();
     base_crit += p -> artifact.deathdealer.percent();
-
-    if ( p -> ayalas_stone_heart )
-    {
-      execute_threshold = 35.0;
-    }
-    else
-    {
-      execute_threshold = 20.0;
-    }
   }
 
   double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
 
-    if ( p() -> mastery.colossal_might -> ok() )
+    if ( p() -> mastery.colossal_might -> ok() && !p() -> buff.ayalas_stone_heart -> up() )
     {
-      am *= 4.0 * ( std::min( 40.0, ( p() -> resources.current[RESOURCE_RAGE] ) ) / 40 );
+      am *= 4.0 * (std::min( 40.0, (p() -> resources.current[RESOURCE_RAGE]) ) / 40);
     }
     else if ( p() -> has_shield_equipped() )
     { am *= 1.0 + p() -> spec.protection -> effectN( 2 ).percent(); }
@@ -1644,6 +1636,11 @@ struct execute_t: public warrior_attack_t
   {
     double c = warrior_attack_t::cost();
 
+    if ( p() -> buff.ayalas_stone_heart -> check() )
+    {
+      return c *= 1.0 + p() -> buff.ayalas_stone_heart -> data().effectN( 2 ).percent();
+    }
+
     if ( p() -> mastery.colossal_might -> ok() ) // Arms
     {
       c = std::min( 40.0, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
@@ -1662,7 +1659,6 @@ struct execute_t: public warrior_attack_t
     warrior_attack_t::execute();
 
     p() -> buff.berserking_driver -> trigger();
-
     p() -> buff.sense_death -> expire();
     p() -> buff.sense_death -> trigger();
 
@@ -1672,7 +1668,7 @@ struct execute_t: public warrior_attack_t
 
     p() -> buff.shattered_defenses -> expire();
     p() -> buff.precise_strikes -> expire();
-
+    p() -> buff.ayalas_stone_heart -> expire();
     p() -> buff.juggernaut -> trigger( 1 );
   }
 
@@ -1693,8 +1689,13 @@ struct execute_t: public warrior_attack_t
       return false;
     }
 
+    if ( p() -> buff.ayalas_stone_heart -> check() )
+    {
+      return warrior_attack_t::ready();
+    }
+
     // Call warrior_attack_t::ready() first for proper targeting support.
-    if ( warrior_attack_t::ready() && target -> health_percentage() < execute_threshold )
+    if ( warrior_attack_t::ready() && target -> health_percentage() <= 20 )
     {
       return true;
     }
@@ -1805,12 +1806,11 @@ struct heroic_leap_t: public warrior_attack_t
 
   void impact( action_state_t* s ) override
   {
-    if ( p() -> current.distance_to_move > heroic_leap_damage -> effectN( 1 ).radius() )
-    {
-      s -> result_amount = 0;
-    }
-
     warrior_attack_t::impact( s );
+    if ( p() -> weight_of_the_earth )
+    {
+      td( s -> target ) -> debuffs_colossus_smash -> trigger();
+    }
   }
 
   bool ready() override
@@ -2041,11 +2041,6 @@ struct mortal_strike_t: public warrior_attack_t
     base_costs[RESOURCE_RAGE] += p -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
     cooldown -> charges += p -> talents.mortal_combo -> effectN( 1 ).base_value();
     weapon_multiplier *= 1.0 + p -> artifact.thoradins_might.percent();
-    if ( p -> manacles_of_mannoroth_the_flayer )
-    {
-      base_costs[RESOURCE_RAGE] *= 1.0 + p -> manacles_of_mannoroth_the_flayer -> driver() -> effectN( 1 ).percent();
-      parse_effect_data( p -> manacles_of_mannoroth_the_flayer -> driver() -> effectN( 2 ) );
-    }
   }
 
   double composite_crit() const override
@@ -2101,6 +2096,10 @@ struct mortal_strike_t: public warrior_attack_t
 
     p() -> buff.shattered_defenses -> expire();
     p() -> buff.precise_strikes -> expire();
+    if ( p() -> archavons_heavy_hand )
+    {
+      p() -> resource_gain( RESOURCE_RAGE, p() -> archavons_heavy_hand -> driver() -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.archavons_heavy_hand );
+    }
   }
 
   double recharge_multiplier() const override
@@ -4492,6 +4491,7 @@ void warrior_t::init_gains()
 {
   player_t::init_gains();
 
+  gain.archavons_heavy_hand = get_gain( "archavons_heavy_hand" );
   gain.avoided_attacks = get_gain( "avoided_attacks" );
   gain.bloodthirst = get_gain( "bloodthirst" );
   gain.charge = get_gain( "charge" );
@@ -5348,6 +5348,12 @@ static void manacles_of_mannoroth_the_flayer( special_effect_t& effect )
   do_trinket_init( s, SPEC_NONE, s -> manacles_of_mannoroth_the_flayer, effect );
 }
 
+static void weight_of_the_earth( special_effect_t& effect )
+{
+  warrior_t* s = debug_cast<warrior_t*>(effect.player);
+  do_trinket_init( s, SPEC_NONE, s -> weight_of_the_earth, effect );
+}
+
 // WARRIOR MODULE INTERFACE =================================================
 
 struct fury_trinket_t : public unique_gear::class_buff_cb_t<warrior_t, haste_buff_t, haste_buff_creator_t>
@@ -5368,6 +5374,24 @@ struct fury_trinket_t : public unique_gear::class_buff_cb_t<warrior_t, haste_buf
       .default_value( e.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).average( e.item ) / 100.0 );
   }
 }; 
+
+struct ayalas_stone_heart_t: public unique_gear::class_buff_cb_t<warrior_t>
+{
+  ayalas_stone_heart_t(): super( WARRIOR, "ayalas_stone_heart" )
+  {}
+
+  buff_t*& buff_ptr( const special_effect_t& e ) override
+  {
+    return actor( e ) -> buff.ayalas_stone_heart;
+  }
+
+  buff_creator_t creator( const special_effect_t& e ) const override
+  {
+    return super::creator( e )
+      .spell( e.driver() -> effectN( 1 ).trigger() )
+      .trigger_spell( e.driver() -> effectN( 1 ).trigger() );
+  }
+};
 
 struct bindings_of_kakushan_t : public unique_gear::class_buff_cb_t<warrior_t>
 {
@@ -5474,9 +5498,10 @@ struct warrior_module_t: public module_t
     unique_gear::register_special_effect( 207428, prydaz_xavarics_magnum_opus_t(), true );
     unique_gear::register_special_effect( 208908, verjas_protectors_of_the_berserker_king );
     unique_gear::register_special_effect( 215096, najentuss_vertebrae );
-    unique_gear::register_special_effect( 207767, ayalas_stone_heart );
+    unique_gear::register_special_effect( 207767, ayalas_stone_heart_t(), true );
     unique_gear::register_special_effect( 207438, aggramars_stride );
     unique_gear::register_special_effect( 205144, manacles_of_mannoroth_the_flayer );
+    unique_gear::register_special_effect( 208177, weight_of_the_earth );
   }
 
   virtual void register_hotfixes() const override {}
