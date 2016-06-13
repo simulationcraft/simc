@@ -99,7 +99,6 @@ public:
     buff_t* last_stand;
     buff_t* massacre;
     buff_t* meat_cleaver;
-    buff_t* meat_grinder;
     buff_t* odyns_champion;
     buff_t* overpower;
     buff_t* precise_strikes;
@@ -303,7 +302,6 @@ public:
     const spell_data_t* frenzy;
     const spell_data_t* inner_rage;
     const spell_data_t* into_the_fray;
-    const spell_data_t* meat_grinder;
     const spell_data_t* titanic_might;
     const spell_data_t* trauma;
     const spell_data_t* vengeance;
@@ -1194,6 +1192,8 @@ struct bloodthirst_t: public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
+
+    p() -> buff.meat_cleaver -> expire();
 
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -2156,7 +2156,7 @@ struct raging_blow_attack_t: public warrior_attack_t
   {
     warrior_attack_t::impact( s );
     if ( s -> result == RESULT_CRIT )
-    { // Can proc off MH/OH individually from each meat cleaver hit.
+    {
       if ( rng().roll( p() -> sets.set( WARRIOR_FURY, T17, B2 ) -> proc_chance() ) )
       {
         p() -> enrage();
@@ -2332,19 +2332,20 @@ struct warbreaker_t: public warrior_attack_t
 
 struct rampage_attack_t: public warrior_attack_t
 {
+  int aoe_targets;
   rampage_attack_t( warrior_t* p, const spell_data_t* rampage, const std::string& name ):
-    warrior_attack_t( name, p, rampage )
+    warrior_attack_t( name, p, rampage ),
+    aoe_targets( p -> buff.meat_cleaver -> data().effectN( 1 ).base_value() )
   {
     dual = true;
     weapon_multiplier *= 1.0 + p -> artifact.unstoppable.percent();
-    base_aoe_multiplier = 0.5; // No spelldata for this, only matters when Meat Grinder is talented. 
   }
 
   int n_targets() const override
   {
-    if ( p() -> buff.meat_grinder -> up() )
+    if ( p() -> buff.meat_cleaver -> up() )
     {
-      return 5;
+      return aoe_targets + 1;
     }
     return 1;
   }
@@ -2400,7 +2401,7 @@ struct rampage_event_t: public event_t
     }
     else
     {
-      warrior -> buff.meat_grinder -> expire();
+      warrior -> buff.meat_cleaver -> expire();
     }
   }
 };
@@ -2880,16 +2881,6 @@ struct fury_whirlwind_mh_t: public warrior_attack_t
     aoe = -1;
   }
 
-  void impact( action_state_t* s ) override
-  {
-    warrior_attack_t::impact( s );
-
-    if ( s -> result_amount > 0 )// Only triggers if damage is done.
-    {
-      p() -> buff.meat_cleaver -> trigger();
-    }
-  }
-
   double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
@@ -2979,7 +2970,7 @@ struct fury_whirlwind_parent_t: public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
-    p() -> buff.meat_grinder -> trigger();
+    p() -> buff.meat_cleaver -> trigger();
   }
 
   bool ready() override
@@ -3613,7 +3604,6 @@ void warrior_t::init_spells()
   talents.inner_rage            = find_talent_spell( "Inner Rage" );
   talents.into_the_fray         = find_talent_spell( "Into The Fray" );
   talents.massacre              = find_talent_spell( "Massacre" );
-  talents.meat_grinder          = find_talent_spell( "Meat Grinder" );
   talents.mortal_combo          = find_talent_spell( "Mortal Combo" );
   talents.never_surrender       = find_talent_spell( "Never Surrender" );
   talents.opportunity_strikes   = find_talent_spell( "Opportunity Strikes" );
@@ -4037,7 +4027,6 @@ void warrior_t::apl_fury()
   two_targets -> add_action( this, "Bloodthirst", "if=buff.enrage.down|rage<40" );
   two_targets -> add_talent( this, "Siegebreaker" );
   two_targets -> add_action( this, "Execute", "cycle_targets=1" );
-  two_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.up|target.health.pct<20" );
   two_targets -> add_action( this, "Whirlwind", "if=!buff.meat_cleaver.up&target.health.pct>20" );
   two_targets -> add_action( this, "Bloodthirst" );
   two_targets -> add_action( this, "Whirlwind" );
@@ -4045,7 +4034,6 @@ void warrior_t::apl_fury()
   three_targets -> add_talent( this, "Ravager" );
   three_targets -> add_action( "call_action_list,name=bladestorm" );
   three_targets -> add_action( this, "Bloodthirst", "if=buff.enrage.down|rage<50" );
-  three_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.up" );
   three_targets -> add_talent( this, "Siegebreaker" );
   three_targets -> add_action( this, "Execute", "cycle_targets=1" );
   three_targets -> add_talent( this, "Dragon Roar" );
@@ -4054,7 +4042,6 @@ void warrior_t::apl_fury()
   three_targets -> add_action( this, "Raging Blow" );
 
   aoe -> add_talent( this, "Ravager" );
-  aoe -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.up&buff.enrage.up" );
   aoe -> add_action( this, "Bloodthirst", "if=buff.enrage.down|rage<50" );
   aoe -> add_action( "call_action_list,name=bladestorm" );
   aoe -> add_action( this, "Whirlwind" );
@@ -4404,9 +4391,6 @@ void warrior_t::create_buffs()
   buff.heroic_leap_movement = buff_creator_t( this, "heroic_leap_movement" );
   buff.charge_movement = buff_creator_t( this, "charge_movement" );
   buff.intervene_movement = buff_creator_t( this, "intervene_movement" );
-
-  buff.meat_grinder = buff_creator_t( this, "meat_grinder", find_spell( 213283 ) )
-    .chance( talents.meat_grinder -> ok() );
 
   buff.focused_rage = buff_creator_t( this, "focused_rage", specialization() == WARRIOR_ARMS ? talents.focused_rage : spec.focused_rage )
     .default_value( specialization() == WARRIOR_ARMS ? talents.focused_rage -> effectN( 1 ).percent() : spec.focused_rage -> effectN( 1 ).percent() )
