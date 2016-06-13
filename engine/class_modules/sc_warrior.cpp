@@ -723,7 +723,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
   {
     base_t::assess_damage( type, s );
 
-    if ( special && s -> result_amount > 0 && result_is_hit( s -> result ) && p() -> buff.bloodbath -> up() )
+    if ( s -> result_amount > 0 && p() -> buff.bloodbath -> up() )
     {
       trigger_bloodbath_dot( s -> target, s -> result_amount );
     }
