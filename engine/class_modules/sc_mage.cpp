@@ -405,7 +405,7 @@ public:
                      everywhere_at_once, //NYI
                      arcane_purification,
                      aegwynns_imperative,
-                     aegwynns_ascendance, //NYI
+                     aegwynns_ascendance,
                      aegwynns_wrath,
                      crackling_energy,
                      blasting_rod,
@@ -2238,7 +2238,23 @@ struct ignite_t : public residual_action_t
 };
 
 
-// Arcane Barrage Spell =====================================================
+// Aegwynn's Ascendance Spell =================================================
+struct aegwynns_ascendance_t : public arcane_mage_spell_t
+{
+  aegwynns_ascendance_t( mage_t* p ) :
+    arcane_mage_spell_t( "aegwynns_ascendance", p,
+                         p -> find_spell( 187677 ) )
+  {
+    callbacks = false;
+    school = SCHOOL_ARCANE;
+    aoe = -1;
+    trigger_gcd = timespan_t::zero();
+    background = true;
+  }
+};
+
+
+// Arcane Barrage Spell =======================================================
 // Arcane Rebound Spell
 //TODO: Improve timing of impact of this vs Arcane Barrage if alpha timings go live
 struct arcane_rebound_t : public arcane_mage_spell_t
@@ -3074,9 +3090,13 @@ struct ebonbolt_t : public frost_mage_spell_t
 
 struct evocation_t : public arcane_mage_spell_t
 {
+  aegwynns_ascendance_t* aegwynns_ascendance;
+  double mana_gained;
+
   evocation_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "evocation", p,
-                         p -> find_class_spell( "Evocation" ) )
+                         p -> find_class_spell( "Evocation" ) ),
+    mana_gained( 0.0 )
   {
     parse_options( options_str );
 
@@ -3088,6 +3108,17 @@ struct evocation_t : public arcane_mage_spell_t
     tick_zero         = true;
     ignore_false_positive = true;
     may_proc_missiles = false;
+
+    if ( p -> artifact.aegwynns_ascendance.rank() )
+    {
+      aegwynns_ascendance = new aegwynns_ascendance_t( p );
+    }
+  }
+
+  virtual void execute()
+  {
+    mana_gained = 0.0;
+    arcane_mage_spell_t::execute();
   }
 
   virtual void tick( dot_t* d ) override
@@ -3097,7 +3128,8 @@ struct evocation_t : public arcane_mage_spell_t
     double mana_gain = p() -> resources.max[ RESOURCE_MANA ] *
                        data().effectN( 1 ).percent();
 
-    p() -> resource_gain( RESOURCE_MANA, mana_gain, p() -> gains.evocation );
+    mana_gained += p() -> resource_gain( RESOURCE_MANA, mana_gain,
+                                         p() -> gains.evocation );
   }
 
   virtual void last_tick( dot_t* d ) override
@@ -3107,6 +3139,16 @@ struct evocation_t : public arcane_mage_spell_t
     if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B2 ) )
     {
       p() -> buffs.arcane_affinity -> trigger();
+    }
+
+    if ( p() -> artifact.aegwynns_ascendance.rank() )
+    {
+      double explosion_amount = mana_gained *
+                                p() -> artifact.aegwynns_ascendance.percent();
+      aegwynns_ascendance -> target = d -> target;
+      aegwynns_ascendance -> base_dd_max = explosion_amount;
+      aegwynns_ascendance -> base_dd_min = explosion_amount;
+      aegwynns_ascendance -> execute();
     }
   }
 };
