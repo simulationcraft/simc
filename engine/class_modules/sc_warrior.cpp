@@ -28,6 +28,7 @@ struct warrior_t;
 
 struct warrior_td_t: public actor_target_data_t
 {
+  dot_t* dots_bloodbath;
   dot_t* dots_deep_wounds;
   dot_t* dots_ravager;
   dot_t* dots_rend;
@@ -62,6 +63,7 @@ public:
   // Active
   struct active_t
   {
+    action_t* bloodbath_dot;
     action_t* deep_wounds;
     action_t* corrupted_blood_of_zakajz;
     action_t* opportunity_strikes;
@@ -77,6 +79,7 @@ public:
     buff_t* berserking;
     buff_t* berserking_driver;
     buff_t* bladestorm;
+    buff_t* bloodbath;
     buff_t* bounding_stride;
     buff_t* charge_movement;
     buff_t* cleave;
@@ -295,6 +298,7 @@ public:
     const spell_data_t* mortal_combo;
     const spell_data_t* never_surrender; //
 
+    const spell_data_t* bloodbath;
     const spell_data_t* booming_voice;
     const spell_data_t* focused_rage;
     const spell_data_t* frenzy;
@@ -718,6 +722,11 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
   virtual void assess_damage( dmg_e type, action_state_t* s ) override
   {
     base_t::assess_damage( type, s );
+
+    if ( special && s -> result_amount > 0 && result_is_hit( s -> result ) && p() -> buff.bloodbath -> up() )
+    {
+      trigger_bloodbath_dot( s -> target, s -> result_amount );
+    }
   }
 
   virtual void execute() override
@@ -805,6 +814,14 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     return dmg;
   }
 
+  virtual void trigger_bloodbath_dot( player_t* t, double dmg )
+  {
+    residual_action::trigger(
+      p() -> active.bloodbath_dot, // ignite spell
+      t, // target
+      p() -> buff.bloodbath -> data().effectN( 1 ).percent() * dmg );
+  }
+
   virtual void tactician( double chance )
   {
     if ( rng().roll( chance ) )
@@ -813,6 +830,20 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
       p() -> proc.tactician -> occur();
     }
   }
+};
+
+// Bloodbath Dot ============================================================
+
+struct bloodbath_dot_t: public residual_action::residual_periodic_action_t < warrior_attack_t >
+{
+  bloodbath_dot_t( warrior_t* p ):
+    base_t( "bloodbath", p, p -> find_spell( 113344 ) )
+  {
+    dual = true;
+  }
+
+  void trigger_bloodbath_dot( player_t*, double ) override // Bloodbath doesn't trigger itself.
+  {}
 };
 
 // Melee Attack =============================================================
@@ -3187,6 +3218,24 @@ struct berserker_rage_t: public warrior_spell_t
   }
 };
 
+// Bloodbath ================================================================
+
+struct bloodbath_t: public warrior_spell_t
+{
+  bloodbath_t( warrior_t* p, const std::string& options_str ):
+    warrior_spell_t( "bloodbath", p, p -> talents.bloodbath )
+  {
+    parse_options( options_str );
+  }
+
+  void execute() override
+  {
+    warrior_spell_t::execute();
+
+    p() -> buff.bloodbath -> trigger();
+  }
+};
+
 // Defensive Stance ===============================================================
 
 struct defensive_stance_t: public warrior_spell_t
@@ -3462,6 +3511,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "avatar"               ) return new avatar_t               ( this, options_str );
   if ( name == "berserker_rage"       ) return new berserker_rage_t       ( this, options_str );
   if ( name == "bladestorm"           ) return new bladestorm_t           ( this, options_str );
+  if ( name == "bloodbath"            ) return new bloodbath_t            ( this, options_str );
   if ( name == "bloodthirst"          ) return new bloodthirst_t          ( this, options_str );
   if ( name == "charge"               ) return new charge_t               ( this, options_str );
   if ( name == "cleave"               ) return new cleave_t               ( this, options_str );
@@ -3578,6 +3628,7 @@ void warrior_t::init_spells()
   talents.avatar                = find_talent_spell( "Avatar" );//
   talents.best_served_cold      = find_talent_spell( "Best Served Cold" );
   talents.bladestorm            = find_talent_spell( "Bladestorm" );
+  talents.bloodbath             = find_talent_spell( "Bloodbath" );
   talents.booming_voice         = find_talent_spell( "Booming Voice" );
   talents.bounding_stride       = find_talent_spell( "Bounding Stride" );
   talents.carnage               = find_talent_spell( "Carnage" );
@@ -3674,11 +3725,13 @@ void warrior_t::init_spells()
   spell.revenge_trigger         = find_class_spell( "Revenge Trigger" );
 
   // Active spells
+  active.bloodbath_dot             = nullptr;
   active.deep_wounds               = nullptr;
   active.corrupted_blood_of_zakajz = nullptr;
   active.trauma                    = nullptr;
   active.opportunity_strikes       = nullptr;
 
+  if ( talents.bloodbath -> ok() ) active.bloodbath_dot = new bloodbath_dot_t( this );
   if ( spec.deep_wounds -> ok() ) active.deep_wounds = new deep_wounds_t( this );
   if ( talents.opportunity_strikes -> ok() ) active.opportunity_strikes = new opportunity_strikes_t( this );
   if ( talents.trauma -> ok() ) active.trauma = new trauma_dot_t( this );
@@ -4303,6 +4356,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ):
 {
   using namespace buffs;
 
+  dots_bloodbath = target -> get_dot( "bloodbath", &p );
   dots_deep_wounds = target -> get_dot( "deep_wounds", &p );
   dots_ravager = target -> get_dot( "ravager", &p );
   dots_rend = target -> get_dot( "rend", &p );
@@ -4333,6 +4387,9 @@ void warrior_t::create_buffs()
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.berserker_rage = buff_creator_t( this, "berserker_rage", find_class_spell( "Berserker Rage" ) )
+    .cd( timespan_t::zero() );
+
+  buff.bloodbath = buff_creator_t( this, "bloodbath", talents.bloodbath )
     .cd( timespan_t::zero() );
 
   buff.frothing_berserker = buff_creator_t( this, "frothing_berserker", talents.frothing_berserker -> effectN( 1 ).trigger() )
@@ -5190,6 +5247,8 @@ struct fel_cleave_t: public warrior_attack_t
     weapon_multiplier = 0;
     aoe = -1;
   }
+  void trigger_bloodbath_dot( player_t*, double ) override
+  {}
 };
 
 action_t* warrior_t::create_proc_action( const std::string& name, const special_effect_t& effect )
