@@ -160,7 +160,6 @@ public:
     gain_t* bloodthirst;
     gain_t* charge;
     gain_t* critical_block;
-    gain_t* fervor_of_battle;
     gain_t* in_for_the_kill;
     gain_t* melee_crit;
     gain_t* melee_main_hand;
@@ -183,7 +182,6 @@ public:
     const spell_data_t* charge;
     const spell_data_t* colossus_smash_debuff;
     const spell_data_t* defensive_stance;
-    const spell_data_t* fervor_of_battle;
     const spell_data_t* headlong_rush;
     const spell_data_t* heroic_leap;
     const spell_data_t* indomitable;
@@ -300,6 +298,7 @@ public:
 
     const spell_data_t* bloodbath;
     const spell_data_t* booming_voice;
+    const spell_data_t* deadly_calm;
     const spell_data_t* focused_rage;
     const spell_data_t* frenzy;
     const spell_data_t* inner_rage;
@@ -335,7 +334,6 @@ public:
     artifact_power_t thoradins_might;
     artifact_power_t unending_rage;
     artifact_power_t void_cleave;
-    artifact_power_t war_veteran;
     artifact_power_t warbreaker;
     artifact_power_t will_of_the_first_king;
 
@@ -480,7 +478,8 @@ namespace
 template <class Base>
 struct warrior_action_t: public Base
 {
-  bool headlongrush, headlongrushgcd, sweeping_strikes, dauntless, war_veteran;
+  bool headlongrush, headlongrushgcd, sweeping_strikes, dauntless;
+  double tactician_per_rage;
 private:
   typedef Base ab; // action base, eg. spell_t
 public:
@@ -492,9 +491,11 @@ public:
     headlongrushgcd( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 2 ) ) ),
     sweeping_strikes( ab::data().affected_by( player -> talents.sweeping_strikes -> effectN( 1 ) ) ),
     dauntless( ab::data().affected_by( player -> talents.dauntless -> effectN( 1 ) ) ),
-    war_veteran( ab::data().affected_by( player -> artifact.war_veteran.data().effectN( 1 ).trigger() -> effectN( 1 ) ) )
+    tactician_per_rage( 0 )
   {
     ab::may_crit = true;
+    tactician_per_rage += player -> spec.tactician -> effectN( 2 ).percent();
+    tactician_per_rage *= 1.0 + player -> artifact.exploit_the_weakness.percent();
   }
 
   void init() override
@@ -535,9 +536,9 @@ public:
       c *= 1.0 + p() -> talents.dauntless -> effectN( 1 ).percent();
     }
 
-    if ( war_veteran && p() -> buff.battle_cry -> check() )
+    if ( p() -> talents.deadly_calm -> ok() && p() -> buff.battle_cry -> check() )
     {
-      c *= 1.0 + p() -> artifact.war_veteran.data().effectN( 1 ).trigger() -> effectN( 1 ).percent();
+      c *= 1.0 + p() -> talents.deadly_calm  -> effectN( 1 ).percent();
     }
 
     return c;
@@ -658,6 +659,12 @@ public:
       anger_management( rage );
     }
 
+    if ( tactician_per_rage && rng().roll( tactician_per_rage * rage ) )
+    {
+      p() -> cooldown.colossus_smash -> reset( true );
+      p() -> proc.tactician -> occur();
+    }
+
     if ( ab::result_is_miss( ab::execute_state -> result ) && rage > 0 && !ab::aoe )
     {
       p() -> resource_gain( RESOURCE_RAGE, rage*0.8, p() -> gain.avoided_attacks );
@@ -706,11 +713,11 @@ struct warrior_spell_t: public warrior_action_t < spell_t >
 
 struct warrior_attack_t: public warrior_action_t < melee_attack_t >
 { // Main Warrior Attack Class
-  bool procs_overpower, procs_tactician;
+  bool procs_overpower;
   warrior_attack_t( const std::string& n, warrior_t* p,
                     const spell_data_t* s = spell_data_t::nil() ):
     base_t( n, p, s ),
-    procs_overpower( false ), procs_tactician( false )
+    procs_overpower( false )
   {
     special = true;
     if ( p -> talents.overpower -> ok() )
@@ -758,12 +765,6 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
       if ( procs_overpower )
       {
         p() -> buff.overpower -> trigger();
-      }
-
-      // TOCHECK: Does Sweeping Strikes grant MS/Execute 2 chances to proc Tactician?
-      if ( procs_tactician )
-      {
-        tactician( p() -> spec.tactician -> effectN( 2 ).percent() );
       }
 
       if ( p() -> buff.corrupted_blood_of_zakajz -> up() )
@@ -820,15 +821,6 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
       p() -> active.bloodbath_dot, // ignite spell
       t, // target
       p() -> buff.bloodbath -> data().effectN( 1 ).percent() * dmg );
-  }
-
-  virtual void tactician( double chance )
-  {
-    if ( rng().roll( chance ) )
-    {
-      p() -> cooldown.colossus_smash -> reset( true );
-      p() -> proc.tactician -> occur();
-    }
   }
 };
 
@@ -1336,14 +1328,6 @@ struct cleave_t: public warrior_attack_t
     weapon = &( player -> main_hand_weapon );
     aoe = -1;
 
-    if ( p -> talents.fervor_of_battle -> ok() )
-    {
-      energize_type = ENERGIZE_PER_HIT;
-      energize_resource = RESOURCE_RAGE;
-      energize_amount = p -> spell.fervor_of_battle -> effectN( 1 ).resource( RESOURCE_RAGE );
-      gain = p -> gain.fervor_of_battle;
-    }
-
     if ( p -> artifact.void_cleave.rank() )
     {
       void_cleave = new void_cleave_t( p );
@@ -1601,7 +1585,6 @@ struct execute_t: public warrior_attack_t
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
-    procs_tactician = true;
 
     if ( p -> specialization() == WARRIOR_FURY )
     {
@@ -2063,7 +2046,6 @@ struct mortal_strike_t: public warrior_attack_t
       base_costs[RESOURCE_RAGE] *= 1.0 + p -> manacles_of_mannoroth_the_flayer -> driver() -> effectN( 1 ).percent();
       parse_effect_data( p -> manacles_of_mannoroth_the_flayer -> driver() -> effectN( 2 ) );
     }
-    procs_tactician = true;
   }
 
   double composite_crit() const override
@@ -2738,7 +2720,6 @@ struct slam_t: public warrior_attack_t
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
-    procs_tactician = true;
     weapon_multiplier *= 1.0 + p -> artifact.crushing_blows.percent();
   }
 
@@ -2751,15 +2732,6 @@ struct slam_t: public warrior_attack_t
         p() -> active.trauma, // ignite spell
         s -> target, // target
         p() -> talents.trauma -> effectN( 1 ).percent() * s -> result_amount );
-    }
-  }
-
-  void tactician( double chance )
-  {
-    if ( rng().roll( chance + p() -> artifact.exploit_the_weakness.percent() ) )
-    {
-      p() -> cooldown.colossus_smash -> reset( true );
-      p() -> proc.tactician -> occur();
     }
   }
 
@@ -2906,25 +2878,13 @@ struct fury_whirlwind_mh_t: public warrior_attack_t
     warrior_attack_t( "whirlwind_mh", p, whirlwind )
   {
     aoe = -1;
-    weapon_multiplier *= 1.0 + p -> artifact.many_will_fall.percent();
-
-    if ( p -> talents.fervor_of_battle -> ok() )
-    {
-      parse_effect_data( p -> spell.fervor_of_battle -> effectN( 1 ) );
-      energize_type = ENERGIZE_PER_HIT;
-      gain = p -> gain.fervor_of_battle;
-    }
   }
 
   void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
 
-    if ( p() -> artifact.will_of_the_first_king.rank() )
-    {
-      p() -> resource_gain( RESOURCE_RAGE, p() -> artifact.will_of_the_first_king.data().effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.will_of_the_first_king );
-    }
-    else if ( s -> result_amount > 0 )// Only triggers if damage is done.
+    if ( s -> result_amount > 0 )// Only triggers if damage is done.
     {
       p() -> buff.meat_cleaver -> trigger();
     }
@@ -2933,8 +2893,6 @@ struct fury_whirlwind_mh_t: public warrior_attack_t
   double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
-
-    am *= 1.0 + p() -> buff.cleave -> check_value();
 
     if ( p() -> buff.wrecking_ball -> up() )
     {
@@ -2953,34 +2911,23 @@ struct fury_whirlwind_parent_t: public warrior_attack_t
   fury_whirlwind_parent_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "whirlwind", p, p -> spec.whirlwind ),
     oh_attack( nullptr ), mh_attack( nullptr ),
-    spin_time( timespan_t::from_millis( p -> specialization() == WARRIOR_ARMS ? p -> spec.whirlwind -> effectN( 2 ).misc_value1() :
-                                                                              p -> spec.whirlwind -> effectN( 3 ).misc_value1() ) )
+    spin_time( timespan_t::from_millis( p -> spec.whirlwind -> effectN( 3 ).misc_value1() ) )
   {
     parse_options( options_str );
     radius = data().effectN( 1 ).trigger() -> effectN( 1 ).radius_max();
 
     if ( p -> main_hand_weapon.type != WEAPON_NONE )
     {
-      if ( p -> specialization() == WARRIOR_FURY )
+      mh_attack = new fury_whirlwind_mh_t( p, data().effectN( 1 ).trigger() );
+      mh_attack -> weapon = &(p -> main_hand_weapon);
+      mh_attack -> radius = radius;
+      add_child( mh_attack );
+      if ( p -> off_hand_weapon.type != WEAPON_NONE )
       {
-        mh_attack = new fury_whirlwind_mh_t( p, data().effectN( 1 ).trigger() );
-        mh_attack -> weapon = &( p -> main_hand_weapon );
-        mh_attack -> radius = radius;
-        add_child( mh_attack );
-        if ( p -> off_hand_weapon.type != WEAPON_NONE )
-        {
-          oh_attack = new whirlwind_off_hand_t( p, data().effectN( 2 ).trigger() );
-          oh_attack -> weapon = &( p -> off_hand_weapon );
-          oh_attack -> radius = radius;
-          add_child( oh_attack );
-        }
-      }
-      else
-      {
-        mh_attack = new fury_whirlwind_mh_t( p, data().effectN( 1 ).trigger() );
-        mh_attack -> weapon = &( p -> main_hand_weapon );
-        mh_attack -> radius = radius;
-        add_child( mh_attack );
+        oh_attack = new whirlwind_off_hand_t( p, data().effectN( 2 ).trigger() );
+        oh_attack -> weapon = &(p -> off_hand_weapon);
+        oh_attack -> radius = radius;
+        add_child( oh_attack );
       }
     }
     tick_zero = true;
@@ -3053,7 +3000,6 @@ struct arms_whirlwind_mh_t: public warrior_attack_t
   {
     aoe = -1;
     weapon_multiplier *= 1.0 + p -> artifact.many_will_fall.percent();
-    procs_tactician = false;
   }
 
   double action_multiplier() const override
@@ -3061,6 +3007,18 @@ struct arms_whirlwind_mh_t: public warrior_attack_t
     double am = warrior_attack_t::action_multiplier();
 
     am *= 1.0 + p() -> buff.cleave -> check_value();
+
+    return am;
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double am = warrior_attack_t::composite_target_multiplier( target );
+
+    if ( p() -> talents.fervor_of_battle -> ok() && target == execute_state -> target )
+    {
+      am *= 1.0 + p() -> talents.fervor_of_battle -> effectN( 1 ).percent();
+    }
 
     return am;
   }
@@ -3073,13 +3031,6 @@ struct first_arms_whirlwind_mh_t: public warrior_attack_t
   {
     aoe = -1;
     weapon_multiplier *= 1.0 + p -> artifact.many_will_fall.percent();
-
-    if ( p -> talents.fervor_of_battle -> ok() )
-    {
-      parse_effect_data( p -> spell.fervor_of_battle -> effectN( 1 ) );
-      energize_type = ENERGIZE_PER_HIT;
-      gain = p -> gain.fervor_of_battle;
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -3097,6 +3048,18 @@ struct first_arms_whirlwind_mh_t: public warrior_attack_t
     double am = warrior_attack_t::action_multiplier();
 
     am *= 1.0 + p() -> buff.cleave -> check_value();
+
+    return am;
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double am = warrior_attack_t::composite_target_multiplier( target );
+
+    if ( p() -> talents.fervor_of_battle -> ok() && target == execute_state -> target )
+    {
+      am *= 1.0 + p() -> talents.fervor_of_battle -> effectN( 1 ).percent();
+    }
 
     return am;
   }
@@ -3625,7 +3588,7 @@ void warrior_t::init_spells()
 
   // Talents
   talents.anger_management      = find_talent_spell( "Anger Management" );
-  talents.avatar                = find_talent_spell( "Avatar" );//
+  talents.avatar                = find_talent_spell( "Avatar" );
   talents.best_served_cold      = find_talent_spell( "Best Served Cold" );
   talents.bladestorm            = find_talent_spell( "Bladestorm" );
   talents.bloodbath             = find_talent_spell( "Bloodbath" );
@@ -3634,6 +3597,7 @@ void warrior_t::init_spells()
   talents.carnage               = find_talent_spell( "Carnage" );
   talents.crackling_thunder     = find_talent_spell( "Crackling Thunder" );
   talents.dauntless             = find_talent_spell( "Dauntless" );
+  talents.deadly_calm           = find_talent_spell( "Deadly Calm" );
   talents.die_by_the_sword      = find_talent_spell( "Die by the Sword" );
   talents.double_time           = find_talent_spell( "Double Time" );
   talents.dragon_roar           = find_talent_spell( "Dragon Roar" );
@@ -3688,7 +3652,6 @@ void warrior_t::init_spells()
   artifact.touch_of_zakajz           = find_artifact_spell( "Touch of Zakajz" );
   artifact.unending_rage             = find_artifact_spell( "Unending Rage" );
   artifact.void_cleave               = find_artifact_spell( "Void Cleave" );
-  artifact.war_veteran               = find_artifact_spell( "War Veteran" );
   artifact.warbreaker                = find_artifact_spell( "Warbreaker" );
   artifact.many_will_fall            = find_artifact_spell( "Many Will Fall" );
 
@@ -3717,7 +3680,6 @@ void warrior_t::init_spells()
   spell.charge                  = find_class_spell( "Charge" );
   spell.colossus_smash_debuff   = find_spell( 208086 );
   spell.defensive_stance        = find_class_spell( "Defensive Stance" );
-  spell.fervor_of_battle        = find_spell( 202317 );
   spell.intervene               = find_class_spell( "Intervene" );
   spell.headlong_rush           = find_spell( 137047 ); // Also may be used for other crap in the future.
   spell.heroic_leap             = find_class_spell( "Heroic Leap" );
@@ -4552,7 +4514,6 @@ void warrior_t::init_gains()
   gain.critical_block = get_gain( "critical_block" );
   gain.in_for_the_kill = get_gain( "in_for_the_kill" );
   gain.melee_crit = get_gain( "melee_crit" );
-  gain.fervor_of_battle = get_gain( "fervor_of_battle" );
   gain.melee_main_hand = get_gain( "melee_main_hand" );
   gain.melee_off_hand = get_gain( "melee_off_hand" );
   gain.raging_blow = get_gain( "raging_blow" );
