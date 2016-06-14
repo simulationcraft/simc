@@ -2413,7 +2413,7 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
 
   void trigger_piercing_shots( action_state_t* s )
   {
-    double amount = s -> result_amount;
+    double amount = p() -> talents.careful_aim -> effectN( 3 ).percent() * s -> result_amount;
 
     residual_action::trigger( p() -> active.piercing_shots, s -> target, amount );
   }
@@ -2749,7 +2749,12 @@ struct multi_shot_t: public hunter_ranged_attack_t
     if ( p() -> specialization() == HUNTER_MARKSMANSHIP && result_is_hit( s -> result ) )
     {
       if ( s -> result == RESULT_CRIT )
+      {
         p() -> buffs.bombardment -> trigger();
+
+        if ( p() -> buffs.careful_aim -> check() )
+          trigger_piercing_shots( s );
+      }
     }
   }
 };
@@ -3035,7 +3040,7 @@ struct trick_shot_t: public hunter_ranged_attack_t
       hunter_ranged_attack_t::impact( s );
 
       trigger_true_aim( p(), s -> target );
-      if ( p() -> buffs.careful_aim -> value() && s -> result == RESULT_CRIT )
+      if ( p() -> buffs.careful_aim -> check() && s -> result == RESULT_CRIT )
         trigger_piercing_shots( s );
     }
   }
@@ -3439,6 +3444,9 @@ struct marked_shot_t: public hunter_ranged_attack_t
 
       td -> debuffs.hunters_mark -> expire();
     }
+
+    if ( p() -> buffs.careful_aim -> check() && s -> result == RESULT_CRIT )
+      trigger_piercing_shots( s );
   }
 
   // Only schedule the attack if a valid target
@@ -5228,7 +5236,7 @@ void hunter_t::init_spells()
     active.serpent_sting = new attacks::serpent_sting_t( this );
 
   if ( talents.careful_aim -> ok() )
-    active.piercing_shots = new attacks::piercing_shots_t( this, "piercing_shots", find_spell( 63468 ) );
+    active.piercing_shots = new attacks::piercing_shots_t( this, "careful_aim", find_spell( 63468 ) );
 
   if ( talents.exotic_munitions -> ok() )
   {
