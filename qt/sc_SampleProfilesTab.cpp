@@ -40,8 +40,8 @@ void SC_SampleProfilesTab::fillTree( QDir baseDir )
 {
     baseDir.setFilter( QDir::Dirs );
 
-    static const char* tierNames[] = { "T17", "T18" };
-    static const int TIER_MAX = 2; // = sizeof_array( tierNames );
+    static const char* tierNames[] = { "T17", "T18", "T19" };
+    static const int TIER_MAX = 3; // = sizeof_array( tierNames );
 
     QTreeWidgetItem* playerItems[PLAYER_MAX];
     range::fill( playerItems, 0 );
@@ -76,8 +76,11 @@ void SC_SampleProfilesTab::fillTree( QDir baseDir )
         player_e player = PLAYER_MAX;
 
         // Hack! For now...  Need to decide sim-wide just how the heck we want to refer to DKs.
+        // Hack²! For now... I didn't know how to add DH :D
         if ( profile.contains( "Death_Knight" ) )
           player = DEATH_KNIGHT;
+        else if ( profile.contains( "Demon_Hunter" ) )
+          player = DEMON_HUNTER;
         else
         {
           for ( player_e j = PLAYER_NONE; j < PLAYER_MAX; j++ )
