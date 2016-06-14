@@ -4785,9 +4785,12 @@ struct rune_of_power_t : public mage_spell_t
 
 struct scorch_t : public fire_mage_spell_t
 {
+  double scorch_multiplier;
+
   scorch_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "scorch", p,
-                       p -> find_specialization_spell( "Scorch" ) )
+                       p -> find_specialization_spell( "Scorch" ) ),
+    scorch_multiplier( 0 )
   {
     parse_options( options_str );
 
@@ -7664,7 +7667,6 @@ private:
 using namespace unique_gear;
 using namespace actions;
 
-template<typename T>
 struct koralons_burning_touch_t : public scoped_action_callback_t<scorch_t>
 {
   koralons_burning_touch_t() : super( MAGE_FIRE, "scorch" )
