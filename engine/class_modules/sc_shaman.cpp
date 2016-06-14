@@ -214,7 +214,6 @@ public:
   spell_t*  earthen_rage;
   spell_t* crashing_storm;
   spell_t* doom_vortex;
-  action_t* magnitude;
   action_t* lightning_rod;
 
   // Pets
@@ -284,6 +283,7 @@ public:
     buff_t* earth_surge;
     buff_t* icefury;
     buff_t* hot_hand;
+    haste_buff_t* elemental_mastery;
 
     // Artifact related buffs
     buff_t* stormkeeper;
@@ -401,21 +401,19 @@ public:
     const spell_data_t* earthen_rage;
     const spell_data_t* totem_mastery;
 
-    const spell_data_t* fleet_of_foot;
-
     const spell_data_t* elemental_blast;
     const spell_data_t* echo_of_the_elements;
 
     const spell_data_t* elemental_fusion;
     const spell_data_t* primal_elementalist;
-    const spell_data_t* magnitude;
+    const spell_data_t* icefury;
 
-    const spell_data_t* lightning_rod;
+    const spell_data_t* elemental_mastery;
     const spell_data_t* storm_elemental;
     const spell_data_t* aftershock;
 
-    const spell_data_t* icefury;
     const spell_data_t* liquid_magma_totem;
+    const spell_data_t* lightning_rod;
 
     // Enhancement
     const spell_data_t* windsong;
@@ -2544,16 +2542,6 @@ struct earthen_rage_driver_t : public spell_t
   { return data().duration(); }
 };
 
-struct magnitude_t : public shaman_spell_t
-{
-  magnitude_t( shaman_t* p ) :
-    shaman_spell_t( "magnitude", p, p -> find_spell( 197576 ) )
-  {
-    background = true;
-    callbacks = false;
-  }
-};
-
 struct lightning_rod_t : public spell_t
 {
   lightning_rod_t( shaman_t* p ) :
@@ -4123,17 +4111,6 @@ struct earthquake_totem_damage_t : public shaman_spell_t
     base_multiplier *= 1.0 + p() -> artifact.the_ground_trembles.percent();
   }
 
-  void impact( action_state_t* state ) override
-  {
-    shaman_spell_t::impact( state );
-
-    if ( td( state -> target ) -> dot.flame_shock -> is_ticking() && p() -> talent.magnitude -> ok() )
-    {
-      p() -> magnitude -> target = state -> target;
-      p() -> magnitude -> schedule_execute();
-    }
-  }
-
   double target_armor( player_t* ) const override
   { return 0; }
 };
@@ -4162,6 +4139,26 @@ struct earthquake_totem_t : public shaman_spell_t
         .start_time( sim -> current_time() )
         .action( rumble )
         .hasted( ground_aoe_params_t::SPELL_HASTE ), true );
+  }
+};
+
+// Elemental Mastery Spell ==================================================
+
+struct elemental_mastery_t : public shaman_spell_t
+{
+  elemental_mastery_t( shaman_t* player, const std::string& options_str ) :
+    shaman_spell_t( "elemental_mastery", player, player -> talent.elemental_mastery, options_str )
+  {
+    harmful   = false;
+    may_crit  = false;
+    may_miss  = false;
+  }
+
+  virtual void execute() override
+  {
+    shaman_spell_t::execute();
+
+    p() -> buff.elemental_mastery -> trigger();
   }
 };
 
@@ -4958,6 +4955,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "earth_shock"             ) return new              earth_shock_t( this, options_str );
   if ( name == "earthquake_totem"        ) return new         earthquake_totem_t( this, options_str );
   if ( name == "elemental_blast"         ) return new          elemental_blast_t( this, options_str );
+  if ( name == "elemental_mastery"       ) return new        elemental_mastery_t( this, options_str );
   if ( name == "ghost_wolf"              ) return new               ghost_wolf_t( this, options_str );
   if ( name == "feral_lunge"             ) return new              feral_lunge_t( this, options_str );
   if ( name == "fire_elemental"          ) return new           fire_elemental_t( this, options_str );
@@ -5145,11 +5143,6 @@ bool shaman_t::create_actions()
     earthen_rage = new earthen_rage_driver_t( this );
   }
 
-  if ( talent.magnitude -> ok() )
-  {
-    magnitude = new magnitude_t( this );
-  }
-
   if ( talent.lightning_rod -> ok() )
   {
     lightning_rod = new lightning_rod_t( this );
@@ -5233,13 +5226,13 @@ void shaman_t::init_spells()
 
   talent.elemental_fusion            = find_talent_spell( "Elemental Fusion"     );
   talent.primal_elementalist         = find_talent_spell( "Primal Elementalist"  );
-  talent.magnitude                   = find_talent_spell( "Magnitude"            );
+  talent.icefury                     = find_talent_spell( "Icefury"              );
 
-  talent.lightning_rod               = find_talent_spell( "Lightning Rod"        );
+  talent.elemental_mastery           = find_talent_spell( "Elemental Mastery"    );
   talent.storm_elemental             = find_talent_spell( "Storm Elemental"      );
   talent.aftershock                  = find_talent_spell( "Aftershock"           );
 
-  talent.icefury                     = find_talent_spell( "Icefury"              );
+  talent.lightning_rod               = find_talent_spell( "Lightning Rod"        );
   talent.liquid_magma_totem          = find_talent_spell( "Liquid Magma Totem"   );
 
   // Enhancement
@@ -5819,6 +5812,9 @@ void shaman_t::create_buffs()
   buff.t19_oh_8pc = stat_buff_creator_t( this, "might_of_the_maelstrom" )
     .spell( sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
     .trigger_spell( sets.set( specialization(), T19OH, B8 ) );
+  buff.elemental_mastery = haste_buff_creator_t( this, "elemental_mastery", talent.elemental_mastery )
+                           .default_value( 1.0 / ( 1.0 + talent.elemental_mastery -> effectN( 1 ).percent() ) )
+                           .cd( timespan_t::zero() ); // Handled by the action
 }
 
 // shaman_t::init_gains =====================================================
@@ -6232,6 +6228,11 @@ double shaman_t::composite_spell_haste() const
     h *= buff.tailwind_totem -> check_value();
   }
 
+  if ( buff.elemental_mastery -> up() )
+  {
+    h *= buff.elemental_mastery -> check_value();
+  }
+
   return h;
 }
 
@@ -6299,6 +6300,11 @@ double shaman_t::composite_melee_haste() const
   if ( buff.tailwind_totem -> up() )
   {
     h *= buff.tailwind_totem -> check_value();
+  }
+
+  if ( buff.elemental_mastery -> up() )
+  {
+    h *= buff.elemental_mastery -> check_value();
   }
 
   return h;
