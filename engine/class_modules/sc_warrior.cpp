@@ -659,7 +659,7 @@ public:
       anger_management( rage );
     }
 
-    if ( tactician_per_rage && rng().roll( tactician_per_rage * rage ) )
+    if ( tactician_per_rage && ab::rng().roll( tactician_per_rage * rage ) )
     {
       p() -> cooldown.colossus_smash -> reset( true );
       p() -> proc.tactician -> occur();
