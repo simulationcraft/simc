@@ -2757,6 +2757,14 @@ struct multi_shot_t: public hunter_ranged_attack_t
       }
     }
   }
+
+  virtual bool ready() override
+  {
+    if ( p() -> talents.sidewinders->ok() )
+      return false;
+
+    return hunter_ranged_attack_t::ready();
+  }
 };
 
 // Exotic Munitions ==================================================================
