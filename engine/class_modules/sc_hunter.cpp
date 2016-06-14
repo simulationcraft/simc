@@ -16,14 +16,13 @@
 //
 // Marksmanship
 //  Talents
-//   - Sentinel (Broken in game)
+//   - Sentinel
 //  Artifacts
 //
 // Survival
 //   - Harpoon
 //  Talents
 //   - Steel Trap
-//   - Dragonsfire Grenade
 //  Artifacts
 //   - Eagle's Claw
 //   - Talon Strike
@@ -3934,6 +3933,53 @@ struct carve_t: public hunter_melee_attack_t
   }
 };
 
+
+
+// Fury of the Eagle ================================================================
+
+struct fury_of_the_eagle_t: public hunter_melee_attack_t
+{
+  struct fury_of_the_eagle_tick_t: public hunter_melee_attack_t
+  {
+    fury_of_the_eagle_tick_t( hunter_t* p ):
+      hunter_melee_attack_t( "fury_of_the_eagle_tick", p, p -> find_spell( 203413 ) )
+    {
+      aoe = -1;
+      background = true;
+      may_crit = true;
+      radius = data().max_range();
+    }
+  };
+
+  fury_of_the_eagle_t( hunter_t* p, const std::string& options_str ):
+    hunter_melee_attack_t( "fury_of_the_eagle", p, p -> artifacts.fury_of_the_eagle )
+  {
+    parse_options( options_str );
+
+    channeled = true;
+    tick_zero = true;
+    tick_action = new fury_of_the_eagle_tick_t( p );
+  }
+
+  virtual void execute() override
+  {
+    hunter_melee_attack_t::execute();
+
+    if ( p() -> buffs.mongoose_fury -> up() )
+      p() -> buffs.mongoose_fury -> extend_duration( p(), timespan_t::from_seconds( 5.0 ) );
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = hunter_melee_attack_t::action_multiplier();
+
+    if ( p() -> buffs.mongoose_fury -> up() )
+      am *= 1.0 + p() -> buffs.mongoose_fury -> check_stack_value();
+
+    return am;
+  }
+};
+
 // Butchery ==========================================================================
 
 struct butchery_t: public hunter_melee_attack_t
@@ -4066,6 +4112,17 @@ public:
     hunter_action_t<spell_t>::execute();
     
     this -> try_steady_focus();
+  }
+  
+  virtual double composite_attack_power() const override
+  {
+    double ap = base_t::composite_attack_power();
+
+    // BUG - unaffected by AP granted by moknathal tactics
+    if ( p() -> buffs.moknathal_tactics -> check() )
+      ap /= 1.0 + p() -> buffs.moknathal_tactics -> check_stack_value();
+
+    return ap;
   }
 };
 
@@ -4732,7 +4789,6 @@ struct explosive_trap_t: public hunter_spell_t
       base_tick_time = data().effectN( 2 ).period();
       cooldown -> duration = p -> specs.explosive_trap -> cooldown();
       dot_duration = data().duration();
-      ground_aoe = true;
       hasted_ticks = false;
       may_crit = true;
       tick_may_crit = false;
@@ -4747,61 +4803,87 @@ struct explosive_trap_t: public hunter_spell_t
       if ( p -> artifacts.hunters_guile.rank() )
         cooldown -> duration *= 1.0 + p -> artifacts.hunters_guile.percent();
     }
-
-  virtual double composite_attack_power() const override
-  {
-    double ap = hunter_spell_t::composite_attack_power();
-
-    // BUG - unaffected by AP granted by moknathal tactics
-    if ( p() -> buffs.moknathal_tactics -> check() )
-      ap /= 1.0 + p() -> buffs.moknathal_tactics -> check_stack_value();
-
-    return ap;
-  }
 };
 
-// Fury of the Eagle ================================================================
+// Dragonsfire Grenade ==============================================================
 
-struct fury_of_the_eagle_t: public hunter_spell_t
+struct dragonsfire_grenade_t: public hunter_spell_t
 {
-  struct fury_of_the_eagle_tick_t: public hunter_spell_t
+  struct dragonsfire_conflagration_t: public hunter_spell_t
   {
-    fury_of_the_eagle_tick_t( hunter_t* p ):
-      hunter_spell_t( "fury_of_the_eagle_tick", p, p -> find_spell( 203413 ) )
+    player_t* source;
+    // Since dragonsfire scales n^2 with the number of targets,
+    // there's an option to speed up the sim by letting the aoe do all its damage upfront
+    dragonsfire_conflagration_t( hunter_t* p, bool do_damage_upfront = false ):
+      hunter_spell_t( "dragonsfire_conflagration", p, p -> find_spell( 194859 ) ), source( nullptr )
     {
       aoe = -1;
+      attack_power_mod.direct = do_damage_upfront ? 8.0 * ( num_targets() - 1 ) : 1.0;
       background = true;
       may_crit = true;
-      radius = data().max_range();
+      radius = 8.0;
+    }
+
+    virtual void impact( action_state_t* s ) override
+    {
+      if ( s -> target != source )
+        hunter_spell_t::impact( s );
     }
   };
 
-  fury_of_the_eagle_t( hunter_t* p, const std::string& options_str ):
-    hunter_spell_t( "fury_of_the_eagle", p, p -> artifacts.fury_of_the_eagle )
+  struct dragonsfire_grenade_tick_t: public hunter_spell_t
+  {
+
+    dragonsfire_conflagration_t* conflag;
+    dragonsfire_grenade_tick_t( hunter_t* p ):
+      hunter_spell_t( "dragonsfire_grenade", p, p -> find_spell( 194858 ) ), conflag( nullptr )
+    {
+      background = true;
+      dual = true;
+      hasted_ticks = false;
+
+      if ( num_targets() > 1 && num_targets() < 10 )
+      {
+        conflag = new dragonsfire_conflagration_t( p );
+        add_child( conflag );
+      }
+    }
+
+    virtual void tick( dot_t* d ) override
+    {
+      hunter_spell_t::tick( d );
+
+      if ( conflag )
+      {
+        conflag -> source = d -> target;
+        conflag -> execute();
+      }
+    }
+  };
+
+  dragonsfire_conflagration_t* conflag;
+  dragonsfire_grenade_t( hunter_t* p, const std::string& options_str ):
+    hunter_spell_t( "dragonsfire_grenade", p, p -> talents.dragonsfire_grenade ), conflag( nullptr )
   {
     parse_options( options_str );
 
-    channeled = true;
-    tick_zero = true;
-    tick_action = new fury_of_the_eagle_tick_t( p );
-  }
+    aoe = -1;
+    impact_action = new dragonsfire_grenade_tick_t( p );
+
+    // Avoid n^2 runtime on many targets
+    if ( num_targets() >= 10 )
+    {
+      conflag = new dragonsfire_conflagration_t( p, true );
+      add_child( conflag );
+    }
+  }  
 
   virtual void execute() override
   {
     hunter_spell_t::execute();
 
-    if ( p() -> buffs.mongoose_fury -> up() )
-      p() -> buffs.mongoose_fury -> extend_duration( p(), timespan_t::from_seconds( 5.0 ) );
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = hunter_spell_t::action_multiplier();
-
-    if ( p() -> buffs.mongoose_fury -> up() )
-      am *= 1.0 + p() -> buffs.mongoose_fury -> check_stack_value();
-
-    return am;
+    if ( conflag )
+      conflag -> execute();
   }
 };
 
@@ -4872,6 +4954,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "cobra_shot"            ) return new             cobra_shot_t( this, options_str );
   if ( name == "dire_beast"            ) return new             dire_beast_t( this, options_str );
   if ( name == "dire_frenzy"           ) return new            dire_frenzy_t( this, options_str );
+  if ( name == "dragonsfire_grenade"   ) return new    dragonsfire_grenade_t( this, options_str );
   if ( name == "exotic_munitions"      ) return new       exotic_munitions_t( this, options_str );
   if ( name == "explosive_shot"        ) return new         explosive_shot_t( this, options_str );
   if ( name == "explosive_trap"        ) return new         explosive_trap_t( this, options_str );
