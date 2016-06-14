@@ -15,6 +15,8 @@ namespace { // UNNAMED NAMESPACE
 
 struct mage_t;
 
+
+enum mage_rotation_e { ROTATION_NONE = 0, ROTATION_DPS, ROTATION_DPM, ROTATION_MAX };
 // Forcibly reset mage's current target, if it dies.
 struct current_target_reset_cb_t
 {
@@ -189,6 +191,20 @@ public:
          iv_haste,
          pet_multiplier;
 
+  // Legendary Effects
+  const special_effect_t* belovirs_final_stand,
+                        * cord_of_infinity,
+                        * darcklis_dragonfire_diadem,
+                        * koralons_burning_touch,
+                        * lady_vashjs_grasp,
+                        * magtheridons_banished_bracers,
+                        * marquee_bindings_of_the_sun_king,
+                        * mythic_kilt_of_the_rune_master,
+                        * norgannons_foresight,
+                        * rhonins_assaulting_armwraps,
+                        * shard_of_the_exodar,
+                        * zannesu_journey;
+                        
   // Benefits
   struct benefits_t
   {
@@ -262,6 +278,7 @@ public:
     cooldown_t* combustion,
               * cone_of_cold,
               * dragons_breath,
+              * evocation,
               * frozen_orb,
               * icy_veins,
               * inferno_blast,
@@ -307,6 +324,21 @@ public:
 
     proc_t* controlled_burn; // Tracking Controlled Burn talent
   } procs;
+
+  // Rotation ( DPS vs DPM )
+  struct rotation_t
+  {
+    mage_rotation_e current;
+    double mana_gain,
+           dps_mana_loss,
+           dpm_mana_gain;
+    timespan_t dps_time,
+               dpm_time,
+               last_time;
+
+    void reset() { memset( this, 0, sizeof( *this ) ); current = ROTATION_DPS; }
+    rotation_t() { reset(); }
+  } rotation;
 
   // Specializations
   struct specializations_t
@@ -472,6 +504,18 @@ public:
     wild_arcanist( nullptr ),
     pyrosurge( nullptr ),
     shatterlance( nullptr ),
+    belovirs_final_stand( nullptr ),
+    cord_of_infinity( nullptr ),
+    darcklis_dragonfire_diadem( nullptr ),
+    koralons_burning_touch( nullptr ),
+    lady_vashjs_grasp( nullptr ),
+    magtheridons_banished_bracers( nullptr ),
+    marquee_bindings_of_the_sun_king( nullptr ),
+    mythic_kilt_of_the_rune_master( nullptr ),
+    norgannons_foresight( nullptr ),
+    rhonins_assaulting_armwraps( nullptr ),
+    shard_of_the_exodar( nullptr ),
+    zannesu_journey( nullptr ),
     cinder_count( 6.0 ),
     distance_from_rune( 0.0 ),
     incanters_flow_stack_mult( find_spell( 116267 ) -> effectN( 1 ).percent() ),
@@ -483,6 +527,7 @@ public:
     gains( gains_t() ),
     pets( pets_t() ),
     procs( procs_t() ),
+    rotation( rotation_t() ),
     spec( specializations_t() ),
     talents( talents_list_t() )
   {
@@ -490,6 +535,7 @@ public:
     cooldowns.combustion       = get_cooldown( "combustion"       );
     cooldowns.cone_of_cold     = get_cooldown( "cone_of_cold"     );
     cooldowns.dragons_breath   = get_cooldown( "dragons_breath"   );
+    cooldowns.evocation        = get_cooldown( "evocation"        );
     cooldowns.frozen_orb       = get_cooldown( "frozen_orb"       );
     cooldowns.icy_veins        = get_cooldown( "icy_veins"        );
     cooldowns.inferno_blast    = get_cooldown( "inferno_blast"    );
@@ -1505,11 +1551,16 @@ struct mage_spell_t : public spell_t
        may_proc_missiles;
 
 public:
+  int dps_rotation,
+      dpm_rotation;
+
   mage_spell_t( const std::string& n, mage_t* p,
                 const spell_data_t* s = spell_data_t::nil() ) :
     spell_t( n, p, s ),
     consumes_ice_floes( true ),
-    frozen( false )
+    frozen( false ),
+    dps_rotation( 0 ),
+    dpm_rotation( 0 )
   {
     may_proc_missiles = harmful && !background;
     may_crit      = true;
@@ -4959,6 +5010,10 @@ struct time_warp_t : public mage_spell_t
 // Mage Custom Actions
 // ============================================================================
 
+// Choose Rotation ============================================================
+
+
+
 
 // Choose Target Action =======================================================
 
@@ -7603,6 +7658,22 @@ public:
 private:
   mage_t& p;
 };
+// Custom Gear ==============================================================
+
+// Generic Legendary Items
+using namespace unique_gear;
+using namespace actions;
+
+template<typename T>
+struct koralons_burning_touch_t : public scoped_action_callback_t<scorch_t>
+{
+  koralons_burning_touch_t() : super( MAGE_FIRE, "scorch" )
+  { }
+
+  void manipulate( scorch_t* action, const special_effect_t& e ) override
+  { action -> scorch_multiplier = e.driver() -> effectN( 1 ).percent(); }
+
+};
 
 // MAGE MODULE INTERFACE ====================================================
 
@@ -7640,6 +7711,7 @@ static void shatterlance( special_effect_t& effect )
 
 struct mage_module_t : public module_t
 {
+public:
   mage_module_t() : module_t( MAGE ) {}
 
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
@@ -7654,6 +7726,7 @@ struct mage_module_t : public module_t
     unique_gear::register_special_effect( 184903, wild_arcanist );
     unique_gear::register_special_effect( 184904, pyrosurge     );
     unique_gear::register_special_effect( 184905, shatterlance  );
+    unique_gear::register_special_effect( 208099, koralons_burning_touch_t() );
   }
 
   virtual void register_hotfixes() const override
