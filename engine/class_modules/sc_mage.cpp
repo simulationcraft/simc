@@ -270,6 +270,9 @@ public:
     buff_t* chain_reaction,
           * chilled_to_the_core;
 
+    // Legendary 
+    buff_t* magtheridons_might;
+
   } buffs;
 
   // Cooldowns
@@ -3286,7 +3289,11 @@ struct fireball_t : public fire_mage_spell_t
       c += td( target ) -> debuffs.firestarter
                         -> data().effectN( 1 ).percent();
     }
-
+    if( p() -> talents.fire_starter -> ok() && ( target -> health_percentage() >
+        p() -> talents.fire_starter -> effectN( 1 ).base_value() ) )
+    {
+      c = 1.0;
+    }
     return c;
   }
 
@@ -3297,11 +3304,9 @@ struct fireball_t : public fire_mage_spell_t
       c += p() -> buffs.enhanced_pyrotechnics -> stack() *
            p() -> buffs.enhanced_pyrotechnics -> data().effectN( 1 ).percent();
 
-      if( p() -> talents.fire_starter -> ok() && ( target -> health_percentage() >
-          p() -> talents.fire_starter -> effectN( 1 ).base_value() ) )
-        c = 1.0;
     return c;
   }
+
 
   virtual double composite_crit_multiplier() const override
   {
@@ -3833,11 +3838,13 @@ struct ice_lance_t : public frost_mage_spell_t
   int frozen_orb_action_id;
   frost_bomb_explosion_t* frost_bomb_explosion;
 
-  double shatterlance_effect;
+  double shatterlance_effect,
+         magtheridons_banished_bracers_multiplier;
 
   ice_lance_t( mage_t* p, const std::string& options_str ) :
     frost_mage_spell_t( "ice_lance", p, p -> find_class_spell( "Ice Lance" ) ),
-    shatterlance_effect( 0.0 )
+    shatterlance_effect( 0.0 ),
+    magtheridons_banished_bracers_multiplier( 0.0 )
   {
     parse_options( options_str );
 
@@ -3889,6 +3896,11 @@ struct ice_lance_t : public frost_mage_spell_t
 
     frost_mage_spell_t::execute();
 
+    //TODO: Impact vs Execute? FoF required or not?
+    if ( magtheridons_banished_bracers_multiplier > 0.0 )
+    {
+      p() -> buffs.magtheridons_might -> trigger();
+    }
     if ( p() -> talents.thermal_void -> ok() &&
          p() -> buffs.icy_veins -> check() )
     {
@@ -3959,6 +3971,11 @@ struct ice_lance_t : public frost_mage_spell_t
     if ( p() -> buffs.chain_reaction -> up() )
     {
       am *= 1.0 + p() -> buffs.chain_reaction -> data().effectN( 1 ).percent();
+    }
+
+    if ( p() -> buffs.magtheridons_might -> up() )
+    {
+      am *= 1.0 + ( magtheridons_banished_bracers_multiplier * p() -> buffs.magtheridons_might -> check() );
     }
     return am;
   }
@@ -4785,12 +4802,12 @@ struct rune_of_power_t : public mage_spell_t
 
 struct scorch_t : public fire_mage_spell_t
 {
-  double scorch_multiplier;
+  double koralons_burning_touch_multiplier;
 
   scorch_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "scorch", p,
                        p -> find_specialization_spell( "Scorch" ) ),
-    scorch_multiplier( 0 )
+    koralons_burning_touch_multiplier( 0.0 )
   {
     parse_options( options_str );
 
@@ -4808,7 +4825,17 @@ struct scorch_t : public fire_mage_spell_t
 
     return m;
   }
+  double composite_target_multiplier( player_t* target ) const override 
+  {
+    double ctm = fire_mage_spell_t::composite_target_multiplier( target );
 
+    if ( ( koralons_burning_touch_multiplier > 0.0 ) && ( target -> health_percentage() <= 35 ) )
+    {
+      ctm *= 1.0 + koralons_burning_touch_multiplier;
+    }
+
+    return ctm;
+  }
   virtual void execute() override
   {
     fire_mage_spell_t::execute();
@@ -6155,6 +6182,9 @@ void mage_t::create_buffs()
 
   buffs.chilled_to_the_core = buff_creator_t( this, "chilled_to_the_core", find_spell( 195446 ) )
                                    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  // Legendary 
+  buffs.magtheridons_might = buff_creator_t( this, "magtheridons_might", find_spell( 214404 ) );
 }
 
 // mage_t::create_options ===================================================
@@ -7667,16 +7697,28 @@ private:
 using namespace unique_gear;
 using namespace actions;
 
+
+// Fire Legendary Items
 struct koralons_burning_touch_t : public scoped_action_callback_t<scorch_t>
 {
   koralons_burning_touch_t() : super( MAGE_FIRE, "scorch" )
   { }
 
   void manipulate( scorch_t* action, const special_effect_t& e ) override
-  { action -> scorch_multiplier = e.driver() -> effectN( 1 ).percent(); }
+  { action -> koralons_burning_touch_multiplier = e.driver() -> effectN( 1 ).percent(); }
 
 };
 
+// Frost Legendary Items
+
+struct magtheridons_banished_bracers_t : public scoped_action_callback_t<ice_lance_t>
+{
+  magtheridons_banished_bracers_t() : super( MAGE_FROST, "ice_lance" )
+  { }
+
+  void manipulate( ice_lance_t* action, const special_effect_t& e ) override
+  { action -> magtheridons_banished_bracers_multiplier = e.driver() -> effectN( 1 ).percent(); }
+};
 // MAGE MODULE INTERFACE ====================================================
 
 static void do_trinket_init( mage_t*                  p,
@@ -7729,6 +7771,7 @@ public:
     unique_gear::register_special_effect( 184904, pyrosurge     );
     unique_gear::register_special_effect( 184905, shatterlance  );
     unique_gear::register_special_effect( 208099, koralons_burning_touch_t() );
+    unique_gear::register_special_effect( 214403, magtheridons_banished_bracers_t() );
   }
 
   virtual void register_hotfixes() const override
