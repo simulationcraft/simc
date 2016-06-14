@@ -5816,7 +5816,7 @@ double hunter_t::composite_melee_haste() const
   double h = player_t::composite_melee_haste();
 
   if ( buffs.instincts_of_the_raptor -> check() )
-    h *= 1.0 + buffs.instincts_of_the_raptor -> default_value;
+    h *= 1.0 / ( 1.0 + buffs.instincts_of_the_raptor -> default_value );
 
   return h;
 }
@@ -5828,7 +5828,7 @@ double hunter_t::composite_spell_haste() const
   double h = player_t::composite_spell_haste();
 
   if ( buffs.instincts_of_the_raptor -> check() )
-    h *= 1.0 + buffs.instincts_of_the_raptor -> default_value;
+    h *= 1.0 / ( 1.0 + buffs.instincts_of_the_raptor -> default_value );
 
   return h;
 }
