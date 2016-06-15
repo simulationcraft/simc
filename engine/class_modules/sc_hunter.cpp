@@ -4922,6 +4922,7 @@ dots( dots_t() )
     debuffs.vulnerable      = buff_creator_t( *this, "vulnerability" )
                                   .spell( p -> find_spell( 187131 ) )
                                   .default_value( p -> find_spell( 187131 ) -> effectN( 2 ).percent() + p -> talents.patient_sniper -> effectN( 2 ).percent() )
+                                  .duration( timespan_t::from_seconds( 8.0 ) )
                                   .max_stack( 1 );
   }
   else
