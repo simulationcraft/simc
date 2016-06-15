@@ -116,7 +116,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #5 (id=296790)   : Apply Aura (6) | Unknown effect sub type (332)
                    Base Value: 201427 | Scaled Value: 201427 | Target: Self(1)
-                   Affected Spells: Chaos Strike (162794), Chaos Strike (222031)
+                   Affected Spells: Chaos Strike (162794)
 #6 (id=296792)   : Apply Aura (6) | Unknown effect sub type (332)
                    Base Value: 210152 | Scaled Value: 210152 | Target: Self(1)
                    Affected Spells: Blade Dance (188499), Blade Dance (199552), Blade Dance (200685)
@@ -136,7 +136,7 @@ School           : Chaos
 Resource         : 40 Fury
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Metamorphosis (162264), Mastery: Demonic Presence (185164), Critical Chaos (201455), Chaos Cleave (206475), Item - Demon Hunter T19 Havoc 4P Bonus (211074), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613), Warglaives of Chaos (214795)
+Affecting spells : Metamorphosis (162264), Mastery: Demonic Presence (185164), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ x....... 
                  : ........ ........ ........ ........   ........ ....x... ........ ........ 
@@ -145,12 +145,12 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=228690)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 30 | Scaled Value: 30 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=230219)   : Trigger Spell: Chaos Strike (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 222031 | Target: Enemy(6)
 #3 (id=293650)   : Trigger Spell: Chaos Strike (64)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 300 | Trigger Spell: 199547 | Target: Enemy(6)
-Description      : Slice your target for ${$222031sw1+$199547sw1} Chaos damage.  Critical strikes do not consume Fury.
+Description      : Slice your target for ${$222031sw1+$199547sw1} Chaos damage. Critical strikes refund $197125s1 Fury.
 
 Name             : Demon Soul (id=163073) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -747,7 +747,6 @@ Description      : Summons darkness around you in an 8 yd radius, cloaking frien
 Name             : Chaos Strike (Passive) (id=197125) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
 School           : Physical
-Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........ 
                  : Yellow Melee, AOE Hostile Spell
@@ -760,7 +759,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=289481)   : Apply Aura (6) | Proc Trigger Spell (42)
-                   Base Value: 40 | Scaled Value: 40 | Target: Self(1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
 Description      : $@spelldesc162794
 
 Name             : Glide (id=197130) [Spell Family (107), Passive, Hidden] 
@@ -801,7 +800,7 @@ Effects          :
                    Base Value: -200 | Scaled Value: -200 | Target: Self(1)
 #3 (id=291387)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : Blasts all enemies directly in front of you for $<dmg> Chaos damage.  This ability always crits.
+Description      : Blasts all enemies directly in front of you for $<dmg> Chaos damage. Eye Beam always critically strikes.
 Variables        : $dmg=$?a203550[${$198030m1*14}][${$198030m1*9}]
 
 Name             : Eye Beam (id=198030) [Spell Family (107)] 
@@ -817,7 +816,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=291051)   : School Damage: chromatic (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.60700 | Radius: 20 yards | Target: Unknown(129)
+                   Base Value: 1 | Scaled Value: 1 (avg=0, dl=0.1) | AP Coefficient: 0.60700 | Radius: 20 yards | Target: Unknown(129)
 Description      : $@spelldesc198013
 
 Name             : Blur (id=198589) [Spell Family (107)] 
@@ -916,7 +915,7 @@ Effects          :
 #1 (id=293656)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=293657)   : Weapon Damage% (31)
-                   Base Value: 105 | Scaled Value: 1.05 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 110 | Scaled Value: 1.1 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 Description      : $@spelldesc188499
 
 Name             : Metamorphosis (id=200166) [Spell Family (107)] 
@@ -952,7 +951,7 @@ Effects          :
 #1 (id=295486)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=295487)   : Weapon Damage% (31)
-                   Base Value: 315 | Scaled Value: 3.15 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 330 | Scaled Value: 3.3 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 Description      : $@spelldesc188499
 
 Name             : Activating Specialization (id=200749) [Hidden] 
@@ -980,7 +979,7 @@ School           : Chaos
 Resource         : 40 Fury
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Metamorphosis (162264), Mastery: Demonic Presence (185164), Chaos Cleave (206475), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613)
+Affecting spells : Metamorphosis (162264), Mastery: Demonic Presence (185164), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ x....... 
                  : ........ ........ ........ ........   ........ ....x... ........ ........ 
@@ -989,18 +988,20 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=296756)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 30 | Scaled Value: 30 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=296757)   : Trigger Spell: Annihilation (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 227518 | Target: Self(1)
 #3 (id=296758)   : Trigger Spell: Annihilation (64)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 300 | Trigger Spell: 201428 | Target: Self(1)
-Description      : Slice your target for ${$227518sw1+$201428sw1} Chaos damage. Critical strikes do not consume Fury.
+Description      : Slice your target for ${$227518sw1+$201428sw1} Chaos damage.
+
+Chaos Strike has a $s1% chance to have its cost refunded.
 
 Name             : Annihilation (id=201428) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chaos
 Range            : 15 yards
-Affecting spells : Mastery: Demonic Presence (185164)
+Affecting spells : Mastery: Demonic Presence (185164), Critical Chaos (201455), Item - Demon Hunter T19 Havoc 4P Bonus (211074), Warglaives of Chaos (214795)
 Triggered by     : Annihilation (201427)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .x...... ........ x....... 
@@ -1013,7 +1014,7 @@ Effects          :
 #1 (id=296759)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=296760)   : Weapon Damage% (31)
-                   Base Value: 840 | Scaled Value: 8.4 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 728 | Scaled Value: 7.28 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc201427
 
 Name             : Fury of the Illidari (Artifact) (id=201467) [Spell Family (107)] 
@@ -1550,9 +1551,9 @@ Effects          :
 #1 (id=300651)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=300652)   : Weapon Damage% (31)
-                   Base Value: 350 | Scaled Value: 3.5 | Target: Enemy(6)
+                   Base Value: 125 | Scaled Value: 1.25 | Target: Enemy(6)
 #3 (id=300653)   : Energize Power (30)
-                   Base Value: 19 | Scaled Value: 20 - 30 | Value Range: 11 | Misc Value: fury | Target: Self(1)
+                   Base Value: 9 | Scaled Value: 10 - 15 | Value Range: 6 | Misc Value: fury | Target: Self(1)
 Description      : Inflicts $sw1 Shadow damage and generates $m3 to $M3 Fury.
 
 Name             : Soul Cleave (id=203798) [Spell Family (107)] 
@@ -1797,9 +1798,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=301971)   : School Damage: fire (2)
-                   Base Value: 0 | Scaled Value: 0 (avg=1, dl=0.1) | AP Coefficient: 4.12500 | Radius: 8 yards | Target: AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 (avg=1, dl=0.1) | AP Coefficient: 1.65000 | Radius: 8 yards | Target: AOE enemy (instant)(16)
 #2 (id=301972)   : Apply Aura (6) | Periodic Damage: fire every 2 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 (avg=1, dl=0.1) | AP Coefficient: 1.50000 | Radius: 8 yards | Target: AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 (avg=1, dl=0.1) | AP Coefficient: 0.60000 | Radius: 8 yards | Target: AOE enemy (instant)(16)
 Description      : $@spelldesc204596
 Tooltip          : Suffering $s2 Fire damage every $t2 sec.
 
@@ -1919,7 +1920,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=305360)   : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 17 | Target: Self(1)
-                   Affected Spells: Chaos Strike (162794), Chaos Strike (199547), Annihilation (201427), Chaos Strike (222031), Annihilation (227518)
+                   Affected Spells: Chaos Strike (199547), Chaos Strike (222031), Annihilation (227518)
 Description      : Chaos Strike hits an additional target.
 
 Name             : Momentum (id=206476) [Spell Family (107), Passive] 
@@ -2343,7 +2344,7 @@ Effects          :
 #1 (id=307772)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Radius: 8 yards | Target: Cone Front(104)
 #2 (id=307773)   : Weapon Damage% (31)
-                   Base Value: 415 | Scaled Value: 4.15 | Radius: 8 yards | Target: Cone Front(104)
+                   Base Value: 330 | Scaled Value: 3.3 | Radius: 8 yards | Target: Cone Front(104)
 Description      : $@spelldesc203798
 
 Name             : Demon Soul (id=208195) [Spell Family (107)] 
@@ -2646,7 +2647,7 @@ Effects          :
 #1 (id=311156)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=311157)   : Weapon Damage% (31)
-                   Base Value: 210 | Scaled Value: 2.1 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 143 | Scaled Value: 1.43 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 Description      : $@spelldesc210152
 
 Name             : Death Sweep (id=210155) [Spell Family (107)] 
@@ -2664,7 +2665,7 @@ Effects          :
 #1 (id=311159)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=311160)   : Weapon Damage% (31)
-                   Base Value: 630 | Scaled Value: 6.3 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 429 | Scaled Value: 4.29 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 Description      : $@spelldesc210152
 
 Name             : Soul Fragments (id=210788) [Spell Family (107), Hidden] 
@@ -2844,7 +2845,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=314431)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.65000 | Radius: 20 yards | Target: Unknown(129)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.65000 | Radius: 13 yards | Target: Cone Front(104)
 Description      : $@spelldesc212084
 
 Name             : Fel Devastation (id=212106) [Spell Family (107)] 
@@ -3362,14 +3363,14 @@ Effects          :
 #1 (id=331357)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Radius: 8 yards | Target: Cone Front(104)
 #2 (id=331358)   : Weapon Damage% (31)
-                   Base Value: 415 | Scaled Value: 4.15 | Radius: 8 yards | Target: Cone Front(104)
+                   Base Value: 330 | Scaled Value: 3.3 | Radius: 8 yards | Target: Cone Front(104)
 Description      : $@spelldesc203798
 
 Name             : Chaos Strike (id=222031) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chaos
 Range            : 15 yards
-Affecting spells : Metamorphosis (162264), Mastery: Demonic Presence (185164), Critical Chaos (201455), Chaos Cleave (206475), Item - Demon Hunter T19 Havoc 4P Bonus (211074), Warglaives of Chaos (214795)
+Affecting spells : Mastery: Demonic Presence (185164), Critical Chaos (201455), Chaos Cleave (206475), Item - Demon Hunter T19 Havoc 4P Bonus (211074), Warglaives of Chaos (214795)
 Triggered by     : Chaos Strike (162794)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ......x. 
@@ -3610,7 +3611,7 @@ Name             : Annihilation (id=227518) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Chaos
 Range            : 15 yards
-Affecting spells : Mastery: Demonic Presence (185164), Chaos Cleave (206475)
+Affecting spells : Mastery: Demonic Presence (185164), Critical Chaos (201455), Chaos Cleave (206475), Item - Demon Hunter T19 Havoc 4P Bonus (211074), Warglaives of Chaos (214795)
 Triggered by     : Annihilation (201427)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ......x. 
@@ -3623,7 +3624,7 @@ Effects          :
 #1 (id=342015)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=342016)   : Weapon Damage% (31)
-                   Base Value: 525 | Scaled Value: 5.25 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 455 | Scaled Value: 4.55 | Chain Targets: 1 | Target: Enemy(6)
 Description      : Slice your target for ${$sw1+$201428sw1} Chaos damage.  Critical strikes do not consume Fury.
 
 

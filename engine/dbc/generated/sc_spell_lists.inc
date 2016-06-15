@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 21874
+// Class based active abilities, wow build 21952
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -49,7 +49,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
         1719, // Battle Cry
        18499, // Berserker Rage
-       46924, // Bladestorm
+      227847, // Bladestorm
          845, // Cleave
       167105, // Colossus Smash
        97462, // Commanding Shout
@@ -116,7 +116,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       121183, // Contemplation
        35395, // Crusader Strike
          642, // Divine Shield
-      209202, // Eye of Tyr (Artifact, Active Mitigation)
+      209202, // Eye of Tyr (Artifact)
        62124, // Hand of Reckoning
       162056, // Jailer's Judgment
        20271, // Judgment
@@ -304,10 +304,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Rogue
   {
-    // General tree, 15 abilities
+    // General tree, 16 abilities
     {
        22482, // Blade Flurry
        31224, // Cloak of Shadows
+      212205, // Create: Crimson Vial (Honor Talent)
       185311, // Crimson Vial
       202665, // Curse of the Dreadblades (Artifact)
         2818, // Deadly Poison
@@ -491,7 +492,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
        48707, // Anti-Magic Shell
       220143, // Apocalypse (Artifact)
-      205223, // Consumption (Artifact, Active Mitigation)
+      205223, // Consumption (Artifact)
       111673, // Control Undead
       127344, // Corpse Explosion
        56222, // Dark Command
@@ -948,7 +949,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       164812, // Moonfire (Lunar)
       175682, // Nature's Control
       202767, // New Moon (Artifact)
-      200851, // Rage of the Sleeper (Artifact, Active Mitigation)
+      200851, // Rage of the Sleeper (Artifact)
        20484, // Rebirth
       210053, // Stag Form (Shapeshift)
       164815, // Sunfire (Solar)
@@ -1120,7 +1121,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 };
 #define TREE_SPECIALIZATION_SIZE (29)
 
-// Talent tree specialization abilities, wow build 21874
+// Talent tree specialization abilities, wow build 21952
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1189,7 +1190,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       137049, // Arms Warrior
         1719, // Battle Cry
        18499, // Berserker Rage
-       46924, // Bladestorm
+      227847, // Bladestorm
          845, // Cleave
       167105, // Colossus Smash
        97462, // Commanding Shout
@@ -2130,7 +2131,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 21874
+// Class mastery abilities, wow build 21952
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2369,7 +2370,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 21874
+// Racial abilities, wow build 21952
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3107,7 +3108,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 };
 #define SET_BONUS_DATA_SIZE (472)
 
-// Set bonus data, wow build 21874
+// Set bonus data, wow build 21952
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -3351,9 +3352,9 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Deathlord's Battleplate"                    ,   "tier19oh",      3,  1269,   19,   8,   6,   -1, 221620, { 139673, 139674, 139675, 139676, 139677, 139678, 139679, 139680,  0 } },
   { "Raiment of the Farseer"                     ,   "tier19oh",      3,  1278,   19,   2,   7,   -1, 221615, { 139698, 139699, 139700, 139701, 139702, 139703, 139704, 139705,  0 } },
   { "Raiment of the Farseer"                     ,   "tier19oh",      3,  1278,   19,   4,   7,   -1, 221617, { 139698, 139699, 139700, 139701, 139702, 139703, 139704, 139705,  0 } },
-  { "Raiment of the Farseer"                     ,   "tier19oh",      3,  1278,   19,   6,   7,  263, 221535, { 139698, 139699, 139700, 139701, 139702, 139703, 139704, 139705,  0 } },
   { "Raiment of the Farseer"                     ,   "tier19oh",      3,  1278,   19,   6,   7,  262, 221534, { 139698, 139699, 139700, 139701, 139702, 139703, 139704, 139705,  0 } },
   { "Raiment of the Farseer"                     ,   "tier19oh",      3,  1278,   19,   6,   7,  264, 221534, { 139698, 139699, 139700, 139701, 139702, 139703, 139704, 139705,  0 } },
+  { "Raiment of the Farseer"                     ,   "tier19oh",      3,  1278,   19,   6,   7,  263, 221535, { 139698, 139699, 139700, 139701, 139702, 139703, 139704, 139705,  0 } },
   { "Raiment of the Farseer"                     ,   "tier19oh",      3,  1278,   19,   8,   7,   -1, 221664, { 139698, 139699, 139700, 139701, 139702, 139703, 139704, 139705,  0 } },
   { "Vesture of Tirisgarde"                      ,   "tier19oh",      3,  1273,   19,   2,   8,   -1, 221615, { 139751, 139747, 139748, 139749, 139750, 139752, 139753, 139754,  0 } },
   { "Vesture of Tirisgarde"                      ,   "tier19oh",      3,  1273,   19,   4,   8,   -1, 221617, { 139751, 139747, 139748, 139749, 139750, 139752, 139753, 139754,  0 } },
@@ -3601,9 +3602,9 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Vestment of Second Sight"                   ,     "tier19",      6,  1282,   19,   4,  12,  577, 211074, { 138375, 138376, 138377, 138378, 138379, 138380,  0 } },
   { "Vestment of Second Sight"                   ,     "tier19",      6,  1282,   19,   4,  12,  581, 211077, { 138375, 138376, 138377, 138378, 138379, 138380,  0 } },
 };
-#define RPPMMOD_SIZE (194)
+#define RPPMMOD_SIZE (196)
 
-// 194 RPPM Modifiers, wow build level 21874
+// 196 RPPM Modifiers, wow build level 21952
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  49530,    4,  1,  1.0000 },
   {  51128,    4,  1,  1.0000 },
@@ -3799,11 +3800,13 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 225601,    4,  1,  1.0000 },
   { 225606,    4,  1,  1.0000 },
   { 227171,    4,  1,  1.0000 },
+  { 227868,    4,  1,  1.0000 },
+  { 228141,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
 };
 #define ARTIFACT_SIZE (41)
 
-// Artifact base data, wow build 21874
+// Artifact base data, wow build 21952
 static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
   {  2,  70 },
   {  3, 577 },
@@ -3849,7 +3852,7 @@ static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
 };
 #define ARTIFACT_POWER_SIZE (715)
 
-// Artifact power data, wow build 21874
+// Artifact power data, wow build 21952
 static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] = {
   {   40,   2,  0,   0, "Wake of Ashes"                      }, // Wake of Ashes (id=205273, n_ranks=1)
   {   41,   2,  4,   3, "Highlord's Judgment"                }, // Highlord's Judgment (id=186941, n_ranks=6)
@@ -4093,7 +4096,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1178,  37, 11,   3, "Open Link"                          }, // Open Link (id=211144, n_ranks=6)
   { 1179,  37, 12,   3, "Firm Resolve"                       }, // Firm Resolve (id=211131, n_ranks=6)
   { 1180,  37,  0,   1, "Imp-erator"                         }, // Imp-erator (id=211158, n_ranks=1)
-  { 1181,  37,  0,   1, "Fel Skin"                           }, // Fel Skin (id=218567, n_ranks=1)
+  { 1181,  37,  0,   1, "Soul Skin"                          }, // Soul Skin (id=218567, n_ranks=1)
   { 1182,  37,  0,   1, "Doom, Doubled"                      }, // Doom, Doubled (id=218572, n_ranks=1)
   { 1183,  37,  1,   1, "The Expendables"                    }, // The Expendables (id=211219, n_ranks=1)
   { 1184,  37,  2,   1, "Thal'kiel's Discord"                }, // Thal'kiel's Discord (id=211720, n_ranks=1)
@@ -4376,7 +4379,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1202,  52,  0,   0, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1277,  52,  0,   0, "Exploding Keg"                      }, // Exploding Keg (id=214326, n_ranks=1)
   { 1278,  52,  4,   3, "Obsidian Fists"                     }, // Obsidian Fists (id=213051, n_ranks=6)
-  { 1279,  52,  5,   3, "Adjunct Advantage"                  }, // Adjunct Advantage (id=213049, n_ranks=6)
+  { 1279,  52,  5,   3, "Hot Blooded"                        }, // Hot Blooded (id=213049, n_ranks=6)
   { 1280,  52,  6,   3, "Overflow"                           }, // Overflow (id=213180, n_ranks=6)
   { 1281,  52,  7,   3, "Dark Side of the Moon"              }, // Dark Side of the Moon (id=213062, n_ranks=6)
   { 1282,  52,  8,   3, "Staggering Around"                  }, // Staggering Around (id=213055, n_ranks=6)
@@ -4569,7 +4572,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
 };
 #define ARTIFACT_POWER_RANK_SIZE (3062)
 
-// Artifact power rank data, wow build 21874
+// Artifact power rank data, wow build 21952
 static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RANK_SIZE] = {
   { 2316,    40,  0, 205273,      0.000 },
   { 2317,    41,  0, 186941,      0.000 },

@@ -419,7 +419,7 @@ Attributes       : ........ ........ .....x.. x..x....   ...x.x.x ........ .....
                  : ........ ......x. ...x.... ........   ......xx .x...... ..x..... ........ 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ..x..... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : .....x.. ....x... ........ ........   ........ ...x.... ....x... ........ 
+                 : .....x.. .x..x... ........ ........   ........ ...x.... ....x... ........ 
                  : ........ ........ ......x. ...x....   ........ ........ ........ ..x..... 
                  : Not a proc (105)
 Effects          :
@@ -572,9 +572,11 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self(1)
 #2 (id=10780)    : Trigger Spell: Bestial Wrath (64)
                    Base Value: 15 | Scaled Value: 15 | Trigger Spell: 186254
+#3 (id=342782)   : Dummy (3)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self(1)
 Description      : Sends you and your pet into a rage, increasing all damage you both deal by $s1% for $d.
 
-Bestial Wrath's remaining cooldown is reduced by $s2 sec each time you use $?s217200[Dire Frenzy][Dire Beast].
+Bestial Wrath's remaining cooldown is reduced by $s3 sec each time you use $?s217200[Dire Frenzy][Dire Beast].
 Tooltip          : Damage dealt increased by $s1%.
 
 Name             : Intimidation (id=19577) [Spell Family (9)] 
@@ -3656,7 +3658,7 @@ Class            : Marksmanship Hunter
 School           : Physical
 Spell Level      : 18
 Proc Chance      : 100%
-Real PPM         : 6.5 (Haste multiplier)
+Real PPM         : 5 (Haste multiplier)
 Proc Flags       : ......x. ........ ........ ........ 
                  : White Ranged
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -3837,7 +3839,7 @@ Tooltip          : Critical Strike chance on abilities increased by $s1%.
 Name             : Bursting Shot (id=186387) [Spell Family (9)] 
 Class            : Marksmanship Hunter
 School           : Physical
-Resource         : 50 Focus
+Resource         : 10 Focus
 Spell Level      : 22
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
@@ -4582,7 +4584,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=285183)   : Apply Aura (6) | Decrease Movement Speed% (33)
@@ -4812,7 +4814,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=286030)   : Apply Aura (6) | Periodic Damage: fire every 1 seconds (3)
@@ -5272,7 +5274,7 @@ Name             : Mok'Nathal Tactics (id=201081) [Spell Family (9)]
 Class            : Hunter
 School           : Nature
 Duration         : 8 seconds
-Stacks           : 5 maximum
+Stacks           : 4 maximum
 Proc Chance      : 101%
 Triggered by     : Way of the Mok'Nathal (201082)
 Attributes       : ........ ........ ..x..... .....x..   ........ ........ ........ ........ 
@@ -5283,6 +5285,8 @@ Attributes       : ........ ........ ..x..... .....x..   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=296090)   : Apply Aura (6) | Unknown effect sub type (166)
+                   Base Value: 3 | Scaled Value: 3 | Target: Self(1)
+#2 (id=342988)   : Apply Aura (6) | Unknown effect sub type (167)
                    Base Value: 5 | Scaled Value: 5 | Target: Self(1)
 Description      : $@spelldesc109306
 Tooltip          : Attack Power increased by $s1%
@@ -5440,8 +5444,7 @@ Description      : A coordinated attack on the target, where you deal $sw1 Physi
 If the target is attacking you, your pet's attack will deal $s3% increased damage and $s4% increased threat. Otherwise, your attack will deal $s3% increased damage.$?s191334[
 
 Flanking strike has double the normal chance to trigger Hunting Companion.][]
-Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
-$damage=${1.5*($83381m1+($RAP*2.5))*$<bmMastery>*(1+$@versadmg)}
+Variables        : $damage=${1.5*(($AP*2.152))*(1+$@versadmg)}
 
 
 Name             : Fury of the Eagle (id=203413) [Spell Family (9)] 
@@ -6019,7 +6022,7 @@ Effects          :
                    Base Value: 125 | Scaled Value: 125 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Vulnerable (187131)
 #3 (id=341737)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
-                   Base Value: -22000 | Scaled Value: -22000 | Misc Value: 1 | Target: Self(1)
+                   Base Value: -24000 | Scaled Value: -24000 | Misc Value: 1 | Target: Self(1)
                    Affected Spells: Vulnerable (187131)
 #4 (id=341738)   : Apply Aura (6) | Add Flat Modifier (107)
                    Base Value: -2 | Scaled Value: -2 | Misc Value: 37 | Target: Self(1)

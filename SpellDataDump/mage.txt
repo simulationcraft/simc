@@ -42,7 +42,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=75)       : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.65000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.75000 | Target: Enemy(6)
 #2 (id=76)       : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Launches a bolt of frost at the enemy, causing $s1 Frost damage and slowing movement speed by $205708s1% for $205708d.
@@ -161,7 +161,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=91)       : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.70000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.00000 | Target: Enemy(6)
 Description      : Throws a fiery ball that causes $s1 Fire damage.
 
 Name             : Arcane Explosion (id=1449) [Spell Family (3)] 
@@ -436,7 +436,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=4785)     : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.00000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.30000 | Target: Enemy(6)
 Description      : Hurls an immense fiery boulder that causes $s1 Fire damage.
 
 Name             : Ice Barrier (id=11426) [Spell Family (3)] 
@@ -770,7 +770,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=20028)    : School Damage: arcane (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.55000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.65000 | Target: Enemy(6)
 #2 (id=20029)    : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: none | Target: Self(1)
 Description      : Blasts the target with energy, dealing $30451s1 Arcane damage.
@@ -799,7 +799,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=20036)    : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 (avg=0.335, dl=0.25) | SP Coefficient: 0.50000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 (avg=0.335, dl=0.25) | SP Coefficient: 0.55000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=85836)    : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 #3 (id=257156)   : Server Side Script (77)
@@ -1449,7 +1449,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=53215)    : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 (avg=1.65, dl=0.1) | SP Coefficient: 0.72000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 (avg=1.65, dl=0.1) | SP Coefficient: 0.48000 | Target: Enemy(6)
 #2 (id=53216)    : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
 Description      : Inflicts Frost damage to an enemy and reduces its movement speed for $d.
@@ -1800,7 +1800,6 @@ GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 60 seconds
 Category         : 1269
-Affecting spells : Lonely Winter (205024)
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ....x... 
                  : ..x..... ........ ......x. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1924,7 +1923,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=90295)    : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 (avg=1.8, dl=0.2) | SP Coefficient: 0.90000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 (avg=1.8, dl=0.2) | SP Coefficient: 0.65000 | Target: Enemy(6)
 Description      : Hurls a fiery ball that causes $s1 Fire damage.
 
 Name             : Arcane Blast (id=88084) [Spell Family (3)] 
@@ -1943,7 +1942,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=90297)    : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 (avg=0.9, dl=0.15) | SP Coefficient: 0.45000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 (avg=0.9, dl=0.15) | SP Coefficient: 0.33000 | Target: Enemy(6)
 #2 (id=90298)    : Trigger Spell: Arcane Charge (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 36032 | Target: Self(1)
 Description      : Blasts the target with energy, dealing $30451s1 Arcane damage. Generates an Arcane Charge.
@@ -2048,7 +2047,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=120062)   : School Damage: fire (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | Target: Enemy(6)
 Description      : Blasts the enemy for $s1 Fire damage. This damage is always a critical strike. Unaffected by the global cooldown and castable while casting.
 
 Name             : Greater Invisibility (id=110959) [Spell Family (3)] 
@@ -2121,10 +2120,10 @@ Class            : Frost Mage
 School           : Physical
 Spell Level      : 24
 Affecting spells : Item - Mage T19 Frost 4P Bonus (211404)
-Attributes       : ....x.x. ........ ..x..... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
@@ -2224,7 +2223,7 @@ Attributes       : ........ ........ x....... ..x.....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=128479)   : Apply Aura (6) | Periodic Damage: arcane every 1 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.06000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.05500 | Target: Enemy(6)
 #2 (id=220453)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Enemy(6)
 Description      : Places a Nether Tempest on the target which deals $114923o1 Arcane damage over $114923d to the target and ${$114954m1*12/$t1} to all enemies within 10 yards. Limit 1 target.
@@ -2247,7 +2246,7 @@ Attributes       : ........ ........ x.x....x x..x....   ........ ........ .....
                  : ........ ........ x....... ........   ........ ........ .....x.. ........ 
 Effects          :
 #1 (id=128532)   : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.06000 | Radius: 0 - 10 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.05500 | Radius: 0 - 10 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : $@spelldesc114923
 
 Name             : Player Damage Reduction (id=115043) [Passive, Hidden] 
@@ -2311,7 +2310,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=150698)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 50 | Scaled Value: 50 | Target: Self(1)
-                   Affected Spells: Waterbolt (31707), Freeze (33395), Lonely Winter (205024)
+                   Affected Spells: Waterbolt (31707), Freeze (33395)
 Description      : $@spelldesc116011
 Tooltip          : Spell damage increased by $w1%.$?$w2=0[][
 Health restored by $w2% per second.]
@@ -2927,7 +2926,7 @@ Resource         : 1% Base Mana (11000 @Level 110)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 2.5 seconds
-Cooldown         : 15 seconds
+Cooldown         : 20 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3452,6 +3451,20 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Target: Self(1)
 Description      : Reduces all damage taken from players or their pets by ${$m1/-100}%.
 
+Name             : Aegwynn's Ascendance (id=187677) [Spell Family (3)] 
+Class            : Mage
+School           : Arcane
+Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=273718)   : School Damage: arcane (2)
+                   Base Value: 1 | Scaled Value: 1 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
+Description      : An emanation of mana-fueled Arcane damage.
+
 Name             : Combustion (id=190319) [Spell Family (3)] 
 Class            : Fire Mage
 School           : Fire
@@ -3828,7 +3841,7 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=292756)   : School Damage: fire (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.65000 | Target: Enemy(6)
 Description      : $@spelldesc198929
 
 Name             : Cinderstorm (id=198929) [Spell Family (3)] 
@@ -3880,7 +3893,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=294013)   : School Damage: frost (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 8.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 6.50000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=294014)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(58) | Target: Enemy(6)
 Description      : Conjures a massive spike of ice, and merges your current Icicles into it. It impales your target, dealing $s1 damage plus the damage stored in your Icicles, and freezes the target in place for $d. Damage may interrupt the freeze effect.
@@ -3946,7 +3959,7 @@ Effects          :
 #1 (id=302648)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
 #2 (id=303101)   : Apply Aura (6) | Periodic Damage: frost every 1 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.30000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.35000 | Target: Enemy(6)
 Description      : For the next $d, you can channel a beam of icy power at an enemy, slowing movement by $m1% and dealing $s2 Frost damage every $t2 sec. Each time Ray of Frost deals damage, its damage increases by $208141s1%.
 Tooltip          : Movement slowed by $m1% and taking $s2 Frost damage every $t2 sec.
 
@@ -3993,7 +4006,7 @@ Name             : Lonely Winter (id=205024) [Spell Family (3), Passive]
 Class            : Mage
 School           : Frost
 Spell Level      : 1
-Affecting spells : Mastery: Icicles (76613), Rune of Power (116014), Incanter's Flow (116267), It's Cold Outside (214776)
+Affecting spells : Mastery: Icicles (76613), Incanter's Flow (116267), It's Cold Outside (214776)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4003,9 +4016,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=302651)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
-                   Affected Spells: Frostbolt (116), Ice Lance (30455), Frozen Orb (84714), Frozen Orb (84721)
-Description      : You can no longer summon your Water Elemental, but Frost Bolt, Ice Lance, and Frozen Orb deal $s1% increased damage. 
+                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
+                   Affected Spells: Frostbolt (116), Ice Lance (30455), Frozen Orb (84721)
+Description      : You can no longer summon your Water Elemental, but Frostbolt, Ice Lance, and Frozen Orb deal $s1% increased damage. 
 
 Name             : Presence of Mind (id=205025) [Spell Family (3)] 
 Class            : Mage
@@ -4621,7 +4634,7 @@ Class            : Mage
 School           : Fire
 Spell Level      : 1
 Range            : 40 yards
-Duration         : 12 seconds
+Duration         : 4 seconds
 Affecting spells : Shatter (12982), Mage (137018)
 Attributes       : ........ ........ x....... ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4630,7 +4643,7 @@ Attributes       : ........ ........ x....... ..x.....   ........ ........ .....
                  : ........ .x..x... .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=324014)   : Apply Aura (6) | Periodic Damage: fire every 3 seconds (3)
+#1 (id=324014)   : Apply Aura (6) | Periodic Damage: fire every 1 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.25000 | Target: Enemy(6)
 #2 (id=324015)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
@@ -4672,7 +4685,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=337222)   : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.60000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.45000 | Target: Enemy(6)
 Description      : Launches bolts of arcane energy at the enemy target, causing $s1 Arcane damage. 
 
 Name             : Conflagration (id=226757) [Spell Family (3)] 

@@ -9,7 +9,7 @@ Category         : 1415
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Bladestorm (46924), Warrior (137047), Bladestorm (222634)
+Affecting spells : Bladestorm (46924), Warrior (137047), Bladestorm (222634), Bladestorm (227847)
 Attributes       : ....x.xx ........ x.x..... x..x.x.x   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -81,7 +81,7 @@ Duration         : 3 seconds
 Cooldown         : 8 seconds
 Category         : 82
 Proc Chance      : 101%
-Affecting spells : Berserker Rage (18499), Bladestorm (46924), Neltharion's Fury (203524), Bladestorm (222634)
+Affecting spells : Berserker Rage (18499), Bladestorm (46924), Neltharion's Fury (203524), Bladestorm (222634), Bladestorm (227847)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ x.x..... ........ 
                  : ........ ...x.... .......x ........   ........ ........ ........ ........ 
@@ -164,7 +164,7 @@ School           : Physical
 Spell Level      : 48
 Duration         : 8 seconds
 Cooldown         : 240 seconds
-Affecting spells : Bladestorm (46924), Neltharion's Fury (203524), Bladestorm (222634)
+Affecting spells : Bladestorm (46924), Neltharion's Fury (203524), Bladestorm (222634), Bladestorm (227847)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -184,7 +184,7 @@ Spell Level      : 40
 Duration         : 8 seconds
 Cooldown         : 90 seconds
 Proc Chance      : 101%
-Affecting spells : Bladestorm (46924), Rumbling Voice (188651), Booming Voice (202743), Neltharion's Fury (203524), Bladestorm (222634)
+Affecting spells : Bladestorm (46924), Rumbling Voice (188651), Booming Voice (202743), Neltharion's Fury (203524), Bladestorm (222634), Bladestorm (227847)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -198,10 +198,10 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 0x7f | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
 #3 (id=292881)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
-                   Affected Spells: Cleave (845), Whirlwind (1680), Thunder Clap (6343), Heroic Leap (6544), Revenge (6572), Overpower (7384), Devastate (20243), Shield Slam (23922), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Bladestorm Off-Hand (95738), Deep Wounds (115767), Shockwave (132168), Bladestorm (168969), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Focused Rage (204488), Focused Rage (207982), Bladestorm (222634)
+                   Affected Spells: Cleave (845), Whirlwind (1680), Thunder Clap (6343), Heroic Leap (6544), Revenge (6572), Overpower (7384), Devastate (20243), Shield Slam (23922), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Bladestorm Off-Hand (95738), Deep Wounds (115767), Shockwave (132168), Bladestorm (168969), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Focused Rage (204488), Focused Rage (207982), Bladestorm (222634), Bladestorm (227847)
 #4 (id=298857)   : Apply Aura (6) | Unknown effect sub type (343)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
-                   Affected Spells: Cleave (845), Whirlwind (1680), Thunder Clap (6343), Heroic Leap (6544), Revenge (6572), Overpower (7384), Devastate (20243), Shield Slam (23922), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Bladestorm Off-Hand (95738), Deep Wounds (115767), Shockwave (132168), Bladestorm (168969), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Focused Rage (204488), Focused Rage (207982), Bladestorm (222634)
+                   Affected Spells: Cleave (845), Whirlwind (1680), Thunder Clap (6343), Heroic Leap (6544), Revenge (6572), Overpower (7384), Devastate (20243), Shield Slam (23922), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Bladestorm Off-Hand (95738), Deep Wounds (115767), Shockwave (132168), Bladestorm (168969), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Focused Rage (204488), Focused Rage (207982), Bladestorm (222634), Bladestorm (227847)
 #5 (id=298858)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: rage | Target: Self(1)
 Description      : $?s199023[Demoralizes all enemies within $A2 yards, reducing the damage they do by $s1% for $d.][Demoralizes all enemies within $A2 yards, reducing the damage they do to you by $s1% for $d.]$?s202743[
@@ -316,7 +316,7 @@ Spell Level      : 18
 Cooldown         : 1 seconds
 Charges          : 2 (15 seconds cooldown)
 Category         : 1385
-Affecting spells : Bladestorm (46924), Neltharion's Fury (203524), Bladestorm (222634)
+Affecting spells : Bladestorm (46924), Neltharion's Fury (203524), Bladestorm (222634), Bladestorm (227847)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -489,7 +489,7 @@ Range            : 8 - 40 yards
 Cooldown         : 0.8 seconds
 Charges          : 1 (45 seconds cooldown)
 Category         : 1211
-Affecting spells : Demoralizing Shout (1160), 
+Affecting spells : Demoralizing Shout (1160), Weight of the Earth (208177)
 Attributes       : ....x... x....... x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -684,7 +684,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x1 | Target: Self(1)
 #2 (id=257018)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 50 | Scaled Value: 50 | Target: Self(1)
-                   Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (168969), Bladestorm (222634)
+                   Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (168969), Bladestorm (222634), Bladestorm (227847)
 Description      : While wielding a two-handed melee weapon, you deal $s1% increased damage.
 
 Name             : Meat Cleaver (id=12950) [Spell Family (4), Passive] 
@@ -714,7 +714,7 @@ Spell Level      : 36
 Duration         : 15 seconds
 Cooldown         : 180 seconds
 Category         : 1251
-Affecting spells : Bladestorm (46924), Item - Warrior T18 Protection 2P Bonus (185796), Will to Survive (188683), Neltharion's Fury (203524), Bladestorm (222634)
+Affecting spells : Bladestorm (46924), Item - Warrior T18 Protection 2P Bonus (185796), Will to Survive (188683), Neltharion's Fury (203524), Bladestorm (222634), Bladestorm (227847)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1152,7 +1152,7 @@ Effects          :
 Description      : Allows you to dual-wield a pair of two-handed weapons, and increases your maximum health by $s2%.
 
 Name             : Bladestorm (id=46924) [Spell Family (4)] 
-Class            : Arms Warrior
+Class            : Warrior
 School           : Physical
 Spell Level      : 75
 GCD              : 1.5 seconds
@@ -1231,7 +1231,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 1
 Affecting spells : Demoralizing Shout (1160), Seasoned Soldier (12712), Protection (131086), Warrior (137047)
-Triggered by     : Bladestorm (46924)
+Triggered by     : Bladestorm (46924), Bladestorm (227847)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : .......x .......x ........ ........   ........ .......x ........ ........ 
@@ -1253,7 +1253,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 56
 Range            : 50000 yards
-Affecting spells : Demoralizing Shout (1160), 
+Affecting spells : Demoralizing Shout (1160), Weight of the Earth (208177)
 Attributes       : ....x... ........ x.x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ..x..... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ..x...x. 
@@ -2394,7 +2394,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 56
 Duration         : 9 seconds
-Affecting spells : Bladestorm (46924), Rumbling Voice (188651), Booming Voice (202743), Neltharion's Fury (203524), Bladestorm (222634)
+Affecting spells : Bladestorm (46924), Rumbling Voice (188651), Booming Voice (202743), Neltharion's Fury (203524), Bladestorm (222634), Bladestorm (227847)
 Triggered by     : Demoralizing Shout (1160)
 Attributes       : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2471,7 +2471,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=168884)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 40 | Scaled Value: 40 | Target: Self(1)
-                   Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (168969), Bladestorm (222634)
+                   Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (168969), Bladestorm (222634), Bladestorm (227847)
 #2 (id=256725)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558)
@@ -2560,7 +2560,7 @@ Effects          :
                    Affected Spells: Cleave (845), Thunder Clap (6343), Revenge (6572), Overpower (7384), Bloodthirst (23881), Shield Slam (23922), Raging Blow (85288), Raging Blow (85384), Raging Blow (96103), Furious Slash (100130), Focused Rage (204488), Focused Rage (207982)
 #2 (id=188987)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11 | Target: Self(1)
-                   Affected Spells: Defensive Stance (71), Charge (100), Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Intimidating Shout (5246), Execute (5308), Thunder Clap (6343), Pummel (6552), Revenge (6572), Overpower (7384), Mortal Strike (12294), Piercing Howl (12323), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Improved Hamstring (24428), Victory Rush (34428), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Throw (57755), Raging Blow (85288), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Shockwave (132168), Storm Bolt (132169), Ravager (152277), Ravager (156287), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Bladestorm (168969), Rampage (184367), Rampage (184707), Rampage (184709), Cleave (188923), Whirlwind (190411), Defensive Stance (197690), Charge (198337), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Focused Rage (204488), Focused Rage (207982), Colossus Smash (208086), Warbreaker (209577), Rampage (218617), Bladestorm (222634), Ravager (227744)
+                   Affected Spells: Defensive Stance (71), Charge (100), Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Intimidating Shout (5246), Execute (5308), Thunder Clap (6343), Pummel (6552), Revenge (6572), Overpower (7384), Mortal Strike (12294), Piercing Howl (12323), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Improved Hamstring (24428), Victory Rush (34428), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Throw (57755), Raging Blow (85288), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Shockwave (132168), Storm Bolt (132169), Ravager (152277), Ravager (156287), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Bladestorm (168969), Rampage (184367), Rampage (184707), Rampage (184709), Cleave (188923), Whirlwind (190411), Defensive Stance (197690), Charge (198337), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Focused Rage (204488), Focused Rage (207982), Colossus Smash (208086), Warbreaker (209577), Rampage (218617), Bladestorm (222634), Ravager (227744), Bladestorm (227847)
 #3 (id=191020)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1385 | Target: Self(1)
 #4 (id=191021)   : Apply Aura (6) | Unknown effect sub type (457)
@@ -2780,7 +2780,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=198921)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self(1)
-Description      : Your Battle Cry ability causes the appearance of your weapon to change to that of a random weapon from your primary bag for $147367d.
+Description      : Your Battle Cry ability causes the appearance of your weapon to change to that of a random weapon from your bag for $147367d.
 
 Name             : Weaponmaster (id=147367) 
 Class            : Warrior
@@ -2860,8 +2860,8 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=210835)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
-#2 (id=217166)   : Summon (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 76168 | Misc Value 2: 0xd55 | Radius: 8 yards | Target: AOE enemy (instant)(16)
+#2 (id=217166)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: AOE enemy (instant)(16)
 #3 (id=217506)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #4 (id=254765)   : Dummy (3)
@@ -3109,7 +3109,7 @@ School           : Physical
 Spell Level      : 12
 Duration         : 8 seconds
 Cooldown         : 120 seconds
-Affecting spells : Unwavering Sentinel (29144), Bladestorm (46924), Neltharion's Fury (203524), Bladestorm (222634)
+Affecting spells : Unwavering Sentinel (29144), Bladestorm (46924), Neltharion's Fury (203524), Bladestorm (222634), Bladestorm (227847)
 Attributes       : ....x... ........ x.x..... ........   ........ .......x x....... ........ 
                  : ........ ........ ........ .....x..   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
@@ -3238,7 +3238,7 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=275632)   : Apply Aura (6) | Proc Trigger Spell: Reflect Generates Rage Proc Trigger (42)
                    Base Value: 5 | Scaled Value: 5 | Trigger Spell: 203231 | Target: Self(1)
-Description      : Spell Reflect now reflects an unlimited number of spells during its duration, and generates ${$203234m1/10} Rage each time it reflects a spell.
+Description      : $?s213915[Mass Spell Reflection][Spell Reflect] now reflects an unlimited number of spells during its duration, and generates ${$203234m1/10} Rage each time it reflects a spell.
 
 Name             : Cleave (id=188923) [Spell Family (4)] 
 Class            : Warrior
@@ -4279,13 +4279,13 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=301805)   : Apply Aura (6) | Add Flat Modifier: Generic Modifier (107)
-                   Base Value: 105 | Scaled Value: 105 | Target: Self(1)
+#1 (id=301805)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
                    Affected Spells: Shield Slam (23922)
 #2 (id=301810)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : Focus your rage on your next Shield Slam, causing it to deal ${$AP*$s1/100*(1+$@versadmg)} additional damage, stacking up to $u times. Unaffected by the global cooldown
-Tooltip          : Shield Slam deals $w2 more damage.
+Description      : Focus your rage on your next Shield Slam, increasing its damage by $s1%, stacking up to $u times. Unaffected by the global cooldown
+Tooltip          : Shield Slam deals $s1% increased damage.
 
 Name             : Inspiring Presence (id=205484) [Spell Family (4), Passive] 
 Class            : Warrior
@@ -4471,7 +4471,7 @@ School           : Physical
 Resource         : 15 Rage
 Spell Level      : 1
 Range            : 5 yards
-Duration         : Aura (infinite)
+Duration         : 30 seconds
 Cooldown         : 1.5 seconds
 Stacks           : 1 initial, 3 maximum
 Proc Chance      : 100%
@@ -4485,13 +4485,13 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=307672)   : Apply Aura (6) | Add Flat Modifier: Generic Modifier (107)
-                   Base Value: 165 | Scaled Value: 165 | Target: Self(1)
+#1 (id=307672)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
                    Affected Spells: Mortal Strike (12294)
 #2 (id=307673)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : Focus your rage on your next Mortal Strike, causing it to deal ${$AP*$s1/100*(1+$@versadmg)} additional damage, stacking up to $u times. Unaffected by the global cooldown
-Tooltip          : Next Mortal Strike deals $w2 more damage.
+Description      : Focus your rage on your next Mortal Strike, increasing its damage by $s1%, stacking up to $u times. Unaffected by the global cooldown
+Tooltip          : Next Mortal Strike deals $s1% increased damage.
 
 Name             : Colossus Smash (id=208086) [Spell Family (4)] 
 Class            : Warrior
@@ -4661,6 +4661,29 @@ Effects          :
                    Base Value: 90 | Scaled Value: 90 | Target: Enemy(6)
 Description      : @spelldesc199045
 Tooltip          : Movement speed reduced by $w1%.
+
+Name             : Mass Spell Reflection (Honor Talent) (id=213915) [Spell Family (4)] 
+Class            : Warrior
+School           : Physical
+Duration         : 3 seconds
+Cooldown         : 30 seconds
+Proc Chance      : 100%
+Proc Flags       : .....x.x .x...x.. .x...... ........ 
+                 : Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
+Affecting spells : Manual of Spell Reflection (168801)
+Attributes       : ....x... ........ x.x..... ...x....   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   .x...... ........ ........ ..x..... 
+                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ......x. ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+Effects          :
+#1 (id=317491)   : Apply Aura (6) | Spell Reflection (28)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 4 | Radius: 20 yards | Target: Raid Members(56)
+Description      : Reflects all spells cast on you and on all party and raid members within $a1 yards for $d.
+
+Replaces Spell Reflection.
+Tooltip          : Reflects all spells cast on you.
 
 Name             : Trauma (id=215537) [Spell Family (4)] 
 Class            : Warrior
@@ -5153,5 +5176,34 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
 Description      : $@spelldesc152277
 Tooltip          : $?s23922[Chance to Parry increased by $s1%.][Ravager is currently active.]
+
+Name             : Bladestorm (id=227847) [Spell Family (4)] 
+Class            : Arms Warrior
+School           : Physical
+Spell Level      : 75
+GCD              : 1.5 seconds
+Velocity         : 10 yards/sec
+Duration         : 6 seconds
+Cooldown         : 90 seconds
+Affecting spells : Demoralizing Shout (1160), Seasoned Soldier (12712), Protection (131086), Warrior (137047)
+Attributes       : ....x... ........ x.x..... ........   ....x... .xx....x ........ ........ 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. .x....x. ........   ........ ........ ........ ........ 
+                 : ........ ........ ..x..... ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=342669)   : Apply Aura (6) | Periodic Trigger Spell: Bladestorm every 1 seconds (23)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 50622 | Target: Self(1)
+#2 (id=342670)   : Apply Aura (6) | Unknown effect sub type (147)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1733 | Target: Self(1)
+#3 (id=342671)   : Apply Aura (6) | Unknown effect sub type (263)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+                   Affected Spells: Defensive Stance (71), Taunt (355), Shield Wall (871), Demoralizing Shout (1160), Shield Block (2565), Last Stand (12975), Demoralizing Shout (125565), Enraged Regeneration (184364)
+Description      : Become an unstoppable storm of destructive force, striking all targets within $50622A1 yards $?s23881[with both weapons for ${7*($50622sw2+$95738sw2)} Physical damage][for ${7*$168969sw2} Physical damage] over $d.
+
+You are immune to movement impairing and loss of control effects, but can use defensive abilities and can avoid attacks.
+Tooltip          : Dealing damage to all nearby enemies every $t1 sec.
+Immune to crowd control.
 
 

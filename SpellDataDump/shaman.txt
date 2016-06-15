@@ -402,7 +402,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self(1)
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Healing Surge (8004), Earth Shock (8042), Thunderstorm (51490), Lava Burst (51505), Lava Beam (114074), Elemental Blast (117014), Lightning Bolt (187837), Healing Surge (188070), Lightning Bolt (188196), Chain Lightning (188443), Frost Shock (196840), Icefury (210714), Lightning Bolt (214815), Lightning Bolt Overload (214816), Icefury Overload (219271)
 Description      : $@spelldesc16164
-Tooltip          : Your next $n spells deal $s1% increased damage and healing.
+Tooltip          : Your next spell deals $s1% increased damage and healing.
 
 Name             : Stormstrike (id=17364) [Spell Family (11)] 
 Class            : Enhancement Shaman
@@ -735,7 +735,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=37246)    : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.50000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.30000 | Target: Enemy(6)
 Description      : Casts a bolt of lightning at the target for $s1 Nature damage.
 
 Name             : Chain Lightning Overload (id=45297) [Spell Family (11)] 
@@ -1079,8 +1079,6 @@ Resource         : 40% Base Mana (88000 @Level 110)
 Spell Level      : 20
 Range            : 40 yards
 Cast Time        : 3 seconds
-Cooldown         : 1 seconds
-Category         : 19
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1629,7 +1627,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=68090)    : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.40000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.20000 | Target: Enemy(6)
 #2 (id=287602)   : Energize Power (30)
                    Base Value: 9 | Scaled Value: 9 | Misc Value: maelstrom | Target: Self(1)
 Description      : You hurl molten lava at the target, dealing $s1 Fire damage. If your Flame Shock is on the target, Lava Burst will deal a critical strike.
@@ -1652,7 +1650,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=68093)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.50000 | Chain Multiplier: 0.2 | Target: Chain Friendly(45)
-Description      : A slow but efficient wave of healing energy that restores $s1 of a friendly targetâ€™s health.
+Description      : A slow but efficient wave of healing energy that restores $s1 of a friendly target’s health.
 
 Name             : Earthquake (id=77478) [Spell Family (11)] 
 Class            : Shaman
@@ -1773,7 +1771,7 @@ Name             : Hand of Gul'dan (id=86040) [Spell Family (5)]
 Class            : Shaman, Warlock
 School           : Shadowflame
 Range            : 50000 yards
-Affecting spells : Dirty Hands (211105), Infernal Furnace (211119), Imp-erator (211158)
+Affecting spells : Dirty Hands (211105)
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   x....... ........ ........ ......x. 
                  : ........ ........ ........ .x......   ........ ..x..... ........ ..x..... 
@@ -1964,7 +1962,6 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 0.7 yards/sec
-Affecting spells : Infernal Furnace (211119), Imp-erator (211158)
 Attributes       : ........ ........ x....... ........   .......x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ...x.... ........ ........   ........ ..x..... ........ ...x.... 
@@ -2144,7 +2141,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Category         : 85
-Affecting spells : Elemental Focus (16246), Elemental Fury (60188), Spiritwalker's Grace (79206), Lucidity (137326)
+Affecting spells : Elemental Focus (16246), Elemental Fury (60188), Spiritwalker's Grace (79206), Lucidity (137326), Electric Discharge (191577), Stormkeeper (205495), Al'Akir's Acrimony (208699)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2201,7 +2198,7 @@ School           : Fire
 Resource         : 8% Base Mana (17600 @Level 110)
 Spell Level      : 28
 Range            : 40 yards
-Affecting spells : Elemental Fury (60188), Master of the Elements (191647)
+Affecting spells : Elemental Fury (60188), Electric Discharge (191577), Master of the Elements (191647), Al'Akir's Acrimony (208699)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2660,7 +2657,7 @@ Effects          :
 #2 (id=191046)   : Apply Aura (6) | Unknown effect sub type (379)
                    Base Value: 25 | Scaled Value: 25 | Target: Self(1)
 #3 (id=191047)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
+                   Base Value: 42 | Scaled Value: 42 | Target: Self(1)
                    Affected Spells: Lava Burst (51505)
 #4 (id=191048)   : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 18 | Target: Self(1)
@@ -3540,7 +3537,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=274643)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.50000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.30000 | Target: Enemy(6)
 Description      : Hurls a bolt of lightning at the target, dealing $s1 Nature damage.
 
 |cFFFFFFFFGenerates $214815s1 Maelstrom.|r 
@@ -3562,9 +3559,9 @@ Attributes       : ........ ........ x.x..... ..x.....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=274966)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.87500 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.80000 | Target: Enemy(6)
 #2 (id=274967)   : Apply Aura (6) | Periodic Damage: fire every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.43750 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.40000 | Target: Enemy(6)
 #3 (id=322658)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Enemy(6)
 Description      : Sears the target with fire, causing $s1 Fire damage and then an additional $o2 Fire damage over $d. Maelstrom increases duration up to $s3%.
@@ -4021,7 +4018,7 @@ School           : Nature
 Spell Level      : 1
 Range            : 10 yards
 Affecting spells : Energized Shield (24499), Shaman Lightning Shield Bonus (33020), Elemental Fury (60188), Windstrike (115356), Lucidity (137326)
-Triggered by     : Lightning Shield (192106)
+Triggered by     : Lightning Shield (192106), Blessed Bandage (214689)
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ xx..x... ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4438,7 +4435,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=288995)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.60000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.52000 | Target: Enemy(6)
 #2 (id=288996)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
 #3 (id=313061)   : Dummy (3)
@@ -5166,6 +5163,7 @@ Range            : 10 yards
 GCD              : 1.5 seconds
 Charges          : 2 (6 seconds cooldown)
 Category         : 1634
+Affecting spells : Gathering of the Maelstrom (198349), Weapons of the Elements (215381)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5394,11 +5392,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=303466)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 200 | Scaled Value: 200 | Target: Self(1)
-                   Affected Spells: Lightning Bolt (403), Chain Lightning (421), Lightning Bolt (187837), Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815), Lightning Bolt Overload (214816)
+                   Affected Spells: Lightning Bolt (403), Chain Lightning (421), Lava Beam (114074), Lightning Bolt (187837), Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815), Lightning Bolt Overload (214816)
 #2 (id=303467)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
 Description      : Raises |cFFFFCC99The Fist of Ra-den|r to the sky and absorbs all nearby electric energy, causing your next $n casts of Lightning Bolt or Chain Lightning to deal $s1% increased damage.
-Tooltip          : Your next $s2 Lightning Bolt or Chain Lightning spells will deal 200% additional damage.
+Tooltip          : Your next Lightning Bolt or Chain Lightning will deal $s1% additional damage.
 
 Name             : Ancestral Protection Totem (id=207399) [Spell Family (11)] 
 Class            : Shaman
@@ -6251,6 +6249,7 @@ Class            : Shaman
 School           : Nature
 Range            : 10 yards
 Duration         : 10 seconds
+Affecting spells : Gathering of the Maelstrom (198349), Weapons of the Elements (215381)
 Triggered by     : Boulderfist (201897)
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6343,7 +6342,7 @@ Effects          :
 Description      : The Doom Wolf surges with electric energy, increasing its haste by $s1% for $d.
 Tooltip          : Haste increased by $s1%.
 
-Name             : Hand of Gul'dan (id=225481) [Hidden] 
+Name             : Hand of Gul'dan (id=225481) [Spell Family (5), Hidden] 
 Class            : Shaman, Warlock
 School           : Physical
 Duration         : 12 seconds
@@ -6379,7 +6378,7 @@ Class            : Shaman
 School           : Nature
 Range            : 50000 yards
 Duration         : 120 seconds
-Affecting spells : Dirty Hands (211105), Infernal Furnace (211119), Imp-erator (211158)
+Affecting spells : Dirty Hands (211105)
 Triggered by     : Totem Mastery (210643)
 Attributes       : ........ x....... .......x ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   ........ ........ ........ ........ 

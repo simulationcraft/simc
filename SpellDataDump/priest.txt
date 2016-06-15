@@ -157,7 +157,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=242)      : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.35000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.40000 | Target: Enemy(6)
 #2 (id=254257)   : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.35000 | Target: Enemy(6)
 #3 (id=323674)   : Energize Power (30)
@@ -370,7 +370,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=3283)     : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.25000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000 | Target: Enemy(6)
 #2 (id=139174)   : Energize Power (30)
                    Base Value: 1200 | Scaled Value: 1200 | Misc Value: insanity | Target: Self(1)
 Description      : Blasts the target's mind for $s1 Shadow damage.
@@ -730,7 +730,7 @@ School           : Shadow
 Spell Level      : 46
 Range            : 40 yards
 GCD              : 1.5 seconds
-Cooldown         : 12 seconds
+Charges          : 2 (12 seconds cooldown)
 Category         : 1169
 Affecting spells : Priest (137030), Lucidity (137323), Death's Embrace (193645)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -953,7 +953,7 @@ Effects          :
 #1 (id=25009)    : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy(6)
 #2 (id=25010)    : Apply Aura (6) | Periodic Health Leech (53)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.60000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.70000 | Target: Enemy(6)
 #3 (id=323673)   : Energize Power (30)
                    Base Value: 400 | Scaled Value: 400 | Misc Value: insanity | Target: Self(1)
 Description      : A touch of darkness that causes $34914o2 Shadow damage over $34914d, and heals the Priest for ${$e2*100}% of damage dealt.
@@ -3210,7 +3210,7 @@ Attributes       : ........ ........ ..x..... x..x.x.x   .....x.. ..x..... .....
                  : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
 Effects          :
 #1 (id=285130)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 0x20 | Target: Self(1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 0x20 | Target: Self(1)
 #2 (id=285131)   : Apply Aura (6) | Modify Power Regeneration (85)
                    Base Value: -4500 | Scaled Value: -4500 | Misc Value: 13 | Target: Self(1)
 #3 (id=285132)   : Apply Aura (6) | Modify All Haste% (193)
@@ -3617,7 +3617,7 @@ School           : Shadow
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
-Duration         : 20 seconds
+Duration         : 15 seconds
 Cooldown         : 60 seconds
 Category         : 1417
 Stance Mask      : 0x08000000
@@ -3634,7 +3634,7 @@ Effects          :
 #2 (id=294667)   : Trigger Spell: (41967) (64)
                    Base Value: 75 | Scaled Value: 75 | Trigger Spell: 41967 | Target: Self(1)
 #3 (id=294668)   : Dummy (3)
-                   Base Value: 5 | Scaled Value: 5 | Target: Enemy(6)
+                   Base Value: 4 | Scaled Value: 4 | Target: Enemy(6)
 Description      : Summons a Mindbender to attack the target for $d.
 
 |cFFFFFFFFGenerates $s3 Insanity each time the Mindbender attacks.|r
@@ -3953,6 +3953,9 @@ Description      : Raise your dagger into the sky, channeling a torrent of void 
 
 Requires Voidform. 
 
+Tooltip          : Dealing $s1 Shadow damage to the target every $t sec.
+
+Insanity drain temporarily stopped.
 
 Name             : Shadow Word: Void (id=205351) [Spell Family (6)] 
 Class            : Priest
@@ -3972,7 +3975,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=303208)   : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.80000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.20000 | Target: Enemy(6)
 #2 (id=303209)   : Energize Power (30)
                    Base Value: 2500 | Scaled Value: 2500 | Misc Value: insanity | Target: Self(1)
 Description      : Blasts the target's mind for $s1 Shadow damage.
@@ -4086,7 +4089,7 @@ Tooltip          : Increases $?s73510[Mind Spike][Mind Flay] and Mind Sear damag
 
 Name             : Shadow Crash (id=205385) [Spell Family (6)] 
 Class            : Priest
-School           : Physical
+School           : Shadow
 Range            : 40 yards
 Velocity         : 2.5 yards/sec
 Cooldown         : 30 seconds
@@ -4120,7 +4123,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=303255)   : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 (avg=1, dl=0.4) | SP Coefficient: 3.99960 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 (avg=1, dl=0.4) | SP Coefficient: 6.40000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 Description      : $@spelldesc205385
 
 
@@ -4141,7 +4144,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=303382)   : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.40000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.20000 | Target: Enemy(6)
 #2 (id=303383)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Enemy(6)
 #3 (id=308158)   : Energize Power (30)
@@ -4417,7 +4420,7 @@ Duration         : 10 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
+                 : ........ ........ ...x.... ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 

@@ -298,7 +298,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Cooldown         : 12 seconds
-Affecting spells : Seal of the Crusader Judgment Increase (23300), Proc Mana Regen (38334), Guarded by the Light (53592), Item - Icecrown 25 Normal Tank Weapon Proc (71871), Item - Icecrown 25 Heroic Slow Melee Weapon Proc (71878), Item - Icecrown 25 Normal Dagger Proc (71880), Mastery: Divine Judgment (76672), Item - Proc Mastery Rating (95878), Paladin (137026), Protection Paladin (137028), Holy Paladin (137029), Lucidity (137288), Seal of the Crusader Judgment Increase (144307), Seal of the Crusader Judgment Increase (144310), Seal of the Crusader Judgment Increase (144311), Highlord's Judgment (186941), Stern Judgment (209217), Greater Judgment (218178), 
+Affecting spells : Seal of the Crusader Judgment Increase (23300), Proc Mana Regen (38334), Guarded by the Light (53592), Item - Icecrown 25 Normal Tank Weapon Proc (71871), Item - Icecrown 25 Heroic Slow Melee Weapon Proc (71878), Item - Icecrown 25 Normal Dagger Proc (71880), Mastery: Divine Judgment (76672), Item - Proc Mastery Rating (95878), Paladin (137026), Retribution Paladin (137027), Protection Paladin (137028), Holy Paladin (137029), Lucidity (137288), Seal of the Crusader Judgment Increase (144307), Seal of the Crusader Judgment Increase (144310), Seal of the Crusader Judgment Increase (144311), Highlord's Judgment (186941), Stern Judgment (209217), Greater Judgment (218178)
 Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -310,7 +310,11 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.00000 | Chain Multiplier: 0.65 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=336161)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Chain Multiplier: 0.65 | Target: Enemy(6)
-Description      : Judges an enemy, dealing $s1 Holy damage$?s76672[, and causing the target to take $197277s2% increased damage from your Holy Power consumers for $197277d]?s137029[, and causing the target to take $214222s2% increased damage from your Crusader Strike and Holy Shock for $214222d]?s137028[, and reducing the remaining cooldown on Shield of the Righteous by $s2 sec, or ${$m2*2} sec on a critical strike][].
+#3 (id=343343)   : Dummy (3)
+                   Base Value: 3 | Scaled Value: 3 | Target: Self(1)
+#4 (id=343346)   : Dummy (3)
+                   Base Value: 35 | Scaled Value: 35 | Target: Self(1)
+Description      : Judges an enemy, dealing $s1 Holy damage$?s76672[, chaining to an additional target for $s4% reduced damage, and causing the target to take $197277s2% increased damage from your Holy Power spenders for $197277d]?s137029[, and causing the target to take $214222s2% increased damage from your Crusader Strike and Holy Shock for $214222d]?s137028[, and reducing the remaining cooldown on Shield of the Righteous by $s2 sec, or ${$m2*2} sec on a critical strike][].
 
 Name             : Holy Shock (id=20473) [Spell Family (10)] 
 Class            : Holy Paladin
@@ -2213,8 +2217,9 @@ Effects          :
 #2 (id=191092)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: 70 | Scaled Value: 70 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Flash of Light (19750)
-#3 (id=191093)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#3 (id=191093)   : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 17 | Target: Self(1)
+                   Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222)
 #4 (id=191094)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #5 (id=191095)   : Apply Aura (6) | Dummy (4)
@@ -3049,10 +3054,10 @@ Name             : Consecration (id=188370) [Spell Family (10)]
 Class            : Paladin
 School           : Holy
 Range            : 50000 yards
-Duration         : 10 seconds
+Duration         : Aura (infinite)
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ...x.... ........   ........ ........ ........ ........ 
-                 : x......x ........ ........ ........   ...x.... ..x..... .xx..... ........ 
+                 : x......x ........ ........ ........   ...x.... ........ .xx..... ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3168,8 +3173,8 @@ Name             : Judgment (id=197277) [Spell Family (10)]
 Class            : Paladin
 School           : Holy
 Range            : 100 yards
-Duration         : 6 seconds
-Affecting spells : Seal of the Crusader Judgment Increase (23300), Proc Mana Regen (38334), Guarded by the Light (53592), Item - Icecrown 25 Normal Tank Weapon Proc (71871), Item - Icecrown 25 Heroic Slow Melee Weapon Proc (71878), Item - Icecrown 25 Normal Dagger Proc (71880), Mastery: Divine Judgment (76672), Item - Proc Mastery Rating (95878), Paladin (137026), Protection Paladin (137028), Holy Paladin (137029), Lucidity (137288), Seal of the Crusader Judgment Increase (144307), Seal of the Crusader Judgment Increase (144310), Seal of the Crusader Judgment Increase (144311), Highlord's Judgment (186941), Stern Judgment (209217), Greater Judgment (218178), 
+Duration         : 8 seconds
+Affecting spells : Seal of the Crusader Judgment Increase (23300), Proc Mana Regen (38334), Guarded by the Light (53592), Item - Icecrown 25 Normal Tank Weapon Proc (71871), Item - Icecrown 25 Heroic Slow Melee Weapon Proc (71878), Item - Icecrown 25 Normal Dagger Proc (71880), Mastery: Divine Judgment (76672), Item - Proc Mastery Rating (95878), Paladin (137026), Retribution Paladin (137027), Protection Paladin (137028), Holy Paladin (137029), Lucidity (137288), Seal of the Crusader Judgment Increase (144307), Seal of the Crusader Judgment Increase (144310), Seal of the Crusader Judgment Increase (144311), Highlord's Judgment (186941), Stern Judgment (209217), Greater Judgment (218178)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3489,10 +3494,10 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 12 seconds
 Affecting spells : Paladin (137026), Deliver the Justice (186927)
-Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ....x... 
+Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
@@ -3507,6 +3512,7 @@ Effects          :
 Description      : Strikes an enemy with the Blade of Wrath, dealing $sw2 Holy damage, and an additional $o4 Holy damage over $d.
 
 |cFFFFFFFFGenerates $s3 Holy Power.
+Tooltip          : Deals $s4 Holy damage every $t4 sec.
 
 Name             : Virtue's Blade (id=202271) [Spell Family (10), Passive] 
 Class            : Paladin
@@ -4152,7 +4158,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
 Description      : $@spelldesc190784
 
-Name             : Eye of Tyr (Artifact, Active Mitigation) (id=209202) [Spell Family (10)] 
+Name             : Eye of Tyr (Artifact) (id=209202) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
 GCD              : 1.5 seconds
@@ -4411,7 +4417,7 @@ Class            : Paladin
 School           : Holy
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Seal of the Crusader Judgment Increase (23300), Proc Mana Regen (38334), Guarded by the Light (53592), Item - Icecrown 25 Normal Tank Weapon Proc (71871), Item - Icecrown 25 Heroic Slow Melee Weapon Proc (71878), Item - Icecrown 25 Normal Dagger Proc (71880), Mastery: Divine Judgment (76672), Item - Proc Mastery Rating (95878), Paladin (137026), Protection Paladin (137028), Holy Paladin (137029), Lucidity (137288), Seal of the Crusader Judgment Increase (144307), Seal of the Crusader Judgment Increase (144310), Seal of the Crusader Judgment Increase (144311), Highlord's Judgment (186941), Stern Judgment (209217), Greater Judgment (218178), 
+Affecting spells : Seal of the Crusader Judgment Increase (23300), Proc Mana Regen (38334), Guarded by the Light (53592), Item - Icecrown 25 Normal Tank Weapon Proc (71871), Item - Icecrown 25 Heroic Slow Melee Weapon Proc (71878), Item - Icecrown 25 Normal Dagger Proc (71880), Mastery: Divine Judgment (76672), Item - Proc Mastery Rating (95878), Paladin (137026), Retribution Paladin (137027), Protection Paladin (137028), Holy Paladin (137029), Lucidity (137288), Seal of the Crusader Judgment Increase (144307), Seal of the Crusader Judgment Increase (144310), Seal of the Crusader Judgment Increase (144311), Highlord's Judgment (186941), Stern Judgment (209217), Greater Judgment (218178)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4515,16 +4521,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=324834)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
-                   Base Value: -2000 | Scaled Value: -2000 | Misc Value: 11 | Target: Self(1)
+#1 (id=324834)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 85 | Scaled Value: 85 | Misc Value: 11 | Target: Self(1)
+#2 (id=343344)   : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 17 | Target: Self(1)
                    Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222)
-#2 (id=324835)   : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
-                   Base Value: 3 | Scaled Value: 3 | Misc Value: 17 | Target: Self(1)
-                   Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222)
-#3 (id=341048)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 35 | Scaled Value: 35 | Misc Value: 11 | Target: Self(1)
-                   Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222)
-Description      : Your Judgment cooldown is reduced by ${$s1/-1000} sec and jumps to $s2 additional nearby enemies. Each jump deals $s3% less damage.
+Description      : Your Judgment ability always deals a critical strike when the target is above $s1% health and jumps to $s2 additional nearby enemies.
 
 Name             : Light of the Martyr (id=219562) [Spell Family (10), Passive, Hidden] 
 Class            : Holy Paladin
@@ -4602,7 +4604,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=334765)   : Apply Aura (6) | Proc Trigger Spell: Divine Purpose (42)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 223819 | Target: Self(1)
-Description      : Your Holy Power consuming abilities have a $h% chance to make your next Holy Power consuming ability free.
+Description      : Your Holy Power spending abilities have a $h% chance to make your next Holy Power spending ability free.
 
 Name             : Divine Purpose (id=223819) [Spell Family (10)] 
 Class            : Paladin

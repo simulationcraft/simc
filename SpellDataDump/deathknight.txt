@@ -4139,10 +4139,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=299112)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self(1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
                    Affected Spells: Heart Strike (206930)
 #2 (id=299113)   : None (0)
-                   Base Value: 5 | Scaled Value: 5
+                   Base Value: 10 | Scaled Value: 10
 #3 (id=299114)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Heart Strike (206930)
@@ -4167,7 +4167,7 @@ Effects          :
                    Affected Spells: Howling Blast (49184)
 Description      : The critical strike chance of your Howling Blast increased by $m1%, but it no longer deals area of effect damage.
 
-Name             : Consumption (Artifact, Active Mitigation) (id=205223) [Spell Family (15)] 
+Name             : Consumption (Artifact) (id=205223) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
 Spell Level      : 56
@@ -4185,9 +4185,9 @@ Effects          :
 #1 (id=302967)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Cone Front(104)
 #2 (id=302968)   : Weapon Damage% (31)
-                   Base Value: 340 | Scaled Value: 3.4 | Radius: 8 yards | Target: Cone Front(104)
+                   Base Value: 250 | Scaled Value: 2.5 | Radius: 8 yards | Target: Cone Front(104)
 #3 (id=302969)   : Dummy (3)
-                   Base Value: 200 | Scaled Value: 200
+                   Base Value: 100 | Scaled Value: 100
 #4 (id=302970)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12
 #5 (id=302971)   : Dummy (3)
@@ -4202,7 +4202,7 @@ School           : Physical
 Spell Level      : 1
 Affecting spells : Icebound Fortitude (48792), Dark Succor (101568)
 Attributes       : ........ ........ ........ ...x....   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ....x...   ........ ........ x....... ........ 
+                 : ........ ........ ........ ....xx..   ........ ........ x....... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

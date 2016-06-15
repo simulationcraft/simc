@@ -40,7 +40,7 @@ Cooldown         : 20 seconds
 Category         : 270
 Proc Chance      : 101%
 Mechanic         : Unknown(95)
-Affecting spells : Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Vendetta (79140), Prey on the Weak (131511), Deepening Shadows (185314), Deeper Stratagem (193531), Alacrity (193539), Acrobatic Strikes (196924), 
+Affecting spells : Rogue Tier 6 Trinket (40460), Vendetta (79140), Prey on the Weak (131511), Deeper Stratagem (193531), Acrobatic Strikes (196924), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ...x.... ........ ........   ........ ........ ........ ........ 
@@ -104,7 +104,7 @@ Effects          :
 Description      : Garrote the enemy, causing $o1 Bleed damage over $d. Silences the target for $1330d when used from Stealth.
 
 |cFFFFFFFFAwards $s3 combo $lpoint:points;.|r
-Tooltip          : $w1 damage every $t1 seconds.
+Tooltip          : Suffering $w1 damage every $t1 seconds.
 
 Name             : Pick Pocket (id=921) [Spell Family (8)] 
 Class            : Assassination Outlaw Subtlety Rogue
@@ -383,7 +383,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 4 seconds
 Mechanic         : Bleed
-Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Hemorrhage (16511), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Mastery: Executioner (76808), Vendetta (79140), Deepening Shadows (185314), Adrenaline Rush (186286), Serrated Edge (192315), Gushing Wound (192329), Blood of the Assassinated (192925), Deeper Stratagem (193531), Alacrity (193539), Agonizing Poison (200803)
+Affecting spells : Adrenaline Rush (13750), Hemorrhage (16511), Rogue Tier 6 Trinket (40460), Mastery: Executioner (76808), Vendetta (79140), Adrenaline Rush (186286), Serrated Edge (192315), Gushing Wound (192329), Blood of the Assassinated (192925), Deeper Stratagem (193531), Agonizing Poison (200803)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ........ ....x... ........   ........ ........ ........ ........ 
@@ -475,7 +475,7 @@ Resource         : 1 - 5 Combo Points
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Death from Above (163786), Deceit (166878), Eviscerating Blade (184917), Deeper Stratagem (193531), Alacrity (193539), Acrobatic Strikes (196924), Ghostly Strike (196937), Fate's Thirst (202514), Fatebringer (202524)
+Affecting spells : Adrenaline Rush (13750), Death from Above (163786), Deceit (166878), Eviscerating Blade (184917), Deeper Stratagem (193531), Acrobatic Strikes (196924), Ghostly Strike (196937), Fate's Thirst (202514), Fatebringer (202524)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -633,7 +633,7 @@ Spell Level      : 14
 Range            : 100 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
-Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Vendetta (79140), Energetic Recovery (79152), Adrenaline Rush (186286), Deeper Stratagem (193531), Alacrity (193539), Fatebringer (202524)
+Affecting spells : Adrenaline Rush (13750), Rogue Tier 6 Trinket (40460), Vendetta (79140), Energetic Recovery (79152), Adrenaline Rush (186286), Deeper Stratagem (193531), Fatebringer (202524)
 Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -947,7 +947,9 @@ Name             : Ruthlessness (id=14161) [Spell Family (8), Passive]
 Class            : Outlaw Rogue
 School           : Physical
 Spell Level      : 27
-Proc Chance      : 101%
+Proc Chance      : 100%
+Proc Flags       : ....x... x.x.x.x. x....... ........ 
+                 : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -956,9 +958,8 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=6447)     : Apply Aura (6) | Unknown effect sub type (109)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Points Per Combo Point: 20 | Trigger Spell: 139569 | Target: Self(1)
-                   Affected Spells: Kidney Shot (408), Rupture (1943), Run Through (2098), Slice and Dice (5171), Roll the Bones (193316), Eviscerate (196819), Finality: Eviscerate (197393), Between the Eyes (199804)
+#1 (id=6447)     : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Points Per Combo Point: 20 | Target: Self(1)
 Description      : Your finishing moves have a $b1% chance per combo point spent to grant a combo point.
 
 Name             : Seal Fate (id=14189) [Spell Family (8)] 
@@ -1612,6 +1613,9 @@ Name             : Relentless Strikes (Passive) (id=58423) [Spell Family (8), Pa
 Class            : Subtlety Rogue
 School           : Physical
 Spell Level      : 54
+Proc Chance      : 100%
+Proc Flags       : ....x... x.x.x.x. x....... ........ 
+                 : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1620,9 +1624,8 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=51794)    : Apply Aura (6) | Unknown effect sub type (109)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Points Per Combo Point: 20 | Trigger Spell: 98440 | Target: Self(1)
-                   Affected Spells: Kidney Shot (408), Rupture (1943), Weaponmaster (193536), Nightblade (195452), Eviscerate (196819), Finality: Eviscerate (197393), Finality: Nightblade (197395), Enveloping Shadows (206237)
+#1 (id=51794)    : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Points Per Combo Point: 20 | Target: Self(1)
 #2 (id=289228)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
 Description      : Your finishing moves have a $s2% chance per combo point to generate $98440s2 Energy.
@@ -2031,7 +2034,6 @@ Description      : Enables Worgens to switch between human and Worgan forms
 Name             : Relentless Strikes (id=98440) 
 Class            : Rogue
 School           : Physical
-Triggered by     : Relentless Strikes (58423)
 Attributes       : ........ ........ ........ ........   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2558,25 +2560,6 @@ Effects          :
 Description      : Marks the target, instantly generating $s1 combo points. Cooldown reset if the target dies within $d.
 Tooltip          : Marked for Death will reset upon death.
 
-Name             : Combo Point Delayed (id=139569) 
-Class            : Rogue
-School           : Physical
-Range            : 100 yards
-Stacks           : 1 maximum
-Proc Chance      : 101%
-Triggered by     : Ruthlessness (14161)
-Attributes       : ....x... x....... ........ x.......   ........ ..x..... ........ ........ 
-                 : x.x..... ........ ........ ........   ........ ........ xx...... ........ 
-                 : .......x ........ ...x.... ........   ...x.... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ .......x 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Disable player procs (112), Disable target procs (113)
-Effects          :
-#1 (id=184172)   : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
-Description      : Grants $m1 combo point.
-
 Name             : Marked for Death (id=140149) [Spell Family (8), Hidden] 
 Class            : Rogue
 School           : Physical
@@ -2914,6 +2897,9 @@ Name             : Deepening Shadows (id=185314) [Spell Family (8), Passive]
 Class            : Subtlety Rogue
 School           : Physical
 Spell Level      : 42
+Proc Chance      : 100%
+Proc Flags       : ....x... x.x.x.x. x....... ........ 
+                 : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2922,9 +2908,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=269038)   : Apply Aura (6) | Unknown effect sub type (109)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Points Per Combo Point: 5 | Trigger Spell: 212267 | Target: Self(1)
-                   Affected Spells: Kidney Shot (408), Rupture (1943), Weaponmaster (193536), Nightblade (195452), Eviscerate (196819), Finality: Eviscerate (197393), Finality: Nightblade (197395), Enveloping Shadows (206237)
+#1 (id=269038)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Points Per Combo Point: 5 | Target: Self(1)
 #2 (id=288611)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Self(1)
 Description      : Your finishing moves have a $s2% chance per combo point to grant an additional charge of Shadow Dance.
@@ -3254,7 +3239,7 @@ Spell Level      : 36
 Range            : 100 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
-Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Deeper Stratagem (193531), Alacrity (193539), Fatebringer (202524)
+Affecting spells : Adrenaline Rush (13750), Deeper Stratagem (193531), Fatebringer (202524)
 Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... ......x. ....x... 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -3385,7 +3370,7 @@ Class            : Rogue
 School           : Shadow
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Relentless Strikes (58423), Mastery: Executioner (76808), Deepening Shadows (185314), Deeper Stratagem (193531), Alacrity (193539), Demon's Kiss (197233)
+Affecting spells : Mastery: Executioner (76808), Deeper Stratagem (193531), Demon's Kiss (197233)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ x.x..... .....xx. 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -3440,6 +3425,9 @@ Tooltip          : Haste increased by $w1%.
 Name             : Alacrity (id=193539) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Proc Chance      : 100%
+Proc Flags       : ....x... x.x.x.x. x....... ........ 
+                 : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3448,11 +3436,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=283935)   : Apply Aura (6) | Unknown effect sub type (109)
+#1 (id=283935)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Points Per Combo Point: 20 | Trigger Spell: 193538 | Target: Self(1)
-                   Affected Spells: Kidney Shot (408), Rupture (1943), Run Through (2098), Slice and Dice (5171), Roll the Bones (193316), Weaponmaster (193536), Nightblade (195452), Eviscerate (196819), Finality: Eviscerate (197393), Finality: Nightblade (197395), Between the Eyes (199804), Enveloping Shadows (206237)
-#2 (id=283936)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
+#2 (id=342821)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 14 | Points Per Combo Point: 20 | Target: Self(1)
 Description      : Your finishing moves have a $s2% chance per combo point to grant $193538s1% Haste for $193538d, stacking up to $193538u times.
 
 Name             : Iron Stomach (id=193546) [Spell Family (8), Passive] 
@@ -3468,7 +3455,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=283945)   : Apply Aura (6) | Add Percent Modifier: Spell Tick Time (108)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 8 | Target: Self(1)
-                   Affected Spells: Crimson Vial (185311)
+                   Affected Spells: Crimson Vial (185311), Crimson Vial (212198)
 Description      : Increases the healing you receive from Crimson Vial, healing potions, and healthstones by $s1%.
 
 Name             : Elaborate Planning (id=193640) [Spell Family (8), Passive] 
@@ -3523,7 +3510,7 @@ Duration         : 6 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Hostile Spell Taken
-Affecting spells : Relentless Strikes (58423), Mastery: Executioner (76808), Deepening Shadows (185314), Deeper Stratagem (193531), Alacrity (193539), Demon's Kiss (197233)
+Affecting spells : Mastery: Executioner (76808), Deeper Stratagem (193531), Demon's Kiss (197233)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ........ ....x... ........   ........ ........ ........ ........ 
@@ -3607,7 +3594,7 @@ Resource         : 1 - 5 Combo Points
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Mastery: Executioner (76808), Vendetta (79140), Death from Above (163786), Cold Blood (182304), Eviscerating Blade (184917), Deepening Shadows (185314), Adrenaline Rush (186286), Deeper Stratagem (193531), Alacrity (193539), Acrobatic Strikes (196924), Ghostly Strike (196937), Gutripper (197234)
+Affecting spells : Rogue Tier 6 Trinket (40460), Mastery: Executioner (76808), Vendetta (79140), Death from Above (163786), Cold Blood (182304), Eviscerating Blade (184917), Adrenaline Rush (186286), Deeper Stratagem (193531), Acrobatic Strikes (196924), Ghostly Strike (196937), Gutripper (197234)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -3878,7 +3865,7 @@ Resource         : 1 - 5 Combo Points
 Spell Level      : 3
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Mastery: Executioner (76808), Vendetta (79140), Death from Above (163786), Cold Blood (182304), Eviscerating Blade (184917), Deepening Shadows (185314), Adrenaline Rush (186286), Deeper Stratagem (193531), Alacrity (193539), Acrobatic Strikes (196924), Ghostly Strike (196937), Gutripper (197234)
+Affecting spells : Rogue Tier 6 Trinket (40460), Mastery: Executioner (76808), Vendetta (79140), Death from Above (163786), Cold Blood (182304), Eviscerating Blade (184917), Adrenaline Rush (186286), Deeper Stratagem (193531), Acrobatic Strikes (196924), Ghostly Strike (196937), Gutripper (197234)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -3910,7 +3897,7 @@ Duration         : 6 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Hostile Spell Taken
-Affecting spells : Relentless Strikes (58423), Mastery: Executioner (76808), Deepening Shadows (185314), Deeper Stratagem (193531), Alacrity (193539), Demon's Kiss (197233)
+Affecting spells : Mastery: Executioner (76808), Deeper Stratagem (193531), Demon's Kiss (197233)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ........ ....x... ........   ........ ........ ........ ........ 
@@ -4137,7 +4124,7 @@ Range            : 20 yards
 GCD              : 1 seconds
 Duration         : 5 seconds
 Cooldown         : 20 seconds
-Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Outlaw Rogue (137036), Deeper Stratagem (193531), Alacrity (193539), Ghostly Strike (196937), Fatebringer (202524), Black Powder (216230)
+Affecting spells : Adrenaline Rush (13750), Outlaw Rogue (137036), Deeper Stratagem (193531), Ghostly Strike (196937), Fatebringer (202524), Black Powder (216230)
 Attributes       : ....x... ........ x.....x. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
@@ -4453,7 +4440,7 @@ Resource         : 1 - 5 Combo Points
 Spell Level      : 1
 Range            : 100 yards
 GCD              : 1 seconds
-Affecting spells : Relentless Strikes (58423), Deepening Shadows (185314), Deeper Stratagem (193531), Alacrity (193539)
+Affecting spells : Deeper Stratagem (193531)
 Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -4594,23 +4581,48 @@ Effects          :
 #1 (id=311072)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 23 | Target: Self(1)
 
-Name             : Deepening Shadows (id=212267) [Spell Family (8)] 
+Name             : Crimson Vial (id=212198) [Spell Family (8)] 
+Class            : Rogue
+School           : Nature
+Spell Level      : 1
+Duration         : 6 seconds
+Cooldown         : 60 seconds
+Category         : 30
+Affecting spells : Iron Stomach (193546)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ...x....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=314567)   : Apply Aura (6) | Periodic Heal%: every 1 seconds (20)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self(1)
+Description      : Drink an alchemical concoction that heals you for $o1% of your maximum health over $d.
+Tooltip          : Healing for $m1% of maximum health every $t1 sec.
+
+Name             : Create: Crimson Vial (Honor Talent) (id=212205) 
 Class            : Rogue
 School           : Physical
-Range            : 100 yards
-Cooldown         : 2 seconds
-Triggered by     : Deepening Shadows (185314)
-Attributes       : ....x... ........ .....x.. ...x....   .....x.. ..x..... ........ ....x... 
-                 : ..x..... ........ ........ ........   ........ ........ .xx..... ......x. 
-                 : ........ .......x ........ ........   ......x. ........ ........ ........ 
-                 : ..x...x. ..x..... ........ ........   ........ ........ ........ ........ 
+Cast Time        : 1.5 seconds
+GCD              : 1.5 seconds
+Charges          : 3 (60 seconds cooldown)
+Category         : 1613
+Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Disable target procs (113)
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=314679)   : Server Side Script (77)
+#1 (id=314579)   : Create Item (24)
                    Base Value: 1 | Scaled Value: 1 | Target: Self(1)
-Description      : $@spelldesc185314
+#2 (id=314590)   : None (0)
+                   Base Value: 3 | Scaled Value: 3
+Description      : Create a Crimson Vial to share with allies. Maximum of $212205m2 can be carried at once. 
+
+$@spellicon212198 $@spellname212198
+$@spelldesc212198
 
 Name             : Symbols of Death (id=212283) [Spell Family (8)] 
 Class            : Subtlety Rogue

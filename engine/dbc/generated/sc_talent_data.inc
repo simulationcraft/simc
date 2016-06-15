@@ -1,6 +1,6 @@
 #define TALENT_SIZE (610)
 
-// 610 talents, wow build 21874
+// 610 talents, wow build 21952
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   0,   3,   29838,       0,  0 },
@@ -162,7 +162,7 @@ static struct talent_data_t __talent_data[] = {
   { "Stonebark"                         , 21651, 0x00, 0x0400, 105,   1,   6,  197061,       0,  0 },
   { "Moment of Clarity"                 , 21653, 0x00, 0x0400, 103,   2,   6,  155577,       0,  0 },
   { "Nature's Balance"                  , 21655, 0x00, 0x0400, 102,   2,   6,  202430,       0,  0 },
-  { "Ravager"                           , 21667, 0x00, 0x0001,  71,   2,   6,  152277,   46924,  0 },
+  { "Ravager"                           , 21667, 0x00, 0x0001,  71,   2,   6,  152277,  227847,  0 },
   { "Beacon of Faith"                   , 21668, 0x00, 0x0002,  65,   0,   6,  156910,       0,  0 },
   { "Beacon of the Lightbringer"        , 21671, 0x00, 0x0002,  65,   1,   6,  197446,       0,  0 },
   { "High Tide"                         , 21675, 0x00, 0x0040, 264,   2,   6,  157154,       0,  0 },
@@ -372,7 +372,7 @@ static struct talent_data_t __talent_data[] = {
   { "Dire Stable"                       , 22282, 0x00, 0x0004, 253,   2,   0,  193532,       0,  0 },
   { "Throwing Axes"                     , 22283, 0x00, 0x0004, 255,   1,   0,  200163,       0,  0 },
   { "Binding Shot"                      , 22284, 0x00, 0x0004,   0,   0,   4,  109248,  175686,  0 },
-  { "Black Arrow"                       , 22286, 0x00, 0x0004, 254,   1,   3,  194599,       0,  0 },
+  { "Sentinel"                          , 22286, 0x00, 0x0004, 254,   1,   3,  206817,       0,  0 },
   { "Volley"                            , 22287, 0x00, 0x0004,   0,   2,   5,  194386,       0,  0 },
   { "Trick Shot"                        , 22288, 0x00, 0x0004, 254,   2,   6,  199522,       0,  0 },
   { "Careful Aim"                       , 22289, 0x00, 0x0004, 254,   2,   0,   53238,       0,  0 },
@@ -555,11 +555,11 @@ static struct talent_data_t __talent_data[] = {
   { "First Blood"                       , 22494, 0x00, 0x0800, 577,   1,   2,  206416,       0,  0 },
   { "Lock and Load"                     , 22495, 0x00, 0x0004, 254,   0,   1,  194595,       0,  0 },
   { "Ranger's Net"                      , 22496, 0x00, 0x0004, 255,   1,   4,  200108,  195645,  0 },
-  { "Steady Focus"                      , 22497, 0x00, 0x0004, 254,   1,   1,  193533,       0,  0 },
+  { "Black Arrow"                       , 22497, 0x00, 0x0004, 254,   1,   1,  194599,       0,  0 },
   { "True Aim"                          , 22498, 0x00, 0x0004, 254,   2,   1,  199527,       0,  0 },
   { "Camouflage"                        , 22499, 0x00, 0x0004, 254,   2,   4,  199483,  175686,  0 },
   { "Caltrops"                          , 22500, 0x00, 0x0004, 255,   0,   1,  194277,  187698,  0 },
-  { "Sentinel"                          , 22501, 0x00, 0x0004, 254,   1,   0,  206817,       0,  0 },
+  { "Steady Focus"                      , 22501, 0x00, 0x0004, 254,   1,   0,  193533,       0,  0 },
   { "Abyssal Strike"                    , 22502, 0x00, 0x0800, 581,   0,   0,  207550,       0,  0 },
   { "Agonizing Flames"                  , 22503, 0x00, 0x0800, 581,   1,   0,  207548,       0,  0 },
   { "Razor Spikes"                      , 22504, 0x00, 0x0800, 581,   2,   0,  209400,       0,  0 },

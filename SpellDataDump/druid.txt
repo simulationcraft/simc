@@ -37,7 +37,7 @@ Proc Chance      : 100%
 Mechanic         : Unknown(58)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Cat Form (3025), Predatory Swiftness (69369), Incarnation: Tree of Life (81097), Roots Range Increase (96148), Lucidity (137247), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Cat Form (3025), Incarnation: Tree of Life (81097), Roots Range Increase (96148), Lucidity (137247), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ x....... ......x.   ........ ..x..... ........ .x...... 
                  : ........ ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ...x.... ....x... .....x..   .....x.. ........ ........ ........ 
@@ -349,7 +349,7 @@ Spell Level      : 26
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Cat Form (3025), Incarnation: Tree of Life (5420), Bear Form (5487), Nimble Healing Touch (24542), Blessing of Lower City (37878), Predatory Swiftness (69369), Soul of the Forest (114108), Lucidity (137247), Blessing of the World Tree (189744), Astral Influence (197524), Abundance (207640), Power of Elune, the Moon Goddess (208284), Attuned to Nature (210590), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Cat Form (3025), Incarnation: Tree of Life (5420), Bear Form (5487), Nimble Healing Touch (24542), Blessing of Lower City (37878), Soul of the Forest (114108), Lucidity (137247), Blessing of the World Tree (189744), Astral Influence (197524), Abundance (207640), Power of Elune, the Moon Goddess (208284), Attuned to Nature (210590), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -495,10 +495,10 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=124697)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 15 | Scaled Value: 15 | Target: Self(1)
-                   Affected Spells: Rejuvenation (774), Healing Touch (5185), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Efflorescence (145205), Tranquility (157982)
+                   Affected Spells: Rejuvenation (774), Healing Touch (5185), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Efflorescence (145205), Tranquility (157982), Gjallar's Horn (228136)
 #2 (id=124698)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self(1)
-                   Affected Spells: Rejuvenation (774), Healing Touch (5185), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Efflorescence (145205), Tranquility (157982)
+                   Affected Spells: Rejuvenation (774), Healing Touch (5185), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Efflorescence (145205), Tranquility (157982), Gjallar's Horn (228136)
 #3 (id=1947)     : Apply Aura (6) | Modify Armor% (101)
                    Base Value: 120 | Scaled Value: 120 | Misc Value: 1 | Target: Self(1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438)
@@ -791,9 +791,6 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=8636)     : Apply Aura (6) | Unknown effect sub type (154)
                    Base Value: 15 | Scaled Value: 15 | SP Coefficient: 1.00000 | Target: Self(1)
-#2 (id=281942)   : Apply Aura (6) | Unknown effect sub type (109)
-                   Base Value: 0 | Scaled Value: 0 | Points Per Combo Point: 20 | Trigger Spell: 69369 | Target: Self(1)
-                   Affected Spells: Savage Roar (52610)
 Description      : Reduces the chance enemies have to detect you while Prowl is active.
 
 Name             : Primal Fury (id=16953) 
@@ -889,7 +886,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 600 seconds
 Category         : 26
-Affecting spells : Cat Form (3025), Bear Form (5487), Cheaper Druid Shapeshifting (38314), Predatory Swiftness (69369), Lucidity (137247), Book of Rebirth (176021), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Cat Form (3025), Bear Form (5487), Cheaper Druid Shapeshifting (38314), Lucidity (137247), Book of Rebirth (176021), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : x....... ........ ........ ........   ....x... ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -1532,7 +1529,7 @@ Spell Level      : 1
 Range            : 100 yards
 GCD              : 1 seconds
 Duration         : 4 seconds
-Affecting spells : Feral Instinct (16949), Incarnation: King of the Jungle (102543), Berserk (106951), Clearcasting (135700)
+Affecting spells : Incarnation: King of the Jungle (102543), Berserk (106951), Clearcasting (135700)
 Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... ......x. ...x.... 
                  : x.x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -1787,34 +1784,6 @@ Effects          :
 Description      : Activates your true form, increasing current movement speed by an additional $s1% for $d.
 Tooltip          : True form activated, movement speed increased by an additional $s1%.
 
-Name             : Predatory Swiftness (id=69369) [Spell Family (7)] 
-Class            : Druid
-School           : Physical
-Duration         : 12 seconds
-Stacks           : 1 maximum
-Proc Chance      : 101%
-Affecting spells : Item - Druid WoD PvP Restoration 4P Bonus (165707), Ailuro Pouncers (208209)
-Triggered by     : Feral Instinct (16949)
-Attributes       : ........ ........ ..x..... .x......   ........ ..x..... .x...... ........ 
-                 : ........ ........ ........ ........   ........ ........ xx...... ........ 
-                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Disable player procs (112), Disable target procs (113)
-Effects          :
-#1 (id=63124)    : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self(1)
-                   Affected Spells: Entangling Roots (339), Healing Touch (5185), Rebirth (20484)
-#2 (id=100285)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Entangling Roots (339), Healing Touch (5185), Rebirth (20484)
-#3 (id=167620)   : Apply Aura (6) | Unknown effect sub type (275)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self(1)
-                   Affected Spells: Entangling Roots (339), Healing Touch (5185), Rebirth (20484)
-Description      : $@spelldesc16974
-Tooltip          : Your next Entangling Roots, Healing Touch, or Rebirth will be instant, free, and castable in all forms.
-
 Name             : Mastery: Starlight (id=77492) [Spell Family (7), Passive] 
 Class            : Balance Druid
 School           : Physical
@@ -1922,7 +1891,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=68268)    : School Damage: astral (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.70000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.50000 | Target: Enemy(6)
 #2 (id=289864)   : Trigger Spell: Lunar Empowerment (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 164547 | Target: Self(1)
 #3 (id=289865)   : Trigger Spell: Solar Empowerment (64)
@@ -2243,7 +2212,7 @@ Effects          :
 #1 (id=98196)    : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 32 | Target: Self(1)
                    Affected Spells: Mangle (33917)
-Description      : $@spelldesc33917
+Description      : $@spelldesc210706
 Tooltip          : Mangle's cooldown has been reset, and generates an additional ${$m1/10} Rage.
 
 Name             : Skull Bash (id=93985) [Spell Family (7)] 
@@ -2343,7 +2312,7 @@ Effects          :
                    Base Value: 12 | Scaled Value: 12 | Target: Friend(21)
 #3 (id=219284)   : Apply Aura (6) | Unknown effect sub type (283)
                    Base Value: 0 | Scaled Value: 0 | Target: Friend(21)
-                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102351), Cenarion Ward (102352), Tranquility (157982)
+                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102351), Cenarion Ward (102352), Tranquility (157982), Gjallar's Horn (228136)
 Description      : The target's skin becomes as tough as Ironwood, reducing all damage taken by $s1% for $d$?a197061[ and increases healing from your heal over time effects by $197061s2%][].
 Tooltip          : All damage taken is reduced by $s1%$?a197061[ and healing over time from the caster increased by $w3%][].
 
@@ -2556,7 +2525,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... x....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=111387)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 40 | Scaled Value: 40 | Misc Value: 0x7e | Target: Self(1)
+                   Base Value: 35 | Scaled Value: 35 | Misc Value: 0x7e | Target: Self(1)
 #2 (id=310508)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 22 | Target: Self(1)
 #3 (id=310509)   : Dummy (3)
@@ -5218,7 +5187,7 @@ Effects          :
 Description      : Switch to your Primary Talent Specialization.
 Tooltip          : Switch to your Primary Talent Specialization.
 
-Name             : Rage of the Sleeper (Artifact, Active Mitigation) (id=200851) [Spell Family (7)] 
+Name             : Rage of the Sleeper (Artifact) (id=200851) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
 Duration         : 10 seconds
@@ -6249,7 +6218,7 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=312014)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 127 | Target: Self(1)
-Description      : Berserk increases all damage you deal by $s1%.
+Description      : $?s102543[Incarnation: King of the Jungle][Berserk] increases all damage you deal by $s1% for $210649d.
 
 Name             : Feral Instinct (id=210649) [Spell Family (7)] 
 Class            : Druid
@@ -6423,7 +6392,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=312759)   : Apply Aura (6) | Dummy (4)
@@ -6438,7 +6407,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=312761)   : Apply Aura (6) | Dummy (4)
@@ -6457,7 +6426,7 @@ Attributes       : ........ ........ x....... x..x....   .....x.. ........ .....
                  : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
 Effects          :
 #1 (id=313366)   : School Damage: astral (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | Radius: 0 - 3 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | Radius: 0 - 3 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 Description      : $@spelldesc202770
 
 Name             : Fury of Elune (id=211547) [Spell Family (7)] 
@@ -6467,9 +6436,9 @@ Range            : 40 yards
 Cooldown         : 0.5 seconds
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=313368)   : Dummy (3)
