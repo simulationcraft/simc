@@ -3245,7 +3245,7 @@ class RandomSuffixGenerator(DataGenerator):
             for i in range(1,5):
                 item_ench = self._spellitemenchantment_db.get( getattr(data, 'id_property_%d' % i) )
                 if not item_ench:
-                    logging.debug("No item enchantment found for %s (%s)", data.name, data.name_int)
+                    logging.debug("No item enchantment found for %s", data.name)
                     continue
 
                 if item_ench.type_1 not in [4, 5]:
@@ -3284,8 +3284,6 @@ class RandomSuffixGenerator(DataGenerator):
             except:
                 print(fields)
                 sys.exit(1)
-            if rs.name_int:
-                self._out.write(' // %s' % rs.name_int)
             self._out.write('\n')
 
         self._out.write('};\n')

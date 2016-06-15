@@ -1,6 +1,6 @@
 #define RAND_PROP_POINTS_SIZE (1000)
 
-// Random property points for item levels 1-1000, wow build 21874
+// Random property points for item levels 1-1000, wow build 21953
 static struct random_prop_data_t __rand_prop_points_data[] = {
   {    1, {     0,     0,     0,     0,     0 }, {     0,     0,     0,     0,     0 }, {     0,     0,     0,     0,     0 } },
   {    2, {     0,     0,     0,     0,     0 }, {     0,     0,     0,     0,     0 }, {     0,     0,     0,     0,     0 } },
@@ -1006,463 +1006,463 @@ static struct random_prop_data_t __rand_prop_points_data[] = {
 };
 #define RAND_SUFFIX_SIZE (450)
 
-// Random new-style item suffixes, wow build 21874
+// Random new-style item suffixes, wow build 21953
 static struct random_suffix_data_t __rand_suffix_data[] = {
-  {   5, "of the Monkey"          , {  2802,  2803,     0,     0,     0 }, {  6666, 10000,     0,     0,     0 } }, // Monkey
-  {   6, "of the Eagle"           , {  2804,  2803,     0,     0,     0 }, {  6666, 10000,     0,     0,     0 } }, // Eagle
-  {   7, "of the Bear"            , {  2803,  2805,     0,     0,     0 }, { 10000,  6666,     0,     0,     0 } }, // Bear
-  {   8, "of the Whale"           , {  2806,  2803,     0,     0,     0 }, {  6666, 10000,     0,     0,     0 } }, // Whale
-  {   9, "of the Owl"             , {  2804,  2806,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Owl
-  {  10, "of the Gorilla"         , {  2804,  2805,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Gorilla
-  {  11, "of the Falcon"          , {  2802,  2804,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Falcon
-  {  12, "of the Boar"            , {  2806,  2805,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Boar
-  {  13, "of the Wolf"            , {  2802,  2806,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Wolf
-  {  14, "of the Tiger"           , {  2802,  2823,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Tiger
-  {  15, "of Spirit"              , {  2806,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } }, // Spirit
-  {  16, "of Stamina"             , {  2803,     0,     0,     0,     0 }, { 15000,     0,     0,     0,     0 } }, // Stamina
-  {  17, "of Strength"            , {  2805,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } }, // Strength
-  {  18, "of Agility"             , {  2802,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } }, // Agility
-  {  19, "of Intellect"           , {  2804,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } }, // Intellect
-  {  20, "of Power"               , {  2825,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } }, // Power
-  {  21, "of Intellect"           , {  2804,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } }, // Intellect: Used to Be Arcane Wrath
-  {  22, "of Intellect"           , {  2804,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } }, // Intellect:  Used to Be Fiery Wrath
-  {  23, "of Intellect"           , {  2804,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } }, // Intellect: Used to Be Frozen Wrath
-  {  24, "of Intellect"           , {  2804,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } }, // Intellect (used to be Nature's Wrath)
-  {  25, "of Intellect"           , {  2804,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } }, // Intellect: Used to Be Shadow Wrath
-  {  26, "of Intellect"           , {  2804,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } }, // Intellect
-  {  27, "of Nimbleness"          , {  2815,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } }, // Nimbleness
-  {  28, "of Stamina"             , {  2803,     0,     0,     0,     0 }, { 15000,     0,     0,     0,     0 } }, // Stamina
-  {  29, "of Eluding"             , {  2815,  2802,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Eluding
-  {  30, "of Spirit"              , {  2806,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } }, // Spirit
-  {  31, "of Arcane Protection"   , {  2803,  2817,     0,     0,     0 }, { 10000,  6666,     0,     0,     0 } }, // Arcane Protection
-  {  32, "of Fire Protection"     , {  2803,  2818,     0,     0,     0 }, { 10000,  6666,     0,     0,     0 } }, // Fire Protection
-  {  33, "of Frost Protection"    , {  2803,  2819,     0,     0,     0 }, { 10000,  6666,     0,     0,     0 } }, // Frost Protection
-  {  34, "of Nature Protection"   , {  2803,  2820,     0,     0,     0 }, { 10000,  6666,     0,     0,     0 } }, // Nature Protection
-  {  35, "of Shadow Protection"   , {  2803,  2821,     0,     0,     0 }, { 10000,  6666,     0,     0,     0 } }, // Shadow Protection
-  {  36, "of the Sorcerer"        , {  2803,  2804,  3726,     0,     0 }, {  7889,  5259,  5259,     0,     0 } }, // Sorcerer
-  {  37, "of the Seer"            , {  2803,  2804,  2822,     0,     0 }, {  7889,  5259,  5259,     0,     0 } }, // Seer
-  {  38, "of the Prophet"         , {  2804,  2806,  3726,     0,     0 }, {  5259,  5259,  5259,     0,     0 } }, // Prophet
-  {  39, "of the Invoker"         , {  2804,  2822,     0,     0,     0 }, {  7889,  5259,     0,     0,     0 } }, // Invoker
-  {  40, "of the Bandit"          , {  2802,  2803,  2822,     0,     0 }, {  5259,  7889,  5259,     0,     0 } }, // Bandit
-  {  41, "of the Beast"           , {  3726,  2822,  2803,     0,     0 }, {  5259,  5259,  7889,     0,     0 } }, // Beast
-  {  42, "of the Elder"           , {  2803,  2806,  2804,     0,     0 }, {  7889,  5259,  5259,     0,     0 } }, // Elder
-  {  43, "of the Soldier"         , {  2805,  2803,  2823,     0,     0 }, {  5259,  7889,  5259,     0,     0 } }, // Soldier
-  {  44, "of the Elder"           , {  2803,  2804,  2806,     0,     0 }, {  7889,  5259,  5259,     0,     0 } }, // Elder
-  {  45, "of the Champion"        , {  2805,  2803,  2815,     0,     0 }, {  5259,  7889,  5259,     0,     0 } }, // Champion
-  {  47, "of Blocking"            , {  2826,  2805,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Blocking
-  {  49, "of the Grove"           , {  2802,  3726,  2803,     0,     0 }, {  7266,  4106,  4790,     0,     0 } }, // Grove
-  {  50, "of the Hunt"            , {  2802,  2822,  3726,     0,     0 }, {  7266,  4106,  3193,     0,     0 } }, // Hunt
-  {  51, "of the Mind"            , {  2804,  2822,  3726,     0,     0 }, {  7266,  4106,  3193,     0,     0 } }, // Mind
-  {  52, "of the Crusade"         , {  2805,  2803,  2813,     0,     0 }, {  7266,  6159,  3193,     0,     0 } }, // Crusade
-  {  53, "of the Vision"          , {  2804,  3726,  2803,     0,     0 }, {  7266,  4106,  3193,     0,     0 } }, // Vision
-  {  54, "of the Ancestor"        , {  2805,  2823,  2803,     0,     0 }, {  7266,  4106,  4790,     0,     0 } }, // Ancestor
-  {  55, "of the Nightmare"       , {  2804,  2803,  2822,     0,     0 }, {  7266,  6159,  3193,     0,     0 } }, // Nightmare
-  {  56, "of the Battle"          , {  2805,  2803,  2823,     0,     0 }, {  7266,  6159,  3193,     0,     0 } }, // Battle
-  {  57, "of the Shadow"          , {  2802,  2822,  2803,     0,     0 }, {  7266,  4106,  4790,     0,     0 } }, // Shadow
-  {  58, "of the Sun"             , {  2823,  2803,  2804,     0,     0 }, {  5259,  5259,  5259,     0,     0 } }, // Sun
-  {  59, "of the Moon"            , {  2804,  2803,  2806,     0,     0 }, {  5259,  5259,  5259,     0,     0 } }, // Moon
-  {  60, "of the Wild"            , {  2802,  2803,  3726,     0,     0 }, {  5259,  5259,  5259,     0,     0 } }, // Wild
-  {  61, "of Intellect"           , {  2804,     0,     0,     0,     0 }, {  5000,     0,     0,     0,     0 } }, // Intellect (Resistance)
-  {  62, "of Strength"            , {  2805,     0,     0,     0,     0 }, {  5000,     0,     0,     0,     0 } }, // Strength (resistance)
-  {  63, "of Agility"             , {  2802,     0,     0,     0,     0 }, {  5000,     0,     0,     0,     0 } }, // Agility (resistance)
-  {  64, "of Power"               , {  2825,     0,     0,     0,     0 }, {  5000,     0,     0,     0,     0 } }, // Power (resistance)
-  {  65, "of Magic"               , {  2804,     0,     0,     0,     0 }, {  5000,     0,     0,     0,     0 } }, // Magic (resistance)
-  {  66, "of the Knight"          , {  2803,  2813,  2822,     0,     0 }, {  7889,  5259,  5259,     0,     0 } }, // Knight
-  {  67, "of the Seer"            , {  2803,  2822,  2804,     0,     0 }, {  7889,  5259,  5259,     0,     0 } }, // Seer
-  {  68, "of the Bear"            , {  2805,  2803,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Bear (<60)
-  {  69, "of the Eagle"           , {  2803,  2804,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Eagle (<60)
-  {  70, "of the Ancestor"        , {  2805,  2822,  2803,     0,     0 }, {  7266,  4106,  3193,     0,     0 } }, // Ancestor (<60)
-  {  71, "of the Bandit"          , {  2802,  2803,  2822,     0,     0 }, {  5259,  5259,  5259,     0,     0 } }, // Bandit (<60)
-  {  72, "of the Battle"          , {  2805,  2803,  2822,     0,     0 }, {  7266,  4106,  3193,     0,     0 } }, // Battle (<60)
-  {  73, "of the Elder"           , {  2803,  2804,  2806,     0,     0 }, {  5259,  5259,  5259,     0,     0 } }, // Elder (<60)
-  {  74, "of the Beast"           , {  3726,  2822,  2803,     0,     0 }, {  5259,  5259,  5259,     0,     0 } }, // Beast (<60)
-  {  75, "of the Champion"        , {  2805,  2803,  2815,     0,     0 }, {  5259,  5259,  5259,     0,     0 } }, // Champion (<60)
-  {  76, "of the Grove"           , {  2802,  3726,  2803,     0,     0 }, {  7266,  4106,  3193,     0,     0 } }, // Grove (<60)
-  {  77, "of the Knight"          , {  2803,  2813,  3726,     0,     0 }, {  5259,  5259,  6153,     0,     0 } }, // Knight (<60)
-  {  78, "of the Monkey"          , {  2802,  2803,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Monkey (<60)
-  {  79, "of the Moon"            , {  2804,  2803,  2806,     0,     0 }, {  5259,  3506,  5259,     0,     0 } }, // Moon (<60)
-  {  80, "of the Wild"            , {  2802,  2803,  3726,     0,     0 }, {  5259,  3506,  5259,     0,     0 } }, // Wild (<60)
-  {  81, "of the Whale"           , {  2803,  2806,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Whale (<60)
-  {  82, "of the Vision"          , {  2804,  3726,  2803,     0,     0 }, {  7266,  4106,  2129,     0,     0 } }, // Vision (<60)
-  {  83, "of the Sun"             , {  2823,  2803,  2804,     0,     0 }, {  5259,  5259,  5259,     0,     0 } }, // Sun (<60)
-  {  84, "of Stamina"             , {  2803,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } }, // Stamina (<60)
-  {  85, "of the Sorcerer"        , {  2803,  2804,  3726,     0,     0 }, {  5259,  5259,  5259,     0,     0 } }, // Sorcerer (<60)
-  {  86, "of the Soldier"         , {  2805,  2803,  2822,     0,     0 }, {  5259,  5259,  5259,     0,     0 } }, // Soldier (<60)
-  {  87, "of the Shadow"          , {  2802,  2822,  2803,     0,     0 }, {  7266,  4106,  3193,     0,     0 } }, // Shadow (<60)
-  {  88, "of the Foreseer"        , {  2804,  3726,  2822,     0,     0 }, {  5259,  5259,  5259,     0,     0 } }, // Foreseer
-  {  89, "of the Thief"           , {  2803,  2802,  3726,     0,     0 }, {  7889,  5259,  5259,     0,     0 } }, // Thief
-  {  90, "of the Necromancer"     , {  2803,  3726,  2804,     0,     0 }, {  7889,  5259,  5259,     0,     0 } }, // Necromancer
-  {  91, "of the Marksman"        , {  2803,  2802,  2822,     0,     0 }, {  7889,  5259,  5259,     0,     0 } }, // Marksman
-  {  92, "of the Squire"          , {  2803,  3726,  2805,     0,     0 }, {  7889,  5259,  5259,     0,     0 } }, // Squire
-  {  93, "of Restoration"         , {  2803,  2804,  2806,     0,     0 }, {  7889,  5259,  5259,     0,     0 } }, // Restoration
-  {  94, 0                        , {  2802,     0,     0,     0,     0 }, {  9000,     0,     0,     0,     0 } }, // Agility (Darkmoon Card)
-  {  95, 0                        , {  2805,     0,     0,     0,     0 }, {  9000,     0,     0,     0,     0 } }, // Strength (Darkmoon Card)
-  {  96, 0                        , {  2803,     0,     0,     0,     0 }, { 13500,     0,     0,     0,     0 } }, // Stamina (Darkmoon Card)
-  {  97, 0                        , {  2804,     0,     0,     0,     0 }, {  9000,     0,     0,     0,     0 } }, // Intellect (Darkmoon Card)
-  {  98, 0                        , {  2806,     0,     0,     0,     0 }, {  9000,     0,     0,     0,     0 } }, // Spirit (Darkmoon Card)
-  {  99, "of Speed"               , {  3726,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } }, // Haste
-  { 100, "of the Principle"       , {  2803,  2805,  3726,  2822,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Principle
-  { 101, "of the Sentinel"        , {  2803,  2805,  3726,  2822,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Sentinel
-  { 102, "of the Hero"            , {  2803,  2805,  2822,  3726,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Hero
-  { 103, "of the Avatar"          , {  2803,  2805,  2822,  4059,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Avatar
-  { 104, "of the Embodiment"      , {  2803,  2805,  3726,  4059,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Embodiment
-  { 105, "of the Guardian"        , {  2803,  2805,  4059,  2815,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Guardian
-  { 106, "of the Defender"        , {  2803,  2805,  2815,  4060,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Defender
-  { 107, "of the Exemplar"        , {  2803,  2805,  3726,  2815,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Exemplar
-  { 108, "of the Curator"         , {  2803,  2805,  2815,  4060,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Curator
-  { 109, "of the Preserver"       , {  2803,  2804,  4059,  2806,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Preserver
-  { 110, "of the Elements"        , {  2803,  2804,  3726,  2823,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Elements
-  { 111, "of the Paradigm"        , {  2803,  2804,  3726,  4059,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Paradigm
-  { 112, "of the Pattern"         , {  2803,  2804,  2822,  3726,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Pattern
-  { 113, "of the Essence"         , {  2803,  2804,  3726,  2806,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Essence
-  { 114, "of the Flameblaze"      , {  2803,  2804,  4059,  3726,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Flameblaze
-  { 115, "of the Archetype"       , {  2803,  2802,  3726,  2822,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Archetype
-  { 116, "of the Manifestation"   , {  2803,  2802,  3726,  2822,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Manifestation
-  { 117, "of the Incarnation"     , {  2803,  2802,  2823,  3726,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Incarnation
-  { 118, "of the Faultline"       , {  2803,  2805,  3726,  4059,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Faultline
-  { 119, "of the Ideal"           , {  2803,  2802,  3726,  4059,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Ideal
-  { 120, "of the Earthshaker"     , {  2803,  2805,  3726,  2822,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Earthshaker
-  { 121, "of the Landslide"       , {  2803,  2805,  3726,  2822,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Landslide
-  { 122, "of the Earthfall"       , {  2803,  2805,  2822,  3726,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Earthfall
-  { 123, "of the Earthbreaker"    , {  2803,  2805,  2822,  4059,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Earthbreaker
-  { 124, "of the Mountainbed"     , {  2803,  2805,  4059,  3726,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Mountainbed
-  { 125, "of the Bedrock"         , {  2803,  2805,  4059,  4060,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Bedrock
-  { 126, "of the Substratum"      , {  2803,  2805,  3726,  2815,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Substratum
-  { 127, "of the Bouldercrag"     , {  2803,  2805,  2815,  4060,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Bouldercrag
-  { 128, "of the Rockslab"        , {  2803,  2805,  4059,  2815,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Rockslab
-  { 129, "of the Wildfire"        , {  2803,  2804,  3726,  2822,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Wildfire
-  { 130, "of the Fireflash"       , {  2803,  2804,  2822,  3726,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Fireflash
-  { 131, "of the Undertow"        , {  2803,  2804,  3726,  2806,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Undertow
-  { 132, "of the Wavecrest"       , {  2803,  2804,  4059,  2806,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Wavecrest
-  { 133, "of the Stormblast"      , {  2803,  2802,  3726,  2822,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Stormblast
-  { 134, "of the Galeburst"       , {  2803,  2802,  3726,  2822,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Galeburst
-  { 135, "of the Windflurry"      , {  2803,  2802,  2822,  3726,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Windflurry
-  { 136, "of the Zephyr"          , {  2803,  2802,  3726,  4059,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Zephyr
-  { 137, "of the Windstorm"       , {  2803,  2802,  2822,  4059,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Windstorm
-  { 138, "of the Feverflare"      , {  2803,  2804,  3726,  4059,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // Feverflare
-  { 139, "of the Mercenary"       , {  2803,  2805,  3726,     0,     0 }, {  7889,  5259,  5259,     0,     0 } }, // Mercenary
-  { 140, "of the Wraith"          , {  2822,  2806,     0,     0,     0 }, {  3506,  3506,     0,     0,     0 } }, // Crit/Spirit Bonus (50/50)
-  { 141, "of the Wind"            , {  2806,  3726,     0,     0,     0 }, {  3506,  3506,     0,     0,     0 } }, // Spirit/Haste (50/50)
-  { 142, "of the Master"          , {  2806,  4059,     0,     0,     0 }, {  3506,  3506,     0,     0,     0 } }, // Spirit/Mastery (50/50)
-  { 143, "of the Scorpion"        , {  3726,  2822,     0,     0,     0 }, {  3506,  3506,     0,     0,     0 } }, // Haste/Crit (50/50)
-  { 144, "of the Shark"           , {  2822,  4059,     0,     0,     0 }, {  3506,  3506,     0,     0,     0 } }, // Crit/Mastery (50/50)
-  { 145, "of the Panther"         , {  4059,  3726,     0,     0,     0 }, {  3506,  3506,     0,     0,     0 } }, // Mastery/Haste (50/50)
-  { 146, "Crit/Mastery (40/60)"   , {  2822,  4059,     0,     0,     0 }, {  2664,  3997,     0,     0,     0 } }, // of the Shark
-  { 147, "of the Shark"           , {  2822,  4059,     0,     0,     0 }, {  2664,  3997,     0,     0,     0 } }, // Crit/Mastery (40/60)
-  { 148, "Crit/Spirit (40/60)"    , {  2822,  2806,     0,     0,     0 }, {  2664,  3997,     0,     0,     0 } }, // of the Wraith
-  { 149, "of the Scorpion"        , {  3726,  2822,     0,     0,     0 }, {  2664,  3997,     0,     0,     0 } }, // Haste/Crit (40/60)
-  { 150, "of the Panther"         , {  4059,  3726,     0,     0,     0 }, {  2664,  3997,     0,     0,     0 } }, // Mastery/Haste (40/60)
-  { 151, "of the Wind"            , {  2806,  3726,     0,     0,     0 }, {  2664,  3997,     0,     0,     0 } }, // Spirit/Haste (40/60)
-  { 152, "of the Master"          , {  2806,  4059,     0,     0,     0 }, {  2664,  3997,     0,     0,     0 } }, // Spirit/Mastery (40/60)
-  { 153, "of the Wraith"          , {  3726,  4059,     0,     0,     0 }, {  2664,  3997,     0,     0,     0 } }, // Haste/Crit (40/60)
-  { 154, "of the Shark"           , {  2822,  4059,     0,     0,     0 }, {  3997,  2664,     0,     0,     0 } }, // Crit/Mastery (60/40)
-  { 155, "of the Scorpion"        , {  3726,  2822,     0,     0,     0 }, {  3997,  2664,     0,     0,     0 } }, // Haste/Crit (60/40)
-  { 156, "of the Wraith"          , {  2822,  2806,     0,     0,     0 }, {  3997,  2664,     0,     0,     0 } }, // Crit/Spirit (60/40)
-  { 157, "of the Panther"         , {  4059,  3726,     0,     0,     0 }, {  3997,  2664,     0,     0,     0 } }, // Mastery/Haste (60/40)
-  { 158, "of the Wind"            , {  2806,  3726,     0,     0,     0 }, {  3997,  2664,     0,     0,     0 } }, // Spirit/Haste (60/40)
-  { 159, "of the Master"          , {  2806,  4059,     0,     0,     0 }, {  3997,  2664,     0,     0,     0 } }, // Spirit/Mastery (60/40)
-  { 160, "of the Mongoose"        , {  2822,  3726,     0,     0,     0 }, {  3506,  3506,     0,     0,     0 } }, // Hit/Haste (50/50)
-  { 161, "of Storms"              , {  3726,  2822,     0,     0,     0 }, {  3506,  3506,     0,     0,     0 } }, // Hit/Crit (50/50)
-  { 162, "of Flames"              , {  3726,  4059,     0,     0,     0 }, {  3506,  3506,     0,     0,     0 } }, // Hit/Mastery (50/50)
-  { 163, "of the Mongoose"        , {  2822,  3726,     0,     0,     0 }, {  2664,  3997,     0,     0,     0 } }, // Hit/Haste (40/60)
-  { 164, "of Storms"              , {  3726,  2822,     0,     0,     0 }, {  2664,  3997,     0,     0,     0 } }, // Hit/Crit (40/60)
-  { 165, "of Flames"              , {  3726,  4059,     0,     0,     0 }, {  2664,  3997,     0,     0,     0 } }, // Hit/Mastery (40/60)
-  { 166, "of the Mongoose"        , {  3726,  4059,     0,     0,     0 }, {  3997,  2664,     0,     0,     0 } }, // Hit/Haste (60/40)
-  { 167, "of Storms"              , {  3726,  2822,     0,     0,     0 }, {  3997,  2664,     0,     0,     0 } }, // Hit/Crit (60/40)
-  { 168, "of Flames"              , {  3726,  4059,     0,     0,     0 }, {  3997,  2664,     0,     0,     0 } }, // Hit/Mastery (60/40)
-  { 169, "of the Landslide"       , {  2803,  2805,  3726,  2822,     0 }, {  7889,  4638,  3205,  3205,     0 } }, // Skywall - 359 - Primary - Landslide
-  { 170, "of the Earthshaker"     , {  2803,  2805,  3726,  2822,     0 }, {  7889,  4638,  3205,  3205,     0 } }, // Skywall - 359 - Primary - Earthshaker
-  { 171, "of the Earthfall"       , {  2803,  2805,  2822,  3726,     0 }, {  7889,  4638,  3205,  3205,     0 } }, // Skywall - 359 - Primary - Earthfall
-  { 172, "of the Faultline"       , {  2803,  2805,  3726,  4059,     0 }, {  7889,  4638,  3205,  3205,     0 } }, // Skywall - 359 - Primary - Faultline
-  { 173, "of the Earthshaker"     , {  2803,  2805,  3726,  2822,     0 }, {  7889,  4707,  3247,  3247,     0 } }, // Skywall - 372 - Primary - Earthshaker
-  { 174, "of the Landslide"       , {  2803,  2805,  3726,  2822,     0 }, {  7889,  4707,  3247,  3247,     0 } }, // Skywall - 372 - Primary - Landslide
-  { 175, "of the Earthfall"       , {  2803,  2805,  2822,  3726,     0 }, {  7889,  4707,  3247,  3247,     0 } }, // Skywall - 372 - Primary - Earthfall
-  { 176, "of the Faultline"       , {  2803,  2805,  3726,  4059,     0 }, {  7889,  4707,  3247,  3247,     0 } }, // Skywall - 372 - Primary - Faultline
-  { 177, "of the Bedrock"         , {  2803,  2805,  4059,  4060,     0 }, {  7889,  4638,  3205,  3205,     0 } }, // Skywall - 359 - Primary - Bedrock
-  { 178, "of the Bouldercrag"     , {  2803,  2805,  2815,  4060,     0 }, {  7889,  4638,  3205,  3205,     0 } }, // Skywall - 359 - Primary - Bouldercrag
-  { 179, "of the Rockslab"        , {  2803,  2805,  4059,  2815,     0 }, {  7889,  4638,  3205,  3205,     0 } }, // Skywall - 359 - Primary - Rockslab
-  { 180, "of the Bedrock"         , {  2803,  2805,  4059,  4060,     0 }, {  7889,  4707,  3247,  3247,     0 } }, // Skywall - 372 - Primary - Bedrock
-  { 181, "of the Bouldercrag"     , {  2803,  2805,  2815,  4060,     0 }, {  7889,  4707,  3247,  3247,     0 } }, // Skywall - 372 - Primary - Bouldercrag
-  { 182, "of the Rockslab"        , {  2803,  2805,  4059,  2815,     0 }, {  7889,  4707,  3247,  3247,     0 } }, // Skywall - 372 - Primary - Rockslab
-  { 183, "of the Wildfire"        , {  2803,  2804,  3726,  2822,     0 }, {  7889,  4638,  3205,  3205,     0 } }, // Skywall - 359 - Primary - Wildfire
-  { 184, "of the Flameblaze"      , {  2803,  2804,  4059,  3726,     0 }, {  7889,  4638,  3205,  3205,     0 } }, // Skywall - 359 - Primary - Flameblaze
-  { 185, "of the Fireflash"       , {  2803,  2804,  2822,  3726,     0 }, {  7889,  4638,  3205,  3205,     0 } }, // Skywall - 359 - Primary - Fireflash
-  { 186, "of the Feverflare"      , {  2803,  2804,  3726,  4059,     0 }, {  7889,  4638,  3205,  3205,     0 } }, // Skywall - 359 - Primary - Feverflare
-  { 187, "of the Undertow"        , {  2803,  2804,  3726,  2806,     0 }, {  7889,  4638,  3205,  3205,     0 } }, // Skywall - 359 - Primary - Undertow
-  { 188, "of the Wavecrest"       , {  2803,  2804,  4059,  2806,     0 }, {  7889,  4638,  3205,  3205,     0 } }, // Skywall - 359 - Primary - Wavecrest
-  { 189, "of the Wildfire"        , {  2803,  2804,  3726,  2822,     0 }, {  7889,  4707,  3247,  3247,     0 } }, // Skywall - 372 - Primary - Wildfire
-  { 190, "of the Flameblaze"      , {  2803,  2804,  4059,  3726,     0 }, {  7889,  4707,  3247,  3247,     0 } }, // Skywall - 372 - Primary - Flameblaze
-  { 191, "of the Fireflash"       , {  2803,  2804,  2822,  3726,     0 }, {  7889,  4707,  3247,  3247,     0 } }, // Skywall - 372 - Primary - Fireflash
-  { 192, "of the Feverflare"      , {  2803,  2804,  3726,  4059,     0 }, {  7889,  4707,  3247,  3247,     0 } }, // Skywall - 372 - Primary - Feverflare
-  { 193, "of the Undertow"        , {  2803,  2804,  3726,  2806,     0 }, {  7889,  4707,  3247,  3247,     0 } }, // Skywall - 372 - Primary - Undertow
-  { 194, "of the Wavecrest"       , {  2803,  2804,  4059,  2806,     0 }, {  7889,  4707,  3247,  3247,     0 } }, // Skywall - 372 - Primary - Wavecrest
-  { 195, "of the Stormblast"      , {  2803,  2802,  3726,  2822,     0 }, {  7889,  4638,  3205,  3205,     0 } }, // Skywall - 359 - Primary - Stormblast
-  { 196, "of the Windflurry"      , {  2803,  2802,  2822,  3726,     0 }, {  7889,  4638,  3205,  3205,     0 } }, // Skywall - 359 - Primary - Windflurry
-  { 197, "of the Windstorm"       , {  2803,  2802,  2822,  4059,     0 }, {  7889,  4638,  3205,  3205,     0 } }, // Skywall - 359 - Primary - Windstorm
-  { 198, "of the Zephyr"          , {  2803,  2802,  3726,  4059,     0 }, {  7889,  4638,  3205,  3205,     0 } }, // Skywall - 359 - Primary - Zephyr
-  { 199, "of the Stormblast"      , {  2803,  2802,  3726,  2822,     0 }, {  7889,  4707,  3247,  3247,     0 } }, // Skywall - 372 - Primary - Stormblast
-  { 200, "of the Windflurry"      , {  2803,  2802,  2822,  3726,     0 }, {  7889,  4707,  3247,  3247,     0 } }, // Skywall - 372 - Primary - Windflurry
-  { 201, "of the Windstorm"       , {  2803,  2802,  2822,  4059,     0 }, {  7889,  4707,  3247,  3247,     0 } }, // Skywall - 372 - Primary - Windstorm
-  { 202, "of the Zephyr"          , {  2803,  2802,  3726,  4059,     0 }, {  7889,  4707,  3247,  3247,     0 } }, // Skywall - 372 - Primary - Zephyr
-  { 203, "of the Earthshaker"     , {  2803,  2805,  3726,  2822,     0 }, {  7889,  4834,  3320,  3320,     0 } }, // Skywall - 359 - Secondary - Earthshaker
-  { 204, "of the Landslide"       , {  2803,  2805,  3726,  2822,     0 }, {  7889,  4834,  3320,  3320,     0 } }, // Skywall - 359 - Secondary - Landslide
-  { 205, "of the Earthfall"       , {  2803,  2805,  2822,  3726,     0 }, {  7889,  4834,  3320,  3320,     0 } }, // Skywall - 359 - Secondary - Earthfall
-  { 206, "of the Faultline"       , {  2803,  2805,  3726,  4059,     0 }, {  7889,  4834,  3320,  3320,     0 } }, // Skywall - 359 - Secondary - Faultline
-  { 207, "of the Bedrock"         , {  2803,  2805,  4059,  4060,     0 }, {  7889,  4834,  3320,  3320,     0 } }, // Skywall - 359 - Secondary - Bedrock
-  { 208, "of the Bouldercrag"     , {  2803,  2805,  2815,  4060,     0 }, {  7889,  4834,  3320,  3320,     0 } }, // Skywall - 359 - Secondary - Bouldercrag
-  { 209, "of the Rockslab"        , {  2803,  2805,  4059,  2815,     0 }, {  7889,  4834,  3320,  3320,     0 } }, // Skywall - 359 - Secondary - Rockslab
-  { 210, "of the Wildfire"        , {  2803,  2804,  3726,  2822,     0 }, {  7889,  4834,  3320,  3320,     0 } }, // Skywall - 359 - Secondary - Wildfire
-  { 211, "of the Flameblaze"      , {  2803,  2804,  4059,  3726,     0 }, {  7889,  4834,  3320,  3320,     0 } }, // Skywall - 359 - Secondary - Flameblaze
-  { 212, "of the Fireflash"       , {  2803,  2804,  2822,  3726,     0 }, {  7889,  4834,  3320,  3320,     0 } }, // Skywall - 359 - Secondary - Fireflash
-  { 213, "of the Feverflare"      , {  2803,  2804,  3726,  4059,     0 }, {  7889,  4834,  3320,  3320,     0 } }, // Skywall - 359 - Secondary - Feverflare
-  { 214, "of the Undertow"        , {  2803,  2804,  3726,  2806,     0 }, {  7889,  4834,  3320,  3320,     0 } }, // Skywall - 359 - Secondary - Undertow
-  { 215, "of the Wavecrest"       , {  2803,  2804,  4059,  2806,     0 }, {  7889,  4834,  3320,  3320,     0 } }, // Skywall - 359 - Secondary - Wavecrest
-  { 216, "of the Stormblast"      , {  2803,  2802,  3726,  2822,     0 }, {  7889,  4834,  3320,  3320,     0 } }, // Skywall - 359 - Secondary - Stormblast
-  { 217, "of the Windflurry"      , {  2803,  2802,  2822,  3726,     0 }, {  7889,  4834,  3320,  3320,     0 } }, // Skywall - 359 - Secondary - Windflurry
-  { 218, "of the Windstorm"       , {  2803,  2802,  2822,  4059,     0 }, {  7889,  4834,  3320,  3320,     0 } }, // Skywall - 359 - Secondary - Windstorm
-  { 219, "of the Zephyr"          , {  2803,  2802,  3726,  4059,     0 }, {  7889,  4834,  3320,  3320,     0 } }, // Skywall - 359 - Secondary - Zephyr
-  { 220, "of the Earthshaker"     , {  2803,  2805,  3726,  2822,     0 }, {  7889,  4890,  3327,  3327,     0 } }, // Skywall - 372 - Secondary - Earthshaker
-  { 221, "of the Landslide"       , {  2803,  2805,  3726,  2823,     0 }, {  7889,  4890,  3327,  3327,     0 } }, // Skywall - 372 - Secondary - Landslide
-  { 222, "of the Earthfall"       , {  2803,  2805,  2822,  3726,     0 }, {  7889,  4890,  3327,  3327,     0 } }, // Skywall - 372 - Secondary - Earthfall
-  { 223, "of the Faultline"       , {  2803,  2805,  3726,  4059,     0 }, {  7889,  4890,  3327,  3327,     0 } }, // Skywall - 372 - Secondary - Faultline
-  { 224, "of the Bedrock"         , {  2803,  2805,  4059,  4060,     0 }, {  7889,  4890,  3327,  3327,     0 } }, // Skywall - 372 - Secondary - Bedrock
-  { 225, "of the Bouldercrag"     , {  2803,  2805,  2815,  4060,     0 }, {  7889,  4890,  3327,  3327,     0 } }, // Skywall - 372 - Secondary - Bouldercrag
-  { 226, "of the Rockslab"        , {  2803,  2805,  4059,  2815,     0 }, {  7889,  4890,  3327,  3327,     0 } }, // Skywall - 372 - Secondary - Rockslab
-  { 227, "of the Wildfire"        , {  2803,  2804,  3726,  2822,     0 }, {  7889,  4890,  3327,  3327,     0 } }, // Skywall - 372 - Secondary - Wildfire
-  { 228, "of the Flameblaze"      , {  2803,  2804,  4059,  3726,     0 }, {  7889,  4890,  3327,  3327,     0 } }, // Skywall - 372 - Secondary - Flameblaze
-  { 229, "of the Fireflash"       , {  2803,  2804,  2822,  3726,     0 }, {  7889,  4890,  3327,  3327,     0 } }, // Skywall - 372 - Secondary - Fireflash
-  { 230, "of the Feverflare"      , {  2803,  2804,  3726,  4059,     0 }, {  7889,  4890,  3327,  3327,     0 } }, // Skywall - 372 - Secondary - Feverflare
-  { 231, "of the Undertow"        , {  2803,  2804,  3726,  2806,     0 }, {  7889,  4890,  3327,  3327,     0 } }, // Skywall - 372 - Secondary - Undertow
-  { 232, "of the Wavecrest"       , {  2803,  2804,  4059,  2806,     0 }, {  7889,  4890,  3327,  3327,     0 } }, // Skywall - 372 - Secondary - Wavecrest
-  { 233, "of the Stormblast"      , {  2803,  2802,  3726,  2822,     0 }, {  7889,  4890,  3327,  3327,     0 } }, // Skywall - 372 - Secondary - Stormblast
-  { 234, "of the Windflurry"      , {  2803,  2802,  2822,  3726,     0 }, {  7889,  4890,  3327,  3327,     0 } }, // Skywall - 372 - Secondary - Windflurry
-  { 235, "of the Windstorm"       , {  2803,  2802,  2822,  4059,     0 }, {  7889,  4890,  3327,  3327,     0 } }, // Skywall - 372 - Secondary - Windstorm
-  { 236, "of the Zephyr"          , {  2803,  2802,  3726,  4059,     0 }, {  7889,  4890,  3327,  3327,     0 } }, // Skywall - 372 - Secondary - Zephyr
-  { 260, "of the Wildfire"        , {  2803,  2804,  3726,  2822,     0 }, {  7889,  4580,  3165,  3165,     0 } }, // Firelands - 391 - Primary (3 Sockets) - Wildfire
-  { 261, "of the Flameblaze"      , {  2803,  2804,  4059,  3726,     0 }, {  7889,  4580,  3165,  3165,     0 } }, // Firelands - 391 - Primary (3 Sockets) - Flameblaze
-  { 262, "of the Feverflare"      , {  2803,  2804,  3726,  4059,     0 }, {  7889,  4580,  3165,  3165,     0 } }, // Firelands - 391 - Primary (3 Sockets) - Flameblaze
-  { 263, "of the Undertow"        , {  2803,  2804,  3726,  2806,     0 }, {  7889,  4580,  3165,  3165,     0 } }, // Firelands - 391 - Primary (3 Sockets) - Undertow
-  { 264, "of the Wavecrest"       , {  2803,  2804,  4059,  2806,     0 }, {  7889,  4580,  3165,  3165,     0 } }, // Firelands - 391 - Primary (3 Sockets) - Wavecrest
-  { 265, "of the Wildfire"        , {  2803,  2804,  3726,  2822,     0 }, {  7889,  4490,  3125,  3125,     0 } }, // Firelands - 378 - Primary (3 Sockets) - Wildfire
-  { 266, "of the Flameblaze"      , {  2803,  2804,  4059,  3726,     0 }, {  7889,  4490,  3125,  3125,     0 } }, // Firelands - 378 - Primary (3 Sockets) - Flameblaze
-  { 267, "of the Fireflash"       , {  2803,  2804,  2822,  3726,     0 }, {  7889,  4490,  3125,  3125,     0 } }, // Firelands - 378 - Primary (3 Sockets) - Fireflash
-  { 268, "of the Feverflare"      , {  2803,  2804,  3726,  4059,     0 }, {  7889,  4490,  3125,  3125,     0 } }, // Firelands - 378 - Primary (3 Sockets) - Feverflare
-  { 269, "of the Undertow"        , {  2803,  2804,  3726,  2806,     0 }, {  7889,  4490,  3125,  3125,     0 } }, // Firelands - 378 - Primary (3 Sockets) - Undertow
-  { 270, "of the Wavecrest"       , {  2803,  2804,  4059,  2806,     0 }, {  7889,  4490,  3125,  3125,     0 } }, // Firelands - 378 - Primary (3 Sockets) - Wavecrest
-  { 271, "of the Fireflash"       , {  2803,  2804,  2822,  3726,     0 }, {  7889,  4580,  3165,  3165,     0 } }, // Firelands - 391 - Primary (3 Sockets) - Wildfire
-  { 272, "of the Bedrock"         , {  2803,  2805,  4059,  4060,     0 }, {  7889,  4900,  3340,  3340,     0 } }, // Firelands - 378 - Secondary (1 Sockets) - Bedrock
-  { 273, "of the Bouldercrag"     , {  2803,  2805,  2815,  4060,     0 }, {  7889,  4900,  3340,  3340,     0 } }, // Firelands - 378 - Secondary (1 Sockets) - Bouldercrag
-  { 274, "of the Rockslab"        , {  2803,  2805,  4059,  2815,     0 }, {  7889,  4900,  3340,  3340,     0 } }, // Firelands - 378 - Secondary (1 Sockets) - Rockslab
-  { 275, "of the Bedrock"         , {  2803,  2805,  4059,  4060,     0 }, {  7889,  4950,  3360,  3360,     0 } }, // Firelands - 391 - Secondary (1 Sockets) - Bedrock
-  { 276, "of the Bouldercrag"     , {  2803,  2805,  2815,  4060,     0 }, {  7889,  4950,  3360,  3360,     0 } }, // Firelands - 391 - Secondary (1 Sockets) - Bouldercrag
-  { 277, "of the Rockslab"        , {  2803,  2805,  4059,  2815,     0 }, {  7889,  4950,  3360,  3360,     0 } }, // Firelands - 391 - Secondary (1 Sockets) - Rockslab
-  { 278, "of the Wildfire"        , {  2803,  2804,  3726,  2822,     0 }, {  7889,  4900,  3340,  3340,     0 } }, // Firelands - 378 - Secondary (1 Sockets) - Wildfire
-  { 279, "of the Flameblaze"      , {  2803,  2804,  4059,  3726,     0 }, {  7889,  4900,  3340,  3340,     0 } }, // Firelands - 378 - Secondary (1 Sockets) - Flameblaze
-  { 280, "of the Fireflash"       , {  2803,  2804,  2822,  3726,     0 }, {  7889,  4900,  3340,  3340,     0 } }, // Firelands - 378 - Secondary (1 Sockets) - Fireflash
-  { 281, "of the Feverflare"      , {  2803,  2804,  3726,  4059,     0 }, {  7889,  4900,  3340,  3340,     0 } }, // Firelands - 378 - Secondary (1 Sockets) - Feverflare
-  { 282, "of the Undertow"        , {  2803,  2804,  3726,  2806,     0 }, {  7889,  4900,  3340,  3340,     0 } }, // Firelands - 378 - Secondary (1 Sockets) - Undertow
-  { 283, "of the Wavecrest"       , {  2803,  2804,  4059,  2806,     0 }, {  7889,  4900,  3340,  3340,     0 } }, // Firelands - 378 - Secondary (1 Sockets) - Wavecrest
-  { 284, "of the Fireflash"       , {  2803,  2804,  2822,  3726,     0 }, {  7889,  4950,  3360,  3360,     0 } }, // Firelands - 391 - Secondary (1 Sockets) - Fireflash
-  { 285, "of the Feverflare"      , {  2803,  2804,  3726,  4059,     0 }, {  7889,  4950,  3360,  3360,     0 } }, // Firelands - 391 - Secondary (1 Sockets) - Feverflare
-  { 286, "of the Undertow"        , {  2803,  2804,  3726,  2806,     0 }, {  7889,  4950,  3360,  3360,     0 } }, // Firelands - 391 - Secondary (1 Sockets) - Undertow
-  { 287, "of the Wavecrest"       , {  2803,  2804,  4059,  2806,     0 }, {  7889,  4950,  3360,  3360,     0 } }, // Firelands - 391 - Secondary (1 Sockets) - Wavecrest
-  { 288, "of the Stormblast"      , {  2803,  2802,  3726,  2822,     0 }, {  7889,  4900,  3340,  3340,     0 } }, // Firelands - 378 - Secondary (1 Sockets) - Stormblast
-  { 289, "of the Windflurry"      , {  2803,  2802,  2822,  3726,     0 }, {  7889,  4900,  3340,  3340,     0 } }, // Firelands - 378 - Secondary (1 Sockets) - Windflurry
-  { 290, "of the Windstorm"       , {  2803,  2802,  2822,  4059,     0 }, {  7889,  4900,  3340,  3340,     0 } }, // Firelands - 378 - Secondary (1 Sockets) - Windstorm
-  { 291, "of the Zephyr"          , {  2803,  2802,  3726,  4059,     0 }, {  7889,  4900,  3340,  3340,     0 } }, // Firelands - 378 - Secondary (1 Sockets) - Zephyr
-  { 292, "of the Stormblast"      , {  2803,  2802,  3726,  2822,     0 }, {  7889,  4950,  3360,  3360,     0 } }, // Firelands - 391 - Secondary (1 Sockets) - Stormblast
-  { 293, "of the Windflurry"      , {  2803,  2802,  2822,  3726,     0 }, {  7889,  4950,  3360,  3360,     0 } }, // Firelands - 391 - Secondary (1 Sockets) - Windflurry
-  { 294, "of the Windstorm"       , {  2803,  2802,  2822,  4059,     0 }, {  7889,  4950,  3360,  3360,     0 } }, // Firelands - 391 - Secondary (1 Sockets) - Windstorm
-  { 295, "of the Zephyr"          , {  2803,  2802,  3726,  4059,     0 }, {  7889,  4950,  3360,  3360,     0 } }, // Firelands - 391 - Secondary (1 Sockets) - Zephyr
-  { 296, "TMP of Hit"             , {  3726,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } }, // Hit
-  { 297, "TMP of Crit"            , {  2822,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } }, // Crit
-  { 298, "TMP of Str/Hit"         , {  2805,  3726,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Str/Hit
-  { 299, "TMP of Agi/Hit"         , {  2802,  3726,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Agi/Hit
-  { 300, "TMP of Int/Hit"         , {  2804,  3726,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Int/Hit
-  { 301, "TMP of Stam/Hit"        , {  2803,  3726,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Stam/Hit
-  { 302, "TMP of Str/Crit"        , {  2805,  2822,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Str/Crit
-  { 303, "TMP of Agi/Crit"        , {  2802,  2822,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Agi/Crit
-  { 304, "TMP of Stam/Crit"       , {  2803,  2822,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Stam/Crit
-  { 305, "TMP of Str/Dodge"       , {  2805,  2815,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Str/Dodge
-  { 306, "TMP of Str/Haste"       , {  2805,  3726,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Str/Haste
-  { 307, "TMP of Agi/Haste"       , {  2802,  3726,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Agi/Haste
-  { 308, "TMP of Int/Haste"       , {  2804,  3726,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Int/Haste
-  { 309, "TMP of Stam/Haste"      , {  2803,  3726,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Stam/Haste
-  { 310, "TMP of Parry"           , {  4060,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } }, // Parry
-  { 311, "TMP of Expertise"       , {  2823,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } }, // Expertise
-  { 312, "TMP of Str/Exp"         , {  2805,  2822,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Str/Exp
-  { 313, "TMP of Dodge/Parry"     , {  2815,  4060,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Dodge/Parry
-  { 314, "TMP of Agi/Exp"         , {  2802,  2822,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Agi/Exp
-  { 315, "TMP of Stam/Exp"        , {  2803,  2822,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Stam/Exp
-  { 316, "TMP of Str/Parry"       , {  2805,  4060,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Str/Parry
-  { 317, "of Nature Protection"   , {  2803,  2820,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Nature Protection (<60)
-  { 318, "of Arcane Protection"   , {  2803,  2817,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Arcane Protection (<60)
-  { 319, "of Fire Protection"     , {  2803,  2818,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Fire Protection (<60)
-  { 320, "of Frost Protection"    , {  2803,  2819,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Frost Protection (<60)
-  { 321, "of Shadow Protection"   , {  2803,  2821,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } }, // Shadow Protection (<60)
-  { 324, "of Arcane Resistance"   , {  2817,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } }, // Arcane Resistance
-  { 325, "of Dodge"               , {  2815,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } }, // Dodge
-  { 326, "of Fire Resistance"     , {  2818,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } }, // Fire Resistance
-  { 327, "of Frost Resistance"    , {  2819,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } }, // Frost Resistance
-  { 328, "of Nature Resistance"   , {  2820,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } }, // Nature Resistance
-  { 329, "of Shadow Resistance"   , {  2821,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } }, // Shadow Resistance
-  { 330, "of Restoration"         , {  2803,  2804,  2806,     0,     0 }, {  5259,  5259,  5259,     0,     0 } }, // Restoration <60
-  { 331, "of Striking"            , {  2803,  2825,  3726,     0,     0 }, {  5259,  5259,  5259,     0,     0 } }, // Striking
-  { 332, "of Sorcery"             , {  2803,  2804,  3726,     0,     0 }, {  5259,  5259,  5259,     0,     0 } }, // Sorcery
-  { 333, 0                        , {     0,     0,     0,     0,     0 }, {     0,     0,     0,     0,     0 } }, // Test - Blank Suffix
-  { 336, 0                        , {  2822,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } }, // Crit Rating (5.2 Thunder King Raid)
-  { 337, 0                        , {  3727,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } }, // Hit Rating (5.2 Thunder King Raid)
-  { 338, 0                        , {  4058,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } }, // Expertise Rating (5.2 Thunder King Raid)
-  { 339, 0                        , {  4059,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } }, // Mastery Rating (5.2 Thunder King Raid)
-  { 340, 0                        , {  3726,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } }, // Haste Rating (5.2 Thunder King Raid)
-  { 341, 0                        , {  3727,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } }, // Crit Rating (5.2 Thunder King Raid) (old: Parry)
-  { 342, 0                        , {  3727,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } }, // Crit Rating (5.2 Thunder King Raid) (old: Dodge)
-  { 343, 0                        , {  3727,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } }, // Crit Rating (5.2 Thunder King Raid) (old: Spirit)
-  { 344, "of the Decimator"       , {  2822,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } }, // 5.3 Barrens - Crit
-  { 345, "of the Impatient"       , {  3726,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } }, // 5.3 Barrens - Hit
-  { 346, "of the Decimator"       , {  2822,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } }, // 5.3 Barrens - Expertise
-  { 347, "of the Savant"          , {  4059,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } }, // 5.3 Barrens - Mastery
-  { 348, "of the Impatient"       , {  3726,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } }, // 5.3 Barrens - Haste
-  { 349, "of the Bladewall"       , {  3727,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } }, // 5.3 Barrens - Crit (old: Parry)
-  { 350, "of the Bladewall"       , {  5280,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } }, // 5.3 Barrens - Dodge
-  { 351, "of the Savant"          , {  4059,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } }, // 5.3 Barrens - Mastery (old: Spirit)
-  { 352, "of the Landslide"       , {     0,     0,  3726,  2822,     0 }, {     0,     0,  3506,  3506,     0 } }, // 5.3 Landslide - Str Versa
-  { 353, "of the Stormblast"      , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // 5.3 Stormblast - Agi
-  { 354, "of the Galeburst"       , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // 5.3 Galeburst - Agi
-  { 355, "of the Windflurry"      , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // 5.3 Windflurry - Agi
-  { 356, "of the Windstorm"       , {     0,     0,  2822,  4059,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // 5.3 Windstorm - Agi
-  { 357, "of the Zephyr"          , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // 5.3 Zephyr - Agi
-  { 358, "of the Wildfire"        , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // 5.3 Wildfire - Int Hit
-  { 359, "of the Flameblaze"      , {     0,     0,  4059,  3726,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // 5.3 Flameblaze - Int Hit
-  { 360, "of the Fireflash"       , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // 5.3 Fireflash - Int Versa
-  { 361, "of the Feverflare"      , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // 5.3 Feverflare - Int Versa
-  { 362, "of the Fireflash"       , {     0,     0,  3726,  3727,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // 5.3 Undertow - Int Spirit
-  { 363, "of the Wavecrest"       , {     0,     0,  4059,  3727,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // 5.3 Wavecrest - Int Spirit
-  { 364, "of the Earthbreaker"    , {     0,     0,  2822,  4059,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // 5.3 Earthbreaker - Str DPS
-  { 365, "of the Faultline"       , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // 5.3 Faultline - Str DPS
-  { 366, "of the Mountainbed"     , {     0,     0,  4059,  2822,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // 5.3 Mountainbed - Str Vers
-  { 367, "of the Rockslab"        , {     0,     0,  4059,  3727,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // 5.3 Bedrock - Str Tank
-  { 368, "of the Bouldercrag"     , {     0,     0,  4059,  3727,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // 5.3 Bouldercrag - Str Tank
-  { 369, "of the Rockslab"        , {     0,     0,  4059,  3727,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // 5.3 Rockslab - Str Tank
-  { 370, "of the Earthshaker"     , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // 5.3 Earthshaker - Str DPS
-  { 371, "of the Earthfall"       , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // 5.3 Earthfall - Str DPS
-  { 377, "of the Decimator"       , {  2822,     0,     0,     0,     0 }, {  4170,     0,     0,     0,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Crit
-  { 378, "of the Impatient"       , {  3726,     0,     0,     0,     0 }, {  4170,     0,     0,     0,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Hit
-  { 379, "of the Decimator"       , {  2822,     0,     0,     0,     0 }, {  4170,     0,     0,     0,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Expertise
-  { 380, "of the Savant"          , {  4059,     0,     0,     0,     0 }, {  4170,     0,     0,     0,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Mastery
-  { 381, "of the Impatient"       , {  3726,     0,     0,     0,     0 }, {  4170,     0,     0,     0,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Haste
-  { 382, "of the Bladewall"       , {  3727,     0,     0,     0,     0 }, {  4170,     0,     0,     0,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Crit (Old: Parry)
-  { 383, "of the Bladewall"       , {  3727,     0,     0,     0,     0 }, {  4170,     0,     0,     0,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Crit (Old: Dodge)
-  { 384, "of the Savant"          , {  4059,     0,     0,     0,     0 }, {  4170,     0,     0,     0,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Mastery (old: Spirit)
-  { 385, "of the Landslide"       , {     0,     0,  3726,  2822,     0 }, {     0,     0,  2990,  2990,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Landslide - Str Versa
-  { 386, "of the Stormblast"      , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  2990,  2990,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Stormblast - Agi
-  { 387, "of the Galeburst"       , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  2990,  2990,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Galeburst - Agi
-  { 388, "of the Windflurry"      , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  2990,  2990,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Windflurry - Agi
-  { 389, "of the Windstorm"       , {     0,     0,  2822,  4059,     0 }, {  7889,  5259,  2990,  2990,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Windstorm - Agi
-  { 390, "of the Zephyr"          , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  2990,  2990,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Zephyr - Agi
-  { 391, "of the Wildfire"        , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  2990,  2990,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Wildfire - Int Hit
-  { 392, "of the Flameblaze"      , {     0,     0,  4059,  3726,     0 }, {  7889,  5259,  2990,  2990,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Flameblaze - Int Hit
-  { 393, "of the Fireflash"       , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  2990,  2990,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Fireflash - Int Versa
-  { 394, "of the Feverflare"      , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  2990,  2990,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Feverflare - Int Versa
-  { 395, "of the Fireflash"       , {     0,     0,  3726,  3727,     0 }, {  7889,  5259,  2990,  2990,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Undertow - Int Spirit
-  { 396, "of the Wavecrest"       , {     0,     0,  4059,  3727,     0 }, {  7889,  5259,  2990,  2990,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Wavecrest - Int Spirit
-  { 397, "of the Earthbreaker"    , {     0,     0,  2822,  4059,     0 }, {  7889,  5259,  2990,  2990,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Earthbreaker - Str DPS
-  { 398, "of the Faultline"       , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  2990,  2990,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Faultline - Str DPS
-  { 399, "of the Mountainbed"     , {     0,     0,  4059,  2822,     0 }, {  7889,  5259,  2990,  2990,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Mountainbed - Str Vers
-  { 400, "of the Rockslab"        , {     0,     0,  4059,  5280,     0 }, {  7889,  5259,  2990,  2990,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Bedrock - Str Tank
-  { 401, "of the Bouldercrag"     , {     0,     0,  5280,  3727,     0 }, {  7889,  5259,  2990,  2990,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Bouldercrag - Str Tank
-  { 402, "of the Rockslab"        , {     0,     0,  4059,  5280,     0 }, {  7889,  5259,  2990,  2990,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Rockslab - Str Tank
-  { 403, "of the Earthshaker"     , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Earthshaker - Str DPS
-  { 404, "of the Earthfall"       , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  3506,  3506,     0 } }, // 5.4 (ilvl 496) - 1.5 socket cost - Earthfall - Str DPS
-  { 405, "of the Decimator"       , {  2822,     0,     0,     0,     0 }, {  4960,     0,     0,     0,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Crit
-  { 406, "of the Impatient"       , {  3726,     0,     0,     0,     0 }, {  4960,     0,     0,     0,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Hit
-  { 407, "of the Decimator"       , {  2822,     0,     0,     0,     0 }, {  4960,     0,     0,     0,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Expertise
-  { 408, "of the Savant"          , {  4059,     0,     0,     0,     0 }, {  4960,     0,     0,     0,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Mastery
-  { 409, "of the Impatient"       , {  3726,     0,     0,     0,     0 }, {  4960,     0,     0,     0,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Haste
-  { 410, "of the Bladewall"       , {  3727,     0,     0,     0,     0 }, {  4960,     0,     0,     0,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Crit (Old: Parry)
-  { 411, "of the Bladewall"       , {  3727,     0,     0,     0,     0 }, {  4960,     0,     0,     0,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Crit (Old: Dodge)
-  { 412, "of the Savant"          , {  4059,     0,     0,     0,     0 }, {  4960,     0,     0,     0,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Mastery (old: Spirit)
-  { 413, "of the Landslide"       , {     0,     0,  3726,  2822,     0 }, {     0,     0,  3268,  3268,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Landslide - Str Versa
-  { 414, "of the Stormblast"      , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  3268,  3268,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Stormblast - Agi
-  { 415, "of the Galeburst"       , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  3268,  3268,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Galeburst - Agi
-  { 416, "of the Windflurry"      , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  3268,  3268,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Windflurry - Agi
-  { 417, "of the Windstorm"       , {     0,     0,  2822,  4059,     0 }, {  7889,  5259,  3268,  3268,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Windstorm - Agi
-  { 418, "of the Zephyr"          , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  3268,  3268,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Zephyr - Agi
-  { 419, "of the Wildfire"        , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  3268,  3268,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Wildfire - Int Hit
-  { 420, "of the Flameblaze"      , {     0,     0,  4059,  3726,     0 }, {  7889,  5259,  3268,  3268,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Flameblaze - Int Hit
-  { 421, "of the Fireflash"       , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  3268,  3268,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Fireflash - Int Versa
-  { 422, "of the Feverflare"      , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  3268,  3268,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Feverflare - Int Versa
-  { 423, "of the Fireflash"       , {     0,     0,  3726,  3727,     0 }, {  7889,  5259,  3268,  3268,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Undertow - Int Spirit
-  { 424, "of the Wavecrest"       , {     0,     0,  4059,  3727,     0 }, {  7889,  5259,  3268,  3268,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Wavecrest - Int Spirit
-  { 425, "of the Earthbreaker"    , {     0,     0,  2822,  4059,     0 }, {  7889,  5259,  3268,  3268,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Earthbreaker - Str DPS
-  { 426, "of the Faultline"       , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  3268,  3268,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Faultline - Str DPS
-  { 427, "of the Mountainbed"     , {     0,     0,  4059,  2822,     0 }, {  7889,  5259,  3268,  3268,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Mountainbed - Str Vers
-  { 428, "of the Rockslab"        , {     0,     0,  4059,  5280,     0 }, {  7889,  5259,  3268,  3268,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Bedrock - Str Tank
-  { 429, "of the Bouldercrag"     , {     0,     0,  5280,  3727,     0 }, {  7889,  5259,  3268,  3268,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Bouldercrag - Str Tank
-  { 430, "of the Rockslab"        , {     0,     0,  4059,  5280,     0 }, {  7889,  5259,  3268,  3268,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Rockslab - Str Tank
-  { 431, "of the Earthshaker"     , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  3268,  3268,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Earthshaker - Str DPS
-  { 432, "of the Earthfall"       , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  3268,  3268,     0 } }, // 5.4 (ilvl 535) - 0.5 socket cost - Earthfall - Str DPS
-  { 433, "of the Decimator"       , {  2822,     0,     0,     0,     0 }, {  4480,     0,     0,     0,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Crit
-  { 434, "of the Impatient"       , {  3726,     0,     0,     0,     0 }, {  4480,     0,     0,     0,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Hit
-  { 435, "of the Decimator"       , {  2822,     0,     0,     0,     0 }, {  4480,     0,     0,     0,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Expertise
-  { 436, "of the Savant"          , {  4059,     0,     0,     0,     0 }, {  4480,     0,     0,     0,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Mastery
-  { 437, "of the Impatient"       , {  3726,     0,     0,     0,     0 }, {  4480,     0,     0,     0,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Haste
-  { 438, "of the Bladewall"       , {  3727,     0,     0,     0,     0 }, {  4480,     0,     0,     0,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Crit (Old: Parry)
-  { 439, "of the Bladewall"       , {  3727,     0,     0,     0,     0 }, {  4480,     0,     0,     0,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Crit (Old: Dodge)
-  { 440, "of the Savant"          , {  4059,     0,     0,     0,     0 }, {  4480,     0,     0,     0,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Mastery (old: Spirit)
-  { 441, "of the Landslide"       , {     0,     0,  3726,  2822,     0 }, {     0,     0,  2788,  2788,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Landslide - Str Versa
-  { 442, "of the Stormblast"      , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  2788,  2788,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Stormblast - Agi
-  { 443, "of the Galeburst"       , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  2788,  2788,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Galeburst - Agi
-  { 444, "of the Windflurry"      , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  2788,  2788,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Windflurry - Agi
-  { 445, "of the Windstorm"       , {     0,     0,  2822,  4059,     0 }, {  7889,  5259,  2788,  2788,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Windstorm - Agi
-  { 446, "of the Zephyr"          , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  2788,  2788,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Zephyr - Agi
-  { 447, "of the Wildfire"        , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  2788,  2788,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Wildfire - Int Hit
-  { 448, "of the Flameblaze"      , {     0,     0,  4059,  3726,     0 }, {  7889,  5259,  2788,  2788,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Flameblaze - Int Hit
-  { 449, "of the Fireflash"       , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  2788,  2788,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Fireflash - Int Versa
-  { 450, "of the Feverflare"      , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  2788,  2788,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Feverflare - Int Versa
-  { 451, "of the Fireflash"       , {     0,     0,  3726,  3727,     0 }, {  7889,  5259,  2788,  2788,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Undertow - Int Spirit
-  { 452, "of the Wavecrest"       , {     0,     0,  4059,  3727,     0 }, {  7889,  5259,  2788,  2788,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Wavecrest - Int Spirit
-  { 453, "of the Earthbreaker"    , {     0,     0,  2822,  4059,     0 }, {  7889,  5259,  2788,  2788,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Earthbreaker - Str DPS
-  { 454, "of the Faultline"       , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  2788,  2788,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Faultline - Str DPS
-  { 455, "of the Mountainbed"     , {     0,     0,  4059,  2822,     0 }, {  7889,  5259,  2788,  2788,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Mountainbed - Str Vers
-  { 456, "of the Rockslab"        , {     0,     0,  4059,  5280,     0 }, {  7889,  5259,  2788,  2788,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Bedrock - Str Tank
-  { 457, "of the Bouldercrag"     , {     0,     0,  5280,  3727,     0 }, {  7889,  5259,  2788,  2788,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Bouldercrag - Str Tank
-  { 458, "of the Rockslab"        , {     0,     0,  4059,  5280,     0 }, {  7889,  5259,  2788,  2788,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Rockslab - Str Tank
-  { 459, "of the Earthshaker"     , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  2788,  2788,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Earthshaker - Str DPS
-  { 460, "of the Earthfall"       , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  2788,  2788,     0 } }, // 5.4 (ilvl 535) - 1.5 socket cost - Earthfall - Str DPS
-  { 461, "of the Decimator"       , {  2822,     0,     0,     0,     0 }, {  4859,     0,     0,     0,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Crit
-  { 462, "of the Impatient"       , {  3726,     0,     0,     0,     0 }, {  4859,     0,     0,     0,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Hit
-  { 463, "of the Decimator"       , {  2822,     0,     0,     0,     0 }, {  4859,     0,     0,     0,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Expertise
-  { 464, "of the Savant"          , {  4059,     0,     0,     0,     0 }, {  4859,     0,     0,     0,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Mastery
-  { 465, "of the Impatient"       , {  3726,     0,     0,     0,     0 }, {  4859,     0,     0,     0,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Haste
-  { 466, "of the Bladewall"       , {  3727,     0,     0,     0,     0 }, {  4859,     0,     0,     0,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Crit (Old: Parry)
-  { 467, "of the Bladewall"       , {  3727,     0,     0,     0,     0 }, {  4859,     0,     0,     0,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Crit (Old: Dodge)
-  { 468, "of the Savant"          , {  4059,     0,     0,     0,     0 }, {  4859,     0,     0,     0,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Mastery (old: Spirit)
-  { 469, "of the Landslide"       , {     0,     0,  3726,  2822,     0 }, {     0,     0,  3159,  3159,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Landslide - Str Versa
-  { 470, "of the Stormblast"      , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  3159,  3159,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Stormblast - Agi
-  { 471, "of the Galeburst"       , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  3159,  3159,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Galeburst - Agi
-  { 472, "of the Windflurry"      , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  3159,  3159,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Windflurry - Agi
-  { 473, "of the Windstorm"       , {     0,     0,  2822,  4059,     0 }, {  7889,  5259,  3159,  3159,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Windstorm - Agi
-  { 474, "of the Zephyr"          , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  3159,  3159,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Zephyr - Agi
-  { 475, "of the Wildfire"        , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  3159,  3159,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Wildfire - Int Hit
-  { 476, "of the Flameblaze"      , {     0,     0,  4059,  3726,     0 }, {  7889,  5259,  3159,  3159,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Flameblaze - Int Hit
-  { 477, "of the Fireflash"       , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  3159,  3159,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Fireflash - Int Versa
-  { 478, "of the Feverflare"      , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  3159,  3159,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Feverflare - Int Versa
-  { 479, "of the Fireflash"       , {     0,     0,  3726,  3727,     0 }, {  7889,  5259,  3159,  3159,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Undertow - Int Spirit
-  { 480, "of the Wavecrest"       , {     0,     0,  4059,  3727,     0 }, {  7889,  5259,  3159,  3159,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Wavecrest - Int Spirit
-  { 481, "of the Earthbreaker"    , {     0,     0,  2822,  4059,     0 }, {  7889,  5259,  3159,  3159,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Earthbreaker - Str DPS
-  { 482, "of the Faultline"       , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  3159,  3159,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Faultline - Str DPS
-  { 483, "of the Mountainbed"     , {     0,     0,  4059,  2822,     0 }, {  7889,  5259,  3159,  3159,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Mountainbed - Str Vers
-  { 484, "of the Rockslab"        , {     0,     0,  4059,  5280,     0 }, {  7889,  5259,  3159,  3159,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Bedrock - Str Tank
-  { 485, "of the Bouldercrag"     , {     0,     0,  5280,  3727,     0 }, {  7889,  5259,  3159,  3159,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Bouldercrag - Str Tank
-  { 486, "of the Rockslab"        , {     0,     0,  4059,  5280,     0 }, {  7889,  5259,  3159,  3159,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Rockslab - Str Tank
-  { 487, "of the Earthshaker"     , {     0,     0,  4058,  2822,     0 }, {  7889,  5259,  3159,  3159,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Earthshaker - Str DPS
-  { 488, "of the Earthfall"       , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  3159,  3159,     0 } }, // 5.4 (ilvl 496) - 0.5 socket cost - Earthfall - Str DPS
+  {   5, "of the Monkey"          , {  2802,  2803,     0,     0,     0 }, {  6666, 10000,     0,     0,     0 } },
+  {   6, "of the Eagle"           , {  2804,  2803,     0,     0,     0 }, {  6666, 10000,     0,     0,     0 } },
+  {   7, "of the Bear"            , {  2803,  2805,     0,     0,     0 }, { 10000,  6666,     0,     0,     0 } },
+  {   8, "of the Whale"           , {  2806,  2803,     0,     0,     0 }, {  6666, 10000,     0,     0,     0 } },
+  {   9, "of the Owl"             , {  2804,  2806,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  {  10, "of the Gorilla"         , {  2804,  2805,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  {  11, "of the Falcon"          , {  2802,  2804,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  {  12, "of the Boar"            , {  2806,  2805,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  {  13, "of the Wolf"            , {  2802,  2806,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  {  14, "of the Tiger"           , {  2802,  2823,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  {  15, "of Spirit"              , {  2806,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } },
+  {  16, "of Stamina"             , {  2803,     0,     0,     0,     0 }, { 15000,     0,     0,     0,     0 } },
+  {  17, "of Strength"            , {  2805,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } },
+  {  18, "of Agility"             , {  2802,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } },
+  {  19, "of Intellect"           , {  2804,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } },
+  {  20, "of Power"               , {  2825,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } },
+  {  21, "of Intellect"           , {  2804,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } },
+  {  22, "of Intellect"           , {  2804,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } },
+  {  23, "of Intellect"           , {  2804,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } },
+  {  24, "of Intellect"           , {  2804,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } },
+  {  25, "of Intellect"           , {  2804,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } },
+  {  26, "of Intellect"           , {  2804,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } },
+  {  27, "of Nimbleness"          , {  2815,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } },
+  {  28, "of Stamina"             , {  2803,     0,     0,     0,     0 }, { 15000,     0,     0,     0,     0 } },
+  {  29, "of Eluding"             , {  2815,  2802,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  {  30, "of Spirit"              , {  2806,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } },
+  {  31, "of Arcane Protection"   , {  2803,  2817,     0,     0,     0 }, { 10000,  6666,     0,     0,     0 } },
+  {  32, "of Fire Protection"     , {  2803,  2818,     0,     0,     0 }, { 10000,  6666,     0,     0,     0 } },
+  {  33, "of Frost Protection"    , {  2803,  2819,     0,     0,     0 }, { 10000,  6666,     0,     0,     0 } },
+  {  34, "of Nature Protection"   , {  2803,  2820,     0,     0,     0 }, { 10000,  6666,     0,     0,     0 } },
+  {  35, "of Shadow Protection"   , {  2803,  2821,     0,     0,     0 }, { 10000,  6666,     0,     0,     0 } },
+  {  36, "of the Sorcerer"        , {  2803,  2804,  3726,     0,     0 }, {  7889,  5259,  5259,     0,     0 } },
+  {  37, "of the Seer"            , {  2803,  2804,  2822,     0,     0 }, {  7889,  5259,  5259,     0,     0 } },
+  {  38, "of the Prophet"         , {  2804,  2806,  3726,     0,     0 }, {  5259,  5259,  5259,     0,     0 } },
+  {  39, "of the Invoker"         , {  2804,  2822,     0,     0,     0 }, {  7889,  5259,     0,     0,     0 } },
+  {  40, "of the Bandit"          , {  2802,  2803,  2822,     0,     0 }, {  5259,  7889,  5259,     0,     0 } },
+  {  41, "of the Beast"           , {  3726,  2822,  2803,     0,     0 }, {  5259,  5259,  7889,     0,     0 } },
+  {  42, "of the Elder"           , {  2803,  2806,  2804,     0,     0 }, {  7889,  5259,  5259,     0,     0 } },
+  {  43, "of the Soldier"         , {  2805,  2803,  2823,     0,     0 }, {  5259,  7889,  5259,     0,     0 } },
+  {  44, "of the Elder"           , {  2803,  2804,  2806,     0,     0 }, {  7889,  5259,  5259,     0,     0 } },
+  {  45, "of the Champion"        , {  2805,  2803,  2815,     0,     0 }, {  5259,  7889,  5259,     0,     0 } },
+  {  47, "of Blocking"            , {  2826,  2805,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  {  49, "of the Grove"           , {  2802,  3726,  2803,     0,     0 }, {  7266,  4106,  4790,     0,     0 } },
+  {  50, "of the Hunt"            , {  2802,  2822,  3726,     0,     0 }, {  7266,  4106,  3193,     0,     0 } },
+  {  51, "of the Mind"            , {  2804,  2822,  3726,     0,     0 }, {  7266,  4106,  3193,     0,     0 } },
+  {  52, "of the Crusade"         , {  2805,  2803,  2813,     0,     0 }, {  7266,  6159,  3193,     0,     0 } },
+  {  53, "of the Vision"          , {  2804,  3726,  2803,     0,     0 }, {  7266,  4106,  3193,     0,     0 } },
+  {  54, "of the Ancestor"        , {  2805,  2823,  2803,     0,     0 }, {  7266,  4106,  4790,     0,     0 } },
+  {  55, "of the Nightmare"       , {  2804,  2803,  2822,     0,     0 }, {  7266,  6159,  3193,     0,     0 } },
+  {  56, "of the Battle"          , {  2805,  2803,  2823,     0,     0 }, {  7266,  6159,  3193,     0,     0 } },
+  {  57, "of the Shadow"          , {  2802,  2822,  2803,     0,     0 }, {  7266,  4106,  4790,     0,     0 } },
+  {  58, "of the Sun"             , {  2823,  2803,  2804,     0,     0 }, {  5259,  5259,  5259,     0,     0 } },
+  {  59, "of the Moon"            , {  2804,  2803,  2806,     0,     0 }, {  5259,  5259,  5259,     0,     0 } },
+  {  60, "of the Wild"            , {  2802,  2803,  3726,     0,     0 }, {  5259,  5259,  5259,     0,     0 } },
+  {  61, "of Intellect"           , {  2804,     0,     0,     0,     0 }, {  5000,     0,     0,     0,     0 } },
+  {  62, "of Strength"            , {  2805,     0,     0,     0,     0 }, {  5000,     0,     0,     0,     0 } },
+  {  63, "of Agility"             , {  2802,     0,     0,     0,     0 }, {  5000,     0,     0,     0,     0 } },
+  {  64, "of Power"               , {  2825,     0,     0,     0,     0 }, {  5000,     0,     0,     0,     0 } },
+  {  65, "of Magic"               , {  2804,     0,     0,     0,     0 }, {  5000,     0,     0,     0,     0 } },
+  {  66, "of the Knight"          , {  2803,  2813,  2822,     0,     0 }, {  7889,  5259,  5259,     0,     0 } },
+  {  67, "of the Seer"            , {  2803,  2822,  2804,     0,     0 }, {  7889,  5259,  5259,     0,     0 } },
+  {  68, "of the Bear"            , {  2805,  2803,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  {  69, "of the Eagle"           , {  2803,  2804,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  {  70, "of the Ancestor"        , {  2805,  2822,  2803,     0,     0 }, {  7266,  4106,  3193,     0,     0 } },
+  {  71, "of the Bandit"          , {  2802,  2803,  2822,     0,     0 }, {  5259,  5259,  5259,     0,     0 } },
+  {  72, "of the Battle"          , {  2805,  2803,  2822,     0,     0 }, {  7266,  4106,  3193,     0,     0 } },
+  {  73, "of the Elder"           , {  2803,  2804,  2806,     0,     0 }, {  5259,  5259,  5259,     0,     0 } },
+  {  74, "of the Beast"           , {  3726,  2822,  2803,     0,     0 }, {  5259,  5259,  5259,     0,     0 } },
+  {  75, "of the Champion"        , {  2805,  2803,  2815,     0,     0 }, {  5259,  5259,  5259,     0,     0 } },
+  {  76, "of the Grove"           , {  2802,  3726,  2803,     0,     0 }, {  7266,  4106,  3193,     0,     0 } },
+  {  77, "of the Knight"          , {  2803,  2813,  3726,     0,     0 }, {  5259,  5259,  6153,     0,     0 } },
+  {  78, "of the Monkey"          , {  2802,  2803,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  {  79, "of the Moon"            , {  2804,  2803,  2806,     0,     0 }, {  5259,  3506,  5259,     0,     0 } },
+  {  80, "of the Wild"            , {  2802,  2803,  3726,     0,     0 }, {  5259,  3506,  5259,     0,     0 } },
+  {  81, "of the Whale"           , {  2803,  2806,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  {  82, "of the Vision"          , {  2804,  3726,  2803,     0,     0 }, {  7266,  4106,  2129,     0,     0 } },
+  {  83, "of the Sun"             , {  2823,  2803,  2804,     0,     0 }, {  5259,  5259,  5259,     0,     0 } },
+  {  84, "of Stamina"             , {  2803,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } },
+  {  85, "of the Sorcerer"        , {  2803,  2804,  3726,     0,     0 }, {  5259,  5259,  5259,     0,     0 } },
+  {  86, "of the Soldier"         , {  2805,  2803,  2822,     0,     0 }, {  5259,  5259,  5259,     0,     0 } },
+  {  87, "of the Shadow"          , {  2802,  2822,  2803,     0,     0 }, {  7266,  4106,  3193,     0,     0 } },
+  {  88, "of the Foreseer"        , {  2804,  3726,  2822,     0,     0 }, {  5259,  5259,  5259,     0,     0 } },
+  {  89, "of the Thief"           , {  2803,  2802,  3726,     0,     0 }, {  7889,  5259,  5259,     0,     0 } },
+  {  90, "of the Necromancer"     , {  2803,  3726,  2804,     0,     0 }, {  7889,  5259,  5259,     0,     0 } },
+  {  91, "of the Marksman"        , {  2803,  2802,  2822,     0,     0 }, {  7889,  5259,  5259,     0,     0 } },
+  {  92, "of the Squire"          , {  2803,  3726,  2805,     0,     0 }, {  7889,  5259,  5259,     0,     0 } },
+  {  93, "of Restoration"         , {  2803,  2804,  2806,     0,     0 }, {  7889,  5259,  5259,     0,     0 } },
+  {  94, 0                        , {  2802,     0,     0,     0,     0 }, {  9000,     0,     0,     0,     0 } },
+  {  95, 0                        , {  2805,     0,     0,     0,     0 }, {  9000,     0,     0,     0,     0 } },
+  {  96, 0                        , {  2803,     0,     0,     0,     0 }, { 13500,     0,     0,     0,     0 } },
+  {  97, 0                        , {  2804,     0,     0,     0,     0 }, {  9000,     0,     0,     0,     0 } },
+  {  98, 0                        , {  2806,     0,     0,     0,     0 }, {  9000,     0,     0,     0,     0 } },
+  {  99, "of Speed"               , {  3726,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } },
+  { 100, "of the Principle"       , {  2803,  2805,  3726,  2822,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 101, "of the Sentinel"        , {  2803,  2805,  3726,  2822,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 102, "of the Hero"            , {  2803,  2805,  2822,  3726,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 103, "of the Avatar"          , {  2803,  2805,  2822,  4059,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 104, "of the Embodiment"      , {  2803,  2805,  3726,  4059,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 105, "of the Guardian"        , {  2803,  2805,  4059,  2815,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 106, "of the Defender"        , {  2803,  2805,  2815,  4060,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 107, "of the Exemplar"        , {  2803,  2805,  3726,  2815,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 108, "of the Curator"         , {  2803,  2805,  2815,  4060,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 109, "of the Preserver"       , {  2803,  2804,  4059,  2806,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 110, "of the Elements"        , {  2803,  2804,  3726,  2823,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 111, "of the Paradigm"        , {  2803,  2804,  3726,  4059,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 112, "of the Pattern"         , {  2803,  2804,  2822,  3726,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 113, "of the Essence"         , {  2803,  2804,  3726,  2806,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 114, "of the Flameblaze"      , {  2803,  2804,  4059,  3726,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 115, "of the Archetype"       , {  2803,  2802,  3726,  2822,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 116, "of the Manifestation"   , {  2803,  2802,  3726,  2822,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 117, "of the Incarnation"     , {  2803,  2802,  2823,  3726,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 118, "of the Faultline"       , {  2803,  2805,  3726,  4059,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 119, "of the Ideal"           , {  2803,  2802,  3726,  4059,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 120, "of the Earthshaker"     , {  2803,  2805,  3726,  2822,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 121, "of the Landslide"       , {  2803,  2805,  3726,  2822,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 122, "of the Earthfall"       , {  2803,  2805,  2822,  3726,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 123, "of the Earthbreaker"    , {  2803,  2805,  2822,  4059,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 124, "of the Mountainbed"     , {  2803,  2805,  4059,  3726,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 125, "of the Bedrock"         , {  2803,  2805,  4059,  4060,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 126, "of the Substratum"      , {  2803,  2805,  3726,  2815,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 127, "of the Bouldercrag"     , {  2803,  2805,  2815,  4060,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 128, "of the Rockslab"        , {  2803,  2805,  4059,  2815,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 129, "of the Wildfire"        , {  2803,  2804,  3726,  2822,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 130, "of the Fireflash"       , {  2803,  2804,  2822,  3726,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 131, "of the Undertow"        , {  2803,  2804,  3726,  2806,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 132, "of the Wavecrest"       , {  2803,  2804,  4059,  2806,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 133, "of the Stormblast"      , {  2803,  2802,  3726,  2822,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 134, "of the Galeburst"       , {  2803,  2802,  3726,  2822,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 135, "of the Windflurry"      , {  2803,  2802,  2822,  3726,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 136, "of the Zephyr"          , {  2803,  2802,  3726,  4059,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 137, "of the Windstorm"       , {  2803,  2802,  2822,  4059,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 138, "of the Feverflare"      , {  2803,  2804,  3726,  4059,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 139, "of the Mercenary"       , {  2803,  2805,  3726,     0,     0 }, {  7889,  5259,  5259,     0,     0 } },
+  { 140, "of the Wraith"          , {  2822,  2806,     0,     0,     0 }, {  3506,  3506,     0,     0,     0 } },
+  { 141, "of the Wind"            , {  2806,  3726,     0,     0,     0 }, {  3506,  3506,     0,     0,     0 } },
+  { 142, "of the Master"          , {  2806,  4059,     0,     0,     0 }, {  3506,  3506,     0,     0,     0 } },
+  { 143, "of the Scorpion"        , {  3726,  2822,     0,     0,     0 }, {  3506,  3506,     0,     0,     0 } },
+  { 144, "of the Shark"           , {  2822,  4059,     0,     0,     0 }, {  3506,  3506,     0,     0,     0 } },
+  { 145, "of the Panther"         , {  4059,  3726,     0,     0,     0 }, {  3506,  3506,     0,     0,     0 } },
+  { 146, "Crit/Mastery (40/60)"   , {  2822,  4059,     0,     0,     0 }, {  2664,  3997,     0,     0,     0 } },
+  { 147, "of the Shark"           , {  2822,  4059,     0,     0,     0 }, {  2664,  3997,     0,     0,     0 } },
+  { 148, "Crit/Spirit (40/60)"    , {  2822,  2806,     0,     0,     0 }, {  2664,  3997,     0,     0,     0 } },
+  { 149, "of the Scorpion"        , {  3726,  2822,     0,     0,     0 }, {  2664,  3997,     0,     0,     0 } },
+  { 150, "of the Panther"         , {  4059,  3726,     0,     0,     0 }, {  2664,  3997,     0,     0,     0 } },
+  { 151, "of the Wind"            , {  2806,  3726,     0,     0,     0 }, {  2664,  3997,     0,     0,     0 } },
+  { 152, "of the Master"          , {  2806,  4059,     0,     0,     0 }, {  2664,  3997,     0,     0,     0 } },
+  { 153, "of the Wraith"          , {  3726,  4059,     0,     0,     0 }, {  2664,  3997,     0,     0,     0 } },
+  { 154, "of the Shark"           , {  2822,  4059,     0,     0,     0 }, {  3997,  2664,     0,     0,     0 } },
+  { 155, "of the Scorpion"        , {  3726,  2822,     0,     0,     0 }, {  3997,  2664,     0,     0,     0 } },
+  { 156, "of the Wraith"          , {  2822,  2806,     0,     0,     0 }, {  3997,  2664,     0,     0,     0 } },
+  { 157, "of the Panther"         , {  4059,  3726,     0,     0,     0 }, {  3997,  2664,     0,     0,     0 } },
+  { 158, "of the Wind"            , {  2806,  3726,     0,     0,     0 }, {  3997,  2664,     0,     0,     0 } },
+  { 159, "of the Master"          , {  2806,  4059,     0,     0,     0 }, {  3997,  2664,     0,     0,     0 } },
+  { 160, "of the Mongoose"        , {  2822,  3726,     0,     0,     0 }, {  3506,  3506,     0,     0,     0 } },
+  { 161, "of Storms"              , {  3726,  2822,     0,     0,     0 }, {  3506,  3506,     0,     0,     0 } },
+  { 162, "of Flames"              , {  3726,  4059,     0,     0,     0 }, {  3506,  3506,     0,     0,     0 } },
+  { 163, "of the Mongoose"        , {  2822,  3726,     0,     0,     0 }, {  2664,  3997,     0,     0,     0 } },
+  { 164, "of Storms"              , {  3726,  2822,     0,     0,     0 }, {  2664,  3997,     0,     0,     0 } },
+  { 165, "of Flames"              , {  3726,  4059,     0,     0,     0 }, {  2664,  3997,     0,     0,     0 } },
+  { 166, "of the Mongoose"        , {  3726,  4059,     0,     0,     0 }, {  3997,  2664,     0,     0,     0 } },
+  { 167, "of Storms"              , {  3726,  2822,     0,     0,     0 }, {  3997,  2664,     0,     0,     0 } },
+  { 168, "of Flames"              , {  3726,  4059,     0,     0,     0 }, {  3997,  2664,     0,     0,     0 } },
+  { 169, "of the Landslide"       , {  2803,  2805,  3726,  2822,     0 }, {  7889,  4638,  3205,  3205,     0 } },
+  { 170, "of the Earthshaker"     , {  2803,  2805,  3726,  2822,     0 }, {  7889,  4638,  3205,  3205,     0 } },
+  { 171, "of the Earthfall"       , {  2803,  2805,  2822,  3726,     0 }, {  7889,  4638,  3205,  3205,     0 } },
+  { 172, "of the Faultline"       , {  2803,  2805,  3726,  4059,     0 }, {  7889,  4638,  3205,  3205,     0 } },
+  { 173, "of the Earthshaker"     , {  2803,  2805,  3726,  2822,     0 }, {  7889,  4707,  3247,  3247,     0 } },
+  { 174, "of the Landslide"       , {  2803,  2805,  3726,  2822,     0 }, {  7889,  4707,  3247,  3247,     0 } },
+  { 175, "of the Earthfall"       , {  2803,  2805,  2822,  3726,     0 }, {  7889,  4707,  3247,  3247,     0 } },
+  { 176, "of the Faultline"       , {  2803,  2805,  3726,  4059,     0 }, {  7889,  4707,  3247,  3247,     0 } },
+  { 177, "of the Bedrock"         , {  2803,  2805,  4059,  4060,     0 }, {  7889,  4638,  3205,  3205,     0 } },
+  { 178, "of the Bouldercrag"     , {  2803,  2805,  2815,  4060,     0 }, {  7889,  4638,  3205,  3205,     0 } },
+  { 179, "of the Rockslab"        , {  2803,  2805,  4059,  2815,     0 }, {  7889,  4638,  3205,  3205,     0 } },
+  { 180, "of the Bedrock"         , {  2803,  2805,  4059,  4060,     0 }, {  7889,  4707,  3247,  3247,     0 } },
+  { 181, "of the Bouldercrag"     , {  2803,  2805,  2815,  4060,     0 }, {  7889,  4707,  3247,  3247,     0 } },
+  { 182, "of the Rockslab"        , {  2803,  2805,  4059,  2815,     0 }, {  7889,  4707,  3247,  3247,     0 } },
+  { 183, "of the Wildfire"        , {  2803,  2804,  3726,  2822,     0 }, {  7889,  4638,  3205,  3205,     0 } },
+  { 184, "of the Flameblaze"      , {  2803,  2804,  4059,  3726,     0 }, {  7889,  4638,  3205,  3205,     0 } },
+  { 185, "of the Fireflash"       , {  2803,  2804,  2822,  3726,     0 }, {  7889,  4638,  3205,  3205,     0 } },
+  { 186, "of the Feverflare"      , {  2803,  2804,  3726,  4059,     0 }, {  7889,  4638,  3205,  3205,     0 } },
+  { 187, "of the Undertow"        , {  2803,  2804,  3726,  2806,     0 }, {  7889,  4638,  3205,  3205,     0 } },
+  { 188, "of the Wavecrest"       , {  2803,  2804,  4059,  2806,     0 }, {  7889,  4638,  3205,  3205,     0 } },
+  { 189, "of the Wildfire"        , {  2803,  2804,  3726,  2822,     0 }, {  7889,  4707,  3247,  3247,     0 } },
+  { 190, "of the Flameblaze"      , {  2803,  2804,  4059,  3726,     0 }, {  7889,  4707,  3247,  3247,     0 } },
+  { 191, "of the Fireflash"       , {  2803,  2804,  2822,  3726,     0 }, {  7889,  4707,  3247,  3247,     0 } },
+  { 192, "of the Feverflare"      , {  2803,  2804,  3726,  4059,     0 }, {  7889,  4707,  3247,  3247,     0 } },
+  { 193, "of the Undertow"        , {  2803,  2804,  3726,  2806,     0 }, {  7889,  4707,  3247,  3247,     0 } },
+  { 194, "of the Wavecrest"       , {  2803,  2804,  4059,  2806,     0 }, {  7889,  4707,  3247,  3247,     0 } },
+  { 195, "of the Stormblast"      , {  2803,  2802,  3726,  2822,     0 }, {  7889,  4638,  3205,  3205,     0 } },
+  { 196, "of the Windflurry"      , {  2803,  2802,  2822,  3726,     0 }, {  7889,  4638,  3205,  3205,     0 } },
+  { 197, "of the Windstorm"       , {  2803,  2802,  2822,  4059,     0 }, {  7889,  4638,  3205,  3205,     0 } },
+  { 198, "of the Zephyr"          , {  2803,  2802,  3726,  4059,     0 }, {  7889,  4638,  3205,  3205,     0 } },
+  { 199, "of the Stormblast"      , {  2803,  2802,  3726,  2822,     0 }, {  7889,  4707,  3247,  3247,     0 } },
+  { 200, "of the Windflurry"      , {  2803,  2802,  2822,  3726,     0 }, {  7889,  4707,  3247,  3247,     0 } },
+  { 201, "of the Windstorm"       , {  2803,  2802,  2822,  4059,     0 }, {  7889,  4707,  3247,  3247,     0 } },
+  { 202, "of the Zephyr"          , {  2803,  2802,  3726,  4059,     0 }, {  7889,  4707,  3247,  3247,     0 } },
+  { 203, "of the Earthshaker"     , {  2803,  2805,  3726,  2822,     0 }, {  7889,  4834,  3320,  3320,     0 } },
+  { 204, "of the Landslide"       , {  2803,  2805,  3726,  2822,     0 }, {  7889,  4834,  3320,  3320,     0 } },
+  { 205, "of the Earthfall"       , {  2803,  2805,  2822,  3726,     0 }, {  7889,  4834,  3320,  3320,     0 } },
+  { 206, "of the Faultline"       , {  2803,  2805,  3726,  4059,     0 }, {  7889,  4834,  3320,  3320,     0 } },
+  { 207, "of the Bedrock"         , {  2803,  2805,  4059,  4060,     0 }, {  7889,  4834,  3320,  3320,     0 } },
+  { 208, "of the Bouldercrag"     , {  2803,  2805,  2815,  4060,     0 }, {  7889,  4834,  3320,  3320,     0 } },
+  { 209, "of the Rockslab"        , {  2803,  2805,  4059,  2815,     0 }, {  7889,  4834,  3320,  3320,     0 } },
+  { 210, "of the Wildfire"        , {  2803,  2804,  3726,  2822,     0 }, {  7889,  4834,  3320,  3320,     0 } },
+  { 211, "of the Flameblaze"      , {  2803,  2804,  4059,  3726,     0 }, {  7889,  4834,  3320,  3320,     0 } },
+  { 212, "of the Fireflash"       , {  2803,  2804,  2822,  3726,     0 }, {  7889,  4834,  3320,  3320,     0 } },
+  { 213, "of the Feverflare"      , {  2803,  2804,  3726,  4059,     0 }, {  7889,  4834,  3320,  3320,     0 } },
+  { 214, "of the Undertow"        , {  2803,  2804,  3726,  2806,     0 }, {  7889,  4834,  3320,  3320,     0 } },
+  { 215, "of the Wavecrest"       , {  2803,  2804,  4059,  2806,     0 }, {  7889,  4834,  3320,  3320,     0 } },
+  { 216, "of the Stormblast"      , {  2803,  2802,  3726,  2822,     0 }, {  7889,  4834,  3320,  3320,     0 } },
+  { 217, "of the Windflurry"      , {  2803,  2802,  2822,  3726,     0 }, {  7889,  4834,  3320,  3320,     0 } },
+  { 218, "of the Windstorm"       , {  2803,  2802,  2822,  4059,     0 }, {  7889,  4834,  3320,  3320,     0 } },
+  { 219, "of the Zephyr"          , {  2803,  2802,  3726,  4059,     0 }, {  7889,  4834,  3320,  3320,     0 } },
+  { 220, "of the Earthshaker"     , {  2803,  2805,  3726,  2822,     0 }, {  7889,  4890,  3327,  3327,     0 } },
+  { 221, "of the Landslide"       , {  2803,  2805,  3726,  2823,     0 }, {  7889,  4890,  3327,  3327,     0 } },
+  { 222, "of the Earthfall"       , {  2803,  2805,  2822,  3726,     0 }, {  7889,  4890,  3327,  3327,     0 } },
+  { 223, "of the Faultline"       , {  2803,  2805,  3726,  4059,     0 }, {  7889,  4890,  3327,  3327,     0 } },
+  { 224, "of the Bedrock"         , {  2803,  2805,  4059,  4060,     0 }, {  7889,  4890,  3327,  3327,     0 } },
+  { 225, "of the Bouldercrag"     , {  2803,  2805,  2815,  4060,     0 }, {  7889,  4890,  3327,  3327,     0 } },
+  { 226, "of the Rockslab"        , {  2803,  2805,  4059,  2815,     0 }, {  7889,  4890,  3327,  3327,     0 } },
+  { 227, "of the Wildfire"        , {  2803,  2804,  3726,  2822,     0 }, {  7889,  4890,  3327,  3327,     0 } },
+  { 228, "of the Flameblaze"      , {  2803,  2804,  4059,  3726,     0 }, {  7889,  4890,  3327,  3327,     0 } },
+  { 229, "of the Fireflash"       , {  2803,  2804,  2822,  3726,     0 }, {  7889,  4890,  3327,  3327,     0 } },
+  { 230, "of the Feverflare"      , {  2803,  2804,  3726,  4059,     0 }, {  7889,  4890,  3327,  3327,     0 } },
+  { 231, "of the Undertow"        , {  2803,  2804,  3726,  2806,     0 }, {  7889,  4890,  3327,  3327,     0 } },
+  { 232, "of the Wavecrest"       , {  2803,  2804,  4059,  2806,     0 }, {  7889,  4890,  3327,  3327,     0 } },
+  { 233, "of the Stormblast"      , {  2803,  2802,  3726,  2822,     0 }, {  7889,  4890,  3327,  3327,     0 } },
+  { 234, "of the Windflurry"      , {  2803,  2802,  2822,  3726,     0 }, {  7889,  4890,  3327,  3327,     0 } },
+  { 235, "of the Windstorm"       , {  2803,  2802,  2822,  4059,     0 }, {  7889,  4890,  3327,  3327,     0 } },
+  { 236, "of the Zephyr"          , {  2803,  2802,  3726,  4059,     0 }, {  7889,  4890,  3327,  3327,     0 } },
+  { 260, "of the Wildfire"        , {  2803,  2804,  3726,  2822,     0 }, {  7889,  4580,  3165,  3165,     0 } },
+  { 261, "of the Flameblaze"      , {  2803,  2804,  4059,  3726,     0 }, {  7889,  4580,  3165,  3165,     0 } },
+  { 262, "of the Feverflare"      , {  2803,  2804,  3726,  4059,     0 }, {  7889,  4580,  3165,  3165,     0 } },
+  { 263, "of the Undertow"        , {  2803,  2804,  3726,  2806,     0 }, {  7889,  4580,  3165,  3165,     0 } },
+  { 264, "of the Wavecrest"       , {  2803,  2804,  4059,  2806,     0 }, {  7889,  4580,  3165,  3165,     0 } },
+  { 265, "of the Wildfire"        , {  2803,  2804,  3726,  2822,     0 }, {  7889,  4490,  3125,  3125,     0 } },
+  { 266, "of the Flameblaze"      , {  2803,  2804,  4059,  3726,     0 }, {  7889,  4490,  3125,  3125,     0 } },
+  { 267, "of the Fireflash"       , {  2803,  2804,  2822,  3726,     0 }, {  7889,  4490,  3125,  3125,     0 } },
+  { 268, "of the Feverflare"      , {  2803,  2804,  3726,  4059,     0 }, {  7889,  4490,  3125,  3125,     0 } },
+  { 269, "of the Undertow"        , {  2803,  2804,  3726,  2806,     0 }, {  7889,  4490,  3125,  3125,     0 } },
+  { 270, "of the Wavecrest"       , {  2803,  2804,  4059,  2806,     0 }, {  7889,  4490,  3125,  3125,     0 } },
+  { 271, "of the Fireflash"       , {  2803,  2804,  2822,  3726,     0 }, {  7889,  4580,  3165,  3165,     0 } },
+  { 272, "of the Bedrock"         , {  2803,  2805,  4059,  4060,     0 }, {  7889,  4900,  3340,  3340,     0 } },
+  { 273, "of the Bouldercrag"     , {  2803,  2805,  2815,  4060,     0 }, {  7889,  4900,  3340,  3340,     0 } },
+  { 274, "of the Rockslab"        , {  2803,  2805,  4059,  2815,     0 }, {  7889,  4900,  3340,  3340,     0 } },
+  { 275, "of the Bedrock"         , {  2803,  2805,  4059,  4060,     0 }, {  7889,  4950,  3360,  3360,     0 } },
+  { 276, "of the Bouldercrag"     , {  2803,  2805,  2815,  4060,     0 }, {  7889,  4950,  3360,  3360,     0 } },
+  { 277, "of the Rockslab"        , {  2803,  2805,  4059,  2815,     0 }, {  7889,  4950,  3360,  3360,     0 } },
+  { 278, "of the Wildfire"        , {  2803,  2804,  3726,  2822,     0 }, {  7889,  4900,  3340,  3340,     0 } },
+  { 279, "of the Flameblaze"      , {  2803,  2804,  4059,  3726,     0 }, {  7889,  4900,  3340,  3340,     0 } },
+  { 280, "of the Fireflash"       , {  2803,  2804,  2822,  3726,     0 }, {  7889,  4900,  3340,  3340,     0 } },
+  { 281, "of the Feverflare"      , {  2803,  2804,  3726,  4059,     0 }, {  7889,  4900,  3340,  3340,     0 } },
+  { 282, "of the Undertow"        , {  2803,  2804,  3726,  2806,     0 }, {  7889,  4900,  3340,  3340,     0 } },
+  { 283, "of the Wavecrest"       , {  2803,  2804,  4059,  2806,     0 }, {  7889,  4900,  3340,  3340,     0 } },
+  { 284, "of the Fireflash"       , {  2803,  2804,  2822,  3726,     0 }, {  7889,  4950,  3360,  3360,     0 } },
+  { 285, "of the Feverflare"      , {  2803,  2804,  3726,  4059,     0 }, {  7889,  4950,  3360,  3360,     0 } },
+  { 286, "of the Undertow"        , {  2803,  2804,  3726,  2806,     0 }, {  7889,  4950,  3360,  3360,     0 } },
+  { 287, "of the Wavecrest"       , {  2803,  2804,  4059,  2806,     0 }, {  7889,  4950,  3360,  3360,     0 } },
+  { 288, "of the Stormblast"      , {  2803,  2802,  3726,  2822,     0 }, {  7889,  4900,  3340,  3340,     0 } },
+  { 289, "of the Windflurry"      , {  2803,  2802,  2822,  3726,     0 }, {  7889,  4900,  3340,  3340,     0 } },
+  { 290, "of the Windstorm"       , {  2803,  2802,  2822,  4059,     0 }, {  7889,  4900,  3340,  3340,     0 } },
+  { 291, "of the Zephyr"          , {  2803,  2802,  3726,  4059,     0 }, {  7889,  4900,  3340,  3340,     0 } },
+  { 292, "of the Stormblast"      , {  2803,  2802,  3726,  2822,     0 }, {  7889,  4950,  3360,  3360,     0 } },
+  { 293, "of the Windflurry"      , {  2803,  2802,  2822,  3726,     0 }, {  7889,  4950,  3360,  3360,     0 } },
+  { 294, "of the Windstorm"       , {  2803,  2802,  2822,  4059,     0 }, {  7889,  4950,  3360,  3360,     0 } },
+  { 295, "of the Zephyr"          , {  2803,  2802,  3726,  4059,     0 }, {  7889,  4950,  3360,  3360,     0 } },
+  { 296, "TMP of Hit"             , {  3726,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } },
+  { 297, "TMP of Crit"            , {  2822,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } },
+  { 298, "TMP of Str/Hit"         , {  2805,  3726,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  { 299, "TMP of Agi/Hit"         , {  2802,  3726,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  { 300, "TMP of Int/Hit"         , {  2804,  3726,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  { 301, "TMP of Stam/Hit"        , {  2803,  3726,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  { 302, "TMP of Str/Crit"        , {  2805,  2822,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  { 303, "TMP of Agi/Crit"        , {  2802,  2822,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  { 304, "TMP of Stam/Crit"       , {  2803,  2822,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  { 305, "TMP of Str/Dodge"       , {  2805,  2815,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  { 306, "TMP of Str/Haste"       , {  2805,  3726,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  { 307, "TMP of Agi/Haste"       , {  2802,  3726,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  { 308, "TMP of Int/Haste"       , {  2804,  3726,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  { 309, "TMP of Stam/Haste"      , {  2803,  3726,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  { 310, "TMP of Parry"           , {  4060,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } },
+  { 311, "TMP of Expertise"       , {  2823,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } },
+  { 312, "TMP of Str/Exp"         , {  2805,  2822,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  { 313, "TMP of Dodge/Parry"     , {  2815,  4060,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  { 314, "TMP of Agi/Exp"         , {  2802,  2822,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  { 315, "TMP of Stam/Exp"        , {  2803,  2822,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  { 316, "TMP of Str/Parry"       , {  2805,  4060,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  { 317, "of Nature Protection"   , {  2803,  2820,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  { 318, "of Arcane Protection"   , {  2803,  2817,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  { 319, "of Fire Protection"     , {  2803,  2818,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  { 320, "of Frost Protection"    , {  2803,  2819,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  { 321, "of Shadow Protection"   , {  2803,  2821,     0,     0,     0 }, {  6666,  6666,     0,     0,     0 } },
+  { 324, "of Arcane Resistance"   , {  2817,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } },
+  { 325, "of Dodge"               , {  2815,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } },
+  { 326, "of Fire Resistance"     , {  2818,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } },
+  { 327, "of Frost Resistance"    , {  2819,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } },
+  { 328, "of Nature Resistance"   , {  2820,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } },
+  { 329, "of Shadow Resistance"   , {  2821,     0,     0,     0,     0 }, { 10000,     0,     0,     0,     0 } },
+  { 330, "of Restoration"         , {  2803,  2804,  2806,     0,     0 }, {  5259,  5259,  5259,     0,     0 } },
+  { 331, "of Striking"            , {  2803,  2825,  3726,     0,     0 }, {  5259,  5259,  5259,     0,     0 } },
+  { 332, "of Sorcery"             , {  2803,  2804,  3726,     0,     0 }, {  5259,  5259,  5259,     0,     0 } },
+  { 333, 0                        , {     0,     0,     0,     0,     0 }, {     0,     0,     0,     0,     0 } },
+  { 336, 0                        , {  2822,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } },
+  { 337, 0                        , {  3727,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } },
+  { 338, 0                        , {  4058,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } },
+  { 339, 0                        , {  4059,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } },
+  { 340, 0                        , {  3726,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } },
+  { 341, 0                        , {  3727,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } },
+  { 342, 0                        , {  3727,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } },
+  { 343, 0                        , {  3727,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } },
+  { 344, "of the Decimator"       , {  2822,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } },
+  { 345, "of the Impatient"       , {  3726,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } },
+  { 346, "of the Decimator"       , {  2822,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } },
+  { 347, "of the Savant"          , {  4059,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } },
+  { 348, "of the Impatient"       , {  3726,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } },
+  { 349, "of the Bladewall"       , {  3727,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } },
+  { 350, "of the Bladewall"       , {  5280,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } },
+  { 351, "of the Savant"          , {  4059,     0,     0,     0,     0 }, {  5200,     0,     0,     0,     0 } },
+  { 352, "of the Landslide"       , {     0,     0,  3726,  2822,     0 }, {     0,     0,  3506,  3506,     0 } },
+  { 353, "of the Stormblast"      , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 354, "of the Galeburst"       , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 355, "of the Windflurry"      , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 356, "of the Windstorm"       , {     0,     0,  2822,  4059,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 357, "of the Zephyr"          , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 358, "of the Wildfire"        , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 359, "of the Flameblaze"      , {     0,     0,  4059,  3726,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 360, "of the Fireflash"       , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 361, "of the Feverflare"      , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 362, "of the Fireflash"       , {     0,     0,  3726,  3727,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 363, "of the Wavecrest"       , {     0,     0,  4059,  3727,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 364, "of the Earthbreaker"    , {     0,     0,  2822,  4059,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 365, "of the Faultline"       , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 366, "of the Mountainbed"     , {     0,     0,  4059,  2822,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 367, "of the Rockslab"        , {     0,     0,  4059,  3727,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 368, "of the Bouldercrag"     , {     0,     0,  4059,  3727,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 369, "of the Rockslab"        , {     0,     0,  4059,  3727,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 370, "of the Earthshaker"     , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 371, "of the Earthfall"       , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 377, "of the Decimator"       , {  2822,     0,     0,     0,     0 }, {  4170,     0,     0,     0,     0 } },
+  { 378, "of the Impatient"       , {  3726,     0,     0,     0,     0 }, {  4170,     0,     0,     0,     0 } },
+  { 379, "of the Decimator"       , {  2822,     0,     0,     0,     0 }, {  4170,     0,     0,     0,     0 } },
+  { 380, "of the Savant"          , {  4059,     0,     0,     0,     0 }, {  4170,     0,     0,     0,     0 } },
+  { 381, "of the Impatient"       , {  3726,     0,     0,     0,     0 }, {  4170,     0,     0,     0,     0 } },
+  { 382, "of the Bladewall"       , {  3727,     0,     0,     0,     0 }, {  4170,     0,     0,     0,     0 } },
+  { 383, "of the Bladewall"       , {  3727,     0,     0,     0,     0 }, {  4170,     0,     0,     0,     0 } },
+  { 384, "of the Savant"          , {  4059,     0,     0,     0,     0 }, {  4170,     0,     0,     0,     0 } },
+  { 385, "of the Landslide"       , {     0,     0,  3726,  2822,     0 }, {     0,     0,  2990,  2990,     0 } },
+  { 386, "of the Stormblast"      , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  2990,  2990,     0 } },
+  { 387, "of the Galeburst"       , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  2990,  2990,     0 } },
+  { 388, "of the Windflurry"      , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  2990,  2990,     0 } },
+  { 389, "of the Windstorm"       , {     0,     0,  2822,  4059,     0 }, {  7889,  5259,  2990,  2990,     0 } },
+  { 390, "of the Zephyr"          , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  2990,  2990,     0 } },
+  { 391, "of the Wildfire"        , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  2990,  2990,     0 } },
+  { 392, "of the Flameblaze"      , {     0,     0,  4059,  3726,     0 }, {  7889,  5259,  2990,  2990,     0 } },
+  { 393, "of the Fireflash"       , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  2990,  2990,     0 } },
+  { 394, "of the Feverflare"      , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  2990,  2990,     0 } },
+  { 395, "of the Fireflash"       , {     0,     0,  3726,  3727,     0 }, {  7889,  5259,  2990,  2990,     0 } },
+  { 396, "of the Wavecrest"       , {     0,     0,  4059,  3727,     0 }, {  7889,  5259,  2990,  2990,     0 } },
+  { 397, "of the Earthbreaker"    , {     0,     0,  2822,  4059,     0 }, {  7889,  5259,  2990,  2990,     0 } },
+  { 398, "of the Faultline"       , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  2990,  2990,     0 } },
+  { 399, "of the Mountainbed"     , {     0,     0,  4059,  2822,     0 }, {  7889,  5259,  2990,  2990,     0 } },
+  { 400, "of the Rockslab"        , {     0,     0,  4059,  5280,     0 }, {  7889,  5259,  2990,  2990,     0 } },
+  { 401, "of the Bouldercrag"     , {     0,     0,  5280,  3727,     0 }, {  7889,  5259,  2990,  2990,     0 } },
+  { 402, "of the Rockslab"        , {     0,     0,  4059,  5280,     0 }, {  7889,  5259,  2990,  2990,     0 } },
+  { 403, "of the Earthshaker"     , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 404, "of the Earthfall"       , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  3506,  3506,     0 } },
+  { 405, "of the Decimator"       , {  2822,     0,     0,     0,     0 }, {  4960,     0,     0,     0,     0 } },
+  { 406, "of the Impatient"       , {  3726,     0,     0,     0,     0 }, {  4960,     0,     0,     0,     0 } },
+  { 407, "of the Decimator"       , {  2822,     0,     0,     0,     0 }, {  4960,     0,     0,     0,     0 } },
+  { 408, "of the Savant"          , {  4059,     0,     0,     0,     0 }, {  4960,     0,     0,     0,     0 } },
+  { 409, "of the Impatient"       , {  3726,     0,     0,     0,     0 }, {  4960,     0,     0,     0,     0 } },
+  { 410, "of the Bladewall"       , {  3727,     0,     0,     0,     0 }, {  4960,     0,     0,     0,     0 } },
+  { 411, "of the Bladewall"       , {  3727,     0,     0,     0,     0 }, {  4960,     0,     0,     0,     0 } },
+  { 412, "of the Savant"          , {  4059,     0,     0,     0,     0 }, {  4960,     0,     0,     0,     0 } },
+  { 413, "of the Landslide"       , {     0,     0,  3726,  2822,     0 }, {     0,     0,  3268,  3268,     0 } },
+  { 414, "of the Stormblast"      , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  3268,  3268,     0 } },
+  { 415, "of the Galeburst"       , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  3268,  3268,     0 } },
+  { 416, "of the Windflurry"      , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  3268,  3268,     0 } },
+  { 417, "of the Windstorm"       , {     0,     0,  2822,  4059,     0 }, {  7889,  5259,  3268,  3268,     0 } },
+  { 418, "of the Zephyr"          , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  3268,  3268,     0 } },
+  { 419, "of the Wildfire"        , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  3268,  3268,     0 } },
+  { 420, "of the Flameblaze"      , {     0,     0,  4059,  3726,     0 }, {  7889,  5259,  3268,  3268,     0 } },
+  { 421, "of the Fireflash"       , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  3268,  3268,     0 } },
+  { 422, "of the Feverflare"      , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  3268,  3268,     0 } },
+  { 423, "of the Fireflash"       , {     0,     0,  3726,  3727,     0 }, {  7889,  5259,  3268,  3268,     0 } },
+  { 424, "of the Wavecrest"       , {     0,     0,  4059,  3727,     0 }, {  7889,  5259,  3268,  3268,     0 } },
+  { 425, "of the Earthbreaker"    , {     0,     0,  2822,  4059,     0 }, {  7889,  5259,  3268,  3268,     0 } },
+  { 426, "of the Faultline"       , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  3268,  3268,     0 } },
+  { 427, "of the Mountainbed"     , {     0,     0,  4059,  2822,     0 }, {  7889,  5259,  3268,  3268,     0 } },
+  { 428, "of the Rockslab"        , {     0,     0,  4059,  5280,     0 }, {  7889,  5259,  3268,  3268,     0 } },
+  { 429, "of the Bouldercrag"     , {     0,     0,  5280,  3727,     0 }, {  7889,  5259,  3268,  3268,     0 } },
+  { 430, "of the Rockslab"        , {     0,     0,  4059,  5280,     0 }, {  7889,  5259,  3268,  3268,     0 } },
+  { 431, "of the Earthshaker"     , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  3268,  3268,     0 } },
+  { 432, "of the Earthfall"       , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  3268,  3268,     0 } },
+  { 433, "of the Decimator"       , {  2822,     0,     0,     0,     0 }, {  4480,     0,     0,     0,     0 } },
+  { 434, "of the Impatient"       , {  3726,     0,     0,     0,     0 }, {  4480,     0,     0,     0,     0 } },
+  { 435, "of the Decimator"       , {  2822,     0,     0,     0,     0 }, {  4480,     0,     0,     0,     0 } },
+  { 436, "of the Savant"          , {  4059,     0,     0,     0,     0 }, {  4480,     0,     0,     0,     0 } },
+  { 437, "of the Impatient"       , {  3726,     0,     0,     0,     0 }, {  4480,     0,     0,     0,     0 } },
+  { 438, "of the Bladewall"       , {  3727,     0,     0,     0,     0 }, {  4480,     0,     0,     0,     0 } },
+  { 439, "of the Bladewall"       , {  3727,     0,     0,     0,     0 }, {  4480,     0,     0,     0,     0 } },
+  { 440, "of the Savant"          , {  4059,     0,     0,     0,     0 }, {  4480,     0,     0,     0,     0 } },
+  { 441, "of the Landslide"       , {     0,     0,  3726,  2822,     0 }, {     0,     0,  2788,  2788,     0 } },
+  { 442, "of the Stormblast"      , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  2788,  2788,     0 } },
+  { 443, "of the Galeburst"       , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  2788,  2788,     0 } },
+  { 444, "of the Windflurry"      , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  2788,  2788,     0 } },
+  { 445, "of the Windstorm"       , {     0,     0,  2822,  4059,     0 }, {  7889,  5259,  2788,  2788,     0 } },
+  { 446, "of the Zephyr"          , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  2788,  2788,     0 } },
+  { 447, "of the Wildfire"        , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  2788,  2788,     0 } },
+  { 448, "of the Flameblaze"      , {     0,     0,  4059,  3726,     0 }, {  7889,  5259,  2788,  2788,     0 } },
+  { 449, "of the Fireflash"       , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  2788,  2788,     0 } },
+  { 450, "of the Feverflare"      , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  2788,  2788,     0 } },
+  { 451, "of the Fireflash"       , {     0,     0,  3726,  3727,     0 }, {  7889,  5259,  2788,  2788,     0 } },
+  { 452, "of the Wavecrest"       , {     0,     0,  4059,  3727,     0 }, {  7889,  5259,  2788,  2788,     0 } },
+  { 453, "of the Earthbreaker"    , {     0,     0,  2822,  4059,     0 }, {  7889,  5259,  2788,  2788,     0 } },
+  { 454, "of the Faultline"       , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  2788,  2788,     0 } },
+  { 455, "of the Mountainbed"     , {     0,     0,  4059,  2822,     0 }, {  7889,  5259,  2788,  2788,     0 } },
+  { 456, "of the Rockslab"        , {     0,     0,  4059,  5280,     0 }, {  7889,  5259,  2788,  2788,     0 } },
+  { 457, "of the Bouldercrag"     , {     0,     0,  5280,  3727,     0 }, {  7889,  5259,  2788,  2788,     0 } },
+  { 458, "of the Rockslab"        , {     0,     0,  4059,  5280,     0 }, {  7889,  5259,  2788,  2788,     0 } },
+  { 459, "of the Earthshaker"     , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  2788,  2788,     0 } },
+  { 460, "of the Earthfall"       , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  2788,  2788,     0 } },
+  { 461, "of the Decimator"       , {  2822,     0,     0,     0,     0 }, {  4859,     0,     0,     0,     0 } },
+  { 462, "of the Impatient"       , {  3726,     0,     0,     0,     0 }, {  4859,     0,     0,     0,     0 } },
+  { 463, "of the Decimator"       , {  2822,     0,     0,     0,     0 }, {  4859,     0,     0,     0,     0 } },
+  { 464, "of the Savant"          , {  4059,     0,     0,     0,     0 }, {  4859,     0,     0,     0,     0 } },
+  { 465, "of the Impatient"       , {  3726,     0,     0,     0,     0 }, {  4859,     0,     0,     0,     0 } },
+  { 466, "of the Bladewall"       , {  3727,     0,     0,     0,     0 }, {  4859,     0,     0,     0,     0 } },
+  { 467, "of the Bladewall"       , {  3727,     0,     0,     0,     0 }, {  4859,     0,     0,     0,     0 } },
+  { 468, "of the Savant"          , {  4059,     0,     0,     0,     0 }, {  4859,     0,     0,     0,     0 } },
+  { 469, "of the Landslide"       , {     0,     0,  3726,  2822,     0 }, {     0,     0,  3159,  3159,     0 } },
+  { 470, "of the Stormblast"      , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  3159,  3159,     0 } },
+  { 471, "of the Galeburst"       , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  3159,  3159,     0 } },
+  { 472, "of the Windflurry"      , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  3159,  3159,     0 } },
+  { 473, "of the Windstorm"       , {     0,     0,  2822,  4059,     0 }, {  7889,  5259,  3159,  3159,     0 } },
+  { 474, "of the Zephyr"          , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  3159,  3159,     0 } },
+  { 475, "of the Wildfire"        , {     0,     0,  3726,  2822,     0 }, {  7889,  5259,  3159,  3159,     0 } },
+  { 476, "of the Flameblaze"      , {     0,     0,  4059,  3726,     0 }, {  7889,  5259,  3159,  3159,     0 } },
+  { 477, "of the Fireflash"       , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  3159,  3159,     0 } },
+  { 478, "of the Feverflare"      , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  3159,  3159,     0 } },
+  { 479, "of the Fireflash"       , {     0,     0,  3726,  3727,     0 }, {  7889,  5259,  3159,  3159,     0 } },
+  { 480, "of the Wavecrest"       , {     0,     0,  4059,  3727,     0 }, {  7889,  5259,  3159,  3159,     0 } },
+  { 481, "of the Earthbreaker"    , {     0,     0,  2822,  4059,     0 }, {  7889,  5259,  3159,  3159,     0 } },
+  { 482, "of the Faultline"       , {     0,     0,  3726,  4059,     0 }, {  7889,  5259,  3159,  3159,     0 } },
+  { 483, "of the Mountainbed"     , {     0,     0,  4059,  2822,     0 }, {  7889,  5259,  3159,  3159,     0 } },
+  { 484, "of the Rockslab"        , {     0,     0,  4059,  5280,     0 }, {  7889,  5259,  3159,  3159,     0 } },
+  { 485, "of the Bouldercrag"     , {     0,     0,  5280,  3727,     0 }, {  7889,  5259,  3159,  3159,     0 } },
+  { 486, "of the Rockslab"        , {     0,     0,  4059,  5280,     0 }, {  7889,  5259,  3159,  3159,     0 } },
+  { 487, "of the Earthshaker"     , {     0,     0,  4058,  2822,     0 }, {  7889,  5259,  3159,  3159,     0 } },
+  { 488, "of the Earthfall"       , {     0,     0,  2822,  3726,     0 }, {  7889,  5259,  3159,  3159,     0 } },
   {   0, 0                        , {     0,     0,     0,     0,     0 }, {     0,     0,     0,     0,     0 } },
 };
-#define SPELL_ITEM_ENCH_SIZE (4131)
+#define SPELL_ITEM_ENCH_SIZE (4132)
 
-// Item enchantment data, wow build 21874
+// Item enchantment data, wow build 21953
 static struct item_enchantment_data_t __spell_item_ench_data[] = {
   {   13,  33,      0, -1,   5,   1,   0,   0, {   2,   0,   0 }, {    3,    0,    0 }, {      0,      0,      0 }, {  1.0000,  0.0000,  0.0000 },      0, "Sharpened (+$k1 Damage)"           },
   {   14,  33,      0, -1,  15,  15,   0,   0, {   2,   0,   0 }, {    4,    0,    0 }, {      0,      0,      0 }, {  0.3637,  0.0000,  0.0000 },      0, "Sharpened (+$k1 Damage)"           },
@@ -5345,7 +5345,7 @@ static struct item_enchantment_data_t __spell_item_ench_data[] = {
   { 5614,   0,      0,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {      9,    709,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 3 - Iron 1"                },
   { 5615,   0,      0,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {      9,    709,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 3 - Life 1"                },
   { 5616,   0,      0,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {      9,    709,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 3 - Shadow 1"              },
-  { 5617,   0, 132833,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {      9,    709,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 3 - Water 1"               },
+  { 5617,   0,      0,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {      9,    709,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 3 - Water 1"               },
   { 5618,   0,      0,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {      9,    709,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 3 - Wind 1"                },
   { 5619,   0,      0,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {     10,    709,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 4 - Arcane 1"              },
   { 5620,   0,      0,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {     10,    709,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 4 - Blood 1"               },
@@ -5356,7 +5356,7 @@ static struct item_enchantment_data_t __spell_item_ench_data[] = {
   { 5625,   0,      0,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {     10,    709,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 4 - Iron 1"                },
   { 5626,   0,      0,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {     10,    709,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 4 - Life 1"                },
   { 5627,   0,      0,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {     10,    709,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 4 - Shadow 1"              },
-  { 5628,   0, 132853,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {     10,    709,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 4 - Water 1"               },
+  { 5628,   0,      0,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {     10,    709,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 4 - Water 1"               },
   { 5629,   0,      0,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {     10,    709,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 4 - Wind 1"                },
   { 5632,   0,      0,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {      7,    708,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 1 - Holy 1"                },
   { 5633,   0,      0,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {      7,    708,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 1 - Arcane 1"              },
@@ -5453,7 +5453,7 @@ static struct item_enchantment_data_t __spell_item_ench_data[] = {
   { 5725,   0,      0,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {      8,    709,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 4 - Iron 1"                },
   { 5726,   0,      0,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {      8,    709,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 4 - Life 1"                },
   { 5727,   0,      0,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {      8,    709,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 4 - Shadow 1"              },
-  { 5728,   0, 133038,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {      8,    709,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 4 - Water 1"               },
+  { 5728,   0,      0,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {      8,    709,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 4 - Water 1"               },
   { 5729,   0,      0,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {      8,    709,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 4 - Wind 1"                },
   { 5730,   0,      0,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {      8,    708,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 2 - Arcane 1"              },
   { 5731,   0,      0,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {      8,    708,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 2 - Blood 1"               },
@@ -5486,7 +5486,7 @@ static struct item_enchantment_data_t __spell_item_ench_data[] = {
   { 5759,   0,      0,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {      5,    709,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 3 - Iron 1"                },
   { 5760,   0,      0,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {      5,    709,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 3 - Life 1"                },
   { 5761,   0,      0,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {      5,    709,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 3 - Shadow 1"              },
-  { 5762,   0, 133123,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {      5,    709,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 3 - Water 1"               },
+  { 5762,   0,      0,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {      5,    709,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 3 - Water 1"               },
   { 5763,   0,      0,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {      5,    709,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 3 - Wind 1"                },
   { 5764,   0,      0,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {     10,    709,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 4 - Arcane 1"              },
   { 5765,   0,      0,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {     10,    709,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 4 - Blood 1"               },
@@ -5595,9 +5595,10 @@ static struct item_enchantment_data_t __spell_item_ench_data[] = {
   { 5883,   0,      0,  0,   1, 100,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 222856,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 222853, "Bloodhunter"                       },
   { 5884,   0,      0,  0,   1,  60,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 223937, "Songs of the Horde"                },
   { 5885,   0,      0,  0,   1,  60,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 223938, "Songs of the Alliance"             },
+  { 5888,   0,      0,  0,   1, 100,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 228138,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 228139, "Netherdrift"                       },
   {    0,   0,      0,  0,   0,   0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, 0                                   },
 };
-// Item armor values data from ItemArmorQuality.dbc, ilevels 1-1000, wow build 21874
+// Item armor values data from ItemArmorQuality.dbc, ilevels 1-1000, wow build 21953
 static struct item_scale_data_t __itemarmorquality_data[] = {
   {    1, {  0.900,  0.950,  1.000,  1.000,  1.000,  1.000,  1.000 } },
   {    2, {  0.900,  0.950,  1.000,  1.000,  1.000,  1.000,  1.000 } },
@@ -6602,7 +6603,7 @@ static struct item_scale_data_t __itemarmorquality_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item armor values data from ItemArmorShield.dbc, ilevels 1-1000, wow build 21874
+// Item armor values data from ItemArmorShield.dbc, ilevels 1-1000, wow build 21953
 static struct item_scale_data_t __itemarmorshield_data[] = {
   {    1, {   22.000,   23.000,   24.000,   31.000,   38.000,   38.000,   38.000 } },
   {    2, {   24.000,   25.000,   26.000,   33.000,   41.000,   41.000,   41.000 } },
@@ -7607,7 +7608,7 @@ static struct item_scale_data_t __itemarmorshield_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item armor values data from ItemArmorTotal.dbc, ilevels 1-1000, wow build 21874
+// Item armor values data from ItemArmorTotal.dbc, ilevels 1-1000, wow build 21953
 static struct item_armor_type_data_t __itemarmortotal_data[] = {
   {    1, {    19.625,    31.400,    44.857,   78.5000 } },
   {    2, {    20.875,    33.400,    47.714,   83.5000 } },
@@ -8639,7 +8640,7 @@ static struct item_armor_type_data_t __armor_slot_data[] = {
   { 0, { 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageOneHand.dbc, ilevels 1-1000, wow build 21874
+// Item damage data from ItemDamageOneHand.dbc, ilevels 1-1000, wow build 21953
 static struct item_scale_data_t __itemdamageonehand_data[] = {
   {    1, {     0.347,     0.520,     0.629,     1.050,     1.874,     1.874,     1.874 } },
   {    2, {     0.502,     0.755,     0.886,     1.377,     2.240,     2.240,     2.240 } },
@@ -9644,7 +9645,7 @@ static struct item_scale_data_t __itemdamageonehand_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageOneHandCaster.dbc, ilevels 1-1000, wow build 21874
+// Item damage data from ItemDamageOneHandCaster.dbc, ilevels 1-1000, wow build 21953
 static struct item_scale_data_t __itemdamageonehandcaster_data[] = {
   {    1, {     0.173,     0.260,     0.315,     0.525,     0.937,     0.937,     0.937 } },
   {    2, {     0.251,     0.377,     0.443,     0.689,     1.120,     1.120,     1.120 } },
@@ -10649,7 +10650,7 @@ static struct item_scale_data_t __itemdamageonehandcaster_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageTwoHand.dbc, ilevels 1-1000, wow build 21874
+// Item damage data from ItemDamageTwoHand.dbc, ilevels 1-1000, wow build 21953
 static struct item_scale_data_t __itemdamagetwohand_data[] = {
   {    1, {     0.446,     0.669,     0.810,     1.352,     2.412,     2.412,     2.412 } },
   {    2, {     0.646,     0.971,     1.140,     1.773,     2.883,     2.883,     2.883 } },
@@ -11654,7 +11655,7 @@ static struct item_scale_data_t __itemdamagetwohand_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageTwoHandCaster.dbc, ilevels 1-1000, wow build 21874
+// Item damage data from ItemDamageTwoHandCaster.dbc, ilevels 1-1000, wow build 21953
 static struct item_scale_data_t __itemdamagetwohandcaster_data[] = {
   {    1, {     0.223,     0.335,     0.405,     0.676,     1.206,     1.206,     1.206 } },
   {    2, {     0.323,     0.486,     0.570,     0.886,     1.442,     1.442,     1.442 } },
@@ -12659,7 +12660,7 @@ static struct item_scale_data_t __itemdamagetwohandcaster_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Gem properties, wow build 21874
+// Gem properties, wow build 21953
 static struct gem_property_data_t __gem_property_data[] = {
   {    2,  2686, 0x00000002,    0 },
   {    3,  2687, 0x00000008,    0 },
@@ -14468,7 +14469,7 @@ static struct gem_property_data_t __gem_property_data[] = {
   { 3352,  5853, 0x00000080,    0 },
 };
 
-// Item upgrade rules, wow build level 21874
+// Item upgrade rules, wow build level 21953
 static struct item_upgrade_rule_t __item_upgrade_rule_data[] = {
   {    94,  445,  86741 },
   {    95,  445,  86743 },
@@ -23675,7 +23676,7 @@ static struct item_upgrade_rule_t __item_upgrade_rule_data[] = {
   {     0,    0,      0 },
 };
 
-// Upgrade rule data, wow build level 21874
+// Upgrade rule data, wow build level 21953
 static struct item_upgrade_t __upgrade_rule_data[] = {
   {   1,   1,    0,  8 },
   { 373,  89,    0,  4 },
@@ -23734,9 +23735,9 @@ static struct item_upgrade_t __upgrade_rule_data[] = {
   {   0,   0,    0,  0 },
 };
 
-#define ITEM_BONUS_TREE_SIZE (147)
+#define ITEM_BONUS_TREE_SIZE (153)
 
-// Item bonus trees, wow build 21874
+// Item bonus trees, wow build 21953
 static struct item_bonus_tree_entry_t __item_bonus_tree_data[ITEM_BONUS_TREE_SIZE] = {
   {    1,    1,  5,    0,    1 },
   {  107,   61,  5,    0,  449 },
@@ -23811,7 +23812,7 @@ static struct item_bonus_tree_entry_t __item_bonus_tree_data[ITEM_BONUS_TREE_SIZ
   { 1552,  367,  2,    0, 1726 },
   { 1553,  367, 23,    0, 1727 },
   { 1554,  438,  0,    0, 1796 },
-  { 1556,  440,  0,    0, 1792 },
+  { 1556,  440,  0,    0, 1794 },
   { 1557,  441,  5,    0,    0 },
   { 1558,  441,  3,    0,    0 },
   { 1559,  441,  6,    0,    0 },
@@ -23884,12 +23885,18 @@ static struct item_bonus_tree_entry_t __item_bonus_tree_data[ITEM_BONUS_TREE_SIZ
   { 1791,  517, 25,    0, 3398 },
   { 1792,  517, 26,    0,    0 },
   { 1795,  455, 16,    0, 3399 },
+  { 1801,  511, 25,    0,    0 },
+  { 1802,  511, 26,    0,    0 },
+  { 1803,  511, 27,    0,    0 },
+  { 1804,  511, 27,    0,    0 },
+  { 1805,  511, 29,    0,    0 },
+  { 1806,  511, 30,    0,    0 },
   {    0,    0,  0,    0,    0 },
 };
 
-#define ITEM_BONUS_SIZE (3170)
+#define ITEM_BONUS_SIZE (3173)
 
-// Item bonuses, wow build 21874
+// Item bonuses, wow build 21953
 static struct item_bonus_entry_t __item_bonus_data[ITEM_BONUS_SIZE] = {
   {    1,    1,  1,     20,      0,  0 },
   {    2,    1,  2,      7,  15789,  1 },
@@ -27060,12 +27067,15 @@ static struct item_bonus_entry_t __item_bonus_data[ITEM_BONUS_SIZE] = {
   { 4996, 1794, 12,  66890,      0,  2 },
   { 4997,  768,  0,      0,      0,  2 },
   { 4998, 3379,  7,      4,      0,  3 },
+  { 4999,  669,  3,      4,      0,  1 },
+  { 5000,  670,  3,      4,      0,  1 },
+  { 5001,  671,  3,      4,      0,  1 },
   {    0,    0,  0,      0,      0,  0 },
 };
 
-#define ITEM_BONUS_MAP_SIZE (11039)
+#define ITEM_BONUS_MAP_SIZE (11035)
 
-// Item bonus map, wow build 21874
+// Item bonus map, wow build 21953
 static struct item_bonus_node_entry_t __item_bonus_map_data[ITEM_BONUS_MAP_SIZE] = {
   {     1, 109188,  393 },
   {   125, 109550,  438 },
@@ -29696,7 +29706,7 @@ static struct item_bonus_node_entry_t __item_bonus_map_data[ITEM_BONUS_MAP_SIZE]
   { 19981, 121485,  416 },
   { 19982, 121486,  416 },
   { 19983, 121487,  419 },
-  { 19984, 121488,  419 },
+  { 19984, 121488,  421 },
   { 19985, 121489,  418 },
   { 19986, 121490,  418 },
   { 19987, 121491,  418 },
@@ -32000,18 +32010,17 @@ static struct item_bonus_node_entry_t __item_bonus_map_data[ITEM_BONUS_MAP_SIZE]
   { 30459, 121792,  338 },
   { 30482, 128884,  274 },
   { 30484, 128900,  274 },
-  { 30546, 128959,  497 },
-  { 30552, 129035,  419 },
-  { 30553, 129037,  419 },
+  { 30552, 129035,  440 },
+  { 30553, 129037,  440 },
   { 30554, 129038,  419 },
-  { 30555, 129040,  419 },
-  { 30556, 129041,  419 },
+  { 30555, 129040,  440 },
+  { 30556, 129041,  440 },
   { 30557, 129042,  419 },
-  { 30558, 129044,  419 },
+  { 30558, 129044,  440 },
   { 30559, 129046,  419 },
-  { 30560, 129048,  419 },
+  { 30560, 129048,  440 },
   { 30561, 129049,  440 },
-  { 30562, 129056,  419 },
+  { 30562, 129056,  440 },
   { 30563, 123911,  274 },
   { 30565, 123912,  274 },
   { 30567, 123913,  274 },
@@ -32087,17 +32096,16 @@ static struct item_bonus_node_entry_t __item_bonus_map_data[ITEM_BONUS_MAP_SIZE]
   { 30668, 128905,  363 },
   { 30669, 128906,  363 },
   { 30670, 128907,  363 },
-  { 30671, 129101,  419 },
-  { 30672, 129104,  497 },
-  { 30673, 129109,  419 },
-  { 30674, 129110,  419 },
-  { 30676, 129123,  419 },
-  { 30677, 129127,  419 },
+  { 30671, 129101,  440 },
+  { 30673, 129109,  440 },
+  { 30674, 129110,  440 },
+  { 30676, 129123,  440 },
+  { 30677, 129127,  440 },
   { 30679, 129130,  419 },
-  { 30680, 129133,  419 },
-  { 30681, 129144,  419 },
+  { 30680, 129133,  440 },
+  { 30681, 129144,  440 },
   { 30682, 129146,  440 },
-  { 30683, 129152,  419 },
+  { 30683, 129152,  440 },
   { 30685, 129160,  419 },
   { 30686, 129162,  419 },
   { 30687, 129166,  418 },
@@ -32106,9 +32114,9 @@ static struct item_bonus_node_entry_t __item_bonus_map_data[ITEM_BONUS_MAP_SIZE]
   { 30696, 129170,  418 },
   { 30699, 129171,  418 },
   { 30702, 129172,  418 },
-  { 30708, 129199,  419 },
-  { 30709, 129206,  419 },
-  { 30710, 129219,  419 },
+  { 30708, 129199,  440 },
+  { 30709, 129206,  440 },
+  { 30710, 129219,  440 },
   { 30725, 129225,  420 },
   { 30728, 129226,  420 },
   { 30731, 129227,  420 },
@@ -32139,9 +32147,9 @@ static struct item_bonus_node_entry_t __item_bonus_map_data[ITEM_BONUS_MAP_SIZE]
   { 30824, 129258,  421 },
   { 30827, 129259,  421 },
   { 30830, 129260,  421 },
-  { 30833, 129264,  419 },
-  { 30834, 129266,  419 },
-  { 30847, 129291,  419 },
+  { 30833, 129264,  440 },
+  { 30834, 129266,  440 },
+  { 30847, 129291,  440 },
   { 30855, 129302,  416 },
   { 30856, 129303,  416 },
   { 30857, 129304,  416 },
@@ -32297,8 +32305,8 @@ static struct item_bonus_node_entry_t __item_bonus_map_data[ITEM_BONUS_MAP_SIZE]
   { 31113, 130022,  416 },
   { 31242, 130143,  419 },
   { 31299, 130294,  416 },
-  { 31302, 131767,  419 },
-  { 31305, 131799,  419 },
+  { 31302, 131767,  440 },
+  { 31305, 131799,  440 },
   { 31308, 130280,  418 },
   { 31311, 130281,  418 },
   { 31314, 130282,  418 },
@@ -32346,7 +32354,7 @@ static struct item_bonus_node_entry_t __item_bonus_map_data[ITEM_BONUS_MAP_SIZE]
   { 31440, 130310,  420 },
   { 31443, 130311,  420 },
   { 31446, 130312,  420 },
-  { 31449, 131921,  419 },
+  { 31449, 131921,  440 },
   { 31452, 132087,  419 },
   { 31455, 132088,  419 },
   { 31458, 132089,  419 },
@@ -32384,8 +32392,8 @@ static struct item_bonus_node_entry_t __item_bonus_map_data[ITEM_BONUS_MAP_SIZE]
   { 31559, 132771,  416 },
   { 31562, 132772,  416 },
   { 31565, 132773,  416 },
-  { 31571, 132895,  419 },
-  { 31572, 132898,  419 },
+  { 31571, 132895,  440 },
+  { 31572, 132898,  440 },
   { 31573, 132899,  418 },
   { 31576, 132900,  418 },
   { 31579, 132901,  418 },
@@ -34893,62 +34901,61 @@ static struct item_bonus_node_entry_t __item_bonus_map_data[ITEM_BONUS_MAP_SIZE]
   { 37227, 137007,  438 },
   { 37228, 137008,  449 },
   { 37229, 137009,  438 },
-  { 37279, 129061,  419 },
-  { 37280, 129062,  419 },
-  { 37281, 129063,  419 },
-  { 37282, 129065,  419 },
-  { 37283, 129066,  419 },
-  { 37284, 129067,  419 },
-  { 37285, 129068,  419 },
-  { 37286, 129069,  419 },
-  { 37287, 129078,  419 },
-  { 37288, 129080,  419 },
-  { 37289, 129082,  419 },
-  { 37290, 129083,  419 },
-  { 37291, 129084,  419 },
-  { 37292, 129085,  419 },
-  { 37293, 129090,  419 },
-  { 37294, 129091,  419 },
-  { 37295, 129163,  419 },
-  { 37296, 130116,  419 },
-  { 37297, 130121,  419 },
-  { 37298, 130122,  419 },
-  { 37299, 130125,  419 },
-  { 37300, 130126,  419 },
-  { 37301, 130127,  419 },
-  { 37302, 130135,  419 },
-  { 37303, 130136,  419 },
-  { 37304, 130137,  419 },
+  { 37279, 129061,  440 },
+  { 37280, 129062,  440 },
+  { 37281, 129063,  440 },
+  { 37282, 129065,  440 },
+  { 37283, 129066,  440 },
+  { 37284, 129067,  440 },
+  { 37285, 129068,  440 },
+  { 37286, 129069,  440 },
+  { 37287, 129078,  440 },
+  { 37288, 129080,  440 },
+  { 37289, 129082,  440 },
+  { 37290, 129083,  440 },
+  { 37291, 129084,  440 },
+  { 37292, 129085,  440 },
+  { 37293, 129090,  440 },
+  { 37294, 129091,  440 },
+  { 37295, 129163,  440 },
+  { 37296, 130116,  440 },
+  { 37297, 130121,  440 },
+  { 37298, 130122,  440 },
+  { 37299, 130125,  440 },
+  { 37300, 130126,  440 },
+  { 37301, 130127,  440 },
+  { 37302, 130135,  440 },
+  { 37303, 130136,  440 },
+  { 37304, 130137,  440 },
   { 37305, 130138,  419 },
-  { 37306, 130154,  440 },
-  { 37308, 131791,  419 },
-  { 37309, 131792,  419 },
-  { 37310, 131793,  419 },
-  { 37311, 131796,  419 },
-  { 37312, 131797,  419 },
-  { 37313, 131798,  419 },
-  { 37314, 131800,  419 },
-  { 37315, 131803,  419 },
+  { 37308, 131791,  440 },
+  { 37309, 131792,  440 },
+  { 37310, 131793,  440 },
+  { 37311, 131796,  440 },
+  { 37312, 131797,  440 },
+  { 37313, 131798,  440 },
+  { 37314, 131800,  440 },
+  { 37315, 131803,  440 },
   { 37316, 130114,  419 },
-  { 37317, 130132,  419 },
+  { 37317, 130132,  440 },
   { 37318, 130213,  419 },
-  { 37319, 131773,  419 },
+  { 37319, 131773,  440 },
   { 37320, 121725,  419 },
   { 37321, 129071,  419 },
-  { 37322, 129075,  419 },
+  { 37322, 129075,  440 },
   { 37323, 130124,  419 },
   { 37324, 130140,  419 },
   { 37325, 131770,  419 },
-  { 37326, 129079,  419 },
-  { 37327, 130115,  419 },
+  { 37326, 129079,  440 },
+  { 37327, 130115,  440 },
   { 37328, 131759,  419 },
-  { 37329, 131780,  419 },
-  { 37330, 131781,  419 },
+  { 37329, 131780,  440 },
+  { 37330, 131781,  440 },
   { 37331, 132356,  419 },
   { 37332, 132363,  419 },
   { 37333, 132364,  419 },
-  { 37334, 129070,  419 },
-  { 37335, 129073,  419 },
+  { 37334, 129070,  440 },
+  { 37335, 129073,  440 },
   { 37336, 129074,  419 },
   { 37337, 130139,  419 },
   { 37338, 131764,  419 },
@@ -34956,36 +34963,36 @@ static struct item_bonus_node_entry_t __item_bonus_map_data[ITEM_BONUS_MAP_SIZE]
   { 37340, 132291,  419 },
   { 37341, 129081,  419 },
   { 37342, 130117,  419 },
-  { 37343, 130118,  419 },
+  { 37343, 130118,  440 },
   { 37344, 130119,  419 },
   { 37345, 130120,  419 },
-  { 37346, 130133,  419 },
-  { 37347, 131726,  419 },
+  { 37346, 130133,  440 },
+  { 37347, 131726,  440 },
   { 37348, 131749,  419 },
-  { 37349, 131761,  419 },
+  { 37349, 131761,  440 },
   { 37350, 131787,  419 },
-  { 37351, 129064,  419 },
-  { 37352, 130134,  419 },
-  { 37353, 131756,  419 },
-  { 37354, 131769,  419 },
-  { 37355, 131775,  419 },
+  { 37351, 129064,  440 },
+  { 37352, 130134,  440 },
+  { 37353, 131756,  440 },
+  { 37354, 131769,  440 },
+  { 37355, 131775,  440 },
   { 37356, 131790,  419 },
   { 37357, 132358,  419 },
-  { 37358, 129072,  419 },
+  { 37358, 129072,  440 },
   { 37359, 129088,  419 },
   { 37360, 129089,  419 },
   { 37361, 130123,  419 },
   { 37362, 130141,  419 },
-  { 37363, 131919,  419 },
+  { 37363, 131919,  440 },
   { 37364, 131920,  419 },
   { 37365, 132362,  419 },
   { 37366, 130142,  419 },
   { 37367, 131765,  419 },
-  { 37368, 131730,  419 },
-  { 37369, 131776,  419 },
-  { 37370, 129086,  419 },
-  { 37371, 129087,  419 },
-  { 37372, 132359,  419 },
+  { 37368, 131730,  440 },
+  { 37369, 131776,  440 },
+  { 37370, 129086,  440 },
+  { 37371, 129087,  440 },
+  { 37372, 132359,  440 },
   { 37373, 137226,  286 },
   { 37376, 137247,  286 },
   { 37377, 137251,  286 },
@@ -35635,8 +35642,8 @@ static struct item_bonus_node_entry_t __item_bonus_map_data[ITEM_BONUS_MAP_SIZE]
   { 39302, 137386,  286 },
   { 39303, 138388,  286 },
   { 39304, 138390,  286 },
-  { 39305, 138395,  419 },
-  { 39307, 138396,  419 },
+  { 39305, 138395,  440 },
+  { 39307, 138396,  440 },
   { 39309, 138401,  405 },
   { 39311, 138402,  405 },
   { 39313, 138403,  405 },
@@ -35645,20 +35652,16 @@ static struct item_bonus_node_entry_t __item_bonus_map_data[ITEM_BONUS_MAP_SIZE]
   { 39319, 138406,  405 },
   { 39321, 138407,  405 },
   { 39323, 138408,  405 },
-  { 39325, 138417,  419 },
-  { 39327, 138418,  419 },
-  { 39329, 138419,  419 },
-  { 39331, 138420,  419 },
-  { 39333, 138421,  419 },
+  { 39325, 138417,  440 },
+  { 39327, 138418,  440 },
+  { 39329, 138419,  440 },
+  { 39331, 138420,  440 },
+  { 39333, 138421,  440 },
   { 39600, 138480,  286 },
   { 39605, 138487,  286 },
   { 39606, 138478,  286 },
   { 39607, 138479,  286 },
   { 39614, 138731,  286 },
-  { 40112, 138773,  497 },
-  { 40113, 138774,  497 },
-  { 40114, 138775,  497 },
-  { 40115, 138776,  497 },
   { 40116, 138254,  456 },
   { 40607, 138819,  418 },
   { 40609, 138820,  418 },
@@ -35666,7 +35669,7 @@ static struct item_bonus_node_entry_t __item_bonus_map_data[ITEM_BONUS_MAP_SIZE]
   { 40613, 138822,  418 },
   { 40615, 138823,  418 },
   { 40617, 138824,  418 },
-  { 40619, 138837,  416 },
+  { 40619, 138837,  418 },
   { 40621, 138840,  418 },
   { 40623, 138841,  418 },
   { 40625, 138842,  418 },
@@ -35997,7 +36000,7 @@ static struct item_bonus_node_entry_t __item_bonus_map_data[ITEM_BONUS_MAP_SIZE]
   { 42018, 139377,  286 },
   { 42019, 139378,  286 },
   { 42020, 139379,  286 },
-  { 42021, 139387,  419 },
+  { 42021, 139387,  440 },
   { 42023, 139392,  463 },
   { 42024, 139392,  455 },
   { 42025, 139393,  463 },
@@ -36128,20 +36131,16 @@ static struct item_bonus_node_entry_t __item_bonus_map_data[ITEM_BONUS_MAP_SIZE]
   { 42245, 139402,  286 },
   { 42246, 139403,  286 },
   { 42247, 139390,  286 },
-  { 42263, 139905,  497 },
   { 42272, 139914,  416 },
   { 42274, 139916,  416 },
   { 42283, 139925,  416 },
-  { 42292, 139934,  497 },
   { 42306, 139948,  416 },
   { 42308, 139950,  416 },
   { 42313, 139955,  416 },
   { 42314, 139956,  416 },
-  { 42323, 139965,  497 },
   { 42332, 139974,  416 },
   { 42334, 139976,  416 },
   { 42345, 139987,  416 },
-  { 42355, 139997,  497 },
   { 42370, 140012,  416 },
   { 42376, 140018,  416 },
   { 42446, 140090,  286 },
@@ -36311,11 +36310,11 @@ static struct item_bonus_node_entry_t __item_bonus_map_data[ITEM_BONUS_MAP_SIZE]
   { 42749, 139267,  495 },
   { 42750, 139268,  495 },
   { 42751, 139269,  495 },
-  { 42767, 140680,  419 },
-  { 42769, 140681,  419 },
-  { 42771, 140682,  419 },
-  { 42773, 140683,  419 },
-  { 42775, 140686,  419 },
+  { 42767, 140680,  440 },
+  { 42769, 140681,  440 },
+  { 42771, 140682,  440 },
+  { 42773, 140683,  440 },
+  { 42775, 140686,  440 },
   { 42777, 140687,  496 },
   { 42778, 140714,  496 },
   { 42779, 140721,  420 },
@@ -38037,7 +38036,6 @@ static struct item_bonus_node_entry_t __item_bonus_map_data[ITEM_BONUS_MAP_SIZE]
   { 46678, 141550,  421 },
   { 46680, 141551,  421 },
   { 46695, 138450,  497 },
-  { 46697, 141294,  497 },
   { 46705, 141564,  517 },
   { 46708, 141565,  517 },
   { 46711, 141566,  517 },
@@ -38105,12 +38103,20 @@ static struct item_bonus_node_entry_t __item_bonus_map_data[ITEM_BONUS_MAP_SIZE]
   { 47036, 141647,  420 },
   { 47039, 141653,  493 },
   { 47040, 141654,  493 },
+  { 47053, 141694,  449 },
+  { 47056, 141694,  495 },
+  { 47057, 141695,  449 },
+  { 47060, 141695,  495 },
+  { 47061, 141696,  449 },
+  { 47064, 141696,  495 },
+  { 47067, 141689,  286 },
+  { 47068, 141690,  286 },
   {     0,      0,    0 },
 };
 
 #define SCALING_STAT_DISTRIBUTION_SIZE (295)
 
-// Scaling stat distributions, wow build 21874
+// Scaling stat distributions, wow build 21953
 static struct scaling_stat_distribution_t __scaling_stat_distribution_data[SCALING_STAT_DISTRIBUTION_SIZE] = {
   {    1,   0,  80,   956 },
   {    2,   0,  80,   956 },
@@ -38409,9 +38415,9 @@ static struct scaling_stat_distribution_t __scaling_stat_distribution_data[SCALI
   {    0,   0,   0,     0 },
 };
 
-#define CURVE_POINT_SIZE (5628)
+#define CURVE_POINT_SIZE (5636)
 
-// Curve points data, wow build 21874
+// Curve points data, wow build 21953
 static struct curve_point_t __curve_point_data[CURVE_POINT_SIZE] = {
   {    8,  0,    0.00000,    1.00000 },
   {    9,  0,    0.00000,    1.00000 },
@@ -43852,54 +43858,58 @@ static struct curve_point_t __curve_point_data[CURVE_POINT_SIZE] = {
   { 2208, 12,   97.00000,  600.00000 },
   { 2208, 13,   98.00000,  640.00000 },
   { 2208, 14,   99.00000,  670.00000 },
-  { 2208, 15,  100.00000,  685.00000 },
-  { 2208, 16,  110.00000,  685.00000 },
+  { 2208, 15,  100.00000,  700.00000 },
+  { 2208, 16,  110.00000,  700.00000 },
   { 2209,  0,    1.00000,   10.00000 },
-  { 2209,  1,    5.00000,   15.00000 },
-  { 2209,  2,   57.00000,   66.00000 },
-  { 2209,  3,   58.00000,   84.00000 },
-  { 2209,  4,   67.00000,  110.00000 },
-  { 2209,  5,   68.00000,  144.00000 },
-  { 2209,  6,   80.00000,  192.00000 },
-  { 2209,  7,   81.00000,  284.00000 },
-  { 2209,  8,   85.00000,  338.00000 },
-  { 2209,  9,   86.00000,  389.00000 },
-  { 2209, 10,   90.00000,  468.00000 },
-  { 2209, 11,   91.00000,  535.00000 },
-  { 2209, 12,   97.00000,  605.00000 },
-  { 2209, 13,   98.00000,  655.00000 },
-  { 2209, 14,   99.00000,  685.00000 },
-  { 2209, 15,  100.00000,  700.00000 },
-  { 2209, 16,  110.00000,  700.00000 },
+  { 2209,  1,    5.00000,   10.00000 },
+  { 2209,  2,   57.00000,   61.00000 },
+  { 2209,  3,   58.00000,   79.00000 },
+  { 2209,  4,   67.00000,  105.00000 },
+  { 2209,  5,   68.00000,  139.00000 },
+  { 2209,  6,   80.00000,  187.00000 },
+  { 2209,  7,   81.00000,  279.00000 },
+  { 2209,  8,   85.00000,  333.00000 },
+  { 2209,  9,   86.00000,  384.00000 },
+  { 2209, 10,   90.00000,  463.00000 },
+  { 2209, 11,   91.00000,  530.00000 },
+  { 2209, 12,   97.00000,  600.00000 },
+  { 2209, 13,   98.00000,  650.00000 },
+  { 2209, 14,   99.00000,  680.00000 },
+  { 2209, 15,  100.00000,  710.00000 },
+  { 2209, 16,  110.00000,  710.00000 },
   { 2210,  0,    1.00000,   10.00000 },
-  { 2210,  1,    5.00000,   25.00000 },
-  { 2210,  2,   57.00000,   76.00000 },
-  { 2210,  3,   58.00000,   94.00000 },
-  { 2210,  4,   67.00000,  120.00000 },
-  { 2210,  5,   68.00000,  154.00000 },
-  { 2210,  6,   80.00000,  202.00000 },
-  { 2210,  7,   81.00000,  294.00000 },
-  { 2210,  8,   85.00000,  348.00000 },
-  { 2210,  9,   86.00000,  399.00000 },
-  { 2210, 10,   90.00000,  478.00000 },
-  { 2210, 11,   91.00000,  545.00000 },
-  { 2210, 12,   97.00000,  615.00000 },
-  { 2210, 13,   98.00000,  665.00000 },
-  { 2210, 14,   99.00000,  695.00000 },
-  { 2210, 15,  100.00000,  710.00000 },
-  { 2210, 16,  110.00000,  710.00000 },
+  { 2210,  1,    5.00000,   20.00000 },
+  { 2210,  2,   57.00000,   71.00000 },
+  { 2210,  3,   58.00000,   89.00000 },
+  { 2210,  4,   67.00000,  115.00000 },
+  { 2210,  5,   68.00000,  149.00000 },
+  { 2210,  6,   80.00000,  197.00000 },
+  { 2210,  7,   81.00000,  289.00000 },
+  { 2210,  8,   85.00000,  343.00000 },
+  { 2210,  9,   86.00000,  394.00000 },
+  { 2210, 10,   90.00000,  473.00000 },
+  { 2210, 11,   91.00000,  540.00000 },
+  { 2210, 12,   97.00000,  610.00000 },
+  { 2210, 13,   98.00000,  660.00000 },
+  { 2210, 14,   99.00000,  690.00000 },
+  { 2210, 15,  100.00000,  720.00000 },
+  { 2210, 16,  110.00000,  720.00000 },
   { 2211,  0,    0.00000,    0.00000 },
-  { 2211,  1,  200.00000,    0.00000 },
-  { 2211,  2,  300.00000,    0.33000 },
-  { 2211,  3,  400.00000,    1.00000 },
+  { 2211,  1,  199.00000,    0.00000 },
+  { 2211,  2,  200.00000,    1.00000 },
+  { 2211,  3,  299.00000,    1.00000 },
+  { 2211,  4,  301.00000,    0.00000 },
+  { 2211,  5,  400.00000,    0.00000 },
   { 2212,  0,    0.00000,    0.00000 },
-  { 2212,  1,  300.00000,    0.00000 },
-  { 2212,  2,  350.00000,    0.10000 },
-  { 2212,  3,  375.00000,    0.25000 },
-  { 2212,  4,  400.00000,    1.00000 },
+  { 2212,  1,  299.00000,    0.00000 },
+  { 2212,  2,  300.00000,    1.00000 },
+  { 2212,  3,  374.00000,    1.00000 },
+  { 2212,  4,  375.00000,    0.00000 },
+  { 2212,  5,  400.00000,    0.00000 },
   { 2213,  0,    0.00000,    0.00000 },
-  { 2213,  1,  375.00000,    0.00000 },
-  { 2213,  2,  400.00000,    0.25000 },
+  { 2213,  1,  374.00000,    0.00000 },
+  { 2213,  2,  375.00000,    1.00000 },
+  { 2213,  3,  400.00000,    1.00000 },
   { 2214,  0,    0.00000,    0.00000 },
   { 2214,  1,   74.00000,    0.00000 },
   { 2214,  2,   75.00000,    1.00000 },
@@ -43946,9 +43956,6 @@ static struct curve_point_t __curve_point_data[CURVE_POINT_SIZE] = {
   { 2239,  0,    0.00000,    0.00000 },
   { 2239,  1,    0.01091,    0.59893 },
   { 2239,  2,    1.00000,    1.00000 },
-  { 2240,  0,    0.00000,    0.82888 },
-  { 2240,  1,    0.44000,    4.41176 },
-  { 2240,  2,    1.00000,    0.82888 },
   { 2242,  0,    0.00000,    0.25000 },
   { 2242,  1,    0.01000,    1.00000 },
   { 2242,  2,    1.00000,    0.98930 },
@@ -43966,7 +43973,7 @@ static struct curve_point_t __curve_point_data[CURVE_POINT_SIZE] = {
   { 2248,  1,  109.00000,    0.00000 },
   { 2248,  2,  110.00000,    1.00000 },
   { 2249,  0,    1.00000,    0.00000 },
-  { 2249,  1, 200000.00000,   -1.00000 },
+  { 2249,  1, 2000000.00000,   -1.00000 },
   { 2250,  0,   10.00000,    0.10000 },
   { 2250,  1,   30.00000,    0.03333 },
   { 2251,  0,    1.00000,    0.00000 },
@@ -44004,21 +44011,18 @@ static struct curve_point_t __curve_point_data[CURVE_POINT_SIZE] = {
   { 2267,  0,    0.00000,    0.00000 },
   { 2267,  1,    1.00000,   -1.00000 },
   { 2268,  0,    1.00000,  845.00000 },
-  { 2268,  1,    2.00000,  845.00000 },
-  { 2268,  2,    3.00000,  850.00000 },
-  { 2268,  3,    4.00000,  850.00000 },
-  { 2268,  4,    5.00000,  855.00000 },
-  { 2268,  5,    6.00000,  860.00000 },
-  { 2268,  6,    7.00000,  860.00000 },
-  { 2268,  7,    7.00000,  860.00000 },
-  { 2268,  8,    8.00000,  865.00000 },
-  { 2268,  9,    9.00000,  865.00000 },
-  { 2268, 10,   10.00000,  870.00000 },
-  { 2268, 11,   11.00000,  870.00000 },
-  { 2268, 12,   12.00000,  875.00000 },
-  { 2268, 13,   13.00000,  875.00000 },
-  { 2268, 14,   14.00000,  880.00000 },
-  { 2268, 15,   15.00000,  880.00000 },
+  { 2268,  1,    2.00000,  850.00000 },
+  { 2268,  2,    3.00000,  855.00000 },
+  { 2268,  3,    4.00000,  860.00000 },
+  { 2268,  4,    5.00000,  865.00000 },
+  { 2268,  5,    6.00000,  865.00000 },
+  { 2268,  6,    7.00000,  870.00000 },
+  { 2268,  7,    8.00000,  870.00000 },
+  { 2268,  8,    9.00000,  875.00000 },
+  { 2268,  9,   10.00000,  880.00000 },
+  { 2268, 10,   11.00000,  880.00000 },
+  { 2268, 11,   12.00000,  880.00000 },
+  { 2268, 12,   13.00000,  880.00000 },
   { 2270,  0,   10.00000,    0.10000 },
   { 2270,  1,   30.00000,    0.03333 },
   { 2272,  0,    0.00000,    0.00000 },
@@ -44040,12 +44044,22 @@ static struct curve_point_t __curve_point_data[CURVE_POINT_SIZE] = {
   { 2283,  1,    1.00000,    1.00000 },
   { 2284,  0,    0.00000,    0.00000 },
   { 2284,  1,    1.00000,    1.00000 },
+  { 2290,  0,    1.00000,  840.00000 },
+  { 2290,  1,    2.00000,  845.00000 },
+  { 2290,  2,    3.00000,  845.00000 },
+  { 2290,  3,    4.00000,  850.00000 },
+  { 2290,  4,    5.00000,  850.00000 },
+  { 2290,  5,    6.00000,  855.00000 },
+  { 2290,  6,    7.00000,  855.00000 },
+  { 2290,  7,    8.00000,  860.00000 },
+  { 2290,  8,    9.00000,  860.00000 },
+  { 2290,  9,   10.00000,  865.00000 },
   {    0,  0,    0.00000,    0.00000 },
 };
 
 #define ITEM_NAME_DESCRIPTION_SIZE (156)
 
-// Item name descriptions, wow build 21874
+// Item name descriptions, wow build 21953
 static struct item_name_description_t __item_name_description_data[ITEM_NAME_DESCRIPTION_SIZE] = {
   {     2, "Now with extra description"   },
   {    20, "Season 10"                    },
@@ -44207,7 +44221,7 @@ static struct item_name_description_t __item_name_description_data[ITEM_NAME_DES
 
 #define ITEM_CHILD_EQUIPMENT_SIZE (23)
 
-// Item child equipment, wow build 21874
+// Item child equipment, wow build 21953
 static struct item_child_equipment_t __item_child_equipment_data[ITEM_CHILD_EQUIPMENT_SIZE] = {
   {  2, 127417,   1728 },
   {  3, 127829, 127830 },
