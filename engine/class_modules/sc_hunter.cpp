@@ -190,6 +190,8 @@ public:
     gain_t* dire_beast;
     gain_t* multi_shot;
     gain_t* chimaera_shot;
+    gain_t* aspect_of_the_wild;
+    gain_t* spitting_cobra;
   } gains;
 
   // Procs
@@ -481,7 +483,6 @@ public:
   virtual double    composite_player_critical_damage_multiplier() const override;
   virtual double    composite_rating_multiplier( rating_e rating ) const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
-  virtual double    focus_regen_per_second() const override;
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
   virtual void      invalidate_cache( cache_e ) override;
   virtual void      create_options() override;
@@ -1006,6 +1007,7 @@ public:
   struct gains_t
   {
     gain_t* steady_focus;
+    gain_t* aspect_of_the_wild;
   } gains;
 
   // Benefits
@@ -1110,7 +1112,9 @@ public:
   {
     base_t::create_buffs();
 
-    buffs.aspect_of_the_wild = buff_creator_t( this, 193530, "aspect_of_the_wild" );
+    buffs.aspect_of_the_wild = buff_creator_t( this, 193530, "aspect_of_the_wild" )
+      .affects_regen( true )
+      .default_value( find_spell( 193530 ) -> effectN( 1 ).percent() );
     if ( o() -> artifacts.wilderness_expert.rank() )
       buffs.aspect_of_the_wild -> buff_duration += o() -> artifacts.wilderness_expert.time_value();
 
@@ -1170,7 +1174,8 @@ public:
   {
     base_t::init_gains();
 
-    gains.steady_focus      = get_gain( "steady_focus" );
+    gains.steady_focus       = get_gain( "steady_focus" );
+    gains.aspect_of_the_wild = get_gain( "aspect_of_the_wild" );
   }
 
   virtual void init_benefits() override
@@ -1220,6 +1225,8 @@ public:
       double base = focus_regen_per_second() * o() -> buffs.steady_focus -> current_value;
       resource_gain( RESOURCE_FOCUS, base * periodicity.total_seconds(), gains.steady_focus );
     }
+    if ( buffs.aspect_of_the_wild -> up() )
+      resource_gain( RESOURCE_FOCUS, buffs.aspect_of_the_wild -> data().effectN( 2 ).resource( RESOURCE_FOCUS ) * periodicity.total_seconds(), gains.aspect_of_the_wild );
   }
 
   double focus_regen_per_second() const override
@@ -5271,20 +5278,19 @@ void hunter_t::create_buffs()
 
   buffs.aspect_of_the_wild           = buff_creator_t( this, 193530, "aspect_of_the_wild" )
     .affects_regen( true )
-    .add_invalidate( CACHE_CRIT );
+    .add_invalidate( CACHE_CRIT )
+    .default_value( find_spell( 193530 ) -> effectN( 1 ).percent() );
   
   if ( artifacts.wilderness_expert.rank() )
     buffs.aspect_of_the_wild -> buff_duration += artifacts.wilderness_expert.time_value();
   
   buffs.dire_beast = buff_creator_t( this, 120694, "dire_beast" )
     .affects_regen(true)
-    .default_value( find_spell( 120694 ) -> effectN( 1 )
-    .resource( RESOURCE_FOCUS ) );
+    .default_value( find_spell( 120694 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ) / find_spell( 120694 ) -> effectN( 1 ).period().total_seconds() );
 
   buffs.dire_beast_2 = buff_creator_t( this, 120694, "dire_beast_2" )
     .affects_regen(true)
-    .default_value( find_spell( 120694 ) -> effectN( 1 )
-    .resource( RESOURCE_FOCUS ) );
+    .default_value( find_spell( 120694 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ) / find_spell( 120694 ) -> effectN( 1 ).period().total_seconds() );
 
   if ( talents.dire_stable -> ok() )
   {
@@ -5372,7 +5378,8 @@ void hunter_t::create_buffs()
     .default_value( find_spell( 201081 ) -> effectN( 1 ).percent() );
 
   buffs.spitting_cobra = buff_creator_t( this, 194407, "spitting_cobra" )
-    .default_value( find_spell( 194407 ) -> effectN( 2 ).base_value() );
+    .affects_regen( true )
+    .default_value( find_spell( 194407 ) -> effectN( 2 ).resource( RESOURCE_FOCUS ) );
 }
 
 // hunter_t::init_gains =====================================================
@@ -5388,6 +5395,9 @@ void hunter_t::init_gains()
   gains.dire_beast           = get_gain( "dire_beast" );
   gains.multi_shot           = get_gain( "multi_shot" );
   gains.chimaera_shot        = get_gain( "chimaera_shot" );
+  gains.dire_beast           = get_gain( "dire_beast" );
+  gains.aspect_of_the_wild   = get_gain( "aspect_of_the_wild" );
+  gains.spitting_cobra       = get_gain( "spitting_cobra" );
 }
 
 // hunter_t::init_position ==================================================
@@ -5741,6 +5751,14 @@ void hunter_t::regen( timespan_t periodicity )
     double base = focus_regen_per_second() * buffs.steady_focus -> current_value;
     resource_gain( RESOURCE_FOCUS, base * periodicity.total_seconds(), gains.steady_focus );
   }
+  if ( buffs.dire_beast -> up() )
+    resource_gain( RESOURCE_FOCUS, buffs.dire_beast -> default_value * periodicity.total_seconds(), gains.dire_beast );
+  if ( buffs.dire_beast_2 -> up() )
+    resource_gain( RESOURCE_FOCUS, buffs.dire_beast_2 -> default_value * periodicity.total_seconds(), gains.dire_beast );
+  if ( buffs.aspect_of_the_wild -> up() )
+    resource_gain( RESOURCE_FOCUS, buffs.aspect_of_the_wild -> data().effectN( 2 ).resource( RESOURCE_FOCUS ) * periodicity.total_seconds(), gains.aspect_of_the_wild );
+  if ( buffs.spitting_cobra -> up() )
+    resource_gain( RESOURCE_FOCUS, buffs.spitting_cobra -> default_value * periodicity.total_seconds(), gains.spitting_cobra );
 }
 
 // hunter_t::composite_attack_power_multiplier ==============================
@@ -5867,25 +5885,6 @@ double hunter_t::composite_player_multiplier( school_e school ) const
 
   return m;
 }
-
-// hunter_t::focus_regen_per_second  ====================================
-
-double hunter_t::focus_regen_per_second() const
-{
-  double regen = player_t::focus_regen_per_second();
-
-  if ( buffs.aspect_of_the_wild -> check() )
-    regen += buffs.aspect_of_the_wild -> data().effectN( 2 ).resource( RESOURCE_FOCUS );
-  if ( buffs.dire_beast -> check() )
-    regen += buffs.dire_beast -> default_value / 2;
-  if ( buffs.dire_beast_2 -> check() )
-    regen += buffs.dire_beast_2 -> default_value / 2;
-  if ( buffs.spitting_cobra -> check() )
-    regen += buffs.spitting_cobra -> data().effectN( 2 ).resource( RESOURCE_FOCUS );
-
-  return regen;
-}
-
 
 // hunter_t::composite_mastery_value  ====================================
 
