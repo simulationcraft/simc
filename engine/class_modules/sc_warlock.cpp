@@ -362,8 +362,13 @@ public:
     proc_t* two_shard_hog;
     proc_t* three_shard_hog;
     proc_t* four_shard_hog;
+    //demo
     proc_t* impending_doom;
     proc_t* improved_dreadstalkers;
+    proc_t* thalkiels_discord;
+    proc_t* demonic_calling;
+    proc_t* power_trip;
+
   } procs;
 
   struct spells_t
@@ -999,6 +1004,8 @@ struct wild_firebolt_t: public warlock_pet_spell_t
   wild_firebolt_t( warlock_pet_t* p ):
     warlock_pet_spell_t( "fel_firebolt", p, p -> find_spell( 104318 ) )
   {
+      base_multiplier += 1.0 + p->o()->artifact.infernal_furnace.percent();
+      this->crit_bonus_multiplier += p->o()->artifact.imperator.percent();
   }
 
   virtual bool ready() override
@@ -1185,7 +1192,9 @@ double warlock_pet_t::composite_melee_haste() const
   double mh = pet_t::composite_melee_haste();
 
   if ( buffs.demonic_empowerment -> up() )
-      mh *= 0.5 + buffs.demonic_empowerment -> data().effectN( 1 ).percent();
+  {
+      mh *= 0.5 + buffs.demonic_empowerment -> data().effectN( 1 ).percent() + o()->artifact.summoners_prowess.percent();
+  }
 
   return mh;
 }
@@ -1195,7 +1204,7 @@ double warlock_pet_t::composite_spell_haste() const
   double sh = pet_t::composite_spell_haste();
 
   if ( buffs.demonic_empowerment -> up() )
-      sh *= 0.5 + buffs.demonic_empowerment -> data().effectN( 1 ).percent();
+      sh *= 0.5 + buffs.demonic_empowerment -> data().effectN( 1 ).percent() + o()->artifact.summoners_prowess.percent();
 
   return sh;
 }
@@ -1622,6 +1631,8 @@ struct wild_imp_pet_t: public warlock_pet_t
 
     resources.base[RESOURCE_ENERGY] = 1000;
     base_energy_regen_per_second = 0;
+
+
   }
 
   virtual action_t* create_action( const std::string& name,
@@ -1672,6 +1683,7 @@ struct dreadstalker_t : public warlock_pet_t
     melee_attack = new actions::warlock_pet_melee_t( this );
     if ( o() -> warlock_pet_list.dreadstalkers[0] )
       melee_attack -> stats = o() ->warlock_pet_list.dreadstalkers[0] -> get_stats( "melee" );
+    this->base.attack_crit += o()->artifact.sharpened_dreadfangs.percent();
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
@@ -2291,6 +2303,8 @@ struct shadow_bolt_t: public warlock_spell_t
     energize_type = ENERGIZE_ON_CAST;
     energize_resource = RESOURCE_SOUL_SHARD;
     energize_amount = 1;
+
+    this->crit_bonus_multiplier = p->artifact.maw_of_shadows.percent();
   }
 
 //  virtual timespan_t execute_time() const override
@@ -2321,6 +2335,8 @@ struct doom_t: public warlock_spell_t
     base_tick_time = p -> find_spell( 603 ) -> effectN( 1 ).period();
     dot_duration = p -> find_spell( 603 ) -> duration();
     spell_power_mod.tick = p -> spec.doom -> effectN( 1 ).sp_coeff();
+
+    base_add_multiplier += p->artifact.the_doom_of_azeroth.percent();
 
     may_crit = true;
     hasted_ticks = true;
@@ -2361,7 +2377,7 @@ struct demonic_empowerment_t: public warlock_spell_t
 	}
 
 	void execute() override
-	{
+    {
     warlock_spell_t::execute();
     for( auto& pet : p() -> pet_list )
     {
@@ -2420,6 +2436,7 @@ struct hand_of_guldan_t: public warlock_spell_t
     doom -> background = true;
     doom -> dual = true;
     doom -> base_costs[RESOURCE_MANA] = 0;
+    base_multiplier *= 1.0 + p -> artifact.dirty_hands.percent();
   }
 
   virtual timespan_t travel_time() const override
@@ -3238,6 +3255,7 @@ struct demonbolt_t: public warlock_spell_t
         energize_type = ENERGIZE_ON_CAST;
         energize_resource = RESOURCE_SOUL_SHARD;
         energize_amount = 1;
+        this->crit_bonus_multiplier = p->artifact.maw_of_shadows.percent();
     }
 
   virtual double action_multiplier() const override
@@ -3831,6 +3849,10 @@ double warlock_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + artifact.flames_of_the_pit.percent();
   }
 
+  if ( specialization() == WARLOCK_AFFLICTION && ( dbc::is_school( SCHOOL_FIRE, school ) || dbc::is_school( SCHOOL_FIRE, school ) ) )
+  {
+      m *= 1.0 + artifact.breath_of_thalkiel.percent();
+  }
   return m;
 }
 
@@ -4353,6 +4375,9 @@ void warlock_t::init_procs()
   procs.four_shard_hog = get_proc( "four_shard_hog" );
   procs.impending_doom = get_proc( "impending_doom" );
   procs.improved_dreadstalkers = get_proc( "improved_dreadstalkers" );
+  procs.thalkiels_discord = get_proc( "thalkiels_discord" );
+  procs.demonic_calling = get_proc( "demonic_calling" );
+  procs.power_trip = get_proc( "power_trip" );
 }
 
 void warlock_t::apl_precombat()
