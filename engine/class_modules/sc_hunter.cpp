@@ -3901,16 +3901,6 @@ struct serpent_sting_t: public hunter_melee_attack_t
     hasted_ticks = false;
     weapon_multiplier = 0;
   }
-  virtual double composite_attack_power() const override
-  {
-    double ap = hunter_melee_attack_t::composite_attack_power();
-
-    //TODO: Verify numbers, consider moving to hunter_melee_attack_tf
-    if ( p() -> buffs.moknathal_tactics -> check() )
-      ap /= 1.0 + p() -> buffs.moknathal_tactics -> check_stack_value();
-
-    return ap;
-  }
 };
 
 // Carve =============================================================================
@@ -4128,17 +4118,6 @@ public:
     hunter_action_t<spell_t>::execute();
     
     this -> try_steady_focus();
-  }
-  
-  virtual double composite_attack_power() const override
-  {
-    double ap = base_t::composite_attack_power();
-
-    // BUG - unaffected by AP granted by moknathal tactics
-    if ( p() -> buffs.moknathal_tactics -> check() )
-      ap /= 1.0 + p() -> buffs.moknathal_tactics -> check_stack_value();
-
-    return ap;
   }
 };
 
@@ -5389,7 +5368,7 @@ void hunter_t::create_buffs()
     .default_value( find_spell( 204333 ) -> effectN( 1 ).percent() );
 
   buffs.moknathal_tactics = buff_creator_t( this, 201081, "moknathal_tactics")
-    .max_stack( 5 )
+    .max_stack( 4 )
     .default_value( find_spell( 201081 ) -> effectN( 1 ).percent() );
 
   buffs.spitting_cobra = buff_creator_t( this, 194407, "spitting_cobra" )
