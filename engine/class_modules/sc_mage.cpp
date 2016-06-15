@@ -191,20 +191,6 @@ public:
          iv_haste,
          pet_multiplier;
 
-  // Legendary Effects
-  const special_effect_t* belovirs_final_stand,
-                        * cord_of_infinity,
-                        * darcklis_dragonfire_diadem,
-                        * koralons_burning_touch,
-                        * lady_vashjs_grasp,
-                        * magtheridons_banished_bracers,
-                        * marquee_bindings_of_the_sun_king,
-                        * mythic_kilt_of_the_rune_master,
-                        * norgannons_foresight,
-                        * rhonins_assaulting_armwraps,
-                        * shard_of_the_exodar,
-                        * zannesu_journey;
-                        
   // Benefits
   struct benefits_t
   {
@@ -271,7 +257,8 @@ public:
           * chilled_to_the_core;
 
     // Legendary 
-    buff_t* magtheridons_might;
+    buff_t* magtheridons_might,
+          * zannesu_journey;
 
   } buffs;
 
@@ -296,6 +283,12 @@ public:
     gain_t* evocation;
   } gains;
 
+  // Legendary
+  struct legendary_t
+  {
+    bool zannesu_journey;
+    double zannesu_journey_multiplier;
+  } legendary;
   // Pets
   struct pets_t
   {
@@ -507,18 +500,6 @@ public:
     wild_arcanist( nullptr ),
     pyrosurge( nullptr ),
     shatterlance( nullptr ),
-    belovirs_final_stand( nullptr ),
-    cord_of_infinity( nullptr ),
-    darcklis_dragonfire_diadem( nullptr ),
-    koralons_burning_touch( nullptr ),
-    lady_vashjs_grasp( nullptr ),
-    magtheridons_banished_bracers( nullptr ),
-    marquee_bindings_of_the_sun_king( nullptr ),
-    mythic_kilt_of_the_rune_master( nullptr ),
-    norgannons_foresight( nullptr ),
-    rhonins_assaulting_armwraps( nullptr ),
-    shard_of_the_exodar( nullptr ),
-    zannesu_journey( nullptr ),
     cinder_count( 6.0 ),
     distance_from_rune( 0.0 ),
     incanters_flow_stack_mult( find_spell( 116267 ) -> effectN( 1 ).percent() ),
@@ -2849,14 +2830,17 @@ struct blink_t : public mage_spell_t
 
 struct blizzard_shard_t : public frost_mage_spell_t
 {
+  double zannesu_journey_multiplier;
+
   blizzard_shard_t( mage_t* p ) :
-    frost_mage_spell_t( "blizzard_shard", p, p -> find_spell( 190357 ) )
+    frost_mage_spell_t( "blizzard_shard", p, p -> find_spell( 190357 ) ),
+    zannesu_journey_multiplier( 0.0 )
   {
     aoe = -1;
     background = true;
     ground_aoe = true;
     spell_power_mod.direct *= 1.0 + p -> talents.arctic_gale -> effectN( 1 ).percent();
-    chills = true;
+    chills = true;  
   }
 
   // Override damage type because Blizzard is considered a DOT
@@ -2864,7 +2848,15 @@ struct blizzard_shard_t : public frost_mage_spell_t
   {
     return DMG_OVER_TIME;
   }
+  virtual void init() override
+  {
+    frost_mage_spell_t::init();
+    if ( p() -> legendary.zannesu_journey )
+    {
+      zannesu_journey_multiplier = p() -> buffs.zannesu_journey -> data().effectN( 1 ).percent();
+    }
 
+  }
   virtual void execute() override
   {
     frost_mage_spell_t::execute();
@@ -2875,6 +2867,14 @@ struct blizzard_shard_t : public frost_mage_spell_t
                                    -> effectN( 2 ).percent();
       trigger_fof( "Blizzard", fof_proc_chance );
     }
+    // TODO: Snapshot in an ugly way for now. This probably needs to be moved elsewhere so it is updated mid-cast (check in game behavior)
+    if ( p() -> legendary.zannesu_journey && p() -> buffs.zannesu_journey -> check() )
+    {
+      zannesu_journey_multiplier = p() -> buffs.zannesu_journey -> data().effectN( 1 ).percent() * p() -> buffs.zannesu_journey -> check();
+    }
+    p() -> buffs.zannesu_journey -> expire();
+    sim -> out_debug.printf( "%f", zannesu_journey_multiplier);
+
   }
 
   virtual double composite_crit() const override
@@ -2886,6 +2886,18 @@ struct blizzard_shard_t : public frost_mage_spell_t
     }
     return c;
   }
+
+   virtual double composite_da_multiplier( const action_state_t* s ) const
+  {
+    double ctm = frost_mage_spell_t::composite_da_multiplier( s );
+
+    if ( p() -> legendary.zannesu_journey && p() -> buffs.zannesu_journey -> up() )
+    {
+      ctm *= 1.0 + ( zannesu_journey_multiplier );
+    }
+    return ctm;
+  }
+
 };
 
 struct blizzard_t : public frost_mage_spell_t
@@ -3714,6 +3726,7 @@ struct frozen_orb_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::tick( d );
     // "travel time" reduction of ticks based on distance from target - set on the side of less ticks lost.
+    //TODO: Update this for legion.
     if ( d -> current_tick <= ( d -> num_ticks - util::round( ( ( player -> current.distance - 16.0 ) / 16.0 ), 0 ) ) )
     {
     frozen_orb_bolt -> target = d -> target;
@@ -3728,6 +3741,11 @@ struct frozen_orb_t : public frost_mage_spell_t
     if ( p() -> sets.has_set_bonus( MAGE_FROST, T17, B4 ) )
     {
       p() -> buffs.frost_t17_4pc -> trigger();
+    }
+
+    if ( p() -> legendary.zannesu_journey == true )
+    {
+      p() -> buffs.zannesu_journey -> trigger();
     }
   }
 
@@ -6185,6 +6203,7 @@ void mage_t::create_buffs()
 
   // Legendary 
   buffs.magtheridons_might = buff_creator_t( this, "magtheridons_might", find_spell( 214404 ) );
+  buffs.zannesu_journey    = buff_creator_t( this, "zannesu_journey", find_spell( 226852 ) );
 }
 
 // mage_t::create_options ===================================================
@@ -7171,7 +7190,7 @@ double mage_t::composite_spell_haste() const
   // TODO: Double check scaling with hits.
   if ( buffs.quickening -> check() )
   {
-    h /= 1.0 + buffs.quickening -> data().effectN( 1 ).percent() * buffs.quickening -> current_stack;
+    h /= 1.0 + buffs.quickening -> data().effectN( 1 ).percent() * buffs.quickening -> check();
   }
 
   return h;
@@ -7719,6 +7738,15 @@ struct magtheridons_banished_bracers_t : public scoped_action_callback_t<ice_lan
   void manipulate( ice_lance_t* action, const special_effect_t& e ) override
   { action -> magtheridons_banished_bracers_multiplier = e.driver() -> effectN( 1 ).percent(); }
 };
+
+struct zannesu_journey_t : public scoped_actor_callback_t<mage_t>
+{
+  zannesu_journey_t() : super( MAGE_FROST )
+  { }
+
+  void manipulate( mage_t* actor, const special_effect_t& /* e */ ) override
+  { actor -> legendary.zannesu_journey = true; }
+};
 // MAGE MODULE INTERFACE ====================================================
 
 static void do_trinket_init( mage_t*                  p,
@@ -7772,6 +7800,7 @@ public:
     unique_gear::register_special_effect( 184905, shatterlance  );
     unique_gear::register_special_effect( 208099, koralons_burning_touch_t() );
     unique_gear::register_special_effect( 214403, magtheridons_banished_bracers_t() );
+    unique_gear::register_special_effect( 206397, zannesu_journey_t() );
   }
 
   virtual void register_hotfixes() const override
