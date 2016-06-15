@@ -14,8 +14,6 @@ GENERAL:
 WINDWALKER:
 - Check if the Tornado Kick can proc the T18 trinket
 - Check if Whirling Dragon Punch works with T18 trinket
-- Strike of the Windlord - make sure AoE is using the n^2 calculation or straight up AoE
-- Serenity - Double check if Strength of Xuen Artifact trait works with Serenity
 - Check if SEF uses Strike of the Windlord
 - Update Crosswinds targeting system.
 - Add Cyclone Strike Counter as an expression
@@ -193,6 +191,7 @@ public:
     buff_t* fortification;
     buff_t* fortifying_brew;
     buff_t* gift_of_the_ox;
+    buff_t* gifted_student;
     buff_t* greater_gift_of_the_ox;
     buff_t* ironskin_brew;
     buff_t* keg_smash_talent;
@@ -401,7 +400,7 @@ public:
   struct artifact_spell_data_t
   {
     // Brewmaster Artifact
-    artifact_power_t adjunct_advantage;
+    artifact_power_t hot_blooded;
     artifact_power_t brew_stache;
     artifact_power_t dark_side_of_the_moon;
     artifact_power_t dragonfire_brew;
@@ -2739,6 +2738,9 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
         buff_t::DEFAULT_VALUE(),
         1.0,
         composite_dot_duration( execute_state ) );
+
+    if ( p() -> artifact.transfer_the_power.rank() )
+      p() -> buff.transfer_the_power -> trigger();
   }
 };
 
@@ -3894,8 +3896,8 @@ struct breath_of_fire_t: public monk_spell_t
     {
       double am = monk_spell_t::action_multiplier();
 
-      if ( p() -> artifact.adjunct_advantage.rank() )
-        am *= 1 + p() -> artifact.adjunct_advantage.percent();
+      if ( p() -> artifact.hot_blooded.rank() )
+        am *= 1 + p() -> artifact.hot_blooded.percent();
 
       return am;
     }
@@ -5052,27 +5054,20 @@ struct gift_of_the_ox_t: public monk_heal_t
 
   virtual bool ready() override
   {
-    return p() -> specialization() == MONK_BREWMASTER;
-  }
+    if ( p() -> specialization() != MONK_BREWMASTER )
+      return false;
 
-  double action_multiplier() const override
-  {
-    double am = monk_heal_t::action_multiplier();
-
-    if ( p() -> artifact.gifted_student.rank() )
-      am *= 1 + p() -> artifact.gifted_student.percent();
-
-    return am;
+    return p() -> buff.gift_of_the_ox -> up();
   }
 
   virtual void execute() override
   {
-    if ( p() -> buff.gift_of_the_ox -> up() )
-    {
-      monk_heal_t::execute();
+    monk_heal_t::execute();
 
-      p() -> buff.gift_of_the_ox -> decrement();
-    }
+    p() -> buff.gift_of_the_ox -> decrement();
+
+    if ( p() -> artifact.gifted_student.rank() )
+      p() -> buff.gifted_student -> trigger();
   }
 };
 
@@ -5094,7 +5089,10 @@ struct greater_gift_of_the_ox_t: public monk_heal_t
 
   virtual bool ready() override
   {
-    return p() -> specialization() == MONK_BREWMASTER;
+    if ( p() -> specialization() != MONK_BREWMASTER )
+      return false;
+
+    return p() -> buff.greater_gift_of_the_ox -> up();
   }
 
   double action_multiplier() const override
@@ -5109,12 +5107,12 @@ struct greater_gift_of_the_ox_t: public monk_heal_t
 
   virtual void execute() override
   {
-    if ( p() -> buff.greater_gift_of_the_ox -> up() )
-    {
-      monk_heal_t::execute();
+    monk_heal_t::execute();
 
-      p() -> buff.greater_gift_of_the_ox -> decrement();
-    }
+    p() -> buff.greater_gift_of_the_ox -> decrement();
+
+    if ( p() -> artifact.gifted_student.rank() )
+      p() -> buff.gifted_student -> trigger();
   }
 };
 
@@ -5957,7 +5955,7 @@ void monk_t::init_spells()
   
   // Artifact spells ========================================
   // Brewmater
-  artifact.adjunct_advantage          = find_artifact_spell( "Adjunct Advantage" );
+  artifact.hot_blooded                = find_artifact_spell( "Hot Blooded" );
   artifact.brew_stache                = find_artifact_spell( "Brew-Stache" );
   artifact.dark_side_of_the_moon      = find_artifact_spell( "Dark Side of the Moon" );
   artifact.dragonfire_brew            = find_artifact_spell( "Dragonfire Brew" );
@@ -6305,10 +6303,14 @@ void monk_t::create_buffs()
   buff.keg_smash_talent = buff_creator_t( this, "keg_smash", talent.gift_of_the_mists -> effectN( 1 ).trigger() )
     .chance( talent.gift_of_the_mists -> proc_chance() ); 
 
-  buff.gift_of_the_ox = buff_creator_t( this, "gift_of_the_ox" , passives.gift_of_the_ox_summon )
+  buff.gift_of_the_ox = buff_creator_t( this, "gift_of_the_ox", passives.gift_of_the_ox_summon )
     .duration( passives.gift_of_the_ox_summon -> duration() )
     .refresh_behavior( BUFF_REFRESH_NONE )
     .max_stack( 99 );
+
+  buff.gifted_student = buff_creator_t( this, "gifted_student", artifact.gifted_student.data().effectN( 1 ).trigger() )
+    .default_value( artifact.gifted_student.rank() ? artifact.gifted_student.percent() : 0 )
+    .add_invalidate( CACHE_CRIT );
 
   buff.greater_gift_of_the_ox = buff_creator_t( this, "greater_gift_of_the_ox" , passives.gift_of_the_ox_summon )
     .duration( passives.gift_of_the_ox_summon -> duration() )
@@ -6397,9 +6399,9 @@ void monk_t::create_buffs()
       * ( specialization() == MONK_WINDWALKER ? mastery.combo_strikes -> effectN( 1 ).mastery_value() : 1 ) )
     .add_invalidate( CACHE_MASTERY );
 
-  // TODO: Double check if Strength of Xuen Artifact trait works with Serenity
   buff.serenity = buff_creator_t( this, "serenity", talent.serenity )
-    .default_value( talent.serenity -> effectN( 2 ).percent() )
+    .default_value( talent.serenity -> effectN( 2 ).percent() 
+    + ( artifact.spiritual_focus.rank() ? artifact.spiritual_focus.percent() : 0 ) )
     .duration( talent.serenity -> duration() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
@@ -6580,6 +6582,9 @@ double monk_t::composite_melee_crit() const
 
   if ( buff.mistweaving -> check() )
     crit += buff.mistweaving -> stack_value();
+
+  if ( buff.gifted_student -> check() )
+    crit += buff.gifted_student -> value();
 
   return crit;
 }
@@ -7015,6 +7020,9 @@ void monk_t::assess_damage(school_e school,
 
       if ( sets.has_set_bonus( MONK_BREWMASTER, T17, B2 ) )
         resource_gain( RESOURCE_ENERGY, passives.tier17_2pc_tank -> effectN( 1 ).base_value(), gain.energy_refund );
+
+      if ( artifact.gifted_student.rank() )
+        buff.gifted_student -> trigger();
     }
   }
 
