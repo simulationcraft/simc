@@ -11,16 +11,19 @@ actions.precombat+=/summon_pet
 actions.precombat+=/volley
 
 actions=auto_shot
+actions+=/use_item,name=horn_of_valor
 actions+=/trueshot
 actions+=/a_murder_of_crows
 actions+=/barrage
+actions+=/piercing_shot
 actions+=/explosive_shot
 actions+=/black_arrow
-actions+=/windburst,if=focus>50
-actions+=/marked_shot
-actions+=/aimed_shot
+actions+=/windburst
+actions+=/marked_shot,if=debuff.vulnerability.up&(!talent.patient_sniper.enabled|debuff.vulnerability.remains<2)
+actions+=/aimed_shot,if=focus+cast_regen>80
+actions+=/multishot,if=spell_targets.multishot>1
 actions+=/arcane_shot
-actions+=/sidewinders,if=buff.marking_targets.up&focus>30
+actions+=/sidewinders,if=(buff.marking_targets.up)|charges=2
 
 head=Head,stats=297armor_1340sta
 neck=Neck,stats=754sta
