@@ -2830,11 +2830,8 @@ struct blink_t : public mage_spell_t
 
 struct blizzard_shard_t : public frost_mage_spell_t
 {
-  double zannesu_journey_multiplier;
-
   blizzard_shard_t( mage_t* p ) :
-    frost_mage_spell_t( "blizzard_shard", p, p -> find_spell( 190357 ) ),
-    zannesu_journey_multiplier( 0.0 )
+    frost_mage_spell_t( "blizzard_shard", p, p -> find_spell( 190357 ) )
   {
     aoe = -1;
     background = true;
@@ -2851,11 +2848,6 @@ struct blizzard_shard_t : public frost_mage_spell_t
   virtual void init() override
   {
     frost_mage_spell_t::init();
-    if ( p() -> legendary.zannesu_journey )
-    {
-      zannesu_journey_multiplier = p() -> buffs.zannesu_journey -> data().effectN( 1 ).percent();
-    }
-
   }
   virtual void execute() override
   {
@@ -2867,14 +2859,8 @@ struct blizzard_shard_t : public frost_mage_spell_t
                                    -> effectN( 2 ).percent();
       trigger_fof( "Blizzard", fof_proc_chance );
     }
-    // TODO: Snapshot in an ugly way for now. This probably needs to be moved elsewhere so it is updated mid-cast (check in game behavior)
-    if ( p() -> legendary.zannesu_journey && p() -> buffs.zannesu_journey -> check() )
-    {
-      zannesu_journey_multiplier = p() -> buffs.zannesu_journey -> data().effectN( 1 ).percent() * p() -> buffs.zannesu_journey -> check();
-    }
-    p() -> buffs.zannesu_journey -> expire();
-    sim -> out_debug.printf( "%f", zannesu_journey_multiplier);
 
+    sim -> out_debug.printf( "%f multiplier", p() -> legendary.zannesu_journey_multiplier );
   }
 
   virtual double composite_crit() const override
@@ -2886,18 +2872,16 @@ struct blizzard_shard_t : public frost_mage_spell_t
     }
     return c;
   }
-
-   virtual double composite_da_multiplier( const action_state_t* s ) const
+  double calculate_direct_amount( action_state_t* s ) const override
   {
-    double ctm = frost_mage_spell_t::composite_da_multiplier( s );
+    frost_mage_spell_t::calculate_direct_amount( s );
 
-    if ( p() -> legendary.zannesu_journey && p() -> buffs.zannesu_journey -> up() )
+    if ( p() -> legendary.zannesu_journey )
     {
-      ctm *= 1.0 + ( zannesu_journey_multiplier );
+      s -> result_total *= 1.0 + p() -> legendary.zannesu_journey_multiplier;
     }
-    return ctm;
+    return s -> result_total;
   }
-
 };
 
 struct blizzard_t : public frost_mage_spell_t
@@ -2917,12 +2901,33 @@ struct blizzard_t : public frost_mage_spell_t
 
     tick_action = new blizzard_shard_t( p );
   }
+  virtual void execute() override
+  {
+    // "Snapshot" multiplier before we execute blizzard
+    if ( p() -> legendary.zannesu_journey && p() -> buffs.zannesu_journey -> check() )
+    {
+      p() -> legendary.zannesu_journey_multiplier = p() -> buffs.zannesu_journey -> data().effectN( 1 ).percent() * p() -> buffs.zannesu_journey -> check();
+    }
 
+    frost_mage_spell_t::execute();
+
+    p() -> buffs.zannesu_journey -> expire();
+
+  }
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     timespan_t duration = frost_mage_spell_t::composite_dot_duration( s );
     return duration * ( tick_time( s ) / base_tick_time );
   }
+  //TODO: Fix this so that the last tick has the modifier.
+  virtual void last_tick( dot_t* d ) override
+  {
+    frost_mage_spell_t::last_tick( d );
+    if ( p() -> legendary.zannesu_journey )
+    {
+      p() -> legendary.zannesu_journey_multiplier = 0;
+    }
+    }
 };
 
 // Charged Up Spell =========================================================
