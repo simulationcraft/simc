@@ -62,22 +62,19 @@ actions.two_targets=dragon_roar
 actions.two_targets+=/call_action_list,name=bladestorm
 actions.two_targets+=/bloodthirst,if=buff.enrage.down|rage<40
 actions.two_targets+=/execute,cycle_targets=1
-actions.two_targets+=/raging_blow,if=buff.meat_cleaver.up|target.health.pct<20
 actions.two_targets+=/whirlwind,if=!buff.meat_cleaver.up&target.health.pct>20
 actions.two_targets+=/bloodthirst
 actions.two_targets+=/whirlwind
 
 actions.three_targets=call_action_list,name=bladestorm
 actions.three_targets+=/bloodthirst,if=buff.enrage.down|rage<50
-actions.three_targets+=/raging_blow,if=buff.meat_cleaver.up
 actions.three_targets+=/execute,cycle_targets=1
 actions.three_targets+=/dragon_roar
 actions.three_targets+=/whirlwind,if=target.health.pct>20
 actions.three_targets+=/bloodthirst
 actions.three_targets+=/raging_blow
 
-actions.aoe=raging_blow,if=buff.meat_cleaver.up&buff.enrage.up
-actions.aoe+=/bloodthirst,if=buff.enrage.down|rage<50
+actions.aoe=bloodthirst,if=buff.enrage.down|rage<50
 actions.aoe+=/call_action_list,name=bladestorm
 actions.aoe+=/whirlwind
 actions.aoe+=/dragon_roar

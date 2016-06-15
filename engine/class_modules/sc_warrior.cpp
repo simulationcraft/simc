@@ -1148,7 +1148,7 @@ struct bloodthirst_t: public warrior_attack_t
     bloodthirst_heal( nullptr ),
     fresh_meat_crit_chance( p -> talents.endless_rage -> effectN( 1 ).percent() ),
     rage_gain( data().effectN( 3 ).resource( RESOURCE_RAGE ) ),
-    aoe_targets( p -> buff.meat_cleaver -> data().effectN( 1 ).base_value() )
+    aoe_targets( p -> spec.meat_cleaver -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() )
   {
     parse_options( options_str );
 
@@ -1164,7 +1164,7 @@ struct bloodthirst_t: public warrior_attack_t
 
   int n_targets() const override
   {
-    if ( p() -> buff.meat_cleaver -> up() )
+    if ( p() -> buff.meat_cleaver -> check() )
     {
       return aoe_targets + 1;
     }
@@ -2334,7 +2334,7 @@ struct rampage_attack_t: public warrior_attack_t
   int aoe_targets;
   rampage_attack_t( warrior_t* p, const spell_data_t* rampage, const std::string& name ):
     warrior_attack_t( name, p, rampage ),
-    aoe_targets( p -> buff.meat_cleaver -> data().effectN( 1 ).base_value() )
+    aoe_targets( p -> spec.meat_cleaver -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() )
   {
     dual = true;
     weapon_multiplier *= 1.0 + p -> artifact.unstoppable.percent();
@@ -2342,7 +2342,7 @@ struct rampage_attack_t: public warrior_attack_t
 
   int n_targets() const override
   {
-    if ( p() -> buff.meat_cleaver -> up() )
+    if ( p() -> buff.meat_cleaver -> check() )
     {
       return aoe_targets + 1;
     }

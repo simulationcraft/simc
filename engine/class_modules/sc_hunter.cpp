@@ -1159,7 +1159,7 @@ public:
     {
       const spell_data_t* data = hunter -> find_spell( bl -> spell_id );
       buffs.bestial_wrath -> buff_duration += timespan_t::from_seconds( data -> effectN( 1 ).base_value() );
-      double increase = data -> effectN( 2 ).average( bl -> item ) + data -> effectN( 3 ).average( bl -> item );
+      double increase = data -> effectN( 1 ).average( bl -> item );
       buffs.bestial_wrath -> default_value += increase / 100.0;
     }
 

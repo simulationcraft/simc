@@ -16,49 +16,46 @@ spec=subtlety
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=greater_draenic_agility_flask
-actions.precombat+=/food,type=salty_squid_roll
-actions.precombat+=/apply_poison,lethal=deadly
+actions.precombat+=/food,type=sleeper_sushi
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_agility
 actions.precombat+=/stealth
 actions.precombat+=/marked_for_death
+actions.precombat+=/symbols_of_death
 
 # Executed every time the actor is available.
 
 actions=potion,name=draenic_agility,if=buff.bloodlust.react|target.time_to_die<40
-actions+=/kick
 actions+=/blood_fury,if=buff.shadow_dance.up
 actions+=/berserking,if=buff.shadow_dance.up
-actions+=/arcane_torrent,if=energy<80&buff.shadow_dance.up
-actions+=/vanish,if=set_bonus.tier18_4pc=1&time<1
-actions+=/wait,sec=buff.subterfuge.remains-0.1,if=buff.subterfuge.remains>0.5&buff.subterfuge.remains<1.6&time>6
-actions+=/pool_resource,if=energy<110&cooldown.shadow_dance.remains<3.5
-actions+=/pool_resource,for_next=1,extra_amount=110
-actions+=/shadow_dance,if=energy>=110&buff.stealth.down|((buff.bloodlust.up|buff.deathly_shadows.up)&(dot.hemorrhage.ticking|dot.garrote.ticking|dot.rupture.ticking))
-actions+=/pool_resource,for_next=1,extra_amount=50
-actions+=/shadowmeld,if=talent.shadow_focus.enabled&energy>=45&energy<=75&combo_points<4-talent.anticipation.enabled&buff.stealth.down&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
-actions+=/pool_resource,for_next=1,extra_amount=50
-actions+=/vanish,if=talent.shadow_focus.enabled&energy>=45&energy<=75&combo_points<4-talent.anticipation.enabled&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
-actions+=/pool_resource,for_next=1,extra_amount=115
-actions+=/shadowmeld,if=talent.subterfuge.enabled&energy>=115&combo_points<4-talent.anticipation.enabled&buff.stealth.down&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
-actions+=/vanish,if=set_bonus.tier18_4pc=1&combo_points<3
-actions+=/pool_resource,for_next=1,extra_amount=115
-actions+=/vanish,if=talent.subterfuge.enabled&energy>=115&combo_points<4-talent.anticipation.enabled&buff.shadow_dance.down
-actions+=/marked_for_death,if=combo_points=0
-actions+=/run_action_list,name=finisher,if=combo_points=5&debuff.find_weakness.remains
-actions+=/run_action_list,name=finisher,if=combo_points=5
-actions+=/run_action_list,name=generator,if=combo_points<4
-
-# Combo point generators
-
-actions.generator=backstab,if=debuff.find_weakness.up|buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up
-actions.generator+=/backstab,if=energy.time_to_max<=gcd*2
+actions+=/arcane_torrent,if=energy<80
+actions+=/shadow_blades,if=!buff.shadow_blades.up
+actions+=/goremaws_bite,if=(combo_points.max-combo_points>=3&time<10)|(combo_points.max-combo_points>=4&energy<energy.max-10)
+actions+=/symbols_of_death,if=buff.symbols_of_death.remains<=10.5
+actions+=/pool_resource,for_next=1
+actions+=/shadowstrike,if=combo_points.max-combo_points>=2
+actions+=/pool_resource,for_next=1,extra_amount=60
+actions+=/vanish,if=energy>60&combo_points.max-combo_points>=2&buff.symbols_of_death.remains<=10.5
+actions+=/pool_resource,for_next=1,extra_amount=energy.max-(10+talent.master_of_shadows.enabled*60)
+actions+=/shadow_dance,if=combo_points.max-combo_points>=4&((cooldown.vanish.remains&buff.symbols_of_death.remains<=10.5&energy<energy.max-(10+talent.master_of_shadows.enabled*60))|cooldown.shadow_dance.charges>=2|target.time_to_die<20)
+actions+=/enveloping_shadows,if=buff.enveloping_shadows.remains<target.time_to_die&((buff.enveloping_shadows.remains<=10.8+talent.deeper_strategem.enabled*1.8&combo_points>=5+talent.deeper_strategem.enabled)|buff.enveloping_shadows.remains<=6)
+actions+=/marked_for_death,if=combo_points.max-combo_points>=4
+actions+=/run_action_list,name=finisher,if=combo_points>=5
+actions+=/run_action_list,name=generator,if=combo_points<5
 
 # Combo point finishers
 
-actions.finisher=death_from_above
-actions.finisher+=/eviscerate,if=(energy.time_to_max<=cooldown.death_from_above.remains+action.death_from_above.execute_time)|!talent.death_from_above.enabled
+actions.finisher=nightblade,if=!dot.nightblade.ticking|dot.nightblade.remains<(6+(2*combo_points))*0.3
+actions.finisher+=/nightblade,,cycle_targets=1,target_if=max:target.time_to_die,if=spell_targets.crimson_tempest<8&active_dot.nightblade<6&target.time_to_die>6&(!dot.nightblade.ticking|dot.nightblade.remains<(6+(2*combo_points))*0.3)
+actions.finisher+=/death_from_above
+actions.finisher+=/eviscerate
+
+# Combo point generators
+
+actions.generator=shuriken_storm,if=spell_targets.shuriken_storm>2
+actions.generator+=/gloomblade,if=energy.time_to_max<=1.3
+actions.generator+=/backstab,if=energy.time_to_max<=1.3
 
 head=felblade_hood,id=124263,bonus_id=567,upgrade=2
 neck=choker_of_the_great_betrayer,id=124210,bonus_id=567,upgrade=2,enchant_id=5320
