@@ -11223,8 +11223,6 @@ void player_t::adjust_global_cooldown( haste_type_e haste_type )
   timespan_t remains = readying ? readying -> remains() : ( gcd_ready - sim -> current_time() ),
              new_remains = remains * delta;
 
-  assert( remains > timespan_t::zero() && new_remains > timespan_t::zero() );
-
   // Don't bother processing too small (less than a millisecond) granularity changes
   if ( remains == new_remains )
   {
