@@ -3498,6 +3498,79 @@ public:
   }
 };
 
+// Assessors, currently a state assessor functionality is defined.
+namespace assessor
+{
+  // Assessor commands (continue evaluating, or stop to this assessor)
+  enum command { CONTINUE = 0U, STOP };
+
+  // Default assessor priorities
+  enum priority
+  {
+    RESOLVE           = 0U,      // Resolve updating
+    TARGET_MITIGATION = 100U,    // Target assessing (mitigation etc)
+    TARGET_DAMAGE     = 200U,    // Do damage to target (and related functionality)
+    LOG               = 300U,    // Logging (including debug output)
+    CALLBACKS         = 400U,    // Impact callbacks
+    LEECH             = 1000U,   // Leech processing
+  };
+
+  // State assessor callback type
+  typedef std::function<command(dmg_e, action_state_t*)> state_assessor_t;
+
+  // A simple entry that defines a state assessor
+  struct state_assessor_entry_t
+  {
+    uint16_t priority;
+    state_assessor_t assessor;
+
+    state_assessor_entry_t( uint16_t p, const state_assessor_t& a ) :
+      priority( p ), assessor( a )
+    { }
+  };
+
+  // State assessor functionality creates an ascending priority-based list of manipulators for state
+  // (action_state_t) objects. Each assessor is run on the state object, until assessor::STOP is
+  // encountered, or all the assessors have ran.
+  //
+  // There are a number of default assessors associated for outgoing damage state (the only place
+  // where this code is used for now), defined in player_t::init_assessors. Init_assessors is called
+  // late in the actor initialization order, and can take advantage of conditional registration
+  // based on talents, items, special effects, specialization and other actor-related state.
+  //
+  // An assessor function takes two parameters, dmg_e indicating the "damage type", and
+  // action_state_t pointer to the state being assessed. The state object can be manipulated by the
+  // function, but it may not be freed. The function must return one of priority enum values,
+  // typically priority::CONTINUE to continue the pipeline.
+  //
+  // Assessors are sorted to ascending priority order in player_t::init_finished.
+  //
+  struct state_assessor_pipeline_t
+  {
+    std::vector<state_assessor_entry_t> assessors;
+
+    void add( uint16_t p, const state_assessor_t& cb )
+    { assessors.push_back( state_assessor_entry_t( p, cb ) ); }
+
+    void sort()
+    {
+      range::sort( assessors, []( const state_assessor_entry_t& a, const state_assessor_entry_t& b )
+      { return a.priority < b.priority; } );
+    }
+
+    void execute( dmg_e type, action_state_t* state )
+    {
+      for ( const auto& a: assessors )
+      {
+        if ( a.assessor( type, state ) == STOP )
+        {
+          break;
+        }
+      }
+    }
+  };
+} // Namespace assessor ends
+
 // Player ===================================================================
 
 enum action_var_e
@@ -3908,7 +3981,6 @@ struct player_t : public actor_t
 
     // 6.2 trinket proxy buffs
     buff_t* naarus_discipline; // Priest-Discipline Boss 13 T18 trinket
-    buff_t* spirit_shift; // Soul Capacitor trinket
     buff_t* tyrants_immortality; // Tyrant's Decree trinket proc
     buff_t* tyrants_decree_driver; // Tyrant's Decree trinket driver
 
@@ -4040,6 +4112,7 @@ struct player_t : public actor_t
   virtual void init_stats();
   virtual void init_distance_targeting();
   virtual void init_absorb_priority();
+  virtual void init_assessors();
   virtual void register_callbacks();
 
   virtual bool create_actions();
@@ -4243,6 +4316,7 @@ struct player_t : public actor_t
   virtual void target_mitigation( school_e, dmg_e, action_state_t* );
   virtual void assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* );
   virtual void assess_damage_imminent( school_e, dmg_e, action_state_t* );
+  virtual void do_damage( action_state_t* );
   double       compute_incoming_damage( timespan_t = timespan_t::from_seconds( 5 ) );
   double       calculate_time_to_bloodlust();
 
@@ -4589,7 +4663,14 @@ public:
   // Child item functionality
   slot_e parent_item_slot( const item_t& item ) const;
   slot_e child_item_slot( const item_t& item ) const;
+
+  // Assessors
+
+  // Outgoing damage assessors, pipeline is invoked on all objects passing through
+  // action_t::assess_damage.
+  assessor::state_assessor_pipeline_t assessor_out_damage;
 };
+
 
 // Target Specific ==========================================================
 

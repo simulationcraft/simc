@@ -2067,6 +2067,55 @@ void item::legendary_ring( special_effect_t& effect )
       util::tokenize( name );
       buff = new legendary_ring_buff_t( effect, name, buffspell, actionspell );
     }
+
+    // Make legendary ring do it's accounting after target has been damaged
+    p -> assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, [ buff ]( dmg_e, action_state_t* state )
+    {
+      if ( ! buff -> up() )
+      {
+        return assessor::CONTINUE;
+      }
+
+      buff -> current_value += state -> result_amount;
+      if ( buff -> sim -> debug )
+      {
+        buff -> sim -> out_debug.printf( "%s %s stores %.2f damage from %s on %s, new stored amount = %.2f",
+                         buff -> player -> name(),
+                         buff -> name(),
+                         state -> result_amount, state -> action -> name(), state -> target -> name(),
+                         buff -> current_value );
+      }
+      return assessor::CONTINUE;
+    } );
+
+    // Generate functions for pets
+    for ( auto& pet : p -> pet_list )
+    {
+      if ( ! pet -> cast_pet() -> affects_wod_legendary_ring )
+      {
+        continue;
+      }
+
+      pet -> assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, [ buff ]( dmg_e, action_state_t* state )
+      {
+        if ( ! buff -> check() )
+        {
+          return assessor::CONTINUE;
+        }
+
+        buff -> current_value += state -> result_amount;
+        if ( buff -> sim -> debug )
+        {
+          buff -> sim -> out_debug.printf( "%s %s stores %.2f damage from %s %s on %s, new stored amount = %.2f",
+                           state -> action -> player -> name(),
+                           buff -> name(),
+                           state -> result_amount, buff -> player -> name(), state -> action -> name(),
+                           state -> target -> name(),
+                           buff -> current_value );
+        }
+        return assessor::CONTINUE;
+      } );
+    }
   }
   else // Tanks
   {
@@ -3202,7 +3251,6 @@ struct soul_capacitor_buff_t : public buff_t
     buff_t( buff_creator_t( player, "spirit_shift", player -> find_spell( 184293 ), effect.item ) ),
     explosion( new soul_capacitor_explosion_t( player, effect ) )
   {
-    player -> buffs.spirit_shift = this;
     player -> sim -> target_non_sleeping_list.register_callback( spirit_shift_explode_callback_t( this ) );
   }
 
@@ -3234,7 +3282,29 @@ void spirit_shift_explode_callback_t::operator()(player_t* player)
 
 void item::soul_capacitor( special_effect_t& effect )
 {
-  effect.custom_buff = new soul_capacitor_buff_t( effect.player, effect );
+  buff_t* b = effect.custom_buff = new soul_capacitor_buff_t( effect.player, effect );
+
+  // Perform Spirit Shift accounting just before the target actor is damaged. Spirit Shift will stop
+  // the assessing of the state object.
+  effect.player -> assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, [ b ]( dmg_e, action_state_t* state ) {
+    player_t* p = state -> action -> player;
+    if ( ! b -> up() || ! state -> target -> is_enemy() )
+    {
+      return assessor::CONTINUE;
+    }
+
+    if ( p -> sim -> debug )
+    {
+      p -> sim -> out_debug.printf( "%s spirit_shift accumulates %.0f damage.",
+        p -> name(), state -> result_amount );
+    }
+
+    b -> current_value += state -> result_amount;
+    // All damage is absorbed, so make the result be zero
+    state -> result_amount = 0;
+
+    return assessor::STOP;
+  } );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
