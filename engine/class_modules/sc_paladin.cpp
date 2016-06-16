@@ -13,7 +13,28 @@
     - BoK/BoW
     - Check mana/mana regen for ret, sword of light has been significantly changed to no longer have the mana regen stuff, or the bonus to healing, reduction in mana costs, etc.
   TODO (prot):
-    - everything, pretty much :(
+    - Avenger's Shield - artifact / legendary bonuses
+    - First Avenger (talent) - bonus to GC proc rate
+    - Bastion of Light (talent/spell)
+    - Light of the Protector
+    - Hammer of the Righteous - multiple fixes (see TODOs)
+    - Blessed Hammer (talent/spell)
+    - Judgment - multiple fixes (see TODOs)
+    - Hand of the Protector (talent)
+    - Divine Steed (spell)
+    - Knight Templar (talent)
+    - Aegis of Light (talent/spell)
+    - Judgment of Light (talent)
+    - Consecrated Ground (talent)
+    - Righteous Protector (talent)
+    - Seraphim (talent)
+    - Last Defender (talent)
+    - Improved Block (passive - is this still around?)
+    - Action Priority List
+    - Sample Profile (for testing)
+    - Final Stand??
+    - Blessing of Protection/Spellweaving??
+    - Retribution Aura??
 */
 #include "simulationcraft.hpp"
 
@@ -834,7 +855,9 @@ struct avengers_shield_t : public paladin_spell_t
       background = true;
     }
 
-    aoe = 3;
+    // TODO: add artifact and legendary bonuses
+    aoe = 3 + p -> talents.first_avenger -> effectN( 2 ).base_value();  //first_avenger adds -5 to num targets. 
+    aoe = std::max( aoe, 0 );
     may_crit     = true;
 
     // link needed for trigger_grand_crusader
@@ -851,6 +874,10 @@ struct avengers_shield_t : public paladin_spell_t
       p() -> buffs.faith_barricade -> trigger();
   }
 };
+
+// Bastion of Light
+
+// TODO: add Bastion of Light talent spell
 
 // Blessing of Might
 struct blessing_of_might_t : public paladin_heal_t
@@ -1696,6 +1723,14 @@ struct lay_on_hands_t : public paladin_heal_t
   }
 };
 
+// Light of the Protector ===================================================
+
+// TODO: Add Light of the Protector heal (prot)
+
+// Hand of the Protector
+
+// TODO: Add Hand of the Protector heal (prot)
+
 // Light's Hammer ===========================================================
 
 struct lights_hammer_damage_tick_t : public paladin_spell_t
@@ -2478,6 +2513,9 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     hotr_aoe = new hammer_of_the_righteous_aoe_t( p );
     // Attach AoE proc as a child
     add_child( hotr_aoe );
+
+    //TODO: remove CS cooldown link & supporting code
+    //TODO: set cooldown to zero if Consecrated Hammer talent active
   }
 
   void execute() override
@@ -2495,11 +2533,16 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       if ( hotr_aoe -> target != execute_state -> target )
         hotr_aoe -> target_cache.is_valid = false;
 
+      // TODO: if (standing in consecration) trigger AOE
       hotr_aoe -> target = execute_state -> target;
       hotr_aoe -> execute();
     }
   }
 };
+
+// Blessed Hammer ============================================================
+
+// TODO: add Blessed Hammer talent/ability
 
 // Blessing of Might proc
 // TODO: is this a melee attack?
@@ -2575,6 +2618,10 @@ struct judgment_t : public paladin_melee_attack_t
     {
       td( s -> target ) -> buffs.debuffs_judgment -> trigger();
     }
+
+    //TODO: Reduce SotR cooldown by 2s on normal hit, 4s on crit
+
+    //TODO: Add Grand Crusader trigger from Crusader's Judgment talent (T1).
 
     paladin_melee_attack_t::impact( s );
   }
