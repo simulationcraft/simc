@@ -670,9 +670,9 @@
   "SpellScaling": [
     { "data_type": "I", "field": "id_spell" },
     { "data_type": "H", "field": "max_scaling_ilevel" },
+    { "data_type": "b", "field": "id_class" },
     { "data_type": "b", "field": "min_scaling_level" },
-    { "data_type": "b", "field": "max_scaling_level" },
-    { "data_type": "b", "field": "id_class" }
+    { "data_type": "h", "field": "max_scaling_level" }
   ],
   "SpellShapeshift": [
     { "data_type": "I", "field": "id_spell" },
