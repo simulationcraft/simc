@@ -1768,7 +1768,7 @@ public:
   // Make sure the current combo strike ability is not the same as the previous ability used
   virtual bool compare_previous_combo_strikes( combo_strikes_e new_ability )
   {
-    return ( p() -> previous_combo_strike == new_ability );
+    return p() -> previous_combo_strike == new_ability;
   }
 
   // Used to trigger Windwalker's Combo Strike Mastery; Triggers prior to calculating damage
@@ -1790,7 +1790,6 @@ public:
       p() -> buff.combo_strikes -> trigger();
       if ( p() -> talent.hit_combo -> ok() )
         p() -> buff.hit_combo -> trigger();
-      p() -> previous_combo_strike = new_ability;
     }
     else
     {
@@ -1799,6 +1798,7 @@ public:
       p() -> buff.combo_master -> expire();
       p() -> tier19_4pc_melee_counter = 0;
     }
+    p() -> previous_combo_strike = new_ability;
   }
 
   virtual double cost() const
@@ -2379,7 +2379,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     if ( p -> artifact.tornado_kicks.rank() )
       add_child( rsk_tornado_kick );
 
-    if ( p -> furious_sun )
+    if ( p -> specialization() == MONK_WINDWALKER )
       add_child( rsk_proc );
   }
 
@@ -2407,14 +2407,13 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 
     // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
     // of the special effect.
-/*    if ( p() -> furious_sun )
+    if ( p() -> furious_sun )
     {
       double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item ) / 100.0;
 
       if ( rng().roll( proc_chance ) )
         rsk_proc -> execute();
     }
-*/
   }
 
   virtual void execute() override
@@ -2498,17 +2497,16 @@ struct blackout_kick_t: public monk_melee_attack_t
   {
     parse_options( options_str );
 
-    if ( p -> furious_sun )
-    {
-      rsk_proc = new rising_sun_kick_proc_t( p );
-    }
 
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     spell_power_mod.direct = 0.0;
     cooldown -> duration = data().cooldown();
     if ( p -> specialization() == MONK_WINDWALKER )
+    {
       cooldown -> duration *= 1 + p -> spec.combat_conditioning -> effectN( 2 ).percent(); // -100% for Windwalkers
+      rsk_proc = new rising_sun_kick_proc_t( p );
+    }
 
     sef_ability = SEF_BLACKOUT_KICK;
   }
@@ -2558,14 +2556,13 @@ struct blackout_kick_t: public monk_melee_attack_t
 
     // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
     // of the special effect.
-/*    if ( p() -> furious_sun )
+    if ( p() -> furious_sun )
     {
       double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item ) / 100.0;
 
       if ( rng().roll( proc_chance ) )
         rsk_proc -> execute();
     }
-*/
   }
 
   void execute() override
@@ -2930,8 +2927,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
 
     tick_action = new fists_of_fury_tick_t( p, "fists_of_fury_tick" );
 
-    if ( p -> furious_sun )
-      rsk_proc = new rising_sun_kick_proc_t( p );
+    rsk_proc = new rising_sun_kick_proc_t( p );
 
     if ( p -> artifact.crosswinds.rank() )
       add_child( crosswinds );
@@ -2989,14 +2985,13 @@ struct fists_of_fury_t: public monk_melee_attack_t
     monk_melee_attack_t::last_tick( dot );
     // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
     // of the special effect.
-/*    if ( p() -> furious_sun )
+    if ( p() -> furious_sun )
     {
       double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item ) / 100.0;
 
       if ( rng().roll( proc_chance ) )
         rsk_proc -> execute();
     }
-*/
   }
 };
 
@@ -6390,7 +6385,7 @@ void monk_t::create_buffs()
     .add_invalidate( CACHE_MASTERY );
 
   buff.combo_strikes = buff_creator_t( this, "combo_strikes" )
-    .duration( timespan_t::from_seconds( 0 ) ) // No duration limit
+    .duration( timespan_t::from_minutes( 60 ) )
     .quiet( true ) // In-game does not show this buff but I would like to use it for background stuff
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
@@ -6405,7 +6400,7 @@ void monk_t::create_buffs()
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.masterful_strikes = buff_creator_t(this, "masterful_strikes", passives.tier18_2pc_melee )
-    .duration( timespan_t::from_seconds( 0 ) ) // No duration limit
+    .duration( timespan_t::from_minutes( 60 ) )
     .default_value( passives.tier18_2pc_melee -> effectN( 1 ).base_value() 
       * ( specialization() == MONK_WINDWALKER ? mastery.combo_strikes -> effectN( 1 ).mastery_value() : 1 ) )
     .add_invalidate( CACHE_MASTERY );
@@ -6645,7 +6640,7 @@ double monk_t::composite_player_multiplier( school_e school ) const
 
   if ( buff.combo_strikes -> up() )
   {
-    m *= 1.0 + cache.mastery() * mastery.combo_strikes -> effectN( 1 ).mastery_value();
+    m *= 1.0 + ( composite_mastery() * 0.01 );
     m *= 1.0 + buff.hit_combo -> stack_value();
   }
 
@@ -6788,8 +6783,8 @@ double monk_t::composite_mastery() const
 {
   double m = player_t::composite_mastery();
 
-  if ( buff.masterful_strikes -> up())
-    m += buff.masterful_strikes -> value();
+  if ( buff.masterful_strikes -> up() )
+    m += buff.masterful_strikes -> value() * 100;
 
   return m;
 }
