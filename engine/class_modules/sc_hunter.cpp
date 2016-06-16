@@ -3200,10 +3200,7 @@ struct aimed_shot_t: public hunter_ranged_attack_t
   {
     parse_options( options_str );
 
-    if ( p -> buffs.lock_and_load -> up() )
-      base_execute_time *= 0.0;
-    else
-      base_execute_time *= 1.0 - ( p -> sets.set( HUNTER_MARKSMANSHIP, T18, B4 ) -> effectN( 2 ).percent() );
+    base_execute_time *= 1.0 - ( p -> sets.set( HUNTER_MARKSMANSHIP, T18, B4 ) -> effectN( 2 ).percent() );
 
     if ( p -> talents.trick_shot -> ok() )
     {
@@ -3260,6 +3257,10 @@ struct aimed_shot_t: public hunter_ranged_attack_t
   virtual void execute() override
   {
     p() -> no_steady_focus();
+
+    if ( p() -> buffs.lock_and_load -> up() )
+      base_execute_time *= 0.0;
+
     hunter_ranged_attack_t::execute();
     aimed_in_ca -> update( p() -> buffs.careful_aim -> check() != 0 );
     if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, PVP, B4 ) )
