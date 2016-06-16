@@ -2414,7 +2414,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
       if ( rng().roll( proc_chance ) )
         rsk_proc -> execute();
     }
-    */
+*/
   }
 
   virtual void execute() override
@@ -2565,7 +2565,7 @@ struct blackout_kick_t: public monk_melee_attack_t
       if ( rng().roll( proc_chance ) )
         rsk_proc -> execute();
     }
-    */
+*/
   }
 
   void execute() override
@@ -2996,7 +2996,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
       if ( rng().roll( proc_chance ) )
         rsk_proc -> execute();
     }
-    */
+*/
   }
 };
 
@@ -6390,7 +6390,7 @@ void monk_t::create_buffs()
     .add_invalidate( CACHE_MASTERY );
 
   buff.combo_strikes = buff_creator_t( this, "combo_strikes" )
-    .duration( timespan_t::from_minutes( 10 ) ) // Buff lasts longer than 10 minutes. Sticking it to 10 minutes
+    .duration( timespan_t::from_seconds( 0 ) ) // No duration limit
     .quiet( true ) // In-game does not show this buff but I would like to use it for background stuff
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
@@ -6405,14 +6405,14 @@ void monk_t::create_buffs()
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.masterful_strikes = buff_creator_t(this, "masterful_strikes", passives.tier18_2pc_melee )
-    .duration( timespan_t::from_minutes( 10 ) )
+    .duration( timespan_t::from_seconds( 0 ) ) // No duration limit
     .default_value( passives.tier18_2pc_melee -> effectN( 1 ).base_value() 
       * ( specialization() == MONK_WINDWALKER ? mastery.combo_strikes -> effectN( 1 ).mastery_value() : 1 ) )
     .add_invalidate( CACHE_MASTERY );
 
   buff.serenity = buff_creator_t( this, "serenity", talent.serenity )
-    .default_value( talent.serenity -> effectN( 2 ).percent() 
-    + ( artifact.spiritual_focus.rank() ? artifact.spiritual_focus.percent() : 0 ) )
+    .default_value( talent.serenity -> effectN( 2 ).percent() +
+      ( artifact.spiritual_focus.rank() ? artifact.spiritual_focus.percent() : 0 ) )
     .duration( talent.serenity -> duration() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
@@ -6421,8 +6421,8 @@ void monk_t::create_buffs()
                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                               .cd( timespan_t::zero() );
 
-    buff.transfer_the_power = buff_creator_t( this, "transfer_the_power", artifact.transfer_the_power.data().effectN( 1 ).trigger() )
-    // The proc gives 1%; even though tooltip and datamining say 5% per stack
+  buff.transfer_the_power = buff_creator_t( this, "transfer_the_power", artifact.transfer_the_power.data().effectN( 1 ).trigger() )
+  // The proc gives 1%; even though tooltip and datamining say 5% per stack
     .default_value( artifact.transfer_the_power.rank() ?  0.1 /* artifact.transfer_the_power.percent() */ : 0 ); 
 }
 
