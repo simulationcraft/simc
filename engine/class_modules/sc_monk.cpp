@@ -64,6 +64,7 @@ enum combo_strikes_e {
   CS_TIGER_PALM,
   CS_BLACKOUT_KICK,
   CS_RISING_SUN_KICK,
+  CS_RISING_SUN_KICK_TRINKET,
   CS_FISTS_OF_FURY,
   CS_SPINNING_CRANE_KICK,
   CS_RUSHING_JADE_WIND,
@@ -625,6 +626,8 @@ public:
   virtual double    composite_mastery_rating() const override;
   virtual double    composite_crit_avoidance() const override;
   virtual double    composite_rating_multiplier( rating_e rating ) const override;
+  virtual double    temporary_movement_modifier() const override;
+  virtual double    passive_movement_modifier() const override;
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() ) override;
   virtual void      create_pets() override;
   virtual void      init_spells() override;
@@ -1796,9 +1799,6 @@ public:
       p() -> buff.combo_master -> expire();
       p() -> tier19_4pc_melee_counter = 0;
     }
-
-    if ( p() -> buff.masterful_strikes -> up() )
-      p() -> buff.masterful_strikes -> decrement();
   }
 
   virtual double cost() const
@@ -2149,6 +2149,9 @@ struct tiger_palm_t: public monk_melee_attack_t
         if ( p() -> buff.bok_proc -> trigger() )
           p() -> proc.bok_proc -> occur();
 
+        if ( p() -> buff.masterful_strikes -> up() )
+          p() -> buff.masterful_strikes -> decrement();
+
         break;
       }
       case MONK_BREWMASTER:
@@ -2247,10 +2250,18 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
 
   virtual void execute() override
   {
+    // Trigger Combo Strikes
+    // registers even on a miss
+    combo_strikes_trigger( CS_RISING_SUN_KICK_TRINKET );
+
     monk_melee_attack_t::execute();
 
     if ( result_is_miss( execute_state -> result ) )
       return;
+
+    // TODO: This is a possible bug where it is removing a stack before adding 2 stacks
+    if ( p() -> buff.masterful_strikes -> up() )
+      p() -> buff.masterful_strikes -> decrement();
 
     // Activate A'Buraq's Trait
     if ( p() -> artifact.transfer_the_power.rank() )
@@ -2264,10 +2275,10 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    // Apply Mortal Wonds
     if ( result_is_hit( s -> result ) )
     {
-      s -> target -> debuffs.mortal_wounds -> trigger(); 
+      // Apply Mortal Wonds
+      s -> target -> debuffs.mortal_wounds -> trigger();
       p() -> trigger_cyclone_strikes( s );
     }
   }
@@ -2316,16 +2327,23 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
 
     if ( result_is_miss( execute_state -> result ) )
       return;
+
+    // TODO: This is a possible bug where it is removing a stack before adding 2 stacks
+    if ( p() -> buff.masterful_strikes -> up() )
+      p() -> buff.masterful_strikes -> decrement();
+
+    if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B2 ) )
+      p() -> buff.masterful_strikes -> trigger( ( int ) p() -> sets.set( MONK_WINDWALKER,T18, B2 ) -> effect_count() );
   }
 
   virtual void impact( action_state_t* s ) override
   {
     monk_melee_attack_t::impact( s );
 
-    // Apply Mortal Wonds
     if ( result_is_hit( s -> result ) )
     {
-      s -> target -> debuffs.mortal_wounds -> trigger();  
+      // Apply Mortal Wonds
+      s -> target -> debuffs.mortal_wounds -> trigger();
       p() -> trigger_cyclone_strikes( s );
     }
   }
@@ -2391,7 +2409,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     // of the special effect.
 /*    if ( p() -> furious_sun )
     {
-      double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item) / 100.0;
+      double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item ) / 100.0;
 
       if ( rng().roll( proc_chance ) )
         rsk_proc -> execute();
@@ -2420,6 +2438,9 @@ struct rising_sun_kick_t: public monk_melee_attack_t
       }
       case MONK_WINDWALKER:
       {
+        // TODO: This is a possible bug where it is removing a stack before adding 2 stacks
+        if ( p() -> buff.masterful_strikes -> up() )
+          p() -> buff.masterful_strikes -> decrement();
 
         // Activate A'Buraq's Trait
         if ( p() -> artifact.transfer_the_power.rank() )
@@ -2571,6 +2592,9 @@ struct blackout_kick_t: public monk_melee_attack_t
       }
       case MONK_WINDWALKER:
       {
+        if ( p() -> buff.masterful_strikes -> up() )
+          p() -> buff.masterful_strikes -> decrement();
+
         if ( p() -> artifact.transfer_the_power.rank() )
           p() -> buff.transfer_the_power -> trigger();
         break;
@@ -2739,6 +2763,9 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
         1.0,
         composite_dot_duration( execute_state ) );
 
+    if ( p() -> buff.masterful_strikes -> up() )
+       p() -> buff.masterful_strikes -> decrement();
+
     if ( p() -> artifact.transfer_the_power.rank() )
       p() -> buff.transfer_the_power -> trigger();
   }
@@ -2803,6 +2830,14 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     combo_strikes_trigger( CS_SPINNING_CRANE_KICK );
 
     monk_melee_attack_t::execute();
+  }
+
+  virtual void last_tick( dot_t* dot ) override
+  {
+    monk_melee_attack_t::last_tick( dot );
+
+    if ( p() -> buff.masterful_strikes -> up() )
+      p() -> buff.masterful_strikes -> decrement();
   }
 };
 
@@ -2943,8 +2978,6 @@ struct fists_of_fury_t: public monk_melee_attack_t
       // Since Serenity replaces Tigereye Brew, adjust Serenity's cooldown first.
       if ( p() -> talent.serenity )
         p() -> cooldown.serenity -> adjust( timespan_t::from_seconds( p() -> sets.set( MONK_WINDWALKER, T17, B2 ) -> effectN( 1 ).base_value() ) );
-//      else
-//        p() -> cooldown.s -> adjust( timespan_t::from_seconds( p() -> sets.set( MONK_WINDWALKER, T17, B2 ) -> effectN( 1 ).base_value() ) );
     }
 
     if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B4 ) )
@@ -2992,7 +3025,6 @@ struct whirling_dragon_punch_tick_t: public monk_melee_attack_t
 
 struct whirling_dragon_punch_t: public monk_melee_attack_t
 {
-//  rising_sun_kick_proc_t* rsk_proc;
 
   whirling_dragon_punch_t(monk_t* p, const std::string& options_str) :
     monk_melee_attack_t( "whirling_dragon_punch", p, p -> talent.whirling_dragon_punch )
@@ -3008,9 +3040,6 @@ struct whirling_dragon_punch_t: public monk_melee_attack_t
     spell_power_mod.direct = 0.0;
 
     tick_action = new whirling_dragon_punch_tick_t( "whirling_dragon_punch_tick", p, p -> passives.whirling_dragon_punch );
-
-//    if ( p -> furious_sun )
-//      rsk_proc = new rising_sun_kick_proc_t( p, p -> passives.rising_sun_kick_trinket );
   }
 
   virtual bool ready() override
@@ -3035,24 +3064,6 @@ struct whirling_dragon_punch_t: public monk_melee_attack_t
     combo_strikes_trigger( CS_WHIRLING_DRAGON_PUNCH );
 
     monk_melee_attack_t::execute();
-  }
-
-  virtual void last_tick(dot_t* dot) override
-  {
-    monk_melee_attack_t::last_tick(dot); 
-//    if ( p() -> furious_sun )
-//    {
-//      double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item) / 100.0;
-      // Hurricane Strike's proc chance is reduced in half
-//      proc_chance *= 0.50;
-
-      // Each chi spent has a chance of proccing a Rising Sun Kick. Plausible to see up to 3 RSK procs; though highly unlikely
-//      for ( int i = 1; i <= 3; i++ ) // TODO: Hard code the 3 for the time being until final word on how this works
-//      {
-//        if ( rng().roll( proc_chance ) )
-//          rsk_proc -> execute();
-//      }
-//    }
   }
 };
 
@@ -6813,6 +6824,24 @@ double monk_t::composite_armor_multiplier() const
   a += spec.stagger -> effectN( 14 ).percent();
 
   return a;
+}
+
+// monk_t::temporary_movement_modifier =====================================
+
+double monk_t::temporary_movement_modifier() const
+{
+  double active = player_t::temporary_movement_modifier();
+
+  return active;
+}
+
+// monk_t::passive_movement_modifier =======================================
+
+double monk_t::passive_movement_modifier() const
+{
+  double ms = player_t::passive_movement_modifier();
+
+  return ms;
 }
 
 // monk_t::invalidate_cache ==============================================
