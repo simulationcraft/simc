@@ -734,7 +734,7 @@ public:
 };
 
 // True Aim can only exist on one target at a time
-void trigger_true_aim( hunter_t* p, player_t* t )
+void trigger_true_aim( hunter_t* p, player_t* t, int stacks = 1 )
 {
   if ( p -> talents.true_aim -> ok() )
   {
@@ -756,8 +756,7 @@ void trigger_true_aim( hunter_t* p, player_t* t )
       }
     }
 
-    // Apply one stack to current target
-    td_curr -> debuffs.true_aim -> trigger();
+    td_curr -> debuffs.true_aim -> trigger( stacks );
   }
 }
 
@@ -3135,7 +3134,7 @@ struct legacy_of_the_windrunners_t: hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::impact( s );
 
-    trigger_true_aim( p(), s -> target );
+    trigger_true_aim( p(), s -> target, 6 );
   }
 
 
