@@ -336,6 +336,7 @@ struct rogue_t : public player_t
     const spell_data_t* fan_of_knives;
     const spell_data_t* fleet_footed;
     const spell_data_t* sprint;
+    const spell_data_t* relentless_strikes_energize;
     const spell_data_t* ruthlessness_cp_driver;
     const spell_data_t* ruthlessness_driver;
     const spell_data_t* ruthlessness_cp;
@@ -780,7 +781,9 @@ struct rogue_attack_t : public melee_attack_t
                                 data().affected_by( p() -> spec.shadow_blades -> effectN( 3 ) ) ||
                                 data().affected_by( p() -> spec.shadow_blades -> effectN( 4 ) );
     affected_by.ruthlessness = data().affected_by( p() -> spec.ruthlessness -> effectN( 1 ) );
-    affected_by.relentless_strikes = data().affected_by( p() -> spec.relentless_strikes -> effectN( 1 ) );
+    // TODO: This got nuked from spell data, sigh
+    //affected_by.relentless_strikes = data().affected_by( p() -> spec.relentless_strikes -> effectN( 1 ) );
+    affected_by.relentless_strikes = base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.deepening_shadows = data().affected_by( p() -> spec.deepening_shadows -> effectN( 1 ) );
     affected_by.ghostly_strike = data().affected_by( p() -> talent.ghostly_strike -> effectN( 5 ) );
     affected_by.vendetta = data().affected_by( p() -> spec.vendetta -> effectN( 1 ) );
@@ -2933,14 +2936,10 @@ struct run_through_t: public rogue_attack_t
     base_multiplier *= 1.0 + p -> artifact.fates_thirst.percent();
 
     // Tier 18 (WoD 6.2) Combat trinket effect
-    // TODO: Eviscerate actually changes spells to 185187
-    // TODO: Legion
     if ( p -> eviscerating_blade )
     {
       const spell_data_t* data = p -> find_spell( p -> eviscerating_blade -> spell_id );
       base_multiplier *= 1.0 + data -> effectN( 2 ).average( p -> eviscerating_blade -> item ) / 100.0;
-
-      range += data -> effectN( 1 ).base_value();
     }
   }
 
@@ -3250,18 +3249,6 @@ struct rupture_t : public rogue_attack_t
     may_crit = false;
     base_multiplier *= 1.0 + p -> artifact.gushing_wound.percent();
     base_crit += p -> artifact.serrated_edge.percent();
-  }
-
-  void execute() override
-  {
-    rogue_attack_t::execute();
-
-    if ( p() -> sets.has_set_bonus( ROGUE_SUBTLETY, T18, B4 ) )
-    {
-      timespan_t v = timespan_t::from_seconds( -p() -> sets.set( ROGUE_SUBTLETY, T18, B4 ) -> effectN( 1 ).base_value() );
-      v *= cast_state( execute_state ) -> cp;
-      p() -> cooldowns.vanish -> adjust( v, false );
-    }
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -3768,6 +3755,13 @@ struct death_from_above_t : public rogue_attack_t
         assert(0);
     }
     driver = new death_from_above_driver_t( p, finisher );
+  }
+
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    affected_by.relentless_strikes = false;
   }
 
   void adjust_attack( attack_t* attack, const timespan_t& oor_delay )
@@ -4719,13 +4713,13 @@ void rogue_t::trigger_relentless_strikes( const action_state_t* state )
   double grant_energy = 0;
   if ( proc_chance > 1 )
   {
-    grant_energy += spec.relentless_strikes -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_ENERGY );
+    grant_energy += spell.relentless_strikes_energize -> effectN( 1 ).resource( RESOURCE_ENERGY );
     proc_chance -= 1;
   }
 
   if ( rng().roll( proc_chance ) )
   {
-    grant_energy += spec.relentless_strikes -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_ENERGY );
+    grant_energy += spell.relentless_strikes_energize -> effectN( 1 ).resource( RESOURCE_ENERGY );
   }
 
   if ( grant_energy > 0 )
@@ -5797,6 +5791,7 @@ void rogue_t::init_spells()
   spell.shadow_focus        = find_spell( 112942 );
   spell.subterfuge          = find_spell( 115192 );
   spell.tier18_2pc_combat_ar= find_spell( 186286 );
+  spell.relentless_strikes_energize = find_spell( 98440 );
 
   // Talents
   talent.deeper_stratagem   = find_talent_spell( "Deeper Stratagem" );
