@@ -226,24 +226,27 @@ public:
 
     // Protection
     const spell_data_t* first_avenger;
-    const spell_data_t* day_of_reckoning;
-    const spell_data_t* consecrated_hammer;
+    const spell_data_t* bastion_of_light;
+    const spell_data_t* crusaders_judgment;
     const spell_data_t* holy_shield;
-    const spell_data_t* guardians_light;
-    const spell_data_t* last_defender;
-    const spell_data_t* blessing_of_negation;
+    const spell_data_t* blessed_hammer;
+    const spell_data_t* consecrated_hammer;
+    // skip T45
+    const spell_data_t* blessing_of_spellwarding;
     const spell_data_t* blessing_of_salvation;
     const spell_data_t* retribution_aura;
-    const spell_data_t* divine_bulwark;
-    const spell_data_t* crusaders_judgment;
-    const spell_data_t* blessed_hammer;
-    const spell_data_t* righteous_protector;
-    const spell_data_t* consecrated_ground;
-    // TODO: aegis of light has a positional requirement?
-    const spell_data_t* aegis_of_light;
+    const spell_data_t* hand_of_the_protector;
     const spell_data_t* knight_templar;
     const spell_data_t* final_stand;
-
+    // TODO: aegis of light has a positional requirement?
+    const spell_data_t* aegis_of_light;
+    // Judgment of Light seems to be a recopy from Holy. 
+    //const spell_data_t* judgment_of_light;
+    const spell_data_t* consecrated_ground;
+    const spell_data_t* righteous_protector;
+    const spell_data_t* seraphim;
+    const spell_data_t* last_defender;
+    
     // Retribution
     const spell_data_t* final_verdict;
     const spell_data_t* execution_sentence;
@@ -1777,8 +1780,9 @@ struct light_of_the_protector_t : public paladin_heal_t
   {
     parse_options( options_str );
 
-    may_crit = false; // TODO: test
+    may_crit = false;
     use_off_gcd = true;
+    target = p;
 
     // pct of missing health returned
     health_diff_pct = data().effectN( 1 ).percent();
@@ -1806,7 +1810,42 @@ struct light_of_the_protector_t : public paladin_heal_t
 
 // Hand of the Protector (Protection) =========================================
 
-// TODO: Add Hand of the Protector heal (prot)
+struct hand_of_the_protector_t : public paladin_heal_t
+{
+  double health_diff_pct;
+
+  hand_of_the_protector_t( paladin_t* p, const std::string& options_str )
+    : paladin_heal_t( "hand_of_the_protector", p, p -> find_talent_spell( "Hand of the Protector" ) ), health_diff_pct( 0 )
+  {
+    parse_options( options_str );
+
+    may_crit = false;
+    use_off_gcd = true;
+
+    // pct of missing health returned
+    health_diff_pct = data().effectN( 1 ).percent();
+  }
+
+  double action_multiplier() const override
+  {
+    double am = paladin_heal_t::action_multiplier();
+
+    if ( p() -> buffs.standing_in_consecraton -> check() )
+      am *= 1.0 + p() -> buffs.standing_in_consecraton -> data().effectN( 2 ).percent();
+
+    return am;
+  }
+
+  virtual void execute() override
+  {
+    // heals for 25% of missing health.
+    base_dd_min = base_dd_max = health_diff_pct * ( target -> resources.max[ RESOURCE_HEALTH ] - target -> resources.current[ RESOURCE_HEALTH ] );
+
+    paladin_heal_t::execute();
+  }
+
+};
+
 
 // Light's Hammer =============================================================
 
@@ -3187,6 +3226,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "guardian_of_ancient_kings" ) return new guardian_of_ancient_kings_t( this, options_str );
   if ( name == "judgment"                  ) return new judgment_t                 ( this, options_str );
   if ( name == "light_of_the_protector"    ) return new light_of_the_protector_t   ( this, options_str );
+  if ( name == "hand_of_the_protector"     ) return new hand_of_the_protector_t    ( this, options_str );
   if ( name == "light_of_dawn"             ) return new light_of_dawn_t            ( this, options_str );
   if ( name == "lights_hammer"             ) return new lights_hammer_t            ( this, options_str );
   if ( name == "rebuke"                    ) return new rebuke_t                   ( this, options_str );
@@ -3826,22 +3866,23 @@ void paladin_t::init_spells()
   talents.beacon_of_the_savior       = find_talent_spell( "Beacon of the Savior" );
 
   talents.first_avenger              = find_talent_spell( "First Avenger" );
-  talents.day_of_reckoning           = find_talent_spell( "Day of Reckoning" );
-  talents.consecrated_hammer         = find_talent_spell( "Consecrated Hammer" );
+  talents.bastion_of_light           = find_talent_spell( "Bastion of Light" );
+  talents.crusaders_judgment         = find_talent_spell( "Crusader's Judgment" );
   talents.holy_shield                = find_talent_spell( "Holy Shield" );
-  talents.guardians_light            = find_talent_spell( "Guardian's Light" );
-  talents.last_defender              = find_talent_spell( "Last Defender" );
-  talents.blessing_of_negation       = find_talent_spell( "Blessing of Negation" );
+  talents.blessed_hammer             = find_talent_spell( "Blessed Hammer" );
+  talents.consecrated_hammer         = find_talent_spell( "Consecrated Hammer" );
+  talents.blessing_of_spellwarding   = find_talent_spell( "Blessing of Spellwarding" );
   talents.blessing_of_salvation      = find_talent_spell( "Blessing of Salvation" );
   talents.retribution_aura           = find_talent_spell( "Retribution Aura" );
-  talents.divine_bulwark             = find_talent_spell( "Divine Bulwark" );
-  talents.crusaders_judgment         = find_talent_spell( "Crusader's Judgment" );
-  talents.blessed_hammer             = find_talent_spell( "Blessed Hammer" );
-  talents.righteous_protector        = find_talent_spell( "Righteous Protector" );
-  talents.consecrated_ground         = find_talent_spell( "Consecrated Ground" );
-  talents.aegis_of_light             = find_talent_spell( "Aegis of Light" );
+  talents.hand_of_the_protector      = find_talent_spell( "Hand of the Protector" );
   talents.knight_templar             = find_talent_spell( "Knight Templar" );
   talents.final_stand                = find_talent_spell( "Final Stand" );
+  talents.aegis_of_light             = find_talent_spell( "Aegis of Light" );
+  //talents.judgment_of_light          = find_talent_spell( "Judgment of Light" );
+  talents.consecrated_ground         = find_talent_spell( "Consecrated Ground" );
+  talents.righteous_protector        = find_talent_spell( "Righteous Protector" );
+  talents.seraphim                   = find_talent_spell( "Seraphim" );
+  talents.last_defender              = find_talent_spell( "Last Defender" );
 
   talents.final_verdict              = find_talent_spell( "Final Verdict" );
   talents.execution_sentence         = find_talent_spell( "Execution Sentence" );
