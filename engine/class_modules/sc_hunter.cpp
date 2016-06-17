@@ -4391,10 +4391,7 @@ struct dire_beast_t: public hunter_spell_t
     hunter_spell_t::execute();
     p() -> no_steady_focus();
 
-    if ( !p() -> buffs.dire_beast ->check() )
-      p() -> buffs.dire_beast -> trigger();
-    else
-      p() -> buffs.dire_beast_2 -> trigger();
+    p() -> buffs.dire_beast -> trigger();
 
     timespan_t t = timespan_t::from_seconds( p() -> specs.dire_beast -> effectN( 1 ).base_value() );
     p() -> cooldowns.bestial_wrath -> adjust( -t );
@@ -5285,18 +5282,14 @@ void hunter_t::create_buffs()
     buffs.aspect_of_the_wild -> buff_duration += artifacts.wilderness_expert.time_value();
   
   buffs.dire_beast = buff_creator_t( this, 120694, "dire_beast" )
-    .affects_regen(true)
-    .default_value( find_spell( 120694 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ) / find_spell( 120694 ) -> effectN( 1 ).period().total_seconds() );
-
-  buffs.dire_beast_2 = buff_creator_t( this, 120694, "dire_beast_2" )
-    .affects_regen(true)
+    .max_stack( 8 )
+    .stack_behavior( BUFF_STACK_ASYNCHRONOUS )
+    .period( timespan_t::zero() )
+    .tick_behavior( BUFF_TICK_NONE )
     .default_value( find_spell( 120694 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ) / find_spell( 120694 ) -> effectN( 1 ).period().total_seconds() );
 
   if ( talents.dire_stable -> ok() )
-  {
     buffs.dire_beast -> default_value += talents.dire_stable -> effectN( 1 ).base_value();
-    buffs.dire_beast_2 -> default_value += talents.dire_stable -> effectN( 1 ).base_value();
-  }
 
   buffs.bestial_wrath                = buff_creator_t( this, "bestial_wrath", specs.bestial_wrath )
     .duration( timespan_t::from_seconds( 15.0 ) )
@@ -5752,9 +5745,7 @@ void hunter_t::regen( timespan_t periodicity )
     resource_gain( RESOURCE_FOCUS, base * periodicity.total_seconds(), gains.steady_focus );
   }
   if ( buffs.dire_beast -> up() )
-    resource_gain( RESOURCE_FOCUS, buffs.dire_beast -> default_value * periodicity.total_seconds(), gains.dire_beast );
-  if ( buffs.dire_beast_2 -> up() )
-    resource_gain( RESOURCE_FOCUS, buffs.dire_beast_2 -> default_value * periodicity.total_seconds(), gains.dire_beast );
+    resource_gain( RESOURCE_FOCUS, buffs.dire_beast -> check_stack_value() * periodicity.total_seconds(), gains.dire_beast );
   if ( buffs.aspect_of_the_wild -> up() )
     resource_gain( RESOURCE_FOCUS, buffs.aspect_of_the_wild -> data().effectN( 2 ).resource( RESOURCE_FOCUS ) * periodicity.total_seconds(), gains.aspect_of_the_wild );
   if ( buffs.spitting_cobra -> up() )
