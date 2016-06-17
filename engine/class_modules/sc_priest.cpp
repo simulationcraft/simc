@@ -2670,11 +2670,16 @@ public:
     }
 
     cooldown -> hasted = true;
+  }
 
-    if (priest.active_items.mangazas_madness)
+  void init() override
+  {
+    if (priest.active_items.mangazas_madness && priest.cooldowns.mind_blast->charges == 1)
     {
       priest.cooldowns.mind_blast->charges += priest.active_items.mangazas_madness->driver()->effectN(1).base_value();
     }
+
+    priest_spell_t::init();
   }
 
   void execute() override
@@ -2961,8 +2966,6 @@ struct shadow_word_death_t final : public priest_spell_t
     {
       base_multiplier *= 1.0 + p.artifact.deaths_embrace.percent();
     }
-
-    cooldown -> hasted = true;
   }
   
   void impact(action_state_t* s) override
