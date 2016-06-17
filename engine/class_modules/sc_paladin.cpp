@@ -14,7 +14,6 @@
     - Check mana/mana regen for ret, sword of light has been significantly changed to no longer have the mana regen stuff, or the bonus to healing, reduction in mana costs, etc.
   TODO (prot):
     - Avenger's Shield - artifact / legendary bonuses
-    - Bastion of Light (talent/spell)
     - Light of the Protector (spell)
     - Blessed Hammer (talent/spell)
     - Hand of the Protector (talent)
@@ -883,11 +882,34 @@ struct avengers_shield_t : public paladin_spell_t
   }
 };
 
-// Bastion of Light
+// Bastion of Light ========================================================
 
-// TODO: add Bastion of Light talent spell
+struct bastion_of_light_t : public paladin_spell_t
+{
+  int charges;
 
-// Blessing of Might
+  bastion_of_light_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "bastion_of_light", p, p -> find_talent_spell( "Bastion of Light" ) )
+  {
+    charges = data().effectN( 1 ).base_value();
+
+    harmful = false;
+    use_off_gcd = true;
+  }
+
+  virtual void execute()
+  {
+    paladin_spell_t::execute();
+
+    for ( int i = 0; i < charges; i++ )
+      p() -> cooldowns.shield_of_the_righteous -> reset( false );
+  }
+
+};
+
+
+// Blessing of Might =======================================================
+
 struct blessing_of_might_t : public paladin_heal_t
 {
   blessing_of_might_t( paladin_t* p, const std::string& options_str )
@@ -3099,6 +3121,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "avengers_shield"           ) return new avengers_shield_t          ( this, options_str );
   if ( name == "avenging_wrath"            ) return new avenging_wrath_t           ( this, options_str );
   if ( name == "crusade"                   ) return new crusade_t                  ( this, options_str );
+  if ( name == "bastion_of_light"          ) return new bastion_of_light_t         ( this, options_str );
   if ( name == "blessing_of_might"         ) return new blessing_of_might_t        ( this, options_str );
   if ( name == "blinding_light"            ) return new blinding_light_t           ( this, options_str );
   if ( name == "beacon_of_light"           ) return new beacon_of_light_t          ( this, options_str );
