@@ -3674,6 +3674,14 @@ struct storm_earth_and_fire_t: public monk_spell_t
     sim -> target_non_sleeping_list.register_callback( sef_despawn_cb_t( this ) );
   }
 
+  bool ready() override
+  {
+    if ( p() -> talent.serenity -> ok() )
+      return false;
+
+    return monk_spell_t::ready();
+  }
+
   virtual void execute() override
   {
     monk_spell_t::execute();
