@@ -161,7 +161,8 @@ public:
     buff_t* instincts_of_the_cheetah;
     buff_t* moknathal_tactics;
     buff_t* spitting_cobra;
-    buff_t* t18_rapid_fire;
+    buff_t* t18_2p_rapid_fire;
+    buff_t* t18_2p_dire_longevity;
   } buffs;
 
   // Cooldowns
@@ -2747,6 +2748,9 @@ struct multi_shot_t: public hunter_ranged_attack_t
 
     if ( p() -> legendary.mm_feet )
       p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
+
+    if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T18, B2 ) )
+      p() -> buffs.t18_2p_dire_longevity -> trigger();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -2933,6 +2937,9 @@ struct cobra_shot_t: public hunter_ranged_attack_t
     // Cobra Shot has a chance to reset Kill Command when Bestial Wrath is up w/ Killer Cobra talent
     if ( p() -> talents.killer_cobra -> ok() && p() -> buffs.bestial_wrath -> up() && rng().roll( p() -> talents.killer_cobra -> effectN( 1 ).percent() ) )
       p() -> cooldowns.kill_command -> reset( true );
+
+    if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T18, B2 ) )
+      p() -> buffs.t18_2p_dire_longevity -> trigger();
   }
 
   virtual double composite_target_crit( player_t* t ) const override
@@ -3467,7 +3474,7 @@ struct marked_shot_t: public hunter_ranged_attack_t
         trigger_piercing_shots( s );
 
       if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T18, B2 ) )
-        p() -> buffs.t18_rapid_fire -> trigger();
+        p() -> buffs.t18_2p_rapid_fire -> trigger();
     }
   }
 
@@ -4398,7 +4405,11 @@ struct dire_beast_t: public hunter_spell_t
     hunter_spell_t::execute();
     p() -> no_steady_focus();
 
-    p() -> buffs.dire_beast -> trigger();
+    timespan_t duration = p() -> buffs.dire_beast -> buff_duration + timespan_t::from_millis( p() -> buffs.t18_2p_dire_longevity -> check_stack_value() );
+
+    p() -> buffs.dire_beast -> trigger( 1, p() -> buffs.dire_beast -> DEFAULT_VALUE(), -1.0, duration );
+
+    p() -> buffs.t18_2p_dire_longevity -> expire();
 
     timespan_t t = timespan_t::from_seconds( p() -> specs.dire_beast -> effectN( 1 ).base_value() );
     p() -> cooldowns.bestial_wrath -> adjust( -t );
@@ -4424,7 +4435,7 @@ struct dire_beast_t: public hunter_spell_t
     // isn't important and combat log testing shows some variation in
     // attack speeds.  This is not quite perfect but more accurate
     // than plateaus.
-    const timespan_t base_duration = timespan_t::from_seconds( 8.0 );
+    const timespan_t base_duration = duration;
     const timespan_t swing_time = beast -> main_hand_weapon.swing_time * beast -> composite_melee_speed();
     double partial_attacks_per_summon = base_duration / swing_time;
     double base_attacks_per_summon = floor( partial_attacks_per_summon + 0.5 ); // 8.4 -> 7, 8.5 -> 8, 8.6 -> 8, etc
@@ -4432,9 +4443,9 @@ struct dire_beast_t: public hunter_spell_t
     if ( rng().roll( partial_attacks_per_summon - base_attacks_per_summon + 0.5 ) )
       base_attacks_per_summon += 1;
 
-    timespan_t duration = base_attacks_per_summon * swing_time;
+    timespan_t summon_duration = base_attacks_per_summon * swing_time;
     assert( beast );
-    beast -> summon( duration );
+    beast -> summon( summon_duration );
   }
 
   virtual bool ready() override
@@ -5332,7 +5343,7 @@ void hunter_t::create_buffs()
 
   buffs.trueshot -> cooldown -> duration = timespan_t::zero();
 
-  buffs.t18_rapid_fire              = buff_creator_t( this, 188202, "rapid_fire" )
+  buffs.t18_2p_rapid_fire              = buff_creator_t( this, 188202, "rapid_fire" )
     .add_invalidate( CACHE_HASTE )
     .chance( sets.set( HUNTER_MARKSMANSHIP, T18, B2 ) -> proc_chance() )
     .default_value( find_spell( 188202 ) -> effectN( 1 ).percent() );
@@ -5385,6 +5396,10 @@ void hunter_t::create_buffs()
   buffs.spitting_cobra = buff_creator_t( this, 194407, "spitting_cobra" )
     .affects_regen( true )
     .default_value( find_spell( 194407 ) -> effectN( 2 ).resource( RESOURCE_FOCUS ) );
+
+  buffs.t18_2p_dire_longevity = buff_creator_t( this, 215911, "dire_longevity" )
+    .default_value( find_spell( 215911 ) -> effectN( 1 ).base_value() )
+    .max_stack( 8 );
 }
 
 // hunter_t::init_gains =====================================================
@@ -5822,8 +5837,8 @@ double hunter_t::composite_melee_haste() const
   if ( buffs.trueshot -> check() )
     h *= 1.0 / ( 1.0 + buffs.trueshot -> default_value );
 
-  if ( buffs.t18_rapid_fire -> check() )
-    h *= 1.0 / ( 1.0 + buffs.t18_rapid_fire -> default_value );
+  if ( buffs.t18_2p_rapid_fire -> check() )
+    h *= 1.0 / ( 1.0 + buffs.t18_2p_rapid_fire -> default_value );
 
   return h;
 }
@@ -5840,8 +5855,8 @@ double hunter_t::composite_spell_haste() const
   if ( buffs.trueshot -> check() )
     h *= 1.0 / ( 1.0 + buffs.trueshot -> default_value );
 
-  if ( buffs.t18_rapid_fire -> check() )
-    h *= 1.0 / ( 1.0 + buffs.t18_rapid_fire -> default_value );
+  if ( buffs.t18_2p_rapid_fire -> check() )
+    h *= 1.0 / ( 1.0 + buffs.t18_2p_rapid_fire -> default_value );
 
   return h;
 }
