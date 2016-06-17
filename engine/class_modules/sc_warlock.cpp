@@ -9,11 +9,11 @@
 //
 // TODO:
 // Wild imps have a 14 sec duration on 104317, expire after 12 UNLESS implosion.
-// Affliction is very...very broken. I think it's related to service.
 // Double check all up()/check() usage.
 // Remove manatap/soul harvest pet multiplier bugs when they get fixed.
 // Check resource generation execute/impact and hit requirement
 // Report which spells triggered soul conduit
+// Move imp spawn to hog impact
 //
 // Affliction -
 // Haunt reset
@@ -2441,7 +2441,7 @@ struct hand_of_guldan_t: public warlock_spell_t
 
   virtual timespan_t travel_time() const override
   {
-    return timespan_t::from_seconds( 1.5 );
+    return timespan_t::from_millis( 700 );
   }
 
   virtual bool ready() override
