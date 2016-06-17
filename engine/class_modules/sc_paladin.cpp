@@ -170,6 +170,9 @@ public:
     const spell_data_t* plate_specialization;
     const spell_data_t* riposte;   // hidden
     const spell_data_t* paladin;
+    const spell_data_t* retribution_paladin;
+    const spell_data_t* protection_paladin;
+    const spell_data_t* holy_paladin;
     const spell_data_t* sanctuary;
     const spell_data_t* sword_of_light;
     const spell_data_t* sword_of_light_value;
@@ -2599,16 +2602,38 @@ struct judgment_t : public paladin_melee_attack_t
 
     // TODO: this is a hack; figure out what's really going on here.
     if ( ( p -> specialization() == PALADIN_RETRIBUTION ) )
-      base_costs[ RESOURCE_MANA ] = 0;
-
-    base_multiplier *= 1.0 + p -> artifact.highlords_judgment.percent();
-
-    if ( p -> talents.greater_judgment -> ok() )
     {
-      cooldown -> duration += timespan_t::from_millis( p -> talents.greater_judgment -> effectN( 1 ).base_value() );
-      aoe = 1 + p -> talents.greater_judgment -> effectN( 2 ).base_value();
+      base_costs[ RESOURCE_MANA ] = 0;
       base_add_multiplier = data().effectN( 1 ).chain_multiplier();
+      aoe = 1 + p -> passives.retribution_paladin -> effectN( 3 ).base_value();
+      base_multiplier *= 1.0 + p -> artifact.highlords_judgment.percent();
+
+      if ( p -> talents.greater_judgment -> ok() )
+      {
+        aoe += p -> talents.greater_judgment -> effectN( 2 ).base_value();
+      }
     }
+    else if ( ( p -> specialization() == PALADIN_PROTECTION ) )
+    {
+      base_multiplier *= 1.0 + p -> passives.protection_paladin -> effectN( 6 ).percent();
+    }
+  }
+
+  virtual double composite_target_crit( player_t* t ) const override
+  {
+    double cc = paladin_melee_attack_t::composite_target_crit( t );
+
+    if ( p() -> talents.greater_judgment -> ok() )
+    {
+      double threshold = p() -> talents.greater_judgment -> effectN( 1 ).base_value();
+      if ( ( t -> health_percentage() > threshold ) )
+      {
+        // TODO: is this correct? where does this come from?
+        return 1.0;
+      }
+    }
+
+    return cc;
   }
 
   // Special things that happen when Judgment damages target
@@ -3763,6 +3788,10 @@ void paladin_t::init_spells()
   passives.boundless_conviction   = find_spell( 115675 ); // find_spell fails here
   passives.plate_specialization   = find_specialization_spell( "Plate Specialization" );
   passives.paladin                = find_spell( 137026 );  // find_spell fails here
+  passives.retribution_paladin    = find_spell( 137027 );
+  passives.protection_paladin     = find_spell( 137028 );
+  passives.holy_paladin           = find_spell( 137029 );
+
 
   // Holy Passives
   passives.holy_insight           = find_specialization_spell( "Holy Insight" );
