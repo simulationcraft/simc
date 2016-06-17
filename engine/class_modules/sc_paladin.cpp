@@ -2615,7 +2615,11 @@ struct judgment_t : public paladin_melee_attack_t
     }
     else if ( ( p -> specialization() == PALADIN_PROTECTION ) )
     {
-      base_multiplier *= 1.0 + p -> passives.protection_paladin -> effectN( 6 ).percent();
+      base_multiplier *= 1.0 + p -> passives.protection_paladin -> effectN( 3 ).percent();
+    }
+    else if ( ( p -> specialization() == PALADIN_HOLY ) )
+    {
+      base_multiplier *= 1.0 + p -> passives.holy_paladin -> effectN( 6 ).percent();
     }
   }
 
