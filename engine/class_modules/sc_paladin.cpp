@@ -16,7 +16,6 @@
     - Avenger's Shield - artifact / legendary bonuses
     - Bastion of Light (talent/spell)
     - Light of the Protector
-    - Hammer of the Righteous - multiple fixes (see TODOs)
     - Blessed Hammer (talent/spell)
     - Judgment - multiple fixes (see TODOs)
     - Hand of the Protector (talent)
@@ -2529,15 +2528,17 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     : paladin_melee_attack_t( "hammer_of_the_righteous", p, p -> find_class_spell( "Hammer of the Righteous" ), true )
   {
     parse_options( options_str );
-    // link with Crusader Strike's cooldown
-    cooldown = p -> get_cooldown( "crusader_strike" );
-    cooldown -> duration = data().cooldown();
+
+    // eliminate cooldown and infinite charges if consecrated hammer is taken
+    if ( p -> talents.consecrated_hammer -> ok() )
+    {
+      cooldown -> charges = 1;
+      cooldown -> duration = timespan_t::zero();
+    }
+
     hotr_aoe = new hammer_of_the_righteous_aoe_t( p );
     // Attach AoE proc as a child
     add_child( hotr_aoe );
-
-    //TODO: remove CS cooldown link & supporting code
-    //TODO: set cooldown to zero if Consecrated Hammer talent active
   }
 
   void execute() override
