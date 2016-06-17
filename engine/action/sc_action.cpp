@@ -2816,7 +2816,11 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
   if ( splits.size() == 3 && splits[ 0 ] == "dot" )
   {
-    return target -> get_dot( splits[ 1 ], player ) -> create_expression( this, splits[ 2 ], true );
+    auto expr = target -> get_dot( splits[ 1 ], player ) -> create_expression( this, splits[ 2 ], true );
+    if ( expr )
+    {
+      return expr;
+    }
   }
   if ( splits.size() == 3 && splits[ 0 ] == "enemy_dot" )
   {
