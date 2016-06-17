@@ -2222,7 +2222,8 @@ struct zeal_t : public holy_power_generator_t
   void execute() override
   {
     holy_power_generator_t::execute();
-    retribution_trinket_trigger();
+    if ( ! ( p() -> bugs ) )
+      retribution_trinket_trigger();
 
     // Special things that happen when Zeal connects
     // Apply Zeal stacks
