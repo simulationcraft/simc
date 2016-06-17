@@ -67,6 +67,7 @@ enum combo_strikes_e {
   CS_RISING_SUN_KICK_TRINKET,
   CS_FISTS_OF_FURY,
   CS_SPINNING_CRANE_KICK,
+  CS_TOUCH_OF_DEATH,
   CS_RUSHING_JADE_WIND,
   CS_WHIRLING_DRAGON_PUNCH,
   CS_STRIKE_OF_THE_WINDLORD,
@@ -3373,6 +3374,19 @@ struct touch_of_death_t: public monk_spell_t
     return p() -> resources.max[RESOURCE_HEALTH];
   }
 
+  virtual double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    if ( p() -> buff.combo_strikes -> up() )
+    {
+      am *= 1.0 + ( p() -> composite_mastery() * 0.01 );
+      am *= 1.0 + p() -> buff.hit_combo -> stack_value();
+    }
+
+    return am;
+  }
+
   void last_tick( dot_t* dot ) override
   {
     monk_spell_t::last_tick( dot );
@@ -3387,6 +3401,10 @@ struct touch_of_death_t: public monk_spell_t
 
   virtual void execute() override
   {
+    // Trigger Combo Strikes
+    // registers even on a miss
+    combo_strikes_trigger( CS_TOUCH_OF_DEATH );
+
     monk_spell_t::execute();
 
     p() -> gale_burst_touch_of_death_bonus = 0.0;
