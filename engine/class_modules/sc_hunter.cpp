@@ -58,6 +58,7 @@ struct hunter_td_t: public actor_target_data_t
     buff_t* vulnerable;
     buff_t* true_aim;
     buff_t* lacerate;
+    buff_t* t18_2pc_open_wounds;
   } debuffs;
 
   struct dots_t
@@ -109,6 +110,8 @@ public:
   const special_effect_t* beastlord;
   const special_effect_t* longview;
   const special_effect_t* blackness;
+
+  double blackness_multiplier;
 
   struct legendary_t
   {
@@ -177,6 +180,7 @@ public:
     cooldown_t* dire_frenzy;
     cooldown_t* kill_command;
     cooldown_t* mongoose_bite;
+    cooldown_t* lacerate;
   } cooldowns;
 
   // Custom Parameters
@@ -208,6 +212,8 @@ public:
     proc_t* tier18_2pc_mm_wasted_proc;
     proc_t* tier18_2pc_mm_wasted_overwrite;
     proc_t* hunting_companion;
+    proc_t* mortal_wounds;
+    proc_t* t18_4pc_sv;
   } procs;
 
   real_ppm_t* ppm_hunters_mark;
@@ -424,6 +430,7 @@ public:
     beastlord( nullptr ),
     longview( nullptr ),
     blackness( nullptr ),
+    blackness_multiplier(),
     legendary( legendary_t() ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
@@ -452,6 +459,7 @@ public:
     cooldowns.dire_frenzy     = get_cooldown( "dire_frenzy" );
     cooldowns.kill_command    = get_cooldown( "kill_command" );
     cooldowns.mongoose_bite   = get_cooldown( "mongoose_bite" );
+    cooldowns.lacerate        = get_cooldown( "lacerate" );
 
     summon_pet_str = "";
     base.distance = 40;
@@ -466,6 +474,7 @@ public:
   virtual void      init_spells() override;
   virtual void      init_base_stats() override;
   virtual void      create_buffs() override;
+  virtual bool      init_special_effects() override;
   virtual void      init_gains() override;
   virtual void      init_position() override;
   virtual void      init_procs() override;
@@ -732,6 +741,16 @@ public:
   {
     if ( p() -> talents.steady_focus -> ok() )
       p() -> buffs.pre_steady_focus -> expire();
+  }
+
+  virtual double composite_target_da_multiplier( player_t* t ) const override
+  {
+    double d = ab::composite_target_da_multiplier( t );
+
+    if ( school == SCHOOL_PHYSICAL )
+      d *= 1.0 + td( t ) -> debuffs.t18_2pc_open_wounds -> value();
+
+    return d;
   }
 };
 
@@ -1126,6 +1145,8 @@ public:
       buffs.bestial_wrath -> default_value += o() -> talents.bestial_fury -> effectN( 1 ).percent();
     if ( o() -> artifacts.unleash_the_beast.rank() )
       buffs.bestial_wrath -> default_value += o() -> artifacts.unleash_the_beast.percent();
+    if ( o() -> beastlord )
+      buffs.bestial_wrath -> buff_duration *= 1.0 + find_spell( o() -> beastlord -> spell_id ) -> effectN( 1 ).average( o() -> beastlord -> item ) / 100.0;
 
     // Use buff to indicate whether the pet is a stampede summon
     buffs.stampede          = buff_creator_t( this, 130201, "stampede" )
@@ -1153,22 +1174,6 @@ public:
     buffs.tier18_4pc_bm = buff_creator_t( this, "tier18_4pc_bm" )
       .default_value( owner -> find_spell( 178875 ) -> effectN( 2 ).percent() )
       .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  }
-
-  virtual bool init_special_effects() override
-  {
-    bool ret = base_t::init_special_effects();
-    hunter_t* hunter = debug_cast<hunter_t*>( owner );
-    const special_effect_t* bl = hunter -> beastlord;
-    if ( bl )
-    {
-      const spell_data_t* data = hunter -> find_spell( bl -> spell_id );
-      buffs.bestial_wrath -> buff_duration += timespan_t::from_seconds( data -> effectN( 1 ).base_value() );
-      double increase = data -> effectN( 1 ).average( bl -> item );
-      buffs.bestial_wrath -> default_value += increase / 100.0;
-    }
-
-    return ret;
   }
 
   virtual void init_gains() override
@@ -2330,6 +2335,8 @@ struct hati_t: public hunter_secondary_pet_t
       buffs.bestial_wrath -> default_value += o() -> talents.bestial_fury -> effectN( 1 ).percent();
     if ( o() -> artifacts.unleash_the_beast.rank() )
       buffs.bestial_wrath -> default_value += o() -> artifacts.unleash_the_beast.percent();
+    if ( o() -> beastlord )
+      buffs.bestial_wrath -> buff_duration *= 1.0 + find_spell( o() -> beastlord -> spell_id ) -> effectN( 1 ).average( o() -> beastlord -> item ) / 100.0;
 
     double cleave_value     = o() -> find_specialization_spell( "Beast Cleave" ) -> effectN( 1 ).percent();
     if ( o() -> artifacts.furious_swipes.rank() )
@@ -3784,6 +3791,12 @@ struct mongoose_bite_t: hunter_melee_attack_t
     hunter_melee_attack_t::execute();
 
     p() -> buffs.mongoose_fury -> trigger();
+
+    if ( p() -> sets.has_set_bonus( HUNTER_SURVIVAL, T18, B4 ) && rng().roll( p() -> sets.set( HUNTER_SURVIVAL, T18, B4 ) -> proc_chance() ) )
+    {
+      p() -> cooldowns.lacerate -> reset( true );
+      p() -> procs.t18_4pc_sv -> occur();
+    }
   }
 
   virtual double action_multiplier() const override
@@ -3795,6 +3808,9 @@ struct mongoose_bite_t: hunter_melee_attack_t
 
     if ( p() -> artifacts.sharpened_fang.rank() )
       am *= 1.0 + p() -> artifacts.sharpened_fang.percent();
+
+    if ( p() -> blackness )
+      am *= 1.0 + p() -> blackness_multiplier;
 
     return am;
   }
@@ -3898,7 +3914,7 @@ struct lacerate_t: public hunter_melee_attack_t
     if ( p() -> talents.mortal_wounds -> ok() && rng().roll( p() -> talents.mortal_wounds -> proc_chance() ) )
     {
       p() -> cooldowns.mongoose_bite -> reset( true );
-      p() -> procs.hunting_companion -> occur();
+      p() -> procs.mortal_wounds -> occur();
     }
   }
 
@@ -3907,6 +3923,9 @@ struct lacerate_t: public hunter_melee_attack_t
     hunter_melee_attack_t::impact( s );
 
     td( s -> target ) -> debuffs.lacerate -> trigger();
+
+    if ( p() -> sets.has_set_bonus( HUNTER_SURVIVAL, T18, B2 ) )
+      td( s -> target ) -> debuffs.t18_2pc_open_wounds -> trigger();
   }
 };
 
@@ -4939,6 +4958,10 @@ dots( dots_t() )
 
   debuffs.lacerate          = buff_creator_t( *this, "lacerate" )
                                 .spell( p -> find_specialization_spell( "Lacerate" ) );
+
+  debuffs.t18_2pc_open_wounds = buff_creator_t( *this, "open_wounds" )
+                                .spell( p -> find_spell( 188400 ) )
+                                .default_value( p -> find_spell( 188400 ) -> effectN( 1 ).percent() );
 }
  
 
@@ -5402,6 +5425,19 @@ void hunter_t::create_buffs()
     .max_stack( 8 );
 }
 
+bool hunter_t::init_special_effects()
+{
+  bool ret = player_t::init_special_effects();
+
+  if ( beastlord )
+    buffs.bestial_wrath -> buff_duration *= 1.0 + find_spell( beastlord -> spell_id ) -> effectN( 1 ).average( beastlord -> item ) / 100.0;
+
+  if ( blackness ) 
+    blackness_multiplier = find_spell( blackness -> spell_id ) -> effectN( 1 ).average( blackness -> item ) / 100.0;
+
+  return ret;
+}
+
 // hunter_t::init_gains =====================================================
 
 void hunter_t::init_gains()
@@ -5456,6 +5492,8 @@ void hunter_t::init_procs()
   procs.tier18_2pc_mm_wasted_proc    = get_proc( "tier18_2pc_mm_wasted_proc" );
   procs.tier18_2pc_mm_wasted_overwrite     = get_proc ("tier18_2pc_mm_wasted_overwrite");
   procs.hunting_companion            = get_proc( "hunting_companion" );
+  procs.mortal_wounds                = get_proc( "mortal_wounds" );
+  procs.t18_4pc_sv                   = get_proc( "t18_4pc_sv" );
 }
 
 // hunter_t::init_rng =======================================================
