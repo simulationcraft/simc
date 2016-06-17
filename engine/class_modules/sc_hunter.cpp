@@ -4420,9 +4420,9 @@ struct dire_beast_t: public hunter_spell_t
     const timespan_t base_duration = timespan_t::from_seconds( 8.0 );
     const timespan_t swing_time = beast -> main_hand_weapon.swing_time * beast -> composite_melee_speed();
     double partial_attacks_per_summon = base_duration / swing_time;
-    double base_attacks_per_summon = floor( partial_attacks_per_summon - 0.5 ); // 8.4 -> 7, 8.5 -> 8, 8.6 -> 8, etc
+    double base_attacks_per_summon = floor( partial_attacks_per_summon + 0.5 ); // 8.4 -> 7, 8.5 -> 8, 8.6 -> 8, etc
 
-    if ( rng().roll( partial_attacks_per_summon - base_attacks_per_summon - 0.5 ) )
+    if ( rng().roll( partial_attacks_per_summon - base_attacks_per_summon + 0.5 ) )
       base_attacks_per_summon += 1;
 
     timespan_t duration = base_attacks_per_summon * swing_time;
