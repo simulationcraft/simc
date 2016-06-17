@@ -161,6 +161,7 @@ public:
     buff_t* instincts_of_the_cheetah;
     buff_t* moknathal_tactics;
     buff_t* spitting_cobra;
+    buff_t* t18_rapid_fire;
   } buffs;
 
   // Cooldowns
@@ -3460,8 +3461,14 @@ struct marked_shot_t: public hunter_ranged_attack_t
       td -> debuffs.hunters_mark -> expire();
     }
 
-    if ( p() -> buffs.careful_aim -> check() && s -> result == RESULT_CRIT )
-      trigger_piercing_shots( s );
+    if ( s -> result == RESULT_CRIT )
+    {
+      if ( p() -> buffs.careful_aim -> check() )
+        trigger_piercing_shots( s );
+
+      if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T18, B2 ) )
+        p() -> buffs.t18_rapid_fire -> trigger();
+    }
   }
 
   // Only schedule the attack if a valid target
@@ -5321,9 +5328,14 @@ void hunter_t::create_buffs()
   buffs.trick_shot                  = buff_creator_t( this, 227272, "trick_shot" ).default_value( find_spell( 227272 ) -> effectN( 1 ).percent() );
 
   buffs.trueshot                    = buff_creator_t( this, "trueshot", specs.trueshot )
-    .add_invalidate( CACHE_ATTACK_HASTE );
+    .add_invalidate( CACHE_HASTE );
 
   buffs.trueshot -> cooldown -> duration = timespan_t::zero();
+
+  buffs.t18_rapid_fire              = buff_creator_t( this, 188202, "rapid_fire" )
+    .add_invalidate( CACHE_HASTE )
+    .chance( sets.set( HUNTER_MARKSMANSHIP, T18, B2 ) -> proc_chance() )
+    .default_value( find_spell( 188202 ) -> effectN( 1 ).percent() );
 
   buffs.volley                      = buff_creator_t( this, "volley", talents.volley );
 
@@ -5806,6 +5818,12 @@ double hunter_t::composite_melee_haste() const
 
   if ( buffs.instincts_of_the_raptor -> check() )
     h *= 1.0 / ( 1.0 + buffs.instincts_of_the_raptor -> default_value );
+  
+  if ( buffs.trueshot -> check() )
+    h *= 1.0 / ( 1.0 + buffs.trueshot -> default_value );
+
+  if ( buffs.t18_rapid_fire -> check() )
+    h *= 1.0 / ( 1.0 + buffs.t18_rapid_fire -> default_value );
 
   return h;
 }
@@ -5818,6 +5836,12 @@ double hunter_t::composite_spell_haste() const
 
   if ( buffs.instincts_of_the_raptor -> check() )
     h *= 1.0 / ( 1.0 + buffs.instincts_of_the_raptor -> default_value );
+  
+  if ( buffs.trueshot -> check() )
+    h *= 1.0 / ( 1.0 + buffs.trueshot -> default_value );
+
+  if ( buffs.t18_rapid_fire -> check() )
+    h *= 1.0 / ( 1.0 + buffs.t18_rapid_fire -> default_value );
 
   return h;
 }
