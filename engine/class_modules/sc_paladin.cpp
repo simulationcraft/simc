@@ -14,7 +14,6 @@
     - Check mana/mana regen for ret, sword of light has been significantly changed to no longer have the mana regen stuff, or the bonus to healing, reduction in mana costs, etc.
   TODO (prot):
     - Avenger's Shield - artifact / legendary bonuses
-    - Light of the Protector (spell)
     - Blessed Hammer (talent/spell)
     - Hand of the Protector (talent)
     - Divine Steed (spell)
@@ -1748,7 +1747,7 @@ struct lay_on_hands_t : public paladin_heal_t
 
   virtual void execute() override
   {
-    base_dd_min = base_dd_max = p() -> resources.max[RESOURCE_HEALTH];
+    base_dd_min = base_dd_max = p() -> resources.max[ RESOURCE_HEALTH ];
 
     paladin_heal_t::execute();
 
@@ -1767,15 +1766,49 @@ struct lay_on_hands_t : public paladin_heal_t
   }
 };
 
-// Light of the Protector ===================================================
+// Light of the Protector (Protection) ========================================
 
-// TODO: Add Light of the Protector heal (prot)
+struct light_of_the_protector_t : public paladin_heal_t
+{
+  double health_diff_pct;
 
-// Hand of the Protector
+  light_of_the_protector_t( paladin_t* p, const std::string& options_str )
+    : paladin_heal_t( "light_of_the_protector", p, p -> find_specialization_spell( "Light of the Protector" ) ), health_diff_pct( 0 )
+  {
+    parse_options( options_str );
+
+    may_crit = false; // TODO: test
+    use_off_gcd = true;
+
+    // pct of missing health returned
+    health_diff_pct = data().effectN( 1 ).percent();
+  }
+
+  double action_multiplier() const override
+  {
+    double am = paladin_heal_t::action_multiplier();
+
+    if ( p() -> buffs.standing_in_consecraton -> check() )
+      am *= 1.0 + p() -> buffs.standing_in_consecraton -> data().effectN( 2 ).percent();
+
+    return am;
+  }
+
+  virtual void execute() override
+  {
+    // heals for 25% of missing health.
+    base_dd_min = base_dd_max = health_diff_pct * ( p() -> resources.max[ RESOURCE_HEALTH ] - p() -> resources.current[ RESOURCE_HEALTH ] );
+
+    paladin_heal_t::execute();
+  }
+
+};
+
+// Hand of the Protector (Protection) =========================================
 
 // TODO: Add Hand of the Protector heal (prot)
 
-// Light's Hammer ===========================================================
+// Light's Hammer =============================================================
 
 struct lights_hammer_damage_tick_t : public paladin_spell_t
 {
@@ -2790,6 +2823,17 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     cooldown = p -> cooldowns.shield_of_the_righteous;
   }
 
+  double action_multiplier() const override
+  {
+    double am = paladin_melee_attack_t::action_multiplier();
+
+    if ( p() -> buffs.standing_in_consecraton -> check() )
+      am *= 1.0 + p() -> buffs.standing_in_consecraton -> data().effectN( 2 ).percent();
+
+    return am;
+  }
+
+
   virtual void execute() override
   {
     paladin_melee_attack_t::execute();
@@ -3142,6 +3186,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "holy_shock"                ) return new holy_shock_t               ( this, options_str );
   if ( name == "guardian_of_ancient_kings" ) return new guardian_of_ancient_kings_t( this, options_str );
   if ( name == "judgment"                  ) return new judgment_t                 ( this, options_str );
+  if ( name == "light_of_the_protector"    ) return new light_of_the_protector_t   ( this, options_str );
   if ( name == "light_of_dawn"             ) return new light_of_dawn_t            ( this, options_str );
   if ( name == "lights_hammer"             ) return new lights_hammer_t            ( this, options_str );
   if ( name == "rebuke"                    ) return new rebuke_t                   ( this, options_str );
@@ -3317,7 +3362,7 @@ void paladin_t::create_buffs()
                                           .chance( passives.grand_crusader -> proc_chance() * ( 1.0 + talents.first_avenger -> effectN( 3 ).percent() ) );
   buffs.shield_of_the_righteous        = buff_creator_t( this, "shield_of_the_righteous" ).spell( find_spell( 132403 ) );
   buffs.ardent_defender                = new buffs::ardent_defender_buff_t( this );
-  buffs.standing_in_consecraton        = buff_creator_t( this, "standing_in_consecration" );
+  buffs.standing_in_consecraton        = buff_creator_t( this, "standing_in_consecration", find_spell( 188370 ) );
 
   // Ret
   buffs.zeal                           = buff_creator_t( this, "zeal" ).spell( find_spell( 217020 ) );
@@ -4306,6 +4351,12 @@ void paladin_t::target_mitigation( school_e school,
     // split his out to make it more readable / easier to debug
     double sotr_mitigation;
     sotr_mitigation = buffs.shield_of_the_righteous -> data().effectN( 1 ).percent() + cache.mastery() * passives.divine_bulwark -> effectN( 4 ).mastery_value();
+
+    // 20% more effective if standing in Cons
+    // TODO: test if this is multiplicative or additive. Assumed multiplicative.
+    if ( buffs.standing_in_consecraton -> check() )
+      sotr_mitigation *= 1.0 + buffs.standing_in_consecraton -> data().effectN( 3 ).percent();
+
 
     // clamp is hardcoded in tooltip, not shown in effects
     sotr_mitigation = std::max( -0.80, sotr_mitigation );
