@@ -4827,7 +4827,7 @@ struct explosive_trap_t: public hunter_spell_t
       dot_duration = data().duration();
       hasted_ticks = false;
       may_crit = true;
-      tick_may_crit = false;
+      tick_may_crit = true;
       trigger_gcd = p -> specs.explosive_trap -> gcd();
 
       if ( p -> talents.improved_traps -> ok() )
@@ -4877,6 +4877,7 @@ struct dragonsfire_grenade_t: public hunter_spell_t
       background = true;
       dual = true;
       hasted_ticks = false;
+      tick_may_crit = true;
 
       if ( num_targets() > 1 && num_targets() < 10 )
       {
