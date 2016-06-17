@@ -14,7 +14,6 @@
     - Check mana/mana regen for ret, sword of light has been significantly changed to no longer have the mana regen stuff, or the bonus to healing, reduction in mana costs, etc.
   TODO (prot):
     - Avenger's Shield - artifact / legendary bonuses
-    - First Avenger (talent) - bonus to GC proc rate
     - Bastion of Light (talent/spell)
     - Light of the Protector
     - Hammer of the Righteous - multiple fixes (see TODOs)
@@ -25,7 +24,6 @@
     - Knight Templar (talent)
     - Aegis of Light (talent/spell)
     - Judgment of Light (talent)
-    - Consecrated Ground (talent)
     - Righteous Protector (talent)
     - Seraphim (talent)
     - Last Defender (talent)
@@ -33,6 +31,7 @@
     - Action Priority List
     - Sample Profile (for testing)
     - Bugfix: check Guarded by the Light's block contribution once spell data is corrected
+    - Consecration: Convert from DoT to totem or ground effect or pet, fix HotR triggering condition
     - Final Stand??
     - Blessing of Protection/Spellweaving??
     - Retribution Aura??
@@ -110,6 +109,7 @@ public:
     buff_t* grand_crusader;
     buff_t* infusion_of_light;
     buff_t* shield_of_the_righteous;
+    buff_t* standing_in_consecraton;
 
     // talents
     absorb_buff_t* holy_shield_absorb; // Dummy buff to trigger spell damage "blocking" absorb effect
@@ -1101,6 +1101,20 @@ struct consecration_t : public paladin_spell_t
     {
       paladin_spell_t::tick( d );
     }
+  }
+
+  virtual void execute()
+  {
+    paladin_spell_t::execute();
+
+    p() -> buffs.standing_in_consecraton -> trigger();
+  }
+
+  virtual void last_tick( dot_t* d )
+  {
+    paladin_spell_t::last_tick( d );
+
+    p() -> buffs.standing_in_consecraton -> expire();
   }
 };
 
@@ -2541,9 +2555,11 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       if ( hotr_aoe -> target != execute_state -> target )
         hotr_aoe -> target_cache.is_valid = false;
 
-      // TODO: if (standing in consecration) trigger AOE
-      hotr_aoe -> target = execute_state -> target;
-      hotr_aoe -> execute();
+      if ( p() -> buffs.standing_in_consecraton -> check() || p() -> talents.consecrated_hammer -> ok() )
+      {
+        hotr_aoe -> target = execute_state -> target;
+        hotr_aoe -> execute();
+      }
     }
   }
 };
@@ -3263,6 +3279,7 @@ void paladin_t::create_buffs()
                                           .chance( passives.grand_crusader -> proc_chance() * ( 1.0 + talents.first_avenger -> effectN( 3 ).percent() ) );
   buffs.shield_of_the_righteous        = buff_creator_t( this, "shield_of_the_righteous" ).spell( find_spell( 132403 ) );
   buffs.ardent_defender                = new buffs::ardent_defender_buff_t( this );
+  buffs.standing_in_consecraton        = buff_creator_t( this, "standing_in_consecration" );
 
   // Ret
   buffs.zeal                           = buff_creator_t( this, "zeal" ).spell( find_spell( 217020 ) );
