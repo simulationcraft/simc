@@ -32,6 +32,7 @@
     - Improved Block (passive - is this still around?)
     - Action Priority List
     - Sample Profile (for testing)
+    - Bugfix: check Guarded by the Light's block contribution once spell data is corrected
     - Final Stand??
     - Blessing of Protection/Spellweaving??
     - Retribution Aura??
@@ -857,11 +858,14 @@ struct avengers_shield_t : public paladin_spell_t
       sim -> errorf( "%s: %s only usable with shield equipped in offhand\n", p -> name(), name() );
       background = true;
     }
+    may_crit     = true;
 
     // TODO: add artifact and legendary bonuses
-    aoe = 3 + p -> talents.first_avenger -> effectN( 2 ).base_value();  //first_avenger adds -5 to num targets. 
+    // First Avenger increases multiplier but reduces number of targets to 1
+    base_multiplier *= 1.0 + p -> talents.first_avenger -> effectN( 1 ).percent();
+    aoe = 3 + p -> talents.first_avenger -> effectN( 2 ).base_value(); // 3 + (-5) + TODO: legendary
     aoe = std::max( aoe, 0 );
-    may_crit     = true;
+
 
     // link needed for trigger_grand_crusader
     cooldown = p -> cooldowns.avengers_shield;
@@ -2243,7 +2247,7 @@ struct blade_of_justice_t : public holy_power_generator_t
     parse_options( options_str );
 
     // Guarded by the Light and Sword of Light reduce base mana cost; spec-limited so only one will ever be active
-    base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent();
+    base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 5 ).percent();
     base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
 
     base_multiplier *= 1.0 + p -> artifact.deliver_the_justice.percent();
@@ -2268,7 +2272,7 @@ struct blade_of_wrath_t : public holy_power_generator_t
     parse_options( options_str );
 
     // Guarded by the Light and Sword of Light reduce base mana cost; spec-limited so only one will ever be active
-    base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent();
+    base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 5 ).percent();
     base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
 
     base_multiplier *= 1.0 + p -> artifact.deliver_the_justice.percent();
@@ -3255,7 +3259,8 @@ void paladin_t::create_buffs()
   // Prot
   buffs.guardian_of_ancient_kings      = buff_creator_t( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
                                           .cd( timespan_t::zero() ); // let the ability handle the CD
-  buffs.grand_crusader                 = buff_creator_t( this, "grand_crusader" ).spell( passives.grand_crusader -> effectN( 1 ).trigger() ).chance( passives.grand_crusader -> proc_chance() );
+  buffs.grand_crusader                 = buff_creator_t( this, "grand_crusader" ).spell( passives.grand_crusader -> effectN( 1 ).trigger() )
+                                          .chance( passives.grand_crusader -> proc_chance() * ( 1.0 + talents.first_avenger -> effectN( 3 ).percent() ) );
   buffs.shield_of_the_righteous        = buff_creator_t( this, "shield_of_the_righteous" ).spell( find_spell( 132403 ) );
   buffs.ardent_defender                = new buffs::ardent_defender_buff_t( this );
 
@@ -4148,8 +4153,9 @@ double paladin_t::composite_block() const
   double block_subject_to_dr = cache.mastery() * passives.divine_bulwark -> effectN( 1 ).mastery_value();
   double b = player_t::composite_block_dr( block_subject_to_dr );
 
- // Guarded by the Light block not affected by diminishing returns
-  b += passives.guarded_by_the_light -> effectN( 6 ).percent();
+  // Guarded by the Light block not affected by diminishing returns
+  // TODO: spell data broken (0%, tooltip values pointing at wrong effects) - revisit once spell data updated
+  b += passives.guarded_by_the_light -> effectN( 4 ).percent();
 
   // Holy Shield (assuming for now that it's not affected by DR)
   b += talents.holy_shield -> effectN( 1 ).percent();
@@ -4180,7 +4186,7 @@ double paladin_t::composite_crit_avoidance() const
   double c = player_t::composite_crit_avoidance();
 
   // Guarded by the Light grants -6% crit chance
-  c += passives.guarded_by_the_light -> effectN( 5 ).percent();
+  c += passives.guarded_by_the_light -> effectN( 3 ).percent();
 
   return c;
 }
