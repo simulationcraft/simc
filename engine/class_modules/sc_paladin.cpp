@@ -15,9 +15,8 @@
   TODO (prot):
     - Avenger's Shield - artifact / legendary bonuses
     - Bastion of Light (talent/spell)
-    - Light of the Protector
+    - Light of the Protector (spell)
     - Blessed Hammer (talent/spell)
-    - Judgment - multiple fixes (see TODOs)
     - Hand of the Protector (talent)
     - Divine Steed (spell)
     - Knight Templar (talent)
@@ -30,7 +29,7 @@
     - Action Priority List
     - Sample Profile (for testing)
     - Bugfix: check Guarded by the Light's block contribution once spell data is corrected
-    - Consecration: Convert from DoT to totem or ground effect or pet, fix HotR triggering condition
+    - Consecration: Convert from DoT to totem or ground effect or pet, fix HotR triggering condition (low priority / long-term)
     - Final Stand??
     - Blessing of Protection/Spellweaving??
     - Retribution Aura??
@@ -148,8 +147,10 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
-    // this seems to be required to get Grand Crusader procs working
+    // Required to get Grand Crusader procs working
     cooldown_t* avengers_shield;
+    // Required to get Judgment's SotR charge time reduction working
+    cooldown_t* shield_of_the_righteous;
 
     // whoo fist of justice
     cooldown_t* hammer_of_justice;
@@ -327,8 +328,9 @@ public:
     active_holy_shield_proc            = nullptr;
     active_protector_of_the_innocent   = nullptr;
 
-    cooldowns.avengers_shield = get_cooldown( "avengers_shield" );
-    cooldowns.hammer_of_justice = get_cooldown( "hammer_of_justice" );
+    cooldowns.avengers_shield         = get_cooldown( "avengers_shield" );
+    cooldowns.shield_of_the_righteous = get_cooldown( "shield_of_the_righteous" );
+    cooldowns.hammer_of_justice       = get_cooldown( "hammer_of_justice" );
 
     beacon_target = nullptr;
 
@@ -2611,6 +2613,8 @@ struct blessing_of_might_proc_t : public paladin_melee_attack_t
 
 struct judgment_t : public paladin_melee_attack_t
 {
+  timespan_t sotr_cdr; // needed for sotr interaction for protection
+
   judgment_t( paladin_t* p, const std::string& options_str )
     : paladin_melee_attack_t( "judgment", p, p -> find_spell( "Judgment" ), true )
   {
@@ -2623,7 +2627,7 @@ struct judgment_t : public paladin_melee_attack_t
     may_glance = may_block = may_parry = may_dodge = false;
 
     // TODO: this is a hack; figure out what's really going on here.
-    if ( ( p -> specialization() == PALADIN_RETRIBUTION ) )
+    if ( p -> specialization() == PALADIN_RETRIBUTION )
     {
       base_costs[ RESOURCE_MANA ] = 0;
       base_add_multiplier = data().effectN( 1 ).chain_multiplier();
@@ -2635,13 +2639,16 @@ struct judgment_t : public paladin_melee_attack_t
         aoe += p -> talents.greater_judgment -> effectN( 2 ).base_value();
       }
     }
-    else if ( ( p -> specialization() == PALADIN_PROTECTION ) )
-    {
-      base_multiplier *= 1.0 + p -> passives.protection_paladin -> effectN( 3 ).percent();
-    }
-    else if ( ( p -> specialization() == PALADIN_HOLY ) )
+
+    else if ( p -> specialization() == PALADIN_HOLY )
     {
       base_multiplier *= 1.0 + p -> passives.holy_paladin -> effectN( 6 ).percent();
+    }
+
+    else if ( p -> specialization() == PALADIN_PROTECTION ) 
+    {
+      base_multiplier *= 1.0 + p -> passives.protection_paladin -> effectN( 3 ).percent();
+      sotr_cdr = -1.0 * timespan_t::from_seconds( data().effectN( 2 ).base_value() );
     }
   }
 
@@ -2665,14 +2672,18 @@ struct judgment_t : public paladin_melee_attack_t
   // Special things that happen when Judgment damages target
   virtual void impact( action_state_t* s ) override
   {
-    if ( result_is_hit( s->result ) )
+    if ( result_is_hit( s -> result ) )
     {
       td( s -> target ) -> buffs.debuffs_judgment -> trigger();
+
+      // Judgment hits/crits reduce SotR recharge time
+      if ( p() -> specialization() == PALADIN_PROTECTION )
+        p() -> cooldowns.shield_of_the_righteous -> adjust( s -> result == RESULT_CRIT ? 2.0 * sotr_cdr : sotr_cdr );
     }
-
-    //TODO: Reduce SotR cooldown by 2s on normal hit, 4s on crit
-
-    //TODO: Add Grand Crusader trigger from Crusader's Judgment talent (T1).
+    
+    // Grand Crusader procs for prot if Crusader's Judgment talented
+    if ( p() -> talents.crusaders_judgment -> ok() )
+      p() -> trigger_grand_crusader();
 
     paladin_melee_attack_t::impact( s );
   }
@@ -2752,6 +2763,9 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
 
     // no weapon multiplier
     weapon_multiplier = 0.0;
+    
+    // link needed for Judgment cooldown reduction
+    cooldown = p -> cooldowns.shield_of_the_righteous;
   }
 
   virtual void execute() override
