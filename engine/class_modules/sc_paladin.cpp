@@ -15,12 +15,10 @@
   TODO (prot):
     - Avenger's Shield - artifact / legendary bonuses
     - Blessed Hammer (talent/spell)
-    - Hand of the Protector (talent)
     - Divine Steed (spell)
     - Knight Templar (talent)
     - Aegis of Light (talent/spell)
     - Judgment of Light (talent)
-    - Righteous Protector (talent)
     - Seraphim (talent)
     - Last Defender (talent)
     - Improved Block (passive - is this still around?)
@@ -145,10 +143,12 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
-    // Required to get Grand Crusader procs working
-    cooldown_t* avengers_shield;
-    // Required to get Judgment's SotR charge time reduction working
-    cooldown_t* shield_of_the_righteous;
+    // Required to get various cooldown-reducing procs procs working
+    cooldown_t* avengers_shield;         // Grand Crusader (prot)
+    cooldown_t* shield_of_the_righteous; // Judgment (prot)
+    cooldown_t* avenging_wrath;          // Righteous Protector (prot)
+    cooldown_t* light_of_the_protector;  // Righteous Protector (prot)
+    cooldown_t* hand_of_the_protector;   // Righteous Protector (prot)
 
     // whoo fist of justice
     cooldown_t* hammer_of_justice;
@@ -331,6 +331,9 @@ public:
 
     cooldowns.avengers_shield         = get_cooldown( "avengers_shield" );
     cooldowns.shield_of_the_righteous = get_cooldown( "shield_of_the_righteous" );
+    cooldowns.avenging_wrath          = get_cooldown( "avenging_wrath" );
+    cooldowns.light_of_the_protector  = get_cooldown( "light_of_the_protector" );
+    cooldowns.hand_of_the_protector   = get_cooldown( "hand_of_the_protector" );
     cooldowns.hammer_of_justice       = get_cooldown( "hammer_of_justice" );
 
     beacon_target = nullptr;
@@ -476,39 +479,34 @@ namespace buffs {
   struct avenging_wrath_buff_t: public buff_t
   {
     avenging_wrath_buff_t( player_t* p ):
-      buff_t( buff_creator_t( p, "avenging_wrath", p -> specialization() == PALADIN_RETRIBUTION ? p -> find_spell( 31884 ) : p -> find_spell( 31842 ) ) ),
+      buff_t( buff_creator_t( p, "avenging_wrath", p -> specialization() == PALADIN_HOLY ? p -> find_spell( 31842 ) : p -> find_spell( 31884 ) ) ),
       damage_modifier( 0.0 ),
       healing_modifier( 0.0 ),
-      crit_bonus( 0.0 ),
-      haste_bonus( 0.0 )
+      crit_bonus( 0.0 )
     {
       // Map modifiers appropriately based on spec
-      if ( p -> specialization() == PALADIN_RETRIBUTION )
+      paladin_t* paladin = static_cast<paladin_t*>( player );
+
+      if ( p -> specialization() == PALADIN_HOLY )
+      {
+        healing_modifier = data().effectN( 1 ).percent();
+        crit_bonus = data().effectN( 2 ).percent();
+        damage_modifier = data().effectN( 3 ).percent();
+        // holy shock cooldown reduction handled in holy_shock_t
+
+        // invalidate crit
+        add_invalidate( CACHE_CRIT );
+
+        // Lengthen duration if Sanctified Wrath is taken
+        buff_duration *= 1.0 + paladin -> talents.sanctified_wrath -> effectN( 1 ).percent();
+      }
+      else // we're Ret or Prot
       {
         damage_modifier = data().effectN( 1 ).percent();
         healing_modifier = data().effectN( 2 ).percent();
 
-        paladin_t* paladin = static_cast<paladin_t*>( player );
         if ( paladin -> artifact.wrath_of_the_ashbringer.rank() )
-        {
           buff_duration += timespan_t::from_millis(paladin -> artifact.wrath_of_the_ashbringer.value());
-        }
-      }
-      else // we're Holy
-      {
-        damage_modifier = data().effectN( 5 ).percent();
-        healing_modifier = data().effectN( 3 ).percent();
-        crit_bonus = data().effectN( 2 ).percent();
-        haste_bonus = data().effectN( 1 ).percent();
-
-        // invalidate crit and haste
-        add_invalidate( CACHE_CRIT );
-        add_invalidate( CACHE_HASTE );
-
-        // Lengthen duration if Sanctified Wrath is taken
-        const spell_data_t* s = p -> find_talent_spell( "Sanctified Wrath" );
-        if ( s -> ok() )
-          buff_duration *= 1.0 + s -> effectN( 2 ).percent();
       }
 
       // let the ability handle the cooldown
@@ -542,15 +540,10 @@ namespace buffs {
       return crit_bonus;
     }
 
-    double get_haste_bonus() const
-    {
-      return haste_bonus;
-    }
     private:
     double damage_modifier;
     double healing_modifier;
     double crit_bonus;
-    double haste_bonus;
   };
 
   struct crusade_buff_t : public buff_t
@@ -977,20 +970,18 @@ struct crusade_t : public paladin_heal_t
 };
 
 // Avenging Wrath ===========================================================
-// AW is two spells now (31884 for Ret, 31842 for Holy) and the effects are all jumbled.
+// AW is actually two spells (31884 for Ret/Prot, 31842 for Holy) and the effects are all jumbled.
 // Thus, we need to use some ugly hacks to get it to work seamlessly for both specs within the same spell.
 // Most of them can be found in buffs::avenging_wrath_buff_t, this spell just triggers the buff
 
-struct avenging_wrath_t : public paladin_heal_t
+struct avenging_wrath_t : public paladin_spell_t
 {
   avenging_wrath_t( paladin_t* p, const std::string& options_str )
-    : paladin_heal_t( "avenging_wrath", p, p -> specialization() == PALADIN_RETRIBUTION ? p -> find_spell( 31884 ) : p -> find_spell( 31842 ) )
+    : paladin_spell_t( "avenging_wrath", p, p -> specialization() == PALADIN_HOLY ? p -> find_spell( 31842 ) : p -> find_spell( 31884 ) )
   {
     parse_options( options_str );
-    // disable for protection
-    if ( p -> specialization() == PALADIN_PROTECTION )
-      background = true;
-    else if ( p -> specialization() == PALADIN_RETRIBUTION )
+    
+    if ( p -> specialization() == PALADIN_RETRIBUTION )
     {
       if ( p -> talents.crusade -> ok() )
         background = true;
@@ -999,22 +990,14 @@ struct avenging_wrath_t : public paladin_heal_t
 
     harmful = false;
     trigger_gcd = timespan_t::zero();
-  }
 
-  void tick( dot_t* d ) override
-  {
-    // override for this just in case Avenging Wrath were to get canceled or removed
-    // early, or if there's a duration mismatch (unlikely, but...)
-    if ( p() -> buffs.avenging_wrath -> check() )
-    {
-      // call tick()
-      heal_t::tick( d );
-    }
+    // link needed for Righteous Protector / SotR cooldown reduction
+    cooldown = p -> cooldowns.avenging_wrath;
   }
 
   void execute() override
   {
-    paladin_heal_t::execute();
+    paladin_spell_t::execute();
 
     p() -> buffs.avenging_wrath -> trigger();
     if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T18, B4 ) )
@@ -1029,12 +1012,13 @@ struct avenging_wrath_t : public paladin_heal_t
     }
   }
 
+  // TODO: is this needed? Question for Ret dev, since I don't think it is for Prot/Holy
   bool ready() override
   {
     if ( p() -> buffs.avenging_wrath -> check() )
       return false;
     else
-      return paladin_heal_t::ready();
+      return paladin_spell_t::ready();
   }
 };
 
@@ -1589,11 +1573,9 @@ struct holy_prism_t : public paladin_spell_t
 struct holy_shock_damage_t : public paladin_spell_t
 {
   double crit_chance_multiplier;
-  double crit_increase;
 
   holy_shock_damage_t( paladin_t* p )
-    : paladin_spell_t( "holy_shock_damage", p, p -> find_spell( 25912 ) ),
-      crit_increase( 0.0 )
+    : paladin_spell_t( "holy_shock_damage", p, p -> find_spell( 25912 ) )
   {
     background = may_crit = true;
     trigger_gcd = timespan_t::zero();
@@ -1605,11 +1587,6 @@ struct holy_shock_damage_t : public paladin_spell_t
   virtual double composite_crit() const override
   {
     double cc = paladin_spell_t::composite_crit();
-
-    if ( p() -> buffs.avenging_wrath -> check() )
-    {
-      cc += crit_increase;
-    }
 
     // effect 1 doubles crit chance
     cc *= crit_chance_multiplier;
@@ -1623,11 +1600,9 @@ struct holy_shock_damage_t : public paladin_spell_t
 struct holy_shock_heal_t : public paladin_heal_t
 {
   double crit_chance_multiplier;
-  double crit_increase;
 
   holy_shock_heal_t( paladin_t* p ) :
-    paladin_heal_t( "holy_shock_heal", p, p -> find_spell( 25914 ) ),
-    crit_increase( 0.0 )
+    paladin_heal_t( "holy_shock_heal", p, p -> find_spell( 25914 ) )
   {
     background = true;
     trigger_gcd = timespan_t::zero();
@@ -1639,11 +1614,6 @@ struct holy_shock_heal_t : public paladin_heal_t
   virtual double composite_crit() const override
   {
     double cc = paladin_heal_t::composite_crit();
-
-    if ( p() -> buffs.avenging_wrath -> check() )
-    {
-      cc += crit_increase;
-    }
 
     // effect 1 doubles crit chance
     cc *= crit_chance_multiplier;
@@ -1678,23 +1648,15 @@ struct holy_shock_t : public paladin_heal_t
     parse_options( options_str );
 
     cd_duration = cooldown -> duration;
-
-    double crit_increase = 0.0;
-
+    
     // Bonuses from Sanctified Wrath need to be stored for future use
-    if ( ( p -> specialization() == PALADIN_HOLY ) && p -> spells.sanctified_wrath -> ok()  )
-    {
-      // the actual values of these are stored in spell 114232 rather than the spell returned by find_talent_spell
-      cooldown_mult = p -> spells.sanctified_wrath -> effectN( 1 ).percent();
-      crit_increase = p -> spells.sanctified_wrath -> effectN( 5 ).percent();
-    }
+    if ( ( p -> specialization() == PALADIN_HOLY ) && p -> talents.sanctified_wrath -> ok()  )
+      cooldown_mult = p -> talents.sanctified_wrath -> effectN( 2 ).percent();
 
     // create the damage and healing spell effects, designate them as children for reporting
     damage = new holy_shock_damage_t( p );
-    damage ->crit_increase = crit_increase;
     add_child( damage );
     heal = new holy_shock_heal_t( p );
-    heal ->crit_increase = crit_increase;
     add_child( heal );
   }
 
@@ -1786,6 +1748,16 @@ struct light_of_the_protector_t : public paladin_heal_t
 
     // pct of missing health returned
     health_diff_pct = data().effectN( 1 ).percent();
+
+    // link needed for Righteous Protector / SotR cooldown reduction
+    cooldown = p -> cooldowns.light_of_the_protector;
+
+    // prevent spamming
+    internal_cooldown -> duration = timespan_t::from_seconds( 1.0 );
+
+    // disable if Hand of the Protector talented
+    if ( p -> talents.hand_of_the_protector -> ok() )
+      background = true;
   }
 
   double action_multiplier() const override
@@ -1824,6 +1796,16 @@ struct hand_of_the_protector_t : public paladin_heal_t
 
     // pct of missing health returned
     health_diff_pct = data().effectN( 1 ).percent();
+
+    // link needed for Righteous Protector / SotR cooldown reduction
+    cooldown = p -> cooldowns.hand_of_the_protector;
+
+    // prevent spamming
+    internal_cooldown -> duration = timespan_t::from_seconds( 1.0 );
+
+    // disable if Hand of the Protector is not talented
+    if ( ! p -> talents.hand_of_the_protector -> ok() )
+      background = true;
   }
 
   double action_multiplier() const override
@@ -2886,6 +2868,24 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     else
       p() -> buffs.shield_of_the_righteous -> trigger();
   }
+
+  // Special things that happen when SotR damages target
+  virtual void impact( action_state_t* s ) override
+  {
+    if ( result_is_hit( s -> result ) ) // TODO: not needed anymore? Can we even miss?
+    {
+      // SotR hits reduce Light of the Protector and Avenging Wrath cooldown times if Righteous Protector is talented
+      if ( p() -> talents.righteous_protector -> ok() )
+      {
+        timespan_t reduction = timespan_t::from_seconds( -1.0 * p() -> talents.righteous_protector -> effectN( 1 ).base_value() );
+        p() -> cooldowns.avenging_wrath -> adjust( reduction );
+        p() -> cooldowns.light_of_the_protector -> adjust( reduction );
+        p() -> cooldowns.hand_of_the_protector -> adjust( reduction );
+      }
+    }
+
+    paladin_melee_attack_t::impact( s );
+  }
 };
 
 // Templar's Verdict ========================================================================
@@ -3923,7 +3923,6 @@ void paladin_t::init_spells()
 
   // Spells
   spells.holy_light                    = find_specialization_spell( "Holy Light" );
-  spells.sanctified_wrath              = find_spell( 114232 );  // cooldown reduction effects
   spells.divine_purpose_ret            = find_spell( 223817 );
   spells.liadrins_fury_unleashed       = find_spell( 208408 );
   spells.justice_gaze                  = find_spell( 211557 );
@@ -4112,10 +4111,6 @@ double paladin_t::composite_melee_haste() const
 {
   double h = player_t::composite_melee_haste();
 
-  // This should only give a nonzero boost for Holy
-  if ( buffs.avenging_wrath -> check() )
-    h /= 1.0 + buffs.avenging_wrath -> get_haste_bonus();
-
   if ( buffs.crusade -> check() )
     h /= 1.0 + buffs.crusade -> get_haste_bonus();
 
@@ -4150,11 +4145,7 @@ double paladin_t::composite_spell_crit() const
 double paladin_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
-
-  // This should only give a nonzero boost for Holy
-  if ( buffs.avenging_wrath -> check() )
-    h /= 1.0 + buffs.avenging_wrath -> get_haste_bonus();
-
+  
   if ( buffs.crusade -> check() )
     h /= 1.0 + buffs.crusade -> get_haste_bonus();
 
