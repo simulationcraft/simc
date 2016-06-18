@@ -494,7 +494,7 @@ public:
     tactician_per_rage( 0 )
   {
     ab::may_crit = true;
-    tactician_per_rage += player -> spec.tactician -> effectN( 2 ).percent();
+    tactician_per_rage += ( player -> spec.tactician -> effectN( 2 ).percent() / 10 );
     tactician_per_rage *= 1.0 + player -> artifact.exploit_the_weakness.percent();
   }
 
