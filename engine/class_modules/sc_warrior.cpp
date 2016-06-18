@@ -775,7 +775,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
           target, // target
           s -> result_amount * p() -> buff.corrupted_blood_of_zakajz -> check_value() );
       }
-      if ( p() -> talents.opportunity_strikes -> ok() && s -> result_amount > 0 )
+      if ( p() -> talents.opportunity_strikes -> ok() && s -> result_amount > 0 && s -> action -> s_data -> id() != p() -> active.opportunity_strikes -> s_data -> id() )
       {
         if ( rng().roll( ( 1 - ( s -> target -> health_percentage() / 100 ) ) * p() -> talents.opportunity_strikes -> proc_chance() ) )
         {
@@ -1080,7 +1080,7 @@ struct bladestorm_t: public warrior_attack_t
 {
   attack_t* bladestorm_mh, *bladestorm_oh;
   bladestorm_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "bladestorm", p, p -> talents.bladestorm ),
+    warrior_attack_t( "bladestorm", p, p -> specialization() == WARRIOR_FURY ? p -> talents.bladestorm : p -> find_class_spell( "Bladestorm") ),
     bladestorm_mh( new bladestorm_tick_t( p, "bladestorm_mh" ) ), bladestorm_oh( nullptr )
   {
     parse_options( options_str );
@@ -3001,11 +3001,11 @@ struct arms_whirlwind_mh_t: public warrior_attack_t
     return am;
   }
 
-  double composite_target_multiplier( player_t* target ) const override
+  double composite_target_multiplier( player_t* t ) const override
   {
-    double am = warrior_attack_t::composite_target_multiplier( target );
+    double am = warrior_attack_t::composite_target_multiplier( t );
 
-    if ( p() -> talents.fervor_of_battle -> ok() && target == execute_state -> target )
+    if ( p() -> talents.fervor_of_battle -> ok() && t == target )
     {
       am *= 1.0 + p() -> talents.fervor_of_battle -> effectN( 1 ).percent();
     }
@@ -3042,11 +3042,11 @@ struct first_arms_whirlwind_mh_t: public warrior_attack_t
     return am;
   }
 
-  double composite_target_multiplier( player_t* target ) const override
+  double composite_target_multiplier( player_t* t ) const override
   {
-    double am = warrior_attack_t::composite_target_multiplier( target );
+    double am = warrior_attack_t::composite_target_multiplier( t );
 
-    if ( p() -> talents.fervor_of_battle -> ok() && target == execute_state -> target )
+    if ( p() -> talents.fervor_of_battle -> ok() && t == target )
     {
       am *= 1.0 + p() -> talents.fervor_of_battle -> effectN( 1 ).percent();
     }
