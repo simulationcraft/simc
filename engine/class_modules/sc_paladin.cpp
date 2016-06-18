@@ -3761,7 +3761,7 @@ void paladin_t::generate_action_prio_list_ret()
   single -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=4" );
   single -> add_talent( this, "Consecration" );
   single -> add_talent( this, "Zeal", "if=holy_power<=4" );
-  single -> add_action( this, "Crusader Strike", ",if=holy_power<=4" );
+  single -> add_action( this, "Crusader Strike", "if=holy_power<=4" );
   single -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&holy_power>=3" );
   single -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=3" );
   single -> add_talent( this, "Blinding Light" );
