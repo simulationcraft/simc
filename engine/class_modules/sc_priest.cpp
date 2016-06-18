@@ -2173,7 +2173,8 @@ struct dispersion_t final : public priest_spell_t
     channeled             = true;
     harmful               = false;
     tick_may_crit         = false;
-    // hasted_ticks      = false;
+    hasted_ticks          = false;
+    may_miss              = false;
 
     if ( priest.artifact.from_the_shadows.rank() )
     {
@@ -2184,12 +2185,9 @@ struct dispersion_t final : public priest_spell_t
 
   void execute() override
   {
-    priest_spell_t::execute();
+    priest.buffs.dispersion->trigger();
 
-    priest.buffs.dispersion->trigger(
-        1, 0, 1, dot_duration );  // timespan_t::from_seconds( 6.0 ) +
-                                  // priest.glyphs.delayed_coalescence ->
-                                  // effectN( 1 ).time_value() );
+    priest_spell_t::execute();
   }
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
@@ -2197,10 +2195,16 @@ struct dispersion_t final : public priest_spell_t
     return timespan_t::from_seconds( 6.0 );
   }
 
+  timespan_t tick_time(const action_state_t*) const
+  {
+    return timespan_t::from_seconds(1.0);
+  }
+
   void last_tick( dot_t* d ) override
   {
-    priest_spell_t::last_tick( d );
-    priest.buffs.dispersion->expire();
+    priest_spell_t::last_tick(d);    
+    // reset() instead of expire() because it was not properly creating the buff every 2nd time
+    priest.buffs.dispersion->reset();
   }
 };
 
@@ -5331,7 +5335,7 @@ struct voidform_t final : public priest_buff_t<buff_t>
       {
         insanity_loss = priest->resources.current[RESOURCE_INSANITY];
       }
-
+            
       priest->resource_loss( RESOURCE_INSANITY, insanity_loss,
                               priest->gains.insanity_drain );
 
@@ -5467,15 +5471,6 @@ struct archangel_t final : public priest_buff_t<buff_t>
     priest.buffs.holy_evangelism->expire();
 
     return success;
-  }
-};
-
-struct dispersion_t : public priest_buff_t<buff_t>
-{
-  dispersion_t( priest_t& p )
-    : base_t( p, buff_creator_t( &p, "dispersion" )
-                     .spell( p.find_class_spell( "Dispersion" ) ) )
-  {
   }
 };
 
@@ -6656,7 +6651,8 @@ void priest_t::create_buffs()
           .max_stack( 2 )
           .duration( timespan_t::from_seconds( 5.0 ) );
 
-  buffs.dispersion = new buffs::dispersion_t( *this );
+  buffs.dispersion = buff_creator_t(this, "dispersion", find_class_spell("Dispersion"))
+    .duration(find_class_spell("Dispersion")->duration());
 
   // Set Bonuses
   buffs.mental_instinct =
@@ -6879,7 +6875,8 @@ void priest_t::apl_default()
 void priest_t::apl_shadow()
 {
   action_priority_list_t* default_list = get_action_priority_list( "default" );
-  action_priority_list_t* main         = get_action_priority_list( "main" );
+  action_priority_list_t* main = get_action_priority_list("main");
+  action_priority_list_t* vf = get_action_priority_list("vf");
 
   // On-Use Items
   std::vector<std::string> item_actions = get_item_actions();
@@ -6897,29 +6894,40 @@ void priest_t::apl_shadow()
 
   // Choose which APL to use based on talents and fight conditions.
 
-  default_list->add_action( "call_action_list,name=main" );
+  default_list->add_action("call_action_list,name=vf,if=buff.voidform.up");
+  default_list->add_action("call_action_list,name=main");
 
-  main->add_action( "voidform" );
-  main->add_action(
-      "surrender_to_madness,if=talent.surrender_to_madness.enabled&buff."
-      "voidform.stack<10&time_to_die<100" );
-  main->add_action( "power_infusion,if=talent.power_infusion.enabled" );
-  main->add_action( "void_bolt" );
-  main->add_action( "dispersion,if=buff.voidform.up&buff.voidform.stack>20" );
-  main->add_action( "void_torrent,if=buff.voidform.up&buff.voidform.stack>17" );
-  main->add_action( "shadow_word_death,if=talent.reaper_of_souls.enabled" );
-  main->add_action( "mind_blast" );
-  main->add_action( "shadow_word_void,if=talent.shadow_word_void.enabled" );
-  main->add_action( "shadow_word_death" );
-  main->add_action( "mindbender,if=talent.mindbender.enabled" );
-  main->add_action( "shadow_word_pain,if=!ticking" );
-  main->add_action( "vampiric_touch,if=!ticking" );
-  main->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
-  main->add_action( "shadowfiend,if=!talent.mindbender.enabled" );
-  main->add_action(
-      "mind_flay,if=!talent.mind_spike.enabled,interrupt=1,chain=1" );
-  main->add_action( "mind_spike,if=talent.mind_spike.enabled" );
-  main->add_action( "shadow_word_pain" );  // moving
+  main->add_action("voidform");
+  main->add_action("mindbender,if=talent.mindbender.enabled&set_bonus.tier18_2pc");
+  main->add_action("shadow_word_death");
+  main->add_action("mind_blast");
+  main->add_action("shadow_word_pain,if=!ticking,cycle_targets=1");
+  main->add_action("vampiric_touch,if=!ticking,cycle_targets=1");
+  main->add_action("shadow_word_void");
+  main->add_action("shadow_crash,if=talent.shadow_crash.enabled");
+  main->add_action("shadowfiend,if=!talent.mindbender.enabled");
+  main->add_action("mind_flay,if=!talent.mind_spike.enabled,interrupt=1,chain=1");
+  main->add_action("mind_spike,if=talent.mind_spike.enabled");
+  main->add_action("shadow_word_pain");  // moving
+
+  vf->add_action("surrender_to_madness,if=talent.surrender_to_madness.enabled&insanity>=25&(cooldown.void_bolt.up|cooldown.void_torrent.up)&target.time_to_die<120");
+  vf->add_action("power_infusion,if=buff.voidform.stack>=10");
+  vf->add_action("berserking,if=buff.voidform.stack>10");
+  vf->add_action("dispersion");
+  vf->add_action("void_torrent,if=buff.voidform.stack>=10");
+  vf->add_action("void_bolt,if=dot.shadow_word_pain.remains<3.5*gcd,cycle_targets=1");
+  vf->add_action("void_bolt");
+  vf->add_action("mind_blast");
+  vf->add_action("mindbender,if=talent.mindbender.enabled");
+  vf->add_action("shadow_word_death");
+  vf->add_action("shadow_word_void");
+  vf->add_action("shadowfiend,if=!talent.mindbender.enabled");
+  vf->add_action("shadow_word_pain,if=!ticking,cycle_targets=1");
+  vf->add_action("vampiric_touch,if=!ticking,cycle_targets=1");
+  vf->add_action("shadow_crash,if=talent.shadow_crash.enabled");
+  vf->add_action("mind_flay,if=!talent.mind_spike.enabled,interrupt=1,chain=1");
+  vf->add_action("mind_spike,if=talent.mind_spike.enabled");
+  vf->add_action("shadow_word_pain"); // moving
 }
 
 // Discipline Heal Combat Action Priority List
