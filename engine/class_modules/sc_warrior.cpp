@@ -494,7 +494,7 @@ public:
     tactician_per_rage( 0 )
   {
     ab::may_crit = true;
-    tactician_per_rage += ( player -> spec.tactician -> effectN( 2 ).percent() / 10 );
+    tactician_per_rage += ( player -> spec.tactician -> effectN( 2 ).percent() / 100 );
     tactician_per_rage *= 1.0 + player -> artifact.exploit_the_weakness.percent();
   }
 
@@ -1601,6 +1601,7 @@ struct execute_t: public warrior_attack_t
 
     base_crit += p -> artifact.deathblow.percent();
     base_crit += p -> artifact.deathdealer.percent();
+    energize_amount = 0;
   }
 
   double action_multiplier() const override
