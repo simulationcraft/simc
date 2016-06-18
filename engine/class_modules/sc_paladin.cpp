@@ -3730,9 +3730,10 @@ void paladin_t::generate_action_prio_list_ret()
     }
   }
 
-  def -> add_talent( this, "Equality" );
+  def -> add_talent( this, "Holy Wrath" );
   def -> add_action( this, "Avenging Wrath" );
   def -> add_talent( this, "Crusade", "sync=judgment,if=holy_power>=3" );
+  def -> add_talent( this, "Execution Sentence", "if=cooldown.judgment.remains<gcd*5&(holy_power>=3|buff.divine_purpose.react|buff.the_fires_of_justice.react)" );
 
   std::vector<std::string> racial_actions = get_racial_actions();
   for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -3740,21 +3741,29 @@ void paladin_t::generate_action_prio_list_ret()
 
   def -> add_action( "call_action_list,name=single" );
 
-  single -> add_action( "wake_of_ashes", "if=holy_power<2" );
-  single -> add_talent( this, "Execution Sentence", "if=cooldown.judgment.remains<gcd*5&(holy_power>=3|buff.divine_purpose.react|buff.the_fires_of_justice.react)" );
-  single -> add_talent( this, "Consecration", "if=spell_targets.divine_storm>=4" );
-  single -> add_action( this, "Judgment" );
-  single -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&talent.greater_judgment.enabled&(holy_power>=3|buff.divine_purpose.react|buff.the_fires_of_justice.react|debuff.judgment.remains<gcd*2)" );
-  single -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=3&(holy_power>=3|buff.divine_purpose.react|buff.the_fires_of_justice.react|debuff.judgment.remains<gcd*2)" );
-  single -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&(holy_power>=3|buff.divine_purpose.react|buff.the_fires_of_justice.react|debuff.judgment.remains<gcd*2)" );
+  single -> add_action( this, "judgment" );
+  single -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&debuff.judgment.remains<gcd" );
+  single -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&holy_power>=5" );
+  single -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.divine_purpose.react" );
+  single -> add_action( this, "Divine Storm", "if=spell_targets.divine_storm>=2&cooldown.wake_of_ashes.remains<gcd*2" );
+  single -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&debuff.judgment.remains<gcd" );
+  single -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=5" );
+  single -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.divine_purpose.react" );
+  single -> add_action( this, "Templar's Verdict", "if=cooldown.wake_of_ashes.remains<gcd*2" );
+  single -> add_action( this, "Wake of Ashes", "if=cooldown.judgment.remains>gcd*2" );
+  single -> add_talent( this, "Zeal", "if=charges=2&holy_power<=4" );
+  single -> add_action( this, "Crusader Strike", "if=charges=2&!talent.the_fires_of_justice.enabled" );
   single -> add_action( this, "Blade of Justice", "if=holy_power<=3" );
   single -> add_talent( this, "Blade of Wrath", "if=holy_power<=3" );
-  single -> add_talent( this, "Zeal", "if=charges=2&holy_power<=4" );
-  single -> add_action( this, "Crusader Strike", "if=charges=2&holy_power<=4" );
   single -> add_talent( this, "Divine Hammer", "if=holy_power<=4" );
+  single -> add_action( this, "Crusader Strike", "if=charges=2&talent.the_fires_of_justice.enabled" );
+  single -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&holy_power>=4" );
+  single -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=4" );
   single -> add_talent( this, "Consecration" );
   single -> add_talent( this, "Zeal", "if=holy_power<=4" );
-  single -> add_action( this, "Crusader Strike", "if=holy_power<=4" );
+  single -> add_action( this, "Crusader Strike", ",if=holy_power<=4" );
+  single -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&holy_power>=3" );
+  single -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=3" );
   single -> add_talent( this, "Blinding Light" );
 }
 
