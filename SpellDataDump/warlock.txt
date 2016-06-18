@@ -598,7 +598,7 @@ Description      : When cast on live targets, the soul of the target is stored a
 
 If cast on a dead target, they are instantly resurrected. Targets resurrect with $3026s1% health and $3026q1% mana.
 
-Name             : Healthstone (id=6262) [Spell Family (5)] 
+Name             : Healthstone (id=6262) [Scaling Spell (-2), Spell Family (5)] 
 Class            : Warlock
 School           : Physical
 Cooldown         : 60 seconds
@@ -611,9 +611,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=2157)     : Direct Heal (10)
-                   Base Value: 15 | Scaled Value: 15 (avg=0.294118) | Target: Self(1)
+                   Base Value: 15 | Scaled Value: 352941.6 (avg=0.294118) | Target: Self(1)
 #2 (id=127600)   : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
-                   Base Value: 30 | Scaled Value: 30 (avg=0.058823) | Target: Self(1)
+                   Base Value: 30 | Scaled Value: 70587.6 (avg=0.058823) | Target: Self(1)
 Description      : $?s56224[Restores $o2 health over $d.][Instantly restores health.]
 Tooltip          : $w2 health restored every $t2 sec.
 
@@ -647,7 +647,7 @@ Cast upon targets who attack, stun, silence or fear the master.
 |cFF777777(Right-Click to toggle)|r
 Tooltip          : Disoriented.
 
-Name             : Whiplash (Special Ability) (id=6360) [Spell Family (57)] 
+Name             : Whiplash (Special Ability) (id=6360) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
 Resource         : 40 Energy
@@ -664,14 +664,14 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .x...
                  : Not a proc (105)
 Effects          :
 #1 (id=2216)     : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 (avg=0.46, dl=0.15) | SP Coefficient: 0.46000 | Radius: 0 - 5 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.46, dl=0.15) | SP Coefficient: 0.46000 | Radius: 0 - 5 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 #2 (id=2217)     : Unknown effect type (144)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 200 | Radius: 5 yards | Target: AOE enemy (instant)(16) -> AOE enemy (instant)(16)
 #3 (id=204720)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Radius: 5 yards | Target: AOE enemy (instant)(16) -> AOE enemy (instant)(16)
 Description      : Deals $s1 Shadow damage and knocks back all enemies within $6360A1 yards.
 
-Name             : Mortal Coil (id=6789) [Spell Family (5)] 
+Name             : Mortal Coil (id=6789) [Scaling Spell (11), Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
 Resource         : 6% Base Mana (66000 @Level 110)
@@ -703,7 +703,7 @@ Effects          :
 Description      : Horrifies an enemy target into fleeing, incapacitating for $6789d and healing you for $108396m1% of maximum health.
 Tooltip          : Incapacitated.
 
-Name             : Lash of Pain (Basic Attack) (id=7814) [Spell Family (57)] 
+Name             : Lash of Pain (Basic Attack) (id=7814) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
 Resource         : 60 Energy
@@ -719,14 +719,14 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=3106)     : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 (avg=0.907) | SP Coefficient: 0.90700 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.907) | SP Coefficient: 0.90700 | Target: Enemy(6)
 #2 (id=113763)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : Lashes the target for $s1 Shadow damage.
 
 |cFF777777(Right-Click to toggle)|r
 
-Name             : Lesser Invisibility (Special Ability) (id=7870) [Spell Family (57)] 
+Name             : Lesser Invisibility (Special Ability) (id=7870) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
 Resource         : 20 Energy
@@ -757,7 +757,7 @@ Reapply when the $?s108499[Shivarra][Succubus] leaves combat.
 |cFF777777(Right-Click to toggle)|r
 Tooltip          : Invisible.
 
-Name             : Suffering (Special Ability) (id=17735) [Spell Family (57)] 
+Name             : Suffering (Special Ability) (id=17735) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
 Resource         : 40 Energy
@@ -775,7 +775,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=9346)     : Unknown effect type (114)
-                   Base Value: 40 | Scaled Value: 40 (avg=1.943) | Target: Enemy(6)
+                   Base Value: 40 | Scaled Value: 0 (avg=1.943) | Target: Enemy(6)
 #2 (id=9347)     : Apply Aura (6) | Taunt (11)
                    Base Value: 200 | Scaled Value: 200 | Target: Enemy(6)
 Description      : The $?s108499[Voidlord][Voidwalker] taunts the target to attack it for $d, and increases its threat against the target.
@@ -786,7 +786,7 @@ Taunts the current target if it is not attacking the $?s108499[Voidlord][Voidwal
 |cFF777777(Right-Click to toggle)|r
 Tooltip          : Taunted.
 
-Name             : Shadow Bulwark (Special Ability) (id=17767) [Spell Family (57)] 
+Name             : Shadow Bulwark (Special Ability) (id=17767) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
 Resource         : 10 Energy
@@ -944,7 +944,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(227) | Target: Enemy(6)
 Description      : Counters the enemy's spellcast, preventing any spell from that school of magic from being cast for $19647d.
 
-Name             : Immolation (id=20153) [Spell Family (5)] 
+Name             : Immolation (id=20153) [Scaling Spell (11), Spell Family (5)] 
 Class            : Warlock
 School           : Fire
 Spell Level      : 50
@@ -957,7 +957,7 @@ Attributes       : ....x... ........ x.x..... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=11232)    : School Damage: fire (2)
-                   Base Value: 25 | Scaled Value: 55 (avg=0.1) | Points Per Level: 0.5 | SP Coefficient: 0.45000 | Radius: 0 - 12 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 25 | Scaled Value: 0 (avg=0.1) | Points Per Level: 0.5 | SP Coefficient: 0.45000 | Radius: 0 - 12 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=242870)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 Description      : Deals Fire damage to all enemies near the caster.
@@ -1020,7 +1020,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 Description      : Damage dealt by pets increased by $s1%.
 
-Name             : Infernal Awakening (id=22703) [Spell Family (5)] 
+Name             : Infernal Awakening (id=22703) [Scaling Spell (11), Spell Family (5)] 
 Class            : Warlock
 School           : Fire
 Spell Level      : 50
@@ -1035,7 +1035,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=12912)    : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 (avg=1, dl=0.12) | SP Coefficient: 0.50000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 0 (avg=1, dl=0.12) | SP Coefficient: 0.50000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 #2 (id=12913)    : Apply Aura (6) | Stun (12)
                    Base Value: 3 | Scaled Value: 3 | SP Coefficient: 1.00000 | Radius: 0 - 10 yards | Mechanic: Unknown(95) | Target: Unknown(87) -> AOE enemy (instant)(16)
 Description      : An infernal falls from the sky, dealing $s1 Fire damage to all targets, stunning them for $d.
@@ -1077,7 +1077,7 @@ Tooltip          : Embeded with a demon seed that will soon explode, dealing Sha
 
 The seed will detonate early if the target is hit by other detonations, or takes $w3 damage from your spells.
 
-Name             : Seed of Corruption (id=27285) [Spell Family (5)] 
+Name             : Seed of Corruption (id=27285) [Scaling Spell (11), Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
 Spell Level      : 72
@@ -1092,7 +1092,7 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=16922)    : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 (avg=0.91, dl=0.15) | SP Coefficient: 1.20000 | Radius: 0 - 10 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.91, dl=0.15) | SP Coefficient: 1.20000 | Radius: 0 - 10 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : $@spelldesc27243
 
 Name             : Arcane Torrent (Racial) (id=28730) 
@@ -1237,7 +1237,7 @@ Use anytime the $?s108499[Wrathguard][Felguard]'s target is further than 8 yards
 |cFF777777(Right-Click to toggle)|r
 Tooltip          : Movement speed increased by $s3%.
 
-Name             : Pursuit (id=30153) 
+Name             : Pursuit (id=30153) [Scaling Spell (11)] 
 Class            : Warlock
 School           : Physical
 Range            : 50000 yards
@@ -1346,7 +1346,7 @@ Effects          :
 Description      : Interrupts casting for $d.
 Tooltip          : Interrupted.
 
-Name             : Blood Fury (Racial) (id=33702) 
+Name             : Blood Fury (Racial) (id=33702) [Scaling Spell (-1)] 
 Class            : Mage, Warlock
 Race             : Orc
 School           : Physical
@@ -1361,9 +1361,9 @@ Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=118955)   : Apply Aura (6) | Modify Healing Power (135)
-                   Base Value: 5 | Scaled Value: 5 (avg=1.32) | Target: Self(1)
+                   Base Value: 5 | Scaled Value: 2242.68 (avg=1.32) | Target: Self(1)
 #2 (id=23584)    : Apply Aura (6) | Damage Done (13)
-                   Base Value: 5 | Scaled Value: 223 (avg=1.32) | Points Per Level: 2 | Misc Value: 0x7e | Target: Self(1)
+                   Base Value: 5 | Scaled Value: 2242.68 (avg=1.32) | Points Per Level: 2 | Misc Value: 0x7e | Target: Self(1)
 Description      : Increases your spell power by $s2.  Lasts $d.
 Tooltip          : Spell power increased by $s2.
 
@@ -1917,7 +1917,7 @@ Effects          :
 Description      : The $?s108499[Wrathguard][Felguard] hurls its weapon, stunning the target for $89766d.
 Tooltip          : Stunned for $d.
 
-Name             : Flee (Special Ability) (id=89792) [Spell Family (57)] 
+Name             : Flee (Special Ability) (id=89792) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
 School           : Fire
 Resource         : 20 Energy
@@ -1964,7 +1964,7 @@ Cast only upon master when $ghe:she; is unable to cast spells due to a Magic eff
 
 |cFF777777(Right-Click to toggle)|r
 
-Name             : Flee (Special Ability) (id=93282) [Spell Family (5)] 
+Name             : Flee (Special Ability) (id=93282) [Scaling Spell (11), Spell Family (5)] 
 Class            : Warlock
 School           : Fire
 Resource         : 2% Base Mana (22000 @Level 110)
@@ -2108,7 +2108,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 55659 | Misc Value 2: 0xc8a | Target: Unknown(63)
 Description      : $@spelldesc105174
 
-Name             : Fel Firebolt (Basic Attack) (id=104318) [Spell Family (5)] 
+Name             : Fel Firebolt (Basic Attack) (id=104318) [Scaling Spell (11), Spell Family (5)] 
 Class            : Warlock
 School           : Fire
 Spell Level      : 1
@@ -2124,7 +2124,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=113740)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 (avg=0.242, dl=0.05) | SP Coefficient: 0.15000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.242, dl=0.05) | SP Coefficient: 0.15000 | Target: Enemy(6)
 #2 (id=113741)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : Deals $s1 Fire damage to a target.
@@ -2701,7 +2701,7 @@ Effects          :
 Description      : Maximum health increased by $s1%.
 Tooltip          : Maximum health increased by $s1%.
 
-Name             : Fellash (Special Ability) (id=115770) [Spell Family (57)] 
+Name             : Fellash (Special Ability) (id=115770) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
 Resource         : 40 Energy
@@ -2718,14 +2718,14 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .x...
                  : Not a proc (105)
 Effects          :
 #1 (id=129829)   : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 (avg=0.46, dl=0.15) | SP Coefficient: 0.46000 | Radius: 0 - 5 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.46, dl=0.15) | SP Coefficient: 0.46000 | Radius: 0 - 5 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 #2 (id=129830)   : Unknown effect type (144)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 200 | Radius: 5 yards | Target: AOE enemy (instant)(16) -> AOE enemy (instant)(16)
 #3 (id=204722)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Radius: 5 yards | Target: AOE enemy (instant)(16) -> AOE enemy (instant)(16)
 Description      : Deals $s1 Shadow damage and instantly knocks back all enemies within $115770A1 yards.
 
-Name             : Optical Blast (Special Ability) (id=115781) [Spell Family (57)] 
+Name             : Optical Blast (Special Ability) (id=115781) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
 Resource         : 20 Energy
@@ -2913,7 +2913,7 @@ Abyssal: $@spellname171018][]$?!s108499&s152107[
 Doomguard: $@spellname171138
 Infernal: $@spellname171017][]
 
-Name             : Cauterize Master (Special Ability) (id=119899) [Spell Family (57)] 
+Name             : Cauterize Master (Special Ability) (id=119899) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
 School           : Fire
 Resource         : 40 Energy
@@ -3358,7 +3358,7 @@ Dodge and Parry chance increased by $s2%.
 
 Physical damage taken reduced by $s4%.
 
-Name             : Seethe (Special Ability) (id=171014) [Spell Family (57)] 
+Name             : Seethe (Special Ability) (id=171014) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
 School           : Fire
 Spell Level      : 15
@@ -3375,7 +3375,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=242711)   : Unknown effect type (114)
-                   Base Value: 40 | Scaled Value: 40 (avg=1.943) | Target: Enemy(6)
+                   Base Value: 40 | Scaled Value: 0 (avg=1.943) | Target: Enemy(6)
 #2 (id=242712)   : Apply Aura (6) | Taunt (11)
                    Base Value: 200 | Scaled Value: 200 | Target: Enemy(6)
 Description      : The $?s108499[Abyssal][Infernal] taunts the target to attack it, and increases threat that it generates against the target by for $d.
@@ -3386,7 +3386,7 @@ Taunts the current target if it is not attacking the $?s108499[Abyssal][Infernal
 |cFF777777(Right-Click to toggle)|r
 Tooltip          : Taunted.
 
-Name             : Meteor Strike (id=171017) [Spell Family (5)] 
+Name             : Meteor Strike (id=171017) [Scaling Spell (11), Spell Family (5)] 
 Class            : Warlock
 School           : Fire
 Spell Level      : 50
@@ -3401,13 +3401,13 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=242715)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 (avg=1, dl=0.12) | SP Coefficient: 0.50000 | Radius: 0 - 10 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 0 (avg=1, dl=0.12) | SP Coefficient: 0.50000 | Radius: 0 - 10 yards | Target: Custom(18) -> AOE enemy (instant)(16)
 #2 (id=242716)   : Apply Aura (6) | Stun (12)
                    Base Value: 3 | Scaled Value: 3 | SP Coefficient: 1.00000 | Radius: 0 - 10 yards | Mechanic: Unknown(95) | Target: Custom(18) -> AOE enemy (instant)(16)
 Description      : The infernal releases a powerful burst of flames, dealing $s1 Fire damage to nearby targets, and stunning them for $d.
 Tooltip          : Stunned.
 
-Name             : Meteor Strike (id=171018) [Spell Family (5)] 
+Name             : Meteor Strike (id=171018) [Scaling Spell (11), Spell Family (5)] 
 Class            : Warlock
 School           : Fire
 Spell Level      : 50
@@ -3422,7 +3422,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=242717)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 (avg=1, dl=0.12) | SP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 0 (avg=1, dl=0.12) | SP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Custom(18) -> AOE enemy (instant)(16)
 #2 (id=242718)   : Apply Aura (6) | Stun (12)
                    Base Value: 3 | Scaled Value: 3 | SP Coefficient: 1.00000 | Radius: 0 - 10 yards | Mechanic: Unknown(95) | Target: Custom(18) -> AOE enemy (instant)(16)
 Description      : The abyssal releases a powerful burst of flames, dealing $s1 Fire damage to nearby targets, and stunning them for $d.

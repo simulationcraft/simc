@@ -36,7 +36,7 @@ Effects          :
 Description      : Purges the enemy target, removing $m1 beneficial Magic $leffect:effects;.$?(s147762&s51530)
 [ Successfully purging a target grants a stack of Maelstrom Weapon.][]
 
-Name             : Lightning Bolt (id=403) [Spell Family (11)] 
+Name             : Lightning Bolt (id=403) [Scaling Spell (10), Spell Family (11)] 
 Class            : Restoration Shaman
 School           : Nature
 Spell Level      : 1
@@ -283,7 +283,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 9.00000 | Target: Enemy(6)
 Description      : Instantly shocks the target with concussive force, causing up to $s1 Nature damage based on Maelstrom spent.
 
-Name             : Fire Nova (id=8349) [Spell Family (11)] 
+Name             : Fire Nova (id=8349) [Scaling Spell (10), Spell Family (11)] 
 Class            : Shaman
 School           : Fire
 Spell Level      : 12
@@ -300,7 +300,7 @@ Effects          :
 #1 (id=3464)     : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=105012)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 (avg=1.436, dl=0.15) | SP Coefficient: 0.48070 | Radius: 0 - 10 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 0 (avg=1.436, dl=0.15) | SP Coefficient: 0.48070 | Radius: 0 - 10 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 #3 (id=110055)   : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : Causes the Shaman's Flame Shocked targets to emit a wave of flames, inflicting $s2 Fire damage to enemies within $A2 yards of each.
@@ -597,7 +597,7 @@ Description      : Increases haste by $s1% for all party and raid members for $d
 Allies receiving this effect will become Exhausted and unable to benefit from Heroism or Time Warp again for $57723d.
 Tooltip          : Haste increased by $s1%.
 
-Name             : Blood Fury (Racial) (id=33697) 
+Name             : Blood Fury (Racial) (id=33697) [Scaling Spell (-1)] 
 Class            : Shaman, Monk
 Race             : Orc
 School           : Physical
@@ -612,11 +612,11 @@ Attributes       : ....x... ........ x....... ........   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=23581)    : Apply Aura (6) | Modify Attack Power (99)
-                   Base Value: 3 | Scaled Value: 439 (avg=1.32) | Points Per Level: 4 | Target: Self(1)
+                   Base Value: 3 | Scaled Value: 2242.68 (avg=1.32) | Points Per Level: 4 | Target: Self(1)
 #2 (id=23582)    : Apply Aura (6) | Damage Done (13)
-                   Base Value: 5 | Scaled Value: 5 (avg=1.32) | Misc Value: 0x7e | Target: Self(1)
+                   Base Value: 5 | Scaled Value: 2242.68 (avg=1.32) | Misc Value: 0x7e | Target: Self(1)
 #3 (id=116811)   : Apply Aura (6) | Modify Healing Power (135)
-                   Base Value: 5 | Scaled Value: 5 (avg=1.32) | Misc Value: 126 | Target: Self(1)
+                   Base Value: 5 | Scaled Value: 2242.68 (avg=1.32) | Misc Value: 126 | Target: Self(1)
 Description      : Increases your melee attack power by $s1 and your spell power by $s2. Lasts $d.
 Tooltip          : Melee attack power increased by $s1.
 Spell power increased by $s2.
@@ -1650,7 +1650,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=68093)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.50000 | Chain Multiplier: 0.2 | Target: Chain Friendly(45)
-Description      : A slow but efficient wave of healing energy that restores $s1 of a friendly targetâ€™s health.
+Description      : A slow but efficient wave of healing energy that restores $s1 of a friendly target’s health.
 
 Name             : Earthquake (id=77478) [Spell Family (11)] 
 Class            : Shaman
@@ -2192,7 +2192,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 1 | Target: Enemy(6)
 Description      : A massive gust of air that deals $sw1 Physical damage.
 
-Name             : Lava Beam Overload (id=114738) [Spell Family (11)] 
+Name             : Lava Beam Overload (id=114738) [Scaling Spell (10), Spell Family (11)] 
 Class            : Shaman
 School           : Fire
 Resource         : 8% Base Mana (17600 @Level 110)
@@ -2207,7 +2207,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=128188)   : School Damage: fire (2)
-                   Base Value: 190 | Scaled Value: 346.8 - 372.8 (avg=0.816, dl=0.133) | Points Per Level: 1.9 | Value Range: 27 | SP Coefficient: 1.61000 | Chain Multiplier: 1.1 | Chain Targets: 5 | Target: Enemy(6)
+                   Base Value: 190 | Scaled Value: 0 (avg=0.816, dl=0.133) | Points Per Level: 1.9 | Value Range: 27 | SP Coefficient: 1.61000 | Chain Multiplier: 1.1 | Chain Targets: 5 | Target: Enemy(6)
 Description      : Unleash a blast of superheated flame at the enemy, dealing $s1 Fire damage and then jumping to additional nearby enemies. Affects up to $x1 total targets.
 
 Name             : Ancestral Guidance (id=114911) 
@@ -2474,7 +2474,7 @@ Effects          :
 Description      : Smashes an enemy with a rocky fist, stunning the target for $d.
 Tooltip          : Stunned.
 
-Name             : Elemental Blast: Critical Strike (id=118522) [Spell Family (11)] 
+Name             : Elemental Blast: Critical Strike (id=118522) [Scaling Spell (-1), Spell Family (11)] 
 Class            : Shaman
 School           : Elemental
 Range            : 40 yards
@@ -2487,7 +2487,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=135038)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 5 | Scaled Value: 5 (avg=0.706472) | Misc Value: 1792 | Target: Self(1)
+                   Base Value: 5 | Scaled Value: 1200.296 (avg=0.706472) | Misc Value: 1792 | Target: Self(1)
 Description      : $@spelldesc117014
 Tooltip          : Critical Strike increased by $s1.
 
@@ -2509,7 +2509,7 @@ Effects          :
 Description      : Stuns enemies within $A1 yards for $d.
 Tooltip          : Stunned.
 
-Name             : Elemental Blast Overload (id=120588) [Spell Family (11)] 
+Name             : Elemental Blast Overload (id=120588) [Scaling Spell (10), Spell Family (11)] 
 Class            : Shaman
 School           : Elemental
 Range            : 40 yards
@@ -2839,7 +2839,7 @@ Effects          :
                    Affected Spells: Healing Stream (5672), Healing Stream Totem (52042)
 Description      : Healing Stream Totem now heals two targets at once.
 
-Name             : Frostbrand Attack (id=147732) [Spell Family (11)] 
+Name             : Frostbrand Attack (id=147732) [Scaling Spell (10), Spell Family (11)] 
 Class            : Shaman
 School           : Frost
 Spell Level      : 1
@@ -3295,7 +3295,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000 | Target: Self(1)
 Description      : $@spelldesc165610
 
-Name             : Elemental Blast: Haste (id=173183) [Spell Family (11)] 
+Name             : Elemental Blast: Haste (id=173183) [Scaling Spell (-1), Spell Family (11)] 
 Class            : Shaman
 School           : Elemental
 Range            : 40 yards
@@ -3308,11 +3308,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=246371)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 5 | Scaled Value: 5 (avg=0.706472) | Misc Value: 917504 | Target: Self(1)
+                   Base Value: 5 | Scaled Value: 1200.296 (avg=0.706472) | Misc Value: 917504 | Target: Self(1)
 Description      : $@spelldesc117014
 Tooltip          : Haste increased by $s1.
 
-Name             : Elemental Blast: Mastery (id=173184) [Spell Family (11)] 
+Name             : Elemental Blast: Mastery (id=173184) [Scaling Spell (-1), Spell Family (11)] 
 Class            : Shaman
 School           : Elemental
 Range            : 40 yards
@@ -3325,7 +3325,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=246377)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 5 | Scaled Value: 5 (avg=0.706472) | Misc Value: 33554432 | Target: Self(1)
+                   Base Value: 5 | Scaled Value: 1200.296 (avg=0.706472) | Misc Value: 33554432 | Target: Self(1)
 Description      : $@spelldesc117014
 Tooltip          : Mastery increased by $s1.
 
@@ -3521,7 +3521,7 @@ Effects          :
 Description      : Summons an Earthen Spike under an enemy, dealing $s1 Physical damage and increasing Physical and Nature damage you deal to the target by $s2% for $d.
 Tooltip          : Suffering $s2% increased Nature and Physical damage from the Shaman.
 
-Name             : Lightning Bolt (id=188196) [Spell Family (11)] 
+Name             : Lightning Bolt (id=188196) [Scaling Spell (10), Spell Family (11)] 
 Class            : Elemental Shaman
 School           : Nature
 Spell Level      : 1
@@ -3542,7 +3542,7 @@ Description      : Hurls a bolt of lightning at the target, dealing $s1 Nature d
 
 |cFFFFFFFFGenerates $214815s1 Maelstrom.|r 
 
-Name             : Flame Shock (id=188389) [Spell Family (11)] 
+Name             : Flame Shock (id=188389) [Scaling Spell (10), Spell Family (11)] 
 Class            : Elemental Shaman
 School           : Fire
 Resource         : 0 - 20 Maelstrom
@@ -4209,7 +4209,7 @@ Description      : Assaults your target with earthen power, dealing $s1 Nature d
 
 |cFFFFFFFFGenerates $s2 Maelstrom.|r
 
-Name             : Flametongue (id=193796) [Spell Family (11)] 
+Name             : Flametongue (id=193796) [Scaling Spell (10), Spell Family (11)] 
 Class            : Enhancement Shaman
 School           : Fire
 Spell Level      : 12
@@ -5327,7 +5327,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Summons a Resonance Totem near the caster for $d that generates $202192s1 Maelstrom every $202192t1 sec.
 
-Name             : Resonance Totem (id=202192) [Spell Family (11), Passive] 
+Name             : Resonance Totem (id=202192) [Scaling Spell (10), Spell Family (11), Passive] 
 Class            : Shaman
 School           : Nature
 Spell Level      : 1
@@ -5630,7 +5630,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self(1)
 Description      : Summons an Ember Totem near the caster for $d that increases damage over time from your Flame Shock by $s2%.
 
-Name             : Ember Totem (id=210658) [Spell Family (11), Passive] 
+Name             : Ember Totem (id=210658) [Scaling Spell (10), Spell Family (11), Passive] 
 Class            : Shaman
 School           : Fire
 Spell Level      : 1
@@ -5650,7 +5650,7 @@ Effects          :
 Description      : $@spelldesc210657
 Tooltip          : Increases Flame Shock damage over time by $s1%.
 
-Name             : Tailwind Totem (id=210659) [Spell Family (11), Passive] 
+Name             : Tailwind Totem (id=210659) [Scaling Spell (10), Spell Family (11), Passive] 
 Class            : Shaman
 School           : Nature
 Spell Level      : 1

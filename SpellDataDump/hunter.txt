@@ -1,6 +1,6 @@
 SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21796)
 
-Name             : Mend Pet (id=136) [Spell Family (9)] 
+Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Nature
 Spell Level      : 1
@@ -449,7 +449,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1613 | Target: Unknown(87)
 Description      : $@spelldesc191433
 
-Name             : Claw (Basic Attack) (id=16827) [Spell Family (9)] 
+Name             : Claw (Basic Attack) (id=16827) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Resource         : 25 Focus
@@ -466,14 +466,14 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=8519)     : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 (avg=0.114, dl=0.35) | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.114, dl=0.35) | Target: Enemy(6)
 Description      : Claw the enemy, causing ${$<damage>} damage.  Deals $62762s2% more damage and costs $62762s1% more Focus when your pet has 50 or more Focus.
 Variables        : $ce=$?s152244[${1.7}][${1.5}]
 $spiked=$?s53184[${1.1}][${1.0}]
 $blink=$?s130392[${1.5}][${1.0}]
 $damage=${$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
 
-Name             : Bite (Basic Attack) (id=17253) [Spell Family (9)] 
+Name             : Bite (Basic Attack) (id=17253) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter, Death Knight
 School           : Physical
 Resource         : 25 Focus
@@ -491,7 +491,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=8994)     : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 (avg=0.114, dl=0.35) | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.114, dl=0.35) | Target: Enemy(6)
 Description      : Bite the enemy, causing ${$<damage>} damage.  Deals $62762s2% more damage and costs $62762s1% more Focus when your pet has 50 or more Focus.
 Variables        : $ce=$?s152244[${1.7}][${1.5}]
 $spiked=$?s53184[${1.1}][${1.0}]
@@ -528,7 +528,7 @@ Effects          :
 Description      : A stinging shot that puts the target to sleep, incapacitating them for $d. Damage will cancel the effect. Usable while moving.
 Tooltip          : Incapacitated.
 
-Name             : Aimed Shot (id=19434) [Spell Family (9)] 
+Name             : Aimed Shot (id=19434) [Scaling Spell (4), Spell Family (9)] 
 Class            : Marksmanship Hunter
 School           : Physical
 Resource         : 50 Focus
@@ -734,7 +734,7 @@ Effects          :
 Description      : Shows the location of all nearby undead on the minimap.
 Tooltip          : Tracking Undead.
 
-Name             : Blood Fury (Racial) (id=20572) 
+Name             : Blood Fury (Racial) (id=20572) [Scaling Spell (-1)] 
 Class            : Warrior, Hunter, Rogue, Death Knight
 Race             : Orc
 School           : Physical
@@ -749,9 +749,9 @@ Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=11564)    : Apply Aura (6) | Modify Attack Power (99)
-                   Base Value: 3 | Scaled Value: 439 (avg=1.32) | Points Per Level: 4 | Target: Self(1)
+                   Base Value: 3 | Scaled Value: 2242.68 (avg=1.32) | Points Per Level: 4 | Target: Self(1)
 #2 (id=11565)    : Apply Aura (6) | Modify Ranged Attack Power (124)
-                   Base Value: 3 | Scaled Value: 439 (avg=1.32) | Points Per Level: 4 | Target: Self(1)
+                   Base Value: 3 | Scaled Value: 2242.68 (avg=1.32) | Points Per Level: 4 | Target: Self(1)
 Description      : Increases attack power by $s1. Lasts $d.
 Tooltip          : Attack power increased by $s1.
 
@@ -809,7 +809,7 @@ Effects          :
 Description      : Command your pet to intimidate the target, stunning it for $24394d.
 Tooltip          : Stunned.
 
-Name             : Bloody Screech (Special Ability) (id=24423) [Spell Family (9)] 
+Name             : Bloody Screech (Special Ability) (id=24423) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 1
@@ -902,7 +902,7 @@ Effects          :
 Description      : Interrupts casting for $d.
 Tooltip          : Interrupted.
 
-Name             : Kill Command (id=34026) [Spell Family (9)] 
+Name             : Kill Command (id=34026) [Scaling Spell (4), Spell Family (9)] 
 Class            : Beast Mastery Hunter
 School           : Physical
 Resource         : 30 Focus
@@ -1015,7 +1015,7 @@ Effects          :
 #1 (id=38206)    : Create Item (24)
                    Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 
-Name             : Smack (Basic Attack) (id=49966) [Spell Family (9)] 
+Name             : Smack (Basic Attack) (id=49966) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Resource         : 25 Focus
@@ -1032,14 +1032,14 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=42080)    : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 (avg=0.114, dl=0.35) | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.114, dl=0.35) | Target: Enemy(6)
 Description      : Smack the enemy, causing ${$<damage>} damage.  Deals $62762s2% more damage and costs $62762s1% more Focus when your pet has 50 or more Focus.
 Variables        : $ce=$?s152244[${1.7}][${1.5}]
 $spiked=$?s53184[${1.1}][${1.0}]
 $blink=$?s130392[${1.5}][${1.0}]
 $damage=${$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
 
-Name             : Ankle Crack (Special Ability) (id=50433) [Spell Family (9)] 
+Name             : Ankle Crack (Special Ability) (id=50433) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 20
@@ -1295,7 +1295,7 @@ Effects          :
 Description      : Your pet simultaneously breathes frost and lightning at an enemy target, slowing the target for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
-Name             : Monstrous Bite (Exotic Ability) (id=54680) [Spell Family (9)] 
+Name             : Monstrous Bite (Exotic Ability) (id=54680) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 20
@@ -1848,7 +1848,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | Target: Unknown(32)
 Description      : Summons your fifth pet to you.
 
-Name             : Kill Command (id=83381) [Spell Family (9)] 
+Name             : Kill Command (id=83381) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 1
@@ -1862,7 +1862,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=83776)    : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 (avg=0.75) | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.75) | Target: Enemy(6)
 Description      : $@spelldesc34026
 
 Name             : Mail Specialization (Passive) (id=86538) [Passive, Hidden] 
@@ -1964,7 +1964,7 @@ Description      : Increases haste by $s1% for all party and raid members for $d
 Allies receiving this effect will become Sated and unable to benefit from Ancient Hysteria or similar effects again for $57724d.
 Tooltip          : Haste increased by $s1%.
 
-Name             : Spirit Mend (Exotic Ability) (id=90361) [Spell Family (9)] 
+Name             : Spirit Mend (Exotic Ability) (id=90361) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Nature
 Resource         : 5 Focus
@@ -1981,9 +1981,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=93520)    : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 (avg=1.1) | Target: Friend(21)
+                   Base Value: 1 | Scaled Value: 0 (avg=1.1) | Target: Friend(21)
 #2 (id=93521)    : Apply Aura (6) | Periodic Heal: every 2 seconds (8)
-                   Base Value: 1 | Scaled Value: 1 (avg=0.423) | Target: Friend(21)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.423) | Target: Friend(21)
 Description      : The Spirit Beast heals the current friendly target for ${$m1+(($RAP*0.6)*3*1.0504)} plus an additional ${$m2+(($RAP*0.6)*2*1.0504)} over $d.
 Tooltip          : Heals $w2 every $t2 sec for $d.
 
@@ -2003,7 +2003,7 @@ Effects          :
 #1 (id=94364)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
-Name             : Froststorm Breath (Exotic Ability) (id=92380) [Spell Family (9)] 
+Name             : Froststorm Breath (Exotic Ability) (id=92380) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Froststorm
 Resource         : 10 Focus and 5 Focus per second or tick
@@ -2070,7 +2070,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Allows you to give commands to control your pet.
 
-Name             : Burrow Attack (Exotic Ability) (id=93433) [Spell Family (9)] 
+Name             : Burrow Attack (Exotic Ability) (id=93433) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Nature
 Resource         : 10 Focus and 5 Focus per second or tick
@@ -2144,7 +2144,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Enables Worgens to switch between human and Worgan forms
 
-Name             : Burrow Attack (Exotic Ability) (id=95714) [Spell Family (9)] 
+Name             : Burrow Attack (Exotic Ability) (id=95714) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Nature
 Spell Level      : 20
@@ -2157,12 +2157,12 @@ Attributes       : ........ ........ ........ ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=101379)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 (avg=0.074) | Radius: 0 - 10 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.074) | Radius: 0 - 10 yards | Target: Custom(18) -> AOE enemy (instant)(16)
 Description      : The Worm burrows into the earth, shaking the ground above dealing $<damage> Nature damage over $93433d.
 Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
 $damage= ${($95714m1+(($RAP*0.60)*0.096))*8*(1+$@versadmg)*$<bmMastery>}
 
-Name             : Froststorm Breath (Exotic Ability) (id=95725) [Spell Family (9)] 
+Name             : Froststorm Breath (Exotic Ability) (id=95725) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Froststorm
 Spell Level      : 20
@@ -2175,7 +2175,7 @@ Attributes       : ........ ........ x....x.. ........   .......x ........ .x...
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=101401)   : School Damage: froststorm (2)
-                   Base Value: 1 | Scaled Value: 1 (avg=0.221) | Radius: 12 yards | Target: Unknown(24)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.221) | Radius: 12 yards | Target: Unknown(24)
 Description      : $@spelldesc92380
 
 Name             : Posthaste (id=109215) [Spell Family (9), Passive] 
@@ -2267,7 +2267,7 @@ Effects          :
 Description      : Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 Tooltip          : Healing effects received reduced by $w1%.
 
-Name             : Narrow Escape (id=115928) [Spell Family (9)] 
+Name             : Narrow Escape (id=115928) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 1
@@ -2321,7 +2321,7 @@ Effects          :
 Description      : Breaking the tether of Binding Shot will stun the target for $d (3 sec PvP).
 Tooltip          : Stunned.
 
-Name             : Serpent Sting (id=118253) [Spell Family (9)] 
+Name             : Serpent Sting (id=118253) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Nature
 Spell Level      : 1
@@ -2336,7 +2336,7 @@ Attributes       : ........ ........ x....... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=134592)   : Apply Aura (6) | Periodic Damage: nature every 3 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 (avg=2.6) | AP Coefficient: 0.87000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 0 (avg=2.6) | AP Coefficient: 0.87000 | Target: Enemy(6)
 Description      : Causes $o1 Nature damage over $d.
 Tooltip          : Causes $w1 Nature damage every $t1 seconds.
 
@@ -2681,7 +2681,7 @@ Effects          :
 Description      : Place a tar trap that creates a slick around itself for $13810d when the first enemy approaches it. All enemies within $13810s1 yards will be slowed by $135299s1% while in the area of effect. Trap will exist for $13809d.
 Tooltip          : Movement speed slowed by $s1%.
 
-Name             : Narrow Escape (id=136634) [Spell Family (9)] 
+Name             : Narrow Escape (id=136634) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Nature
 Spell Level      : 1
@@ -2880,11 +2880,12 @@ Effects          :
 #15 (id=260886)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
-Name             : Lightning Blast (id=138374) 
+Name             : Lightning Blast (id=138374) [Scaling Spell (-1)] 
 Class            : Hunter
 School           : Nature
 Resource         : 1000% Base Mana (0 @Level 110)
 Spell Level      : 30
+Max Scaling Level: 90
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
@@ -2897,7 +2898,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=181839)   : School Damage: nature (2)
-                   Base Value: 0 | Scaled Value: 0 (avg=11.68, dl=0.4) | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 626.048 - 939.072 (avg=11.68, dl=0.4) | Target: Enemy(6)
 Description      : Blasts a target for $s1 Nature damage.
 
 Name             : Ancient Zandalari Knowledge (id=138430) [Hidden] 
@@ -3194,7 +3195,7 @@ Effects          :
 Description      : The Clefthoof's skin thickens, causing it to take $s1% less damage for $d.
 Tooltip          : Damage taken reduced by $s1%.
 
-Name             : Deadly Sting (Special Ability) (id=160060) [Spell Family (9)] 
+Name             : Deadly Sting (Special Ability) (id=160060) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 1
@@ -3216,7 +3217,7 @@ Description      : The scorpion lashes out with its tail, stinging the target an
 |Tinterface\icons\ability_criticalstrike.blp:24|t |cFFFFFFFFMortal Wounds|r
 Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 
-Name             : Tendon Rip (Special Ability) (id=160065) [Spell Family (9)] 
+Name             : Tendon Rip (Special Ability) (id=160065) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 20
@@ -3236,7 +3237,7 @@ Effects          :
 Description      : Claw at the target's feet, reducing movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
-Name             : Web Spray (Special Ability) (id=160067) [Spell Family (9)] 
+Name             : Web Spray (Special Ability) (id=160067) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 20
@@ -3526,7 +3527,7 @@ Effects          :
 #2 (id=257005)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 0x7f | Target: Self(1)
 
-Name             : Arcane Shot (id=185358) [Spell Family (9)] 
+Name             : Arcane Shot (id=185358) [Scaling Spell (4), Spell Family (9)] 
 Class            : Marksmanship Hunter
 School           : Arcane
 Spell Level      : 10
@@ -3543,7 +3544,7 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
                  : Ranged ability (1)
 Effects          :
 #1 (id=269119)   : Normalized Weapon Damage (121)
-                   Base Value: 1 | Scaled Value: 1 (avg=1.85) | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 0 (avg=1.85) | Target: Enemy(6)
 #2 (id=269120)   : Weapon Damage% (31)
                    Base Value: 125 | Scaled Value: 1.25 | Target: Enemy(6)
 Description      : A quick shot that causes $sw2 Arcane damage.
@@ -6029,7 +6030,7 @@ Effects          :
                    Affected Spells: Vulnerable (187131)
 Description      : Gain the patience of a veteran sniper, increasing your maximum focus by $s1 and causing Vulnerable to increase your Marked Shot and Aimed Shot damage by ${25+$m2}%, but only last ${30+$m3/1000} sec and no longer stack.
 
-Name             : Piercing Shot (id=213678) [Spell Family (9)] 
+Name             : Piercing Shot (id=213678) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Resource         : 20 - 100 Focus

@@ -35,7 +35,7 @@ Effects          :
 Description      : Activates a freezing aura for $d that creates ice beneath your feet, allowing party or raid members within $a1 yards to walk on water.  Usable while mounted, but being attacked or damaged will cancel the effect.
 Tooltip          : Grants the ability to walk across water.
 
-Name             : Bite (Basic Attack) (id=17253) [Spell Family (9)] 
+Name             : Bite (Basic Attack) (id=17253) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter, Death Knight
 School           : Physical
 Resource         : 25 Focus
@@ -53,14 +53,14 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=8994)     : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 (avg=0.114, dl=0.35) | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.114, dl=0.35) | Target: Enemy(6)
 Description      : Bite the enemy, causing ${$<damage>} damage.  Deals $62762s2% more damage and costs $62762s1% more Focus when your pet has 50 or more Focus.
 Variables        : $ce=$?s152244[${1.7}][${1.5}]
 $spiked=$?s53184[${1.1}][${1.0}]
 $blink=$?s130392[${1.5}][${1.0}]
 $damage=${$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
 
-Name             : Blood Fury (Racial) (id=20572) 
+Name             : Blood Fury (Racial) (id=20572) [Scaling Spell (-1)] 
 Class            : Warrior, Hunter, Rogue, Death Knight
 Race             : Orc
 School           : Physical
@@ -75,9 +75,9 @@ Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=11564)    : Apply Aura (6) | Modify Attack Power (99)
-                   Base Value: 3 | Scaled Value: 439 (avg=1.32) | Points Per Level: 4 | Target: Self(1)
+                   Base Value: 3 | Scaled Value: 2242.68 (avg=1.32) | Points Per Level: 4 | Target: Self(1)
 #2 (id=11565)    : Apply Aura (6) | Modify Ranged Attack Power (124)
-                   Base Value: 3 | Scaled Value: 439 (avg=1.32) | Points Per Level: 4 | Target: Self(1)
+                   Base Value: 3 | Scaled Value: 2242.68 (avg=1.32) | Points Per Level: 4 | Target: Self(1)
 Description      : Increases attack power by $s1. Lasts $d.
 Tooltip          : Attack power increased by $s1.
 
@@ -226,7 +226,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 24207 | Misc Value 2: 0x2af | Target: Unknown(86)
 Description      : $@spelldesc42650
 
-Name             : Death and Decay (id=43265) [Spell Family (15)] 
+Name             : Death and Decay (id=43265) [Scaling Spell (1), Spell Family (15)] 
 Class            : Blood Unholy Death Knight
 School           : Shadow
 Resource         : 1 Rune
@@ -248,7 +248,7 @@ Effects          :
 #1 (id=34958)    : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Radius: 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 #2 (id=105194)   : Dummy (3)
-                   Base Value: 26 | Scaled Value: 26 (avg=0.041) | Radius: 8 yards | Target: Unknown(87) -> AOE enemy(28)
+                   Base Value: 26 | Scaled Value: 0 (avg=0.041) | Radius: 8 yards | Target: Unknown(87) -> AOE enemy(28)
 #3 (id=129192)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #4 (id=274827)   : Unknown effect type (179)
@@ -437,7 +437,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(227) | Target: Enemy(6)
 Description      : Smash the target's mind with cold, interrupting spellcasting and preventing any spell in that school from being cast for $d.
 
-Name             : Death Coil (id=47541) [Spell Family (15)] 
+Name             : Death Coil (id=47541) [Scaling Spell (1), Spell Family (15)] 
 Class            : Unholy Death Knight
 School           : Shadow
 Resource         : 35 Runic Power
@@ -454,7 +454,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .xx..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=39752)    : Dummy (3)
-                   Base Value: 167 | Scaled Value: 167 (avg=3) | Target: Enemy(6)
+                   Base Value: 167 | Scaled Value: 0 (avg=3) | Target: Enemy(6)
 Description      : Fires a blast of unholy energy at the target, causing $47632s1 Shadow damage to an enemy$?s49530[ and restoring $196263s1 Energy to your ][]$?s49530&?s207313[abomination]?s49530[ghoul][].
 Variables        : $mastery=$?s55090[${((100+$77515m1)/100)}][${1.00}]
 $blood=$?a48263[${1.2}][${1.0}]
@@ -664,7 +664,7 @@ Description      : Summons a rune weapon for $d that mirrors your melee attacks 
 
 While active, you gain $81256s1% parry chance.
 
-Name             : Frost Strike (id=49143) [Spell Family (15)] 
+Name             : Frost Strike (id=49143) [Scaling Spell (1), Spell Family (15)] 
 Class            : Frost Death Knight
 School           : Frost
 Resource         : 25 Runic Power
@@ -1034,7 +1034,7 @@ Effects          :
 Description      : $@spelldesc53343
 Tooltip          : Frost damage taken from the Death Knight's abilities increased by $s1%.
 
-Name             : Gargoyle Strike (id=51963) [Spell Family (15)] 
+Name             : Gargoyle Strike (id=51963) [Scaling Spell (1), Spell Family (15)] 
 Class            : Death Knight
 School           : Shadowstorm
 Spell Level      : 20
@@ -1049,7 +1049,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=44400)    : School Damage: shadowstorm (2)
-                   Base Value: 1 | Scaled Value: 1 (avg=0.5, dl=0.5) | SP Coefficient: 1.33000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.5, dl=0.5) | SP Coefficient: 1.33000 | Target: Enemy(6)
 Description      : Inflicts Plague (Nature and Shadow) damage to an enemy.
 
 Name             : On a Pale Horse (id=51986) [Spell Family (15), Passive] 
@@ -1070,7 +1070,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self(1)
 Description      : You are as hard to stop as death itself, increasing your mounted speed by $s1%.
 
-Name             : Death and Decay (id=52212) [Spell Family (15)] 
+Name             : Death and Decay (id=52212) [Scaling Spell (1), Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
 Range            : 100 yards
@@ -1168,7 +1168,7 @@ Effects          :
 Description      : Affixes your rune weapon with a rune that has a chance to heal you for $53365s2% and increase total Strength by $53365s1% for $53365d.
 Tooltip          : Strength increased by $s1%.
 
-Name             : Blood Plague (id=55078) [Spell Family (15)] 
+Name             : Blood Plague (id=55078) [Scaling Spell (1), Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
 Spell Level      : 55
@@ -1217,7 +1217,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Trigger Spell: 70890 | Target: Enemy(6)
 Description      : An unholy strike that deals $sw3 Physical damage and $70890sw2 Shadow damage, and causes 1 Festering Wound to burst.
 
-Name             : Frost Fever (id=55095) [Spell Family (15)] 
+Name             : Frost Fever (id=55095) [Scaling Spell (1), Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
 Spell Level      : 55
@@ -1622,7 +1622,7 @@ Description      : Transform your $?s207313[abomination]?s58640[geist][ghoul] in
 Tooltip          : $?$w2>0[Transformed into an undead monstrosity.][Gassy.]
 Damage dealt increased by $w1%.
 
-Name             : Death Strike Off-Hand (id=66188) [Spell Family (15)] 
+Name             : Death Strike Off-Hand (id=66188) [Scaling Spell (1), Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
 Range            : 100 yards
@@ -1635,12 +1635,12 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=60359)    : Normalized Weapon Damage (121)
-                   Base Value: 1 | Scaled Value: 1 (avg=0.2) | Chain Multiplier: 5 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.2) | Chain Multiplier: 5 | Target: Enemy(6)
 #2 (id=60360)    : Weapon Damage% (31)
                    Base Value: 250 | Scaled Value: 2.5 | Target: Enemy(6)
 Description      : $@spelldesc49998
 
-Name             : Frost Strike Off-Hand (id=66196) [Spell Family (15)] 
+Name             : Frost Strike Off-Hand (id=66196) [Scaling Spell (1), Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
 Range            : 100 yards
@@ -1659,7 +1659,7 @@ Effects          :
                    Base Value: 225 | Scaled Value: 2.25 | Target: Enemy(6)
 Description      : Instantly strike the enemy with your off-hand weapon, causing $sw2 Frost damage.
 
-Name             : Obliterate Off-Hand (id=66198) [Spell Family (15)] 
+Name             : Obliterate Off-Hand (id=66198) [Scaling Spell (1), Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
 Range            : 100 yards
@@ -1974,7 +1974,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 1 - 6 | Value Range: 6 | SP Coefficient: 1.00000 | Misc Value: 90
 Description      : Gives a chance to parry enemy melee attacks.
 
-Name             : Festering Strike (id=85948) [Spell Family (15)] 
+Name             : Festering Strike (id=85948) [Scaling Spell (1), Spell Family (15)] 
 Class            : Unholy Death Knight
 School           : Physical
 Resource         : 2 Rune
@@ -1991,7 +1991,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=87374)    : Normalized Weapon Damage (121)
-                   Base Value: 1 | Scaled Value: 1 (avg=0.433) | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.433) | Target: Enemy(6)
 #2 (id=87375)    : Weapon Damage% (31)
                    Base Value: 400 | Scaled Value: 4 | Target: Enemy(6)
 #3 (id=333923)   : Dummy (3)
@@ -3478,7 +3478,7 @@ Effects          :
 Description      : A pustulent lesion that will burst on death or when damaged by Scourge Strike, dealing $194311s1 Shadow damage and generating $195757s1 Runic Power.
 Tooltip          : Suffering from a wound that will deal ${$194311s1/$s1} Shadow damage when damaged by Scourge Strike.
 
-Name             : Festering Wound (id=194311) [Spell Family (15)] 
+Name             : Festering Wound (id=194311) [Scaling Spell (1), Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
 Spell Level      : 57
@@ -3767,7 +3767,7 @@ Description      : Smash the target, dealing $sw2 Physical damage and generating
 |Tinterface\icons\ability_deathknight_boneshield.blp:24|t |cFFFFFFFFBone Shield|r
 $@spelldesc195181
 
-Name             : Death's Caress (id=195292) [Spell Family (15)] 
+Name             : Death's Caress (id=195292) [Scaling Spell (1), Spell Family (15)] 
 Class            : Blood Death Knight
 School           : Shadow
 Resource         : 1 Rune
@@ -3785,7 +3785,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=286689)   : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 (avg=0.3, dl=0.083) | AP Coefficient: 1.00000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.3, dl=0.083) | AP Coefficient: 1.00000 | Target: Enemy(6)
 #2 (id=293371)   : Trigger Spell: Blood Plague (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 55078 | Target: Enemy(6)
 Description      : Reach out with necrotic tendrils, dealing $s1 Shadow damage and applying Blood Plague to your target.
@@ -3793,7 +3793,7 @@ Description      : Reach out with necrotic tendrils, dealing $s1 Shadow damage a
 |Tinterface\icons\spell_deathknight_bloodplague.blp:24|t |cFFFFFFFFBlood Plague|r
 $@spelldesc55078
 
-Name             : Frost Fever (id=195617) 
+Name             : Frost Fever (id=195617) [Scaling Spell (1)] 
 Class            : Death Knight
 School           : Frost
 Spell Level      : 55
@@ -3814,7 +3814,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 Description      : Grants the Death Knight $s2 runic power.
 
-Name             : Frost Fever (id=195621) [Spell Family (15), Passive, Hidden] 
+Name             : Frost Fever (id=195621) [Scaling Spell (1), Spell Family (15), Passive, Hidden] 
 Class            : Frost Death Knight
 School           : Frost
 Spell Level      : 55
@@ -3927,7 +3927,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.75000 | Radius: 0 - 1.5 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 Description      : Summon glacial spikes from the ground that advance forward, damaging enemies near their eruption point for $s1 frost damage.
 
-Name             : Unholy Vigor (id=196263) 
+Name             : Unholy Vigor (id=196263) [Scaling Spell (1)] 
 Class            : Death Knight
 School           : Shadow
 Spell Level      : 55
@@ -4264,7 +4264,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Target: Self(1)
 Description      : Anti-Magic Shell also increases your maximum health by $s1% for $205725d.
 
-Name             : Heart Strike (id=206930) [Spell Family (15)] 
+Name             : Heart Strike (id=206930) [Scaling Spell (1), Spell Family (15)] 
 Class            : Blood Death Knight
 School           : Physical
 Resource         : 1 Rune
@@ -4544,7 +4544,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Target: Self(1)
 Description      : Consuming the Killing Machine effect has a $s1% chance to cause you to gain $207062s1 Rune.
 
-Name             : Murderous Efficiency (id=207062) 
+Name             : Murderous Efficiency (id=207062) [Scaling Spell (1)] 
 Class            : Death Knight
 School           : Frost
 Spell Level      : 1
@@ -4639,7 +4639,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 207150 | Target: Self(1)
 Description      : While Pillar of Frost is active, your melee critical strikes cause jagged icicles to fall on your nearby enemies, dealing $207150s1 Frost damage.
 
-Name             : Avalanche (id=207150) [Spell Family (15)] 
+Name             : Avalanche (id=207150) [Scaling Spell (5), Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
 Spell Level      : 1
@@ -4654,7 +4654,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=306367)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 (avg=0.323) | AP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.323) | AP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
 Description      : $@spelldesc207142
 
 Name             : Abomination's Might (id=207161) [Spell Family (15), Passive] 
@@ -4677,7 +4677,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 Description      : Obliterate critical strikes have a chance to drive lesser enemies to the ground, stunning them for $207165d. Players are Dazed for $211831d instead.
 
-Name             : Abomination's Might (id=207165) [Spell Family (15)] 
+Name             : Abomination's Might (id=207165) [Scaling Spell (3), Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
 Spell Level      : 1
@@ -4696,7 +4696,7 @@ Effects          :
 Description      : $@spelldesc207161
 Tooltip          : Stunned.
 
-Name             : Blinding Sleet (id=207167) [Spell Family (15)] 
+Name             : Blinding Sleet (id=207167) [Scaling Spell (1), Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
 Spell Level      : 1
@@ -5195,7 +5195,7 @@ Effects          :
 Description      : $@spelldesc194912
 Tooltip          : Remorseless Winter damage increased by $s1%.
 
-Name             : Abomination's Might (id=211831) [Spell Family (15)] 
+Name             : Abomination's Might (id=211831) [Scaling Spell (3), Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
 Spell Level      : 1
@@ -5470,7 +5470,7 @@ Effects          :
 Description      : $@spelldesc207346
 Tooltip          : Scourge Strike damage increased by $s1%.
 
-Name             : Defile (id=218100) [Spell Family (15)] 
+Name             : Defile (id=218100) [Scaling Spell (-1), Spell Family (15)] 
 Class            : Death Knight
 School           : Shadowfrost
 Range            : 100 yards
@@ -5486,7 +5486,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=324699)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 1 | Scaled Value: 1 (avg=0.088235) | Misc Value: 33554432 | Target: Self(1)
+                   Base Value: 1 | Scaled Value: 149.9113 (avg=0.088235) | Misc Value: 33554432 | Target: Self(1)
 Description      : $@spelldesc152280
 Tooltip          : Mastery increased by $s1.
 
@@ -5621,7 +5621,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: runic_power | Target: Self(1)
 Description      : $@spelldesc207104
 
-Name             : Heartbreaker (id=221536) [Passive] 
+Name             : Heartbreaker (id=221536) [Scaling Spell (1), Passive] 
 Class            : Death Knight
 School           : Shadow
 Spell Level      : 55
@@ -5681,7 +5681,7 @@ Description      : Consume shadowy essence.
 
 Recharge time reduced by $s2 sec whenever a Bone Shield charge is consumed.
 
-Name             : Obliterate (id=222024) [Spell Family (15)] 
+Name             : Obliterate (id=222024) [Scaling Spell (1), Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
 Range            : 100 yards
@@ -5701,7 +5701,7 @@ Effects          :
 Description      : $@spelldesc49020
 
 
-Name             : Frost Strike (id=222026) [Spell Family (15)] 
+Name             : Frost Strike (id=222026) [Scaling Spell (1), Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
 Range            : 100 yards

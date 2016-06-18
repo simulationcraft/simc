@@ -784,7 +784,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy(6)
 Description      : A direct strike, dealing $sw1 Physical damage. $s3% chance to reset the remaining cooldown on Shield Slam.
 
-Name             : Blood Fury (Racial) (id=20572) 
+Name             : Blood Fury (Racial) (id=20572) [Scaling Spell (-1)] 
 Class            : Warrior, Hunter, Rogue, Death Knight
 Race             : Orc
 School           : Physical
@@ -799,9 +799,9 @@ Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=11564)    : Apply Aura (6) | Modify Attack Power (99)
-                   Base Value: 3 | Scaled Value: 439 (avg=1.32) | Points Per Level: 4 | Target: Self(1)
+                   Base Value: 3 | Scaled Value: 2242.68 (avg=1.32) | Points Per Level: 4 | Target: Self(1)
 #2 (id=11565)    : Apply Aura (6) | Modify Ranged Attack Power (124)
-                   Base Value: 3 | Scaled Value: 439 (avg=1.32) | Points Per Level: 4 | Target: Self(1)
+                   Base Value: 3 | Scaled Value: 2242.68 (avg=1.32) | Points Per Level: 4 | Target: Self(1)
 Description      : Increases attack power by $s1. Lasts $d.
 Tooltip          : Attack power increased by $s1.
 
@@ -1033,7 +1033,7 @@ Effects          :
 Description      : Interrupts casting for $d.
 Tooltip          : Interrupted.
 
-Name             : Victory Rush (id=34428) [Spell Family (4)] 
+Name             : Victory Rush (id=34428) [Scaling Spell (12), Spell Family (4)] 
 Class            : Arms Protection Warrior
 School           : Physical
 Spell Level      : 10
@@ -2032,7 +2032,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 991
 Description      : $@spelldesc115946
 
-Name             : Bloodbath (id=113344) [Spell Family (4)] 
+Name             : Bloodbath (id=113344) [Scaling Spell (12), Spell Family (4)] 
 Class            : Warrior
 School           : Physical
 Spell Level      : 1
@@ -2047,7 +2047,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : ........ ......x. ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=126202)   : Apply Aura (6) | Periodic Damage: physical every 1 seconds (3)
-                   Base Value: 5 | Scaled Value: 5 (avg=0.094) | Mechanic: Bleed | Target: Enemy(6)
+                   Base Value: 5 | Scaled Value: 0 (avg=0.094) | Mechanic: Bleed | Target: Enemy(6)
 Description      : $@spelldesc12292
 Tooltip          : Bleeding for $w1 every $t1 sec.
 

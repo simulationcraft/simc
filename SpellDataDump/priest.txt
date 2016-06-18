@@ -1410,7 +1410,7 @@ Effects          :
 Description      : $@spelldesc28880
 Tooltip          : Healing $/5;s2% every $t1 seconds.
 
-Name             : Power Word: Barrier (id=62618) [Spell Family (6)] 
+Name             : Power Word: Barrier (id=62618) [Scaling Spell (8), Spell Family (6)] 
 Class            : Discipline Priest
 School           : Holy
 Resource         : 6.3% Base Mana (69300 @Level 110)
@@ -2766,7 +2766,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1087
 Description      : $@spelldesc147072
 
-Name             : Shadowy Apparition (id=148859) [Spell Family (6)] 
+Name             : Shadowy Apparition (id=148859) [Scaling Spell (8), Spell Family (6)] 
 Class            : Priest
 School           : Shadow
 Spell Level      : 1
@@ -2780,7 +2780,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.x ........ .....
                  : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
 Effects          :
 #1 (id=203471)   : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 (avg=0.375) | SP Coefficient: 0.30000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.375) | SP Coefficient: 0.30000 | Target: Enemy(6)
 #2 (id=315217)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: insanity | Target: Self(1)
 Description      : $@spelldesc78203
@@ -4109,7 +4109,7 @@ Description      : Hurl a bolt of slow-moving Shadow energy at the destination, 
 
 |cFFFFFFFFGenerates $/100;s2 Insanity.|r
 
-Name             : Shadow Crash (id=205386) 
+Name             : Shadow Crash (id=205386) [Scaling Spell (8)] 
 Class            : Priest
 School           : Shadow
 Spell Level      : 1
