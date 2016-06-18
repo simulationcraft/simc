@@ -662,6 +662,7 @@ public:
     if ( tactician_per_rage && ab::rng().roll( tactician_per_rage * rage ) )
     {
       p() -> cooldown.colossus_smash -> reset( true );
+      p() -> cooldown.mortal_strike -> reset( true );
       p() -> proc.tactician -> occur();
     }
 
@@ -2472,7 +2473,6 @@ struct ravager_t: public warrior_attack_t
     parse_options( options_str );
     ignore_false_positive = true;
     hasted_ticks = callbacks = false;
-    dot_duration = timespan_t::from_seconds( data().effectN( 4 ).base_value() );
     attack_power_mod.direct = attack_power_mod.tick = 0;
     add_child( ravager );
   }
