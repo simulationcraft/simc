@@ -242,13 +242,13 @@ public:
     const spell_data_t* knight_templar;
     const spell_data_t* final_stand;
     const spell_data_t* aegis_of_light;
-    // Judgment of Light seems to be a recopy from Holy. 
+    // Judgment of Light seems to be a recopy from Holy.
     //const spell_data_t* judgment_of_light;
     const spell_data_t* consecrated_ground;
     const spell_data_t* righteous_protector;
     const spell_data_t* seraphim;
     const spell_data_t* last_defender;
-    
+
     // Retribution
     const spell_data_t* final_verdict;
     const spell_data_t* execution_sentence;
@@ -697,7 +697,7 @@ public:
     if ( p() -> resources.current[ RESOURCE_HEALTH ] < p() -> resources.max[ RESOURCE_HEALTH ] )
     {
       p() -> active_judgment_of_light_proc -> execute();
-      td ( target ) -> buffs.judgment_of_light -> decrement();
+      td ( s -> target ) -> buffs.judgment_of_light -> decrement();
     }
   }
 
@@ -708,7 +708,7 @@ public:
     if ( should_trigger_bom )
       trigger_blessing_of_might( s );
 
-    if ( td( target ) -> buffs.judgment_of_light -> up() )
+    if ( td( s -> target ) -> buffs.judgment_of_light -> up() )
       trigger_judgment_of_light( s );
   }
 
@@ -1017,7 +1017,7 @@ struct avenging_wrath_t : public paladin_spell_t
     : paladin_spell_t( "avenging_wrath", p, p -> specialization() == PALADIN_HOLY ? p -> find_spell( 31842 ) : p -> find_spell( 31884 ) )
   {
     parse_options( options_str );
-    
+
     if ( p -> specialization() == PALADIN_RETRIBUTION )
     {
       if ( p -> talents.crusade -> ok() )
@@ -1713,7 +1713,7 @@ struct holy_shock_t : public paladin_heal_t
     parse_options( options_str );
 
     cd_duration = cooldown -> duration;
-    
+
     // Bonuses from Sanctified Wrath need to be stored for future use
     if ( ( p -> specialization() == PALADIN_HOLY ) && p -> talents.sanctified_wrath -> ok()  )
       cooldown_mult = p -> talents.sanctified_wrath -> effectN( 2 ).percent();
@@ -2807,7 +2807,7 @@ struct judgment_t : public paladin_melee_attack_t
       base_multiplier *= 1.0 + p -> passives.holy_paladin -> effectN( 6 ).percent();
     }
 
-    else if ( p -> specialization() == PALADIN_PROTECTION ) 
+    else if ( p -> specialization() == PALADIN_PROTECTION )
     {
       base_multiplier *= 1.0 + p -> passives.protection_paladin -> effectN( 3 ).percent();
       sotr_cdr = -1.0 * timespan_t::from_seconds( data().effectN( 2 ).base_value() );
@@ -2845,7 +2845,7 @@ struct judgment_t : public paladin_melee_attack_t
       if ( p() -> specialization() == PALADIN_PROTECTION )
         p() -> cooldowns.shield_of_the_righteous -> adjust( s -> result == RESULT_CRIT ? 2.0 * sotr_cdr : sotr_cdr );
     }
-    
+
     // Grand Crusader procs for prot if Crusader's Judgment talented
     if ( p() -> talents.crusaders_judgment -> ok() )
       p() -> trigger_grand_crusader();
@@ -2928,7 +2928,7 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
 
     // no weapon multiplier
     weapon_multiplier = 0.0;
-    
+
     // link needed for Judgment cooldown reduction
     cooldown = p -> cooldowns.shield_of_the_righteous;
   }
@@ -4265,7 +4265,7 @@ double paladin_t::composite_spell_crit() const
 double paladin_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
-  
+
   if ( buffs.crusade -> check() )
     h /= 1.0 + buffs.crusade -> get_haste_bonus();
 
@@ -4470,7 +4470,7 @@ double paladin_t::composite_parry_rating() const
 double paladin_t::temporary_movement_modifier() const
 {
   double temporary = player_t::temporary_movement_modifier();
-  
+
   // shamelessly stolen from warrior_t - see that module for how to add more buffs
 
   // These are ordered in the highest speed movement increase to the lowest, there's no reason to check the rest as they will just be overridden.
