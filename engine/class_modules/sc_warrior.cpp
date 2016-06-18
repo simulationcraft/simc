@@ -3002,6 +3002,18 @@ struct arms_whirlwind_mh_t: public warrior_attack_t
     return am;
   }
 
+  void assess_damage( dmg_e type, action_state_t* s ) override
+  {
+    warrior_attack_t::assess_damage( type, s );
+    if ( p() -> talents.trauma -> ok() )
+    {
+      residual_action::trigger(
+        p() -> active.trauma, // ignite spell
+        s -> target, // target
+        p() -> talents.trauma -> effectN( 1 ).percent() * s -> result_amount );
+    }
+  }
+
   double composite_target_multiplier( player_t* t ) const override
   {
     double am = warrior_attack_t::composite_target_multiplier( t );
@@ -3031,6 +3043,18 @@ struct first_arms_whirlwind_mh_t: public warrior_attack_t
     if ( p() -> artifact.will_of_the_first_king.rank() )
     {
       p() -> resource_gain( RESOURCE_RAGE, p() -> artifact.will_of_the_first_king.data().effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.will_of_the_first_king );
+    }
+  }
+
+  void assess_damage( dmg_e type, action_state_t* s ) override
+  {
+    warrior_attack_t::assess_damage( type, s );
+    if ( p() -> talents.trauma -> ok() )
+    {
+      residual_action::trigger(
+        p() -> active.trauma, // ignite spell
+        s -> target, // target
+        p() -> talents.trauma -> effectN( 1 ).percent() * s -> result_amount );
     }
   }
 
