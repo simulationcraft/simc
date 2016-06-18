@@ -15,7 +15,6 @@
   TODO (prot):
     - Avenger's Shield - artifact / legendary bonuses
     - Blessed Hammer (talent/spell)
-    - Judgment of Light (talent)
     - Seraphim (talent)
     - Last Defender (talent)
     - Improved Block (passive - is this still around?)
@@ -24,9 +23,11 @@
     - Bugfix: check Guarded by the Light's block contribution once spell data is corrected
     - Consecration: Convert from DoT to totem or ground effect or pet, fix HotR triggering condition (medium priority)
     - Aegis of Light: Convert from self-buff to totem/pet with area buff? (low priority)
-    - Final Stand??
+
+    - Everything below this line is super-low priority and can probably be ignored ======
+    - Final Stand?? (like Hand of Reckoning, but AOE)
     - Blessing of Protection/Spellweaving??
-    - Retribution Aura??
+    - Retribution Aura?? (like HS, but would need to be in player_t to trigger off of other players being hit)
 */
 #include "simulationcraft.hpp"
 
@@ -57,6 +58,7 @@ struct paladin_td_t : public actor_target_data_t
   struct buffs_t
   {
     buff_t* debuffs_judgment;
+    buff_t* judgment_of_light;
   } buffs;
 
   paladin_td_t( player_t* target, paladin_t* paladin );
@@ -75,6 +77,7 @@ public:
   heal_t*   active_enlightened_judgments;
   action_t* active_blessing_of_might_proc;
   action_t* active_holy_shield_proc;
+  action_t* active_judgment_of_light_proc;
   heal_t*   active_protector_of_the_innocent;
 
   const special_effect_t* retribution_trinket;
@@ -326,6 +329,7 @@ public:
     active_enlightened_judgments       = nullptr;
     active_blessing_of_might_proc      = nullptr;
     active_holy_shield_proc            = nullptr;
+    active_judgment_of_light_proc      = nullptr;
     active_protector_of_the_innocent   = nullptr;
 
     cooldowns.avengers_shield         = get_cooldown( "avengers_shield" );
@@ -687,12 +691,24 @@ public:
     }
   }
 
+  void trigger_judgment_of_light( action_state_t* s )
+  {
+    if ( p() -> resources.current[ RESOURCE_HEALTH ] < p() -> resources.max[ RESOURCE_HEALTH ] )
+    {
+      p() -> active_judgment_of_light_proc -> execute();
+      td ( target ) -> buffs.judgment_of_light -> decrement();
+    }
+  }
+
   virtual void impact( action_state_t* s )
   {
     ab::impact( s );
 
     if ( should_trigger_bom )
-      trigger_blessing_of_might(s);
+      trigger_blessing_of_might( s );
+
+    if ( td( target ) -> buffs.judgment_of_light -> up() )
+      trigger_judgment_of_light( s );
   }
 
   virtual double cooldown_multiplier() { return 1.0; }
@@ -1736,6 +1752,27 @@ struct holy_shock_t : public paladin_heal_t
       cdm += cooldown_mult;
 
     return cdm;
+  }
+};
+
+// Judgment of Light proc =====================================================
+
+struct judgment_of_light_proc_t : public paladin_heal_t
+{
+  judgment_of_light_proc_t( paladin_t* p )
+    : paladin_heal_t( "judgment_of_light", p, p -> find_spell( 183811 ) ) // proc data stored in 183811
+  {
+    background = true;
+    proc = true;
+    may_miss = false;
+    may_crit = true;
+
+    // it seems this updates dynamically with SP changes and AW because the heal comes from the paladin
+    // thus, we can treat it as a heal cast by the paladin and not worry about snapshotting.
+
+    // NOTE: this is implemented in SimC as a self-heal only. It does NOT proc for other players attacking the boss.
+    // This is mostly done because it's much simpler to code, and for the most part Prot doesn't care about raid healing efficiency.
+    // If Holy wants this to work like the in-game implementation, they'll have to go through the pain of moving things to player_t
   }
 };
 
@@ -2800,6 +2837,9 @@ struct judgment_t : public paladin_melee_attack_t
     {
       td( s -> target ) -> buffs.debuffs_judgment -> trigger();
 
+      if ( p() -> talents.judgment_of_light -> ok() )
+        td( s -> target ) -> buffs.judgment_of_light -> trigger( 40 );
+
       // Judgment hits/crits reduce SotR recharge time
       if ( p() -> specialization() == PALADIN_PROTECTION )
         p() -> cooldowns.shield_of_the_righteous -> adjust( s -> result == RESULT_CRIT ? 2.0 * sotr_cdr : sotr_cdr );
@@ -3241,6 +3281,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
 {
   dots.execution_sentence = target -> get_dot( "execution_sentence", paladin );
   buffs.debuffs_judgment = buff_creator_t( *this, "judgment", paladin -> find_spell( 197277 ));
+  buffs.judgment_of_light = buff_creator_t( *this, "judgment_of_light", paladin -> find_spell( 196941 ) );
 }
 
 // paladin_t::create_action =================================================
@@ -4022,6 +4063,9 @@ void paladin_t::init_spells()
 
   if ( talents.holy_shield -> ok() )
     active_holy_shield_proc = new holy_shield_proc_t( this );
+
+  if ( talents.judgment_of_light -> ok() )
+    active_judgment_of_light_proc = new judgment_of_light_proc_t( this );
 }
 
 // paladin_t::primary_role ==================================================
