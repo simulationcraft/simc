@@ -113,6 +113,7 @@ public:
     buff_t* blessing_of_might;
     buff_t* the_fires_of_justice;
     buff_t* divine_purpose;
+    buff_t* divine_steed;
     buff_t* whisper_of_the_nathrezim;
     buffs::liadrins_fury_unleashed_t* liadrins_fury_unleashed;
 
@@ -374,6 +375,7 @@ public:
   virtual double    composite_parry_rating() const override;
   virtual double    composite_block() const override;
   virtual double    composite_block_reduction() const override;
+  virtual double    temporary_movement_modifier() const override;
 
   // combat outcome functions
   virtual void      assess_damage( school_e, dmg_e, action_state_t* ) override;
@@ -1204,6 +1206,34 @@ struct divine_shield_t : public paladin_spell_t
 
     return paladin_spell_t::ready();
   }
+};
+
+// Divine Steed (Protection, Retribution) =====================================
+
+struct divine_steed_t : public paladin_spell_t
+{
+  divine_steed_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "divine_steed", p, p -> find_spell( "Divine Steed" ) )
+  {
+    parse_options( options_str );
+
+    // disable for Ret unless talent is taken
+    if ( p -> specialization() == PALADIN_RETRIBUTION && ! p -> talents.divine_steed -> ok() )
+      background = true;
+
+    // adjust cooldown based on Knight Templar talent for prot
+    if ( p -> talents.knight_templar -> ok() )
+      cooldown -> duration *= 1.0 + p -> talents.knight_templar -> effectN( 1 ).percent();
+
+  }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
+
+    p() -> buffs.divine_steed -> trigger();
+  }
+
 };
 
 // Denounce =================================================================
@@ -3216,6 +3246,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "divine_hammer"             ) return new divine_hammer_t            ( this, options_str );
   if ( name == "denounce"                  ) return new denounce_t                 ( this, options_str );
   if ( name == "divine_protection"         ) return new divine_protection_t        ( this, options_str );
+  if ( name == "divine_steed"              ) return new divine_steed_t             ( this, options_str );
   if ( name == "divine_shield"             ) return new divine_shield_t            ( this, options_str );
   if ( name == "divine_storm"              ) return new divine_storm_t             ( this, options_str );
   if ( name == "execution_sentence"        ) return new execution_sentence_t       ( this, options_str );
@@ -3410,6 +3441,8 @@ void paladin_t::create_buffs()
   buffs.the_fires_of_justice           = buff_creator_t( this, "the_fires_of_justice" ).spell( find_spell( 209785 ) );
   buffs.blessing_of_might              = buff_creator_t( this, "blessing_of_might" ).spell( find_spell( 203528 ) );
   buffs.divine_purpose                 = buff_creator_t( this, "divine_purpose" ).spell( find_spell( 223819 ) );
+  buffs.divine_steed                   = buff_creator_t( this, "divine_steed", find_spell( "Divine Steed" ) )
+                                          .duration( timespan_t::from_seconds( 3.0 ) ).chance( 1.0 ).default_value( 1.0 ); // TODO: change this to spellid 221883 & see if that automatically captures details
   buffs.whisper_of_the_nathrezim       = buff_creator_t( this, "whisper_of_the_nathrezim" ).spell( find_spell( 207635 ) );
   buffs.liadrins_fury_unleashed        = new buffs::liadrins_fury_unleashed_t( this );
 
@@ -4336,7 +4369,27 @@ double paladin_t::composite_parry_rating() const
   return p;
 }
 
-// paladin_t::target_mitigation =============================================
+// paladin_t::temporary_movement_modifier =====================================
+
+double paladin_t::temporary_movement_modifier() const
+{
+  double temporary = player_t::temporary_movement_modifier();
+  
+  // shamelessly stolen from warrior_t - see that module for how to add more buffs
+
+  // These are ordered in the highest speed movement increase to the lowest, there's no reason to check the rest as they will just be overridden.
+  // Also gives correct benefit numbers.
+  if ( buffs.divine_steed -> up() )
+  {
+    // TODO: replace with commented version once we have spell data
+    temporary = std::max( buffs.divine_steed -> value(), temporary );
+    // temporary = std::max( buffs.divine_steed -> data().effectN( 1 ).percent(), temporary );
+  }
+
+  return temporary;
+}
+
+// paladin_t::target_mitigation ===============================================
 
 void paladin_t::target_mitigation( school_e school,
                                    dmg_e    dt,
@@ -4376,6 +4429,10 @@ void paladin_t::target_mitigation( school_e school,
     if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
       sim -> out_debug.printf( "Damage to %s after Divine Protection is %f", s -> target -> name(), s -> result_amount );
   }
+
+  // Knight Templar
+  if ( talents.knight_templar -> ok() && buffs.divine_steed -> up() )
+      s -> result_amount *= 1.0 + talents.knight_templar -> effectN( 2 ).percent();
 
   // Shield of the Righteous
   if ( buffs.shield_of_the_righteous -> check() && school == SCHOOL_PHYSICAL )
