@@ -198,7 +198,7 @@ timespan_t action_t::distance_targeting_travel_time( action_state_t* /*s*/ ) con
 
 // player_t::get_position_distance ==============================================
 
-double player_t::get_position_distance( double m, double v )
+double player_t::get_position_distance( double m, double v ) const
 {
   double delta_x = this -> x_position - m;
   double delta_y = this -> y_position - v;
@@ -208,14 +208,14 @@ double player_t::get_position_distance( double m, double v )
 
 // player_t::get_player_distance ===============================================
 
-double player_t::get_player_distance( player_t& p )
+double player_t::get_player_distance( player_t& p ) const
 {
   return get_position_distance( p.x_position, p.y_position );
 }
 
 // player_t::get_ground_aoe_distance ===========================================
 
-double player_t::get_ground_aoe_distance( action_state_t& a )
+double player_t::get_ground_aoe_distance( action_state_t& a ) const
 {
   return get_position_distance( a.original_x, a.original_y );
 }
