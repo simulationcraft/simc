@@ -1057,7 +1057,7 @@ struct auto_attack_t: public warrior_attack_t
 struct bladestorm_tick_t: public warrior_attack_t
 {
   bladestorm_tick_t( warrior_t* p, const std::string& name ):
-    warrior_attack_t( name, p, p -> talents.bladestorm -> effectN( 1 ).trigger() )
+    warrior_attack_t( name, p, p -> specialization() == WARRIOR_FURY ? p -> talents.bladestorm -> effectN( 1 ).trigger() : p -> find_class_spell( "Bladestorm" ) -> effectN( 1 ).trigger() )
   {
     dual = true;
     aoe = -1;
