@@ -15,9 +15,6 @@
   TODO (prot):
     - Avenger's Shield - artifact / legendary bonuses
     - Blessed Hammer (talent/spell)
-    - Divine Steed (spell)
-    - Knight Templar (talent)
-    - Aegis of Light (talent/spell)
     - Judgment of Light (talent)
     - Seraphim (talent)
     - Last Defender (talent)
@@ -25,7 +22,8 @@
     - Action Priority List
     - Sample Profile (for testing)
     - Bugfix: check Guarded by the Light's block contribution once spell data is corrected
-    - Consecration: Convert from DoT to totem or ground effect or pet, fix HotR triggering condition (low priority / long-term)
+    - Consecration: Convert from DoT to totem or ground effect or pet, fix HotR triggering condition (medium priority)
+    - Aegis of Light: Convert from self-buff to totem/pet with area buff? (low priority)
     - Final Stand??
     - Blessing of Protection/Spellweaving??
     - Retribution Aura??
@@ -114,6 +112,7 @@ public:
     buff_t* the_fires_of_justice;
     buff_t* divine_purpose;
     buff_t* divine_steed;
+    buff_t* aegis_of_light;
     buff_t* whisper_of_the_nathrezim;
     buffs::liadrins_fury_unleashed_t* liadrins_fury_unleashed;
 
@@ -239,7 +238,6 @@ public:
     const spell_data_t* hand_of_the_protector;
     const spell_data_t* knight_templar;
     const spell_data_t* final_stand;
-    // TODO: aegis of light has a positional requirement?
     const spell_data_t* aegis_of_light;
     // Judgment of Light seems to be a recopy from Holy. 
     //const spell_data_t* judgment_of_light;
@@ -819,7 +817,27 @@ struct paladin_absorb_t : public paladin_spell_base_t< absorb_t >
   { }
 };
 
-// Ardent Defender ==========================================================
+// Aegis of Light (Protection) ================================================
+
+struct aegis_of_light_t : public paladin_spell_t
+{
+  aegis_of_light_t( paladin_t* p, const std::string& options_str ) :
+    paladin_spell_t( "aegis_of_light", p, p -> find_talent_spell( "Aegis of Light" ) )
+  {
+    parse_options( options_str );
+
+    harmful = false;
+  }
+
+  virtual void execute() override
+  {
+    paladin_spell_t::execute();
+
+    p() -> buffs.aegis_of_light -> trigger();
+  }
+};
+
+// Ardent Defender (Protection) ===============================================
 
 struct ardent_defender_t : public paladin_spell_t
 {
@@ -3230,6 +3248,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
 action_t* paladin_t::create_action( const std::string& name, const std::string& options_str )
 {
   if ( name == "auto_attack"               ) return new auto_melee_attack_t        ( this, options_str );
+  if ( name == "aegis_of_light"            ) return new aegis_of_light_t           ( this, options_str );
   if ( name == "ardent_defender"           ) return new ardent_defender_t          ( this, options_str );
   if ( name == "avengers_shield"           ) return new avengers_shield_t          ( this, options_str );
   if ( name == "avenging_wrath"            ) return new avenging_wrath_t           ( this, options_str );
@@ -3434,6 +3453,7 @@ void paladin_t::create_buffs()
   buffs.shield_of_the_righteous        = buff_creator_t( this, "shield_of_the_righteous" ).spell( find_spell( 132403 ) );
   buffs.ardent_defender                = new buffs::ardent_defender_buff_t( this );
   buffs.standing_in_consecraton        = buff_creator_t( this, "standing_in_consecration", find_spell( 188370 ) );
+  buffs.aegis_of_light                 = buff_creator_t( this, "aegis_of_light", find_talent_spell( "Aegis of Light" ) );
 
   // Ret
   buffs.zeal                           = buff_creator_t( this, "zeal" ).spell( find_spell( 217020 ) );
@@ -4433,6 +4453,10 @@ void paladin_t::target_mitigation( school_e school,
   // Knight Templar
   if ( talents.knight_templar -> ok() && buffs.divine_steed -> up() )
       s -> result_amount *= 1.0 + talents.knight_templar -> effectN( 2 ).percent();
+
+  // Aegis of Light
+  if ( talents.aegis_of_light -> ok() && buffs.aegis_of_light -> up() )
+      s -> result_amount *= 1.0 + talents.aegis_of_light -> effectN( 1 ).percent();
 
   // Shield of the Righteous
   if ( buffs.shield_of_the_righteous -> check() && school == SCHOOL_PHYSICAL )
