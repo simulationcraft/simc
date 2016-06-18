@@ -16,7 +16,7 @@
     - Avenger's Shield - artifact / legendary bonuses
     - Blessed Hammer (talent/spell)
     - Seraphim (talent)
-    - Last Defender (talent)
+    - Consecrated Ground (talent)
     - Improved Block (passive - is this still around?)
     - Action Priority List
     - Sample Profile (for testing)
@@ -400,6 +400,7 @@ public:
   double  get_divine_judgment() const;
   void    trigger_grand_crusader();
   void    trigger_holy_shield( action_state_t* s );
+  int     get_local_enemies( double distance ) const;
   virtual bool has_t18_class_trinket() const override;
   void    generate_action_prio_list_prot();
   void    generate_action_prio_list_ret();
@@ -3368,6 +3369,19 @@ void paladin_t::trigger_holy_shield( action_state_t* s )
   }
 }
 
+int paladin_t::get_local_enemies( double distance ) const
+{
+  int num_nearby = 0;
+  for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
+  {
+    player_t* p = sim -> target_non_sleeping_list[ i ];
+    if ( p -> is_enemy() && get_player_distance( *p ) <= distance )
+      num_nearby += 1;
+  }
+  return num_nearby;
+}
+
+
 // paladin_t::init_base =====================================================
 
 void paladin_t::init_base_stats()
@@ -4298,6 +4312,15 @@ double paladin_t::composite_player_multiplier( school_e school ) const
   if ( buffs.vindicators_fury -> check() )
     m *= 1.0 + buffs.vindicators_fury -> value() * buffs.vindicators_fury -> data().effectN( 1 ).percent();
 
+  // Last Defender
+  if ( talents.last_defender -> ok() )
+  {
+    // Last defender gives the same amount of damage increase as it gives mitigation.
+    // Mitigation is 0.97^n, or (1-0.03)^n, where the 0.03 is in the spell data.
+    // The damage buff is then 1+(1-0.97^n), or 2-(1-0.03)^n.
+    int num_enemies = get_local_enemies( talents.last_defender -> effectN( 1 ).base_value() );
+    m *= 2.0 - std::pow( 1.0 - talents.last_defender -> effectN( 2 ).percent(), num_enemies );
+  }
 
   m *= 1.0 + artifact.ashbringers_light.percent();
 
@@ -4496,11 +4519,19 @@ void paladin_t::target_mitigation( school_e school,
 
   // Knight Templar
   if ( talents.knight_templar -> ok() && buffs.divine_steed -> up() )
-      s -> result_amount *= 1.0 + talents.knight_templar -> effectN( 2 ).percent();
+    s -> result_amount *= 1.0 + talents.knight_templar -> effectN( 2 ).percent();
 
   // Aegis of Light
   if ( talents.aegis_of_light -> ok() && buffs.aegis_of_light -> up() )
-      s -> result_amount *= 1.0 + talents.aegis_of_light -> effectN( 1 ).percent();
+    s -> result_amount *= 1.0 + talents.aegis_of_light -> effectN( 1 ).percent();
+
+  // Last Defender
+  if ( talents.last_defender -> ok() )
+  {
+    // Last Defender gives a multiplier of 0.97^N - coded using spell data in case that changes
+    s -> result_amount *= std::pow( 1.0 - talents.last_defender -> effectN( 2 ).percent(), get_local_enemies( talents.last_defender -> effectN( 1 ).base_value() ) );
+  }
+
 
   // Shield of the Righteous
   if ( buffs.shield_of_the_righteous -> check() && school == SCHOOL_PHYSICAL )
