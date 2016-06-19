@@ -16,7 +16,6 @@
     - Avenger's Shield - artifact / legendary bonuses
     - Blessed Hammer (talent/spell)
     - Consecrated Ground (talent)
-    - Improved Block (passive - is this still around?)
     - Action Priority List
     - Sample Profile (for testing)
     - Bugfix: check Guarded by the Light's block contribution once spell data is corrected
@@ -178,6 +177,7 @@ public:
     const spell_data_t* sanctuary;
     const spell_data_t* sword_of_light;
     const spell_data_t* sword_of_light_value;
+    const spell_data_t* improved_block; //hidden
   } passives;
 
   // Procs
@@ -4135,6 +4135,7 @@ void paladin_t::init_spells()
   passives.guarded_by_the_light   = find_specialization_spell( "Guarded by the Light" );
   passives.sanctuary              = find_specialization_spell( "Sanctuary" );
   passives.riposte                = find_specialization_spell( "Riposte" );
+  passives.improved_block         = find_specialization_spell( "Improved Block" );
 
   // Ret Passives
   passives.sword_of_light         = find_specialization_spell( "Sword of Light" );
@@ -4498,6 +4499,8 @@ double paladin_t::composite_block() const
 double paladin_t::composite_block_reduction() const
 {
   double br = player_t::composite_block_reduction();
+
+  br += passives.improved_block -> effectN( 1 ).percent();
 
   if ( buffs.defender_of_the_light -> up() )
     br += buffs.defender_of_the_light -> value();
