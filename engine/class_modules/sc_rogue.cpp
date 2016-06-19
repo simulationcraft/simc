@@ -159,6 +159,7 @@ struct rogue_t : public player_t
   action_t* from_the_shadows_;
   action_t* poison_bomb;
   action_t* greed;
+  action_t* soul_rip; // Akaari
 
   // Autoattacks
   action_t* auto_attack;
@@ -612,7 +613,6 @@ struct rogue_t : public player_t
   void trigger_shadow_techniques( const action_state_t* );
   void trigger_weaponmaster( const action_state_t* );
   void trigger_energetic_stabbing( const action_state_t* );
-  void trigger_akaaris_soul( const action_state_t* );
   void trigger_surge_of_toxins( const action_state_t* );
   void trigger_poison_knives( const action_state_t* );
   void trigger_true_bearing( int );
@@ -1179,6 +1179,24 @@ struct shadow_nova_t : public rogue_attack_t
   {
     background = true;
     aoe = -1;
+  }
+};
+
+struct soul_rip_t : public rogue_attack_t
+{
+  soul_rip_t( rogue_t* p ) :
+    rogue_attack_t( "soul_rip", p, p -> find_spell( 220893 ) )
+  {
+    background = true;
+    callbacks = false;
+    weapon_multiplier = weapon_power_mod = 0;
+  }
+
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    memset( &affected_by, 0, sizeof( affected_by ) );
   }
 };
 
@@ -3424,6 +3442,26 @@ struct shadowstep_t : public rogue_attack_t
 
 struct shadowstrike_t : public rogue_attack_t
 {
+  struct akaaris_soul_event_t : public event_t
+  {
+    rogue_t* rogue;
+    player_t* target;
+    akaaris_soul_event_t( rogue_t* r, player_t* target ) :
+      event_t( *r ), rogue( r ), target( target )
+    {
+      add_event( timespan_t::from_seconds( r -> artifact.akaaris_soul.data().effectN( 1 ).base_value() ) );
+    }
+
+    const char* name() const override
+    { return "akaaris_soul_event"; }
+
+    void execute() override
+    {
+      rogue -> soul_rip -> target = target;
+      rogue -> soul_rip -> schedule_execute();
+    }
+  };
+
   shadowstrike_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "shadowstrike", p, p -> find_specialization_spell( "Shadowstrike" ), options_str )
   {
@@ -3431,6 +3469,11 @@ struct shadowstrike_t : public rogue_attack_t
     requires_stealth = true;
     energize_amount += p -> talent.premeditation -> effectN( 2 ).base_value();
     base_multiplier *= 1.0 + p -> artifact.precision_strike.percent();
+
+    if ( p -> soul_rip )
+    {
+      add_child( p -> soul_rip );
+    }
   }
 
   void execute() override
@@ -3438,7 +3481,8 @@ struct shadowstrike_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     p() -> trigger_energetic_stabbing( execute_state );
-    p() -> trigger_akaaris_soul( execute_state );
+
+    new ( *sim ) akaaris_soul_event_t( p(), execute_state -> target );
 
     p() -> buffs.death -> decrement();
   }
@@ -4523,37 +4567,6 @@ void rogue_t::trigger_energetic_stabbing( const action_state_t* s )
   {
     resource_gain( RESOURCE_ENERGY, artifact.energetic_stabbing.value(), gains.energetic_stabbing, s -> action );
   }
-}
-
-void rogue_t::trigger_akaaris_soul( const action_state_t* s )
-{
-  struct akaaris_soul_event_t : public actions::secondary_ability_trigger_t
-  {
-    akaaris_soul_event_t( action_state_t* s ) :
-      secondary_ability_trigger_t( s, timespan_t::from_seconds( 4 ) )
-    { }
-
-    const char* name() const override
-    { return "akaaris_soul_event"; }
-
-    void execute() override
-    {
-      actions::rogue_attack_t* attack = rogue_t::cast_attack( state -> action );
-      std::swap( attack -> stats, attack -> akaari );
-
-      secondary_ability_trigger_t::execute();
-
-      std::swap( attack -> stats, attack -> akaari );
-    }
-  };
-
-  actions::rogue_attack_t* attack = rogue_t::cast_attack( s -> action );
-  if ( ! attack -> akaari || attack -> background )
-  {
-    return;
-  }
-
-  new ( *sim ) akaaris_soul_event_t( attack -> get_state( s ) );
 }
 
 void rogue_t::trigger_surge_of_toxins( const action_state_t* s )
@@ -5935,6 +5948,11 @@ void rogue_t::init_spells()
   if ( artifact.greed.rank() )
   {
     greed = new actions::greed_t( this );
+  }
+
+  if ( artifact.akaaris_soul.rank() )
+  {
+    soul_rip = new actions::soul_rip_t( this );
   }
 }
 
