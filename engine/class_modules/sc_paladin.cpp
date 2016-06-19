@@ -15,7 +15,6 @@
   TODO (prot):
     - Avenger's Shield - artifact / legendary bonuses
     - Blessed Hammer (talent/spell)
-    - Consecrated Ground (talent)
     - Action Priority List
     - Sample Profile (for testing)
     - Bugfix: check Guarded by the Light's block contribution once spell data is corrected
@@ -75,6 +74,7 @@ public:
   heal_t*   active_enlightened_judgments;
   action_t* active_blessing_of_might_proc;
   action_t* active_holy_shield_proc;
+  heal_t*   active_consecrated_ground_tick;
   action_t* active_judgment_of_light_proc;
   heal_t*   active_protector_of_the_innocent;
 
@@ -329,6 +329,7 @@ public:
     active_enlightened_judgments       = nullptr;
     active_blessing_of_might_proc      = nullptr;
     active_holy_shield_proc            = nullptr;
+    active_consecrated_ground_tick     = nullptr;
     active_judgment_of_light_proc      = nullptr;
     active_protector_of_the_innocent   = nullptr;
 
@@ -1119,6 +1120,18 @@ struct consecration_tick_t : public paladin_spell_t
   }
 };
 
+struct consecrated_ground_tick_t : public paladin_heal_t
+{
+  consecrated_ground_tick_t( paladin_t* p )
+    : paladin_heal_t( "consecrated_ground", p, p -> find_spell ( 204241 ) )
+  {
+    aoe = 6;
+    ground_aoe = true;
+    background = true;
+    direct_tick = true;
+  }
+};
+
 struct consecration_t : public paladin_spell_t
 {
   consecration_t( paladin_t* p, const std::string& options_str )
@@ -1147,6 +1160,8 @@ struct consecration_t : public paladin_spell_t
     {
       paladin_spell_t::tick( d );
     }
+    if ( p() -> talents.consecrated_ground -> ok() && p() -> buffs.standing_in_consecraton-> check() )
+      p() -> active_consecrated_ground_tick -> execute();
   }
 
   virtual void execute()
@@ -4152,6 +4167,9 @@ void paladin_t::init_spells()
 
   if ( talents.holy_shield -> ok() )
     active_holy_shield_proc = new holy_shield_proc_t( this );
+
+  if ( talents.consecrated_ground -> ok() )
+    active_consecrated_ground_tick = new consecrated_ground_tick_t( this );
 
   if ( talents.judgment_of_light -> ok() )
     active_judgment_of_light_proc = new judgment_of_light_proc_t( this );
