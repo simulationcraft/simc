@@ -780,18 +780,17 @@ struct rogue_attack_t : public melee_attack_t
     affected_by.shadow_blades = data().affected_by( p() -> spec.shadow_blades -> effectN( 2 ) ) ||
                                 data().affected_by( p() -> spec.shadow_blades -> effectN( 3 ) ) ||
                                 data().affected_by( p() -> spec.shadow_blades -> effectN( 4 ) );
-    affected_by.ruthlessness = data().affected_by( p() -> spec.ruthlessness -> effectN( 1 ) );
-    // TODO: This got nuked from spell data, sigh
-    //affected_by.relentless_strikes = data().affected_by( p() -> spec.relentless_strikes -> effectN( 1 ) );
+
+    affected_by.ruthlessness = base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.relentless_strikes = base_costs[ RESOURCE_COMBO_POINT ] > 0;
-    affected_by.deepening_shadows = data().affected_by( p() -> spec.deepening_shadows -> effectN( 1 ) );
+    affected_by.deepening_shadows = base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.ghostly_strike = data().affected_by( p() -> talent.ghostly_strike -> effectN( 5 ) );
     affected_by.vendetta = data().affected_by( p() -> spec.vendetta -> effectN( 1 ) );
     affected_by.weaponmaster = ! background && harmful &&
                                ( weapon_multiplier > 0 || attack_power_mod.direct > 0 );
     affected_by.agonizing_poison = p() -> talent.agonizing_poison -> ok() &&
                                    data().affected_by( p() -> find_spell( 200803 ) -> effectN( 1 ) );
-    affected_by.alacrity = data().affected_by( p() -> talent.alacrity -> effectN( 1 ) );
+    affected_by.alacrity = base_costs[ RESOURCE_COMBO_POINT ] > 0;
   }
 
   bool init_finished() override
@@ -3719,7 +3718,10 @@ struct death_from_above_t : public rogue_attack_t
   {
     rogue_attack_t::init();
 
+    affected_by.ruthlessness = false;
     affected_by.relentless_strikes = false;
+    affected_by.deepening_shadows = false;
+    affected_by.alacrity = false;
   }
 
   void adjust_attack( attack_t* attack, const timespan_t& oor_delay )
