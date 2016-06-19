@@ -15,7 +15,6 @@
   TODO (prot):
     - Avenger's Shield - artifact / legendary bonuses
     - Blessed Hammer (talent/spell)
-    - Seraphim (talent)
     - Consecrated Ground (talent)
     - Improved Block (passive - is this still around?)
     - Action Priority List
@@ -116,6 +115,7 @@ public:
     buff_t* divine_purpose;
     buff_t* divine_steed;
     buff_t* aegis_of_light;
+    stat_buff_t* seraphim;
     buff_t* whisper_of_the_nathrezim;
     buffs::liadrins_fury_unleashed_t* liadrins_fury_unleashed;
 
@@ -1914,7 +1914,6 @@ struct hand_of_the_protector_t : public paladin_heal_t
 
 };
 
-
 // Light's Hammer =============================================================
 
 struct lights_hammer_damage_tick_t : public paladin_spell_t
@@ -2000,6 +1999,61 @@ struct lights_hammer_t : public paladin_spell_t
   }
 };
 
+// Seraphim ( Protection ) ====================================================
+
+struct seraphim_t : public paladin_spell_t
+{
+  seraphim_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "seraphim", p, p -> find_talent_spell( "Seraphim" ) )
+  {
+    parse_options( options_str );
+
+    harmful = false;
+    may_miss = false;
+
+    // ugly hack for if SotR hasn't been put in the APL yet
+    if ( p -> cooldowns.shield_of_the_righteous -> charges < 3 )
+    {
+      const spell_data_t* sotr = p -> find_class_spell( "Shield of the Righteous" );
+      p -> cooldowns.shield_of_the_righteous -> charges = p -> cooldowns.shield_of_the_righteous -> current_charge = sotr -> _charges;
+      p -> cooldowns.shield_of_the_righteous -> duration = timespan_t::from_millis( sotr -> _charge_cooldown );
+    }
+  }
+
+  virtual void execute() override
+  {
+    paladin_spell_t::execute();
+
+    // duration depends on sotr charges, need to do some math
+    timespan_t duration = timespan_t::zero();
+    int available_charges = p() -> cooldowns.shield_of_the_righteous -> current_charge;
+    int full_charges_used = 0;
+    timespan_t remains = p() -> cooldowns.shield_of_the_righteous -> current_charge_remains();
+
+    if ( available_charges >= 1 )
+    {
+      full_charges_used = std::min( available_charges, 2 );
+      duration = full_charges_used * p() -> talents.seraphim -> duration();
+      for ( int i = 0; i < full_charges_used; i++ )
+        p() -> cooldowns.shield_of_the_righteous -> start();
+    }
+    if ( full_charges_used < 2 )
+    {
+      double partial_charges_used = 0.0;
+      partial_charges_used = ( p() -> cooldowns.shield_of_the_righteous -> duration.total_seconds() - remains.total_seconds() ) / p() -> cooldowns.shield_of_the_righteous -> duration.total_seconds();
+      duration += partial_charges_used * p() -> talents.seraphim -> duration();
+      p() -> cooldowns.shield_of_the_righteous -> adjust( p() -> cooldowns.shield_of_the_righteous -> duration - remains );
+    }
+    
+    if ( duration > timespan_t::zero() )
+      p() -> buffs.seraphim -> trigger( 1, -1.0, -1.0, duration );
+
+  }
+
+};
+
+// Wake of Ashes (Retribution) ================================================
+
 struct wake_of_ashes_t : public paladin_spell_t
 {
   wake_of_ashes_t( paladin_t* p, const std::string& options_str )
@@ -2041,6 +2095,8 @@ struct wake_of_ashes_t : public paladin_spell_t
   }
 };
 
+// Holy Wrath (Retribution) ===================================================
+
 struct holy_wrath_t : public paladin_spell_t
 {
   holy_wrath_t( paladin_t* p, const std::string& options_str )
@@ -2077,6 +2133,8 @@ struct holy_wrath_t : public paladin_spell_t
   }
 };
 
+// Blinding Light (Holy/Prot/Retribution) =====================================
+
 struct blinding_light_effect_t : public paladin_spell_t
 {
   blinding_light_effect_t( paladin_t* p )
@@ -2098,7 +2156,7 @@ struct blinding_light_t : public paladin_spell_t
   }
 };
 
-// Light of Dawn ============================================================
+// Light of Dawn (Holy) =======================================================
 
 struct light_of_dawn_t : public paladin_heal_t
 {
@@ -3328,6 +3386,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "holy_wrath"                ) return new holy_wrath_t               ( this, options_str );
   if ( name == "holy_prism"                ) return new holy_prism_t               ( this, options_str );
   if ( name == "wake_of_ashes"             ) return new wake_of_ashes_t            ( this, options_str );
+  if ( name == "seraphim"                  ) return new seraphim_t                 ( this, options_str );
   if ( name == "seal_of_light"             ) return new seal_of_light_t            ( this, options_str );
   if ( name == "holy_light"                ) return new holy_light_t               ( this, options_str );
   if ( name == "flash_of_light"            ) return new flash_of_light_t           ( this, options_str );
@@ -3509,6 +3568,12 @@ void paladin_t::create_buffs()
   buffs.ardent_defender                = new buffs::ardent_defender_buff_t( this );
   buffs.standing_in_consecraton        = buff_creator_t( this, "standing_in_consecration", find_spell( 188370 ) );
   buffs.aegis_of_light                 = buff_creator_t( this, "aegis_of_light", find_talent_spell( "Aegis of Light" ) );
+  buffs.seraphim                       = stat_buff_creator_t( this, "seraphim", talents.seraphim )
+                                          .add_stat( STAT_HASTE_RATING, talents.seraphim -> effectN( 1 ).average( this, true_level ) )
+                                          .add_stat( STAT_CRIT_RATING, talents.seraphim -> effectN( 1 ).average( this, true_level ) )
+                                          .add_stat( STAT_MASTERY_RATING, talents.seraphim -> effectN( 1 ).average( this, true_level ) )
+                                          .add_stat( STAT_VERSATILITY_RATING, talents.seraphim -> effectN( 1 ).average( this, true_level ) )
+                                          .cd( timespan_t::zero() ); // let the ability handle the cooldown
 
   // Ret
   buffs.zeal                           = buff_creator_t( this, "zeal" ).spell( find_spell( 217020 ) );
