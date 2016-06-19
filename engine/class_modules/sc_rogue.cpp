@@ -3686,6 +3686,14 @@ struct death_from_above_driver_t : public rogue_attack_t
     attack_power_mod.direct = 0;
     base_dd_min = base_dd_max = 0;
     base_costs[ RESOURCE_ENERGY ] = 0;
+    base_costs[ RESOURCE_COMBO_POINT ] = 0;
+  }
+
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    memset( &affected_by, 0, sizeof( affected_by ) );
   }
 
   void tick( dot_t* d ) override
