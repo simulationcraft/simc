@@ -13,7 +13,25 @@
     - BoK/BoW
     - Check mana/mana regen for ret, sword of light has been significantly changed to no longer have the mana regen stuff, or the bonus to healing, reduction in mana costs, etc.
   TODO (prot):
-    - Avenger's Shield - artifact / legendary bonuses
+    - Legendary Item bonuses
+    - Eye of Tyr (artifact)
+    - Truthguard's Light (artifact)
+    - Faith's Armor (artifact)
+    - Scatter the Shadows (artifact)
+    - Righteous Crusader (artifact)
+    - Unflinching Defense (artifact)
+    - Sacrifice of the Just (artifact)
+    - Hammer Time (artifact)
+    - Bastion of Truth (artifact)
+    - Resolve of Truth (artifact)
+    - Painful Truths (artifact)
+    - Forbearant Faithful (artifact)
+    - Consecration in Flame (artifact)
+    - Stern Judgment (artifact)
+    - Bulwark of Order (artifact)
+    - Light of the Titans (artifact)
+    - Tyr's Enforcer (artifact)
+    - Unrelenting Light (artifact)
     - Blessed Hammer (talent/spell)
     - Action Priority List
     - Sample Profile (for testing)
@@ -294,6 +312,27 @@ public:
     artifact_power_t unbreakable_will;              // NYI
     artifact_power_t righteous_blade;
     artifact_power_t ashbringers_light;
+
+    // Prot
+    artifact_power_t eye_of_tyr;
+    artifact_power_t truthguards_light;
+    artifact_power_t faiths_armor;
+    artifact_power_t scatter_the_shadows;
+    artifact_power_t righteous_crusader;
+    artifact_power_t unflinching_defense;
+    artifact_power_t sacrifice_of_the_just;
+    artifact_power_t hammer_time;
+    artifact_power_t bastion_of_truth;
+    artifact_power_t resolve_of_truth;
+    artifact_power_t painful_truths;
+    artifact_power_t forbearant_faithful;
+    artifact_power_t consecration_in_flame;
+    artifact_power_t stern_judgment;
+    artifact_power_t bulwark_of_order;
+    artifact_power_t light_of_the_titans;
+    artifact_power_t tyrs_enforcer;
+    artifact_power_t unrelenting_light;
+
   } artifact;
 
   player_t* beacon_target;
@@ -4117,6 +4156,25 @@ void paladin_t::init_spells()
   artifact.deflection              = find_artifact_spell( "Deflection" );
   artifact.ashbringers_light       = find_artifact_spell( "Ashbringer's Light" );
   artifact.ashes_to_ashes          = find_artifact_spell( "Ashes to Ashes" );
+
+  artifact.eye_of_tyr              = find_artifact_spell( "Eye of Tyr" );
+  artifact.truthguards_light       = find_artifact_spell( "Truthguard's Light" );
+  artifact.faiths_armor            = find_artifact_spell( "Faith's Armor" );
+  artifact.scatter_the_shadows     = find_artifact_spell( "Scatter the Shadows" );
+  artifact.righteous_crusader      = find_artifact_spell( "Righteous Crusader" );
+  artifact.unflinching_defense     = find_artifact_spell( "Unflinching Defense" );
+  artifact.sacrifice_of_the_just   = find_artifact_spell( "Sacrifice of the Just" );
+  artifact.hammer_time             = find_artifact_spell( "Hammer Time" );
+  artifact.bastion_of_truth        = find_artifact_spell( "Bastion of Truth" );
+  artifact.resolve_of_truth        = find_artifact_spell( "Resolve of Truth" );
+  artifact.painful_truths          = find_artifact_spell( "Painful Truths" );
+  artifact.forbearant_faithful     = find_artifact_spell( "Forbearant Faithful" );
+  artifact.consecration_in_flame   = find_artifact_spell( "Consecration in Flame" );
+  artifact.stern_judgment          = find_artifact_spell( "Stern Judgment" );
+  artifact.bulwark_of_order        = find_artifact_spell( "Bulwark of Order" );
+  artifact.light_of_the_titans     = find_artifact_spell( "Light of the Titans" );
+  artifact.tyrs_enforcer           = find_artifact_spell( "Tyr's Enforcer" );
+  artifact.unrelenting_light       = find_artifact_spell( "Unrelenting Light" );
 
   // Spells
   spells.holy_light                    = find_specialization_spell( "Holy Light" );
