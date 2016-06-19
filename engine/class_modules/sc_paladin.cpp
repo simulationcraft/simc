@@ -4711,7 +4711,7 @@ void paladin_t::target_mitigation( school_e school,
 
   // Eye of Tyr
   if ( artifact.eye_of_tyr.rank() && get_target_data( s -> action -> player ) -> buffs.eye_of_tyr_debuff -> up() )
-    s -> result_amount *= 1.0 + artifact.eye_of_tyr.data().effectN( 1 ).percent();
+    s -> result_amount *= 1.0 + artifact.eye_of_tyr.percent( 1 );
 
   if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
     sim -> out_debug.printf( "Damage to %s after other mitigation effects but before SotR is %f", s -> target -> name(), s -> result_amount );
