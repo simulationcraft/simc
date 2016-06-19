@@ -130,6 +130,7 @@ public:
     // Set Bonuses
     buff_t* faith_barricade;      // t17_2pc_tank
     buff_t* defender_of_the_light; // t17_4pc_tank
+    buff_t* blazing_resolve;
     buff_t* vindicators_fury;     // WoD Ret PVP 4-piece
     buff_t* wings_of_liberty;     // Most roleplay name. T18 4P Ret bonus
     buffs::wings_of_liberty_driver_t* wings_of_liberty_driver;
@@ -163,6 +164,10 @@ public:
 
     // whoo fist of justice
     cooldown_t* hammer_of_justice;
+
+    cooldown_t* blade_of_justice;
+    cooldown_t* blade_of_wrath;
+    cooldown_t* divine_hammer;
   } cooldowns;
 
   // Passives
@@ -369,6 +374,9 @@ public:
     cooldowns.light_of_the_protector  = get_cooldown( "light_of_the_protector" );
     cooldowns.hand_of_the_protector   = get_cooldown( "hand_of_the_protector" );
     cooldowns.hammer_of_justice       = get_cooldown( "hammer_of_justice" );
+    cooldowns.blade_of_justice        = get_cooldown( "blade_of_justice" );
+    cooldowns.blade_of_wrath          = get_cooldown( "blade_of_wrath" );
+    cooldowns.divine_hammer           = get_cooldown( "divine_hammer" );
 
     beacon_target = nullptr;
 
@@ -1001,6 +1009,8 @@ struct crusade_t : public paladin_heal_t
 
     if ( ! ( p -> talents.crusade -> ok() ) )
       background = true;
+
+    cooldown -> charges += p -> sets.set( PALADIN_RETRIBUTION, T18, B2 ) -> effectN( 1 ).base_value();
   }
 
   void tick( dot_t* d ) override
@@ -2098,7 +2108,7 @@ struct seraphim_t : public paladin_spell_t
       duration += partial_charges_used * p() -> talents.seraphim -> duration();
       p() -> cooldowns.shield_of_the_righteous -> adjust( p() -> cooldowns.shield_of_the_righteous -> duration - remains );
     }
-    
+
     if ( duration > timespan_t::zero() )
       p() -> buffs.seraphim -> trigger( 1, -1.0, -1.0, duration );
 
@@ -2385,6 +2395,17 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
     {
       double reduction = p() -> talents.fist_of_justice -> effectN( 2 ).base_value();
       p() -> cooldowns.hammer_of_justice -> ready -= timespan_t::from_seconds( reduction );
+    }
+
+    if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T17, B2 ) )
+    {
+      bool success = rng().roll( p() -> sets.set( PALADIN_RETRIBUTION, T17, B2 ) -> effectN( 1 ).percent() );
+      if ( success )
+      {
+        p() -> cooldowns.blade_of_justice -> reset( true );
+        p() -> cooldowns.blade_of_wrath -> reset( true );
+        p() -> cooldowns.divine_hammer -> reset( true );
+      }
     }
   }
 };
@@ -2742,6 +2763,13 @@ struct divine_storm_t: public holy_power_consumer_t
 
       p() -> buffs.whisper_of_the_nathrezim -> trigger();
     }
+
+    if ( p() -> buffs.blazing_resolve -> up() )
+    {
+      p() -> buffs.blazing_resolve -> expire();
+      // TODO: clean this up
+      p() -> resource_gain( RESOURCE_HOLY_POWER, 1.0, p() -> gains.hp_templars_verdict_refund );
+    }
   }
 
   void record_data( action_state_t* ) override {}
@@ -2995,7 +3023,14 @@ struct judgment_t : public paladin_melee_attack_t
 
       // Judgment hits/crits reduce SotR recharge time
       if ( p() -> specialization() == PALADIN_PROTECTION )
+      {
         p() -> cooldowns.shield_of_the_righteous -> adjust( s -> result == RESULT_CRIT ? 2.0 * sotr_cdr : sotr_cdr );
+      }
+      else if ( p() -> specialization() == PALADIN_RETRIBUTION )
+      {
+        if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T17, B4 ) )
+          p() -> buffs.blazing_resolve -> trigger();
+      }
     }
 
     // Grand Crusader procs for prot if Crusader's Judgment talented
@@ -3247,6 +3282,13 @@ struct templars_verdict_t : public holy_power_consumer_t
         p() -> buffs.whisper_of_the_nathrezim -> expire();
       p() -> buffs.whisper_of_the_nathrezim -> trigger();
     }
+
+    if ( p() -> buffs.blazing_resolve -> up() )
+    {
+      p() -> buffs.blazing_resolve -> expire();
+      // TODO: clean this up
+      p() -> resource_gain( RESOURCE_HOLY_POWER, 1.0, p() -> gains.hp_templars_verdict_refund );
+    }
   }
 };
 
@@ -3466,7 +3508,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "divine_shield"             ) return new divine_shield_t            ( this, options_str );
   if ( name == "divine_storm"              ) return new divine_storm_t             ( this, options_str );
   if ( name == "execution_sentence"        ) return new execution_sentence_t       ( this, options_str );
-  if ( name == "blessing_of_sacrifice"         ) return new blessing_of_sacrifice_t        ( this, options_str );
+  if ( name == "blessing_of_sacrifice"     ) return new blessing_of_sacrifice_t    ( this, options_str );
   if ( name == "hammer_of_justice"         ) return new hammer_of_justice_t        ( this, options_str );
   if ( name == "hammer_of_the_righteous"   ) return new hammer_of_the_righteous_t  ( this, options_str );
   if ( name == "holy_shock"                ) return new holy_shock_t               ( this, options_str );
@@ -3563,7 +3605,7 @@ void paladin_t::init_base_stats()
 
   // Resolve of Truth max HP multiplier
   resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1.0 + artifact.resolve_of_truth.percent( 1 );
-  
+
   // Holy Insight grants mana regen from spirit during combat
   base.mana_regen_from_spirit_multiplier = passives.holy_insight -> effectN( 3 ).percent();
 
@@ -3695,6 +3737,7 @@ void paladin_t::create_buffs()
   buffs.defender_of_the_light  = buff_creator_t( this, "defender_of_the_light", sets.set( PALADIN_PROTECTION, T17, B4 ) -> effectN( 1 ).trigger() )
                                  .trigger_spell( sets.set( PALADIN_PROTECTION, T17, B4 ) )
                                  .default_value( sets.set( PALADIN_PROTECTION, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+  buffs.blazing_resolve        = buff_creator_t( this, "blazing_resolve", sets.set( PALADIN_RETRIBUTION, T17, B4 ) -> effectN( 1 ).trigger() );
   buffs.vindicators_fury       = buff_creator_t( this, "vindicators_fury", find_spell( 165903 ) )
                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                  .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
