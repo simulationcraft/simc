@@ -3483,7 +3483,10 @@ struct shadowstrike_t : public rogue_attack_t
 
     p() -> trigger_energetic_stabbing( execute_state );
 
-    new ( *sim ) akaaris_soul_event_t( p(), execute_state -> target );
+    if ( p() -> artifact.akaaris_soul.rank() )
+    {
+      new ( *sim ) akaaris_soul_event_t( p(), execute_state -> target );
+    }
 
     p() -> buffs.death -> decrement();
   }
