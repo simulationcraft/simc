@@ -14,17 +14,11 @@
     - Check mana/mana regen for ret, sword of light has been significantly changed to no longer have the mana regen stuff, or the bonus to healing, reduction in mana costs, etc.
   TODO (prot):
     - Legendary Item bonuses
-    - Painful Truths (artifact)
-    - Forbearant Faithful (artifact)
-    - Consecration in Flame (artifact)
-    - Stern Judgment (artifact)
-    - Bulwark of Order (artifact)
-    - Light of the Titans (artifact)
-    - Tyr's Enforcer (artifact)
-    - Unrelenting Light (artifact)
+    - Unrelenting Light - test interaction with faiths' armor (artifact)
     - Blessed Hammer (talent/spell)
     - Action Priority List
     - Sample Profile (for testing)
+    - Blessing of Protection? (for Forbearant Faithful)
     - Bugfix: check Guarded by the Light's block contribution once spell data is corrected
     - Consecration: Convert from DoT to totem or ground effect or pet, fix HotR triggering condition (medium priority)
     - Aegis of Light: Convert from self-buff to totem/pet with area buff? (low priority)
@@ -65,6 +59,7 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* debuffs_judgment;
     buff_t* judgment_of_light;
     buff_t* eye_of_tyr_debuff;
+    buff_t* forbearant_faithful;
   } buffs;
 
   paladin_td_t( player_t* target, paladin_t* paladin );
@@ -83,6 +78,8 @@ public:
   heal_t*   active_enlightened_judgments;
   action_t* active_blessing_of_might_proc;
   action_t* active_holy_shield_proc;
+  action_t* active_painful_truths_proc;
+  action_t* active_tyrs_enforcer_proc;
   heal_t*   active_consecrated_ground_tick;
   action_t* active_judgment_of_light_proc;
   heal_t*   active_protector_of_the_innocent;
@@ -97,6 +94,9 @@ public:
   {
     blessing_of_sacrifice_redirect_t* blessing_of_sacrifice_redirect;
   } active;
+  
+  // Forbearant Faithful cooldown shenanigans
+  std::vector<cooldown_t*> forbearant_faithful_cooldowns;
 
   // Buffs
   struct buffs_t
@@ -112,6 +112,7 @@ public:
     buff_t* infusion_of_light;
     buff_t* shield_of_the_righteous;
     buff_t* standing_in_consecraton;
+    absorb_buff_t* bulwark_of_order;
 
     // talents
     absorb_buff_t* holy_shield_absorb; // Dummy buff to trigger spell damage "blocking" absorb effect
@@ -142,6 +143,7 @@ public:
   {
     // Healing/absorbs
     gain_t* holy_shield;
+    gain_t* bulwark_of_order;
 
     // Mana
     gain_t* extra_regen;
@@ -364,6 +366,8 @@ public:
     active_enlightened_judgments       = nullptr;
     active_blessing_of_might_proc      = nullptr;
     active_holy_shield_proc            = nullptr;
+    active_tyrs_enforcer_proc          = nullptr;
+    active_painful_truths_proc         = nullptr;
     active_consecrated_ground_tick     = nullptr;
     active_judgment_of_light_proc      = nullptr;
     active_protector_of_the_innocent   = nullptr;
@@ -440,7 +444,11 @@ public:
   double  get_divine_judgment() const;
   void    trigger_grand_crusader();
   void    trigger_holy_shield( action_state_t* s );
+  void    trigger_painful_truths( action_state_t* s );
+  void    trigger_tyrs_enforcer( action_state_t* s );
   int     get_local_enemies( double distance ) const;
+  double  get_forbearant_faithful_recharge_multiplier() const;
+  void    update_forbearance_recharge_multipliers() const;
   virtual bool has_t18_class_trinket() const override;
   void    generate_action_prio_list_prot();
   void    generate_action_prio_list_ret();
@@ -954,6 +962,17 @@ struct avengers_shield_t : public paladin_spell_t
     if ( p() -> sets.has_set_bonus( PALADIN_PROTECTION, T17, B2 ) )
       p() -> buffs.faith_barricade -> trigger();
   }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    paladin_spell_t::impact( s );
+
+    // Bulwark of Order absorb shield. Amount is additive per hit.
+    if ( p() -> artifact.bulwark_of_order.rank() )
+      p() -> buffs.bulwark_of_order -> trigger( 1, p() -> buffs.bulwark_of_order -> value() + s -> result_amount * p() -> artifact.bulwark_of_order.percent() );
+
+    p() -> trigger_tyrs_enforcer( s );
+  }
 };
 
 // Bastion of Light ========================================================
@@ -1187,6 +1206,8 @@ struct consecration_t : public paladin_spell_t
       background = ! ( p -> talents.consecration -> ok() );
     }
 
+    dot_duration += timespan_t::from_millis( p -> artifact.consecration_in_flame.value() );
+
     hasted_ticks   = true;
     may_miss       = false;
 
@@ -1248,6 +1269,8 @@ struct divine_protection_t : public paladin_spell_t
   }
 };
 
+// Divine Shield ==============================================================
+
 struct divine_shield_t : public paladin_spell_t
 {
   divine_shield_t( paladin_t* p, const std::string& options_str ) :
@@ -1260,6 +1283,13 @@ struct divine_shield_t : public paladin_spell_t
     // unbreakable spirit reduces cooldown
     if ( p -> talents.unbreakable_spirit -> ok() )
       cooldown -> duration = data().cooldown() * ( 1 + p -> talents.unbreakable_spirit -> effectN( 1 ).percent() );
+  }
+
+  bool init_finished() override
+  {
+    p() -> forbearant_faithful_cooldowns.push_back( cooldown );
+
+    return paladin_spell_t::init_finished();
   }
 
   virtual void execute() override
@@ -1290,6 +1320,15 @@ struct divine_shield_t : public paladin_spell_t
       return;
     timespan_t duration = p() -> debuffs.forbearance -> data().duration();
     p() -> debuffs.forbearance -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration  );
+  }
+  
+  double recharge_multiplier() const override
+  {
+    double cdr = paladin_spell_t::recharge_multiplier();
+
+    cdr *= p() -> get_forbearant_faithful_recharge_multiplier();
+
+    return cdr;
   }
 
   virtual bool ready() override
@@ -1577,6 +1616,34 @@ struct holy_shield_proc_t : public paladin_spell_t
 
 };
 
+// Painful Truths proc ========================================================
+
+struct painful_truths_proc_t : public paladin_spell_t
+{
+  painful_truths_proc_t( paladin_t* p )
+    : paladin_spell_t( "painful_truths", p, p -> find_spell( 209331 ) ) // damage stored in 209331
+  {
+    background = true;
+    proc = true;
+    may_miss = false;
+  }
+
+};
+
+// Tyr's Enforcer proc ========================================================
+
+struct tyrs_enforcer_proc_t : public paladin_spell_t
+{
+  tyrs_enforcer_proc_t( paladin_t* p )
+    : paladin_spell_t( "tyrs_enforcer", p, p -> find_spell( 209478 ) ) // damage stored in 209478
+  {
+    background = true;
+    proc = true;
+    may_miss = false;
+    aoe = -1;
+  }
+};
+
 // Holy Prism ===============================================================
 
 // Holy Prism AOE (damage) - This is the aoe damage proc that triggers when holy_prism_heal is cast.
@@ -1856,6 +1923,13 @@ struct lay_on_hands_t : public paladin_heal_t
       trigger_gcd = timespan_t::zero();
   }
 
+  bool init_finished() override
+  {
+    p() -> forbearant_faithful_cooldowns.push_back( cooldown );
+
+    return paladin_heal_t::init_finished();
+  }
+
   virtual void execute() override
   {
     base_dd_min = base_dd_max = p() -> resources.max[ RESOURCE_HEALTH ];
@@ -1865,7 +1939,11 @@ struct lay_on_hands_t : public paladin_heal_t
     if ( p() -> artifact.endless_resolve.rank() )
       // Don't trigger forbearance with endless resolve
       return;
+
+    // apply forbearance, track locally for forbearant faithful & force recharge recalculation
     target -> debuffs.forbearance -> trigger();
+    td( target ) -> buffs.forbearant_faithful -> trigger();
+    p() -> update_forbearance_recharge_multipliers();
   }
 
   virtual bool ready() override
@@ -1875,6 +1953,27 @@ struct lay_on_hands_t : public paladin_heal_t
 
     return paladin_heal_t::ready();
   }
+  
+  double recharge_multiplier() const override
+  {
+    double cdr = paladin_heal_t::recharge_multiplier();
+
+    cdr *= p() -> get_forbearant_faithful_recharge_multiplier();
+
+    return cdr;
+  }
+};
+
+// Light of the Titans proc ===================================================
+
+struct light_of_the_titans_t : public paladin_heal_t
+{
+  light_of_the_titans_t( paladin_t* p )
+    : paladin_heal_t( "light_of_the_titans", p, p -> find_spell( 209540 ) ) // hot stored in 209540
+  {
+    background = true;
+    proc = true;
+  }
 };
 
 // Light of the Protector (Protection) ========================================
@@ -1882,6 +1981,7 @@ struct lay_on_hands_t : public paladin_heal_t
 struct light_of_the_protector_t : public paladin_heal_t
 {
   double health_diff_pct;
+  light_of_the_titans_t* titans_proc;
 
   light_of_the_protector_t( paladin_t* p, const std::string& options_str )
     : paladin_heal_t( "light_of_the_protector", p, p -> find_specialization_spell( "Light of the Protector" ) ), health_diff_pct( 0 )
@@ -1904,6 +2004,9 @@ struct light_of_the_protector_t : public paladin_heal_t
     // disable if Hand of the Protector talented
     if ( p -> talents.hand_of_the_protector -> ok() )
       background = true;
+    
+    // light of the titans object attached to this
+    titans_proc = new light_of_the_titans_t( p );
   }
 
   double action_multiplier() const override
@@ -1924,6 +2027,8 @@ struct light_of_the_protector_t : public paladin_heal_t
     base_dd_min = base_dd_max = health_diff_pct * ( p() -> resources.max[ RESOURCE_HEALTH ] - p() -> resources.current[ RESOURCE_HEALTH ] );
 
     paladin_heal_t::execute();
+
+    titans_proc -> schedule_execute();
   }
 
 };
@@ -1933,6 +2038,7 @@ struct light_of_the_protector_t : public paladin_heal_t
 struct hand_of_the_protector_t : public paladin_heal_t
 {
   double health_diff_pct;
+  light_of_the_titans_t* titans_proc;
 
   hand_of_the_protector_t( paladin_t* p, const std::string& options_str )
     : paladin_heal_t( "hand_of_the_protector", p, p -> find_talent_spell( "Hand of the Protector" ) ), health_diff_pct( 0 )
@@ -1954,6 +2060,9 @@ struct hand_of_the_protector_t : public paladin_heal_t
     // disable if Hand of the Protector is not talented
     if ( ! p -> talents.hand_of_the_protector -> ok() )
       background = true;
+
+    // light of the titans object attached to this
+    titans_proc = new light_of_the_titans_t( p );
   }
 
   double action_multiplier() const override
@@ -1974,6 +2083,10 @@ struct hand_of_the_protector_t : public paladin_heal_t
     base_dd_min = base_dd_max = health_diff_pct * ( target -> resources.max[ RESOURCE_HEALTH ] - target -> resources.current[ RESOURCE_HEALTH ] );
 
     paladin_heal_t::execute();
+
+    // Light of the Titans only works if self-cast
+    if ( target == p() )
+      titans_proc -> schedule_execute();
   }
 
 };
@@ -3009,6 +3122,16 @@ struct judgment_t : public paladin_melee_attack_t
     }
 
     return cc;
+  }  
+
+  virtual double composite_crit() const override
+  {
+    double cc = paladin_melee_attack_t::composite_crit();
+
+    // Stern Judgment increases crit chance by 10% - assume additive
+    cc += p() -> artifact.stern_judgment.percent( 1 );
+
+    return cc;
   }
 
   // Special things that happen when Judgment damages target
@@ -3436,6 +3559,34 @@ struct blessing_of_sacrifice_t : public buff_t
   }
 };
 
+struct forbearance_t : public debuff_t
+{
+  paladin_t* paladin;
+
+  forbearance_t( paladin_t* p ) :
+    debuff_t( buff_creator_t( p, "forbearance", p -> find_spell( 25771 ) ) ), paladin( p )
+  { }
+
+  void execute( int stacks, double value, timespan_t duration ) override
+  {
+    debuff_t::execute( stacks, value, duration );
+
+    paladin -> update_forbearance_recharge_multipliers();
+  }
+
+  void expire( timespan_t delay ) override
+  {
+    bool expired = check() != 0;
+
+    debuff_t::expire( delay );
+
+    if ( expired )
+    {
+      paladin -> update_forbearance_recharge_multipliers();
+    }
+  }
+};
+
 // Divine Protection buff
 struct divine_protection_t : public buff_t
 {
@@ -3480,6 +3631,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   buffs.debuffs_judgment = buff_creator_t( *this, "judgment", paladin -> find_spell( 197277 ));
   buffs.judgment_of_light = buff_creator_t( *this, "judgment_of_light", paladin -> find_spell( 196941 ) );
   buffs.eye_of_tyr_debuff = buff_creator_t( *this, "eye_of_tyr", paladin -> find_class_spell( "Eye of Tyr" ) ).cd( timespan_t::zero() );
+  buffs.forbearant_faithful = buff_creator_t( *this, "forbearant_faithful", paladin -> find_spell( 25771 ) );
 }
 
 // paladin_t::create_action =================================================
@@ -3568,6 +3720,34 @@ void paladin_t::trigger_holy_shield( action_state_t* s )
   }
 }
 
+void paladin_t::trigger_painful_truths( action_state_t* s )
+{
+  // escape if we don't have artifact
+  if ( artifact.painful_truths.rank() == 0 )
+    return;
+
+  // sanity check - no friendly-fire
+  if ( ! s -> action -> player -> is_enemy() )
+    return;
+
+  active_painful_truths_proc -> target = s -> action -> player;
+  active_painful_truths_proc -> schedule_execute();
+}
+
+void paladin_t::trigger_tyrs_enforcer( action_state_t* s )
+{
+  // escape if we don't have artifact
+  if ( artifact.tyrs_enforcer.rank() == 0 )
+    return;
+
+  // sanity check - no friendly-fire
+  if ( ! s -> target -> is_enemy() )
+    return;
+
+  active_tyrs_enforcer_proc -> target = s -> target;
+  active_tyrs_enforcer_proc -> schedule_execute();
+}
+
 int paladin_t::get_local_enemies( double distance ) const
 {
   int num_nearby = 0;
@@ -3580,6 +3760,37 @@ int paladin_t::get_local_enemies( double distance ) const
   return num_nearby;
 }
 
+double paladin_t::get_forbearant_faithful_recharge_multiplier() const
+{
+  double cdr = 1.0;
+
+  if ( artifact.forbearant_faithful.rank() )
+  {
+    int num_buffs = 0;
+
+      if ( debuffs.forbearance -> check() )
+        num_buffs++;
+
+    // loop over player list to check those
+    for ( size_t i = 0; i < sim -> player_no_pet_list.size(); i++ )
+    {
+      player_t* q = sim -> player_no_pet_list[ i ];
+
+      if ( get_target_data( q ) -> buffs.forbearant_faithful -> check() )
+        num_buffs++;
+    }
+
+    cdr += num_buffs * artifact.forbearant_faithful.percent( 2 );
+  }
+
+  return cdr;
+
+}
+
+void paladin_t::update_forbearance_recharge_multipliers() const
+{
+  range::for_each( forbearant_faithful_cooldowns, []( cooldown_t* cd ) { cd -> adjust_recharge_multiplier(); } );
+}
 
 // paladin_t::init_base =====================================================
 
@@ -3639,6 +3850,7 @@ void paladin_t::init_gains()
 
   // Health
   gains.holy_shield                 = get_gain( "holy_shield_absorb" );
+  gains.bulwark_of_order            = get_gain( "bulwark_of_order" );
 
   // Holy Power
   gains.hp_templars_verdict_refund  = get_gain( "templars_verdict_refund" );
@@ -3717,6 +3929,10 @@ void paladin_t::create_buffs()
                                           .add_stat( STAT_MASTERY_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
                                           .add_stat( STAT_VERSATILITY_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
                                           .cd( timespan_t::zero() ); // let the ability handle the cooldown
+  buffs.bulwark_of_order               = absorb_buff_creator_t( this, "bulwark_of_order", find_spell( 209388 ) )
+                                         .source( get_stats( "bulwark_of_order" ) )
+                                         .gain( get_gain( "bulwark_of_order" ) )
+                                         .max_stack( 1 ); // not sure why data says 3 stacks
 
   // Ret
   buffs.zeal                           = buff_creator_t( this, "zeal" ).spell( find_spell( 217020 ) );
@@ -4316,6 +4532,12 @@ void paladin_t::init_spells()
   if ( talents.holy_shield -> ok() )
     active_holy_shield_proc = new holy_shield_proc_t( this );
 
+  if ( artifact.painful_truths.rank() )
+    active_painful_truths_proc = new painful_truths_proc_t( this );
+
+  if ( artifact.tyrs_enforcer.rank() )
+    active_tyrs_enforcer_proc = new tyrs_enforcer_proc_t( this );
+
   if ( talents.consecrated_ground -> ok() )
     active_consecrated_ground_tick = new consecrated_ground_tick_t( this );
 
@@ -4521,14 +4743,17 @@ double paladin_t::composite_mastery_rating() const
   return m;
 }
 
-// paladin_t::composite_armor =================================================
+// paladin_t::composite_armor_multiplier ======================================
 
 double paladin_t::composite_armor_multiplier() const
 {
   double a = player_t::composite_armor_multiplier();
 
+  // Faith's Armor boosts armor when below 40% health
   if ( resources.current[ RESOURCE_HEALTH ] / resources.max[ RESOURCE_HEALTH ] < artifact.faiths_armor.percent( 1 ) )
     a *= 1.0 + artifact.faiths_armor.percent( 2 );
+
+  a *= 1.0 + artifact.unrelenting_light.percent();
 
   return a;
 }
@@ -4974,6 +5199,10 @@ void paladin_t::assess_damage( school_e school,
     trigger_grand_crusader();
   }
 
+  // Trigger Painful Truths artifact damage event
+  if ( action_t::result_is_hit( s -> result ) )
+    trigger_painful_truths( s );
+
   player_t::assess_damage( school, dtype, s );
 }
 
@@ -5224,7 +5453,7 @@ struct paladin_module_t : public module_t
   {
     p -> buffs.beacon_of_light          = buff_creator_t( p, "beacon_of_light", p -> find_spell( 53563 ) );
     p -> buffs.blessing_of_sacrifice    = new buffs::blessing_of_sacrifice_t( p );
-    p -> debuffs.forbearance            = buff_creator_t( p, "forbearance", p -> find_spell( 25771 ) );
+    p -> debuffs.forbearance            = new buffs::forbearance_t( static_cast<paladin_t*>( p ) );
   }
 
   virtual void register_hotfixes() const override
