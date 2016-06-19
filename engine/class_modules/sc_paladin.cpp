@@ -14,9 +14,6 @@
     - Check mana/mana regen for ret, sword of light has been significantly changed to no longer have the mana regen stuff, or the bonus to healing, reduction in mana costs, etc.
   TODO (prot):
     - Legendary Item bonuses
-    - Truthguard's Light (artifact)
-    - Faith's Armor (artifact)
-    - Scatter the Shadows (artifact)
     - Righteous Crusader (artifact)
     - Unflinching Defense (artifact)
     - Sacrifice of the Just (artifact)
@@ -401,6 +398,7 @@ public:
   virtual double    composite_attack_power_multiplier() const override;
   virtual double    composite_mastery() const override;
   virtual double    composite_mastery_rating() const override;
+  virtual double    composite_armor_multiplier() const override;
   virtual double    composite_bonus_armor() const override;
   virtual double    composite_melee_attack_power() const override;
   virtual double    composite_melee_crit() const override;
@@ -1907,6 +1905,8 @@ struct light_of_the_protector_t : public paladin_heal_t
     if ( p() -> buffs.standing_in_consecraton -> check() )
       am *= 1.0 + p() -> buffs.standing_in_consecraton -> data().effectN( 2 ).percent();
 
+    am *= 1.0 + p() -> artifact.scatter_the_shadows.percent();
+
     return am;
   }
 
@@ -1954,6 +1954,8 @@ struct hand_of_the_protector_t : public paladin_heal_t
 
     if ( p() -> buffs.standing_in_consecraton -> check() )
       am *= 1.0 + p() -> buffs.standing_in_consecraton -> data().effectN( 2 ).percent();
+
+    am *= 1.0 + p() -> artifact.scatter_the_shadows.percent();
 
     return am;
   }
@@ -4454,6 +4456,19 @@ double paladin_t::composite_mastery_rating() const
   return m;
 }
 
+// paladin_t::composite_armor =================================================
+
+double paladin_t::composite_armor_multiplier() const
+{
+  double a = player_t::composite_armor_multiplier();
+
+  if ( resources.current[ RESOURCE_HEALTH ] / resources.max[ RESOURCE_HEALTH ] < artifact.faiths_armor.percent( 1 ) )
+    a *= 1.0 + artifact.faiths_armor.percent( 2 );
+
+  return a;
+}
+
+
 // paladin_t::composite_bonus_armor =========================================
 
 double paladin_t::composite_bonus_armor() const
@@ -4496,7 +4511,11 @@ double paladin_t::composite_player_multiplier( school_e school ) const
     m *= 2.0 - std::pow( 1.0 - talents.last_defender -> effectN( 2 ).percent(), num_enemies );
   }
 
+  // artifacts
   m *= 1.0 + artifact.ashbringers_light.percent();
+
+  if ( school == SCHOOL_HOLY )
+    m *= 1.0 + artifact.truthguards_light.percent();
 
   return m;
 }
