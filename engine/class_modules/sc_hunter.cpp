@@ -158,6 +158,7 @@ public:
     buff_t* bullseye;
     buff_t* heavy_shot; // t17 SV 4pc
     buff_t* mongoose_fury;
+    buff_t* fury_of_the_eagle;
     buff_t* aspect_of_the_eagle;
     buff_t* instincts_of_the_raptor;
     buff_t* instincts_of_the_mongoose;
@@ -1811,6 +1812,7 @@ struct dire_frenzy_t: public hunter_main_pet_attack_t
       hunter_main_pet_attack_t( "dire_frenzy_tick", p, p -> find_spell( 217200 ) ), df_tt_proc( nullptr )
     {
       background = true;
+      energize_amount = 0.0;
       weapon = &p -> main_hand_weapon;
       weapon_multiplier = 1.0;
       if ( p -> o() -> artifacts.titans_thunder.rank() )
@@ -1832,6 +1834,7 @@ struct dire_frenzy_t: public hunter_main_pet_attack_t
       background = true;
       base_tick_time = timespan_t::from_seconds( 0.2 );
       dot_duration = timespan_t::from_seconds( 1.0 );
+      energize_amount = 0.0;
       tick_action = new dire_frenzy_tick_t( p );
   }
 
@@ -4012,7 +4015,13 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
     hunter_melee_attack_t::execute();
 
     if ( p() -> buffs.mongoose_fury -> up() )
+    {
       p() -> buffs.mongoose_fury -> extend_duration( p(), timespan_t::from_seconds( 5.0 ) );
+      
+      // Tracking purposes
+      p() -> buffs.fury_of_the_eagle -> trigger( p() -> buffs.mongoose_fury -> stack(), p() -> buffs.fury_of_the_eagle -> DEFAULT_VALUE(), -1.0,
+        this -> composite_dot_duration( execute_state ) );
+    }
   }
 
   virtual double action_multiplier() const override
@@ -4586,6 +4595,9 @@ struct dire_frenzy_t: public hunter_spell_t
 
     cooldown -> hasted = true;
     harmful = false;
+
+    if ( p -> talents.dire_stable -> ok() )
+      energize_amount += p -> talents.dire_stable -> effectN( 2 ).base_value();
   }
 
   bool init_finished() override
@@ -5331,7 +5343,7 @@ void hunter_t::create_buffs()
     .default_value( find_spell( 120694 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ) / find_spell( 120694 ) -> effectN( 1 ).period().total_seconds() );
 
   if ( talents.dire_stable -> ok() )
-    buffs.dire_beast -> default_value += talents.dire_stable -> effectN( 1 ).base_value();
+    buffs.dire_beast -> default_value += talents.dire_stable -> effectN( 1 ).base_value() / buffs.dire_beast -> data().effectN( 1 ).period().total_seconds();
 
   buffs.bestial_wrath                = buff_creator_t( this, "bestial_wrath", specs.bestial_wrath )
     .duration( timespan_t::from_seconds( 15.0 ) )
@@ -5395,6 +5407,10 @@ void hunter_t::create_buffs()
   buffs.mongoose_fury = buff_creator_t( this, 190931, "mongoose_fury" )
     .default_value( find_spell( 190931 ) -> effectN( 1 ).percent() )
     .refresh_behavior( BUFF_REFRESH_DISABLED )
+    .max_stack( 6 );
+
+  buffs.fury_of_the_eagle = buff_creator_t( this, 203415, "fury_of_the_eagle" )
+    .cd( timespan_t::zero() )
     .max_stack( 6 );
 
   buffs.aspect_of_the_eagle = buff_creator_t( this, 186289, "aspect_of_the_eagle" )
