@@ -336,6 +336,7 @@ struct rogue_t : public player_t
     const spell_data_t* death_from_above;
     const spell_data_t* fan_of_knives;
     const spell_data_t* fleet_footed;
+    const spell_data_t* master_of_shadows;
     const spell_data_t* sprint;
     const spell_data_t* relentless_strikes_energize;
     const spell_data_t* ruthlessness_cp_driver;
@@ -4901,7 +4902,7 @@ struct stealth_like_buff_t : public buff_t
 
     if ( rogue -> in_combat && rogue -> talent.master_of_shadows -> ok() )
     {
-      rogue -> resource_gain( RESOURCE_ENERGY, rogue -> talent.master_of_shadows -> effectN( 1 ).base_value(),
+      rogue -> resource_gain( RESOURCE_ENERGY, rogue -> spell.master_of_shadows -> effectN( 1 ).base_value(),
           rogue -> gains.master_of_shadows );
     }
 
@@ -5819,6 +5820,7 @@ void rogue_t::init_spells()
   spell.death_from_above    = find_spell( 163786 );
   spell.fan_of_knives       = find_class_spell( "Fan of Knives" );
   spell.fleet_footed        = find_class_spell( "Fleet Footed" );
+  spell.master_of_shadows   = find_spell( 196980 );
   spell.sprint              = find_class_spell( "Sprint" );
   spell.ruthlessness_driver = find_spell( 14161 );
   spell.ruthlessness_cp     = spec.ruthlessness -> effectN( 1 ).trigger();
