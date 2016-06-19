@@ -15,7 +15,6 @@
   TODO (prot):
     - Legendary Item bonuses
     - Unrelenting Light - test interaction with faiths' armor (artifact)
-    - Blessed Hammer (talent/spell)
     - Action Priority List
     - Sample Profile (for testing)
     - Blessing of Protection? (for Forbearant Faithful)
@@ -60,6 +59,7 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* judgment_of_light;
     buff_t* eye_of_tyr_debuff;
     buff_t* forbearant_faithful;
+    buff_t* blessed_hammer_debuff;
   } buffs;
 
   paladin_td_t( player_t* target, paladin_t* paladin );
@@ -1164,6 +1164,68 @@ struct beacon_of_light_heal_t : public heal_t
 
     target = p -> beacon_target;
   }
+};
+
+// Blessed Hammer (Protection) ================================================
+
+struct blessed_hammer_tick_t : public paladin_spell_t
+{
+  blessed_hammer_tick_t( paladin_t* p ) :
+    paladin_spell_t( "blessed_hammer_tick", p, p -> find_spell( 204301 ) )
+  {
+    aoe = -1;
+    background = dual = direct_tick = true;
+    callbacks = false;
+    radius = 9.0; // Guess, must be > 8 (cons) but < 10 (HoJ)
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    paladin_spell_t::impact( s );
+
+    // apply BH debuff to target_data structure
+    td( s -> target ) -> buffs.blessed_hammer_debuff -> trigger();
+  }
+};
+
+struct blessed_hammer_t : public paladin_spell_t
+{
+  blessed_hammer_tick_t* hammer;
+  int num_strikes;
+
+  blessed_hammer_t( paladin_t* p, const std::string& options_str ) :
+    paladin_spell_t( "blessed_hammer", p, p -> find_talent_spell( "Blessed Hammer" ) ),
+    hammer( new blessed_hammer_tick_t( p ) ), num_strikes( 3 )
+  {
+    add_option( opt_int( "strikes", num_strikes ) );
+    parse_options( options_str );
+
+    dot_duration = timespan_t::zero(); // The periodic event is handled by ground_aoe_event_t
+    may_miss = false;
+    base_tick_time = timespan_t::from_seconds( 1.667 );
+
+    add_child( hammer );
+  }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
+    
+    timespan_t initial_delay = num_strikes < 3 ? base_tick_time * 0.25 : timespan_t::zero();;
+
+    new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+        .target( execute_state -> target )
+        .x( execute_state -> target -> x_position )
+        .y( execute_state -> target -> y_position )
+        .pulse_time( base_tick_time )
+        .duration( base_tick_time * ( num_strikes - 1 ) )
+        .start_time( sim -> current_time() + initial_delay )
+        .action( hammer ), true );
+
+    // Oddly, Grand Crusader seems to proc on cast whether it hits or not (tested 6/19/2016 by Theck on PTR)
+    p() -> trigger_grand_crusader();
+  }
+
 };
 
 // Consecration =============================================================
@@ -3632,6 +3694,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   buffs.judgment_of_light = buff_creator_t( *this, "judgment_of_light", paladin -> find_spell( 196941 ) );
   buffs.eye_of_tyr_debuff = buff_creator_t( *this, "eye_of_tyr", paladin -> find_class_spell( "Eye of Tyr" ) ).cd( timespan_t::zero() );
   buffs.forbearant_faithful = buff_creator_t( *this, "forbearant_faithful", paladin -> find_spell( 25771 ) );
+  buffs.blessed_hammer_debuff = buff_creator_t( *this, "blessed_hammer", paladin -> find_spell( 204301 ) );
 }
 
 // paladin_t::create_action =================================================
@@ -3645,6 +3708,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "avenging_wrath"            ) return new avenging_wrath_t           ( this, options_str );
   if ( name == "crusade"                   ) return new crusade_t                  ( this, options_str );
   if ( name == "bastion_of_light"          ) return new bastion_of_light_t         ( this, options_str );
+  if ( name == "blessed_hammer"            ) return new blessed_hammer_t           ( this, options_str );
   if ( name == "blessing_of_might"         ) return new blessing_of_might_t        ( this, options_str );
   if ( name == "blinding_light"            ) return new blinding_light_t           ( this, options_str );
   if ( name == "beacon_of_light"           ) return new beacon_of_light_t          ( this, options_str );
@@ -5011,6 +5075,23 @@ void paladin_t::target_mitigation( school_e school,
     }
     if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
       sim -> out_debug.printf( "Damage to %s after Divine Protection is %f", s -> target -> name(), s -> result_amount );
+  }
+
+  // Other stuff
+
+  // Blessed Hammer 
+  if ( talents.blessed_hammer -> ok() )    
+  {
+    buff_t* b = get_target_data( s -> action -> player ) -> buffs.blessed_hammer_debuff;
+
+    // BH only reduces auto-attack damage. The only distinguishing feature of auto attacks is that
+    // our enemies call them "melee_main_hand" and "melee_off_hand", so we need to check for "hand" in name_str
+    if ( b -> up() && util::str_in_str_ci( s -> action -> name_str, "_hand" ) )
+    {
+      // apply mitigation and expire the BH buff
+      s -> result_amount *= 1.0 - b -> data().effectN( 2 ).percent();
+      b -> expire();
+    }
   }
 
   // Knight Templar
