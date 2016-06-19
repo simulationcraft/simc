@@ -3013,6 +3013,9 @@ struct cooldown_t
   timespan_t remains() const
   { return std::max( timespan_t::zero(), ready - sim.current_time() ); }
 
+  timespan_t current_charge_remains() const
+  { return recharge_event != NULL ? recharge_event -> remains() : timespan_t::zero(); }
+
   // return true if the cooldown is done (i.e., the associated ability is ready)
   bool up() const
   { return ready <= sim.current_time(); }
