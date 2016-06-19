@@ -14,7 +14,6 @@
     - Check mana/mana regen for ret, sword of light has been significantly changed to no longer have the mana regen stuff, or the bonus to healing, reduction in mana costs, etc.
   TODO (prot):
     - Legendary Item bonuses
-    - Eye of Tyr (artifact)
     - Truthguard's Light (artifact)
     - Faith's Armor (artifact)
     - Scatter the Shadows (artifact)
@@ -74,6 +73,7 @@ struct paladin_td_t : public actor_target_data_t
   {
     buff_t* debuffs_judgment;
     buff_t* judgment_of_light;
+    buff_t* eye_of_tyr_debuff;
   } buffs;
 
   paladin_td_t( player_t* target, paladin_t* paladin );
@@ -2106,6 +2106,27 @@ struct seraphim_t : public paladin_spell_t
 
 };
 
+// Eye of Tyr (Protection) ====================================================
+
+struct eye_of_tyr_t : public paladin_spell_t
+{
+  eye_of_tyr_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "eye_of_tyr", p, p -> artifact.eye_of_tyr )
+  {
+    parse_options( options_str );
+
+    aoe = -1;
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    paladin_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+      td( s -> target ) -> buffs.eye_of_tyr_debuff -> trigger();
+  }
+};
+
 // Wake of Ashes (Retribution) ================================================
 
 struct wake_of_ashes_t : public paladin_spell_t
@@ -3395,6 +3416,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   dots.execution_sentence = target -> get_dot( "execution_sentence", paladin );
   buffs.debuffs_judgment = buff_creator_t( *this, "judgment", paladin -> find_spell( 197277 ));
   buffs.judgment_of_light = buff_creator_t( *this, "judgment_of_light", paladin -> find_spell( 196941 ) );
+  buffs.eye_of_tyr_debuff = buff_creator_t( *this, "eye_of_tyr", paladin -> find_class_spell( "Eye of Tyr" ) ).cd( timespan_t::zero() );
 }
 
 // paladin_t::create_action =================================================
@@ -3440,6 +3462,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "holy_wrath"                ) return new holy_wrath_t               ( this, options_str );
   if ( name == "holy_prism"                ) return new holy_prism_t               ( this, options_str );
   if ( name == "wake_of_ashes"             ) return new wake_of_ashes_t            ( this, options_str );
+  if ( name == "eye_of_tyr"                ) return new eye_of_tyr_t               ( this, options_str );
   if ( name == "seraphim"                  ) return new seraphim_t                 ( this, options_str );
   if ( name == "seal_of_light"             ) return new seal_of_light_t            ( this, options_str );
   if ( name == "holy_light"                ) return new holy_light_t               ( this, options_str );
@@ -4646,6 +4669,14 @@ void paladin_t::target_mitigation( school_e school,
   // Passive sources (Sanctuary)
   s -> result_amount *= 1.0 + passives.sanctuary -> effectN( 1 ).percent();
 
+  // Last Defender
+  if ( talents.last_defender -> ok() )
+  {
+    // Last Defender gives a multiplier of 0.97^N - coded using spell data in case that changes
+    s -> result_amount *= std::pow( 1.0 - talents.last_defender -> effectN( 2 ).percent(), get_local_enemies( talents.last_defender -> effectN( 1 ).base_value() ) );
+  }
+
+
   if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
     sim -> out_debug.printf( "Damage to %s after passive mitigation is %f", s -> target -> name(), s -> result_amount );
 
@@ -4678,13 +4709,12 @@ void paladin_t::target_mitigation( school_e school,
   if ( talents.aegis_of_light -> ok() && buffs.aegis_of_light -> up() )
     s -> result_amount *= 1.0 + talents.aegis_of_light -> effectN( 1 ).percent();
 
-  // Last Defender
-  if ( talents.last_defender -> ok() )
-  {
-    // Last Defender gives a multiplier of 0.97^N - coded using spell data in case that changes
-    s -> result_amount *= std::pow( 1.0 - talents.last_defender -> effectN( 2 ).percent(), get_local_enemies( talents.last_defender -> effectN( 1 ).base_value() ) );
-  }
+  // Eye of Tyr
+  if ( artifact.eye_of_tyr.rank() && get_target_data( s -> action -> player ) -> buffs.eye_of_tyr_debuff -> up() )
+    s -> result_amount *= 1.0 + artifact.eye_of_tyr.data().effectN( 1 ).percent();
 
+  if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
+    sim -> out_debug.printf( "Damage to %s after other mitigation effects but before SotR is %f", s -> target -> name(), s -> result_amount );
 
   // Shield of the Righteous
   if ( buffs.shield_of_the_righteous -> check() && school == SCHOOL_PHYSICAL )
