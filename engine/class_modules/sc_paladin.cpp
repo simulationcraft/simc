@@ -14,12 +14,6 @@
     - Check mana/mana regen for ret, sword of light has been significantly changed to no longer have the mana regen stuff, or the bonus to healing, reduction in mana costs, etc.
   TODO (prot):
     - Legendary Item bonuses
-    - Righteous Crusader (artifact)
-    - Unflinching Defense (artifact)
-    - Sacrifice of the Just (artifact)
-    - Hammer Time (artifact)
-    - Bastion of Truth (artifact)
-    - Resolve of Truth (artifact)
     - Painful Truths (artifact)
     - Forbearant Faithful (artifact)
     - Consecration in Flame (artifact)
@@ -46,7 +40,7 @@ namespace { // UNNAMED NAMESPACE
 
 // Forward declarations
 struct paladin_t;
-struct hand_of_sacrifice_redirect_t;
+struct blessing_of_sacrifice_redirect_t;
 namespace buffs {
                   struct avenging_wrath_buff_t;
                   struct crusade_buff_t;
@@ -101,7 +95,7 @@ public:
 
   struct active_actions_t
   {
-    hand_of_sacrifice_redirect_t* hand_of_sacrifice_redirect;
+    blessing_of_sacrifice_redirect_t* blessing_of_sacrifice_redirect;
   } active;
 
   // Buffs
@@ -904,6 +898,8 @@ struct ardent_defender_t : public paladin_spell_t
     harmful = false;
     use_off_gcd = true;
     trigger_gcd = timespan_t::zero();
+
+    cooldown -> duration += timespan_t::from_millis( p -> artifact.unflinching_defense.value( 1 ) );
   }
 
   virtual void execute() override
@@ -1460,12 +1456,12 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
   }
 };
 
-// Hand of Sacrifice ========================================================
+// Blessing of Sacrifice ========================================================
 
-struct hand_of_sacrifice_redirect_t : public paladin_spell_t
+struct blessing_of_sacrifice_redirect_t : public paladin_spell_t
 {
-  hand_of_sacrifice_redirect_t( paladin_t* p ) :
-    paladin_spell_t( "hand_of_sacrifice_redirect", p, p -> find_class_spell( "Hand of Sacrifice" ) )
+  blessing_of_sacrifice_redirect_t( paladin_t* p ) :
+    paladin_spell_t( "blessing_of_sacrifice_redirect", p, p -> find_class_spell( "Blessing of Sacrifice" ) )
   {
     background = true;
     trigger_gcd = timespan_t::zero();
@@ -1482,25 +1478,27 @@ struct hand_of_sacrifice_redirect_t : public paladin_spell_t
     base_dd_max = redirect_value;
   }
 
-  // Hand of Sacrifice's Execute function is defined after Paladin Buffs, Part Deux because it requires
-  // the definition of the buffs_t::hand_of_sacrifice_t object.
+  // Blessing of Sacrifice's Execute function is defined after Paladin Buffs, Part Deux because it requires
+  // the definition of the buffs_t::blessing_of_sacrifice_t object.
 };
 
-struct hand_of_sacrifice_t : public paladin_spell_t
+struct blessing_of_sacrifice_t : public paladin_spell_t
 {
-  hand_of_sacrifice_t( paladin_t* p, const std::string& options_str ) :
-    paladin_spell_t( "hand_of_sacrifice", p, p-> find_class_spell( "Hand of Sacrifice" ) )
+  blessing_of_sacrifice_t( paladin_t* p, const std::string& options_str ) :
+    paladin_spell_t( "blessing_of_sacrifice", p, p-> find_class_spell( "Blessing of Sacrifice" ) )
   {
     parse_options( options_str );
 
+    cooldown -> duration += timespan_t::from_millis( p -> artifact.sacrifice_of_the_just.value( 1 ) );
+
     harmful = false;
     may_miss = false;
-//    p -> active.hand_of_sacrifice_redirect = new hand_of_sacrifice_redirect_t( p );
+//    p -> active.blessing_of_sacrifice_redirect = new blessing_of_sacrifice_redirect_t( p );
 
 
     // Create redirect action conditionalized on the existence of HoS.
-    if ( ! p -> active.hand_of_sacrifice_redirect )
-      p -> active.hand_of_sacrifice_redirect = new hand_of_sacrifice_redirect_t( p );
+    if ( ! p -> active.blessing_of_sacrifice_redirect )
+      p -> active.blessing_of_sacrifice_redirect = new blessing_of_sacrifice_redirect_t( p );
   }
 
   virtual void execute() override;
@@ -2818,6 +2816,15 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
     }
     return tl.size();
   }
+
+  double action_multiplier() const override
+  {
+    double am = paladin_melee_attack_t::action_multiplier();
+
+    am *= 1.0 + p() -> artifact.hammer_time.percent( 1 );
+
+    return am;
+  }
 };
 
 struct hammer_of_the_righteous_t : public paladin_melee_attack_t
@@ -2862,11 +2869,21 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       }
     }
   }
+
+  double action_multiplier() const override
+  {
+    double am = paladin_melee_attack_t::action_multiplier();
+
+    am *= 1.0 + p() -> artifact.hammer_time.percent( 1 );
+
+    return am;
+  }
 };
 
 // Blessed Hammer ============================================================
 
 // TODO: add Blessed Hammer talent/ability
+// Don't forget to add Hammer Time's action multiplier effect (see hotr)
 
 // Blessing of Might proc
 // TODO: is this a melee attack?
@@ -3074,6 +3091,8 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
 
     if ( p() -> buffs.standing_in_consecraton -> check() )
       am *= 1.0 + p() -> buffs.standing_in_consecraton -> data().effectN( 2 ).percent();
+
+    am *= 1.0 + p() -> artifact.righteous_crusader.percent( 1 );
 
     return am;
   }
@@ -3315,13 +3334,13 @@ struct seal_of_light_t : public paladin_spell_t
 
 namespace buffs {
 
-struct hand_of_sacrifice_t : public buff_t
+struct blessing_of_sacrifice_t : public buff_t
 {
   paladin_t* source; // Assumption: Only one paladin can cast HoS per target
   double source_health_pool;
 
-  hand_of_sacrifice_t( player_t* p ) :
-    buff_t( buff_creator_t( p, "hand_of_sacrifice", p -> find_spell( 6940 ) ) ),
+  blessing_of_sacrifice_t( player_t* p ) :
+    buff_t( buff_creator_t( p, "blessing_of_sacrifice", p -> find_spell( 6940 ) ) ),
     source( nullptr ),
     source_health_pool( 0.0 )
   {
@@ -3346,7 +3365,7 @@ struct hand_of_sacrifice_t : public buff_t
     assert( source );
 
     value = std::min( source_health_pool, value );
-    source -> active.hand_of_sacrifice_redirect -> trigger( value );
+    source -> active.blessing_of_sacrifice_redirect -> trigger( value );
     source_health_pool -= value;
 
     // If the health pool is fully consumed, expire the buff early
@@ -3397,13 +3416,13 @@ struct divine_protection_t : public buff_t
 // End Paladin Buffs, Part Deux
 // ==========================================================================
 
-// Hand of Sacrifice execute function
+// Blessing of Sacrifice execute function
 
-void hand_of_sacrifice_t::execute()
+void blessing_of_sacrifice_t::execute()
 {
   paladin_spell_t::execute();
 
-  buffs::hand_of_sacrifice_t* b = debug_cast<buffs::hand_of_sacrifice_t*>( target -> buffs.hand_of_sacrifice );
+  buffs::blessing_of_sacrifice_t* b = debug_cast<buffs::blessing_of_sacrifice_t*>( target -> buffs.blessing_of_sacrifice );
 
   b -> trigger_hos( *p() );
 }
@@ -3447,7 +3466,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "divine_shield"             ) return new divine_shield_t            ( this, options_str );
   if ( name == "divine_storm"              ) return new divine_storm_t             ( this, options_str );
   if ( name == "execution_sentence"        ) return new execution_sentence_t       ( this, options_str );
-  if ( name == "hand_of_sacrifice"         ) return new hand_of_sacrifice_t        ( this, options_str );
+  if ( name == "blessing_of_sacrifice"         ) return new blessing_of_sacrifice_t        ( this, options_str );
   if ( name == "hammer_of_justice"         ) return new hammer_of_justice_t        ( this, options_str );
   if ( name == "hammer_of_the_righteous"   ) return new hammer_of_the_righteous_t  ( this, options_str );
   if ( name == "holy_shock"                ) return new holy_shock_t               ( this, options_str );
@@ -3542,6 +3561,9 @@ void paladin_t::init_base_stats()
   // add Sanctuary expertise
   base.expertise += passives.sanctuary -> effectN( 4 ).percent();
 
+  // Resolve of Truth max HP multiplier
+  resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1.0 + artifact.resolve_of_truth.percent( 1 );
+  
   // Holy Insight grants mana regen from spirit during combat
   base.mana_regen_from_spirit_multiplier = passives.holy_insight -> effectN( 3 ).percent();
 
@@ -4609,6 +4631,9 @@ double paladin_t::composite_block() const
   if ( buffs.faith_barricade -> check() )
     b += buffs.faith_barricade -> value();
 
+  // Bastion of Truth (assuming not affected by DR)
+  b += artifact.bastion_of_truth.percent( 1 );
+
   return b;
 }
 
@@ -4738,19 +4763,27 @@ void paladin_t::target_mitigation( school_e school,
   // Shield of the Righteous
   if ( buffs.shield_of_the_righteous -> check() && school == SCHOOL_PHYSICAL )
   {
-    // split his out to make it more readable / easier to debug
+    // sotr has a lot going on, so we'll be verbose
     double sotr_mitigation;
-    sotr_mitigation = buffs.shield_of_the_righteous -> data().effectN( 1 ).percent() + cache.mastery() * passives.divine_bulwark -> effectN( 4 ).mastery_value();
+
+    // base effect
+    sotr_mitigation = buffs.shield_of_the_righteous -> data().effectN( 1 ).percent();
+
+    // mastery bonus
+    sotr_mitigation += cache.mastery() * passives.divine_bulwark -> effectN( 4 ).mastery_value();
+
+    // 3% more reduction with artifact trait
+    // TODO: test if this is multiplicative or additive. Assumed additive
+    sotr_mitigation += artifact.righteous_crusader.percent( 2 );
 
     // 20% more effective if standing in Cons
     // TODO: test if this is multiplicative or additive. Assumed multiplicative.
     if ( buffs.standing_in_consecraton -> check() )
       sotr_mitigation *= 1.0 + buffs.standing_in_consecraton -> data().effectN( 3 ).percent();
 
-
     // clamp is hardcoded in tooltip, not shown in effects
     sotr_mitigation = std::max( -0.80, sotr_mitigation );
-    sotr_mitigation = std::min( -0.20, sotr_mitigation );
+    sotr_mitigation = std::min( -0.25, sotr_mitigation );
 
     s -> result_amount *= 1.0 + sotr_mitigation;
 
@@ -5147,7 +5180,7 @@ struct paladin_module_t : public module_t
   virtual void init( player_t* p ) const override
   {
     p -> buffs.beacon_of_light          = buff_creator_t( p, "beacon_of_light", p -> find_spell( 53563 ) );
-    p -> buffs.hand_of_sacrifice        = new buffs::hand_of_sacrifice_t( p );
+    p -> buffs.blessing_of_sacrifice    = new buffs::blessing_of_sacrifice_t( p );
     p -> debuffs.forbearance            = buff_creator_t( p, "forbearance", p -> find_spell( 25771 ) );
   }
 

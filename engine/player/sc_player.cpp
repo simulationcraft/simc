@@ -1349,10 +1349,13 @@ void player_t::init_resources( bool force )
       resources.initial[ i ]  = resources.base[ i ];
       resources.initial[ i ] *= resources.base_multiplier[ i ];
       resources.initial[ i ] += total_gear.resource[ i ];
-      resources.initial[ i ] *= resources.initial_multiplier[ i ];
 
+      // re-ordered 19/06/2016 by Theck - initial_multiplier should do something for RESOURCE_HEALTH
       if ( i == RESOURCE_HEALTH )
         resources.initial[ i ] += floor( stamina() ) * current.health_per_stamina;
+
+      resources.initial[ i ] *= resources.initial_multiplier[ i ];
+
     }
   }
 
@@ -5092,22 +5095,22 @@ void account_parry_haste( player_t& p, action_state_t* s )
   }
 }
 
-void account_hand_of_sacrifice( player_t& p, action_state_t* s )
+void account_blessing_of_sacrifice( player_t& p, action_state_t* s )
 {
-  if ( p.buffs.hand_of_sacrifice -> check() )
+  if ( p.buffs.blessing_of_sacrifice -> check() )
   {
     // figure out how much damage gets redirected
-    double redirected_damage = s -> result_amount * ( p.buffs.hand_of_sacrifice -> data().effectN( 1 ).percent() );
+    double redirected_damage = s -> result_amount * ( p.buffs.blessing_of_sacrifice -> data().effectN( 1 ).percent() );
 
     // apply that damage to the source paladin
-    p.buffs.hand_of_sacrifice -> trigger( s -> action, 0, redirected_damage, timespan_t::zero() );
+    p.buffs.blessing_of_sacrifice -> trigger( s -> action, 0, redirected_damage, timespan_t::zero() );
 
     // mitigate that amount from the target.
     // Slight inaccuracy: We do not get a feedback of paladin health buffer expiration here.
     s -> result_amount -= redirected_damage;
 
     if ( p.sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-      p.sim -> out_debug.printf( "Damage to %s after Hand of Sacrifice is %f", s -> target -> name(), s -> result_amount );
+      p.sim -> out_debug.printf( "Damage to %s after Blessing of Sacrifice is %f", s -> target -> name(), s -> result_amount );
   }
 }
 
@@ -5362,7 +5365,7 @@ void player_t::assess_damage( school_e school,
   if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
     sim -> out_debug.printf( "Damage to %s after all mitigation is %f", s -> target -> name(), s -> result_amount );
 
-  account_hand_of_sacrifice( *this, s );
+  account_blessing_of_sacrifice( *this, s );
 
   assess_damage_imminent_pre_absorb( school, type, s );
 
