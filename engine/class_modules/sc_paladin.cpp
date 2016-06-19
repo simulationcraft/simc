@@ -3584,10 +3584,10 @@ void paladin_t::create_buffs()
   buffs.standing_in_consecraton        = buff_creator_t( this, "standing_in_consecration", find_spell( 188370 ) );
   buffs.aegis_of_light                 = buff_creator_t( this, "aegis_of_light", find_talent_spell( "Aegis of Light" ) );
   buffs.seraphim                       = stat_buff_creator_t( this, "seraphim", talents.seraphim )
-                                          .add_stat( STAT_HASTE_RATING, talents.seraphim -> effectN( 1 ).average( this, true_level ) )
-                                          .add_stat( STAT_CRIT_RATING, talents.seraphim -> effectN( 1 ).average( this, true_level ) )
-                                          .add_stat( STAT_MASTERY_RATING, talents.seraphim -> effectN( 1 ).average( this, true_level ) )
-                                          .add_stat( STAT_VERSATILITY_RATING, talents.seraphim -> effectN( 1 ).average( this, true_level ) )
+                                          .add_stat( STAT_HASTE_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
+                                          .add_stat( STAT_CRIT_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
+                                          .add_stat( STAT_MASTERY_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
+                                          .add_stat( STAT_VERSATILITY_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
                                           .cd( timespan_t::zero() ); // let the ability handle the cooldown
 
   // Ret
