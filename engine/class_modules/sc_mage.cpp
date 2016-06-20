@@ -256,8 +256,9 @@ public:
     buff_t* chain_reaction,
           * chilled_to_the_core;
 
-    // Legendary 
-    buff_t* magtheridons_might,
+    // Legendary
+    buff_t* lady_vashjs_grasp,
+          * magtheridons_might,
           * zannesu_journey;
 
   } buffs;
@@ -287,6 +288,7 @@ public:
   struct legendary_t
   {
     bool zannesu_journey;
+    bool lady_vashjs_grasp;
     double zannesu_journey_multiplier;
   } legendary;
   // Pets
@@ -2837,7 +2839,7 @@ struct blizzard_shard_t : public frost_mage_spell_t
     background = true;
     ground_aoe = true;
     spell_power_mod.direct *= 1.0 + p -> talents.arctic_gale -> effectN( 1 ).percent();
-    chills = true;  
+    chills = true;
   }
 
   // Override damage type because Blizzard is considered a DOT
@@ -2860,7 +2862,6 @@ struct blizzard_shard_t : public frost_mage_spell_t
       trigger_fof( "Blizzard", fof_proc_chance );
     }
 
-    sim -> out_debug.printf( "%f multiplier", p() -> legendary.zannesu_journey_multiplier );
   }
 
   virtual double composite_crit() const override
@@ -3262,7 +3263,6 @@ struct fireball_t : public fire_mage_spell_t
   virtual void impact( action_state_t* s ) override
   {
     fire_mage_spell_t::impact( s );
-    sim ->out_debug.printf("%f",p() -> cache.mastery_value());
     if ( result_is_hit( s -> result ) )
     {
       if ( s -> result == RESULT_CRIT )
@@ -4039,6 +4039,10 @@ struct icy_veins_t : public frost_mage_spell_t
     frost_mage_spell_t::execute();
 
     p() -> buffs.icy_veins -> trigger();
+    if ( p() -> legendary.lady_vashjs_grasp )
+    {
+      p() -> buffs.lady_vashjs_grasp -> trigger();
+    }
     if ( p() -> artifact.chilled_to_the_core.rank() )
     {
     p() -> buffs.chilled_to_the_core -> trigger();
@@ -4848,7 +4852,7 @@ struct scorch_t : public fire_mage_spell_t
 
     return m;
   }
-  double composite_target_multiplier( player_t* target ) const override 
+  double composite_target_multiplier( player_t* target ) const override
   {
     double ctm = fire_mage_spell_t::composite_target_multiplier( target );
 
@@ -6056,7 +6060,23 @@ void mage_t::init_base_stats()
 }
 
 // Custom buffs ===============================================================
+struct icy_veins_buff_t : public buff_t
+{
+  mage_t* p;
+  icy_veins_buff_t( mage_t* p ) :
+    buff_t( buff_creator_t( p, "icy_veins_buff", p -> find_spell( 12472 ) )
+            .add_invalidate( CACHE_SPELL_HASTE ) ),p( p )
+  {}
 
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+    if ( p -> legendary.lady_vashjs_grasp )
+    {
+      p -> buffs.lady_vashjs_grasp -> expire();
+    }
+  }
+};
 struct incanters_flow_t : public buff_t
 {
   incanters_flow_t( mage_t* p ) :
@@ -6096,6 +6116,7 @@ struct ray_of_frost_buff_t : public buff_t
     rof_cd = rof_data -> cooldown() - rof_data -> duration();
   }
 
+  //TODO: This be calling expire_override instead
   virtual void aura_loss() override
   {
     buff_t::aura_loss();
@@ -6169,8 +6190,7 @@ void mage_t::create_buffs()
                                               artifact.icy_hand.rank() );
   buffs.frost_armor           = buff_creator_t( this, "frost_armor", find_spell( 7302 ) )
                                   .add_invalidate( CACHE_SPELL_HASTE );
-  buffs.icy_veins             = buff_creator_t( this, "icy_veins", find_spell( 12472 ) )
-                                  .add_invalidate( CACHE_SPELL_HASTE );
+  buffs.icy_veins             = new icy_veins_buff_t( this );
   buffs.frost_t17_4pc         = buff_creator_t( this, "frost_t17_4pc", find_spell( 165470 ) )
                                   .duration( find_spell( 84714 ) -> duration() )
                                   .period( find_spell( 165470 ) -> effectN( 1 ).time_value() )
@@ -6206,9 +6226,13 @@ void mage_t::create_buffs()
   buffs.chilled_to_the_core = buff_creator_t( this, "chilled_to_the_core", find_spell( 195446 ) )
                                    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  // Legendary 
+  // Legendary
   buffs.magtheridons_might = buff_creator_t( this, "magtheridons_might", find_spell( 214404 ) );
   buffs.zannesu_journey    = buff_creator_t( this, "zannesu_journey", find_spell( 226852 ) );
+  buffs.lady_vashjs_grasp  = buff_creator_t( this, "lady_vashjs_grasp", find_spell( 208147 ) ).tick_callback(
+                                           [ this ]( buff_t*, int, const timespan_t& )
+                                           { buffs.fingers_of_frost -> trigger();
+                                             benefits.fingers_of_frost -> update( "Legedary Gain", 1.0 ); } );
 }
 
 // mage_t::create_options ===================================================
@@ -7752,6 +7776,15 @@ struct zannesu_journey_t : public scoped_actor_callback_t<mage_t>
   void manipulate( mage_t* actor, const special_effect_t& /* e */ ) override
   { actor -> legendary.zannesu_journey = true; }
 };
+
+struct lady_vashjs_grasp_t : public scoped_actor_callback_t<mage_t>
+{
+  lady_vashjs_grasp_t() : super( MAGE_FROST )
+  { }
+
+  void manipulate( mage_t* actor, const special_effect_t& /* e */ ) override
+  { actor -> legendary.lady_vashjs_grasp = true; }
+};
 // MAGE MODULE INTERFACE ====================================================
 
 static void do_trinket_init( mage_t*                  p,
@@ -7806,6 +7839,7 @@ public:
     unique_gear::register_special_effect( 208099, koralons_burning_touch_t() );
     unique_gear::register_special_effect( 214403, magtheridons_banished_bracers_t() );
     unique_gear::register_special_effect( 206397, zannesu_journey_t() );
+    unique_gear::register_special_effect( 208146 ,lady_vashjs_grasp_t() );
   }
 
   virtual void register_hotfixes() const override
