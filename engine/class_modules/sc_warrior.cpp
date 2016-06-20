@@ -672,6 +672,14 @@ public:
     }
   }
 
+  void arms_t19_4p( action_state_t* s )
+  {
+    if ( p() -> sets.has_set_bonus( WARRIOR_ARMS, T19, B4 ) && s -> result == RESULT_CRIT && rng().roll( p() -> sets.set(WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).percent() ) )
+    {
+      p() -> cooldown.colossus_smash -> reset( true );
+    }
+  }
+
   void anger_management( double rage )
   {
     if ( rage > 0 )
@@ -2736,6 +2744,12 @@ struct slam_t: public warrior_attack_t
     }
   }
 
+  void impact( action_state_t* s )
+  {
+    warrior_attack_t::impact( s );
+    arms_t19_4p( s );
+  }
+
   bool ready() override
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
@@ -3025,6 +3039,12 @@ struct arms_whirlwind_mh_t: public warrior_attack_t
 
     return am;
   }
+
+  void impact( action_state_t* s )
+  {
+    warrior_attack_t::impact( s );
+    arms_t19_4p( s );
+  }
 };
 
 struct first_arms_whirlwind_mh_t: public warrior_attack_t
@@ -3039,7 +3059,7 @@ struct first_arms_whirlwind_mh_t: public warrior_attack_t
   void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
-
+    arms_t19_4p( s );
     if ( p() -> artifact.will_of_the_first_king.rank() )
     {
       p() -> resource_gain( RESOURCE_RAGE, p() -> artifact.will_of_the_first_king.data().effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.will_of_the_first_king );
@@ -4287,7 +4307,7 @@ struct enrage_t: public warrior_buff_t < buff_t >
 {
   int health_gain;
   enrage_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
-    base_t( p, buff_creator_t( &p, n, s ).can_cancel( false ).add_invalidate( CACHE_ATTACK_SPEED ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) ), health_gain( 0 )
+    base_t( p, buff_creator_t( &p, n, s ).duration( p.spec.enrage -> duration() + p.sets.set(WARRIOR_FURY, T19, B4 )->effectN( 1 ).time_value() ).can_cancel( false ).add_invalidate( CACHE_ATTACK_SPEED ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) ), health_gain( 0 )
   {}
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
@@ -4425,7 +4445,7 @@ void warrior_t::create_buffs()
   buff.meat_cleaver = buff_creator_t( this, "meat_cleaver", spec.meat_cleaver -> effectN( 1 ).trigger() );
 
   buff.taste_for_blood = buff_creator_t( this, "taste_for_blood", spec.furious_slash -> effectN( 4 ).trigger() )
-    .default_value( spec.furious_slash -> effectN( 4 ).trigger() -> effectN( 1 ).percent() );
+    .default_value( spec.furious_slash -> effectN( 4 ).trigger() -> effectN( 1 ).percent() + sets.set( WARRIOR_FURY, T19, B2 ) -> effectN( 1 ).percent() );
 
   buff.commanding_shout = new buffs::commanding_shout_t( *this, "commanding_shout", find_spell( 97463 ) );
 
@@ -4454,6 +4474,7 @@ void warrior_t::create_buffs()
     .trigger_spell( artifact.odyns_champion );
 
   buff.battle_cry = buff_creator_t( this, "battle_cry", spec.battle_cry )
+    .duration( spec.battle_cry -> duration() + sets.set( WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).time_value() )
     .add_invalidate( CACHE_CRIT )
     .cd( timespan_t::zero() );
 
