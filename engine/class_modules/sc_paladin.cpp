@@ -14,7 +14,7 @@
     - Check mana/mana regen for ret, sword of light has been significantly changed to no longer have the mana regen stuff, or the bonus to healing, reduction in mana costs, etc.
   TODO (prot):
     - Legendary Item bonuses
-    - Unrelenting Light - test interaction with faiths' armor (artifact)
+    - Test logic/math in get_forbearant_faithful_recharge_multiplier()
     - Action Priority List
     - Sample Profile (for testing)
     - Blessing of Protection? (for Forbearant Faithful)
@@ -1035,6 +1035,58 @@ struct blessing_of_might_t : public paladin_heal_t
     paladin_heal_t::execute();
     p() -> buffs.blessing_of_might -> trigger();
   }
+};
+
+// Blessing of Protection =====================================================
+
+struct blessing_of_protection_t : public paladin_spell_t
+{
+  blessing_of_protection_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "blessing_of_protection", p, p -> find_class_spell( "Blessing of Protection" ) )
+  {
+    parse_options( options_str );
+
+    cooldown -> duration;
+  }
+
+  bool init_finished() override
+  {
+    p() -> forbearant_faithful_cooldowns.push_back( cooldown );
+
+    return paladin_spell_t::init_finished();
+  }
+
+  virtual void execute() override
+  {
+    paladin_spell_t::execute();
+
+    if ( p() -> artifact.endless_resolve.rank() )
+      // Don't trigger forbearance with endless resolve
+      return;
+
+    // apply forbearance, track locally for forbearant faithful & force recharge recalculation
+    target -> debuffs.forbearance -> trigger();
+    td( target ) -> buffs.forbearant_faithful -> trigger();
+    p() -> update_forbearance_recharge_multipliers();
+  }
+
+  virtual bool ready() override
+  {
+    if ( target -> debuffs.forbearance -> check() )
+      return false;
+
+    return paladin_spell_t::ready();
+  }
+  
+  double recharge_multiplier() const override
+  {
+    double cdr = paladin_spell_t::recharge_multiplier();
+
+    cdr *= p() -> get_forbearant_faithful_recharge_multiplier();
+
+    return cdr;
+  }
+
 };
 
 // Crusade
@@ -3765,6 +3817,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "bastion_of_light"          ) return new bastion_of_light_t         ( this, options_str );
   if ( name == "blessed_hammer"            ) return new blessed_hammer_t           ( this, options_str );
   if ( name == "blessing_of_might"         ) return new blessing_of_might_t        ( this, options_str );
+  if ( name == "blessing_of_protection"    ) return new blessing_of_protection_t   ( this, options_str );
   if ( name == "blinding_light"            ) return new blinding_light_t           ( this, options_str );
   if ( name == "beacon_of_light"           ) return new beacon_of_light_t          ( this, options_str );
   if ( name == "consecration"              ) return new consecration_t             ( this, options_str );
@@ -3913,14 +3966,13 @@ bool paladin_t::standing_in_consecration() const
 
 double paladin_t::get_forbearant_faithful_recharge_multiplier() const
 {
-  double cdr = 1.0;
+  double m = 1.0;
 
   if ( artifact.forbearant_faithful.rank() )
   {
     int num_buffs = 0;
 
-      if ( debuffs.forbearance -> check() )
-        num_buffs++;
+    // need to test - this is making some assumptions.
 
     // loop over player list to check those
     for ( size_t i = 0; i < sim -> player_no_pet_list.size(); i++ )
@@ -3928,13 +3980,16 @@ double paladin_t::get_forbearant_faithful_recharge_multiplier() const
       player_t* q = sim -> player_no_pet_list[ i ];
 
       if ( get_target_data( q ) -> buffs.forbearant_faithful -> check() )
+      {
         num_buffs++;
+        m *= 1.0 - artifact.forbearant_faithful.percent( 2 );
+      }
     }
 
-    cdr += num_buffs * artifact.forbearant_faithful.percent( 2 );
+    //m += num_buffs * artifact.forbearant_faithful.percent( 2 );
   }
 
-  return cdr;
+  return m;
 
 }
 
