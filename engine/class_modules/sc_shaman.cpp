@@ -324,6 +324,7 @@ public:
     gain_t* fulmination; // TODO: Remove
     gain_t* spirit_of_the_maelstrom;
     gain_t* resonance_totem;
+    gain_t* wind_gust;
   } gain;
 
   // Tracked Procs
@@ -2080,9 +2081,21 @@ struct storm_elemental_t : public primal_elemental_t
   // TODO: Healing
   struct wind_gust_t : public pet_spell_t<storm_elemental_t>
   {
+    const spell_data_t* energize;
+
     wind_gust_t( storm_elemental_t* player, const std::string& options ) :
-      super( player, "wind_gust", player -> find_spell( 157331 ), options )
+      super( player, "wind_gust", player -> find_spell( 157331 ), options ),
+      energize( player -> find_spell( 226180 ) )
     { }
+
+    void execute() override
+    {
+      super::execute();
+
+      p() -> o() -> resource_gain( RESOURCE_MAELSTROM,
+        energize -> effectN( 1 ).resource( RESOURCE_MAELSTROM ),
+        p() -> o() -> gain.wind_gust, this );
+    }
   };
 
   struct call_lightning_t : public pet_spell_t<storm_elemental_t>
@@ -5820,6 +5833,7 @@ void shaman_t::init_gains()
   gain.fulmination          = get_gain( "Fulmination"       );
   gain.spirit_of_the_maelstrom = get_gain( "Spirit of the Maelstrom" );
   gain.resonance_totem      = get_gain( "Resonance Totem"   );
+  gain.wind_gust            = get_gain( "Wind Gust"         );
 }
 
 // shaman_t::init_procs =====================================================
