@@ -14,7 +14,6 @@
     - Check mana/mana regen for ret, sword of light has been significantly changed to no longer have the mana regen stuff, or the bonus to healing, reduction in mana costs, etc.
   TODO (prot):
     - Legendary Item bonuses
-    - Test logic/math in get_forbearant_faithful_recharge_multiplier()
     - Action Priority List
     - Sample Profile (for testing)
     - Blessing of Protection? (for Forbearant Faithful)
@@ -39,6 +38,7 @@ namespace buffs {
                   struct ardent_defender_buff_t;
                   struct wings_of_liberty_driver_t;
                   struct liadrins_fury_unleashed_t;
+                  struct forbearance_t;
                 }
 
 // ==========================================================================
@@ -57,7 +57,7 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* debuffs_judgment;
     buff_t* judgment_of_light;
     buff_t* eye_of_tyr_debuff;
-    buff_t* forbearant_faithful;
+    buffs::forbearance_t* forbearant_faithful;
     buff_t* blessed_hammer_debuff;
   } buffs;
 
@@ -665,6 +665,34 @@ namespace buffs {
     double haste_bonus;
   };
 
+  struct forbearance_t : public debuff_t
+  {
+    paladin_t* paladin;
+
+    forbearance_t( paladin_t* p ) :
+      debuff_t( buff_creator_t( p, "forbearance", p -> find_spell( 25771 ) ) ), paladin( p )
+    { }
+
+    void execute( int stacks, double value, timespan_t duration ) override
+    {
+      debuff_t::execute( stacks, value, duration );
+
+      paladin -> update_forbearance_recharge_multipliers();
+    }
+
+    void expire( timespan_t delay ) override
+    {
+      bool expired = check() != 0;
+
+      debuff_t::expire( delay );
+
+      if ( expired )
+      {
+        paladin -> update_forbearance_recharge_multipliers();
+      }
+    }
+  };
+
 } // end namespace buffs
 // ==========================================================================
 // End Paladin Buffs, Part One
@@ -1045,8 +1073,6 @@ struct blessing_of_protection_t : public paladin_spell_t
     : paladin_spell_t( "blessing_of_protection", p, p -> find_class_spell( "Blessing of Protection" ) )
   {
     parse_options( options_str );
-
-    cooldown -> duration;
   }
 
   bool init_finished() override
@@ -1082,7 +1108,8 @@ struct blessing_of_protection_t : public paladin_spell_t
   {
     double cdr = paladin_spell_t::recharge_multiplier();
 
-    cdr *= p() -> get_forbearant_faithful_recharge_multiplier();
+    // BoP is bugged on beta - doesnot benefit from this, but the forbearance debuff it applies does affect LoH/DS.
+    // cdr *= p() -> get_forbearant_faithful_recharge_multiplier();
 
     return cdr;
   }
@@ -1489,6 +1516,8 @@ struct divine_shield_t : public paladin_spell_t
       return;
     timespan_t duration = p() -> debuffs.forbearance -> data().duration();
     p() -> debuffs.forbearance -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration  );
+    // add ourselves to the target_data list for tracking of forbearant faithful
+    td( p() ) -> buffs.forbearant_faithful -> trigger();
   }
   
   double recharge_multiplier() const override
@@ -3728,34 +3757,6 @@ struct blessing_of_sacrifice_t : public buff_t
   }
 };
 
-struct forbearance_t : public debuff_t
-{
-  paladin_t* paladin;
-
-  forbearance_t( paladin_t* p ) :
-    debuff_t( buff_creator_t( p, "forbearance", p -> find_spell( 25771 ) ) ), paladin( p )
-  { }
-
-  void execute( int stacks, double value, timespan_t duration ) override
-  {
-    debuff_t::execute( stacks, value, duration );
-
-    paladin -> update_forbearance_recharge_multipliers();
-  }
-
-  void expire( timespan_t delay ) override
-  {
-    bool expired = check() != 0;
-
-    debuff_t::expire( delay );
-
-    if ( expired )
-    {
-      paladin -> update_forbearance_recharge_multipliers();
-    }
-  }
-};
-
 // Divine Protection buff
 struct divine_protection_t : public buff_t
 {
@@ -3800,7 +3801,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   buffs.debuffs_judgment = buff_creator_t( *this, "judgment", paladin -> find_spell( 197277 ));
   buffs.judgment_of_light = buff_creator_t( *this, "judgment_of_light", paladin -> find_spell( 196941 ) );
   buffs.eye_of_tyr_debuff = buff_creator_t( *this, "eye_of_tyr", paladin -> find_class_spell( "Eye of Tyr" ) ).cd( timespan_t::zero() );
-  buffs.forbearant_faithful = buff_creator_t( *this, "forbearant_faithful", paladin -> find_spell( 25771 ) );
+  buffs.forbearant_faithful = new buffs::forbearance_t( paladin );
   buffs.blessed_hammer_debuff = buff_creator_t( *this, "blessed_hammer", paladin -> find_spell( 204301 ) );
 }
 
@@ -3972,21 +3973,19 @@ double paladin_t::get_forbearant_faithful_recharge_multiplier() const
   {
     int num_buffs = 0;
 
-    // need to test - this is making some assumptions.
-
     // loop over player list to check those
     for ( size_t i = 0; i < sim -> player_no_pet_list.size(); i++ )
     {
       player_t* q = sim -> player_no_pet_list[ i ];
 
       if ( get_target_data( q ) -> buffs.forbearant_faithful -> check() )
-      {
         num_buffs++;
-        m *= 1.0 - artifact.forbearant_faithful.percent( 2 );
-      }
     }
 
-    //m += num_buffs * artifact.forbearant_faithful.percent( 2 );
+    // Forbearant Faithful is not... faithful... to its tooltip.
+    // Testing in-game reveals that the cooldown multiplier is ( 1.0 * num_buffs * 0.25 ) - tested 6/20/2016
+    // It looks like we're getting half of the described effect
+    m -= num_buffs * artifact.forbearant_faithful.percent( 2 ) / 2;
   }
 
   return m;
