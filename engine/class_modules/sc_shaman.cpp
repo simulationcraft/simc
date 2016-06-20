@@ -2041,10 +2041,9 @@ struct fire_elemental_t : public primal_elemental_t
   };
 
   fire_elemental_t( shaman_t* owner, bool guardian ) :
-    primal_elemental_t( owner, ( ! guardian ) ? "primal_fire_elemental" : "greater_fire_elemental", guardian )
+    primal_elemental_t( owner, ( ! guardian ) ? "primal_fire_elemental" : "greater_fire_elemental", guardian, false )
   {
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 1.4 );
-    owner_coeff.sp_from_sp      = 0.25;
+    owner_coeff.sp_from_sp = 1.0;
   }
 
   void init_action_list() override
@@ -2069,15 +2068,6 @@ struct fire_elemental_t : public primal_elemental_t
     if ( name == "immolate"    ) return new immolate_t( this, options_str );
 
     return primal_elemental_t::create_action( name, options_str );
-  }
-
-  attack_t* create_auto_attack() override
-  {
-    auto attack = new pet_melee_attack_t<primal_elemental_t>( this, "melee" );
-    attack -> repeating = true;
-    attack -> auto_attack = true;
-    attack -> school = SCHOOL_FIRE;
-    return attack;
   }
 };
 
