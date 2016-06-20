@@ -2745,6 +2745,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
         }
       }
     }
+
     if ( p() -> artifacts.surge_of_the_stormgod.rank() && rng().roll( p() -> artifacts.surge_of_the_stormgod.data().proc_chance() ) )
     {
       if ( p() -> active.pet )
@@ -3217,7 +3218,8 @@ struct aimed_shot_t: public hunter_ranged_attack_t
   {
     parse_options( options_str );
 
-    base_execute_time *= 1.0 - ( p -> sets.set( HUNTER_MARKSMANSHIP, T18, B4 ) -> effectN( 2 ).percent() );
+    if ( p -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T18, B4 ) )
+      base_execute_time *= 1.0 - ( p -> sets.set( HUNTER_MARKSMANSHIP, T18, B4 ) -> effectN( 2 ).percent() );
 
     if ( p -> talents.trick_shot -> ok() )
     {
@@ -3275,9 +3277,6 @@ struct aimed_shot_t: public hunter_ranged_attack_t
   {
     p() -> no_steady_focus();
 
-    if ( p() -> buffs.lock_and_load -> up() )
-      base_execute_time *= 0.0;
-
     hunter_ranged_attack_t::execute();
     aimed_in_ca -> update( p() -> buffs.careful_aim -> check() != 0 );
     if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, PVP, B4 ) )
@@ -3298,6 +3297,16 @@ struct aimed_shot_t: public hunter_ranged_attack_t
 
     if ( p() -> legendary.mm_feet )
       p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
+  }
+
+  virtual timespan_t execute_time() const override
+  {
+    timespan_t t = hunter_ranged_attack_t::execute_time();
+
+    if ( p() -> buffs.lock_and_load -> up() )
+      t = timespan_t::zero();
+
+    return t;
   }
 
   virtual double composite_target_da_multiplier( player_t* t ) const override

@@ -19,7 +19,7 @@ actions+=/piercing_shot
 actions+=/explosive_shot
 actions+=/black_arrow
 actions+=/windburst
-actions+=/marked_shot,if=debuff.vulnerability.up&(!talent.patient_sniper.enabled|debuff.vulnerability.remains<2)
+actions+=/marked_shot,if=!talent.patient_sniper.enabled|debuff.vulnerability.remains<2
 actions+=/aimed_shot,if=focus+cast_regen>80
 actions+=/multishot,if=spell_targets.multishot>1
 actions+=/arcane_shot
