@@ -753,13 +753,13 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     p() -> buff.ayalas_stone_heart -> trigger();
     if ( special && p() -> buff.odyns_champion -> up() && p() -> cooldown.odyns_champion_icd -> up() )
     {
-      p() -> cooldown.odyns_champion_icd -> start();
       odyns_champion( timespan_t::from_seconds( -1.0 * p() -> artifact.odyns_champion.data().effectN( 1 ).base_value() ) );
     }
   }
 
-  void odyns_champion( timespan_t reduction )
+  virtual void odyns_champion( timespan_t reduction )
   {
+    p() -> cooldown.odyns_champion_icd -> start();
     for ( size_t i = 0; i < p() -> odyns_champion_cds.size(); i++ )
     {
       p() -> odyns_champion_cds[i] -> adjust( reduction );
@@ -2358,6 +2358,9 @@ struct rampage_attack_t: public warrior_attack_t
     }
     return 1;
   }
+  void odyns_champion( timespan_t )
+  { // Only procs odyns champion once from the spell being initially cast.
+  }
 };
 
 struct rampage_event_t: public event_t
@@ -2440,11 +2443,11 @@ struct rampage_parent_t: public warrior_attack_t
 
   void execute() override
   {
+    p() -> buff.odyns_champion -> trigger();
     warrior_attack_t::execute();
 
     p() -> buff.massacre -> expire();
     p() -> buff.berserking_driver -> trigger();
-    p() -> buff.odyns_champion -> trigger();
 
     p() -> rampage_driver = new ( *sim ) rampage_event_t( p(), 0 );
   }
@@ -2885,6 +2888,9 @@ struct whirlwind_off_hand_t: public warrior_attack_t
 
     return am;
   }
+  void odyns_champion( timespan_t )
+  { // Only procs odyns champion once from the spell being initially cast.
+  }
 };
 
 struct fury_whirlwind_mh_t: public warrior_attack_t
@@ -2905,6 +2911,9 @@ struct fury_whirlwind_mh_t: public warrior_attack_t
     }
 
     return am;
+  }
+  void odyns_champion( timespan_t )
+  { // Only procs odyns champion once from the spell being initially cast.
   }
 };
 
