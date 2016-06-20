@@ -19,7 +19,6 @@
     - Sample Profile (for testing)
     - Blessing of Protection? (for Forbearant Faithful)
     - Bugfix: check Guarded by the Light's block contribution once spell data is corrected
-    - Consecration: Convert from DoT to totem or ground effect or pet, fix HotR triggering condition (medium priority)
     - Aegis of Light: Convert from self-buff to totem/pet with area buff? (low priority)
 
     - Everything below this line is super-low priority and can probably be ignored ======
@@ -80,7 +79,6 @@ public:
   action_t* active_holy_shield_proc;
   action_t* active_painful_truths_proc;
   action_t* active_tyrs_enforcer_proc;
-  heal_t*   active_consecrated_ground_tick;
   action_t* active_judgment_of_light_proc;
   heal_t*   active_protector_of_the_innocent;
 
@@ -111,7 +109,6 @@ public:
     buff_t* grand_crusader;
     buff_t* infusion_of_light;
     buff_t* shield_of_the_righteous;
-    buff_t* standing_in_consecraton;
     absorb_buff_t* bulwark_of_order;
 
     // talents
@@ -215,6 +212,7 @@ public:
     const spell_data_t* divine_purpose_ret;
     const spell_data_t* liadrins_fury_unleashed;
     const spell_data_t* justice_gaze;
+    const spell_data_t* consecration_bonus;
   } spells;
 
   // Talents
@@ -368,7 +366,6 @@ public:
     active_holy_shield_proc            = nullptr;
     active_tyrs_enforcer_proc          = nullptr;
     active_painful_truths_proc         = nullptr;
-    active_consecrated_ground_tick     = nullptr;
     active_judgment_of_light_proc      = nullptr;
     active_protector_of_the_innocent   = nullptr;
 
@@ -448,6 +445,28 @@ public:
   void    trigger_tyrs_enforcer( action_state_t* s );
   int     get_local_enemies( double distance ) const;
   double  get_forbearant_faithful_recharge_multiplier() const;
+  void    update_consecration_list();
+  bool    standing_in_consecration() const;
+
+  struct active_consecration_data_t 
+  {
+    double x;
+    double y;
+    timespan_t expires;
+    double radius;
+
+    active_consecration_data_t( double xx, double yy, timespan_t expiration_time, double cons_radius )
+    { 
+      x = xx;
+      y = yy;
+      expires = expiration_time;
+      radius = cons_radius;
+    }
+  };
+
+  std::vector<active_consecration_data_t*> active_consecrations;
+
+
   void    update_forbearance_recharge_multipliers() const;
   virtual bool has_t18_class_trinket() const override;
   void    generate_action_prio_list_prot();
@@ -1200,9 +1219,14 @@ struct blessed_hammer_t : public paladin_spell_t
     add_option( opt_int( "strikes", num_strikes ) );
     parse_options( options_str );
 
+    // Sane bounds for num_strikes - only makes three revolutions, impossible to hit one target more than 3 times.
+    // Likewise calling the pell with 0 strikes is sort of pointless.
+    if ( num_strikes < 1 ) { num_strikes = 1; sim -> out_debug.printf( "%s tried to hit less than one time with blessed_hammer", p -> name() ); }
+    if ( num_strikes > 3 ) { num_strikes = 3; sim -> out_debug.printf( "%s tried to hit more than three times with blessed_hammer", p -> name() ); }
+
     dot_duration = timespan_t::zero(); // The periodic event is handled by ground_aoe_event_t
     may_miss = false;
-    base_tick_time = timespan_t::from_seconds( 1.667 );
+    base_tick_time = timespan_t::from_seconds( 1.667 ); // Rough estimation based on stopwatch testing
 
     add_child( hammer );
   }
@@ -1215,10 +1239,11 @@ struct blessed_hammer_t : public paladin_spell_t
 
     new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
         .target( execute_state -> target )
-        .x( execute_state -> target -> x_position )
-        .y( execute_state -> target -> y_position )
+        // spawn at feet of player
+        .x( execute_state -> action -> player -> x_position )
+        .y( execute_state -> action -> player -> y_position )
         .pulse_time( base_tick_time )
-        .duration( base_tick_time * ( num_strikes - 1 ) )
+        .duration( base_tick_time * ( num_strikes - 0.5 ) )
         .start_time( sim -> current_time() + initial_delay )
         .action( hammer ), true );
 
@@ -1242,12 +1267,22 @@ struct consecration_tick_t : public paladin_spell_t
     may_crit    = true;
     ground_aoe = true;
   }
+
+  virtual void execute() override
+  {
+    // TODO: check if this is needed anymore, because it causes errors!
+    //if ( target -> debuffs.flying -> check() )
+    //  if ( sim -> debug ) sim -> out_debug.printf( "Ground effect %s can not hit flying target %s", name(), target -> name() );
+    //else
+      paladin_spell_t::execute();
+  }
 };
 
+// healing tick from Consecrated Ground talent
 struct consecrated_ground_tick_t : public paladin_heal_t
 {
   consecrated_ground_tick_t( paladin_t* p )
-    : paladin_heal_t( "consecrated_ground", p, p -> find_spell ( 204241 ) )
+    : paladin_heal_t( "consecrated_ground", p, p -> find_spell( 204241 ) )
   {
     aoe = 6;
     ground_aoe = true;
@@ -1258,50 +1293,70 @@ struct consecrated_ground_tick_t : public paladin_heal_t
 
 struct consecration_t : public paladin_spell_t
 {
+  consecration_tick_t* damage_tick;
+  consecrated_ground_tick_t* heal_tick;
+  timespan_t ground_effect_duration;
+
   consecration_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "consecration", p, p -> specialization() == PALADIN_RETRIBUTION ? p -> find_spell( 205228 ) : p -> find_class_spell( "Consecration" ) )
+    : paladin_spell_t( "consecration", p, p -> specialization() == PALADIN_RETRIBUTION ? p -> find_spell( 205228 ) : p -> find_class_spell( "Consecration" ) ),
+    damage_tick( new consecration_tick_t( p ) ), heal_tick( new consecrated_ground_tick_t( p ) ),
+    ground_effect_duration( data().duration() )
   {
     parse_options( options_str );
 
+    // disable if Ret and not talented
     if ( p -> specialization() == PALADIN_RETRIBUTION )
-    {
       background = ! ( p -> talents.consecration -> ok() );
-    }
 
-    dot_duration += timespan_t::from_millis( p -> artifact.consecration_in_flame.value() );
-
-    hasted_ticks   = true;
+    dot_duration = timespan_t::zero(); // the periodic event is handled by ground_aoe_event_t
     may_miss       = false;
 
-    tick_action = new consecration_tick_t( p );
+    // Consecrated In Flame extends duration
+    ground_effect_duration += timespan_t::from_millis( p -> artifact.consecration_in_flame.value() );
   }
 
-  virtual void tick( dot_t* d ) override
-  {
-    if ( d -> state -> target -> debuffs.flying -> check() )
-    {
-      if ( sim -> debug ) sim -> out_debug.printf( "Ground effect %s can not hit flying target %s", name(), d -> state -> target -> name() );
-    }
-    else
-    {
-      paladin_spell_t::tick( d );
-    }
-    if ( p() -> talents.consecrated_ground -> ok() && p() -> buffs.standing_in_consecraton-> check() )
-      p() -> active_consecrated_ground_tick -> execute();
-  }
-
-  virtual void execute()
+  virtual void execute() override
   {
     paladin_spell_t::execute();
 
-    p() -> buffs.standing_in_consecraton -> trigger();
-  }
+    // create a new ground event
+    ground_aoe_event_t* cons_aoe = 
+      new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+        .target( execute_state -> target )
+        // spawn at feet of player
+        .x( execute_state -> action -> player -> x_position )
+        .y( execute_state -> action -> player -> y_position )
+        .duration( ground_effect_duration )
+        .start_time( sim -> current_time()  )
+        .action( damage_tick )
+        .hasted( ground_aoe_params_t::SPELL_HASTE ), true );
 
-  virtual void last_tick( dot_t* d )
-  {
-    paladin_spell_t::last_tick( d );
+    // use the calculated tick time and duration from the ground event to determine the hasted duration
+    timespan_t actual_duration = floor( ground_effect_duration / cons_aoe -> pulse_time() ) * cons_aoe -> pulse_time();
+    
+    // maintain the consecration list by purging old entries
+    p() -> update_consecration_list();
 
-    p() -> buffs.standing_in_consecraton -> expire();
+    // push the location and expiration time of this consecration on to the list
+    p() -> active_consecrations.push_back( new paladin_t::active_consecration_data_t( cons_aoe -> params -> x(),
+                                                                                        cons_aoe -> params -> y(),
+                                                                                        sim -> current_time() + actual_duration,
+                                                                                        damage_tick -> radius ) );
+
+
+    // if we've talented consecrated ground, make a second healing ground effect for that
+    if ( p() -> talents.consecrated_ground -> ok() )
+    {
+      new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+          .target( execute_state -> action -> player )
+          // spawn at feet of player
+          .x( execute_state -> action -> player -> x_position )
+          .y( execute_state -> action -> player -> y_position )
+          .duration( ground_effect_duration )
+          .start_time( sim -> current_time()  )
+          .action( heal_tick )
+          .hasted( ground_aoe_params_t::SPELL_HASTE ), true );
+    }
   }
 };
 
@@ -2075,8 +2130,8 @@ struct light_of_the_protector_t : public paladin_heal_t
   {
     double am = paladin_heal_t::action_multiplier();
 
-    if ( p() -> buffs.standing_in_consecraton -> check() )
-      am *= 1.0 + p() -> buffs.standing_in_consecraton -> data().effectN( 2 ).percent();
+    if ( p() -> standing_in_consecration() )
+      am *= 1.0 + p() -> spells.consecration_bonus -> effectN( 2 ).percent();
 
     am *= 1.0 + p() -> artifact.scatter_the_shadows.percent();
 
@@ -2131,8 +2186,8 @@ struct hand_of_the_protector_t : public paladin_heal_t
   {
     double am = paladin_heal_t::action_multiplier();
 
-    if ( p() -> buffs.standing_in_consecraton -> check() )
-      am *= 1.0 + p() -> buffs.standing_in_consecraton -> data().effectN( 2 ).percent();
+    if ( p() -> standing_in_consecration() )
+      am *= 1.0 + p() -> spells.consecration_bonus -> effectN( 2 ).percent();
 
     am *= 1.0 + p() -> artifact.scatter_the_shadows.percent();
 
@@ -3065,7 +3120,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       if ( hotr_aoe -> target != execute_state -> target )
         hotr_aoe -> target_cache.is_valid = false;
 
-      if ( p() -> buffs.standing_in_consecraton -> check() || p() -> talents.consecrated_hammer -> ok() )
+      if ( p() -> talents.consecrated_hammer -> ok() || p() -> standing_in_consecration() )
       {
         hotr_aoe -> target = execute_state -> target;
         hotr_aoe -> execute();
@@ -3309,8 +3364,8 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
-    if ( p() -> buffs.standing_in_consecraton -> check() )
-      am *= 1.0 + p() -> buffs.standing_in_consecraton -> data().effectN( 2 ).percent();
+    if ( p() -> standing_in_consecration() )
+      am *= 1.0 + p() -> spells.consecration_bonus -> effectN( 2 ).percent();
 
     am *= 1.0 + p() -> artifact.righteous_crusader.percent( 1 );
 
@@ -3824,6 +3879,38 @@ int paladin_t::get_local_enemies( double distance ) const
   return num_nearby;
 }
 
+void paladin_t::update_consecration_list()
+{
+  // purge the vector of any expired consecrations
+  for ( size_t i = 0; i < active_consecrations.size(); i++ )
+  {
+    if ( active_consecrations[ i ] -> expires < sim -> current_time() )
+      active_consecrations.erase( active_consecrations.begin() + i );
+  }
+}
+
+bool paladin_t::standing_in_consecration() const
+{
+  for ( size_t i = 0; i < active_consecrations.size(); i++ )
+  {
+    // check current distance to each consecration
+    active_consecration_data_t* cons_to_test = active_consecrations[ i ];
+
+    // check that the cons hasn't expired yet - must do this because we only purge the list
+    // every time a new ground event is generated. Can't purge here because const.
+    if ( cons_to_test -> expires >= sim -> current_time() )
+    {
+      double distance = get_position_distance( cons_to_test -> x, cons_to_test -> y );
+
+      // exit with true if we're in range of any one Cons center
+      if ( distance <= cons_to_test -> radius )
+        return true;
+    }
+  }
+
+  return false;
+}
+
 double paladin_t::get_forbearant_faithful_recharge_multiplier() const
 {
   double cdr = 1.0;
@@ -3985,7 +4072,6 @@ void paladin_t::create_buffs()
                                           .chance( passives.grand_crusader -> proc_chance() * ( 1.0 + talents.first_avenger -> effectN( 3 ).percent() ) );
   buffs.shield_of_the_righteous        = buff_creator_t( this, "shield_of_the_righteous" ).spell( find_spell( 132403 ) );
   buffs.ardent_defender                = new buffs::ardent_defender_buff_t( this );
-  buffs.standing_in_consecraton        = buff_creator_t( this, "standing_in_consecration", find_spell( 188370 ) );
   buffs.aegis_of_light                 = buff_creator_t( this, "aegis_of_light", find_talent_spell( "Aegis of Light" ) );
   buffs.seraphim                       = stat_buff_creator_t( this, "seraphim", talents.seraphim )
                                           .add_stat( STAT_HASTE_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
@@ -4551,6 +4637,7 @@ void paladin_t::init_spells()
   spells.divine_purpose_ret            = find_spell( 223817 );
   spells.liadrins_fury_unleashed       = find_spell( 208408 );
   spells.justice_gaze                  = find_spell( 211557 );
+  spells.consecration_bonus            = find_spell( 188370 );
 
   // Masteries
   passives.divine_bulwark         = find_mastery_spell( PALADIN_PROTECTION );
@@ -4601,9 +4688,6 @@ void paladin_t::init_spells()
 
   if ( artifact.tyrs_enforcer.rank() )
     active_tyrs_enforcer_proc = new tyrs_enforcer_proc_t( this );
-
-  if ( talents.consecrated_ground -> ok() )
-    active_consecrated_ground_tick = new consecrated_ground_tick_t( this );
 
   if ( talents.judgment_of_light -> ok() )
     active_judgment_of_light_proc = new judgment_of_light_proc_t( this );
@@ -5127,8 +5211,8 @@ void paladin_t::target_mitigation( school_e school,
 
     // 20% more effective if standing in Cons
     // TODO: test if this is multiplicative or additive. Assumed multiplicative.
-    if ( buffs.standing_in_consecraton -> check() )
-      sotr_mitigation *= 1.0 + buffs.standing_in_consecraton -> data().effectN( 3 ).percent();
+    if ( standing_in_consecration() )
+      sotr_mitigation *= 1.0 + spells.consecration_bonus -> effectN( 3 ).percent();
 
     // clamp is hardcoded in tooltip, not shown in effects
     sotr_mitigation = std::max( -0.80, sotr_mitigation );
