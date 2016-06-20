@@ -16,7 +16,6 @@
     - Legendary Item bonuses
     - Action Priority List
     - Sample Profile (for testing)
-    - Blessing of Protection? (for Forbearant Faithful)
     - Bugfix: check Guarded by the Light's block contribution once spell data is corrected
     - Aegis of Light: Convert from self-buff to totem/pet with area buff? (low priority)
 
@@ -32,6 +31,7 @@ namespace { // UNNAMED NAMESPACE
 // Forward declarations
 struct paladin_t;
 struct blessing_of_sacrifice_redirect_t;
+struct paladin_ground_aoe_t;
 namespace buffs {
                   struct avenging_wrath_buff_t;
                   struct crusade_buff_t;
@@ -445,26 +445,9 @@ public:
   void    trigger_tyrs_enforcer( action_state_t* s );
   int     get_local_enemies( double distance ) const;
   double  get_forbearant_faithful_recharge_multiplier() const;
-  void    update_consecration_list();
   bool    standing_in_consecration() const;
 
-  struct active_consecration_data_t 
-  {
-    double x;
-    double y;
-    timespan_t expires;
-    double radius;
-
-    active_consecration_data_t( double xx, double yy, timespan_t expiration_time, double cons_radius )
-    { 
-      x = xx;
-      y = yy;
-      expires = expiration_time;
-      radius = cons_radius;
-    }
-  };
-
-  std::vector<active_consecration_data_t*> active_consecrations;
+  std::vector<paladin_ground_aoe_t*> active_consecrations;
 
 
   void    update_forbearance_recharge_multipliers() const;
@@ -843,6 +826,38 @@ public:
 
 };
 
+// paladin_ground_aoe_t for consecration and blessed hammer
+
+struct paladin_ground_aoe_t : public ground_aoe_event_t
+{
+  double radius;
+  paladin_t* paladin;
+
+  paladin_ground_aoe_t( paladin_t* p, const ground_aoe_params_t& param, bool first_tick = false ) :
+    ground_aoe_event_t( p, param, first_tick ), radius( param.action() -> radius ), paladin( p )
+  {}
+  
+  paladin_ground_aoe_t( paladin_t* p, const ground_aoe_params_t* param, bool first_tick = false ): 
+    ground_aoe_event_t( p, param, first_tick ), radius( param -> action() -> radius ), paladin( p )
+  {}
+
+  
+  void schedule_event() override
+  { 
+    paladin_ground_aoe_t* foo = new ( sim() ) paladin_ground_aoe_t( paladin, params );
+    paladin -> active_consecrations.push_back( foo );
+  }
+
+  void execute() override
+  {
+    auto it = range::find( paladin -> active_consecrations, this );
+    paladin -> active_consecrations.erase( it );
+
+    bool test = may_pulse();
+
+    ground_aoe_event_t::execute();
+  }
+};
 
 // ==========================================================================
 // The damage formula in action_t::calculate_direct_amount in sc_action.cpp is documented here:
@@ -1398,9 +1413,9 @@ struct consecration_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
 
-    // create a new ground event
-    ground_aoe_event_t* cons_aoe = 
-      new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+    // create a new ground aoe event
+    paladin_ground_aoe_t* alt_aoe = 
+      new ( *sim ) paladin_ground_aoe_t( p(), ground_aoe_params_t()
         .target( execute_state -> target )
         // spawn at feet of player
         .x( execute_state -> action -> player -> x_position )
@@ -1410,20 +1425,12 @@ struct consecration_t : public paladin_spell_t
         .action( damage_tick )
         .hasted( ground_aoe_params_t::SPELL_HASTE ), true );
 
-    // use the calculated tick time and duration from the ground event to determine the hasted duration
-    timespan_t actual_duration = floor( ground_effect_duration / cons_aoe -> pulse_time() ) * cons_aoe -> pulse_time();
-    
-    // maintain the consecration list by purging old entries
-    p() -> update_consecration_list();
-
-    // push the location and expiration time of this consecration on to the list
-    p() -> active_consecrations.push_back( new paladin_t::active_consecration_data_t( cons_aoe -> params -> x(),
-                                                                                        cons_aoe -> params -> y(),
-                                                                                        sim -> current_time() + actual_duration,
-                                                                                        damage_tick -> radius ) );
-
+    // push the pointer to the list of active consecrations
+    // execute() and schedule_event() methods of paladin_ground_aoe_t handle updating the list
+    p() -> active_consecrations.push_back( alt_aoe );
 
     // if we've talented consecrated ground, make a second healing ground effect for that
+    // this can be a normal ground_aoe_event_t, since we don't need the extra stuff
     if ( p() -> talents.consecrated_ground -> ok() )
     {
       new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
@@ -3933,35 +3940,21 @@ int paladin_t::get_local_enemies( double distance ) const
   return num_nearby;
 }
 
-void paladin_t::update_consecration_list()
-{
-  // purge the vector of any expired consecrations
-  for ( size_t i = 0; i < active_consecrations.size(); i++ )
-  {
-    if ( active_consecrations[ i ] -> expires < sim -> current_time() )
-      active_consecrations.erase( active_consecrations.begin() + i );
-  }
-}
-
 bool paladin_t::standing_in_consecration() const
 {
+  // new
   for ( size_t i = 0; i < active_consecrations.size(); i++ )
   {
-    // check current distance to each consecration
-    active_consecration_data_t* cons_to_test = active_consecrations[ i ];
+    // calculate current distance to each consecration
+    paladin_ground_aoe_t* cons_to_test = active_consecrations[ i ];
 
-    // check that the cons hasn't expired yet - must do this because we only purge the list
-    // every time a new ground event is generated. Can't purge here because const.
-    if ( cons_to_test -> expires >= sim -> current_time() )
-    {
-      double distance = get_position_distance( cons_to_test -> x, cons_to_test -> y );
-
-      // exit with true if we're in range of any one Cons center
-      if ( distance <= cons_to_test -> radius )
-        return true;
-    }
+    double distance = get_position_distance( cons_to_test -> params -> x(), cons_to_test -> params -> y() );
+    
+    // exit with true if we're in range of any one Cons center
+    if ( distance <= cons_to_test -> radius )
+      return true;
   }
-
+  // if we're not in range of any of them
   return false;
 }
 
