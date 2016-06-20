@@ -3560,8 +3560,7 @@ struct lava_burst_t : public shaman_spell_t
   {
     base_multiplier *= 1.0 + player -> artifact.lava_imbued.percent();
     base_multiplier *= 1.0 + player -> talent.path_of_flame -> effectN( 1 ).percent();
-    // TODO: Additive with Elemental Fury? Spell data claims same effect property, so probably ..
-    crit_bonus_multiplier += player -> artifact.molten_blast.percent();
+    crit_bonus_multiplier *= 1.0 + player -> artifact.molten_blast.percent();
 
     // Manacost is only for resto
     base_costs[ RESOURCE_MANA ] = 0;
