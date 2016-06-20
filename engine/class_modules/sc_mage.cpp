@@ -259,6 +259,7 @@ public:
     // Legendary
     buff_t* lady_vashjs_grasp,
           * magtheridons_might,
+          * rhonins_assaulting_armwraps,
           * zannesu_journey;
 
   } buffs;
@@ -2402,14 +2403,17 @@ struct arcane_blast_t : public arcane_mage_spell_t
     {
       c *= 1.0 + p() -> buffs.arcane_affinity -> data().effectN( 1 ).percent();
     }
-
+    //TODO: Find a work-around to remove hardcoding
+    if ( p() -> buffs.rhonins_assaulting_armwraps -> up() )
+    {
+      c = 0;
+    }
     return c;
   }
 
   virtual void execute() override
   {
     p() -> benefits.arcane_charge.arcane_blast -> update();
-
     arcane_mage_spell_t::execute();
 
     p() -> buffs.arcane_charge -> up();
@@ -2494,6 +2498,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
   virtual void impact( action_state_t* s ) override
   {
     arcane_mage_spell_t::impact( s );
+    p() -> buffs.rhonins_assaulting_armwraps -> expire();
 
     if ( result_is_hit( s -> result ) )
     {
@@ -2579,11 +2584,12 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
 struct arcane_missiles_t : public arcane_mage_spell_t
 {
   timespan_t temporal_hero_duration;
-
+  double rhonins_assaulting_armwraps_proc_rate;
   arcane_missiles_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "arcane_missiles", p,
                          p -> find_class_spell( "Arcane Missiles" ) ),
-    temporal_hero_duration( timespan_t::zero() )
+    temporal_hero_duration( timespan_t::zero() ),
+    rhonins_assaulting_armwraps_proc_rate( 0.0 )
   {
     parse_options( options_str );
     may_miss = false;
@@ -2671,6 +2677,12 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     if ( p() -> talents.quickening -> ok() )
     {
       p() -> buffs.quickening -> trigger();
+    }
+
+    //TODO: Is this rolled on Execute or spell Impact?
+    if ( rhonins_assaulting_armwraps_proc_rate > 0 && rng().roll( rhonins_assaulting_armwraps_proc_rate ) )
+    {
+      p() -> buffs.rhonins_assaulting_armwraps -> trigger();
     }
   }
 
@@ -6233,6 +6245,7 @@ void mage_t::create_buffs()
                                            [ this ]( buff_t*, int, const timespan_t& )
                                            { buffs.fingers_of_frost -> trigger();
                                              benefits.fingers_of_frost -> update( "Legedary Gain", 1.0 ); } );
+  buffs.rhonins_assaulting_armwraps = buff_creator_t( this, "rhonins_assaulting_armwraps", find_spell( 208081 ) );
 }
 
 // mage_t::create_options ===================================================
@@ -7745,6 +7758,15 @@ private:
 using namespace unique_gear;
 using namespace actions;
 
+// Arcane Legendary Items
+struct rhonins_assaulting_armwraps_t : public scoped_action_callback_t<arcane_missiles_t>
+{
+  rhonins_assaulting_armwraps_t() : super( MAGE_ARCANE, "arcane_missiles" )
+  { }
+
+  void manipulate( arcane_missiles_t* action, const special_effect_t&  e ) override
+  { action -> rhonins_assaulting_armwraps_proc_rate = e.driver() -> effectN( 1 ).percent(); }
+};
 
 // Fire Legendary Items
 struct koralons_burning_touch_t : public scoped_action_callback_t<scorch_t>
@@ -7839,7 +7861,8 @@ public:
     unique_gear::register_special_effect( 208099, koralons_burning_touch_t() );
     unique_gear::register_special_effect( 214403, magtheridons_banished_bracers_t() );
     unique_gear::register_special_effect( 206397, zannesu_journey_t() );
-    unique_gear::register_special_effect( 208146 ,lady_vashjs_grasp_t() );
+    unique_gear::register_special_effect( 208146, lady_vashjs_grasp_t() );
+    unique_gear::register_special_effect( 208080, rhonins_assaulting_armwraps_t() );
   }
 
   virtual void register_hotfixes() const override
