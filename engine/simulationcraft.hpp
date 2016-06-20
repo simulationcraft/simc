@@ -7643,6 +7643,9 @@ struct ground_aoe_event_t : public player_event_t
   const char* name() const override
   { return "ground_aoe_event"; }
 
+  virtual void schedule_event()
+  { new ( sim() ) ground_aoe_event_t( _player, params ); }
+
   void execute() override
   {
     action_t* spell_ = params -> action();
@@ -7670,7 +7673,7 @@ struct ground_aoe_event_t : public player_event_t
     // Schedule next tick, if it can fit into the duration
     if ( may_pulse() )
     {
-      new ( sim() ) ground_aoe_event_t( _player, params );
+      schedule_event();
       // Ugly hack-ish, but we want to re-use the parmas object while this ground aoe is pulsing, so
       // nullptr the params from this (soon to be recycled) event.
       params = nullptr;
