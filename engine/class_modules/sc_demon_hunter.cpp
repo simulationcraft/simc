@@ -32,6 +32,7 @@ namespace
    Fury of the Illidari distance targeting support
    Overwhelming Power artifact trait
    Defensive artifact traits
+   Keep an eye out for Metamorphosis haste instead of flat GCD reductions
 
    Vengeance ----------------------------------------------------------------
    Infernal Strike
@@ -131,6 +132,7 @@ public:
   actions::attacks::chaos_blade_t* chaos_blade_main_hand;
   actions::attacks::chaos_blade_t* chaos_blade_off_hand;
 
+  unsigned demon_blades_charges; // # of banked Demon Blades procs
   unsigned shear_counter; // # of failed Shears since last proc
   double metamorphosis_health; // Vengeance temp health from meta;
 
@@ -2515,10 +2517,7 @@ struct melee_t : public demon_hunter_attack_t
   {
     demon_hunter_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
-    {
-      trigger_demon_blades( s );
-    }
+    trigger_demon_blades( s );
   }
 
   void schedule_execute( action_state_t* s ) override
@@ -2567,19 +2566,32 @@ struct melee_t : public demon_hunter_attack_t
     demon_hunter_attack_t::execute();
   }
 
+  // Mechanics described at http://us.battle.net/wow/en/forum/topic/20743504316?page=26#520
   void trigger_demon_blades( action_state_t* s )
   {
     if ( ! p() -> talent.demon_blades -> ok() )
       return;
 
-    if ( p() -> in_gcd() )
+    if ( ! result_is_hit( s -> result ) )
       return;
 
-    if ( ! rng().roll( p() -> talent.demon_blades -> effectN( 1 ).percent() ) )
-      return;
+    // All hits have an x% chance to generate 1 charge.
+    if ( p() -> demon_blades_charges < 10 && rng().roll( p() -> talent.demon_blades -> effectN( 1 ).percent() ) )
+    {
+      p() -> demon_blades_charges++;
+    }
+    
+    // Hits not during a GCD can expend up to 2 charges.
+    if ( ! p() -> in_gcd() )
+    {
+      for ( unsigned i = 0; i < p() -> demon_blades_charges && i < 2; i++ )
+      {
+        p() -> active.demon_blades -> target = s -> target;
+        p() -> active.demon_blades -> schedule_execute();
+      }
 
-    p() -> active.demon_blades -> target = s -> target;
-    p() -> active.demon_blades -> schedule_execute();
+      p() -> demon_blades_charges -= std::min( (unsigned) 2, p() -> demon_blades_charges );
+    }
   }
 };
 
