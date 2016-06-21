@@ -257,7 +257,8 @@ public:
           * chilled_to_the_core;
 
     // Legendary
-    buff_t* lady_vashjs_grasp,
+    buff_t* kaelthas_ultimate_ability,
+          * lady_vashjs_grasp,
           * magtheridons_might,
           * rhonins_assaulting_armwraps,
           * shard_time_warp,
@@ -4661,9 +4662,11 @@ struct conjure_phoenix_t : public fire_mage_spell_t
 struct pyroblast_t : public fire_mage_spell_t
 {
   conjure_phoenix_t* conjure_phoenix;
+  double marquee_bindings_of_the_sun_king_proc_chance;
 
   pyroblast_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "pyroblast", p, p -> find_class_spell( "Pyroblast" ) ),
+    marquee_bindings_of_the_sun_king_proc_chance( 0.0 ),
     conjure_phoenix( nullptr )
   {
     parse_options( options_str );
@@ -4680,6 +4683,18 @@ struct pyroblast_t : public fire_mage_spell_t
     base_multiplier *= 1.0 + p -> artifact.pyroclasmic_paranoia.percent();
   }
 
+  virtual double action_multiplier() const override
+  {
+    double am = fire_mage_spell_t::action_multiplier();
+
+    /*if ( p() -> buffs.kaelthas_ultimate_ability -> check() &&
+         !p() -> buffs.hot_streak &&
+         marquee_bindings_of_the_sun_king_proc_chance > 0 )
+    {
+      am *= 1.0 + p() -> buffs.kaelthas_ultimate_ability -> data().effectN( 1 ).percent();
+    }*/
+    return am;
+  }
   virtual action_state_t* new_state() override
   {
     return new ignite_spell_state_t( this, target );
@@ -4703,6 +4718,12 @@ struct pyroblast_t : public fire_mage_spell_t
 
     fire_mage_spell_t::execute();
 
+  /*  if ( marquee_bindings_of_the_sun_king_proc_chance > 0 &&
+         p() -> buffs.hot_streak -> check() &&
+         rng().roll( marquee_bindings_of_the_sun_king_proc_chance ) )
+    {
+      p() -> buffs.kaelthas_ultimate_ability -> trigger();
+    }*/
     if ( p() -> talents.pyromaniac -> ok() &&
          rng().roll( p() -> talents.pyromaniac -> effectN( 1 ).percent() ) )
     {
@@ -5113,7 +5134,7 @@ struct shard_of_the_exodar_warp_t : public mage_spell_t
   virtual void execute() override
   {
     mage_spell_t::execute();
-    p() -> buffs.shard_time_warp -> trigger(); 
+    p() -> buffs.shard_time_warp -> trigger();
   }
 
 };
@@ -6293,6 +6314,7 @@ void mage_t::create_buffs()
   buffs.rhonins_assaulting_armwraps = buff_creator_t( this, "rhonins_assaulting_armwraps", find_spell( 208081 ) );
   buffs.shard_time_warp   = buff_creator_t( this, "shard_time_warp", find_spell( 2825 ) )
                                             .add_invalidate( CACHE_SPELL_HASTE );
+  buffs.kaelthas_ultimate_ability = buff_creator_t( this, "kaelthas_ultimate_ability", find_spell( 209455 ) );
 }
 
 // mage_t::create_options ===================================================
@@ -7848,6 +7870,16 @@ struct darcklis_dragonfire_diadem_t : public scoped_action_callback_t<dragons_br
   void manipulate( dragons_breath_t* action, const special_effect_t& e ) override
   { action -> darcklis_dragonfire_diadem_multiplier = e.driver() -> effectN( 2 ).percent(); }
 };
+
+struct marquee_bindings_of_the_sun_king_t : public scoped_action_callback_t<pyroblast_t>
+{
+  marquee_bindings_of_the_sun_king_t() : super( MAGE_FIRE, "pyroblast" )
+  { }
+
+  void manipulate( pyroblast_t* action, const special_effect_t& e ) override
+  { action ->  marquee_bindings_of_the_sun_king_proc_chance = e.driver() -> effectN( 1 ).percent(); }
+};
+
 // Frost Legendary Items
 
 struct magtheridons_banished_bracers_t : public scoped_action_callback_t<ice_lance_t>
@@ -7934,6 +7966,7 @@ public:
     unique_gear::register_special_effect( 208080, rhonins_assaulting_armwraps_t() );
     unique_gear::register_special_effect( 207547, darcklis_dragonfire_diadem_t() );
     unique_gear::register_special_effect( 207970, shard_of_the_exodar_t() );
+    unique_gear::register_special_effect( 209450, marquee_bindings_of_the_sun_king_t() );
   }
 
   virtual void register_hotfixes() const override
