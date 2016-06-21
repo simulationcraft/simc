@@ -210,6 +210,7 @@ public:
     //Tier bonuses
     proc_t* t17_2pc_arms;
     proc_t* t17_2pc_fury;
+    proc_t* t19_4pc_arms;
   } proc;
 
   // Spec Passives
@@ -672,10 +673,11 @@ public:
     }
   }
 
-  void arms_t19_4p( action_state_t* s )
+  void arms_t19_4p( action_state_t& s ) const
   {
-    if ( p() -> sets.has_set_bonus( WARRIOR_ARMS, T19, B4 ) && s -> result == RESULT_CRIT && rng().roll( p() -> sets.set(WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).percent() ) )
+    if ( p() -> sets.has_set_bonus( WARRIOR_ARMS, T19, B4 ) && s.result == RESULT_CRIT && rng().roll( p() -> sets.set(WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).percent() ) )
     {
+      p() -> proc.t19_4pc_arms -> occur();
       p() -> cooldown.colossus_smash -> reset( true );
     }
   }
@@ -1689,6 +1691,7 @@ struct execute_t: public warrior_attack_t
     if ( s -> result == RESULT_CRIT )
     {
       p() -> buff.massacre -> trigger();
+      arms_t19_4p( *s );
     }
   }
 
@@ -2747,10 +2750,10 @@ struct slam_t: public warrior_attack_t
     }
   }
 
-  void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
-    arms_t19_4p( s );
+    arms_t19_4p( *s );
   }
 
   bool ready() override
@@ -3049,10 +3052,10 @@ struct arms_whirlwind_mh_t: public warrior_attack_t
     return am;
   }
 
-  void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
-    arms_t19_4p( s );
+    arms_t19_4p( *s );
   }
 };
 
@@ -3068,7 +3071,7 @@ struct first_arms_whirlwind_mh_t: public warrior_attack_t
   void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
-    arms_t19_4p( s );
+    arms_t19_4p( *s );
     if ( p() -> artifact.will_of_the_first_king.rank() )
     {
       p() -> resource_gain( RESOURCE_RAGE, p() -> artifact.will_of_the_first_king.data().effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.will_of_the_first_king );
@@ -4583,6 +4586,7 @@ void warrior_t::init_procs()
 
   proc.t17_2pc_fury = get_proc( "t17_2pc_fury" );
   proc.t17_2pc_arms = get_proc( "t17_2pc_arms" );
+  proc.t19_4pc_arms = get_proc( "t19_4pc_arms" );
   proc.arms_trinket = get_proc( "arms_trinket" );
   proc.tactician    = get_proc( "tactician"    );
 }
