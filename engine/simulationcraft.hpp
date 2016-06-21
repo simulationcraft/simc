@@ -6942,14 +6942,14 @@ namespace unique_gear
     typedef scoped_action_callback_t<T_ACTION> super;
 
     const std::string name;
-    const unsigned spell_id;
+    const int spell_id;
 
     scoped_action_callback_t( player_e c, const std::string& n ) :
-      class_scoped_callback_t( c ), name( n ), spell_id( 0 )
+      class_scoped_callback_t( c ), name( n ), spell_id( -1 )
     { }
 
     scoped_action_callback_t( specialization_e s, const std::string& n ) :
-      class_scoped_callback_t( s ), name( n ), spell_id( 0 )
+      class_scoped_callback_t( s ), name( n ), spell_id( -1 )
     { }
 
     scoped_action_callback_t( player_e c, unsigned sid ) :
@@ -6964,7 +6964,8 @@ namespace unique_gear
     void initialize( special_effect_t& e ) override
     {
       range::for_each( e.player -> action_list, [ this, e ]( action_t* a ) {
-        if ( util::str_compare_ci( name, a -> name_str ) || spell_id == a -> id )
+        if ( ( ! name.empty() && util::str_compare_ci( name, a -> name_str ) ) ||
+             ( spell_id > 0 && spell_id == as<int>( a -> id ) ) )
         {
           if ( a -> sim -> debug )
           {
