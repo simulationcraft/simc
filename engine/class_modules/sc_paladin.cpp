@@ -13,7 +13,15 @@
     - BoK/BoW
     - Check mana/mana regen for ret, sword of light has been significantly changed to no longer have the mana regen stuff, or the bonus to healing, reduction in mana costs, etc.
   TODO (prot):
-    - Legendary Item bonuses
+    - Breastplate of the Golden Val'kyr (leg)
+    - Chain of Thrayn (leg)
+    - Tyelca, Ferren Marcus' Stature (leg)
+    - Aggramar's Stride (leg)
+    - Uther's Guard (leg)
+    - Aegisjalmur, the Armguards of Awe (leg)
+    - Tyr's Hand of Faith (leg)
+    - Heathcliff's Immortality (leg)
+    - Ilterendi, Crown Jewel of Silvermoon (leg - Holy?)
     - Action Priority List
     - Sample Profile (for testing)
     - Bugfix: check Guarded by the Light's block contribution once spell data is corrected
@@ -21,7 +29,7 @@
 
     - Everything below this line is super-low priority and can probably be ignored ======
     - Final Stand?? (like Hand of Reckoning, but AOE)
-    - Blessing of Protection/Spellweaving??
+    - Blessing of Spellweaving??
     - Retribution Aura?? (like HS, but would need to be in player_t to trigger off of other players being hit)
 */
 #include "simulationcraft.hpp"
