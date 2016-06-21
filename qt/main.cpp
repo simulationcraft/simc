@@ -51,8 +51,10 @@ int main( int argc, char *argv[] )
   QLocale::setDefault( QLocale( "C" ) );
   std::locale::global( std::locale( "C" ) );
   QApplication::setStyle( QStyleFactory::create( "Fusion" ) );
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
   QCoreApplication::setAttribute( Qt::AA_EnableHighDpiScaling );
   qputenv( "QT_AUTO_SCREEN_SCALE_FACTOR", "1" );
+#endif
   setlocale( LC_ALL, "C" );
 
   dbc::init();

@@ -19,11 +19,12 @@ SC_TextEdit::SC_TextEdit( QWidget* parent, bool accept_drops, bool enable_search
   enable_search( enable_search ),
   edited_by_user( false )
 {
+  textformat_error.setFontPointSize( 20 );
   setAcceptDrops( accept_drops );
   setLineWrapMode( QPlainTextEdit::NoWrap );
   //setAcceptRichText( false );
   QFont font;
-  font.setPointSize(14);
+  font.setPointSize(10);
   setFont(font);
   QList< Qt::KeyboardModifier > ctrl;
   ctrl.push_back( Qt::ControlModifier );
