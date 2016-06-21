@@ -4566,7 +4566,6 @@ void demon_hunter_t::init_rng()
   rppm.felblade = get_rppm( "felblade", find_spell( 203557 ) );
 
   // Havoc
-  rppm.demon_blades = get_rppm( "demon_blades", talent.demon_blades );
   rppm.inner_demons = get_rppm( "inner_demons", artifact.inner_demons );
 
   // Vengeance
