@@ -23,6 +23,7 @@ actions.precombat+=/potion,name=draenic_strength
 # Executed every time the actor is available.
 
 actions=auto_attack
+actions+=/use_item,name=tablet_of_turnbuckle_teamwork,if=active_enemies=1|(active_enemies>=2&buff.ravager_protection.up)
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent

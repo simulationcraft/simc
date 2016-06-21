@@ -28,6 +28,7 @@ actions+=/skull_bash
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
+actions+=/use_item,slot=trinket2
 actions+=/barkskin
 actions+=/bristling_fur,if=buff.ironfur.remains<2&rage<40
 actions+=/ironfur,if=buff.ironfur.down|rage.deficit<25

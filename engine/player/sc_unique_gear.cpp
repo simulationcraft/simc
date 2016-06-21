@@ -3426,7 +3426,7 @@ void item::insatiable_hunger( special_effect_t& effect )
 {
   // Setup a secondary driver when the buff is up to generate stacks to it
   special_effect_t* effect_driver = new special_effect_t( effect.player );
-  effect_driver -> type = SPECIAL_EFFECT_CUSTOM;
+  effect_driver -> type = SPECIAL_EFFECT_EQUIP;
   effect_driver -> name_str = "hammering_blows_driver";
   effect_driver -> spell_id = effect.trigger() -> id();
   effect_driver -> custom_init = insatiable_hunger_2;
@@ -4042,7 +4042,7 @@ struct down_draft_t : public stat_buff_t
 
 void item::nightmare_egg_shell( special_effect_t& effect )
 {
-  effect.type = SPECIAL_EFFECT_CUSTOM;
+  effect.type = SPECIAL_EFFECT_EQUIP;
   effect.custom_buff = new down_draft_t( effect );
 
   new dbc_proc_callback_t( effect.item, effect );
@@ -4068,17 +4068,12 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
   bool ret = true;
   player_t* p = effect.player;
 
-  auto dbitems = find_special_effect_db_item( spell_id, effect );
+  // Setup the driver always, though honoring any parsing performed in the first phase options.
+  if ( effect.spell_id == 0 )
+    effect.spell_id = spell_id;
 
-  // Nothing found in our special effect database, jump out early and indicate that no special
-  // effects should be created
-  if ( dbitems.front() -> spell_id == 0 || dbitems.size() == 0 )
-  {
-    effect.type = SPECIAL_EFFECT_NONE;
-    return ret;
-  }
-
-  for ( const auto dbitem: dbitems )
+  // Try to find the special effect from the custom effect database
+  for ( const auto dbitem: find_special_effect_db_item( spell_id, effect ) )
   {
     // Parse auxilary effect options before doing spell data based parsing
     if ( ! dbitem -> encoded_options.empty() )
@@ -4092,11 +4087,6 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
         return false;
     }
 
-    // Setup the driver always, though honoring any parsing performed in the 
-    // first phase options.
-    if ( effect.spell_id == 0 )
-      effect.spell_id = spell_id;
-
     if ( dbitem -> cb_obj )
     {
       if ( ! dbitem -> cb_obj -> valid( effect ) )
@@ -4108,13 +4098,20 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
       // automatically.
       if ( dbitem -> cb_obj )
       {
-        effect.type = SPECIAL_EFFECT_CUSTOM;
         effect.custom_init_object.push_back( dbitem -> cb_obj );
       }
     }
   }
 
-  if ( effect.spell_id > 0 && p -> find_spell( effect.spell_id ) -> id() != effect.spell_id )
+  // Custom init found a valid initializer callback, this special effect will be initialized with it
+  // later on
+  if ( effect.custom_init_object.size() > 0 )
+  {
+    return ret;
+  }
+
+  // No custom effect found, so ensure that we have spell data for the driver
+  if ( p -> find_spell( effect.spell_id ) -> id() != effect.spell_id )
   {
     if ( p -> sim -> debug )
       p -> sim -> out_debug.printf( "Player %s unable to initialize special effect in item %s, spell identifier %u not found.",
@@ -4127,19 +4124,12 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
   // otherwise there's no point in trying to proc anything
   if ( effect.type == SPECIAL_EFFECT_EQUIP && ! special_effect::usable_proc( effect ) )
     effect.type = SPECIAL_EFFECT_NONE;
+  // For generic use stuff, we need to have a proper buff or action that we can generate
   else if ( effect.type == SPECIAL_EFFECT_USE &&
             effect.buff_type() == SPECIAL_EFFECT_BUFF_NONE &&
             effect.action_type() == SPECIAL_EFFECT_ACTION_NONE )
-    effect.type = SPECIAL_EFFECT_NONE;
-
-  if ( effect.type == SPECIAL_EFFECT_CUSTOM && effect.custom_init_object.size() == 0 )
   {
-    if ( p -> sim -> debug )
-      p -> sim -> out_debug.printf( "Player %s unable to initialize special effect in item %s, "
-                                    "special effect fails validity check.",
-          p -> name(), effect.item ? effect.item -> name() : "unknown" );
     effect.type = SPECIAL_EFFECT_NONE;
-    return ret;
   }
 
   return ret;
@@ -4149,9 +4139,8 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
 // effects, or calls the custom initialization function given in the first phase initialization.
 void unique_gear::initialize_special_effect_2( special_effect_t* effect )
 {
-  if ( effect -> type == SPECIAL_EFFECT_CUSTOM )
+  if ( effect -> custom_init || effect -> custom_init_object.size() > 0 )
   {
-    assert( effect -> custom_init || effect -> custom_init_object.size() > 0 );
     if ( effect -> custom_init )
     {
       effect -> custom_init( *effect );
@@ -4252,10 +4241,6 @@ struct item_effect_base_expr_t : public expr_t
         effects.push_back( e );
 
       e = &( a -> player -> items[ slots[ i ] ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) );
-      if ( e -> source != SPECIAL_EFFECT_SOURCE_NONE )
-        effects.push_back( e );
-
-      e = &( a -> player -> items[ slots[ i ] ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_CUSTOM ) );
       if ( e -> source != SPECIAL_EFFECT_SOURCE_NONE )
         effects.push_back( e );
     }
@@ -4617,7 +4602,6 @@ const item_data_t* unique_gear::find_item_by_spell( const dbc_t& dbc, unsigned s
 namespace unique_gear
 {
 std::vector<special_effect_db_item_t> __special_effect_db, __fallback_effect_db;
-static const special_effect_db_item_t __null_db_item;
 }
 
 namespace
@@ -4635,7 +4619,7 @@ static unique_gear::special_effect_set_t do_find_special_effect_db_item(
 
   if ( it == db.end() || it -> spell_id != spell_id )
   {
-    return { &__null_db_item };
+    return { };
   }
 
   while ( it != db.end() && it -> spell_id == spell_id )
@@ -5053,8 +5037,9 @@ void unique_gear::initialize_special_effect_fallbacks( player_t* actor )
 
     fallback_effect.reset();
     fallback_effect.spell_id = fallback_id;
+    // TODO: Is this really needed?
     fallback_effect.source = SPECIAL_EFFECT_SOURCE_FALLBACK;
-    fallback_effect.type = SPECIAL_EFFECT_CUSTOM;
+    fallback_effect.type = SPECIAL_EFFECT_FALLBACK;
 
     // Get all registered fallback effects for the spell (fallback) id
     auto dbitems = find_fallback_effect_db_item( fallback_id, fallback_effect );
