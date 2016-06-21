@@ -675,7 +675,7 @@ public:
 
   void arms_t19_4p( action_state_t& s ) const
   {
-    if ( p() -> sets.has_set_bonus( WARRIOR_ARMS, T19, B4 ) && s.result == RESULT_CRIT && rng().roll( p() -> sets.set(WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).percent() ) )
+    if ( p() -> sets.has_set_bonus( WARRIOR_ARMS, T19, B4 ) && s.result == RESULT_CRIT && ab::rng().roll( p() -> sets.set(WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).percent() ) )
     {
       p() -> proc.t19_4pc_arms -> occur();
       p() -> cooldown.colossus_smash -> reset( true );
