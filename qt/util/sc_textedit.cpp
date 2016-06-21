@@ -19,12 +19,12 @@ SC_TextEdit::SC_TextEdit( QWidget* parent, bool accept_drops, bool enable_search
   enable_search( enable_search ),
   edited_by_user( false )
 {
-  textformat_error.setFontPointSize( 20 );
-
   setAcceptDrops( accept_drops );
   setLineWrapMode( QPlainTextEdit::NoWrap );
   //setAcceptRichText( false );
-  
+  QFont font;
+  font.setPointSize(14);
+  setFont(font);
   QList< Qt::KeyboardModifier > ctrl;
   ctrl.push_back( Qt::ControlModifier );
   addIgnoreKeyPressEvent( Qt::Key_Tab, ctrl );
@@ -175,6 +175,10 @@ void SC_TextEdit::findSomeText( const QString& text, QTextDocument::FindFlags op
 {
   if ( ! text.isEmpty() )
   {
+    QList<QTextEdit::ExtraSelection> extraSelections;
+    QColor color( Qt::red );
+    QTextEdit::ExtraSelection extra;
+    extra.format.setBackground( color );
     QTextDocument* doc = document();
     if ( position < 0 )
       position = textCursor().selectionStart();
@@ -182,6 +186,8 @@ void SC_TextEdit::findSomeText( const QString& text, QTextDocument::FindFlags op
     if ( ! found.isNull() )
     {
       setTextCursor( found );
+      extra.cursor = found;
+      extraSelections.append( extra );
     }
     else if ( searchBox -> wrapSearch() )
     {
@@ -197,6 +203,8 @@ void SC_TextEdit::findSomeText( const QString& text, QTextDocument::FindFlags op
       if ( ! found.isNull() )
       {
         setTextCursor( found );
+        extra.cursor = found;
+        extraSelections.append( extra );
       }
     }
   }
