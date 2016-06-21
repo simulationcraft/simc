@@ -2251,6 +2251,8 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
+    am *= combo_strikes_multiplier();
+
     if ( p() -> artifact.rising_winds.rank() )
       am *= 1 + p() -> artifact.rising_winds.percent();
 
