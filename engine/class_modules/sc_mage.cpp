@@ -260,6 +260,7 @@ public:
     buff_t* lady_vashjs_grasp,
           * magtheridons_might,
           * rhonins_assaulting_armwraps,
+          * shard_time_warp,
           * zannesu_journey;
 
   } buffs;
@@ -290,6 +291,7 @@ public:
   {
     bool zannesu_journey;
     bool lady_vashjs_grasp;
+    bool shard_of_the_exodar;
     double zannesu_journey_multiplier;
   } legendary;
   // Pets
@@ -3142,13 +3144,27 @@ struct counterspell_t : public mage_spell_t
 
 struct dragons_breath_t : public fire_mage_spell_t
 {
+  double  darcklis_dragonfire_diadem_multiplier;
   dragons_breath_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "dragons_breath", p,
-                       p -> find_class_spell( "Dragon's Breath" ) )
+                       p -> find_class_spell( "Dragon's Breath" ) ),
+                       darcklis_dragonfire_diadem_multiplier( 0.0 )
   {
     parse_options( options_str );
     aoe = -1;
   }
+
+  virtual double action_multiplier() const override
+  {
+    double am = fire_mage_spell_t::action_multiplier();
+
+    if ( darcklis_dragonfire_diadem_multiplier > 0 )
+    {
+      am *= 1.0 + darcklis_dragonfire_diadem_multiplier;
+    }
+    return am;
+  }
+
 };
 
 // Ebonbolt Spell ===========================================================
@@ -5076,8 +5092,31 @@ struct time_warp_t : public mage_spell_t
   }
 };
 
+// Shard of the Exodar Timewarp ========================================================
 
+struct shard_of_the_exodar_warp_t : public mage_spell_t
+{
+  shard_of_the_exodar_warp_t( mage_t* p, const std::string& options_str ) :
+    mage_spell_t( "shard_of_the_exodar_warp", p, p -> find_class_spell( "Time Warp" ) )
+  {
+    parse_options( options_str );
+  }
 
+  virtual bool ready() override
+  {
+    if ( p() -> legendary.shard_of_the_exodar )
+      return mage_spell_t::ready();
+
+    return false;
+  }
+
+  virtual void execute() override
+  {
+    mage_spell_t::execute();
+    p() -> buffs.shard_time_warp -> trigger(); 
+  }
+
+};
 // ============================================================================
 // Mage Custom Actions
 // ============================================================================
@@ -5859,6 +5898,9 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "mirror_image"      ) return new            mirror_image_t( this, options_str );
   if ( name == "rune_of_power"     ) return new           rune_of_power_t( this, options_str );
 
+  // Legendary Actions
+  if ( name == "shard_of_the_exodar_warp" ) return new shard_of_the_exodar_warp_t( this, options_str );
+
   return player_t::create_action( name, options_str );
 }
 
@@ -6249,6 +6291,8 @@ void mage_t::create_buffs()
                                            { buffs.fingers_of_frost -> trigger();
                                              benefits.fingers_of_frost -> update( "Legedary Gain", 1.0 ); } );
   buffs.rhonins_assaulting_armwraps = buff_creator_t( this, "rhonins_assaulting_armwraps", find_spell( 208081 ) );
+  buffs.shard_time_warp   = buff_creator_t( this, "shard_time_warp", find_spell( 2825 ) )
+                                            .add_invalidate( CACHE_SPELL_HASTE );
 }
 
 // mage_t::create_options ===================================================
@@ -7222,6 +7266,11 @@ double mage_t::composite_spell_haste() const
     h *= iv_haste;
   }
 
+  if ( buffs.shard_time_warp -> check() )
+  {
+    h *= 1.0 / ( 1.0 + buffs.shard_time_warp -> data().effectN( 1 ).percent() );
+  }
+
   if ( buffs.frost_armor -> check() )
   {
     h /= 1.0 + buffs.frost_armor -> data().effectN( 1 ).percent();
@@ -7761,6 +7810,15 @@ private:
 using namespace unique_gear;
 using namespace actions;
 
+struct shard_of_the_exodar_t : public scoped_actor_callback_t<mage_t>
+{
+  shard_of_the_exodar_t() : super( MAGE )
+  { }
+
+  void manipulate( mage_t* actor, const special_effect_t& /* e */ ) override
+  { actor -> legendary.shard_of_the_exodar = true; }
+};
+
 // Arcane Legendary Items
 struct rhonins_assaulting_armwraps_t : public scoped_action_callback_t<arcane_missiles_t>
 {
@@ -7782,6 +7840,14 @@ struct koralons_burning_touch_t : public scoped_action_callback_t<scorch_t>
 
 };
 
+struct darcklis_dragonfire_diadem_t : public scoped_action_callback_t<dragons_breath_t>
+{
+  darcklis_dragonfire_diadem_t() : super( MAGE_FIRE, "dragons_breath" )
+  { }
+
+  void manipulate( dragons_breath_t* action, const special_effect_t& e ) override
+  { action -> darcklis_dragonfire_diadem_multiplier = e.driver() -> effectN( 2 ).percent(); }
+};
 // Frost Legendary Items
 
 struct magtheridons_banished_bracers_t : public scoped_action_callback_t<ice_lance_t>
@@ -7866,6 +7932,8 @@ public:
     unique_gear::register_special_effect( 206397, zannesu_journey_t() );
     unique_gear::register_special_effect( 208146, lady_vashjs_grasp_t() );
     unique_gear::register_special_effect( 208080, rhonins_assaulting_armwraps_t() );
+    unique_gear::register_special_effect( 207547, darcklis_dragonfire_diadem_t() );
+    unique_gear::register_special_effect( 207970, shard_of_the_exodar_t() );
   }
 
   virtual void register_hotfixes() const override
