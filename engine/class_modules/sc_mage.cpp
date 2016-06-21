@@ -4687,12 +4687,12 @@ struct pyroblast_t : public fire_mage_spell_t
   {
     double am = fire_mage_spell_t::action_multiplier();
 
-    /*if ( p() -> buffs.kaelthas_ultimate_ability -> check() &&
-         !p() -> buffs.hot_streak &&
+    if ( p() -> buffs.kaelthas_ultimate_ability -> check() &&
+         !p() -> buffs.hot_streak -> check() &&
          marquee_bindings_of_the_sun_king_proc_chance > 0 )
     {
       am *= 1.0 + p() -> buffs.kaelthas_ultimate_ability -> data().effectN( 1 ).percent();
-    }*/
+    }
     return am;
   }
   virtual action_state_t* new_state() override
@@ -4718,12 +4718,17 @@ struct pyroblast_t : public fire_mage_spell_t
 
     fire_mage_spell_t::execute();
 
-  /*  if ( marquee_bindings_of_the_sun_king_proc_chance > 0 &&
+    if ( p() -> buffs.kaelthas_ultimate_ability -> check() &&
+        !p() -> buffs.hot_streak -> check() )
+    {
+      p() -> buffs.kaelthas_ultimate_ability -> expire();
+    }
+    if ( marquee_bindings_of_the_sun_king_proc_chance > 0 &&
          p() -> buffs.hot_streak -> check() &&
          rng().roll( marquee_bindings_of_the_sun_king_proc_chance ) )
     {
       p() -> buffs.kaelthas_ultimate_ability -> trigger();
-    }*/
+    }
     if ( p() -> talents.pyromaniac -> ok() &&
          rng().roll( p() -> talents.pyromaniac -> effectN( 1 ).percent() ) )
     {
@@ -4733,6 +4738,8 @@ struct pyroblast_t : public fire_mage_spell_t
     {
       p() -> buffs.hot_streak -> expire();
     }
+
+
   }
 
   virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
@@ -6116,7 +6123,7 @@ void mage_t::init_spells()
     ignite = new actions::ignite_t( this );
   if ( spec.icicles -> ok() )
     icicle = new actions::icicle_t( this );
-  if ( talents.unstable_magic )
+  if ( talents.unstable_magic -> ok() )
     unstable_magic_explosion = new actions::unstable_magic_explosion_t( this );
 }
 
