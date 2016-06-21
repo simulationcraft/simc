@@ -2115,6 +2115,8 @@ struct tiger_palm_t: public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
+    am *= combo_strikes_multiplier();
+
     if ( p() -> artifact.tiger_claws.rank() )
       am *= 1 + p() -> artifact.tiger_claws.percent();
 
