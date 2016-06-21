@@ -32,10 +32,6 @@ namespace
    Fury of the Illidari distance targeting support
    Overwhelming Power artifact trait
    Defensive artifact traits
-   Fel Mastery rework
-   Eye Beam always crits (see Havoc passive)
-   Check Annihilation (trigger structure changed)
-   Demon Blades proc change
 
    Vengeance ----------------------------------------------------------------
    Infernal Strike
@@ -407,7 +403,6 @@ public:
     real_ppm_t* felblade;
 
     // Havoc
-    real_ppm_t* demon_blades;
     real_ppm_t* inner_demons;
 
     // Vengeance
@@ -1413,6 +1408,8 @@ struct eye_beam_t : public demon_hunter_spell_t
     {
       aoe  = -1;
       dual = background = true;
+      base_crit += p -> spec.havoc -> effectN( 3 ).percent();
+
       if ( ! p -> bugs )
       {
         school = SCHOOL_CHAOS;
@@ -1451,6 +1448,7 @@ struct eye_beam_t : public demon_hunter_spell_t
     harmful = false; // Disables bleeding on the target.
     channeled = true;
     beam -> stats = stats;
+
     if ( ! p -> bugs )
     {
       school = SCHOOL_CHAOS;
@@ -1618,7 +1616,7 @@ struct fel_rush_t : public demon_hunter_spell_t
       dual = background = true;
       may_miss = may_dodge = may_block = false;
 
-      base_crit += p -> talent.fel_mastery -> effectN( 2 ).percent();
+      base_multiplier *= 1.0 + p -> talent.fel_mastery -> effectN( 2 ).percent();
 
       if ( p -> talent.fel_mastery -> ok() )
       {
@@ -2577,10 +2575,7 @@ struct melee_t : public demon_hunter_attack_t
     if ( p() -> in_gcd() )
       return;
 
-    if ( p() -> active.demon_blades -> cooldown -> down() )
-      return;
-
-    if ( ! p() -> rppm.demon_blades -> trigger() )
+    if ( ! rng().roll( p() -> talent.demon_blades -> effectN( 1 ).percent() ) )
       return;
 
     p() -> active.demon_blades -> target = s -> target;
@@ -3191,6 +3186,7 @@ struct demons_bite_t : public demon_hunter_attack_t
 };
 
 // Demon Blade ==============================================================
+// TOCHECK: Anger of the Half-Giants interaction.
 
 struct demon_blades_t : public demon_hunter_attack_t
 {
