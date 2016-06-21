@@ -2404,7 +2404,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
       c *= 1.0 + p() -> buffs.arcane_affinity -> data().effectN( 1 ).percent();
     }
     //TODO: Find a work-around to remove hardcoding
-    if ( p() -> buffs.rhonins_assaulting_armwraps -> up() )
+    if ( p() -> buffs.rhonins_assaulting_armwraps -> check() )
     {
       c = 0;
     }
@@ -2415,6 +2415,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
   {
     p() -> benefits.arcane_charge.arcane_blast -> update();
     arcane_mage_spell_t::execute();
+    p() -> buffs.rhonins_assaulting_armwraps -> expire();
 
     p() -> buffs.arcane_charge -> up();
     p() -> buffs.arcane_affinity -> up();
@@ -2498,7 +2499,6 @@ struct arcane_blast_t : public arcane_mage_spell_t
   virtual void impact( action_state_t* s ) override
   {
     arcane_mage_spell_t::impact( s );
-    p() -> buffs.rhonins_assaulting_armwraps -> expire();
 
     if ( result_is_hit( s -> result ) )
     {
