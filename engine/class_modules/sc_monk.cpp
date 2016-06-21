@@ -1802,6 +1802,19 @@ public:
     p() -> previous_combo_strike = new_ability;
   }
 
+  double combo_strikes_multiplier() const
+  {
+    double am = 1;
+
+    if ( p() -> buff.combo_strikes -> up() )
+    {
+      am *= 1.0 + ( p() -> composite_mastery() * 0.01 );
+      am *= 1.0 + p() -> buff.hit_combo -> stack_value();
+    }
+
+    return am;
+  }
+
   virtual double cost() const
   {
     double c = ab::cost();
@@ -2388,6 +2401,8 @@ struct rising_sun_kick_t: public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
+    am *= combo_strikes_multiplier();
+
     if ( p() -> artifact.rising_winds.rank() )
       am *= 1 + p() -> artifact.rising_winds.percent();
 
@@ -2535,6 +2550,8 @@ struct blackout_kick_t: public monk_melee_attack_t
       }
       case MONK_WINDWALKER:
       {
+        am *= combo_strikes_multiplier();
+
         if ( p() -> artifact.dark_skies.rank() )
           am *= 1 + p() -> artifact.dark_skies.percent();
 
@@ -2739,6 +2756,8 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
+    am *= combo_strikes_multiplier();
+    
     if ( p() -> specialization() == MONK_BREWMASTER )
       am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent(); 
 
@@ -2809,6 +2828,8 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
   virtual double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
+
+    am *= combo_strikes_multiplier();
 
     am *= 1 + cyclone_strike_counter() * p() -> spec.spinning_crane_kick -> effectN( 2 ).percent();
 
@@ -2938,6 +2959,8 @@ struct fists_of_fury_t: public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
+    am *= combo_strikes_multiplier();
+
     if ( p() -> buff.transfer_the_power -> up() )
     {
       am *= 1 + p() -> buff.transfer_the_power -> stack_value();
@@ -3011,6 +3034,15 @@ struct whirling_dragon_punch_tick_t: public monk_melee_attack_t
 
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    am *= combo_strikes_multiplier();
+
+    return am;
   }
 
   virtual timespan_t travel_time() const override
@@ -3378,11 +3410,7 @@ struct touch_of_death_t: public monk_spell_t
   {
     double am = monk_spell_t::action_multiplier();
 
-    if ( p() -> buff.combo_strikes -> up() )
-    {
-      am *= 1.0 + ( p() -> composite_mastery() * 0.01 );
-      am *= 1.0 + p() -> buff.hit_combo -> stack_value();
-    }
+    am *= combo_strikes_multiplier();
 
     return am;
   }
@@ -3813,6 +3841,8 @@ struct crackling_jade_lightning_t: public monk_spell_t
   virtual double action_multiplier() const override
   {
     double am = monk_spell_t::action_multiplier();
+
+    am *= combo_strikes_multiplier();
 
     if ( p() -> specialization() == MONK_MISTWEAVER )
       am *= 1 + p() -> passives.aura_mistweaver_monk -> effectN( 13 ).percent();
@@ -5237,6 +5267,15 @@ struct chi_wave_heal_tick_t: public monk_heal_t
     attack_power_mod.direct = 0.750; // Hard code 06/21/16
     target = player;
   }
+
+  double action_multiplier() const override
+  {
+    double am = monk_heal_t::action_multiplier();
+
+    am *= combo_strikes_multiplier();
+
+    return am;
+  }
 };
 
 struct chi_wave_dmg_tick_t: public monk_spell_t
@@ -5246,6 +5285,15 @@ struct chi_wave_dmg_tick_t: public monk_spell_t
   {
     background = direct_tick = true;
     attack_power_mod.direct = 0.750; // Hard code 06/21/16
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    am *= combo_strikes_multiplier();
+
+    return am;
   }
 };
 
@@ -5314,6 +5362,15 @@ struct chi_burst_heal_t: public monk_heal_t
     target = p();
     attack_power_mod.direct = 4.125; // Hard code 06/21/16
   }
+
+  double action_multiplier() const override
+  {
+    double am = monk_heal_t::action_multiplier();
+
+    am *= combo_strikes_multiplier();
+
+    return am;
+  }
 };
 
 struct chi_burst_damage_t: public monk_spell_t
@@ -5324,6 +5381,15 @@ struct chi_burst_damage_t: public monk_spell_t
     background = true;
     target = p();
     attack_power_mod.direct = 4.125; // Hard code 06/21/16
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    am *= combo_strikes_multiplier();
+
+    return am;
   }
 };
 
@@ -6663,12 +6729,6 @@ double monk_t::composite_player_multiplier( school_e school ) const
   double m = base_t::composite_player_multiplier( school );
 
   m *= 1.0 + spec.stance_of_the_fierce_tiger -> effectN( 3 ).percent();
-
-  if ( buff.combo_strikes -> up() )
-  {
-    m *= 1.0 + ( composite_mastery() * 0.01 );
-    m *= 1.0 + buff.hit_combo -> stack_value();
-  }
 
   if ( buff.serenity -> up() )
     m *= 1.0 + buff.serenity -> value();
