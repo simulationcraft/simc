@@ -78,13 +78,13 @@ int main( int argc, char *argv[] )
   // Localization
   QTranslator qtTranslator;
   qtTranslator.load( "qt_" + QLocale::system().name(),
-    QLibraryInfo::location( QLibraryInfo::TranslationsPath ) );
+  QLibraryInfo::location( QLibraryInfo::TranslationsPath ) );
   a.installTranslator( &qtTranslator );
 
   QString lang;
   QSettings settings;
   lang = settings.value( "options/gui_localization", "auto" ).toString();
-  qDebug() << "[Localization]: Seleced gui language: " << lang;
+  qDebug() << "[Localization]: Selected gui language: " << lang;
   if ( lang == "auto" )
   {
     QString langName = QLocale::system().name();
