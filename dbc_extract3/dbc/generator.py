@@ -1250,6 +1250,7 @@ class SpellDataGenerator(DataGenerator):
           ( 214134, 0 ),                                # The Deceiver's Blood Pact energize
           ( 224126, 0 ), ( 224125, 0 ), ( 224127, 0 ),  # Wolves of Doom Doom Effects, DOOM!
           ( 198506, 0 ),                                # Wolves of Doom, summon spell
+          ( 197568, 0 ),                                # Lightning Rod damage spell
         ),
 
         # Mage:
