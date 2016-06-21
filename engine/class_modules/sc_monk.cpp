@@ -67,7 +67,6 @@ enum combo_strikes_e {
   CS_RISING_SUN_KICK_TRINKET,
   CS_FISTS_OF_FURY,
   CS_SPINNING_CRANE_KICK,
-  CS_TOUCH_OF_DEATH,
   CS_RUSHING_JADE_WIND,
   CS_WHIRLING_DRAGON_PUNCH,
   CS_STRIKE_OF_THE_WINDLORD,
@@ -77,6 +76,7 @@ enum combo_strikes_e {
   CS_CHI_BURST,
   CS_CHI_WAVE,
   CS_CRACKLING_JADE_LIGHTNING,
+  CS_TOUCH_OF_DEATH,
   CS_FLYING_SERPENT_KICK,
   CS_SPELL_MAX,
 
@@ -5234,7 +5234,7 @@ struct chi_wave_heal_tick_t: public monk_heal_t
     monk_heal_t( name, p, p.passives.chi_wave_heal )
   {
     background = direct_tick = true;
-    attack_power_mod.direct = 0.500; // Hard code 09/09/14
+    attack_power_mod.direct = 0.750; // Hard code 06/21/16
     target = player;
   }
 };
@@ -5245,7 +5245,7 @@ struct chi_wave_dmg_tick_t: public monk_spell_t
     monk_spell_t( name, player, player -> passives.chi_wave_damage )
   {
     background = direct_tick = true;
-    attack_power_mod.direct = 0.500; // Hard code 09/09/14
+    attack_power_mod.direct = 0.750; // Hard code 06/21/16
   }
 };
 
@@ -5312,7 +5312,7 @@ struct chi_burst_heal_t: public monk_heal_t
   {
     background = true;
     target = p();
-    attack_power_mod.direct = 2.75;
+    attack_power_mod.direct = 4.125; // Hard code 06/21/16
   }
 };
 
@@ -5323,7 +5323,7 @@ struct chi_burst_damage_t: public monk_spell_t
   {
     background = true;
     target = p();
-    attack_power_mod.direct = 2.75;
+    attack_power_mod.direct = 4.125; // Hard code 06/21/16
   }
 };
 
