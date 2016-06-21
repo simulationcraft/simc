@@ -20,9 +20,10 @@ namespace
    Demon Soul buff
    Fel Blade movement mechanics
    Darkness
+   Confirm min GCD (all specs)
+   Set bonuses
 
    Havoc --------------------------------------------------------------------
-   Demonic Appetite travel time
    Demonic Appetite fury from spell data
    Change Nemesis to be race specific instead of generic
    Nemesis buffs for each race?
@@ -31,6 +32,11 @@ namespace
    Fury of the Illidari distance targeting support
    Overwhelming Power artifact trait
    Defensive artifact traits
+   Chaos Strike refund (see spell 197125)
+   Fel Mastery rework
+   Eye Beam always crits (see Havoc passive)
+   Check Annihilation (trigger structure changed)
+   Demon Blades proc change
 
    Vengeance ----------------------------------------------------------------
    Infernal Strike
@@ -39,6 +45,12 @@ namespace
    Infernal Force artifact trait
    Siphon Power artifact trait
      http://us.battle.net/wow/en/forum/topic/20743504316?page=15#282
+   Soul Barrier rework
+   Blade Turning rework
+   Gluttony
+   Pain resource name
+   Spirit Bomb rework
+   Fallout talent
 
    Needs Documenting --------------------------------------------------------
    Vengeful Retreat / Fel Rush "jump_cancel" option
@@ -206,7 +218,6 @@ public:
     const spell_data_t* soul_barrier;
 
     const spell_data_t* spirit_bomb;
-    const spell_data_t* etched_in_blood;
     const spell_data_t* soul_rending;
 
     const spell_data_t* burning_alive;
@@ -953,20 +964,6 @@ public:
     }
 
     return tm;
-  }
-
-  virtual void consume_resource() override
-  {
-    ab::consume_resource();
-
-    if ( p() -> talent.etched_in_blood -> ok() && ab::resource_current == RESOURCE_PAIN &&
-      ab::resource_consumed > 0 )
-    {
-      // No spell data values... like at all.
-      timespan_t reduction = ( ab::resource_consumed / 20.0 ) * timespan_t::from_seconds( -1.0 );
-
-      p() -> cooldown.sigil_of_flame -> adjust( reduction );
-    }
   }
 
   virtual void tick( dot_t* d ) override
@@ -4674,7 +4671,6 @@ void demon_hunter_t::init_spells()
   talent.last_resort          = find_talent_spell( "Last Resort" );
 
   talent.spirit_bomb          = find_talent_spell( "Spirit Bomb" );
-  talent.etched_in_blood      = find_talent_spell( "Etched in Blood" );
     
   talent.burning_alive        = find_talent_spell( "Burning Alive" );
   talent.concentrated_sigils  = find_talent_spell( "Concentrated Sigils" );
