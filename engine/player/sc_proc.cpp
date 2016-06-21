@@ -388,9 +388,7 @@ absorb_buff_t* special_effect_t::initialize_absorb_buff() const
 
 special_effect_buff_e special_effect_t::buff_type() const
 {
-  if ( type == SPECIAL_EFFECT_CUSTOM )
-    return SPECIAL_EFFECT_BUFF_CUSTOM;
-  else if ( custom_buff != nullptr )
+  if ( custom_buff != nullptr )
     return SPECIAL_EFFECT_BUFF_CUSTOM;
   else if ( is_stat_buff() )
     return SPECIAL_EFFECT_BUFF_STAT;
@@ -543,9 +541,7 @@ action_t* special_effect_t::create_action() const
 
 special_effect_action_e special_effect_t::action_type() const
 {
-  if ( type == SPECIAL_EFFECT_CUSTOM )
-    return SPECIAL_EFFECT_ACTION_CUSTOM;
-  else if ( execute_action != nullptr )
+  if ( execute_action != nullptr )
     return SPECIAL_EFFECT_ACTION_CUSTOM;
   else if ( is_offensive_spell_action() )
     return SPECIAL_EFFECT_ACTION_SPELL;

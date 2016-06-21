@@ -1305,7 +1305,7 @@ bool player_t::create_special_effects()
       return false;
     }
 
-    if ( effect.type != SPECIAL_EFFECT_CUSTOM )
+    if ( effect.custom_init_object.size() == 0 )
     {
       continue;
     }
@@ -6611,7 +6611,7 @@ struct use_item_t : public action_t
       if ( s == SLOT_INVALID )
       {
         sim -> errorf( "Player %s attempting 'use_item' action with invalid slot name '%s'.", player -> name(), item_slot.c_str() );
-        return;
+        background = true;
       }
 
       item = &( player -> items[ s ] );
@@ -6620,7 +6620,7 @@ struct use_item_t : public action_t
       {
         sim -> errorf( "Player %s attempting 'use_item' action with invalid item '%s' in slot '%s'.", player -> name(), item -> name(), item_slot.c_str() );
         item = 0;
-        return;
+        background = true;
       }
 
       name_str = name_str + "_" + item -> name();
@@ -6628,8 +6628,13 @@ struct use_item_t : public action_t
     else
     {
       sim -> errorf( "Player %s has 'use_item' action with no 'name=' or 'slot=' option.\n", player -> name() );
-      return;
+      background = true;
     }
+  }
+
+  void init() override
+  {
+    action_t::init();
 
     // Parse Special Effect
     const special_effect_t& e = item -> special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );

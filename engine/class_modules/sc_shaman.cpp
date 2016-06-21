@@ -5869,7 +5869,7 @@ bool shaman_t::init_special_effects()
   stormlash_buff_t* stormlash_buff = static_cast<stormlash_buff_t*>( buff_t::find( this, "stormlash" ) );
 
   special_effect_t* effect = new special_effect_t( this );
-  effect -> type = SPECIAL_EFFECT_CUSTOM;
+  effect -> type = SPECIAL_EFFECT_EQUIP;
   effect -> spell_id = 195222;
   special_effects.push_back( effect );
 

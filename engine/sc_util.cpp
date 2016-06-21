@@ -1302,7 +1302,7 @@ const char* util::special_effect_string( special_effect_e type )
   {
     case SPECIAL_EFFECT_EQUIP: return "equip";
     case SPECIAL_EFFECT_USE:   return "use";
-    case SPECIAL_EFFECT_CUSTOM: return "custom";
+    case SPECIAL_EFFECT_FALLBACK: return "fallback";
     default:                   return "unknown";
   }
 }

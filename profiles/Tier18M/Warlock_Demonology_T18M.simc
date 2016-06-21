@@ -21,7 +21,8 @@ actions.precombat+=/snapshot_stats
 
 # Executed every time the actor is available.
 
-actions=life_tap
+actions=use_item,name=nithramus_the_allseer
+actions+=/life_tap
 
 head=demon_princes_ascendant_crown,id=124159,bonus_id=567,upgrade=2
 neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,upgrade=2,enchant_id=5319
