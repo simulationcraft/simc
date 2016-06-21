@@ -2415,7 +2415,10 @@ struct arcane_blast_t : public arcane_mage_spell_t
   {
     p() -> benefits.arcane_charge.arcane_blast -> update();
     arcane_mage_spell_t::execute();
-    p() -> buffs.rhonins_assaulting_armwraps -> expire();
+    if ( p() -> buffs.rhonins_assaulting_armwraps -> check() )
+    {
+      p() -> buffs.rhonins_assaulting_armwraps -> expire();
+    }
 
     p() -> buffs.arcane_charge -> up();
     p() -> buffs.arcane_affinity -> up();
