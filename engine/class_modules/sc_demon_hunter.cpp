@@ -32,7 +32,6 @@ namespace
    Fury of the Illidari distance targeting support
    Overwhelming Power artifact trait
    Defensive artifact traits
-   Chaos Strike refund (see spell 197125)
    Fel Mastery rework
    Eye Beam always crits (see Havoc passive)
    Check Annihilation (trigger structure changed)
@@ -838,7 +837,6 @@ template <typename Base>
 class demon_hunter_action_t : public Base
 {
 public:
-  gain_t* action_gain;
   bool metamorphosis_gcd;
   bool hasted_gcd, hasted_cd;
   bool demonic_presence;
@@ -847,7 +845,6 @@ public:
                          const spell_data_t* s = spell_data_t::nil(),
                          const std::string& o = std::string() )
     : ab( n, p, s ),
-      action_gain( p -> get_gain( n ) ),
       metamorphosis_gcd( p -> specialization() == DEMON_HUNTER_HAVOC &&
         ab::data().affected_by( p -> spec.metamorphosis_buff -> effectN( 7 ) ) ),
       hasted_gcd( false ),
@@ -1353,7 +1350,7 @@ struct consume_magic_t : public demon_hunter_spell_t
   {
     demon_hunter_spell_t::execute();
 
-    p() -> resource_gain( resource, resource_amount, action_gain );
+    p() -> resource_gain( resource, resource_amount, gain );
   }
 
   bool ready() override
@@ -2938,9 +2935,11 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
 
       /* Refund occurs prior to the offhand hit, and since we need to check the execute state
          we'll replicate that by doing it here instead of in execute(). */
-      if ( may_refund && debug_cast<chaos_strike_state_t*>( s ) -> is_critical )
+      chaos_strike_state_t* cs = debug_cast<chaos_strike_state_t*>( s );
+
+      if ( weapon == &( p() -> off_hand_weapon ) && parent -> roll_refund( cs ) )
       {
-        p() -> resource_gain( RESOURCE_FURY, parent -> cost(), parent -> action_gain );
+        p() -> resource_gain( RESOURCE_FURY, parent -> composite_energize_amount( s ), parent -> gain );
       }
     }
   };
@@ -2981,6 +2980,14 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
 
     return f;
   }
+
+  // Don't record data for this action.
+  void record_data( action_state_t* s ) override
+  { assert( s -> result_amount == 0.0 ); }
+
+  /* Function determines whether the OH hit should trigger a refund.
+     annihilation_t and chaos_strike_t each have different implementations. */
+  virtual bool roll_refund( chaos_strike_state_t* s ) = 0;
 
   action_state_t* new_state() override
   { return new chaos_strike_state_t( this, target ); }
@@ -3063,12 +3070,11 @@ struct chaos_strike_t : public chaos_strike_base_t
   chaos_strike_t( demon_hunter_t* p, const std::string& options_str ) :
     chaos_strike_base_t( "chaos_strike", p, p -> spec.chaos_strike, options_str )
   {
-    aoe += p -> talent.chaos_cleave -> effectN( 1 ).base_value();
+    energize_amount = p -> find_spell( 197125 ) -> effectN( 1 ).resource( RESOURCE_FURY );
   }
 
-  // Don't record data for this action.
-  void record_data( action_state_t* s ) override
-  { assert( s -> result_amount == 0.0 ); }
+  bool roll_refund( chaos_strike_state_t* s ) override
+  { return s -> is_critical; }
 
   bool ready() override
   {
@@ -3087,7 +3093,12 @@ struct annihilation_t : public chaos_strike_base_t
 {
   annihilation_t( demon_hunter_t* p, const std::string& options_str ) : 
     chaos_strike_base_t( "annihilation", p, p -> spec.annihilation, options_str )
-  {}
+  {
+    energize_amount = base_costs[ RESOURCE_FURY ];
+  }
+  
+  bool roll_refund( chaos_strike_state_t* ) override
+  { return rng().roll( data().effectN( 1 ).percent() ); }
 
   bool ready() override
   {
@@ -3472,7 +3483,7 @@ struct shear_t : public demon_hunter_attack_t
 
     if ( hit_any_target )
     {
-      p() -> resource_gain( RESOURCE_PAIN, data().effectN( 3 ).resource( RESOURCE_PAIN ), action_gain );
+      p() -> resource_gain( RESOURCE_PAIN, data().effectN( 3 ).resource( RESOURCE_PAIN ), gain );
 
       shatter( execute_state );
     }
