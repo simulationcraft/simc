@@ -4,7 +4,7 @@ race=orc
 spec=beast_mastery
 position=ranged_back
 role=attack
-talents=0001333
+talents=2102021
 head=hood_of_the_savage_hunt,id=124296,bonus_id=566
 neck=choker_of_the_great_betrayer,id=124210,bonus_id=566,enchant_id=5318
 shoulder=pauldrons_of_the_savage_hunt,id=124307,bonus_id=566
@@ -27,7 +27,7 @@ level=100
 race=blood_elf
 role=attack
 position=ranged_back
-talents=0003332
+talents=1103021
 spec=marksmanship
 distance=45
 head=hood_of_the_savage_hunt,id=124296,bonus_id=566
@@ -52,7 +52,7 @@ level=100
 race=blood_elf
 role=attack
 position=ranged_back
-talents=0001333
+talents=3203022
 spec=survival
 head=hood_of_the_savage_hunt,id=124296,bonus_id=566
 neck=shifting_taladite_pendant,id=115800,bonus_id=227/618,enchant_id=5320
