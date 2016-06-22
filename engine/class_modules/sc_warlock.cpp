@@ -233,7 +233,7 @@ public:
     artifact_power_t open_link;//NYI
     artifact_power_t stolen_power;//NYI
     artifact_power_t imperator;
-    artifact_power_t summoners_prowess;//NYI
+    artifact_power_t summoners_prowess;
     artifact_power_t thalkiels_lingering_power;//NYI
 
     // Destruction
@@ -1192,7 +1192,7 @@ double warlock_pet_t::composite_melee_haste() const
 
   if ( buffs.demonic_empowerment -> up() )
   {
-      mh *= 0.5 + buffs.demonic_empowerment -> data().effectN( 1 ).percent() + o()->artifact.summoners_prowess.percent();
+      mh /= 1.0 + buffs.demonic_empowerment -> data().effectN( 2 ).percent() + o()->artifact.summoners_prowess.percent();
   }
 
   return mh;
@@ -1203,7 +1203,7 @@ double warlock_pet_t::composite_spell_haste() const
   double sh = pet_t::composite_spell_haste();
 
   if ( buffs.demonic_empowerment -> up() )
-      sh *= 0.5 + buffs.demonic_empowerment -> data().effectN( 1 ).percent() + o()->artifact.summoners_prowess.percent();
+      sh /= 1.0 + buffs.demonic_empowerment -> data().effectN( 2 ).percent() + o()->artifact.summoners_prowess.percent();
 
   return sh;
 }
