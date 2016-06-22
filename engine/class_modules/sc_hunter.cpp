@@ -11,7 +11,6 @@
 //
 // Beast Mastery
 //  Artifacts
-//   - Surge of the Stormgod: proc at pet location, figure out why damage is not reflecting beta testing
 //   - Cleanup duplicate code for Beast Cleave
 //
 // Marksmanship
@@ -4910,6 +4909,26 @@ struct explosive_trap_t: public hunter_spell_t
   }
 };
 
+// Steel Trap =======================================================================
+
+struct steel_trap_t: public hunter_spell_t
+{
+  steel_trap_t( hunter_t* p, const std::string& options_str ):
+    hunter_spell_t( "steel_trap", p, p -> talents.steel_trap )
+  {
+    parse_options( options_str );
+
+    attack_power_mod.direct = p -> talents.expert_trapper -> ok() ? p -> find_spell( 201199 ) -> effectN( 1 ).ap_coeff() : 0.0;
+    attack_power_mod.tick = 1.0;
+    base_tick_time = p -> find_spell( 162487 ) -> effectN( 1 ).period();
+    dot_duration = p -> find_spell ( 162487 ) -> duration();
+    hasted_ticks = false;
+    may_crit = true;
+    tick_may_crit = true;
+    trigger_gcd = p -> talents.steel_trap -> gcd();
+  }
+};
+
 // Dragonsfire Grenade ==============================================================
 
 struct dragonsfire_grenade_t: public hunter_spell_t
@@ -5062,6 +5081,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "snake_hunter"          ) return new           snake_hunter_t( this, options_str );
   if ( name == "spitting_cobra"        ) return new         spitting_cobra_t( this, options_str );
   if ( name == "stampede"              ) return new               stampede_t( this, options_str );
+  if ( name == "steel_trap"            ) return new             steel_trap_t( this, options_str );
   if ( name == "summon_pet"            ) return new             summon_pet_t( this, options_str );
   if ( name == "throwing_axes"         ) return new          throwing_axes_t( this, options_str );
   if ( name == "titans_thunder"        ) return new         titans_thunder_t( this, options_str );
