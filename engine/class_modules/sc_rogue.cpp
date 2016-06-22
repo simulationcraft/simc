@@ -274,6 +274,7 @@ struct rogue_t : public player_t
     gain_t* t17_4pc_assassination;
     gain_t* t17_2pc_subtlety;
     gain_t* t17_4pc_subtlety;
+    gain_t* t18_2pc_assassination;
     gain_t* venomous_wounds;
     gain_t* vitality;
     gain_t* energetic_stabbing;
@@ -3082,6 +3083,12 @@ struct mutilate_t : public rogue_attack_t
       oh_strike -> target = execute_state -> target;
       oh_strike -> schedule_execute( s );
     }
+
+    if ( execute_state -> target -> health_percentage() < 35 &&
+         p() -> sets.has_set_bonus( ROGUE_ASSASSINATION, T18, B4 ) )
+    {
+      p() -> trigger_combo_point_gain( 1, p() -> gains.t18_2pc_assassination, this );
+    }
   }
 };
 
@@ -3186,9 +3193,7 @@ struct roll_the_bones_t : public rogue_attack_t
     rogue_attack_t( "roll_the_bones", p, p -> spec.roll_the_bones, options_str )
   {
     harmful = false;
-    // TODO: Spell data be fubared
-    base_costs[ RESOURCE_COMBO_POINT ] = 1;
-    secondary_costs[ RESOURCE_COMBO_POINT ] = 5;
+    dot_duration = timespan_t::zero();
   }
 
   void execute() override
@@ -3226,6 +3231,18 @@ struct rupture_t : public rogue_attack_t
     may_crit = false;
     base_multiplier *= 1.0 + p -> artifact.gushing_wound.percent();
     base_crit += p -> artifact.serrated_edge.percent();
+  }
+
+  double composite_target_crit( player_t* target ) const override
+  {
+    double m = rogue_attack_t::composite_target_crit( target );
+
+    if ( target -> health_percentage() < 35 )
+    {
+      m += p() -> sets.set( ROGUE_ASSASSINATION, T18, B2 ) -> effectN( 1 ).percent();
+    }
+
+    return m;
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -5995,6 +6012,7 @@ void rogue_t::init_gains()
   gains.t17_4pc_assassination   = get_gain( "t17_4pc_assassination" );
   gains.t17_2pc_subtlety        = get_gain( "t17_2pc_subtlety" );
   gains.t17_4pc_subtlety        = get_gain( "t17_4pc_subtlety" );
+  gains.t18_2pc_assassination   = get_gain( "Assassination T18 2PC" );
   gains.venomous_wounds         = get_gain( "venomous_vim"       );
   gains.quick_draw = get_gain( "Quick Draw" );
   gains.broadsides = get_gain( "Broadsides" );
