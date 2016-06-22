@@ -1616,7 +1616,8 @@ void erosion_event_t::execute()
   if ( erosion_debuff -> check() > 0 )
   {
     erosion_debuff -> decay_event =
-      new ( sim() ) events::erosion_event_t( *actor, erosion_debuff, data );
+      new ( sim() ) events::erosion_event_t( *(erosion_debuff -> source),
+                                             erosion_debuff, data );
   }
   else
   {
