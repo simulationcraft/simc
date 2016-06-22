@@ -1357,7 +1357,7 @@ struct cleave_t: public warrior_attack_t
     {
       p() -> buff.cleave -> trigger( 1, p() -> buff.cleave -> default_value * std::min( p() -> buff.cleave -> max_stack(), static_cast<int>( execute_state -> n_targets ) ) );
 
-      if ( void_cleave && static_cast<int>( execute_state -> n_targets ) > p() -> artifact.void_cleave.data().effectN( 1 ).base_value() )
+      if ( void_cleave && static_cast<int>( execute_state -> n_targets ) >= p() -> artifact.void_cleave.data().effectN( 1 ).base_value() )
       {
         void_cleave -> target = execute_state -> target;
         void_cleave -> execute();
