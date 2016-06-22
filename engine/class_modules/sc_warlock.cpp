@@ -2312,6 +2312,8 @@ struct life_tap_t: public warlock_spell_t
   }
 };
 
+
+// Demonology Spells
 struct shadow_bolt_t: public warlock_spell_t
 {
   shadow_bolt_t( warlock_t* p ):
@@ -2417,25 +2419,6 @@ struct demonic_empowerment_t: public warlock_spell_t
 	}
 };
 
-struct havoc_t: public warlock_spell_t
-{
-  havoc_t( warlock_t* p ): warlock_spell_t( p, "Havoc" )
-  {
-    may_crit = false;
-
-    if ( p -> talents.wreak_havoc -> ok() )
-      cooldown -> duration = timespan_t::from_seconds( 0 );
-  }
-
-  virtual void execute() override
-  {
-    warlock_spell_t::execute();
-
-    p() -> buffs.havoc -> trigger( p() -> buffs.havoc -> max_stack() );
-    p() -> havoc_target = execute_state -> target;
-  }
-};
-
 struct hand_of_guldan_t: public warlock_spell_t
 {
   double demonology_trinket_chance;
@@ -2499,6 +2482,25 @@ struct hand_of_guldan_t: public warlock_spell_t
       doom -> target = s -> target;
       doom -> execute();
     }
+  }
+};
+
+struct havoc_t: public warlock_spell_t
+{
+  havoc_t( warlock_t* p ): warlock_spell_t( p, "Havoc" )
+  {
+    may_crit = false;
+
+    if ( p -> talents.wreak_havoc -> ok() )
+      cooldown -> duration = timespan_t::from_seconds( 0 );
+  }
+
+  virtual void execute() override
+  {
+    warlock_spell_t::execute();
+
+    p() -> buffs.havoc -> trigger( p() -> buffs.havoc -> max_stack() );
+    p() -> havoc_target = execute_state -> target;
   }
 };
 
@@ -2787,6 +2789,21 @@ struct dimensional_rift_t : public warlock_spell_t
       }
     }
   }
+};
+
+struct thalkeils_consumption_t : public warlock_spell_t
+{
+    thalkeils_consumption_t( warlock_t* p ):
+        warlock_spell_t( "thalkiels_consumption", p, p -> artifact.thalkiels_consumption )
+    {
+
+    }
+
+    void execute() override
+    {
+        warlock_spell_t::execute();
+        //do other stuff
+    }
 };
 
 // AOE SPELLS
