@@ -219,7 +219,7 @@ public:
     // Demonology
     artifact_power_t thalkiels_consumption;  //NYI
     artifact_power_t breath_of_thalkiel;
-    artifact_power_t the_doom_of_azeroth;//NYI
+    artifact_power_t the_doom_of_azeroth;
     artifact_power_t sharpened_dreadfangs;
     artifact_power_t fel_skin;//NYI
     artifact_power_t firm_resolve;//NYI
@@ -227,12 +227,12 @@ public:
     artifact_power_t legionwrath;//NYI
     artifact_power_t dirty_hands;//NYI
     artifact_power_t doom_doubled;//NYI
-    artifact_power_t infernal_furnace;//NYI
+    artifact_power_t infernal_furnace;
     artifact_power_t the_expendables;//NYI
     artifact_power_t maw_of_shadows;//NYI
     artifact_power_t open_link;//NYI
     artifact_power_t stolen_power;//NYI
-    artifact_power_t imperator;//NYI
+    artifact_power_t imperator;
     artifact_power_t summoners_prowess;//NYI
     artifact_power_t thalkiels_lingering_power;//NYI
 
@@ -1005,7 +1005,7 @@ struct wild_firebolt_t: public warlock_pet_spell_t
     warlock_pet_spell_t( "fel_firebolt", p, p -> find_spell( 104318 ) )
   {
       base_multiplier += 1.0 + p->o()->artifact.infernal_furnace.percent();
-      this->crit_bonus_multiplier += p->o()->artifact.imperator.percent();
+      this->base_crit += p->o()->artifact.imperator.percent();
   }
 
   virtual bool ready() override
