@@ -107,7 +107,8 @@ struct mage_td_t : public actor_target_data_t
 
   struct debuffs_t
   {
-    buff_t* slow;
+    buff_t* erosion,
+          * slow;
 
     buff_t* firestarter;
 
@@ -415,7 +416,7 @@ public:
                       * living_bomb,
                       * frost_bomb,
                       * unstable_magic,
-                      * erosion, // NYI
+                      * erosion,
                       * flame_patch,
                       * arctic_gale;
 
@@ -1529,8 +1530,103 @@ struct chilled_t : public buff_t
   }
 };
 
+
+// Erosion debuff =============================================================
+
+namespace events {
+struct erosion_event_t : public event_t
+{
+  buff_t* debuff;
+  const spell_data_t* data;
+
+  erosion_event_t( actor_t& m, buff_t* _debuff, const spell_data_t* _data,
+                   bool player_triggered = false ) :
+    event_t( m ), debuff( _debuff ), data( _data )
+  {
+    // Erosion debuff decays 3 seconds after direct application by a player,
+    // followed by a 1 stack every second
+    if ( player_triggered )
+    {
+      add_event( data -> duration() );
+    }
+    else
+    {
+      add_event( data -> effectN( 1 ).period() );
+    }
+  }
+
+  virtual const char* name() const override
+  { return "erosion_decay_event"; }
+
+  void execute() override;
+};
+}
+
+struct erosion_debuff_t : public buff_t
+{
+  const spell_data_t* erosion_event_data;
+  event_t* decay_event;
+
+  erosion_debuff_t( mage_td_t* td ) :
+    buff_t( buff_creator_t( *td, "erosion",
+                            td -> source -> find_spell( 210134 ) ) ),
+    erosion_event_data( td -> source -> find_spell( 210154) ),
+    decay_event( nullptr )
+  {}
+
+  bool trigger( int stacks, double value,
+                double chance, timespan_t duration ) override
+  {
+    bool triggered = buff_t::trigger( stacks, value, chance, duration );
+
+    if ( triggered )
+    {
+      if ( decay_event )
+      {
+        event_t::cancel( decay_event );
+      }
+
+      decay_event = new (*sim)
+        events::erosion_event_t( *source, this, erosion_event_data, true );
+    }
+
+    return triggered;
+  }
+
+  void reset() override
+  {
+    if ( decay_event )
+    {
+      event_t::cancel( decay_event );
+    }
+
+    buff_t::reset();
+  }
+};
+
+namespace events{
+void erosion_event_t::execute()
+{
+  erosion_debuff_t* erosion_debuff = static_cast<erosion_debuff_t*>( debuff );
+  erosion_debuff -> decrement();
+
+  // Always update the parent debuff's reference to the decay event, so that it
+  // can be cancelled upon a new application of the debuff
+  if ( erosion_debuff -> check() > 0 )
+  {
+    erosion_debuff -> decay_event =
+      new ( sim() ) events::erosion_event_t( *actor, erosion_debuff, data );
+  }
+  else
+  {
+    erosion_debuff -> decay_event = nullptr;
+  }
+}
+}
+
+
 namespace actions {
-// ==========================================================================
+// ============================================================================
 // Mage Spell
 // ==========================================================================
 
@@ -1626,6 +1722,20 @@ public:
     return m;
   }
 
+  virtual double composite_target_multiplier( player_t* target ) const override
+  {
+    double tm = spell_t::composite_target_multiplier( target );
+    mage_td_t* tdata = td( target );
+
+    if ( school == SCHOOL_ARCANE )
+    {
+      tm *= 1.0 + tdata -> debuffs.erosion -> check() *
+                  tdata -> debuffs.erosion -> data().effectN( 1 ).percent();
+    }
+
+    return tm;
+  }
+
   void snapshot_internal( action_state_t* s, uint32_t flags,
                           dmg_e rt ) override
   {
@@ -1717,7 +1827,6 @@ typedef residual_action::residual_periodic_action_t< mage_spell_t > residual_act
 // ============================================================================
 // Arcane Mage Spell
 // ============================================================================
-//
 
 struct arcane_mage_spell_t : public mage_spell_t
 {
@@ -1751,6 +1860,16 @@ struct arcane_mage_spell_t : public mage_spell_t
   {
     timespan_t t = mage_spell_t::gcd();
     return t;
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    mage_spell_t::impact( s );
+
+    if ( p() -> talents.erosion -> ok() &&  result_is_hit( s -> result ) )
+    {
+      td( s -> target ) -> debuffs.erosion -> trigger();
+    }
   }
 };
 
@@ -3219,7 +3338,7 @@ struct evocation_t : public arcane_mage_spell_t
     }
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     mana_gained = 0.0;
     arcane_mage_spell_t::execute();
@@ -5598,15 +5717,6 @@ struct nithramus_t : public mage_spell_t
 } // namespace actions
 
 namespace events {
-
-struct erosion_event_t : public event_t
-{
-  mage_t* mage;
-  player_t* target;
-  erosion_event_t( mage_t& m, player_t* t ) :
-    event_t( m ), mage( &m ), target( t )
-  {}
-};
 struct icicle_event_t : public event_t
 {
   mage_t* mage;
@@ -5821,12 +5931,17 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   dots.nether_tempest = target -> get_dot( "nether_tempest", mage );
   dots.frozen_orb     = target -> get_dot( "frozen_orb",     mage );
 
-  debuffs.frost_bomb  = buff_creator_t( *this, "frost_bomb",
-                                        mage -> talents.frost_bomb );
-  debuffs.chilled     = new chilled_t( this );
+  debuffs.erosion     = new erosion_debuff_t( this );
+  debuffs.slow        = buff_creator_t( *this, "slow",
+                                        mage -> find_spell( 31589 ) );
+
   debuffs.firestarter = buff_creator_t( *this, "firestarter" )
                           .chance( 1.0 )
                           .duration( timespan_t::from_seconds( 10.0 ) );
+
+  debuffs.chilled     = new chilled_t( this );
+  debuffs.frost_bomb  = buff_creator_t( *this, "frost_bomb",
+                                        mage -> talents.frost_bomb );
   debuffs.water_jet   = buff_creator_t( *this, "water_jet",
                                         mage -> find_spell( 135029 ) )
                           .quiet( true )
