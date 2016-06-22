@@ -1004,9 +1004,9 @@ struct rogue_attack_t : public melee_attack_t
   {
     double m = melee_attack_t::composite_persistent_multiplier( state );
 
-    // TODO: Vanish?
     if ( p() -> talent.nightstalker -> ok() &&
-         ( p() -> buffs.stealth -> check() || p() -> buffs.shadow_dance -> check() ) )
+         ( p() -> buffs.stealth -> check() || p() -> buffs.shadow_dance -> check() ||
+           p() -> buffs.vanish -> check() ) )
     {
       m *= 1.0 + ( p() -> talent.nightstalker -> effectN( 2 ).percent() +
                    p() -> spec.subtlety_rogue -> effectN( 1 ).percent() );
