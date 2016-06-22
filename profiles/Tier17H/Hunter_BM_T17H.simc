@@ -4,7 +4,6 @@ race=orc
 role=attack
 position=ranged_back
 talents=0001333
-talent_override=steady_focus,if=raid_event.adds.count>=1|enemies>1
 spec=beast_mastery
 
 # This default action priority list is automatically created based on your character.
@@ -20,8 +19,6 @@ actions.precombat+=/food,type=sleeper_sushi
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/exotic_munitions,ammo_type=poisoned,if=spell_targets.multi_shot<3
-actions.precombat+=/exotic_munitions,ammo_type=incendiary,if=spell_targets.multi_shot>=3
 actions.precombat+=/potion,name=draenic_agility
 
 # Executed every time the actor is available.
@@ -31,20 +28,18 @@ actions+=/use_item,name=beating_heart_of_the_mountain
 actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury
 actions+=/berserking
-actions+=/potion,name=draenic_agility,if=!talent.stampede.enabled&((buff.bestial_wrath.up&(legendary_ring.up|!legendary_ring.has_cooldown)&target.health.pct<=20)|target.time_to_die<=20)
-actions+=/bestial_wrath,if=focus>30&!buff.bestial_wrath.up
+actions+=/aspect_of_the_wild
+actions+=/stampede
+actions+=/titans_thunder,if=buff.dire_beast.remains>6
 actions+=/multishot,if=spell_targets.multi_shot>1&pet.cat.buff.beast_cleave.remains<0.5
-actions+=/barrage,if=spell_targets.barrage>1
-actions+=/multishot,if=spell_targets.multi_shot>5
+actions+=/bestial_wrath
 actions+=/kill_command
 actions+=/a_murder_of_crows
-# Cast a second shot for steady focus if that won't cap us.
-actions+=/cobra_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<7&(14+cast_regen)<focus.deficit
-# Prepare for steady focus refresh if it is running out.
-actions+=/cobra_shot,if=talent.steady_focus.enabled&buff.steady_focus.remains<4&focus<50
-actions+=/barrage
-actions+=/cobra_shot,if=spell_targets.multi_shot>5
-actions+=/cobra_shot
+actions+=/chimaera_shot
+actions+=/dire_beast
+actions+=/dire_frenzy
+actions+=/barrage,if=cooldown.kill_command.remains>1
+actions+=/cobra_shot,if=focus>90
 
 head=rylakstalkers_headguard,id=115545,bonus_id=566
 neck=engineers_grounded_gorget,id=113892,bonus_id=566,enchant_id=5319

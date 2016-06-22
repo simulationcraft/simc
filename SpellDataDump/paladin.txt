@@ -298,7 +298,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Cooldown         : 12 seconds
-Affecting spells : Seal of the Crusader Judgment Increase (23300), Proc Mana Regen (38334), Guarded by the Light (53592), Item - Icecrown 25 Normal Tank Weapon Proc (71871), Item - Icecrown 25 Heroic Slow Melee Weapon Proc (71878), Item - Icecrown 25 Normal Dagger Proc (71880), Mastery: Divine Judgment (76672), Item - Proc Mastery Rating (95878), Paladin (137026), Retribution Paladin (137027), Protection Paladin (137028), Holy Paladin (137029), Lucidity (137288), Seal of the Crusader Judgment Increase (144307), Seal of the Crusader Judgment Increase (144310), Seal of the Crusader Judgment Increase (144311), Highlord's Judgment (186941), Stern Judgment (209217), Greater Judgment (218178)
+Affecting spells : Seal of the Crusader Judgment Increase (23300), Proc Mana Regen (38334), Guarded by the Light (53592), Item - Icecrown 25 Normal Tank Weapon Proc (71871), Item - Icecrown 25 Heroic Slow Melee Weapon Proc (71878), Item - Icecrown 25 Normal Dagger Proc (71880), Mastery: Divine Judgment (76672), Item - Proc Mastery Rating (95878), Paladin (137026), Retribution Paladin (137027), Protection Paladin (137028), Holy Paladin (137029), Lucidity (137288), Seal of the Crusader Judgment Increase (144307), Seal of the Crusader Judgment Increase (144310), Seal of the Crusader Judgment Increase (144311), Highlord's Judgment (186941), Stern Judgment (209217)
 Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -307,14 +307,16 @@ Attributes       : ........ ........ x.x..x.. ........   ........ .x...... .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=11347)    : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.00000 | Chain Multiplier: 0.65 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.00000 | Target: Enemy(6)
 #2 (id=336161)   : Dummy (3)
-                   Base Value: 2 | Scaled Value: 2 | Chain Multiplier: 0.65 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #3 (id=343343)   : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3 | Target: Self(1)
+                   Base Value: 3 | Scaled Value: 3 | Target: Enemy(6)
 #4 (id=343346)   : Dummy (3)
-                   Base Value: 35 | Scaled Value: 35 | Target: Self(1)
-Description      : Judges an enemy, dealing $s1 Holy damage$?s76672[, chaining to an additional target for $s4% reduced damage, and causing the target to take $197277s2% increased damage from your Holy Power spenders for $197277d]?s137029[, and causing the target to take $214222s2% increased damage from your Crusader Strike and Holy Shock for $214222d]?s137028[, and reducing the remaining cooldown on Shield of the Righteous by $s2 sec, or ${$m2*2} sec on a critical strike][].
+                   Base Value: 35 | Scaled Value: 35 | Target: Enemy(6)
+#5 (id=343393)   : Dummy (3)
+                   Base Value: 2 | Scaled Value: 2 | Target: Enemy(6)
+Description      : Judges the target$?s218178[ and up to $s3 other nearby enemies]?s137027[ and $s2 other nearby enemy][], dealing $s1 Holy damage$?s76672[, and causing them to take $197277s2% increased damage taken from your Holy Power spenders for $197277d]?s137029[, and causing the target to take $214222s2% increased damage from your Crusader Strike and Holy Shock for $214222d]?s137028[, and reducing the remaining cooldown on Shield of the Righteous by $s2 sec, or ${$m2*2} sec on a critical strike][].
 
 Name             : Holy Shock (id=20473) [Spell Family (10)] 
 Class            : Holy Paladin
@@ -952,7 +954,7 @@ Range            : 5 yards
 Cooldown         : 1 seconds
 Charges          : 3 (16 seconds cooldown)
 Category         : 1543
-Affecting spells : Paladin (137026), Consecration (188370), Righteous Crusader (209226), Righteous Crusader (213570), Righteous Crusader (213571), Righteous Crusader (213572), Righteous Crusader (213573), Righteous Crusader (213574)
+Affecting spells : Paladin (137026), Consecration (188370), Consecrated Hammer (203785), Righteous Crusader (209226), Righteous Crusader (213570), Righteous Crusader (213571), Righteous Crusader (213572), Righteous Crusader (213573), Righteous Crusader (213574)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2134,7 +2136,7 @@ School           : Holy
 Spell Level      : 40
 Range            : 5 yards
 Duration         : 4.5 seconds
-Affecting spells : Mastery: Divine Bulwark (76671), Consecration (188370), Righteous Crusader (209226), Righteous Crusader (213570), Righteous Crusader (213571), Righteous Crusader (213572), Righteous Crusader (213573), Righteous Crusader (213574)
+Affecting spells : Mastery: Divine Bulwark (76671), Consecration (188370), Consecrated Hammer (203785), Righteous Crusader (209226), Righteous Crusader (213570), Righteous Crusader (213571), Righteous Crusader (213572), Righteous Crusader (213573), Righteous Crusader (213574)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2969,7 +2971,7 @@ Class            : Protection Paladin
 School           : Holy
 Spell Level      : 12
 Cooldown         : 15 seconds
-Affecting spells : Paladin (137026), Consecration (188370)
+Affecting spells : Paladin (137026), Consecration (188370), Consecrated Hammer (203785)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2992,7 +2994,7 @@ School           : Physical
 Spell Level      : 16
 Range            : 12 yards
 GCD              : 1.5 seconds
-Cooldown         : 12 seconds
+Cooldown         : 8 seconds
 Affecting spells : Paladin (137026), Deliver the Justice (186927), Virtue's Blade (202271), 
 Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3004,7 +3006,7 @@ Effects          :
 #1 (id=267535)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=267536)   : Weapon Damage% (31)
-                   Base Value: 405 | Scaled Value: 4.05 | Target: Enemy(6)
+                   Base Value: 320 | Scaled Value: 3.2 | Target: Enemy(6)
 #3 (id=267537)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: holy_power | Target: Self(1)
 Description      : Strikes an enemy with the Blade of Justice, dealing $sw2 Physical damage.
@@ -3055,6 +3057,7 @@ Class            : Paladin
 School           : Holy
 Range            : 50000 yards
 Duration         : Aura (infinite)
+Affecting spells : Consecrated Hammer (203785), 
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ...x.... ........   ........ ........ ........ ........ 
                  : x......x ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -3158,7 +3161,7 @@ Proc Flags       : ...x.x.x .x...x.. .x...... ........
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
 Triggered by     : Judgment of Light (183778)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3174,7 +3177,7 @@ Class            : Paladin
 School           : Holy
 Range            : 100 yards
 Duration         : 8 seconds
-Affecting spells : Seal of the Crusader Judgment Increase (23300), Proc Mana Regen (38334), Guarded by the Light (53592), Item - Icecrown 25 Normal Tank Weapon Proc (71871), Item - Icecrown 25 Heroic Slow Melee Weapon Proc (71878), Item - Icecrown 25 Normal Dagger Proc (71880), Mastery: Divine Judgment (76672), Item - Proc Mastery Rating (95878), Paladin (137026), Retribution Paladin (137027), Protection Paladin (137028), Holy Paladin (137029), Lucidity (137288), Seal of the Crusader Judgment Increase (144307), Seal of the Crusader Judgment Increase (144310), Seal of the Crusader Judgment Increase (144311), Highlord's Judgment (186941), Stern Judgment (209217), Greater Judgment (218178)
+Affecting spells : Seal of the Crusader Judgment Increase (23300), Proc Mana Regen (38334), Guarded by the Light (53592), Item - Icecrown 25 Normal Tank Weapon Proc (71871), Item - Icecrown 25 Heroic Slow Melee Weapon Proc (71878), Item - Icecrown 25 Normal Dagger Proc (71880), Mastery: Divine Judgment (76672), Item - Proc Mastery Rating (95878), Paladin (137026), Retribution Paladin (137027), Protection Paladin (137028), Holy Paladin (137029), Lucidity (137288), Seal of the Crusader Judgment Increase (144307), Seal of the Crusader Judgment Increase (144310), Seal of the Crusader Judgment Increase (144311), Highlord's Judgment (186941), Stern Judgment (209217)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3235,8 +3238,8 @@ Name             : Divine Hammer (id=198034) [Spell Family (10)]
 Class            : Paladin
 School           : Holy
 GCD              : 1.5 seconds
-Duration         : 8 seconds
-Cooldown         : 8 seconds
+Duration         : 10 seconds
+Cooldown         : 10 seconds
 Affecting spells : Paladin (137026), Deliver the Justice (186927)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3248,7 +3251,7 @@ Effects          :
 #1 (id=291057)   : Apply Aura (6) | Periodic Trigger Spell: Divine Hammer every 2 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 198137 | Target: Self(1)
 #2 (id=340346)   : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self(1)
 Description      : Divine Hammers spin around you, damaging enemies within $198137A1 yds for $198137sw1 Holy damage instantly and every $t1 sec for $d.
 
 |cFFFFFFFFGenerates $s2 Holy Power.|r
@@ -3491,24 +3494,24 @@ School           : Holy
 Spell Level      : 1
 Range            : 12 yards
 GCD              : 1.5 seconds
-Duration         : 8 seconds
-Cooldown         : 12 seconds
+Duration         : 6 seconds
+Cooldown         : 7 seconds
 Affecting spells : Paladin (137026), Deliver the Justice (186927)
 Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=298131)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=298132)   : Weapon Damage% (31)
-                   Base Value: 240 | Scaled Value: 2.4 | Target: Enemy(6)
+                   Base Value: 100 | Scaled Value: 1 | Target: Enemy(6)
 #3 (id=298133)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: holy_power | Target: Self(1)
 #4 (id=341688)   : Apply Aura (6) | Periodic Damage: holy every 2 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.50000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.40000 | Target: Enemy(6)
 Description      : Strikes an enemy with the Blade of Wrath, dealing $sw2 Holy damage, and an additional $o4 Holy damage over $d.
 
 |cFFFFFFFFGenerates $s3 Holy Power.
@@ -3703,7 +3706,21 @@ Effects          :
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 1570 | Target: Self(1)
 #3 (id=342341)   : Apply Aura (6) | Modify Cooldown Charge (411)
                    Base Value: -2 | Scaled Value: -2 | Misc Value: 1659 | Target: Self(1)
-Description      : Hammer of the Righteous has no cooldown$?s26573[, and always gains the damage bonus of Consecration][].
+#4 (id=343499)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
+                   Affected Spells: Shield of the Righteous (53600), Light of the Protector (184092), Hand of the Protector (213652)
+#5 (id=343500)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 1 (108)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Target: Self(1)
+                   Affected Spells: Shield of the Righteous (132403)
+#6 (id=343501)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 2 (108)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 12 | Target: Self(1)
+                   Affected Spells: Consecration (188370)
+#7 (id=343502)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 3 (108)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 23 | Target: Self(1)
+                   Affected Spells: Consecration (188370)
+Description      : Hammer of the Righteous has no cooldown. $?s26573[
+
+Hammer of the Righteous, Shield of the Righteous, and Light of the Protector now always gain the benefit of Consecration.][]
 
 Name             : Last Defender (id=203791) [Spell Family (10), Passive] 
 Class            : Paladin
@@ -4263,11 +4280,12 @@ Range            : 100 yards
 Affecting spells : Aura Mastery (31821), 
 Triggered by     : Aura of Mercy (183415)
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ x....... ......x. 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
+                 : Disable player procs (112)
 Effects          :
 #1 (id=311373)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.15000 | Radius: 0 - 10 yards | Target: Custom(18) -> AOE friendly(31)
@@ -4348,7 +4366,7 @@ School           : Holy
 Spell Level      : 1
 Range            : 40 yards
 Cooldown         : 10 seconds
-Affecting spells : Paladin (137026), Consecration (188370)
+Affecting spells : Paladin (137026), Consecration (188370), Consecrated Hammer (203785)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4417,7 +4435,7 @@ Class            : Paladin
 School           : Holy
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Seal of the Crusader Judgment Increase (23300), Proc Mana Regen (38334), Guarded by the Light (53592), Item - Icecrown 25 Normal Tank Weapon Proc (71871), Item - Icecrown 25 Heroic Slow Melee Weapon Proc (71878), Item - Icecrown 25 Normal Dagger Proc (71880), Mastery: Divine Judgment (76672), Item - Proc Mastery Rating (95878), Paladin (137026), Retribution Paladin (137027), Protection Paladin (137028), Holy Paladin (137029), Lucidity (137288), Seal of the Crusader Judgment Increase (144307), Seal of the Crusader Judgment Increase (144310), Seal of the Crusader Judgment Increase (144311), Highlord's Judgment (186941), Stern Judgment (209217), Greater Judgment (218178)
+Affecting spells : Seal of the Crusader Judgment Increase (23300), Proc Mana Regen (38334), Guarded by the Light (53592), Item - Icecrown 25 Normal Tank Weapon Proc (71871), Item - Icecrown 25 Heroic Slow Melee Weapon Proc (71878), Item - Icecrown 25 Normal Dagger Proc (71880), Mastery: Divine Judgment (76672), Item - Proc Mastery Rating (95878), Paladin (137026), Retribution Paladin (137027), Protection Paladin (137028), Holy Paladin (137029), Lucidity (137288), Seal of the Crusader Judgment Increase (144307), Seal of the Crusader Judgment Increase (144310), Seal of the Crusader Judgment Increase (144311), Highlord's Judgment (186941), Stern Judgment (209217)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4522,11 +4540,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=324834)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 85 | Scaled Value: 85 | Misc Value: 11 | Target: Self(1)
-#2 (id=343344)   : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
+                   Base Value: 75 | Scaled Value: 75 | Misc Value: 11 | Target: Self(1)
+#2 (id=343344)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 17 | Target: Self(1)
-                   Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222)
-Description      : Your Judgment ability always deals a critical strike when the target is above $s1% health and jumps to $s2 additional nearby enemies.
+Description      : Your Judgment ability hits $s2 additional nearby enemies, and always deals a critical strike against targets above $s1% health.
 
 Name             : Light of the Martyr (id=219562) [Spell Family (10), Passive, Hidden] 
 Class            : Holy Paladin

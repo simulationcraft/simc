@@ -1,6 +1,6 @@
 #define TALENT_SIZE (610)
 
-// 610 talents, wow build 22000
+// 610 talents, wow build 21996
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   0,   3,   29838,       0,  0 },
@@ -273,7 +273,7 @@ static struct talent_data_t __talent_data[] = {
   { "Black Ox Brew"                     , 22097, 0x00, 0x0200, 268,   1,   2,  115399,       0,  0 },
   { "Light Brewing"                     , 22098, 0x00, 0x0200, 268,   0,   2,  196721,       0,  0 },
   { "Energizing Elixir"                 , 22099, 0x00, 0x0200, 269,   0,   2,  115288,       0,  0 },
-  { "Dizzying Kicks"                    , 22100, 0x00, 0x0200, 269,   1,   3,  196722,  175697,  0 },
+  { "Dizzying Kicks"                    , 22100, 0x00, 0x0200, 269,   1,   3,  196722,       0,  0 },
   { "Invoke Niuzao, the Black Ox"       , 22101, 0x00, 0x0200, 268,   1,   5,  132578,       0,  0 },
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Special Delivery"                  , 22102, 0x00, 0x0200, 268,   2,   5,  196730,       0,  0 },
@@ -581,7 +581,7 @@ static struct talent_data_t __talent_data[] = {
   { "Abomination's Might"               , 22521, 0x00, 0x0020, 251,   0,   3,  207161,       0,  0 },
   { "Sludge Belcher"                    , 22522, 0x00, 0x0020, 252,   0,   3,  207313,       0,  0 },
   { "Blinding Sleet"                    , 22523, 0x00, 0x0020, 251,   1,   3,  207167,       0,  0 },
-  { "Asphyxiate"                        , 22524, 0x00, 0x0020, 252,   1,   3,  221562,       0,  0 },
+  { "Asphyxiate"                        , 22524, 0x00, 0x0020, 252,   1,   3,  108194,       0,  0 },
   { "Winter is Coming"                  , 22525, 0x00, 0x0020, 251,   2,   3,  207170,       0,  0 },
   { "Debilitating Infestation"          , 22526, 0x00, 0x0020, 252,   2,   3,  207316,       0,  0 },
   { "Volatile Shielding"                , 22527, 0x00, 0x0020, 251,   0,   4,  207188,       0,  0 },

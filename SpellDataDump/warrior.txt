@@ -2321,10 +2321,6 @@ Name             : Ultimatum (id=122510) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Duration         : 10 seconds
-Stacks           : 1 initial, 1 maximum
-Proc Chance      : 100%
-Proc Flags       : ........ ..x...x. ........ ........ 
-                 : AOE Heal, Heal
 Triggered by     : Ultimatum (122509)
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3225,9 +3221,6 @@ Description      : You have a ${$m2/100}.2% chance per Rage spent to reset the r
 Name             : Reflective Plating (id=188672) [Spell Family (4), Passive] 
 Class            : Warrior
 School           : Physical
-Proc Chance      : 101%
-Proc Flags       : ........ ..x...x. ........ ........ 
-                 : AOE Heal, Heal
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3236,9 +3229,9 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=275632)   : Apply Aura (6) | Proc Trigger Spell: Reflect Generates Rage Proc Trigger (42)
-                   Base Value: 5 | Scaled Value: 5 | Trigger Spell: 203231 | Target: Self(1)
-Description      : $?s213915[Mass Spell Reflection][Spell Reflect] now reflects an unlimited number of spells during its duration, and generates ${$203234m1/10} Rage each time it reflects a spell.
+#1 (id=275632)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self(1)
+Description      : $?s213915[Mass Spell Reflection][Spell Reflect] now reflects an unlimited number of spells during its duration.
 
 Name             : Cleave (id=188923) [Spell Family (4)] 
 Class            : Warrior
@@ -3298,7 +3291,7 @@ Spell Level      : 34
 Range            : 5 yards
 Duration         : 15 seconds
 Cooldown         : 1 seconds
-Affecting spells : Shield Mastery (184927), Indomitable (202095), Vengeance: Ignore Pain (202574), Dragon Skin (203225), Neltharion's Fury (203524)
+Affecting spells : Shield Mastery (184927), Indomitable (202095), Vengeance: Ignore Pain (202574), Dragon Skin (203225), Neltharion's Fury (203524), Dragon Scales (203581)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3935,10 +3928,6 @@ Name             : Vengeance: Focused Rage (id=202573) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Duration         : 15 seconds
-Stacks           : 1 initial, 1 maximum
-Proc Chance      : 100%
-Proc Flags       : ........ ..x..... ........ ........ 
-                 : AOE Heal
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4182,40 +4171,6 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 6 | Target: Self(1)
                    Affected Spells: Thunder Clap (6343)
 Description      : Increases the radius of Thunder Clap by $s1%.
-
-Name             : Reflect Generates Rage Proc Trigger (id=203231) [Spell Family (4)] 
-Class            : Warrior
-School           : Physical
-Duration         : 5 seconds
-Proc Chance      : 101%
-Proc Flags       : .....x.. .x...x.. .x.x.... ........ 
-                 : Yellow Melee Taken, Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Triggered by     : Reflective Plating (188672)
-Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=299692)   : Apply Aura (6) | Proc Trigger Spell: Reflective Plating (42)
-                   Base Value: -3000 | Scaled Value: -3000 | Trigger Spell: 203234 | Target: Self(1)
-Description      : $@spelldesc188672
-
-Name             : Reflective Plating (id=203234) [Spell Family (4)] 
-Class            : Warrior
-School           : Physical
-Triggered by     : Reflect Generates Rage Proc Trigger (203231)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=299695)   : Energize Power (30)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: rage | Target: Self(1)
-Description      : $@spelldesc188672
 
 Name             : Neltharion's Fury (Artifact) (id=203524) [Spell Family (4)] 
 Class            : Warrior
@@ -4551,7 +4506,7 @@ Attributes       : ......xx ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=310164)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self(1)
-Description      : When Cleave strikes more than $s1 targets, |cFFFFCC99Strom'kar|r releases a burst of void energy, dealing $209700s1 Shadow damage to all nearby enemies.
+Description      : When Cleave strikes at least $s1 targets, |cFFFFCC99Strom'kar|r releases a burst of void energy, dealing $209700s1 Shadow damage to all nearby enemies.
 
 Name             : Warbreaker (Artifact) (id=209577) [Spell Family (4)] 
 Class            : Warrior

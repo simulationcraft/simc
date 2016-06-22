@@ -358,7 +358,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1839)     : Direct Heal (10)
-                   Base Value: -1 | Scaled Value: 0 - 2 | Value Range: 3 | SP Coefficient: 3.60000 | Target: Friend(21)
+                   Base Value: -1 | Scaled Value: 0 - 2 | Value Range: 3 | SP Coefficient: 4.00000 | Target: Friend(21)
 Description      : Heals a friendly target for $s1$?s54825[ and reduces your remaining cooldown on Nature's Swiftness by $54825m1 sec][].$?s24858|s197625[ Usable while in Moonkin Form.][]
 
 Name             : Mighty Bash (id=5211) [Spell Family (7)] 
@@ -2211,7 +2211,7 @@ Attributes       : ....x... ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=98196)    : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 32 | Target: Self(1)
-                   Affected Spells: Mangle (33917)
+                   Affected Spells: Mangle (33917), Enraged Mangle (202085)
 Description      : $@spelldesc210706
 Tooltip          : Mangle's cooldown has been reset, and generates an additional ${$m1/10} Rage.
 
@@ -2492,7 +2492,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... x....
 Effects          :
 #1 (id=111383)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 11 | Target: Self(1)
-                   Affected Spells: Mangle (33917), Thrash (77758), Thrash (106830), Thrash (192090), Swipe (213771)
+                   Affected Spells: Mangle (33917), Thrash (77758), Thrash (106830), Thrash (192090), Enraged Mangle (202085), Swipe (213771)
 #2 (id=111384)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
                    Base Value: -1500 | Scaled Value: -1500 | Misc Value: 11 | Target: Self(1)
                    Affected Spells: Maul (6807)
@@ -2501,7 +2501,7 @@ Effects          :
                    Affected Spells: Growl (6795)
 #4 (id=300948)   : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
                    Base Value: 3 | Scaled Value: 3 | SP Coefficient: 1.00000 | Misc Value: 17 | Target: Self(1)
-                   Affected Spells: Mangle (33917)
+                   Affected Spells: Mangle (33917), Enraged Mangle (202085)
 Description      : An improved Bear Form that reduces the cooldown on all melee damage abilities and Growl to 1.5 sec, and causes Mangle to hit up to $s4 targets.
 
 Lasts $d. You may freely shapeshift in and out of this improved Bear Form for its duration.
@@ -3235,10 +3235,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1568 | Target: Self(1)
 #3 (id=191163)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11 | Target: Self(1)
-                   Affected Spells: Maul (6807), Frenzied Regeneration (22842), Mangle (33917), Thrash (77758), Thrash (192090), Swipe (213771)
+                   Affected Spells: Maul (6807), Frenzied Regeneration (22842), Mangle (33917), Thrash (77758), Thrash (192090), Enraged Mangle (202085), Swipe (213771)
 #4 (id=191164)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11 | Target: Self(1)
-                   Affected Spells: Mighty Bash (5211), Maul (6807), Incarnation: Tree of Life (33891), Mangle (33917), Thrash (77758), Pulverize (80313), Skull Bash (93985), Cenarion Ward (102351), Cenarion Ward (102352), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Skull Bash (106839), Pulverize (158792), Thrash (192090), Swipe (213771)
+                   Affected Spells: Mighty Bash (5211), Maul (6807), Incarnation: Tree of Life (33891), Mangle (33917), Thrash (77758), Pulverize (80313), Skull Bash (93985), Cenarion Ward (102351), Cenarion Ward (102352), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Skull Bash (106839), Pulverize (158792), Thrash (192090), Enraged Mangle (202085), Swipe (213771)
 #5 (id=191165)   : Apply Aura (6) | Unknown effect sub type (379)
                    Base Value: 220 | Scaled Value: 220 | Target: Self(1)
 #6 (id=320062)   : Apply Aura (6) | Dummy (4)
@@ -3599,7 +3599,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=195368)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
-                   Affected Spells: Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Swipe (106785), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Thrash (192090), Swipe (213771)
+                   Affected Spells: Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Swipe (106785), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Thrash (192090), Enraged Mangle (202085), Swipe (213771)
 Description      : Casting Healing Touch causes your next two melee abilities to deal $s1% increased damage for their full duration.
 Tooltip          : Your next two melee abilities deal $s1% increased damage for their full duration.
 
@@ -3877,7 +3877,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=220365)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=8.255) | SP Coefficient: 1.50000 | Radius: 0 - 40 yards | Target: At Caster(22) -> AOE friendly(30)
+                   Base Value: 1 | Scaled Value: 0 (avg=8.255) | SP Coefficient: 1.80000 | Radius: 0 - 40 yards | Target: At Caster(22) -> AOE friendly(30)
 Description      : $@spelldesc740
 
 Name             : Soul of the Forest (id=158476) [Spell Family (7), Passive] 
@@ -3908,10 +3908,10 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=221438)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 32 | Target: Self(1)
-                   Affected Spells: Mangle (33917)
+                   Affected Spells: Mangle (33917), Enraged Mangle (202085)
 #2 (id=221439)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 15 | Scaled Value: 15 | Target: Self(1)
-                   Affected Spells: Mangle (33917)
+                   Affected Spells: Mangle (33917), Enraged Mangle (202085)
 Description      : Mangle generates ${$m1/10} more Rage and deals $s2% more damage.
 
 Name             : Soul of the Forest (id=158478) [Spell Family (7), Passive] 
@@ -4539,7 +4539,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Stance Mask      : 0x40000000
-Affecting spells : Mastery: Starlight (77492), Soul of the Forest (114107), Lucidity (137247), Thrash (192090), Astral Influence (197524), Stellar Drift (202354), Oneth's Overconfidence (209407), Ekowraith, Creator of Worlds (210667), Echoing Stars (213666), 
+Affecting spells : Mastery: Starlight (77492), Soul of the Forest (114107), Lucidity (137247), Thrash (192090), Astral Influence (197524), Stellar Drift (202354), Oneth's Overconfidence (209407), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ x....... .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ......x. ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4564,7 +4564,7 @@ School           : Astral
 Spell Level      : 76
 Range            : 50000 yards
 Velocity         : 0.8 yards/sec
-Affecting spells : Mastery: Starlight (77492), Soul of the Forest (114107), Lucidity (137247), Thrash (192090), Astral Influence (197524), Stellar Drift (202354), Ekowraith, Creator of Worlds (210667), Echoing Stars (213666), 
+Affecting spells : Mastery: Starlight (77492), Soul of the Forest (114107), Lucidity (137247), Thrash (192090), Astral Influence (197524), Stellar Drift (202354), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ..x..... ........ ........ ......x.   x....... .x...... ....x... .x....x. 
                  : .......x .......x ........ ........   ........ ........ ........ ..x..... 
@@ -4649,10 +4649,10 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.15000 | Mechanic: Bleed | Target: Enemy(6)
 #2 (id=301092)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
-                   Affected Spells: Rip (1079), Rake (1822), Solar Wrath (5176), Shred (5221), Maul (6807), Moonfire (8921), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Sunfire (93402), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Ashamane's Rip (210705), Swipe (213771), Bloody Paws (214995)
+                   Affected Spells: Rip (1079), Rake (1822), Solar Wrath (5176), Shred (5221), Maul (6807), Moonfire (8921), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Sunfire (93402), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Enraged Mangle (202085), Ashamane's Rip (210705), Swipe (213771), Bloody Paws (214995)
 #3 (id=301093)   : Apply Aura (6) | Unknown effect sub type (343)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
-                   Affected Spells: Rip (1079), Rake (1822), Solar Wrath (5176), Shred (5221), Maul (6807), Moonfire (8921), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Sunfire (93402), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Ashamane's Rip (210705), Swipe (213771), Bloody Paws (214995)
+                   Affected Spells: Rip (1079), Rake (1822), Solar Wrath (5176), Shred (5221), Maul (6807), Moonfire (8921), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Sunfire (93402), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Enraged Mangle (202085), Ashamane's Rip (210705), Swipe (213771), Bloody Paws (214995)
 Description      : $@spelldesc77758
 Tooltip          : Suffering $w1 damage every $t1 sec.
 
@@ -4900,10 +4900,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=290202)   : Apply Aura (6) | Add Flat Modifier: Spell Range (107)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 5 | Target: Self(1)
-                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Hurricane (16914), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Hurricane (42231), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Lunar Beam (204069), Force of Nature (205636), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210723), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771)
+                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Hurricane (16914), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Hurricane (42231), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Enraged Mangle (202085), Stellar Flare (202347), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Lunar Beam (204069), Force of Nature (205636), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210723), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771)
 #2 (id=314659)   : Apply Aura (6) | Unknown effect sub type (153)
                    Base Value: 5 | Scaled Value: 5 | Target: Self(1)
-                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Stellar Flare (202347), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Lunar Beam (204069), Force of Nature (205636), Ashamane's Rip (210705), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771)
+                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Enraged Mangle (202085), Stellar Flare (202347), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Lunar Beam (204069), Force of Nature (205636), Ashamane's Rip (210705), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771)
 #3 (id=317501)   : Apply Aura (6) | Add Flat Modifier: Spell Radius (107)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 6 | Target: Self(1)
                    Affected Spells: Incapacitating Roar (99), Tranquility (740), Typhoon (61391), Thrash (77758), Displacer Beast (102280), Swipe (106785), Thrash (106830), Typhoon (132469), Tranquility (157982), Brutal Slash (202028), Lunar Beam (204069), Shadow Thrash (210687), Brambles (213709), Swipe (213771)
@@ -5674,7 +5674,7 @@ Resource         : 6 Eclipse and 12 Eclipse per second or tick
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Cooldown         : 60 seconds
+Cooldown         : 90 seconds
 Affecting spells : Incarnation: King of the Jungle (102543), Berserk (106951), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -5962,7 +5962,7 @@ School           : Nature
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
-Duration         : 8 seconds
+Duration         : 8.5 seconds
 Cooldown         : 90 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ......x. 
@@ -5972,8 +5972,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=301149)   : Unknown effect type (179)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 5994 | Target: Custom(18)
-Description      : Summons a beam of lunar light at your location, dealing ${$204069s2*8} Arcane damage and healing you for ${$204069s1*8} over $d.
+                   Base Value: 8 | Scaled Value: 8 | Misc Value: 5994 | Target: Custom(18)
+Description      : Summons a beam of lunar light at your location, dealing ${$204069s2*8} Arcane damage and healing you for ${$204069s1*8} over $m1 sec.
 
 Name             : Lunar Beam (id=204069) [Spell Family (7)] 
 Class            : Druid
@@ -6481,33 +6481,6 @@ Effects          :
 #1 (id=316822)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1 | Target: Self(1)
 Description      : $@spelldesc210650
-
-Name             : Echoing Stars (id=213666) [Spell Family (7), Passive] 
-Class            : Druid
-School           : Physical
-Internal Cooldown: 12 seconds
-Proc Chance      : 25%
-Proc Flags       : ........ ....x... x.x..... ........ 
-                 : AOE Hostile Spell, Hostile Spell, Periodic
-Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=317040)   : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 17 | Target: Self(1)
-                   Affected Spells: Starfall (191034), Starfall (191037)
-#2 (id=317041)   : Apply Aura (6) | Add Percent Modifier: Spell Target Bonus (108)
-                   Base Value: -66 | Scaled Value: -66 | Misc Value: 20 | Target: Self(1)
-                   Affected Spells: Starfall (191034), Starfall (191037)
-#3 (id=317042)   : Apply Aura (6) | Add Flat Modifier (107)
-                   Base Value: 8 | Scaled Value: 8 | Misc Value: 35 | Target: Self(1)
-                   Affected Spells: Starfall (191034), Starfall (191037)
-Description      : Stars from Starfall will now bounce to an additional target within $s3 yards, dealing ${$191037s1*0.33} Astral damage.
-Tooltip          : Stars from Starfall will now bounce to an additional target within $s3 yards, dealing ${$191037s1*0.33} Astral damage.
 
 Name             : Guardian of Elune (id=213680) [Spell Family (7)] 
 Class            : Druid

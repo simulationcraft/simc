@@ -229,7 +229,7 @@ Proc Chance      : 100%
 Mechanic         : Unknown(110)
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
-Affecting spells : Vendetta (79140), Dirty Tricks (108216), Prey on the Weak (131511), Broadsides (193356), Acrobatic Strikes (196924), Ghostly Strike (196937), 
+Affecting spells : Vendetta (79140), Dirty Tricks (108216), Prey on the Weak (131511), Broadsides (193356), Acrobatic Strikes (196924), 
 Attributes       : ....x... ...x.... x.x.x... ........   ........ ........ ..x..... ..xx.... 
                  : ........ ........ ........ ........   .x.x.... ..x..... ........ ..x..... 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -475,7 +475,7 @@ Resource         : 1 - 5 Combo Points
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Adrenaline Rush (13750), Death from Above (163786), Deceit (166878), Eviscerating Blade (184917), Deeper Stratagem (193531), Acrobatic Strikes (196924), Ghostly Strike (196937), Fate's Thirst (202514), Fatebringer (202524)
+Affecting spells : Adrenaline Rush (13750), Death from Above (163786), Deceit (166878), Eviscerating Blade (184917), Deeper Stratagem (193531), Acrobatic Strikes (196924), Fate's Thirst (202514), Fatebringer (202524)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -755,7 +755,7 @@ Spell Level      : 14
 Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x20000000
-Affecting spells : Stealth (1784), Vendetta (79140), Shadow Blades (121471), Sleight of Hand (145211), Cold Blood (182304), Broadsides (193356), Acrobatic Strikes (196924), Ghostly Strike (196937)
+Affecting spells : Stealth (1784), Vendetta (79140), Shadow Blades (121471), Sleight of Hand (145211), Cold Blood (182304), Broadsides (193356), Acrobatic Strikes (196924)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1183,7 +1183,7 @@ Name             : Master of Subtlety (id=31223) [Spell Family (8), Passive]
 Class            : Rogue
 School           : Physical
 Spell Level      : 1
-Attributes       : ....x.x. x....... .x...... ........   ........ ........ ........ ........ 
+Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1465,7 +1465,7 @@ Range            : 10 yards
 GCD              : 1 seconds
 Duration         : 3 seconds
 Cooldown         : 120 seconds
-Affecting spells : Blade Flurry (13877), Ghostly Strike (196937), 
+Affecting spells : Blade Flurry (13877)
 Attributes       : ....x... ........ x....... .....x..   ........ ..x..... ........ ..x..... 
                  : ........ ........ ........ ....x...   x....... ..x..... xx...... ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -1504,7 +1504,7 @@ Attributes       : ....x... ........ x....... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=44107)    : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.27720 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.83160 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=150470)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.35000 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
 Description      : Sprays knives at all targets within $A1 yards, dealing $s1 Physical damage and applying your active poisons at their normal rate.
@@ -1547,7 +1547,6 @@ Class            : Rogue
 School           : Physical
 Spell Level      : 1
 Range            : 5 yards
-Affecting spells : Ghostly Strike (196937), 
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ......x.   x....... .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1569,7 +1568,6 @@ Class            : Rogue
 School           : Physical
 Spell Level      : 1
 Range            : 5 yards
-Affecting spells : Ghostly Strike (196937), 
 Triggered by     : Killing Spree (57841)
 Attributes       : ....x... ........ x.x..x.. ........   ....x... ........ ........ ........ 
                  : ........ ........ ........ ......x.   x....... .x...... ........ x....... 
@@ -2000,7 +1998,7 @@ Class            : Rogue
 School           : Physical
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Ghostly Strike (196937), Fortune's Strike (202521)
+Affecting spells : Fortune's Strike (202521)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   .....x.. .x...... ........ x.....x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2973,7 +2971,7 @@ Range            : 20 yards
 GCD              : 1 seconds
 Velocity         : 40 yards/sec
 Duration         : 6 seconds
-Affecting spells : Adrenaline Rush (13750), Broadsides (193356), Opportunity (195627), Ghostly Strike (196937), Gunslinger (202522), Blunderbuss (202848), Greenskin's Waterlogged Wristcuffs (209423)
+Affecting spells : Adrenaline Rush (13750), Broadsides (193356), Opportunity (195627), Gunslinger (202522), Blunderbuss (202848), Greenskin's Waterlogged Wristcuffs (209423)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
@@ -3002,7 +3000,6 @@ Range            : 35 yards
 GCD              : 1 seconds
 Duration         : 1.8 seconds
 Cooldown         : 60 seconds
-Affecting spells : Ghostly Strike (196937)
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ....x... 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3044,7 +3041,6 @@ School           : Physical
 Spell Level      : 20
 Range            : 100 yards
 Velocity         : 0.6 yards/sec
-Affecting spells : Ghostly Strike (196937)
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ........ ......x.   ........ .x...... ........ ......x. 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
@@ -3102,7 +3098,12 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=282211)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 11 | Target: Self(1)
-Description      : When Fan of Knives strikes targets poisoned with your Deadly Poison, Deadly Poison instantly deals $s1% of its remaining damage.
+#2 (id=343569)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 1 (108)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 3 | Target: Self(1)
+                   Affected Spells: Agonizing Poison (200803)
+Description      : When Fan of Knives strikes targets poisoned with your Deadly Poison, Deadly Poison instantly deals $s1% of its remaining damage.$?s200802[
+
+Increases the effect of Agonizing Poison's damage bonus by ${$m1*1}.1%][]
 
 Name             : Poison Knives (id=192380) [Spell Family (8)] 
 Class            : Rogue
@@ -3204,7 +3205,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 0.5 seconds
-Affecting spells : Adrenaline Rush (13750), Broadsides (193356), Acrobatic Strikes (196924), Ghostly Strike (196937), Swordmaster (200733), Cursed Edges (202463), Swordplay (211669)
+Affecting spells : Adrenaline Rush (13750), Broadsides (193356), Acrobatic Strikes (196924), Swordmaster (200733), Cursed Edges (202463), Swordplay (211669)
 Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
@@ -3335,7 +3336,7 @@ Attributes       : ....x... ........ ..x..... .....x.x   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=283683)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 127 | Target: Self(1)
 Description      : For the duration of Roll the Bones, each time you use a finishing move, you reduce the remaining cooldown on Adrenaline Rush, Sprint, Between the Eyes, Vanish, Blind, Cloak of Shadows, Riposte, Grappling Hook, Cannonball Barrage, Killing Spree, Marked for Death, and Death from Above by $s1 sec per combo point spent.
 Tooltip          : Finishers reduce the remaining cooldown on many of your abilities by $s1 sec per combo point.
 
@@ -3594,7 +3595,7 @@ Resource         : 1 - 5 Combo Points
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Rogue Tier 6 Trinket (40460), Mastery: Executioner (76808), Vendetta (79140), Death from Above (163786), Cold Blood (182304), Eviscerating Blade (184917), Adrenaline Rush (186286), Deeper Stratagem (193531), Acrobatic Strikes (196924), Ghostly Strike (196937), Gutripper (197234)
+Affecting spells : Rogue Tier 6 Trinket (40460), Mastery: Executioner (76808), Vendetta (79140), Death from Above (163786), Cold Blood (182304), Eviscerating Blade (184917), Adrenaline Rush (186286), Deeper Stratagem (193531), Acrobatic Strikes (196924), Gutripper (197234)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -3651,6 +3652,9 @@ Effects          :
 #4 (id=289050)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 2 (108)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Wound Poison (8679), Wound Poison (8680)
+#5 (id=343395)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 1 (108)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 3 | Target: Self(1)
+                   Affected Spells: Agonizing Poison (200803)
 Description      : Increases the damage done by your poisons by $s1% and their non-damaging effects by $s3%.
 
 Name             : Shadow Techniques (id=196912) [Spell Family (8), Passive] 
@@ -3741,18 +3745,16 @@ Effects          :
                    Base Value: 176 | Scaled Value: 1.76 | Target: Enemy(6)
 #3 (id=289167)   : Normalized Weapon Damage (121)
                    Base Value: 176 | Scaled Value: 176 | Target: Enemy(6)
-#4 (id=289168)   : Apply Aura (6) | Unknown effect sub type (343)
+#4 (id=289168)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Enemy(6)
-#5 (id=289169)   : Apply Aura (6) | Unknown effect sub type (271)
-                   Base Value: 10 | Scaled Value: 10 | Target: Enemy(6)
-                   Affected Spells: Gouge (1776), Run Through (2098), Ambush (8676), Killing Spree (51690), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Pistol Shot (185763), Cannonball Barrage (185767), Cannonball Barrage (185779), Saber Slash (193315), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Riposte (199753), Riposte (199754), Between the Eyes (199804), Blunderbuss (202895)
+#5 (id=289169)   : Apply Aura (6) | Unknown effect sub type (270)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 127 | Target: Enemy(6)
 #6 (id=297629)   : Apply Aura (6) | Periodic Dummy: every 3 seconds (226)
                    Base Value: 10 | Scaled Value: 10 | Target: Enemy(6)
-                   Affected Spells: Gouge (1776), Killing Spree (51690), Killing Spree (57841), Killing Spree Off-Hand (57842), Saber Slash (193315), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393)
 Description      : Strikes an enemy with your cursed weapon, dealing $sw2 Physical damage and causing the target to take $s5% increased damage from your abilities for $d.
 
 |cFFFFFFFFAwards $s1 combo $lpoint:points;.|r
-Tooltip          : Taking $s5% increased damage from the Rogue.
+Tooltip          : Taking $s5% increased damage from the Rogue's abilities.
 
 Name             : Quick Draw (Passive Talent) (id=196938) [Spell Family (8), Passive] 
 Class            : Rogue
@@ -3865,7 +3867,7 @@ Resource         : 1 - 5 Combo Points
 Spell Level      : 3
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Rogue Tier 6 Trinket (40460), Mastery: Executioner (76808), Vendetta (79140), Death from Above (163786), Cold Blood (182304), Eviscerating Blade (184917), Adrenaline Rush (186286), Deeper Stratagem (193531), Acrobatic Strikes (196924), Ghostly Strike (196937), Gutripper (197234)
+Affecting spells : Rogue Tier 6 Trinket (40460), Mastery: Executioner (76808), Vendetta (79140), Death from Above (163786), Cold Blood (182304), Eviscerating Blade (184917), Adrenaline Rush (186286), Deeper Stratagem (193531), Acrobatic Strikes (196924), Gutripper (197234)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -3928,7 +3930,7 @@ Resource         : 35 Energy
 Spell Level      : 66
 GCD              : 1 seconds
 Velocity         : 18 yards/sec
-Affecting spells : Vendetta (79140), Shadow Blades (121471), Agonizing Poison (200803), The Dreadlord's Deceit (208693)
+Affecting spells : Vendetta (79140), Shadow Blades (121471), Agonizing Poison (200803), The Dreadlord's Deceit (208693), The Dreadlord's Deceit (228224)
 Attributes       : ....x... ........ x....... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
@@ -4033,7 +4035,7 @@ Effects          :
 #1 (id=293940)   : Apply Aura (6) | Charm (6)
                    Base Value: 55 | Scaled Value: 111 | Points Per Level: 1 | Target: Enemy(6)
 #2 (id=327745)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Enemy(6)
 Description      : Bribes a non-player humanoid target up to level $s1 with fool's gold, convincing it to fight for you for $d.
 Tooltip          : Bribed.
 
@@ -4072,7 +4074,6 @@ School           : Physical
 Spell Level      : 42
 Range            : 50000 yards
 GCD              : 1 seconds
-Affecting spells : Ghostly Strike (196937)
 Triggered by     : Riposte (199754)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ......x. 
@@ -4099,7 +4100,6 @@ Internal Cooldown: 1 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
-Affecting spells : Ghostly Strike (196937)
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4124,7 +4124,7 @@ Range            : 20 yards
 GCD              : 1 seconds
 Duration         : 5 seconds
 Cooldown         : 20 seconds
-Affecting spells : Adrenaline Rush (13750), Outlaw Rogue (137036), Deeper Stratagem (193531), Ghostly Strike (196937), Fatebringer (202524), Black Powder (216230)
+Affecting spells : Adrenaline Rush (13750), Outlaw Rogue (137036), Deeper Stratagem (193531), Fatebringer (202524), Black Powder (216230)
 Attributes       : ....x... ........ x.....x. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
@@ -4272,7 +4272,7 @@ Range            : 100 yards
 Duration         : 12 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Mastery: Potent Poisons (76803), Vendetta (79140), Master Alchemist (192318), Surge of Toxins (192425), Master Poisoner (196864), 
+Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Mastery: Potent Poisons (76803), Vendetta (79140), Master Alchemist (192318), Poison Knives (192376), Surge of Toxins (192425), Master Poisoner (196864), 
 Triggered by     : Agonizing Poison (200802)
 Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...... ........ 
                  : ..x..... ........ ........ x.......   .......x ........ ........ ......x. 
@@ -4382,7 +4382,7 @@ Range            : 20 yards
 GCD              : 1 seconds
 Velocity         : 40 yards/sec
 Duration         : 6 seconds
-Affecting spells : Adrenaline Rush (13750), Broadsides (193356), Opportunity (195627), Ghostly Strike (196937), Gunslinger (202522), Blunderbuss (202848), Greenskin's Waterlogged Wristcuffs (209423)
+Affecting spells : Adrenaline Rush (13750), Broadsides (193356), Opportunity (195627), Gunslinger (202522), Blunderbuss (202848), Greenskin's Waterlogged Wristcuffs (209423)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ..xxx... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4525,7 +4525,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #2 (id=310493)   : Weapon Damage% (31)
                    Base Value: 500 | Scaled Value: 5 | Target: Enemy(6)
-Description      : Deals $s2% weapon damage as Shadow damage.
+Description      : $@spelldesc209782
 
 Name             : Goremaw's Bite (id=209784) [Spell Family (8)] 
 Class            : Rogue
@@ -4543,7 +4543,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #2 (id=310495)   : Weapon Damage% (31)
                    Base Value: 500 | Scaled Value: 5 | Target: Enemy(6)
-Description      : Deals $s2% weapon damage as Shadow damage.
+Description      : $@spelldesc209782
 
 Name             : Goremaw's Bite (id=209786) [Spell Family (7)] 
 Class            : Rogue
@@ -4564,7 +4564,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .x...
 Effects          :
 #1 (id=310497)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -60 | Scaled Value: -60 | Mechanic: Unknown(88) | Target: Enemy(6)
-Description      : Movement speed slowed by $s1%.
+Description      : $@spelldesc209782
 Tooltip          : Movement speed slowed by $s1%.
 
 Name             : Detection (id=210108) [Spell Family (8), Passive] 
@@ -4666,7 +4666,8 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Misc Value: combo_points | Target: Self(1)
 #2 (id=329478)   : Apply Aura (6) | Periodic Energize Power: every 1 seconds (24)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 3 | Target: Self(1)
-Description      : Deals $s2% weapon damage as Shadow damage.
+Description      : $@spelldesc209782
+Tooltip          : Generating $s2 Energy every $t2 sec.
 
 Name             : Nightblade (id=222018) [Hidden] 
 Class            : Rogue

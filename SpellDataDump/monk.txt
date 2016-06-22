@@ -666,7 +666,7 @@ Name             : Rising Sun Kick (id=107428) [Spell Family (53)]
 Class            : Mistweaver Windwalker Monk
 School           : Physical
 Resource         : 2 Chi w/ Windwalker Monk (id=137025)
-Resource         : 2% Base Mana (22000 @Level 110) w/ Mistweaver Monk (id=137024)
+Resource         : 2.25% Base Mana (24750 @Level 110) w/ Mistweaver Monk (id=137024)
 Spell Level      : 18
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -750,9 +750,9 @@ Attributes       : ........ ........ ........ ........   ..x...x. .xx..... .....
 Effects          :
 #1 (id=126625)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
-#2 (id=128845)   : Apply Aura (6) | Periodic Trigger Spell: Fists of Fury every 1 seconds (23)
+#2 (id=128845)   : Apply Aura (6) | Periodic Dummy: every 0.166 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 120086 | Target: Self(1)
-#3 (id=159495)   : Apply Aura (6) | Unknown effect sub type (227)
+#3 (id=159495)   : Apply Aura (6) | Periodic Dummy: every 0.166 seconds (226)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 117418 | Target: Self(1)
 #4 (id=219526)   : Apply Aura (6) | Modify Parry% (47)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
@@ -884,7 +884,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
 #2 (id=341043)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Self(1)
-Description      : Draw in the positive chi of all Healing Spheres within $s1 yards, and expel negative chi, damaging the nearest enemy for $s2% of the amount healed.
+Description      : Draw in the positive chi of all your Healing Spheres, and expel negative chi, damaging the nearest enemy for $s2% of the amount healed.
 
 Name             : Paralysis (id=115078) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
@@ -970,7 +970,7 @@ $healing=${$<healMult>*$AP*0.500*(1+$@versadmg)}
 Name             : Renewing Mist (id=115151) [Scaling Spell (6), Spell Family (53)] 
 Class            : Mistweaver Monk
 School           : Nature
-Resource         : 2.5% Base Mana (27500 @Level 110)
+Resource         : 2.8% Base Mana (30799 @Level 110)
 Spell Level      : 24
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -1156,7 +1156,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x....x .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=129071)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=8.75) | SP Coefficient: 6.00000 | Radius: 0 - 40 yards | Target: At Caster(22) -> Raid Members(56)
+                   Base Value: 1 | Scaled Value: 0 (avg=8.75) | SP Coefficient: 7.20000 | Radius: 0 - 40 yards | Target: At Caster(22) -> Raid Members(56)
 #2 (id=140011)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Radius: 0 - 40 yards | Target: At Caster(22) -> Raid Members(56)
 #3 (id=155430)   : Dispel (38)
@@ -1439,7 +1439,7 @@ Effects          :
 #1 (id=131794)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Friend(21)
 #2 (id=284314)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Radius: 0 - 40 yards | Target: Unknown(132) -> AOE friendly(31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.75000 | Radius: 0 - 40 yards | Target: Unknown(132) -> AOE friendly(31)
 Description      : Causes a surge of invigorating mists around the target, healing them and their $s1 nearest injured allies for $s2.
 
 Name             : Thunder Focus Tea (id=116680) [Scaling Spell (6), Spell Family (53)] 
@@ -1912,7 +1912,7 @@ Attributes       : ........ ........ ..x..... x..x....   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=138091)   : Apply Aura (6) | Periodic Heal: every 2 seconds (8)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.069999) | SP Coefficient: 0.75000 | Target: Friend(21)
+                   Base Value: 1 | Scaled Value: 0 (avg=2.069999) | SP Coefficient: 0.70000 | Target: Friend(21)
 Description      : $@spelldesc115151
 Tooltip          : Restores $w1 health every $t1 sec.
 
@@ -2310,7 +2310,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .x...... ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=156180)   : Apply Aura (6) | Periodic Damage: fire every 2 seconds (3)
@@ -2318,7 +2318,7 @@ Effects          :
 #2 (id=342380)   : Apply Aura (6) | Unknown effect sub type (269)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Enemy(6)
 Description      : $@spelldesc115181
-Tooltip          : Burning for $123725o1 Fire damage.
+Tooltip          : Burning for $123725o1 Fire damage.$?$W2<0[ Reduces damage to the caster by ${$s2/-1}%.][]
 
 Name             : Invoke Xuen, the White Tiger (id=123904) [Spell Family (53)] 
 Class            : Monk
@@ -2559,7 +2559,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=157616)   : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | Misc Value: 15 | Target: Self(1)
-Description      : When you take damage, you have a chance to summon a Healing Sphere visible only to you. Moving through this Healing Sphere heals you for $124507s1. The lower your current health, the greater your chance to summon a healing sphere.
+Description      : When you take damage, you have a chance to summon a Healing Sphere visible only to you. Moving through this Healing Sphere heals you for $124507s1.
 
 Name             : Gift of the Ox (id=124503) [Spell Family (53)] 
 Class            : Monk
@@ -4381,7 +4381,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=289621)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
+                   Base Value: 40 | Scaled Value: 40 | Target: Self(1)
                    Affected Spells: Vivify (116670)
 Description      : $@spelldesc115151
 Tooltip          : Your next Vivify causes $s1% increased healing.
@@ -4485,7 +4485,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=290836)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value 2: 0x8 | Target: Self(1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value 2: 0x8 | Target: Self(1)
 Description      : Enveloping Mist reduces the mana cost of your next Vivify by $s1%, and Vivify reduces the mana cost of your next Enveloping Mist by $s1%.
 
 Name             : Mistwalk (Talent) (id=197945) [Spell Family (53)] 
@@ -4562,7 +4562,7 @@ Effects          :
 #1 (id=292176)   : Unknown effect type (254)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 8 | Target: Unknown(132)
 #2 (id=316503)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.50000 | Target: Friend(21)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.80000 | Target: Friend(21)
 Description      : Chi-Ji dashes to three allies, healing them for $s2.
 
 Name             : Song of Chi-Ji (id=198898) [Spell Family (53)] 
