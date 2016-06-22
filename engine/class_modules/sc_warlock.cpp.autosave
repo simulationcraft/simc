@@ -219,7 +219,7 @@ public:
     // Demonology
     artifact_power_t thalkiels_consumption;  //NYI
     artifact_power_t breath_of_thalkiel;
-    artifact_power_t the_doom_of_azeroth;//NYI
+    artifact_power_t the_doom_of_azerothYI
     artifact_power_t sharpened_dreadfangs;
     artifact_power_t fel_skin;//NYI
     artifact_power_t firm_resolve;//NYI
