@@ -177,11 +177,6 @@ struct rogue_t : public player_t
   // Blurred time cooldown shenanigans
   std::vector<cooldown_t*> blurred_time_cooldowns;
 
-  // Tier 18 (WoD 6.2) trinket effects
-  const special_effect_t* toxic_mutilator;
-  const special_effect_t* eviscerating_blade;
-  const special_effect_t* from_the_shadows;
-
   // Buffs
   struct buffs_t
   {
@@ -520,9 +515,6 @@ struct rogue_t : public player_t
     auto_attack( nullptr ), melee_main_hand( nullptr ), melee_off_hand( nullptr ),
     shadow_blade_main_hand( nullptr ), shadow_blade_off_hand( nullptr ),
     dfa_mh( nullptr ), dfa_oh( nullptr ),
-    toxic_mutilator( nullptr ),
-    eviscerating_blade( nullptr ),
-    from_the_shadows( nullptr ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
@@ -2060,13 +2052,6 @@ struct ambush_t : public rogue_attack_t
     rogue_attack_t( "ambush", p, p -> find_specialization_spell( "Ambush" ), options_str )
   {
     requires_stealth  = true;
-
-    // Tier 18 (WoD 6.2) Subtlety trinket effect
-    if ( p -> from_the_shadows )
-    {
-      const spell_data_t* data = p -> find_spell( p -> from_the_shadows -> spell_id );
-      base_multiplier *= 1.0 + ( data -> effectN( 1 ).average( p -> from_the_shadows -> item ) / 100.0 );
-    }
   }
 
   double action_multiplier() const override
@@ -2518,13 +2503,6 @@ struct garrote_t : public rogue_attack_t
     rogue_attack_t( "garrote", p, p -> find_specialization_spell( "Garrote" ), options_str )
   {
     may_crit          = false;
-
-    // Tier 18 (WoD 6.2) Subtlety trinket effect
-    if ( p -> from_the_shadows )
-    {
-      const spell_data_t* data = p -> find_spell( p -> from_the_shadows -> spell_id );
-      base_multiplier *= 1.0 + ( data -> effectN( 1 ).average( p -> from_the_shadows -> item ) / 100.0 );
-    }
   }
 
   double composite_persistent_multiplier( const action_state_t* state ) const override
@@ -2912,13 +2890,6 @@ struct run_through_t: public rogue_attack_t
     rogue_attack_t( "run_through", p, p -> find_specialization_spell( "Run Through" ), options_str )
   {
     base_multiplier *= 1.0 + p -> artifact.fates_thirst.percent();
-
-    // Tier 18 (WoD 6.2) Combat trinket effect
-    if ( p -> eviscerating_blade )
-    {
-      const spell_data_t* data = p -> find_spell( p -> eviscerating_blade -> spell_id );
-      base_multiplier *= 1.0 + data -> effectN( 2 ).average( p -> eviscerating_blade -> item ) / 100.0;
-    }
   }
 
   double action_multiplier() const override
@@ -3030,14 +3001,6 @@ struct mutilate_t : public rogue_attack_t
     snapshot_flags |= STATE_MUL_DA;
 
     base_multiplier *= 1.0 + p -> artifact.assassins_blades.percent();
-
-    // Tier 18 (WoD 6.2) trinket effect for Assassination
-    if ( p -> toxic_mutilator )
-    {
-      const spell_data_t* data = p -> find_spell( p -> toxic_mutilator -> spell_id );
-      toxic_mutilator_crit_chance = data -> effectN( 1 ).average( p -> toxic_mutilator -> item );
-      toxic_mutilator_crit_chance /= 100.0;
-    }
 
     if ( p -> main_hand_weapon.type != WEAPON_DAGGER ||
          p ->  off_hand_weapon.type != WEAPON_DAGGER )
@@ -5550,7 +5513,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* finishers = get_action_priority_list( "finishers" );
 
     def -> add_action( this, "Vanish", "if=time>10&energy>13&!buff.stealth.up&energy.time_to_max>gcd*2&(combo_points<8|(!talent.anticipation.enabled&combo_points<=1))" );
-    def -> add_action( this, "Mutilate", "if=buff.stealth.up|buff.vanish.up" );
+    def -> add_action( this, "Mutilate", "if=buff.stealth.up|buff.vanish.up|combo_points<combo_points.max" );
     def -> add_action( this, "Rupture", "if=((combo_points>=4&!talent.anticipation.enabled)|combo_points=5)&ticks_remain<3" );
     def -> add_action( this, "Rupture", "cycle_targets=1,if=spell_targets.fan_of_knives>1&!ticking&combo_points=5" );
     def -> add_talent( this, "Marked for Death", "if=combo_points=0" );
@@ -6763,36 +6726,29 @@ private:
 
 // ROGUE MODULE INTERFACE ===================================================
 
-static void do_trinket_init( rogue_t*                 r,
-                             specialization_e         spec,
-                             const special_effect_t*& ptr,
-                             const special_effect_t&  effect )
+struct toxic_mutilator_t : public unique_gear::scoped_action_callback_t<actions::mutilate_t>
 {
-  if ( ! r -> find_spell( effect.spell_id ) -> ok() || r -> specialization() != spec )
-  {
-    return;
-  }
+  toxic_mutilator_t() : super( ROGUE_ASSASSINATION, "mutilate" ) { }
 
-  ptr = &( effect );
-}
+  void manipulate( actions::mutilate_t* action, const special_effect_t& effect ) override
+  { action -> toxic_mutilator_crit_chance = effect.driver() -> effectN( 1 ).average( effect.item ) / 100.0; }
+};
 
-static void toxic_mutilator( special_effect_t& effect )
+struct eviscerating_blade_t : public unique_gear::scoped_action_callback_t<>
 {
-  rogue_t* rogue = debug_cast<rogue_t*>( effect.player );
-  do_trinket_init( rogue, ROGUE_ASSASSINATION, rogue -> toxic_mutilator, effect );
-}
+  eviscerating_blade_t() : super( ROGUE_OUTLAW, "run_through" ) { }
 
-static void eviscerating_blade( special_effect_t& effect )
-{
-  rogue_t* rogue = debug_cast<rogue_t*>( effect.player );
-  do_trinket_init( rogue, ROGUE_OUTLAW, rogue -> eviscerating_blade, effect );
-}
+  void manipulate( action_t* action, const special_effect_t& effect ) override
+  { action -> base_multiplier *= 1.0 + effect.driver() -> effectN( 2 ).average( effect.item ) / 100.0; }
+};
 
-static void from_the_shadows( special_effect_t& effect )
+struct from_the_shadows_t : public unique_gear::scoped_action_callback_t<>
 {
-  rogue_t* rogue = debug_cast<rogue_t*>( effect.player );
-  do_trinket_init( rogue, ROGUE_SUBTLETY, rogue -> from_the_shadows, effect );
-}
+  from_the_shadows_t() : super( ROGUE_SUBTLETY, "shadowstrike" ) { }
+
+  void manipulate( action_t* action, const special_effect_t& effect ) override
+  { action -> base_multiplier *= 1.0 + effect.driver() -> effectN( 1 ).average( effect.item ) / 100.0; }
+};
 
 struct rogue_module_t : public module_t
 {
@@ -6810,9 +6766,9 @@ struct rogue_module_t : public module_t
 
   virtual void static_init() const override
   {
-    unique_gear::register_special_effect( 184916, toxic_mutilator    );
-    unique_gear::register_special_effect( 184917, eviscerating_blade );
-    unique_gear::register_special_effect( 184918, from_the_shadows   );
+    unique_gear::register_special_effect( 184916, toxic_mutilator_t()    );
+    unique_gear::register_special_effect( 184917, eviscerating_blade_t() );
+    unique_gear::register_special_effect( 184918, from_the_shadows_t()   );
   }
 
   virtual void register_hotfixes() const override
