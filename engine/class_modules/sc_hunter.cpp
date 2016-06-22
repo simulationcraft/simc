@@ -215,6 +215,8 @@ public:
     proc_t* hunting_companion;
     proc_t* mortal_wounds;
     proc_t* t18_4pc_sv;
+    proc_t* no_vuln_aimed_shot;
+    proc_t* no_vuln_marked_shot;
   } procs;
 
   real_ppm_t* ppm_hunters_mark;
@@ -698,6 +700,16 @@ public:
     // TODO: Apparently this only procs on a single impact for multi-shot
     if ( p() -> artifacts.bullseye.rank() &&  s -> target -> health_percentage() < p() -> artifacts.bullseye.value() )
       p() -> buffs.bullseye -> trigger();
+  }
+
+  virtual double cost() const override
+  {
+    double cost = ab::cost();
+
+    if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T19, B4 ) && p() -> buffs.trueshot -> up() )
+      cost *= 0.50; //TODO: Wait to see if spell data is updated with a value
+
+    return cost;
   }
 
   virtual timespan_t gcd() const override
@@ -2405,6 +2417,10 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
   {
     ranged_attack_t::execute();
     try_steady_focus();
+
+    // TODO: Verify if only integer chunks of 20 focus reduce the CD, or if there's rollover
+    if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T19, B2 ) )
+      p() -> cooldowns.trueshot -> adjust( timespan_t::from_seconds( -1.0 * cost() / p() -> sets.set( HUNTER_MARKSMANSHIP, T19, B2 ) -> effectN( 1 ).base_value() ) );
   }
 
   virtual timespan_t execute_time() const override
@@ -2677,6 +2693,81 @@ struct start_attack_t: public hunter_ranged_attack_t
 //==============================
 // Shared attacks
 //==============================
+// Barrage ==================================================================
+// This is a spell because that's the only way to support "channeled" effects
+
+struct barrage_t: public hunter_ranged_attack_t
+{
+  struct barrage_damage_t: public attacks::hunter_ranged_attack_t
+  {
+    barrage_damage_t( hunter_t* player ):
+      attacks::hunter_ranged_attack_t( "barrage_primary", player, player -> talents.barrage -> effectN( 2 ).trigger() )
+    {
+      background = true;
+      may_crit = true;
+      weapon = &( player -> main_hand_weapon );
+      base_execute_time = weapon -> swing_time;
+      aoe = -1;
+      base_aoe_multiplier = 0.5;
+      range = radius;
+      range = 0;
+    }
+  };
+
+  barrage_t( hunter_t* player, const std::string& options_str ):
+    hunter_ranged_attack_t( "barrage", player, player -> talents.barrage )
+  {
+    parse_options( options_str );
+
+    may_block = false;
+    hasted_ticks = false;
+    channeled = true;
+
+    tick_zero = true;
+    dynamic_tick_action = true;
+    travel_speed = 0.0;
+    tick_action = new barrage_damage_t( player );
+
+    starved_proc = player -> get_proc( "starved: barrage" );
+  }
+
+ void schedule_execute( action_state_t* state = nullptr ) override
+  {
+    hunter_ranged_attack_t::schedule_execute( state );
+
+    // To suppress autoshot, just delay it by the execute time of the barrage
+    if ( p() -> main_hand_attack && p() -> main_hand_attack -> execute_event )
+    {
+      timespan_t time_to_next_hit = p() -> main_hand_attack -> execute_event -> remains();
+      time_to_next_hit += dot_duration;
+      p() -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
+    }
+    p() -> no_steady_focus();
+  }
+
+ virtual void execute() override
+ {
+   hunter_ranged_attack_t::execute();
+
+    if ( p() -> legendary.mm_feet )
+      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
+ }
+
+ bool usable_moving() const override
+  {
+    return true;
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = hunter_ranged_attack_t::action_multiplier();
+
+    if ( p() -> mastery.sniper_training -> ok() )
+      am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
+
+    return am;
+  }
+};
 
 // Multi Shot Attack =================================================================
 
@@ -3277,6 +3368,9 @@ struct aimed_shot_t: public hunter_ranged_attack_t
     trigger_true_aim( p(), s -> target );
     if ( p() -> buffs.careful_aim -> value() && s -> result == RESULT_CRIT )
       trigger_piercing_shots( s );
+
+    if ( !td( s -> target ) -> debuffs.vulnerable -> check() )
+      p() -> procs.no_vuln_aimed_shot -> occur();
   }
 
   virtual void execute() override
@@ -3501,6 +3595,9 @@ struct marked_shot_t: public hunter_ranged_attack_t
       if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T18, B2 ) )
         p() -> buffs.t18_2p_rapid_fire -> trigger();
     }
+
+    if ( !td -> debuffs.vulnerable -> check() )
+      p() -> procs.no_vuln_marked_shot -> occur();
   }
 
   // Only schedule the attack if a valid target
@@ -4062,6 +4159,16 @@ struct butchery_t: public hunter_melee_attack_t
     aoe = -1;
     cooldown -> hasted = true;
   }
+
+  virtual double action_multiplier() const override
+  {
+    double am = hunter_melee_attack_t::action_multiplier();
+
+    if ( p() -> artifacts.hellcarver.rank() )
+      am *= 1.0 + num_targets() * p() -> artifacts.hellcarver.percent();
+
+    return am;
+  }
 };
 
 // Throwing Axes =====================================================================
@@ -4211,81 +4318,6 @@ struct sentinel_t : public hunter_spell_t
 // Shared spells
 //==============================
 
-// Barrage ==================================================================
-// This is a spell because that's the only way to support "channeled" effects
-
-struct barrage_t: public hunter_spell_t
-{
-  struct barrage_damage_t: public attacks::hunter_ranged_attack_t
-  {
-    barrage_damage_t( hunter_t* player ):
-      attacks::hunter_ranged_attack_t( "barrage_primary", player, player -> talents.barrage -> effectN( 2 ).trigger() )
-    {
-      background = true;
-      may_crit = true;
-      weapon = &( player -> main_hand_weapon );
-      base_execute_time = weapon -> swing_time;
-      aoe = -1;
-      base_aoe_multiplier = 0.5;
-      range = radius;
-      range = 0;
-    }
-  };
-
-  barrage_t( hunter_t* player, const std::string& options_str ):
-    hunter_spell_t( "barrage", player, player -> talents.barrage )
-  {
-    parse_options( options_str );
-
-    may_block = false;
-    hasted_ticks = false;
-    channeled = true;
-
-    tick_zero = true;
-    dynamic_tick_action = true;
-    travel_speed = 0.0;
-    tick_action = new barrage_damage_t( player );
-
-    starved_proc = player -> get_proc( "starved: barrage" );
-  }
-
- void schedule_execute( action_state_t* state = nullptr ) override
-  {
-    hunter_spell_t::schedule_execute( state );
-
-    // To suppress autoshot, just delay it by the execute time of the barrage
-    if ( p() -> main_hand_attack && p() -> main_hand_attack -> execute_event )
-    {
-      timespan_t time_to_next_hit = p() -> main_hand_attack -> execute_event -> remains();
-      time_to_next_hit += dot_duration;
-      p() -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
-    }
-    p() -> no_steady_focus();
-  }
-
- virtual void execute() override
- {
-   hunter_spell_t::execute();
-
-    if ( p() -> legendary.mm_feet )
-      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
- }
-
- bool usable_moving() const override
-  {
-    return true;
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = hunter_spell_t::action_multiplier();
-
-    if ( p() -> mastery.sniper_training -> ok() )
-      am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
-
-    return am;
-  }
-};
 
 // A Murder of Crows ========================================================
 
@@ -4885,13 +4917,11 @@ struct dragonsfire_grenade_t: public hunter_spell_t
   struct dragonsfire_conflagration_t: public hunter_spell_t
   {
     player_t* source;
-    // Since dragonsfire scales n^2 with the number of targets,
-    // there's an option to speed up the sim by letting the aoe do all its damage upfront
-    dragonsfire_conflagration_t( hunter_t* p, bool do_damage_upfront = false ):
+    dragonsfire_conflagration_t( hunter_t* p ):
       hunter_spell_t( "dragonsfire_conflagration", p, p -> find_spell( 194859 ) ), source( nullptr )
     {
       aoe = -1;
-      attack_power_mod.direct = do_damage_upfront ? 8.0 * ( num_targets() - 1 ) : 1.0;
+      attack_power_mod.direct = 1.0;
       background = true;
       may_crit = true;
       radius = 8.0;
@@ -4906,7 +4936,6 @@ struct dragonsfire_grenade_t: public hunter_spell_t
 
   struct dragonsfire_grenade_tick_t: public hunter_spell_t
   {
-
     dragonsfire_conflagration_t* conflag;
     dragonsfire_grenade_tick_t( hunter_t* p ):
       hunter_spell_t( "dragonsfire_grenade", p, p -> find_spell( 194858 ) ), conflag( nullptr )
@@ -4916,11 +4945,8 @@ struct dragonsfire_grenade_t: public hunter_spell_t
       hasted_ticks = false;
       tick_may_crit = true;
 
-      if ( num_targets() > 1 && num_targets() < 10 )
-      {
-        conflag = new dragonsfire_conflagration_t( p );
-        add_child( conflag );
-      }
+      conflag = new dragonsfire_conflagration_t( p );
+      add_child( conflag );
     }
 
     virtual void tick( dot_t* d ) override
@@ -4935,29 +4961,12 @@ struct dragonsfire_grenade_t: public hunter_spell_t
     }
   };
 
-  dragonsfire_conflagration_t* conflag;
   dragonsfire_grenade_t( hunter_t* p, const std::string& options_str ):
-    hunter_spell_t( "dragonsfire_grenade", p, p -> talents.dragonsfire_grenade ), conflag( nullptr )
+    hunter_spell_t( "dragonsfire_grenade", p, p -> talents.dragonsfire_grenade )
   {
     parse_options( options_str );
 
-    aoe = -1;
     impact_action = new dragonsfire_grenade_tick_t( p );
-
-    // Avoid n^2 runtime on many targets
-    if ( num_targets() >= 10 )
-    {
-      conflag = new dragonsfire_conflagration_t( p, true );
-      add_child( conflag );
-    }
-  }
-
-  virtual void execute() override
-  {
-    hunter_spell_t::execute();
-
-    if ( conflag )
-      conflag -> execute();
   }
 };
 
@@ -5536,10 +5545,12 @@ void hunter_t::init_procs()
   procs.tier17_2pc_bm                = get_proc( "tier17_2pc_bm" );
   procs.black_arrow_trinket_reset    = get_proc( "black_arrow_trinket_reset" );
   procs.tier18_2pc_mm_wasted_proc    = get_proc( "tier18_2pc_mm_wasted_proc" );
-  procs.tier18_2pc_mm_wasted_overwrite     = get_proc ("tier18_2pc_mm_wasted_overwrite");
+  procs.tier18_2pc_mm_wasted_overwrite     = get_proc ( "tier18_2pc_mm_wasted_overwrite" );
   procs.hunting_companion            = get_proc( "hunting_companion" );
   procs.mortal_wounds                = get_proc( "mortal_wounds" );
   procs.t18_4pc_sv                   = get_proc( "t18_4pc_sv" );
+  procs.no_vuln_aimed_shot           = get_proc( "no_vuln_aimed_shot" );
+  procs.no_vuln_marked_shot          = get_proc( "no_vuln_marked_shot" );
 }
 
 // hunter_t::init_rng =======================================================
@@ -5707,7 +5718,7 @@ void hunter_t::apl_mm()
   add_item_actions( default_list );
   add_racial_actions( default_list );
 
-  default_list -> add_action( this, "Trueshot", "if=target.time_to_die>195|target.time_to_die<18|buff.bullseye.stack>15" );
+  default_list -> add_action( this, "Trueshot", "if=!artifact.bullseye.enabled|target.time_to_die>cooldown.trueshot.duration+15|target.time_to_die<18|buff.bullseye.stack>15" );
   default_list -> add_talent( this, "A Murder of Crows" );
   default_list -> add_talent( this, "Barrage");
   default_list -> add_talent( this, "Piercing Shot" );
@@ -5715,10 +5726,11 @@ void hunter_t::apl_mm()
   default_list -> add_talent( this, "Black Arrow" );
   default_list -> add_action( this, "Windburst" );
   default_list -> add_action( this, "Marked Shot", "if=!talent.patient_sniper.enabled|debuff.vulnerability.remains<2" );
-  default_list -> add_action( this, "Aimed Shot", "if=focus+cast_regen>80|(!debuff.hunters_mark.up&cast_time<debuff.vulnerability.remains)" );
+  default_list -> add_action( this, "Aimed Shot", "if=cast_time<debuff.vulnerability.remains&(focus+cast_regen>80|!debuff.hunters_mark.up)" );
   default_list -> add_action( this, "Multi-shot", "if=spell_targets.multishot>1" );
   default_list -> add_action( this, "Arcane Shot" );
   default_list -> add_talent( this, "Sidewinders", "if=!debuff.hunters_mark.up&(buff.marking_targets.up|buff.trueshot.up|charges=2)" );
+  default_list -> add_action( this, "Aimed Shot", "if=focus+cast_regen>80" );
 }
 
 // Survival Action List ===================================================================
