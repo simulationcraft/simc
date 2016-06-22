@@ -225,11 +225,11 @@ public:
     artifact_power_t firm_resolve;//NYI
     artifact_power_t thalkiels_discord;//NYI
     artifact_power_t legionwrath;//NYI
-    artifact_power_t dirty_hands;//NYI
+    artifact_power_t dirty_hands;
     artifact_power_t doom_doubled;//NYI
     artifact_power_t infernal_furnace;
     artifact_power_t the_expendables;//NYI
-    artifact_power_t maw_of_shadows;//NYI
+    artifact_power_t maw_of_shadows;
     artifact_power_t open_link;//NYI
     artifact_power_t stolen_power;//NYI
     artifact_power_t imperator;
@@ -2321,7 +2321,7 @@ struct shadow_bolt_t: public warlock_spell_t
     energize_resource = RESOURCE_SOUL_SHARD;
     energize_amount = 1;
 
-    this->crit_bonus_multiplier = p->artifact.maw_of_shadows.percent();
+    base_crit += p->artifact.maw_of_shadows.percent();
   }
 
 //  virtual timespan_t execute_time() const override
@@ -3272,7 +3272,7 @@ struct demonbolt_t: public warlock_spell_t
         energize_type = ENERGIZE_ON_CAST;
         energize_resource = RESOURCE_SOUL_SHARD;
         energize_amount = 1;
-        this->crit_bonus_multiplier = p->artifact.maw_of_shadows.percent();
+        base_crit += p->artifact.maw_of_shadows.percent();
     }
 
   virtual double action_multiplier() const override
