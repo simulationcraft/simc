@@ -1176,7 +1176,6 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
 double warlock_pet_t::composite_melee_crit() const
 {
   double mc = pet_t::composite_melee_crit();
-
   return mc;
 }
 
@@ -1675,6 +1674,21 @@ struct dreadstalker_t : public warlock_pet_t
     regen_type = REGEN_DISABLED;
   }
 
+  virtual double composite_melee_crit() const override
+  {
+      double pw = warlock_pet_t::composite_melee_crit();
+      pw += o()->artifact.sharpened_dreadfangs.percent();
+
+      return pw;
+  }
+
+  virtual double composite_spell_crit() const override
+  {
+      double pw = warlock_pet_t::composite_spell_crit();
+      pw += o()->artifact.sharpened_dreadfangs.percent();
+      return pw;
+  }
+
   void init_base_stats() override
   {
     warlock_pet_t::init_base_stats();
@@ -1683,7 +1697,6 @@ struct dreadstalker_t : public warlock_pet_t
     melee_attack = new actions::warlock_pet_melee_t( this );
     if ( o() -> warlock_pet_list.dreadstalkers[0] )
       melee_attack -> stats = o() ->warlock_pet_list.dreadstalkers[0] -> get_stats( "melee" );
-    this->base.attack_crit += o()->artifact.sharpened_dreadfangs.percent();
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
