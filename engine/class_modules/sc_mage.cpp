@@ -285,7 +285,8 @@ public:
   // Gains
   struct gains_t
   {
-    gain_t* evocation;
+    gain_t* evocation,
+          * mystic_kilt_of_the_rune_master;
   } gains;
 
   // Legendary
@@ -2438,10 +2439,11 @@ struct arcane_rebound_t : public arcane_mage_spell_t
 struct arcane_barrage_t : public arcane_mage_spell_t
 {
   arcane_rebound_t* arcane_rebound;
-
+  double mystic_kilt_of_the_rune_master_regen;
   arcane_barrage_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "arcane_barrage", p, p -> find_class_spell( "Arcane Barrage" ) ),
-    arcane_rebound( new arcane_rebound_t( p, options_str ) )
+    arcane_rebound( new arcane_rebound_t( p, options_str ) ),
+    mystic_kilt_of_the_rune_master_regen( 0.0 )
   {
     parse_options( options_str );
 
@@ -2457,10 +2459,17 @@ struct arcane_barrage_t : public arcane_mage_spell_t
 
     p() -> benefits.arcane_charge.arcane_barrage -> update();
 
+    if ( mystic_kilt_of_the_rune_master_regen > 0 &&
+         p() -> buffs.arcane_charge -> check() )
+    {
+      p() -> resource_gain( RESOURCE_MANA, ( p() -> buffs.arcane_charge -> check() * mystic_kilt_of_the_rune_master_regen * p() -> resources.max[ RESOURCE_MANA ] ), p() -> gains.mystic_kilt_of_the_rune_master );
+    }
+
     arcane_mage_spell_t::execute();
 
     p() -> buffs.arcane_charge -> expire();
     p() -> buffs.quickening -> expire();
+
   }
 
   virtual void impact( action_state_t* s ) override
@@ -6454,6 +6463,7 @@ void mage_t::init_gains()
   player_t::init_gains();
 
   gains.evocation              = get_gain( "evocation"              );
+  gains.mystic_kilt_of_the_rune_master = get_gain( "Mystic Kilt of the Rune Master" );
 }
 
 // mage_t::init_procs =======================================================
@@ -7950,7 +7960,7 @@ private:
 };
 // Custom Gear ==============================================================
 
-// Generic Legendary Items
+// Mage Legendary Items
 using namespace unique_gear;
 using namespace actions;
 
@@ -7964,6 +7974,14 @@ struct shard_of_the_exodar_t : public scoped_actor_callback_t<mage_t>
 };
 
 // Arcane Legendary Items
+struct mystic_kilt_of_the_rune_master_t : public scoped_action_callback_t<arcane_barrage_t>
+{
+  mystic_kilt_of_the_rune_master_t() : super( MAGE_ARCANE, "arcane_barrage" )
+  { }
+
+  void manipulate( arcane_barrage_t* action, const special_effect_t& e ) override
+  { action -> mystic_kilt_of_the_rune_master_regen = e.driver() -> effectN( 1 ).percent(); }
+};
 struct rhonins_assaulting_armwraps_t : public scoped_action_callback_t<arcane_missiles_t>
 {
   rhonins_assaulting_armwraps_t() : super( MAGE_ARCANE, "arcane_missiles" )
@@ -8003,7 +8021,6 @@ struct marquee_bindings_of_the_sun_king_t : public scoped_action_callback_t<pyro
 };
 
 // Frost Legendary Items
-
 struct magtheridons_banished_bracers_t : public scoped_action_callback_t<ice_lance_t>
 {
   magtheridons_banished_bracers_t() : super( MAGE_FROST, "ice_lance" )
@@ -8089,6 +8106,7 @@ public:
     unique_gear::register_special_effect( 207547, darcklis_dragonfire_diadem_t() );
     unique_gear::register_special_effect( 207970, shard_of_the_exodar_t() );
     unique_gear::register_special_effect( 209450, marquee_bindings_of_the_sun_king_t() );
+    unique_gear::register_special_effect( 209280, mystic_kilt_of_the_rune_master_t() );
   }
 
   virtual void register_hotfixes() const override
