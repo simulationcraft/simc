@@ -199,6 +199,7 @@ public:
   bool       lava_surge_during_lvb;
   std::vector<counter_t*> counters;
   std::vector<player_t*> lightning_rods;
+  int t18_4pc_elemental_counter;
 
   // Data collection for cooldown waste
   auto_dispose< std::vector<data_t*> > cd_waste_exec, cd_waste_cumulative;
@@ -258,14 +259,14 @@ public:
     buff_t* tidal_waves;
     buff_t* focus_of_the_elements;
     buff_t* feral_spirit;
-    buff_t* t18_4pc_elemental;
-    buff_t* gathering_vortex;
+    haste_buff_t* t18_4pc_elemental;
 
     stat_buff_t* elemental_blast_crit;
     stat_buff_t* elemental_blast_haste;
     stat_buff_t* elemental_blast_mastery;
 
     stat_buff_t* t19_oh_8pc;
+    buff_t* t18_4pc_enhancement;
 
     buff_t* flametongue;
     buff_t* frostbrand;
@@ -325,14 +326,13 @@ public:
     gain_t* spirit_of_the_maelstrom;
     gain_t* resonance_totem;
     gain_t* wind_gust;
+    gain_t* t18_2pc_elemental;
   } gain;
 
   // Tracked Procs
   struct
   {
     proc_t* lava_surge;
-    proc_t* t15_2pc_melee;
-    proc_t* wasted_t15_2pc_melee;
     proc_t* wasted_lava_surge;
     proc_t* windfury;
 
@@ -500,6 +500,7 @@ public:
   shaman_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN ) :
     player_t( sim, SHAMAN, name, r ),
     lava_surge_during_lvb( false ),
+    t18_4pc_elemental_counter( 0 ),
     ancestral_awakening( nullptr ),
     pet_fire_elemental( nullptr ),
     guardian_fire_elemental( nullptr ),
@@ -556,7 +557,7 @@ public:
   void trigger_hailstorm( const action_state_t* );
   void trigger_t17_2pc_elemental( int );
   void trigger_t17_4pc_elemental( int );
-  void trigger_t18_4pc_elemental( int );
+  void trigger_t18_4pc_elemental();
   void trigger_t19_oh_8pc( const action_state_t* );
   void trigger_stormbringer( const action_state_t* state );
   void trigger_unleash_doom( const action_state_t* state );
@@ -1124,6 +1125,13 @@ public:
     }
 
     p() -> resource_gain( RESOURCE_MAELSTROM, amount, gain, this );
+
+    if ( p() -> electrocute &&
+         rng().roll( p() -> sets.set( SHAMAN_ENHANCEMENT, T18, B2 ) -> effectN( 1 ).percent() ) )
+    {
+      p() -> electrocute -> target = source_state -> target;
+      p() -> electrocute -> schedule_execute();
+    }
   }
 
   virtual double stormbringer_proc_chance() const
@@ -3415,6 +3423,7 @@ struct chain_lightning_t: public shaman_spell_t
     p() -> buff.stormkeeper -> decrement();
     p() -> buff.static_overload -> decrement();
     p() -> buff.static_overload -> trigger();
+    p() -> trigger_t18_4pc_elemental();
   }
 
   void impact( action_state_t* state ) override
@@ -3769,6 +3778,7 @@ struct lightning_bolt_t : public shaman_spell_t
     }
 
     p() -> trigger_t19_oh_8pc( execute_state );
+    p() -> trigger_t18_4pc_elemental();
   }
 
   void impact( action_state_t* state ) override
@@ -4200,6 +4210,11 @@ struct earth_shock_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
+    if ( p() -> sets.has_set_bonus( SHAMAN_ELEMENTAL, T18, B2 ) &&
+         rng().roll( p() -> sets.set( SHAMAN_ELEMENTAL, T18, B2 ) -> effectN( 1 ).percent() ) )
+    {
+      p() -> resource_gain( RESOURCE_MAELSTROM, resource_consumed, p() -> gain.t18_2pc_elemental, this );
+    }
   }
 
   bool ready() override
@@ -4938,6 +4953,30 @@ inline void ascendance_buff_t::expire_override( int expiration_stacks, timespan_
   buff_t::expire_override( expiration_stacks, remaining_duration );
 }
 
+struct flametongue_buff_t : public buff_t
+{
+  shaman_t* p;
+
+  flametongue_buff_t( shaman_t* p ) :
+    buff_t( buff_creator_t( p, "flametongue", p -> find_specialization_spell( "Flametongue" ) -> effectN( 1 ).trigger() ) ),
+    p( p )
+  { }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    p -> buff.t18_4pc_enhancement -> decrement();
+  }
+
+  void execute( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() )
+  {
+    buff_t::execute( stacks, value, duration );
+
+    p -> buff.t18_4pc_enhancement -> trigger();
+  }
+};
+
 // ==========================================================================
 // Shaman Character Definition
 // ==========================================================================
@@ -5621,29 +5660,20 @@ void shaman_t::trigger_t17_4pc_elemental( int stacks )
   cooldown.lava_burst -> reset( false );
 }
 
-void shaman_t::trigger_t18_4pc_elemental( int ls_stack )
+void shaman_t::trigger_t18_4pc_elemental()
 {
   if ( ! sets.has_set_bonus( SHAMAN_ELEMENTAL, T18, B4 ) )
   {
     return;
   }
 
-  int gathering_vortex_stacks = buff.gathering_vortex -> check();
-  gathering_vortex_stacks += ls_stack;
-  // Stacks have to go past max stack to trigger Lightning Vortex
-  if ( gathering_vortex_stacks <= buff.gathering_vortex -> max_stack() )
+  if ( ++t18_4pc_elemental_counter < sets.set( SHAMAN_ELEMENTAL, T18, B4 ) -> effectN( 1 ).base_value() )
   {
-    buff.gathering_vortex -> trigger( ls_stack );
+    return;
   }
-  else
-  {
-    int remainder_stack = gathering_vortex_stacks % buff.gathering_vortex -> max_stack();
-    buff.gathering_vortex -> expire();
-    // Back to back 20 stack Lightning Shield fulminations will just set Gathering Vortex up so it's
-    // again at 20 stacks, presumably.
-    buff.gathering_vortex -> trigger( remainder_stack ? remainder_stack : buff.gathering_vortex -> max_stack() );
-    buff.t18_4pc_elemental -> trigger();
-  }
+
+  buff.t18_4pc_elemental -> trigger();
+  t18_4pc_elemental_counter = 0;
 }
 
 void shaman_t::trigger_t19_oh_8pc( const action_state_t* )
@@ -5727,24 +5757,21 @@ void shaman_t::create_buffs()
                                  .max_stack( 1 );
   buff.elemental_blast_mastery = stat_buff_creator_t( this, "elemental_blast_mastery", find_spell( 173184 ) )
                                  .max_stack( 1 );
-  buff.t18_4pc_elemental        = buff_creator_t( this, "lightning_vortex", find_spell( 189063 ) )
+  // TODO: How does this refresh?
+  buff.t18_4pc_elemental        = haste_buff_creator_t( this, "lightning_vortex", find_spell( 189063 ) )
+    .period( find_spell( 189063 ) -> effectN( 2 ).period() )
+    .refresh_behavior( BUFF_REFRESH_DURATION )
     .chance( sets.has_set_bonus( SHAMAN_ELEMENTAL, T18, B4 ) )
-    .reverse( true )
-    .add_invalidate( CACHE_HASTE )
-    .default_value( find_spell( 189063 ) -> effectN( 2 ).percent() )
-    .max_stack( 5 ); // Shows 3 stacks in spelldata, but the wording makes it seem that it is actually 5.
+    .default_value( find_spell( 189063 ) -> effectN( 1 ).percent() )
+    .tick_callback( []( buff_t* b, int t, const timespan_t& ) {
+      b -> current_value = ( t - b -> current_tick ) * b -> data().effectN( 2 ).percent();
+    } );
 
   buff.focus_of_the_elements = buff_creator_t( this, "focus_of_the_elements", find_spell( 167205 ) )
                                .chance( static_cast< double >( sets.has_set_bonus( SHAMAN_ELEMENTAL, T17, B2 ) ) );
   buff.feral_spirit          = buff_creator_t( this, "t17_4pc_melee", sets.set( SHAMAN_ENHANCEMENT, T17, B4 ) -> effectN( 1 ).trigger() );
 
-  buff.gathering_vortex      = buff_creator_t( this, "gathering_vortex", find_spell( 189078 ) )
-                               .max_stack( sets.has_set_bonus( SHAMAN_ELEMENTAL, T18, B4 )
-                                           ? sets.set( SHAMAN_ELEMENTAL, T18, B4 ) -> effectN( 1 ).base_value()
-                                           : 1 )
-                               .chance( sets.has_set_bonus( SHAMAN_ELEMENTAL, T18, B4 ) );
-
-  buff.flametongue = buff_creator_t( this, "flametongue", find_specialization_spell( "Flametongue" ) -> effectN( 1 ).trigger() );
+  buff.flametongue = new flametongue_buff_t( this );
   buff.frostbrand = buff_creator_t( this, "frostbrand", spec.frostbrand );
   buff.stormbringer = buff_creator_t( this, "stormbringer", find_spell( 201846 ) )
                    .activated( false ) // TODO: Need a delay on this
@@ -5820,6 +5847,11 @@ void shaman_t::create_buffs()
   buff.elemental_mastery = haste_buff_creator_t( this, "elemental_mastery", talent.elemental_mastery )
                            .default_value( 1.0 / ( 1.0 + talent.elemental_mastery -> effectN( 1 ).percent() ) )
                            .cd( timespan_t::zero() ); // Handled by the action
+  buff.t18_4pc_enhancement = buff_creator_t( this, "natures_reprisal" )
+    .spell( sets.set( SHAMAN_ENHANCEMENT, T18, B4 ) -> effectN( 1 ).trigger() )
+    .trigger_spell( sets.set( SHAMAN_ENHANCEMENT, T18, B4 ) )
+    .default_value( sets.set( SHAMAN_ENHANCEMENT, T18, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 }
 
 // shaman_t::init_gains =====================================================
@@ -5836,6 +5868,7 @@ void shaman_t::init_gains()
   gain.spirit_of_the_maelstrom = get_gain( "Spirit of the Maelstrom" );
   gain.resonance_totem      = get_gain( "Resonance Totem"   );
   gain.wind_gust            = get_gain( "Wind Gust"         );
+  gain.t18_2pc_elemental    = get_gain( "Elemental T18 2PC" );
 }
 
 // shaman_t::init_procs =====================================================
@@ -5845,8 +5878,6 @@ void shaman_t::init_procs()
   player_t::init_procs();
 
   proc.lava_surge         = get_proc( "Lava Surge"              );
-  proc.t15_2pc_melee      = get_proc( "t15_2pc_melee"           );
-  proc.wasted_t15_2pc_melee = get_proc( "wasted_t15_2pc_melee"  );
   proc.wasted_lava_surge  = get_proc( "Lava Surge: Wasted"      );
   proc.windfury           = get_proc( "Windfury"                );
   proc.surge_during_lvb   = get_proc( "Lava Surge: During Lava Burst" );
@@ -6050,6 +6081,7 @@ void shaman_t::init_action_list()
     def -> add_action( this, "Feral Spirit" );
     def -> add_talent( this, "Liquid Magma", "if=pet.searing_totem.remains>10|pet.magma_totem.remains>10|pet.fire_elemental_totem.remains>10" );
     def -> add_action( this, "Ascendance" );
+    def -> add_action( this, "Flametongue", "if=!buff.flametongue.up" );
 
     def -> add_action( "call_action_list,name=aoe,if=spell_targets.chain_lightning>1", "On multiple enemies, the priority follows the 'aoe' action list." );
     def -> add_action( "call_action_list,name=single", "If only one enemy, priority follows the 'single' action list." );
@@ -6114,6 +6146,7 @@ void shaman_t::init_action_list()
     single -> add_action( this, "Spiritwalker's Grace", "moving=1,if=buff.ascendance.up" );
     if ( find_item( "unerring_vision_of_lei_shen" ) )
       single -> add_action( this, "Flame Shock", "if=buff.perfect_aim.react&crit_pct<100" );
+    single -> add_action( this, "Earth Shock", "if=maelstrom>=88");
     single -> add_action( this, spec.fulmination, "earth_shock", "if=buff.lightning_shield.react=buff.lightning_shield.max_stack" );
     single -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)" );
     single -> add_action( this, spec.fulmination, "earth_shock", "if=(set_bonus.tier17_4pc&buff.lightning_shield.react>=12&!buff.lava_surge.up)|(!set_bonus.tier17_4pc&buff.lightning_shield.react>15)" );
@@ -6403,6 +6436,11 @@ double shaman_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + artifact.call_the_thunder.percent();
   }
 
+  if ( buff.t18_4pc_enhancement -> up() && dbc::is_school( school, SCHOOL_NATURE ) )
+  {
+    m *= 1.0 + buff.t18_4pc_enhancement -> check_value();
+  }
+
   return m;
 }
 
@@ -6452,6 +6490,7 @@ void shaman_t::reset()
   player_t::reset();
 
   lava_surge_during_lvb = false;
+  t18_4pc_elemental_counter = 0;
   for (auto & elem : counters)
     elem -> reset();
 
