@@ -233,8 +233,6 @@ public:
     std::array<pet_t*, 6> doom_wolves;
   } pet;
 
-  // Tier 18 (WoD 6.2) class specific trinket effects
-  const special_effect_t* elemental_bellows;
   const special_effect_t* furious_winds;
 
   // Constants
@@ -506,7 +504,6 @@ public:
     guardian_fire_elemental( nullptr ),
     pet_earth_elemental( nullptr ),
     guardian_earth_elemental( nullptr ),
-    elemental_bellows( nullptr ),
     furious_winds( nullptr ),
     constant(),
     buff(),
@@ -2274,17 +2271,6 @@ struct windfury_weapon_melee_attack_t : public shaman_attack_t
 
     // Windfury can not proc itself
     may_proc_windfury = false;
-
-    // Enhancement Tier 18 (WoD 6.2) trinket effect
-    if ( player -> furious_winds )
-    {
-      const spell_data_t* data = player -> furious_winds -> driver();
-      double damage_value = data -> effectN( 1 ).average( player -> furious_winds -> item ) / 100.0;
-
-      furious_winds_chance = data -> effectN( 2 ).average( player -> furious_winds -> item ) / 100.0;
-
-      base_multiplier *= 1.0 + damage_value;
-    }
   }
 
   double action_multiplier() const
@@ -2297,6 +2283,16 @@ struct windfury_weapon_melee_attack_t : public shaman_attack_t
     }
 
     return m;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    shaman_attack_t::impact( state );
+
+    if ( rng().roll( furious_winds_chance ) )
+    {
+      trigger_maelstrom_weapon( state );
+    }
   }
 };
 
@@ -4241,18 +4237,6 @@ struct flame_shock_t : public shaman_spell_t
     tick_may_crit         = true;
     track_cd_waste        = false;
     base_multiplier *= 1.0 + player -> artifact.firestorm.percent();
-
-    // Elemental Tier 18 (WoD 6.2) trinket effect is in use, adjust Flame Shock based on spell data
-    // of the special effect.
-    if ( player -> elemental_bellows )
-    {
-      const spell_data_t* data = player -> elemental_bellows -> driver();
-      double damage_value = data -> effectN( 1 ).average( player -> elemental_bellows -> item ) / 100.0;
-      double duration_value = data -> effectN( 3 ).average( player -> elemental_bellows -> item ) / 100.0;
-
-      base_multiplier *= 1.0 + damage_value;
-      duration_multiplier = 1.0 + duration_value;
-    }
   }
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
@@ -6551,8 +6535,10 @@ bool shaman_t::has_t18_class_trinket() const
 {
   switch ( specialization() )
   {
-    case SHAMAN_ENHANCEMENT: return furious_winds != nullptr;
-    case SHAMAN_ELEMENTAL:   return elemental_bellows != nullptr;
+    case SHAMAN_ENHANCEMENT:
+    case SHAMAN_ELEMENTAL:
+      return items[ SLOT_TRINKET_1 ].parsed.data.id == 124521 ||
+             items[ SLOT_TRINKET_2 ].parsed.data.id == 124521;
     default:                 return false;
   }
 }
@@ -6917,36 +6903,27 @@ private:
 
 // SHAMAN MODULE INTERFACE ==================================================
 
-static void do_trinket_init( shaman_t*                player,
-                             specialization_e         spec,
-                             const special_effect_t*& ptr,
-                             const special_effect_t&  effect )
+struct elemental_bellows_t : public unique_gear::scoped_action_callback_t<flame_shock_t>
 {
-  // Ensure we have the spell data. This will prevent the trinket effect from working on live
-  // Simulationcraft. Also ensure correct specialization.
-  if ( ! player -> find_spell( effect.spell_id ) -> ok() ||
-       player -> specialization() != spec )
+  elemental_bellows_t() : super( SHAMAN_ELEMENTAL, "flame_shock" ) { }
+
+  void manipulate( flame_shock_t* action, const special_effect_t& effect ) override
   {
-    return;
+    action -> base_multiplier *= 1.0 + effect.driver() -> effectN( 1 ).average( effect.item ) / 100.0;
+    action -> duration_multiplier = 1.0 + effect.driver() -> effectN( 3 ).average( effect.item ) / 100.0;
   }
+};
 
-  // Set pointer, module considers non-null pointer to mean the effect is "enabled"
-  ptr = &( effect );
-}
-
-// Elemental T18 (WoD 6.2) trinket effect
-static void elemental_bellows( special_effect_t& effect )
+struct furious_winds_t : public unique_gear::scoped_action_callback_t<windfury_weapon_melee_attack_t>
 {
-  shaman_t* s = debug_cast<shaman_t*>( effect.player );
-  do_trinket_init( s, SHAMAN_ELEMENTAL, s -> elemental_bellows, effect );
-}
+  furious_winds_t( const std::string& name_str ) : super( SHAMAN_ENHANCEMENT, name_str ) { }
 
-// Enhancement T18 (WoD 6.2) trinket effect
-static void furious_winds( special_effect_t& effect )
-{
-  shaman_t* s = debug_cast<shaman_t*>( effect.player );
-  do_trinket_init( s, SHAMAN_ENHANCEMENT, s -> furious_winds, effect );
-}
+  void manipulate( windfury_weapon_melee_attack_t* action, const special_effect_t& effect ) override
+  {
+    action -> base_multiplier *= 1.0 + effect.driver() -> effectN( 1 ).average( effect.item ) / 100.0;
+    action -> furious_winds_chance = effect.driver() -> effectN( 2 ).average( effect.item ) / 100.0;
+  }
+};
 
 struct shaman_module_t : public module_t
 {
@@ -6974,8 +6951,9 @@ struct shaman_module_t : public module_t
 
   virtual void static_init() const override
   {
-    unique_gear::register_special_effect( 184919, elemental_bellows );
-    unique_gear::register_special_effect( 184920, furious_winds     );
+    unique_gear::register_special_effect( 184919, elemental_bellows_t() );
+    unique_gear::register_special_effect( 184920, furious_winds_t( "windfury_attack" ) );
+    unique_gear::register_special_effect( 184920, furious_winds_t( "windfury_attack_oh" ) );
   }
 
   virtual void register_hotfixes() const override
