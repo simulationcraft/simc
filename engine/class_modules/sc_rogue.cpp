@@ -515,6 +515,7 @@ struct rogue_t : public player_t
     from_the_shadows_( nullptr ),
     poison_bomb( nullptr ),
     greed( nullptr ),
+    soul_rip( nullptr ),
     auto_attack( nullptr ), melee_main_hand( nullptr ), melee_off_hand( nullptr ),
     shadow_blade_main_hand( nullptr ), shadow_blade_off_hand( nullptr ),
     dfa_mh( nullptr ), dfa_oh( nullptr ),
@@ -3732,7 +3733,7 @@ struct death_from_above_t : public rogue_attack_t
 
     // Create appropriate finisher for the players spec. Associate its stats
     // with the DfA's stats.
-    action_t* finisher;
+    action_t* finisher = nullptr;
     switch ( p->specialization() )
     {
       case ROGUE_ASSASSINATION:
@@ -3765,9 +3766,13 @@ struct death_from_above_t : public rogue_attack_t
         break;
       }
       default:
+        background = true;
         assert(0);
     }
-    driver = new death_from_above_driver_t( p, finisher );
+    if ( driver )
+    {
+      driver = new death_from_above_driver_t( p, finisher );
+    }
   }
 
   void init() override
