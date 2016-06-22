@@ -402,12 +402,17 @@ public:
     artifact_power_t raptors_cry;
     artifact_power_t hellcarver;
     artifact_power_t my_beloved_monster;
-    artifact_power_t strength_of_the_mountain;
+    artifact_power_t explosive_force;
     artifact_power_t fluffy_go;
     artifact_power_t jagged_claws;
     artifact_power_t lacerating_talons;
     artifact_power_t embrace_of_the_aspects;
     artifact_power_t hunters_guile;
+
+    // Paragon points
+    artifact_power_t windflight_arrows;
+    artifact_power_t spiritbound;
+    artifact_power_t voice_of_the_wild_gods;
   } artifacts;
 
   stats_t* stats_stampede;
@@ -535,9 +540,10 @@ public:
   {
     double pm = pet_multiplier;
     if ( mastery.master_of_beasts -> ok() )
-    {
       pm *= 1.0 + cache.mastery_value();
-    }
+
+    if ( artifacts.spiritbound.rank() )
+      pm *= 1.0 + artifacts.spiritbound.percent();
 
     return pm;
   }
@@ -4860,6 +4866,16 @@ struct explosive_trap_t: public hunter_spell_t
       if ( p -> artifacts.hunters_guile.rank() )
         cooldown -> duration *= 1.0 + p -> artifacts.hunters_guile.percent();
     }
+
+  virtual double action_multiplier() const override
+  {
+    double am = hunter_spell_t::action_multiplier();
+
+    if ( p() -> artifacts.explosive_force.rank() )
+      am *= 1.0 + p() -> artifacts.explosive_force.percent();
+
+    return am;
+  }
 };
 
 // Dragonsfire Grenade ==============================================================
@@ -5280,12 +5296,16 @@ void hunter_t::init_spells()
   artifacts.raptors_cry              = find_artifact_spell( "Raptor's Cry" );
   artifacts.hellcarver               = find_artifact_spell( "Hellcarver" );
   artifacts.my_beloved_monster       = find_artifact_spell( "My Beloved Monster" );
-  artifacts.strength_of_the_mountain = find_artifact_spell( "Strength of the Mountain" );
+  artifacts.explosive_force          = find_artifact_spell( "Explosive Force" );
   artifacts.fluffy_go                = find_artifact_spell( "Fluffy, Go" );
   artifacts.jagged_claws             = find_artifact_spell( "Jagged Claws" );
   artifacts.embrace_of_the_aspects   = find_artifact_spell( "Embrace of the Aspects" );
   artifacts.hunters_guile            = find_artifact_spell( "Hunter's Guile" );
   artifacts.lacerating_talons        = find_artifact_spell( "Lacerating Talons" );
+
+  artifacts.windflight_arrows        = find_artifact_spell( "Windflight Arrows" );
+  artifacts.spiritbound              = find_artifact_spell( "Spiritbound" );
+  artifacts.voice_of_the_wild_gods   = find_artifact_spell( "Voice of the Wild Gods" );
 
   if ( talents.serpent_sting -> ok() )
     active.serpent_sting = new attacks::serpent_sting_t( this );
@@ -5696,7 +5716,7 @@ void hunter_t::apl_mm()
   default_list -> add_action( this, "Windburst" );
   default_list -> add_action( this, "Marked Shot", "if=!talent.patient_sniper.enabled|debuff.vulnerability.remains<2" );
   default_list -> add_action( this, "Aimed Shot", "if=focus+cast_regen>80|(!debuff.hunters_mark.up&cast_time<debuff.vulnerability.remains)" );
-  default_list -> add_action( this, "Multi-shot", ",if=spell_targets.multishot>1" );
+  default_list -> add_action( this, "Multi-shot", "if=spell_targets.multishot>1" );
   default_list -> add_action( this, "Arcane Shot" );
   default_list -> add_talent( this, "Sidewinders", "if=!debuff.hunters_mark.up&(buff.marking_targets.up|buff.trueshot.up|charges=2)" );
 }
@@ -5907,16 +5927,17 @@ double hunter_t::composite_player_multiplier( school_e school ) const
       m *= 1.0 + base.distance * factor;
   }
 
-  if ( school == SCHOOL_PHYSICAL )
-  {
-    if ( artifacts.iron_talons.rank() )
-      m *= 1.0 + artifacts.iron_talons.data().effectN( 1 ).percent();
-    if ( artifacts.strength_of_the_mountain.rank() )
-      m *= 1.0 + artifacts.strength_of_the_mountain.percent();
-  }
+  if ( school == SCHOOL_PHYSICAL && artifacts.iron_talons.rank() )
+    m *= 1.0 + artifacts.iron_talons.data().effectN( 1 ).percent();
 
   if ( artifacts.aspect_of_the_skylord.rank() && buffs.aspect_of_the_eagle -> check() )
     m *= 1.0 + find_spell( 203927 ) -> effectN( 1 ).percent();
+
+  if ( artifacts.windflight_arrows.rank() )
+    m *= 1.0 + artifacts.windflight_arrows.percent();
+
+  if ( artifacts.voice_of_the_wild_gods.rank() )
+    m *= 1.0 + artifacts.voice_of_the_wild_gods.percent();
 
   return m;
 }
