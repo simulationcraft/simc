@@ -3769,7 +3769,7 @@ struct death_from_above_t : public rogue_attack_t
         background = true;
         assert(0);
     }
-    if ( driver )
+    if ( finisher )
     {
       driver = new death_from_above_driver_t( p, finisher );
     }
