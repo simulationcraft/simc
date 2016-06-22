@@ -1999,6 +1999,10 @@ public:
       double chaotic_energies_rng = rng().range( 0, p() -> cache.mastery_value() );
       pm *= 1.0 + chaotic_energies_rng;
     }
+    if ( p()->specialization() == WARLOCK_AFFLICTION && ( dbc::is_school( SCHOOL_FIRE, school ) || dbc::is_school( SCHOOL_FIRE, school ) ) )
+    {
+        pm *= 1.0 + p()->artifact.breath_of_thalkiel.percent();
+    }
 
     return pm;
   }
@@ -3844,6 +3848,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
   regen_caches[CACHE_SPELL_HASTE] = true;
 }
 
+
 double warlock_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
@@ -3864,7 +3869,8 @@ double warlock_t::composite_player_multiplier( school_e school ) const
 
   if ( specialization() == WARLOCK_AFFLICTION && ( dbc::is_school( SCHOOL_FIRE, school ) || dbc::is_school( SCHOOL_FIRE, school ) ) )
   {
-      m *= 1.0 + artifact.breath_of_thalkiel.percent();
+      //m *= 1.0 + artifact.breath_of_thalkiel.percent();
+      m += artifact.breath_of_thalkiel.percent();
   }
   return m;
 }
