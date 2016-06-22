@@ -5320,6 +5320,9 @@ void shaman_t::init_base_stats()
   if ( specialization() == SHAMAN_ELEMENTAL || specialization() == SHAMAN_ENHANCEMENT )
     resources.base[ RESOURCE_MAELSTROM ] = 100;
 
+  if ( spec.enhancement_shaman -> ok() )
+    resources.base[ RESOURCE_MAELSTROM ] += spec.enhancement_shaman -> effectN( 4 ).base_value();
+
   base.distance = ( specialization() == SHAMAN_ENHANCEMENT ) ? 3 : 30;
   base.mana_regen_from_spirit_multiplier = spec.meditation -> effectN( 1 ).percent();
 
