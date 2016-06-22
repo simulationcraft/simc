@@ -735,8 +735,9 @@ class ItemDataGenerator(DataGenerator):
             filter_ilevel = True
 
             # Item no longer in game
-            if data.flags_1 & 0x10:
-                continue
+            # LEGION: Apparently no longer true?
+            #if data.flags_1 & 0x10:
+            #    continue
 
             # Various things in armors/weapons
             if classdata.classs in [ 2, 4 ]:
