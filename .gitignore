@@ -77,3 +77,4 @@ SimulationCraft.includes
 SimulationCraft.app
 .qmake.stash
 qrc_simcqt.cpp
+*.autosave
