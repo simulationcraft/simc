@@ -1665,7 +1665,7 @@ public:
                  const spell_data_t* s      = spell_data_t::nil(),
                  const std::string& options = std::string() )
     : base_t( token, p, s ),
-      incarnation( data().affected_by( p -> talent.incarnation_moonkin -> effectN( 3 ) ) ),
+      incarnation( data().affected_by( p -> talent.incarnation_moonkin -> effectN( 4 ) ) ),
       celestial_alignment( data().affected_by( p -> spec.celestial_alignment -> effectN( 3 ) ) ),
       blessing_of_elune( data().affected_by( p -> spec.blessing_of_elune -> effectN( 1 ) ) )
   {
@@ -1685,7 +1685,7 @@ public:
         e *= 1.0 + p() -> spec.celestial_alignment -> effectN( 3 ).percent();
 
       if ( incarnation && p() -> buff.incarnation_moonkin -> check() )
-        e *= 1.0 + p() -> talent.incarnation_moonkin -> effectN( 3 ).percent();
+        e *= 1.0 + p() -> talent.incarnation_moonkin -> effectN( 4 ).percent();
     }
 
     return e;
@@ -4255,8 +4255,6 @@ struct celestial_alignment_t : public druid_spell_t
 
   virtual bool ready() override
   {
-    if ( p() -> talent.fury_of_elune -> ok() )
-      return false;
     if ( p() -> talent.incarnation_moonkin -> ok() )
       return false;
 
