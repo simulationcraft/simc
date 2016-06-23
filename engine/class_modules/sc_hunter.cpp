@@ -82,6 +82,7 @@ public:
     action_t*           incendiary_ammo;
     action_t*           poisoned_ammo;
     action_t*           surge_of_the_stormgod;
+    action_t*           lacerate;
   } active;
 
   // Dire beasts last 8 seconds, so you'll have at max 8
@@ -177,6 +178,7 @@ public:
     cooldown_t* kill_command;
     cooldown_t* mongoose_bite;
     cooldown_t* lacerate;
+    cooldown_t* aspect_of_the_eagle;
   } cooldowns;
 
   // Custom Parameters
@@ -468,6 +470,7 @@ public:
     cooldowns.kill_command    = get_cooldown( "kill_command" );
     cooldowns.mongoose_bite   = get_cooldown( "mongoose_bite" );
     cooldowns.lacerate        = get_cooldown( "lacerate" );
+    cooldowns.aspect_of_the_eagle = get_cooldown( "aspect_of_the_eagle" );
 
     summon_pet_str = "";
     base.distance = 40;
@@ -562,7 +565,7 @@ static void init_special_effect( hunter_t*                 r,
                              const special_effect_t*&  ptr,
                              const special_effect_t&   effect )
 {
-  if ( ! r -> find_spell( effect.spell_id ) -> ok() || r -> specialization() != spec )
+  if ( ! r -> find_spell( effect.spell_id ) -> ok() || ( r -> specialization() != spec && spec != SPEC_NONE ) )
   {
     return;
   }
@@ -609,7 +612,7 @@ static void sv_waist( special_effect_t& effect )
 static void wrist( special_effect_t& effect )
 {
   hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
-  init_special_effect( hunter, HUNTER_SURVIVAL, hunter -> legendary.wrist, effect );
+  init_special_effect( hunter, SPEC_NONE, hunter -> legendary.wrist, effect );
 }
 
 static void bm_feet( special_effect_t& effect )
@@ -1374,6 +1377,9 @@ public:
 
     // Pet combat experience
     m *= 1.0 + specs.combat_experience -> effectN( 2 ).percent();
+
+    if ( o() -> legendary.bm_ring )
+      m *= 1.1; //TODO: Find corresponding spell, or wait for spell data to be updated
 
     return m;
   }
@@ -4126,6 +4132,40 @@ struct carve_t: public hunter_melee_attack_t
       impact_action = new serpent_sting_t( p );
   }
 
+  virtual void execute() override
+  {
+    hunter_melee_attack_t::execute();
+
+    if ( p() -> legendary.sv_ring && num_targets() > 1 )
+    {
+      // Check each target to see if they have lacerate.
+      // Find a new target at random.
+      // Once all targets have been checked, apply the new debuffs.
+      std::unordered_map<int, timespan_t> new_lacerate_targets;
+      std::vector<player_t*> carve_targets = execute_state -> action -> target_list();
+      for ( int i = 0; i < carve_targets.size(); i++ )
+      {
+        if ( td( carve_targets[ i ] ) -> debuffs.lacerate -> up() )
+        {
+          int new_target_index = rand() % carve_targets.size();
+          while( new_target_index == i ) new_target_index = rand() % carve_targets.size();
+          if ( td( carve_targets[ i ] ) -> debuffs.lacerate -> remains() > td( carve_targets[ new_target_index ] ) -> debuffs.lacerate -> remains() )
+            new_lacerate_targets[ new_target_index ] = td ( carve_targets[ i ] ) -> debuffs.lacerate -> remains();
+        }
+      }
+
+      // Apply the new debuffs.
+      for ( auto i : new_lacerate_targets )
+      {
+        p() -> active.lacerate -> target = carve_targets[ i.first ];
+        p() -> active.lacerate -> dot_duration = i.second;
+        p() -> active.lacerate -> base_costs[ RESOURCE_FOCUS ] = 0.0;
+        p() -> active.lacerate -> dual = true;
+        p() -> active.lacerate -> execute();
+      }
+    }
+  }
+
   virtual bool ready() override
   {
     if ( p() -> talents.butchery -> ok() )
@@ -4219,7 +4259,42 @@ struct butchery_t: public hunter_melee_attack_t
       am *= 1.0 + num_targets() * p() -> artifacts.hellcarver.percent();
 
     return am;
+  }  
+  
+  virtual void execute() override
+  {
+    hunter_melee_attack_t::execute();
+
+    if ( p() -> legendary.sv_ring && num_targets() > 1 )
+    {
+      // Check each target to see if they have lacerate.
+      // Find a new target at random.
+      // Once all targets have been checked, apply the new debuffs.
+      std::unordered_map<int, timespan_t> new_lacerate_targets;
+      std::vector<player_t*> butchery_targets = execute_state -> action -> target_list();
+      for ( int i = 0; i < butchery_targets.size(); i++ )
+      {
+        if ( td( butchery_targets[ i ] ) -> debuffs.lacerate -> up() )
+        {
+          int new_target_index = rand() % butchery_targets.size();
+          while( new_target_index == i ) new_target_index = rand() % butchery_targets.size();
+          if ( td( butchery_targets[ i ] ) -> debuffs.lacerate -> remains() > td( butchery_targets[ new_target_index ] ) -> debuffs.lacerate -> remains() )
+            new_lacerate_targets[ new_target_index ] = td ( butchery_targets[ i ] ) -> debuffs.lacerate -> remains();
+        }
+      }
+
+      // Apply the new debuffs.
+      for ( auto i : new_lacerate_targets )
+      {
+        p() -> active.lacerate -> target = butchery_targets[ i.first ];
+        p() -> active.lacerate -> dot_duration = i.second;
+        p() -> active.lacerate -> base_costs[ RESOURCE_FOCUS ] = 0.0;
+        p() -> active.lacerate -> dual = true;
+        p() -> active.lacerate -> execute();
+      }
+    }
   }
+
 };
 
 // Throwing Axes =====================================================================
@@ -4542,6 +4617,9 @@ struct dire_beast_t: public hunter_spell_t
       t += timespan_t::from_seconds( p() -> sets.set( HUNTER_BEAST_MASTERY, T19, B2 ) -> effectN( 1 ).base_value() );
     p() -> cooldowns.bestial_wrath -> adjust( -t );
 
+    if ( p() -> legendary.bm_feet )
+      p() -> cooldowns.kill_command -> adjust( p() -> legendary.bm_feet -> driver() -> effectN( 1 ).time_value() );
+
     pet_t* beast = nullptr;
     for( size_t i = 0; i < p() -> pet_dire_beasts.size(); i++ )
     {
@@ -4793,6 +4871,14 @@ struct aspect_of_the_wild_t: public hunter_spell_t
 
     return hunter_spell_t::ready();
   }
+
+  virtual void init() override
+  {
+    hunter_spell_t::init();
+
+    if ( p() -> legendary.wrist )
+      cooldown -> duration *= 1.0 + p() -> legendary.wrist -> driver() -> effectN( 1 ).percent();
+  }
 };
 
 // Stampede =================================================================
@@ -4870,6 +4956,14 @@ struct aspect_of_the_eagle_t: public hunter_spell_t
     hunter_spell_t::execute();
 
     p() -> buffs.aspect_of_the_eagle -> trigger();
+  }
+
+  virtual void init() override
+  {
+    hunter_spell_t::init();
+
+    if ( p() -> legendary.wrist )
+      cooldown -> duration *= 1.0 + p() -> legendary.wrist -> driver() -> effectN( 1 ).percent();
   }
 };
 
@@ -4968,6 +5062,14 @@ struct explosive_trap_t: public hunter_spell_t
       am *= 1.0 + p() -> artifacts.explosive_force.percent();
 
     return am;
+  }
+
+  virtual void execute() override
+  {
+    hunter_spell_t::execute();
+
+    if ( p() -> legendary.sv_feet )
+      p() -> resource_gain( RESOURCE_FOCUS, p() -> find_spell( 212575 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ), p() -> gains.nesingwarys_trapping_treads );
   }
 };
 
@@ -5093,6 +5195,7 @@ dots( dots_t() )
                                 .default_value( p -> find_spell( 199803 ) -> effectN( 1 ).percent() );
 
   debuffs.lacerate          = buff_creator_t( *this, "lacerate" )
+                                .cd( timespan_t::zero() )
                                 .spell( p -> find_specialization_spell( "Lacerate" ) );
 
   debuffs.t18_2pc_open_wounds = buff_creator_t( *this, "open_wounds" )
@@ -5421,6 +5524,8 @@ void hunter_t::init_spells()
 
   if ( artifacts.surge_of_the_stormgod.rank() )
     active.surge_of_the_stormgod = new attacks::surge_of_the_stormgod_t( this );
+
+  active.lacerate = new attacks::lacerate_t( this, "" );
 
   action_lightning_arrow_aimed_shot = new attacks::lightning_arrow_t( this, "_aimed_shot" );
   action_lightning_arrow_arcane_shot = new attacks::lightning_arrow_t( this, "_arcane_shot" );
