@@ -7,18 +7,16 @@
 
 // ==========================================================================
 // TODO
-// General: Cleanup class hierachy for pets
+// General 
+//   - Cleanup old spells
 //
 // Beast Mastery
 //  Artifacts
 //   - Cleanup duplicate code for Beast Cleave
-//   - Update behavior for T18 4pc
+//   - Update T18 4pc
 //
 // Survival
-//   - Harpoon
-//  Artifacts
-//   - Eagle's Claw
-//   - Talon Strike
+//   - Harpoon legendary
 //
 // ==========================================================================
 
@@ -60,6 +58,7 @@ struct hunter_td_t: public actor_target_data_t
     dot_t* poisoned_ammo;
     dot_t* piercing_shots;
     dot_t* lacerate;
+    dot_t* on_the_trail;
   } dots;
 
   hunter_td_t( player_t* target, hunter_t* p );
@@ -345,7 +344,7 @@ public:
   {
     const spell_data_t* arachnophobia;
     const spell_data_t* lesser_proportion;
-    const spell_data_t* nesignwarys_nemesis;
+    const spell_data_t* nesingwarys_nemesis;
     const spell_data_t* sparks;
     const spell_data_t* bullseye;
     const spell_data_t* firecracker;
@@ -3890,11 +3889,24 @@ struct piercing_shots_t: public residual_action_t
 
 // Melee attack ==============================================================
 
+// Talon Strike =============================================================
+
+struct talon_strike_t: public hunter_melee_attack_t
+{
+  talon_strike_t( hunter_t* p ):
+    hunter_melee_attack_t( "talon_strike", p, p -> find_spell( 203525 ) )
+  {
+    background = true;
+    weapon_multiplier = 0.0;
+  };
+};
+
 struct melee_t: public hunter_melee_attack_t
 {
   bool first;
+  talon_strike_t* talon_strike;
   melee_t( hunter_t* player, const std::string &name = "auto_attack", const spell_data_t* s = spell_data_t::nil() ):
-    hunter_melee_attack_t( name, player, s ), first( true )
+    hunter_melee_attack_t( name, player, s ), first( true ), talon_strike( nullptr )
   {
     school             = SCHOOL_PHYSICAL;
     base_execute_time  = player -> main_hand_weapon.swing_time;
@@ -3902,6 +3914,12 @@ struct melee_t: public hunter_melee_attack_t
     repeating          = true;
     special            = false;
     trigger_gcd        = timespan_t::zero();
+
+    if ( p() -> artifacts.talon_strike.rank() )
+    {
+      talon_strike = new talon_strike_t( player );
+      add_child( talon_strike );
+    }
   }
 
   virtual timespan_t execute_time() const override
@@ -3919,6 +3937,25 @@ struct melee_t: public hunter_melee_attack_t
     if ( first )
       first = false;
     hunter_melee_attack_t::execute();
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    hunter_melee_attack_t::impact( s );
+
+    if ( td( s -> target ) -> dots.on_the_trail -> is_ticking() )
+    {
+      // TODO: Wait for spell data to reflect actual values
+      // Max extended duration of 36s
+      timespan_t extension = std::min( timespan_t::from_seconds( 6.0 ), timespan_t::from_seconds( 36.0 ) - td( s -> target ) -> dots.on_the_trail -> remains() );
+      td( s -> target ) -> dots.on_the_trail -> extend_duration( extension );
+    }
+
+    if ( talon_strike && rng().roll( 0.10 ) ) // TODO: Update with spell data when possible
+    {
+      talon_strike -> execute();
+      talon_strike -> execute();
+    }
   }
 };
 
@@ -4381,6 +4418,71 @@ struct raptor_strike_t: public hunter_melee_attack_t
       am *= 1.0 + p() -> artifacts.raptors_cry.percent();
 
     return am;
+  }
+};
+
+// On the Trail =============================================================
+
+struct on_the_trail_t: public hunter_melee_attack_t
+{
+  on_the_trail_t( hunter_t* p ):
+    hunter_melee_attack_t( "on_the_trail", p, p -> find_spell( 204081 ) )
+  {
+    background = true;
+    weapon_multiplier = 0.0;
+    tick_may_crit = false;
+  }
+
+  virtual void execute() override
+  {
+    hunter_melee_attack_t::execute();
+
+    td( execute_state -> target ) -> dots.on_the_trail -> trigger( data().duration() );
+  }
+};
+
+// Harpoon ==================================================================
+
+struct harpoon_t: public hunter_melee_attack_t
+{
+  bool first_harpoon;
+  on_the_trail_t* on_the_trail;
+  harpoon_t( hunter_t* p, const std::string& options_str ):
+    hunter_melee_attack_t( "harpoon", p, p -> specs.harpoon ), first_harpoon( true ), on_the_trail( nullptr )
+  {
+    parse_options( options_str );
+    harmful = false;
+    weapon_multiplier = 0.0;
+
+    if ( p -> artifacts.eagles_bite.rank() )
+      on_the_trail = new on_the_trail_t( p );
+  }
+
+  virtual void execute() override
+  {
+    hunter_melee_attack_t::execute();
+
+    first_harpoon = false;
+
+    if ( on_the_trail )
+      on_the_trail -> execute();
+  }
+
+  virtual bool ready() override
+  {
+    if ( first_harpoon )
+      return hunter_melee_attack_t::ready();
+
+    if ( p() -> current.distance_to_move < data().min_range() )
+      return false;
+
+    return hunter_melee_attack_t::ready();
+  }
+
+  virtual void reset() override
+  {
+    action_t::reset();
+    first_harpoon = true;
   }
 };
 
@@ -5172,6 +5274,7 @@ dots( dots_t() )
   dots.poisoned_ammo = target -> get_dot( "poisoned_ammo", p );
   dots.piercing_shots = target -> get_dot( "piercing_shots", p );
   dots.lacerate = target -> get_dot( "lacerate", p );
+  dots.on_the_trail = target -> get_dot( "on_the_trail", p );
 
   debuffs.hunters_mark      = buff_creator_t( *this, "hunters_mark" )
                                 .spell( p -> find_spell( 185365 ) );
@@ -5241,13 +5344,14 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "freezing_trap"         ) return new          freezing_trap_t( this, options_str );
   if ( name == "flanking_strike"       ) return new        flanking_strike_t( this, options_str );
   if ( name == "fury_of_the_eagle"     ) return new      fury_of_the_eagle_t( this, options_str );
-  if ( name == "piercing_shot"         ) return new          piercing_shot_t( this, options_str );
+  if ( name == "harpoon"               ) return new                harpoon_t( this, options_str );
   if ( name == "kill_command"          ) return new           kill_command_t( this, options_str );
   if ( name == "lacerate"              ) return new               lacerate_t( this, options_str );
   if ( name == "marked_shot"           ) return new            marked_shot_t( this, options_str );
   if ( name == "mongoose_bite"         ) return new          mongoose_bite_t( this, options_str );
   if ( name == "multishot"             ) return new             multi_shot_t( this, options_str );
   if ( name == "multi_shot"            ) return new             multi_shot_t( this, options_str );
+  if ( name == "piercing_shot"         ) return new          piercing_shot_t( this, options_str );
   if ( name == "raptor_strike"         ) return new          raptor_strike_t( this, options_str );
   if ( name == "sentinel"              ) return new               sentinel_t( this, options_str );
   if ( name == "sidewinders"           ) return new            sidewinders_t( this, options_str );
@@ -5425,7 +5529,7 @@ void hunter_t::init_spells()
   // Glyphs
   glyphs.arachnophobia       = find_glyph_spell( "Glyph of Arachnophobia" );
   glyphs.lesser_proportion   = find_glyph_spell( "Glyph of Lesser Proportion" );
-  glyphs.nesignwarys_nemesis = find_glyph_spell( "Glyph of Nesingwary's Nemesis'" );
+  glyphs.nesingwarys_nemesis = find_glyph_spell( "Glyph of Nesingwary's Nemesis'" );
   glyphs.sparks              = find_glyph_spell( "Glyph of Sparks" );
   glyphs.bullseye            = find_glyph_spell( "Glyph of the Bullseye" );
   glyphs.firecracker         = find_glyph_spell( "Glyph of the Firecracker" );
@@ -5712,7 +5816,7 @@ void hunter_t::init_gains()
   gains.dire_beast           = get_gain( "dire_beast" );
   gains.aspect_of_the_wild   = get_gain( "aspect_of_the_wild" );
   gains.spitting_cobra       = get_gain( "spitting_cobra" );
-  gains.nesingwarys_trapping_treads = get_gain( "nesignwarys_trapping_treads" );
+  gains.nesingwarys_trapping_treads = get_gain( "nesingwarys_trapping_treads" );
 }
 
 // hunter_t::init_position ==================================================
