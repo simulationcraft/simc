@@ -12,16 +12,10 @@
 // Beast Mastery
 //  Artifacts
 //   - Cleanup duplicate code for Beast Cleave
-//
-// Marksmanship
-//  Talents
-//   - Sentinel
-//  Artifacts
+//   - Update behavior for T18 4pc
 //
 // Survival
 //   - Harpoon
-//  Talents
-//   - Steel Trap
 //  Artifacts
 //   - Eagle's Claw
 //   - Talon Strike
@@ -166,6 +160,7 @@ public:
     buff_t* spitting_cobra;
     buff_t* t18_2p_rapid_fire;
     buff_t* t18_2p_dire_longevity;
+    buff_t* t19_4p_mongoose_power;
   } buffs;
 
   // Cooldowns
@@ -687,6 +682,9 @@ public:
 
     if ( lone_wolf )
       am *= 1.0 + p() -> talents.lone_wolf -> effectN( 1 ).percent();
+
+    if ( p() -> buffs.t19_4p_mongoose_power -> up() && ab::special )
+      am *= 1.0 + p() -> buffs.t19_4p_mongoose_power -> default_value;
 
     return am;
   }
@@ -3221,11 +3219,13 @@ struct trick_shot_t: public hunter_ranged_attack_t
 //   Careful Aim
 struct legacy_of_the_windrunners_t: hunter_ranged_attack_t
 {
-  legacy_of_the_windrunners_t( hunter_t* p, const std::string& name ):
-    hunter_ranged_attack_t( name, p, p -> find_spell( 191043 ) )
+  legacy_of_the_windrunners_t( hunter_t* p ):
+    hunter_ranged_attack_t( "legacy_of_the_windrunners", p, p -> artifacts.legacy_of_the_windrunners )
   {
     background = true;
     proc = true;
+    weapon_multiplier = p -> find_spell( 191043 ) -> effectN( 2 ).percent();
+    weapon = &p -> main_hand_weapon;
 
     //Rather than simulate 6 attacks, just treat it as one attack
     base_multiplier *= 6.0;
@@ -3330,7 +3330,7 @@ struct aimed_shot_t: public hunter_ranged_attack_t
     // Legacy of the Windrunners
     if ( p -> artifacts.legacy_of_the_windrunners.rank() )
     {
-      legacy_of_the_windrunners = new legacy_of_the_windrunners_t( p, "artifact" );
+      legacy_of_the_windrunners = new legacy_of_the_windrunners_t( p );
       add_child( legacy_of_the_windrunners );
     }
 
@@ -3391,7 +3391,7 @@ struct aimed_shot_t: public hunter_ranged_attack_t
 
     // Thas'dorah's proc has a 1/6 chance to fire 6 mini Aimed Shots.
     // Proc chance missing from spell data.
-    if ( legacy_of_the_windrunners && rng().roll( 0.167 ) )
+    if ( legacy_of_the_windrunners && rng().roll( p() -> artifacts.legacy_of_the_windrunners.data().proc_chance() ) )
       legacy_of_the_windrunners -> execute();
 
     if ( p() -> legendary.mm_feet )
@@ -3904,6 +3904,9 @@ struct mongoose_bite_t: hunter_melee_attack_t
   {
     hunter_melee_attack_t::execute();
 
+    if ( p() -> sets.has_set_bonus( HUNTER_SURVIVAL, T19, B4 ) && p() -> buffs.mongoose_fury -> stack() == 5 )
+      p() -> buffs.t19_4p_mongoose_power -> trigger();
+
     p() -> buffs.mongoose_fury -> trigger();
 
     if ( p() -> sets.has_set_bonus( HUNTER_SURVIVAL, T18, B4 ) && rng().roll( p() -> sets.set( HUNTER_SURVIVAL, T18, B4 ) -> proc_chance() ) )
@@ -3948,13 +3951,10 @@ struct flanking_strike_t: hunter_melee_attack_t
     if ( p() -> active.pet )
       p() -> active.pet -> active.flanking_strike -> execute();
 
-    // TODO: Move this to Pet Flanking Strike. Fix hardcoding.
-    double proc_chance = p() -> cache.mastery_value() * 0.25;
-    // Double proc rate for Survival Hunters. Fix hardcoding.
-    if ( p() -> specialization() == HUNTER_SURVIVAL )
-    {
-      proc_chance *= 2.0;
-    }
+    double proc_chance = p() -> cache.mastery_value() * 0.50;
+
+    if ( p() -> sets.has_set_bonus( HUNTER_SURVIVAL, T19, B2 ) )
+      proc_chance *= p() -> sets.set( HUNTER_SURVIVAL, T19, B2 ) -> effectN( 1 ).base_value();
 
     if ( p() -> buffs.aspect_of_the_eagle -> up() )
       proc_chance *= 1.0 + p() -> specs.aspect_of_the_eagle -> effectN( 2 ).percent();
@@ -5472,6 +5472,7 @@ void hunter_t::create_buffs()
     .max_stack( 6 );
 
   buffs.aspect_of_the_eagle = buff_creator_t( this, 186289, "aspect_of_the_eagle" )
+    .cd( timespan_t::zero() )
     .default_value( find_spell( 186289 ) -> effectN( 1 ).percent() );
 
   if ( artifacts.aspect_of_the_skylord.rank() )
@@ -5498,6 +5499,9 @@ void hunter_t::create_buffs()
   buffs.t18_2p_dire_longevity = buff_creator_t( this, 215911, "dire_longevity" )
     .default_value( find_spell( 215911 ) -> effectN( 1 ).base_value() )
     .max_stack( 8 );
+
+  buffs.t19_4p_mongoose_power = buff_creator_t( this, 211362, "mongoose_power" )
+    .default_value( find_spell( 211362 ) -> effectN( 1 ).percent() );
 }
 
 bool hunter_t::init_special_effects()

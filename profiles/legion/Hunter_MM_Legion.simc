@@ -3,7 +3,7 @@ level=110
 race=gnome
 role=attack
 position=ranged_back
-talents=1113311
+talents=1113321
 artifact=http://beta.wowdb.com/artifact-calculator#OJJZbbbbJIAAAAAAAAAA
 spec=marksmanship
 
@@ -11,8 +11,7 @@ actions.precombat+=/summon_pet
 actions.precombat+=/volley
 
 actions=auto_shot
-actions+=/use_item,name=horn_of_valor
-actions+=/trueshot
+actions+=/trueshot,if=!artifact.bullseye.enabled|target.time_to_die>cooldown.trueshot.duration+15|target.time_to_die<18|buff.bullseye.stack>15
 actions+=/a_murder_of_crows
 actions+=/barrage
 actions+=/piercing_shot
@@ -20,10 +19,11 @@ actions+=/explosive_shot
 actions+=/black_arrow
 actions+=/windburst
 actions+=/marked_shot,if=!talent.patient_sniper.enabled|debuff.vulnerability.remains<2
-actions+=/aimed_shot,if=focus+cast_regen>80
+actions+=/aimed_shot,if=cast_time<debuff.vulnerability.remains&(focus+cast_regen>80|!debuff.hunters_mark.up)
 actions+=/multishot,if=spell_targets.multishot>1
 actions+=/arcane_shot
-actions+=/sidewinders,if=(buff.marking_targets.up)|charges=2
+actions+=/sidewinders,if=!debuff.hunters_mark.up&(buff.marking_targets.up|buff.trueshot.up|charges=2)
+actions+=/aimed_shot,if=focus+cast_regen>80
 
 head=Head,stats=297armor_1340sta
 neck=Neck,stats=754sta
@@ -54,5 +54,3 @@ main_hand=thasdorah_legacy_of_the_windrunners,id=128826
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
 summon_pet=cat
-
-enemy=enemy1
