@@ -2379,7 +2379,6 @@ struct rip_state_t : public action_state_t
 
 // Ashamane's Frenzy ========================================================
 // FIXME: First tick sometimes occurs at 11 stacks.
-// Mar 23 2016: Does not snapshot Savage Roar or Tiger's Fury. (bug?)
 
 struct ashamanes_frenzy_t : public cat_attack_t
 {
@@ -4224,17 +4223,6 @@ struct cat_form_t : public druid_spell_t
     {
       player -> init_beast_weapon( player -> cat_weapon, 1.0 );
       player -> cat_melee_attack = new cat_attacks::cat_melee_t( player );
-
-      // Fangs of Ashamane act as a 2 handed weapon when in Cat Form.
-      if ( player -> fangs_of_ashamane )
-      {
-        unsigned ilevel = player -> items[ SLOT_MAIN_HAND ].item_level();
-        double mod = sim -> dbc.item_damage_2h( ilevel ).values[ ITEM_QUALITY_ARTIFACT ]
-                   / sim -> dbc.item_damage_1h( ilevel ).values[ ITEM_QUALITY_ARTIFACT ];
-        player -> cat_weapon.min_dmg *= mod;
-        player -> cat_weapon.max_dmg *= mod;
-        player -> cat_weapon.damage  *= mod;
-      }
     }
   }
 
@@ -7885,6 +7873,14 @@ static void fangs_of_ashamane( special_effect_t& effect )
 {
   druid_t* s = debug_cast<druid_t*>( effect.player );
   init_special_effect( s, DRUID_FERAL, s -> fangs_of_ashamane, effect );
+
+  // Fangs of Ashamane act as a 2 handed weapon when in Cat Form.
+  unsigned ilevel = s -> items[ SLOT_MAIN_HAND ].item_level();
+  double mod = s -> sim -> dbc.item_damage_2h( ilevel ).values[ ITEM_QUALITY_ARTIFACT ]
+              / s -> sim -> dbc.item_damage_1h( ilevel ).values[ ITEM_QUALITY_ARTIFACT ];
+  s -> cat_weapon.min_dmg *= mod;
+  s -> cat_weapon.max_dmg *= mod;
+  s -> cat_weapon.damage  *= mod;
 }
 
 // Legion Legendaries
