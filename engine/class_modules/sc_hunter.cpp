@@ -3261,9 +3261,6 @@ struct legacy_of_the_windrunners_t: hunter_ranged_attack_t
     weapon_multiplier = p -> find_spell( 191043 ) -> effectN( 2 ).percent();
     weapon = &p -> main_hand_weapon;
 
-    //Rather than simulate 6 attacks, just treat it as one attack
-    base_multiplier *= 6.0;
-
     // Wind Arrows
     if ( p -> artifacts.wind_arrows.rank() )
       base_multiplier *= 1.0 +  p -> artifacts.wind_arrows.percent();
@@ -3423,10 +3420,15 @@ struct aimed_shot_t: public hunter_ranged_attack_t
     if ( trick_shot )
       trick_shot -> execute();
 
-    // Thas'dorah's proc has a 1/6 chance to fire 6 mini Aimed Shots.
-    // Proc chance missing from spell data.
     if ( legacy_of_the_windrunners && rng().roll( p() -> artifacts.legacy_of_the_windrunners.data().proc_chance() ) )
-      legacy_of_the_windrunners -> execute();
+    {
+      legacy_of_the_windrunners -> schedule_execute();
+      legacy_of_the_windrunners -> schedule_execute();
+      legacy_of_the_windrunners -> schedule_execute();
+      legacy_of_the_windrunners -> schedule_execute();
+      legacy_of_the_windrunners -> schedule_execute();
+      legacy_of_the_windrunners -> schedule_execute();
+    }
 
     if ( p() -> legendary.mm_feet )
       p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
@@ -3953,8 +3955,8 @@ struct melee_t: public hunter_melee_attack_t
 
     if ( talon_strike && rng().roll( 0.10 ) ) // TODO: Update with spell data when possible
     {
-      talon_strike -> execute();
-      talon_strike -> execute();
+      talon_strike -> schedule_execute();
+      talon_strike -> schedule_execute();
     }
   }
 };
