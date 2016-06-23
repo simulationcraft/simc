@@ -7875,7 +7875,7 @@ static void fangs_of_ashamane( special_effect_t& effect )
   init_special_effect( s, DRUID_FERAL, s -> fangs_of_ashamane, effect );
 
   // Fangs of Ashamane act as a 2 handed weapon when in Cat Form.
-  if ( s -> cat_weapon )
+  if ( s -> cat_weapon.type == WEAPON_BEAST )
   {
     unsigned ilevel = s -> items[ SLOT_MAIN_HAND ].item_level();
     double mod = s -> sim -> dbc.item_damage_2h( ilevel ).values[ ITEM_QUALITY_ARTIFACT ]
