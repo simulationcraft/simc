@@ -3298,7 +3298,6 @@ struct judgment_t : public paladin_melee_attack_t
     if ( p -> specialization() == PALADIN_RETRIBUTION )
     {
       base_costs[ RESOURCE_MANA ] = 0;
-      base_add_multiplier = data().effectN( 1 ).chain_multiplier();
       aoe = 1 + p -> passives.retribution_paladin -> effectN( 3 ).base_value();
       base_multiplier *= 1.0 + p -> artifact.highlords_judgment.percent();
 
