@@ -161,6 +161,7 @@ public:
     buff_t* t18_2p_rapid_fire;
     buff_t* t18_2p_dire_longevity;
     buff_t* t19_4p_mongoose_power;
+    buff_t* sentinels_sight;
   } buffs;
 
   // Cooldowns
@@ -193,6 +194,7 @@ public:
     gain_t* chimaera_shot;
     gain_t* aspect_of_the_wild;
     gain_t* spitting_cobra;
+    gain_t* nesingwarys_trapping_treads;
   } gains;
 
   // Procs
@@ -211,6 +213,7 @@ public:
     proc_t* t18_4pc_sv;
     proc_t* no_vuln_aimed_shot;
     proc_t* no_vuln_marked_shot;
+    proc_t* zevrims_hunger;
   } procs;
 
   real_ppm_t* ppm_hunters_mark;
@@ -419,6 +422,8 @@ public:
 
   player_t* last_true_aim_target;
 
+  bool clear_next_hunters_mark;
+
   hunter_t( sim_t* sim, const std::string& name, race_e r = RACE_NONE ):
     player_t( sim, HUNTER, name, r ),
     active( actives_t() ),
@@ -448,7 +453,8 @@ public:
     stats_tier17_4pc_bm( nullptr ),
     stats_tier18_4pc_bm( nullptr ),
     pet_multiplier( 1.0 ),
-    last_true_aim_target()
+    last_true_aim_target(),
+    clear_next_hunters_mark( true )
   {
     // Cooldowns
     cooldowns.explosive_shot  = get_cooldown( "explosive_shot" );
@@ -705,6 +711,9 @@ public:
 
     if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T19, B4 ) && p() -> buffs.trueshot -> up() )
       cost *= 0.50; //TODO: Wait to see if spell data is updated with a value
+
+    if ( p() -> legendary.bm_waist && p() -> buffs.bestial_wrath -> check() )
+      cost *= 1.0 + p() -> find_spell( 207318 ) -> effectN( 1 ).percent();
 
     return cost;
   }
@@ -2889,6 +2898,9 @@ struct multi_shot_t: public hunter_ranged_attack_t
           trigger_piercing_shots( s );
       }
     }
+
+    if ( p() -> legendary.mm_waist )
+      p() -> buffs.sentinels_sight -> trigger();
   }
 
   virtual bool ready() override
@@ -3449,6 +3461,12 @@ struct aimed_shot_t: public hunter_ranged_attack_t
     if ( p() -> buffs.trick_shot -> up() )
       am *= 1.0 + p() -> buffs.trick_shot -> default_value;
 
+    if ( p() -> buffs.sentinels_sight -> up() )
+    {
+      am *= 1.0 + p() -> buffs.sentinels_sight -> check_stack_value();
+      p() -> buffs.sentinels_sight -> expire();
+    }
+
     return am;
   }
 };
@@ -3557,6 +3575,7 @@ struct marked_shot_t: public hunter_ranged_attack_t
 
     // Simulated as AOE for simplicity.
     aoe               = -1;
+    travel_speed      = 0.0;
     weapon            = &p -> main_hand_weapon;
     weapon_multiplier = p -> find_spell( 212621 ) -> effectN( 2 ).percent();
 
@@ -3572,17 +3591,36 @@ struct marked_shot_t: public hunter_ranged_attack_t
 
   virtual void execute() override
   {
+    if ( p() -> legendary.mm_ring && rng().roll( p() -> legendary.mm_ring -> driver() -> effectN( 1 ).percent() ) )
+    {
+      p() -> clear_next_hunters_mark = false;
+      p() -> procs.zevrims_hunger -> occur();
+    }
+    else
+      p() -> clear_next_hunters_mark = true;
+
     p() -> no_steady_focus();
     hunter_ranged_attack_t::execute();
 
-    // Consume Hunter's Mark and apply appropriate debuffs. Vulnerable and Deadeye apply on cast.
+    // Consume Hunter's Mark and apply appropriate debuffs. Vulnerable applies on cast.
+    bool no_vuln_check = true;
     std::vector<player_t*> marked_shot_targets = execute_state -> action -> target_list();
     for ( size_t i = 0; i < marked_shot_targets.size(); i++ )
     {
+      if ( !td( marked_shot_targets[i] ) -> debuffs.vulnerable -> check() && no_vuln_check )
+      {
+        p() -> procs.no_vuln_marked_shot -> occur();
+        no_vuln_check = false; // Don't show multiple procs for one cast
+      }
+
       if ( td( marked_shot_targets[i] ) -> debuffs.hunters_mark -> up() )
-          td( marked_shot_targets[i] ) -> debuffs.vulnerable -> trigger();
+        td( marked_shot_targets[i] ) -> debuffs.vulnerable -> trigger();
+
+      if ( p() -> clear_next_hunters_mark )
+        td( marked_shot_targets[i] ) -> debuffs.hunters_mark -> expire();
     }
-    p() -> buffs.hunters_mark_exists -> expire();
+    if ( p() -> clear_next_hunters_mark )
+      p() -> buffs.hunters_mark_exists -> expire();
 
     if ( p() -> artifacts.call_of_the_hunter.rank() && p() -> ppm_call_of_the_hunter -> trigger() )
       call_of_the_hunter -> execute();
@@ -3593,15 +3631,7 @@ struct marked_shot_t: public hunter_ranged_attack_t
 
   virtual void impact( action_state_t* s ) override
   {
-    hunter_td_t* td = this -> td( s -> target );
-
-    // Only register hits against targets with Hunter's Mark.
-    if ( td -> debuffs.hunters_mark -> up() )
-    {
-      hunter_ranged_attack_t::impact( s );
-
-      td -> debuffs.hunters_mark -> expire();
-    }
+    hunter_ranged_attack_t::impact( s );
 
     if ( s -> result == RESULT_CRIT )
     {
@@ -3611,9 +3641,6 @@ struct marked_shot_t: public hunter_ranged_attack_t
       if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T18, B2 ) )
         p() -> buffs.t18_2p_rapid_fire -> trigger();
     }
-
-    if ( !td -> debuffs.vulnerable -> check() )
-      p() -> procs.no_vuln_marked_shot -> occur();
   }
 
   // Only schedule the attack if a valid target
@@ -3802,6 +3829,14 @@ struct sidewinders_t: hunter_ranged_attack_t
 
     if ( p() -> legendary.mm_feet )
       p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    hunter_ranged_attack_t::impact( s );
+
+    if ( p() -> legendary.mm_waist )
+      p() -> buffs.sentinels_sight -> trigger();
   }
 };
 
@@ -4954,6 +4989,14 @@ struct steel_trap_t: public hunter_spell_t
     tick_may_crit = true;
     trigger_gcd = p -> talents.steel_trap -> gcd();
   }
+
+  virtual void execute() override
+  {
+    hunter_spell_t::execute();
+
+    if ( p() -> legendary.sv_feet )
+      p() -> resource_gain( RESOURCE_FOCUS, p() -> find_spell( 212575 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ), p() -> gains.nesingwarys_trapping_treads );
+  }
 };
 
 // Dragonsfire Grenade ==============================================================
@@ -5529,6 +5572,10 @@ void hunter_t::create_buffs()
 
   buffs.t19_4p_mongoose_power = buff_creator_t( this, 211362, "mongoose_power" )
     .default_value( find_spell( 211362 ) -> effectN( 1 ).percent() );
+
+  buffs.sentinels_sight = buff_creator_t( this, 208913, "sentinels_sight" )
+    .default_value( find_spell( 208913 ) -> effectN( 1 ).percent() )
+    .max_stack( 20 );
 }
 
 bool hunter_t::init_special_effects()
@@ -5560,6 +5607,7 @@ void hunter_t::init_gains()
   gains.dire_beast           = get_gain( "dire_beast" );
   gains.aspect_of_the_wild   = get_gain( "aspect_of_the_wild" );
   gains.spitting_cobra       = get_gain( "spitting_cobra" );
+  gains.nesingwarys_trapping_treads = get_gain( "nesignwarys_trapping_treads" );
 }
 
 // hunter_t::init_position ==================================================
@@ -5602,6 +5650,7 @@ void hunter_t::init_procs()
   procs.t18_4pc_sv                   = get_proc( "t18_4pc_sv" );
   procs.no_vuln_aimed_shot           = get_proc( "no_vuln_aimed_shot" );
   procs.no_vuln_marked_shot          = get_proc( "no_vuln_marked_shot" );
+  procs.zevrims_hunger               = get_proc( "zevrims_hunger" );
 }
 
 // hunter_t::init_rng =======================================================
