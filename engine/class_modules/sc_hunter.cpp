@@ -2128,6 +2128,11 @@ struct dire_critter_t: public hunter_secondary_pet_t
     action_t* titans_thunder;
   } active;
 
+  struct buffs_t
+  {
+    buff_t* bestial_wrath;
+  } buffs;
+
   dire_critter_t( hunter_t& owner, size_t index ):
     hunter_secondary_pet_t( owner, std::string( "dire_beast_" ) + util::to_string( index ) )
   {
@@ -2166,7 +2171,19 @@ struct dire_critter_t: public hunter_secondary_pet_t
     if ( o() -> artifacts.beast_master.rank() )
       cpm *= 1.0 + o() -> artifacts.beast_master.percent();
 
+    if ( buffs.bestial_wrath -> up() )
+      cpm *= 1.0 + buffs.bestial_wrath -> default_value;
+
     return cpm;
+  }
+
+  virtual void create_buffs() override
+  {
+    hunter_secondary_pet_t::create_buffs();
+
+    buffs.bestial_wrath = buff_creator_t( this, 211183, "bestial_wrath" )
+      .default_value( find_spell( 211183 ) -> effectN( 1 ).percent() )
+      .quiet( true );
   }
 };
 
@@ -4479,13 +4496,15 @@ struct dire_beast_t: public hunter_spell_t
     hunter_spell_t::execute();
     p() -> no_steady_focus();
 
+    // Trigger buffs
     timespan_t duration = p() -> buffs.dire_beast -> buff_duration + timespan_t::from_millis( p() -> buffs.t18_2p_dire_longevity -> check_stack_value() );
-
     p() -> buffs.dire_beast -> trigger( 1, p() -> buffs.dire_beast -> DEFAULT_VALUE(), -1.0, duration );
-
     p() -> buffs.t18_2p_dire_longevity -> expire();
 
+    // Adjust BW cd
     timespan_t t = timespan_t::from_seconds( p() -> specs.dire_beast -> effectN( 1 ).base_value() );
+    if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T19, B2 ) )
+      t += timespan_t::from_seconds( p() -> sets.set( HUNTER_BEAST_MASTERY, T19, B2 ) -> effectN( 1 ).base_value() );
     p() -> cooldowns.bestial_wrath -> adjust( -t );
 
     pet_t* beast = nullptr;
@@ -4545,6 +4564,14 @@ struct bestial_wrath_t: public hunter_spell_t
   {
     p() -> buffs.bestial_wrath  -> trigger();
     p() -> active.pet -> buffs.bestial_wrath -> trigger();
+    if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T19, B4 ) )
+    {
+      for ( size_t i = 0; i < p() -> pet_dire_beasts.size(); i++ )
+      {
+        if ( ! p() -> pet_dire_beasts[ i ] -> is_sleeping() )
+          p() -> pet_dire_beasts[ i ] -> buffs.bestial_wrath -> trigger();
+      }
+    }
     if ( p() -> artifacts.master_of_beasts.rank() )
       p() -> hati -> buffs.bestial_wrath -> trigger();
     if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T17, B4 ) )
