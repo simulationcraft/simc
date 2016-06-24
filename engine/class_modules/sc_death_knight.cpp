@@ -2842,7 +2842,8 @@ struct frostscythe_t : public death_knight_melee_attack_t
 
     weapon = &( player -> main_hand_weapon );
 
-    crit_bonus_multiplier *= p -> talent.frostscythe -> effectN( 3 ).percent();
+    // TODO: Check how this is exactly in game
+    crit_bonus_multiplier *= 1.0 + p -> spec.death_knight -> effectN( 5 ).percent();
   }
 
   void execute() override
