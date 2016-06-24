@@ -119,6 +119,8 @@ namespace item
   void memento_of_angerboda( special_effect_t& );
   void nightmare_egg_shell( special_effect_t& );
   void obelisk_of_the_void( special_effect_t& );
+  void shivermaws_jawbone( special_effect_t& );
+  void spiked_counterweight( special_effect_t& );
 }
 
 namespace gem
@@ -4181,7 +4183,90 @@ void item::memento_of_angerboda( special_effect_t& effect )
 void item::obelisk_of_the_void( special_effect_t& effect )
 {
   effect.custom_buff = stat_buff_creator_t( effect.player, "collapsing_shadow", effect.player -> find_spell( 215476 ), effect.item )
-    .add_stat( STAT_AGI_INT, effect.driver() -> effectN( 2 ).average( effect.item ) );
+    .add_stat( effect.player -> convert_hybrid_stat( STAT_AGI_INT ), effect.driver() -> effectN( 2 ).average( effect.item ) );
+}
+
+struct ice_bomb_t : public spell_t
+{
+  buff_t* buff;
+
+  ice_bomb_t( special_effect_t& effect ) : 
+    spell_t( "ice_bomb", effect.player, effect.driver() )
+  {
+    background = may_crit = true;
+    callbacks = false;
+    aoe = -1;
+    item = effect.item;
+
+    base_dd_min = base_dd_max = data().effectN( 1 ).average( item );
+    buff = stat_buff_creator_t( effect.player, "frigid_armor", effect.player -> find_spell( 214589 ), effect.item );
+  }
+
+  void execute() override
+  {
+    spell_t::execute();
+
+    buff -> trigger( num_targets_hit );
+  }
+};
+
+void item::shivermaws_jawbone( special_effect_t& effect )
+{
+  effect.execute_action = new ice_bomb_t( effect );
+}
+
+struct spiked_counterweight_constructor_t : public item_targetdata_initializer_t
+{
+  spiked_counterweight_constructor_t( unsigned iid, const std::vector< slot_e >& s ) :
+    item_targetdata_initializer_t( iid, s )
+  {}
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    const special_effect_t* effect = find_effect( td -> source );
+    if ( effect == 0 )
+    {
+      td -> debuff.brutal_haymaker = buff_creator_t( *td, "brutal_haymaker" );
+    }
+    else
+    {
+      assert( ! td -> debuff.brutal_haymaker );
+
+      td -> debuff.brutal_haymaker = buff_creator_t( td -> target, "brutal_haymaker", td -> source -> find_spell( 214169 ) )
+        .default_value( td -> source -> find_spell( 214169 ) -> effectN( 2 ).percent() );
+      td -> debuff.brutal_haymaker -> reset();
+    }
+  }
+};
+
+struct brutal_haymaker_t : public spell_t
+{
+  brutal_haymaker_t( special_effect_t& effect ) :
+    spell_t( "brutal_haymaker", effect.player, effect.driver() -> effectN( 1 ).trigger() )
+  {
+    background = may_crit = true;
+    callbacks = false;
+    item = effect.item;
+
+    base_dd_min = base_dd_min = data().effectN( 1 ).average( item );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      player -> get_target_data( s -> target ) -> debuff.brutal_haymaker -> trigger();
+    }
+  }
+};
+
+void item::spiked_counterweight( special_effect_t& effect )
+{
+  effect.execute_action = new brutal_haymaker_t( effect );
+
+  new dbc_proc_callback_t( effect.item, effect );
 }
 
 } // UNNAMED NAMESPACE
@@ -4907,6 +4992,8 @@ void unique_gear::register_special_effects()
   register_special_effect( 214798, item::memento_of_angerboda           );
   register_special_effect( 214340, item::nightmare_egg_shell            );
   register_special_effect( 215467, item::obelisk_of_the_void            );
+  register_special_effect( 214584, item::shivermaws_jawbone             );
+  register_special_effect( 214168, item::spiked_counterweight           );
 
   /* Warlords of Draenor 6.2 */
   register_special_effect( 184270, item::mirror_of_the_blademaster      );
@@ -5119,7 +5206,7 @@ void unique_gear::register_target_data_initializers( sim_t* sim )
 
   sim -> register_target_data_initializer( empty_drinking_horn_constructor_t( 124238, trinkets ) );
   sim -> register_target_data_initializer( prophecy_of_fear_constructor_t( 124230, trinkets ) );
-
+  sim -> register_target_data_initializer( spiked_counterweight_constructor_t( 136715, trinkets ) );
 }
 
 static const special_effect_t* find_special_effect( player_t* actor, unsigned spell_id )

@@ -537,6 +537,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
   {
     debuff_t* mark_of_doom;
     debuff_t* fel_burn;
+    debuff_t* brutal_haymaker;
   } debuff;
 
   struct atd_dot_t
@@ -5601,6 +5602,7 @@ public:
   virtual double composite_target_multiplier( player_t* target ) const
   {
     double m = target -> composite_player_vulnerability( get_school() );
+
     if ( target -> race == RACE_DEMON &&
          player -> buffs.demon_damage_buff &&
          player -> buffs.demon_damage_buff -> up() )
@@ -5608,6 +5610,13 @@ public:
       // Bad idea to hardcode the effect number, but it'll work for now. The buffs themselves are
       // stat buffs.
       m *= 1.0 + player -> buffs.demon_damage_buff -> data().effectN( 2 ).percent();
+    }
+
+    actor_target_data_t* td = player -> get_target_data( target );
+
+    if ( td )
+    {
+      m *= 1.0 + td -> debuff.brutal_haymaker -> value();
     }
 
     return m;
