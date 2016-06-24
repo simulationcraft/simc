@@ -1931,7 +1931,7 @@ struct melee_t : public death_knight_melee_attack_t
         p() -> buffs.killing_machine -> trigger();
       }
 
-      if ( frozen_pulse && p() -> resources.current[ RESOURCE_RUNE ] < 1 )
+      if ( frozen_pulse && p() -> _runes.runes_full() == 0 )
       {
         frozen_pulse -> target = s -> target;
         frozen_pulse -> schedule_execute();
@@ -4535,6 +4535,7 @@ void death_knight_t::create_buffs()
                               .duration( find_class_spell( "Icebound Fortitude" ) -> duration() )
                               .cd( timespan_t::zero() );
   buffs.icy_talons          = haste_buff_creator_t( this, "icy_talons", find_spell( 194879 ) )
+                              .add_invalidate( CACHE_ATTACK_SPEED )
                               .default_value( find_spell( 194879 ) -> effectN( 1 ).percent() )
                               .trigger_spell( talent.icy_talons );
   buffs.killing_machine     = buff_creator_t( this, "killing_machine", spec.killing_machine -> effectN( 1 ).trigger() )
