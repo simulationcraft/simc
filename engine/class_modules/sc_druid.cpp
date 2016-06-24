@@ -288,6 +288,7 @@ public:
     spell_t*                        starfall;
     spell_t*                        echoing_stars;
     spells::starshards_t*           starshards;
+    attack_t*                        ashamanes_rip;
   } active;
 
   // Pets
@@ -2228,8 +2229,15 @@ public:
 
     base_t::execute();
 
-    if ( energize_resource == RESOURCE_COMBO_POINT && hit_any_target && attack_critical )
-      trigger_primal_fury();
+    if ( energize_resource == RESOURCE_COMBO_POINT && energize_amount > 0 && hit_any_target )
+    {
+      trigger_ashamanes_rip();
+
+      if ( attack_critical )
+      {
+        trigger_primal_fury();
+      }
+    }
 
     if ( ! hit_any_target )
       trigger_energy_refund();
@@ -2304,6 +2312,25 @@ public:
     {
       p() -> proc.the_wildshapers_clutch -> occur();
       trigger_primal_fury();
+    }
+  }
+
+  void trigger_ashamanes_rip()
+  {
+    if ( ! p() -> artifact.ashamanes_bite.rank() )
+      return;
+    if ( ! ( energize_resource == RESOURCE_COMBO_POINT && energize_amount > 0 ) )
+      return;
+    if ( ! hit_any_target )
+      return;
+
+    if ( p() -> rng().roll( p() -> artifact.ashamanes_bite.data().proc_chance() ) )
+    {
+      if ( td( execute_state -> target ) -> dots.rip -> is_ticking() )
+      {
+        p() -> active.ashamanes_rip -> target = execute_state -> target;
+        p() -> active.ashamanes_rip -> schedule_execute();
+      }
     }
   }
 }; // end druid_cat_attack_t
@@ -2420,6 +2447,31 @@ struct ashamanes_frenzy_t : public cat_attack_t
   { assert( s -> result_amount == 0.0 ); }
 };
 
+// Ashamane's Rip ===========================================================
+
+struct ashamanes_rip_t : public cat_attack_t
+{
+  ashamanes_rip_t( druid_t* p ) :
+    cat_attack_t( "ashamanes_rip", p, p -> find_spell( 210705 ) )
+  {
+    background = true;
+    may_miss = may_block = may_dodge = may_parry = false;
+      
+    base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> artifact.razor_fangs.percent();
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  { return td( s -> target ) -> dots.rip -> remains(); }
+
+  virtual void execute() override
+  {
+    assert( td( target ) -> dots.rip -> is_ticking() );
+
+    cat_attack_t::execute();
+  }
+};
+
 // Berserk ==================================================================
 
 struct berserk_t : public cat_attack_t
@@ -2483,87 +2535,11 @@ struct brutal_slash_t : public cat_attack_t
 
 struct ferocious_bite_t : public cat_attack_t
 {
-  struct ashamanes_rip_state_t : public action_state_t
-  {
-    double amount;
-    druid_t* druid;
-
-    ashamanes_rip_state_t( druid_t* p, action_t* a, player_t* t ) :
-      action_state_t( a, t ), druid( p )
-    {}
-
-    druid_td_t* td()
-    { return druid -> get_target_data( action -> target ); }
-
-    void initialize() override
-    {
-      action_state_t::initialize();
-
-      assert( td() -> dots.rip -> is_ticking() );
-
-      td() -> dots.rip -> current_action -> calculate_tick_amount( td() -> dots.rip -> state, 1.0 );
-      amount = td() -> dots.rip -> state -> result_raw;
-    }
-
-    void copy_state( const action_state_t* state ) override
-    {
-      action_state_t::copy_state( state );
-
-      amount = debug_cast<const ashamanes_rip_state_t*>( state ) -> amount;
-    }
-
-    std::ostringstream& debug_str( std::ostringstream& s ) override
-    {
-      action_state_t::debug_str( s );
-
-      s << " td=" << amount;
-
-      return s;
-    }
-  };
-
-  struct ashamanes_rip_t : public cat_attack_t
-  {
-    ashamanes_rip_t( druid_t* p ) :
-      cat_attack_t( "ashamanes_rip", p, p -> find_spell( 210705 ) )
-    {
-      background = true;
-      may_miss = may_block = may_dodge = may_parry = false;
-      
-      // Mar 03 2016: Does not benefit from Jagged Wounds.
-      // base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
-    }
-
-    void init() override
-    {
-      cat_attack_t::init();
-
-      snapshot_flags = update_flags = STATE_CRIT | STATE_TGT_CRIT | STATE_TGT_MUL_TA;
-    }
-
-    action_state_t* new_state() override
-    { return new ashamanes_rip_state_t( p(), this, target ); }
-
-    timespan_t composite_dot_duration( const action_state_t* s ) const override
-    { return td( s -> target ) -> dots.rip -> remains(); }
-
-    double base_ta( const action_state_t* s ) const override
-    { return debug_cast<const ashamanes_rip_state_t*>( s ) -> amount; }
-
-    virtual void execute() override
-    {
-      assert( td( target ) -> dots.rip -> is_ticking() );
-
-      cat_attack_t::execute();
-    }
-  };
-
   double excess_energy;
   double max_excess_energy;
   timespan_t sabertooth_total;
   timespan_t sabertooth_base;
   bool max_energy;
-  ashamanes_rip_t* ashamanes_rip;
 
   ferocious_bite_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "ferocious_bite", p, p -> find_class_spell( "Ferocious Bite" ) ),
@@ -2583,9 +2559,6 @@ struct ferocious_bite_t : public cat_attack_t
       sabertooth_base =
         timespan_t::from_seconds( p -> talent.sabertooth -> effectN( 1 ).base_value() );
     }
-
-    if ( p -> artifact.ashamanes_bite.rank() )
-      ashamanes_rip  = new ashamanes_rip_t( p );
   } 
 
   double maximum_energy() const
@@ -2645,9 +2618,6 @@ struct ferocious_bite_t : public cat_attack_t
 
       if ( sabertooth_total > timespan_t::zero() )
         td( s -> target ) -> dots.rip -> extend_duration( sabertooth_total, p() -> spec.rip -> duration() * 1.3 ); // TOCHECK: Sabertooth before or after BitW?
-
-      // Ashamane's Bite procs after Sabertooth.
-      trigger_ashamanes_bite( s );
     }
   }
 
@@ -2674,30 +2644,6 @@ struct ferocious_bite_t : public cat_attack_t
     am *= 1.0 + excess_energy / max_excess_energy;
 
     return am;
-  }
-
-  void trigger_ashamanes_bite( action_state_t* s )
-  {
-    if ( ! p() -> artifact.ashamanes_bite.rank() )
-      return;
-    if ( ! td( s -> target ) -> dots.rip -> is_ticking() )
-      return;
-
-    // 1.5% chance per 5 extra energy.
-    double energy_divisor = 5.0;
-    // Lower divisor if Berserk or Incarnation is active.
-    energy_divisor *= 1.0 + p() -> buff.berserk -> check_value();
-    energy_divisor *= 1.0 + p() -> buff.incarnation_cat -> check_value();
-
-    double chance = ( p() -> resources.current[ RESOURCE_COMBO_POINT ] + excess_energy / energy_divisor ) * 0.015;
-
-    if ( ! rng().roll( chance ) )
-      return;
-
-    p() -> proc.ashamanes_bite -> occur();
-
-    ashamanes_rip -> target = s -> target;
-    ashamanes_rip -> schedule_execute();
   }
 };
 
@@ -5994,6 +5940,8 @@ void druid_t::init_spells()
     active.galactic_guardian  = new spells::galactic_guardian_t( this );
   if ( artifact.rage_of_the_sleeper.rank() )
     active.rage_of_the_sleeper = new bear_attacks::rage_of_the_sleeper_reflect_t( this );
+  if ( artifact.ashamanes_bite.rank() )
+    active.ashamanes_rip = new cat_attacks::ashamanes_rip_t( this );
 }
 
 // druid_t::init_base =======================================================
