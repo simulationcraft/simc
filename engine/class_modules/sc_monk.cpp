@@ -185,6 +185,7 @@ public:
 
     // Brewmaster
     buff_t* bladed_armor;
+    buff_t* blackout_combo;
     buff_t* brew_stache;
     buff_t* dragonfire_brew;
     buff_t* elusive_brawler;
@@ -324,7 +325,7 @@ public:
     // Tier 100 Talents
     // Brewmaster
     const spell_data_t* elusive_dance;
-    const spell_data_t* fortified_mind;
+    const spell_data_t* blackout_combo;
     const spell_data_t* high_tolerance;
     // Windwalker
     const spell_data_t* chi_orbit;
@@ -471,6 +472,7 @@ public:
   {
     cooldown_t* brewmaster_attack;
     cooldown_t* brewmaster_active_mitigation;
+    cooldown_t* breath_of_fire;
     cooldown_t* desperate_measure;
     cooldown_t* fists_of_fury;
     cooldown_t* fortifying_brew;
@@ -585,6 +587,7 @@ public:
 
     cooldown.brewmaster_attack            = get_cooldown( "brewmaster_attack" );
     cooldown.brewmaster_active_mitigation = get_cooldown( "brews" );
+    cooldown.breath_of_fire               = get_cooldown( "breath_of_fire" );
     cooldown.fortifying_brew              = get_cooldown( "fortifying_brew" );
     cooldown.fists_of_fury                = get_cooldown( "fists_of_fury" );
     cooldown.healing_elixirs              = get_cooldown( "healing_elixirs" );
@@ -2123,6 +2126,9 @@ struct tiger_palm_t: public monk_melee_attack_t
     if ( p() -> specialization() == MONK_MISTWEAVER )
       am *= 1 + p() -> passives.aura_mistweaver_monk -> effectN( 11 ).percent();
 
+    if ( p() -> buff.blackout_combo -> up() )
+      am *= 1 + p() -> buff.blackout_combo -> data().effectN( 1 ).percent();
+
     return am;
   }
 
@@ -2178,18 +2184,16 @@ struct tiger_palm_t: public monk_melee_attack_t
           double time_reduction = data().effectN( 3 ).base_value()
             + ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T19, B4 ) ? p() -> sets.set( MONK_BREWMASTER, T19, B4 ) -> effectN( 1 ).base_value() : 0 );
 
+
           if ( p() -> artifact.face_palm.rank() )
           {
             if ( rng().roll( p() -> artifact.face_palm.percent() ) )
               time_reduction += 1;
           }
-
-          p() -> cooldown.brewmaster_active_mitigation -> adjust( timespan_t::from_seconds( time_reduction ) );
-
-          // Fortified Mind reduces Fortifying Brew's cooldown
-          if ( p() -> talent.fortified_mind -> ok() )
-            p() -> cooldown.fortifying_brew -> adjust( timespan_t::from_seconds( time_reduction ) );
         }
+
+        if ( p() -> buff.blackout_combo -> up() )
+          p() -> buff.blackout_combo -> expire();
         break;
       }
       default: break;
@@ -2684,7 +2688,7 @@ struct blackout_strike_t: public monk_melee_attack_t
     }
   }
 
-    virtual double action_multiplier() const override
+  virtual double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
 
@@ -2695,6 +2699,14 @@ struct blackout_strike_t: public monk_melee_attack_t
       am *= 1 + p() -> passives.aura_mistweaver_monk -> effectN( 10 ).percent();
     }
     return am;
+  }
+
+  void execute() override
+  {
+    monk_melee_attack_t::execute();
+
+    if ( p() -> talent.blackout_combo -> ok() )
+      p() -> buff.blackout_combo -> execute();
   }
 };
 
@@ -3340,9 +3352,13 @@ struct keg_smash_t: public monk_melee_attack_t
     if ( p() -> cooldown.brewmaster_active_mitigation -> down() )
       p() -> cooldown.brewmaster_active_mitigation -> adjust( timespan_t::from_seconds( p() -> spec.keg_smash -> effectN( 3 ).base_value() ) );
 
-    // Fortified Mind talent reduces Fortifying Brew's cooldown by 4 sec.
-    if ( p() -> talent.fortified_mind -> ok() )
-      p() -> cooldown.fortifying_brew ->adjust ( timespan_t::from_seconds( p() -> spec.keg_smash -> effectN( 3 ).base_value() ) );
+    // Blackout Combo talent reduces Brew's cooldown by 2 sec.
+    if ( p() -> buff.blackout_combo -> up() )
+    {
+      p() -> cooldown.fortifying_brew -> adjust ( timespan_t::from_seconds( p() -> buff.blackout_combo -> data().effectN( 3 ).base_value() ) );
+      p() -> cooldown.brewmaster_active_mitigation -> adjust( timespan_t::from_seconds( p() -> buff.blackout_combo -> data().effectN( 3 ).base_value() ) );
+      p() -> buff.blackout_combo -> expire();
+    }
   }
 };
 
@@ -3983,6 +3999,20 @@ struct breath_of_fire_t: public monk_spell_t
     add_child( dragonfire );
   }
 
+  virtual void update_ready( timespan_t ) override
+  {
+    timespan_t cd = cooldown -> duration;
+
+    // Update the cooldown if Blackout Combo is up
+    if ( p() -> buff.blackout_combo -> check() )
+    {
+      cd += p() -> buff.blackout_combo -> data().effectN( 2 ).time_value(); // saved as -6 seconds
+      p() -> buff.blackout_combo -> expire();
+    }
+
+    monk_spell_t::update_ready( cd );
+  }
+
   virtual void impact( action_state_t* s ) override
   {
     monk_spell_t::impact( s );
@@ -4181,6 +4211,12 @@ struct ironskin_brew_t : public monk_spell_t
         delivery -> execute();
     }
 
+    if ( p() -> buff.blackout_combo -> up() )
+    {
+      p() -> buff.elusive_brawler -> trigger();
+      p() -> buff.blackout_combo -> expire();
+    }
+
     if ( p() -> artifact.swift_as_a_coursing_river.rank() )
       p() -> buff.swift_as_a_coursing_river -> trigger();
 
@@ -4228,7 +4264,12 @@ struct purifying_brew_t: public monk_spell_t
     monk_spell_t::execute();
 
     double stagger_pct = p() -> current_stagger_tick_dmg_percent();
-    double stagger_dmg = p() -> partial_clear_stagger( p() -> spec.purifying_brew -> effectN( 1 ).percent() );
+
+    double purifying_brew_percent = p() -> spec.purifying_brew -> effectN( 1 ).percent();
+    if ( p() -> talent.elusive_dance -> ok() )
+      purifying_brew_percent += p() -> talent.elusive_dance -> effectN( 2 ).percent();
+
+    double stagger_dmg = p() -> partial_clear_stagger( purifying_brew_percent );
 
     // Optional addition: Track and report amount of damage cleared
     if ( stagger_pct > p() -> heavy_stagger_threshold )
@@ -4277,6 +4318,13 @@ struct purifying_brew_t: public monk_spell_t
 
     if ( p() -> artifact.brew_stache.rank() )
       p() -> buff.brew_stache -> trigger();
+
+/*    if ( p() -> buff.blackout_combo -> up() )
+    {
+      p() -> active_actions.stagger_self_damage->tick_ -> reschedule_execute( timespan_t::from_seconds( p() -> buff.blackout_combo -> data().effectN( 4 ).base_value() ) );
+      p() -> buff.blackout_combo -> expire();
+    }
+*/
   }
 };
 
@@ -6044,7 +6092,7 @@ void monk_t::init_spells()
   // Tier 100 Talents
   // Brewmaster
   talent.elusive_dance               = find_talent_spell( "Elusive Dance" );
-  talent.fortified_mind              = find_talent_spell( "Fortified Mind" );
+  talent.blackout_combo              = find_talent_spell( "Fortified Mind" );
   talent.high_tolerance              = find_talent_spell( "High Tolerance" );
   // Windwalker
   talent.chi_orbit                   = find_talent_spell( "Chi Orbit" );
@@ -6372,6 +6420,8 @@ void monk_t::create_buffs()
   buff.bladed_armor = buff_creator_t( this, "bladed_armor", spec.bladed_armor )
     .default_value( spec.bladed_armor -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_ATTACK_POWER );
+
+  buff.blackout_combo = buff_creator_t( this, "blackout_combo", talent.blackout_combo -> effectN( 5 ).trigger() );
 
   buff.brew_stache = buff_creator_t( this, "brew_stache", artifact.brew_stache.data().effectN( 1 ).trigger() )
     .default_value( artifact.brew_stache.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() )
