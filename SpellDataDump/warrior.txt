@@ -50,8 +50,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=64)       : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: rage | Target: Self(1)
-#3 (id=291488)   : Trigger Spell: Charge (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 198337 | Target: Self(1)
 Description      : Charge to an enemy, $?s103828[stunning][rooting] it for $?s103828[$7922d][$105771d].
 
 |cFFFFFFFFGenerates $/10;s2 Rage.|r
@@ -184,7 +182,7 @@ Spell Level      : 40
 Duration         : 8 seconds
 Cooldown         : 90 seconds
 Proc Chance      : 101%
-Affecting spells : Bladestorm (46924), Rumbling Voice (188651), Booming Voice (202743), Neltharion's Fury (203524), Bladestorm (222634), Bladestorm (227847)
+Affecting spells : Bladestorm (46924), Rumbling Voice (188651), Morale Killer (199023), Booming Voice (202743), Neltharion's Fury (203524), Bladestorm (222634), Bladestorm (227847)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -634,8 +632,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
-#1 (id=5274)     : Trigger Spell: Mortal Wounds (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 115804 | Chain Targets: 1 | Target: Enemy(6)
+#1 (id=5274)     : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=5275)     : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Targets: 1 | Target: Enemy(6)
 #3 (id=99581)    : Weapon Damage% (31)
@@ -1695,9 +1693,9 @@ Attributes       : ....x... ........ x.x..... ........   ....x... ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=86555)    : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Targets: 1 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=86556)    : Weapon Damage% (31)
-                   Base Value: 215 | Scaled Value: 2.15 | Chain Targets: 1 | Target: Unknown(25)
+                   Base Value: 215 | Scaled Value: 2.15 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc85288
 
 Name             : Meat Cleaver (id=85739) [Spell Family (4)] 
@@ -2099,7 +2097,7 @@ School           : Physical
 Range            : 100 yards
 Duration         : 10 seconds
 Proc Chance      : 101%
-Triggered by     : Mortal Strike (12294), Bloody Screech (24423), Deadly Sting (160060)
+Triggered by     : Bloody Screech (24423), Deadly Sting (160060)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2390,7 +2388,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 56
 Duration         : 9 seconds
-Affecting spells : Bladestorm (46924), Rumbling Voice (188651), Booming Voice (202743), Neltharion's Fury (203524), Bladestorm (222634), Bladestorm (227847)
+Affecting spells : Bladestorm (46924), Rumbling Voice (188651), Morale Killer (199023), Booming Voice (202743), Neltharion's Fury (203524), Bladestorm (222634), Bladestorm (227847)
 Triggered by     : Demoralizing Shout (1160)
 Attributes       : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2402,41 +2400,6 @@ Effects          :
 #1 (id=159299)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 127 | Target: Self(1)
 Tooltip          : Demoralized enemies deal $1160s1% less damage to you.
-
-Name             : Warrior Charge Drop Fire Periodic (id=126661) [Hidden] 
-Class            : Warrior
-School           : Physical
-Spell Level      : 10
-Range            : 40 yards
-Duration         : 3 seconds
-Triggered by     : Charge (198337)
-Attributes       : .......x x....... x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ...x.... ........   ........ ........ ..x..... ........ 
-                 : ........ ........ ....x... ........   ........ ........ ........ ........ 
-                 : ........ ........ .......x ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Hidden (7)
-Effects          :
-#1 (id=160966)   : Apply Aura (6) | Periodic Trigger Spell (23)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
-
-Name             : Warrior Charge Drop Fire Periodic Clear (id=126664) [Hidden] 
-Class            : Warrior
-School           : Physical
-Spell Level      : 10
-Range            : 40 yards
-Triggered by     : Charge (198337)
-Attributes       : .......x x....... x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ...x.... ........   ........ ........ ..x..... ........ 
-                 : ........ ........ ....x... ........   ........ ........ ........ ........ 
-                 : ........ ........ .......x ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Hidden (7)
-Effects          :
-#1 (id=160971)   : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 
 Name             : Reinforced Retinal Armor (id=127123) 
 Class            : Warrior, Paladin, Death Knight
@@ -2556,7 +2519,7 @@ Effects          :
                    Affected Spells: Cleave (845), Thunder Clap (6343), Revenge (6572), Overpower (7384), Bloodthirst (23881), Shield Slam (23922), Raging Blow (85288), Raging Blow (85384), Raging Blow (96103), Furious Slash (100130), Focused Rage (204488), Focused Rage (207982)
 #2 (id=188987)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11 | Target: Self(1)
-                   Affected Spells: Defensive Stance (71), Charge (100), Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Intimidating Shout (5246), Execute (5308), Thunder Clap (6343), Pummel (6552), Revenge (6572), Overpower (7384), Mortal Strike (12294), Piercing Howl (12323), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Improved Hamstring (24428), Victory Rush (34428), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Throw (57755), Raging Blow (85288), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Shockwave (132168), Storm Bolt (132169), Ravager (152277), Ravager (156287), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Bladestorm (168969), Rampage (184367), Rampage (184707), Rampage (184709), Cleave (188923), Whirlwind (190411), Defensive Stance (197690), Charge (198337), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Focused Rage (204488), Focused Rage (207982), Colossus Smash (208086), Warbreaker (209577), Rampage (218617), Bladestorm (222634), Ravager (227744), Bladestorm (227847)
+                   Affected Spells: Defensive Stance (71), Charge (100), Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Intimidating Shout (5246), Execute (5308), Thunder Clap (6343), Pummel (6552), Revenge (6572), Overpower (7384), Mortal Strike (12294), Piercing Howl (12323), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Improved Hamstring (24428), Victory Rush (34428), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Throw (57755), Raging Blow (85288), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Shockwave (132168), Storm Bolt (132169), Ravager (152277), Ravager (156287), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Bladestorm (168969), Rampage (184367), Rampage (184707), Rampage (184709), Cleave (188923), Whirlwind (190411), Defensive Stance (197690), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Focused Rage (204488), Focused Rage (207982), Colossus Smash (208086), Warbreaker (209577), Rampage (218617), Bladestorm (222634), Ravager (227744), Bladestorm (227847)
 #3 (id=191020)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1385 | Target: Self(1)
 #4 (id=191021)   : Apply Aura (6) | Unknown effect sub type (457)
@@ -3363,27 +3326,7 @@ When targeting an ally, Intercept will intercept the next melee or ranged attack
 
 |cFFFFFFFFGenerates $/10;s2 Rage.|r
 
-Name             : Charge (id=198337) [Spell Family (4)] 
-Class            : Warrior
-School           : Physical
-Spell Level      : 3
-Range            : 8 - 25 yards
-Affecting spells : Warrior (137047), Uncontrolled Rage (200856), Raging Fury (222266)
-Triggered by     : Charge (100)
-Attributes       : ....x... ........ x.x..... .....x..   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ..x..... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ .x...... 
-                 : ........ ........ .......x ........   ........ ........ ..x..... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=291486)   : Charge (96)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 0xb018 | Trigger Spell: 126664 | Target: Enemy(6)
-#2 (id=291487)   : Trigger Spell: Warrior Charge Drop Fire Periodic (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 126661 | Target: Self(1)
-Description      : $@spelldesc100
-
-Name             : Morale Killer (Honor Talent) (id=199023) [Spell Family (3), Passive, Hidden] 
+Name             : Morale Killer (Honor Talent) (id=199023) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -3396,7 +3339,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=292876)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self(1)
-Description      : Demoralizing Shout now reduces the damage enemies deal to all targets, not just you.
+#2 (id=344340)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
+                   Base Value: -30000 | Scaled Value: -30000 | Misc Value: 11 | Target: Self(1)
+                   Affected Spells: Demoralizing Shout (1160), Demoralizing Shout (125565)
+Description      : Reduces the cooldown of Demoralizing Shout by ${($m2/1000)*-1} sec, and Demoralizing Shout now reduces the damage enemies deal to all targets, not just you.
 
 Name             : Thunderstruck (Honor Talent) (id=199042) [Spell Family (4)] 
 Class            : Warrior
@@ -3430,7 +3376,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=292907)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self(1)
-Description      : Thunder Clap snares all targets by $213913m1% for $213913d.
+Description      : Thunder Clap roots all targets for $199042d.
 
 Name             : Warrior Intervene Charge Clear (id=199114) [Hidden] 
 Class            : Warrior
@@ -4597,26 +4543,6 @@ Effects          :
 #1 (id=312498)   : Unknown effect type (164)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 209697 | Target: Self(1)
 
-Name             : Thunderstruck (Honor Talent) (id=213913) [Spell Family (4)] 
-Class            : Warrior
-School           : Physical
-Spell Level      : 1
-Range            : 50000 yards
-Duration         : 1.5 seconds
-Proc Chance      : 101%
-Mechanic         : Unknown(88)
-Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=317488)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: 90 | Scaled Value: 90 | Target: Enemy(6)
-Description      : @spelldesc199045
-Tooltip          : Movement speed reduced by $w1%.
-
 Name             : Mass Spell Reflection (Honor Talent) (id=213915) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
@@ -4635,9 +4561,7 @@ Attributes       : ....x... ........ x.x..... ...x....   ........ ..x..... .....
 Effects          :
 #1 (id=317491)   : Apply Aura (6) | Spell Reflection (28)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 4 | Radius: 20 yards | Target: Raid Members(56)
-Description      : Reflects all spells cast on you and on all party and raid members within $a1 yards for $d.
-
-Replaces Spell Reflection.
+Description      : Reflects all spells cast on you and on all party and raid members within $a1 yards for $d.
 Tooltip          : Reflects all spells cast on you.
 
 Name             : Trauma (id=215537) [Spell Family (4)] 

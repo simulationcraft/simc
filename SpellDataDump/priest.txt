@@ -870,7 +870,7 @@ Resource         : 1.6% Base Mana (17600 @Level 110)
 Spell Level      : 56
 Range            : 40 yards
 Duration         : 8 seconds
-Cooldown         : 300 seconds
+Cooldown         : 240 seconds
 Affecting spells : Lucidity (137323), Item - Priest WoD PvP Discipline 4P Bonus (171141), Item - Priest WoD PvP Holy4P Bonus (171142), Pain is in Your Mind (197713)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -1273,7 +1273,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .x...
                  : ........ .....x.. ........ ....x...   ........ ........ ..xx.... ....x... 
 Effects          :
 #1 (id=40042)    : Apply Aura (6) | Unknown effect sub type (118)
-                   Base Value: 60 | Scaled Value: 60 | Misc Value: 127 | Target: Friend(21)
+                   Base Value: 40 | Scaled Value: 40 | Misc Value: 127 | Target: Friend(21)
 #2 (id=40043)    : Dummy (3)
                    Base Value: 40 | Scaled Value: 40
 #3 (id=188025)   : Apply Aura (6) | Absorb Damage (69)
@@ -2673,7 +2673,7 @@ Effects          :
 #2 (id=191068)   : Apply Aura (6) | Unknown effect sub type (232)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 26 | Target: Self(1)
 #3 (id=191069)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
-                   Base Value: 75 | Scaled Value: 75 | Misc Value: 14 | Target: Self(1)
+                   Base Value: 65 | Scaled Value: 65 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Power Word: Shield (17), Mass Dispel (32375), Mass Dispel (32592), Shadow Mend (186263), Shadow Mend (187464)
 #4 (id=191070)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: -25 | Scaled Value: -25 | Target: Self(1)
@@ -2944,7 +2944,7 @@ Attributes       : ........ ........ x....... .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=271185)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.00000 | Target: Friend(21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 8.00000 | Target: Friend(21)
 Description      : Wraps an ally in shadows which heal for $m1, but at a price.
 
 The ally will take ${$m1/20} damage every $187464t1 sec, until they have taken ${$m1/2} total damage from all sources, or leave combat.
@@ -3732,7 +3732,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=294728)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 90 | Scaled Value: 90 | Target: Self(1)
+                   Base Value: 120 | Scaled Value: 120 | Target: Self(1)
 Description      : When Guardian Spirit expires without saving the target from death, reduce its remaining cooldown to $s1 seconds.
 
 Name             : Grace (Passive) (id=200309) [Spell Family (6), Passive] 
@@ -3986,7 +3986,8 @@ Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 1.8 seconds
 GCD              : 1.5 seconds
-Duration         : 60 seconds
+Duration         : 30 seconds
+Cooldown         : 180 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
 Mechanic         : Unknown(2)
@@ -4000,6 +4001,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .x...
 Effects          :
 #2 (id=327739)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Enemy(6)
+#3 (id=344258)   : Dummy (3)
+                   Base Value: 3 | Scaled Value: 3
 Description      : Controls a mind up to 1 level above yours for $d while still controlling your own mind.  Does not work versus Mechanical beings$?a205477[][ or players]. This spell shares diminishing returns with other disorienting effects.
 Tooltip          : Under the control of the Priest.
 
@@ -4017,7 +4020,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=303234)   : Apply Aura (6) | Unknown effect sub type (332)
                    Base Value: 205364 | Scaled Value: 205364 | Misc Value: 605 | Target: Self(1)
-Description      : You may also control your own character while Mind Control is active, and Mind control now lasts $205364d, but it may not be used against players.
+Description      : You may also control your own character while Mind Control is active, but Mind Control has a $205364s3 min cooldown, and it may not be used against players.
 
 Name             : Mind Bomb (id=205369) [Spell Family (5)] 
 Class            : Priest

@@ -33,6 +33,7 @@ actions+=/blood_fury
 actions+=/arcane_torrent
 actions+=/berserking
 actions+=/feral_spirit
+actions+=/flametongue,if=!buff.flametongue.up
 # On multiple enemies, the priority follows the 'aoe' action list.
 actions+=/call_action_list,name=aoe,if=spell_targets.chain_lightning>1
 # If only one enemy, priority follows the 'single' action list.

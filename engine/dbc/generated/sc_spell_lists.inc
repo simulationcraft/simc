@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 21996
+// Class based active abilities, wow build 22018
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -1026,12 +1026,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       106832, // Thrash
            0,
     },
-    // Restoration tree, 18 abilities
+    // Restoration tree, 17 abilities
     {
        22812, // Barkskin
       145205, // Efflorescence
         5185, // Healing Touch
-       16914, // Hurricane
        29166, // Innervate
       102342, // Ironbark
        33763, // Lifebloom
@@ -1103,7 +1102,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       204596, // Sigil of Flame
       207684, // Sigil of Misery
       202137, // Sigil of Silence
-      203798, // Soul Cleave
+      228477, // Soul Cleave
       204157, // Throw Glaive
       185245, // Torment
            0,
@@ -1121,7 +1120,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 };
 #define TREE_SPECIALIZATION_SIZE (29)
 
-// Talent tree specialization abilities, wow build 21996
+// Talent tree specialization abilities, wow build 22018
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -2060,7 +2059,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        22812, // Barkskin
       145205, // Efflorescence
         5185, // Healing Touch
-       16914, // Hurricane
        29166, // Innervate
       102342, // Ironbark
       108299, // Killer Instinct
@@ -2117,7 +2115,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       204596, // Sigil of Flame
       207684, // Sigil of Misery
       202137, // Sigil of Silence
-      203798, // Soul Cleave
+      228477, // Soul Cleave
       204157, // Throw Glaive
       185245, // Torment
       212613, // Vengeance Demon Hunter
@@ -2133,7 +2131,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 21996
+// Class mastery abilities, wow build 22018
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2372,7 +2370,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 21996
+// Racial abilities, wow build 22018
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3110,7 +3108,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 };
 #define SET_BONUS_DATA_SIZE (472)
 
-// Set bonus data, wow build 21996
+// Set bonus data, wow build 22018
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -3606,7 +3604,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
 };
 #define RPPMMOD_SIZE (199)
 
-// 199 RPPM Modifiers, wow build level 21996
+// 199 RPPM Modifiers, wow build level 22018
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  49530,    4,  1,  1.0000 },
   {  51128,    4,  1,  1.0000 },
@@ -3811,7 +3809,7 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
 };
 #define ARTIFACT_SIZE (41)
 
-// Artifact base data, wow build 21996
+// Artifact base data, wow build 22018
 static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
   {  2,  70 },
   {  3, 577 },
@@ -3857,7 +3855,7 @@ static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
 };
 #define ARTIFACT_POWER_SIZE (715)
 
-// Artifact power data, wow build 21996
+// Artifact power data, wow build 22018
 static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] = {
   {   40,   2,  0,   0, "Wake of Ashes"                      }, // Wake of Ashes (id=205273, n_ranks=1)
   {   41,   2,  4,   3, "Highlord's Judgment"                }, // Highlord's Judgment (id=186941, n_ranks=6)
@@ -4403,9 +4401,9 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1454,  52,  0,   0, "Artificial Damage"                  }, // Artificial Damage (id=226829, n_ranks=1)
   {  783,  53,  0,   0, "Ebonbolt"                           }, // Ebonbolt (id=214634, n_ranks=1)
   {  784,  53,  4,   3, "Icy Caress"                         }, // Icy Caress (id=195315, n_ranks=6)
-  {  785,  53,  5,   3, "Orbital Strike"                     }, // Orbital Strike (id=195317, n_ranks=6)
+  {  785,  53,  5,   3, "Ice Age"                            }, // Ice Age (id=195317, n_ranks=6)
   {  786,  53,  6,   3, "Let It Go"                          }, // Let It Go (id=195322, n_ranks=6)
-  {  787,  53,  7,   3, "Ice Age"                            }, // Ice Age (id=195323, n_ranks=6)
+  {  787,  53,  7,   3, "Orbital Strike"                     }, // Orbital Strike (id=195323, n_ranks=6)
   {  788,  53,  8,   3, "Frozen Veins"                       }, // Frozen Veins (id=195345, n_ranks=6)
   {  789,  53,  9,   3, "Clarity of Thought"                 }, // Clarity of Thought (id=195351, n_ranks=6)
   {  790,  53, 10,   3, "The Storm Rages"                    }, // The Storm Rages (id=195352, n_ranks=6)
@@ -4577,7 +4575,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
 };
 #define ARTIFACT_POWER_RANK_SIZE (3062)
 
-// Artifact power rank data, wow build 21996
+// Artifact power rank data, wow build 22018
 static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RANK_SIZE] = {
   { 2316,    40,  0, 205273,      0.000 },
   { 2317,    41,  0, 186941,      0.000 },
@@ -4675,12 +4673,12 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 3556,    81,  3, 187276,      4.000 },
   { 3557,    81,  4, 187276,      5.000 },
   { 3558,    81,  5, 187276,      6.000 },
-  { 2408,    82,  0, 187264,      0.000 },
-  { 3559,    82,  1, 187264,   4000.000 },
-  { 3560,    82,  2, 187264,   6000.000 },
-  { 3561,    82,  3, 187264,   8000.000 },
-  { 3562,    82,  4, 187264,  10000.000 },
-  { 3563,    82,  5, 187264,  12000.000 },
+  { 2408,    82,  0, 187264,   1000.000 },
+  { 3559,    82,  1, 187264,   2000.000 },
+  { 3560,    82,  2, 187264,   3000.000 },
+  { 3561,    82,  3, 187264,   4000.000 },
+  { 3562,    82,  4, 187264,   5000.000 },
+  { 3563,    82,  5, 187264,   6000.000 },
   { 2411,    83,  0, 187301,      1.000 },
   { 3564,    83,  1, 187301,      2.000 },
   { 3565,    83,  2, 187301,      3.000 },
@@ -4832,12 +4830,12 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 3436,   132,  3, 189760,     20.000 },
   { 3437,   132,  4, 189760,     25.000 },
   { 3438,   132,  5, 189760,     30.000 },
-  { 2510,   133,  0, 189757,     -3.000 },
-  { 3439,   133,  1, 189757,     -6.000 },
-  { 3440,   133,  2, 189757,    -10.000 },
-  { 3441,   133,  3, 189757,    -13.000 },
-  { 3442,   133,  4, 189757,    -16.000 },
-  { 3443,   133,  5, 189757,    -20.000 },
+  { 2510,   133,  0, 189757,     -2.000 },
+  { 3439,   133,  1, 189757,     -4.000 },
+  { 3440,   133,  2, 189757,     -6.000 },
+  { 3441,   133,  3, 189757,     -8.000 },
+  { 3442,   133,  4, 189757,    -10.000 },
+  { 3443,   133,  5, 189757,    -12.000 },
   { 2513,   134,  0, 189754,      0.000 },
   { 3444,   134,  1, 189754,     -4.000 },
   { 3445,   134,  2, 189754,     -6.000 },
@@ -5177,22 +5175,22 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 3160,   748,  0, 194466,      0.000 },
   { 2727,   749,  0, 194224,     -3.000 },
   { 3720,   749,  1, 194224,     -6.000 },
-  { 3721,   749,  2, 194224,    -10.000 },
-  { 3722,   749,  3, 194224,    -13.000 },
-  { 3723,   749,  4, 194224,    -16.000 },
-  { 3724,   749,  5, 194224,    -20.000 },
+  { 3721,   749,  2, 194224,     -9.000 },
+  { 3722,   749,  3, 194224,    -12.000 },
+  { 3723,   749,  4, 194224,    -15.000 },
+  { 3724,   749,  5, 194224,    -18.000 },
   { 3161,   750,  0, 194234,      8.000 },
   { 3725,   750,  1, 194234,     16.000 },
   { 3726,   750,  2, 194234,     24.000 },
   { 3727,   750,  3, 194234,     32.000 },
   { 3728,   750,  4, 194234,     40.000 },
   { 3729,   750,  5, 194234,     48.000 },
-  { 3162,   751,  0, 194239,      0.000 },
-  { 3730,   751,  1, 194239,      6.000 },
-  { 3731,   751,  2, 194239,     10.000 },
-  { 3732,   751,  3, 194239,     13.000 },
-  { 3733,   751,  4, 194239,     16.000 },
-  { 3734,   751,  5, 194239,     20.000 },
+  { 3162,   751,  0, 194239,      2.000 },
+  { 3730,   751,  1, 194239,      4.000 },
+  { 3731,   751,  2, 194239,      6.000 },
+  { 3732,   751,  3, 194239,      8.000 },
+  { 3733,   751,  4, 194239,     10.000 },
+  { 3734,   751,  5, 194239,     12.000 },
   { 3163,   752,  0, 194312,      1.000 },
   { 3735,   752,  1, 194312,      2.000 },
   { 3736,   752,  2, 194312,      3.000 },
@@ -5205,18 +5203,18 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 5138,   753,  3, 210182,     20.000 },
   { 5139,   753,  4, 210182,     25.000 },
   { 5140,   753,  5, 210182,     30.000 },
-  { 3165,   754,  0, 194313,      0.000 },
-  { 3745,   754,  1, 194313,     10.000 },
-  { 3746,   754,  2, 194313,     15.000 },
-  { 3747,   754,  3, 194313,     20.000 },
-  { 3748,   754,  4, 194313,     25.000 },
-  { 3749,   754,  5, 194313,     30.000 },
-  { 3166,   755,  0, 194314,      3.000 },
-  { 3750,   755,  1, 194314,      6.000 },
-  { 3751,   755,  2, 194314,     10.000 },
-  { 3752,   755,  3, 194314,     13.000 },
-  { 3753,   755,  4, 194314,     16.000 },
-  { 3754,   755,  5, 194314,     20.000 },
+  { 3165,   754,  0, 194313,      3.000 },
+  { 3745,   754,  1, 194313,      6.000 },
+  { 3746,   754,  2, 194313,      9.000 },
+  { 3747,   754,  3, 194313,     12.000 },
+  { 3748,   754,  4, 194313,     15.000 },
+  { 3749,   754,  5, 194313,     18.000 },
+  { 3166,   755,  0, 194314,      4.000 },
+  { 3750,   755,  1, 194314,      8.000 },
+  { 3751,   755,  2, 194314,     12.000 },
+  { 3752,   755,  3, 194314,     16.000 },
+  { 3753,   755,  4, 194314,     20.000 },
+  { 3754,   755,  5, 194314,     24.000 },
   { 3167,   756,  0, 194318,      0.833 },
   { 3760,   756,  1, 194318,      1.666 },
   { 3761,   756,  2, 194318,      2.500 },

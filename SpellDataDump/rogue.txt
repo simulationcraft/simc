@@ -465,7 +465,8 @@ Effects          :
 #3 (id=289054)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Enemy(6)
 Description      : Blinds the target, causing it to wander disoriented for $d. Damage will interrupt the effect. Limit 1.
-Tooltip          : Disoriented.
+Tooltip          : Disoriented.$?$w3!=0[
+Damage taken increased by $w3%.][]
 
 Name             : Run Through (id=2098) [Spell Family (8)] 
 Class            : Outlaw Rogue
@@ -1604,8 +1605,11 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 30000 | Target: Unknown(57)
 #2 (id=51255)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : Redirects all threat you cause to the targeted party or raid member, beginning with your next damaging attack within the next $d and lasting $59628d.
-Tooltip          : Threat redirected from Rogue.
+#3 (id=344026)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | Target: Unknown(57)
+Description      : $?s221622[Increases you and the target's damage by $221622m1%, and redirects][Redirects] all threat you cause to the targeted party or raid member, beginning with your next damaging attack within the next $d and lasting $59628d.
+Tooltip          : Threat redirected from Rogue.
+$?s221622[Damage increased by $221622m1%.][]
 
 Name             : Relentless Strikes (Passive) (id=58423) [Spell Family (8), Passive] 
 Class            : Subtlety Rogue
@@ -1644,8 +1648,9 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 127 | Target: Self(1)
 #2 (id=330680)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self(1)
-Description      : The current party or raid member becomes the target of your Tricks of the Trade. The threat caused by your next attack and all actions taken for $57933d afterwards will be transferred to the target.
-Tooltip          : All threat transferred from the Rogue to the target.
+Description      : The current party or raid member becomes the target of your Tricks of the Trade$?s221622[, increasing you and the target's damage by $221622m1%][]. The threat caused by your next attack and all actions taken for $57933d afterwards will be transferred to the target.
+Tooltip          : All threat transferred from the Rogue to the target.
+$?s221622[Damage increased by $221622m1%.][]
 
 Name             : Vitality (id=61329) [Passive, Hidden] 
 Class            : Outlaw Rogue
@@ -2112,8 +2117,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=119258)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Gouge (1776), Cheap Shot (1833), Blind (2094), Sap (6770)
-Description      : Gouge, Blind, Cheap Shot, and Sap no longer cost Energy.
+                   Affected Spells: Gouge (1776), Cheap Shot (1833), Blind (2094), Sap (6770), Dismantle (207777)
+Description      : Gouge, $?s207777[Dismantle, ][]Blind, Cheap Shot, and Sap no longer cost Energy.
 
 Name             : Shadow Focus (id=112942) [Spell Family (8), Hidden] 
 Class            : Rogue
@@ -2361,7 +2366,10 @@ Effects          :
 #2 (id=169695)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 23 | Target: Self(1)
                    Affected Spells: Cheap Shot (1833), Blind (2094)
-Description      : Enemies disabled with your $?s2094[Blind, ][]$?s193315[Gouge, Cheap Shot, or Sap][Kidney Shot, Cheap Shot, or Sap] take $s1% increased damage from all sources.
+#3 (id=344011)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 32 | Target: Self(1)
+                   Affected Spells: Dismantle (207777)
+Description      : Enemies disabled with your $?s207777[Dismantle, ][]$?s2094[Blind, ][]$?s193315[Gouge, Cheap Shot, or Sap][Kidney Shot, Cheap Shot, or Sap] take $s1% increased damage from all sources.
 
 Name             : Rogue (id=137034) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
@@ -4483,6 +4491,36 @@ Effects          :
 Description      : $@spelldesc195452
 Tooltip          : Movement speed slowed by $s1%.
 
+Name             : Dismantle (Honor Talent) (id=207777) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Resource         : 25 Energy
+Spell Level      : 52
+Range            : 5 yards
+GCD              : 1 seconds
+Duration         : 8 seconds
+Cooldown         : 45 seconds
+Mechanic         : Unknown(22)
+Affecting spells : Dirty Tricks (108216), Prey on the Weak (131511)
+Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+Effects          :
+#1 (id=307372)   : Apply Aura (6) | Unknown effect sub type (278)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
+#2 (id=307373)   : Apply Aura (6) | Unknown effect sub type (254)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
+#3 (id=307374)   : Apply Aura (6) | Disarm (67)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
+#4 (id=344010)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Enemy(6)
+Description      : Disarm the enemy, preventing the use of any weapons or shield for $d.
+Tooltip          : Disarmed.$?$w4!=0[
+Damage taken increased by $w4%.][]
+
 Name             : Goremaw's Bite (Artifact) (id=209782) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
@@ -4668,6 +4706,22 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 3 | Target: Self(1)
 Description      : $@spelldesc209782
 Tooltip          : Generating $s2 Energy every $t2 sec.
+
+Name             : Thick as Thieves (Honor Talent) (id=221622) [Spell Family (8), Passive, Hidden] 
+Class            : Rogue
+School           : Physical
+Proc Chance      : 101%
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=330681)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 12 | Target: Self(1)
+Description      : Your Tricks of the Trade now increases you and the friendly target's damage by $m1% for $59628d.
 
 Name             : Nightblade (id=222018) [Hidden] 
 Class            : Rogue

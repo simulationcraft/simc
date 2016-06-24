@@ -202,7 +202,7 @@ Spell Level      : 56
 Range            : 40 yards
 Duration         : 12 seconds
 Cooldown         : 1 seconds
-Charges          : 1 (180 seconds cooldown)
+Charges          : 1 (150 seconds cooldown)
 Category         : 1186
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
@@ -307,7 +307,7 @@ Attributes       : ........ ........ x.x..x.. ........   ........ .x...... .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=11347)    : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.00000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.20000 | Target: Enemy(6)
 #2 (id=336161)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #3 (id=343343)   : Dummy (3)
@@ -692,7 +692,7 @@ Effects          :
 #1 (id=25579)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=25580)    : Weapon Damage% (31)
-                   Base Value: 160 | Scaled Value: 1.6 | Target: Enemy(6)
+                   Base Value: 180 | Scaled Value: 1.8 | Target: Enemy(6)
 #3 (id=91108)    : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: holy_power | Target: Self(1)
 Description      : Strike the target for $sw2 Physical damage. Maximum 2 charges.$?s85256[
@@ -1355,7 +1355,7 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
                  : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
 Effects          :
 #1 (id=81788)    : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.45000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.30000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 Description      : Deals $s1 Holy damage to enemies within $A1 yards.
 
 Name             : Reinforced Bio-Optic Killshades (id=81714) 
@@ -1939,18 +1939,18 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 15 yards | Target: Unknown(132) -> AOE Custom(8)
 Description      : $@spelldesc114165
 
-Name             : Light's Hammer (id=114918) [Spell Family (10), Passive] 
+Name             : Light's Hammer (id=114918) [Spell Family (10)] 
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 School           : Nature
 Spell Level      : 1
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+Duration         : 14 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ .x...... ........ ........ 
+                 : x....... .......x ........ ........   ........ .x...... ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
 Effects          :
 #1 (id=128469)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
@@ -2010,7 +2010,7 @@ Attributes       : ........ ........ ..x.x... ......x.   ...x...x ........ ..x..
 Effects          :
 #1 (id=129792)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
-Description      : Emits dazzling light in all directions, blinding enemies within $105421A1 yards, dealing $105421sw1 damage and causing them to wander disoriented for $d. Non-Holy damage will break the disorient effect.
+Description      : Emits dazzling light in all directions, blinding enemies within $105421A1 yards, dealing $105421sw1 Holy damage and causing them to wander disoriented for $d. Non-Holy damage will break the disorient effect.
 
 Name             : Fire From the Heavens (id=115995) [Spell Family (10), Hidden] 
 Class            : Paladin
@@ -2217,7 +2217,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Target: Self(1)
                    Affected Spells: Flash of Light (19750)
 #2 (id=191092)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
-                   Base Value: 70 | Scaled Value: 70 | Misc Value: 14 | Target: Self(1)
+                   Base Value: 37 | Scaled Value: 37 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Flash of Light (19750)
 #3 (id=191093)   : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 17 | Target: Self(1)
@@ -2321,10 +2321,10 @@ Effects          :
 #4 (id=191086)   : Apply Aura (6) | Unknown effect sub type (404)
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
 #5 (id=191087)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 70 | Scaled Value: 70
+                   Base Value: 50 | Scaled Value: 50
                    Affected Spells: Crusader Strike (35395)
 #6 (id=260927)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 70 | Scaled Value: 70
+                   Base Value: 50 | Scaled Value: 50
                    Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222)
 #7 (id=260928)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
@@ -2504,7 +2504,7 @@ Class            : Paladin
 School           : Holy
 Duration         : 8 seconds
 Cooldown         : 30 seconds
-Affecting spells : The Fires of Justice (209785), 
+Affecting spells : The Fires of Justice (209785), Divine Purpose (223819)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3006,7 +3006,7 @@ Effects          :
 #1 (id=267535)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=267536)   : Weapon Damage% (31)
-                   Base Value: 320 | Scaled Value: 3.2 | Target: Enemy(6)
+                   Base Value: 360 | Scaled Value: 3.6 | Target: Enemy(6)
 #3 (id=267537)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: holy_power | Target: Self(1)
 Description      : Strikes an enemy with the Blade of Justice, dealing $sw2 Physical damage.
@@ -3343,7 +3343,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
-Cooldown         : 12 seconds
+Cooldown         : 15 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
@@ -3507,11 +3507,11 @@ Effects          :
 #1 (id=298131)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=298132)   : Weapon Damage% (31)
-                   Base Value: 100 | Scaled Value: 1 | Target: Enemy(6)
+                   Base Value: 140 | Scaled Value: 1.4 | Target: Enemy(6)
 #3 (id=298133)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: holy_power | Target: Self(1)
 #4 (id=341688)   : Apply Aura (6) | Periodic Damage: holy every 2 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.40000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.55000 | Target: Enemy(6)
 Description      : Strikes an enemy with the Blade of Wrath, dealing $sw2 Holy damage, and an additional $o4 Holy damage over $d.
 
 |cFFFFFFFFGenerates $s3 Holy Power.
@@ -3600,9 +3600,9 @@ Attributes       : ........ ........ x.x..... ....x...   ........ ........ .....
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=300186)   : Unknown effect type (174) | Dummy (4)
+#1 (id=300186)   : Unknown effect type (202) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 1792 | Radius: 100 yards | Target: Friend(21)
-#2 (id=303979)   : Unknown effect type (174) | Dummy (4)
+#2 (id=303979)   : Unknown effect type (202) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 1792 | Radius: 100 yards | Target: Friend(21)
 Description      : Places a blessing on an ally that gives their attacks a $s1% chance to deal $s2% additional damage as Holy.
 
@@ -4201,10 +4201,8 @@ Name             : The Fires of Justice (id=209785) [Spell Family (10)]
 Class            : Paladin
 School           : Holy
 Duration         : 15 seconds
-Stacks           : 1 initial, 1 maximum
-Proc Chance      : 100%
-Proc Flags       : ....x... x.x.x.x. x....... ........ 
-                 : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
+Stacks           : 1 maximum
+Proc Chance      : 101%
 Affecting spells : Item - Paladin T19 Retribution 4P Bonus (211448)
 Triggered by     : The Fires of Justice (203316), Item - Paladin T19 Retribution 4P Bonus (211448)
 Attributes       : ........ ........ ..x..... .....x..   ........ ........ ........ ........ 
@@ -4216,7 +4214,7 @@ Attributes       : ........ ........ ..x..... .....x..   ........ ........ .....
 Effects          :
 #1 (id=310496)   : Apply Aura (6) | Add Flat Modifier: Spell Resource Cost (107)
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Divine Storm (53385), Templar's Verdict (85256), Seraphim (152262), Execution Sentence (213757)
+                   Affected Spells: Divine Storm (53385), Templar's Verdict (85256), Seraphim (152262), Word of Glory (210191), Execution Sentence (213757), Justicar's Vengeance (215661)
 #2 (id=314994)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Divine Storm (53385), Templar's Verdict (85256), Seraphim (152262)
@@ -4231,7 +4229,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Charges          : 2 (60 seconds cooldown)
 Category         : 1629
-Affecting spells : Bastion of Power (144569), Sacred Shield Overridde (Holy) (148040), Divine Purpose (223819)
+Affecting spells : Bastion of Power (144569), Sacred Shield Overridde (Holy) (148040), The Fires of Justice (209785), Divine Purpose (223819)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ...x.... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4397,7 +4395,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=317188)   : Apply Aura (6) | Periodic Damage: holy every 8 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 16.20000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 12.00000 | Target: Enemy(6)
 Description      : A hammer slowly falls from the sky, dealing $s2 Holy damage after $d.
 Tooltip          : Taking $s2 Holy damage when this expires.
 
@@ -4456,7 +4454,7 @@ Resource         : 5 Holy Power
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Judgment (197277), Item - Paladin T19 Retribution 2P Bonus (211444), Divine Purpose (223819)
+Affecting spells : Judgment (197277), The Fires of Justice (209785), Item - Paladin T19 Retribution 2P Bonus (211444), Divine Purpose (223819)
 Attributes       : ........ ........ x.x..... ........   ....x... .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ....x... ........ ........ 
@@ -4494,7 +4492,7 @@ Effects          :
 #1 (id=322914)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0.6 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=322915)   : Weapon Damage% (31)
-                   Base Value: 285 | Scaled Value: 2.85 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 320 | Scaled Value: 3.2 | Chain Targets: 1 | Target: Enemy(6)
 #3 (id=322916)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: holy_power | Target: Self(1)
 #4 (id=322917)   : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
@@ -4629,10 +4627,6 @@ School           : Holy
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 12 seconds
-Stacks           : 1 initial, 1 maximum
-Proc Chance      : 100%
-Proc Flags       : ....x... ..x.x.x. x.x..... ........ 
-                 : Yellow Melee, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic
 Triggered by     : Divine Purpose (223817)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -4643,7 +4637,8 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=334770)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Divine Storm (53385), Templar's Verdict (85256), Word of Glory (210191), Execution Sentence (213757), Justicar's Vengeance (215661)
+                   Affected Spells: Divine Storm (53385), Templar's Verdict (85256), Seraphim (152262), Word of Glory (210191), Execution Sentence (213757), Justicar's Vengeance (215661)
+Description      : $@spelldesc223817
 Tooltip          : Your next Holy Power consuming ability will cost no Holy Power.
 
 Name             : Divine Storm (id=224239) [Spell Family (10)] 
@@ -4679,7 +4674,7 @@ Attributes       : ........ ........ x.x..... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=335615)   : Weapon Damage% (31)
-                   Base Value: 390 | Scaled Value: 3.9 | Target: Enemy(6)
+                   Base Value: 420 | Scaled Value: 4.2 | Target: Enemy(6)
 #2 (id=335616)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #3 (id=335617)   : Dummy (3)

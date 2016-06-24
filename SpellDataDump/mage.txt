@@ -33,7 +33,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
-Affecting spells : Icy Veins (12472), Shatter (12982), Frosty Zap (24392), Improved Counterspell (24429), Ice Floes (108839), Ice Shard (166869), Icy Caress (195315), Lonely Winter (205024), Shattering Bolts (214629)
+Affecting spells : Icy Veins (12472), Shatter (12982), Frosty Zap (24392), Improved Counterspell (24429), Ice Floes (108839), Ice Shard (166869), Icy Caress (195315), Ice Form (198144), Lonely Winter (205024), Shattering Bolts (214629)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -41,12 +41,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
-#1 (id=75)       : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.90000 | Target: Enemy(6)
-#2 (id=76)       : Server Side Script (77)
-                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
-Description      : Launches a bolt of frost at the enemy, causing $s1 Frost damage and slowing movement speed by $205708s1% for $205708d.
-Tooltip          : $?$w1=0[][Movement slowed by $205708w1%.]
+#1 (id=75)       : Trigger Missiles (32)
+                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 228597 | Target: Enemy(6)
+Description      : Launches a bolt of frost at the enemy, causing $228597s1 Frost damage and slowing movement speed by $205708s1% for $205708d.
 
 Name             : Polymorph (Sheep) (id=118) [Spell Family (3)] 
 Class            : Mage
@@ -61,7 +58,7 @@ Proc Chance      : 100%
 Mechanic         : Unknown(141)
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Icy Veins (12472), Ice Floes (108839), 
+Affecting spells : Icy Veins (12472), Ice Floes (108839), Ice Form (198144), 
 Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
                  : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ...x.... ........ .....x..   .....x.. ........ ........ ........ 
@@ -152,7 +149,7 @@ Cast Time        : 2.25 seconds
 GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
 Proc Chance      : 101%
-Affecting spells : Icy Veins (12472), Shatter (12982), Ice Floes (108839), Critical Mass (117216), Mage (137018), Enhanced Pyrotechnics (157644), Ignition (165979), Firestarter (171170), Fire at Will (194224), Great Balls of Fire (194313)
+Affecting spells : Icy Veins (12472), Shatter (12982), Ice Floes (108839), Critical Mass (117216), Mage (137018), Enhanced Pyrotechnics (157644), Ignition (165979), Firestarter (171170), Fire at Will (194224), Great Balls of Fire (194313), Ice Form (198144), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -242,7 +239,7 @@ Range            : 40 yards
 Cast Time        : 4 seconds
 GCD              : 1.5 seconds
 Duration         : 8 seconds
-Affecting spells : Icy Veins (12472), Shatter (12982), Hot Streak! (48108), Ice Floes (108839), Blue Flame Special (210182), 
+Affecting spells : Icy Veins (12472), Shatter (12982), Hot Streak! (48108), Ice Floes (108839), Ice Form (198144), Blue Flame Special (210182), 
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ......x. 
@@ -287,7 +284,7 @@ Spell Level      : 40
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Icy Veins (12472), Shatter (12982), Critical Mass (117216), Mage (137018)
+Affecting spells : Icy Veins (12472), Shatter (12982), Critical Mass (117216), Mage (137018), Ice Form (198144), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -326,7 +323,7 @@ Spell Level      : 16
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
-Affecting spells : Icy Veins (12472), Ice Floes (108839), Arcane Instability (166872), Arcane Focus (171375)
+Affecting spells : Icy Veins (12472), Ice Floes (108839), Arcane Instability (166872), Arcane Focus (171375), Ice Form (198144), 
 Triggered by     : Arcane Missiles! (79683)
 Attributes       : ........ x....... x....... .....x..   ..x....x ..x...x. ........ ..x.x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -427,7 +424,7 @@ Cast Time        : 4.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
 Proc Chance      : 101%
-Affecting spells : Icy Veins (12472), Shatter (12982), Hot Streak! (48108), Ice Floes (108839), Critical Mass (117216), Mage (137018), Pyromaniac (166868), Pyroclasmic Paranoia (194239), 
+Affecting spells : Icy Veins (12472), Shatter (12982), Hot Streak! (48108), Ice Floes (108839), Critical Mass (117216), Mage (137018), Pyromaniac (166868), Pyroclasmic Paranoia (194239), Ice Form (198144), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -488,7 +485,7 @@ School           : Arcane
 Spell Level      : 44
 Duration         : 10 seconds
 Cooldown         : 90 seconds
-Affecting spells : Icy Veins (12472), Wild Arcanist (184903), Aegwynn's Imperative (187264)
+Affecting spells : Icy Veins (12472), Wild Arcanist (184903), Aegwynn's Imperative (187264), Ice Form (198144), 
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -520,7 +517,7 @@ Spell Level      : 40
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 90 seconds
-Affecting spells : Icy Veins (12472), Ice Floes (108839), 
+Affecting spells : Icy Veins (12472), Ice Floes (108839), Ice Form (198144), 
 Attributes       : ........ ........ x....... ........   ......x. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
@@ -551,7 +548,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
 #2 (id=5359)     : Apply Aura (6) | Add Percent Modifier: Spell Pushback (108)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 9 | Target: Self(1)
-                   Affected Spells: Frostbolt (116), Polymorph (118), Fireball (133), Flamestrike (2120), Scorch (2948), Arcane Missiles (5143), Pyroblast (11366), Arcane Power (12042), Evocation (12051), Polymorph (28271), Polymorph (28272), Arcane Blast (30451), Flurry (44614), Polymorph (61025), Polymorph (61305), Polymorph (61721), Polymorph (61780), Arcane Missiles! (79683), Conjure Familiar (126578), Polymorph (126819), Polymorph (161353), Polymorph (161354), Polymorph (161355), Polymorph (161372), Conjure Refreshment (190336), Blizzard (190356), Blizzard (190357), Aftershocks (194432), Displacement (195676), Displacement Beacon (212799)
+                   Affected Spells: Frostbolt (116), Polymorph (118), Fireball (133), Flamestrike (2120), Scorch (2948), Arcane Missiles (5143), Pyroblast (11366), Arcane Power (12042), Evocation (12051), Polymorph (28271), Polymorph (28272), Arcane Blast (30451), Flurry (44614), Polymorph (61025), Polymorph (61305), Polymorph (61721), Polymorph (61780), Arcane Missiles! (79683), Conjure Familiar (126578), Polymorph (126819), Polymorph (161353), Polymorph (161354), Polymorph (161355), Polymorph (161372), Conjure Refreshment (190336), Blizzard (190356), Blizzard (190357), Aftershocks (194432), Displacement (195676), Displacement Beacon (212799), Frostbolt (228597)
 Description      : Accelerates your spellcasting for $d, granting $m1% haste and preventing damage from delaying your spellcasts.
 Tooltip          : Haste increased by $w1% and immune to pushback.
 
@@ -618,7 +615,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=5792)     : Apply Aura (6) | Unknown effect sub type (112)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 911 | Target: Self(1)
-                   Affected Spells: Frostbolt (116), Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Frost Armor (7302), Pyroblast (11366), Arcane Blast (30451), Ice Lance (30455), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44457), Living Bomb (44461), Flurry (44614), Frozen Orb (84721), Fire Blast (108853), Frost Bomb (113092), Nether Tempest (114923), Nether Tempest (114954), Comet Storm (153595), Comet Storm (153596), Ice Nova (157997), Combustion (190319), Blizzard (190356), Blizzard (190357), Aftershocks (194432), Ray of Frost (205021), Ebonbolt (214634), Living Bomb (217694), Flurry (228354)
+                   Affected Spells: Frostbolt (116), Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Frost Armor (7302), Pyroblast (11366), Arcane Blast (30451), Ice Lance (30455), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44457), Living Bomb (44461), Flurry (44614), Frozen Orb (84721), Fire Blast (108853), Frost Bomb (113092), Nether Tempest (114923), Nether Tempest (114954), Comet Storm (153595), Comet Storm (153596), Ice Nova (157997), Combustion (190319), Blizzard (190356), Blizzard (190357), Aftershocks (194432), Glacial Spike (199786), Ray of Frost (205021), Ebonbolt (214634), Living Bomb (217694), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Ebonbolt (228599), Glacial Spike (228600)
 #2 (id=99824)    : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self(1)
 Description      : Multiplies the critical strike chance of your spells against frozen targets by 1.5, and adds an additional $s2% critical strike chance.
@@ -668,7 +665,7 @@ Proc Chance      : 100%
 Mechanic         : Unknown(141)
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Icy Veins (12472), Ice Floes (108839), 
+Affecting spells : Icy Veins (12472), Ice Floes (108839), Ice Form (198144), 
 Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
                  : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ...x.... ........ .....x..   .....x.. ........ ........ ........ 
@@ -696,7 +693,7 @@ Proc Chance      : 100%
 Mechanic         : Unknown(141)
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Icy Veins (12472), Ice Floes (108839), 
+Affecting spells : Icy Veins (12472), Ice Floes (108839), Ice Form (198144), 
 Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
                  : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ...x.... ........ .....x..   .....x.. ........ ........ ........ 
@@ -763,7 +760,7 @@ Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 2.25 seconds
 GCD              : 1.5 seconds
-Affecting spells : Arcane Power (12042), Icy Veins (12472), Shatter (12982), Arcane Charge (36032), Ice Floes (108839), Arcane Affinity (166871), Arcane Focus (171375), Blasting Rod (187258), Presence of Mind (205025), Rhonin's Assaulting Armwraps (208081), Erosion (210134)
+Affecting spells : Arcane Power (12042), Icy Veins (12472), Shatter (12982), Arcane Charge (36032), Ice Floes (108839), Arcane Affinity (166871), Arcane Focus (171375), Blasting Rod (187258), Ice Form (198144), Presence of Mind (205025), Rhonin's Assaulting Armwraps (208081), Erosion (210134)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -800,13 +797,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=20036)    : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1, dl=0.1) | SP Coefficient: 0.95000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy(6)
-#2 (id=85836)    : Dummy (3)
-                   Base Value: 100 | Scaled Value: 100
-#3 (id=257156)   : Server Side Script (77)
-                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0.75 | Chain Targets: 1 | Target: Enemy(6)
-Description      : Quickly fling a shard of ice at the target, dealing $s1 Frost damage$?s56377[, and ${$s1*$56377m2/100} Frost damage to a second nearby target][].
+#1 (id=20036)    : Server Side Script (77)
+                   Base Value: 1 | Scaled Value: 0 (avg=1, dl=0.1) | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy(6)
+Description      : Quickly fling a shard of ice at the target, dealing $228598s1 Frost damage$?s56377[, and ${$228598s1*$56377m2/100} Frost damage to a second nearby target][].
 
 Ice Lance damage is tripled against frozen targets.
 Variables        : $masteryMod=${$cond($gt($pl,79),1,0)}
@@ -1217,7 +1210,7 @@ Spell Level      : 16
 Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
-Affecting spells : Icy Veins (12472), Shatter (12982), Ice Floes (108839), Critical Mass (117216), Mage (137018), Enhanced Pyrotechnics (157644)
+Affecting spells : Icy Veins (12472), Shatter (12982), Ice Floes (108839), Critical Mass (117216), Mage (137018), Enhanced Pyrotechnics (157644), Ice Form (198144), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1354,7 +1347,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50
 #3 (id=341171)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 10 | Scaled Value: 10 | Target: Self(1)
-                   Affected Spells: Ice Lance (30455)
+                   Affected Spells: Ice Lance (30455), Ice Lance (228598)
 Description      : Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for $s2% of their damage.
 
 Name             : Glyph of Crittermorph (id=56382) [Spell Family (3), Passive, Hidden] 
@@ -1492,7 +1485,7 @@ Proc Chance      : 100%
 Mechanic         : Unknown(141)
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Icy Veins (12472), Ice Floes (108839), 
+Affecting spells : Icy Veins (12472), Ice Floes (108839), Ice Form (198144), 
 Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
                  : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ...x.... ........ .....x..   .....x.. ........ ........ ........ 
@@ -1520,7 +1513,7 @@ Proc Chance      : 100%
 Mechanic         : Unknown(141)
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Icy Veins (12472), Ice Floes (108839), 
+Affecting spells : Icy Veins (12472), Ice Floes (108839), Ice Form (198144), 
 Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
                  : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ...x.... ........ .....x..   .....x.. ........ ........ ........ 
@@ -1548,7 +1541,7 @@ Proc Chance      : 100%
 Mechanic         : Unknown(141)
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Icy Veins (12472), Ice Floes (108839), 
+Affecting spells : Icy Veins (12472), Ice Floes (108839), Ice Form (198144), 
 Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
                  : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ...x.... ........ .....x..   .....x.. ........ ........ ........ 
@@ -1576,7 +1569,7 @@ Proc Chance      : 100%
 Mechanic         : Unknown(141)
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Icy Veins (12472), Ice Floes (108839), 
+Affecting spells : Icy Veins (12472), Ice Floes (108839), Ice Form (198144), 
 Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
                  : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ...x.... ........ .....x..   .....x.. ........ ........ ........ 
@@ -1702,7 +1695,7 @@ Stacks           : 1 initial, 3 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
-Affecting spells : Arcane Missiles (5143), Icy Veins (12472), Ice Floes (108839), Arcane Instability (166872), Arcane Focus (171375)
+Affecting spells : Arcane Missiles (5143), Icy Veins (12472), Ice Floes (108839), Arcane Instability (166872), Arcane Focus (171375), Ice Form (198144), 
 Triggered by     : Arcane Missiles (79684)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -1841,13 +1834,13 @@ Class            : Mage
 School           : Frost
 Spell Level      : 81
 Range            : 100 yards
-Affecting spells : Shatter (12982), Orbital Strike (195317), Ice Age (195323), Lonely Winter (205024)
+Affecting spells : Shatter (12982), Orbital Strike (195323), Lonely Winter (205024)
 Attributes       : ........ ........ x......x x..x....   .....x.x ........ ........ ........ 
-                 : ........ ......x. ...x.... ......x.   ........ .x...... ........ ......x. 
+                 : ..x..... ......x. ...x.... ......x.   ........ .x...... ........ ......x. 
                  : x......x .......x ........ ........   ...x.... ........ .xx..... ..x..... 
                  : x....... ....x... .....x.. ........   ........ ........ ........ ........ 
                  : .....x.. ....x... ........ ........   ........ ...x.... ....x... ........ 
-                 : ........ ........ ........ ........   .x...... ........ ........ ..x..... 
+                 : ........ ........ ......x. ........   .x...... ........ ........ ..x..... 
                  : Not a proc (105)
 Effects          :
 #1 (id=85629)    : School Damage: frost (2)
@@ -2024,10 +2017,10 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=120042)   : Apply Aura (6) | Unknown effect sub type (330)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-                   Affected Spells: Frostbolt (116), Polymorph (118), Fireball (133), Flamestrike (2120), Arcane Missiles (5143), Mage Armor (6117), Frost Armor (7302), Pyroblast (11366), Evocation (12051), Polymorph (28271), Polymorph (28272), Arcane Blast (30451), Molten Armor (30482), Summon Water Elemental (31687), Flurry (44614), Polymorph (61025), Polymorph (61305), Polymorph (61721), Polymorph (61780), Arcane Missiles! (79683), Frost Bomb (112948), Ring of Frost (113724), Rune of Power (116011), Conjure Familiar (126578), Polymorph (126819), Polymorph (161353), Polymorph (161354), Polymorph (161355), Polymorph (161372), Conjure Refreshment (190336), Blizzard (190356), Blizzard (190357), Aftershocks (194432), Glacial Spike (199786), Ebonbolt (214634), Mark of Aluneth (224968)
+                   Affected Spells: Frostbolt (116), Polymorph (118), Fireball (133), Flamestrike (2120), Arcane Missiles (5143), Mage Armor (6117), Frost Armor (7302), Pyroblast (11366), Evocation (12051), Polymorph (28271), Polymorph (28272), Arcane Blast (30451), Molten Armor (30482), Summon Water Elemental (31687), Flurry (44614), Polymorph (61025), Polymorph (61305), Polymorph (61721), Polymorph (61780), Arcane Missiles! (79683), Frost Bomb (112948), Ring of Frost (113724), Rune of Power (116011), Conjure Familiar (126578), Polymorph (126819), Polymorph (161353), Polymorph (161354), Polymorph (161355), Polymorph (161372), Conjure Refreshment (190336), Blizzard (190356), Blizzard (190357), Aftershocks (194432), Glacial Spike (199786), Ebonbolt (214634), Mark of Aluneth (224968), Frostbolt (228597), Ebonbolt (228599), Glacial Spike (228600)
 #2 (id=340801)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Self(1)
-                   Affected Spells: Frostbolt (116), Polymorph (118), Fireball (133), Flamestrike (2120), Arcane Missiles (5143), Mage Armor (6117), Frost Armor (7302), Pyroblast (11366), Evocation (12051), Polymorph (28271), Polymorph (28272), Arcane Blast (30451), Molten Armor (30482), Summon Water Elemental (31687), Flurry (44614), Polymorph (61025), Polymorph (61305), Polymorph (61721), Polymorph (61780), Arcane Missiles! (79683), Frost Bomb (112948), Ring of Frost (113724), Rune of Power (116011), Ancient Teleport: Dalaran (120145), Conjure Familiar (126578), Polymorph (126819), Polymorph (161353), Polymorph (161354), Polymorph (161355), Polymorph (161372), Conjure Refreshment (190336), Blizzard (190356), Blizzard (190357), Aftershocks (194432), Glacial Spike (199786), Ebonbolt (214634)
+                   Affected Spells: Frostbolt (116), Polymorph (118), Fireball (133), Flamestrike (2120), Arcane Missiles (5143), Mage Armor (6117), Frost Armor (7302), Pyroblast (11366), Evocation (12051), Polymorph (28271), Polymorph (28272), Arcane Blast (30451), Molten Armor (30482), Summon Water Elemental (31687), Flurry (44614), Polymorph (61025), Polymorph (61305), Polymorph (61721), Polymorph (61780), Arcane Missiles! (79683), Frost Bomb (112948), Ring of Frost (113724), Rune of Power (116011), Ancient Teleport: Dalaran (120145), Conjure Familiar (126578), Polymorph (126819), Polymorph (161353), Polymorph (161354), Polymorph (161355), Polymorph (161372), Conjure Refreshment (190336), Blizzard (190356), Blizzard (190357), Aftershocks (194432), Glacial Spike (199786), Ebonbolt (214634), Frostbolt (228597), Ebonbolt (228599), Glacial Spike (228600)
 Description      : Makes your next Mage spell with a cast time shorter than $s2 sec castable while moving. Unaffected by the global cooldown and castable while casting. Max 3 charges.
 Tooltip          : Able to move while casting spells.
 
@@ -2313,7 +2306,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Custom(18)
 #3 (id=177659)   : Summon (28)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 60199 | Misc Value 2: 0xc89 | Target: Custom(18)
-Description      : Places a Rune of Power on the ground for $116011d which increases your spell damage by $116014s1% while you stand within 8 yds.
+Description      : Places a Rune of Power on the ground for $116011d which increases your spell damage by $116014s1% while you stand within 8 yds. Max 2 charges.
 
 Name             : Rune of Power (id=116014) [Spell Family (3)] 
 Class            : Mage
@@ -2428,7 +2421,7 @@ Proc Chance      : 100%
 Mechanic         : Unknown(141)
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Icy Veins (12472), Ice Floes (108839), 
+Affecting spells : Icy Veins (12472), Ice Floes (108839), Ice Form (198144), 
 Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
                  : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ...x.... ........ .....x..   .....x.. ........ ........ ........ 
@@ -2929,14 +2922,13 @@ Name             : Comet Storm (id=153596) [Spell Family (3)]
 Class            : Mage
 School           : Frost
 Range            : 100 yards
-Velocity         : 1 yards/sec
 Affecting spells : Shatter (12982)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ .xx..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ....x... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
+                 : ..x..... ......x. ...x.... ........   ........ ........ ........ ......x. 
+                 : .......x ........ ........ ........   ...x.... ........ .xx..... .xx..... 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ....x... ...x.... ....x... ........ 
+                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
 Effects          :
 #1 (id=212872)   : School Damage: frost (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | Radius: 0 - 4 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
@@ -3015,7 +3007,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=215509)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self(1)
-Description      : Your Fireball, Pyroblast, and Inferno Blast critical strikes reduce the remaining cooldown on Combustion by $s1 sec.
+Description      : Your Fireball, Pyroblast, and Fire Blast critical strikes reduce the remaining cooldown on Combustion by $s1 sec.
 
 Name             : Thermal Void (id=155149) [Passive] 
 Class            : Mage
@@ -3290,7 +3282,7 @@ Proc Chance      : 100%
 Mechanic         : Unknown(141)
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Icy Veins (12472), Ice Floes (108839), 
+Affecting spells : Icy Veins (12472), Ice Floes (108839), Ice Form (198144), 
 Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
                  : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ...x.... ........ .....x..   .....x.. ........ ........ ........ 
@@ -3318,7 +3310,7 @@ Proc Chance      : 100%
 Mechanic         : Unknown(141)
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Icy Veins (12472), Ice Floes (108839), 
+Affecting spells : Icy Veins (12472), Ice Floes (108839), Ice Form (198144), 
 Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
                  : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ...x.... ........ .....x..   .....x.. ........ ........ ........ 
@@ -3346,7 +3338,7 @@ Proc Chance      : 100%
 Mechanic         : Unknown(141)
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Icy Veins (12472), Ice Floes (108839), 
+Affecting spells : Icy Veins (12472), Ice Floes (108839), Ice Form (198144), 
 Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
                  : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ...x.... ........ .....x..   .....x.. ........ ........ ........ 
@@ -3374,7 +3366,7 @@ Proc Chance      : 100%
 Mechanic         : Unknown(141)
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Icy Veins (12472), Ice Floes (108839), 
+Affecting spells : Icy Veins (12472), Ice Floes (108839), Ice Form (198144), 
 Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
                  : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ...x.... ........ .....x..   .....x.. ........ ........ ........ 
@@ -3520,7 +3512,7 @@ Resource         : 3% Base Mana (33000 @Level 110)
 Spell Level      : 22
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
-Affecting spells : Icy Veins (12472), Ice Floes (108839), 
+Affecting spells : Icy Veins (12472), Ice Floes (108839), Ice Form (198144), 
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3543,7 +3535,7 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 8 seconds
 Proc Chance      : 100%
-Affecting spells : Icy Veins (12472), Shatter (12982), Ice Floes (108839), Mage (137018), The Storm Rages (195352), Arctic Gale (205038), Zann'esu Journey (226852)
+Affecting spells : Icy Veins (12472), Shatter (12982), Ice Floes (108839), Mage (137018), The Storm Rages (195352), Ice Form (198144), Arctic Gale (205038), Zann'esu Journey (226852)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -3562,13 +3554,13 @@ Class            : Mage
 School           : Frost
 Spell Level      : 44
 Range            : 100 yards
-Affecting spells : Icy Veins (12472), Shatter (12982), Ice Floes (108839), The Storm Rages (195352), Arctic Gale (205038), Zann'esu Journey (226852)
-Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
-                 : ........ ........ ........ ......x.   ........ .x...... ........ ......x. 
-                 : .......x .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Affecting spells : Icy Veins (12472), Shatter (12982), Ice Floes (108839), The Storm Rages (195352), Ice Form (198144), Arctic Gale (205038), Zann'esu Journey (226852)
+Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ ........ ........ 
+                 : ..x..... ......x. ...x.... ......x.   ........ .x...... ........ ......x. 
+                 : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... .....x.. ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
+                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
                  : Not a proc (105)
 Effects          :
 #1 (id=278848)   : School Damage: frost (2)
@@ -3713,7 +3705,7 @@ School           : Fire
 Spell Level      : 44
 Range            : 40 yards
 Cast Time        : 2 seconds
-Affecting spells : Icy Veins (12472), Shatter (12982), Hot Streak! (48108), Ice Floes (108839), Blue Flame Special (210182), 
+Affecting spells : Icy Veins (12472), Shatter (12982), Hot Streak! (48108), Ice Floes (108839), Ice Form (198144), Blue Flame Special (210182), 
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ .....x.. ........ ......x. 
@@ -3733,7 +3725,7 @@ Spell Level      : 12
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
-Charges          : 3 (30 seconds cooldown)
+Charges          : 3 (90 seconds cooldown)
 Category         : 1633
 Proc Chance      : 101%
 Affecting spells : Critical Mass (117216)
@@ -3746,7 +3738,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=285474)   : School Damage: fire (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 5.00000 | Target: Enemy(6)
-Description      : Hurls a Phoenix that causes $s1 Fire damage to the target and splashes $224637s2 Fire damage to other nearby enemies.
+Description      : Hurls a Phoenix that causes $s1 Fire damage to the target and splashes $224637s2 Fire damage to other nearby enemies. This damage is always a critical strike.
 
 Name             : Hot Streak (id=195283) [Spell Family (3), Passive] 
 Class            : Fire Mage
@@ -3794,7 +3786,7 @@ School           : Arcane
 Spell Level      : 24
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
-Affecting spells : Icy Veins (12472), Improved Mana Gems (37447), Everywhere At Once (187301), 
+Affecting spells : Icy Veins (12472), Improved Mana Gems (37447), Everywhere At Once (187301), Ice Form (198144), 
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3922,8 +3914,7 @@ Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
-Duration         : 4 seconds
-Affecting spells : Splitting Ice (56377), Ice Floes (108839), 
+Affecting spells : Shatter (12982), Splitting Ice (56377), Ice Floes (108839), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3931,11 +3922,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=294013)   : School Damage: frost (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 6.50000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy(6)
-#2 (id=294014)   : Apply Aura (6) | Root (26)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(58) | Target: Enemy(6)
-Description      : Conjures a massive spike of ice, and merges your current Icicles into it. It impales your target, dealing $s1 damage plus the damage stored in your Icicles, and freezes the target in place for $d. Damage may interrupt the freeze effect.
+#1 (id=294013)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy(6)
+Description      : Conjures a massive spike of ice, and merges your current Icicles into it. It impales your target, dealing $228600s1 damage plus the damage stored in your Icicles, and freezes the target in place for $228600d. Damage may interrupt the freeze effect.
 
 Requires 5 Icicles to cast.
 
@@ -4008,7 +3997,7 @@ School           : Arcane
 Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 3600 seconds
-Cooldown         : 60 seconds
+Cooldown         : 10 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4056,7 +4045,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=302651)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
-                   Affected Spells: Frostbolt (116), Ice Lance (30455), Frozen Orb (84721), Flurry (228354)
+                   Affected Spells: Frostbolt (116), Ice Lance (30455), Frozen Orb (84721), Flurry (228354), Frostbolt (228597), Ice Lance (228598)
 Description      : You can no longer summon your Water Elemental, but Frostbolt, Ice Lance, Flurry, and Frozen Orb deal $s1% increased damage. 
 
 Name             : Presence of Mind (id=205025) [Spell Family (3)] 
@@ -4147,7 +4136,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=302656)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self(1)
-Description      : Immediately grants $s1 charges of Inferno Blast.
+Description      : Immediately grants $s1 charges of Fire  Blast.
 
 Name             : Frozen Touch (id=205030) [Spell Family (3)] 
 Class            : Mage
@@ -4289,7 +4278,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=302666)   : Apply Aura (6) | Proc Trigger Spell: Erosion (42)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 210134 | Target: Enemy(6)
-Description      : Your attacks erode the target's resistances, increasing all damage the target takes from your spells by $210134s1%, stacking up to $210134u times.  After $210154d of not taking damage from your spells, this effect decreases by $210134s1% every $210154t1 sec.
+Description      : Your attacks erode the target's resistances, increasing all damage the target takes from your Arcane spells by $210134s1%, stacking up to $210134u times.  After $210154d of not taking damage from your spells, this effect decreases by $210134s1% every $210154t1 sec.
 
 Name             : Arcane Assault (id=205235) [Spell Family (3)] 
 Class            : Mage
@@ -4474,7 +4463,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
                    Affected Spells: Invisibility (66), Arcane Explosion (1449), Arcane Missiles (7268), Arcane Blast (30451), Slow (31589), Invisibility (32612), Arcane Barrage (44425), Greater Invisibility (110959), Greater Invisibility (110960), Ancient Teleport: Dalaran (120145), Arcane Orb (153640), Sloooow Down (210732)
 Description      : $@spelldesc205039
-Tooltip          : Damage taken from Arcane spells increased by $s1%.
+Tooltip          : Damage taken from the Mage's Arcane spells increased by $s1%.
 
 Name             : Erosion (id=210154) [Spell Family (3), Hidden] 
 Class            : Mage
@@ -4586,7 +4575,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 20 yards | Target: Self(1) -> Unknown(55)
 #2 (id=315358)   : Apply Aura (6) | Unknown effect sub type (377)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : Teleports you $A1 yards forward, unless something is in the way. Unaffected by the global cooldown and castable while casting.
+Description      : Teleports you $A1 yards forward, unless something is in the way. Unaffected by the global cooldown and castable while casting. Max 2 charges.
 Tooltip          : Shimmering.
 
 Name             : Cone of Cold (id=212792) [Spell Family (3)] 
@@ -4613,7 +4602,7 @@ School           : Arcane
 Spell Level      : 24
 Duration         : 10 seconds
 Cooldown         : 30 seconds
-Affecting spells : Icy Veins (12472), Improved Mana Gems (37447), Everywhere At Once (187301), 
+Affecting spells : Icy Veins (12472), Improved Mana Gems (37447), Everywhere At Once (187301), Ice Form (198144), 
 Attributes       : ........ ........ x.x..... .x......   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4664,9 +4653,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=318792)   : School Damage: shadowfrost (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 9.00000 | Target: Enemy(6)
-Description      : Deals $s1 Shadowfrost damage and grants two charges of Fingers of Frost.
+#1 (id=318792)   : Trigger Missiles (32)
+                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 228599 | Target: Enemy(6)
+Description      : Deals $228599s1 Shadowfrost damage and grants two charges of Fingers of Frost.
 
 Name             : Living Bomb (id=217694) [Spell Family (3)] 
 Class            : Mage
@@ -4751,15 +4740,14 @@ Class            : Mage
 School           : Frost
 Spell Level      : 1
 Range            : 100 yards
-Velocity         : 45 yards/sec
 Duration         : 1 seconds
-Affecting spells : Shatter (12982), Lonely Winter (205024)
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   .x...... ........ ........ ........ 
+Affecting spells : Shatter (12982), Ice Age (195317), Lonely Winter (205024)
+Attributes       : ........ ........ x......x x..x....   .....x.. ........ ........ ........ 
+                 : ..x..... ......x. ...x.... ........   ........ ........ ........ ......x. 
+                 : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... .....x.. ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
+                 : ........ ........ ......x. ........   .x...... ........ ........ ..x..... 
 Effects          :
 #1 (id=343734)   : School Damage: frost (2)
                    Base Value: -1 | Scaled Value: 0 - 2 | Value Range: 3 | SP Coefficient: 0.90000 | Target: Enemy(6)
@@ -4767,5 +4755,80 @@ Effects          :
                    Base Value: -70 | Scaled Value: -70 | Mechanic: Unknown(88) | Target: Enemy(6)
 Description      : $@spelldesc44614
 Tooltip          : Movement slowed by $s2%.
+
+Name             : Frostbolt (id=228597) [Spell Family (3)] 
+Class            : Mage
+School           : Frost
+Spell Level      : 1
+Range            : 100 yards
+Affecting spells : Icy Veins (12472), Shatter (12982), Frosty Zap (24392), Improved Counterspell (24429), Ice Floes (108839), Ice Shard (166869), Icy Caress (195315), Ice Form (198144), Lonely Winter (205024), Shattering Bolts (214629)
+Triggered by     : Frostbolt (116)
+Attributes       : ........ ........ x......x x..x....   .....x.. ........ ........ ........ 
+                 : ..x..... ......x. ...x.... ........   .......x ........ ........ ........ 
+                 : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... .....x.. ........   ........ ........ ........ ........ 
+                 : .....x.. ....x... ........ ........   ........ ...x.... ....x... ........ 
+                 : ........ ........ ......x. ........   .x...... ........ ........ ..x..... 
+Effects          :
+#1 (id=344284)   : School Damage: frost (2)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.90000 | Target: Enemy(6)
+Description      : $@spelldesc116
+
+Name             : Ice Lance (id=228598) [Scaling Spell (5), Spell Family (3)] 
+Class            : Mage
+School           : Frost
+Spell Level      : 5
+Range            : 40 yards
+GCD              : 1.5 seconds
+Affecting spells : Shatter (12982), Splitting Ice (56377), Let It Go (195322), Chain Reaction (195418), Lonely Winter (205024), Magtheridon's Might (214404)
+Attributes       : ........ ........ x.x....x x..x....   .....x.. ........ ........ ........ 
+                 : ..x..... ......x. ...x.... ........   ........ ........ ........ ........ 
+                 : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
+                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
+Effects          :
+#1 (id=344285)   : School Damage: frost (2)
+                   Base Value: 1 | Scaled Value: 0 (avg=1, dl=0.1) | SP Coefficient: 0.95000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy(6)
+#2 (id=344286)   : Dummy (3)
+                   Base Value: 100 | Scaled Value: 100
+Description      : $@spelldesc30455
+
+Name             : Ebonbolt (Artifact) (id=228599) [Spell Family (3)] 
+Class            : Mage
+School           : Shadowfrost
+Range            : 100 yards
+Affecting spells : Shatter (12982), Ice Floes (108839), 
+Triggered by     : Ebonbolt (214634)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=344288)   : School Damage: shadowfrost (2)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 9.00000 | Target: Enemy(6)
+Description      : $@spelldesc214634
+
+Name             : Glacial Spike (id=228600) [Spell Family (3)] 
+Class            : Mage
+School           : Frost
+Range            : 100 yards
+Duration         : 4 seconds
+Affecting spells : Shatter (12982), Ice Floes (108839), 
+Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
+                 : ..x..... ......x. ...x.... ........   ........ ........ ........ ........ 
+                 : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
+                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
+Effects          :
+#1 (id=344289)   : School Damage: frost (2)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 6.50000 | Target: Enemy(6)
+#2 (id=344290)   : Apply Aura (6) | Root (26)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(58) | Target: Enemy(6)
+Description      : $@spelldesc199786
+Tooltip          : Frozen in place.
 
 

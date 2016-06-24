@@ -1,6 +1,6 @@
 #define TALENT_SIZE (610)
 
-// 610 talents, wow build 21996
+// 610 talents, wow build 22018
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   0,   3,   29838,       0,  0 },
@@ -278,7 +278,7 @@ static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Special Delivery"                  , 22102, 0x00, 0x0200, 268,   2,   5,  196730,       0,  0 },
   { "Hit Combo"                         , 22103, 0x00, 0x0200, 269,   2,   5,  196740,       0,  0 },
-  { "Fortified Mind"                    , 22104, 0x00, 0x0200, 268,   1,   6,  196736,       0,  0 },
+  { "Blackout Combo"                    , 22104, 0x00, 0x0200, 268,   1,   6,  196736,       0,  0 },
   { "Whirling Dragon Punch"             , 22105, 0x00, 0x0200, 269,   1,   6,  152175,       0,  0 },
   { "Elusive Dance"                     , 22106, 0x00, 0x0200, 268,   0,   6,  196738,       0,  0 },
   { "Chi Orbit"                         , 22107, 0x00, 0x0200, 269,   0,   6,  196743,       0,  0 },

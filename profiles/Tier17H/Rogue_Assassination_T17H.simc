@@ -31,7 +31,7 @@ actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent,if=energy<60
 actions+=/vanish,if=time>10&energy>13&!buff.stealth.up&energy.time_to_max>gcd*2&(combo_points<8|(!talent.anticipation.enabled&combo_points<=1))
-actions+=/mutilate,if=buff.stealth.up|buff.vanish.up
+actions+=/mutilate,if=buff.stealth.up|buff.vanish.up|combo_points<combo_points.max
 actions+=/rupture,if=((combo_points>=4&!talent.anticipation.enabled)|combo_points=5)&ticks_remain<3
 actions+=/rupture,cycle_targets=1,if=spell_targets.fan_of_knives>1&!ticking&combo_points=5
 actions+=/marked_for_death,if=combo_points=0

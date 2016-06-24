@@ -546,7 +546,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=21915)    : Weapon Damage% (31)
-                   Base Value: 585 | Scaled Value: 5.85 | SP Coefficient: 1.00000 | Target: Enemy(6)
+                   Base Value: 540 | Scaled Value: 5.4 | SP Coefficient: 1.00000 | Target: Enemy(6)
 #2 (id=172084)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : $@spelldesc17364
@@ -567,7 +567,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=21916)    : Weapon Damage% (31)
-                   Base Value: 585 | Scaled Value: 5.85 | SP Coefficient: 1.00000 | Target: Enemy(6)
+                   Base Value: 540 | Scaled Value: 5.4 | SP Coefficient: 1.00000 | Target: Enemy(6)
 #2 (id=172085)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : $@spelldesc17364
@@ -644,7 +644,7 @@ Name             : Windfury (id=33757) [Spell Family (11), Passive]
 Class            : Enhancement Shaman
 School           : Nature
 Spell Level      : 30
-Proc Chance      : 3%
+Proc Chance      : 5%
 Proc Flags       : ..x.x... ........ ......xx ........ 
                  : White Melee, Yellow Melee, Melee Off-Hand
 Affecting spells : Mastery: Enhanced Elements (77223), Doom Winds (204945), 
@@ -906,7 +906,6 @@ School           : Nature
 Spell Level      : 48
 Range            : 30 yards
 GCD              : 1.5 seconds
-Duration         : 15 seconds
 Cooldown         : 120 seconds
 Category         : 1653
 Affecting spells : Shaman (137038), Lucidity (137326)
@@ -918,8 +917,8 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Disable target procs (113)
 Effects          :
-#1 (id=43877)    : Summon (28)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 29264 | Misc Value 2: 0x489 | Radius: 3 yards | Target: Unknown(48) -> Self(1)
+#1 (id=43877)    : Dummy (3)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self(1) -> Self(1)
 Description      : Summons two Spirit $?s147783[Raptors][Wolves] that aid you in battle for $d. They are immune to movement-impairing effects and grant you $190185s1 Maelstrom each time they attack.
 Variables        : $percent=$?s63271[${$58877m1*1.4}][${$58877m1}]
 
@@ -940,9 +939,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=43915)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 7 | Target: Self(1)
-#2 (id=226711)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 7 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Self(1)
 Description      : Casting Chain Heal or Riptide reduces the cast time of your next Healing Wave by $53390s1% or increases the critical effect chance of your next Healing Surge by $53390s2%. Stacks up to $53390u times.
 
 Name             : Cleanse Spirit (id=51886) [Spell Family (11)] 
@@ -990,7 +987,7 @@ Stacks           : 1 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : AOE Heal, Heal
-Affecting spells : Crashing Waves (197464), Tidal Chains (207088), 
+Affecting spells : Tidal Chains (207088), 
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -999,10 +996,10 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=46044)    : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
-                   Base Value: -20 | Scaled Value: -20 | Misc Value: 10 | Target: Self(1)
+                   Base Value: -30 | Scaled Value: -30 | Misc Value: 10 | Target: Self(1)
                    Affected Spells: Healing Wave (77472)
 #2 (id=46045)    : Apply Aura (6) | Add Flat Modifier: Spell Critical Chance (107)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 7 | Target: Self(1)
+                   Base Value: 40 | Scaled Value: 40 | Misc Value: 7 | Target: Self(1)
                    Affected Spells: Healing Surge (8004), Healing Surge (188070)
 Description      : $@spelldesc51564
 Tooltip          : Cast time of next Healing Wave reduced by $w1%.
@@ -1585,10 +1582,10 @@ Effects          :
 #2 (id=92143)    : Apply Aura (6) | Dummy (4)
                    Base Value: 250 | Scaled Value: 250 | Target: Self(1)
 #3 (id=297947)   : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Misc Value: 18 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.12500 | Misc Value: 18 | Target: Self(1)
                    Affected Spells: Stormbringer (201845)
 #4 (id=297948)   : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Misc Value: 18 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.12500 | Misc Value: 18 | Target: Self(1)
                    Affected Spells: Windfury (33757)
 Description      : Increases your chance to trigger Stormbringer and Windfury by ${$m3}.2%, and increases all Fire, Frost, and Nature damage you deal by ${$77223m1}.2%.
 
@@ -2708,7 +2705,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179724)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 14 | Target: Self(1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Healing Surge (8004), Healing Surge (188070)
 #2 (id=191042)   : Apply Aura (6) | Unknown effect sub type (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self(1)
@@ -3446,8 +3443,8 @@ Class            : Enhancement Shaman
 School           : Physical
 Spell Level      : 52
 Proc Chance      : 100%
-Proc Flags       : ..x.x... ........ ......xx ........ 
-                 : White Melee, Yellow Melee, Melee Off-Hand
+Proc Flags       : ..x..... ........ ........ ........ 
+                 : White Melee
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3458,7 +3455,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=274047)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self(1)
-Description      : Each time you deal damage with a melee weapon, you generate $187890s1 Maelstrom.
+Description      : Your auto attacks generate $187890s1 Maelstrom.
 
 Name             : Maelstrom Weapon (id=187890) [Spell Family (11)] 
 Class            : Shaman
@@ -3477,7 +3474,7 @@ Description      : $@spelldesc187880
 Name             : Healing Surge (id=188070) [Spell Family (11)] 
 Class            : Enhancement Shaman
 School           : Nature
-Resource         : 27% Base Mana (59400 @Level 110)
+Resource         : 22% Base Mana (48400 @Level 110)
 Spell Level      : 7
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -3961,9 +3958,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=281777)   : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self(1)
 #2 (id=281778)   : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self(1)
 Description      : Increases haste by $s1% and attack speed by $s2%.
 
 Name             : Graceful Spirit (id=192088) [Spell Family (11), Passive] 
@@ -4624,13 +4621,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=290105)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
-                   Base Value: -15 | Scaled Value: -15 | Misc Value: 3 | Target: Self(1)
-                   Affected Spells: Tidal Waves (53390)
-#2 (id=290106)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 12 | Target: Self(1)
-                   Affected Spells: Tidal Waves (53390)
-Description      : Tidal Waves increases the critical effect chance of Healing Surge by an additional $s3%, and reduces the cast time of Healing Wave by an additional $s2%.
+#1 (id=290105)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self(1)
+Description      : Riptide grants an additional charge of Tidal Waves.
 
 Name             : Bottomless Depths (id=197467) [Spell Family (11), Passive] 
 Class            : Shaman
@@ -4867,10 +4860,7 @@ Class            : Shaman
 School           : Nature
 Spell Level      : 60
 Range            : 30 yards
-GCD              : 1.5 seconds
 Duration         : 15 seconds
-Cooldown         : 120 seconds
-Category         : 1653
 Affecting spells : Shaman (137038), Lucidity (137326)
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ .x...... ......x. 
@@ -5126,7 +5116,7 @@ Name             : Stormbringer (id=201845) [Spell Family (11), Passive]
 Class            : Enhancement Shaman
 School           : Nature
 Spell Level      : 40
-Proc Chance      : 3%
+Proc Chance      : 5%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
 Affecting spells : Mastery: Enhanced Elements (77223)
@@ -5193,7 +5183,7 @@ Effects          :
 #1 (id=297537)   : School Damage: nature (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.00000 | Target: Enemy(6)
 #2 (id=297594)   : Energize Power (30)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: maelstrom | Target: Self(1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: maelstrom | Target: Self(1)
 #3 (id=297596)   : Trigger Spell: Boulderfist (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 218825 | Target: Self(1)
 Description      : Slams your target with the power of stone, dealing $s1 Nature damage and enhancing your weapons for $218825d, increasing your critical strike chance by $218825s1% and all damage you deal by $218825s2%.
@@ -5240,7 +5230,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=297542)   : Apply Aura (6) | Proc Trigger Spell: Hot Hand (42)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 215785 | Target: Self(1)
-Description      : Melee attacks with Flametongue active also make your next Lava Lash cost no Maelstrom and deal $215785s1% increased damage.
+Description      : Melee attacks with Flametongue active have a chance to make your next Lava Lash cost no Maelstrom and deal $215785s1% increased damage.
 
 Name             : Path of Flame (id=201909) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
@@ -5273,7 +5263,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=297679)   : Apply Aura (6) | Unknown effect sub type (166)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self(1)
 Description      : Enhance your weapons, increasing your attack power by $s1%.
 Tooltip          : Attack Power increased by $s1%.
 
@@ -5730,7 +5720,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
 #2 (id=341410)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
-Description      : Your Lightning Bolt and Chain Lightning have a $s1% chance to make the primary target a Lightning Rod for $197209d. When you deal damage with Lightning Bolt or Chain Lightning, they deal an additional $s2% of their damage to all Lightning Rods.
+Description      : Your Lightning Bolt and Chain Lightning have a $s1% chance to make the primary target a Lightning Rod for $197209d. Lightning Rods take $s2% of all damage you deal with Lightning Bolt and Chain Lightning.
 
 Name             : Aftershock (id=210707) [Spell Family (11), Passive] 
 Class            : Shaman
@@ -5853,7 +5843,7 @@ Attributes       : ........ ........ ........ x..x....   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=312258)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.24000 | Radius: 8 yards | Target: AOE enemy (instant)(16) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.16000 | Radius: 8 yards | Target: AOE enemy (instant)(16) -> AOE enemy (instant)(16)
 Description      : $@spelldesc192246
 
 Name             : Hailstorm (id=210853) [Spell Family (11), Passive] 
@@ -5887,7 +5877,7 @@ Effects          :
 #1 (id=312326)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #2 (id=312327)   : Weapon Damage% (31)
-                   Base Value: 10 | Scaled Value: 0.1 | Target: Enemy(6)
+                   Base Value: 30 | Scaled Value: 0.3 | Target: Enemy(6)
 Description      : $@spelldesc210853
 
 Name             : Hex (id=210873) [Spell Family (11)] 
@@ -6042,7 +6032,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=316413)   : School Damage: nature (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.00000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.20000 | Target: Enemy(6)
 Description      : $@spelldesc195255
 
 Name             : Overcharge (id=213498) [Spell Family (11), Passive] 
@@ -6269,7 +6259,6 @@ Class            : Shaman
 School           : Nature
 Range            : 10 yards
 Duration         : 10 seconds
-Affecting spells : Gathering of the Maelstrom (198349), Weapons of the Elements (215381)
 Triggered by     : Boulderfist (201897)
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

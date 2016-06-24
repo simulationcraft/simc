@@ -349,7 +349,7 @@ Spell Level      : 26
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Cat Form (3025), Incarnation: Tree of Life (5420), Bear Form (5487), Nimble Healing Touch (24542), Blessing of Lower City (37878), Soul of the Forest (114108), Lucidity (137247), Blessing of the World Tree (189744), Astral Influence (197524), Abundance (207640), Power of Elune, the Moon Goddess (208284), Attuned to Nature (210590), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Cat Form (3025), Incarnation: Tree of Life (5420), Bear Form (5487), Nimble Healing Touch (24542), Blessing of Lower City (37878), Soul of the Forest (114108), Guardian Druid (137010), Feral Druid (137011), Balance Druid (137013), Lucidity (137247), Blessing of the World Tree (189744), Astral Influence (197524), Abundance (207640), Power of Elune, the Moon Goddess (208284), Attuned to Nature (210590), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -731,34 +731,6 @@ Effects          :
                    Affected Spells: Regrowth (8936)
 Description      : $@spelldesc113043
 Tooltip          : Your next Regrowth is free.
-
-Name             : Hurricane (id=16914) [Spell Family (7)] 
-Class            : Restoration Druid
-School           : Nature
-Resource         : 10% Base Mana (22000 @Level 110)
-Spell Level      : 42
-Range            : 35 yards
-Cast Time        : 2 seconds
-GCD              : 1.5 seconds
-Duration         : 10 seconds
-Cooldown         : 10 seconds
-Proc Chance      : 101%
-Stance Mask      : 0x40000002
-Affecting spells : Restoration Druid (137012), Lucidity (137247), Astral Influence (197524), Ekowraith, Creator of Worlds (210667)
-Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
-                 : ........ ........ ...x..x. ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
-                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
-                 : ........ ....x... .x...... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=8599)     : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
-#2 (id=289058)   : Unknown effect type (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 5290 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
-#3 (id=325400)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : Creates a violent storm at the target location, causing ${$42231m1*10} Nature damage over $d.
 
 Name             : Thick Hide (id=16931) [Spell Family (7), Passive] 
 Class            : Guardian Druid
@@ -1174,7 +1146,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=23639)    : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.20000 | Target: Friend(21)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.25000 | Target: Friend(21)
 Description      : Heals the target for $o1 over $d. When Lifebloom expires or is dispelled, the target is instantly healed for $33778s1. Limit 1.
 Tooltip          : Healing $w1 every second.
 Blooms for additional healing when effect expires or is dispelled.
@@ -1194,7 +1166,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... .....
                  : Disable player procs (112)
 Effects          :
 #1 (id=23653)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Target: Friend(21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Target: Friend(21)
 Description      : $@spelldesc33763
 
 Name             : Nurturing Instinct (id=33873) [Spell Family (7), Passive] 
@@ -1327,27 +1299,6 @@ Attributes       : .....x.. x....... x....... ........   ........ ..x..... .....
 Effects          :
 #1 (id=32744)    : Create Item (24)
                    Base Value: 1 | Scaled Value: 1 | Target: Self(1)
-
-Name             : Hurricane (id=42231) [Spell Family (7)] 
-Class            : Druid
-School           : Nature
-Spell Level      : 42
-Range            : 100 yards
-Duration         : 1.5 seconds
-Affecting spells : Restoration Druid (137012), Lucidity (137247), Astral Influence (197524), Ekowraith, Creator of Worlds (210667)
-Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
-                 : ........ ........ ........ ......x.   ........ ........ ........ ......x. 
-                 : .......x .......x ........ ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=33889)    : School Damage: nature (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.36000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
-#2 (id=289082)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Radius: 0 - 8 yards | Mechanic: Unknown(88) | Target: Unknown(87) -> AOE enemy (instant)(16)
-Description      : $@spelldesc16914
-Tooltip          : Movement speed reduced by $w2%.
 
 Name             : Wonderheal XT68 Shades (id=46106) 
 Class            : Monk, Druid
@@ -2346,7 +2297,7 @@ Class            : Druid
 School           : Nature
 Spell Level      : 1
 Range            : 100 yards
-Duration         : 6 seconds
+Duration         : 8 seconds
 Affecting spells : Bear Form (5487), Ironbark (102342), Druid (137009), Lucidity (137247), Grovewalker (186320), Astral Influence (197524), Essence of G'Hanir (208253), Ekowraith, Creator of Worlds (210667), 
 Triggered by     : Cenarion Ward (102351)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2357,7 +2308,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=111087)   : Apply Aura (6) | Periodic Heal: every 2 seconds (8)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.50000 | Target: Friend(21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.20000 | Target: Friend(21)
 Description      : Heals the target for $m1 every $t1 sec for $d.
 Tooltip          : Heals $w1 damage every $t1 seconds.
 
@@ -3262,15 +3213,16 @@ Effects          :
 #1 (id=179693)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 11 | Target: Self(1)
                    Affected Spells: Barkskin (22812)
-#2 (id=191158)   : Apply Aura (6) | Unknown effect sub type (454)
+#2 (id=191158)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
+                   Affected Spells: Healing Touch (5185)
+#3 (id=191159)   : Apply Aura (6) | Unknown effect sub type (454)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1469 | Target: Self(1)
-#3 (id=191159)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+#4 (id=191160)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: -50 | Scaled Value: -50 | Target: Self(1)
                    Affected Spells: Moonfire (8921), Moonfire (164812)
-#4 (id=191160)   : Apply Aura (6) | Unknown effect sub type (198)
+#5 (id=191161)   : Apply Aura (6) | Unknown effect sub type (198)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 256 | Misc Value 2: 0x4 | Target: Self(1)
-#5 (id=191161)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=260757)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #7 (id=260758)   : Apply Aura (6) | Dummy (4)
@@ -3291,6 +3243,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #15 (id=260766)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#16 (id=344349)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Feral Druid (id=137011) [Spell Family (7), Passive, Hidden] 
 Class            : Feral Druid
@@ -3306,8 +3260,9 @@ Effects          :
 #1 (id=179694)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
                    Base Value: 90000 | Scaled Value: 90000 | Misc Value: 11 | Target: Self(1)
                    Affected Spells: Moonkin Form (24858), Incarnation: Chosen of Elune (102560), Moonkin Form (197625)
-#2 (id=191154)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#2 (id=191154)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
+                   Affected Spells: Healing Touch (5185)
 #3 (id=191155)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #4 (id=191156)   : Apply Aura (6) | Dummy (4)
@@ -3333,6 +3288,8 @@ Effects          :
 #14 (id=260775)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #15 (id=260776)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#16 (id=344350)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Restoration Druid (id=137012) [Spell Family (7), Passive, Hidden] 
@@ -3367,7 +3324,6 @@ Effects          :
                    Affected Spells: Moonfire (8921), Sunfire (93402), Moonfire (164812), Sunfire (164815), Sunfire (197630)
 #9 (id=260750)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-                   Affected Spells: Hurricane (16914), Hurricane (42231)
 #10 (id=260751)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #11 (id=260752)   : Apply Aura (6) | Dummy (4)
@@ -3411,11 +3367,12 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179696)   : Apply Aura (6) | Unknown effect sub type (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 8 | Target: Self(1)
-#2 (id=191146)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
+#2 (id=191146)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
+                   Affected Spells: Healing Touch (5185)
+#3 (id=191147)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 23 | Target: Self(1)
                    Affected Spells: Moonfire (8921), Sunfire (93402), Sunfire (164815), Sunfire (197630)
-#3 (id=191147)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #4 (id=191148)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #5 (id=191149)   : Apply Aura (6) | Dummy (4)
@@ -3441,6 +3398,8 @@ Effects          :
 #15 (id=260786)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #16 (id=317007)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#17 (id=344348)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Displacer Beast (id=137452) [Spell Family (7)] 
@@ -4870,11 +4829,14 @@ Effects          :
                    Base Value: 125 | Scaled Value: 125 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Swiftmend (18562)
 #3 (id=327253)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
-                   Base Value: 40 | Scaled Value: 40 | Misc Value: 14 | Target: Self(1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Regrowth (8936)
 #4 (id=328242)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Rejuvenation (774)
+#5 (id=344347)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
+                   Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562)
 Description      : You gain:
 
 $@spellicon145108 $@spellname145108
@@ -4900,7 +4862,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=290202)   : Apply Aura (6) | Add Flat Modifier: Spell Range (107)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 5 | Target: Self(1)
-                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Hurricane (16914), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Hurricane (42231), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Enraged Mangle (202085), Stellar Flare (202347), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Lunar Beam (204069), Force of Nature (205636), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210723), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771)
+                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Enraged Mangle (202085), Stellar Flare (202347), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Lunar Beam (204069), Force of Nature (205636), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210723), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771)
 #2 (id=314659)   : Apply Aura (6) | Unknown effect sub type (153)
                    Base Value: 5 | Scaled Value: 5 | Target: Self(1)
                    Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Enraged Mangle (202085), Stellar Flare (202347), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Lunar Beam (204069), Force of Nature (205636), Ashamane's Rip (210705), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771)
