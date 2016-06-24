@@ -1104,7 +1104,9 @@ class SpellDataGenerator(DataGenerator):
          184968,                    # Unholy coil heal (Blood dk class trinket)
          191091, 191118, 191119,    # Mark of the Loyal Druid spells
          191121, 191112, 191123,
-         191124, 191146     
+         191124, 191146,
+         214802, 214803,            # Momento of Angerboda trinket
+         215476                     # Obelisk of the Void trinket
         ),
 
         # Warrior:

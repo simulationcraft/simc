@@ -114,7 +114,11 @@ namespace item
   void infallible_tracking_charm( special_effect_t& );
 
   /* Legion 7.0 */
+  void giant_ornamental_pearl( special_effect_t& );
+  void impact_tremor( special_effect_t& );
+  void memento_of_angerboda( special_effect_t& );
   void nightmare_egg_shell( special_effect_t& );
+  void obelisk_of_the_void( special_effect_t& );
 }
 
 namespace gem
@@ -4048,6 +4052,138 @@ void item::nightmare_egg_shell( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
+struct gaseous_bubble_t : public absorb_buff_t
+{
+  struct gaseous_explosion_t : public spell_t
+  {
+    gaseous_explosion_t( special_effect_t& effect ) : 
+      spell_t( "gaseous_explosion", effect.player, effect.player -> find_spell( 214972 ) )
+    {
+      background = may_crit = true;
+      callbacks = false;
+      aoe = -1;
+      item = effect.item;
+
+      base_dd_min = base_dd_max = effect.driver() -> effectN( 2 ).average( item );
+    }
+  };
+
+  gaseous_explosion_t* explosion;
+
+  gaseous_bubble_t( special_effect_t& effect ) : 
+    absorb_buff_t( absorb_buff_creator_t( effect.player, "gaseous_bubble", effect.driver(), effect.item ) ),
+    explosion( new gaseous_explosion_t( effect ) )
+  {}
+
+  void expire_override( int stacks, timespan_t remaining ) override
+  {
+    absorb_buff_t::expire_override( stacks, remaining );
+
+    explosion -> schedule_execute();
+  }
+};
+
+void item::giant_ornamental_pearl( special_effect_t& effect )
+{
+  effect.type = SPECIAL_EFFECT_USE;
+  effect.custom_buff = new gaseous_bubble_t( effect );
+}
+
+struct devilsaurs_stampede_t : public spell_t
+{
+  devilsaurs_stampede_t( special_effect_t& effect ) : 
+    spell_t( "devilsaurs_stampede", effect.player, effect.player -> find_spell( 224061 ) )
+  {
+    background = may_crit = true;
+    callbacks = false;
+    aoe = -1;
+    item = effect.item;
+
+    base_dd_min = base_dd_max = data().effectN( 1 ).average( item );
+  }
+};
+
+void item::impact_tremor( special_effect_t& effect )
+{
+  action_t* stampede = effect.player -> find_action( "devilsaurs_stampede" );
+  if ( ! stampede )
+  {
+    stampede = effect.player -> create_proc_action( "devilsaurs_stampede", effect );
+  }
+
+  if ( ! stampede )
+  {
+    stampede = new devilsaurs_stampede_t( effect );
+  }
+
+  buff_t* b = buff_creator_t( effect.player, "devilsaurs_stampede", effect.driver() -> effectN( 1 ).trigger(), effect.item )
+    .tick_zero( true )
+    .tick_callback( [ stampede ]( buff_t*, int, const timespan_t& ) {
+      stampede -> schedule_execute();
+    } );
+
+  effect.custom_buff = b;
+
+  new dbc_proc_callback_t( effect.item, effect );
+}
+
+struct random_combat_enhancement_callback_t : public dbc_proc_callback_t
+{
+  stat_buff_t* crit, *haste, *mastery;
+
+  random_combat_enhancement_callback_t( const item_t* i,
+                       const special_effect_t& effect,
+                       stat_buff_t* cb,
+                       stat_buff_t* hb,
+                       stat_buff_t* mb ) :
+                 dbc_proc_callback_t( i, effect ),
+    crit( cb ), haste( hb ), mastery( mb )
+  {}
+
+  void execute( action_t* /* a */, action_state_t* /* call_data */ ) override
+  {
+    stat_buff_t* buff;
+
+    int p_type = ( int ) ( listener -> sim -> rng().real() * 3.0 );
+    switch ( p_type )
+    {
+      case 0: buff = haste; break;
+      case 1: buff = crit; break;
+      case 2:
+      default:
+        buff = mastery; break;
+    }
+
+    buff -> trigger();
+  }
+};
+
+void item::memento_of_angerboda( special_effect_t& effect )
+{
+  double rating_amount = effect.driver() -> effectN( 2 ).average( effect.item );
+
+  stat_buff_t* crit_buff =
+    stat_buff_creator_t( effect.player, "howl_of_ingvar", effect.player -> find_spell( 214802 ) )
+      .activated( false )
+      .add_stat( STAT_CRIT_RATING, rating_amount );
+  stat_buff_t* haste_buff =
+    stat_buff_creator_t( effect.player, "wail_of_svala", effect.player -> find_spell( 214803 ) )
+     .activated( false )
+      .add_stat( STAT_HASTE_RATING, rating_amount );
+  stat_buff_t* mastery_buff =
+    stat_buff_creator_t( effect.player, "dirge_of_angerboda", effect.player -> find_spell( 214807 ) )
+      .activated( false )
+      .add_stat( STAT_MASTERY_RATING, rating_amount );
+
+  new random_combat_enhancement_callback_t( effect.item, effect, crit_buff, haste_buff, mastery_buff );
+}
+
+void item::obelisk_of_the_void( special_effect_t& effect )
+{
+  effect.custom_buff = stat_buff_creator_t( effect.player, "collapsing_shadow", effect.player -> find_spell( 215476 ), effect.item )
+    .add_stat( STAT_AGI_INT, effect.driver() -> effectN( 2 ).average( effect.item ) );
+}
+
 } // UNNAMED NAMESPACE
 
 /*
@@ -4766,7 +4902,11 @@ void unique_gear::register_special_effects()
   register_special_effect( 188534, item::felmouth_frenzy                );
 
   /* Legion 7.0 */
+  register_special_effect( 214971, item::giant_ornamental_pearl         );
+  register_special_effect( 224059, item::impact_tremor                  );
+  register_special_effect( 214798, item::memento_of_angerboda           );
   register_special_effect( 214340, item::nightmare_egg_shell            );
+  register_special_effect( 215467, item::obelisk_of_the_void            );
 
   /* Warlords of Draenor 6.2 */
   register_special_effect( 184270, item::mirror_of_the_blademaster      );
