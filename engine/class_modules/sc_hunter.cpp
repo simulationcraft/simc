@@ -201,7 +201,6 @@ public:
   // Procs
   struct procs_t
   {
-    proc_t* aimed_shot_artifact;
     proc_t* lock_and_load;
     proc_t* hunters_mark;
     proc_t* wild_call;
@@ -3269,13 +3268,6 @@ struct legacy_of_the_windrunners_t: hunter_ranged_attack_t
     crit_bonus_multiplier *= 1.0 + p -> artifacts.deadly_aim.percent();
   }
 
-  virtual void execute()
-  {
-    p() -> procs.aimed_shot_artifact -> occur();
-
-    hunter_ranged_attack_t::execute();
-  }
-
   virtual void impact( action_state_t* s )
   {
     hunter_ranged_attack_t::impact( s );
@@ -4532,13 +4524,20 @@ struct sentinel_t : public hunter_spell_t
     harmful = false;
     parse_options( options_str );
     aoe = -1;
-    //TODO: Callbacks flase?
+  }
+
+  virtual void execute() override
+  {
+    hunter_spell_t::execute();
+
+    p() -> buffs.hunters_mark_exists -> trigger();
   }
 
   virtual void impact( action_state_t* s ) override
   {
     hunter_spell_t::impact( s );
-    td( execute_state -> target ) -> debuffs.hunters_mark -> trigger();
+
+    td( s -> target ) -> debuffs.hunters_mark -> trigger();
   }
 };
 
@@ -5848,7 +5847,6 @@ void hunter_t::init_procs()
 {
   player_t::init_procs();
 
-  procs.aimed_shot_artifact          = get_proc( "aimed_shot_artifact" );
   procs.lock_and_load                = get_proc( "lock_and_load" );
   procs.hunters_mark                 = get_proc( "hunters_mark" );
   procs.wild_call                    = get_proc( "wild_call" );
