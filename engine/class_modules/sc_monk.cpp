@@ -2958,6 +2958,10 @@ struct fists_of_fury_t: public monk_melee_attack_t
     sef_ability = SEF_FISTS_OF_FURY;
 
     channeled = tick_zero = true;
+    hasted_ticks = false;
+    interrupt_auto_attack = true;
+    // Effect 1 shows a period of 166 milliseconds which appears to refer to the visual and not the tick period
+    base_tick_time = p -> spec.fists_of_fury -> duration() / 5;
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
     attack_power_mod.direct = 0.0;
@@ -3006,10 +3010,10 @@ struct fists_of_fury_t: public monk_melee_attack_t
 
     monk_melee_attack_t::execute();
 
-      if ( p() -> artifact.crosswinds.rank() )
-        crosswinds -> execute();
+    if ( p() -> artifact.crosswinds.rank() )
+      crosswinds -> execute();
 
-      if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T17, B2 ) )
+    if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T17, B2 ) )
     {
       // Since Serenity replaces Tigereye Brew, adjust Serenity's cooldown first.
       if ( p() -> talent.serenity )
