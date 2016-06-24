@@ -276,7 +276,7 @@ public:
               * evocation,
               * frozen_orb,
               * icy_veins,
-              * inferno_blast,
+              * fire_blast,
               * phoenixs_flames,
               * presence_of_mind,
               * ray_of_frost;
@@ -530,7 +530,7 @@ public:
     cooldowns.evocation        = get_cooldown( "evocation"        );
     cooldowns.frozen_orb       = get_cooldown( "frozen_orb"       );
     cooldowns.icy_veins        = get_cooldown( "icy_veins"        );
-    cooldowns.inferno_blast    = get_cooldown( "inferno_blast"    );
+    cooldowns.fire_blast       = get_cooldown( "fire_blast"    );
     cooldowns.phoenixs_flames  = get_cooldown( "phoenixs_flames"  );
     cooldowns.presence_of_mind = get_cooldown( "presence_of_mind" );
     cooldowns.ray_of_frost     = get_cooldown( "ray_of_frost"     );
@@ -3613,7 +3613,7 @@ struct flame_on_t : public fire_mage_spell_t
     // TODO: Change reset() to accept # of charges as parameter?
     for ( int i = data().effectN( 1 ).base_value(); i > 0; i-- )
     {
-      p() -> cooldowns.inferno_blast -> reset( false );
+      p() -> cooldowns.fire_blast -> reset( false );
     }
   }
 };
@@ -4211,18 +4211,18 @@ struct icy_veins_t : public frost_mage_spell_t
   }
 };
 
-// Inferno Blast Spell ======================================================
+// Fire Blast Spell ======================================================
 
-struct inferno_blast_t : public fire_mage_spell_t
+struct fire_blast_t : public fire_mage_spell_t
 {
   double pyrosurge_chance;
   flamestrike_t* pyrosurge_flamestrike;
   cooldown_t* icd;
   blast_furance_t* blast_furnace;
 
-  inferno_blast_t( mage_t* p, const std::string& options_str ) :
-    fire_mage_spell_t( "inferno_blast", p,
-                       p -> find_class_spell( "Inferno Blast" ) ),
+  fire_blast_t( mage_t* p, const std::string& options_str ) :
+    fire_mage_spell_t( "fire_blast", p,
+                       p -> find_class_spell( "Fire Blast" ) ),
     pyrosurge_chance( 0.0 ),
     blast_furnace( nullptr )
   {
@@ -4235,7 +4235,7 @@ struct inferno_blast_t : public fire_mage_spell_t
     cooldown -> duration += p -> sets.set( MAGE_FIRE, T17, B2 ) -> effectN( 1 ).time_value();
     cooldown -> hasted = true;
     //TODO: What is this..?
-    icd = p -> get_cooldown( "inferno_blast_icd" );
+    icd = p -> get_cooldown( "fire_blast_icd" );
 
     triggers_hot_streak = true;
     triggers_ignite = true;
@@ -4304,7 +4304,7 @@ struct inferno_blast_t : public fire_mage_spell_t
     }
   }
 
-  // Inferno Blast always crits
+  // Fire Blast always crits
   virtual double composite_crit() const override
   { return 1.0; }
 };
@@ -5992,7 +5992,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "fireball"          ) return new                fireball_t( this, options_str );
   if ( name == "flamestrike"       ) return new             flamestrike_t( this, options_str );
   if ( name == "flame_on"          ) return new                flame_on_t( this, options_str );
-  if ( name == "inferno_blast"     ) return new           inferno_blast_t( this, options_str );
+  if ( name == "fire_blast"     ) return new                 fire_blast_t( this, options_str );
   if ( name == "living_bomb"       ) return new             living_bomb_t( this, options_str );
   if ( name == "meteor"            ) return new                  meteor_t( this, options_str );
   if ( name == "pyroblast"         ) return new               pyroblast_t( this, options_str );
