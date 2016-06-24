@@ -272,6 +272,7 @@ public:
     // Shadow
     const spell_data_t* shadowy_apparitions;
     const spell_data_t* voidform;
+    const spell_data_t* void_eruption;
   } specs;
 
   // Mastery Spells
@@ -2266,15 +2267,38 @@ struct power_infusion_t final : public priest_spell_t
   }
 };
 
-// Voidform Spell ========================================================
+// Void Eruption Spell ========================================================
 
-struct voidform_t final : public priest_spell_t
+struct void_eruption_t final : public priest_spell_t
 {
-  voidform_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "voidform", p, p.specs.voidform )
+  void_eruption_t(priest_t& p, const std::string& options_str)
+    : priest_spell_t( "void_eruption", p, p.specs.void_eruption )
   {
     parse_options( options_str );
-    base_costs[ RESOURCE_INSANITY ] = 0.0;
+    base_costs[RESOURCE_INSANITY] = 0.0;
+
+    may_miss = false;
+    aoe = -1;
+    range = 0.0;
+    radius = 100.0;
+    school = SCHOOL_SHADOW;
+  }
+
+  double calculate_direct_amount(action_state_t* state) const override
+  {
+    double cda = priest_spell_t::calculate_direct_amount(state);
+
+    dot_t* swp = state->target->get_dot("shadow_word_pain", &priest);
+    dot_t* vt = state->target->get_dot("vampiric_touch", &priest);
+
+    if (swp || vt)  // Shadow Word: Pain or Vampiric Touch is ticking on the target; deal damage
+    {
+      return cda;
+    }
+    else
+    {
+      return 0.0;
+    }
   }
 
   void execute() override
@@ -3475,7 +3499,7 @@ struct void_bolt_t final : public priest_spell_t
 
   void_bolt_t( priest_t& player, const std::string& options_str )
     : priest_spell_t( "void_bolt", player,
-                      player.find_specialization_spell( "Void Bolt" ) ),
+                      player.find_spell(205448)),
       insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
@@ -6200,8 +6224,8 @@ action_t* priest_t::create_action( const std::string& name,
     return new void_bolt_t( *this, options_str );
   if ( name == "void_torrent" )
     return new void_torrent_t( *this, options_str );
-  if ( name == "voidform" )
-    return new voidform_t( *this, options_str );
+  if ( name == "void_eruption" || name == "voidform" ) // Backward compatability for now. -- Twintop 2016/06/23
+    return new void_eruption_t( *this, options_str );
 
   if ( ( name == "shadowfiend" ) || ( name == "mindbender" ) )
   {
@@ -6498,7 +6522,8 @@ void priest_t::init_spells()
   specs.focused_will      = find_specialization_spell( "Focused Will" );
 
   // Shadow
-  specs.voidform = find_specialization_spell( "Voidform" );
+  specs.voidform = find_specialization_spell("Voidform");
+  specs.void_eruption = find_specialization_spell("Void Eruption");
   specs.shadowy_apparitions =
       find_specialization_spell( "Shadowy Apparitions" );
 
@@ -6897,7 +6922,7 @@ void priest_t::apl_shadow()
   default_list->add_action("call_action_list,name=vf,if=buff.voidform.up");
   default_list->add_action("call_action_list,name=main");
 
-  main->add_action("voidform");
+  main->add_action("void_eruption");
   main->add_action("mindbender,if=talent.mindbender.enabled&set_bonus.tier18_2pc");
   main->add_action("shadow_word_death");
   main->add_action("mind_blast");
