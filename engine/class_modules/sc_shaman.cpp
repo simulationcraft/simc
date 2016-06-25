@@ -481,6 +481,7 @@ public:
     const spell_data_t* eruption;
     const spell_data_t* maelstrom_melee_gain;
     const spell_data_t* fury_of_the_storms_driver;
+    const spell_data_t* feral_spirit_summon;
   } spell;
 
   // Cached pointer for ascendance / normal white melee
@@ -3928,13 +3929,15 @@ struct feral_spirit_spell_t : public shaman_spell_t
           continue;
         }
 
-        p() -> pet.doom_wolves[ idx ] -> summon( data().duration() );
+        p() -> pet.doom_wolves[ idx ] -> summon( p() -> spell.feral_spirit_summon -> duration() );
         n--;
       }
     }
     else
     {
-      range::for_each( p() -> pet.spirit_wolves, [ this ]( pet_t* p ) { p -> summon( this -> data().duration() ); } );
+      range::for_each( p() -> pet.spirit_wolves, [ this ]( pet_t* p ) {
+        p -> summon( this -> p() -> spell.feral_spirit_summon -> duration() );
+      } );
       p() -> buff.feral_spirit -> trigger();
     }
   }
@@ -5322,6 +5325,7 @@ void shaman_t::init_spells()
   spell.eruption                     = find_spell( 168556 );
   spell.maelstrom_melee_gain         = find_spell( 187890 );
   spell.fury_of_the_storms_driver    = find_spell( 191716 );
+  spell.feral_spirit_summon          = find_spell( 198506 );
 
   // Constants
   constant.speed_attack_ancestral_swiftness = 1.0 / ( 1.0 + talent.ancestral_swiftness -> effectN( 2 ).percent() );
