@@ -20,7 +20,7 @@ struct runes_t;
 
 namespace pets {
   struct dancing_rune_weapon_pet_t;
-  struct ghoul_pet_t;
+  struct dt_pet_t;
 }
 
 namespace runeforge {
@@ -347,6 +347,11 @@ public:
     const spell_data_t* glacial_advance;
 
     const spell_data_t* defile;
+
+    // Unholy
+
+    // Tier 4
+    const spell_data_t* sludge_belcher;
   } talent;
 
   // Spells
@@ -360,7 +365,7 @@ public:
   {
     std::array< pet_t*, 8 > army_ghoul;
     pets::dancing_rune_weapon_pet_t* dancing_rune_weapon;
-    pets::ghoul_pet_t* ghoul_pet;
+    pets::dt_pet_t* ghoul_pet; // Covers both Ghoul and Sludge Belcher
     pet_t* gargoyle;
   } pets;
 
@@ -908,17 +913,25 @@ struct dt_melee_ability_t : public pet_melee_attack_t<T>
 {
   typedef dt_melee_ability_t<T> super;
 
+  bool usable_in_dt;
+
   dt_melee_ability_t( T* pet, const std::string& name,
-      const spell_data_t* spell = spell_data_t::nil(), const std::string& options = std::string() ) :
-    pet_melee_attack_t<T>( pet, name, spell, options )
+      const spell_data_t* spell = spell_data_t::nil(), const std::string& options = std::string(),
+      bool usable_in_dt = true ) :
+    pet_melee_attack_t<T>( pet, name, spell, options ),
+    usable_in_dt( usable_in_dt )
   { }
 
   bool ready() override
   {
-    if ( pet_melee_attack_t<T>::p() -> o() -> buffs.dark_transformation -> check() )
-      return pet_melee_attack_t<T>::ready();
+    bool dt_state = pet_melee_attack_t<T>::p() -> o() -> buffs.dark_transformation -> check() > 0;
 
-    return false;
+    if ( usable_in_dt != dt_state )
+    {
+      return false;
+    }
+
+    return pet_melee_attack_t<T>::ready();
   }
 };
 
@@ -1036,40 +1049,39 @@ struct dt_pet_t : public base_ghoul_pet_t
 
 struct ghoul_pet_t : public dt_pet_t
 {
-  struct ghoul_claw_t : public pet_melee_attack_t<ghoul_pet_t>
+  struct claw_t : public dt_melee_ability_t<ghoul_pet_t>
   {
-    ghoul_claw_t( ghoul_pet_t* player, const std::string& options_str ) :
-      super( player, "claw", player -> find_spell( 91776 ), options_str )
+    claw_t( ghoul_pet_t* player, const std::string& options_str ) :
+      super( player, "claw", player -> find_spell( 91776 ), options_str, false )
     { }
+  };
 
-    bool ready() override
+  struct gnaw_t : public dt_melee_ability_t<ghoul_pet_t>
+  {
+    gnaw_t( ghoul_pet_t* player, const std::string& options_str ) :
+      super( player, "gnaw", player -> find_spell( 91800 ), options_str, false )
+    { }
+  };
+
+  struct monstrous_blow_t : public dt_melee_ability_t<ghoul_pet_t>
+  {
+    monstrous_blow_t( ghoul_pet_t* player, const std::string& options_str ):
+      super( player, "monstrous_blow", player -> find_spell( 91797 ), options_str )
     {
-      if ( p() -> o() -> buffs.dark_transformation -> check() )
-      {
-        return false;
-      }
-
-      return super::ready();
+      cooldown = player -> get_cooldown( "gnaw" ); // Shares CD with Gnaw
     }
   };
 
-  struct ghoul_monstrous_blow_t : public dt_melee_ability_t<ghoul_pet_t>
+  struct sweeping_claws_t : public dt_melee_ability_t<ghoul_pet_t>
   {
-    ghoul_monstrous_blow_t( ghoul_pet_t* player, const std::string& options_str ):
-      super( player, "monstrous_blow", player -> find_spell( 91797 ), options_str )
-    { }
-  };
-
-  struct ghoul_sweeping_claws_t : public dt_melee_ability_t<ghoul_pet_t>
-  {
-    ghoul_sweeping_claws_t( ghoul_pet_t* player, const std::string& options_str ) :
+    sweeping_claws_t( ghoul_pet_t* player, const std::string& options_str ) :
       super( player, "sweeping_claws", player -> find_spell( 91778 ), options_str )
     {
       aoe = -1; // TODO: Nearby enemies == all now?
     }
   };
 
-  ghoul_pet_t( death_knight_t* owner, const std::string& name ) : dt_pet_t( owner, name )
+  ghoul_pet_t( death_knight_t* owner ) : dt_pet_t( owner, "Ghoul" )
   { }
 
   void init_base_stats() override
@@ -1084,6 +1096,7 @@ struct ghoul_pet_t : public dt_pet_t
     dt_pet_t::init_action_list();
 
     action_priority_list_t* def = get_action_priority_list( "default" );
+    def -> add_action( "Gnaw" );
     def -> add_action( "Monstrous Blow" );
     def -> add_action( "Sweeping Claws" );
     def -> add_action( "Claw" );
@@ -1091,9 +1104,80 @@ struct ghoul_pet_t : public dt_pet_t
 
   action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
-    if ( name == "claw"           ) return new           ghoul_claw_t( this, options_str );
-    if ( name == "sweeping_claws" ) return new ghoul_sweeping_claws_t( this, options_str );
-    if ( name == "monstrous_blow" ) return new ghoul_monstrous_blow_t( this, options_str );
+    if ( name == "claw"           ) return new           claw_t( this, options_str );
+    if ( name == "gnaw"           ) return new           gnaw_t( this, options_str );
+    if ( name == "sweeping_claws" ) return new sweeping_claws_t( this, options_str );
+    if ( name == "monstrous_blow" ) return new monstrous_blow_t( this, options_str );
+
+    return dt_pet_t::create_action( name, options_str );
+  }
+};
+
+// ==========================================================================
+// Unholy Sludge Belcher
+// ==========================================================================
+
+struct sludge_belcher_pet_t : public dt_pet_t
+{
+  struct cleaver_t : public dt_melee_ability_t<sludge_belcher_pet_t>
+  {
+    cleaver_t( sludge_belcher_pet_t* player, const std::string& options_str ) :
+      super( player, "cleaver", player -> find_spell( 212335 ), options_str, false )
+    { }
+  };
+
+  struct smash_t : public dt_melee_ability_t<sludge_belcher_pet_t>
+  {
+    smash_t( sludge_belcher_pet_t* player, const std::string& options_str ):
+      super( player, "smash", player -> find_spell( 212332 ), options_str, false )
+    { }
+  };
+
+  struct vile_gas_t : public dt_melee_ability_t<sludge_belcher_pet_t>
+  {
+    vile_gas_t( sludge_belcher_pet_t* player, const std::string& options_str ) :
+      super( player, "vile_gas", player -> find_spell( 212338 ), options_str )
+    {
+      aoe = -1;
+    }
+  };
+
+  struct monstrous_blow_t : public dt_melee_ability_t<sludge_belcher_pet_t>
+  {
+    monstrous_blow_t( sludge_belcher_pet_t* player, const std::string& options_str ):
+      super( player, "monstrous_blow", player -> find_spell( 91797 ), options_str )
+    {
+      cooldown = player -> get_cooldown( "smash" ); // Shares CD with Smash
+    }
+  };
+
+  sludge_belcher_pet_t( death_knight_t* owner ) : dt_pet_t( owner, "Sludge_Belcher" )
+  { }
+
+  void init_base_stats() override
+  {
+    dt_pet_t::init_base_stats();
+
+    owner_coeff.ap_from_ap = 1.0;
+  }
+
+  void init_action_list() override
+  {
+    dt_pet_t::init_action_list();
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def -> add_action( "Smash" );
+    def -> add_action( "Monstrous Blow" );
+    def -> add_action( "Vile Gas" );
+    def -> add_action( "Cleaver" );
+  }
+
+  action_t* create_action( const std::string& name, const std::string& options_str ) override
+  {
+    if ( name == "cleaver"        ) return new        cleaver_t( this, options_str );
+    if ( name == "vile_gas"       ) return new       vile_gas_t( this, options_str );
+    if ( name == "smash"          ) return new          smash_t( this, options_str );
+    if ( name == "monstrous_blow" ) return new monstrous_blow_t( this, options_str );
 
     return dt_pet_t::create_action( name, options_str );
   }
@@ -3501,14 +3585,14 @@ struct raise_dead_t : public death_knight_spell_t
     harmful = false;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     death_knight_spell_t::execute();
 
     p() -> pets.ghoul_pet -> summon( timespan_t::zero() );
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( p() -> pets.ghoul_pet && ! p() -> pets.ghoul_pet -> is_sleeping() )
       return false;
@@ -4339,7 +4423,14 @@ void death_knight_t::create_pets()
 
     if ( find_action( "raise_dead" ) )
     {
-      pets.ghoul_pet = new pets::ghoul_pet_t( this, "Ghoul" );
+      if ( talent.sludge_belcher -> ok() )
+      {
+        pets.ghoul_pet = new pets::sludge_belcher_pet_t( this );
+      }
+      else
+      {
+        pets.ghoul_pet = new pets::ghoul_pet_t( this );
+      }
     }
   }
 
@@ -4483,6 +4574,10 @@ void death_knight_t::init_spells()
   talent.obliteration          = find_talent_spell( "Obliteration" );
   talent.breath_of_sindragosa  = find_talent_spell( "Breath of Sindragosa" );
   talent.glacial_advance       = find_talent_spell( "Glacial Advance" );
+
+  // Unholy Talents
+  // Tier 4
+  talent.sludge_belcher        = find_talent_spell( "Sludge Belcher" );
 
   // Generic spells
   spell.antimagic_shell           = find_class_spell( "Anti-Magic Shell" );
